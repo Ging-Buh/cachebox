@@ -8,6 +8,7 @@ import java.util.TimerTask;
 
 import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
+import org.slf4j.LoggerFactory;
 
 import CB_Locator.GpsStrength;
 import CB_Locator.Location.ProviderType;
@@ -20,8 +21,6 @@ import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.devicesSizes;
 import CB_Utils.Plattform;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.ILog;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.iChanged;
 import android.content.Context;
@@ -50,8 +49,11 @@ import de.CB.TestBase.Views.MainView;
 import de.CB.TestBase.Views.splash;
 import de.CB_VisualTest.android.R;
 
-public class MainActivity extends AndroidApplication implements LocationListener, GpsStatus.NmeaListener, GpsStatus.Listener, ILog
+
+public class MainActivity extends AndroidApplication implements LocationListener, GpsStatus.NmeaListener, GpsStatus.Listener
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(MainActivity.class);
+	
 	String workPath;
 	public static LocationManager locationManager;
 
@@ -64,7 +66,7 @@ public class MainActivity extends AndroidApplication implements LocationListener
 
 		that = this;
 
-		Logger.Add(this);
+	
 
 		GL.resetIsInitial();
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -156,7 +158,7 @@ public class MainActivity extends AndroidApplication implements LocationListener
 			locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 			// Define the criteria how to select the locatioin provider -> use
 			// default
-			Criteria criteria = new Criteria(); // noch nötig ???
+			Criteria criteria = new Criteria(); // noch nï¿½tig ???
 			criteria.setAccuracy(Criteria.ACCURACY_FINE);
 			criteria.setAltitudeRequired(false);
 			criteria.setBearingRequired(false);
@@ -166,8 +168,8 @@ public class MainActivity extends AndroidApplication implements LocationListener
 			/*
 			 * Longri: Ich habe die Zeiten und Distanzen der Location Updates angepasst. Der Network Provider hat eine schlechte
 			 * genauigkeit, darher reicht es wenn er alle 10sec einen wert liefert, wen der alte um 500m abweicht. Beim GPS Provider habe
-			 * ich die aktualiesierungs Zeit verkürzt, damit bei deaktiviertem Hardware Kompass aber die Werte trotzdem noch in einem
-			 * gesunden Verhältnis zwichen Performance und Stromverbrauch, geliefert werden. Andere apps haben hier 0.
+			 * ich die aktualiesierungs Zeit verkï¿½rzt, damit bei deaktiviertem Hardware Kompass aber die Werte trotzdem noch in einem
+			 * gesunden Verhï¿½ltnis zwichen Performance und Stromverbrauch, geliefert werden. Andere apps haben hier 0.
 			 */
 
 			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
@@ -178,7 +180,7 @@ public class MainActivity extends AndroidApplication implements LocationListener
 		}
 		catch (Exception e)
 		{
-			Logger.Error("main.initialLocationManager()", "", e);
+			log.error("main.initialLocationManager()", e);
 			e.printStackTrace();
 		}
 
@@ -379,25 +381,25 @@ public class MainActivity extends AndroidApplication implements LocationListener
 				try
 				{
 					if (s[11].equals("")) return;
-					if (!s[6].equals("1") & !s[6].equals("2")) return; // Fix ungültig
+					if (!s[6].equals("1") & !s[6].equals("2")) return; // Fix ungï¿½ltig
 					double altCorrection = Double.valueOf(s[11]);
 					if (altCorrection == 0) return;
-					Logger.General("AltCorrection: " + String.valueOf(altCorrection));
+					log.info("AltCorrection: " + String.valueOf(altCorrection));
 					Locator.setAltCorrection(altCorrection);
 					Log.d("NMEA.AltCorrection", Double.toString(altCorrection));
-					// Höhenkorrektur ändert sich normalerweise nicht, einmal
+					// Hï¿½henkorrektur ï¿½ndert sich normalerweise nicht, einmal
 					// auslesen reicht...
 					locationManager.removeNmeaListener(this);
 				}
 				catch (Exception exc)
 				{
-					// keine Höhenkorrektur vorhanden
+					// keine Hï¿½henkorrektur vorhanden
 				}
 			}
 		}
 		catch (Exception e)
 		{
-			Logger.Error("main.onNmeaReceived()", "", e);
+			log.error("main.onNmeaReceived()", e);
 			e.printStackTrace();
 		}
 	}
@@ -589,26 +591,6 @@ public class MainActivity extends AndroidApplication implements LocationListener
 			CB_Android_FileExplorer.onActivityResult(requestCode, resultCode, data);
 			return;
 		}
-	}
-
-	@Override
-	public void receiveLog(String Msg)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void receiveShortLog(String Msg)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void receiveLogCat(String Msg)
-	{
-		Log.d("CACHEBOX", Msg);
 	}
 
 }

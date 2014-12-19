@@ -6,6 +6,7 @@ import java.io.IOException;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
+import org.slf4j.LoggerFactory;
 
 import CB_Locator.Map.Descriptor;
 import CB_Locator.Map.ManagerBase;
@@ -18,7 +19,6 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.graphics.GL_GraphicFactory;
 import CB_UI_Base.graphics.PolylineDrawable;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_GraphicFactory;
-import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -26,8 +26,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 
+import de.CB.TestBase.Config;
+
 public abstract class TestCaseBase extends CB_View_Base
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(TestCaseBase.class);
 	protected final String MSG_TOP;
 	protected final String MSG_BOTOM;
 	protected int TestIndex;
@@ -135,7 +138,7 @@ public abstract class TestCaseBase extends CB_View_Base
 		}
 		catch (Exception ex)
 		{
-			Logger.DEBUG("[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
+			log.error("[TileGL] can't create Pixmap or Texture: " , ex);
 		}
 		return null;
 	}

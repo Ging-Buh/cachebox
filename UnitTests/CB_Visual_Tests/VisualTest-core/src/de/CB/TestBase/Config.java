@@ -5,14 +5,16 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.slf4j.LoggerFactory;
+
+import de.CB.Test.Map.MapTileTestBase;
 import CB_Locator.LocatorSettings;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Config_Core;
-import CB_Utils.Log.Logger;
 
 public class Config extends Config_Core implements Settings, LocatorSettings
 {
-
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(Config.class);
 	public Config(String workPath)
 	{
 		super(workPath);
@@ -142,7 +144,7 @@ public class Config extends Config_Core implements Settings, LocatorSettings
 		}
 		catch (IOException e)
 		{
-			Logger.Error("ReadConfig", "Error when accessing cachebox.config!", e);
+			log.error( "Error when accessing cachebox.config!", e);
 			e.printStackTrace();
 		}
 
@@ -317,8 +319,8 @@ public class Config extends Config_Core implements Settings, LocatorSettings
 	}
 
 	/*
-	 * Nachfolgend die Getter von Einstellungen, welche sehr häufig abgerufen werden. Diese Einstellungen werden zwischen gespeichert und
-	 * erst bei einer Änderung aktualisiert. Diese erspart das Parsen von Werten
+	 * Nachfolgend die Getter von Einstellungen, welche sehr hï¿½ufig abgerufen werden. Diese Einstellungen werden zwischen gespeichert und
+	 * erst bei einer ï¿½nderung aktualisiert. Diese erspart das Parsen von Werten
 	 */
 
 	public static void SetEncrypted(String key, String value)
@@ -361,7 +363,7 @@ public class Config extends Config_Core implements Settings, LocatorSettings
 	// act = CB_Core_Settings.GcAPI.getValue();
 	// }
 	//
-	// // Prüfen, ob das AccessToken für ACB ist!!!
+	// // Prï¿½fen, ob das AccessToken fï¿½r ACB ist!!!
 	// if (!(act.startsWith("A"))) return "";
 	// String result = act.substring(1, act.length());
 	//

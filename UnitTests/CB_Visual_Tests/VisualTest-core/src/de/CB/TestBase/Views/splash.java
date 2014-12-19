@@ -2,6 +2,8 @@ package de.CB.TestBase.Views;
 
 import java.io.IOException;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Locator.Map.ManagerBase;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Fonts;
@@ -14,7 +16,6 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
-import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
@@ -27,10 +28,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import de.CB.TestBase.Ex;
 import de.CB.TestBase.Global;
+import de.CB.TestBase.Actions.TestCaseBase;
 import de.CB.TestBase.Res.ResourceCache;
 
 public class splash extends MainViewBase
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(splash.class);
+	
 	private final long SPLASH_MIN_SHOW_TIME = 10;
 	private boolean nextClicked = false;
 	private long splashEndTime = 0;
@@ -65,7 +69,7 @@ public class splash extends MainViewBase
 		switcher = !switcher;
 		if (switcher && !breakForWait)
 		{
-			// in jedem Render Vorgang einen Step ausführen
+			// in jedem Render Vorgang einen Step ausfï¿½hren
 			switch (step)
 			{
 			case 0:
@@ -200,7 +204,7 @@ public class splash extends MainViewBase
 	 */
 	private void ini_Translations()
 	{
-		Logger.DEBUG("ini_Translations");
+		log.debug("ini_Translations");
 		new Translation("data", FileType.Internal);
 		try
 		{
@@ -218,7 +222,7 @@ public class splash extends MainViewBase
 	 */
 	private void ini_Sprites()
 	{
-		Logger.DEBUG("ini_Sprites");
+		log.debug("ini_Sprites");
 		ResourceCache.LoadSprites(false);
 		GL_UISizes.initial(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight());
 	}
@@ -238,7 +242,7 @@ public class splash extends MainViewBase
 	 */
 	private void ini_CacheDB()
 	{
-		Logger.DEBUG("ini_CacheDB");
+		log.debug("ini_CacheDB");
 		// chk if exist filter preset splitter "#" and Replace
 
 	}
@@ -249,7 +253,7 @@ public class splash extends MainViewBase
 	 */
 	private void ini_MapPaks()
 	{
-		Logger.DEBUG("ini_MapPaks");
+		log.debug("ini_MapPaks");
 		ManagerBase.Manager.initialMapPacks();
 	}
 
@@ -267,7 +271,7 @@ public class splash extends MainViewBase
 			return;
 		}
 
-		Logger.DEBUG("ini_TabMainView");
+		log.debug("ini_TabMainView");
 		GL.that.removeRenderView(this);
 		((Ex) GL.that).switchToMainView();
 

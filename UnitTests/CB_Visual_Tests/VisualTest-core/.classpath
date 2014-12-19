@@ -10,5 +10,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Locator_Desktop"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Utils"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Translation_Base"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -6,17 +6,19 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.slf4j.LoggerFactory;
+
+import de.CB.TestBase.MainActivity;
 import CB_Locator.Map.BoundingBox;
 import CB_Locator.Map.Descriptor;
 import CB_Locator.Map.ManagerBase;
 import CB_Locator.Map.PackBase;
-import CB_Utils.Log.Logger;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 public class AndroidPack extends PackBase
 {
-
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(AndroidPack.class);
 	public AndroidPack(CB_Locator.Map.Layer layer)
 	{
 		super(layer);
@@ -43,7 +45,7 @@ public class AndroidPack extends PackBase
 	// / <returns>Bitmap der Kachel</returns>
 	public Bitmap LoadFromBoundingBox(BoundingBox bbox, Descriptor desc)
 	{
-		Logger.DEBUG("LoadFromBoundingBox");
+		log.debug("LoadFromBoundingBox");
 		try
 		{
 			byte[] buffer = LoadFromBoundingBoxByteArray(bbox, desc);

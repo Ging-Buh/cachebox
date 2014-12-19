@@ -12,6 +12,7 @@ import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.slf4j.LoggerFactory;
 
 import CB_Locator.Map.Layer;
 import CB_Locator.Map.ManagerBase;
@@ -25,7 +26,6 @@ import CB_UI_Base.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_UI_Base.GL_UI.Main.CB_Button;
 import CB_Utils.Plattform;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -41,7 +41,7 @@ import de.CB.TestBase.Views.MainView;
 
 public abstract class MapTileTestBase extends TestCaseBase
 {
-
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(MapTileTestBase.class);
 	private final AtomicBoolean isDisposed = new AtomicBoolean(false);
 
 	private MultiToggleButton togl;
@@ -147,7 +147,7 @@ public abstract class MapTileTestBase extends TestCaseBase
 		GL_mapDatabase = new MapDatabase();
 		GL_mapDatabase.closeFile();
 		GL_mapDatabase.openFile(mapFile);
-		Logger.DEBUG("Open MapsForge Map: " + mapFile);
+		log.debug("Open MapsForge Map: " + mapFile);
 		// try
 		// {
 		// renderTheme = new ExternalRenderTheme(themeFile);
@@ -166,7 +166,7 @@ public abstract class MapTileTestBase extends TestCaseBase
 		MF_mapDatabase = new org.mapsforge.map.reader.MapDatabase();
 		MF_mapDatabase.closeFile();
 		MF_mapDatabase.openFile(mapFile);
-		Logger.DEBUG("Open MapsForge Map: " + mapFile);
+		log.debug("Open MapsForge Map: " + mapFile);
 		// try
 		// {
 		// renderTheme = new ExternalRenderTheme(themeFile);
@@ -261,7 +261,7 @@ public abstract class MapTileTestBase extends TestCaseBase
 	}
 
 	/**
-	 * Gibt vier MapDrawabels zurück
+	 * Gibt vier MapDrawabels zurï¿½ck
 	 * 
 	 * @param tile
 	 * @return
@@ -308,7 +308,7 @@ public abstract class MapTileTestBase extends TestCaseBase
 	}
 
 	/**
-	 * Gibt vier MapDrawabels zurück
+	 * Gibt vier MapDrawabels zurï¿½ck
 	 * 
 	 * @param tile
 	 * @return

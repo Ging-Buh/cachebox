@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
+import org.slf4j.LoggerFactory;
 
 import CB_Locator.Map.BoundingBox;
 import CB_Locator.Map.Descriptor;
@@ -16,14 +17,16 @@ import CB_Locator.Map.TileGL;
 import CB_Locator.Map.TileGL.TileState;
 import CB_Locator.Map.TileGL_Bmp;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_GraphicFactory;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import android.graphics.BitmapFactory;
 
 import com.badlogic.gdx.graphics.Pixmap.Format;
 
+
 public class AndroidManager extends ManagerBase
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(AndroidManager.class);
+	
 	public AndroidManager(DisplayModel displaymodel)
 	{
 		super(displaymodel);
@@ -91,7 +94,7 @@ public class AndroidManager extends ManagerBase
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("Manager", "Exception", exc);
+			log.error("Manager", "Exception", exc);
 			/*
 			 * #if DEBUG Global.AddLog("Manager.LoadLocalBitmap: " + exc.ToString()); #endif
 			 */
