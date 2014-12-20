@@ -109,7 +109,7 @@ public class FieldNoteEntry implements Serializable
 	{
 		typeIcon = type.getIconID();
 
-		if (type == LogTypes.found)
+		if (type == LogTypes.found || type == LogTypes.attended)
 		{
 			typeString = "#" + foundNumber + " - Found it!";
 			if (cacheType == 5 || cacheType == 6 || cacheType == 7) typeString = "Attended";
@@ -175,10 +175,7 @@ public class FieldNoteEntry implements Serializable
 			return;
 		}
 		// search FieldNote Id
-		CoreCursor reader = Database.FieldNotes
-				.rawQuery(
-						"select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber, directLog from FieldNotes where GcCode='"
-								+ gcCode + "' and type=" + type.getGcLogTypeId(), null);
+		CoreCursor reader = Database.FieldNotes.rawQuery("select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber, directLog from FieldNotes where GcCode='" + gcCode + "' and type=" + type.getGcLogTypeId(), null);
 		reader.moveToFirst();
 		while (reader.isAfterLast() == false)
 		{

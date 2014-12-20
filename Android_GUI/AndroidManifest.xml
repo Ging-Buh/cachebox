@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="de.cachebox_test" android:installLocation="preferExternal"
-	android:versionCode="2358" android:versionName="0.8.2358 (Test)">
+	android:versionCode="2360" android:versionName="0.8.2360 (Test)">
 	<uses-sdk android:minSdkVersion="9" android:targetSdkVersion="9" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
@@ -30,7 +30,7 @@
 				
 			</intent-filter>
 		</activity>
-		<activity android:name="splash" android:launchMode="singleTask" android:screenOrientation="portrait">
+		<activity android:name="splash" android:launchMode="singleTask" >
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />

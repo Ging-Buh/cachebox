@@ -18,6 +18,8 @@ package CB_UI_Base.GL_UI;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.slf4j.LoggerFactory;
+
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
@@ -37,7 +39,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public abstract class GL_View_Base extends CB_RectF
 {
-
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(GL_View_Base.class);
 	// # CONSTANTS
 
 	/**
@@ -184,7 +186,7 @@ public abstract class GL_View_Base extends CB_RectF
 	}
 
 	/**
-	 * Gibt die Parent View zurück, wenn diese über den Constructor übergeben wurde!
+	 * Gibt die Parent View zurï¿½ck, wenn diese ï¿½ber den Constructor ï¿½bergeben wurde!
 	 * 
 	 * @return parent View oder null
 	 */
@@ -449,16 +451,16 @@ public abstract class GL_View_Base extends CB_RectF
 		float A = 0, R = 0, G = 0, B = 0; // Farbwerte der batch um diese wieder einzustellen, wenn ein ColorFilter angewandt wurde!
 
 		boolean ColorFilterSeted = false; // Wir benutzen hier dieses Boolean um am ende dieser Methode zu entscheiden, ob wir die alte
-											// Farbe des Batches wieder herstellen müssen. Wir verlassen uns hier nicht darauf, das
+											// Farbe des Batches wieder herstellen mï¿½ssen. Wir verlassen uns hier nicht darauf, das
 											// mColorFilter!= null ist, da dies in der zwichenzeit passiert sein kann.
 
 		// Set Colorfilter ?
 		if (mColorFilter != null)
 		{
 			ColorFilterSeted = true;
-			// zuerst alte Farbe abspeichern, um sie Wieder Herstellen zu können
+			// zuerst alte Farbe abspeichern, um sie Wieder Herstellen zu kï¿½nnen
 			// hier muss jeder Wert einzeln abgespeichert werden, da bei getColor()
-			// nur eine Referenz zurück gegeben wird
+			// nur eine Referenz zurï¿½ck gegeben wird
 			Color c = batch.getColor();
 			A = c.a;
 			R = c.r;
@@ -576,15 +578,15 @@ public abstract class GL_View_Base extends CB_RectF
 				}
 				catch (java.util.NoSuchElementException e)
 				{
-					break; // da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
+					break; // da die Liste nicht mehr gï¿½ltig ist, brechen wir hier den Iterator ab
 				}
 				catch (java.util.ConcurrentModificationException e)
 				{
-					break; // da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
+					break; // da die Liste nicht mehr gï¿½ltig ist, brechen wir hier den Iterator ab
 				}
 				catch (java.lang.IndexOutOfBoundsException e)
 				{
-					break; // da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
+					break; // da die Liste nicht mehr gï¿½ltig ist, brechen wir hier den Iterator ab
 				}
 			}
 			childsInvalidate = false;
@@ -729,7 +731,7 @@ public abstract class GL_View_Base extends CB_RectF
 	}
 
 	/**
-	 * setzt den Scale Factor des dargestellten Images, wobei die Größe nicht verändert wird. Ist das Image größer, wird es abgeschnitten
+	 * setzt den Scale Factor des dargestellten Images, wobei die Grï¿½ï¿½e nicht verï¿½ndert wird. Ist das Image grï¿½ï¿½er, wird es abgeschnitten
 	 * 
 	 * @param value
 	 */
@@ -754,7 +756,7 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 		DebugSprite = null;
 
-		// Eine Größenänderung an die Childs Melden
+		// Eine Grï¿½ï¿½enï¿½nderung an die Childs Melden
 		if (childs != null && childs.size() > 0)
 		{
 			try
@@ -885,7 +887,7 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			log.error("click", e);
 		}
 		return handled;
 	}
@@ -981,7 +983,7 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		// Achtung: dieser touchDown ist nicht virtual und darf nicht ï¿½berschrieben werden!!!
 		// das Ereignis wird dann in der richtigen View an onTouchDown ï¿½bergeben!!!
-		// touchDown liefert die View zurück, die dieses TochDown Ereignis angenommen hat
+		// touchDown liefert die View zurï¿½ck, die dieses TochDown Ereignis angenommen hat
 		GL_View_Base resultView = null;
 
 		if (childs != null && childs.size() > 0)
@@ -1320,10 +1322,10 @@ public abstract class GL_View_Base extends CB_RectF
 	}
 
 	// Abfrage der clickToleranz, mit der Bestimmt wird ab welcher Bewegung ein onTouchDragged erzeugt wird und beim loslassen kein click
-	// dies kann hier für einzelne Views unabhängig bestimmt werden
+	// dies kann hier fï¿½r einzelne Views unabhï¿½ngig bestimmt werden
 	public int getClickTolerance()
 	{
-		// wenn eine View clickable ist dann muß für die Verschiebung (onTouchDragged) ein gewisser Toleranzbereich definiert werden,
+		// wenn eine View clickable ist dann muï¿½ fï¿½r die Verschiebung (onTouchDragged) ein gewisser Toleranzbereich definiert werden,
 		// innerhalb dem erstmal kein onTouchDragged aufgerufen wird
 		if (isClickable()) return UI_Size_Base.that.getClickToleranz();
 		else

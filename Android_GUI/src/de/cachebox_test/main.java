@@ -176,7 +176,6 @@ import de.CB_PlugIn.IPlugIn;
 import de.cachebox_test.NotifyService.LocalBinder;
 import de.cachebox_test.CB_Texturepacker.Android_Packer;
 import de.cachebox_test.Components.CacheNameView;
-import de.cachebox_test.Custom_Controls.DebugInfoPanel;
 import de.cachebox_test.Custom_Controls.Mic_On_Flash;
 import de.cachebox_test.Custom_Controls.downSlider;
 import de.cachebox_test.Custom_Controls.QuickButtonList.HorizontalListView;
@@ -281,7 +280,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private boolean mustRunSearch = false;
 
 	private Mic_On_Flash Mic_Icon;
-	private static DebugInfoPanel debugInfoPanel;
 
 	// Views
 	private ViewOptionsMenu aktView = null;
@@ -546,8 +544,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		InfoDownSlider.invalidate();
 
 		CacheListChangedEvent();
-
-		setDebugVisible();
 
 		try
 		{
@@ -1321,8 +1317,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					jokerView = null;
 					descriptionView = null;
 					mainActivity = null;
-					debugInfoPanel.OnFree();
-					debugInfoPanel = null;
+
 					InfoDownSlider = null;
 
 					Config.AcceptChanges();
@@ -1662,7 +1657,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		InfoDownSlider = (downSlider) this.findViewById(R.id.downSlider);
 
-		debugInfoPanel = (DebugInfoPanel) this.findViewById(R.id.debugInfo);
 		Mic_Icon = (Mic_On_Flash) this.findViewById(R.id.mic_flash);
 
 		cacheNameView = (CacheNameView) this.findViewById(R.id.main_cache_name_view);
@@ -2231,34 +2225,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			startActivity(intent);
 		}
-
-	}
-
-	/*
-	 * Setter
-	 */
-
-	public void setDebugVisible()
-	{
-		// never used anymore, so set to GONE
-		debugInfoPanel.setVisibility(View.GONE);
-		// debugInfoPanel.onShow();
-	}
-
-	String debugMsg = "";
-
-	public void setDebugMsg(String msg)
-	{
-		debugMsg = msg;
-
-		runOnUiThread(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				debugInfoPanel.setMsg(debugMsg);
-			}
-		});
 
 	}
 

@@ -37,7 +37,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import de.cachebox_test.Global;
 import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Views.Forms.MessageBox;
@@ -415,7 +414,6 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 	{
 		public void run()
 		{
-			Global.setDebugMsg("Reload " + String.valueOf(downloadTryCounter++));
 			if (downloadTryCounter < 10) // nur 10 Download versuche zu lassen
 			setCache(aktCache);
 		}

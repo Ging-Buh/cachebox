@@ -64,14 +64,7 @@
         android:layout_marginBottom="140dip"
         android:layout_marginRight="2dip" />
 
-    <de.cachebox_test.Custom_Controls.DebugInfoPanel
-        android:id="@+id/debugInfo"
-        android:layout_width="200dip"
-        android:layout_height="60dip"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="2dip"
-        android:layout_marginTop="40dip" />
+    
 
     <de.cachebox_test.Custom_Controls.downSlider
         android:id="@+id/downSlider"

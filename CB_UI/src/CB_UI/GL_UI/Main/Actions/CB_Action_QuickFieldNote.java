@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI.GL_UI.Main.Actions;
 
 import CB_Core.Enums.LogTypes;
@@ -8,14 +23,14 @@ import CB_UI.GL_UI.Controls.PopUps.QuickFieldNoteFeedbackPopUp;
 import CB_UI.GL_UI.Views.FieldNotesView;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_UI_Base.GL_UI.Main.Actions.CB_ActionCommand;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -55,7 +70,7 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand
 				case MenuID.MI_QUICK_FOUND:
 					FieldNotesView.addNewFieldnote(LogTypes.found, true);
 					if (FieldNotesView.that != null) FieldNotesView.that.notifyDataSetChanged();
-					CachListChangedEventList.Call(); // damit der Status geändert wird
+					CachListChangedEventList.Call(); // damit der Status geï¿½ndert wird
 					// damit die Icons in der Map aktualisiert werden
 					SelectedCacheEventList.Call(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 					QuickFieldNoteFeedbackPopUp pop = new QuickFieldNoteFeedbackPopUp(true);
@@ -65,7 +80,7 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand
 				case MenuID.MI_QUICK_NOT_FOUND:
 					FieldNotesView.addNewFieldnote(LogTypes.didnt_find, true);
 					if (FieldNotesView.that != null) FieldNotesView.that.notifyDataSetChanged();
-					CachListChangedEventList.Call(); // damit der Status geändert wird
+					CachListChangedEventList.Call(); // damit der Status geï¿½ndert wird
 					// damit die Icons in der Map aktualisiert werden
 					SelectedCacheEventList.Call(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 					QuickFieldNoteFeedbackPopUp pop2 = new QuickFieldNoteFeedbackPopUp(false);

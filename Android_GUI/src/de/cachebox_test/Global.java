@@ -33,7 +33,7 @@ public class Global
 	public static final String PREFS_NAME = "DroidCacheboxPrefsFile";
 
 	/**
-	 * Activity Result ID´s
+	 * Activity Result IDï¿½s
 	 */
 	public static final int RESULT_SELECT_PQ_LIST = 771971;
 	public static final int RESULT_ADVANCED_SETTINGS = 12112011;
@@ -80,7 +80,7 @@ public class Global
 	public static Paint invertPaint = new Paint();
 
 	/**
-	 * gibt die resultierende Farbe für Schwarz zurück, wenn der Invert Filter angewandt wurde.
+	 * gibt die resultierende Farbe fï¿½r Schwarz zurï¿½ck, wenn der Invert Filter angewandt wurde.
 	 * 
 	 * @return int (Color)
 	 */
@@ -105,12 +105,12 @@ public class Global
 	}
 
 	/**
-	 * enthält die resultierende Farbe für Schwarz, wenn der Invert Filter angewandt wurde.
+	 * enthï¿½lt die resultierende Farbe fï¿½r Schwarz, wenn der Invert Filter angewandt wurde.
 	 */
 	private static int mInvertBlack = -1;
 
 	/**
-	 * gibt die resultierende Farbe für Schwarz zurück, wenn der Invert Filter angewandt wurde.
+	 * gibt die resultierende Farbe fï¿½r Schwarz zurï¿½ck, wenn der Invert Filter angewandt wurde.
 	 * 
 	 * @return int (Color)
 	 */
@@ -137,7 +137,7 @@ public class Global
 	}
 
 	/**
-	 * enthält die resultierende Farbe für Schwarz, wenn der Invert Filter angewandt wurde.
+	 * enthï¿½lt die resultierende Farbe fï¿½r Schwarz, wenn der Invert Filter angewandt wurde.
 	 */
 	private static int mInvertWhite = -1;
 
@@ -324,11 +324,6 @@ public class Global
 
 		}
 
-	}
-
-	public static void setDebugMsg(String msg)
-	{
-		((main) main.mainActivity).setDebugMsg(msg);
 	}
 
 	public static String GetDateTimeString()
