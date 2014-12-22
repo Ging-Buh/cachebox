@@ -18,6 +18,8 @@ package CB_Utils.Lists;
 import java.io.Serializable;
 import java.util.Arrays;
 
+import org.slf4j.LoggerFactory;
+
 /**
  * A resizable, ordered array. Avoids the boxing that occurs with ArrayList<Float>. If unordered, this class avoids a memory copy when
  * removing elements (the last element is moved to the removed element's position).
@@ -26,6 +28,7 @@ import java.util.Arrays;
  */
 public class CB_List<T> implements Serializable
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_List.class);
 	private static final long serialVersionUID = 4378819539487000418L;
 	protected T[] items;
 	protected int size;
@@ -363,7 +366,14 @@ public class CB_List<T> implements Serializable
 	public void sort()
 	{
 		if (size == 0) return;
-		Arrays.sort(items, 0, size);
+		try
+		{
+			Arrays.sort(items, 0, size);
+		}
+		catch (Exception e)
+		{
+			log.error("Sort", e);
+		}
 	}
 
 	public void set(int index, T value)

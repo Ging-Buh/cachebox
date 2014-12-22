@@ -37,7 +37,7 @@ public class Descriptor implements Comparable<Descriptor>
 	public static int[] TilesPerLine = null;
 	public static int[] TilesPerColumn = null;
 	static int[] tileOffset = null;
-	// zur Übergabe beliebiger Daten
+	// zur ï¿½bergabe beliebiger Daten
 	public Object Data = null;
 	private long BuffertHash = 0;
 
@@ -48,8 +48,7 @@ public class Descriptor implements Comparable<Descriptor>
 		public void isChanged()
 		{
 			TileCacheFolder = LocatorSettings.TileCacheFolder.getValue();
-			if (LocatorSettings.TileCacheFolderLocal.getValue().length() > 0) TileCacheFolder = LocatorSettings.TileCacheFolderLocal
-					.getValue();
+			if (LocatorSettings.TileCacheFolderLocal.getValue().length() > 0) TileCacheFolder = LocatorSettings.TileCacheFolderLocal.getValue();
 		}
 	};
 
@@ -95,7 +94,7 @@ public class Descriptor implements Comparable<Descriptor>
 	public boolean NightMode = false;
 
 	/**
-	 * Erzeugt einen neuen Deskriptor mit den übergebenen Parametern
+	 * Erzeugt einen neuen Deskriptor mit den ï¿½bergebenen Parametern
 	 * 
 	 * @param x
 	 *            X-Koordinate der Kachel
@@ -188,12 +187,12 @@ public class Descriptor implements Comparable<Descriptor>
 	}
 
 	/**
-	 * Projeziert die übergebene Koordinate in den Tile Space
+	 * Projeziert die ï¿½bergebene Koordinate in den Tile Space
 	 * 
 	 * @param latitude
 	 *            Breitengrad
 	 * @param longitude
-	 *            Längengrad
+	 *            Lï¿½ngengrad
 	 * @param projectionZoom
 	 *            zoom
 	 * @return PointD
@@ -206,10 +205,10 @@ public class Descriptor implements Comparable<Descriptor>
 	}
 
 	/**
-	 * Berechnet aus dem übergebenen Längengrad die X-Koordinate im OSM-Koordinatensystem der gewünschten Zoom-Stufe
+	 * Berechnet aus dem ï¿½bergebenen Lï¿½ngengrad die X-Koordinate im OSM-Koordinatensystem der gewï¿½nschten Zoom-Stufe
 	 * 
 	 * @param zoom
-	 *            Zoom-Stufe, in der die Koordinaten ausgedrückt werden sollen
+	 *            Zoom-Stufe, in der die Koordinaten ausgedrï¿½ckt werden sollen
 	 * @param longitude
 	 *            Longitude
 	 * @return double
@@ -233,10 +232,10 @@ public class Descriptor implements Comparable<Descriptor>
 	}
 
 	/**
-	 * Berechnet aus dem übergebenen Breitengrad die Y-Koordinate im OSM-Koordinatensystem der gewünschten Zoom-Stufe
+	 * Berechnet aus dem ï¿½bergebenen Breitengrad die Y-Koordinate im OSM-Koordinatensystem der gewï¿½nschten Zoom-Stufe
 	 * 
 	 * @param zoom
-	 *            Zoom-Stufe, in der die Koordinaten ausgedrückt werden sollen
+	 *            Zoom-Stufe, in der die Koordinaten ausgedrï¿½ckt werden sollen
 	 * @param latitude
 	 *            Latitude
 	 * @return double
@@ -267,7 +266,7 @@ public class Descriptor implements Comparable<Descriptor>
 	}
 
 	/**
-	 * Berechnet aus der übergebenen OSM-X-Koordinate den entsprechenden Längengrad
+	 * Berechnet aus der ï¿½bergebenen OSM-X-Koordinate den entsprechenden Lï¿½ngengrad
 	 */
 	public static double TileXToLongitude(double zoom, double x)
 	{
@@ -276,7 +275,7 @@ public class Descriptor implements Comparable<Descriptor>
 	}
 
 	/**
-	 * Berechnet aus der übergebenen OSM-Y-Koordinate den entsprechenden Breitengrad
+	 * Berechnet aus der ï¿½bergebenen OSM-Y-Koordinate den entsprechenden Breitengrad
 	 */
 	public static double TileYToLatitude(double zoom, double y)
 	{
@@ -291,7 +290,7 @@ public class Descriptor implements Comparable<Descriptor>
 
 	/**
 	 * Berechnet die Pixel-Koordinaten auf dem Bildschirm. Es wird auf die Kachelecke oben links noch ein Offset addiert. Will man also die
-	 * Koordinaten der Ecke unten links haben, übergibt man xOffset=0,yOffset=1
+	 * Koordinaten der Ecke unten links haben, ï¿½bergibt man xOffset=0,yOffset=1
 	 * 
 	 * @param xOffset
 	 * @param yOffset
@@ -316,7 +315,7 @@ public class Descriptor implements Comparable<Descriptor>
 		return new PointD(X / (adjust * 256), Y / (adjust * 256));
 	}
 
-	public Long GetHashCode()
+	public long GetHashCode()
 	{
 		if (BuffertHash != 0) return BuffertHash;
 		BuffertHash = ((tileOffset[Zoom]) + (long) (TilesPerLine[Zoom]) * Y + X);
@@ -347,7 +346,7 @@ public class Descriptor implements Comparable<Descriptor>
 		if (obj instanceof Descriptor)
 		{
 			Descriptor desc = (Descriptor) obj;
-			if (this.GetHashCode().longValue() == desc.GetHashCode().longValue()) return true;
+			if (this.GetHashCode() == desc.GetHashCode()) return true;
 		}
 		return false;
 	}

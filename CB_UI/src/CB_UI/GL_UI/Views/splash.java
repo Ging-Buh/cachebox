@@ -43,7 +43,6 @@ import CB_UI_Base.GL_UI.Controls.ProgressBar;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.MainViewBase;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Plattform;
 import CB_Utils.Lists.CB_List;
@@ -239,12 +238,12 @@ public class splash extends MainViewBase
 	 */
 	private void ini_Config()
 	{
-		log.debug("ini_Config");
-		Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
-		Config.settings.ReadFromDB();
-		// now must reinitial UiSizes with reading settings values
-		GL_UISizes.initial(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight());
-		Config.AcceptChanges();
+		// log.debug("ini_Config");
+		// Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
+		// Config.settings.ReadFromDB();
+		// // now must reinitial UiSizes with reading settings values
+		// GL_UISizes.initial(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight());
+		// Config.AcceptChanges();
 	}
 
 	/**
@@ -418,7 +417,7 @@ public class splash extends MainViewBase
 
 		Database.Data.StartUp(Config.DatabasePath.getValue());
 
-		Config.settings.ReadFromDB();
+		// Config.settings.ReadFromDB();
 
 		// zuerst den FilterString im neuen JSON Format laden versuchen
 		String FilterString = Config.FilterNew.getValue();

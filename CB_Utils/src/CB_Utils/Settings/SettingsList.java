@@ -164,32 +164,22 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 		for (Iterator<SettingBase<?>> it = this.iterator(); it.hasNext();)
 		{
 			SettingBase<?> setting = it.next();
+			String debugString;
+
+			boolean isPlatform = false;
+			boolean isPlattformoverride = false;
+
 			if (SettingStoreType.Local == setting.getStoreType())
 			{
 				setting = dao.ReadFromDatabase(getDataDB(), setting);
-				if (!setting.value.equals(setting.defaultValue))
-				{
-					log.info("Change Local setting [" + setting.name + "] to: " + setting.value.toString());
-				}
-				else
-				{
-					log.debug("Default Local setting [" + setting.name + "] to: " + setting.value.toString());
-				}
 			}
 			else if (SettingStoreType.Global == setting.getStoreType() || (!PlatformSettings.canUsePlatformSettings() && SettingStoreType.Platform == setting.getStoreType()))
 			{
 				setting = dao.ReadFromDatabase(getSettingsDB(), setting);
-				if (!setting.value.equals(setting.defaultValue))
-				{
-					log.info("Change Global setting [" + setting.name + "] to: " + setting.value.toString());
-				}
-				else
-				{
-					log.debug("Default Global setting [" + setting.name + "] to: " + setting.value.toString());
-				}
 			}
 			else if (SettingStoreType.Platform == setting.getStoreType())
 			{
+				isPlatform = true;
 				SettingBase<?> cpy = setting.copy();
 				cpy = dao.ReadFromDatabase(getSettingsDB(), cpy);
 				setting = dao.ReadFromPlatformSetting(setting);
@@ -215,7 +205,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 						setting.setValueFrom(cpy);
 						dao.WriteToPlatformSettings(setting);
 						setting.clearDirty();
-						log.debug("Override Platform setting [" + setting.name + "] from DB to: " + setting.value.toString());
+						isPlattformoverride = true;
 					}
 					else
 					{
@@ -223,10 +213,40 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 						cpy.setValueFrom(setting);
 						dao.WriteToDatabase(getSettingsDB(), cpy);
 						cpy.clearDirty();
-						log.debug("Override PlatformDB setting [" + setting.name + "] from Platform to: " + setting.value.toString());
 					}
 				}
+			}
 
+			if (setting instanceof SettingEncryptedString)
+			{// Don't write encrypted settings in to a log file
+				debugString = "*******";
+			}
+			else
+			{
+				debugString = setting.value.toString();
+			}
+
+			if (isPlatform)
+			{
+				if (isPlattformoverride)
+				{
+					log.debug("Override Platform setting [" + setting.name + "] from DB to: " + debugString);
+				}
+				else
+				{
+					log.debug("Override PlatformDB setting [" + setting.name + "] from Platform to: " + debugString);
+				}
+			}
+			else
+			{
+				if (!setting.value.equals(setting.defaultValue))
+				{
+					log.info("Change Local setting [" + setting.name + "] to: " + debugString);
+				}
+				else
+				{
+					log.debug("Default Local setting [" + setting.name + "] to: " + debugString);
+				}
 			}
 		}
 		log.debug("Settings are loaded");

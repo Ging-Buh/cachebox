@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Locale;
 
 import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
@@ -50,16 +49,9 @@ import CB_Utils.Settings.PlatformSettings;
 import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
 import CB_Utils.Settings.SettingBase;
 import CB_Utils.Settings.SettingBool;
-import CB_Utils.Settings.SettingDouble;
-import CB_Utils.Settings.SettingEncryptedString;
-import CB_Utils.Settings.SettingEnum;
-import CB_Utils.Settings.SettingFile;
-import CB_Utils.Settings.SettingFolder;
 import CB_Utils.Settings.SettingInt;
-import CB_Utils.Settings.SettingIntArray;
 import CB_Utils.Settings.SettingModus;
 import CB_Utils.Settings.SettingString;
-import CB_Utils.Settings.SettingTime;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.iChanged;
 import android.app.Activity;
@@ -286,6 +278,7 @@ public class splash extends Activity
 	protected void onStart()
 	{
 		super.onStart();
+		log.debug("onStart");
 
 		// initial GDX
 		Gdx.files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
@@ -844,7 +837,7 @@ public class splash extends Activity
 				test.delete();
 				testFolder.delete();
 			}
-			catch (IOException e)
+			catch (Exception e)
 			{
 				externalSd = null;
 			}
@@ -868,7 +861,7 @@ public class splash extends Activity
 					testFolder.delete();
 					externalSd = sandboxPath.getAbsolutePath();
 				}
-				catch (IOException e)
+				catch (Exception e)
 				{
 					externalSd = null;
 				}
@@ -1025,6 +1018,7 @@ public class splash extends Activity
 	@Override
 	public void onDestroy()
 	{
+		log.debug("onDestroiy");
 		if (isFinishing())
 		{
 			ReleaseImages();
@@ -1068,7 +1062,7 @@ public class splash extends Activity
 	private void Initial()
 	{
 		// Jetzt ist der workPath erstmal festgelegt.
-
+		log.debug("Initial()");
 		// Zur Kompatibilität mit Älteren Installationen wird hier noch die redirection.txt abgefragt
 		if (FileIO.FileExists(workPath + "/redirection.txt"))
 		{
@@ -1094,19 +1088,6 @@ public class splash extends Activity
 			{
 				log.error("read redirection", e);
 			}
-
-		}
-
-		if (GlobalCore.isTab)
-		{
-			// Tab Modus only Landscape
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
-		}
-		else
-		{
-			// Phone Modus only Landscape
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		}
 
@@ -1196,6 +1177,20 @@ public class splash extends Activity
 			}
 		});
 
+		if (GlobalCore.isTab)
+		{
+			// Tab Modus only Landscape
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+			log.debug("GlobalCore.isTab => setRequestedOrientation SCREEN_ORIENTATION_LANDSCAPE");
+		}
+		else
+		{
+			// Phone Modus only Landscape
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+			log.debug("!GlobalCore.isTab => setRequestedOrientation SCREEN_ORIENTATION_PORTRAIT");
+		}
+
+		log.debug("Android Version = " + android.os.Build.VERSION.SDK_INT);
 		// Check Android Version and disable MixedDatabaseRenderer with Version<14(4.0.0)
 		if (android.os.Build.VERSION.SDK_INT < 14)
 		{
@@ -1203,70 +1198,10 @@ public class splash extends Activity
 			// Set setting to invisible
 			LocatorSettings.MapsforgeRenderType.changeSettingsModus(SettingModus.Never);
 			Config.settings.WriteToDB();
+			log.debug("disable MixedDatabaseRenderer for Android Version <14");
 		}
 
 		Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
-
-		// wenn eine cachebox.config existiert, werden die Werte in die DB
-		// �bertragen
-		if (FileIO.FileExists(workPath + "/cachebox.config"))
-		{
-			Config.readConfigFile(/* getAssets() */);
-
-			for (Iterator<SettingBase<?>> it = Config.settings.iterator(); it.hasNext();)
-			{
-				SettingBase<?> setting = it.next();
-
-				if (setting instanceof SettingBool)
-				{
-					((SettingBool) setting).setValue(Config.GetBool(setting.getName()));
-				}
-				else if (setting instanceof SettingIntArray)
-				{
-					((SettingIntArray) setting).setValue(Config.GetInt(setting.getName()));
-				}
-				else if (setting instanceof SettingTime)
-				{
-					((SettingTime) setting).setValue(((Config.GetInt("LockM") * 60) + Config.GetInt("LockSec")) * 1000);
-				}
-				else if (setting instanceof SettingInt)
-				{
-					((SettingInt) setting).setValue(Config.GetInt(setting.getName()));
-				}
-				else if (setting instanceof SettingDouble)
-				{
-					((SettingDouble) setting).setValue(Config.GetDouble(setting.getName()));
-				}
-				else if (setting instanceof SettingFolder)
-				{
-					((SettingFolder) setting).setValue(Config.GetString(setting.getName()));
-				}
-				else if (setting instanceof SettingFile)
-				{
-					((SettingFile) setting).setValue(Config.GetString(setting.getName()));
-				}
-				else if (setting instanceof SettingEnum)
-				{
-					((SettingEnum<?>) setting).setValue(Config.GetString(setting.getName()));
-				}
-				else if (setting instanceof SettingEncryptedString)
-				{
-					((SettingEncryptedString) setting).setEncryptedValue(Config.GetString(setting.getName() + "Enc"));
-				}
-				else if (setting instanceof SettingString)
-				{
-					((SettingString) setting).setValue(Config.GetString(setting.getName()));
-				}
-
-			}
-			// Schreibe settings in die DB
-			Config.AcceptChanges();
-
-			// cachebox.config umbenennen.
-			File f = new File(workPath + "/cachebox.config");
-			f.renameTo(new File(workPath + "/ALT_cachebox.config"));
-
-		}
 
 		// copy AssetFolder only if Rev-Number changed, like at new installation
 		if (Config.installRev.getValue() < GlobalCore.CurrentRevision)
@@ -1351,15 +1286,15 @@ public class splash extends Activity
 		// UiSize Structur für die Berechnung der Größen zusammen stellen!
 		Resources res = this.getResources();
 
-		// WindowManager w = this.getWindowManager();
-		// Display d = w.getDefaultDisplay();
-
 		FrameLayout frame = (FrameLayout) findViewById(R.id.frameLayout1);
 		int width = frame.getMeasuredWidth();
 		int height = frame.getMeasuredHeight();
 
+		log.debug("Mesure FrameLayout w/h:" + String.valueOf(width) + "/" + String.valueOf(height));
+
 		if (ui == null)
 		{
+			log.debug("create new devices-sizes");
 			ui = new devicesSizes();
 
 			ui.Window = new Size(width, height);
@@ -1373,7 +1308,21 @@ public class splash extends Activity
 			ui.ArrowSizeMap = res.getDimensionPixelSize(R.dimen.ArrowSize_Map);
 			ui.TB_IconSize = res.getDimensionPixelSize(R.dimen.TB_icon_Size);
 			ui.isLandscape = false;
+
 		}
+
+		// Log Size values
+		log.debug("UI-Sizes");
+		log.debug("ui.Density: " + ui.Density);
+		log.debug("ui.RefSize: " + ui.RefSize);
+		log.debug("ui.TextSize_Normal: " + ui.TextSize_Normal);
+		log.debug("ui.ButtonTextSize: " + ui.ButtonTextSize);
+		log.debug("ui.IconSize: " + ui.IconSize);
+		log.debug("ui.Margin: " + ui.Margin);
+		log.debug("ui.ArrowSizeList: " + ui.ArrowSizeList);
+		log.debug("ui.ArrowSizeMap: " + ui.ArrowSizeMap);
+		log.debug("ui.TB_IconSize: " + ui.TB_IconSize);
+		log.debug("ui.isLandscape: " + ui.isLandscape);
 
 		new UiSizes();
 		UI_Size_Base.that.initial(ui);

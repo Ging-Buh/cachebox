@@ -53,7 +53,7 @@
 <!-- Create a file appender for Settings messages -->
 	<appender name="ConfigLog" class="ch.qos.logback.core.FileAppender">
 		<filter class="ch.qos.logback.classic.filter.LevelFilter">
-			<level>ALL</level>
+			<level>INFO</level>
 		</filter>
 		<file>${LOG_DIR}/configlog_${DATE}.txt</file>
 		<encoder>
@@ -67,44 +67,33 @@
 	</logger>
 
   
-  <!-- ################################################################### -->
-  <!-- Create a file appender for Debug messages -->
-	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-		<filter class="ch.qos.logback.classic.filter.LevelFilter">
-			<level>DEBUG</level>
-		</filter>
-		<file>${LOG_DIR}/debuglog_${DATE}.txt</file>
-		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-		</encoder>
-	</appender>
-
-<!-- Write all messages to debug log -->
-	<root level='ALL'>
-		<appender-ref ref='FILE' />
-	</root>
-	
+ 
 
 <!-- ################################################################### -->
 <!-- Create a file appender for Slider messages -->
-	<appender name="SliderLog" class="ch.qos.logback.core.FileAppender">
+	<appender name="SplashLog" class="ch.qos.logback.core.FileAppender">
 		<filter class="ch.qos.logback.classic.filter.LevelFilter">
 			<level>ALL</level>
 		</filter>
-		<file>${LOG_DIR}/sliderlog_${DATE}.txt</file>
+		<file>${LOG_DIR}/splashsizelog_${DATE}.txt</file>
 		<encoder>
 			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
 		</encoder>
 	</appender>
 
 <!-- Write messages from class de.cachebox_test.Custom_Controls.downSlider to SliderLog -->
-	<logger name="de.cachebox_test.Custom_Controls.downSlider" level="ALL">
-		<appender-ref ref="SliderLog" />
+	<logger name="de.cachebox_test.splash" level="ALL">
+		<appender-ref ref="SplashLog" />
 	</logger>
 	
 <!-- Write messages from class CB_UI.GL_UI.Controls.Slider to SliderLog -->
-	<logger name="CB_UI.GL_UI.Controls.Slider" level="ALL">
-		<appender-ref ref="SliderLog" />
+	<logger name="CB_UI_Base.Math.UI_Size_Base" level="ALL">
+		<appender-ref ref="SplashLog" />
+	</logger>
+
+<!-- Write messages from class CB_UI.GL_UI.Controls.Slider to SliderLog -->
+	<logger name="CB_UI_Base.Math.GL_UISizes" level="ALL">
+		<appender-ref ref="SplashLog" />
 	</logger>
 
   
