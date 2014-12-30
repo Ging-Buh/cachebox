@@ -118,7 +118,7 @@ public class PolygonDrawable implements IRotateDrawable
 			// reset color
 			batch.setColor(r, g, b, a);
 		}
-		return false;
+		return true;
 	}
 
 	private void createTexRegFromPixMap()

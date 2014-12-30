@@ -73,9 +73,9 @@ public abstract class GL_View_Base extends CB_RectF
 	protected OnClickListener mOnLongClickListener;
 	protected OnClickListener mOnDoubleClickListener;
 
-	private Pixmap debugRegPixmap = null;
-	private Texture debugRegTexture = null;
-	private Sprite DebugSprite = null;
+	public Pixmap debugRegPixmap = null;
+	public Texture debugRegTexture = null;
+	protected Sprite DebugSprite = null;
 
 	/**
 	 * Don't use this Flag direct, use the method isClickable() </br></br> Maby a child is clickable!!
@@ -619,7 +619,7 @@ public abstract class GL_View_Base extends CB_RectF
 		return isDisposed;
 	}
 
-	private void writeDebug()
+	protected void writeDebug()
 	{
 		if (DebugSprite == null)
 		{

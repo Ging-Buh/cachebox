@@ -53,8 +53,7 @@ public class platformConector
 		showView(viewID, x, y, width, height, 0, 0, 0, 0);
 	}
 
-	public static void showView(ViewID viewID, float x, float y, float width, float height, float leftMargin, float topMargin,
-			float rightMargin, float bottomMargin)
+	public static void showView(ViewID viewID, float x, float y, float width, float height, float leftMargin, float topMargin, float rightMargin, float bottomMargin)
 	{
 		if (showViewListner != null)
 		{
@@ -123,6 +122,10 @@ public class platformConector
 		boolean isTorchOn();
 
 		void switchTorch();
+
+		void switchToGpsMeasure();
+
+		void switchtoGpsDefault();
 
 	}
 
@@ -264,8 +267,7 @@ public class platformConector
 		getFileListner = listner;
 	}
 
-	public static void getFile(String initialPath, String extension, String TitleText, String ButtonText,
-			IgetFileReturnListner returnListner)
+	public static void getFile(String initialPath, String extension, String TitleText, String ButtonText, IgetFileReturnListner returnListner)
 	{
 		if (getFileListner != null) getFileListner.getFile(initialPath, extension, TitleText, ButtonText, returnListner);
 	}
@@ -420,6 +422,24 @@ public class platformConector
 	{
 		if (startPictureApp != null) startPictureApp.Start();
 	}
+
 	// -----------------------------------------
+
+	public static void switchToGpsMeasure()
+	{
+		if (hardwareListner != null)
+		{
+			hardwareListner.switchToGpsMeasure();
+			;
+		}
+	}
+
+	public static void switchToGpsDefault()
+	{
+		if (hardwareListner != null)
+		{
+			hardwareListner.switchtoGpsDefault();
+		}
+	}
 
 }

@@ -272,7 +272,10 @@ public class ZoomButtons extends CB_View_Base
 			// caclc offset
 			offX = -(e - f);
 			offY = -(f - e);
-
+		}
+		else
+		{
+			btnDown.setRotation(0f);
 		}
 
 		btnDown.setBounds(hx + offX, hy + offY, hw, hh);
@@ -303,6 +306,10 @@ public class ZoomButtons extends CB_View_Base
 
 			hw = hh;
 			hh = HitRecUp.getWidth();
+		}
+		else
+		{
+			btnUp.setRotation(0f);
 		}
 
 		btnUp.setBounds(hx + offX, hy + offY, hw, hh);

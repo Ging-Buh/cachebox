@@ -1051,7 +1051,35 @@ public class splash extends Activity
 			@Override
 			public void run()
 			{
-				Initial();
+				// wait for measure layout
+
+				final FrameLayout frame = (FrameLayout) findViewById(R.id.frameLayout1);
+				int width = frame.getMeasuredWidth();
+				int height = frame.getMeasuredHeight();
+
+				while (width == 0 || height == 0)
+				{
+					log.debug("wait for splsh layout");
+					splash.this.runOnUiThread(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							frame.forceLayout();
+						}
+					});
+					try
+					{
+						Thread.sleep(100);
+					}
+					catch (InterruptedException e)
+					{
+					}
+					width = frame.getMeasuredWidth();
+					height = frame.getMeasuredHeight();
+				}
+
+				Initial(width, height);
 			}
 		};
 
@@ -1059,7 +1087,7 @@ public class splash extends Activity
 
 	}
 
-	private void Initial()
+	private void Initial(int width, int height)
 	{
 		// Jetzt ist der workPath erstmal festgelegt.
 		log.debug("Initial()");
@@ -1284,16 +1312,13 @@ public class splash extends Activity
 		Config.AcceptChanges();
 
 		// UiSize Structur für die Berechnung der Größen zusammen stellen!
-		Resources res = this.getResources();
-
-		FrameLayout frame = (FrameLayout) findViewById(R.id.frameLayout1);
-		int width = frame.getMeasuredWidth();
-		int height = frame.getMeasuredHeight();
 
 		log.debug("Mesure FrameLayout w/h:" + String.valueOf(width) + "/" + String.valueOf(height));
 
 		if (ui == null)
 		{
+			Resources res = splash.this.getResources();
+
 			log.debug("create new devices-sizes");
 			ui = new devicesSizes();
 
@@ -1313,6 +1338,7 @@ public class splash extends Activity
 
 		// Log Size values
 		log.debug("UI-Sizes");
+		log.debug("ui.Window: " + ui.Window.toString());
 		log.debug("ui.Density: " + ui.Density);
 		log.debug("ui.RefSize: " + ui.RefSize);
 		log.debug("ui.TextSize_Normal: " + ui.TextSize_Normal);

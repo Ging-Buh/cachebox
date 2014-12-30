@@ -252,7 +252,7 @@ public class FieldNotesView extends V_ListView
 
 		Cache cache = GlobalCore.getSelectedCache();
 
-		if (cache == null) return null;
+		// if (cache == null) return null;
 
 		final Menu cm = new Menu("FieldNoteContextMenu");
 
@@ -296,31 +296,35 @@ public class FieldNotesView extends V_ListView
 			}
 		});
 
-		// Found je nach CacheType
-		if (cache.Type == null) return null;
-		switch (cache.Type)
+		if (cache != null)
 		{
-		case Giga:
-			cm.addItem(MenuID.MI_WILL_ATTENDED, "will-attended", SpriteCacheBase.getThemedSprite("log8icon"));
-			cm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCacheBase.getThemedSprite("log9icon"));
-			break;
-		case MegaEvent:
-			cm.addItem(MenuID.MI_WILL_ATTENDED, "will-attended", SpriteCacheBase.getThemedSprite("log8icon"));
-			cm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCacheBase.getThemedSprite("log9icon"));
-			break;
-		case Event:
-			cm.addItem(MenuID.MI_WILL_ATTENDED, "will-attended", SpriteCacheBase.getThemedSprite("log8icon"));
-			cm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCacheBase.getThemedSprite("log9icon"));
-			break;
-		case Camera:
-			cm.addItem(MenuID.MI_WEBCAM_FOTO_TAKEN, "webCamFotoTaken", SpriteCacheBase.getThemedSprite("log10icon"));
-			break;
-		default:
-			cm.addItem(MenuID.MI_FOUND, "found", SpriteCacheBase.getThemedSprite("log0icon"));
-			break;
-		}
 
-		cm.addItem(MenuID.MI_NOT_FOUND, "DNF", SpriteCacheBase.getThemedSprite("log1icon"));
+			// Found je nach CacheType
+			if (cache.Type == null) return null;
+			switch (cache.Type)
+			{
+			case Giga:
+				cm.addItem(MenuID.MI_WILL_ATTENDED, "will-attended", SpriteCacheBase.getThemedSprite("log8icon"));
+				cm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCacheBase.getThemedSprite("log9icon"));
+				break;
+			case MegaEvent:
+				cm.addItem(MenuID.MI_WILL_ATTENDED, "will-attended", SpriteCacheBase.getThemedSprite("log8icon"));
+				cm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCacheBase.getThemedSprite("log9icon"));
+				break;
+			case Event:
+				cm.addItem(MenuID.MI_WILL_ATTENDED, "will-attended", SpriteCacheBase.getThemedSprite("log8icon"));
+				cm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCacheBase.getThemedSprite("log9icon"));
+				break;
+			case Camera:
+				cm.addItem(MenuID.MI_WEBCAM_FOTO_TAKEN, "webCamFotoTaken", SpriteCacheBase.getThemedSprite("log10icon"));
+				break;
+			default:
+				cm.addItem(MenuID.MI_FOUND, "found", SpriteCacheBase.getThemedSprite("log0icon"));
+				break;
+			}
+
+			cm.addItem(MenuID.MI_NOT_FOUND, "DNF", SpriteCacheBase.getThemedSprite("log1icon"));
+		}
 
 		// Aktueller Cache ist von geocaching.com dann weitere Men�eintr�ge freigeben
 		if (cache != null && cache.getGcCode().toLowerCase().startsWith("gc"))
@@ -332,7 +336,10 @@ public class FieldNotesView extends V_ListView
 		cm.addItem(MenuID.MI_UPLOAD_FIELDNOTE, "uploadFieldNotes", SpriteCacheBase.Icons.get(IconName.uploadFieldNote_64.ordinal()));
 		cm.addItem(MenuID.MI_DELETE_ALL_FIELDNOTES, "DeleteAllNotes", SpriteCacheBase.getThemedSprite("delete"));
 
-		cm.addMoreMenu(getSecondMenu(), Translation.Get("defaultLogTypes"), Translation.Get("ownerLogTypes"));
+		if (cache != null)
+		{
+			cm.addMoreMenu(getSecondMenu(), Translation.Get("defaultLogTypes"), Translation.Get("ownerLogTypes"));
+		}
 
 		return cm;
 

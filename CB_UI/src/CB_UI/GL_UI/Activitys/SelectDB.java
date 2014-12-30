@@ -75,13 +75,13 @@ public class SelectDB extends ActivityBase
 	private CustomAdapter lvAdapter;
 	private File AktFile = null;
 	private String[] countList;
-	private boolean MusstSelect = false;
+	private boolean MustSelect = false;
 	private ReturnListner returnListner;
 
 	public SelectDB(CB_RectF rec, String Name, boolean mustSelect)
 	{
 		super(rec, Name);
-		MusstSelect = mustSelect;
+		MustSelect = mustSelect;
 		DBPath = FileIO.GetDirectoryName(Config.DatabasePath.getValue());
 
 		if (DBPath.endsWith(".db3"))
@@ -172,7 +172,7 @@ public class SelectDB extends ActivityBase
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				stopTimer();
-				if (MusstSelect)
+				if (MustSelect)
 				{
 					TabMainView.actionClose.CallExecute();
 				}
@@ -312,11 +312,11 @@ public class SelectDB extends ActivityBase
 					}
 					catch (Exception e)
 					{
-						e.printStackTrace();
+						log.error("select item", e);
 					}
 				}
 
-				lvFiles.RunIfListInitial(new IRunOnGL()
+				GL.that.RunOnGL(new IRunOnGL()
 				{
 
 					@Override
@@ -532,7 +532,7 @@ public class SelectDB extends ActivityBase
 	@Override
 	protected void finish()
 	{
-		GL.that.closeActivity(!MusstSelect);
+		GL.that.closeActivity(!MustSelect);
 	}
 
 	private void setAutoStartText()
@@ -682,7 +682,7 @@ public class SelectDB extends ActivityBase
 	@Override
 	public boolean canCloseWithBackKey()
 	{
-		return !MusstSelect;
+		return !MustSelect;
 	}
 
 	@Override

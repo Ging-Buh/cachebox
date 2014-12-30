@@ -119,7 +119,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	protected SortedMap<Integer, Integer> DistanceZoomLevel;
 	CancelWaitDialog wd = null;
 
-	MapViewCacheList mapCacheList;
+	public MapViewCacheList mapCacheList;
 	int zoomCross = 16;
 
 	// private GL_ZoomScale zoomScale;

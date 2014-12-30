@@ -28,6 +28,7 @@ import CB_Locator.Events.PositionChangedEventList;
 import CB_Locator.Map.Descriptor;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Controls.SatBarChart;
+import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
@@ -355,7 +356,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 			lblMeasureCount.setText(String.valueOf(MeasureCount) + "/" + String.valueOf(mMeasureList.size()));
 
-			// nach jeder 10. Messung die Liste Aufräumen
+			// nach jeder 10. Messung die Liste Aufrï¿½umen
 			if (mMeasureList.size() % 10 == 0)
 			{
 				mMeasureList.setAverage();
@@ -383,6 +384,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 		{
 			chart.onShow();
 			chart.setDrawWithAlpha(false);
+			platformConector.switchToGpsMeasure();
 		}
 
 	}
@@ -393,6 +395,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 		super.onHide();
 		PositionChangedEventList.Remove(this);
 		if (chart != null) chart.onHide();
+		platformConector.switchToGpsDefault();
 	}
 
 	@Override

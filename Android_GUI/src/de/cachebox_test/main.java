@@ -146,7 +146,6 @@ import android.os.PowerManager;
 import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.text.ClipboardManager;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -159,6 +158,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewParent;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -369,13 +369,18 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		super.onCreate(savedInstanceState);
 		GL.resetIsInitial();
 
+		// add flags for run on lock screen
+		this.getWindow().addFlags(
+				WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+						| WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
 		if (GlobalCore.RunFromSplash)
 		{
-			Log.d("CACHEBOX", "main-OnCreate Run from Splash");
+			log.info("CACHEBOX", "main-OnCreate Run from Splash");
 		}
 		else
 		{
-			Log.d("CACHEBOX", "main-OnCreate illegal-Run");
+			log.info("CACHEBOX", "main-OnCreate illegal-Run");
 			// run splash
 			Intent mainIntent = new Intent().setClass(main.this, de.cachebox_test.splash.class);
 			startActivity(mainIntent);
@@ -1261,11 +1266,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (mReceiver != null) this.unregisterReceiver(mReceiver);
 		mReceiver = null;
 
-		Log.d("CACHEBOX", "Main=> onDestroy");
+		log.info("CACHEBOX", "Main=> onDestroy");
 		// frame.removeAllViews();
 		if (isRestart)
 		{
-			Log.d("CACHEBOX", "Main=> onDestroy isFinishing");
 			log.debug("Main=> onDestroy isRestart");
 			super.onDestroy();
 			isRestart = false;
@@ -1274,7 +1278,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (isFinishing())
 			{
-				Log.d("CACHEBOX", "Main=> onDestroy isFinishing");
+				log.info("Main=> onDestroy isFinishing");
 				if (GlobalCore.RunFromSplash)
 				{
 					Config.settings.WriteToDB();
@@ -1335,7 +1339,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 			else
 			{
-				Log.d("CACHEBOX", "Main=> onDestroy isFinishing==false");
+				log.info("Main=> onDestroy isFinishing==false");
 
 				if (aktView != null) aktView.OnHide();
 				if (aktTabView != null) aktTabView.OnHide();
@@ -1592,7 +1596,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void ShowViewGL(ViewID Id)
 	{
-		Log.d("CACHEBOX", "GL Frame" + GlFrame.getMeasuredWidth() + "/" + GlFrame.getMeasuredHeight());
+		log.debug("ShowViewGL " + GlFrame.getMeasuredWidth() + "/" + GlFrame.getMeasuredHeight());
 
 		initialViewGL();
 
@@ -1709,7 +1713,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			});
 
 			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 1, this);
-			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 500, this);
+			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 300, this);
 
 			locationManager.addNmeaListener(this);
 			locationManager.addGpsStatusListener(this);
@@ -2270,7 +2274,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					if (altCorrection == 0) return;
 					log.info("AltCorrection: " + String.valueOf(altCorrection));
 					Locator.setAltCorrection(altCorrection);
-					Log.d("NMEA.AltCorrection", Double.toString(altCorrection));
 					// H�henkorrektur �ndert sich normalerweise nicht, einmal
 					// auslesen reicht...
 					locationManager.removeNmeaListener(this);
@@ -2568,7 +2571,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	// ########### PlugIn Method ##########################
 
 	// PlugIn Methodes
-	private static final String LOG_TAG = "CB_PlugIn";
 	private static final String ACTION_PICK_PLUGIN = "de.cachebox.action.PICK_PLUGIN";
 	private static final String KEY_PKG = "pkg";
 	private static final String KEY_SERVICENAME = "servicename";
@@ -2641,7 +2643,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 		catch (NameNotFoundException ex)
 		{
-			Log.e(LOG_TAG, "NameNotFoundException", ex);
+			log.error("NameNotFoundException", ex);
 		}
 	}
 
@@ -2701,7 +2703,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		public void onServiceConnected(ComponentName className, IBinder boundService)
 		{
 			int idx = getServiceConnectionIndex();
-			Log.d(LOG_TAG, "onServiceConnected: ComponentName: " + className + "; idx: " + idx);
+			log.info("onServiceConnected: ComponentName: " + className + "; idx: " + idx);
 			if (idx >= 0)
 			{
 				Global.iPlugin[idx] = IPlugIn.Stub.asInterface((IBinder) boundService);
@@ -2724,7 +2726,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		public void onServiceDisconnected(ComponentName className)
 		{
 			int idx = getServiceConnectionIndex();
-			Log.d(LOG_TAG, "onServiceDisconnected: ComponentName: " + className + "; idx: " + idx);
+			log.info("onServiceDisconnected: ComponentName: " + className + "; idx: " + idx);
 			if (idx >= 0) Global.iPlugin[idx] = null;
 		}
 
@@ -2816,6 +2818,22 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					deviceCamera.release();
 					deviceCamera = null;
 				}
+			}
+
+			@Override
+			public void switchToGpsMeasure()
+			{
+				log.info("switchToGpsMeasure()");
+				int updateTime = Config.gpsUpdateTime.getValue();
+				locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 0, main.this);
+			}
+
+			@Override
+			public void switchtoGpsDefault()
+			{
+				log.info("switchtoGpsDefault()");
+				int updateTime = Config.gpsUpdateTime.getValue();
+				locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 1, main.this);
 			}
 
 		});
