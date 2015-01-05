@@ -5,17 +5,7 @@
     android:orientation="vertical" 
     android:id="@+id/layoutTextField">
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
-
-        <FrameLayout
-            android:id="@+id/layoutGlContent"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_alignParentLeft="true" >
-        </FrameLayout>
-    </RelativeLayout>
+   
     
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -53,7 +43,17 @@
         
     </RelativeLayout>
 
-    
+     <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <FrameLayout
+            android:id="@+id/layoutGlContent"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignParentLeft="true" >
+        </FrameLayout>
+    </RelativeLayout>
 
     <de.cachebox_test.Custom_Controls.Mic_On_Flash
         android:id="@+id/mic_flash"

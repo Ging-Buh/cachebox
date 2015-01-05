@@ -532,7 +532,7 @@ public class MessageBox extends android.app.Dialog
 		{
 			int winWidth = UI_Size_Base.that != null ? UI_Size_Base.that.getWindowWidth() : WindowWidth;
 			int winHeight = UI_Size_Base.that != null ? UI_Size_Base.that.getWindowHeight() : WindowHeight;
-			float txtSize = UI_Size_Base.that != null ? (float) (UI_Size_Base.that.getScaledFontSize_btn()) : textSize;
+			// float txtSize = UI_Size_Base.that != null ? (float) (UI_Size_Base.that.getScaledFontSize_btn()) : textSize;
 			int Buttonheight = UI_Size_Base.that != null ? UI_Size_Base.that.getButtonHeight() : ButtonHeight;
 
 			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -544,7 +544,7 @@ public class MessageBox extends android.app.Dialog
 			if (title != null && !title.equals(""))
 			{
 				((TextView) layout.findViewById(R.id.title)).setText(title);
-				((TextView) layout.findViewById(R.id.title)).setTextSize(txtSize);
+				// ((TextView) layout.findViewById(R.id.title)).setTextSize(txtSize);
 			}
 			else
 			{
@@ -616,7 +616,7 @@ public class MessageBox extends android.app.Dialog
 			{
 
 				((TextView) layout.findViewById(R.id.message)).setText(message);
-				((TextView) layout.findViewById(R.id.message)).setTextSize(txtSize);
+				// ((TextView) layout.findViewById(R.id.message)).setTextSize(txtSize);
 
 				((TextView) layout.findViewById(R.id.message)).measure(winWidth - 100, winHeight - 100);
 				int height = ((TextView) layout.findViewById(R.id.message)).getMeasuredHeight();

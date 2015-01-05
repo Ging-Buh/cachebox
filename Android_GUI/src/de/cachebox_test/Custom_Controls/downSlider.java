@@ -577,7 +577,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		this.invalidate();
 
-		CB_UI.GL_UI.Controls.Slider.setAndroidSliderPos(yPos);
+		// CB_UI.GL_UI.Controls.Slider.setAndroidSliderPos(yPos);
 
 	}
 
@@ -591,8 +591,8 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 			@Override
 			public void run()
 			{
-				((main) main.mainActivity).InfoDownSlider.setPos(Pos);
-				((main) main.mainActivity).InfoDownSlider.invalidate();
+				// ((main) main.mainActivity).InfoDownSlider.setPos(Pos);
+				// ((main) main.mainActivity).InfoDownSlider.invalidate();
 			}
 		});
 	}

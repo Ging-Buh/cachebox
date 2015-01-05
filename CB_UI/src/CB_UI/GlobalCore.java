@@ -54,7 +54,7 @@ import CB_Utils.Interfaces.cancelRunnable;
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface
 {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(GlobalCore.class);
-	public static final int CurrentRevision = 2362;
+	public static final int CurrentRevision = 2364;
 
 	public static final String CurrentVersion = "0.8.";
 	public static final String VersionPrefix = "test";
@@ -197,7 +197,8 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 	static boolean JokerPwExist = false;
 
 	/**
-	 * JokerisOnline Liefert TRUE wenn die M�glichkeit besteht auf das Internet zuzugreifen und ein Passwort f�r gcJoker.de vorhanden ist.
+	 * JokerisOnline Liefert TRUE wenn die M�glichkeit besteht auf das Internet zuzugreifen und ein Passwort f�r gcJoker.de vorhanden
+	 * ist.
 	 */
 	public static boolean JokerisOnline()
 	{

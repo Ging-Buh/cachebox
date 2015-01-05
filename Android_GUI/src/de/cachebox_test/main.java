@@ -123,6 +123,7 @@ import android.content.pm.ServiceInfo;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.database.Cursor;
+import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Sensor;
@@ -153,6 +154,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
@@ -272,7 +274,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private LinearLayout TopLayout;
 
-	public downSlider InfoDownSlider;
+	private downSlider InfoDownSlider;
 
 	private String ExtSearch_GcCode = null;
 	private String ExtSearch_GpxPath = null;
@@ -1173,6 +1175,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				.getQuickButtonListHeight() : 0;
 		((main) main.mainActivity).setQuickButtonHeight(sollHeight);
 		downSlider.isInitial = false;
+		if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
+		if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
 		InfoDownSlider.invalidate();
 
 		// Ausschalten verhindern
@@ -1589,8 +1593,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (aktView != null) ((View) aktView).setVisibility(View.VISIBLE);
 		if (aktTabView != null) ((View) aktTabView).setVisibility(View.VISIBLE);
-		if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.VISIBLE);
-		if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.VISIBLE);
+		if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
+		if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
 
 	}
 
@@ -1736,9 +1740,18 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			// gdxView = initializeForView(glListener, GL20);
 
 			AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
-			cfg.numSamples = 16;
+			cfg.r = cfg.g = cfg.b = cfg.a = 8;
+
+			cfg.numSamples = 2;
 
 			gdxView = initializeForView(glListener, cfg);
+
+			if (graphics.getView() instanceof SurfaceView)
+			{
+				SurfaceView glView = (SurfaceView) graphics.getView();
+				glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+				glView.setZOrderOnTop(true);
+			}
 
 			log.debug("Initial new gdxView=" + gdxView.toString());
 
@@ -2885,12 +2898,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						if (InfoDownSlider != null)
 						{
 							InfoDownSlider.ActionUp();
-							((View) InfoDownSlider).setVisibility(View.VISIBLE);
+							((View) InfoDownSlider).setVisibility(View.INVISIBLE);
 						}
 
 						if (aktView != null) ((View) aktView).setVisibility(View.VISIBLE);
 						if (aktTabView != null) ((View) aktTabView).setVisibility(View.VISIBLE);
-						if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.VISIBLE);
+						if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
 
 						if (viewID == ViewConst.JOKER_VIEW)
 						{
@@ -3003,8 +3016,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 								{
 									if (aktView != null) ((View) aktView).setVisibility(View.VISIBLE);
 									if (aktTabView != null) ((View) aktTabView).setVisibility(View.VISIBLE);
-									if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.VISIBLE);
-									if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.VISIBLE);
+									if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
+									if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
 								}
 								// set position of slider
 								downSlider.ButtonShowStateChanged();

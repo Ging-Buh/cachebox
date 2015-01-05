@@ -27,6 +27,8 @@ import com.badlogic.gdx.graphics.Color;
  */
 public class COLOR
 {
+	private final static Color TRANSPARENT = new Color(0, 0, 0, 0);
+
 	private static Color day_fontColor;
 	private static Color day_fontColorDisable;
 	private static Color day_fontColorHighLight;
@@ -164,5 +166,10 @@ public class COLOR
 	public static Color getPopUpMenuIconBackColor()
 	{
 		return cfg.Nightmode ? night_popup_menu_icon_back : day_popup_menu_icon_back;
+	}
+
+	public static Color getTransparent()
+	{
+		return TRANSPARENT;
 	}
 }
