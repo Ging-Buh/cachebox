@@ -23,11 +23,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import CB_Core.CoreSettingsForward;
+import CB_Core.DAO.CategoryDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheListLive;
+import CB_Core.Types.Category;
+import CB_Core.Types.GpxFilename;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Locator.Coordinate;
@@ -60,6 +64,9 @@ public class LiveMapQue
 	private static final ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 	public static CacheListLive LiveCaches;
 	public static Live_Radius radius = CB_Core.Settings.CB_Core_Settings.LiveRadius.getEnumValue();
+
+	private static GpxFilename gpxFilename;
+
 	static
 	{
 		CB_Core.Settings.CB_Core_Settings.LiveRadius.addChangedEventListner(new iChanged()
@@ -181,9 +188,17 @@ public class LiveMapQue
 			}
 			if (apiCaches == null)
 			{
+
+				if (gpxFilename == null)
+				{
+					CategoryDAO categoryDAO = new CategoryDAO();
+					Category category = categoryDAO.GetCategory(CoreSettingsForward.Categories, "API-Import");
+					gpxFilename = categoryDAO.CreateNewGpxFilename(category, "API-Import");
+				}
+
 				apiCaches = new CB_List<Cache>();
 				CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
-				result = t.SearchForGeocachesJSON(requestSearch, apiCaches, apiLogs, apiImages, 0, null);
+				result = t.SearchForGeocachesJSON(requestSearch, apiCaches, apiLogs, apiImages, gpxFilename.Id, null);
 			}
 
 			if (result.equals("download limit"))
@@ -256,7 +271,14 @@ public class LiveMapQue
 		CB_List<Cache> cacheList = new CB_List<Cache>();
 		if (result != null && result.length() > 0)
 		{
-			SEARCH_API.ParseJsonResult(requestSearch, cacheList, apiLogs, apiImages, 0, result, (byte) 1, true);
+			if (gpxFilename == null)
+			{
+				CategoryDAO categoryDAO = new CategoryDAO();
+				Category category = categoryDAO.GetCategory(CoreSettingsForward.Categories, "API-Import");
+				gpxFilename = categoryDAO.CreateNewGpxFilename(category, "API-Import");
+			}
+
+			SEARCH_API.ParseJsonResult(requestSearch, cacheList, apiLogs, apiImages, gpxFilename.Id, result, (byte) 1, true);
 			return cacheList;
 		}
 
