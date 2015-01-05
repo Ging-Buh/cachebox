@@ -34,6 +34,9 @@ public class COLOR
 	private static Color day_darknesColor;
 	private static Color day_crossColor;
 	private static Color day_MenuBackColor;
+	private static Color day_popup_menu_info_back;
+	private static Color day_popup_menu_border;
+	private static Color day_popup_menu_icon_back;
 
 	private static Color night_fontColor;
 	private static Color night_fontColorDisable;
@@ -42,6 +45,9 @@ public class COLOR
 	private static Color night_darknesColor;
 	private static Color night_crossColor;
 	private static Color night_MenuBackColor;
+	private static Color night_popup_menu_info_back;
+	private static Color night_popup_menu_border;
+	private static Color night_popup_menu_icon_back;
 
 	private static SkinSettings cfg;
 
@@ -56,6 +62,9 @@ public class COLOR
 		day_darknesColor = getDayColor("darknes");
 		day_crossColor = getDayColor("cross");
 		day_MenuBackColor = getDayColor("menu-back-color");
+		day_popup_menu_info_back = getDayColor("popup-menu-info-back");
+		day_popup_menu_border = getDayColor("popup-menu-border");
+		day_popup_menu_icon_back = getDayColor("popup-menu-icon-back");
 
 		night_fontColor = getNightColor("font-color");
 		night_fontColorDisable = getNightColor("font-color-disable");
@@ -64,6 +73,9 @@ public class COLOR
 		night_darknesColor = getNightColor("darknes");
 		night_crossColor = getNightColor("cross");
 		night_MenuBackColor = getNightColor("menu-back-color");
+		night_popup_menu_info_back = getNightColor("popup-menu-info-back");
+		night_popup_menu_border = getNightColor("popup-menu-border");
+		night_popup_menu_icon_back = getNightColor("popup-menu-icon-back");
 	}
 
 	private static Color getDayColor(String name)
@@ -137,5 +149,20 @@ public class COLOR
 	public static Color getCrossColor()
 	{
 		return cfg.Nightmode ? night_crossColor : day_crossColor;
+	}
+
+	public static Color getPopUpInfoBackColor()
+	{
+		return cfg.Nightmode ? night_popup_menu_info_back : day_popup_menu_info_back;
+	}
+
+	public static Color getPopUpMenuBorderColor()
+	{
+		return cfg.Nightmode ? night_popup_menu_border : day_popup_menu_border;
+	}
+
+	public static Color getPopUpMenuIconBackColor()
+	{
+		return cfg.Nightmode ? night_popup_menu_icon_back : day_popup_menu_icon_back;
 	}
 }

@@ -15,21 +15,25 @@
  */
 package CB_UI_Base.GL_UI.Controls.PopUps;
 
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.graphics.CircleDrawable;
 import CB_UI_Base.graphics.GL_Paint;
 import CB_UI_Base.graphics.PolygonDrawable;
 import CB_UI_Base.graphics.Geometry.GeometryList;
+import CB_UI_Base.graphics.Geometry.Line;
+import CB_UI_Base.graphics.Geometry.Quadrangle;
 import CB_UI_Base.graphics.Geometry.RingSegment;
 import CB_Utils.Lists.CB_List;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.MathUtils;
 
 /**
  * A rounded menu PopUp with various menu entrys from 1 to 6
@@ -38,30 +42,67 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
  */
 public class PopUpMenu extends PopUp_Base
 {
+
+	private final float[] TEMPLATE_ONE_SEGMENT = new float[]
+		{ 10, 50 };
+	private final float[] TEMPLATE_TWO_SEGMENT = new float[]
+		{ 10, 50, 90 };
+	private final float[] TEMPLATE_THREE_SEGMENT = new float[]
+		{ 10, 50, 90, 120 };
+	private final float[] TEMPLATE_FOUR_SEGMENT = new float[]
+		{ 10, 50, 90, 120, 160 };
+
 	private final CB_List<MenuItem> items = new CB_List<MenuItem>();
+	private final float outerRadius;
+	private final float innerRadius;
+	private final float centerX;
+	private final float centerY;
 	private final RingSegment ringsegment;
 	private final RingSegment outersegment;
 	private final RingSegment innersegment;
+	private final CircleDrawable infoCircle;
 	private PolygonDrawable ringDrawable;
 	private PolygonDrawable borderDrawable;
 	private GeometryList geomList;
+	private float[] segmente;
+
+	float lineWidth = 3;
+	int SEGMENTE = 4;
 
 	public PopUpMenu(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 
+		switch (SEGMENTE)
+		{
+		case 1:
+			segmente = TEMPLATE_ONE_SEGMENT;
+		case 2:
+			segmente = TEMPLATE_TWO_SEGMENT;
+		case 3:
+			segmente = TEMPLATE_THREE_SEGMENT;
+		case 4:
+			segmente = TEMPLATE_FOUR_SEGMENT;
+		default:
+			segmente = TEMPLATE_FOUR_SEGMENT;
+		}
+
 		rec.setPos(0, 0);
 
-		float outerRadius = Math.min(this.getHalfWidth(), this.getHalfHeight());
-		float innerRadius = Math.min(this.getHalfWidth() / 2, this.getHalfHeight() / 2);
-		float startAngle = 0;
-		float endAngle = 270;
-		float lineWidth = 5;
+		centerX = this.getHalfWidth();
+		centerY = this.getHalfHeight();
+
+		outerRadius = Math.min(this.getHalfWidth(), this.getHalfHeight());
+		innerRadius = Math.min(this.getHalfWidth() / 2, this.getHalfHeight() / 2);
+		float startAngle = segmente[0];
+		float endAngle = segmente[segmente.length - 1];
 
 		ringsegment = new RingSegment(this.getHalfWidth(), this.getHalfHeight(), innerRadius, outerRadius, startAngle, endAngle);
 		innersegment = new RingSegment(this.getHalfWidth(), this.getHalfHeight(), innerRadius, innerRadius + lineWidth, startAngle, endAngle);
 		outersegment = new RingSegment(this.getHalfWidth(), this.getHalfHeight(), outerRadius - lineWidth, outerRadius, startAngle, endAngle);
-
+		GL_Paint paint = new GL_Paint();
+		paint.setColor(COLOR.getPopUpInfoBackColor());
+		infoCircle = new CircleDrawable(rec.getCenterPosX(), rec.getCenterPosY(), innerRadius, paint, rec.getWidth(), rec.getHeight());
 	}
 
 	@Override
@@ -83,7 +124,7 @@ public class PopUpMenu extends PopUp_Base
 			ringsegment.Compute();
 			outersegment.Compute();
 			GL_Paint p = new GL_Paint();
-			p.setColor(Color.GREEN);
+			p.setColor(COLOR.getPopUpMenuIconBackColor());
 
 			ringDrawable = new PolygonDrawable(ringsegment.getVertices(), ringsegment.getTriangles(), p, this.getWidth(), this.getHeight());
 
@@ -91,11 +132,14 @@ public class PopUpMenu extends PopUp_Base
 			geomList.add(innersegment);
 			geomList.add(outersegment);
 
+			for (float se : segmente)
+			{
+				addSegmentLine(se);
+			}
+
 			GL_Paint p2 = new GL_Paint();
-			p2.setColor(Color.BLACK);
+			p2.setColor(COLOR.getPopUpMenuBorderColor());
 			borderDrawable = new PolygonDrawable(geomList.getVertices(), geomList.getTriangles(), p2, this.getWidth(), this.getHeight());
-			// borderDrawable = new PolygonDrawable(outersegment.getVertices(), outersegment.getTriangles(), p2, this.getWidth(),
-			// this.getHeight());
 
 		}
 
@@ -103,14 +147,26 @@ public class PopUpMenu extends PopUp_Base
 
 		ringDrawable.draw(batch, 0, 0, this.getWidth(), this.getHeight(), 0);
 		borderDrawable.draw(batch, 0, 0, this.getWidth(), this.getHeight(), 0);
+		infoCircle.draw(batch, 0, 0, this.getWidth(), this.getHeight(), 0);
 
-		writeDebug();
-		if (DebugSprite != null)
-		{
-			batch.flush();
-			DebugSprite.draw(batch);
+		// writeDebug();
+		// if (DebugSprite != null)
+		// {
+		// batch.flush();
+		// DebugSprite.draw(batch);
+		//
+		// }
+	}
 
-		}
+	private void addSegmentLine(float i)
+	{
+		float x1 = centerX + innerRadius * MathUtils.cos(i * MathUtils.degRad);
+		float y1 = centerY + innerRadius * MathUtils.sin(i * MathUtils.degRad);
+		float x2 = centerX + outerRadius * MathUtils.cos(i * MathUtils.degRad);
+		float y2 = centerY + outerRadius * MathUtils.sin(i * MathUtils.degRad);
+		Line l1 = new Line(x1, y1, x2, y2);
+		Quadrangle q1 = new Quadrangle(l1, lineWidth);
+		geomList.add(q1);
 	}
 
 	@Override
@@ -151,4 +207,11 @@ public class PopUpMenu extends PopUp_Base
 
 		}
 	}
+
+	// @Override
+	// public void onClick()
+	// {
+	//
+	// }
+
 }

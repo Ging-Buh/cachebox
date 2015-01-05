@@ -291,6 +291,20 @@ public class DesktopMain
 				torchOn = !torchOn;
 			}
 
+			@Override
+			public void switchToGpsMeasure()
+			{
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void switchtoGpsDefault()
+			{
+				// TODO Auto-generated method stub
+
+			}
+
 		});
 
 		platformConector.setGetFileListner(new IgetFileListner()

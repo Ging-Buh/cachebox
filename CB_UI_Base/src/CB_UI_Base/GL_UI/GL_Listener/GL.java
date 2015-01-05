@@ -925,7 +925,7 @@ public class GL implements ApplicationListener, InputProcessor
 						// normaler Click
 						boolean handled = first.view.click(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.ThisWorldRec.getY(), pointer, button);
 						if (handled) platformConector.vibrate();
-						// log.debug("GL_Listner => onTouchUpBase (Click) : " + first.view.getName());
+
 						lastClickTime = System.currentTimeMillis();
 						lastClickPoint = akt;
 					}
@@ -1809,24 +1809,6 @@ public class GL implements ApplicationListener, InputProcessor
 			DialogIsShown = false;
 			darknesAlpha = 0f;
 		}
-
-		// Timer timer = new Timer();
-		// TimerTask task = new TimerTask()
-		// {
-		// @Override
-		// public void run()
-		// {
-		//
-		// if (dialog != null)
-		// {
-		// if (!dialog.isDisposed())
-		// {
-		// dialog.dispose();
-		// }
-		// }
-		// }
-		// };
-		// timer.schedule(task, 500);
 
 		if (dialog != null)
 		{
