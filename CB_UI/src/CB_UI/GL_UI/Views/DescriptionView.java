@@ -17,13 +17,11 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.ViewConst;
-import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -51,24 +49,10 @@ public class DescriptionView extends CB_View_Base
 	Image LiveIcon;
 	private PolygonDrawable Line;
 	private float margin;
-	private Box transoverlay;
 
 	public DescriptionView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
-
-		Label lblDummy = new Label(CB_RectF.ScaleCenter(rec, 0.8f), "DummyLabel");
-		lblDummy.setFont(Fonts.getNormal());
-		lblDummy.setText("Dummy DescriptionView");
-		// setBackground(SpriteCacheBase.ListBack);
-
-		this.addChild(lblDummy);
-
-		transoverlay = new Box(this, "transoverlay");
-		Color transBackColor = new Color(0.5f, 0.5f, 0.5f, 0.5f);
-		transoverlay.setBackground(new ColorDrawable(transBackColor));
-		this.addChild(transoverlay);
-
 	}
 
 	@Override
@@ -81,7 +65,7 @@ public class DescriptionView extends CB_View_Base
 			cacheInfo = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), 0, sel);
 			cacheInfo.setY(this.getHeight() - cacheInfo.getHeight());
 
-			this.addChild(cacheInfo);
+			if (!Global.isTab) this.addChild(cacheInfo);
 			resetUi();
 			if (sel.isLive() || sel.getApiStatus() == 1)
 			{

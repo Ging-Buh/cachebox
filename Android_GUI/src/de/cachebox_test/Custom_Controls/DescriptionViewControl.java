@@ -35,6 +35,7 @@ import android.os.Message;
 import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import de.cachebox_test.main;
@@ -73,6 +74,12 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 		this.setWebViewClient(clint);
 		that = this;
 		this.setFocusable(false);
+	}
+
+	public boolean dispatchTouchEvent(MotionEvent event)
+	{
+		this.getParent();
+		return super.dispatchTouchEvent(event);
 	}
 
 	public DescriptionViewControl(Context context, AttributeSet attrs)

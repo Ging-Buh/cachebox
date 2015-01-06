@@ -588,6 +588,11 @@ public abstract class ManagerBase
 			log.error("databaseRenderer: ", ErrorMsg);
 			renderTheme = CB_InternalRenderTheme.OSMARENDER;
 		}
+		catch (Exception e)
+		{
+			log.error("databaseRenderer: ", e);
+			renderTheme = CB_InternalRenderTheme.OSMARENDER;
+		}
 
 		databaseRenderer = new IDatabaseRenderer[PROCESSOR_COUNT];
 		RenderThemeChanged = false;
