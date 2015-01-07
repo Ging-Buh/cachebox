@@ -30,6 +30,8 @@ public class platformConector
 	{
 		void show(ViewID viewID, int left, int top, int right, int bottom);
 
+		void setContentSize(int left, int top, int right, int bottom);
+
 		void hide(ViewID viewID);
 
 		void showForDialog();
@@ -106,6 +108,14 @@ public class platformConector
 		if (showViewListner != null)
 		{
 			showViewListner.hideForDialog();
+		}
+	}
+
+	public static void setContentSize(final int left, final int top, final int right, final int bottom)
+	{
+		if (showViewListner != null)
+		{
+			showViewListner.setContentSize(left, top, right, bottom);
 		}
 	}
 

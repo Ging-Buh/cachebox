@@ -328,14 +328,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 		ui.Window = myInitialSize;
 		ui.Density = 1.5f;
-		ui.RefSize = 64;
-		ui.TextSize_Normal = 52;
-		ui.ButtonTextSize = 50;
-		ui.IconSize = 13;
-		ui.Margin = 4;
-		ui.ArrowSizeList = 11;
-		ui.ArrowSizeMap = 18;
-		ui.TB_IconSize = 8;
+
 		ui.isLandscape = false;
 		return ui;
 	}
@@ -346,14 +339,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 		ui.Window = myInitialSize;
 		ui.Density = 0.75f;
-		ui.RefSize = 33;
-		ui.TextSize_Normal = 27;
-		ui.ButtonTextSize = 20;
-		ui.IconSize = 8;
-		ui.Margin = 4;
-		ui.ArrowSizeList = 20;
-		ui.ArrowSizeMap = 14;
-		ui.TB_IconSize = 15;
+
 		ui.isLandscape = false;
 		return ui;
 	}
@@ -364,14 +350,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 		ui.Window = myInitialSize;
 		ui.Density = 1.0f;
-		ui.RefSize = 54;
-		ui.TextSize_Normal = 52;
-		ui.ButtonTextSize = 50;
-		ui.IconSize = 13;
-		ui.Margin = 3;
-		ui.ArrowSizeList = 20;
-		ui.ArrowSizeMap = 18;
-		ui.TB_IconSize = 12;
+
 		ui.isLandscape = false;
 		return ui;
 	}
@@ -382,14 +361,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 		ui.Window = myInitialSize;
 		ui.Density = 1.5f;
-		ui.RefSize = 64;
-		ui.TextSize_Normal = 52;
-		ui.ButtonTextSize = 50;
-		ui.IconSize = 13;
-		ui.Margin = 4;
-		ui.ArrowSizeList = 11;
-		ui.ArrowSizeMap = 18;
-		ui.TB_IconSize = 8;
+
 		ui.isLandscape = false;
 		return ui;
 	}
@@ -400,14 +372,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 		ui.Window = myInitialSize;
 		ui.Density = 2f;
-		ui.RefSize = 148;
-		ui.TextSize_Normal = 124;
-		ui.ButtonTextSize = 120;
-		ui.IconSize = 24;
-		ui.Margin = 6;
-		ui.ArrowSizeList = 22;
-		ui.ArrowSizeMap = 36;
-		ui.TB_IconSize = 8;
+
 		ui.isLandscape = false;
 		return ui;
 	}
@@ -418,14 +383,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 		ui.Window = myInitialSize;
 		ui.Density = 1.3312501f;
-		ui.RefSize = 85;
-		ui.TextSize_Normal = 69;
-		ui.ButtonTextSize = 67;
-		ui.IconSize = 17;
-		ui.Margin = 5;
-		ui.ArrowSizeList = 15;
-		ui.ArrowSizeMap = 24;
-		ui.TB_IconSize = 11;
+
 		ui.isLandscape = true;
 		return ui;
 	}

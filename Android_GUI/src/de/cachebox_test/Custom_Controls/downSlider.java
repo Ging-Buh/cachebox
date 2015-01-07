@@ -197,7 +197,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 				if (drag)
 				{
 					int value = Y - 25;// y - 25 minus halbe Button H�he
-					int buttom = (int) (height - (UI_Size_Base.that.getScaledRefSize_normal() * 2.2));
+					int buttom = (int) (height - (10 * 2.2));
 					if (value > buttom) value = buttom - 1;
 
 					setPos(value);
@@ -266,8 +266,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		final Drawable Slide = Global.BtnIcons[0];
 
-		mBtnRec.set(-10, yPos - UI_Size_Base.that.getMargin(), width + 10,
-				(int) (yPos + UI_Size_Base.that.getMargin() + UI_Size_Base.that.getScaledRefSize_normal() * 3.3));
+		mBtnRec.set(-10, yPos - UI_Size_Base.that.getMargin(), width + 10, (int) (yPos + UI_Size_Base.that.getMargin() + 10 * 3.3));
 		if (LogLevel.isLogLevel(LogLevel.TRACE)) log.trace("AndroidSlider bound: " + mBtnRec.toShortString());
 
 		Slide.setBounds(mBtnRec);

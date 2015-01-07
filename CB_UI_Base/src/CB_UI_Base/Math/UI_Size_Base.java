@@ -39,7 +39,6 @@ public abstract class UI_Size_Base
 	protected int scaledFontSize_btn;
 	protected int ScaledFontSize_small;
 	protected int ScaledFontSize_supersmall;
-	protected int scaledRefSize_normal;
 	protected int IconContextMenuHeight;
 	protected float scale;
 	protected int margin;
@@ -63,7 +62,7 @@ public abstract class UI_Size_Base
 
 		calcBase = 533.333 * scale;
 
-		margin = ini.Margin;
+		margin = (int) (10 * scale);
 
 		float NormalTextSize = CB_UI_Base_Settings.FONT_SIZE_NORMAL.getValue() * 3.2f;
 
@@ -86,14 +85,13 @@ public abstract class UI_Size_Base
 
 		GL_UISizes.writeDebug("Button", Button.asFloat());
 
-		scaledRefSize_normal = (int) ((calcBase / (ini.RefSize)) * scale);
-		scaledFontSize_normal = (int) ((calcBase / (ini.TextSize_Normal)) * scale);
+		scaledFontSize_normal = (int) (10 * scale);
 		scaledFontSize_big = (int) (scaledFontSize_normal * 1.1);
 		ScaledFontSize_small = (int) (scaledFontSize_normal * 0.9);
 		ScaledFontSize_supersmall = (int) (ScaledFontSize_small * 0.8);
-		scaledFontSize_btn = (int) ((calcBase / ini.ButtonTextSize) * scale);
+		scaledFontSize_btn = (int) (11 * scale);
 
-		iconSize = (int) ((calcBase / ini.IconSize) * scale);
+		iconSize = (int) (10 * scale);
 
 		IconContextMenuHeight = (int) (calcBase / 11.1);
 
@@ -147,11 +145,6 @@ public abstract class UI_Size_Base
 	public int getScaledFontSize_btn()
 	{
 		return scaledFontSize_btn;
-	}
-
-	public int getScaledRefSize_normal()
-	{
-		return scaledRefSize_normal;
 	}
 
 	public int getScaledFontSize_big()

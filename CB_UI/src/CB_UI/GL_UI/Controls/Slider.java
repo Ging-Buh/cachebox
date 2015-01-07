@@ -295,7 +295,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 		{
 
 			if (!AnimationIsRunning) return; // Animation wurde abgebrochen
-
+			// TODO set DEBUG for dauer schleife
 			int newValue = 0;
 			if (AnimationDirection == -1)
 			{

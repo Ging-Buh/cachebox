@@ -1324,14 +1324,6 @@ public class splash extends Activity
 
 			ui.Window = new Size(width, height);
 			ui.Density = res.getDisplayMetrics().density;
-			ui.RefSize = res.getDimensionPixelSize(R.dimen.RefSize);
-			ui.TextSize_Normal = res.getDimensionPixelSize(R.dimen.TextSize_normal);
-			ui.ButtonTextSize = res.getDimensionPixelSize(R.dimen.BtnTextSize);
-			ui.IconSize = res.getDimensionPixelSize(R.dimen.IconSize);
-			ui.Margin = res.getDimensionPixelSize(R.dimen.Margin);
-			ui.ArrowSizeList = res.getDimensionPixelSize(R.dimen.ArrowSize_List);
-			ui.ArrowSizeMap = res.getDimensionPixelSize(R.dimen.ArrowSize_Map);
-			ui.TB_IconSize = res.getDimensionPixelSize(R.dimen.TB_icon_Size);
 			ui.isLandscape = false;
 
 		}
@@ -1340,14 +1332,6 @@ public class splash extends Activity
 		log.debug("UI-Sizes");
 		log.debug("ui.Window: " + ui.Window.toString());
 		log.debug("ui.Density: " + ui.Density);
-		log.debug("ui.RefSize: " + ui.RefSize);
-		log.debug("ui.TextSize_Normal: " + ui.TextSize_Normal);
-		log.debug("ui.ButtonTextSize: " + ui.ButtonTextSize);
-		log.debug("ui.IconSize: " + ui.IconSize);
-		log.debug("ui.Margin: " + ui.Margin);
-		log.debug("ui.ArrowSizeList: " + ui.ArrowSizeList);
-		log.debug("ui.ArrowSizeMap: " + ui.ArrowSizeMap);
-		log.debug("ui.TB_IconSize: " + ui.TB_IconSize);
 		log.debug("ui.isLandscape: " + ui.isLandscape);
 
 		new UiSizes();

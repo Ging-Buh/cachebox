@@ -86,6 +86,12 @@ public class DescriptionView extends CB_View_Base
 		// onShow();
 		if (cacheInfo != null) cacheInfo.setY(this.getHeight() - cacheInfo.getHeight());
 		layout();
+
+		float infoHeight = 0;
+		if (cacheInfo != null) infoHeight = cacheInfo.getHeight();
+		CB_RectF world = this.getWorldRec();
+
+		platformConector.setContentSize((int) world.getX(), (int) ((GL_UISizes.SurfaceSize.getHeight() - world.getMaxY() + infoHeight)), (int) (GL_UISizes.SurfaceSize.getWidth() - world.getMaxX()), (int) world.getY());
 	}
 
 	@Override
