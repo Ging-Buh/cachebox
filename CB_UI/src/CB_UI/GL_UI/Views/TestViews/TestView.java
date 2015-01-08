@@ -17,6 +17,7 @@ import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.ZoomButtons;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog.iCancelListner;
@@ -62,7 +63,8 @@ public class TestView extends CB_View_Base
 
 		// ####################################################
 
-		Label label = new Label(new CB_RectF(50, 50, 500, 100), "/ExtSD/Карти/Vector Maps");
+		Label label = new Label(new CB_RectF(50, 50, 300, 100), "/ExtSD/Карти/Vector Maps/asadasdasd dasasdasdasd");
+		label.setHAlignment(HAlignment.SCROLL_LEFT);
 		this.addChild(label);
 		// ####################################################
 

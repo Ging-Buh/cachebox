@@ -15,6 +15,7 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.ImageButton;
 import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_UI_Base.GL_UI.Controls.MessageBox.ButtonDialog;
@@ -24,8 +25,6 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Interfaces.cancelRunnable;
-
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 
 public class DeleteDialog extends ButtonDialog
 {

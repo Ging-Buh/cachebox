@@ -38,6 +38,7 @@ import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
 import CB_UI_Base.GL_UI.Controls.FloatControl;
 import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.LinearCollapseBox;
 import CB_UI_Base.GL_UI.Controls.Linearlayout;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
@@ -83,7 +84,6 @@ import CB_Utils.Settings.SettingsAudio;
 import CB_Utils.Util.FileIO;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class SettingsActivity extends ActivityBase implements SelectedLangChangedEvent

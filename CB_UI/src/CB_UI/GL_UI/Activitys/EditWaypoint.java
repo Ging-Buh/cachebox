@@ -26,6 +26,7 @@ import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.DefaultOnscreenKeyboard;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.Spinner;
 import CB_UI_Base.GL_UI.Controls.Spinner.selectionChangedListner;
@@ -34,7 +35,6 @@ import CB_UI_Base.GL_UI.Controls.chkBox;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -132,8 +132,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	private void iniCacheNameLabel()
 	{
-		tvCacheName = new Label(leftBorder + margin, getHeight() - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin,
-				MeasuredLabelHeight, "CacheNameLabel");
+		tvCacheName = new Label(leftBorder + margin, getHeight() - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight, "CacheNameLabel");
 		tvCacheName.setFont(Fonts.getBubbleNormal());
 		tvCacheName.setText(GlobalCore.getSelectedCache().getName());
 		scrollBox.addChild(tvCacheName);
@@ -141,8 +140,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	private void iniCoordButton()
 	{
-		CB_RectF rec = new CB_RectF(leftBorder, tvCacheName.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth,
-				UI_Size_Base.that.getButtonHeight());
+		CB_RectF rec = new CB_RectF(leftBorder, tvCacheName.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
 		Coordinate coordinate = waypoint.Pos;
 		if (!coordinate.isValid() || coordinate.isZero())
 		{
@@ -172,14 +170,12 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 	private void iniLabelTyp()
 	{
 		cbStartPointWidth = UI_Size_Base.that.getButtonHeight() * 1.5f;
-		tvTyp = new Label(leftBorder + margin, bCoord.getY() - margin - MeasuredLabelHeight, innerWidth - margin - cbStartPointWidth,
-				MeasuredLabelHeight, "TypeLabel");
+		tvTyp = new Label(leftBorder + margin, bCoord.getY() - margin - MeasuredLabelHeight, innerWidth - margin - cbStartPointWidth, MeasuredLabelHeight, "TypeLabel");
 		tvTyp.setFont(Fonts.getBubbleNormal());
 		tvTyp.setText(Translation.Get("type"));
 		scrollBox.addChild(tvTyp);
 
-		tvStartPoint = new Label(tvTyp.getMaxX() + margin, bCoord.getY() - margin - MeasuredLabelHeight, cbStartPointWidth,
-				MeasuredLabelHeight, "TypeLabel");
+		tvStartPoint = new Label(tvTyp.getMaxX() + margin, bCoord.getY() - margin - MeasuredLabelHeight, cbStartPointWidth, MeasuredLabelHeight, "TypeLabel");
 		tvStartPoint.setFont(Fonts.getBubbleNormal()).setHAlignment(HAlignment.CENTER);
 		tvStartPoint.setText(Translation.Get("start"));
 		tvStartPoint.setVisible(false);
@@ -189,8 +185,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	private void iniTypeSpinner()
 	{
-		CB_RectF rec = new CB_RectF(leftBorder, tvTyp.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth - cbStartPointWidth,
-				UI_Size_Base.that.getButtonHeight());
+		CB_RectF rec = new CB_RectF(leftBorder, tvTyp.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth - cbStartPointWidth, UI_Size_Base.that.getButtonHeight());
 		sType = new Spinner(rec, "CoordButton", getSpinerAdapter(), new selectionChangedListner()
 		{
 
@@ -226,8 +221,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 		});
 
 		// CheckBox for the selection whether this WP is the startpoint of the cache
-		rec = new CB_RectF(tvStartPoint.getX() + tvStartPoint.getHalfWidth() - (UI_Size_Base.that.getButtonHeight() / 2), tvTyp.getY()
-				- UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
+		rec = new CB_RectF(tvStartPoint.getX() + tvStartPoint.getHalfWidth() - (UI_Size_Base.that.getButtonHeight() / 2), tvTyp.getY() - UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
 		cbStartPoint = new chkBox(rec, "CheckBoxStartPoint");
 		cbStartPoint.setVisible(false);
 
@@ -266,8 +260,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 	private SpinnerAdapter getSpinerAdapter()
 	{
 		final String[] names = new String[]
-			{ Translation.Get("Reference"), Translation.Get("StageofMulti"), Translation.Get("Question2Answer"),
-					Translation.Get("Trailhead"), Translation.Get("Parking"), Translation.Get("Final") };
+			{ Translation.Get("Reference"), Translation.Get("StageofMulti"), Translation.Get("Question2Answer"), Translation.Get("Trailhead"), Translation.Get("Parking"), Translation.Get("Final") };
 
 		SpinnerAdapter adapter = new SpinnerAdapter()
 		{
@@ -314,8 +307,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	private void iniLabelTitle()
 	{
-		tvTitle = new Label(leftBorder + margin, sType.getY() - margin - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight,
-				"TitleLabel");
+		tvTitle = new Label(leftBorder + margin, sType.getY() - margin - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight, "TitleLabel");
 		tvTitle.setFont(Fonts.getBubbleNormal());
 		tvTitle.setText(Translation.Get("Title"));
 		scrollBox.addChild(tvTitle);
@@ -323,8 +315,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	private void iniTitleTextField()
 	{
-		CB_RectF rec = new CB_RectF(leftBorder, tvTitle.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth,
-				UI_Size_Base.that.getButtonHeight());
+		CB_RectF rec = new CB_RectF(leftBorder, tvTitle.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
 		etTitle = new EditTextField(rec, this);
 
 		String txt = (waypoint.getTitle() == null) ? "" : waypoint.getTitle();
@@ -335,8 +326,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	private void iniLabelDesc()
 	{
-		tvDescription = new Label(leftBorder + margin, etTitle.getY() - margin - MeasuredLabelHeight, innerWidth - margin,
-				MeasuredLabelHeight, "DescLabel");
+		tvDescription = new Label(leftBorder + margin, etTitle.getY() - margin - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight, "DescLabel");
 		tvDescription.setFont(Fonts.getBubbleNormal());
 		tvDescription.setText(Translation.Get("Description"));
 		scrollBox.addChild(tvDescription);
@@ -344,8 +334,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	private void iniTitleTextDesc()
 	{
-		CB_RectF rec = new CB_RectF(leftBorder, tvDescription.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth,
-				UI_Size_Base.that.getButtonHeight());
+		CB_RectF rec = new CB_RectF(leftBorder, tvDescription.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
 		etDescription = new EditTextField(this, rec, WrapType.WRAPPED, "DescTextField");
 
 		String txt = (waypoint.getDescription() == null) ? "" : waypoint.getDescription();
@@ -373,8 +362,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	private void iniLabelClue()
 	{
-		tvClue = new Label(leftBorder + margin, etDescription.getY() - margin - MeasuredLabelHeight, innerWidth - margin,
-				MeasuredLabelHeight, "ClueLabel");
+		tvClue = new Label(leftBorder + margin, etDescription.getY() - margin - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight, "ClueLabel");
 		tvClue.setFont(Fonts.getBubbleNormal());
 		tvClue.setText(Translation.Get("Clue"));
 		scrollBox.addChild(tvClue);
@@ -382,8 +370,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	private void iniTitleTextClue()
 	{
-		CB_RectF rec = new CB_RectF(leftBorder, tvClue.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth,
-				UI_Size_Base.that.getButtonHeight());
+		CB_RectF rec = new CB_RectF(leftBorder, tvClue.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
 		etClue = new EditTextField(this, rec, WrapType.WRAPPED, "ClueTextField");
 
 		String txt = (waypoint.getClue() == null) ? "" : waypoint.getClue();

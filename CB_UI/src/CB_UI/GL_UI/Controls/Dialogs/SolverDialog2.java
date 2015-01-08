@@ -22,6 +22,7 @@ import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
@@ -31,7 +32,6 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.UI_Size_Base;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 
 public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 {

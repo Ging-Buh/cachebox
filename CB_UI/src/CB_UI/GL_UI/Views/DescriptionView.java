@@ -3,6 +3,8 @@ package CB_UI.GL_UI.Views;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Types.Cache;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -20,6 +22,7 @@ import CB_UI_Base.GL_UI.ViewConst;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
@@ -33,10 +36,10 @@ import CB_UI_Base.graphics.Geometry.Quadrangle;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 
 public class DescriptionView extends CB_View_Base
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(DescriptionView.class);
 	final static String STRING_POWERD_BY = "Powerd by Geocaching Live";
 	final static String BASIC = "Basic";
 	final static String PREMIUM = "Premium";
@@ -77,6 +80,16 @@ public class DescriptionView extends CB_View_Base
 			}
 		}
 
+		Timer t = new Timer();
+		TimerTask tt = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				DescriptionView.this.onResized(DescriptionView.this);
+			}
+		};
+		t.schedule(tt, 70);
 	}
 
 	@Override
@@ -87,8 +100,8 @@ public class DescriptionView extends CB_View_Base
 		if (cacheInfo != null) cacheInfo.setY(this.getHeight() - cacheInfo.getHeight());
 		layout();
 
-		float infoHeight = 0;
-		if (cacheInfo != null) infoHeight = cacheInfo.getHeight();
+		float infoHeight = -(UiSizes.that.getInfoSliderHeight());
+		if (cacheInfo != null && !Global.isTab) infoHeight += cacheInfo.getHeight();
 		CB_RectF world = this.getWorldRec();
 
 		platformConector.setContentSize((int) world.getX(), (int) ((GL_UISizes.SurfaceSize.getHeight() - world.getMaxY() + infoHeight)), (int) (GL_UISizes.SurfaceSize.getWidth() - world.getMaxX()), (int) world.getY());

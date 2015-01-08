@@ -2,10 +2,9 @@ package CB_UI_Base.GL_UI.Controls.Dialogs;
 
 import CB_UI_Base.GL_UI.Controls.Dialog;
 import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
 import CB_UI_Base.Math.CB_RectF;
-
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 
 public class Toast extends Dialog
 {

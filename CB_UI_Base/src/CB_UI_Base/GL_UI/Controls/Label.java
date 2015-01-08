@@ -30,7 +30,6 @@ import CB_UI_Base.Math.UI_Size_Base;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -42,6 +41,33 @@ public class Label extends CB_View_Base
 	static public enum VAlignment
 	{
 		TOP, CENTER, BOTTOM
+	}
+
+	static public enum HAlignment
+	{
+		LEFT, CENTER, RIGHT, SCROLL_LEFT, SCROLL_CENTER, SCROLL_RIGHT
+	}
+
+	public static com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment GDX_HAlignment(HAlignment ali)
+	{
+		switch (ali)
+		{
+		case CENTER:
+			return com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment.CENTER;
+		case LEFT:
+			return com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment.LEFT;
+		case RIGHT:
+			return com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment.RIGHT;
+		case SCROLL_CENTER:
+			return com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment.CENTER;
+		case SCROLL_LEFT:
+			return com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment.LEFT;
+		case SCROLL_RIGHT:
+			return com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment.RIGHT;
+		default:
+			return com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment.LEFT;
+
+		}
 	}
 
 	BitmapFontCache TextObject; // FIXME Create BitmapFontCache-Array and reduce PolygonSpriteBatch(10920) constructor for Labels with long
@@ -110,6 +136,11 @@ public class Label extends CB_View_Base
 		makeText();
 	}
 
+	final int ScrollPause = 120;
+	int test = 0;
+	boolean left = true;
+	int scrollPauseCount = 0;
+
 	@Override
 	protected void render(Batch batch)
 	{
@@ -117,6 +148,39 @@ public class Label extends CB_View_Base
 		try
 		{
 			if (TextObject != null) TextObject.draw(batch);
+			if (mHAlignment == HAlignment.SCROLL_CENTER || mHAlignment == HAlignment.SCROLL_LEFT || mHAlignment == HAlignment.SCROLL_RIGHT)
+			{
+				int max = (int) (bounds.width - innerWidth) + 20;
+
+				if (left)
+				{
+					scrollPauseCount++;
+					if (scrollPauseCount > ScrollPause)
+					{
+						test--;
+						if (test < -max)
+						{
+							left = false;
+							scrollPauseCount = 0;
+						}
+					}
+
+				}
+				else
+				{
+
+					scrollPauseCount++;
+					if (scrollPauseCount > ScrollPause)
+					{
+
+						scrollPauseCount = test = 0;
+						left = true;
+					}
+				}
+
+				setTextPosition();
+				GL.that.renderOnce();
+			}
 		}
 		catch (ArrayIndexOutOfBoundsException e)
 		{
@@ -155,7 +219,7 @@ public class Label extends CB_View_Base
 		bounds = mFont.getMultiLineBounds(mText);
 		try
 		{
-			bounds = TextObject.setMultiLineText(mText, 0, bounds.height, bounds.width, mHAlignment);
+			bounds = TextObject.setMultiLineText(mText, 0, bounds.height, bounds.width, GDX_HAlignment(mHAlignment));
 		}
 		catch (Exception e)
 		{
@@ -173,7 +237,7 @@ public class Label extends CB_View_Base
 		bounds = mFont.getWrappedBounds(mText, innerWidth);
 		try
 		{
-			bounds = TextObject.setWrappedText(mText, 0, bounds.height, bounds.width, mHAlignment);
+			bounds = TextObject.setWrappedText(mText, 0, bounds.height, bounds.width, GDX_HAlignment(mHAlignment));
 		}
 		catch (Exception e)
 		{
@@ -206,15 +270,20 @@ public class Label extends CB_View_Base
 		float xPosition = leftBorder + 1; // HAlignment.LEFT !!! Die 1 ist empirisch begr�ndet
 		if (innerWidth > bounds.width)
 		{
-			if (mHAlignment == HAlignment.CENTER)
+			if (mHAlignment == HAlignment.CENTER || mHAlignment == HAlignment.SCROLL_CENTER)
 			{
 				xPosition = (innerWidth - bounds.width) / 2f;
 			}
-			else if (mHAlignment == HAlignment.RIGHT)
+			else if (mHAlignment == HAlignment.RIGHT || mHAlignment == HAlignment.SCROLL_RIGHT)
 			{
 				xPosition = innerWidth - bounds.width;
 			}
 		}
+		else if (mHAlignment == HAlignment.SCROLL_CENTER || mHAlignment == HAlignment.SCROLL_LEFT || mHAlignment == HAlignment.SCROLL_RIGHT)
+		{
+			xPosition += test;
+		}
+
 		float yPosition = 0; // VAlignment.BOTTOM
 
 		if (mVAlignment == null) mVAlignment = VAlignment.CENTER;

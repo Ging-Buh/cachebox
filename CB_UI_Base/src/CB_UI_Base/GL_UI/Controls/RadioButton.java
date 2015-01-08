@@ -1,12 +1,12 @@
 package CB_UI_Base.GL_UI.Controls;
 
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 
 public class RadioButton extends chkBox
 {

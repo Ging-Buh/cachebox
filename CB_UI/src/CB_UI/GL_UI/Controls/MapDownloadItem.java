@@ -15,6 +15,7 @@ import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
 import CB_UI_Base.GL_UI.Controls.chkBox;
 import CB_UI_Base.Math.CB_RectF;
@@ -22,8 +23,6 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Util.Downloader;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.CopyHelper.Copy;
-
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 
 public class MapDownloadItem extends CB_View_Base
 {
@@ -49,16 +48,14 @@ public class MapDownloadItem extends CB_View_Base
 
 		checkBoxMap.setY(margin);
 
-		lblName = new Label(checkBoxMap.getMaxX() + margin, checkBoxMap.getY(), innerWidth - margin * 3 - checkBoxMap.getWidth(),
-				checkBoxMap.getHeight(), "");
+		lblName = new Label(checkBoxMap.getMaxX() + margin, checkBoxMap.getY(), innerWidth - margin * 3 - checkBoxMap.getWidth(), checkBoxMap.getHeight(), "");
 		lblName.setFont(Fonts.getNormal());
 
 		// Cut "Freizeitkarte"
 		String Name = mapInfo.Name.replace("Freizeitkarte", "");
 		lblName.setText(Name);
 
-		lblSize = new Label(checkBoxMap.getMaxX() + margin, checkBoxMap.getY(), innerWidth - margin * 3 - checkBoxMap.getWidth(),
-				checkBoxMap.getHeight(), "");
+		lblSize = new Label(checkBoxMap.getMaxX() + margin, checkBoxMap.getY(), innerWidth - margin * 3 - checkBoxMap.getWidth(), checkBoxMap.getHeight(), "");
 		lblSize.setFont(Fonts.getNormal());
 
 		// Format Size

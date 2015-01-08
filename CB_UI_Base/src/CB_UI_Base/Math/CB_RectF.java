@@ -16,8 +16,6 @@
 
 package CB_UI_Base.Math;
 
-import java.util.Arrays;
-
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.MoveableList;
 
@@ -47,7 +45,7 @@ public class CB_RectF
 	 * [8] = centerPos.x <br>
 	 * [9] = centerPos.x <br>
 	 */
-	protected Float member[] = new Float[]
+	protected float member[] = new float[]
 		{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
 
 	public float getHalfWidth()
@@ -576,11 +574,6 @@ public class CB_RectF
 				list.clear();
 				list = null;
 			}
-		}
-
-		if (member != null)
-		{
-			Arrays.fill(member, null);
 		}
 		member = null;
 

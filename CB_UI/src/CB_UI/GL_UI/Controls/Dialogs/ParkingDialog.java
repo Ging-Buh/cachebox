@@ -12,6 +12,7 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.ImageButton;
 import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.Linearlayout;
 import CB_UI_Base.GL_UI.Controls.MessageBox.ButtonDialog;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
@@ -20,8 +21,6 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
-
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 
 public class ParkingDialog extends ButtonDialog
 {
@@ -35,8 +34,7 @@ public class ParkingDialog extends ButtonDialog
 
 	public ParkingDialog()
 	{
-		super((calcMsgBoxSize("Text", true, true, false, false)).getBounds().asFloat(), "Parking-Dialog", "", Translation
-				.Get("My_Parking_Area_Title"), MessageBoxButtons.Cancel, null, null);
+		super((calcMsgBoxSize("Text", true, true, false, false)).getBounds().asFloat(), "Parking-Dialog", "", Translation.Get("My_Parking_Area_Title"), MessageBoxButtons.Cancel, null, null);
 
 		msgBoxContentSize = getContentSize();
 		// initial VariableField

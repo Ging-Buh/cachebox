@@ -17,6 +17,7 @@ import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.Math.CB_RectF;
@@ -26,7 +27,6 @@ import CB_Utils.Log.LogLevel;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 
 public class Slider extends CB_View_Base implements SelectedCacheEvent
 {
@@ -94,7 +94,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 		mSlideBox.setBackground(SpriteCacheBase.ProgressBack);
 		mLblCacheName = new Label(new CB_RectF(20, 0, this.getWidth() - 30, mSlideBox.getHeight()), "CacheNameLbl").setFont(Fonts.getBig());
 		mLblCacheName.setPos(30, 0);
-		mLblCacheName.setHAlignment(HAlignment.CENTER);
+		mLblCacheName.setHAlignment(HAlignment.SCROLL_CENTER);
 		mSlideBox.addChild(mLblCacheName);
 
 		mSlideBoxContent = new Box(this, "SlideBoxContent");
