@@ -123,7 +123,6 @@ import android.content.pm.ServiceInfo;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.database.Cursor;
-import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Sensor;
@@ -154,7 +153,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
@@ -274,7 +272,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private LinearLayout TopLayout;
 
-	private downSlider InfoDownSlider;
+	public downSlider InfoDownSlider;
 
 	private String ExtSearch_GcCode = null;
 	private String ExtSearch_GpxPath = null;
@@ -420,6 +418,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			ui.Window = new Size(savedInstanceState.getInt("WindowWidth"), savedInstanceState.getInt("WindowHeight"));
 			ui.Density = res.getDisplayMetrics().density;
+
 			ui.isLandscape = false;
 
 			new UiSizes();
@@ -1167,8 +1166,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				.getQuickButtonListHeight() : 0;
 		((main) main.mainActivity).setQuickButtonHeight(sollHeight);
 		downSlider.isInitial = false;
-		if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
-		if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
 		InfoDownSlider.invalidate();
 
 		// Ausschalten verhindern
@@ -1569,6 +1566,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 
 		aktView = view;
+		((View) aktView).setDrawingCacheEnabled(true);
 
 		frame.removeAllViews();
 		ViewParent parent = ((View) aktView).getParent();
@@ -1726,20 +1724,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		try
 		{
+			// boolean GL20 = checkGL20Support(this);
+			//
+			// if (gdxView != null) log.debug("gdxView war initialisiert=" + gdxView.toString());
+			// gdxView = initializeForView(glListener, GL20);
 
 			AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
-			cfg.r = cfg.g = cfg.b = cfg.a = 8;
-
-			cfg.numSamples = 2;
+			cfg.numSamples = 16;
 
 			gdxView = initializeForView(glListener, cfg);
-
-			if (graphics.getView() instanceof SurfaceView)
-			{
-				SurfaceView glView = (SurfaceView) graphics.getView();
-				glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-				glView.setZOrderOnTop(true);
-			}
 
 			log.debug("Initial new gdxView=" + gdxView.toString());
 
@@ -2852,8 +2845,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					public void run()
 					{
 						log.info("Show View from GL =>" + viewID.getID());
-						log.debug("left/top/right/bottom" + String.valueOf(left) + "/" + String.valueOf(top) + "/" + String.valueOf(right)
-								+ "/" + String.valueOf(bottom));
 
 						// set Content size
 
@@ -3413,4 +3404,5 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	}
 
 	private boolean losseChek = false;
+
 }

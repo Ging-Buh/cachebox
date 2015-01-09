@@ -41,6 +41,7 @@ public class platformConector
 		void dayNightSwitched();
 
 		void firstShow();
+
 	}
 
 	private static IShowViewListner showViewListner;

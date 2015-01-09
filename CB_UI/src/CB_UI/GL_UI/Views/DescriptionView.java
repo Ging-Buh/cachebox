@@ -46,10 +46,10 @@ public class DescriptionView extends CB_View_Base
 	final static String BASIC_LIMIT = "3";
 	final static String PREMIUM_LIMIT = "6000";
 
-	CacheListViewItem cacheInfo;
-	Button downloadButton;
-	Label MessageLabel, PowerdBy;
-	Image LiveIcon;
+	private CacheListViewItem cacheInfo;
+	private Button downloadButton;
+	private Label MessageLabel, PowerdBy;
+	private Image LiveIcon;
 	private PolygonDrawable Line;
 	private float margin;
 
@@ -61,6 +61,7 @@ public class DescriptionView extends CB_View_Base
 	@Override
 	public void onShow()
 	{
+		margin = GL_UISizes.margin;
 		if (cacheInfo != null) this.removeChild(cacheInfo);
 		Cache sel = GlobalCore.getSelectedCache();
 		if (sel != null)
@@ -102,9 +103,11 @@ public class DescriptionView extends CB_View_Base
 
 		float infoHeight = -(UiSizes.that.getInfoSliderHeight());
 		if (cacheInfo != null && !Global.isTab) infoHeight += cacheInfo.getHeight();
+		infoHeight += margin * 2;
 		CB_RectF world = this.getWorldRec();
 
-		platformConector.setContentSize((int) world.getX(), (int) ((GL_UISizes.SurfaceSize.getHeight() - world.getMaxY() + infoHeight)), (int) (GL_UISizes.SurfaceSize.getWidth() - world.getMaxX()), (int) world.getY());
+		platformConector.setContentSize((int) world.getX(), (int) ((GL_UISizes.SurfaceSize.getHeight() - (world.getMaxY() - infoHeight))), (int) (GL_UISizes.SurfaceSize.getWidth() - world.getMaxX()), (int) world.getY());
+
 	}
 
 	@Override
@@ -220,7 +223,6 @@ public class DescriptionView extends CB_View_Base
 		if (CB_Core.Api.GroundspeakAPI.CachesLeft == -1) getLimitThread.start();
 
 		float contentWidth = this.getWidth() * 0.95f;
-		margin = GL_UISizes.margin;
 
 		LiveIcon = new Image(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight, "LIVE-ICON");
 		LiveIcon.setSprite(SpriteCacheBase.LiveBtn.get(0));

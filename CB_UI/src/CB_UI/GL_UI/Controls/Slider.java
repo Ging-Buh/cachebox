@@ -189,6 +189,14 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 		}
 
 		float newY = y - mSlideBox.getHeight() - touchYoffset;
+
+		float maxY = mSlideBox.getHeight() + QuickButtonMaxHeight;
+
+		if (newY < (this.getHeight() - maxY))
+		{
+			newY = (this.getHeight() - maxY);
+		}
+
 		setSliderPos(newY);
 		return true;
 	}
