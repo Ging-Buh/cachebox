@@ -56,6 +56,8 @@ public class HtmlView extends ScrollBox
 		CB_Html_Renderer renderer = new CB_Html_Renderer(source);
 		List<HtmlSegment> segmentList = renderer.getElementList();
 
+		float innerWidth = this.getInnerWidth() - (margin * 2);
+
 		CB_List<CB_View_Base> segmentViewList = new CB_List<CB_View_Base>();
 		float contentHeight = 0;
 		for (int i = 0, n = segmentList.size(); i < n; i++)
@@ -70,7 +72,7 @@ public class HtmlView extends ScrollBox
 			{
 				BitmapFont font = GL_Fonts.get(seg.fontFamily, seg.fontStyle, seg.fontSize);
 
-				TextBounds bounds = font.getMultiLineBounds(seg.formatetText);
+				TextBounds bounds = font.getWrappedBounds(seg.formatetText, innerWidth);
 				segHeight = bounds.height + margin;
 				Label lbl = new Label(0, 0, this.getWidth(), segHeight, "DescLabel");
 				lbl.setTextColor(seg.fontColor);
@@ -84,7 +86,7 @@ public class HtmlView extends ScrollBox
 		}
 
 		contentBox = new Box(this, "topContent");
-		contentBox.setWidth(this.getInnerWidth() - (margin * 2));
+		contentBox.setWidth(innerWidth);
 
 		contentBox.setHeight(contentHeight);
 		contentBox.setZeroPos();
