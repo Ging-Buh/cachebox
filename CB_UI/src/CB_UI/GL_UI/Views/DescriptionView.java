@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2015 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI.GL_UI.Views;
 
 import java.util.Timer;
@@ -24,6 +39,7 @@ import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
+import CB_UI_Base.GL_UI.Controls.html.HtmlView;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
@@ -37,6 +53,9 @@ import CB_UI_Base.graphics.Geometry.Quadrangle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
+/**
+ * @author Longri
+ */
 public class DescriptionView extends CB_View_Base
 {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(DescriptionView.class);
@@ -53,9 +72,23 @@ public class DescriptionView extends CB_View_Base
 	private PolygonDrawable Line;
 	private float margin;
 
+	private HtmlView htmlView;
+
 	public DescriptionView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
+		htmlView = new HtmlView(this);
+		htmlView.setZeroPos();
+		this.addChild(htmlView);
+
+		if (GlobalCore.getSelectedCache() != null)
+		{
+			String desc = GlobalCore.getSelectedCache().getLongDescription();
+			if (desc != null)
+			{
+				htmlView.showHtml(desc);
+			}
+		}
 	}
 
 	@Override
@@ -104,8 +137,10 @@ public class DescriptionView extends CB_View_Base
 		float infoHeight = -(UiSizes.that.getInfoSliderHeight());
 		if (cacheInfo != null && !Global.isTab) infoHeight += cacheInfo.getHeight();
 		infoHeight += margin * 2;
-		CB_RectF world = this.getWorldRec();
 
+		htmlView.setHeight(this.getHeight() - (cacheInfo.getHeight() + (margin * 2)));
+
+		CB_RectF world = this.getWorldRec();
 		platformConector.setContentSize((int) world.getX(), (int) ((GL_UISizes.SurfaceSize.getHeight() - (world.getMaxY() - infoHeight))), (int) (GL_UISizes.SurfaceSize.getWidth() - world.getMaxX()), (int) world.getY());
 
 	}
