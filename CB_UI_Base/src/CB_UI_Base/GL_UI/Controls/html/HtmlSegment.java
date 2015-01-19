@@ -25,6 +25,9 @@ import net.htmlparser.jericho.StartTag;
 import net.htmlparser.jericho.Tag;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.Math.Stack;
+import CB_UI_Base.Math.UiSizes;
+import CB_UI_Base.graphics.GL_FontFamily;
+import CB_UI_Base.graphics.GL_FontStyle;
 import CB_Utils.Util.HSV_Color;
 
 import com.badlogic.gdx.graphics.Color;
@@ -35,6 +38,8 @@ import com.badlogic.gdx.graphics.Color;
 public class HtmlSegment
 {
 	public static final String br = System.getProperty("line.separator");
+	private static final float DEFAULT_FONT_SIZE = 14;
+	private static final float DEFAULT_FONT_SIZE_FACTOR = 1.3f;
 
 	List<StartTag> tags = new ArrayList<StartTag>();
 	String formatetText;
@@ -47,7 +52,9 @@ public class HtmlSegment
 	// Possible attributes
 	HAlignment hAlignment = HAlignment.LEFT;
 	Color fontColor = Color.BLACK;
-	float fontSize = 14;
+	float fontSize = DEFAULT_FONT_SIZE;
+	GL_FontStyle fontStyle = GL_FontStyle.NORMAL;
+	GL_FontFamily fontFamily = GL_FontFamily.DEFAULT;
 
 	public HtmlSegment()
 	{
@@ -156,8 +163,20 @@ public class HtmlSegment
 		if (size != null)
 		{
 			int intSize = Integer.parseInt(size);
-			this.fontSize = getFontPx(intSize);
+			this.fontSize = getFontPx(intSize) * UiSizes.that.getScale() * DEFAULT_FONT_SIZE_FACTOR;
 		}
+		else
+		{
+			this.fontSize = DEFAULT_FONT_SIZE * UiSizes.that.getScale() * DEFAULT_FONT_SIZE_FACTOR;
+		}
+
+		// resolve Font Style
+		for (Tag tag : tags)
+		{
+			if (!tag.getName().equals("strong")) continue;
+			this.fontStyle = GL_FontStyle.BOLD;
+		}
+
 	}
 
 	private static float getFontPx(int value)

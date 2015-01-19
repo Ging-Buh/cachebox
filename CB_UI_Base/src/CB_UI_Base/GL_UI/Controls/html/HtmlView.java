@@ -22,14 +22,15 @@ import net.htmlparser.jericho.Source;
 import org.slf4j.LoggerFactory;
 
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.graphics.GL_Fonts;
 import CB_Utils.Lists.CB_List;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 
 /**
@@ -67,12 +68,13 @@ public class HtmlView extends ScrollBox
 			}
 			else
 			{
+				BitmapFont font = GL_Fonts.get(seg.fontFamily, seg.fontStyle, seg.fontSize);
 
-				TextBounds bounds = Fonts.getSmall().getMultiLineBounds(seg.formatetText);
+				TextBounds bounds = font.getMultiLineBounds(seg.formatetText);
 				segHeight = bounds.height + margin;
 				Label lbl = new Label(0, 0, this.getWidth(), segHeight, "DescLabel");
 				lbl.setTextColor(seg.fontColor);
-				lbl.setFont(Fonts.getSmall()).setHAlignment(seg.hAlignment);
+				lbl.setFont(font).setHAlignment(seg.hAlignment);
 				lbl.setWrappedText(seg.formatetText);
 				segmentViewList.add(lbl);
 				contentHeight += segHeight;
@@ -82,10 +84,11 @@ public class HtmlView extends ScrollBox
 		}
 
 		contentBox = new Box(this, "topContent");
-		contentBox.setWidth(this.getInnerWidth());
+		contentBox.setWidth(this.getInnerWidth() - (margin * 2));
 
 		contentBox.setHeight(contentHeight);
 		contentBox.setZeroPos();
+		contentBox.setX(margin);
 
 		contentBox.setMargins(margin, margin);
 		contentBox.initRow();
