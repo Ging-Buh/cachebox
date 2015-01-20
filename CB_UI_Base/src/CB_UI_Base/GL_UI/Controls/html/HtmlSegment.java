@@ -39,7 +39,7 @@ public class HtmlSegment
 {
 	public static final String br = System.getProperty("line.separator");
 	private static final float DEFAULT_FONT_SIZE = 14;
-	private static final float DEFAULT_FONT_SIZE_FACTOR = 1.3f;
+	public static final float DEFAULT_FONT_SIZE_FACTOR = 1.3f;
 
 	List<StartTag> tags = new ArrayList<StartTag>();
 	String formatetText;

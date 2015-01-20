@@ -25,11 +25,12 @@ import CB_Core.CB_Core.Api.PQ_Download;
 import CB_Core.CB_Core.Api.PocketQueryTest;
 import CB_Core.CB_Core.Api.Trackable_Test;
 import CB_Core.CB_Core.Api.isPremium_GetFound_Test;
+import CB_Utils.Downloader_test;
 
 @RunWith(Suite.class)
 @SuiteClasses(
 	{ searchForGeoCache_Test.class, Bug384.class, isPremium_GetFound_Test.class, PocketQueryTest.class, PQ_Download.class,
-			Trackable_Test.class })
+			Trackable_Test.class, Downloader_test.class })
 public class Online_tests
 {
 

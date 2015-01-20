@@ -30,7 +30,6 @@ import net.htmlparser.jericho.Tag;
 
 import org.slf4j.LoggerFactory;
 
-import CB_UI_Base.GL_UI.Controls.html.CB_Html_Renderer.ImagelementHandler;
 import CB_UI_Base.Math.Stack;
 
 /**
@@ -111,18 +110,18 @@ public class CB_HtmlProcessor extends Processor
 	// appendSegment(index, end);
 	// }
 
-	@Override
-	protected ElementHandler getElementHandler(final Element element)
-	{
-		if (element.getStartTag().getStartTagType().isServerTag()) return Renderer.RemoveElementHandler.INSTANCE;
-		ElementHandler elementHandler = Renderer.ELEMENT_HANDLERS.get(element.getName());
-
-		if (elementHandler instanceof ImagelementHandler)
-		{
-			isImage = true;
-		}
-		return (elementHandler != null) ? elementHandler : Renderer.StandardInlineElementHandler.INSTANCE;
-	}
+	// @Override
+	// protected ElementHandler getElementHandler(final Element element)
+	// {
+	// if (element.getStartTag().getStartTagType().isServerTag()) return Renderer.RemoveElementHandler.INSTANCE;
+	// ElementHandler elementHandler = Renderer.ELEMENT_HANDLERS.get(element.getName());
+	//
+	// if (elementHandler instanceof ImagelementHandler)
+	// {
+	// isImage = true;
+	// }
+	// return (elementHandler != null) ? elementHandler : Renderer.StandardInlineElementHandler.INSTANCE;
+	// }
 
 	public List<HtmlSegment> getElementList()
 	{
@@ -138,9 +137,11 @@ public class CB_HtmlProcessor extends Processor
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		checkNewSegment();
+
 		return segmentList;
 
 	}
@@ -154,32 +155,14 @@ public class CB_HtmlProcessor extends Processor
 		if (isOpenStartTag(tag))
 		{
 
-			String innerText = appendable.toString();
-			if (innerText != null && !innerText.isEmpty() && isNotSpace(innerText))
-			{
-				log.debug("Append Text:" + innerText);
-				HtmlSegment segment = new HtmlSegment(AtributeStack, innerText).setIsImage(isImage);
-				if (!(segment.formatetText == null || segment.formatetText.isEmpty())) segmentList.add(segment);
-				apendableList.add(appendable);
-				appendable = new StringBuilder();
-				isImage = false;
-			}
+			checkNewSegment();
 			log.debug("Push Tag >" + tag.toString());
 			AtributeStack.push(tag);
 		}
 		else if (isClosedEndTag(tag))
 		{
 
-			String innerText = appendable.toString();
-			if (innerText != null && !innerText.isEmpty() && isNotSpace(innerText))
-			{
-				log.debug("Append Text:" + innerText);
-				HtmlSegment segment = new HtmlSegment(AtributeStack, innerText).setIsImage(isImage);
-				if (!(segment.formatetText == null || segment.formatetText.isEmpty())) segmentList.add(segment);
-				apendableList.add(appendable);
-				appendable = new StringBuilder();
-				isImage = false;
-			}
+			checkNewSegment();
 			Tag pop = AtributeStack.pop();
 			if (pop != null)
 			{
@@ -207,6 +190,43 @@ public class CB_HtmlProcessor extends Processor
 		finally
 		{
 			if (renderedIndex < end) renderedIndex = end;
+		}
+	}
+
+	void checkNewSegment()
+	{
+		String innerText = appendable.toString();
+		if (innerText != null && !innerText.isEmpty() && isNotSpace(innerText))
+		{
+			log.debug("Append Text:" + innerText);
+			HtmlSegment segment = new HtmlSegment(AtributeStack, innerText).setIsImage(isImage);
+			if (!(segment.formatetText == null || segment.formatetText.isEmpty())) segmentList.add(segment);
+			apendableList.add(appendable);
+			appendable = new StringBuilder();
+			isImage = false;
+		}
+	}
+
+	@Override
+	protected void appendSegmentProcessingChildElements(final int begin, final int end, final List<Element> childElements) throws IOException
+	{
+		int index = begin;
+		for (Element childElement : childElements)
+		{
+			if (index >= childElement.getEnd()) continue;
+			if (index < childElement.getBegin()) appendSegmentRemovingTags(index, childElement.getBegin());
+			ElementHandler handler = getElementHandler(childElement);
+			handler.process(this, childElement);
+			if (isImage)
+			{
+				checkNewSegment();
+			}
+
+			index = Math.max(renderedIndex, childElement.getEnd());
+		}
+		if (index < end)
+		{
+			appendSegmentRemovingTags(index, end);
 		}
 	}
 

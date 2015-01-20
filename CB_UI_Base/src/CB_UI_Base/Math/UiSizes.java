@@ -57,13 +57,13 @@ public class UiSizes extends UI_Size_Base
 	public void instanzeInitial()
 	{
 		QuickButtonRef = 320;
-		QuickButtonList = new Size((int) (QuickButtonRef * scale - (13.3333f * scale)), (int) (((QuickButtonRef * scale) / 5) - 4 * scale));
+		QuickButtonList = new Size((int) (QuickButtonRef * getScale() - (13.3333f * getScale())), (int) (((QuickButtonRef * getScale()) / 5) - 4 * getScale()));
 
-		scaledIconSize = (int) (10 * scale);
+		scaledIconSize = (int) (10 * getScale());
 
-		CornerSize = (int) (10 * scale);
-		CacheInfoHeight = (int) (40 * scale);
-		infoSliderHeight = (int) (30 * scale);
+		CornerSize = (int) (10 * getScale());
+		CacheInfoHeight = (int) (40 * getScale());
+		infoSliderHeight = (int) (30 * getScale());
 
 		spaceWidth = (int) (scaledFontSize_normal * 0.9);
 		tabWidth = (int) (scaledFontSize_normal * 0.6);
@@ -75,9 +75,9 @@ public class UiSizes extends UI_Size_Base
 		CacheListDrawRec = CacheListItemSize.getBounds(5, 2, -5, -2);
 		StrengthHeightMultipler = (int) (calcBase / 600);
 
-		arrowScaleList = (int) (10 * scale);
-		arrowScaleMap = (int) (10 * scale);
-		TB_icon_Size = (int) (10 * scale);
+		arrowScaleList = (int) (10 * getScale());
+		arrowScaleMap = (int) (10 * getScale());
+		TB_icon_Size = (int) (10 * getScale());
 
 	}
 

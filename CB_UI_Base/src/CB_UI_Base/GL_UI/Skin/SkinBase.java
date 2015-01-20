@@ -1,5 +1,22 @@
 package CB_UI_Base.GL_UI.Skin;
 
+/* 
+ * Copyright (C) 2011-2015 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import org.slf4j.LoggerFactory;
+
 import CB_UI_Base.Global;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 
@@ -16,6 +33,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
  */
 public abstract class SkinBase
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(SkinBase.class);
+
 	public static SkinBase that;
 	private static Skin night_skin;
 	private static Skin day_skin;
@@ -87,28 +106,45 @@ public abstract class SkinBase
 
 		if (day_skin == null)
 		{
-			String day_skinPath = settings.SkinFolder + "/day/skin.json";
-			if (settings.SkinFolder.type() == FileType.Absolute)
+			try
 			{
-				day_skin = new Skin(Gdx.files.absolute(day_skinPath));
+				String day_skinPath = settings.SkinFolder + "/day/skin.json";
+				if (settings.SkinFolder.type() == FileType.Absolute)
+				{
+					day_skin = new Skin(Gdx.files.absolute(day_skinPath));
+				}
+				else
+				{
+					day_skin = new Skin(Gdx.files.internal(day_skinPath));
+				}
 			}
-			else
+			catch (Exception e)
 			{
-				day_skin = new Skin(Gdx.files.internal(day_skinPath));
+				log.error("Load Custum Skin", e);
 			}
 		}
 
 		if (night_skin == null)
 		{
-			String night_skinPath = settings.SkinFolder + "/night/skin.json";
-			if (settings.SkinFolder.type() == FileType.Absolute)
+			try
 			{
-				night_skin = new Skin(Gdx.files.absolute(night_skinPath));
+				String night_skinPath = settings.SkinFolder + "/night/skin.json";
+				if (settings.SkinFolder.type() == FileType.Absolute)
+				{
+					night_skin = new Skin(Gdx.files.absolute(night_skinPath));
+				}
+				else
+				{
+					night_skin = new Skin(Gdx.files.internal(night_skinPath));
+				}
 			}
-			else
+			catch (Exception e)
 			{
-				night_skin = new Skin(Gdx.files.internal(night_skinPath));
+				log.error("Load Custum Night Skin", e);
 			}
 		}
+
+		if (day_skin == null) day_skin = default_day_skin;
+		if (night_skin == null) night_skin = default_night_skin;
 	}
 }

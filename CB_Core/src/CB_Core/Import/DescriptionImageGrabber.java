@@ -15,22 +15,18 @@
  */
 package CB_Core.Import;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import org.apache.http.util.ByteArrayBuffer;
 import org.slf4j.LoggerFactory;
 
 import CB_Core.Api.GroundspeakAPI;
@@ -39,6 +35,7 @@ import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 import CB_Utils.DB.Database_Core.Parameters;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Util.Downloader;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.SDBM_Hash;
 
@@ -269,60 +266,74 @@ public class DescriptionImageGrabber
 
 	public static Boolean Download(String uri, String local)
 	{
+
+		File localFile = new File(local);
+
 		try
 		{
-			String localDir = local.substring(0, local.lastIndexOf("/"));
-			if (!FileIO.createDirectory(localDir)) return false;
-
-			URL aURL = null;
-			try
-			{
-				// ung�ltige URL -> nicht importieren
-				aURL = new URL(uri.replace("&amp;", "&"));
-			}
-			catch (Exception ex)
-			{
-				return true;
-			}
-			File file = new File(local);
-			URLConnection con = aURL.openConnection();
-			con.setConnectTimeout(5000);
-			con.setReadTimeout(10000);
-			con.setRequestProperty("Accept-Charset", "UTF-8");
-
-			InputStream is = con.getInputStream();
-			FileOutputStream fos = new FileOutputStream(file);
-			BufferedInputStream bis = new BufferedInputStream(is);
-			ByteArrayBuffer baf = new ByteArrayBuffer(10024);
-			int current = 0;
-			int count = 0;
-			while ((current = bis.read()) != -1)
-			{
-				baf.append((byte) current);
-				count++;
-				if (count > 10000)
-				{
-					fos.write(baf.toByteArray());
-					count = 0;
-					baf.clear();
-					baf.setLength(0);
-				}
-			}
-
-			fos.write(baf.toByteArray());
-			/*
-			 * try { int d; while ((d = is.read()) != -1) { fos.write(d); } } catch (IOException ex) { // TODO make a callback on exception.
-			 * }
-			 */
-			fos.close();
-
-			return true;
+			new Downloader(new URL(uri), localFile).run();
 		}
-		catch (Exception e)
+		catch (MalformedURLException e)
 		{
-			e.printStackTrace();
-			return false;
+			log.error("Download: " + uri + " to " + local, e);
 		}
+
+		return localFile.exists();
+
+		// try
+		// {
+		// String localDir = local.substring(0, local.lastIndexOf("/"));
+		// if (!FileIO.createDirectory(localDir)) return false;
+		//
+		// URL aURL = null;
+		// try
+		// {
+		// // ung�ltige URL -> nicht importieren
+		// aURL = new URL(uri.replace("&amp;", "&"));
+		// }
+		// catch (Exception ex)
+		// {
+		// return true;
+		// }
+		// File file = new File(local);
+		// URLConnection con = aURL.openConnection();
+		// con.setConnectTimeout(5000);
+		// con.setReadTimeout(10000);
+		// con.setRequestProperty("Accept-Charset", "UTF-8");
+		//
+		// InputStream is = con.getInputStream();
+		// FileOutputStream fos = new FileOutputStream(file);
+		// BufferedInputStream bis = new BufferedInputStream(is);
+		// ByteArrayBuffer baf = new ByteArrayBuffer(10024);
+		// int current = 0;
+		// int count = 0;
+		// while ((current = bis.read()) != -1)
+		// {
+		// baf.append((byte) current);
+		// count++;
+		// if (count > 10000)
+		// {
+		// fos.write(baf.toByteArray());
+		// count = 0;
+		// baf.clear();
+		// baf.setLength(0);
+		// }
+		// }
+		//
+		// fos.write(baf.toByteArray());
+		// /*
+		// * try { int d; while ((d = is.read()) != -1) { fos.write(d); } } catch (IOException ex) { // TODO make a callback on exception.
+		// * }
+		// */
+		// fos.close();
+		//
+		// return true;
+		// }
+		// catch (Exception e)
+		// {
+		// e.printStackTrace();
+		// return false;
+		// }
 	}
 
 	public static LinkedList<String> GetAllImages(Cache Cache)
@@ -608,7 +619,8 @@ public class DescriptionImageGrabber
 						// Spoiler ohne den Hash im Dateinamen l�schen
 						new File(local).delete();
 					}
-					// Local Filename mit Hash erzeugen, damit �nderungen der Datei ohne �nderungen des Dateinamens erkannt werden k�nnen
+					// Local Filename mit Hash erzeugen, damit �nderungen der Datei ohne �nderungen des Dateinamens erkannt werden
+					// k�nnen
 					// Hier erst die alten Version mit den Klammern als Eingrenzung des Hash
 					// Dies hier machen, damit die Namen der Spoiler ins neue System Konvertiert werden k�nnen.
 					String localOld = BuildAdditionalImageFilenameHash(gcCode, decodedImageName, uri);
@@ -634,7 +646,8 @@ public class DescriptionImageGrabber
 					// �berpr�fen, ob dieser Spoiler bereits geladen wurde
 					if (afiles.contains(filename))
 					{
-						// wenn ja, dann aus der Liste der aktuell vorhandenen Spoiler entfernen und mit dem n�chsten Spoiler weiter machen
+						// wenn ja, dann aus der Liste der aktuell vorhandenen Spoiler entfernen und mit dem n�chsten Spoiler weiter
+						// machen
 						// dieser Spoiler muss jetzt nicht mehr geladen werden da er schon vorhanden ist.
 						afiles.remove(filename);
 						continue;
@@ -665,7 +678,8 @@ public class DescriptionImageGrabber
 					args.put("ImagesUpdated", additionalImagesUpdated);
 					Database.Data.update("Caches", args, "Id = ?", new String[]
 						{ String.valueOf(id) });
-					// jetzt k�nnen noch alle "alten" Spoiler gel�scht werden. "alte" Spoiler sind die, die auf der SD vorhanden sind, aber
+					// jetzt k�nnen noch alle "alten" Spoiler gel�scht werden. "alte" Spoiler sind die, die auf der SD vorhanden sind,
+					// aber
 					// nicht als Link �ber die API gemeldet wurden
 					// Alle Spoiler in der Liste afiles sind "alte"
 					for (String file : afiles)

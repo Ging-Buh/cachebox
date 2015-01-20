@@ -40,7 +40,7 @@ public abstract class UI_Size_Base
 	protected int ScaledFontSize_small;
 	protected int ScaledFontSize_supersmall;
 	protected int IconContextMenuHeight;
-	protected float scale;
+	private float scale;
 	protected int margin;
 	protected double calcBase;
 	protected int RefWidth;
@@ -56,17 +56,17 @@ public abstract class UI_Size_Base
 		windowWidth = ini.Window.width;// d.getWidth();
 		windowHeight = ini.Window.height;// d.getHeight();
 
-		scale = ini.Density;// res.getDisplayMetrics().density;
+		setScale(ini.Density);// res.getDisplayMetrics().density;
 
-		mClickToleranz = (int) (17 * scale);
+		mClickToleranz = (int) (17 * getScale());
 
-		calcBase = 533.333 * scale;
+		calcBase = 533.333 * getScale();
 
-		margin = (int) (10 * scale);
+		margin = (int) (10 * getScale());
 
 		float NormalTextSize = CB_UI_Base_Settings.FONT_SIZE_NORMAL.getValue() * 3.2f;
 
-		int b = (int) (NormalTextSize * scale);
+		int b = (int) (NormalTextSize * getScale());
 		Button = new Size(b, b);
 
 		if (Global.isTab)
@@ -85,13 +85,13 @@ public abstract class UI_Size_Base
 
 		GL_UISizes.writeDebug("Button", Button.asFloat());
 
-		scaledFontSize_normal = (int) (10 * scale);
+		scaledFontSize_normal = (int) (10 * getScale());
 		scaledFontSize_big = (int) (scaledFontSize_normal * 1.1);
 		ScaledFontSize_small = (int) (scaledFontSize_normal * 0.9);
 		ScaledFontSize_supersmall = (int) (ScaledFontSize_small * 0.8);
-		scaledFontSize_btn = (int) (11 * scale);
+		scaledFontSize_btn = (int) (11 * getScale());
 
-		iconSize = (int) (10 * scale);
+		iconSize = (int) (10 * getScale());
 
 		IconContextMenuHeight = (int) (calcBase / 11.1);
 
@@ -180,6 +180,11 @@ public abstract class UI_Size_Base
 	public int getClickToleranz()
 	{
 		return mClickToleranz;
+	}
+
+	public void setScale(float scale)
+	{
+		this.scale = scale;
 	}
 
 }

@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2011-2014 team-cachebox.de
+ * Copyright (C) 2011-2015 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import CB_UI_Base.CB_Texturepacker.Settings;
 import CB_UI_Base.CB_Texturepacker.TexturePacker_Base;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
+import CB_UI_Base.GL_UI.ParentInfo;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.Animation.AnimationBase;
@@ -75,6 +76,14 @@ public class Image extends CB_View_Base
 	public Image(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
+	}
+
+	@Override
+	public void renderChilds(final Batch batch, ParentInfo parentInfo)
+	{
+		debug = true;
+		super.renderChilds(batch, parentInfo);
+		debug = false;
 	}
 
 	@Override
@@ -174,6 +183,7 @@ public class Image extends CB_View_Base
 		}
 
 		batch.setColor(altColor);
+
 	}
 
 	private Thread loadingThread;
@@ -224,7 +234,7 @@ public class Image extends CB_View_Base
 		if (mDrawable != null)
 		{
 			dispose();
-			// das laden des Images in das Sprite darf erst in der Render Methode passieren, damit es aus dem GL_Thread herraus lï¿½uft.
+			// das laden des Images in das Sprite darf erst in der Render Methode passieren, damit es aus dem GL_Thread herraus läuft.
 		}
 		GL.that.renderOnce();
 	}
@@ -295,7 +305,7 @@ public class Image extends CB_View_Base
 			@Override
 			public void run()
 			{
-				final String CachePath = CB_UI_Base_Settings.ImageCacheFolderLocal.getValue();
+				final String CachePath = new File(CB_UI_Base_Settings.ImageCacheFolderLocal.getValue()).getAbsolutePath();
 
 				// Search first slash after Http or www
 				int slashPos = -1;
@@ -425,6 +435,7 @@ public class Image extends CB_View_Base
 		catch (Exception e)
 		{
 			e.printStackTrace();
+			ImageLoadError = true;
 		}
 
 		Sprite spt = tryToLoadFromCreatetdAtlas(ImagePath);

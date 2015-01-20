@@ -23,10 +23,12 @@ import org.slf4j.LoggerFactory;
 
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Box;
+import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.graphics.GL_Fonts;
 import CB_Utils.Lists.CB_List;
 
@@ -66,7 +68,10 @@ public class HtmlView extends ScrollBox
 			HtmlSegment seg = segmentList.get(i);
 			if (seg.isImage)
 			{
-
+				Image img = new Image(0, 0, 50, 50 * UiSizes.that.getScale(), "Html-Image");
+				img.setImageURL(seg.formatetText);
+				contentHeight += img.getHeight();
+				segmentViewList.add(img);
 			}
 			else
 			{

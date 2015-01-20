@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2013-2015 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Utils.Util;
 
 /**
@@ -27,6 +42,7 @@ import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -34,6 +50,17 @@ import java.net.URLConnection;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+
+import CB_Utils.http.HttpUtils;
 
 /**
  * Download a remote resource.
@@ -369,9 +396,48 @@ public class Downloader implements Runnable
 			progressString = "Opening input stream to remote resource";
 			progressUpdated = true;
 
+			InputStream input = null;
+
 			try
 			{
-				final InputStream input = link.getInputStream();
+
+				if (totalLength < 1)
+				{
+
+					// load with http Request
+					HttpGet httppost = new HttpGet(url.toString());
+
+					// Execute HTTP Post Request
+					try
+					{
+						HttpParams httpParameters = new BasicHttpParams();
+						HttpConnectionParams.setConnectionTimeout(httpParameters, HttpUtils.conectionTimeout);
+						HttpConnectionParams.setSoTimeout(httpParameters, HttpUtils.socketTimeout);
+						DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
+						HttpResponse response = httpClient.execute(httppost);
+						input = response.getEntity().getContent();
+					}
+					catch (ConnectTimeoutException e1)
+					{
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					catch (ClientProtocolException e1)
+					{
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					catch (IOException e1)
+					{
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
+				}
+				else
+				{
+					input = link.getInputStream();
+				}
 
 				if (target instanceof File)
 				{

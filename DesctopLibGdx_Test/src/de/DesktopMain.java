@@ -472,7 +472,8 @@ public class DesktopMain
 	 */
 	public static void InitalConfig()
 	{
-		String workPath = "./cachebox";
+		String base = new File("").getAbsolutePath();
+		String workPath = base + "/cachebox";
 
 		new Config(workPath);
 

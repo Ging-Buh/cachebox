@@ -58,10 +58,12 @@ public class CB_Html_Renderer extends Renderer
 		@Override
 		public void process(Processor x, Element element) throws IOException
 		{
+			((CB_HtmlProcessor) x).checkNewSegment();
 			String src = element.getStartTag().getAttributeValue("src");
 			if (src == null) return;
 			x.appendText(src);
 			((CB_HtmlProcessor) x).isImage = true;
+			((CB_HtmlProcessor) x).checkNewSegment();
 		}
 	}
 
