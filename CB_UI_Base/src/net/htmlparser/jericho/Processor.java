@@ -15,7 +15,7 @@ public class Processor
 	protected final Segment rootSegment;
 	protected final Source source;
 	final int maxLineLength;
-	final int hrLineLength;
+	public final int hrLineLength;
 	private final String newLine;
 	final boolean includeHyperlinkURLs;
 	public final boolean includeAlternateText;
@@ -26,11 +26,11 @@ public class Processor
 	private final char[] listBullets;
 	final String tableCellSeparator;
 
-	protected Appendable appendable;
+	public Appendable appendable;
 	protected int renderedIndex; // keeps track of where rendering is up to in case of overlapping elements
 	public boolean atStartOfLine;
 	public boolean skipInitialNewLines;
-	protected int col;
+	public int col;
 	protected int listIndentLevel;
 	protected int indentSize;
 	protected int blockVerticalMargin; // minimum number of blank lines to output at the current block boundary, or NO_MARGIN (-1) if we
@@ -110,11 +110,7 @@ public class Processor
 	protected ElementHandler getElementHandler(final Element element)
 	{
 		if (element.getStartTag().getStartTagType().isServerTag()) return RemoveElementHandler.INSTANCE; // hard-coded configuration
-																											// does not include server
-																											// tags in child element
-																											// hierarchy, so this is
-																											// normally not executed.
-		ElementHandler elementHandler = Renderer.ELEMENT_HANDLERS.get(element.getName());
+	ElementHandler elementHandler = Renderer.ELEMENT_HANDLERS.get(element.getName());
 		return (elementHandler != null) ? elementHandler : StandardInlineElementHandler.INSTANCE;
 	}
 
@@ -246,7 +242,7 @@ public class Processor
 		return blockVerticalMargin != NO_MARGIN;
 	}
 
-	void appendBlockVerticalMargin() throws IOException
+	public void appendBlockVerticalMargin() throws IOException
 	{
 		assert blockVerticalMargin != NO_MARGIN;
 		if (skipInitialNewLines)
@@ -352,7 +348,7 @@ public class Processor
 		atStartOfLine = false;
 	}
 
-	Processor append(final char ch) throws IOException
+	public Processor append(final char ch) throws IOException
 	{
 		appendTextInit();
 		appendable.append(ch);

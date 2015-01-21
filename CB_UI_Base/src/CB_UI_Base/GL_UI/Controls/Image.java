@@ -55,454 +55,420 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
  * 
  * @author Longri
  */
-public class Image extends CB_View_Base
-{
-	final static org.slf4j.Logger log = LoggerFactory.getLogger(Image.class);
-	private AnimationBase Wait;
+public class Image extends CB_View_Base {
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(Image.class);
+    private AnimationBase Wait;
 
-	private Color mColor = new Color(1, 1, 1, 1);
-	private float spriteWidth = -1;
-	private float spriteHeight = -1;
-	private boolean inLoad = false;
-	private boolean ImageLoadError = false;
+    private Color mColor = new Color(1, 1, 1, 1);
+    private float spriteWidth = -1;
+    private float spriteHeight = -1;
+    private boolean inLoad = false;
+    private boolean ImageLoadError = false;
+    private final boolean reziseHeight;
+    private int State = 0;
 
-	private int State = 0;
+    public Image(float X, float Y, float Width, float Height, String Name, boolean reziseHeight) {
+	super(X, Y, Width, Height, Name);
+	this.reziseHeight = reziseHeight;
+    }
 
-	public Image(float X, float Y, float Width, float Height, String Name)
-	{
-		super(X, Y, Width, Height, Name);
+    public Image(CB_RectF rec, String Name, boolean reziseHeight) {
+	super(rec, Name);
+	this.reziseHeight = reziseHeight;
+    }
+
+    @Override
+    public void renderChilds(final Batch batch, ParentInfo parentInfo) {
+	//	debug = true;
+	super.renderChilds(batch, parentInfo);
+	//	debug = false;
+    }
+
+    @Override
+    protected void render(Batch batch) {
+	if (ImageLoadError) {
+	    if (Wait != null) {
+		GL.that.removeRenderView(Wait);
+		this.removeChild(Wait);
+		Wait = null;
+	    }
+
+	    setSprite(SpriteCacheBase.Icons.get(IconName.delete_28.ordinal()), this.reziseHeight);
+	    ImageLoadError = false;
+	    return;
 	}
 
-	public Image(CB_RectF rec, String Name)
-	{
-		super(rec, Name);
-	}
+	if (State == 3) {
+	    try {
 
-	@Override
-	public void renderChilds(final Batch batch, ParentInfo parentInfo)
-	{
-		debug = true;
-		super.renderChilds(batch, parentInfo);
-		debug = false;
-	}
+		mImageTex = new Texture(Gdx.files.absolute(mPath));
+		Sprite sprite = new com.badlogic.gdx.graphics.g2d.Sprite(mImageTex);
 
-	@Override
-	protected void render(Batch batch)
-	{
-		if (ImageLoadError)
-		{
-			// TODO Draw error Image
-			if (Wait != null)
-			{
-				GL.that.removeRenderView(Wait);
-				this.removeChild(Wait);
-				Wait = null;
-			}
-
-			setSprite(SpriteCacheBase.Icons.get(IconName.delete_28.ordinal()));
-			ImageLoadError = false;
-			return;
-		}
-
-		if (State == 3)
-		{
-			try
-			{
-
-				mImageTex = new Texture(Gdx.files.absolute(mPath));
-				Sprite sprite = new com.badlogic.gdx.graphics.g2d.Sprite(mImageTex);
-
-				spriteWidth = sprite.getWidth();
-				spriteHeight = sprite.getHeight();
-
-				setSprite(sprite);
-
-			}
-			catch (com.badlogic.gdx.utils.GdxRuntimeException e)
-			{
-				State = 4;
-			}
-			catch (Exception e)
-			{
-				ImageLoadError = true;
-				log.debug("E Load GL Image", e);
-				e.printStackTrace();
-			}
-			return;
-		}
-
-		if (State == 4) ThreadLoad();
-
-		if (State == 6) setAtlas(this.AtlasPath, this.ImgName);
-
-		Color altColor = batch.getColor().cpy();
-
-		batch.setColor(mColor);
-
-		if (mDrawable != null)
-		{
-			if (Wait != null)
-			{
-				GL.that.removeRenderView(Wait);
-				this.removeChild(Wait);
-				Wait = null;
-			}
-			inLoad = false;
-			float drawwidth = getWidth();
-			float drawHeight = getHeight();
-			float drawX = 0;
-			float drawY = 0;
-
-			if (spriteWidth > 0 && spriteHeight > 0)
-			{
-				float proportionWidth = getWidth() / spriteWidth;
-				float proportionHeight = getHeight() / spriteHeight;
-
-				float proportion = Math.min(proportionWidth, proportionHeight);
-
-				drawwidth = spriteWidth * proportion;
-				drawHeight = spriteHeight * proportion;
-				drawX = (getWidth() - drawwidth) / 2;
-				drawY = (getHeight() - drawHeight) / 2;
-			}
-
-			mDrawable.draw(batch, drawX, drawY, drawwidth, drawHeight);
-
-		}
-		else if (inLoad)
-		{
-			if (Wait == null)
-			{
-				CB_RectF animationRec = new CB_RectF(0, 0, this.getWidth(), this.getHeight());
-				Wait = WorkAnimation.GetINSTANCE(animationRec);
-				GL.that.addRenderView(Wait, GL.FRAME_RATE_ACTION);
-				this.addChild(Wait);
-			}
-
-			GL.that.renderOnce();
-		}
-
-		batch.setColor(altColor);
-
-	}
-
-	private Thread loadingThread;
-
-	private void ThreadLoad()
-	{
-		State = 5;
-		if (isPacking) return;
-
-		if (loadingThread != null)
-		{
-			if (loadingThread.getState() != Thread.State.TERMINATED) return;
-			else
-				loadingThread = null;
-		}
-
-		loadingThread = new Thread(new Runnable()
-		{
-
-			@Override
-			public void run()
-			{
-				Sprite spt = tryToLoadFromCreatetdAtlas(mPath);
-
-				if (spt != null)
-				{
-					setSprite(spt);
-				}
-				else
-				{
-					packImagesToTextureAtlas(mPath);
-				}
-
-			}
-		});
-
-		if (loadingThread.getState() == Thread.State.NEW) loadingThread.start();
-	}
-
-	private String mPath;
-	private Texture mImageTex = null;
-	Drawable mDrawable = null;
-
-	public void setImage(String Path)
-	{
-		State = 3;
-		mPath = Path;
-		if (mDrawable != null)
-		{
-			dispose();
-			// das laden des Images in das Sprite darf erst in der Render Methode passieren, damit es aus dem GL_Thread herraus läuft.
-		}
-		GL.that.renderOnce();
-	}
-
-	public void setDrawable(Drawable drawable)
-	{
-		mDrawable = drawable;
-		inLoad = false;
-		GL.that.renderOnce();
-	}
-
-	@Override
-	public void dispose()
-	{
-		GL.that.RunOnGL(new IRunOnGL()
-		{
-
-			@Override
-			public void run()
-			{
-				if (mImageTex != null) mImageTex.dispose();
-				mImageTex = null;
-				mDrawable = null;
-			}
-		});
-	}
-
-	@Override
-	protected void Initial()
-	{
-	}
-
-	@Override
-	protected void SkinIsChanged()
-	{
-
-	}
-
-	public void setColor(Color color)
-	{
-		if (color == null) mColor = new Color(1, 1, 1, 1);
-		else
-			mColor = color;
-	}
-
-	private Thread ImageDownloadThread;
-
-	/**
-	 * Sets a Image URl and Downlowd this Image if this don't exist on Cache
-	 * 
-	 * @param iconUrl
-	 */
-	public void setImageURL(final String iconUrl)
-	{
-		if (iconUrl == null) return;
-		if (iconUrl.length() == 0) return;
-
-		if (ImageDownloadThread != null)
-		{
-			if (ImageDownloadThread.getState() != Thread.State.TERMINATED) return;
-			else
-				ImageDownloadThread = null;
-		}
-
-		ImageDownloadThread = new Thread(new Runnable()
-		{
-
-			@Override
-			public void run()
-			{
-				final String CachePath = new File(CB_UI_Base_Settings.ImageCacheFolderLocal.getValue()).getAbsolutePath();
-
-				// Search first slash after Http or www
-				int slashPos = -1;
-				slashPos = iconUrl.indexOf("http");
-				if (slashPos == -1) slashPos = iconUrl.indexOf("www");
-				if (slashPos == -1) return; // invalid URL
-				slashPos += 7;
-				slashPos = iconUrl.indexOf("/", slashPos);
-
-				final String LocalPath = iconUrl.substring(slashPos);
-
-				// check if Image exist on Cache
-				if (FileIO.FileExists(CachePath + LocalPath))
-				{
-					setImage(CachePath + LocalPath);
-					return;
-				}
-
-				inLoad = true;
-
-				// Download Image to Cache
-				try
-				{
-					final Downloader dl = new Downloader(new URL(iconUrl), new File(CachePath + LocalPath));
-
-					Thread DLThread = new Thread(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							dl.run();
-							inLoad = false;
-
-							// chk if Download complied
-							if (!FileIO.FileExists(CachePath + LocalPath))
-							{
-								// Download Error
-								ImageLoadError = true;
-								return;
-							}
-
-							setImage(CachePath + LocalPath);
-						}
-					});
-
-					DLThread.run();
-				}
-				catch (MalformedURLException e)
-				{
-					e.printStackTrace();
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-			}
-		});
-		ImageDownloadThread.start();
-
-		GL.that.renderOnce();
-	}
-
-	public void setSprite(Sprite sprite)
-	{
-		State = 7;
-		inLoad = false;
 		spriteWidth = sprite.getWidth();
 		spriteHeight = sprite.getHeight();
-		mDrawable = new SpriteDrawable(sprite);
-		GL.that.renderOnce();
+
+		setSprite(sprite, this.reziseHeight);
+
+	    } catch (com.badlogic.gdx.utils.GdxRuntimeException e) {
+		State = 4;
+	    } catch (Exception e) {
+		ImageLoadError = true;
+		log.debug("E Load GL Image", e);
+		e.printStackTrace();
+	    }
+	    return;
 	}
 
-	public void clearImage()
-	{
+	if (State == 4)
+	    ThreadLoad(this.reziseHeight);
+
+	if (State == 6)
+	    setAtlas(this.AtlasPath, this.ImgName, this.reziseHeight);
+
+	Color altColor = batch.getColor().cpy();
+
+	batch.setColor(mColor);
+
+	if (mDrawable != null) {
+	    if (Wait != null) {
+		GL.that.removeRenderView(Wait);
+		this.removeChild(Wait);
+		Wait = null;
+	    }
+	    inLoad = false;
+	    float drawwidth = getWidth();
+	    float drawHeight = getHeight();
+	    float drawX = 0;
+	    float drawY = 0;
+
+	    if (spriteWidth > 0 && spriteHeight > 0) {
+		float proportionWidth = getWidth() / spriteWidth;
+		float proportionHeight = getHeight() / spriteHeight;
+
+		float proportion = Math.min(proportionWidth, proportionHeight);
+
+		drawwidth = spriteWidth * proportion;
+		drawHeight = spriteHeight * proportion;
+		drawX = (getWidth() - drawwidth) / 2;
+		drawY = (getHeight() - drawHeight) / 2;
+	    }
+
+	    mDrawable.draw(batch, drawX, drawY, drawwidth, drawHeight);
+
+	} else if (inLoad) {
+	    if (Wait == null) {
+		CB_RectF animationRec = new CB_RectF(0, 0, this.getWidth(), this.getHeight());
+		Wait = WorkAnimation.GetINSTANCE(animationRec);
+		GL.that.addRenderView(Wait, GL.FRAME_RATE_ACTION);
+		this.addChild(Wait);
+	    }
+
+	    GL.that.renderOnce();
+	}
+
+	batch.setColor(altColor);
+
+    }
+
+    private Thread loadingThread;
+
+    private void ThreadLoad(final boolean reziseHeight) {
+	State = 5;
+	if (isPacking)
+	    return;
+
+	if (loadingThread != null) {
+	    if (loadingThread.getState() != Thread.State.TERMINATED)
+		return;
+	    else
+		loadingThread = null;
+	}
+
+	loadingThread = new Thread(new Runnable() {
+
+	    @Override
+	    public void run() {
+		Sprite spt = tryToLoadFromCreatetdAtlas(mPath);
+
+		if (spt != null) {
+		    setSprite(spt, reziseHeight);
+		} else {
+		    packImagesToTextureAtlas(mPath, reziseHeight);
+		}
+
+	    }
+	});
+
+	if (loadingThread.getState() == Thread.State.NEW)
+	    loadingThread.start();
+    }
+
+    private String mPath;
+    private Texture mImageTex = null;
+    Drawable mDrawable = null;
+
+    public void setImage(String Path) {
+	State = 3;
+	mPath = Path;
+	if (mDrawable != null) {
+	    dispose();
+	    // das laden des Images in das Sprite darf erst in der Render Methode passieren, damit es aus dem GL_Thread herraus läuft.
+	}
+	GL.that.renderOnce();
+    }
+
+    public void setDrawable(Drawable drawable) {
+	mDrawable = drawable;
+	inLoad = false;
+	GL.that.renderOnce();
+    }
+
+    @Override
+    public void dispose() {
+	GL.that.RunOnGL(new IRunOnGL() {
+
+	    @Override
+	    public void run() {
+		if (mImageTex != null)
+		    mImageTex.dispose();
+		mImageTex = null;
 		mDrawable = null;
-		mColor = new Color(1, 1, 1, 1);
-		mPath = null;
-		mScale = 1;
-		setOriginCenter();
+	    }
+	});
+    }
+
+    @Override
+    protected void Initial() {
+    }
+
+    @Override
+    protected void SkinIsChanged() {
+
+    }
+
+    public void setColor(Color color) {
+	if (color == null)
+	    mColor = new Color(1, 1, 1, 1);
+	else
+	    mColor = color;
+    }
+
+    private Thread ImageDownloadThread;
+
+    /**
+     * Sets a Image URl and Downlowd this Image if this don't exist on Cache
+     * 
+     * @param iconUrl
+     */
+    public void setImageURL(final String iconUrl) {
+	if (iconUrl == null)
+	    return;
+	if (iconUrl.length() == 0)
+	    return;
+
+	if (ImageDownloadThread != null) {
+	    if (ImageDownloadThread.getState() != Thread.State.TERMINATED)
+		return;
+	    else
+		ImageDownloadThread = null;
 	}
 
-	private boolean isPacking = false;
+	ImageDownloadThread = new Thread(new Runnable() {
 
-	/**
-	 * Pack the images from Folder into a Atlas and Load the Image from Atlas
-	 */
-	private void packImagesToTextureAtlas(String ImagePath)
-	{
-		if (isPacking) return;
-		isPacking = true;
+	    @Override
+	    public void run() {
+		final String CachePath = new File(CB_UI_Base_Settings.ImageCacheFolderLocal.getValue()).getAbsolutePath();
 
-		Settings textureSettings = new Settings();
+		// Search first slash after Http or www
+		int slashPos = -1;
+		slashPos = iconUrl.indexOf("http");
+		if (slashPos == -1)
+		    slashPos = iconUrl.indexOf("www");
+		if (slashPos == -1)
+		    return; // invalid URL
+		slashPos += 7;
+		slashPos = iconUrl.indexOf("/", slashPos);
 
-		textureSettings.pot = true;
-		textureSettings.paddingX = 2;
-		textureSettings.paddingY = 2;
-		textureSettings.duplicatePadding = true;
-		textureSettings.edgePadding = true;
-		textureSettings.rotation = false;
-		textureSettings.minWidth = 16;
-		textureSettings.minHeight = 16;
-		textureSettings.maxWidth = 2048;
-		textureSettings.maxHeight = 2048;
-		textureSettings.stripWhitespaceX = false;
-		textureSettings.stripWhitespaceY = false;
-		textureSettings.alphaThreshold = 0;
-		textureSettings.filterMin = TextureFilter.Linear;
-		textureSettings.filterMag = TextureFilter.Linear;
-		textureSettings.wrapX = TextureWrap.ClampToEdge;
-		textureSettings.wrapY = TextureWrap.ClampToEdge;
-		textureSettings.format = Format.RGBA8888;
-		textureSettings.alias = true;
-		textureSettings.outputFormat = "png";
-		textureSettings.jpegQuality = 0.9f;
-		textureSettings.ignoreBlankImages = true;
-		textureSettings.fast = false;
-		textureSettings.debug = false;
+		final String LocalPath = iconUrl.substring(slashPos);
 
-		String inputFolder = FileIO.GetDirectoryName(ImagePath);
-		String outputFolder = CB_UI_Base_Settings.ImageCacheFolderLocal.getValue();
-		String Name = getCachedAtlasName(inputFolder);
-
-		try
-		{
-			TexturePacker_Base.process(textureSettings, inputFolder, outputFolder, Name);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			ImageLoadError = true;
+		// check if Image exist on Cache
+		if (FileIO.FileExists(CachePath + LocalPath)) {
+		    setImage(CachePath + LocalPath);
+		    return;
 		}
 
-		Sprite spt = tryToLoadFromCreatetdAtlas(ImagePath);
-		if (spt != null) setSprite(spt);
+		inLoad = true;
 
-		isPacking = false;
-		GL.that.renderOnce();
-	}
+		// Download Image to Cache
+		try {
+		    final Downloader dl = new Downloader(new URL(iconUrl), new File(CachePath + LocalPath));
 
-	private String getCachedAtlasName(String inputFolder)
-	{
-		String Name = inputFolder.replace("/", "_");
-		Name = Name.replace("\\", "_");
-		Name = Name.replace(".", "");
-		Name = Name + ".spp";
-		return Name;
-	}
+		    Thread DLThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+			    dl.run();
+			    inLoad = false;
 
-	private HashMap<String, TextureAtlas> Atlanten;
+			    // chk if Download complied
+			    if (!FileIO.FileExists(CachePath + LocalPath)) {
+				// Download Error
+				ImageLoadError = true;
+				return;
+			    }
 
-	private Sprite tryToLoadFromCreatetdAtlas(String ImagePath)
-	{
+			    setImage(CachePath + LocalPath);
+			}
+		    });
 
-		if (Atlanten == null) Atlanten = new HashMap<String, TextureAtlas>();
-
-		String inputFolder = FileIO.GetDirectoryName(ImagePath);
-		String ImageName = FileIO.GetFileNameWithoutExtension(ImagePath);
-		String Name = getCachedAtlasName(inputFolder);
-
-		final String AtlasPath = CB_UI_Base_Settings.ImageCacheFolderLocal.getValue() + "/" + Name;
-		if (!FileIO.FileExists(AtlasPath)) return null;
-		TextureAtlas atlas = null;
-		if (Atlanten.containsKey(AtlasPath))
-		{
-			atlas = Atlanten.get(AtlasPath);
+		    DLThread.run();
+		} catch (MalformedURLException e) {
+		    e.printStackTrace();
+		} catch (Exception e) {
+		    e.printStackTrace();
 		}
-		else
-		{
-			this.AtlasPath = AtlasPath;
-			this.ImgName = ImageName;
-			State = 6;
-		}
+	    }
+	});
+	ImageDownloadThread.start();
 
-		Sprite tmp = null;
-		if (atlas != null)
-		{
-			tmp = atlas.createSprite(ImageName);
-		}
-		return tmp;
+	GL.that.renderOnce();
+    }
+
+    public void setSprite(Sprite sprite, boolean reziseHeight) {
+
+	State = 7;
+	inLoad = false;
+	spriteWidth = sprite.getWidth();
+	spriteHeight = sprite.getHeight();
+
+	if (reziseHeight) {
+	    float proportionWidth = getWidth() / spriteWidth;
+	    float newWidth = spriteWidth * proportionWidth;
+	    float newHeight = spriteHeight * proportionWidth;
+	    this.setSize(newWidth, newHeight);
 
 	}
 
-	private String AtlasPath;
-	private String ImgName;
+	mDrawable = new SpriteDrawable(sprite);
+	GL.that.renderOnce();
+    }
 
-	private void setAtlas(String atlasPath, String imgName)
-	{
-		State = 7;
-		TextureAtlas atlas = new TextureAtlas(Gdx.files.absolute(atlasPath));
-		Atlanten.put(atlasPath, atlas);
+    public void clearImage() {
+	mDrawable = null;
+	mColor = new Color(1, 1, 1, 1);
+	mPath = null;
+	mScale = 1;
+	setOriginCenter();
+    }
 
-		Sprite tmp = null;
-		if (atlas != null)
-		{
-			tmp = atlas.createSprite(imgName);
-		}
+    private boolean isPacking = false;
 
-		if (tmp != null) setSprite(tmp);
+    /**
+     * Pack the images from Folder into a Atlas and Load the Image from Atlas
+     */
+    private void packImagesToTextureAtlas(String ImagePath, boolean reziseHeight) {
+	if (isPacking)
+	    return;
+	isPacking = true;
+
+	Settings textureSettings = new Settings();
+
+	textureSettings.pot = true;
+	textureSettings.paddingX = 2;
+	textureSettings.paddingY = 2;
+	textureSettings.duplicatePadding = true;
+	textureSettings.edgePadding = true;
+	textureSettings.rotation = false;
+	textureSettings.minWidth = 16;
+	textureSettings.minHeight = 16;
+	textureSettings.maxWidth = 2048;
+	textureSettings.maxHeight = 2048;
+	textureSettings.stripWhitespaceX = false;
+	textureSettings.stripWhitespaceY = false;
+	textureSettings.alphaThreshold = 0;
+	textureSettings.filterMin = TextureFilter.Linear;
+	textureSettings.filterMag = TextureFilter.Linear;
+	textureSettings.wrapX = TextureWrap.ClampToEdge;
+	textureSettings.wrapY = TextureWrap.ClampToEdge;
+	textureSettings.format = Format.RGBA8888;
+	textureSettings.alias = true;
+	textureSettings.outputFormat = "png";
+	textureSettings.jpegQuality = 0.9f;
+	textureSettings.ignoreBlankImages = true;
+	textureSettings.fast = false;
+	textureSettings.debug = false;
+
+	String inputFolder = FileIO.GetDirectoryName(ImagePath);
+	String outputFolder = CB_UI_Base_Settings.ImageCacheFolderLocal.getValue();
+	String Name = getCachedAtlasName(inputFolder);
+
+	try {
+	    TexturePacker_Base.process(textureSettings, inputFolder, outputFolder, Name);
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    ImageLoadError = true;
 	}
+
+	Sprite spt = tryToLoadFromCreatetdAtlas(ImagePath);
+	if (spt != null)
+	    setSprite(spt, reziseHeight);
+
+	isPacking = false;
+	GL.that.renderOnce();
+    }
+
+    private String getCachedAtlasName(String inputFolder) {
+	String Name = inputFolder.replace("/", "_");
+	Name = Name.replace("\\", "_");
+	Name = Name.replace(".", "");
+	Name = Name + ".spp";
+	return Name;
+    }
+
+    private HashMap<String, TextureAtlas> Atlanten;
+
+    private Sprite tryToLoadFromCreatetdAtlas(String ImagePath) {
+
+	if (Atlanten == null)
+	    Atlanten = new HashMap<String, TextureAtlas>();
+
+	String inputFolder = FileIO.GetDirectoryName(ImagePath);
+	String ImageName = FileIO.GetFileNameWithoutExtension(ImagePath);
+	String Name = getCachedAtlasName(inputFolder);
+
+	final String AtlasPath = CB_UI_Base_Settings.ImageCacheFolderLocal.getValue() + "/" + Name;
+	if (!FileIO.FileExists(AtlasPath))
+	    return null;
+	TextureAtlas atlas = null;
+	if (Atlanten.containsKey(AtlasPath)) {
+	    atlas = Atlanten.get(AtlasPath);
+	} else {
+	    this.AtlasPath = AtlasPath;
+	    this.ImgName = ImageName;
+	    State = 6;
+	}
+
+	Sprite tmp = null;
+	if (atlas != null) {
+	    tmp = atlas.createSprite(ImageName);
+	}
+	return tmp;
+
+    }
+
+    private String AtlasPath;
+    private String ImgName;
+
+    private void setAtlas(String atlasPath, String imgName, boolean reziseHeight) {
+	State = 7;
+	TextureAtlas atlas = new TextureAtlas(Gdx.files.absolute(atlasPath));
+	Atlanten.put(atlasPath, atlas);
+
+	Sprite tmp = null;
+	if (atlas != null) {
+	    tmp = atlas.createSprite(imgName);
+	}
+
+	if (tmp != null)
+	    setSprite(tmp, reziseHeight);
+    }
 }

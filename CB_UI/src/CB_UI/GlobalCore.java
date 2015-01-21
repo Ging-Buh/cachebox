@@ -51,397 +51,339 @@ import CB_Utils.Interfaces.cancelRunnable;
  * @author arbor95
  * @author longri
  */
-public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface
-{
-	final static org.slf4j.Logger log = LoggerFactory.getLogger(GlobalCore.class);
-	public static final int CurrentRevision = 2369;
+public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface {
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(GlobalCore.class);
+    public static final int CurrentRevision = 2374;
 
-	public static final String CurrentVersion = "0.8.";
-	public static final String VersionPrefix = "test";
+    public static final String CurrentVersion = "0.8.";
+    public static final String VersionPrefix = "test";
 
-	// public static final String ps = System.getProperty("path.separator");
-	public static final String AboutMsg = "Team Cachebox (2011-2014)" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";
-	public static final String splashMsg = AboutMsg + br + br + "POWERED BY:";
+    // public static final String ps = System.getProperty("path.separator");
+    public static final String AboutMsg = "Team Cachebox (2011-2014)" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";
+    public static final String splashMsg = AboutMsg + br + br + "POWERED BY:";
 
-	public static boolean restartAfterKill = false;
-	public static String restartCache;
-	public static String restartWaypoint;
-	public static boolean filterLogsOfFriends = false;
+    public static boolean restartAfterKill = false;
+    public static String restartCache;
+    public static String restartWaypoint;
+    public static boolean filterLogsOfFriends = false;
 
-	// ###########create instance#############
-	public final static GlobalCore INSTANCE = new GlobalCore();
+    // ###########create instance#############
+    public final static GlobalCore INSTANCE = new GlobalCore();
 
-	private GlobalCore()
-	{
-		super();
-		Solver.solverCacheInterface = this;
+    private GlobalCore() {
+	super();
+	Solver.solverCacheInterface = this;
+    }
+
+    // #######################################
+
+    public static Track AktuelleRoute = null;
+    public static int aktuelleRouteCount = 0;
+    // public static long TrackDistance;
+
+    public static boolean switchToCompassCompleted = false;
+
+    public static GlobalLocationReceiver receiver;
+
+    private static Cache selectedCache = null;
+    private static boolean autoResort;
+
+    public static void setSelectedCache(Cache Cache) {
+	setSelectedWaypoint(Cache, null);
+    }
+
+    public static Cache getSelectedCache() {
+	return selectedCache;
+    }
+
+    private static Cache nearestCache = null;
+
+    public static Cache NearestCache() {
+	return nearestCache;
+    }
+
+    private static Waypoint selectedWaypoint = null;
+
+    public static void setSelectedWaypoint(Cache Cache, Waypoint waypoint) {
+	setSelectedWaypoint(Cache, waypoint, true);
+    }
+
+    /**
+     * if changeAutoResort == false -> do not change state of autoResort Flag
+     * 
+     * @param Cache
+     * @param waypoint
+     * @param changeAutoResort
+     */
+    public static void setSelectedWaypoint(Cache Cache, Waypoint waypoint, boolean changeAutoResort) {
+
+	if (Cache == null) {
+	    selectedCache = null;
+	    selectedWaypoint = null;
+	    return;
 	}
 
-	// #######################################
+	// // rewrite Changed Values ( like Favroite state)
+	// if (selectedCache != null)
+	// {
+	// if (!Cache.getGcCode().equals("CBPark"))
+	// {
+	// Cache lastCache = Database.Data.Query.GetCacheById(selectedCache.Id);
+	//
+	// }
+	// }
 
-	public static Track AktuelleRoute = null;
-	public static int aktuelleRouteCount = 0;
-	// public static long TrackDistance;
+	// remove Detail Info from old selectedCache
+	if ((selectedCache != Cache) && (selectedCache != null) && (selectedCache.detail != null)) {
+	    selectedCache.deleteDetail(Config.ShowAllWaypoints.getValue());
+	}
+	selectedCache = Cache;
+	selectedWaypoint = waypoint;
 
-	public static boolean switchToCompassCompleted = false;
-
-	public static GlobalLocationReceiver receiver;
-
-	private static Cache selectedCache = null;
-	private static boolean autoResort;
-
-	public static void setSelectedCache(Cache Cache)
-	{
-		setSelectedWaypoint(Cache, null);
+	// load Detail Info if not available
+	if (selectedCache.detail == null) {
+	    selectedCache.loadDetail();
 	}
 
-	public static Cache getSelectedCache()
-	{
-		return selectedCache;
+	SelectedCacheEventList.Call(selectedCache, selectedWaypoint);
+
+	if (changeAutoResort) {
+	    // switch off auto select
+	    GlobalCore.setAutoResort(false);
 	}
 
-	private static Cache nearestCache = null;
+	GL.that.renderOnce();
+    }
 
-	public static Cache NearestCache()
-	{
-		return nearestCache;
+    public static void setNearestCache(Cache Cache) {
+	nearestCache = Cache;
+    }
+
+    public static Waypoint getSelectedWaypoint() {
+	return selectedWaypoint;
+    }
+
+    /**
+     * APIisOnline Liefert TRUE wenn die M�glichkeit besteht auf das Internet zuzugreifen und ein API Access Token vorhanden ist.
+     */
+    public static boolean APIisOnline() {
+	if (Config.GetAccessToken().length() == 0) {
+	    log.info("GlobalCore.APIisOnline() - no GC - API AccessToken");
+	    return false;
+	}
+	if (platformConector.isOnline()) {
+	    return true;
+	}
+	return false;
+    }
+
+    static boolean JaokerPwChk = false;
+    static boolean JokerPwExist = false;
+
+    /**
+     * JokerisOnline Liefert TRUE wenn die M�glichkeit besteht auf das Internet zuzugreifen und ein Passwort f�r gcJoker.de vorhanden
+     * ist.
+     */
+    public static boolean JokerisOnline() {
+	if (!JaokerPwChk) {
+	    JokerPwExist = Config.GcJoker.getValue().length() == 0;
+	    JaokerPwChk = true;
 	}
 
-	private static Waypoint selectedWaypoint = null;
+	if (JokerPwExist) {
+	    // log.info("GlobalCore.JokerisOnline() - no Joker Password");
+	    return false;
+	}
+	if (platformConector.isOnline()) {
+	    return true;
+	}
+	return false;
+    }
 
-	public static void setSelectedWaypoint(Cache Cache, Waypoint waypoint)
-	{
-		setSelectedWaypoint(Cache, waypoint, true);
+    public static String getVersionString() {
+	final String ret = "Version: " + CurrentVersion + String.valueOf(CurrentRevision) + "  " + (VersionPrefix.equals("") ? "" : "(" + VersionPrefix + ")");
+	return ret;
+    }
+
+    public static Coordinate getSelectedCoord() {
+	Coordinate ret = null;
+
+	if (selectedWaypoint != null) {
+	    ret = selectedWaypoint.Pos;
+	} else if (selectedCache != null) {
+	    ret = selectedCache.Pos;
 	}
 
-	/**
-	 * if changeAutoResort == false -> do not change state of autoResort Flag
-	 * 
-	 * @param Cache
-	 * @param waypoint
-	 * @param changeAutoResort
-	 */
-	public static void setSelectedWaypoint(Cache Cache, Waypoint waypoint, boolean changeAutoResort)
-	{
+	return ret;
+    }
 
-		if (Cache == null)
-		{
-			selectedCache = null;
-			selectedWaypoint = null;
-			return;
+    public static void checkSelectedCacheValid() {
+
+	CacheList List = Database.Data.Query;
+
+	// Pr�fen, ob der SelectedCache noch in der cacheList drin ist.
+	if ((List.size() > 0) && (GlobalCore.ifCacheSelected()) && (List.GetCacheById(GlobalCore.getSelectedCache().Id) == null)) {
+	    // der SelectedCache ist nicht mehr in der cacheList drin -> einen beliebigen aus der CacheList ausw�hlen
+	    log.debug("Change SelectedCache from " + GlobalCore.getSelectedCache().getGcCode() + "to" + List.get(0).getGcCode());
+	    GlobalCore.setSelectedCache(List.get(0));
+	}
+	// Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
+	if ((GlobalCore.getSelectedCache() == null) && (List.size() > 0)) {
+	    GlobalCore.setSelectedCache(List.get(0));
+	    log.debug("Set SelectedCache to " + List.get(0).getGcCode() + " first in List.");
+	}
+    }
+
+    public static boolean getAutoResort() {
+	return autoResort;
+    }
+
+    public static void setAutoResort(boolean value) {
+	GlobalCore.autoResort = value;
+    }
+
+    private static CancelWaitDialog wd;
+
+    public static boolean RunFromSplash = false;
+
+    public static CancelWaitDialog ImportSpoiler() {
+	wd = CancelWaitDialog.ShowWait(Translation.Get("chkApiState"), DownloadAnimation.GetINSTANCE(), new IcancelListner() {
+
+	    @Override
+	    public void isCanceld() {
+		// TODO Handle Cancel
+
+	    }
+	}, new cancelRunnable() {
+
+	    @Override
+	    public void run() {
+		Importer importer = new Importer();
+		ImporterProgress ip = new ImporterProgress();
+		int result = importer.importSpoilerForCacheNew(ip, GlobalCore.getSelectedCache());
+		wd.close();
+		if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
+		    GL.that.Toast(ConnectionError.INSTANCE);
+		    return;
 		}
 
-		// // rewrite Changed Values ( like Favroite state)
-		// if (selectedCache != null)
-		// {
-		// if (!Cache.getGcCode().equals("CBPark"))
-		// {
-		// Cache lastCache = Database.Data.Query.GetCacheById(selectedCache.Id);
-		//
-		// }
-		// }
-
-		// remove Detail Info from old selectedCache
-		if ((selectedCache != Cache) && (selectedCache != null) && (selectedCache.detail != null))
-		{
-			selectedCache.deleteDetail(Config.ShowAllWaypoints.getValue());
+		if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
+		    GL.that.Toast(ApiUnavailable.INSTANCE);
+		    return;
 		}
-		selectedCache = Cache;
-		selectedWaypoint = waypoint;
+	    }
 
-		// load Detail Info if not available
-		if (selectedCache.detail == null)
-		{
-			selectedCache.loadDetail();
-		}
-
-		SelectedCacheEventList.Call(selectedCache, selectedWaypoint);
-
-		if (changeAutoResort)
-		{
-			// switch off auto select
-			GlobalCore.setAutoResort(false);
-		}
-
-		GL.that.renderOnce();
-	}
-
-	public static void setNearestCache(Cache Cache)
-	{
-		nearestCache = Cache;
-	}
-
-	public static Waypoint getSelectedWaypoint()
-	{
-		return selectedWaypoint;
-	}
-
-	/**
-	 * APIisOnline Liefert TRUE wenn die M�glichkeit besteht auf das Internet zuzugreifen und ein API Access Token vorhanden ist.
-	 */
-	public static boolean APIisOnline()
-	{
-		if (Config.GetAccessToken().length() == 0)
-		{
-			log.info("GlobalCore.APIisOnline() - no GC - API AccessToken");
-			return false;
-		}
-		if (platformConector.isOnline())
-		{
-			return true;
-		}
+	    @Override
+	    public boolean cancel() {
+		// TODO Handle Cancel
 		return false;
+	    }
+	});
+	return wd;
+    }
+
+    public interface IChkRedyHandler {
+	public void chekReady(int MemberTypeId);
+    }
+
+    static CancelWaitDialog dia;
+
+    public static void MsgDownloadLimit() {
+	GL.that.RunOnGLWithThreadCheck(new IRunOnGL() {
+
+	    @Override
+	    public void run() {
+		GL_MsgBox.Show(Translation.Get("Limit_msg"), Translation.Get("Limit_title"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
+	    }
+	});
+
+    }
+
+    public static void chkAPiLogInWithWaitDialog(final IChkRedyHandler handler) {
+
+	if (GroundspeakAPI.ApiLimit()) {
+	    MsgDownloadLimit();
+	    return;
 	}
 
-	static boolean JaokerPwChk = false;
-	static boolean JokerPwExist = false;
+	if (!GroundspeakAPI.API_isCheked()) {
+	    dia = CancelWaitDialog.ShowWait("chk API Key", DownloadAnimation.GetINSTANCE(), new IcancelListner() {
 
-	/**
-	 * JokerisOnline Liefert TRUE wenn die M�glichkeit besteht auf das Internet zuzugreifen und ein Passwort f�r gcJoker.de vorhanden
-	 * ist.
-	 */
-	public static boolean JokerisOnline()
-	{
-		if (!JaokerPwChk)
-		{
-			JokerPwExist = Config.GcJoker.getValue().length() == 0;
-			JaokerPwChk = true;
+		@Override
+		public void isCanceld() {
+		    dia.close();
 		}
+	    }, new cancelRunnable() {
 
-		if (JokerPwExist)
-		{
-			// log.info("GlobalCore.JokerisOnline() - no Joker Password");
-			return false;
-		}
-		if (platformConector.isOnline())
-		{
-			return true;
-		}
-		return false;
-	}
+		@Override
+		public void run() {
+		    final int ret = GroundspeakAPI.chkMemperShip(false);
+		    dia.close();
 
-	public static String getVersionString()
-	{
-		final String ret = "Version: " + CurrentVersion + String.valueOf(CurrentRevision) + "  " + (VersionPrefix.equals("") ? "" : "(" + VersionPrefix + ")");
-		return ret;
-	}
-
-	public static Coordinate getSelectedCoord()
-	{
-		Coordinate ret = null;
-
-		if (selectedWaypoint != null)
-		{
-			ret = selectedWaypoint.Pos;
-		}
-		else if (selectedCache != null)
-		{
-			ret = selectedCache.Pos;
-		}
-
-		return ret;
-	}
-
-	public static void checkSelectedCacheValid()
-	{
-
-		CacheList List = Database.Data.Query;
-
-		// Pr�fen, ob der SelectedCache noch in der cacheList drin ist.
-		if ((List.size() > 0) && (GlobalCore.ifCacheSelected()) && (List.GetCacheById(GlobalCore.getSelectedCache().Id) == null))
-		{
-			// der SelectedCache ist nicht mehr in der cacheList drin -> einen beliebigen aus der CacheList ausw�hlen
-			log.debug("Change SelectedCache from " + GlobalCore.getSelectedCache().getGcCode() + "to" + List.get(0).getGcCode());
-			GlobalCore.setSelectedCache(List.get(0));
-		}
-		// Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
-		if ((GlobalCore.getSelectedCache() == null) && (List.size() > 0))
-		{
-			GlobalCore.setSelectedCache(List.get(0));
-			log.debug("Set SelectedCache to " + List.get(0).getGcCode() + " first in List.");
-		}
-	}
-
-	public static boolean getAutoResort()
-	{
-		return autoResort;
-	}
-
-	public static void setAutoResort(boolean value)
-	{
-		GlobalCore.autoResort = value;
-	}
-
-	private static CancelWaitDialog wd;
-
-	public static boolean RunFromSplash = false;
-
-	public static CancelWaitDialog ImportSpoiler()
-	{
-		wd = CancelWaitDialog.ShowWait(Translation.Get("chkApiState"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
-		{
+		    Timer ti = new Timer();
+		    TimerTask task = new TimerTask() {
 
 			@Override
-			public void isCanceld()
-			{
-				// TODO Handle Cancel
-
+			public void run() {
+			    handler.chekReady(ret);
 			}
-		}, new cancelRunnable()
-		{
+		    };
+		    ti.schedule(task, 300);
 
-			@Override
-			public void run()
-			{
-				Importer importer = new Importer();
-				ImporterProgress ip = new ImporterProgress();
-				int result = importer.importSpoilerForCacheNew(ip, GlobalCore.getSelectedCache());
-				wd.close();
-				if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
-				{
-					GL.that.Toast(ConnectionError.INSTANCE);
-					return;
-				}
-
-				if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
-				{
-					GL.that.Toast(ApiUnavailable.INSTANCE);
-					return;
-				}
-			}
-
-			@Override
-			public boolean cancel()
-			{
-				// TODO Handle Cancel
-				return false;
-			}
-		});
-		return wd;
-	}
-
-	public interface IChkRedyHandler
-	{
-		public void chekReady(int MemberTypeId);
-	}
-
-	static CancelWaitDialog dia;
-
-	public static void MsgDownloadLimit()
-	{
-		GL.that.RunOnGLWithThreadCheck(new IRunOnGL()
-		{
-
-			@Override
-			public void run()
-			{
-				GL_MsgBox.Show(Translation.Get("Limit_msg"), Translation.Get("Limit_title"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
-			}
-		});
-
-	}
-
-	public static void chkAPiLogInWithWaitDialog(final IChkRedyHandler handler)
-	{
-
-		if (GroundspeakAPI.ApiLimit())
-		{
-			MsgDownloadLimit();
-			return;
 		}
 
-		if (!GroundspeakAPI.API_isCheked())
-		{
-			dia = CancelWaitDialog.ShowWait("chk API Key", DownloadAnimation.GetINSTANCE(), new IcancelListner()
-			{
-
-				@Override
-				public void isCanceld()
-				{
-					dia.close();
-				}
-			}, new cancelRunnable()
-			{
-
-				@Override
-				public void run()
-				{
-					final int ret = GroundspeakAPI.chkMemperShip(false);
-					dia.close();
-
-					Timer ti = new Timer();
-					TimerTask task = new TimerTask()
-					{
-
-						@Override
-						public void run()
-						{
-							handler.chekReady(ret);
-						}
-					};
-					ti.schedule(task, 300);
-
-				}
-
-				@Override
-				public boolean cancel()
-				{
-					// TODO Handle Cancel
-					return false;
-				}
-			});
+		@Override
+		public boolean cancel() {
+		    // TODO Handle Cancel
+		    return false;
 		}
-		else
-		{
-			handler.chekReady(GroundspeakAPI.chkMemperShip(true));
-		}
-
+	    });
+	} else {
+	    handler.chekReady(GroundspeakAPI.chkMemperShip(true));
 	}
 
-	@Override
-	protected String getVersionPrefix()
-	{
-		return VersionPrefix;
-	}
+    }
 
-	// Interface f�r den Solver zum Zugriff auf den SelectedCache.
-	// Direkter Zugriff geht nicht da der Solver im Core definiert ist
-	@Override
-	public Cache sciGetSelectedCache()
-	{
-		return getSelectedCache();
-	}
+    @Override
+    protected String getVersionPrefix() {
+	return VersionPrefix;
+    }
 
-	@Override
-	public void sciSetSelectedCache(Cache cache)
-	{
-		setSelectedCache(cache);
-	}
+    // Interface f�r den Solver zum Zugriff auf den SelectedCache.
+    // Direkter Zugriff geht nicht da der Solver im Core definiert ist
+    @Override
+    public Cache sciGetSelectedCache() {
+	return getSelectedCache();
+    }
 
-	@Override
-	public void sciSetSelectedWaypoint(Cache cache, Waypoint waypoint)
-	{
-		setSelectedWaypoint(cache, waypoint);
-	}
+    @Override
+    public void sciSetSelectedCache(Cache cache) {
+	setSelectedCache(cache);
+    }
 
-	@Override
-	public Waypoint sciGetSelectedWaypoint()
-	{
-		return getSelectedWaypoint();
-	}
+    @Override
+    public void sciSetSelectedWaypoint(Cache cache, Waypoint waypoint) {
+	setSelectedWaypoint(cache, waypoint);
+    }
 
-	/**
-	 * Returns true, if a Cache selected and this Cache object is valid.
-	 * 
-	 * @return
-	 */
-	public static boolean ifCacheSelected()
-	{
-		if (getSelectedCache() == null) return false;
+    @Override
+    public Waypoint sciGetSelectedWaypoint() {
+	return getSelectedWaypoint();
+    }
 
-		if (getSelectedCache().getGcCode().length() == 0) return false;
+    /**
+     * Returns true, if a Cache selected and this Cache object is valid.
+     * 
+     * @return
+     */
+    public static boolean ifCacheSelected() {
+	if (getSelectedCache() == null)
+	    return false;
 
-		return true;
-	}
+	if (getSelectedCache().getGcCode().length() == 0)
+	    return false;
+
+	return true;
+    }
 
 }

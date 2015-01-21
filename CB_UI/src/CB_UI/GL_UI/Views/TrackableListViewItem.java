@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2015 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI.GL_UI.Views;
 
 import CB_Core.Types.Trackable;
@@ -9,37 +24,32 @@ import CB_UI_Base.Math.UI_Size_Base;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 
-public class TrackableListViewItem extends ListViewItemBackground
-{
-	private Image img;
-	private Label lblName;
+public class TrackableListViewItem extends ListViewItemBackground {
+    private Image img;
+    private Label lblName;
 
-	public TrackableListViewItem(CB_RectF rec, int Index, Trackable TB)
-	{
-		super(rec, Index, TB.getName());
+    public TrackableListViewItem(CB_RectF rec, int Index, Trackable TB) {
+	super(rec, Index, TB.getName());
 
-		float hw = this.getHeight() - this.getTopHeight() - this.getBottomHeight();
+	float hw = this.getHeight() - this.getTopHeight() - this.getBottomHeight();
 
-		img = new Image(leftBorder, this.getBottomHeight(), hw, hw, "IconImage");
-		img.setImageURL(TB.getIconUrl());
-		this.addChild(img);
+	img = new Image(leftBorder, this.getBottomHeight(), hw, hw, "IconImage", false);
+	img.setImageURL(TB.getIconUrl());
+	this.addChild(img);
 
-		lblName = new Label(img.getMaxX() + UI_Size_Base.that.getMargin(), img.getY(), this.getWidth() - img.getMaxX()
-				- UI_Size_Base.that.getMargin(), img.getHeight(), "Label Name");
-		lblName.setWrappedText(TB.getName());
-		this.addChild(lblName);
-	}
+	lblName = new Label(img.getMaxX() + UI_Size_Base.that.getMargin(), img.getY(), this.getWidth() - img.getMaxX() - UI_Size_Base.that.getMargin(), img.getHeight(), "Label Name");
+	lblName.setWrappedText(TB.getName());
+	this.addChild(lblName);
+    }
 
-	@Override
-	protected void SkinIsChanged()
-	{
-	}
+    @Override
+    protected void SkinIsChanged() {
+    }
 
-	@Override
-	protected void render(Batch batch)
-	{
-		super.render(batch);
+    @Override
+    protected void render(Batch batch) {
+	super.render(batch);
 
-	}
+    }
 
 }

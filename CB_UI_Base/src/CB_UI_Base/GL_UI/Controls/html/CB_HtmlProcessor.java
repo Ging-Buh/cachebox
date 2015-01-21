@@ -25,6 +25,8 @@ import net.htmlparser.jericho.EndTag;
 import net.htmlparser.jericho.Processor;
 import net.htmlparser.jericho.Renderer;
 import net.htmlparser.jericho.Renderer.ElementHandler;
+import net.htmlparser.jericho.Renderer.RemoveElementHandler;
+import net.htmlparser.jericho.Renderer.StandardInlineElementHandler;
 import net.htmlparser.jericho.Segment;
 import net.htmlparser.jericho.Tag;
 
@@ -35,219 +37,159 @@ import CB_UI_Base.Math.Stack;
 /**
  * @author Longri
  */
-public class CB_HtmlProcessor extends Processor
-{
-	final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_HtmlProcessor.class);
+public class CB_HtmlProcessor extends Processor {
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_HtmlProcessor.class);
 
-	final static Stack<Tag> AtributeStack = new Stack<Tag>();
-	List<Appendable> apendableList = new ArrayList<Appendable>();
-	List<HtmlSegment> segmentList;
+    final static Stack<Tag> AtributeStack = new Stack<Tag>();
+    List<Appendable> apendableList = new ArrayList<Appendable>();
+    List<Html_Segment> segmentList;
 
-	boolean isImage = false;
+    boolean isImage = false;
 
-	public CB_HtmlProcessor(Renderer renderer, Segment rootSegment, int maxLineLength, int hrLineLength, String newLine, boolean includeHyperlinkURLs, boolean includeAlternateText, boolean decorateFontStyles, boolean convertNonBreakingSpaces, int blockIndentSize, int listIndentSize, char[] listBullets, String tableCellSeparator)
-	{
-		super(renderer, rootSegment, maxLineLength, hrLineLength, newLine, includeHyperlinkURLs, includeAlternateText, decorateFontStyles, convertNonBreakingSpaces, blockIndentSize, listIndentSize, listBullets, tableCellSeparator);
+    public CB_HtmlProcessor(Renderer renderer, Segment rootSegment, int maxLineLength, int hrLineLength, String newLine, boolean includeHyperlinkURLs, boolean includeAlternateText, boolean decorateFontStyles, boolean convertNonBreakingSpaces, int blockIndentSize, int listIndentSize, char[] listBullets, String tableCellSeparator) {
+	super(renderer, rootSegment, maxLineLength, hrLineLength, newLine, includeHyperlinkURLs, includeAlternateText, decorateFontStyles, convertNonBreakingSpaces, blockIndentSize, listIndentSize, listBullets, tableCellSeparator);
+    }
+
+    public List<Html_Segment> getElementList() {
+	reset();
+	segmentList = new ArrayList<Html_Segment>();
+	{// CB-CHANGE
+	    super.appendable = new StringBuilder();// = appendable;
+	}
+	List<Element> elements = rootSegment instanceof Element ? Collections.singletonList((Element) rootSegment) : rootSegment.getChildElements();
+	try {
+	    appendSegmentProcessingChildElements(rootSegment.getBegin(), rootSegment.getEnd(), elements);
+	} catch (IOException e) {
+	    e.printStackTrace();
 	}
 
-	// @Override
-	// protected void appendElementContent(final Element element) throws IOException
-	// {
-	// final int contentEnd = element.getContentEnd();
-	// if (element.isEmpty() || renderedIndex >= contentEnd) return;
-	// final int contentBegin = element.getStartTag().getEnd();
-	//
-	// appendSegmentProcessingChildElements(Math.max(renderedIndex, contentBegin), contentEnd, element.getChildElements());
-	//
-	// }
-	//
-	// @Override
-	// protected void appendNonPreformattedSegment(final int begin, final int end) throws IOException
-	// {
-	// assert begin < end;
-	// assert begin >= renderedIndex;
-	// final String text = CharacterReference.decodeCollapseWhiteSpace(source.subSequence(begin, end), convertNonBreakingSpaces);
-	// if (text.length() == 0)
-	// {
-	// // collapsed text is zero length but original segment wasn't, meaning it consists purely of white space.
-	// if (!ignoreInitialWhiteSpace) lastCharWhiteSpace = true;
-	// }
-	// appendNonPreformattedText(text, Segment.isWhiteSpace(source.charAt(begin)), Segment.isWhiteSpace(source.charAt(end - 1)));
-	//
-	// }
+	createNewSegment();
 
-	// @Override
-	// protected void appendSegmentProcessingChildElements(final int begin, final int end, final List<Element> childElements) throws
-	// IOException
-	// {
-	// int index = begin;
-	// for (Element childElement : childElements)
-	// {
-	// if (index >= childElement.getEnd()) continue;
-	// if (index < childElement.getBegin()) appendSegmentRemovingTags(index, childElement.getBegin());
-	// getElementHandler(childElement).process(this, childElement);
-	// index = Math.max(renderedIndex, childElement.getEnd());
-	// }
-	// if (index < end)
-	// {
-	// appendSegmentRemovingTags(index, end);
-	// }
-	// }
+	return segmentList;
 
-	// @Override
-	// protected void appendSegmentRemovingTags(final int begin, final int end) throws IOException
-	// {
-	// int index = begin;
-	// while (true)
-	// {
-	//
-	// Tag tag = source.getNextTag(index);
-	//
-	// if (tag == null || tag.getBegin() >= end) break;
-	// appendSegment(index, tag.getBegin());
-	// index = tag.getEnd();
-	// }
-	// appendSegment(index, end);
-	// }
+    }
 
-	// @Override
-	// protected ElementHandler getElementHandler(final Element element)
-	// {
-	// if (element.getStartTag().getStartTagType().isServerTag()) return Renderer.RemoveElementHandler.INSTANCE;
-	// ElementHandler elementHandler = Renderer.ELEMENT_HANDLERS.get(element.getName());
-	//
-	// if (elementHandler instanceof ImagelementHandler)
-	// {
-	// isImage = true;
-	// }
-	// return (elementHandler != null) ? elementHandler : Renderer.StandardInlineElementHandler.INSTANCE;
-	// }
+    @Override
+    protected void appendSegment(int begin, final int end) throws IOException {
 
-	public List<HtmlSegment> getElementList()
-	{
-		reset();
-		segmentList = new ArrayList<HtmlSegment>();
-		{// CB-CHANGE
-			super.appendable = new StringBuilder();// = appendable;
-		}
-		List<Element> elements = rootSegment instanceof Element ? Collections.singletonList((Element) rootSegment) : rootSegment.getChildElements();
-		try
-		{
-			appendSegmentProcessingChildElements(rootSegment.getBegin(), rootSegment.getEnd(), elements);
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+	Tag tag = source.getPreviousTag(begin);
 
-		checkNewSegment();
+	if (isOpenStartTag(tag)) {
 
-		return segmentList;
+	    createNewSegment();
+	    log.debug("Push Tag >" + tag.toString());
+	    AtributeStack.push(tag);
+	} else if (isClosedEndTag(tag)) {
+
+	    createNewSegment();
+	    Tag pop = AtributeStack.pop();
+	    if (pop != null) {
+		log.debug("Pop Tag >" + pop.toString());
+	    } else {
+		log.error("Pop Tag > ERROR Stack are empty");
+	    }
 
 	}
 
-	@Override
-	protected void appendSegment(int begin, final int end) throws IOException
-	{
-
-		Tag tag = source.getPreviousTag(begin);
-
-		if (isOpenStartTag(tag))
-		{
-
-			checkNewSegment();
-			log.debug("Push Tag >" + tag.toString());
-			AtributeStack.push(tag);
-		}
-		else if (isClosedEndTag(tag))
-		{
-
-			checkNewSegment();
-			Tag pop = AtributeStack.pop();
-			if (pop != null)
-			{
-				log.debug("Pop Tag >" + pop.toString());
-			}
-			else
-			{
-				log.error("Pop Tag > ERROR Stack are empty");
-			}
-
-		}
-
-		assert begin <= end;
-		if (begin < renderedIndex) begin = renderedIndex;
-		if (begin >= end) return;
-		try
-		{
-			if (preformatted)
-			{
-				appendPreformattedSegment(begin, end);
-			}
-			else
-				appendNonPreformattedSegment(begin, end);
-		}
-		finally
-		{
-			if (renderedIndex < end) renderedIndex = end;
-		}
+	assert begin <= end;
+	if (begin < renderedIndex)
+	    begin = renderedIndex;
+	if (begin >= end)
+	    return;
+	try {
+	    if (preformatted) {
+		appendPreformattedSegment(begin, end);
+	    } else
+		appendNonPreformattedSegment(begin, end);
+	} finally {
+	    if (renderedIndex < end)
+		renderedIndex = end;
 	}
+    }
 
-	void checkNewSegment()
-	{
-		String innerText = appendable.toString();
-		if (innerText != null && !innerText.isEmpty() && isNotSpace(innerText))
-		{
-			log.debug("Append Text:" + innerText);
-			HtmlSegment segment = new HtmlSegment(AtributeStack, innerText).setIsImage(isImage);
-			if (!(segment.formatetText == null || segment.formatetText.isEmpty())) segmentList.add(segment);
-			apendableList.add(appendable);
-			appendable = new StringBuilder();
-			isImage = false;
-		}
+    void createNewSegment() {
+	String innerText = appendable.toString();
+	if (innerText != null && !innerText.isEmpty() && isNotSpace(innerText)) {
+	    log.debug("Append Text:" + innerText);
+
+	    Html_Segment segment;
+
+	    if (isImage) {
+		segment = new Html_Segment_Image(AtributeStack, innerText);
+	    } else {
+		segment = new Html_Segment_TextBlock(AtributeStack, innerText);
+	    }
+
+	    if (!(segment.formatetText == null || segment.formatetText.isEmpty()))
+		segmentList.add(segment);
+	    apendableList.add(appendable);
+	    appendable = new StringBuilder();
+	    isImage = false;
 	}
+    }
 
-	@Override
-	protected void appendSegmentProcessingChildElements(final int begin, final int end, final List<Element> childElements) throws IOException
-	{
-		int index = begin;
-		for (Element childElement : childElements)
-		{
-			if (index >= childElement.getEnd()) continue;
-			if (index < childElement.getBegin()) appendSegmentRemovingTags(index, childElement.getBegin());
-			ElementHandler handler = getElementHandler(childElement);
-			handler.process(this, childElement);
-			if (isImage)
-			{
-				checkNewSegment();
-			}
+    void createNewHrSegment() {
+	log.debug("Append HR segment:");
 
-			index = Math.max(renderedIndex, childElement.getEnd());
-		}
-		if (index < end)
-		{
-			appendSegmentRemovingTags(index, end);
-		}
+	Html_Segment segment = new Html_Segment_HR(AtributeStack);
+	segmentList.add(segment);
+	appendable = new StringBuilder();
+	isImage = false;
+
+    }
+
+    @Override
+    protected void appendSegmentProcessingChildElements(final int begin, final int end, final List<Element> childElements) throws IOException {
+	int index = begin;
+	for (Element childElement : childElements) {
+	    if (index >= childElement.getEnd())
+		continue;
+	    if (index < childElement.getBegin())
+		appendSegmentRemovingTags(index, childElement.getBegin());
+	    ElementHandler handler = getElementHandler(childElement);
+	    handler.process(this, childElement);
+	    if (isImage) {
+		createNewSegment();
+	    }
+
+	    index = Math.max(renderedIndex, childElement.getEnd());
 	}
-
-	private boolean isNotSpace(String innerText)
-	{
-
-		if (innerText.equals(" ")) return false;
-		return true;
+	if (index < end) {
+	    appendSegmentRemovingTags(index, end);
 	}
+    }
 
-	private boolean isClosedEndTag(Tag tag)
-	{
-		if (tag instanceof EndTag) return true;
-		return false;
+    private boolean isNotSpace(String innerText) {
 
-	}
+	if (innerText.equals(" "))
+	    return false;
+	return true;
+    }
 
-	private boolean isOpenStartTag(Tag tag)
-	{
-		if (tag instanceof EndTag) return false;
-		if (tag.toString().endsWith("/>")) return false;
-		return true;
-	}
+    private boolean isClosedEndTag(Tag tag) {
+	if (tag == null)
+	    return false;
+	if (tag instanceof EndTag)
+	    return true;
+	return false;
+
+    }
+
+    private boolean isOpenStartTag(Tag tag) {
+	if (tag == null)
+	    return false;
+	if (tag instanceof EndTag)
+	    return false;
+	if (tag.toString().endsWith("/>"))
+	    return false;
+	return true;
+    }
+
+    @Override
+    protected ElementHandler getElementHandler(final Element element) {
+	if (element.getStartTag().getStartTagType().isServerTag())
+	    return RemoveElementHandler.INSTANCE; // hard-coded configuration
+	ElementHandler elementHandler = CB_Html_Renderer.ELEMENT_HANDLERS.get(element.getName());
+	return (elementHandler != null) ? elementHandler : StandardInlineElementHandler.INSTANCE;
+    }
 }

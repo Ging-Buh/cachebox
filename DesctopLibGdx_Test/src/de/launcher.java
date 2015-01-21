@@ -48,8 +48,6 @@ class Ex_1
 	public static void main(String[] args)
 	{
 
-		// Logger.getLogger("org.apache.http").setLevel(org.apache.log4j.Level.OFF);
-
 		DesktopMain.InitalConfig();
 
 		Config.settings.ReadFromDB();

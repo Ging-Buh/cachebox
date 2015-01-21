@@ -45,7 +45,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
  * <code>new CB_SLF4J(WorkPath);</code> <br>
  * <br>
  * Inside the given WorkPath will create a Folder <code>Logs</code>. <br>
- * On this folder the class will search the {@link #Logger} config file called <code>"logbag.xml"</code>.<br>
+ * On this folder the class will search the {@link #Logger} config file called <code>"logback.xml"</code>.<br>
  * <br>
  * If the config file exists, so the LoggerFactory will load this config file, otherwise the LoggerFactory <br>
  * will set to DEFAULT Logger.<br>
@@ -70,7 +70,7 @@ public class CB_SLF4J
 	 * <code>new CB_SLF4J(WorkPath);</code> <br>
 	 * <br>
 	 * Inside the given WorkPath will create a Folder <code>Logs</code>. <br>
-	 * On this folder the class will search the {@link #Logger} config file called <code>"logbag.xml"</code>.<br>
+	 * On this folder the class will search the {@link #Logger} config file called <code>"logback.xml"</code>.<br>
 	 * <br>
 	 * If the config file exists, so the LoggerFactory will load this config file, otherwise the LoggerFactory <br>
 	 * will set to DEFAULT Logger.<br>
@@ -84,7 +84,7 @@ public class CB_SLF4J
 		WORKPATH = workpath;
 
 		logFolder = WORKPATH + "/Logs";
-		logBackXmlFile = logFolder + "/logbag.xml";
+		logBackXmlFile = logFolder + "/logback.xml";
 
 		File logFolderFiile = new File(logFolder);
 
@@ -94,7 +94,7 @@ public class CB_SLF4J
 			String fileNames[] = logFolderFiile.list();
 			for (String fileName : fileNames)
 			{
-				if (!fileName.endsWith("logbag.xml"))
+				if (!fileName.endsWith("logback.xml"))
 				{
 					File file = new File(logFolder + "/" + fileName);
 
