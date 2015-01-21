@@ -60,655 +60,570 @@ import CB_Utils.Util.FileList;
  * @author ging-buh
  * @author Longri
  */
-public class SelectDB extends ActivityBase
-{
-	final static org.slf4j.Logger log = LoggerFactory.getLogger(SelectDB.class);
-	private int autoStartTime = 10;
-	private int autoStartCounter = 0;
-	private String DBPath;
-	private Button bNew;
-	private Button bSelect;
-	private Button bCancel;
-	private Button bAutostart;
-	private V_ListView lvFiles;
-	private Scrollbar scrollbar;
-	private CustomAdapter lvAdapter;
-	private File AktFile = null;
-	private String[] countList;
-	private boolean MustSelect = false;
-	private ReturnListner returnListner;
+public class SelectDB extends ActivityBase {
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(SelectDB.class);
+    private int autoStartTime = 10;
+    private int autoStartCounter = 0;
+    private String DBPath;
+    private Button bNew;
+    private Button bSelect;
+    private Button bCancel;
+    private Button bAutostart;
+    private V_ListView lvFiles;
+    private Scrollbar scrollbar;
+    private CustomAdapter lvAdapter;
+    private File AktFile = null;
+    private String[] countList;
+    private boolean MustSelect = false;
+    private ReturnListner returnListner;
 
-	public SelectDB(CB_RectF rec, String Name, boolean mustSelect)
-	{
-		super(rec, Name);
-		MustSelect = mustSelect;
-		DBPath = FileIO.GetDirectoryName(Config.DatabasePath.getValue());
+    public SelectDB(CB_RectF rec, String Name, boolean mustSelect) {
+	super(rec, Name);
+	MustSelect = mustSelect;
+	DBPath = FileIO.GetDirectoryName(Config.DatabasePath.getValue());
 
-		if (DBPath.endsWith(".db3"))
-		{
-			Config.DatabasePath.setValue(DBPath);
-			Config.AcceptChanges();
-			DBPath = FileIO.GetDirectoryName(DBPath);
+	if (DBPath.endsWith(".db3")) {
+	    Config.DatabasePath.setValue(DBPath);
+	    Config.AcceptChanges();
+	    DBPath = FileIO.GetDirectoryName(DBPath);
+	}
+
+	String DBFile = FileIO.GetFileName(Config.DatabasePath.getValue());
+
+	// lvFiles = (ListView) findViewById(R.id.sdb_list);
+	final FileList files = new FileList(Config.WorkPath, "DB3", true);
+	countList = new String[files.size()];
+
+	int index = 0;
+	for (File file : files) {
+	    if (file.getName().equalsIgnoreCase(DBFile))
+		AktFile = file;
+	    countList[index] = "";
+	    index++;
+	}
+
+	lvFiles = new V_ListView(new CB_RectF(leftBorder, this.getBottomHeight() + UI_Size_Base.that.getButtonHeight() * 2, innerWidth, getHeight() - (UI_Size_Base.that.getButtonHeight() * 2) - this.getTopHeight() - this.getBottomHeight()), "DB File ListView");
+
+	lvAdapter = new CustomAdapter(files);
+	lvFiles.setBaseAdapter(lvAdapter);
+
+	this.addChild(lvFiles);
+
+	this.scrollbar = new Scrollbar(lvFiles);
+	this.addChild(this.scrollbar);
+	this.lvFiles.addListPosChangedEventHandler(new IListPosChanged() {
+
+	    @Override
+	    public void ListPosChanged() {
+		scrollbar.ScrollPositionChanged();
+	    }
+	});
+
+	float btWidth = innerWidth / 3;
+
+	bNew = new Button(new CB_RectF(leftBorder, this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), "selectDB.bNew");
+	bSelect = new Button(new CB_RectF(bNew.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), "selectDB.bSelect");
+	bCancel = new Button(new CB_RectF(bSelect.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), "selectDB.bCancel");
+	bAutostart = new Button(new CB_RectF(leftBorder, bNew.getMaxY(), innerWidth, UI_Size_Base.that.getButtonHeight()), "selectDB.bAutostart");
+
+	this.addChild(bSelect);
+	this.addChild(bNew);
+	this.addChild(bCancel);
+	this.addChild(bAutostart);
+
+	// New Button
+	bNew.setOnClickListener(new OnClickListener() {
+	    @Override
+	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+		stopTimer();
+		NewDB_InputBox.Show(WrapType.SINGLELINE, Translation.Get("NewDB"), Translation.Get("InsNewDBName"), "NewDB", DialogListnerNewDB);
+		return true;
+	    }
+	});
+
+	// Select Button
+	bSelect.setOnClickListener(new OnClickListener() {
+	    @Override
+	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+		stopTimer();
+		if (AktFile == null) {
+		    GL.that.Toast("Please select Database!", Toast.LENGTH_SHORT);
+		    return false;
+		}
+		selectDB();
+		return true;
+	    }
+	});
+
+	// Cancel Button
+	bCancel.setOnClickListener(new OnClickListener() {
+	    @Override
+	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+		stopTimer();
+		if (MustSelect) {
+		    TabMainView.actionClose.CallExecute();
+		} else {
+		    finish();
 		}
 
-		String DBFile = FileIO.GetFileName(Config.DatabasePath.getValue());
+		return true;
+	    }
+	});
 
-		// lvFiles = (ListView) findViewById(R.id.sdb_list);
-		final FileList files = new FileList(Config.WorkPath, "DB3", true);
-		countList = new String[files.size()];
+	// AutoStart Button
+	bAutostart.setOnClickListener(new OnClickListener() {
+	    @Override
+	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+		stopTimer();
+		showSelectionMenu();
+		return true;
+	    }
 
+	});
+
+	// Translations
+	bNew.setText(Translation.Get("NewDB"));
+	bSelect.setText(Translation.Get("confirm"));
+	bCancel.setText(Translation.Get("cancel"));
+	bAutostart.setText(Translation.Get("StartWithoutSelection"));
+
+	autoStartTime = Config.MultiDBAutoStartTime.getValue();
+	if (autoStartTime > 0) {
+	    autoStartCounter = autoStartTime;
+	    bAutostart.setText(autoStartCounter + " " + Translation.Get("confirm"));
+	    setAutoStartText();
+	    if ((autoStartTime > 0) && (AktFile != null)) {
+		updateTimer = new Timer();
+		updateTimer.scheduleAtFixedRate(timerTask, 1000, 1000);
+	    } else
+		stopTimer();
+	}
+
+	this.isClickable();
+
+	readCountatThread();
+    }
+
+    TimerTask timerTask = new TimerTask() {
+
+	@Override
+	public void run() {
+	    if (autoStartCounter == 0) {
+		stopTimer();
+		selectDB();
+	    } else {
+		autoStartCounter--;
+		bAutostart.setText(autoStartCounter + "    " + Translation.Get("confirm"));
+	    }
+	}
+    };
+
+    private void readCountatThread() {
+	Thread thread = new Thread() {
+	    @Override
+	    public void run() {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 		int index = 0;
-		for (File file : files)
-		{
-			if (file.getName().equalsIgnoreCase(DBFile)) AktFile = file;
-			countList[index] = "";
-			index++;
+		for (File file : lvAdapter.files) {
+		    String LastModifit = sdf.format(file.lastModified());
+		    String FileSize = String.valueOf(file.length() / (1024 * 1024)) + "MB";
+		    String CacheCount = String.valueOf(Database.Data.getCacheCountInDB(file.getAbsolutePath()));
+		    countList[index] = CacheCount + " Caches  " + FileSize + "    last use " + LastModifit;
+		    index++;
 		}
 
-		lvFiles = new V_ListView(new CB_RectF(leftBorder, this.getBottomHeight() + UI_Size_Base.that.getButtonHeight() * 2, innerWidth, getHeight() - (UI_Size_Base.that.getButtonHeight() * 2) - this.getTopHeight() - this.getBottomHeight()), "DB File ListView");
-
-		lvAdapter = new CustomAdapter(files);
 		lvFiles.setBaseAdapter(lvAdapter);
+	    }
+	};
+	thread.start();
+    }
 
-		this.addChild(lvFiles);
+    @Override
+    protected void Initial() {
 
-		this.scrollbar = new Scrollbar(lvFiles);
-		this.addChild(this.scrollbar);
-		this.lvFiles.addListPosChangedEventHandler(new IListPosChanged()
-		{
+    }
 
-			@Override
-			public void ListPosChanged()
-			{
-				scrollbar.ScrollPositionChanged();
-			}
-		});
+    @Override
+    public void onShow() {
 
-		float btWidth = innerWidth / 3;
+	int itemSpace = lvFiles.getMaxItemCount();
 
-		bNew = new Button(new CB_RectF(leftBorder, this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), "selectDB.bNew");
-		bSelect = new Button(new CB_RectF(bNew.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), "selectDB.bSelect");
-		bCancel = new Button(new CB_RectF(bSelect.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), "selectDB.bCancel");
-		bAutostart = new Button(new CB_RectF(leftBorder, bNew.getMaxY(), innerWidth, UI_Size_Base.that.getButtonHeight()), "selectDB.bAutostart");
-
-		this.addChild(bSelect);
-		this.addChild(bNew);
-		this.addChild(bCancel);
-		this.addChild(bAutostart);
-
-		// New Button
-		bNew.setOnClickListener(new OnClickListener()
-		{
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				stopTimer();
-				NewDB_InputBox.Show(WrapType.SINGLELINE, Translation.Get("NewDB"), Translation.Get("InsNewDBName"), "NewDB", DialogListnerNewDB);
-				return true;
-			}
-		});
-
-		// Select Button
-		bSelect.setOnClickListener(new OnClickListener()
-		{
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				stopTimer();
-				if (AktFile == null)
-				{
-					GL.that.Toast("Please select Database!", Toast.LENGTH_SHORT);
-					return false;
-				}
-				selectDB();
-				return true;
-			}
-		});
-
-		// Cancel Button
-		bCancel.setOnClickListener(new OnClickListener()
-		{
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				stopTimer();
-				if (MustSelect)
-				{
-					TabMainView.actionClose.CallExecute();
-				}
-				else
-				{
-					finish();
-				}
-
-				return true;
-			}
-		});
-
-		// AutoStart Button
-		bAutostart.setOnClickListener(new OnClickListener()
-		{
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				stopTimer();
-				showSelectionMenu();
-				return true;
-			}
-
-		});
-
-		// Translations
-		bNew.setText(Translation.Get("NewDB"));
-		bSelect.setText(Translation.Get("confirm"));
-		bCancel.setText(Translation.Get("cancel"));
-		bAutostart.setText(Translation.Get("StartWithoutSelection"));
-
-		autoStartTime = Config.MultiDBAutoStartTime.getValue();
-		if (autoStartTime > 0)
-		{
-			autoStartCounter = autoStartTime;
-			bAutostart.setText(autoStartCounter + " " + Translation.Get("confirm"));
-			setAutoStartText();
-			if ((autoStartTime > 0) && (AktFile != null))
-			{
-				updateTimer = new Timer();
-				updateTimer.scheduleAtFixedRate(timerTask, 1000, 1000);
-			}
-			else
-				stopTimer();
-		}
-
-		this.isClickable();
-
-		readCountatThread();
+	if (itemSpace >= lvAdapter.getCount()) {
+	    lvFiles.setUndragable();
+	} else {
+	    lvFiles.setDragable();
 	}
 
-	TimerTask timerTask = new TimerTask()
-	{
+	TimerTask task = new TimerTask() {
+	    @Override
+	    public void run() {
 
-		@Override
-		public void run()
-		{
-			if (autoStartCounter == 0)
-			{
-				stopTimer();
-				selectDB();
+		// Set selected item
+		for (int i = 0; i < lvAdapter.getCount(); i++) {
+		    File file = lvAdapter.getItem(i);
+
+		    try {
+			if (file.getAbsoluteFile().compareTo(AktFile.getAbsoluteFile()) == 0) {
+			    lvFiles.setSelection(i);
 			}
-			else
-			{
-				autoStartCounter--;
-				bAutostart.setText(autoStartCounter + "    " + Translation.Get("confirm"));
-			}
+
+			Point firstAndLast = lvFiles.getFirstAndLastVisibleIndex();
+
+			if (!(firstAndLast.x < i && firstAndLast.y > i))
+			    lvFiles.scrollToItem(i);
+		    } catch (Exception e) {
+			log.error("select item", e);
+		    }
 		}
+
+		GL.that.RunOnGL(new IRunOnGL() {
+
+		    @Override
+		    public void run() {
+			setSelectedItemVisible();
+		    }
+		});
+
+		resetInitial();
+		lvFiles.chkSlideBack();
+	    }
 	};
 
-	private void readCountatThread()
-	{
-		Thread thread = new Thread()
-		{
-			@Override
-			public void run()
-			{
-				SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-				int index = 0;
-				for (File file : lvAdapter.files)
-				{
-					String LastModifit = sdf.format(file.lastModified());
-					String FileSize = String.valueOf(file.length() / (1024 * 1024)) + "MB";
-					String CacheCount = String.valueOf(Database.Data.getCacheCountInDB(file.getAbsolutePath()));
-					countList[index] = CacheCount + " Caches  " + FileSize + "    last use " + LastModifit;
-					index++;
-				}
+	Timer timer = new Timer();
+	timer.schedule(task, 350);
 
-				lvFiles.setBaseAdapter(lvAdapter);
-			}
-		};
-		thread.start();
+	GL.that.renderOnce();
+    }
+
+    private void setSelectedItemVisible() {
+	int id = 0;
+	Point firstAndLast = lvFiles.getFirstAndLastVisibleIndex();
+
+	for (File file : lvAdapter.getFileList()) {
+	    if (file.getAbsoluteFile().compareTo(AktFile.getAbsoluteFile()) == 0) {
+		lvFiles.setSelection(id);
+		if (lvFiles.isDragable()) {
+		    if (!(firstAndLast.x <= id && firstAndLast.y >= id)) {
+			lvFiles.scrollToItem(id);
+			log.debug("Scroll to:" + id);
+		    }
+		}
+		break;
+	    }
+	    id++;
 	}
 
-	@Override
-	protected void Initial()
-	{
+	TimerTask task = new TimerTask() {
+	    @Override
+	    public void run() {
+		GL.that.RunOnGL(new IRunOnGL() {
 
-	}
-
-	@Override
-	public void onShow()
-	{
-
-		int itemSpace = lvFiles.getMaxItemCount();
-
-		if (itemSpace >= lvAdapter.getCount())
-		{
-			lvFiles.setUndragable();
-		}
-		else
-		{
-			lvFiles.setDragable();
-		}
-
-		TimerTask task = new TimerTask()
-		{
-			@Override
-			public void run()
-			{
-
-				// Set selected item
-				for (int i = 0; i < lvAdapter.getCount(); i++)
-				{
-					File file = lvAdapter.getItem(i);
-
-					try
-					{
-						if (file.getAbsoluteFile().compareTo(AktFile.getAbsoluteFile()) == 0)
-						{
-							lvFiles.setSelection(i);
-						}
-
-						Point firstAndLast = lvFiles.getFirstAndLastVisibleIndex();
-
-						if (!(firstAndLast.x < i && firstAndLast.y > i)) lvFiles.scrollToItem(i);
-					}
-					catch (Exception e)
-					{
-						log.error("select item", e);
-					}
-				}
-
-				GL.that.RunOnGL(new IRunOnGL()
-				{
-
-					@Override
-					public void run()
-					{
-						setSelectedItemVisible();
-					}
-				});
-
-				resetInitial();
-				lvFiles.chkSlideBack();
-			}
-		};
-
-		Timer timer = new Timer();
-		timer.schedule(task, 350);
-
-		GL.that.renderOnce();
-	}
-
-	private void setSelectedItemVisible()
-	{
-		int id = 0;
-		Point firstAndLast = lvFiles.getFirstAndLastVisibleIndex();
-
-		for (File file : lvAdapter.getFileList())
-		{
-			if (file.getAbsoluteFile().compareTo(AktFile.getAbsoluteFile()) == 0)
-			{
-				lvFiles.setSelection(id);
-				if (lvFiles.isDragable())
-				{
-					if (!(firstAndLast.x <= id && firstAndLast.y >= id))
-					{
-						lvFiles.scrollToItem(id);
-						log.debug("Scroll to:" + id);
-					}
-				}
-				break;
-			}
-			id++;
-		}
-
-		TimerTask task = new TimerTask()
-		{
-			@Override
-			public void run()
-			{
-				GL.that.RunOnGL(new IRunOnGL()
-				{
-
-					@Override
-					public void run()
-					{
-						lvFiles.chkSlideBack();
-						GL.that.renderOnce();
-					}
-				});
-			}
-		};
-
-		Timer timer = new Timer();
-		timer.schedule(task, 50);
-
-		GL.that.renderOnce();
-	}
-
-	OnClickListener onItemClickListner = new OnClickListener()
-	{
-
-		@Override
-		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-		{
-			stopTimer();
-			File file = null;
-
-			for (int i = 0; i < lvAdapter.getCount(); i++)
-			{
-				if (v.getName().equals(lvAdapter.getItem(i).getName()))
-				{
-					file = lvAdapter.getItem(i);
-
-					AktFile = file;
-					lvFiles.setSelection(i);
-					break;
-				}
-			}
-			return true;
-
-		}
+		    @Override
+		    public void run() {
+			lvFiles.chkSlideBack();
+			GL.that.renderOnce();
+		    }
+		});
+	    }
 	};
 
+	Timer timer = new Timer();
+	timer.schedule(task, 50);
+
+	GL.that.renderOnce();
+    }
+
+    OnClickListener onItemClickListner = new OnClickListener() {
+
 	@Override
-	protected void SkinIsChanged()
-	{
+	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+	    stopTimer();
+	    File file = null;
+
+	    for (int i = 0; i < lvAdapter.getCount(); i++) {
+		if (v.getName().equals(lvAdapter.getItem(i).getName())) {
+		    file = lvAdapter.getItem(i);
+
+		    AktFile = file;
+		    lvFiles.setSelection(i);
+		    break;
+		}
+	    }
+	    return true;
+
 	}
+    };
 
-	OnMsgBoxClickListener DialogListnerNewDB = new OnMsgBoxClickListener()
-	{
+    @Override
+    protected void SkinIsChanged() {
+    }
 
-		@Override
-		public boolean onClick(int which, Object data)
-		{
-			String NewDB_Name = NewDB_InputBox.editText.getText();
-			// Behandle das Ergebnis
-			switch (which)
-			{
-			case 1: // ok clicked
+    OnMsgBoxClickListener DialogListnerNewDB = new OnMsgBoxClickListener() {
 
-				// zuerst den FilterString im neuen JSON Format laden versuchen
-				String FilterString = Config.FilterNew.getValue();
-				if (FilterString.length() > 0)
-				{
-					FilterProperties.LastFilter = new FilterProperties(FilterString);
-				}
-				else
-				{
-					// Falls kein Neuer gefunden wurde -> das alte Format versuchen
-					FilterString = Config.Filter.getValue();
-					FilterProperties.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0].toString()) : new FilterProperties(FilterString);
-				}
-				String sqlWhere = FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+	@Override
+	public boolean onClick(int which, Object data) {
+	    String NewDB_Name = NewDB_InputBox.editText.getText();
+	    // Behandle das Ergebnis
+	    switch (which) {
+	    case 1: // ok clicked
 
-				// initialize Database
+		String FilterString = Config.FilterNew.getValue();
+		FilterProperties.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0].toString()) : new FilterProperties(FilterString);
+		String sqlWhere = FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 
-				String database = Config.WorkPath + GlobalCore.fs + NewDB_Name + ".db3";
-				Config.DatabasePath.setValue(database);
-				Database.Data.Close();
-				Database.Data.StartUp(database);
+		// initialize Database
 
-				// OwnRepository?
-				if (data != null && ((Boolean) data) == false)
-				{
-					String folder = "?/" + NewDB_Name + "/";
+		String database = Config.WorkPath + GlobalCore.fs + NewDB_Name + ".db3";
+		Config.DatabasePath.setValue(database);
+		Database.Data.Close();
+		Database.Data.StartUp(database);
 
-					Config.DescriptionImageFolderLocal.setValue(folder + "Images");
-					Config.MapPackFolderLocal.setValue(folder + "Maps");
-					Config.SpoilerFolderLocal.setValue(folder + "Spoilers");
-					Config.TileCacheFolderLocal.setValue(folder + "Cache");
-					Config.AcceptChanges();
+		// OwnRepository?
+		if (data != null && ((Boolean) data) == false) {
+		    String folder = "?/" + NewDB_Name + "/";
 
-					// Create Folder?
-					FileIO.createDirectory(Config.DescriptionImageFolderLocal.getValue());
-					FileIO.createDirectory(Config.MapPackFolderLocal.getValue());
-					FileIO.createDirectory(Config.SpoilerFolderLocal.getValue());
-					FileIO.createDirectory(Config.TileCacheFolderLocal.getValue());
-				}
+		    Config.DescriptionImageFolderLocal.setValue(folder + "Images");
+		    Config.MapPackFolderLocal.setValue(folder + "Maps");
+		    Config.SpoilerFolderLocal.setValue(folder + "Spoilers");
+		    Config.TileCacheFolderLocal.setValue(folder + "Cache");
+		    Config.AcceptChanges();
 
-				Config.AcceptChanges();
-
-				CoreSettingsForward.Categories = new Categories();
-				Database.Data.GPXFilenameUpdateCacheCount();
-
-				synchronized (Database.Data.Query)
-				{
-					CacheListDAO cacheListDAO = new CacheListDAO();
-					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
-					GlobalCore.checkSelectedCacheValid();
-				}
-
-				if (!FileIO.createDirectory(Config.WorkPath + "/User")) return true;
-				Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
-
-				Config.AcceptChanges();
-				AktFile = new File(database);
-				selectDB();
-
-				break;
-			case 2: // cancel clicked
-				SelectDB.this.show();
-				break;
-			case 3:
-				SelectDB.this.show();
-				break;
-			}
-
-			return true;
-		}
-	};
-
-	protected void selectDB()
-	{
-		if (AktFile == null)
-		{
-			GL.that.Toast("no DB selected", 200);
-			return;
+		    // Create Folder?
+		    FileIO.createDirectory(Config.DescriptionImageFolderLocal.getValue());
+		    FileIO.createDirectory(Config.MapPackFolderLocal.getValue());
+		    FileIO.createDirectory(Config.SpoilerFolderLocal.getValue());
+		    FileIO.createDirectory(Config.TileCacheFolderLocal.getValue());
 		}
 
-		Config.MultiDBAutoStartTime.setValue(autoStartTime);
-		Config.MultiDBAsk.setValue(autoStartTime >= 0);
-
-		String name = AktFile.getName();
-		// Toast.makeText(getApplicationContext(), name,
-		// Toast.LENGTH_SHORT).show();
-
-		String path = DBPath + "/" + name;
-		// Toast.makeText(getApplicationContext(), path,
-		// Toast.LENGTH_SHORT).show();
-
-		Config.DatabasePath.setValue(path);
 		Config.AcceptChanges();
 
-		// reload settings for get filter form selected DB
-		Config.settings.ReadFromDB();
+		CoreSettingsForward.Categories = new Categories();
+		Database.Data.GPXFilenameUpdateCacheCount();
 
-		ManagerBase.Manager.initialMapPacks();
+		synchronized (Database.Data.Query) {
+		    CacheListDAO cacheListDAO = new CacheListDAO();
+		    cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+		    GlobalCore.checkSelectedCacheValid();
+		}
 
-		finish();
-		if (returnListner != null) returnListner.back();
+		if (!FileIO.createDirectory(Config.WorkPath + "/User"))
+		    return true;
+		Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
 
+		Config.AcceptChanges();
+		AktFile = new File(database);
+		selectDB();
+
+		break;
+	    case 2: // cancel clicked
+		SelectDB.this.show();
+		break;
+	    case 3:
+		SelectDB.this.show();
+		break;
+	    }
+
+	    return true;
+	}
+    };
+
+    protected void selectDB() {
+	if (AktFile == null) {
+	    GL.that.Toast("no DB selected", 200);
+	    return;
+	}
+
+	Config.MultiDBAutoStartTime.setValue(autoStartTime);
+	Config.MultiDBAsk.setValue(autoStartTime >= 0);
+
+	String name = AktFile.getName();
+	// Toast.makeText(getApplicationContext(), name,
+	// Toast.LENGTH_SHORT).show();
+
+	String path = DBPath + "/" + name;
+	// Toast.makeText(getApplicationContext(), path,
+	// Toast.LENGTH_SHORT).show();
+
+	Config.DatabasePath.setValue(path);
+	Config.AcceptChanges();
+
+	ManagerBase.Manager.initialMapPacks();
+
+	finish();
+	if (returnListner != null)
+	    returnListner.back();
+
+    }
+
+    @Override
+    protected void finish() {
+	GL.that.closeActivity(!MustSelect);
+    }
+
+    private void setAutoStartText() {
+	if (autoStartTime < 0)
+	    bAutostart.setText(Translation.Get("StartWithoutSelection"));
+	else if (autoStartTime == 0)
+	    bAutostart.setText(Translation.Get("AutoStartDisabled"));
+	else
+	    bAutostart.setText(Translation.Get("AutoStartTime", String.valueOf(autoStartTime)));
+    }
+
+    public class CustomAdapter implements Adapter {
+
+	private FileList files;
+	private CB_RectF recItem;
+
+	public CustomAdapter(FileList files) {
+	    this.files = files;
+	    recItem = UiSizes.that.getCacheListItemRec().asFloat();
+	    recItem.setHeight(recItem.getHeight() * 0.8f);
+	    recItem.setWidth(getWidth() - getLeftWidth() - getRightWidth() - (margin * 1.5f));
+	}
+
+	public void setFiles(FileList files) {
+	    this.files = files;
+	}
+
+	public FileList getFileList() {
+	    return files;
 	}
 
 	@Override
-	protected void finish()
-	{
-		GL.that.closeActivity(!MustSelect);
+	public int getCount() {
+	    return files.size();
 	}
 
-	private void setAutoStartText()
-	{
-		if (autoStartTime < 0) bAutostart.setText(Translation.Get("StartWithoutSelection"));
-		else if (autoStartTime == 0) bAutostart.setText(Translation.Get("AutoStartDisabled"));
-		else
-			bAutostart.setText(Translation.Get("AutoStartTime", String.valueOf(autoStartTime)));
+	public File getItem(int position) {
+	    return files.get(position);
 	}
 
-	public class CustomAdapter implements Adapter
-	{
-
-		private FileList files;
-		private CB_RectF recItem;
-
-		public CustomAdapter(FileList files)
-		{
-			this.files = files;
-			recItem = UiSizes.that.getCacheListItemRec().asFloat();
-			recItem.setHeight(recItem.getHeight() * 0.8f);
-			recItem.setWidth(getWidth() - getLeftWidth() - getRightWidth() - (margin * 1.5f));
-		}
-
-		public void setFiles(FileList files)
-		{
-			this.files = files;
-		}
-
-		public FileList getFileList()
-		{
-			return files;
-		}
-
-		@Override
-		public int getCount()
-		{
-			return files.size();
-		}
-
-		public File getItem(int position)
-		{
-			return files.get(position);
-		}
-
-		public long getItemId(int position)
-		{
-			return position;
-		}
-
-		@Override
-		public ListViewItemBase getView(int position)
-		{
-			SelectDBItem v = new SelectDBItem(recItem, position, files.get(position), countList[position]);
-			v.setOnClickListener(onItemClickListner);
-			return v;
-		}
-
-		@Override
-		public float getItemSize(int position)
-		{
-			return recItem.getHeight();
-		}
-
-	}
-
-	private void stopTimer()
-	{
-		if (updateTimer != null) updateTimer.cancel();
-		// bAutostart.setText(Translation.Get("confirm"));
-	}
-
-	public void setReturnListner(ReturnListner listner)
-	{
-		returnListner = listner;
-	}
-
-	public interface ReturnListner
-	{
-		public void back();
-	}
-
-	Timer updateTimer;
-
-	private void showSelectionMenu()
-	{
-		final String[] cs = new String[6];
-		cs[0] = Translation.Get("StartWithoutSelection");
-		cs[1] = Translation.Get("AutoStartDisabled");
-		cs[2] = Translation.Get("AutoStartTime", "5");
-		cs[3] = Translation.Get("AutoStartTime", "10");
-		cs[4] = Translation.Get("AutoStartTime", "25");
-		cs[5] = Translation.Get("AutoStartTime", "60");
-
-		Menu cm = new Menu("MiscContextMenu");
-
-		cm.addItemClickListner(new OnClickListener()
-		{
-
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-
-				switch (((MenuItem) v).getMenuItemId())
-				{
-				case MenuID.MI_START_WITHOUT_SELECTION:
-					autoStartTime = -1;
-					setAutoStartText();
-					break;
-				case MenuID.MI_AUTO_START_DISABLED:
-					autoStartTime = 0;
-					setAutoStartText();
-					break;
-				case MenuID.MI_5:
-					autoStartTime = 5;
-					setAutoStartText();
-					break;
-				case MenuID.MI_10:
-					autoStartTime = 10;
-					setAutoStartText();
-					break;
-				case MenuID.MI_25:
-					autoStartTime = 25;
-					setAutoStartText();
-					break;
-				case MenuID.MI_60:
-					autoStartTime = 60;
-					setAutoStartText();
-					break;
-
-				}
-				SelectDB.this.show();
-				return true;
-			}
-		});
-
-		cm.addItem(MenuID.MI_START_WITHOUT_SELECTION, cs[0], true);
-		cm.addItem(MenuID.MI_AUTO_START_DISABLED, cs[1], true);
-		cm.addItem(MenuID.MI_5, cs[2], true);
-		cm.addItem(MenuID.MI_10, cs[3], true);
-		cm.addItem(MenuID.MI_25, cs[4], true);
-		cm.addItem(MenuID.MI_60, cs[5], true);
-
-		cm.Show();
+	public long getItemId(int position) {
+	    return position;
 	}
 
 	@Override
-	public boolean canCloseWithBackKey()
-	{
-		return !MustSelect;
+	public ListViewItemBase getView(int position) {
+	    SelectDBItem v = new SelectDBItem(recItem, position, files.get(position), countList[position]);
+	    v.setOnClickListener(onItemClickListner);
+	    return v;
 	}
 
 	@Override
-	public void dispose()
-	{
-
-		DBPath = null;
-		if (bNew != null) bNew.dispose();
-		bNew = null;
-		if (bSelect != null) bSelect.dispose();
-		bSelect = null;
-		if (bCancel != null) bCancel.dispose();
-		bCancel = null;
-		if (bAutostart != null) bAutostart.dispose();
-		bAutostart = null;
-		if (lvFiles != null) lvFiles.dispose();
-		lvFiles = null;
-		if (scrollbar != null) scrollbar.dispose();
-		scrollbar = null;
-
-		lvAdapter = null;
-		AktFile = null;
-		countList = null;
-
-		returnListner = null;
-		super.dispose();
+	public float getItemSize(int position) {
+	    return recItem.getHeight();
 	}
+
+    }
+
+    private void stopTimer() {
+	if (updateTimer != null)
+	    updateTimer.cancel();
+	// bAutostart.setText(Translation.Get("confirm"));
+    }
+
+    public void setReturnListner(ReturnListner listner) {
+	returnListner = listner;
+    }
+
+    public interface ReturnListner {
+	public void back();
+    }
+
+    Timer updateTimer;
+
+    private void showSelectionMenu() {
+	final String[] cs = new String[6];
+	cs[0] = Translation.Get("StartWithoutSelection");
+	cs[1] = Translation.Get("AutoStartDisabled");
+	cs[2] = Translation.Get("AutoStartTime", "5");
+	cs[3] = Translation.Get("AutoStartTime", "10");
+	cs[4] = Translation.Get("AutoStartTime", "25");
+	cs[5] = Translation.Get("AutoStartTime", "60");
+
+	Menu cm = new Menu("MiscContextMenu");
+
+	cm.addItemClickListner(new OnClickListener() {
+
+	    @Override
+	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+
+		switch (((MenuItem) v).getMenuItemId()) {
+		case MenuID.MI_START_WITHOUT_SELECTION:
+		    autoStartTime = -1;
+		    setAutoStartText();
+		    break;
+		case MenuID.MI_AUTO_START_DISABLED:
+		    autoStartTime = 0;
+		    setAutoStartText();
+		    break;
+		case MenuID.MI_5:
+		    autoStartTime = 5;
+		    setAutoStartText();
+		    break;
+		case MenuID.MI_10:
+		    autoStartTime = 10;
+		    setAutoStartText();
+		    break;
+		case MenuID.MI_25:
+		    autoStartTime = 25;
+		    setAutoStartText();
+		    break;
+		case MenuID.MI_60:
+		    autoStartTime = 60;
+		    setAutoStartText();
+		    break;
+
+		}
+		SelectDB.this.show();
+		return true;
+	    }
+	});
+
+	cm.addItem(MenuID.MI_START_WITHOUT_SELECTION, cs[0], true);
+	cm.addItem(MenuID.MI_AUTO_START_DISABLED, cs[1], true);
+	cm.addItem(MenuID.MI_5, cs[2], true);
+	cm.addItem(MenuID.MI_10, cs[3], true);
+	cm.addItem(MenuID.MI_25, cs[4], true);
+	cm.addItem(MenuID.MI_60, cs[5], true);
+
+	cm.Show();
+    }
+
+    @Override
+    public boolean canCloseWithBackKey() {
+	return !MustSelect;
+    }
+
+    @Override
+    public void dispose() {
+
+	DBPath = null;
+	if (bNew != null)
+	    bNew.dispose();
+	bNew = null;
+	if (bSelect != null)
+	    bSelect.dispose();
+	bSelect = null;
+	if (bCancel != null)
+	    bCancel.dispose();
+	bCancel = null;
+	if (bAutostart != null)
+	    bAutostart.dispose();
+	bAutostart = null;
+	if (lvFiles != null)
+	    lvFiles.dispose();
+	lvFiles = null;
+	if (scrollbar != null)
+	    scrollbar.dispose();
+	scrollbar = null;
+
+	lvAdapter = null;
+	AktFile = null;
+	countList = null;
+
+	returnListner = null;
+	super.dispose();
+    }
 
 }

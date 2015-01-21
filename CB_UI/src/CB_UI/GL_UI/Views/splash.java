@@ -382,17 +382,11 @@ public class splash extends MainViewBase {
 
 	Database.Data.StartUp(Config.DatabasePath.getValue());
 
-	// Config.settings.ReadFromDB();
+	Config.settings.ReadFromDB();
 
 	// zuerst den FilterString im neuen JSON Format laden versuchen
 	String FilterString = Config.FilterNew.getValue();
-	if (FilterString.length() > 0) {
-	    FilterProperties.LastFilter = new FilterProperties(FilterString);
-	} else {
-	    // Falls kein Neuer gefunden wurde -> das alte Format versuchen
-	    FilterString = Config.Filter.getValue();
-	    FilterProperties.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0].toString()) : new FilterProperties(FilterString);
-	}
+	FilterProperties.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0].toString()) : new FilterProperties(FilterString);
 	String sqlWhere = FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 
 	CoreSettingsForward.Categories = new Categories();

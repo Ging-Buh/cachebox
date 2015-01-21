@@ -481,7 +481,7 @@ public class Importer
 				}
 				String localFile = DescriptionImageGrabber.BuildImageFilename(gccode, URI.create(url));
 
-				if (!FileIO.FileExists(localFile))
+				if (!FileIO.FileExistsNotEmpty(localFile))
 				{
 					downloadedImage = true;
 					if (downloadFaild || !DescriptionImageGrabber.Download(url, localFile))
@@ -672,8 +672,8 @@ public class Importer
 
 	/**
 	 * Bilderimport. Wenn descriptionImagesUpdated oder additionalImagesUpdated == false dann werden die entsprechenden Images importiert
-	 * Aber nur dann wenn CheckLocalImages daf�r false liefert. wenn importAlways == true -> die Bilder werden unabh�ngig davon, ob schon
-	 * welche existieren importiert
+	 * Aber nur dann wenn CheckLocalImages daf�r false liefert. wenn importAlways == true -> die Bilder werden unabh�ngig davon, ob
+	 * schon welche existieren importiert
 	 * 
 	 * @param Staging
 	 *            Config.settings.StagingAPI.getValue()

@@ -216,7 +216,7 @@ public class DescriptionImageGrabber
 																// ORGINAL!!!!!!!!!
 					String localFile = BuildImageFilename(Cache.getGcCode(), imgUri);
 
-					if (FileIO.FileExists(localFile))
+					if (FileIO.FileExistsNotEmpty(localFile))
 					{
 						int idx = 0;
 

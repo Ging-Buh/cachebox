@@ -292,7 +292,7 @@ public class Image extends CB_View_Base {
 		final String LocalPath = iconUrl.substring(slashPos);
 
 		// check if Image exist on Cache
-		if (FileIO.FileExists(CachePath + LocalPath)) {
+		if (FileIO.FileExistsNotEmpty(CachePath + LocalPath)) {
 		    setImage(CachePath + LocalPath);
 		    return;
 		}
@@ -310,7 +310,7 @@ public class Image extends CB_View_Base {
 			    inLoad = false;
 
 			    // chk if Download complied
-			    if (!FileIO.FileExists(CachePath + LocalPath)) {
+			    if (!FileIO.FileExistsNotEmpty(CachePath + LocalPath)) {
 				// Download Error
 				ImageLoadError = true;
 				return;
@@ -436,7 +436,7 @@ public class Image extends CB_View_Base {
 	String Name = getCachedAtlasName(inputFolder);
 
 	final String AtlasPath = CB_UI_Base_Settings.ImageCacheFolderLocal.getValue() + "/" + Name;
-	if (!FileIO.FileExists(AtlasPath))
+	if (!FileIO.FileExistsNotEmpty(AtlasPath))
 	    return null;
 	TextureAtlas atlas = null;
 	if (Atlanten.containsKey(AtlasPath)) {

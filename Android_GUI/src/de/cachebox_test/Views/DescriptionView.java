@@ -48,17 +48,6 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 
 	}
 
-	// @Override
-	// protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-	// {
-	// // we overriding onMeasure because this is where the application gets
-	// // its right size.
-	// super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-	//
-	// cacheInfo.setHeight(UiSizes.that.getCacheInfoHeight());
-	//
-	// }
-
 	public void SetSelectedCache(Cache cache, Waypoint waypoint)
 	{
 		if (cache == null || WebControl == null) return;

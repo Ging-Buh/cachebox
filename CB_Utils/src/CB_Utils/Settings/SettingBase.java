@@ -156,10 +156,10 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>>
 		return defaultValue;
 	}
 
-	public void setValue(T value)
+	public void setValue(T newValue)
 	{
-		if (this.value.equals(value)) return;
-		this.value = value;
+		if (this.value.equals(newValue)) return;
+		this.value = newValue;
 		setDirty();
 	}
 

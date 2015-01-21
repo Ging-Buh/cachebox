@@ -29,6 +29,21 @@ public class FileIO
 	}
 
 	/**
+	 * Überprüft ob ein File exestiert! Und nicht leer ist (0 Bytes)
+	 * 
+	 * @param filename
+	 * @return true, wenn das File Exestiert, ansonsten false.
+	 */
+	public static boolean FileExistsNotEmpty(String filename)
+	{
+		File file = new File(filename);
+		if (!file.exists()) return false;
+		if (file.length() <= 0) return false;
+
+		return true;
+	}
+
+	/**
 	 * Überprüft ob ein File exestiert! <br>
 	 * Und nicht Älter als die angegebene Zeit in Minuten ist!
 	 * 
