@@ -139,7 +139,7 @@ public class ImportCBServer
 								Waypoint waypoint = (Waypoint) cache.waypoints.get(j);
 								wayDao.WriteToDatabase(waypoint);
 							}
-							if (importImages)
+							if (importImages && (cache.getSpoilerRessources() != null))
 							{
 								// TODO - Delete old no longer valid Spoiler Images
 								// this can be done with Hash code of Path of URL which is added to Image Name of Spoilers
@@ -169,24 +169,20 @@ public class ImportCBServer
 									String imagePath;
 									if (image.ImageUrl.indexOf("/spoilers/") >= 0)
 									{
-										imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + cache.getGcCode().substring(0, 4)
-												+ "/" + file.getName();
+										imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + cache.getGcCode().substring(0, 4) + "/" + file.getName();
 										if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() != 0)
 										{
 											// Own Repo
-											imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/"
-													+ cache.getGcCode().substring(0, 4) + "/" + file.getName();
+											imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/" + cache.getGcCode().substring(0, 4) + "/" + file.getName();
 										}
 									}
 									else
 									{
-										imagePath = CB_Core_Settings.DescriptionImageFolder.getValue() + "/"
-												+ cache.getGcCode().substring(0, 4) + "/" + file.getName();
+										imagePath = CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + cache.getGcCode().substring(0, 4) + "/" + file.getName();
 										if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() != 0)
 										{
 											// Own Repo
-											imagePath = CB_Core_Settings.DescriptionImageFolderLocal.getValue() + "/"
-													+ cache.getGcCode().substring(0, 4) + "/" + file.getName();
+											imagePath = CB_Core_Settings.DescriptionImageFolderLocal.getValue() + "/" + cache.getGcCode().substring(0, 4) + "/" + file.getName();
 										}
 									}
 									file = new File(imagePath);

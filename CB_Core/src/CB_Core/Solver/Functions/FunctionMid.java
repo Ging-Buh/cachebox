@@ -63,7 +63,7 @@ public class FunctionMid extends Function
 	@Override
 	public int getAnzParam()
 	{
-		return 2;
+		return 3;
 	}
 
 	@Override
