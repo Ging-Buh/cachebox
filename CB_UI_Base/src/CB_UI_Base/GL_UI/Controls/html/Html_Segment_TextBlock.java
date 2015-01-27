@@ -25,6 +25,7 @@ import CB_UI_Base.Math.Stack;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.graphics.GL_FontFamily;
 import CB_UI_Base.graphics.GL_FontStyle;
+import CB_Utils.Exceptions.NotImplementedException;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.HSV_Color;
 
@@ -44,6 +45,7 @@ public class Html_Segment_TextBlock extends Html_Segment {
     private final GL_FontFamily fontFamily = GL_FontFamily.DEFAULT;
     private final H h;
     boolean underline = false;
+    boolean strikeOut = false;
     CB_List<HyperLinkText> hyperLinkList = new CB_List<HyperLinkText>();
 
     public Html_Segment_TextBlock(Stack<Tag> atributeStack, String string, H h_value) {
@@ -75,12 +77,32 @@ public class Html_Segment_TextBlock extends Html_Segment {
 	    }
 	}
 	if (color != null) {
-	    String hex = (color.startsWith("#")) ? color.replace("#", "") : color;
-	    this.fontColor = new HSV_Color(hex);
+
+	    if (color.startsWith("#")) {
+		try {
+		    this.fontColor = new HSV_Color(color.replace("#", ""));
+		} catch (Exception e) {
+		    this.fontColor = Color.BLACK;
+		    throw new NotImplementedException("HTML Renderer Color <" + color + "> is not implemented");
+		}
+	    } else {
+		try {
+		    this.fontColor = HTMLColors.getColor(color);
+		    if (this.fontColor == null) {
+			this.fontColor = Color.BLACK;
+			throw new NotImplementedException("HTML Renderer Color <" + color + "> is not implemented");
+		    }
+		} catch (Exception e) {
+		    this.fontColor = Color.BLACK;
+		    throw new NotImplementedException("HTML Renderer Color <" + color + "> is not implemented");
+		}
+	    }
+
 	}
 
 	// resolve Font Size
-	String size = null;
+
+	int size = 3;
 	for (Tag tag : tags) {
 	    if (!tag.getName().equals("font"))
 		continue;
@@ -94,17 +116,36 @@ public class Html_Segment_TextBlock extends Html_Segment {
 		Attributes attributes = ele.getAttributes();
 		for (Attribute attr : attributes) {
 		    if (attr.getKey().equals("size")) {
-			size = attr.getValue();
+
+			/*
+			    * The following values are acceptable:
+			   *
+			   * 1, 2, 3, 4, 5, 6, 7
+			   * +1, +2, +3, +4, +5, +6
+			   * -1, -2, -3, -4, -5, -6
+			    */
+
+			String value = attr.getValue();
+			if (value.startsWith("+")) {
+			    int intSize = Integer.parseInt(value.replace("+", ""));
+			    size += intSize;
+			} else if (value.startsWith("-")) {
+			    int intSize = Integer.parseInt(value.replace("-", ""));
+			    size -= intSize;
+			} else {
+			    size = Integer.parseInt(value);
+			}
+
 		    }
 		}
 	    }
 	}
-	if (size != null) {
-	    int intSize = Integer.parseInt(size);
-	    this.scaledfontSize = getFontPx(intSize) * UiSizes.that.getScale() * DEFAULT_FONT_SIZE_FACTOR;
-	} else {
-	    this.scaledfontSize = DEFAULT_FONT_SIZE * UiSizes.that.getScale() * DEFAULT_FONT_SIZE_FACTOR;
-	}
+	if (size < 1)
+	    size = 1;
+	if (size > 7)
+	    size = 7;
+
+	this.scaledfontSize = getFontPx(size) * UiSizes.that.getScale() * DEFAULT_FONT_SIZE_FACTOR;
 
 	if (h != H.H0) {
 
@@ -149,10 +190,12 @@ public class Html_Segment_TextBlock extends Html_Segment {
 	boolean BOOLD = false;
 	boolean ITALIC = false;
 	for (Tag tag : tags) {
-	    if (!tag.getName().equals("strong")) {
+	    if (tag.getName().equals("strong") || tag.getName().equals("b")) {
 		BOOLD = true;
-	    } else if (!tag.getName().equals("i")) {
+	    } else if (tag.getName().equals("i")) {
 		ITALIC = true;
+	    } else if (tag.getName().equals("strike")) {
+		strikeOut = true;
 	    }
 
 	}

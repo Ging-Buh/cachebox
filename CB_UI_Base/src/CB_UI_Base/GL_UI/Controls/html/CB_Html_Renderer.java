@@ -45,7 +45,7 @@ public class CB_Html_Renderer extends Renderer {
 	ELEMENT_HANDLERS.put(HTMLElementName.A, IMPLEMENTED ? A_ElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.ADDRESS, NOTIMPLEMENTED ? StandardBlockElementHandler.INSTANCE_0_0 : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.APPLET, NOTIMPLEMENTED ? AlternateTextElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
-	ELEMENT_HANDLERS.put(HTMLElementName.B, NOTIMPLEMENTED ? FontStyleElementHandler.INSTANCE_B : Not_implemented_ElementHandler.INSTANCE);
+	ELEMENT_HANDLERS.put(HTMLElementName.B, IMPLEMENTED ? FontStyleElementHandler.INSTANCE_B : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.BLOCKQUOTE, NOTIMPLEMENTED ? StandardBlockElementHandler.INSTANCE_1_1_INDENT : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.BR, IMPLEMENTED ? BR_ElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.BUTTON, NOTIMPLEMENTED ? RemoveElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
@@ -67,7 +67,7 @@ public class CB_Html_Renderer extends Renderer {
 	ELEMENT_HANDLERS.put(HTMLElementName.H6, IMPLEMENTED ? H_ElementHandler.INSTANCE_H6 : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.HEAD, NOTIMPLEMENTED ? RemoveElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.HR, IMPLEMENTED ? HR_ElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
-	ELEMENT_HANDLERS.put(HTMLElementName.I, NOTIMPLEMENTED ? FontStyleElementHandler.INSTANCE_I : Not_implemented_ElementHandler.INSTANCE);
+	ELEMENT_HANDLERS.put(HTMLElementName.I, IMPLEMENTED ? FontStyleElementHandler.INSTANCE_I : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.IMG, IMPLEMENTED ? ImagelementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.INPUT, NOTIMPLEMENTED ? AlternateTextElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.LEGEND, NOTIMPLEMENTED ? StandardBlockElementHandler.INSTANCE_0_0 : Not_implemented_ElementHandler.INSTANCE);
@@ -164,24 +164,6 @@ public class CB_Html_Renderer extends Renderer {
 
 	    cb_processor.add(new HyperLinkText(text, renderedHyperlinkURL));
 
-	    //	    if (renderedHyperlinkURL == null) {
-	    //		x.appendElementContent(element);
-	    //		return;
-	    //	    }
-	    //	    String href = element.getAttributeValue("href");
-	    //	    final boolean displayContent = href == null || !getInformalURL(href).equals(getInformalURL(element.getContent().toString()));
-	    //	    int linkLength = renderedHyperlinkURL.length();
-	    //	    if (displayContent) {
-	    //		x.appendElementContent(element);
-	    //		linkLength++; // allow for space after content
-	    //	    }
-	    //	    if (x.maxLineLength > 0 && x.col + linkLength >= x.maxLineLength) {
-	    //		x.startNewLine(0);
-	    //	    } else if (displayContent) {
-	    //		x.append(' ');
-	    //	    }
-	    //	    x.append(renderedHyperlinkURL);
-	    //	    x.lastCharWhiteSpace = true;
 	}
     }
 

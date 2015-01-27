@@ -153,14 +153,35 @@ public class HtmlView extends ScrollBox {
 	BitmapFont font = GL_Fonts.get(seg.getFontFamily(), seg.getFontStyle(), seg.getFontSize());
 	TextBounds bounds = font.getWrappedBounds(seg.formatetText, this.getInnerWidth() - (margin * 2));
 	float segHeight = bounds.height + margin;
+
+	parseHyperLinks(seg, "http://");
+	parseHyperLinks(seg, "www.");
+
 	LinkLabel lbl = new LinkLabel(0, 0, this.getInnerWidth() - (margin * 2), segHeight, "DescLabel");
+
+	if (!seg.hyperLinkList.isEmpty()) {
+	    lbl.setMarkupEnabled(true);
+	}
+
 	lbl.setTextColor(seg.getFontColor());
 	lbl.setFont(font).setHAlignment(seg.hAlignment);
 
-	if (seg.formatetText.contains("http://")) {
+	if (!seg.hyperLinkList.isEmpty()) {
+	    lbl.addHyperlinks(seg.hyperLinkList);
+	}
+
+	lbl.setWrappedText(seg.formatetText);
+	lbl.setUnderline(seg.underline);
+	lbl.setStrikeout(seg.strikeOut);
+	segmentViewList.add(lbl);
+	return segHeight;
+    }
+
+    private void parseHyperLinks(Html_Segment_TextBlock seg, String hyperLinkTag) {
+	if (seg.formatetText.contains(hyperLinkTag)) {
 	    // add to hyperLings
 
-	    int start = seg.formatetText.indexOf("http://");
+	    int start = seg.formatetText.indexOf(hyperLinkTag);
 
 	    int end1 = seg.formatetText.indexOf(" ", start);
 	    int end2 = seg.formatetText.indexOf("\r", start);
@@ -178,14 +199,5 @@ public class HtmlView extends ScrollBox {
 	    HyperLinkText hyper = new HyperLinkText(link, link);
 	    seg.hyperLinkList.add(hyper);
 	}
-
-	if (!seg.hyperLinkList.isEmpty()) {
-	    lbl.addHyperlinks(seg.hyperLinkList);
-	}
-
-	lbl.setWrappedText(seg.formatetText);
-	lbl.setUnderline(seg.underline);
-	segmentViewList.add(lbl);
-	return segHeight;
     }
 }

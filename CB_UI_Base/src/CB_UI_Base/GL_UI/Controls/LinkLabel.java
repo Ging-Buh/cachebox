@@ -30,9 +30,6 @@ public class LinkLabel extends MultiColorLabel {
 	if (isMarkup)
 	    this.mFont.setMarkupEnabled(true);
 	super.render(batch);
-
-	if (isMarkup)
-	    this.mFont.setMarkupEnabled(false);
     }
 
     private void parse() {
@@ -54,5 +51,9 @@ public class LinkLabel extends MultiColorLabel {
 
     public void addHyperlinks(CB_List<HyperLinkText> HyperLinkList) {
 	this.hyperLinkList = HyperLinkList;
+    }
+
+    public void setMarkupEnabled(boolean IsMarkUp) {
+	this.isMarkup = IsMarkUp;
     }
 }

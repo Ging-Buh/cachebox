@@ -18,7 +18,7 @@ public class Processor {
     private final String newLine;
     public final boolean includeHyperlinkURLs;
     public final boolean includeAlternateText;
-    final boolean decorateFontStyles;
+    public final boolean decorateFontStyles;
     protected final boolean convertNonBreakingSpaces;
     final int blockIndentSize;
     private final int listIndentSize;
