@@ -25,6 +25,7 @@ import CB_UI_Base.Math.Stack;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.graphics.GL_FontFamily;
 import CB_UI_Base.graphics.GL_FontStyle;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.HSV_Color;
 
 import com.badlogic.gdx.graphics.Color;
@@ -34,16 +35,20 @@ import com.badlogic.gdx.graphics.Color;
  */
 public class Html_Segment_TextBlock extends Html_Segment {
 
-    protected static final float DEFAULT_FONT_SIZE = 14;
+    protected static final float DEFAULT_FONT_SIZE = 11;
     public static final float DEFAULT_FONT_SIZE_FACTOR = 1.3f;
 
     private Color fontColor = Color.BLACK;
     private float scaledfontSize = 8;
     private GL_FontStyle fontStyle = GL_FontStyle.NORMAL;
     private final GL_FontFamily fontFamily = GL_FontFamily.DEFAULT;
+    private final H h;
+    boolean underline = false;
+    CB_List<HyperLinkText> hyperLinkList = new CB_List<HyperLinkText>();
 
-    public Html_Segment_TextBlock(Stack<Tag> atributeStack, String string) {
+    public Html_Segment_TextBlock(Stack<Tag> atributeStack, String string, H h_value) {
 	super(Html_Segment_Typ.TextBlock, atributeStack, string);
+	this.h = h_value;
 	resolveAtributes();
     }
 
@@ -101,12 +106,77 @@ public class Html_Segment_TextBlock extends Html_Segment {
 	    this.scaledfontSize = DEFAULT_FONT_SIZE * UiSizes.that.getScale() * DEFAULT_FONT_SIZE_FACTOR;
 	}
 
-	// resolve Font Style
-	for (Tag tag : tags) {
-	    if (!tag.getName().equals("strong"))
-		continue;
-	    this.fontStyle = GL_FontStyle.BOLD;
+	if (h != H.H0) {
+
+	    /* h1: 2em
+	       h2: 1.5em
+	       h3: 1.17em
+	       h4: 1em
+	       h5: 0.83em
+	       h6: 0.75em 
+	    */
+
+	    switch (h) {
+
+	    case H1:
+		this.scaledfontSize *= 2;
+		break;
+	    case H2:
+		this.scaledfontSize *= 1.5f;
+		break;
+	    case H3:
+		this.scaledfontSize *= 1.17f;
+		break;
+	    case H4:
+		break;
+	    case H5:
+		this.scaledfontSize *= 0.83f;
+		break;
+	    case H6:
+		this.scaledfontSize *= 0.75f;
+		break;
+
+	    case H0:
+		break;
+	    default:
+		break;
+
+	    }
 	}
+
+	// resolve Font Style
+
+	boolean BOOLD = false;
+	boolean ITALIC = false;
+	for (Tag tag : tags) {
+	    if (!tag.getName().equals("strong")) {
+		BOOLD = true;
+	    } else if (!tag.getName().equals("i")) {
+		ITALIC = true;
+	    }
+
+	}
+
+	if (h != H.H0)
+	    BOOLD = true;
+
+	if (!BOOLD && !ITALIC)
+	    this.fontStyle = GL_FontStyle.NORMAL;
+	if (BOOLD && !ITALIC)
+	    this.fontStyle = GL_FontStyle.BOLD;
+	if (BOOLD && ITALIC)
+	    this.fontStyle = GL_FontStyle.BOLD_ITALIC;
+	if (!BOOLD && ITALIC)
+	    this.fontStyle = GL_FontStyle.ITALIC;
+
+	//resolve underline
+	for (Tag tag : tags) {
+	    if (tag.getName().equals("u")) {
+		underline = true;
+	    }
+
+	}
+
 	System.out.print(true);
     }
 
@@ -153,6 +223,10 @@ public class Html_Segment_TextBlock extends Html_Segment {
 	if (this.attDirty)
 	    resolveAtributes();
 	return fontStyle;
+    }
+
+    public void add(CB_List<HyperLinkText> hyperLinkList) {
+	this.hyperLinkList.addAll(hyperLinkList);
     }
 
 }

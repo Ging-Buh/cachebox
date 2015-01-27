@@ -11,7 +11,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Rpc"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Translation_Base"/>
 	<classpathentry kind="lib" path="lib/kxml2-2.3.0.jar"/>
-	<classpathentry kind="lib" path="lib/gdx-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.6.jar"/>
+	<classpathentry kind="lib" path="lib/gdx-1.5.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

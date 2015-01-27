@@ -33,6 +33,7 @@ import net.htmlparser.jericho.Tag;
 import org.slf4j.LoggerFactory;
 
 import CB_UI_Base.Math.Stack;
+import CB_Utils.Lists.CB_List;
 
 /**
  * @author Longri
@@ -45,6 +46,7 @@ public class CB_HtmlProcessor extends Processor {
     List<Html_Segment> segmentList;
 
     boolean isImage = false;
+    public H h = H.H0;
 
     public CB_HtmlProcessor(Renderer renderer, Segment rootSegment, int maxLineLength, int hrLineLength, String newLine, boolean includeHyperlinkURLs, boolean includeAlternateText, boolean decorateFontStyles, boolean convertNonBreakingSpaces, int blockIndentSize, int listIndentSize, char[] listBullets, String tableCellSeparator) {
 	super(renderer, rootSegment, maxLineLength, hrLineLength, newLine, includeHyperlinkURLs, includeAlternateText, decorateFontStyles, convertNonBreakingSpaces, blockIndentSize, listIndentSize, listBullets, tableCellSeparator);
@@ -117,7 +119,10 @@ public class CB_HtmlProcessor extends Processor {
 	    if (isImage) {
 		segment = new Html_Segment_Image(AtributeStack, innerText);
 	    } else {
-		segment = new Html_Segment_TextBlock(AtributeStack, innerText);
+		segment = new Html_Segment_TextBlock(AtributeStack, innerText, h);
+		if (!hyperLinkList.isEmpty()) {
+		    ((Html_Segment_TextBlock) segment).add(hyperLinkList);
+		}
 	    }
 
 	    if (!(segment.formatetText == null || segment.formatetText.isEmpty()))
@@ -125,6 +130,7 @@ public class CB_HtmlProcessor extends Processor {
 	    apendableList.add(appendable);
 	    appendable = new StringBuilder();
 	    isImage = false;
+	    h = H.H0;
 	}
     }
 
@@ -191,5 +197,11 @@ public class CB_HtmlProcessor extends Processor {
 	    return RemoveElementHandler.INSTANCE; // hard-coded configuration
 	ElementHandler elementHandler = CB_Html_Renderer.ELEMENT_HANDLERS.get(element.getName());
 	return (elementHandler != null) ? elementHandler : StandardInlineElementHandler.INSTANCE;
+    }
+
+    CB_List<HyperLinkText> hyperLinkList = new CB_List<HyperLinkText>();
+
+    public void add(HyperLinkText hyperLinkText) {
+	hyperLinkList.add(hyperLinkText);
     }
 }

@@ -26,7 +26,7 @@ import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Image;
-import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.LinkLabel;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
@@ -111,7 +111,7 @@ public class HtmlView extends ScrollBox {
 	contentBox.setZeroPos();
 	contentBox.setX(margin);
 
-	contentBox.setMargins(margin, margin);
+	contentBox.setMargins(0, 0);
 	contentBox.initRow();
 
 	for (int i = 0, n = segmentViewList.size(); i < n; i++) {
@@ -151,12 +151,40 @@ public class HtmlView extends ScrollBox {
 
     private float addTextBlog(CB_List<CB_View_Base> segmentViewList, Html_Segment_TextBlock seg) {
 	BitmapFont font = GL_Fonts.get(seg.getFontFamily(), seg.getFontStyle(), seg.getFontSize());
-	TextBounds bounds = font.getWrappedBounds(seg.formatetText, innerWidth);
+	TextBounds bounds = font.getWrappedBounds(seg.formatetText, this.getInnerWidth() - (margin * 2));
 	float segHeight = bounds.height + margin;
-	Label lbl = new Label(0, 0, this.getWidth(), segHeight, "DescLabel");
+	LinkLabel lbl = new LinkLabel(0, 0, this.getInnerWidth() - (margin * 2), segHeight, "DescLabel");
 	lbl.setTextColor(seg.getFontColor());
 	lbl.setFont(font).setHAlignment(seg.hAlignment);
+
+	if (seg.formatetText.contains("http://")) {
+	    // add to hyperLings
+
+	    int start = seg.formatetText.indexOf("http://");
+
+	    int end1 = seg.formatetText.indexOf(" ", start);
+	    int end2 = seg.formatetText.indexOf("\r", start);
+	    int end3 = seg.formatetText.indexOf("\n", start);
+
+	    if (end1 < 0)
+		end1 = Integer.MAX_VALUE;
+	    if (end2 < 0)
+		end2 = Integer.MAX_VALUE;
+	    if (end3 < 0)
+		end3 = Integer.MAX_VALUE;
+
+	    int end = Math.min(Math.min(end1, end2), end3);
+	    String link = seg.formatetText.substring(start, end);
+	    HyperLinkText hyper = new HyperLinkText(link, link);
+	    seg.hyperLinkList.add(hyper);
+	}
+
+	if (!seg.hyperLinkList.isEmpty()) {
+	    lbl.addHyperlinks(seg.hyperLinkList);
+	}
+
 	lbl.setWrappedText(seg.formatetText);
+	lbl.setUnderline(seg.underline);
 	segmentViewList.add(lbl);
 	return segHeight;
     }

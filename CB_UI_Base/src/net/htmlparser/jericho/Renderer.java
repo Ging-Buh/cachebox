@@ -946,7 +946,7 @@ public class Renderer implements CharStreamSource {
 	public static final ElementHandler INSTANCE_0_0_INDENT = new StandardBlockElementHandler(0, 0, true);
 	public static final ElementHandler INSTANCE_1_1_INDENT = new StandardBlockElementHandler(1, 1, true);
 
-	private StandardBlockElementHandler(int topMargin, int bottomMargin, boolean indent) {
+	public StandardBlockElementHandler(int topMargin, int bottomMargin, boolean indent) {
 	    super(topMargin, bottomMargin, indent);
 	}
 
@@ -1004,7 +1004,7 @@ public class Renderer implements CharStreamSource {
 	}
     }
 
-    private static final String getInformalURL(String url) {
+    public static final String getInformalURL(String url) {
 	if (url.startsWith("http://"))
 	    url = url.substring(7);
 	if (url.endsWith("/"))

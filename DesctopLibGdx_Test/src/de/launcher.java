@@ -97,7 +97,7 @@ class Ex_1
 				final Gui screen = new Gui("Device Launcher");
 				screen.setSize(250, 500);
 				screen.setVisible(true);
-				DesktopMain.start(Gui.iniPhone(), false, false, true, screen);
+				// DesktopMain.start(Gui.iniPhone(), false, false, true, screen);
 			}
 		}
 		else

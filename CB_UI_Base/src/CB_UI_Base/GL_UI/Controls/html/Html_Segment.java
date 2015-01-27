@@ -47,7 +47,6 @@ public abstract class Html_Segment {
 	for (int i = atributeStack.size() - 1; i >= 0; i--) {
 	    this.tags.add((StartTag) atributeStack.get(i));
 	}
-	resolveAtributes();
     }
 
     public abstract void resolveAtributes();
@@ -65,6 +64,12 @@ public abstract class Html_Segment {
     protected void resolveHAligment() {
 	// resolve HAlignment
 	for (Tag tag : tags) {
+
+	    if (tag.getName().contains("center")) {
+		hAlignment = HAlignment.CENTER;
+		continue;
+	    }
+
 	    List<Element> elements = tag.getAllElements();
 	    if (elements.isEmpty())
 		elements.add(tag.getElement());

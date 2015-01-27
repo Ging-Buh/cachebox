@@ -168,6 +168,15 @@ public class Image extends CB_View_Base {
 
 	batch.setColor(altColor);
 
+	//	//Draw Debug Rec
+	//	if (DebugSprite != null) {
+	//	    batch.flush();
+	//	    DebugSprite.draw(batch);
+	//
+	//	} else {
+	//	    writeDebug();
+	//	}
+
     }
 
     private Thread loadingThread;
