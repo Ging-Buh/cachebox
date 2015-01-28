@@ -149,10 +149,15 @@ public class DescriptionView extends CB_View_Base {
 	    infoHeight += cacheInfo.getHeight();
 	infoHeight += margin * 2;
 
-	htmlView.setHeight(this.getHeight() - (cacheInfo.getHeight() + (margin * 2)));
+	try {
+	    htmlView.setHeight(this.getHeight() - (cacheInfo.getHeight() + (margin * 2)));
 
-	CB_RectF world = this.getWorldRec();
-	platformConector.setContentSize((int) world.getX(), (int) ((GL_UISizes.SurfaceSize.getHeight() - (world.getMaxY() - infoHeight))), (int) (GL_UISizes.SurfaceSize.getWidth() - world.getMaxX()), (int) world.getY());
+	    CB_RectF world = this.getWorldRec();
+	    platformConector.setContentSize((int) world.getX(), (int) ((GL_UISizes.SurfaceSize.getHeight() - (world.getMaxY() - infoHeight))), (int) (GL_UISizes.SurfaceSize.getWidth() - world.getMaxX()), (int) world.getY());
+	} catch (Exception e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
 
     }
 

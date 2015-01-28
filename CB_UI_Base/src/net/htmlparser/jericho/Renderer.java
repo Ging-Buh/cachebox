@@ -976,19 +976,7 @@ public class Renderer implements CharStreamSource {
 		return;
 	    }
 	    String href = element.getAttributeValue("href");
-	    final boolean displayContent = href == null || !getInformalURL(href).equals(getInformalURL(element.getContent().toString())); // only
-																	  // display
-																	  // the
-																	  // content
-																	  // if
-																	  // it
-																	  // is
-																	  // not
-																	  // the
-																	  // same
-																	  // as
-																	  // the
-																	  // URL
+	    final boolean displayContent = href == null || !getInformalURL(href).equals(getInformalURL(element.getContent().toString()));
 	    int linkLength = renderedHyperlinkURL.length();
 	    if (displayContent) {
 		x.appendElementContent(element);

@@ -34,6 +34,7 @@ import CB_UI_Base.GL_UI.Controls.Animation.AnimationBase;
 import CB_UI_Base.GL_UI.Controls.Animation.WorkAnimation;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Util.Downloader;
 import CB_Utils.Util.FileIO;
@@ -349,10 +350,14 @@ public class Image extends CB_View_Base {
 	spriteWidth = sprite.getWidth();
 	spriteHeight = sprite.getHeight();
 
-	if (reziseHeight) {
+	if (this.reziseHeight) {
 	    float proportionWidth = getWidth() / spriteWidth;
-	    float newWidth = spriteWidth * proportionWidth;
-	    float newHeight = spriteHeight * proportionWidth;
+	    if (proportionWidth > 1) {
+		proportionWidth = 1;
+	    }
+
+	    float newWidth = spriteWidth * proportionWidth * UI_Size_Base.that.getScale();
+	    float newHeight = spriteHeight * proportionWidth * UI_Size_Base.that.getScale();
 	    this.setSize(newWidth, newHeight);
 
 	}

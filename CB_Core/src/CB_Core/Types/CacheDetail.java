@@ -323,7 +323,7 @@ public class CacheDetail implements Serializable
 	{
 
 		String gcCode = cache.getGcCode();
-		if (gcCode.length() < 4 || !gcCode.startsWith("GC")) return;
+		if (gcCode.length() < 4) return;
 
 		spoilerRessources = new CB_List<ImageEntry>();
 

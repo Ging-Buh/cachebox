@@ -46,7 +46,6 @@ public class CB_HtmlProcessor extends Processor {
     List<Html_Segment> segmentList;
 
     boolean isImage = false;
-    public H h = H.H0;
 
     public CB_HtmlProcessor(Renderer renderer, Segment rootSegment, int maxLineLength, int hrLineLength, String newLine, boolean includeHyperlinkURLs, boolean includeAlternateText, boolean decorateFontStyles, boolean convertNonBreakingSpaces, int blockIndentSize, int listIndentSize, char[] listBullets, String tableCellSeparator) {
 	super(renderer, rootSegment, maxLineLength, hrLineLength, newLine, includeHyperlinkURLs, includeAlternateText, decorateFontStyles, convertNonBreakingSpaces, blockIndentSize, listIndentSize, listBullets, tableCellSeparator);
@@ -83,7 +82,8 @@ public class CB_HtmlProcessor extends Processor {
 	    AtributeStack.push(tag);
 	} else if (isClosedEndTag(tag)) {
 
-	    createNewSegment();
+	    if (!tag.getName().toLowerCase().equals("a"))
+		createNewSegment();
 	    Tag pop = AtributeStack.pop();
 	    if (pop != null) {
 		log.debug("Pop Tag >" + pop.toString());
@@ -119,7 +119,7 @@ public class CB_HtmlProcessor extends Processor {
 	    if (isImage) {
 		segment = new Html_Segment_Image(AtributeStack, innerText);
 	    } else {
-		segment = new Html_Segment_TextBlock(AtributeStack, innerText, h);
+		segment = new Html_Segment_TextBlock(AtributeStack, innerText);
 		if (!hyperLinkList.isEmpty()) {
 		    ((Html_Segment_TextBlock) segment).add(hyperLinkList);
 		}
@@ -130,7 +130,6 @@ public class CB_HtmlProcessor extends Processor {
 	    apendableList.add(appendable);
 	    appendable = new StringBuilder();
 	    isImage = false;
-	    h = H.H0;
 	}
     }
 

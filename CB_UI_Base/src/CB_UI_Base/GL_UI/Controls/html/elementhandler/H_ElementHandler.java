@@ -8,7 +8,6 @@ import net.htmlparser.jericho.Renderer.AbstractBlockElementHandler;
 import net.htmlparser.jericho.Renderer.ElementHandler;
 import net.htmlparser.jericho.Renderer.StandardBlockElementHandler;
 import CB_UI_Base.GL_UI.Controls.html.CB_HtmlProcessor;
-import CB_UI_Base.GL_UI.Controls.html.H;
 
 public class H_ElementHandler extends AbstractBlockElementHandler {
     public static final ElementHandler INSTANCE_H1 = new H_ElementHandler(1);
@@ -18,42 +17,16 @@ public class H_ElementHandler extends AbstractBlockElementHandler {
     public static final ElementHandler INSTANCE_H5 = new H_ElementHandler(5);
     public static final ElementHandler INSTANCE_H6 = new H_ElementHandler(6);
 
-    private int typ = 0;
-
     H_ElementHandler(int type) {
 	super(2, 1, false);
-	typ = type;
     }
 
     @Override
     protected void processBlockContent(Processor x, Element element) throws IOException {
 
 	CB_HtmlProcessor p = ((CB_HtmlProcessor) x);
-
 	p.appendElementContent(element);
-	switch (typ) {
-	case 1:
-	    p.h = H.H1;
-	    break;
-	case 2:
-	    p.h = H.H2;
-	    break;
-	case 3:
-	    p.h = H.H3;
-	    break;
-	case 4:
-	    p.h = H.H4;
-	    break;
-	case 5:
-	    p.h = H.H5;
-	    break;
-	case 6:
-	    p.h = H.H6;
-	    break;
-	default:
-	    p.h = H.H0;
-	    break;
-	}
+
     }
 
     @Override

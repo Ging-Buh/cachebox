@@ -29,6 +29,7 @@ import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.LinkLabel;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
@@ -124,8 +125,13 @@ public class HtmlView extends ScrollBox {
     }
 
     private float addHR(CB_List<CB_View_Base> segmentViewList, Html_Segment_HR seg) {
-	// TODO Auto-generated method stub
-	return 0;
+
+	HrView hrView = new HrView(0, 0, this.getWidth(), seg.hrsize, "hr");
+
+	hrView.setBackground(new ColorDrawable(seg.getColor()));
+
+	segmentViewList.add(hrView);
+	return hrView.getHeight();
     }
 
     private float addImage(final CB_List<CB_View_Base> segmentViewList, Html_Segment seg) {

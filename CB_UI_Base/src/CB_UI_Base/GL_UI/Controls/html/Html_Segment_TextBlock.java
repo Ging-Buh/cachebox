@@ -37,20 +37,19 @@ import com.badlogic.gdx.graphics.Color;
 public class Html_Segment_TextBlock extends Html_Segment {
 
     protected static final float DEFAULT_FONT_SIZE = 11;
-    public static final float DEFAULT_FONT_SIZE_FACTOR = 1.3f;
+    public static final float DEFAULT_FONT_SIZE_FACTOR = 1.2f;
 
     private Color fontColor = Color.BLACK;
     private float scaledfontSize = 8;
     private GL_FontStyle fontStyle = GL_FontStyle.NORMAL;
     private final GL_FontFamily fontFamily = GL_FontFamily.DEFAULT;
-    private final H h;
+    private H h = H.H0;
     boolean underline = false;
     boolean strikeOut = false;
     CB_List<HyperLinkText> hyperLinkList = new CB_List<HyperLinkText>();
 
-    public Html_Segment_TextBlock(Stack<Tag> atributeStack, String string, H h_value) {
+    public Html_Segment_TextBlock(Stack<Tag> atributeStack, String string) {
 	super(Html_Segment_Typ.TextBlock, atributeStack, string);
-	this.h = h_value;
 	resolveAtributes();
     }
 
@@ -104,7 +103,7 @@ public class Html_Segment_TextBlock extends Html_Segment {
 
 	int size = 3;
 	for (Tag tag : tags) {
-	    if (!tag.getName().equals("font"))
+	    if (!tag.getName().toLowerCase().equals("font"))
 		continue;
 	    List<Element> elements = tag.getAllElements();
 
@@ -146,6 +145,46 @@ public class Html_Segment_TextBlock extends Html_Segment {
 	    size = 7;
 
 	this.scaledfontSize = getFontPx(size) * UiSizes.that.getScale() * DEFAULT_FONT_SIZE_FACTOR;
+	//	this.scaledfontSize = getFontPx(size) * UiSizes.that.getScale();
+
+	//resolve underline
+	for (Tag tag : tags) {
+	    if (tag.getName().toLowerCase().equals("u")) {
+		underline = true;
+	    }
+	    if (tag.getName().toLowerCase().startsWith("h")) {
+		String value = tag.getName().substring(1);
+		try {
+		    int intValue = Integer.parseInt(value);
+		    switch (intValue) {
+		    case 1:
+			h = H.H1;
+			break;
+		    case 2:
+			h = H.H2;
+			break;
+		    case 3:
+			h = H.H3;
+			break;
+		    case 4:
+			h = H.H4;
+			break;
+		    case 5:
+			h = H.H5;
+			break;
+		    case 6:
+			h = H.H6;
+			break;
+		    default:
+			h = H.H0;
+			break;
+		    }
+		} catch (NumberFormatException e) {
+
+		}
+	    }
+
+	}
 
 	if (h != H.H0) {
 
@@ -190,11 +229,11 @@ public class Html_Segment_TextBlock extends Html_Segment {
 	boolean BOOLD = false;
 	boolean ITALIC = false;
 	for (Tag tag : tags) {
-	    if (tag.getName().equals("strong") || tag.getName().equals("b")) {
+	    if (tag.getName().toLowerCase().equals("strong") || tag.getName().toLowerCase().equals("b")) {
 		BOOLD = true;
-	    } else if (tag.getName().equals("i")) {
+	    } else if (tag.getName().toLowerCase().equals("i")) {
 		ITALIC = true;
-	    } else if (tag.getName().equals("strike")) {
+	    } else if (tag.getName().toLowerCase().equals("strike")) {
 		strikeOut = true;
 	    }
 
@@ -212,18 +251,10 @@ public class Html_Segment_TextBlock extends Html_Segment {
 	if (!BOOLD && ITALIC)
 	    this.fontStyle = GL_FontStyle.ITALIC;
 
-	//resolve underline
-	for (Tag tag : tags) {
-	    if (tag.getName().equals("u")) {
-		underline = true;
-	    }
-
-	}
-
 	System.out.print(true);
     }
 
-    private static float getFontPx(int value) {
+    static float getFontPx(int value) {
 	switch (value) {
 	case 1:
 	    return 7;
