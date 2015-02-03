@@ -84,7 +84,7 @@ public class CB_HtmlProcessor extends Processor {
 	    AtributeStack.push(tag);
 	} else if (isClosedEndTag(tag)) {
 
-	    if (!tag.getName().toLowerCase().equals("a"))
+	    if (!tag.getName().toLowerCase().equals("a") && !nextIsLI)
 		createNewSegment();
 	    Tag pop = AtributeStack.pop();
 	    if (pop != null) {
@@ -114,9 +114,10 @@ public class CB_HtmlProcessor extends Processor {
     boolean nextIsLI = false;
 
     public boolean spanelement;
+    public boolean listelement;
 
     void createNewSegment() {
-	if (spanelement) {
+	if (spanelement || listelement) {
 	    return;
 	}
 	String innerText = appendable.toString();
@@ -124,7 +125,7 @@ public class CB_HtmlProcessor extends Processor {
 
 	    Html_Segment segment;
 
-	    if (nextIsLI) {
+	    if (nextIsLI && actList != null) {
 		log.debug("Append new LI element:" + innerText);
 
 		while (innerText.startsWith(" "))
@@ -139,13 +140,11 @@ public class CB_HtmlProcessor extends Processor {
 
 		appendable = new StringBuilder();
 		isImage = false;
-		nextIsLI = false;
 		return;
 
 	    }
 
 	    if (actList != null && !actList.getSegmentList().isEmpty()) {
-		//list end, append
 		segmentList.add(actList);
 		actList = null;
 	    }

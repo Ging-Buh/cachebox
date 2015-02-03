@@ -37,10 +37,15 @@ public class HTML_Segment_List extends Html_Segment {
     private final int tabLeveL;
     private float scaledfontSize;
 
-    public HTML_Segment_List(Stack<Tag> atributeStack, int bulletNumber, int tabLevel) {
+    public HTML_Segment_List(Stack<Tag> atributeStack, int bulletNumber, int tabLevel, boolean ordert) {
 	super(Html_Segment_Typ.List, atributeStack, "");
-	this.listBulletNumber = bulletNumber;
+
 	this.tabLeveL = tabLevel;
+	if (ordert) {
+	    this.listBulletNumber = -1;
+	} else {
+	    this.listBulletNumber = bulletNumber;
+	}
 	resolveAtributes();
     }
 

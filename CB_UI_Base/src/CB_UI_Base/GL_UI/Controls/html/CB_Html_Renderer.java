@@ -76,7 +76,7 @@ public class CB_Html_Renderer extends Renderer {
 	ELEMENT_HANDLERS.put(HTMLElementName.MAP, NOTIMPLEMENTED ? RemoveElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.NOFRAMES, NOTIMPLEMENTED ? RemoveElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.NOSCRIPT, NOTIMPLEMENTED ? RemoveElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
-	ELEMENT_HANDLERS.put(HTMLElementName.OL, NOTIMPLEMENTED ? ListElementHandler.INSTANCE_OL : Not_implemented_ElementHandler.INSTANCE);
+	ELEMENT_HANDLERS.put(HTMLElementName.OL, IMPLEMENTED ? ListElementHandler.INSTANCE_OL : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.P, IMPLEMENTED ? StandardBlockElementHandler.INSTANCE_1_1 : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.PRE, NOTIMPLEMENTED ? PRE_ElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.SCRIPT, NOTIMPLEMENTED ? RemoveElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
@@ -169,17 +169,19 @@ public class CB_Html_Renderer extends Renderer {
     }
 
     public static final class ListElementHandler extends AbstractBlockElementHandler {
-	public static final ElementHandler INSTANCE_OL = new ListElementHandler(0);
-	public static final ElementHandler INSTANCE_UL = new ListElementHandler(UNORDERED_LIST);
+	public static final ElementHandler INSTANCE_OL = new ListElementHandler(0, true);
+	public static final ElementHandler INSTANCE_UL = new ListElementHandler(UNORDERED_LIST, false);
 	private final int initialListBulletNumber;
+	private final boolean ordert;
 
-	private ListElementHandler(int initialListBulletNumber) {
-	    this(initialListBulletNumber, 0, 0, false);
+	private ListElementHandler(int initialListBulletNumber, boolean ordertList) {
+	    this(initialListBulletNumber, 0, 0, false, ordertList);
 	}
 
-	private ListElementHandler(int initialListBulletNumber, int topMargin, int bottomMargin, boolean indent) {
+	private ListElementHandler(int initialListBulletNumber, int topMargin, int bottomMargin, boolean indent, boolean ordertList) {
 	    super(topMargin, bottomMargin, indent);
 	    this.initialListBulletNumber = initialListBulletNumber;
+	    this.ordert = ordertList;
 	}
 
 	@Override
@@ -187,7 +189,7 @@ public class CB_Html_Renderer extends Renderer {
 	    int oldListBulletNumber = x.listBulletNumber;
 	    x.listIndentLevel++;
 	    log.debug("Create new List:");
-	    ((CB_HtmlProcessor) x).actList = new HTML_Segment_List(CB_HtmlProcessor.AtributeStack, oldListBulletNumber, x.listIndentLevel);
+	    ((CB_HtmlProcessor) x).actList = new HTML_Segment_List(CB_HtmlProcessor.AtributeStack, oldListBulletNumber, x.listIndentLevel, this.ordert);
 
 	    x.listBulletNumber = initialListBulletNumber;
 
@@ -198,7 +200,7 @@ public class CB_Html_Renderer extends Renderer {
 
 	@Override
 	protected AbstractBlockElementHandler newInstance(int topMargin, int bottomMargin, boolean indent) {
-	    return new ListElementHandler(initialListBulletNumber, topMargin, bottomMargin, indent);
+	    return new ListElementHandler(initialListBulletNumber, topMargin, bottomMargin, indent, false);
 	}
     }
 
@@ -218,13 +220,14 @@ public class CB_Html_Renderer extends Renderer {
 	    if (x.listBulletNumber != UNORDERED_LIST)
 		x.listBulletNumber++;
 	    //	    x.bullet = true;
-	    ((CB_HtmlProcessor) x).nextIsLI = true;
-	    //	    x.appendBlockVerticalMargin();
-	    //	    x.appendIndent();
-	    //	    x.skipInitialNewLines = true;
-	    //	    x.blockBoundary(0); // this shouldn't result in the output of any new lines but ensures surrounding white space is ignored
+	    ((CB_HtmlProcessor) x).listelement = true;
+
 	    x.appendElementContent(element);
 	    x.bullet = false;
+	    ((CB_HtmlProcessor) x).listelement = false;
+	    ((CB_HtmlProcessor) x).nextIsLI = true;
+	    ((CB_HtmlProcessor) x).createNewSegment();
+	    ((CB_HtmlProcessor) x).nextIsLI = false;
 	}
 
 	@Override
