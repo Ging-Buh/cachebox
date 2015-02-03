@@ -220,26 +220,35 @@ public class HtmlView extends ScrollBox implements ListLayout {
     }
 
     private static void parseHyperLinks(Html_Segment_TextBlock seg, String hyperLinkTag) {
-	if (seg.formatetText.contains(hyperLinkTag)) {
-	    // add to hyperLings
+	try {
+	    if (seg.formatetText.contains(hyperLinkTag)) {
+		// add to hyperLings
 
-	    int start = seg.formatetText.indexOf(hyperLinkTag);
+		int start = seg.formatetText.indexOf(hyperLinkTag);
 
-	    int end1 = seg.formatetText.indexOf(" ", start);
-	    int end2 = seg.formatetText.indexOf("\r", start);
-	    int end3 = seg.formatetText.indexOf("\n", start);
+		int end1 = seg.formatetText.indexOf(" ", start);
+		int end2 = seg.formatetText.indexOf("\r", start);
+		int end3 = seg.formatetText.indexOf("\n", start);
 
-	    if (end1 < 0)
-		end1 = Integer.MAX_VALUE;
-	    if (end2 < 0)
-		end2 = Integer.MAX_VALUE;
-	    if (end3 < 0)
-		end3 = Integer.MAX_VALUE;
+		if (end1 < 0)
+		    end1 = Integer.MAX_VALUE;
+		if (end2 < 0)
+		    end2 = Integer.MAX_VALUE;
+		if (end3 < 0)
+		    end3 = Integer.MAX_VALUE;
 
-	    int end = Math.min(Math.min(end1, end2), end3);
-	    String link = seg.formatetText.substring(start, end);
-	    HyperLinkText hyper = new HyperLinkText(link, link);
-	    seg.hyperLinkList.add(hyper);
+		int end = Math.min(Math.min(end1, end2), end3);
+
+		if (end == Integer.MAX_VALUE) {
+		    end = seg.formatetText.length();
+		}
+
+		String link = seg.formatetText.substring(start, end);
+		HyperLinkText hyper = new HyperLinkText(link, link);
+		seg.hyperLinkList.add(hyper);
+	    }
+	} catch (Exception e) {
+	    log.error("parseHyperLinks", e);
 	}
     }
 }

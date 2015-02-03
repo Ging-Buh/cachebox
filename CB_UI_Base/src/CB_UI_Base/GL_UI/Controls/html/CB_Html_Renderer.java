@@ -56,7 +56,7 @@ public class CB_Html_Renderer extends Renderer {
 	ELEMENT_HANDLERS.put(HTMLElementName.DIR, NOTIMPLEMENTED ? ListElementHandler.INSTANCE_UL : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.DIV, IMPLEMENTED ? StandardBlockElementHandler.INSTANCE_0_0 : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.DT, NOTIMPLEMENTED ? StandardBlockElementHandler.INSTANCE_0_0 : Not_implemented_ElementHandler.INSTANCE);
-	ELEMENT_HANDLERS.put(HTMLElementName.EM, NOTIMPLEMENTED ? FontStyleElementHandler.INSTANCE_I : Not_implemented_ElementHandler.INSTANCE);
+	ELEMENT_HANDLERS.put(HTMLElementName.EM, IMPLEMENTED ? FontStyleElementHandler.INSTANCE_I : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.FIELDSET, NOTIMPLEMENTED ? StandardBlockElementHandler.INSTANCE_1_1 : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.FORM, IMPLEMENTED ? StandardBlockElementHandler.INSTANCE_1_1 : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.H1, IMPLEMENTED ? H_ElementHandler.INSTANCE_H1 : Not_implemented_ElementHandler.INSTANCE);
