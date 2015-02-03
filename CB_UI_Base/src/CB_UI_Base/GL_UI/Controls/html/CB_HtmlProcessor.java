@@ -113,7 +113,12 @@ public class CB_HtmlProcessor extends Processor {
 
     boolean nextIsLI = false;
 
+    public boolean spanelement;
+
     void createNewSegment() {
+	if (spanelement) {
+	    return;
+	}
 	String innerText = appendable.toString();
 	if (innerText != null && !innerText.isEmpty() && isNotSpace(innerText)) {
 

@@ -80,13 +80,14 @@ public class CB_Html_Renderer extends Renderer {
 	ELEMENT_HANDLERS.put(HTMLElementName.P, IMPLEMENTED ? StandardBlockElementHandler.INSTANCE_1_1 : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.PRE, NOTIMPLEMENTED ? PRE_ElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.SCRIPT, NOTIMPLEMENTED ? RemoveElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
+	ELEMENT_HANDLERS.put(HTMLElementName.SPAN, IMPLEMENTED ? SpanElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.SELECT, NOTIMPLEMENTED ? RemoveElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.STRONG, IMPLEMENTED ? FontStyleElementHandler.INSTANCE_B : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.STYLE, NOTIMPLEMENTED ? RemoveElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.TEXTAREA, NOTIMPLEMENTED ? RemoveElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
-	ELEMENT_HANDLERS.put(HTMLElementName.TD, NOTIMPLEMENTED ? TD_ElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
-	ELEMENT_HANDLERS.put(HTMLElementName.TH, NOTIMPLEMENTED ? TD_ElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
-	ELEMENT_HANDLERS.put(HTMLElementName.TR, NOTIMPLEMENTED ? StandardBlockElementHandler.INSTANCE_0_0 : Not_implemented_ElementHandler.INSTANCE);
+	ELEMENT_HANDLERS.put(HTMLElementName.TD, IMPLEMENTED ? TD_ElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
+	ELEMENT_HANDLERS.put(HTMLElementName.TH, IMPLEMENTED ? TD_ElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
+	ELEMENT_HANDLERS.put(HTMLElementName.TR, IMPLEMENTED ? StandardBlockElementHandler.INSTANCE_0_0 : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.U, IMPLEMENTED ? FontStyleElementHandler.INSTANCE_U : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.UL, IMPLEMENTED ? ListElementHandler.INSTANCE_UL : Not_implemented_ElementHandler.INSTANCE);
     }
@@ -229,6 +230,31 @@ public class CB_Html_Renderer extends Renderer {
 	@Override
 	protected AbstractBlockElementHandler newInstance(int topMargin, int bottomMargin, boolean indent) {
 	    return new LI_ElementHandler(topMargin, bottomMargin, indent);
+	}
+    }
+
+    public static final class SpanElementHandler extends AbstractBlockElementHandler {
+	public static final ElementHandler INSTANCE = new SpanElementHandler(0, 0, false);
+
+	public SpanElementHandler(int topMargin, int bottomMargin, boolean indent) {
+	    super(topMargin, bottomMargin, indent);
+	}
+
+	@Override
+	protected void processBlockContent(Processor x, Element element) throws IOException {
+
+	    CB_HtmlProcessor xp = (CB_HtmlProcessor) x;
+	    boolean was = xp.spanelement;
+	    if (!was)
+		xp.spanelement = true;
+	    x.appendElementContent(element);
+	    if (!was)
+		xp.spanelement = false;
+	}
+
+	@Override
+	protected AbstractBlockElementHandler newInstance(int topMargin, int bottomMargin, boolean indent) {
+	    return new StandardBlockElementHandler(topMargin, bottomMargin, indent);
 	}
     }
 
