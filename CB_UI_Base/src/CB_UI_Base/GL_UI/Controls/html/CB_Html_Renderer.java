@@ -58,7 +58,7 @@ public class CB_Html_Renderer extends Renderer {
 	ELEMENT_HANDLERS.put(HTMLElementName.DT, NOTIMPLEMENTED ? StandardBlockElementHandler.INSTANCE_0_0 : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.EM, NOTIMPLEMENTED ? FontStyleElementHandler.INSTANCE_I : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.FIELDSET, NOTIMPLEMENTED ? StandardBlockElementHandler.INSTANCE_1_1 : Not_implemented_ElementHandler.INSTANCE);
-	ELEMENT_HANDLERS.put(HTMLElementName.FORM, NOTIMPLEMENTED ? StandardBlockElementHandler.INSTANCE_1_1 : Not_implemented_ElementHandler.INSTANCE);
+	ELEMENT_HANDLERS.put(HTMLElementName.FORM, IMPLEMENTED ? StandardBlockElementHandler.INSTANCE_1_1 : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.H1, IMPLEMENTED ? H_ElementHandler.INSTANCE_H1 : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.H2, IMPLEMENTED ? H_ElementHandler.INSTANCE_H2 : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.H3, IMPLEMENTED ? H_ElementHandler.INSTANCE_H3 : Not_implemented_ElementHandler.INSTANCE);
@@ -69,10 +69,10 @@ public class CB_Html_Renderer extends Renderer {
 	ELEMENT_HANDLERS.put(HTMLElementName.HR, IMPLEMENTED ? HR_ElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.I, IMPLEMENTED ? FontStyleElementHandler.INSTANCE_I : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.IMG, IMPLEMENTED ? ImagelementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
-	ELEMENT_HANDLERS.put(HTMLElementName.INPUT, NOTIMPLEMENTED ? AlternateTextElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
+	ELEMENT_HANDLERS.put(HTMLElementName.INPUT, IMPLEMENTED ? AlternateTextElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.LEGEND, NOTIMPLEMENTED ? StandardBlockElementHandler.INSTANCE_0_0 : Not_implemented_ElementHandler.INSTANCE);
-	ELEMENT_HANDLERS.put(HTMLElementName.LI, NOTIMPLEMENTED ? LI_ElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
-	ELEMENT_HANDLERS.put(HTMLElementName.MENU, NOTIMPLEMENTED ? ListElementHandler.INSTANCE_UL : Not_implemented_ElementHandler.INSTANCE);
+	ELEMENT_HANDLERS.put(HTMLElementName.LI, IMPLEMENTED ? LI_ElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
+	ELEMENT_HANDLERS.put(HTMLElementName.MENU, IMPLEMENTED ? ListElementHandler.INSTANCE_UL : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.MAP, NOTIMPLEMENTED ? RemoveElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.NOFRAMES, NOTIMPLEMENTED ? RemoveElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.NOSCRIPT, NOTIMPLEMENTED ? RemoveElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
@@ -88,7 +88,7 @@ public class CB_Html_Renderer extends Renderer {
 	ELEMENT_HANDLERS.put(HTMLElementName.TH, NOTIMPLEMENTED ? TD_ElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.TR, NOTIMPLEMENTED ? StandardBlockElementHandler.INSTANCE_0_0 : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.U, IMPLEMENTED ? FontStyleElementHandler.INSTANCE_U : Not_implemented_ElementHandler.INSTANCE);
-	ELEMENT_HANDLERS.put(HTMLElementName.UL, NOTIMPLEMENTED ? ListElementHandler.INSTANCE_UL : Not_implemented_ElementHandler.INSTANCE);
+	ELEMENT_HANDLERS.put(HTMLElementName.UL, IMPLEMENTED ? ListElementHandler.INSTANCE_UL : Not_implemented_ElementHandler.INSTANCE);
     }
 
     public CB_Html_Renderer(Segment segment) {
@@ -96,7 +96,7 @@ public class CB_Html_Renderer extends Renderer {
     }
 
     public List<Html_Segment> getElementList() {
-	return new CB_HtmlProcessor(this, rootSegment, getMaxLineLength(), getHRLineLength(), getNewLine(), getIncludeHyperlinkURLs(), getIncludeAlternateText(), getDecorateFontStyles(), getConvertNonBreakingSpaces(), getBlockIndentSize(), getListIndentSize(), getListBullets(), getTableCellSeparator()).getElementList();
+	return new CB_HtmlProcessor(this, rootSegment, getHRLineLength(), getNewLine(), getIncludeHyperlinkURLs(), getIncludeAlternateText(), getDecorateFontStyles(), getConvertNonBreakingSpaces(), getBlockIndentSize(), getListIndentSize(), getListBullets(), getTableCellSeparator()).getElementList();
     }
 
     private static final class Not_implemented_ElementHandler implements ElementHandler {
@@ -164,6 +164,71 @@ public class CB_Html_Renderer extends Renderer {
 
 	    cb_processor.add(new HyperLinkText(text, renderedHyperlinkURL));
 
+	}
+    }
+
+    public static final class ListElementHandler extends AbstractBlockElementHandler {
+	public static final ElementHandler INSTANCE_OL = new ListElementHandler(0);
+	public static final ElementHandler INSTANCE_UL = new ListElementHandler(UNORDERED_LIST);
+	private final int initialListBulletNumber;
+
+	private ListElementHandler(int initialListBulletNumber) {
+	    this(initialListBulletNumber, 0, 0, false);
+	}
+
+	private ListElementHandler(int initialListBulletNumber, int topMargin, int bottomMargin, boolean indent) {
+	    super(topMargin, bottomMargin, indent);
+	    this.initialListBulletNumber = initialListBulletNumber;
+	}
+
+	@Override
+	protected void processBlockContent(Processor x, Element element) throws IOException {
+	    int oldListBulletNumber = x.listBulletNumber;
+	    x.listIndentLevel++;
+	    log.debug("Create new List:");
+	    ((CB_HtmlProcessor) x).actList = new HTML_Segment_List(CB_HtmlProcessor.AtributeStack, oldListBulletNumber, x.listIndentLevel);
+
+	    x.listBulletNumber = initialListBulletNumber;
+
+	    x.appendElementContent(element);
+	    x.listIndentLevel--;
+	    x.listBulletNumber = oldListBulletNumber;
+	}
+
+	@Override
+	protected AbstractBlockElementHandler newInstance(int topMargin, int bottomMargin, boolean indent) {
+	    return new ListElementHandler(initialListBulletNumber, topMargin, bottomMargin, indent);
+	}
+    }
+
+    public static final class LI_ElementHandler extends AbstractBlockElementHandler {
+	public static final ElementHandler INSTANCE = new LI_ElementHandler();
+
+	private LI_ElementHandler() {
+	    this(0, 0, false);
+	}
+
+	private LI_ElementHandler(int topMargin, int bottomMargin, boolean indent) {
+	    super(topMargin, bottomMargin, indent);
+	}
+
+	@Override
+	protected void processBlockContent(Processor x, Element element) throws IOException {
+	    if (x.listBulletNumber != UNORDERED_LIST)
+		x.listBulletNumber++;
+	    //	    x.bullet = true;
+	    ((CB_HtmlProcessor) x).nextIsLI = true;
+	    //	    x.appendBlockVerticalMargin();
+	    //	    x.appendIndent();
+	    //	    x.skipInitialNewLines = true;
+	    //	    x.blockBoundary(0); // this shouldn't result in the output of any new lines but ensures surrounding white space is ignored
+	    x.appendElementContent(element);
+	    x.bullet = false;
+	}
+
+	@Override
+	protected AbstractBlockElementHandler newInstance(int topMargin, int bottomMargin, boolean indent) {
+	    return new LI_ElementHandler(topMargin, bottomMargin, indent);
 	}
     }
 

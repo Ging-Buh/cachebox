@@ -61,7 +61,7 @@ public abstract class Html_Segment {
 	}
     }
 
-    protected void resolveHAligment() {
+    protected void resolveHAlignment() {
 	// resolve HAlignment
 	for (Tag tag : tags) {
 

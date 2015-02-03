@@ -965,21 +965,32 @@ public abstract class GL_View_Base extends CB_RectF {
 	DebugSprite = null;
 
 	try {
-	    if (debugRegTexture != null)
-		debugRegTexture.dispose();
+
+	    GL.that.RunOnGLWithThreadCheck(new IRunOnGL() {
+		@Override
+		public void run() {
+		    if (debugRegTexture != null) {
+			debugRegTexture.dispose();
+			debugRegTexture = null;
+		    }
+
+		    if (debugRegPixmap != null) {
+			debugRegPixmap.dispose();
+			debugRegPixmap = null;
+		    }
+		}
+	    });
+
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
 
 	try {
-	    if (debugRegPixmap != null)
-		debugRegPixmap.dispose();
+
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
-	debugRegPixmap = null;
-	debugRegTexture = null;
-	debugRegTexture = null;
+
 	name = null;
 	data = null;
 	mOnClickListener = null;
@@ -1222,13 +1233,6 @@ public abstract class GL_View_Base extends CB_RectF {
     public boolean getEnabled() {
 	return enabled;
     }
-
-    // @Override
-    // protected void calcCrossCorner()
-    // {
-    // super.calcCrossCorner();
-    // thisInvalidate = true;
-    // }
 
     private Object data = null;
 

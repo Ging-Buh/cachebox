@@ -56,7 +56,7 @@ public class Html_Segment_TextBlock extends Html_Segment {
     @Override
     public void resolveAtributes() {
 
-	resolveHAligment();
+	resolveHAlignment();
 
 	// resolve Font Color
 	String color = null;

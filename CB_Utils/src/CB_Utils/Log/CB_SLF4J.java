@@ -83,7 +83,7 @@ public class CB_SLF4J
 		that = this;
 		WORKPATH = workpath;
 
-		logFolder = WORKPATH + "/Logs";
+		logFolder = (WORKPATH + "/Logs").replace("\\", "/");
 		logBackXmlFile = logFolder + "/logback.xml";
 
 		File logFolderFiile = new File(logFolder);

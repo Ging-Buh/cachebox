@@ -30,15 +30,15 @@ public class Processor {
     public boolean atStartOfLine;
     public boolean skipInitialNewLines;
     public int col;
-    protected int listIndentLevel;
+    public int listIndentLevel;
     protected int indentSize;
     protected int blockVerticalMargin; // minimum number of blank lines to output at the current block boundary, or NO_MARGIN (-1) if we
 				       // are not currently at a block boundary.
     protected boolean preformatted;
     public boolean lastCharWhiteSpace;
     protected final boolean ignoreInitialWhiteSpace = false; // can remove this at some stage once we're sure it won't be used.
-    boolean bullet;
-    int listBulletNumber;
+    public boolean bullet;
+    public int listBulletNumber;
 
     private static final int NO_MARGIN = -1;
 
@@ -283,7 +283,7 @@ public class Processor {
 	    appendIndent();
     }
 
-    void appendIndent() throws IOException {
+    public void appendIndent() throws IOException {
 	for (int i = indentSize; i > 0; i--)
 	    appendable.append(' ');
 	if (bullet) {

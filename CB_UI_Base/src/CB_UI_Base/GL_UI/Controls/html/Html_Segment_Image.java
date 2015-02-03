@@ -25,11 +25,12 @@ public class Html_Segment_Image extends Html_Segment {
 
     public Html_Segment_Image(Stack<Tag> atributeStack, String string) {
 	super(Html_Segment_Typ.Image, atributeStack, string);
+	resolveAtributes();
     }
 
     @Override
     public void resolveAtributes() {
-	resolveHAligment();
+	resolveHAlignment();
     }
 
 }

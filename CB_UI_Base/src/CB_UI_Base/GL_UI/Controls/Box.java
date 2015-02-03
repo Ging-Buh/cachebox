@@ -24,33 +24,31 @@ import CB_UI_Base.Math.CB_RectF;
  * 
  * @author Longri
  */
-public class Box extends CB_View_Base
-{
+public class Box extends CB_View_Base {
 
-	public Box()
-	{
-		super("Box");
-	}
+    public Box() {
+	super("Box");
+    }
 
-	public Box(CB_RectF rec, String Name)
-	{
-		super(rec, Name);
-	}
+    public Box(CB_RectF rec, String Name) {
+	super(rec, Name);
+    }
 
-	public Box(float Width, float Height, String Name)
-	{
-		super(0f, 0f, Width, Height, Name);
-	}
+    public Box(float Width, float Height, String Name) {
+	super(0f, 0f, Width, Height, Name);
+    }
 
-	@Override
-	protected void Initial()
-	{
+    public Box(float width, float height) {
+	super(0f, 0f, width, height, "");
+    }
 
-	}
+    @Override
+    protected void Initial() {
 
-	@Override
-	protected void SkinIsChanged()
-	{
+    }
 
-	}
+    @Override
+    protected void SkinIsChanged() {
+
+    }
 }

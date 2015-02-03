@@ -45,10 +45,12 @@ public class CB_HtmlProcessor extends Processor {
     List<Appendable> apendableList = new ArrayList<Appendable>();
     List<Html_Segment> segmentList;
 
+    HTML_Segment_List actList = null;
+
     boolean isImage = false;
 
-    public CB_HtmlProcessor(Renderer renderer, Segment rootSegment, int maxLineLength, int hrLineLength, String newLine, boolean includeHyperlinkURLs, boolean includeAlternateText, boolean decorateFontStyles, boolean convertNonBreakingSpaces, int blockIndentSize, int listIndentSize, char[] listBullets, String tableCellSeparator) {
-	super(renderer, rootSegment, maxLineLength, hrLineLength, newLine, includeHyperlinkURLs, includeAlternateText, decorateFontStyles, convertNonBreakingSpaces, blockIndentSize, listIndentSize, listBullets, tableCellSeparator);
+    public CB_HtmlProcessor(Renderer renderer, Segment rootSegment, int hrLineLength, String newLine, boolean includeHyperlinkURLs, boolean includeAlternateText, boolean decorateFontStyles, boolean convertNonBreakingSpaces, int blockIndentSize, int listIndentSize, char[] listBullets, String tableCellSeparator) {
+	super(renderer, rootSegment, Integer.MAX_VALUE, hrLineLength, newLine, includeHyperlinkURLs, includeAlternateText, decorateFontStyles, convertNonBreakingSpaces, blockIndentSize, listIndentSize, listBullets, tableCellSeparator);
     }
 
     public List<Html_Segment> getElementList() {
@@ -109,12 +111,41 @@ public class CB_HtmlProcessor extends Processor {
 	}
     }
 
+    boolean nextIsLI = false;
+
     void createNewSegment() {
 	String innerText = appendable.toString();
 	if (innerText != null && !innerText.isEmpty() && isNotSpace(innerText)) {
-	    log.debug("Append Text:" + innerText);
 
 	    Html_Segment segment;
+
+	    if (nextIsLI) {
+		log.debug("Append new LI element:" + innerText);
+
+		while (innerText.startsWith(" "))
+		    innerText = innerText.replaceFirst(" ", "");
+
+		segment = new Html_Segment_TextBlock(AtributeStack, innerText);
+		if (!hyperLinkList.isEmpty()) {
+		    ((Html_Segment_TextBlock) segment).add(hyperLinkList);
+		}
+		if (!(segment.formatetText == null || segment.formatetText.isEmpty()))
+		    actList.addListEntry(segment);
+
+		appendable = new StringBuilder();
+		isImage = false;
+		nextIsLI = false;
+		return;
+
+	    }
+
+	    if (actList != null && !actList.getSegmentList().isEmpty()) {
+		//list end, append
+		segmentList.add(actList);
+		actList = null;
+	    }
+
+	    log.debug("Append Text:" + innerText);
 
 	    if (isImage) {
 		segment = new Html_Segment_Image(AtributeStack, innerText);

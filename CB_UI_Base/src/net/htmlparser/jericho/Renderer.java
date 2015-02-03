@@ -74,7 +74,7 @@ public class Renderer implements CharStreamSource {
     private String tableCellSeparator = " \t";
 
     private static final int DEFAULT_LINE_LENGTH = 76;
-    static final int UNORDERED_LIST = -1;
+    public static final int UNORDERED_LIST = -1;
 
     static Map<String, ElementHandler> ELEMENT_HANDLERS = new HashMap<String, ElementHandler>();
     static {
@@ -902,12 +902,12 @@ public class Renderer implements CharStreamSource {
 
 	@Override
 	public void process(Processor x, Element element) throws IOException {
-	    x.blockBoundary(RendererCSS.getTopMargin(element, topMargin));
-	    int leftMargin = RendererCSS.getLeftMargin(element, indent ? x.blockIndentSize : 0);
-	    x.indentSize += leftMargin;
+	    //	    x.blockBoundary(RendererCSS.getTopMargin(element, topMargin));
+	    //	    int leftMargin = RendererCSS.getLeftMargin(element, indent ? x.blockIndentSize : 0);
+	    //	    x.indentSize += leftMargin;
 	    processBlockContent(x, element);
-	    x.indentSize -= leftMargin;
-	    x.blockBoundary(RendererCSS.getBottomMargin(element, bottomMargin));
+	    //	    x.indentSize -= leftMargin;
+	    //	    x.blockBoundary(RendererCSS.getBottomMargin(element, bottomMargin));
 	}
 
 	public AbstractBlockElementHandler newTopMargin(int topMargin) {

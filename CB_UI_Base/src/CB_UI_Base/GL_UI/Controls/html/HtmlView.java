@@ -23,6 +23,7 @@ import net.htmlparser.jericho.Source;
 import org.slf4j.LoggerFactory;
 
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Image;
@@ -42,16 +43,16 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 /**
  * @author Longri
  */
-public class HtmlView extends ScrollBox {
+public class HtmlView extends ScrollBox implements ListLayout {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(HtmlView.class);
-    int margin;
+    static int margin;
     private Box contentBox;
     private List<Html_Segment> segmentList;
     private CB_List<CB_View_Base> segmentViewList;
 
     public HtmlView(CB_RectF rec) {
 	super(rec);
-	margin = UI_Size_Base.that.getMargin();
+	margin = UI_Size_Base.that.getMargin() / 2;
     }
 
     public void showHtml(final String HTMLSOURCE) throws Exception {
@@ -68,24 +69,7 @@ public class HtmlView extends ScrollBox {
 	    Source source = new CB_FormatedHtmlSource(HTMLSOURCE);
 	    segmentList = new CB_Html_Renderer(source).getElementList();
 
-	    for (int i = 0, n = segmentList.size(); i < n; i++) {
-		Html_Segment seg = segmentList.get(i);
-
-		switch (seg.segmentTyp) {
-		case HR:
-		    addHR(segmentViewList, (Html_Segment_HR) seg);
-		    break;
-		case Image:
-		    addImage(segmentViewList, seg);
-		    break;
-		case TextBlock:
-		    addTextBlog(segmentViewList, (Html_Segment_TextBlock) seg);
-		    break;
-		default:
-		    break;
-
-		}
-	    }
+	    addViewsToBox(segmentList, segmentViewList, this.getWidth(), this);
 	} catch (Exception e) {
 	    any = e;
 	}
@@ -94,7 +78,38 @@ public class HtmlView extends ScrollBox {
 	    throw any;
     }
 
-    private void layout(CB_List<CB_View_Base> segmentViewList) {
+    public static void addViewsToBox(List<Html_Segment> segmentList, CB_List<CB_View_Base> segmentViewList, float innerWidth, final ListLayout relayout) {
+	for (int i = 0, n = segmentList.size(); i < n; i++) {
+	    Html_Segment seg = segmentList.get(i);
+
+	    switch (seg.segmentTyp) {
+	    case HR:
+		addHR(segmentViewList, (Html_Segment_HR) seg, innerWidth);
+		break;
+	    case Image:
+		addImage(segmentViewList, seg, relayout);
+		break;
+	    case TextBlock:
+		addTextBlog(segmentViewList, (Html_Segment_TextBlock) seg, innerWidth);
+		break;
+	    case List:
+		addListBlog(segmentViewList, (HTML_Segment_List) seg, innerWidth);
+		break;
+	    default:
+		break;
+
+	    }
+	}
+    }
+
+    private static float addListBlog(CB_List<CB_View_Base> segmentViewList, HTML_Segment_List seg, float innerWidth) {
+	Html_ListView ListcontentBox = new Html_ListView(innerWidth, seg);
+	segmentViewList.add(ListcontentBox);
+	return ListcontentBox.getHeight();
+    }
+
+    @Override
+    public void layout(CB_List<CB_View_Base> segmentViewList) {
 
 	this.removeChilds();
 
@@ -116,7 +131,27 @@ public class HtmlView extends ScrollBox {
 	contentBox.initRow();
 
 	for (int i = 0, n = segmentViewList.size(); i < n; i++) {
-	    contentBox.addLast(segmentViewList.get(i));
+
+	    CB_View_Base view = segmentViewList.get(i);
+
+	    if (view instanceof Image) {
+		contentBox.addLast(segmentViewList.get(i));
+	    } else {
+		contentBox.addLast(segmentViewList.get(i), -1);
+	    }
+
+	}
+
+	for (int i = 0, n = contentBox.getchilds().size(); i < n; i++) {
+
+	    GL_View_Base child = contentBox.getChild(i);
+	    if (child instanceof Html_ListView) {
+		// move tab on x
+		float tabX = contentBox.getWidth() - ((Html_ListView) child).getContentWidth();
+		child.setX(tabX);
+		//		child.setX(0);
+	    }
+
 	}
 
 	this.addChild(contentBox);
@@ -124,9 +159,9 @@ public class HtmlView extends ScrollBox {
 	this.scrollTo(0);
     }
 
-    private float addHR(CB_List<CB_View_Base> segmentViewList, Html_Segment_HR seg) {
+    private static float addHR(CB_List<CB_View_Base> segmentViewList, Html_Segment_HR seg, float innerWidth) {
 
-	HrView hrView = new HrView(0, 0, this.getWidth(), seg.hrsize, "hr");
+	HrView hrView = new HrView(0, 0, innerWidth, seg.hrsize, "hr");
 
 	hrView.setBackground(new ColorDrawable(seg.getColor()));
 
@@ -134,7 +169,7 @@ public class HtmlView extends ScrollBox {
 	return hrView.getHeight();
     }
 
-    private float addImage(final CB_List<CB_View_Base> segmentViewList, Html_Segment seg) {
+    private static float addImage(final CB_List<CB_View_Base> segmentViewList, Html_Segment seg, final ListLayout relayout) {
 	Image img = new Image(0, 0, 50, 50 * UiSizes.that.getScale(), "Html-Image", true) {
 
 	    @Override
@@ -144,26 +179,27 @@ public class HtmlView extends ScrollBox {
 
 		    @Override
 		    public void run() {
-			layout(segmentViewList);
+			relayout.layout(segmentViewList);
 		    }
 		});
 	    }
 	};
+	img.setHAlignment(seg.hAlignment);
 	img.setImageURL(seg.formatetText);
 
 	segmentViewList.add(img);
 	return img.getHeight();
     }
 
-    private float addTextBlog(CB_List<CB_View_Base> segmentViewList, Html_Segment_TextBlock seg) {
+    private static float addTextBlog(CB_List<CB_View_Base> segmentViewList, Html_Segment_TextBlock seg, float innerWidth) {
 	BitmapFont font = GL_Fonts.get(seg.getFontFamily(), seg.getFontStyle(), seg.getFontSize());
-	TextBounds bounds = font.getWrappedBounds(seg.formatetText, this.getInnerWidth() - (margin * 2));
-	float segHeight = bounds.height + margin;
+	TextBounds bounds = font.getWrappedBounds(seg.formatetText, innerWidth - (margin * 2));
+	float segHeight = bounds.height + (margin * 2);
 
 	parseHyperLinks(seg, "http://");
 	parseHyperLinks(seg, "www.");
 
-	LinkLabel lbl = new LinkLabel(0, 0, this.getInnerWidth() - (margin * 2), segHeight, "DescLabel");
+	LinkLabel lbl = new LinkLabel(0, 0, innerWidth - (margin * 2), segHeight, "DescLabel");
 
 	if (!seg.hyperLinkList.isEmpty()) {
 	    lbl.setMarkupEnabled(true);
@@ -183,7 +219,7 @@ public class HtmlView extends ScrollBox {
 	return segHeight;
     }
 
-    private void parseHyperLinks(Html_Segment_TextBlock seg, String hyperLinkTag) {
+    private static void parseHyperLinks(Html_Segment_TextBlock seg, String hyperLinkTag) {
 	if (seg.formatetText.contains(hyperLinkTag)) {
 	    // add to hyperLings
 

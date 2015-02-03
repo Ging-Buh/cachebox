@@ -15,9 +15,16 @@
  */
 package CB_UI_Base.GL_UI.Controls.html;
 
+import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_Utils.Lists.CB_List;
+
 /**
+ * 
  * @author Longri
+ *
  */
-public enum Html_Segment_Typ {
-    TextBlock, Image, HR, List
+public interface ListLayout {
+
+    public abstract void layout(CB_List<CB_View_Base> segmentViewList);
+
 }

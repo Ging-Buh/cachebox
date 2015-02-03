@@ -15,14 +15,21 @@
  */
 package CB_UI.GL_UI.Views;
 
+import java.io.File;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import org.slf4j.LoggerFactory;
 
 import CB_Core.Api.GroundspeakAPI;
+import CB_Core.DB.Database;
+import CB_Core.Enums.Attributes;
+import CB_Core.Import.DescriptionImageGrabber;
 import CB_Core.Types.Cache;
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GL_UI.Main.TabMainView;
@@ -33,6 +40,7 @@ import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.Handler;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.ViewConst;
@@ -65,6 +73,11 @@ public class DescriptionView extends CB_View_Base {
     final static String PREMIUM = "Premium";
     final static String BASIC_LIMIT = "3";
     final static String PREMIUM_LIMIT = "6000";
+
+    private Cache aktCache;
+    private LinkedList<String> NonLocalImages = new LinkedList<String>();
+    private LinkedList<String> NonLocalImagesUrl = new LinkedList<String>();
+    private int downloadTryCounter = 0;
 
     private CacheListViewItem cacheInfo;
     private Button downloadButton;
@@ -105,25 +118,7 @@ public class DescriptionView extends CB_View_Base {
 	    this.removeChild(cacheInfo);
 	Cache sel = GlobalCore.getSelectedCache();
 	if (sel != null) {
-	    cacheInfo = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), 0, sel);
-	    cacheInfo.setY(this.getHeight() - cacheInfo.getHeight());
-
-	    if (!Global.isTab)
-		this.addChild(cacheInfo);
-	    resetUi();
-	    if (sel.isLive() || sel.getApiStatus() == 1) {
-		showDownloadButton();
-	    } else {
-		showWebView();
-	    }
-
-	    try {
-		htmlView.showHtml(sel.getLongDescription());
-	    } catch (Exception e) {
-		e.printStackTrace();
-		htmllog.info(GlobalCore.getSelectedCache().toString() + " " + e.toString());
-	    }
-
+	    setCache(sel);
 	}
 
 	Timer t = new Timer();
@@ -134,6 +129,85 @@ public class DescriptionView extends CB_View_Base {
 	    }
 	};
 	t.schedule(tt, 70);
+    }
+
+    private void setCache(Cache cache) {
+	cacheInfo = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), 0, cache);
+	cacheInfo.setY(this.getHeight() - cacheInfo.getHeight());
+
+	if (!Global.isTab)
+	    this.addChild(cacheInfo);
+	resetUi();
+	if (cache.isLive() || cache.getApiStatus() == 1) {
+	    showDownloadButton();
+	} else {
+	    showWebView();
+	}
+
+	NonLocalImages.clear();
+	NonLocalImagesUrl.clear();
+	String cachehtml = Database.GetDescription(cache);
+	String html = "";
+	if (cache.getApiStatus() == 1)// GC.com API lite
+	{ // Load Standard HTML
+	    String nodesc = Translation.Get("GC_NoDescription");
+	    html = "</br>" + nodesc + "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" " + Translation.Get("GC_DownloadDescription") + " \"></form>";
+	} else {
+	    html = DescriptionImageGrabber.ResolveImages(cache, cachehtml, false, NonLocalImages, NonLocalImagesUrl);
+
+	    if (!Config.DescriptionNoAttributes.getValue())
+		html = getAttributesHtml(cache) + html;
+
+	    // add 2 empty lines so that the last line of description can be selected with the markers
+	    html += "</br></br>";
+	}
+
+	final String FinalHtml = html;
+
+	try {
+	    htmlView.showHtml(FinalHtml);
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    htmllog.info(cache.toString() + " " + e.toString());
+	}
+
+	// Falls nicht geladene Bilder vorliegen und eine Internetverbindung
+	// erlaubt ist, diese laden und Bilder erneut aufl�sen
+	if (NonLocalImagesUrl.size() > 0) {
+	    downloadThread = new Thread() {
+		public void run() {
+
+		    if (downloadTryCounter > 0) {
+			try {
+			    Thread.sleep(100);
+			} catch (InterruptedException e) {
+			    log.error("DescriptionViewControl.setCache()", "Thread.sleep fehler", e);
+			    e.printStackTrace();
+			}
+		    }
+
+		    while (NonLocalImagesUrl != null && NonLocalImagesUrl.size() > 0) {
+			String local, url;
+			local = NonLocalImages.poll();
+			url = NonLocalImagesUrl.poll();
+
+			try {
+			    DescriptionImageGrabber.Download(url, local);
+			} catch (Exception e) {
+			    log.error("DescriptionViewControl.setCache()", "downloadThread run()", e);
+			}
+		    }
+		    downloadReadyHandler.post(downloadComplete);
+
+		}
+	    };
+	    downloadThread.start();
+	}
+
+	if (cache != null) {
+	    cache.ReloadSpoilerRessources();
+	}
+
     }
 
     @Override
@@ -150,12 +224,16 @@ public class DescriptionView extends CB_View_Base {
 	infoHeight += margin * 2;
 
 	try {
-	    htmlView.setHeight(this.getHeight() - (cacheInfo.getHeight() + (margin * 2)));
+	    if (htmlView != null && cacheInfo != null)
+		htmlView.setHeight(this.getHeight() - (cacheInfo.getHeight() + (margin * 2)));
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
 
+	try {
 	    CB_RectF world = this.getWorldRec();
 	    platformConector.setContentSize((int) world.getX(), (int) ((GL_UISizes.SurfaceSize.getHeight() - (world.getMaxY() - infoHeight))), (int) (GL_UISizes.SurfaceSize.getWidth() - world.getMaxX()), (int) world.getY());
 	} catch (Exception e) {
-	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
 
@@ -358,5 +436,42 @@ public class DescriptionView extends CB_View_Base {
 
 	return sb.toString();
 
+    }
+
+    final Handler downloadReadyHandler = new Handler();
+    Thread downloadThread;
+
+    final Runnable downloadComplete = new Runnable() {
+	public void run() {
+	    if (downloadTryCounter < 10) // nur 10 Download versuche zu lassen
+		setCache(aktCache);
+	}
+    };
+
+    private String getAttributesHtml(Cache cache) {
+	StringBuilder sb = new StringBuilder();
+	try {
+	    Iterator<Attributes> attrs = cache.getAttributes().iterator();
+
+	    if (attrs == null || !attrs.hasNext())
+		return "";
+
+	    do {
+		Attributes attribute = attrs.next();
+		File result = new File(Config.WorkPath + "/data/Attributes/" + attribute.getImageName() + ".png");
+
+		sb.append("<form action=\"Attr\">");
+		sb.append("<input name=\"Button\" type=\"image\" src=\"file://" + result.getAbsolutePath() + "\" value=\" " + attribute.getImageName() + " \">");
+	    } while (attrs.hasNext());
+
+	    sb.append("</form>");
+
+	    if (sb.length() > 0)
+		sb.append("<br>");
+	    return sb.toString();
+	} catch (Exception ex) {
+	    // TODO Handle Exception
+	    return "";
+	}
     }
 }

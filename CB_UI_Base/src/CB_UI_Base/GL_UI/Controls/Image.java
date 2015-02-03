@@ -27,9 +27,9 @@ import CB_UI_Base.CB_Texturepacker.Settings;
 import CB_UI_Base.CB_Texturepacker.TexturePacker_Base;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.ParentInfo;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.Animation.AnimationBase;
 import CB_UI_Base.GL_UI.Controls.Animation.WorkAnimation;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -67,6 +67,7 @@ public class Image extends CB_View_Base {
     private boolean ImageLoadError = false;
     private final boolean reziseHeight;
     private int State = 0;
+    private HAlignment hAlignment = HAlignment.CENTER;
 
     public Image(float X, float Y, float Width, float Height, String Name, boolean reziseHeight) {
 	super(X, Y, Width, Height, Name);
@@ -76,13 +77,6 @@ public class Image extends CB_View_Base {
     public Image(CB_RectF rec, String Name, boolean reziseHeight) {
 	super(rec, Name);
 	this.reziseHeight = reziseHeight;
-    }
-
-    @Override
-    public void renderChilds(final Batch batch, ParentInfo parentInfo) {
-	//	debug = true;
-	super.renderChilds(batch, parentInfo);
-	//	debug = false;
     }
 
     @Override
@@ -150,7 +144,32 @@ public class Image extends CB_View_Base {
 
 		drawwidth = spriteWidth * proportion;
 		drawHeight = spriteHeight * proportion;
-		drawX = (getWidth() - drawwidth) / 2;
+
+		switch (hAlignment) {
+		case CENTER:
+		    drawX = (getWidth() - drawwidth) / 2;
+		    break;
+		case LEFT:
+		    drawX = 0;
+		    break;
+		case RIGHT:
+		    drawX = getWidth() - drawwidth;
+		    break;
+		case SCROLL_CENTER:
+		    drawX = (getWidth() - drawwidth) / 2;
+		    break;
+		case SCROLL_LEFT:
+		    drawX = 0;
+		    break;
+		case SCROLL_RIGHT:
+		    drawX = getWidth() - drawwidth;
+		    break;
+		default:
+		    drawX = (getWidth() - drawwidth) / 2;
+		    break;
+
+		}
+
 		drawY = (getHeight() - drawHeight) / 2;
 	    }
 
@@ -295,7 +314,11 @@ public class Image extends CB_View_Base {
 		if (slashPos == -1)
 		    slashPos = iconUrl.indexOf("www");
 		if (slashPos == -1)
+		    slashPos = iconUrl.indexOf("file");
+		if (slashPos == -1) {
+		    ImageLoadError = true;
 		    return; // invalid URL
+		}
 		slashPos += 7;
 		slashPos = iconUrl.indexOf("/", slashPos);
 
@@ -484,5 +507,9 @@ public class Image extends CB_View_Base {
 
 	if (tmp != null)
 	    setSprite(tmp, reziseHeight);
+    }
+
+    public void setHAlignment(HAlignment alignment) {
+	this.hAlignment = alignment;
     }
 }
