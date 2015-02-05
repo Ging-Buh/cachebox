@@ -38,6 +38,13 @@ public class ImageButton extends Button {
 	this.addChild(image);
     }
 
+    public ImageButton(ImageLoader img) {
+	super("");
+	this.setText("");
+	image = new Image(img, this.ScaleCenter(0.8f), "", false);
+	this.addChild(image);
+    }
+
     @Override
     protected void render(Batch batch) {
 	super.render(batch);
@@ -99,4 +106,5 @@ public class ImageButton extends Button {
     public void clearImage() {
 	image.clearImage();
     }
+
 }

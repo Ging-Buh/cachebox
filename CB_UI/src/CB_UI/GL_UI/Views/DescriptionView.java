@@ -462,17 +462,15 @@ public class DescriptionView extends CB_View_Base {
 		Attributes attribute = attrs.next();
 		File result = new File(Config.WorkPath + "/data/Attributes/" + attribute.getImageName() + ".png");
 
-		sb.append("<form action=\"Attr\">");
 		sb.append("<input name=\"Button\" type=\"image\" src=\"file://" + result.getAbsolutePath() + "\" value=\" " + attribute.getImageName() + " \">");
+
 	    } while (attrs.hasNext());
 
-	    sb.append("</form>");
-
 	    if (sb.length() > 0)
-		sb.append("<br>");
+		sb.append("<br><hr><br><br><br>");
 	    return sb.toString();
 	} catch (Exception ex) {
-	    // TODO Handle Exception
+	    log.error("getAttributesHtml(" + cache.getGcCode() + "):", ex);
 	    return "";
 	}
     }

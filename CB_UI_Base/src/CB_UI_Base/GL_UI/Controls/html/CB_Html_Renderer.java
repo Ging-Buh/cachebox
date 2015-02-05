@@ -69,7 +69,7 @@ public class CB_Html_Renderer extends Renderer {
 	ELEMENT_HANDLERS.put(HTMLElementName.HR, IMPLEMENTED ? HR_ElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.I, IMPLEMENTED ? FontStyleElementHandler.INSTANCE_I : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.IMG, IMPLEMENTED ? ImagelementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
-	ELEMENT_HANDLERS.put(HTMLElementName.INPUT, IMPLEMENTED ? AlternateTextElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
+	ELEMENT_HANDLERS.put(HTMLElementName.INPUT, IMPLEMENTED ? InputElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.LEGEND, NOTIMPLEMENTED ? StandardBlockElementHandler.INSTANCE_0_0 : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.LI, IMPLEMENTED ? LI_ElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.MENU, IMPLEMENTED ? ListElementHandler.INSTANCE_UL : Not_implemented_ElementHandler.INSTANCE);
@@ -97,7 +97,31 @@ public class CB_Html_Renderer extends Renderer {
     }
 
     public List<Html_Segment> getElementList() {
-	return new CB_HtmlProcessor(this, rootSegment, getHRLineLength(), getNewLine(), getIncludeHyperlinkURLs(), getIncludeAlternateText(), getDecorateFontStyles(), getConvertNonBreakingSpaces(), getBlockIndentSize(), getListIndentSize(), getListBullets(), getTableCellSeparator()).getElementList();
+	List<Html_Segment> segList = new CB_HtmlProcessor(this, rootSegment, getHRLineLength(), getNewLine(), getIncludeHyperlinkURLs(), getIncludeAlternateText(), getDecorateFontStyles(), getConvertNonBreakingSpaces(), getBlockIndentSize(), getListIndentSize(), getListBullets(), getTableCellSeparator()).getElementList();
+
+	//remove last line brakes
+
+	for (int i = segList.size() - 1; i > 0; i--) {
+	    Html_Segment seg = segList.get(i);
+
+	    if (seg.formatetText.isEmpty() || hasOnlyLineBreakes(seg.formatetText)) {
+		segList.remove(i);
+	    } else {
+		break;
+	    }
+
+	}
+
+	return segList;
+    }
+
+    private boolean hasOnlyLineBreakes(String value) {
+	for (int i = 0; i < value.length(); i++) {
+	    char c = value.charAt(i);
+	    if (!(c == '\r' || c == '\n' || c == ' '))
+		return false;
+	}
+	return true;
     }
 
     private static final class Not_implemented_ElementHandler implements ElementHandler {
@@ -146,6 +170,21 @@ public class CB_Html_Renderer extends Renderer {
 	    x.appendText(src);
 	    ((CB_HtmlProcessor) x).isImage = true;
 	    ((CB_HtmlProcessor) x).createNewSegment();
+	}
+    }
+
+    public static final class InputElementHandler implements ElementHandler {
+	public static final ElementHandler INSTANCE = new InputElementHandler();
+
+	@Override
+	public void process(Processor x, Element element) throws IOException {
+
+	    String src = element.getAttributeValue("src");
+	    String val = element.getAttributeValue("value").trim();
+
+	    Html_Segment_Input seg = new Html_Segment_Input(Html_Segment_Typ.Input, CB_HtmlProcessor.AtributeStack, src, val);
+	    ((CB_HtmlProcessor) x).segmentList.add(seg);
+
 	}
     }
 

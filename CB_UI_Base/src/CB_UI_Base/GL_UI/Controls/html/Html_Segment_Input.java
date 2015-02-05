@@ -15,9 +15,33 @@
  */
 package CB_UI_Base.GL_UI.Controls.html;
 
+import net.htmlparser.jericho.Tag;
+import CB_UI_Base.Math.Stack;
+
 /**
+ * 
  * @author Longri
+ *
  */
-public enum Html_Segment_Typ {
-    TextBlock, Image, HR, List, Input
+public class Html_Segment_Input extends Html_Segment {
+
+    final String imagePath;
+    final String value;
+
+    public Html_Segment_Input(Html_Segment_Typ segmentTyp, Stack<Tag> atributeStack, String ImagePath, String Value) {
+	super(segmentTyp, atributeStack, "");
+	this.imagePath = ImagePath;
+	this.value = Value;
+    }
+
+    @Override
+    public void resolveAtributes() {
+	// TODO Auto-generated method stub
+
+    }
+
+    public String getValue() {
+	return value;
+    }
+
 }

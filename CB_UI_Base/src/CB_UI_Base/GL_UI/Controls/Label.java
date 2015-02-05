@@ -16,6 +16,8 @@
 
 package CB_UI_Base.GL_UI.Controls;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.slf4j.LoggerFactory;
 
 import CB_UI_Base.Enums.WrapType;
@@ -42,6 +44,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 public class Label extends CB_View_Base {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(Label.class);
 
+    private static final float DEFAULTSCROLLSTEP = 0.7f;
+    private static final int SCROLL_PAUSE = 60;
+
     static public enum VAlignment {
 	TOP, CENTER, BOTTOM
     }
@@ -49,6 +54,8 @@ public class Label extends CB_View_Base {
     static public enum HAlignment {
 	LEFT, CENTER, RIGHT, SCROLL_LEFT, SCROLL_CENTER, SCROLL_RIGHT
     }
+
+    private static float scrollstep = 0;
 
     public static com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment GDX_HAlignment(HAlignment ali) {
 	switch (ali) {
@@ -80,14 +87,16 @@ public class Label extends CB_View_Base {
     private HAlignment mHAlignment = HAlignment.LEFT;
     private WrapType mWrapType = WrapType.SINGLELINE;
     private int ErrorCount = 0;
-    private final int ScrollPause = 120;
-    private int test = 0;
+
+    private int scrollPos = 0;
     private boolean left = true;
     private int scrollPauseCount = 0;
     private boolean underline = false;
     private boolean strikeout = false;
     private TextBounds bounds;
     private PolygonDrawable underlineStrikeoutDrawable;
+
+    private float lastRender;
 
     /**
      * object for holding Text. default size is ButtonWidthWide x ButtonHeight from UI_Size_Base
@@ -174,6 +183,9 @@ public class Label extends CB_View_Base {
     @Override
     protected void render(Batch batch) {
 
+	if (lastRender <= 0)
+	    lastRender = GL.that.getStateTime();
+
 	try {
 	    if (TextObject != null)
 		TextObject.draw(batch);
@@ -197,30 +209,43 @@ public class Label extends CB_View_Base {
 
 	    //calculate scroll animation
 	    if (mHAlignment == HAlignment.SCROLL_CENTER || mHAlignment == HAlignment.SCROLL_LEFT || mHAlignment == HAlignment.SCROLL_RIGHT) {
-		int max = (int) (bounds.width - innerWidth) + 20;
 
-		if (left) {
-		    scrollPauseCount++;
-		    if (scrollPauseCount > ScrollPause) {
-			test--;
-			if (test < -max) {
-			    left = false;
-			    scrollPauseCount = 0;
+		if (scrollstep <= 0) {
+		    scrollstep = DEFAULTSCROLLSTEP * UI_Size_Base.that.getScale();
+		}
+
+		int max = (int) (bounds.width - innerWidth) + 20;
+		if (max < 0)
+		    return;
+
+		if (lastRender + 0.01 < GL.that.getStateTime()) {
+		    lastRender = GL.that.getStateTime();
+		    if (left) {
+			scrollPauseCount++;
+			if (scrollPauseCount > SCROLL_PAUSE) {
+			    scrollPos -= scrollstep;
+			    if (scrollPos < -max) {
+				left = false;
+				scrollPauseCount = 0;
+			    }
+			}
+
+		    } else {
+
+			scrollPauseCount++;
+			if (scrollPauseCount > SCROLL_PAUSE) {
+
+			    scrollPauseCount = scrollPos = 0;
+			    left = true;
 			}
 		    }
 
+		    setTextPosition();
+		    GL.that.renderOnce();
 		} else {
-
-		    scrollPauseCount++;
-		    if (scrollPauseCount > ScrollPause) {
-
-			scrollPauseCount = test = 0;
-			left = true;
-		    }
+		    checkRenderMustStart();
 		}
 
-		setTextPosition();
-		GL.that.renderOnce();
 	    }
 	} catch (ArrayIndexOutOfBoundsException e) {
 	    // kommt manchmal wenn der Text geändert wird
@@ -238,6 +263,35 @@ public class Label extends CB_View_Base {
 	//	} else {
 	//	    writeDebug();
 	//	}
+
+    }
+
+    private final AtomicBoolean chekRuns = new AtomicBoolean(false);
+
+    private void checkRenderMustStart() {
+
+	if (chekRuns.get())
+	    return;
+	Thread th = new Thread(new Runnable() {
+
+	    @Override
+	    public void run() {
+		chekRuns.set(true);
+		while (lastRender + 0.01 < GL.that.getStateTime()) {
+		    try {
+			Thread.sleep(10);
+		    } catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		    }
+		    GL.that.renderOnce();
+		    chekRuns.set(false);
+		}
+
+	    }
+	});
+
+	th.start();
 
     }
 
@@ -358,7 +412,7 @@ public class Label extends CB_View_Base {
 		xPosition = innerWidth - bounds.width;
 	    }
 	} else if (mHAlignment == HAlignment.SCROLL_CENTER || mHAlignment == HAlignment.SCROLL_LEFT || mHAlignment == HAlignment.SCROLL_RIGHT) {
-	    xPosition += test;
+	    xPosition += scrollPos;
 	}
 
 	float yPosition = 0; // VAlignment.BOTTOM

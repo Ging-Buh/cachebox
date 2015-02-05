@@ -83,7 +83,7 @@ public class GL_MsgBox extends Dialog {
     }
 
     public static GL_MsgBox Show(String msg) {
-	GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, false, true, false), "MsgBox" + msg.substring(0, Math.max(10, msg.length())));
+	GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, false, true, false), "MsgBox" + msg.substring(0, Math.max(5, msg.length())));
 	msgBox.setButtonCaptions(MessageBoxButtons.OK);
 	msgBox.label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
 	msgBox.label.setZeroPos();

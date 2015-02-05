@@ -62,6 +62,7 @@ import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
+import CB_Utils.Log.Trace;
 import CB_Utils.Math.Point;
 import CB_Utils.Util.iChanged;
 
@@ -239,7 +240,6 @@ public class GL implements ApplicationListener, InputProcessor {
 	} else {
 	    RunOnGL(run);
 	}
-	renderOnce(FORCE);
     }
 
     public void RunOnGL(IRunOnGL run) {
@@ -254,15 +254,12 @@ public class GL implements ApplicationListener, InputProcessor {
 	synchronized (runOnGL_List) {
 	    runOnGL_List.add(run);
 	}
-
-	renderOnce(FORCE);
     }
 
     public void RunIfInitial(IRunOnGL run) {
 	synchronized (runIfInitial) {
 	    runIfInitial.add(run);
 	}
-
 	renderOnce(FORCE);
     }
 
@@ -1047,23 +1044,53 @@ public class GL implements ApplicationListener, InputProcessor {
     }
 
     /**
-     * Fï¿½rt EINEN Render Durchgang aus
-     * 
-     * @param view
-     *            Aufrufendes GL_View_Base fï¿½r Debug zwecke. Kann auch null sein.
+     * Fürt EINEN Render Durchgang aus
      */
     public void renderOnce(boolean force) {
+	requestRender(force);
+    }
+
+    /**
+     * Fürt EINEN Render Durchgang aus
+     */
+    private void requestRender(boolean force) {
 
 	if (!force && lastRenderOnceTime == GL.that.getStateTime())
 	    return;
+
+	String name = Trace.getCallerName(1);
+	if (caller.containsKey(name)) {
+	    float last = stateTime - caller.get(name);
+	    caller.put(name, stateTime);
+	    if (last < 0.008) {
+		int lastCount = callerCount.get(name) + 1;
+		if (lastCount > 50) {
+		    lastCount = 0;
+		    log.error("to many calls from: " + name);
+		}
+		callerCount.put(name, lastCount);
+	    }
+	} else {
+	    callerCount.put(name, 0);
+	    caller.put(name, stateTime);
+	}
+
 	lastRenderOnceTime = GL.that.getStateTime();
 
 	if (listenerInterface != null)
 	    listenerInterface.RequestRender();
     }
 
+    int findCallerCount = 0;
+    String lastCaller = "";
+    HashMap<String, Float> caller = new HashMap<String, Float>();
+    HashMap<String, Integer> callerCount = new HashMap<String, Integer>();
+
+    /**
+     * Fürt EINEN Render Durchgang aus
+     */
     public void renderOnce() {
-	renderOnce(false);
+	requestRender(false);
     }
 
     private void calcNewRenderSpeed() {
@@ -1704,6 +1731,9 @@ public class GL implements ApplicationListener, InputProcessor {
      * Startet den Renderer wenn er durch StopRender() gestoppt wurde
      */
     public void RestartRender() {
+
+	log.debug("restart render" + Trace.getCallerName());
+
 	listenerInterface.RenderContinous();
 	stopRender = false;
 	renderOnce();

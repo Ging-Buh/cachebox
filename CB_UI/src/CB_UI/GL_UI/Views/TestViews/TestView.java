@@ -15,7 +15,7 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
-import CB_UI_Base.GL_UI.Controls.Image;
+import CB_UI_Base.GL_UI.Controls.ImageLoader;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.ZoomButtons;
@@ -128,7 +128,7 @@ public class TestView extends CB_View_Base
 
 	}
 
-	Image testImg;
+	ImageLoader testImg;
 
 	OnClickListener click = new OnClickListener()
 	{

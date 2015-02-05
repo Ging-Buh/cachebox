@@ -603,10 +603,10 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	    for (int i = 0; i < 20; i++) {
 		att[i] = new Image(attRec, "", false);
 		if ((i < attLineBreak - 1) || (i > attLineBreak && i < 19)) {
-		    topContentBox.addNext(att[i], CB_View_Base.FIXED);
+		    topContentBox.addNext(att[i], FIXED);
 		}
 		if (i == attLineBreak || i == 19) {
-		    topContentBox.addLast(att[i], CB_View_Base.FIXED);
+		    topContentBox.addLast(att[i], FIXED);
 		}
 	    }
 	}

@@ -22,18 +22,21 @@ import net.htmlparser.jericho.Source;
 
 import org.slf4j.LoggerFactory;
 
+import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Image;
+import CB_UI_Base.GL_UI.Controls.ImageLoader;
+import CB_UI_Base.GL_UI.Controls.ImageButton;
 import CB_UI_Base.GL_UI.Controls.LinkLabel;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
-import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.graphics.GL_Fonts;
 import CB_Utils.Lists.CB_List;
 
@@ -87,13 +90,16 @@ public class HtmlView extends ScrollBox implements ListLayout {
 		addHR(segmentViewList, (Html_Segment_HR) seg, innerWidth);
 		break;
 	    case Image:
-		addImage(segmentViewList, seg, relayout);
+		addImage(segmentViewList, seg, relayout, innerWidth);
 		break;
 	    case TextBlock:
 		addTextBlog(segmentViewList, (Html_Segment_TextBlock) seg, innerWidth);
 		break;
 	    case List:
 		addListBlog(segmentViewList, (HTML_Segment_List) seg, innerWidth);
+		break;
+	    case Input:
+		addInput(segmentViewList, (Html_Segment_Input) seg, relayout, innerWidth);
 		break;
 	    default:
 		break;
@@ -102,23 +108,76 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	}
     }
 
+    private static float addInput(final CB_List<CB_View_Base> segmentViewList, final Html_Segment_Input seg, final ListLayout relayout, float innerWidth) {
+
+	if (!seg.value.startsWith("att_"))
+	    return 0;
+
+	ImageLoader img = new ImageLoader();
+	img.setImage(seg.imagePath);
+
+	ImageButton imgBtn = new ImageButton(img) {
+
+	    @Override
+	    public void onResized(CB_RectF rec) {
+		super.onResized(rec);
+		this.setWidth(this.getHeight());
+		GL.that.RunOnGL(new IRunOnGL() {
+
+		    @Override
+		    public void run() {
+			relayout.layout(segmentViewList);
+		    }
+		});
+	    }
+	};
+	imgBtn.setWidth(imgBtn.getHeight());
+
+	imgBtn.setOnClickListener(new OnClickListener() {
+
+	    @Override
+	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+		GL_MsgBox.Show(Translation.Get(seg.value));
+		return true;
+	    }
+	});
+
+	segmentViewList.add(imgBtn);
+	return imgBtn.getHeight();
+    }
+
     private static float addListBlog(CB_List<CB_View_Base> segmentViewList, HTML_Segment_List seg, float innerWidth) {
 	Html_ListView ListcontentBox = new Html_ListView(innerWidth, seg);
 	segmentViewList.add(ListcontentBox);
 	return ListcontentBox.getHeight();
     }
 
+    private int testcount = 0;
+
     @Override
     public void layout(CB_List<CB_View_Base> segmentViewList) {
-
+	testcount = 0;
 	this.removeChilds();
 
 	float innerWidth = this.getInnerWidth() - (margin * 2);
-
+	int maxAttributeButtonsPerLine = (int) (innerWidth / (UI_Size_Base.that.getButtonHeight()));
 	float contentHeight = 0;
+	int attLines = 1;
 	for (int i = 0, n = segmentViewList.size(); i < n; i++) {
-	    contentHeight += segmentViewList.get(i).getHeight();
+
+	    CB_View_Base view = segmentViewList.get(i);
+
+	    if (view instanceof ImageButton) {
+		if (testcount++ > maxAttributeButtonsPerLine) {
+		    attLines++;
+		    testcount = 0;
+		}
+	    } else {
+		contentHeight += view.getHeight();
+	    }
 	}
+
+	contentHeight += (attLines * UI_Size_Base.that.getButtonHeight());
 
 	contentBox = new Box(this, "topContent");
 	contentBox.setWidth(innerWidth);
@@ -129,15 +188,23 @@ public class HtmlView extends ScrollBox implements ListLayout {
 
 	contentBox.setMargins(0, 0);
 	contentBox.initRow();
-
+	testcount = 0;
 	for (int i = 0, n = segmentViewList.size(); i < n; i++) {
 
 	    CB_View_Base view = segmentViewList.get(i);
 
 	    if (view instanceof Image) {
 		contentBox.addLast(segmentViewList.get(i));
+	    } else if (view instanceof ImageButton) {
+		if (testcount++ > maxAttributeButtonsPerLine) {
+		    contentBox.addLast(segmentViewList.get(i), FIXED);
+		    testcount = 0;
+		} else {
+		    contentBox.addNext(segmentViewList.get(i), FIXED);
+		}
+
 	    } else {
-		contentBox.addLast(segmentViewList.get(i), -1);
+		contentBox.addLast(segmentViewList.get(i), FIXED);
 	    }
 
 	}
@@ -169,8 +236,8 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	return hrView.getHeight();
     }
 
-    private static float addImage(final CB_List<CB_View_Base> segmentViewList, Html_Segment seg, final ListLayout relayout) {
-	Image img = new Image(0, 0, 50, 50 * UiSizes.that.getScale(), "Html-Image", true) {
+    private static float addImage(final CB_List<CB_View_Base> segmentViewList, Html_Segment seg, final ListLayout relayout, float innerWidth) {
+	Image img = new Image(0, 0, innerWidth, 50, "Html-Image", true) {
 
 	    @Override
 	    public void onResized(CB_RectF rec) {
