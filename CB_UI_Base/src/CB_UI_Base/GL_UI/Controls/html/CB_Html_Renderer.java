@@ -202,7 +202,7 @@ public class CB_Html_Renderer extends Renderer {
 	    String text = x.appendable.toString().replace(lastText, "");
 	    String renderedHyperlinkURL = x.renderer.renderHyperlinkURL(element.getStartTag());
 
-	    cb_processor.add(new HyperLinkText(text, renderedHyperlinkURL));
+	    cb_processor.add(new HyperLinkText(text.trim(), renderedHyperlinkURL.trim()));
 
 	}
     }

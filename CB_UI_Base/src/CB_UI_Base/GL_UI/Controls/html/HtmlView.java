@@ -28,8 +28,8 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Image;
-import CB_UI_Base.GL_UI.Controls.ImageLoader;
 import CB_UI_Base.GL_UI.Controls.ImageButton;
+import CB_UI_Base.GL_UI.Controls.ImageLoader;
 import CB_UI_Base.GL_UI.Controls.LinkLabel;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
@@ -56,6 +56,7 @@ public class HtmlView extends ScrollBox implements ListLayout {
     public HtmlView(CB_RectF rec) {
 	super(rec);
 	margin = UI_Size_Base.that.getMargin() / 2;
+	this.setClickable(true);
     }
 
     public void showHtml(final String HTMLSOURCE) throws Exception {
@@ -181,7 +182,7 @@ public class HtmlView extends ScrollBox implements ListLayout {
 
 	contentBox = new Box(this, "topContent");
 	contentBox.setWidth(innerWidth);
-
+	contentBox.setClickable(true);
 	contentBox.setHeight(contentHeight);
 	contentBox.setZeroPos();
 	contentBox.setX(margin);
@@ -311,7 +312,7 @@ public class HtmlView extends ScrollBox implements ListLayout {
 		}
 
 		String link = seg.formatetText.substring(start, end);
-		HyperLinkText hyper = new HyperLinkText(link, link);
+		HyperLinkText hyper = new HyperLinkText(link.trim(), link.trim());
 		seg.hyperLinkList.add(hyper);
 	    }
 	} catch (Exception e) {

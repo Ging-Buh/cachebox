@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2011-2014 team-cachebox.de
+ * Copyright (C) 2011-2015 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
  * you may not use this file except in compliance with the License.
@@ -255,4 +255,5 @@ public class MenuID {
     public static final int MI_ADD_MISSING_VARIABLES = 205;
 
     public static final int AID_SWITCH_DESCRIPTION = 206;
+    public static final int AID_SHOW_DescExt = 207;
 }

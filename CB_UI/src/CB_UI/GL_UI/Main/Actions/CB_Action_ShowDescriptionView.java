@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2015 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI.GL_UI.Main.Actions;
 
 import java.util.ArrayList;
@@ -38,199 +53,176 @@ import CB_Utils.Lists.CB_List;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
-{
+public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
-	public CB_Action_ShowDescriptionView()
-	{
-		super("Description", MenuID.AID_SHOW_DESCRIPTION);
-	}
+    public CB_Action_ShowDescriptionView() {
+	super("Description", MenuID.AID_SHOW_DESCRIPTION);
+    }
 
-	@Override
-	public void Execute()
-	{
-		if ((TabMainView.descriptionView == null) && (tabMainView != null) && (tab != null)) TabMainView.descriptionView = new DescriptionView(tab.getContentRec(), "DescriptionView");
+    @Override
+    public void Execute() {
+	if ((TabMainView.descriptionView == null) && (tabMainView != null) && (tab != null))
+	    TabMainView.descriptionView = new DescriptionView(tab.getContentRec(), "DescriptionView");
 
-		if ((TabMainView.descriptionView != null) && (tab != null)) tab.ShowView(TabMainView.descriptionView);
-	}
+	if ((TabMainView.descriptionView != null) && (tab != null))
+	    tab.ShowView(TabMainView.descriptionView);
+    }
 
-	@Override
-	public boolean getEnabled()
-	{
-		return true;
-	}
+    @Override
+    public boolean getEnabled() {
+	return true;
+    }
 
-	@Override
-	public Sprite getIcon()
-	{
-		return SpriteCacheBase.Icons.get(IconName.doc_2.ordinal());
-	}
+    @Override
+    public Sprite getIcon() {
+	return SpriteCacheBase.Icons.get(IconName.doc_2.ordinal());
+    }
 
-	@Override
-	public CB_View_Base getView()
-	{
-		return TabMainView.descriptionView;
-	}
+    @Override
+    public CB_View_Base getView() {
+	return TabMainView.descriptionView;
+    }
 
-	@Override
-	public boolean HasContextMenu()
-	{
-		return true;
-	}
+    @Override
+    public boolean HasContextMenu() {
+	return true;
+    }
 
-	CancelWaitDialog wd = null;
+    CancelWaitDialog wd = null;
 
-	@Override
-	public Menu getContextMenu()
-	{
-		Menu cm = new Menu("CacheListContextMenu");
+    @Override
+    public Menu getContextMenu() {
+	Menu cm = new Menu("CacheListContextMenu");
 
-		cm.addItemClickListner(new OnClickListener()
-		{
+	cm.addItemClickListner(new OnClickListener() {
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				switch (((MenuItem) v).getMenuItemId())
-				{
-				case MenuID.MI_FAVORIT:
-					if (GlobalCore.getSelectedCache() == null)
-					{
-						GL_MsgBox.Show(Translation.Get("NoCacheSelect"), Translation.Get("Error"), MessageBoxIcon.Error);
-						return true;
-					}
-
-					GlobalCore.getSelectedCache().setFavorit(!GlobalCore.getSelectedCache().isFavorite());
-					CacheDAO dao = new CacheDAO();
-					dao.UpdateDatabase(GlobalCore.getSelectedCache());
-
-					// Update Query
-					Database.Data.Query.GetCacheById(GlobalCore.getSelectedCache().Id).setFavorite(GlobalCore.getSelectedCache().isFavorite());
-
-					// Update View
-					if (TabMainView.descriptionView != null) TabMainView.descriptionView.onShow();
-
-					CachListChangedEventList.Call();
-
-					return true;
-				case MenuID.MI_RELOAD_CACHE:
-
-					ReloadSelectedCache();
-
-					return true;
-				}
-				return false;
-			}
-
-		});
-
-		MenuItem mi;
-
-		boolean isSelected = (GlobalCore.ifCacheSelected());
-
-		mi = cm.addItem(MenuID.MI_FAVORIT, "Favorite", SpriteCacheBase.Icons.get(IconName.favorit_42.ordinal()));
-		mi.setCheckable(true);
-		if (isSelected)
-		{
-			mi.setChecked(GlobalCore.getSelectedCache().isFavorite());
-		}
-		else
-		{
-			mi.setEnabled(false);
-		}
-
-		boolean selectedCacheIsNoGC = false;
-
-		if (isSelected) selectedCacheIsNoGC = !GlobalCore.getSelectedCache().getGcCode().startsWith("GC");
-		mi = cm.addItem(MenuID.MI_RELOAD_CACHE, "ReloadCacheAPI", SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal()));
-		if (!isSelected) mi.setEnabled(false);
-		if (selectedCacheIsNoGC) mi.setEnabled(false);
-		return cm;
-	}
-
-	public void ReloadSelectedCache()
-	{
-		if (GlobalCore.getSelectedCache() == null)
-		{
+	    @Override
+	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+		switch (((MenuItem) v).getMenuItemId()) {
+		case MenuID.MI_FAVORIT:
+		    if (GlobalCore.getSelectedCache() == null) {
 			GL_MsgBox.Show(Translation.Get("NoCacheSelect"), Translation.Get("Error"), MessageBoxIcon.Error);
-			return;
+			return true;
+		    }
+
+		    GlobalCore.getSelectedCache().setFavorit(!GlobalCore.getSelectedCache().isFavorite());
+		    CacheDAO dao = new CacheDAO();
+		    dao.UpdateDatabase(GlobalCore.getSelectedCache());
+
+		    // Update Query
+		    Database.Data.Query.GetCacheById(GlobalCore.getSelectedCache().Id).setFavorite(GlobalCore.getSelectedCache().isFavorite());
+
+		    // Update View
+		    if (TabMainView.descriptionView != null)
+			TabMainView.descriptionView.onShow();
+
+		    CachListChangedEventList.Call();
+
+		    return true;
+		case MenuID.MI_RELOAD_CACHE:
+
+		    ReloadSelectedCache();
+
+		    return true;
+		}
+		return false;
+	    }
+
+	});
+
+	MenuItem mi;
+
+	boolean isSelected = (GlobalCore.ifCacheSelected());
+
+	mi = cm.addItem(MenuID.MI_FAVORIT, "Favorite", SpriteCacheBase.Icons.get(IconName.favorit_42.ordinal()));
+	mi.setCheckable(true);
+	if (isSelected) {
+	    mi.setChecked(GlobalCore.getSelectedCache().isFavorite());
+	} else {
+	    mi.setEnabled(false);
+	}
+
+	boolean selectedCacheIsNoGC = false;
+
+	if (isSelected)
+	    selectedCacheIsNoGC = !GlobalCore.getSelectedCache().getGcCode().startsWith("GC");
+	mi = cm.addItem(MenuID.MI_RELOAD_CACHE, "ReloadCacheAPI", SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal()));
+	if (!isSelected)
+	    mi.setEnabled(false);
+	if (selectedCacheIsNoGC)
+	    mi.setEnabled(false);
+	return cm;
+    }
+
+    public void ReloadSelectedCache() {
+	if (GlobalCore.getSelectedCache() == null) {
+	    GL_MsgBox.Show(Translation.Get("NoCacheSelect"), Translation.Get("Error"), MessageBoxIcon.Error);
+	    return;
+	}
+
+	wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListner() {
+
+	    @Override
+	    public void isCanceld() {
+		// TODO handle cancel
+	    }
+	}, new cancelRunnable() {
+
+	    @Override
+	    public void run() {
+		String GcCode = GlobalCore.getSelectedCache().getGcCode();
+
+		SearchGC searchC = new SearchGC(GcCode);
+		searchC.number = 1;
+		searchC.available = false;
+
+		CB_List<Cache> apiCaches = new CB_List<Cache>();
+		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
+		ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
+
+		CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, GlobalCore.getSelectedCache().GPXFilename_ID, this);
+
+		try {
+		    GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
+		} catch (InterruptedException e) {
+		    e.printStackTrace();
 		}
 
-		wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
-		{
+		// Reload result from DB
+		synchronized (Database.Data.Query) {
+		    String sqlWhere = FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+		    CacheListDAO cacheListDAO = new CacheListDAO();
+		    cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+		}
 
-			@Override
-			public void isCanceld()
-			{
-				// TODO handle cancel
-			}
-		}, new cancelRunnable()
-		{
+		CachListChangedEventList.Call();
+		Cache selCache = Database.Data.Query.GetCacheByGcCode(GcCode);
+		GlobalCore.setSelectedCache(selCache);
+		GL.that.RunOnGL(new IRunOnGL() {
 
-			@Override
-			public void run()
-			{
-				String GcCode = GlobalCore.getSelectedCache().getGcCode();
+		    @Override
+		    public void run() {
+			GL.that.RunOnGL(new IRunOnGL() {
 
-				SearchGC searchC = new SearchGC(GcCode);
-				searchC.number = 1;
-				searchC.available = false;
-
-				CB_List<Cache> apiCaches = new CB_List<Cache>();
-				ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
-				ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
-
-				CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, GlobalCore.getSelectedCache().GPXFilename_ID, this);
-
-				try
-				{
-					GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
-				}
-				catch (InterruptedException e)
-				{
-					e.printStackTrace();
-				}
-
-				// Reload result from DB
-				synchronized (Database.Data.Query)
-				{
-					String sqlWhere = FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue());
-					CacheListDAO cacheListDAO = new CacheListDAO();
-					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
-				}
-
-				CachListChangedEventList.Call();
-				Cache selCache = Database.Data.Query.GetCacheByGcCode(GcCode);
-				GlobalCore.setSelectedCache(selCache);
-				GL.that.RunOnGL(new IRunOnGL()
-				{
-
-					@Override
-					public void run()
-					{
-						GL.that.RunOnGL(new IRunOnGL()
-						{
-
-							@Override
-							public void run()
-							{
-								if (TabMainView.descriptionView != null) TabMainView.descriptionView.onShow();
-								GL.that.renderOnce();
-							}
-						});
-					}
-				});
-
-				wd.close();
-			}
-
-			@Override
-			public boolean cancel()
-			{
-				// TODO Auto-generated method stub
-				return false;
-			}
+			    @Override
+			    public void run() {
+				if (TabMainView.descriptionView != null)
+				    TabMainView.descriptionView.onShow();
+				GL.that.renderOnce();
+			    }
+			});
+		    }
 		});
-	}
+
+		wd.close();
+	    }
+
+	    @Override
+	    public boolean cancel() {
+		// TODO Auto-generated method stub
+		return false;
+	    }
+	});
+    }
 
 }

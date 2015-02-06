@@ -450,7 +450,7 @@ public class DescriptionView extends CB_View_Base {
 	}
     };
 
-    private String getAttributesHtml(Cache cache) {
+    public static String getAttributesHtml(Cache cache) {
 	StringBuilder sb = new StringBuilder();
 	try {
 	    Iterator<Attributes> attrs = cache.getAttributes().iterator();

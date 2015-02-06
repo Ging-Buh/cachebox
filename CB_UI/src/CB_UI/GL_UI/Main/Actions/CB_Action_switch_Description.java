@@ -23,7 +23,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_switch_Description extends CB_ActionCommand {
 
-    public static boolean SHOW_ANDROID = true;
+    public static boolean SHOW_ANDROID = false;
 
     public static switchEventListner event;
 

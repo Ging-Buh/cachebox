@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2015 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Locator.Map;
 
 import java.util.Date;
@@ -96,11 +111,17 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 
 		int intZoom = (int) zoom;
 
-		com.badlogic.gdx.graphics.Color c = COLOR.getFontColor();
-		Fonts.getNormal().setColor(c.r, c.g, c.b, FadeValue);
-		Fonts.getNormal().draw(batch, String.valueOf(intZoom), ValueRec.getX() + (ValueRec.getWidth() / 3),
-				ValueRec.getY() + ValueRec.getHeight() / 1.15f);
-		Fonts.getNormal().setColor(c.r, c.g, c.b, 1f);
+		try
+		{
+			com.badlogic.gdx.graphics.Color c = COLOR.getFontColor();
+			Fonts.getNormal().setColor(c.r, c.g, c.b, FadeValue);
+			Fonts.getNormal().draw(batch, String.valueOf(intZoom), ValueRec.getX() + (ValueRec.getWidth() / 3), ValueRec.getY() + ValueRec.getHeight() / 1.15f);
+			Fonts.getNormal().setColor(c.r, c.g, c.b, 1f);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
 		invalidateTextureEventList.Add(this);
 	}
@@ -158,8 +179,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 
 			y = (int) ((1 - ((zoom) - minzoom) / numSteps) * (bottomRow - topRow)) + topRow;
 
-			ValueRec = new CB_RectF(rect.getX() + GL_UISizes.infoShadowHeight + centerColumn - rect.getWidth() / 2 - lineHeight / 2, grundY
-					+ y, rect.getWidth(), rect.getWidth() / 2);
+			ValueRec = new CB_RectF(rect.getX() + GL_UISizes.infoShadowHeight + centerColumn - rect.getWidth() / 2 - lineHeight / 2, grundY + y, rect.getWidth(), rect.getWidth() / 2);
 		}
 		else
 		{

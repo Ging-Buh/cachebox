@@ -413,9 +413,19 @@ public class DesktopMain
 
 				try
 				{
+					java.net.URI uri = null;
+					if (url.startsWith("file://"))
+					{
+						File f = new File(url.replace("file://", ""));
+						uri = f.toURI();
+					}
+					else
+					{
+						uri = new java.net.URI(url);
+					}
 
-					java.net.URI uri = new java.net.URI(url);
 					desktop.browse(uri);
+
 				}
 				catch (Exception e)
 				{

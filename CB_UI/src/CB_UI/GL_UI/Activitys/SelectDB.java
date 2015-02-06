@@ -299,38 +299,42 @@ public class SelectDB extends ActivityBase {
 	int id = 0;
 	Point firstAndLast = lvFiles.getFirstAndLastVisibleIndex();
 
-	for (File file : lvAdapter.getFileList()) {
-	    if (file.getAbsoluteFile().compareTo(AktFile.getAbsoluteFile()) == 0) {
-		lvFiles.setSelection(id);
-		if (lvFiles.isDragable()) {
-		    if (!(firstAndLast.x <= id && firstAndLast.y >= id)) {
-			lvFiles.scrollToItem(id);
-			log.debug("Scroll to:" + id);
+	try {
+	    for (File file : lvAdapter.getFileList()) {
+		if (file.getAbsoluteFile().compareTo(AktFile.getAbsoluteFile()) == 0) {
+		    lvFiles.setSelection(id);
+		    if (lvFiles.isDragable()) {
+			if (!(firstAndLast.x <= id && firstAndLast.y >= id)) {
+			    lvFiles.scrollToItem(id);
+			    log.debug("Scroll to:" + id);
+			}
 		    }
+		    break;
 		}
-		break;
+		id++;
 	    }
-	    id++;
+
+	    TimerTask task = new TimerTask() {
+		@Override
+		public void run() {
+		    GL.that.RunOnGL(new IRunOnGL() {
+
+			@Override
+			public void run() {
+			    lvFiles.chkSlideBack();
+			    GL.that.renderOnce();
+			}
+		    });
+		}
+	    };
+
+	    Timer timer = new Timer();
+	    timer.schedule(task, 50);
+
+	    GL.that.renderOnce();
+	} catch (Exception e) {
+	    log.error("Set selected DB Visible", e);
 	}
-
-	TimerTask task = new TimerTask() {
-	    @Override
-	    public void run() {
-		GL.that.RunOnGL(new IRunOnGL() {
-
-		    @Override
-		    public void run() {
-			lvFiles.chkSlideBack();
-			GL.that.renderOnce();
-		    }
-		});
-	    }
-	};
-
-	Timer timer = new Timer();
-	timer.schedule(task, 50);
-
-	GL.that.renderOnce();
     }
 
     OnClickListener onItemClickListner = new OnClickListener() {
