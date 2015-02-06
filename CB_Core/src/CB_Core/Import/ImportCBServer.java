@@ -137,7 +137,7 @@ public class ImportCBServer
 							for (int j = 0, m = cache.waypoints.size(); j < m; j++)
 							{
 								Waypoint waypoint = (Waypoint) cache.waypoints.get(j);
-								wayDao.WriteToDatabase(waypoint);
+								wayDao.WriteToDatabase(waypoint, false); // do not store replication information
 							}
 							if (importImages && (cache.getSpoilerRessources() != null))
 							{

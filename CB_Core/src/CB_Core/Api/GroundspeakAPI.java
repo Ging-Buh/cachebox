@@ -1628,9 +1628,10 @@ public class GroundspeakAPI
 
 				if (update)
 				{
-					if (!waypointDAO.UpdateDatabase(waypoint))
+					// do not store replication information when importing caches with GC api
+					if (!waypointDAO.UpdateDatabase(waypoint, false))
 					{
-						waypointDAO.WriteToDatabase(waypoint);
+						waypointDAO.WriteToDatabase(waypoint, false); // do not store replication information here
 					}
 				}
 

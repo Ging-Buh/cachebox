@@ -561,7 +561,7 @@ public abstract class ManagerBase
 	public void setRenderTheme(XmlRenderTheme RenderTheme)
 	{
 		renderTheme = RenderTheme;
-
+		if (renderTheme == null) return;
 		// Check RenderTheme valid
 		try
 		{

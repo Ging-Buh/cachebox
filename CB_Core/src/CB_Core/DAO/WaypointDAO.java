@@ -23,8 +23,17 @@ public class WaypointDAO
 
 	public void WriteToDatabase(Waypoint WP)
 	{
+		WriteToDatabase(WP, true);
+	}
+
+	// sometimes Replication for synchronization with CBServer should not be used (when importing caches from gc api)
+	public void WriteToDatabase(Waypoint WP, boolean useReplication)
+	{
 		int newCheckSum = createCheckSum(WP);
-		Replication.WaypointNew(WP.CacheId, WP.getCheckSum(), newCheckSum, WP.getGcCode());
+		if (useReplication)
+		{
+			Replication.WaypointNew(WP.CacheId, WP.getCheckSum(), newCheckSum, WP.getGcCode());
+		}
 		Parameters args = new Parameters();
 		args.put("gccode", WP.getGcCode());
 		args.put("cacheid", WP.CacheId);
@@ -60,9 +69,18 @@ public class WaypointDAO
 
 	public boolean UpdateDatabase(Waypoint WP)
 	{
+		return UpdateDatabase(WP, true);
+	}
+
+	// sometimes Replication for synchronization with CBServer should not be used (when importing caches from gc api)
+	public boolean UpdateDatabase(Waypoint WP, boolean useReplication)
+	{
 		boolean result = false;
 		int newCheckSum = createCheckSum(WP);
-		Replication.WaypointChanged(WP.CacheId, WP.getCheckSum(), newCheckSum, WP.getGcCode());
+		if (useReplication)
+		{
+			Replication.WaypointChanged(WP.CacheId, WP.getCheckSum(), newCheckSum, WP.getGcCode());
+		}
 		if (newCheckSum != WP.getCheckSum())
 		{
 			Parameters args = new Parameters();
@@ -79,8 +97,7 @@ public class WaypointDAO
 			args.put("isStart", WP.IsStart);
 			try
 			{
-				long count = Database.Data.update("Waypoint", args, "CacheId=" + WP.CacheId + " and GcCode=\"" + WP.getGcCode() + "\"",
-						null);
+				long count = Database.Data.update("Waypoint", args, "CacheId=" + WP.CacheId + " and GcCode=\"" + WP.getGcCode() + "\"", null);
 				if (count > 0) result = true;
 			}
 			catch (Exception exc)
@@ -225,8 +242,7 @@ public class WaypointDAO
 				args.put("isStart", false);
 				try
 				{
-					long count = Database.Data.update("Waypoint", args, "CacheId=" + wp.CacheId + " and GcCode=\"" + wp.getGcCode() + "\"",
-							null);
+					long count = Database.Data.update("Waypoint", args, "CacheId=" + wp.CacheId + " and GcCode=\"" + wp.getGcCode() + "\"", null);
 
 				}
 				catch (Exception exc)

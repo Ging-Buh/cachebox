@@ -867,7 +867,7 @@ public class SearchForGeocaches_Core
 							}
 						}
 
-						if (update) waypointDAO.WriteToDatabase(waypoint);
+						if (update) waypointDAO.WriteToDatabase(waypoint, false);
 					}
 
 					ImageDAO imageDAO = new ImageDAO();
