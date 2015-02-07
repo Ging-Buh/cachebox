@@ -21,6 +21,9 @@ import net.htmlparser.jericho.Attribute;
 import net.htmlparser.jericho.Attributes;
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.Tag;
+
+import org.slf4j.LoggerFactory;
+
 import CB_UI_Base.Math.Stack;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.graphics.GL_FontFamily;
@@ -36,6 +39,7 @@ import com.badlogic.gdx.graphics.Color;
  */
 public class Html_Segment_TextBlock extends Html_Segment {
 
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(Html_Segment_TextBlock.class);
     protected static final float DEFAULT_FONT_SIZE = 11;
     public static final float DEFAULT_FONT_SIZE_FACTOR = 1.2f;
 
@@ -132,7 +136,11 @@ public class Html_Segment_TextBlock extends Html_Segment {
 			    int intSize = Integer.parseInt(value.replace("-", ""));
 			    size -= intSize;
 			} else {
-			    size = Integer.parseInt(value);
+			    try {
+				size = Integer.parseInt(value);
+			    } catch (NumberFormatException e) {
+				log.error("wrong size value =>" + value);
+			    }
 			}
 
 		    }
@@ -145,7 +153,6 @@ public class Html_Segment_TextBlock extends Html_Segment {
 	    size = 7;
 
 	this.scaledfontSize = getFontPx(size) * UiSizes.that.getScale() * DEFAULT_FONT_SIZE_FACTOR;
-	//	this.scaledfontSize = getFontPx(size) * UiSizes.that.getScale();
 
 	//resolve underline
 	for (Tag tag : tags) {
