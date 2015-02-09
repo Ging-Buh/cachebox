@@ -158,7 +158,9 @@ public class HtmlView extends ScrollBox implements ListLayout {
     @Override
     public void layout(CB_List<CB_View_Base> segmentViewList) {
 	testcount = 0;
+
 	this.removeChilds();
+	//TODO remove and dispose old content
 
 	float innerWidth = this.getInnerWidth() - (margin * 2);
 	int maxAttributeButtonsPerLine = (int) (innerWidth / (UI_Size_Base.that.getButtonHeight()));
@@ -319,4 +321,10 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	    log.error("parseHyperLinks", e);
 	}
     }
+
+    @Override
+    public void dispose() {
+	super.dispose();
+    }
+
 }

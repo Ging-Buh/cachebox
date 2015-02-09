@@ -1043,6 +1043,14 @@ public class GL implements ApplicationListener, InputProcessor {
 	}
     }
 
+    private Timer tim;
+    private final TimerTask tt = new TimerTask() {
+	@Override
+	public void run() {
+	    requestRender(false);
+	}
+    };
+
     /**
      * Fürt EINEN Render Durchgang aus
      */

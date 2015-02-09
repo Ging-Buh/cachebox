@@ -28,6 +28,7 @@ import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.utils.GifDecoder;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Util.Downloader;
 import CB_Utils.Util.FileIO;
@@ -37,8 +38,11 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -62,6 +66,13 @@ public class ImageLoader {
     private HashMap<String, TextureAtlas> Atlanten;
     private String AtlasPath;
     private String ImgName;
+    private boolean inGenerate = false;
+    private float frameCounter = 0;
+    private SpriteDrawable animDrawable;
+    private Sprite animSprite;
+
+    private Animation anim;
+
     boolean inLoad = false;
     float spriteWidth;
     float spriteHeight;
@@ -225,19 +236,6 @@ public class ImageLoader {
 	GL.that.renderOnce();
     }
 
-    public void dispose() {
-	GL.that.RunOnGL(new IRunOnGL() {
-
-	    @Override
-	    public void run() {
-		if (mImageTex != null)
-		    mImageTex.dispose();
-		mImageTex = null;
-		mDrawable = null;
-	    }
-	});
-    }
-
     /**
      * Sets a Image URl and Downlowd this Image if this don't exist on Cache
      * 
@@ -327,7 +325,7 @@ public class ImageLoader {
     public void setImage(String Path) {
 	State = 3;
 	mPath = Path.replace("file://", "");
-	if (getDrawable() != null) {
+	if (getDrawable(0) != null) {
 	    dispose();
 	    // das laden des Images in das Sprite darf erst in der Render Methode passieren, damit es aus dem GL_Thread herraus läuft.
 	}
@@ -358,16 +356,8 @@ public class ImageLoader {
 	GL.that.renderOnce();
     }
 
-    private boolean inGenerate = false;
-
     private void generate() {
 	if (ImageLoadError) {
-	    //	    if (Wait != null) {
-	    //		GL.that.removeRenderView(Wait);
-	    //		this.removeChild(Wait);
-	    //		Wait = null;
-	    //	    }
-
 	    setSprite(SpriteCacheBase.Icons.get(IconName.delete_28.ordinal()), this.reziseHeight);
 	    ImageLoadError = false;
 	    return;
@@ -382,15 +372,23 @@ public class ImageLoader {
 		public void run() {
 		    try {
 			inGenerate = true;
-			mImageTex = new Texture(Gdx.files.absolute(mPath));
-			Sprite sprite = new com.badlogic.gdx.graphics.g2d.Sprite(mImageTex);
 
-			spriteWidth = sprite.getWidth();
-			spriteHeight = sprite.getHeight();
+			if (mPath.endsWith(".gif")) {
+			    //			    setSprite(SpriteCacheBase.Icons.get(IconName.delete_28.ordinal()), ImageLoader.this.reziseHeight);
+			    //			    ImageLoadError = true;
 
-			setSprite(sprite, reziseHeight);
+			    anim = GifDecoder.loadGIFAnimation(PlayMode.LOOP, Gdx.files.absolute(mPath).read());
+
+			} else {
+			    mImageTex = new Texture(Gdx.files.absolute(mPath));
+			    Sprite sprite = new com.badlogic.gdx.graphics.g2d.Sprite(mImageTex);
+			    spriteWidth = sprite.getWidth();
+			    spriteHeight = sprite.getHeight();
+			    setSprite(sprite, reziseHeight);
+			}
 
 		    } catch (com.badlogic.gdx.utils.GdxRuntimeException e) {
+			ImageLoadError = true;
 			log.error("Load GL Image", e);
 			State = 4;
 		    } catch (Exception e) {
@@ -412,8 +410,82 @@ public class ImageLoader {
 	    setAtlas(this.AtlasPath, this.ImgName, reziseHeight);
     }
 
-    public Drawable getDrawable() {
+    /**
+     * Returns the drawable was is loaded.
+     * 
+     * If the loaded image a Animation, like GIF, so returns the drawable for the given KeyFrame.
+     * 
+     * @param keyFrame
+     * @return
+     */
+    public Drawable getDrawable(float keyFrame) {
+	if (anim != null) {
+	    frameCounter += keyFrame;
+	    TextureRegion tex = anim.getKeyFrame(frameCounter);
+
+	    if (animSprite == null) {
+		animSprite = new com.badlogic.gdx.graphics.g2d.Sprite(tex);
+		spriteWidth = animSprite.getWidth();
+		spriteHeight = animSprite.getHeight();
+	    } else {
+		animSprite.setRegion(tex);
+	    }
+
+	    if (animDrawable == null) {
+		animDrawable = new SpriteDrawable(animSprite);
+	    } else {
+		animDrawable.setSprite(animSprite);
+	    }
+
+	    return animDrawable;
+	}
 	return mDrawable;
     }
 
+    public boolean isDrawableNULL() {
+	if (mDrawable == null && anim == null)
+	    return true;
+	return false;
+    }
+
+    public int getAnimDelay() {
+	if (anim != null) {
+	    return (int) (anim.getFrameDuration() * 1000);
+	}
+	return 0;
+    }
+
+    public void dispose() {
+
+	loadingThread = null;
+	mPath = null;
+	if (mImageTex != null)
+	    mImageTex.dispose();
+	mImageTex = null;
+	mDrawable = null;
+
+	ImageDownloadThread = null;
+	if (Atlanten != null) {
+	    Atlanten.clear();
+	    Atlanten = null;
+	}
+
+	AtlasPath = null;
+	ImgName = null;
+	animDrawable = null;
+
+	animSprite = null;
+	anim = null;
+
+	GL.that.RunOnGL(new IRunOnGL() {
+
+	    @Override
+	    public void run() {
+		if (mImageTex != null)
+		    mImageTex.dispose();
+		mImageTex = null;
+		mDrawable = null;
+	    }
+	});
+    }
 }
