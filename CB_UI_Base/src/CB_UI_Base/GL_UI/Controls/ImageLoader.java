@@ -29,6 +29,7 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.utils.GifDecoder;
+import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Util.Downloader;
 import CB_Utils.Util.FileIO;
@@ -341,8 +342,8 @@ public class ImageLoader {
 
 	if (this.resizeListner != null) {
 	    float proportionWidth = resizeWidth / spriteWidth;
-	    if (proportionWidth > 1) {
-		proportionWidth = 1;
+	    if (proportionWidth > UI_Size_Base.that.getScale()) {
+		proportionWidth = UI_Size_Base.that.getScale();
 	    }
 
 	    float newWidth = spriteWidth * proportionWidth;//* UI_Size_Base.that.getScale();
@@ -427,6 +428,20 @@ public class ImageLoader {
 		animSprite = new com.badlogic.gdx.graphics.g2d.Sprite(tex);
 		spriteWidth = animSprite.getWidth();
 		spriteHeight = animSprite.getHeight();
+
+		if (this.resizeListner != null) {
+		    float proportionWidth = resizeWidth / spriteWidth;
+		    if (proportionWidth > UI_Size_Base.that.getScale()) {
+			proportionWidth = UI_Size_Base.that.getScale();
+		    }
+
+		    float newWidth = spriteWidth * proportionWidth;//* UI_Size_Base.that.getScale();
+		    float newHeight = spriteHeight * proportionWidth;//* UI_Size_Base.that.getScale();
+		    animSprite.scale(proportionWidth);
+		    this.resizeListner.sizechanged(newWidth, newHeight);
+
+		}
+
 	    } else {
 		animSprite.setRegion(tex);
 	    }
