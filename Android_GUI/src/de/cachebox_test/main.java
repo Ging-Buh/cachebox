@@ -3155,14 +3155,17 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				try
 				{
+					if (url.startsWith("www."))
+					{
+						url = "http://" + url;
+					}
 					Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url.trim()));
 					main.mainActivity.startActivity(browserIntent);
 				}
 				catch (Exception exc)
 				{
-					Toast.makeText(main.mainActivity,
-							Translation.Get("Cann_not_open_cache_browser") + " (" + GlobalCore.getSelectedCache().getUrl().trim() + ")",
-							Toast.LENGTH_SHORT).show();
+					Toast.makeText(main.mainActivity, Translation.Get("Cann_not_open_cache_browser") + " (" + url.trim() + ")",
+							Toast.LENGTH_LONG).show();
 				}
 			}
 		});

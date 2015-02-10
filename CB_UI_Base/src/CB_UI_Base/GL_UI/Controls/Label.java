@@ -42,7 +42,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Label extends CB_View_Base {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(Label.class);
+    private final static org.slf4j.Logger log = LoggerFactory.getLogger(Label.class);
 
     private static final float DEFAULTSCROLLSTEP = 0.7f;
     private static final int SCROLL_PAUSE = 60;

@@ -258,7 +258,7 @@ public class Html_Segment_TextBlock extends Html_Segment {
 	if (!BOOLD && ITALIC)
 	    this.fontStyle = GL_FontStyle.ITALIC;
 
-	System.out.print(true);
+	//	System.out.print(true);
     }
 
     static float getFontPx(int value) {

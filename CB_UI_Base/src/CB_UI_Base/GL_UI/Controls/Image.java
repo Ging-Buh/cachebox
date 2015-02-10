@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.LoggerFactory;
 
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.Animation.AnimationBase;
 import CB_UI_Base.GL_UI.Controls.Animation.WorkAnimation;
@@ -206,6 +207,8 @@ public class Image extends CB_View_Base {
 
     @Override
     public void dispose() {
+	GL.that.removeRenderView(this);
+	isAsRenderViewRegisted.set(false);
 	imageLoader.dispose();
 	imageLoader = null;
     }
@@ -248,5 +251,16 @@ public class Image extends CB_View_Base {
 
     public void setSprite(Sprite sprite, boolean reziseHeight) {
 	imageLoader.setSprite(sprite, reziseHeight);
+    }
+
+    public void forceImageLoad() {
+	GL.that.RunOnGL(new IRunOnGL() {
+
+	    @Override
+	    public void run() {
+		imageLoader.getDrawable(0);
+	    }
+	});
+
     }
 }

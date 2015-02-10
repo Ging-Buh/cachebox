@@ -113,9 +113,9 @@ public class DescriptionView extends CB_View_Base {
 
     @Override
     public void onShow() {
+	super.onShow();
 	margin = GL_UISizes.margin;
-	if (cacheInfo != null)
-	    this.removeChild(cacheInfo);
+
 	Cache sel = GlobalCore.getSelectedCache();
 	if (sel != null) {
 	    setCache(sel);
@@ -134,6 +134,14 @@ public class DescriptionView extends CB_View_Base {
     private void setCache(Cache cache) {
 	if (cache == null)
 	    return;
+
+	if (cache.equals(aktCache))
+	    return;
+
+	aktCache = cache;
+
+	if (cacheInfo != null)
+	    this.removeChild(cacheInfo);
 	cacheInfo = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), 0, cache);
 	cacheInfo.setY(this.getHeight() - cacheInfo.getHeight());
 
@@ -243,6 +251,7 @@ public class DescriptionView extends CB_View_Base {
 
     @Override
     public void onHide() {
+	super.onHide();
 	platformConector.hideView(ViewConst.DESCRIPTION_VIEW);
     }
 

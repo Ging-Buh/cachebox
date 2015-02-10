@@ -39,6 +39,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.graphics.GL_Fonts;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Trace;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
@@ -160,7 +161,11 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	testcount = 0;
 
 	this.removeChilds();
-	//TODO remove and dispose old content
+
+	log.debug("HTML View Layout");
+	log.debug("   " + Trace.getCallerName(0));
+	log.debug("   " + Trace.getCallerName(1));
+	log.debug("   " + Trace.getCallerName(2));
 
 	float innerWidth = this.getInnerWidth() - (margin * 2);
 	int maxAttributeButtonsPerLine = (int) (innerWidth / (UI_Size_Base.that.getButtonHeight()));
@@ -239,6 +244,8 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	return hrView.getHeight();
     }
 
+    private static float lastRelayoutStateTime = 0;
+
     private static float addImage(final CB_List<CB_View_Base> segmentViewList, Html_Segment seg, final ListLayout relayout, float innerWidth) {
 	Image img = new Image(0, 0, innerWidth, 50, "Html-Image", true) {
 
@@ -249,6 +256,9 @@ public class HtmlView extends ScrollBox implements ListLayout {
 
 		    @Override
 		    public void run() {
+			if (lastRelayoutStateTime == GL.that.getStateTime())
+			    return;
+			lastRelayoutStateTime = GL.that.getStateTime();
 			relayout.layout(segmentViewList);
 		    }
 		});
@@ -256,6 +266,8 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	};
 	img.setHAlignment(seg.hAlignment);
 	img.setImageURL(seg.formatetText);
+
+	img.forceImageLoad();
 
 	segmentViewList.add(img);
 	return img.getHeight();
@@ -314,6 +326,11 @@ public class HtmlView extends ScrollBox implements ListLayout {
 		}
 
 		String link = seg.formatetText.substring(start, end);
+
+		if (link.endsWith(")") || link.endsWith("]") || link.endsWith("}")) {
+		    link = seg.formatetText.substring(start, end - 1);
+		}
+
 		HyperLinkText hyper = new HyperLinkText(link.trim(), link.trim());
 		seg.hyperLinkList.add(hyper);
 	    }

@@ -321,8 +321,10 @@ public class SelectDB extends ActivityBase {
 
 			@Override
 			public void run() {
-			    lvFiles.chkSlideBack();
-			    GL.that.renderOnce();
+			    if (lvFiles != null) {
+				lvFiles.chkSlideBack();
+				GL.that.renderOnce();
+			    }
 			}
 		    });
 		}

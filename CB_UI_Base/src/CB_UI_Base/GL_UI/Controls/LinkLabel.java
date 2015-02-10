@@ -18,6 +18,8 @@ package CB_UI_Base.GL_UI.Controls;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.slf4j.LoggerFactory;
+
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Controls.html.HyperLinkText;
@@ -34,7 +36,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
  *
  */
 public class LinkLabel extends MultiColorLabel {
-
+    private final static org.slf4j.Logger log = LoggerFactory.getLogger(LinkLabel.class);
     private final AtomicBoolean dirty = new AtomicBoolean(true);;
     private final AtomicBoolean inParse = new AtomicBoolean(false);
     CB_List<HyperLinkText> hyperLinkList = new CB_List<HyperLinkText>();
@@ -88,10 +90,8 @@ public class LinkLabel extends MultiColorLabel {
 	float[] vertices = TextObject.getVertices();
 
 	for (int i = 0, n = vertices.length - 21; i < n; i += 20) {
-
 	    float lx1 = vertices[i + 0] - halfGlyphWidth;
 	    float ly1 = vertices[i + 1] - halfGlyphWidth;
-
 	    float lx2 = vertices[i + 10] + halfGlyphWidth;
 	    float ly2 = ly1 + lineHeight;
 
@@ -130,14 +130,19 @@ public class LinkLabel extends MultiColorLabel {
 
 	for (int i = Start; i <= end; i += 20) {
 	    GlyphUV glyphUV = new GlyphUV(vertices[i + 3], vertices[i + 4]);
-	    String s = glyphList.get(glyphUV);
-	    sb.append(s);
+	    if (floatBits == vertices[i + 2]) {
+
+		String s = glyphList.get(glyphUV);
+		if (s != null) {
+		    sb.append(s);
+		}
+	    }
 	}
 
 	return sb.toString();
     }
 
-    final static String ALL_LINK_CHAR = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890/_. :-";
+    final static String ALL_LINK_CHAR = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890/_. :-[]";
     HashMap<GlyphUV, String> glyphList;
 
     private static class GlyphUV {

@@ -80,18 +80,21 @@ public class CB_HtmlProcessor extends Processor {
 	if (isOpenStartTag(tag)) {
 
 	    createNewSegment();
-	    log.debug("Push Tag >" + tag.toString());
+	    //	    log.debug("Push Tag >" + tag.toString());
 	    AtributeStack.push(tag);
 	} else if (isClosedEndTag(tag)) {
 
 	    if (!tag.getName().toLowerCase().equals("a") && !nextIsLI)
 		createNewSegment();
-	    Tag pop = AtributeStack.pop();
-	    if (pop != null) {
-		log.debug("Pop Tag >" + pop.toString());
-	    } else {
-		log.error("Pop Tag > ERROR Stack are empty");
-	    }
+
+	    AtributeStack.pop();
+
+	    //	    Tag pop = AtributeStack.pop();
+	    //	    if (pop != null) {
+	    //		log.debug("Pop Tag >" + pop.toString());
+	    //	    } else {
+	    //		log.error("Pop Tag > ERROR Stack are empty");
+	    //	    }
 
 	}
 
@@ -126,7 +129,7 @@ public class CB_HtmlProcessor extends Processor {
 	    Html_Segment segment;
 
 	    if (nextIsLI && actList != null) {
-		log.debug("Append new LI element:" + innerText);
+		//		log.debug("Append new LI element:" + innerText);
 
 		while (innerText.startsWith(" "))
 		    innerText = innerText.replaceFirst(" ", "");
@@ -149,7 +152,7 @@ public class CB_HtmlProcessor extends Processor {
 		actList = null;
 	    }
 
-	    log.debug("Append Text:" + innerText);
+	    //	    log.debug("Append Text:" + innerText);
 
 	    if (isImage) {
 		segment = new Html_Segment_Image(AtributeStack, innerText);
@@ -169,7 +172,7 @@ public class CB_HtmlProcessor extends Processor {
     }
 
     void createNewHrSegment() {
-	log.debug("Append HR segment:");
+	//	log.debug("Append HR segment:");
 
 	Html_Segment segment = new Html_Segment_HR(AtributeStack);
 	segmentList.add(segment);
