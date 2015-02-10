@@ -435,8 +435,8 @@ public class ImageLoader {
 			proportionWidth = UI_Size_Base.that.getScale();
 		    }
 
-		    float newWidth = spriteWidth * proportionWidth;//* UI_Size_Base.that.getScale();
-		    float newHeight = spriteHeight * proportionWidth;//* UI_Size_Base.that.getScale();
+		    float newWidth = spriteWidth * proportionWidth;
+		    float newHeight = spriteHeight * proportionWidth;
 		    animSprite.scale(proportionWidth);
 		    this.resizeListner.sizechanged(newWidth, newHeight);
 

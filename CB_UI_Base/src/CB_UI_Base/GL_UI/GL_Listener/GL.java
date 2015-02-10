@@ -542,7 +542,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	    batch.setProjectionMatrix(prjMatrix.Matrix());
 
 	    // TODO float FpsInfoSize = MapTileLoader.queueProcessorLifeCycle ? 4 : 8;
-	    float FpsInfoSize = 4;
+	    float FpsInfoSize = 4 * UI_Size_Base.that.getScale();
 	    if (FpsInfoSprite != null) {
 		batch.draw(FpsInfoSprite, FpsInfoPos, 2, FpsInfoSize, FpsInfoSize);
 	    } else {
@@ -551,12 +551,12 @@ public class GL implements ApplicationListener, InputProcessor {
 
 		    FpsInfoSprite = new Sprite(SpriteCacheBase.getThemedSprite("pixel2x2"));
 		    FpsInfoSprite.setColor(1.0f, 1.0f, 0.0f, 1.0f);
-		    FpsInfoSprite.setSize(4, 4);
+		    FpsInfoSprite.setSize(FpsInfoSize, FpsInfoSize);
 		}
 	    }
 
-	    FpsInfoPos++;
-	    if (FpsInfoPos > 60) {
+	    FpsInfoPos += UI_Size_Base.that.getScale();
+	    if (FpsInfoPos > 60 * UI_Size_Base.that.getScale()) {
 		FpsInfoPos = 0;
 	    }
 
