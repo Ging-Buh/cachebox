@@ -17,6 +17,7 @@ package CB_Utils.Lists;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Iterator;
 
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Longri, based on FloatArray from Nathan Sweet (LibGdx)
  */
-public class CB_List<T> implements Serializable
+public class CB_List<T> implements Serializable, Iterable<T>
 {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_List.class);
 	private static final long serialVersionUID = 4378819539487000418L;
@@ -427,6 +428,34 @@ public class CB_List<T> implements Serializable
 	{
 		if (index < 0 || index > size) return;
 		items[index] = value;
+	}
+
+	@Override
+	public Iterator<T> iterator()
+	{
+		return new Iterator<T>()
+		{
+			int idx = 0;
+
+			@Override
+			public boolean hasNext()
+			{
+				if (idx < size) return true;
+				return false;
+			}
+
+			@Override
+			public T next()
+			{
+				return items[idx++];
+			}
+
+			@Override
+			public void remove()
+			{
+				// notImplemented
+			}
+		};
 	}
 
 }

@@ -130,14 +130,14 @@ public class Image extends CB_View_Base {
 	    float drawX = 0;
 	    float drawY = 0;
 
-	    if (imageLoader.spriteWidth > 0 && imageLoader.spriteHeight > 0) {
-		float proportionWidth = getWidth() / imageLoader.spriteWidth;
-		float proportionHeight = getHeight() / imageLoader.spriteHeight;
+	    if (imageLoader.getSpriteWidth() > 0 && imageLoader.getSpriteHeight() > 0) {
+		float proportionWidth = getWidth() / imageLoader.getSpriteWidth();
+		float proportionHeight = getHeight() / imageLoader.getSpriteHeight();
 
 		float proportion = Math.min(proportionWidth, proportionHeight);
 
-		drawwidth = imageLoader.spriteWidth * proportion;
-		drawHeight = imageLoader.spriteHeight * proportion;
+		drawwidth = imageLoader.getSpriteWidth() * proportion;
+		drawHeight = imageLoader.getSpriteHeight() * proportion;
 
 		switch (hAlignment) {
 		case CENTER:
@@ -262,5 +262,16 @@ public class Image extends CB_View_Base {
 	    }
 	});
 
+    }
+
+    public Drawable getDrawable() {
+	if (imageLoader == null)
+	    return null;
+	return imageLoader.getDrawable(Gdx.graphics.getDeltaTime());
+    }
+
+    public ImageLoader getImageLoader() {
+
+	return imageLoader;
     }
 }

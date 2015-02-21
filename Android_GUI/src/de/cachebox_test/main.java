@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2014 team-cachebox.de
+ * Copyright (C) 2014-2015 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
  * you may not use this file except in compliance with the License.
@@ -202,6 +202,15 @@ import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEventListner,
 		GpsStatus.NmeaListener, GpsStatus.Listener
 {
+
+	private static AndroidApplicationConfiguration gdxConfig = new AndroidApplicationConfiguration();
+
+	static
+	{
+		gdxConfig.numSamples = 2;
+		gdxConfig.useAccelerometer = true;
+		gdxConfig.useCompass = true;
+	}
 
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(main.class);
 	private static ServiceConnection mConnection;
@@ -621,11 +630,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			if (input == null)
 			{
-				AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-				graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
-						: config.resolutionStrategy);
+				graphics = new AndroidGraphics(this, gdxConfig, gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy()
+						: gdxConfig.resolutionStrategy);
 
-				input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), config);
+				input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), gdxConfig);
 
 			}
 
@@ -1042,10 +1050,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (input == null)
 		{
-			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-			graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
-					: config.resolutionStrategy);
-			input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), config);
+			graphics = new AndroidGraphics(this, gdxConfig, gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy()
+					: gdxConfig.resolutionStrategy);
+			input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), gdxConfig);
 		}
 
 		if (isFinishing())
@@ -1139,10 +1146,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (input == null)
 		{
 			log.debug("Main=> onResume input== null");
-			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-			graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
-					: config.resolutionStrategy);
-			input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), config);
+
+			graphics = new AndroidGraphics(this, gdxConfig, gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy()
+					: gdxConfig.resolutionStrategy);
+			input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), gdxConfig);
 		}
 
 		super.onResume();
@@ -1724,15 +1731,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		try
 		{
-			// boolean GL20 = checkGL20Support(this);
-			//
-			// if (gdxView != null) log.debug("gdxView war initialisiert=" + gdxView.toString());
-			// gdxView = initializeForView(glListener, GL20);
-
-			AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
-			cfg.numSamples = 16;
-
-			gdxView = initializeForView(glListener, cfg);
+			gdxView = initializeForView(glListener, gdxConfig);
 
 			log.debug("Initial new gdxView=" + gdxView.toString());
 

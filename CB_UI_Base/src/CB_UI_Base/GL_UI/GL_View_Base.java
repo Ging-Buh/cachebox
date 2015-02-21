@@ -791,6 +791,8 @@ public abstract class GL_View_Base extends CB_RectF {
 			// touch innerhalb des Views
 			// -> Klick an das View weitergeben
 			behandelt = view.doubleClick(x - (int) view.getX(), y - (int) view.getY(), pointer, button);
+			if (behandelt)
+			    break;
 		    }
 		}
 	    }

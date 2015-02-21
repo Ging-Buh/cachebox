@@ -210,7 +210,7 @@ public class V_ListView extends ListViewBase {
 			mAllSize += itemHeight + mDividerSize;
 		    }
 
-		    mPosDefault.add(countPos);
+		    mPosDefault.add(countPos + mItemPosOffset);
 
 		}
 	    } else {
@@ -220,7 +220,7 @@ public class V_ListView extends ListViewBase {
 		    if (itemHeight < minimumItemSize)
 			minimumItemSize = itemHeight;
 		    mAllSize += itemHeight + mDividerSize;
-		    mPosDefault.add(countPos);
+		    mPosDefault.add(countPos + mItemPosOffset);
 
 		}
 	    }

@@ -75,8 +75,8 @@ public class ImageLoader {
     private Animation anim;
 
     boolean inLoad = false;
-    float spriteWidth;
-    float spriteHeight;
+    private float spriteWidth;
+    private float spriteHeight;
     boolean reziseHeight;
 
     public interface resize {
@@ -502,5 +502,21 @@ public class ImageLoader {
 		mDrawable = null;
 	    }
 	});
+    }
+
+    public float getSpriteWidth() {
+	return spriteWidth;
+    }
+
+    public void setSpriteWidth(float spriteWidth) {
+	this.spriteWidth = spriteWidth;
+    }
+
+    public float getSpriteHeight() {
+	return spriteHeight;
+    }
+
+    public void setSpriteHeight(float spriteHeight) {
+	this.spriteHeight = spriteHeight;
     }
 }

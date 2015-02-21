@@ -19,8 +19,7 @@ public class SettingString extends SettingBase<String>
 {
 	public static final String STRING_SPLITTER = "¡";
 
-	public SettingString(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType,
-			SettingUsage usage)
+	public SettingString(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage)
 	{
 		super(name, category, modus, StoreType, usage);
 		this.defaultValue = defaultValue;
@@ -68,4 +67,5 @@ public class SettingString extends SettingBase<String>
 
 		return true;
 	}
+
 }

@@ -207,4 +207,8 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>>
 		return this.usage;
 	}
 
+	public boolean isDefault()
+	{
+		return value.equals(defaultValue);
+	}
 }
