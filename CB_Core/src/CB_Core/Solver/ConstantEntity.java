@@ -27,7 +27,11 @@ public class ConstantEntity extends Entity
 	public String Berechne()
 	{
 		String value = String.valueOf(wert);
-		if (Math.round(wert) == wert) value = String.valueOf((int) (Math.round(wert)));
+		if (Math.round(wert) == wert)
+		{
+			long iv = (long) Math.round(wert);
+			value = String.valueOf(iv);
+		}
 		return value;
 	}
 

@@ -29,6 +29,8 @@ import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction.IFunctionResult;
 import CB_UI_Base.Enums.WrapType;
+import CB_UI_Base.Events.KeyboardFocusChangedEvent;
+import CB_UI_Base.Events.KeyboardFocusChangedEventList;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -36,6 +38,7 @@ import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextField.IListPosChanged;
+import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
 import CB_UI_Base.GL_UI.Controls.Dialogs.Toast;
 import CB_UI_Base.GL_UI.Controls.List.IScrollbarParent;
 import CB_UI_Base.GL_UI.Controls.List.Scrollbar;
@@ -115,6 +118,13 @@ public class SolverView extends CB_View_Base {
 	super(rec, Name);
 	addControls();
 	layout();
+	KeyboardFocusChangedEventList.Add(new KeyboardFocusChangedEvent() {
+
+	    @Override
+	    public void KeyboardFocusChanged(EditTextFieldBase focus) {
+		layoutEditFields(focus);
+	    }
+	});
     }
 
     public void SetSelectedCache(Cache cache, Waypoint waypoint) {
@@ -187,6 +197,14 @@ public class SolverView extends CB_View_Base {
 	btnFunct.setOnClickListener(functClicked);
 	this.addChild(btnFunct);
 	btnSelect = new Button(Translation.Get("Select."));
+	btnSelect.setOnClickListener(new OnClickListener() {
+
+	    @Override
+	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+		GL.that.setKeyboardFocus(null);
+		return true;
+	    }
+	});
 	this.addChild(btnSelect);
 
 	btnInputWindow = new Button(Translation.Get("LeftWindow"));
@@ -208,7 +226,7 @@ public class SolverView extends CB_View_Base {
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		windowState = WindowState.Left;
-		layoutEditFields();
+		layoutEditFields(GL.that.getKeyboardFocus());
 		return true;
 	    }
 	});
@@ -218,7 +236,7 @@ public class SolverView extends CB_View_Base {
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		windowState = WindowState.Both;
-		layoutEditFields();
+		layoutEditFields(GL.that.getKeyboardFocus());
 		return true;
 	    }
 	});
@@ -228,7 +246,7 @@ public class SolverView extends CB_View_Base {
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		windowState = WindowState.Right;
-		layoutEditFields();
+		layoutEditFields(GL.that.getKeyboardFocus());
 		return true;
 	    }
 	});
@@ -338,7 +356,7 @@ public class SolverView extends CB_View_Base {
 	btnBothWindow.setPos(btnWidth, yPos);
 	btnSolveWindow.setPos(btnWidth * 2, yPos);
 
-	layoutEditFields();
+	layoutEditFields(GL.that.getKeyboardFocus());
 
     }
 
@@ -346,7 +364,7 @@ public class SolverView extends CB_View_Base {
 	Left, Both, Right
     }
 
-    private void layoutEditFields() {
+    private void layoutEditFields(EditTextFieldBase focus) {
 
 	float le = this.getHalfWidth();
 	float le2 = this.getWidth() * 0.2f;
@@ -368,6 +386,11 @@ public class SolverView extends CB_View_Base {
 	float editHeight = this.getHeight() - (btnSolve.getHeight() * 2);
 	float widthLeft = this.getWidth() - le;
 
+	if (focus == edSolver) {
+	    y = this.getHalfHeight();
+	    editHeight = btnSolve.getY() - y;
+	}
+
 	edSolver.set(0, y, widthLeft, editHeight);
 	edResult.set(widthLeft, y, this.getWidth() - widthLeft, editHeight);
 
@@ -375,6 +398,11 @@ public class SolverView extends CB_View_Base {
 	float psW = scrollBar.getPushSliderWidth();
 	scrollBar.set(widthLeft, y, widthLeft, editHeight);
 	scrollBar.set(widthLeft - ((slW / 2) + psW), y, widthLeft, editHeight);
+
+    }
+
+    private void chkFocus() {
+
     }
 
     protected void solve() {
