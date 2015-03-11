@@ -80,6 +80,7 @@ import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 
@@ -264,8 +265,18 @@ public class GL implements ApplicationListener, InputProcessor {
 
     protected boolean ShaderSetted = false;
 
-    protected void setShader() {
+    public void setDefaultShader() {
 	batch.setShader(SpriteBatch.createDefaultShader());
+	ShaderSetted = true;
+    }
+
+    public void setShader(ShaderProgram shader) {
+
+	if (shader == null) {
+	    setDefaultShader();
+	    return;
+	}
+	batch.setShader(shader);
 	ShaderSetted = true;
     }
 

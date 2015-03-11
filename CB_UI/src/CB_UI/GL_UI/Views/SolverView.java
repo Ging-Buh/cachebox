@@ -31,7 +31,6 @@ import CB_UI.GL_UI.Activitys.SelectSolverFunction.IFunctionResult;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.KeyboardFocusChangedEvent;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
-import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
@@ -48,8 +47,6 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.GL_UISizes;
-import CB_UI_Base.Math.UiSizes;
 
 /**
  * 
@@ -166,10 +163,6 @@ public class SolverView extends CB_View_Base {
     public void onResized(CB_RectF rec) {
 	super.onResized(rec);
 	layout();
-
-	float infoHeight = -(UiSizes.that.getInfoSliderHeight());
-	CB_RectF world = this.getWorldRec();
-	platformConector.setContentSize((int) world.getX(), (int) ((GL_UISizes.SurfaceSize.getHeight() - world.getMaxY() + infoHeight)), (int) (GL_UISizes.SurfaceSize.getWidth() - world.getMaxX()), (int) world.getY());
     }
 
     @Override
@@ -219,6 +212,7 @@ public class SolverView extends CB_View_Base {
 	this.addChild(edSolver);
 	edResult = new EditTextField();
 	edResult.setWrapType(WrapType.MULTILINE);
+	edResult.disable();
 	this.addChild(edResult);
 
 	btnInputWindow.setOnClickListener(new OnClickListener() {
@@ -408,6 +402,9 @@ public class SolverView extends CB_View_Base {
     protected void solve() {
 	// Hide Keyboard when Calculating
 	// showVirturalKeyboard(false);
+
+	edResult.enable();
+
 	solver = new Solver(edSolver.getText().toString());
 	if (!solver.Solve()) {
 	    GL.that.Toast("Error", Toast.LENGTH_SHORT);
@@ -419,7 +416,7 @@ public class SolverView extends CB_View_Base {
 	}
 
 	edResult.setText(result);
-
+	edResult.disable();
 	scrollBar.ScrollPositionChanged();
 	GL.that.RunOnGL(new IRunOnGL() {
 
