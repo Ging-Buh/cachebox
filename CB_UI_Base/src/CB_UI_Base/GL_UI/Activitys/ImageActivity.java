@@ -35,6 +35,7 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.MathUtils;
 import CB_Utils.Math.Point;
 import CB_Utils.Math.PointL;
+import CB_Utils.Util.HSV_Color;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -92,7 +93,7 @@ public class ImageActivity extends ActivityBase {
 	deleteImage.setOnClickListener(deleteClick);
 	this.setClickable(true);
 
-	this.setBackground(new ColorDrawable(Color.BLACK));
+	this.setBackground(new ColorDrawable(new HSV_Color(Color.BLACK)));
 	img = selectionImage;
 	mapIntHeight = (int) this.getHeight();
 	screenCenterW.x = (long) (this.getHalfWidth());

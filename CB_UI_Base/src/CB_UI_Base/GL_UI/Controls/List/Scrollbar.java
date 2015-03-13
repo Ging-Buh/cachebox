@@ -32,6 +32,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  *
  */
 public class Scrollbar extends CB_View_Base {
+
+    final String NAME = "ScrollBar";
+
     private final IScrollbarParent ListView;
     private final CB_RectF SliderPuchRec = new CB_RectF();
     private final CB_RectF SliderRec = new CB_RectF();
@@ -49,8 +52,8 @@ public class Scrollbar extends CB_View_Base {
     private float mPushSliderTouch = 0;
     private float mPushSliderIstHight = 0;
 
-    private final Fader mPushSliderFader = new Fader(this);
-    private final Fader mSliderFader = new Fader(this);
+    private final Fader mPushSliderFader = new Fader(NAME);
+    private final Fader mSliderFader = new Fader(NAME);
 
     private float mPushSliderAlpha = 1f;
     private float mSliderAlpha = 1f;

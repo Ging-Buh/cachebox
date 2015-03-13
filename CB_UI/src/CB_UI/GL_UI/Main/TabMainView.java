@@ -203,6 +203,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 	    }
 	};
 	releaseTimer.scheduleAtFixedRate(releaseTask, 5000, 5000);
+
     }
 
     /**

@@ -53,6 +53,7 @@ import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
 import CB_UI_Base.GL_UI.Controls.SelectionMarker;
 import CB_UI_Base.GL_UI.Controls.SelectionMarker.Type;
+import CB_UI_Base.GL_UI.Controls.Animation.Fader;
 import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_UI_Base.GL_UI.Main.MainViewBase;
 import CB_UI_Base.GL_UI.Menu.Menu;
@@ -63,6 +64,7 @@ import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Log.Trace;
 import CB_Utils.Math.Point;
+import CB_Utils.Util.HSV_Color;
 import CB_Utils.Util.iChanged;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -321,8 +323,35 @@ public class GL implements ApplicationListener, InputProcessor {
 	return false;
     }
 
+    Fader grayFader = null;
+
+    public void resetAmbianeMode() {
+	grayFader.resetFadeOut();
+    }
+
+    public static void setBatchColor(HSV_Color color) {
+
+	float gray = that.grayFader.getValue();
+
+	if (gray < 1f) {
+	    float h = color.getSat() * gray;
+	    HSV_Color grayColor = new HSV_Color(color);
+	    grayColor.setSat(h);
+	    GL.batch.setColor(grayColor);
+	} else {
+	    GL.batch.setColor(color);
+	}
+    }
+
     @Override
     public void render() {
+
+	if (grayFader == null) {
+	    grayFader = new Fader("GRayScale");
+	}
+
+	setGrayscale(grayFader.getValue());
+
 	GL_ThreadId = Thread.currentThread().getId();
 	if (Energy.DisplayOff())
 	    return;
@@ -591,6 +620,7 @@ public class GL implements ApplicationListener, InputProcessor {
     protected int debugSpritebatchMaxCount = 0;
     protected long lastRenderBegin = 0;
     protected long renderTime = 0;
+    private GrayscalShaderProgram shader;
 
     @Override
     public void resize(int Width, int Height) {
@@ -613,14 +643,14 @@ public class GL implements ApplicationListener, InputProcessor {
     @Override
     public void pause() {
 	// wird aufgerufen beim Wechsel der aktiven App und beim Ausschalten des Ger�ts
-	// log.debug("Pause");
+	log.debug("Pause");
 
 	onStop();
     }
 
     @Override
     public void resume() {
-	// log.debug("Resume");
+	log.debug("Resume");
 
 	onStart();
     }
@@ -694,6 +724,9 @@ public class GL implements ApplicationListener, InputProcessor {
     // TouchEreignisse die von der View gesendet werden
     // hier wird entschieden, wann TouchDonw, TouchDragged, TouchUp und Clicked, LongClicked Ereignisse gesendet werden m�ssen
     public boolean onTouchDownBase(int x, int y, int pointer, int button) {
+
+	resetAmbianeMode();
+
 	misTouchDown = true;
 	touchDraggedActive = false;
 	touchDraggedCorrect = new Point(0, 0);
@@ -997,6 +1030,18 @@ public class GL implements ApplicationListener, InputProcessor {
 	    mActivity.setLongClickable(true);
 	}
 
+	//initial GrayScale shader
+	shader = new GrayscalShaderProgram();
+	setShader(shader);
+
+	setGrayscale(0.5f);
+
+    }
+
+    public void setGrayscale(float value) {
+	shader.begin();
+	shader.setUniformf("grayscale", value);
+	shader.end();
     }
 
     public CB_View_Base getDialogLayer() {

@@ -3,7 +3,8 @@ package CB_UI_Base.GL_UI.Controls.Animation;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import CB_UI_Base.GL_UI.GL_View_Base;
+import org.slf4j.LoggerFactory;
+
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 
 /**
@@ -12,6 +13,9 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
  * @author Longri
  */
 public class Fader {
+
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(Fader.class);
+
     /**
      * Default time to start the FadeOut Animation.<br>
      * default value: 13 sec
@@ -29,18 +33,18 @@ public class Fader {
     private float mFadeOutTime = DEFAULT_FADE_OUT_TIME;
     private float mFadeInTime = DEFAULT_FADE_IN_TIME;
     private float mFadeoutBeginntime = 0;
+    private final String name;
 
     /**
      * Constructor!
-     * 
-     * @param view
-     *            how implemented this Fader
-     */
-    public Fader(GL_View_Base view) {
+      */
+    public Fader(String name) {
+	this.name = name;
 	resetFadeOut();
     }
 
     float lastRender = 0;
+    float lastFadeValue = -1;
 
     /**
      * Returns the actual Fade Value
@@ -58,18 +62,10 @@ public class Fader {
 	    mFadeValue = 1;
 	}
 
-	if (this.isVisible()) {
-	    if (mFadeOut) {
-		if (lastRender + 0.01 < GL.that.getStateTime()) {
-		    lastRender = GL.that.getStateTime();
-		    GL.that.renderOnce();
-		}
-	    }
-
-	    if (mFadeIn) {
-		GL.that.renderOnce();
-	    }
+	if (mFadeIn || mFadeOut) {
+	    GL.that.renderOnce();
 	}
+
 	return mFadeValue;
     }
 
@@ -89,7 +85,8 @@ public class Fader {
 	cancelTimerToFadeOut();
 	mFadeoutBeginntime = GL.that.getStateTime() * 1000;
 	mFadeOut = true;
-	GL.that.renderOnce();
+	log.debug("beginn fade out =>" + name);
+	GL.that.renderOnce(true);
     }
 
     /**
@@ -129,7 +126,7 @@ public class Fader {
      */
     public void resetFadeOut() {
 
-	// log.debug("Reset Fade Out");
+	log.debug("reset fade out =>" + name);
 	if (mFadeIn && !mFadeOut) {
 	    mFadeIn = false;
 	    mFadeValue = 1.0f;
@@ -149,7 +146,7 @@ public class Fader {
 	}
 
 	startTimerToFadeOut();
-	GL.that.renderOnce();
+	GL.that.renderOnce(true);
     }
 
     private void calcFade() {
@@ -191,6 +188,8 @@ public class Fader {
 
     private void startTimerToFadeOut() {
 	cancelTimerToFadeOut();
+
+	log.debug("Start Timer to fade out =>" + Integer.toString(mTimeToFadeOut) + name);
 
 	mTimer = new Timer();
 	TimerTask task = new TimerTask() {

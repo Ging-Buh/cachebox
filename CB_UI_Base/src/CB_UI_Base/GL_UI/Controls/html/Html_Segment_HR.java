@@ -35,7 +35,7 @@ import com.badlogic.gdx.graphics.Color;
  */
 public class Html_Segment_HR extends Html_Segment {
 
-    Color color = Color.BLACK;
+    HSV_Color color = new HSV_Color(Color.BLACK);
     float hrsize = 0;
 
     public Html_Segment_HR(Stack<Tag> atributeStack) {
@@ -78,18 +78,18 @@ public class Html_Segment_HR extends Html_Segment {
 		try {
 		    this.color = new HSV_Color(color.replace("#", ""));
 		} catch (Exception e) {
-		    this.color = Color.BLACK;
+		    this.color = new HSV_Color(Color.BLACK);
 		    throw new NotImplementedException("HTML Renderer Color <" + color + "> is not implemented");
 		}
 	    } else {
 		try {
 		    this.color = HTMLColors.getColor(color);
 		    if (this.color == null) {
-			this.color = Color.BLACK;
+			this.color = new HSV_Color(Color.BLACK);
 			throw new NotImplementedException("HTML Renderer Color <" + color + "> is not implemented");
 		    }
 		} catch (Exception e) {
-		    this.color = Color.BLACK;
+		    this.color = new HSV_Color(Color.BLACK);
 		    throw new NotImplementedException("HTML Renderer Color <" + color + "> is not implemented");
 		}
 	    }
@@ -144,7 +144,7 @@ public class Html_Segment_HR extends Html_Segment {
 	this.hrsize = (Html_Segment_TextBlock.getFontPx(size) * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR) / 10;
     }
 
-    public Color getColor() {
+    public HSV_Color getColor() {
 	return color;
     }
 }

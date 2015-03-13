@@ -90,6 +90,7 @@ import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Util.HSV_Color;
 import CB_Utils.Util.iChanged;
 
 import com.badlogic.gdx.graphics.Color;
@@ -290,11 +291,11 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 	togBtn = new MultiToggleButton(GL_UISizes.Toggle, "toggle");
 
-	togBtn.addState("Free", Color.GRAY);
-	togBtn.addState("GPS", Color.GREEN);
-	togBtn.addState("WP", Color.MAGENTA);
-	togBtn.addState("Lock", Color.RED);
-	togBtn.addState("Car", Color.YELLOW);
+	togBtn.addState("Free", new HSV_Color(Color.GRAY));
+	togBtn.addState("GPS", new HSV_Color(Color.GREEN));
+	togBtn.addState("WP", new HSV_Color(Color.MAGENTA));
+	togBtn.addState("Lock", new HSV_Color(Color.RED));
+	togBtn.addState("Car", new HSV_Color(Color.YELLOW));
 	togBtn.setLastStateWithLongClick(true);
 
 	MapState last = MapState.values()[Config.LastMapToggleBtnState.getValue()];
