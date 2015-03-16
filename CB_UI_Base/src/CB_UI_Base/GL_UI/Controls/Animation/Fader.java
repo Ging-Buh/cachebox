@@ -34,6 +34,7 @@ public class Fader {
     private float mFadeInTime = DEFAULT_FADE_IN_TIME;
     private float mFadeoutBeginntime = 0;
     private final String name;
+    private boolean alwaysOn = false;
 
     /**
      * Constructor!
@@ -52,6 +53,9 @@ public class Fader {
      * @return
      */
     public float getValue() {
+	if (this.alwaysOn)
+	    return 1f;
+
 	calcFade();
 	if (mFadeValue < 0) {
 	    mFadeOut = false;
@@ -75,6 +79,8 @@ public class Fader {
      * @return
      */
     public boolean isVisible() {
+	if (this.alwaysOn)
+	    return true;
 	return mVirtualVisible;
     }
 
@@ -82,6 +88,8 @@ public class Fader {
      * Starts the FadeOut Animation
      */
     public void beginnFadeout() {
+	if (this.alwaysOn)
+	    return;
 	cancelTimerToFadeOut();
 	mFadeoutBeginntime = GL.that.getStateTime() * 1000;
 	mFadeOut = true;
@@ -125,7 +133,8 @@ public class Fader {
      * Restart the timer to begin FadeOut
      */
     public void resetFadeOut() {
-
+	if (this.alwaysOn)
+	    return;
 	log.debug("reset fade out =>" + name);
 	if (mFadeIn && !mFadeOut) {
 	    mFadeIn = false;
@@ -189,6 +198,8 @@ public class Fader {
     private void startTimerToFadeOut() {
 	cancelTimerToFadeOut();
 
+	if (this.alwaysOn)
+	    return;
 	log.debug("Start Timer to fade out =>" + Integer.toString(mTimeToFadeOut) + name);
 
 	mTimer = new Timer();
@@ -220,5 +231,9 @@ public class Fader {
      */
     public void stopTimer() {
 	cancelTimerToFadeOut();
+    }
+
+    public void setAlwaysOn(boolean value) {
+	this.alwaysOn = value;
     }
 }

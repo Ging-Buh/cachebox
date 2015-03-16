@@ -231,6 +231,10 @@ public class Scrollbar extends CB_View_Base {
 	    mPushSliderFader.stopTimer();
 	    float ll = ListView.getAllListSize();
 	    float ls = this.getHeight();
+
+	    if (ls > ll)
+		return true;
+
 	    float p = -ls + y - mPushSliderTouch;
 	    float s = mPushSliderIstHight;
 	    float l = this.getHeight();

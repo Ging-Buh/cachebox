@@ -348,6 +348,21 @@ public class GL implements ApplicationListener, InputProcessor {
 
 	if (grayFader == null) {
 	    grayFader = new Fader("GRayScale");
+	    grayFader.setAlwaysOn(CB_UI_Base_Settings.dontUseAmbient.getValue());
+	    grayFader.setTimeToFadeOut(CB_UI_Base_Settings.ambientTime.getValue() * 1000);
+
+	    iChanged ce = new iChanged() {
+
+		@Override
+		public void isChanged() {
+		    grayFader.setAlwaysOn(CB_UI_Base_Settings.dontUseAmbient.getValue());
+		    grayFader.setTimeToFadeOut(CB_UI_Base_Settings.ambientTime.getValue() * 1000);
+		    grayFader.resetFadeOut();
+		}
+	    };
+
+	    CB_UI_Base_Settings.dontUseAmbient.addChangedEventListner(ce);
+	    CB_UI_Base_Settings.ambientTime.addChangedEventListner(ce);
 	}
 
 	setGrayscale(grayFader.getValue());
