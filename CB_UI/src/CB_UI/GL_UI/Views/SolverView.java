@@ -47,6 +47,7 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
+import CB_Utils.Plattform;
 
 /**
  * 
@@ -213,6 +214,7 @@ public class SolverView extends CB_View_Base {
 	edResult = new EditTextField();
 	edResult.setWrapType(WrapType.MULTILINE);
 	edResult.disable();
+	edResult.dontShowSoftKeyBoardOnFocus(true);
 	this.addChild(edResult);
 
 	btnInputWindow.setOnClickListener(new OnClickListener() {
@@ -257,7 +259,8 @@ public class SolverView extends CB_View_Base {
 
 		    @Override
 		    public void run() {
-			edResult.setScrollPos(edSolver.getScrollPos());
+			if (edSolver.getMeasuredHeight() > edSolver.getHeight())
+			    edResult.setScrollPos(edSolver.getScrollPos());
 		    }
 		});
 	    }
@@ -270,7 +273,8 @@ public class SolverView extends CB_View_Base {
 
 		    @Override
 		    public void run() {
-			edSolver.setScrollPos(edResult.getScrollPos());
+			if (edSolver.getMeasuredHeight() > edSolver.getHeight())
+			    edSolver.setScrollPos(edResult.getScrollPos());
 		    }
 		});
 	    }
@@ -380,7 +384,7 @@ public class SolverView extends CB_View_Base {
 	float editHeight = this.getHeight() - (btnSolve.getHeight() * 2);
 	float widthLeft = this.getWidth() - le;
 
-	if (focus == edSolver) {
+	if (Plattform.used == Plattform.Android && focus == edSolver) {
 	    y = this.getHalfHeight();
 	    editHeight = btnSolve.getY() - y;
 	}
@@ -392,10 +396,6 @@ public class SolverView extends CB_View_Base {
 	float psW = scrollBar.getPushSliderWidth();
 	scrollBar.set(widthLeft, y, widthLeft, editHeight);
 	scrollBar.set(widthLeft - ((slW / 2) + psW), y, widthLeft, editHeight);
-
-    }
-
-    private void chkFocus() {
 
     }
 

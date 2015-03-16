@@ -93,7 +93,7 @@ public class Fader {
 	cancelTimerToFadeOut();
 	mFadeoutBeginntime = GL.that.getStateTime() * 1000;
 	mFadeOut = true;
-	log.debug("beginn fade out =>" + name);
+	//	log.debug("beginn fade out =>" + name);
 	GL.that.renderOnce(true);
     }
 
@@ -135,7 +135,7 @@ public class Fader {
     public void resetFadeOut() {
 	if (this.alwaysOn)
 	    return;
-	log.debug("reset fade out =>" + name);
+	//	log.debug("reset fade out =>" + name);
 	if (mFadeIn && !mFadeOut) {
 	    mFadeIn = false;
 	    mFadeValue = 1.0f;
@@ -200,7 +200,7 @@ public class Fader {
 
 	if (this.alwaysOn)
 	    return;
-	log.debug("Start Timer to fade out =>" + Integer.toString(mTimeToFadeOut) + name);
+	//	log.debug("Start Timer to fade out =>" + Integer.toString(mTimeToFadeOut) + name);
 
 	mTimer = new Timer();
 	TimerTask task = new TimerTask() {

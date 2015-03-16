@@ -116,72 +116,80 @@ public class Image extends CB_View_Base {
 
     @Override
     protected void render(Batch batch) {
+
+	if (imageLoader == null)
+	    return;
+
 	Color altColor = batch.getColor().cpy();
 	batch.setColor(mColor);
-	if (!imageLoader.isDrawableNULL()) {
-	    if (Wait != null) {
-		GL.that.removeRenderView(Wait);
-		this.removeChild(Wait);
-		Wait = null;
-	    }
-	    imageLoader.inLoad = false;
-	    float drawwidth = getWidth();
-	    float drawHeight = getHeight();
-	    float drawX = 0;
-	    float drawY = 0;
+	try {
+	    if (!imageLoader.isDrawableNULL()) {
+		if (Wait != null) {
+		    GL.that.removeRenderView(Wait);
+		    this.removeChild(Wait);
+		    Wait = null;
+		}
+		imageLoader.inLoad = false;
+		float drawwidth = getWidth();
+		float drawHeight = getHeight();
+		float drawX = 0;
+		float drawY = 0;
 
-	    if (imageLoader.getSpriteWidth() > 0 && imageLoader.getSpriteHeight() > 0) {
-		float proportionWidth = getWidth() / imageLoader.getSpriteWidth();
-		float proportionHeight = getHeight() / imageLoader.getSpriteHeight();
+		if (imageLoader.getSpriteWidth() > 0 && imageLoader.getSpriteHeight() > 0) {
+		    float proportionWidth = getWidth() / imageLoader.getSpriteWidth();
+		    float proportionHeight = getHeight() / imageLoader.getSpriteHeight();
 
-		float proportion = Math.min(proportionWidth, proportionHeight);
+		    float proportion = Math.min(proportionWidth, proportionHeight);
 
-		drawwidth = imageLoader.getSpriteWidth() * proportion;
-		drawHeight = imageLoader.getSpriteHeight() * proportion;
+		    drawwidth = imageLoader.getSpriteWidth() * proportion;
+		    drawHeight = imageLoader.getSpriteHeight() * proportion;
 
-		switch (hAlignment) {
-		case CENTER:
-		    drawX = (getWidth() - drawwidth) / 2;
-		    break;
-		case LEFT:
-		    drawX = 0;
-		    break;
-		case RIGHT:
-		    drawX = getWidth() - drawwidth;
-		    break;
-		case SCROLL_CENTER:
-		    drawX = (getWidth() - drawwidth) / 2;
-		    break;
-		case SCROLL_LEFT:
-		    drawX = 0;
-		    break;
-		case SCROLL_RIGHT:
-		    drawX = getWidth() - drawwidth;
-		    break;
-		default:
-		    drawX = (getWidth() - drawwidth) / 2;
-		    break;
+		    switch (hAlignment) {
+		    case CENTER:
+			drawX = (getWidth() - drawwidth) / 2;
+			break;
+		    case LEFT:
+			drawX = 0;
+			break;
+		    case RIGHT:
+			drawX = getWidth() - drawwidth;
+			break;
+		    case SCROLL_CENTER:
+			drawX = (getWidth() - drawwidth) / 2;
+			break;
+		    case SCROLL_LEFT:
+			drawX = 0;
+			break;
+		    case SCROLL_RIGHT:
+			drawX = getWidth() - drawwidth;
+			break;
+		    default:
+			drawX = (getWidth() - drawwidth) / 2;
+			break;
 
+		    }
+
+		    drawY = (getHeight() - drawHeight) / 2;
 		}
 
-		drawY = (getHeight() - drawHeight) / 2;
-	    }
+		imageLoader.getDrawable(Gdx.graphics.getDeltaTime()).draw(batch, drawX, drawY, drawwidth, drawHeight);
 
-	    imageLoader.getDrawable(Gdx.graphics.getDeltaTime()).draw(batch, drawX, drawY, drawwidth, drawHeight);
+		if (!isAsRenderViewRegisted.get() && imageLoader.getAnimDelay() > 0) {
+		    GL.that.addRenderView(this, imageLoader.getAnimDelay());
+		    isAsRenderViewRegisted.set(true);
+		}
+	    } else if (imageLoader.inLoad) {
+		if (Wait == null) {
+		    CB_RectF animationRec = new CB_RectF(0, 0, this.getWidth(), this.getHeight());
+		    Wait = WorkAnimation.GetINSTANCE(animationRec);
+		    GL.that.addRenderView(Wait, GL.FRAME_RATE_ACTION);
+		    this.addChild(Wait);
+		}
 
-	    if (!isAsRenderViewRegisted.get() && imageLoader.getAnimDelay() > 0) {
-		GL.that.addRenderView(this, imageLoader.getAnimDelay());
-		isAsRenderViewRegisted.set(true);
+		GL.that.renderOnce();
 	    }
-	} else if (imageLoader.inLoad) {
-	    if (Wait == null) {
-		CB_RectF animationRec = new CB_RectF(0, 0, this.getWidth(), this.getHeight());
-		Wait = WorkAnimation.GetINSTANCE(animationRec);
-		GL.that.addRenderView(Wait, GL.FRAME_RATE_ACTION);
-		this.addChild(Wait);
-	    }
-
-	    GL.that.renderOnce();
+	} catch (Exception e) {
+	    e.printStackTrace();
 	}
 
 	batch.setColor(altColor);
