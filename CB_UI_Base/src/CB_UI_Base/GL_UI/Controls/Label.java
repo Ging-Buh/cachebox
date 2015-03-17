@@ -338,7 +338,7 @@ public class Label extends CB_View_Base {
 	} catch (Exception e) {
 	    // java.lang.ArrayIndexOutOfBoundsException kommt mal vor
 	    e.printStackTrace();
-	    log.debug(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height + " \"" + mText + "\"");
+	    log.error(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height + " \"" + mText + "\"", e);
 	}
 
 	//new text, delete underline and strikeout drawable

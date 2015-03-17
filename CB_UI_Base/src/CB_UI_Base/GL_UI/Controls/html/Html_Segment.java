@@ -75,17 +75,22 @@ public abstract class Html_Segment {
 		elements.add(tag.getElement());
 	    for (Element ele : elements) {
 		Attributes attributes = ele.getAttributes();
-		for (Attribute attr : attributes) {
-		    if (attr.getKey().equals("align")) {
-			String val = attr.getValue();
-			if (val.contains("center"))
-			    hAlignment = HAlignment.CENTER;
-			else if (val.contains("left"))
-			    hAlignment = HAlignment.LEFT;
-			else if (val.contains("right"))
-			    hAlignment = HAlignment.RIGHT;
-			else
-			    hAlignment = HAlignment.LEFT;
+		if (attributes == null) {
+		    hAlignment = HAlignment.LEFT;
+		} else {
+
+		    for (Attribute attr : attributes) {
+			if (attr.getKey().equals("align")) {
+			    String val = attr.getValue();
+			    if (val.contains("center"))
+				hAlignment = HAlignment.CENTER;
+			    else if (val.contains("left"))
+				hAlignment = HAlignment.LEFT;
+			    else if (val.contains("right"))
+				hAlignment = HAlignment.RIGHT;
+			    else
+				hAlignment = HAlignment.LEFT;
+			}
 		    }
 		}
 	    }

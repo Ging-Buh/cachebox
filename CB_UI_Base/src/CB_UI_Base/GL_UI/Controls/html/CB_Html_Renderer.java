@@ -204,11 +204,11 @@ public class CB_Html_Renderer extends Renderer {
 
 	    if (text != null)
 		text = text.trim();
-	    if (renderedHyperlinkURL != null)
+	    if (renderedHyperlinkURL != null && !text.isEmpty()) {
 		renderedHyperlinkURL = renderedHyperlinkURL.trim();
 
-	    cb_processor.add(new HyperLinkText(text, renderedHyperlinkURL));
-
+		cb_processor.add(new HyperLinkText(text, renderedHyperlinkURL));
+	    }
 	}
     }
 
