@@ -24,6 +24,7 @@ import javax.swing.JFileChooser;
 import CB_UI_Base.Global;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_Utils.Util.Downloader;
+import CB_Utils.Util.HSV_Color;
 import CB_Utils.Util.CopyHelper.Copy;
 import CB_Utils.Util.CopyHelper.Copy.CopyMsg;
 import CB_Utils.Util.CopyHelper.CopyRule;
@@ -92,7 +93,7 @@ public class Core implements ApplicationListener
 		LabelStyle lblOutStyle = new LabelStyle(skin.get(LabelStyle.class));
 		lblOutStyle.font = font15;
 		lblOutStyle.fontColor = Color.BLACK;
-		lblOutStyle.background = new ColorDrawable(Color.WHITE);
+		lblOutStyle.background = new ColorDrawable(new HSV_Color(Color.WHITE));
 
 		TextButtonStyle btnStyle = skin.get(TextButtonStyle.class);
 		btnStyle.font = font15;
