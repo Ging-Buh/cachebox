@@ -570,6 +570,7 @@ public class Locator
 	 */
 	public static void setHeading(float heading, CompassType type)
 	{
+
 		if (type == CompassType.GPS)
 		{
 			that.mlastGPSHeading = heading;

@@ -1428,7 +1428,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				mCompassValues = event.values;
 				compassHeading = mCompassValues[0];
-
 				CB_Locator.Locator.setHeading(compassHeading, CompassType.Magnetic);
 			}
 			catch (Exception e)

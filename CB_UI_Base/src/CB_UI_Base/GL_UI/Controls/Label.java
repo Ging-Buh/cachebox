@@ -33,6 +33,7 @@ import CB_UI_Base.graphics.PolygonDrawable;
 import CB_UI_Base.graphics.Geometry.GeometryList;
 import CB_UI_Base.graphics.Geometry.Line;
 import CB_UI_Base.graphics.Geometry.Quadrangle;
+import CB_Utils.Util.HSV_Color;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -608,6 +609,20 @@ public class Label extends CB_View_Base {
 	mHAlignment = null;
 	mText = null;
 	bounds = null;
+    }
+
+    public void setText(String text, HSV_Color color) {
+	// TODO Auto-generated method stub
+	if (color != null) {
+	    if (color != mColor) {
+		mColor = color;
+	    }
+	}
+
+	if (text == null)
+	    text = "";
+	mText = text;
+	makeText();
     }
 
 }

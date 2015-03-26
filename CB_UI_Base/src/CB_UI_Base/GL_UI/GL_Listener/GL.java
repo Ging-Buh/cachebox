@@ -95,6 +95,7 @@ public class GL implements ApplicationListener, InputProcessor {
     public static final int FRAME_RATE_ACTION = 50;
     public static final int FRAME_RATE_FAST_ACTION = 40;
 
+    private static final AtomicBoolean ambientMode = new AtomicBoolean(false);
     private final int MAX_FBO_RENDER_TIME = 200;
     private static final boolean TOUCH_DEBUG = false;
     private final boolean FORCE = true;
@@ -166,6 +167,10 @@ public class GL implements ApplicationListener, InputProcessor {
 
     public static boolean ifAllInitial = false;
 
+    public static void setAmbientMode(boolean value) {
+	ambientMode.set(value);
+    }
+
     public static void setIsInitial() {
 	ifAllInitial = true;
     }
@@ -226,8 +231,10 @@ public class GL implements ApplicationListener, InputProcessor {
 	    }
 	});
 
-	Gdx.input.setInputProcessor(this);
-	Gdx.input.setCatchBackKey(true);
+	if (Gdx.input != null) {
+	    Gdx.input.setInputProcessor(this);
+	    Gdx.input.setCatchBackKey(true);
+	}
     }
 
     /**
@@ -346,6 +353,12 @@ public class GL implements ApplicationListener, InputProcessor {
     @Override
     public void render() {
 
+	if (Gdx.gl == null) {
+	    //	    log.error("GL.render() with not initial GDX.gl");
+	    Gdx.app.error("CB_UI GL", "GL.render() with not initial GDX.gl");
+	    return;
+	}
+
 	if (grayFader == null) {
 	    grayFader = new Fader("GRayScale");
 	    grayFader.setAlwaysOn(CB_UI_Base_Settings.dontUseAmbient.getValue());
@@ -365,7 +378,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	    CB_UI_Base_Settings.ambientTime.addChangedEventListner(ce);
 	}
 
-	setGrayscale(grayFader.getValue());
+	setGrayscale(ambientMode.get() ? 0f : grayFader.getValue());
 
 	GL_ThreadId = Thread.currentThread().getId();
 	if (Energy.DisplayOff())
@@ -1054,9 +1067,11 @@ public class GL implements ApplicationListener, InputProcessor {
     }
 
     public void setGrayscale(float value) {
-	shader.begin();
-	shader.setUniformf("grayscale", value);
-	shader.end();
+	if (shader != null) {
+	    shader.begin();
+	    shader.setUniformf("grayscale", value);
+	    shader.end();
+	}
     }
 
     public CB_View_Base getDialogLayer() {
