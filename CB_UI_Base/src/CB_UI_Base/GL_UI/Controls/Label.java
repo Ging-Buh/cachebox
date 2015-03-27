@@ -428,7 +428,7 @@ public class Label extends CB_View_Base {
 	    yPosition = (innerHeight - bounds.height - mFont.getAscent()) / 2f;
 	    break;
 	case BOTTOM:
-	    // TODO implement
+	    yPosition = -mFont.getDescent();
 	    break;
 
 	}
