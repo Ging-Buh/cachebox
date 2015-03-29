@@ -30,4 +30,9 @@ public class HyperLinkText {
 	this.url = Url;
     }
 
+    public void dispose() {
+	// all member are final
+	// nothing to do
+    }
+
 }

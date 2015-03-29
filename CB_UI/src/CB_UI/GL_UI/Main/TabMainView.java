@@ -328,7 +328,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 	API_ErrorEventHandlerList.addHandler(handler);
 
 	log.debug("Start TabMainView-Initial");
-	log.debug("Start TabMainView-Initial");
 
 	actionShowMap = new CB_Action_ShowMap();
 	actionShowHint = new CB_Action_ShowHint();
@@ -690,7 +689,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
     }
 
     public void setContentMaxY(float y) {
-	log.debug("TabMainView SetContent maxY" + y);
+	//log.debug("TabMainView SetContent maxY" + y);
 	synchronized (childs) {
 	    for (int i = 0, n = childs.size(); i < n; i++) {
 		GL_View_Base view = childs.get(i);

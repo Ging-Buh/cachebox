@@ -34,7 +34,7 @@ public abstract class Html_Segment {
     public static final String br = System.getProperty("line.separator");
 
     protected List<StartTag> tags = new ArrayList<StartTag>();
-    protected String formatetText;
+    protected String formatedText;
     protected boolean attDirty = false;
     public final Html_Segment_Typ segmentTyp;
     protected HAlignment hAlignment = HAlignment.LEFT;
@@ -42,7 +42,7 @@ public abstract class Html_Segment {
     public Html_Segment(Html_Segment_Typ segmentTyp, Stack<Tag> atributeStack, String string) {
 	super();
 	this.segmentTyp = segmentTyp;
-	this.formatetText = string;
+	this.formatedText = string;
 
 	for (int i = atributeStack.size() - 1; i >= 0; i--) {
 	    this.tags.add((StartTag) atributeStack.get(i));
@@ -108,8 +108,22 @@ public abstract class Html_Segment {
 	    }
 	    sb.append("]" + br);
 	}
-	sb.append(segmentTyp.toString() + ": " + formatetText);
+	sb.append(segmentTyp.toString() + ": " + formatedText);
 	return sb.toString();
     }
 
+    public void dispose() {
+
+	if (tags != null) {
+	    for (StartTag tag : tags) {
+		tag.dispose();
+		tag = null;
+	    }
+	    tags.clear();
+	    tags = null;
+	}
+
+	formatedText = null;
+
+    }
 }

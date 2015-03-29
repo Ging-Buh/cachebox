@@ -204,317 +204,317 @@ import java.util.List;
  * 
  * @see HTMLElements
  */
-public final class Element extends Segment
-{
-	private final StartTag startTag;
-	private final EndTag endTag;
-	private Segment content = null;
-	Element parentElement = Element.NOT_CACHED;
-	private int depth = -1;
-	private List<Element> childElements = null;
+public final class Element extends Segment {
+    private final StartTag startTag;
+    private final EndTag endTag;
+    private Segment content = null;
+    Element parentElement = Element.NOT_CACHED;
+    private int depth = -1;
+    private List<Element> childElements = null;
 
-	static final Element NOT_CACHED = new Element();
+    static final Element NOT_CACHED = new Element();
 
-	private static final boolean INCLUDE_INCORRECTLY_NESTED_CHILDREN_IN_HIERARCHY = true;
+    private static final boolean INCLUDE_INCORRECTLY_NESTED_CHILDREN_IN_HIERARCHY = true;
 
-	Element(final Source source, final StartTag startTag, final EndTag endTag)
-	{
-		super(source, startTag.begin, endTag == null ? startTag.end : endTag.end);
-		if (source.isStreamed()) throw new UnsupportedOperationException("Elements are not supported when using StreamedSource");
-		this.startTag = startTag;
-		this.endTag = (endTag == null || endTag.length() == 0) ? null : endTag;
+    Element(final Source source, final StartTag startTag, final EndTag endTag) {
+	super(source, startTag.begin, endTag == null ? startTag.end : endTag.end);
+	if (source.isStreamed())
+	    throw new UnsupportedOperationException("Elements are not supported when using StreamedSource");
+	this.startTag = startTag;
+	this.endTag = (endTag == null || endTag.length() == 0) ? null : endTag;
+    }
+
+    // used only to construct NOT_CACHED
+    private Element() {
+	startTag = null;
+	endTag = null;
+    }
+
+    /**
+     * Returns the parent of this element in the document element hierarchy.
+     * <p>
+     * The {@link Source#fullSequentialParse()} method must be called (either explicitly or implicitly) immediately after construction of
+     * the <code>Source</code> object if this method is to be used. An <code>IllegalStateException</code> is thrown if a full sequential
+     * parse has not been performed or if it was performed after this element was found.
+     * <p>
+     * This method returns <code>null</code> for a <a href="Source.html#TopLevelElement">top-level element</a>, as well as any element
+     * formed from a {@linkplain TagType#isServerTag() server tag}, regardless of whether it is nested inside a normal element.
+     * <p>
+     * See the {@link Source#getChildElements()} method for more details.
+     *
+     * @return the parent of this element in the document element hierarchy, or <code>null</code> if this element is a <a
+     *         href="Source.html#TopLevelElement">top-level element</a>.
+     * @throws IllegalStateException
+     *             if a {@linkplain Source#fullSequentialParse() full sequential parse} has not been performed or if it was performed after
+     *             this element was found.
+     * @see #getChildElements()
+     */
+    public Element getParentElement() {
+	if (parentElement == Element.NOT_CACHED) {
+	    if (!source.wasFullSequentialParseCalled())
+		throw new IllegalStateException("This operation is only possible after a full sequential parse has been performed");
+	    if (startTag.isOrphaned())
+		throw new IllegalStateException("This operation is only possible if a full sequential parse was performed immediately after construction of the Source object");
+	    source.getChildElements();
+	    if (parentElement == Element.NOT_CACHED)
+		parentElement = null;
 	}
+	return parentElement;
+    }
 
-	// used only to construct NOT_CACHED
-	private Element()
-	{
-		startTag = null;
-		endTag = null;
-	}
+    /**
+     * Returns a list of the immediate children of this element in the document element hierarchy.
+     * <p>
+     * The objects in the list are all of type {@link Element}.
+     * <p>
+     * See the {@link Source#getChildElements()} method for more details.
+     *
+     * @return a list of the immediate children of this element in the document element hierarchy, guaranteed not <code>null</code>.
+     * @see #getParentElement()
+     */
+    @Override
+    public final List<Element> getChildElements() {
+	return childElements != null ? childElements : getChildElements(-1);
+    }
 
-	/**
-	 * Returns the parent of this element in the document element hierarchy.
-	 * <p>
-	 * The {@link Source#fullSequentialParse()} method must be called (either explicitly or implicitly) immediately after construction of
-	 * the <code>Source</code> object if this method is to be used. An <code>IllegalStateException</code> is thrown if a full sequential
-	 * parse has not been performed or if it was performed after this element was found.
-	 * <p>
-	 * This method returns <code>null</code> for a <a href="Source.html#TopLevelElement">top-level element</a>, as well as any element
-	 * formed from a {@linkplain TagType#isServerTag() server tag}, regardless of whether it is nested inside a normal element.
-	 * <p>
-	 * See the {@link Source#getChildElements()} method for more details.
-	 *
-	 * @return the parent of this element in the document element hierarchy, or <code>null</code> if this element is a <a
-	 *         href="Source.html#TopLevelElement">top-level element</a>.
-	 * @throws IllegalStateException
-	 *             if a {@linkplain Source#fullSequentialParse() full sequential parse} has not been performed or if it was performed after
-	 *             this element was found.
-	 * @see #getChildElements()
-	 */
-	public Element getParentElement()
-	{
-		if (parentElement == Element.NOT_CACHED)
-		{
-			if (!source.wasFullSequentialParseCalled()) throw new IllegalStateException("This operation is only possible after a full sequential parse has been performed");
-			if (startTag.isOrphaned()) throw new IllegalStateException("This operation is only possible if a full sequential parse was performed immediately after construction of the Source object");
-			source.getChildElements();
-			if (parentElement == Element.NOT_CACHED) parentElement = null;
-		}
-		return parentElement;
-	}
-
-	/**
-	 * Returns a list of the immediate children of this element in the document element hierarchy.
-	 * <p>
-	 * The objects in the list are all of type {@link Element}.
-	 * <p>
-	 * See the {@link Source#getChildElements()} method for more details.
-	 *
-	 * @return a list of the immediate children of this element in the document element hierarchy, guaranteed not <code>null</code>.
-	 * @see #getParentElement()
-	 */
-	@Override
-	public final List<Element> getChildElements()
-	{
-		return childElements != null ? childElements : getChildElements(-1);
-	}
-
-	final List<Element> getChildElements(int depth)
-	{
-		if (depth != -1) this.depth = depth;
-		if (childElements == null)
-		{
-			if (!Config.IncludeServerTagsInElementHierarchy && end == startTag.end)
-			{
-				childElements = Collections.emptyList();
+    final List<Element> getChildElements(int depth) {
+	if (depth != -1)
+	    this.depth = depth;
+	if (childElements == null) {
+	    if (!Config.IncludeServerTagsInElementHierarchy && end == startTag.end) {
+		childElements = Collections.emptyList();
+	    } else {
+		final int childDepth = (depth == -1 ? -1 : depth + 1);
+		childElements = new ArrayList<Element>();
+		int pos = Config.IncludeServerTagsInElementHierarchy ? begin + 1 : startTag.end;
+		final int maxChildBegin = (Config.IncludeServerTagsInElementHierarchy || endTag == null) ? end : endTag.begin;
+		while (true) {
+		    final StartTag childStartTag = source.getNextStartTag(pos);
+		    if (childStartTag == null || childStartTag.begin >= maxChildBegin)
+			break;
+		    if (Config.IncludeServerTagsInElementHierarchy) {
+			if (childStartTag.begin < startTag.end && !childStartTag.getTagType().isServerTag() && !startTag.getTagType().isServerTag()) {
+			    // A start tag is found within another start tag, but neither is a server tag.
+			    // This only legitimately happens in very rare cases like entity definitions in doctype.
+			    // We don't want to include the child elements in the hierarchy.
+			    pos = childStartTag.end;
+			    continue;
 			}
-			else
-			{
-				final int childDepth = (depth == -1 ? -1 : depth + 1);
-				childElements = new ArrayList<Element>();
-				int pos = Config.IncludeServerTagsInElementHierarchy ? begin + 1 : startTag.end;
-				final int maxChildBegin = (Config.IncludeServerTagsInElementHierarchy || endTag == null) ? end : endTag.begin;
-				while (true)
-				{
-					final StartTag childStartTag = source.getNextStartTag(pos);
-					if (childStartTag == null || childStartTag.begin >= maxChildBegin) break;
-					if (Config.IncludeServerTagsInElementHierarchy)
-					{
-						if (childStartTag.begin < startTag.end && !childStartTag.getTagType().isServerTag() && !startTag.getTagType().isServerTag())
-						{
-							// A start tag is found within another start tag, but neither is a server tag.
-							// This only legitimately happens in very rare cases like entity definitions in doctype.
-							// We don't want to include the child elements in the hierarchy.
-							pos = childStartTag.end;
-							continue;
-						}
-					}
-					else if (childStartTag.getTagType().isServerTag())
-					{
-						pos = childStartTag.end;
-						continue;
-					}
-					final Element childElement = childStartTag.getElement();
-					if (childElement.end > end)
-					{
-						if (source.logger.isErrorEnabled()) source.logger.error("Child " + childElement.getDebugInfo() + " extends beyond end of parent " + getDebugInfo());
-						if (!INCLUDE_INCORRECTLY_NESTED_CHILDREN_IN_HIERARCHY)
-						{
-							pos = childElement.end;
-							continue;
-						}
-					}
-					childElement.getChildElements(childDepth);
-					if (childElement.parentElement == Element.NOT_CACHED)
-					{ // make sure element was not added as a child of a descendent element (can happen with overlapping elements)
-						childElement.parentElement = this;
-						childElements.add(childElement);
-					}
-					pos = childElement.end;
-				}
+		    } else if (childStartTag.getTagType().isServerTag()) {
+			pos = childStartTag.end;
+			continue;
+		    }
+		    final Element childElement = childStartTag.getElement();
+		    if (childElement.end > end) {
+			if (source.logger.isErrorEnabled())
+			    source.logger.error("Child " + childElement.getDebugInfo() + " extends beyond end of parent " + getDebugInfo());
+			if (!INCLUDE_INCORRECTLY_NESTED_CHILDREN_IN_HIERARCHY) {
+			    pos = childElement.end;
+			    continue;
 			}
+		    }
+		    childElement.getChildElements(childDepth);
+		    if (childElement.parentElement == Element.NOT_CACHED) { // make sure element was not added as a child of a descendent element (can happen with overlapping elements)
+			childElement.parentElement = this;
+			childElements.add(childElement);
+		    }
+		    pos = childElement.end;
 		}
-		return childElements;
+	    }
 	}
+	return childElements;
+    }
 
-	/**
-	 * Returns the nesting depth of this element in the document element hierarchy.
-	 * <p>
-	 * The {@link Source#fullSequentialParse()} method must be called (either explicitly or implicitly) after construction of the
-	 * <code>Source</code> object if this method is to be used. An <code>IllegalStateException</code> is thrown if a full sequential parse
-	 * has not been performed or if it was performed after this element was found.
-	 * <p>
-	 * A <a href="Source.html#TopLevelElement">top-level element</a> has a nesting depth of <code>0</code>.
-	 * <p>
-	 * An element formed from a {@linkplain TagType#isServerTag() server tag} always have a nesting depth of <code>0</code>, regardless of
-	 * whether it is nested inside a normal element.
-	 * <p>
-	 * See the {@link Source#getChildElements()} method for more details.
-	 *
-	 * @return the nesting depth of this element in the document element hierarchy.
-	 * @throws IllegalStateException
-	 *             if a {@linkplain Source#fullSequentialParse() full sequential parse} has not been performed or if it was performed after
-	 *             this element was found.
-	 * @see #getParentElement()
-	 */
-	public int getDepth()
-	{
-		if (depth == -1)
-		{
-			getParentElement();
-			if (depth == -1) depth = 0;
+    /**
+     * Returns the nesting depth of this element in the document element hierarchy.
+     * <p>
+     * The {@link Source#fullSequentialParse()} method must be called (either explicitly or implicitly) after construction of the
+     * <code>Source</code> object if this method is to be used. An <code>IllegalStateException</code> is thrown if a full sequential parse
+     * has not been performed or if it was performed after this element was found.
+     * <p>
+     * A <a href="Source.html#TopLevelElement">top-level element</a> has a nesting depth of <code>0</code>.
+     * <p>
+     * An element formed from a {@linkplain TagType#isServerTag() server tag} always have a nesting depth of <code>0</code>, regardless of
+     * whether it is nested inside a normal element.
+     * <p>
+     * See the {@link Source#getChildElements()} method for more details.
+     *
+     * @return the nesting depth of this element in the document element hierarchy.
+     * @throws IllegalStateException
+     *             if a {@linkplain Source#fullSequentialParse() full sequential parse} has not been performed or if it was performed after
+     *             this element was found.
+     * @see #getParentElement()
+     */
+    public int getDepth() {
+	if (depth == -1) {
+	    getParentElement();
+	    if (depth == -1)
+		depth = 0;
+	}
+	return depth;
+    }
+
+    /**
+     * Returns the segment representing the <a target="_blank" href="http://www.w3.org/TR/REC-xml#dt-content">content</a> of the element.
+     * <p>
+     * This segment spans between the end of the start tag and the start of the end tag. If the end tag is not present, the content reaches
+     * to the end of the element.
+     * <p>
+     * A zero-length segment is returned if the element is {@linkplain #isEmpty() empty},
+     *
+     * @return the segment representing the content of the element, guaranteed not <code>null</code>.
+     */
+    public Segment getContent() {
+	if (content == null)
+	    content = new Segment(source, startTag.end, getContentEnd());
+	return content;
+    }
+
+    /**
+     * Returns the start tag of the element.
+     * 
+     * @return the start tag of the element.
+     */
+    public StartTag getStartTag() {
+	return startTag;
+    }
+
+    /**
+     * Returns the end tag of the element.
+     * <p>
+     * If the element has no end tag this method returns <code>null</code>.
+     *
+     * @return the end tag of the element, or <code>null</code> if the element has no end tag.
+     */
+    public EndTag getEndTag() {
+	return endTag;
+    }
+
+    /**
+     * Returns the {@linkplain StartTag#getName() name} of the {@linkplain #getStartTag() start tag} of this element, always in lower case.
+     * <p>
+     * This is equivalent to {@link #getStartTag()}<code>.</code>{@link StartTag#getName() getName()}.
+     * <p>
+     * See the {@link Tag#getName()} method for more information.
+     *
+     * @return the name of the {@linkplain #getStartTag() start tag} of this element, always in lower case.
+     */
+    public String getName() {
+	return startTag.getName();
+    }
+
+    /**
+     * Indicates whether this element has zero-length {@linkplain #getContent() content}.
+     * <p>
+     * This is equivalent to {@link #getContent()}<code>.</code>{@link Segment#length() length()}<code>==0</code>.
+     * <p>
+     * Note that this is a broader definition than that of both the <a target="_blank"
+     * href="http://www.w3.org/TR/html401/intro/sgmltut.html#didx-element-4">HTML definition of an empty element</a>, which is only those
+     * elements whose end tag is {@linkplain HTMLElements#getEndTagForbiddenElementNames() forbidden}, and the <a target="_blank"
+     * href="http://www.w3.org/TR/REC-xml#dt-empty">XML definition of an empty element</a>, which is "either a start-tag immediately
+     * followed by an end-tag, or an {@linkplain #isEmptyElementTag() empty-element tag}". The other possibility covered by this property is
+     * the case of an <a href="HTMLElements.html#HTMLElement">HTML element</a> with an
+     * {@linkplain HTMLElements#getEndTagOptionalElementNames() optional} end tag that is immediately followed by another tag that
+     * implicitly terminates the element.
+     *
+     * @return <code>true</code> if this element has zero-length {@linkplain #getContent() content}, otherwise <code>false</code>.
+     * @see #isEmptyElementTag()
+     */
+    public boolean isEmpty() {
+	return startTag.end == getContentEnd();
+    }
+
+    /**
+     * Indicates whether this element is an <a target="_blank" href="http://www.w3.org/TR/REC-xml#dt-eetag">empty-element tag</a>.
+     * <p>
+     * This is equivalent to {@link #getStartTag()}<code>.</code>{@link StartTag#isEmptyElementTag() isEmptyElementTag()}.
+     *
+     * @return <code>true</code> if this element is an <a target="_blank" href="http://www.w3.org/TR/REC-xml#dt-eetag">empty-element
+     *         tag</a>, otherwise <code>false</code>.
+     */
+    public boolean isEmptyElementTag() {
+	return startTag.isEmptyElementTag();
+    }
+
+    /**
+     * Returns the attributes specified in this element's start tag.
+     * <p>
+     * This is equivalent to {@link #getStartTag()}<code>.</code>{@link StartTag#getAttributes() getAttributes()}.
+     *
+     * @return the attributes specified in this element's start tag.
+     * @see StartTag#getAttributes()
+     */
+    public Attributes getAttributes() {
+	return getStartTag().getAttributes();
+    }
+
+    /**
+     * Returns the {@linkplain CharacterReference#decode(CharSequence) decoded} value of the attribute with the specified name (case
+     * insensitive).
+     * <p>
+     * Returns <code>null</code> if the {@linkplain #getStartTag() start tag of this element} does not
+     * {@linkplain StartTagType#hasAttributes() have attributes}, no attribute with the specified name exists or the attribute
+     * {@linkplain Attribute#hasValue() has no value}.
+     * <p>
+     * This is equivalent to {@link #getStartTag()}<code>.</code>{@link StartTag#getAttributeValue(String) getAttributeValue(attributeName)}.
+     *
+     * @param attributeName
+     *            the name of the attribute to get.
+     * @return the {@linkplain CharacterReference#decode(CharSequence) decoded} value of the attribute with the specified name, or
+     *         <code>null</code> if the attribute does not exist or {@linkplain Attribute#hasValue() has no value}.
+     */
+    public String getAttributeValue(final String attributeName) {
+	return getStartTag().getAttributeValue(attributeName);
+    }
+
+    /**
+     * Returns the {@link FormControl} defined by this element.
+     * 
+     * @return the {@link FormControl} defined by this element, or <code>null</code> if it is not a <a target="_blank"
+     *         href="http://www.w3.org/TR/html401/interact/forms.html#form-controls">control</a>.
+     */
+    public FormControl getFormControl() {
+	return FormControl.construct(this);
+    }
+
+    @Override
+    public String getDebugInfo() {
+	if (this == NOT_CACHED)
+	    return "NOT_CACHED";
+	final StringBuilder sb = new StringBuilder();
+	sb.append("Element ");
+	startTag.appendDebugTag(sb);
+	if (!isEmpty())
+	    sb.append('-');
+	if (endTag != null)
+	    sb.append(endTag);
+	sb.append(' ');
+	startTag.appendDebugTagType(sb);
+	sb.append(super.getDebugInfo());
+	return sb.toString();
+    }
+
+    public int getContentEnd() {
+	return endTag != null ? endTag.begin : end;
+    }
+
+    @Override
+    public void dispose() {
+	if (content != null) {
+	    content.dispose();
+	    content = null;
+	}
+	parentElement = null;
+
+	if (childElements != null) {
+	    for (Element element : childElements) {
+		if (element != null) {
+		    element.dispose();
+		    element = null;
 		}
-		return depth;
+	    }
+	    childElements.clear();
+	    childElements = null;
 	}
-
-	/**
-	 * Returns the segment representing the <a target="_blank" href="http://www.w3.org/TR/REC-xml#dt-content">content</a> of the element.
-	 * <p>
-	 * This segment spans between the end of the start tag and the start of the end tag. If the end tag is not present, the content reaches
-	 * to the end of the element.
-	 * <p>
-	 * A zero-length segment is returned if the element is {@linkplain #isEmpty() empty},
-	 *
-	 * @return the segment representing the content of the element, guaranteed not <code>null</code>.
-	 */
-	public Segment getContent()
-	{
-		if (content == null) content = new Segment(source, startTag.end, getContentEnd());
-		return content;
-	}
-
-	/**
-	 * Returns the start tag of the element.
-	 * 
-	 * @return the start tag of the element.
-	 */
-	public StartTag getStartTag()
-	{
-		return startTag;
-	}
-
-	/**
-	 * Returns the end tag of the element.
-	 * <p>
-	 * If the element has no end tag this method returns <code>null</code>.
-	 *
-	 * @return the end tag of the element, or <code>null</code> if the element has no end tag.
-	 */
-	public EndTag getEndTag()
-	{
-		return endTag;
-	}
-
-	/**
-	 * Returns the {@linkplain StartTag#getName() name} of the {@linkplain #getStartTag() start tag} of this element, always in lower case.
-	 * <p>
-	 * This is equivalent to {@link #getStartTag()}<code>.</code>{@link StartTag#getName() getName()}.
-	 * <p>
-	 * See the {@link Tag#getName()} method for more information.
-	 *
-	 * @return the name of the {@linkplain #getStartTag() start tag} of this element, always in lower case.
-	 */
-	public String getName()
-	{
-		return startTag.getName();
-	}
-
-	/**
-	 * Indicates whether this element has zero-length {@linkplain #getContent() content}.
-	 * <p>
-	 * This is equivalent to {@link #getContent()}<code>.</code>{@link Segment#length() length()}<code>==0</code>.
-	 * <p>
-	 * Note that this is a broader definition than that of both the <a target="_blank"
-	 * href="http://www.w3.org/TR/html401/intro/sgmltut.html#didx-element-4">HTML definition of an empty element</a>, which is only those
-	 * elements whose end tag is {@linkplain HTMLElements#getEndTagForbiddenElementNames() forbidden}, and the <a target="_blank"
-	 * href="http://www.w3.org/TR/REC-xml#dt-empty">XML definition of an empty element</a>, which is "either a start-tag immediately
-	 * followed by an end-tag, or an {@linkplain #isEmptyElementTag() empty-element tag}". The other possibility covered by this property is
-	 * the case of an <a href="HTMLElements.html#HTMLElement">HTML element</a> with an
-	 * {@linkplain HTMLElements#getEndTagOptionalElementNames() optional} end tag that is immediately followed by another tag that
-	 * implicitly terminates the element.
-	 *
-	 * @return <code>true</code> if this element has zero-length {@linkplain #getContent() content}, otherwise <code>false</code>.
-	 * @see #isEmptyElementTag()
-	 */
-	public boolean isEmpty()
-	{
-		return startTag.end == getContentEnd();
-	}
-
-	/**
-	 * Indicates whether this element is an <a target="_blank" href="http://www.w3.org/TR/REC-xml#dt-eetag">empty-element tag</a>.
-	 * <p>
-	 * This is equivalent to {@link #getStartTag()}<code>.</code>{@link StartTag#isEmptyElementTag() isEmptyElementTag()}.
-	 *
-	 * @return <code>true</code> if this element is an <a target="_blank" href="http://www.w3.org/TR/REC-xml#dt-eetag">empty-element
-	 *         tag</a>, otherwise <code>false</code>.
-	 */
-	public boolean isEmptyElementTag()
-	{
-		return startTag.isEmptyElementTag();
-	}
-
-	/**
-	 * Returns the attributes specified in this element's start tag.
-	 * <p>
-	 * This is equivalent to {@link #getStartTag()}<code>.</code>{@link StartTag#getAttributes() getAttributes()}.
-	 *
-	 * @return the attributes specified in this element's start tag.
-	 * @see StartTag#getAttributes()
-	 */
-	public Attributes getAttributes()
-	{
-		return getStartTag().getAttributes();
-	}
-
-	/**
-	 * Returns the {@linkplain CharacterReference#decode(CharSequence) decoded} value of the attribute with the specified name (case
-	 * insensitive).
-	 * <p>
-	 * Returns <code>null</code> if the {@linkplain #getStartTag() start tag of this element} does not
-	 * {@linkplain StartTagType#hasAttributes() have attributes}, no attribute with the specified name exists or the attribute
-	 * {@linkplain Attribute#hasValue() has no value}.
-	 * <p>
-	 * This is equivalent to {@link #getStartTag()}<code>.</code>{@link StartTag#getAttributeValue(String) getAttributeValue(attributeName)}.
-	 *
-	 * @param attributeName
-	 *            the name of the attribute to get.
-	 * @return the {@linkplain CharacterReference#decode(CharSequence) decoded} value of the attribute with the specified name, or
-	 *         <code>null</code> if the attribute does not exist or {@linkplain Attribute#hasValue() has no value}.
-	 */
-	public String getAttributeValue(final String attributeName)
-	{
-		return getStartTag().getAttributeValue(attributeName);
-	}
-
-	/**
-	 * Returns the {@link FormControl} defined by this element.
-	 * 
-	 * @return the {@link FormControl} defined by this element, or <code>null</code> if it is not a <a target="_blank"
-	 *         href="http://www.w3.org/TR/html401/interact/forms.html#form-controls">control</a>.
-	 */
-	public FormControl getFormControl()
-	{
-		return FormControl.construct(this);
-	}
-
-	@Override
-	public String getDebugInfo()
-	{
-		if (this == NOT_CACHED) return "NOT_CACHED";
-		final StringBuilder sb = new StringBuilder();
-		sb.append("Element ");
-		startTag.appendDebugTag(sb);
-		if (!isEmpty()) sb.append('-');
-		if (endTag != null) sb.append(endTag);
-		sb.append(' ');
-		startTag.appendDebugTagType(sb);
-		sb.append(super.getDebugInfo());
-		return sb.toString();
-	}
-
-	public int getContentEnd()
-	{
-		return endTag != null ? endTag.begin : end;
-	}
+    }
 }

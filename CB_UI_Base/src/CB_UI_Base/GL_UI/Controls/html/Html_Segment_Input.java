@@ -36,12 +36,17 @@ public class Html_Segment_Input extends Html_Segment {
 
     @Override
     public void resolveAtributes() {
-	// TODO Auto-generated method stub
-
+	// nothing to do
     }
 
     public String getValue() {
 	return value;
+    }
+
+    @Override
+    public void dispose() {
+	super.dispose();
+	// nothing to do	
     }
 
 }

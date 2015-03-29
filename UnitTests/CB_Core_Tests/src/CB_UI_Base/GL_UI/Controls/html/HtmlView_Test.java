@@ -100,96 +100,96 @@ public class HtmlView_Test {
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(new HSV_Color("333399")));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 18 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.startsWith("FEZ - An der W"));
+	assertTrue(testSeg.formatedText.startsWith("FEZ - An der W"));
 
 	testSeg = segmentList.get(1);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(testSeg instanceof Html_Segment_Image);
-	assertTrue(testSeg.formatetText.startsWith("http://img.geocaching.com/cache/e96b"));
+	assertTrue(testSeg.formatedText.startsWith("http://img.geocaching.com/cache/e96b"));
 
 	testSeg = segmentList.get(2);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(new HSV_Color("333399")));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 14 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.startsWith(br + br));
+	assertTrue(testSeg.formatedText.startsWith(br + br));
 
 	testSeg = segmentList.get(3);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(new HSV_Color("333399")));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 14 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.startsWith("Hier geht es um einen klei"));
+	assertTrue(testSeg.formatedText.startsWith("Hier geht es um einen klei"));
 
 	testSeg = segmentList.get(4);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(new HSV_Color("333399")));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 12 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.startsWith("In diesem Park befinden si"));
+	assertTrue(testSeg.formatedText.startsWith("In diesem Park befinden si"));
 
 	testSeg = segmentList.get(5);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(new HSV_Color("333399")));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 14 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.startsWith(br + br + "Viel Spaﬂ bei der Suche"));
+	assertTrue(testSeg.formatedText.startsWith(br + br + "Viel Spaﬂ bei der Suche"));
 
 	testSeg = segmentList.get(6);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(new HSV_Color("FF0000")));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 14 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.equals(br + br));
+	assertTrue(testSeg.formatedText.equals(br + br));
 
 	testSeg = segmentList.get(7);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(new HSV_Color("FF0000")));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 14 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.startsWith("PS: Passt bitte auf die grau"));
+	assertTrue(testSeg.formatedText.startsWith("PS: Passt bitte auf die grau"));
 
 	testSeg = segmentList.get(8);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(new HSV_Color("333399")));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 14 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.startsWith(br + br));
+	assertTrue(testSeg.formatedText.startsWith(br + br));
 
 	testSeg = segmentList.get(9);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(testSeg instanceof Html_Segment_Image);
-	assertTrue(testSeg.formatetText.startsWith("http://www.gif-star.com/tie"));
+	assertTrue(testSeg.formatedText.startsWith("http://www.gif-star.com/tie"));
 
 	testSeg = segmentList.get(10);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 14 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.equals(br));
+	assertTrue(testSeg.formatedText.equals(br));
 
 	testSeg = segmentList.get(11);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 14 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.equals(br + br + " " + br + br));
+	assertTrue(testSeg.formatedText.equals(br + br + " " + br + br));
 
 	testSeg = segmentList.get(12);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 14 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.equals(br + br));
+	assertTrue(testSeg.formatedText.equals(br + br));
 
 	testSeg = segmentList.get(13);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 14 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.equals(br + br));
+	assertTrue(testSeg.formatedText.equals(br + br));
 
 	assertTrue(segmentList.size() == 14);
     }
@@ -206,96 +206,96 @@ public class HtmlView_Test {
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(new HSV_Color("333399")));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 18 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.startsWith("FEZ - An der W"));
+	assertTrue(testSeg.formatedText.startsWith("FEZ - An der W"));
 
 	testSeg = segmentList.get(1);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(testSeg instanceof Html_Segment_Image);
-	assertTrue(testSeg.formatetText.startsWith("http://img.geocaching.com/cache/e96b"));
+	assertTrue(testSeg.formatedText.startsWith("http://img.geocaching.com/cache/e96b"));
 
 	testSeg = segmentList.get(2);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(new HSV_Color("333399")));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 14 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.startsWith(br + br));
+	assertTrue(testSeg.formatedText.startsWith(br + br));
 
 	testSeg = segmentList.get(3);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(new HSV_Color("333399")));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 14 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.startsWith("Hier geht es um einen klei"));
+	assertTrue(testSeg.formatedText.startsWith("Hier geht es um einen klei"));
 
 	testSeg = segmentList.get(4);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(new HSV_Color("333399")));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 12 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.startsWith("In diesem Park befinden si"));
+	assertTrue(testSeg.formatedText.startsWith("In diesem Park befinden si"));
 
 	testSeg = segmentList.get(5);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(new HSV_Color("333399")));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 14 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.startsWith(br + br + "Viel Spaﬂ bei der Suche"));
+	assertTrue(testSeg.formatedText.startsWith(br + br + "Viel Spaﬂ bei der Suche"));
 
 	testSeg = segmentList.get(6);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(new HSV_Color("FF0000")));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 14 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.equals(br + br));
+	assertTrue(testSeg.formatedText.equals(br + br));
 
 	testSeg = segmentList.get(7);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(new HSV_Color("FF0000")));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 14 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.startsWith("PS: Passt bitte auf die grau"));
+	assertTrue(testSeg.formatedText.startsWith("PS: Passt bitte auf die grau"));
 
 	testSeg = segmentList.get(8);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(new HSV_Color("333399")));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 14 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.startsWith(br + br));
+	assertTrue(testSeg.formatedText.startsWith(br + br));
 
 	testSeg = segmentList.get(9);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(testSeg instanceof Html_Segment_Image);
-	assertTrue(testSeg.formatetText.startsWith("http://www.gif-star.com/tie"));
+	assertTrue(testSeg.formatedText.startsWith("http://www.gif-star.com/tie"));
 
 	testSeg = segmentList.get(10);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 14 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.equals(br));
+	assertTrue(testSeg.formatedText.equals(br));
 
 	testSeg = segmentList.get(11);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 14 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.equals(br + br + " " + br + br));
+	assertTrue(testSeg.formatedText.equals(br + br + " " + br + br));
 
 	testSeg = segmentList.get(12);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 14 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.equals(br + br));
+	assertTrue(testSeg.formatedText.equals(br + br));
 
 	testSeg = segmentList.get(13);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 14 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatetText.equals(br + br));
+	assertTrue(testSeg.formatedText.equals(br + br));
 
 	assertTrue(segmentList.size() == 14);
     }
@@ -311,40 +311,40 @@ public class HtmlView_Test {
 	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == DEFAULT_FONTSIZE);
-	assertTrue(testSeg.formatetText.startsWith("Cacherausbildung ( oder : auch di"));
+	assertTrue(testSeg.formatedText.startsWith("Cacherausbildung ( oder : auch di"));
 
 	testSeg = segmentList.get(1);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == DEFAULT_FONTSIZE);
-	assertTrue(testSeg.formatetText.equals(br + br));
+	assertTrue(testSeg.formatedText.equals(br + br));
 
 	testSeg = segmentList.get(2);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
 	assertTrue(testSeg instanceof Html_Segment_HR);
-	assertTrue(testSeg.formatetText.startsWith("--Todo--HR----Todo--HR-"));
+	assertTrue(testSeg.formatedText.startsWith("--Todo--HR----Todo--HR-"));
 
 	testSeg = segmentList.get(3);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == DEFAULT_FONTSIZE);
-	assertTrue(testSeg.formatetText.startsWith(br + br + "Im FEZ kann man spielen, man"));
+	assertTrue(testSeg.formatedText.startsWith(br + br + "Im FEZ kann man spielen, man"));
 
 	testSeg = segmentList.get(4);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
 	assertTrue(testSeg instanceof Html_Segment_Image);
-	assertTrue(testSeg.formatetText.startsWith("http://imgcdn.geocaching.com/cache/large/00ababb1"));
+	assertTrue(testSeg.formatedText.startsWith("http://imgcdn.geocaching.com/cache/large/00ababb1"));
 
 	testSeg = segmentList.get(5);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == DEFAULT_FONTSIZE);
-	assertTrue(testSeg.formatetText.startsWith(br + br + "4. Hinweis beachten : magnet"));
+	assertTrue(testSeg.formatedText.startsWith(br + br + "4. Hinweis beachten : magnet"));
 
 	assertTrue(segmentList.size() == 6);
     }

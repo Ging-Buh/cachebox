@@ -689,6 +689,10 @@ public class GifDecoder {
     public Animation getAnimation(PlayMode playType) {
 	int nrFrames = getFrameCount();
 	Pixmap frame = getFrame(0);
+
+	if (frame == null)
+	    return null;
+
 	int width = frame.getWidth();
 	int height = frame.getHeight();
 	int vzones = (int) Math.sqrt(nrFrames);

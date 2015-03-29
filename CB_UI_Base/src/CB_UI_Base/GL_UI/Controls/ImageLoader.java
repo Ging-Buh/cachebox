@@ -287,7 +287,9 @@ public class ImageLoader {
 
 		// Download Image to Cache
 		try {
-		    final Downloader dl = new Downloader(new URL(iconUrl), new File(CachePath + LocalPath));
+		    URL url = new URL(iconUrl);
+
+		    final Downloader dl = new Downloader(url, new File(CachePath + LocalPath));
 
 		    Thread DLThread = new Thread(new Runnable() {
 			@Override
@@ -308,6 +310,7 @@ public class ImageLoader {
 
 		    DLThread.run();
 		} catch (MalformedURLException e) {
+		    log.error("ImageDownloader wrong URL: " + iconUrl, e);
 		    e.printStackTrace();
 		} catch (Exception e) {
 		    e.printStackTrace();

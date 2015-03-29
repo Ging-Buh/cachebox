@@ -147,4 +147,14 @@ public class Html_Segment_HR extends Html_Segment {
     public HSV_Color getColor() {
 	return color;
     }
+
+    @Override
+    public void dispose() {
+	super.dispose();
+	if (color != null) {
+	    color.dispose();
+	    color = null;
+	}
+    }
+
 }

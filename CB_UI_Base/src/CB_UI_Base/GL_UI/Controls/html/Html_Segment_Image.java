@@ -33,4 +33,9 @@ public class Html_Segment_Image extends Html_Segment {
 	resolveHAlignment();
     }
 
+    @Override
+    public void dispose() {
+	super.dispose();
+    }
+
 }

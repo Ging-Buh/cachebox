@@ -310,4 +310,19 @@ public class Html_Segment_TextBlock extends Html_Segment {
 	this.hyperLinkList.addAll(hyperLinkList);
     }
 
+    @Override
+    public void dispose() {
+	super.dispose();
+	if (hyperLinkList != null) {
+	    for (HyperLinkText hyperLink : hyperLinkList) {
+		if (hyperLink != null) {
+		    hyperLink.dispose();
+		    hyperLink = null;
+		}
+	    }
+	    hyperLinkList.clear();
+	    hyperLinkList = null;
+	}
+    }
+
 }

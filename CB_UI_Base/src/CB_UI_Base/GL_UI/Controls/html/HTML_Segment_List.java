@@ -120,4 +120,18 @@ public class HTML_Segment_List extends Html_Segment {
 	return this.scaledfontSize;
     }
 
+    @Override
+    public void dispose() {
+	super.dispose();
+	if (listEntrys != null) {
+	    for (Html_Segment entry : listEntrys) {
+		if (entry != null) {
+		    entry.dispose();
+		    entry = null;
+		}
+	    }
+	    listEntrys.clear();
+	}
+    }
+
 }

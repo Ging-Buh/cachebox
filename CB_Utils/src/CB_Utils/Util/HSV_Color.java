@@ -218,7 +218,11 @@ public class HSV_Color extends Color
 
 	public int toInt()
 	{
-		return (((int) (a * 255f)) & 0xff) << 24 | (((int) (r * 255f)) & 0xff) << 16 | (((int) (g * 255f)) & 0xff) << 8
-				| (((int) (b * 255f)) & 0xff);
+		return (((int) (a * 255f)) & 0xff) << 24 | (((int) (r * 255f)) & 0xff) << 16 | (((int) (g * 255f)) & 0xff) << 8 | (((int) (b * 255f)) & 0xff);
+	}
+
+	public void dispose()
+	{
+		// nothing to do
 	}
 }

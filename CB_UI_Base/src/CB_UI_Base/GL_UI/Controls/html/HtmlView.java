@@ -48,6 +48,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
  * @author Longri
  */
 public class HtmlView extends ScrollBox implements ListLayout {
+    private int testcount = 0;
     final static org.slf4j.Logger log = LoggerFactory.getLogger(HtmlView.class);
     static int margin;
     private Box contentBox;
@@ -153,8 +154,6 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	segmentViewList.add(ListcontentBox);
 	return ListcontentBox.getHeight();
     }
-
-    private int testcount = 0;
 
     @Override
     public void layout(CB_List<CB_View_Base> segmentViewList) {
@@ -265,7 +264,7 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	    }
 	};
 	img.setHAlignment(seg.hAlignment);
-	img.setImageURL(seg.formatetText);
+	img.setImageURL(seg.formatedText);
 
 	img.forceImageLoad();
 
@@ -275,7 +274,7 @@ public class HtmlView extends ScrollBox implements ListLayout {
 
     private static float addTextBlog(CB_List<CB_View_Base> segmentViewList, Html_Segment_TextBlock seg, float innerWidth) {
 	BitmapFont font = GL_Fonts.get(seg.getFontFamily(), seg.getFontStyle(), seg.getFontSize());
-	TextBounds bounds = font.getWrappedBounds(seg.formatetText, innerWidth - (margin * 2));
+	TextBounds bounds = font.getWrappedBounds(seg.formatedText, innerWidth - (margin * 2));
 	float segHeight = bounds.height + (margin * 2);
 
 	parseHyperLinks(seg, "http://");
@@ -294,7 +293,7 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	    lbl.addHyperlinks(seg.hyperLinkList);
 	}
 
-	lbl.setWrappedText(seg.formatetText);
+	lbl.setWrappedText(seg.formatedText);
 	lbl.setUnderline(seg.underline);
 	lbl.setStrikeout(seg.strikeOut);
 	segmentViewList.add(lbl);
@@ -303,14 +302,14 @@ public class HtmlView extends ScrollBox implements ListLayout {
 
     private static void parseHyperLinks(Html_Segment_TextBlock seg, String hyperLinkTag) {
 	try {
-	    if (seg.formatetText.contains(hyperLinkTag)) {
+	    if (seg.formatedText.contains(hyperLinkTag)) {
 		// add to hyperLings
 
-		int start = seg.formatetText.indexOf(hyperLinkTag);
+		int start = seg.formatedText.indexOf(hyperLinkTag);
 
-		int end1 = seg.formatetText.indexOf(" ", start);
-		int end2 = seg.formatetText.indexOf("\r", start);
-		int end3 = seg.formatetText.indexOf("\n", start);
+		int end1 = seg.formatedText.indexOf(" ", start);
+		int end2 = seg.formatedText.indexOf("\r", start);
+		int end3 = seg.formatedText.indexOf("\n", start);
 
 		if (end1 < 0)
 		    end1 = Integer.MAX_VALUE;
@@ -322,13 +321,13 @@ public class HtmlView extends ScrollBox implements ListLayout {
 		int end = Math.min(Math.min(end1, end2), end3);
 
 		if (end == Integer.MAX_VALUE) {
-		    end = seg.formatetText.length();
+		    end = seg.formatedText.length();
 		}
 
-		String link = seg.formatetText.substring(start, end);
+		String link = seg.formatedText.substring(start, end);
 
 		if (link.endsWith(")") || link.endsWith("]") || link.endsWith("}")) {
-		    link = seg.formatetText.substring(start, end - 1);
+		    link = seg.formatedText.substring(start, end - 1);
 		}
 
 		HyperLinkText hyper = new HyperLinkText(link.trim(), link.trim());
@@ -341,7 +340,44 @@ public class HtmlView extends ScrollBox implements ListLayout {
 
     @Override
     public void dispose() {
+	clearHtml();
 	super.dispose();
+    }
+
+    private void clearHtml() {
+	log.debug("Clear html");
+	this.removeChilds();
+
+	if (segmentViewList != null) {
+	    for (CB_View_Base view : segmentViewList) {
+		if (view != null) {
+		    view.dispose();
+		}
+		view = null;
+	    }
+	    segmentViewList.clear();
+	}
+
+	if (segmentList != null) {
+	    for (Html_Segment segment : segmentList) {
+		if (segment != null) {
+		    segment.dispose();
+		}
+		segment = null;
+	    }
+	    segmentList.clear();
+	}
+
+	if (contentBox != null) {
+	    for (GL_View_Base view : contentBox.getchilds()) {
+		if (view != null) {
+		    view.dispose();
+		}
+		view = null;
+	    }
+	    contentBox.dispose();
+	}
+
     }
 
 }

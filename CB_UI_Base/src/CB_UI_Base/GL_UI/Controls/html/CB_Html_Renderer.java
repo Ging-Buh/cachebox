@@ -104,7 +104,7 @@ public class CB_Html_Renderer extends Renderer {
 	for (int i = segList.size() - 1; i > 0; i--) {
 	    Html_Segment seg = segList.get(i);
 
-	    if (seg.formatetText.isEmpty() || hasOnlyLineBreakes(seg.formatetText)) {
+	    if (seg.formatedText.isEmpty() || hasOnlyLineBreakes(seg.formatedText)) {
 		segList.remove(i);
 	    } else {
 		break;
@@ -167,6 +167,11 @@ public class CB_Html_Renderer extends Renderer {
 	    String src = element.getStartTag().getAttributeValue("src");
 	    if (src == null)
 		return;
+
+	    //create new segment, if append not empty  
+	    if (!x.appendable.toString().isEmpty())
+		((CB_HtmlProcessor) x).createNewSegment(true);
+
 	    x.appendText(src);
 	    ((CB_HtmlProcessor) x).isImage = true;
 	    ((CB_HtmlProcessor) x).createNewSegment();

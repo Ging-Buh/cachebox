@@ -120,7 +120,11 @@ public class CB_HtmlProcessor extends Processor {
     public boolean listelement;
 
     void createNewSegment() {
-	if (spanelement || listelement) {
+	createNewSegment(false);
+    }
+
+    void createNewSegment(boolean force) {
+	if (!force && (spanelement || listelement)) {
 	    return;
 	}
 	String innerText = appendable.toString();
@@ -138,7 +142,7 @@ public class CB_HtmlProcessor extends Processor {
 		if (!hyperLinkList.isEmpty()) {
 		    ((Html_Segment_TextBlock) segment).add(hyperLinkList);
 		}
-		if (!(segment.formatetText == null || segment.formatetText.isEmpty()))
+		if (!(segment.formatedText == null || segment.formatedText.isEmpty()))
 		    actList.addListEntry(segment);
 
 		appendable = new StringBuilder();
@@ -163,7 +167,7 @@ public class CB_HtmlProcessor extends Processor {
 		}
 	    }
 
-	    if (!(segment.formatetText == null || segment.formatetText.isEmpty()))
+	    if (!(segment.formatedText == null || segment.formatedText.isEmpty()))
 		segmentList.add(segment);
 	    apendableList.add(appendable);
 	    appendable = new StringBuilder();
