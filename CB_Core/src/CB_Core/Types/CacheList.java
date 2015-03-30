@@ -88,7 +88,7 @@ public class CacheList extends MoveableList<Cache>
 			// sort after Distance from selected Cache
 			Coordinate fromPos = selectedCoord;
 			// avoid "illegal waypoint"
-			if (fromPos.getLatitude() == 0 && fromPos.getLongitude() == 0)
+			if (fromPos == null || (fromPos.getLatitude() == 0 && fromPos.getLongitude() == 0))
 			{
 				fromPos = selected.getCache().Pos;
 			}
