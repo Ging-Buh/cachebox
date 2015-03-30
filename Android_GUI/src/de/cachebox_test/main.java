@@ -379,9 +379,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		GL.resetIsInitial();
 
 		// add flags for run on lock screen
-		this.getWindow().addFlags(
-				WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-						| WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+		// this.getWindow().addFlags(
+		// WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+		// | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
+		this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 
 		if (GlobalCore.RunFromSplash)
 		{
@@ -1166,7 +1168,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 		}
 
-		if (mSensorManager != null) mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_GAME);
+		if (mSensorManager != null) mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_UI);
 		this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
 		int sollHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.that
@@ -1182,14 +1184,35 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (Config.SuppressPowerSaving.getValue())
 		{
 			log.debug("Main=> onResume SuppressPowerSaving");
-
 			final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-
 			int flags = PowerManager.SCREEN_BRIGHT_WAKE_LOCK;
-
-			this.mWakeLock = pm.newWakeLock(flags, "My Tag");
+			this.mWakeLock = pm.newWakeLock(flags, "Cachebox");
 			this.mWakeLock.acquire();
 		}
+
+		Config.SuppressPowerSaving.addChangedEventListner(new iChanged()
+		{
+
+			@Override
+			public void isChanged()
+			{
+				if (Config.SuppressPowerSaving.getValue())
+				{
+					log.debug("Main=> onResume SuppressPowerSaving");
+					final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+					int flags = PowerManager.SCREEN_BRIGHT_WAKE_LOCK;
+					main.this.mWakeLock = pm.newWakeLock(flags, "Cachebox");
+					main.this.mWakeLock.acquire();
+
+				}
+				else
+				{
+					final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+					main.this.mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Cachebox non Powersave");
+					main.this.mWakeLock.acquire();
+				}
+			}
+		});
 
 		try
 		{
@@ -1254,7 +1277,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (Config.SuppressPowerSaving.getValue())
 		{
 			final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-			this.mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "My Tag");
+			this.mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Cachebox non Powersave");
 			this.mWakeLock.acquire();
 		}
 	}
@@ -1283,7 +1306,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				{
 					Config.settings.WriteToDB();
 
-					if (this.mWakeLock != null) this.mWakeLock.release();
+					try
+					{
+						if (this.mWakeLock != null) this.mWakeLock.release();
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+					}
 					counter.cancel();
 					TrackRecorder.StopRecording();
 					// GPS Verbindung beenden
