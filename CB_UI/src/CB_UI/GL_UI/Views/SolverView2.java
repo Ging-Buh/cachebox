@@ -74,7 +74,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 
     @Override
     public void onShow() {
-	// CachListChangedEventList.Add(this);
+	log.debug("onShow()");
 	SelectedCacheEventList.Add(this);
 
 	setBackground(SpriteCacheBase.ListBack);
@@ -141,8 +141,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 
     @Override
     public void onHide() {
-	// platformConector.hideView(ViewConst.SOLVER_VIEW);
-	// CachListChangedEventList.Add(this);
+	log.debug("onHide()");
 	SelectedCacheEventList.Remove(this);
 	if (GlobalCore.ifCacheSelected())
 	    Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());

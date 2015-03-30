@@ -133,7 +133,7 @@ public class SolverView extends CB_View_Base {
     }
 
     public void onShow() {
-
+	log.debug("onShow()");
 	SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 
 	if (aktCache == null)
@@ -153,11 +153,14 @@ public class SolverView extends CB_View_Base {
     @Override
     public void onHide() {
 	// Save changed Solver text
+	log.debug("onHide()");
 	if (aktCache != null) {
 	    Database.SetSolver(aktCache, edSolver.getText().toString());
 	    // When Solve 1 changes -> Solver 2 must reload the information from DB to get the changes from Solver 1
 	    aktCache.setSolver1Changed(true);
 	}
+
+	this.mustLoadSolver = true;
     }
 
     @Override
