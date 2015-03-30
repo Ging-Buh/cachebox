@@ -203,10 +203,9 @@ public class V_ListView extends ListViewBase {
 	try {
 	    if (mPosDefault != null) {
 		mPosDefault.clear();
-		mPosDefault = null;
+	    } else {
+		mPosDefault = new CB_List<Float>();
 	    }
-
-	    mPosDefault = new CB_List<Float>();
 
 	    minimumItemSize = this.getHeight();
 

@@ -28,330 +28,318 @@ import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
-public class WaypointViewItem extends ListViewItemBackground implements PositionChangedEvent
-{
-	private Cache mCache;
-	private Waypoint mWaypoint;
+public class WaypointViewItem extends ListViewItemBackground implements PositionChangedEvent {
+    private Cache mCache;
+    private Waypoint mWaypoint;
 
-	protected extendedCacheInfo info;
-	protected boolean isPressed = false;
+    protected extendedCacheInfo info;
+    protected boolean isPressed = false;
 
-	private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
-	private CB_RectF ArrowRec;
-	private Sprite arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
-	private BitmapFontCache distance;
-	private Sprite mIconSprite;
-	private float mIconSize = 0;
-	private float mMargin = 0;
+    private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
+    private CB_RectF ArrowRec;
+    private Sprite arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
+    private BitmapFontCache distance;
+    private Sprite mIconSprite;
+    private float mIconSize = 0;
+    private float mMargin = 0;
 
-	private BitmapFontCache mNameCache;
-	private BitmapFontCache mDescCache;
-	private BitmapFontCache mCoordCache;
+    private BitmapFontCache mNameCache;
+    private BitmapFontCache mDescCache;
+    private BitmapFontCache mCoordCache;
 
-	private int ViewMode = CacheInfo.VIEW_MODE_WAYPOINTS;
+    private int ViewMode = CacheInfo.VIEW_MODE_WAYPOINTS;
 
-	/**
-	 * mit ausgeschaltener scissor berechnung
-	 * 
-	 * @author Longri
-	 */
-	private class extendedCacheInfo extends CacheInfo
-	{
+    /**
+     * mit ausgeschaltener scissor berechnung
+     * 
+     * @author Longri
+     */
+    private class extendedCacheInfo extends CacheInfo {
 
-		public extendedCacheInfo(CB_RectF rec, String Name, Cache value)
-		{
-			super(rec, Name, value);
-		}
-
-		@Override
-		public void renderChilds(final Batch batch, ParentInfo parentInfo)
-		{
-			if (!disableScissor) Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
-
-			batch.flush();
-
-			this.render(batch);
-			batch.flush();
-
-			Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
-		}
-	}
-
-	public WaypointViewItem(CB_RectF rec, int Index, Cache cache, Waypoint waypoint)
-	{
-		super(rec, Index, "");
-		ViewMode = CacheInfo.VIEW_MODE_WAYPOINTS;
-		initial(Index, cache, waypoint);
-	}
-
-	public WaypointViewItem(CB_RectF rec, int Index, Cache cache, Waypoint waypoint, int viewMode)
-	{
-		super(rec, Index, "");
-		ViewMode = viewMode;
-		initial(Index, cache, waypoint);
-	}
-
-	private void initial(int Index, Cache cache, Waypoint waypoint)
-	{
-		this.mCache = cache;
-		this.mWaypoint = waypoint;
-
-		distance = new BitmapFontCache(Fonts.getSmall());
-		distance.setColor(COLOR.getFontColor());
-		distance.setText("", 0, 0);
-
-		if (waypoint == null) // this Item is the Cache
-		{
-
-			if (cache == null)
-			{
-				arrow = null;
-				distance = null;
-				return;
-			}
-
-			info = new extendedCacheInfo(UiSizes.that.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.getGcCode(),
-					cache);
-			info.setZeroPos();
-			info.setViewMode(ViewMode);
-
-			this.addChild(info);
-		}
-
-		if (ViewMode != CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK)// For Compass without own compass
-		{
-			PositionChangedEventList.Add(this);
-
-			float size = this.getHeight() / 2.3f;
-			ArrowRec = new CB_RectF(this.getWidth() - (size * 1.2f), this.getHeight() - (size * 1.6f), size, size);
-			arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
-			arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
-
-			if (Locator.Valid())
-			{
-				arrow.setColor(DISABLE_COLOR);
-				setDistanceString("---");
-			}
-			else
-			{
-				setActLocator();
-			}
-
-		}
-		else
-		{
-			arrow = null;
-			distance = null;
-		}
-	}
-
-	public Waypoint getWaypoint()
-	{
-		return mWaypoint;
-	}
-
-	private void setDistanceString(String txt)
-	{
-		TextBounds bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
-		float x = ArrowRec.getHalfWidth() - (bounds.width / 2f);
-		distance.setPosition(x, 0);
-
-	}
-
-	private void setActLocator()
-	{
-		if (Locator.Valid())
-		{
-
-			if (mWaypoint != null && mWaypoint.Pos.isZero())
-			{
-				arrow = null;
-				setDistanceString("???");
-			}
-			else
-			{
-				double lat = (mWaypoint == null) ? mCache.Latitude() : mWaypoint.Pos.getLatitude();
-				double lon = (mWaypoint == null) ? mCache.Longitude() : mWaypoint.Pos.getLongitude();
-				float distance = (mWaypoint == null) ? mCache.Distance(CalculationType.FAST, true) : mWaypoint.Distance();
-
-				Coordinate position = Locator.getCoordinate();
-				double heading = Locator.getHeading();
-				double bearing = CoordinateGPS.Bearing(CalculationType.FAST, position.getLatitude(), position.getLongitude(), lat, lon);
-				double cacheBearing = -(bearing - heading);
-				setDistanceString(UnitFormatter.DistanceString(distance));
-
-				arrow.setRotation((float) cacheBearing);
-				if (arrow.getColor().r == DISABLE_COLOR.r && arrow.getColor().g == DISABLE_COLOR.g && arrow.getColor().b == DISABLE_COLOR.b)// ignore
-																																			// alpha
-				{
-					float size = this.getHeight() / 2.3f;
-					arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
-					arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
-					arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
-				}
-			}
-
-		}
+	public extendedCacheInfo(CB_RectF rec, String Name, Cache value) {
+	    super(rec, Name, value);
 	}
 
 	@Override
-	protected void render(Batch batch)
-	{
-		if (mIndex != -1) super.render(batch);
+	public void renderChilds(final Batch batch, ParentInfo parentInfo) {
+	    if (!disableScissor)
+		Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
 
-		if (arrow != null) arrow.draw(batch);
-		if (distance != null) distance.draw(batch);
-		if (mIconSprite != null) mIconSprite.draw(batch);
-		if (mIconSprite == null && mWaypoint != null) requestLayout();
+	    batch.flush();
 
-		if (mNameCache != null) mNameCache.draw(batch);
-		if (mDescCache != null) mDescCache.draw(batch);
-		if (mCoordCache != null) mCoordCache.draw(batch);
+	    this.render(batch);
+	    batch.flush();
+
+	    Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
 	}
+    }
 
-	@Override
-	public void dispose()
+    public WaypointViewItem(CB_RectF rec, int Index, Cache cache, Waypoint waypoint) {
+	super(rec, Index, "");
+	ViewMode = CacheInfo.VIEW_MODE_WAYPOINTS;
+	initial(Index, cache, waypoint);
+    }
+
+    public WaypointViewItem(CB_RectF rec, int Index, Cache cache, Waypoint waypoint, int viewMode) {
+	super(rec, Index, "");
+	ViewMode = viewMode;
+	initial(Index, cache, waypoint);
+    }
+
+    private void initial(int Index, Cache cache, Waypoint waypoint) {
+	this.mCache = cache;
+	this.mWaypoint = waypoint;
+
+	distance = new BitmapFontCache(Fonts.getSmall());
+	distance.setColor(COLOR.getFontColor());
+	distance.setText("", 0, 0);
+
+	if (waypoint == null) // this Item is the Cache
 	{
-		PositionChangedEventList.Remove(this);
-		if (info != null) info.dispose();
-		info = null;
 
+	    if (cache == null) {
 		arrow = null;
-		// if (distance != null) distance.dispose();
 		distance = null;
+		return;
+	    }
+
+	    info = new extendedCacheInfo(UiSizes.that.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.getGcCode(), cache);
+	    info.setZeroPos();
+	    info.setViewMode(ViewMode);
+
+	    this.addChild(info);
 	}
 
-	@Override
-	public boolean onTouchDown(int x, int y, int pointer, int button)
+	if (ViewMode != CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK)// For Compass without own compass
 	{
+	    PositionChangedEventList.Add(this);
 
-		isPressed = true;
+	    float size = this.getHeight() / 2.3f;
+	    ArrowRec = new CB_RectF(this.getWidth() - (size * 1.2f), this.getHeight() - (size * 1.6f), size, size);
+	    arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
+	    arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 
-		return false;
-	}
-
-	@Override
-	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
-	{
-		isPressed = false;
-
-		return false;
-	}
-
-	@Override
-	public boolean onTouchUp(int x, int y, int pointer, int button)
-	{
-		isPressed = false;
-
-		return false;
-	}
-
-	@Override
-	public void PositionChanged()
-	{
+	    if (Locator.Valid()) {
+		arrow.setColor(DISABLE_COLOR);
+		setDistanceString("---");
+	    } else {
 		setActLocator();
+	    }
+
+	} else {
+	    arrow = null;
+	    distance = null;
 	}
+    }
 
-	@Override
-	public void OrientationChanged()
-	{
-		if (mCache == null) return;
-		setActLocator();
-	}
+    public Waypoint getWaypoint() {
+	return mWaypoint;
+    }
 
-	@Override
-	public String getReceiverName()
-	{
-		return "Core.WayPointViewItem";
-	}
+    private void setDistanceString(String txt) {
+	TextBounds bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
+	float x = ArrowRec.getHalfWidth() - (bounds.width / 2f);
+	distance.setPosition(x, 0);
 
-	@Override
-	protected void SkinIsChanged()
-	{
+    }
 
-	}
+    private void setActLocator() {
+	if (Locator.Valid()) {
 
-	private void requestLayout()
-	{
-		if (mWaypoint != null)
+	    if (mWaypoint != null && mWaypoint.Pos.isZero()) {
+		arrow = null;
+		setDistanceString("???");
+	    } else {
+		double lat = (mWaypoint == null) ? mCache.Latitude() : mWaypoint.Pos.getLatitude();
+		double lon = (mWaypoint == null) ? mCache.Longitude() : mWaypoint.Pos.getLongitude();
+		float distance = (mWaypoint == null) ? mCache.Distance(CalculationType.FAST, true) : mWaypoint.Distance();
+
+		Coordinate position = Locator.getCoordinate();
+		double heading = Locator.getHeading();
+		double bearing = CoordinateGPS.Bearing(CalculationType.FAST, position.getLatitude(), position.getLongitude(), lat, lon);
+		double cacheBearing = -(bearing - heading);
+		setDistanceString(UnitFormatter.DistanceString(distance));
+
+		arrow.setRotation((float) cacheBearing);
+		if (arrow.getColor().r == DISABLE_COLOR.r && arrow.getColor().g == DISABLE_COLOR.g && arrow.getColor().b == DISABLE_COLOR.b)// ignore
+																	    // alpha
 		{
-			float scaleFactor = getWidth() / UiSizes.that.getCacheListItemRec().getWidth();
-			float mLeft = 3 * scaleFactor;
-			float mTop = 3 * scaleFactor;
-			mMargin = mLeft;
-
-			mIconSize = Fonts.Measure("T").height * 3.5f * scaleFactor;
-
-			Vector2 mSpriteCachePos = new Vector2(mLeft + mMargin, getHeight() - mTop - mIconSize);
-
-			{ // Icon Sprite erstellen
-				// MultiStage Waypoint anders darstellen wenn dieser als Startpunkt definiert ist
-				if ((mWaypoint.Type == CacheTypes.MultiStage) && mWaypoint.IsStart) mIconSprite = new Sprite(
-						SpriteCacheBase.BigIcons.get(23));
-				else
-					mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(mWaypoint.Type.ordinal()));
-
-				mIconSprite.setSize(mIconSize, mIconSize);
-				mIconSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);
-			}
-
-			mNameCache = new BitmapFontCache(Fonts.getNormal());
-			mDescCache = new BitmapFontCache(Fonts.getBubbleNormal());
-			mCoordCache = new BitmapFontCache(Fonts.getBubbleNormal());
-
-			mNameCache.setText("", 0, 0);
-			mDescCache.setText("", 0, 0);
-			mCoordCache.setText("", 0, 0);
-
-			mNameCache.setColor(COLOR.getFontColor());
-			mDescCache.setColor(COLOR.getFontColor());
-			mCoordCache.setColor(COLOR.getFontColor());
-
-			float textYPos = this.getHeight() - mMargin;
-
-			textYPos -= (mNameCache.setMultiLineText(mWaypoint.getGcCode() + ": " + mWaypoint.getTitle(), mSpriteCachePos.x + mIconSize
-					+ mMargin, textYPos)).height
-					+ mMargin + mMargin;
-
-			if (ViewMode == CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK)
-			{
-				mDescCache = null;
-			}
-			else
-			{
-				if (!mWaypoint.getDescription().equals(""))
-				{
-					textYPos -= (mDescCache.setMultiLineText(mWaypoint.getDescription(), mSpriteCachePos.x + mIconSize + mMargin, textYPos)).height
-							+ mMargin + mMargin;
-				}
-			}
-
-			String sCoord = "";
-
-			if (ViewMode == CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK)
-			{
-				sCoord = mWaypoint.Pos.FormatCoordinateLineBreake();
-			}
-			else
-			{
-				sCoord = mWaypoint.Pos.FormatCoordinate();
-			}
-
-			textYPos -= (mCoordCache.setMultiLineText(sCoord, mSpriteCachePos.x + mIconSize + mMargin, textYPos)).height + mMargin
-					+ mMargin;
-
+		    float size = this.getHeight() / 2.3f;
+		    arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
+		    arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
+		    arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 		}
+	    }
 
 	}
+    }
 
-	@Override
-	public Priority getPriority()
-	{
-		return Priority.Low;
+    @Override
+    protected void render(Batch batch) {
+	if (mIndex != -1)
+	    super.render(batch);
+
+	if (arrow != null)
+	    arrow.draw(batch);
+	if (distance != null)
+	    distance.draw(batch);
+	if (mIconSprite != null)
+	    mIconSprite.draw(batch);
+	if (mIconSprite == null && mWaypoint != null)
+	    requestLayout();
+
+	if (mNameCache != null)
+	    mNameCache.draw(batch);
+	if (mDescCache != null)
+	    mDescCache.draw(batch);
+	if (mCoordCache != null)
+	    mCoordCache.draw(batch);
+    }
+
+    @Override
+    public void dispose() {
+	PositionChangedEventList.Remove(this);
+	if (info != null)
+	    info.dispose();
+	info = null;
+
+	arrow = null;
+	// if (distance != null) distance.dispose();
+	distance = null;
+	super.dispose();
+    }
+
+    @Override
+    public boolean onTouchDown(int x, int y, int pointer, int button) {
+
+	isPressed = true;
+
+	return false;
+    }
+
+    @Override
+    public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
+	isPressed = false;
+
+	return false;
+    }
+
+    @Override
+    public boolean onTouchUp(int x, int y, int pointer, int button) {
+	isPressed = false;
+
+	return false;
+    }
+
+    @Override
+    public void PositionChanged() {
+	setActLocator();
+    }
+
+    @Override
+    public void OrientationChanged() {
+	if (mCache == null)
+	    return;
+	setActLocator();
+    }
+
+    @Override
+    public String getReceiverName() {
+	return "Core.WayPointViewItem";
+    }
+
+    @Override
+    protected void SkinIsChanged() {
+
+    }
+
+    boolean inChange = false;
+
+    private void requestLayout() {
+	if (mWaypoint != null) {
+	    float scaleFactor = getWidth() / UiSizes.that.getCacheListItemRec().getWidth();
+	    float mLeft = 3 * scaleFactor;
+	    float mTop = 3 * scaleFactor;
+	    mMargin = mLeft;
+
+	    mIconSize = Fonts.Measure("T").height * 3.5f * scaleFactor;
+
+	    Vector2 mSpriteCachePos = new Vector2(mLeft + mMargin, getHeight() - mTop - mIconSize);
+
+	    { // Icon Sprite erstellen
+	      // MultiStage Waypoint anders darstellen wenn dieser als Startpunkt definiert ist
+		if ((mWaypoint.Type == CacheTypes.MultiStage) && mWaypoint.IsStart)
+		    mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(23));
+		else
+		    mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(mWaypoint.Type.ordinal()));
+
+		mIconSprite.setSize(mIconSize, mIconSize);
+		mIconSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);
+	    }
+
+	    mNameCache = new BitmapFontCache(Fonts.getNormal());
+	    mDescCache = new BitmapFontCache(Fonts.getBubbleNormal());
+	    mCoordCache = new BitmapFontCache(Fonts.getBubbleNormal());
+
+	    mNameCache.setText("", 0, 0);
+	    mDescCache.setText("", 0, 0);
+	    mCoordCache.setText("", 0, 0);
+
+	    mNameCache.setColor(COLOR.getFontColor());
+	    mDescCache.setColor(COLOR.getFontColor());
+	    mCoordCache.setColor(COLOR.getFontColor());
+
+	    float textYPos = this.getHeight() - mMargin;
+
+	    float allHeight = (mNameCache.setMultiLineText(mWaypoint.getGcCode() + ": " + mWaypoint.getTitle(), mSpriteCachePos.x + mIconSize + mMargin, textYPos)).height + mMargin + mMargin;
+	    textYPos -= allHeight;
+
+	    if (ViewMode == CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK) {
+		mDescCache = null;
+	    } else {
+		if (!mWaypoint.getDescription().equals("")) {
+
+		    float textXPos = mSpriteCachePos.x + mIconSize + mMargin;
+		    float descHeight = (mDescCache.setWrappedText(mWaypoint.getDescription(), textXPos, textYPos, this.getWidth() - (textXPos + mIconSize + mMargin))).height + mMargin + mMargin;
+		    allHeight += descHeight;
+
+		    textYPos -= descHeight;
+		}
+	    }
+
+	    String sCoord = "";
+
+	    if (ViewMode == CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK) {
+		sCoord = mWaypoint.Pos.FormatCoordinateLineBreake();
+	    } else {
+		sCoord = mWaypoint.Pos.FormatCoordinate();
+	    }
+
+	    float coordHeight = (mCoordCache.setMultiLineText(sCoord, mSpriteCachePos.x + mIconSize + mMargin, textYPos)).height + mMargin + mMargin;
+	    allHeight += coordHeight;
+	    textYPos -= coordHeight;
+
+	    if (allHeight > UiSizes.that.getCacheListItemRec().asFloat().getHeight()) {
+
+		if (!inChange && member[3] != allHeight) {
+		    inChange = true;
+		    member[3] = allHeight;
+		    calcCrossCorner();
+		    CallRecChanged();
+		    requestLayout();
+		    inChange = false;
+		}
+	    }
 	}
 
-	@Override
-	public void SpeedChanged()
-	{
-	}
+    }
+
+    @Override
+    public Priority getPriority() {
+	return Priority.Low;
+    }
+
+    @Override
+    public void SpeedChanged() {
+    }
 }

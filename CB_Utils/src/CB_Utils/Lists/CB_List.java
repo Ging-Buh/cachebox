@@ -261,8 +261,20 @@ public class CB_List<T> implements Serializable, Iterable<T>
 	 */
 	public T[] ensureCapacity(int additionalCapacity)
 	{
+		return ensureCapacity(additionalCapacity, false);
+	}
+
+	/**
+	 * Increases the size of the backing array to acommodate the specified number of additional items. Useful before adding many items to
+	 * avoid multiple backing array resizes.
+	 * 
+	 * @return {@link #items}
+	 */
+	public T[] ensureCapacity(int additionalCapacity, boolean set)
+	{
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded > getItemLength()) resize(Math.max(INITIAL_SIZE, sizeNeeded));
+		if (set) size = sizeNeeded;
 		return items;
 	}
 
@@ -424,7 +436,7 @@ public class CB_List<T> implements Serializable, Iterable<T>
 		items = array;
 	}
 
-	public void replasce(T value, int index)
+	public void replace(T value, int index)
 	{
 		if (index < 0 || index > size) return;
 		items[index] = value;

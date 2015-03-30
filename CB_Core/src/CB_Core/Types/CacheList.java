@@ -225,7 +225,7 @@ public class CacheList extends MoveableList<Cache>
 			{
 				if (!ca.isLive())
 				{
-					this.replasce(ca, index);
+					this.replace(ca, index);
 					return index;
 				}
 			}
