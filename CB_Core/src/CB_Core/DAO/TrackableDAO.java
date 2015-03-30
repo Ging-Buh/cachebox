@@ -92,7 +92,10 @@ public class TrackableDAO
 
 		try
 		{
-			stimestampLastVisit = iso8601Format.format(trackable.getLastVisit());
+			String lastVisit = trackable.getLastVisit();
+			if (!lastVisit.isEmpty()) stimestampLastVisit = iso8601Format.format(lastVisit);
+			else
+				stimestampLastVisit = "";
 		}
 		catch (Exception e)
 		{

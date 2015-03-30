@@ -217,7 +217,8 @@ public class Image extends CB_View_Base {
     public void dispose() {
 	GL.that.removeRenderView(this);
 	isAsRenderViewRegisted.set(false);
-	imageLoader.dispose();
+	if (imageLoader != null)
+	    imageLoader.dispose();
 	imageLoader = null;
     }
 
