@@ -84,6 +84,8 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	    throw any;
     }
 
+    static int test = 0;
+
     public static void addViewsToBox(List<Html_Segment> segmentList, CB_List<CB_View_Base> segmentViewList, float innerWidth, final ListLayout relayout) {
 	for (int i = 0, n = segmentList.size(); i < n; i++) {
 	    Html_Segment seg = segmentList.get(i);
@@ -96,7 +98,10 @@ public class HtmlView extends ScrollBox implements ListLayout {
 		addImage(segmentViewList, seg, relayout, innerWidth);
 		break;
 	    case TextBlock:
-		addTextBlog(segmentViewList, (Html_Segment_TextBlock) seg, innerWidth);
+		if (test++ < 2)
+		    addTextBlog(segmentViewList, (Html_Segment_TextBlock) seg, innerWidth);
+		else
+		    addTextBlog(segmentViewList, (Html_Segment_TextBlock) seg, innerWidth);
 		break;
 	    case List:
 		addListBlog(segmentViewList, (HTML_Segment_List) seg, innerWidth);

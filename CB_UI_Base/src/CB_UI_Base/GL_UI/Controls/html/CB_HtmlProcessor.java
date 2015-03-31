@@ -127,7 +127,16 @@ public class CB_HtmlProcessor extends Processor {
 	if (!force && (spanelement || listelement)) {
 	    return;
 	}
-	String innerText = appendable.toString();
+
+	// Truncate to 2500 chars
+	CB_List<String> innerTexts = turncate2500(appendable.toString());
+	for (String innerText : innerTexts) {
+	    handleInnerText(innerText);
+	}
+
+    }
+
+    private void handleInnerText(String innerText) {
 	if (innerText != null && !innerText.isEmpty() && isNotSpace(innerText)) {
 
 	    Html_Segment segment;
@@ -161,6 +170,7 @@ public class CB_HtmlProcessor extends Processor {
 	    if (isImage) {
 		segment = new Html_Segment_Image(AtributeStack, innerText);
 	    } else {
+
 		segment = new Html_Segment_TextBlock(AtributeStack, innerText);
 		if (!hyperLinkList.isEmpty()) {
 		    ((Html_Segment_TextBlock) segment).add(hyperLinkList);
@@ -173,6 +183,36 @@ public class CB_HtmlProcessor extends Processor {
 	    appendable = new StringBuilder();
 	    isImage = false;
 	}
+    }
+
+    CB_List<String> turncate2500(String text) {
+
+	if (text.length() < 2500) {
+	    CB_List<String> ret = new CB_List<String>();
+	    ret.add(text);
+	    return ret;
+	}
+
+	CB_List<String> textList = new CB_List<String>();
+	String[] split = null;
+	while (text.length() > 2500) {
+	    split = split(text);
+	    textList.add(split[0]);
+	    text = split[1];
+	}
+	textList.add(split[1]);
+
+	return textList;
+
+    }
+
+    private String[] split(String text) {
+	//search first line break before 2500 char
+	int pos = text.lastIndexOf(this.newLine, 2500);
+	String first = text.substring(0, pos);
+	String second = text.substring(pos);
+
+	return new String[] { first, second };
     }
 
     void createNewHrSegment() {

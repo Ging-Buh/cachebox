@@ -78,7 +78,7 @@ public class CB_Html_Renderer extends Renderer {
 	ELEMENT_HANDLERS.put(HTMLElementName.NOSCRIPT, IMPLEMENTED ? RemoveElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.OL, IMPLEMENTED ? ListElementHandler.INSTANCE_OL : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.P, IMPLEMENTED ? StandardBlockElementHandler.INSTANCE_1_1 : Not_implemented_ElementHandler.INSTANCE);
-	ELEMENT_HANDLERS.put(HTMLElementName.PRE, NOTIMPLEMENTED ? PRE_ElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
+	ELEMENT_HANDLERS.put(HTMLElementName.PRE, IMPLEMENTED ? PRE_ElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.SCRIPT, IMPLEMENTED ? RemoveElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.SPAN, IMPLEMENTED ? SpanElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.SELECT, IMPLEMENTED ? RemoveElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);

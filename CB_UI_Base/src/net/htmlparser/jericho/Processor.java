@@ -15,7 +15,7 @@ public class Processor {
     protected final Source source;
     public final int maxLineLength;
     public final int hrLineLength;
-    private final String newLine;
+    protected final String newLine;
     public final boolean includeHyperlinkURLs;
     public final boolean includeAlternateText;
     public final boolean decorateFontStyles;
