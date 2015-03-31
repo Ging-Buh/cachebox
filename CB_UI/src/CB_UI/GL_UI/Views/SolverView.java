@@ -26,6 +26,8 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
+import CB_UI.Events.SelectedCacheEvent;
+import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction.IFunctionResult;
 import CB_UI_Base.Enums.WrapType;
@@ -54,7 +56,7 @@ import CB_Utils.Plattform;
  * @author Longri
  *
  */
-public class SolverView extends CB_View_Base {
+public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 
     final static org.slf4j.Logger log = LoggerFactory.getLogger(SolverView.class);
 
@@ -135,6 +137,7 @@ public class SolverView extends CB_View_Base {
     public void onShow() {
 	log.debug("onShow()");
 	SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+	SelectedCacheEventList.Add(this);
 
 	if (aktCache == null)
 	    return;
@@ -154,6 +157,7 @@ public class SolverView extends CB_View_Base {
     public void onHide() {
 	// Save changed Solver text
 	log.debug("onHide()");
+	SelectedCacheEventList.Remove(this);
 	if (aktCache != null) {
 	    Database.SetSolver(aktCache, edSolver.getText().toString());
 	    // When Solve 1 changes -> Solver 2 must reload the information from DB to get the changes from Solver 1
@@ -463,5 +467,10 @@ public class SolverView extends CB_View_Base {
 	}
 
     };
+
+    @Override
+    public void SelectedCacheChanged(Cache selectedCache, Waypoint waypoint) {
+	onShow();
+    }
 
 }
