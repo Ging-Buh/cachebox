@@ -156,7 +156,13 @@ public class DescriptionView extends CB_View_Base {
 
 	NonLocalImages.clear();
 	NonLocalImagesUrl.clear();
-	String cachehtml = Database.GetDescription(cache);
+	String cachehtml = Database.GetShortDescription(cache);
+	if (cachehtml.isEmpty()) {
+	    cachehtml = Database.GetDescription(cache);
+	} else {
+	    cachehtml += "<br/><hr/><br/>" + Database.GetDescription(cache);
+	}
+
 	String html = "";
 	if (cache.getApiStatus() == 1)// GC.com API lite
 	{ // Load Standard HTML

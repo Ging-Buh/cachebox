@@ -42,7 +42,7 @@ public class CacheDAO
 	public String[] SQL_ENUM =
 		{ "c.Id", "GcCode", "Latitude" };
 	static final String SQL_DETAILS = "PlacedBy, DateHidden, Url, TourName, GpxFilename_ID, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint ";
-	static final String SQL_GET_DETAIL_WITH_DESCRIPTION = "Description, Solver, Notes ";
+	static final String SQL_GET_DETAIL_WITH_DESCRIPTION = "Description, Solver, Notes, ShortDescription ";
 	static final String SQL_GET_DETAIL_FROM_ID = "select " + SQL_DETAILS + SQL_BY_ID;
 	static final String SQL_EXIST_CACHE = "select 1 from Caches where Id = ?";
 
@@ -173,6 +173,7 @@ public class CacheDAO
 			detail.longDescription = reader.getString(readerOffset + 11);
 			detail.tmpSolver = reader.getString(readerOffset + 12);
 			detail.tmpNote = reader.getString(readerOffset + 13);
+			detail.shortDescription = reader.getString(readerOffset + 14);
 		}
 		return true;
 	}
@@ -218,19 +219,12 @@ public class CacheDAO
 
 		if ((cache.getShortDescription() != null) && (cache.getShortDescription().length() > 0))
 		{
-			args.put("Description", cache.getShortDescription() + "<br /><hr /><br />");
+			args.put("ShortDescription", cache.getShortDescription());
 		}
 
 		if ((cache.getLongDescription() != null) && (cache.getLongDescription().length() > 0))
 		{
-			if (args.containsKey("Description"))
-			{
-				args.put("Description", args.get("Description") + cache.getLongDescription());
-			}
-			else
-			{
-				args.put("Description", cache.getLongDescription());
-			}
+			args.put("Description", cache.getLongDescription());
 		}
 
 		args.put("NumTravelbugs", cache.NumTravelbugs);
@@ -344,19 +338,12 @@ public class CacheDAO
 
 		if ((cache.getShortDescription() != null) && (cache.getShortDescription().length() > 0))
 		{
-			args.put("Description", cache.getShortDescription() + "<br /><hr /><br />");
+			args.put("ShortDescription", cache.getShortDescription());
 		}
 
 		if ((cache.getLongDescription() != null) && (cache.getLongDescription().length() > 0))
 		{
-			if (args.containsKey("Description"))
-			{
-				args.put("Description", args.get("Description") + cache.getLongDescription());
-			}
-			else
-			{
-				args.put("Description", cache.getLongDescription());
-			}
+			args.put("Description", cache.getLongDescription());
 		}
 
 		args.put("Url", cache.getUrl());

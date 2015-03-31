@@ -298,6 +298,13 @@ public abstract class Database extends Database_Core
 					// nicht mehr ben�tigt execSQL("ALTER TABLE [Waypoint] ADD COLUMN [UserNote] ntext NULL");
 				}
 
+				if (lastDatabaseSchemeVersion < 1026)
+				{
+					// add one column for short description
+					// [ShortDescription] ntext NULL
+					execSQL("ALTER TABLE [Caches] ADD [ShortDescription] ntext NULL;");
+				}
+
 				setTransactionSuccessful();
 			}
 			catch (Exception exc)
@@ -663,6 +670,23 @@ public abstract class Database extends Database_Core
 	{
 		String description = "";
 		CoreCursor reader = Database.Data.rawQuery("select Description from Caches where Id=?", new String[]
+			{ Long.toString(cache.Id) });
+		if (reader == null) return "";
+		reader.moveToFirst();
+		while (reader.isAfterLast() == false)
+		{
+			if (reader.getString(0) != null) description = reader.getString(0);
+			reader.moveToNext();
+		}
+		reader.close();
+
+		return description;
+	}
+
+	public static String GetShortDescription(Cache cache)
+	{
+		String description = "";
+		CoreCursor reader = Database.Data.rawQuery("select ShortDescription from Caches where Id=?", new String[]
 			{ Long.toString(cache.Id) });
 		if (reader == null) return "";
 		reader.moveToFirst();

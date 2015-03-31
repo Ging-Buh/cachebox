@@ -1220,7 +1220,10 @@ public class Cache implements Comparable<Cache>, Serializable
 	{
 		if (detail != null)
 		{
-			if (detail.getLongDescription() == null || detail.getLongDescription().length() == 0) return Database.GetDescription(this);
+			if (detail.getLongDescription() == null || detail.getLongDescription().length() == 0)
+			{
+				return Database.GetDescription(this);
+			}
 			return detail.getLongDescription();
 		}
 		else
@@ -1241,6 +1244,10 @@ public class Cache implements Comparable<Cache>, Serializable
 	{
 		if (detail != null)
 		{
+			if (detail.getShortDescription() == null || detail.getShortDescription().length() == 0)
+			{
+				return Database.GetShortDescription(this);
+			}
 			return detail.getShortDescription();
 		}
 		else

@@ -494,6 +494,8 @@ public class GifDecoder {
 	    switch (code) {
 	    case 0x2C: // image separator
 		readBitmap();
+		if (frameCount > 50)
+		    done = true;
 		break;
 	    case 0x21: // extension
 		code = read();
