@@ -18,7 +18,6 @@ package CB_UI.GL_UI.Controls;
 import CB_Core.Api.LiveMapQue;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
-import CB_Locator.LocatorSettings;
 import CB_Locator.Map.MapViewBase;
 import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.GL_UI.CB_View_Base;
@@ -227,12 +226,11 @@ public class MapInfoPanel extends CB_View_Base {
 	if (!forceSet && tmp == lastUsedCompass)
 	    return;// no change required
 	lastUsedCompass = tmp;
-	boolean Transparency = LocatorSettings.PositionMarkerTransparent.getValue();
 	int arrowId = 0;
 	if (lastUsedCompass) {
-	    arrowId = Transparency ? 1 : 0;
+	    arrowId = 0;
 	} else {
-	    arrowId = Transparency ? 3 : 2;
+	    arrowId = 2;
 	}
 	Sprite arrowSprite = new Sprite(SpriteCacheBase.Arrows.get(arrowId));
 	arrowSprite.setRotation(0);// reset rotation
