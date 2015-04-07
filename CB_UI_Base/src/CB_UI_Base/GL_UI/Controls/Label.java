@@ -315,15 +315,33 @@ public class Label extends CB_View_Base {
 
 	    float ly2 = vertices[i + 21];
 
-	    if (ly2 + ascent < ly) {
+	    if ((ly2 + ascent < ly) || (i == n - 19)) {
+
+		//search last visible
+		boolean mustBreak = false;
+		if ((i == n - 19)) {
+		    while (true) {
+			if (vertices[i] == 0 && vertices[i + 1] == 0 && vertices[i + 2] == 0) {
+			    i -= 20;
+			} else {
+			    mustBreak = true;
+			    break;
+			}
+		    }
+
+		}
 
 		//Line breake
 		lxEnd = vertices[i + 15];
 		start2 = i + 20;
 
-		Line line = new Line(lxStart, ly - yOffset, lxEnd, ly - yOffset);
-		Quadrangle qr = new Quadrangle(line, underlineHight);
-		lineList.add(qr);
+		if (lxStart != lxEnd) {
+		    Line line = new Line(lxStart, ly - yOffset, lxEnd, ly - yOffset);
+		    Quadrangle qr = new Quadrangle(line, underlineHight);
+		    lineList.add(qr);
+		}
+		if (mustBreak)
+		    break;
 	    }
 
 	}

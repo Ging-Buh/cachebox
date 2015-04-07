@@ -82,10 +82,23 @@ public class CB_HtmlProcessor extends Processor {
 	    createNewSegment();
 	    //	    log.debug("Push Tag >" + tag.toString());
 	    AtributeStack.push(tag);
+
+	    //	    if (tag.getName().equals("pre") || tag.getName().equals("span")) {
+	    if (tag.getName().equals("span")) {
+		preformatted = false;
+	    }
+
 	} else if (isClosedEndTag(tag)) {
 
-	    if (!tag.getName().toLowerCase().equals("a") && !nextIsLI)
+	    if (!tag.getName().toLowerCase().equals("a") && !nextIsLI) {
+
+		//close Span?
+		if (tag.getName().equals("span")) {
+		    this.spanelement = false;
+		}
+
 		createNewSegment();
+	    }
 
 	    AtributeStack.pop();
 

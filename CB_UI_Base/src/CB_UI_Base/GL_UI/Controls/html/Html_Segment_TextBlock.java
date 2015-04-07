@@ -65,11 +65,8 @@ public class Html_Segment_TextBlock extends Html_Segment {
 	// resolve Font Color
 	String color = null;
 	for (Tag tag : tags) {
-	    if (!tag.getName().equals("font"))
-		
-		Handle Style
-		
-		continue;
+	    //	    if (!tag.getName().equals("font") && !tag.getName().toLowerCase().equals("style"))
+	    //		continue;
 	    List<Element> elements = tag.getAllElements();
 	    if (elements.isEmpty())
 		elements.add(tag.getElement());
@@ -78,6 +75,16 @@ public class Html_Segment_TextBlock extends Html_Segment {
 		for (Attribute attr : attributes) {
 		    if (attr.getKey().equals("color")) {
 			color = attr.getValue();
+		    }
+		    if (attr.getKey().equals("style")) {
+			String[] values = attr.getValue().split(";");
+
+			for (String value : values) {
+			    String[] paar = value.split(":");
+			    if (paar[0].equals("color")) {
+				color = paar[1];
+			    }
+			}
 		    }
 		}
 	    }
@@ -110,8 +117,8 @@ public class Html_Segment_TextBlock extends Html_Segment {
 
 	int size = 3;
 	for (Tag tag : tags) {
-	    if (!tag.getName().toLowerCase().equals("font"))
-		continue;
+	    //	    if (!tag.getName().toLowerCase().equals("font") && !tag.getName().toLowerCase().equals("style"))
+	    //		continue;
 	    List<Element> elements = tag.getAllElements();
 
 	    if (elements.isEmpty())
@@ -123,29 +130,23 @@ public class Html_Segment_TextBlock extends Html_Segment {
 		for (Attribute attr : attributes) {
 		    if (attr.getKey().equals("size")) {
 
-			/*
-			    * The following values are acceptable:
-			   *
-			   * 1, 2, 3, 4, 5, 6, 7
-			   * +1, +2, +3, +4, +5, +6
-			   * -1, -2, -3, -4, -5, -6
-			    */
-
 			String value = attr.getValue();
-			if (value.startsWith("+")) {
-			    int intSize = Integer.parseInt(value.replace("+", ""));
-			    size += intSize;
-			} else if (value.startsWith("-")) {
-			    int intSize = Integer.parseInt(value.replace("-", ""));
-			    size -= intSize;
-			} else {
-			    try {
-				size = Integer.parseInt(value);
-			    } catch (NumberFormatException e) {
-				log.error("wrong size value =>" + value);
+
+			size = getFontSizeFromString(size, value);
+		    }
+		    if (attr.getKey().equals("style")) {
+			String[] values = attr.getValue().split(";");
+
+			for (String value : values) {
+			    String[] paar = value.split(":");
+			    if (paar[0].equals("font-size")) {
+				size = getFontSizeFromString(size, paar[1]);
+			    }
+			    if (paar[0].equals("text-decoration")) {
+				if (paar[1].equals("underline"))
+				    underline = true;
 			    }
 			}
-
 		    }
 		}
 	    }
@@ -262,6 +263,56 @@ public class Html_Segment_TextBlock extends Html_Segment {
 	    this.fontStyle = GL_FontStyle.ITALIC;
 
 	//	System.out.print(true);
+    }
+
+    private int getFontSizeFromString(int size, String value) {
+	/*
+	    * The following values are acceptable:
+	   *
+	   * 1, 2, 3, 4, 5, 6, 7
+	   * +1, +2, +3, +4, +5, +6
+	   * -1, -2, -3, -4, -5, -6
+	    */
+
+	/* Or
+	  	xx-small = 1.
+		x-small = 2.
+		small = 3.
+		medium = 4.
+		large = 5.
+		x-large = 6.
+		xx-large = 7.
+	 */
+
+	if (value.equals("xx-small"))
+	    return 1;
+	if (value.equals("x-small"))
+	    return 2;
+	if (value.equals("small"))
+	    return 3;
+	if (value.equals("medium"))
+	    return 4;
+	if (value.equals("large"))
+	    return 5;
+	if (value.equals("x-large"))
+	    return 6;
+	if (value.equals("xx-large"))
+	    return 7;
+
+	if (value.startsWith("+")) {
+	    int intSize = Integer.parseInt(value.replace("+", ""));
+	    size += intSize;
+	} else if (value.startsWith("-")) {
+	    int intSize = Integer.parseInt(value.replace("-", ""));
+	    size -= intSize;
+	} else {
+	    try {
+		size = Integer.parseInt(value);
+	    } catch (NumberFormatException e) {
+		log.error("wrong size value =>" + value);
+	    }
+	}
+	return size;
     }
 
     static float getFontPx(int value) {

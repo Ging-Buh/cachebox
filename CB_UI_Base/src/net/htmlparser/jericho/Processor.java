@@ -34,7 +34,7 @@ public class Processor {
     protected int indentSize;
     protected int blockVerticalMargin; // minimum number of blank lines to output at the current block boundary, or NO_MARGIN (-1) if we
 				       // are not currently at a block boundary.
-    protected boolean preformatted;
+    protected boolean preformatted = false;
     public boolean lastCharWhiteSpace;
     protected final boolean ignoreInitialWhiteSpace = false; // can remove this at some stage once we're sure it won't be used.
     public boolean bullet;

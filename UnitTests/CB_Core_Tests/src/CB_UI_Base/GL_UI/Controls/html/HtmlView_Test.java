@@ -15,6 +15,7 @@
  */
 package CB_UI_Base.GL_UI.Controls.html;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
@@ -359,16 +360,16 @@ public class HtmlView_Test {
 	Html_Segment testSeg = segmentList.get(0);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
-	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.RED));
-	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == DEFAULT_FONTSIZE);
-	assertTrue(testSeg.formatedText.startsWith(" Cacherausbildung ( oder : auch di"));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(HSV_Color.RED));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 43.2f);
+	assertTrue(testSeg.formatedText.startsWith(" Dieser Cache ist Carina"));
 
 	testSeg = segmentList.get(1);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
-	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
-	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == DEFAULT_FONTSIZE);
-	assertTrue(testSeg.formatedText.equals(br));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.RED));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 43.2f);
+	assertTrue(testSeg.formatedText.startsWith(" und soll als Geburtstagscache ein klei"));
 
 	testSeg = segmentList.get(2);
 	testSeg.resolveAtributes();
@@ -380,23 +381,75 @@ public class HtmlView_Test {
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
-	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == DEFAULT_FONTSIZE);
-	assertTrue(testSeg.formatedText.startsWith(br + "Im FEZ kann man spielen, man"));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 25.2f);
+	assertTrue(((Html_Segment_TextBlock) testSeg).underline == false);
+	assertTrue(testSeg.formatedText.startsWith(" Hier erwartet euch eine kurze R"));
 
 	testSeg = segmentList.get(4);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
-	assertTrue(testSeg instanceof Html_Segment_Image);
-	assertTrue(testSeg.formatedText.startsWith("http://imgcdn.geocaching.com/cache/large/00ababb1"));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 25.2f);
+	assertFalse(((Html_Segment_TextBlock) testSeg).underline);
+	assertTrue(testSeg.formatedText.startsWith(" Mit hin und Rückweg dürfte die gesamte Wegstre"));
 
 	testSeg = segmentList.get(5);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
-	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == DEFAULT_FONTSIZE);
-	assertTrue(testSeg.formatedText.startsWith(br + br + "4. Hinweis beachten : magnet"));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 25.2f);
+	assertTrue(((Html_Segment_TextBlock) testSeg).underline);
+	assertTrue(testSeg.formatedText.startsWith(" Allgemeines:"));
 
-	assertTrue(segmentList.size() == 6);
+	testSeg = segmentList.get(6);
+	testSeg.resolveAtributes();
+	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 32.4f);
+	assertFalse(((Html_Segment_TextBlock) testSeg).underline);
+	assertTrue(testSeg.formatedText.startsWith(" Bleibt bitte auf den Pfaden, ihr müsst nicht in den Fluss steig"));
+
+	testSeg = segmentList.get(7);
+	testSeg.resolveAtributes();
+	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 32.4f);
+	assertFalse(((Html_Segment_TextBlock) testSeg).underline);
+	assertTrue(testSeg.formatedText.startsWith(" Petlinge mässen nicht geöffnet werden, die In"));
+
+	testSeg = segmentList.get(8);
+	testSeg.resolveAtributes();
+	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 32.4f);
+	assertFalse(((Html_Segment_TextBlock) testSeg).underline);
+	assertTrue(testSeg.formatedText.startsWith(" An Stage 2 das Behätnis wieder an den Fun"));
+
+	testSeg = segmentList.get(9);
+	testSeg.resolveAtributes();
+	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 25.2f);
+	assertTrue(((Html_Segment_TextBlock) testSeg).underline);
+	assertTrue(testSeg.formatedText.startsWith(" Hinweis zur Bewertung:"));
+
+	testSeg = segmentList.get(10);
+	testSeg.resolveAtributes();
+	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 25.2f);
+	assertFalse(((Html_Segment_TextBlock) testSeg).underline);
+	assertTrue(testSeg.formatedText.startsWith(" Die D-Wertung bezieht sich auf den derzei"));
+
+	testSeg = segmentList.get(11);
+	testSeg.resolveAtributes();
+	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 25.2f);
+	assertFalse(((Html_Segment_TextBlock) testSeg).underline);
+	assertTrue(testSeg.formatedText.startsWith(" Die T-Wertung könnte je nach Wetterlage variieren und ersch"));
+
+	assertTrue(segmentList.size() == 12);
     }
 
 }

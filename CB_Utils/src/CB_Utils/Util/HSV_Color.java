@@ -225,4 +225,13 @@ public class HSV_Color extends Color
 	{
 		// nothing to do
 	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o) return true;
+		if (o == null || (getClass() != o.getClass() && !(o instanceof Color))) return false;
+		Color color = (Color) o;
+		return toIntBits() == color.toIntBits();
+	}
 }
