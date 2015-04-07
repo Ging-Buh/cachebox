@@ -46,6 +46,7 @@ public class HtmlView_Test {
     static String HTMLSOURCE_2;
     static String HTMLSOURCE_3;
     static String HTMLSOURCE_4;
+    static String HTMLSOURCE_5;
     static String HTML_IMAGE_TAG = "<img src=\"http://img.geocaching.com/cache/e96baf07-b869-4568-a1ef-8a69d27a3e43.jpg\" />";
     static float DEFAULT_FONTSIZE = 21.6f;
 
@@ -54,6 +55,7 @@ public class HtmlView_Test {
 	HTMLSOURCE_2 = getFileFromResource("HTMLSOURCE_2.html");
 	HTMLSOURCE_3 = getFileFromResource("HTMLSOURCE_3.html");
 	HTMLSOURCE_4 = getFileFromResource("HTMLSOURCE_4.html");
+	HTMLSOURCE_5 = getFileFromResource("HTMLSOURCE_ GC57YAE.html");
 
 	if (UiSizes.that == null) {
 	    new UiSizes().setScale(1.5f);
@@ -309,6 +311,55 @@ public class HtmlView_Test {
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == DEFAULT_FONTSIZE);
+	assertTrue(testSeg.formatedText.startsWith(" Cacherausbildung ( oder : auch di"));
+
+	testSeg = segmentList.get(1);
+	testSeg.resolveAtributes();
+	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == DEFAULT_FONTSIZE);
+	assertTrue(testSeg.formatedText.equals(br));
+
+	testSeg = segmentList.get(2);
+	testSeg.resolveAtributes();
+	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
+	assertTrue(testSeg instanceof Html_Segment_HR);
+	assertTrue(testSeg.formatedText.startsWith("--Todo--HR----Todo--HR-"));
+
+	testSeg = segmentList.get(3);
+	testSeg.resolveAtributes();
+	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == DEFAULT_FONTSIZE);
+	assertTrue(testSeg.formatedText.startsWith(br + "Im FEZ kann man spielen, man"));
+
+	testSeg = segmentList.get(4);
+	testSeg.resolveAtributes();
+	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
+	assertTrue(testSeg instanceof Html_Segment_Image);
+	assertTrue(testSeg.formatedText.startsWith("http://imgcdn.geocaching.com/cache/large/00ababb1"));
+
+	testSeg = segmentList.get(5);
+	testSeg.resolveAtributes();
+	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == DEFAULT_FONTSIZE);
+	assertTrue(testSeg.formatedText.startsWith(br + br + "4. Hinweis beachten : magnet"));
+
+	assertTrue(segmentList.size() == 6);
+    }
+
+    @Test
+    public void parserTest_GC57YAE() {
+	Source source = new CB_FormatedHtmlSource(HTMLSOURCE_5);
+	CB_Html_Renderer renderer = new CB_Html_Renderer(source);
+	List<Html_Segment> segmentList = renderer.getElementList();
+
+	Html_Segment testSeg = segmentList.get(0);
+	testSeg.resolveAtributes();
+	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.RED));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == DEFAULT_FONTSIZE);
 	assertTrue(testSeg.formatedText.startsWith(" Cacherausbildung ( oder : auch di"));
 

@@ -66,6 +66,9 @@ public class Html_Segment_TextBlock extends Html_Segment {
 	String color = null;
 	for (Tag tag : tags) {
 	    if (!tag.getName().equals("font"))
+		
+		Handle Style
+		
 		continue;
 	    List<Element> elements = tag.getAllElements();
 	    if (elements.isEmpty())
