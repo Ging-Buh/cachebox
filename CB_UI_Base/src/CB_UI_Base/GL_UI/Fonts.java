@@ -40,217 +40,194 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
  * 
  * @author Longri
  */
-public class Fonts
-{
-	final static org.slf4j.Logger log = LoggerFactory.getLogger(Fonts.class);
-	static final String DEFAULT_CHARACTER = getCyrilCharSet();
+public class Fonts {
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(Fonts.class);
+    static final String DEFAULT_CHARACTER = getCyrilCharSet();
 
-	static String getCyrilCharSet()
-	{
-		int CharSize = 0x04ff - 0x0400;
-		char[] cyril = new char[CharSize + 1];
-		for (int i = 0x0400; i < 0x04ff + 1; i++)
-		{
-			cyril[i - 0x0400] = (char) i;
+    static String getCyrilCharSet() {
+	int CharSize = 0x04ff - 0x0400;
+	char[] cyril = new char[CharSize + 1];
+	for (int i = 0x0400; i < 0x04ff + 1; i++) {
+	    cyril[i - 0x0400] = (char) i;
+	}
+	return FreeTypeFontGenerator.DEFAULT_CHARS + String.copyValueOf(cyril) + "—–";
+    }
+
+    private static BitmapFont compass;
+    private static BitmapFont big;
+    private static BitmapFont normal;
+    private static BitmapFont small;
+    private static BitmapFont normalBubble;
+    private static BitmapFont smallBubble;
+
+    private static SkinSettings cfg;
+
+    /**
+     * Lädt die verwendeten Bitmap Fonts und berechnet die entsprechenden Größen
+     */
+    public static void loadFonts(SkinBase skin) {
+
+	cfg = skin.getSettings();
+	COLOR.loadColors(skin);
+	FreeTypeFontGenerator generator = null;
+
+	// get the first found ttf-font
+
+	FileHandle font = null;
+
+	if (cfg.SkinFolder.isDirectory()) {
+	    FileHandle[] ttfFonts = cfg.SkinFolder.list();
+	    for (FileHandle file : ttfFonts) {
+		if (file.extension().equalsIgnoreCase("ttf")) {
+		    font = file;
+		    break;
 		}
-		return FreeTypeFontGenerator.DEFAULT_CHARS + String.copyValueOf(cyril);
+	    }
 	}
 
-	private static BitmapFont compass;
-	private static BitmapFont big;
-	private static BitmapFont normal;
-	private static BitmapFont small;
-	private static BitmapFont normalBubble;
-	private static BitmapFont smallBubble;
-
-	private static SkinSettings cfg;
-
-	/**
-	 * Lädt die verwendeten Bitmap Fonts und berechnet die entsprechenden Größen
-	 */
-	public static void loadFonts(SkinBase skin)
-	{
-
-		cfg = skin.getSettings();
-		COLOR.loadColors(skin);
-		FreeTypeFontGenerator generator = null;
-
-		// get the first found ttf-font
-
-		FileHandle font = null;
-
-		if (cfg.SkinFolder.isDirectory())
-		{
-			FileHandle[] ttfFonts = cfg.SkinFolder.list();
-			for (FileHandle file : ttfFonts)
-			{
-				if (file.extension().equalsIgnoreCase("ttf"))
-				{
-					font = file;
-					break;
-				}
-			}
-		}
-
-		if (font == null || !font.exists())
-		{
-			// no skin font found, use default font
-			font = Global.getInternalFileHandle("skins/default/DroidSans-Bold.ttf");
-		}
-
-		log.debug("Generate scaled Fonts from " + font);
-		generator = new FreeTypeFontGenerator(font);
-
-		double density = UiSizes.that.getScale();
-
-		compass = loadFontFromFile(generator, (int) (cfg.SizeBiggest * density));
-		big = loadFontFromFile(generator, (int) (cfg.SizeBig * density));
-		normal = loadFontFromFile(generator, (int) (cfg.SizeNormal * density));
-		small = loadFontFromFile(generator, (int) (cfg.SizeSmall * density));
-		normalBubble = loadFontFromFile(generator, (int) (cfg.SizeNormalbubble * density));
-		smallBubble = loadFontFromFile(generator, (int) (cfg.SizeSmallBubble * density));
-		generator.dispose();
+	if (font == null || !font.exists()) {
+	    // no skin font found, use default font
+	    font = Global.getInternalFileHandle("skins/default/DroidSans-Bold.ttf");
 	}
 
-	public static void dispose()
-	{
-		compass.dispose();
-		big.dispose();
-		normal.dispose();
-		small.dispose();
-		normalBubble.dispose();
-		smallBubble.dispose();
+	log.debug("Generate scaled Fonts from " + font);
+	generator = new FreeTypeFontGenerator(font);
 
-		big = null;
-		normal = null;
-		small = null;
-		normalBubble = null;
-		smallBubble = null;
+	double density = UiSizes.that.getScale();
 
-	}
+	compass = loadFontFromFile(generator, (int) (cfg.SizeBiggest * density));
+	big = loadFontFromFile(generator, (int) (cfg.SizeBig * density));
+	normal = loadFontFromFile(generator, (int) (cfg.SizeNormal * density));
+	small = loadFontFromFile(generator, (int) (cfg.SizeSmall * density));
+	normalBubble = loadFontFromFile(generator, (int) (cfg.SizeNormalbubble * density));
+	smallBubble = loadFontFromFile(generator, (int) (cfg.SizeSmallBubble * density));
+	generator.dispose();
+    }
 
-	public static BitmapFont getCompass()
-	{
-		return compass;
-	}
+    public static void dispose() {
+	compass.dispose();
+	big.dispose();
+	normal.dispose();
+	small.dispose();
+	normalBubble.dispose();
+	smallBubble.dispose();
 
-	public static BitmapFont getBig()
-	{
-		return big;
-	}
+	big = null;
+	normal = null;
+	small = null;
+	normalBubble = null;
+	smallBubble = null;
 
-	public static BitmapFont getNormal()
-	{
-		return normal;
-	}
+    }
 
-	public static BitmapFont getSmall()
-	{
-		return small;
-	}
+    public static BitmapFont getCompass() {
+	return compass;
+    }
 
-	public static BitmapFont getBubbleNormal()
-	{
-		return normalBubble;
-	}
+    public static BitmapFont getBig() {
+	return big;
+    }
 
-	public static BitmapFont getBubbleSmall()
-	{
-		return smallBubble;
-	}
+    public static BitmapFont getNormal() {
+	return normal;
+    }
 
-	private static BitmapFontCache measureNormalCache;
-	private static BitmapFontCache measureSmallCache;
-	private static BitmapFontCache measureBigCache;
+    public static BitmapFont getSmall() {
+	return small;
+    }
 
-	//
+    public static BitmapFont getBubbleNormal() {
+	return normalBubble;
+    }
 
-	public static TextBounds Measure(String txt)
-	{
-		if (txt == null || txt.equals("")) txt = "text";
-		if (measureNormalCache == null) measureNormalCache = new BitmapFontCache(Fonts.getNormal());
-		TextBounds bounds = measureNormalCache.setText(txt, 0, 0);
-		bounds.height = bounds.height - measureNormalCache.getFont().getDescent();
-		return bounds;
-	}
+    public static BitmapFont getBubbleSmall() {
+	return smallBubble;
+    }
 
-	public static TextBounds MeasureSmall(String txt)
-	{
-		if (measureSmallCache == null) measureSmallCache = new BitmapFontCache(Fonts.getSmall());
-		TextBounds bounds = measureSmallCache.setText(txt, 0, 0);
-		bounds.height = bounds.height - measureSmallCache.getFont().getDescent();
-		return bounds;
-	}
+    private static BitmapFontCache measureNormalCache;
+    private static BitmapFontCache measureSmallCache;
+    private static BitmapFontCache measureBigCache;
 
-	public static TextBounds MeasureBig(String txt)
-	{
-		if (measureBigCache == null) measureBigCache = new BitmapFontCache(Fonts.getBig());
-		TextBounds bounds = measureBigCache.setText(txt, 0, 0);
-		bounds.height = bounds.height - measureBigCache.getFont().getDescent();
-		return bounds;
-	}
+    //
 
-	public static TextBounds MeasureWrapped(String txt, float width)
-	{
-		if (measureNormalCache == null) measureNormalCache = new BitmapFontCache(Fonts.getNormal());
-		TextBounds bounds = measureNormalCache.setWrappedText(txt, 0, 0, width);
-		bounds.height = bounds.height - measureNormalCache.getFont().getDescent();
-		return bounds;
-	}
+    public static TextBounds Measure(String txt) {
+	if (txt == null || txt.equals(""))
+	    txt = "text";
+	if (measureNormalCache == null)
+	    measureNormalCache = new BitmapFontCache(Fonts.getNormal());
+	TextBounds bounds = measureNormalCache.setText(txt, 0, 0);
+	bounds.height = bounds.height - measureNormalCache.getFont().getDescent();
+	return bounds;
+    }
 
-	private static BitmapFont loadFontFromFile(FreeTypeFontGenerator generator, int scale)
-	{
-		String fs = Global.fs;
-		String fontPath = "";
+    public static TextBounds MeasureSmall(String txt) {
+	if (measureSmallCache == null)
+	    measureSmallCache = new BitmapFontCache(Fonts.getSmall());
+	TextBounds bounds = measureSmallCache.setText(txt, 0, 0);
+	bounds.height = bounds.height - measureSmallCache.getFont().getDescent();
+	return bounds;
+    }
+
+    public static TextBounds MeasureBig(String txt) {
+	if (measureBigCache == null)
+	    measureBigCache = new BitmapFontCache(Fonts.getBig());
+	TextBounds bounds = measureBigCache.setText(txt, 0, 0);
+	bounds.height = bounds.height - measureBigCache.getFont().getDescent();
+	return bounds;
+    }
+
+    public static TextBounds MeasureWrapped(String txt, float width) {
+	if (measureNormalCache == null)
+	    measureNormalCache = new BitmapFontCache(Fonts.getNormal());
+	TextBounds bounds = measureNormalCache.setWrappedText(txt, 0, 0, width);
+	bounds.height = bounds.height - measureNormalCache.getFont().getDescent();
+	return bounds;
+    }
+
+    private static BitmapFont loadFontFromFile(FreeTypeFontGenerator generator, int scale) {
+	String fs = Global.fs;
+	String fontPath = "";
+	// fonts-Verzeichnis "lokal" im cachebox/skins/small oder ..normal oder christmas
+
+	if (cfg.SkinFolder.type() == FileType.Absolute) {
+	    String FolderPath = cfg.SkinFolder.path();
+	    String path = FolderPath.replace("/", fs) + fs + "fnts";
+	    if (FileIO.DirectoryExists(path)) {
 		// fonts-Verzeichnis "lokal" im cachebox/skins/small oder ..normal oder christmas
+		fontPath = path + fs + String.valueOf(scale) + ".fnt";
+	    } else {
+		// fonts-Verzeichnis "global" im cachebox/skins
+		path = FolderPath.replace("/", fs) + fs + ".." + fs + "fnts";
+		fontPath = path + fs + String.valueOf(scale) + ".fnt";
+	    }
 
-		if (cfg.SkinFolder.type() == FileType.Absolute)
-		{
-			String FolderPath = cfg.SkinFolder.path();
-			String path = FolderPath.replace("/", fs) + fs + "fnts";
-			if (FileIO.DirectoryExists(path))
-			{
-				// fonts-Verzeichnis "lokal" im cachebox/skins/small oder ..normal oder christmas
-				fontPath = path + fs + String.valueOf(scale) + ".fnt";
-			}
-			else
-			{
-				// fonts-Verzeichnis "global" im cachebox/skins
-				path = FolderPath.replace("/", fs) + fs + ".." + fs + "fnts";
-				fontPath = path + fs + String.valueOf(scale) + ".fnt";
-			}
-
-		}
-
-		// Wenn der font nicht vorberechnet ist, dann wird er generiert
-		if (FileIO.FileExists(fontPath))
-		{
-			log.debug("load font for scale " + scale + " from " + fontPath);
-			// automatic load of png does not work on Android, so
-			// return new BitmapFont(Gdx.files.absolute(fontPath),false);
-			Texture tex = new Texture(Gdx.files.absolute(fontPath.replace(".fnt", ".png")));
-			tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-			TextureRegion region = new TextureRegion(tex);
-			BitmapFont ret = new BitmapFont(Gdx.files.absolute(fontPath), region, false);
-			return ret;
-		}
-		else
-		{
-			log.debug("generate font for scale " + scale);
-			FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-			parameter.size = scale;
-			parameter.characters = DEFAULT_CHARACTER;
-			BitmapFont ret = generator.generateFont(parameter);
-			TextureRegion region = ret.getRegion();
-			Texture tex = region.getTexture();
-			tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-			return ret;
-		}
 	}
 
-	public static void setNightMode(boolean value)
-	{
-		cfg.Nightmode = value;
+	// Wenn der font nicht vorberechnet ist, dann wird er generiert
+	if (FileIO.FileExists(fontPath)) {
+	    log.debug("load font for scale " + scale + " from " + fontPath);
+	    // automatic load of png does not work on Android, so
+	    // return new BitmapFont(Gdx.files.absolute(fontPath),false);
+	    Texture tex = new Texture(Gdx.files.absolute(fontPath.replace(".fnt", ".png")));
+	    tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+	    TextureRegion region = new TextureRegion(tex);
+	    BitmapFont ret = new BitmapFont(Gdx.files.absolute(fontPath), region, false);
+	    return ret;
+	} else {
+	    log.debug("generate font for scale " + scale);
+	    FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+	    parameter.size = scale;
+	    parameter.characters = DEFAULT_CHARACTER;
+	    BitmapFont ret = generator.generateFont(parameter);
+	    TextureRegion region = ret.getRegion();
+	    Texture tex = region.getTexture();
+	    tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+	    return ret;
 	}
+    }
+
+    public static void setNightMode(boolean value) {
+	cfg.Nightmode = value;
+    }
 
 }

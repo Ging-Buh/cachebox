@@ -57,7 +57,7 @@ public class CB_Html_Renderer extends Renderer {
 	ELEMENT_HANDLERS.put(HTMLElementName.DIV, IMPLEMENTED ? StandardBlockElementHandler.INSTANCE_0_0 : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.DT, NOTIMPLEMENTED ? StandardBlockElementHandler.INSTANCE_0_0 : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.EM, IMPLEMENTED ? FontStyleElementHandler.INSTANCE_I : Not_implemented_ElementHandler.INSTANCE);
-	ELEMENT_HANDLERS.put(HTMLElementName.FIELDSET, NOTIMPLEMENTED ? StandardBlockElementHandler.INSTANCE_1_1 : Not_implemented_ElementHandler.INSTANCE);
+	ELEMENT_HANDLERS.put(HTMLElementName.FIELDSET, IMPLEMENTED ? StandardBlockElementHandler.INSTANCE_1_1 : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.FORM, IMPLEMENTED ? StandardBlockElementHandler.INSTANCE_1_1 : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.H1, IMPLEMENTED ? H_ElementHandler.INSTANCE_H1 : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.H2, IMPLEMENTED ? H_ElementHandler.INSTANCE_H2 : Not_implemented_ElementHandler.INSTANCE);
@@ -70,7 +70,7 @@ public class CB_Html_Renderer extends Renderer {
 	ELEMENT_HANDLERS.put(HTMLElementName.I, IMPLEMENTED ? FontStyleElementHandler.INSTANCE_I : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.IMG, IMPLEMENTED ? ImagelementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.INPUT, IMPLEMENTED ? InputElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
-	ELEMENT_HANDLERS.put(HTMLElementName.LEGEND, NOTIMPLEMENTED ? StandardBlockElementHandler.INSTANCE_0_0 : Not_implemented_ElementHandler.INSTANCE);
+	ELEMENT_HANDLERS.put(HTMLElementName.LEGEND, IMPLEMENTED ? StandardBlockElementHandler.INSTANCE_0_0 : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.LI, IMPLEMENTED ? LI_ElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.MENU, IMPLEMENTED ? ListElementHandler.INSTANCE_UL : Not_implemented_ElementHandler.INSTANCE);
 	ELEMENT_HANDLERS.put(HTMLElementName.MAP, IMPLEMENTED ? RemoveElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);

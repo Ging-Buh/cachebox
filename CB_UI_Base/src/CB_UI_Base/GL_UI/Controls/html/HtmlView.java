@@ -37,7 +37,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
-import CB_UI_Base.graphics.GL_Fonts;
+import CB_UI_Base.graphics.FontCache;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Trace;
 
@@ -278,7 +278,10 @@ public class HtmlView extends ScrollBox implements ListLayout {
     }
 
     private static float addTextBlog(CB_List<CB_View_Base> segmentViewList, Html_Segment_TextBlock seg, float innerWidth) {
-	BitmapFont font = GL_Fonts.get(seg.getFontFamily(), seg.getFontStyle(), seg.getFontSize());
+
+	boolean markUp = !seg.hyperLinkList.isEmpty();
+
+	BitmapFont font = FontCache.get(markUp, seg.getFontFamily(), seg.getFontStyle(), seg.getFontSize());
 	TextBounds bounds = font.getWrappedBounds(seg.formatedText, innerWidth - (margin * 2));
 	float segHeight = bounds.height + (margin * 2);
 
@@ -287,14 +290,14 @@ public class HtmlView extends ScrollBox implements ListLayout {
 
 	LinkLabel lbl = new LinkLabel(0, 0, innerWidth - (margin * 2), segHeight, "DescLabel");
 
-	if (!seg.hyperLinkList.isEmpty()) {
+	if (markUp) {
 	    lbl.setMarkupEnabled(true);
 	}
 
 	lbl.setTextColor(seg.getFontColor());
 	lbl.setFont(font).setHAlignment(seg.hAlignment);
 
-	if (!seg.hyperLinkList.isEmpty()) {
+	if (markUp) {
 	    lbl.addHyperlinks(seg.hyperLinkList);
 	}
 

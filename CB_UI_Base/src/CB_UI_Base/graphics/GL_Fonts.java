@@ -110,21 +110,27 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
  * @author Longri
  */
 public class GL_Fonts {
-    private final static HashMap<Integer, BitmapFont> DroidSansMono = new HashMap<Integer, BitmapFont>();
-    private final static HashMap<Integer, BitmapFont> DroidSans_Bold = new HashMap<Integer, BitmapFont>();
-    private final static HashMap<Integer, BitmapFont> DroidSans = new HashMap<Integer, BitmapFont>();
-    private final static HashMap<Integer, BitmapFont> DroidSans_BoldItalic = new HashMap<Integer, BitmapFont>();
-    private final static HashMap<Integer, BitmapFont> DroidSans_Italic = new HashMap<Integer, BitmapFont>();
-    private final static HashMap<Integer, BitmapFont> Roboto_Regular = new HashMap<Integer, BitmapFont>();
-    private final static HashMap<Integer, BitmapFont> Roboto_Italic = new HashMap<Integer, BitmapFont>();
-    private final static HashMap<Integer, BitmapFont> Roboto_Bold = new HashMap<Integer, BitmapFont>();
-    private final static HashMap<Integer, BitmapFont> Roboto_BoldItalic = new HashMap<Integer, BitmapFont>();
-    private final static HashMap<Integer, BitmapFont> DroidSerif_Bold = new HashMap<Integer, BitmapFont>();
-    private final static HashMap<Integer, BitmapFont> DroidSerif_BoldItalic = new HashMap<Integer, BitmapFont>();
-    private final static HashMap<Integer, BitmapFont> DroidSerif_Italic = new HashMap<Integer, BitmapFont>();
-    private final static HashMap<Integer, BitmapFont> DroidSerif_Regular = new HashMap<Integer, BitmapFont>();
+    private final HashMap<Integer, BitmapFont> DroidSansMono = new HashMap<Integer, BitmapFont>();
+    private final HashMap<Integer, BitmapFont> DroidSans_Bold = new HashMap<Integer, BitmapFont>();
+    private final HashMap<Integer, BitmapFont> DroidSans = new HashMap<Integer, BitmapFont>();
+    private final HashMap<Integer, BitmapFont> DroidSans_BoldItalic = new HashMap<Integer, BitmapFont>();
+    private final HashMap<Integer, BitmapFont> DroidSans_Italic = new HashMap<Integer, BitmapFont>();
+    private final HashMap<Integer, BitmapFont> Roboto_Regular = new HashMap<Integer, BitmapFont>();
+    private final HashMap<Integer, BitmapFont> Roboto_Italic = new HashMap<Integer, BitmapFont>();
+    private final HashMap<Integer, BitmapFont> Roboto_Bold = new HashMap<Integer, BitmapFont>();
+    private final HashMap<Integer, BitmapFont> Roboto_BoldItalic = new HashMap<Integer, BitmapFont>();
+    private final HashMap<Integer, BitmapFont> DroidSerif_Bold = new HashMap<Integer, BitmapFont>();
+    private final HashMap<Integer, BitmapFont> DroidSerif_BoldItalic = new HashMap<Integer, BitmapFont>();
+    private final HashMap<Integer, BitmapFont> DroidSerif_Italic = new HashMap<Integer, BitmapFont>();
+    private final HashMap<Integer, BitmapFont> DroidSerif_Regular = new HashMap<Integer, BitmapFont>();
 
-    public static BitmapFont get(GL_FontFamily fontFamily, GL_FontStyle fontStyle, float textSize) {
+    private final boolean markUp;
+
+    public GL_Fonts(boolean markUp) {
+	this.markUp = markUp;
+    }
+
+    public BitmapFont get(GL_FontFamily fontFamily, GL_FontStyle fontStyle, float textSize) {
 	int Size = ((int) textSize);
 	if (textSize <= 0)
 	    textSize = 3;
@@ -147,7 +153,7 @@ public class GL_Fonts {
 
     }
 
-    private static BitmapFont get_SANS_SERIF(GL_FontStyle fontStyle, int textSize) {
+    private BitmapFont get_SANS_SERIF(GL_FontStyle fontStyle, int textSize) {
 	switch (fontStyle) {
 	case BOLD:
 	    return get_Roboto_Bold(textSize);// Roboto-Bold.ttf
@@ -161,7 +167,7 @@ public class GL_Fonts {
 	return null;
     }
 
-    private static BitmapFont get_SERIF(GL_FontStyle fontStyle, int textSize) {
+    private BitmapFont get_SERIF(GL_FontStyle fontStyle, int textSize) {
 
 	switch (fontStyle) {
 	case BOLD:
@@ -176,7 +182,7 @@ public class GL_Fonts {
 	return null;
     }
 
-    private static BitmapFont get_Default(GL_FontStyle fontStyle, int textSize) {
+    private BitmapFont get_Default(GL_FontStyle fontStyle, int textSize) {
 	switch (fontStyle) {
 	case BOLD:
 	    return get_DroidSans_Bold(textSize);
@@ -190,7 +196,7 @@ public class GL_Fonts {
 	return null;
     }
 
-    private static BitmapFont get_Monospace(GL_FontStyle fontStyle, int textSize) {
+    private BitmapFont get_Monospace(GL_FontStyle fontStyle, int textSize) {
 	// MonoSpace has no Style
 	return get_DroidSansMono(textSize);
     }
@@ -201,7 +207,7 @@ public class GL_Fonts {
      * @param textSize
      * @return
      */
-    private static BitmapFont get_DroidSerif_Bold(int textSize) {
+    private BitmapFont get_DroidSerif_Bold(int textSize) {
 	if (DroidSerif_Bold.containsKey(textSize))
 	    return DroidSerif_Bold.get(textSize);
 	FileHandle fh = Global.getInternalFileHandle("data/fonts/DroidSerif-Bold.ttf");
@@ -216,7 +222,7 @@ public class GL_Fonts {
      * @param textSize
      * @return
      */
-    private static BitmapFont get_DroidSerif_BoldItalic(int textSize) {
+    private BitmapFont get_DroidSerif_BoldItalic(int textSize) {
 	if (DroidSerif_BoldItalic.containsKey(textSize))
 	    return DroidSerif_BoldItalic.get(textSize);
 	FileHandle fh = Global.getInternalFileHandle("data/fonts/DroidSerif-BoldItalic.ttf");
@@ -231,7 +237,7 @@ public class GL_Fonts {
      * @param textSize
      * @return
      */
-    private static BitmapFont get_DroidSerif_Italic(int textSize) {
+    private BitmapFont get_DroidSerif_Italic(int textSize) {
 	if (DroidSerif_Italic.containsKey(textSize))
 	    return DroidSerif_Italic.get(textSize);
 	FileHandle fh = Global.getInternalFileHandle("data/fonts/DroidSerif-Italic.ttf");
@@ -246,7 +252,7 @@ public class GL_Fonts {
      * @param textSize
      * @return
      */
-    private static BitmapFont get_DroidSerif_Regular(int textSize) {
+    private BitmapFont get_DroidSerif_Regular(int textSize) {
 	if (DroidSerif_Regular.containsKey(textSize))
 	    return DroidSerif_Regular.get(textSize);
 	FileHandle fh = Global.getInternalFileHandle("data/fonts/DroidSerif-Regular.ttf");
@@ -261,7 +267,7 @@ public class GL_Fonts {
      * @param textSize
      * @return
      */
-    private static BitmapFont get_Roboto_Regular(int textSize) {
+    private BitmapFont get_Roboto_Regular(int textSize) {
 	if (Roboto_Regular.containsKey(textSize))
 	    return Roboto_Regular.get(textSize);
 	FileHandle fh = Global.getInternalFileHandle("data/fonts/Roboto-Regular.ttf");
@@ -276,7 +282,7 @@ public class GL_Fonts {
      * @param textSize
      * @return
      */
-    private static BitmapFont get_Roboto_Bold(int textSize) {
+    private BitmapFont get_Roboto_Bold(int textSize) {
 	if (Roboto_Bold.containsKey(textSize))
 	    return Roboto_Bold.get(textSize);
 	FileHandle fh = Global.getInternalFileHandle("data/fonts/Roboto-Bold.ttf");
@@ -291,7 +297,7 @@ public class GL_Fonts {
      * @param textSize
      * @return
      */
-    private static BitmapFont get_Roboto_Italic(int textSize) {
+    private BitmapFont get_Roboto_Italic(int textSize) {
 	if (Roboto_Italic.containsKey(textSize))
 	    return Roboto_Italic.get(textSize);
 	FileHandle fh = Global.getInternalFileHandle("data/fonts/Roboto-Italic.ttf");
@@ -306,7 +312,7 @@ public class GL_Fonts {
      * @param textSize
      * @return
      */
-    private static BitmapFont get_Roboto_BoldItalic(int textSize) {
+    private BitmapFont get_Roboto_BoldItalic(int textSize) {
 	if (Roboto_BoldItalic.containsKey(textSize))
 	    return Roboto_BoldItalic.get(textSize);
 	FileHandle fh = Global.getInternalFileHandle("data/fonts/Roboto-BoldItalic.ttf");
@@ -321,7 +327,7 @@ public class GL_Fonts {
      * @param textSize
      * @return
      */
-    private static BitmapFont get_DroidSans(int textSize) {
+    private BitmapFont get_DroidSans(int textSize) {
 	if (DroidSans.containsKey(textSize))
 	    return DroidSans.get(textSize);
 	FileHandle fh = Global.getInternalFileHandle("data/fonts/DroidSans.ttf");
@@ -336,7 +342,7 @@ public class GL_Fonts {
      * @param textSize
      * @return
      */
-    private static BitmapFont get_DroidSans_BoldItalic(int textSize) {
+    private BitmapFont get_DroidSans_BoldItalic(int textSize) {
 	if (DroidSans_BoldItalic.containsKey(textSize))
 	    return DroidSans_BoldItalic.get(textSize);
 	FileHandle fh = Global.getInternalFileHandle("data/fonts/DroidSans-BoldItalic.ttf");
@@ -351,7 +357,7 @@ public class GL_Fonts {
      * @param textSize
      * @return
      */
-    private static BitmapFont get_DroidSans_Italic(int textSize) {
+    private BitmapFont get_DroidSans_Italic(int textSize) {
 	if (DroidSans_Italic.containsKey(textSize))
 	    return DroidSans_Italic.get(textSize);
 	FileHandle fh = Global.getInternalFileHandle("data/fonts/DroidSans-Italic.ttf");
@@ -366,7 +372,7 @@ public class GL_Fonts {
      * @param textSize
      * @return
      */
-    private static BitmapFont get_DroidSans_Bold(int textSize) {
+    private BitmapFont get_DroidSans_Bold(int textSize) {
 	if (DroidSans_Bold.containsKey(textSize))
 	    return DroidSans_Bold.get(textSize);
 	FileHandle fh = Global.getInternalFileHandle("data/fonts/DroidSans-Bold.ttf");
@@ -381,7 +387,7 @@ public class GL_Fonts {
      * @param textSize
      * @return
      */
-    private static BitmapFont get_DroidSansMono(int textSize) {
+    private BitmapFont get_DroidSansMono(int textSize) {
 	if (DroidSansMono.containsKey(textSize))
 	    return DroidSansMono.get(textSize);
 	FileHandle fh = Global.getInternalFileHandle("data/fonts/DroidSansMono.ttf");
@@ -390,7 +396,7 @@ public class GL_Fonts {
 	return f;
     }
 
-    private static BitmapFont generateFont(FileHandle file, int textSize) {
+    private BitmapFont generateFont(FileHandle file, int textSize) {
 	FreeTypeFontGenerator generator = new FreeTypeFontGenerator(file);
 
 	FreeTypeFontParameter parameter = new FreeTypeFontParameter();
@@ -401,6 +407,11 @@ public class GL_Fonts {
 	Texture tex = region.getTexture();
 	tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 	generator.dispose();
+
+	if (this.markUp) {
+	    ret.setMarkupEnabled(true);
+	}
+
 	return ret;
     }
 

@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
@@ -54,20 +55,24 @@ import CB_Utils.Settings.SettingModus;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.iChanged;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.UriPermission;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -122,6 +127,12 @@ public class splash extends Activity
 	private boolean isLandscape = false;
 	private boolean ToastEx = false;
 	private Boolean showSandbox;
+
+	protected int height;
+
+	protected int width;
+
+	private String LolipopworkPath;
 
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -439,7 +450,7 @@ public class splash extends Activity
 								startInitial();
 							}
 						};
-						thread.run();
+						thread.start();
 					}
 				});
 				Button buttonE = (Button) dialog.findViewById(R.id.button2);
@@ -498,7 +509,7 @@ public class splash extends Activity
 													startInitial();
 												}
 											};
-											thread.run();
+											thread.start();
 										}
 									}).setNegativeButton(Translation.Get("no"), new DialogInterface.OnClickListener()
 									{
@@ -537,7 +548,7 @@ public class splash extends Activity
 									startInitial();
 								}
 							};
-							thread.run();
+							thread.start();
 						}
 					}
 				});
@@ -634,7 +645,7 @@ public class splash extends Activity
 									startInitial();
 								}
 							};
-							thread.run();
+							thread.start();
 
 						}
 					});
@@ -913,9 +924,46 @@ public class splash extends Activity
 		writeAdditionalWorkPathArray(AdditionalWorkPathArray);
 	}
 
+	private static final String PATH_DOCUMENT = "document";
+
+	@TargetApi(Build.VERSION_CODES.KITKAT)
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
+
+		if (resultCode == RESULT_OK)
+		{
+			Uri treeUri = data.getData();
+
+			Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+			final int takeFlags = intent.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+			// Check for the freshest data.
+
+			// Uri workPathUri = Uri.parse(workPath);
+
+			ContentResolver cr = getContentResolver();
+
+			grantUriPermission(getPackageName(), treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+			cr.takePersistableUriPermission(treeUri, takeFlags);
+
+			List<UriPermission> permissionlist = cr.getPersistedUriPermissions();
+
+			LolipopworkPath = "content://com.android.externalstorage.documents/tree/B8C5-760B%3A";// treeUri.getPath();
+
+			Thread th = new Thread(new Runnable()
+			{
+
+				@Override
+				public void run()
+				{
+					Initial(width, height);
+				}
+			});
+			th.start();
+
+		}
+
 		if (requestCode == Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR)
 		{
 			if (resultCode == android.app.Activity.RESULT_OK && data != null)
@@ -1048,14 +1096,15 @@ public class splash extends Activity
 		// saved workPath found -> use this
 		Thread thread = new Thread()
 		{
+
 			@Override
 			public void run()
 			{
 				// wait for measure layout
 
 				final FrameLayout frame = (FrameLayout) findViewById(R.id.frameLayout1);
-				int width = frame.getMeasuredWidth();
-				int height = frame.getMeasuredHeight();
+				width = frame.getMeasuredWidth();
+				height = frame.getMeasuredHeight();
 
 				while (width == 0 || height == 0)
 				{
@@ -1079,7 +1128,19 @@ public class splash extends Activity
 					height = frame.getMeasuredHeight();
 				}
 
-				Initial(width, height);
+				// lolipop ask write permission
+				if (android.os.Build.VERSION.SDK_INT > 20)
+				{
+					Initial(width, height);
+
+					// Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+					// startActivityForResult(intent, 42);
+				}
+				else
+				{
+					Initial(width, height);
+				}
+
 			}
 		};
 
@@ -1087,10 +1148,28 @@ public class splash extends Activity
 
 	}
 
+	// Here are some examples of how you might call this method.
+	// The first parameter is the MIME type, and the second parameter is the name
+	// of the file you are creating:
+	//
+	// createFile("text/plain", "foobar.txt");
+	// createFile("image/png", "mypicture.png");
+
+	// Unique request code.
+	private static final int WRITE_REQUEST_CODE = 43;
+
+	@TargetApi(Build.VERSION_CODES.KITKAT)
 	private void Initial(int width, int height)
 	{
 		// Jetzt ist der workPath erstmal festgelegt.
 		log.debug("Initial()");
+
+		// lolipop ask write permission
+		if (android.os.Build.VERSION.SDK_INT > 20)
+		{
+			// if (LolipopworkPath != null) workPath = LolipopworkPath + "/cachebox";
+		}
+
 		// Zur Kompatibilität mit Älteren Installationen wird hier noch die redirection.txt abgefragt
 		if (FileIO.FileExists(workPath + "/redirection.txt"))
 		{
@@ -1126,7 +1205,10 @@ public class splash extends Activity
 
 		// hier muss die Config Db initialisiert werden
 		Database.Settings = new AndroidDB(DatabaseType.Settings, this);
-		if (!FileIO.createDirectory(Config.WorkPath + "/User")) return;
+
+		boolean userFolderExists = FileIO.createDirectory(Config.WorkPath + "/User");
+
+		if (!userFolderExists) return;
 		Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
 
 		// initialisieren der PlattformSettings

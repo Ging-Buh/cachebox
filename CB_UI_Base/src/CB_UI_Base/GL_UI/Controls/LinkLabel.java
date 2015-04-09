@@ -142,7 +142,7 @@ public class LinkLabel extends MultiColorLabel {
 	return sb.toString();
     }
 
-    final static String ALL_LINK_CHAR = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890/_. :-[]";
+    final static String ALL_LINK_CHAR = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890/_. :-[]()!";
     HashMap<GlyphUV, String> glyphList;
 
     private static class GlyphUV {
@@ -207,6 +207,8 @@ public class LinkLabel extends MultiColorLabel {
 
 	if (isMarkup)
 	    this.mFont.setMarkupEnabled(true);
+	else
+	    this.mFont.setMarkupEnabled(false);
 	super.render(batch);
     }
 
@@ -216,10 +218,8 @@ public class LinkLabel extends MultiColorLabel {
 	for (int i = 0, n = this.hyperLinkList.size(); i < n; i++) {
 
 	    HyperLinkText hyper = this.hyperLinkList.get(i);
-
-	    this.mFont.setMarkupEnabled(true);
-	    this.setText(this.mText.replace(hyper.content, "[#0000fffe]" + hyper.content + "[]"));
 	    isMarkup = true;
+	    this.setText(this.mText.replace(hyper.content, "[#0000fffe]" + hyper.content + "[]"));
 
 	}
 
@@ -232,6 +232,6 @@ public class LinkLabel extends MultiColorLabel {
     }
 
     public void setMarkupEnabled(boolean IsMarkUp) {
-	this.isMarkup = IsMarkUp;
+	//	this.isMarkup = IsMarkUp;
     }
 }

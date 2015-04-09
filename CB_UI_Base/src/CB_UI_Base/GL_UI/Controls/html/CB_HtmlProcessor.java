@@ -169,6 +169,9 @@ public class CB_HtmlProcessor extends Processor {
 
 		appendable = new StringBuilder();
 		isImage = false;
+
+		hyperLinkList.clear();
+
 		return;
 
 	    }
@@ -194,6 +197,9 @@ public class CB_HtmlProcessor extends Processor {
 		segmentList.add(segment);
 	    apendableList.add(appendable);
 	    appendable = new StringBuilder();
+
+	    hyperLinkList.clear();
+
 	    isImage = false;
 	}
     }

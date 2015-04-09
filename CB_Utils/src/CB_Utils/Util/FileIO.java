@@ -81,6 +81,7 @@ public class FileIO
 		}
 		catch (IOException e)
 		{
+			e.printStackTrace();
 			return false;
 		}
 		return true;
