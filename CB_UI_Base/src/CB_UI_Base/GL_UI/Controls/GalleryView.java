@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.List.H_ListView;
+import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Lists.CB_List;
@@ -229,5 +230,27 @@ public class GalleryView extends H_ListView {
 	float sollpos = defaultpos - this.getHalfWidth() + (mBaseAdapter.getItemSize(idx) / 2);
 	mBottomAnimation = sollpos > mPos;
 	scrollTo(sollpos);
+	this.mSelectedIndex = idx;
     }
+
+    @Override
+    public ListViewItemBase getSelectedItem() {
+	if (mBaseAdapter == null)
+	    return null;
+
+	//get selected idx
+
+	int idx = 0;
+	for (int n = mBaseAdapter.getCount(); idx < n; idx++) {
+	    if (mPosDefault.get(idx) == mPos)
+		break;
+	}
+
+	if (idx == -1)
+	    return null;
+	if (idx >= mBaseAdapter.getCount())
+	    return null;
+	return mBaseAdapter.getView(idx);
+    }
+
 }

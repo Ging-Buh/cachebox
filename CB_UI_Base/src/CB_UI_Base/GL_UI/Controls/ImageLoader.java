@@ -522,4 +522,8 @@ public class ImageLoader {
     public void setSpriteHeight(float spriteHeight) {
 	this.spriteHeight = spriteHeight;
     }
+
+    public String getImagePath() {
+	return mPath;
+    }
 }

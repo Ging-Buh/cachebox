@@ -74,6 +74,7 @@ import CB_UI_Base.Events.platformConector.IShowViewListner;
 import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
 import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
 import CB_UI_Base.Events.platformConector.IsetScreenLockTime;
+import CB_UI_Base.Events.platformConector.iStartPictureApp;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.ViewConst;
@@ -3195,6 +3196,18 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					Toast.makeText(main.mainActivity, Translation.Get("Cann_not_open_cache_browser") + " (" + url.trim() + ")",
 							Toast.LENGTH_LONG).show();
 				}
+			}
+		});
+
+		platformConector.setStartPictureApp(new iStartPictureApp()
+		{
+			@Override
+			public void Start(String file)
+			{
+				Uri uriToImage = Uri.fromFile(new File(file));
+				Intent shareIntent = new Intent(Intent.ACTION_VIEW);
+				shareIntent.setDataAndType(uriToImage, "image/*");
+				main.mainActivity.startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.app_name)));
 			}
 		});
 

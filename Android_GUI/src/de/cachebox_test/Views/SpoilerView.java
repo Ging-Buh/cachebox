@@ -84,9 +84,9 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 		platformConector.setStartPictureApp(new iStartPictureApp()
 		{
 			@Override
-			public void Start()
+			public void Start(String file)
 			{
-				Uri uriToImage = Uri.fromFile(new File(fileName));
+				Uri uriToImage = Uri.fromFile(new File(file));
 				Intent shareIntent = new Intent(Intent.ACTION_VIEW);
 				shareIntent.setDataAndType(uriToImage, "image/*");
 				main.mainActivity.startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.app_name)));

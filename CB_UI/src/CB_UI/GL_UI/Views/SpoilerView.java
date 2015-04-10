@@ -256,4 +256,14 @@ public class SpoilerView extends CB_View_Base {
 	}
     };
 
+    public String getSelectedFilePath() {
+	String file = null;
+	try {
+	    file = ((GallaryItem) gallery.getSelectedItem()).getImage().getImageLoader().getImagePath();
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+	return file;
+    }
+
 }
