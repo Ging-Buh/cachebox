@@ -57,21 +57,25 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 			return ret;
 		}
 
-		Iterator<MeasuredCoord> iterator = this.iterator();
-
-		double sumLatitude = 0;
-		double sumLongitude = 0;
-
-		do
+		synchronized (this)
 		{
-			MeasuredCoord tmp = iterator.next();
-			sumLatitude += tmp.getLatitude();
-			sumLongitude += tmp.getLongitude();
-		}
-		while (iterator.hasNext());
+			Iterator<MeasuredCoord> iterator = this.iterator();
 
-		ret = new CoordinateGPS(sumLatitude / this.size(), sumLongitude / this.size());
-		ret.setValid(true);
+			double sumLatitude = 0;
+			double sumLongitude = 0;
+
+			do
+			{
+				MeasuredCoord tmp = iterator.next();
+				sumLatitude += tmp.getLatitude();
+				sumLongitude += tmp.getLongitude();
+			}
+			while (iterator.hasNext());
+
+			ret = new CoordinateGPS(sumLatitude / this.size(), sumLongitude / this.size());
+			ret.setValid(true);
+
+		}
 
 		return ret;
 	}
@@ -95,13 +99,17 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 	@Override
 	public boolean add(MeasuredCoord measuredCoord)
 	{
-		boolean ret = super.add(measuredCoord);
+		boolean ret = false;
 
-		if (this.size() > 3)
+		synchronized (this)
 		{
-			MeasuredCoord.Referenz = this.getMeasuredAverageCoord();
-		}
+			ret = super.add(measuredCoord);
 
+			if (this.size() > 3)
+			{
+				MeasuredCoord.Referenz = this.getMeasuredAverageCoord();
+			}
+		}
 		return ret;
 	}
 
@@ -110,9 +118,11 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 	 */
 	public void sort()
 	{
-		MeasuredCoord.Referenz = this.getMeasuredAverageCoord();
-
-		Collections.sort(this);
+		synchronized (this)
+		{
+			MeasuredCoord.Referenz = this.getMeasuredAverageCoord();
+			Collections.sort(this);
+		}
 	}
 
 	/**
@@ -129,27 +139,29 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 	public void clearDiscordantValue()
 	{
 		boolean ready = false;
-
-		do
+		synchronized (this)
 		{
-			ready = true;
-
-			this.setAverage();
-			Iterator<MeasuredCoord> iterator = this.iterator();
 			do
 			{
-				MeasuredCoord tmp = iterator.next();
-				if (tmp.Distance(CalculationType.ACCURATE) > 3)
+				ready = true;
+
+				this.setAverage();
+				Iterator<MeasuredCoord> iterator = this.iterator();
+				do
 				{
-					this.remove(tmp);
-					ready = false;
-					break;
+					MeasuredCoord tmp = iterator.next();
+					if (tmp.Distance(CalculationType.ACCURATE) > 3)
+					{
+						this.remove(tmp);
+						ready = false;
+						break;
+					}
 				}
+				while (iterator.hasNext());
 			}
-			while (iterator.hasNext());
+			while (!ready);
+			this.setAverage();
 		}
-		while (!ready);
-		this.setAverage();
 	}
 
 	public String toString()
@@ -157,8 +169,7 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 		String ret = "";
 		if (this.getAccuWeightedAverageCoord().isValid())
 		{
-			ret = UnitFormatter.FormatLatitudeDM(this.getAccuWeightedAverageCoord().getLatitude()) + " / "
-					+ UnitFormatter.FormatLongitudeDM(this.getAccuWeightedAverageCoord().getLongitude());
+			ret = UnitFormatter.FormatLatitudeDM(this.getAccuWeightedAverageCoord().getLatitude()) + " / " + UnitFormatter.FormatLongitudeDM(this.getAccuWeightedAverageCoord().getLongitude());
 		}
 
 		return ret;

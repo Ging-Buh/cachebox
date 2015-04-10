@@ -469,6 +469,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		    GlobalCore.getSelectedCache().waypoints.remove(aktWaypoint);
 		    GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), null);
 		    aktWaypoint = null;
+		    lvAdapter = new CustomAdapter(GlobalCore.getSelectedCache());
 		    that.setBaseAdapter(lvAdapter);
 
 		    int itemCount = lvAdapter.getCount();
@@ -521,6 +522,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		}
 		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", targetCoord.getLatitude(), targetCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", "projiziert");
 		GlobalCore.getSelectedCache().waypoints.add(newWP);
+		lvAdapter = new CustomAdapter(GlobalCore.getSelectedCache());
 		that.setBaseAdapter(lvAdapter);
 		aktWaypoint = newWP;
 		GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), newWP);
@@ -554,7 +556,10 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		}
 		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Measured", returnCoord.getLatitude(), returnCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", "Measured");
 		GlobalCore.getSelectedCache().waypoints.add(newWP);
+
+		lvAdapter = new CustomAdapter(GlobalCore.getSelectedCache());
 		that.setBaseAdapter(lvAdapter);
+
 		aktWaypoint = newWP;
 		GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), newWP);
 		WaypointDAO waypointDAO = new WaypointDAO();
