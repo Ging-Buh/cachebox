@@ -360,7 +360,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	}
 
 	if (grayFader == null) {
-	    grayFader = new Fader("GRayScale");
+	    grayFader = new Fader();
 	    grayFader.setAlwaysOn(CB_UI_Base_Settings.dontUseAmbient.getValue());
 	    grayFader.setTimeToFadeOut(CB_UI_Base_Settings.ambientTime.getValue() * 1000);
 

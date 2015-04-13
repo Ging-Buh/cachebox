@@ -72,17 +72,20 @@ public class Html_Segment_TextBlock extends Html_Segment {
 		elements.add(tag.getElement());
 	    for (Element ele : elements) {
 		Attributes attributes = ele.getAttributes();
-		for (Attribute attr : attributes) {
-		    if (attr.getKey().equals("color")) {
-			color = attr.getValue();
-		    }
-		    if (attr.getKey().equals("style")) {
-			String[] values = attr.getValue().split(";");
 
-			for (String value : values) {
-			    String[] paar = value.split(":");
-			    if (paar[0].equals("color")) {
-				color = paar[1];
+		if (attributes != null) {
+		    for (Attribute attr : attributes) {
+			if (attr.getKey().equals("color")) {
+			    color = attr.getValue();
+			}
+			if (attr.getKey().equals("style")) {
+			    String[] values = attr.getValue().split(";");
+
+			    for (String value : values) {
+				String[] paar = value.split(":");
+				if (paar[0].equals("color")) {
+				    color = paar[1];
+				}
 			    }
 			}
 		    }
@@ -127,24 +130,26 @@ public class Html_Segment_TextBlock extends Html_Segment {
 	    for (Element ele : elements) {
 		// tag.getElement().
 		Attributes attributes = ele.getAttributes();
-		for (Attribute attr : attributes) {
-		    if (attr.getKey().equals("size")) {
+		if (attributes != null) {
+		    for (Attribute attr : attributes) {
+			if (attr.getKey().equals("size")) {
 
-			String value = attr.getValue();
+			    String value = attr.getValue();
 
-			size = getFontSizeFromString(size, value);
-		    }
-		    if (attr.getKey().equals("style")) {
-			String[] values = attr.getValue().split(";");
+			    size = getFontSizeFromString(size, value);
+			}
+			if (attr.getKey().equals("style")) {
+			    String[] values = attr.getValue().split(";");
 
-			for (String value : values) {
-			    String[] paar = value.split(":");
-			    if (paar[0].equals("font-size")) {
-				size = getFontSizeFromString(size, paar[1]);
-			    }
-			    if (paar[0].equals("text-decoration")) {
-				if (paar[1].equals("underline"))
-				    underline = true;
+			    for (String value : values) {
+				String[] paar = value.split(":");
+				if (paar[0].equals("font-size")) {
+				    size = getFontSizeFromString(size, paar[1]);
+				}
+				if (paar[0].equals("text-decoration")) {
+				    if (paar[1].equals("underline"))
+					underline = true;
+				}
 			    }
 			}
 		    }

@@ -33,14 +33,12 @@ public class Fader {
     private float mFadeOutTime = DEFAULT_FADE_OUT_TIME;
     private float mFadeInTime = DEFAULT_FADE_IN_TIME;
     private float mFadeoutBeginntime = 0;
-    private final String name;
     private boolean alwaysOn = false;
 
     /**
      * Constructor!
       */
-    public Fader(String name) {
-	this.name = name;
+    public Fader() {
 	resetFadeOut();
     }
 
