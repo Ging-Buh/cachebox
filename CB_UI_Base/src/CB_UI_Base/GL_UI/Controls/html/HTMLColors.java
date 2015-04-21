@@ -75,6 +75,20 @@ public class HTMLColors {
 
     /** Returns a color with the specified case-insensitive name.*/
     public static HSV_Color getColor(String name) {
+
+	if (name.startsWith("rgb(")) {
+	    String sub = name.substring(4, name.length() - 1);
+	    String[] values = sub.split(",");
+
+	    int r = Integer.parseInt(values[0].trim());
+	    int g = Integer.parseInt(values[1].trim());
+	    int b = Integer.parseInt(values[2].trim());
+
+	    HSV_Color color = new HSV_Color(255, r, g, b);
+	    return color;
+
+	}
+
 	return name2color.get(name.toLowerCase());
     }
 
