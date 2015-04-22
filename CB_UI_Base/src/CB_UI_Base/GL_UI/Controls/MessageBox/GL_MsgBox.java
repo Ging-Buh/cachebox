@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.Button;
@@ -133,7 +134,7 @@ public class GL_MsgBox extends Dialog {
 	// nur damit bei mir die Box maximiert kommt und damit der Text nicht skaliert.
 	// !!! gilt f�r alle Dialoge, da statisch definiert. K�nnte es auch dort �ndern.
 	Dialog.margin = 5;
-	GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), true, (remember != null)), "MsgBox" + title);
+	final GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), true, (remember != null)), "MsgBox" + title);
 
 	msgBox.rememberSetting = remember;
 	msgBox.mMsgBoxClickListner = Listener;
@@ -156,7 +157,14 @@ public class GL_MsgBox extends Dialog {
 	msgBox.label.setWrappedText(msg);
 	msgBox.addChild(msgBox.label);
 
-	GL.that.showDialog(msgBox);
+	GL.that.RunOnGL(new IRunOnGL() {
+
+	    @Override
+	    public void run() {
+		GL.that.showDialog(msgBox);
+	    }
+	});
+
 	return msgBox;
     }
 
