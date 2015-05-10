@@ -85,6 +85,7 @@ public class DescriptionView extends CB_View_Base {
     private Image LiveIcon;
     private PolygonDrawable Line;
     private float margin;
+    private boolean forceReload = false;
 
     private HtmlView htmlView;
 
@@ -118,9 +119,9 @@ public class DescriptionView extends CB_View_Base {
 
 	Cache sel = GlobalCore.getSelectedCache();
 	if (sel != null) {
-	    setCache(sel);
+	    setCache(sel, forceReload);
 	}
-
+	forceReload = false;
 	Timer t = new Timer();
 	TimerTask tt = new TimerTask() {
 	    @Override
@@ -131,11 +132,11 @@ public class DescriptionView extends CB_View_Base {
 	t.schedule(tt, 70);
     }
 
-    private void setCache(Cache cache) {
+    private void setCache(Cache cache, boolean force) {
 	if (cache == null)
 	    return;
 
-	if (cache.equals(aktCache))
+	if (cache.equals(aktCache) && !force)
 	    return;
 
 	aktCache = cache;
@@ -461,7 +462,7 @@ public class DescriptionView extends CB_View_Base {
     final Runnable downloadComplete = new Runnable() {
 	public void run() {
 	    if (downloadTryCounter < 10) // nur 10 Download versuche zu lassen
-		setCache(aktCache);
+		setCache(aktCache, false);
 	}
     };
 
@@ -488,5 +489,9 @@ public class DescriptionView extends CB_View_Base {
 	    log.error("getAttributesHtml(" + cache.getGcCode() + "):", ex);
 	    return "";
 	}
+    }
+
+    public void forceReload() {
+	forceReload = true;
     }
 }
