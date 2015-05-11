@@ -956,7 +956,7 @@ public class GroundspeakAPI
 		case 12:
 			return CacheTypes.Cache; // Locationless (Reverse) Cache
 		case 13:
-			return CacheTypes.Cache; // Cache In Trash Out Event
+			return CacheTypes.CITO; // Cache In Trash Out Event
 		case 137:
 			return CacheTypes.Earth;
 		case 453:
