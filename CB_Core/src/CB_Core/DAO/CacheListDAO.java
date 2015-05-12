@@ -281,13 +281,7 @@ public class CacheListDAO
 	}
 
 	/**
-	 * Lï¿½scht alle Spoiler und Description Images der ï¿½bergebenen Liste mit GC-Codes
-	 * 
-	 * @param list
-	 */
-
-	/**
-	 * Lï¿½scht alle Spoiler und Description Images der ï¿½bergebenen Liste mit GC-Codes
+	 * Löscht alle Spoiler und Description Images der übergebenen Liste mit GC-Codes
 	 * 
 	 * @param list
 	 * @param SpoilerFolder
@@ -319,7 +313,7 @@ public class CacheListDAO
 		imageDAO = null;
 	}
 
-	private void delCacheImagesByPath(String path, ArrayList<String> list)
+	public void delCacheImagesByPath(String path, ArrayList<String> list)
 	{
 		for (Iterator<String> iterator = list.iterator(); iterator.hasNext();)
 		{
