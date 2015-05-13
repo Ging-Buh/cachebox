@@ -16,8 +16,6 @@
 
 package CB_Core.DAO;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.SortedMap;
@@ -34,6 +32,8 @@ import CB_Core.Types.Waypoint;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.FileIO;
+
+import com.badlogic.gdx.files.FileHandle;
 
 /**
  * @author ging-buh
@@ -317,24 +317,20 @@ public class CacheListDAO
 	{
 		for (Iterator<String> iterator = list.iterator(); iterator.hasNext();)
 		{
-			final String GcCode = iterator.next();
+			final String GcCode = iterator.next().toLowerCase();
 			String directory = path + "/" + GcCode.substring(0, 4);
 			if (!FileIO.DirectoryExists(directory)) continue;
-			File dir = new File(directory);
-			FilenameFilter filter = new FilenameFilter()
-			{
-				@Override
-				public boolean accept(File dir, String filename)
-				{
-					filename = filename.toLowerCase();
-					return (filename.indexOf(GcCode.toLowerCase()) == 0);
-				}
-			};
-			String[] files = dir.list(filter);
+
+			FileHandle dir = new FileHandle(directory);
+			FileHandle[] files = dir.list();
+
 			for (int i = 0; i < files.length; i++)
 			{
-				String filename = dir + "/" + files[i];
-				File file = new File(filename);
+
+				if (!files[i].name().toLowerCase().startsWith(GcCode)) continue;
+
+				String filename = directory + "/" + files[i].name();
+				FileHandle file = new FileHandle(filename);
 				if (file.exists())
 				{
 					if (!file.delete()) log.debug("Error deleting : " + filename);

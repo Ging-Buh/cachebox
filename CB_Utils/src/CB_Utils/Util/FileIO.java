@@ -14,6 +14,8 @@ import java.util.regex.Pattern;
 
 import org.apache.http.util.ByteArrayBuffer;
 
+import com.badlogic.gdx.files.FileHandle;
+
 public class FileIO
 {
 	/**
@@ -117,11 +119,17 @@ public class FileIO
 		}
 	}
 
+	/**
+	 * @param folder
+	 *            Path as String
+	 * @return true, if folder exist! false otherwise
+	 */
 	public static boolean DirectoryExists(String folder)
 	{
-		File f = new File(folder);
-		if (f.isDirectory()) return true;
-		return false;
+		FileHandle fh = new FileHandle(folder);
+		boolean exist = fh.exists();
+		fh = null;
+		return exist;
 	}
 
 	public static String GetFileExtension(String filename)

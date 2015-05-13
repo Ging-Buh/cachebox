@@ -46,10 +46,11 @@ public class test_CacheListDAO extends TestCase {
 	    }
 
 	    //chk file exists
-	    assertTrue(FileIO.FileExists("./testdata/repository/Images/GC4H/GC4H6N6802289101.gif"));
-	    assertTrue(FileIO.FileExists("./testdata/repository/Images/GC4H/GC4H6N61744439196.jpg"));
-	    assertTrue(FileIO.FileExists("./testdata/repository/Images/GC4H/GC4H6N62438533361.jpg"));
-	    assertTrue(FileIO.FileExists("./testdata/repository/Images/GC4H/GC4H6N62696779999.jpg"));
+	    assertTrue("File must exist for runing test. Must include images.zip", FileIO.FileExists("./testdata/repository/Images/GC4H/GC4H6N6802289101.gif"));
+	    assertTrue("File must exist for runing test. Must include images.zip", FileIO.FileExists("./testdata/repository/Images/GC4H/GC4H6N61744439196.jpg"));
+	    assertTrue("File must exist for runing test. Must include images.zip", FileIO.FileExists("./testdata/repository/Images/GC4H/GC4H6N62438533361.jpg"));
+	    assertTrue("File must exist for runing test. Must include images.zip", FileIO.FileExists("./testdata/repository/Images/GC4H/GC4H6N62696779999.jpg"));
+	    assertTrue("File must exist for runing test. Must include images.zip", FileIO.FileExists("./testdata/repository/Images/GC4H/GC4H7N62696779999.jpg"));
 	}
 
 	//call del function
@@ -59,10 +60,11 @@ public class test_CacheListDAO extends TestCase {
 	dao.delCacheImagesByPath(imagePath, list);
 
 	//chk file dosent exists
-	assertFalse(FileIO.FileExists("./testdata/repository/Images/GC4H/GC4H6N6802289101.gif"));
-	assertFalse(FileIO.FileExists("./testdata/repository/Images/GC4H/GC4H6N61744439196.jpg"));
-	assertFalse(FileIO.FileExists("./testdata/repository/Images/GC4H/GC4H6N62438533361.jpg"));
-	assertFalse(FileIO.FileExists("./testdata/repository/Images/GC4H/GC4H6N62696779999.jpg"));
+	assertFalse("File must delete from function!", FileIO.FileExists("./testdata/repository/Images/GC4H/GC4H6N6802289101.gif"));
+	assertFalse("File must delete from function!", FileIO.FileExists("./testdata/repository/Images/GC4H/GC4H6N61744439196.jpg"));
+	assertFalse("File must delete from function!", FileIO.FileExists("./testdata/repository/Images/GC4H/GC4H6N62438533361.jpg"));
+	assertFalse("File must delete from function!", FileIO.FileExists("./testdata/repository/Images/GC4H/GC4H6N62696779999.jpg"));
+	assertTrue("File should not be deleted from function!", FileIO.FileExists("./testdata/repository/Images/GC4H/GC4H7N62696779999.jpg"));
 
     }
 

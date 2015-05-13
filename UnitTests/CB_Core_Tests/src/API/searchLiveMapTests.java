@@ -21,122 +21,113 @@ import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Lists.CB_List;
 import __Static.InitTestDBs;
 
-public class searchLiveMapTests extends TestCase
-{
-	@Override
-	public void setUp() throws Exception
-	{
-		super.setUp();
-		LoadConfig();
+public class searchLiveMapTests extends TestCase {
+    @Override
+    public void setUp() throws Exception {
+	super.setUp();
+	LoadConfig();
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+	super.tearDown();
+
+    }
+
+    /**
+     * lädt die Config Datei aus dem Ordner "trunk\Cachebox Core\testdata" Hie muss eine gültige cachebox.config Datei liegen. Diese Datei
+     * ist auf der Ignore list von SVN, so das diese Persönliche config nicht veröffentlicht werden kann. (zum Schutz des Persönlichen API
+     * Keys)
+     */
+    private void LoadConfig() {
+	InitTestDBs.InitalConfig();
+	String key = Config.GetAccessToken();
+	assertFalse("Kein Access Key gefunden, liegt die Config an der richtigen stelle?", key.equals(""));
+    }
+
+    public void testSearchLive() {
+
+	// Descriptor Zoom Level 14 = search radius 2km
+	// Center of Descriptor x=8801 y=5368 z=14 => 52° 34,982N / 13° 23,540E (Pankow)
+	Descriptor descPankow = new Descriptor(8801, 5368, 14, false);
+	Coordinate corPankow = new Coordinate("52° 34,9815N / 13° 23,540E");
+
+	// List of Coordinates are into x=8801 y=5368 z=14
+	Coordinate[] coordList = new Coordinate[] { new Coordinate("52° 34,973N / 13° 23,531E"), new Coordinate("52° 35,364N / 13° 24,170E"), new Coordinate("52° 35,367N / 13° 22,908E"), new Coordinate("52° 34,601N / 13° 22,923E"), new Coordinate("52° 34,598N / 13° 24,170E"), new Coordinate("52° 34,773N / 13° 23,346E"), new Coordinate("52° 34,933N / 13° 23,938E") };
+
+	// check
+	for (Coordinate cor : coordList) {
+	    Descriptor desc = new Descriptor(cor, 14);
+	    assertEquals("mustEquals", desc, descPankow);
+
+	    // Check center coordinate of Descriptor
+	    Coordinate cord = desc.getCenterCoordinate();
+	    assertEquals("mustEquals", cord, corPankow);
 	}
+    }
 
-	@Override
-	protected void tearDown() throws Exception
-	{
-		super.tearDown();
+    @Test
+    public void testLiveQue() {
+	// get API limits and Check the limits after request
 
-	}
+	GroundspeakAPI.GetCacheLimits(null);
+	int CachesLeft = GroundspeakAPI.CachesLeft;
 
-	/**
-	 * lädt die Config Datei aus dem Ordner "trunk\Cachebox Core\testdata" Hie muss eine gültige cachebox.config Datei liegen. Diese Datei
-	 * ist auf der Ignore list von SVN, so das diese Persönliche config nicht veröffentlicht werden kann. (zum Schutz des Persönlichen API
-	 * Keys)
-	 */
-	private void LoadConfig()
-	{
-		InitTestDBs.InitalConfig();
-		String key = Config.GetAccessToken();
-		assertFalse("Kein Access Key gefunden, liegt die Config an der richtigen stelle?", key.equals(""));
-	}
+	Coordinate coord = new Coordinate("52° 34,9815N / 13° 23,540E");
+	Descriptor desc = new Descriptor(coord, 14);
 
-	public void testSearchLive()
-	{
+	// TODO
+	// assertTrue("muss ausgeführt werden", LiveMapQue.quePosition(new Coordinate("52° 34,9815N / 13° 23,540E")));
+	// assertFalse("darf nicht ausgeführt werden", LiveMapQue.quePosition(new Coordinate("52° 34,9815N / 13° 23,540E")));
 
-		// Descriptor Zoom Level 14 = search radius 2km
-		// Center of Descriptor x=8801 y=5368 z=14 => 52° 34,982N / 13° 23,540E (Pankow)
-		Descriptor descPankow = new Descriptor(8801, 5368, 14, false);
-		Coordinate corPankow = new Coordinate("52° 34,9815N / 13° 23,540E");
+	// Chk all Caches are in to the Descriptor of new Coordinate("52° 34,973N / 13° 23,531E")
 
-		// List of Coordinates are into x=8801 y=5368 z=14
-		Coordinate[] coordList = new Coordinate[]
-			{ new Coordinate("52° 34,973N / 13° 23,531E"), new Coordinate("52° 35,364N / 13° 24,170E"),
-					new Coordinate("52° 35,367N / 13° 22,908E"), new Coordinate("52° 34,601N / 13° 22,923E"),
-					new Coordinate("52° 34,598N / 13° 24,170E"), new Coordinate("52° 34,773N / 13° 23,346E"),
-					new Coordinate("52° 34,933N / 13° 23,938E") };
+	for (int i = 0; i < LiveMapQue.LiveCaches.getSize(); i++) {
+	    Cache ca = LiveMapQue.LiveCaches.get(i);
 
-		// check
-		for (Coordinate cor : coordList)
-		{
-			Descriptor desc = new Descriptor(cor, 14);
-			assertEquals("mustEquals", desc, descPankow);
+	    Descriptor targetDesc = new Descriptor(ca.Pos, 14);
 
-			// Check center coordinate of Descriptor
-			Coordinate cord = desc.getCenterCoordinate();
-			assertEquals("mustEquals", cord, corPankow);
-		}
-	}
+	    if (!targetDesc.equals(desc)) {
+		// Check max Distance from Center
+		float distance = coord.Distance(ca.Pos, CalculationType.ACCURATE);
+		assertTrue("Distance from center must be closer then request distance", distance <= LiveMapQue.Used_max_request_radius);
+	    }
 
-	@Test
-	public void testLiveQue()
-	{
-		// get API limits and Check the limits after request
-
-		GroundspeakAPI.GetCacheLimits(null);
-		int CachesLeft = GroundspeakAPI.CachesLeft;
-
-		Coordinate coord = new Coordinate("52° 34,9815N / 13° 23,540E");
-		Descriptor desc = new Descriptor(coord, 14);
-
-		// TODO
-		// assertTrue("muss ausgeführt werden", LiveMapQue.quePosition(new Coordinate("52° 34,9815N / 13° 23,540E")));
-		// assertFalse("darf nicht ausgeführt werden", LiveMapQue.quePosition(new Coordinate("52° 34,9815N / 13° 23,540E")));
-
-		// Chk all Caches are in to the Descriptor of new Coordinate("52° 34,973N / 13° 23,531E")
-
-		for (int i = 0; i < LiveMapQue.LiveCaches.getSize(); i++)
-		{
-			Cache ca = LiveMapQue.LiveCaches.get(i);
-
-			Descriptor targetDesc = new Descriptor(ca.Pos, 14);
-
-			if (!targetDesc.equals(desc))
-			{
-				// Check max Distance from Center
-				float distance = coord.Distance(ca.Pos, CalculationType.ACCURATE);
-				assertTrue("Distance from center must be closer then request distance", distance <= LiveMapQue.Used_max_request_radius);
-			}
-
-			CB_List<LogEntry> cleanLogs = new CB_List<LogEntry>();
-			cleanLogs = Database.Logs(ca);// cache.Logs();
-
-		}
-
-		// Check if count are not same like requested (increase Max Count)
-		assertTrue("count mast be lower then requested", LiveMapQue.LiveCaches.getSize() < LiveMapQue.MAX_REQUEST_CACHE_COUNT);
-
-		GroundspeakAPI.GetCacheLimits(null);
-
-		assertTrue("CacheLimits must not changed", CachesLeft == GroundspeakAPI.CachesLeft);
+	    CB_List<LogEntry> cleanLogs = new CB_List<LogEntry>();
+	    cleanLogs = Database.Logs(ca);// cache.Logs();
 
 	}
 
-	public static final int MAX_REQUEST_CACHE_COUNT = 200;
-	private static final ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
-	private static final ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
-	private static final float Used_max_request_radius = 2120;
+	// Check if count are not same like requested (increase Max Count)
+	assertTrue("count mast be lower then requested", LiveMapQue.LiveCaches.getSize() < LiveMapQue.MAX_REQUEST_CACHE_COUNT);
 
-	public void test_request()
-	{
-		Descriptor desc = new Descriptor(new Coordinate("52° 34,9815N / 13° 23,540E"), 14);
-		SearchLiveMap requestSearch = new SearchLiveMap(MAX_REQUEST_CACHE_COUNT, desc, Used_max_request_radius);
+	GroundspeakAPI.GetCacheLimits(null);
 
-		CB_List<Cache> apiCaches = new CB_List<Cache>();
+	assertTrue("CacheLimits must not changed", CachesLeft == GroundspeakAPI.CachesLeft);
 
-		CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
-		String result = t.SearchForGeocachesJSON(requestSearch, apiCaches, apiLogs, apiImages, 0, null);
+    }
 
-		assertTrue("ApiImage-Size must be 0", apiImages.size() == 0);
-		assertTrue("ApiLog-Size must be 0", apiLogs.size() == 0);
-		assertTrue("CacheList-Size must be 79", apiCaches.size() == 79);
-	}
+    public static final int MAX_REQUEST_CACHE_COUNT = 200;
+    private static final ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
+    private static final ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
+    private static final float Used_max_request_radius = 2120;
+
+    public void test_request() {
+	Descriptor desc = new Descriptor(new Coordinate("52° 34,9815N / 13° 23,540E"), 14);
+	SearchLiveMap requestSearch = new SearchLiveMap(MAX_REQUEST_CACHE_COUNT, desc, Used_max_request_radius);
+
+	CB_List<Cache> apiCaches = new CB_List<Cache>();
+
+	CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
+	String result = t.SearchForGeocachesJSON(requestSearch, apiCaches, apiLogs, apiImages, 0, null);
+
+	assertTrue("ApiImage-Size must be 0", apiImages.size() == 0);
+	assertTrue("ApiLog-Size must be 0", apiLogs.size() == 0);
+	assertTrue("CacheList-Size must be 79", apiCaches.size() == 79);
+
+	//check LiveMapQue_Cache
+	CB_List<Cache> CacheList = LiveMapQue.loadDescLiveFromCache(requestSearch);
+	assertTrue("CacheList-Size must be 50", CacheList.size() == 50);
+
+    }
 }

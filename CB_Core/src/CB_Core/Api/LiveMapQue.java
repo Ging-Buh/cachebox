@@ -17,8 +17,6 @@
 package CB_Core.Api;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -43,6 +41,8 @@ import CB_Utils.Lists.CB_Stack.iCompare;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.LoopThread;
 import CB_Utils.Util.iChanged;
+
+import com.badlogic.gdx.files.FileHandle;
 
 /**
  * @author Longri
@@ -238,14 +238,17 @@ public class LiveMapQue
 		eventList.add(listner);
 	}
 
-	protected static CB_List<Cache> loadDescLiveFromCache(SearchLiveMap requestSearch)
+	public static CB_List<Cache> loadDescLiveFromCache(SearchLiveMap requestSearch)
 	{
 		String path = requestSearch.descriptor.getLocalCachePath(LIVE_CACHE_NAME) + LIVE_CACHE_EXTENTION;
 		String result = null;
-		BufferedReader br = null;
+
+		FileHandle fh = new FileHandle(path);
+
 		try
 		{
-			br = new BufferedReader(new FileReader(path));
+
+			BufferedReader br = fh.reader(1000);
 			StringBuilder sb = new StringBuilder();
 			String line = br.readLine();
 
@@ -257,10 +260,6 @@ public class LiveMapQue
 			}
 			result = sb.toString();
 			br.close();
-		}
-		catch (FileNotFoundException e)
-		{
-			e.printStackTrace();
 		}
 		catch (IOException e)
 		{
