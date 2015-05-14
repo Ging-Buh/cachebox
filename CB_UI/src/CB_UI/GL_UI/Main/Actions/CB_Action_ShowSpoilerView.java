@@ -7,9 +7,11 @@ import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IReadyListner;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
@@ -96,7 +98,17 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
 			// erst die Lokalen Images für den Cache neu laden
 			if (GlobalCore.ifCacheSelected()) {
 			    GlobalCore.getSelectedCache().ReloadSpoilerRessources();
-			    Execute();
+			    GL.that.RunOnGL(new IRunOnGL() {
+
+				@Override
+				public void run() {
+				    if (TabMainView.spoilerView != null)
+					TabMainView.spoilerView.ForceReload();
+				    Execute();
+				    TabMainView.spoilerView.onShow();
+				}
+			    });
+
 			}
 
 		    }

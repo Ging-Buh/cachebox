@@ -37,6 +37,7 @@ public class SpoilerView extends CB_View_Base {
     CB_List<GallaryItem> overviewItems = new CB_List<GallaryItem>();
     GalleryView gallery;
     GalleryView galleryOverwiew;
+    boolean forceReload = false;
 
     public SpoilerView(CB_RectF rec, String Name) {
 	super(rec, Name);
@@ -63,11 +64,20 @@ public class SpoilerView extends CB_View_Base {
 	this.addChild(galleryOverwiew);
     }
 
+    public void ForceReload() {
+	forceReload = true;
+    }
+
     @Override
     public void onShow() {
 
-	if (GlobalCore.getSelectedCache().equals(actCache))
+	if (GlobalCore.getSelectedCache() == null)
 	    return;
+
+	if (!forceReload && GlobalCore.getSelectedCache().equals(actCache))
+	    return;
+
+	forceReload = false;
 
 	actCache = GlobalCore.getSelectedCache();
 

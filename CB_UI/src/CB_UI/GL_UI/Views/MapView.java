@@ -74,7 +74,6 @@ import CB_UI_Base.GL_UI.Controls.ZoomButtons;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
-import CB_UI_Base.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.utils.KineticZoom;
 import CB_UI_Base.Math.CB_RectF;
@@ -1218,11 +1217,6 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
     public void onShow() {
 	super.onShow();
 
-	if (MapTileLoderPreInitialAtWork) {
-	    //TODO set max Time for showing
-	    waitForPreloadDialog = WaitDialog.ShowWait(Translation.Get("WaitForMapsforgeInitial"));
-	}
-
 	CB_UI.Events.SelectedCacheEventList.Add(this);
 	this.NorthOriented = Mode == MapMode.Normal ? Config.MapNorthOriented.getValue() : false;
 	SelectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
@@ -1230,7 +1224,6 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
     private static boolean MapTileLoderPreInitial = false;
     private static boolean MapTileLoderPreInitialAtWork = false;
-    private WaitDialog waitForPreloadDialog;
 
     @Override
     public void setNewSettings(int InitialFlags) {
@@ -1406,9 +1399,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 				    }
 				}
-				// cloase Wait Dialog
-				if (waitForPreloadDialog != null)
-				    waitForPreloadDialog.close();
+
 				MapTileLoderPreInitialAtWork = false;
 			    }
 			});
