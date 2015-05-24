@@ -153,10 +153,11 @@ public class GroundspeakAPI
 	private static String GetUTCDate(Date date)
 	{
 		long utc = date.getTime();
-		TimeZone tz = TimeZone.getDefault();
+		// date.getTime already returns utc timestamp. Conversion to utc is not necessary!!!
+		// TimeZone tz = TimeZone.getDefault();
 		TimeZone tzp = TimeZone.getTimeZone("GMT-8");
-		int offset = tz.getOffset(utc);
-		utc += offset - tzp.getOffset(utc);
+		// int offset = tz.getOffset(utc);
+		utc += /* offset */-tzp.getOffset(utc);
 		return "\\/Date(" + utc + ")\\/";
 	}
 
@@ -956,7 +957,7 @@ public class GroundspeakAPI
 		case 12:
 			return CacheTypes.Cache; // Locationless (Reverse) Cache
 		case 13:
-			return CacheTypes.CITO; // Cache In Trash Out Event
+			return CacheTypes.Cache; // Cache In Trash Out Event
 		case 137:
 			return CacheTypes.Earth;
 		case 453:
