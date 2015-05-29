@@ -438,13 +438,39 @@ public class GroundspeakAPI
 					// Zur�cksetzen, falls ein anderer User gew�hlt wurde
 					return memberTypeId;
 				}
-				else
+				else if (status.getInt("StatusCode") == 2)
 				{
+					// Not authorized
+					API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.INVALID);
 					result = "StatusCode = " + status.getInt("StatusCode") + "\n";
 					result += status.getString("StatusMessage") + "\n";
 					result += status.getString("ExceptionDetails");
 
-					logger.warn("GetMembershipType API-Error");
+					logger.warn("GetMembershipType API-Error: " + result);
+					API_isCheked = false;
+					return API_ERROR;
+				}
+				else if (status.getInt("StatusCode") == 3)
+				{
+					// API Key expired
+					API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.EXPIRED);
+					result = "StatusCode = " + status.getInt("StatusCode") + "\n";
+					result += status.getString("StatusMessage") + "\n";
+					result += status.getString("ExceptionDetails");
+
+					logger.warn("GetMembershipType API-Error: " + result);
+					API_isCheked = false;
+					return API_ERROR;
+
+				}
+				else
+				{
+
+					result = "StatusCode = " + status.getInt("StatusCode") + "\n";
+					result += status.getString("StatusMessage") + "\n";
+					result += status.getString("ExceptionDetails");
+
+					logger.warn("GetMembershipType API-Error: " + result);
 					API_isCheked = false;
 					return API_ERROR;
 				}
@@ -1717,7 +1743,7 @@ public class GroundspeakAPI
 
 		if (!isValid && ret != CONNECTION_TIMEOUT)
 		{
-			if (!withoutMsg) API_ErrorEventHandlerList.callInvalidApiKey();
+			if (!withoutMsg) API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.INVALID);
 		}
 
 		if (ret != CONNECTION_TIMEOUT) API_isCheked = true;
