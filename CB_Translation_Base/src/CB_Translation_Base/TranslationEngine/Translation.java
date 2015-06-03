@@ -24,8 +24,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import CB_Translation_Base.FileUtil;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Util.FileIO;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
@@ -218,7 +218,7 @@ public class Translation
 		readDefFile(FilePath);
 
 		{// read refFile (EN)
-			String FileName = FileUtil.GetFileName(FilePath);
+			String FileName = FileIO.GetFileName(FilePath);
 			int pos = FilePath.lastIndexOf("lang") + 4;
 			String LangFileName = FilePath.substring(0, pos) + "/en-GB/" + FileName;
 			readRefFile(LangFileName);
