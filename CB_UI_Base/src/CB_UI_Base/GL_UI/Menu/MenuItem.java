@@ -47,6 +47,11 @@ public class MenuItem extends MenuItemBase {
 	mID = ID;
     }
 
+    public MenuItem(int Index, int ID, String Name) {
+	super(new CB_RectF(), Index, Name);
+	mID = ID;
+    }
+
     public int getMenuItemId() {
 	return mID;
     }

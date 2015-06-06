@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.FileIO;
 
@@ -36,7 +38,7 @@ import com.badlogic.gdx.files.FileHandle;
  */
 public class Translation
 {
-
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(Translation.class);
 	/**
 	 * @uml.property name="that"
 	 * @uml.associationEnd
@@ -304,6 +306,7 @@ public class Translation
 			if (!mMissingStringList.contains(notFound))
 			{
 				mMissingStringList.add(notFound);
+				log.debug("MissingTranslation: " + notFound.toString());
 			}
 			return retString;
 		}

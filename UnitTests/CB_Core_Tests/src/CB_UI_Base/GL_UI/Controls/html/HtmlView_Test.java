@@ -362,14 +362,14 @@ public class HtmlView_Test {
 	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(HSV_Color.RED));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 43.2f);
-	assertTrue(testSeg.formatedText.startsWith(" Dieser Cache ist Carina"));
+	assertTrue(testSeg.formatedText.trim().startsWith("Dieser Cache ist Carina"));
 
 	testSeg = segmentList.get(1);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.RED));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 43.2f);
-	assertTrue(testSeg.formatedText.startsWith(" und soll als Geburtstagscache ein klei"));
+	assertTrue(testSeg.formatedText.trim().startsWith("und soll als Geburtstagscache ein klei"));
 
 	testSeg = segmentList.get(2);
 	testSeg.resolveAtributes();
@@ -381,41 +381,39 @@ public class HtmlView_Test {
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
-	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 25.2f);
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 21.6f);
 	assertTrue(((Html_Segment_TextBlock) testSeg).underline == false);
-	assertTrue(testSeg.formatedText.startsWith(" Hier erwartet euch eine kurze R"));
 
 	testSeg = segmentList.get(4);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 25.2f);
-	assertFalse(((Html_Segment_TextBlock) testSeg).underline);
-	assertTrue(testSeg.formatedText.startsWith(" Mit hin und Rückweg dürfte die gesamte Wegstre"));
+	assertTrue(((Html_Segment_TextBlock) testSeg).underline == false);
+	assertTrue(testSeg.formatedText.trim().startsWith("Hier erwartet euch eine kurze R"));
 
 	testSeg = segmentList.get(5);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 25.2f);
-	assertTrue(((Html_Segment_TextBlock) testSeg).underline);
-	assertTrue(testSeg.formatedText.startsWith(" Allgemeines:"));
+	assertFalse(((Html_Segment_TextBlock) testSeg).underline);
+	assertTrue(testSeg.formatedText.trim().startsWith("Mit hin und Rückweg dürfte die gesamte Wegstre"));
 
 	testSeg = segmentList.get(6);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
-	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 32.4f);
-	assertFalse(((Html_Segment_TextBlock) testSeg).underline);
-	assertTrue(testSeg.formatedText.startsWith(" Bleibt bitte auf den Pfaden, ihr müsst nicht in den Fluss steig"));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 21.6f);
+	assertTrue(((Html_Segment_TextBlock) testSeg).underline == false);
 
 	testSeg = segmentList.get(7);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
-	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 32.4f);
-	assertFalse(((Html_Segment_TextBlock) testSeg).underline);
-	assertTrue(testSeg.formatedText.startsWith(" Petlinge mässen nicht geöffnet werden, die In"));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 25.2f);
+	assertTrue(((Html_Segment_TextBlock) testSeg).underline);
+	assertTrue(testSeg.formatedText.trim().startsWith("Allgemeines:"));
 
 	testSeg = segmentList.get(8);
 	testSeg.resolveAtributes();
@@ -423,33 +421,56 @@ public class HtmlView_Test {
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 32.4f);
 	assertFalse(((Html_Segment_TextBlock) testSeg).underline);
-	assertTrue(testSeg.formatedText.startsWith(" An Stage 2 das Behätnis wieder an den Fun"));
+	assertTrue(testSeg.formatedText.trim().startsWith("Bleibt bitte auf den Pfaden, ihr müsst nicht in den Fluss steig"));
 
 	testSeg = segmentList.get(9);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
-	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 25.2f);
-	assertTrue(((Html_Segment_TextBlock) testSeg).underline);
-	assertTrue(testSeg.formatedText.startsWith(" Hinweis zur Bewertung:"));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 32.4f);
+	assertFalse(((Html_Segment_TextBlock) testSeg).underline);
+	assertTrue(testSeg.formatedText.trim().startsWith("Petlinge mässen nicht geöffnet werden, die In"));
 
 	testSeg = segmentList.get(10);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
-	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 25.2f);
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 32.4f);
 	assertFalse(((Html_Segment_TextBlock) testSeg).underline);
-	assertTrue(testSeg.formatedText.startsWith(" Die D-Wertung bezieht sich auf den derzei"));
+	assertTrue(testSeg.formatedText.trim().startsWith("An Stage 2 das Behätnis wieder an den Fun"));
 
 	testSeg = segmentList.get(11);
 	testSeg.resolveAtributes();
 	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 21.6f);
+	assertTrue(((Html_Segment_TextBlock) testSeg).underline == false);
+
+	testSeg = segmentList.get(12);
+	testSeg.resolveAtributes();
+	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 25.2f);
+	assertTrue(((Html_Segment_TextBlock) testSeg).underline);
+	assertTrue(testSeg.formatedText.trim().startsWith("Hinweis zur Bewertung:"));
+
+	testSeg = segmentList.get(13);
+	testSeg.resolveAtributes();
+	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 25.2f);
 	assertFalse(((Html_Segment_TextBlock) testSeg).underline);
-	assertTrue(testSeg.formatedText.startsWith(" Die T-Wertung könnte je nach Wetterlage variieren und ersch"));
+	assertTrue(testSeg.formatedText.trim().startsWith("Die D-Wertung bezieht sich auf den derzei"));
 
-	assertTrue(segmentList.size() == 12);
+	testSeg = segmentList.get(14);
+	testSeg.resolveAtributes();
+	assertTrue(testSeg.hAlignment == HAlignment.LEFT);
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
+	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 25.2f);
+	assertFalse(((Html_Segment_TextBlock) testSeg).underline);
+	assertTrue(testSeg.formatedText.trim().startsWith("Die T-Wertung könnte je nach Wetterlage variieren und ersch"));
+
+	assertTrue(segmentList.size() == 16);
     }
 
 }

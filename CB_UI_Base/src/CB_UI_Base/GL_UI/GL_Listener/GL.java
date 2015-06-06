@@ -97,7 +97,7 @@ public class GL implements ApplicationListener, InputProcessor {
 
     private static final AtomicBoolean ambientMode = new AtomicBoolean(false);
     private final int MAX_FBO_RENDER_TIME = 200;
-    private static final boolean TOUCH_DEBUG = false;
+    private static final boolean TOUCH_DEBUG = true;
     private final boolean FORCE = true;
 
     /**
@@ -765,6 +765,17 @@ public class GL implements ApplicationListener, InputProcessor {
 	{
 	    view = mMarkerOverlay.touchDown(x, (int) mMarkerOverlay.getHeight() - y, pointer, button);
 	}
+
+	// check to open popup menu and close if click outside	
+	if (aktPopUp != null) {
+	    view = aktPopUp.touchDown(x, height - y, pointer, button);
+	    if (view == null || view != aktPopUp) {
+		//outside of popup menu => close and return
+		aktPopUp.close();
+		return false;
+	    }
+	}
+
 	if (view == null) {
 	    CB_View_Base testingView = DialogIsShown ? mDialog : ActivityIsShown ? mActivity : child;
 	    view = testingView.touchDown(x, (int) testingView.getHeight() - y, pointer, button);

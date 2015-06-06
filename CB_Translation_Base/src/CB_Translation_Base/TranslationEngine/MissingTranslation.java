@@ -21,4 +21,10 @@ public class MissingTranslation extends Translations
 		return stringId;
 	}
 
+	@Override
+	public String toString()
+	{
+		return stringId;
+	}
+
 }

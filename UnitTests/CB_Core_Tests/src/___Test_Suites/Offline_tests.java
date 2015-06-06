@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2011-2014 team-cachebox.de
+ * Copyright (C) 2011-2015 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import CB_Core.Converter.Base64_Test;
 import CB_Locator.Coordinate_LatLong_Test;
 import CB_Locator.Map.MapTileCache_Test;
 import CB_UI_Base.GL_UI.Controls.html.HtmlView_Test;
+import CB_UI_Base.graphics.CircleDrawable_Test;
 import CB_Utils.computeDistanceAndBearing;
 import CB_Utils.Lists.CB_Stack_Test;
 import Math.Cb_RectF_Test;
@@ -37,12 +38,8 @@ import Types.CacheTest;
 import Types.MeasuredCoordListTest;
 
 @RunWith(Suite.class)
-@SuiteClasses(
-	{ Config_Crypt.class, FilterProperties_Test.class, HSV_Test.class, MeasuredCoordTest.class, Import_tests.class, DescriptorTest.class,
-			Base64_Test.class, MapTileCache_Test.class, computeDistanceAndBearing.class, Cb_RectF_Test.class, PolylineReduction_Test.class,
-			CacheTest.class, MeasuredCoordListTest.class, GPX_Export.class, Coordinate_LatLong_Test.class, CB_Stack_Test.class,
-			Config_Crypt.class, HtmlView_Test.class })
-public class Offline_tests
-{
+@SuiteClasses({ Config_Crypt.class, FilterProperties_Test.class, HSV_Test.class, MeasuredCoordTest.class, Import_tests.class, DescriptorTest.class, Base64_Test.class, MapTileCache_Test.class, computeDistanceAndBearing.class, Cb_RectF_Test.class, PolylineReduction_Test.class, CacheTest.class, MeasuredCoordListTest.class, GPX_Export.class, Coordinate_LatLong_Test.class, CB_Stack_Test.class,
+	Config_Crypt.class, HtmlView_Test.class, CircleDrawable_Test.class })
+public class Offline_tests {
 
 }

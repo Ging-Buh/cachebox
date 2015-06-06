@@ -8,23 +8,22 @@ import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_UI.GL_UI.Activitys.CreateTrackOverMapActivity;
 import CB_UI_Base.Energy;
-import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.Button;
-import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.ImageLoader;
-import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
-import CB_UI_Base.GL_UI.Controls.ZoomButtons;
+import CB_UI_Base.GL_UI.Controls.RadioButton;
+import CB_UI_Base.GL_UI.Controls.RadioGroup;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog.iCancelListner;
+import CB_UI_Base.GL_UI.Controls.PopUps.PopUpMenu;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.Menu.Menu;
+import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UI_Size_Base;
 
 import com.badlogic.gdx.Gdx;
@@ -50,26 +49,75 @@ public class TestView extends CB_View_Base {
 
 	setBackground(SpriteCacheBase.ListBack);
 
-	CB_RectF TextFieldRec = new CB_RectF(0, this.getHeight() - (UI_Size_Base.that.getButtonHeight() * 3), UI_Size_Base.that.getButtonWidth() * 6, UI_Size_Base.that.getButtonHeight() * 3);
-
-	wrappedTextField = new CB_UI_Base.GL_UI.Controls.EditTextField(TextFieldRec, this).setWrapType(WrapType.WRAPPED);
-	wrappedTextField.setStyle(EditTextField.getDefaultStyle());
-	wrappedTextField.setText(splashMsg);
-	// wrappedTextField.setText("");
-
-	this.addChild(wrappedTextField);
+	//	CB_RectF TextFieldRec = new CB_RectF(0, this.getHeight() - (UI_Size_Base.that.getButtonHeight() * 3), UI_Size_Base.that.getButtonWidth() * 6, UI_Size_Base.that.getButtonHeight() * 3);
+	//
+	//	wrappedTextField = new CB_UI_Base.GL_UI.Controls.EditTextField(TextFieldRec, this).setWrapType(WrapType.WRAPPED);
+	//	wrappedTextField.setStyle(EditTextField.getDefaultStyle());
+	//	wrappedTextField.setText(splashMsg);
+	//	// wrappedTextField.setText("");
+	//
+	//	this.addChild(wrappedTextField);
 
 	// ####################################################
-
-	Label label = new Label(new CB_RectF(50, 50, 300, 100), "/ExtSD/Карти/Vector Maps/asadasdasd dasasdasdasd");
-	label.setHAlignment(HAlignment.SCROLL_LEFT);
-	this.addChild(label);
+	//
+	//	Label label = new Label(new CB_RectF(50, 50, 300, 100), "/ExtSD/Карти/Vector Maps/asadasdasd dasasdasdasd");
+	//	label.setHAlignment(HAlignment.SCROLL_LEFT);
+	//	this.addChild(label);
 	// ####################################################
+
+	float margin = UI_Size_Base.that.getMargin();
+
+	final RadioButton rb = new RadioButton("1 segment");
+
+	float rbmargin = rb.getHeight() - margin;
+
+	rb.setPos(5, this.getHeight() - rbmargin);
+	rb.setWidth(this.getHalfWidth() - rb.getX());
+	rb.setText("Option 1");
+	this.addChild(rb);
+
+	final RadioButton rb2 = new RadioButton("Test");
+	rb2.setPos(5, rb.getY() - rbmargin);
+	rb2.setWidth(this.getHalfWidth() - rb.getX());
+	rb2.setText("Option 2");
+	this.addChild(rb2);
+
+	final RadioButton rb3 = new RadioButton("Test");
+	rb3.setPos(5, rb2.getY() - rbmargin);
+	rb3.setWidth(this.getHalfWidth() - rb.getX());
+	rb3.setText("Option 3");
+	this.addChild(rb3);
+
+	final RadioButton rb4 = new RadioButton("Test");
+	rb4.setPos(5, rb3.getY() - rbmargin);
+	rb4.setWidth(this.getHalfWidth() - rb.getX());
+	rb4.setText("Option 4");
+	this.addChild(rb4);
+
+	final RadioButton rb5 = new RadioButton("Test");
+	rb5.setPos(5, rb4.getY() - rbmargin);
+	rb5.setWidth(this.getHalfWidth() - rb.getX());
+	rb5.setText("Option 5");
+	this.addChild(rb5);
+
+	final RadioButton rb6 = new RadioButton("Test");
+	rb6.setPos(5, rb5.getY() - rbmargin);
+	rb6.setWidth(this.getHalfWidth() - rb.getX());
+	rb6.setText("Option 6");
+	this.addChild(rb6);
+
+	final RadioGroup Group = new RadioGroup();
+	Group.add(rb);
+	Group.add(rb2);
+	Group.add(rb3);
+	Group.add(rb4);
+	Group.add(rb5);
+	Group.add(rb6);
+	Group.aktivate(rb);
 
 	// Setting Button
-	Button btnSetting = new Button(this.getWidth() - UI_Size_Base.that.getMargin() - (UI_Size_Base.that.getButtonWidthWide() * 2), wrappedTextField.getY() - UI_Size_Base.that.getMargin() - UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonWidthWide() * 2, UI_Size_Base.that.getButtonHeight(), "");
-
-	btnSetting.setText("Post Conection Error");
+	Button btnSetting = new Button(this.getWidth() - UI_Size_Base.that.getMargin() - (UI_Size_Base.that.getButtonWidthWide() * 2), this.getHeight() - UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonWidthWide() * 2, UI_Size_Base.that.getButtonHeight(), "");
+	btnSetting.setText("Show TrackView");
 	btnSetting.setOnClickListener(new OnClickListener() {
 
 	    @Override
@@ -85,40 +133,55 @@ public class TestView extends CB_View_Base {
 
 	this.addChild(btnSetting);
 
-	// RadioButton rb = new RadioButton("Test");
-	// rb.setPos(50, 50);
-	// rb.setWidth(this.getWidth() - rb.getX());
-	// rb.setText("Option 1");
-	// this.addChild(rb);
-	//
-	// this.addChild(btnSetting);
-	//
-	// RadioButton rb2 = new RadioButton("Test");
-	// rb2.setPos(50, rb.getMaxY() + UI_Size_Base.that.getMargin());
-	// rb2.setWidth(this.getWidth() - rb.getX());
-	// rb2.setText("Option 2");
-	// this.addChild(rb2);
-	//
-	// RadioButton rb3 = new RadioButton("Test");
-	// rb3.setPos(50, rb2.getMaxY() + UI_Size_Base.that.getMargin());
-	// rb3.setWidth(this.getWidth() - rb.getX());
-	// rb3.setText("Option 3");
-	// this.addChild(rb3);
-	//
-	// RadioGroup Group = new RadioGroup();
-	// Group.add(rb);
-	// Group.add(rb2);
-	// Group.add(rb3);
+	Button btnMenu = new Button(this.getWidth() - UI_Size_Base.that.getMargin() - (UI_Size_Base.that.getButtonWidthWide() * 2), this.getHeight() - UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonWidthWide() * 2, UI_Size_Base.that.getButtonHeight(), "");
 
-	float margin = GL_UISizes.margin;
+	btnMenu.setY(btnMenu.getY() - (margin + btnMenu.getHeight()));
+	btnMenu.setText("Show Menu");
+	btnMenu.setOnClickListener(new OnClickListener() {
 
-	ZoomButtons zoomBtn = new ZoomButtons(GL_UISizes.ZoomBtn, this, "ZoomButtons");
-	zoomBtn.setPortrait();
-	zoomBtn.disableFadeOut();
-	zoomBtn.setSize(GL_UISizes.ZoomBtn.getHeight(), GL_UISizes.ZoomBtn.getWidth());
-	zoomBtn.setPos(this.getWidth() - margin - zoomBtn.getWidth(), this.getHeight() - margin - zoomBtn.getHeight());
+	    @Override
+	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+		CB_RectF rec = new CB_RectF(x - 1, y - 1, 300, 300);
 
-	this.addChild(zoomBtn);
+		RadioButton option = Group.getActSelection();
+
+		int testCount = 0;
+		if (option == rb)
+		    testCount = 1;
+		if (option == rb2)
+		    testCount = 2;
+		if (option == rb3)
+		    testCount = 3;
+		if (option == rb4)
+		    testCount = 4;
+		if (option == rb5)
+		    testCount = 5;
+
+		Menu menu = new Menu("RoundPopUpMenu");
+
+		for (int i = 0; i < testCount; i++) {
+		    MenuItem menuItem = new MenuItem(0, 0, "Item" + i);
+		    menu.addItem(menuItem);
+		}
+
+		PopUpMenu popmenu = new PopUpMenu(rec, menu);
+		popmenu.setPos(TestView.this.getHalfHeight() - menu.getHalfWidth(), menu.getHeight());
+		popmenu.showNotCloseAutomaticly();
+		return true;
+	    }
+	});
+
+	this.addChild(btnMenu);
+
+	//	float margin = GL_UISizes.margin;
+	//
+	//	ZoomButtons zoomBtn = new ZoomButtons(GL_UISizes.ZoomBtn, this, "ZoomButtons");
+	//	zoomBtn.setPortrait();
+	//	zoomBtn.disableFadeOut();
+	//	zoomBtn.setSize(GL_UISizes.ZoomBtn.getHeight(), GL_UISizes.ZoomBtn.getWidth());
+	//	zoomBtn.setPos(this.getWidth() - margin - zoomBtn.getWidth(), this.getHeight() - margin - zoomBtn.getHeight());
+	//
+	//	this.addChild(zoomBtn);
 
 	requestLayout();
 

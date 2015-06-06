@@ -1,0 +1,80 @@
+<!-- ################################################################### 
+
+	For work, rename this file to "logback.xml" and copy to [WORKPATH]/Logs!
+
+-->
+
+<configuration>
+<!-- ################################################################### -->
+<!-- Member -->	
+	<property name="LOG_DIR" value="/@Work/Longri/SVNs/Cachebox/code/trunk/DesctopLibGdx_Test/cachebox/Logs" />
+	<timestamp key="DATE" datePattern="yyyy.MM.dd._HH_mm_ss" />
+<!-- ################################################################### -->
+
+<!-- ################################################################### -->
+	
+	<!-- If system equals Android then use Locat-Apender -->
+	<if condition='property("os.name").contains("Android")'>
+	<then>
+		<!-- Create a logcat appender -->
+			<appender name="logcat" class="ch.qos.logback.classic.android.LogcatAppender">
+				<encoder>
+					<pattern>%msg</pattern>
+				</encoder>
+			</appender>
+  
+		<!-- Write INFO (and higher-level) messages to logcat -->
+			<root level="INFO">
+				<appender-ref ref="logcat" />
+			</root>
+	</then>
+	</if>
+
+
+
+
+	<!-- Create a console appender -->
+		<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+			<encoder>
+				<pattern>%-4relative [%thread] %-5level %logger - %msg%n</pattern>
+			</encoder>
+		</appender>
+  
+	<!-- Write INFO (and higher-level) messages to logcat -->
+		<root level="ALL">
+			<appender-ref ref="console" />
+		</root>
+
+ 
+
+<!-- ################################################################### -->
+
+<!-- ################################################################### -->
+
+  
+  
+	
+
+<!-- ################################################################### -->
+<!-- Create a file appender for Translation messages -->
+	<appender name="TranslationLog" class="ch.qos.logback.core.FileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ALL</level>
+		</filter>
+		<file>${LOG_DIR}/gpslog_${DATE}.txt</file>
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+<!-- Write messages from class CB_Locator.Locator to GPS-log -->
+	<logger name="CB_Translation_Base.TranslationEngine.Translation" level="ALL">
+		<appender-ref ref="TranslationLog" />
+	</logger>
+	
+
+
+  
+  <!-- ################################################################### -->
+  
+</configuration>
