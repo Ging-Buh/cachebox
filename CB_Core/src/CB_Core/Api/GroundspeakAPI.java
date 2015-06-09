@@ -61,7 +61,7 @@ public class GroundspeakAPI
 {
 	final static org.slf4j.Logger logger = LoggerFactory.getLogger(GroundspeakAPI.class);
 	public static final String GS_LIVE_URL = "https://api.groundspeak.com/LiveV6/geocaching.svc/";
-	static final String STAGING_GS_LIVE_URL = "https://staging.api.groundspeak.com/Live/V6Beta/geocaching.svc/";
+	public static final String STAGING_GS_LIVE_URL = "https://staging.api.groundspeak.com/Live/V6Beta/geocaching.svc/";
 
 	public static final int IO = 0;
 	private static final int ERROR = -1;
@@ -424,8 +424,8 @@ public class GroundspeakAPI
 			{
 				JSONTokener tokener = new JSONTokener(result);
 				JSONObject json = (JSONObject) tokener.nextValue();
-				JSONObject status = json.getJSONObject("Status");
-				if (status.getInt("StatusCode") == 0)
+				int status = getApiStatus(result);
+				if (status == 0)
 				{
 					result = "";
 					JSONObject profile = json.getJSONObject("Profile");
@@ -438,38 +438,14 @@ public class GroundspeakAPI
 					// Zur�cksetzen, falls ein anderer User gew�hlt wurde
 					return memberTypeId;
 				}
-				else if (status.getInt("StatusCode") == 2)
+				else if (status == 2 || status == 3 || status == 141)
 				{
-					// Not authorized
-					API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.INVALID);
-					result = "StatusCode = " + status.getInt("StatusCode") + "\n";
-					result += status.getString("StatusMessage") + "\n";
-					result += status.getString("ExceptionDetails");
-
-					logger.warn("GetMembershipType API-Error: " + result);
-					API_isCheked = false;
-					return API_ERROR;
-				}
-				else if (status.getInt("StatusCode") == 3)
-				{
-					// API Key expired
-					API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.EXPIRED);
-					result = "StatusCode = " + status.getInt("StatusCode") + "\n";
-					result += status.getString("StatusMessage") + "\n";
-					result += status.getString("ExceptionDetails");
-
-					logger.warn("GetMembershipType API-Error: " + result);
 					API_isCheked = false;
 					return API_ERROR;
 
 				}
 				else
 				{
-
-					result = "StatusCode = " + status.getInt("StatusCode") + "\n";
-					result += status.getString("StatusMessage") + "\n";
-					result += status.getString("ExceptionDetails");
-
 					logger.warn("GetMembershipType API-Error: " + result);
 					API_isCheked = false;
 					return API_ERROR;
@@ -515,6 +491,55 @@ public class GroundspeakAPI
 			return ERROR;
 		}
 
+	}
+
+	public static int getApiStatus(String result)
+	{
+
+		try
+		{
+			JSONTokener tokener = new JSONTokener(result);
+			JSONObject json = (JSONObject) tokener.nextValue();
+			JSONObject jsonStatus = json.getJSONObject("Status");
+			int status = jsonStatus.getInt("StatusCode");
+			String statusMessage = jsonStatus.getString("StatusMessage");
+			String exceptionDetails = jsonStatus.getString("ExceptionDetails");
+
+			String logString = "StatusCode = " + status + "\n" + statusMessage + "\n" + exceptionDetails;
+
+			if (status == 0) return status;
+
+			if (status == 2)
+			{
+				// Not authorized
+				API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.INVALID);
+				logger.warn("API-Error: " + logString);
+				return status;
+			}
+
+			if (status == 3)
+			{
+				// API Key expired
+				API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.EXPIRED);
+				logger.warn("API-Error: " + logString);
+				return status;
+			}
+
+			if (status == 141)
+			{
+				// / {"Status":{"StatusCode":141,"StatusMessage":"The AccessToken provided is not valid"
+				API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.INVALID);
+				logger.warn("API-Error: " + logString);
+				return status;
+			}
+
+		}
+		catch (JSONException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -1;
 	}
 
 	/**

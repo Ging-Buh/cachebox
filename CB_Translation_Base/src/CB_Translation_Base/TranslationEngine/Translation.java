@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import org.slf4j.LoggerFactory;
 
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Trace;
 import CB_Utils.Util.FileIO;
 
 import com.badlogic.gdx.Files.FileType;
@@ -306,7 +307,7 @@ public class Translation
 			if (!mMissingStringList.contains(notFound))
 			{
 				mMissingStringList.add(notFound);
-				log.debug("MissingTranslation: " + notFound.toString());
+				log.debug("MissingTranslation: " + notFound.toString() + " from =>" + Trace.getCallerName(2));
 			}
 			return retString;
 		}

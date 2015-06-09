@@ -110,7 +110,9 @@ public class SearchForGeocaches_Core
 			isLite = search.isLite;
 		}
 
-		HttpPost httppost = new HttpPost("https://api.groundspeak.com/LiveV6/Geocaching.svc/SearchForGeocaches?format=json");
+		String URL = CB_Core_Settings.StagingAPI.getValue() ? GroundspeakAPI.STAGING_GS_LIVE_URL : GroundspeakAPI.GS_LIVE_URL;
+
+		HttpPost httppost = new HttpPost(URL + "SearchForGeocaches?format=json");
 
 		String requestString = "";
 
@@ -257,42 +259,31 @@ public class SearchForGeocaches_Core
 		try
 		{
 			result = HttpUtils.Execute(httppost, icancel);
-			if (result.contains("The service is unavailable"))
-			{
-				return "The service is unavailable";
-			}
-			else if (result.contains("server error"))
-			{
-				return "The service is unavailable";
-			}
-			else if (result.contains("Cache download limit has been exceeded"))
-			{
-				return "download limit";
-			}
 		}
 		catch (ConnectTimeoutException e)
 		{
 			logger.error("SearchForGeocaches:ConnectTimeoutException", e);
 			showToastConnectionError();
-
 			return "";
-
 		}
 		catch (ClientProtocolException e)
 		{
 			logger.error("SearchForGeocaches:ClientProtocolException", e);
 			showToastConnectionError();
-
 			return "";
 		}
 		catch (IOException e)
 		{
 			logger.error("SearchForGeocaches:IOException", e);
 			showToastConnectionError();
-
 			return "";
 		}
 
+		// chk api result
+		if (GroundspeakAPI.getApiStatus(result) != 0) return "";
+		if (result.contains("The service is unavailable")) return "The service is unavailable";
+		if (result.contains("server error")) return "The service is unavailable";
+		if (result.contains("Cache download limit has been exceeded")) return "download limit";
 		if (result.length() == 0)
 		{
 			showToastConnectionError();
@@ -353,7 +344,7 @@ public class SearchForGeocaches_Core
 				requestString += "\"TrackableLogCount\":2";
 				requestString += "}";
 
-				httppost = new HttpPost("https://api.groundspeak.com/LiveV6/geocaching.svc/GetMoreGeocaches?format=json");
+				httppost = new HttpPost(URL + "GetMoreGeocaches?format=json");
 
 				try
 				{

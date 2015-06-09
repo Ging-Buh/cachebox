@@ -23,7 +23,7 @@ public class API_ErrorEventHandlerList
 {
 	public enum API_ERROR
 	{
-		INVALID, EXPIRED
+		INVALID, EXPIRED, NO
 	};
 
 	private static ArrayList<API_ErrorEventHandler> list = new ArrayList<API_ErrorEventHandler>();
@@ -40,7 +40,7 @@ public class API_ErrorEventHandlerList
 	private static long lastCall;
 	private static final long MIN_CALL_TIME = 5000;
 
-	static void callInvalidApiKey(final API_ERROR type)
+	public static void callInvalidApiKey(final API_ERROR type)
 	{
 		if (lastCall != 0 && lastCall > System.currentTimeMillis() - MIN_CALL_TIME) return;
 		lastCall = System.currentTimeMillis();
@@ -64,6 +64,9 @@ public class API_ErrorEventHandlerList
 								break;
 							case INVALID:
 								handler.InvalidAPI_Key();
+								break;
+							case NO:
+								handler.NoAPI_Key();
 								break;
 							default:
 								break;

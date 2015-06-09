@@ -20,4 +20,6 @@ public interface API_ErrorEventHandler
 	public void InvalidAPI_Key();
 
 	public void ExpiredAPI_Key();
+
+	public void NoAPI_Key();
 }

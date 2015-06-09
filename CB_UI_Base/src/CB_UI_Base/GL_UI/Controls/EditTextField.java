@@ -21,6 +21,8 @@ import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.slf4j.LoggerFactory;
+
 import CB_UI_Base.Global;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.CB_View_Base;
@@ -42,6 +44,8 @@ import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
 
 public class EditTextField extends EditTextFieldBase {
+
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(EditTextField.class);
 
     public static final char BACKSPACE = 8;
     public static final char ENTER_DESKTOP = '\r';
@@ -1066,33 +1070,39 @@ public class EditTextField extends EditTextFieldBase {
     }
 
     private void checkCursorVisible(boolean hideCursor) {
-	if (hideCursor)
-	    hideSelectionMarker();
-	// Cursorpos prüfen, ob ausserhalb sichtbaren Bereich (Oben-Unten)
-	if (cursor.line - topLine >= maxLineCount) {
-	    topLine = cursor.line - maxLineCount + 1;
-	}
-	if (cursor.line < topLine) {
-	    topLine = cursor.line;
-	}
-	// links-Rechts
-	// Cursor Pos in Pixeln vom Textanfang an
-	DisplayText dt = getAktDisplayText();
-	if (dt != null) {
-	    float xCursor = 0;
-	    if (cursor.pos < dt.glyphPositions.size) {
-		xCursor = dt.glyphPositions.get(cursor.pos);
-	    } else {
-		xCursor = dt.glyphPositions.get(dt.glyphPositions.size - 1);
+	try {
+	    if (hideCursor)
+		hideSelectionMarker();
+	    // Cursorpos prüfen, ob ausserhalb sichtbaren Bereich (Oben-Unten)
+	    if (cursor.line - topLine >= maxLineCount) {
+		topLine = cursor.line - maxLineCount + 1;
 	    }
-	    // Prüfen, ob der Cursor links außen ist
-	    if (xCursor < leftPos) {
-		leftPos = xCursor;
+	    if (cursor.line < topLine) {
+		topLine = cursor.line;
 	    }
-	    // Prüfen, ob der Cursr rechts außen ist
-	    if ((xCursor > leftPos + maxTextWidth) && (maxTextWidth > 0)) {
-		leftPos = xCursor - maxTextWidth;
+	    // links-Rechts
+	    // Cursor Pos in Pixeln vom Textanfang an
+	    DisplayText dt = getAktDisplayText();
+	    if (dt != null) {
+		float xCursor = 0;
+		if (cursor.pos < dt.glyphPositions.size) {
+		    xCursor = dt.glyphPositions.get(cursor.pos);
+		} else {
+		    xCursor = dt.glyphPositions.get(dt.glyphPositions.size - 1);
+		}
+		// Prüfen, ob der Cursor links außen ist
+		if (xCursor < leftPos) {
+		    leftPos = xCursor;
+		}
+		// Prüfen, ob der Cursr rechts außen ist
+		if ((xCursor > leftPos + maxTextWidth) && (maxTextWidth > 0)) {
+		    leftPos = xCursor - maxTextWidth;
+		}
 	    }
+	} catch (Exception e) {
+	    log.error("checkCursorVisible", e);
+	    if (cursor.pos == -1)
+		setCursorPosition(0);
 	}
     }
 

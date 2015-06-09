@@ -25,6 +25,7 @@ import CB_Core.CoreSettingsForward;
 import CB_Core.FilterProperties;
 import CB_Core.Api.API_ErrorEventHandler;
 import CB_Core.Api.API_ErrorEventHandlerList;
+import CB_Core.Api.API_ErrorEventHandlerList.API_ERROR;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
@@ -403,6 +404,9 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 	GL.that.removeRenderView(this);
 
 	AppRater.app_launched();
+
+	if (!Config.GcAPI.getValue().equals(""))
+	    API_ErrorEventHandlerList.callInvalidApiKey(API_ERROR.NO);
 
     }
 
@@ -805,6 +809,38 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 
 	@Override
 	public void InvalidAPI_Key() {
+	    String Msg = Translation.Get("apiKeyInvalid") + GlobalCore.br + GlobalCore.br;
+	    Msg += Translation.Get("wantApi");
+
+	    GL_MsgBox.Show(Msg, Translation.Get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, new OnMsgBoxClickListener() {
+
+		@Override
+		public boolean onClick(int which, Object data) {
+		    if (which == GL_MsgBox.BUTTON_POSITIVE)
+			platformConector.callGetApiKeyt();
+		    return true;
+		}
+	    });
+	}
+
+	@Override
+	public void ExpiredAPI_Key() {
+	    String Msg = Translation.Get("apiKeyExpired") + GlobalCore.br + GlobalCore.br;
+	    Msg += Translation.Get("wantApi");
+
+	    GL_MsgBox.Show(Msg, Translation.Get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, new OnMsgBoxClickListener() {
+
+		@Override
+		public boolean onClick(int which, Object data) {
+		    if (which == GL_MsgBox.BUTTON_POSITIVE)
+			platformConector.callGetApiKeyt();
+		    return true;
+		}
+	    });
+	}
+
+	@Override
+	public void NoAPI_Key() {
 	    String Msg = Translation.Get("apiKeyNeeded") + GlobalCore.br + GlobalCore.br;
 	    Msg += Translation.Get("wantApi");
 
@@ -817,22 +853,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 		    return true;
 		}
 	    }, Config.RememberAsk_Get_API_Key);
-	}
-
-	@Override
-	public void ExpiredAPI_Key() {
-	    String Msg = Translation.Get("apiKeyNeeded") + GlobalCore.br + GlobalCore.br;
-	    Msg += Translation.Get("wantApi");
-
-	    GL_MsgBox.Show(Msg, Translation.Get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, new OnMsgBoxClickListener() {
-
-		@Override
-		public boolean onClick(int which, Object data) {
-		    if (which == GL_MsgBox.BUTTON_POSITIVE)
-			platformConector.callGetApiKeyt();
-		    return true;
-		}
-	    });
 	}
     };
 

@@ -27,4 +27,15 @@ public class MissingTranslation extends Translations
 		return stringId;
 	}
 
+	@Override
+	public boolean equals(Object other)
+	{
+		if (!(other instanceof MissingTranslation)) return false;
+
+		MissingTranslation cast = (MissingTranslation) other;
+
+		if (stringId.equals(cast.stringId)) return true;
+		return false;
+	}
+
 }
