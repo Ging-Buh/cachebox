@@ -23,10 +23,12 @@ import net.htmlparser.jericho.Source;
 import org.slf4j.LoggerFactory;
 
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Box;
+import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.ImageButton;
 import CB_UI_Base.GL_UI.Controls.ImageLoader;
@@ -48,6 +50,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
  * @author Longri
  */
 public class HtmlView extends ScrollBox implements ListLayout {
+
+    private boolean textOnly = false;
+    private EditTextField textOnlyField;
     private int testcount = 0;
     final static org.slf4j.Logger log = LoggerFactory.getLogger(HtmlView.class);
     static int margin;
@@ -63,25 +68,54 @@ public class HtmlView extends ScrollBox implements ListLayout {
 
     public void showHtml(final String HTMLSOURCE) throws Exception {
 
-	if (segmentList != null) {
-	    segmentList.clear();
+	clearHtml();
+	if (textOnly) {
+
+	    Source source = new Source(HTMLSOURCE);
+
+	    StringBuilder sb = new StringBuilder();
+
+	    source.getRenderer().appendTo(sb);
+
+	    String text = sb.toString();
+
+	    textOnlyField = new EditTextField(this);
+	    textOnlyField.setSize(this);
+	    textOnlyField.setWrapType(WrapType.MULTILINE);
+	    textOnlyField.setEditable(false);
+	    textOnlyField.setNoBorders();
+	    this.addChild(textOnlyField);
+
+	    this.setVirtualHeight(this.getHeight());
+	    this.scrollTo(0);
+	    this.setUndragable();
+
+	    textOnlyField.setText(text);
+
 	} else {
-	    segmentList = new ArrayList<Html_Segment>();
-	}
-	segmentViewList = new CB_List<CB_View_Base>();
-	Exception any = null;
+	    this.setDragable();
 
-	try {
-	    Source source = new CB_FormatedHtmlSource(HTMLSOURCE);
-	    segmentList = new CB_Html_Renderer(source).getElementList();
+	    if (segmentList != null) {
+		segmentList.clear();
+	    } else {
+		segmentList = new ArrayList<Html_Segment>();
+	    }
+	    segmentViewList = new CB_List<CB_View_Base>();
+	    Exception any = null;
 
-	    addViewsToBox(segmentList, segmentViewList, this.getWidth(), this);
-	} catch (Exception e) {
-	    any = e;
+	    try {
+		Source source = new CB_FormatedHtmlSource(HTMLSOURCE);
+		segmentList = new CB_Html_Renderer(source).getElementList();
+
+		addViewsToBox(segmentList, segmentViewList, this.getWidth(), this);
+	    } catch (Exception e) {
+		any = e;
+	    }
+	    layout(segmentViewList);
+	    if (any != null)
+		throw any;
 	}
-	layout(segmentViewList);
-	if (any != null)
-	    throw any;
+
     }
 
     static int test = 0;
@@ -386,6 +420,18 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	    contentBox.dispose();
 	}
 
+    }
+
+    /**
+     * Return true, if this in text only mode!
+     * @return
+     */
+    public boolean getTextOnly() {
+	return textOnly;
+    }
+
+    public void setTextOnly(boolean value) {
+	textOnly = value;
     }
 
 }

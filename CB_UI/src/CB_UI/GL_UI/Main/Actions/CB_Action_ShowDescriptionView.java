@@ -117,12 +117,12 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 			TabMainView.descriptionView.onShow();
 
 		    CachListChangedEventList.Call();
-
 		    return true;
 		case MenuID.MI_RELOAD_CACHE:
-
 		    ReloadSelectedCache();
-
+		    return true;
+		case MenuID.MI_TOGGLE_DEC__TXT_HTML:
+		    TabMainView.descriptionView.toggleTxt_Html();
 		    return true;
 		}
 		return false;
@@ -151,6 +151,15 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 	    mi.setEnabled(false);
 	if (selectedCacheIsNoGC)
 	    mi.setEnabled(false);
+
+	if (TabMainView.descriptionView != null) {
+	    if (TabMainView.descriptionView.getTxtOnly()) {
+		mi = cm.addItem(MenuID.MI_TOGGLE_DEC__TXT_HTML, "showHtml", SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal()));
+	    } else {
+		mi = cm.addItem(MenuID.MI_TOGGLE_DEC__TXT_HTML, "showTxtOnly", SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal()));
+	    }
+	}
+
 	return cm;
     }
 

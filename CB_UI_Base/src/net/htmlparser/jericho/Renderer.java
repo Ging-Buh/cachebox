@@ -160,6 +160,7 @@ public class Renderer implements CharStreamSource {
     // Documentation inherited from CharStreamSource
     @Override
     public String toString() {
+
 	return CharStreamSourceUtil.toString(this);
     }
 

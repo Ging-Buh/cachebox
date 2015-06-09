@@ -58,6 +58,7 @@ public class EditTextField extends EditTextFieldBase {
     static protected final double markerFactor = 2.0;
     protected final float x = 0;
     protected final float y = 0;
+    protected boolean isEditable = true;
 
     protected TextFieldStyle style;
     protected String text, messageText;
@@ -1283,6 +1284,10 @@ public class EditTextField extends EditTextFieldBase {
     }
 
     public boolean keyTyped(char character, boolean ignoreFocus) {
+
+	if (disabled)
+	    return false;
+
 	final BitmapFont font = style.font;
 	DisplayText dt = getAktDisplayText();
 	if (dt == null || disabled)
@@ -1819,6 +1824,10 @@ public class EditTextField extends EditTextFieldBase {
 
     public float getLineHeight() {
 	return lineHeight;
+    }
+
+    public void setEditable(boolean value) {
+	isEditable = value;
     }
 
 }

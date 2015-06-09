@@ -117,6 +117,11 @@ public class DescriptionView extends CB_View_Base {
 	t.schedule(tt, 70);
     }
 
+    public void toggleTxt_Html() {
+	htmlView.setTextOnly(!htmlView.getTextOnly());
+	setCache(aktCache, true);
+    }
+
     private void setCache(Cache cache, boolean force) {
 	if (cache == null)
 	    return;
@@ -460,5 +465,9 @@ public class DescriptionView extends CB_View_Base {
 
     public void forceReload() {
 	forceReload = true;
+    }
+
+    public boolean getTxtOnly() {
+	return this.htmlView.getTextOnly();
     }
 }

@@ -59,13 +59,15 @@ public class Processor {
 	this.tableCellSeparator = tableCellSeparator;
     }
 
-    public void appendTo(final Appendable appendable) throws IOException {
+    public void appendTo(final Appendable otherappendable) throws IOException {
 	reset();
 	List<Element> elements = rootSegment instanceof Element ? Collections.singletonList((Element) rootSegment) : rootSegment.getChildElements();
 	appendSegmentProcessingChildElements(rootSegment.begin, rootSegment.end, elements);
+	otherappendable.append(this.appendable.toString());
     }
 
     protected void reset() {
+	appendable = null;
 	renderedIndex = 0;
 	atStartOfLine = true;
 	skipInitialNewLines = !renderer.includeFirstElementTopMargin;
@@ -272,6 +274,8 @@ public class Processor {
     }
 
     public void newLine() throws IOException {
+	if (appendable == null)
+	    appendable = new StringBuilder();
 	appendable.append(newLine);
 	atStartOfLine = true;
 	col = 0;
