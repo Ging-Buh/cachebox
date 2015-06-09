@@ -61,6 +61,7 @@ import CB_UI.GL_UI.Activitys.settings.SettingsActivity;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog.searchMode;
 import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Views.DescriptionView;
 import CB_UI.GL_UI.Views.splash;
 import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.Energy;
@@ -184,7 +185,6 @@ import de.cachebox_test.DB.AndroidDB;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AndroidClipboard;
-import de.cachebox_test.Views.DescriptionView;
 import de.cachebox_test.Views.JokerView;
 import de.cachebox_test.Views.SolverView;
 import de.cachebox_test.Views.SpoilerView;
@@ -1499,28 +1499,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			return spoilerView;
 		}
 
-		else if (ID == ViewConst.DESCRIPTION_VIEW)
-		{
-			if (descriptionView != null)
-			{
-				return descriptionView;
-			}
-			else
-			{
-				return descriptionView = new DescriptionView(this, inflater);
-			}
-
-		}
 		return null;
 	}
 
 	private void showActivity(ViewID ID)
 	{
-		if (ID == ViewConst.RELOAD_CACHE)
-		{
-			if (descriptionView != null) descriptionView.reloadCacheInfo();
-		}
-		else if (ID == ViewConst.NAVIGATE_TO)
+		if (ID == ViewConst.NAVIGATE_TO)
 		{
 			NavigateTo();
 		}
@@ -1583,13 +1567,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				aktView = null;
 				spoilerView.OnFree();
 				spoilerView = null;
-			}
-			else if (aktView.equals(descriptionView))
-			{
-				// Instanz l�schenn
-				aktView = null;
-				descriptionView.OnHide();
-
 			}
 
 		}
@@ -3070,19 +3047,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				Global.InitIcons(mainActivity);
 				Global.initTheme(mainActivity);
 
-				if (aktViewId == ViewConst.DESCRIPTION_VIEW || aktTabViewId == ViewConst.DESCRIPTION_VIEW)
-				{
-					if (descriptionView.getVisibility() == View.VISIBLE)
-					{
-						if (aktView == descriptionView)
-						{
-							hide(ViewConst.DESCRIPTION_VIEW);
-							descriptionView = null;
-
-						}
-					}
-
-				}
 			}
 
 			@Override

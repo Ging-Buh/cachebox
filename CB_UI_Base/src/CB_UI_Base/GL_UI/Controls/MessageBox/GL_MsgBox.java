@@ -126,7 +126,7 @@ public class GL_MsgBox extends Dialog {
 	    // wir brauchen die MsgBox nicht anzeigen, da der User die Remember Funktion gesetzt hat!
 	    // Wir liefern nur ein On Click auf den OK Button zur�ck!
 	    if (Listener != null) {
-		Listener.onClick(BUTTON_POSITIVE, null);
+		Listener.onClick(BUTTON_NEGATIVE, null);
 	    }
 	    return null;
 	}

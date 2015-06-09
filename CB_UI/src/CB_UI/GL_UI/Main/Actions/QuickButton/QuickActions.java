@@ -16,6 +16,7 @@
 package CB_UI.GL_UI.Main.Actions.QuickButton;
 
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Config;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowActivity;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowHint;
@@ -24,7 +25,6 @@ import CB_UI.GL_UI.Main.Actions.CB_Action_UploadFieldNote;
 import CB_UI.GL_UI.Main.Actions.CB_Action_add_WP;
 import CB_UI.GL_UI.Main.Actions.CB_Action_switch_Autoresort;
 import CB_UI.GL_UI.Main.Actions.CB_Action_switch_DayNight;
-import CB_UI.GL_UI.Main.Actions.CB_Action_switch_Description;
 import CB_UI.GL_UI.Main.Actions.CB_Action_switch_Torch;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
@@ -80,22 +80,26 @@ public enum QuickActions {
      */
     public static MoveableList<QuickButtonItem> getListFromConfig(String[] configList, float height) {
 	InitialActions();
-	MoveableList<QuickButtonItem> retVel = new MoveableList<QuickButtonItem>();
+	MoveableList<QuickButtonItem> retList = new MoveableList<QuickButtonItem>();
 	if (configList == null || configList.length == 0) {
-	    return retVel;
+	    return retList;
 	}
+
+	boolean invalidEnumId = false;
 	try {
 	    int index = 0;
+
 	    for (String s : configList) {
 		s = s.replace(",", "");
 		int EnumId = Integer.parseInt(s);
 		if (EnumId > -1) {
 
 		    QuickActions type = QuickActions.values()[EnumId];
-
-		    QuickButtonItem tmp = new QuickButtonItem(new CB_RectF(0, 0, height, height), index++, QuickActions.getActionEnumById(EnumId), QuickActions.getName(EnumId), type);
-
-		    retVel.add(tmp);
+		    if (QuickActions.getActionEnumById(EnumId) != null) {
+			QuickButtonItem tmp = new QuickButtonItem(new CB_RectF(0, 0, height, height), index++, QuickActions.getActionEnumById(EnumId), QuickActions.getName(EnumId), type);
+			retList.add(tmp);
+		    } else
+			invalidEnumId = true;
 		}
 	    }
 	} catch (Exception e)// wenn ein Fehler auftritt, gib die bis dorthin
@@ -103,8 +107,23 @@ public enum QuickActions {
 	{
 
 	}
+	if (invalidEnumId) {
+	    //	    write valid id's back
 
-	return retVel;
+	    String ActionsString = "";
+	    int counter = 0;
+	    for (int i = 0, n = retList.size(); i < n; i++) {
+		QuickButtonItem tmp = retList.get(i);
+		ActionsString += String.valueOf(tmp.getAction().ordinal());
+		if (counter < retList.size() - 1) {
+		    ActionsString += ",";
+		}
+		counter++;
+	    }
+	    Config.quickButtonList.setValue(ActionsString);
+	    Config.AcceptChanges();
+	}
+	return retList;
     }
 
     /**
@@ -171,8 +190,7 @@ public enum QuickActions {
 	    return CB_Action_UploadFieldNote.INSTANCE;
 	case 25:
 	    return action_Torch;
-	case 26:
-	    return new CB_Action_switch_Description();
+
 	}
 	return null;
     }
@@ -231,8 +249,7 @@ public enum QuickActions {
 	    return Translation.Get("uploadFieldNotes");
 	case 25:
 	    return Translation.Get("torch");
-	case 26:
-	    return "switchDesc";
+
 	}
 	return "empty";
     }

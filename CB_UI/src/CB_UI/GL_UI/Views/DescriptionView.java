@@ -33,8 +33,6 @@ import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GL_UI.Main.TabMainView;
-import CB_UI.GL_UI.Main.Actions.CB_Action_switch_Description;
-import CB_UI.GL_UI.Main.Actions.CB_Action_switch_Description.switchEventListner;
 import CB_UI_Base.Global;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.CB_View_Base;
@@ -95,19 +93,6 @@ public class DescriptionView extends CB_View_Base {
 	htmlView.setZeroPos();
 	this.addChild(htmlView);
 
-	CB_Action_switch_Description.event = new switchEventListner() {
-
-	    @Override
-	    public void descSwitch() {
-		if (DescriptionView.this.isVisible()) {
-		    if (CB_Action_switch_Description.SHOW_ANDROID) {
-			showWebView();
-		    } else {
-			platformConector.hideView(ViewConst.DESCRIPTION_VIEW);
-		    }
-		}
-	    }
-	};
     }
 
     final static org.slf4j.Logger htmllog = LoggerFactory.getLogger("HTML_PARSER");
@@ -151,8 +136,6 @@ public class DescriptionView extends CB_View_Base {
 	resetUi();
 	if (cache.isLive() || cache.getApiStatus() == 1) {
 	    showDownloadButton();
-	} else {
-	    showWebView();
 	}
 
 	NonLocalImages.clear();
@@ -270,22 +253,6 @@ public class DescriptionView extends CB_View_Base {
     @Override
     protected void SkinIsChanged() {
 
-    }
-
-    private void showWebView() {
-	// Rufe ANDROID VIEW auf
-	Timer timer = new Timer();
-	TimerTask task = new TimerTask() {
-	    @Override
-	    public void run() {
-		float infoHeight = 0;
-		if (cacheInfo != null)
-		    infoHeight = cacheInfo.getHeight();
-		if (CB_Action_switch_Description.SHOW_ANDROID)
-		    platformConector.showView(ViewConst.DESCRIPTION_VIEW, DescriptionView.this.getX(), DescriptionView.this.getY(), DescriptionView.this.getWidth(), DescriptionView.this.getHeight(), 0, (infoHeight + GL_UISizes.margin), 0, 0);
-	    }
-	};
-	timer.schedule(task, 50);
     }
 
     private void resetUi() {
