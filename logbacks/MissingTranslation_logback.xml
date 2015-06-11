@@ -61,7 +61,7 @@
 		<filter class="ch.qos.logback.classic.filter.LevelFilter">
 			<level>ALL</level>
 		</filter>
-		<file>${LOG_DIR}/gpslog_${DATE}.txt</file>
+		<file>${LOG_DIR}/missing_translation_log_${DATE}.txt</file>
 		<encoder>
 			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
 		</encoder>
