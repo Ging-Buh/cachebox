@@ -746,10 +746,20 @@ public abstract class Database extends Database_Core
 
 	public int getCacheCountInDB()
 	{
-		CoreCursor reader = Database.Data.rawQuery("select count(*) from caches", null);
-		reader.moveToFirst();
-		int count = reader.getInt(0);
-		reader.close();
+		CoreCursor reader = null;
+		int count = 0;
+		try
+		{
+			reader = Database.Data.rawQuery("select count(*) from caches", null);
+			reader.moveToFirst();
+			count = reader.getInt(0);
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (reader != null) reader.close();
 
 		return count;
 	}

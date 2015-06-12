@@ -480,7 +480,8 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
     @Override
     public void KeyboardFocusChanged(EditTextFieldBase focus) {
 	if (focus == null) {
-	    scrollBox.setY(0);
+	    if (scrollBox != null)
+		scrollBox.setY(0);
 	}
     }
 }

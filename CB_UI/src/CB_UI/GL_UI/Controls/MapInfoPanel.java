@@ -58,8 +58,12 @@ public class MapInfoPanel extends CB_View_Base {
 	if (Coord != null && lblLatitude != null && lblLongitude != null) {
 	    if (aktCoord == null || !aktCoord.equals(Coord)) {
 		aktCoord = Coord;
-		lblLatitude.setText(UnitFormatter.FormatLatitudeDM(Coord.getLatitude()));
-		lblLongitude.setText(UnitFormatter.FormatLongitudeDM(Coord.getLongitude()));
+		try {
+		    lblLatitude.setText(UnitFormatter.FormatLatitudeDM(Coord.getLatitude()));
+		    lblLongitude.setText(UnitFormatter.FormatLongitudeDM(Coord.getLongitude()));
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
 
 		if (CB_UI_Settings.LiveMapEnabeld.getValue() && !this.parentMapView.isCarMode())
 		    LiveMapQue.quePosition(Coord);

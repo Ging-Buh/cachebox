@@ -97,7 +97,7 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 			@Override
 			public void run()
 			{
-				if (aktCache.Id != cache.Id)
+				if (aktCache == null || aktCache.Id != cache.Id)
 				{
 					// Wwenn der aktuelle Cache geändert wurde, Telefonjokerliste löschen
 					aktCache = cache;
