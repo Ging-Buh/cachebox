@@ -766,15 +766,16 @@ public class GL implements ApplicationListener, InputProcessor {
 	    view = mMarkerOverlay.touchDown(x, (int) mMarkerOverlay.getHeight() - y, pointer, button);
 	}
 
-	// check to open popup menu and close if click outside	
-	if (aktPopUp != null) {
-	    view = aktPopUp.touchDown(x, height - y, pointer, button);
-	    if (view == null || view != aktPopUp) {
-		//outside of popup menu => close and return
-		aktPopUp.close();
-		return false;
-	    }
-	}
+	// do that for round menu on the round menu
+	//	// check to open popup menu and close if click outside	
+	//	if (aktPopUp != null) {
+	//	    view = aktPopUp.touchDown(x, height - y, pointer, button);
+	//	    if (view == null || view != aktPopUp) {
+	//		//outside of popup menu => close and return
+	//		aktPopUp.close();
+	//		return false;
+	//	    }
+	//	}
 
 	if (view == null) {
 	    CB_View_Base testingView = DialogIsShown ? mDialog : ActivityIsShown ? mActivity : child;

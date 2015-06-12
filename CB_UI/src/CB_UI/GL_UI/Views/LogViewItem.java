@@ -144,7 +144,6 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
 
     @Override
     public String pasteFromClipboard() {
-	// TODO Auto-generated method stub
 	return null;
     }
 
@@ -156,7 +155,11 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
 
     @Override
     public String cutToClipboard() {
-	// TODO Auto-generated method stub
 	return null;
+    }
+
+    @Override
+    public boolean isEditable() {
+	return false;
     }
 }

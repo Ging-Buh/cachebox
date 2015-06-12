@@ -1285,7 +1285,7 @@ public class EditTextField extends EditTextFieldBase {
 
     public boolean keyTyped(char character, boolean ignoreFocus) {
 
-	if (disabled)
+	if (disabled || !isEditable)
 	    return false;
 
 	final BitmapFont font = style.font;
@@ -1828,6 +1828,10 @@ public class EditTextField extends EditTextFieldBase {
 
     public void setEditable(boolean value) {
 	isEditable = value;
+    }
+
+    public boolean isEditable() {
+	return isEditable;
     }
 
 }

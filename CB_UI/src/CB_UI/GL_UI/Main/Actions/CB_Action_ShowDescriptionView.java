@@ -17,6 +17,8 @@ package CB_UI.GL_UI.Main.Actions;
 
 import java.util.ArrayList;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.SearchGC;
@@ -54,6 +56,8 @@ import CB_Utils.Lists.CB_List;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
+
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_Action_ShowDescriptionView.class);
 
     public CB_Action_ShowDescriptionView() {
 	super("Description", MenuID.AID_SHOW_DESCRIPTION);
@@ -189,40 +193,46 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 		ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
-		CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, GlobalCore.getSelectedCache().GPXFilename_ID, this);
+		String result = CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, GlobalCore.getSelectedCache().GPXFilename_ID, this);
 
-		try {
-		    GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
-		} catch (InterruptedException e) {
-		    e.printStackTrace();
-		}
+		if (result.length() > 0) {
 
-		// Reload result from DB
-		synchronized (Database.Data.Query) {
-		    String sqlWhere = FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue());
-		    CacheListDAO cacheListDAO = new CacheListDAO();
-		    cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
-		}
+		    log.debug("result:" + result);
 
-		CachListChangedEventList.Call();
-		Cache selCache = Database.Data.Query.GetCacheByGcCode(GcCode);
-		GlobalCore.setSelectedCache(selCache);
-		GL.that.RunOnGL(new IRunOnGL() {
-
-		    @Override
-		    public void run() {
-			GL.that.RunOnGL(new IRunOnGL() {
-
-			    @Override
-			    public void run() {
-				if (TabMainView.descriptionView != null)
-				    TabMainView.descriptionView.forceReload();
-				TabMainView.descriptionView.onShow();
-				GL.that.renderOnce();
-			    }
-			});
+		    try {
+			GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
+		    } catch (InterruptedException e) {
+			e.printStackTrace();
 		    }
-		});
+
+		    // Reload result from DB
+		    synchronized (Database.Data.Query) {
+			String sqlWhere = FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+			CacheListDAO cacheListDAO = new CacheListDAO();
+			cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+		    }
+
+		    CachListChangedEventList.Call();
+		    Cache selCache = Database.Data.Query.GetCacheByGcCode(GcCode);
+		    GlobalCore.setSelectedCache(selCache);
+		    GL.that.RunOnGL(new IRunOnGL() {
+
+			@Override
+			public void run() {
+			    GL.that.RunOnGL(new IRunOnGL() {
+
+				@Override
+				public void run() {
+				    if (TabMainView.descriptionView != null)
+					TabMainView.descriptionView.forceReload();
+				    TabMainView.descriptionView.onShow();
+				    GL.that.renderOnce();
+				}
+			    });
+			}
+		    });
+
+		}
 
 		wd.close();
 	    }
