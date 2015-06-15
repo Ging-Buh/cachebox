@@ -10,6 +10,7 @@ import CB_UI.Config;
 import CB_UI.Events.SelectedCacheEvent;
 import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Views.WaypointViewItem;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Handler;
@@ -22,6 +23,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
+import CB_UI_Base.Math.SizeChangedEvent;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.LogLevel;
 import CB_Utils.Util.HSV_Color;
@@ -33,6 +35,9 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
     private final int ANIMATION_TIME = 50;// 50;
     public static Slider that;
     private QuickButtonList quickButtonList;
+
+    private Cache actCache;
+    private Waypoint actWaypoint;
 
     private Label mLblCacheName;
     private static Box mSlideBox, mSlideBoxContent;
@@ -47,9 +52,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
     private int AnimationDirection = -1;
     private int AnimationTarget = 0;
     private boolean isKinetigPan = false;
-
     private Handler handler = new Handler();
-
     private ArrayList<YPositionChanged> eventList = new ArrayList<YPositionChanged>();
 
     public interface YPositionChanged {
@@ -125,6 +128,11 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 	    mLblCacheName.setText(cache.getName());
 	}
 
+	actCache = cache;
+	actWaypoint = waypoint;
+
+	fillCacheWpInfo();
+
     }
 
     private void setSliderPos(float value) {
@@ -168,13 +176,6 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 	}
 
 	float newY = y - mSlideBox.getHeight() - touchYoffset;
-
-	float maxY = mSlideBox.getHeight() + QuickButtonMaxHeight;
-
-	if (newY < (this.getHeight() - maxY)) {
-	    newY = (this.getHeight() - maxY);
-	}
-
 	setSliderPos(newY);
 	return true;
     }
@@ -192,7 +193,12 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 	    return true;
 	}
 
+	// return true if slider down
+	if (yPos <= 0)
+	    return true;
+
 	return false;
+
     }
 
     private boolean oneTouchUP = false;
@@ -235,7 +241,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 	    swipeUp = swipeDown = false;
 
 	} else {
-	    if (yPos > getHeight() * 0.7) {
+	    if (yPos > getHeight() * 0.5) {
 		startAnimationTo((int) (getHeight() - mSlideBox.getHeight() - (QuickButtonShow ? QuickButtonHeight : 0)));
 	    } else {
 		startAnimationTo(0);
@@ -263,6 +269,8 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 
 	@Override
 	public void run() {
+
+	    GL.that.renderOnce(true);
 
 	    if (!AnimationIsRunning)
 		return; // Animation wurde abgebrochen
@@ -300,11 +308,8 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 			handler.postDelayed(AnimationTask, ANIMATION_TIME);
 		    }
 		}
-
 	    }
-
 	}
-
     };
 
     private void setPos_onUI(final int newValue) {
@@ -343,6 +348,62 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 
     public void onResized(CB_RectF rec) {
 	super.onResized(rec);
+    }
+
+    WaypointViewItem cacheDesc;
+    WaypointViewItem waypointDesc;
+
+    private void fillCacheWpInfo() {
+
+	mSlideBoxContent.removeChildsDirekt();
+
+	CB_RectF rec = UiSizes.that.getCacheListItemRec().asFloat();
+	rec.setWidth(this.getWidth());
+	if (actCache != null) {
+	    cacheDesc = new WaypointViewItem(rec, 0, actCache, null, CacheInfo.VIEW_MODE_SLIDER);
+	    cacheDesc.setHeight(cacheDesc.getHeight() + cacheDesc.getAttributeHeight() + (cacheDesc.getTexteHeight() / 2));
+	    cacheDesc.requestLayout();
+	    cacheDesc.isSelected = true;
+	    cacheDesc.Add(onItemSizeChanged);
+	    mSlideBoxContent.addChild(cacheDesc);
+	}
+
+	if (actWaypoint != null) {
+	    waypointDesc = new WaypointViewItem(rec, 0, actCache, actWaypoint);
+	    waypointDesc.isSelected = true;
+	    waypointDesc.Add(onItemSizeChanged);
+	    mSlideBoxContent.addChild(waypointDesc);
+	} else {
+	    if (waypointDesc != null)
+		waypointDesc.dispose();
+	    waypointDesc = null;
+	}
+
+	layout();
+    }
+
+    private SizeChangedEvent onItemSizeChanged = new SizeChangedEvent() {
+
+	@Override
+	public void sizeChanged() {
+	    layout();
+	    GL.that.renderOnce(true);
+	}
+    };
+
+    private void layout() {
+
+	float YLayoutPos = GL_UISizes.margin;
+
+	if (waypointDesc != null) {
+	    waypointDesc.setPos(0, YLayoutPos);
+	    YLayoutPos += GL_UISizes.margin + waypointDesc.getHeight();
+	}
+
+	if (cacheDesc != null) {
+	    cacheDesc.setPos(0, YLayoutPos);
+	    YLayoutPos += GL_UISizes.margin + cacheDesc.getHeight();
+	}
     }
 
 }

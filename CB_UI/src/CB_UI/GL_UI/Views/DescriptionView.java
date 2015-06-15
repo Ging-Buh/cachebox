@@ -41,7 +41,6 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Handler;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.ViewConst;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
@@ -247,7 +246,6 @@ public class DescriptionView extends CB_View_Base {
     @Override
     public void onHide() {
 	super.onHide();
-	platformConector.hideView(ViewConst.DESCRIPTION_VIEW);
     }
 
     @Override

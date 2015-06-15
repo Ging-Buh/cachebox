@@ -72,6 +72,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
 	    Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
 	}
+
     }
 
     public WaypointViewItem(CB_RectF rec, int Index, Cache cache, Waypoint waypoint) {
@@ -103,33 +104,14 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 		return;
 	    }
 
-	    info = new extendedCacheInfo(UiSizes.that.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.getGcCode(), cache);
+	    info = new extendedCacheInfo(this, "CacheInfo " + Index + " @" + cache.getGcCode(), cache);
 	    info.setZeroPos();
 	    info.setViewMode(ViewMode);
 
 	    this.addChild(info);
 	}
+	requestLayout();
 
-	if (ViewMode != CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK)// For Compass without own compass
-	{
-	    PositionChangedEventList.Add(this);
-
-	    float size = this.getHeight() / 2.3f;
-	    ArrowRec = new CB_RectF(this.getWidth() - (size * 1.2f), this.getHeight() - (size * 1.6f), size, size);
-	    arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
-	    arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
-
-	    if (Locator.Valid()) {
-		arrow.setColor(DISABLE_COLOR);
-		setDistanceString("---");
-	    } else {
-		setActLocator();
-	    }
-
-	} else {
-	    arrow = null;
-	    distance = null;
-	}
     }
 
     public Waypoint getWaypoint() {
@@ -255,7 +237,29 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
     boolean inChange = false;
 
-    private void requestLayout() {
+    public void requestLayout() {
+
+	if (ViewMode != CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK)// For Compass without own compass
+	{
+	    PositionChangedEventList.Add(this);
+
+	    float size = UiSizes.that.getCacheListItemRec().asFloat().getHeight() / 2.3f;
+	    ArrowRec = new CB_RectF(this.getWidth() - (size * 1.2f), this.getHeight() - (size * 1.6f), size, size);
+	    arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
+	    arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
+
+	    if (Locator.Valid()) {
+		arrow.setColor(DISABLE_COLOR);
+		setDistanceString("---");
+	    } else {
+		setActLocator();
+	    }
+
+	} else {
+	    arrow = null;
+	    distance = null;
+	}
+
 	if (mWaypoint != null) {
 	    float scaleFactor = getWidth() / UiSizes.that.getCacheListItemRec().getWidth();
 	    float mLeft = 3 * scaleFactor;
@@ -330,6 +334,9 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 		    inChange = false;
 		}
 	    }
+	} else {
+	    info.setSize(this);
+	    info.requestLayout();
 	}
 
     }
@@ -341,5 +348,18 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
     @Override
     public void SpeedChanged() {
+    }
+
+    public float getAttributeHeight() {
+	if (info == null)
+	    return 0;
+	return info.getAttributeHeight();
+    }
+
+    public float getTexteHeight() {
+	if (info == null)
+	    return 0;
+	return info.getTextHeight();
+
     }
 }
