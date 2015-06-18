@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
@@ -111,7 +112,7 @@ public class ResourceCache extends SpriteCacheBase
 			BoundingBox box = new BoundingBox();
 			instance.calculateBoundingBox(box);
 
-			size = box.getDimensions().x;
+			size = box.getDimensions(new Vector3()).x;
 			halfsize = size / 2;
 			dpi = UI_Size_Base.that.getScale();
 			instance = null;

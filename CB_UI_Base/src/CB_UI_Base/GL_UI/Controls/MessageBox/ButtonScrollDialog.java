@@ -36,7 +36,7 @@ import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -298,13 +298,13 @@ public class ButtonScrollDialog extends Dialog {
 
 	float MsgWidth = (Width * 0.95f) - 5 - UI_Size_Base.that.getButtonHeight();
 
-	TextBounds bounds = Fonts.MeasureWrapped(Text, MsgWidth);
+	GlyphLayout bounds = Fonts.MeasureWrapped(Text, MsgWidth);
 	float MeasuredTextHeight = bounds.height + (margin * 2);
 
 	int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, UI_Size_Base.that.getButtonHeight()) : (int) MeasuredTextHeight);
 
 	if (hasTitle) {
-	    TextBounds titleBounds = Fonts.Measure("T");
+	    GlyphLayout titleBounds = Fonts.Measure("T");
 	    Height += (titleBounds.height * 3);
 	    Height += margin * 2;
 	}

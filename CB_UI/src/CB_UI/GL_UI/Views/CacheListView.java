@@ -50,8 +50,9 @@ import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Math.Point;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.utils.Align;
 
 public class CacheListView extends CB_View_Base implements CacheListChangedEventListner, SelectedCacheEvent, PositionChangedEvent {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(CacheListView.class);
@@ -96,7 +97,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	    if (lvAdapter == null || lvAdapter.getCount() == 0) {
 		if (emptyMsg == null) {
 		    emptyMsg = new BitmapFontCache(Fonts.getBig());
-		    TextBounds bounds = emptyMsg.setWrappedText(Translation.Get("EmptyCacheList"), 0, 0, this.getWidth());
+		    GlyphLayout bounds = emptyMsg.setText(Translation.Get("EmptyCacheList"), 0f, 0f, this.getWidth(), Align.left, true);
 		    emptyMsg.setPosition(this.getHalfWidth() - (bounds.width / 2), this.getHalfHeight() - (bounds.height / 2));
 		}
 		if (emptyMsg != null)
@@ -107,7 +108,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	} catch (Exception e) {
 	    if (emptyMsg == null) {
 		emptyMsg = new BitmapFontCache(Fonts.getBig());
-		TextBounds bounds = emptyMsg.setWrappedText(Translation.Get("EmptyCacheList"), 0, 0, this.getWidth());
+		GlyphLayout bounds = emptyMsg.setText(Translation.Get("EmptyCacheList"), 0f, 0f, this.getWidth(), Align.left, true);
 		emptyMsg.setPosition(this.getHalfWidth() - (bounds.width / 2), this.getHalfHeight() - (bounds.height / 2));
 	    }
 	    if (emptyMsg != null)

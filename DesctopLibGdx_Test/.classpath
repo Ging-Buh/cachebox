@@ -32,11 +32,11 @@
 	<classpathentry kind="lib" path="Lib/sqlite-jdbc-3.7.15-SNAPSHOT-2.jar"/>
 	<classpathentry kind="lib" path="Lib/slf4j-api-1.7.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="Lib/logback-core-1.0.13 14.25.54.jar"/>
-	<classpathentry kind="lib" path="Lib/gdx-1.5.3.jar"/>
-	<classpathentry kind="lib" path="Lib/gdx-backend-lwjgl-1.5.3.jar"/>
-	<classpathentry kind="lib" path="Lib/gdx-backend-lwjgl-natives-1.5.3.jar"/>
-	<classpathentry kind="lib" path="Lib/gdx-freetype-1.5.3.jar"/>
-	<classpathentry kind="lib" path="Lib/gdx-freetype-natives-1.5.3.jar"/>
-	<classpathentry kind="lib" path="Lib/gdx-natives-1.5.3.jar"/>
+	<classpathentry kind="lib" path="Lib/gdx-1.6.2.jar"/>
+	<classpathentry kind="lib" path="Lib/gdx-backend-lwjgl-1.6.2.jar"/>
+	<classpathentry kind="lib" path="Lib/gdx-backend-lwjgl-natives-1.6.2.jar"/>
+	<classpathentry kind="lib" path="Lib/gdx-freetype-1.6.2.jar"/>
+	<classpathentry kind="lib" path="Lib/gdx-freetype-natives-1.6.2.jar"/>
+	<classpathentry kind="lib" path="Lib/gdx-natives-1.6.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

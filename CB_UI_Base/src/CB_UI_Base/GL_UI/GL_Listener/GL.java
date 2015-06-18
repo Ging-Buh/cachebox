@@ -77,7 +77,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -1799,7 +1799,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	}
 	toast.setWrappedText(string);
 
-	TextBounds bounds = Fonts.MeasureWrapped(string, UiSizes.that.getWindowWidth());
+	GlyphLayout bounds = Fonts.MeasureWrapped(string, UiSizes.that.getWindowWidth());
 
 	// float measuredWidth = Fonts.Measure(string).width + (toast.getLeftWidth() * 2) + (UI_Size_Base.that.getMargin() * 2);
 	float border = +(toast.getLeftWidth() * 2) + (UI_Size_Base.that.getMargin() * 2);
@@ -2051,6 +2051,17 @@ public class GL implements ApplicationListener, InputProcessor {
 
 	    closeActivity();
 	    return true; // behandelt!
+	}
+
+	if (Character.getType(character) == 15) {
+	    //check if coursor up/down/left/rigt clicked
+	    log.debug("value:" + Character.getNumericValue(character));
+	    if (Character.getNumericValue(character) == -1) {
+		if (!(character == EditTextField.BACKSPACE || character == EditTextField.DELETE || character == EditTextField.ENTER_ANDROID || character == EditTextField.ENTER_DESKTOP || character == EditTextField.TAB)) {
+		    return true;
+		}
+	    }
+
 	}
 
 	// WeiterLeiten an EditTextView, welches den Focus Hat

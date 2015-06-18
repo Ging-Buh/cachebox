@@ -43,8 +43,10 @@ import CB_UI_Base.graphics.FontCache;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Trace;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.utils.Align;
 
 /**
  * @author Longri
@@ -319,8 +321,10 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	boolean markUp = !seg.hyperLinkList.isEmpty();
 
 	BitmapFont font = FontCache.get(markUp, seg.getFontFamily(), seg.getFontStyle(), seg.getFontSize());
-	TextBounds bounds = font.getWrappedBounds(seg.formatedText, innerWidth - (margin * 2));
-	float segHeight = bounds.height + (margin * 2);
+	GlyphLayout layout = new GlyphLayout(); //dont do this every frame! Store it as member
+	layout.setText(font, seg.formatedText, Color.BLACK, innerWidth - (margin * 2), Align.left, true);
+
+	float segHeight = layout.height + (margin * 2);
 
 	parseHyperLinks(seg, "http://");
 	parseHyperLinks(seg, "www.");

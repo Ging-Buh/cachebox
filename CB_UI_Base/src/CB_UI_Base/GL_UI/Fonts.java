@@ -29,8 +29,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
@@ -150,36 +150,36 @@ public class Fonts {
 
     //
 
-    public static TextBounds Measure(String txt) {
+    public static GlyphLayout Measure(String txt) {
 	if (txt == null || txt.equals(""))
 	    txt = "text";
 	if (measureNormalCache == null)
 	    measureNormalCache = new BitmapFontCache(Fonts.getNormal());
-	TextBounds bounds = measureNormalCache.setText(txt, 0, 0);
+	GlyphLayout bounds = measureNormalCache.setText(txt, 0, 0);
 	bounds.height = bounds.height - measureNormalCache.getFont().getDescent();
 	return bounds;
     }
 
-    public static TextBounds MeasureSmall(String txt) {
+    public static GlyphLayout MeasureSmall(String txt) {
 	if (measureSmallCache == null)
 	    measureSmallCache = new BitmapFontCache(Fonts.getSmall());
-	TextBounds bounds = measureSmallCache.setText(txt, 0, 0);
+	GlyphLayout bounds = measureSmallCache.setText(txt, 0, 0);
 	bounds.height = bounds.height - measureSmallCache.getFont().getDescent();
 	return bounds;
     }
 
-    public static TextBounds MeasureBig(String txt) {
+    public static GlyphLayout MeasureBig(String txt) {
 	if (measureBigCache == null)
 	    measureBigCache = new BitmapFontCache(Fonts.getBig());
-	TextBounds bounds = measureBigCache.setText(txt, 0, 0);
+	GlyphLayout bounds = measureBigCache.setText(txt, 0, 0);
 	bounds.height = bounds.height - measureBigCache.getFont().getDescent();
 	return bounds;
     }
 
-    public static TextBounds MeasureWrapped(String txt, float width) {
+    public static GlyphLayout MeasureWrapped(String txt, float width) {
 	if (measureNormalCache == null)
 	    measureNormalCache = new BitmapFontCache(Fonts.getNormal());
-	TextBounds bounds = measureNormalCache.setWrappedText(txt, 0, 0, width);
+	GlyphLayout bounds = measureNormalCache.setText(txt, 0, 0, width, 0, true);//measureNormalCache.setWrappedText(txt, 0, 0, width);
 	bounds.height = bounds.height - measureNormalCache.getFont().getDescent();
 	return bounds;
     }

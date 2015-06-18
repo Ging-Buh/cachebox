@@ -206,9 +206,9 @@ public class LinkLabel extends MultiColorLabel {
 	}
 
 	if (isMarkup)
-	    this.mFont.setMarkupEnabled(true);
+	    this.mFont.getData().markupEnabled = true;
 	else
-	    this.mFont.setMarkupEnabled(false);
+	    this.mFont.getData().markupEnabled = false;
 	super.render(batch);
     }
 

@@ -62,7 +62,7 @@ import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Util.UnitFormatter;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsStateChangeEvent, PositionChangedEvent {
@@ -137,12 +137,15 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	CB_Logo.setDrawable(new SpriteDrawable(SpriteCacheBase.getSpriteDrawable("cachebox-logo")));
 	this.addChild(CB_Logo);
 
-	String VersionString = GlobalCore.getVersionString();
-	TextBounds bounds = Fonts.getSmall().getMultiLineBounds(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.AboutMsg);
-	descTextView = new Label(0, CB_Logo.getY() - margin - margin - margin - bounds.height, this.getWidth(), bounds.height + margin, "DescLabel");
+	String VersionString = GlobalCore.getVersionString() + GlobalCore.br + GlobalCore.br + GlobalCore.AboutMsg;
+
+	GlyphLayout layout = new GlyphLayout();
+	layout.setText(Fonts.getSmall(), VersionString);
+
+	descTextView = new Label(0, CB_Logo.getY() - margin - margin - margin - layout.height, this.getWidth(), layout.height + margin, "DescLabel");
 	descTextView.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
 
-	descTextView.setWrappedText(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.AboutMsg);
+	descTextView.setWrappedText(VersionString);
 	this.addChild(descTextView);
 
 	CachesFoundLabel = new Label("", Fonts.getNormal(), COLOR.getLinkFontColor(), WrapType.SINGLELINE).setHAlignment(HAlignment.CENTER);

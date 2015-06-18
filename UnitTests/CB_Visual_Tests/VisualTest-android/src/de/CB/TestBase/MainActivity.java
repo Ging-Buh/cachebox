@@ -95,14 +95,6 @@ public class MainActivity extends AndroidApplication implements LocationListener
 
 		ui.Window = new Size(w, h);
 		ui.Density = res.getDisplayMetrics().density;
-		ui.RefSize = res.getDimensionPixelSize(R.dimen.RefSize);
-		ui.TextSize_Normal = res.getDimensionPixelSize(R.dimen.TextSize_normal);
-		ui.ButtonTextSize = res.getDimensionPixelSize(R.dimen.BtnTextSize);
-		ui.IconSize = res.getDimensionPixelSize(R.dimen.IconSize);
-		ui.Margin = res.getDimensionPixelSize(R.dimen.Margin);
-		ui.ArrowSizeList = res.getDimensionPixelSize(R.dimen.ArrowSize_List);
-		ui.ArrowSizeMap = res.getDimensionPixelSize(R.dimen.ArrowSize_Map);
-		ui.TB_IconSize = res.getDimensionPixelSize(R.dimen.TB_icon_Size);
 		ui.isLandscape = false;
 
 		Global.displayDensity = ui.Density;

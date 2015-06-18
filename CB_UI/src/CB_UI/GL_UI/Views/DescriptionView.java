@@ -59,6 +59,7 @@ import CB_UI_Base.graphics.Geometry.Quadrangle;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
 /**
  * @author Longri
@@ -70,6 +71,7 @@ public class DescriptionView extends CB_View_Base {
     final static String PREMIUM = "Premium";
     final static String BASIC_LIMIT = "3";
     final static String PREMIUM_LIMIT = "6000";
+    private GlyphLayout layout;
 
     private Cache aktCache;
     private LinkedList<String> NonLocalImages = new LinkedList<String>();
@@ -330,7 +332,12 @@ public class DescriptionView extends CB_View_Base {
 	this.addChild(LiveIcon);
 
 	PowerdBy = new Label(this, "");
-	PowerdBy.setHeight(Fonts.getNormal().getBounds(STRING_POWERD_BY).height + (margin * 2));
+
+	if (layout == null)
+	    layout = new GlyphLayout();
+	layout.setText(Fonts.getNormal(), STRING_POWERD_BY);
+	PowerdBy.setHeight(layout.height + (margin * 2));
+
 	PowerdBy.setFont(Fonts.getNormal()).setHAlignment(HAlignment.CENTER);
 
 	PowerdBy.setWrappedText(STRING_POWERD_BY);

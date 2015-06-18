@@ -38,8 +38,8 @@ import CB_Utils.Util.HSV_Color;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Label extends CB_View_Base {
@@ -58,22 +58,22 @@ public class Label extends CB_View_Base {
 
     private static float scrollstep = 0;
 
-    public static com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment GDX_HAlignment(HAlignment ali) {
+    public static int GDX_HAlignment(HAlignment ali) {
 	switch (ali) {
 	case CENTER:
-	    return com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment.CENTER;
+	    return com.badlogic.gdx.utils.Align.center;
 	case LEFT:
-	    return com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment.LEFT;
+	    return com.badlogic.gdx.utils.Align.left;
 	case RIGHT:
-	    return com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment.RIGHT;
+	    return com.badlogic.gdx.utils.Align.right;
 	case SCROLL_CENTER:
-	    return com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment.CENTER;
+	    return com.badlogic.gdx.utils.Align.center;
 	case SCROLL_LEFT:
-	    return com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment.LEFT;
+	    return com.badlogic.gdx.utils.Align.left;
 	case SCROLL_RIGHT:
-	    return com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment.RIGHT;
+	    return com.badlogic.gdx.utils.Align.right;
 	default:
-	    return com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment.LEFT;
+	    return com.badlogic.gdx.utils.Align.left;
 
 	}
     }
@@ -94,7 +94,7 @@ public class Label extends CB_View_Base {
     private int scrollPauseCount = 0;
     private boolean underline = false;
     private boolean strikeout = false;
-    private TextBounds bounds;
+    private GlyphLayout bounds;
     private PolygonDrawable underlineStrikeoutDrawable;
 
     private float lastRender;
@@ -351,9 +351,10 @@ public class Label extends CB_View_Base {
     protected void setText() {
 	mWrapType = WrapType.SINGLELINE;
 	makeTextObject();
-	bounds = mFont.getBounds(mText);
 	try {
-	    bounds = TextObject.setText(mText, 0, bounds.height);
+	    bounds = TextObject.setText(mText, 0, 0);
+	    log.debug("inner width: " + innerWidth);
+	    log.debug("lblTextBounds: " + bounds.toString() + "\n");
 	} catch (Exception e) {
 	    // java.lang.ArrayIndexOutOfBoundsException kommt mal vor
 	    e.printStackTrace();
@@ -369,9 +370,11 @@ public class Label extends CB_View_Base {
     protected void setMultiLineText() {
 	mWrapType = WrapType.MULTILINE;
 	makeTextObject();
-	bounds = mFont.getMultiLineBounds(mText);
+	//	bounds = mFont.getMultiLineBounds(mText);
 	try {
-	    bounds = TextObject.setMultiLineText(mText, 0, bounds.height, bounds.width, GDX_HAlignment(mHAlignment));
+	    bounds = TextObject.setText(mText, 0f, 0f, this.getWidth(), GDX_HAlignment(mHAlignment), false);
+	    log.debug("inner width: " + innerWidth);
+	    log.debug("lblTextBounds: " + bounds.toString() + "\n");
 	} catch (Exception e) {
 	    // java.lang.ArrayIndexOutOfBoundsException kommt mal vor
 	    e.printStackTrace();
@@ -387,9 +390,9 @@ public class Label extends CB_View_Base {
     protected void setWrappedText() {
 	mWrapType = WrapType.WRAPPED;
 	makeTextObject();
-	bounds = mFont.getWrappedBounds(mText, innerWidth);
+	//	bounds = mFont.getWrappedBounds(mText, innerWidth);
 	try {
-	    bounds = TextObject.setWrappedText(mText, 0, bounds.height, bounds.width, GDX_HAlignment(mHAlignment));
+	    bounds = TextObject.setText(mText, 0f, 0f, this.getWidth(), GDX_HAlignment(mHAlignment), true);
 	} catch (Exception e) {
 	    // java.lang.ArrayIndexOutOfBoundsException kommt mal vor
 	    e.printStackTrace();
@@ -398,7 +401,6 @@ public class Label extends CB_View_Base {
 
 	//new text, delete underline and strikeout drawable
 	deleteUnderlineStrikeout();
-
 	setTextPosition();
     }
 
@@ -426,9 +428,11 @@ public class Label extends CB_View_Base {
 	float xPosition = leftBorder + 1; // HAlignment.LEFT !!! Die 1 ist empirisch begründet
 	if (innerWidth > bounds.width) {
 	    if (mHAlignment == HAlignment.CENTER || mHAlignment == HAlignment.SCROLL_CENTER) {
-		xPosition = (innerWidth - bounds.width) / 2f;
+		if (mWrapType == WrapType.SINGLELINE)
+		    xPosition = (innerWidth - bounds.width) / 2f;
 	    } else if (mHAlignment == HAlignment.RIGHT || mHAlignment == HAlignment.SCROLL_RIGHT) {
-		xPosition = innerWidth - bounds.width;
+		if (mWrapType == WrapType.SINGLELINE)
+		    xPosition = innerWidth - bounds.width;
 	    }
 	} else if (mHAlignment == HAlignment.SCROLL_CENTER || mHAlignment == HAlignment.SCROLL_LEFT || mHAlignment == HAlignment.SCROLL_RIGHT) {
 	    xPosition += scrollPos;
@@ -440,19 +444,18 @@ public class Label extends CB_View_Base {
 	    mVAlignment = VAlignment.CENTER;
 	switch (mVAlignment) {
 	case TOP:
-	    yPosition = innerHeight - bounds.height - mFont.getAscent();
+	    yPosition = innerHeight - bounds.height;
 	    break;
 	case CENTER:
-	    yPosition = (innerHeight - bounds.height - mFont.getAscent()) / 2f;
+	    yPosition = (innerHeight - bounds.height) / 2f;
 	    break;
 	case BOTTOM:
-	    yPosition = -mFont.getDescent();
+	    yPosition = 0;
 	    break;
-
 	}
 
 	try {
-	    TextObject.setPosition(xPosition, yPosition);
+	    TextObject.setPosition(xPosition, yPosition + bounds.height);
 	    ErrorCount = 0;
 	} catch (Exception e) {
 	    // Try again

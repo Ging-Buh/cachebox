@@ -19,8 +19,7 @@ import CB_UI_Base.Math.UiSizes;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
@@ -28,7 +27,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import de.CB.TestBase.Ex;
 import de.CB.TestBase.Global;
-import de.CB.TestBase.Actions.TestCaseBase;
 import de.CB.TestBase.Res.ResourceCache;
 
 public class splash extends MainViewBase
@@ -138,12 +136,14 @@ public class splash extends MainViewBase
 		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref, ref * 5,
 				(ref * 5) / 4.11f);
 
-		String VersionString = Global.getVersionString();
-		TextBounds bounds = Fonts.getNormal().getMultiLineBounds(VersionString + Global.br + Global.br + Global.splashMsg);
-		descTextView = new Label(0, CB_LogoRec.getY() - ref - bounds.height, this.getWidth(), bounds.height + 10, "DescLabel");
+		String VersionString = Global.getVersionString()+ Global.br + Global.br + Global.splashMsg;
+		GlyphLayout layout = new GlyphLayout(); 
+		layout.setText( Fonts.getNormal(),VersionString);
+		
+		descTextView = new Label(0, CB_LogoRec.getY() - ref - layout.height, this.getWidth(), layout.height + 10, "DescLabel");
 
-		descTextView.setWrappedText(VersionString + Global.br + Global.br + Global.splashMsg);
-		descTextView.setHAlignment(HAlignment.CENTER);
+		descTextView.setWrappedText(VersionString );
+		descTextView.setHAlignment(CB_UI_Base.GL_UI.Controls.Label.HAlignment.CENTER);
 		this.addChild(descTextView);
 
 		Drawable ProgressBack = new NinePatchDrawable(atlas.createPatch("btn-normal"));
@@ -168,13 +168,15 @@ public class splash extends MainViewBase
 		final float fXPos = xPos;
 		rec_Mapsforge_Logo.setX(xPos);
 
-		Mapsforge_Logo = new Image(rec_Mapsforge_Logo, "mapsforge_logo");
+		boolean resizeHeight=false;
+		
+		Mapsforge_Logo = new Image(rec_Mapsforge_Logo, "mapsforge_logo",resizeHeight);
 		Mapsforge_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("mapsforge_logo")));
 		this.addChild(Mapsforge_Logo);
 
 		rec_Mapsforge_Logo.setX(xPos + rec_Mapsforge_Logo.getWidth() + (margin * 2));
 
-		OSM_Logo = new Image(rec_Mapsforge_Logo, "osm_logo");
+		OSM_Logo = new Image(rec_Mapsforge_Logo, "osm_logo",resizeHeight);
 		OSM_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("osm_logo")));
 		this.addChild(OSM_Logo);
 
@@ -182,7 +184,7 @@ public class splash extends MainViewBase
 		rec_Mapsforge_Logo.setX(xPos);
 		rec_Mapsforge_Logo.setY(rec_Mapsforge_Logo.getMinY() - rec_Mapsforge_Logo.getHeight() - margin);
 
-		CGeo_Logo = new Image(rec_Mapsforge_Logo, "cgeo");
+		CGeo_Logo = new Image(rec_Mapsforge_Logo, "cgeo",resizeHeight);
 		CGeo_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("cgeo")));
 		this.addChild(CGeo_Logo);
 
@@ -192,7 +194,7 @@ public class splash extends MainViewBase
 		rec_Mapsforge_Logo.setX(xPos + rec_Mapsforge_Logo.getWidth() + (margin * 2) + div);
 		rec_Mapsforge_Logo.setY(rec_Mapsforge_Logo.getY() + div);
 
-		CB_Logo = new Image(rec_Mapsforge_Logo, "CB_Icon");
+		CB_Logo = new Image(rec_Mapsforge_Logo, "CB_Icon",resizeHeight);
 		CB_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("CB_Icon")));
 		this.addChild(CB_Logo);
 

@@ -28,8 +28,8 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class MapScale extends CB_View_Base implements invalidateTextureEvent
@@ -159,7 +159,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 
 		try
 		{
-			TextBounds bounds = fontCache.setText(distanceString, 0, fontCache.getFont().isFlipped() ? 0 : fontCache.getFont().getCapHeight());
+			GlyphLayout bounds = fontCache.setText(distanceString, 0, fontCache.getFont().isFlipped() ? 0 : fontCache.getFont().getCapHeight());
 			this.setWidth((float) (drawableWidth + (bounds.width * 1.3)));
 			CachedScaleDrawable = SpriteCacheBase.MapScale[scaleUnits - 3];
 			float margin = (this.getHeight() - bounds.height) / 1.6f;

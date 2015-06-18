@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Align;
 
 public class FilterSetListViewItem extends ListViewItemBackground {
     private FilterSetEntry mFilterSetEntry;
@@ -93,9 +94,9 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 		EntryName.setColor(COLOR.getFontColor());
 		if (this.mFilterSetEntry.getItemType() == FilterSetListView.THREE_STATE_ITEM) {
 		    float TextWidth = getWidth() - (left + 20) - getRightWidth() - getHeight();
-		    EntryName.setWrappedText(name, left + 20, top, TextWidth);
+		    EntryName.setText(name, left + 20, top, TextWidth, Align.left, true);
 		} else {
-		    EntryName.setMultiLineText(name, left + 10, top);
+		    EntryName.setText(name, left + 10, top);
 		}
 	    }
 	    EntryName.draw(batch);
@@ -274,14 +275,14 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 	    Minus = new BitmapFontCache(Fonts.getBig());
 	    Minus.setColor(COLOR.getFontColor());
 	    Minus.setText("-", 0, 0);
-	    Minus.setPosition(lBounds.getCenterPosX() - (Minus.getBounds().width / 2), lBounds.getCenterPosY() + (Minus.getBounds().height / 2));
+	    Minus.setPosition(lBounds.getCenterPosX() - (Minus.getLayouts().first().width / 2), lBounds.getCenterPosY() + (Minus.getLayouts().first().height / 2));
 	}
 
 	if (Plus == null) {
 	    Plus = new BitmapFontCache(Fonts.getBig());
 	    Plus.setColor(COLOR.getFontColor());
 	    Plus.setText("+", 0, 0);
-	    Plus.setPosition(rBounds.getCenterPosX() - (Plus.getBounds().width / 2), rBounds.getCenterPosY() + (Plus.getBounds().height / 2));
+	    Plus.setPosition(rBounds.getCenterPosX() - (Plus.getLayouts().first().width / 2), rBounds.getCenterPosY() + (Plus.getLayouts().first().height / 2));
 	}
 
 	// draw [-] Button

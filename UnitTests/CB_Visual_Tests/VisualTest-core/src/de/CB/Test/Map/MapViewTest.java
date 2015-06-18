@@ -15,9 +15,9 @@ import CB_Locator.Map.Layer;
 import CB_Locator.Map.ManagerBase;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Main.CB_Button;
+import CB_UI_Base.graphics.FontCache;
 import CB_UI_Base.graphics.GL_FontFamily;
 import CB_UI_Base.graphics.GL_FontStyle;
-import CB_UI_Base.graphics.GL_Fonts;
 import CB_Utils.Plattform;
 
 import com.badlogic.gdx.Gdx;
@@ -114,13 +114,13 @@ public class MapViewTest extends TestCaseBase
 			loadMap();
 
 			// Preinitial Fonts
-			GL_Fonts.get(GL_FontFamily.DEFAULT, GL_FontStyle.NORMAL, 20);
-			GL_Fonts.get(GL_FontFamily.DEFAULT, GL_FontStyle.NORMAL, 22);
-			GL_Fonts.get(GL_FontFamily.DEFAULT, GL_FontStyle.NORMAL, 24);
-			GL_Fonts.get(GL_FontFamily.DEFAULT, GL_FontStyle.NORMAL, 26);
-			GL_Fonts.get(GL_FontFamily.DEFAULT, GL_FontStyle.NORMAL, 30);
-			GL_Fonts.get(GL_FontFamily.DEFAULT, GL_FontStyle.NORMAL, 40);
-			GL_Fonts.get(GL_FontFamily.DEFAULT, GL_FontStyle.NORMAL, 50);
+			FontCache.get(GL_FontFamily.DEFAULT, GL_FontStyle.NORMAL, 20);
+			FontCache.get(GL_FontFamily.DEFAULT, GL_FontStyle.NORMAL, 22);
+			FontCache.get(GL_FontFamily.DEFAULT, GL_FontStyle.NORMAL, 24);
+			FontCache.get(GL_FontFamily.DEFAULT, GL_FontStyle.NORMAL, 26);
+			FontCache.get(GL_FontFamily.DEFAULT, GL_FontStyle.NORMAL, 30);
+			FontCache.get(GL_FontFamily.DEFAULT, GL_FontStyle.NORMAL, 40);
+			FontCache.get(GL_FontFamily.DEFAULT, GL_FontStyle.NORMAL, 50);
 
 		}
 		else

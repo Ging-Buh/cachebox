@@ -577,7 +577,7 @@ public abstract class MapTileTestBase extends TestCaseBase
 
 					topMsg = new BitmapFontCache(drawMapsforge ? Fonts.getBig() : Fonts.getNormal());
 					topMsg.setColor(drawMapsforge ? Color.RED : Color.BLACK);
-					topMsg.setMultiLineText(MSG_TOP, MF_X, getHeight() - 20);
+					topMsg.setText(MSG_TOP, MF_X, getHeight() - 20);
 
 				}
 
@@ -586,7 +586,7 @@ public abstract class MapTileTestBase extends TestCaseBase
 
 					botomMsg = new BitmapFontCache(drawMapsforge ? Fonts.getNormal() : Fonts.getBig());
 					botomMsg.setColor(drawMapsforge ? Color.BLACK : Color.RED);
-					botomMsg.setMultiLineText(MSG_BOTOM, CB_X, getHalfHeight() - 20);
+					botomMsg.setText(MSG_BOTOM, CB_X, getHalfHeight() - 20);
 
 				}
 

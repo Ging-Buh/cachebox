@@ -32,6 +32,7 @@ import CB_Utils.Util.HSV_Color;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
 /**
  * @author Longri
@@ -113,11 +114,18 @@ public class GL_Paint implements ext_Paint {
 	return c;
     }
 
+    GlyphLayout layout;
+
     @Override
     public int getTextHeight(String text) {
 	if (font == null)
 	    return 0;
-	return (int) font.getBounds(text).height;
+
+	if (layout == null)
+	    layout = new GlyphLayout();
+	layout.setText(font, text);
+
+	return (int) layout.height;
 
     }
 
@@ -125,7 +133,12 @@ public class GL_Paint implements ext_Paint {
     public int getTextWidth(String text) {
 	if (font == null)
 	    return 0;
-	return (int) font.getBounds(text).width;
+
+	if (layout == null)
+	    layout = new GlyphLayout();
+	layout.setText(font, text);
+
+	return (int) layout.width;
     }
 
     public void setColor(Color color) {

@@ -33,8 +33,9 @@ import CB_Utils.Math.Point;
 import CB_Utils.Util.MoveableList;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.utils.Align;
 
 public abstract class ListViewBase extends CB_View_Base implements IScrollbarParent {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(ListViewBase.class);
@@ -332,7 +333,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	    try {
 		if (emptyMsg == null && mEmptyMsg != null) {
 		    emptyMsg = new BitmapFontCache(Fonts.getBig());
-		    TextBounds bounds = emptyMsg.setWrappedText(mEmptyMsg, 0, 0, this.getWidth());
+		    GlyphLayout bounds = emptyMsg.setText(mEmptyMsg, 0f, 0f, this.getWidth(), Align.left, true);
 		    emptyMsg.setPosition(this.getHalfWidth() - (bounds.width / 2), this.getHalfHeight() - (bounds.height / 2));
 		}
 	    } catch (Exception e) {

@@ -109,7 +109,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
  * 
  * @author Longri
  */
-public class GL_Fonts {
+class GL_Fonts {
     private final HashMap<Integer, BitmapFont> DroidSansMono = new HashMap<Integer, BitmapFont>();
     private final HashMap<Integer, BitmapFont> DroidSans_Bold = new HashMap<Integer, BitmapFont>();
     private final HashMap<Integer, BitmapFont> DroidSans = new HashMap<Integer, BitmapFont>();
@@ -408,9 +408,9 @@ public class GL_Fonts {
 	tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 	generator.dispose();
 
-	if (this.markUp) {
-	    ret.setMarkupEnabled(true);
-	}
+	//	if (this.markUp) {
+	//	    ret.setMarkupEnabled(true);
+	//	}
 
 	return ret;
     }

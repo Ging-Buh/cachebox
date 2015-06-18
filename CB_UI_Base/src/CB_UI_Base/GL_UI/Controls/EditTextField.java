@@ -37,7 +37,9 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Clipboard;
@@ -361,7 +363,7 @@ public class EditTextField extends EditTextFieldBase {
 
     private void updateDisplayTextList() {
 	displayText.clear();
-	if (passwordMode && style.font.containsCharacter(passwordCharacter)) {
+	if (passwordMode && style.font.getData().hasGlyph(passwordCharacter)) {
 	    if (passwordBuffer == null)
 		passwordBuffer = new StringBuilder(text.length());
 	    if (passwordBuffer.length() > text.length()) //
@@ -378,7 +380,7 @@ public class EditTextField extends EditTextFieldBase {
 	}
 
 	for (DisplayText dt : displayText) {
-	    style.font.computeGlyphAdvancesAndPositions(dt.getDisplayText(), dt.glyphAdvances, dt.glyphPositions);
+	    computeGlyphAdvancesAndPositions(dt.getDisplayText(), dt.glyphAdvances, dt.glyphPositions);
 	}
 
 	int lineCount = displayText.size();
@@ -420,7 +422,7 @@ public class EditTextField extends EditTextFieldBase {
 		    String s1 = dt.displayText.toString().substring(0, idWord);
 		    String s2 = dt.displayText.toString().substring(idWord, dt.displayText.length());
 		    prevDt.displayText += s1;
-		    style.font.computeGlyphAdvancesAndPositions(prevDt.displayText, prevDt.glyphAdvances, prevDt.glyphPositions);
+		    computeGlyphAdvancesAndPositions(prevDt.displayText, prevDt.glyphAdvances, prevDt.glyphPositions);
 		    dt.displayText = s2;
 		    if (s2.length() == 0) {
 			// komplette Zeile löschen
@@ -432,7 +434,7 @@ public class EditTextField extends EditTextFieldBase {
 			cursor.pos = 0;
 			idWord = 0;
 		    } else {
-			style.font.computeGlyphAdvancesAndPositions(dt.displayText, dt.glyphAdvances, dt.glyphPositions);
+			computeGlyphAdvancesAndPositions(dt.displayText, dt.glyphAdvances, dt.glyphPositions);
 		    }
 		    if (cursor.pos > idWord) {
 			cursor.pos -= idWord; // Cursor ist hinter den Zeichen die in die vorherige Zeile verschoben werden -> nach Vorne
@@ -454,7 +456,7 @@ public class EditTextField extends EditTextFieldBase {
 		}
 	    }
 	}
-	style.font.computeGlyphAdvancesAndPositions(dt.displayText, dt.glyphAdvances, dt.glyphPositions);
+	computeGlyphAdvancesAndPositions(dt.displayText, dt.glyphAdvances, dt.glyphPositions);
 	float len = dt.getWidth();
 
 	// Prüfen, ob Zeile zu lang geworden ist und ob am Ende Zeichen in die nächste Zeile verschoben werden müssen
@@ -486,7 +488,7 @@ public class EditTextField extends EditTextFieldBase {
 		String s1 = dt.displayText.toString().substring(0, id);
 		String s2 = dt.displayText.toString().substring(id, dt.displayText.length());
 		dt.displayText = s1;
-		style.font.computeGlyphAdvancesAndPositions(dt.displayText, dt.glyphAdvances, dt.glyphPositions);
+		computeGlyphAdvancesAndPositions(dt.displayText, dt.glyphAdvances, dt.glyphPositions);
 		cursor.line++;
 		// Text der nächsten Zeile holen und prüfen, ob dies eine durch einen autoWrap eingefügte Zeile ist
 		DisplayText nextDt = getAktDisplayText();
@@ -494,7 +496,7 @@ public class EditTextField extends EditTextFieldBase {
 		if ((nextDt != null) && nextDt.autoWrap) {
 		    // Umzubrechnenden Text am Anfang von nextDT anfügen
 		    nextDt.displayText = s2 + nextDt.displayText;
-		    style.font.computeGlyphAdvancesAndPositions(nextDt.displayText, nextDt.glyphAdvances, nextDt.glyphPositions);
+		    computeGlyphAdvancesAndPositions(nextDt.displayText, nextDt.glyphAdvances, nextDt.glyphPositions);
 		    cursor.line++;
 		    updateDisplayText(nextDt, false);
 		    cursor.line--;
@@ -502,7 +504,7 @@ public class EditTextField extends EditTextFieldBase {
 		    // neue Zeile erstellen
 		    DisplayText newDt = new DisplayText(s2, true, style.font);
 		    displayText.add(cursor.line + 1, newDt);
-		    style.font.computeGlyphAdvancesAndPositions(newDt.displayText, newDt.glyphAdvances, newDt.glyphPositions);
+		    computeGlyphAdvancesAndPositions(newDt.displayText, newDt.glyphAdvances, newDt.glyphPositions);
 		}
 		if (calcCursor && (cursor.pos >= id)) {
 		    // Cursor auch in die nächste Zeile verschieben, an die Stelle im Wort an der der Cursor vorher auch war
@@ -539,7 +541,7 @@ public class EditTextField extends EditTextFieldBase {
 		String s1 = nextDt.displayText.toString().substring(0, idWord);
 		String s2 = nextDt.displayText.toString().substring(idWord, nextDt.displayText.length());
 		dt.displayText += s1;
-		style.font.computeGlyphAdvancesAndPositions(dt.displayText, dt.glyphAdvances, dt.glyphPositions);
+		computeGlyphAdvancesAndPositions(dt.displayText, dt.glyphAdvances, dt.glyphPositions);
 		updateDisplayText(dt, false);
 		nextDt.displayText = s2;
 		if (s2.length() == 0) {
@@ -547,7 +549,7 @@ public class EditTextField extends EditTextFieldBase {
 		    displayText.remove(nextDt);
 		} else {
 		    cursor.line++;
-		    style.font.computeGlyphAdvancesAndPositions(nextDt.displayText, nextDt.glyphAdvances, nextDt.glyphPositions);
+		    computeGlyphAdvancesAndPositions(nextDt.displayText, nextDt.glyphAdvances, nextDt.glyphPositions);
 		    updateDisplayText(nextDt, false);
 		    cursor.line--;
 		}
@@ -1016,8 +1018,8 @@ public class EditTextField extends EditTextFieldBase {
 	dt.displayText = s1;
 	DisplayText newDt = new DisplayText(s2, style.font);
 	displayText.add(cursor.line + 1, newDt);
-	style.font.computeGlyphAdvancesAndPositions(dt.displayText, dt.glyphAdvances, dt.glyphPositions);
-	style.font.computeGlyphAdvancesAndPositions(newDt.displayText, newDt.glyphAdvances, newDt.glyphPositions);
+	computeGlyphAdvancesAndPositions(dt.displayText, dt.glyphAdvances, dt.glyphPositions);
+	computeGlyphAdvancesAndPositions(newDt.displayText, newDt.glyphAdvances, newDt.glyphPositions);
 	setCursorLine(cursor.line + 1, true);
 	cursor.pos = 0;
 
@@ -1213,7 +1215,7 @@ public class EditTextField extends EditTextFieldBase {
 		for (int i = 0; i < content.length(); i++) {
 		    char c = content.charAt(i);
 
-		    if (style.font.containsCharacter(c)) {
+		    if (style.font.getData().hasGlyph(c)) {
 			builder.append(c);
 			keyTyped(c);
 		    }
@@ -1402,7 +1404,7 @@ public class EditTextField extends EditTextFieldBase {
 		    return true;
 	    }
 
-	    if (font.containsCharacter(character)) {
+	    if (font.getData().getGlyph(character) != null) {
 		if (selection != null)
 		    delete();
 		{
@@ -1468,7 +1470,7 @@ public class EditTextField extends EditTextFieldBase {
 	StringBuffer buffer = new StringBuffer();
 	for (int i = 0; i < text.length(); i++) {
 	    char c = text.charAt(i);
-	    if (font.containsCharacter(c) || (c == '\n'))
+	    if (font.getData().hasGlyph(c) || (c == '\n'))
 		buffer.append(c);
 	}
 
@@ -1631,7 +1633,7 @@ public class EditTextField extends EditTextFieldBase {
 
     private class DisplayText {
 	private String displayText;
-	private final TextBounds textBounds = new TextBounds();
+	private final GlyphLayout textBounds = new GlyphLayout();
 	private final FloatArray glyphAdvances = new FloatArray();
 	private final FloatArray glyphPositions = new FloatArray();
 	private boolean autoWrap;
@@ -1650,16 +1652,15 @@ public class EditTextField extends EditTextFieldBase {
 	}
 
 	public void calcTextBounds(BitmapFont font) {
-	    textBounds.set(font.getBounds(displayText));
-	    textBounds.height -= font.getDescent() * 2;
-	    font.computeGlyphAdvancesAndPositions(displayText, glyphAdvances, glyphPositions);
+	    textBounds.setText(font, displayText);
+	    computeGlyphAdvancesAndPositions(displayText, glyphAdvances, glyphPositions);
 	}
 
 	public String getDisplayText() {
 	    return displayText;
 	}
 
-	public TextBounds getTextBounds() {
+	public GlyphLayout getTextBounds() {
 	    return textBounds;
 	}
 
@@ -1830,8 +1831,58 @@ public class EditTextField extends EditTextFieldBase {
 	isEditable = value;
     }
 
+    @Override
     public boolean isEditable() {
 	return isEditable;
+    }
+
+    //#########################################################################################################
+
+    /** Computes the glyph advances for the given character sequence and stores them in the provided {@link FloatArray}. The float
+     * arrays are cleared. An additional element is added at the end.
+     * @param glyphAdvances the glyph advances output array.
+     * @param glyphPositions the glyph positions output array. */
+    public void computeGlyphAdvancesAndPositions(CharSequence str, FloatArray glyphAdvances, FloatArray glyphPositions) {
+	glyphAdvances.clear();
+	glyphPositions.clear();
+	int index = 0;
+	int end = str.length();
+	float width = 0;
+	Glyph lastGlyph = null;
+	BitmapFontData data = style.font.getData();
+	if (data.scaleX == 1) {
+	    for (; index < end; index++) {
+		char ch = str.charAt(index);
+		Glyph g = data.getGlyph(ch);
+		if (g != null) {
+		    if (lastGlyph != null)
+			width += lastGlyph.getKerning(ch);
+		    lastGlyph = g;
+		    glyphAdvances.add(g.xadvance);
+		    glyphPositions.add(width);
+		    width += g.xadvance;
+		}
+	    }
+	    glyphAdvances.add(0);
+	    glyphPositions.add(width);
+	} else {
+	    float scaleX = style.font.getData().scaleX;
+	    for (; index < end; index++) {
+		char ch = str.charAt(index);
+		Glyph g = data.getGlyph(ch);
+		if (g != null) {
+		    if (lastGlyph != null)
+			width += lastGlyph.getKerning(ch) * scaleX;
+		    lastGlyph = g;
+		    float xadvance = g.xadvance * scaleX;
+		    glyphAdvances.add(xadvance);
+		    glyphPositions.add(width);
+		    width += xadvance;
+		}
+	    }
+	    glyphAdvances.add(0);
+	    glyphPositions.add(width);
+	}
     }
 
 }

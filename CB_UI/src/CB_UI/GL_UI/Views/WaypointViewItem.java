@@ -23,10 +23,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Align;
 
 public class WaypointViewItem extends ListViewItemBackground implements PositionChangedEvent {
     private Cache mCache;
@@ -119,7 +120,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
     }
 
     private void setDistanceString(String txt) {
-	TextBounds bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
+	GlyphLayout bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
 	float x = ArrowRec.getHalfWidth() - (bounds.width / 2f);
 	distance.setPosition(x, 0);
 
@@ -295,7 +296,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
 	    float textYPos = this.getHeight() - mMargin;
 
-	    float allHeight = (mNameCache.setMultiLineText(mWaypoint.getGcCode() + ": " + mWaypoint.getTitle(), mSpriteCachePos.x + mIconSize + mMargin, textYPos)).height + mMargin + mMargin;
+	    float allHeight = (mNameCache.setText(mWaypoint.getGcCode() + ": " + mWaypoint.getTitle(), mSpriteCachePos.x + mIconSize + mMargin, textYPos)).height + mMargin + mMargin;
 	    textYPos -= allHeight;
 
 	    if (ViewMode == CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK) {
@@ -304,7 +305,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 		if (!mWaypoint.getDescription().equals("")) {
 
 		    float textXPos = mSpriteCachePos.x + mIconSize + mMargin;
-		    float descHeight = (mDescCache.setWrappedText(mWaypoint.getDescription(), textXPos, textYPos, this.getWidth() - (textXPos + mIconSize + mMargin))).height + mMargin + mMargin;
+		    float descHeight = (mDescCache.setText(mWaypoint.getDescription(), textXPos, textYPos, this.getWidth() - (textXPos + mIconSize + mMargin), Align.left, true)).height + mMargin + mMargin;
 		    allHeight += descHeight;
 
 		    textYPos -= descHeight;
@@ -319,7 +320,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 		sCoord = mWaypoint.Pos.FormatCoordinate();
 	    }
 
-	    float coordHeight = (mCoordCache.setMultiLineText(sCoord, mSpriteCachePos.x + mIconSize + mMargin, textYPos)).height + mMargin + mMargin;
+	    float coordHeight = (mCoordCache.setText(sCoord, mSpriteCachePos.x + mIconSize + mMargin, textYPos)).height + mMargin + mMargin;
 	    allHeight += coordHeight;
 	    textYPos -= coordHeight;
 

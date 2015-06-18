@@ -64,15 +64,7 @@ public class Main
 
 		ui.Window = new Size(cfg.width, cfg.height);
 		ui.Density = 0.8f;
-		ui.RefSize = 148;
-		ui.TextSize_Normal = 124;
-		ui.ButtonTextSize = 120;
-		ui.IconSize = 24;
-		ui.Margin = 6;
-		ui.ArrowSizeList = 22;
-		ui.ArrowSizeMap = 36;
-		ui.TB_IconSize = 8;
-		ui.isLandscape = false;
+			ui.isLandscape = false;
 		DisplayModel.setDeviceScaleFactor(DENSITY);
 		new UiSizes();
 		UiSizes.that.initial(ui);

@@ -94,6 +94,7 @@ import CB_Utils.Util.iChanged;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
@@ -137,6 +138,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
     Cache lastSelectedCache = null;
     Waypoint lastSelectedWaypoint = null;
+    GlyphLayout layout = null;
 
     public MapView(CB_RectF rec, MapMode Mode, String Name) {
 	super(rec, Name);
@@ -687,8 +689,13 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	    try {
 		String Name = drawAsWaypoint ? wpi.Waypoint.getTitle() : wpi.Cache.getName();
 
-		float halfWidth = Fonts.getNormal().getBounds(Name).width / 2;
-		Fonts.getNormal().draw(batch, Name, screen.x - halfWidth, screen.y - WpUnderlay.halfHeight - NameYMovement);
+		if (layout == null)
+		    layout = new GlyphLayout(Fonts.getNormal(), Name);
+		else
+		    layout.setText(Fonts.getNormal(), Name);
+
+		float halfWidth = layout.width / 2;
+		Fonts.getNormal().draw(batch, layout, screen.x - halfWidth, screen.y - WpUnderlay.halfHeight - NameYMovement);
 	    } catch (Exception e) {
 	    }
 	}

@@ -173,16 +173,9 @@ public class TestView extends CB_View_Base {
 
 	this.addChild(btnMenu);
 
-	//	float margin = GL_UISizes.margin;
-	//
-	//	ZoomButtons zoomBtn = new ZoomButtons(GL_UISizes.ZoomBtn, this, "ZoomButtons");
-	//	zoomBtn.setPortrait();
-	//	zoomBtn.disableFadeOut();
-	//	zoomBtn.setSize(GL_UISizes.ZoomBtn.getHeight(), GL_UISizes.ZoomBtn.getWidth());
-	//	zoomBtn.setPos(this.getWidth() - margin - zoomBtn.getWidth(), this.getHeight() - margin - zoomBtn.getHeight());
-	//
-	//	this.addChild(zoomBtn);
-
+	TestLabelView labelTest = new TestLabelView(this, "test Label");
+	labelTest.setZeroPos();
+	this.addChild(labelTest);
 	requestLayout();
 
     }

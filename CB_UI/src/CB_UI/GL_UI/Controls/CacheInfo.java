@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
@@ -230,7 +231,7 @@ public class CacheInfo extends CB_View_Base {
 	    mS_FontCache = new BitmapFontCache(mBitmapFontSmall);
 	    mS_FontCache.setText("MSRLO", 0, 0);
 	    mS_FontCache.setColor(COLOR.getFontColor());
-	    float starHeight = mS_FontCache.getBounds().height * 1.1f;
+	    float starHeight = mS_FontCache.getLayouts().first().height * 1.1f;
 	    mStarSize = new SizeF(starHeight * 5, starHeight);
 
 	    if (ifModeFlag(SHOW_S_D_T)) {
@@ -253,10 +254,10 @@ public class CacheInfo extends CB_View_Base {
 		    break;
 		}
 		mS_FontCache.setText(CacheSize, 0, 0);
-		mBottom += mS_FontCache.getBounds().height;
+		mBottom += mS_FontCache.getLayouts().first().height;
 		float mSpriteBottom = mMargin;
 		mS_FontCache.setPosition(mLeft, mBottom);
-		mLeft += mS_FontCache.getBounds().width + mMargin;
+		mLeft += mS_FontCache.getLayouts().first().width + mMargin;
 
 		mStarSize.scale(mScaleFactor);
 		mSSprite = new Sprite(SpriteCacheBase.SizesIcons.get((int) (mCache.Size.ordinal())));
@@ -266,7 +267,7 @@ public class CacheInfo extends CB_View_Base {
 		mD_FontCache = new BitmapFontCache(mBitmapFontSmall);
 		mD_FontCache.setColor(COLOR.getFontColor());
 		mD_FontCache.setText("D", mLeft, mBottom);
-		mLeft += mD_FontCache.getBounds().width + mMargin;
+		mLeft += mD_FontCache.getLayouts().first().width + mMargin;
 		mDSprite = new Sprite(SpriteCacheBase.Stars.get((int) (mCache.getDifficulty() * 2)));
 		mDSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
 		mDSprite.setRotation(0);
@@ -275,7 +276,7 @@ public class CacheInfo extends CB_View_Base {
 		mT_FontCache = new BitmapFontCache(mBitmapFontSmall);
 		mT_FontCache.setColor(COLOR.getFontColor());
 		mT_FontCache.setText("T", mLeft, mBottom);
-		mLeft += mT_FontCache.getBounds().width + mMargin;
+		mLeft += mT_FontCache.getLayouts().first().width + mMargin;
 		mTSprite = new Sprite(SpriteCacheBase.Stars.get((int) (mCache.getTerrain() * 2)));
 		mTSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
 		mTSprite.setRotation(0);
@@ -330,7 +331,7 @@ public class CacheInfo extends CB_View_Base {
 		} else {
 		    mInfo_FontCache.setColor(COLOR.getFontColor());
 		}
-		mInfo_FontCache.setMultiLineText(text.toString(), mSpriteCachePos.x + mIconSize + mMargin, this.getHeight() - mMargin);
+		mInfo_FontCache.setText(text.toString(), mSpriteCachePos.x + mIconSize + mMargin, this.getHeight() - mMargin);
 
 	    }
 
@@ -537,10 +538,13 @@ public class CacheInfo extends CB_View_Base {
 	requestLayout();
     }
 
+    GlyphLayout layout;
+
     public float getTextHeight() {
-	String text = createText().toString();
-	float textHeight = mBitmapFont.getMultiLineBounds(text).height;
-	return textHeight;
+	if (layout == null)
+	    layout = new GlyphLayout();
+	layout.setText(mBitmapFont, createText().toString());
+	return layout.height;
     }
 
 }

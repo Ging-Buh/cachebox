@@ -27,6 +27,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.IntArray;
 
@@ -89,7 +90,7 @@ public class TextOnPath implements Disposable {
 	    return;
 	}
 
-	int regionsLength = font.regions.length;
+	int regionsLength = font.regions.size;
 	if (regionsLength == 0)
 	    throw new IllegalArgumentException("The specified font must contain at least 1 texture page");
 
@@ -283,7 +284,7 @@ public class TextOnPath implements Disposable {
 
 	if (PathToClose || isDisposed)
 	    return;
-	TextureRegion[] regions = font.getRegions();
+	Array<TextureRegion> regions = font.getRegions();
 
 	if (StrokeVertexData != null) {
 	    drawVertexData(batch, regions, TransStrokeVertexData);
@@ -292,13 +293,13 @@ public class TextOnPath implements Disposable {
 
     }
 
-    private void drawVertexData(Batch batch, TextureRegion[] regions, float[][] data) {
+    private void drawVertexData(Batch batch, Array<TextureRegion> regions, float[][] data) {
 	if (data == null)
 	    return;
 	for (int j = 0, n = data.length; j < n; j++) {
 	    if (idx[j] >= 0) { // ignore if this texture has no glyphs
 		float[] vertices = data[j];
-		batch.draw(regions[j].getTexture(), vertices, 0, vertices.length);
+		batch.draw(regions.get(j).getTexture(), vertices, 0, vertices.length);
 
 	    }
 	}

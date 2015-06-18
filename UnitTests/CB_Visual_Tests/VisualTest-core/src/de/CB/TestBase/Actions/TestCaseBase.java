@@ -189,7 +189,7 @@ public abstract class TestCaseBase extends CB_View_Base
 
 			topMsg = new BitmapFontCache(Fonts.getNormal());
 			topMsg.setColor(COLOR.getFontColor());
-			topMsg.setMultiLineText("("+ TestIndex+")  " +   MSG_TOP, 20, getHeight() - 20);
+			topMsg.setText("("+ TestIndex+")  " +   MSG_TOP, 20, getHeight() - 20);
 
 		}
 
@@ -198,7 +198,7 @@ public abstract class TestCaseBase extends CB_View_Base
 
 			botomMsg = new BitmapFontCache(Fonts.getNormal());
 			botomMsg.setColor(COLOR.getFontColor());
-			botomMsg.setMultiLineText(MSG_BOTOM, 20, getHalfHeight() - 20);
+			botomMsg.setText(MSG_BOTOM, 20, getHalfHeight() - 20);
 
 		}
 
