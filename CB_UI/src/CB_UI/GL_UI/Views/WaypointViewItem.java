@@ -113,6 +113,10 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 	}
 	requestLayout();
 
+	//register pos changed event
+	if ((ViewMode & CacheInfo.SHOW_COMPASS) == CacheInfo.SHOW_COMPASS)
+	    PositionChangedEventList.Add(this);
+
     }
 
     public Waypoint getWaypoint() {
@@ -162,10 +166,13 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 	if (mIndex != -1)
 	    super.render(batch);
 
-	if (arrow != null)
-	    arrow.draw(batch);
-	if (distance != null)
-	    distance.draw(batch);
+	if ((ViewMode & CacheInfo.SHOW_COMPASS) == CacheInfo.SHOW_COMPASS) {
+	    if (arrow != null)
+		arrow.draw(batch);
+	    if (distance != null)
+		distance.draw(batch);
+	}
+
 	if (mIconSprite != null)
 	    mIconSprite.draw(batch);
 	if (mIconSprite == null && mWaypoint != null)
@@ -242,8 +249,6 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
 	if (ViewMode != CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK)// For Compass without own compass
 	{
-	    PositionChangedEventList.Add(this);
-
 	    float size = UiSizes.that.getCacheListItemRec().asFloat().getHeight() / 2.3f;
 	    ArrowRec = new CB_RectF(this.getWidth() - (size * 1.2f), this.getHeight() - (size * 1.6f), size, size);
 	    arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
