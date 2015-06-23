@@ -89,6 +89,16 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 	super(ActivityBase.ActivityRec(), "");
 	setFieldNote(note, listner, isNewFieldNote);
 
+	if (note.type.isDirectLogType())
+	    iniOptions(note, isNewFieldNote);// show only if possible
+	iniTextfieldFocus();
+
+    }
+
+    private void iniUi() {
+	if (scrollBox != null)
+	    return;
+
 	scrollBox = new Box(ActivityBase.ActivityRec(), "");
 	this.addChild(scrollBox);
 	iniOkCancel();
@@ -99,13 +109,13 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 	iniTime();
 	iniGC_VoteItem();
 	iniCommentTextField();
-	if (note.type.isDirectLogType())
-	    iniOptions(note, isNewFieldNote);// show only if possible
-	iniTextfieldFocus();
-
     }
 
     private void setDefaultValues() {
+
+	if (scrollBox == null)
+	    iniUi();
+
 	tvCacheName.setText(fieldNote.isTbFieldNote ? fieldNote.TbName : fieldNote.CacheName);
 
 	if (fieldNote.isTbFieldNote)

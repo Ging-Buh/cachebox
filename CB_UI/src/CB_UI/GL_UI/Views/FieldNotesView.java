@@ -556,9 +556,6 @@ public class FieldNotesView extends V_ListView {
 
 	FieldNotesView.firstShow = false;
 
-	efnActivity.dispose();
-	efnActivity = null;
-
 	if (fieldNote != null) {
 
 	    if (isNewFieldNote) {
@@ -710,10 +707,10 @@ public class FieldNotesView extends V_ListView {
 
     }
 
-    static EditFieldNotes efnActivity;
+    private static EditFieldNotes efnActivity;
 
     private void editFieldNote() {
-	if (efnActivity != null) {
+	if (efnActivity != null && !efnActivity.isDisposed()) {
 	    efnActivity.setFieldNote(aktFieldNote, returnListner, false);
 	} else {
 	    efnActivity = new EditFieldNotes(aktFieldNote, returnListner, false);

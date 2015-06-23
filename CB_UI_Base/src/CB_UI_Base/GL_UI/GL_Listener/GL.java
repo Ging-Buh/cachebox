@@ -1624,6 +1624,11 @@ public class GL implements ApplicationListener, InputProcessor {
 	if (!ActivityIsShown)
 	    return;
 
+	//check if KeyboardFocus on this Activitiy
+	if (keyboardFocus != null && keyboardFocus.getParent() == actActivity) {
+	    setKeyboardFocus(null);
+	}
+
 	if (activityHistory.size() > 0) {
 	    mActivity.removeChild(actActivity);
 	    actActivity.onHide();
@@ -1717,8 +1722,15 @@ public class GL implements ApplicationListener, InputProcessor {
 
 	if (MsgToPlatformConector)
 	    platformConector.hideForDialog();
-	if (actDialog != null)
+	if (actDialog != null) {
+	    //check if KeyboardFocus on this Dialog
+	    if (keyboardFocus != null && keyboardFocus.getParent() == actDialog) {
+		setKeyboardFocus(null);
+	    }
+
 	    actDialog.onHide();
+	}
+
 	if (dialogHistory.size() > 0) {
 	    mDialog.removeChild(actDialog);
 	    // letzten Dialog wiederherstellen
@@ -1851,8 +1863,10 @@ public class GL implements ApplicationListener, InputProcessor {
 
     public void setKeyboardFocus(EditTextField view) {
 	// don't set Focus to NULL?
-	if (view == null && keyboardFocus == null)
+	if (view == null && keyboardFocus == null) {
+
 	    return;
+	}
 
 	// Don't open KeyBoard if Keybord is Showing
 	boolean dontOpenKeybord = keyboardFocus != null;
