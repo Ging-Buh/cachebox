@@ -87,11 +87,8 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
     public EditFieldNotes(FieldNoteEntry note, ReturnListner listner, boolean isNewFieldNote) {
 	super(ActivityBase.ActivityRec(), "");
+	setFieldNote(note, listner, isNewFieldNote);
 
-	this.isNewFieldNote = isNewFieldNote;
-	mReturnListner = listner;
-	fieldNote = note;
-	altfieldNote = note.copy();
 	scrollBox = new Box(ActivityBase.ActivityRec(), "");
 	this.addChild(scrollBox);
 	iniOkCancel();
@@ -105,8 +102,6 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 	if (note.type.isDirectLogType())
 	    iniOptions(note, isNewFieldNote);// show only if possible
 	iniTextfieldFocus();
-
-	setDefaultValues();
 
     }
 
@@ -483,5 +478,13 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 	    if (scrollBox != null)
 		scrollBox.setY(0);
 	}
+    }
+
+    public void setFieldNote(FieldNoteEntry note, ReturnListner listner, boolean isNewFieldNote) {
+	this.isNewFieldNote = isNewFieldNote;
+	mReturnListner = listner;
+	fieldNote = note;
+	altfieldNote = note.copy();
+	setDefaultValues();
     }
 }

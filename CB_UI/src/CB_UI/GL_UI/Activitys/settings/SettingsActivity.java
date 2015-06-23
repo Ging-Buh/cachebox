@@ -61,6 +61,7 @@ import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Settings.Audio;
 import CB_Utils.Settings.SettingBase;
 import CB_Utils.Settings.SettingBool;
@@ -88,7 +89,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class SettingsActivity extends ActivityBase implements SelectedLangChangedEvent {
 
-    private ArrayList<SettingCategory> Categorys = new ArrayList<SettingCategory>(); // FIXME change to CB_List
+    private CB_List<SettingCategory> Categorys = new CB_List<SettingCategory>();
     private Button btnOk, btnCancel, btnMenu;
     private ScrollBox scrollBox;
     private CB_RectF ButtonRec, itemRec;
@@ -239,7 +240,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	// Categorie List zusammen stellen
 
 	if (Categorys == null) {
-	    Categorys = new ArrayList<SettingCategory>();
+	    Categorys = new CB_List<SettingCategory>();
 	}
 
 	Categorys.clear();

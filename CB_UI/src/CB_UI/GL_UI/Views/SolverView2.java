@@ -62,13 +62,6 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 	super(rec, Name);
 
 	log.debug("Create SolverView2 => " + rec.toString());
-	/*
-	 * Label lblDummy = new Label(CB_RectF.ScaleCenter(rec, 0.8f), "DummyLabel"); lblDummy.setFont(Fonts.getNormal());
-	 * lblDummy.setText("Dummy SolverView"); setBackground(SpriteCache.ListBack); ^ if (GlobalCore.platform == Plattform.Desktop)
-	 * this.addChild(lblDummy);
-	 */
-
-	// cache = GlobalCore.getSelectedCache();
 	cache = null;
     }
 
@@ -256,6 +249,9 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 	public ListViewItemBase getView(int position) {
 	    if (solver == null)
 		return null;
+
+	    //FIXME cache SolverViewItem, don't create new. Bad dispose this cache
+
 	    SolverZeile solverZeile = solver.get(position);
 	    SolverViewItem v = new SolverViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, solverZeile);
 	    v.setClickable(true);
@@ -462,8 +458,12 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 
     @Override
     public void dispose() {
-	// FIXME release all Member
-	// FIXME release all EventHandler
+
+	this.setBaseAdapter(null);
+	lvAdapter = null;
+	solver = null;
+	cache = null;
 	super.dispose();
+	log.debug("SolverView2 disposed");
     }
 }
