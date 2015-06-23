@@ -255,17 +255,7 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 	this.clipboard = clipboard;
     }
 
-    protected void registerPopUpLongClick() {
-	this.setOnLongClickListener(new OnClickListener() {
-
-	    @Override
-	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		showPopUp(x, y);
-		return true;
-	    }
-
-	});
-    }
+    protected abstract void registerPopUpLongClick();
 
     protected void showPopUp(int x, int y) {
 

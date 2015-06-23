@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import CB_UI_Base.Global;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -1885,4 +1886,21 @@ public class EditTextField extends EditTextFieldBase {
 	}
     }
 
+    @Override
+    protected void registerPopUpLongClick() {
+	this.setOnLongClickListener(new OnClickListener() {
+
+	    @Override
+	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+
+		//if no selection, select the word under long click
+		if (selection == null) {
+		    EditTextField.this.doubleClick(x, y, pointer, button);
+		}
+		showPopUp(x, y);
+		return true;
+	    }
+
+	});
+    }
 }
