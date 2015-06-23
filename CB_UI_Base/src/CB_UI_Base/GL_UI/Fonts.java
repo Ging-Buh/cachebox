@@ -42,7 +42,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
  */
 public class Fonts {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(Fonts.class);
-    static final String DEFAULT_CHARACTER = getCyrilCharSet();
+    public static final String DEFAULT_CHARACTER = getCyrilCharSet();
 
     static String getCyrilCharSet() {
 	int CharSize = 0x04ff - 0x0400;

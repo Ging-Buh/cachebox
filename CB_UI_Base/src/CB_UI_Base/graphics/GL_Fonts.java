@@ -18,6 +18,7 @@ package CB_UI_Base.graphics;
 import java.util.HashMap;
 
 import CB_UI_Base.Global;
+import CB_UI_Base.GL_UI.Fonts;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
@@ -401,16 +402,13 @@ class GL_Fonts {
 
 	FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 	parameter.size = textSize;
+	parameter.characters = Fonts.DEFAULT_CHARACTER;
 	BitmapFont ret = generator.generateFont(parameter);
 
 	TextureRegion region = ret.getRegion();
 	Texture tex = region.getTexture();
 	tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 	generator.dispose();
-
-	//	if (this.markUp) {
-	//	    ret.setMarkupEnabled(true);
-	//	}
 
 	return ret;
     }
