@@ -66,7 +66,7 @@ public enum QuickActions {
     Notesview, // 23
     uploadFieldNote, // 24
     torch, // 25
-    switchDesc, // 26
+
     // ScreenLock, // 21
 
     empty, ;
