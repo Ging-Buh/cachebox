@@ -214,7 +214,7 @@ public class CB_HtmlProcessor extends Processor {
 
 	CB_List<String> textList = new CB_List<String>();
 	String[] split = null;
-	while (text.length() > 2500) {
+	while (text != null && text.length() > 2500) {
 	    split = split(text);
 	    textList.add(split[0]);
 	    text = split[1];
@@ -225,11 +225,28 @@ public class CB_HtmlProcessor extends Processor {
 
     }
 
+    private final int MAX_TEXT_LENGTH = 2500;
+
     private String[] split(String text) {
 	//search first line break before 2500 char
-	int pos = text.lastIndexOf(this.newLine, 2500);
-	String first = text.substring(0, pos);
-	String second = text.substring(pos);
+	int pos = text.lastIndexOf(this.newLine, MAX_TEXT_LENGTH);
+	String first = null;
+	String second = null;
+	if (pos < 2) {
+	    //	    search for Space
+	    pos = text.lastIndexOf(" ", MAX_TEXT_LENGTH);
+	    if (pos < 2) {
+		log.debug("Cant split HTML Text");
+		first = text; // can't split
+	    } else {
+		first = text.substring(0, pos);
+		second = text.substring(pos);
+	    }
+
+	} else {
+	    first = text.substring(0, pos);
+	    second = text.substring(pos);
+	}
 
 	return new String[] { first, second };
     }

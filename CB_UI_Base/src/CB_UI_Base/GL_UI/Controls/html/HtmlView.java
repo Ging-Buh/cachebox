@@ -203,77 +203,81 @@ public class HtmlView extends ScrollBox implements ListLayout {
     public void layout(CB_List<CB_View_Base> segmentViewList) {
 	testcount = 0;
 
-	this.removeChilds();
-
-	log.debug("HTML View Layout");
-	log.debug("   " + Trace.getCallerName(0));
-	log.debug("   " + Trace.getCallerName(1));
-	log.debug("   " + Trace.getCallerName(2));
-
-	float innerWidth = this.getInnerWidth() - (margin * 2);
-	int maxAttributeButtonsPerLine = (int) (innerWidth / (UI_Size_Base.that.getButtonHeight()));
-	float contentHeight = 0;
-	int attLines = 1;
-	for (int i = 0, n = segmentViewList.size(); i < n; i++) {
-
-	    CB_View_Base view = segmentViewList.get(i);
-
-	    if (view instanceof ImageButton) {
-		if (testcount++ > maxAttributeButtonsPerLine) {
-		    attLines++;
-		    testcount = 0;
-		}
-	    } else {
-		contentHeight += view.getHeight();
-	    }
-	}
-
-	contentHeight += (attLines * UI_Size_Base.that.getButtonHeight());
-
 	contentBox = new Box(this, "topContent");
-	contentBox.setWidth(innerWidth);
-	contentBox.setClickable(true);
-	contentBox.setHeight(contentHeight);
-	contentBox.setZeroPos();
-	contentBox.setX(margin);
+	synchronized (contentBox) {
 
-	contentBox.setMargins(0, 0);
-	contentBox.initRow();
-	testcount = 0;
-	for (int i = 0, n = segmentViewList.size(); i < n; i++) {
+	    this.removeChilds();
 
-	    CB_View_Base view = segmentViewList.get(i);
+	    log.debug("HTML View Layout");
+	    log.debug("   " + Trace.getCallerName(0));
+	    log.debug("   " + Trace.getCallerName(1));
+	    log.debug("   " + Trace.getCallerName(2));
 
-	    if (view instanceof Image) {
-		contentBox.addLast(segmentViewList.get(i));
-	    } else if (view instanceof ImageButton) {
-		if (testcount++ > maxAttributeButtonsPerLine) {
-		    contentBox.addLast(segmentViewList.get(i), FIXED);
-		    testcount = 0;
+	    float innerWidth = this.getInnerWidth() - (margin * 2);
+	    int maxAttributeButtonsPerLine = (int) (innerWidth / (UI_Size_Base.that.getButtonHeight()));
+	    float contentHeight = 0;
+	    int attLines = 1;
+	    for (int i = 0, n = segmentViewList.size(); i < n; i++) {
+
+		CB_View_Base view = segmentViewList.get(i);
+
+		if (view instanceof ImageButton) {
+		    if (testcount++ > maxAttributeButtonsPerLine) {
+			attLines++;
+			testcount = 0;
+		    }
 		} else {
-		    contentBox.addNext(segmentViewList.get(i), FIXED);
+		    contentHeight += view.getHeight();
+		}
+	    }
+
+	    contentHeight += (attLines * UI_Size_Base.that.getButtonHeight());
+
+	    contentBox.setWidth(innerWidth);
+	    contentBox.setClickable(true);
+	    contentBox.setHeight(contentHeight);
+	    contentBox.setZeroPos();
+	    contentBox.setX(margin);
+
+	    contentBox.setMargins(0, 0);
+	    contentBox.initRow();
+	    testcount = 0;
+	    for (int i = 0, n = segmentViewList.size(); i < n; i++) {
+
+		CB_View_Base view = segmentViewList.get(i);
+
+		if (view instanceof Image) {
+		    contentBox.addLast(segmentViewList.get(i));
+		} else if (view instanceof ImageButton) {
+		    if (testcount++ > maxAttributeButtonsPerLine) {
+			contentBox.addLast(segmentViewList.get(i), FIXED);
+			testcount = 0;
+		    } else {
+			contentBox.addNext(segmentViewList.get(i), FIXED);
+		    }
+
+		} else {
+		    contentBox.addLast(segmentViewList.get(i), FIXED);
 		}
 
-	    } else {
-		contentBox.addLast(segmentViewList.get(i), FIXED);
 	    }
 
-	}
+	    for (int i = 0, n = contentBox.getchilds().size(); i < n; i++) {
 
-	for (int i = 0, n = contentBox.getchilds().size(); i < n; i++) {
+		GL_View_Base child = contentBox.getChild(i);
+		if (child instanceof Html_ListView) {
+		    // move tab on x
+		    float tabX = contentBox.getWidth() - ((Html_ListView) child).getContentWidth();
+		    child.setX(tabX);
+		    //		child.setX(0);
+		}
 
-	    GL_View_Base child = contentBox.getChild(i);
-	    if (child instanceof Html_ListView) {
-		// move tab on x
-		float tabX = contentBox.getWidth() - ((Html_ListView) child).getContentWidth();
-		child.setX(tabX);
-		//		child.setX(0);
 	    }
 
+	    this.addChild(contentBox);
+	    this.setVirtualHeight(contentHeight);
 	}
 
-	this.addChild(contentBox);
-	this.setVirtualHeight(contentHeight);
 	this.scrollTo(0);
     }
 
@@ -394,39 +398,45 @@ public class HtmlView extends ScrollBox implements ListLayout {
     }
 
     private void clearHtml() {
-	log.debug("Clear html");
-	this.removeChilds();
 
-	if (segmentViewList != null) {
-	    for (CB_View_Base view : segmentViewList) {
-		if (view != null) {
-		    view.dispose();
+	if (contentBox == null)
+	    return;
+
+	synchronized (contentBox) {
+
+	    log.debug("Clear html");
+	    this.removeChilds();
+
+	    if (segmentViewList != null) {
+		for (CB_View_Base view : segmentViewList) {
+		    if (view != null) {
+			view.dispose();
+		    }
+		    view = null;
 		}
-		view = null;
+		segmentViewList.clear();
 	    }
-	    segmentViewList.clear();
-	}
 
-	if (segmentList != null) {
-	    for (Html_Segment segment : segmentList) {
-		if (segment != null) {
-		    segment.dispose();
+	    if (segmentList != null) {
+		for (Html_Segment segment : segmentList) {
+		    if (segment != null) {
+			segment.dispose();
+		    }
+		    segment = null;
 		}
-		segment = null;
+		segmentList.clear();
 	    }
-	    segmentList.clear();
-	}
 
-	if (contentBox != null) {
-	    for (GL_View_Base view : contentBox.getchilds()) {
-		if (view != null) {
-		    view.dispose();
+	    if (contentBox != null) {
+		for (GL_View_Base view : contentBox.getchilds()) {
+		    if (view != null) {
+			view.dispose();
+		    }
+		    view = null;
 		}
-		view = null;
+		contentBox.dispose();
 	    }
-	    contentBox.dispose();
 	}
-
     }
 
     /**

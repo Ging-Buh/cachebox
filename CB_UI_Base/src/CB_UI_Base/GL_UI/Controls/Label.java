@@ -353,12 +353,10 @@ public class Label extends CB_View_Base {
 	makeTextObject();
 	try {
 	    bounds = TextObject.setText(mText, 0, 0);
-	    log.debug("inner width: " + innerWidth);
-	    log.debug("lblTextBounds: " + bounds.toString() + "\n");
 	} catch (Exception e) {
 	    // java.lang.ArrayIndexOutOfBoundsException kommt mal vor
 	    e.printStackTrace();
-	    log.error(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height + " \"" + mText + "\"", e);
+	    log.error(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + " \"" + mText + "\"", e);
 	}
 
 	//new text, delete underline and strikeout drawable
@@ -373,12 +371,11 @@ public class Label extends CB_View_Base {
 	//	bounds = mFont.getMultiLineBounds(mText);
 	try {
 	    bounds = TextObject.setText(mText, 0f, 0f, this.getWidth(), GDX_HAlignment(mHAlignment), false);
-	    log.debug("inner width: " + innerWidth);
-	    log.debug("lblTextBounds: " + bounds.toString() + "\n");
+
 	} catch (Exception e) {
 	    // java.lang.ArrayIndexOutOfBoundsException kommt mal vor
 	    e.printStackTrace();
-	    log.debug(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height + " \"" + mText + "\"");
+	    log.debug(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + " \"" + mText + "\"");
 	}
 
 	//new text, delete underline and strikeout drawable
@@ -396,7 +393,7 @@ public class Label extends CB_View_Base {
 	} catch (Exception e) {
 	    // java.lang.ArrayIndexOutOfBoundsException kommt mal vor
 	    e.printStackTrace();
-	    log.debug(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height + " \"" + mText + "\"");
+	    log.debug(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + " \"" + mText + "\"");
 	}
 
 	//new text, delete underline and strikeout drawable

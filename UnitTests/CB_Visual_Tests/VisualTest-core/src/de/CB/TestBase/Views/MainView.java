@@ -179,53 +179,7 @@ public class MainView extends MainViewBase
 			}
 		});
 
-		// btn3.setOnClickListener(new OnClickListener()
-		// {
-		// @Override
-		// public boolean onClick(GL_View_Base arg0, int arg1, int arg2, int arg3, int arg4)
-		// {
-		// if (Global.editor == null)
-		// {
-		// GL_MsgBox.Show("No Theme Loaded", "Error", MessageBoxIcon.Error);
-		// return true;
-		// }
-		//
-		// new ConfigListActivity().show();
-		//
-		// return true;
-		// }
-		// });
-
-		// btn4.setOnClickListener(new OnClickListener()
-		// {
-		//
-		// @Override
-		// public boolean onClick(GL_View_Base arg0, int arg1, int arg2, int arg3, int arg4)
-		// {
-		// if (Global.editor != null)
-		// {
-		// try
-		//
-		// {
-		// Global.editor.save();
-		// }
-		// catch (IOException e)
-		// {
-		// GL_MsgBox.Show("Error with saving Theme" + Global.br + e.getMessage(), "Error", MessageBoxIcon.Error);
-		// return true;
-		// }
-		//
-		// GL_MsgBox.Show("Theme saved!", null, MessageBoxIcon.None);
-		//
-		// }
-		// else
-		// {
-		// GL_MsgBox.Show("No Theme loaded!", "Error", MessageBoxIcon.Error);
-		// }
-		// return true;
-		// }
-		// });
-
+		
 		btn5.addAction(new CB_ActionButton(actionClose, false));
 
 		// actionShowMap.Execute();

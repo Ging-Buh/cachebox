@@ -1,5 +1,7 @@
 package CB_UI_Base.GL_UI.Main;
 
+import org.slf4j.LoggerFactory;
+
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -13,6 +15,8 @@ import CB_UI_Base.Math.GL_UISizes;
 import com.badlogic.gdx.math.Vector2;
 
 public class CB_TabView extends CB_View_Base {
+
+    private final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_TabView.class);
 
     private CB_ButtonList mButtonList;
     private H_ListView buttonListView;
@@ -128,9 +132,14 @@ public class CB_TabView extends CB_View_Base {
 		    aktView.setInvisible();
 		}
 
-		// set View size and pos
-		view.setSize(CB_TabView.this.getWidth(), CB_TabView.this.getHeight() - buttonListView.getHeight());
-		view.setPos(new Vector2(0, buttonListView.getHeight()));
+		try {
+		    // set View size and pos
+		    view.setSize(CB_TabView.this.getWidth(), CB_TabView.this.getHeight() - buttonListView.getHeight());
+		    view.setPos(new Vector2(0, buttonListView.getHeight()));
+		} catch (Exception e) {
+		    log.error("set view size", e);
+		    return;
+		}
 
 		if (aktView == view)
 		    return;
