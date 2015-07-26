@@ -466,7 +466,9 @@ public class CacheInfo extends CB_View_Base {
 
     public float getAttributeHeight() {
 	float attSize = mIconSize;//2
-	int attCount = mCache.getAttributes().size();
+	int attCount = 0;
+	if (mCache != null && mCache.getAttributes() != null)
+	    attCount = mCache.getAttributes().size();
 	final int countPerLine = (int) (this.getWidth() / (attSize + mMargin));
 	int lineCount = getLineCount(attCount, countPerLine);
 	return lineCount * (attSize + mMargin) + mMargin;

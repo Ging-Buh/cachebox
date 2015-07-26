@@ -223,9 +223,10 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
 				@Override
 				public void run() {
-				    if (TabMainView.descriptionView != null)
+				    if (TabMainView.descriptionView != null) {
 					TabMainView.descriptionView.forceReload();
-				    TabMainView.descriptionView.onShow();
+					TabMainView.descriptionView.onShow();
+				    }
 				    GL.that.renderOnce();
 				}
 			    });

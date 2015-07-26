@@ -210,7 +210,8 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 			    @Override
 			    public void run() {
-				listView.chkSlideBack();
+				if (listView != null)
+				    listView.chkSlideBack();
 				GL.that.renderOnce();
 			    }
 			});

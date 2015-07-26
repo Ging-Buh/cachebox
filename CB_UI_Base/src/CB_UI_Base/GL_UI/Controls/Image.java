@@ -97,9 +97,11 @@ public class Image extends CB_View_Base {
     @Override
     public void onShow() {
 	super.onShow();
-	if (imageLoader.getAnimDelay() > 0) {
-	    GL.that.addRenderView(this, imageLoader.getAnimDelay());
-	    isAsRenderViewRegisted.set(true);
+	if (imageLoader != null) {
+	    if (imageLoader.getAnimDelay() > 0) {
+		GL.that.addRenderView(this, imageLoader.getAnimDelay());
+		isAsRenderViewRegisted.set(true);
+	    }
 	}
     }
 
@@ -108,9 +110,11 @@ public class Image extends CB_View_Base {
     @Override
     public void onHide() {
 	super.onHide();
-	if (imageLoader.getAnimDelay() > 0) {
-	    GL.that.removeRenderView(this);
-	    isAsRenderViewRegisted.set(false);
+	if (imageLoader != null) {
+	    if (imageLoader.getAnimDelay() > 0) {
+		GL.that.removeRenderView(this);
+		isAsRenderViewRegisted.set(false);
+	    }
 	}
     }
 
@@ -206,11 +210,13 @@ public class Image extends CB_View_Base {
     }
 
     public void setImage(String Path) {
-	imageLoader.setImage(Path);
+	if (imageLoader != null)
+	    imageLoader.setImage(Path);
     }
 
     public void setDrawable(Drawable drawable) {
-	imageLoader.setDrawable(drawable);
+	if (imageLoader != null)
+	    imageLoader.setDrawable(drawable);
     }
 
     @Override
@@ -244,11 +250,13 @@ public class Image extends CB_View_Base {
      * @param iconUrl
      */
     public void setImageURL(final String iconUrl) {
-	imageLoader.setImageURL(iconUrl);
+	if (imageLoader != null)
+	    imageLoader.setImageURL(iconUrl);
     }
 
     public void clearImage() {
-	imageLoader.clearImage();
+	if (imageLoader != null)
+	    imageLoader.clearImage();
 	mColor = new Color(1, 1, 1, 1);
 	mScale = 1;
 	setOriginCenter();
@@ -259,7 +267,8 @@ public class Image extends CB_View_Base {
     }
 
     public void setSprite(Sprite sprite, boolean reziseHeight) {
-	imageLoader.setSprite(sprite, reziseHeight);
+	if (imageLoader != null)
+	    imageLoader.setSprite(sprite, reziseHeight);
     }
 
     public void forceImageLoad() {
@@ -267,7 +276,8 @@ public class Image extends CB_View_Base {
 
 	    @Override
 	    public void run() {
-		imageLoader.getDrawable(0);
+		if (imageLoader != null)
+		    imageLoader.getDrawable(0);
 	    }
 	});
 
