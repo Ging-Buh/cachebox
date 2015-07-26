@@ -89,7 +89,7 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	    textOnlyField.setText(text);
 	    textOnlyField.setEditable(false);
 
-	    this.addChild(textOnlyField);
+	    this.addChildDirekt(textOnlyField);
 
 	    this.setVirtualHeight(this.getHeight());
 	    this.scrollTo(0);
