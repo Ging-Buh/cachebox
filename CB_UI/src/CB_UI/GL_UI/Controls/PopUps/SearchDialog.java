@@ -800,19 +800,50 @@ public class SearchDialog extends PopUp_Base {
 	Titel, GcCode, Owner
     }
 
-    public void addSearch(String searchPattern, searchMode Mode) {
+    public void addSearch(final String searchPattern, final searchMode Mode) {
 
 	log.debug("addSearch " + searchPattern);
 
-	mEingabe.setText(searchPattern);
-	switchSearcheMode(Mode.ordinal());
+	try {
+	    GL.that.RunOnGL(new IRunOnGL() {
 
-	// auf Online schalten
-	mTglBtnOnline.setState(1);
-	setFilterBtnState();
+		@Override
+		public void run() { //step 1
+		    mEingabe.setText(searchPattern);
+		    GL.that.RunOnGL(new IRunOnGL() {
 
-	// Suche ausl�sen
-	mBtnSearch.performClick();
+			@Override
+			public void run() {//step 2
+			    switchSearcheMode(Mode.ordinal());
+			    GL.that.RunOnGL(new IRunOnGL() {
+
+				@Override
+				public void run() {//step 3
+				    mTglBtnOnline.setState(1);
+				    GL.that.RunOnGL(new IRunOnGL() {
+
+					@Override
+					public void run() {//step 4
+					    setFilterBtnState();
+					    GL.that.RunOnGL(new IRunOnGL() {
+
+						@Override
+						public void run() {//step 5
+						    mBtnSearch.performClick();
+						}
+					    });
+					}
+				    });
+				}
+			    });
+			}
+		    });
+
+		}
+	    });
+	} catch (Exception e) {
+	    log.error("Add search from notification Mail", e);
+	}
     }
 
     @Override

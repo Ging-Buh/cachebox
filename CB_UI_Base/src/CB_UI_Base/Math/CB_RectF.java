@@ -86,13 +86,14 @@ public class CB_RectF {
 
     public CB_RectF(CB_RectF rec) {
 	if (member == null)
-	    throw new IllegalStateException("Is Disposed"); // isDisposed!; // isDisposed!
-	System.arraycopy(rec.member, 0, this.member, 0, 10);
+	    throw new IllegalStateException("Is Disposed"); // isDisposed!; 
+	if (rec != null && rec.member != null)
+	    System.arraycopy(rec.member, 0, this.member, 0, 10);
     }
 
     public void setWidth(float Width) {
 	if (member == null)
-	    throw new IllegalStateException("Is Disposed"); // isDisposed!; // isDisposed!
+	    throw new IllegalStateException("Is Disposed"); // isDisposed!;
 	if (member[2] == Width)
 	    return;
 	member[2] = Width;

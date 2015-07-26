@@ -112,9 +112,15 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand {
 		if (sGc != null && !sGc.equals("")) {
 		    for (int i = 0, n = Database.Data.Query.size(); i < n; i++) {
 			Cache c = Database.Data.Query.get(i);
+
 			if (c.getGcCode().equalsIgnoreCase(sGc)) {
-			    log.debug("returnFromSelectDB:Set selectedCache to " + c.getGcCode() + " from lastSaved.");
-			    GlobalCore.setSelectedCache(c);
+			    try {
+				log.debug("returnFromSelectDB:Set selectedCache to " + c.getGcCode() + " from lastSaved.");
+				c.loadDetail();
+				GlobalCore.setSelectedCache(c);
+			    } catch (Exception e) {
+				log.error("set last selected Cache", e);
+			    }
 			    break;
 			}
 		    }

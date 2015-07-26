@@ -643,4 +643,20 @@ public class Label extends CB_View_Base {
 	makeText();
     }
 
+    public boolean equals(String text, BitmapFont font, Color color, HAlignment alignment) {
+
+	if (color == null || text == null || font == null || alignment == null)
+	    return false;
+
+	if (!text.equals(mText))
+	    return false;
+	if (!color.equals(mColor))
+	    return false;
+	if (!alignment.equals(mHAlignment))
+	    return false;
+	if (!font.equals(mFont))
+	    return false;
+	return true;
+    }
+
 }
