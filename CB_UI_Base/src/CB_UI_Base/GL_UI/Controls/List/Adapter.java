@@ -20,7 +20,7 @@ public interface Adapter
 	ListViewItemBase getView(int position);
 
 	/**
-	 * Gibt die Größe zur berechnung der Position eines Items zurück.</br> </br>Für V_ListView => die Höhe </br>Für H_ListView => die Breite
+	 * Gibt die GrÃ¶ÃŸe zur berechnung der Position eines Items zurÃ¼ck.</br> </br>FÃ¼r V_ListView => die HÃ¶he </br>FÃ¼r H_ListView => die Breite
 	 * 
 	 * @param position
 	 * @return

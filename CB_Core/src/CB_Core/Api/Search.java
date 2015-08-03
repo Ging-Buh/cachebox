@@ -76,7 +76,7 @@ public class Search
 		}
 	}
 
-	// isLite kann hier nochmal abgefragt werden da dieser Wert von einzelnen Search-Objecten geändert werden könnte
+	// isLite kann hier nochmal abgefragt werden da dieser Wert von einzelnen Search-Objecten geÃ¤ndert werden kÃ¶nnte
 	protected boolean getIsLite()
 	{
 		return isLite;

@@ -26,8 +26,8 @@ import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.UnitFormatter;
 
 /**
- * Eine ArrayList<MeasuredCoord> welche die gemessenen Koordinaten aufnimmt, sortiert, Ausreißer eliminiert und über die Methode
- * "getMeasuredAverageCoord()" eine Durchschnitts Koordinate zurück gibt.
+ * Eine ArrayList<MeasuredCoord> welche die gemessenen Koordinaten aufnimmt, sortiert, AusreiÃŸer eliminiert und Ã¼ber die Methode
+ * "getMeasuredAverageCoord()" eine Durchschnitts Koordinate zurÃ¼ck gibt.
  * 
  * @author Longri
  */
@@ -40,7 +40,7 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Gibt die Durchschnittliche Koordinate dieser Liste zurück.
+	 * Gibt die Durchschnittliche Koordinate dieser Liste zurÃ¼ck.
 	 * 
 	 * @return Coordinate
 	 */
@@ -81,7 +81,7 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 	}
 
 	/**
-	 * Gibt die Durchschnittliche Koordinate dieser Liste zurück. Wobei die Genauigkeit der gemessenen Koordinaten berücksichtigt wird!
+	 * Gibt die Durchschnittliche Koordinate dieser Liste zurÃ¼ck. Wobei die Genauigkeit der gemessenen Koordinaten berÃ¼cksichtigt wird!
 	 * 
 	 * @return Coordinate
 	 */
@@ -93,7 +93,7 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 	}
 
 	/**
-	 * Überschreibt die add Methode um bei einer Listen Größe > 3 <br>
+	 * Ãœberschreibt die add Methode um bei einer Listen GrÃ¶ÃŸe > 3 <br>
 	 * die MeasuredCoord.Referenz auf den Durchschnitt der Liste zu setzen.
 	 */
 	@Override
@@ -134,7 +134,7 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 	}
 
 	/**
-	 * Löscht die Ausreißer Werte, welche eine Distanz von mehr als 3m zur Referenz Koordinate haben.
+	 * LÃ¶scht die AusreiÃŸer Werte, welche eine Distanz von mehr als 3m zur Referenz Koordinate haben.
 	 */
 	public void clearDiscordantValue()
 	{

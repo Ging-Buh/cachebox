@@ -71,7 +71,7 @@ public class chkBox extends Button
 	protected void Initial()
 	{
 
-		// die einzelnen Hintergründe werden hier anders benutzt
+		// die einzelnen HintergrÃ¼nde werden hier anders benutzt
 		// drawableNormal= unchecked
 		// drawablePressed= checked
 		// drawableDisabled= unchecked Disabled

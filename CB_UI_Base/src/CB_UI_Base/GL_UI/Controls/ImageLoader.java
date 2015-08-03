@@ -331,7 +331,7 @@ public class ImageLoader {
 	mPath = Path.replace("file://", "");
 	if (getDrawable(0) != null) {
 	    dispose();
-	    // das laden des Images in das Sprite darf erst in der Render Methode passieren, damit es aus dem GL_Thread herraus läuft.
+	    // das laden des Images in das Sprite darf erst in der Render Methode passieren, damit es aus dem GL_Thread herraus lÃ¤uft.
 	}
 	generate();
     }

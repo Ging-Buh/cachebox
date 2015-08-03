@@ -42,7 +42,7 @@ import org.poly2tri.triangulation.delaunay.DelaunayTriangle;
 import org.poly2tri.triangulation.point.TPoint;
 
 /**
- * @author Thomas Åhlén, thahlen@gmail.com
+ * @author Thomas Ã…hlÃ©n, thahlen@gmail.com
  */
 public class DTSweepContext extends TriangulationContext<DTSweepDebugContext>
 {

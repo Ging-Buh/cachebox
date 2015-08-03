@@ -97,7 +97,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     private static SettingsActivity that;
 
     /***
-     * Enth‰lt den Key des zu Editierenden Wertes der SettingsList
+     * Enth√§lt den Key des zu Editierenden Wertes der SettingsList
      */
     public static int EditKey = -1;
 
@@ -278,7 +278,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 		final CB_View_Base btn = getView(catBtn, 1);
 
-		// add Cat eintr‰ge
+		// add Cat eintr√§ge
 		final LinearCollapseBox lay = new LinearCollapseBox(btn, "");
 		lay.setClickable(true);
 		lay.setAnimationListner(new animatetHeightChangedListner() {
@@ -354,9 +354,9 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		for (Iterator<SettingBase<?>> it = SortedSettingList.iterator(); it.hasNext();) {
 		    SettingBase<?> settingItem = it.next();
 		    if (settingItem.getCategory().name().equals(cat.name())) {
-			// item nur zur Liste Hinzuf¸gen, wenn der
+			// item nur zur Liste Hinzuf√ºgen, wenn der
 			// SettingModus
-			// dies auch zu l‰sst.
+			// dies auch zu l√§sst.
 			if (settingItem.getModus() != SettingModus.develop || GlobalCore.isDevelop()) {
 
 			    if (((settingItem.getModus() == SettingModus.Normal) || (settingItem.getModus() == SettingModus.Expert && Config.SettingsShowExpert.getValue()) || Config.SettingsShowAll.getValue()) && (settingItem.getModus() != SettingModus.Never)) {

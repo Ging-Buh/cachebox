@@ -1,0 +1,10 @@
+!!!! Achtung !!!!
+
+Dies ist unsere Test-Version um neue Funktionen von unseren Beta-Testern testen zu lassen!
+
+Mit Großer Wahrscheinlichkeit wird es zu Abstürzen kommen, weil wir noch nicht alles fertig haben.
+Diese Version gibt uns aber die Möglichkeit, dass wir alle Fehler finden, bevor wir diese Version als Release veröffentlichen. 
+
+Wenn Du uns helfen willst, die Cachebox zu verbessern, dann schicke uns ein Feedback in unserem Support Forum bzw. sende einen Fehlerbericht bei einem Absturz.
+
+Danke, Team-Cachebox

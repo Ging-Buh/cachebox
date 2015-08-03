@@ -89,7 +89,7 @@ public class CB_AllContextMenuHandler
 		if (GlobalCore.JokerisOnline())
 		{
 			mi = icm.addItem(MenuID.MI_JOKER, "joker", SpriteCacheBase.Icons.get(IconName.jokerPhone_25.ordinal()));
-			// Menu Item Telefonjoker enabled / disabled abh‰nging von gcJoker MD5
+			// Menu Item Telefonjoker enabled / disabled abh√§nging von gcJoker MD5
 
 			if (mi != null)
 			{

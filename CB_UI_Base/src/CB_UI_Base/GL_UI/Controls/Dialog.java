@@ -55,13 +55,13 @@ public abstract class Dialog extends CB_View_Base {
     protected String CallerName = "";
 
     /**
-     * enthällt die Controls, welche über allen anderen gezeichnet werden zB. Selection Marker des TextFields
+     * enthÃ¤llt die Controls, welche Ã¼ber allen anderen gezeichnet werden zB. Selection Marker des TextFields
      */
     private ArrayList<GL_View_Base> overlayForTextMarker = new ArrayList<GL_View_Base>();
-    // TODO das Handling der Marker in den Dialogen überarbeiten!
+    // TODO das Handling der Marker in den Dialogen Ã¼berarbeiten!
 
     /**
-     * Overlay über alles wird als letztes Gerendert
+     * Overlay Ã¼ber alles wird als letztes Gerendert
      */
     private ArrayList<GL_View_Base> overlay = new ArrayList<GL_View_Base>();
 
@@ -233,7 +233,7 @@ public abstract class Dialog extends CB_View_Base {
 
 	    mTitleHeight = titleLabel.getHeight();
 	    mTitleWidth = titleLabel.getWidth();
-	    mTitleWidth += rightBorder + leftBorder; // sonst sieht es blöd aus
+	    mTitleWidth += rightBorder + leftBorder; // sonst sieht es blÃ¶d aus
 	}
 
 	mContent.setWidth(this.getWidth() * 0.95f);
@@ -313,7 +313,7 @@ public abstract class Dialog extends CB_View_Base {
 			}
 
 		    } catch (java.util.ConcurrentModificationException e) {
-			// da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
+			// da die Liste nicht mehr gÃ¼ltig ist, brechen wir hier den Iterator ab
 			break;
 		    }
 		}

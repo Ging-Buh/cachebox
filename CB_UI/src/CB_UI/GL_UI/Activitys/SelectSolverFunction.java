@@ -48,22 +48,22 @@ public class SelectSolverFunction extends ButtonDialog
 		mResultListner = resultListner;
 		this.dataType = dataType;
 
-		// Grössen für die CategoryButtons und ItemButtons berechnen!
+		// GrÃ¶ssen fÃ¼r die CategoryButtons und ItemButtons berechnen!
 		categoryBtnRec = new CB_RectF(leftBorder, 0, innerWidth - mCenter9patch.getLeftWidth() - mCenter9patch.getRightWidth(),
 				UI_Size_Base.that.getButtonHeight());
 
 		itemBtnRec = new CB_RectF(leftBorder, 0, categoryBtnRec.getWidth() - leftBorder - rightBorder, UI_Size_Base.that.getButtonHeight());
 
-		// Initialisiert die unteren Buttons für Ok/Cancel
+		// Initialisiert die unteren Buttons fÃ¼r Ok/Cancel
 		iniOkCancel();
 
-		// über den Buttons liegt ein Wrapped Label, welches die Beschreibeung der Selectierten Function anzeigt
+		// Ã¼ber den Buttons liegt ein Wrapped Label, welches die Beschreibeung der Selectierten Function anzeigt
 		iniDescLabel();
 
-		// Initialisieren der Controls für die Function List
+		// Initialisieren der Controls fÃ¼r die Function List
 		iniFunctionList();
 
-		// jetzt sind alle Controls initialisiert und wir können Die Liste mit den Funktionen Füllen
+		// jetzt sind alle Controls initialisiert und wir kÃ¶nnen Die Liste mit den Funktionen FÃ¼llen
 		fillContent();
 
 	}
@@ -92,7 +92,7 @@ public class SelectSolverFunction extends ButtonDialog
 					}
 					catch (NullPointerException e)
 					{
-						throw new IllegalArgumentException("Der Returnlistner kann hier die Rückgabe von NULL nicht verarbeiten!");
+						throw new IllegalArgumentException("Der Returnlistner kann hier die RÃ¼ckgabe von NULL nicht verarbeiten!");
 					}
 				}
 				GL.that.closeDialog(SelectSolverFunction.this);
@@ -111,7 +111,7 @@ public class SelectSolverFunction extends ButtonDialog
 				}
 				catch (NullPointerException e)
 				{
-					throw new IllegalArgumentException("Der Returnlistner kann hier die Rückgabe von NULL nicht verarbeiten!");
+					throw new IllegalArgumentException("Der Returnlistner kann hier die RÃ¼ckgabe von NULL nicht verarbeiten!");
 				}
 				GL.that.closeDialog(SelectSolverFunction.this);
 				return true;
@@ -144,7 +144,7 @@ public class SelectSolverFunction extends ButtonDialog
 		// }
 		// catch (NullPointerException e)
 		// {
-		// throw new IllegalArgumentException("Der Returnlistner kann hier die Rückgabe von NULL nicht verarbeiten!");
+		// throw new IllegalArgumentException("Der Returnlistner kann hier die RÃ¼ckgabe von NULL nicht verarbeiten!");
 		// }
 		// }
 		// GL.that.closeDialog(SelectSolverFunction.this);
@@ -164,7 +164,7 @@ public class SelectSolverFunction extends ButtonDialog
 		// }
 		// catch (NullPointerException e)
 		// {
-		// throw new IllegalArgumentException("Der Returnlistner kann hier die Rückgabe von NULL nicht verarbeiten!");
+		// throw new IllegalArgumentException("Der Returnlistner kann hier die RÃ¼ckgabe von NULL nicht verarbeiten!");
 		// }
 		// GL.that.closeDialog(SelectSolverFunction.this);
 		// return true;
@@ -175,13 +175,13 @@ public class SelectSolverFunction extends ButtonDialog
 
 	private void iniDescLabel()
 	{
-		// rechteck für Label erstellen
+		// rechteck fÃ¼r Label erstellen
 		CB_RectF rec = new CB_RectF(0, this.getBottomHeight(), this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.5f);
 
 		desc = new Label(rec, "description");
 
-		// das Beschreibungs Label erhällt auch den BackGround der Activity.
-		// Damit haben alle Bereiche der Activity den Selben Rahmen, dies Wirkt aufgeräumter
+		// das Beschreibungs Label erhÃ¤llt auch den BackGround der Activity.
+		// Damit haben alle Bereiche der Activity den Selben Rahmen, dies Wirkt aufgerÃ¤umter
 		desc.setBackground(this.getBackground());
 
 		this.addChild(desc);
@@ -189,33 +189,33 @@ public class SelectSolverFunction extends ButtonDialog
 
 	private void iniFunctionList()
 	{
-		// rechteck für die List erstellen.
+		// rechteck fÃ¼r die List erstellen.
 		// diese ergibt sich aus dem Platzangebot oberhalb des desc Labels
 		CB_RectF rec = new CB_RectF(0, desc.getMaxY(), desc.getWidth(), this.getHeight() - desc.getMaxY() - mFooterHeight);
 
-		// Die Einträge der Function List werden aber nicht in einer ListView dargestellt, sondern werden in ein LinearLayout von oben nach
+		// Die EintrÃ¤ge der Function List werden aber nicht in einer ListView dargestellt, sondern werden in ein LinearLayout von oben nach
 		// unten geschrieben.
 		//
-		// Dieses LinearLayout wird dann in eine ScrollBox verpackt, damit dies Scrollbar ist, wenn die Länge den Anzeige Bereich
-		// überschreitet!
+		// Dieses LinearLayout wird dann in eine ScrollBox verpackt, damit dies Scrollbar ist, wenn die LÃ¤nge den Anzeige Bereich
+		// Ã¼berschreitet!
 		scrollBox = new ScrollBox(rec);
 
-		// damit die Scrollbox auch Events erhällt
+		// damit die Scrollbox auch Events erhÃ¤llt
 		scrollBox.setClickable(true);
 
-		// die ScrollBox erhält den Selben Hintergrund wie die Activity und wird damit ein wenig abgegrenzt von den Restlichen Controls
+		// die ScrollBox erhÃ¤lt den Selben Hintergrund wie die Activity und wird damit ein wenig abgegrenzt von den Restlichen Controls
 		scrollBox.setBackground(this.getBackground());
 
 		// Initial LinearLayout
-		// Dieses wird nur mit der Breite Initialisiert, die Höhe ergibt sich aus dem Inhalt
+		// Dieses wird nur mit der Breite Initialisiert, die HÃ¶he ergibt sich aus dem Inhalt
 		mLinearLayout = new Linearlayout(categoryBtnRec.getWidth(), "SelectSolverFunction-LinearLayout");
 
-		// damit das LinearLayout auch Events erhällt
+		// damit das LinearLayout auch Events erhÃ¤llt
 		mLinearLayout.setClickable(true);
 
 		mLinearLayout.setZeroPos();
 
-		// hier setzen wir ein LayoutChanged Listner, um die innere Höhe der ScrollBox bei einer veränderung der Höhe zu setzen!
+		// hier setzen wir ein LayoutChanged Listner, um die innere HÃ¶he der ScrollBox bei einer verÃ¤nderung der HÃ¶he zu setzen!
 		mLinearLayout.setLayoutChangedListner(new LayoutChanged()
 		{
 			@Override
@@ -236,8 +236,8 @@ public class SelectSolverFunction extends ButtonDialog
 	{
 
 		/**
-		 * in dieser liste sind alle Function Buttons enthalten! diese wird benötigt, um hier den Zustand der Buttons ändern zu können. wenn
-		 * ein Button selectiert wurde müssen alle anderen deselectiert werden.
+		 * in dieser liste sind alle Function Buttons enthalten! diese wird benÃ¶tigt, um hier den Zustand der Buttons Ã¤ndern zu kÃ¶nnen. wenn
+		 * ein Button selectiert wurde mÃ¼ssen alle anderen deselectiert werden.
 		 */
 		final ArrayList<Button> functBtnList = new ArrayList<Button>();
 
@@ -253,10 +253,10 @@ public class SelectSolverFunction extends ButtonDialog
 				final Button categoryButton = new Button(categoryBtnRec, "Btn-" + cat.getName());
 				categoryButton.setText(Translation.Get(cat.getName()));
 
-				// alle Buttons müssen das Atribut Dragable habe, da sie sich in einer Dragable View befinden.
+				// alle Buttons mÃ¼ssen das Atribut Dragable habe, da sie sich in einer Dragable View befinden.
 				categoryButton.setDrageble();
 
-				// Category Button Gelb einfärben, damit sie sich von den Function Buttons unterscheiden
+				// Category Button Gelb einfÃ¤rben, damit sie sich von den Function Buttons unterscheiden
 				categoryButton.setColorFilter(new Color(1f, 0.8f, 0.0f, 1));
 
 				// erstelle Category Box
@@ -267,8 +267,8 @@ public class SelectSolverFunction extends ButtonDialog
 
 				lay.setClickable(true);
 
-				// Zähler für die Anzahl der Funktionen, die zu dieser CollabsBox hinzugefügt wurden.
-				// Dies wird dazu benutzt, um zu entscheiden, ob die Category vielleicht keine Einträge hat und garnicht in der Liste
+				// ZÃ¤hler fÃ¼r die Anzahl der Funktionen, die zu dieser CollabsBox hinzugefÃ¼gt wurden.
+				// Dies wird dazu benutzt, um zu entscheiden, ob die Category vielleicht keine EintrÃ¤ge hat und garnicht in der Liste
 				// erscheinen soll.
 				int EntryCount = 0;
 
@@ -286,13 +286,13 @@ public class SelectSolverFunction extends ButtonDialog
 						}
 						final Button btnFct = new Button(itemBtnRec, "FunctionBtn-" + fct.getName());
 
-						// den Function Button der algemeinen Liste hinzufügrn
+						// den Function Button der algemeinen Liste hinzufÃ¼grn
 						functBtnList.add(btnFct);
 
 						// setze Button Text
 						btnFct.setText(fct.getName());
 
-						// alle Buttons müssen das Atribut Dragable habe, da sie sich in einer Dragable View befinden.
+						// alle Buttons mÃ¼ssen das Atribut Dragable habe, da sie sich in einer Dragable View befinden.
 						btnFct.setDrageble();
 
 						// Wenn Der Button geclickt wurd, wird dieser als Selecktiert Markiert
@@ -302,7 +302,7 @@ public class SelectSolverFunction extends ButtonDialog
 							@Override
 							public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 							{
-								// ColorFilter aller Buttons zurück setzen
+								// ColorFilter aller Buttons zurÃ¼ck setzen
 								Iterator<Button> btnIterator = functBtnList.iterator();
 								do
 								{
@@ -310,7 +310,7 @@ public class SelectSolverFunction extends ButtonDialog
 								}
 								while (btnIterator.hasNext());
 
-								// setze für diesen Button den ColorFilter als selected Markierung
+								// setze fÃ¼r diesen Button den ColorFilter als selected Markierung
 								btnFct.setColorFilter(new Color(1f, 0.5f, 0.5f, 1));
 
 								// Schreibe die Funktions Beschreibung in das Desc Label
@@ -318,44 +318,44 @@ public class SelectSolverFunction extends ButtonDialog
 
 								selectedFunction = fct;
 
-								// hier muss einmal gerendert werden, damit die Änderungen übernommen werden
+								// hier muss einmal gerendert werden, damit die Ã„nderungen Ã¼bernommen werden
 								GL.that.renderOnce();
 
 								return false;
 							}
 						});
 
-						// den Function Button der Collapse Box hinzufügen
+						// den Function Button der Collapse Box hinzufÃ¼gen
 						lay.addChild(btnFct);
-						EntryCount++; // Den Function Zähler erhöhen;
+						EntryCount++; // Den Function ZÃ¤hler erhÃ¶hen;
 
 					}
 					while (iteratorFunctions.hasNext());
 				}
 
-				// Nur wenn die Anzahl der Einträge größer 0 ist, erscheinen Category Buttn und CollbaseBox in dem LinearLayout
+				// Nur wenn die Anzahl der EintrÃ¤ge grÃ¶ÃŸer 0 ist, erscheinen Category Buttn und CollbaseBox in dem LinearLayout
 				if (EntryCount > 0)
 				{
 
-					// CategoryButton und CollabsBox werden beide auf Position 0,0 gesetzt, da,it sie richtig angeordnet werden können
+					// CategoryButton und CollabsBox werden beide auf Position 0,0 gesetzt, da,it sie richtig angeordnet werden kÃ¶nnen
 					categoryButton.setZeroPos();
 					lay.setZeroPos();
 
-					// Den Category Button zum LinearLayout hinzufügen mit einem normalen Abstand zum darüberliegendem Control
+					// Den Category Button zum LinearLayout hinzufÃ¼gen mit einem normalen Abstand zum darÃ¼berliegendem Control
 					mLinearLayout.addChild(categoryButton, margin);
 
-					// die Collapse noch Schliessen, bevor sie zum LinearLayout hinzugefügt wird.
-					// Da wir hier aber keine Animation haben wollen, setzen wir die AnimationsHöhe auf null und rufen nicht die Methode
-					// Collapse() auf, da diese eine Animation starten würde.
+					// die Collapse noch Schliessen, bevor sie zum LinearLayout hinzugefÃ¼gt wird.
+					// Da wir hier aber keine Animation haben wollen, setzen wir die AnimationsHÃ¶he auf null und rufen nicht die Methode
+					// Collapse() auf, da diese eine Animation starten wÃ¼rde.
 					lay.setAnimationHeight(0f);
 
-					// Die mit den Functions Buttons gefüllte CollapseBox zum LinearLayout hinzufügen mit keinem Abstand zum
-					// darüberliegendem
+					// Die mit den Functions Buttons gefÃ¼llte CollapseBox zum LinearLayout hinzufÃ¼gen mit keinem Abstand zum
+					// darÃ¼berliegendem
 					// Category Button!
 					mLinearLayout.addChild(lay, margin);
 
-					// Wenn die CollapseBox ihre größe verändert, muss dies noch dem LinearLayout mitgeteilt werden und auch der ScrollBox,
-					// dass sich die innere Höhe geändert hat!
+					// Wenn die CollapseBox ihre grÃ¶ÃŸe verÃ¤ndert, muss dies noch dem LinearLayout mitgeteilt werden und auch der ScrollBox,
+					// dass sich die innere HÃ¶he geÃ¤ndert hat!
 					lay.setAnimationListner(new animatetHeightChangedListner()
 					{
 						@Override
@@ -368,7 +368,7 @@ public class SelectSolverFunction extends ButtonDialog
 						}
 					});
 
-					// Bei einem Click auf dem Category Button wird die darunterliegende CollabsBox geöfnet oder geschlossen
+					// Bei einem Click auf dem Category Button wird die darunterliegende CollabsBox geÃ¶fnet oder geschlossen
 					categoryButton.setOnClickListener(new OnClickListener()
 					{
 						@Override

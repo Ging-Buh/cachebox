@@ -34,7 +34,7 @@ import org.poly2tri.triangulation.TriangulationPoint;
 
 
 /**
- * @author Thomas Åhlen (thahlen@gmail.com)
+ * @author Thomas Ã…hlen (thahlen@gmail.com)
  */
 public class AdvancingFront
 {

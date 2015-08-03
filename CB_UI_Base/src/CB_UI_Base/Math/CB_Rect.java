@@ -19,7 +19,7 @@ package CB_UI_Base.Math;
 import java.util.ArrayList;
 
 /**
- * Eine Structur für RectF mit besonderen Methoden Speziel für die Handhabung in der Verwendung der Berechneten Grössen und Positionen
+ * Eine Structur fÃ¼r RectF mit besonderen Methoden Speziel fÃ¼r die Handhabung in der Verwendung der Berechneten GrÃ¶ssen und Positionen
  * einzelner UI Elemente in Cachebox
  * 
  * @author Longri
@@ -55,7 +55,7 @@ public class CB_Rect
 	}
 
 	/**
-	 * Constructor für ein neues RectF mit Angabe der linken unteren Ecke und der Höhe und Breite
+	 * Constructor fÃ¼r ein neues RectF mit Angabe der linken unteren Ecke und der HÃ¶he und Breite
 	 * 
 	 * @param X
 	 * @param Y
@@ -110,7 +110,7 @@ public class CB_Rect
 	}
 
 	/**
-	 * Setzt die Werte für Height und Width. Wenn sich einer der Werte geändert hat, wird ein True zurück gegeben, ansonsten False.
+	 * Setzt die Werte fÃ¼r Height und Width. Wenn sich einer der Werte geÃ¤ndert hat, wird ein True zurÃ¼ck gegeben, ansonsten False.
 	 * 
 	 * @param Width
 	 * @param Height
@@ -172,7 +172,7 @@ public class CB_Rect
 	}
 
 	/**
-	 * Gibt die Position der rechten oberen Ecke zurück
+	 * Gibt die Position der rechten oberen Ecke zurÃ¼ck
 	 * 
 	 * @return intPos
 	 */
@@ -244,7 +244,7 @@ public class CB_Rect
 	}
 
 	/**
-	 * Setzt Height und Width auf die nächst größere Potenz von 2
+	 * Setzt Height und Width auf die nÃ¤chst grÃ¶ÃŸere Potenz von 2
 	 */
 	public void setPO2()
 	{

@@ -505,8 +505,8 @@ public class GcApiLogin
 
 		String page = builder.toString();
 
-		// Jetzt haben wir die Anfrage abgeschickt und wir müssen die Abhol Seite Aufrufen
-		// Wenn wir als Rückgabe eine Move to URl Seite bekommen! Ansonsten ist etwas schief gegeangen!
+		// Jetzt haben wir die Anfrage abgeschickt und wir mÃ¼ssen die Abhol Seite Aufrufen
+		// Wenn wir als RÃ¼ckgabe eine Move to URl Seite bekommen! Ansonsten ist etwas schief gegeangen!
 		// http://www.geocaching.com/oauth/MobileAuthorize.aspx?locale=en-US
 		if (page.contains("moved"))
 		{
@@ -739,12 +739,12 @@ public class GcApiLogin
 		if (pos < 0) return;
 		int pos2 = html.indexOf("</span>", pos);
 		if (pos2 < pos) return;
-		// zwischen pos und pos2 sollte ein gültiges AccessToken sein!!!
+		// zwischen pos und pos2 sollte ein gÃ¼ltiges AccessToken sein!!!
 		final String accessToken = html.substring(pos + search.length(), pos2);
 
 		// store the encrypted AccessToken in the Config file
-		// wir bekommen den Key schon verschlüsselt, deshalb muss er
-		// nicht noch einmal verschlüsselt werden!
+		// wir bekommen den Key schon verschlÃ¼sselt, deshalb muss er
+		// nicht noch einmal verschlÃ¼sselt werden!
 		Config.GcAPI.setEncryptedValue(accessToken);
 		Config.AcceptChanges();
 

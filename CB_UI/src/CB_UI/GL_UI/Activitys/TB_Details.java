@@ -47,7 +47,7 @@ public class TB_Details extends ActivityBase {
     private Image icon, image;
     private Label lblName, lblAbout, lblAboutDesc, lblGoal, lblGoalDesc;
     private Label lblTypeName, lblTbCode, lblOwner, lblBirth;
-    // TODO Visit,Home und Distance müssen noch angezeigt werden!
+    // TODO Visit,Home und Distance mÃ¼ssen noch angezeigt werden!
     private Label TypeName, TbCode, Owner, Birth;
     private Box AboutThisItem, GoalThisItem, DetailThisItem;
 

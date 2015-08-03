@@ -1,0 +1,20 @@
+apply plugin: "java"
+
+sourceCompatibility = 1.6
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+sourceSets.main.java.srcDirs = [ "src/" ]
+
+
+dependencies {
+        compile project(":CB_Utils")
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        compile 'org.slf4j:slf4j-api:1.7.12'
+    }
+
+
+eclipse.project {
+    name = appName + "-core"
+}

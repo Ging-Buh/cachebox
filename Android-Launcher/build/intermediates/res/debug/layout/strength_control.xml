@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content" android:layout_height="30dip" android:baselineAligned="false">
+	
+	<View android:id="@+id/balken_view1" android:layout_width="5dip"
+		android:layout_height="25dip" android:background="@color/Day_Background" android:layout_marginLeft="1dip" android:layout_gravity="bottom"></View>
+		
+	<View android:id="@+id/balken_view2" android:layout_width="5dip"
+		android:layout_height="25dip" android:background="@color/Day_Background" android:layout_marginLeft="1dip" android:layout_gravity="bottom"></View>
+		
+	<View android:id="@+id/balken_view3" android:layout_width="5dip"
+		android:layout_height="25dip" android:background="@color/Day_Background" android:layout_marginLeft="1dip" android:layout_gravity="bottom"></View>
+		
+	<View android:id="@+id/balken_view4" android:layout_width="5dip"
+		android:layout_height="25dip" android:background="@color/Day_Background" android:layout_marginLeft="1dip" android:layout_gravity="bottom"></View>
+		
+	<View android:id="@+id/balken_view5" android:layout_width="5dip"
+		android:layout_height="25dip" android:background="@color/Day_Background" android:layout_marginLeft="1dip" android:layout_gravity="bottom"></View>
+		
+	<View android:id="@+id/balken_view6" android:layout_width="5dip"
+		android:layout_height="25dip" android:background="@color/Day_Background" android:layout_marginLeft="1dip" android:layout_gravity="bottom"></View>
+		
+	<View android:id="@+id/balken_view7" android:layout_width="5dip"
+		android:layout_height="25dip" android:background="@color/Day_Background" android:layout_marginLeft="1dip" android:layout_gravity="bottom"></View>
+		
+	<View android:id="@+id/balken_view8" android:layout_width="5dip"
+		android:layout_height="25dip" android:background="@color/Day_Background" android:layout_marginLeft="1dip" android:layout_gravity="bottom"></View>
+		
+	<View android:id="@+id/balken_view9" android:layout_width="5dip"
+		android:layout_height="25dip" android:background="@color/Day_Background" android:layout_marginLeft="1dip" android:layout_gravity="bottom"></View>
+		
+	<View android:id="@+id/balken_view10" android:layout_width="5dip"
+		android:layout_height="25dip" android:background="@color/Day_Background" android:layout_marginLeft="1dip" android:layout_gravity="bottom"></View>
+
+</LinearLayout>
+<!-- From: file:/C:/@Work/Longri/Gits/cachebox/Android-Launcher/res/layout/strength_control.xml -->

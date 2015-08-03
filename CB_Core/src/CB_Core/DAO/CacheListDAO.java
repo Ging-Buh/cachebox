@@ -281,7 +281,7 @@ public class CacheListDAO
 	}
 
 	/**
-	 * Löscht alle Spoiler und Description Images der übergebenen Liste mit GC-Codes
+	 * LÃ¶scht alle Spoiler und Description Images der Ã¼bergebenen Liste mit GC-Codes
 	 * 
 	 * @param list
 	 * @param SpoilerFolder

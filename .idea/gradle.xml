@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleJvm" value="#JAVA_HOME" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/Android-Launcher" />
+            <option value="$PROJECT_DIR$/CB_Core" />
+            <option value="$PROJECT_DIR$/CB_Locator_Base" />
+            <option value="$PROJECT_DIR$/CB_Locator_Desktop" />
+            <option value="$PROJECT_DIR$/CB_Rpc" />
+            <option value="$PROJECT_DIR$/CB_Translation_Base" />
+            <option value="$PROJECT_DIR$/CB_UI" />
+            <option value="$PROJECT_DIR$/CB_UI_Base" />
+            <option value="$PROJECT_DIR$/CB_Utils" />
+            <option value="$PROJECT_DIR$/CB_mapsforge" />
+            <option value="$PROJECT_DIR$/Desktop-Launcher" />
+            <option value="$PROJECT_DIR$/GPS_Simulator" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

@@ -23,7 +23,7 @@ import CB_Utils.MathUtils.CalculationType;
 
 /**
  * Ein Koordinaten Typ, der speziell zum Messen einer Koordinaten Reihe da ist. <br>
- * Dieser Typ implementiert das Comparable Interface um einen Vergleich über die Distanz zur Referenz Koordinate zu ermöglichen.
+ * Dieser Typ implementiert das Comparable Interface um einen Vergleich Ã¼ber die Distanz zur Referenz Koordinate zu ermÃ¶glichen.
  * 
  * @author Longri
  */
@@ -35,7 +35,7 @@ public class MeasuredCoord implements Comparable<MeasuredCoord>
 
 	/**
 	 * Die Referenz Coordinate, auf die sich der Vergleich bezieht. <br>
-	 * Je grösser der Abstand zur Referenz Coordinate desto höher der Index in einer Liste.
+	 * Je grÃ¶sser der Abstand zur Referenz Coordinate desto hÃ¶her der Index in einer Liste.
 	 */
 	public static Coordinate Referenz;
 
@@ -61,7 +61,7 @@ public class MeasuredCoord implements Comparable<MeasuredCoord>
 	}
 
 	/**
-	 * Gibt die Latitude dieser Koordinate zurück
+	 * Gibt die Latitude dieser Koordinate zurÃ¼ck
 	 * 
 	 * @return double
 	 */
@@ -71,7 +71,7 @@ public class MeasuredCoord implements Comparable<MeasuredCoord>
 	}
 
 	/**
-	 * Gibt die Longitude dieser Koordinate zurück
+	 * Gibt die Longitude dieser Koordinate zurÃ¼ck
 	 * 
 	 * @return double
 	 */
@@ -81,7 +81,7 @@ public class MeasuredCoord implements Comparable<MeasuredCoord>
 	}
 
 	/**
-	 * Gibt die Genauigkeit dieser gemessenen Koordinate zurück!
+	 * Gibt die Genauigkeit dieser gemessenen Koordinate zurÃ¼ck!
 	 * 
 	 * @return float
 	 */
@@ -117,9 +117,9 @@ public class MeasuredCoord implements Comparable<MeasuredCoord>
 	}
 
 	/**
-	 * Gibt die Entfernung zur Referenz Position als Float zurück
+	 * Gibt die Entfernung zur Referenz Position als Float zurÃ¼ck
 	 * 
-	 * @return Entfernung zur übergebenen User Position als Float
+	 * @return Entfernung zur Ã¼bergebenen User Position als Float
 	 */
 	public float Distance(CalculationType type)
 	{

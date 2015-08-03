@@ -53,7 +53,7 @@ public class GradiantFilledRectangle extends CB_View_Base
 			{
 				tex = gradiant.getTexture();
 
-				// TODO handle angle over 90°
+				// TODO handle angle over 90Â°
 
 				double alpha = (gradiant.getDirection() * MathUtils.DEG_RAD);
 

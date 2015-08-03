@@ -12,7 +12,7 @@ public class Astronomy
 {
 	private final static Calendar calender = Calendar.getInstance();
 
-	// Wandelt den übergebenen Zeitpunkt ins Julianische Datum um
+	// Wandelt den Ã¼bergebenen Zeitpunkt ins Julianische Datum um
 	// nach http://www.jgiesen.de/elevaz/basics/meeus.htm#jd
 	public static double UtcToJulianDate(Date date)
 	{

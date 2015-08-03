@@ -6,7 +6,7 @@ import CB_UI_Base.Math.CB_RectF;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
- * zeigt die Methoden die Überschrieben werden müssen und die, welche Überschrieben werden können. Wobei die Basis Methoden von CB_RecF
+ * zeigt die Methoden die Ãœberschrieben werden mÃ¼ssen und die, welche Ãœberschrieben werden kÃ¶nnen. Wobei die Basis Methoden von CB_RecF
  * weggelassen wurden.
  * 
  * @author Longri

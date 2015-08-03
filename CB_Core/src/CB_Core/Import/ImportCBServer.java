@@ -42,7 +42,7 @@ public class ImportCBServer
 			if (item.getDownload())
 			{
 				count++;
-				// Downloads für diese Category
+				// Downloads fÃ¼r diese Category
 				int downloads = (item.getCacheCount() - 1) / anzToLoad + 1;
 				anzDownloadsTotal += downloads;
 			}
@@ -75,7 +75,7 @@ public class ImportCBServer
 					{
 						RpcAnswer_GetCacheList gclAnswer = (RpcAnswer_GetCacheList) answer;
 						System.out.println("************* CacheList ***************");
-						// GPX-Filename und Category Eintrag prüfen
+						// GPX-Filename und Category Eintrag prÃ¼fen
 						Category cat = null;
 						CategoryDAO catDao = new CategoryDAO();
 						// Suchen, ob diese Category schon vorhanden ist
@@ -92,7 +92,7 @@ public class ImportCBServer
 						if (cat == null)
 						{
 							cat = catDao.CreateNewCategory(item.getDescription());
-							CoreSettingsForward.Categories.add(cat); // Category hinzufügen
+							CoreSettingsForward.Categories.add(cat); // Category hinzufÃ¼gen
 						}
 						// GpxFilenames Eintrag erzeugen
 						// Alle importierten Caches werdem diesem neuen GpxFilename zugeordnet
@@ -219,7 +219,7 @@ public class ImportCBServer
 		System.out.println("Import Ende (" + (System.currentTimeMillis() - tmpTS) + ")");
 		tmpTS = System.currentTimeMillis();
 		System.out.println("Import Gesamtdauer: " + (endTS - startTS) + "ms");
-		// Aufzeichnen der Änderungen aktivieren
+		// Aufzeichnen der Ã„nderungen aktivieren
 		if (Database.Data.MasterDatabaseId == 0)
 		{
 			Database.Data.MasterDatabaseId = 1;

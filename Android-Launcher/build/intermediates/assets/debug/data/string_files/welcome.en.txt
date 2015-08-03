@@ -1,0 +1,10 @@
+!!!! Attantion !!!! 
+
+This is our trial version to get tested new features from our beta testers! 
+
+With Big chance it will lead to a crash, because we still do not have everything ready. 
+
+But this version gives us the possibility that we find all errors before we publish this version as a release. 
+If you want to help us to improve the Cachebox, then send us a feedback on our support forum or send an error report when a crash occurs. 
+
+Thank you, Team Cachebox

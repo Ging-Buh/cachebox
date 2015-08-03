@@ -18,7 +18,7 @@
 package CB_UI_Base.Math;
 
 /**
- * Die Size Structur enthält die Member width und height
+ * Die Size Structur enthÃ¤lt die Member width und height
  * 
  * @author Longri
  */
@@ -62,7 +62,7 @@ public class SizeF
 	}
 
 	/**
-	 * Setzt die Werte für Height und Width. Wenn sich einer der Werte geändert hat, wird ein True zurück gegeben, ansonsten False.
+	 * Setzt die Werte fÃ¼r Height und Width. Wenn sich einer der Werte geÃ¤ndert hat, wird ein True zurÃ¼ck gegeben, ansonsten False.
 	 * 
 	 * @param Width
 	 * @param Height
