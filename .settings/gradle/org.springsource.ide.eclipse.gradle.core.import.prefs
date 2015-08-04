@@ -1,0 +1,9 @@
+#org.springsource.ide.eclipse.gradle.core.preferences.GradleImportPreferences
+#Tue Aug 04 11:30:56 CEST 2015
+addResourceFilters=true
+afterTasks=afterEclipseImport;
+beforeTasks=cleanEclipse;eclipse;
+enableAfterTasks=true
+enableBeforeTasks=true
+enableDependendencyManagement=true
+projects=;Android-Launcher;CB_Core;CB_Locator_Base;CB_Locator_Desktop;CB_mapsforge;CB_Rpc;CB_Translation_Base;CB_UI;CB_UI_Base;CB_Utils;Desktop-Launcher;GPS_Simulator;

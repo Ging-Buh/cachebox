@@ -26,8 +26,11 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="gdx-1.6.4" level="project" />
-    <orderEntry type="library" exported="" name="gdx-box2d-1.6.4" level="project" />
-    <orderEntry type="library" exported="" name="gdx-freetype-1.6.4" level="project" />
+    <orderEntry type="module" module-name="CB_Locator_Base" exported="" />
+    <orderEntry type="module" module-name="CB_mapsforge" exported="" />
+    <orderEntry type="module" module-name="CB_Utils" exported="" />
+    <orderEntry type="library" exported="" name="gdx-1.6.2" level="project" />
+    <orderEntry type="library" exported="" name="gdx-box2d-1.6.2" level="project" />
+    <orderEntry type="library" exported="" name="gdx-freetype-1.6.2" level="project" />
   </component>
 </module>

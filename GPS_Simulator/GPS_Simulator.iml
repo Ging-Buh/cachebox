@@ -26,8 +26,13 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="gdx-1.6.4" level="project" />
-    <orderEntry type="library" exported="" name="gdx-box2d-1.6.4" level="project" />
-    <orderEntry type="library" exported="" name="gdx-freetype-1.6.4" level="project" />
+    <orderEntry type="module" module-name="CB_UI_Base" exported="" />
+    <orderEntry type="module" module-name="CB_Locator_Base" exported="" />
+    <orderEntry type="module" module-name="CB_Locator_Desktop" exported="" />
+    <orderEntry type="module" module-name="CB_mapsforge" exported="" />
+    <orderEntry type="library" exported="" name="slf4j-api-1.7.12" level="project" />
+    <orderEntry type="library" exported="" name="log4j-1.2.17" level="project" />
+    <orderEntry type="library" exported="" name="avetanaBT" level="project" />
+    <orderEntry type="library" exported="" name="bluecove-2.1.1-SNAPSHOT" level="project" />
   </component>
 </module>

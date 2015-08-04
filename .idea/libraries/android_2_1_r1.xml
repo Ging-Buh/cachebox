@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="android-2.1_r1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android/android/2.1_r1/7f7a36a99c1aa40ac399cf57db855eda9b498899/android-2.1_r1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android/android/2.1_r1/a0c950d58d41e040c5d6ce9286d3d084fbe26c63/android-2.1_r1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -18,6 +18,3 @@ dependencies {
     }
 
 
-eclipse.project {
-    name = appName + "-core"
-}

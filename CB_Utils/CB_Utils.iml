@@ -26,8 +26,21 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="gdx-1.6.4" level="project" />
-    <orderEntry type="library" exported="" name="gdx-box2d-1.6.4" level="project" />
-    <orderEntry type="library" exported="" name="gdx-freetype-1.6.4" level="project" />
+    <orderEntry type="library" exported="" name="gdx-1.6.2" level="project" />
+    <orderEntry type="library" exported="" name="httpclient-4.1.1" level="project" />
+    <orderEntry type="library" exported="" name="httpmime-4.1.1" level="project" />
+    <orderEntry type="library" exported="" name="slf4j-api-1.7.12" level="project" />
+    <orderEntry type="library" exported="" name="logback-classic-1.1.3" level="project" />
+    <orderEntry type="library" exported="" name="logback-android-classic-1.1.1-4" level="project" />
+    <orderEntry type="library" exported="" name="httpcore-4.1" level="project" />
+    <orderEntry type="library" exported="" name="commons-logging-1.1.1" level="project" />
+    <orderEntry type="library" exported="" name="commons-codec-1.4" level="project" />
+    <orderEntry type="library" exported="" name="logback-core-1.1.3" level="project" />
+    <orderEntry type="library" exported="" name="apktool-lib-1.4.4-3" level="project" />
+    <orderEntry type="library" exported="" name="logback-android-core-1.1.1-4" level="project" />
+    <orderEntry type="library" exported="" name="android-2.1_r1" level="project" />
+    <orderEntry type="library" exported="" name="opengl-api-gl1.1-android-2.1_r1" level="project" />
+    <orderEntry type="library" exported="" name="xmlParserAPIs-2.6.2" level="project" />
+    <orderEntry type="library" exported="" name="xpp3-1.1.4c" level="project" />
   </component>
 </module>

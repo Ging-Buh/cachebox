@@ -12,7 +12,3 @@ dependencies {
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
     }
 
-
-eclipse.project {
-    name = appName + "-core"
-}
