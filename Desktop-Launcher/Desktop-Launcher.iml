@@ -34,6 +34,7 @@
     <orderEntry type="module" module-name="CB_UI_Base" exported="" />
     <orderEntry type="module" module-name="CB_Core" exported="" />
     <orderEntry type="library" exported="" name="slf4j-api-1.7.12" level="project" />
+    <orderEntry type="library" exported="" name="sqlite-jdbc-3.8.11" level="project" />
     <orderEntry type="library" exported="" name="gdx-backend-lwjgl-1.6.2" level="project" />
     <orderEntry type="library" exported="" name="gdx-platform-1.6.2-natives-desktop" level="project" />
     <orderEntry type="library" exported="" name="gdx-box2d-platform-1.6.2-natives-desktop" level="project" />
