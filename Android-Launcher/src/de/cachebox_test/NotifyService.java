@@ -28,7 +28,7 @@ public class NotifyService extends Service implements GPS_FallBackEvent
 	{
 
 		/**
-		 * Damit erhalten wir Zugriff auf unseren Service. Gibt unsere Instanz des NotifyService zurück.
+		 * Damit erhalten wir Zugriff auf unseren Service. Gibt unsere Instanz des NotifyService zurÃ¼ck.
 		 */
 		NotifyService getService()
 		{

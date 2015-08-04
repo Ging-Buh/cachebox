@@ -69,7 +69,7 @@ public class CacheDraw
 	private static TextPaint namePaint;
 
 	// Die Cached Bmp wird nur zur Darstellung als Bubble in der
-	// MapView benötigt.
+	// MapView benÃ¶tigt.
 	public static Bitmap CachedBitmap;
 	private static long CachedBitmapId = -1;
 	private static Paint CachedBitmapPaitnt;
@@ -151,7 +151,7 @@ public class CacheDraw
 			final int SDTLineTop = SDTImageTop + UiSizes.that.getScaledFontSize();
 
 			// Measure
-			if (VoteWidth == 0) // Grössen noch nicht berechnet
+			if (VoteWidth == 0) // GrÃ¶ssen noch nicht berechnet
 			{
 
 				VoteWidth = UiSizes.that.getScaledIconSize() / 2;

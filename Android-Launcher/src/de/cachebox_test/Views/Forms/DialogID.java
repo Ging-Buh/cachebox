@@ -2,7 +2,7 @@ package de.cachebox_test.Views.Forms;
 
 
 /**
- * Enthällt die Statichen ID´d, die einen Dialog entsprechen
+ * EnthÃ¤llt die Statichen IDÂ´d, die einen Dialog entsprechen
  * @author Longri
  *
  */

@@ -190,7 +190,7 @@ public class ActivityUtils
 
 	// / <summary>
 	// / Zeichnet das Bild und skaliert es proportional so, dass es die
-	// / übergebene füllt.
+	// / Ã¼bergebene fÃ¼llt.
 	// / </summary>
 	// / <param name="graphics"></param>
 	// / <param name="image"></param>
@@ -235,7 +235,7 @@ public class ActivityUtils
 
 	// / <summary>
 	// / Zeichnet das Bild und skaliert es proportional so, dass es die
-	// / übergebene füllt.
+	// / Ã¼bergebene fÃ¼llt.
 	// / </summary>
 	// / <param name="graphics"></param>
 	// / <param name="image"></param>
@@ -354,7 +354,7 @@ public class ActivityUtils
 	}
 
 	/**
-	 * Da bei dem Verwendeten Themes die disabled TextColor nicht richtig übernommen wird, wird mit dieser Methode der Status überprüft und
+	 * Da bei dem Verwendeten Themes die disabled TextColor nicht richtig Ã¼bernommen wird, wird mit dieser Methode der Status Ã¼berprÃ¼ft und
 	 * gegebenenfalls die Farbe angepasst.
 	 * 
 	 * @param btn
@@ -373,7 +373,7 @@ public class ActivityUtils
 	}
 
 	/**
-	 * Da bei dem Verwendeten Themes die disabled TextColor nicht richtig übernommen wird, wird mit dieser Methode der Status gesetzt und
+	 * Da bei dem Verwendeten Themes die disabled TextColor nicht richtig Ã¼bernommen wird, wird mit dieser Methode der Status gesetzt und
 	 * gegebenenfalls die Farbe angepasst.
 	 * 
 	 * @param btn

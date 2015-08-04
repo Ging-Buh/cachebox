@@ -186,8 +186,6 @@ import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AndroidClipboard;
 import de.cachebox_test.Views.JokerView;
-import de.cachebox_test.Views.SolverView;
-import de.cachebox_test.Views.SpoilerView;
 import de.cachebox_test.Views.ViewGL;
 import de.cachebox_test.Views.Forms.GcApiLogin;
 import de.cachebox_test.Views.Forms.MessageBox;
@@ -228,8 +226,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public static ViewID aktTabViewId = null;
 
 	public static DescriptionView descriptionView = null; // ID 4
-	private static SpoilerView spoilerView = null; // ID 5
-	private static SolverView solverView = null; // ID 7
 	private static JokerView jokerView = null; // ID 12
 
 	/**
@@ -1491,13 +1487,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 
 		if (ID == ViewConst.JOKER_VIEW) return jokerView = new JokerView(this, this);
-		else if (ID == ViewConst.SOLVER_VIEW) return solverView = new SolverView(this, inflater);
-		else if (ID == ViewConst.SPOILER_VIEW)
-		{
-			if (spoilerView == null) spoilerView = new SpoilerView(this, inflater);
-
-			return spoilerView;
-		}
 
 		return null;
 	}
@@ -1554,22 +1543,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				jokerView.OnFree();
 				jokerView = null;
 			}
-			else if (aktView.equals(solverView))
-			{
-				// Instanz l�schenn
-				aktView = null;
-				solverView.OnFree();
-				solverView = null;
-			}
-			else if (aktView.equals(spoilerView))
-			{
-				// Instanz l�schenn
-				aktView = null;
-				spoilerView.OnFree();
-				spoilerView = null;
-			}
-
-		}
+				}
 
 		if (ID.getType() == UI_Type.OpenGl)
 		{
