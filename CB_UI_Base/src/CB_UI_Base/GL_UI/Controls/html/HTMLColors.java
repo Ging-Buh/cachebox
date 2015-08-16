@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Utils.Util.HSV_Color;
 
 /**
@@ -13,6 +15,8 @@ import CB_Utils.Util.HSV_Color;
  * @author Adrian Ber
  */
 public class HTMLColors {
+
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(HTMLColors.class);
 
     /** Don't instantiate this, use only the static methods */
     private HTMLColors() {
@@ -89,7 +93,15 @@ public class HTMLColors {
 
 	}
 
-	return name2color.get(name.toLowerCase());
+	HSV_Color ret = name2color.get(name.toLowerCase());
+
+	if (ret == null) {
+	    // unknown color, set to black
+	    log.error("unknown color name: " + name);
+	    ret = new HSV_Color(HSV_Color.BLACK);
+	}
+
+	return ret;
     }
 
     /** Returns a collection of all color names */
