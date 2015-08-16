@@ -27,7 +27,7 @@ public class HintDialog extends GL_MsgBox
 	}
 
 	/**
-	 * Zeigt den Hint des Global angewählten Caches
+	 * Zeigt den Hint des Global angewÃ¤hlten Caches
 	 */
 	public static void show()
 	{
@@ -40,7 +40,7 @@ public class HintDialog extends GL_MsgBox
 		hintTextEncoded = HintFromDB + "\n ";
 
 		// nur damit bei mir die Box maximiert kommt und damit der Text nicht skaliert.
-		// !!! gilt für alle Dialoge, da statisch definiert. Könnte es auch dort ändern.
+		// !!! gilt fÃ¼r alle Dialoge, da statisch definiert. KÃ¶nnte es auch dort Ã¤ndern.
 		Dialog.margin = 5;
 		Size decodedSize = calcMsgBoxSize(hintTextDecoded, true, true, false);
 		Size encodedSize = calcMsgBoxSize(hintTextEncoded, true, true, false);
@@ -66,11 +66,11 @@ public class HintDialog extends GL_MsgBox
 		// der decodierte Text wird per Default zuerst angezeigt
 		msgBox.label.setWrappedText(hintTextDecoded);// , Fonts.getBig()
 		float lblHeigtTextDecoded = msgBox.label.getTextHeight();
-		// Falls der decodierte Text mehr Höhe benötigt, dann diese nehmen
+		// Falls der decodierte Text mehr HÃ¶he benÃ¶tigt, dann diese nehmen
 		if (lblHeigtTextDecoded > lblHeight) lblHeight = lblHeigtTextDecoded;
-		// vorsichtshalber oben und unten die margin berücksichtigen
+		// vorsichtshalber oben und unten die margin berÃ¼cksichtigen
 		lblHeight = lblHeight + 2f * margin;
-		// Anpassung der Label Höhe, damit der ganze Text drauf passt
+		// Anpassung der Label HÃ¶he, damit der ganze Text drauf passt
 		msgBox.label.setHeight(lblHeight);
 		// nur der Label ist auf der Scrollbox
 		scrollBox.setVirtualHeight(lblHeight);

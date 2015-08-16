@@ -30,7 +30,7 @@
  */package org.poly2tri.triangulation;
 
 /**
- * @author Thomas Åhlén, thahlen@gmail.com
+ * @author Thomas Ã…hlÃ©n, thahlen@gmail.com
  */
 public class TriangulationUtil
 {

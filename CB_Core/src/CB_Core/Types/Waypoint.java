@@ -19,7 +19,7 @@ public class Waypoint implements Serializable
 	public static final Charset UTF_8 = Charset.forName("UTF-8");
 	public static final String EMPTY_STRING = "";
 
-	// / Id des dazugehörigen Caches in der Datenbank von geocaching.com
+	// / Id des dazugehÃ¶rigen Caches in der Datenbank von geocaching.com
 	public long CacheId;
 
 	// / Waypoint Code
@@ -39,8 +39,8 @@ public class Waypoint implements Serializable
 	// / true, falls der Wegpunkt von der Synchronisation ausgeschlossen wird
 	public boolean IsSyncExcluded;
 
-	// True wenn dies der Startpunkt für den nächsten Besuch ist.
-	// Das CacheIcon wird dann auf diesen Waypoint verschoben und dieser Waypoint wird standardmäßig aktiviert
+	// True wenn dies der Startpunkt fÃ¼r den nÃ¤chsten Besuch ist.
+	// Das CacheIcon wird dann auf diesen Waypoint verschoben und dieser Waypoint wird standardmÃ¤ÃŸig aktiviert
 	// Es muss aber sichergestellt sein dass immer nur 1 Waypoint eines Caches ein Startpunkt ist!
 	public boolean IsStart = false;
 
@@ -77,7 +77,7 @@ public class Waypoint implements Serializable
 	}
 
 	// / <summary>
-	// / Entfernung von der letzten gültigen Position
+	// / Entfernung von der letzten gÃ¼ltigen Position
 	// / </summary>
 	public float Distance()
 	{

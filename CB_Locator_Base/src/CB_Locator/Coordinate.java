@@ -85,7 +85,7 @@ public class Coordinate extends LatLong implements Serializable
 
 		double lat2 = Math.asin(Math.sin(lat1) * Math.cos(dist) + Math.cos(lat1) * Math.sin(dist) * Math.cos(brng));
 		double lon2 = lon1 + Math.atan2(Math.sin(brng) * Math.sin(dist) * Math.cos(lat1), Math.cos(dist) - Math.sin(lat1) * Math.sin(lat2));
-		lon2 = (lon2 + 3 * Math.PI) % (2 * Math.PI) - Math.PI; // normalise to -180..+180º
+		lon2 = (lon2 + 3 * Math.PI) % (2 * Math.PI) - Math.PI; // normalise to -180..+180Âº
 
 		Coordinate result = new Coordinate(lat2 * MathUtils.RAD_DEG, lon2 * MathUtils.RAD_DEG);
 		result.Valid = true;
@@ -289,7 +289,7 @@ public class Coordinate extends LatLong implements Serializable
 					convert.iUTM2LatLon(nording, easting, zone);
 					ddlat = convert.dLat;
 					ddlon = convert.dLon;
-					// Ergebnis runden, da sonst Koordinaten wie 47° 60' herauskommen!
+					// Ergebnis runden, da sonst Koordinaten wie 47Â° 60' herauskommen!
 					ddlat = Math.rint(ddlat * 1000000) / 1000000;
 					ddlon = Math.rint(ddlon * 1000000) / 1000000;
 					values[2] = 1;

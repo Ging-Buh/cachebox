@@ -68,7 +68,7 @@ public class CoordinateEntity extends Entity
 		}
 		Coordinate coord = null;
 		if (selCache != null)
-		// In 99,9% der Fälle dürfte der Wegpunkt zum aktuellen Cache gehören
+		// In 99,9% der FÃ¤lle dÃ¼rfte der Wegpunkt zum aktuellen Cache gehÃ¶ren
 		{
 			if (selCache.getGcCode().equalsIgnoreCase(gcCode))
 			{

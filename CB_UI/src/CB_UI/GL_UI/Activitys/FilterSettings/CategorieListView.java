@@ -143,7 +143,7 @@ public class CategorieListView extends V_ListView
 				// collabs Button chk clicked
 				int State = mCat.getChek();
 				if (State == 0)
-				{// keins ausgew‰hlt, also alle anw‰hlen
+				{// keins ausgew√§hlt, also alle anw√§hlen
 
 					for (GpxFilename tmp : mCat)
 					{
@@ -152,7 +152,7 @@ public class CategorieListView extends V_ListView
 
 				}
 				else
-				{// einer oder mehr ausgew‰hlt, also alle abw‰hlen
+				{// einer oder mehr ausgew√§hlt, also alle abw√§hlen
 
 					for (GpxFilename tmp : mCat)
 					{

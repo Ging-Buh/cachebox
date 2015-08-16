@@ -93,7 +93,7 @@ public class CB_Action_ShowDescExt extends CB_Action {
 
     @Override
     public boolean getEnabled() {
-	// liefert true zurück wenn ein Cache gewählt ist und dieser einen Hint hat
+	// liefert true zurÃ¼ck wenn ein Cache gewÃ¤hlt ist und dieser einen Hint hat
 	if (GlobalCore.getSelectedCache() == null)
 	    return false;
 

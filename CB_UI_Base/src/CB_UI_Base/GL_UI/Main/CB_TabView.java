@@ -65,14 +65,14 @@ public class CB_TabView extends CB_View_Base {
 
     @Override
     protected void Initial() {
-	// Wenn die Anzahl der Buttons = der Anzahl der Möglichen Buttons ist, diese gleichmäßig verteilen
+	// Wenn die Anzahl der Buttons = der Anzahl der MÃ¶glichen Buttons ist, diese gleichmÃ¤ÃŸig verteilen
 	if (mButtonList.Buttons.size() == buttonListView.getMaxItemCount()) {
 	    float sollDivider = (buttonListView.getWidth() - (GL_UISizes.BottomButtonHeight * mButtonList.Buttons.size())) / (mButtonList.Buttons.size() + 1);
 	    buttonListView.setDividerSize(sollDivider);
 	}
 
-	// Das Button Seitenverhältniss ist 88x76!
-	// Höhe der Buttons einstellen und diese Zentrieren!
+	// Das Button SeitenverhÃ¤ltniss ist 88x76!
+	// HÃ¶he der Buttons einstellen und diese Zentrieren!
 	float buttonHeight = GL_UISizes.BottomButtonHeight * 0.863f;
 	for (CB_Button btn : mButtonList.Buttons) {
 	    btn.setHeight(buttonHeight);
@@ -161,7 +161,7 @@ public class CB_TabView extends CB_View_Base {
     /**
      * Beim Wechsel der View, kann es sein, dass noch nicht alle Childs der View geladen sind, da die meisten Childs erst in der initial()
      * erstellt werden. Damit erhalten diese Childs dann kein onShow(). Als Abhilfe werden hier erst 150ms gewartet, bevor ein onShow()
-     * ausgeführt wird.
+     * ausgefÃ¼hrt wird.
      */
     private void sendOnShow2aktView() {
 	GL.that.RunOnGL(new IRunOnGL() {

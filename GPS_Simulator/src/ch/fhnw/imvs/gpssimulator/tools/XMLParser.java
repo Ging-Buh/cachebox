@@ -186,7 +186,7 @@ public class XMLParser extends DefaultHandler
 
 	private static Date parseDateWithFormat(SimpleDateFormat df, String text) throws Exception
 	{
-		// TODO hier müsste mal über die Zeitzone nachgedacht werden -
+		// TODO hier mÃ¼sste mal Ã¼ber die Zeitzone nachgedacht werden -
 		// irgendwas ist an den Daten, die von GC.com kommen, komisch
 		Date date = null;
 		try

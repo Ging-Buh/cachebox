@@ -41,24 +41,24 @@ public class EditCache extends ActivityBase
 {
 	// Allgemein
 	private final CacheTypes[] CacheTypNumbers = new CacheTypes[]
-		{ CacheTypes.Traditional, // = 0,
-				CacheTypes.Multi, // = 1,
-				CacheTypes.Mystery, // = 2,
-				CacheTypes.Camera, // = 3,
-				CacheTypes.Earth, // = 4,
-				CacheTypes.Event, // = 5,
-				CacheTypes.MegaEvent, // = 6,
-				CacheTypes.CITO, // = 7,
-				CacheTypes.Virtual, // = 8,
-				CacheTypes.Letterbox, // = 9,
-				CacheTypes.Wherigo }; // = 10,
+			{ CacheTypes.Traditional, // = 0,
+					CacheTypes.Multi, // = 1,
+					CacheTypes.Mystery, // = 2,
+					CacheTypes.Camera, // = 3,
+					CacheTypes.Earth, // = 4,
+					CacheTypes.Event, // = 5,
+					CacheTypes.MegaEvent, // = 6,
+					CacheTypes.CITO, // = 7,
+					CacheTypes.Virtual, // = 8,
+					CacheTypes.Letterbox, // = 9,
+					CacheTypes.Wherigo }; // = 10,
 	private final CacheSizes[] CacheSizeNumbers = new CacheSizes[]
-		{ CacheSizes.other, // 0
-				CacheSizes.micro, // 1
-				CacheSizes.small, // 2
-				CacheSizes.regular, // 3
-				CacheSizes.large // 4
-		};
+			{ CacheSizes.other, // 0
+					CacheSizes.micro, // 1
+					CacheSizes.small, // 2
+					CacheSizes.regular, // 3
+					CacheSizes.large // 4
+			};
 
 	private Cache cache;
 	private Cache newValues;
@@ -79,7 +79,7 @@ public class EditCache extends ActivityBase
 	public EditCache(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
-		// das übliche
+		// das ?bliche
 		btnOK = new Button(Translation.Get("ok"));
 		btnOKClickHandler();
 		btnCancel = new Button(Translation.Get("cancel"));
@@ -175,7 +175,7 @@ public class EditCache extends ActivityBase
 		newValues.setTerrain(1);
 		newValues.Pos = Locator.getLocation().toCordinate();
 		if (!newValues.Pos.isValid()) newValues.Pos = GlobalCore.getSelectedCoord();
-		// GC - Code bestimmen für freies CWxxxx = CustomWaypint
+		// GC - Code bestimmen f?r freies CWxxxx = CustomWaypint
 		String prefix = "CW";
 		int count = 0;
 		do

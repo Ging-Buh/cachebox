@@ -7,8 +7,8 @@ public enum CacheSizes
 	small, // 2
 	regular, // 3
 	large // 4
-	// virtual, // 0 - Achtung, hier habe ich einen neuen Wert eingefügt
-	// other // 6 - Achtung, hier habe ich einen neuen Wert eingefügt
+	// virtual, // 0 - Achtung, hier habe ich einen neuen Wert eingefÃ¼gt
+	// other // 6 - Achtung, hier habe ich einen neuen Wert eingefÃ¼gt
 	;
 
 	public static CacheSizes parseInt(int value)

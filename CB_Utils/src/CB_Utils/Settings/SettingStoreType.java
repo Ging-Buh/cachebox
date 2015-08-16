@@ -5,7 +5,7 @@ package CB_Utils.Settings;
  * <br>
  * Global = config.db3<br>
  * Local = aktuelle DB<br>
- * Platform = über den PlatformConector
+ * Platform = Ã¼ber den PlatformConector
  * 
  * @author Longri
  */

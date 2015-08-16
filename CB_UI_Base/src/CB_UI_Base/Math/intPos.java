@@ -1,7 +1,7 @@
 package CB_UI_Base.Math;
 
 /**
- * Enth‰lt x und y werte einer Position
+ * Enth√§lt x und y werte einer Position
  * 
  * @author Longri
  */

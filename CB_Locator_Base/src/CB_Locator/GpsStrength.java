@@ -18,7 +18,7 @@ package CB_Locator;
 
 
 /**
- * Structur für die Signal Stärken der Satteliten
+ * Structur fÃ¼r die Signal StÃ¤rken der Satteliten
  * 
  * @author Longri
  */
@@ -40,7 +40,7 @@ public class GpsStrength implements Comparable<GpsStrength>
 	private float mSnr = 0.0f;
 
 	/**
-	 * Gibt zurück ob der Sattelit ein Fix hat
+	 * Gibt zurÃ¼ck ob der Sattelit ein Fix hat
 	 * 
 	 * @return boolean
 	 */
@@ -50,7 +50,7 @@ public class GpsStrength implements Comparable<GpsStrength>
 	}
 
 	/**
-	 * Gibt die Signal Stärke des Sateliten zurück
+	 * Gibt die Signal StÃ¤rke des Sateliten zurÃ¼ck
 	 * 
 	 * @return float
 	 */

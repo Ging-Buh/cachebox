@@ -249,10 +249,10 @@ public class Label extends CB_View_Base {
 
 	    }
 	} catch (ArrayIndexOutOfBoundsException e) {
-	    // kommt manchmal wenn der Text ge�ndert wird
+	    // kommt manchmal wenn der Text geändert wird
 	    makeText();
 	} catch (NullPointerException e) {
-	    // kommt manchmal wenn der Text ge�ndert wird
+	    // kommt manchmal wenn der Text geändert wird
 	    makeText();
 	}
 
@@ -422,7 +422,7 @@ public class Label extends CB_View_Base {
     }
 
     private void setTextPosition() {
-	float xPosition = leftBorder + 1; // HAlignment.LEFT !!! Die 1 ist empirisch begr�ndet
+	float xPosition = leftBorder + 1; // HAlignment.LEFT !!! Die 1 ist empirisch begründet
 	if (innerWidth > bounds.width) {
 	    if (mHAlignment == HAlignment.CENTER || mHAlignment == HAlignment.SCROLL_CENTER) {
 		if (mWrapType == WrapType.SINGLELINE)
@@ -601,7 +601,7 @@ public class Label extends CB_View_Base {
 
     @Override
     protected void SkinIsChanged() {
-	// todo den korrekten Font (original Fontgr�sse nicht bekannt) setzen
+	// todo den korrekten Font (original Fontgrï¿½sse nicht bekannt) setzen
 	mFont = Fonts.getNormal();
 	mColor = COLOR.getFontColor();
 	initLabel();

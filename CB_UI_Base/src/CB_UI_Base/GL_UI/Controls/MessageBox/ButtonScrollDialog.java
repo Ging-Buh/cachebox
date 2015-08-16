@@ -72,16 +72,16 @@ public class ButtonScrollDialog extends Dialog {
 	SizeF contentSize = getContentSize();
 
 	rec = new CB_RectF(0, 0, contentSize.width - leftBorder - rightBorder, contentSize.height);
-	// initial ScrollBox mit einer Inneren Höhe des halben rec´s.
-	// Die Innere Höhe muss angepasst werden, wenn sich die Höhe des LinearLayouts verändert hat.
-	// Entweder wenn ein Control hinzugefügt wurde oder wenn eine CollapseBox geöffnrt oder geschlossen wird!
+	// initial ScrollBox mit einer Inneren HÃ¶he des halben recÂ´s.
+	// Die Innere HÃ¶he muss angepasst werden, wenn sich die HÃ¶he des LinearLayouts verÃ¤ndert hat.
+	// Entweder wenn ein Control hinzugefÃ¼gt wurde oder wenn eine CollapseBox geÃ¶ffnrt oder geschlossen wird!
 	scrollBox = new ScrollBox(rec);
-	// die ScrollBox erhält den Selben Hintergrund wie die Activity und wird damit ein wenig abgegrenzt von den Restlichen Controls
+	// die ScrollBox erhÃ¤lt den Selben Hintergrund wie die Activity und wird damit ein wenig abgegrenzt von den Restlichen Controls
 	// scrollBox.setBackground(this.getBackground());
 	scrollBox.setMargins(margin, margin);
 	scrollBox.initRow();
 
-	// damit die Scrollbox auch Events erhällt
+	// damit die Scrollbox auch Events erhÃ¤llt
 	scrollBox.setClickable(true);
 
 	CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());

@@ -1,0 +1,1 @@
+include 'Desktop-Launcher', 'Android-Launcher', 'CB_Core', 'CB_Locator_Base', 'CB_Locator_Desktop', 'CB_mapsforge', 'CB_Rpc', 'CB_Translation_Base', 'CB_UI', 'CB_UI_Base', 'CB_Utils', 'GPS_Simulator'

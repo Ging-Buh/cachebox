@@ -3,8 +3,8 @@ package CB_UI_Base.Math;
 import java.io.Serializable;
 
 /**
- * UiSize ist eine Struktur die alle Wichtigen Geräte abhängigen Größen enthält. Sie wird in der Regel der Klasse Sizes im Constructor
- * übergeben, damit die Größen in dieser berechnet werden können!
+ * UiSize ist eine Struktur die alle Wichtigen GerÃ¤te abhÃ¤ngigen GrÃ¶ÃŸen enthÃ¤lt. Sie wird in der Regel der Klasse Sizes im Constructor
+ * Ã¼bergeben, damit die GrÃ¶ÃŸen in dieser berechnet werden kÃ¶nnen!
  * 
  * @author Longri
  */
@@ -16,17 +16,17 @@ public class devicesSizes implements Serializable
 	private static final long serialVersionUID = -5441749943486589905L;
 
 	/**
-	 * Die Größe die CB im gesamten zur Verfügung steht.
+	 * Die GrÃ¶ÃŸe die CB im gesamten zur VerfÃ¼gung steht.
 	 */
 	public Size Window;
 
 	/**
-	 * die Auflösung die das Display hat
+	 * die AuflÃ¶sung die das Display hat
 	 */
 	public float Density;
 
 	/**
-	 * True wenn die Berechnung für Landscape durchgeführt werden soll.
+	 * True wenn die Berechnung fÃ¼r Landscape durchgefÃ¼hrt werden soll.
 	 */
 	public boolean isLandscape;
 }

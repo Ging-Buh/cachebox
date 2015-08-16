@@ -128,7 +128,7 @@ public class FilterProperties
 	private final String GPXseperator = "^";
 
 	/**
-	 * True, wenn diese FiletrPropertys eine Filterung nach Name, Gc-Code oder Owner enth�lt!
+	 * True, wenn diese FiletrPropertys eine Filterung nach Name, Gc-Code oder Owner enthï¿½lt!
 	 * 
 	 * @return
 	 */
@@ -144,7 +144,7 @@ public class FilterProperties
 	}
 
 	/**
-	 * Gibt den SQL Where String dieses Filters zur�ck
+	 * Gibt den SQL Where String dieses Filters zurï¿½ck
 	 * 
 	 * @return
 	 */

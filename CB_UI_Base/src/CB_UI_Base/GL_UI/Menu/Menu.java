@@ -431,9 +431,9 @@ public class Menu extends ButtonDialog {
 		    this.setWidth(getLeve0_Width());
 		    mMoreMenu.setWidth(getLeve0_Width());
 		    mMoreMenu.setX(-this.getLeftWidth() - this.getRightWidth() - 2.5f);
-		    // TODO die -2,5f müssen auf meinem S3 sein,
+		    // TODO die -2,5f mÃ¼ssen auf meinem S3 sein,
 		    // damit die linke Position passt auf dem desktop sind es 0 auf anderen?
-		    // ich habe hier den zusammen hang noch nicht finden können
+		    // ich habe hier den zusammen hang noch nicht finden kÃ¶nnen
 		    mMoreMenuToggleButton.setX(getLevel0_x() - mMoreMenuToggleButton.getHalfWidth() + (margin * 2));
 
 		    mMoreMenuLabel.setText(mMoreMenuTextLeft);

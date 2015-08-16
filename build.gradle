@@ -1,0 +1,32 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'org.robovm:robovm-gradle-plugin:1.5.0'
+    }
+}
+
+allprojects {
+    apply plugin: "eclipse"
+    apply plugin: "idea"
+
+    version = '1.0'
+    ext {
+        appName = 'my-gdx-game'
+        gdxVersion = '1.6.2'
+        roboVMVersion = '1.5.0'
+        box2DLightsVersion = '1.4'
+        ashleyVersion = '1.4.0'
+        aiVersion = '1.5.0'
+    }
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+tasks.eclipse.doLast {
+    delete ".project"
+}
