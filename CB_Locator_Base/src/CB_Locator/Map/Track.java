@@ -22,6 +22,13 @@ public class Track
 		mColor = color;
 	}
 
+	public Track(String name, Color color, ArrayList<TrackPoint> points)
+	{
+		Points = points;
+		Name = name;
+		mColor = color;
+	}
+
 	public Color getColor()
 	{
 		return mColor;
