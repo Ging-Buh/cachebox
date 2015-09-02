@@ -13,6 +13,6 @@
 	<classpathentry kind="lib" path="lib/kxml2-2.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.6.jar"/>
 	<classpathentry kind="lib" path="lib/gdx-1.6.2.jar"/>
-	<classpathentry kind="lib" path="lib/graphhopper-0.5.0.jar"/>
+	<classpathentry kind="lib" path="lib/graphhopper-0.6-SNAPSHOT.jar" sourcepath="C:/Users/Hoepfner/Desktop/test/graphhopper-master/core/src/main/java"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

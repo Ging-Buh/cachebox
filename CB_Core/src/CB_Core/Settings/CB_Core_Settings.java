@@ -49,6 +49,10 @@ public interface CB_Core_Settings
 	public static final SettingFolder DescriptionImageFolderLocal = new SettingFolder("DescriptionImageFolder", SettingCategory.Folder, NEVER, "", SettingStoreType.Local, SettingUsage.ALL, true);
 	public static final SettingFolder SpoilerFolder = new SettingFolder("SpoilerFolder", SettingCategory.Folder, EXPERT, Config_Core.WorkPath + "/repository/spoilers", SettingStoreType.Global, SettingUsage.ALL, true);
 	public static final SettingFolder SpoilerFolderLocal = new SettingFolder("SpoilerFolder", SettingCategory.Folder, NEVER, "", SettingStoreType.Local, SettingUsage.ALL, true);
+	public static final SettingFolder GraphhopperFolder = new SettingFolder("GraphhopperFolder", SettingCategory.Folder, EXPERT, Config_Core.WorkPath + "/repository/graphhopper", SettingStoreType.Global, SettingUsage.ALL, false);
+	public static final SettingFolder GraphhopperTemp = new SettingFolder("GraphhopperTemp", SettingCategory.Folder, EXPERT, Config_Core.WorkPath + "/repository/graphhopper_temp", SettingStoreType.Global, SettingUsage.ALL, true);
+	public static final SettingString GraphhopperActFile = new SettingString("GraphhopperActFile", SettingCategory.Map, NORMAL, "", SettingStoreType.Global, SettingUsage.ALL);
+
 	public static final SettingInt conection_timeout = new SettingInt("conection_timeout", SettingCategory.Internal, INVISIBLE, 10000, SettingStoreType.Global, SettingUsage.ALL);
 	public static final SettingInt socket_timeout = new SettingInt("socket_timeout", SettingCategory.Internal, INVISIBLE, 60000, SettingStoreType.Global, SettingUsage.ALL);
 	public static final SettingEncryptedString GcVotePassword = new SettingEncryptedString("GcVotePassword", SettingCategory.Login, NORMAL, "", SettingStoreType.Platform, SettingUsage.ALL);

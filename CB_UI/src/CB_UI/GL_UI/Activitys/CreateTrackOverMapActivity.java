@@ -189,12 +189,12 @@ public class CreateTrackOverMapActivity extends ActivityBase {
 	if (waypoints.size() == 2) {
 	    // Two Points, begins with Track drawing
 	    track = new Track("generate", Color.RED);
-	    GlobalCore.AktuelleRoute.Points.add(convertToTrackPoint(waypoints.get(0)));
-	    GlobalCore.AktuelleRoute.Points.add(convertToTrackPoint(waypoints.get(1)));
+	    GlobalCore.AktuelleRoute.add(convertToTrackPoint(waypoints.get(0)));
+	    GlobalCore.AktuelleRoute.add(convertToTrackPoint(waypoints.get(1)));
 	}
 
 	if (waypoints.size() > 2) {
-	    GlobalCore.AktuelleRoute.Points.add(convertToTrackPoint(wp));
+	    GlobalCore.AktuelleRoute.add(convertToTrackPoint(wp));
 	}
 
 	if (waypoints.size() > 1) {

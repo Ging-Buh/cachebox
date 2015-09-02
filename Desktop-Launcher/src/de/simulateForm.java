@@ -20,9 +20,9 @@ import CB_Locator.CoordinateGPS;
 import CB_Locator.GPS;
 import CB_Locator.GpsStrength;
 import CB_Locator.Location.ProviderType;
+import CB_Locator.Events.GpsStateChangeEventList;
 import CB_Locator.Map.Track;
 import CB_Locator.Map.TrackPoint;
-import CB_Locator.Events.GpsStateChangeEventList;
 import CB_UI.Config;
 import CB_UI.Map.RouteOverlay;
 import CB_Utils.Lists.CB_List;
@@ -288,9 +288,9 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 
 		NetworkSend = false;
 
-		trackPointIndexEnd = simulationRoute.Points.size() - 1;
-		long nextTimeStamp = (simulationRoute.Points.get(trackPointIndex + 1).TimeStamp.getTime() - simulationRoute.Points
-				.get(trackPointIndex).TimeStamp.getTime());
+		trackPointIndexEnd = simulationRoute.PointSize() - 1;
+		long nextTimeStamp = (simulationRoute.get(trackPointIndex + 1).TimeStamp.getTime() - simulationRoute.get(trackPointIndex).TimeStamp
+				.getTime());
 
 		if (!chekRealSpeed.getState()) nextTimeStamp /= 8; // ein wenig schneller ablaufen lassen?
 
@@ -302,7 +302,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 			@Override
 			public void run()
 			{
-				TrackPoint trk = simulationRoute.Points.get(trackPointIndex);
+				TrackPoint trk = simulationRoute.get(trackPointIndex);
 				Coordinate pos = new CoordinateGPS(trk.Y, trk.X);
 				CB_Locator.Locator.setNewLocation(new CB_Locator.Location(pos.getLatitude(), pos.getLongitude(), 100, true, speed, true,
 						(float) trk.Direction, 95, ProviderType.GPS));

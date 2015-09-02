@@ -189,7 +189,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand {
 
 						    lastAcceptedCoordinate = new CoordinateGPS(lat, lon);
 
-						    route.Points.add(new TrackPoint(lastAcceptedCoordinate.getLongitude(), lastAcceptedCoordinate.getLatitude(), 0, 0, null));
+						    route.add(new TrackPoint(lastAcceptedCoordinate.getLongitude(), lastAcceptedCoordinate.getLatitude(), 0, 0, null));
 
 						    // Calculate the length of a Track
 						    if (!FromPosition.isValid()) {

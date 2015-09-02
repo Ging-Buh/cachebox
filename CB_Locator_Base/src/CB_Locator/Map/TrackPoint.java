@@ -17,4 +17,13 @@ public class TrackPoint extends PointD
 		this.Direction = direction;
 		this.TimeStamp = time;
 	}
+
+	@Override
+	public String toString()
+	{
+
+		StringBuilder SB = new StringBuilder();
+		SB.append("Trackpoint: " + Double.toString(X) + "/" + Double.toString(Y));
+		return SB.toString();
+	}
 }
