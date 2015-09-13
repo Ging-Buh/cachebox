@@ -28,7 +28,6 @@ import CB_UI_Base.Math.Stack;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.graphics.GL_FontFamily;
 import CB_UI_Base.graphics.GL_FontStyle;
-import CB_Utils.Exceptions.NotImplementedException;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.HSV_Color;
 
@@ -99,18 +98,18 @@ public class Html_Segment_TextBlock extends Html_Segment {
 		    this.fontColor = new HSV_Color(color.replace("#", ""));
 		} catch (Exception e) {
 		    this.fontColor = Color.BLACK;
-		    throw new NotImplementedException("HTML Renderer Color <" + color + "> is not implemented");
+		    //throw new NotImplementedException("HTML Renderer Color <" + color + "> is not implemented");
 		}
 	    } else {
 		try {
 		    this.fontColor = HTMLColors.getColor(color);
 		    if (this.fontColor == null) {
 			this.fontColor = Color.BLACK;
-			throw new NotImplementedException("HTML Renderer Color <" + color + "> is not implemented");
+			//throw new NotImplementedException("HTML Renderer Color <" + color + "> is not implemented");
 		    }
 		} catch (Exception e) {
 		    this.fontColor = Color.BLACK;
-		    throw new NotImplementedException("HTML Renderer Color <" + color + "> is not implemented");
+		    //throw new NotImplementedException("HTML Renderer Color <" + color + "> is not implemented");
 		}
 	    }
 
