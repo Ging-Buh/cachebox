@@ -119,6 +119,7 @@ public class splash extends Activity
 	int AdditionalWorkPathCount;
 	SharedPreferences AndroidSettings;
 	MessageBox msg;
+	private boolean permissionGranted = false;
 
 	ArrayList<String> AdditionalWorkPathArray;
 
@@ -467,6 +468,7 @@ public class splash extends Activity
 
 				buttonE.setOnClickListener(new OnClickListener()
 				{
+
 					@Override
 					public void onClick(View v)
 					{
@@ -529,6 +531,21 @@ public class splash extends Activity
 						}
 						else
 						{
+
+							// Ext Sd selected
+
+							// check Android 5.x for get permission
+							if (android.os.Build.VERSION.SDK_INT >= 21)
+							{
+								if (!permissionGranted)
+								{
+									// prompt the user to pick a directory tree
+									Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+									startActivityForResult(intent, Global.REQUEST_CODE_GET_WRITE_PERMISSION_ANDROID_5);
+								}
+
+							}
+
 							// close select dialog
 							dialog.dismiss();
 
@@ -931,7 +948,7 @@ public class splash extends Activity
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 
-		if (resultCode == RESULT_OK)
+		if (resultCode == RESULT_OK && requestCode == Global.REQUEST_CODE_GET_WRITE_PERMISSION_ANDROID_5)
 		{
 			Uri treeUri = data.getData();
 
@@ -964,7 +981,7 @@ public class splash extends Activity
 
 		}
 
-		if (requestCode == Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR)
+		if (requestCode == Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR && resultCode == RESULT_OK)
 		{
 			if (resultCode == android.app.Activity.RESULT_OK && data != null)
 			{
@@ -1128,18 +1145,7 @@ public class splash extends Activity
 					height = frame.getMeasuredHeight();
 				}
 
-				// lolipop ask write permission
-				if (android.os.Build.VERSION.SDK_INT > 20)
-				{
-					Initial(width, height);
-
-					// Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-					// startActivityForResult(intent, 42);
-				}
-				else
-				{
-					Initial(width, height);
-				}
+				Initial(width, height);
 
 			}
 		};
