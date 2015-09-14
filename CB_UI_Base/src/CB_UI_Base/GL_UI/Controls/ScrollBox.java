@@ -62,6 +62,22 @@ public class ScrollBox extends CB_View_Base {
     }
 
     private void Layout() {
+
+	//if this is disposed do nothing
+	if (this.isDisposed())
+	    return;
+
+	//if Listview NULL initial
+	if (lv == null) {
+	    initScrollBox();
+	    return;
+	}
+
+	// if Listview disposed do nothing!
+	// THIS will dispose soon!
+	if (lv.isDisposed())
+	    return;
+
 	lv.setSize(innerWidth, innerHeight);
 
 	item.setHeight(virtualHeight);
