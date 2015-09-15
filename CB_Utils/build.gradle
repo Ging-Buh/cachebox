@@ -5,6 +5,7 @@ sourceCompatibility = 1.6
 
 sourceSets.main.java.srcDirs = [ "src/" ]
 
+configurations.compile.exclude group: 'com.google.android', module: 'android'  // remove from intern pom.xml
 
 dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"

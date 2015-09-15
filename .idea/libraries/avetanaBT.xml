@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="avetanaBT">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/GPS_Simulator/lib/avetanaBT.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

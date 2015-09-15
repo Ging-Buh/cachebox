@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="servlet-api-6.0.16">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/CB_Rpc/lib/servlet-api-6.0.16.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

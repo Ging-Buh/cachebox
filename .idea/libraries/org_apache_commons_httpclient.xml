@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="org.apache.commons.httpclient">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/CB_Rpc/lib/org.apache.commons.httpclient.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
