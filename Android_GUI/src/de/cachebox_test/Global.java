@@ -48,6 +48,7 @@ public class Global
 	public static final int REQUEST_CODE_GET_API_KEY = 987654321;
 	public static final int REQUEST_CODE_SCREENLOCK = 12345;
 	public static final int REQUEST_CODE_KEYBOARDACTIVITY = 11012;
+	public static final int REQUEST_CODE_GET_WRITE_PERMISSION_ANDROID_5 = 42;
 
 	/**
 	 * Liste der Buttons in der QuickButton Leiste
@@ -150,51 +151,32 @@ public class Global
 	/**
 	 * <b>Ein Array mit Icons als Drawable</b> <br>
 	 * <br>
-	 * Index 0 =<img src="doc-files/night_tb.png" width=32 height=32> <img src="doc-files/day_tb.png" width=32 height=32> <br>
-	 * Index 1 =<img src="doc-files/addwaypoint.png" width=32 height=32> <br>
-	 * Index 2 =<img src="doc-files/smilie_gross.gif" width=32 height=32> <br>
-	 * Index 3 =<img src="doc-files/download.png" width=32 height=32> <br>
-	 * Index 4 =<img src="doc-files/log1.png" width=32 height=32> <br>
-	 * Index 5 =<img src="doc-files/maintenance.png" width=32 height=32> <br>
-	 * Index 6 =<img src="doc-files/checkbox_checked.png" width=32 height=32> <br>
-	 * Index 7 =<img src="doc-files/checkbox_unchecked.png" width=32 height=32> <br>
-	 * Index 8 =<img src="doc-files/sonne.png" width=32 height=32> <br>
-	 * Index 9 =<img src="doc-files/mond.png" width=32 height=32> <br>
-	 * Index 10 =<img src="doc-files/travelbug.gif" width=32 height=32> <br>
-	 * Index 11 =<img src="doc-files/collapse.png" width=32 height=32> <br>
-	 * Index 12 =<img src="doc-files/expand.png" width=32 height=32> <br>
-	 * Index 13 =<img src="doc-files/enabled.png" width=32 height=32> <br>
-	 * Index 14 =<img src="doc-files/disabled.png" width=32 height=32> <br>
-	 * Index 15 =<img src="doc-files/retrieve_tb.png" width=32 height=32> <br>
-	 * Index 16 =<img src="doc-files/drop_tb.png" width=32 height=32> <br>
-	 * Index 17 =<img src="doc-files/star.png" width=32 height=32> <br>
-	 * Index 18 =<img src="doc-files/earth.png" width=32 height=32> <br>
-	 * Index 19 =<img src="doc-files/favorit.png" width=32 height=32> <br>
-	 * Index 20 =<img src="doc-files/file.png" width=32 height=32> <br>
-	 * Index 21 =<img src="doc-files/userdata.jpg" width=32 height=32> <br>
-	 * Index 22 =<img src="doc-files/delete.jpg" width=32 height=32> <br>
-	 * Index 23 =<img src="doc-files/archiv.png" width=32 height=32> <br>
-	 * Index 24 =<img src="doc-files/not_available.jpg" width=32 height=32> <br>
-	 * Index 25 =<img src="doc-files/checkbox_crossed.png" width=32 height=32> <br>
-	 * Index 26 =<img src="doc-files/map22.png" width=32 height=32> <br>
-	 * Index 27 =<img src="doc-files/chk_icon.png" width=32 height=32> <br>
-	 * Index 28 =<img src="doc-files/delete_icon.png" width=32 height=32> <br>
-	 * Index 29 =<img src="doc-files/voice_rec_icon.png" width=32 height=32> <br>
-	 * Index 30 =<img src="doc-files/satellite.png" width=32 height=32> <br>
-	 * Index 31 =<img src="doc-files/close_icon.png" width=32 height=32> <br>
-	 * Index 32 =<img src="doc-files/info_icon.png" width=32 height=32> <br>
-	 * Index 33 =<img src="doc-files/warning_icon.png" width=32 height=32> <br>
-	 * Index 34 =<img src="doc-files/help_icon.png" width=32 height=32> <br>
-	 * Index 35 =<img src="doc-files/power_gc_live.png" width=32 height=32> <br>
-	 * Index 36 =<img src="doc-files/gc_live_icon.png" width=32 height=32> <br>
-	 * Index 37 =<img src="doc-files/pin_icon.png" width=32 height=32> <br>
-	 * Index 38 =<img src="doc-files/pin_icon_disable.png" width=32 height=32> <br>
-	 * Index 39 =<img src="doc-files/chk_icon_disable.png" width=32 height=32> <br>
-	 * Index 40 =<img src="doc-files/night_slider_down.png" width=32 height=32> <img src="doc-files/day_slider_down.png" width=32 height=32> <br>
-	 * Index 41 =<img src="doc-files/night_slider_up_down.png" width=32 height=32> <img src="doc-files/day_slider_up_down.png" width=32
-	 * height=32> <br>
-	 * Index 42 =<img src="doc-files/night_spinner.png" width=32 height=32><br>
-	 * Index 43 =<img src="doc-files/target_day.png" width=32 height=32>
+	 * Index 0 =<img src="doc-files/night_tb.png" width=32 height=32> <img src="doc-files/day_tb.png" width=32 height=32> <br> Index 1 =<img
+	 * src="doc-files/addwaypoint.png" width=32 height=32> <br> Index 2 =<img src="doc-files/smilie_gross.gif" width=32 height=32> <br>
+	 * Index 3 =<img src="doc-files/download.png" width=32 height=32> <br> Index 4 =<img src="doc-files/log1.png" width=32 height=32> <br>
+	 * Index 5 =<img src="doc-files/maintenance.png" width=32 height=32> <br> Index 6 =<img src="doc-files/checkbox_checked.png" width=32
+	 * height=32> <br> Index 7 =<img src="doc-files/checkbox_unchecked.png" width=32 height=32> <br> Index 8 =<img src="doc-files/sonne.png"
+	 * width=32 height=32> <br> Index 9 =<img src="doc-files/mond.png" width=32 height=32> <br> Index 10 =<img src="doc-files/travelbug.gif"
+	 * width=32 height=32> <br> Index 11 =<img src="doc-files/collapse.png" width=32 height=32> <br> Index 12 =<img
+	 * src="doc-files/expand.png" width=32 height=32> <br> Index 13 =<img src="doc-files/enabled.png" width=32 height=32> <br> Index 14
+	 * =<img src="doc-files/disabled.png" width=32 height=32> <br> Index 15 =<img src="doc-files/retrieve_tb.png" width=32 height=32> <br>
+	 * Index 16 =<img src="doc-files/drop_tb.png" width=32 height=32> <br> Index 17 =<img src="doc-files/star.png" width=32 height=32> <br>
+	 * Index 18 =<img src="doc-files/earth.png" width=32 height=32> <br> Index 19 =<img src="doc-files/favorit.png" width=32 height=32> <br>
+	 * Index 20 =<img src="doc-files/file.png" width=32 height=32> <br> Index 21 =<img src="doc-files/userdata.jpg" width=32 height=32> <br>
+	 * Index 22 =<img src="doc-files/delete.jpg" width=32 height=32> <br> Index 23 =<img src="doc-files/archiv.png" width=32 height=32> <br>
+	 * Index 24 =<img src="doc-files/not_available.jpg" width=32 height=32> <br> Index 25 =<img src="doc-files/checkbox_crossed.png" width=
+	 * 32 height=32> <br> Index 26 =<img src="doc-files/map22.png" width=32 height=32> <br> Index 27 =<img src="doc-files/chk_icon.png"
+	 * width=32 height=32> <br> Index 28 =<img src="doc-files/delete_icon.png" width=32 height=32> <br> Index 29 =<img
+	 * src="doc-files/voice_rec_icon.png" width=32 height=32> <br> Index 30 =<img src="doc-files/satellite.png" width=32 height=32> <br>
+	 * Index 31 =<img src="doc-files/close_icon.png" width=32 height=32> <br> Index 32 =<img src="doc-files/info_icon.png" width=32
+	 * height=32> <br> Index 33 =<img src="doc-files/warning_icon.png" width=32 height=32> <br> Index 34 =<img src="doc-files/help_icon.png"
+	 * width=32 height=32> <br> Index 35 =<img src="doc-files/power_gc_live.png" width=32 height=32> <br> Index 36 =<img
+	 * src="doc-files/gc_live_icon.png" width=32 height=32> <br> Index 37 =<img src="doc-files/pin_icon.png" width=32 height=32> <br> Index
+	 * 38 =<img src="doc-files/pin_icon_disable.png" width=32 height=32> <br> Index 39 =<img src="doc-files/chk_icon_disable.png" width=32
+	 * height=32> <br> Index 40 =<img src="doc-files/night_slider_down.png" width=32 height=32> <img src="doc-files/day_slider_down.png"
+	 * width=32 height=32> <br> Index 41 =<img src="doc-files/night_slider_up_down.png" width=32 height=32> <img
+	 * src="doc-files/day_slider_up_down.png" width=32 height=32> <br> Index 42 =<img src="doc-files/night_spinner.png" width=32
+	 * height=32><br> Index 43 =<img src="doc-files/target_day.png" width=32 height=32>
 	 */
 	public static Drawable[] Icons = null;
 	public static Drawable[] SmallStarIcons = null;
@@ -204,27 +186,18 @@ public class Global
 	/**
 	 * <b>Ein Array mit CacheIcons als Drawable</b> <br>
 	 * <br>
-	 * Index 0 =<img src="doc-files/big_0.gif" width=32 height=32> <br>
-	 * Index 1 =<img src="doc-files/big_1.gif" width=32 height=32> <br>
-	 * Index 2 =<img src="doc-files/big_2.gif" width=32 height=32> <br>
-	 * Index 3 =<img src="doc-files/big_3.gif" width=32 height=32> <br>
-	 * Index 4 =<img src="doc-files/big_4.gif" width=32 height=32> <br>
-	 * Index 5 =<img src="doc-files/big_5.gif" width=32 height=32> <br>
-	 * Index 6 =<img src="doc-files/big_6.gif" width=32 height=32> <br>
-	 * Index 7 =<img src="doc-files/big_7.png" width=32 height=32> <br>
-	 * Index 8 =<img src="doc-files/big_8.gif" width=32 height=32> <br>
-	 * Index 9 =<img src="doc-files/big_9.gif" width=32 height=32> <br>
-	 * Index 10 =<img src="doc-files/big_10.gif" width=32 height=32> <br>
-	 * Index 11 =<img src="doc-files/big_11.png" width=32 height=32> <br>
-	 * Index 12 =<img src="doc-files/big_12.png" width=32 height=32> <br>
-	 * Index 13 =<img src="doc-files/big_13.png" width=32 height=32> <br>
-	 * Index 14 =<img src="doc-files/big_14.png" width=32 height=32> <br>
-	 * Index 15 =<img src="doc-files/big_15.png" width=32 height=32> <br>
-	 * Index 16 =<img src="doc-files/big_16.png" width=32 height=32> <br>
-	 * Index 17 =<img src="doc-files/big_17.png" width=32 height=32> <br>
-	 * Index 18 =<img src="doc-files/big_18.png" width=32 height=32> <br>
-	 * Index 19 =<img src="doc-files/big_19.gif" width=32 height=32> <br>
-	 * Index 20 =<img src="doc-files/my_parking.png" width=32 height=32> <br>
+	 * Index 0 =
+	 * <img src="doc-files/big_0.gif" width=32 height=32> <br> Index 1 =<img src="doc-files/big_1.gif" width=32 height=32> <br> Index 2
+	 * =<img src="doc-files/big_2.gif" width=32 height=32> <br> Index 3 =<img src="doc-files/big_3.gif" width=32 height=32> <br> Index 4
+	 * =<img src="doc-files/big_4.gif" width=32 height=32> <br> Index 5 =<img src="doc-files/big_5.gif" width=32 height=32> <br> Index 6
+	 * =<img src="doc-files/big_6.gif" width=32 height=32> <br> Index 7 =<img src="doc-files/big_7.png" width=32 height=32> <br> Index 8
+	 * =<img src="doc-files/big_8.gif" width=32 height=32> <br> Index 9 =<img src="doc-files/big_9.gif" width=32 height=32> <br> Index 10
+	 * =<img src="doc-files/big_10.gif" width=32 height=32> <br> Index 11 =<img src="doc-files/big_11.png" width=32 height=32> <br> Index 12
+	 * =<img src="doc-files/big_12.png" width=32 height=32> <br> Index 13 =<img src="doc-files/big_13.png" width=32 height=32> <br> Index 14
+	 * =<img src="doc-files/big_14.png" width=32 height=32> <br> Index 15 =<img src="doc-files/big_15.png" width=32 height=32> <br> Index 16
+	 * =<img src="doc-files/big_16.png" width=32 height=32> <br> Index 17 =<img src="doc-files/big_17.png" width=32 height=32> <br> Index 18
+	 * =<img src="doc-files/big_18.png" width=32 height=32> <br> Index 19 =<img src="doc-files/big_19.gif" width=32 height=32> <br> Index 20
+	 * =<img src="doc-files/my_parking.png" width=32 height=32> <br>
 	 */
 	public static Drawable[] CacheIconsBig = null;
 	public static Drawable[] BatteryIcons = null;
@@ -232,28 +205,18 @@ public class Global
 	/**
 	 * <b>Ein Array mit LogIcons als Drawable</b> <br>
 	 * <br>
-	 * Index 0 =<img src="doc-files/log0.gif" width=32 height=32> <br>
-	 * Index 1 =<img src="doc-files/log1.png" width=32 height=32> <br>
-	 * Index 2 =<img src="doc-files/log2.png" width=32 height=32> <br>
-	 * Index 3 =<img src="doc-files/log3.png" width=32 height=32> <br>
-	 * Index 4 =<img src="doc-files/log4.png" width=32 height=32> <br>
-	 * Index 5 =<img src="doc-files/log5.png" width=32 height=32> <br>
-	 * Index 6 =<img src="doc-files/log6.png" width=32 height=32> <br>
-	 * Index 7 =<img src="doc-files/log7.png" width=32 height=32> <br>
-	 * Index 8 =<img src="doc-files/log8.png" width=32 height=32> <br>
-	 * Index 9 =<img src="doc-files/log9.png" width=32 height=32> <br>
-	 * Index 10 =<img src="doc-files/log10.png" width=32 height=32> <br>
-	 * Index 11 =<img src="doc-files/log11.jpg" width=32 height=32> <br>
-	 * Index 12 =<img src="doc-files/log12.jpg" width=32 height=32> <br>
-	 * Index 13 =<img src="doc-files/log13.png" width=32 height=32> <br>
-	 * Index 14 =<img src="doc-files/log14.png" width=32 height=32> <br>
-	 * Index 15 =<img src="doc-files/log15.gif" width=32 height=32> <br>
-	 * Index 16 =<img src="doc-files/log16.gif" width=32 height=32> <br>
-	 * Index 17 =<img src="doc-files/log17.gif" width=32 height=32> <br>
-	 * Index 18 =<img src="doc-files/log18.gif" width=32 height=32> <br>
-	 * Index 19 =<img src="doc-files/log19.gif" width=32 height=32> <br>
-	 * Index 20 =<img src="doc-files/log20.gif" width=32 height=32> <br>
-	 * Index 21 =<img src="doc-files/log21.gif" width=32 height=32> <br>
+	 * Index 0 =
+	 * <img src="doc-files/log0.gif" width=32 height=32> <br> Index 1 =<img src="doc-files/log1.png" width=32 height=32> <br> Index 2 =<img
+	 * src="doc-files/log2.png" width=32 height=32> <br> Index 3 =<img src="doc-files/log3.png" width=32 height=32> <br> Index 4 =<img
+	 * src="doc-files/log4.png" width=32 height=32> <br> Index 5 =<img src="doc-files/log5.png" width=32 height=32> <br> Index 6 =<img
+	 * src="doc-files/log6.png" width=32 height=32> <br> Index 7 =<img src="doc-files/log7.png" width=32 height=32> <br> Index 8 =<img
+	 * src="doc-files/log8.png" width=32 height=32> <br> Index 9 =<img src="doc-files/log9.png" width=32 height=32> <br> Index 10 =<img
+	 * src="doc-files/log10.png" width=32 height=32> <br> Index 11 =<img src="doc-files/log11.jpg" width=32 height=32> <br> Index 12 =<img
+	 * src="doc-files/log12.jpg" width=32 height=32> <br> Index 13 =<img src="doc-files/log13.png" width=32 height=32> <br> Index 14 =<img
+	 * src="doc-files/log14.png" width=32 height=32> <br> Index 15 =<img src="doc-files/log15.gif" width=32 height=32> <br> Index 16 =<img
+	 * src="doc-files/log16.gif" width=32 height=32> <br> Index 17 =<img src="doc-files/log17.gif" width=32 height=32> <br> Index 18 =<img
+	 * src="doc-files/log18.gif" width=32 height=32> <br> Index 19 =<img src="doc-files/log19.gif" width=32 height=32> <br> Index 20 =<img
+	 * src="doc-files/log20.gif" width=32 height=32> <br> Index 21 =<img src="doc-files/log21.gif" width=32 height=32> <br>
 	 */
 	public static Drawable[] LogIcons = null;
 	public static Drawable[] Arrows = null;
@@ -437,21 +400,21 @@ public class Global
 					getDrawable(R.drawable.big_21, res), };
 
 		BtnIcons = new Drawable[]
-			{ getDrawable(R.drawable.day_btn_default_normal, R.drawable.night_btn_default_normal, res),// 0
-					getDrawable(R.drawable.button, R.drawable.night_button, res),// 1
-					getDrawable(R.drawable.doc_icon, res),// 2
-					getDrawable(R.drawable.big_16, res),// 3
+			{ getDrawable(R.drawable.day_btn_default_normal, R.drawable.night_btn_default_normal, res), // 0
+					getDrawable(R.drawable.button, R.drawable.night_button, res), // 1
+					getDrawable(R.drawable.doc_icon, res), // 2
+					getDrawable(R.drawable.big_16, res), // 3
 					getDrawable(R.drawable.list_icon, res), // 4 LogView braucht noch ein Icon
 					getDrawable(R.drawable.map, res), // 5
-					getDrawable(R.drawable.compass, res),// 6
-					getDrawable(R.drawable.cache_list_icon, res),// 7
+					getDrawable(R.drawable.compass, res), // 6
+					getDrawable(R.drawable.cache_list_icon, res), // 7
 					getDrawable(R.drawable.track_list_icon, res), // 8
-					getDrawable(R.drawable.log10, res),// 9
+					getDrawable(R.drawable.log10, res), // 9
 					getDrawable(R.drawable.video_icon, res), // 10
-					getDrawable(R.drawable.voice_rec_icon, res),// 11
+					getDrawable(R.drawable.voice_rec_icon, res), // 11
 					getDrawable(R.drawable.lupe, res), // 12
 					getDrawable(R.drawable.filter, res), // 13
-					getDrawable(R.drawable.lock_icon, res),// 14
+					getDrawable(R.drawable.lock_icon, res), // 14
 					getDrawable(R.drawable.auto_sort_on_icon, res), // 15
 					getDrawable(R.drawable.auto_sort_off_icon, res), // 16
 					getDrawable(R.drawable.solver_icon, res), // 17
@@ -477,28 +440,28 @@ public class Global
 			};
 
 		Icons = new Drawable[]
-			{ getDrawable(R.drawable.day_tb, R.drawable.night_tb, res),// 0
-					getDrawable(R.drawable.addwaypoint, res),// 1
-					getDrawable(R.drawable.smilie_gross, res),// 2
-					getDrawable(R.drawable.download, res),// 3
-					getDrawable(R.drawable.log1, res),// 4
-					getDrawable(R.drawable.maintenance, res),// 5
-					getDrawable(R.drawable.checkbox_checked, res),// 6
-					getDrawable(R.drawable.checkbox_unchecked, res),// 7
-					getDrawable(R.drawable.sonne, res),// 8
-					getDrawable(R.drawable.mond, res),// 9
-					getDrawable(R.drawable.travelbug, res),// 10
-					getDrawable(R.drawable.collapse, res),// 11
-					getDrawable(R.drawable.expand, res),// 12
-					getDrawable(R.drawable.enabled, res),// 13
-					getDrawable(R.drawable.disabled, res),// 14
-					getDrawable(R.drawable.retrieve_tb, res),// 15
-					getDrawable(R.drawable.drop_tb, res),// 16
-					getDrawable(R.drawable.star, res),// 17
-					getDrawable(R.drawable.earth, res),// 18
-					getDrawable(R.drawable.favorit, res),// 19
-					getDrawable(R.drawable.file, res),// 20
-					getDrawable(R.drawable.userdata, res),// 21
+			{ getDrawable(R.drawable.day_tb, R.drawable.night_tb, res), // 0
+					getDrawable(R.drawable.addwaypoint, res), // 1
+					getDrawable(R.drawable.smilie_gross, res), // 2
+					getDrawable(R.drawable.download, res), // 3
+					getDrawable(R.drawable.log1, res), // 4
+					getDrawable(R.drawable.maintenance, res), // 5
+					getDrawable(R.drawable.checkbox_checked, res), // 6
+					getDrawable(R.drawable.checkbox_unchecked, res), // 7
+					getDrawable(R.drawable.sonne, res), // 8
+					getDrawable(R.drawable.mond, res), // 9
+					getDrawable(R.drawable.travelbug, res), // 10
+					getDrawable(R.drawable.collapse, res), // 11
+					getDrawable(R.drawable.expand, res), // 12
+					getDrawable(R.drawable.enabled, res), // 13
+					getDrawable(R.drawable.disabled, res), // 14
+					getDrawable(R.drawable.retrieve_tb, res), // 15
+					getDrawable(R.drawable.drop_tb, res), // 16
+					getDrawable(R.drawable.star, res), // 17
+					getDrawable(R.drawable.earth, res), // 18
+					getDrawable(R.drawable.favorit, res), // 19
+					getDrawable(R.drawable.file, res), // 20
+					getDrawable(R.drawable.userdata, res), // 21
 					getDrawable(R.drawable.delete, res), // 22
 					getDrawable(R.drawable.archiv, res), // 23
 					getDrawable(R.drawable.not_available, res), // 24
@@ -538,10 +501,10 @@ public class Global
 
 		colorAttrs = new int[]
 			{ R.attr.ListBackground, R.attr.ListBackground_secend, R.attr.ListBackground_select, R.attr.myBackground, R.attr.ListSeparator,
-					R.attr.TextColor, R.attr.TextColor_disable, R.attr.EmptyBackground, R.attr.DropDownBackground,
-					R.attr.ToggleBtColor_off, R.attr.ToggleBtColor_on, R.attr.TitleBarBackColor, R.attr.SlideDownBackColor,
-					R.attr.LinkLabelColor, R.attr.Compass_rimColorFilter, R.attr.Compass_faceColorFilter, R.attr.Compass_TextColor,
-					R.attr.Compass_N_TextColor, R.attr.Map_Compass_TextColor, R.attr.Map_ColorCompassPanel };
+					R.attr.TextColor, R.attr.TextColor_disable, R.attr.EmptyBackground, R.attr.DropDownBackground, R.attr.ToggleBtColor_off,
+					R.attr.ToggleBtColor_on, R.attr.TitleBarBackColor, R.attr.SlideDownBackColor, R.attr.LinkLabelColor,
+					R.attr.Compass_rimColorFilter, R.attr.Compass_faceColorFilter, R.attr.Compass_TextColor, R.attr.Compass_N_TextColor,
+					R.attr.Map_Compass_TextColor, R.attr.Map_ColorCompassPanel };
 
 		try
 		{
