@@ -958,7 +958,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 				@Override
 				public void getFolderReturn(String Path) {
 				    // check WriteProtection
-				    if (!needWritePermission || FileIO.checkWritePermission(Path)) {
+				    if (!needWritePermission && FileIO.checkWritePermission(Path)) {
 					SB.setValue(Path);
 					resortList();
 				    } else {
