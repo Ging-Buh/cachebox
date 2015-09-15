@@ -134,6 +134,7 @@ public class HTMLColors {
     public static final HSV_Color darkcyan = new HSV_Color("008b8b");
     public static final HSV_Color darkgoldenrod = new HSV_Color("b8860b");
     public static final HSV_Color darkgray = new HSV_Color("a9a9a9");
+    public static final HSV_Color darkgrey = new HSV_Color("a9a9a9");
     public static final HSV_Color darkgreen = new HSV_Color("006400");
     public static final HSV_Color darkkhaki = new HSV_Color("bdb76b");
     public static final HSV_Color darkmagenta = new HSV_Color("8b008b");
@@ -145,11 +146,13 @@ public class HTMLColors {
     public static final HSV_Color darkseagreen = new HSV_Color("8fbc8f");
     public static final HSV_Color darkslateblue = new HSV_Color("483d8b");
     public static final HSV_Color darkslategray = new HSV_Color("2f4f4f");
+    public static final HSV_Color darkslategrey = new HSV_Color("2f4f4f");
     public static final HSV_Color darkturquoise = new HSV_Color("00ced1");
     public static final HSV_Color darkviolet = new HSV_Color("9400d3");
     public static final HSV_Color deeppink = new HSV_Color("ff1493");
     public static final HSV_Color deepskyblue = new HSV_Color("00bfff");
     public static final HSV_Color dimgray = new HSV_Color("696969");
+    public static final HSV_Color dimgrey = new HSV_Color("696969");
     public static final HSV_Color dodgerblue = new HSV_Color("1e90ff");
     public static final HSV_Color firebrick = new HSV_Color("b22222");
     public static final HSV_Color floralwhite = new HSV_Color("fffaf0");
@@ -160,6 +163,7 @@ public class HTMLColors {
     public static final HSV_Color gold = new HSV_Color("ffd700");
     public static final HSV_Color goldenrod = new HSV_Color("daa520");
     public static final HSV_Color gray = new HSV_Color("808080");
+    public static final HSV_Color grey = new HSV_Color("808080");
     public static final HSV_Color green = new HSV_Color("008000");
     public static final HSV_Color greenyellow = new HSV_Color("adff2f");
     public static final HSV_Color honeydew = new HSV_Color("f0fff0");
@@ -178,11 +182,13 @@ public class HTMLColors {
     public static final HSV_Color lightgoldenrodyellow = new HSV_Color("fafad2");
     public static final HSV_Color lightgreen = new HSV_Color("90ee90");
     public static final HSV_Color lightgrey = new HSV_Color("d3d3d3");
+    public static final HSV_Color lightgray = new HSV_Color("d3d3d3");
     public static final HSV_Color lightpink = new HSV_Color("ffb6c1");
     public static final HSV_Color lightsalmon = new HSV_Color("ffa07a");
     public static final HSV_Color lightseagreen = new HSV_Color("20b2aa");
     public static final HSV_Color lightskyblue = new HSV_Color("87cefa");
     public static final HSV_Color lightslategray = new HSV_Color("778899");
+    public static final HSV_Color lightslategrey = new HSV_Color("778899");
     public static final HSV_Color lightsteelblue = new HSV_Color("b0c4de");
     public static final HSV_Color lightyellow = new HSV_Color("ffffe0");
     public static final HSV_Color lime = new HSV_Color("00ff00");
@@ -235,6 +241,7 @@ public class HTMLColors {
     public static final HSV_Color skyblue = new HSV_Color("87ceeb");
     public static final HSV_Color slateblue = new HSV_Color("6a5acd");
     public static final HSV_Color slategray = new HSV_Color("708090");
+    public static final HSV_Color slategrey = new HSV_Color("708090");
     public static final HSV_Color snow = new HSV_Color("fffafa");
     public static final HSV_Color springgreen = new HSV_Color("00ff7f");
     public static final HSV_Color steelblue = new HSV_Color("4682b4");

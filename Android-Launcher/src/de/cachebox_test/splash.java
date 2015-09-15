@@ -404,7 +404,6 @@ public class splash extends Activity
 						{
 							splash.this.finish();
 						}
-
 						return super.onKeyDown(keyCode, event);
 					}
 				};
@@ -823,22 +822,22 @@ public class splash extends Activity
 			externalSd += Folder;
 		}
 
-		if (android.os.Build.VERSION.SDK_INT == 19)
+		if (android.os.Build.VERSION.SDK_INT >= 19)
 		{
 			// check for Root permission
 
 			File sandboxPath = null;
-
+			String sandboxParentPath = "";
 			try
 			{
 				String testFolderName = externalSd + "/Test";
 
 				File testFolder = new File(testFolderName);
 
-				sandboxPath = new File(testFolder.getParentFile().getParentFile().getAbsolutePath()
-						+ "/Android/data/de.cachebox_test/files/");
+				sandboxParentPath = new File(externalSd).getParent() + "/Android/data/" + getPackageName();
+				sandboxPath = new File(sandboxParentPath + "/files");
 
-				File test = new File(testFolderName + "/Test.txt");
+				File test = new File(testFolder + "/Test.txt");
 				testFolder.mkdirs();
 				test.createNewFile();
 				if (!test.exists())
@@ -858,10 +857,12 @@ public class splash extends Activity
 				// Check Sandbox Path
 				try
 				{
-					String testFolderName = sandboxPath.getAbsolutePath() + "/Test";
+
+					new File(sandboxParentPath).mkdirs();
+					String testFolderName = sandboxPath.getAbsolutePath() + File.separator + "Test";
 
 					File testFolder = new File(testFolderName);
-					File test = new File(testFolderName + "/Test.txt");
+					File test = new File(testFolderName + File.separator + "Test.txt");
 					testFolder.mkdirs();
 					test.createNewFile();
 					if (!test.exists())
@@ -874,6 +875,7 @@ public class splash extends Activity
 				}
 				catch (Exception e)
 				{
+					e.printStackTrace();
 					externalSd = null;
 				}
 			}

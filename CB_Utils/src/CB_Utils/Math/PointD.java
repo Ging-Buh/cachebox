@@ -24,6 +24,6 @@ public class PointD
 	@Override
 	public String toString()
 	{
-		return this.X + ", " + this.Y;
+		return this.X + " / " + this.Y;
 	}
 }
