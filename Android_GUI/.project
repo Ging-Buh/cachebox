@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>droidcachebox</name>
+	<name>Android_GUI</name>
 	<comment></comment>
 	<projects>
 		<project>CB_Core</project>
