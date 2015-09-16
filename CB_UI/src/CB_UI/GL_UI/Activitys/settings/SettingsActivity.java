@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import CB_Locator.Events.PositionChangedEventList;
 import CB_Translation_Base.TranslationEngine.Lang;
 import CB_Translation_Base.TranslationEngine.SelectedLangChangedEvent;
@@ -83,9 +86,6 @@ import CB_Utils.Settings.SettingTime;
 import CB_Utils.Settings.SettingUsage;
 import CB_Utils.Settings.SettingsAudio;
 import CB_Utils.Util.FileIO;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class SettingsActivity extends ActivityBase implements SelectedLangChangedEvent {
 
@@ -958,12 +958,12 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 				@Override
 				public void getFolderReturn(String Path) {
 				    // check WriteProtection
-				    if (!needWritePermission && FileIO.checkWritePermission(Path)) {
-					SB.setValue(Path);
-					resortList();
-				    } else {
+				    if (needWritePermission && !FileIO.checkWritePermission(Path)) {
 					String WriteProtectionMsg = Translation.Get("NoWriteAcces");
 					GL.that.Toast(WriteProtectionMsg, 8000);
+				    } else {
+					SB.setValue(Path);
+					resortList();
 				    }
 
 				}

@@ -64,6 +64,12 @@ public class FileIO
 		return true;
 	}
 
+	/**
+	 * Returns TRUE has the given PATH write permission!
+	 * 
+	 * @param Path
+	 * @return
+	 */
 	public static boolean checkWritePermission(String Path)
 	{
 		try
