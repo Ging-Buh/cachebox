@@ -27,6 +27,10 @@ import CB_Core.Enums.LogTypes;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.Util.iChanged;
+import android.content.Context;
+import android.media.MediaScannerConnection;
+import android.media.MediaScannerConnection.MediaScannerConnectionClient;
+import android.net.Uri;
 
 public class FieldNoteList extends ArrayList<FieldNoteEntry>
 {
@@ -197,6 +201,14 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 			e.printStackTrace();
 		}
 		;
+		try
+		{
+			new SingleMediaScanner(null, txtFile);
+		}
+		catch (Exception e)
+		{
+		}
+
 	}
 
 	public void DeleteFieldNoteByCacheId(long cacheId, LogTypes type)
@@ -279,4 +291,31 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 			return false;
 		}
 	}
+}
+
+class SingleMediaScanner implements MediaScannerConnectionClient
+{
+
+	private MediaScannerConnection mMs;
+	private File mFile;
+
+	public SingleMediaScanner(Context context, File f)
+	{
+		mFile = f;
+		mMs = new MediaScannerConnection(context, this);
+		mMs.connect();
+	}
+
+	@Override
+	public void onMediaScannerConnected()
+	{
+		mMs.scanFile(mFile.getAbsolutePath(), null);
+	}
+
+	@Override
+	public void onScanCompleted(String path, Uri uri)
+	{
+		mMs.disconnect();
+	}
+
 }
