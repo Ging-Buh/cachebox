@@ -94,7 +94,7 @@ public class TextFilterView extends CB_View_Base
 			}
 		});
 
-		// Controls zum Dialog hinzufügen
+		// Controls zum Dialog hinzufÃ¼gen
 		this.addChild(mTglBtnTitle);
 		this.addChild(mTglBtnGc);
 		this.addChild(mTglBtnOwner);

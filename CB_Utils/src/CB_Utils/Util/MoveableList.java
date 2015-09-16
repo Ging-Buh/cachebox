@@ -26,7 +26,7 @@ import CB_Utils.Lists.CB_List;
 /// 
 /// 
 ///  <example>
-///  <para><b>Der Aufruf folgender Methoden lösen ein Changed Event aus:</b></para>
+///  <para><b>Der Aufruf folgender Methoden lÃ¶sen ein Changed Event aus:</b></para>
 /// 
 /// <para>
 ///  Add / 
@@ -41,7 +41,7 @@ import CB_Utils.Lists.CB_List;
 ///  </para>
 /// 
 /// 
-/// <para><b>Neu implementierte Methoden, welche ein Changed Event aus lösen:</b></para>
+/// <para><b>Neu implementierte Methoden, welche ein Changed Event aus lÃ¶sen:</b></para>
 /// <para >
 ///  MoveItem /
 ///  MoveItemFirst /
@@ -263,7 +263,7 @@ public class MoveableList<T> extends CB_List<T>
 	private int _MoveResultIndex;
 
 	// / <summary>
-	// / Gigbt die Position der letzten Move Methode zurück.
+	// / Gigbt die Position der letzten Move Methode zurÃ¼ck.
 	// / </summary>
 	// / <returns>Null-Basierender Index, des Ergebnisses der letzten Move Nethode</returns>
 	// / <remarks>Bei den Methoden <see cref="MoveItemsLeft">[MoveItemsLeft]</see> und <see cref="MoveItemsRight">[MoveItemsRight]</see>

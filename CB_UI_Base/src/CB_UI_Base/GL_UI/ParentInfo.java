@@ -6,8 +6,8 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * enthält die Matrix4 und die dazugehörige Vector2 für die verschiebung bei Zeichnen eines Controls auf der GL Oberfläche </br> und ein
- * rechteck, welches die letzt mögliche Zeichen Größe enthällt, inerhalb dessen gezeichnet werden darf.
+ * enthÃ¤lt die Matrix4 und die dazugehÃ¶rige Vector2 fÃ¼r die verschiebung bei Zeichnen eines Controls auf der GL OberflÃ¤che </br> und ein
+ * rechteck, welches die letzt mÃ¶gliche Zeichen GrÃ¶ÃŸe enthÃ¤llt, inerhalb dessen gezeichnet werden darf.
  * 
  * @author Longri
  */

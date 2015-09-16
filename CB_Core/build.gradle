@@ -1,0 +1,23 @@
+apply plugin: "java"
+
+sourceCompatibility = 1.6
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+sourceSets.main.java.srcDirs = [ "src/" ]
+
+
+dependencies {
+        compile project(":CB_Translation_Base")
+        compile project(":CB_Locator_Base")
+        compile project(":CB_Utils")
+        compile project(":CB_Rpc")
+
+    compile fileTree(dir: 'lib', include: ['*.jar'])
+
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+
+        compile 'org.apache.httpcomponents:httpclient:4.1.1'
+        compile 'org.apache.httpcomponents:httpmime:4.1.1'
+        compile 'org.slf4j:slf4j-api:1.7.12'
+    }
+

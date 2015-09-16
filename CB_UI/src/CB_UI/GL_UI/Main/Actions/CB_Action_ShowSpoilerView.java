@@ -95,7 +95,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
 		GlobalCore.ImportSpoiler().setReadyListner(new IReadyListner() {
 		    @Override
 		    public void isReady() {
-			// erst die Lokalen Images für den Cache neu laden
+			// erst die Lokalen Images fÃ¼r den Cache neu laden
 			if (GlobalCore.ifCacheSelected()) {
 			    GlobalCore.getSelectedCache().ReloadSpoilerRessources();
 			    GL.that.RunOnGL(new IRunOnGL() {

@@ -1,7 +1,7 @@
 package CB_Core;
 
 /**
- * Struktur die alle Infos enthällt, die an den Core übergeben werden müssen
+ * Struktur die alle Infos enthÃ¤llt, die an den Core Ã¼bergeben werden mÃ¼ssen
  * 
  * @author Longri
  */

@@ -45,7 +45,7 @@ public abstract class RotateAnimation extends AnimationBase
 	}
 
 	/**
-	 * Time for 360°
+	 * Time for 360Â°
 	 */
 	protected void play(int duration)
 	{

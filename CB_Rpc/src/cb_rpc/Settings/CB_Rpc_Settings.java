@@ -23,7 +23,7 @@ import CB_Utils.Settings.SettingString;
 import CB_Utils.Settings.SettingUsage;
 
 public interface CB_Rpc_Settings {
-	// Abkürzende Schreibweisen für die Übersichlichkeit bei den add Methoden
+	// AbkÃ¼rzende Schreibweisen fÃ¼r die Ãœbersichlichkeit bei den add Methoden
 	public static final SettingModus INVISIBLE = SettingModus.Invisible;
 	public static final SettingModus NORMAL = SettingModus.Normal;
 	public static final SettingModus EXPERT = SettingModus.Expert;

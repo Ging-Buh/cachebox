@@ -1406,7 +1406,7 @@ public class Base64
 
 	/*
 	 * This reads the bytes from an InputStream and writes the result directly to a file Only for API-PQ-Download!!! buff : Buffer fuer das
-	 * Einlesen buffLen : Max. Anzahl an Bytes im Buffer buffCount : Aktuell im Buffer enthaltene gültige Bytes buffPos : Aktuelle Position
+	 * Einlesen buffLen : Max. Anzahl an Bytes im Buffer buffCount : Aktuell im Buffer enthaltene gÃ¼ltige Bytes buffPos : Aktuelle Position
 	 * im Buffer
 	 */
 	public static boolean decodeStreamToStream(java.io.InputStream inputStream, byte[] buff, int buffLen, int buffCount, int buffPos,

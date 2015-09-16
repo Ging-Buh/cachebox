@@ -63,7 +63,7 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 	private boolean cancel = false;
 	private RunnableReadyHandler ChkStatRunnable = new RunnableReadyHandler()
 	{
-		final int BlockSize = 100; // die API läst nur maximal 100 zu!
+		final int BlockSize = 100; // die API lÃ¤st nur maximal 100 zu!
 
 		@Override
 		public void run()
@@ -83,7 +83,7 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 			}
 			float ProgressInkrement = 100.0f / (chkList.size() / BlockSize);
 
-			// in Blöcke Teilen
+			// in BlÃ¶cke Teilen
 
 			int start = 0;
 			int stop = BlockSize;

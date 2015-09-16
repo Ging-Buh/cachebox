@@ -78,7 +78,7 @@ public class API_ErrorEventHandlerList
 			}
 		});
 
-		// Zeit verzögerter Fehler aufruf
+		// Zeit verzÃ¶gerter Fehler aufruf
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask()
 		{

@@ -434,7 +434,7 @@ public class Renderer implements CharStreamSource {
      *    &nbsp; &nbsp; &nbsp; &nbsp; if (startTag.getName()==HTMLElementName.AREA) return null;
      *    &nbsp; &nbsp; &nbsp; &nbsp; String alt=startTag.getAttributeValue("alt");<br />
      *    &nbsp; &nbsp; &nbsp; &nbsp; if (alt==null || alt.length()==0) return null;<br />
-     *    &nbsp; &nbsp; &nbsp; &nbsp; return '«'+alt+'»';<br />
+     *    &nbsp; &nbsp; &nbsp; &nbsp; return 'Â«'+alt+'Â»';<br />
      *    &nbsp; &nbsp; }<br />
      *    };<br />
      *    String renderedSegment=renderer.toString();

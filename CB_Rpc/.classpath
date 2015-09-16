@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="lib" path="lib/mina-core-2.0.4.jar"/>
-	<classpathentry kind="lib" path="lib/servlet-api-6.0.16.jar"/>
-	<classpathentry kind="lib" path="lib/org.apache.commons.httpclient.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CB_Utils"/>
-	<classpathentry kind="lib" path="lib/slf4j-api-1.7.6.jar"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

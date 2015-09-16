@@ -18,7 +18,7 @@ public class UnitFormatter
 	// public static boolean ImperialUnits = Config.settings.ImperialUnits.getValue();
 
 	// / <summary>
-	// / Erzeugt eine für den Menschen lesbare Form der Distanz
+	// / Erzeugt eine fÃ¼r den Menschen lesbare Form der Distanz
 	// / </summary>
 	// / <param name="distance"></param>
 	// / <returns></returns>
@@ -30,7 +30,7 @@ public class UnitFormatter
 	}
 
 	// / <summary>
-	// / Erzeugt eine für den Menschen lesbare Form der Distanz
+	// / Erzeugt eine fÃ¼r den Menschen lesbare Form der Distanz
 	// / </summary>
 	// / <param name="distance"></param>
 	// / <returns></returns>
@@ -45,7 +45,7 @@ public class UnitFormatter
 	}
 
 	// / <summary>
-	// / Erzeugt eine für den Menschen lesbare Form der Distanz
+	// / Erzeugt eine fÃ¼r den Menschen lesbare Form der Distanz
 	// / </summary>
 	// / <param name="distance"></param>
 	// / <returns></returns>

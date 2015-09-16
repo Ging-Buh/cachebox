@@ -105,7 +105,7 @@ public class Solver extends ArrayList<SolverZeile>
 
 		for (SolverZeile zeile : this)
 		{
-			// wenn die letzte Zeile leer ist dann nicht einfügen
+			// wenn die letzte Zeile leer ist dann nicht einfÃ¼gen
 			if ((zeile == this.get(this.size() - 1)) && (zeile.getOrgText().length() == 0)) break;
 			if (result.length() > 0) result += "\n";
 			result += zeile.getOrgText();

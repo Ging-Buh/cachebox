@@ -99,7 +99,7 @@ public class CB_Action_UploadFieldNote extends CB_ActionCommand
 						if (cancel.get()) break;
 
 						if (fieldNote.uploaded) continue;
-						if (ThreadCancel) // wenn im ProgressDialog Cancel gedrückt
+						if (ThreadCancel) // wenn im ProgressDialog Cancel gedrÃ¼ckt
 											// wurde.
 						break;
 						// Progress status Melden
@@ -186,7 +186,7 @@ public class CB_Action_UploadFieldNote extends CB_ActionCommand
 			}
 		};
 
-		// ProgressDialog Anzeigen und den Abarbeitungs Thread übergeben.
+		// ProgressDialog Anzeigen und den Abarbeitungs Thread Ã¼bergeben.
 
 		GL.that.RunOnGL(new IRunOnGL()
 		{

@@ -6,7 +6,7 @@ public class WaypointDetail implements Serializable
 {
 	private static final long serialVersionUID = -3177862382324983452L;
 
-	// / Lösung einer QTA
+	// / LÃ¶sung einer QTA
 	private byte[] Clue;
 	// / Kommentartext
 	private byte[] Description;

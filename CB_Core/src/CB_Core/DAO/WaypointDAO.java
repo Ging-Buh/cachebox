@@ -108,7 +108,7 @@ public class WaypointDAO
 
 			if (WP.IsUserWaypoint)
 			{
-				// HasUserData nicht updaten wenn der Waypoint kein UserWaypoint ist (z.B. über API)
+				// HasUserData nicht updaten wenn der Waypoint kein UserWaypoint ist (z.B. Ã¼ber API)
 				args = new Parameters();
 				args.put("hasUserData", true);
 				try
@@ -226,7 +226,7 @@ public class WaypointDAO
 		}
 	}
 
-	// Hier wird überprüft, ob für diesen Cache ein Start-Waypoint existiert und dieser in diesem Fall zurückgesetzt
+	// Hier wird Ã¼berprÃ¼ft, ob fÃ¼r diesen Cache ein Start-Waypoint existiert und dieser in diesem Fall zurÃ¼ckgesetzt
 	// Damit kann bei der Definition eines neuen Start-Waypoints vorher der alte entfernt werden damit sichergestellt ist dass ein Cache nur
 	// 1 Start-Waypoint hat
 	public void ResetStartWaypoint(Cache cache, Waypoint except)

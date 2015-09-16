@@ -1593,7 +1593,7 @@ public class SVG
 	}
 
 	// One of the element types that can cause graphics to be drawn onto the target canvas.
-	// Specifically: ‘circle’, ‘ellipse’, ‘image’, ‘line’, ‘path’, ‘polygon’, ‘polyline’, ‘rect’, ‘text’ and ‘use’.
+	// Specifically: â€˜circleâ€™, â€˜ellipseâ€™, â€˜imageâ€™, â€˜lineâ€™, â€˜pathâ€™, â€˜polygonâ€™, â€˜polylineâ€™, â€˜rectâ€™, â€˜textâ€™ and â€˜useâ€™.
 	protected static abstract class GraphicsElement extends SvgConditionalElement implements HasTransform
 	{
 		public ext_Matrix transform;

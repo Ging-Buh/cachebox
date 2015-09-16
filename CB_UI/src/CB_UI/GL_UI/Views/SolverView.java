@@ -298,8 +298,8 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 
 		@Override
 		public void selectedFunction(final Function function) {
-		    // ausgewählte Funktion verarbeiten!
-		    // wenn funktion==null wurde Cancel gedrückt
+		    // ausgewÃ¤hlte Funktion verarbeiten!
+		    // wenn funktion==null wurde Cancel gedrÃ¼ckt
 
 		    if (function != null) {
 
@@ -311,7 +311,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 			if (function.needsTextArgument()) {
 			    zeichen = "\"";
 			    if ((selection.length() > 0) && (selection.charAt(0) == '"')) {
-				// Anführungszeichen bereits vorhanden
+				// AnfÃ¼hrungszeichen bereits vorhanden
 				zeichen = "";
 			    }
 			}
@@ -435,7 +435,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 
 	if ((solver.MissingVariables != null) && (solver.MissingVariables.size() > 0)) {
 	    // es sind nicht alle Variablen zugewiesen
-	    // Abfrage, ob die Deklarationen eingefügt werden sollen
+	    // Abfrage, ob die Deklarationen eingefÃ¼gt werden sollen
 	    String message = "";
 	    for (String s : solver.MissingVariables.keySet()) {
 		if (message != "")

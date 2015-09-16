@@ -106,7 +106,7 @@ public class CacheList extends MoveableList<Cache>
 
 		this.sort();
 
-		// Nächsten Cache auswählen
+		// NÃ¤chsten Cache auswÃ¤hlen
 		if (this.size() > 0)
 		{
 			Cache nextCache = this.get(0); // or null ...
@@ -119,7 +119,7 @@ public class CacheList extends MoveableList<Cache>
 					{
 						if (!nextCache.isFound()) // eigentlich wenn has_fieldnote(found,DNF,Maint,SBA, aber note vielleicht nicht) , aber
 													// found
-													// kann nicht rückgängig gemacht werden.
+													// kann nicht rÃ¼ckgÃ¤ngig gemacht werden.
 						{
 							if (!nextCache.ImTheOwner())
 							{
@@ -146,7 +146,7 @@ public class CacheList extends MoveableList<Cache>
 			Waypoint waypoint = nextCache.GetFinalWaypoint();
 			if (waypoint == null)
 			{
-				// wenn ein Cache keinen Final Waypoint hat dann wird überprüft, ob dieser einen Startpunkt definiert hat
+				// wenn ein Cache keinen Final Waypoint hat dann wird Ã¼berprÃ¼ft, ob dieser einen Startpunkt definiert hat
 				// Wenn ein Cache einen Startpunkt definiert hat dann wird beim Selektieren dieses Caches gleich dieser Startpunkt
 				// selektiert
 				waypoint = nextCache.GetStartWaypoint();
