@@ -103,7 +103,7 @@ public enum CacheTypes
 		case Event:
 			return "Event Cache";
 		case Final:
-			break;
+			return "Final Location";
 		case Giga:
 			break;
 		case Letterbox:
@@ -125,7 +125,7 @@ public enum CacheTypes
 		case ParkingArea:
 			return "Parking Area";
 		case ReferencePoint:
-			break;
+			return "Reference Point";
 		case Traditional:
 			return "Traditional Cache";
 		case Trailhead:
