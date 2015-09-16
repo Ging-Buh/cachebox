@@ -160,10 +160,10 @@ public class ImageActivity extends ActivityBase {
 	float y = Gdx.input.getAccelerometerY();
 	float z = Gdx.input.getAccelerometerY();
 
-	// • (|Gpz| < 0.5g) AND (Gpx > 0.5g) AND (|Gpy| < 0.4g): Change orientation to Left
-	// • (|Gpz| < 0.5g) AND (Gpx < -0.5g) AND (|Gpy| < 0.4g): Change orientation to Right
-	// • (|Gpz| < 0.5g) AND (Gpy > 0.5g) AND (|Gpx| < 0.4g): Change orientation to Bottom
-	// • (|Gpz| < 0.5g) AND (Gpy < -0.5g) AND (|Gpx| < 0.4g): Change orientation to Top.
+	// � (|Gpz| < 0.5g) AND (Gpx > 0.5g) AND (|Gpy| < 0.4g): Change orientation to Left
+	// � (|Gpz| < 0.5g) AND (Gpx < -0.5g) AND (|Gpy| < 0.4g): Change orientation to Right
+	// � (|Gpz| < 0.5g) AND (Gpy > 0.5g) AND (|Gpx| < 0.4g): Change orientation to Bottom
+	// � (|Gpz| < 0.5g) AND (Gpy < -0.5g) AND (|Gpx| < 0.4g): Change orientation to Top.
 
 	if (z < 5 && x > 5 && y < 4) {
 	    imageHeading = -90;
@@ -339,7 +339,7 @@ public class ImageActivity extends ActivityBase {
 	    // debugString = "touchDragged: " + x + " - " + y;
 	    // debugString = "touchDragged " + inputState.toString();
 	    if (inputState == InputState.IdleDown) {
-		// es wurde 1x gedrï¿½ckt -> testen, ob ein gewisser Minimum Bereich verschoben wurde
+		// es wurde 1x gedr�ckt -> testen, ob ein gewisser Minimum Bereich verschoben wurde
 		Point p = fingerDown.get(pointer);
 		if (p != null) {
 		    // if ((Math.abs(p.x - x) > 10) || (Math.abs(p.y - y) > 10)) // this check is not necessary because this is already
@@ -355,7 +355,7 @@ public class ImageActivity extends ActivityBase {
 		}
 	    }
 	    if (inputState == InputState.Button) {
-		// wenn ein Button gedrï¿½ckt war -> beim Verschieben nichts machen!!!
+		// wenn ein Button gedr�ckt war -> beim Verschieben nichts machen!!!
 		return false;
 	    }
 
@@ -376,7 +376,7 @@ public class ImageActivity extends ActivityBase {
 		    int dyr = (int) (-Math.sin(angle) * dx + Math.cos(angle) * dy);
 		    // debugString = dx + " - " + dy + " - " + dxr + " - " + dyr;
 
-		    // Pan stufenlos anpassen an den aktuell gï¿½ltigen Zoomfaktor
+		    // Pan stufenlos anpassen an den aktuell g�ltigen Zoomfaktor
 		    float tmpZoom = camera.zoom;
 		    float ffaktor = 1.5f;
 		    while (tmpZoom > ffaktor) {
@@ -443,12 +443,12 @@ public class ImageActivity extends ActivityBase {
 	y = mapIntHeight - y;
 
 	if (inputState == InputState.IdleDown) {
-	    // es wurde gedrï¿½ckt, aber nich verschoben
+	    // es wurde gedr�ckt, aber nich verschoben
 	    fingerDown.remove(pointer);
 	    inputState = InputState.Idle;
 	    // -> Buttons testen
 
-	    // auf Button Clicks nur reagieren, wenn aktuell noch kein Finger gedrï¿½ckt ist!!!
+	    // auf Button Clicks nur reagieren, wenn aktuell noch kein Finger gedr�ckt ist!!!
 	    if (kineticPan != null)
 		// bei FingerKlick (wenn Idle) sofort das kinetische Scrollen stoppen
 		kineticPan = null;

@@ -52,7 +52,7 @@ public class H_ListView extends ListViewBase {
 
 	mReloadItems = false;
 
-	// afrï¿½umen
+	// afr�umen
 	if (clearList.size() > 0) {
 	    for (int i = 0; i < clearList.size(); i++) {
 		ListViewItemBase tmp = clearList.get(i);
@@ -69,7 +69,7 @@ public class H_ListView extends ListViewBase {
 	    }
 	    clearList.clear();
 
-	    // setze First Index, damit nicht alle Items durchlaufen werden mï¿½ssen
+	    // setze First Index, damit nicht alle Items durchlaufen werden m�ssen
 	    mAddeedIndexList.sort();
 
 	    if (mAddeedIndexList.size() > 0) {
@@ -219,7 +219,7 @@ public class H_ListView extends ListViewBase {
 	    return true;
 	mLastTouch = x;
 	mLastPos_onTouch = mPos;
-	return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgelösst wird.
+	return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgel�sst wird.
     }
 
     @Override

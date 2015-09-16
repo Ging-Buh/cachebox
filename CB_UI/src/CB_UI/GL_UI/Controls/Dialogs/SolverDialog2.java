@@ -40,7 +40,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     }
 
     private enum buttons {
-	Text(pages.Text, "TXT"), Zahl(pages.Zahl, "123"), Function(pages.Function, "f(x)"), Variable(pages.Variable, "@"), Operator(pages.Operator, "+-*/"), Waypoint(pages.Waypoint, "$GC"), Coordinate(pages.Coordinate, "Â°");
+	Text(pages.Text, "TXT"), Zahl(pages.Zahl, "123"), Function(pages.Function, "f(x)"), Variable(pages.Variable, "@"), Operator(pages.Operator, "+-*/"), Waypoint(pages.Waypoint, "$GC"), Coordinate(pages.Coordinate, "°");
 	private pages page;
 	public String description;
 
@@ -53,7 +53,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	    if (dataType == DataType.None)
 		return true; // wenn kein spezieller DataType angegeben ist -> alle Pages anzeigen
 	    if (dataType == DataType.String)
-		return true; // alles kann als String zurÃ¼ck gegeben werden
+		return true; // alles kann als String zurück gegeben werden
 	    switch (page) {
 	    case Coordinate:
 		return dataType == DataType.Coordinate;
@@ -133,7 +133,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     private Label[] lWaypoints = null;
     // Page Coordinate
     private CoordinateButton bCoord = null;
-    private Solver solver; // Solver Object dieses Caches fÃ¼r die Functions, Variablen...
+    private Solver solver; // Solver Object dieses Caches für die Functions, Variablen...
 
     public interface SolverBackStringListner {
 	public void BackString(String backString);
@@ -234,7 +234,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     }
 
     private boolean isFunction(String string) {
-	// Funktion aufsplitten nach Funktionsname und Parameter (falls mÃ¶glich!)
+	// Funktion aufsplitten nach Funktionsname und Parameter (falls möglich!)
 	String formula = string;
 	formula.trim();
 	int posKlammerAuf = formula.indexOf("(");
@@ -245,13 +245,13 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	    return false;
 	if (posKlammerZu != formula.length() - 1)
 	    return false;
-	// in eine gÃ¼ltigen Formel dÃ¼rfen nur normale Buchstaben oder Zahlen stehen
+	// in eine gültigen Formel dürfen nur normale Buchstaben oder Zahlen stehen
 	for (int i = 0; i < posKlammerAuf; i++) {
 	    char c = formula.charAt(i);
 	    if (!Character.isLetter(c) && !Character.isDigit(c))
 		return false;
 	}
-	// gÃ¼ltige Formel erkannt anhand dem Format.
+	// gültige Formel erkannt anhand dem Format.
 	return true;
     }
 
@@ -303,7 +303,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
 	visibleButtons.clear();
 	// Buttons zur Auswahl des Dialog-Typs
-	// nur die Buttons werden angezeigt, die auch den gewÃ¼nschten DataType liefern kÃ¶nnen
+	// nur die Buttons werden angezeigt, die auch den gewünschten DataType liefern können
 	for (buttons btn : buttons.values()) {
 	    if (btn == buttons.Operator)
 		continue; // Operator erstmal noch nicht anzeigen
@@ -477,7 +477,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	bOK.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		// damit die Ã„nderungen in sForm gespeichert werden
+		// damit die Änderungen in sForm gespeichert werden
 		saveAktPage();
 		String result = "";
 		if (mVariableField != null) {
@@ -520,7 +520,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     public void onStateChange(GL_View_Base v, int State) {
 
 	pages newPage = null;
-	// StatusÃ¤nderung eines MultiToggleButtons
+	// Statusänderung eines MultiToggleButtons
 	if (State == 1) {
 	    // Werte der aktuellen Seite in den String sForm speichern
 	    saveAktPage();
@@ -562,7 +562,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	    if (checkDataType(newPage)) {
 		showPage(newPage);
 	    } else {
-		// Button States zurÃ¼ck setzen
+		// Button States zurück setzen
 		setButtonStates();
 	    }
 	}
@@ -602,7 +602,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	}
     }
 
-    // Ã¼berprÃ¼ft fÃ¼r alle pages, ob der aktuell eingegebene String einen gÃ¼ltigen Wert fÃ¼r diese Page darstellt
+    // überprüft für alle pages, ob der aktuell eingegebene String einen gültigen Wert für diese Page darstellt
     private void checkDataTypes() {
 	for (pages p : pages.values()) {
 	    checkDataType(p);
@@ -823,7 +823,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			    } else if (text.length() == 1) {
 				text = "";
 			    }
-			    // Resultierende Zahl Ã¼berprÃ¼fen
+			    // Resultierende Zahl überprüfen
 			    if (isZahl(text)) {
 				tbZahl.setText(text);
 			    }
@@ -850,7 +850,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	    @SuppressWarnings("unused")
 	    double zahl = Double.valueOf(text);
 	} catch (Exception ex) {
-	    // Fehler, Zahl konnte nicht interpretiert werden -> keine Ã„nderung!!!
+	    // Fehler, Zahl konnte nicht interpretiert werden -> keine Änderung!!!
 	    return false;
 	}
 	return true;
@@ -881,12 +881,12 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	bFunction.setText("F(x)");
 	scrollBox.addChild(bFunction);
 
-	// Funktion aufsplitten nach Funktionsname und Parameter (falls mÃ¶glich!)
+	// Funktion aufsplitten nach Funktionsname und Parameter (falls möglich!)
 	String formula = sForm.trim();
 	int posKlammerAuf = formula.indexOf("(");
 	int posKlammerZu = formula.lastIndexOf(")");
 	if ((posKlammerAuf >= 0) && (posKlammerZu > posKlammerAuf)) {
-	    // gÃ¼ltige Formel erkannt
+	    // gültige Formel erkannt
 	    String function = formula.substring(0, posKlammerAuf);
 	    tbFunction.setText(function);
 	    String parameter = formula.substring(posKlammerAuf + 1, posKlammerZu);
@@ -932,7 +932,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	if (function != null) {
 	    paramName = Translation.Get(function.getParamName(i));
 	}
-	// Eingabefelder fÃ¼r die Parameter einfÃ¼gen
+	// Eingabefelder für die Parameter einfügen
 	lFunctionParam[i] = new Label();
 	lFunctionParam[i].setText(paramName);
 	scrollBox.addChild(lFunctionParam[i]);
@@ -998,7 +998,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	if (tbFunction == null) {
 	    return;
 	}
-	// geÃ¤nderte Formel merken
+	// geänderte Formel merken
 	sForm = tbFunction.getText();
 	if (sForm.length() > 0) {
 	    sForm += "(";

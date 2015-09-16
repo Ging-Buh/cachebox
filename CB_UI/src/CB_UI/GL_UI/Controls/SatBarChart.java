@@ -114,7 +114,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent {
 		}
 
 		try {
-		    // balken hÃ¶he festlegen
+		    // balken höhe festlegen
 		    if (balken[count] != null) {
 			float barHeight = Math.min((tmp.getStrength() * 3 / 100) * this.getHeight(), this.getHeight());
 

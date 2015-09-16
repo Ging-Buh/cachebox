@@ -22,11 +22,11 @@ public class NumPad extends CB_View_Base
 /**
 		 * Value hat den Wert 0-9 oder "." <br>
 		 * oder <br>
-		 * "D" fÃ¼r Delete Button<br>
-		 * "O" fÃ¼r Ok Button<br>
-		 * "C" fÃ¼r Cancel Button<br>
-		 * "<" fÃ¼r Left Button<br>
-		 * ">" fÃ¼r Right Button<br>
+		 * "D" für Delete Button<br>
+		 * "O" für Ok Button<br>
+		 * "C" für Cancel Button<br>
+		 * "<" für Left Button<br>
+		 * ">" für Right Button<br>
 		 * @param value
 		 */
 		public void KeyPressed(String value);

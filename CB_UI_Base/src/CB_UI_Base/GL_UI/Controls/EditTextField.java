@@ -391,20 +391,20 @@ public class EditTextField extends EditTextFieldBase {
     // Wenn calcCursor == true -> Cursorposition wird evtl. angepasst, sonst nicht
     private void updateDisplayText(DisplayText dt, boolean calcCursor) {
 	float maxWidth = getWidth() - 50; // noch falsch!!!!!!!!!!!!!!!!!!!!!
-	// wenn dies eine autoWrap Zeile ist muss zuerst die Zeile davor Ã¼berprÃ¼ft werden, ob die ersten Zeichen dieser Zeile dahinein
-	// kopiert werden kÃ¶nnen
+	// wenn dies eine autoWrap Zeile ist muss zuerst die Zeile davor überprüft werden, ob die ersten Zeichen dieser Zeile dahinein
+	// kopiert werden können
 	if (dt.autoWrap) {
 	    DisplayText prevDt = getDisplayText(cursor.line - 1);
 	    if (prevDt != null) {
 		// Restlichen Platz suchen
 		float rest = maxWidth - prevDt.getWidth(); // Restlicher Platz der vorherigen Zeile
-		// Breite des ersten Wortes incl. abschlieÃŸendem Leerzeichen suchen
+		// Breite des ersten Wortes incl. abschließendem Leerzeichen suchen
 
 		int idWord = 0;
 		for (int i = 0; i < dt.displayText.length(); i++) {
 		    char c = dt.displayText.charAt(i);
 		    float pos = dt.glyphPositions.get(i + 1);
-		    // PrÃ¼fen, ob aktuelles Zeichen ein Leerzeichen ist und ob das Ende nicht weiter als "rest" vom Start der Linie entfernt
+		    // Prüfen, ob aktuelles Zeichen ein Leerzeichen ist und ob das Ende nicht weiter als "rest" vom Start der Linie entfernt
 		    // ist
 		    if ((c == ' ') && (pos <= rest)) {
 			idWord = i + 1;
@@ -413,7 +413,7 @@ public class EditTextField extends EditTextFieldBase {
 		    }
 		}
 		if (idWord == 0) {
-		    // PrÃ¼fen, ob komplette nÃ¤chste Zeile in diese rein passt
+		    // Prüfen, ob komplette nächste Zeile in diese rein passt
 		    if (dt.getWidth() <= rest) {
 			idWord = dt.displayText.length();
 		    }
@@ -426,11 +426,11 @@ public class EditTextField extends EditTextFieldBase {
 		    computeGlyphAdvancesAndPositions(prevDt.displayText, prevDt.glyphAdvances, prevDt.glyphPositions);
 		    dt.displayText = s2;
 		    if (s2.length() == 0) {
-			// komplette Zeile lÃ¶schen
+			// komplette Zeile löschen
 			displayText.remove(dt);
 			int lineCount = displayText.size();
 			sendLineCountChanged(lineCount, lineHeight * lineCount);
-			// 2014-07-09: cursor.pos und idWord = 0 setzen damit spÃ¤ter der Cursor auf das Ende der vorherigen Zeile gesetzt
+			// 2014-07-09: cursor.pos und idWord = 0 setzen damit später der Cursor auf das Ende der vorherigen Zeile gesetzt
 			// wird
 			cursor.pos = 0;
 			idWord = 0;
@@ -445,7 +445,7 @@ public class EditTextField extends EditTextFieldBase {
 			// verschieben
 			cursor.pos = prevDt.displayText.length() + 1/* - 1 */;
 			setCursorLine(cursor.line - 1, true);
-			// anschlieÃŸende Zeile noch mal berechnen.
+			// anschließende Zeile noch mal berechnen.
 			cursor.line++;
 			DisplayText nextDt = getAktDisplayText();
 			if (nextDt != null) {
@@ -460,13 +460,13 @@ public class EditTextField extends EditTextFieldBase {
 	computeGlyphAdvancesAndPositions(dt.displayText, dt.glyphAdvances, dt.glyphPositions);
 	float len = dt.getWidth();
 
-	// PrÃ¼fen, ob Zeile zu lang geworden ist und ob am Ende Zeichen in die nÃ¤chste Zeile verschoben werden mÃ¼ssen
+	// Prüfen, ob Zeile zu lang geworden ist und ob am Ende Zeichen in die nächste Zeile verschoben werden müssen
 	if ((len > maxWidth) && isWraped()) {
-	    // automatischen Umbruch einfÃ¼gen
-	    // erstes Zeichen suchen, das auÃŸerhalb des max. Bereichs liegt
+	    // automatischen Umbruch einfügen
+	    // erstes Zeichen suchen, das außerhalb des max. Bereichs liegt
 	    int id = 0;
 	    for (int i = 1; i < dt.glyphPositions.size; i++) {
-		// abschlieÃŸende Leerzeichen hier nicht berÃ¼cksichtigen
+		// abschließende Leerzeichen hier nicht berücksichtigen
 		if ((dt.displayText.length() > i - 1) && (dt.displayText.charAt(i - 1) == ' '))
 		    continue;
 		float pos = dt.glyphPositions.get(i);
@@ -491,11 +491,11 @@ public class EditTextField extends EditTextFieldBase {
 		dt.displayText = s1;
 		computeGlyphAdvancesAndPositions(dt.displayText, dt.glyphAdvances, dt.glyphPositions);
 		cursor.line++;
-		// Text der nÃ¤chsten Zeile holen und prÃ¼fen, ob dies eine durch einen autoWrap eingefÃ¼gte Zeile ist
+		// Text der nächsten Zeile holen und prüfen, ob dies eine durch einen autoWrap eingefügte Zeile ist
 		DisplayText nextDt = getAktDisplayText();
 		cursor.line--;
 		if ((nextDt != null) && nextDt.autoWrap) {
-		    // Umzubrechnenden Text am Anfang von nextDT anfÃ¼gen
+		    // Umzubrechnenden Text am Anfang von nextDT anfügen
 		    nextDt.displayText = s2 + nextDt.displayText;
 		    computeGlyphAdvancesAndPositions(nextDt.displayText, nextDt.glyphAdvances, nextDt.glyphPositions);
 		    cursor.line++;
@@ -508,23 +508,23 @@ public class EditTextField extends EditTextFieldBase {
 		    computeGlyphAdvancesAndPositions(newDt.displayText, newDt.glyphAdvances, newDt.glyphPositions);
 		}
 		if (calcCursor && (cursor.pos >= id)) {
-		    // Cursor auch in die nÃ¤chste Zeile verschieben, an die Stelle im Wort an der der Cursor vorher auch war
+		    // Cursor auch in die nächste Zeile verschieben, an die Stelle im Wort an der der Cursor vorher auch war
 		    cursor.pos = cursor.pos - id;
 		    setCursorLine(cursor.line + 1, true);
 		}
 	    }
 	}
-	// PrÃ¼fen, ob am Ende der Zeile wieder Platz fÃ¼r Zeichen / WÃ¶rter der vorgÃ¤nger-Zeile ist
+	// Prüfen, ob am Ende der Zeile wieder Platz für Zeichen / Wörter der vorgänger-Zeile ist
 	float rest = maxWidth - dt.getWidth(); // Restlicher Platz
-	// Wenn anschlieÃŸend eine Wraped-Zeile kommt dann erstes Word dessen suchen und PrÃ¼fen, ob dies hier eingefÃ¼gt werden kann
+	// Wenn anschließend eine Wraped-Zeile kommt dann erstes Word dessen suchen und Prüfen, ob dies hier eingefügt werden kann
 	DisplayText nextDt = getDisplayText(cursor.line + 1);
 	if ((nextDt != null) && (nextDt.autoWrap)) {
-	    // Breite des ersten Wortes incl. abschlieÃŸendem Leerzeichen suchen
+	    // Breite des ersten Wortes incl. abschließendem Leerzeichen suchen
 	    int idWord = 0;
 	    for (int i = 0; i < nextDt.displayText.length(); i++) {
 		char c = nextDt.displayText.charAt(i);
 		float pos = nextDt.glyphPositions.get(i + 1);
-		// PrÃ¼fen, ob aktuelles Zeichen ein Leerzeichen ist und ob das Ende nicht weiter als "rest" vom Start der Linie entfernt ist
+		// Prüfen, ob aktuelles Zeichen ein Leerzeichen ist und ob das Ende nicht weiter als "rest" vom Start der Linie entfernt ist
 		if ((c == ' ') && (pos <= rest)) {
 		    idWord = i + 1;
 		} else if (pos > rest) {
@@ -532,7 +532,7 @@ public class EditTextField extends EditTextFieldBase {
 		}
 	    }
 	    if (idWord == 0) {
-		// PrÃ¼fen, ob komplette nÃ¤chste Zeile in diese rein passt
+		// Prüfen, ob komplette nächste Zeile in diese rein passt
 		if (nextDt.getWidth() <= rest) {
 		    idWord = nextDt.displayText.length();
 		}
@@ -546,7 +546,7 @@ public class EditTextField extends EditTextFieldBase {
 		updateDisplayText(dt, false);
 		nextDt.displayText = s2;
 		if (s2.length() == 0) {
-		    // komplette Zeile lÃ¶schen
+		    // komplette Zeile löschen
 		    displayText.remove(nextDt);
 		} else {
 		    cursor.line++;
@@ -556,7 +556,7 @@ public class EditTextField extends EditTextFieldBase {
 		}
 	    }
 	} else {
-	    // anschlieÃŸend kommt keine Zeile, die automatisch umgebrochen wurde -> nichts machen
+	    // anschließend kommt keine Zeile, die automatisch umgebrochen wurde -> nichts machen
 	}
     }
 
@@ -568,9 +568,9 @@ public class EditTextField extends EditTextFieldBase {
     @Override
     public boolean onTouchDown(int X, int Y, int pointer, int button) {
 	mouseDown = new Point(X, Y);
-	// topLine merken, zu dem Zeitpunkt als die Maus gedrÃ¼ckt wurde
+	// topLine merken, zu dem Zeitpunkt als die Maus gedrückt wurde
 	mouseDownTopLine = topLine;
-	// leftPos merken, zu dem Zeitpunkt als die Maus gedrÃ¼ckt wurde
+	// leftPos merken, zu dem Zeitpunkt als die Maus gedrückt wurde
 	mouseDownLeftPos = leftPos;
 	return true;
     }
@@ -605,7 +605,7 @@ public class EditTextField extends EditTextFieldBase {
 		    // Text hat auf einmal Platz -> auf Ursprung hin scrollen
 		    leftPos = 0;
 		} else {
-		    // Text hat nicht auf einmal Platz -> Scrollen mÃ¶glich
+		    // Text hat nicht auf einmal Platz -> Scrollen möglich
 		    leftPos = mouseDownLeftPos + (mouseDown.x - x);
 		    if (leftPos < 0) {
 			leftPos = 0;
@@ -620,7 +620,7 @@ public class EditTextField extends EditTextFieldBase {
 	}
 	GL.that.renderOnce();
 
-	// Scrollen nach oben / unten soll mÃ¶glich sein trotzdem dass hier evtl. schon links / rechts gescrollt wird ????
+	// Scrollen nach oben / unten soll möglich sein trotzdem dass hier evtl. schon links / rechts gescrollt wird ????
 	return bearbeitet;
     };
 
@@ -919,7 +919,7 @@ public class EditTextField extends EditTextFieldBase {
 			// hasSelection = true;
 			// }
 			cursor.pos = 0;
-			// Ã¼berprÃ¼fen, ob der Cursor sichtbar ist
+			// überprüfen, ob der Cursor sichtbar ist
 			checkCursorVisible(true);
 		    }
 		    if (keycode == Keys.END) {
@@ -929,12 +929,12 @@ public class EditTextField extends EditTextFieldBase {
 			// hasSelection = true;
 			// }
 			cursor.pos = text.length();
-			// Ã¼berprÃ¼fen, ob der Cursor sichtbar ist
+			// überprüfen, ob der Cursor sichtbar ist
 			checkCursorVisible(true);
 		    }
 
 		    /*
-		     * cursor.pos = Math.max(0, cursor.pos); cursor.pos = Math.min(text.length(), cursor.pos); // Ã¼berprÃ¼fen, ob der Cursor
+		     * cursor.pos = Math.max(0, cursor.pos); cursor.pos = Math.min(text.length(), cursor.pos); // überprüfen, ob der Cursor
 		     * sichtbar ist checkCursorVisible(true);
 		     */
 		} else {
@@ -978,11 +978,11 @@ public class EditTextField extends EditTextFieldBase {
 	    return;
 	if (i < 0) {
 	    cursor.pos = 0;
-	    // Ã¼berprÃ¼fen, ob der Cursor sichtbar ist
+	    // überprüfen, ob der Cursor sichtbar ist
 	    checkCursorVisible(true);
 	} else {
 	    cursor.pos = dt.displayText.length();
-	    // Ã¼berprÃ¼fen, ob der Cursor sichtbar ist
+	    // überprüfen, ob der Cursor sichtbar ist
 	    checkCursorVisible(true);
 	}
     }
@@ -1004,11 +1004,11 @@ public class EditTextField extends EditTextFieldBase {
 	} else {
 	    cursor.pos = newCursor;
 	}
-	// Ã¼berprÃ¼fen, ob der Cursor sichtbar ist
+	// überprüfen, ob der Cursor sichtbar ist
 	// checkCursorVisible(true);
     }
 
-    // fÃ¼gt eine neue Zeile an der Cursor Position ein
+    // fügt eine neue Zeile an der Cursor Position ein
     private void insertNewLine() {
 	DisplayText dt = getAktDisplayText();
 	if (dt == null)
@@ -1030,7 +1030,7 @@ public class EditTextField extends EditTextFieldBase {
 
     }
 
-    // bewegt den Cursor nach oben / unten. X-Position des Cursors soll mÃ¶glichst gleich bleiben
+    // bewegt den Cursor nach oben / unten. X-Position des Cursors soll möglichst gleich bleiben
     private boolean cursorUpDown(int i) {
 	int newCursorLine = cursor.line + i;
 	if (newCursorLine < 0)
@@ -1042,7 +1042,7 @@ public class EditTextField extends EditTextFieldBase {
 	float x = oldDt.glyphPositions.items[cursor.pos];
 	// Cursor in neue Zeile plazieren
 	setCursorLine(newCursorLine, true);
-	// Cursor mÃ¶glichst an gleiche x-Position plazieren
+	// Cursor möglichst an gleiche x-Position plazieren
 	setCursorXPos(x);
 	return true;
     }
@@ -1067,7 +1067,7 @@ public class EditTextField extends EditTextFieldBase {
 	return newDt;
     }
 
-    // Zeile des Cursors Ã¤ndern. Sicherstellen, dass der Cursor sichtbar ist
+    // Zeile des Cursors ändern. Sicherstellen, dass der Cursor sichtbar ist
     private void setCursorLine(int newCursorLine, boolean hideCursor) {
 	cursor.line = newCursorLine;
 	checkCursorVisible(hideCursor);
@@ -1077,7 +1077,7 @@ public class EditTextField extends EditTextFieldBase {
 	try {
 	    if (hideCursor)
 		hideSelectionMarker();
-	    // Cursorpos prÃ¼fen, ob ausserhalb sichtbaren Bereich (Oben-Unten)
+	    // Cursorpos prüfen, ob ausserhalb sichtbaren Bereich (Oben-Unten)
 	    if (cursor.line - topLine >= maxLineCount) {
 		topLine = cursor.line - maxLineCount + 1;
 	    }
@@ -1094,11 +1094,11 @@ public class EditTextField extends EditTextFieldBase {
 		} else {
 		    xCursor = dt.glyphPositions.get(dt.glyphPositions.size - 1);
 		}
-		// PrÃ¼fen, ob der Cursor links auÃŸen ist
+		// Prüfen, ob der Cursor links außen ist
 		if (xCursor < leftPos) {
 		    leftPos = xCursor;
 		}
-		// PrÃ¼fen, ob der Cursr rechts auÃŸen ist
+		// Prüfen, ob der Cursr rechts außen ist
 		if ((xCursor > leftPos + maxTextWidth) && (maxTextWidth > 0)) {
 		    leftPos = xCursor - maxTextWidth;
 		}
@@ -1164,7 +1164,7 @@ public class EditTextField extends EditTextFieldBase {
 	if (clipboard == null)
 	    return null;
 	if (selection != null) {
-	    // zuerst evtl. markierten Text lÃ¶schen
+	    // zuerst evtl. markierten Text löschen
 	    delete();
 	}
 
@@ -1172,7 +1172,7 @@ public class EditTextField extends EditTextFieldBase {
 
 	if ((contents != null) && (contents.length > 0)) {
 	    boolean firstLine = true;
-	    // nach ZeilenvorschÃ¼ben trennen
+	    // nach Zeilenvorschüben trennen
 	    for (String content : contents) {
 		StringBuilder builder = new StringBuilder();
 		content = content.replace("\b", "");
@@ -1208,11 +1208,11 @@ public class EditTextField extends EditTextFieldBase {
 		content = content.replace("\u2007", " ");
 		content = content.replace("\u180E", " ");
 		if (!firstLine) {
-		    // bei jeder weiteren Zeile vor dem EinfÃ¼gen einen Zeilenvorschub machen
+		    // bei jeder weiteren Zeile vor dem Einfügen einen Zeilenvorschub machen
 		    insertNewLine();
 		}
 		firstLine = false;
-		// Zeile fÃ¼r Zeile
+		// Zeile für Zeile
 		for (int i = 0; i < content.length(); i++) {
 		    char c = content.charAt(i);
 
@@ -1238,7 +1238,7 @@ public class EditTextField extends EditTextFieldBase {
     private void delete() {
 	if (selection == null)
 	    return;
-	// markierte Zeichen lÃ¶schen
+	// markierte Zeichen löschen
 	String text = "";
 	// Zeilenanfang bis Markierung Start
 	DisplayText dt = getDisplayText(selection.cursorStart.line);

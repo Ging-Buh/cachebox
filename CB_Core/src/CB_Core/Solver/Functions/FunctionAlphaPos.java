@@ -35,7 +35,7 @@ public class FunctionAlphaPos extends Function
 		if (parameter.length != 1)
 		{
 			return Translation.Get("solverErrParamCount".hashCode(), "1", "$solverFuncAlphaPos");
-			// return "Diese Funktion benÃ¶tigt %s Parameter".replace("%s", "1");
+			// return "Diese Funktion benötigt %s Parameter".replace("%s", "1");
 		}
 		String wert = parameter[0].trim().toLowerCase();
 		if (wert.length() == 0) return "0";

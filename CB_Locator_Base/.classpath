@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_Utils"/>
+	<classpathentry kind="lib" path="libs/httpclient-4.1.1.jar"/>
+	<classpathentry kind="lib" path="libs/httpcore-4.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_UI_Base"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_mapsforge"/>
+	<classpathentry kind="lib" path="libs/kxml2-2.3.0.jar"/>
+	<classpathentry kind="lib" path="libs/sjxp-2.2.jar"/>
+	<classpathentry kind="lib" path="libs/slf4j-api-1.7.6.jar"/>
+	<classpathentry kind="lib" path="libs/gdx-1.6.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

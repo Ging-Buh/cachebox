@@ -180,7 +180,7 @@ public class ProjectionCoordinate extends ActivityBase
 		lblBearing = new Label(labelRec, sBearing);
 		valueBearing = new EditTextField(textFieldRec, this);
 		valueBearing.dontShowSoftKeyBoardOnFocus();
-		lblBearingUnit = new Label(UnitRec, "Â°");
+		lblBearingUnit = new Label(UnitRec, "°");
 
 		labelRec.setY(lblBearing.getY() - ButtonHeight);
 		textFieldRec.setY(lblBearing.getY() - ButtonHeight);

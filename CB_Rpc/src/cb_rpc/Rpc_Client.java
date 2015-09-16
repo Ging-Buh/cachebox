@@ -11,7 +11,7 @@ import cb_rpc.Functions.RpcMessage;
 import cb_rpc.Settings.CB_Rpc_Settings;
 
 public class Rpc_Client {
-	// XmlRpc Objecte fÃ¼r den Zugriff auf den RPC-Server
+	// XmlRpc Objecte für den Zugriff auf den RPC-Server
 	private XmlRpcClient client = null;
 
 	public Rpc_Client() {
@@ -19,7 +19,7 @@ public class Rpc_Client {
 	}
 	
 	/**
-	 * Erstellt die Config-Objecte fÃ¼r den Zugriff auf den PCharge-Server Ã¼ber XmlRpc
+	 * Erstellt die Config-Objecte für den Zugriff auf den PCharge-Server über XmlRpc
 	 */
 	private void createRpcConfig() {
 		client = null;
@@ -47,7 +47,7 @@ public class Rpc_Client {
 
 	/**
 	 * Sendet eine XmlRpc-Nachricht an den RPC-Server und liefert dessen
-	 * Antwort zurÃ¼ck
+	 * Antwort zurück
 	 * 
 	 * @param message
 	 * @return

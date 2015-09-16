@@ -41,8 +41,8 @@ public class HttpUtils
 	public static int socketTimeout = 60000;
 
 	/**
-	 * FÃ¼rt ein Http Request aus und gibt die Antwort als String zurÃ¼ck. Da ein HttpRequestBase Ã¼bergeben wird kann ein HttpGet oder
-	 * HttpPost zum AusfÃ¼hren Ã¼bergeben werden.
+	 * Fürt ein Http Request aus und gibt die Antwort als String zurück. Da ein HttpRequestBase übergeben wird kann ein HttpGet oder
+	 * HttpPost zum Ausführen übergeben werden.
 	 * 
 	 * @param httprequest
 	 *            HttpGet oder HttpPost

@@ -38,9 +38,9 @@ public abstract class CB_Action_ShowView extends CB_Action
 	}
 
 	/**
-	 * zeigt, falls vorhanden das ContectmenÃ¼ dieser View an
+	 * zeigt, falls vorhanden das Contectmenü dieser View an
 	 * 
-	 * @return gibt true zurÃ¼ck // oder gibt false zurÃ¼ck, falls kein ContextmenÃ¼ vorhanden ist
+	 * @return gibt true zurück // oder gibt false zurück, falls kein Contextmenü vorhanden ist
 	 */
 	public final boolean ShowContextMenu()
 	{
@@ -53,7 +53,7 @@ public abstract class CB_Action_ShowView extends CB_Action
 	}
 
 	/**
-	 * gibt das ContextMenu dieser View zurÃ¼ck
+	 * gibt das ContextMenu dieser View zurück
 	 * 
 	 * @return
 	 */

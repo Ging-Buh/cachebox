@@ -19,7 +19,7 @@ import com.badlogic.gdx.files.FileHandle;
 public class FileIO
 {
 	/**
-	 * ÃœberprÃ¼ft ob ein File exestiert!
+	 * Überprüft ob ein File exestiert!
 	 * 
 	 * @param filename
 	 * @return true, wenn das File Exestiert, ansonsten false.
@@ -31,7 +31,7 @@ public class FileIO
 	}
 
 	/**
-	 * ÃœberprÃ¼ft ob ein File exestiert! Und nicht leer ist (0 Bytes)
+	 * Überprüft ob ein File exestiert! Und nicht leer ist (0 Bytes)
 	 * 
 	 * @param filename
 	 * @return true, wenn das File Exestiert, ansonsten false.
@@ -46,12 +46,12 @@ public class FileIO
 	}
 
 	/**
-	 * ÃœberprÃ¼ft ob ein File exestiert! <br>
-	 * Und nicht Ã„lter als die angegebene Zeit in Minuten ist!
+	 * Überprüft ob ein File exestiert! <br>
+	 * Und nicht Älter als die angegebene Zeit in Minuten ist!
 	 * 
 	 * @param filename
 	 * @param maxAge
-	 * @return true, wenn das File Exestiert und das Alter nicht grÃ¶ÃŸer als {maxAge} ist, ansonsten false.
+	 * @return true, wenn das File Exestiert und das Alter nicht größer als {maxAge} ist, ansonsten false.
 	 */
 	public static boolean FileExists(String filename, int maxAge)
 	{
@@ -90,7 +90,7 @@ public class FileIO
 	}
 
 	/**
-	 * ÃœberprÃ¼ft ob ein Ordner exestiert und legt ihn an, wenn er nicht exestiert.
+	 * Überprüft ob ein Ordner exestiert und legt ihn an, wenn er nicht exestiert.
 	 * 
 	 * @param folder
 	 *            Pfad des Ordners
@@ -268,7 +268,7 @@ public class FileIO
 	}
 
 	/**
-	 * Gibt eine ArrayList<File> zurÃ¼ck, die alle Files mit der Endung gpx enthÃ¤lt.
+	 * Gibt eine ArrayList<File> zurück, die alle Files mit der Endung gpx enthält.
 	 * 
 	 * @param directory
 	 * @param files
@@ -280,7 +280,7 @@ public class FileIO
 	}
 
 	/**
-	 * Gibt eine ArrayList<File> zurÃ¼ck, die alle Files mit der angegebenen Endung haben.
+	 * Gibt eine ArrayList<File> zurück, die alle Files mit der angegebenen Endung haben.
 	 * 
 	 * @param directory
 	 * @param files

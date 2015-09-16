@@ -12,7 +12,7 @@ public class FunctionLength extends Function
 	{
 		super(solver);
 		Names.add(new LacalNames("Length", "en"));
-		Names.add(new LacalNames("LÃ¤nge", "de"));
+		Names.add(new LacalNames("Länge", "de"));
 		Names.add(new LacalNames("Len", "en"));
 		Names.add(new LacalNames("Len", "de"));
 	}

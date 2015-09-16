@@ -90,7 +90,7 @@ public class NumerikInputBox extends CB_View_Base
 			@Override
 			public void show(boolean arg0)
 			{
-				// do nothing, donÂ´t show Keybord
+				// do nothing, don´t show Keybord
 			}
 		});
 		editText.setFocus();
@@ -136,7 +136,7 @@ public class NumerikInputBox extends CB_View_Base
 			@Override
 			public void show(boolean arg0)
 			{
-				// do nothing, donÂ´t show Keybord
+				// do nothing, don´t show Keybord
 			}
 		});
 		editText.setFocus();
@@ -209,7 +209,7 @@ public class NumerikInputBox extends CB_View_Base
 			@Override
 			public void show(boolean arg0)
 			{
-				// do nothing, donÂ´t show Keybord
+				// do nothing, don´t show Keybord
 			}
 		});
 		editText.setFocus();

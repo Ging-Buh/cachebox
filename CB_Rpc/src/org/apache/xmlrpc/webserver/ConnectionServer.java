@@ -54,7 +54,7 @@ class ConnectionServer extends XmlRpcHttpServer {
 				super.writeResponse(pConfig, pStream, pResult);
 				data.getConnection().writeResponse(data, pStream);
 			} else {
-				// Header wurden vorher schon hinzugefÃ¼gt da dies vor der GZIP Komprimierung geschehen muss!
+				// Header wurden vorher schon hinzugefügt da dies vor der GZIP Komprimierung geschehen muss!
 //				data.getConnection().writeResponseHeader(data, -1);
 				super.writeResponse(pConfig, pStream, pResult);
 				pStream.flush();

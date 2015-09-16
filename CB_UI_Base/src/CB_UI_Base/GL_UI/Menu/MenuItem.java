@@ -202,7 +202,7 @@ public class MenuItem extends MenuItemBase {
 	mIsEnabled = enabled;
 
 	if (!mIsEnabled) {
-	    // lÃ¶sche ClickListner
+	    // lösche ClickListner
 	    setOnClickListener(null);
 	    setOnLongClickListener(null);
 	}

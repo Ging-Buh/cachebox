@@ -15,7 +15,7 @@ public class Linearlayout extends CB_View_Base
 	private float margin = 5;
 
 	/**
-	 * HÃ¶he wird von den zugefÃ¼gten Items bestimmt.
+	 * Höhe wird von den zugefügten Items bestimmt.
 	 * 
 	 * @param width
 	 * @param Name

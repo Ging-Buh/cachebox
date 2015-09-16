@@ -13,7 +13,7 @@ public class ImporterProgress
 {
 
 	/**
-	 * Enth√§lt einen √úbergeordneten Schritt
+	 * Enth‰lt einen ‹bergeordneten Schritt
 	 * 
 	 * @author Longri
 	 */

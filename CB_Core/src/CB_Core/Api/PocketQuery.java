@@ -65,7 +65,7 @@ public class PocketQuery
 	}
 
 	/**
-	 * Ruft die Liste der PQï¿½s ab.
+	 * Ruft die Liste der PQ�s ab.
 	 * 
 	 * @param Staging
 	 *            Config.settings.StagingAPI.getValue()

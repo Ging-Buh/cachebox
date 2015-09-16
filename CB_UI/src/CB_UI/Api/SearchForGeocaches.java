@@ -22,7 +22,7 @@ public class SearchForGeocaches extends SearchForGeocaches_Core {
     protected void actualizeSpoilerOfActualCache(Cache cache) {
 	super.actualizeSpoilerOfActualCache(cache);
 	// Spoiler aktualisieren
-	// wenn der aktuelle Cache Ã¼ber diese API aktualisiert wird dann mÃ¼ssen hier dessen Spoiler erneut geladen werden
+	// wenn der aktuelle Cache über diese API aktualisiert wird dann müssen hier dessen Spoiler erneut geladen werden
 	// damit die Anzeige in der Description und SpoilerView aktualisiert wird
 	if (GlobalCore.ifCacheSelected()) {
 	    if (GlobalCore.getSelectedCache().getGcCode().equals(cache.getGcCode())) {

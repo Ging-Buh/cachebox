@@ -19,7 +19,7 @@ import CB_Utils.Config_Core;
 
 public class SettingEncryptedString extends SettingLongString
 {
-	// im value intern ist die Einstellung verschlÃ¼sselt abgespeichert
+	// im value intern ist die Einstellung verschlüsselt abgespeichert
 	// so wie sie dann in die DB geschrieben wird.
 	public SettingEncryptedString(String name, SettingCategory category, SettingModus modus, String defaultValue,
 			SettingStoreType StoreType, SettingUsage usage)
@@ -35,7 +35,7 @@ public class SettingEncryptedString extends SettingLongString
 			return Config_Core.decrypt(this.value);
 	}
 
-	// Liefert die verschlÃ¼sselte Einstellung zurÃ¼ck
+	// Liefert die verschlüsselte Einstellung zurück
 	public String getEncryptedValue()
 	{
 		return this.value;
@@ -47,14 +47,14 @@ public class SettingEncryptedString extends SettingLongString
 		return Config_Core.decrypt(this.defaultValue);
 	}
 
-	// liefert den verschlÃ¼sselten Standadwert
+	// liefert den verschlüsselten Standadwert
 	public String getEncryptedDefaultValue()
 	{
 		return this.defaultValue;
 	}
 
-	// hiermit kann die Einstellung im Klartext Ã¼bergeben werden und wird sofort
-	// verschlÃ¼sselt
+	// hiermit kann die Einstellung im Klartext übergeben werden und wird sofort
+	// verschlüsselt
 	public void setValue(String value)
 	{
 		String encrypted = "";
@@ -64,7 +64,7 @@ public class SettingEncryptedString extends SettingLongString
 		setDirty();
 	}
 
-	// hier kann die schon verschlÃ¼sselte Einstellung Ã¼bergeben werden.
+	// hier kann die schon verschlüsselte Einstellung übergeben werden.
 	public void setEncryptedValue(String value)
 	{
 		if ((this.value != null) && (this.value.equals(value))) return;

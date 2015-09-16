@@ -45,7 +45,7 @@ import org.poly2tri.triangulation.delaunay.DelaunayTriangle;
 /**
  * Sweep-line, Constrained Delauney Triangulation (CDT) See: Domiter, V. and Zalik, B.(2008)'Sweep-line algorithm for constrained Delaunay
  * triangulation', International Journal of Geographical Information Science "FlipScan" Constrained Edge Algorithm invented by author of
- * this code. Author: Thomas Ã…hlÃ©n, thahlen@gmail.com
+ * this code. Author: Thomas Åhlén, thahlen@gmail.com
  */
 
 public class DTSweep

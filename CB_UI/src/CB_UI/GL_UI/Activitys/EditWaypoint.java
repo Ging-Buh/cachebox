@@ -430,7 +430,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 					mReturnListner.returnedWP(waypoint);
 				}
 
-				// Ã„nderungen auch an die MapView melden
+				// Änderungen auch an die MapView melden
 				if (MapView.that != null) MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
 
 				finish();

@@ -58,7 +58,7 @@ public class MultiToggleButton extends Button {
     private OnStateChangeListener mOnStateChangeListener;
 
     /**
-     * wenn True wird der letzte State nur Ã¼ber ein LongClick angewÃ¤hlt
+     * wenn True wird der letzte State nur über ein LongClick angewählt
      */
     private boolean lastStateWithLongClick = false;
 
@@ -69,7 +69,7 @@ public class MultiToggleButton extends Button {
 	if (lblTxt == null)
 	    return;
 
-	// verschiebe Text nach oben, wegen Platz fÃ¼r LED
+	// verschiebe Text nach oben, wegen Platz für LED
 	CB_RectF r = this.ScaleCenter(0.9f);
 	float l = (r.getHeight() / 2);
 	lblTxt.setY(l);
@@ -78,7 +78,7 @@ public class MultiToggleButton extends Button {
 
     @Override
     public boolean click(int x, int y, int pointer, int button) {
-	// wenn Button disabled ein Behandelt zurÃ¼ck schicken,
+	// wenn Button disabled ein Behandelt zurück schicken,
 	// damit keine weiteren Abfragen durchgereicht werden.
 	// Auch wenn dieser Button ein OnClickListner hat.
 	if (isDisabled || wasLongClicked) {
@@ -112,7 +112,7 @@ public class MultiToggleButton extends Button {
     @Override
     public boolean longClick(int x, int y, int pointer, int button) {
 	wasLongClicked = true;
-	// wenn Button disabled ein Behandelt zurÃ¼ck schicken,
+	// wenn Button disabled ein Behandelt zurück schicken,
 	// damit keine weiteren Abfragen durchgereicht werden.
 	// Auch wenn dieser Button ein OnClickListner hat.
 	if (isDisabled) {

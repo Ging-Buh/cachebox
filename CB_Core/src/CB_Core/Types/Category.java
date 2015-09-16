@@ -67,9 +67,9 @@ public class Category extends ArrayList<GpxFilename> implements Comparable<Categ
 	}
 
 	/**
-	 * gibt den chk status der enthaltenen GpxFiles zurÃ¼ck </br> 0 = keins
-	 * ausgewÃ¤hlt </br> 1 = alle ausgewÃ¤hlt </br> -1 = nicht alle, aber
-	 * mindestens eins ausgewÃ¤hlt
+	 * gibt den chk status der enthaltenen GpxFiles zurück </br> 0 = keins
+	 * ausgewählt </br> 1 = alle ausgewählt </br> -1 = nicht alle, aber
+	 * mindestens eins ausgewählt
 	 * 
 	 * @return
 	 */

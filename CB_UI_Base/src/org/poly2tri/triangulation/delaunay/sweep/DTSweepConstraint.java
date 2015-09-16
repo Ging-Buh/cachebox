@@ -34,7 +34,7 @@ import org.poly2tri.triangulation.TriangulationConstraint;
 import org.poly2tri.triangulation.TriangulationPoint;
 
 /**
- * @author Thomas Ã…hlÃ©n, thahlen@gmail.com
+ * @author Thomas Åhlén, thahlen@gmail.com
  */
 public class DTSweepConstraint extends TriangulationConstraint
 {

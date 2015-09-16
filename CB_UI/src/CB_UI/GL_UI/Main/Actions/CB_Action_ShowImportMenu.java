@@ -109,19 +109,19 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 				}
 				else if (((MenuItem) v).getMenuItemId() == MenuID.MI_IMPORT_CBS)
 				{
-					// MenÃ¼ noch nicht zeigen da darin nur 1 Befehl ist
+					// Menü noch nicht zeigen da darin nur 1 Befehl ist
 					// showImportMenu_CBS();
 					import_CBS();
 				}
 				else if (((MenuItem) v).getMenuItemId() == MenuID.MI_IMPORT_GPX)
 				{
-					// MenÃ¼ nicht zeigen da darin nur 1 Befehl ist
+					// Menü nicht zeigen da darin nur 1 Befehl ist
 					// showImportMenu_GPX();
 					import_GPX();
 				}
 				else if (((MenuItem) v).getMenuItemId() == MenuID.MI_IMPORT_GCV)
 				{
-					// MenÃ¼ nicht zeigen da darin nur 1 Befehl ist
+					// Menü nicht zeigen da darin nur 1 Befehl ist
 					// showImportMenu_GCV();
 					import_GCV();
 				}

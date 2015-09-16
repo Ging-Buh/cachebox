@@ -21,7 +21,7 @@ public class SelectionMarker extends CB_View_Base
 	protected Drawable marker;
 	// Breite des Markers
 	protected float markerWidth;
-	// X-Position des EinfÃ¼gepunktes des Markers relativ zur linke Seite
+	// X-Position des Einfügepunktes des Markers relativ zur linke Seite
 	protected float markerXPos;
 
 	public SelectionMarker(Type type)
@@ -38,12 +38,12 @@ public class SelectionMarker extends CB_View_Base
 
 		if (marker == null) return;
 
-		// OrginalgrÃ¶ÃŸe des Marker-Sprites
+		// Orginalgröße des Marker-Sprites
 		float orgWidth = marker.getMinWidth();
 		float orgHeight = marker.getMinHeight();
 
 		float Width = Height / orgHeight * orgWidth;
-		// markerXPos ist der EinfÃ¼gepunkt rel. der linken Seite
+		// markerXPos ist der Einfügepunkt rel. der linken Seite
 		switch (type)
 		{
 		case Center:
@@ -119,11 +119,11 @@ public class SelectionMarker extends CB_View_Base
 				y -= tv.ThisWorldRec.getY();
 			}
 			// SelectionMarker verschieben
-			// neue gewÃ¼nschte Koordinaten rel. links unten
+			// neue gewünschte Koordinaten rel. links unten
 			float newX = this.getX() + x - touchDownPos.x;
 			float newY = this.getY() + y - touchDownPos.y;
 			// System.out.println("getX()=" + this.Pos.x + " x=" + x + " - newX=" + newX);
-			// neue gewÃ¼nschte Koordinaten am EinfÃ¼gepunkt des Markers
+			// neue gewünschte Koordinaten am Einfügepunkt des Markers
 			newX = newX + markerXPos;
 			newY = newY + getHeight();
 			Point cursorPos = GL.that.getKeyboardFocus().GetNextCursorPos(new Point((int) newX, (int) newY), type, true);
@@ -145,11 +145,11 @@ public class SelectionMarker extends CB_View_Base
 		if ((pointer == 0) && (touchDownPos != null))
 		{
 			// SelectionMarker verschieben
-			// neue gewÃ¼nschte Koordinaten rel. links unten
+			// neue gewünschte Koordinaten rel. links unten
 			float newX = this.getX() + x - touchDownPos.x;
 			float newY = this.getY() + y - touchDownPos.y;
 
-			// neue gewÃ¼nschte Koordinaten am EinfÃ¼gepunkt des Markers
+			// neue gewünschte Koordinaten am Einfügepunkt des Markers
 			newX = newX + markerXPos;
 			newY = newY + getHeight();
 			// Point cursorPos = GL.that.getKeyboardFocus().GetNextCursorPos(new Point((int) newX, (int) newY), type, true);

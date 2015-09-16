@@ -368,35 +368,35 @@ public class TB_Log extends ActivityBase {
 
     private String getCache_GcCode() {
 	/**
-	 * Muss je nach LogType leer oder gefÃ¼llt sein
+	 * Muss je nach LogType leer oder gefüllt sein
 	 */
 	return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getGcCode() : "";
     }
 
     private String getCache_Name() {
 	/**
-	 * Muss je nach LogType leer oder gefÃ¼llt sein
+	 * Muss je nach LogType leer oder gefüllt sein
 	 */
 	return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getName() : "";
     }
 
     private long getCache_ID() {
 	/**
-	 * Muss je nach LogType leer oder gefÃ¼llt sein
+	 * Muss je nach LogType leer oder gefüllt sein
 	 */
 	return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().Id : -1;
     }
 
     private String getCache_URL() {
 	/**
-	 * Muss je nach LogType leer oder gefÃ¼llt sein
+	 * Muss je nach LogType leer oder gefüllt sein
 	 */
 	return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getUrl() : "";
     }
 
     private int getCache_Type() {
 	/**
-	 * Muss je nach LogType leer oder gefÃ¼llt sein
+	 * Muss je nach LogType leer oder gefüllt sein
 	 */
 	return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().Type.ordinal() : -1;
     }

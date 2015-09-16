@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>Desktop-Launcher</name>
+	<name>DesctopLibGdx_Test</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -12,14 +12,6 @@
 		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>org.springsource.ide.eclipse.gradle.core.nature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>assets</name>
-			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Android-Launcher/assets</locationURI>
-		</link>
-	</linkedResources>
 </projectDescription>

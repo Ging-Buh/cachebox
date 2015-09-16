@@ -194,7 +194,7 @@ public abstract class Function implements Serializable
 	{
 		// Return Type dieser Funktion
 		DataType dt = getReturnType();
-		// Wenn eine Funktion keinen speziellen ReturnDataType gegeben hat -> kÃ¶nnte fÃ¼r den gegebenen Fall gehen -> true
+		// Wenn eine Funktion keinen speziellen ReturnDataType gegeben hat -> könnte für den gegebenen Fall gehen -> true
 		if (dt == DataType.None) return true;
 		switch (dataType)
 		{

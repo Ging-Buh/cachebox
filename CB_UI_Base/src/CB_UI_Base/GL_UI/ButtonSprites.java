@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 /**
- * Strucutr fÃ¼r die Aufnahme von drei Sprites fÃ¼r die drei ZustÃ¤nde eines Buttons </BR> Normal, Pressed, Disabled
+ * Strucutr für die Aufnahme von drei Sprites für die drei Zustände eines Buttons </BR> Normal, Pressed, Disabled
  * 
  * @author Longri
  */
@@ -45,11 +45,11 @@ public class ButtonSprites
 	 * @param atlas
 	 *            aus dem die Sprites gelesen werden
 	 * @param Normal
-	 *            Name fÃ¼r das Normal Sprite
+	 *            Name für das Normal Sprite
 	 * @param Pressed
-	 *            Name fÃ¼r das Pressed Sprite
+	 *            Name für das Pressed Sprite
 	 * @param Disabled
-	 *            Name fÃ¼r das Disabled Sprite
+	 *            Name für das Disabled Sprite
 	 */
 	public ButtonSprites(TextureAtlas atlas, String Normal, String Pressed, String Disabled)
 	{
@@ -59,16 +59,16 @@ public class ButtonSprites
 	}
 
 	/**
-	 * Inintialisiert die ninePatchSprites mit den Ã¼bergebenen Werten
+	 * Inintialisiert die ninePatchSprites mit den übergebenen Werten
 	 * 
 	 * @param atlas
 	 *            aus dem die Sprites gelesen werden
 	 * @param Normal
-	 *            Name fÃ¼r das Normal Sprite
+	 *            Name für das Normal Sprite
 	 * @param Pressed
-	 *            Name fÃ¼r das Pressed Sprite
+	 *            Name für das Pressed Sprite
 	 * @param Disabled
-	 *            Name fÃ¼r das Disabled Sprite
+	 *            Name für das Disabled Sprite
 	 * @param left
 	 * @param right
 	 * @param top
@@ -96,9 +96,9 @@ public class ButtonSprites
 	 * @param atlas
 	 *            aus dem die Sprites gelesen werden
 	 * @param Normal
-	 *            Name fÃ¼r das Normal Sprite
+	 *            Name für das Normal Sprite
 	 * @param Pressed
-	 *            Name fÃ¼r das Pressed Sprite
+	 *            Name für das Pressed Sprite
 	 */
 	public ButtonSprites(Sprite Normal, Sprite Pressed)
 	{
@@ -115,14 +115,14 @@ public class ButtonSprites
 	}
 
 	/**
-	 * Inintialisiert die ninePatchSprites mit den Ã¼bergebenen Werten
+	 * Inintialisiert die ninePatchSprites mit den übergebenen Werten
 	 * 
 	 * @param atlas
 	 *            aus dem die Sprites gelesen werden
 	 * @param Normal
-	 *            Name fÃ¼r das Normal Sprite
+	 *            Name für das Normal Sprite
 	 * @param Pressed
-	 *            Name fÃ¼r das Pressed Sprite
+	 *            Name für das Pressed Sprite
 	 * @param left
 	 * @param right
 	 * @param top

@@ -35,7 +35,7 @@ public class ArrowView extends CB_View_Base
 
 	// # Constructors
 	/**
-	 * Constructor fÃ¼r ein neues TestView mit Angabe der linken unteren Ecke und der HÃ¶he und Breite
+	 * Constructor für ein neues TestView mit Angabe der linken unteren Ecke und der Höhe und Breite
 	 * 
 	 * @param X
 	 * @param Y

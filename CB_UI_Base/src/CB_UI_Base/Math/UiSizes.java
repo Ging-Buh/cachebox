@@ -19,7 +19,7 @@ package CB_UI_Base.Math;
 //import de.cachebox_test.R;
 
 /**
- * EnthÃ¤lt die GrÃ¶ÃŸen einzelner Controls
+ * Enthält die Größen einzelner Controls
  * 
  * @author Longri
  */

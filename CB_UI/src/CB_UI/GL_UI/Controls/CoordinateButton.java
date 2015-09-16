@@ -191,7 +191,7 @@ public class CoordinateButton extends Button implements ICopyPaste {
 	    return null;
 	String content = this.getText();
 	clipboard.setContents(content);
-	CoordinateGPS cor = new CoordinateGPS("N 0Â° 0.00 / E 0Â° 0.00");
+	CoordinateGPS cor = new CoordinateGPS("N 0° 0.00 / E 0° 0.00");
 	cor.setValid(false);
 	this.setCoordinate(cor);
 	return content;

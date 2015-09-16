@@ -102,8 +102,8 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	}
 
 	/**
-	 * Da die meisten Sprite Initialisierungen von Sprites im Render Thread durchgefÃ¼hrt werden mÃ¼ssen, wird diese Methode, zu
-	 * Initialisierung im ersten Render Durchgang ausgefÃ¼hrt.
+	 * Da die meisten Sprite Initialisierungen von Sprites im Render Thread durchgeführt werden müssen, wird diese Methode, zu
+	 * Initialisierung im ersten Render Durchgang ausgeführt.
 	 */
 	protected abstract void Initial();
 
@@ -393,7 +393,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		this.rowYPos = y;
 		if (bottomYAdd < 0)
 		{
-			// nur beim ersten Mal, sonst mÃ¼ssen die Werte erhalten bleiben
+			// nur beim ersten Mal, sonst müssen die Werte erhalten bleiben
 			if (direction)
 			{
 				this.bottomYAdd = this.bottomBorder;
@@ -419,8 +419,8 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 
 	public void adjustHeight()
 	{
-		// nicht sinnvoll wenn von unten und von oben was hinzugefÃ¼gt wurde
-		// und danach auch bitte nichts mehr hinzufÃ¼gen.
+		// nicht sinnvoll wenn von unten und von oben was hinzugefügt wurde
+		// und danach auch bitte nichts mehr hinzufügen.
 		if (this.topdown)
 		{
 			this.setHeight(this.getHeight() - this.topYAdd);
@@ -587,7 +587,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 			{
 				this.rowYPos = this.rowYPos + this.rowMaxHeight + this.yMargin;
 				this.bottomYAdd = this.rowYPos;
-				// todo vielleicht automatische HÃ¶henanpassung von this
+				// todo vielleicht automatische Höhenanpassung von this
 			}
 			this.row.clear();
 		}

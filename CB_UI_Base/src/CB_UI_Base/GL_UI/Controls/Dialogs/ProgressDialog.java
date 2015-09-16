@@ -184,7 +184,7 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 	@Override
 	public void onHide()
 	{
-		// lÃ¶sche Registrierung Progress Changed Event
+		// lösche Registrierung Progress Changed Event
 		ProgresssChangedEventList.Remove(this);
 	}
 

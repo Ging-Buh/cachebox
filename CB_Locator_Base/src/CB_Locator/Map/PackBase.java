@@ -90,7 +90,7 @@ public abstract class PackBase implements Comparable<PackBase>
 	}
 
 	// / <summary>
-	// / ÃœberprÃ¼ft, ob der Descriptor in diesem Map Pack enthalten ist und liefert
+	// / Überprüft, ob der Descriptor in diesem Map Pack enthalten ist und liefert
 	// / die BoundingBox, falls dies der Fall ist, bzw. null
 	// / </summary>
 	// / <param name="desc">Deskriptor, dessen </param>
@@ -217,7 +217,7 @@ public abstract class PackBase implements Comparable<PackBase>
 
 					Descriptor desc = new Descriptor(x, y, bbox.Zoom, false);
 
-					// DateigrÃ¶ÃŸe ermitteln
+					// Dateigröße ermitteln
 					String local = Layer.GetLocalFilename(desc);
 
 					if (FileIO.FileExists(local))
@@ -228,7 +228,7 @@ public abstract class PackBase implements Comparable<PackBase>
 					else
 						Layer.DownloadTile(desc);
 
-					// Nicht vorhandene Tiles haben die LÃ¤nge 0
+					// Nicht vorhandene Tiles haben die Länge 0
 					if (!FileIO.FileExists(local)) offset += 0;
 					else
 					{
@@ -246,7 +246,7 @@ public abstract class PackBase implements Comparable<PackBase>
 			}
 		}
 
-		// Zur LÃ¤ngenberechnung
+		// Zur Längenberechnung
 		writer.writeLong(Long.reverseBytes(offset));
 
 		// So, und nun kopieren wir noch den Mist rein

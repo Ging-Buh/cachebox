@@ -4,7 +4,7 @@ import CB_Utils.Interfaces.cancelRunnable;
 
 /**
  * Extends Runnable um eine Ready Meldung
- *
+ * 
  * @author Longri
  */
 public abstract class RunnableReadyHandler implements cancelRunnable
@@ -41,7 +41,7 @@ public abstract class RunnableReadyHandler implements cancelRunnable
 	}
 
 	/*
-	 * Bricht den Thread, in dem das Runnable l?uft ab!
+	 * Bricht den Thread, in dem das Runnable läuft ab!
 	 */
 	public void Cancel()
 	{

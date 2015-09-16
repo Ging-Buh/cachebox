@@ -184,7 +184,7 @@ public class GL implements ApplicationListener, InputProcessor {
     }
 
     /**
-     * Zwischenspeicher fï¿½r die touchDown Positionen der einzelnen Finger
+     * Zwischenspeicher f�r die touchDown Positionen der einzelnen Finger
      */
     protected SortedMap<Integer, TouchDownPointer> touchDownPos = Collections.synchronizedSortedMap((new TreeMap<Integer, TouchDownPointer>()));
 
@@ -670,7 +670,7 @@ public class GL implements ApplicationListener, InputProcessor {
 
     @Override
     public void pause() {
-	// wird aufgerufen beim Wechsel der aktiven App und beim Ausschalten des Gerï¿½ts
+	// wird aufgerufen beim Wechsel der aktiven App und beim Ausschalten des Ger�ts
 	log.debug("Pause");
 
 	onStop();
@@ -697,7 +697,7 @@ public class GL implements ApplicationListener, InputProcessor {
     }
 
     public void onStart() {
-	// App wird wiederhergestellt oder Gerï¿½t eingeschaltet
+	// App wird wiederhergestellt oder Ger�t eingeschaltet
 	// log.debug("GL_Listner => onStart");
 	started.set(true);
 	if (listenerInterface != null)
@@ -724,7 +724,7 @@ public class GL implements ApplicationListener, InputProcessor {
     }
 
     public void onStop() {
-	// App wird verkleinert oder Gerï¿½t ausgeschaltet
+	// App wird verkleinert oder Ger�t ausgeschaltet
 	// log.debug("GL_Listner => onStop");
 	stopTimer();
 	if (listenerInterface != null)
@@ -750,7 +750,7 @@ public class GL implements ApplicationListener, InputProcessor {
     }
 
     // TouchEreignisse die von der View gesendet werden
-    // hier wird entschieden, wann TouchDonw, TouchDragged, TouchUp und Clicked, LongClicked Ereignisse gesendet werden mï¿½ssen
+    // hier wird entschieden, wann TouchDonw, TouchDragged, TouchUp und Clicked, LongClicked Ereignisse gesendet werden m�ssen
     public boolean onTouchDownBase(int x, int y, int pointer, int button) {
 
 	resetAmbianeMode();
@@ -793,7 +793,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	}
 
 	if (touchDownPos.containsKey(pointer)) {
-	    // fï¿½r diesen Pointer ist aktuell ein kinetisches Pan aktiv -> dieses abbrechen
+	    // f�r diesen Pointer ist aktuell ein kinetisches Pan aktiv -> dieses abbrechen
 	    StopKinetic(x, y, pointer, false);
 	}
 
@@ -817,8 +817,8 @@ public class GL implements ApplicationListener, InputProcessor {
 	CB_View_Base testingView = DialogIsShown ? mDialog : ActivityIsShown ? mActivity : child;
 
 	if (!touchDownPos.containsKey(pointer)) {
-	    // fï¿½r diesen Pointer ist kein touchDownPos gespeichert ->
-	    // dï¿½rfte nicht passieren!!!
+	    // f�r diesen Pointer ist kein touchDownPos gespeichert ->
+	    // d�rfte nicht passieren!!!
 
 	    return false;
 	}
@@ -829,9 +829,9 @@ public class GL implements ApplicationListener, InputProcessor {
 	    Point akt = new Point(x, y);
 	    if (touchDraggedActive || (distance(akt, first.point) > first.view.getClickTolerance())) {
 		if (pointer != GL_View_Base.MOUSE_WHEEL_POINTER_UP && pointer != GL_View_Base.MOUSE_WHEEL_POINTER_DOWN) {
-		    // Nachdem die ClickToleranz ï¿½berschritten wurde wird jetzt hier die Verschiebung gemerkt.
+		    // Nachdem die ClickToleranz �berschritten wurde wird jetzt hier die Verschiebung gemerkt.
 		    // Diese wird dann immer von den Positionen abgezogen, damit der erste Sprung bei der Verschiebung nachem die Toleranz
-		    // ï¿½berschriten wurde nicht mehr auftritt.
+		    // �berschriten wurde nicht mehr auftritt.
 		    if (!touchDraggedActive) {
 			touchDraggedCorrect = new Point(x - first.point.x, y - first.point.y);
 		    }
@@ -871,8 +871,8 @@ public class GL implements ApplicationListener, InputProcessor {
 	CB_View_Base testingView = DialogIsShown ? mDialog : ActivityIsShown ? mActivity : child;
 
 	if (!touchDownPos.containsKey(pointer)) {
-	    // fï¿½r diesen Pointer ist kein touchDownPos gespeichert ->
-	    // dï¿½rfte nicht passieren!!!
+	    // f�r diesen Pointer ist kein touchDownPos gespeichert ->
+	    // d�rfte nicht passieren!!!
 
 	    return false;
 	}
@@ -916,7 +916,7 @@ public class GL implements ApplicationListener, InputProcessor {
 		first.kineticPan.start();
 		first.startKinetic(this, x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.ThisWorldRec.getY());
 	    } else {
-		// onTouchUp immer auslï¿½sen
+		// onTouchUp immer ausl�sen
 		first.view.touchUp(x, (int) testingView.getHeight() - y, pointer, button);
 		touchDownPos.remove(pointer);
 	    }
@@ -1141,14 +1141,14 @@ public class GL implements ApplicationListener, InputProcessor {
     }
 
     /**
-     * Fürt EINEN Render Durchgang aus
+     * F�rt EINEN Render Durchgang aus
      */
     public void renderOnce(boolean force) {
 	requestRender(force);
     }
 
     /**
-     * Fürt EINEN Render Durchgang aus
+     * F�rt EINEN Render Durchgang aus
      */
     private void requestRender(boolean force) {
 
@@ -1184,7 +1184,7 @@ public class GL implements ApplicationListener, InputProcessor {
     HashMap<String, Integer> callerCount = new HashMap<String, Integer>();
 
     /**
-     * Fürt EINEN Render Durchgang aus
+     * F�rt EINEN Render Durchgang aus
      */
     public void renderOnce() {
 	requestRender(false);
@@ -1216,17 +1216,17 @@ public class GL implements ApplicationListener, InputProcessor {
 	    public void run() {
 		if (!touchDownPos.containsKey(pointer))
 		    return;
-		// fï¿½r diesen Pointer ist kein touchDownPos gespeichert ->
-		// dï¿½rfte nicht passieren!!!
+		// f�r diesen Pointer ist kein touchDownPos gespeichert ->
+		// d�rfte nicht passieren!!!
 		TouchDownPointer first = touchDownPos.get(pointer);
 		Point akt = new Point(x, y);
 		if (distance(akt, first.point) < first.view.getClickTolerance()) {
 		    if (first.view.isLongClickable()) {
 			boolean handled = first.view.longClick(x - (int) first.view.ThisWorldRec.getX(), (int) child.getHeight() - y - (int) first.view.ThisWorldRec.getY(), pointer, 0);
 			// log.debug("GL_Listner => onLongClick : " + first.view.getName());
-			// fï¿½r diesen TouchDownn darf kein normaler Click mehr ausgefï¿½hrt werden
+			// f�r diesen TouchDownn darf kein normaler Click mehr ausgef�hrt werden
 			touchDownPos.remove(pointer);
-			// onTouchUp nach Long-Click direkt auslï¿½sen
+			// onTouchUp nach Long-Click direkt ausl�sen
 			first.view.touchUp(x, (int) child.getHeight() - y, pointer, 0);
 			// log.debug("GL_Listner => onTouchUpBase : " + first.view.getName());
 			if (handled)
@@ -1318,7 +1318,7 @@ public class GL implements ApplicationListener, InputProcessor {
     protected class KineticPan {
 	private boolean started;
 	private boolean fertig;
-	// benutze den Abstand der letzten 5 Positionsï¿½nderungen
+	// benutze den Abstand der letzten 5 Positions�nderungen
 	final int anzPoints = 6;
 	int anzPointsUsed = 0;
 	private final int[] x = new int[anzPoints];
@@ -1345,7 +1345,7 @@ public class GL implements ApplicationListener, InputProcessor {
 
 	public void setLast(long aktTs, int aktX, int aktY) {
 	    if ((anzPointsUsed > 0) && (ts[0] < aktTs - 500)) {
-		// wenn seit der letzten Verschiebung mehr Zeit Vergangen ist -> bisherige gemerkte Verschiebungen lï¿½schen
+		// wenn seit der letzten Verschiebung mehr Zeit Vergangen ist -> bisherige gemerkte Verschiebungen l�schen
 		anzPointsUsed = 0;
 		started = false;
 		return;
@@ -1435,7 +1435,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	    result.y = (int) ((float) diffY / anzPointsUsed * (1 - faktor)) + lastY;
 
 	    if ((result.x == lastX) && (result.y == lastY)) {
-		// wenn keine Nennenswerten ï¿½nderungen mehr gemacht werden dann einfach auf fertig schalten
+		// wenn keine Nennenswerten �nderungen mehr gemacht werden dann einfach auf fertig schalten
 		fertig = true;
 		faktor = 1;
 		result.x = (int) ((float) diffX / anzPointsUsed * (1 - faktor)) + lastX;
@@ -1492,7 +1492,7 @@ public class GL implements ApplicationListener, InputProcessor {
 
     public void showDialog(final Dialog dialog) {
 	if (dialog instanceof ActivityBase)
-	    throw new IllegalArgumentException("donï¿½t show an Activity as Dialog. Use \"GL_listner.showActivity()\"");
+	    throw new IllegalArgumentException("don�t show an Activity as Dialog. Use \"GL_listner.showActivity()\"");
 
 	showDialog(dialog, false);
     }
@@ -1502,7 +1502,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	setKeyboardFocus(null);
 
 	if (dialog instanceof ActivityBase)
-	    throw new IllegalArgumentException("donï¿½t show an Activity as Dialog. Use \"GL_listner.showActivity()\"");
+	    throw new IllegalArgumentException("don�t show an Activity as Dialog. Use \"GL_listner.showActivity()\"");
 
 	clearRenderViews();
 
@@ -1525,7 +1525,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	if (actDialog != null && actDialog != dialog) {
 	    actDialog.onHide();
 	    actDialog.setEnabled(false);
-	    // am Anfang der Liste einfï¿½gen
+	    // am Anfang der Liste einf�gen
 	    dialogHistory.add(0, actDialog);
 	    mDialog.removeChildsDirekt(actDialog);
 	}
@@ -1537,8 +1537,8 @@ public class GL implements ApplicationListener, InputProcessor {
 
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		// Sollte bei einem Click neben dem Dialog ausgelï¿½st werden.
-		// Dann soll der Dialog geschlossen werden, wenn es sich um ein Menï¿½ handelt.
+		// Sollte bei einem Click neben dem Dialog ausgel�st werden.
+		// Dann soll der Dialog geschlossen werden, wenn es sich um ein Men� handelt.
 		if (DialogIsShown) {
 		    GL_View_Base vDialog = mDialog.getChild(0);
 		    if (vDialog instanceof Menu)
@@ -1598,7 +1598,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	if (actActivity != null && actActivity != activity) {
 	    actActivity.onHide();
 	    actActivity.setEnabled(false);
-	    // am Anfang der Liste einfï¿½gen
+	    // am Anfang der Liste einf�gen
 	    activityHistory.add(0, actActivity);
 	    mActivity.removeChildsDirekt(actActivity);
 	}
@@ -1698,7 +1698,7 @@ public class GL implements ApplicationListener, InputProcessor {
 
     public void closeDialog(CB_View_Base dialog) {
 	if (dialog instanceof ActivityBase)
-	    throw new IllegalArgumentException("donï¿½t show an Activity as Dialog. Use \"GL_listner.showActivity()\"");
+	    throw new IllegalArgumentException("don�t show an Activity as Dialog. Use \"GL_listner.showActivity()\"");
 	closeDialog(dialog, true);
     }
 

@@ -1,0 +1,14 @@
+diff --git a/mapsforge-map/src/main/java/org/mapsforge/map/layer/renderer/DatabaseRenderer.java b/mapsforge-map/src/main/java/org/mapsforge/map/layer/renderer/DatabaseRenderer.java
+index d28ebc6..5341107 100644
+--- a/mapsforge-map/src/main/java/org/mapsforge/map/layer/renderer/DatabaseRenderer.java
++++ b/mapsforge-map/src/main/java/org/mapsforge/map/layer/renderer/DatabaseRenderer.java
+@@ -258,8 +258,8 @@ public class DatabaseRenderer implements RenderCallback {
+ 	@Override
+ 	public void renderPointOfInterestCircle(float radius, Paint fill, Paint stroke, int level) {
+ 		List<ShapePaintContainer> list = this.drawingLayers.get(level);
+-		list.add(new ShapePaintContainer(new CircleContainer(this.poiPosition, radius), fill));
+ 		list.add(new ShapePaintContainer(new CircleContainer(this.poiPosition, radius), stroke));
++		list.add(new ShapePaintContainer(new CircleContainer(this.poiPosition, radius), fill));
+ 	}
+ 
+ 	@Override

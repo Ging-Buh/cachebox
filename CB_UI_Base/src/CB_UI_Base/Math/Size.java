@@ -20,7 +20,7 @@ package CB_UI_Base.Math;
 import java.io.Serializable;
 
 /**
- * Die Size Structur enth√§lt die Member width und height
+ * Die Size Structur enth‰lt die Member width und height
  * 
  * @author Longri
  */

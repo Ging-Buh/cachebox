@@ -41,7 +41,7 @@ import org.poly2tri.triangulation.sets.ConstrainedPointSet;
 import org.poly2tri.triangulation.sets.PointSet;
 
 /**
- * @author Thomas Ã…hlÃ©n, thahlen@gmail.com
+ * @author Thomas Åhlén, thahlen@gmail.com
  */
 public class TriangulationProcess implements Runnable
 {

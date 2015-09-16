@@ -223,7 +223,7 @@ public class Cache implements Comparable<Cache>, Serializable
 	}
 
 	/**
-	 * LÃ¤ngengrad
+	 * Längengrad
 	 */
 	public double Longitude()
 	{

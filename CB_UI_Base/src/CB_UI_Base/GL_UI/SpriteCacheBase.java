@@ -40,7 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 /**
- * EnthÃ¤lt die geladenen Sprites und das Handling fÃ¼r Laden und Entladen.
+ * Enthält die geladenen Sprites und das Handling für Laden und Entladen.
  * 
  * @author Longri
  */

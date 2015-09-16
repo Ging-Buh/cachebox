@@ -422,7 +422,7 @@ public class SearchOverPosition extends ActivityBase {
 			// alle per API importierten Caches landen in der Category und
 			// GpxFilename
 			// API-Import
-			// Category suchen, die dazu gehÃ¶rt
+			// Category suchen, die dazu gehört
 			CategoryDAO categoryDAO = new CategoryDAO();
 			Category category = categoryDAO.GetCategory(CoreSettingsForward.Categories, "API-Import");
 			if (category != null) // should not happen!!!

@@ -17,7 +17,7 @@ package CB_Utils.Settings;
 
 public class SettingString extends SettingBase<String>
 {
-	public static final String STRING_SPLITTER = "ยก";
+	public static final String STRING_SPLITTER = "ก";
 
 	public SettingString(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage)
 	{

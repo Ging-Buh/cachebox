@@ -9,7 +9,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
 /**
- * Eine View Base zur anzeige eines PopUpÂ´s
+ * Eine View Base zur anzeige eines PopUp´s
  * 
  * @author Longri
  */

@@ -38,7 +38,7 @@ public class CB_Action_ShowHint extends CB_Action {
 
     @Override
     public boolean getEnabled() {
-	// liefert true zurÃ¼ck wenn ein Cache gewÃ¤hlt ist und dieser einen Hint hat
+	// liefert true zurück wenn ein Cache gewählt ist und dieser einen Hint hat
 	if (GlobalCore.getSelectedCache() == null)
 	    return false;
 	String hintText = GlobalCore.getSelectedCache().getHint();

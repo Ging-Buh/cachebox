@@ -35,7 +35,7 @@ package org.poly2tri.triangulation;
  * when triangulating. For example used to enforce
  * Polygon Edges during a polygon triangulation.
  * 
- * @author Thomas Ã…hlÃ©n, thahlen@gmail.com
+ * @author Thomas Åhlén, thahlen@gmail.com
  */
 public class TriangulationConstraint
 {
