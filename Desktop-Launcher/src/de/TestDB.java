@@ -10,7 +10,6 @@ import java.sql.Statement;
 import java.util.Map.Entry;
 
 import CB_Core.DB.Database;
-import CB_UI.Config;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.Log.LogLevel;
 
@@ -32,7 +31,7 @@ public class TestDB extends Database
 	{
 		try
 		{
-			if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG)
+			if (LogLevel.isLogLevel(LogLevel.DEBUG))
 			{
 				log.debug("close DB:" + databasePath);
 			}
@@ -55,7 +54,7 @@ public class TestDB extends Database
 
 			try
 			{
-				if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG) log.debug("open data base: " + databasePath);
+				if (LogLevel.isLogLevel(LogLevel.DEBUG)) log.debug("open data base: " + databasePath);
 				myDB = DriverManager.getConnection("jdbc:sqlite:" + databasePath);
 			}
 			catch (Exception exc)
@@ -72,13 +71,13 @@ public class TestDB extends Database
 		File file = new File(databasePath);
 		if (file.exists())
 		{
-			if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG) log.debug("RESET DB, delete file: " + databasePath);
+			if (LogLevel.isLogLevel(LogLevel.DEBUG)) log.debug("RESET DB, delete file: " + databasePath);
 			file.delete();
 		}
 
 		try
 		{
-			if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG) log.debug("create data base: " + databasePath);
+			if (LogLevel.isLogLevel(LogLevel.DEBUG)) log.debug("create data base: " + databasePath);
 			myDB = DriverManager.getConnection("jdbc:sqlite:" + databasePath);
 			myDB.commit();
 			myDB.close();
@@ -95,7 +94,7 @@ public class TestDB extends Database
 	{
 		if (myDB == null) return null;
 
-		if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG)
+		if (LogLevel.isLogLevel(LogLevel.DEBUG))
 		{
 			StringBuilder sb = new StringBuilder("RAW_QUERY :" + sql + " ARGs= ");
 			if (args != null)
@@ -178,7 +177,7 @@ public class TestDB extends Database
 	{
 		if (myDB == null) return;
 
-		if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG) log.debug("execSQL : " + sql);
+		if (LogLevel.isLogLevel(LogLevel.DEBUG)) log.debug("execSQL : " + sql);
 
 		Statement statement = null;
 		try
@@ -210,7 +209,7 @@ public class TestDB extends Database
 	public long update(String tablename, Parameters val, String whereClause, String[] whereArgs)
 	{
 
-		if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG)
+		if (LogLevel.isLogLevel(LogLevel.DEBUG))
 		{
 			StringBuilder sb = new StringBuilder("Update @ Table:" + tablename);
 			sb.append("Parameters:" + val.toString());
@@ -342,7 +341,7 @@ public class TestDB extends Database
 				st.setObject(j, entry.getValue());
 			}
 
-			if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG) log.debug("INSERT: " + sql);
+			if (LogLevel.isLogLevel(LogLevel.DEBUG)) log.debug("INSERT: " + sql);
 			return st.execute() ? 0 : 1;
 
 		}
@@ -366,7 +365,7 @@ public class TestDB extends Database
 	@Override
 	public long delete(String tablename, String whereClause, String[] whereArgs)
 	{
-		if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG)
+		if (LogLevel.isLogLevel(LogLevel.DEBUG))
 		{
 			StringBuilder sb = new StringBuilder("Delete@ Table:" + tablename);
 			sb.append("WHERECLAUSE:" + whereClause);
@@ -433,7 +432,7 @@ public class TestDB extends Database
 	{
 		try
 		{
-			if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG) log.debug("begin transaction");
+			if (LogLevel.isLogLevel(LogLevel.DEBUG)) log.debug("begin transaction");
 			if (myDB != null) myDB.setAutoCommit(false);
 		}
 		catch (SQLException e)
@@ -448,7 +447,7 @@ public class TestDB extends Database
 	{
 		try
 		{
-			if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG) log.debug("set Transaction Successful");
+			if (LogLevel.isLogLevel(LogLevel.DEBUG)) log.debug("set Transaction Successful");
 			if (myDB != null) myDB.commit();
 		}
 		catch (SQLException e)
@@ -462,7 +461,7 @@ public class TestDB extends Database
 	{
 		try
 		{
-			if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG) log.debug("endTransaction");
+			if (LogLevel.isLogLevel(LogLevel.DEBUG)) log.debug("endTransaction");
 			if (myDB != null) myDB.setAutoCommit(true);
 		}
 		catch (SQLException e)
@@ -477,7 +476,7 @@ public class TestDB extends Database
 	{
 		if (myDB == null) return 0;
 
-		if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG)
+		if (LogLevel.isLogLevel(LogLevel.DEBUG))
 		{
 			log.debug("insertWithConflictReplace @Table:" + tablename + "Parameters: " + val.toString());
 		}
@@ -552,7 +551,7 @@ public class TestDB extends Database
 	{
 		if (myDB == null) return 0;
 
-		if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG)
+		if (LogLevel.isLogLevel(LogLevel.DEBUG))
 		{
 			log.debug("insertWithConflictIgnore @Table:" + tablename + "Parameters: " + val.toString());
 		}
