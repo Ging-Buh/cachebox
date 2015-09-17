@@ -41,8 +41,6 @@ public interface LocatorSettings
 
 	public static final SettingFolder MapPackFolderLocal = new SettingFolder("MapPackFolderLocal", SettingCategory.Folder, NEVER, Config_Core.WorkPath + "/repository/maps", SettingStoreType.Local, SettingUsage.ALL, false);
 
-	public static final SettingBool FireMapQueueProcessorExceptions = new SettingBool("FireMapQueueProcessorExceptions", SettingCategory.Internal, INVISIBLE, false, SettingStoreType.Global, SettingUsage.ACB);
-
 	public static final SettingDouble MapInitLatitude = new SettingDouble("MapInitLatitude", SettingCategory.Positions, EXPERT, -1000, SettingStoreType.Global, SettingUsage.ALL);
 
 	public static final SettingDouble MapInitLongitude = new SettingDouble("MapInitLongitude", SettingCategory.Positions, EXPERT, -1000, SettingStoreType.Global, SettingUsage.ALL);

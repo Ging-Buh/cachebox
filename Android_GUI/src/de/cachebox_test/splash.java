@@ -27,10 +27,6 @@ import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
 import org.slf4j.LoggerFactory;
 
-import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.android.AndroidFiles;
-
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Locator.LocatorSettings;
@@ -94,6 +90,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.android.AndroidFiles;
+
 import de.cachebox_test.Components.copyAssetFolder;
 import de.cachebox_test.DB.AndroidDB;
 import de.cachebox_test.Views.Forms.MessageBox;
@@ -116,7 +117,6 @@ public class splash extends Activity
 	String workPath;
 	IgetFolderReturnListner getFolderReturnListner;
 	int AdditionalWorkPathCount;
-	SharedPreferences AndroidSettings;
 	MessageBox msg;
 
 	ArrayList<String> AdditionalWorkPathArray;
@@ -293,11 +293,11 @@ public class splash extends Activity
 		// initial GDX
 		Gdx.files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
 		// first, try to find stored preferences of workPath
-		AndroidSettings = this.getSharedPreferences(Global.PREFS_NAME, 0);
+		androidSetting = this.getSharedPreferences(Global.PREFS_NAME, 0);
 
-		workPath = AndroidSettings.getString("WorkPath", Environment.getDataDirectory() + "/cachebox");
-		boolean askAgain = AndroidSettings.getBoolean("AskAgain", true);
-		showSandbox = AndroidSettings.getBoolean("showSandbox", false);
+		workPath = androidSetting.getString("WorkPath", Environment.getDataDirectory() + "/cachebox");
+		boolean askAgain = androidSetting.getBoolean("AskAgain", true);
+		showSandbox = androidSetting.getBoolean("showSandbox", false);
 
 		Global.initTheme(this);
 		Global.InitIcons(this);
@@ -306,7 +306,7 @@ public class splash extends Activity
 		platformConector.setGetFileListner(fileExplorer);
 		platformConector.setGetFolderListner(fileExplorer);
 
-		String LangPath = AndroidSettings.getString("Sel_LanguagePath", "");
+		String LangPath = androidSetting.getString("Sel_LanguagePath", "");
 		if (LangPath.length() == 0)
 		{
 			// set default lang
@@ -480,44 +480,44 @@ public class splash extends Activity
 							// set dialog message
 							alertDialogBuilder.setMessage(Translation.Get("Desc_Sandbox")).setCancelable(false)
 									.setPositiveButton(Translation.Get("yes"), new DialogInterface.OnClickListener()
-							{
-								public void onClick(DialogInterface dialog, int id)
-								{
-									// if this button is clicked, run Sandbox Path
-
-									showSandbox = true;
-									Config.AcceptChanges();
-
-									// close select dialog
-									dialog.dismiss();
-
-									// show please wait dialog
-									showPleaseWaitDialog();
-
-									// use external SD -> change workPath
-									Thread thread = new Thread()
 									{
-										@Override
-										public void run()
+										public void onClick(DialogInterface dialog, int id)
 										{
-											workPath = externalSd2;
-											boolean askAgain = cbAskAgain.isChecked();
-											// boolean useTabletLayout = rbTabletLayout.isChecked();
-											saveWorkPath(askAgain/* , useTabletLayout */);
-											startInitial();
+											// if this button is clicked, run Sandbox Path
+
+											showSandbox = true;
+											Config.AcceptChanges();
+
+											// close select dialog
+											dialog.dismiss();
+
+											// show please wait dialog
+											showPleaseWaitDialog();
+
+											// use external SD -> change workPath
+											Thread thread = new Thread()
+											{
+												@Override
+												public void run()
+												{
+													workPath = externalSd2;
+													boolean askAgain = cbAskAgain.isChecked();
+													// boolean useTabletLayout = rbTabletLayout.isChecked();
+													saveWorkPath(askAgain/* , useTabletLayout */);
+													startInitial();
+												}
+											};
+											thread.start();
 										}
-									};
-									thread.start();
-								}
-							}).setNegativeButton(Translation.Get("no"), new DialogInterface.OnClickListener()
-							{
-								public void onClick(DialogInterface dialog, int id)
-								{
-									// if this button is clicked, just close
-									// the dialog box and do nothing
-									dialog.cancel();
-								}
-							});
+									}).setNegativeButton(Translation.Get("no"), new DialogInterface.OnClickListener()
+									{
+										public void onClick(DialogInterface dialog, int id)
+										{
+											// if this button is clicked, just close
+											// the dialog box and do nothing
+											dialog.cancel();
+										}
+									});
 
 							// create alert dialog
 							AlertDialog alertDialog = alertDialogBuilder.create();
@@ -597,22 +597,22 @@ public class splash extends Activity
 							msg = (MessageBox) MessageBox.Show(Translation.Get("shuredeleteWorkspace", Name),
 									Translation.Get("deleteWorkspace"), MessageBoxButtons.YesNo, MessageBoxIcon.Question,
 									new DialogInterface.OnClickListener()
-							{
-
-								@Override
-								public void onClick(DialogInterface dialog, int which)
-								{
-									if (which == MessageBox.BUTTON_POSITIVE)
 									{
-										// Delete this Workpath only from Settings don't delete any File
-										deleteWorkPath(AddWorkPath);
-									}
-									// Start again to exclude the old Folder
-									msg.dismiss();
-									onStart();
-								}
 
-							});
+										@Override
+										public void onClick(DialogInterface dialog, int which)
+										{
+											if (which == MessageBox.BUTTON_POSITIVE)
+											{
+												// Delete this Workpath only from Settings don't delete any File
+												deleteWorkPath(AddWorkPath);
+											}
+											// Start again to exclude the old Folder
+											msg.dismiss();
+											onStart();
+										}
+
+									});
 
 							dialog.dismiss();
 							return true;
@@ -888,17 +888,17 @@ public class splash extends Activity
 	private ArrayList<String> getAdditionalWorkPathArray()
 	{
 		ArrayList<String> retList = new ArrayList<String>();
-		AdditionalWorkPathCount = AndroidSettings.getInt("AdditionalWorkPathCount", 0);
+		AdditionalWorkPathCount = androidSetting.getInt("AdditionalWorkPathCount", 0);
 		for (int i = 0; i < AdditionalWorkPathCount; i++)
 		{
-			retList.add(AndroidSettings.getString("AdditionalWorkPath" + String.valueOf(i), ""));
+			retList.add(androidSetting.getString("AdditionalWorkPath" + String.valueOf(i), ""));
 		}
 		return retList;
 	}
 
 	private void writeAdditionalWorkPathArray(ArrayList<String> list)
 	{
-		Editor editor = AndroidSettings.edit();
+		Editor editor = androidSetting.edit();
 
 		// first remove all
 		for (int i = 0; i < AdditionalWorkPathCount; i++)
@@ -1277,6 +1277,9 @@ public class splash extends Activity
 		{
 			Config.settings.ReadFromDB();
 		}
+
+		// Add Android Only Settings
+		AndroidSettings.addToSettiongsList();
 
 		new CB_SLF4J(workPath);
 		CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());

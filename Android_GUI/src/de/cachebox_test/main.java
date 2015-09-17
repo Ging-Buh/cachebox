@@ -382,11 +382,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		GL.resetIsInitial();
 
 		// add flags for run on lock screen
-		// this.getWindow().addFlags(
-		// WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-		// | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-
-		this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+		if (AndroidSettings.RunOverLockScreen.getValue()) this.getWindow().addFlags(
+				WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 
 		if (GlobalCore.RunFromSplash)
 		{
