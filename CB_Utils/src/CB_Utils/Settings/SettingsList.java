@@ -96,7 +96,12 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 		return new SettingsDAO();
 	}
 
-	public void WriteToDB()
+	/**
+	 * Return true, if setting changes need restart
+	 * 
+	 * @return
+	 */
+	public boolean WriteToDB()
 	{
 		// Write into DB
 		SettingsDAO dao = createSettingsDAO();
@@ -112,6 +117,8 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 			// do not change Data now!
 			Data = null;
 		}
+
+		boolean needRestart = false;
 
 		try
 		{
@@ -133,11 +140,19 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 					dao.WriteToPlatformSettings(setting);
 					dao.WriteToDatabase(getSettingsDB(), setting);
 				}
+
+				if (setting.needRestart)
+				{
+					needRestart = true;
+				}
+
 				setting.clearDirty();
 
 			}
 			if (Data != null) Data.setTransactionSuccessful();
 			getSettingsDB().setTransactionSuccessful();
+
+			return needRestart;
 		}
 		finally
 		{

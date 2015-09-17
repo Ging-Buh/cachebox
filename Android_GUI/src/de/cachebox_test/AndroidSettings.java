@@ -15,8 +15,8 @@ public class AndroidSettings
 	public static final SettingModus EXPERT = SettingModus.Expert;
 	public static final SettingModus NEVER = SettingModus.Never;
 
-	public static final SettingBool RunOverLockScreen = new SettingBool("RunOverLockScreen", SettingCategory.Misc, NORMAL, true,
-			SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingBool RunOverLockScreen = (SettingBool) new SettingBool("RunOverLockScreen", SettingCategory.Misc, NORMAL,
+			true, SettingStoreType.Global, SettingUsage.ACB).setNeedRestart();
 
 	public static void addToSettiongsList()
 	{
