@@ -1111,7 +1111,6 @@ public class splash extends Activity
 
 				while (width == 0 || height == 0)
 				{
-					log.debug("wait for splsh layout");
 					splash.this.runOnUiThread(new Runnable()
 					{
 						@Override
