@@ -3,10 +3,10 @@ package de.cachebox_test.DB;
 import java.io.File;
 import java.util.Map.Entry;
 
-import org.slf4j.LoggerFactory;
-
 import CB_Core.DB.Database;
+import CB_UI.Config;
 import CB_Utils.DB.CoreCursor;
+import CB_Utils.Log.LogLevel;
 import CB_Utils.Util.FileIO;
 import android.app.Activity;
 import android.content.ContentValues;
@@ -16,7 +16,6 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class AndroidDB extends Database
 {
-	final static org.slf4j.Logger log = LoggerFactory.getLogger(AndroidDB.class);
 	private Activity activity;
 	public SQLiteDatabase myDB = null;
 
@@ -24,11 +23,13 @@ public class AndroidDB extends Database
 	{
 		super(databaseType);
 		this.activity = activity;
+
 	}
 
 	@Override
 	public void Initialize()
 	{
+
 		if (myDB == null)
 		{
 			if (!FileIO.FileExists(databasePath))
@@ -39,6 +40,7 @@ public class AndroidDB extends Database
 			{
 				try
 				{
+					if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG) log.debug("open data base: " + databasePath);
 					myDB = SQLiteDatabase.openDatabase(databasePath, null, SQLiteDatabase.OPEN_READWRITE);
 				}
 				catch (Exception exc)
@@ -53,18 +55,24 @@ public class AndroidDB extends Database
 	@Override
 	public void Reset()
 	{
+
 		// if exists, delete old database file
 		File file = new File(databasePath);
-		if (file.exists()) file.delete();
+		if (file.exists())
+		{
+			if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG) log.debug("RESET DB, delete file: " + databasePath);
+			file.delete();
+		}
 
 		try
 		{
+			if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG) log.debug("create data base: " + databasePath);
 			myDB = activity.openOrCreateDatabase(getDatabasePath(databasePath).getAbsolutePath(), Context.MODE_WORLD_WRITEABLE, null);
 			newDB = true;
 		}
 		catch (Exception exc)
 		{
-			log.error("resetDB", exc);
+			log.error("createDB", exc);
 		}
 	}
 
@@ -84,6 +92,18 @@ public class AndroidDB extends Database
 	@Override
 	public CoreCursor rawQuery(String sql, String[] args)
 	{
+		if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG)
+		{
+			StringBuilder sb = new StringBuilder("RAW_QUERY :" + sql + " ARGs= ");
+			if (args != null)
+			{
+				for (String arg : args)
+					sb.append(arg + ", ");
+			}
+			else
+				sb.append("NULL");
+			log.debug(sb.toString());
+		}
 		if (myDB == null) return null;
 		Cursor c = myDB.rawQuery(sql, args);
 		return new AndroidCursor(c);
@@ -92,6 +112,7 @@ public class AndroidDB extends Database
 	@Override
 	public void execSQL(String sql)
 	{
+		if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG) log.debug("execSQL : " + sql);
 		try
 		{
 			myDB.execSQL(sql);
@@ -126,11 +147,14 @@ public class AndroidDB extends Database
 	@Override
 	public long insert(String tablename, Parameters val)
 	{
+
 		ContentValues values = getContentValues(val);
 
 		long ret = -1;
 		try
 		{
+			if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG)
+				log.debug("INSERT into: " + tablename + "values: " + values.toString());
 			myDB.insert(tablename, null, values);
 		}
 		catch (Exception e)
@@ -144,6 +168,24 @@ public class AndroidDB extends Database
 	@Override
 	public long update(String tablename, Parameters val, String whereClause, String[] whereArgs)
 	{
+
+		if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG)
+		{
+			StringBuilder sb = new StringBuilder("Update Table:" + tablename);
+			sb.append("Parameters:" + val.toString());
+			sb.append("WHERECLAUSE:" + whereClause);
+
+			if (whereArgs != null)
+			{
+				for (String arg : whereArgs)
+				{
+					sb.append(arg + ", ");
+				}
+			}
+
+			log.debug(sb.toString());
+		}
+
 		try
 		{
 			ContentValues values = getContentValues(val);
@@ -158,30 +200,54 @@ public class AndroidDB extends Database
 	@Override
 	public long delete(String tablename, String whereClause, String[] whereArgs)
 	{
+
+		if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG)
+		{
+			StringBuilder sb = new StringBuilder("Delete@ Table:" + tablename);
+			sb.append("WHERECLAUSE:" + whereClause);
+
+			if (whereArgs != null)
+			{
+				for (String arg : whereArgs)
+				{
+					sb.append(arg + ", ");
+				}
+			}
+
+			log.debug(sb.toString());
+		}
+
 		return myDB.delete(tablename, whereClause, whereArgs);
 	}
 
 	@Override
 	public void beginTransaction()
 	{
+		if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG) log.debug("begin transaction");
 		if (myDB != null) myDB.beginTransaction();
 	}
 
 	@Override
 	public void setTransactionSuccessful()
 	{
+		if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG) log.debug("set Transaction Successful");
 		if (myDB != null) myDB.setTransactionSuccessful();
 	}
 
 	@Override
 	public void endTransaction()
 	{
+		if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG) log.debug("endTransaction");
 		if (myDB != null) myDB.endTransaction();
 	}
 
 	@Override
 	public long insertWithConflictReplace(String tablename, Parameters val)
 	{
+		if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG)
+		{
+			log.debug("insertWithConflictReplace @Table:" + tablename + "Parameters: " + val.toString());
+		}
 		ContentValues values = getContentValues(val);
 		return myDB.insertWithOnConflict(tablename, null, values, SQLiteDatabase.CONFLICT_REPLACE);
 	}
@@ -189,6 +255,10 @@ public class AndroidDB extends Database
 	@Override
 	public long insertWithConflictIgnore(String tablename, Parameters val)
 	{
+		if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG)
+		{
+			log.debug("insertWithConflictIgnore @Table:" + tablename + "Parameters: " + val.toString());
+		}
 		ContentValues values = getContentValues(val);
 		return myDB.insertWithOnConflict(tablename, null, values, SQLiteDatabase.CONFLICT_IGNORE);
 	}
@@ -196,6 +266,10 @@ public class AndroidDB extends Database
 	@Override
 	public void Close()
 	{
+		if (Config.AktLogLevel.getEnumValue() == LogLevel.DEBUG)
+		{
+			log.debug("close DB:" + databasePath);
+		}
 		if (myDB != null) myDB.close();
 		myDB = null;
 	}

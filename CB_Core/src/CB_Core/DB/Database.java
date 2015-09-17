@@ -41,7 +41,7 @@ import CB_Utils.Util.SDBM_Hash;
 
 public abstract class Database extends Database_Core
 {
-	final static org.slf4j.Logger log = LoggerFactory.getLogger(Database.class);
+	protected final org.slf4j.Logger log;
 	public static Database Data;
 	public static Database FieldNotes;
 	public static Database Settings;
@@ -58,6 +58,8 @@ public abstract class Database extends Database_Core
 	{
 		super();
 		this.databaseType = databaseType;
+
+		log = LoggerFactory.getLogger("Database." + databaseType);
 
 		switch (databaseType)
 		{
@@ -450,7 +452,7 @@ public abstract class Database extends Database_Core
 		}
 		catch (Exception exc)
 		{
-			log.error("Waypoint.DeleteFromDataBase()", "", exc);
+			Database.Data.log.error("Waypoint.DeleteFromDataBase()", "", exc);
 		}
 	}
 
@@ -609,7 +611,7 @@ public abstract class Database extends Database_Core
 	{
 		CB_List<LogEntry> result = new CB_List<LogEntry>();
 		if (cache == null) // if no cache is selected!
-		return result;
+			return result;
 		CoreCursor reader = Database.Data.rawQuery("select CacheId, Timestamp, Finder, Type, Comment, Id from Logs where CacheId=@cacheid order by Timestamp desc", new String[]
 			{ Long.toString(cache.Id) });
 
