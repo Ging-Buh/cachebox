@@ -381,10 +381,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		super.onCreate(savedInstanceState);
 		GL.resetIsInitial();
 
-		// add flags for run on lock screen
-		if (AndroidSettings.RunOverLockScreen.getValue()) this.getWindow().addFlags(
-				WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-
 		if (GlobalCore.RunFromSplash)
 		{
 			log.info("CACHEBOX", "main-OnCreate Run from Splash");
@@ -539,6 +535,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		Config.AcceptChanges();
 
+		setLockScreenProperty();
+		AndroidSettings.RunOverLockScreen.addChangedEventListner(new iChanged() {
+			@Override
+			public void isChanged() {
+				setLockScreenProperty();
+			}
+		});
+
+
 		// Initial Android TexturePacker
 		new Android_Packer();
 
@@ -647,6 +652,24 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
 
 		initialViewGL();
+	}
+
+	private void setLockScreenProperty() {
+		// add flags for run on lock screen
+
+
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (AndroidSettings.RunOverLockScreen.getValue()) {
+					main.this.getWindow().addFlags(
+							WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+				} else{
+					main.this.getWindow().clearFlags(
+							WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+				}
+			}
+		});
 	}
 
 	boolean flag = false;
