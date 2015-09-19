@@ -113,7 +113,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     private long ANIMATION_TICK = 450;
     private int animationValue = 0;
 
-    private Date ImportStart;
+    protected Date ImportStart;
 
     private Boolean importStarted = false;
 
