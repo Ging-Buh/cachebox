@@ -30,7 +30,6 @@ import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Types.Cache;
-import CB_Locator.LocatorSettings;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_Locator.Map.ManagerBase;
@@ -405,7 +404,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 	// create MapView Instanz
 	CB_TabView mapTap = GlobalCore.isTab ? RightTab : LeftTab;
 	TabMainView.mapView = new MapView(mapTap.getContentRec(), MapMode.Normal, "MapView");
-	MapView.that.SetZoom(LocatorSettings.lastZoomLevel.getValue());
+	MapView.that.SetZoom(Config.lastZoomLevel.getValue());
 
 	platformConector.FirstShow();
 	filterSetChanged();
