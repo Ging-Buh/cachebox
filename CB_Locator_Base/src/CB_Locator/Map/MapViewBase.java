@@ -253,7 +253,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	{
 		LocatorSettings.MapInitLatitude.setValue(center.getLatitude());
 		LocatorSettings.MapInitLongitude.setValue(center.getLongitude());
-		LocatorSettings.lastZoomLevel.setValue(aktZoom);
+		LocatorSettings.lastZoomLevel.setValue(zoomBtn.getZoom());
 		super.onStop();
 	}
 
