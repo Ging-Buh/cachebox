@@ -16,10 +16,10 @@
 
 package CB_UI_Base.Math;
 
+import com.badlogic.gdx.math.Vector2;
+
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.MoveableList;
-
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * Eine Structur f�r RectF mit besonderen Methoden Speziel f�r die Handhabung in der Verwendung der Berechneten Gr�ssen und Positionen

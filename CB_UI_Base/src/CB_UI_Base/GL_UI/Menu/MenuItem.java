@@ -15,15 +15,15 @@
  */
 package CB_UI_Base.GL_UI.Menu;
 
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
-
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class MenuItem extends MenuItemBase {
 
@@ -41,6 +41,7 @@ public class MenuItem extends MenuItemBase {
     private final int mID;
 
     protected boolean isPressed = false;
+    private Image iconImage;
 
     public MenuItem(SizeF size, int Index, int ID, String Name) {
 	super(new CB_RectF(size), Index, Name);
@@ -76,31 +77,20 @@ public class MenuItem extends MenuItemBase {
 	super.Initial();
 	this.removeChilds();
 
-	boolean hasIcon = (mIcon != null);
-
 	// float left = (mIsCheckable || mLeft) ? this.height * 0.97f : this.height * 0.2f;
-	float left = this.getHeight() * 0.2f;
-	float right = hasIcon ? this.getHeight() : 0;
-	float labelWidth = (this.getWidth() - right - left) * 0.97f;
 
 	mLabel = new Label(this.ScaleCenter(0.97f), "MenuItemLabel");
-
-	mLabel.setWidth(labelWidth);
+	boolean hasIcon = (mIcon != null);
 
 	// float x = ((this.width - mLabel.getWidth()) / 2) + left;
-	float x = left;
-	float y = (this.getHeight() - mLabel.getHeight()) / 2;
 
 	if (hasIcon) {
 	    CB_RectF rec = new CB_RectF(this.getWidth() - this.getHeight(), 0, this.getHeight(), this.getHeight()).ScaleCenter(0.75f);
-
-	    Image iconImage = new Image(rec, "MenuItemImage", false);
-
+	    iconImage = new Image(rec, "MenuItemImage", false);
 	    iconImage.setDrawable(mIcon);
 	    if (!mIsEnabled) {
 		iconImage.setColor(COLOR.getDisableFontColor());
 	    }
-
 	    this.addChild(iconImage);
 	}
 
@@ -127,14 +117,47 @@ public class MenuItem extends MenuItemBase {
 	    this.addChild(checkImage);
 	}
 
-	mLabel.setPos(x, y);
 	if (mTitle != null)
 	    mLabel.setText(mTitle);
 	if (!mIsEnabled) {
 	    mLabel.setTextColor(COLOR.getDisableFontColor());
 	}
-
 	this.addChild(mLabel);
+	setContentSize();
+    }
+
+    @Override
+    public void onResized(CB_RectF rec) {
+	super.onResized(rec);
+	setContentSize();
+    }
+
+    private void setContentSize() {
+	boolean hasIcon = (mIcon != null);
+
+	float left = this.getHeight() * 0.2f;
+	float right = hasIcon ? this.getHeight() : 0;
+	float labelWidth = (this.getWidth() - right - left) * 0.97f;
+	mLabel.setWidth(labelWidth);
+
+	if (hasIcon && iconImage != null) {
+	    iconImage.setPos(this.getWidth() - this.getHeight(), 0);
+	}
+
+	if (mIsCheckable && checkImage != null) {
+	    CB_RectF rec;
+	    if (hasIcon) {
+		rec = new CB_RectF(this.getWidth() - 2 * this.getHeight(), 0, this.getHeight(), this.getHeight()).ScaleCenter(0.75f);
+	    } else {
+		rec = new CB_RectF(this.getWidth() - this.getHeight(), 0, this.getHeight(), this.getHeight()); // .ScaleCenter(0.75f);
+	    }
+	    rec.setHeight(rec.getWidth());
+	    checkImage.setSize(rec);
+	}
+
+	float x = left;
+	float y = (this.getHeight() - mLabel.getHeight()) / 2;
+	mLabel.setPos(x, y);
     }
 
     /**
@@ -202,7 +225,7 @@ public class MenuItem extends MenuItemBase {
 	mIsEnabled = enabled;
 
 	if (!mIsEnabled) {
-	    // lösche ClickListner
+	    // lï¿½sche ClickListner
 	    setOnClickListener(null);
 	    setOnLongClickListener(null);
 	}

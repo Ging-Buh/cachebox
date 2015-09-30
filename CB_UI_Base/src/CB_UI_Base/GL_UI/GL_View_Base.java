@@ -20,12 +20,6 @@ import java.util.Iterator;
 
 import org.slf4j.LoggerFactory;
 
-import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.SizeF;
-import CB_UI_Base.Math.UI_Size_Base;
-import CB_Utils.Util.MoveableList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -36,6 +30,12 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
+import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.SizeF;
+import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.Util.MoveableList;
 
 public abstract class GL_View_Base extends CB_RectF {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(GL_View_Base.class);
@@ -650,7 +650,6 @@ public abstract class GL_View_Base extends CB_RectF {
     @Override
     public void resize(float width, float height) {
 	super.resize(width, height);
-
 	try {
 	    innerWidth = width - leftBorder - rightBorder;
 	    innerHeight = height - topBorder - bottomBorder;
