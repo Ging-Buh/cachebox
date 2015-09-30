@@ -141,7 +141,7 @@ public class MenuItem extends MenuItemBase {
 	mLabel.setWidth(labelWidth);
 
 	if (hasIcon && iconImage != null) {
-	    iconImage.setPos(this.getWidth() - this.getHeight(), 0);
+	    iconImage.setPos(this.getWidth() - this.getHeight(), (this.getHeight() - iconImage.getHeight()) / 2);
 	}
 
 	if (mIsCheckable && checkImage != null) {
