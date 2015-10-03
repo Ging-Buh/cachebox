@@ -6,19 +6,19 @@ import java.sql.SQLException;
 
 import de.cb.sqlite.CoreCursor;
 
-public class TestCursor extends CoreCursor
+public class DesktopCursor extends CoreCursor
 {
 	private ResultSet rs;
 	private PreparedStatement ps;
 	private int rowcount;
 
-	public TestCursor(ResultSet rs, PreparedStatement ps)
+	public DesktopCursor(ResultSet rs, PreparedStatement ps)
 	{
 		this.rs = rs;
 		this.ps = ps;
 	}
 
-	public TestCursor(ResultSet rs, int rowcount, PreparedStatement ps)
+	public DesktopCursor(ResultSet rs, int rowcount, PreparedStatement ps)
 	{
 		this.rs = rs;
 		this.rowcount = rowcount;

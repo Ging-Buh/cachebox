@@ -13,12 +13,12 @@ import CB_Core.DB.Database;
 import CB_Utils.Log.LogLevel;
 import de.cb.sqlite.CoreCursor;
 
-public class TestDB extends Database
+public class DesktopDB extends Database
 {
 
 	Connection myDB = null;
 
-	public TestDB(DatabaseType databaseType) throws ClassNotFoundException
+	public DesktopDB(DatabaseType databaseType) throws ClassNotFoundException
 	{
 		super(databaseType);
 
@@ -169,7 +169,7 @@ public class TestDB extends Database
 			}
 		}
 
-		return new TestCursor(rs, rowcount, statement);
+		return new DesktopCursor(rs, rowcount, statement);
 	}
 
 	@Override

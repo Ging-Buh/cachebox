@@ -54,7 +54,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 import de.CB_Texturepacker.Desctop_Packer;
 import de.Map.DesktopManager;
-import de.cb.sqlite.TestDB;
+import de.cb.sqlite.DesktopDB;
 
 public class DesktopMain
 {
@@ -497,7 +497,7 @@ public class DesktopMain
 		// hier muss die Config Db initialisiert werden
 		try
 		{
-			Database.Settings = new TestDB(DatabaseType.Settings);
+			Database.Settings = new DesktopDB(DatabaseType.Settings);
 		}
 		catch (ClassNotFoundException e)
 		{
@@ -508,7 +508,7 @@ public class DesktopMain
 
 		try
 		{
-			Database.Data = new TestDB(DatabaseType.CacheBox);
+			Database.Data = new DesktopDB(DatabaseType.CacheBox);
 		}
 		catch (ClassNotFoundException e)
 		{
@@ -517,7 +517,7 @@ public class DesktopMain
 
 		try
 		{
-			Database.FieldNotes = new TestDB(DatabaseType.FieldNotes);
+			Database.FieldNotes = new DesktopDB(DatabaseType.FieldNotes);
 		}
 		catch (ClassNotFoundException e)
 		{
