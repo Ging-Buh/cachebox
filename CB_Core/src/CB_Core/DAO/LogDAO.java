@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import CB_Core.DB.Database;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Types.LogEntry;
-import CB_Utils.DB.Database_Core.Parameters;
+import de.cb.sqlite.Database_Core.Parameters;
 
 public class LogDAO
 {

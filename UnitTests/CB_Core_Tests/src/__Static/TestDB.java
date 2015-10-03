@@ -10,7 +10,7 @@ import java.sql.Statement;
 import java.util.Map.Entry;
 
 import CB_Core.DB.Database;
-import CB_Utils.DB.CoreCursor;
+import de.cb.sqlite.CoreCursor;
 
 public class TestDB extends Database
 {

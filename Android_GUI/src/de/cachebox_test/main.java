@@ -183,7 +183,6 @@ import de.cachebox_test.Components.CacheNameView;
 import de.cachebox_test.Custom_Controls.Mic_On_Flash;
 import de.cachebox_test.Custom_Controls.downSlider;
 import de.cachebox_test.Custom_Controls.QuickButtonList.HorizontalListView;
-import de.cachebox_test.DB.AndroidDB;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AndroidClipboard;
@@ -194,6 +193,7 @@ import de.cachebox_test.Views.ViewGL;
 import de.cachebox_test.Views.Forms.GcApiLogin;
 import de.cachebox_test.Views.Forms.MessageBox;
 import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
+import de.cb.sqlite.AndroidDB;
 
 /**
  * @author Longri

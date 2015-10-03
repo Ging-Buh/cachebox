@@ -44,9 +44,9 @@ import CB_Core.GCVote.RatingData;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
-import CB_Utils.DB.CoreCursor;
 import CB_Utils.Events.ProgresssChangedEventList;
 import CB_Utils.Util.FileIO;
+import de.cb.sqlite.CoreCursor;
 
 public class Importer
 {

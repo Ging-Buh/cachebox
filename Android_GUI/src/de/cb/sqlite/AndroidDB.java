@@ -1,10 +1,9 @@
-package de.cachebox_test.DB;
+package de.cb.sqlite;
 
 import java.io.File;
 import java.util.Map.Entry;
 
 import CB_Core.DB.Database;
-import CB_Utils.DB.CoreCursor;
 import CB_Utils.Log.LogLevel;
 import CB_Utils.Util.FileIO;
 import android.app.Activity;
@@ -12,6 +11,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import de.cb.sqlite.CoreCursor;
 
 public class AndroidDB extends Database
 {

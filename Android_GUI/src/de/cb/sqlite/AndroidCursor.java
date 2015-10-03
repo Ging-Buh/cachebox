@@ -1,7 +1,7 @@
-package de.cachebox_test.DB;
+package de.cb.sqlite;
 
-import CB_Utils.DB.CoreCursor;
 import android.database.Cursor;
+import de.cb.sqlite.CoreCursor;
 
 public class AndroidCursor extends CoreCursor
 {

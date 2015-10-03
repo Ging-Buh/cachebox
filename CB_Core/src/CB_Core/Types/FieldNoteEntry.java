@@ -9,8 +9,8 @@ import java.util.TimeZone;
 
 import CB_Core.DB.Database;
 import CB_Core.Enums.LogTypes;
-import CB_Utils.DB.CoreCursor;
-import CB_Utils.DB.Database_Core.Parameters;
+import de.cb.sqlite.CoreCursor;
+import de.cb.sqlite.Database_Core.Parameters;
 
 public class FieldNoteEntry implements Serializable
 {

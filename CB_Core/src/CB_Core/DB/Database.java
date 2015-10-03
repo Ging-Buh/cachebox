@@ -34,10 +34,10 @@ import CB_Core.Types.Categories;
 import CB_Core.Types.Category;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
-import CB_Utils.DB.CoreCursor;
-import CB_Utils.DB.Database_Core;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.SDBM_Hash;
+import de.cb.sqlite.CoreCursor;
+import de.cb.sqlite.Database_Core;
 
 public abstract class Database extends Database_Core
 {

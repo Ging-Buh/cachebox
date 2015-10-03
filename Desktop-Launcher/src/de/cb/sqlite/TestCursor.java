@@ -1,10 +1,10 @@
-package de;
+package de.cb.sqlite;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import CB_Utils.DB.CoreCursor;
+import de.cb.sqlite.CoreCursor;
 
 public class TestCursor extends CoreCursor
 {

@@ -7,7 +7,7 @@ import java.util.Iterator;
 
 import org.slf4j.LoggerFactory;
 
-import CB_Utils.DB.Database_Core;
+import de.cb.sqlite.Database_Core;
 
 public abstract class SettingsList extends ArrayList<SettingBase<?>>
 {

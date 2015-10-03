@@ -27,10 +27,10 @@ import CB_Core.DB.Database;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
-import CB_Utils.DB.CoreCursor;
-import CB_Utils.DB.Database_Core.Parameters;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.SDBM_Hash;
+import de.cb.sqlite.CoreCursor;
+import de.cb.sqlite.Database_Core.Parameters;
 
 public class CacheInfoList
 {

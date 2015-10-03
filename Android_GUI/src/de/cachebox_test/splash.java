@@ -96,8 +96,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidFiles;
 
 import de.cachebox_test.Components.copyAssetFolder;
-import de.cachebox_test.DB.AndroidDB;
 import de.cachebox_test.Views.Forms.MessageBox;
+import de.cb.sqlite.AndroidDB;
 
 public class splash extends Activity
 {

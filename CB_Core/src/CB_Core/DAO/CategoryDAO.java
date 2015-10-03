@@ -27,8 +27,8 @@ import CB_Core.DB.Database;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
-import CB_Utils.DB.CoreCursor;
-import CB_Utils.DB.Database_Core.Parameters;
+import de.cb.sqlite.CoreCursor;
+import de.cb.sqlite.Database_Core.Parameters;
 
 public class CategoryDAO
 {

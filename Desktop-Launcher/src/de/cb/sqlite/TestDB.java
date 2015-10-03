@@ -1,4 +1,4 @@
-package de;
+package de.cb.sqlite;
 
 import java.io.File;
 import java.sql.Connection;
@@ -10,8 +10,8 @@ import java.sql.Statement;
 import java.util.Map.Entry;
 
 import CB_Core.DB.Database;
-import CB_Utils.DB.CoreCursor;
 import CB_Utils.Log.LogLevel;
+import de.cb.sqlite.CoreCursor;
 
 public class TestDB extends Database
 {
