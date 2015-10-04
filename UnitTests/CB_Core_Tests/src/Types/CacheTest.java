@@ -18,8 +18,6 @@ package Types;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import junit.framework.TestCase;
-
 import org.junit.Test;
 
 import CB_Core.DAO.CacheDAO;
@@ -36,21 +34,22 @@ import CB_Locator.Location.ProviderType;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Lists.CB_List;
 import __Static.InitTestDBs;
+import junit.framework.TestCase;
 
 public class CacheTest extends TestCase {
 
     private static Cache mCache;
     private static final String BR = "\n";
-    private static final String SHORT_DESC = "<font face=\"tahoma\" size=\"3\" color=\"#330033\"><br />" + BR + "<br />" + BR + "T5 Klettercache<br />" + BR + "Ihr benötigt ein 30 m Seil und Eurer Klettergeraffel<br />" + BR + "Bigshot wäre von Vorteil!<br />" + BR + "BITTE NUR KLETTERN, wenn Klettererfahrungen und geeignetes Wissen" + BR
-	    + "vorhanden sind!! Klettern natürlich auf eigene Gefahr!<br />" + BR + "BITTE:<br />" + BR + "NICHT alleine Klettern!! Denkt daran, auch ein Fall aus wenigen" + BR + "Metern Höhe kann böse enden!!<br /></font>";
+    private static final String SHORT_DESC = "<font face=\"tahoma\" size=\"3\" color=\"#330033\"><br />" + BR + "<br />" + BR + "T5 Klettercache<br />" + BR + "Ihr benï¿½tigt ein 30 m Seil und Eurer Klettergeraffel<br />" + BR + "Bigshot wï¿½re von Vorteil!<br />" + BR + "BITTE NUR KLETTERN, wenn Klettererfahrungen und geeignetes Wissen" + BR
+	    + "vorhanden sind!! Klettern natï¿½rlich auf eigene Gefahr!<br />" + BR + "BITTE:<br />" + BR + "NICHT alleine Klettern!! Denkt daran, auch ein Fall aus wenigen" + BR + "Metern Hï¿½he kann bï¿½se enden!!<br /></font>";
     private static final String LONG_DESC = "<br />" + BR + "<center><img src=" + BR + "\"http://img.geocaching.com/cache/9b0334c7-c419-41c8-b883-8bb0adf20ac3.jpg\" /><br />" + BR + "" + BR + "<br />" + BR + "<font face=\"tahoma\" size=\"3\" color=\"#330033\"><br />" + BR + "<br />" + BR + "Der Hampir, so sagt man, optisch ein liebes zartes Wesen<br />" + BR
-	    + "im dunklen Hardtwald treibt er seine Spesen.<br />" + BR + "So süß, so flauschig sogleich<br />" + BR + "auch sein Fell so samtig und weich!<br />" + BR + "Deshalb lass dich blos nicht blenden,<br />" + BR + "sonst könnte es sehr böse für dich enden!<br />" + BR + "<br />" + BR + "Aaaaaber wenn du ihn entdeckst,<br />" + BR
-	    + "so achte dich vor ihm, die Gefahr besteht dass du vergisst<br />" + BR + "und vor lauter Kummer und Sorgen ihm tief in die Augen" + BR + "erblickst!!<br />" + BR + "<br />" + BR + "Es ist dann zu spät!<br />" + BR + "Dann hat dich der Hampir bereits erspäht!!<br />" + BR + "Der Hampir, so sagt man erschallt sein Gelächter<br />" + BR
+	    + "im dunklen Hardtwald treibt er seine Spesen.<br />" + BR + "So sï¿½ï¿½, so flauschig sogleich<br />" + BR + "auch sein Fell so samtig und weich!<br />" + BR + "Deshalb lass dich blos nicht blenden,<br />" + BR + "sonst kï¿½nnte es sehr bï¿½se fï¿½r dich enden!<br />" + BR + "<br />" + BR + "Aaaaaber wenn du ihn entdeckst,<br />" + BR
+	    + "so achte dich vor ihm, die Gefahr besteht dass du vergisst<br />" + BR + "und vor lauter Kummer und Sorgen ihm tief in die Augen" + BR + "erblickst!!<br />" + BR + "<br />" + BR + "Es ist dann zu spï¿½t!<br />" + BR + "Dann hat dich der Hampir bereits erspï¿½ht!!<br />" + BR + "Der Hampir, so sagt man erschallt sein Gelï¿½chter<br />" + BR
 	    + "wenn es Beute vor sich hat, so schaurig so grell,<br />" + BR + "rette dich wenn du kannst schneller als schnell!<br />" + BR + "<br />" + BR + "Und wage dich nicht in den Wald<br />" + BR + "in der Nacht beim Vollmond ist es dort bitterkalt!<br />" + BR + "Nebelschwaden dort, aber die schaurige Gestalten<br />" + BR + "verstecken sich im dunkeln mit dem Gedanken,<br />" + BR
-	    + "ihre Beute noch schneller zu jagen als der Hampir!<br />" + BR + "Dennoch willst du in den Wald?! Überlege es dir!!<br />" + BR + "<br />" + BR + "Du meinst, ach was... Hampire... die gibt es doch nicht?!<br />" + BR + "Die Hasen die warnen: HIER wartet er auf dich!!!<br />" + BR + "<br /></font></center>" + BR + "<font face=\"tahoma\" size=\"3\" color=\"#330033\"><br />" + BR
-	    + "<br />" + BR + "Fotos dürft Ihr gerne machen <img src=" + BR + "'http://www.geocaching.com/images/icons/icon_smile_big.gif' border=" + BR + "\"0\" align=\"middle\" /><br />" + BR + "<br />" + BR + "<br />" + BR + "ein besonderer Dank an Monas Cacherteam, für die handwerkliche" + BR + "Meisterleistung!!<br />" + BR + "Es ist genau so geworden, wie es sich die Hasen vorgestellt" + BR
-	    + "haben!!<br />" + BR + "<br /></font><br />" + BR + "<a href=\"http://www.andyhoppe.com/\" title=" + BR + "\"Counter/Zähler\"><img src=\"http://c.andyhoppe.com/1302990447\"" + BR + "style=\"border:none\" alt=\"Counter/Zähler\" /></a><p>Additional Hidden Waypoints</p>PK2T9RW - GC2T9RW Parking<br />N 49° 21.077 E 008° 37.840<br />Raststätte Hardtwald West." + BR
-	    + "Und für Ortskundige: einfach Richtung ADAC Übungsgelände. Dann müsst Ihr nicht auf die Autobahn.<br />";
+	    + "ihre Beute noch schneller zu jagen als der Hampir!<br />" + BR + "Dennoch willst du in den Wald?! ï¿½berlege es dir!!<br />" + BR + "<br />" + BR + "Du meinst, ach was... Hampire... die gibt es doch nicht?!<br />" + BR + "Die Hasen die warnen: HIER wartet er auf dich!!!<br />" + BR + "<br /></font></center>" + BR + "<font face=\"tahoma\" size=\"3\" color=\"#330033\"><br />" + BR
+	    + "<br />" + BR + "Fotos dï¿½rft Ihr gerne machen <img src=" + BR + "'http://www.geocaching.com/images/icons/icon_smile_big.gif' border=" + BR + "\"0\" align=\"middle\" /><br />" + BR + "<br />" + BR + "<br />" + BR + "ein besonderer Dank an Monas Cacherteam, fï¿½r die handwerkliche" + BR + "Meisterleistung!!<br />" + BR + "Es ist genau so geworden, wie es sich die Hasen vorgestellt" + BR
+	    + "haben!!<br />" + BR + "<br /></font><br />" + BR + "<a href=\"http://www.andyhoppe.com/\" title=" + BR + "\"Counter/Zï¿½hler\"><img src=\"http://c.andyhoppe.com/1302990447\"" + BR + "style=\"border:none\" alt=\"Counter/Zï¿½hler\" /></a><p>Additional Hidden Waypoints</p>PK2T9RW - GC2T9RW Parking<br />N 49ï¿½ 21.077 E 008ï¿½ 37.840<br />Raststï¿½tte Hardtwald West." + BR
+	    + "Und fï¿½r Ortskundige: einfach Richtung ADAC ï¿½bungsgelï¿½nde. Dann mï¿½sst Ihr nicht auf die Autobahn.<br />";
 
     @Override
     public void setUp() throws Exception {
@@ -203,11 +202,11 @@ public class CacheTest extends TestCase {
 
 	Cache cache = cacheDAO.getFromDbByGcCode("GC2T9RW", true);
 
-	assertTrue("Cache muss zurückgegeben werden", cache != null);
+	assertTrue("Cache muss zurï¿½ckgegeben werden", cache != null);
 
 	assertTrue("Pos: Latitude falsch", cache.Pos.getLatitude() == 49.349817);
 	assertTrue("Pos: Longitude falsch", cache.Pos.getLongitude() == 8.62925);
-	assertTrue("Pos ist ungültig", cache.Pos.isValid());
+	assertTrue("Pos ist ungï¿½ltig", cache.Pos.isValid());
 
 	assertEquals("GcCode falsch", "GC2T9RW", cache.getGcCode());
 	assertEquals("DateHidden falsch", "Sat Apr 16 07:00:00 CEST 2011", cache.getDateHidden().toString());
@@ -257,14 +256,14 @@ public class CacheTest extends TestCase {
 	    assertTrue(attr.toString() + " Attribut falsch", cache.isAttributeNegativeSet(attr));
 	}
 
-	// fülle eine Liste mit allen Attributen
+	// fï¿½lle eine Liste mit allen Attributen
 	ArrayList<Attributes> attributes = new ArrayList<Attributes>();
 	Attributes[] tmp = Attributes.values();
 	for (Attributes item : tmp) {
 	    attributes.add(item);
 	}
 
-	// Lösche die vergebenen Atribute aus der Kommplett Liste
+	// Lï¿½sche die vergebenen Atribute aus der Kommplett Liste
 	positiveInterator = PositvieList.iterator();
 	negativeInterator = NegativeList.iterator();
 
@@ -280,7 +279,7 @@ public class CacheTest extends TestCase {
 	attributes.remove(Attributes.getAttributeEnumByGcComId(65));
 	attributes.remove(Attributes.getAttributeEnumByGcComId(66));
 
-	// Teste ob die Übrig gebliebenen Atributte auch nicht vergeben wurden.
+	// Teste ob die ï¿½brig gebliebenen Atributte auch nicht vergeben wurden.
 	Iterator<Attributes> RestInterator = attributes.iterator();
 
 	while (RestInterator.hasNext()) {
@@ -318,11 +317,11 @@ public class CacheTest extends TestCase {
 
 	Cache cache = cacheDAO.getFromDbByGcCode("GC2T9RW", false);
 
-	assertTrue("Cache muss zurückgegeben werden", cache != null);
+	assertTrue("Cache muss zurï¿½ckgegeben werden", cache != null);
 
 	assertTrue("Pos: Latitude falsch", cache.Pos.getLatitude() == 49.349817);
 	assertTrue("Pos: Longitude falsch", cache.Pos.getLongitude() == 8.62925);
-	assertTrue("Pos ist ungültig", cache.Pos.isValid());
+	assertTrue("Pos ist ungï¿½ltig", cache.Pos.isValid());
 
 	assertEquals("GcCode falsch", "GC2T9RW", cache.getGcCode());
 	// assertEquals("DateHidden falsch", "Sat Apr 16 07:00:00 CEST 2011", cache.getDateHidden().toString());
@@ -340,14 +339,14 @@ public class CacheTest extends TestCase {
 	assertTrue("Difficulty ist falsch", cache.getDifficulty() == 2);
 	assertTrue("Terrain ist falsch", cache.getTerrain() == 5);
 
-	// fülle eine Liste mit allen Attributen
+	// fï¿½lle eine Liste mit allen Attributen
 	ArrayList<Attributes> attributes = new ArrayList<Attributes>();
 	Attributes[] tmp = Attributes.values();
 	for (Attributes item : tmp) {
 	    attributes.add(item);
 	}
 
-	// Teste ob die Übrig gebliebenen Atributte auch nicht vergeben wurden.
+	// Teste ob die ï¿½brig gebliebenen Atributte auch nicht vergeben wurden.
 	Iterator<Attributes> RestInterator = attributes.iterator();
 
 	while (RestInterator.hasNext()) {
