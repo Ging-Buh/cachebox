@@ -144,7 +144,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 
 	if (mustLoadSolver) {
 
-	    String sol = Database.GetSolver(aktCache);
+	    String sol = Database.Data.GetSolver(aktCache);
 	    if (sol == null)
 		sol = "";
 	    edSolver.setText(sol);
@@ -159,7 +159,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 	log.debug("onHide()");
 	SelectedCacheEventList.Remove(this);
 	if (aktCache != null) {
-	    Database.SetSolver(aktCache, edSolver.getText().toString());
+	    Database.Data.SetSolver(aktCache, edSolver.getText().toString());
 	    // When Solve 1 changes -> Solver 2 must reload the information from DB to get the changes from Solver 1
 	    aktCache.setSolver1Changed(true);
 	}

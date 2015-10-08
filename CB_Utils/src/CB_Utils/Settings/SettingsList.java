@@ -105,12 +105,12 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 	{
 		// Write into DB
 		SettingsDAO dao = createSettingsDAO();
-		getSettingsDB().beginTransaction();
+		getSettingsDB().db.beginTransaction();
 		Database_Core Data = getDataDB();
 
 		try
 		{
-			if (Data != null) Data.beginTransaction();
+			if (Data != null) Data.db.beginTransaction();
 		}
 		catch (Exception ex)
 		{
@@ -149,15 +149,15 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 				setting.clearDirty();
 
 			}
-			if (Data != null) Data.setTransactionSuccessful();
-			getSettingsDB().setTransactionSuccessful();
+			if (Data != null) Data.db.setTransactionSuccessful();
+			getSettingsDB().db.setTransactionSuccessful();
 
 			return needRestart;
 		}
 		finally
 		{
-			getSettingsDB().endTransaction();
-			if (Data != null) Data.endTransaction();
+			getSettingsDB().db.endTransaction();
+			if (Data != null) Data.db.endTransaction();
 		}
 
 	}
@@ -167,8 +167,8 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 		// Read from DB
 		try
 		{
-			log.info("Reading global settings: " + getSettingsDB().getDatabasePath());
-			log.info("and local settings: " + getSettingsDB().getDatabasePath());
+			log.info("Reading global settings: " + getSettingsDB().db.getDatabasePath());
+			log.info("and local settings: " + getSettingsDB().db.getDatabasePath());
 		}
 		catch (Exception e)
 		{

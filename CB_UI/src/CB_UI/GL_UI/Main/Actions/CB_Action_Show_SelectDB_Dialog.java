@@ -17,6 +17,8 @@ package CB_UI.GL_UI.Main.Actions;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import CB_Core.CoreSettingsForward;
 import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
@@ -36,8 +38,6 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_ActionCommand;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.Math.CB_RectF;
-
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_Action_Show_SelectDB_Dialog.class);
@@ -89,7 +89,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand {
 	    public void run() {
 		Database.Data.Query.clear();
 		Database.Data.Close();
-		Database.Data.StartUp(Config.DatabasePath.getValue());
+		Database.Data.StartUp();
 
 		Config.settings.ReadFromDB();
 

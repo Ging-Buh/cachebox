@@ -11,16 +11,15 @@ import java.util.Map.Entry;
 
 import CB_Core.DB.Database;
 import CB_Utils.Log.LogLevel;
-import de.cb.sqlite.CoreCursor;
 
 public class DesktopDB extends Database
 {
 
 	Connection myDB = null;
 
-	public DesktopDB(DatabaseType databaseType) throws ClassNotFoundException
+	public DesktopDB() throws ClassNotFoundException
 	{
-		super(databaseType);
+		super();
 
 		System.setProperty("sqlite.purejava", "true");
 		Class.forName("org.sqlite.JDBC");

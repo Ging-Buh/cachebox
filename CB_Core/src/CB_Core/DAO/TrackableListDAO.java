@@ -43,10 +43,7 @@ public class TrackableListDAO
 	public static TbList ReadTbList(String where)
 	{
 		TbList trackableList = new TbList();
-		CoreCursor reader = Database.FieldNotes
-				.rawQuery(
-						"select Id ,Archived ,GcCode ,CacheId ,CurrentGoal ,CurrentOwnerName ,DateCreated ,Description ,IconUrl ,ImageUrl ,Name ,OwnerName ,Url,TypeName, Home,TravelDistance   from Trackable",
-						null);
+		CoreCursor reader = Database.FieldNotes.db.rawQuery("select Id ,Archived ,GcCode ,CacheId ,CurrentGoal ,CurrentOwnerName ,DateCreated ,Description ,IconUrl ,ImageUrl ,Name ,OwnerName ,Url,TypeName, Home,TravelDistance   from Trackable", null);
 		reader.moveToFirst();
 
 		while (reader.isAfterLast() == false)
@@ -63,7 +60,7 @@ public class TrackableListDAO
 	 */
 	public static void clearDB()
 	{
-		Database.FieldNotes.delete("Trackable", "", null);
+		Database.FieldNotes.db.delete("Trackable", "", null);
 	}
 
 }

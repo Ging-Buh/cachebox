@@ -383,7 +383,7 @@ public class Importer
 	 *         GL.that.Toast(ConnectionError.INSTANCE);<br>
 	 *         return;<br>
 	 *         }<br>
-	 * <br>
+	 *         <br>
 	 *         if (result == GroundspeakAPI.API_IS_UNAVAILABLE)<br>
 	 *         {<br>
 	 *         GL.that.Toast(ApiUnavailable.INSTANCE);<br>
@@ -548,7 +548,7 @@ public class Importer
 	 *         GL.that.Toast(ConnectionError.INSTANCE);<br>
 	 *         return;<br>
 	 *         }<br>
-	 * <br>
+	 *         <br>
 	 *         if (result == GroundspeakAPI.API_IS_UNAVAILABLE)<br>
 	 *         {<br>
 	 *         GL.that.Toast(ApiUnavailable.INSTANCE);<br>
@@ -564,7 +564,7 @@ public class Importer
 
 		String sql = "select Id, Description, Name, GcCode, Url, ImagesUpdated, DescriptionImagesUpdated from Caches";
 		if (where.length() > 0) sql += " where " + where;
-		CoreCursor reader = Database.Data.rawQuery(sql, null);
+		CoreCursor reader = Database.Data.db.rawQuery(sql, null);
 
 		int cnt = -1;
 		int numCaches = reader.getCount();
@@ -657,7 +657,7 @@ public class Importer
 	 *         GL.that.Toast(ConnectionError.INSTANCE);<br>
 	 *         return;<br>
 	 *         }<br>
-	 * <br>
+	 *         <br>
 	 *         if (result == GroundspeakAPI.API_IS_UNAVAILABLE)<br>
 	 *         {<br>
 	 *         GL.that.Toast(ApiUnavailable.INSTANCE);<br>
@@ -696,13 +696,13 @@ public class Importer
 	 *         {<br>
 	 *         GL.that.Toast(ConnectionError.INSTANCE);<br>
 	 *         return;<br>
-	 * <br>
-	 * <br>
+	 *         <br>
+	 *         <br>
 	 *         if (result == GroundspeakAPI.API_IS_UNAVAILABLE)<br>
 	 *         {<br>
 	 *         GL.that.Toast(ApiUnavailable.INSTANCE);<br>
 	 *         return;<br>
-	 * <br>
+	 *         <br>
 	 */
 	private int importImagesForCacheNew(ImporterProgress ip, boolean descriptionImagesUpdated, boolean additionalImagesUpdated, long id, String gcCode, String name, String description, String uri, boolean importAlways)
 	{
@@ -753,7 +753,7 @@ public class Importer
 		// Parameters args = new Parameters();
 		// args.put("ImagesUpdated", additionalImagesUpdated);
 		// args.put("DescriptionImagesUpdated", descriptionImagesUpdated);
-		// Database.Data.update("Caches", args, "Id = ?", new String[]
+		// Database.Data.db.update("Caches", args, "Id = ?", new String[]
 		// { String.valueOf(id) });
 		// }
 
@@ -843,7 +843,7 @@ public class Importer
 	 *         GL.that.Toast(ConnectionError.INSTANCE);<br>
 	 *         return;<br>
 	 *         }<br>
-	 * <br>
+	 *         <br>
 	 *         if (result == GroundspeakAPI.API_IS_UNAVAILABLE)<br>
 	 *         {<br>
 	 *         GL.that.Toast(ApiUnavailable.INSTANCE);<br>

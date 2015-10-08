@@ -28,7 +28,7 @@ import CB_Core.Types.Categories;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
 import de.cb.sqlite.CoreCursor;
-import de.cb.sqlite.Database_Core.Parameters;
+import de.cb.sqlite.Parameters;
 
 public class CategoryDAO
 {
@@ -43,7 +43,7 @@ public class CategoryDAO
 		result.pinned = reader.getInt(2) != 0;
 
 		// alle GpxFilenames einlesen
-		CoreCursor reader2 = Database.Data.rawQuery("select ID, GPXFilename, Imported, CacheCount from GpxFilenames where CategoryId=?", new String[]
+		CoreCursor reader2 = Database.Data.db.rawQuery("select ID, GPXFilename, Imported, CacheCount from GpxFilenames where CategoryId=?", new String[]
 			{ String.valueOf(result.Id) });
 		reader2.moveToFirst();
 		while (reader2.isAfterLast() == false)
@@ -69,7 +69,7 @@ public class CategoryDAO
 		args.put("GPXFilename", filename);
 		try
 		{
-			Database.Data.insert("Category", args);
+			Database.Data.db.insert("Category", args);
 		}
 		catch (Exception exc)
 		{
@@ -78,7 +78,7 @@ public class CategoryDAO
 
 		long Category_ID = 0;
 
-		CoreCursor reader = Database.Data.rawQuery("Select max(ID) from Category", null);
+		CoreCursor reader = Database.Data.db.rawQuery("Select max(ID) from Category", null);
 		reader.moveToFirst();
 		if (reader.isAfterLast() == false)
 		{
@@ -105,7 +105,7 @@ public class CategoryDAO
 		args.put("Imported", stimestamp);
 		try
 		{
-			Database.Data.insert("GpxFilenames", args);
+			Database.Data.db.insert("GpxFilenames", args);
 		}
 		catch (Exception exc)
 		{
@@ -114,7 +114,7 @@ public class CategoryDAO
 
 		long GPXFilename_ID = 0;
 
-		CoreCursor reader = Database.Data.rawQuery("Select max(ID) from GpxFilenames", null);
+		CoreCursor reader = Database.Data.db.rawQuery("Select max(ID) from GpxFilenames", null);
 		reader.moveToFirst();
 		if (reader.isAfterLast() == false)
 		{
@@ -135,7 +135,7 @@ public class CategoryDAO
 		args.put("pinned", pinned);
 		try
 		{
-			Database.Data.update("Category", args, "Id=" + String.valueOf(category.Id), null);
+			Database.Data.db.update("Category", args, "Id=" + String.valueOf(category.Id), null);
 		}
 		catch (Exception exc)
 		{
@@ -152,7 +152,7 @@ public class CategoryDAO
 
 		CoreSettingsForward.Categories.clear();
 
-		CoreCursor reader = Database.Data.rawQuery("select ID, GPXFilename, Pinned from Category", null);
+		CoreCursor reader = Database.Data.db.rawQuery("select ID, GPXFilename, Pinned from Category", null);
 		reader.moveToFirst();
 
 		while (reader.isAfterLast() == false)
@@ -193,7 +193,7 @@ public class CategoryDAO
 			Category cat = CoreSettingsForward.Categories.get(i);
 			if (cat.CacheCount() == 0)
 			{
-				Database.Data.delete("Category", "Id=?", new String[]
+				Database.Data.db.delete("Category", "Id=?", new String[]
 					{ String.valueOf(cat.Id) });
 				delete.add(cat);
 			}

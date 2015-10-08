@@ -23,6 +23,8 @@ import java.util.TreeMap;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.files.FileHandle;
+
 import CB_Core.FilterProperties;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
@@ -32,8 +34,6 @@ import CB_Core.Types.Waypoint;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.FileIO;
 import de.cb.sqlite.CoreCursor;
-
-import com.badlogic.gdx.files.FileHandle;
 
 /**
  * @author ging-buh
@@ -87,7 +87,7 @@ public class CacheListDAO
 			sql += " where IsStart=\"true\" or Type=18"; // StartWaypoint or Final
 		}
 		sql += " order by CacheId";
-		CoreCursor reader = Database.Data.rawQuery(sql, null);
+		CoreCursor reader = Database.Data.db.rawQuery(sql, null);
 		reader.moveToFirst();
 		while (!reader.isAfterLast())
 		{
@@ -133,12 +133,12 @@ public class CacheListDAO
 			}
 
 			sql += " from Caches c " + join + " " + ((where.length() > 0) ? "where " + where : where);
-			reader = Database.Data.rawQuery(sql, null);
+			reader = Database.Data.db.rawQuery(sql, null);
 
 		}
 		catch (Exception e)
 		{
-			log.error("CacheList.LoadCaches()", "reader = Database.Data.myDB.rawQuery(....", e);
+			log.error("CacheList.LoadCaches()", "reader = Database.Data.db.myDB.rawQuery(....", e);
 		}
 		reader.moveToFirst();
 
@@ -202,7 +202,7 @@ public class CacheListDAO
 		try
 		{
 			delCacheImages(getGcCodeList("Archived=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
-			long ret = Database.Data.delete("Caches", "Archived=1", null);
+			long ret = Database.Data.db.delete("Caches", "Archived=1", null);
 			return ret;
 		}
 		catch (Exception e)
@@ -228,7 +228,7 @@ public class CacheListDAO
 		try
 		{
 			delCacheImages(getGcCodeList("Found=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
-			long ret = Database.Data.delete("Caches", "Found=1", null);
+			long ret = Database.Data.db.delete("Caches", "Found=1", null);
 			return ret;
 		}
 		catch (Exception e)
@@ -255,7 +255,7 @@ public class CacheListDAO
 		try
 		{
 			delCacheImages(getGcCodeList(Where), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
-			long ret = Database.Data.delete("Caches", Where, null);
+			long ret = Database.Data.db.delete("Caches", Where, null);
 			return ret;
 		}
 		catch (Exception e)

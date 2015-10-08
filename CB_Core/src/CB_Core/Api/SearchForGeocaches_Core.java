@@ -64,7 +64,7 @@ public class SearchForGeocaches_Core
 
 	private Boolean LoadBooleanValueFromDB(String sql) // Found-Status aus Datenbank auslesen
 	{
-		CoreCursor reader = Database.Data.rawQuery(sql, null);
+		CoreCursor reader = Database.Data.db.rawQuery(sql, null);
 		try
 		{
 			reader.moveToFirst();
@@ -819,7 +819,7 @@ public class SearchForGeocaches_Core
 			{
 				if (apiCaches.size() == 1)
 				{
-					Database.Data.beginTransaction();
+					Database.Data.db.beginTransaction();
 					newCache = apiCaches.get(0);
 					Database.Data.Query.remove(aktCache);
 					Database.Data.Query.add(newCache);
@@ -870,8 +870,8 @@ public class SearchForGeocaches_Core
 						imageDAO.WriteToDatabase(image, false);
 					}
 
-					Database.Data.setTransactionSuccessful();
-					Database.Data.endTransaction();
+					Database.Data.db.setTransactionSuccessful();
+					Database.Data.db.endTransaction();
 
 					Database.Data.GPXFilenameUpdateCacheCount();
 				}

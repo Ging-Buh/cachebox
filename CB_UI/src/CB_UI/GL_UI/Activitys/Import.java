@@ -1113,17 +1113,17 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
 			long startTime = System.currentTimeMillis();
 
-			Database.Data.beginTransaction();
+			Database.Data.db.beginTransaction();
 			Database.Data.Query.clear();
 			try {
 
 			    importer.importGpx(directoryPath, ip);
 
-			    Database.Data.setTransactionSuccessful();
+			    Database.Data.db.setTransactionSuccessful();
 			} catch (Exception exc) {
 			    exc.printStackTrace();
 			}
-			Database.Data.endTransaction();
+			Database.Data.db.endTransaction();
 
 			if (BreakawayImportThread.isCanceld()) {
 			    cancelImport();
@@ -1157,16 +1157,16 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
 			long startTime = System.currentTimeMillis();
 
-			Database.Data.beginTransaction();
+			Database.Data.db.beginTransaction();
 			try {
 
 			    importCBServer.importCBServer(cbServerExportList, ip, true);
 
-			    Database.Data.setTransactionSuccessful();
+			    Database.Data.db.setTransactionSuccessful();
 			} catch (Exception exc) {
 			    exc.printStackTrace();
 			}
-			Database.Data.endTransaction();
+			Database.Data.db.endTransaction();
 
 			if (BreakawayImportThread.isCanceld()) {
 			    cancelImport();
@@ -1181,16 +1181,16 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
 		    if (checkBoxGcVote.isChecked()) {
 			dis.setAnimationType(AnimationType.Download);
-			Database.Data.beginTransaction();
+			Database.Data.db.beginTransaction();
 			try {
 			    importer.importGcVote(FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue()), ip);
 
-			    Database.Data.setTransactionSuccessful();
+			    Database.Data.db.setTransactionSuccessful();
 			} catch (Exception exc) {
 			    exc.printStackTrace();
 			}
 			dis.setAnimationType(AnimationType.Work);
-			Database.Data.endTransaction();
+			Database.Data.db.endTransaction();
 			if (BreakawayImportThread.isCanceld()) {
 			    cancelImport();
 			    ip.ProgressChangeMsg("", "");
@@ -1238,7 +1238,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 		    if (checkBoxCompactDB.isChecked()) {
 			ip.setJobMax("CompactDB", 1);
 			ip.ProgressChangeMsg("CompactDB", "");
-			Database.Data.execSQL("vacuum");
+			Database.Data.db.execSQL("vacuum");
 			ip.ProgressInkrement("CompactDB", "", true);
 		    }
 

@@ -9,10 +9,10 @@ public class SettingsDAO
 		String dbString = setting.toDBString();
 		if (setting instanceof SettingLongString)
 		{
-			database.WriteConfigLongString(setting.name, dbString);
+			database.db.WriteConfigLongString(setting.name, dbString);
 		}
 		else
-			database.WriteConfigString(setting.name, dbString);
+			database.db.WriteConfigString(setting.name, dbString);
 	}
 
 	public SettingBase<?> ReadFromDatabase(Database_Core database, SettingBase<?> setting)
@@ -23,12 +23,12 @@ public class SettingsDAO
 
 			if (setting instanceof SettingLongString)
 			{
-				dbString = database.ReadConfigLongString(setting.name);
+				dbString = database.db.ReadConfigLongString(setting.name);
 			}
 
 			if (dbString == null)
 			{
-				dbString = database.ReadConfigString(setting.name);
+				dbString = database.db.ReadConfigString(setting.name);
 			}
 
 			if (dbString == null)

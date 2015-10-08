@@ -26,8 +26,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Scanner;
 
-import junit.framework.TestCase;
-
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +47,7 @@ import CB_Locator.Coordinate;
 import CB_UI_Base.Global;
 import Types.CacheTest;
 import __Static.InitTestDBs;
+import junit.framework.TestCase;
 
 /**
  * Test the GPX Export
@@ -98,8 +97,8 @@ public class GPX_Export extends TestCase {
 	    Cache cache = cacheDAO.getFromDbByGcCode("GC2T9RW", false);
 	    cache.loadDetail();
 
-	    Database.SetNote(cache, "Test Note for In/Ex-port");
-	    Database.SetSolver(cache, "Test Solver for In/Ex-port");
+	    Database.Data.SetNote(cache, "Test Note for In/Ex-port");
+	    Database.Data.SetSolver(cache, "Test Solver for In/Ex-port");
 
 	    cache.waypoints.get(0).setClue("Test Clue for In/Ex-port");
 
@@ -267,7 +266,7 @@ public class GPX_Export extends TestCase {
 
 	String newGcCode = "";
 	try {
-	    newGcCode = Database.CreateFreeGcCode(newCache.getGcCode());
+	    newGcCode = Database.Data.CreateFreeGcCode(newCache.getGcCode());
 	} catch (Exception e) {
 	    return;
 	}

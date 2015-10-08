@@ -10,7 +10,7 @@ import java.util.TimeZone;
 import CB_Core.DB.Database;
 import CB_Core.Enums.LogTypes;
 import de.cb.sqlite.CoreCursor;
-import de.cb.sqlite.Database_Core.Parameters;
+import de.cb.sqlite.Parameters;
 
 public class FieldNoteEntry implements Serializable
 {
@@ -168,14 +168,14 @@ public class FieldNoteEntry implements Serializable
 		args.put("directLog", isDirectLog);
 		try
 		{
-			Database.FieldNotes.insertWithConflictReplace("Fieldnotes", args);
+			Database.FieldNotes.db.insertWithConflictReplace("Fieldnotes", args);
 		}
 		catch (Exception exc)
 		{
 			return;
 		}
 		// search FieldNote Id
-		CoreCursor reader = Database.FieldNotes.rawQuery("select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber, directLog from FieldNotes where GcCode='" + gcCode + "' and type=" + type.getGcLogTypeId(), null);
+		CoreCursor reader = Database.FieldNotes.db.rawQuery("select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber, directLog from FieldNotes where GcCode='" + gcCode + "' and type=" + type.getGcLogTypeId(), null);
 		reader.moveToFirst();
 		while (reader.isAfterLast() == false)
 		{
@@ -211,7 +211,7 @@ public class FieldNoteEntry implements Serializable
 		args.put("directLog", isDirectLog);
 		try
 		{
-			long count = Database.FieldNotes.update("FieldNotes", args, "id=" + Id, null);
+			long count = Database.FieldNotes.db.update("FieldNotes", args, "id=" + Id, null);
 			if (count > 0) return;
 		}
 		catch (Exception exc)
@@ -224,7 +224,7 @@ public class FieldNoteEntry implements Serializable
 	{
 		try
 		{
-			Database.FieldNotes.delete("FieldNotes", "id=" + Id, null);
+			Database.FieldNotes.db.delete("FieldNotes", "id=" + Id, null);
 		}
 		catch (Exception exc)
 		{

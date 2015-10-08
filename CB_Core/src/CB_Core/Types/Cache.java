@@ -95,7 +95,10 @@ public class Cache implements Comparable<Cache>, Serializable
 	private byte[] GcId;
 
 	/**
-	 * Bin ich der Owner? </br>-1 noch nicht getestet </br>1 ja </br>0 nein
+	 * Bin ich der Owner? </br>
+	 * -1 noch nicht getestet </br>
+	 * 1 ja </br>
+	 * 0 nein
 	 */
 	private int myCache = -1;
 	private boolean isSearchVisible = true;
@@ -308,7 +311,6 @@ public class Cache implements Comparable<Cache>, Serializable
 		}
 	}
 
-
 	public boolean ImTheOwner()
 	{
 		String userName = CB_Core_Settings.GcLogin.getValue().toLowerCase(Locale.getDefault());
@@ -474,7 +476,6 @@ public class Cache implements Comparable<Cache>, Serializable
 			return false;
 		}
 	}
-
 
 	public void ReloadSpoilerRessources()
 	{
@@ -1209,7 +1210,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		{
 			if (detail.getLongDescription() == null || detail.getLongDescription().length() == 0)
 			{
-				return Database.GetDescription(this);
+				return Database.Data.GetDescription(this);
 			}
 			return detail.getLongDescription();
 		}
@@ -1233,7 +1234,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		{
 			if (detail.getShortDescription() == null || detail.getShortDescription().length() == 0)
 			{
-				return Database.GetShortDescription(this);
+				return Database.Data.GetShortDescription(this);
 			}
 			return detail.getShortDescription();
 		}

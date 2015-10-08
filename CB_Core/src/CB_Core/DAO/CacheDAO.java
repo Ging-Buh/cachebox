@@ -32,7 +32,7 @@ import CB_Core.Types.CacheDetail;
 import CB_Core.Types.DLong;
 import CB_Locator.Coordinate;
 import de.cb.sqlite.CoreCursor;
-import de.cb.sqlite.Database_Core.Parameters;
+import de.cb.sqlite.Parameters;
 
 public class CacheDAO
 {
@@ -105,7 +105,7 @@ public class CacheDAO
 		if (cache.detail != null) return true;
 		cache.detail = new CacheDetail();
 
-		CoreCursor reader = Database.Data.rawQuery(SQL_GET_DETAIL_FROM_ID, new String[]
+		CoreCursor reader = Database.Data.db.rawQuery(SQL_GET_DETAIL_FROM_ID, new String[]
 			{ String.valueOf(cache.Id) });
 
 		try
@@ -264,7 +264,7 @@ public class CacheDAO
 		}
 		try
 		{
-			Database.Data.insert("Caches", args);
+			Database.Data.db.insert("Caches", args);
 
 		}
 		catch (Exception exc)
@@ -280,7 +280,7 @@ public class CacheDAO
 		args.put("found", cache.isFound());
 		try
 		{
-			Database.Data.update("Caches", args, "Id = ?", new String[]
+			Database.Data.db.update("Caches", args, "Id = ?", new String[]
 				{ String.valueOf(cache.Id) });
 			Replication.FoundChanged(cache.Id, cache.isFound());
 		}
@@ -366,7 +366,7 @@ public class CacheDAO
 
 		try
 		{
-			long ret = Database.Data.update("Caches", args, "Id = ?", new String[]
+			long ret = Database.Data.db.update("Caches", args, "Id = ?", new String[]
 				{ String.valueOf(cache.Id) });
 			return ret > 0;
 		}
@@ -380,7 +380,7 @@ public class CacheDAO
 
 	public Cache getFromDbByCacheId(long CacheID)
 	{
-		CoreCursor reader = Database.Data.rawQuery(SQL_GET_CACHE + SQL_BY_ID, new String[]
+		CoreCursor reader = Database.Data.db.rawQuery(SQL_GET_CACHE + SQL_BY_ID, new String[]
 			{ String.valueOf(CacheID) });
 
 		try
@@ -416,7 +416,7 @@ public class CacheDAO
 	{
 		String where = SQL_GET_CACHE + (witDetail ? ", " + SQL_DETAILS : "") + SQL_BY_GC_CODE;
 
-		CoreCursor reader = Database.Data.rawQuery(where, new String[]
+		CoreCursor reader = Database.Data.db.rawQuery(where, new String[]
 			{ GcCode });
 
 		try
@@ -447,7 +447,7 @@ public class CacheDAO
 	public Boolean cacheExists(long CacheID)
 	{
 
-		CoreCursor reader = Database.Data.rawQuery(SQL_EXIST_CACHE, new String[]
+		CoreCursor reader = Database.Data.db.rawQuery(SQL_EXIST_CACHE, new String[]
 			{ String.valueOf(CacheID) });
 
 		boolean exists = (reader.getCount() > 0);
@@ -501,7 +501,7 @@ public class CacheDAO
 
 			try
 			{
-				Database.Data.update("Caches", args, "Id = ?", new String[]
+				Database.Data.db.update("Caches", args, "Id = ?", new String[]
 					{ String.valueOf(writeTmp.Id) });
 			}
 			catch (Exception exc)
@@ -559,7 +559,7 @@ public class CacheDAO
 
 		ArrayList<String> GcCodes = new ArrayList<String>();
 
-		CoreCursor reader = Database.Data.rawQuery("select GcCode from Caches where Type<>4 and (ImagesUpdated=0 or DescriptionImagesUpdated=0)", null);
+		CoreCursor reader = Database.Data.db.rawQuery("select GcCode from Caches where Type<>4 and (ImagesUpdated=0 or DescriptionImagesUpdated=0)", null);
 
 		if (reader.getCount() > 0)
 		{
@@ -577,7 +577,7 @@ public class CacheDAO
 
 	public Boolean loadBooleanValue(String gcCode, String key)
 	{
-		CoreCursor reader = Database.Data.rawQuery("select " + key + " from Caches where GcCode = \"" + gcCode + "\"", null);
+		CoreCursor reader = Database.Data.db.rawQuery("select " + key + " from Caches where GcCode = \"" + gcCode + "\"", null);
 		try
 		{
 			reader.moveToFirst();

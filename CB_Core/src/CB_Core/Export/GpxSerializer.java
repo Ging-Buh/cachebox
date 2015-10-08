@@ -161,16 +161,16 @@ public final class GpxSerializer
 			}
 
 			String additinalIfFound = cache.isFound() ? "|Found" : "";
-			String note = Database.GetNote(cache);
+			String note = Database.Data.GetNote(cache);
 			if (note == null) note = "";
-			String solver = Database.GetSolver(cache);
+			String solver = Database.Data.GetSolver(cache);
 			if (solver == null) solver = "";
 
-			multipleTexts(gpx, PREFIX_GPX,//
-					"name", cache.getGcCode(),//
-					"desc", cache.getName(),//
+			multipleTexts(gpx, PREFIX_GPX, //
+					"name", cache.getGcCode(), //
+					"desc", cache.getName(), //
 					"url", cache.getUrl(), //
-					"urlname", cache.getName(),//
+					"urlname", cache.getName(), //
 					"sym", cache.isFound() ? "Geocache Found" : "Geocache", //
 					"type", "Geocache|" + cache.Type.toString() + additinalIfFound//
 
@@ -202,16 +202,16 @@ public final class GpxSerializer
 				terrain = Float.toString(cache.getTerrain());
 			}
 
-			multipleTexts(gpx, PREFIX_GROUNDSPEAK,//
+			multipleTexts(gpx, PREFIX_GROUNDSPEAK, //
 					"name", cache.getName(), //
-					"placed_by", cache.getPlacedBy(),//
-					"owner", cache.getOwner(),//
-					"type", cache.Type.toString(),//
-					"container", cache.Size.toString(),//
-					"difficulty", difficulty,//
-					"terrain", terrain,//
-					"country", getCountry(cache),//
-					"state", getState(cache),//
+					"placed_by", cache.getPlacedBy(), //
+					"owner", cache.getOwner(), //
+					"type", cache.Type.toString(), //
+					"container", cache.Size.toString(), //
+					"difficulty", difficulty, //
+					"terrain", terrain, //
+					"country", getCountry(cache), //
+					"state", getState(cache), //
 					"encoded_hints", cache.getHint());
 
 			writeAttributes(cache);
@@ -241,8 +241,8 @@ public final class GpxSerializer
 			gpx.endTag(PREFIX_GROUNDSPEAK, "cache");
 
 			gpx.startTag(PREFIX_GPX, PREFIX_CACHEBOX);
-			multipleTexts(gpx, PREFIX_GPX,//
-					"note", note,//
+			multipleTexts(gpx, PREFIX_GPX, //
+					"note", note, //
 					"solver", solver//
 			);
 			gpx.endTag(PREFIX_GPX, PREFIX_CACHEBOX);
@@ -311,16 +311,16 @@ public final class GpxSerializer
 			gpx.attribute("", "lat", Double.toString(coords.getLatitude()));
 			gpx.attribute("", "lon", Double.toString(coords.getLongitude()));
 			multipleTexts(gpx, PREFIX_GPX, //
-					"name", wp.getGcCode(),//
+					"name", wp.getGcCode(), //
 					"cmt", wp.getDescription(), //
-					"desc", wp.getTitle(),//
+					"desc", wp.getTitle(), //
 					"sym", wp.Type.toString(), //
 					"type", "Waypoint|" + wp.Type.toString()); //
 
 			gpx.startTag(PREFIX_GPX, PREFIX_CACHEBOX);
 
-			multipleTexts(gpx, PREFIX_GPX,//
-					"clue", wp.getClue(),//
+			multipleTexts(gpx, PREFIX_GPX, //
+					"clue", wp.getClue(), //
 					"Parent", cache.getGcCode());
 			gpx.endTag(PREFIX_GPX, PREFIX_CACHEBOX);
 
@@ -331,7 +331,7 @@ public final class GpxSerializer
 	private void writeLogs(final Cache cache) throws IOException
 	{
 		CB_List<LogEntry> cleanLogs = new CB_List<LogEntry>();
-		cleanLogs = Database.Logs(cache);
+		cleanLogs = Database.Data.Logs(cache);
 
 		if (cleanLogs.isEmpty())
 		{

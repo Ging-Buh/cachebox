@@ -35,7 +35,7 @@ public class CoordinateEntity extends Entity
 
 	private Coordinate LoadFromDB(String sql)
 	{
-		CoreCursor reader = Database.Data.rawQuery(sql, null);
+		CoreCursor reader = Database.Data.db.rawQuery(sql, null);
 		try
 		{
 			reader.moveToFirst();
@@ -88,11 +88,11 @@ public class CoordinateEntity extends Entity
 			}
 		}
 		if (coord == null)
-		// gesuchten Waypoint nicht im aktuellen Cache gefunden, jetzt alle Caches mit den passenden GC/OC etc. Code suchen
-		coord = LoadFromDB("select GcCode, Latitude, Longitude from Caches where GcCode = \"" + this.gcCode + "\"");
+			// gesuchten Waypoint nicht im aktuellen Cache gefunden, jetzt alle Caches mit den passenden GC/OC etc. Code suchen
+			coord = LoadFromDB("select GcCode, Latitude, Longitude from Caches where GcCode = \"" + this.gcCode + "\"");
 		if (coord == null)
-		// gesuchter Waypoint ist kein Cache-Waypoint, jetzt in Waypoint-Tabelle danach suchen
-		coord = LoadFromDB("select GcCode, Latitude, Longitude from Waypoint where GcCode = \"" + this.gcCode + "\"");
+			// gesuchter Waypoint ist kein Cache-Waypoint, jetzt in Waypoint-Tabelle danach suchen
+			coord = LoadFromDB("select GcCode, Latitude, Longitude from Waypoint where GcCode = \"" + this.gcCode + "\"");
 		if (coord == null) return Translation.Get("CacheOrWaypointNotFound".hashCode(), gcCode);
 		else
 			return coord.FormatCoordinate();
@@ -106,7 +106,7 @@ public class CoordinateEntity extends Entity
 		WaypointDAO waypointDAO = new WaypointDAO();
 		Waypoint dbWaypoint = null;
 		// Suchen, ob dieser Waypoint bereits vorhanden ist.
-		CoreCursor reader = Database.Data.rawQuery(WaypointDAO.SQL_WP_FULL + " where GcCode = \"" + this.gcCode + "\"", null);
+		CoreCursor reader = Database.Data.db.rawQuery(WaypointDAO.SQL_WP_FULL + " where GcCode = \"" + this.gcCode + "\"", null);
 		try
 		{
 			reader.moveToFirst();
@@ -120,8 +120,7 @@ public class CoordinateEntity extends Entity
 		// if ((CB_UI.GlobalCore.getSelectedCache() == null) || (CB_UI.GlobalCore.getSelectedCache().Id != dbWaypoint.CacheId))
 		if (Solver.solverCacheInterface != null)
 		{
-			if ((Solver.solverCacheInterface.sciGetSelectedCache() == null)
-					|| (Solver.solverCacheInterface.sciGetSelectedCache().Id != dbWaypoint.CacheId))
+			if ((Solver.solverCacheInterface.sciGetSelectedCache() == null) || (Solver.solverCacheInterface.sciGetSelectedCache().Id != dbWaypoint.CacheId))
 			{
 				// Zuweisung soll an einen Waypoint eines anderen als dem aktuellen Cache gemacht werden.
 				// Vermutlich Tippfehler daher Update verhindern. Modale Dialoge gehen in Android nicht
@@ -166,8 +165,7 @@ public class CoordinateEntity extends Entity
 					}
 					else
 					{
-						Solver.solverCacheInterface.sciSetSelectedWaypoint(Solver.solverCacheInterface.sciGetSelectedCache(),
-								Solver.solverCacheInterface.sciGetSelectedWaypoint());
+						Solver.solverCacheInterface.sciSetSelectedWaypoint(Solver.solverCacheInterface.sciGetSelectedCache(), Solver.solverCacheInterface.sciGetSelectedWaypoint());
 					}
 				}
 			}

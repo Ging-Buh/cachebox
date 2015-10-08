@@ -206,7 +206,7 @@ public class CacheDetail implements Serializable
 	{
 		if (this.attributesNegative == null)
 		{
-			CoreCursor c = Database.Data.rawQuery("select AttributesNegative,AttributesNegativeHigh from Caches where Id=?", new String[]
+			CoreCursor c = Database.Data.db.rawQuery("select AttributesNegative,AttributesNegativeHigh from Caches where Id=?", new String[]
 				{ String.valueOf(Id) });
 			c.moveToFirst();
 			while (c.isAfterLast() == false)
@@ -226,7 +226,7 @@ public class CacheDetail implements Serializable
 	{
 		if (this.attributesPositive == null)
 		{
-			CoreCursor c = Database.Data.rawQuery("select AttributesPositive,AttributesPositiveHigh from Caches where Id=?", new String[]
+			CoreCursor c = Database.Data.db.rawQuery("select AttributesPositive,AttributesPositiveHigh from Caches where Id=?", new String[]
 				{ String.valueOf(Id) });
 			c.moveToFirst();
 			while (c.isAfterLast() == false)

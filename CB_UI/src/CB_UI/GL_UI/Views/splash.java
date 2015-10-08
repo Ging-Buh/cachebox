@@ -382,7 +382,7 @@ public class splash extends MainViewBase {
 	    Config.AcceptChanges();
 	}
 
-	Database.Data.StartUp(Config.DatabasePath.getValue());
+	Database.Data.StartUp();
 
 	Config.settings.ReadFromDB();
 
@@ -402,7 +402,7 @@ public class splash extends MainViewBase {
 
 	CachListChangedEventList.Call();
 
-	Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
+	Database.FieldNotes.StartUp();
 
     }
 

@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import CB_Core.DB.Database;
 import CB_Core.Types.Trackable;
 import de.cb.sqlite.CoreCursor;
-import de.cb.sqlite.Database_Core.Parameters;
+import de.cb.sqlite.Parameters;
 
 public class TrackableDAO
 {
@@ -50,7 +50,7 @@ public class TrackableDAO
 
 		try
 		{
-			Database.FieldNotes.insert("Trackable", args);
+			Database.FieldNotes.db.insert("Trackable", args);
 		}
 		catch (Exception exc)
 		{
@@ -65,7 +65,7 @@ public class TrackableDAO
 
 		try
 		{
-			Database.FieldNotes.update("Trackable", args, "GcCode='" + trackable.getGcCode() + "'", null);
+			Database.FieldNotes.db.update("Trackable", args, "GcCode='" + trackable.getGcCode() + "'", null);
 		}
 		catch (Exception exc)
 		{
@@ -127,7 +127,7 @@ public class TrackableDAO
 	{
 		String where = "GcCode = \"" + GcCode + "\"";
 		String query = "select Id ,Archived ,GcCode ,CacheId ,CurrentGoal ,CurrentOwnerName ,DateCreated ,Description ,IconUrl ,ImageUrl ,Name ,OwnerName ,Url,TypeName, Home,TravelDistance   from Trackable WHERE " + where;
-		CoreCursor reader = Database.FieldNotes.rawQuery(query, null);
+		CoreCursor reader = Database.FieldNotes.db.rawQuery(query, null);
 
 		try
 		{

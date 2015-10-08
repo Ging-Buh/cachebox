@@ -25,7 +25,7 @@ import CB_RpcCore.Functions.RpcMessage_GetCacheList;
 import CB_Utils.Util.SDBM_Hash;
 import cb_rpc.Functions.RpcAnswer;
 import cb_rpc.Settings.CB_Rpc_Settings;
-import de.cb.sqlite.Database_Core.Parameters;
+import de.cb.sqlite.Parameters;
 
 public class ImportCBServer
 {
@@ -50,7 +50,7 @@ public class ImportCBServer
 		ip.setJobMax("importCBServer", anzDownloadsTotal);
 		int actDownload = 0;
 
-		Database.Data.beginTransaction();
+		Database.Data.db.beginTransaction();
 		try
 		{
 			for (ListItem item : cbServerExportList)
@@ -120,7 +120,7 @@ public class ImportCBServer
 								Parameters args = new Parameters();
 								// orginal NoteChecksum in DB speichern
 								args.put("Notes", cache.getTmpNote());
-								Database.Data.update("Caches", args, "id=" + cache.Id, null);
+								Database.Data.db.update("Caches", args, "id=" + cache.Id, null);
 
 								cache.setTmpNote(null);
 							}
@@ -129,7 +129,7 @@ public class ImportCBServer
 								cache.setSolverChecksum((int) SDBM_Hash.sdbm(cache.getTmpSolver()));
 								Parameters args = new Parameters();
 								args.put("Solver", cache.getTmpSolver());
-								Database.Data.update("Caches", args, "id=" + cache.Id, null);
+								Database.Data.db.update("Caches", args, "id=" + cache.Id, null);
 
 								cache.setTmpSolver(null);
 							}
@@ -209,21 +209,21 @@ public class ImportCBServer
 					}
 				}
 			}
-			Database.Data.setTransactionSuccessful();
+			Database.Data.db.setTransactionSuccessful();
 		}
 		finally
 		{
-			Database.Data.endTransaction();
+			Database.Data.db.endTransaction();
 		}
 		long endTS = System.currentTimeMillis();
 		System.out.println("Import Ende (" + (System.currentTimeMillis() - tmpTS) + ")");
 		tmpTS = System.currentTimeMillis();
 		System.out.println("Import Gesamtdauer: " + (endTS - startTS) + "ms");
 		// Aufzeichnen der �nderungen aktivieren
-		if (Database.Data.MasterDatabaseId == 0)
+		if (Database.Data.db.MasterDatabaseId == 0)
 		{
-			Database.Data.MasterDatabaseId = 1;
-			Database.Data.WriteConfigLong("MasterDatabaseId", Database.Data.MasterDatabaseId);
+			Database.Data.db.MasterDatabaseId = 1;
+			Database.Data.db.WriteConfigLong("MasterDatabaseId", Database.Data.db.MasterDatabaseId);
 		}
 
 	}

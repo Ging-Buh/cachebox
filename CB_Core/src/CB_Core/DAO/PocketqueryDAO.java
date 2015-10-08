@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.DB.Database;
 import de.cb.sqlite.CoreCursor;
-import de.cb.sqlite.Database_Core.Parameters;
+import de.cb.sqlite.Parameters;
 
 public class PocketqueryDAO
 {
@@ -41,7 +41,7 @@ public class PocketqueryDAO
 
 		try
 		{
-			Database.Data.insertWithConflictReplace("PocketQueries", args);
+			Database.Data.db.insertWithConflictReplace("PocketQueries", args);
 		}
 		catch (Exception exc)
 		{
@@ -61,7 +61,7 @@ public class PocketqueryDAO
 	 */
 	public Date getLastGeneratedDate(String pqName)
 	{
-		CoreCursor reader = Database.Data.rawQuery("select max(CreationTimeOfPQ) from PocketQueries where PQName=@PQName", new String[]
+		CoreCursor reader = Database.Data.db.rawQuery("select max(CreationTimeOfPQ) from PocketQueries where PQName=@PQName", new String[]
 			{ pqName });
 		try
 		{

@@ -77,7 +77,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent {
 	chkFocus(GL.that.getKeyboardFocus());
 
 	if (mustLoadNotes) {
-	    String text = aktCache != null ? Database.GetNote(aktCache) : "";
+	    String text = aktCache != null ? Database.Data.GetNote(aktCache) : "";
 	    if (text == null)
 		text = "";
 	    edNotes.setText(text);
@@ -91,7 +91,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent {
 	String text = edNotes.getText().toString();
 	if (text != null) {
 	    try {
-		Database.SetNote(aktCache, text);
+		Database.Data.SetNote(aktCache, text);
 	    } catch (Exception e) {
 		e.printStackTrace();
 	    }

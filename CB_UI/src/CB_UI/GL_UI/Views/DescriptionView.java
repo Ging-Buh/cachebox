@@ -23,6 +23,10 @@ import java.util.TimerTask;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
@@ -56,10 +60,6 @@ import CB_UI_Base.graphics.GL_Paint;
 import CB_UI_Base.graphics.PolygonDrawable;
 import CB_UI_Base.graphics.Geometry.Line;
 import CB_UI_Base.graphics.Geometry.Quadrangle;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
 /**
  * @author Longri
@@ -146,15 +146,15 @@ public class DescriptionView extends CB_View_Base {
 
 	NonLocalImages.clear();
 	NonLocalImagesUrl.clear();
-	String cachehtml = Database.GetShortDescription(cache);
+	String cachehtml = Database.Data.GetShortDescription(cache);
 	if (cachehtml.isEmpty()) {
-	    cachehtml = Database.GetDescription(cache);
+	    cachehtml = Database.Data.GetDescription(cache);
 	} else {
-	    cachehtml += "<br/><hr/><br/>" + Database.GetDescription(cache);
+	    cachehtml += "<br/><hr/><br/>" + Database.Data.GetDescription(cache);
 	}
 
 	String html = "";
-	if (cache.getApiStatus() == 1)// GC.com API lite
+	if (cache.getApiStatus() == 1) // GC.com API lite
 	{ // Load Standard HTML
 	    String nodesc = Translation.Get("GC_NoDescription");
 	    html = "</br>" + nodesc + "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" " + Translation.Get("GC_DownloadDescription") + " \"></form>";

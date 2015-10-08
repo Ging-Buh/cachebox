@@ -24,6 +24,12 @@ import java.util.TreeMap;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
+
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.LiveMapQue;
@@ -91,12 +97,6 @@ import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.HSV_Color;
 import CB_Utils.Util.iChanged;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * @author ging-buh
@@ -837,7 +837,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
     public void createWaypointAtCenter() {
 	String newGcCode = "";
 	try {
-	    newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
+	    newGcCode = Database.Data.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
 	} catch (Exception e) {
 	    return;
 	}

@@ -15,10 +15,7 @@
  */
 package CB_Core.Import;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 
 import org.slf4j.LoggerFactory;
@@ -30,7 +27,7 @@ import CB_Core.Types.LogEntry;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.SDBM_Hash;
 import de.cb.sqlite.CoreCursor;
-import de.cb.sqlite.Database_Core.Parameters;
+import de.cb.sqlite.Parameters;
 
 public class CacheInfoList
 {
@@ -42,14 +39,14 @@ public class CacheInfoList
 	private static HashMap<String, CacheInfo> List = null;
 
 	/**
-	 * Mit dieser Methode wird die DB indexiert und die Klasse enth�lt dann eine Statiche Liste mit den Cache Informationen. Wenn die Liste
-	 * nicht mehr ben�tigt wird, sollte sie mit dispose() gel�scht werden.
+	 * Mit dieser Methode wird die DB indexiert und die Klasse enth�lt dann eine Statiche Liste mit den Cache Informationen. Wenn die
+	 * Liste nicht mehr ben�tigt wird, sollte sie mit dispose() gel�scht werden.
 	 */
 	public static void IndexDB()
 	{
 		List = new HashMap<String, CacheInfo>();
 
-		CoreCursor reader = Database.Data.rawQuery("select GcCode, Id, ListingCheckSum, ImagesUpdated, DescriptionImagesUpdated, ListingChanged, Found, CorrectedCoordinates, Latitude, Longitude, GpxFilename_Id, Favorit from Caches", null);
+		CoreCursor reader = Database.Data.db.rawQuery("select GcCode, Id, ListingCheckSum, ImagesUpdated, DescriptionImagesUpdated, ListingChanged, Found, CorrectedCoordinates, Latitude, Longitude, GpxFilename_Id, Favorit from Caches", null);
 
 		reader.moveToFirst();
 
@@ -196,7 +193,8 @@ public class CacheInfoList
 	}
 
 	/**
-	 * F�gt die CacheInfo in der Liste mit dem Infos des �bergebenen Caches zusammen und �ndert gegebenenfalls die Changed Attribute neu!
+	 * F�gt die CacheInfo in der Liste mit dem Infos des �bergebenen Caches zusammen und �ndert gegebenenfalls die Changed Attribute
+	 * neu!
 	 * 
 	 * @param cache
 	 * @param DescriptionImageFolder
@@ -212,11 +210,11 @@ public class CacheInfoList
 		if (info != null)
 		{
 
-			String stringForListingCheckSum = Database.GetDescription(cache);
+			String stringForListingCheckSum = Database.Data.GetDescription(cache);
 			String recentOwnerLogString = "";
 
 			CB_List<LogEntry> cleanLogs = new CB_List<LogEntry>();
-			cleanLogs = Database.Logs(cache);// cache.Logs();
+			cleanLogs = Database.Data.Logs(cache);// cache.Logs();
 
 			if (cleanLogs.size() > 0)
 			{
@@ -313,7 +311,7 @@ public class CacheInfoList
 
 			try
 			{
-				Database.Data.update("Caches", args, "Id = ?", new String[]
+				Database.Data.db.update("Caches", args, "Id = ?", new String[]
 					{ String.valueOf(info.id) });
 			}
 			catch (Exception exc)
@@ -324,26 +322,26 @@ public class CacheInfoList
 		}
 	}
 
-	private static void CreateChangedListingFile(String changedFileString) throws IOException
-	{
-		File file = new File(changedFileString);
-
-		if (!file.exists())
-		{
-			String changedFileDir = changedFileString.substring(0, changedFileString.lastIndexOf("/"));
-			File Directory = new File(changedFileDir);
-
-			if (!Directory.exists())
-			{
-				Directory.mkdirs();
-			}
-
-			PrintWriter writer = new PrintWriter(new FileWriter(file));
-
-			writer.write("Listing Changed!");
-			writer.close();
-		}
-	}
+	// private static void CreateChangedListingFile(String changedFileString) throws IOException
+	// {
+	// File file = new File(changedFileString);
+	//
+	// if (!file.exists())
+	// {
+	// String changedFileDir = changedFileString.substring(0, changedFileString.lastIndexOf("/"));
+	// File Directory = new File(changedFileDir);
+	//
+	// if (!Directory.exists())
+	// {
+	// Directory.mkdirs();
+	// }
+	//
+	// PrintWriter writer = new PrintWriter(new FileWriter(file));
+	//
+	// writer.write("Listing Changed!");
+	// writer.close();
+	// }
+	// }
 
 	/**
 	 * Packt eine neue CacheInfo des �bergebenen Caches in die Liste
@@ -353,11 +351,11 @@ public class CacheInfoList
 	public static void putNewInfo(Cache cache)
 	{
 		CacheInfo info = new CacheInfo(cache.Id, cache.GPXFilename_ID);
-		String stringForListingCheckSum = Database.GetDescription(cache);
+		String stringForListingCheckSum = Database.Data.GetDescription(cache);
 		String recentOwnerLogString = "";
 
 		CB_List<LogEntry> cleanLogs = new CB_List<LogEntry>();
-		cleanLogs = Database.Logs(cache);// cache.Logs();
+		cleanLogs = Database.Data.Logs(cache);// cache.Logs();
 
 		if (cleanLogs.size() > 0)
 		{

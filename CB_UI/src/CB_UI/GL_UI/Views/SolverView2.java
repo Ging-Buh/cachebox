@@ -86,7 +86,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 	    solver = new Solver("");
 	} else {
 	    this.cache = GlobalCore.getSelectedCache();
-	    String s = Database.GetSolver(this.cache);
+	    String s = Database.Data.GetSolver(this.cache);
 	    if (s == null)
 		s = "";
 	    solver = new Solver(s);
@@ -137,7 +137,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 	log.debug("onHide()");
 	SelectedCacheEventList.Remove(this);
 	if (GlobalCore.ifCacheSelected())
-	    Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
+	    Database.Data.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
     }
 
     @Override
@@ -280,7 +280,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 	    return; // Cache hat sich nicht ge�ndert!
 	// Solver speichern
 	if (this.cache != null)
-	    Database.SetSolver(this.cache, solver.getSolverString());
+	    Database.Data.SetSolver(this.cache, solver.getSolverString());
 	// n�chsten Cache laden
 	this.cache = cache;
 	intiList();
@@ -337,7 +337,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 
 	    // Store Solver Content into Database after editing one line
 	    if (GlobalCore.ifCacheSelected())
-		Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
+		Database.Data.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
 	}
     };
 
@@ -368,7 +368,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 
 		// Store Solver Content into Database after editing one line
 		if (GlobalCore.ifCacheSelected())
-		    Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
+		    Database.Data.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
 
 		reloadList();
 		return true;
@@ -423,7 +423,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 	    wp.setTitle("Final");
 	    wp.IsUserWaypoint = true;
 	    try {
-		wp.setGcCode(Database.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode()));
+		wp.setGcCode(Database.Data.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode()));
 	    } catch (Exception e) {
 		return;
 	    }

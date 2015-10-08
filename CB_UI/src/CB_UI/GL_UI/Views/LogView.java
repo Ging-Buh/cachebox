@@ -107,7 +107,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
 	    return; // Kein Cache angewählt
 
 	CB_List<LogEntry> cleanLogs = new CB_List<LogEntry>();
-	cleanLogs = Database.Logs(cache);// cache.Logs();
+	cleanLogs = Database.Data.Logs(cache);// cache.Logs();
 
 	String finders = Config.Friends.getValue();
 	String[] finder = finders.split("\\|");

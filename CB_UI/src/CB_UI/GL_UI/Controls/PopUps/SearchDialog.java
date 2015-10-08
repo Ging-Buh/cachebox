@@ -19,6 +19,8 @@ import java.util.ArrayList;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import CB_Core.CoreSettingsForward;
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
@@ -76,8 +78,6 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
-
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 /**
  * @author Longri
@@ -504,9 +504,9 @@ public class SearchDialog extends PopUp_Base {
     // searchPattern = searchPattern.replace("\n", "");
     // searchPattern = searchPattern.replace("\r", "");
     //
-    // synchronized (Database.Data.Query)
+    // synchronized (Database.Data.db.Query)
     // {
-    // for (Cache cache : Database.Data.Query)
+    // for (Cache cache : Database.Data.db.Query)
     // {
     // boolean set = true;
     // switch (mSearchState)
@@ -532,11 +532,11 @@ public class SearchDialog extends PopUp_Base {
     // private void clearSearchFilter()
     // {
     // if (!Config.dynamicFilterAtSearch.getValue()) return;
-    // synchronized (Database.Data.Query)
+    // synchronized (Database.Data.db.Query)
     // {
-    // for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
+    // for (int i = 0, n = Database.Data.db.Query.size(); i < n; i++)
     // {
-    // Database.Data.Query.get(i).setSearchVisible(true);
+    // Database.Data.db.Query.get(i).setSearchVisible(true);
     // }
     // }
     // if (CacheListView.that != null)
@@ -700,7 +700,7 @@ public class SearchDialog extends PopUp_Base {
 		CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id, this);
 
 		if (apiCaches.size() > 0) {
-		    Database.Data.beginTransaction();
+		    Database.Data.db.beginTransaction();
 
 		    CacheDAO cacheDAO = new CacheDAO();
 		    LogDAO logDAO = new LogDAO();
@@ -742,8 +742,8 @@ public class SearchDialog extends PopUp_Base {
 			    }
 			}
 		    }
-		    Database.Data.setTransactionSuccessful();
-		    Database.Data.endTransaction();
+		    Database.Data.db.setTransactionSuccessful();
+		    Database.Data.db.endTransaction();
 
 		    Database.Data.GPXFilenameUpdateCacheCount();
 

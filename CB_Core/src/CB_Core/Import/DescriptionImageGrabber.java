@@ -37,7 +37,7 @@ import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.Downloader;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.SDBM_Hash;
-import de.cb.sqlite.Database_Core.Parameters;
+import de.cb.sqlite.Parameters;
 
 public class DescriptionImageGrabber
 {
@@ -471,7 +471,7 @@ public class DescriptionImageGrabber
 	 *         GL.that.Toast(ConnectionError.INSTANCE);<br>
 	 *         return;<br>
 	 *         }<br>
-	 * <br>
+	 *         <br>
 	 *         if (result == GroundspeakAPI.API_IS_UNAVAILABLE)<br>
 	 *         {<br>
 	 *         GL.that.Toast(ApiUnavailable.INSTANCE);<br>
@@ -527,7 +527,7 @@ public class DescriptionImageGrabber
 			{
 				Parameters args = new Parameters();
 				args.put("DescriptionImagesUpdated", descriptionImagesUpdated);
-				Database.Data.update("Caches", args, "Id = ?", new String[]
+				Database.Data.db.update("Caches", args, "Id = ?", new String[]
 					{ String.valueOf(id) });
 			}
 		}
@@ -676,7 +676,7 @@ public class DescriptionImageGrabber
 				{
 					Parameters args = new Parameters();
 					args.put("ImagesUpdated", additionalImagesUpdated);
-					Database.Data.update("Caches", args, "Id = ?", new String[]
+					Database.Data.db.update("Caches", args, "Id = ?", new String[]
 						{ String.valueOf(id) });
 					// jetzt k�nnen noch alle "alten" Spoiler gel�scht werden. "alte" Spoiler sind die, die auf der SD vorhanden sind,
 					// aber

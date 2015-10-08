@@ -375,7 +375,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 	createNewWaypoint = true;
 	String newGcCode = "";
 	try {
-	    newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
+	    newGcCode = Database.Data.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
 	} catch (Exception e) {
 	    return;
 	}
@@ -465,7 +465,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		switch (which) {
 		case GL_MsgBox.BUTTON_POSITIVE:
 		    // Yes button clicked
-		    Database.DeleteFromDatabase(aktWaypoint);
+		    Database.Data.DeleteFromDatabase(aktWaypoint);
 		    GlobalCore.getSelectedCache().waypoints.remove(aktWaypoint);
 		    GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), null);
 		    aktWaypoint = null;
@@ -515,7 +515,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 		String newGcCode = "";
 		try {
-		    newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
+		    newGcCode = Database.Data.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
 		} catch (Exception e) {
 
 		    return;
@@ -549,7 +549,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 		String newGcCode = "";
 		try {
-		    newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
+		    newGcCode = Database.Data.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
 		} catch (Exception e) {
 
 		    return;

@@ -92,10 +92,14 @@ public class GroundspeakAPI
 	}
 
 	/**
-	 * Read the encrypted AccessToken from the config and check wheter it is correct for Andorid CB </br> If Url_Codiert==true so the
-	 * API-Key is URL-Codiert </br> Like replase '/' with '%2F'</br></br> This is essential for PQ-List
+	 * Read the encrypted AccessToken from the config and check wheter it is correct for Andorid CB </br>
+	 * If Url_Codiert==true so the API-Key is URL-Codiert </br>
+	 * Like replase '/' with '%2F'</br>
+	 * </br>
+	 * This is essential for PQ-List
 	 * 
-	 * @param boolean Url_Codiert
+	 * @param boolean
+	 *            Url_Codiert
 	 * @return
 	 */
 	static String GetAccessToken(boolean Url_Codiert)
@@ -1565,7 +1569,7 @@ public class GroundspeakAPI
 		// Auf eventuellen Thread Abbruch reagieren
 		Thread.sleep(2);
 
-		Database.Data.beginTransaction();
+		Database.Data.db.beginTransaction();
 
 		CacheDAO cacheDAO = new CacheDAO();
 		LogDAO logDAO = new LogDAO();
@@ -1603,7 +1607,7 @@ public class GroundspeakAPI
 			// Notes von Groundspeak �berpr�fen und evtl. in die DB an die vorhandenen Notes anh�ngen
 			if (cache.getTmpNote() != null)
 			{
-				String oldNote = Database.GetNote(cache);
+				String oldNote = Database.Data.GetNote(cache);
 				String newNote = "";
 				if (oldNote == null)
 				{
@@ -1633,7 +1637,7 @@ public class GroundspeakAPI
 					newNote += System.getProperty("line.separator") + end;
 				}
 				cache.setTmpNote(newNote);
-				Database.SetNote(cache, cache.getTmpNote());
+				Database.Data.SetNote(cache, cache.getTmpNote());
 			}
 
 			// Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
@@ -1704,8 +1708,8 @@ public class GroundspeakAPI
 			}
 
 		}
-		Database.Data.setTransactionSuccessful();
-		Database.Data.endTransaction();
+		Database.Data.db.setTransactionSuccessful();
+		Database.Data.db.endTransaction();
 
 		Database.Data.GPXFilenameUpdateCacheCount();
 

@@ -47,8 +47,8 @@ public class CacheTest extends TestCase {
 	    + "so achte dich vor ihm, die Gefahr besteht dass du vergisst<br />" + BR + "und vor lauter Kummer und Sorgen ihm tief in die Augen" + BR + "erblickst!!<br />" + BR + "<br />" + BR + "Es ist dann zu sp�t!<br />" + BR + "Dann hat dich der Hampir bereits ersp�ht!!<br />" + BR + "Der Hampir, so sagt man erschallt sein Gel�chter<br />" + BR
 	    + "wenn es Beute vor sich hat, so schaurig so grell,<br />" + BR + "rette dich wenn du kannst schneller als schnell!<br />" + BR + "<br />" + BR + "Und wage dich nicht in den Wald<br />" + BR + "in der Nacht beim Vollmond ist es dort bitterkalt!<br />" + BR + "Nebelschwaden dort, aber die schaurige Gestalten<br />" + BR + "verstecken sich im dunkeln mit dem Gedanken,<br />" + BR
 	    + "ihre Beute noch schneller zu jagen als der Hampir!<br />" + BR + "Dennoch willst du in den Wald?! �berlege es dir!!<br />" + BR + "<br />" + BR + "Du meinst, ach was... Hampire... die gibt es doch nicht?!<br />" + BR + "Die Hasen die warnen: HIER wartet er auf dich!!!<br />" + BR + "<br /></font></center>" + BR + "<font face=\"tahoma\" size=\"3\" color=\"#330033\"><br />" + BR
-	    + "<br />" + BR + "Fotos d�rft Ihr gerne machen <img src=" + BR + "'http://www.geocaching.com/images/icons/icon_smile_big.gif' border=" + BR + "\"0\" align=\"middle\" /><br />" + BR + "<br />" + BR + "<br />" + BR + "ein besonderer Dank an Monas Cacherteam, f�r die handwerkliche" + BR + "Meisterleistung!!<br />" + BR + "Es ist genau so geworden, wie es sich die Hasen vorgestellt" + BR
-	    + "haben!!<br />" + BR + "<br /></font><br />" + BR + "<a href=\"http://www.andyhoppe.com/\" title=" + BR + "\"Counter/Z�hler\"><img src=\"http://c.andyhoppe.com/1302990447\"" + BR + "style=\"border:none\" alt=\"Counter/Z�hler\" /></a><p>Additional Hidden Waypoints</p>PK2T9RW - GC2T9RW Parking<br />N 49� 21.077 E 008� 37.840<br />Rastst�tte Hardtwald West." + BR
+	    + "<br />" + BR + "Fotos d�rft Ihr gerne machen <img src=" + BR + "'http://www.geocaching.com/images/icons/icon_smile_big.gif' border=" + BR + "\"0\" align=\"middle\" /><br />" + BR + "<br />" + BR + "<br />" + BR + "ein besonderer Dank an Monas Cacherteam, f�r die handwerkliche" + BR + "Meisterleistung!!<br />" + BR + "Es ist genau so geworden, wie es sich die Hasen vorgestellt"
+	    + BR + "haben!!<br />" + BR + "<br /></font><br />" + BR + "<a href=\"http://www.andyhoppe.com/\" title=" + BR + "\"Counter/Z�hler\"><img src=\"http://c.andyhoppe.com/1302990447\"" + BR + "style=\"border:none\" alt=\"Counter/Z�hler\" /></a><p>Additional Hidden Waypoints</p>PK2T9RW - GC2T9RW Parking<br />N 49� 21.077 E 008� 37.840<br />Rastst�tte Hardtwald West." + BR
 	    + "Und f�r Ortskundige: einfach Richtung ADAC �bungsgel�nde. Dann m�sst Ihr nicht auf die Autobahn.<br />";
 
     @Override
@@ -291,7 +291,7 @@ public class CacheTest extends TestCase {
 	assertEquals("Hint falsch", "wenn du ihn nicht findest, findet er dich!!", cache.getHint());
 
 	CB_List<LogEntry> logs = new CB_List<LogEntry>();
-	logs = Database.Logs(cache);
+	logs = Database.Data.Logs(cache);
 
 	LogEntry log = logs.get(0);
 
@@ -370,8 +370,8 @@ public class CacheTest extends TestCase {
 
 	Cache cache = cacheDAO.getFromDbByGcCode("GC2T9RW", false);
 
-	assertEquals(Database.GetNote(cache), "Test Note for In/Ex-port");
-	assertEquals(Database.GetSolver(cache), "Test Solver for In/Ex-port");
+	assertEquals(Database.Data.GetNote(cache), "Test Note for In/Ex-port");
+	assertEquals(Database.Data.GetSolver(cache), "Test Solver for In/Ex-port");
 
 	cache.loadDetail();
 

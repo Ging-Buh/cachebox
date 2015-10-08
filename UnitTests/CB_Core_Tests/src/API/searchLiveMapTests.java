@@ -2,8 +2,6 @@ package API;
 
 import java.util.ArrayList;
 
-import junit.framework.TestCase;
-
 import org.junit.Test;
 
 import CB_Core.Api.GroundspeakAPI;
@@ -20,6 +18,7 @@ import CB_UI.Config;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Lists.CB_List;
 import __Static.InitTestDBs;
+import junit.framework.TestCase;
 
 public class searchLiveMapTests extends TestCase {
     @Override
@@ -94,7 +93,7 @@ public class searchLiveMapTests extends TestCase {
 	    }
 
 	    CB_List<LogEntry> cleanLogs = new CB_List<LogEntry>();
-	    cleanLogs = Database.Logs(ca);// cache.Logs();
+	    cleanLogs = Database.Data.Logs(ca);// cache.Logs();
 
 	}
 

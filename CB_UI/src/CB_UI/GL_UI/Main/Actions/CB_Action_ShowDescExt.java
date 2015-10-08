@@ -23,6 +23,8 @@ import java.util.LinkedList;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import CB_Core.DB.Database;
 import CB_Core.Import.DescriptionImageGrabber;
 import CB_Core.Types.Cache;
@@ -35,8 +37,6 @@ import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
-
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
 /**
  * 
@@ -63,7 +63,7 @@ public class CB_Action_ShowDescExt extends CB_Action {
 	    Cache cache = GlobalCore.getSelectedCache();
 	    NonLocalImages.clear();
 	    NonLocalImagesUrl.clear();
-	    String cachehtml = Database.GetDescription(cache);
+	    String cachehtml = Database.Data.GetDescription(cache);
 	    String html = DescriptionImageGrabber.ResolveImages(cache, cachehtml, false, NonLocalImages, NonLocalImagesUrl);
 
 	    if (!Config.DescriptionNoAttributes.getValue())

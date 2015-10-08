@@ -8,7 +8,7 @@ import java.util.Date;
 import CB_Core.DB.Database;
 import CB_Core.Types.GpxFilename;
 import de.cb.sqlite.CoreCursor;
-import de.cb.sqlite.Database_Core.Parameters;
+import de.cb.sqlite.Parameters;
 
 public class GpxFilenameDAO
 {
@@ -49,8 +49,7 @@ public class GpxFilenameDAO
 	{
 		// welche GPXFilenamen sind in der DB erfasst
 
-		CoreCursor reader = Database.Data.rawQuery(
-				"select GPXFilename_ID, Count(*) as CacheCount from Caches where GPXFilename_ID is not null Group by GPXFilename_ID", null);
+		CoreCursor reader = Database.Data.db.rawQuery("select GPXFilename_ID, Count(*) as CacheCount from Caches where GPXFilename_ID is not null Group by GPXFilename_ID", null);
 
 		reader.moveToFirst();
 		while (reader.isAfterLast() == false)
@@ -61,15 +60,15 @@ public class GpxFilenameDAO
 			Parameters args = new Parameters();
 			args.put("CacheCount", CacheCount);
 
-			Database.Data.update("GPXFilenames", args, "ID=?", new String[]
+			Database.Data.db.update("GPXFilenames", args, "ID=?", new String[]
 				{ String.valueOf(GPXFilename_ID) });
 			reader.moveToNext();
 		}
 
 		reader.close();
 
-		Database.Data.delete("GPXFilenames", "Cachecount is NULL or CacheCount = 0", null);
-		Database.Data.delete("GPXFilenames", "ID not in (Select GPXFilename_ID From Caches)", null);
+		Database.Data.db.delete("GPXFilenames", "Cachecount is NULL or CacheCount = 0", null);
+		Database.Data.db.delete("GPXFilenames", "ID not in (Select GPXFilename_ID From Caches)", null);
 	}
 
 }

@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import CB_Core.DB.Database;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Types.LogEntry;
-import de.cb.sqlite.Database_Core.Parameters;
+import de.cb.sqlite.Parameters;
 
 public class LogDAO
 {
@@ -43,7 +43,7 @@ public class LogDAO
 		args.put("CacheId", logEntry.CacheId);
 		try
 		{
-			Database.Data.insertWithConflictReplace("Logs", args);
+			Database.Data.db.insertWithConflictReplace("Logs", args);
 		}
 		catch (Exception exc)
 		{
@@ -91,7 +91,7 @@ public class LogDAO
 	public void ClearOrphanedLogs()
 	{
 		String SQL = "DELETE  FROM  Logs WHERE  NOT EXISTS (SELECT * FROM Caches c WHERE  Logs.CacheId = c.Id)";
-		Database.Data.execSQL(SQL);
+		Database.Data.db.execSQL(SQL);
 	}
 
 }
