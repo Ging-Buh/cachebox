@@ -15,8 +15,13 @@ import javax.swing.filechooser.FileFilter;
 import org.mapsforge.map.model.DisplayModel;
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics.DisplayMode;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+
 import CB_Core.DB.Database;
-import CB_Core.DB.Database.DatabaseType;
 import CB_Locator.Location.ProviderType;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
@@ -42,19 +47,10 @@ import CB_Utils.Settings.SettingBase;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingString;
-import CB_Utils.Util.FileIO;
 import CB_Utils.Util.iChanged;
 import ch.fhnw.imvs.gpssimulator.SimulatorMain;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics.DisplayMode;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-
 import de.CB_Texturepacker.Desctop_Packer;
 import de.Map.DesktopManager;
-import de.cb.sqlite.DesktopDB;
 
 public class DesktopMain
 {
@@ -70,7 +66,7 @@ public class DesktopMain
 		Plattform.used = Plattform.Desktop;
 		frame.setVisible(false);
 
-		// Initial Desctop TexturePacker
+		// Initial Desktop TexturePacker
 		new Desctop_Packer();
 
 		PlatformSettings.setPlatformSettings(new iPlatformSettings()
@@ -439,6 +435,16 @@ public class DesktopMain
 
 	}
 
+	static void InitalConfig()
+	{
+		String base = new File("").getAbsolutePath();
+		String workPath = base + "/cachebox";
+		new Config(workPath);
+		if (Config.settings != null && Config.settings.isLoaded()) return;
+		Database.Inital(workPath);
+		Config.Initialize(workPath, "config");
+	}
+
 	private static void Run(boolean simulate)
 	{
 		CB_UI.onStart();
@@ -476,55 +482,6 @@ public class DesktopMain
 			e.printStackTrace();
 		}
 
-	}
-
-	/**
-	 * Initialisiert die Config für die Tests! initialisiert wird die Config mit der unter Testdata abgelegten config.db3
-	 */
-	public static void InitalConfig()
-	{
-		String base = new File("").getAbsolutePath();
-		String workPath = base + "/cachebox";
-
-		new Config(workPath);
-
-		if (Config.settings != null && Config.settings.isLoaded()) return;
-
-		// Read Config
-
-		Config.Initialize(workPath, workPath + "/cachebox.config");
-
-		// hier muss die Config Db initialisiert werden
-		try
-		{
-			Database.Settings = new DesktopDB(DatabaseType.Settings);
-		}
-		catch (ClassNotFoundException e)
-		{
-			e.printStackTrace();
-		}
-
-		Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
-
-		try
-		{
-			Database.Data = new DesktopDB(DatabaseType.CacheBox);
-		}
-		catch (ClassNotFoundException e)
-		{
-			e.printStackTrace();
-		}
-
-		try
-		{
-			Database.FieldNotes = new DesktopDB(DatabaseType.FieldNotes);
-		}
-		catch (ClassNotFoundException e)
-		{
-			e.printStackTrace();
-		}
-		if (!FileIO.createDirectory(Config.WorkPath + "/User")) return;
-		Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
 	}
 
 	/**

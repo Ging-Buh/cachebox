@@ -16,8 +16,6 @@ public abstract class Database_Core
 		this.db = DB;
 	}
 
-	public abstract void AlterDatabase(int lastDatabaseSchemeVersion);
-
 	public abstract void Initialize();
 
 	public abstract void Reset();

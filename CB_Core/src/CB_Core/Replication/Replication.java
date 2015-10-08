@@ -9,7 +9,7 @@ public class Replication
 
 	public static void FoundChanged(long CacheId, boolean found)
 	{
-		if (Database.Data.db.MasterDatabaseId > 0)
+		if (Database.Data.MasterDatabaseId > 0)
 		{
 			ChangeType changeType;
 			if (found) changeType = ChangeType.Found;
@@ -28,7 +28,7 @@ public class Replication
 
 	public static void SolverChanged(long CacheId, int oldSolverCheckSum, int newSolverCheckSum)
 	{
-		if (Database.Data.db.MasterDatabaseId > 0)
+		if (Database.Data.MasterDatabaseId > 0)
 		{
 			if (oldSolverCheckSum != newSolverCheckSum)
 			{
@@ -83,7 +83,7 @@ public class Replication
 
 	public static void NoteChanged(long CacheId, int oldNoteCheckSum, int newNoteCheckSum)
 	{
-		if (Database.Data.db.MasterDatabaseId > 0)
+		if (Database.Data.MasterDatabaseId > 0)
 		{
 			if (oldNoteCheckSum != newNoteCheckSum)
 			{
@@ -153,7 +153,7 @@ public class Replication
 
 	private static void Changed(long CacheId, int oldCheckSum, int newCheckSum, String checkSumType, ChangeType changeType, String WpGcCode)
 	{
-		if (Database.Data.db.MasterDatabaseId > 0)
+		if (Database.Data.MasterDatabaseId > 0)
 		{
 			if (oldCheckSum != newCheckSum)
 			{
@@ -205,7 +205,7 @@ public class Replication
 
 	public static void AvailableChanged(long CacheId, boolean available)
 	{
-		if (Database.Data.db.MasterDatabaseId > 0)
+		if (Database.Data.MasterDatabaseId > 0)
 		{
 			ChangeType changeType;
 			if (available) changeType = ChangeType.Available;
@@ -224,7 +224,7 @@ public class Replication
 
 	public static void ArchivedChanged(long CacheId, boolean archived)
 	{
-		if (Database.Data.db.MasterDatabaseId > 0)
+		if (Database.Data.MasterDatabaseId > 0)
 		{
 			ChangeType changeType;
 			if (archived) changeType = ChangeType.Archived;
@@ -243,7 +243,7 @@ public class Replication
 
 	public static void NumTravelbugsChanged(long CacheId, int numTravelbugs)
 	{
-		if (Database.Data.db.MasterDatabaseId > 0)
+		if (Database.Data.MasterDatabaseId > 0)
 		{
 			ChangeType changeType;
 

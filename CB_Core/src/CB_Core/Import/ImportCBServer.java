@@ -220,10 +220,10 @@ public class ImportCBServer
 		tmpTS = System.currentTimeMillis();
 		System.out.println("Import Gesamtdauer: " + (endTS - startTS) + "ms");
 		// Aufzeichnen der �nderungen aktivieren
-		if (Database.Data.db.MasterDatabaseId == 0)
+		if (Database.Data.MasterDatabaseId == 0)
 		{
-			Database.Data.db.MasterDatabaseId = 1;
-			Database.Data.db.WriteConfigLong("MasterDatabaseId", Database.Data.db.MasterDatabaseId);
+			Database.Data.MasterDatabaseId = 1;
+			Database.Data.db.WriteConfigLong("MasterDatabaseId", Database.Data.MasterDatabaseId);
 		}
 
 	}

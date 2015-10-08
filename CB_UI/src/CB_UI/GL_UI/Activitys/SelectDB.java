@@ -26,6 +26,8 @@ import CB_Core.CoreSettingsForward;
 import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
+import CB_Core.DB.Database_Data;
+import CB_Core.DB.Database_Fieldnotes;
 import CB_Core.Types.Categories;
 import CB_Locator.Map.ManagerBase;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -55,6 +57,8 @@ import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Math.Point;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.FileList;
+import de.cb.sqlite.DatabaseFactory;
+import de.cb.sqlite.SQLite;
 
 /**
  * @author ging-buh
@@ -227,7 +231,10 @@ public class SelectDB extends ActivityBase {
 		for (File file : lvAdapter.files) {
 		    String LastModifit = sdf.format(file.lastModified());
 		    String FileSize = String.valueOf(file.length() / (1024 * 1024)) + "MB";
-		    String CacheCount = String.valueOf(Database.Data.getCacheCountInDB(file.getAbsolutePath()));
+
+		    final SQLite db = DatabaseFactory.getInstanz(file.getAbsolutePath(), Database.ALERNATE_DATA_DB);
+
+		    String CacheCount = String.valueOf(Database_Data.getCacheCountInDB(db));
 		    countList[index] = CacheCount + " Caches  " + FileSize + "    last use " + LastModifit;
 		    index++;
 		}
@@ -382,7 +389,8 @@ public class SelectDB extends ActivityBase {
 		String database = Config.WorkPath + GlobalCore.fs + NewDB_Name + ".db3";
 		Config.DatabasePath.setValue(database);
 		Database.Data.Close();
-		Database.Data.StartUp(database);
+		Database.Data = new Database_Data(DatabaseFactory.getInstanz(database, Database.ALERNATE_DATA_DB));
+		Database.Data.StartUp();
 
 		// OwnRepository?
 		if (data != null && ((Boolean) data) == false) {
@@ -414,7 +422,8 @@ public class SelectDB extends ActivityBase {
 
 		if (!FileIO.createDirectory(Config.WorkPath + "/User"))
 		    return true;
-		Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
+		Database.FieldNotes = new Database_Fieldnotes(DatabaseFactory.getInstanz(Config.WorkPath + "/User/FieldNotes.db3", Database.ALTERNATE_FIELDNOTES_DB));
+		Database.FieldNotes.StartUp();
 
 		Config.AcceptChanges();
 		AktFile = new File(database);

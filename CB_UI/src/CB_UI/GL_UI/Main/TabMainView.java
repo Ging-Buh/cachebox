@@ -21,6 +21,8 @@ import java.util.TimerTask;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+
 import CB_Core.CoreSettingsForward;
 import CB_Core.FilterProperties;
 import CB_Core.Api.API_ErrorEventHandler;
@@ -28,6 +30,7 @@ import CB_Core.Api.API_ErrorEventHandlerList;
 import CB_Core.Api.API_ErrorEventHandlerList.API_ERROR;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
+import CB_Core.DB.Database_Data;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Locator.Events.PositionChangedEvent;
@@ -117,8 +120,6 @@ import CB_Utils.Settings.SettingModus;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.UnitFormatter;
 import CB_Utils.Util.iChanged;
-
-import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
  * @author ging-buh
@@ -791,7 +792,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 	    if (Database.Data.Query.GetCacheByGcCode("CBPark") != null)
 		--filterCount;
 
-	    int DBCount = Database.Data.getCacheCountInDB();
+	    int DBCount = Database_Data.getCacheCountInDB(Database.Data.db);
 	    String Filtert = "";
 	    if (filterCount != DBCount) {
 		Filtert = String.valueOf(filterCount) + "/";

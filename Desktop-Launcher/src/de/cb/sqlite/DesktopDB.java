@@ -9,18 +9,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map.Entry;
 
-import CB_Core.DB.Database;
 import CB_Utils.Log.LogLevel;
 
-public class DesktopDB extends Database
+public class DesktopDB extends SQLite
 {
 
 	Connection myDB = null;
 
-	public DesktopDB() throws ClassNotFoundException
+	public DesktopDB(String databasePath, AlternateDatabase alternate) throws ClassNotFoundException
 	{
-		super();
-
+		super(databasePath, alternate);
 		System.setProperty("sqlite.purejava", "true");
 		Class.forName("org.sqlite.JDBC");
 	}
@@ -53,8 +51,8 @@ public class DesktopDB extends Database
 
 			try
 			{
-				if (LogLevel.isLogLevel(LogLevel.DEBUG)) log.debug("open data base: " + databasePath);
-				myDB = DriverManager.getConnection("jdbc:sqlite:" + databasePath);
+				if (LogLevel.isLogLevel(LogLevel.DEBUG)) log.debug("open data base: " + dbfile.getAbsolutePath());
+				myDB = DriverManager.getConnection("jdbc:sqlite:" + dbfile.getAbsolutePath());
 			}
 			catch (Exception exc)
 			{
@@ -80,7 +78,6 @@ public class DesktopDB extends Database
 			myDB = DriverManager.getConnection("jdbc:sqlite:" + databasePath);
 			myDB.commit();
 			myDB.close();
-
 		}
 		catch (Exception exc)
 		{
@@ -618,31 +615,4 @@ public class DesktopDB extends Database
 			}
 		}
 	}
-
-	@Override
-	public int getCacheCountInDB(String filename)
-	{
-
-		if (myDB == null) return 0;
-
-		int count = 0;
-		Connection myDB = null;
-		try
-		{
-			myDB = DriverManager.getConnection("jdbc:sqlite:" + filename);
-
-			Statement statement = myDB.createStatement();
-			ResultSet result = statement.executeQuery("select count(*) from caches");
-			// result.first();
-			count = result.getInt(1);
-			result.close();
-			myDB.close();
-		}
-		catch (SQLException e)
-		{
-			// String s = e.getMessage();
-		}
-		return count;
-	}
-
 }

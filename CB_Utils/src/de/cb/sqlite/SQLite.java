@@ -31,15 +31,20 @@ public abstract class SQLite
 	private int latestDatabaseChange = 0;
 	protected boolean newDB = false;
 
-	public SQLite(String databasePath)
+	private final AlternateDatabase alterNate;
+
+	public SQLite(String databasePath, AlternateDatabase alter)
 	{
 		super();
 		this.databasePath = databasePath;
+		this.alterNate = alter;
 	}
 
 	public abstract void Initialize();
 
-	public abstract void AlterDatabase(int databaseSchemeVersion);
+	public abstract void Close();
+
+	public abstract void Reset();
 
 	public abstract CoreCursor rawQuery(String sql, String[] args);
 
@@ -88,7 +93,7 @@ public abstract class SQLite
 		int databaseSchemeVersion = GetDatabaseSchemeVersion();
 		if (databaseSchemeVersion < getLatestDatabaseChange())
 		{
-			AlterDatabase(databaseSchemeVersion);
+			alterNate.alternateDatabase(this, databaseSchemeVersion);
 			SetDatabaseSchemeVersion();
 		}
 		SetDatabaseSchemeVersion();
@@ -278,5 +283,4 @@ public abstract class SQLite
 			return 0;
 		}
 	}
-
 }

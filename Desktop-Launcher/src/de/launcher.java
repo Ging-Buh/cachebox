@@ -38,6 +38,7 @@ import CB_UI_Base.Math.devicesSizes;
 import CB_Utils.Log.CB_SLF4J;
 import CB_Utils.Log.LogLevel;
 import CB_Utils.Util.iChanged;
+import de.cb.sqlite.DesktopDatabaseFactory;
 
 class Ex_1
 {
@@ -47,6 +48,9 @@ class Ex_1
 
 	public static void main(String[] args)
 	{
+
+		// Initial database factory
+		new DesktopDatabaseFactory();
 
 		DesktopMain.InitalConfig();
 

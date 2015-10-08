@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import de.cb.sqlite.Database_Core;
 import de.cb.sqlite.SQLite;
 
-public abstract class Database_Settings extends Database_Core
+public class Database_Settings extends Database_Core
 {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(Database_Fieldnotes.class);
 	public static Database_Settings Settings;
@@ -41,33 +41,23 @@ public abstract class Database_Settings extends Database_Core
 	}
 
 	@Override
-	public void AlterDatabase(int lastDatabaseSchemeVersion)
+	public void Initialize()
 	{
-		this.db.AlterDatabase(lastDatabaseSchemeVersion);
+		// TODO Auto-generated method stub
 
-		this.db.beginTransaction();
-		try
-		{
-			if (lastDatabaseSchemeVersion <= 0)
-			{
-				// First Initialization of the Database
-				this.db.execSQL("CREATE TABLE [Config] ([Key] nvarchar (30) NOT NULL, [Value] nvarchar (255) NULL);");
-				this.db.execSQL("CREATE INDEX [Key_idx] ON [Config] ([Key] ASC);");
-			}
-			if (lastDatabaseSchemeVersion < 1002)
-			{
-				// Long Text Field for long Strings
-				this.db.execSQL("ALTER TABLE [Config] ADD [LongString] ntext NULL;");
-			}
-			this.db.setTransactionSuccessful();
-		}
-		catch (Exception exc)
-		{
-			log.error("AlterDatabase", "", exc);
-		}
-		finally
-		{
-			this.db.endTransaction();
-		}
+	}
+
+	@Override
+	public void Reset()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void Close()
+	{
+		// TODO Auto-generated method stub
+
 	}
 }

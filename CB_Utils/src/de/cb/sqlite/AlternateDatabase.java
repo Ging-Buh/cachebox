@@ -15,21 +15,12 @@
  */
 package de.cb.sqlite;
 
-public abstract class DatabaseFactory
+/**
+ * TODO document
+ * 
+ * @author Hoepfner 2015
+ */
+public interface AlternateDatabase
 {
-	private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DatabaseFactory.class);
-	private static DatabaseFactory THAT;
-
-	protected DatabaseFactory()
-	{
-		THAT = this;
-	}
-
-	public static SQLite getInstanz(String Path, AlternateDatabase alter)
-	{
-		return THAT.createInstanz(Path, alter);
-	}
-
-	protected abstract SQLite createInstanz(String Path, AlternateDatabase alter);
-
+	void alternateDatabase(SQLite db, int databaseSchemeVersion);
 }
