@@ -1,7 +1,16 @@
 package CB_Utils.Util;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import org.slf4j.LoggerFactory;
+
 public class UnitFormatter
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(UnitFormatter.class);
+	private final static String ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	private final static String ROT13_LOOKUP = "nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM";
 
 	private static boolean mUseImperialUnits = false;
 
@@ -15,10 +24,8 @@ public class UnitFormatter
 		return mUseImperialUnits;
 	}
 
-	// public static boolean ImperialUnits = Config.settings.ImperialUnits.getValue();
-
 	// / <summary>
-	// / Erzeugt eine für den Menschen lesbare Form der Distanz
+	// / Erzeugt eine fï¿½r den Menschen lesbare Form der Distanz
 	// / </summary>
 	// / <param name="distance"></param>
 	// / <returns></returns>
@@ -30,7 +37,7 @@ public class UnitFormatter
 	}
 
 	// / <summary>
-	// / Erzeugt eine für den Menschen lesbare Form der Distanz
+	// / Erzeugt eine fï¿½r den Menschen lesbare Form der Distanz
 	// / </summary>
 	// / <param name="distance"></param>
 	// / <returns></returns>
@@ -45,7 +52,7 @@ public class UnitFormatter
 	}
 
 	// / <summary>
-	// / Erzeugt eine für den Menschen lesbare Form der Distanz
+	// / Erzeugt eine fï¿½r den Menschen lesbare Form der Distanz
 	// / </summary>
 	// / <param name="distance"></param>
 	// / <returns></returns>
@@ -127,23 +134,36 @@ public class UnitFormatter
 
 	public static String Rot13(String message)
 	{
-		String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		String lookup = "nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM";
-
 		String result = "";
-
 		for (int i = 0; i < message.length(); i++)
 		{
 			String curChar = message.substring(i, i + 1);
-			int idx = alphabet.indexOf(curChar);
+			int idx = ALPHABET.indexOf(curChar);
 
 			if (idx < 0) result += curChar;
 			else
-				result += lookup.substring(idx, idx + 1);
+				result += ROT13_LOOKUP.substring(idx, idx + 1);
 		}
-
 		return result;
+	}
 
+	private final static String WRONG_DATE = "??.??.??";
+
+	public static String getReadableDate(Date date)
+	{
+		if (date == null) return WRONG_DATE;
+
+		String dateString = WRONG_DATE;
+		try
+		{
+			SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
+			dateString = postFormater.format(date);
+		}
+		catch (Exception e)
+		{
+			log.error("getReadableDate", e);
+		}
+		return dateString;
 	}
 
 }

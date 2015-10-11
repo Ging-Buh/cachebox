@@ -3,6 +3,14 @@ package CB_UI.GL_UI.Controls;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
+
 import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheTypes;
@@ -18,14 +26,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Lists.CB_List;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
+import CB_Utils.Util.UnitFormatter;
 
 public class CacheInfo extends CB_View_Base {
     public static final Color gcVoteColor = new Color(0.5f, 0.5f, 1f, 1f);
@@ -437,7 +438,7 @@ public class CacheInfo extends CB_View_Base {
 	    text.append(br);
 	}
 	if (mCache instanceof Cache && ifModeFlag(SHOW_OWNER)) {
-	    text.append("by " + mCache.getOwner() + ", ");
+	    text.append("by " + mCache.getOwner() + ", " + UnitFormatter.getReadableDate(mCache.getDateHidden()));
 	    text.append(br);
 	}
 
