@@ -30,6 +30,7 @@ public abstract class SQLite
 	final protected String databasePath;
 	private int latestDatabaseChange = 0;
 	protected boolean newDB = false;
+	protected boolean isStartet = false;
 
 	private final AlternateDatabase alterNate;
 
@@ -97,6 +98,7 @@ public abstract class SQLite
 			SetDatabaseSchemeVersion();
 		}
 		SetDatabaseSchemeVersion();
+		isStartet = true;
 		return true;
 	}
 
@@ -282,5 +284,10 @@ public abstract class SQLite
 		{
 			return 0;
 		}
+	}
+
+	public boolean isStarted()
+	{
+		return isStartet;
 	}
 }

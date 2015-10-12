@@ -389,6 +389,13 @@ public class Database_Data extends Database_Core
 
 		CoreCursor reader = null;
 		int count = 0;
+		boolean closeAfterChk = false;
+		if (!db.isStarted())
+		{
+			db.StartUp();
+			closeAfterChk = true;
+		}
+
 		try
 		{
 			reader = db.rawQuery("select count(*) from caches", null);
@@ -397,10 +404,11 @@ public class Database_Data extends Database_Core
 		}
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		if (reader != null) reader.close();
+
+		if (closeAfterChk) db.Close();
 
 		return count;
 	}

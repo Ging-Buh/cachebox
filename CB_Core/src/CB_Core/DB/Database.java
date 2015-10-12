@@ -49,8 +49,8 @@ public abstract class Database
 		Database.Settings = new Database_Settings(DatabaseFactory.getInstanz(WorkPath + "/User/Config.db3", ALTERNATE_SETTINGS_DB));
 		Database.Settings.StartUp();
 
-		Database.FieldNotes = new Database_Fieldnotes(DatabaseFactory.getInstanz(WorkPath + "/User/Config.db3", ALTERNATE_FIELDNOTES_DB));
 		if (!FileIO.createDirectory(WorkPath + "/User")) return;
+		Database.FieldNotes = new Database_Fieldnotes(DatabaseFactory.getInstanz(WorkPath + "/User/FieldNotes.db3", ALTERNATE_FIELDNOTES_DB));
 		Database.FieldNotes.StartUp();
 	}
 

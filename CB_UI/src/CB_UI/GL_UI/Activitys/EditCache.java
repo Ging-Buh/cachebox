@@ -76,7 +76,7 @@ public class EditCache extends ActivityBase
     // ctor
     public EditCache(CB_RectF rec, String Name) {
 	super(rec, Name);
-	// das übliche
+	// das ï¿½bliche
 	btnOK = new Button(Translation.Get("ok"));
 	btnOKClickHandler();
 	btnCancel = new Button(Translation.Get("cancel"));
@@ -168,7 +168,7 @@ public class EditCache extends ActivityBase
 	newValues.Pos = Locator.getLocation().toCordinate();
 	if (!newValues.Pos.isValid())
 	    newValues.Pos = GlobalCore.getSelectedCoord();
-	// GC - Code bestimmen für freies CWxxxx = CustomWaypint
+	// GC - Code bestimmen fï¿½r freies CWxxxx = CustomWaypint
 	String prefix = "CW";
 	int count = 0;
 	do {
@@ -247,6 +247,7 @@ public class EditCache extends ActivityBase
 		    CachListChangedEventList.Call();
 		} else {
 		    Database.Data.Query.add(cache);
+		    //TODO chk if coord valid
 		    cacheDAO.WriteToDatabase(cache);
 		    CachListChangedEventList.Call();
 		    GlobalCore.setSelectedCache(cache);
