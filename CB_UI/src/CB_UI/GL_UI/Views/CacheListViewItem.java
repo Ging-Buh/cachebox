@@ -1,5 +1,13 @@
 package CB_UI.GL_UI.Views;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import CB_Core.DB.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
@@ -19,14 +27,6 @@ import CB_UI_Base.Math.UiSizes;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.UnitFormatter;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CacheListViewItem extends ListViewItemBackground implements PositionChangedEvent {
 
@@ -105,14 +105,24 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
     private String lastString = "";
 
     private void setDistanceString(String txt) {
+	if (this.isDisposed())
+	    return;
+
+	if (txt == null)
+	    txt = "";
+
 	if (txt.equals(lastString)) {
 	    return;
 	}
 	lastString = txt;
 	synchronized (distance) {
-	    GlyphLayout bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
-	    float x = ArrowRec.getHalfWidth() - (bounds.width / 2f);
-	    distance.setPosition(x, 0);
+	    try {
+		GlyphLayout bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
+		float x = ArrowRec.getHalfWidth() - (bounds.width / 2f);
+		distance.setPosition(x, 0);
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }
 	}
 
     }
