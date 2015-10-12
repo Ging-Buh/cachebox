@@ -41,7 +41,7 @@ public abstract class Database
 	public static Database_Settings Settings;
 
 	/**
-	 * Initialisiert die Config für die Tests! initialisiert wird die Config mit der unter Testdata abgelegten config.db3
+	 * Initialisiert die Config fï¿½r die Tests! initialisiert wird die Config mit der unter Testdata abgelegten config.db3
 	 */
 	public static void Inital(String WorkPath)
 	{
@@ -52,6 +52,12 @@ public abstract class Database
 		Database.FieldNotes = new Database_Fieldnotes(DatabaseFactory.getInstanz(WorkPath + "/User/Config.db3", ALTERNATE_FIELDNOTES_DB));
 		if (!FileIO.createDirectory(WorkPath + "/User")) return;
 		Database.FieldNotes.StartUp();
+	}
+
+	public static void initialDataDB(String path)
+	{
+		Data = new Database_Data(DatabaseFactory.getInstanz(path, ALERNATE_DATA_DB));
+		Data.StartUp();
 	}
 
 	public static final AlternateDatabase ALERNATE_DATA_DB = new AlternateDatabase()

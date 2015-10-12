@@ -3,6 +3,8 @@ package CB_UI.GL_UI.Main.Actions;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DB.Database;
@@ -27,12 +29,10 @@ import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
-
 public class CB_Action_ShowCacheList extends CB_Action_ShowView {
 
     public CB_Action_ShowCacheList() {
-	super("cacheList", "  (" + String.valueOf(Database.Data.Query.size()) + ")", MenuID.AID_SHOW_CACHELIST);
+	super("cacheList", MenuID.AID_SHOW_CACHELIST);
     }
 
     @Override
