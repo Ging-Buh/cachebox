@@ -2,6 +2,10 @@ package de.cb.sqlite;
 
 public class DesktopDatabaseFactory extends DatabaseFactory
 {
+	public DesktopDatabaseFactory()
+	{
+		super();
+	}
 
 	@Override
 	protected SQLite createInstanz(String Path, AlternateDatabase alter)

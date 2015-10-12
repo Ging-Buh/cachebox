@@ -73,7 +73,7 @@ public class GPX_Export extends TestCase {
 
 	// Delete Cache from DB end import from Real-GPX
 	{
-	    Database.Data.delete("Caches", "GcCode='" + "GC2T9RW" + "'", null);
+	    Database.Data.db.delete("Caches", "GcCode='" + "GC2T9RW" + "'", null);
 	    // Logs
 	    log.debug("Delete Logs");
 	    LogDAO logdao = new LogDAO();
@@ -81,12 +81,12 @@ public class GPX_Export extends TestCase {
 	    logdao = null;
 
 	    ImportHandler importHandler = new ImportHandler();
-	    Database.Data.beginTransaction();
+	    Database.Data.db.beginTransaction();
 	    GPXFileImporter importer = new GPXFileImporter(new File("./testdata/gpx/GC2T9RW.gpx"));
 	    assertTrue("Objekt muss konstruierbar sein", importer != null);
 	    importer.doImport(importHandler, 0);
-	    Database.Data.setTransactionSuccessful();
-	    Database.Data.endTransaction();
+	    Database.Data.db.setTransactionSuccessful();
+	    Database.Data.db.endTransaction();
 	}
 
 	CacheTest.assertCache_GC2T9RW_with_details(true);
@@ -130,7 +130,7 @@ public class GPX_Export extends TestCase {
 
 	// Delete Cache from DB and import the created GPX
 	{
-	    Database.Data.delete("Caches", "GcCode='" + "GC2T9RW" + "'", null);
+	    Database.Data.db.delete("Caches", "GcCode='" + "GC2T9RW" + "'", null);
 	    // Logs
 	    log.debug("Delete Logs");
 	    LogDAO logdao = new LogDAO();
@@ -138,12 +138,12 @@ public class GPX_Export extends TestCase {
 	    logdao = null;
 
 	    ImportHandler importHandler = new ImportHandler();
-	    Database.Data.beginTransaction();
+	    Database.Data.db.beginTransaction();
 	    GPXFileImporter importer = new GPXFileImporter(exportFile);
 	    assertTrue("Objekt muss konstruierbar sein", importer != null);
 	    importer.doImport(importHandler, 0);
-	    Database.Data.setTransactionSuccessful();
-	    Database.Data.endTransaction();
+	    Database.Data.db.setTransactionSuccessful();
+	    Database.Data.db.endTransaction();
 
 	    CacheTest.assertCache_GC2T9RW_with_detailsAndChangedNote(true);
 
@@ -246,8 +246,8 @@ public class GPX_Export extends TestCase {
 	newCache.Size = CacheSizes.micro;
 	newCache.setDifficulty(1);
 	newCache.setTerrain(1);
-	newCache.Pos = new Coordinate("52° 33,355N / 13° 24,873E");
-	// GC - Code bestimmen für freies CWxxxx = CustomWaypint
+	newCache.Pos = new Coordinate("52ï¿½ 33,355N / 13ï¿½ 24,873E");
+	// GC - Code bestimmen fï¿½r freies CWxxxx = CustomWaypint
 	String prefix = "CW";
 	int count = 0;
 	do {
@@ -270,7 +270,7 @@ public class GPX_Export extends TestCase {
 	} catch (Exception e) {
 	    return;
 	}
-	Coordinate coord = new Coordinate("52° 33,301N / 13° 24,873E");
+	Coordinate coord = new Coordinate("52ï¿½ 33,301N / 13ï¿½ 24,873E");
 	Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), newCache.Id, "", "wyptDefTitle");
 
 	newCache.waypoints.add(newWP);
@@ -305,7 +305,7 @@ public class GPX_Export extends TestCase {
 
 	// Delete Cache from DB and import the created GPX
 	{
-	    Database.Data.delete("Caches", "GcCode='" + newCache.getGcCode() + "'", null);
+	    Database.Data.db.delete("Caches", "GcCode='" + newCache.getGcCode() + "'", null);
 	    // Logs
 	    log.debug("Delete Logs");
 	    LogDAO logdao = new LogDAO();
@@ -313,12 +313,12 @@ public class GPX_Export extends TestCase {
 	    logdao = null;
 
 	    ImportHandler importHandler = new ImportHandler();
-	    Database.Data.beginTransaction();
+	    Database.Data.db.beginTransaction();
 	    GPXFileImporter importer = new GPXFileImporter(exportFile);
 	    assertTrue("Objekt muss konstruierbar sein", importer != null);
 	    importer.doImport(importHandler, 0);
-	    Database.Data.setTransactionSuccessful();
-	    Database.Data.endTransaction();
+	    Database.Data.db.setTransactionSuccessful();
+	    Database.Data.db.endTransaction();
 
 	    InitTestDBs.InitalConfig();
 
@@ -326,11 +326,11 @@ public class GPX_Export extends TestCase {
 
 	    Cache cache = cacheDAO.getFromDbByGcCode(newCache.getGcCode(), true);
 
-	    assertTrue("Cache muss zurückgegeben werden", cache != null);
+	    assertTrue("Cache muss zurï¿½ckgegeben werden", cache != null);
 
 	    assertTrue("Pos: Latitude falsch", cache.Pos.getLatitude() == 52.555916);
 	    assertTrue("Pos: Longitude falsch", cache.Pos.getLongitude() == 13.41455);
-	    assertTrue("Pos ist ungültig", cache.Pos.isValid());
+	    assertTrue("Pos ist ungï¿½ltig", cache.Pos.isValid());
 
 	    assertEquals("GcCode falsch", newCache.getGcCode(), cache.getGcCode());
 	    assertEquals("DateHidden falsch", newCache.getDateHidden().toString(), cache.getDateHidden().toString());
@@ -355,14 +355,14 @@ public class GPX_Export extends TestCase {
 	    Iterator<Attributes> positiveInterator = PositvieList.iterator();
 	    Iterator<Attributes> negativeInterator = NegativeList.iterator();
 
-	    // fülle eine Liste mit allen Attributen
+	    // fï¿½lle eine Liste mit allen Attributen
 	    ArrayList<Attributes> attributes = new ArrayList<Attributes>();
 	    Attributes[] tmp = Attributes.values();
 	    for (Attributes item : tmp) {
 		attributes.add(item);
 	    }
 
-	    // Lösche die vergebenen Atribute aus der Kommplett Liste
+	    // Lï¿½sche die vergebenen Atribute aus der Kommplett Liste
 	    positiveInterator = PositvieList.iterator();
 	    negativeInterator = NegativeList.iterator();
 
@@ -374,7 +374,7 @@ public class GPX_Export extends TestCase {
 		attributes.remove(negativeInterator.next());
 	    }
 
-	    // Teste ob die übrig gebliebenen Atributte auch nicht vergeben wurden.
+	    // Teste ob die ï¿½brig gebliebenen Atributte auch nicht vergeben wurden.
 	    Iterator<Attributes> RestInterator = attributes.iterator();
 
 	    while (RestInterator.hasNext()) {

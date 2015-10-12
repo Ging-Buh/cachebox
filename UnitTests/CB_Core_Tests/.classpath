@@ -27,5 +27,6 @@
 	<classpathentry kind="lib" path="lib/gdx-freetype-1.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/gdx-freetype-natives-1.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/gdx-natives-1.6.2.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Desktop-Launcher"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -17,8 +17,6 @@ package CB_Core.CB_Core.Import;
 
 import java.io.File;
 
-import junit.framework.TestCase;
-
 import org.slf4j.LoggerFactory;
 
 import CB_Core.DAO.CacheDAO;
@@ -29,6 +27,7 @@ import CB_Core.Import.ImportHandler;
 import CB_Core.Types.Cache;
 import Types.CacheTest;
 import __Static.InitTestDBs;
+import junit.framework.TestCase;
 
 /**
  * Test the GPX Import
@@ -49,7 +48,7 @@ public class GpxImportTest extends TestCase {
 
 	// First must delete DB entry from last TestRun
 	{
-	    Database.Data.delete("Caches", "GcCode='" + "GC2T9RW" + "'", null);
+	    Database.Data.db.delete("Caches", "GcCode='" + "GC2T9RW" + "'", null);
 	    // Logs
 	    log.debug("Delete Logs");
 	    LogDAO logdao = new LogDAO();
@@ -59,18 +58,18 @@ public class GpxImportTest extends TestCase {
 
 	ImportHandler importHandler = new ImportHandler();
 
-	Database.Data.beginTransaction();
+	Database.Data.db.beginTransaction();
 
 	try {
 	    GPXFileImporter importer = new GPXFileImporter(new File("./testdata/gpx/GC2T9RW.gpx"));
 	    assertTrue("Objekt muss konstruierbar sein", importer != null);
 	    importer.doImport(importHandler, 0);
 
-	    Database.Data.setTransactionSuccessful();
+	    Database.Data.db.setTransactionSuccessful();
 	} finally {
 	}
 
-	Database.Data.endTransaction();
+	Database.Data.db.endTransaction();
 
 	CacheTest.assertCache_GC2T9RW_with_details(true);
     }
@@ -86,7 +85,7 @@ public class GpxImportTest extends TestCase {
 
 	// First must delete DB entry from last TestRun
 	{
-	    Database.Data.delete("Caches", "GcCode='" + "GC52BKF" + "'", null);
+	    Database.Data.db.delete("Caches", "GcCode='" + "GC52BKF" + "'", null);
 	    // Logs
 	    log.debug("Delete Logs");
 	    LogDAO logdao = new LogDAO();
@@ -96,25 +95,25 @@ public class GpxImportTest extends TestCase {
 
 	ImportHandler importHandler = new ImportHandler();
 
-	Database.Data.beginTransaction();
+	Database.Data.db.beginTransaction();
 
 	try {
 	    GPXFileImporter importer = new GPXFileImporter(new File("./testdata/gpx/GC52BKF.gpx"));
 	    assertTrue("Objekt muss konstruierbar sein", importer != null);
 	    importer.doImport(importHandler, 0);
 
-	    Database.Data.setTransactionSuccessful();
+	    Database.Data.db.setTransactionSuccessful();
 	} finally {
 	}
 
-	Database.Data.endTransaction();
+	Database.Data.db.endTransaction();
 
 	CacheDAO cacheDAO = new CacheDAO();
 	Cache cache = cacheDAO.getFromDbByGcCode("GC52BKF", true);
 
 	assertEquals("", cache.getLongDescription());
 
-	String sd = "<p>Drive In. Eine nette Zusatzeule. Bewohner ist informiert. Dennoch oft  muggelig. Das Grundstück muss nicht betreten werden! <img alt=\"enlightened\" src=\"http://www.geocaching.com/static/js/CKEditor/4.1.2/plugins/smiley/images/lightbulb.gif\" title=\"enlightened\" style=\"height:20px;width:20px;\" /></p>";
+	String sd = "<p>Drive In. Eine nette Zusatzeule. Bewohner ist informiert. Dennoch oft ï¿½muggelig. Das Grundstï¿½ck muss nicht betreten werden!ï¿½<img alt=\"enlightened\" src=\"http://www.geocaching.com/static/js/CKEditor/4.1.2/plugins/smiley/images/lightbulb.gif\" title=\"enlightened\" style=\"height:20px;width:20px;\" /></p>";
 	assertEquals(sd, cache.getShortDescription());
 
     }

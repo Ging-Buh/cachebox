@@ -17,7 +17,8 @@ import CB_Utils.Settings.SettingBase;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingString;
-import CB_Utils.Util.FileIO;
+import de.cb.sqlite.DatabaseFactory;
+import de.cb.sqlite.DesktopDatabaseFactory;
 
 /**
  * Initialisiert die Config oder eine TestDB
@@ -29,39 +30,27 @@ public class InitTestDBs {
     static Preferences prefs = Preferences.userNodeForPackage(InitTestDBs.class);
 
     /**
-     * Initialisiert die Config für die Tests! initialisiert wird die Config mit der unter Testdata abgelegten config.db3
+     * Initialisiert die Config fï¿½r die Tests! initialisiert wird die Config mit der unter Testdata abgelegten config.db3
      */
     public static void InitalConfig() {
 
 	if (Database.Settings != null)
 	    return;
 
+	// Initial database factory
+	if (!DatabaseFactory.isInitial())
+	    new DesktopDatabaseFactory();
+
 	// Read Config
 	String workPath = "./testdata";
 
 	Config.Initialize(workPath, workPath + "/cachebox.config");
-
-	// hier muss die Config Db initialisiert werden
-	try {
-	    Database.Settings = new TestDB(DatabaseType.Settings);
-	} catch (ClassNotFoundException e) {
-	    e.printStackTrace();
-	}
-	if (!FileIO.createDirectory(Config.WorkPath))
-	    return;
-	Database.Settings.StartUp();//Database.Settings.StartUp(Config.WorkPath + "/Config.db3");
+	if (!Database.Data.db.isStarted())
+	    Database.initialDataDB("./testdata/test.db3");
 
 	initialPlatformSettings();
 
 	Config.settings.ReadFromDB();
-
-	String database = "./testdata/test.db3";
-	try {
-	    InitTestDBs.InitTestDB(database);
-	} catch (ClassNotFoundException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
     }
 
     private static void initialPlatformSettings() {
@@ -109,18 +98,23 @@ public class InitTestDBs {
     }
 
     /**
-     * Initialisiert eine CacheBox DB für die Tests
+     * Initialisiert eine CacheBox DB fï¿½r die Tests
      * 
      * @param database
      *            Pfad zur DB
      * @throws ClassNotFoundException
      */
-    public static void InitTestDB(String database) throws ClassNotFoundException {
+    public static void InitTestDB(String path) throws ClassNotFoundException {
 
-	if (Database.Data != null)
+	// Initial database factory
+	if (!DatabaseFactory.isInitial())
+	    new DesktopDatabaseFactory();
+
+	if (Database.Data != null && Database.Data.db.isStarted())
 	    return;
-	Database.Data = new TestDB(DatabaseType.CacheBox);
-	Database.Data.StartUp();//Database.Data.StartUp(database);
+
+	Database.initialDataDB(path);
+
 	CoreSettingsForward.Categories = new Categories();
 	Database.Data.GPXFilenameUpdateCacheCount();
     }

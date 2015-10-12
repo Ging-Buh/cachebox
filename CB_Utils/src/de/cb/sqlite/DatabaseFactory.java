@@ -30,6 +30,11 @@ public abstract class DatabaseFactory
 		return THAT.createInstanz(Path, alter);
 	}
 
+	public static boolean isInitial()
+	{
+		return THAT != null;
+	}
+
 	protected abstract SQLite createInstanz(String Path, AlternateDatabase alter);
 
 }
