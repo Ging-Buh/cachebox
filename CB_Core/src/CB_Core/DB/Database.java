@@ -278,6 +278,12 @@ public abstract class Database
 				db.endTransaction();
 			}
 		}
+
+		@Override
+		public int databaseSchemeVersion()
+		{
+			return LatestDatabaseChange;
+		}
 	};
 
 	private static long convertAttribute(long att)
@@ -343,6 +349,12 @@ public abstract class Database
 			{
 				db.endTransaction();
 			}
+		}
+
+		@Override
+		public int databaseSchemeVersion()
+		{
+			return LatestDatabaseFieldNoteChange;
 		}
 	};
 
@@ -411,6 +423,12 @@ public abstract class Database
 			{
 				db.endTransaction();
 			}
+		}
+
+		@Override
+		public int databaseSchemeVersion()
+		{
+			return LatestDatabaseSettingsChange;
 		}
 	};
 

@@ -28,7 +28,6 @@ public class Database_Fieldnotes extends Database_Core
 	public Database_Fieldnotes(SQLite database)
 	{
 		super(database);
-		database.setLatestDatabaseChange(Database.LatestDatabaseChange);
 		FieldNotes = this;
 	}
 

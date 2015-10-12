@@ -399,11 +399,7 @@ public class splash extends MainViewBase {
 	    cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 	    cacheListDAO = null;
 	}
-
 	CachListChangedEventList.Call();
-
-	Database.FieldNotes.StartUp();
-
     }
 
     private String ReplaceSplitter(String ConfigPreset) {

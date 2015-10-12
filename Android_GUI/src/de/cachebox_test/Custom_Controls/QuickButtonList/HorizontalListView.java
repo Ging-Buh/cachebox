@@ -33,10 +33,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
-import de.cachebox_test.Custom_Controls.downSlider;
 
 /**
- * nur noch ein Dummy um die Größe und damit das Layout zu erhalten
+ * nur noch ein Dummy um die Grï¿½ï¿½e und damit das Layout zu erhalten
  * 
  * @author Longri
  */
@@ -47,7 +46,7 @@ public class HorizontalListView extends AdapterView<ListAdapter>
 	public void onSizeChanged(int w, int h, int oldw, int oldh)
 	{
 		super.onSizeChanged(w, h, oldw, oldh);
-		// GL größen müssen neu berechnet werden
+		// GL grï¿½ï¿½en mï¿½ssen neu berechnet werden
 
 	}
 
@@ -128,7 +127,7 @@ public class HorizontalListView extends AdapterView<ListAdapter>
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
 	{
-		setMeasuredDimension(measure(widthMeasureSpec), downSlider.getAktQuickButtonHeight());
+		setMeasuredDimension(measure(widthMeasureSpec), 0);
 	}
 
 	/**

@@ -28,7 +28,6 @@ public abstract class SQLite
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(SQLite.class);
 
 	final protected String databasePath;
-	private int latestDatabaseChange = 0;
 	protected boolean newDB = false;
 	protected boolean isStartet = false;
 
@@ -92,12 +91,11 @@ public abstract class SQLite
 		Initialize();
 
 		int databaseSchemeVersion = GetDatabaseSchemeVersion();
-		if (databaseSchemeVersion < getLatestDatabaseChange())
+		if (databaseSchemeVersion < alterNate.databaseSchemeVersion())
 		{
 			alterNate.alternateDatabase(this, databaseSchemeVersion);
 			SetDatabaseSchemeVersion();
 		}
-		SetDatabaseSchemeVersion();
 		isStartet = true;
 		return true;
 	}
@@ -140,7 +138,7 @@ public abstract class SQLite
 	private void SetDatabaseSchemeVersion()
 	{
 		Parameters val = new Parameters();
-		val.put("Value", getLatestDatabaseChange());
+		val.put("Value", alterNate.databaseSchemeVersion());
 		long anz = update("Config", val, "[Key] like 'DatabaseSchemeVersionWin'", null);
 		if (anz <= 0)
 		{
@@ -149,7 +147,7 @@ public abstract class SQLite
 			insert("Config", val);
 		}
 		// for Compatibility with WinCB
-		val.put("Value", getLatestDatabaseChange());
+		val.put("Value", alterNate.databaseSchemeVersion());
 		anz = update("Config", val, "[Key] like 'DatabaseSchemeVersion'", null);
 		if (anz <= 0)
 		{
@@ -157,16 +155,6 @@ public abstract class SQLite
 			val.put("Key", "DatabaseSchemeVersion");
 			insert("Config", val);
 		}
-	}
-
-	public int getLatestDatabaseChange()
-	{
-		return latestDatabaseChange;
-	}
-
-	public void setLatestDatabaseChange(int latestDatabaseChange)
-	{
-		this.latestDatabaseChange = latestDatabaseChange;
 	}
 
 	public void WriteConfigString(String key, String value)
@@ -289,5 +277,10 @@ public abstract class SQLite
 	public boolean isStarted()
 	{
 		return isStartet;
+	}
+
+	public String toString()
+	{
+		return "SQLite DB [" + (isStartet ? "is started" : "not started") + "]:" + databasePath;
 	}
 }

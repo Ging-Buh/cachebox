@@ -27,8 +27,11 @@ import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.android.AndroidFiles;
+
 import CB_Core.DB.Database;
-import CB_Core.DB.Database.DatabaseType;
 import CB_Locator.LocatorSettings;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
@@ -90,14 +93,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.android.AndroidFiles;
-
 import de.cachebox_test.Components.copyAssetFolder;
 import de.cachebox_test.Views.Forms.MessageBox;
-import de.cb.sqlite.AndroidDB;
+import de.cb.sqlite.AndroidDatabaseFactory;
+import de.cb.sqlite.DatabaseFactory;
 
 public class splash extends Activity
 {
@@ -480,44 +479,44 @@ public class splash extends Activity
 							// set dialog message
 							alertDialogBuilder.setMessage(Translation.Get("Desc_Sandbox")).setCancelable(false)
 									.setPositiveButton(Translation.Get("yes"), new DialogInterface.OnClickListener()
+							{
+								public void onClick(DialogInterface dialog, int id)
+								{
+									// if this button is clicked, run Sandbox Path
+
+									showSandbox = true;
+									Config.AcceptChanges();
+
+									// close select dialog
+									dialog.dismiss();
+
+									// show please wait dialog
+									showPleaseWaitDialog();
+
+									// use external SD -> change workPath
+									Thread thread = new Thread()
 									{
-										public void onClick(DialogInterface dialog, int id)
+										@Override
+										public void run()
 										{
-											// if this button is clicked, run Sandbox Path
-
-											showSandbox = true;
-											Config.AcceptChanges();
-
-											// close select dialog
-											dialog.dismiss();
-
-											// show please wait dialog
-											showPleaseWaitDialog();
-
-											// use external SD -> change workPath
-											Thread thread = new Thread()
-											{
-												@Override
-												public void run()
-												{
-													workPath = externalSd2;
-													boolean askAgain = cbAskAgain.isChecked();
-													// boolean useTabletLayout = rbTabletLayout.isChecked();
-													saveWorkPath(askAgain/* , useTabletLayout */);
-													startInitial();
-												}
-											};
-											thread.start();
+											workPath = externalSd2;
+											boolean askAgain = cbAskAgain.isChecked();
+											// boolean useTabletLayout = rbTabletLayout.isChecked();
+											saveWorkPath(askAgain/* , useTabletLayout */);
+											startInitial();
 										}
-									}).setNegativeButton(Translation.Get("no"), new DialogInterface.OnClickListener()
-									{
-										public void onClick(DialogInterface dialog, int id)
-										{
-											// if this button is clicked, just close
-											// the dialog box and do nothing
-											dialog.cancel();
-										}
-									});
+									};
+									thread.start();
+								}
+							}).setNegativeButton(Translation.Get("no"), new DialogInterface.OnClickListener()
+							{
+								public void onClick(DialogInterface dialog, int id)
+								{
+									// if this button is clicked, just close
+									// the dialog box and do nothing
+									dialog.cancel();
+								}
+							});
 
 							// create alert dialog
 							AlertDialog alertDialog = alertDialogBuilder.create();
@@ -597,22 +596,22 @@ public class splash extends Activity
 							msg = (MessageBox) MessageBox.Show(Translation.Get("shuredeleteWorkspace", Name),
 									Translation.Get("deleteWorkspace"), MessageBoxButtons.YesNo, MessageBoxIcon.Question,
 									new DialogInterface.OnClickListener()
+							{
+
+								@Override
+								public void onClick(DialogInterface dialog, int which)
+								{
+									if (which == MessageBox.BUTTON_POSITIVE)
 									{
+										// Delete this Workpath only from Settings don't delete any File
+										deleteWorkPath(AddWorkPath);
+									}
+									// Start again to exclude the old Folder
+									msg.dismiss();
+									onStart();
+								}
 
-										@Override
-										public void onClick(DialogInterface dialog, int which)
-										{
-											if (which == MessageBox.BUTTON_POSITIVE)
-											{
-												// Delete this Workpath only from Settings don't delete any File
-												deleteWorkPath(AddWorkPath);
-											}
-											// Start again to exclude the old Folder
-											msg.dismiss();
-											onStart();
-										}
-
-									});
+							});
 
 							dialog.dismiss();
 							return true;
@@ -1205,13 +1204,12 @@ public class splash extends Activity
 		// Read Config
 		Config.Initialize(workPath, workPath + "/cachebox.config");
 
-		// hier muss die Config Db initialisiert werden
-		Database.Settings = new AndroidDB(DatabaseType.Settings, this);
-
 		boolean userFolderExists = FileIO.createDirectory(Config.WorkPath + "/User");
-
 		if (!userFolderExists) return;
-		Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
+
+		// Initial database factory and Databases
+		if (!DatabaseFactory.isInitial()) new AndroidDatabaseFactory(this);
+		Database.Inital(workPath);
 
 		// initialisieren der PlattformSettings
 		PlatformSettings.setPlatformSettings(new iPlatformSettings()
@@ -1268,7 +1266,7 @@ public class splash extends Activity
 
 		// wenn die Settings DB neu Erstellt wurde, m�ssen die Default werte
 		// geschrieben werden.
-		if (Database.Settings.isDbNew())
+		if (Database.Settings.db.isDbNew())
 		{
 			Config.settings.LoadAllDefaultValues();
 			Config.settings.WriteToDB();
@@ -1315,8 +1313,6 @@ public class splash extends Activity
 			Config.settings.WriteToDB();
 			log.debug("disable MixedDatabaseRenderer for Android Version <14");
 		}
-
-		Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
 
 		// copy AssetFolder only if Rev-Number changed, like at new installation
 		if (Config.installRev.getValue() < GlobalCore.CurrentRevision)
@@ -1442,11 +1438,6 @@ public class splash extends Activity
 
 	private void Initial2()
 	{
-
-		// initialize Database
-		Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
-		Database.FieldNotes = new AndroidDB(DatabaseType.FieldNotes, this);
-
 		Config.AcceptChanges();
 
 		// Initial Ready Show main

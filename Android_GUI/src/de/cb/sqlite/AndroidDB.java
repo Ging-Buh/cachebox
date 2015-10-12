@@ -3,7 +3,6 @@ package de.cb.sqlite;
 import java.io.File;
 import java.util.Map.Entry;
 
-import CB_Core.DB.Database;
 import CB_Utils.Log.LogLevel;
 import CB_Utils.Util.FileIO;
 import android.app.Activity;
@@ -11,16 +10,15 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import de.cb.sqlite.CoreCursor;
 
-public class AndroidDB extends Database
+public class AndroidDB extends SQLite
 {
 	private Activity activity;
 	public SQLiteDatabase myDB = null;
 
-	public AndroidDB(DatabaseType databaseType, Activity activity)
+	public AndroidDB(Activity activity, String databasePath, AlternateDatabase alternate) throws ClassNotFoundException
 	{
-		super(databaseType);
+		super(databasePath, alternate);
 		this.activity = activity;
 
 	}
@@ -270,24 +268,5 @@ public class AndroidDB extends Database
 		}
 		if (myDB != null) myDB.close();
 		myDB = null;
-	}
-
-	@Override
-	public int getCacheCountInDB(String filename)
-	{
-		try
-		{
-			SQLiteDatabase myDB = SQLiteDatabase.openDatabase(filename, null, SQLiteDatabase.OPEN_READONLY);
-			Cursor c = myDB.rawQuery("select count(*) from caches", null);
-			c.moveToFirst();
-			int count = c.getInt(0);
-			c.close();
-			myDB.close();
-			return count;
-		}
-		catch (Exception ex)
-		{
-		}
-		return 0;
 	}
 }

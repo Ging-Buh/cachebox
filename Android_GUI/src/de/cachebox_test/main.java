@@ -36,9 +36,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.backends.android.AndroidGraphics;
+import com.badlogic.gdx.backends.android.AndroidInput;
+import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
+
 import CB_Core.FilterProperties;
 import CB_Core.DB.Database;
-import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.Importer;
@@ -167,33 +174,23 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
-import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.backends.android.AndroidApplication;
-import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.badlogic.gdx.backends.android.AndroidGraphics;
-import com.badlogic.gdx.backends.android.AndroidInput;
-import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
-
 import de.CB_PlugIn.IPlugIn;
 import de.cachebox_test.NotifyService.LocalBinder;
 import de.cachebox_test.CB_Texturepacker.Android_Packer;
 import de.cachebox_test.Components.CacheNameView;
 import de.cachebox_test.Custom_Controls.Mic_On_Flash;
-import de.cachebox_test.Custom_Controls.downSlider;
 import de.cachebox_test.Custom_Controls.QuickButtonList.HorizontalListView;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AndroidClipboard;
 import de.cachebox_test.Views.JokerView;
-import de.cachebox_test.Views.SolverView;
 import de.cachebox_test.Views.SpoilerView;
 import de.cachebox_test.Views.ViewGL;
 import de.cachebox_test.Views.Forms.GcApiLogin;
 import de.cachebox_test.Views.Forms.MessageBox;
 import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
-import de.cb.sqlite.AndroidDB;
+import de.cb.sqlite.AndroidDatabaseFactory;
+import de.cb.sqlite.DatabaseFactory;
 
 /**
  * @author Longri
@@ -231,12 +228,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public static DescriptionView descriptionView = null; // ID 4
 	private static SpoilerView spoilerView = null; // ID 5
-	private static SolverView solverView = null; // ID 7
 	private static JokerView jokerView = null; // ID 12
 
 	/**
-	 * viewGl kann mehrere ID beinhalten, vieGL ist nur die Basis f�r alle Views auf Basis von GL_View_Base </br> TestView = 16 </br>
-	 * CreditsView = 17 </br> MapView = 18 </br>
+	 * viewGl kann mehrere ID beinhalten, vieGL ist nur die Basis f�r alle Views auf Basis von GL_View_Base </br>
+	 * TestView = 16 </br>
+	 * CreditsView = 17 </br>
+	 * MapView = 18 </br>
 	 */
 	public static ViewGL viewGL = null;
 
@@ -283,9 +281,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private FrameLayout GlFrame;
 
 	private LinearLayout TopLayout;
-
-	public downSlider InfoDownSlider;
-
 	private String ExtSearch_GcCode = null;
 	private String ExtSearch_GpxPath = null;
 
@@ -366,8 +361,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		savedInstanceState.putInt("WindowHeight", UI_Size_Base.that.ui.Window.height);
 
 		if (GlobalCore.ifCacheSelected()) savedInstanceState.putString("selectedCacheID", GlobalCore.getSelectedCache().getGcCode());
-		if (GlobalCore.getSelectedWaypoint() != null) savedInstanceState.putString("selectedWayPoint", GlobalCore.getSelectedWaypoint()
-				.getGcCode());
+		if (GlobalCore.getSelectedWaypoint() != null)
+			savedInstanceState.putString("selectedWayPoint", GlobalCore.getSelectedWaypoint().getGcCode());
 
 		// TODO onSaveInstanceState => save more
 
@@ -410,13 +405,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			// Read Config
 			Config.Initialize(workPath, workPath + "/cachebox.config");
 
-			// hier muss die Config Db initialisiert werden
-			Database.Settings = new AndroidDB(DatabaseType.Settings, this);
-			if (!FileIO.createDirectory(Config.WorkPath + "/User")) return;
-			Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
-			// initialize Database
-			Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
-			Database.FieldNotes = new AndroidDB(DatabaseType.FieldNotes, this);
+			// Initial database factory and Databases
+			if (!DatabaseFactory.isInitial()) new AndroidDatabaseFactory(this);
+			Database.Inital(workPath);
+			Database.initialDataDB(Config.DatabasePath.getValue());
 
 			Config.AcceptChanges();
 
@@ -536,13 +528,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		Config.AcceptChanges();
 
 		setLockScreenProperty();
-		AndroidSettings.RunOverLockScreen.addChangedEventListner(new iChanged() {
+		AndroidSettings.RunOverLockScreen.addChangedEventListner(new iChanged()
+		{
 			@Override
-			public void isChanged() {
+			public void isChanged()
+			{
 				setLockScreenProperty();
 			}
 		});
-
 
 		// Initial Android TexturePacker
 		new Android_Packer();
@@ -554,8 +547,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		glListener.onStart();
 		if (tabFrame != null) tabFrame.setVisibility(View.INVISIBLE);
 		if (frame != null) frame.setVisibility(View.INVISIBLE);
-
-		InfoDownSlider.invalidate();
 
 		CacheListChangedEvent();
 
@@ -573,10 +564,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			// Are you missing a call to unregisterReceiver()?
 		}
 
-		downSlider.isInitial = false;
-
-		int sollHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.that
-				.getQuickButtonListHeight() : 0;
+		int sollHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue())
+				? UiSizes.that.getQuickButtonListHeight() : 0;
 
 		setQuickButtonHeight(sollHeight);
 
@@ -637,8 +626,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			if (input == null)
 			{
-				graphics = new AndroidGraphics(this, gdxConfig, gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy()
-						: gdxConfig.resolutionStrategy);
+				graphics = new AndroidGraphics(this, gdxConfig,
+						gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy() : gdxConfig.resolutionStrategy);
 
 				input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), gdxConfig);
 
@@ -648,23 +637,27 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (aktView != null) ((View) aktView).setVisibility(View.INVISIBLE);
 		if (aktTabView != null) ((View) aktTabView).setVisibility(View.INVISIBLE);
-		if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
 		if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
 
 		initialViewGL();
 	}
 
-	private void setLockScreenProperty() {
+	private void setLockScreenProperty()
+	{
 		// add flags for run on lock screen
 
-
-		runOnUiThread(new Runnable() {
+		runOnUiThread(new Runnable()
+		{
 			@Override
-			public void run() {
-				if (AndroidSettings.RunOverLockScreen.getValue()) {
-					main.this.getWindow().addFlags(
-							WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-				} else{
+			public void run()
+			{
+				if (AndroidSettings.RunOverLockScreen.getValue())
+				{
+					main.this.getWindow()
+							.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+				}
+				else
+				{
 					main.this.getWindow().clearFlags(
 							WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 				}
@@ -762,12 +755,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 									log.info("startGPXImport:Timer startet");
 									Importer importer = new Importer();
 									ImporterProgress ip = new ImporterProgress();
-									Database.Data.beginTransaction();
+									Database.Data.db.beginTransaction();
 
 									importer.importGpx(ExtSearch_GpxPath, ip);
 
-									Database.Data.setTransactionSuccessful();
-									Database.Data.endTransaction();
+									Database.Data.db.setTransactionSuccessful();
+									Database.Data.db.endTransaction();
 
 									// Import ready
 									wd.close();
@@ -1075,8 +1068,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (input == null)
 		{
-			graphics = new AndroidGraphics(this, gdxConfig, gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy()
-					: gdxConfig.resolutionStrategy);
+			graphics = new AndroidGraphics(this, gdxConfig,
+					gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy() : gdxConfig.resolutionStrategy);
 			input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), gdxConfig);
 		}
 
@@ -1172,8 +1165,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			log.debug("Main=> onResume input== null");
 
-			graphics = new AndroidGraphics(this, gdxConfig, gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy()
-					: gdxConfig.resolutionStrategy);
+			graphics = new AndroidGraphics(this, gdxConfig,
+					gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy() : gdxConfig.resolutionStrategy);
 			input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), gdxConfig);
 		}
 
@@ -1194,11 +1187,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (mSensorManager != null) mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_UI);
 		this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
-		int sollHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.that
-				.getQuickButtonListHeight() : 0;
+		int sollHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue())
+				? UiSizes.that.getQuickButtonListHeight() : 0;
 		((main) main.mainActivity).setQuickButtonHeight(sollHeight);
-		downSlider.isInitial = false;
-		InfoDownSlider.invalidate();
 
 		// Ausschalten verhindern
 		/*
@@ -1383,8 +1374,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					descriptionView = null;
 					mainActivity = null;
 
-					InfoDownSlider = null;
-
 					Config.AcceptChanges();
 
 					Database.Data.Close();
@@ -1522,7 +1511,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 
 		if (ID == ViewConst.JOKER_VIEW) return jokerView = new JokerView(this, this);
-		else if (ID == ViewConst.SOLVER_VIEW) return solverView = new SolverView(this, inflater);
 		else if (ID == ViewConst.SPOILER_VIEW)
 		{
 			if (spoilerView == null) spoilerView = new SpoilerView(this, inflater);
@@ -1585,13 +1573,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				jokerView.OnFree();
 				jokerView = null;
 			}
-			else if (aktView.equals(solverView))
-			{
-				// Instanz l�schenn
-				aktView = null;
-				solverView.OnFree();
-				solverView = null;
-			}
 			else if (aktView.equals(spoilerView))
 			{
 				// Instanz l�schenn
@@ -1623,12 +1604,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		frame.addView((View) aktView);
 		aktView.OnShow();
 
-		InfoDownSlider.invalidate();
 		((View) aktView).forceLayout();
 
 		if (aktView != null) ((View) aktView).setVisibility(View.VISIBLE);
 		if (aktTabView != null) ((View) aktTabView).setVisibility(View.VISIBLE);
-		if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
 		if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
 
 	}
@@ -1651,9 +1630,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			frame.setVisibility(View.INVISIBLE);
 		}
-
-		InfoDownSlider.invalidate();
-
 	}
 
 	private void showTabletView(ViewOptionsMenu view, ViewID Id)
@@ -1676,7 +1652,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		tabFrame.addView((View) aktTabView);
 		aktTabView.OnShow();
 		aktTabViewId = Id;
-		InfoDownSlider.invalidate();
 		((View) aktTabView).forceLayout();
 
 	}
@@ -1697,8 +1672,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		frame = (FrameLayout) this.findViewById(R.id.layoutContent);
 		tabFrame = (FrameLayout) this.findViewById(R.id.tabletLayoutContent);
 		GlFrame = (FrameLayout) this.findViewById(R.id.layoutGlContent);
-
-		InfoDownSlider = (downSlider) this.findViewById(R.id.downSlider);
 
 		Mic_Icon = (Mic_On_Flash) this.findViewById(R.id.mic_flash);
 
@@ -1844,8 +1817,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 			case MotionEvent.ACTION_POINTER_DOWN:
 			case MotionEvent.ACTION_DOWN:
-				glListener.onTouchDownBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex),
-						event.getPointerId(pointerIndex), 0);
+				glListener.onTouchDownBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex), event.getPointerId(pointerIndex),
+						0);
 				break;
 			case MotionEvent.ACTION_MOVE:
 				glListener.onTouchDraggedBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex),
@@ -1897,8 +1870,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (GlobalCore.ifCacheSelected())
 		{
-			String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-"
-					+ GlobalCore.getSelectedCache().getName());
+			String validName = FileIO
+					.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
 			mediaCacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
 			// Title = Global.SelectedCache().Name;
 		}
@@ -1932,8 +1905,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (GlobalCore.ifCacheSelected())
 		{
-			String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-"
-					+ GlobalCore.getSelectedCache().getName());
+			String validName = FileIO
+					.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
 			mediaCacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
 			// Title = Global.SelectedCache().Name;
 		}
@@ -1981,8 +1954,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			if (GlobalCore.ifCacheSelected())
 			{
-				String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-"
-						+ GlobalCore.getSelectedCache().getName());
+				String validName = FileIO
+						.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
 				mediaCacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
 				// Title = Global.SelectedCache().Name;
 			}
@@ -2410,29 +2383,29 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					{
 						MessageBox.Show(Translation.Get("GPSon?"), Translation.Get("GPSoff"), MessageBoxButtons.YesNo,
 								MessageBoxIcon.Question, new DialogInterface.OnClickListener()
+						{
+							@Override
+							public void onClick(DialogInterface dialog, int button)
+							{
+								// Behandle das ergebniss
+								switch (button)
 								{
-									@Override
-									public void onClick(DialogInterface dialog, int button)
-									{
-										// Behandle das ergebniss
-										switch (button)
-										{
-										case -1:
-											// yes open gps settings
-											startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-											break;
-										case -2:
-											// no,
-											break;
-										case -3:
+								case -1:
+									// yes open gps settings
+									startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+									break;
+								case -2:
+									// no,
+									break;
+								case -3:
 
-											break;
-										}
+									break;
+								}
 
-										dialog.dismiss();
-									}
+								dialog.dismiss();
+							}
 
-								});
+						});
 					}
 				});
 
@@ -2634,7 +2607,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					{
 						Config.hasFTF_PlugIn.setValue(true);
 					}
-					else if (sinfo.packageName.contains("de.CB_PQ_PlugIn"))// Don't bind, is an Widget
+					else if (sinfo.packageName.contains("de.CB_PQ_PlugIn")) // Don't bind, is an Widget
 					{
 						Config.hasPQ_PlugIn.setValue(true);
 					}
@@ -2913,12 +2886,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							}
 						}
 
-						if (InfoDownSlider != null)
-						{
-							InfoDownSlider.ActionUp();
-							((View) InfoDownSlider).setVisibility(View.INVISIBLE);
-						}
-
 						if (aktView != null) ((View) aktView).setVisibility(View.VISIBLE);
 						if (aktTabView != null) ((View) aktTabView).setVisibility(View.VISIBLE);
 						if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
@@ -3005,7 +2972,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 						if (aktView != null) ((View) aktView).setVisibility(View.INVISIBLE);
 						if (aktTabView != null) ((View) aktTabView).setVisibility(View.INVISIBLE);
-						if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
 						if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
 						log.debug("Show AndroidView");
 					}
@@ -3034,11 +3000,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 								{
 									if (aktView != null) ((View) aktView).setVisibility(View.VISIBLE);
 									if (aktTabView != null) ((View) aktTabView).setVisibility(View.VISIBLE);
-									if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
 									if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
 								}
-								// set position of slider
-								downSlider.ButtonShowStateChanged();
 							}
 						});
 
@@ -3051,17 +3014,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			@Override
 			public void firstShow()
 			{
-				Timer timer = new Timer();
-				TimerTask task = new TimerTask()
-				{
-					@Override
-					public void run()
-					{
-						downSlider.ButtonShowStateChanged();
-					}
-				};
-				timer.schedule(task, 200);
-
 				if (mustRunSearch)
 				{
 					log.info("mustRunSearch");
@@ -3089,8 +3041,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					public void run()
 					{
 
-						log.debug("Set Android Content Sizeleft/top/right/bottom :" + String.valueOf(left) + "/" + String.valueOf(top)
-								+ "/" + String.valueOf(right) + "/" + String.valueOf(bottom));
+						log.debug("Set Android Content Sizeleft/top/right/bottom :" + String.valueOf(left) + "/" + String.valueOf(top) + "/"
+								+ String.valueOf(right) + "/" + String.valueOf(bottom));
 
 						// set Content size
 

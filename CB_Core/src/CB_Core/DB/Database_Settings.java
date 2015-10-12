@@ -28,7 +28,6 @@ public class Database_Settings extends Database_Core
 	public Database_Settings(SQLite database)
 	{
 		super(database);
-		database.setLatestDatabaseChange(Database.LatestDatabaseChange);
 		Settings = this;
 	}
 

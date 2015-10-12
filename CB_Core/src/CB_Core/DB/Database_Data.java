@@ -49,7 +49,6 @@ public class Database_Data extends Database_Core
 	public Database_Data(SQLite database)
 	{
 		super(database);
-		database.setLatestDatabaseChange(Database.LatestDatabaseChange);
 		Query = new CacheList();
 		Data = this;
 

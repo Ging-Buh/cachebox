@@ -18,9 +18,12 @@ package de.cb.sqlite;
 /**
  * TODO document
  * 
- * @author Hoepfner 2015
+ * @author Longri 2015
  */
 public interface AlternateDatabase
 {
 	void alternateDatabase(SQLite db, int databaseSchemeVersion);
+
+	int databaseSchemeVersion();
+
 }

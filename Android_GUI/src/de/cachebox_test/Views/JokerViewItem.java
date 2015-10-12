@@ -13,8 +13,6 @@ import android.text.TextPaint;
 import android.view.View;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
-import de.cachebox_test.Components.CacheDraw;
-import de.cachebox_test.Components.CacheDraw.DrawStyle;
 import de.cachebox_test.Ui.ActivityUtils;
 
 public class JokerViewItem extends View
@@ -71,7 +69,8 @@ public class JokerViewItem extends View
 					Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 		}
 		LayoutTelefon = new StaticLayout("Tel: " + joker.Telefon, LayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-		LayoutBemerkung = new StaticLayout("Bem.:" + joker.Bemerkung, LayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+		LayoutBemerkung = new StaticLayout("Bem.:" + joker.Bemerkung, LayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f,
+				false);
 		LayoutTextPaintBold = new TextPaint(LayoutTextPaint);
 		LayoutTextPaintBold.setFakeBoldText(true);
 		LayoutName = new StaticLayout(joker.GCLogin + " (" + joker.Vorname + ", " + joker.Name + ")", LayoutTextPaintBold, TextWidth,
@@ -183,7 +182,7 @@ public class JokerViewItem extends View
 
 		if (joker == null) // this Item is the Cache
 		{
-			CacheDraw.DrawInfo(cache, canvas, DrawingRec, BackgroundColor, DrawStyle.withoutSeparator, false);
+
 		}
 		else
 		{
