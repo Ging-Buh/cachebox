@@ -146,22 +146,23 @@ public class CategoryDAO
 	// Categories
 	public void LoadCategoriesFromDatabase()
 	{
-		// alle Categories einlesen
+		// read all Categories
 
 		CoreSettingsForward.Categories.beginnTransaction();
-
 		CoreSettingsForward.Categories.clear();
 
 		CoreCursor reader = Database.Data.rawQuery("select ID, GPXFilename, Pinned from Category", null);
-		reader.moveToFirst();
-
-		while (reader.isAfterLast() == false)
+		if (reader != null)
 		{
-			Category category = ReadFromCursor(reader);
-			CoreSettingsForward.Categories.add(category);
-			reader.moveToNext();
+			reader.moveToFirst();
+			while (reader.isAfterLast() == false)
+			{
+				Category category = ReadFromCursor(reader);
+				CoreSettingsForward.Categories.add(category);
+				reader.moveToNext();
+			}
+			reader.close();
 		}
-		reader.close();
 		CoreSettingsForward.Categories.sort();
 		CoreSettingsForward.Categories.endTransaction();
 	}
