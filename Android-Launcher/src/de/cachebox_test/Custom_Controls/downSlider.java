@@ -196,7 +196,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 				// String.format("%n") + "y= " + Y);
 				if (drag)
 				{
-					int value = Y - 25;// y - 25 minus halbe Button H�he
+					int value = Y - 25;// y - 25 minus halbe Button Hï¿½he
 					int buttom = (int) (height - (10 * 2.2));
 					if (value > buttom) value = buttom - 1;
 
@@ -622,7 +622,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		return mBtnRec.contains(x, y);
 	}
 
-	public void ActionUp() // Slider zur�ck scrolllen lassen
+	public void ActionUp() // Slider zurï¿½ck scrolllen lassen
 	{
 
 		if (main.mainActivity != null)

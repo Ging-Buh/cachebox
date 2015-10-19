@@ -161,12 +161,12 @@ public class splash extends Activity
 		else
 			GlobalCore.displayType = DisplayType.Small;
 
-		// überprüfen, ob ACB im Hochformat oder Querformat gestartet wurde.
+		// Ã¼berprÃ¼fen, ob ACB im Hochformat oder Querformat gestartet wurde.
 		// Hochformat -> Handymodus
 		// Querformat -> Tablet-Modus
 		if (w > h) isLandscape = true;
 
-		// Porträt erzwingen wenn Normal oder Small display
+		// PortrÃ¤t erzwingen wenn Normal oder Small display
 		if (isLandscape && (GlobalCore.displayType == DisplayType.Normal || GlobalCore.displayType == DisplayType.Small))
 		{
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -390,7 +390,7 @@ public class splash extends Activity
 			}
 
 			// externe SD wurde gefunden != internal
-			// oder Tablet Layout m�glich
+			// oder Tablet Layout mï¿½glich
 			// -> Auswahldialog anzeigen
 			try
 			{
@@ -1172,7 +1172,7 @@ public class splash extends Activity
 			// if (LolipopworkPath != null) workPath = LolipopworkPath + "/cachebox";
 		}
 
-		// Zur Kompatibilität mit Älteren Installationen wird hier noch die redirection.txt abgefragt
+		// Zur KompatibilitÃ¤t mit Ã„lteren Installationen wird hier noch die redirection.txt abgefragt
 		if (FileIO.FileExists(workPath + "/redirection.txt"))
 		{
 			BufferedReader Filereader;
@@ -1266,7 +1266,7 @@ public class splash extends Activity
 			}
 		});
 
-		// wenn die Settings DB neu Erstellt wurde, m�ssen die Default werte
+		// wenn die Settings DB neu Erstellt wurde, mï¿½ssen die Default werte
 		// geschrieben werden.
 		if (Database.Settings.isDbNew())
 		{
@@ -1398,7 +1398,7 @@ public class splash extends Activity
 		Config.showSandbox.setValue(showSandbox);
 		Config.AcceptChanges();
 
-		// UiSize Structur für die Berechnung der Größen zusammen stellen!
+		// UiSize Structur fÃ¼r die Berechnung der GrÃ¶ÃŸen zusammen stellen!
 
 		log.debug("Mesure FrameLayout w/h:" + String.valueOf(width) + "/" + String.valueOf(height));
 

@@ -245,7 +245,7 @@ public class GcApiLogin extends Activity
 			if (pos < 0) return;
 			int pos2 = html.indexOf("</span>", pos);
 			if (pos2 < pos) return;
-			// zwischen pos und pos2 sollte ein g�ltiges AccessToken sein!!!
+			// zwischen pos und pos2 sollte ein gï¿½ltiges AccessToken sein!!!
 			final String accessToken = html.substring(pos + search.length(), pos2);
 
 			Thread thread = new Thread()
@@ -256,8 +256,8 @@ public class GcApiLogin extends Activity
 					GroundspeakAPI.CacheStatusLiteValid = false;
 
 					// store the encrypted AccessToken in the Config file
-					// wir bekommen den Key schon verschl�sselt, deshalb muss er
-					// nicht noch einmal verschl�sselt werden!
+					// wir bekommen den Key schon verschlï¿½sselt, deshalb muss er
+					// nicht noch einmal verschlï¿½sselt werden!
 					if (Config.StagingAPI.getValue())
 					{
 						Config.GcAPIStaging.setEncryptedValue(accessToken);
