@@ -52,11 +52,11 @@ import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_Locator.CoordinateGPS;
-import CB_Utils.DB.CoreCursor;
 import CB_Utils.Interfaces.ICancel;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.FileIO;
 import CB_Utils.http.HttpUtils;
+import de.cb.sqlite.CoreCursor;
 
 public class SearchForGeocaches_Core
 {

@@ -308,11 +308,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		}
 	}
 
-	/**
-	 * @param userName
-	 *            Config.settings.GcLogin.getValue()
-	 * @return
-	 */
+
 	public boolean ImTheOwner()
 	{
 		String userName = CB_Core_Settings.GcLogin.getValue().toLowerCase(Locale.getDefault());
@@ -479,16 +475,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		}
 	}
 
-	/**
-	 * @param SpoilerFolderLocal
-	 *            Config.settings.SpoilerFolderLocal.getValue()
-	 * @param DefaultSpoilerFolder
-	 *            Config.settings.SpoilerFolder.getDefaultValue()
-	 * @param DescriptionImageFolder
-	 *            Config.settings.DescriptionImageFolder.getValue()
-	 * @param UserImageFolder
-	 *            Config.settings.UserImageFolder.getValue()
-	 */
+
 	public void ReloadSpoilerRessources()
 	{
 		if (detail != null)

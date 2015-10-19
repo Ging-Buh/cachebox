@@ -9,11 +9,11 @@ import CB_Core.Replication.Replication;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
-import CB_Utils.DB.CoreCursor;
-import CB_Utils.DB.Database_Core.Parameters;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.SDBM_Hash;
 import CB_Utils.Util.UnitFormatter;
+import de.cb.sqlite.CoreCursor;
+import de.cb.sqlite.Database_Core.Parameters;
 
 public class WaypointDAO
 {
@@ -108,7 +108,7 @@ public class WaypointDAO
 
 			if (WP.IsUserWaypoint)
 			{
-				// HasUserData nicht updaten wenn der Waypoint kein UserWaypoint ist (z.B. über API)
+				// HasUserData nicht updaten wenn der Waypoint kein UserWaypoint ist (z.B. �ber API)
 				args = new Parameters();
 				args.put("hasUserData", true);
 				try
@@ -226,7 +226,7 @@ public class WaypointDAO
 		}
 	}
 
-	// Hier wird überprüft, ob für diesen Cache ein Start-Waypoint existiert und dieser in diesem Fall zurückgesetzt
+	// Hier wird �berpr�ft, ob f�r diesen Cache ein Start-Waypoint existiert und dieser in diesem Fall zur�ckgesetzt
 	// Damit kann bei der Definition eines neuen Start-Waypoints vorher der alte entfernt werden damit sichergestellt ist dass ein Cache nur
 	// 1 Start-Waypoint hat
 	public void ResetStartWaypoint(Cache cache, Waypoint except)

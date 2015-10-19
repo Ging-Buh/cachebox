@@ -20,6 +20,13 @@ import java.io.IOException;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import CB_Core.CoreSettingsForward;
 import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
@@ -50,13 +57,6 @@ import CB_Utils.Lists.CB_List;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileList;
 
-import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-
 /**
  * @author ging-buh
  * @author Longri
@@ -81,6 +81,7 @@ public class splash extends MainViewBase {
 
     @Override
     protected void Initial() {
+	GL.that.RestartRender();
 	switcher = !switcher;
 	if (switcher && !breakForWait) {
 	    // in jedem Render Vorgang einen Step ausf�hren
@@ -88,6 +89,7 @@ public class splash extends MainViewBase {
 	    case 0:
 		atlas = new TextureAtlas(Gdx.files.internal("skins/default/day/SplashPack.spp"));
 		setBackground(new SpriteDrawable(atlas.createSprite("splash-back")));
+
 		break;
 	    case 1:
 		ini_Progressbar();

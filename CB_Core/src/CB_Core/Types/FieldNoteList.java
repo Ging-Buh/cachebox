@@ -25,8 +25,8 @@ import org.slf4j.LoggerFactory;
 import CB_Core.DB.Database;
 import CB_Core.Enums.LogTypes;
 import CB_Core.Settings.CB_Core_Settings;
-import CB_Utils.DB.CoreCursor;
 import CB_Utils.Util.iChanged;
+import de.cb.sqlite.CoreCursor;
 
 public class FieldNoteList extends ArrayList<FieldNoteEntry>
 {

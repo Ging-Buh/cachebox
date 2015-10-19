@@ -21,7 +21,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.LoggerFactory;
 
-import CB_Locator.LocatorSettings;
 import CB_UI_Base.Energy;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Lists.CB_List;
@@ -166,11 +165,7 @@ class MultiThreadQueueProcessor extends Thread
 					}
 					catch (Exception ex1)
 					{
-						if (LocatorSettings.FireMapQueueProcessorExceptions.getValue())
-						{
-							throw ex1;
-						}
-						// log.error("MapViewGL.queueProcessor.doInBackground()", "1", ex1);
+						log.error("MapViewGL.queueProcessor.doInBackground()", "1", ex1);
 						Thread.sleep(200);
 					}
 
@@ -186,17 +181,7 @@ class MultiThreadQueueProcessor extends Thread
 		catch (Exception ex3)
 		{
 			log.error("MapViewGL.queueProcessor.doInBackground()", "3", ex3);
-			if (LocatorSettings.FireMapQueueProcessorExceptions.getValue())
-			{
-				try
-				{
-					throw new Exception(ex3);
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-			}
+
 			try
 			{
 				Thread.sleep(200);

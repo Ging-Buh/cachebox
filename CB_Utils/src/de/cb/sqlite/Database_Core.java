@@ -1,4 +1,4 @@
-package CB_Utils.DB;
+package de.cb.sqlite;
 
 import java.util.HashMap;
 

@@ -2,6 +2,11 @@ package CB_UI_Base.GL_UI.Menu;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Global;
 import CB_UI_Base.Enums.WrapType;
@@ -22,11 +27,6 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
-
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class Menu extends ButtonDialog {
 
@@ -147,6 +147,7 @@ public class Menu extends ButtonDialog {
 	    hideMoreMenu();
 	}
 	animateStartTime = GL.that.getStateTime();
+	mListView.notifyDataSetChanged();
     }
 
     private void showMoreMenu() {
@@ -315,10 +316,8 @@ public class Menu extends ButtonDialog {
 	@Override
 	public ListViewItemBase getView(int position) {
 	    ListViewItemBase v = mItems.get(position);
-
-	    v.setWidth(mListView.getWidth());
-
-	    v.resetInitial();
+	    //v.setWidth(mListView.getWidth());
+	    //	    v.resetInitial();
 	    return v;
 	}
 
@@ -339,7 +338,7 @@ public class Menu extends ButtonDialog {
 	menuItem.setOnClickListener(MenuItemClickListner);
 	mItems.add(menuItem);
 	mListView.notifyDataSetChanged();
-	resetInitial();
+	//resetInitial();
     }
 
     public MenuItem addItem(int ID, String StringId) {
@@ -401,11 +400,11 @@ public class Menu extends ButtonDialog {
 	    return;
 
 	try {
-	    float WithOffset = isMoreMenu ? mMoreMenuToggleButtonWidth / 2 : 0;
+	    float WithOffset = isMoreMenu ? mMoreMenuToggleButtonWidth : 0;
 	    if (isMoreMenu && mMoreMenu != null)
 		WithOffset = mMoreMenuToggleButtonWidth;
 	    if (!isMoreMenu && mMoreMenu != null)
-		WithOffset = mMoreMenuToggleButtonWidth / 2;
+		WithOffset = mMoreMenuToggleButtonWidth / 1.1f;
 	    if (mListView != null) {
 		mListView.setSize(this.getContentSize().width - WithOffset, this.getContentSize().height);
 		mListView.setZeroPos();
@@ -420,9 +419,7 @@ public class Menu extends ButtonDialog {
 	    float w = mListView.getWidth();
 	    for (MenuItemBase item : mItems) {
 		item.setWidth(w);
-		item.resetInitial();
 	    }
-	    mListView.notifyDataSetChanged();
 
 	    if (mMoreMenuToggleButton != null) {
 
@@ -431,9 +428,9 @@ public class Menu extends ButtonDialog {
 		    this.setWidth(getLeve0_Width());
 		    mMoreMenu.setWidth(getLeve0_Width());
 		    mMoreMenu.setX(-this.getLeftWidth() - this.getRightWidth() - 2.5f);
-		    // TODO die -2,5f müssen auf meinem S3 sein,
+		    // TODO die -2,5f m�ssen auf meinem S3 sein,
 		    // damit die linke Position passt auf dem desktop sind es 0 auf anderen?
-		    // ich habe hier den zusammen hang noch nicht finden können
+		    // ich habe hier den zusammen hang noch nicht finden k�nnen
 		    mMoreMenuToggleButton.setX(getLevel0_x() - mMoreMenuToggleButton.getHalfWidth() + (margin * 2));
 
 		    mMoreMenuLabel.setText(mMoreMenuTextLeft);

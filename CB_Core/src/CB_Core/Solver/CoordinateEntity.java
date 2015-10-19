@@ -10,7 +10,7 @@ import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_Utils.DB.CoreCursor;
+import de.cb.sqlite.CoreCursor;
 
 public class CoordinateEntity extends Entity
 {
@@ -68,7 +68,7 @@ public class CoordinateEntity extends Entity
 		}
 		Coordinate coord = null;
 		if (selCache != null)
-		// In 99,9% der Fälle dürfte der Wegpunkt zum aktuellen Cache gehören
+		// In 99,9% der F�lle d�rfte der Wegpunkt zum aktuellen Cache geh�ren
 		{
 			if (selCache.getGcCode().equalsIgnoreCase(gcCode))
 			{

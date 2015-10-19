@@ -17,12 +17,6 @@ package CB_UI_Base.GL_UI;
 
 import org.slf4j.LoggerFactory;
 
-import CB_UI_Base.Global;
-import CB_UI_Base.GL_UI.Skin.SkinBase;
-import CB_UI_Base.GL_UI.Skin.SkinSettings;
-import CB_UI_Base.Math.UiSizes;
-import CB_Utils.Util.FileIO;
-
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -34,6 +28,12 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+
+import CB_UI_Base.Global;
+import CB_UI_Base.GL_UI.Skin.SkinBase;
+import CB_UI_Base.GL_UI.Skin.SkinSettings;
+import CB_UI_Base.Math.UiSizes;
+import CB_Utils.Util.FileIO;
 
 /**
  * Enthält die benutzten und geladenen GDX-Fonts
@@ -161,6 +161,10 @@ public class Fonts {
     }
 
     public static GlyphLayout MeasureSmall(String txt) {
+
+	if (txt == null || txt.equals(""))
+	    txt = "text";
+
 	if (measureSmallCache == null)
 	    measureSmallCache = new BitmapFontCache(Fonts.getSmall());
 	GlyphLayout bounds = measureSmallCache.setText(txt, 0, 0);
@@ -169,6 +173,8 @@ public class Fonts {
     }
 
     public static GlyphLayout MeasureBig(String txt) {
+	if (txt == null || txt.equals(""))
+	    txt = "text";
 	if (measureBigCache == null)
 	    measureBigCache = new BitmapFontCache(Fonts.getBig());
 	GlyphLayout bounds = measureBigCache.setText(txt, 0, 0);
@@ -177,6 +183,8 @@ public class Fonts {
     }
 
     public static GlyphLayout MeasureWrapped(String txt, float width) {
+	if (txt == null || txt.equals(""))
+	    txt = "text";
 	if (measureNormalCache == null)
 	    measureNormalCache = new BitmapFontCache(Fonts.getNormal());
 	GlyphLayout bounds = measureNormalCache.setText(txt, 0, 0, width, 0, true);//measureNormalCache.setWrappedText(txt, 0, 0, width);

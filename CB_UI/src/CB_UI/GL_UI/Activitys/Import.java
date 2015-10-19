@@ -25,6 +25,8 @@ import java.util.TimerTask;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.PocketQuery;
@@ -57,6 +59,7 @@ import CB_UI_Base.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.Spinner;
@@ -87,8 +90,6 @@ import CB_Utils.Util.CopyHelper.Copy;
 import CB_Utils.Util.CopyHelper.CopyRule;
 import cb_rpc.Functions.RpcAnswer;
 
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-
 public class Import extends ActivityBase implements ProgressChangedEvent {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(Import.class);
     final boolean MAP_LINE_ACTIVE = false;
@@ -113,7 +114,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     private long ANIMATION_TICK = 450;
     private int animationValue = 0;
 
-    private Date ImportStart;
+    protected Date ImportStart;
 
     private Boolean importStarted = false;
 
@@ -287,11 +288,11 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
 	pgBar.setProgress(0, "");
 
-	float SmallLineHeight = Fonts.MeasureSmall("Tg").height;
+	float progressLineHeight = Fonts.MeasureSmall("Tg").height * 3;
 
-	lblProgressMsg = new Label(leftBorder + margin, lblTitle.getY() - margin - SmallLineHeight, innerWidth - margin - margin, SmallLineHeight, "ProgressMsg");
-
-	lblProgressMsg.setFont(Fonts.getSmall());
+	lblProgressMsg = new Label(leftBorder + margin, lblTitle.getY() - margin - progressLineHeight, innerWidth - margin - margin, progressLineHeight, "ProgressMsg");
+	lblProgressMsg.setFont(Fonts.getBubbleSmall());
+	lblProgressMsg.setVAlignment(VAlignment.TOP);
 
 	this.addChild(pgBar);
 	this.addChild(lblProgressMsg);

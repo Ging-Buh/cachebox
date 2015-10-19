@@ -137,6 +137,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
+import android.media.MediaScannerConnection;
+import android.media.MediaScannerConnection.MediaScannerConnectionClient;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -181,7 +183,6 @@ import de.cachebox_test.Components.CacheNameView;
 import de.cachebox_test.Custom_Controls.Mic_On_Flash;
 import de.cachebox_test.Custom_Controls.downSlider;
 import de.cachebox_test.Custom_Controls.QuickButtonList.HorizontalListView;
-import de.cachebox_test.DB.AndroidDB;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AndroidClipboard;
@@ -190,6 +191,7 @@ import de.cachebox_test.Views.ViewGL;
 import de.cachebox_test.Views.Forms.GcApiLogin;
 import de.cachebox_test.Views.Forms.MessageBox;
 import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
+import de.cb.sqlite.AndroidDB;
 
 /**
  * @author Longri
@@ -375,13 +377,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		super.onCreate(savedInstanceState);
 		GL.resetIsInitial();
 
-		// add flags for run on lock screen
-		// this.getWindow().addFlags(
-		// WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-		// | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-
-		this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-
 		if (GlobalCore.RunFromSplash)
 		{
 			log.info("CACHEBOX", "main-OnCreate Run from Splash");
@@ -536,6 +531,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		Config.AcceptChanges();
 
+		setLockScreenProperty();
+		AndroidSettings.RunOverLockScreen.addChangedEventListner(new iChanged() {
+			@Override
+			public void isChanged() {
+				setLockScreenProperty();
+			}
+		});
+
+
 		// Initial Android TexturePacker
 		new Android_Packer();
 
@@ -644,6 +648,24 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
 
 		initialViewGL();
+	}
+
+	private void setLockScreenProperty() {
+		// add flags for run on lock screen
+
+
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (AndroidSettings.RunOverLockScreen.getValue()) {
+					main.this.getWindow().addFlags(
+							WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+				} else{
+					main.this.getWindow().clearFlags(
+							WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+				}
+			}
+		});
 	}
 
 	boolean flag = false;
@@ -1283,6 +1305,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public void onDestroy()
 	{
 
+		try
+		{
+			new SingleMediaScanner(null, new File(Config.FieldNotesGarminPath.getValue()));
+		}
+		catch (Exception e)
+		{
+		}
+
 		if (mReceiver != null) this.unregisterReceiver(mReceiver);
 		mReceiver = null;
 
@@ -1361,6 +1391,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					Database.Settings.Close();
 
 				}
+
 				super.onDestroy();
 				if (GlobalCore.RunFromSplash) System.exit(0);
 			}
@@ -3386,5 +3417,32 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	}
 
 	private boolean losseChek = false;
+
+}
+
+class SingleMediaScanner implements MediaScannerConnectionClient
+{
+
+	private MediaScannerConnection mMs;
+	private File mFile;
+
+	public SingleMediaScanner(Context context, File f)
+	{
+		mFile = f;
+		mMs = new MediaScannerConnection(context, this);
+		mMs.connect();
+	}
+
+	@Override
+	public void onMediaScannerConnected()
+	{
+		mMs.scanFile(mFile.getAbsolutePath(), null);
+	}
+
+	@Override
+	public void onScanCompleted(String path, Uri uri)
+	{
+		mMs.disconnect();
+	}
 
 }

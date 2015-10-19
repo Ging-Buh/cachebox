@@ -29,9 +29,9 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.Waypoint;
-import CB_Utils.DB.CoreCursor;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.FileIO;
+import de.cb.sqlite.CoreCursor;
 
 import com.badlogic.gdx.files.FileHandle;
 
@@ -281,7 +281,7 @@ public class CacheListDAO
 	}
 
 	/**
-	 * Löscht alle Spoiler und Description Images der übergebenen Liste mit GC-Codes
+	 * L�scht alle Spoiler und Description Images der �bergebenen Liste mit GC-Codes
 	 * 
 	 * @param list
 	 * @param SpoilerFolder

@@ -103,7 +103,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	private final Point lastMovement = new Point(0, 0);
 	protected Vector2 myPointOnScreen;
 	protected boolean showAccuracyCircle;
-	public int aktZoom;
+	protected int aktZoom;
 	protected KineticZoom kineticZoom = null;
 	private KineticPan kineticPan = null;
 	protected float maxTilesPerScreen = 0;
@@ -253,7 +253,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	{
 		LocatorSettings.MapInitLatitude.setValue(center.getLatitude());
 		LocatorSettings.MapInitLongitude.setValue(center.getLongitude());
-		LocatorSettings.lastZoomLevel.setValue(aktZoom);
+		LocatorSettings.lastZoomLevel.setValue(zoomBtn.getZoom());
 		super.onStop();
 	}
 
@@ -947,14 +947,13 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			{
 				iconFactor = CB_UI_Base_Settings.MapViewDPIFaktor.getValue();
 
-				int setAktZoom = LocatorSettings.lastZoomLevel.getValue();
 				int setMaxZoom = LocatorSettings.OsmMaxLevel.getValue();
 				int setMinZoom = LocatorSettings.OsmMinLevel.getValue();
 
-				aktZoom = setAktZoom;
 				zoomBtn.setMaxZoom(setMaxZoom);
 				zoomBtn.setMinZoom(setMinZoom);
-				zoomBtn.setZoom(aktZoom);
+				zoomBtn.setZoom(LocatorSettings.lastZoomLevel.getValue());
+				aktZoom = zoomBtn.getZoom();
 
 				if (zoomScale != null)
 				{

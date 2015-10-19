@@ -31,8 +31,8 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.CacheDetail;
 import CB_Core.Types.DLong;
 import CB_Locator.Coordinate;
-import CB_Utils.DB.CoreCursor;
-import CB_Utils.DB.Database_Core.Parameters;
+import de.cb.sqlite.CoreCursor;
+import de.cb.sqlite.Database_Core.Parameters;
 
 public class CacheDAO
 {

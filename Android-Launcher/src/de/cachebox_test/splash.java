@@ -96,8 +96,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidFiles;
 
 import de.cachebox_test.Components.copyAssetFolder;
-import de.cachebox_test.DB.AndroidDB;
 import de.cachebox_test.Views.Forms.MessageBox;
+import de.cb.sqlite.AndroidDB;
 
 public class splash extends Activity
 {
@@ -117,7 +117,6 @@ public class splash extends Activity
 	String workPath;
 	IgetFolderReturnListner getFolderReturnListner;
 	int AdditionalWorkPathCount;
-	SharedPreferences AndroidSettings;
 	MessageBox msg;
 
 	ArrayList<String> AdditionalWorkPathArray;
@@ -294,11 +293,11 @@ public class splash extends Activity
 		// initial GDX
 		Gdx.files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
 		// first, try to find stored preferences of workPath
-		AndroidSettings = this.getSharedPreferences(Global.PREFS_NAME, 0);
+		androidSetting = this.getSharedPreferences(Global.PREFS_NAME, 0);
 
-		workPath = AndroidSettings.getString("WorkPath", Environment.getDataDirectory() + "/cachebox");
-		boolean askAgain = AndroidSettings.getBoolean("AskAgain", true);
-		showSandbox = AndroidSettings.getBoolean("showSandbox", false);
+		workPath = androidSetting.getString("WorkPath", Environment.getDataDirectory() + "/cachebox");
+		boolean askAgain = androidSetting.getBoolean("AskAgain", true);
+		showSandbox = androidSetting.getBoolean("showSandbox", false);
 
 		Global.initTheme(this);
 		Global.InitIcons(this);
@@ -307,7 +306,7 @@ public class splash extends Activity
 		platformConector.setGetFileListner(fileExplorer);
 		platformConector.setGetFolderListner(fileExplorer);
 
-		String LangPath = AndroidSettings.getString("Sel_LanguagePath", "");
+		String LangPath = androidSetting.getString("Sel_LanguagePath", "");
 		if (LangPath.length() == 0)
 		{
 			// set default lang
@@ -835,6 +834,7 @@ public class splash extends Activity
 				File testFolder = new File(testFolderName);
 
 				sandboxParentPath = new File(externalSd).getParent() + "/Android/data/" + getPackageName();
+
 				sandboxPath = new File(sandboxParentPath + "/files");
 
 				File test = new File(testFolder + "/Test.txt");
@@ -857,8 +857,9 @@ public class splash extends Activity
 				// Check Sandbox Path
 				try
 				{
+					// create Sandbox folder with getExternalFilesDir(null);
+					getExternalFilesDir(null); // new File(sandboxParentPath).mkdirs(); dosen't work
 
-					new File(sandboxParentPath).mkdirs();
 					String testFolderName = sandboxPath.getAbsolutePath() + File.separator + "Test";
 
 					File testFolder = new File(testFolderName);
@@ -887,17 +888,17 @@ public class splash extends Activity
 	private ArrayList<String> getAdditionalWorkPathArray()
 	{
 		ArrayList<String> retList = new ArrayList<String>();
-		AdditionalWorkPathCount = AndroidSettings.getInt("AdditionalWorkPathCount", 0);
+		AdditionalWorkPathCount = androidSetting.getInt("AdditionalWorkPathCount", 0);
 		for (int i = 0; i < AdditionalWorkPathCount; i++)
 		{
-			retList.add(AndroidSettings.getString("AdditionalWorkPath" + String.valueOf(i), ""));
+			retList.add(androidSetting.getString("AdditionalWorkPath" + String.valueOf(i), ""));
 		}
 		return retList;
 	}
 
 	private void writeAdditionalWorkPathArray(ArrayList<String> list)
 	{
-		Editor editor = AndroidSettings.edit();
+		Editor editor = androidSetting.edit();
 
 		// first remove all
 		for (int i = 0; i < AdditionalWorkPathCount; i++)
@@ -933,7 +934,7 @@ public class splash extends Activity
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 
-		if (resultCode == RESULT_OK)
+		if (resultCode == RESULT_OK && requestCode == Global.REQUEST_CODE_GET_WRITE_PERMISSION_ANDROID_5)
 		{
 			Uri treeUri = data.getData();
 
@@ -966,7 +967,7 @@ public class splash extends Activity
 
 		}
 
-		if (requestCode == Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR)
+		if (resultCode == RESULT_OK && requestCode == Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR)
 		{
 			if (resultCode == android.app.Activity.RESULT_OK && data != null)
 			{
@@ -1110,7 +1111,6 @@ public class splash extends Activity
 
 				while (width == 0 || height == 0)
 				{
-					log.debug("wait for splsh layout");
 					splash.this.runOnUiThread(new Runnable()
 					{
 						@Override
@@ -1277,6 +1277,9 @@ public class splash extends Activity
 		{
 			Config.settings.ReadFromDB();
 		}
+
+		// Add Android Only Settings
+		AndroidSettings.addToSettiongsList();
 
 		new CB_SLF4J(workPath);
 		CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());

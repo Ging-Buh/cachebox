@@ -1,24 +1,24 @@
-package de;
+package de.cb.sqlite;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import CB_Utils.DB.CoreCursor;
+import de.cb.sqlite.CoreCursor;
 
-public class TestCursor extends CoreCursor
+public class DesktopCursor extends CoreCursor
 {
 	private ResultSet rs;
 	private PreparedStatement ps;
 	private int rowcount;
 
-	public TestCursor(ResultSet rs, PreparedStatement ps)
+	public DesktopCursor(ResultSet rs, PreparedStatement ps)
 	{
 		this.rs = rs;
 		this.ps = ps;
 	}
 
-	public TestCursor(ResultSet rs, int rowcount, PreparedStatement ps)
+	public DesktopCursor(ResultSet rs, int rowcount, PreparedStatement ps)
 	{
 		this.rs = rs;
 		this.rowcount = rowcount;

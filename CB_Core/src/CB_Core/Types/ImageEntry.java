@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.net.URI;
 
 import CB_Core.Import.DescriptionImageGrabber;
-import CB_Utils.DB.CoreCursor;
+import de.cb.sqlite.CoreCursor;
 
 public class ImageEntry implements Serializable
 {

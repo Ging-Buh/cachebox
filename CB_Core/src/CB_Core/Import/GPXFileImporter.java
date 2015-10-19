@@ -24,8 +24,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.slf4j.LoggerFactory;
+
+import com.thebuzzmedia.sjxp.XMLParser;
+import com.thebuzzmedia.sjxp.XMLParserException;
+import com.thebuzzmedia.sjxp.rule.DefaultRule;
+import com.thebuzzmedia.sjxp.rule.IRule;
+import com.thebuzzmedia.sjxp.rule.IRule.Type;
 
 import CB_Core.StaticFinal;
 import CB_Core.DAO.WaypointDAO;
@@ -43,18 +50,19 @@ import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Utils.Lists.CB_List;
 
-import com.thebuzzmedia.sjxp.XMLParser;
-import com.thebuzzmedia.sjxp.XMLParserException;
-import com.thebuzzmedia.sjxp.rule.DefaultRule;
-import com.thebuzzmedia.sjxp.rule.IRule;
-import com.thebuzzmedia.sjxp.rule.IRule.Type;
-
 public class GPXFileImporter
 {
 	final static org.slf4j.Logger logger = LoggerFactory.getLogger(GPXFileImporter.class);
-	private static SimpleDateFormat datePattern1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
-	private static SimpleDateFormat datePattern2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-	private static SimpleDateFormat datePattern3 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+	private final static SimpleDateFormat DATE_PATTERN_1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
+	private final static SimpleDateFormat DATE_PATTERN_3 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+	private final static SimpleDateFormat DATE_PATTERN_2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+	static
+	{
+		DATE_PATTERN_1.setTimeZone(TimeZone.getTimeZone("EST"));
+		DATE_PATTERN_2.setTimeZone(TimeZone.getTimeZone("EST"));
+		DATE_PATTERN_3.setTimeZone(TimeZone.getTimeZone("EST"));
+	}
 
 	private File mGpxFile;
 	private String mDisplayFilename;
@@ -1696,21 +1704,21 @@ public class GPXFileImporter
 
 	private static Date parseDate(String text) throws Exception
 	{
-		Date date = parseDateWithFormat(datePattern1, text);
+		Date date = parseDateWithFormat(DATE_PATTERN_1, text);
 		if (date != null)
 		{
 			return date;
 		}
 		else
 		{
-			date = parseDateWithFormat(datePattern2, text);
+			date = parseDateWithFormat(DATE_PATTERN_2, text);
 			if (date != null)
 			{
 				return date;
 			}
 			else
 			{
-				date = parseDateWithFormat(datePattern3, text);
+				date = parseDateWithFormat(DATE_PATTERN_3, text);
 				if (date != null)
 				{
 					return date;
@@ -1725,8 +1733,8 @@ public class GPXFileImporter
 
 	private static Date parseDateWithFormat(SimpleDateFormat df, String text) throws Exception
 	{
-		// TODO hier m�sste mal �ber die Zeitzone nachgedacht werden -
-		// irgendwas ist an den Daten, die von GC.com kommen, komisch
+		// TODO write an own parser, original works but to match.
+
 		Date date = null;
 		try
 		{
@@ -1737,28 +1745,4 @@ public class GPXFileImporter
 		}
 		return date;
 	}
-
-	// private static Boolean LoadBooleanValueFromDB(String sql) // Found-Status aus Datenbank auslesen
-	// {
-	// CoreCursor reader = Database.Data.rawQuery(sql, null);
-	// try
-	// {
-	// reader.moveToFirst();
-	// while (!reader.isAfterLast())
-	// {
-	// if (reader.getInt(0) != 0)
-	// { // gefunden. Suche abbrechen
-	// return true;
-	// }
-	// reader.moveToNext();
-	// }
-	// }
-	// finally
-	// {
-	// reader.close();
-	// }
-	//
-	// return false;
-	// }
-
 }

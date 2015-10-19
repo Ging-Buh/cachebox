@@ -77,10 +77,10 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.StringH;
-import CB_Utils.DB.CoreCursor;
 import CB_Utils.Events.ProgressChangedEvent;
 import CB_Utils.Events.ProgresssChangedEventList;
 import cb_rpc.Functions.RpcAnswer;
+import de.cb.sqlite.CoreCursor;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 

@@ -1,6 +1,6 @@
 package CB_Utils.Settings;
 
-import CB_Utils.DB.Database_Core;
+import de.cb.sqlite.Database_Core;
 
 public class SettingsDAO
 {

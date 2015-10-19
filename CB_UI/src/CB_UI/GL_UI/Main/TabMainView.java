@@ -404,6 +404,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 	// create MapView Instanz
 	CB_TabView mapTap = GlobalCore.isTab ? RightTab : LeftTab;
 	TabMainView.mapView = new MapView(mapTap.getContentRec(), MapMode.Normal, "MapView");
+	MapView.that.SetZoom(Config.lastZoomLevel.getValue());
 
 	platformConector.FirstShow();
 	filterSetChanged();

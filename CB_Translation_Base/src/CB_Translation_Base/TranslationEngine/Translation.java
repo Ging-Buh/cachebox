@@ -67,7 +67,7 @@ public class Translation
 	{
 		that = this;
 		mWorkPath = WorkPath;
-		BR = System.getProperty("line.separator");
+		BR = "\n"; //System.getProperty("line.separator");
 		mStringList = new CB_List<Translations>();
 		mRefTranslation = new CB_List<Translations>();
 		mMissingStringList = new CB_List<MissingTranslation>();

@@ -36,6 +36,7 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>>
 	protected T value;
 	protected T defaultValue;
 	protected T lastValue;
+	protected boolean needRestart = false;
 
 	/**
 	 * saves whether this setting is changed and needs to be saved
@@ -210,5 +211,11 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>>
 	public boolean isDefault()
 	{
 		return value.equals(defaultValue);
+	}
+
+	public SettingBase<T> setNeedRestart()
+	{
+		needRestart = true;
+		return this;
 	}
 }
