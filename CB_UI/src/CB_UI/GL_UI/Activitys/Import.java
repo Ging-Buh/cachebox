@@ -1274,11 +1274,16 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 	// finish close activity and notify changes
 
 	CachListChangedEventList.Call();
+	String Msg;
 
-	Date Importfin = new Date();
-	long ImportZeit = Importfin.getTime() - ImportStart.getTime();
+	if (ImportStart != null) {
+	    Date Importfin = new Date();
+	    long ImportZeit = Importfin.getTime() - ImportStart.getTime();
 
-	String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "C " + String.valueOf(GPXFileImporter.LogCount) + "L in " + String.valueOf(ImportZeit);
+	    Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "C " + String.valueOf(GPXFileImporter.LogCount) + "L in " + String.valueOf(ImportZeit);
+	} else {
+	    Msg = "Import canceld";
+	}
 
 	log.debug(Msg);
 
