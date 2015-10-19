@@ -41,6 +41,7 @@ public class CacheInfo extends CB_View_Base {
     public static final int SHOW_S_D_T = 256;
     public static final int SHOW_VOTE = 512;
     public static final int SHOW_ICON = 1024;
+    public static final int SHOW_HIDDEN_DATE = 2048;
 
     /**
      * SHOW_GC, SHOW_NAME, SHOW_COMPASS
@@ -48,9 +49,9 @@ public class CacheInfo extends CB_View_Base {
     public static final int VIEW_MODE_CACHE_LIST = SHOW_GC + SHOW_NAME + SHOW_COMPASS + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 19;
 
     /**
-     * SHOW_COMPASS, SHOW_OWNER, SHOW_CORRDS, SHOW_GC
+     * SHOW_COMPASS, SHOW_OWNER, SHOW_CORRDS, SHOW_GC, SHOW_HIDDEN_DATE 
      */
-    public static final int VIEW_MODE_DESCRIPTION = SHOW_GC + SHOW_COORDS + SHOW_OWNER + SHOW_COMPASS + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 29;
+    public static final int VIEW_MODE_DESCRIPTION = SHOW_GC + SHOW_COORDS + SHOW_OWNER + SHOW_HIDDEN_DATE + SHOW_COMPASS + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 29;
 
     /**
      * SHOW_OWNER, SHOW_CORRDS, SHOW_GC, SHOW_LAST_FOUND
@@ -58,9 +59,9 @@ public class CacheInfo extends CB_View_Base {
     public static final int VIEW_MODE_COMPAS = 60;
 
     /**
-     * SHOW_NAME, SHOW_OWNER, SHOW_CORRDS, SHOW_GC, SHOW_LAST_FOUND, SHOW_ATTRIBUTES
+     * SHOW_NAME, SHOW_OWNER, SHOW_CORRDS, SHOW_GC, SHOW_LAST_FOUND, SHOW_ATTRIBUTES, SHOW_HIDDEN_DATE 
      */
-    public static final int VIEW_MODE_SLIDER = SHOW_ATTRIBUTES + SHOW_LAST_FOUND + SHOW_GC + SHOW_COORDS + SHOW_OWNER + SHOW_NAME + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 126
+    public static final int VIEW_MODE_SLIDER = SHOW_ATTRIBUTES + SHOW_LAST_FOUND + SHOW_GC + SHOW_COORDS + SHOW_OWNER + SHOW_HIDDEN_DATE + SHOW_NAME + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 126
 
     /**
      * SHOW_COORDS, SHOW_COMPASS, SHOW_NAME
@@ -76,6 +77,11 @@ public class CacheInfo extends CB_View_Base {
      * SHOW_NAME, SHOW_OWNER, SHOW_CORRDS
      */
     public static final int VIEW_MODE_BUBBLE = SHOW_COORDS + SHOW_OWNER + SHOW_NAME + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 30
+
+    /**
+     * SHOW_NAME, SHOW_OWNER, SHOW_CORRDS
+     */
+    public static final int VIEW_MODE_BUBBLE_EVENT = SHOW_COORDS + SHOW_HIDDEN_DATE + SHOW_NAME + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T;
 
     /**
      * SHOW_S_D_T
@@ -437,8 +443,18 @@ public class CacheInfo extends CB_View_Base {
 	    text.append(mCache.getName());
 	    text.append(br);
 	}
-	if (mCache instanceof Cache && ifModeFlag(SHOW_OWNER)) {
-	    text.append("by " + mCache.getOwner() + ", " + UnitFormatter.getReadableDate(mCache.getDateHidden()));
+	if (mCache instanceof Cache && (ifModeFlag(SHOW_OWNER) || ifModeFlag(SHOW_HIDDEN_DATE))) {
+	    if (ifModeFlag(SHOW_OWNER)) {
+		text.append("by " + mCache.getOwner());
+		if (ifModeFlag(SHOW_HIDDEN_DATE)) {
+		    text.append(", ");
+		}
+	    }
+
+	    if (ifModeFlag(SHOW_HIDDEN_DATE)) {
+		text.append(UnitFormatter.getReadableDate(mCache.getDateHidden()));
+	    }
+
 	    text.append(br);
 	}
 

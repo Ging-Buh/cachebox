@@ -95,7 +95,10 @@ public class Cache implements Comparable<Cache>, Serializable
 	private byte[] GcId;
 
 	/**
-	 * Bin ich der Owner? </br>-1 noch nicht getestet </br>1 ja </br>0 nein
+	 * Bin ich der Owner? </br>
+	 * -1 noch nicht getestet </br>
+	 * 1 ja </br>
+	 * 0 nein
 	 */
 	private int myCache = -1;
 	private boolean isSearchVisible = true;
@@ -308,7 +311,6 @@ public class Cache implements Comparable<Cache>, Serializable
 		}
 	}
 
-
 	public boolean ImTheOwner()
 	{
 		String userName = CB_Core_Settings.GcLogin.getValue().toLowerCase(Locale.getDefault());
@@ -474,7 +476,6 @@ public class Cache implements Comparable<Cache>, Serializable
 			return false;
 		}
 	}
-
 
 	public void ReloadSpoilerRessources()
 	{
@@ -1337,6 +1338,20 @@ public class Cache implements Comparable<Cache>, Serializable
 		{
 			if (filterValue != (found ? 1 : -1)) return true;
 		}
+		return false;
+	}
+
+	/**
+	 * Returns true if the Cache a event like Giga, Cito, Event or Mega
+	 * 
+	 * @return
+	 */
+	public boolean isEvent()
+	{
+		if (this.Type == CacheTypes.Giga) return true;
+		if (this.Type == CacheTypes.CITO) return true;
+		if (this.Type == CacheTypes.Event) return true;
+		if (this.Type == CacheTypes.MegaEvent) return true;
 		return false;
 	}
 
