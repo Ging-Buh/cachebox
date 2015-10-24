@@ -16,7 +16,7 @@
 package CB_Core.Types;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -177,16 +177,20 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 		lFieldNotes.LoadFieldNotes("", "Timestamp ASC", LoadingType.Loadall);
 
 		File txtFile = new File(dirFileName);
-		FileWriter writer;
+		FileOutputStream writer;
 		try
 		{
-			writer = new FileWriter(txtFile);
+			writer = new FileOutputStream(txtFile);
+
+			// write utf8 bom EF BB BF
+			byte[] bom =
+				{ (byte) 239, (byte) 187, (byte) 191 };
+			writer.write(bom);
 
 			for (FieldNoteEntry fieldNote : lFieldNotes)
 			{
 				String log = fieldNote.gcCode + "," + fieldNote.GetDateTimeString() + "," + fieldNote.type.toString() + ",\"" + fieldNote.comment + "\"\n";
-				writer.write(log + "\n");
-
+				writer.write((log + "\n").getBytes("UTF-8"));
 			}
 			writer.flush();
 			writer.close();

@@ -777,6 +777,8 @@ public class FieldNotesView extends V_ListView {
 		    lvAdapter = new CustomAdapter(lFieldNotes);
 		    that.setBaseAdapter(lvAdapter);
 
+		    FieldNoteList.CreateVisitsTxt(Config.FieldNotesGarminPath.getValue());
+
 		    break;
 		case GL_MsgBox.BUTTON_NEGATIVE:
 		    // No button clicked

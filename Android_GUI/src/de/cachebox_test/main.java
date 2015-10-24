@@ -536,13 +536,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		Config.AcceptChanges();
 
 		setLockScreenProperty();
-		AndroidSettings.RunOverLockScreen.addChangedEventListner(new iChanged() {
+		AndroidSettings.RunOverLockScreen.addChangedEventListner(new iChanged()
+		{
 			@Override
-			public void isChanged() {
+			public void isChanged()
+			{
 				setLockScreenProperty();
 			}
 		});
-
 
 		// Initial Android TexturePacker
 		new Android_Packer();
@@ -654,17 +655,22 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		initialViewGL();
 	}
 
-	private void setLockScreenProperty() {
+	private void setLockScreenProperty()
+	{
 		// add flags for run on lock screen
 
-
-		runOnUiThread(new Runnable() {
+		runOnUiThread(new Runnable()
+		{
 			@Override
-			public void run() {
-				if (AndroidSettings.RunOverLockScreen.getValue()) {
+			public void run()
+			{
+				if (AndroidSettings.RunOverLockScreen.getValue())
+				{
 					main.this.getWindow().addFlags(
 							WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-				} else{
+				}
+				else
+				{
 					main.this.getWindow().clearFlags(
 							WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 				}
@@ -1312,9 +1318,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		try
 		{
 			new SingleMediaScanner(null, new File(Config.FieldNotesGarminPath.getValue()));
+			log.info("Main=> MediaScanner FieldNotes");
 		}
 		catch (Exception e)
 		{
+			log.error("Main=> MediaScanner FieldNotes: " + e.getMessage());
 		}
 
 		if (mReceiver != null) this.unregisterReceiver(mReceiver);

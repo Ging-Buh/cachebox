@@ -26,7 +26,9 @@ import java.util.TimerTask;
 
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.FieldNoteEntry;
+import CB_Core.Types.FieldNoteList;
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListView;
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListView.FilterSetEntry;
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListViewItem;
@@ -214,6 +216,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		    if (!altfieldNote.equals(fieldNote)) {
 			fieldNote.uploaded = false;
 			fieldNote.UpdateDatabase();
+			FieldNoteList.CreateVisitsTxt(Config.FieldNotesGarminPath.getValue());
 		    }
 
 		    boolean dl = false;
