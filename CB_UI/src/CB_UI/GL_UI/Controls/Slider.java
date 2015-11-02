@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_UI.Config;
@@ -11,6 +13,7 @@ import CB_UI.Events.SelectedCacheEvent;
 import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.WaypointViewItem;
+import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Handler;
@@ -27,8 +30,7 @@ import CB_UI_Base.Math.SizeChangedEvent;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.LogLevel;
 import CB_Utils.Util.HSV_Color;
-
-import com.badlogic.gdx.graphics.g2d.Batch;
+import CB_Utils.Util.iChanged;
 
 public class Slider extends CB_View_Base implements SelectedCacheEvent {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(Slider.class);
@@ -100,9 +102,24 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 
 	mSlideBoxContent.setBackground(new ColorDrawable(transBackColor));
 	this.addChild(mSlideBoxContent);
-
 	this.addChild(quickButtonList);
 	this.addChild(mSlideBox);
+
+	//register QuickButtonStateChangedEvent
+	CB_UI_Settings.quickButtonShow.addChangedEventListner(new iChanged() {
+
+	    @Override
+	    public void isChanged() {
+		if (CB_UI_Settings.quickButtonShow.getValue()) {
+		    quickButtonList.setHeight(QuickButtonMaxHeight);
+		} else {
+		    quickButtonList.setHeight(0);
+		}
+		quickButtonList.notifyDataSetChanged();
+		Initial();
+	    }
+	});
+
     }
 
     @Override
@@ -156,12 +173,13 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
     private void setQuickButtonListHeight() {
 	if (Config.quickButtonShow.getValue()) {
 	    if (this.getHeight() - mSlideBox.getMaxY() < QuickButtonMaxHeight) {
-		quickButtonList.setHeight(this.getHeight() - (mSlideBox.getMaxY() - GL_UISizes.margin));
+		quickButtonList.setHeight(this.getHeight() - mSlideBox.getMaxY());
 		quickButtonList.setY(this.getHeight() - quickButtonList.getHeight());
 	    } else {
-		quickButtonList.setHeight(QuickButtonMaxHeight + GL_UISizes.margin);
+		quickButtonList.setHeight(QuickButtonMaxHeight);
 		quickButtonList.setY(this.getHeight() - quickButtonList.getHeight());
 	    }
+
 	} else {
 	    quickButtonList.setHeight(0);
 	}

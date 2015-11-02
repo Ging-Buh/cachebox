@@ -23,6 +23,10 @@ import java.util.TimerTask;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
@@ -31,6 +35,7 @@ import CB_Core.Types.Cache;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
+import CB_UI.GL_UI.Controls.CacheInfo;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI_Base.Global;
@@ -56,10 +61,6 @@ import CB_UI_Base.graphics.GL_Paint;
 import CB_UI_Base.graphics.PolygonDrawable;
 import CB_UI_Base.graphics.Geometry.Line;
 import CB_UI_Base.graphics.Geometry.Quadrangle;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
 /**
  * @author Longri
@@ -136,6 +137,7 @@ public class DescriptionView extends CB_View_Base {
 	    this.removeChild(cacheInfo);
 	cacheInfo = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), 0, cache);
 	cacheInfo.setY(this.getHeight() - cacheInfo.getHeight());
+	cacheInfo.info.setViewMode(CacheInfo.VIEW_MODE_DESCRIPTION);
 
 	if (!Global.isTab)
 	    this.addChild(cacheInfo);

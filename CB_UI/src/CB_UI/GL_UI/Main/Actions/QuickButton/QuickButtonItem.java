@@ -16,6 +16,11 @@
 
 package CB_UI.GL_UI.Main.Actions.QuickButton;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import CB_UI.GlobalCore;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -27,11 +32,6 @@ import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.Math.CB_RectF;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 /**
  * Stellt ein Item der Quick Button List dar
@@ -172,4 +172,10 @@ public class QuickButtonItem extends ListViewItemBase {
     public QuickActions getAction() {
 	return quickActionsEnum;
     }
+
+    @Override
+    public void setY(float i) {
+	super.setY(i);
+    }
+
 }

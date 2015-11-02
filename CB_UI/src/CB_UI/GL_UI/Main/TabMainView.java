@@ -21,6 +21,8 @@ import java.util.TimerTask;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+
 import CB_Core.CoreSettingsForward;
 import CB_Core.FilterProperties;
 import CB_Core.Api.API_ErrorEventHandler;
@@ -117,8 +119,6 @@ import CB_Utils.Settings.SettingModus;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.UnitFormatter;
 import CB_Utils.Util.iChanged;
-
-import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
  * @author ging-buh
@@ -700,12 +700,12 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
     }
 
     public void setContentMaxY(float y) {
-	//log.debug("TabMainView SetContent maxY" + y);
+
 	synchronized (childs) {
 	    for (int i = 0, n = childs.size(); i < n; i++) {
 		GL_View_Base view = childs.get(i);
 		if (view instanceof CB_TabView) {
-		    view.setHeight(y + GL_UISizes.margin);
+		    view.setHeight(y);
 		}
 	    }
 	}

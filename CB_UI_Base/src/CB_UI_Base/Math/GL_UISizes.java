@@ -17,14 +17,14 @@ package CB_UI_Base.Math;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.math.Vector2;
+
 import CB_UI_Base.Global;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Skin.CB_Skin;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Util.iChanged;
-
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * Diese Klasse Kapselt die Werte, welche in der OpenGL Map benï¿½tigt werden. Auch die Benutzen Fonts werden hier gespeichert, da die Grï¿½sse
@@ -263,7 +263,7 @@ public class GL_UISizes implements SizeChangedEvent {
 	GlyphLayout bounds;
 	if (Fonts.getNormal() != null) {
 	    bounds = new GlyphLayout();
-	    bounds.setText(Fonts.getSmall(), "52° 34,806N ");
+	    bounds.setText(Fonts.getSmall(), "52ï¿½ 34,806N ");
 	} else {
 	    bounds = new GlyphLayout();
 	    bounds.height = 20;
@@ -282,17 +282,8 @@ public class GL_UISizes implements SizeChangedEvent {
 
     }
 
-    public static float BottomButtonHeight = convertDip2Pix(65);
+    public static int BottomButtonHeight = convertDip2Pix(65);
     public static float TopButtonHeight = convertDip2Pix(35);
-
-    // public static boolean set_Top_Buttom_Height(float Top, float Bottom)
-    // {
-    // if (BottomButtonHeight == Bottom && TopButtonHeight == Top) return false;
-    //
-    // BottomButtonHeight = Bottom;
-    // TopButtonHeight = Top;
-    // return true;
-    // }
 
     /**
      * Berechnet die Grï¿½ï¿½en der UI-Elemente
@@ -306,11 +297,8 @@ public class GL_UISizes implements SizeChangedEvent {
 	int frameRightWidth = WindowWidth - frameLeftwidth;
 
 	// max 65dp
-	if (frameLeftwidth < 400) {
-	    BottomButtonHeight = Math.min(frameLeftwidth / 5.8f, convertDip2Pix(69));
-	} else {
-	    BottomButtonHeight = Math.min(frameLeftwidth / 5.18f, convertDip2Pix(69));
-	}
+
+	BottomButtonHeight = Math.round(Math.min(frameLeftwidth / 5.8f, convertDip2Pix(63)));
 
 	margin = (float) (6.6666667 * DPI);
 

@@ -53,12 +53,11 @@ import CB_Utils.Interfaces.cancelRunnable;
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(GlobalCore.class);
-    public static final int CurrentRevision = 20151012;
+    public static final int CurrentRevision = 20151102;
 
     public static final String CurrentVersion = "0.8.";
     public static final String VersionPrefix = "test";
 
-    // public static final String ps = System.getProperty("path.separator");
     public static final String AboutMsg = "Team Cachebox (2011-2015)" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";
     public static final String splashMsg = AboutMsg + br + br + "POWERED BY:";
 

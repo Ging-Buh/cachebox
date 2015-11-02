@@ -35,7 +35,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
      * 
      * @author Longri
      */
-    private class extendedCacheInfo extends CacheInfo {
+    class extendedCacheInfo extends CacheInfo {
 
 	public extendedCacheInfo(CB_RectF rec, String Name, Cache value) {
 	    super(rec, Name, value);

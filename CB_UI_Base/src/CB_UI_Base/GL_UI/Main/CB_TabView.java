@@ -2,6 +2,8 @@ package CB_UI_Base.GL_UI.Main;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.math.Vector2;
+
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -11,8 +13,6 @@ import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
-
-import com.badlogic.gdx.math.Vector2;
 
 public class CB_TabView extends CB_View_Base {
 
@@ -65,14 +65,14 @@ public class CB_TabView extends CB_View_Base {
 
     @Override
     protected void Initial() {
-	// Wenn die Anzahl der Buttons = der Anzahl der Möglichen Buttons ist, diese gleichmäßig verteilen
-	if (mButtonList.Buttons.size() == buttonListView.getMaxItemCount()) {
+	// Wenn die Anzahl der Buttons = der Anzahl der Mï¿½glichen Buttons ist, diese gleichmï¿½ï¿½ig verteilen
+	if (mButtonList.Buttons.size() <= buttonListView.getMaxItemCount()) {
 	    float sollDivider = (buttonListView.getWidth() - (GL_UISizes.BottomButtonHeight * mButtonList.Buttons.size())) / (mButtonList.Buttons.size() + 1);
 	    buttonListView.setDividerSize(sollDivider);
 	}
 
-	// Das Button Seitenverhältniss ist 88x76!
-	// Höhe der Buttons einstellen und diese Zentrieren!
+	// Das Button Seitenverhï¿½ltniss ist 88x76!
+	// Hï¿½he der Buttons einstellen und diese Zentrieren!
 	float buttonHeight = GL_UISizes.BottomButtonHeight * 0.863f;
 	for (CB_Button btn : mButtonList.Buttons) {
 	    btn.setHeight(buttonHeight);
@@ -161,7 +161,7 @@ public class CB_TabView extends CB_View_Base {
     /**
      * Beim Wechsel der View, kann es sein, dass noch nicht alle Childs der View geladen sind, da die meisten Childs erst in der initial()
      * erstellt werden. Damit erhalten diese Childs dann kein onShow(). Als Abhilfe werden hier erst 150ms gewartet, bevor ein onShow()
-     * ausgeführt wird.
+     * ausgefï¿½hrt wird.
      */
     private void sendOnShow2aktView() {
 	GL.that.RunOnGL(new IRunOnGL() {
