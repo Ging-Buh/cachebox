@@ -71,10 +71,9 @@ public class EditTextField extends EditTextFieldBase {
     protected float cursorHeight;
     // protected int cursorLine;
     protected float topLine;
-    protected float maxLineCount; // Anzahl der darzustellenden Zeilen
+    protected int maxLineCount; // Anzahl der darzustellenden Zeilen
     protected float leftPos; // Anzahl der Pixel, um die nach links gescrollt ist
     protected float maxTextWidth; // Anzahl der Pixel des sichtbaren Textes
-    protected TextFieldListener listener;
     protected TextFieldFilter filter;
     protected OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 
@@ -148,6 +147,7 @@ public class EditTextField extends EditTextFieldBase {
 	displayText = new ArrayList<EditTextField.DisplayText>();
 	setCursorLine(0, true);
 	lineHeight = style.font.getLineHeight();
+	maxLineCount = (int) ((getHeight() - bgTopHeight - bgBottomHeight) / lineHeight) - 1;
 	setText("");
 	topLine = 0;
 	leftPos = 0;
@@ -264,7 +264,7 @@ public class EditTextField extends EditTextFieldBase {
 
 	    float textY = (int) (getHeight() / 2 + textHeight / 2 + font.getDescent());
 	    textY = (int) getHeight() /*- textHeight*/- bgTopHeight + font.getDescent();
-	    maxLineCount = (getHeight() - bgTopHeight - bgBottomHeight - lineHeight / 2) / lineHeight;
+	    maxLineCount = (int) ((getHeight() - bgTopHeight - bgBottomHeight) / lineHeight) - 1;
 	    maxTextWidth = getWidth() - bgLeftWidth - bgRightWidth;
 
 	    if (selection != null) {
@@ -1788,12 +1788,10 @@ public class EditTextField extends EditTextFieldBase {
     }
 
     public float getScrollPos() {
-	// TODO Auto-generated method stub
 	return (topLine) * lineHeight;
     }
 
     public void setScrollPos(float value) {
-	// TODO Auto-generated method stub
 	topLine = value / lineHeight;
 
 	if (topLine < 0) {
@@ -1802,6 +1800,22 @@ public class EditTextField extends EditTextFieldBase {
 
 	if (displayText.size() - topLine < maxLineCount) {
 	    topLine = displayText.size() - maxLineCount;
+	}
+    }
+
+    public void showFromLine(float lineNo) {
+	if (lineNo < 1) {
+	    topLine = 0;
+	} else {
+	    topLine = lineNo - 1;
+	}
+    }
+
+    public void showLastLines() {
+	if (displayText.size() < this.maxLineCount) {
+	    topLine = 0;
+	} else {
+	    topLine = displayText.size() - this.maxLineCount;
 	}
     }
 

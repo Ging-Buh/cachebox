@@ -310,25 +310,21 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
     private void iniCommentTextField() {
 	CB_RectF rec;
+	float maxTextFieldHeight = Math.max(this.getHeight() / 2.5f, UI_Size_Base.that.getButtonHeight());
 	if (GcVote != null) {
-	    rec = new CB_RectF(leftBorder, GcVote.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
+	    rec = new CB_RectF(leftBorder, GcVote.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, maxTextFieldHeight);
 	} else {
-	    rec = new CB_RectF(leftBorder, lblTime.getY() - UI_Size_Base.that.getButtonHeight() - margin, innerWidth, UI_Size_Base.that.getButtonHeight());
+	    rec = new CB_RectF(leftBorder, lblTime.getY() - UI_Size_Base.that.getButtonHeight() - margin, innerWidth, maxTextFieldHeight);
 	}
 
 	etComment = new EditTextField(this, rec, WrapType.WRAPPED, "DescTextField");
 	etComment.setText(fieldNote.comment);
 
-	// set Size to linecount
-	float maxTextFieldHeight = this.getHeight() / 2.5f;
-	float rand = etComment.getStyle().background.getBottomHeight() + etComment.getStyle().background.getTopHeight();
-	float descriptionHeight = Math.min(maxTextFieldHeight, etComment.getMeasuredHeight() + rand);
-	descriptionHeight = Math.max(descriptionHeight, UI_Size_Base.that.getButtonHeight());
-	etComment.setHeight(descriptionHeight);
+	etComment.setHeight(maxTextFieldHeight);
 	if (GcVote != null) {
-	    etComment.setY(GcVote.getY() - descriptionHeight);
+	    etComment.setY(GcVote.getY() - maxTextFieldHeight);
 	} else {
-	    etComment.setY(lblTime.getY() - descriptionHeight - margin);
+	    etComment.setY(lblTime.getY() - maxTextFieldHeight - margin);
 	}
 
 	etComment.setTextFieldListener(new TextFieldListener() {
@@ -383,6 +379,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
     private void iniTextfieldFocus() {
 	registerTextField(etComment);
+	etComment.showLastLines();
 	registerTextField(tvDate);
 	registerTextField(tvTime);
     }
@@ -411,8 +408,8 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
     private void layoutTextFields() {
 	float maxTextFieldHeight = this.getHeight() / 2.5f;
-	float rand = etComment.getStyle().background.getBottomHeight() + etComment.getStyle().background.getTopHeight();
-	float descriptionHeight = Math.min(maxTextFieldHeight, etComment.getMeasuredHeight() + rand);
+	// float rand = etComment.getStyle().background.getBottomHeight() + etComment.getStyle().background.getTopHeight();
+	float descriptionHeight = maxTextFieldHeight; // Math.min(maxTextFieldHeight, etComment.getMeasuredHeight() + rand);
 
 	descriptionHeight = Math.max(descriptionHeight, UI_Size_Base.that.getButtonHeight());
 
