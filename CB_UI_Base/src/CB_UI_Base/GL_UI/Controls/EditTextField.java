@@ -67,13 +67,23 @@ public class EditTextField extends EditTextFieldBase {
     protected String text, messageText;
     protected ArrayList<DisplayText> displayText;
     protected Cursor cursor = new Cursor(0, 0);
-    // protected int cursor;
     protected float cursorHeight;
-    // protected int cursorLine;
-    protected float topLine;
-    protected int maxLineCount; // Anzahl der darzustellenden Zeilen
-    protected float leftPos; // Anzahl der Pixel, um die nach links gescrollt ist
-    protected float maxTextWidth; // Anzahl der Pixel des sichtbaren Textes
+    /**
+     * oberste sichtbare Zeile ist displayText(topline)
+     */
+    protected int topLine;
+    /**
+     * Anzahl der sichtbaren Zeilen
+     */
+    protected int maxLineCount;
+    /**
+     * Anzahl der Pixel, um die der Text der aktuellen Zeile nach links gescrollt ist
+     */
+    protected float leftPos;
+    /**
+     * Anzahl der sichtbaren Pixel
+     */
+    protected float maxTextWidth;
     protected TextFieldFilter filter;
     protected OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 
@@ -81,7 +91,6 @@ public class EditTextField extends EditTextFieldBase {
     protected StringBuilder passwordBuffer;
 
     protected final Rectangle fieldBounds = new Rectangle();
-    protected float textHeight;
     protected float lineHeight;
     protected final Rectangle scissor = new Rectangle();
     //    protected float renderOffset, textOffset;
@@ -99,6 +108,8 @@ public class EditTextField extends EditTextFieldBase {
 
     float bgTopHeight = 0;
     float bgBottomHeight = 0;
+    float bgLeftWidth = 0;
+    float bgRightWidth = 0;
 
     private WrapType mWrapType = WrapType.SINGLELINE;
 
@@ -147,7 +158,9 @@ public class EditTextField extends EditTextFieldBase {
 	displayText = new ArrayList<EditTextField.DisplayText>();
 	setCursorLine(0, true);
 	lineHeight = style.font.getLineHeight();
+	calculateBackgroundBorders(GL.that.hasFocus(this));
 	maxLineCount = (int) ((getHeight() - bgTopHeight - bgBottomHeight) / lineHeight) - 1;
+	maxTextWidth = getWidth() - bgLeftWidth - bgRightWidth;
 	setText("");
 	topLine = 0;
 	leftPos = 0;
@@ -203,6 +216,41 @@ public class EditTextField extends EditTextFieldBase {
 	return style;
     }
 
+    /**
+     * calculates bgLeftWidth, bgRightWidth, bgTopHeight, bgBottomHeight
+     * @param focused
+     */
+    private void calculateBackgroundBorders(boolean focused) {
+	bgLeftWidth = 0;
+	bgRightWidth = 0;
+	bgTopHeight = 0;
+	bgBottomHeight = 0;
+
+	if (focused) {
+	    if (style.backgroundFocused != null) {
+		bgLeftWidth = style.backgroundFocused.getLeftWidth();
+		bgRightWidth = style.background.getRightWidth();
+		bgTopHeight = style.background.getTopHeight();
+		bgBottomHeight = style.background.getBottomHeight();
+		if (mWrapType == WrapType.SINGLELINE) {
+		    bgTopHeight = (getHeight() - lineHeight) / 2;
+		    bgBottomHeight = (getHeight() - lineHeight) / 2;
+		}
+	    }
+	} else {
+	    if (style.background != null) {
+		bgLeftWidth = style.background.getLeftWidth();
+		bgRightWidth = style.background.getRightWidth();
+		bgTopHeight = style.background.getTopHeight();
+		bgBottomHeight = style.background.getBottomHeight();
+		if (mWrapType == WrapType.SINGLELINE) {
+		    bgTopHeight = (getHeight() - lineHeight) / 2;
+		    bgBottomHeight = (getHeight() - lineHeight) / 2;
+		}
+	    }
+	}
+    }
+
     @Override
     protected void render(Batch batch) {
 	if (this.isDisposed())
@@ -210,60 +258,35 @@ public class EditTextField extends EditTextFieldBase {
 
 	displayTextLock.lock();
 	try {
-	    final BitmapFont font = style.font;
 	    final Color fontColor = style.fontColor;
 	    final Drawable selectionPatch = style.selection;
 	    final Drawable cursorPatch = style.cursor;
+
 	    lineHeight = style.font.getLineHeight();
-
-	    float bgLeftWidth = 0;
-	    float bgRightWidth = 0;
-	    bgTopHeight = 0;
-	    bgBottomHeight = 0;
 	    boolean focused = GL.that.hasFocus(this);
-
+	    calculateBackgroundBorders(focused);
 	    if (focused) {
 		if (style.backgroundFocused != null) {
 		    style.backgroundFocused.draw(batch, x, y, getWidth(), getHeight());
-		    bgLeftWidth = style.backgroundFocused.getLeftWidth();
-		    bgRightWidth = style.background.getRightWidth();
-		    bgTopHeight = style.background.getTopHeight();
-		    bgBottomHeight = style.background.getBottomHeight();
-		    if (mWrapType == WrapType.SINGLELINE) {
-			bgTopHeight = (getHeight() - lineHeight) / 2;
-			bgBottomHeight = (getHeight() - lineHeight) / 2;
-		    }
 		}
 	    } else {
-
 		if (style.background != null) {
 		    style.background.draw(batch, x, y, getWidth(), getHeight());
-		    bgLeftWidth = style.background.getLeftWidth();
-		    bgRightWidth = style.background.getRightWidth();
-		    bgTopHeight = style.background.getTopHeight();
-		    bgBottomHeight = style.background.getBottomHeight();
-		    if (mWrapType == WrapType.SINGLELINE) {
-			bgTopHeight = (getHeight() - lineHeight) / 2;
-			bgBottomHeight = (getHeight() - lineHeight) / 2;
-		    }
 		}
 	    }
 
-	    {// Background is drawed, now set scissor to inner rec
-		batch.end();
+	    // Background is drawn, now set scissor to inner rec
+	    batch.end();
 
-		CB_RectF innerScissorReg = intersectRec.copy();
-		innerScissorReg.setHeight(intersectRec.getHeight() - bgTopHeight - bgBottomHeight);
-		innerScissorReg.setY(intersectRec.getY() + bgBottomHeight);
+	    CB_RectF innerScissorReg = intersectRec.copy();
+	    innerScissorReg.setHeight(intersectRec.getHeight() - bgTopHeight - bgBottomHeight);
+	    innerScissorReg.setY(intersectRec.getY() + bgBottomHeight);
 
-		batch.begin();
+	    batch.begin();
 
-		Gdx.gl.glScissor((int) innerScissorReg.getX(), (int) innerScissorReg.getY(), (int) innerScissorReg.getWidth() + 1, (int) innerScissorReg.getHeight() + 1);
+	    Gdx.gl.glScissor((int) innerScissorReg.getX(), (int) innerScissorReg.getY(), (int) innerScissorReg.getWidth() + 1, (int) innerScissorReg.getHeight() + 1);
 
-	    }
-
-	    float textY = (int) (getHeight() / 2 + textHeight / 2 + font.getDescent());
-	    textY = (int) getHeight() /*- textHeight*/- bgTopHeight + font.getDescent();
+	    float textY = (int) getHeight() - bgTopHeight + style.font.getDescent();
 	    maxLineCount = (int) ((getHeight() - bgTopHeight - bgBottomHeight) / lineHeight) - 1;
 	    maxTextWidth = getWidth() - bgLeftWidth - bgRightWidth;
 
@@ -282,38 +305,34 @@ public class EditTextField extends EditTextFieldBase {
 		    float selectionX = dt.glyphPositions.get(start);
 		    float selectionY = dt.glyphPositions.get(end);
 		    float selectionWidth = selectionY - selectionX;
-		    selectionPatch.draw(batch, x + selectionX + bgLeftWidth - leftPos, y + textY + lineHeight * topLine - lineHeight - line * lineHeight - font.getDescent() / 2, selectionWidth, lineHeight);
+		    selectionPatch.draw(batch, x + selectionX + bgLeftWidth - leftPos, y + textY + lineHeight * topLine - lineHeight - line * lineHeight - style.font.getDescent() / 2, selectionWidth, lineHeight);
 		}
 	    }
 
 	    if ((displayText.size() == 1) && (displayText.get(0).getDisplayText().length() == 0)) {
 		if (!focused && messageText != null) {
 		    if (style.messageFontColor != null) {
-			font.setColor(style.messageFontColor.r, style.messageFontColor.g, style.messageFontColor.b, style.messageFontColor.a);
+			style.font.setColor(style.messageFontColor.r, style.messageFontColor.g, style.messageFontColor.b, style.messageFontColor.a);
 		    } else {
-			font.setColor(0.7f, 0.7f, 0.7f, 1f);
+			style.font.setColor(0.7f, 0.7f, 0.7f, 1f);
 		    }
 
-		    font.draw(batch, messageText, x + bgLeftWidth, y + textY);
+		    style.font.draw(batch, messageText, x + bgLeftWidth, y + textY);
 		}
 	    } else {
-		font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a);
+		style.font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a);
 		textY += lineHeight * topLine;
 		for (DisplayText dt : displayText) {
-		    font.draw(batch, dt.getDisplayText(), x + bgLeftWidth - leftPos, y + textY + mouseTempMove);
+		    style.font.draw(batch, dt.getDisplayText(), x + bgLeftWidth - leftPos, y + textY + mouseTempMove);
 		    textY -= lineHeight;
 		}
 	    }
+
 	    if (focused) {
-
 		if (cursorOn && cursorPatch != null) {
-		    getCursorX();
-		    textY = (int) getHeight() - bgTopHeight + font.getDescent();
-
-		    cursorHeight = font.getLineHeight() + font.getDescent() / 2;
-
-		    cursorPatch.draw(batch, getCursorX() - leftPos, getCursorY() + cursorHeight + font.getDescent(), cursorPatch.getMinWidth(), cursorHeight);
-
+		    textY = (int) getHeight() - bgTopHeight + style.font.getDescent();
+		    cursorHeight = lineHeight + style.font.getDescent() / 2;
+		    cursorPatch.draw(batch, getCursorX(), getCursorY() + cursorHeight + style.font.getDescent(), cursorPatch.getMinWidth(), cursorHeight);
 		}
 	    }
 
@@ -587,7 +606,7 @@ public class EditTextField extends EditTextFieldBase {
 		if (displayText.size() < maxLineCount) {
 		    topLine = 0;
 		} else {
-		    topLine = mouseDownTopLine + (y - mouseDown.y) / lineHeight;
+		    topLine = (int) (mouseDownTopLine + (y - mouseDown.y) / lineHeight);
 		    if (topLine < 0) {
 			topLine = 0;
 		    }
@@ -654,7 +673,7 @@ public class EditTextField extends EditTextFieldBase {
 	// Zeile bestimmen, in die geklickt wurde
 	float clickPos = y;
 	int clickedCursor = 0;
-	int clickedCursorLine = (int) ((this.getHeight() - style.font.getLineHeight() - clickPos + (lineHeight)) / lineHeight) - 1;
+	int clickedCursorLine = (int) ((this.getHeight() - clickPos) / lineHeight) - 1;
 	clickedCursorLine += topLine;
 	if (clickedCursorLine < 0)
 	    clickedCursorLine = 0;
@@ -810,7 +829,7 @@ public class EditTextField extends EditTextFieldBase {
     public Point GetNextCursorPos(Point touch, SelectionMarker.Type type, boolean setCursor) {
 	float x = touch.x - style.backgroundFocused.getLeftWidth() + leftPos;
 	float clickPos = touch.y + cursorHeight / 2;
-	int clickedCursorLine = (int) ((this.getHeight() - style.font.getLineHeight() - clickPos + (lineHeight)) / lineHeight) - 1;
+	int clickedCursorLine = (int) ((this.getHeight() - clickPos) / lineHeight) - 1;
 	clickedCursorLine += topLine;
 	if (clickedCursorLine < 0)
 	    return null;
@@ -1047,7 +1066,10 @@ public class EditTextField extends EditTextFieldBase {
 	return true;
     }
 
-    // liefert das DisplayText-Object der aktuellen Zeile
+    /**
+     * liefert das DisplayText-Object der aktuellen Zeile
+     * @return
+     */
     private DisplayText getAktDisplayText() {
 	if (cursor.line < 0)
 	    return null;
@@ -1057,7 +1079,11 @@ public class EditTextField extends EditTextFieldBase {
 	return newDt;
     }
 
-    // liefert das DisplayText-Object der aktuellen Zeile
+    /**
+     * liefert das DisplayText-Object der angegebenen Zeile
+     * @param line
+     * @return
+     */
     private DisplayText getDisplayText(int line) {
 	if (line < 0)
 	    return null;
@@ -1067,15 +1093,19 @@ public class EditTextField extends EditTextFieldBase {
 	return newDt;
     }
 
-    // Zeile des Cursors ändern. Sicherstellen, dass der Cursor sichtbar ist
+    /**
+     * Zeile des Cursors ändern. Sicherstellen, dass der Cursor sichtbar ist
+     * @param newCursorLine
+     * @param hideCursor
+     */
     private void setCursorLine(int newCursorLine, boolean hideCursor) {
 	cursor.line = newCursorLine;
 	checkCursorVisible(hideCursor);
     }
 
-    private void checkCursorVisible(boolean hideCursor) {
+    private void checkCursorVisible(boolean hideSelectionMarker) {
 	try {
-	    if (hideCursor)
+	    if (hideSelectionMarker)
 		hideSelectionMarker();
 	    // Cursorpos prüfen, ob ausserhalb sichtbaren Bereich (Oben-Unten)
 	    if (cursor.line - topLine >= maxLineCount) {
@@ -1668,6 +1698,11 @@ public class EditTextField extends EditTextFieldBase {
 	public float getWidth() {
 	    return glyphPositions.get(glyphPositions.size - 1) + glyphAdvances.get(glyphAdvances.size - 1);
 	}
+
+	@Override
+	public String toString() {
+	    return this.displayText;
+	}
     }
 
     public float getMeasuredHeight() {
@@ -1685,6 +1720,11 @@ public class EditTextField extends EditTextFieldBase {
 	public int pos;
 	public int line;
 
+	/**
+	 * 
+	 * @param pos
+	 * @param line
+	 */
 	public Cursor(int pos, int line) {
 	    this.pos = pos;
 	    this.line = line;
@@ -1788,11 +1828,11 @@ public class EditTextField extends EditTextFieldBase {
     }
 
     public float getScrollPos() {
-	return (topLine) * lineHeight;
+	return topLine * lineHeight;
     }
 
     public void setScrollPos(float value) {
-	topLine = value / lineHeight;
+	topLine = (int) (value / lineHeight);
 
 	if (topLine < 0) {
 	    topLine = 0;
@@ -1803,7 +1843,7 @@ public class EditTextField extends EditTextFieldBase {
 	}
     }
 
-    public void showFromLine(float lineNo) {
+    public void showFromLine(int lineNo) {
 	if (lineNo < 1) {
 	    topLine = 0;
 	} else {
