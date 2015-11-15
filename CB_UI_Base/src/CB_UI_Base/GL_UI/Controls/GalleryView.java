@@ -226,6 +226,8 @@ public class GalleryView extends H_ListView {
     }
 
     public void scrollItemToCenter(int idx) {
+	if (idx < 0)
+	    return;
 	float defaultpos = mPosDefault.get(idx);
 	float sollpos = defaultpos - this.getHalfWidth() + (mBaseAdapter.getItemSize(idx) / 2);
 	mBottomAnimation = sollpos > mPos;
