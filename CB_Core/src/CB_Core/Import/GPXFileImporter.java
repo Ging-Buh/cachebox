@@ -28,12 +28,6 @@ import java.util.TimeZone;
 
 import org.slf4j.LoggerFactory;
 
-import com.thebuzzmedia.sjxp.XMLParser;
-import com.thebuzzmedia.sjxp.XMLParserException;
-import com.thebuzzmedia.sjxp.rule.DefaultRule;
-import com.thebuzzmedia.sjxp.rule.IRule;
-import com.thebuzzmedia.sjxp.rule.IRule.Type;
-
 import CB_Core.StaticFinal;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
@@ -49,6 +43,12 @@ import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Utils.Lists.CB_List;
+
+import com.thebuzzmedia.sjxp.XMLParser;
+import com.thebuzzmedia.sjxp.XMLParserException;
+import com.thebuzzmedia.sjxp.rule.DefaultRule;
+import com.thebuzzmedia.sjxp.rule.IRule;
+import com.thebuzzmedia.sjxp.rule.IRule.Type;
 
 public class GPXFileImporter
 {
@@ -1588,7 +1588,8 @@ public class GPXFileImporter
 
 				cache.waypoints.add(FinalWp);
 
-				cache.setCorrectedCoordinates(true);
+				// the coordinates of the Cache are not changed. we have a Final with valid coordinates
+				// cache.setCorrectedCoordinates(true);
 			}
 		}
 
