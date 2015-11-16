@@ -1827,8 +1827,8 @@ public class EditTextField extends EditTextFieldBase {
 	return getMeasuredHeight() - bgTopHeight - style.font.getDescent();// displayText.size() * lineHeight;
     }
 
-    public float getScrollPos() {
-	return topLine * lineHeight;
+    public int getTopLineNo() {
+	return topLine + 1; // count No from 1
     }
 
     public void setScrollPos(float value) {
@@ -1843,7 +1843,7 @@ public class EditTextField extends EditTextFieldBase {
 	}
     }
 
-    public void showFromLine(int lineNo) {
+    public void showFromLineNo(int lineNo) {
 	if (lineNo < 1) {
 	    topLine = 0;
 	} else {
