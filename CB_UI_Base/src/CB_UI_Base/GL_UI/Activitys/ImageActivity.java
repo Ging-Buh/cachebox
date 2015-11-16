@@ -97,7 +97,7 @@ public class ImageActivity extends ActivityBase {
 	img = selectionImage;
 	mapIntHeight = (int) this.getHeight();
 	screenCenterW.x = (long) (this.getHalfWidth());
-	screenCenterW.y = (long) -(img.getImageLoader().getSpriteHeight() / 2);
+	screenCenterW.y = (long) -(this.getHalfHeight()); //-(img.getImageLoader().getSpriteHeight() / 2);
 
 	screenCenterT.x = 0;
 	screenCenterT.y = 0;
@@ -158,7 +158,7 @@ public class ImageActivity extends ActivityBase {
 	imageHeading = Gdx.input.getRotation();
 	float x = Gdx.input.getAccelerometerX();
 	float y = Gdx.input.getAccelerometerY();
-	float z = Gdx.input.getAccelerometerY();
+	float z = Gdx.input.getAccelerometerZ();
 
 	// • (|Gpz| < 0.5g) AND (Gpx > 0.5g) AND (|Gpy| < 0.4g): Change orientation to Left
 	// • (|Gpz| < 0.5g) AND (Gpx < -0.5g) AND (|Gpy| < 0.4g): Change orientation to Right

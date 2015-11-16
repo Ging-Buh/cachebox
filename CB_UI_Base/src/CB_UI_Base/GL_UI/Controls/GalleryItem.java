@@ -29,12 +29,12 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
  * @author Longri
  *
  */
-public class GallaryItem extends ListViewItemBackground {
+public class GalleryItem extends ListViewItemBackground {
 
     private final ImageLoader iloader;
     private final Image img;
 
-    public GallaryItem(CB_RectF rec, int Index, ImageLoader loader) {
+    public GalleryItem(CB_RectF rec, int Index, ImageLoader loader) {
 	super(rec, Index, "");
 	iloader = loader;
 
