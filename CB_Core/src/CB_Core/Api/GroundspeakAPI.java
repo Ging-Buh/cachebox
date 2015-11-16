@@ -92,10 +92,14 @@ public class GroundspeakAPI
 	}
 
 	/**
-	 * Read the encrypted AccessToken from the config and check wheter it is correct for Andorid CB </br> If Url_Codiert==true so the
-	 * API-Key is URL-Codiert </br> Like replase '/' with '%2F'</br></br> This is essential for PQ-List
+	 * Read the encrypted AccessToken from the config and check wheter it is correct for Andorid CB </br>
+	 * If Url_Codiert==true so the API-Key is URL-Codiert </br>
+	 * Like replase '/' with '%2F'</br>
+	 * </br>
+	 * This is essential for PQ-List
 	 * 
-	 * @param boolean Url_Codiert
+	 * @param boolean
+	 *            Url_Codiert
 	 * @return
 	 */
 	static String GetAccessToken(boolean Url_Codiert)
@@ -713,7 +717,7 @@ public class GroundspeakAPI
 		}
 
 		int start = 1;
-		int count = 100;
+		int count = 30;
 
 		String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 		while (!cancelRun.cancel() && (finderList.size() > 0 || all))
