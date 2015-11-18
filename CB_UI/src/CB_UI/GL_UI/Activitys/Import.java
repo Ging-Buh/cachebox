@@ -25,8 +25,6 @@ import java.util.TimerTask;
 
 import org.slf4j.LoggerFactory;
 
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.PocketQuery;
@@ -89,6 +87,8 @@ import CB_Utils.Util.FileIO;
 import CB_Utils.Util.CopyHelper.Copy;
 import CB_Utils.Util.CopyHelper.CopyRule;
 import cb_rpc.Functions.RpcAnswer;
+
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Import extends ActivityBase implements ProgressChangedEvent {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(Import.class);
@@ -583,7 +583,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 	lblButKeepLeast.setText(Translation.Get("ButKeepLeast"));
 	LogCollapseBox.addChild(lblButKeepLeast);
 
-	final EditTextField input = new EditTextField(checkBoxCleanLogs.ScaleCenter(2), LogCollapseBox);
+	final EditTextField input = new EditTextField(checkBoxCleanLogs.ScaleCenter(2), LogCollapseBox, this.name + " input");
 	input.setHeight(SmallLineHeight * 2.5f);
 	input.setText(String.valueOf(Config.LogMinCount.getValue()));
 	input.setPos(margin, lblButKeepLeast.getY() - margin - input.getHeight());

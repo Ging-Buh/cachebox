@@ -81,7 +81,7 @@ public class HtmlView extends ScrollBox implements ListLayout {
 
 	    String text = sb.toString();
 
-	    textOnlyField = new EditTextField(this);
+	    textOnlyField = new EditTextField(this, this.name + " textOnlyField");
 	    textOnlyField.setSize(this);
 	    textOnlyField.setWrapType(WrapType.MULTILINE);
 	    textOnlyField.dontShowSoftKeyBoardOnFocus();

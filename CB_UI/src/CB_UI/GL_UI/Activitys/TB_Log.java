@@ -116,7 +116,7 @@ public class TB_Log extends ActivityBase {
 	CacheIcon = new Image(iconRec, "CacheIcon", false);
 	lblPlaced = new Label(iconRec, "CacheName");
 
-	edit = new EditTextField().setWrapType(WrapType.WRAPPED);
+	edit = new EditTextField(this.name + " edit").setWrapType(WrapType.WRAPPED);
 	edit.setWidth(contentBox.getInnerWidth());
 	edit.setHeight(contentBox.getHalfHeight());
 

@@ -852,7 +852,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 	this.focus = setFocus(bLat, bLon, nextFocus);
     }
 
-    private EditTextField invisibleTextField = new EditTextField();
+    private EditTextField invisibleTextField = new EditTextField(this.name + " invisibleTextField");
     private final String utmTest = "ABCDEFGHJKLMNPQRSTUVWXYZ";
 
     private void setUTMFocus(int newFocus) {

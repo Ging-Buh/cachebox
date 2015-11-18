@@ -280,7 +280,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 	scrollBox.addChild(lblDate);
 	CB_RectF rec = new CB_RectF(lblDate.getMaxX() + margin, lblDate.getY() - margin, getWidth() - lblDate.getMaxX() - margin - rightBorder, UI_Size_Base.that.getButtonHeight());
 
-	tvDate = new EditTextField(rec, this);
+	tvDate = new EditTextField(rec, this, this.name + " tvDate");
 	scrollBox.addChild(tvDate);
     }
 
@@ -292,7 +292,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 	scrollBox.addChild(lblTime);
 	CB_RectF rec = new CB_RectF(lblTime.getMaxX() + margin, lblTime.getY() - margin, getWidth() - lblTime.getMaxX() - margin - rightBorder, UI_Size_Base.that.getButtonHeight());
 
-	tvTime = new EditTextField(rec, this);
+	tvTime = new EditTextField(rec, this, this.name + " tvTime");
 	scrollBox.addChild(tvTime);
     }
 

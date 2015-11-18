@@ -149,10 +149,10 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 	btnResultWindow = new Button(Translation.Get("RightWindow"));
 	this.addChild(btnResultWindow);
 
-	edInput = new EditTextField();
+	edInput = new EditTextField(this.name + " edInput");
 	edInput.setWrapType(WrapType.MULTILINE);
 	this.addChild(edInput);
-	edResult = new EditTextField();
+	edResult = new EditTextField(this.name + " edResult");
 	edResult.setWrapType(WrapType.MULTILINE);
 	edResult.disable();
 	edResult.dontShowSoftKeyBoardOnFocus(true);

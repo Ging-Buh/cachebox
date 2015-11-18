@@ -485,6 +485,7 @@ public class DesktopMain
 	{
 		String base = new File("").getAbsolutePath();
 		String workPath = base + "/cachebox";
+		workPath = "C:/Daten/_WCB";
 
 		new Config(workPath);
 

@@ -170,7 +170,7 @@ public class SearchOverPosition extends ActivityBase {
 	box.addChild(lblRadius);
 
 	CB_RectF rec = new CB_RectF(lblRadius.getMaxX() + margin, y, UI_Size_Base.that.getButtonWidthWide(), lineHeight);
-	Radius = new EditTextField(rec, this);
+	Radius = new EditTextField(rec, this, this.name + " Radius");
 	box.addChild(Radius);
 
 	lblRadiusEinheit = new Label(Radius.getMaxX(), y, wEinheit, lineHeight, "");

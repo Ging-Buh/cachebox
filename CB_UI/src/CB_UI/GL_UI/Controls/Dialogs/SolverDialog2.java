@@ -264,7 +264,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     private void createVariableLines() {
 	innerLeft = margin;
 
-	mVariableField = new EditTextField(this);
+	mVariableField = new EditTextField(this, this.name + " mVariableField");
 	mVariableField.setX(innerLeft);
 	mVariableField.setY(innerHeight - mVariableField.getHeight());
 	mVariableField.setWidth(innerWidth - mVariableField.getHeight());
@@ -751,7 +751,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	    }
 	}
 
-	mFormulaField = new EditTextField(this);
+	mFormulaField = new EditTextField(this, this.name + " mFormulaField");
 	mFormulaField.setWrapType(WrapType.SINGLELINE);
 	mFormulaField.setX(innerLeft);
 	mFormulaField.setWidth(innerWidth);
@@ -797,7 +797,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     }
 
     private void showPageZahl() {
-	tbZahl = new EditTextField();
+	tbZahl = new EditTextField(this.name + " tbZahl");
 	tbZahl.dontShowSoftKeyBoardOnFocus(true);
 	tbZahl.setText(sForm);
 	scrollBox.addChild(tbZahl);
@@ -873,7 +873,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
     private void showPageFunction() {
 
-	tbFunction = new EditTextField(this);
+	tbFunction = new EditTextField(this, this.name + " tbFunction");
 	tbFunction.setText(sForm);
 	scrollBox.addChild(tbFunction);
 
@@ -937,7 +937,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	lFunctionParam[i].setText(paramName);
 	scrollBox.addChild(lFunctionParam[i]);
 
-	tbFunctionParam[i] = new EditTextField(SolverDialog2.this);
+	tbFunctionParam[i] = new EditTextField(SolverDialog2.this, this.name + " tbFunctionParam[" + i + "]");
 	tbFunctionParam[i].setText(string);
 	scrollBox.addChild(tbFunctionParam[i]);
 
@@ -1093,7 +1093,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	tbOperator = new EditTextField[2];
 	bOperator = new Button[2];
 	for (int i = 0; i < 2; i++) {
-	    tbOperator[i] = new EditTextField();
+	    tbOperator[i] = new EditTextField(this.name + "tbOperator[" + i + "]");
 	    scrollBox.addChild(tbOperator[i]);
 	    bOperator[i] = new Button("..");
 	    scrollBox.addChild(bOperator[i]);
