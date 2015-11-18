@@ -158,6 +158,7 @@ public class EditTextField extends EditTextFieldBase {
 
     @Override
     public void onResized(CB_RectF rec) {
+	thisInvalidate = true;
 	topLine = 0;
 	leftPos = 0;
 	calculateSizeDependences(GL.that.hasFocus(this));

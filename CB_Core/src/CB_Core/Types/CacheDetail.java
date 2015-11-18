@@ -309,6 +309,11 @@ public class CacheDetail implements Serializable
 		}
 	}
 
+	public void SpoilerForceReEvaluate(Cache cache)
+	{
+		spoilerRessources = null;
+	}
+
 	/**
 	 * @param SpoilerFolderLocal
 	 *            Config.settings.SpoilerFolderLocal.getValue()
@@ -391,7 +396,6 @@ public class CacheDetail implements Serializable
 	private void reloadSpoilerResourcesFromPath(String directory, CB_List<ImageEntry> spoilerRessources2, final Cache cache)
 	{
 		if (!FileIO.DirectoryExists(directory)) return;
-		// log.debug("Loading spoilers from " + directory);
 		File dir = new File(directory);
 		FilenameFilter filter = new FilenameFilter()
 		{

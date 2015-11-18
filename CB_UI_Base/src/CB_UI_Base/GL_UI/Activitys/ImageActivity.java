@@ -178,6 +178,9 @@ public class ImageActivity extends ActivityBase {
 	    //	    log.debug("TOP");
 	}
 
+	// do not rotate until there is a button
+	imageHeading = 0;
+
 	super.render(batch);
 	boolean reduceFps = ((kineticZoom != null) || ((kineticPan != null) && (kineticPan.getStarted())));
 	if (kineticZoom != null) {

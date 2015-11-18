@@ -95,10 +95,7 @@ public class Cache implements Comparable<Cache>, Serializable
 	private byte[] GcId;
 
 	/**
-	 * Bin ich der Owner? </br>
-	 * -1 noch nicht getestet </br>
-	 * 1 ja </br>
-	 * 0 nein
+	 * Bin ich der Owner? </br> -1 noch nicht getestet </br> 1 ja </br> 0 nein
 	 */
 	private int myCache = -1;
 	private boolean isSearchVisible = true;
@@ -475,6 +472,11 @@ public class Cache implements Comparable<Cache>, Serializable
 		{
 			return false;
 		}
+	}
+
+	public void SpoilerForceReEvaluate()
+	{
+		detail.SpoilerForceReEvaluate(this);
 	}
 
 	public void ReloadSpoilerRessources()
