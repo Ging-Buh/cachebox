@@ -48,13 +48,6 @@ public class EditTextField extends EditTextFieldBase {
 
     final static org.slf4j.Logger log = LoggerFactory.getLogger(EditTextField.class);
 
-    public static final char BACKSPACE = 8;
-    public static final char ENTER_DESKTOP = '\r';
-    public static final char ENTER_ANDROID = '\n';
-    public static final char TAB = '\t';
-    public static final char DELETE = 127;
-    public static final char BULLET = 149;
-
     // factor for the size of the selectinMarkers
     static protected final double markerFactor = 2.0;
     protected final float x = 0;
@@ -152,7 +145,7 @@ public class EditTextField extends EditTextFieldBase {
 	setText("");
 	topLine = 0;
 	leftPos = 0;
-	calculateSizeDependences(GL.that.hasFocus(this));
+	calculateSizeDependencies(GL.that.hasFocus(this));
 	this.setClickable(true);
     }
 
@@ -161,7 +154,7 @@ public class EditTextField extends EditTextFieldBase {
 	thisInvalidate = true;
 	topLine = 0;
 	leftPos = 0;
-	calculateSizeDependences(GL.that.hasFocus(this));
+	calculateSizeDependencies(GL.that.hasFocus(this));
     }
 
     public EditTextField setWrapType(WrapType WrapType) {
@@ -215,7 +208,7 @@ public class EditTextField extends EditTextFieldBase {
      * calculates bgLeftWidth, bgRightWidth, bgTopHeight, bgBottomHeight
      * @param focused
      */
-    private void calculateSizeDependences(boolean focused) {
+    private void calculateSizeDependencies(boolean focused) {
 	bgLeftWidth = 0;
 	bgRightWidth = 0;
 	bgTopHeight = 0;
@@ -1817,7 +1810,7 @@ public class EditTextField extends EditTextFieldBase {
     }
 
     public int getTopLineNo() {
-	return topLine + 1; // count No from 1
+	return topLine;
     }
 
     public void setScrollPos(float value) {
@@ -1832,11 +1825,15 @@ public class EditTextField extends EditTextFieldBase {
 	}
     }
 
+    /**
+     * 
+     * @param lineNo
+     */
     public void showFromLineNo(int lineNo) {
-	if (lineNo < 1) {
+	if (lineNo < 0) {
 	    topLine = 0;
 	} else {
-	    topLine = lineNo - 1;
+	    topLine = lineNo;
 	}
     }
 

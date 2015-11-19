@@ -36,12 +36,10 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 	Nothing, Text, Function, Variable, Operator, Waypoint
     }
 
-    private float initialYpos;
     private float boxYPosStart;
     private float boxYPosStored;
 
     private Box mBox;
-    private boolean ignoreStateChange = false;
     private MultiToggleButton btnTxt;
     private MultiToggleButton btnFx;
     private MultiToggleButton btnVar;
@@ -80,7 +78,6 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 	super(rec, name, "Solver", Translation.Get("solver_formula"), MessageBoxButtons.OKCancel, MessageBoxIcon.None, null);
 	this.solver = solver;
 	mSolverString = SolverString;
-	ignoreStateChange = false;
 	page = pages.Nothing;
 	dontRenderDialogBackground = true;
     }
@@ -104,7 +101,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 	float y = msgBoxContentSize.height - TextFieldHeight;
 
 	CB_RectF rec = new CB_RectF(0, y, msgBoxContentSize.width, TextFieldHeight);
-	mVariableField = new EditTextField(this, rec, WrapType.SINGLELINE, "SolverDialogTextField");
+	mVariableField = new EditTextField(this, rec, WrapType.SINGLELINE, this.name + " mVariableField");
 	mVariableField.setText(sVar);
 	// mVariableField.setMsg("Enter formula");
 	scrollBox.addLast(mVariableField);
@@ -367,7 +364,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 	float y = startY;
 	final CB_RectF rec = new CB_RectF(0, y, msgBoxContentSize.width - TextFieldHeight * 2, TextFieldHeight);
 
-	tbFunction = new EditTextField(this, rec, WrapType.SINGLELINE, "SolverDialogTextField");
+	tbFunction = new EditTextField(this, rec, WrapType.SINGLELINE, this.name + " tbFunction");
 	tbFunction.setText(sForm);
 
 	mBox.addNext(tbFunction, 0.8f);
@@ -405,7 +402,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		mBox.addNext(lFunctionParam[i], 0.3f);
 
 		rec2.setY(rec2.getY() - lFunctionParam[i].getHeight() * 3 / 4);
-		tbFunctionParam[i] = new EditTextField(SolverDialog.this, rec2, WrapType.SINGLELINE, "SolverDialogTextFieldParam");
+		tbFunctionParam[i] = new EditTextField(SolverDialog.this, rec2, WrapType.SINGLELINE, this.name + " tbFunctionParam[" + i + "]");
 		tbFunctionParam[i].setText(parameters[i].trim());
 		mBox.addLast(tbFunctionParam[i], 0.7f);
 
@@ -432,7 +429,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 			    lFunctionParam[i].setText("Parameter " + i);
 			    mBox.addNext(lFunctionParam[i], 0.3f);
 			    rec.setY(rec.getY() - lFunctionParam[i].getHeight() * 3 / 4);
-			    tbFunctionParam[i] = new EditTextField(SolverDialog.this, rec, WrapType.SINGLELINE, "SolverDialogTextFieldParam");
+			    tbFunctionParam[i] = new EditTextField(SolverDialog.this, rec, WrapType.SINGLELINE, "selectedFunction" + " tbFunctionParam[" + i + "]");
 			    mBox.addLast(tbFunctionParam[i], 0.7f);
 			}
 		    }
@@ -451,7 +448,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 	// initial FormulaField
 	float y = startY;
 	CB_RectF rec = new CB_RectF(0, y, scrollBox.getInnerWidth(), TextFieldHeight);
-	mFormulaField = new EditTextField(this, rec, WrapType.SINGLELINE, "SolverDialogTextField");
+	mFormulaField = new EditTextField(this, rec, WrapType.SINGLELINE, this.name + " mFormulaField");
 	mFormulaField.setText(sForm);
 	mFormulaField.setZeroPos();
 	mBox.addLast(mFormulaField);
@@ -460,7 +457,6 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 
     @Override
     public void onShow() {
-	initialYpos = this.getY();
 	KeyboardFocusChangedEventList.Add(this);
     }
 

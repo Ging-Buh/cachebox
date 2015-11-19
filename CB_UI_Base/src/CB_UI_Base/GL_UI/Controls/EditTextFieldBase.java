@@ -259,11 +259,9 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 
     protected void showPopUp(int x, int y) {
 
-	popUp = new CopiePastePopUp("CopiePastePopUp=>" + getName(), that);
+	popUp = new CopiePastePopUp(this.name + " popUp", that);
 
 	float noseOffset = popUp.getHalfWidth() / 2;
-
-	// log.debug("Show CopyPaste PopUp");
 
 	CB_RectF world = getWorldRec();
 
