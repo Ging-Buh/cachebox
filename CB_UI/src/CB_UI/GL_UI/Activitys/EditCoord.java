@@ -1,5 +1,8 @@
 package CB_UI.GL_UI.Activitys;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.Clipboard;
+
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -23,9 +26,6 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Converter.UTMConvert;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.utils.Clipboard;
-
 public class EditCoord extends ActivityBase implements ICopyPaste {
     private int aktPage = -1; // Deg-Min
     private UTMConvert convert = new UTMConvert();
@@ -48,17 +48,17 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 
     private Box pnlNumPad;
 
-    // Deg : N_48.46270° E009.28468°
+    // Deg : N_48.46270Â° E009.28468Â°
     private Box pnlD;
     private Button[] btnDLat;
     private Button[] btnDLon;
 
-    // Deg - Min : N_48°27.762' E009°17.081'
+    // Deg - Min : N_48Â°27.762' E009Â°17.081'
     private Box pnlDM;
     private Button[] btnDMLat;
     private Button[] btnDMLon;
 
-    // Deg - Min - Sec : N_48°28'56.16" E009°19'40.14"
+    // Deg - Min - Sec : N_48Â°28'56.16" E009Â°19'40.14"
     private Box pnlDMS;
     private Button[] btnDMSLat;
     private Button[] btnDMSLon;
@@ -250,8 +250,8 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
     private void createD(Box panel) {
 	panel.setOnLongClickListener(LongClickListner);
 
-	this.btnDLat = new Button[9]; // N_48[.]46270[°]
-	this.btnDLon = new Button[9]; // E009[.]28468[°]
+	this.btnDLat = new Button[9]; // N_48[.]46270[Â°]
+	this.btnDLon = new Button[9]; // E009[.]28468[Â°]
 	for (int i = 0; i < 9; i++) {
 	    this.btnDLat[i] = new Button(this, "btnDLat" + i);
 	    this.btnDLon[i] = new Button(this, "btnDLon" + i);
@@ -265,7 +265,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 	for (int i = 4; i < 9; i++) {
 	    panel.addNext(this.btnDLat[i]);
 	}
-	panel.addLast(new Label("°").setFont(Fonts.getBig()), 0.5f);
+	panel.addLast(new Label("Â°").setFont(Fonts.getBig()), 0.5f);
 	// Lon
 	for (int i = 0; i < 4; i++) {
 	    panel.addNext(this.btnDLon[i]);
@@ -274,15 +274,15 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 	for (int i = 4; i < 9; i++) {
 	    panel.addNext(this.btnDLon[i]);
 	}
-	panel.addLast(new Label("°").setFont(Fonts.getBig()), 0.5f);
+	panel.addLast(new Label("Â°").setFont(Fonts.getBig()), 0.5f);
 	this.setClickHandlers(this.btnDLat, this.btnDLon);
     }
 
     private void createDM(Box panel) {
 	panel.setOnLongClickListener(LongClickListner);
 
-	this.btnDMLat = new Button[9]; // N_48[°]29[.]369
-	this.btnDMLon = new Button[9]; // E__9[°]15[.]807
+	this.btnDMLat = new Button[9]; // N_48[Â°]29[.]369
+	this.btnDMLon = new Button[9]; // E__9[Â°]15[.]807
 	for (int i = 0; i < 9; i++) {
 	    this.btnDMLat[i] = new Button(this, "btnDMLat" + i);
 	    this.btnDMLon[i] = new Button(this, "btnDMLon" + i);
@@ -292,7 +292,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 	for (int i = 0; i < 4; i++) {
 	    panel.addNext(this.btnDMLat[i]);
 	}
-	panel.addNext(new Label("°").setFont(Fonts.getBig()), 0.5f);
+	panel.addNext(new Label("Â°").setFont(Fonts.getBig()), 0.5f);
 	panel.addNext(this.btnDMLat[4]);
 	panel.addNext(this.btnDMLat[5]);
 	panel.addNext(new Label(".").setFont(Fonts.getBig()), 0.5f);
@@ -303,7 +303,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 	for (int i = 0; i < 4; i++) {
 	    panel.addNext(this.btnDMLon[i]);
 	}
-	panel.addNext(new Label("°").setFont(Fonts.getBig()), 0.5f);
+	panel.addNext(new Label("Â°").setFont(Fonts.getBig()), 0.5f);
 	panel.addNext(this.btnDMLon[4]);
 	panel.addNext(this.btnDMLon[5]);
 	panel.addNext(new Label(".").setFont(Fonts.getBig()), 0.5f);
@@ -317,8 +317,8 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
     private void createDMS(Box panel) {
 	panel.setOnLongClickListener(LongClickListner);
 
-	this.btnDMSLat = new Button[10]; // N_48[°]28[']56[.]16["]
-	this.btnDMSLon = new Button[10]; // E__9[°]19[']40[.]14["]
+	this.btnDMSLat = new Button[10]; // N_48[Â°]28[']56[.]16["]
+	this.btnDMSLon = new Button[10]; // E__9[Â°]19[']40[.]14["]
 	for (int i = 0; i < 10; i++) {
 	    this.btnDMSLat[i] = new Button(this, "btnDMSLat" + i);
 	    this.btnDMSLon[i] = new Button(this, "btnDMSLon" + i);
@@ -328,7 +328,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 	for (int i = 0; i < 4; i++) {
 	    panel.addNext(this.btnDMSLat[i]);
 	}
-	panel.addNext(new Label("°").setFont(Fonts.getBig()), 0.5f);
+	panel.addNext(new Label("Â°").setFont(Fonts.getBig()), 0.5f);
 	panel.addNext(this.btnDMSLat[4]);
 	panel.addNext(this.btnDMSLat[5]);
 	panel.addNext(new Label("'").setFont(Fonts.getBig()), 0.5f);
@@ -344,7 +344,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 	for (int i = 0; i < 4; i++) {
 	    panel.addNext(this.btnDMSLon[i]);
 	}
-	panel.addNext(new Label("°").setFont(Fonts.getBig()), 0.5f);
+	panel.addNext(new Label("Â°").setFont(Fonts.getBig()), 0.5f);
 	panel.addNext(this.btnDMSLon[4]);
 	panel.addNext(this.btnDMSLon[5]);
 	panel.addNext(new Label("'").setFont(Fonts.getBig()), 0.5f);
@@ -633,7 +633,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 		them.btnUTMZone[f].setText(value);
 	    }
 	}
-	them.setNextUTMFocus(); // weiter zum nächsten Eingabebutton
+	them.setNextUTMFocus(); // weiter zum nÂ°chsten Eingabebutton
     }
 
     private void showPage(int newPage) {
@@ -1011,7 +1011,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 	parseView(); // setting coord
 	String content = coord.FormatCoordinate();
 	clipboard.setContents(content);
-	CoordinateGPS cor = new CoordinateGPS("N 0° 0.00 / E 0° 0.00");
+	CoordinateGPS cor = new CoordinateGPS("N 0Â° 0.00 / E 0Â° 0.00");
 	cor.setValid(false);
 	coord = cor;
 	setButtonValues(aktPage);

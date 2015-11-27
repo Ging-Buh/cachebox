@@ -23,6 +23,9 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
@@ -51,9 +54,6 @@ import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Util.UnitFormatter;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_GenerateRoute extends CB_ActionCommand {
 
@@ -92,7 +92,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand {
     private void GenOpenRoute() {
 
 	if (!Locator.isGPSprovided()) {
-	    GL_MsgBox.Show("GPS ungültig", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+	    GL_MsgBox.Show("GPS ungÃ¼ltig", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
 	    return;
 	} else {
 	    start = Locator.getCoordinate();
@@ -103,7 +103,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand {
 	} else if (GlobalCore.ifCacheSelected()) {
 	    target = GlobalCore.getSelectedCache().Pos;
 	} else {
-	    GL_MsgBox.Show("Cache / WP ungültig", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+	    GL_MsgBox.Show("Cache / WP ungÃ¼ltig", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
 	    return;
 	}
 
@@ -160,8 +160,8 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand {
 						    final String errorMessage = line.substring(errorIdx + 9, endIdx);
 						    wd.close();
 						    GL.that.RunOnGL(new IRunOnGL() {
-							// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
-							// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
+							// wird in RunOnGL ausgefÃ¼hrt, da erst der WaitDialog geschlossen werden muss.
+							// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang spÃ¤ter.
 							@Override
 							public void run() {
 							    GL_MsgBox.Show(errorMessage, "OpenRouteService", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
@@ -199,7 +199,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand {
 							MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, FromPosition.getLatitude(), FromPosition.getLongitude(), lastAcceptedCoordinate.getLatitude(), lastAcceptedCoordinate.getLongitude(), dist);
 							Distance += dist[0];
 							FromPosition = new Coordinate(lastAcceptedCoordinate);
-							IsRoute = true; // min. 2 Punkte, damit es eine gültige Route ist
+							IsRoute = true; // min. 2 Punkte, damit es eine gÃ¼ltige Route ist
 						    }
 						}
 					    }
@@ -214,8 +214,8 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand {
 						wd.close();
 
 						GL.that.RunOnGL(new IRunOnGL() {
-						    // wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
-						    // Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
+						    // wird in RunOnGL ausgefÃ¼hrt, da erst der WaitDialog geschlossen werden muss.
+						    // Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang spÃ¤ter.
 						    @Override
 						    public void run() {
 							String msg = Translation.Get("generateRouteLength") + sDistance;
@@ -226,8 +226,8 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand {
 						wd.close();
 
 						GL.that.RunOnGL(new IRunOnGL() {
-						    // wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
-						    // Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
+						    // wird in RunOnGL ausgefÃ¼hrt, da erst der WaitDialog geschlossen werden muss.
+						    // Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang spÃ¤ter.
 						    @Override
 						    public void run() {
 							GL_MsgBox.Show("no route found", "OpenRouteService", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
@@ -241,8 +241,8 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand {
 					    wd.close();
 
 					    GL.that.RunOnGL(new IRunOnGL() {
-						// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
-						// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
+						// wird in RunOnGL ausgefÃ¼hrt, da erst der WaitDialog geschlossen werden muss.
+						// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang spÃ¤ter.
 						@Override
 						public void run() {
 						    GL_MsgBox.Show("no route found", "OpenRouteService", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
@@ -250,13 +250,13 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand {
 					    });
 					}
 
-					// String page = builder.toString(); //page enthält komplette zurückgelieferte Web-Seite
+					// String page = builder.toString(); //page enthÃ¼llt komplette zurÃ¼ckgelieferte Web-Seite
 				    } catch (ClientProtocolException e) {
 					wd.close();
 
 					GL.that.RunOnGL(new IRunOnGL() {
-					    // wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
-					    // Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
+					    // wird in RunOnGL ausgefÃ¼hrt, da erst der WaitDialog geschlossen werden muss.
+					    // Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang spÃ¤ter.
 					    @Override
 					    public void run() {
 						GL_MsgBox.Show("no route found", "OpenRouteService", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
@@ -266,8 +266,8 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand {
 					wd.close();
 
 					GL.that.RunOnGL(new IRunOnGL() {
-					    // wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
-					    // Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
+					    // wird in RunOnGL ausgefÃ¼hrt, da erst der WaitDialog geschlossen werden muss.
+					    // Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang spÃ¤ter.
 					    @Override
 					    public void run() {
 						GL_MsgBox.Show("no route found", "OpenRouteService", MessageBoxButtons.OK, MessageBoxIcon.Error, null);

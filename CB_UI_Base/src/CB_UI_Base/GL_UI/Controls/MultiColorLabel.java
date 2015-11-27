@@ -15,9 +15,9 @@
  */
 package CB_UI_Base.GL_UI.Controls;
 
-import CB_Utils.Lists.CB_List;
-
 import com.badlogic.gdx.graphics.Color;
+
+import CB_Utils.Lists.CB_List;
 
 /**
  * 
@@ -34,8 +34,8 @@ public class MultiColorLabel extends Label {
 
     private final CB_List<MultiColor> colorList = new CB_List<MultiColorLabel.MultiColor>();
 
-    public MultiColorLabel(float X, float Y, float Width, float Height, String Text) {
-	super(X, Y, Width, Height, Text);
+    public MultiColorLabel(String Name, float X, float Y, float Width, float Height) {
+	super(Name, X, Y, Width, Height);
     }
 
     public void resetMultiColor() {

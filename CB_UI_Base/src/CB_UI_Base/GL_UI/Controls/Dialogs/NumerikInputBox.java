@@ -1,5 +1,7 @@
 package CB_UI_Base.GL_UI.Controls.Dialogs;
 
+import com.badlogic.gdx.Input.Keys;
+
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
@@ -14,8 +16,6 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.UI_Size_Base;
-
-import com.badlogic.gdx.Input.Keys;
 
 public class NumerikInputBox extends CB_View_Base {
 
@@ -135,7 +135,7 @@ public class NumerikInputBox extends CB_View_Base {
 	CB_RectF LabelRec = msgBox.getContentSize().getBounds();
 	LabelRec.setHeight(LabelRec.getHeight() - textFieldRec.getHeight());
 
-	Label label = new Label(LabelRec, "MsgBoxLabel");
+	Label label = new Label("NumerikInputBox" + " label", LabelRec);
 	label.setZeroPos();
 	label.setY(editText.getMaxY() + margin);
 	label.setWrappedText(msg);
@@ -205,7 +205,7 @@ public class NumerikInputBox extends CB_View_Base {
 	CB_RectF LabelRec = msgBox.getContentSize().getBounds();
 	LabelRec.setHeight(LabelRec.getHeight() - textFieldRec.getHeight());
 
-	Label label = new Label(LabelRec, "MsgBoxLabel");
+	Label label = new Label("NumerikInputBox" + " label", LabelRec);
 	label.setZeroPos();
 	label.setY(editText.getMaxY() + margin);
 	label.setWrappedText(msg);

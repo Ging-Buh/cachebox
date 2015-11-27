@@ -18,6 +18,10 @@ package CB_UI.GL_UI.Views;
 import java.text.ParseException;
 import java.util.Date;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.CacheListChangedEventListner;
 import CB_Core.Types.Cache;
@@ -56,10 +60,6 @@ import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.UnitFormatter;
 import CB_Utils.Util.iChanged;
-
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class CompassView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent, invalidateTextureEvent, CacheListChangedEventListner {
     private CB_RectF imageRec;
@@ -286,7 +286,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
     private void Layout() {
 
-	// Die gr��e des Kompasses nach rest Platz berechnen
+	// Die Größe des Kompasses nach rest Platz berechnen
 
 	float compassHeight = 0;
 
@@ -418,7 +418,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	    map.setZeroPos();
 	    rightBox.addChild(map);
 
-	    lblDistance = new Label(margin, margin, rightBox.getWidth(), (Fonts.MeasureBig("T").height * 2.5f), "distanceLabel");
+	    lblDistance = new Label(this.name + " lblDistance", margin, margin, rightBox.getWidth(), (Fonts.MeasureBig("T").height * 2.5f));
 	    BitmapFont font = Fonts.getCompass();
 	    lblDistance.setFont(font);
 	    lblDistance.setHAlignment(HAlignment.CENTER);
@@ -429,7 +429,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	    rightBox.addChild(lblDistance);
 	} else {
 	    float h = Fonts.MeasureBig("T").height * 2.5f;
-	    lblDistance = new Label(margin, leftBox.getHeight() - margin - h, leftBox.getWidth() - margin - margin, h, "distanceLabel");
+	    lblDistance = new Label(this.name + " lblDistance", margin, leftBox.getHeight() - margin - h, leftBox.getWidth() - margin - margin, h);
 	    BitmapFont font = Fonts.getCompass();
 	    lblDistance.setFont(font);
 	    lblDistance.setHAlignment(HAlignment.LEFT);
@@ -440,7 +440,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	    lblDistance.setX(margin);
 	    lblDistance.setVAlignment(VAlignment.BOTTOM);
 
-	    lblAccuracy = new Label(lblDistance, "AccuracyLabel");
+	    lblAccuracy = new Label(this.name + " lblAccuracy", lblDistance);
 	    lblAccuracy.setHAlignment(HAlignment.RIGHT);
 	    lblAccuracy.setZeroPos();
 	    lblAccuracy.setVAlignment(VAlignment.CENTER);
@@ -512,7 +512,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	}
 
 	// add GC-Code and Coord line
-	float mesuredCoorWidth = Fonts.Measure("52� 27.130N / 13� 33.117E").width + margin;
+	float mesuredCoorWidth = Fonts.Measure("52° 27.130N / 13° 33.117E").width + margin;
 	if (showGcCode || showCoords) {
 	    if (showCoords) {
 		if (showGcCode) {
@@ -689,7 +689,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	    else
 		directionToTarget = bearing;
 
-	    String sBearing = Translation.Get("directionToTarget") + " : " + String.format("%.0f", directionToTarget) + "�";
+	    String sBearing = Translation.Get("directionToTarget") + " : " + String.format("%.0f", directionToTarget) + "°";
 	    lblBearing.setText(sBearing);
 	}
 

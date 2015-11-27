@@ -84,7 +84,7 @@ public class splash extends MainViewBase {
 	GL.that.RestartRender();
 	switcher = !switcher;
 	if (switcher && !breakForWait) {
-	    // in jedem Render Vorgang einen Step ausf�hren
+	    // in jedem Render Vorgang einen Step ausführen
 	    switch (step) {
 	    case 0:
 		atlas = new TextureAtlas(Gdx.files.internal("skins/default/day/SplashPack.spp"));

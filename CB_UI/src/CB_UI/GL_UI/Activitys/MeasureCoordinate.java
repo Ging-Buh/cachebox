@@ -17,6 +17,12 @@ package CB_UI.GL_UI.Activitys;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import CB_Core.Types.MeasuredCoord;
 import CB_Core.Types.MeasuredCoordList;
 import CB_Locator.Coordinate;
@@ -39,12 +45,6 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Math.PointD;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class MeasureCoordinate extends ActivityBase implements PositionChangedEvent {
     private Button bOK = null;
@@ -139,16 +139,16 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	CB_RectF rec = new CB_RectF(leftBorder + margin, y, w, MeasuredLabelHeight);
 	CB_RectF rec2 = new CB_RectF(rec.getMaxX() + margin, y, innerWidth - w - margin, MeasuredLabelHeight);
 
-	lblDescMeasureCount = new Label(rec, Translation.Get("MeasureCount"));
+	lblDescMeasureCount = new Label(this.name + " lblDescMeasureCount", rec, Translation.Get("MeasureCount"));
 
-	lblMeasureCount = new Label(rec2, "");
+	lblMeasureCount = new Label(this.name + " lblMeasureCount", rec2);
 
 	rec2.setY(lblMeasureCount.getMaxY() + margin);
 	rec.setY(lblMeasureCount.getMaxY() + margin);
 
-	lblDescMeasureCoord = new Label(rec, Translation.Get("MeasureCoord"));
+	lblDescMeasureCoord = new Label(this.name + " lblDescMeasureCoord", rec, Translation.Get("MeasureCoord"));
 
-	lblMeasureCoord = new Label(rec2, "");
+	lblMeasureCoord = new Label(this.name + " lblMeasureCoord", rec2);
 
 	this.addChild(lblDescMeasureCount);
 	this.addChild(lblMeasureCount);
@@ -339,7 +339,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 	    lblMeasureCount.setText(String.valueOf(MeasureCount) + "/" + String.valueOf(mMeasureList.size()));
 
-	    // nach jeder 10. Messung die Liste Aufr�umen
+	    // nach jeder 10. Messung die Liste Aufräumen
 	    if (mMeasureList.size() % 10 == 0) {
 		mMeasureList.setAverage();
 		mMeasureList.clearDiscordantValue();

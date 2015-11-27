@@ -18,6 +18,9 @@ package CB_UI.GL_UI.Views;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
@@ -33,9 +36,6 @@ import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UI_Size_Base;
-
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class CreditsView extends CB_View_Base {
     private float ref, lineHeight, margin;
@@ -160,7 +160,7 @@ public class CreditsView extends CB_View_Base {
     private void captioned(String title) {
 	title = Translation.Get(title);
 	Box box = new Box(new CB_RectF(0, 0, this.getWidth(), lineHeight * 1.2f), "");
-	Label label = new Label(box, title + ":");
+	Label label = new Label(this.name + " label", box, title + ":");
 	label.setFont(Fonts.getBig());
 	label.setHAlignment(HAlignment.CENTER);
 	box.addChild(label);
@@ -178,7 +178,7 @@ public class CreditsView extends CB_View_Base {
 		Box box = new Box(new CB_RectF(0, 0, this.getWidth(), itemHeight), "");
 
 		if (entry != null) {
-		    box.addChild(new Label(box, entry).setHAlignment(HAlignment.CENTER));
+		    box.addChild(new Label(this.name + " boxLabel", box, entry).setHAlignment(HAlignment.CENTER));
 		}
 
 		layout.addChild(box);

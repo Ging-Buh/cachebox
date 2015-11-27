@@ -18,6 +18,9 @@ package CB_UI_Base.GL_UI.Controls.MessageBox;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -33,9 +36,6 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
-
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class ButtonDialog extends Dialog {
 
@@ -76,12 +76,13 @@ public class ButtonDialog extends Dialog {
 	    addChild(iconImage);
 	}
 
-	label = new Label(contentSize.getBounds(), "MsgBoxLabel");
+	label = new Label(this.name + " label", contentSize.getBounds());
 	label.setWidth(contentSize.getBounds().getWidth() - 5 - UI_Size_Base.that.getButtonHeight());
 	label.setX(imageRec.getMaxX() + 5);
 	label.setY(-margin);
 	label.setWrappedText(msg);
 	addChild(label);
+
 	mMsgBoxClickListner = Listener;
 
 	// setFooterHeight(80);

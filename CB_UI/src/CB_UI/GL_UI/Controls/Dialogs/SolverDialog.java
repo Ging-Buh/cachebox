@@ -1,5 +1,7 @@
 package CB_UI.GL_UI.Controls.Dialogs;
 
+import com.badlogic.gdx.graphics.Color;
+
 import CB_Core.Solver.DataTypes.DataType;
 import CB_Core.Solver.Solver;
 import CB_Core.Solver.Functions.Function;
@@ -28,8 +30,6 @@ import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Util.HSV_Color;
-
-import com.badlogic.gdx.graphics.Color;
 
 public class SolverDialog extends ButtonScrollDialog implements OnStateChangeListener, KeyboardFocusChangedEvent {
     private enum pages {
@@ -108,7 +108,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 	y -= TextFieldHeight * 0.8;
 
 	rec = new CB_RectF(0, y, msgBoxContentSize.width, TextFieldHeight);
-	Label lbGleich = new Label(CB_RectF.ScaleCenter(rec, 0.8f), "=");
+	Label lbGleich = new Label(this.name + " lbGleich", CB_RectF.ScaleCenter(rec, 0.8f), "=");
 	lbGleich.setFont(Fonts.getNormal());
 	lbGleich.setText("=");
 	setBackground(SpriteCacheBase.activityBackground);
@@ -173,19 +173,19 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 
 	// y -= UiSizes.getButtonHeight();
 	float restPlatz = this.getHeight() - y;
-	// Dieses LinearLayout wird dann in eine ScrollBox verpackt, damit dies Scrollbar ist, wenn die L�nge den Anzeige Bereich
-	// �berschreitet!
+	// Dieses LinearLayout wird dann in eine ScrollBox verpackt, damit dies Scrollbar ist, wenn die Länge den Anzeige Bereich
+	// überschreitet!
 
 	rec = new CB_RectF(0, y - restPlatz, msgBoxContentSize.width, restPlatz);
 
 	// Initial LinearLayout
-	// Dieses wird nur mit der Breite Initialisiert, die H�he ergibt sich aus dem Inhalt
+	// Dieses wird nur mit der Breite Initialisiert, die Höhe ergibt sich aus dem Inhalt
 	mBox = new Box(rec.getWidth(), innerHeight, "SelectSolverFunction-Box");
 	float margin = GL_UISizes.margin;
 	mBox.setMargins(margin, margin);
 	mBox.initRow();
 	boxYPosStart = mBox.getRowYPos(); // Startposition der Controls merken
-	// damit das LinearLayout auch Events erh�llt
+	// damit das LinearLayout auch Events erhält
 	mBox.setClickable(true);
 
 	// add LinearLayout zu ScrollBox und diese zu der Activity
@@ -198,7 +198,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-	    // damit die �nderungen in sForm gespeichert werden
+	    // damit die Änderungen in sForm gespeichert werden
 	    showPage(pages.Nothing);
 	    String result = mVariableField.getText();
 	    if (result.length() > 0)
@@ -220,7 +220,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 
     @Override
     public void onStateChange(GL_View_Base v, int State) {
-	// Status�nderung eines MultiToggleButtons
+	// Statusänderung eines MultiToggleButtons
 	if (State == 1) {
 	    if (v == btnTxt) {
 		showPage(pages.Text);
@@ -271,7 +271,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 	    break;
 	}
 
-	// y-Position der Controls zur�cksetzen
+	// y-Position der Controls zurücksetzen
 	mBox.initRow(TOPDOWN, boxYPosStart);
 
 	switch (page) {
@@ -308,7 +308,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
     }
 
     private void hidePageFunction() {
-	// ge�nderte Formel merken
+	// geänderte Formel merken
 	sForm = tbFunction.getText();
 	sForm += "(";
 	for (int i = 0; i < tbFunctionParam.length; i++) {
@@ -338,11 +338,11 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 	    }
 	    lFunctionParam = null;
 	}
-	mBox.initRow(TOPDOWN, boxYPosStored); // Position der n�chsten Controls zur�cksetzen
+	mBox.initRow(TOPDOWN, boxYPosStored); // Position der nächsten Controls zurücksetzen
     }
 
     private void hidePageText() {
-	// ge�nderten Text merken
+	// geänderten Text merken
 	sForm = mFormulaField.getText();
 	mBox.removeChild(mFormulaField);
 	mFormulaField = null;
@@ -373,30 +373,30 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 
 	bFunction.setText("F(x)");
 	mBox.addLast(bFunction, 0.2f);
-	boxYPosStored = mBox.getRowYPos(); // Y-Pos speichern damit nach dem l�schen von Controls die n�chsten wieder an der
+	boxYPosStored = mBox.getRowYPos(); // Y-Pos speichern damit nach dem löschen von Controls die nächsten wieder an der
 					   // richtigen Stelle
-	// eingef�gt werden k�nnen
-	// Funktion aufsplitten nach Funktionsname und Parameter (falls m�glich!)
+					   // eingefügt werden können
+					   // Funktion aufsplitten nach Funktionsname und Parameter (falls möglich!)
 	String formula = sForm.trim();
 	int posKlammerAuf = formula.indexOf("(");
 	int posKlammerZu = formula.lastIndexOf(")");
 	if ((posKlammerAuf >= 0) && (posKlammerZu > posKlammerAuf)) {
-	    // g�ltige Formel erkannt
+	    // gültige Formel erkannt
 	    String function = formula.substring(0, posKlammerAuf);
 	    tbFunction.setText(function);
 	    String parameter = formula.substring(posKlammerAuf + 1, posKlammerZu);
 	    // Parameter nach ";" trennen
 	    String[] parameters = parameter.split(";");
 	    CB_RectF rec2 = rec.copy();
-	    // Parameter einr�cken
+	    // Parameter einrücken
 	    rec2.setX(rec2.getX() + TextFieldHeight / 2);
 
 	    tbFunctionParam = new EditTextField[parameters.length];
 	    lFunctionParam = new Label[parameters.length];
 	    for (int i = 0; i < parameters.length; i++) {
-		// Eingabefelder f�r die Parameter einf�gen
+		// Eingabefelder für die Parameter einfügen
 		rec2.setY(rec2.getY() - TextFieldHeight * 3 / 4);
-		lFunctionParam[i] = new Label(rec2.ScaleCenter(0.6f), "LabelFunctionParam");
+		lFunctionParam[i] = new Label(this.name + " lFunctionParam[" + i + "]", rec2.ScaleCenter(0.6f));
 		// lFunctionParam[i].setVAlignment(VAlignment.BOTTOM);
 		lFunctionParam[i].setText("Parameter" + " " + i);
 		mBox.addNext(lFunctionParam[i], 0.3f);
@@ -425,7 +425,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 			rec.setX(rec.getX() + TextFieldHeight / 2);
 			for (int i = 0; i < function.getAnzParam(); i++) {
 			    rec.setY(rec.getY() - TextFieldHeight * 3 / 4);
-			    lFunctionParam[i] = new Label(rec, "LabelFunctionParam");
+			    lFunctionParam[i] = new Label("SelectSolverFunction" + " lFunctionParam[" + i + "]", rec);
 			    lFunctionParam[i].setText("Parameter " + i);
 			    mBox.addNext(lFunctionParam[i], 0.3f);
 			    rec.setY(rec.getY() - lFunctionParam[i].getHeight() * 3 / 4);

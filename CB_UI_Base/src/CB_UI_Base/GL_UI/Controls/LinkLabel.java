@@ -20,15 +20,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
+
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Controls.html.HyperLinkText;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.HSV_Color;
-
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 
 /**
  * 
@@ -42,8 +42,8 @@ public class LinkLabel extends MultiColorLabel {
     CB_List<HyperLinkText> hyperLinkList = new CB_List<HyperLinkText>();
     private boolean isMarkup = false;
 
-    public LinkLabel(float X, float Y, float Width, float Height, String Text) {
-	super(X, Y, Width, Height, Text);
+    public LinkLabel(String Name, float X, float Y, float Width, float Height) {
+	super(Name, X, Y, Width, Height);
 
 	this.setOnClickListener(new OnClickListener() {
 

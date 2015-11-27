@@ -111,10 +111,10 @@ public class TB_Log extends ActivityBase {
 	iconRec = iconRec.ScaleCenter(0.8f);
 
 	icon = new Image(iconRec, "Icon", false);
-	lblName = new Label(iconRec, "Name");
+	lblName = new Label(this.name + " lblName", iconRec);
 
 	CacheIcon = new Image(iconRec, "CacheIcon", false);
-	lblPlaced = new Label(iconRec, "CacheName");
+	lblPlaced = new Label(this.name + " lblPlaced", iconRec);
 
 	edit = new EditTextField(this.name + " edit").setWrapType(WrapType.WRAPPED);
 	edit.setWidth(contentBox.getInnerWidth());
@@ -368,35 +368,35 @@ public class TB_Log extends ActivityBase {
 
     private String getCache_GcCode() {
 	/**
-	 * Muss je nach LogType leer oder gefüllt sein
+	 * Muss je nach LogType leer oder gefÃ¼llt sein
 	 */
 	return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getGcCode() : "";
     }
 
     private String getCache_Name() {
 	/**
-	 * Muss je nach LogType leer oder gefüllt sein
+	 * Muss je nach LogType leer oder gefÃ¼llt sein
 	 */
 	return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getName() : "";
     }
 
     private long getCache_ID() {
 	/**
-	 * Muss je nach LogType leer oder gefüllt sein
+	 * Muss je nach LogType leer oder gefÃ¼llt sein
 	 */
 	return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().Id : -1;
     }
 
     private String getCache_URL() {
 	/**
-	 * Muss je nach LogType leer oder gefüllt sein
+	 * Muss je nach LogType leer oder gefÃ¼llt sein
 	 */
 	return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getUrl() : "";
     }
 
     private int getCache_Type() {
 	/**
-	 * Muss je nach LogType leer oder gefüllt sein
+	 * Muss je nach LogType leer oder gefÃ¼llt sein
 	 */
 	return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().Type.ordinal() : -1;
     }

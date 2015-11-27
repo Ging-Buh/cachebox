@@ -15,14 +15,14 @@
  */
 package CB_UI.GL_UI.Main.Actions;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Controls.Dialogs.HintDialog;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
-
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowHint extends CB_Action {
 
@@ -38,7 +38,7 @@ public class CB_Action_ShowHint extends CB_Action {
 
     @Override
     public boolean getEnabled() {
-	// liefert true zurück wenn ein Cache gewählt ist und dieser einen Hint hat
+	// liefert true zurÃ¼ck wenn ein Cache gewÃ¤hlt ist und dieser einen Hint hat
 	if (GlobalCore.getSelectedCache() == null)
 	    return false;
 	String hintText = GlobalCore.getSelectedCache().getHint();

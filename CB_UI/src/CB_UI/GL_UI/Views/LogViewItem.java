@@ -17,6 +17,12 @@ package CB_UI.GL_UI.Views;
 
 import java.text.SimpleDateFormat;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.utils.Clipboard;
+
 import CB_Core.Types.LogEntry;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.Fonts;
@@ -28,17 +34,11 @@ import CB_UI_Base.GL_UI.interfaces.ICopyPaste;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.badlogic.gdx.utils.Clipboard;
-
 public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
     private static NinePatch backheader;
     private LogEntry logEntry;
     private Image ivTyp;
-    private Label lblFoundByName;
+    private Label lblFinder;
     private Label lblDate;
     private Label lblComment;
 
@@ -69,8 +69,8 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
     }
 
     private void iniFoundLabel() {
-	lblFoundByName = new Label(secondTab, this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), getWidth() - secondTab - getRightWidth() - UI_Size_Base.that.getMargin(), MeasuredLabelHeight, logEntry.Finder);
-	this.addChild(lblFoundByName);
+	lblFinder = new Label(this.name + " lblFinder", secondTab, this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), getWidth() - secondTab - getRightWidth() - UI_Size_Base.that.getMargin(), MeasuredLabelHeight, logEntry.Finder);
+	this.addChild(lblFinder);
     }
 
     private void iniDateLabel() {
@@ -79,7 +79,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
 	String dateString = postFormater.format(logEntry.Timestamp);
 	float DateLength = Fonts.Measure(dateString).width;
 
-	lblDate = new Label(this.getWidth() - getRightWidth() - DateLength, this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), DateLength, MeasuredLabelHeight, dateString);
+	lblDate = new Label(this.name + " lblDate", this.getWidth() - getRightWidth() - DateLength, this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), DateLength, MeasuredLabelHeight, dateString);
 	this.addChild(lblDate);
     }
 
@@ -90,7 +90,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
 	// logEntry.Comment = "TEst";
 	// }
 
-	lblComment = new Label(getLeftWidth(), 0, this.getWidth() - getLeftWidthStatic() - getRightWidthStatic() - (UI_Size_Base.that.getMargin() * 2), this.getHeight() - headHeight - UI_Size_Base.that.getMargin(), logEntry.Comment);
+	lblComment = new Label(this.name + " lblComment", getLeftWidth(), 0, this.getWidth() - getLeftWidthStatic() - getRightWidthStatic() - (UI_Size_Base.that.getMargin() * 2), this.getHeight() - headHeight - UI_Size_Base.that.getMargin());
 	lblComment.setWrappedText(logEntry.Comment);
 	this.addChild(lblComment);
     }

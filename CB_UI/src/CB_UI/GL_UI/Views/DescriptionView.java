@@ -180,7 +180,7 @@ public class DescriptionView extends CB_View_Base {
 	}
 
 	// Falls nicht geladene Bilder vorliegen und eine Internetverbindung
-	// erlaubt ist, diese laden und Bilder erneut aufl�sen
+	// erlaubt ist, diese laden und Bilder erneut auflösen
 	if (NonLocalImagesUrl.size() > 0) {
 	    downloadThread = new Thread() {
 		public void run() {
@@ -333,7 +333,7 @@ public class DescriptionView extends CB_View_Base {
 
 	this.addChild(LiveIcon);
 
-	PowerdBy = new Label(this, "");
+	PowerdBy = new Label(this.name + " PowerdBy", this);
 
 	if (layout == null)
 	    layout = new GlyphLayout();
@@ -345,7 +345,7 @@ public class DescriptionView extends CB_View_Base {
 	PowerdBy.setWrappedText(STRING_POWERD_BY);
 	this.addChild(PowerdBy);
 
-	MessageLabel = new Label(this, "");
+	MessageLabel = new Label(this.name + " MessageLabel", this);
 	MessageLabel.setWidth(contentWidth);
 	MessageLabel.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
 	MessageLabel.setHeight(this.getHalfHeight());

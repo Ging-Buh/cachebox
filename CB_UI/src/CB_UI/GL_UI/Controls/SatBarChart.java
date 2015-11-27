@@ -15,6 +15,9 @@
  */
 package CB_UI.GL_UI.Controls;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+
 import CB_Locator.GPS;
 import CB_Locator.GpsStrength;
 import CB_Locator.Events.GpsStateChangeEvent;
@@ -24,9 +27,6 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent {
 
@@ -114,7 +114,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent {
 		}
 
 		try {
-		    // balken höhe festlegen
+		    // balken hÃ¶he festlegen
 		    if (balken[count] != null) {
 			float barHeight = Math.min((tmp.getStrength() * 3 / 100) * this.getHeight(), this.getHeight());
 

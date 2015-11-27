@@ -307,7 +307,7 @@ public class FieldNotesView extends V_ListView {
 	    cm.addItem(MenuID.MI_NOT_FOUND, "DNF", SpriteCacheBase.getThemedSprite("log1icon"));
 	}
 
-	// Aktueller Cache ist von geocaching.com dann weitere Men�eintr�ge freigeben
+	// Aktueller Cache ist von geocaching.com dann weitere Menüeinträge freigeben
 	if (cache != null && cache.getGcCode().toLowerCase().startsWith("gc")) {
 	    cm.addItem(MenuID.MI_MAINTANCE, "maintenance", SpriteCacheBase.getThemedSprite("log5icon"));
 	    cm.addItem(MenuID.MI_NOTE, "writenote", SpriteCacheBase.getThemedSprite("log2icon"));
@@ -425,11 +425,11 @@ public class FieldNotesView extends V_ListView {
 
 	FieldNoteEntry newFieldNote = null;
 	if ((type == LogTypes.found) || (type == LogTypes.didnt_find)) {
-	    // nachsehen, ob f�r diesen Cache bereits eine FieldNote des Types
+	    // nachsehen, ob für diesen Cache bereits eine FieldNote des Types
 	    // angelegt wurde
-	    // und gegebenenfalls diese �ndern und keine neue anlegen
-	    // gilt nur f�r Found It! und DNF.
-	    // needMaintance oder Note k�nnen zus�tzlich angelegt werden
+	    // und gegebenenfalls diese ändern und keine neue anlegen
+	    // gilt nur für Found It! und DNF.
+	    // needMaintance oder Note können zusätzlich angelegt werden
 
 	    // .LoadFieldNotes("", false);
 
@@ -469,7 +469,7 @@ public class FieldNotesView extends V_ListView {
 	    if (newFieldNote.comment.equals(""))
 		newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.FoundTemplate.getValue(), newFieldNote);
 	    // wenn eine FieldNote Found erzeugt werden soll und der Cache noch
-	    // nicht gefunden war -> foundNumber um 1 erh�hen
+	    // nicht gefunden war -> foundNumber um 1 erhöhen
 	    break;
 	case attended:
 	    if (!cache.isFound())
@@ -478,7 +478,7 @@ public class FieldNotesView extends V_ListView {
 	    if (newFieldNote.comment.equals(""))
 		newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.FoundTemplate.getValue(), newFieldNote);
 	    // wenn eine FieldNote Found erzeugt werden soll und der Cache noch
-	    // nicht gefunden war -> foundNumber um 1 erh�hen
+	    // nicht gefunden war -> foundNumber um 1 erhöhen
 	    break;
 	case didnt_find:
 	    if (newFieldNote.comment.equals(""))
@@ -514,7 +514,7 @@ public class FieldNotesView extends V_ListView {
 		    Config.FoundOffset.setValue(aktFieldNote.foundNumber);
 		    Config.AcceptChanges();
 		}
-		// und eine evtl. vorhandene FieldNote DNF l�schen
+		// und eine evtl. vorhandene FieldNote DNF löschen
 		tmpFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, LogTypes.didnt_find);
 	    } else if (newFieldNote.type == LogTypes.didnt_find) {
 		// DidNotFound -> Cache als nicht gefunden markieren
@@ -525,7 +525,7 @@ public class FieldNotesView extends V_ListView {
 		    Config.FoundOffset.setValue(Config.FoundOffset.getValue() - 1);
 		    Config.AcceptChanges();
 		}
-		// und eine evtl. vorhandene FieldNote FoundIt l�schen
+		// und eine evtl. vorhandene FieldNote FoundIt löschen
 		tmpFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, LogTypes.found);
 	    }
 
@@ -563,7 +563,7 @@ public class FieldNotesView extends V_ListView {
 		// neue FieldNote
 		lFieldNotes.add(0, fieldNote);
 
-		// eine evtl. vorhandene FieldNote /DNF l�schen
+		// eine evtl. vorhandene FieldNote /DNF löschen
 		if (fieldNote.type == LogTypes.attended || fieldNote.type == LogTypes.found || fieldNote.type == LogTypes.didnt_find) {
 		    lFieldNotes.DeleteFieldNoteByCacheId(fieldNote.CacheId, LogTypes.found);
 		    lFieldNotes.DeleteFieldNoteByCacheId(fieldNote.CacheId, LogTypes.didnt_find);
@@ -575,7 +575,7 @@ public class FieldNotesView extends V_ListView {
 
 	    if (isNewFieldNote) {
 		// nur, wenn eine FieldNote neu angelegt wurde
-		// wenn eine FieldNote neu angelegt werden soll dann kann hier auf SelectedCache zugegriffen werden, da nur f�r den
+		// wenn eine FieldNote neu angelegt werden soll dann kann hier auf SelectedCache zugegriffen werden, da nur für den
 		// SelectedCache eine fieldNote angelegt wird
 		if (fieldNote.type == LogTypes.found || fieldNote.type == LogTypes.attended) { // Found it! -> Cache als gefunden markieren
 		    if (!GlobalCore.getSelectedCache().isFound()) {
@@ -593,7 +593,7 @@ public class FieldNotesView extends V_ListView {
 			cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
 			Config.FoundOffset.setValue(Config.FoundOffset.getValue() - 1);
 			Config.AcceptChanges();
-		    } // und eine evtl. vorhandene FieldNote FoundIt l�schen
+		    } // und eine evtl. vorhandene FieldNote FoundIt löschen
 		    lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, LogTypes.found);
 		}
 	    }
@@ -720,7 +720,7 @@ public class FieldNotesView extends V_ListView {
     }
 
     private void deleteFieldNote() {
-	// aktuell selectierte FieldNote l�schen
+	// aktuell selectierte FieldNote löschen
 	if (aktFieldNote == null)
 	    return;
 	// final Cache cache =
@@ -728,7 +728,7 @@ public class FieldNotesView extends V_ListView {
 
 	Cache tmpCache = null;
 	// suche den Cache aus der DB.
-	// Nicht aus der aktuellen Query, da dieser herausgefiltert sein k�nnte
+	// Nicht aus der aktuellen Query, da dieser herausgefiltert sein könnte
 	CacheList lCaches = new CacheList();
 	CacheListDAO cacheListDAO = new CacheListDAO();
 	cacheListDAO.ReadCacheList(lCaches, "Id = " + aktFieldNote.CacheId, false, false);
@@ -757,7 +757,7 @@ public class FieldNotesView extends V_ListView {
 			    cacheDAO.WriteToDatabase_Found(cache);
 			    Config.FoundOffset.setValue(Config.FoundOffset.getValue() - 1);
 			    Config.AcceptChanges();
-			    // jetzt noch diesen Cache in der aktuellen CacheListe suchen und auch da den Found-Status zur�cksetzen
+			    // jetzt noch diesen Cache in der aktuellen CacheListe suchen und auch da den Found-Status zurücksetzen
 			    // damit das Smiley Symbol aus der Map und der CacheList verschwindet
 			    synchronized (Database.Data.Query) {
 				Cache tc = Database.Data.Query.GetCacheById(cache.Id);
@@ -854,7 +854,7 @@ public class FieldNotesView extends V_ListView {
 	    return;
 
 	// suche den Cache aus der DB.
-	// Nicht aus der aktuellen Query, da dieser herausgefiltert sein k�nnte
+	// Nicht aus der aktuellen Query, da dieser herausgefiltert sein könnte
 	CacheList lCaches = new CacheList();
 	CacheListDAO cacheListDAO = new CacheListDAO();
 	cacheListDAO.ReadCacheList(lCaches, "Id = " + aktFieldNote.CacheId, false, false);

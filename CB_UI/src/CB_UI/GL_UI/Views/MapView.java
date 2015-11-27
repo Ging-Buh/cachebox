@@ -24,6 +24,12 @@ import java.util.TreeMap;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
+
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.LiveMapQue;
@@ -91,12 +97,6 @@ import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.HSV_Color;
 import CB_Utils.Util.iChanged;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * @author ging-buh
@@ -604,10 +604,10 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		for (int i = 0, n = mapCacheList.list.size(); i < n; i++) {
 		    WaypointRenderInfo wpi = mapCacheList.list.get(i);
 		    if (wpi.Selected) {
-			// wenn der Wp selectiert ist, dann immer in der gr��ten Darstellung
+			// wenn der Wp selectiert ist, dann immer in der größten Darstellung
 			renderWPI(batch, GL_UISizes.WPSizes[2], GL_UISizes.UnderlaySizes[2], wpi);
 		    } else if (CarMode) {
-			// wenn CarMode dann immer in der gr��ten Darstellung
+			// wenn CarMode dann immer in der größten Darstellung
 			renderWPI(batch, GL_UISizes.WPSizes[2], GL_UISizes.UnderlaySizes[2], wpi);
 		    } else {
 			renderWPI(batch, wpUnderlay, wpSize, wpi);
@@ -768,7 +768,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 	GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
 
-	// f�r 2sec rendern lassen, bis �nderungen der WPI-list neu berechnet wurden
+	// für 2sec rendern lassen, bis Änderungen der WPI-list neu berechnet wurden
 	TimerTask task = new TimerTask() {
 	    @Override
 	    public void run() {
@@ -866,7 +866,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		    WaypointDAO waypointDAO = new WaypointDAO();
 		    waypointDAO.WriteToDatabase(waypoint);
 
-		    // informiere WaypointListView �ber �nderung
+		    // informiere WaypointListView über Änderung
 		    WaypointListChangedEventList.Call(GlobalCore.getSelectedCache());
 		    GL.that.renderOnce();
 		}
@@ -1070,7 +1070,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		    } else {
 			// Show Bubble
-			// unabh�ngig davon, ob der angeklickte Cache == der selectedCache ist
+			// unabhängig davon, ob der angeklickte Cache == der selectedCache ist
 			infoBubble.setCache(minWpi.Cache, null);
 			infoBubble.setVisible();
 		    }
@@ -1269,7 +1269,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		zoomScale.setMinZoom(setMinZoom);
 
 		if (Mode == MapMode.Compass) {
-		    // Berechne die darstellbare Entfernung f�r jedes ZoomLevel
+		    // Berechne die darstellbare Entfernung für jedes ZoomLevel
 		    DistanceZoomLevel = new TreeMap<Integer, Integer>();
 
 		    int posiblePixel = (int) this.getHalfHeight();
@@ -1326,7 +1326,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 	    if (themePath == null) {
 
-		// Entweder wir sind nicht im CarMode oder es wurde kein Passender Theme f�r den CarMode gefunden!
+		// Entweder wir sind nicht im CarMode oder es wurde kein Passender Theme für den CarMode gefunden!
 		if (Config.nightMode.getValue()) {
 		    themePath = ifThemeExist(Config.MapsforgeNightTheme.getValue());
 		}

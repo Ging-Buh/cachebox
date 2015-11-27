@@ -35,7 +35,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Util.MoveableList;
 
 /**
- * Enthält die Actions Möglichkeiten für die Quick Buttons
+ * EnthÃ¤lt die Actions MÃ¶glichkeiten fÃ¼r die Quick Buttons
  * 
  * @author Longri
  */
@@ -69,10 +69,10 @@ public enum QuickActions {
 
     // ScreenLock, // 21
 
-    empty, ;
+    empty,;
 
     /**
-     * Gibt eine ArrayList von Actions zurück aus einem übergebenen String Array
+     * Gibt eine ArrayList von Actions zurÃ¼ck aus einem Ã¼bergebenen String Array
      * 
      * @param String
      *            []
@@ -103,7 +103,7 @@ public enum QuickActions {
 		}
 	    }
 	} catch (Exception e)// wenn ein Fehler auftritt, gib die bis dorthin
-			     // gelesenen Items zurück
+			     // gelesenen Items zurÃ¼ck
 	{
 
 	}
@@ -127,7 +127,7 @@ public enum QuickActions {
     }
 
     /**
-     * Gibt die ID des Übergebenen Enums zurück
+     * Gibt die ID des Ã¼bergebenen Enums zurÃ¼ck
      * 
      * @param attrib
      * @return long

@@ -2,6 +2,9 @@ package CB_UI.GL_UI.Activitys;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
@@ -34,9 +37,6 @@ import CB_UI_Base.GL_UI.Controls.SpinnerAdapter;
 import CB_UI_Base.GL_UI.Controls.chkBox;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
-
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEvent {
 
@@ -124,7 +124,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     }
 
     private void iniCacheNameLabel() {
-	tvCacheName = new Label(leftBorder + margin, getHeight() - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight, "CacheNameLabel");
+	tvCacheName = new Label(this.name + " tvCacheName", leftBorder + margin, getHeight() - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight);
 	tvCacheName.setFont(Fonts.getBubbleNormal());
 	tvCacheName.setText(GlobalCore.getSelectedCache().getName());
 	scrollBox.addChild(tvCacheName);
@@ -156,12 +156,12 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
     private void iniLabelTyp() {
 	cbStartPointWidth = UI_Size_Base.that.getButtonHeight() * 1.5f;
-	tvTyp = new Label(leftBorder + margin, bCoord.getY() - margin - MeasuredLabelHeight, innerWidth - margin - cbStartPointWidth, MeasuredLabelHeight, "TypeLabel");
+	tvTyp = new Label(this.name + " tvTyp", leftBorder + margin, bCoord.getY() - margin - MeasuredLabelHeight, innerWidth - margin - cbStartPointWidth, MeasuredLabelHeight);
 	tvTyp.setFont(Fonts.getBubbleNormal());
 	tvTyp.setText(Translation.Get("type"));
 	scrollBox.addChild(tvTyp);
 
-	tvStartPoint = new Label(tvTyp.getMaxX() + margin, bCoord.getY() - margin - MeasuredLabelHeight, cbStartPointWidth, MeasuredLabelHeight, "TypeLabel");
+	tvStartPoint = new Label(this.name + " tvStartPoint", tvTyp.getMaxX() + margin, bCoord.getY() - margin - MeasuredLabelHeight, cbStartPointWidth, MeasuredLabelHeight);
 	tvStartPoint.setFont(Fonts.getBubbleNormal()).setHAlignment(HAlignment.CENTER);
 	tvStartPoint.setText(Translation.Get("start"));
 	tvStartPoint.setVisible(false);
@@ -280,7 +280,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     }
 
     private void iniLabelTitle() {
-	tvTitle = new Label(leftBorder + margin, sType.getY() - margin - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight, "TitleLabel");
+	tvTitle = new Label(this.name + " tvTitle", leftBorder + margin, sType.getY() - margin - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight);
 	tvTitle.setFont(Fonts.getBubbleNormal());
 	tvTitle.setText(Translation.Get("Title"));
 	scrollBox.addChild(tvTitle);
@@ -297,7 +297,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     }
 
     private void iniLabelDesc() {
-	tvDescription = new Label(leftBorder + margin, etTitle.getY() - margin - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight, "DescLabel");
+	tvDescription = new Label(this.name + " tvDescription", leftBorder + margin, etTitle.getY() - margin - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight);
 	tvDescription.setFont(Fonts.getBubbleNormal());
 	tvDescription.setText(Translation.Get("Description"));
 	scrollBox.addChild(tvDescription);
@@ -328,7 +328,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     }
 
     private void iniLabelClue() {
-	tvClue = new Label(leftBorder + margin, etDescription.getY() - margin - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight, "ClueLabel");
+	tvClue = new Label(this.name + " tvClue", leftBorder + margin, etDescription.getY() - margin - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight);
 	tvClue.setFont(Fonts.getBubbleNormal());
 	tvClue.setText(Translation.Get("Clue"));
 	scrollBox.addChild(tvClue);
@@ -388,7 +388,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 		    mReturnListner.returnedWP(waypoint);
 		}
 
-		// Änderungen auch an die MapView melden
+		// Ã„nderungen auch an die MapView melden
 		if (MapView.that != null)
 		    MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
 

@@ -315,8 +315,8 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
     }
 
     /*
-     * Nachfolgend die Getter von Einstellungen, welche sehr h�ufig abgerufen werden. Diese Einstellungen werden zwischen gespeichert und
-     * erst bei einer �nderung aktualisiert. Diese erspart das Parsen von Werten
+     * Nachfolgend die Getter von Einstellungen, welche sehr häufig abgerufen werden. Diese Einstellungen werden zwischen gespeichert und
+     * erst bei einer Änderung aktualisiert. Diese erspart das Parsen von Werten
      */
 
     public static void SetEncrypted(String key, String value) {
@@ -354,7 +354,7 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
 	    act = CB_Core_Settings.GcAPI.getValue();
 	}
 
-	// Pr�fen, ob das AccessToken f�r ACB ist!!!
+	// Prüfen, ob das AccessToken für ACB ist!!!
 	if (!(act.startsWith("A")))
 	    return "";
 	String result = act.substring(1, act.length());

@@ -15,6 +15,9 @@
  */
 package CB_UI_Base.GL_UI.Controls.html;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
@@ -24,9 +27,6 @@ import CB_UI_Base.graphics.Geometry.Circle;
 import CB_UI_Base.graphics.Geometry.IGeometry;
 import CB_UI_Base.graphics.Geometry.Quadrangle;
 import CB_UI_Base.graphics.Geometry.Ring;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
  * 
@@ -48,7 +48,7 @@ public class Html_ListView_Bullet extends Box {
 
 	    bulletDrawable = null;
 
-	    orderLabel = new Label(this, String.valueOf(this.idx) + ".");
+	    orderLabel = new Label(this.name + " orderLabel", this, String.valueOf(this.idx) + ".");
 	    orderLabel.setVAlignment(VAlignment.TOP);
 	    orderLabel.setY(-(HtmlView.margin / 2));
 	    this.addChild(orderLabel);

@@ -1,5 +1,8 @@
 package CB_UI.GL_UI.Controls;
 
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Clipboard;
+
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -14,9 +17,6 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.interfaces.ICopyPaste;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
-
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Clipboard;
 
 public class CoordinateButton extends Button implements ICopyPaste {
     protected Coordinate mActCoord;
@@ -191,7 +191,7 @@ public class CoordinateButton extends Button implements ICopyPaste {
 	    return null;
 	String content = this.getText();
 	clipboard.setContents(content);
-	CoordinateGPS cor = new CoordinateGPS("N 0° 0.00 / E 0° 0.00");
+	CoordinateGPS cor = new CoordinateGPS("N 0Â° 0.00 / E 0Â° 0.00");
 	cor.setValid(false);
 	this.setCoordinate(cor);
 	return content;

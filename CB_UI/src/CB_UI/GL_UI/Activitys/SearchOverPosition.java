@@ -17,6 +17,8 @@ package CB_UI.GL_UI.Activitys;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import CB_Core.CoreSettingsForward;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.SearchCoordinate;
@@ -54,14 +56,12 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Interfaces.ICancel;
 import CB_Utils.Lists.CB_List;
 
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-
 public class SearchOverPosition extends ActivityBase {
     private Button bOK, bCancel, btnPlus, btnMinus;
-    private Label lblTitle, lblRadius, lblRadiusEinheit, lblMarkerPos, lblExcludeFounds, lblOnlyAvible, lblExcludeHides;
+    private Label lblTitle, lblRadius, lblRadiusEinheit, lblMarkerPos, lblExcludeFounds, lblOnlyAvailable, lblExcludeHides;
     private Image gsLogo;
     private CoordinateButton coordBtn;
-    private chkBox checkBoxExcludeFounds, checkBoxOnlyAvible, checkBoxExcludeHides;
+    private chkBox checkBoxExcludeFounds, checkBoxOnlyAvailable, checkBoxExcludeHides;
     private EditTextField Radius;
     private float lineHeight;
     private MultiToggleButton tglBtnGPS, tglBtnMap;
@@ -148,7 +148,7 @@ public class SearchOverPosition extends ActivityBase {
 	gsLogo.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal())));
 	this.addChild(gsLogo);
 
-	lblTitle = new Label(leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - (margin * 4) - gsLogo.getWidth(), lineHeight, "TitleLabel");
+	lblTitle = new Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - (margin * 4) - gsLogo.getWidth(), lineHeight);
 	lblTitle.setWrapType(WrapType.WRAPPED);
 	lblTitle.setFont(Fonts.getBig());
 	lblTitle.setWrappedText(Translation.Get("importCachesOverPosition"));
@@ -165,7 +165,7 @@ public class SearchOverPosition extends ActivityBase {
 
 	float y = box.getHeight() - margin - lineHeight;
 
-	lblRadius = new Label(margin, y, wRadius, lineHeight, "");
+	lblRadius = new Label(this.name + " lblRadius", margin, y, wRadius, lineHeight);
 	lblRadius.setText(sRadius);
 	box.addChild(lblRadius);
 
@@ -173,7 +173,7 @@ public class SearchOverPosition extends ActivityBase {
 	Radius = new EditTextField(rec, this, this.name + " Radius");
 	box.addChild(Radius);
 
-	lblRadiusEinheit = new Label(Radius.getMaxX(), y, wEinheit, lineHeight, "");
+	lblRadiusEinheit = new Label(this.name + " lblRadiusEinheit", Radius.getMaxX(), y, wEinheit, lineHeight);
 	lblRadiusEinheit.setText(sEinheit);
 	box.addChild(lblRadiusEinheit);
 
@@ -188,30 +188,30 @@ public class SearchOverPosition extends ActivityBase {
     }
 
     private void createChkBoxLines() {
-	checkBoxOnlyAvible = new chkBox("");
-	checkBoxOnlyAvible.setPos(margin, Radius.getY() - margin - checkBoxOnlyAvible.getHeight());
-	box.addChild(checkBoxOnlyAvible);
+	checkBoxOnlyAvailable = new chkBox("");
+	checkBoxOnlyAvailable.setPos(margin, Radius.getY() - margin - checkBoxOnlyAvailable.getHeight());
+	box.addChild(checkBoxOnlyAvailable);
 
 	checkBoxExcludeHides = new chkBox("");
-	checkBoxExcludeHides.setPos(margin, checkBoxOnlyAvible.getY() - margin - checkBoxExcludeHides.getHeight());
+	checkBoxExcludeHides.setPos(margin, checkBoxOnlyAvailable.getY() - margin - checkBoxExcludeHides.getHeight());
 	box.addChild(checkBoxExcludeHides);
 
 	checkBoxExcludeFounds = new chkBox("");
 	checkBoxExcludeFounds.setPos(margin, checkBoxExcludeHides.getY() - margin - checkBoxExcludeFounds.getHeight());
 	box.addChild(checkBoxExcludeFounds);
 
-	lblOnlyAvible = new Label(checkBoxOnlyAvible, Translation.Get("SearchOnlyAvible"));
-	lblOnlyAvible.setX(checkBoxOnlyAvible.getMaxX() + margin);
-	lblOnlyAvible.setWidth(this.getWidth() - margin - checkBoxOnlyAvible.getMaxX() - margin);
-	box.addChild(lblOnlyAvible);
+	lblOnlyAvailable = new Label(this.name + " lblOnlyAvailable", checkBoxOnlyAvailable, Translation.Get("SearchOnlyAvailable"));
+	lblOnlyAvailable.setX(checkBoxOnlyAvailable.getMaxX() + margin);
+	lblOnlyAvailable.setWidth(this.getWidth() - margin - checkBoxOnlyAvailable.getMaxX() - margin);
+	box.addChild(lblOnlyAvailable);
 
-	lblExcludeHides = new Label(checkBoxExcludeHides, Translation.Get("SearchWithoutOwns"));
-	lblExcludeHides.setX(checkBoxOnlyAvible.getMaxX() + margin);
+	lblExcludeHides = new Label(this.name + " lblExcludeHides", checkBoxExcludeHides, Translation.Get("SearchWithoutOwns"));
+	lblExcludeHides.setX(checkBoxOnlyAvailable.getMaxX() + margin);
 	lblExcludeHides.setWidth(this.getWidth() - margin - checkBoxExcludeHides.getMaxX() - margin);
 	box.addChild(lblExcludeHides);
 
-	lblExcludeFounds = new Label(checkBoxExcludeFounds, Translation.Get("SearchWithoutFounds"));
-	lblExcludeFounds.setX(checkBoxOnlyAvible.getMaxX() + margin);
+	lblExcludeFounds = new Label(this.name + " lblExcludeFounds", checkBoxExcludeFounds, Translation.Get("SearchWithoutFounds"));
+	lblExcludeFounds.setX(checkBoxOnlyAvailable.getMaxX() + margin);
 	lblExcludeFounds.setWidth(this.getWidth() - margin - checkBoxExcludeFounds.getMaxX() - margin);
 	box.addChild(lblExcludeFounds);
 
@@ -239,7 +239,7 @@ public class SearchOverPosition extends ActivityBase {
 
     private void createCoordButton() {
 	CB_RectF rec = new CB_RectF(margin, tglBtnGPS.getY() - margin - lineHeight, this.getWidth() - (margin * 2), lineHeight);
-	lblMarkerPos = new Label(rec, Translation.Get("CurentMarkerPos"));
+	lblMarkerPos = new Label(this.name + " lblMarkerPos", rec, Translation.Get("CurentMarkerPos"));
 	box.addChild(lblMarkerPos);
 
 	coordBtn = new CoordinateButton(rec, name, null, null);
@@ -315,7 +315,7 @@ public class SearchOverPosition extends ActivityBase {
 	}
 
 	checkBoxExcludeFounds.setChecked(Config.SearchWithoutFounds.getValue());
-	checkBoxOnlyAvible.setChecked(Config.SearchOnlyAvible.getValue());
+	checkBoxOnlyAvailable.setChecked(Config.SearchOnlyAvailable.getValue());
 	checkBoxExcludeHides.setChecked(Config.SearchWithoutOwns.getValue());
 	Radius.setText(String.valueOf(Config.lastSearchRadius.getValue()));
 	setToggleBtnState();
@@ -386,7 +386,7 @@ public class SearchOverPosition extends ActivityBase {
     private void ImportNow() {
 	isCanceld = false;
 	Config.SearchWithoutFounds.setValue(checkBoxExcludeFounds.isChecked());
-	Config.SearchOnlyAvible.setValue(checkBoxOnlyAvible.isChecked());
+	Config.SearchOnlyAvailable.setValue(checkBoxOnlyAvailable.isChecked());
 	Config.SearchWithoutOwns.setValue(checkBoxExcludeHides.isChecked());
 
 	int radius = 0;
@@ -422,7 +422,7 @@ public class SearchOverPosition extends ActivityBase {
 			// alle per API importierten Caches landen in der Category und
 			// GpxFilename
 			// API-Import
-			// Category suchen, die dazu gehört
+			// Category suchen, die dazu gehÃ¶rt
 			CategoryDAO categoryDAO = new CategoryDAO();
 			Category category = categoryDAO.GetCategory(CoreSettingsForward.Categories, "API-Import");
 			if (category != null) // should not happen!!!
@@ -436,7 +436,7 @@ public class SearchOverPosition extends ActivityBase {
 
 				searchC.excludeFounds = Config.SearchWithoutFounds.getValue();
 				searchC.excludeHides = Config.SearchWithoutOwns.getValue();
-				searchC.available = Config.SearchOnlyAvible.getValue();
+				searchC.available = Config.SearchOnlyAvailable.getValue();
 
 				dis.setAnimationType(AnimationType.Download);
 				CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id, icancel);
@@ -522,9 +522,9 @@ public class SearchOverPosition extends ActivityBase {
 	if (lblExcludeFounds != null)
 	    lblExcludeFounds.dispose();
 	lblExcludeFounds = null;
-	if (lblOnlyAvible != null)
-	    lblOnlyAvible.dispose();
-	lblOnlyAvible = null;
+	if (lblOnlyAvailable != null)
+	    lblOnlyAvailable.dispose();
+	lblOnlyAvailable = null;
 	if (lblExcludeHides != null)
 	    lblExcludeHides.dispose();
 	lblExcludeHides = null;
@@ -537,9 +537,9 @@ public class SearchOverPosition extends ActivityBase {
 	if (checkBoxExcludeFounds != null)
 	    checkBoxExcludeFounds.dispose();
 	checkBoxExcludeFounds = null;
-	if (checkBoxOnlyAvible != null)
-	    checkBoxOnlyAvible.dispose();
-	checkBoxOnlyAvible = null;
+	if (checkBoxOnlyAvailable != null)
+	    checkBoxOnlyAvailable.dispose();
+	checkBoxOnlyAvailable = null;
 	if (checkBoxExcludeHides != null)
 	    checkBoxExcludeHides.dispose();
 	checkBoxExcludeHides = null;

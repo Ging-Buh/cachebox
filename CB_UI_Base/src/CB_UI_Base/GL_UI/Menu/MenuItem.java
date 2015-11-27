@@ -79,10 +79,8 @@ public class MenuItem extends MenuItemBase {
 
 	// float left = (mIsCheckable || mLeft) ? this.height * 0.97f : this.height * 0.2f;
 
-	mLabel = new Label(this.ScaleCenter(0.97f), "MenuItemLabel");
+	mLabel = new Label(this.name + " mLabel", this.ScaleCenter(0.97f));
 	boolean hasIcon = (mIcon != null);
-
-	// float x = ((this.width - mLabel.getWidth()) / 2) + left;
 
 	if (hasIcon) {
 	    CB_RectF rec = new CB_RectF(this.getWidth() - this.getHeight(), 0, this.getHeight(), this.getHeight()).ScaleCenter(0.75f);
@@ -170,7 +168,7 @@ public class MenuItem extends MenuItemBase {
     public MenuItem setTitle(String title) {
 	mTitle = title;
 	if (mLabel == null)
-	    mLabel = new Label(this.ScaleCenter(0.97f), "MenuItemLabel");
+	    mLabel = new Label(this.name + " mLabel", this.ScaleCenter(0.97f));
 	mLabel.setText(title);
 	return this;
     }

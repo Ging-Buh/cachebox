@@ -91,7 +91,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 		s = "";
 	    solver = new Solver(s);
 	    solver.Solve();
-	    // wenn der Solver noch leer ist oder die letzte Zeile nicht leer ist dann am Ende eine leere Zeile einf�gen
+	    // wenn der Solver noch leer ist oder die letzte Zeile nicht leer ist dann am Ende eine leere Zeile einfügen
 	    if ((solver.size() == 0) || (solver.get(solver.size() - 1).getOrgText().length() > 0)) {
 		solver.add(solver.size(), new SolverZeile(solver, ""));
 	    }
@@ -277,11 +277,11 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
     @Override
     public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
 	if (cache == this.cache)
-	    return; // Cache hat sich nicht ge�ndert!
+	    return; // Cache hat sich nicht geändert!
 	// Solver speichern
 	if (this.cache != null)
 	    Database.SetSolver(this.cache, solver.getSolverString());
-	// n�chsten Cache laden
+	// nächsten Cache laden
 	this.cache = cache;
 	intiList();
     }
@@ -326,7 +326,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 	    }
 
 	    if (!neu) {
-		// wenn der letzte Eintrag ge�ndert wurde dann soll hinter dem letzten Eintrag eine weitere neue Zeile eingef�gt werden
+		// wenn der letzte Eintrag geändert wurde dann soll hinter dem letzten Eintrag eine weitere neue Zeile eingefügt werden
 		if (mSelectedIndex == solver.size() - 1) {
 		    solver.add(solver.size(), new SolverZeile(solver, ""));
 		    neu = true; // damit die Liste neu geladen wird
@@ -378,7 +378,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
     };
 
     public void DeleteLine() {
-	GL_MsgBox.Show("Zeile l�schen?", "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, deleteListener);
+	GL_MsgBox.Show("Zeile löschen?", "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, deleteListener);
     }
 
     private CoordinateGPS getSelectedCoordinateResult() {

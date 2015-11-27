@@ -20,6 +20,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.COLOR;
@@ -34,13 +41,6 @@ import CB_UI_Base.graphics.Geometry.GeometryList;
 import CB_UI_Base.graphics.Geometry.Line;
 import CB_UI_Base.graphics.Geometry.Quadrangle;
 import CB_Utils.Util.HSV_Color;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Label extends CB_View_Base {
     private final static org.slf4j.Logger log = LoggerFactory.getLogger(Label.class);
@@ -78,11 +78,12 @@ public class Label extends CB_View_Base {
 	}
     }
 
-    BitmapFontCache TextObject; // FIXME Create BitmapFontCache-Array and reduce PolygonSpriteBatch(10920) constructor for Labels with long
-    // Text
+    BitmapFontCache TextObject;
+    // FIXME Create BitmapFontCache-Array and reduce PolygonSpriteBatch(10920) constructor for Labels with long Text
 
     protected String mText = "";
     protected BitmapFont mFont = Fonts.getNormal();
+
     private Color mColor = COLOR.getFontColor();
     private VAlignment mVAlignment = VAlignment.CENTER;
     private HAlignment mHAlignment = HAlignment.LEFT;
@@ -131,15 +132,27 @@ public class Label extends CB_View_Base {
 	initLabel();
     }
 
-    public Label(float X, float Y, float Width, float Height, String Text) {
-	super(X, Y, Width, Height, "Label " + Text);
+    public Label(String Name, float X, float Y, float Width, float Height, String Text) {
+	super(X, Y, Width, Height, Name);
 	mText = Text == null ? "" : Text;
 	initLabel();
     }
 
-    public Label(CB_RectF rec, String Text) {
-	super(rec, "Label " + Text);
+    public Label(String Name, float X, float Y, float Width, float Height) {
+	super(X, Y, Width, Height, Name);
+	mText = "";
+	initLabel();
+    }
+
+    public Label(String Name, CB_RectF rec, String Text) {
+	super(rec, Name);
 	mText = Text == null ? "" : Text;
+	initLabel();
+    }
+
+    public Label(String Name, CB_RectF rec) {
+	super(rec, Name);
+	mText = "";
 	initLabel();
     }
 
@@ -403,7 +416,6 @@ public class Label extends CB_View_Base {
 
     private void deleteUnderlineStrikeout() {
 	if (underlineStrikeoutDrawable != null) {
-	    log.debug("delete underlineStrikeoutDrawable");
 	    underlineStrikeoutDrawable.dispose();
 	    underlineStrikeoutDrawable = null;
 	}

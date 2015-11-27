@@ -140,7 +140,7 @@ public class TestLabelView extends CB_View_Base {
 	});
 
 	CB_RectF rec = new CB_RectF(2, 10, this.getWidth() - 2, 100);
-	lbl = new Label(rec, "Test Text gq!\nABCDEFGHIJKLMNOPQRSTUVWXYZ");
+	lbl = new Label(this.name + " lbl", rec, "Test Text gq!\nABCDEFGHIJKLMNOPQRSTUVWXYZ");
 	lbl.setWrapType(WrapType.MULTILINE);
 	lbl.setBackground(new ColorDrawable(COLOR.getHighLightFontColor()));
 	//	this.addChild(lbl);

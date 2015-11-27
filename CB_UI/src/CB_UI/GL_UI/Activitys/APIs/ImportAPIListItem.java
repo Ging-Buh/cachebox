@@ -9,56 +9,50 @@ import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
-public class ImportAPIListItem extends ListViewItemBackground
-{
-	private chkBox chk;
-	private Label lblName, lblInfo;
+public class ImportAPIListItem extends ListViewItemBackground {
+    private chkBox chk;
+    private Label lblName, lblInfo;
 
-	public ImportAPIListItem(CB_RectF rec, int Index, final RpcAnswer_GetExportList.ListItem item)
-	{
-		super(rec, Index, "");
+    public ImportAPIListItem(CB_RectF rec, int Index, final RpcAnswer_GetExportList.ListItem item) {
+	super(rec, Index, "");
 
-		lblName = new Label(getLeftWidth(), this.getHalfHeight(), this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight(),
-				"");
-		lblInfo = new Label(getLeftWidth(), 0, this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight(), "");
+	lblName = new Label(this.name + " lblName", getLeftWidth(), this.getHalfHeight(), this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight());
+	lblInfo = new Label(this.name + " lblInfo", getLeftWidth(), 0, this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight());
 
-		lblName.setFont(Fonts.getNormal());
-		lblInfo.setFont(Fonts.getSmall());
+	lblName.setFont(Fonts.getNormal());
+	lblInfo.setFont(Fonts.getSmall());
 
-		lblName.setText(item.getDescription());
+	lblName.setText(item.getDescription());
 
-		// SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy");
-		// String dateString = postFormater.format(pq.DateLastGenerated);
-		// DecimalFormat df = new DecimalFormat("###.##");
-		// String FileSize = df.format(pq.SizeMB) + " MB";
-		String Count = "   Count=" + String.valueOf(item.getCacheCount());
-		lblInfo.setText(Count);
+	// SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy");
+	// String dateString = postFormater.format(pq.DateLastGenerated);
+	// DecimalFormat df = new DecimalFormat("###.##");
+	// String FileSize = df.format(pq.SizeMB) + " MB";
+	String Count = "   Count=" + String.valueOf(item.getCacheCount());
+	lblInfo.setText(Count);
 
-		// lblInfo.setText("---");
+	// lblInfo.setText("---");
 
-		chk = new chkBox("");
-		chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UI_Size_Base.that.getMargin());
-		chk.setY(this.getHalfHeight() - chk.getHalfHeight());
-		chk.setChecked(false);
-		chk.setOnCheckedChangeListener(new OnCheckedChangeListener()
-		{
+	chk = new chkBox("");
+	chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UI_Size_Base.that.getMargin());
+	chk.setY(this.getHalfHeight() - chk.getHalfHeight());
+	chk.setChecked(false);
+	chk.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
-			@Override
-			public void onCheckedChanged(chkBox view, boolean isChecked)
-			{
-				item.setDownload(isChecked);
-			}
-		});
+	    @Override
+	    public void onCheckedChanged(chkBox view, boolean isChecked) {
+		item.setDownload(isChecked);
+	    }
+	});
 
-		this.addChild(lblName);
-		this.addChild(lblInfo);
-		this.addChild(chk);
-	}
+	this.addChild(lblName);
+	this.addChild(lblInfo);
+	this.addChild(chk);
+    }
 
-	@Override
-	protected void SkinIsChanged()
-	{
+    @Override
+    protected void SkinIsChanged() {
 
-	}
+    }
 
 }

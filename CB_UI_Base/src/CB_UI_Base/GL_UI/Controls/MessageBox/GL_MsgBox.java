@@ -20,6 +20,9 @@ import java.util.Iterator;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -38,9 +41,6 @@ import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Config_Core;
 import CB_Utils.Settings.SettingBool;
-
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class GL_MsgBox extends Dialog {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(GL_MsgBox.class);
@@ -86,7 +86,7 @@ public class GL_MsgBox extends Dialog {
     public static GL_MsgBox Show(String msg) {
 	GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, false, true, false), "MsgBox" + msg.substring(0, Math.max(5, msg.length())));
 	msgBox.setButtonCaptions(MessageBoxButtons.OK);
-	msgBox.label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
+	msgBox.label = new Label("msgBox" + " label", msgBox.getContentSize().getBounds());
 	msgBox.label.setZeroPos();
 	msgBox.label.setWrappedText(msg);
 	msgBox.addChild(msgBox.label);
@@ -111,7 +111,7 @@ public class GL_MsgBox extends Dialog {
 	msgBox.mMsgBoxClickListner = Listener;
 	msgBox.setButtonCaptions(buttons);
 	msgBox.setTitle(title);
-	msgBox.label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
+	msgBox.label = new Label("msgBox" + " label", msgBox.getContentSize().getBounds());
 	msgBox.label.setZeroPos();
 	msgBox.label.setWrappedText(msg);
 	msgBox.addChild(msgBox.label);
@@ -151,7 +151,7 @@ public class GL_MsgBox extends Dialog {
 	    iconImage.setDrawable(new SpriteDrawable(getIcon(icon)));
 	msgBox.addChild(iconImage);
 
-	msgBox.label = new Label(contentSize.getBounds(), "MsgBoxLabel");
+	msgBox.label = new Label("msgBox" + " label", contentSize.getBounds());
 	msgBox.label.setWidth(contentSize.getBounds().getWidth() - 5 - UI_Size_Base.that.getButtonHeight());
 	msgBox.label.setPos(imageRec.getMaxX() + 5, 0);
 	msgBox.label.setWrappedText(msg);

@@ -2,6 +2,8 @@ package CB_UI.GL_UI.Menu;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.SearchGC;
@@ -33,208 +35,201 @@ import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
 
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+public class CB_AllContextMenuHandler {
 
-public class CB_AllContextMenuHandler
-{
+    public static void showBtnCacheContextMenu() {
 
-	public static void showBtnCacheContextMenu()
-	{
+	boolean selectedCacheIsNull = (GlobalCore.getSelectedCache() == null);
 
-		boolean selectedCacheIsNull = (GlobalCore.getSelectedCache() == null);
+	boolean selectedCacheIsNoGC = false;
 
-		boolean selectedCacheIsNoGC = false;
+	if (!selectedCacheIsNull) {
+	    selectedCacheIsNoGC = !GlobalCore.getSelectedCache().getGcCode().startsWith("GC");
+	}
 
-		if (!selectedCacheIsNull)
-		{
-			selectedCacheIsNoGC = !GlobalCore.getSelectedCache().getGcCode().startsWith("GC");
-		}
+	Menu icm = new Menu("BtnCacheContextMenu");
+	icm.addItemClickListner(onItemClickListner);
+	MenuItem mi;
 
-		Menu icm = new Menu("BtnCacheContextMenu");
-		icm.addItemClickListner(onItemClickListner);
-		MenuItem mi;
+	mi = icm.addItem(MenuID.MI_RELOAD_CACHE_INFO, "ReloadCacheAPI", SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal()));
+	if (selectedCacheIsNull)
+	    mi.setEnabled(false);
+	if (selectedCacheIsNoGC)
+	    mi.setEnabled(false);
 
-		mi = icm.addItem(MenuID.MI_RELOAD_CACHE_INFO, "ReloadCacheAPI", SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal()));
-		if (selectedCacheIsNull) mi.setEnabled(false);
-		if (selectedCacheIsNoGC) mi.setEnabled(false);
+	mi = icm.addItem(MenuID.MI_WAYPOINTS, "Waypoints", SpriteCacheBase.BigIcons.get(16));
+	if (selectedCacheIsNull)
+	    mi.setEnabled(false);
 
-		mi = icm.addItem(MenuID.MI_WAYPOINTS, "Waypoints", SpriteCacheBase.BigIcons.get(16));
-		if (selectedCacheIsNull) mi.setEnabled(false);
+	mi = icm.addItem(MenuID.MI_SHOW_LOGS, "ShowLogs", SpriteCacheBase.Icons.get(IconName.list_21.ordinal()));
+	if (selectedCacheIsNull)
+	    mi.setEnabled(false);
 
-		mi = icm.addItem(MenuID.MI_SHOW_LOGS, "ShowLogs", SpriteCacheBase.Icons.get(IconName.list_21.ordinal()));
-		if (selectedCacheIsNull) mi.setEnabled(false);
+	mi = icm.addItem(MenuID.MI_HINT, "hint");
+	if (mi != null) {
+	    boolean enabled = false;
+	    if (!selectedCacheIsNull && (GlobalCore.getSelectedCache().hasHint()))
+		enabled = true;
+	    mi.setEnabled(enabled);
+	    mi.setIcon(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.hint_19.ordinal())));
+	}
 
-		mi = icm.addItem(MenuID.MI_HINT, "hint");
-		if (mi != null)
-		{
-			boolean enabled = false;
-			if (!selectedCacheIsNull && (GlobalCore.getSelectedCache().hasHint())) enabled = true;
-			mi.setEnabled(enabled);
-			mi.setIcon(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.hint_19.ordinal())));
-		}
+	mi = icm.addItem(MenuID.MI_SPOILER, "spoiler", SpriteCacheBase.Icons.get(IconName.images_22.ordinal()));
+	if (selectedCacheIsNull) {
+	    mi.setEnabled(GlobalCore.getSelectedCache().SpoilerExists());
+	} else {
+	    mi.setEnabled(false);
+	}
 
-		mi = icm.addItem(MenuID.MI_SPOILER, "spoiler", SpriteCacheBase.Icons.get(IconName.images_22.ordinal()));
-		if (selectedCacheIsNull)
-		{
-			mi.setEnabled(GlobalCore.getSelectedCache().SpoilerExists());
-		}
-		else
-		{
-			mi.setEnabled(false);
-		}
+	mi = icm.addItem(MenuID.MI_SOLVER, "Solver", SpriteCacheBase.Icons.get(IconName.solver_24.ordinal()));
+	if (selectedCacheIsNull)
+	    mi.setEnabled(false);
 
-		mi = icm.addItem(MenuID.MI_SOLVER, "Solver", SpriteCacheBase.Icons.get(IconName.solver_24.ordinal()));
-		if (selectedCacheIsNull) mi.setEnabled(false);
+	if (GlobalCore.JokerisOnline()) {
+	    mi = icm.addItem(MenuID.MI_JOKER, "joker", SpriteCacheBase.Icons.get(IconName.jokerPhone_25.ordinal()));
+	    // Menu Item Telefonjoker enabled / disabled abh√§nging von gcJoker MD5
 
+	    if (mi != null) {
+		boolean enabled = false;
 		if (GlobalCore.JokerisOnline())
-		{
-			mi = icm.addItem(MenuID.MI_JOKER, "joker", SpriteCacheBase.Icons.get(IconName.jokerPhone_25.ordinal()));
-			// Menu Item Telefonjoker enabled / disabled abh‰nging von gcJoker MD5
+		    enabled = true;
 
-			if (mi != null)
-			{
-				boolean enabled = false;
-				if (GlobalCore.JokerisOnline()) enabled = true;
-
-				mi.setEnabled(enabled);
-			}
-
-		}
-
-		mi = icm.addItem(MenuID.MI_EDIT_CACHE, "MI_EDIT_CACHE");
-		if (selectedCacheIsNull) mi.setEnabled(false);
-
-		mi = icm.addItem(MenuID.MI_FAVORIT, "Favorite", SpriteCacheBase.Icons.get(IconName.favorit_42.ordinal()));
-		mi.setCheckable(true);
-		if (selectedCacheIsNull) mi.setEnabled(false);
-		else
-			mi.setChecked(GlobalCore.getSelectedCache().isFavorite());
-
-		mi = icm.addItem(MenuID.MI_DELETE_CACHE, "MI_DELETE_CACHE");
-		if (selectedCacheIsNull) mi.setEnabled(false);
-
-		icm.Show();
+		mi.setEnabled(enabled);
+	    }
 
 	}
 
-	static CancelWaitDialog wd;
+	mi = icm.addItem(MenuID.MI_EDIT_CACHE, "MI_EDIT_CACHE");
+	if (selectedCacheIsNull)
+	    mi.setEnabled(false);
 
-	private static OnClickListener onItemClickListner = new OnClickListener()
-	{
+	mi = icm.addItem(MenuID.MI_FAVORIT, "Favorite", SpriteCacheBase.Icons.get(IconName.favorit_42.ordinal()));
+	mi.setCheckable(true);
+	if (selectedCacheIsNull)
+	    mi.setEnabled(false);
+	else
+	    mi.setChecked(GlobalCore.getSelectedCache().isFavorite());
 
-		@Override
-		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-		{
-			EditCache editCache = null;
-			CacheDAO dao = null;
-			switch (((MenuItem) v).getMenuItemId())
-			{
-			case MenuID.MI_HINT:
-				HintDialog.show();
-				return true;
+	mi = icm.addItem(MenuID.MI_DELETE_CACHE, "MI_DELETE_CACHE");
+	if (selectedCacheIsNull)
+	    mi.setEnabled(false);
 
-			case MenuID.MI_RELOAD_CACHE_INFO:
-				wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
-				{
+	icm.Show();
 
-					@Override
-					public void isCanceld()
-					{
+    }
 
-					}
-				}, new cancelRunnable()
-				{
+    static CancelWaitDialog wd;
 
-					@Override
-					public void run()
-					{
-						SearchGC searchC = new SearchGC(GlobalCore.getSelectedCache().getGcCode());
+    private static OnClickListener onItemClickListner = new OnClickListener() {
 
-						searchC.number = 1;
+	@Override
+	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+	    EditCache editCache = null;
+	    CacheDAO dao = null;
+	    switch (((MenuItem) v).getMenuItemId()) {
+	    case MenuID.MI_HINT:
+		HintDialog.show();
+		return true;
 
-						CB_List<Cache> apiCaches = new CB_List<Cache>();
-						ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
-						ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
+	    case MenuID.MI_RELOAD_CACHE_INFO:
+		wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListner() {
 
-						CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, GlobalCore.getSelectedCache().GPXFilename_ID, this);
+		    @Override
+		    public void isCanceld() {
 
-						try
-						{
-							GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
-						}
-						catch (InterruptedException e)
-						{
-							e.printStackTrace();
-						}
+		    }
+		}, new cancelRunnable() {
 
-						// Reload result from DB
-						synchronized (Database.Data.Query)
-						{
-							String sqlWhere = FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue());
-							CacheListDAO cacheListDAO = new CacheListDAO();
-							cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
-						}
+		    @Override
+		    public void run() {
+			SearchGC searchC = new SearchGC(GlobalCore.getSelectedCache().getGcCode());
 
-						CachListChangedEventList.Call();
+			searchC.number = 1;
 
-						wd.close();
-					}
+			CB_List<Cache> apiCaches = new CB_List<Cache>();
+			ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
+			ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
-					@Override
-					public boolean cancel()
-					{
-						// TODO Handle cancel
-						return false;
-					}
-				});
+			CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, GlobalCore.getSelectedCache().GPXFilename_ID, this);
 
-				return true;
-
-			case MenuID.MI_WAYPOINTS:
-				if (TabMainView.actionShowWaypointView != null) TabMainView.actionShowWaypointView.Execute();
-				return true;
-
-			case MenuID.MI_SHOW_LOGS:
-				if (TabMainView.actionShowLogView != null) TabMainView.actionShowLogView.Execute();
-				return true;
-
-			case MenuID.MI_SPOILER:
-				if (TabMainView.actionShowSpoilerView != null) TabMainView.actionShowSpoilerView.Execute();
-				return true;
-
-			case MenuID.MI_SOLVER:
-				if (TabMainView.actionShowSolverView != null) TabMainView.actionShowSolverView.Execute();
-				return true;
-
-			case MenuID.MI_JOKER:
-				if (TabMainView.actionShowJokerView != null) TabMainView.actionShowJokerView.Execute();
-				return true;
-
-			case MenuID.MI_EDIT_CACHE:
-				if (editCache == null) editCache = new EditCache(ActivityBase.ActivityRec(), "editCache");
-				editCache.Update(GlobalCore.getSelectedCache());
-				return true;
-
-			case MenuID.MI_FAVORIT:
-				if (GlobalCore.ifCacheSelected())
-				{
-					GlobalCore.getSelectedCache().setFavorit(!GlobalCore.getSelectedCache().isFavorite());
-					if (dao == null) dao = new CacheDAO();
-					dao.UpdateDatabase(GlobalCore.getSelectedCache());
-					CachListChangedEventList.Call();
-				}
-				return true;
-
-			case MenuID.MI_DELETE_CACHE:
-				DeleteSelectedCache.Execute();
-				return true;
-
-			default:
-				return false;
-
+			try {
+			    GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
+			} catch (InterruptedException e) {
+			    e.printStackTrace();
 			}
 
+			// Reload result from DB
+			synchronized (Database.Data.Query) {
+			    String sqlWhere = FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+			    CacheListDAO cacheListDAO = new CacheListDAO();
+			    cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+			}
+
+			CachListChangedEventList.Call();
+
+			wd.close();
+		    }
+
+		    @Override
+		    public boolean cancel() {
+			// TODO Handle cancel
+			return false;
+		    }
+		});
+
+		return true;
+
+	    case MenuID.MI_WAYPOINTS:
+		if (TabMainView.actionShowWaypointView != null)
+		    TabMainView.actionShowWaypointView.Execute();
+		return true;
+
+	    case MenuID.MI_SHOW_LOGS:
+		if (TabMainView.actionShowLogView != null)
+		    TabMainView.actionShowLogView.Execute();
+		return true;
+
+	    case MenuID.MI_SPOILER:
+		if (TabMainView.actionShowSpoilerView != null)
+		    TabMainView.actionShowSpoilerView.Execute();
+		return true;
+
+	    case MenuID.MI_SOLVER:
+		if (TabMainView.actionShowSolverView != null)
+		    TabMainView.actionShowSolverView.Execute();
+		return true;
+
+	    case MenuID.MI_JOKER:
+		if (TabMainView.actionShowJokerView != null)
+		    TabMainView.actionShowJokerView.Execute();
+		return true;
+
+	    case MenuID.MI_EDIT_CACHE:
+		if (editCache == null)
+		    editCache = new EditCache(ActivityBase.ActivityRec(), "editCache");
+		editCache.Update(GlobalCore.getSelectedCache());
+		return true;
+
+	    case MenuID.MI_FAVORIT:
+		if (GlobalCore.ifCacheSelected()) {
+		    GlobalCore.getSelectedCache().setFavorit(!GlobalCore.getSelectedCache().isFavorite());
+		    if (dao == null)
+			dao = new CacheDAO();
+		    dao.UpdateDatabase(GlobalCore.getSelectedCache());
+		    CachListChangedEventList.Call();
 		}
-	};
+		return true;
+
+	    case MenuID.MI_DELETE_CACHE:
+		DeleteSelectedCache.Execute();
+		return true;
+
+	    default:
+		return false;
+
+	    }
+
+	}
+    };
 
 }

@@ -15,19 +15,19 @@ import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.badlogic.gdx.graphics.Color;
+
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.GPS;
 import CB_Locator.GpsStrength;
 import CB_Locator.Location.ProviderType;
+import CB_Locator.Events.GpsStateChangeEventList;
 import CB_Locator.Map.Track;
 import CB_Locator.Map.TrackPoint;
-import CB_Locator.Events.GpsStateChangeEventList;
 import CB_UI.Config;
 import CB_UI.Map.RouteOverlay;
 import CB_Utils.Lists.CB_List;
-
-import com.badlogic.gdx.graphics.Color;
 
 public class simulateForm extends Frame implements ActionListener, WindowListener
 {
@@ -152,7 +152,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 	{
 		if (event.getActionCommand().equals("Load GPX"))
 		{
-			FileDialog filedia = new FileDialog(this, "�ffnen");
+			FileDialog filedia = new FileDialog(this, "öffnen");
 			// filedia.setDirectory(initialPath);
 			filedia.setFile("*.gpx");
 			filedia.show();
@@ -173,8 +173,8 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 
 				Bearing += 5;
 
-				CB_Locator.Locator.setNewLocation(new CB_Locator.Location(pos.getLatitude(), pos.getLongitude(), 100, true, 2, true,
-						Bearing, 95, ProviderType.GPS));
+				CB_Locator.Locator.setNewLocation(
+						new CB_Locator.Location(pos.getLatitude(), pos.getLongitude(), 100, true, 2, true, Bearing, 95, ProviderType.GPS));
 
 				CB_List<GpsStrength> satList = new CB_List<GpsStrength>(8);
 
@@ -289,8 +289,8 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 		NetworkSend = false;
 
 		trackPointIndexEnd = simulationRoute.Points.size() - 1;
-		long nextTimeStamp = (simulationRoute.Points.get(trackPointIndex + 1).TimeStamp.getTime() - simulationRoute.Points
-				.get(trackPointIndex).TimeStamp.getTime());
+		long nextTimeStamp = (simulationRoute.Points.get(trackPointIndex + 1).TimeStamp.getTime()
+				- simulationRoute.Points.get(trackPointIndex).TimeStamp.getTime());
 
 		if (!chekRealSpeed.getState()) nextTimeStamp /= 8; // ein wenig schneller ablaufen lassen?
 

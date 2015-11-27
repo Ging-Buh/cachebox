@@ -18,9 +18,12 @@ package CB_UI_Base.GL_UI.Controls.html;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.htmlparser.jericho.Source;
-
 import org.slf4j.LoggerFactory;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.utils.Align;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Enums.WrapType;
@@ -42,11 +45,7 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.graphics.FontCache;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Trace;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.utils.Align;
+import net.htmlparser.jericho.Source;
 
 /**
  * @author Longri
@@ -333,7 +332,7 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	parseHyperLinks(seg, "http://");
 	parseHyperLinks(seg, "www.");
 
-	LinkLabel lbl = new LinkLabel(0, 0, innerWidth - (margin * 2), segHeight, "DescLabel");
+	LinkLabel lbl = new LinkLabel("HtmlView" + " lbl", 0, 0, innerWidth - (margin * 2), segHeight);
 
 	if (markUp) {
 	    lbl.setMarkupEnabled(true);

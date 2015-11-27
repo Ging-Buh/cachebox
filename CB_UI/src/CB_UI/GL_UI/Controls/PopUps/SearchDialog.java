@@ -19,6 +19,8 @@ import java.util.ArrayList;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import CB_Core.CoreSettingsForward;
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
@@ -77,8 +79,6 @@ import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
 
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-
 /**
  * @author Longri
  */
@@ -87,7 +87,7 @@ public class SearchDialog extends PopUp_Base {
     public static SearchDialog that;
 
     /**
-     * True, wenn eine Suche l�uft und der Iterator mit Next weiter durchlaufen werden kann.
+     * True, wenn eine Suche läuft und der Iterator mit Next weiter durchlaufen werden kann.
      */
     private boolean mSearchAktive = false;
 
@@ -126,7 +126,7 @@ public class SearchDialog extends PopUp_Base {
     private Button mBtnSearch;
 
     /**
-     * Button, der den n�chsten Treffer einer gestarteten Suche findet
+     * Button, der den nächsten Treffer einer gestarteten Suche findet
      */
     private Button mBtnNext;
 
@@ -141,7 +141,7 @@ public class SearchDialog extends PopUp_Base {
     private EditTextField mEingabe;
 
     /**
-     * Enth�llt den Aktuellen Such Modus <br/>
+     * Enthält den Aktuellen Such Modus <br/>
      * 0 = Title <br/>
      * 1 = Gc-Code <br/>
      * 2 = Owner <br/>
@@ -200,7 +200,7 @@ public class SearchDialog extends PopUp_Base {
 
 	mEingabe.setText("");
 
-	// Layout! da es sich nicht �ndert, brauchen wir es nicht in eine Methode packen
+	// Layout! da es sich nicht ändert, brauchen wir es nicht in eine Methode packen
 	float y = margin;
 
 	mBtnFilter.setPos(margin, y);
@@ -217,11 +217,11 @@ public class SearchDialog extends PopUp_Base {
 	mTglBtnGc.setPos(mTglBtnTitle.getMaxX() + margin, y);
 	mTglBtnOwner.setPos(mTglBtnGc.getMaxX() + margin, y);
 
-	// die H�he nach dem Verbrauchten Platz einstellen
+	// die Höhe nach dem Verbrauchten Platz einstellen
 
 	this.setHeight(mTglBtnOwner.getMaxY() + margin);
 
-	// Controls zum Dialog hinzuf�gen
+	// Controls zum Dialog hinzufügen
 	this.addChild(mTglBtnTitle);
 	this.addChild(mTglBtnGc);
 	this.addChild(mTglBtnOwner);
@@ -334,7 +334,7 @@ public class SearchDialog extends PopUp_Base {
     }
 
     /**
-     * Setzt die �bersetzten Texte auf die Buttons
+     * Setzt die übersetzten Texte auf die Buttons
      */
     private void setLang() {
 	MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnTitle, Translation.Get("Title"), Translation.Get("Title"));
@@ -396,7 +396,7 @@ public class SearchDialog extends PopUp_Base {
 	}
 
 	// TODO Sofort Filter hat eine schlechte Performance, deshalb habe ich ihn ersteinmal abgeschalten.
-	// Es w�re aber ein sch�nes Feature!
+	// Es wäre aber ein schönes Feature!
 	// filterSearchByTextChnge();
     }
 
@@ -411,7 +411,7 @@ public class SearchDialog extends PopUp_Base {
     }
 
     /**
-     * Die aktive CahcheList wird durchsucht gefilterte Caches werden dabei nicht ber�cksichtigt.
+     * Die aktive CahcheList wird durchsucht gefilterte Caches werden dabei nicht berücksichtigt.
      * 
      * @param ignoreOnlineSearch
      *            (True, wenn Lokal gesucht werden soll, obwohl der MultiToggleButton "Online" aktiviert ist.
@@ -547,7 +547,7 @@ public class SearchDialog extends PopUp_Base {
     // }
 
     /**
-     * Sucht mit den Vorgaben nach Caches �ber die API. Die Gefundenen Caches werden in die DB eingetragen und im Anschluss wird der lokale
+     * Sucht mit den Vorgaben nach Caches über die API. Die Gefundenen Caches werden in die DB eingetragen und im Anschluss wird der lokale
      * Suchvorgang gestartet.
      */
     private void searchAPI() {
@@ -656,7 +656,7 @@ public class SearchDialog extends PopUp_Base {
 		// alle per API importierten Caches landen in der Category und
 		// GpxFilename
 		// API-Import
-		// Category suchen, die dazu geh�rt
+		// Category suchen, die dazu gehört
 		CategoryDAO categoryDAO = new CategoryDAO();
 		Category category = categoryDAO.GetCategory(CoreSettingsForward.Categories, "API-Import");
 		if (category == null)

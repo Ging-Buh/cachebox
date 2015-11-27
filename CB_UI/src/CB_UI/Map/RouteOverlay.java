@@ -29,6 +29,11 @@ import java.util.Date;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
+
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Map.Descriptor;
 import CB_Locator.Map.MapTileLoader;
@@ -47,15 +52,10 @@ import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.HSV_Color;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
-
 public class RouteOverlay {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(RouteOverlay.class);
     /**
-     * ist in Routes eine von openRouteService generierter Track enthalten, dann enth�llt diese Vatiable diesen track.
+     * ist in Routes eine von openRouteService generierter Track enthalten, dann enthält diese Variable diesen track.
      */
     private static Track OpenRoute;
 
@@ -204,7 +204,7 @@ public class RouteOverlay {
 			    }
 
 			    if (name_end > name_start) {
-				// tmpLine, damit Gro�-/Kleinschreibung beachtet wird
+				// tmpLine, damit Groß-/Kleinschreibung beachtet wird
 				if (isSeg | isRte)
 				    route.Name = tmpLine.substring(name_start, name_end);
 				else
@@ -323,7 +323,7 @@ public class RouteOverlay {
 				DeltaAltitude = Math.abs(FromPosition.getElevation() - lastAcceptedCoordinate.getElevation());
 				FromPosition = new CoordinateGPS(lastAcceptedCoordinate);
 
-				if (DeltaAltitude >= 25.0) // nur aufaddieren wenn H�henunterschied gr��er 10 Meter
+				if (DeltaAltitude >= 25.0) // nur aufaddieren wenn Höhenunterschied größer 10 Meter
 				{
 				    FromPosition.setElevation(lastAcceptedCoordinate.getElevation());
 				    AltitudeDifference = AltitudeDifference + DeltaAltitude;
@@ -636,7 +636,7 @@ public class RouteOverlay {
 	    Routes.add(0, route);
 	    OpenRoute = route;
 	} else {
-	    // erst die alte route l�schen
+	    // erst die alte route löschen
 	    Routes.remove(OpenRoute);
 	    route.setColor(OpenRoute.getColor());
 	    Routes.add(0, route);

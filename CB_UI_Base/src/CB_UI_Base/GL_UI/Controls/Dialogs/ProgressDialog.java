@@ -20,188 +20,167 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Events.ProgressChangedEvent;
 import CB_Utils.Events.ProgresssChangedEventList;
 
-public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
-{
-	private Label messageTextView;
-	private Label progressMessageTextView;
-	private ProgressBar progressBar;
-	private static RunnableReadyHandler ProgressThread;
-	private static String titleText;
-	private static ProgressDialog that;
-	private AnimationBase animation;
-	public float measuredLabelHeight = 0;
+public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent {
+    private Label messageTextView;
+    private Label progressMessageTextView;
+    private ProgressBar progressBar;
+    private static RunnableReadyHandler ProgressThread;
+    private static String titleText;
+    private static ProgressDialog that;
+    private AnimationBase animation;
+    public float measuredLabelHeight = 0;
 
-	private boolean isCanceld = false;
+    private boolean isCanceld = false;
 
-	public interface iCancelListner
-	{
-		public void isCanceld();
+    public interface iCancelListner {
+	public void isCanceld();
+    }
+
+    private iCancelListner mCancelListner;
+
+    public void setCancelListner(iCancelListner listner) {
+	mCancelListner = listner;
+    }
+
+    public ProgressDialog(Size size, String name) {
+	super(size, name);
+	that = this;
+	isCanceld = false;
+
+	setButtonCaptions(MessageBoxButtons.Cancel);
+	button3.setOnClickListener(new OnClickListener() {
+
+	    @Override
+	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+		ProgressThread.Cancel();
+		button3.disable();
+		button3.setText(Translation.Get("waitForCancel"));
+		isCanceld = true;
+		if (mCancelListner != null)
+		    mCancelListner.isCanceld();
+		return true;
+	    }
+	});
+
+	measuredLabelHeight = Fonts.Measure("T").height * 1.5f;
+
+	progressMessageTextView = new Label(this.name + " progressMessageTextView", leftBorder, margin, innerWidth, measuredLabelHeight);
+	this.addChild(progressMessageTextView);
+
+	CB_RectF rec = new CB_RectF(0, progressMessageTextView.getMaxY() + margin, this.getContentSize().width, UI_Size_Base.that.getButtonHeight() * 0.75f);
+
+	progressBar = new ProgressBar(rec, "");
+	progressBar.setProgress(0);
+	this.addChild(progressBar);
+
+	messageTextView = new Label(this.name + " messageTextView", leftBorder, progressBar.getMaxY() + margin, innerWidth, measuredLabelHeight);
+	this.addChild(messageTextView);
+
+    }
+
+    public boolean isCanceld() {
+	return isCanceld;
+    }
+
+    public void setAnimation(final AnimationBase Animation) {
+	GL.that.RunOnGL(new IRunOnGL() {
+
+	    @Override
+	    public void run() {
+		ProgressDialog.this.removeChild(ProgressDialog.this.animation);
+		CB_RectF imageRec = new CB_RectF(0, progressBar.getMaxY() + margin, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
+		ProgressDialog.this.animation = Animation.INSTANCE(imageRec);
+		ProgressDialog.this.addChild(ProgressDialog.this.animation);
+	    }
+	});
+
+    }
+
+    public static ProgressDialog Show(String title, AnimationBase Animation, RunnableReadyHandler RunThread) {
+	ProgressDialog PD = createProgressDialog(title, true, RunThread);
+	PD.setAnimation(Animation);
+
+	GL.that.showDialog(PD);
+
+	return PD;
+    }
+
+    public static ProgressDialog Show(String title, RunnableReadyHandler RunThread) {
+
+	ProgressDialog PD = createProgressDialog(title, false, RunThread);
+	GL.that.showDialog(PD);
+
+	return PD;
+    }
+
+    private static ProgressDialog createProgressDialog(String title, boolean withAnimation, RunnableReadyHandler RunThread) {
+	if (ProgressThread != null) {
+	    ProgressThread = null;
+
 	}
 
-	private iCancelListner mCancelListner;
+	ProgressThread = RunThread;
+	titleText = title;
 
-	public void setCancelListner(iCancelListner listner)
-	{
-		mCancelListner = listner;
-	}
+	ProgressDialog PD = new ProgressDialog(calcMsgBoxSize(title, true, true, true), title);
 
-	public ProgressDialog(Size size, String name)
-	{
-		super(size, name);
-		that = this;
-		isCanceld = false;
+	float h = withAnimation ? UI_Size_Base.that.getButtonHeight() / 2 : 0;
 
-		setButtonCaptions(MessageBoxButtons.Cancel);
-		button3.setOnClickListener(new OnClickListener()
-		{
+	PD.setHeight(PD.getHeight() + (PD.measuredLabelHeight * 2f) + h);
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				ProgressThread.Cancel();
-				button3.disable();
-				button3.setText(Translation.Get("waitForCancel"));
-				isCanceld = true;
-				if (mCancelListner != null) mCancelListner.isCanceld();
-				return true;
-			}
-		});
+	PD.setTitle(titleText);
+	return PD;
+    }
 
-		measuredLabelHeight = Fonts.Measure("T").height * 1.5f;
+    public static void Ready() {
+	that.close();
+    }
 
-		progressMessageTextView = new Label(leftBorder, margin, innerWidth, measuredLabelHeight, "");
-		this.addChild(progressMessageTextView);
+    @Override
+    public void ProgressChangedEventCalled(String Message, String ProgressMessage, int Progress) {
+	setProgress(Message, ProgressMessage, Progress);
+    }
 
-		CB_RectF rec = new CB_RectF(0, progressMessageTextView.getMaxY() + margin, this.getContentSize().width, UI_Size_Base.that.getButtonHeight() * 0.75f);
+    @Override
+    public void onShow() {
+	// Registriere Progress Changed Event
+	ProgresssChangedEventList.Add(this);
+	if (ProgressThread != null) {
+	    Timer runTimer = new Timer();
+	    TimerTask task = new TimerTask() {
 
-		progressBar = new ProgressBar(rec, "");
-		progressBar.setProgress(0);
-		this.addChild(progressBar);
-
-		messageTextView = new Label(leftBorder, progressBar.getMaxY() + margin, innerWidth, measuredLabelHeight, "");
-		this.addChild(messageTextView);
-
-	}
-
-	public boolean isCanceld()
-	{
-		return isCanceld;
-	}
-
-	public void setAnimation(final AnimationBase Animation)
-	{
-		GL.that.RunOnGL(new IRunOnGL()
-		{
-
-			@Override
-			public void run()
-			{
-				ProgressDialog.this.removeChild(ProgressDialog.this.animation);
-				CB_RectF imageRec = new CB_RectF(0, progressBar.getMaxY() + margin, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
-				ProgressDialog.this.animation = Animation.INSTANCE(imageRec);
-				ProgressDialog.this.addChild(ProgressDialog.this.animation);
-			}
-		});
-
-	}
-
-	public static ProgressDialog Show(String title, AnimationBase Animation, RunnableReadyHandler RunThread)
-	{
-		ProgressDialog PD = createProgressDialog(title, true, RunThread);
-		PD.setAnimation(Animation);
-
-		GL.that.showDialog(PD);
-
-		return PD;
-	}
-
-	public static ProgressDialog Show(String title, RunnableReadyHandler RunThread)
-	{
-
-		ProgressDialog PD = createProgressDialog(title, false, RunThread);
-		GL.that.showDialog(PD);
-
-		return PD;
-	}
-
-	private static ProgressDialog createProgressDialog(String title, boolean withAnimation, RunnableReadyHandler RunThread)
-	{
-		if (ProgressThread != null)
-		{
-			ProgressThread = null;
-
+		@Override
+		public void run() {
+		    ProgressThread.run();
+		    ProgressThread.RunnableReady(ProgressThread.cancel());
 		}
+	    };
 
-		ProgressThread = RunThread;
-		titleText = title;
-
-		ProgressDialog PD = new ProgressDialog(calcMsgBoxSize(title, true, true, true), title);
-
-		float h = withAnimation ? UI_Size_Base.that.getButtonHeight() / 2 : 0;
-
-		PD.setHeight(PD.getHeight() + (PD.measuredLabelHeight * 2f) + h);
-
-		PD.setTitle(titleText);
-		return PD;
-	}
-
-	public static void Ready()
-	{
-		that.close();
-	}
-
-	@Override
-	public void ProgressChangedEventCalled(String Message, String ProgressMessage, int Progress)
-	{
-		setProgress(Message, ProgressMessage, Progress);
-	}
-
-	@Override
-	public void onShow()
-	{
-		// Registriere Progress Changed Event
-		ProgresssChangedEventList.Add(this);
-		if (ProgressThread != null)
-		{
-			Timer runTimer = new Timer();
-			TimerTask task = new TimerTask()
-			{
-
-				@Override
-				public void run()
-				{
-					ProgressThread.run();
-					ProgressThread.RunnableReady(ProgressThread.cancel());
-				}
-			};
-
-			runTimer.schedule(task, 20);
-
-		}
+	    runTimer.schedule(task, 20);
 
 	}
 
-	@Override
-	public void onHide()
-	{
-		// lösche Registrierung Progress Changed Event
-		ProgresssChangedEventList.Remove(this);
-	}
+    }
 
-	public void setProgress(final String Msg, final String ProgressMessage, final int value)
-	{
-		GL.that.RunOnGL(new IRunOnGL()
-		{
+    @Override
+    public void onHide() {
+	// lösche Registrierung Progress Changed Event
+	ProgresssChangedEventList.Remove(this);
+    }
 
-			@Override
-			public void run()
-			{
-				if (ProgressDialog.this.isDisposed()) return;
-				progressBar.setProgress(value);
-				progressMessageTextView.setText(ProgressMessage);
-				if (!Msg.equals("")) messageTextView.setText(Msg);
-			}
-		});
-	}
+    public void setProgress(final String Msg, final String ProgressMessage, final int value) {
+	GL.that.RunOnGL(new IRunOnGL() {
+
+	    @Override
+	    public void run() {
+		if (ProgressDialog.this.isDisposed())
+		    return;
+		progressBar.setProgress(value);
+		progressMessageTextView.setText(ProgressMessage);
+		if (!Msg.equals(""))
+		    messageTextView.setText(Msg);
+	    }
+	});
+    }
 
 }

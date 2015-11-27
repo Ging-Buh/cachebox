@@ -15,6 +15,11 @@
  */
 package CB_UI.GL_UI.Controls;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import CB_Core.Api.LiveMapQue;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
@@ -29,11 +34,6 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_Utils.Util.UnitFormatter;
-
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class MapInfoPanel extends CB_View_Base {
 
@@ -186,25 +186,25 @@ public class MapInfoPanel extends CB_View_Base {
 
 	float margin = GL_UISizes.margin;
 
-	lblSpeed = new Label(this.ScaleCenter(0.4f), "lblSpeed");
+	lblSpeed = new Label(this.name + " lblSpeed", this.ScaleCenter(0.4f));
 	lblSpeed.setFont(Fonts.getSmall());
 	lblSpeed.setPos(new Vector2(CompassRec.getWidth() + margin, this.getHeight() * 0.1f));
 	lblSpeed.setText("---");
 	this.addChild(lblSpeed);
 
-	lblDistance = new Label(this.ScaleCenter(0.4f), "lblDistance");
+	lblDistance = new Label(this.name + " lblDistance", this.ScaleCenter(0.4f));
 	lblDistance.setFont(Fonts.getBig());
 	lblDistance.setPos(new Vector2(CompassRec.getWidth() + margin, CompassRec.getWidth() / 2));
 	lblDistance.setText("---");
 	this.addChild(lblDistance);
 
-	lblLatitude = new Label(this.ScaleCenter(0.4f), "lblLatitude");
+	lblLatitude = new Label(this.name + " lblLatitude", this.ScaleCenter(0.4f));
 	lblLatitude.setFont(Fonts.getSmall());
 	lblLatitude.setPos(new Vector2(this.getWidth() - lblLatitude.getWidth() - rightBorder, CompassRec.getWidth() / 2));
 	lblLatitude.setText("---");
 	this.addChild(lblLatitude);
 
-	lblLongitude = new Label(this.ScaleCenter(0.4f), "lblLongitude");
+	lblLongitude = new Label(this.name + " lblLongitude", this.ScaleCenter(0.4f));
 	lblLongitude.setFont(Fonts.getSmall());
 	lblLongitude.setPos(new Vector2(this.getWidth() - lblLongitude.getWidth() - rightBorder, this.getHeight() * 0.1f));
 	lblLongitude.setText("---");

@@ -3,6 +3,9 @@ package CB_UI.GL_UI.Activitys;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheSizes;
@@ -32,9 +35,6 @@ import CB_UI_Base.GL_UI.Controls.Spinner.selectionChangedListner;
 import CB_UI_Base.GL_UI.Controls.SpinnerAdapter;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
-
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class EditCache extends ActivityBase
 // implements KeyboardFocusChangedEvent
@@ -76,7 +76,7 @@ public class EditCache extends ActivityBase
     // ctor
     public EditCache(CB_RectF rec, String Name) {
 	super(rec, Name);
-	// das übliche
+	// das Ã¼bliche
 	btnOK = new Button(Translation.Get("ok"));
 	btnOKClickHandler();
 	btnCancel = new Button(Translation.Get("cancel"));
@@ -168,7 +168,7 @@ public class EditCache extends ActivityBase
 	newValues.Pos = Locator.getLocation().toCordinate();
 	if (!newValues.Pos.isValid())
 	    newValues.Pos = GlobalCore.getSelectedCoord();
-	// GC - Code bestimmen für freies CWxxxx = CustomWaypint
+	// GC - Code bestimmen fÃ¼r freies CWxxxx = CustomWaypint
 	String prefix = "CW";
 	int count = 0;
 	do {

@@ -1,5 +1,8 @@
 package CB_UI.GL_UI.Main.Actions;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.SpoilerView;
@@ -16,9 +19,6 @@ import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
     private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
@@ -95,7 +95,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
 		GlobalCore.ImportSpoiler().setReadyListner(new IReadyListner() {
 		    @Override
 		    public void isReady() {
-			// erst die Lokalen Images für den Cache neu laden
+			// erst die Lokalen Images fÃ¼r den Cache neu laden
 			if (GlobalCore.ifCacheSelected()) {
 			    GlobalCore.getSelectedCache().ReloadSpoilerRessources();
 			    GL.that.RunOnGL(new IRunOnGL() {

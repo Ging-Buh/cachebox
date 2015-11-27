@@ -163,7 +163,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     }
 
     /**
-     * APIisOnline Liefert TRUE wenn die M�glichkeit besteht auf das Internet zuzugreifen und ein API Access Token vorhanden ist.
+     * APIisOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen und ein API Access Token vorhanden ist.
      */
     public static boolean APIisOnline() {
 	if (Config.GetAccessToken().length() == 0) {
@@ -180,7 +180,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     static boolean JokerPwExist = false;
 
     /**
-     * JokerisOnline Liefert TRUE wenn die M�glichkeit besteht auf das Internet zuzugreifen und ein Passwort f�r gcJoker.de vorhanden
+     * JokerisOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen und ein Passwort für gcJoker.de vorhanden
      * ist.
      */
     public static boolean JokerisOnline() {
@@ -220,9 +220,9 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 
 	CacheList List = Database.Data.Query;
 
-	// Pr�fen, ob der SelectedCache noch in der cacheList drin ist.
+	// Prüfen, ob der SelectedCache noch in der cacheList drin ist.
 	if ((List.size() > 0) && (GlobalCore.ifCacheSelected()) && (List.GetCacheById(GlobalCore.getSelectedCache().Id) == null)) {
-	    // der SelectedCache ist nicht mehr in der cacheList drin -> einen beliebigen aus der CacheList ausw�hlen
+	    // der SelectedCache ist nicht mehr in der cacheList drin -> einen beliebigen aus der CacheList auswählen
 	    log.debug("Change SelectedCache from " + GlobalCore.getSelectedCache().getGcCode() + "to" + List.get(0).getGcCode());
 	    GlobalCore.setSelectedCache(List.get(0));
 	}
@@ -348,7 +348,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 	return VersionPrefix;
     }
 
-    // Interface f�r den Solver zum Zugriff auf den SelectedCache.
+    // Interface für den Solver zum Zugriff auf den SelectedCache.
     // Direkter Zugriff geht nicht da der Solver im Core definiert ist
     @Override
     public Cache sciGetSelectedCache() {

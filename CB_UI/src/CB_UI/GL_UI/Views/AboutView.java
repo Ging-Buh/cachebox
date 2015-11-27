@@ -17,6 +17,10 @@ package CB_UI.GL_UI.Views;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
@@ -60,10 +64,6 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Util.UnitFormatter;
-
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsStateChangeEvent, PositionChangedEvent {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(AboutView.class);
@@ -142,7 +142,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	GlyphLayout layout = new GlyphLayout();
 	layout.setText(Fonts.getSmall(), VersionString);
 
-	descTextView = new Label(0, CB_Logo.getY() - margin - margin - margin - layout.height, this.getWidth(), layout.height + margin, "DescLabel");
+	descTextView = new Label(this.name + " descTextView", 0, CB_Logo.getY() - margin - margin - margin - layout.height, this.getWidth(), layout.height + margin);
 	descTextView.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
 
 	descTextView.setWrappedText(VersionString);
@@ -234,19 +234,19 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	float leftMaxWidth = 0;
 	CB_RectF lblRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight() / 2.5f);
 
-	lblGPS = new Label(lblRec, "lblGPS");
+	lblGPS = new Label(this.name + " lblGPS", lblRec);
 	leftMaxWidth = Math.max(leftMaxWidth, lblGPS.setText(Translation.Get("gps")).getTextWidth());
 
-	lblAccuracy = new Label(lblRec, "lblAccuracy");
+	lblAccuracy = new Label(this.name + " lblAccuracy", lblRec);
 	leftMaxWidth = Math.max(leftMaxWidth, lblAccuracy.setText(Translation.Get("accuracy")).getTextWidth());
 
-	lblWP = new Label(lblRec, "lblWP");
+	lblWP = new Label(this.name + " lblWP", lblRec);
 	leftMaxWidth = Math.max(leftMaxWidth, lblWP.setText(Translation.Get("waypoint")).getTextWidth());
 
-	lblCoord = new Label(lblRec, "lblCord");
+	lblCoord = new Label(this.name + " lblCoord", lblRec);
 	leftMaxWidth = Math.max(leftMaxWidth, lblCoord.setText(Translation.Get("coordinate")).getTextWidth());
 
-	lblCurrent = new Label(lblRec, "lblCurrent");
+	lblCurrent = new Label(this.name + " lblCurrent", lblRec);
 	leftMaxWidth = Math.max(leftMaxWidth, lblCurrent.setText(Translation.Get("current")).getTextWidth());
 
 	// set all lbl to the same max width + margin
@@ -276,12 +276,12 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	lblRec.setX(lblGPS.getMaxX() + margin);
 	lblRec.setWidth(this.getWidth() - margin - lblGPS.getMaxX());
 
-	Gps = new Label(lblRec, "GPS");
-	Accuracy = new Label(lblRec, "Accuracy");
+	Gps = new Label(this.name + " Gps", lblRec);
+	Accuracy = new Label(this.name + " Accuracy", lblRec);
 	WaypointLabel = new Label("-", Fonts.getNormal(), COLOR.getLinkFontColor(), WrapType.SINGLELINE);
 	WaypointLabel.setRec(lblRec);
-	CoordLabel = new Label(lblRec, "Cord");
-	Current = new Label(lblRec, "Current");
+	CoordLabel = new Label(this.name + " CoordLabel", lblRec);
+	Current = new Label(this.name + " Current", lblRec);
 
 	// set Y Pos
 	Gps.setY(lblGPS.getY());

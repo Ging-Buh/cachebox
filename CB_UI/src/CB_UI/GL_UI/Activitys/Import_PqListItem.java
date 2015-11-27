@@ -19,8 +19,8 @@ public class Import_PqListItem extends ListViewItemBackground {
     public Import_PqListItem(CB_RectF rec, int Index, final PQ pq) {
 	super(rec, Index, "");
 
-	lblName = new Label(getLeftWidth(), this.getHalfHeight(), this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight(), "");
-	lblInfo = new Label(getLeftWidth(), 0, this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight(), "");
+	lblName = new Label(this.name + " lblName", getLeftWidth(), this.getHalfHeight(), this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight());
+	lblInfo = new Label(this.name + " lblInfo", getLeftWidth(), 0, this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight());
 
 	lblName.setFont(Fonts.getSmall());
 	lblInfo.setFont(Fonts.getBubbleSmall());

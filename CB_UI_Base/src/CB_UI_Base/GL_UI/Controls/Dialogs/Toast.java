@@ -35,7 +35,7 @@ public class Toast extends Dialog {
     public Toast(CB_RectF rec, String Name) {
 	super(rec, Name);
 
-	mTextField = new Label(rec, "Toast.Label");
+	mTextField = new Label(this.name + " mTextField", rec);
 	mTextField.setHAlignment(HAlignment.CENTER);
 	mTextField.setVAlignment(VAlignment.CENTER);
 

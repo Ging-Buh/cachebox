@@ -420,7 +420,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
     private void addPhoneTab() {
 	// nur ein Tab
 
-	// mit f�nf Buttons
+	// mit fünf Buttons
 	CB_RectF btnRec = new CB_RectF(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight);
 
 	CB_RectF rec = this.copy();
@@ -529,7 +529,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
     public CB_Button ToolsButton;
 
     private void addLeftForTabletsTab() {
-	// mit f�nf Buttons
+	// mit fünf Buttons
 	CB_RectF btnRec = new CB_RectF(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight);
 
 	CB_RectF rec = this.copy();
@@ -630,7 +630,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 
     private void addRightForTabletsTab() {
 
-	// mit f�nf Buttons
+	// mit fünf Buttons
 	CB_RectF btnRec = new CB_RectF(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight);
 
 	CB_RectF rec = this.copy();

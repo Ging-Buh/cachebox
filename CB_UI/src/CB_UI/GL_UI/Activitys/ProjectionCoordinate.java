@@ -92,7 +92,7 @@ public class ProjectionCoordinate extends ActivityBase {
 
     private void iniCacheNameLabel() {
 	CB_RectF rec = new CB_RectF(leftBorder + margin, getHeight() - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight);
-	Title = new Label(rec, this.name);
+	Title = new Label(this.name + " Title", rec);
 	this.addChild(Title);
     }
 
@@ -129,7 +129,7 @@ public class ProjectionCoordinate extends ActivityBase {
 
 	CB_RectF labelRec = new CB_RectF(leftBorder + margin, bCoord.getY() - ButtonHeight - MeasuredLabelHeight, innerWidth, MeasuredLabelHeight);
 
-	lblP2P = new Label(labelRec, Translation.Get("toPoint"));
+	lblP2P = new Label(this.name + " lblP2P", labelRec, Translation.Get("toPoint"));
 	this.addChild(lblP2P);
 
 	CB_RectF rec = new CB_RectF(leftBorder, lblP2P.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
@@ -163,19 +163,19 @@ public class ProjectionCoordinate extends ActivityBase {
 	CB_RectF textFieldRec = new CB_RectF(labelRec.getMaxX(), y, innerWidth - labelRec.getWidth() - eWidth - (margin * 2), ButtonHeight);
 	CB_RectF UnitRec = new CB_RectF(textFieldRec.getMaxX(), y, eWidth, ButtonHeight);
 
-	lblBearing = new Label(labelRec, sBearing);
+	lblBearing = new Label(this.name + " lblBearing", labelRec, sBearing);
 	valueBearing = new EditTextField(textFieldRec, this, this.name + " valueBearing");
 	valueBearing.dontShowSoftKeyBoardOnFocus();
-	lblBearingUnit = new Label(UnitRec, "°");
+	lblBearingUnit = new Label(this.name + " lblBearingUnit", UnitRec, "Â°");
 
 	labelRec.setY(lblBearing.getY() - ButtonHeight);
 	textFieldRec.setY(lblBearing.getY() - ButtonHeight);
 	UnitRec.setY(lblBearing.getY() - ButtonHeight);
 
-	lblDistance = new Label(labelRec, sDistance);
+	lblDistance = new Label(this.name + " lblDistance", labelRec, sDistance);
 	valueDistance = new EditTextField(textFieldRec, this, this.name + " valueDistance");
 	valueDistance.dontShowSoftKeyBoardOnFocus();
-	lblDistanceUnit = new Label(UnitRec, sUnit);
+	lblDistanceUnit = new Label(this.name + " lblDistanceUnit", UnitRec, sUnit);
 
 	valueDistance.setText("0");
 	valueBearing.setText("0");

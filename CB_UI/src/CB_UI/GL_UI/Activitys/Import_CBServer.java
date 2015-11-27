@@ -23,6 +23,8 @@ import java.util.TimerTask;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.WaypointDAO;
@@ -80,9 +82,6 @@ import CB_Utils.StringH;
 import CB_Utils.Events.ProgressChangedEvent;
 import CB_Utils.Events.ProgresssChangedEventList;
 import cb_rpc.Functions.RpcAnswer;
-
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-
 import de.cb.sqlite.CoreCursor;
 
 public class Import_CBServer extends ActivityBase implements ProgressChangedEvent {
@@ -223,7 +222,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 	float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
 
-	lblTitle = new Label(leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight, "TitleLabel");
+	lblTitle = new Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight);
 	lblTitle.setFont(Fonts.getBig());
 	float lblWidth = lblTitle.setText(Translation.Get("import")).getTextWidth();
 	this.addChild(lblTitle);
@@ -236,7 +235,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 	float SmallLineHeight = Fonts.MeasureSmall("Tg").height;
 
-	lblProgressMsg = new Label(leftBorder + margin, lblTitle.getY() - margin - SmallLineHeight, innerWidth - margin - margin, SmallLineHeight, "ProgressMsg");
+	lblProgressMsg = new Label(this.name + " lblProgressMsg", leftBorder + margin, lblTitle.getY() - margin - SmallLineHeight, innerWidth - margin - margin, SmallLineHeight);
 
 	lblProgressMsg.setFont(Fonts.getSmall());
 
@@ -255,7 +254,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 	    checkImportFromCBServer.setVisible(false);
 	if (!CBS_LINE_ACTIVE)
 	    checkImportFromCBServer.setHeight(0);
-	lblCBServer = new Label(checkImportFromCBServer.getMaxX() + margin, checkImportFromCBServer.getY(), innerWidth - margin * 3 - checkImportFromCBServer.getWidth(), checkImportFromCBServer.getHeight(), "");
+	lblCBServer = new Label(this.name + " lblCBServer", checkImportFromCBServer.getMaxX() + margin, checkImportFromCBServer.getY(), innerWidth - margin * 3 - checkImportFromCBServer.getWidth(), checkImportFromCBServer.getHeight());
 	lblCBServer.setFont(Fonts.getNormal());
 	lblCBServer.setText(Translation.Get("FromCBServer"));
 	if (!CBS_LINE_ACTIVE)
@@ -276,7 +275,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 	    checkBoxExportToCBServer.setVisible(false);
 	if (!EXPORT_LINE_ACTIVE)
 	    checkBoxExportToCBServer.setHeight(0);
-	lblExportCBServer = new Label(checkBoxExportToCBServer.getMaxX() + margin, checkBoxExportToCBServer.getY(), innerWidth - margin * 3 - checkBoxExportToCBServer.getWidth(), checkBoxExportToCBServer.getHeight(), "");
+	lblExportCBServer = new Label(this.name + " lblExportCBServer", checkBoxExportToCBServer.getMaxX() + margin, checkBoxExportToCBServer.getY(), innerWidth - margin * 3 - checkBoxExportToCBServer.getWidth(), checkBoxExportToCBServer.getHeight());
 	lblExportCBServer.setFont(Fonts.getNormal());
 	lblExportCBServer.setText(Translation.Get("ToCBServer"));
 	if (!EXPORT_LINE_ACTIVE)
@@ -353,7 +352,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 	checkBoxPreloadImages.setX(innerLeft);
 	checkBoxPreloadImages.setY(ExportCollapseBox.getY() - margin - checkBoxPreloadImages.getHeight());
 
-	lblImage = new Label(checkBoxPreloadImages.getMaxX() + margin, checkBoxPreloadImages.getY(), innerWidth - margin * 3 - checkBoxPreloadImages.getWidth(), checkBoxPreloadImages.getHeight(), "");
+	lblImage = new Label(this.name + " lblImage", checkBoxPreloadImages.getMaxX() + margin, checkBoxPreloadImages.getY(), innerWidth - margin * 3 - checkBoxPreloadImages.getWidth(), checkBoxPreloadImages.getHeight());
 	lblImage.setFont(Fonts.getNormal());
 	lblImage.setText(Translation.Get("PreloadImages"));
 
@@ -373,7 +372,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 	    checkBoxCleanLogs.setVisible(false);
 	    checkBoxCleanLogs.setHeight(0);
 	}
-	lblLogs = new Label(checkBoxCleanLogs.getMaxX() + margin, checkBoxCleanLogs.getY(), innerWidth - margin * 3 - checkBoxCleanLogs.getWidth(), checkBoxCleanLogs.getHeight(), "");
+	lblLogs = new Label(this.name + " lblLogs", checkBoxCleanLogs.getMaxX() + margin, checkBoxCleanLogs.getY(), innerWidth - margin * 3 - checkBoxCleanLogs.getWidth(), checkBoxCleanLogs.getHeight());
 	lblLogs.setFont(Fonts.getNormal());
 	lblLogs.setText(Translation.Get("DeleteLogs"));
 
@@ -438,7 +437,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 	LogCollapseBox.addChild(spinner);
 
-	Label lblButKeepLeast = new Label(margin, spinner.getY() - margin - SmallLineHeight, LogCollapseBox.getInnerWidth(), SmallLineHeight, "lblButKeepLeast");
+	Label lblButKeepLeast = new Label(this.name + " lblButKeepLeast", margin, spinner.getY() - margin - SmallLineHeight, LogCollapseBox.getInnerWidth(), SmallLineHeight);
 	lblButKeepLeast.setText(Translation.Get("ButKeepLeast"));
 	LogCollapseBox.addChild(lblButKeepLeast);
 
@@ -482,7 +481,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 	    checkBoxCompactDB.setVisible(false);
 	    checkBoxCompactDB.setHeight(0);
 	}
-	lblCompact = new Label(lblImage.getMaxX() + margin, checkBoxCompactDB.getY(), innerWidth - margin * 3 - checkBoxCompactDB.getWidth(), checkBoxCompactDB.getHeight(), "");
+	lblCompact = new Label(this.name + " lblCompact", lblImage.getMaxX() + margin, checkBoxCompactDB.getY(), innerWidth - margin * 3 - checkBoxCompactDB.getWidth(), checkBoxCompactDB.getHeight());
 	lblCompact.setFont(Fonts.getNormal());
 	lblCompact.setText(Translation.Get("CompactDB"));
 
@@ -1037,15 +1036,15 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 		break;
 	    }
 	    if (entry.toExport) {
-		// nur die Eintr�ge exportieren die markiert wurden
+		// nur die Einträge exportieren die markiert wurden
 		toExport.add(entry);
 	    }
 	}
-	// Export zm CB_Server auf�hren
+	// Export zm CB_Server auführen
 	RpcClientCB client = new RpcClientCB();
 	RpcAnswer answer = client.ExportChangesToServer(toExport);
 	if ((answer != null) && (answer instanceof RpcAnswer_ExportChangesToServer)) {
-	    // Export ohne Fehler -> Replicationseintr�ge entfernen
+	    // Export ohne Fehler -> Replicationseinträge entfernen
 	    String sql = "delete from Replication";
 	    Database.Data.execSQL(sql);
 	    // Liste neu laden

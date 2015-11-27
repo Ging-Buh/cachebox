@@ -104,7 +104,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
 	itemList.clear();
 
 	if (cache == null)
-	    return; // Kein Cache angew‰hlt
+	    return; // Kein Cache angew√§hlt
 
 	CB_List<LogEntry> cleanLogs = new CB_List<LogEntry>();
 	cleanLogs = Database.Logs(cache);// cache.Logs();

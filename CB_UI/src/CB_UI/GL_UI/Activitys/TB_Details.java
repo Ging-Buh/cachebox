@@ -47,7 +47,7 @@ public class TB_Details extends ActivityBase {
     private Image icon, image;
     private Label lblName, lblAbout, lblAboutDesc, lblGoal, lblGoalDesc;
     private Label lblTypeName, lblTbCode, lblOwner, lblBirth;
-    // TODO Visit,Home und Distance müssen noch angezeigt werden!
+    // TODO Visit,Home und Distance mÃ¼ssen noch angezeigt werden!
     private Label TypeName, TbCode, Owner, Birth;
     private Box AboutThisItem, GoalThisItem, DetailThisItem;
 
@@ -95,7 +95,7 @@ public class TB_Details extends ActivityBase {
 	iconRec = iconRec.ScaleCenter(0.8f);
 
 	icon = new Image(iconRec, "Icon", false);
-	lblName = new Label(iconRec, "Name");
+	lblName = new Label(this.name + " lblName", iconRec);
 
 	image = new Image(iconRec, "Image", false);
 	lblAbout = new Label(Translation.Get("AboutThisItem"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
