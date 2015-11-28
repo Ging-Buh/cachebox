@@ -234,7 +234,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private static JokerView jokerView = null; // ID 12
 
 	/**
-	 * viewGl kann mehrere ID beinhalten, viewGL ist nur die Basis f�r alle Views auf Basis von GL_View_Base </br>
+	 * viewGl kann mehrere ID beinhalten, viewGL ist nur die Basis für alle Views auf Basis von GL_View_Base </br>
 	 * TestView = 16 </br>
 	 * CreditsView = 17 </br>
 	 * MapView = 18 </br>
@@ -242,7 +242,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public static ViewGL viewGL = null;
 
 	/**
-	 * gdxView ist die Android.View f�r gdx
+	 * gdxView ist die Android.View für gdx
 	 */
 	private View gdxView = null;
 
@@ -1462,7 +1462,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	}
 
 	/**
-	 * Startet die Bildschirm Sperre. Mit der der �bergabe von force = true, werden abfragen ob im Akkubetrieb oder die Zeit Einstellungen
+	 * Startet die Bildschirm Sperre. Mit der der Übergabe von force = true, werden abfragen ob im Akkubetrieb oder die Zeit Einstellungen
 	 * ignoriert.
 	 * 
 	 * @param force
@@ -1476,7 +1476,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			if (!runsWithAkku) return;
 			counter.cancel();
 			counterStopped = true;
-			// ScreenLock nur Starten, wenn der Config Wert gr��er 10 sec ist.
+			// ScreenLock nur Starten, wenn der Config Wert größer 10 sec ist.
 			// Das verhindert das selber aussperren!
 			if ((Config.ScreenLock.getValue() / 1000 < 10)) return;
 		}
@@ -1515,7 +1515,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public static boolean ScreenLockOff = false;
 
 	/**
-	 * Gibt die zur ViewID geh�rige View zur�ck und erstellst eine Instanz, wenn sie nicht exestiert.
+	 * Gibt die zur ViewID gehörige View zurück und erstellst eine Instanz, wenn sie nicht exestiert.
 	 * 
 	 * @param ID
 	 *            ViewID
@@ -1588,21 +1588,21 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			if (aktView.equals(jokerView))
 			{
-				// Instanz l�schenn
+				// Instanz löschen
 				aktView = null;
 				jokerView.OnFree();
 				jokerView = null;
 			}
 			else if (aktView.equals(solverView))
 			{
-				// Instanz l�schenn
+				// Instanz löschen
 				aktView = null;
 				solverView.OnFree();
 				solverView = null;
 			}
 			else if (aktView.equals(spoilerView))
 			{
-				// Instanz l�schenn
+				// Instanz löschen
 				aktView = null;
 				spoilerView.OnFree();
 				spoilerView = null;
@@ -1625,7 +1625,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		ViewParent parent = ((View) aktView).getParent();
 		if (parent != null)
 		{
-			// aktView ist noch gebunden, also l�sen
+			// aktView ist noch gebunden, also lösen
 			((FrameLayout) parent).removeAllViews();
 		}
 		frame.addView((View) aktView);
@@ -1678,7 +1678,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		ViewParent parent = ((View) aktTabView).getParent();
 		if (parent != null)
 		{
-			// aktView ist noch gebunden, also l�sen
+			// aktView ist noch gebunden, also lösen
 			((FrameLayout) parent).removeAllViews();
 		}
 		tabFrame.addView((View) aktTabView);
@@ -1732,7 +1732,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 			// // Define the criteria how to select the locatioin provider -> use
 			// // default
-			// Criteria criteria = new Criteria(); // noch n�tig ???
+			// Criteria criteria = new Criteria(); // noch nötig ???
 			// criteria.setAccuracy(Criteria.ACCURACY_FINE);
 			// criteria.setAltitudeRequired(false);
 			// criteria.setBearingRequired(false);
@@ -1742,8 +1742,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			/*
 			 * Longri: Ich habe die Zeiten und Distanzen der Location Updates angepasst. Der Network Provider hat eine schlechte
 			 * genauigkeit, darher reicht es wenn er alle 10sec einen wert liefert, wen der alte um 500m abweicht. Beim GPS Provider habe
-			 * ich die aktualiesierungs Zeit verk�rzt, damit bei deaktiviertem Hardware Kompass aber die Werte trotzdem noch in einem
-			 * gesunden Verh�ltnis zwichen Performance und Stromverbrauch, geliefert werden. Andere apps haben hier 0.
+			 * ich die aktualiesierungs Zeit verkürzt, damit bei deaktiviertem Hardware Kompass aber die Werte trotzdem noch in einem
+			 * gesunden Verhältnis zwichen Performance und Stromverbrauch, geliefert werden. Andere apps haben hier 0.
 			 */
 
 			int updateTime = Config.gpsUpdateTime.getValue();
@@ -1810,7 +1810,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			ViewParent parent = ((View) gdxView).getParent();
 			if (parent != null)
 			{
-				// aktView ist noch gebunden, also l�sen
+				// aktView ist noch gebunden, also lösen
 				((RelativeLayout) parent).removeAllViews();
 			}
 			GlFrame.addView((View) gdxView);
@@ -2025,7 +2025,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			Toast.makeText(mainActivity, "Start Voice Recorder", Toast.LENGTH_SHORT).show();
 
 			setVoiceRecIsStart(true);
-			counter.cancel(); // W�hrend der Aufnahme Screen-Lock-Counter
+			counter.cancel(); // Während der Aufnahme Screen-Lock-Counter
 								// stoppen
 			counterStopped = true;
 
@@ -2050,8 +2050,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			public void run()
 			{
 				// Debug add Joker
-				// Global.Jokers.AddJoker("Andre", "H�pfner", "Katipa", "12", "030 ++++++", "24/7");
-				// Global.Jokers.AddJoker("Andre", "H�pfner", "Katipa", "12", "030 ++++++", "24/7");
+				// Global.Jokers.AddJoker("Andre", "Höpfner", "Katipa", "12", "030 ++++++", "24/7");
+				// Global.Jokers.AddJoker("Andre", "Höpfner", "Katipa", "12", "030 ++++++", "24/7");
 
 				if (Global.Jokers.isEmpty())
 				{ // Wenn Telefonjoker-Liste leer neu laden
@@ -2089,7 +2089,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 											if (s[0].equals("1")) // 1 entspricht
 											// Warnung, Ursache
 											// ist in S[1]
-											{ // es k�nnen aber noch g�ltige Eintr�ge
+											{ // es können aber noch gültige Einträge
 												// folgen
 												GL_MsgBox.Show(s[1]);
 											}
@@ -2310,18 +2310,18 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				try
 				{
 					if (s[11].equals("")) return;
-					if (!s[6].equals("1") & !s[6].equals("2")) return; // Fix ung�ltig
+					if (!s[6].equals("1") & !s[6].equals("2")) return; // Fix ungültig
 					double altCorrection = Double.valueOf(s[11]);
 					if (altCorrection == 0) return;
 					log.info("AltCorrection: " + String.valueOf(altCorrection));
 					Locator.setAltCorrection(altCorrection);
-					// H�henkorrektur �ndert sich normalerweise nicht, einmal
+					// Höhenkorrektur ändert sich normalerweise nicht, einmal
 					// auslesen reicht...
 					locationManager.removeNmeaListener(this);
 				}
 				catch (Exception exc)
 				{
-					// keine H�henkorrektur vorhanden
+					// keine Höhenkorrektur vorhanden
 				}
 			}
 		}
@@ -2404,7 +2404,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	}
 
 	/**
-	 * �berpr�ft ob das GPS eingeschaltet ist. Wenn nicht, wird eine Meldung ausgegeben.
+	 * überprüft ob das GPS eingeschaltet ist. Wenn nicht, wird eine Meldung ausgegeben.
 	 */
 	private void chkGpsIsOn()
 	{
@@ -2793,7 +2793,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		platformConector.setisOnlineListner(new IHardwarStateListner()
 		{
 			/*
-			 * isOnline Liefert TRUE wenn die M�glichkeit besteht auf das Internet zuzugreifen
+			 * isOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen
 			 */
 
 			@Override
@@ -3140,7 +3140,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				if (GlobalCore.ifCacheSelected())
 				{
-					// speichere selektierten Cache, da nicht alles �ber die SelectedCacheEventList l�uft
+					// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
 					Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
 					Config.AcceptChanges();
 					log.debug("LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());

@@ -50,8 +50,8 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 				String TelephoneNumber;
 
 				TelephoneNumber = null;
-				if (arg2 >= 0) // Nummer raussuchen und unzul‰ssige Zeichen entfernen
-				TelephoneNumber = Global.Jokers.get(arg2).Telefon.replaceAll("[^\\d\\+]", "");
+				if (arg2 >= 0) // Nummer raussuchen und unzul√§ssige Zeichen entfernen
+					TelephoneNumber = Global.Jokers.get(arg2).Telefon.replaceAll("[^\\d\\+]", "");
 
 				if (Global.iPlugin == null || Global.iPlugin[0] == null) return true;
 
@@ -99,7 +99,7 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 			{
 				if (aktCache == null || aktCache.Id != cache.Id)
 				{
-					// Wwenn der aktuelle Cache ge‰ndert wurde, Telefonjokerliste lˆschen
+					// Wwenn der aktuelle Cache ge√§ndert wurde, Telefonjokerliste l√∂schen
 					aktCache = cache;
 					Global.Jokers.ClearList();
 					JokerView.this.setAdapter(null);

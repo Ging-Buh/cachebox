@@ -16,6 +16,8 @@
 
 package de.cachebox_test.Ui;
 
+import com.badlogic.gdx.backends.android.AndroidApplication;
+
 import CB_UI_Base.Math.CB_Rect;
 import CB_UI_Base.Math.UiSizes;
 import android.app.Activity;
@@ -37,9 +39,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-
-import com.badlogic.gdx.backends.android.AndroidApplication;
-
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
@@ -159,7 +158,8 @@ public class ActivityUtils
 		drawFillRoundRecWithBorder(canvas, rec, BorderSize, BorderColor, FillColor, UiSizes.that.getCornerSize());
 	}
 
-	public static void drawFillRoundRecWithBorder(Canvas canvas, CB_Rect rec, int BorderSize, int BorderColor, int FillColor, int CornerSize)
+	public static void drawFillRoundRecWithBorder(Canvas canvas, CB_Rect rec, int BorderSize, int BorderColor, int FillColor,
+			int CornerSize)
 	{
 		Paint drawPaint = new Paint();
 		drawPaint.setAntiAlias(true);
@@ -190,7 +190,7 @@ public class ActivityUtils
 
 	// / <summary>
 	// / Zeichnet das Bild und skaliert es proportional so, dass es die
-	// / übergebene füllt.
+	// / Ã¼bergebene fÃ¼llt.
 	// / </summary>
 	// / <param name="graphics"></param>
 	// / <param name="image"></param>
@@ -235,7 +235,7 @@ public class ActivityUtils
 
 	// / <summary>
 	// / Zeichnet das Bild und skaliert es proportional so, dass es die
-	// / übergebene füllt.
+	// / Ã¼bergebene fÃ¼llt.
 	// / </summary>
 	// / <param name="graphics"></param>
 	// / <param name="image"></param>
@@ -354,7 +354,7 @@ public class ActivityUtils
 	}
 
 	/**
-	 * Da bei dem Verwendeten Themes die disabled TextColor nicht richtig übernommen wird, wird mit dieser Methode der Status überprüft und
+	 * Da bei dem Verwendeten Themes die disabled TextColor nicht richtig Ã¼bernommen wird, wird mit dieser Methode der Status Ã¼berprÃ¼ft und
 	 * gegebenenfalls die Farbe angepasst.
 	 * 
 	 * @param btn
@@ -373,7 +373,7 @@ public class ActivityUtils
 	}
 
 	/**
-	 * Da bei dem Verwendeten Themes die disabled TextColor nicht richtig übernommen wird, wird mit dieser Methode der Status gesetzt und
+	 * Da bei dem Verwendeten Themes die disabled TextColor nicht richtig Ã¼bernommen wird, wird mit dieser Methode der Status gesetzt und
 	 * gegebenenfalls die Farbe angepasst.
 	 * 
 	 * @param btn

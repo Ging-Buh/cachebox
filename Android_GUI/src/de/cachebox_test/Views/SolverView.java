@@ -54,8 +54,8 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 	{
 		super(context);
 		mustLoadSolver = false;
-		LinearLayout solverLayout = (LinearLayout) inflater.inflate(CB_UI_Base_Settings.nightMode.getValue() ? R.layout.night_solverview
-				: R.layout.solverview, null, false);
+		LinearLayout solverLayout = (LinearLayout) inflater
+				.inflate(CB_UI_Base_Settings.nightMode.getValue() ? R.layout.night_solverview : R.layout.solverview, null, false);
 
 		this.addView(solverLayout);
 
@@ -83,8 +83,8 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 					@Override
 					public void selectedFunction(final Function function)
 					{
-						// ausgewählte Funktion verarbeiten!
-						// wenn funktion==null wurde Cancel gedrückt
+						// ausgewÃ¤hlte Funktion verarbeiten!
+						// wenn funktion==null wurde Cancel gedrÃ¼ckt
 
 						if (function != null)
 						{
@@ -107,7 +107,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 										zeichen = "\"";
 										if ((selection.length() > 0) && (selection.charAt(0) == '"'))
 										{
-											// Anführungszeichen bereits vorhanden
+											// AnfÃ¼hrungszeichen bereits vorhanden
 											zeichen = "";
 										}
 									}
@@ -219,7 +219,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 		if ((solver.MissingVariables != null) && (solver.MissingVariables.size() > 0))
 		{
 			// es sind nicht alle Variablen zugewiesen
-			// Abfrage, ob die Deklarationen eingefügt werden sollen
+			// Abfrage, ob die Deklarationen eingefÃ¼gt werden sollen
 			String message = "";
 			for (String s : solver.MissingVariables.keySet())
 			{

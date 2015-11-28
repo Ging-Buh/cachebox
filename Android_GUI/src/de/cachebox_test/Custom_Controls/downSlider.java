@@ -196,7 +196,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 				// String.format("%n") + "y= " + Y);
 				if (drag)
 				{
-					int value = Y - 25;// y - 25 minus halbe Button H�he
+					int value = Y - 25;// y - 25 minus halbe Button Höhe
 					int buttom = (int) (height - (10 * 2.2));
 					if (value > buttom) value = buttom - 1;
 
@@ -446,9 +446,9 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		try
 		{
 			// draw icon
-			if (((int) mWaypoint.Type.ordinal()) < Global.CacheIconsBig.length) iconWidth = ActivityUtils.PutImageTargetHeight(canvas,
-					Global.CacheIconsBig[(int) mWaypoint.Type.ordinal()], UiSizes.that.getHalfCornerSize(), UiSizes.that.getCornerSize(),
-					imgSize);
+			if (((int) mWaypoint.Type.ordinal()) < Global.CacheIconsBig.length)
+				iconWidth = ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[(int) mWaypoint.Type.ordinal()],
+						UiSizes.that.getHalfCornerSize(), UiSizes.that.getCornerSize(), imgSize);
 		}
 		catch (Exception e1)
 		{
@@ -622,7 +622,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		return mBtnRec.contains(x, y);
 	}
 
-	public void ActionUp() // Slider zur�ck scrolllen lassen
+	public void ActionUp() // Slider zurück scrolllen lassen
 	{
 
 		if (main.mainActivity != null)
@@ -746,9 +746,10 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 					if (mWaypoint.getClue() != null) Clue = mWaypoint.getClue();
 					WPLayoutTextPaint.setAntiAlias(true);
 					WPLayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
-					WPLayoutCord = new StaticLayout(UnitFormatter.FormatLatitudeDM(waypoint.Pos.getLatitude()) + " / "
-							+ UnitFormatter.FormatLongitudeDM(waypoint.Pos.getLongitude()), WPLayoutTextPaint, TextWidth,
-							Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+					WPLayoutCord = new StaticLayout(
+							UnitFormatter.FormatLatitudeDM(waypoint.Pos.getLatitude()) + " / "
+									+ UnitFormatter.FormatLongitudeDM(waypoint.Pos.getLongitude()),
+							WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 					WPLayoutDesc = new StaticLayout(mWaypoint.getDescription(), WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f,
 							0.0f, false);
 					WPLayoutClue = new StaticLayout(Clue, WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);

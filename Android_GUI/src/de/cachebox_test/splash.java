@@ -27,6 +27,10 @@ import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.android.AndroidFiles;
+
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Locator.LocatorSettings;
@@ -90,11 +94,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.android.AndroidFiles;
-
 import de.cachebox_test.Components.copyAssetFolder;
 import de.cachebox_test.Views.Forms.MessageBox;
 import de.cb.sqlite.AndroidDB;
@@ -390,7 +389,7 @@ public class splash extends Activity
 			}
 
 			// externe SD wurde gefunden != internal
-			// oder Tablet Layout m�glich
+			// oder Tablet Layout möglich
 			// -> Auswahldialog anzeigen
 			try
 			{
@@ -480,44 +479,44 @@ public class splash extends Activity
 							// set dialog message
 							alertDialogBuilder.setMessage(Translation.Get("Desc_Sandbox")).setCancelable(false)
 									.setPositiveButton(Translation.Get("yes"), new DialogInterface.OnClickListener()
+							{
+								public void onClick(DialogInterface dialog, int id)
+								{
+									// if this button is clicked, run Sandbox Path
+
+									showSandbox = true;
+									Config.AcceptChanges();
+
+									// close select dialog
+									dialog.dismiss();
+
+									// show please wait dialog
+									showPleaseWaitDialog();
+
+									// use external SD -> change workPath
+									Thread thread = new Thread()
 									{
-										public void onClick(DialogInterface dialog, int id)
+										@Override
+										public void run()
 										{
-											// if this button is clicked, run Sandbox Path
-
-											showSandbox = true;
-											Config.AcceptChanges();
-
-											// close select dialog
-											dialog.dismiss();
-
-											// show please wait dialog
-											showPleaseWaitDialog();
-
-											// use external SD -> change workPath
-											Thread thread = new Thread()
-											{
-												@Override
-												public void run()
-												{
-													workPath = externalSd2;
-													boolean askAgain = cbAskAgain.isChecked();
-													// boolean useTabletLayout = rbTabletLayout.isChecked();
-													saveWorkPath(askAgain/* , useTabletLayout */);
-													startInitial();
-												}
-											};
-											thread.start();
+											workPath = externalSd2;
+											boolean askAgain = cbAskAgain.isChecked();
+											// boolean useTabletLayout = rbTabletLayout.isChecked();
+											saveWorkPath(askAgain/* , useTabletLayout */);
+											startInitial();
 										}
-									}).setNegativeButton(Translation.Get("no"), new DialogInterface.OnClickListener()
-									{
-										public void onClick(DialogInterface dialog, int id)
-										{
-											// if this button is clicked, just close
-											// the dialog box and do nothing
-											dialog.cancel();
-										}
-									});
+									};
+									thread.start();
+								}
+							}).setNegativeButton(Translation.Get("no"), new DialogInterface.OnClickListener()
+							{
+								public void onClick(DialogInterface dialog, int id)
+								{
+									// if this button is clicked, just close
+									// the dialog box and do nothing
+									dialog.cancel();
+								}
+							});
 
 							// create alert dialog
 							AlertDialog alertDialog = alertDialogBuilder.create();
@@ -597,22 +596,22 @@ public class splash extends Activity
 							msg = (MessageBox) MessageBox.Show(Translation.Get("shuredeleteWorkspace", Name),
 									Translation.Get("deleteWorkspace"), MessageBoxButtons.YesNo, MessageBoxIcon.Question,
 									new DialogInterface.OnClickListener()
+							{
+
+								@Override
+								public void onClick(DialogInterface dialog, int which)
+								{
+									if (which == MessageBox.BUTTON_POSITIVE)
 									{
+										// Delete this Workpath only from Settings don't delete any File
+										deleteWorkPath(AddWorkPath);
+									}
+									// Start again to exclude the old Folder
+									msg.dismiss();
+									onStart();
+								}
 
-										@Override
-										public void onClick(DialogInterface dialog, int which)
-										{
-											if (which == MessageBox.BUTTON_POSITIVE)
-											{
-												// Delete this Workpath only from Settings don't delete any File
-												deleteWorkPath(AddWorkPath);
-											}
-											// Start again to exclude the old Folder
-											msg.dismiss();
-											onStart();
-										}
-
-									});
+							});
 
 							dialog.dismiss();
 							return true;
@@ -1266,7 +1265,7 @@ public class splash extends Activity
 			}
 		});
 
-		// wenn die Settings DB neu Erstellt wurde, m�ssen die Default werte
+		// wenn die Settings DB neu Erstellt wurde, müssen die Default werte
 		// geschrieben werden.
 		if (Database.Settings.isDbNew())
 		{

@@ -69,7 +69,7 @@ public class CacheDraw
 	private static TextPaint namePaint;
 
 	// Die Cached Bmp wird nur zur Darstellung als Bubble in der
-	// MapView benötigt.
+	// MapView benÃ¶tigt.
 	public static Bitmap CachedBitmap;
 	private static long CachedBitmapId = -1;
 	private static Paint CachedBitmapPaitnt;
@@ -139,8 +139,8 @@ public class CacheDraw
 			// init
 			Boolean notAvailable = (!cache.isAvailable() || cache.isArchived());
 			Boolean GlobalSelected = cache.Id == GlobalCore.getSelectedCache().Id;
-			if (BackgroundColor == -1) BackgroundColor = GlobalSelected ? Global.getColor(R.attr.ListBackground_select) : Global
-					.getColor(R.attr.ListBackground);
+			if (BackgroundColor == -1)
+				BackgroundColor = GlobalSelected ? Global.getColor(R.attr.ListBackground_select) : Global.getColor(R.attr.ListBackground);
 			if (BorderColor == -1) BorderColor = Global.getColor(R.attr.ListSeparator);
 
 			final int left = rec.getPos().x + UiSizes.that.getHalfCornerSize();
@@ -151,7 +151,7 @@ public class CacheDraw
 			final int SDTLineTop = SDTImageTop + UiSizes.that.getScaledFontSize();
 
 			// Measure
-			if (VoteWidth == 0) // Grössen noch nicht berechnet
+			if (VoteWidth == 0) // GrÃ¶ssen noch nicht berechnet
 			{
 
 				VoteWidth = UiSizes.that.getScaledIconSize() / 2;
@@ -189,13 +189,13 @@ public class CacheDraw
 			// Draw Icon
 			if (cache.CorrectedCoordiantesOrMysterySolved())
 			{
-				ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[19], left + VoteWidth - correctPos, top
-						- (int) (UI_Size_Base.that.getScaledFontSize() / 2), UI_Size_Base.that.getIconSize());
+				ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[19], left + VoteWidth - correctPos,
+						top - (int) (UI_Size_Base.that.getScaledFontSize() / 2), UI_Size_Base.that.getIconSize());
 			}
 			else
 			{
-				ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[cache.Type.ordinal()], left + VoteWidth - correctPos, top
-						- (int) (UI_Size_Base.that.getScaledFontSize() / 2), UI_Size_Base.that.getIconSize());
+				ActivityUtils.PutImageTargetHeight(canvas, Global.CacheIconsBig[cache.Type.ordinal()], left + VoteWidth - correctPos,
+						top - (int) (UI_Size_Base.that.getScaledFontSize() / 2), UI_Size_Base.that.getIconSize());
 			}
 
 			// Draw Cache Name
@@ -245,8 +245,8 @@ public class CacheDraw
 						false);
 			}
 
-			int LayoutHeight = ActivityUtils.drawStaticLayout(canvas, layoutCacheName, left + VoteWidth + UI_Size_Base.that.getIconSize()
-					+ 5, top);
+			int LayoutHeight = ActivityUtils.drawStaticLayout(canvas, layoutCacheName,
+					left + VoteWidth + UI_Size_Base.that.getIconSize() + 5, top);
 
 			// over draw 3. Cache name line
 			int VislinesHeight = LayoutHeight * 2 / layoutCacheName.getLineCount();
@@ -256,8 +256,9 @@ public class CacheDraw
 				backPaint.setColor(BackgroundColor);
 				// backPaint.setColor(Color.RED); //DEBUG
 
-				canvas.drawRect(new Rect(left + VoteWidth + UI_Size_Base.that.getIconSize() + 5, SDTImageTop, nameLayoutWidthRightBorder
-						+ left + VoteWidth + UI_Size_Base.that.getIconSize() + 5, top + LayoutHeight + VislinesHeight - 7), backPaint);
+				canvas.drawRect(new Rect(left + VoteWidth + UI_Size_Base.that.getIconSize() + 5, SDTImageTop,
+						nameLayoutWidthRightBorder + left + VoteWidth + UI_Size_Base.that.getIconSize() + 5,
+						top + LayoutHeight + VislinesHeight - 7), backPaint);
 			}
 
 			// Draw owner and Last Found
@@ -288,8 +289,8 @@ public class CacheDraw
 				// layoutCacheOwner= new StaticLayout(DrawText, 0, 30, namePaint,
 				// nameLayoutWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false,
 				// TextUtils.TruncateAt.START, nameLayoutWidth);
-				ActivityUtils.drawStaticLayout(canvas, layoutCacheOwner, left + VoteWidth + UI_Size_Base.that.getIconSize() + 5, top
-						+ (VislinesHeight / 2));
+				ActivityUtils.drawStaticLayout(canvas, layoutCacheOwner, left + VoteWidth + UI_Size_Base.that.getIconSize() + 5,
+						top + (VislinesHeight / 2));
 			}
 
 			// Draw S/D/T
@@ -345,19 +346,21 @@ public class CacheDraw
 			if (drawStyle != DrawStyle.withoutBearing && drawStyle != DrawStyle.withOwnerAndName && !withoutBearing)
 			{
 
-				int BearingHeight = (int) ((rec.getRight() - rightBorder < SDTleft) ? rec.getTop()
-						- (UI_Size_Base.that.getScaledFontSize() * 2) : rec.getTop() - (UI_Size_Base.that.getScaledFontSize() * 0.8));
+				int BearingHeight = (int) ((rec.getRight() - rightBorder < SDTleft)
+						? rec.getTop() - (UI_Size_Base.that.getScaledFontSize() * 2)
+						: rec.getTop() - (UI_Size_Base.that.getScaledFontSize() * 0.8));
 
-				if (BearingRec == null) BearingRec = new CB_Rect(rec.getRight() - rightBorder, rec.getBottom(), rec.getRight(),
-						BearingHeight);
+				if (BearingRec == null)
+					BearingRec = new CB_Rect(rec.getRight() - rightBorder, rec.getBottom(), rec.getRight(), BearingHeight);
 				DrawBearing(cache, canvas, BearingRec);
 			}
 
 			if (cache.isFound())
 			{
 
-				ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[2], left + VoteWidth - correctPos + UI_Size_Base.that.getIconSize()
-						/ 2, top - (int) (UI_Size_Base.that.getScaledFontSize() / 2) + UI_Size_Base.that.getIconSize() / 2,
+				ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[2],
+						left + VoteWidth - correctPos + UI_Size_Base.that.getIconSize() / 2,
+						top - (int) (UI_Size_Base.that.getScaledFontSize() / 2) + UI_Size_Base.that.getIconSize() / 2,
 						UI_Size_Base.that.getIconSize() / 2);// Smile
 			}
 

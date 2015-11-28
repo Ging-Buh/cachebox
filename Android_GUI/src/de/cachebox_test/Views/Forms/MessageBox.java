@@ -42,8 +42,8 @@ import de.cachebox_test.main;
 import de.cachebox_test.splash;
 
 /**
- * Zeigt ein Meldungsfeld an, das Text, Schaltfl‰chen und Symbole mit Informationen und Anweisungen f¸r den Benutzer enthalten kann.
- * Entspricht in etwa der C# .NET Klasse. Da nicht auf ein Result gewartet werden kann, muss ein DialogInterface.OnClickListener() ¸bergeben
+ * Zeigt ein Meldungsfeld an, das Text, Schaltfl√§chen und Symbole mit Informationen und Anweisungen f√ºr den Benutzer enthalten kann.
+ * Entspricht in etwa der C# .NET Klasse. Da nicht auf ein Result gewartet werden kann, muss ein DialogInterface.OnClickListener() √ºbergeben
  * werden.
  * 
  * @author Longri Basiert auf dem Sample Code von Antoine Vianey. Zu finden unter http://code.google.com/p/androgames-sample/
@@ -54,8 +54,8 @@ public class MessageBox extends android.app.Dialog
 	private static DialogInterface.OnClickListener listner;
 
 	/**
-	 * Zeigt ein Meldungsfeld mit angegebenem Text an. Im Meldungsfeld wird standardm‰ﬂig die Schaltfl‰che OK angezeigt. Das Meldungsfeld
-	 * enth‰lt keine Beschriftung im Titel und kein Icon.
+	 * Zeigt ein Meldungsfeld mit angegebenem Text an. Im Meldungsfeld wird standardm√§√üig die Schaltfl√§che OK angezeigt. Das Meldungsfeld
+	 * enth√§lt keine Beschriftung im Titel und kein Icon.
 	 * 
 	 * @param msg
 	 *            Die Message, welche ausgegeben werden soll.
@@ -65,7 +65,7 @@ public class MessageBox extends android.app.Dialog
 	 * {@code
 	 * MessageBox.Show("Test");
 	 * }
-	 * </pre>
+	 *            </pre>
 	 */
 	public static void Show(String msg)
 	{
@@ -91,15 +91,15 @@ public class MessageBox extends android.app.Dialog
 	}
 
 	/**
-	 * Zeigt ein Meldungsfeld mit dem angegebenen Text und der angegebenen Beschriftung an. Im Meldungsfeld wird standardm‰ﬂig die
-	 * Schaltfl‰che OK angezeigt. Das Meldungsfeld enth‰lt kein Icon.
+	 * Zeigt ein Meldungsfeld mit dem angegebenen Text und der angegebenen Beschriftung an. Im Meldungsfeld wird standardm√§√üig die
+	 * Schaltfl√§che OK angezeigt. Das Meldungsfeld enth√§lt kein Icon.
 	 * 
 	 * @param msg
 	 *            Der im Meldungsfeld anzuzeigende Text.
 	 * @param title
 	 *            Der in der Titelleiste des Meldungsfelds anzuzeigende Text.
 	 * @param buttons
-	 *            Ein MessageBoxButtons-Wert, der angibt, welche Schaltfl‰chen im Meldungsfeld angezeigt werden sollen.
+	 *            Ein MessageBoxButtons-Wert, der angibt, welche Schaltfl√§chen im Meldungsfeld angezeigt werden sollen.
 	 * @param Listener
 	 *            Welcher die Events der Buttons behandelt
 	 * 
@@ -108,17 +108,17 @@ public class MessageBox extends android.app.Dialog
 	 * {@code
 	 * MessageBox.Show("Test", "Titel" ,null);
 	 * }
-	 * </pre>
+	 *            </pre>
 	 * 
 	 *            <pre>
-	 * <b>Wenn eine Message behandelt werden soll, wird noch ein DialogInterface.OnClickListener() benˆtigt:</b>
+	 * <b>Wenn eine Message behandelt werden soll, wird noch ein DialogInterface.OnClickListener() ben√∂tigt:</b>
 	 * {@code
 	 * 	MessageBox.Show("Test", "Titel",DialogListner)
 	 * 	
 	 *  private final  DialogInterface.OnClickListener  DialogListner = new  DialogInterface.OnClickListener() 
 	 *   {
-	 * @return 
-	 * 	@Override
+	 * &#64;return 
+	 * 	&#64;Override
 	 * 	public void onClick(DialogInterface dialog, int button) 
 	 * 	{
 	 * 		// Behandle das ergebniss
@@ -140,7 +140,7 @@ public class MessageBox extends android.app.Dialog
 	 * 	
 	 *    };
 	 * }
-	 * </pre>
+	 *            </pre>
 	 */
 	public static Dialog Show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon,
 			DialogInterface.OnClickListener Listener)
@@ -179,7 +179,7 @@ public class MessageBox extends android.app.Dialog
 	public static Dialog CreateDialog(int dialogId, Bundle b)
 	{
 		if (listner == null) // setze standard Listner zu schliessen des
-								// Dialogs, falls kein L÷istner angegeben wurde
+								// Dialogs, falls kein Listener angegeben wurde
 		{
 			listner = new DialogInterface.OnClickListener()
 			{
@@ -635,8 +635,8 @@ public class MessageBox extends android.app.Dialog
 				// if no message set
 				// add the contentView to the dialog body
 				((LinearLayout) layout.findViewById(R.id.content)).removeAllViews();
-				((LinearLayout) layout.findViewById(R.id.content)).addView(contentView, new LayoutParams(LayoutParams.WRAP_CONTENT,
-						LayoutParams.WRAP_CONTENT));
+				((LinearLayout) layout.findViewById(R.id.content)).addView(contentView,
+						new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 			}
 
 			// set Icon

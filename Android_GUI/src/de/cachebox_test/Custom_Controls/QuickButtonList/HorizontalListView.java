@@ -36,7 +36,7 @@ import android.widget.ListAdapter;
 import de.cachebox_test.Custom_Controls.downSlider;
 
 /**
- * nur noch ein Dummy um die Größe und damit das Layout zu erhalten
+ * nur noch ein Dummy um die GrÃ¶ÃŸe und damit das Layout zu erhalten
  * 
  * @author Longri
  */
@@ -47,7 +47,7 @@ public class HorizontalListView extends AdapterView<ListAdapter>
 	public void onSizeChanged(int w, int h, int oldw, int oldh)
 	{
 		super.onSizeChanged(w, h, oldw, oldh);
-		// GL größen müssen neu berechnet werden
+		// GL grÃ¶ÃŸen mÃ¼ssen neu berechnet werden
 
 	}
 
