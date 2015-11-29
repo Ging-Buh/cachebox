@@ -927,7 +927,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	    try {
 		Coordinate position = Locator.getCoordinate();
 
-		if (GlobalCore.ifCacheSelected()) {
+		if (GlobalCore.isSetSelectedCache()) {
 		    Coordinate dest = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().Pos : GlobalCore.getSelectedCache().Pos;
 
 		    if (dest == null)
@@ -1005,8 +1005,8 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	    Vector2 clickedAt = new Vector2(x, y);
 
 	    if (TargetArrow != null && TargetArrow.contains(x, y)) {
-		if (GlobalCore.ifCacheSelected()) {
-		    if (GlobalCore.ifCacheSelected()) {
+		if (GlobalCore.isSetSelectedCache()) {
+		    if (GlobalCore.isSetSelectedCache()) {
 			if (GlobalCore.getSelectedWaypoint() != null) {
 			    Coordinate tmp = GlobalCore.getSelectedWaypoint().Pos;
 			    setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
@@ -1148,7 +1148,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	    position = Locator.getCoordinate();
 
 	    float distance = -1;
-	    if (GlobalCore.ifCacheSelected() && position.isValid()) {
+	    if (GlobalCore.isSetSelectedCache() && position.isValid()) {
 		try {
 		    if (GlobalCore.getSelectedWaypoint() == null)
 			distance = position.Distance(GlobalCore.getSelectedCache().Pos, CalculationType.ACCURATE);
@@ -1451,7 +1451,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
     @Override
     public void MapStateChangedToWP() {
-	if (GlobalCore.ifCacheSelected()) {
+	if (GlobalCore.isSetSelectedCache()) {
 	    if (GlobalCore.getSelectedWaypoint() != null) {
 		Coordinate tmp = GlobalCore.getSelectedWaypoint().Pos;
 		setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));

@@ -212,49 +212,49 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
      */
     private void releaseNonvisibleViews() {
 	if (cacheListView != null && !cacheListView.isVisible()) {
-	    log.debug("Rerlease CachelistView");
+	    //log.debug("Release CachelistView");
 	    cacheListView.dispose();
 	    cacheListView = null;
 	}
 
 	if (aboutView != null && !aboutView.isVisible()) {
-	    log.debug("Rerlease aboutView");
+	    //log.debug("Release aboutView");
 	    aboutView.dispose();
 	    aboutView = null;
 	}
 
 	if (compassView != null && !compassView.isVisible()) {
-	    log.debug("Rerlease compassView");
+	    //log.debug("Release compassView");
 	    compassView.dispose();
 	    compassView = null;
 	}
 
 	if (fieldNotesView != null && !fieldNotesView.isVisible()) {
-	    log.debug("Rerlease fieldNotesView");
+	    //log.debug("Release fieldNotesView");
 	    fieldNotesView.dispose();
 	    fieldNotesView = null;
 	}
 
 	if (logView != null && !logView.isVisible()) {
-	    log.debug("Rerlease logView");
+	    //log.debug("Release logView");
 	    logView.dispose();
 	    logView = null;
 	}
 
 	if (waypointView != null && !waypointView.isVisible()) {
-	    log.debug("Rerlease waypointView");
+	    //log.debug("Release waypointView");
 	    waypointView.dispose();
 	    waypointView = null;
 	}
 
 	if (solverView2 != null && !solverView2.isVisible()) {
-	    log.debug("Rerlease solverView2");
+	    //log.debug("Release solverView2");
 	    solverView2.dispose();
 	    solverView2 = null;
 	}
 
 	if (descriptionView != null && !descriptionView.isVisible()) {
-	    log.debug("Rerlease descriptionView");
+	    //log.debug("Release descriptionView");
 	    descriptionView.dispose();
 	    descriptionView = null;
 	}
@@ -743,6 +743,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 	    // add Slider as last
 	    Slider slider = new Slider(this, "Slider");
 	    this.addChild(slider);
+	    slider.SelectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 
 	    String state = Config.nightMode.getValue() ? "Night" : "Day";
 
@@ -898,7 +899,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 	    e.printStackTrace();
 	}
 
-	if (GlobalCore.ifCacheSelected()) {
+	if (GlobalCore.isSetSelectedCache()) {
 	    float distance = GlobalCore.getSelectedCache().Distance(CalculationType.FAST, false);
 	    if (GlobalCore.getSelectedWaypoint() != null) {
 		distance = GlobalCore.getSelectedWaypoint().Distance();

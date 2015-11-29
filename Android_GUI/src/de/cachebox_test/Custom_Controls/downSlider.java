@@ -523,7 +523,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 				downSlider.Me.setPos_onUI(0);
 			}
 
-			if (GlobalCore.ifCacheSelected())
+			if (GlobalCore.isSetSelectedCache())
 			{
 				downSlider.Me.setCache_onUI(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 			}

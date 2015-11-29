@@ -3,8 +3,6 @@ package de.cachebox_test.Views;
 import java.io.File;
 import java.util.ArrayList;
 
-import org.slf4j.LoggerFactory;
-
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -39,7 +37,6 @@ import de.cachebox_test.Events.ViewOptionsMenu;
 @SuppressWarnings("deprecation")
 public class SpoilerView extends FrameLayout implements ViewOptionsMenu, AdapterView.OnItemSelectedListener
 {
-	final static org.slf4j.Logger log = LoggerFactory.getLogger(SpoilerView.class);
 	RelativeLayout spoilerLayout;
 	Context context;
 	Gallery g;
@@ -134,7 +131,10 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 		public int getCount()
 		{
 			if (aktCache == null) return 0;
-			if (aktCache.SpoilerExists()) return lBitmaps.size();
+			if (aktCache.SpoilerExists())
+			{
+				return lBitmaps.size();
+			}
 			else
 				return 0;
 			// return mThumbIds.length;
@@ -248,7 +248,6 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 			}
 			catch (Exception exc)
 			{
-				log.error("SpoilerView.onShow() AddBitmap", exc);
 			}
 		}
 

@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.WaypointDAO;
@@ -39,6 +41,7 @@ import CB_Utils.Lists.CB_List;
 public class Cache implements Comparable<Cache>, Serializable
 {
 	private static final long serialVersionUID = 1015307624242318838L;
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(Cache.class);
 	// ########################################################
 	// Boolean Handling
 	// one Boolean use up to 4 Bytes
@@ -95,7 +98,10 @@ public class Cache implements Comparable<Cache>, Serializable
 	private byte[] GcId;
 
 	/**
-	 * Bin ich der Owner? </br> -1 noch nicht getestet </br> 1 ja </br> 0 nein
+	 * Bin ich der Owner? </br>
+	 * -1 noch nicht getestet </br>
+	 * 1 ja </br>
+	 * 0 nein
 	 */
 	private int myCache = -1;
 	private boolean isSearchVisible = true;
@@ -466,10 +472,13 @@ public class Cache implements Comparable<Cache>, Serializable
 	{
 		if (detail != null)
 		{
-			return detail.SpoilerExists(this);
+			boolean hasSpoiler = detail.SpoilerExists(this);
+			// log.info(this + " has Spoiler/s: " + hasSpoiler);
+			return hasSpoiler;
 		}
 		else
 		{
+			// log.info(this + " has no Spoiler");
 			return false;
 		}
 	}

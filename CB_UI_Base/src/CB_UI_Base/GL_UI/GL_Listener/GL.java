@@ -26,7 +26,24 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.slf4j.LoggerFactory;
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Energy;
@@ -67,28 +84,9 @@ import CB_Utils.Math.Point;
 import CB_Utils.Util.HSV_Color;
 import CB_Utils.Util.iChanged;
 
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector2;
-
 public class GL implements ApplicationListener, InputProcessor {
 
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(GL.class);
+    // final static org.slf4j.Logger log = LoggerFactory.getLogger(GL.class);
     // Public Static Constants
     public static final int MAX_KINETIC_SCROLL_DISTANCE = 100;
     public static final int FRAME_RATE_IDLE = 200;
@@ -387,7 +385,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	if (!started.get() || stopRender)
 	    return;
 	if (listenerInterface != null && listenerInterface.isContinous()) {
-	    log.debug("Reset Continous rendering");
+	    // log.debug("Reset Continous rendering");
 	    listenerInterface.RenderDirty();
 	}
 	stateTime += Gdx.graphics.getDeltaTime();
@@ -511,7 +509,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	try {
 	    batch.begin();
 	} catch (java.lang.IllegalStateException e) {
-	    log.error("IllegalStateException", "batch.begin() without batch.end()", e);
+	    // log.error("IllegalStateException", "batch.begin() without batch.end()", e);
 
 	    batch.flush();
 	    batch.end();
@@ -593,7 +591,7 @@ public class GL implements ApplicationListener, InputProcessor {
 		if (lastTouchX != x || lastTouchY != y) {
 		    lastTouchX = x;
 		    lastTouchY = y;
-		    log.debug("TOUCH on x/y" + x + "/" + y);
+		    // log.debug("TOUCH on x/y" + x + "/" + y);
 		}
 
 		batch.draw(point, x - (pointSize / 2), y - (pointSize / 2), pointSize, pointSize);
@@ -671,14 +669,14 @@ public class GL implements ApplicationListener, InputProcessor {
     @Override
     public void pause() {
 	// wird aufgerufen beim Wechsel der aktiven App und beim Ausschalten des Ger�ts
-	log.debug("Pause");
+	// log.debug("Pause");
 
 	onStop();
     }
 
     @Override
     public void resume() {
-	log.debug("Resume");
+	// log.debug("Resume");
 
 	onStart();
     }
@@ -846,11 +844,11 @@ public class GL implements ApplicationListener, InputProcessor {
 		// touchDragged Event an das View, das den onTouchDown bekommen hat
 		boolean behandelt = first.view.touchDragged(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.ThisWorldRec.getY(), pointer, false);
 		if (TOUCH_DEBUG)
-		    log.debug("GL_Listner => onTouchDraggedBase : " + behandelt);
-		if (!behandelt && first.view.getParent() != null) {
-		    // Wenn der Parent eine ScrollBox hat -> Scroll-Events dahin weiterleiten
-		    first.view.getParent().touchDragged(x - (int) first.view.getParent().ThisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.getParent().ThisWorldRec.getY(), pointer, false);
-		}
+		    // log.debug("GL_Listner => onTouchDraggedBase : " + behandelt);
+		    if (!behandelt && first.view.getParent() != null) {
+			// Wenn der Parent eine ScrollBox hat -> Scroll-Events dahin weiterleiten
+			first.view.getParent().touchDragged(x - (int) first.view.getParent().ThisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.getParent().ThisWorldRec.getY(), pointer, false);
+		    }
 		if (touchDownPos.size() == 1) {
 		    if (first.kineticPan == null)
 			first.kineticPan = new KineticPan();
@@ -908,7 +906,7 @@ public class GL implements ApplicationListener, InputProcessor {
 		y -= touchDraggedCorrect.y;
 	    }
 	} catch (Exception e) {
-	    log.error("GL_Listner.onTouchUpBase()", "", e);
+	    // log.error("GL_Listner.onTouchUpBase()", "", e);
 	}
 
 	try {
@@ -921,7 +919,7 @@ public class GL implements ApplicationListener, InputProcessor {
 		touchDownPos.remove(pointer);
 	    }
 	} catch (Exception e) {
-	    log.error("GL_Listner.onTouchUpBase()", "", e);
+	    // log.error("GL_Listner.onTouchUpBase()", "", e);
 	}
 
 	return true;
@@ -1163,7 +1161,7 @@ public class GL implements ApplicationListener, InputProcessor {
 		int lastCount = callerCount.get(name) + 1;
 		if (lastCount > 50) {
 		    lastCount = 0;
-		    log.error("to many calls from: " + name);
+		    // log.error("to many calls from: " + name);
 		}
 		callerCount.put(name, lastCount);
 	    }
@@ -1353,9 +1351,9 @@ public class GL implements ApplicationListener, InputProcessor {
 
 	    anzPointsUsed++;
 	    if (TOUCH_DEBUG)
-		log.debug("AnzUsedPoints: " + anzPointsUsed);
-	    if (anzPointsUsed > anzPoints)
-		anzPointsUsed = anzPoints;
+		// log.debug("AnzUsedPoints: " + anzPointsUsed);
+		if (anzPointsUsed > anzPoints)
+		    anzPointsUsed = anzPoints;
 	    for (int i = anzPoints - 2; i >= 0; i--) {
 		x[i + 1] = x[i];
 		y[i + 1] = y[i];
@@ -1381,8 +1379,8 @@ public class GL implements ApplicationListener, InputProcessor {
 		diffX = (int) ((float) diffX / FRAME_RATE_ACTION * diffTs);
 		diffY = (int) ((float) diffY / FRAME_RATE_ACTION * diffTs);
 	    }
-	    if (TOUCH_DEBUG)
-		log.debug("diffx = " + diffX + " - diffy = " + diffY);
+	    // if (TOUCH_DEBUG)
+	    // log.debug("diffx = " + diffX + " - diffy = " + diffY);
 
 	    // debugString = x[2] + " - " + x[1] + " - " + x[0];
 	}
@@ -1408,9 +1406,9 @@ public class GL implements ApplicationListener, InputProcessor {
 	    endTs = startTs + 1000 + abstand * 15 / anzPointsUsed;
 	    // if (endTs > startTs + 6000) endTs = startTs + 6000; // max. Zeit festlegen
 	    if (TOUCH_DEBUG)
-		log.debug("endTs - startTs: " + String.valueOf(endTs - startTs));
-	    // endTs = startTs + 5000;
-	    started = true;
+		// log.debug("endTs - startTs: " + String.valueOf(endTs - startTs));
+		// endTs = startTs + 5000;
+		started = true;
 	}
 
 	private int lastX = 0;
@@ -1835,7 +1833,7 @@ public class GL implements ApplicationListener, InputProcessor {
      */
     public void RestartRender() {
 
-	log.debug("restart render" + Trace.getCallerName());
+	// log.debug("restart render" + Trace.getCallerName());
 
 	listenerInterface.RenderContinous();
 	stopRender = false;
@@ -1878,7 +1876,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	String sView = "NULL";
 	if (view != null)
 	    sView = view.toString();
-	log.debug("GL => set KeyBoardFocus to " + sView);
+	// log.debug("GL => set KeyBoardFocus to " + sView);
 
 	// fire event
 	KeyboardFocusChangedEventList.Call(view);
@@ -2069,7 +2067,7 @@ public class GL implements ApplicationListener, InputProcessor {
 
 	if (Character.getType(character) == 15) {
 	    //check if coursor up/down/left/rigt clicked
-	    log.debug("value:" + Character.getNumericValue(character));
+	    // log.debug("value:" + Character.getNumericValue(character));
 	    if (Character.getNumericValue(character) == -1) {
 		if (!(character == EditTextField.BACKSPACE || character == EditTextField.DELETE || character == EditTextField.ENTER_ANDROID || character == EditTextField.ENTER_DESKTOP || character == EditTextField.TAB)) {
 		    return true;

@@ -136,7 +136,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
 	MenuItem mi;
 
-	boolean isSelected = (GlobalCore.ifCacheSelected());
+	boolean isSelected = (GlobalCore.isSetSelectedCache());
 
 	mi = cm.addItem(MenuID.MI_FAVORIT, "Favorite", SpriteCacheBase.Icons.get(IconName.favorit_42.ordinal()));
 	mi.setCheckable(true);

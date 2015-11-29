@@ -15,6 +15,8 @@
  */
 package CB_UI.GL_UI.Views;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 import CB_UI.GlobalCore;
@@ -31,6 +33,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Lists.CB_List;
 
 public class SpoilerView extends CB_View_Base {
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(SpoilerView.class);
 
     Cache actCache;
     CB_List<GalleryItem> galaryItems = new CB_List<GalleryItem>();
@@ -66,67 +69,73 @@ public class SpoilerView extends CB_View_Base {
 
     public void ForceReload() {
 	forceReload = true;
+	actCache = null;
     }
 
     @Override
     public void onShow() {
 
-	if (GlobalCore.getSelectedCache() == null)
-	    return;
+	if (GlobalCore.isSetSelectedCache()) {
 
-	if (!forceReload && GlobalCore.getSelectedCache().equals(actCache))
-	    return;
-
-	forceReload = false;
-
-	actCache = GlobalCore.getSelectedCache();
-
-	if (actCache.getSpoilerRessources().size() == 0) {
-	    actCache.ReloadSpoilerRessources();
-	}
-	GalleryItem firstItem = null;
-	synchronized (galaryItems) {
-	    galaryItems.clear();
-	    overviewItems.clear();
-	    if (actCache == null) {
-		gallery.setBaseAdapter(new GalaryImageAdapter());
-		galleryOverwiew.setBaseAdapter(new OverviewImageAdapter());
+	    if (!forceReload && GlobalCore.getSelectedCache().equals(actCache)) {
+		log.info("onShow return cause same Cache");
 		return;
 	    }
 
-	    CB_RectF orItemRec = galleryOverwiew.copy();
-	    orItemRec.setWidth(galleryOverwiew.getHeight());
+	    forceReload = false;
 
-	    for (int i = 0, n = actCache.getSpoilerRessources().size(); i < n; i++) {
-		ImageEntry imageEntry = actCache.getSpoilerRessources().get(i);
-		ImageLoader loader = new ImageLoader();
-		loader.setImage(imageEntry.LocalPath);
+	    actCache = GlobalCore.getSelectedCache();
 
-		GalleryItem item = new GalleryItem(gallery.copy(), i, loader);
-		item.setOnDoubleClickListener(onItemClickListner);
+	    if (actCache.getSpoilerRessources().size() == 0) {
+		log.info("onShow ReloadSpoilerRessources");
+		actCache.ReloadSpoilerRessources();
+	    } else {
+		log.info("onShow don't ReloadSpoilerRessources");
+	    }
 
-		galaryItems.add(item);
+	    GalleryItem firstItem = null;
+	    synchronized (galaryItems) {
+		galaryItems.clear();
+		overviewItems.clear();
+		if (actCache == null) {
+		    gallery.setBaseAdapter(new GalaryImageAdapter());
+		    galleryOverwiew.setBaseAdapter(new OverviewImageAdapter());
+		    return;
+		}
 
-		ImageLoader overviewloader = new ImageLoader();
-		overviewloader.setImage(imageEntry.LocalPath);
-		GalleryItem overviewItem = new GalleryItem(orItemRec, i, loader);
-		overviewItem.setOnClickListener(onItemselectClickListner);
-		if (firstItem == null)
-		    firstItem = overviewItem;
-		overviewItems.add(overviewItem);
+		CB_RectF orItemRec = galleryOverwiew.copy();
+		orItemRec.setWidth(galleryOverwiew.getHeight());
+
+		for (int i = 0, n = actCache.getSpoilerRessources().size(); i < n; i++) {
+		    ImageEntry imageEntry = actCache.getSpoilerRessources().get(i);
+		    ImageLoader loader = new ImageLoader();
+		    loader.setImage(imageEntry.LocalPath);
+
+		    GalleryItem item = new GalleryItem(gallery.copy(), i, loader);
+		    item.setOnDoubleClickListener(onItemClickListner);
+
+		    galaryItems.add(item);
+
+		    ImageLoader overviewloader = new ImageLoader();
+		    overviewloader.setImage(imageEntry.LocalPath);
+		    GalleryItem overviewItem = new GalleryItem(orItemRec, i, loader);
+		    overviewItem.setOnClickListener(onItemselectClickListner);
+		    if (firstItem == null)
+			firstItem = overviewItem;
+		    overviewItems.add(overviewItem);
+		}
+	    }
+
+	    gallery.setBaseAdapter(new GalaryImageAdapter());
+	    galleryOverwiew.setBaseAdapter(new OverviewImageAdapter());
+
+	    //select first item
+	    if (firstItem != null) {
+		//	    gallery.scrollToItem(0);
+		galleryOverwiew.setSelection(0);
+		galleryOverwiew.scrollItemToCenter(0);
 	    }
 	}
-
-	gallery.setBaseAdapter(new GalaryImageAdapter());
-	galleryOverwiew.setBaseAdapter(new OverviewImageAdapter());
-
-	//select first item
-	if (firstItem != null) {
-	    //	    gallery.scrollToItem(0);
-	    galleryOverwiew.setSelection(0);
-	    galleryOverwiew.scrollItemToCenter(0);
-	}
-
     }
 
     @Override

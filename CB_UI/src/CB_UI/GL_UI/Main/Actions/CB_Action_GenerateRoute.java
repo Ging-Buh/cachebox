@@ -100,7 +100,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand {
 
 	if (GlobalCore.getSelectedWaypoint() != null) {
 	    target = GlobalCore.getSelectedWaypoint().Pos;
-	} else if (GlobalCore.ifCacheSelected()) {
+	} else if (GlobalCore.isSetSelectedCache()) {
 	    target = GlobalCore.getSelectedCache().Pos;
 	} else {
 	    GL_MsgBox.Show("Cache / WP ungültig", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, null);

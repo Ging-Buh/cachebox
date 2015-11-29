@@ -86,7 +86,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 
 		    try {
 			if (PlaySounds && !approachSoundCompleted) {
-			    if (GlobalCore.ifCacheSelected()) {
+			    if (GlobalCore.isSetSelectedCache()) {
 				float distance = GlobalCore.getSelectedCache().Distance(CalculationType.FAST, false);
 				if (GlobalCore.getSelectedWaypoint() != null) {
 				    distance = GlobalCore.getSelectedWaypoint().Distance();
@@ -205,7 +205,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 
 	// set approach sound if the distance low
 
-	if (GlobalCore.ifCacheSelected()) {
+	if (GlobalCore.isSetSelectedCache()) {
 	    float distance = GlobalCore.getSelectedCache().Distance(CalculationType.FAST, false);
 	    boolean value = distance < CB_UI_Settings.SoundApproachDistance.getValue();
 	    approachSoundCompleted = value;

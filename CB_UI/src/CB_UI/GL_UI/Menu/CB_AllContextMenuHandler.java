@@ -2,6 +2,8 @@ package CB_UI.GL_UI.Menu;
 
 import java.util.ArrayList;
 
+import org.slf4j.LoggerFactory;
+
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import CB_Core.FilterProperties;
@@ -21,6 +23,7 @@ import CB_UI.GL_UI.Activitys.DeleteSelectedCache;
 import CB_UI.GL_UI.Activitys.EditCache;
 import CB_UI.GL_UI.Controls.Dialogs.HintDialog;
 import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -36,6 +39,7 @@ import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
 
 public class CB_AllContextMenuHandler {
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(QuickButtonItem.class);
 
     public static void showBtnCacheContextMenu() {
 
@@ -66,20 +70,14 @@ public class CB_AllContextMenuHandler {
 	    mi.setEnabled(false);
 
 	mi = icm.addItem(MenuID.MI_HINT, "hint");
-	if (mi != null) {
-	    boolean enabled = false;
-	    if (!selectedCacheIsNull && (GlobalCore.getSelectedCache().hasHint()))
-		enabled = true;
-	    mi.setEnabled(enabled);
-	    mi.setIcon(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.hint_19.ordinal())));
-	}
+	boolean enabled = false;
+	if (!selectedCacheIsNull && (GlobalCore.getSelectedCache().hasHint()))
+	    enabled = true;
+	mi.setEnabled(enabled);
+	mi.setIcon(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.hint_19.ordinal())));
 
 	mi = icm.addItem(MenuID.MI_SPOILER, "spoiler", SpriteCacheBase.Icons.get(IconName.images_22.ordinal()));
-	if (selectedCacheIsNull) {
-	    mi.setEnabled(GlobalCore.getSelectedCache().SpoilerExists());
-	} else {
-	    mi.setEnabled(false);
-	}
+	mi.setEnabled(GlobalCore.selectedCachehasSpoiler());
 
 	mi = icm.addItem(MenuID.MI_SOLVER, "Solver", SpriteCacheBase.Icons.get(IconName.solver_24.ordinal()));
 	if (selectedCacheIsNull)
@@ -90,10 +88,9 @@ public class CB_AllContextMenuHandler {
 	    // Menu Item Telefonjoker enabled / disabled abhänging von gcJoker MD5
 
 	    if (mi != null) {
-		boolean enabled = false;
+		enabled = false;
 		if (GlobalCore.JokerisOnline())
 		    enabled = true;
-
 		mi.setEnabled(enabled);
 	    }
 
@@ -211,7 +208,7 @@ public class CB_AllContextMenuHandler {
 		return true;
 
 	    case MenuID.MI_FAVORIT:
-		if (GlobalCore.ifCacheSelected()) {
+		if (GlobalCore.isSetSelectedCache()) {
 		    GlobalCore.getSelectedCache().setFavorit(!GlobalCore.getSelectedCache().isFavorite());
 		    if (dao == null)
 			dao = new CacheDAO();

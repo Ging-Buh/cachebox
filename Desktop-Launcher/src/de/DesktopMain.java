@@ -381,7 +381,7 @@ public class DesktopMain
 			@Override
 			public void Quit()
 			{
-				if (GlobalCore.ifCacheSelected())
+				if (GlobalCore.isSetSelectedCache())
 				{
 					// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
 					Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());

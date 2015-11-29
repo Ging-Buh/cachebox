@@ -28,7 +28,6 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeChangedEvent;
 import CB_UI_Base.Math.UiSizes;
-import CB_Utils.Log.LogLevel;
 import CB_Utils.Util.HSV_Color;
 import CB_Utils.Util.iChanged;
 
@@ -145,14 +144,14 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 	if (actCache == cache && actWaypoint == waypoint)
 	    return;
 
-	if (cache != null && mLblCacheName != null) {
-	    mLblCacheName.setText(cache.getName());
-	}
-
 	actCache = cache;
 	actWaypoint = waypoint;
 
-	fillCacheWpInfo();
+	if (cache != null) {
+	    if (mLblCacheName != null)
+		mLblCacheName.setText(cache.getName());
+	    fillCacheWpInfo();
+	}
 
     }
 
@@ -162,8 +161,6 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 
 	yPos = value;
 	mSlideBox.setY(value);
-	if (LogLevel.isLogLevel(LogLevel.TRACE))
-	    log.trace("GDX_Slider bound: " + mSlideBox.toString());
 	mSlideBoxContent.setY(mSlideBox.getMaxY() - GL_UISizes.margin);
 	setQuickButtonListHeight();
 	GL.that.renderOnce();
@@ -239,8 +236,6 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 
     public void ActionUp() // Slider zurück scrollen lassen
     {
-	// log.debug("ActionUP");
-
 	boolean QuickButtonShow = Config.quickButtonShow.getValue();
 
 	// check if QuickButtonList snap in
@@ -275,8 +270,6 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
     private void startAnimationTo(int newYPos) {
 	if (yPos == newYPos)
 	    return; // wir brauchen nichts Animieren
-
-	// log.debug("Start Animation To " + newYPos);
 
 	AnimationIsRunning = true;
 	AnimationTarget = newYPos;
@@ -376,7 +369,6 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
     WaypointViewItem waypointDesc;
 
     private void fillCacheWpInfo() {
-
 	mSlideBoxContent.removeChildsDirekt();
 
 	CB_RectF rec = UiSizes.that.getCacheListItemRec().asFloat();

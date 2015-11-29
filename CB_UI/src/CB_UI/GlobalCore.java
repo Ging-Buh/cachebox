@@ -53,7 +53,7 @@ import CB_Utils.Interfaces.cancelRunnable;
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(GlobalCore.class);
-    public static final int CurrentRevision = 20151118;
+    public static final int CurrentRevision = 20151128;
 
     public static final String CurrentVersion = "0.8.";
     public static final String VersionPrefix = "test";
@@ -93,6 +93,13 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 
     public static Cache getSelectedCache() {
 	return selectedCache;
+    }
+
+    public static boolean selectedCachehasSpoiler() {
+	if (selectedCache != null) {
+	    return selectedCache.SpoilerExists();
+	} else
+	    return false;
     }
 
     private static Cache nearestCache = null;
@@ -221,7 +228,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 	CacheList List = Database.Data.Query;
 
 	// Prüfen, ob der SelectedCache noch in der cacheList drin ist.
-	if ((List.size() > 0) && (GlobalCore.ifCacheSelected()) && (List.GetCacheById(GlobalCore.getSelectedCache().Id) == null)) {
+	if ((List.size() > 0) && (GlobalCore.isSetSelectedCache()) && (List.GetCacheById(GlobalCore.getSelectedCache().Id) == null)) {
 	    // der SelectedCache ist nicht mehr in der cacheList drin -> einen beliebigen aus der CacheList auswählen
 	    log.debug("Change SelectedCache from " + GlobalCore.getSelectedCache().getGcCode() + "to" + List.get(0).getGcCode());
 	    GlobalCore.setSelectedCache(List.get(0));
@@ -375,11 +382,11 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
      * 
      * @return
      */
-    public static boolean ifCacheSelected() {
-	if (getSelectedCache() == null)
+    public static boolean isSetSelectedCache() {
+	if (selectedCache == null)
 	    return false;
 
-	if (getSelectedCache().getGcCode().length() == 0)
+	if (selectedCache.getGcCode().length() == 0)
 	    return false;
 
 	return true;

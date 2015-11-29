@@ -114,7 +114,7 @@ public class MapViewCacheList implements CacheListChangedEventListner {
 				if (hideMyFinds && cache.isFound())
 				    continue;
 				boolean selectedCache = false;
-				if (GlobalCore.ifCacheSelected()) {
+				if (GlobalCore.isSetSelectedCache()) {
 				    selectedCache = GlobalCore.getSelectedCache().Id == cache.Id;
 				}
 
@@ -126,7 +126,7 @@ public class MapViewCacheList implements CacheListChangedEventListner {
 				// sichtbare Wegpunkte hinzufügen, auch wenn der Cache nicht sichtbar ist
 				if (showWaypoints) {
 				    if (selectedCache) {
-					if (GlobalCore.ifCacheSelected())
+					if (GlobalCore.isSetSelectedCache())
 					    addWaypoints(GlobalCore.getSelectedCache(), iconSize);
 				    } else {
 					addWaypoints(cache, iconSize);
@@ -355,7 +355,7 @@ public class MapViewCacheList implements CacheListChangedEventListner {
 
     private Sprite getUnderlayIcon(Cache cache, Waypoint waypoint, int iconSize) {
 	boolean selectedCache = false;
-	if (GlobalCore.ifCacheSelected()) {
+	if (GlobalCore.isSetSelectedCache()) {
 	    selectedCache = cache.Id == GlobalCore.getSelectedCache().Id;
 	}
 

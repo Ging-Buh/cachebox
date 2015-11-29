@@ -1,5 +1,7 @@
 package CB_UI.GL_UI.Main.Actions;
 
+import org.slf4j.LoggerFactory;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -21,6 +23,7 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 
 public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_Action_ShowSpoilerView.class);
     private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
 
     public CB_Action_ShowSpoilerView() {
@@ -38,10 +41,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
 
     @Override
     public boolean getEnabled() {
-	boolean hasSpoiler = false;
-	if (GlobalCore.ifCacheSelected())
-	    hasSpoiler = GlobalCore.getSelectedCache().SpoilerExists();
-	return hasSpoiler;
+	return GlobalCore.selectedCachehasSpoiler();
     }
 
     int spoilerState = -1;
@@ -49,10 +49,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
 
     @Override
     public Sprite getIcon() {
-	boolean hasSpoiler = false;
-	if (GlobalCore.ifCacheSelected())
-	    hasSpoiler = GlobalCore.getSelectedCache().SpoilerExists();
-
+	boolean hasSpoiler = GlobalCore.selectedCachehasSpoiler();
 	if (hasSpoiler && spoilerState != 1) {
 	    SpoilerIcon = SpriteCacheBase.Icons.get(IconName.images_18.ordinal());
 	    spoilerState = 1;
@@ -61,7 +58,6 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
 	    SpoilerIcon.setColor(DISABLE_COLOR);
 	    spoilerState = 0;
 	}
-
 	return SpoilerIcon;
     }
 
@@ -96,7 +92,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
 		    @Override
 		    public void isReady() {
 			// erst die Lokalen Images für den Cache neu laden
-			if (GlobalCore.ifCacheSelected()) {
+			if (GlobalCore.isSetSelectedCache()) {
 			    GlobalCore.getSelectedCache().ReloadSpoilerRessources();
 			    GL.that.RunOnGL(new IRunOnGL() {
 

@@ -136,7 +136,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
     public void onHide() {
 	log.debug("onHide()");
 	SelectedCacheEventList.Remove(this);
-	if (GlobalCore.ifCacheSelected())
+	if (GlobalCore.isSetSelectedCache())
 	    Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
     }
 
@@ -336,7 +336,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 	    reloadList();
 
 	    // Store Solver Content into Database after editing one line
-	    if (GlobalCore.ifCacheSelected())
+	    if (GlobalCore.isSetSelectedCache())
 		Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
 	}
     };
@@ -367,7 +367,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 		solver.add(solver.size(), new SolverZeile(solver, ""));
 
 		// Store Solver Content into Database after editing one line
-		if (GlobalCore.ifCacheSelected())
+		if (GlobalCore.isSetSelectedCache())
 		    Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
 
 		reloadList();

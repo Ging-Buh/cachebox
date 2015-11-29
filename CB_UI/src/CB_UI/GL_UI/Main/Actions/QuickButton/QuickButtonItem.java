@@ -16,6 +16,8 @@
 
 package CB_UI.GL_UI.Main.Actions.QuickButton;
 
+import org.slf4j.LoggerFactory;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -39,6 +41,7 @@ import CB_UI_Base.Math.CB_RectF;
  * @author Longri
  */
 public class QuickButtonItem extends ListViewItemBase {
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(QuickButtonItem.class);
     private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
 
     private CB_Action mAction;
@@ -130,8 +133,9 @@ public class QuickButtonItem extends ListViewItemBase {
 	    }
 	} else if (mAction.getId() == MenuID.AID_SHOW_SPOILER) {
 	    boolean hasSpoiler = false;
-	    if (GlobalCore.ifCacheSelected())
-		hasSpoiler = GlobalCore.getSelectedCache().SpoilerExists();
+	    if (GlobalCore.isSetSelectedCache()) {
+		hasSpoiler = GlobalCore.selectedCachehasSpoiler();
+	    }
 
 	    if (hasSpoiler && spoilerState != 1) {
 		mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.images_18.ordinal())));

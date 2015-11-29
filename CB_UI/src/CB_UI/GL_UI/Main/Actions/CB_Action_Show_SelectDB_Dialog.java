@@ -59,7 +59,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand {
     @Override
     public void Execute() {
 
-	if (GlobalCore.ifCacheSelected()) {
+	if (GlobalCore.isSetSelectedCache()) {
 	    // speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
 	    Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
 	    Config.AcceptChanges();
