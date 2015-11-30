@@ -10,7 +10,7 @@ import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
-import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
@@ -141,7 +141,7 @@ public class EditCache extends ActivityBase
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		for (EditTextField tmp : allTextFields) {
 		    tmp.getOnscreenKeyboard().show(false);
-		    tmp.resetFocus();
+		    tmp.setFocus(false);
 		}
 		return true;
 	    }
@@ -244,11 +244,11 @@ public class EditCache extends ActivityBase
 		cache.setLongDescription(cacheDescription.getText());
 		if (update) {
 		    cacheDAO.UpdateDatabase(cache);
-		    CachListChangedEventList.Call();
+		    CacheListChangedEventList.Call();
 		} else {
 		    Database.Data.Query.add(cache);
 		    cacheDAO.WriteToDatabase(cache);
-		    CachListChangedEventList.Call();
+		    CacheListChangedEventList.Call();
 		    GlobalCore.setSelectedCache(cache);
 		    if (TabMainView.cacheListView != null)
 			TabMainView.cacheListView.setSelectedCacheVisible();

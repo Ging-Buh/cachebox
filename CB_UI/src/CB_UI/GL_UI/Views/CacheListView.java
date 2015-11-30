@@ -26,7 +26,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.utils.Align;
 
 import CB_Core.DB.Database;
-import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Events.CacheListChangedEventListner;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
@@ -65,7 +65,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
     public CacheListView(CB_RectF rec, String Name) {
 	super(rec, Name);
 	registerSkinChangedEvent();
-	CachListChangedEventList.Add(this);
+	CacheListChangedEventList.Add(this);
 	SelectedCacheEventList.Add(this);
 	listView = new V_ListView(rec, Name);
 	listView.setZeroPos();
@@ -483,7 +483,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	    emptyMsg.clear();
 	emptyMsg = null;
 
-	CachListChangedEventList.Remove(this);
+	CacheListChangedEventList.Remove(this);
 	SelectedCacheEventList.Remove(this);
 	PositionChangedEventList.Remove(this);
 

@@ -23,7 +23,7 @@ import CB_Core.CoreSettingsForward;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.SearchCoordinate;
 import CB_Core.DAO.CategoryDAO;
-import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
@@ -454,7 +454,7 @@ public class SearchOverPosition extends ActivityBase {
 		}
 
 		if (!threadCanceld) {
-		    CachListChangedEventList.Call();
+		    CacheListChangedEventList.Call();
 		    if (dis != null) {
 			SearchOverPosition.this.removeChildsDirekt(dis);
 			dis.dispose();

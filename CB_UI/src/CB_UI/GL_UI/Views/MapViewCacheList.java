@@ -24,7 +24,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
-import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Events.CacheListChangedEventListner;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
@@ -71,7 +71,7 @@ public class MapViewCacheList implements CacheListChangedEventListner {
 	StartQueueProcessor();
 
 	// register as CacheListChangedEventListner
-	CachListChangedEventList.Add(this);
+	CacheListChangedEventList.Add(this);
 
     }
 

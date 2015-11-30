@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DB.Database;
+import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Solver.Solver;
@@ -53,7 +54,7 @@ import CB_Utils.Interfaces.cancelRunnable;
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(GlobalCore.class);
-    public static final int CurrentRevision = 20151128;
+    public static final int CurrentRevision = 20151130;
 
     public static final String CurrentVersion = "0.8.";
     public static final String VersionPrefix = "test";
@@ -365,11 +366,13 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     @Override
     public void sciSetSelectedCache(Cache cache) {
 	setSelectedCache(cache);
+	CacheListChangedEventList.Call();
     }
 
     @Override
     public void sciSetSelectedWaypoint(Cache cache, Waypoint waypoint) {
 	setSelectedWaypoint(cache, waypoint);
+	CacheListChangedEventList.Call();
     }
 
     @Override

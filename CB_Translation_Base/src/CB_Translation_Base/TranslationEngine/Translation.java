@@ -26,13 +26,13 @@ import java.util.ArrayList;
 
 import org.slf4j.LoggerFactory;
 
-import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Trace;
-import CB_Utils.Util.FileIO;
-
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+
+import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Trace;
+import CB_Utils.Util.FileIO;
 
 /**
  * @author Longri
@@ -67,7 +67,7 @@ public class Translation
 	{
 		that = this;
 		mWorkPath = WorkPath;
-		BR = "\n"; //System.getProperty("line.separator");
+		BR = "\n"; // System.getProperty("line.separator");
 		mStringList = new CB_List<Translations>();
 		mRefTranslation = new CB_List<Translations>();
 		mMissingStringList = new CB_List<MissingTranslation>();
@@ -94,7 +94,8 @@ public class Translation
 	}
 
 	/**
-	 * Returns the translation from StringID </br>with params ??????
+	 * Returns the translation from StringID </br>
+	 * with params ??????
 	 * 
 	 * @param StringId
 	 *            as String
@@ -111,20 +112,23 @@ public class Translation
 	}
 
 	/**
-	 * Returns the translation from StringID </br>with params ??????
+	 * Returns the translation from StringID </br>
+	 * with params ??????
 	 * 
-	 * @param Id
-	 *            Id String as String.hashCode()
+	 * @param hashCode
+	 *            hashCode String as String.hashCode()
 	 * @param params
-	 *            With this a variable number of Strings can be definde Before returning the translation string there will be replaced
-	 *            predefined substrings by these parameters Example: the "{1}" will be replaced by the first param, the "{2}" by the
-	 *            second... Get("abc {1} def {3} ghi {2}", "123", "456", "789"); Result: "abc 123 def 789 ghi 456"
+	 *            With this a variable number of Strings can be defined.<br>
+	 *            They replace the corresponding placeholders {*}<br>
+	 *            Example:<br>
+	 *            Get:("abc {1} def {3} ghi {2}", "123", "456", "789");<br>
+	 *            Result: "abc 123 def 789 ghi 456"<br>
 	 * @return String
 	 */
-	public static String Get(int Id, String... params)
+	public static String Get(int hashCode, String... params)
 	{
 		if (that == null) return "Translation not initial";
-		return that.get(Id, params);
+		return that.get(hashCode, params);
 	}
 
 	/**

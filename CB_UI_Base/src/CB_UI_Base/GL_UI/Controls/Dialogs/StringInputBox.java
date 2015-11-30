@@ -64,7 +64,7 @@ public class StringInputBox extends GL_MsgBox {
 	super.onShow();
 
 	// register Textfield render
-	editText.setFocus();
+	editText.setFocus(true);
     }
 
 }

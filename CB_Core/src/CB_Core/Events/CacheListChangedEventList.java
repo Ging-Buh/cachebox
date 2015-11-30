@@ -28,7 +28,7 @@ import CB_Core.Types.Cache;
 /**
  * @author Longri
  */
-public class CachListChangedEventList
+public class CacheListChangedEventList
 {
 	public static ArrayList<CacheListChangedEventListner> list = new ArrayList<CacheListChangedEventListner>();
 

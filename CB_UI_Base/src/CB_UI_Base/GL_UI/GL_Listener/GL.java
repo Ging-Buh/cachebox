@@ -156,7 +156,7 @@ public class GL implements ApplicationListener, InputProcessor {
     private Sprite mDarknesSprite;
     private Pixmap mDarknesPixmap;
     private Texture mDarknesTexture;
-    protected EditTextField keyboardFocus;
+    private EditTextField focusedEditTextField;
 
     protected ArrayList<IRunOnGL> runOnGL_List = new ArrayList<IRunOnGL>();
     protected ArrayList<IRunOnGL> runOnGL_ListWaitpool = new ArrayList<IRunOnGL>();
@@ -784,9 +784,9 @@ public class GL implements ApplicationListener, InputProcessor {
 	    return false;
 
 	// wenn dieser TouchDown ausserhalb einer TextView war, dann resete den TextField Focus
-	if (GL.that.getKeyboardFocus() != null) {
-	    if (!(view instanceof EditTextFieldBase) && !(view instanceof SelectionMarker) && !(view instanceof Button) && !GL.that.PopUpIsShown()) {
-		GL.that.setKeyboardFocus(null);
+	if (focusedEditTextField != null) {
+	    if (!(view instanceof EditTextFieldBase) && !(view instanceof SelectionMarker) && !(view instanceof Button) && !this.PopUpIsShown()) {
+		setFocusedEditTextField(null);
 	    }
 	}
 
@@ -1150,7 +1150,7 @@ public class GL implements ApplicationListener, InputProcessor {
      */
     private void requestRender(boolean force) {
 
-	if (!force && lastRenderOnceTime == GL.that.getStateTime())
+	if (!force && lastRenderOnceTime == this.getStateTime())
 	    return;
 
 	String name = Trace.getCallerName(1);
@@ -1170,7 +1170,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	    caller.put(name, stateTime);
 	}
 
-	lastRenderOnceTime = GL.that.getStateTime();
+	lastRenderOnceTime = this.getStateTime();
 
 	if (listenerInterface != null)
 	    listenerInterface.RequestRender();
@@ -1497,7 +1497,7 @@ public class GL implements ApplicationListener, InputProcessor {
 
     public void showDialog(final Dialog dialog, boolean atTop) {
 
-	setKeyboardFocus(null);
+	setFocusedEditTextField(null);
 
 	if (dialog instanceof ActivityBase)
 	    throw new IllegalArgumentException("don�t show an Activity as Dialog. Use \"GL_listner.showActivity()\"");
@@ -1573,7 +1573,7 @@ public class GL implements ApplicationListener, InputProcessor {
     }
 
     public void showActivity(final ActivityBase activity) {
-	setKeyboardFocus(null);
+	setFocusedEditTextField(null);
 	clearRenderViews();
 	platformConector.showForDialog();
 
@@ -1623,8 +1623,8 @@ public class GL implements ApplicationListener, InputProcessor {
 	    return;
 
 	//check if KeyboardFocus on this Activitiy
-	if (keyboardFocus != null && keyboardFocus.getParent() == actActivity) {
-	    setKeyboardFocus(null);
+	if (focusedEditTextField != null && focusedEditTextField.getParent() == actActivity) {
+	    setFocusedEditTextField(null);
 	}
 
 	if (activityHistory.size() > 0) {
@@ -1722,8 +1722,8 @@ public class GL implements ApplicationListener, InputProcessor {
 	    platformConector.hideForDialog();
 	if (actDialog != null) {
 	    //check if KeyboardFocus on this Dialog
-	    if (keyboardFocus != null && keyboardFocus.getParent() == actDialog) {
-		setKeyboardFocus(null);
+	    if (focusedEditTextField != null && focusedEditTextField.getParent() == actDialog) {
+		setFocusedEditTextField(null);
 	    }
 
 	    actDialog.onHide();
@@ -1851,7 +1851,7 @@ public class GL implements ApplicationListener, InputProcessor {
     /**
      * @return true wenn behandeld
      */
-    public boolean keyBackCliced() {
+    public boolean keyBackClicked() {
 	if (actDialog instanceof Menu) {
 	    closeDialog(actDialog);
 	    return true;
@@ -1859,37 +1859,31 @@ public class GL implements ApplicationListener, InputProcessor {
 	return false;
     }
 
-    public void setKeyboardFocus(EditTextField view) {
-	// don't set Focus to NULL?
-	if (view == null && keyboardFocus == null) {
-
+    public void setFocusedEditTextField(EditTextField editTextField) {
+	if (editTextField == null && focusedEditTextField == null) {
 	    return;
 	}
 
 	// Don't open KeyBoard if Keybord is Showing
-	boolean dontOpenKeybord = keyboardFocus != null;
+	boolean dontOpenKeybord = focusedEditTextField != null;
 
-	if (view != null && view.dontShowKeyBoard()) {
+	if (editTextField != null && editTextField.dontShowKeyBoard()) {
 	    dontOpenKeybord = true;
 	}
 
-	String sView = "NULL";
-	if (view != null)
-	    sView = view.toString();
-	// log.debug("GL => set KeyBoardFocus to " + sView);
-
 	// fire event
-	KeyboardFocusChangedEventList.Call(view);
+	KeyboardFocusChangedEventList.Call(editTextField);
 
-	if (view != null && view != keyboardFocus) {
-	    view.BecomsFocus();
+	if (editTextField != null && editTextField != focusedEditTextField) {
+	    editTextField.becomesFocus();
 	}
 
-	keyboardFocus = view;
+	focusedEditTextField = editTextField;
+
 	hideMarker();
 
-	if (keyboardFocus != null) {
-	    if (!keyboardFocus.dontShowKeyBoard()) {
+	if (focusedEditTextField != null) {
+	    if (!focusedEditTextField.dontShowKeyBoard()) {
 		if (!dontOpenKeybord) {
 		    platformConector.callsetKeybordFocus(true);
 		}
@@ -1902,12 +1896,12 @@ public class GL implements ApplicationListener, InputProcessor {
 	}
     }
 
-    public EditTextField getKeyboardFocus() {
-	return keyboardFocus;
+    public EditTextField getFocusedEditTextField() {
+	return focusedEditTextField;
     }
 
     public boolean hasFocus(EditTextFieldBase view) {
-	return view == keyboardFocus;
+	return view == focusedEditTextField;
     }
 
     public void hideMarker() {
@@ -2075,18 +2069,17 @@ public class GL implements ApplicationListener, InputProcessor {
 	    }
 
 	}
-
-	// WeiterLeiten an EditTextView, welches den Focus Hat
-	if (keyboardFocus != null && keyboardFocus.keyTyped(character))
+	if (focusedEditTextField != null) {
+	    focusedEditTextField.keyTyped(character);
 	    return true;
-
+	}
 	return false;
 
     }
 
     @Override
-    public boolean keyUp(int KeyCode) {
-	if (KeyCode == Input.Keys.BACK) {
+    public boolean keyUp(int value) {
+	if (value == Input.Keys.BACK) {
 	    if (isShownDialogActivity()) {
 
 		if (DialogIsShown) {
@@ -2106,17 +2099,19 @@ public class GL implements ApplicationListener, InputProcessor {
 	    return true;
 	}
 
-	// WeiterLeiten an EditTextView, welches den Focus Hat
-	if (keyboardFocus != null && keyboardFocus.keyUp(KeyCode))
+	if (focusedEditTextField != null) {
+	    focusedEditTextField.keyUp(value);
 	    return true;
+	}
 	return false;
     }
 
     @Override
-    public boolean keyDown(int keycode) {
-	// WeiterLeiten an EditTextView, welches den Focus Hat
-	if (keyboardFocus != null && keyboardFocus.keyDown(keycode))
+    public boolean keyDown(int value) {
+	if (focusedEditTextField != null) {
+	    focusedEditTextField.keyDown(value);
 	    return true;
+	}
 	return false;
     }
 

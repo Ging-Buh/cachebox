@@ -47,7 +47,7 @@ import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import CB_Core.FilterProperties;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
-import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
@@ -506,7 +506,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	// add Event Handler
 	SelectedCacheEventList.Add(this);
-	CachListChangedEventList.Add(this);
+	CacheListChangedEventList.Add(this);
 	// GpsStateChangeEventList.Add(this);
 
 	vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -722,7 +722,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 				    // finish close activity and notify changes
 
-				    CachListChangedEventList.Call();
+				    CacheListChangedEventList.Call();
 
 				    Date Importfin = new Date();
 				    long ImportZeit = Importfin.getTime() - ImportStart.getTime();
@@ -1236,7 +1236,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		    }
 		    SelectedCacheEventList.list.clear();
 		    SelectedCacheEventList.list.clear();
-		    CachListChangedEventList.list.clear();
+		    CacheListChangedEventList.list.clear();
 		    if (aktView != null) {
 			aktView.OnHide();
 			aktView.OnFree();

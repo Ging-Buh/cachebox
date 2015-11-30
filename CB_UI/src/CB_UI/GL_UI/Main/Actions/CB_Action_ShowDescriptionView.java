@@ -25,7 +25,7 @@ import CB_Core.Api.SearchGC;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
-import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
@@ -120,7 +120,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 		    if (TabMainView.descriptionView != null)
 			TabMainView.descriptionView.onShow();
 
-		    CachListChangedEventList.Call();
+		    CacheListChangedEventList.Call();
 		    return true;
 		case MenuID.MI_RELOAD_CACHE:
 		    ReloadSelectedCache();
@@ -212,7 +212,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 			cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 		    }
 
-		    CachListChangedEventList.Call();
+		    CacheListChangedEventList.Call();
 		    Cache selCache = Database.Data.Query.GetCacheByGcCode(GcCode);
 		    GlobalCore.setSelectedCache(selCache);
 		    GL.that.RunOnGL(new IRunOnGL() {

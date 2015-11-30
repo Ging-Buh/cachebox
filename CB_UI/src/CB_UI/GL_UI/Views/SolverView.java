@@ -134,7 +134,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 	btnSelect.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		GL.that.setKeyboardFocus(null);
+		GL.that.setFocusedEditTextField(null);
 		return true;
 	    }
 	});
@@ -162,7 +162,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		windowState = WindowState.Left;
-		layoutEditFields(GL.that.getKeyboardFocus());
+		layoutEditFields(GL.that.getFocusedEditTextField());
 		return true;
 	    }
 	});
@@ -171,7 +171,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		windowState = WindowState.Both;
-		layoutEditFields(GL.that.getKeyboardFocus());
+		layoutEditFields(GL.that.getFocusedEditTextField());
 		return true;
 	    }
 	});
@@ -180,7 +180,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		windowState = WindowState.Right;
-		layoutEditFields(GL.that.getKeyboardFocus());
+		layoutEditFields(GL.that.getFocusedEditTextField());
 		return true;
 	    }
 	});
@@ -254,7 +254,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 			sb.append(actText.subSequence(end, actText.length()));
 			edInput.setText(sb.toString());
 			edInput.setCursorPosition(newSelectionStart);
-			edInput.setFocus();
+			edInput.setFocus(true);
 		    }
 		}
 	    });
@@ -286,7 +286,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 	btnBothWindow.setPos(btnWidth, yPos);
 	btnResultWindow.setPos(btnWidth * 2, yPos);
 
-	layoutEditFields(GL.that.getKeyboardFocus());
+	layoutEditFields(GL.that.getFocusedEditTextField());
 
     }
 
@@ -330,7 +330,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 
 	edResult.enable();
 
-	solver = new Solver(edInput.getText().toString());
+	solver = new Solver(edInput.getText());
 	if (!solver.Solve()) {
 	    GL.that.Toast("Error", Toast.LENGTH_SHORT);
 	}

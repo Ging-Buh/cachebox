@@ -29,7 +29,7 @@ import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
-import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Import.BreakawayImportThread;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.ImportCBServer;
@@ -956,7 +956,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 		// finish close activity and notify changes
 
-		CachListChangedEventList.Call();
+		CacheListChangedEventList.Call();
 
 		Date Importfin = new Date();
 		long ImportZeit = Importfin.getTime() - ImportStart.getTime();

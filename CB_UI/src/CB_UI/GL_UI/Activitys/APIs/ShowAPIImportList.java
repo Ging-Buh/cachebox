@@ -31,7 +31,7 @@ import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.PocketQuery;
 import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.DB.Database;
-import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
@@ -932,7 +932,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 
 		// finish close activity and notify changes
 
-		CachListChangedEventList.Call();
+		CacheListChangedEventList.Call();
 
 		Date Importfin = new Date();
 		long ImportZeit = Importfin.getTime() - ImportStart.getTime();

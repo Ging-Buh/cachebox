@@ -107,7 +107,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		for (EditTextField tmp : allTextFields) {
-		    tmp.resetFocus();
+		    tmp.setFocus(false);
 		}
 
 		keyboard.show(false);

@@ -101,10 +101,10 @@ public class ProjectionCoordinate extends ActivityBase {
 	if (valueBearing == null) {
 	    if (!p2p) {
 		iniTextFields();
-		valueBearing.setFocus();
+		valueBearing.setFocus(true);
 	    }
 	} else {
-	    valueBearing.setFocus();
+	    valueBearing.setFocus(true);
 	}
 
     }

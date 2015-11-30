@@ -23,7 +23,7 @@ import CB_Core.CoreSettingsForward;
 import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
-import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Categories;
 import CB_UI.Config;
@@ -133,7 +133,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand {
 
 		GlobalCore.setAutoResort(Config.StartWithAutoSelect.getValue());
 
-		CachListChangedEventList.Call();
+		CacheListChangedEventList.Call();
 
 		TabMainView.that.filterSetChanged();
 

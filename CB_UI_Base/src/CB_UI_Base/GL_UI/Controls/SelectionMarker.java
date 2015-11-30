@@ -112,7 +112,7 @@ public class SelectionMarker extends CB_View_Base
 		if ((pointer == 0) && (touchDownPos != null) && (!KineticPan))
 		{
 			// Korrektur der Position
-			EditTextField tv = GL.that.getKeyboardFocus();
+			EditTextField tv = GL.that.getFocusedEditTextField();
 			if (tv != null)
 			{
 				x -= tv.ThisWorldRec.getX();
@@ -126,7 +126,7 @@ public class SelectionMarker extends CB_View_Base
 			// neue gewünschte Koordinaten am Einfügepunkt des Markers
 			newX = newX + markerXPos;
 			newY = newY + getHeight();
-			Point cursorPos = GL.that.getKeyboardFocus().GetNextCursorPos(new Point((int) newX, (int) newY), type, true);
+			Point cursorPos = GL.that.getFocusedEditTextField().GetNextCursorPos(new Point((int) newX, (int) newY), type, true);
 			if (cursorPos != null)
 			{
 				// System.out.println("x=" + x + " - aktX=" + this.Pos.x + " - touchX=" + touchDownPos.x);
@@ -161,7 +161,7 @@ public class SelectionMarker extends CB_View_Base
 	// move absolute
 	public void moveTo(float x, float y)
 	{
-		final EditTextField tv = GL.that.getKeyboardFocus();
+		final EditTextField tv = GL.that.getFocusedEditTextField();
 		if (tv != null)
 		{
 

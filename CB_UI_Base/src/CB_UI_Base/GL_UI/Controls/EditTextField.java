@@ -684,7 +684,7 @@ public class EditTextField extends EditTextFieldBase {
     public boolean click(int X, int Y, int pointer, int button) {
 	if (pointer != 0)
 	    return false;
-	GL.that.setKeyboardFocus(this);
+	GL.that.setFocusedEditTextField(this);
 	setTextAtCursorVisible(false);
 	if (!dontShowKeyBoard())
 	    keyboard.show(true);
@@ -1094,31 +1094,26 @@ public class EditTextField extends EditTextFieldBase {
 	    try {
 		if (hideSelectionMarker)
 		    hideSelectionMarker();
-		// Cursorpos prüfen, ob ausserhalb sichtbaren Bereich (Oben-Unten)
+		// Oben-Unten => topLine anpassen
 		if (cursor.line - topLine >= maxLineCount) {
 		    topLine = cursor.line - maxLineCount + 1;
 		}
 		if (cursor.line < topLine) {
 		    topLine = cursor.line;
 		}
-		// links-Rechts
-		// Cursor Pos in Pixeln vom Textanfang an
+		// links-rechts => leftPos anpassen
 		Line line = getCursorsLine();
-		if (line != null) {
+		if (line != null && maxTextWidth > 0) {
 		    float xCursor = 0;
 		    if (cursor.pos < line.glyphPositions.size) {
 			xCursor = line.glyphPositions.get(cursor.pos);
 		    } else {
 			xCursor = line.glyphPositions.get(line.glyphPositions.size - 1);
 		    }
-		    // Prüfen, ob der Cursor links außen ist
-		    if (xCursor < 0) {
-			leftPos = xCursor;
+		    if (xCursor > maxTextWidth) {
+			leftPos = xCursor - maxTextWidth;
 		    } else {
-			// Prüfen, ob der Cursr rechts außen ist
-			if ((xCursor > maxTextWidth) && (maxTextWidth > 0)) {
-			    leftPos = xCursor - maxTextWidth;
-			}
+			leftPos = 0;
 		    }
 		}
 	    } catch (Exception e) {
@@ -1735,24 +1730,23 @@ public class EditTextField extends EditTextFieldBase {
 	return style.font;
     }
 
-    public void setFocus() {
-	setFocus(true);
-    }
-
     public void setFocus(boolean value) {
-	hasFocus = value;
-	if (value == true) {
-	    GL.that.setKeyboardFocus(this);
-	} else {
-	    if (GL.that.getKeyboardFocus() == this)
-		GL.that.setKeyboardFocus(null);
+	if (value != GL.that.hasFocus(this)) {
+	    if (value) {
+		GL.that.setFocusedEditTextField(this);
+	    } else {
+		if (GL.that.hasFocus(this))
+		    GL.that.setFocusedEditTextField(null);
+	    }
+	    // this.calculateSizeDependencies(value); done by becomesFocus
 	}
     }
 
-    public void resetFocus() {
-	hasFocus = false;
-	GL.that.setKeyboardFocus(null);
-
+    @Override
+    public void becomesFocus() {
+	if (mBecomsFocusListner != null)
+	    mBecomsFocusListner.BecomsFocus();
+	this.calculateSizeDependencies(true);
     }
 
     public void setPasswordMode() {

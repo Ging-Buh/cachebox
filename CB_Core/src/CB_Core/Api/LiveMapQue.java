@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import CB_Core.CoreSettingsForward;
 import CB_Core.DAO.CategoryDAO;
 import CB_Core.DB.Database;
-import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheListLive;
@@ -222,7 +222,7 @@ public class LiveMapQue
 						Database.Data.Query.removeAll(removedCaches);
 					}
 
-					CachListChangedEventList.Call();
+					CacheListChangedEventList.Call();
 					for (int i = 0; i < eventList.size(); i++)
 						eventList.get(i).stateChanged();
 				}

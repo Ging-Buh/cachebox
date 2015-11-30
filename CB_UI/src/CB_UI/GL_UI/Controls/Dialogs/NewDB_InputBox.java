@@ -86,7 +86,7 @@ public class NewDB_InputBox extends GL_MsgBox {
 	super.onShow();
 
 	// register Textfield render
-	editText.setFocus();
+	editText.setFocus(true);
     }
 
 }

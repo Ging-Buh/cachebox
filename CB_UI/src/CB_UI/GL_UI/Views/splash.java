@@ -32,7 +32,7 @@ import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
-import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Waypoint;
@@ -400,7 +400,7 @@ public class splash extends MainViewBase {
 	    cacheListDAO = null;
 	}
 
-	CachListChangedEventList.Call();
+	CacheListChangedEventList.Call();
 
 	Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
 

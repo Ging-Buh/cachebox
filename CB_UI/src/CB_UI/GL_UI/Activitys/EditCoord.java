@@ -650,7 +650,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 	this.pnlUTM.setInvisible();
 	this.pnlNumPad.setVisible();
 	// keyboard ausblenden
-	GL.that.setKeyboardFocus(null);
+	GL.that.setFocusedEditTextField(null);
 	this.Leertaste.setInvisible();
 
 	setButtonValues(newPage);
@@ -860,7 +860,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 	setUTMbtnTextColor(newFocus, COLOR.getHighLightFontColor());
 	if (newFocus == 6 + 8 + 3 - 1) {
 	    // keyboard einblenden
-	    GL.that.setKeyboardFocus(invisibleTextField);
+	    GL.that.setFocusedEditTextField(invisibleTextField);
 	    invisibleTextField.setTextFieldListener(new TextFieldListener() {
 
 		@Override
@@ -881,7 +881,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 	    this.pnlNumPad.setInvisible();
 	} else {
 	    // keyboard ausblenden
-	    GL.that.setKeyboardFocus(null);
+	    GL.that.setFocusedEditTextField(null);
 	    // Numpad einblenden
 	    this.pnlNumPad.setVisible();
 	}

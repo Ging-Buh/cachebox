@@ -38,7 +38,7 @@ import CB_Core.DAO.CacheListDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
-import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
@@ -392,7 +392,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 			    }
 
-			    CachListChangedEventList.Call();
+			    CacheListChangedEventList.Call();
 			    Cache selCache = Database.Data.Query.GetCacheByGcCode(GcCode);
 			    GlobalCore.setSelectedCache(selCache);
 			    infoBubble.setCache(selCache, null, true);

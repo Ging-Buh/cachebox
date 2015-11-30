@@ -18,6 +18,13 @@ package CB_UI_Base.GL_UI.Controls;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Clipboard;
+
 import CB_UI_Base.Global;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.COLOR;
@@ -30,13 +37,6 @@ import CB_UI_Base.GL_UI.interfaces.ICopyPaste;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Clipboard;
-
 public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPaste {
     static public final char BACKSPACE = 8;
     static public final char ENTER_DESKTOP = '\r';
@@ -47,12 +47,9 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 
     protected boolean dontShowKeyBoard = false;
 
-    public EditTextFieldBase that;
-
     public EditTextFieldBase(CB_RectF rec, CB_View_Base parent, String Name) {
 	super(rec, Name);
 	this.parent = parent;
-	that = this;
 	registerPopUpLongClick();
 
 	clipboard = Global.getDefaultClipboard();
@@ -61,7 +58,6 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 
     public EditTextFieldBase(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name) {
 	super(X, Y, Width, Height, Parent, Name);
-	that = this;
 	registerPopUpLongClick();
 
 	clipboard = Global.getDefaultClipboard();
@@ -240,8 +236,6 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 	return ret;
     }
 
-    boolean hasFocus = false;
-
     /** Default is an instance of {@link DefaultOnscreenKeyboard}. */
     public OnscreenKeyboard getOnscreenKeyboard() {
 	return keyboard;
@@ -259,7 +253,7 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 
     protected void showPopUp(int x, int y) {
 
-	popUp = new CopiePastePopUp(this.name + " popUp", that);
+	popUp = new CopiePastePopUp(this.name + " popUp", this);
 
 	float noseOffset = popUp.getHalfWidth() / 2;
 
@@ -297,8 +291,8 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 
     protected void sendKeyTyped(final char character) {
 	if (listener != null) {
+	    final EditTextFieldBase that = this;
 	    Thread th = new Thread(new Runnable() {
-
 		@Override
 		public void run() {
 		    listener.keyTyped(that, character);
@@ -310,6 +304,7 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 
     protected void sendLineCountChanged(final int lineCount, final float textHeight) {
 	if (listener != null) {
+	    final EditTextFieldBase that = this;
 	    Thread th = new Thread(new Runnable() {
 
 		@Override
@@ -344,7 +339,7 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 	mBecomsFocusListner = BecomsFocusListner;
     }
 
-    public void BecomsFocus() {
+    public void becomesFocus() {
 	if (mBecomsFocusListner != null)
 	    mBecomsFocusListner.BecomsFocus();
     }

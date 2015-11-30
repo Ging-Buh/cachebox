@@ -10,7 +10,7 @@ import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
-import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
@@ -180,7 +180,7 @@ public class CB_Action_Command_chkState extends CB_ActionCommand {
 		    cacheListDAO = null;
 		}
 
-		CachListChangedEventList.Call();
+		CacheListChangedEventList.Call();
 		synchronized (Database.Data.Query) {
 		    GL_MsgBox.Show(sCanceld + Translation.Get("CachesUpdatet") + " " + ChangedCount + "/" + Database.Data.Query.size(), Translation.Get("chkState"), MessageBoxIcon.None);
 		}

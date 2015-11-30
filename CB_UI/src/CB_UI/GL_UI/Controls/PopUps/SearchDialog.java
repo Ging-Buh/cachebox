@@ -34,7 +34,7 @@ import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
-import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
@@ -747,7 +747,7 @@ public class SearchDialog extends PopUp_Base {
 
 		    Database.Data.GPXFilenameUpdateCacheCount();
 
-		    CachListChangedEventList.Call();
+		    CacheListChangedEventList.Call();
 
 		    if (counter == 1) {
 			// select this Cache

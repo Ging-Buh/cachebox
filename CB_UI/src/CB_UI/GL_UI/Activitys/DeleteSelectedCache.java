@@ -23,7 +23,7 @@ import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DB.Database;
-import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Waypoint;
 import CB_UI.GlobalCore;
@@ -64,6 +64,6 @@ public class DeleteSelectedCache {
 	log.debug("unselect Cache");
 	GlobalCore.setSelectedCache(null);
 	log.debug("Rebuild View");
-	CachListChangedEventList.Call();
+	CacheListChangedEventList.Call();
     }
 }

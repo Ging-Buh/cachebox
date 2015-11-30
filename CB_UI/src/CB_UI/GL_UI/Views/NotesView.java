@@ -74,7 +74,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent {
 
     @Override
     public void onShow() {
-	chkFocus(GL.that.getKeyboardFocus());
+	chkFocus(GL.that.getFocusedEditTextField());
 
 	if (mustLoadNotes) {
 	    String text = aktCache != null ? Database.GetNote(aktCache) : "";
@@ -123,6 +123,6 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent {
 
     @Override
     public void onResized(CB_RectF rec) {
-	chkFocus(GL.that.getKeyboardFocus());
+	chkFocus(GL.that.getFocusedEditTextField());
     }
 }

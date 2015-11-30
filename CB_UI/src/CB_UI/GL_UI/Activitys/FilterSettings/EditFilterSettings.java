@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
-import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventList;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
@@ -372,7 +372,7 @@ public class EditFilterSettings extends ActivityBase {
 			cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 			GlobalCore.checkSelectedCacheValid();
 		    }
-		    CachListChangedEventList.Call();
+		    CacheListChangedEventList.Call();
 		    pd.dismis();
 		    TabMainView.that.filterSetChanged();
 

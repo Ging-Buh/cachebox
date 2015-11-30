@@ -26,7 +26,7 @@ import CB_Core.Api.SearchGC;
 import CB_Core.Api.SearchGCName;
 import CB_Core.Api.SearchGCOwner;
 import CB_Core.DAO.CategoryDAO;
-import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
@@ -401,7 +401,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
 		// }
 
 		if (!threadCanceld) {
-		    CachListChangedEventList.Call();
+		    CacheListChangedEventList.Call();
 		    cancelImport();
 		    finish();
 		} else {

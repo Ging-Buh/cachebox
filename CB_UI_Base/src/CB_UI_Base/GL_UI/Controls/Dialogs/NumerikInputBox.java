@@ -87,7 +87,7 @@ public class NumerikInputBox extends CB_View_Base {
 		// do nothing, don´t show Keybord
 	    }
 	});
-	editText.setFocus();
+	editText.setFocus(true);
 
 	GL.that.showDialog(msgBox);
 	return msgBox;
@@ -130,7 +130,7 @@ public class NumerikInputBox extends CB_View_Base {
 		// do nothing, don´t show Keybord
 	    }
 	});
-	editText.setFocus();
+	editText.setFocus(true);
 
 	CB_RectF LabelRec = msgBox.getContentSize().getBounds();
 	LabelRec.setHeight(LabelRec.getHeight() - textFieldRec.getHeight());
@@ -200,7 +200,7 @@ public class NumerikInputBox extends CB_View_Base {
 		// do nothing, don´t show Keybord
 	    }
 	});
-	editText.setFocus();
+	editText.setFocus(true);
 
 	CB_RectF LabelRec = msgBox.getContentSize().getBounds();
 	LabelRec.setHeight(LabelRec.getHeight() - textFieldRec.getHeight());
@@ -356,7 +356,7 @@ public class NumerikInputBox extends CB_View_Base {
     @Override
     public void onShow() {
 	super.onShow();
-	editText.setFocus();
+	editText.setFocus(true);
     }
 
     @Override

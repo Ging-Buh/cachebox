@@ -30,7 +30,7 @@ import CB_Core.Api.API_ErrorEventHandlerList;
 import CB_Core.Api.API_ErrorEventHandlerList.API_ERROR;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
-import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
@@ -326,7 +326,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 	    cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 	    cacheListDAO = null;
 	}
-	CachListChangedEventList.Call();
+	CacheListChangedEventList.Call();
 
     }
 

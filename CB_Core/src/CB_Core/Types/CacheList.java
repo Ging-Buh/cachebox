@@ -155,7 +155,7 @@ public class CacheList extends MoveableList<Cache>
 			retValue = new CacheWithWP(nextCache, waypoint);
 		}
 
-		CB_Core.Events.CachListChangedEventList.Call();
+		CB_Core.Events.CacheListChangedEventList.Call();
 
 		// vorhandenen Parkplatz Cache nach oben schieben
 		Cache park = this.GetCacheByGcCode("CBPark");

@@ -22,7 +22,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Events.CacheListChangedEventListner;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
@@ -82,7 +82,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	super(rec, Name);
 	margin = GL_UISizes.margin;
 
-	CachListChangedEventList.Add(this);
+	CacheListChangedEventList.Add(this);
 	invalidateTextureEventList.Add(this);
 	aktCache = GlobalCore.getSelectedCache();
 	aktWaypoint = GlobalCore.getSelectedWaypoint();
@@ -951,7 +951,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 	SettingChangedListner = null;
 	SelectedCacheEventList.Remove(this);
-	CachListChangedEventList.Remove(this);
+	CacheListChangedEventList.Remove(this);
 	PositionChangedEventList.Remove(this);
 	invalidateTextureEventList.Remove(this);
 

@@ -18,7 +18,7 @@ package CB_UI.GL_UI.Main.Actions;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import CB_Core.Enums.LogTypes;
-import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventList;
 import CB_UI.GlobalCore;
 import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.GL_UI.Controls.PopUps.QuickFieldNoteFeedbackPopUp;
@@ -63,7 +63,7 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand {
 		    FieldNotesView.addNewFieldnote(LogTypes.found, true);
 		    if (FieldNotesView.that != null)
 			FieldNotesView.that.notifyDataSetChanged();
-		    CachListChangedEventList.Call(); // damit der Status geändert wird
+		    CacheListChangedEventList.Call(); // damit der Status geändert wird
 		    // damit die Icons in der Map aktualisiert werden
 		    SelectedCacheEventList.Call(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 		    QuickFieldNoteFeedbackPopUp pop = new QuickFieldNoteFeedbackPopUp(true);
@@ -74,7 +74,7 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand {
 		    FieldNotesView.addNewFieldnote(LogTypes.didnt_find, true);
 		    if (FieldNotesView.that != null)
 			FieldNotesView.that.notifyDataSetChanged();
-		    CachListChangedEventList.Call(); // damit der Status geändert wird
+		    CacheListChangedEventList.Call(); // damit der Status geändert wird
 		    // damit die Icons in der Map aktualisiert werden
 		    SelectedCacheEventList.Call(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 		    QuickFieldNoteFeedbackPopUp pop2 = new QuickFieldNoteFeedbackPopUp(false);
