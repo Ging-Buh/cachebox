@@ -15,8 +15,6 @@ import javax.swing.filechooser.FileFilter;
 import org.mapsforge.map.model.DisplayModel;
 import org.slf4j.LoggerFactory;
 
-import CB_Core.DB.Database;
-import CB_Core.DB.Database.DatabaseType;
 import CB_Locator.Location.ProviderType;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
@@ -52,6 +50,8 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
+import CB_Core.Database;
+import CB_Core.Database.DatabaseType;
 import de.CB_Texturepacker.Desctop_Packer;
 import de.Map.DesktopManager;
 import de.cb.sqlite.DesktopDB;

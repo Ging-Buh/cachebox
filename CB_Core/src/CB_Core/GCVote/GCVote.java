@@ -39,7 +39,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import CB_Core.Settings.CB_Core_Settings;
+import CB_Core.CB_Core_Settings;
 
 public class GCVote
 {

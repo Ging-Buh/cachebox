@@ -2,9 +2,9 @@ package CB_Core.Solver;
 
 import java.util.ArrayList;
 
+import CB_Core.Database;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.WaypointDAO;
-import CB_Core.DB.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;

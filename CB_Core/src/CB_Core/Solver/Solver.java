@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import CB_Core.Solver.Functions.FunctionCategories;
 import CB_Translation_Base.TranslationEngine.Translation;
 
 public class Solver extends ArrayList<SolverZeile> {

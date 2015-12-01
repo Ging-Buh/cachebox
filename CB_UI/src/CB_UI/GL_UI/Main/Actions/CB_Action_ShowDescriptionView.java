@@ -19,13 +19,13 @@ import java.util.ArrayList;
 
 import org.slf4j.LoggerFactory;
 
+import CB_Core.CacheListChangedEventList;
+import CB_Core.Database;
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.SearchGC;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
-import CB_Core.DB.Database;
-import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
@@ -193,7 +193,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 		ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
-		String result = CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, GlobalCore.getSelectedCache().GPXFilename_ID, this);
+		String result = CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, GlobalCore.getSelectedCache().GPXFilename_ID, this);
 
 		if (result.length() > 0) {
 

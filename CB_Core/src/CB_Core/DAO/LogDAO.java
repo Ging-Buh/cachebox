@@ -21,7 +21,7 @@ import java.util.Iterator;
 
 import org.slf4j.LoggerFactory;
 
-import CB_Core.DB.Database;
+import CB_Core.Database;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Types.LogEntry;
 import de.cb.sqlite.Database_Core.Parameters;

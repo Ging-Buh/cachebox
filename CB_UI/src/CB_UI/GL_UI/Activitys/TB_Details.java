@@ -15,8 +15,8 @@
  */
 package CB_UI.GL_UI.Activitys;
 
-import CB_Core.Enums.LogTypes;
-import CB_Core.Settings.CB_Core_Settings;
+import CB_Core.CB_Core_Settings;
+import CB_Core.LogTypes;
 import CB_Core.Types.Trackable;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Enums.WrapType;

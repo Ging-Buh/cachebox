@@ -26,12 +26,12 @@ import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
+import CB_Core.CacheListChangedEventList;
+import CB_Core.Database;
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.PocketQuery;
 import CB_Core.Api.PocketQuery.PQ;
-import CB_Core.DB.Database;
-import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;

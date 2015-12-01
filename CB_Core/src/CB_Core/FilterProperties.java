@@ -23,7 +23,6 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.slf4j.LoggerFactory;
 
-import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.DLong;
 
 public class FilterProperties {

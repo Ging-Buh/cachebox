@@ -19,11 +19,11 @@ import java.util.Date;
 
 import org.slf4j.LoggerFactory;
 
+import CB_Core.Database;
+import CB_Core.LogTypes;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
-import CB_Core.DB.Database;
-import CB_Core.Enums.LogTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.FieldNoteEntry;

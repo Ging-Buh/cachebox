@@ -27,12 +27,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
+import CB_Core.CacheListChangedEventList;
 import CB_Core.CoreSettingsForward;
+import CB_Core.Database;
 import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DAO.WaypointDAO;
-import CB_Core.DB.Database;
-import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Waypoint;

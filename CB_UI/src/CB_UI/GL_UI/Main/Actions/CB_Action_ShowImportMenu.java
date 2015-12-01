@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-import CB_Core.DB.Database;
+import CB_Core.Database;
 import CB_Core.Export.GpxSerializer;
 import CB_Core.Export.GpxSerializer.ProgressListener;
 import CB_Translation_Base.TranslationEngine.Translation;

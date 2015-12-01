@@ -19,7 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import CB_Core.Settings.CB_Core_Settings;
+import CB_Core.CB_Core_Settings;
 
 /**
  * Search Definitions

@@ -23,7 +23,7 @@ import java.util.Date;
 import org.slf4j.LoggerFactory;
 
 import CB_Core.CoreSettingsForward;
-import CB_Core.DB.Database;
+import CB_Core.Database;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;

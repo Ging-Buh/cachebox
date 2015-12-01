@@ -1,10 +1,11 @@
 package CB_UI.GL_UI.Controls.Dialogs;
 
-import CB_Core.DB.Database;
-import CB_Core.Events.CacheListChangedEventList;
+import CB_Core.CacheListChangedEventList;
+import CB_Core.Database;
 import CB_Core.Types.Cache;
 import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -105,9 +106,9 @@ public class ParkingDialog extends ButtonDialog {
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 
-		CB_UI.Config.ParkingLatitude.setValue(Locator.getLatitude());
-		CB_UI.Config.ParkingLongitude.setValue(Locator.getLongitude());
-		CB_UI.Config.AcceptChanges();
+		Config.ParkingLatitude.setValue(Locator.getLatitude());
+		Config.ParkingLongitude.setValue(Locator.getLongitude());
+		Config.AcceptChanges();
 		CacheListChangedEventList.Call();
 
 		close();
@@ -133,9 +134,9 @@ public class ParkingDialog extends ButtonDialog {
 
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		CB_UI.Config.ParkingLatitude.setValue(0.0);
-		CB_UI.Config.ParkingLongitude.setValue(0.0);
-		CB_UI.Config.AcceptChanges();
+		Config.ParkingLatitude.setValue(0.0);
+		Config.ParkingLongitude.setValue(0.0);
+		Config.AcceptChanges();
 		CacheListChangedEventList.Call();
 		close();
 		return true;

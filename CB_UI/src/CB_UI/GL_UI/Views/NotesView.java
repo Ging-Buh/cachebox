@@ -15,12 +15,12 @@
  */
 package CB_UI.GL_UI.Views;
 
-import CB_Core.DB.Database;
+import CB_Core.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_UI.GlobalCore;
-import CB_UI.Events.SelectedCacheEvent;
-import CB_UI.Events.SelectedCacheEventList;
+import CB_UI.SelectedCacheEvent;
+import CB_UI.SelectedCacheEventList;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.KeyboardFocusChangedEvent;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;

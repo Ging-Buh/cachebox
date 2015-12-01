@@ -26,7 +26,7 @@ import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.slf4j.LoggerFactory;
 
-import CB_Core.Enums.LogTypes;
+import CB_Core.LogTypes;
 import CB_Utils.Util.UnitFormatter;
 import de.cb.sqlite.CoreCursor;
 

@@ -36,8 +36,6 @@ import CB_Locator.Map.Track;
 import CB_Locator.Map.TrackPoint;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Views.TrackListView;
-import CB_UI.Map.RouteOverlay;
-import CB_UI.Settings.CB_UI_Settings;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.FileIO;

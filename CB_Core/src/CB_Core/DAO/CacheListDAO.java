@@ -25,9 +25,9 @@ import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.files.FileHandle;
 
+import CB_Core.CacheTypes;
+import CB_Core.Database;
 import CB_Core.FilterProperties;
-import CB_Core.DB.Database;
-import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.Waypoint;

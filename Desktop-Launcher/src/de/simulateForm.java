@@ -26,7 +26,7 @@ import CB_Locator.Events.GpsStateChangeEventList;
 import CB_Locator.Map.Track;
 import CB_Locator.Map.TrackPoint;
 import CB_UI.Config;
-import CB_UI.Map.RouteOverlay;
+import CB_UI.RouteOverlay;
 import CB_Utils.Lists.CB_List;
 
 public class simulateForm extends Frame implements ActionListener, WindowListener

@@ -21,7 +21,9 @@ import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
+import CB_Core.CacheListChangedEventList;
 import CB_Core.CoreSettingsForward;
+import CB_Core.Database;
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.Search;
@@ -33,8 +35,6 @@ import CB_Core.DAO.CategoryDAO;
 import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
-import CB_Core.DB.Database;
-import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
@@ -694,7 +694,7 @@ public class SearchDialog extends PopUp_Base {
 		    return;
 		}
 
-		CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id, this);
+		CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id, this);
 
 		if (apiCaches.size() > 0) {
 		    Database.Data.beginTransaction();

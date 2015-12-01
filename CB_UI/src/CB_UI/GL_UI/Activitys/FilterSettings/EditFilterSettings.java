@@ -20,10 +20,10 @@ import java.util.TimerTask;
 
 import org.slf4j.LoggerFactory;
 
+import CB_Core.CacheListChangedEventList;
+import CB_Core.Database;
 import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
-import CB_Core.DB.Database;
-import CB_Core.Events.CacheListChangedEventList;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;

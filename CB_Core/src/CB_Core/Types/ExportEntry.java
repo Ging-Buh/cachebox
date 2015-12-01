@@ -2,7 +2,7 @@ package CB_Core.Types;
 
 import java.io.Serializable;
 
-import CB_Core.Replication.ChangeType;
+import CB_Core.ChangeType;
 import de.cb.sqlite.CoreCursor;
 
 public class ExportEntry implements Serializable

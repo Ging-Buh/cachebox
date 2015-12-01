@@ -29,9 +29,9 @@ import java.util.LinkedList;
 
 import org.slf4j.LoggerFactory;
 
+import CB_Core.CB_Core_Settings;
+import CB_Core.Database;
 import CB_Core.Api.GroundspeakAPI;
-import CB_Core.DB.Database;
-import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.Downloader;
@@ -519,6 +519,7 @@ public class DescriptionImageGrabber {
 			break;
 		    }
 		} while (true);
+
 		if (allimgDict == null)
 		    return 0;
 

@@ -3,8 +3,8 @@ package CB_UI.GL_UI.Controls.Dialogs;
 import com.badlogic.gdx.graphics.Color;
 
 import CB_Core.Solver.DataTypes.DataType;
+import CB_Core.Solver.Function;
 import CB_Core.Solver.Solver;
-import CB_Core.Solver.Functions.Function;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction.IFunctionResult;

@@ -3,7 +3,7 @@ package de.cb.sqlite;
 import java.io.File;
 import java.util.Map.Entry;
 
-import CB_Core.DB.Database;
+import CB_Core.Database;
 import CB_Utils.Log.LogLevel;
 import CB_Utils.Util.FileIO;
 import android.app.Activity;

@@ -3,9 +3,9 @@ package CB_UI.GL_UI.Main.Actions;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import CB_Core.Database;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.LogDAO;
-import CB_Core.DB.Database;
 import CB_Core.Types.LogEntry;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;

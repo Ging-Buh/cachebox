@@ -22,10 +22,10 @@ import org.slf4j.LoggerFactory;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
-import CB_Core.DB.Database;
-import CB_Core.Enums.CacheTypes;
-import CB_Core.Events.CacheListChangedEventList;
-import CB_Core.Events.CacheListChangedEventListner;
+import CB_Core.CacheListChangedEventList;
+import CB_Core.CacheListChangedEventListner;
+import CB_Core.CacheTypes;
+import CB_Core.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Map.Descriptor;

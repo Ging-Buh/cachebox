@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 import org.slf4j.LoggerFactory;
 
-import CB_Core.DB.Database;
+import CB_Core.Database;
 import CB_Core.Types.ImageEntry;
 import de.cb.sqlite.CoreCursor;
 import de.cb.sqlite.Database_Core.Parameters;

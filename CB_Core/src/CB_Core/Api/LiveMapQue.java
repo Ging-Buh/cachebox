@@ -21,11 +21,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import CB_Core.CB_Core_Settings;
+import CB_Core.CacheListChangedEventList;
 import CB_Core.CoreSettingsForward;
+import CB_Core.Database;
 import CB_Core.DAO.CategoryDAO;
-import CB_Core.DB.Database;
-import CB_Core.Events.CacheListChangedEventList;
-import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheListLive;
 import CB_Core.Types.Category;
@@ -63,18 +63,18 @@ public class LiveMapQue
 	private static final ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 	private static final ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 	public static CacheListLive LiveCaches;
-	public static Live_Radius radius = CB_Core.Settings.CB_Core_Settings.LiveRadius.getEnumValue();
+	public static Live_Radius radius = CB_Core.CB_Core_Settings.LiveRadius.getEnumValue();
 
 	private static GpxFilename gpxFilename;
 
 	static
 	{
-		CB_Core.Settings.CB_Core_Settings.LiveRadius.addChangedEventListner(new iChanged()
+		CB_Core.CB_Core_Settings.LiveRadius.addChangedEventListner(new iChanged()
 		{
 			@Override
 			public void isChanged()
 			{
-				radius = CB_Core.Settings.CB_Core_Settings.LiveRadius.getEnumValue();
+				radius = CB_Core.CB_Core_Settings.LiveRadius.getEnumValue();
 
 				switch (radius)
 				{
@@ -96,7 +96,7 @@ public class LiveMapQue
 
 		});
 
-		radius = CB_Core.Settings.CB_Core_Settings.LiveRadius.getEnumValue();
+		radius = CB_Core.CB_Core_Settings.LiveRadius.getEnumValue();
 
 		switch (radius)
 		{
@@ -115,15 +115,15 @@ public class LiveMapQue
 
 		}
 
-		int maxLiveCount = CB_Core.Settings.CB_Core_Settings.LiveMaxCount.getValue();
+		int maxLiveCount = CB_Core.CB_Core_Settings.LiveMaxCount.getValue();
 		LiveCaches = new CacheListLive(maxLiveCount);
-		CB_Core.Settings.CB_Core_Settings.LiveMaxCount.addChangedEventListner(new iChanged()
+		CB_Core.CB_Core_Settings.LiveMaxCount.addChangedEventListner(new iChanged()
 		{
 
 			@Override
 			public void isChanged()
 			{
-				int maxLiveCount = CB_Core.Settings.CB_Core_Settings.LiveMaxCount.getValue();
+				int maxLiveCount = CB_Core.CB_Core_Settings.LiveMaxCount.getValue();
 				LiveCaches = new CacheListLive(maxLiveCount);
 			}
 		});
@@ -296,7 +296,7 @@ public class LiveMapQue
 		if (coord == null || !coord.isValid()) return;
 
 		// no request if disabled
-		if (CB_Core.Settings.CB_Core_Settings.DisableLiveMap.getValue()) return;
+		if (CB_Core.CB_Core_Settings.DisableLiveMap.getValue()) return;
 
 		final Descriptor desc = new Descriptor(coord, Used_Zoom);
 		queDesc(desc);

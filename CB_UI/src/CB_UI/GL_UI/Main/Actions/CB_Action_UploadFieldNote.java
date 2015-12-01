@@ -4,10 +4,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import CB_Core.CB_Core_Settings;
+import CB_Core.LogTypes;
 import CB_Core.Api.GroundspeakAPI;
-import CB_Core.Enums.LogTypes;
 import CB_Core.GCVote.GCVote;
-import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.FieldNoteEntry;
 import CB_Core.Types.FieldNoteList;
 import CB_Core.Types.FieldNoteList.LoadingType;

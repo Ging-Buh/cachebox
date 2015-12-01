@@ -2,8 +2,6 @@ package CB_Core.Solver;
 
 import java.util.ArrayList;
 
-import CB_Core.Solver.Functions.Function;
-
 public class FunctionEntity extends Entity
 {
 

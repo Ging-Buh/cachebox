@@ -23,10 +23,10 @@ import java.util.Date;
 
 import org.slf4j.LoggerFactory;
 
-import CB_Core.DB.Database;
-import CB_Core.Enums.CacheSizes;
-import CB_Core.Enums.CacheTypes;
-import CB_Core.Replication.Replication;
+import CB_Core.CacheSizes;
+import CB_Core.CacheTypes;
+import CB_Core.Database;
+import CB_Core.Replication;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheDetail;
 import CB_Core.Types.DLong;

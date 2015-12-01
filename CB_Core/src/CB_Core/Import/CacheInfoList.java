@@ -23,8 +23,8 @@ import java.util.HashMap;
 
 import org.slf4j.LoggerFactory;
 
-import CB_Core.DB.Database;
-import CB_Core.Settings.CB_Core_Settings;
+import CB_Core.CB_Core_Settings;
+import CB_Core.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import CB_Utils.Lists.CB_List;

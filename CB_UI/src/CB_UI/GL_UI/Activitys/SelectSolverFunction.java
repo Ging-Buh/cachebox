@@ -6,9 +6,9 @@ import java.util.Iterator;
 import com.badlogic.gdx.graphics.Color;
 
 import CB_Core.Solver.DataTypes.DataType;
+import CB_Core.Solver.Function;
+import CB_Core.Solver.Functions;
 import CB_Core.Solver.Solver;
-import CB_Core.Solver.Functions.Function;
-import CB_Core.Solver.Functions.Functions;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Controls.Button;

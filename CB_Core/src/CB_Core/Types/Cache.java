@@ -24,14 +24,14 @@ import java.util.Locale;
 
 import org.slf4j.LoggerFactory;
 
+import CB_Core.Attributes;
+import CB_Core.CB_Core_Settings;
+import CB_Core.CacheSizes;
+import CB_Core.CacheTypes;
+import CB_Core.Database;
 import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.WaypointDAO;
-import CB_Core.DB.Database;
-import CB_Core.Enums.Attributes;
-import CB_Core.Enums.CacheSizes;
-import CB_Core.Enums.CacheTypes;
-import CB_Core.Settings.CB_Core_Settings;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Utils.MathUtils;

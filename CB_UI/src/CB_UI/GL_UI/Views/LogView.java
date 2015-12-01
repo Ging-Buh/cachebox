@@ -19,15 +19,15 @@ import java.util.ArrayList;
 
 import org.slf4j.LoggerFactory;
 
-import CB_Core.DB.Database;
+import CB_Core.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
-import CB_UI.Events.SelectedCacheEvent;
-import CB_UI.Events.SelectedCacheEventList;
+import CB_UI.SelectedCacheEvent;
+import CB_UI.SelectedCacheEventList;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;

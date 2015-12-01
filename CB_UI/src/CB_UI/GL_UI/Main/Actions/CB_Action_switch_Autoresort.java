@@ -1,6 +1,6 @@
 package CB_UI.GL_UI.Main.Actions;
 
-import CB_Core.DB.Database;
+import CB_Core.Database;
 import CB_Core.Types.CacheWithWP;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.SpriteCacheBase;

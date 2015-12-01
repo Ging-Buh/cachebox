@@ -3,7 +3,7 @@ package CB_Core.Types;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 
-import CB_Core.Enums.CacheTypes;
+import CB_Core.CacheTypes;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Utils.MathUtils;

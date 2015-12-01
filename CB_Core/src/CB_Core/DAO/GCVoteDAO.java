@@ -2,7 +2,7 @@ package CB_Core.DAO;
 
 import java.util.ArrayList;
 
-import CB_Core.DB.Database;
+import CB_Core.Database;
 import CB_Core.GCVote.GCVoteCacheInfo;
 import de.cb.sqlite.CoreCursor;
 import de.cb.sqlite.Database_Core.Parameters;

@@ -16,6 +16,11 @@
 
 package CB_UI_Base.GL_UI.Controls;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.ButtonSprites;
 import CB_UI_Base.GL_UI.CB_View_Base;
@@ -27,11 +32,6 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Util.MoveableList;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Button extends CB_View_Base {
     protected BitmapFont mFont;
@@ -229,22 +229,26 @@ public class Button extends CB_View_Base {
 
     public void setText(String Text, BitmapFont font, Color color, HAlignment alignment) {
 
-	//check for changed text before set new Label
-	if (lblTxt != null && lblTxt.equals(Text, font, color, alignment))
-	    return;
+	// ? no change
+	if (lblTxt != null)
+	    if (lblTxt.mText.equals(Text))
+		if (lblTxt.mFont.equals(font))
+		    if (lblTxt.mColor.equals(color))
+			if (lblTxt.mHAlignment.equals(alignment))
+			    return;
 
+	// no text -> remove label
 	if (Text == null || Text.equals("")) {
 	    if (lblTxt != null) {
-
 		this.removeChild(lblTxt);
 		lblTxt.dispose();
 	    }
-
 	    lblTxt = null;
 	    GL.that.renderOnce();
 	    return;
 	}
 
+	// replace old label
 	if (lblTxt != null) {
 	    this.removeChild(lblTxt);
 	}

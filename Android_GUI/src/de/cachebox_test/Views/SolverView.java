@@ -1,10 +1,10 @@
 package de.cachebox_test.Views;
 
-import CB_Core.DB.Database;
 import CB_Core.Solver.DataTypes.DataType;
+import CB_Core.Database;
+import CB_Core.Solver.Function;
 import CB_Core.Solver.Solver;
 import CB_Core.Solver.SolverZeile;
-import CB_Core.Solver.Functions.Function;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Translation_Base.TranslationEngine.Translation;

@@ -28,9 +28,9 @@ import org.kxml2.io.KXmlSerializer;
 import org.slf4j.LoggerFactory;
 import org.xmlpull.v1.XmlSerializer;
 
+import CB_Core.Attributes;
+import CB_Core.Database;
 import CB_Core.DAO.CacheListDAO;
-import CB_Core.DB.Database;
-import CB_Core.Enums.Attributes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.LogEntry;

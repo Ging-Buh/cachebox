@@ -17,7 +17,7 @@ package CB_Core.Types;
 
 import java.util.ArrayList;
 
-import CB_Core.Enums.CacheTypes;
+import CB_Core.CacheTypes;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Utils.MathUtils.CalculationType;
@@ -134,7 +134,7 @@ public class CacheList extends MoveableList<Cache> {
 	    retValue = new CacheWithWP(nextCache, waypoint);
 	}
 
-	CB_Core.Events.CacheListChangedEventList.Call();
+	CB_Core.CacheListChangedEventList.Call();
 
 	// vorhandenen Parkplatz Cache nach oben schieben
 	Cache park = this.GetCacheByGcCode("CBPark");

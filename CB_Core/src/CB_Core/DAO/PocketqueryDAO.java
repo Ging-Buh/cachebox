@@ -22,8 +22,8 @@ import java.util.Date;
 
 import org.slf4j.LoggerFactory;
 
+import CB_Core.Database;
 import CB_Core.Api.PocketQuery.PQ;
-import CB_Core.DB.Database;
 import de.cb.sqlite.CoreCursor;
 import de.cb.sqlite.Database_Core.Parameters;
 

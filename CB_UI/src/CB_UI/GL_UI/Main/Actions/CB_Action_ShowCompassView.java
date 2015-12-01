@@ -1,9 +1,9 @@
 package CB_UI.GL_UI.Main.Actions;
 
+import CB_UI.CB_UI_Settings;
 import CB_UI.Config;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.CompassView;
-import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;

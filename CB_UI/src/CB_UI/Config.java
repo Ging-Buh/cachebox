@@ -1,3 +1,4 @@
+package CB_UI;
 /* 
  * Copyright (C) 2014 team-cachebox.de
  *
@@ -13,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package CB_UI;
+
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -22,11 +23,9 @@ import java.util.HashMap;
 
 import org.slf4j.LoggerFactory;
 
-import CB_Core.Settings.CB_Core_Settings;
+import CB_Core.CB_Core_Settings;
 import CB_Locator.LocatorSettings;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Settings.CB_UI_Settings;
-import CB_UI.Settings.SettingsClass;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Config_Core;

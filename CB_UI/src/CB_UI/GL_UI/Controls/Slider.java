@@ -8,12 +8,12 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
+import CB_UI.CB_UI_Settings;
 import CB_UI.Config;
-import CB_UI.Events.SelectedCacheEvent;
-import CB_UI.Events.SelectedCacheEventList;
+import CB_UI.SelectedCacheEvent;
+import CB_UI.SelectedCacheEventList;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.WaypointViewItem;
-import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Handler;

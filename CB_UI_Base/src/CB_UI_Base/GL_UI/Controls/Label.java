@@ -83,10 +83,10 @@ public class Label extends CB_View_Base {
 
     protected String mText = "";
     protected BitmapFont mFont = Fonts.getNormal();
+    protected Color mColor = COLOR.getFontColor();
+    protected HAlignment mHAlignment = HAlignment.LEFT;
 
-    private Color mColor = COLOR.getFontColor();
     private VAlignment mVAlignment = VAlignment.CENTER;
-    private HAlignment mHAlignment = HAlignment.LEFT;
     private WrapType mWrapType = WrapType.SINGLELINE;
     private int ErrorCount = 0;
 
@@ -204,11 +204,10 @@ public class Label extends CB_View_Base {
 	    if (TextObject != null)
 		TextObject.draw(batch);
 
-	    GeometryList lineList = new GeometryList();
-
 	    //Draw Underline
 	    if (underline | strikeout) {
 		if (underlineStrikeoutDrawable == null) {
+		    GeometryList lineList = new GeometryList();
 		    if (underline)
 			addLine(lineList, 0);
 		    if (strikeout)
@@ -217,7 +216,6 @@ public class Label extends CB_View_Base {
 		    PAINT.setColor(mColor);
 		    underlineStrikeoutDrawable = new PolygonDrawable(lineList.getVertices(), lineList.getTriangles(), PAINT, this.getWidth(), this.getHeight());
 		}
-
 		underlineStrikeoutDrawable.draw(batch, 0, 0, this.getWidth(), this.getHeight(), 0);
 	    }
 
@@ -434,6 +432,7 @@ public class Label extends CB_View_Base {
     }
 
     private void setTextPosition() {
+	// left : text starts at xPosition
 	float xPosition = leftBorder + 1; // HAlignment.LEFT !!! Die 1 ist empirisch begründet
 	if (innerWidth > bounds.width) {
 	    if (mHAlignment == HAlignment.CENTER || mHAlignment == HAlignment.SCROLL_CENTER) {
@@ -446,25 +445,23 @@ public class Label extends CB_View_Base {
 	} else if (mHAlignment == HAlignment.SCROLL_CENTER || mHAlignment == HAlignment.SCROLL_LEFT || mHAlignment == HAlignment.SCROLL_RIGHT) {
 	    xPosition += scrollPos;
 	}
-
-	float yPosition = 0; // VAlignment.BOTTOM
-
+	// bottom : text starts at yPosition
+	float yPosition = bounds.height; // VAlignment.BOTTOM
 	if (mVAlignment == null)
 	    mVAlignment = VAlignment.CENTER;
 	switch (mVAlignment) {
 	case TOP:
-	    yPosition = innerHeight - bounds.height;
+	    yPosition = innerHeight;
 	    break;
 	case CENTER:
-	    yPosition = (innerHeight - bounds.height) / 2f;
+	    yPosition = (bounds.height + innerHeight) / 2f;
 	    break;
-	case BOTTOM:
-	    yPosition = 0;
+	default:
 	    break;
 	}
 
 	try {
-	    TextObject.setPosition(xPosition, yPosition + bounds.height);
+	    TextObject.setPosition(xPosition, yPosition);
 	    ErrorCount = 0;
 	} catch (Exception e) {
 	    // Try again
@@ -653,22 +650,6 @@ public class Label extends CB_View_Base {
 	    text = "";
 	mText = text;
 	makeText();
-    }
-
-    public boolean equals(String text, BitmapFont font, Color color, HAlignment alignment) {
-
-	if (color == null || text == null || font == null || alignment == null)
-	    return false;
-
-	if (!text.equals(mText))
-	    return false;
-	if (!color.equals(mColor))
-	    return false;
-	if (!alignment.equals(mHAlignment))
-	    return false;
-	if (!font.equals(mFont))
-	    return false;
-	return true;
     }
 
 }

@@ -23,14 +23,14 @@ import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 
+import CB_Core.CacheListChangedEventList;
 import CB_Core.CoreSettingsForward;
+import CB_Core.Database;
 import CB_Core.FilterProperties;
 import CB_Core.Api.API_ErrorEventHandler;
 import CB_Core.Api.API_ErrorEventHandlerList;
 import CB_Core.Api.API_ErrorEventHandlerList.API_ERROR;
 import CB_Core.DAO.CacheListDAO;
-import CB_Core.DB.Database;
-import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
@@ -39,6 +39,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.AppRater;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
+import CB_UI.RouteOverlay;
 import CB_UI.TrackRecorder;
 import CB_UI.GL_UI.Controls.Slider;
 import CB_UI.GL_UI.Main.Actions.CB_Action_GenerateRoute;
@@ -89,7 +90,6 @@ import CB_UI.GL_UI.Views.TrackListView;
 import CB_UI.GL_UI.Views.TrackableListView;
 import CB_UI.GL_UI.Views.WaypointView;
 import CB_UI.GL_UI.Views.TestViews.TestView;
-import CB_UI.Map.RouteOverlay;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.Events.platformConector;
@@ -689,7 +689,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 		if (files.length > 0) {
 		    for (String file : files) {
 			RouteOverlay.LoadTrack(trackPath, file);
-
 		    }
 		}
 	    }
@@ -807,13 +806,14 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 	actionShowCacheList.Execute();
     }
 
+    @Override
     public void renderChilds(final Batch batch, ParentInfo parentInfo) {
 	if (childs == null)
 	    return;
 	super.renderChilds(batch, parentInfo);
     }
 
-    private API_ErrorEventHandler handler = new API_ErrorEventHandler() {
+    private final API_ErrorEventHandler handler = new API_ErrorEventHandler() {
 
 	@Override
 	public void InvalidAPI_Key() {

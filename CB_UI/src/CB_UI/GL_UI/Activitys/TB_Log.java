@@ -17,8 +17,8 @@ package CB_UI.GL_UI.Activitys;
 
 import java.util.Date;
 
+import CB_Core.LogTypes;
 import CB_Core.Api.GroundspeakAPI;
-import CB_Core.Enums.LogTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.FieldNoteEntry;
 import CB_Core.Types.Trackable;

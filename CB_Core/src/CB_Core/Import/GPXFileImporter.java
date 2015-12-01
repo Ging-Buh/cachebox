@@ -34,13 +34,13 @@ import com.thebuzzmedia.sjxp.rule.DefaultRule;
 import com.thebuzzmedia.sjxp.rule.IRule;
 import com.thebuzzmedia.sjxp.rule.IRule.Type;
 
+import CB_Core.Attributes;
+import CB_Core.CacheSizes;
+import CB_Core.CacheTypes;
+import CB_Core.Database;
+import CB_Core.LogTypes;
 import CB_Core.StaticFinal;
 import CB_Core.DAO.WaypointDAO;
-import CB_Core.DB.Database;
-import CB_Core.Enums.Attributes;
-import CB_Core.Enums.CacheSizes;
-import CB_Core.Enums.CacheTypes;
-import CB_Core.Enums.LogTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;

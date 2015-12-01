@@ -1,10 +1,10 @@
 package CB_UI.GL_UI.Controls.Dialogs;
 
+import CB_Core.CB_Core_Settings;
 import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
-import CB_Core.Settings.CB_Core_Settings;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;

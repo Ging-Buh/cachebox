@@ -17,7 +17,7 @@ package CB_UI.GL_UI.Controls;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.Api.GcApiLogin;
+import CB_UI.GcApiLogin;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;

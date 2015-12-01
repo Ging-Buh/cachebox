@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-import CB_Core.DB.Database;
+import CB_Core.Database;
 import CB_Core.Import.DescriptionImageGrabber;
 import CB_Core.Types.Cache;
 import CB_UI.Config;

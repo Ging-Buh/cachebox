@@ -19,11 +19,11 @@ import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import CB_Core.CacheListChangedEventList;
 import CB_Core.CoreSettingsForward;
+import CB_Core.Database;
 import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
-import CB_Core.DB.Database;
-import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Categories;
 import CB_UI.Config;

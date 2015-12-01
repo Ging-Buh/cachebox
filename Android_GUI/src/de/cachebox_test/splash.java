@@ -31,8 +31,8 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidFiles;
 
-import CB_Core.DB.Database;
-import CB_Core.DB.Database.DatabaseType;
+import CB_Core.Database;
+import CB_Core.Database.DatabaseType;
 import CB_Locator.LocatorSettings;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;

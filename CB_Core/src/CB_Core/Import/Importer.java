@@ -32,16 +32,16 @@ import java.util.zip.ZipException;
 
 import org.slf4j.LoggerFactory;
 
+import CB_Core.CB_Core_Settings;
+import CB_Core.Database;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.GCVoteDAO;
 import CB_Core.DAO.ImageDAO;
-import CB_Core.DB.Database;
 import CB_Core.GCVote.GCVote;
 import CB_Core.GCVote.GCVoteCacheInfo;
 import CB_Core.GCVote.RatingData;
-import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 import CB_Utils.Events.ProgresssChangedEventList;

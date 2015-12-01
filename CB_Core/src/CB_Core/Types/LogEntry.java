@@ -3,7 +3,7 @@ package CB_Core.Types;
 import java.io.Serializable;
 import java.util.Date;
 
-import CB_Core.Enums.LogTypes;
+import CB_Core.LogTypes;
 
 public class LogEntry implements Serializable
 {

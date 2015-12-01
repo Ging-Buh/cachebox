@@ -28,6 +28,10 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
     private boolean isDisposed = false;
 
     // # Constructors
+    public CB_View_Base() {
+	super();
+    }
+
     public CB_View_Base(String Name) {
 	super(Name);
     }

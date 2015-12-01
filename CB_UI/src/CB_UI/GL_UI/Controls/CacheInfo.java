@@ -11,10 +11,10 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
-import CB_Core.DB.Database;
-import CB_Core.Enums.Attributes;
-import CB_Core.Enums.CacheTypes;
-import CB_Core.Enums.LogTypes;
+import CB_Core.Attributes;
+import CB_Core.CacheTypes;
+import CB_Core.Database;
+import CB_Core.LogTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import CB_UI_Base.GL_UI.CB_View_Base;

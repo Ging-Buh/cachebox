@@ -30,15 +30,15 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
+import CB_Core.CacheListChangedEventList;
+import CB_Core.CacheTypes;
+import CB_Core.Database;
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.LiveMapQue;
 import CB_Core.Api.SearchGC;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DAO.WaypointDAO;
-import CB_Core.DB.Database;
-import CB_Core.Enums.CacheTypes;
-import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
@@ -54,11 +54,13 @@ import CB_Locator.Map.MapTileLoader;
 import CB_Locator.Map.MapViewBase;
 import CB_Locator.Map.ZoomScale;
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.CB_UI_Settings;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
-import CB_UI.Events.SelectedCacheEvent;
-import CB_UI.Events.SelectedCacheEventList;
-import CB_UI.Events.WaypointListChangedEventList;
+import CB_UI.RouteOverlay;
+import CB_UI.SelectedCacheEvent;
+import CB_UI.SelectedCacheEventList;
+import CB_UI.WaypointListChangedEventList;
 import CB_UI.GL_UI.SpriteCache.IconName;
 import CB_UI.GL_UI.Activitys.EditWaypoint;
 import CB_UI.GL_UI.Activitys.EditWaypoint.ReturnListner;
@@ -68,8 +70,6 @@ import CB_UI.GL_UI.Controls.MapInfoPanel;
 import CB_UI.GL_UI.Controls.MapInfoPanel.CoordType;
 import CB_UI.GL_UI.Views.MapViewCacheList.MapViewCacheListUpdateData;
 import CB_UI.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
-import CB_UI.Map.RouteOverlay;
-import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -379,7 +379,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			    ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
 			    try {
-				CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, infoBubble.getCache().GPXFilename_ID, this);
+				CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, infoBubble.getCache().GPXFilename_ID, this);
 				GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
 			    } catch (InterruptedException e) {
 				e.printStackTrace();
@@ -474,7 +474,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	    iconSize = 2; // default Images
 
 	if (Mode != MapMode.Compass)
-	    CB_UI.Map.RouteOverlay.RenderRoute(batch, this);
+	    CB_UI.RouteOverlay.RenderRoute(batch, this);
 	renderWPs(GL_UISizes.WPSizes[iconSize], GL_UISizes.UnderlaySizes[iconSize], batch);
 	renderPositionMarker(batch);
 	RenderTargetArrow(batch);
@@ -891,7 +891,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
     @Override
     public void onHide() {
-	CB_UI.Events.SelectedCacheEventList.Remove(this);
+	CB_UI.SelectedCacheEventList.Remove(this);
 	super.onHide();
     }
 
@@ -1224,7 +1224,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
     public void onShow() {
 	super.onShow();
 
-	CB_UI.Events.SelectedCacheEventList.Add(this);
+	CB_UI.SelectedCacheEventList.Add(this);
 	this.NorthOriented = Mode == MapMode.Normal ? Config.MapNorthOriented.getValue() : false;
 	SelectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
     }

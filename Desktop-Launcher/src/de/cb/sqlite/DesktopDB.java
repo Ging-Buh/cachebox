@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map.Entry;
 
-import CB_Core.DB.Database;
+import CB_Core.Database;
 import CB_Utils.Log.LogLevel;
 import de.cb.sqlite.CoreCursor;
 

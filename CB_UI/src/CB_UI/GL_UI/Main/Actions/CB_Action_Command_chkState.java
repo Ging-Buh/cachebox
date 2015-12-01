@@ -5,12 +5,12 @@ import java.util.Iterator;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import CB_Core.CacheListChangedEventList;
+import CB_Core.Database;
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
-import CB_Core.DB.Database;
-import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;

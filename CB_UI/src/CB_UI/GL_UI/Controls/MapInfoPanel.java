@@ -24,7 +24,7 @@ import CB_Core.Api.LiveMapQue;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Locator.Map.MapViewBase;
-import CB_UI.Settings.CB_UI_Settings;
+import CB_UI.CB_UI_Settings;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.SpriteCacheBase;

@@ -17,9 +17,9 @@ package CB_UI.GL_UI.Views;
 
 import org.slf4j.LoggerFactory;
 
+import CB_Core.CacheTypes;
+import CB_Core.Database;
 import CB_Core.DAO.WaypointDAO;
-import CB_Core.DB.Database;
-import CB_Core.Enums.CacheTypes;
 import CB_Core.Solver.DataTypes.DataType;
 import CB_Core.Solver.Solver;
 import CB_Core.Solver.SolverZeile;
@@ -27,9 +27,9 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.CoordinateGPS;
 import CB_UI.GlobalCore;
-import CB_UI.Events.SelectedCacheEvent;
-import CB_UI.Events.SelectedCacheEventList;
-import CB_UI.Events.WaypointListChangedEventList;
+import CB_UI.SelectedCacheEvent;
+import CB_UI.SelectedCacheEventList;
+import CB_UI.WaypointListChangedEventList;
 import CB_UI.GL_UI.Activitys.EditWaypoint;
 import CB_UI.GL_UI.Activitys.EditWaypoint.ReturnListner;
 import CB_UI.GL_UI.Controls.Dialogs.SolverDialog2;

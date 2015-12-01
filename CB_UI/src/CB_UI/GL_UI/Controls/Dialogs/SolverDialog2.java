@@ -5,8 +5,8 @@ import java.util.TreeMap;
 import com.badlogic.gdx.graphics.Color;
 
 import CB_Core.Solver.DataTypes.DataType;
+import CB_Core.Solver.Function;
 import CB_Core.Solver.Solver;
-import CB_Core.Solver.Functions.Function;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;

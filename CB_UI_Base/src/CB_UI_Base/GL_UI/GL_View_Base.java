@@ -102,6 +102,11 @@ public abstract class GL_View_Base extends CB_RectF {
 
     // # Constructors
 
+    public GL_View_Base() {
+	super();
+	name = "";
+    }
+
     public GL_View_Base(String Name) {
 	super();
 	name = Name;

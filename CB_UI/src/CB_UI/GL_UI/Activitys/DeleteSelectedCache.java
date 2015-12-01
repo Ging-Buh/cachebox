@@ -19,12 +19,12 @@ import java.util.ArrayList;
 
 import org.slf4j.LoggerFactory;
 
+import CB_Core.CB_Core_Settings;
+import CB_Core.CacheListChangedEventList;
+import CB_Core.Database;
 import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DAO.LogDAO;
-import CB_Core.DB.Database;
-import CB_Core.Events.CacheListChangedEventList;
-import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Waypoint;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;

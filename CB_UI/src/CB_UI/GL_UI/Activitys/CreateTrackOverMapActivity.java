@@ -17,7 +17,7 @@ package CB_UI.GL_UI.Activitys;
 
 import java.util.Date;
 
-import CB_Core.Enums.CacheTypes;
+import CB_Core.CacheTypes;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.Map.Descriptor;
@@ -26,11 +26,11 @@ import CB_Locator.Map.Track;
 import CB_Locator.Map.TrackPoint;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
+import CB_UI.RouteOverlay;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GL_UI.Views.MapView.MapMode;
 import CB_UI.GL_UI.Views.MapViewCacheList;
 import CB_UI.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
-import CB_UI.Map.RouteOverlay;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.ParentInfo;

@@ -3,9 +3,9 @@ package CB_UI.GL_UI.Main.Actions;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_Core.Database;
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
-import CB_Core.DB.Database;
 import CB_Core.Types.CacheWithWP;
 import CB_UI.Config;
 import CB_UI.GlobalCore;

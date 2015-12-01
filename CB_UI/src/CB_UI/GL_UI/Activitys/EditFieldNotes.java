@@ -26,7 +26,7 @@ import java.util.TimerTask;
 
 import com.badlogic.gdx.math.Vector2;
 
-import CB_Core.Settings.CB_Core_Settings;
+import CB_Core.CB_Core_Settings;
 import CB_Core.Types.FieldNoteEntry;
 import CB_Core.Types.FieldNoteList;
 import CB_Translation_Base.TranslationEngine.Translation;

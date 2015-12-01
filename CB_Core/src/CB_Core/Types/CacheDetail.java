@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-import CB_Core.DB.Database;
-import CB_Core.Enums.Attributes;
-import CB_Core.Settings.CB_Core_Settings;
+import CB_Core.Attributes;
+import CB_Core.CB_Core_Settings;
+import CB_Core.Database;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.FileIO;
 import de.cb.sqlite.CoreCursor;

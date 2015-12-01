@@ -17,8 +17,8 @@ package CB_UI;
 
 import org.slf4j.LoggerFactory;
 
-import CB_Core.DB.Database;
-import CB_Core.Enums.CacheTypes;
+import CB_Core.CacheTypes;
+import CB_Core.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheWithWP;
 import CB_Locator.GPS;
@@ -30,7 +30,6 @@ import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_UI.GL_UI.SoundCache;
 import CB_UI.GL_UI.SoundCache.Sounds;
-import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.GL_UI.Controls.Dialogs.Toast;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.settings.CB_UI_Base_Settings;

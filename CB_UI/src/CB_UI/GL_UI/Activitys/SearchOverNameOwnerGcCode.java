@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
+import CB_Core.CacheListChangedEventList;
 import CB_Core.CoreSettingsForward;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.Search;
@@ -26,7 +27,6 @@ import CB_Core.Api.SearchGC;
 import CB_Core.Api.SearchGCName;
 import CB_Core.Api.SearchGCOwner;
 import CB_Core.DAO.CategoryDAO;
-import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
@@ -379,7 +379,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
 				searchC.available = Config.SearchOnlyAvailable.getValue();
 
 				dis.setAnimationType(AnimationType.Download);
-				CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id, null);
+				CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id, null);
 				dis.setAnimationType(AnimationType.Work);
 				if (apiCaches.size() > 0) {
 				    GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);

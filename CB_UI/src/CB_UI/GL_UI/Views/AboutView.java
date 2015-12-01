@@ -34,8 +34,8 @@ import CB_Locator.Events.PositionChangedEventList;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
-import CB_UI.Events.SelectedCacheEvent;
-import CB_UI.Events.SelectedCacheEventList;
+import CB_UI.SelectedCacheEvent;
+import CB_UI.SelectedCacheEventList;
 import CB_UI.GL_UI.Controls.SatBarChart;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI_Base.Enums.WrapType;
@@ -208,7 +208,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 				@Override
 				public void run() {
-				    NumerikInputBox.Show(Translation.Get("TelMeFounds"), Translation.Get("AdjustFinds"), CB_UI.Config.FoundOffset.getValue(), DialogListner);
+				    NumerikInputBox.Show(Translation.Get("TelMeFounds"), Translation.Get("AdjustFinds"), Config.FoundOffset.getValue(), DialogListner);
 				}
 			    });
 

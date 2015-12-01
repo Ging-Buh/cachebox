@@ -3,8 +3,8 @@ package de.cachebox_test.Components;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import CB_Core.DB.Database;
-import CB_Core.Enums.LogTypes;
+import CB_Core.Database;
+import CB_Core.LogTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import CB_Locator.Coordinate;

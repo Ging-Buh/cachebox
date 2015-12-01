@@ -20,7 +20,7 @@ import java.util.Iterator;
 
 import org.slf4j.LoggerFactory;
 
-import CB_Core.Enums.Attributes;
+import CB_Core.Attributes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.CoordinateGPS;
@@ -31,8 +31,8 @@ import CB_Locator.Events.GpsStateChangeEventList;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
-import CB_UI.Events.SelectedCacheEvent;
-import CB_UI.Events.SelectedCacheEventList;
+import CB_UI.SelectedCacheEvent;
+import CB_UI.SelectedCacheEventList;
 import CB_UI.GL_UI.Controls.QuickButtonList;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Math.CB_Rect;

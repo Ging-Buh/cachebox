@@ -23,9 +23,9 @@ import java.util.TimerTask;
 import org.slf4j.LoggerFactory;
 
 import CB_Core.CoreSettingsForward;
+import CB_Core.Database;
 import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
-import CB_Core.DB.Database;
 import CB_Core.Types.Categories;
 import CB_Locator.Map.ManagerBase;
 import CB_Translation_Base.TranslationEngine.Translation;

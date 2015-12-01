@@ -1,6 +1,6 @@
 package CB_UI.GL_UI.Views;
 
-import CB_Core.Enums.CacheTypes;
+import CB_Core.CacheTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;

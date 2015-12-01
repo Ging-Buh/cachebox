@@ -3,8 +3,8 @@ package CB_UI.GL_UI.Main.Actions;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_Core.CB_Core_Settings;
 import CB_Core.Api.GroundspeakAPI;
-import CB_Core.Settings.CB_Core_Settings;
 import CB_UI.GlobalCore;
 import CB_UI.GlobalCore.IChkRedyHandler;
 import CB_UI.GL_UI.Main.TabMainView;

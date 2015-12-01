@@ -20,9 +20,9 @@ import java.util.TimerTask;
 
 import org.slf4j.LoggerFactory;
 
+import CB_Core.CacheListChangedEventList;
+import CB_Core.Database;
 import CB_Core.Api.GroundspeakAPI;
-import CB_Core.DB.Database;
-import CB_Core.Events.CacheListChangedEventList;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Solver.Solver;
@@ -33,7 +33,6 @@ import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.Map.Track;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.IRunOnGL;

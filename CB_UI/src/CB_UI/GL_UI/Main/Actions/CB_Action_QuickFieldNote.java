@@ -17,10 +17,10 @@ package CB_UI.GL_UI.Main.Actions;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-import CB_Core.Enums.LogTypes;
-import CB_Core.Events.CacheListChangedEventList;
+import CB_Core.CacheListChangedEventList;
+import CB_Core.LogTypes;
 import CB_UI.GlobalCore;
-import CB_UI.Events.SelectedCacheEventList;
+import CB_UI.SelectedCacheEventList;
 import CB_UI.GL_UI.Controls.PopUps.QuickFieldNoteFeedbackPopUp;
 import CB_UI.GL_UI.Views.FieldNotesView;
 import CB_UI_Base.Events.platformConector;

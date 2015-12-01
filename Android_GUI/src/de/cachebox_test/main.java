@@ -44,10 +44,10 @@ import com.badlogic.gdx.backends.android.AndroidInput;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 
+import CB_Core.CacheListChangedEventList;
+import CB_Core.Database;
 import CB_Core.FilterProperties;
-import CB_Core.DB.Database;
-import CB_Core.DB.Database.DatabaseType;
-import CB_Core.Events.CacheListChangedEventList;
+import CB_Core.Database.DatabaseType;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
@@ -59,11 +59,12 @@ import CB_Locator.Locator;
 import CB_Locator.Locator.CompassType;
 import CB_Locator.Events.GpsStateChangeEventList;
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.CB_UI_Settings;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
+import CB_UI.SelectedCacheEvent;
+import CB_UI.SelectedCacheEventList;
 import CB_UI.TrackRecorder;
-import CB_UI.Events.SelectedCacheEvent;
-import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Activitys.settings.SettingsActivity;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
@@ -71,7 +72,6 @@ import CB_UI.GL_UI.Controls.PopUps.SearchDialog.searchMode;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.DescriptionView;
 import CB_UI.GL_UI.Views.splash;
-import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.Events.platformConector;
@@ -201,7 +201,7 @@ import de.cb.sqlite.AndroidDB;
 @SuppressLint("Wakelock")
 @SuppressWarnings("deprecation")
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener,
-	CB_Core.Events.CacheListChangedEventListner, GpsStatus.NmeaListener, GpsStatus.Listener {
+	CB_Core.CacheListChangedEventListner, GpsStatus.NmeaListener, GpsStatus.Listener {
 
     private static AndroidApplicationConfiguration gdxConfig = new AndroidApplicationConfiguration();
 
