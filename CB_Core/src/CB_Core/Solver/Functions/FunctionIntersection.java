@@ -14,8 +14,8 @@ public class FunctionIntersection extends Function
 	public FunctionIntersection(Solver solver)
 	{
 		super(solver);
-		Names.add(new LacalNames("Intersection", "en"));
-		Names.add(new LacalNames("Schnittpunkt", "de"));
+		Names.add(new LocalNames("Intersection", "en"));
+		Names.add(new LocalNames("Schnittpunkt", "de"));
 	}
 
 	@Override

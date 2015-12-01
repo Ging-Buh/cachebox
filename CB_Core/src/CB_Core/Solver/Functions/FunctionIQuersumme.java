@@ -14,10 +14,10 @@ public class FunctionIQuersumme extends Function
 	public FunctionIQuersumme(Solver solver)
 	{
 		super(solver);
-		Names.add(new LacalNames("ICrosstotal", "en"));
-		Names.add(new LacalNames("IQuersumme", "de"));
-		Names.add(new LacalNames("ICT", "en"));
-		Names.add(new LacalNames("IQS", "de"));
+		Names.add(new LocalNames("ICrosstotal", "en"));
+		Names.add(new LocalNames("IQuersumme", "de"));
+		Names.add(new LocalNames("ICT", "en"));
+		Names.add(new LocalNames("IQS", "de"));
 	}
 
 	@Override

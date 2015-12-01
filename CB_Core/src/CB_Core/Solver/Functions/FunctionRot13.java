@@ -12,7 +12,7 @@ public class FunctionRot13 extends Function
 	public FunctionRot13(Solver solver)
 	{
 		super(solver);
-		Names.add(new LacalNames("Rot13", "en"));
+		Names.add(new LocalNames("Rot13", "en"));
 	}
 
 	@Override

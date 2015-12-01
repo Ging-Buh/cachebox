@@ -11,8 +11,8 @@ public class FunctionRound extends Function
 	public FunctionRound(Solver solver)
 	{
 		super(solver);
-		Names.add(new LacalNames("Round", "en"));
-		Names.add(new LacalNames("Runden", "de"));
+		Names.add(new LocalNames("Round", "en"));
+		Names.add(new LocalNames("Runden", "de"));
 	}
 
 	@Override

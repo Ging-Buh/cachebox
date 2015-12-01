@@ -23,110 +23,97 @@ import CB_Utils.MathUtils.CalculationType;
 
 /**
  * Ein Koordinaten Typ, der speziell zum Messen einer Koordinaten Reihe da ist. <br>
- * Dieser Typ implementiert das Comparable Interface um einen Vergleich über die Distanz zur Referenz Koordinate zu ermöglichen.
+ * Dieser Typ implementiert das Comparable Interface um einen Vergleich Ã¼ber die Distanz zur Referenz Koordinate zu ermÃ¶glichen.
  * 
  * @author Longri
  */
-public class MeasuredCoord implements Comparable<MeasuredCoord>
-{
-	private double Latitude = 0;
-	private double Longitude = 0;
-	private float Accuracy = 0.0f;
+public class MeasuredCoord implements Comparable<MeasuredCoord> {
+    private double Latitude = 0;
+    private double Longitude = 0;
+    private float Accuracy = 0.0f;
 
-	/**
-	 * Die Referenz Coordinate, auf die sich der Vergleich bezieht. <br>
-	 * Je grösser der Abstand zur Referenz Coordinate desto höher der Index in einer Liste.
-	 */
-	public static Coordinate Referenz;
+    /**
+     * Die Referenz Coordinate, auf die sich der Vergleich bezieht. <br>
+     * Je grÃ¶sser der Abstand zur Referenz Coordinate desto hÃ¶her der Index in einer Liste.
+     */
+    public static Coordinate Referenz;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param latitude
-	 * @param longitude
-	 * @param accuracy
-	 */
-	public MeasuredCoord(double latitude, double longitude, float accuracy)
-	{
-		Latitude = latitude;
-		Longitude = longitude;
-		Accuracy = accuracy;
+    /**
+     * Constructor
+     * 
+     * @param latitude
+     * @param longitude
+     * @param accuracy
+     */
+    public MeasuredCoord(double latitude, double longitude, float accuracy) {
+	Latitude = latitude;
+	Longitude = longitude;
+	Accuracy = accuracy;
+    }
+
+    public MeasuredCoord(CoordinateGPS coord) {
+	Latitude = coord.getLatitude();
+	Longitude = coord.getLongitude();
+	Accuracy = coord.getAccuracy();
+    }
+
+    /**
+     * Gibt die Latitude dieser Koordinate zurÃ¼ck
+     * 
+     * @return double
+     */
+    public double getLatitude() {
+	return Latitude;
+    }
+
+    /**
+     * Gibt die Longitude dieser Koordinate zurÃ¼ck
+     * 
+     * @return double
+     */
+    public double getLongitude() {
+	return Longitude;
+    }
+
+    /**
+     * Gibt die Genauigkeit dieser gemessenen Koordinate zurÃ¼ck!
+     * 
+     * @return float
+     */
+    public float getAccuracy() {
+	return Accuracy;
+    }
+
+    @Override
+    public int compareTo(MeasuredCoord o2) {
+	float dist1 = this.Distance(CalculationType.ACCURATE);
+	float dist2 = o2.Distance(CalculationType.ACCURATE);
+
+	float acc1 = this.Accuracy;
+	float acc2 = o2.Accuracy;
+
+	if (dist1 < dist2) {
+	    return -1;
+	} else if (dist1 == dist2) {
+	    // Wenn die Distanzen gleich sind werden noch die Genauigkeitswerte
+	    // verglichen!
+	    return (acc1 < acc2 ? -1 : (acc1 == acc2 ? 0 : 1));
+	} else {
+	    return 1;
 	}
 
-	public MeasuredCoord(CoordinateGPS coord)
-	{
-		Latitude = coord.getLatitude();
-		Longitude = coord.getLongitude();
-		Accuracy = coord.getAccuracy();
-	}
+    }
 
-	/**
-	 * Gibt die Latitude dieser Koordinate zurück
-	 * 
-	 * @return double
-	 */
-	public double getLatitude()
-	{
-		return Latitude;
-	}
+    /**
+     * Gibt die Entfernung zur Referenz Position als Float zurÃ¼ck
+     * 
+     * @return Entfernung zur Ã¼bergebenen User Position als Float
+     */
+    public float Distance(CalculationType type) {
+	float[] dist = new float[4];
+	MathUtils.computeDistanceAndBearing(type, this.Latitude, this.Longitude, Referenz.getLatitude(), Referenz.getLongitude(), dist);
 
-	/**
-	 * Gibt die Longitude dieser Koordinate zurück
-	 * 
-	 * @return double
-	 */
-	public double getLongitude()
-	{
-		return Longitude;
-	}
-
-	/**
-	 * Gibt die Genauigkeit dieser gemessenen Koordinate zurück!
-	 * 
-	 * @return float
-	 */
-	public float getAccuracy()
-	{
-		return Accuracy;
-	}
-
-	@Override
-	public int compareTo(MeasuredCoord o2)
-	{
-		float dist1 = this.Distance(CalculationType.ACCURATE);
-		float dist2 = o2.Distance(CalculationType.ACCURATE);
-
-		float acc1 = this.Accuracy;
-		float acc2 = o2.Accuracy;
-
-		if (dist1 < dist2)
-		{
-			return -1;
-		}
-		else if (dist1 == dist2)
-		{
-			// Wenn die Distanzen gleich sind werden noch die Genauigkeitswerte
-			// verglichen!
-			return (acc1 < acc2 ? -1 : (acc1 == acc2 ? 0 : 1));
-		}
-		else
-		{
-			return 1;
-		}
-
-	}
-
-	/**
-	 * Gibt die Entfernung zur Referenz Position als Float zurück
-	 * 
-	 * @return Entfernung zur übergebenen User Position als Float
-	 */
-	public float Distance(CalculationType type)
-	{
-		float[] dist = new float[4];
-		MathUtils.computeDistanceAndBearing(type, this.Latitude, this.Longitude, Referenz.getLatitude(), Referenz.getLongitude(), dist);
-
-		return (float) dist[0];
-	}
+	return (float) dist[0];
+    }
 
 }

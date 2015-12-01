@@ -14,8 +14,8 @@ public class FunctionProjection extends Function
 	public FunctionProjection(Solver solver)
 	{
 		super(solver);
-		Names.add(new LacalNames("Projection", "en"));
-		Names.add(new LacalNames("Projektion", "de"));
+		Names.add(new LocalNames("Projection", "en"));
+		Names.add(new LocalNames("Projektion", "de"));
 	}
 
 	@Override

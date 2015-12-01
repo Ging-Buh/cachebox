@@ -26,152 +26,130 @@ import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.UnitFormatter;
 
 /**
- * Eine ArrayList<MeasuredCoord> welche die gemessenen Koordinaten aufnimmt, sortiert, Ausreißer eliminiert und über die Methode
- * "getMeasuredAverageCoord()" eine Durchschnitts Koordinate zurück gibt.
+ * Eine ArrayList<MeasuredCoord> welche die gemessenen Koordinaten aufnimmt, sortiert, AusreiÃŸer eliminiert und Ã¼ber die Methode
+ * "getMeasuredAverageCoord()" eine Durchschnitts Koordinate zurÃ¼ck gibt.
  * 
  * @author Longri
  */
-public class MeasuredCoordList extends ArrayList<MeasuredCoord>
-{
+public class MeasuredCoordList extends ArrayList<MeasuredCoord> {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Gibt die Durchschnittliche Koordinate dieser Liste zurück.
-	 * 
-	 * @return Coordinate
-	 */
-	public Coordinate getMeasuredAverageCoord()
-	{
+    /**
+     * Gibt die Durchschnittliche Koordinate dieser Liste zurÃ¼ck.
+     * 
+     * @return Coordinate
+     */
+    public Coordinate getMeasuredAverageCoord() {
 
-		Coordinate ret;
+	Coordinate ret;
 
-		if (this.size() == 0)
-		{
-			ret = new CoordinateGPS(0, 0);
-			ret.setValid(false);
+	if (this.size() == 0) {
+	    ret = new CoordinateGPS(0, 0);
+	    ret.setValid(false);
 
-			return ret;
-		}
-
-		synchronized (this)
-		{
-			Iterator<MeasuredCoord> iterator = this.iterator();
-
-			double sumLatitude = 0;
-			double sumLongitude = 0;
-
-			do
-			{
-				MeasuredCoord tmp = iterator.next();
-				sumLatitude += tmp.getLatitude();
-				sumLongitude += tmp.getLongitude();
-			}
-			while (iterator.hasNext());
-
-			ret = new CoordinateGPS(sumLatitude / this.size(), sumLongitude / this.size());
-			ret.setValid(true);
-
-		}
-
-		return ret;
+	    return ret;
 	}
 
-	/**
-	 * Gibt die Durchschnittliche Koordinate dieser Liste zurück. Wobei die Genauigkeit der gemessenen Koordinaten berücksichtigt wird!
-	 * 
-	 * @return Coordinate
-	 */
-	public Coordinate getAccuWeightedAverageCoord()
-	{
-		// TODO berechne Coord nach Genauigkeits Wichtung
-		return getMeasuredAverageCoord(); // Vorerst, bis die Wichtung fertig
-											// ist!
+	synchronized (this) {
+	    Iterator<MeasuredCoord> iterator = this.iterator();
+
+	    double sumLatitude = 0;
+	    double sumLongitude = 0;
+
+	    do {
+		MeasuredCoord tmp = iterator.next();
+		sumLatitude += tmp.getLatitude();
+		sumLongitude += tmp.getLongitude();
+	    } while (iterator.hasNext());
+
+	    ret = new CoordinateGPS(sumLatitude / this.size(), sumLongitude / this.size());
+	    ret.setValid(true);
+
 	}
 
-	/**
-	 * Überschreibt die add Methode um bei einer Listen Größe > 3 <br>
-	 * die MeasuredCoord.Referenz auf den Durchschnitt der Liste zu setzen.
-	 */
-	@Override
-	public boolean add(MeasuredCoord measuredCoord)
-	{
-		boolean ret = false;
+	return ret;
+    }
 
-		synchronized (this)
-		{
-			ret = super.add(measuredCoord);
+    /**
+     * Gibt die Durchschnittliche Koordinate dieser Liste zurÃ¼ck. Wobei die Genauigkeit der gemessenen Koordinaten berÃ¼cksichtigt wird!
+     * 
+     * @return Coordinate
+     */
+    public Coordinate getAccuWeightedAverageCoord() {
+	// TODO berechne Coord nach Genauigkeits Wichtung
+	return getMeasuredAverageCoord(); // Vorerst, bis die Wichtung fertig
+					  // ist!
+    }
 
-			if (this.size() > 3)
-			{
-				MeasuredCoord.Referenz = this.getMeasuredAverageCoord();
-			}
-		}
-		return ret;
-	}
+    /**
+     * Ã¼berschreibt die add Methode um bei einer Listen GrÃ¶ÃŸe > 3 <br>
+     * die MeasuredCoord.Referenz auf den Durchschnitt der Liste zu setzen.
+     */
+    @Override
+    public boolean add(MeasuredCoord measuredCoord) {
+	boolean ret = false;
 
-	/**
-	 * Sortiert die Koordinaten nach Entfernung zu MeasuredCoord.Referenz welche im ersten Schritt auf den Durchschnitt gesetzt wird.
-	 */
-	public void sort()
-	{
-		synchronized (this)
-		{
-			MeasuredCoord.Referenz = this.getMeasuredAverageCoord();
-			Collections.sort(this);
-		}
-	}
+	synchronized (this) {
+	    ret = super.add(measuredCoord);
 
-	/**
-	 * Setzt die Statisch Referenz Koordinate von MeasuredCoord auf die errechnete durchnitliche Koordinate
-	 */
-	public void setAverage()
-	{
+	    if (this.size() > 3) {
 		MeasuredCoord.Referenz = this.getMeasuredAverageCoord();
+	    }
+	}
+	return ret;
+    }
+
+    /**
+     * Sortiert die Koordinaten nach Entfernung zu MeasuredCoord.Referenz welche im ersten Schritt auf den Durchschnitt gesetzt wird.
+     */
+    public void sort() {
+	synchronized (this) {
+	    MeasuredCoord.Referenz = this.getMeasuredAverageCoord();
+	    Collections.sort(this);
+	}
+    }
+
+    /**
+     * Setzt die Statisch Referenz Koordinate von MeasuredCoord auf die errechnete durchnitliche Koordinate
+     */
+    public void setAverage() {
+	MeasuredCoord.Referenz = this.getMeasuredAverageCoord();
+    }
+
+    /**
+     * LÃ¶scht die AusreiÃŸer Werte, welche eine Distanz von mehr als 3m zur Referenz Koordinate haben.
+     */
+    public void clearDiscordantValue() {
+	boolean ready = false;
+	synchronized (this) {
+	    do {
+		ready = true;
+
+		this.setAverage();
+		Iterator<MeasuredCoord> iterator = this.iterator();
+		do {
+		    MeasuredCoord tmp = iterator.next();
+		    if (tmp.Distance(CalculationType.ACCURATE) > 3) {
+			this.remove(tmp);
+			ready = false;
+			break;
+		    }
+		} while (iterator.hasNext());
+	    } while (!ready);
+	    this.setAverage();
+	}
+    }
+
+    public String toString() {
+	String ret = "";
+	if (this.getAccuWeightedAverageCoord().isValid()) {
+	    ret = UnitFormatter.FormatLatitudeDM(this.getAccuWeightedAverageCoord().getLatitude()) + " / " + UnitFormatter.FormatLongitudeDM(this.getAccuWeightedAverageCoord().getLongitude());
 	}
 
-	/**
-	 * Löscht die Ausreißer Werte, welche eine Distanz von mehr als 3m zur Referenz Koordinate haben.
-	 */
-	public void clearDiscordantValue()
-	{
-		boolean ready = false;
-		synchronized (this)
-		{
-			do
-			{
-				ready = true;
-
-				this.setAverage();
-				Iterator<MeasuredCoord> iterator = this.iterator();
-				do
-				{
-					MeasuredCoord tmp = iterator.next();
-					if (tmp.Distance(CalculationType.ACCURATE) > 3)
-					{
-						this.remove(tmp);
-						ready = false;
-						break;
-					}
-				}
-				while (iterator.hasNext());
-			}
-			while (!ready);
-			this.setAverage();
-		}
-	}
-
-	public String toString()
-	{
-		String ret = "";
-		if (this.getAccuWeightedAverageCoord().isValid())
-		{
-			ret = UnitFormatter.FormatLatitudeDM(this.getAccuWeightedAverageCoord().getLatitude()) + " / " + UnitFormatter.FormatLongitudeDM(this.getAccuWeightedAverageCoord().getLongitude());
-		}
-
-		return ret;
-	}
+	return ret;
+    }
 }

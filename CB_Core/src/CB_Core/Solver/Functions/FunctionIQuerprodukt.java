@@ -11,10 +11,10 @@ public class FunctionIQuerprodukt extends Function
 	public FunctionIQuerprodukt(Solver solver)
 	{
 		super(solver);
-		Names.add(new LacalNames("ICrossproduct", "en"));
-		Names.add(new LacalNames("IQuerprodukt", "de"));
-		Names.add(new LacalNames("ICP", "en"));
-		Names.add(new LacalNames("IQP", "de"));
+		Names.add(new LocalNames("ICrossproduct", "en"));
+		Names.add(new LocalNames("IQuerprodukt", "de"));
+		Names.add(new LocalNames("ICP", "en"));
+		Names.add(new LocalNames("IQP", "de"));
 	}
 
 	@Override

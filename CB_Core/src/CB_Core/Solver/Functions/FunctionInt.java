@@ -11,8 +11,8 @@ public class FunctionInt extends Function
 	public FunctionInt(Solver solver)
 	{
 		super(solver);
-		Names.add(new LacalNames("Int", "en"));
-		Names.add(new LacalNames("Ganzzahl", "de"));
+		Names.add(new LocalNames("Int", "en"));
+		Names.add(new LocalNames("Ganzzahl", "de"));
 	}
 
 	@Override

@@ -11,10 +11,10 @@ public class FunctionHandySum extends Function
 	public FunctionHandySum(Solver solver)
 	{
 		super(solver);
-		Names.add(new LacalNames("PhoneSum", "en"));
-		Names.add(new LacalNames("HandySum", "de"));
-		Names.add(new LacalNames("PS", "en"));
-		Names.add(new LacalNames("HS", "de"));
+		Names.add(new LocalNames("PhoneSum", "en"));
+		Names.add(new LocalNames("HandySum", "de"));
+		Names.add(new LocalNames("PS", "en"));
+		Names.add(new LocalNames("HS", "de"));
 	}
 
 	@Override

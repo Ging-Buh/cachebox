@@ -26,64 +26,56 @@ import CB_Core.Settings.CB_Core_Settings;
  * 
  * @author Hubert
  */
-public class Search
-{
-	public int number;
-	public boolean excludeHides = false;
-	public boolean excludeFounds = false;
-	public boolean available = true;
-	int geocacheLogCount = 10;
-	int trackableLogCount = 10;
-	protected boolean isLite;
+public class Search {
+    public int number;
+    public boolean excludeHides = false;
+    public boolean excludeFounds = false;
+    public boolean available = true;
+    int geocacheLogCount = 10;
+    int trackableLogCount = 10;
+    protected boolean isLite;
 
-	Search(int number)
-	{
-		this.number = number;
+    Search(int number) {
+	this.number = number;
+    }
+
+    protected void getRequest(JSONObject request, boolean isLite) throws JSONException {
+	this.isLite = isLite;
+	request.put("IsLite", isLite);
+	request.put("StartIndex", 0);
+	request.put("MaxPerPage", number);
+	request.put("GeocacheLogCount", geocacheLogCount);
+	request.put("TrackableLogCount", trackableLogCount);
+	if (available) {
+	    JSONObject excl = new JSONObject();
+	    excl.put("Archived", false);
+	    excl.put("Available", true);
+	    request.put("GeocacheExclusions", excl);
+
+	}
+	if (excludeHides) {
+	    JSONObject excl = new JSONObject();
+	    JSONArray jarr = new JSONArray();
+	    jarr.put(CB_Core_Settings.GcLogin.getValue());
+	    excl.put("UserNames", jarr);
+	    request.put("NotHiddenByUsers", excl);
 	}
 
-	protected void getRequest(JSONObject request, boolean isLite) throws JSONException
-	{
-		this.isLite = isLite;
-		request.put("IsLite", isLite);
-		request.put("StartIndex", 0);
-		request.put("MaxPerPage", number);
-		request.put("GeocacheLogCount", geocacheLogCount);
-		request.put("TrackableLogCount", trackableLogCount);
-		if (available)
-		{
-			JSONObject excl = new JSONObject();
-			excl.put("Archived", false);
-			excl.put("Available", true);
-			request.put("GeocacheExclusions", excl);
-
-		}
-		if (excludeHides)
-		{
-			JSONObject excl = new JSONObject();
-			JSONArray jarr = new JSONArray();
-			jarr.put(CB_Core_Settings.GcLogin.getValue());
-			excl.put("UserNames", jarr);
-			request.put("NotHiddenByUsers", excl);
-		}
-
-		if (excludeFounds)
-		{
-			JSONObject excl = new JSONObject();
-			JSONArray jarr = new JSONArray();
-			jarr.put(CB_Core_Settings.GcLogin.getValue());
-			excl.put("UserNames", jarr);
-			request.put("NotFoundByUsers", excl);
-		}
+	if (excludeFounds) {
+	    JSONObject excl = new JSONObject();
+	    JSONArray jarr = new JSONArray();
+	    jarr.put(CB_Core_Settings.GcLogin.getValue());
+	    excl.put("UserNames", jarr);
+	    request.put("NotFoundByUsers", excl);
 	}
+    }
 
-	// isLite kann hier nochmal abgefragt werden da dieser Wert von einzelnen Search-Objecten geändert werden könnte
-	protected boolean getIsLite()
-	{
-		return isLite;
-	}
+    // isLite kann hier nochmal abgefragt werden da dieser Wert von einzelnen Search-Objecten geÃ¤ndert werden kÃ¶nnte
+    protected boolean getIsLite() {
+	return isLite;
+    }
 
-	public void setIsLite(boolean isLite)
-	{
-		this.isLite = isLite;
-	}
+    public void setIsLite(boolean isLite) {
+	this.isLite = isLite;
+    }
 }

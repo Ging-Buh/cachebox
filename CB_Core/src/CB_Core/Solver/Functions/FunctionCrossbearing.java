@@ -15,8 +15,8 @@ public class FunctionCrossbearing extends Function
 	public FunctionCrossbearing(Solver solver)
 	{
 		super(solver);
-		Names.add(new LacalNames("Crossbearing", "en"));
-		Names.add(new LacalNames("Kreuzpeilung", "de"));
+		Names.add(new LocalNames("Crossbearing", "en"));
+		Names.add(new LocalNames("Kreuzpeilung", "de"));
 	}
 
 	@Override

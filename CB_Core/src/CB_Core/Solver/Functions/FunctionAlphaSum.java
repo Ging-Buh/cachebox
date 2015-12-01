@@ -11,8 +11,8 @@ public class FunctionAlphaSum extends Function
 	public FunctionAlphaSum(Solver solver)
 	{
 		super(solver);
-		Names.add(new LacalNames("AlphaSum", "en"));
-		Names.add(new LacalNames("AS", "en"));
+		Names.add(new LocalNames("AlphaSum", "en"));
+		Names.add(new LocalNames("AS", "en"));
 	}
 
 	@Override

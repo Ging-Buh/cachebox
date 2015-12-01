@@ -48,922 +48,817 @@ import CB_Utils.Events.ProgresssChangedEventList;
 import CB_Utils.Util.FileIO;
 import de.cb.sqlite.CoreCursor;
 
-public class Importer
-{
-	final static org.slf4j.Logger logger = LoggerFactory.getLogger(Importer.class);
+public class Importer {
+    final static org.slf4j.Logger logger = LoggerFactory.getLogger(Importer.class);
 
-	public void importGC(ArrayList<PQ> pqList)
-	{
-		ProgresssChangedEventList.Call("import Gc.com", "", 0);
+    public void importGC(ArrayList<PQ> pqList) {
+	ProgresssChangedEventList.Call("import Gc.com", "", 0);
+
+    }
+
+    /**
+     * Importiert die GPX files, die sich in diesem Verzeichniss befinden. Auch wenn sie sich in einem Zip-File befinden. Oder das GPX-File
+     * falls eine einzelne Datei übergeben wird.
+     * 
+     * @param directoryPath
+     * @param ip
+     * @param DescriptionImageFolder
+     *            Config.settings.DescriptionImageFolder.getValue()
+     * @param DescriptionImageFolderLocal
+     *            Config.settings.DescriptionImageFolderLocal.getValue()
+     * @param CategorieList
+     *            GlobalCore.Categories
+     * @return Cache_Log_Return mit dem Inhalt aller Importierten GPX Files
+     */
+    public void importGpx(String directoryPath, ImporterProgress ip) {
+	// resest import Counter
+
+	GPXFileImporter.CacheCount = 0;
+	GPXFileImporter.LogCount = 0;
+
+	// Extract all Zip Files!
+
+	File file = new File(directoryPath);
+
+	if (file.isDirectory()) {
+	    ArrayList<File> ordnerInhalt_Zip = FileIO.recursiveDirectoryReader(file, new ArrayList<File>(), "zip", false);
+
+	    ip.setJobMax("ExtractZip", ordnerInhalt_Zip.size());
+
+	    for (File tmpZip : ordnerInhalt_Zip) {
+		try {
+		    Thread.sleep(10);
+		} catch (InterruptedException e2) {
+		    return; // Thread Canceld
+		}
+
+		ip.ProgressInkrement("ExtractZip", "", false);
+		// Extract ZIP
+		try {
+		    UnZip.extractFolder(tmpZip.getAbsolutePath());
+		} catch (ZipException e) {
+		    logger.error("ZipException", e);
+		    e.printStackTrace();
+		} catch (IOException e) {
+		    logger.error("IOException", e);
+		    e.printStackTrace();
+		}
+	    }
+
+	    if (ordnerInhalt_Zip.size() == 0) {
+		ip.ProgressInkrement("ExtractZip", "", true);
+	    }
+
+	    try {
+		Thread.sleep(50);
+	    } catch (InterruptedException e2) {
+		return; // Thread Canceld
+	    }
+	}
+
+	// Import all GPX files
+	File[] FileList = GetFilesToLoad(directoryPath);
+
+	ip.setJobMax("AnalyseGPX", FileList.length);
+
+	ImportHandler importHandler = new ImportHandler();
+
+	Integer countwpt = 0;
+	HashMap<String, Integer> wptCount = new HashMap<String, Integer>();
+
+	for (File File : FileList) {
+
+	    try {
+		Thread.sleep(10);
+	    } catch (InterruptedException e2) {
+		return; // Thread Canceld
+	    }
+
+	    ip.ProgressInkrement("AnalyseGPX", File.getName(), false);
+
+	    BufferedReader br;
+	    String strLine;
+	    try {
+		br = new BufferedReader(new InputStreamReader(new FileInputStream(File)));
+		while ((strLine = br.readLine()) != null) {
+		    if (strLine.contains("<wpt"))
+			countwpt++;
+		}
+	    } catch (FileNotFoundException e1) {
+
+		e1.printStackTrace();
+	    } catch (IOException e) {
+
+		e.printStackTrace();
+	    }
+
+	    wptCount.put(File.getAbsolutePath(), countwpt);
+	    countwpt = 0;
+	}
+
+	if (FileList.length == 0) {
+	    ip.ProgressInkrement("AnalyseGPX", "", true);
+	}
+
+	for (Integer count : wptCount.values()) {
+	    countwpt += count;
+	}
+
+	// Indiziere DB
+	CacheInfoList.IndexDB();
+
+	ip.setJobMax("ImportGPX", FileList.length + countwpt);
+	for (File File : FileList) {
+	    try {
+		Thread.sleep(10);
+	    } catch (InterruptedException e2) {
+		return; // Thread Canceled
+	    }
+
+	    ip.ProgressInkrement("ImportGPX", "Import: " + File.getName(), false);
+	    GPXFileImporter importer = new GPXFileImporter(File, ip);
+
+	    try {
+		importer.doImport(importHandler, wptCount.get(File.getAbsolutePath()));
+	    } catch (Exception e) {
+		logger.error("importer.doImport => " + File.getAbsolutePath(), e);
+		e.printStackTrace();
+	    }
 
 	}
 
-	/**
-	 * Importiert die GPX files, die sich in diesem Verzeichniss befinden. Auch wenn sie sich in einem Zip-File befinden. Oder das GPX-File
-	 * falls eine einzelne Datei �bergeben wird.
-	 * 
-	 * @param directoryPath
-	 * @param ip
-	 * @param DescriptionImageFolder
-	 *            Config.settings.DescriptionImageFolder.getValue()
-	 * @param DescriptionImageFolderLocal
-	 *            Config.settings.DescriptionImageFolderLocal.getValue()
-	 * @param CategorieList
-	 *            GlobalCore.Categories
-	 * @return Cache_Log_Return mit dem Inhalt aller Importierten GPX Files
-	 */
-	public void importGpx(String directoryPath, ImporterProgress ip)
-	{
-		// resest import Counter
+	if (FileList.length == 0) {
+	    ip.ProgressInkrement("ImportGPX", "", true);
+	}
 
-		GPXFileImporter.CacheCount = 0;
-		GPXFileImporter.LogCount = 0;
+	importHandler.GPXFilenameUpdateCacheCount();
 
-		// Extract all Zip Files!
+	importHandler = null;
 
-		File file = new File(directoryPath);
+	// Indexierte CacheInfos zurück schreiben
+	CacheInfoList.writeListToDB();
+	CacheInfoList.dispose();
 
-		if (file.isDirectory())
-		{
-			ArrayList<File> ordnerInhalt_Zip = FileIO.recursiveDirectoryReader(file, new ArrayList<File>(), "zip", false);
+    }
 
-			ip.setJobMax("ExtractZip", ordnerInhalt_Zip.size());
+    /**
+     * @param whereClause
+     * @param ip
+     * @param userName
+     *            Config.settings.GcLogin.getValue()
+     * @param GcVotePassword
+     *            Config.settings.GcVotePassword.getValue()
+     */
+    public void importGcVote(String whereClause, ImporterProgress ip) {
 
-			for (File tmpZip : ordnerInhalt_Zip)
-			{
-				try
-				{
-					Thread.sleep(10);
-				}
-				catch (InterruptedException e2)
-				{
-					return; // Thread Canceld
-				}
+	GCVoteDAO gcVoteDAO = new GCVoteDAO();
 
-				ip.ProgressInkrement("ExtractZip", "", false);
-				// Extract ZIP
-				try
-				{
-					UnZip.extractFolder(tmpZip.getAbsolutePath());
-				}
-				catch (ZipException e)
-				{
-					logger.error("ZipException", e);
-					e.printStackTrace();
-				}
-				catch (IOException e)
-				{
-					logger.error("IOException", e);
-					e.printStackTrace();
-				}
-			}
+	ArrayList<GCVoteCacheInfo> pendingVotes = gcVoteDAO.getPendingGCVotes();
 
-			if (ordnerInhalt_Zip.size() == 0)
-			{
-				ip.ProgressInkrement("ExtractZip", "", true);
-			}
+	ip.setJobMax("sendGcVote", pendingVotes.size());
+	int i = 0;
 
-			try
-			{
-				Thread.sleep(50);
-			}
-			catch (InterruptedException e2)
-			{
-				return; // Thread Canceld
-			}
+	for (GCVoteCacheInfo info : pendingVotes) {
+
+	    try {
+		Thread.sleep(10);
+	    } catch (InterruptedException e2) {
+		return; // Thread Canceld
+	    }
+
+	    i++;
+
+	    ip.ProgressInkrement("sendGcVote", "Sending Votes (" + String.valueOf(i) + " / " + String.valueOf(pendingVotes.size()) + ")", false);
+
+	    Boolean ret = GCVote.SendVotes(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), info.Vote, info.URL, info.GcCode);
+
+	    if (ret) {
+		gcVoteDAO.updatePendingVote(info.Id);
+	    }
+	}
+
+	if (pendingVotes.size() == 0) {
+	    ip.ProgressInkrement("sendGcVote", "No Votes to send.", true);
+	}
+
+	Integer count = gcVoteDAO.getCacheCountToGetVotesFor(whereClause);
+
+	ip.setJobMax("importGcVote", count);
+
+	int packageSize = 100;
+	int offset = 0;
+	int failCount = 0;
+	i = 0;
+
+	while (offset < count) {
+	    ArrayList<GCVoteCacheInfo> workpackage = gcVoteDAO.getGCVotePackage(whereClause, packageSize, i);
+	    ArrayList<String> requests = new ArrayList<String>();
+	    HashMap<String, Boolean> resetVote = new HashMap<String, Boolean>();
+	    HashMap<String, Long> idLookup = new HashMap<String, Long>();
+
+	    for (GCVoteCacheInfo info : workpackage) {
+		try {
+		    Thread.sleep(10);
+		} catch (InterruptedException e2) {
+		    return; // Thread Canceld
 		}
 
-		// Import all GPX files
-		File[] FileList = GetFilesToLoad(directoryPath);
-
-		ip.setJobMax("AnalyseGPX", FileList.length);
-
-		ImportHandler importHandler = new ImportHandler();
-
-		Integer countwpt = 0;
-		HashMap<String, Integer> wptCount = new HashMap<String, Integer>();
-
-		for (File File : FileList)
-		{
-
-			try
-			{
-				Thread.sleep(10);
-			}
-			catch (InterruptedException e2)
-			{
-				return; // Thread Canceld
-			}
-
-			ip.ProgressInkrement("AnalyseGPX", File.getName(), false);
-
-			BufferedReader br;
-			String strLine;
-			try
-			{
-				br = new BufferedReader(new InputStreamReader(new FileInputStream(File)));
-				while ((strLine = br.readLine()) != null)
-				{
-					if (strLine.contains("<wpt")) countwpt++;
-				}
-			}
-			catch (FileNotFoundException e1)
-			{
-
-				e1.printStackTrace();
-			}
-			catch (IOException e)
-			{
-
-				e.printStackTrace();
-			}
-
-			wptCount.put(File.getAbsolutePath(), countwpt);
-			countwpt = 0;
+		if (!info.GcCode.toLowerCase(Locale.getDefault()).startsWith("gc")) {
+		    ip.ProgressInkrement("importGcVote", "Not a GC.com Cache", false);
+		    continue;
 		}
 
-		if (FileList.length == 0)
-		{
-			ip.ProgressInkrement("AnalyseGPX", "", true);
+		requests.add(info.GcCode);
+		resetVote.put(info.GcCode, !info.VotePending);
+		idLookup.put(info.GcCode, info.Id);
+	    }
+
+	    ArrayList<RatingData> ratingData = GCVote.GetRating(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), requests);
+
+	    if (ratingData == null) {
+		failCount += packageSize;
+		ip.ProgressInkrement("importGcVote", "Query failed...", false);
+	    } else {
+		for (RatingData data : ratingData) {
+		    if (idLookup.containsKey(data.Waypoint)) {
+			if (resetVote.containsKey(data.Waypoint)) {
+			    gcVoteDAO.updateRatingAndVote(idLookup.get(data.Waypoint), data.Rating, data.Vote);
+			} else {
+			    gcVoteDAO.updateRating(idLookup.get(data.Waypoint), data.Rating);
+			}
+		    }
+
+		    i++;
+
+		    ip.ProgressInkrement("importGcVote", "Writing Ratings (" + String.valueOf(i + failCount) + " / " + String.valueOf(count) + ")", false);
 		}
 
-		for (Integer count : wptCount.values())
-		{
-			countwpt += count;
-		}
+	    }
 
-		// Indiziere DB
-		CacheInfoList.IndexDB();
-
-		ip.setJobMax("ImportGPX", FileList.length + countwpt);
-		for (File File : FileList)
-		{
-			try
-			{
-				Thread.sleep(10);
-			}
-			catch (InterruptedException e2)
-			{
-				return; // Thread Canceled
-			}
-
-			ip.ProgressInkrement("ImportGPX", "Import: " + File.getName(), false);
-			GPXFileImporter importer = new GPXFileImporter(File, ip);
-
-			try
-			{
-				importer.doImport(importHandler, wptCount.get(File.getAbsolutePath()));
-			}
-			catch (Exception e)
-			{
-				logger.error("importer.doImport => " + File.getAbsolutePath(), e);
-				e.printStackTrace();
-			}
-
-		}
-
-		if (FileList.length == 0)
-		{
-			ip.ProgressInkrement("ImportGPX", "", true);
-		}
-
-		importHandler.GPXFilenameUpdateCacheCount();
-
-		importHandler = null;
-
-		// Indexierte CacheInfos zur�ck schreiben
-		CacheInfoList.writeListToDB();
-		CacheInfoList.dispose();
+	    offset += packageSize;
 
 	}
 
-	/**
-	 * @param whereClause
-	 * @param ip
-	 * @param userName
-	 *            Config.settings.GcLogin.getValue()
-	 * @param GcVotePassword
-	 *            Config.settings.GcVotePassword.getValue()
-	 */
-	public void importGcVote(String whereClause, ImporterProgress ip)
-	{
-
-		GCVoteDAO gcVoteDAO = new GCVoteDAO();
-
-		ArrayList<GCVoteCacheInfo> pendingVotes = gcVoteDAO.getPendingGCVotes();
-
-		ip.setJobMax("sendGcVote", pendingVotes.size());
-		int i = 0;
-
-		for (GCVoteCacheInfo info : pendingVotes)
-		{
-
-			try
-			{
-				Thread.sleep(10);
-			}
-			catch (InterruptedException e2)
-			{
-				return; // Thread Canceld
-			}
-
-			i++;
-
-			ip.ProgressInkrement("sendGcVote", "Sending Votes (" + String.valueOf(i) + " / " + String.valueOf(pendingVotes.size()) + ")", false);
-
-			Boolean ret = GCVote.SendVotes(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), info.Vote, info.URL, info.GcCode);
-
-			if (ret)
-			{
-				gcVoteDAO.updatePendingVote(info.Id);
-			}
-		}
-
-		if (pendingVotes.size() == 0)
-		{
-			ip.ProgressInkrement("sendGcVote", "No Votes to send.", true);
-		}
-
-		Integer count = gcVoteDAO.getCacheCountToGetVotesFor(whereClause);
-
-		ip.setJobMax("importGcVote", count);
-
-		int packageSize = 100;
-		int offset = 0;
-		int failCount = 0;
-		i = 0;
-
-		while (offset < count)
-		{
-			ArrayList<GCVoteCacheInfo> workpackage = gcVoteDAO.getGCVotePackage(whereClause, packageSize, i);
-			ArrayList<String> requests = new ArrayList<String>();
-			HashMap<String, Boolean> resetVote = new HashMap<String, Boolean>();
-			HashMap<String, Long> idLookup = new HashMap<String, Long>();
-
-			for (GCVoteCacheInfo info : workpackage)
-			{
-				try
-				{
-					Thread.sleep(10);
-				}
-				catch (InterruptedException e2)
-				{
-					return; // Thread Canceld
-				}
-
-				if (!info.GcCode.toLowerCase(Locale.getDefault()).startsWith("gc"))
-				{
-					ip.ProgressInkrement("importGcVote", "Not a GC.com Cache", false);
-					continue;
-				}
-
-				requests.add(info.GcCode);
-				resetVote.put(info.GcCode, !info.VotePending);
-				idLookup.put(info.GcCode, info.Id);
-			}
-
-			ArrayList<RatingData> ratingData = GCVote.GetRating(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), requests);
-
-			if (ratingData == null)
-			{
-				failCount += packageSize;
-				ip.ProgressInkrement("importGcVote", "Query failed...", false);
-			}
-			else
-			{
-				for (RatingData data : ratingData)
-				{
-					if (idLookup.containsKey(data.Waypoint))
-					{
-						if (resetVote.containsKey(data.Waypoint))
-						{
-							gcVoteDAO.updateRatingAndVote(idLookup.get(data.Waypoint), data.Rating, data.Vote);
-						}
-						else
-						{
-							gcVoteDAO.updateRating(idLookup.get(data.Waypoint), data.Rating);
-						}
-					}
-
-					i++;
-
-					ip.ProgressInkrement("importGcVote", "Writing Ratings (" + String.valueOf(i + failCount) + " / " + String.valueOf(count) + ")", false);
-				}
-
-			}
-
-			offset += packageSize;
-
-		}
-
-		if (count == 0)
-		{
-			ip.ProgressInkrement("importGcVote", "", true);
-		}
-
+	if (count == 0) {
+	    ip.ProgressInkrement("importGcVote", "", true);
 	}
 
-	/***
-	 * @param ip
-	 * @param DescriptionImageFolder
-	 *            Config.settings.DescriptionImageFolder.getValue()
-	 * @param DescriptionImageFolderLocal
-	 *            Config.settings.DescriptionImageFolderLocal
-	 * @param Staging
-	 *            Config.settings.StagingAPI.getValue()
-	 * @param AccessToken
-	 *            Config.GetAccessToken(true)
-	 * @param conectionTimeout
-	 *            Config.settings.conection_timeout.getValue()
-	 * @param socketTimeout
-	 *            Config.settings.socket_timeout.getValue()
-	 * @return ErrorCode Use with<br>
-	 *         if (result == GroundspeakAPI.CONNECTION_TIMEOUT)<br>
-	 *         {<br>
-	 *         GL.that.Toast(ConnectionError.INSTANCE);<br>
-	 *         return;<br>
-	 *         }<br>
-	 * <br>
-	 *         if (result == GroundspeakAPI.API_IS_UNAVAILABLE)<br>
-	 *         {<br>
-	 *         GL.that.Toast(ApiUnavailable.INSTANCE);<br>
-	 *         return;<br>
-	 *         }<br>
-	 */
-	public int importImages(ImporterProgress ip)
-	{
+    }
 
-		int ret = 0;
+    /***
+     * @param ip
+     * @param DescriptionImageFolder
+     *            Config.settings.DescriptionImageFolder.getValue()
+     * @param DescriptionImageFolderLocal
+     *            Config.settings.DescriptionImageFolderLocal
+     * @param Staging
+     *            Config.settings.StagingAPI.getValue()
+     * @param AccessToken
+     *            Config.GetAccessToken(true)
+     * @param conectionTimeout
+     *            Config.settings.conection_timeout.getValue()
+     * @param socketTimeout
+     *            Config.settings.socket_timeout.getValue()
+     * @return ErrorCode Use with<br>
+     *         if (result == GroundspeakAPI.CONNECTION_TIMEOUT)<br>
+     *         {<br>
+     *         GL.that.Toast(ConnectionError.INSTANCE);<br>
+     *         return;<br>
+     *         }<br>
+     * <br>
+     *         if (result == GroundspeakAPI.API_IS_UNAVAILABLE)<br>
+     *         {<br>
+     *         GL.that.Toast(ApiUnavailable.INSTANCE);<br>
+     *         return;<br>
+     *         }<br>
+     */
+    public int importImages(ImporterProgress ip) {
 
-		CacheDAO CacheDao = new CacheDAO();
+	int ret = 0;
 
-		// Index DB
-		CacheInfoList.IndexDB();
+	CacheDAO CacheDao = new CacheDAO();
 
-		// get all GcCodes from Listing changed caches without Typ==4 (ErthCache)
-		ArrayList<String> gcCodes = CacheDao.getGcCodesFromMustLoadImages();
+	// Index DB
+	CacheInfoList.IndexDB();
 
-		// refresch all Image Url�s
-		ip.setJobMax("importImageUrls", gcCodes.size());
-		int counter = 0;
-		for (String gccode : gcCodes)
-		{
+	// get all GcCodes from Listing changed caches without Typ==4 (ErthCache)
+	ArrayList<String> gcCodes = CacheDao.getGcCodesFromMustLoadImages();
 
-			try
-			{
-				Thread.sleep(10);
-			}
-			catch (InterruptedException e2)
-			{
-				return 0; // Thread Canceld
-			}
+	// refresch all Image Urls
+	ip.setJobMax("importImageUrls", gcCodes.size());
+	int counter = 0;
+	for (String gccode : gcCodes) {
 
-			if (gccode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
-			{
+	    try {
+		Thread.sleep(10);
+	    } catch (InterruptedException e2) {
+		return 0; // Thread Canceld
+	    }
 
-				// API zugriff nur mit g�ltigem API Key
+	    if (gccode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
+	    {
 
-				int retChk = GroundspeakAPI.isValidAPI_Key(true);
+		// API zugriff nur mit gültigem API Key
 
-				if (retChk > 0)
-				{
-					ret = importApiImages(gccode, CacheInfoList.getIDfromGcCode(gccode));
-					if (ret < 0) return ret;
-				}
+		int retChk = GroundspeakAPI.isValidAPI_Key(true);
 
-				ip.ProgressInkrement("importImageUrls", "get Image Url�s for " + gccode + " (" + String.valueOf(counter++) + " / " + String.valueOf(gcCodes.size()) + ")", false);
-			}
+		if (retChk > 0) {
+		    ret = importApiImages(gccode, CacheInfoList.getIDfromGcCode(gccode));
+		    if (ret < 0)
+			return ret;
 		}
 
-		ImageDAO imageDAO = new ImageDAO();
+		ip.ProgressInkrement("importImageUrls", "get Image Urls for " + gccode + " (" + String.valueOf(counter++) + " / " + String.valueOf(gcCodes.size()) + ")", false);
+	    }
+	}
 
-		// Die Where Clusel sorgt df�r, dass nur die Anzahl der zu ladenden Bilder zur�ck gegeben wird.
-		// Da keine Bilder von ErthCaches geladen werden, wird hier auch der Typ 4 ausgelassen.
-		String where = " Type<>4 and (ImagesUpdated=0 or DescriptionImagesUpdated=0)";
+	ImageDAO imageDAO = new ImageDAO();
 
-		Integer count = imageDAO.getImageCount(where);
+	// Die Where Clausel sorgt dafür, dass nur die Anzahl der zu ladenden Bilder zurück gegeben wird.
+	// Da keine Bilder von ErthCaches geladen werden, wird hier auch der Typ 4 ausgelassen.
+	String where = " Type<>4 and (ImagesUpdated=0 or DescriptionImagesUpdated=0)";
 
-		ip.setJobMax("importImages", count);
+	Integer count = imageDAO.getImageCount(where);
 
-		if (count == 0)
-		{
-			ip.ProgressInkrement("importImages", "", true);
-			return 0;
+	ip.setJobMax("importImages", count);
+
+	if (count == 0) {
+	    ip.ProgressInkrement("importImages", "", true);
+	    return 0;
+	}
+
+	int i = 0;
+
+	for (String gccode : gcCodes) {
+	    try {
+		Thread.sleep(10);
+	    } catch (InterruptedException e2) {
+		return 0; // Thread Canceld
+	    }
+
+	    Boolean downloadedImage = false;
+	    ArrayList<String> imageURLs = imageDAO.getImageURLsForCache(gccode);
+
+	    boolean downloadFaild = false;
+
+	    for (String url : imageURLs) {
+		try {
+		    Thread.sleep(5);
+		} catch (InterruptedException e2) {
+		    return 0; // Thread Canceld
+		}
+		String localFile = DescriptionImageGrabber.BuildImageFilename(gccode, URI.create(url));
+
+		if (!FileIO.FileExistsNotEmpty(localFile)) {
+		    downloadedImage = true;
+		    if (downloadFaild || !DescriptionImageGrabber.Download(url, localFile)) {
+			downloadFaild = true;
+		    }
 		}
 
-		int i = 0;
+		i++;
 
-		for (String gccode : gcCodes)
+		if (gccode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
 		{
-			try
-			{
-				Thread.sleep(10);
-			}
-			catch (InterruptedException e2)
-			{
-				return 0; // Thread Canceld
-			}
+		    ip.ProgressInkrement("importImages", "Importing Images for " + gccode + " (" + String.valueOf(i) + " / " + String.valueOf(count) + ")", false);
+		}
+	    }
 
-			Boolean downloadedImage = false;
-			ArrayList<String> imageURLs = imageDAO.getImageURLsForCache(gccode);
-
-			boolean downloadFaild = false;
-
-			for (String url : imageURLs)
-			{
-				try
-				{
-					Thread.sleep(5);
-				}
-				catch (InterruptedException e2)
-				{
-					return 0; // Thread Canceld
-				}
-				String localFile = DescriptionImageGrabber.BuildImageFilename(gccode, URI.create(url));
-
-				if (!FileIO.FileExistsNotEmpty(localFile))
-				{
-					downloadedImage = true;
-					if (downloadFaild || !DescriptionImageGrabber.Download(url, localFile))
-					{
-						downloadFaild = true;
-					}
-				}
-
-				i++;
-
-				if (gccode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
-				{
-					ip.ProgressInkrement("importImages", "Importing Images for " + gccode + " (" + String.valueOf(i) + " / " + String.valueOf(count) + ")", false);
-				}
-			}
-
-			if (downloadedImage)
-			{
-				if (gccode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
-				{
-					ip.ProgressInkrement("importImages", "Importing Images for " + gccode + " (" + String.valueOf(i) + " / " + String.valueOf(count) + ")", false);
-				}
-
-			}
-			if (!downloadFaild)
-			{
-				// set DescriptionImagesUpdated and ImagesUpdated
-				CacheInfoList.setImageUpdated(gccode);
-			}
+	    if (downloadedImage) {
+		if (gccode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
+		{
+		    ip.ProgressInkrement("importImages", "Importing Images for " + gccode + " (" + String.valueOf(i) + " / " + String.valueOf(count) + ")", false);
 		}
 
-		// Write CacheInfoList back
-		CacheInfoList.writeListToDB();
-		CacheInfoList.dispose();
-
-		return ret;
+	    }
+	    if (!downloadFaild) {
+		// set DescriptionImagesUpdated and ImagesUpdated
+		CacheInfoList.setImageUpdated(gccode);
+	    }
 	}
 
-	/**
-	 * @param Staging
-	 *            Config.settings.StagingAPI.getValue()
-	 * @param ip
-	 * @param importImages
-	 * @param importSpoiler
-	 * @param where
-	 *            [Last Filter]GlobalCore.LastFilter.getSqlWhere();
-	 * @param DescriptionImageFolder
-	 *            Config.settings.SpoilerFolder.getValue()
-	 * @param DescriptionImageFolderLocal
-	 *            Config.settings.SpoilerFolderLocal.getValue()
-	 * @param AccessToken
-	 *            Config.GetAccessToken(true)
-	 * @param DescriptionImageFolder
-	 *            Config.settings.DescriptionImageFolder.getValue()
-	 * @param DescriptionImageFolderLocal
-	 *            Config.settings.DescriptionImageFolderLocal.getValue()
-	 * @param conectionTimeout
-	 *            Config.settings.conection_timeout.getValue()
-	 * @param socketTimeout
-	 *            Config.settings.socket_timeout.getValue()
-	 * @return ErrorCode Use with<br>
-	 *         if (result == GroundspeakAPI.CONNECTION_TIMEOUT)<br>
-	 *         {<br>
-	 *         GL.that.Toast(ConnectionError.INSTANCE);<br>
-	 *         return;<br>
-	 *         }<br>
-	 * <br>
-	 *         if (result == GroundspeakAPI.API_IS_UNAVAILABLE)<br>
-	 *         {<br>
-	 *         GL.that.Toast(ApiUnavailable.INSTANCE);<br>
-	 *         return;<br>
-	 *         }<br>
-	 */
-	public int importImagesNew(ImporterProgress ip, boolean importImages, boolean importSpoiler, String where)
-	{
+	// Write CacheInfoList back
+	CacheInfoList.writeListToDB();
+	CacheInfoList.dispose();
 
-		// refresch all Image Url�s
+	return ret;
+    }
 
-		int ret = 0;
+    /**
+     * @param Staging
+     *            Config.settings.StagingAPI.getValue()
+     * @param ip
+     * @param importImages
+     * @param importSpoiler
+     * @param where
+     *            [Last Filter]GlobalCore.LastFilter.getSqlWhere();
+     * @param DescriptionImageFolder
+     *            Config.settings.SpoilerFolder.getValue()
+     * @param DescriptionImageFolderLocal
+     *            Config.settings.SpoilerFolderLocal.getValue()
+     * @param AccessToken
+     *            Config.GetAccessToken(true)
+     * @param DescriptionImageFolder
+     *            Config.settings.DescriptionImageFolder.getValue()
+     * @param DescriptionImageFolderLocal
+     *            Config.settings.DescriptionImageFolderLocal.getValue()
+     * @param conectionTimeout
+     *            Config.settings.conection_timeout.getValue()
+     * @param socketTimeout
+     *            Config.settings.socket_timeout.getValue()
+     * @return ErrorCode Use with<br>
+     *         if (result == GroundspeakAPI.CONNECTION_TIMEOUT)<br>
+     *         {<br>
+     *         GL.that.Toast(ConnectionError.INSTANCE);<br>
+     *         return;<br>
+     *         }<br>
+     * <br>
+     *         if (result == GroundspeakAPI.API_IS_UNAVAILABLE)<br>
+     *         {<br>
+     *         GL.that.Toast(ApiUnavailable.INSTANCE);<br>
+     *         return;<br>
+     *         }<br>
+     */
+    public int importImagesNew(ImporterProgress ip, boolean importImages, boolean importSpoiler, String where) {
 
-		String sql = "select Id, Description, Name, GcCode, Url, ImagesUpdated, DescriptionImagesUpdated from Caches";
-		if (where.length() > 0) sql += " where " + where;
-		CoreCursor reader = Database.Data.rawQuery(sql, null);
+	// refresch all Image Urls
 
-		int cnt = -1;
-		int numCaches = reader.getCount();
-		ip.setJobMax("importImages", numCaches);
+	int ret = 0;
 
-		if (reader.getCount() > 0)
-		{
-			reader.moveToFirst();
-			while (reader.isAfterLast() == false)
-			{
-				try
-				{// for cancel/interupt Thread
-					Thread.sleep(10);
-				}
-				catch (InterruptedException e)
-				{
-					return 0;
-				}
+	String sql = "select Id, Description, Name, GcCode, Url, ImagesUpdated, DescriptionImagesUpdated from Caches";
+	if (where.length() > 0)
+	    sql += " where " + where;
+	CoreCursor reader = Database.Data.rawQuery(sql, null);
 
-				if (BreakawayImportThread.isCanceld()) return 0;
+	int cnt = -1;
+	int numCaches = reader.getCount();
+	ip.setJobMax("importImages", numCaches);
 
-				cnt++;
-				long id = reader.getLong(0);
-				String name = reader.getString(2);
-				String gcCode = reader.getString(3);
-
-				if (gcCode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
-				{
-					ip.ProgressInkrement("importImages", "Importing Images for " + gcCode + " (" + String.valueOf(cnt) + " / " + String.valueOf(numCaches) + ")", false);
-
-					boolean additionalImagesUpdated = false;
-					boolean descriptionImagesUpdated = false;
-
-					if (!reader.isNull(5))
-					{
-						additionalImagesUpdated = reader.getInt(5) != 0;
-					}
-					if (!reader.isNull(6))
-					{
-						descriptionImagesUpdated = reader.getInt(6) != 0;
-					}
-
-					String description = reader.getString(1);
-					String uri = reader.getString(4);
-
-					if (!importImages)
-					{
-						// do not import Description Images
-						descriptionImagesUpdated = true;
-					}
-					if (!importSpoiler)
-					{
-						// do not import Spoiler Images
-						additionalImagesUpdated = true;
-					}
-					ret = importImagesForCacheNew(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, name, description, uri, false);
-				}
-				reader.moveToNext();
-			}
+	if (reader.getCount() > 0) {
+	    reader.moveToFirst();
+	    while (reader.isAfterLast() == false) {
+		try {// for cancel/interupt Thread
+		    Thread.sleep(10);
+		} catch (InterruptedException e) {
+		    return 0;
 		}
 
-		reader.close();
-		return ret;
+		if (BreakawayImportThread.isCanceld())
+		    return 0;
+
+		cnt++;
+		long id = reader.getLong(0);
+		String name = reader.getString(2);
+		String gcCode = reader.getString(3);
+
+		if (gcCode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
+		{
+		    ip.ProgressInkrement("importImages", "Importing Images for " + gcCode + " (" + String.valueOf(cnt) + " / " + String.valueOf(numCaches) + ")", false);
+
+		    boolean additionalImagesUpdated = false;
+		    boolean descriptionImagesUpdated = false;
+
+		    if (!reader.isNull(5)) {
+			additionalImagesUpdated = reader.getInt(5) != 0;
+		    }
+		    if (!reader.isNull(6)) {
+			descriptionImagesUpdated = reader.getInt(6) != 0;
+		    }
+
+		    String description = reader.getString(1);
+		    String uri = reader.getString(4);
+
+		    if (!importImages) {
+			// do not import Description Images
+			descriptionImagesUpdated = true;
+		    }
+		    if (!importSpoiler) {
+			// do not import Spoiler Images
+			additionalImagesUpdated = true;
+		    }
+		    ret = importImagesForCacheNew(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, name, description, uri, false);
+		}
+		reader.moveToNext();
+	    }
 	}
 
-	/**
-	 * Importiert alle Spoiler Images f�r einen Cache (�ber die API-Funktion)
-	 * 
-	 * @param Staging
-	 *            Config.settings.StagingAPI.getValue()
-	 * @param ip
-	 * @param Cache
-	 * @param DescriptionImageFolder
-	 *            Config.settings.SpoilerFolder.getValue()
-	 * @param DescriptionImageFolderLocal
-	 *            Config.settings.SpoilerFolderLocal.getValue()
-	 * @param AccessToken
-	 *            Config.GetAccessToken(true)
-	 * @param DescriptionImageFolder
-	 *            Config.settings.DescriptionImageFolder.getValue()
-	 * @param DescriptionImageFolderLocal
-	 *            Config.settings.DescriptionImageFolderLocal.getValue()
-	 * @param conectionTimeout
-	 *            Config.settings.conection_timeout.getValue()
-	 * @param socketTimeout
-	 *            Config.settings.socket_timeout.getValue()
-	 * @return ErrorCode Use with<br>
-	 *         if (result == GroundspeakAPI.CONNECTION_TIMEOUT)<br>
-	 *         {<br>
-	 *         GL.that.Toast(ConnectionError.INSTANCE);<br>
-	 *         return;<br>
-	 *         }<br>
-	 * <br>
-	 *         if (result == GroundspeakAPI.API_IS_UNAVAILABLE)<br>
-	 *         {<br>
-	 *         GL.that.Toast(ApiUnavailable.INSTANCE);<br>
-	 *         return;<br>
-	 *         }<br>
-	 */
-	public int importSpoilerForCacheNew(ImporterProgress ip, Cache Cache)
-	{
-		if (Cache == null) return 0;
-		return importImagesForCacheNew(ip, true, false, Cache.Id, Cache.getGcCode(), Cache.getName(), "", "", true);
-	}
+	reader.close();
+	return ret;
+    }
 
-	/**
-	 * Bilderimport. Wenn descriptionImagesUpdated oder additionalImagesUpdated == false dann werden die entsprechenden Images importiert
-	 * Aber nur dann wenn CheckLocalImages daf�r false liefert. wenn importAlways == true -> die Bilder werden unabh�ngig davon, ob
-	 * schon welche existieren importiert
-	 * 
-	 * @param Staging
-	 *            Config.settings.StagingAPI.getValue()
-	 * @param DescriptionImageFolder
-	 *            Config.settings.SpoilerFolder.getValue()
-	 * @param DescriptionImageFolderLocal
-	 *            Config.settings.SpoilerFolderLocal.getValue()
-	 * @param AccessToken
-	 *            Config.GetAccessToken(true)
-	 * @param DescriptionImageFolder
-	 *            Config.settings.DescriptionImageFolder.getValue()
-	 * @param DescriptionImageFolderLocal
-	 *            Config.settings.DescriptionImageFolderLocal.getValue()
-	 * @param conectionTimeout
-	 *            Config.settings.conection_timeout.getValue()
-	 * @param socketTimeout
-	 *            Config.settings.socket_timeout.getValue()
-	 * @return ErrorCode Use with<br>
-	 *         if (result == GroundspeakAPI.CONNECTION_TIMEOUT)<br>
-	 *         {<br>
-	 *         GL.that.Toast(ConnectionError.INSTANCE);<br>
-	 *         return;<br>
-	 * <br>
-	 * <br>
-	 *         if (result == GroundspeakAPI.API_IS_UNAVAILABLE)<br>
-	 *         {<br>
-	 *         GL.that.Toast(ApiUnavailable.INSTANCE);<br>
-	 *         return;<br>
-	 * <br>
-	 */
-	private int importImagesForCacheNew(ImporterProgress ip, boolean descriptionImagesUpdated, boolean additionalImagesUpdated, long id, String gcCode, String name, String description, String uri, boolean importAlways)
-	{
-		boolean dbUpdate = false;
+    /**
+     * Importiert alle Spoiler Images für einen Cache (über die API-Funktion)
+     * 
+     * @param Staging
+     *            Config.settings.StagingAPI.getValue()
+     * @param ip
+     * @param Cache
+     * @param DescriptionImageFolder
+     *            Config.settings.SpoilerFolder.getValue()
+     * @param DescriptionImageFolderLocal
+     *            Config.settings.SpoilerFolderLocal.getValue()
+     * @param AccessToken
+     *            Config.GetAccessToken(true)
+     * @param DescriptionImageFolder
+     *            Config.settings.DescriptionImageFolder.getValue()
+     * @param DescriptionImageFolderLocal
+     *            Config.settings.DescriptionImageFolderLocal.getValue()
+     * @param conectionTimeout
+     *            Config.settings.conection_timeout.getValue()
+     * @param socketTimeout
+     *            Config.settings.socket_timeout.getValue()
+     * @return ErrorCode Use with<br>
+     *         if (result == GroundspeakAPI.CONNECTION_TIMEOUT)<br>
+     *         {<br>
+     *         GL.that.Toast(ConnectionError.INSTANCE);<br>
+     *         return;<br>
+     *         }<br>
+     * <br>
+     *         if (result == GroundspeakAPI.API_IS_UNAVAILABLE)<br>
+     *         {<br>
+     *         GL.that.Toast(ApiUnavailable.INSTANCE);<br>
+     *         return;<br>
+     *         }<br>
+     */
+    public int importSpoilerForCacheNew(ImporterProgress ip, Cache Cache) {
+	if (Cache == null)
+	    return 0;
+	return importImagesForCacheNew(ip, true, false, Cache.Id, Cache.getGcCode(), Cache.getName(), "", "", true);
+    }
 
-		// if (!importAlways)
-		// {
-		// 2014-06-19 - Ging-Buh:
-		// removed this function because spoiler and images was not imported when at least one image of this cache exists.
-		// This is not good because in the DB of each cache is stored whether the images are actual. If they are not actual the image
-		// should be laoded.
-		// the .changed file is no longer used too. The information about changed caches is stored in DB
-		// if (!descriptionImagesUpdated)
-		// {
-		// if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0)
-		// {
-		// descriptionImagesUpdated = CheckLocalImages(CB_Core_Settings.DescriptionImageFolderLocal.getValue(), gcCode);
-		// }
-		// else
-		// {
-		// descriptionImagesUpdated = CheckLocalImages(CB_Core_Settings.DescriptionImageFolder.getValue(), gcCode);
-		// }
-		//
-		// if (descriptionImagesUpdated)
-		// {
-		// dbUpdate = true;
-		// }
-		// }
-		// if (!additionalImagesUpdated)
-		// {
-		// if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() > 0)
-		// {
-		// additionalImagesUpdated = CheckLocalImages(CB_Core_Settings.SpoilerFolderLocal.getValue(), gcCode);
-		// }
-		// else
-		// {
-		// additionalImagesUpdated = CheckLocalImages(CB_Core_Settings.SpoilerFolder.getValue(), gcCode);
-		// }
-		//
-		// if (additionalImagesUpdated)
-		// {
-		// dbUpdate = true;
-		// }
-		// }
-		// }
-		// if (dbUpdate)
-		// {
-		// Parameters args = new Parameters();
-		// args.put("ImagesUpdated", additionalImagesUpdated);
-		// args.put("DescriptionImagesUpdated", descriptionImagesUpdated);
-		// Database.Data.update("Caches", args, "Id = ?", new String[]
-		// { String.valueOf(id) });
-		// }
+    /**
+     * Bilderimport. Wenn descriptionImagesUpdated oder additionalImagesUpdated == false dann werden die entsprechenden Images importiert
+     * Aber nur dann wenn CheckLocalImages dafür false liefert. wenn importAlways == true -> die Bilder werden unabhängig davon, ob
+     * schon welche existieren importiert
+     * 
+     * @param Staging
+     *            Config.settings.StagingAPI.getValue()
+     * @param DescriptionImageFolder
+     *            Config.settings.SpoilerFolder.getValue()
+     * @param DescriptionImageFolderLocal
+     *            Config.settings.SpoilerFolderLocal.getValue()
+     * @param AccessToken
+     *            Config.GetAccessToken(true)
+     * @param DescriptionImageFolder
+     *            Config.settings.DescriptionImageFolder.getValue()
+     * @param DescriptionImageFolderLocal
+     *            Config.settings.DescriptionImageFolderLocal.getValue()
+     * @param conectionTimeout
+     *            Config.settings.conection_timeout.getValue()
+     * @param socketTimeout
+     *            Config.settings.socket_timeout.getValue()
+     * @return ErrorCode Use with<br>
+     *         if (result == GroundspeakAPI.CONNECTION_TIMEOUT)<br>
+     *         {<br>
+     *         GL.that.Toast(ConnectionError.INSTANCE);<br>
+     *         return;<br>
+     * <br>
+     * <br>
+     *         if (result == GroundspeakAPI.API_IS_UNAVAILABLE)<br>
+     *         {<br>
+     *         GL.that.Toast(ApiUnavailable.INSTANCE);<br>
+     *         return;<br>
+     * <br>
+     */
+    private int importImagesForCacheNew(ImporterProgress ip, boolean descriptionImagesUpdated, boolean additionalImagesUpdated, long id, String gcCode, String name, String description, String uri, boolean importAlways) {
+	boolean dbUpdate = false;
 
-		return DescriptionImageGrabber.GrabImagesSelectedByCache(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, name, description, uri);
-	}
-
-	/**
-	 * �berpr�ft, ob f�r den gew�hlten Cache die Bilder nicht geladen werden m�ssen
-	 * 
-	 * @return true wenn schon Images existieren und keine .changed oder .1st Datei ansonsten false
-	 */
-	// nicht mehr benutzt
-	// private boolean CheckLocalImages(String path, final String GcCode)
+	// if (!importAlways)
 	// {
-	// boolean retval = true;
-	//
-	// String imagePath = path + "/" + GcCode.substring(0, 4);
-	// boolean imagePathDirExists = FileIO.DirectoryExists(imagePath);
-	//
-	// if (imagePathDirExists)
+	// 2014-06-19 - Ging-Buh:
+	// removed this function because spoiler and images was not imported when at least one image of this cache exists.
+	// This is not good because in the DB of each cache is stored whether the images are actual. If they are not actual the image
+	// should be laoded.
+	// the .changed file is no longer used too. The information about changed caches is stored in DB
+	// if (!descriptionImagesUpdated)
 	// {
-	// File dir = new File(imagePath);
-	// FilenameFilter filter = new FilenameFilter()
+	// if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0)
 	// {
-	// @Override
-	// public boolean accept(File dir, String filename)
-	// {
-	//
-	// filename = filename.toLowerCase(Locale.getDefault());
-	// if (filename.indexOf(GcCode.toLowerCase(Locale.getDefault())) == 0)
-	// {
-	// return true;
-	// }
-	// return false;
-	// }
-	// };
-	// String[] files = dir.list(filter);
-	//
-	// if (files.length > 0)
-	// {
-	// for (String file : files)
-	// {
-	// if (file.endsWith(".1st") || file.endsWith(".changed"))
-	// {
-	// if (file.endsWith(".changed"))
-	// {
-	// File f = new File(file);
-	// try
-	// {
-	// f.delete();
-	// }
-	// catch (Exception ex)
-	// {
-	// }
-	// }
-	// retval = false;
-	// }
-	// }
+	// descriptionImagesUpdated = CheckLocalImages(CB_Core_Settings.DescriptionImageFolderLocal.getValue(), gcCode);
 	// }
 	// else
 	// {
-	// retval = false;
+	// descriptionImagesUpdated = CheckLocalImages(CB_Core_Settings.DescriptionImageFolder.getValue(), gcCode);
 	// }
+	//
+	// if (descriptionImagesUpdated)
+	// {
+	// dbUpdate = true;
+	// }
+	// }
+	// if (!additionalImagesUpdated)
+	// {
+	// if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() > 0)
+	// {
+	// additionalImagesUpdated = CheckLocalImages(CB_Core_Settings.SpoilerFolderLocal.getValue(), gcCode);
 	// }
 	// else
 	// {
-	// retval = false;
+	// additionalImagesUpdated = CheckLocalImages(CB_Core_Settings.SpoilerFolder.getValue(), gcCode);
 	// }
 	//
-	// return retval;
+	// if (additionalImagesUpdated)
+	// {
+	// dbUpdate = true;
+	// }
+	// }
+	// }
+	// if (dbUpdate)
+	// {
+	// Parameters args = new Parameters();
+	// args.put("ImagesUpdated", additionalImagesUpdated);
+	// args.put("DescriptionImagesUpdated", descriptionImagesUpdated);
+	// Database.Data.update("Caches", args, "Id = ?", new String[]
+	// { String.valueOf(id) });
 	// }
 
-	/**
-	 * @param Staging
-	 *            Config.settings.StagingAPI.getValue()
-	 * @param GcCode
-	 * @param ID
-	 * @param AccessToken
-	 *            Config.GetAccessToken(true)
-	 * @param conectionTimeout
-	 *            Config.settings.conection_timeout.getValue()
-	 * @param socketTimeout
-	 *            Config.settings.socket_timeout.getValue()
-	 * @return ErrorCode Use with<br>
-	 *         if (result == GroundspeakAPI.CONNECTION_TIMEOUT)<br>
-	 *         {<br>
-	 *         GL.that.Toast(ConnectionError.INSTANCE);<br>
-	 *         return;<br>
-	 *         }<br>
-	 * <br>
-	 *         if (result == GroundspeakAPI.API_IS_UNAVAILABLE)<br>
-	 *         {<br>
-	 *         GL.that.Toast(ApiUnavailable.INSTANCE);<br>
-	 *         return;<br>
-	 *         }<br>
-	 */
-	private int importApiImages(String GcCode, long ID)
+	return DescriptionImageGrabber.GrabImagesSelectedByCache(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, name, description, uri);
+    }
+
+    /**
+     * überprüft, ob für den gewählten Cache die Bilder nicht geladen werden müssen
+     * 
+     * @return true wenn schon Images existieren und keine .changed oder .1st Datei ansonsten false
+     */
+    // nicht mehr benutzt
+    // private boolean CheckLocalImages(String path, final String GcCode)
+    // {
+    // boolean retval = true;
+    //
+    // String imagePath = path + "/" + GcCode.substring(0, 4);
+    // boolean imagePathDirExists = FileIO.DirectoryExists(imagePath);
+    //
+    // if (imagePathDirExists)
+    // {
+    // File dir = new File(imagePath);
+    // FilenameFilter filter = new FilenameFilter()
+    // {
+    // @Override
+    // public boolean accept(File dir, String filename)
+    // {
+    //
+    // filename = filename.toLowerCase(Locale.getDefault());
+    // if (filename.indexOf(GcCode.toLowerCase(Locale.getDefault())) == 0)
+    // {
+    // return true;
+    // }
+    // return false;
+    // }
+    // };
+    // String[] files = dir.list(filter);
+    //
+    // if (files.length > 0)
+    // {
+    // for (String file : files)
+    // {
+    // if (file.endsWith(".1st") || file.endsWith(".changed"))
+    // {
+    // if (file.endsWith(".changed"))
+    // {
+    // File f = new File(file);
+    // try
+    // {
+    // f.delete();
+    // }
+    // catch (Exception ex)
+    // {
+    // }
+    // }
+    // retval = false;
+    // }
+    // }
+    // }
+    // else
+    // {
+    // retval = false;
+    // }
+    // }
+    // else
+    // {
+    // retval = false;
+    // }
+    //
+    // return retval;
+    // }
+
+    /**
+     * @param Staging
+     *            Config.settings.StagingAPI.getValue()
+     * @param GcCode
+     * @param ID
+     * @param AccessToken
+     *            Config.GetAccessToken(true)
+     * @param conectionTimeout
+     *            Config.settings.conection_timeout.getValue()
+     * @param socketTimeout
+     *            Config.settings.socket_timeout.getValue()
+     * @return ErrorCode Use with<br>
+     *         if (result == GroundspeakAPI.CONNECTION_TIMEOUT)<br>
+     *         {<br>
+     *         GL.that.Toast(ConnectionError.INSTANCE);<br>
+     *         return;<br>
+     *         }<br>
+     * <br>
+     *         if (result == GroundspeakAPI.API_IS_UNAVAILABLE)<br>
+     *         {<br>
+     *         GL.that.Toast(ApiUnavailable.INSTANCE);<br>
+     *         return;<br>
+     *         }<br>
+     */
+    private int importApiImages(String GcCode, long ID) {
+
+	int ret = 0;
+
+	ImportHandler importHandler = new ImportHandler();
+	LinkedList<String> allImages = new LinkedList<String>();
+	ArrayList<String> apiImages = new ArrayList<String>();
+
+	if (GcCode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
 	{
+	    int result = GroundspeakAPI.getImagesForGeocache(GcCode, apiImages, null);
 
-		int ret = 0;
-
-		ImportHandler importHandler = new ImportHandler();
-		LinkedList<String> allImages = new LinkedList<String>();
-		ArrayList<String> apiImages = new ArrayList<String>();
-
-		if (GcCode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
-		{
-			int result = GroundspeakAPI.getImagesForGeocache(GcCode, apiImages, null);
-
-			if (result == GroundspeakAPI.IO)
-			{
-				for (String image : apiImages)
-				{
-					if (image.contains("/log/")) continue; // do not import log-images
-					if (!allImages.contains(image)) allImages.add(image);
-				}
-				while (allImages != null && allImages.size() > 0)
-				{
-					String url;
-					url = allImages.poll();
-
-					ImageEntry image = new ImageEntry();
-
-					image.CacheId = ID;
-					image.GcCode = GcCode;
-					image.Name = url.substring(url.lastIndexOf("/") + 1);
-					image.Description = "";
-					image.ImageUrl = url;
-					image.IsCacheImage = true;
-
-					importHandler.handleImage(image, true);
-
-				}
-			}
-
-			if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
-			{
-				ret = GroundspeakAPI.CONNECTION_TIMEOUT;
-			}
-			if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
-			{
-				ret = GroundspeakAPI.API_IS_UNAVAILABLE;
-			}
+	    if (result == GroundspeakAPI.IO) {
+		for (String image : apiImages) {
+		    if (image.contains("/log/"))
+			continue; // do not import log-images
+		    if (!allImages.contains(image))
+			allImages.add(image);
 		}
-		return ret;
+		while (allImages != null && allImages.size() > 0) {
+		    String url;
+		    url = allImages.poll();
 
-	}
+		    ImageEntry image = new ImageEntry();
 
-	public void importMaps()
-	{
-		ProgresssChangedEventList.Call("import Map", "", 0);
+		    image.CacheId = ID;
+		    image.GcCode = GcCode;
+		    image.Name = url.substring(url.lastIndexOf("/") + 1);
+		    image.Description = "";
+		    image.ImageUrl = url;
+		    image.IsCacheImage = true;
 
-	}
+		    importHandler.handleImage(image, true);
 
-	public void importMail()
-	{
-		ProgresssChangedEventList.Call("import from Mail", "", 0);
-
-	}
-
-	private File[] GetFilesToLoad(String directoryPath)
-	{
-		ArrayList<File> files = new ArrayList<File>();
-
-		File file = new File(directoryPath);
-		if (file.isFile())
-		{
-			files.add(file);
 		}
-		else
-		{
-			if (FileIO.DirectoryExists(directoryPath))
-			{
-				files = FileIO.recursiveDirectoryReader(new File(directoryPath), files);
-			}
+	    }
+
+	    if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
+		ret = GroundspeakAPI.CONNECTION_TIMEOUT;
+	    }
+	    if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
+		ret = GroundspeakAPI.API_IS_UNAVAILABLE;
+	    }
+	}
+	return ret;
+
+    }
+
+    public void importMaps() {
+	ProgresssChangedEventList.Call("import Map", "", 0);
+
+    }
+
+    public void importMail() {
+	ProgresssChangedEventList.Call("import from Mail", "", 0);
+
+    }
+
+    private File[] GetFilesToLoad(String directoryPath) {
+	ArrayList<File> files = new ArrayList<File>();
+
+	File file = new File(directoryPath);
+	if (file.isFile()) {
+	    files.add(file);
+	} else {
+	    if (FileIO.DirectoryExists(directoryPath)) {
+		files = FileIO.recursiveDirectoryReader(new File(directoryPath), files);
+	    }
+	}
+
+	File[] fileArray = files.toArray(new File[files.size()]);
+
+	Arrays.sort(fileArray, new Comparator<File>() {
+	    public int compare(File f1, File f2) {
+
+		if (f1.getName().equalsIgnoreCase(f2.getName().replace(".gpx", "") + "-wpts.gpx")) {
+		    return 1;
+		} else if (f2.getName().equalsIgnoreCase(f1.getName().replace(".gpx", "") + "-wpts.gpx")) {
+		    return -1;
+		} else if (f1.lastModified() > f2.lastModified()) {
+		    return 1;
 		}
 
-		File[] fileArray = files.toArray(new File[files.size()]);
+		else if (f1.lastModified() < f2.lastModified()) {
+		    return -1;
+		}
 
-		Arrays.sort(fileArray, new Comparator<File>()
-		{
-			public int compare(File f1, File f2)
-			{
+		else {
+		    return f1.getAbsolutePath().compareToIgnoreCase(f2.getAbsolutePath()) * -1;
+		}
+	    }
+	});
 
-				if (f1.getName().equalsIgnoreCase(f2.getName().replace(".gpx", "") + "-wpts.gpx"))
-				{
-					return 1;
-				}
-				else if (f2.getName().equalsIgnoreCase(f1.getName().replace(".gpx", "") + "-wpts.gpx"))
-				{
-					return -1;
-				}
-				else if (f1.lastModified() > f2.lastModified())
-				{
-					return 1;
-				}
-
-				else if (f1.lastModified() < f2.lastModified())
-				{
-					return -1;
-				}
-
-				else
-				{
-					return f1.getAbsolutePath().compareToIgnoreCase(f2.getAbsolutePath()) * -1;
-				}
-			}
-		});
-
-		return fileArray;
-	}
+	return fileArray;
+    }
 
 }

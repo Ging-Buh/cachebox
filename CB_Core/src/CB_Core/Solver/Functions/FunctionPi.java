@@ -11,7 +11,7 @@ public class FunctionPi extends Function
 	public FunctionPi(Solver solver)
 	{
 		super(solver);
-		Names.add(new LacalNames("Pi", "en"));
+		Names.add(new LocalNames("Pi", "en"));
 	}
 
 	@Override

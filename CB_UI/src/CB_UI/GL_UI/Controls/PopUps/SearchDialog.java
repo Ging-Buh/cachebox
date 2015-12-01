@@ -653,10 +653,7 @@ public class SearchDialog extends PopUp_Base {
 		    return;
 		}
 
-		// alle per API importierten Caches landen in der Category und
-		// GpxFilename
-		// API-Import
-		// Category suchen, die dazu gehört
+		// alle per API importierten Caches landen in der Category und GpxFilename API-Import Category suchen, die dazu gehört
 		CategoryDAO categoryDAO = new CategoryDAO();
 		Category category = categoryDAO.GetCategory(CoreSettingsForward.Categories, "API-Import");
 		if (category == null)

@@ -11,7 +11,7 @@ public class FunctionReverse extends Function
 	public FunctionReverse(Solver solver)
 	{
 		super(solver);
-		Names.add(new LacalNames("Reverse", "en"));
+		Names.add(new LocalNames("Reverse", "en"));
 	}
 
 	@Override

@@ -11,7 +11,7 @@ public class FunctionMid extends Function
 	public FunctionMid(Solver solver)
 	{
 		super(solver);
-		Names.add(new LacalNames("Mid", "en"));
+		Names.add(new LocalNames("Mid", "en"));
 	}
 
 	@Override

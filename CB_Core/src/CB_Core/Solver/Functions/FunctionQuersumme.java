@@ -11,10 +11,10 @@ public class FunctionQuersumme extends Function
 	public FunctionQuersumme(Solver solver)
 	{
 		super(solver);
-		Names.add(new LacalNames("Crosstotal", "en"));
-		Names.add(new LacalNames("Quersumme", "de"));
-		Names.add(new LacalNames("CT", "en"));
-		Names.add(new LacalNames("QS", "de"));
+		Names.add(new LocalNames("Crosstotal", "en"));
+		Names.add(new LocalNames("Quersumme", "de"));
+		Names.add(new LocalNames("CT", "en"));
+		Names.add(new LocalNames("QS", "de"));
 	}
 
 	@Override

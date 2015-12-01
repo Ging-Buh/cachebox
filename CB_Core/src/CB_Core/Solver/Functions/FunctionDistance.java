@@ -16,7 +16,7 @@ public class FunctionDistance extends Function
 	public FunctionDistance(Solver solver)
 	{
 		super(solver);
-		Names.add(new LacalNames("Distance", "en"));
+		Names.add(new LocalNames("Distance", "en"));
 	}
 
 	@Override

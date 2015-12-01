@@ -11,7 +11,7 @@ public class FunctionRom2Dec extends Function
 	public FunctionRom2Dec(Solver solver)
 	{
 		super(solver);
-		Names.add(new LacalNames("Rom2Dec", "en"));
+		Names.add(new LocalNames("Rom2Dec", "en"));
 	}
 
 	@Override

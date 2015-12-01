@@ -11,8 +11,8 @@ public class FunctionPrimeIndex extends FunctionPrimeBase
 	public FunctionPrimeIndex(Solver solver)
 	{
 		super(solver);
-		Names.add(new LacalNames("PrimeIndex", "en"));
-		Names.add(new LacalNames("PrimIndex", "de"));
+		Names.add(new LocalNames("PrimeIndex", "en"));
+		Names.add(new LocalNames("PrimIndex", "de"));
 	}
 
 	@Override

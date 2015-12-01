@@ -11,8 +11,8 @@ public class FunctionPrimenumber extends FunctionPrimeBase
 	public FunctionPrimenumber(Solver solver)
 	{
 		super(solver);
-		Names.add(new LacalNames("Primenumber", "en"));
-		Names.add(new LacalNames("Primzahl", "de"));
+		Names.add(new LocalNames("Primenumber", "en"));
+		Names.add(new LocalNames("Primzahl", "de"));
 	}
 
 	@Override

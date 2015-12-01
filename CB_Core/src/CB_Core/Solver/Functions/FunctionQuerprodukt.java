@@ -11,10 +11,10 @@ public class FunctionQuerprodukt extends Function
 	public FunctionQuerprodukt(Solver solver)
 	{
 		super(solver);
-		Names.add(new LacalNames("Crossproduct", "en"));
-		Names.add(new LacalNames("Querprodukt", "de"));
-		Names.add(new LacalNames("CP", "en"));
-		Names.add(new LacalNames("QP", "de"));
+		Names.add(new LocalNames("Crossproduct", "en"));
+		Names.add(new LocalNames("Querprodukt", "de"));
+		Names.add(new LocalNames("CP", "en"));
+		Names.add(new LocalNames("QP", "de"));
 	}
 
 	@Override

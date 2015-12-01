@@ -15,7 +15,7 @@ public class FunctionBearing extends Function
 	public FunctionBearing(Solver solver)
 	{
 		super(solver);
-		Names.add(new LacalNames("Bearing", "en"));
+		Names.add(new LocalNames("Bearing", "en"));
 	}
 
 	@Override
