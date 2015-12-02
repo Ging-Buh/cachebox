@@ -2,15 +2,13 @@ package API;
 
 import java.util.ArrayList;
 
-import junit.framework.TestCase;
-
 import org.junit.Test;
 
+import CB_Core.Database;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.LiveMapQue;
 import CB_Core.Api.SearchForGeocaches_Core;
 import CB_Core.Api.SearchLiveMap;
-import CB_Core.DB.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
@@ -20,6 +18,7 @@ import CB_UI.Config;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Lists.CB_List;
 import __Static.InitTestDBs;
+import junit.framework.TestCase;
 
 public class searchLiveMapTests extends TestCase {
     @Override

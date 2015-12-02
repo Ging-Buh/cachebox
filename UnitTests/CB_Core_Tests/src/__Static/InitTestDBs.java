@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import com.badlogic.gdx.Files.FileType;
+
 import CB_Core.CoreSettingsForward;
-import CB_Core.DB.Database;
-import CB_Core.DB.Database.DatabaseType;
+import CB_Core.Database;
+import CB_Core.Database.DatabaseType;
 import CB_Core.Types.Categories;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
@@ -17,8 +19,6 @@ import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileIO;
-
-import com.badlogic.gdx.Files.FileType;
 
 /**
  * Initialisiert die Config oder eine TestDB

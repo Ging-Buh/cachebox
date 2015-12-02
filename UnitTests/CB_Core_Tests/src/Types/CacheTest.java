@@ -20,12 +20,12 @@ import java.util.Iterator;
 
 import org.junit.Test;
 
+import CB_Core.Attributes;
+import CB_Core.CacheSizes;
+import CB_Core.CacheTypes;
+import CB_Core.Database;
+import CB_Core.LogTypes;
 import CB_Core.DAO.CacheDAO;
-import CB_Core.DB.Database;
-import CB_Core.Enums.Attributes;
-import CB_Core.Enums.CacheSizes;
-import CB_Core.Enums.CacheTypes;
-import CB_Core.Enums.LogTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import CB_Locator.CoordinateGPS;
@@ -47,8 +47,8 @@ public class CacheTest extends TestCase {
 	    + "so achte dich vor ihm, die Gefahr besteht dass du vergisst<br />" + BR + "und vor lauter Kummer und Sorgen ihm tief in die Augen" + BR + "erblickst!!<br />" + BR + "<br />" + BR + "Es ist dann zu sp�t!<br />" + BR + "Dann hat dich der Hampir bereits ersp�ht!!<br />" + BR + "Der Hampir, so sagt man erschallt sein Gel�chter<br />" + BR
 	    + "wenn es Beute vor sich hat, so schaurig so grell,<br />" + BR + "rette dich wenn du kannst schneller als schnell!<br />" + BR + "<br />" + BR + "Und wage dich nicht in den Wald<br />" + BR + "in der Nacht beim Vollmond ist es dort bitterkalt!<br />" + BR + "Nebelschwaden dort, aber die schaurige Gestalten<br />" + BR + "verstecken sich im dunkeln mit dem Gedanken,<br />" + BR
 	    + "ihre Beute noch schneller zu jagen als der Hampir!<br />" + BR + "Dennoch willst du in den Wald?! �berlege es dir!!<br />" + BR + "<br />" + BR + "Du meinst, ach was... Hampire... die gibt es doch nicht?!<br />" + BR + "Die Hasen die warnen: HIER wartet er auf dich!!!<br />" + BR + "<br /></font></center>" + BR + "<font face=\"tahoma\" size=\"3\" color=\"#330033\"><br />" + BR
-	    + "<br />" + BR + "Fotos d�rft Ihr gerne machen <img src=" + BR + "'http://www.geocaching.com/images/icons/icon_smile_big.gif' border=" + BR + "\"0\" align=\"middle\" /><br />" + BR + "<br />" + BR + "<br />" + BR + "ein besonderer Dank an Monas Cacherteam, f�r die handwerkliche" + BR + "Meisterleistung!!<br />" + BR + "Es ist genau so geworden, wie es sich die Hasen vorgestellt" + BR
-	    + "haben!!<br />" + BR + "<br /></font><br />" + BR + "<a href=\"http://www.andyhoppe.com/\" title=" + BR + "\"Counter/Z�hler\"><img src=\"http://c.andyhoppe.com/1302990447\"" + BR + "style=\"border:none\" alt=\"Counter/Z�hler\" /></a><p>Additional Hidden Waypoints</p>PK2T9RW - GC2T9RW Parking<br />N 49� 21.077 E 008� 37.840<br />Rastst�tte Hardtwald West." + BR
+	    + "<br />" + BR + "Fotos d�rft Ihr gerne machen <img src=" + BR + "'http://www.geocaching.com/images/icons/icon_smile_big.gif' border=" + BR + "\"0\" align=\"middle\" /><br />" + BR + "<br />" + BR + "<br />" + BR + "ein besonderer Dank an Monas Cacherteam, f�r die handwerkliche" + BR + "Meisterleistung!!<br />" + BR + "Es ist genau so geworden, wie es sich die Hasen vorgestellt"
+	    + BR + "haben!!<br />" + BR + "<br /></font><br />" + BR + "<a href=\"http://www.andyhoppe.com/\" title=" + BR + "\"Counter/Z�hler\"><img src=\"http://c.andyhoppe.com/1302990447\"" + BR + "style=\"border:none\" alt=\"Counter/Z�hler\" /></a><p>Additional Hidden Waypoints</p>PK2T9RW - GC2T9RW Parking<br />N 49� 21.077 E 008� 37.840<br />Rastst�tte Hardtwald West." + BR
 	    + "Und f�r Ortskundige: einfach Richtung ADAC �bungsgel�nde. Dann m�sst Ihr nicht auf die Autobahn.<br />";
 
     @Override

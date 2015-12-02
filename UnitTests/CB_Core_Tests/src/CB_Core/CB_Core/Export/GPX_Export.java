@@ -26,19 +26,17 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Scanner;
 
-import junit.framework.TestCase;
-
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
+import CB_Core.Attributes;
+import CB_Core.CacheSizes;
+import CB_Core.CacheTypes;
+import CB_Core.Database;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
-import CB_Core.DB.Database;
-import CB_Core.Enums.Attributes;
-import CB_Core.Enums.CacheSizes;
-import CB_Core.Enums.CacheTypes;
 import CB_Core.Export.GpxSerializer;
 import CB_Core.Export.GpxSerializer.ProgressListener;
 import CB_Core.Import.GPXFileImporter;
@@ -49,6 +47,7 @@ import CB_Locator.Coordinate;
 import CB_UI_Base.Global;
 import Types.CacheTest;
 import __Static.InitTestDBs;
+import junit.framework.TestCase;
 
 /**
  * Test the GPX Export

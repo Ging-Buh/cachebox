@@ -17,18 +17,17 @@ package CB_Core.CB_Core.Import;
 
 import java.io.File;
 
-import junit.framework.TestCase;
-
 import org.slf4j.LoggerFactory;
 
+import CB_Core.Database;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.LogDAO;
-import CB_Core.DB.Database;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.ImportHandler;
 import CB_Core.Types.Cache;
 import Types.CacheTest;
 import __Static.InitTestDBs;
+import junit.framework.TestCase;
 
 /**
  * Test the GPX Import
