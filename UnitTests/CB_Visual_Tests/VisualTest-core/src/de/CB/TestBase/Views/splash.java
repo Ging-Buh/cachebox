@@ -140,7 +140,7 @@ public class splash extends MainViewBase
 		GlyphLayout layout = new GlyphLayout(); 
 		layout.setText( Fonts.getNormal(),VersionString);
 		
-		descTextView = new Label(0, CB_LogoRec.getY() - ref - layout.height, this.getWidth(), layout.height + 10, "DescLabel");
+		descTextView = new Label(this.name + " descTextView", 0, CB_LogoRec.getY() - ref - layout.height, this.getWidth(), layout.height + 10);
 
 		descTextView.setWrappedText(VersionString );
 		descTextView.setHAlignment(CB_UI_Base.GL_UI.Controls.Label.HAlignment.CENTER);

@@ -78,7 +78,7 @@ public class Label extends CB_View_Base {
 	}
     }
 
-    BitmapFontCache TextObject;
+    protected BitmapFontCache mTextObject;
     // FIXME Create BitmapFontCache-Array and reduce PolygonSpriteBatch(10920) constructor for Labels with long Text
 
     protected String mText = "";
@@ -156,34 +156,10 @@ public class Label extends CB_View_Base {
 	initLabel();
     }
 
-    public void setUnderline() {
-	underline = true;
-    }
-
-    public void setUnderline(boolean value) {
-	underline = value;
-    }
-
-    public void resetUnderline() {
-	underline = false;
-    }
-
-    public void setStrikeout() {
-	strikeout = true;
-    }
-
-    public void setStrikeout(boolean value) {
-	strikeout = value;
-    }
-
-    public void resetStrikeout() {
-	strikeout = false;
-    }
-
     private void initLabel() {
-	TextObject = new BitmapFontCache(mFont, false);
-	TextObject.setColor(mColor);
-	makeText();
+	mTextObject = new BitmapFontCache(mFont, false);
+	mTextObject.setColor(mColor);
+	setText();
     }
 
     static int indexOf(CharSequence text, char ch, int start) {
@@ -201,9 +177,9 @@ public class Label extends CB_View_Base {
 	    lastRender = GL.that.getStateTime();
 
 	try {
-	    if (TextObject != null)
-		TextObject.draw(batch);
-
+	    if (mTextObject != null) {
+		mTextObject.draw(batch);
+	    }
 	    //Draw Underline
 	    if (underline | strikeout) {
 		if (underlineStrikeoutDrawable == null) {
@@ -211,7 +187,7 @@ public class Label extends CB_View_Base {
 		    if (underline)
 			addLine(lineList, 0);
 		    if (strikeout)
-			addLine(lineList, TextObject.getFont().getDescent());
+			addLine(lineList, mTextObject.getFont().getDescent());
 		    GL_Paint PAINT = new GL_Paint();
 		    PAINT.setColor(mColor);
 		    underlineStrikeoutDrawable = new PolygonDrawable(lineList.getVertices(), lineList.getTriangles(), PAINT, this.getWidth(), this.getHeight());
@@ -261,56 +237,40 @@ public class Label extends CB_View_Base {
 	    }
 	} catch (ArrayIndexOutOfBoundsException e) {
 	    // kommt manchmal wenn der Text geändert wird
-	    makeText();
+	    setText();
 	} catch (NullPointerException e) {
 	    // kommt manchmal wenn der Text geändert wird
-	    makeText();
+	    setText();
 	}
-
-	//	//Draw Debug Rec
-	//	if (DebugSprite != null) {
-	//	    batch.flush();
-	//	    DebugSprite.draw(batch);
-	//
-	//	} else {
-	//	    writeDebug();
-	//	}
-
     }
 
-    private final AtomicBoolean chekRuns = new AtomicBoolean(false);
+    private final AtomicBoolean checkRuns = new AtomicBoolean(false);
 
     private void checkRenderMustStart() {
-
-	if (chekRuns.get())
+	if (checkRuns.get())
 	    return;
-	Thread th = new Thread(new Runnable() {
-
+	Thread thread = new Thread(new Runnable() {
 	    @Override
 	    public void run() {
-		chekRuns.set(true);
+		checkRuns.set(true);
 		while (lastRender + 0.01 < GL.that.getStateTime()) {
 		    try {
 			Thread.sleep(10);
 		    } catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		    }
 		    GL.that.renderOnce();
-		    chekRuns.set(false);
+		    checkRuns.set(false);
 		}
-
 	    }
 	});
-
-	th.start();
-
+	thread.start();
     }
 
     private GeometryList addLine(GeometryList lineList, float yOffset) {
-	float ascent = TextObject.getFont().getAscent();
+	float ascent = mTextObject.getFont().getAscent();
 	float underlineHight = ascent * 0.333f;
-	float[] vertices = TextObject.getVertices();
+	float[] vertices = mTextObject.getVertices();
 
 	int start2 = 0;
 	float lxStart = 0;
@@ -359,91 +319,62 @@ public class Label extends CB_View_Base {
 	return lineList;
     }
 
-    protected void setText() {
-	mWrapType = WrapType.SINGLELINE;
-	makeTextObject();
+    private void setText() {
+	if (mTextObject == null) {
+	    mTextObject = new BitmapFontCache(mFont, false);
+	} else if (!mTextObject.getFont().equals(mFont)) {
+	    mTextObject = new BitmapFontCache(mFont, false);
+	}
+	if (!mTextObject.getColor().equals(mColor)) {
+	    mTextObject.setColor(mColor);
+	}
 	try {
-	    bounds = TextObject.setText(mText, 0, 0);
+	    switch (mWrapType) {
+	    case SINGLELINE:
+		bounds = mTextObject.setText(mText, 0f, 0f);
+		break;
+	    case MULTILINE:
+		bounds = mTextObject.setText(mText, 0f, 0f, this.getWidth(), GDX_HAlignment(mHAlignment), false);
+		break;
+	    case WRAPPED:
+		bounds = mTextObject.setText(mText, 0f, 0f, this.getWidth(), GDX_HAlignment(mHAlignment), true);
+		break;
+	    }
 	} catch (Exception e) {
 	    // java.lang.ArrayIndexOutOfBoundsException kommt mal vor
 	    e.printStackTrace();
 	    log.error(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + " \"" + mText + "\"", e);
 	}
-
-	//new text, delete underline and strikeout drawable
-	deleteUnderlineStrikeout();
-
-	setTextPosition();
-    }
-
-    protected void setMultiLineText() {
-	mWrapType = WrapType.MULTILINE;
-	makeTextObject();
-	//	bounds = mFont.getMultiLineBounds(mText);
-	try {
-	    bounds = TextObject.setText(mText, 0f, 0f, this.getWidth(), GDX_HAlignment(mHAlignment), false);
-
-	} catch (Exception e) {
-	    // java.lang.ArrayIndexOutOfBoundsException kommt mal vor
-	    e.printStackTrace();
-	    log.debug(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + " \"" + mText + "\"");
-	}
-
-	//new text, delete underline and strikeout drawable
-	deleteUnderlineStrikeout();
-
-	setTextPosition();
-    }
-
-    protected void setWrappedText() {
-	mWrapType = WrapType.WRAPPED;
-	makeTextObject();
-	//	bounds = mFont.getWrappedBounds(mText, innerWidth);
-	try {
-	    bounds = TextObject.setText(mText, 0f, 0f, this.getWidth(), GDX_HAlignment(mHAlignment), true);
-	} catch (Exception e) {
-	    // java.lang.ArrayIndexOutOfBoundsException kommt mal vor
-	    e.printStackTrace();
-	    log.debug(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + " \"" + mText + "\"");
-	}
-
-	//new text, delete underline and strikeout drawable
-	deleteUnderlineStrikeout();
-	setTextPosition();
-    }
-
-    private void deleteUnderlineStrikeout() {
 	if (underlineStrikeoutDrawable != null) {
 	    underlineStrikeoutDrawable.dispose();
 	    underlineStrikeoutDrawable = null;
 	}
-    }
-
-    private void makeTextObject() {
-	if (TextObject == null) {
-	    TextObject = new BitmapFontCache(mFont, false);
-	} else if (!TextObject.getFont().equals(mFont)) {
-	    TextObject = new BitmapFontCache(mFont, false);
-	}
-
-	if (!TextObject.getColor().equals(mColor)) {
-	    TextObject.setColor(mColor);
-	}
+	setTextPosition();
     }
 
     private void setTextPosition() {
 	// left : text starts at xPosition
-	float xPosition = leftBorder + 1; // HAlignment.LEFT !!! Die 1 ist empirisch begründet
+	float xPosition = leftBorder + 1; // !!! Die 1 ist empirisch begründet
+	//default HAlignment.LEFT
 	if (innerWidth > bounds.width) {
 	    if (mHAlignment == HAlignment.CENTER || mHAlignment == HAlignment.SCROLL_CENTER) {
-		if (mWrapType == WrapType.SINGLELINE)
+		if (mWrapType == WrapType.SINGLELINE) {
 		    xPosition = (innerWidth - bounds.width) / 2f;
+		} else {
+		}
 	    } else if (mHAlignment == HAlignment.RIGHT || mHAlignment == HAlignment.SCROLL_RIGHT) {
-		if (mWrapType == WrapType.SINGLELINE)
+		if (mWrapType == WrapType.SINGLELINE) {
 		    xPosition = innerWidth - bounds.width;
+		} else {
+		}
 	    }
-	} else if (mHAlignment == HAlignment.SCROLL_CENTER || mHAlignment == HAlignment.SCROLL_LEFT || mHAlignment == HAlignment.SCROLL_RIGHT) {
-	    xPosition += scrollPos;
+	} else {
+	    if (mHAlignment == HAlignment.SCROLL_CENTER || mHAlignment == HAlignment.SCROLL_LEFT || mHAlignment == HAlignment.SCROLL_RIGHT) {
+		xPosition += scrollPos;
+	    } else {
+		// no horizontal scrolling and Text out of limits
+		log.debug("Label Text is too long: " + mText);
+	    }
 	}
 	// bottom : text starts at yPosition
 	float yPosition = bounds.height; // VAlignment.BOTTOM
@@ -461,7 +392,7 @@ public class Label extends CB_View_Base {
 	}
 
 	try {
-	    TextObject.setPosition(xPosition, yPosition);
+	    mTextObject.setPosition(xPosition, yPosition);
 	    ErrorCount = 0;
 	} catch (Exception e) {
 	    // Try again
@@ -476,28 +407,15 @@ public class Label extends CB_View_Base {
 	}
     }
 
-    private void makeText() {
-	switch (mWrapType) {
-	case SINGLELINE:
-	    setText();
-	    break;
-	case MULTILINE:
-	    setMultiLineText();
-	    break;
-	case WRAPPED:
-	    setWrappedText();
-	    break;
-	}
-    }
-
     /**
-     * setting the Text, depending on WrapType, ...
+     * setting the Text
      **/
     public Label setText(String text) {
 	if (text == null)
 	    text = "";
 	mText = text;
-	makeText();
+	this.mWrapType = WrapType.SINGLELINE;
+	setText();
 	return this;
     }
 
@@ -509,7 +427,8 @@ public class Label extends CB_View_Base {
 	    text = "";
 	mText = text;
 	mVAlignment = VAlignment.TOP;
-	setMultiLineText();
+	this.mWrapType = WrapType.MULTILINE;
+	setText();
 	return this;
     }
 
@@ -521,15 +440,24 @@ public class Label extends CB_View_Base {
 	    text = "";
 	mText = text;
 	mVAlignment = VAlignment.TOP;
-	setWrappedText();
+	this.mWrapType = WrapType.WRAPPED;
+	setText();
 	return this;
+    }
+
+    public void setUnderline(boolean value) {
+	underline = value;
+    }
+
+    public void setStrikeout(boolean value) {
+	strikeout = value;
     }
 
     public Label setWrapType(WrapType WrapType) {
 	if (WrapType != null) {
 	    if (WrapType != mWrapType) {
 		mWrapType = WrapType;
-		makeText();
+		setText();
 	    }
 	}
 	return this;
@@ -539,7 +467,9 @@ public class Label extends CB_View_Base {
 	if (Font != null) {
 	    if (Font != mFont) {
 		mFont = Font;
-		makeText();
+		mTextObject = new BitmapFontCache(mFont, false);
+		mTextObject.setColor(mColor);
+		setText();
 	    }
 	}
 	return this;
@@ -549,7 +479,7 @@ public class Label extends CB_View_Base {
 	if (HAlignment != null) {
 	    if (mHAlignment != HAlignment) {
 		mHAlignment = HAlignment;
-		makeText();
+		setText();
 	    }
 	}
 	return this;
@@ -559,7 +489,7 @@ public class Label extends CB_View_Base {
 	if (VAlignment != null) {
 	    if (mVAlignment != VAlignment) {
 		mVAlignment = VAlignment;
-		makeText();
+		setText(); // setTextPosition
 	    }
 	}
 	return this;
@@ -569,7 +499,7 @@ public class Label extends CB_View_Base {
 	if (color != null) {
 	    if (color != mColor) {
 		mColor = color;
-		makeText();
+		setText();
 	    }
 	}
 	return this;
@@ -620,18 +550,18 @@ public class Label extends CB_View_Base {
     public void onResized(CB_RectF rec) {
 	// wird automatisch aufgerufen,
 	// wenn setWidth oder setHeight, ...
-	makeText();
+	setText();
     }
 
     @Override
     public void setBackground(Drawable background) {
 	super.setBackground(background);
-	makeText();
+	setText();
     }
 
     @Override
     public void dispose() {
-	TextObject = null;
+	mTextObject = null;
 	mVAlignment = null;
 	mHAlignment = null;
 	mText = null;
@@ -649,7 +579,7 @@ public class Label extends CB_View_Base {
 	if (text == null)
 	    text = "";
 	mText = text;
-	makeText();
+	setText();
     }
 
 }

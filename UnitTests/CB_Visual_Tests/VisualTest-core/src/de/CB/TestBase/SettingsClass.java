@@ -1,6 +1,5 @@
 package de.CB.TestBase;
 
-import CB_Utils.DB.Database_Core;
 import CB_Utils.Settings.SettingsList;
 
 public class SettingsClass extends SettingsList

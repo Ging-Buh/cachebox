@@ -50,24 +50,6 @@ public class MultiColorLabel extends Label {
 	colorList.add(mc);
     }
 
-    @Override
-    protected void setText() {
-	super.setText();
-	setColors();
-    }
-
-    @Override
-    protected void setMultiLineText() {
-	super.setMultiLineText();
-	setColors();
-    }
-
-    @Override
-    protected void setWrappedText() {
-	super.setWrappedText();
-	setColors();
-    }
-
     private void setColors() {
 	if (colorList == null)
 	    return;
@@ -75,7 +57,7 @@ public class MultiColorLabel extends Label {
 	    for (int i = 0, n = colorList.size(); i < n; i++) {
 		try {
 		    MultiColor c = colorList.get(i);
-		    TextObject.setColors(c.color, c.start, c.end);
+		    mTextObject.setColors(c.color, c.start, c.end);
 		} catch (Exception e) {
 		    // TODO: handle exception
 		}

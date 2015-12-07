@@ -17,8 +17,8 @@ package CB_UI.GL_UI.Views;
 
 import org.slf4j.LoggerFactory;
 
-import CB_Core.Solver.DataTypes.DataType;
 import CB_Core.Database;
+import CB_Core.Solver.DataTypes.DataType;
 import CB_Core.Solver.Function;
 import CB_Core.Solver.Solver;
 import CB_Core.Solver.SolverZeile;
@@ -78,6 +78,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 	});
     }
 
+    @Override
     public void onShow() {
 	if (aktCache != GlobalCore.getSelectedCache()) {
 	    mustLoadSolver = true;
@@ -94,22 +95,25 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 	    if (sol == null)
 		sol = "";
 	    edInput.setText(sol);
-	    mustLoadSolver = false;
 	    edInput.showFromLineNo(0);
+	    mustLoadSolver = false;
+	    this.edResult.setText("");
 	}
     }
 
+    @Override
     public void onHide() {
 	SelectedCacheEventList.Remove(this);
 	if (aktCache != null) {
 	    Database.SetSolver(aktCache, edInput.getText().toString());
-	    // When Solve 1 changes -> Solver 2 must reload the information from DB to get the changes from Solver 1
+	    // When Solver 1 changes -> Solver 2 must reload the information from DB to get the changes from Solver 1
 	    aktCache.setSolver1Changed(true);
 	}
 
 	mustLoadSolver = true;
     }
 
+    @Override
     public void onResized(CB_RectF rec) {
 	super.onResized(rec);
 	layout();
@@ -216,7 +220,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 	});
     }
 
-    private OnClickListener btnFunctClicked = new OnClickListener() {
+    private final OnClickListener btnFunctClicked = new OnClickListener() {
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 	    SelectSolverFunction ssf = new SelectSolverFunction(solver, DataType.None, new IFunctionResult() {

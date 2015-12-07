@@ -85,9 +85,9 @@ public class LinkLabel extends MultiColorLabel {
 
 	//check if clicked Glyph color equals #0000fffe
 
-	float lineHeight = TextObject.getFont().getLineHeight();
+	float lineHeight = mTextObject.getFont().getLineHeight();
 	float halfGlyphWidth = lineHeight / 3;
-	float[] vertices = TextObject.getVertices();
+	float[] vertices = mTextObject.getVertices();
 
 	for (int i = 0, n = vertices.length - 21; i < n; i += 20) {
 	    float lx1 = vertices[i + 0] - halfGlyphWidth;
@@ -105,7 +105,7 @@ public class LinkLabel extends MultiColorLabel {
 
     private String Link(int verticeStart) {
 	StringBuilder sb = new StringBuilder();
-	float[] vertices = TextObject.getVertices();
+	float[] vertices = mTextObject.getVertices();
 
 	//search begin of Link
 	int Start = 0;

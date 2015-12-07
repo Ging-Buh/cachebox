@@ -179,7 +179,7 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     /**
-     * Gibt die Parent View zur�ck, wenn diese �ber den Constructor �bergeben wurde!
+     * Gibt die Parent View zurück, wenn diese über den Constructor übergeben wurde!
      * 
      * @return parent View oder null
      */
@@ -300,6 +300,9 @@ public abstract class GL_View_Base extends CB_RectF {
     protected float rightBorder = 0;
     protected float topBorder = 0;
     protected float bottomBorder = 0;
+    /**
+     * the width (member[2]) without left and right borders (0 or from background left and right width)
+     */
     protected float innerWidth = getWidth();
     protected float innerHeight = getHeight();
 
@@ -378,9 +381,9 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     /**
-     * Die renderChilds() Methode wird vom GL_Listner bei jedem Render-Vorgang aufgerufen. Hier wird dann zuerst die render() Methode dieser
-     * View aufgerufen. Danach werden alle Childs iteriert und dessen renderChilds() Methode aufgerufen, wenn die View sichtbar ist
-     * (Visibility).
+     * Die renderChilds() Methode wird vom GL_Listner bei jedem Render-Vorgang aufgerufen.
+     * Hier wird dann zuerst die render() Methode dieser View aufgerufen. 
+     * Danach werden alle Childs iteriert und dessen renderChilds() Methode aufgerufen, wenn die View sichtbar ist (Visibility).
      * 
      * @param batch
      */
@@ -398,8 +401,7 @@ public abstract class GL_View_Base extends CB_RectF {
 
 	if (!withoutScissor) {
 	    if (intersectRec == null || intersectRec.getHeight() + 1 < 0 || intersectRec.getWidth() + 1 < 0)
-		return; // hier gibt es nichts
-			// zu rendern
+		return; // hier gibt es nichts zu rendern
 	    if (!disableScissor)
 		Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
 	    Gdx.gl.glScissor((int) intersectRec.getX(), (int) intersectRec.getY(), (int) intersectRec.getWidth() + 1, (int) intersectRec.getHeight() + 1);
@@ -408,15 +410,15 @@ public abstract class GL_View_Base extends CB_RectF {
 	float A = 0, R = 0, G = 0, B = 0; // Farbwerte der batch um diese wieder einzustellen, wenn ein ColorFilter angewandt wurde!
 
 	boolean ColorFilterSeted = false; // Wir benutzen hier dieses Boolean um am ende dieser Methode zu entscheiden, ob wir die alte
-					  // Farbe des Batches wieder herstellen m�ssen. Wir verlassen uns hier nicht darauf, das
+					  // Farbe des Batches wieder herstellen müssen. Wir verlassen uns hier nicht darauf, das
 					  // mColorFilter!= null ist, da dies in der zwichenzeit passiert sein kann.
 
 	// Set Colorfilter ?
 	if (mColorFilter != null) {
 	    ColorFilterSeted = true;
-	    // zuerst alte Farbe abspeichern, um sie Wieder Herstellen zu k�nnen
+	    // zuerst alte Farbe abspeichern, um sie Wieder Herstellen zu können
 	    // hier muss jeder Wert einzeln abgespeichert werden, da bei getColor()
-	    // nur eine Referenz zur�ck gegeben wird
+	    // nur eine Referenz zurück gegeben wird
 	    Color c = batch.getColor();
 	    A = c.a;
 	    R = c.r;
@@ -513,11 +515,11 @@ public abstract class GL_View_Base extends CB_RectF {
 		    }
 
 		} catch (java.util.NoSuchElementException e) {
-		    break; // da die Liste nicht mehr g�ltig ist, brechen wir hier den Iterator ab
+		    break; // da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
 		} catch (java.util.ConcurrentModificationException e) {
-		    break; // da die Liste nicht mehr g�ltig ist, brechen wir hier den Iterator ab
+		    break; // da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
 		} catch (java.lang.IndexOutOfBoundsException e) {
-		    break; // da die Liste nicht mehr g�ltig ist, brechen wir hier den Iterator ab
+		    break; // da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
 		}
 	    }
 	    childsInvalidate = false;
@@ -644,7 +646,7 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     /**
-     * setzt den Scale Factor des dargestellten Images, wobei die Gr��e nicht ver�ndert wird. Ist das Image gr��er, wird es abgeschnitten
+     * setzt den Scale Factor des dargestellten Images, wobei die Größe nicht verändert wird. Ist das Image größer, wird es abgeschnitten
      * 
      * @param value
      */
@@ -665,12 +667,11 @@ public abstract class GL_View_Base extends CB_RectF {
 	}
 	DebugSprite = null;
 
-	// Eine Gr��en�nderung an die Childs Melden
+	// Eine Größenänderung an die Childs melden
 	if (childs != null && childs.size() > 0) {
 	    try {
 		for (int i = 0, n = childs.size(); i < n; i++) {
-		    // alle renderChilds() der in dieser GL_View_Base
-		    // enthaltenen Childs auf rufen.
+		    // alle renderChilds() der in dieser GL_View_Base enthaltenen Childs auf rufen.
 		    GL_View_Base view = childs.get(i);
 		    if (view != null)
 			view.onParentRezised(this);
@@ -735,8 +736,8 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     public boolean click(int x, int y, int pointer, int button) {
-	// Achtung: dieser touchDown ist nicht virtual und darf nicht �berschrieben werden!!!
-	// das Ereignis wird dann in der richtigen View an onTouchDown �bergeben!!!
+	// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
+	// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
 	boolean handled = false;
 	try {
 	    if (childs != null && childs.size() > 0) {
@@ -776,8 +777,8 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     public boolean doubleClick(int x, int y, int pointer, int button) {
-	// Achtung: dieser touchDown ist nicht virtual und darf nicht �berschrieben werden!!!
-	// das Ereignis wird dann in der richtigen View an onTouchDown �bergeben!!!
+	// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
+	// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
 	boolean behandelt = false;
 	try {
 	    if (childs != null && childs.size() > 0) {
@@ -815,8 +816,8 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     public boolean longClick(int x, int y, int pointer, int button) {
-	// Achtung: dieser touchDown ist nicht virtual und darf nicht �berschrieben werden!!!
-	// das Ereignis wird dann in der richtigen View an onTouchDown �bergeben!!!
+	// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
+	// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
 	boolean behandelt = false;
 
 	try {
@@ -850,9 +851,9 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     public final GL_View_Base touchDown(int x, int y, int pointer, int button) {
-	// Achtung: dieser touchDown ist nicht virtual und darf nicht �berschrieben werden!!!
-	// das Ereignis wird dann in der richtigen View an onTouchDown �bergeben!!!
-	// touchDown liefert die View zur�ck, die dieses TochDown Ereignis angenommen hat
+	// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
+	// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
+	// touchDown liefert die View zurück, die dieses TochDown Ereignis angenommen hat
 	GL_View_Base resultView = null;
 
 	if (childs != null && childs.size() > 0) {
@@ -894,8 +895,8 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     public final boolean touchDragged(int x, int y, int pointer, boolean KineticPan) {
-	// Achtung: dieser touchDown ist nicht virtual und darf nicht �berschrieben werden!!!
-	// das Ereignis wird dann in der richtigen View an onTouchDown �bergeben!!!
+	// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
+	// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
 	boolean behandelt = false;
 
 	if (childs != null && childs.size() > 0) {
@@ -923,8 +924,8 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     public final boolean touchUp(int x, int y, int pointer, int button) {
-	// Achtung: dieser touchDown ist nicht virtual und darf nicht �berschrieben werden!!!
-	// das Ereignis wird dann in der richtigen View an onTouchDown �bergeben!!!
+	// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
+	// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
 	boolean behandelt = false;
 
 	if (childs != null && childs.size() > 0) {
@@ -954,7 +955,7 @@ public abstract class GL_View_Base extends CB_RectF {
 	return behandelt;
     }
 
-    // die untergeordneten Klassen m�ssen diese Event-Handler �berschreiben!!!
+    // die untergeordneten Klassen müssen diese Event-Handler überschreiben!!!
     // public abstract boolean onClick(int x, int y, int pointer, int button);
 
     public abstract boolean onLongClick(int x, int y, int pointer, int button);
@@ -1164,9 +1165,9 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     // Abfrage der clickToleranz, mit der Bestimmt wird ab welcher Bewegung ein onTouchDragged erzeugt wird und beim loslassen kein click
-    // dies kann hier f�r einzelne Views unabh�ngig bestimmt werden
+    // dies kann hier für einzelne Views unabhängig bestimmt werden
     public int getClickTolerance() {
-	// wenn eine View clickable ist dann mu� f�r die Verschiebung (onTouchDragged) ein gewisser Toleranzbereich definiert werden,
+	// wenn eine View clickable ist dann muß für die Verschiebung (onTouchDragged) ein gewisser Toleranzbereich definiert werden,
 	// innerhalb dem erstmal kein onTouchDragged aufgerufen wird
 	if (isClickable())
 	    return UI_Size_Base.that.getClickToleranz();
