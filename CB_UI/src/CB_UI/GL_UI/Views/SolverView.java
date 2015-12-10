@@ -159,6 +159,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 	edResult = new EditTextField(this.name + " edResult");
 	edResult.setWrapType(WrapType.MULTILINE);
 	edResult.disable();
+	edResult.setEditable(false);
 	edResult.dontShowSoftKeyBoardOnFocus(true);
 	this.addChild(edResult);
 
@@ -189,9 +190,9 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 	    }
 	});
 
-	edInput.addListPosChangedEventHandler(new IListPosChanged() {
+	edInput.addListPosChangedHandler(new IListPosChanged() {
 	    @Override
-	    public void ListPosChanged() {
+	    public void listPosChanged() {
 		GL.that.RunOnGL(new IRunOnGL() {
 		    @Override
 		    public void run() {
@@ -204,9 +205,9 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 	    }
 	});
 
-	edResult.addListPosChangedEventHandler(new IListPosChanged() {
+	edResult.addListPosChangedHandler(new IListPosChanged() {
 	    @Override
-	    public void ListPosChanged() {
+	    public void listPosChanged() {
 		GL.that.RunOnGL(new IRunOnGL() {
 		    @Override
 		    public void run() {

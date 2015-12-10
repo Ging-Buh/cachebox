@@ -10,37 +10,36 @@ import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 
 public class Waypoint implements Serializable {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 67610567646416L;
     public static final Charset US_ASCII = Charset.forName("US-ASCII");
     public static final Charset UTF_8 = Charset.forName("UTF-8");
     public static final String EMPTY_STRING = "";
 
-    // / Id des dazugehörigen Caches in der Datenbank von geocaching.com
+    /** Id des dazugehörigen Caches in der Datenbank von geocaching.com */
     public long CacheId;
 
-    // / Waypoint Code
+    /** Waypoint Code */
     private byte[] GcCode;
 
     public Coordinate Pos;
 
-    // / Titel des Wegpunktes
+    /** Titel des Wegpunktes */
     private byte[] Title;
 
-    // / Art des Wegpunkts
+    /** Art des Wegpunkts */
     public CacheTypes Type;
 
-    // / true, falls der Wegpunkt vom Benutzer erstellt wurde
+    /** true, falls der Wegpunkt vom Benutzer erstellt wurde */
     public boolean IsUserWaypoint;
 
-    // / true, falls der Wegpunkt von der Synchronisation ausgeschlossen wird
+    /** true, falls der Wegpunkt von der Synchronisation ausgeschlossen wird */
     public boolean IsSyncExcluded;
 
-    // True wenn dies der Startpunkt für den nächsten Besuch ist.
-    // Das CacheIcon wird dann auf diesen Waypoint verschoben und dieser Waypoint wird standardmäßig aktiviert
-    // Es muss aber sichergestellt sein dass immer nur 1 Waypoint eines Caches ein Startpunkt ist!
+    /**
+     * True wenn dies der Startpunkt für den nächsten Besuch ist.<br>
+     * Das CacheIcon wird dann auf diesen Waypoint verschoben und dieser Waypoint wird standardmäßig aktiviert<br>
+     * Es muss aber sichergestellt sein dass immer nur 1 Waypoint eines Caches ein Startpunkt ist!<br>
+     */
     public boolean IsStart = false;
 
     // Detail Information of Waypoint which are not always loaded

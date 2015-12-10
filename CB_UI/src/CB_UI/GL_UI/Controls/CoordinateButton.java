@@ -12,7 +12,7 @@ import CB_UI.GL_UI.Activitys.EditCoord.ReturnListner;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
-import CB_UI_Base.GL_UI.Controls.PopUps.CopiePastePopUp;
+import CB_UI_Base.GL_UI.Controls.PopUps.CopyPastePopUp;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.interfaces.ICopyPaste;
 import CB_UI_Base.Math.CB_RectF;
@@ -21,7 +21,7 @@ import CB_UI_Base.Math.UI_Size_Base;
 public class CoordinateButton extends Button implements ICopyPaste {
     protected Coordinate mActCoord;
     protected String mwpName;
-    protected CopiePastePopUp popUp;
+    protected CopyPastePopUp popUp;
     protected Clipboard clipboard;
     private EditCoord edCo;
 
@@ -127,7 +127,7 @@ public class CoordinateButton extends Button implements ICopyPaste {
 
     protected void showPopUp(int x, int y) {
 
-	popUp = new CopiePastePopUp("CopiePastePopUp=>" + getName(), this);
+	popUp = new CopyPastePopUp("CopiePastePopUp=>" + getName(), this);
 
 	float noseOffset = popUp.getHalfWidth() / 2;
 

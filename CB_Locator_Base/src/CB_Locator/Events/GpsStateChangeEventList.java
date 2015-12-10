@@ -52,7 +52,7 @@ public class GpsStateChangeEventList
 			{
 				synchronized (list)
 				{
-					long thradStart = System.currentTimeMillis();
+					long threadStart = System.currentTimeMillis();
 					count++;
 					for (GpsStateChangeEvent event : list)
 					{
@@ -62,7 +62,7 @@ public class GpsStateChangeEventList
 					}
 					if (count > 10) count = 0;
 
-					maxEventListTime = Math.max(maxEventListTime, System.currentTimeMillis() - thradStart);
+					maxEventListTime = Math.max(maxEventListTime, System.currentTimeMillis() - threadStart);
 				}
 			}
 			catch (Exception e)

@@ -19,7 +19,7 @@ import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
-import CB_UI_Base.GL_UI.Controls.PopUps.CopiePastePopUp;
+import CB_UI_Base.GL_UI.Controls.PopUps.CopyPastePopUp;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.interfaces.ICopyPaste;
 import CB_UI_Base.Math.CB_RectF;
@@ -29,7 +29,7 @@ import CB_Utils.Converter.UTMConvert;
 public class EditCoord extends ActivityBase implements ICopyPaste {
     private int aktPage = -1; // Deg-Min
     private UTMConvert convert = new UTMConvert();
-    private CopiePastePopUp popUp;
+    private CopyPastePopUp popUp;
     private Coordinate cancelCoord;
     private Coordinate coord;
     private ReturnListner mReturnListner;
@@ -177,7 +177,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 
     protected void showPopUp(int x, int y) {
 
-	popUp = new CopiePastePopUp("CopiePastePopUp=>" + getName(), this);
+	popUp = new CopyPastePopUp("CopiePastePopUp=>" + getName(), this);
 
 	float noseOffset = popUp.getHalfWidth() / 2;
 

@@ -674,7 +674,7 @@ public abstract class GL_View_Base extends CB_RectF {
 		    // alle renderChilds() der in dieser GL_View_Base enthaltenen Childs auf rufen.
 		    GL_View_Base view = childs.get(i);
 		    if (view != null)
-			view.onParentRezised(this);
+			view.onParentResized(this);
 		}
 	    } catch (Exception e) {
 		// do nothing
@@ -684,7 +684,7 @@ public abstract class GL_View_Base extends CB_RectF {
 
     public abstract void onResized(CB_RectF rec);
 
-    public abstract void onParentRezised(CB_RectF rec);
+    public abstract void onParentResized(CB_RectF rec);
 
     public void onShow() {
 	if (childs != null && childs.size() > 0) {
@@ -960,10 +960,34 @@ public abstract class GL_View_Base extends CB_RectF {
 
     public abstract boolean onLongClick(int x, int y, int pointer, int button);
 
+    /**
+     * 
+     * @param x
+     * @param y
+     * @param pointer
+     * @param button
+     * @return
+     */
     public abstract boolean onTouchDown(int x, int y, int pointer, int button);
 
+    /**
+     * 
+     * @param x
+     * @param y
+     * @param pointer
+     * @param KineticPan
+     * @return
+     */
     public abstract boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan);
 
+    /**
+     * 
+     * @param x
+     * @param y
+     * @param pointer
+     * @param button
+     * @return
+     */
     public abstract boolean onTouchUp(int x, int y, int pointer, int button);
 
     @Override
@@ -1039,13 +1063,13 @@ public abstract class GL_View_Base extends CB_RectF {
     /**
      * Register a callback to be invoked when this view is clicked. If this view is not clickable, it becomes clickable.
      * 
-     * @param l
+     * @param listener
      *            The callback that will run
      * @see #setClickable(boolean)
      */
-    public void setOnClickListener(OnClickListener l) {
-	isClickable = l != null;
-	mOnClickListener = l;
+    public void setOnClickListener(OnClickListener listener) {
+	isClickable = listener != null;
+	mOnClickListener = listener;
     }
 
     public OnClickListener getOnClickListner() {
@@ -1103,8 +1127,7 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     /**
-     * Setzt dieses View Clicable mit der Uebergabe von True. Wenn dieses View nicht Clickable ist, werden auch keine Click-Abfragen an die
-     * Childs weitergegeben.
+     * if value is true, clicks will be sent else not
      * 
      * @param value
      */

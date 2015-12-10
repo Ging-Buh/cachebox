@@ -16,6 +16,8 @@
 package CB_Core.Types;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import CB_Core.CacheTypes;
 import CB_Locator.Coordinate;
@@ -64,6 +66,13 @@ public class CacheList extends MoveableList<Cache> {
      *         GlobalCore.setSelectedWaypoint(nextCache, waypoint, false);<br>
      *         GlobalCore.NearestCache(nextCache);
      */
+
+    /**
+     * 
+     * @param selectedCoord
+     * @param selected
+     * @return
+     */
     public CacheWithWP Resort(Coordinate selectedCoord, CacheWithWP selected) {
 
 	CacheWithWP retValue = null;
@@ -102,16 +111,25 @@ public class CacheList extends MoveableList<Cache> {
 		nextCache = this.get(i);
 		if (!nextCache.isArchived()) {
 		    if (nextCache.isAvailable()) {
-			if (!nextCache.isFound()) // eigentlich wenn has_fieldnote(found,DNF,Maint,SBA, aber note vielleicht nicht) , aber
-						  // found
-						  // kann nicht rückgängig gemacht werden.
+			if (!nextCache.isFound())
+			// eigentlich wenn has_fieldnote(found,DNF,Maint,SBA, aber note vielleicht nicht)
 			{
 			    if (!nextCache.ImTheOwner()) {
-				if (nextCache.Type != CacheTypes.Mystery) {
-				    break;
-				} else {
-				    if (nextCache.CorrectedCoordiantesOrMysterySolved()) {
+				if ((nextCache.Type == CacheTypes.Event) || (nextCache.Type == CacheTypes.MegaEvent) || (nextCache.Type == CacheTypes.CITO) || (nextCache.Type == CacheTypes.Giga)) {
+				    Calendar dateHidden = GregorianCalendar.getInstance();
+				    Calendar today = GregorianCalendar.getInstance();
+				    dateHidden.setTime(nextCache.getDateHidden());
+				    if (("" + today.get(Calendar.DAY_OF_MONTH) + today.get(Calendar.MONTH) + today.get(Calendar.YEAR))
+					    .equals("" + dateHidden.get(Calendar.DAY_OF_MONTH) + dateHidden.get(Calendar.MONTH) + dateHidden.get(Calendar.YEAR))) {
 					break;
+				    }
+				} else {
+				    if (nextCache.Type != CacheTypes.Mystery) {
+					break;
+				    } else {
+					if (nextCache.CorrectedCoordiantesOrMysterySolved()) {
+					    break;
+					}
 				    }
 				}
 			    }
@@ -163,6 +181,7 @@ public class CacheList extends MoveableList<Cache> {
 	super.clear();
     }
 
+    @Override
     public void dispose() {
 	clear();
 	super.dispose();

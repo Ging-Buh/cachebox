@@ -31,7 +31,7 @@ import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.Controls.PopUps.CopiePastePopUp;
+import CB_UI_Base.GL_UI.Controls.PopUps.CopyPastePopUp;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.interfaces.ICopyPaste;
 import CB_UI_Base.Math.CB_RectF;
@@ -46,6 +46,7 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
     static public final char BULLET = 149;
 
     protected boolean dontShowKeyBoard = false;
+    protected boolean isEditable = true;
 
     public EditTextFieldBase(CB_RectF rec, CB_View_Base parent, String Name) {
 	super(rec, Name);
@@ -74,7 +75,7 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
     protected TextFieldFilter filter;
     protected OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
     protected Clipboard clipboard;
-    protected CopiePastePopUp popUp;
+    protected CopyPastePopUp popUp;
     protected boolean disabled = false;
 
     protected boolean cursorOn = true;
@@ -251,9 +252,22 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 
     protected abstract void registerPopUpLongClick();
 
-    protected void showPopUp(int x, int y) {
+    protected void showPastePopUp(int x, int y) {
+	if (popUp != null)
+	    popUp.close();
+	popUp = new CopyPastePopUp(this.name + " popUp", this);
+	popUp.setOnlyPaste();
+	layoutAndShowPopUp(x, y);
+    }
 
-	popUp = new CopiePastePopUp(this.name + " popUp", this);
+    protected void showCopyPastePopUp(int x, int y) {
+	if (popUp != null)
+	    popUp.close();
+	popUp = new CopyPastePopUp(this.name + " popUp", this);
+	layoutAndShowPopUp(x, y);
+    }
+
+    private void layoutAndShowPopUp(int x, int y) {
 
 	float noseOffset = popUp.getHalfWidth() / 2;
 
@@ -277,17 +291,44 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 	    x = (int) (windowW - popUp.getWidth());
 
 	y += worldY + (popUp.getHeight() * 0.2f);
-	popUp.show(x, y);
+	popUp.showNotCloseAutomaticly(x, y);
+
     }
 
+    protected void hidePopUp() {
+	if (popUp != null)
+	    popUp.close();
+    }
+
+    /**
+     * pasteFromClipboard
+     */
     @Override
     public abstract String pasteFromClipboard();
 
+    /**
+     * copyToClipboard
+     */
     @Override
     public abstract String copyToClipboard();
 
+    /**
+     * cutToClipboard
+     */
     @Override
     public abstract String cutToClipboard();
+
+    /**
+     * isEditable
+     */
+    @Override
+    public boolean isEditable() {
+	return isEditable;
+    }
+
+    public void setEditable(boolean value) {
+	isEditable = value;
+    }
 
     protected void sendKeyTyped(final char character) {
 	if (listener != null) {
@@ -306,7 +347,9 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 	if (listener != null) {
 	    final EditTextFieldBase that = this;
 	    Thread th = new Thread(new Runnable() {
-
+		/**
+		 * run
+		 */
 		@Override
 		public void run() {
 		    listener.lineCountChanged(that, lineCount, textHeight);
@@ -329,18 +372,21 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 	return dontShowKeyBoard;
     }
 
-    public interface iBecomsFocus {
-	public void BecomsFocus();
+    public interface IBecomesFocus {
+	public void becomesFocus();
     }
 
-    protected iBecomsFocus mBecomsFocusListner;
+    protected IBecomesFocus becomesFocusListner;
 
-    public void setBecomsFocusListner(iBecomsFocus BecomsFocusListner) {
-	mBecomsFocusListner = BecomsFocusListner;
+    public void setBecomsFocusListner(IBecomesFocus becomesFocusListner) {
+	this.becomesFocusListner = becomesFocusListner;
     }
 
+    /**
+     * 
+     */
     public void becomesFocus() {
-	if (mBecomsFocusListner != null)
-	    mBecomsFocusListner.BecomsFocus();
+	if (becomesFocusListner != null)
+	    becomesFocusListner.becomesFocus();
     }
 }

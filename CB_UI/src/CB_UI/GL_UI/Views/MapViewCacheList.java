@@ -40,7 +40,7 @@ import CB_Utils.Util.MoveableList;
  */
 public class MapViewCacheList implements CacheListChangedEventListner {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(MapViewCacheList.class);
-    private int maxZoomLevel;
+    private final int maxZoomLevel;
     private queueProcessor queueProcessor = null;
 
     /**
@@ -50,7 +50,7 @@ public class MapViewCacheList implements CacheListChangedEventListner {
      * State 3: Berechnung fertig - warten auf abholen <br>
      * State 4: queueProcessor abgebrochen
      */
-    private AtomicInteger state = new AtomicInteger(0);
+    private final AtomicInteger state = new AtomicInteger(0);
     private Vector2 point1;
     private Vector2 point2;
     private int zoom = 15;
@@ -169,8 +169,7 @@ public class MapViewCacheList implements CacheListChangedEventListner {
 				    wpi.Waypoint = null; // = fwp; ist null, ausser bei Mystery-Final // null -> Beschriftung Name vom Cache
 				    wpi.Selected = selectedCache;
 				    if (wpi.Selected && selectedWP == null)
-					selectedWP = wpi;// select nur wenn kein WP selectiert ist (draw
-							 // last)
+					selectedWP = wpi;// select nur wenn kein WP selectiert ist (draw last)
 				    tmplist.add(wpi);
 				}
 			    }

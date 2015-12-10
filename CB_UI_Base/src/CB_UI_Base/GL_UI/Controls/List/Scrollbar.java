@@ -249,7 +249,7 @@ public class Scrollbar extends CB_View_Base {
     }
 
     @Override
-    public void onParentRezised(CB_RectF rec) {
+    public void onParentResized(CB_RectF rec) {
 	this.setWidth(rec.getWidth());
 	this.setHeight(rec.getHeight());
     }

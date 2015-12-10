@@ -2,6 +2,10 @@ package CB_UI_Base.GL_UI.Controls.PopUps;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Global;
 import CB_UI_Base.GL_UI.Fonts;
@@ -13,17 +17,13 @@ import CB_UI_Base.GL_UI.interfaces.ICopyPaste;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
-import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-
-public class CopiePastePopUp extends PopUp_Base {
-    final static org.slf4j.Logger logger = LoggerFactory.getLogger(CopiePastePopUp.class);
+public class CopyPastePopUp extends PopUp_Base {
+    final static org.slf4j.Logger logger = LoggerFactory.getLogger(CopyPastePopUp.class);
     private ImageButton btnCopy;
     private ImageButton btnCut;
     private ImageButton btnPaste;
 
-    public CopiePastePopUp(String Name, final ICopyPaste copyPasteControl) {
+    public CopyPastePopUp(String Name, final ICopyPaste copyPasteControl) {
 	super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth() * 3.2f, UI_Size_Base.that.getButtonHeight() * 1.5f), Name);
 
 	int p = SpriteCacheBase.patch;
@@ -78,13 +78,15 @@ public class CopiePastePopUp extends PopUp_Base {
 	btnCut.setFont(Fonts.getBubbleNormal());
 	btnCut.setImage(SpriteCacheBase.cut);
 	btnCut.setY(rec.getHeight() * 0.4f);
-	if (!copyPasteControl.isEditable())
+	if (!copyPasteControl.isEditable()) {
 	    btnCut.disable();
+	}
 	btnCut.setOnClickListener(new OnClickListener() {
-
+	    /**
+	     * onClick
+	     */
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		logger.debug("Cut Button Clicked");
 		close();
 		String Msg = copyPasteControl.cutToClipboard();
 		if (Msg != null)
@@ -102,6 +104,9 @@ public class CopiePastePopUp extends PopUp_Base {
 	btnPaste.setX(btnCopy.getMaxX() + sollDivider);
     }
 
+    /**
+     * does nothing
+     */
     @Override
     public void Initial() {
     }
@@ -122,5 +127,10 @@ public class CopiePastePopUp extends PopUp_Base {
     @Override
     protected void SkinIsChanged() {
 
+    }
+
+    public void setOnlyPaste() {
+	btnCut.disable();
+	btnCopy.disable();
     }
 }

@@ -82,8 +82,8 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
     }
 
     /**
-     * Da die meisten Sprite Initialisierungen von Sprites im Render Thread durchgef�hrt werden m�ssen, wird diese Methode, zu
-     * Initialisierung im ersten Render Durchgang ausgef�hrt.
+     * Da die meisten Sprite Initialisierungen von Sprites im Render Thread durchgeführt werden müssen, wird diese Methode, zu
+     * Initialisierung im ersten Render Durchgang ausgeführt.
      */
     protected abstract void Initial();
 
@@ -93,7 +93,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
     }
 
     @Override
-    public void onParentRezised(CB_RectF rec) {
+    public void onParentResized(CB_RectF rec) {
 	thisInvalidate = true;
     }
 
@@ -103,21 +103,27 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	return false;
     }
 
+    /**
+     * onTouchDown
+     */
     @Override
     public boolean onTouchDown(int x, int y, int pointer, int button) {
-
 	return false;
     }
 
+    /**
+     * onTouchDragged
+     */
     @Override
     public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
-
 	return false;
     }
 
+    /**
+     * onTouchUp
+     */
     @Override
     public boolean onTouchUp(int x, int y, int pointer, int button) {
-
 	return false;
     }
 
@@ -321,7 +327,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	}
 	this.rowYPos = y;
 	if (bottomYAdd < 0) {
-	    // nur beim ersten Mal, sonst m�ssen die Werte erhalten bleiben
+	    // nur beim ersten Mal, sonst müssen die Werte erhalten bleiben
 	    if (direction) {
 		this.bottomYAdd = this.bottomBorder;
 		this.topYAdd = y;
@@ -343,8 +349,8 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
     }
 
     public void adjustHeight() {
-	// nicht sinnvoll wenn von unten und von oben was hinzugef�gt wurde
-	// und danach auch bitte nichts mehr hinzuf�gen.
+	// nicht sinnvoll wenn von unten und von oben was hinzugefügt wurde
+	// und danach auch bitte nichts mehr hinzufügen.
 	if (this.topdown) {
 	    this.setHeight(this.getHeight() - this.topYAdd);
 	    // Die Position aller Clients muss bei TopDown neu gesetzt werden.
@@ -484,7 +490,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	    } else {
 		this.rowYPos = this.rowYPos + this.rowMaxHeight + this.yMargin;
 		this.bottomYAdd = this.rowYPos;
-		// todo vielleicht automatische H�henanpassung von this
+		// todo vielleicht automatische Höhenanpassung von this
 	    }
 	    this.row.clear();
 	}

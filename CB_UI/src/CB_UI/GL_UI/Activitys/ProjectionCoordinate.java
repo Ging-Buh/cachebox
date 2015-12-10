@@ -11,7 +11,7 @@ import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
-import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.iBecomsFocus;
+import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.IBecomesFocus;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.NumPad;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -190,10 +190,10 @@ public class ProjectionCoordinate extends ActivityBase {
 	    this.addChild(lblBearingUnit);
 	this.addChild(lblDistanceUnit);
 
-	valueDistance.setBecomsFocusListner(new iBecomsFocus() {
+	valueDistance.setBecomsFocusListner(new IBecomesFocus() {
 
 	    @Override
-	    public void BecomsFocus() {
+	    public void becomesFocus() {
 		numPad.registerTextField(valueDistance);
 		GL.that.RunOnGL(new IRunOnGL() {
 		    @Override
@@ -205,10 +205,10 @@ public class ProjectionCoordinate extends ActivityBase {
 	    }
 	});
 
-	valueBearing.setBecomsFocusListner(new iBecomsFocus() {
+	valueBearing.setBecomsFocusListner(new IBecomesFocus() {
 
 	    @Override
-	    public void BecomsFocus() {
+	    public void becomesFocus() {
 		if (numPad != null)
 		    numPad.registerTextField(valueBearing);
 		GL.that.RunOnGL(new IRunOnGL() {
