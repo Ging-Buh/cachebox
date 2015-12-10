@@ -67,12 +67,13 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	this.setClickable(true);
     }
 
-    public void showHtml(final String HTMLSOURCE) throws Exception {
+    public void showHtml(final String html) throws Exception {
 
 	clearHtml();
 	if (textOnly) {
 
-	    Source source = new Source(HTMLSOURCE);
+	    String htmlSource = html.replace("</p>", "</p><br>");
+	    Source source = new Source(htmlSource);
 
 	    StringBuilder sb = new StringBuilder();
 
@@ -80,21 +81,20 @@ public class HtmlView extends ScrollBox implements ListLayout {
 
 	    String text = sb.toString();
 
-	    textOnlyField = new EditTextField(this, this.name + " textOnlyField");
-	    textOnlyField.setSize(this);
-	    textOnlyField.setWrapType(WrapType.MULTILINE);
+	    textOnlyField = new EditTextField(this, this, null, this.name + " textOnlyField", WrapType.WRAPPED);
 	    textOnlyField.dontShowSoftKeyBoardOnFocus();
 	    textOnlyField.setNoBorders();
 	    textOnlyField.setText(text);
 	    textOnlyField.setEditable(false);
+	    textOnlyField.showFromLineNo(0);
 
 	    this.addChildDirekt(textOnlyField);
 
 	    this.setVirtualHeight(this.getHeight());
 	    this.scrollTo(0);
-	    textOnlyField.setScrollPos(0);
 
-	    this.setUndragable();
+	    //this.setUndragable();
+	    this.setDragable();
 
 	} else {
 	    this.setDragable();
@@ -108,7 +108,7 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	    Exception any = null;
 
 	    try {
-		Source source = new CB_FormatedHtmlSource(HTMLSOURCE);
+		Source source = new CB_FormatedHtmlSource(html);
 		segmentList = new CB_Html_Renderer(source).getElementList();
 
 		addViewsToBox(segmentList, segmentViewList, this.getWidth(), this);

@@ -22,7 +22,7 @@ import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.MoveableList;
 
 /**
- * Eine Structur f�r RectF mit besonderen Methoden Speziel f�r die Handhabung in der Verwendung der Berechneten Gr�ssen und Positionen
+ * Eine Structur für RectF mit besonderen Methoden Speziel für die Handhabung in der Verwendung der Berechneten Grössen und Positionen
  * einzelner UI Elemente in Cachebox
  * 
  * @author Longri
@@ -69,7 +69,7 @@ public class CB_RectF {
     }
 
     /**
-     * Constructor f�r ein neues RectF mit Angabe der linken unteren Ecke und der H�he und Breite
+     * Constructor für ein neues RectF mit Angabe der linken unteren Ecke und der Höhe und Breite
      * 
      * @param X
      * @param Y
@@ -114,7 +114,7 @@ public class CB_RectF {
     }
 
     /**
-     * Setzt die Werte f�r Height und Width. Wenn sich einer der Werte ge�ndert hat, wird ein True zur�ck gegeben, ansonsten False.
+     * Setzt die Werte für Height und Width. Wenn sich einer der Werte geändert hat, wird ein True zurück gegeben, ansonsten False.
      * 
      * @param Width
      * @param Height
@@ -226,7 +226,7 @@ public class CB_RectF {
     }
 
     /**
-     * liefert True, wenn das �bergebene Rechteck kommplett in diese rechteck Passt.
+     * liefert True, wenn das übergebene Rechteck kommplett in diese rechteck Passt.
      * 
      * @param rec
      * @return
@@ -320,7 +320,7 @@ public class CB_RectF {
     }
 
     // /**
-    // * Setzt Height und Width auf die n�chst gr��ere Potenz von 2
+    // * Setzt Height und Width auf die nächst größere Potenz von 2
     // */
     // public void setPO2()
     // {
@@ -362,7 +362,7 @@ public class CB_RectF {
     }
 
     /**
-     * Gibt den ersten Schnittpunkt des Rechtecks zwichen den Punkten P1 und P2 zur�ck! <img src="doc-files/rec-intersection.png"
+     * Gibt den ersten Schnittpunkt des Rechtecks zwichen den Punkten P1 und P2 zurück! <img src="doc-files/rec-intersection.png"
      * width=537 height=307>
      * 
      * @param P1
@@ -376,8 +376,8 @@ public class CB_RectF {
     }
 
     /**
-     * Gibt den ersten Schnittpunkt des Rechtecks zwichen den Punkten P1 und P2 zur�ck! </br> Wobei die als int �bergebene Nummer der
-     * Gerade des Rechtecks als erstes �berpr�ft wird. </br> <img src="doc-files/rec-intersection.png" width=537 height=307>
+     * Gibt den ersten Schnittpunkt des Rechtecks zwichen den Punkten P1 und P2 zurück! </br> Wobei die als int übergebene Nummer der
+     * Gerade des Rechtecks als erstes überprüft wird. </br> <img src="doc-files/rec-intersection.png" width=537 height=307>
      * 
      * @param P1
      *            = start Punkt der Linie
@@ -388,7 +388,7 @@ public class CB_RectF {
      */
     public Vector2 getIntersection(Vector2 P1, Vector2 P2, int first) {
 
-	// Array mit Geraden Nummern f�llen
+	// Array mit Geraden Nummern füllen
 	if (Geraden.size() < 4) {
 	    Geraden.add(1);
 	    Geraden.add(2);

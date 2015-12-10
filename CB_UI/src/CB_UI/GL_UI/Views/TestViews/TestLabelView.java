@@ -150,7 +150,7 @@ public class TestLabelView extends CB_View_Base {
 	EditTextField edit = new EditTextField(rec, this, this.name + " edit");
 	edit.setWrapType(WrapType.MULTILINE);
 	edit.setText("Test Text\nin zwei Zeilen");
-	edit.setScrollPos(0);
+	edit.showFromLineNo(0);
 	edit.setSelection(4, 16);
 
 	this.addChild(edit);

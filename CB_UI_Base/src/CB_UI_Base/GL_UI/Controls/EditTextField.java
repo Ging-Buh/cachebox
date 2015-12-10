@@ -1783,18 +1783,6 @@ public class EditTextField extends EditTextFieldBase {
 	return topLine;
     }
 
-    public void setScrollPos(float value) {
-	topLine = (int) (value / this.style.font.getLineHeight());
-
-	if (topLine < 0) {
-	    topLine = 0;
-	}
-
-	if (lines.size() - topLine < maxLineCount) {
-	    topLine = lines.size() - maxLineCount;
-	}
-    }
-
     /**
      * 
      * @param lineNo
