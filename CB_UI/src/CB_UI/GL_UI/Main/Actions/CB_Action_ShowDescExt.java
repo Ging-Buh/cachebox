@@ -48,13 +48,16 @@ public class CB_Action_ShowDescExt extends CB_Action {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_Action_ShowDescExt.class);
     private final String TEMP_CACHE_HTML_FILE = "temp.html";
 
-    private LinkedList<String> NonLocalImages = new LinkedList<String>();
-    private LinkedList<String> NonLocalImagesUrl = new LinkedList<String>();
+    private final LinkedList<String> NonLocalImages = new LinkedList<String>();
+    private final LinkedList<String> NonLocalImagesUrl = new LinkedList<String>();
 
     public CB_Action_ShowDescExt() {
 	super("descExt", MenuID.AID_SHOW_DescExt);
     }
 
+    /**
+     * Execute
+     */
     @Override
     public void Execute() {
 	if (getEnabled()) {
@@ -65,21 +68,23 @@ public class CB_Action_ShowDescExt extends CB_Action {
 	    NonLocalImagesUrl.clear();
 	    String cachehtml = Database.GetDescription(cache);
 	    String html = DescriptionImageGrabber.ResolveImages(cache, cachehtml, false, NonLocalImages, NonLocalImagesUrl);
+	    String header = "<!DOCTYPE html><html><head><meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\" /></head><body>";
 
 	    if (!Config.DescriptionNoAttributes.getValue())
-		html = DescriptionView.getAttributesHtml(cache) + html;
+		html = header + DescriptionView.getAttributesHtml(cache) + html;
+	    else
+		html = header + html;
 
 	    // add 2 empty lines so that the last line of description can be selected with the markers
-	    html += "</br></br>";
-
-	    final String FinalHtml = html;
+	    // add trailer
+	    html += "</br></br>" + "</body></html>";
 
 	    String filePath = CB_UI_Base_Settings.ImageCacheFolderLocal.getValue() + "/" + TEMP_CACHE_HTML_FILE;
 
 	    try {
 
 		OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(filePath), Charset.forName("utf-8"));
-		out.write(FinalHtml);
+		out.write(html);
 		out.close();
 
 		platformConector.callUrl("file://" + filePath);

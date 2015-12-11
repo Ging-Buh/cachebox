@@ -11,6 +11,9 @@ import javax.swing.filechooser.FileFilter;
 import org.mapsforge.map.model.DisplayModel;
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+
 import CB_Locator.Location.ProviderType;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.Events.platformConector.ICallUrl;
@@ -27,345 +30,301 @@ import CB_UI_Base.Math.devicesSizes;
 import CB_Utils.Config_Core;
 import CB_Utils.Plattform;
 import CB_Utils.Util.iChanged;
-
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-
 import de.CB.TestBase.Map.DesktopManager;
 import de.CB.TestBase.Views.MainView;
 import de.CB.TestBase.Views.splash;
 
-public class Main
-{
-	final static org.slf4j.Logger log = LoggerFactory.getLogger(Main.class);
-	
-	public static void main(String[] args)
-	{
-		Plattform.used = Plattform.Desktop;
+public class Main {
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(Main.class);
 
-		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
-		cfg.title = "Graphics-Test";
-		cfg.width = 1120; // Tablet 1200* 720 Desctop 720* 950
-		cfg.height = 720;
-		cfg.samples = 16;
-		// Read Config
-		String workPath = "./freizeitkarte";
-		// Initial Config
-		new Config(workPath);
+    public static void main(String[] args) {
+	Plattform.used = Plattform.Desktop;
 
-		Config_Core.WorkPath = workPath;
-		Config.Initialize(workPath, workPath + "/freizeitkarte.config");
+	LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
+	cfg.title = "Graphics-Test";
+	cfg.width = 1120; // Tablet 1200* 720 Desctop 720* 950
+	cfg.height = 720;
+	cfg.samples = 16;
+	// Read Config
+	String workPath = "./freizeitkarte";
+	// Initial Config
+	new Config(workPath);
 
-		Settings.SkinFolder.setValue("default");
+	Config_Core.WorkPath = workPath;
+	Config.Initialize(workPath, workPath + "/freizeitkarte.config");
 
-		devicesSizes ui = new devicesSizes();
+	Settings.SkinFolder.setValue("default");
 
-		float DENSITY = 1f;
+	devicesSizes ui = new devicesSizes();
 
-		ui.Window = new Size(cfg.width, cfg.height);
-		ui.Density = 0.8f;
-			ui.isLandscape = false;
-		DisplayModel.setDeviceScaleFactor(DENSITY);
-		new UiSizes();
-		UiSizes.that.initial(ui);
+	float DENSITY = 1f;
 
-		initialLocatorBase();
+	ui.Window = new Size(cfg.width, cfg.height);
+	ui.Density = 0.8f;
+	ui.isLandscape = false;
+	DisplayModel.setDeviceScaleFactor(DENSITY);
+	new UiSizes();
+	UiSizes.that.initial(ui);
 
-		DisplayModel model = new DisplayModel();
+	initialLocatorBase();
 
-		new DesktopManager(model);
+	DisplayModel model = new DisplayModel();
 
-		// create new splash
-		splash sp = new splash(0, 0, cfg.width, cfg.height, "Splash");
+	new DesktopManager(model);
 
-		// create new mainView
-		MainView ma = new MainView(0, 0, cfg.width, cfg.height, "mainView");
+	// create new splash
+	splash sp = new splash(0, 0, cfg.width, cfg.height, "Splash");
 
-		final Ex Game = new Ex(cfg.width, cfg.height, sp, ma);
+	// create new mainView
+	MainView ma = new MainView(0, 0, cfg.width, cfg.height, "mainView");
 
-		final LwjglApplication App = new LwjglApplication(Game, cfg);
+	final Ex Game = new Ex(cfg.width, cfg.height, sp, ma);
+
+	final LwjglApplication App = new LwjglApplication(Game, cfg);
+	App.getGraphics().setContinuousRendering(false);
+
+	GL.listenerInterface = new GL_Listener_Interface() {
+
+	    AtomicBoolean mIsContinous = new AtomicBoolean(true);
+
+	    @Override
+	    public void RequestRender() {
+		App.getGraphics().requestRendering();
+	    }
+
+	    @Override
+	    public void RenderDirty() {
+		mIsContinous.set(false);
 		App.getGraphics().setContinuousRendering(false);
+	    }
 
-		GL.listenerInterface = new GL_Listener_Interface()
-		{
+	    @Override
+	    public void RenderContinous() {
+		mIsContinous.set(true);
+		App.getGraphics().setContinuousRendering(true);
+	    }
 
-			AtomicBoolean mIsContinous = new AtomicBoolean(true);
+	    @Override
+	    public boolean isContinous() {
+		return mIsContinous.get();
+	    }
+	};
 
-			@Override
-			public void RequestRender()
-			{
-				App.getGraphics().requestRendering();
-			}
+	Timer timer = new Timer();
+	TimerTask task = new TimerTask() {
+	    @Override
+	    public void run() {
+		Game.onStart();
+	    }
+	};
+	timer.schedule(task, 600);
 
-			@Override
-			public void RenderDirty()
-			{
-				mIsContinous.set(false);
-				App.getGraphics().setContinuousRendering(false);
-			}
+	// ''''''''''''''''''''''
+	platformConector.setisOnlineListner(new IHardwarStateListner() {
 
-			@Override
-			public void RenderContinous()
-			{
-				mIsContinous.set(true);
-				App.getGraphics().setContinuousRendering(true);
-			}
+	    @Override
+	    public boolean isOnline() {
+		return true;
+	    }
 
-			@Override
-			public boolean isContinous()
-			{
-				return mIsContinous.get();
-			}
+	    @Override
+	    public boolean isGPSon() {
+		return true;
+	    }
+
+	    @Override
+	    public void vibrate() {
+
+	    }
+
+	    @Override
+	    public boolean isTorchAvailable() {
+		// TODO Auto-generated method stub
+		return false;
+	    }
+
+	    @Override
+	    public boolean isTorchOn() {
+		// TODO Auto-generated method stub
+		return false;
+	    }
+
+	    @Override
+	    public void switchTorch() {
+
+	    }
+
+	    @Override
+	    public void switchToGpsMeasure() {
+		// TODO Auto-generated method stub
+
+	    }
+
+	    @Override
+	    public void switchtoGpsDefault() {
+		// TODO Auto-generated method stub
+
+	    }
+
+	});
+
+	platformConector.setGetFileListner(new IgetFileListner() {
+	    @Override
+	    public void getFile(String initialPath, final String extension, String TitleText, String ButtonText, IgetFileReturnListner returnListner) {
+
+		final String ext = extension.replace("*", "");
+
+		JFileChooser chooser = new JFileChooser();
+
+		chooser.setCurrentDirectory(new java.io.File(initialPath));
+		chooser.setDialogTitle(TitleText);
+
+		FileFilter filter = new FileFilter() {
+
+		    @Override
+		    public String getDescription() {
+			return extension;
+		    }
+
+		    @Override
+		    public boolean accept(File f) {
+			if (f.getAbsolutePath().endsWith(ext))
+			    return true;
+			return false;
+		    }
 		};
 
-		Timer timer = new Timer();
-		TimerTask task = new TimerTask()
-		{
-			@Override
-			public void run()
-			{
-				Game.onStart();
-			}
-		};
-		timer.schedule(task, 600);
+		chooser.setFileFilter(filter);
 
-		// ''''''''''''''''''''''
-		platformConector.setisOnlineListner(new IHardwarStateListner()
-		{
+		int returnVal = chooser.showOpenDialog(null);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+		    if (returnListner != null)
+			returnListner.getFieleReturn(chooser.getSelectedFile().getAbsolutePath());
+		    System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
+		}
 
-			@Override
-			public boolean isOnline()
-			{
-				return true;
-			}
+	    }
+	});
 
-			@Override
-			public boolean isGPSon()
-			{
-				return true;
-			}
+	platformConector.setGetFolderListner(new IgetFolderListner() {
 
-			@Override
-			public void vibrate()
-			{
+	    @Override
+	    public void getfolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListner returnListner) {
 
-			}
+		JFileChooser chooser = new JFileChooser();
 
-			@Override
-			public boolean isTorchAvailable() {
-				// TODO Auto-generated method stub
-				return false;
-			}
+		chooser.setCurrentDirectory(new java.io.File(initialPath));
+		chooser.setDialogTitle(TitleText);
 
-			@Override
-			public boolean isTorchOn() {
-				// TODO Auto-generated method stub
-				return false;
-			}
+		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		int returnVal = chooser.showOpenDialog(null);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+		    if (returnListner != null)
+			returnListner.getFolderReturn(chooser.getSelectedFile().getAbsolutePath());
+		    System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
+		}
 
-			@Override
-			public void switchTorch() {
-			
-			}
+	    }
+	});
 
-			@Override
-			public void switchToGpsMeasure() {
-				// TODO Auto-generated method stub
-				
-			}
+	platformConector.setQuitListner(new IQuit() {
 
-			@Override
-			public void switchtoGpsDefault() {
-				// TODO Auto-generated method stub
-				
-			}
+	    @Override
+	    public void Quit() {
+		System.exit(0);
 
-		});
+	    }
+	});
 
-		platformConector.setGetFileListner(new IgetFileListner()
-		{
-			@Override
-			public void getFile(String initialPath, final String extension, String TitleText, String ButtonText,
-					IgetFileReturnListner returnListner)
-			{
+	platformConector.setCallUrlListner(new ICallUrl() {
+	    /**
+	     * call
+	     */
+	    @Override
+	    public void call(String url) {
+		java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
 
-				final String ext = extension.replace("*", "");
+		if (!desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
 
-				JFileChooser chooser = new JFileChooser();
+		    System.err.println("Desktop doesn't support the browse action (fatal)");
+		    System.exit(1);
+		}
 
-				chooser.setCurrentDirectory(new java.io.File(initialPath));
-				chooser.setDialogTitle(TitleText);
+		try {
 
-				FileFilter filter = new FileFilter()
-				{
+		    java.net.URI uri = new java.net.URI(url);
+		    desktop.browse(uri);
+		} catch (Exception e) {
 
-					@Override
-					public String getDescription()
-					{
-						return extension;
-					}
+		    System.err.println(e.getMessage());
+		}
 
-					@Override
-					public boolean accept(File f)
-					{
-						if (f.getAbsolutePath().endsWith(ext)) return true;
-						return false;
-					}
-				};
+	    }
+	});
 
-				chooser.setFileFilter(filter);
+    }
 
-				int returnVal = chooser.showOpenDialog(null);
-				if (returnVal == JFileChooser.APPROVE_OPTION)
-				{
-					if (returnListner != null) returnListner.getFieleReturn(chooser.getSelectedFile().getAbsolutePath());
-					System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
-				}
+    /**
+     * Initial all Locator functions
+     */
+    private static void initialLocatorBase() {
+	// ##########################################################
+	// initial Locator with saved Location
+	// ##########################################################
+	double latitude = Config.MapInitLatitude.getValue();
+	double longitude = Config.MapInitLongitude.getValue();
+	ProviderType provider = (latitude == -1000) ? ProviderType.NULL : ProviderType.Saved;
 
-			}
-		});
+	CB_Locator.Location initialLocation;
 
-		platformConector.setGetFolderListner(new IgetFolderListner()
-		{
-
-			@Override
-			public void getfolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListner returnListner)
-			{
-
-				JFileChooser chooser = new JFileChooser();
-
-				chooser.setCurrentDirectory(new java.io.File(initialPath));
-				chooser.setDialogTitle(TitleText);
-
-				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				int returnVal = chooser.showOpenDialog(null);
-				if (returnVal == JFileChooser.APPROVE_OPTION)
-				{
-					if (returnListner != null) returnListner.getFolderReturn(chooser.getSelectedFile().getAbsolutePath());
-					System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
-				}
-
-			}
-		});
-
-		platformConector.setQuitListner(new IQuit()
-		{
-
-			@Override
-			public void Quit()
-			{
-				System.exit(0);
-
-			}
-		});
-
-		platformConector.setCallUrlListner(new ICallUrl()
-		{
-
-			@Override
-			public void call(String url)
-			{
-				java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
-
-				if (!desktop.isSupported(java.awt.Desktop.Action.BROWSE))
-				{
-
-					System.err.println("Desktop doesn't support the browse action (fatal)");
-					System.exit(1);
-				}
-
-				try
-				{
-
-					java.net.URI uri = new java.net.URI(url);
-					desktop.browse(uri);
-				}
-				catch (Exception e)
-				{
-
-					System.err.println(e.getMessage());
-				}
-
-			}
-		});
-
-	
-
+	if (provider == ProviderType.Saved) {
+	    initialLocation = new CB_Locator.Location(latitude, longitude, 0, false, 0, false, 0, 0, provider);
+	} else {
+	    initialLocation = CB_Locator.Location.NULL_LOCATION;
 	}
 
-	/**
-	 * Initial all Locator functions
-	 */
-	private static void initialLocatorBase()
-	{
-		// ##########################################################
-		// initial Locator with saved Location
-		// ##########################################################
-		double latitude = Config.MapInitLatitude.getValue();
-		double longitude = Config.MapInitLongitude.getValue();
-		ProviderType provider = (latitude == -1000) ? ProviderType.NULL : ProviderType.Saved;
+	new CB_Locator.Locator(initialLocation);
 
-		CB_Locator.Location initialLocation;
+	// ##########################################################
+	// initial settings changed handling
+	// ##########################################################
 
-		if (provider == ProviderType.Saved)
-		{
-			initialLocation = new CB_Locator.Location(latitude, longitude, 0, false, 0, false, 0, 0, provider);
-		}
-		else
-		{
-			initialLocation = CB_Locator.Location.NULL_LOCATION;
-		}
-
-		new CB_Locator.Locator(initialLocation);
-
-		// ##########################################################
-		// initial settings changed handling
-		// ##########################################################
-
-		// Use Imperial units?
+	// Use Imperial units?
+	CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
+	Config.ImperialUnits.addChangedEventListner(new iChanged() {
+	    @Override
+	    public void isChanged() {
 		CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
-		Config.ImperialUnits.addChangedEventListner(new iChanged()
-		{
-			@Override
-			public void isChanged()
-			{
-				CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
-			}
-		});
+	    }
+	});
 
-		// GPS update time?
+	// GPS update time?
+	CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
+	Config.gpsUpdateTime.addChangedEventListner(new iChanged() {
+
+	    @Override
+	    public void isChanged() {
 		CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
-		Config.gpsUpdateTime.addChangedEventListner(new iChanged()
-		{
+	    }
+	});
 
-			@Override
-			public void isChanged()
-			{
-				CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
-			}
-		});
-
-		// Use magnetic Compass?
+	// Use magnetic Compass?
+	CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
+	Config.HardwareCompass.addChangedEventListner(new iChanged() {
+	    @Override
+	    public void isChanged() {
 		CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
-		Config.HardwareCompass.addChangedEventListner(new iChanged()
-		{
-			@Override
-			public void isChanged()
-			{
-				CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
-			}
-		});
+	    }
+	});
 
-		// Magnetic compass level
+	// Magnetic compass level
+	CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
+	Config.HardwareCompassLevel.addChangedEventListner(new iChanged() {
+	    @Override
+	    public void isChanged() {
 		CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
-		Config.HardwareCompassLevel.addChangedEventListner(new iChanged()
-		{
-			@Override
-			public void isChanged()
-			{
-				CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
-			}
-		});
-	}
+	    }
+	});
+    }
 
 }

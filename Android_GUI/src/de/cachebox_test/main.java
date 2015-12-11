@@ -46,8 +46,8 @@ import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 
 import CB_Core.CacheListChangedEventList;
 import CB_Core.Database;
-import CB_Core.FilterProperties;
 import CB_Core.Database.DatabaseType;
+import CB_Core.FilterProperties;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
@@ -200,8 +200,7 @@ import de.cb.sqlite.AndroidDB;
  */
 @SuppressLint("Wakelock")
 @SuppressWarnings("deprecation")
-public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener,
-	CB_Core.CacheListChangedEventListner, GpsStatus.NmeaListener, GpsStatus.Listener {
+public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.CacheListChangedEventListner, GpsStatus.NmeaListener, GpsStatus.Listener {
 
     private static AndroidApplicationConfiguration gdxConfig = new AndroidApplicationConfiguration();
 
@@ -297,7 +296,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     private ViewOptionsMenu aktTabView = null;
     private CacheNameView cacheNameView;
 
-    private ArrayList<ViewOptionsMenu> ViewList = new ArrayList<ViewOptionsMenu>();
+    private final ArrayList<ViewOptionsMenu> ViewList = new ArrayList<ViewOptionsMenu>();
 
     // private Threads
     Thread threadReceiveShortLog;
@@ -495,8 +494,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	splash sp = new splash(0, 0, UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), "Splash");
 
 	// create new mainView
-	TabMainView ma = new TabMainView(0, 0, UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(),
-		"mainView");
+	TabMainView ma = new TabMainView(0, 0, UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), "mainView");
 
 	glListener = new GL(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), sp, ma);
 
@@ -553,8 +551,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	downSlider.isInitial = false;
 
-	int sollHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue())
-		? UiSizes.that.getQuickButtonListHeight() : 0;
+	int sollHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.that.getQuickButtonListHeight() : 0;
 
 	setQuickButtonHeight(sollHeight);
 
@@ -603,8 +600,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	    }
 
 	    if (input == null) {
-		graphics = new AndroidGraphics(this, gdxConfig, gdxConfig.resolutionStrategy == null
-			? new FillResolutionStrategy() : gdxConfig.resolutionStrategy);
+		graphics = new AndroidGraphics(this, gdxConfig, gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy() : gdxConfig.resolutionStrategy);
 
 		input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), gdxConfig);
 
@@ -635,11 +631,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		    // log.info("Setting flag from RunOverLockScreen: " +
 		    // AndroidSettings.RunOverLockScreen.getValue());
 		    if (AndroidSettings.RunOverLockScreen.getValue()) {
-			window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-				| WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+			window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 		    } else {
-			window.clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-				| WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+			window.clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 		    }
 		}
 	    }
@@ -727,9 +721,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				    Date Importfin = new Date();
 				    long ImportZeit = Importfin.getTime() - ImportStart.getTime();
 
-				    String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "C "
-					    + String.valueOf(GPXFileImporter.LogCount) + "L in "
-					    + String.valueOf(ImportZeit);
+				    String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "C " + String.valueOf(GPXFileImporter.LogCount) + "L in " + String.valueOf(ImportZeit);
 
 				    log.debug(Msg);
 
@@ -893,8 +885,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			if (last == null)
 			    return;
 
-			TrackRecorder.AnnotateMedia(basename + ".jpg", relativPath + "/" + basename + ".jpg", last,
-				mediaTimeString);
+			TrackRecorder.AnnotateMedia(basename + ".jpg", relativPath + "/" + basename + ".jpg", last, mediaTimeString);
 
 			TabMainView.that.reloadSprites(false);
 
@@ -938,8 +929,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			String TrackFolder = Config.TrackFolder.getValue();
 			String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
-			TrackRecorder.AnnotateMedia(basename + "." + ext, relativPath + "/" + basename + "." + ext,
-				mediaCoordinate, mediaTimeString);
+			TrackRecorder.AnnotateMedia(basename + "." + ext, relativPath + "/" + basename + "." + ext, mediaCoordinate, mediaTimeString);
 		    }
 		});
 
@@ -993,8 +983,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	unbindPluginServices();
 
 	if (input == null) {
-	    graphics = new AndroidGraphics(this, gdxConfig,
-		    gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy() : gdxConfig.resolutionStrategy);
+	    graphics = new AndroidGraphics(this, gdxConfig, gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy() : gdxConfig.resolutionStrategy);
 	    input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), gdxConfig);
 	}
 
@@ -1022,7 +1011,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     Dialog pWaitD;
     private boolean stopped = false;
 
-    private AtomicBoolean waitForGL = new AtomicBoolean(false);
+    private final AtomicBoolean waitForGL = new AtomicBoolean(false);
 
     private void showWaitToRenderStartet() {
 	if (!GL.isInitial())
@@ -1030,8 +1019,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	if (pWaitD == null) {
 
-	    pWaitD = PleaseWaitMessageBox.Show(Translation.Get("waitForGL"), "", MessageBoxButtons.NOTHING,
-		    MessageBoxIcon.None, null);
+	    pWaitD = PleaseWaitMessageBox.Show(Translation.Get("waitForGL"), "", MessageBoxButtons.NOTHING, MessageBoxIcon.None, null);
 	    stopped = false;
 
 	    waitForGL.set(true);
@@ -1075,8 +1063,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	if (input == null) {
 	    log.debug("Main=> onResume input== null");
 
-	    graphics = new AndroidGraphics(this, gdxConfig,
-		    gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy() : gdxConfig.resolutionStrategy);
+	    graphics = new AndroidGraphics(this, gdxConfig, gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy() : gdxConfig.resolutionStrategy);
 	    input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), gdxConfig);
 	}
 
@@ -1094,8 +1081,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	    mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_UI);
 	this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
-	int sollHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue())
-		? UiSizes.that.getQuickButtonListHeight() : 0;
+	int sollHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.that.getQuickButtonListHeight() : 0;
 	((main) main.mainActivity).setQuickButtonHeight(sollHeight);
 	downSlider.isInitial = false;
 	InfoDownSlider.invalidate();
@@ -1355,6 +1341,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     private float compassHeading = -1;
 
     private final SensorEventListener mListener = new SensorEventListener() {
+	@Override
 	public void onSensorChanged(SensorEvent event) {
 	    try {
 		mCompassValues = event.values;
@@ -1366,6 +1353,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	    }
 	}
 
+	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 	}
     };
@@ -1641,12 +1629,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	    viewGL.InitializeMap();
 
 	    GlFrame.removeAllViews();
-	    ViewParent parent = ((View) gdxView).getParent();
+	    ViewParent parent = gdxView.getParent();
 	    if (parent != null) {
 		// aktView ist noch gebunden, also lösen
 		((RelativeLayout) parent).removeAllViews();
 	    }
-	    GlFrame.addView((View) gdxView);
+	    GlFrame.addView(gdxView);
 
 	    // }
 	} catch (Exception e) {
@@ -1672,24 +1660,20 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     public boolean sendMotionEvent(final MotionEvent event) {
 
 	int action = event.getAction() & MotionEvent.ACTION_MASK;
-	final int pointerIndex = (event.getAction()
-		& MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
+	final int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
 
 	try {
 	    switch (action & MotionEvent.ACTION_MASK) {
 	    case MotionEvent.ACTION_POINTER_DOWN:
 	    case MotionEvent.ACTION_DOWN:
-		glListener.onTouchDownBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex),
-			event.getPointerId(pointerIndex), 0);
+		glListener.onTouchDownBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex), event.getPointerId(pointerIndex), 0);
 		break;
 	    case MotionEvent.ACTION_MOVE:
-		glListener.onTouchDraggedBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex),
-			event.getPointerId(pointerIndex));
+		glListener.onTouchDraggedBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex), event.getPointerId(pointerIndex));
 		break;
 	    case MotionEvent.ACTION_POINTER_UP:
 	    case MotionEvent.ACTION_UP:
-		glListener.onTouchUpBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex),
-			event.getPointerId(pointerIndex), 0);
+		glListener.onTouchUpBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex), event.getPointerId(pointerIndex), 0);
 		break;
 	    }
 	} catch (Exception e) {
@@ -1721,8 +1705,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	}
 	basename = Global.GetDateTimeString();
 	if (GlobalCore.isSetSelectedCache()) {
-	    String validName = FileIO.RemoveInvalidFatChars(
-		    GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
+	    String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
 	    mediaCacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
 	    // Title = Global.SelectedCache().Name;
 	} else {
@@ -1757,8 +1740,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	basename = Global.GetDateTimeString();
 
 	if (GlobalCore.isSetSelectedCache()) {
-	    String validName = FileIO.RemoveInvalidFatChars(
-		    GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
+	    String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
 	    mediaCacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
 	    // Title = Global.SelectedCache().Name;
 	} else {
@@ -1802,8 +1784,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	    basename = Global.GetDateTimeString();
 
 	    if (GlobalCore.isSetSelectedCache()) {
-		String validName = FileIO.RemoveInvalidFatChars(
-			GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
+		String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
 		mediaCacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
 		// Title = Global.SelectedCache().Name;
 	    } else {
@@ -1829,8 +1810,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	    String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
 	    // Da eine Voice keine Momentaufnahme ist, muss die Zeit und die
 	    // Koordinaten beim Start der Aufnahme verwendet werden.
-	    TrackRecorder.AnnotateMedia(basename + ".wav", relativPath + "/" + basename + ".wav",
-		    Locator.getLocation(ProviderType.GPS), Global.GetTrackDateTimeString());
+	    TrackRecorder.AnnotateMedia(basename + ".wav", relativPath + "/" + basename + ".wav", Locator.getLocation(ProviderType.GPS), Global.GetTrackDateTimeString());
 	    Toast.makeText(mainActivity, "Start Voice Recorder", Toast.LENGTH_SHORT).show();
 
 	    setVoiceRecIsStart(true);
@@ -1864,8 +1844,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					       // neu laden
 
 		    try {
-			URL url = new URL("http://www.gcjoker.de/cachebox.php?md5=" + Config.GcJoker.getValue()
-				+ "&wpt=" + GlobalCore.getSelectedCache().getGcCode());
+			URL url = new URL("http://www.gcjoker.de/cachebox.php?md5=" + Config.GcJoker.getValue() + "&wpt=" + GlobalCore.getSelectedCache().getGcCode());
 			URLConnection urlConnection = url.openConnection();
 			HttpURLConnection httpConnection = (HttpURLConnection) urlConnection;
 
@@ -1875,24 +1854,23 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			    if (inputStream != null) {
 				String line;
 				try {
-				    BufferedReader reader = new BufferedReader(
-					    new InputStreamReader(inputStream, "UTF-8"));
+				    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
 				    while ((line = reader.readLine()) != null) {
 					String[] s = line.split(";", 7);
 					try {
 					    if (s[0].equals("2")) // 2
 								  // entspricht
-					    // Fehler,
-					    // Fehlerursache ist
-					    // in S[1]
+								  // Fehler,
+								  // Fehlerursache ist
+								  // in S[1]
 					    {
 						GL_MsgBox.Show(s[1]);
 						break;
 					    }
 					    if (s[0].equals("1")) // 1
 								  // entspricht
-					    // Warnung, Ursache
-					    // ist in S[1]
+								  // Warnung, Ursache
+								  // ist in S[1]
 					    { // es können aber noch gültige
 					      // Einträge
 					      // folgen
@@ -1915,8 +1893,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			    }
 			}
 		    } catch (MalformedURLException urlEx) {
-			log.error("main.initialBtnInfoContextMenu()", "MalformedURLException HTTP response Jokers",
-				urlEx);
+			log.error("main.initialBtnInfoContextMenu()", "MalformedURLException HTTP response Jokers", urlEx);
 			// Log.d("DroidCachebox", urlEx.getMessage());
 		    } catch (IOException ioEx) {
 			log.error("main.initialBtnInfoContextMenu()", "IOException HTTP response Jokers", ioEx);
@@ -2091,7 +2068,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
     static LockClass lockObject = new LockClass();
 
-    private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver() {
 
 	@Override
 	public void onReceive(Context arg0, Intent intent) {
@@ -2147,16 +2124,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		runOnUiThread(new Runnable() {
 		    @Override
 		    public void run() {
-			MessageBox.Show(Translation.Get("GPSon?"), Translation.Get("GPSoff"), MessageBoxButtons.YesNo,
-				MessageBoxIcon.Question, new DialogInterface.OnClickListener() {
+			MessageBox.Show(Translation.Get("GPSon?"), Translation.Get("GPSoff"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, new DialogInterface.OnClickListener() {
 			    @Override
 			    public void onClick(DialogInterface dialog, int button) {
 				// Behandle das ergebniss
 				switch (button) {
 				case -1:
 				    // yes open gps settings
-				    startActivity(
-					    new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+				    startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 				    break;
 				case -2:
 				    // no,
@@ -2202,29 +2177,28 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     }
 
     private void askToGetApiKey() {
-	MessageBox.Show(Translation.Get("wantApi"), Translation.Get("welcome"), MessageBoxButtons.YesNo,
-		MessageBoxIcon.GC_Live, new DialogInterface.OnClickListener() {
-		    @Override
-		    public void onClick(DialogInterface dialog, int button) {
-			// Behandle das ergebniss
-			switch (button) {
-			case -1:
-			    // yes get Api key
-			    GetApiAuth();
-			    break;
-			case -2:
-			    // now, we check GPS
-			    chkGpsIsOn();
-			    break;
-			case -3:
+	MessageBox.Show(Translation.Get("wantApi"), Translation.Get("welcome"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, new DialogInterface.OnClickListener() {
+	    @Override
+	    public void onClick(DialogInterface dialog, int button) {
+		// Behandle das ergebniss
+		switch (button) {
+		case -1:
+		    // yes get Api key
+		    GetApiAuth();
+		    break;
+		case -2:
+		    // now, we check GPS
+		    chkGpsIsOn();
+		    break;
+		case -3:
 
-			    break;
-			}
+		    break;
+		}
 
-			dialog.dismiss();
-		    }
+		dialog.dismiss();
+	    }
 
-		});
+	});
     }
 
     public static void Toast(String Msg) {
@@ -2307,7 +2281,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     private static final String KEY_PKG = "pkg";
     private static final String KEY_SERVICENAME = "servicename";
     private ArrayList<HashMap<String, String>> services;
-    private PluginServiceConnection pluginServiceConnection[] = new PluginServiceConnection[4];
+    private final PluginServiceConnection pluginServiceConnection[] = new PluginServiceConnection[4];
 
     private void fillPluginList() {
 	services = new ArrayList<HashMap<String, String>>();
@@ -2385,6 +2359,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	    intent.setClassName(data.get(KEY_PKG), data.get(KEY_SERVICENAME));
 	    // Log.d(LOG_TAG, "bindPluginServices: " + intent);
 	    Thread t = new Thread() {
+		@Override
 		public void run() {
 		    try {
 			bindService(intent, con, Context.BIND_AUTO_CREATE);
@@ -2414,11 +2389,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     }
 
     class PluginServiceConnection implements ServiceConnection {
+	@Override
 	public void onServiceConnected(ComponentName className, IBinder boundService) {
 	    int idx = getServiceConnectionIndex();
 	    log.info("onServiceConnected: ComponentName: " + className + "; idx: " + idx);
 	    if (idx >= 0) {
-		Global.iPlugin[idx] = IPlugIn.Stub.asInterface((IBinder) boundService);
+		Global.iPlugin[idx] = IPlugIn.Stub.asInterface(boundService);
 
 		// set Joker PlugIn
 
@@ -2432,6 +2408,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	    }
 	}
 
+	@Override
 	public void onServiceDisconnected(ComponentName className) {
 	    int idx = getServiceConnectionIndex();
 	    log.info("onServiceDisconnected: ComponentName: " + className + "; idx: " + idx);
@@ -2465,8 +2442,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	    @Override
 	    public boolean isOnline() {
-		ConnectivityManager cm = (ConnectivityManager) main.mainActivity
-			.getSystemService(Context.CONNECTIVITY_SERVICE);
+		ConnectivityManager cm = (ConnectivityManager) main.mainActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo netInfo = cm.getActiveNetworkInfo();
 		if (netInfo != null && netInfo.isConnectedOrConnecting()) {
 		    return true;
@@ -2491,8 +2467,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	    public boolean isTorchAvailable() {
 		if (torchAvailable == null) {
 		    torchAvailable = new AtomicBoolean();
-		    torchAvailable.set(
-			    getBaseContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH));
+		    torchAvailable.set(getBaseContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH));
 		}
 
 		return torchAvailable.get();
@@ -2550,15 +2525,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			if (viewID.getType() != ViewID.UI_Type.Activity) {
 			    if (viewID.getPos() == UI_Pos.Left) {
-				RelativeLayout.LayoutParams paramsLeft = (RelativeLayout.LayoutParams) frame
-					.getLayoutParams();
+				RelativeLayout.LayoutParams paramsLeft = (RelativeLayout.LayoutParams) frame.getLayoutParams();
 				paramsLeft.setMargins(left, top, right, bottom);
 				frame.setLayoutParams(paramsLeft);
 				frame.requestLayout();
 			    } else {
 				if (tabFrame != null) {
-				    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) tabFrame
-					    .getLayoutParams();
+				    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) tabFrame.getLayoutParams();
 
 				    int versatz = 0;
 				    if (TabMainView.LeftTab != null) {
@@ -2717,24 +2690,20 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		    @Override
 		    public void run() {
 
-			log.debug("Set Android Content Sizeleft/top/right/bottom :" + String.valueOf(left) + "/"
-				+ String.valueOf(top) + "/" + String.valueOf(right) + "/" + String.valueOf(bottom));
+			log.debug("Set Android Content Sizeleft/top/right/bottom :" + String.valueOf(left) + "/" + String.valueOf(top) + "/" + String.valueOf(right) + "/" + String.valueOf(bottom));
 
 			// set Content size
 
 			if (aktView != null) {
-			    RelativeLayout.LayoutParams paramsLeft = (RelativeLayout.LayoutParams) frame
-				    .getLayoutParams();
+			    RelativeLayout.LayoutParams paramsLeft = (RelativeLayout.LayoutParams) frame.getLayoutParams();
 			    paramsLeft.setMargins(left, top, right, bottom);
 			    frame.setLayoutParams(paramsLeft);
 			    frame.requestLayout();
 			} else if (aktTabView != null) {
 			    if (tabFrame != null) {
-				LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) tabFrame
-					.getLayoutParams();
+				LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) tabFrame.getLayoutParams();
 
-				LinearLayout.LayoutParams paramsLeft = (LinearLayout.LayoutParams) frame
-					.getLayoutParams();
+				LinearLayout.LayoutParams paramsLeft = (LinearLayout.LayoutParams) frame.getLayoutParams();
 				params.setMargins(left - paramsLeft.width, top, right, bottom);
 				tabFrame.setLayoutParams(params);
 				tabFrame.requestLayout();
@@ -2793,6 +2762,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	platformConector.setCallUrlListner(new ICallUrl() {
 
+	    /**
+	     * call
+	     */
 	    @Override
 	    public void call(String url) {
 		try {
@@ -2802,9 +2774,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url.trim()));
 		    main.mainActivity.startActivity(browserIntent);
 		} catch (Exception exc) {
-		    Toast.makeText(main.mainActivity,
-			    Translation.Get("Cann_not_open_cache_browser") + " (" + url.trim() + ")", Toast.LENGTH_LONG)
-			    .show();
+		    Toast.makeText(main.mainActivity, Translation.Get("Cann_not_open_cache_browser") + " (" + url.trim() + ")", Toast.LENGTH_LONG).show();
 		}
 	    }
 	});
@@ -2815,8 +2785,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		Uri uriToImage = Uri.fromFile(new File(file));
 		Intent shareIntent = new Intent(Intent.ACTION_VIEW);
 		shareIntent.setDataAndType(uriToImage, "image/*");
-		main.mainActivity
-			.startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.app_name)));
+		main.mainActivity.startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.app_name)));
 	    }
 	});
 
@@ -2849,12 +2818,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		    androidSetting = main.this.getSharedPreferences(Global.PREFS_NAME, 0);
 
 		if (setting instanceof SettingString) {
-		    String value = androidSetting.getString(setting.getName(),
-			    ((SettingString) setting).getDefaultValue());
+		    String value = androidSetting.getString(setting.getName(), ((SettingString) setting).getDefaultValue());
 		    ((SettingString) setting).setValue(value);
 		} else if (setting instanceof SettingBool) {
-		    boolean value = androidSetting.getBoolean(setting.getName(),
-			    ((SettingBool) setting).getDefaultValue());
+		    boolean value = androidSetting.getBoolean(setting.getName(), ((SettingBool) setting).getDefaultValue());
 		    ((SettingBool) setting).setValue(value);
 		} else if (setting instanceof SettingInt) {
 		    int value = androidSetting.getInt(setting.getName(), ((SettingInt) setting).getDefaultValue());
@@ -3030,8 +2997,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 class SingleMediaScanner implements MediaScannerConnectionClient {
 
-    private MediaScannerConnection mMs;
-    private File mFile;
+    private final MediaScannerConnection mMs;
+    private final File mFile;
 
     public SingleMediaScanner(Context context, File f) {
 	mFile = f;
