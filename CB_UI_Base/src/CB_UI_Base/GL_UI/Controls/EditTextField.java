@@ -619,23 +619,24 @@ public class EditTextField extends EditTextFieldBase {
 		}
 		bearbeitet = true;
 	    }
-	    if (!isWrapped()) {
-		// Scrollen Links - Rechts
-		float maxWidth = maxLineWidth();
-		if (maxWidth < textWidth) {
-		    // Text hat auf einmal Platz -> auf Ursprung hin scrollen
+	    // if I want to see a very long word
+	    // if (!isWrapped()) {
+	    // Scrollen Links - Rechts
+	    float maxWidth = maxLineWidth();
+	    if (maxWidth < textWidth) {
+		// Text hat auf einmal Platz -> auf Ursprung hin scrollen
+		leftPos = 0;
+	    } else {
+		// Text hat nicht auf einmal Platz -> Scrollen möglich
+		leftPos = leftPosAtTouchDown + (touchDownPos.x - x);
+		if (leftPos < 0) {
 		    leftPos = 0;
-		} else {
-		    // Text hat nicht auf einmal Platz -> Scrollen möglich
-		    leftPos = leftPosAtTouchDown + (touchDownPos.x - x);
-		    if (leftPos < 0) {
-			leftPos = 0;
-		    }
-		    if (leftPos > maxWidth - textWidth) {
-			leftPos = maxWidth - textWidth;
-		    }
+		}
+		if (leftPos > maxWidth - textWidth) {
+		    leftPos = maxWidth - textWidth;
 		}
 	    }
+	    //}
 	    moveSelectionMarkers((oldLeftPos - leftPos), (topLine - oldTopLine) * this.style.font.getLineHeight());
 	    callListPosChangedEvent();
 	}
