@@ -28,7 +28,7 @@ import CB_Utils.Converter.UTMConvert;
 
 public class EditCoord extends ActivityBase implements ICopyPaste {
     private int aktPage = -1; // Deg-Min
-    private UTMConvert convert = new UTMConvert();
+    private final UTMConvert convert = new UTMConvert();
     private CopyPastePopUp popUp;
     private Coordinate cancelCoord;
     private Coordinate coord;
@@ -177,7 +177,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 
     protected void showPopUp(int x, int y) {
 
-	popUp = new CopyPastePopUp("CopiePastePopUp=>" + getName(), this);
+	popUp = new CopyPastePopUp("CopyPastePopUp=>" + getName(), this);
 
 	float noseOffset = popUp.getHalfWidth() / 2;
 
@@ -852,7 +852,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 	this.focus = setFocus(bLat, bLon, nextFocus);
     }
 
-    private EditTextField invisibleTextField = new EditTextField(this.name + " invisibleTextField");
+    private final EditTextField invisibleTextField = new EditTextField(this.name + " invisibleTextField");
     private final String utmTest = "ABCDEFGHJKLMNPQRSTUVWXYZ";
 
     private void setUTMFocus(int newFocus) {

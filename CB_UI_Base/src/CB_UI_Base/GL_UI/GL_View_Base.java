@@ -620,6 +620,11 @@ public abstract class GL_View_Base extends CB_RectF {
 	thisInvalidate = true;
     }
 
+    /**
+     * render
+     * 
+     * @param batch
+     */
     protected abstract void render(Batch batch);
 
     // ########################
@@ -894,6 +899,15 @@ public abstract class GL_View_Base extends CB_RectF {
 	return resultView;
     }
 
+    /**
+     * touchDragged
+     * 
+     * @param x
+     * @param y
+     * @param pointer
+     * @param KineticPan
+     * @return
+     */
     public final boolean touchDragged(int x, int y, int pointer, boolean KineticPan) {
 	// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
 	// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
@@ -916,8 +930,7 @@ public abstract class GL_View_Base extends CB_RectF {
 	}
 
 	if (!behandelt) {
-	    // kein Klick in einem untergeordnetem View
-	    // -> hier behandeln
+	    // kein Klick in einem untergeordnetem View -> hier behandeln
 	    behandelt = onTouchDragged(x, y, pointer, KineticPan);
 	}
 	return behandelt;
@@ -971,6 +984,7 @@ public abstract class GL_View_Base extends CB_RectF {
     public abstract boolean onTouchDown(int x, int y, int pointer, int button);
 
     /**
+     * abstract onTouchDragged: implementation should return true, if handled.
      * 
      * @param x
      * @param y

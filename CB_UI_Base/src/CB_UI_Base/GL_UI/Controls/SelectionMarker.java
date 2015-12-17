@@ -1,5 +1,7 @@
 package CB_UI_Base.GL_UI.Controls;
 
+import org.slf4j.LoggerFactory;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
@@ -10,81 +12,71 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Math.Point;
 
 public class SelectionMarker extends CB_View_Base {
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(SelectionMarker.class);
 
     public enum Type {
 	Center, Left, Right
     }
 
-    // protected EditTextField textField;
     protected Type type;
     protected Drawable marker;
-    // Breite des Markers
-    protected float markerWidth;
     // X-Position des Einfügepunktes des Markers relativ zur linke Seite
     protected float markerXPos;
 
     public SelectionMarker(Type type) {
-
 	super(0, 0, 10, 10, "");
-
-	float Height = UI_Size_Base.that.getButtonHeight();
-
-	this.setSize(Height, Height);
-
 	this.type = type;
-	Initial();
+	init();
+    }
 
-	if (marker == null)
-	    return;
+    /**
+     * does nothing
+     */
+    @Override
+    protected void Initial() {
+    }
+
+    @Override
+    protected void SkinIsChanged() {
+	init();
+    }
+
+    @Override
+    protected void render(Batch batch) {
+	marker.draw(batch, 0, 0, getWidth(), getHeight());
+    }
+
+    private void init() {
+	this.marker = SpriteCacheBase.selection_set;
+	switch (type) {
+	case Center:
+	    break;
+	case Left:
+	    marker = SpriteCacheBase.selection_left;
+	    break;
+	case Right:
+	    marker = SpriteCacheBase.selection_right;
+	    break;
+	}
 
 	// Orginalgröße des Marker-Sprites
 	float orgWidth = marker.getMinWidth();
 	float orgHeight = marker.getMinHeight();
-
-	float Width = Height / orgHeight * orgWidth;
+	float size = UI_Size_Base.that.getButtonHeight();
+	float width = size / orgHeight * orgWidth;
 	// markerXPos ist der Einfügepunkt rel. der linken Seite
 	switch (type) {
 	case Center:
-	    markerXPos = ((orgWidth - 1) / 2) / orgWidth * Width;
+	    markerXPos = ((orgWidth - 1) / 2) / orgWidth * width;
 	    break;
 	case Right:
 	    markerXPos = 0;
 	    break;
 	case Left:
-	    markerXPos = (orgWidth - 1) / orgWidth * Width;
+	    markerXPos = (orgWidth - 1) / orgWidth * width;
 	    break;
 	}
-	this.setWidth(Width);
-
-    }
-
-    @Override
-    protected void Initial() {
-	if (marker == null) {
-	    switch (type) {
-	    case Center:
-		marker = SpriteCacheBase.selection_set;
-		break;
-	    case Left:
-		marker = SpriteCacheBase.selection_left;
-		break;
-	    case Right:
-		marker = SpriteCacheBase.selection_right;
-		break;
-	    }
-	}
-    }
-
-    @Override
-    protected void SkinIsChanged() {
-	Initial();
-    }
-
-    @Override
-    protected void render(Batch batch) {
-	if (marker == null)
-	    Initial();
-	marker.draw(batch, 0, 0, getWidth(), getHeight());
+	this.setSize(width, size);
     }
 
     private Point touchDownPos = null;
@@ -96,6 +88,7 @@ public class SelectionMarker extends CB_View_Base {
     public boolean onTouchDown(int x, int y, int pointer, int button) {
 	if (pointer == 0) {
 	    touchDownPos = new Point(x, y);
+	    log.info("touchdown at " + x + "/" + y);
 	}
 	return true;
     }
@@ -112,9 +105,9 @@ public class SelectionMarker extends CB_View_Base {
 		return true;
 	    EditTextField tv = GL.that.getFocusedEditTextField();
 	    if (tv != null) {
-		Point cursorPos = tv.moveBy(deltaX, deltaY, type);
-		if (cursorPos != null) {
-		    moveTo(cursorPos.x, cursorPos.y);
+		Point newMarkerPos = tv.aSelectionMarkerIsDragged(deltaX, deltaY, type);
+		if (newMarkerPos != null) {
+		    moveTo(newMarkerPos.x, newMarkerPos.y);
 		}
 	    }
 	}

@@ -121,13 +121,14 @@ public class CoordinateButton extends Button implements ICopyPaste {
 	return mActCoord;
     }
 
+    @Override
     public void performClick() {
 	super.performClick();
     }
 
     protected void showPopUp(int x, int y) {
 
-	popUp = new CopyPastePopUp("CopiePastePopUp=>" + getName(), this);
+	popUp = new CopyPastePopUp("CopyPastePopUp=>" + getName(), this);
 
 	float noseOffset = popUp.getHalfWidth() / 2;
 
@@ -159,15 +160,20 @@ public class CoordinateButton extends Button implements ICopyPaste {
 	if (clipboard == null)
 	    return null;
 	String content = clipboard.getContents();
-	CoordinateGPS cor = null;
+	CoordinateGPS coord = null;
 	if (content != null) {
 	    try {
-		cor = new CoordinateGPS(content);
+		coord = new CoordinateGPS(content);
 	    } catch (Exception e) {
 	    }
 
-	    if (cor != null) {
-		this.setCoordinate(cor);
+	    if (coord != null) {
+		if (coord != null && coord.isValid()) {
+		    mActCoord = coord;
+		    if (mCoordinateChangedListner != null)
+			mCoordinateChangedListner.coordinateChanged(coord);
+		    setText();
+		}
 		return content;
 	    } else {
 		return Translation.Get("cantPaste") + GlobalCore.br + content;

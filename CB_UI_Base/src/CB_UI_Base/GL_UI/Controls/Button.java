@@ -118,6 +118,9 @@ public class Button extends CB_View_Base {
 	DrawableOverlayList.remove(drawable);
     }
 
+    /**
+     * render
+     */
     @Override
     protected void render(Batch batch) {
 	if (dragableButton) {

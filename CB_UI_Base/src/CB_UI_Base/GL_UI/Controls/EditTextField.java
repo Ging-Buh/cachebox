@@ -596,10 +596,10 @@ public class EditTextField extends EditTextFieldBase {
     }
 
     /**
-     * onTouchDragged
+     * the text and the selectionmarker/s will be moved (by dx,dy relative to touchDownPos)
      */
     @Override
-    public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
+    public boolean onTouchDragged(int dx, int dy, int pointer, boolean KineticPan) {
 	boolean bearbeitet = false;
 	if (touchDownPos != null) {
 	    float oldTopLine = topLine;
@@ -609,7 +609,7 @@ public class EditTextField extends EditTextFieldBase {
 		if (lines.size() < maxLineCount) {
 		    topLine = 0;
 		} else {
-		    topLine = (int) (topLineAtTouchDown + (y - touchDownPos.y) / this.style.font.getLineHeight());
+		    topLine = (int) (topLineAtTouchDown + (dy - touchDownPos.y) / this.style.font.getLineHeight());
 		    if (topLine < 0) {
 			topLine = 0;
 		    }
@@ -619,8 +619,7 @@ public class EditTextField extends EditTextFieldBase {
 		}
 		bearbeitet = true;
 	    }
-	    // if I want to see a very long word
-	    // if (!isWrapped()) {
+
 	    // Scrollen Links - Rechts
 	    float maxWidth = maxLineWidth();
 	    if (maxWidth < textWidth) {
@@ -628,7 +627,7 @@ public class EditTextField extends EditTextFieldBase {
 		leftPos = 0;
 	    } else {
 		// Text hat nicht auf einmal Platz -> Scrollen möglich
-		leftPos = leftPosAtTouchDown + (touchDownPos.x - x);
+		leftPos = leftPosAtTouchDown + (touchDownPos.x - dx);
 		if (leftPos < 0) {
 		    leftPos = 0;
 		}
@@ -636,7 +635,7 @@ public class EditTextField extends EditTextFieldBase {
 		    leftPos = maxWidth - textWidth;
 		}
 	    }
-	    //}
+
 	    moveSelectionMarkers((oldLeftPos - leftPos), (topLine - oldTopLine) * this.style.font.getLineHeight());
 	    callListPosChangedEvent();
 	}
@@ -684,7 +683,7 @@ public class EditTextField extends EditTextFieldBase {
     }
 
     /**
-     * setting new cursor 
+     * setting cursorposition at x,y 
      */
     @Override
     public boolean click(int X, int Y, int pointer, int button) {
@@ -814,9 +813,18 @@ public class EditTextField extends EditTextFieldBase {
 	GL.that.hideMarker();
     }
 
-    public Point moveBy(int dx, int dy, SelectionMarker.Type type) {
+    /**
+     * A new cursorposition of the desired SelectionMarker given by the selectionMarkerType is calculated.<br>
+     * It is the nearest position of a character determined by the actual position and the difference given by dx and dy<br>
+     * In case of CenterSelectionMarker, the blinking cursor is moved, the new position of the SelectionMarker is returned.<br>
+     * @param dx
+     * @param dy
+     * @param selectionMarkerType
+     * @return the new cursor position in pixels
+     */
+    public Point aSelectionMarkerIsDragged(int dx, int dy, SelectionMarker.Type selectionMarkerType) {
 	Point useCursor = cursor;
-	switch (type) {
+	switch (selectionMarkerType) {
 	case Center:
 	    useCursor = cursor;
 	    break;
@@ -854,25 +862,29 @@ public class EditTextField extends EditTextFieldBase {
 	for (int i = 0; i < line.glyphPositions.size; i++) {
 	    float pos = line.glyphPositions.items[i];
 	    if (pos > lx) {
+		Point result = null;
 		int clickedColumn = Math.max(0, i - 1);
-		Point result = new Point((int) (getCursorX(new Point(clickedColumn, clickedLine)) + style.cursor.getMinWidth() / 2), (int) (getCursorY(clickedLine)));
+		result = new Point((int) (getCursorX(new Point(clickedColumn, clickedLine)) + style.cursor.getMinWidth() / 2), (int) (getCursorY(clickedLine)));
 		useCursor.x = clickedColumn;
 		useCursor.y = clickedLine;
-		if (type == SelectionMarker.Type.Center) {
+		if (selectionMarkerType == SelectionMarker.Type.Center) {
 		    setCursorLine(clickedLine, false);
 		}
+		// log.info("drag " + dy + "/" + dx + " to char" + clickedColumn + " line " + clickedLine);
 		return result;
 	    }
 	}
 
 	// after the last character
 	int clickedColumn = Math.max(0, line.glyphPositions.size - 1);
-	Point result = new Point((int) (getCursorX(new Point(clickedColumn, clickedLine)) + style.cursor.getMinWidth() / 2), (int) (getCursorY(clickedLine)));
+	Point result = null;
+	result = new Point((int) (getCursorX(new Point(clickedColumn, clickedLine)) + style.cursor.getMinWidth() / 2), (int) (getCursorY(clickedLine)));
 	useCursor.x = clickedColumn;
 	useCursor.y = clickedLine;
-	if (type == SelectionMarker.Type.Center) {
+	if (selectionMarkerType == SelectionMarker.Type.Center) {
 	    setCursorLine(clickedLine, false);
 	}
+	//log.info("drag " + dy + "/" + dx + " to char" + clickedColumn + " line " + clickedLine);
 	return result;
     }
 

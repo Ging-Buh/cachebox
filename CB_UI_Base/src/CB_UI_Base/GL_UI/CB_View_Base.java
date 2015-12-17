@@ -72,9 +72,11 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	isInitial = false;
     }
 
+    /**
+     * render
+     */
     @Override
     protected void render(Batch batch) {
-
 	if (!isInitial) {
 	    isInitial = true;
 	    Initial();
@@ -82,8 +84,8 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
     }
 
     /**
-     * Da die meisten Sprite Initialisierungen von Sprites im Render Thread durchgeführt werden müssen, wird diese Methode, zu
-     * Initialisierung im ersten Render Durchgang ausgeführt.
+     * Da die meisten Sprite Initialisierungen von Sprites im Render Thread durchgeführt werden müssen,
+     * wird diese Methode, zur Initialisierung im ersten Render Durchgang ausgeführt.
      */
     protected abstract void Initial();
 

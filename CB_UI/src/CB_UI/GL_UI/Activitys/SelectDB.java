@@ -90,7 +90,6 @@ public class SelectDB extends ActivityBase {
 
 	String DBFile = FileIO.GetFileName(Config.DatabasePath.getValue());
 
-	// lvFiles = (ListView) findViewById(R.id.sdb_list);
 	final FileList files = new FileList(Config.WorkPath, "DB3", true);
 	countList = new String[files.size()];
 
@@ -102,7 +101,8 @@ public class SelectDB extends ActivityBase {
 	    index++;
 	}
 
-	lvFiles = new V_ListView(new CB_RectF(leftBorder, this.getBottomHeight() + UI_Size_Base.that.getButtonHeight() * 2, innerWidth, getHeight() - (UI_Size_Base.that.getButtonHeight() * 2) - this.getTopHeight() - this.getBottomHeight()), "DB File ListView");
+	lvFiles = new V_ListView(new CB_RectF(leftBorder, this.getBottomHeight() + UI_Size_Base.that.getButtonHeight() * 2, innerWidth, getHeight() - (UI_Size_Base.that.getButtonHeight() * 2) - this.getTopHeight() - this.getBottomHeight()),
+		"DB File ListView");
 
 	lvAdapter = new CustomAdapter(files);
 	lvFiles.setBaseAdapter(lvAdapter);
@@ -478,7 +478,7 @@ public class SelectDB extends ActivityBase {
     public class CustomAdapter implements Adapter {
 
 	private FileList files;
-	private CB_RectF recItem;
+	private final CB_RectF recItem;
 
 	public CustomAdapter(FileList files) {
 	    this.files = files;

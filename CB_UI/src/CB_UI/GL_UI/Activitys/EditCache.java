@@ -13,12 +13,12 @@ import CB_Core.Database;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.Types.Cache;
 import CB_Locator.Coordinate;
-import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Controls.CoordinateButton;
 import CB_UI.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
 import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -165,7 +165,7 @@ public class EditCache extends ActivityBase
 	newValues.Size = CacheSizes.micro;
 	newValues.setDifficulty(1);
 	newValues.setTerrain(1);
-	newValues.Pos = Locator.getLocation().toCordinate();
+	newValues.Pos = MapView.that.center; // Locator.getLocation().toCordinate();
 	if (!newValues.Pos.isValid())
 	    newValues.Pos = GlobalCore.getSelectedCoord();
 	// GC - Code bestimmen für freies CWxxxx = CustomWaypint
@@ -409,7 +409,7 @@ public class EditCache extends ActivityBase
 	};
     }
 
-    private ArrayList<EditTextField> allTextFields = new ArrayList<EditTextField>();
+    private final ArrayList<EditTextField> allTextFields = new ArrayList<EditTextField>();
 
     public void registerTextField(final EditTextField textField) {
 	textField.setOnscreenKeyboard(new OnscreenKeyboard() {
