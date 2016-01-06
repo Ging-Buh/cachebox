@@ -39,7 +39,7 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Listener_Interface;
 import CB_UI_Base.Math.UiSizes;
-import CB_UI_Base.Math.devicesSizes;
+import CB_UI_Base.Math.DevicesSizes;
 import CB_Utils.Plattform;
 import CB_Utils.Settings.PlatformSettings;
 import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
@@ -62,7 +62,7 @@ public class DesktopMain {
     static Preferences prefs = Preferences.userNodeForPackage(de.DesktopMain.class);
 
     @SuppressWarnings("unused")
-    public static void start(devicesSizes ui, boolean debug, boolean scissor, final boolean simulate, final Frame frame) {
+    public static void start(DevicesSizes ui, boolean debug, boolean scissor, final boolean simulate, final Frame frame) {
 	Plattform.used = Plattform.Desktop;
 	frame.setVisible(false);
 

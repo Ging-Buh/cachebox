@@ -42,6 +42,11 @@ import CB_UI_Base.graphics.Geometry.Line;
 import CB_UI_Base.graphics.Geometry.Quadrangle;
 import CB_Utils.Util.HSV_Color;
 
+/**
+ * 
+ * @author Longri
+ *
+ */
 public class Label extends CB_View_Base {
     private final static org.slf4j.Logger log = LoggerFactory.getLogger(Label.class);
 
@@ -236,10 +241,10 @@ public class Label extends CB_View_Base {
 
 	    }
 	} catch (ArrayIndexOutOfBoundsException e) {
-	    // kommt manchmal wenn der Text geändert wird
+	    // kommt manchmal wenn der Text geÃ¤ndert wird
 	    setText();
 	} catch (NullPointerException e) {
-	    // kommt manchmal wenn der Text geändert wird
+	    // kommt manchmal wenn der Text geÃ¤ndert wird
 	    setText();
 	}
     }
@@ -354,7 +359,7 @@ public class Label extends CB_View_Base {
 
     private void setTextPosition() {
 	// left : text starts at xPosition
-	float xPosition = leftBorder + 1; // !!! Die 1 ist empirisch begründet
+	float xPosition = leftBorder + 1; // !!! Die 1 ist empirisch begrÃ¼ndet
 	//default HAlignment.LEFT
 	if (innerWidth > bounds.width) {
 	    if (mHAlignment == HAlignment.CENTER || mHAlignment == HAlignment.SCROLL_CENTER) {
@@ -540,7 +545,7 @@ public class Label extends CB_View_Base {
 
     @Override
     protected void SkinIsChanged() {
-	// todo den korrekten Font (original Fontgrï¿½sse nicht bekannt) setzen
+	// todo den korrekten Font (original FontgrÃ¶sse nicht bekannt) setzen
 	mFont = Fonts.getNormal();
 	mColor = COLOR.getFontColor();
 	initLabel();

@@ -733,7 +733,7 @@ public class SearchDialog extends PopUp_Base {
 				}
 
 				for (int i = 0, n = cache.waypoints.size(); i < n; i++) {
-				    Waypoint waypoint = (Waypoint) cache.waypoints.get(i);
+				    Waypoint waypoint = cache.waypoints.get(i);
 				    waypointDAO.WriteToDatabase(waypoint, false); // do not store replication information here
 				}
 			    }
@@ -798,32 +798,25 @@ public class SearchDialog extends PopUp_Base {
     }
 
     public void addSearch(final String searchPattern, final searchMode Mode) {
-
 	log.debug("addSearch " + searchPattern);
-
 	try {
 	    GL.that.RunOnGL(new IRunOnGL() {
-
 		@Override
 		public void run() { //step 1
 		    mEingabe.setText(searchPattern);
 		    GL.that.RunOnGL(new IRunOnGL() {
-
 			@Override
 			public void run() {//step 2
 			    switchSearcheMode(Mode.ordinal());
 			    GL.that.RunOnGL(new IRunOnGL() {
-
 				@Override
 				public void run() {//step 3
 				    mTglBtnOnline.setState(1);
 				    GL.that.RunOnGL(new IRunOnGL() {
-
 					@Override
 					public void run() {//step 4
 					    setFilterBtnState();
 					    GL.that.RunOnGL(new IRunOnGL() {
-
 						@Override
 						public void run() {//step 5
 						    mBtnSearch.performClick();
@@ -835,7 +828,6 @@ public class SearchDialog extends PopUp_Base {
 			    });
 			}
 		    });
-
 		}
 	    });
 	} catch (Exception e) {
@@ -875,7 +867,7 @@ public class SearchDialog extends PopUp_Base {
 	}
     }
 
-    private YPositionChanged listner = new YPositionChanged() {
+    private final YPositionChanged listner = new YPositionChanged() {
 
 	@Override
 	public void Position(float SliderTop, float SliderBottom) {

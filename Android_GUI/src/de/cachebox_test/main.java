@@ -96,10 +96,10 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.Math.DevicesSizes;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
-import CB_UI_Base.Math.devicesSizes;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Plattform;
 import CB_Utils.Interfaces.cancelRunnable;
@@ -355,8 +355,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	savedInstanceState.putBoolean("useSmallSkin", GlobalCore.useSmallSkin);
 	savedInstanceState.putString("WorkPath", Config.WorkPath);
 
-	savedInstanceState.putInt("WindowWidth", UI_Size_Base.that.ui.Window.width);
-	savedInstanceState.putInt("WindowHeight", UI_Size_Base.that.ui.Window.height);
+	savedInstanceState.putInt("WindowWidth", UI_Size_Base.that.getWindowWidth());
+	savedInstanceState.putInt("WindowHeight", UI_Size_Base.that.getWindowHeight());
 
 	if (GlobalCore.isSetSelectedCache())
 	    savedInstanceState.putString("selectedCacheID", GlobalCore.getSelectedCache().getGcCode());
@@ -411,7 +411,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	    Config.AcceptChanges();
 
 	    Resources res = this.getResources();
-	    devicesSizes ui = new devicesSizes();
+	    DevicesSizes ui = new DevicesSizes();
 
 	    ui.Window = new Size(savedInstanceState.getInt("WindowWidth"), savedInstanceState.getInt("WindowHeight"));
 	    ui.Density = res.getDisplayMetrics().density;

@@ -846,12 +846,12 @@ public class GL implements ApplicationListener, InputProcessor {
 		// zu weit verschoben -> Long-Click detection stoppen
 		cancelLongClickTimer();
 		// touchDragged Event an das View, das den onTouchDown bekommen hat
-		boolean behandelt = first.view.touchDragged(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.ThisWorldRec.getY(), pointer, false);
+		boolean behandelt = first.view.touchDragged(x - (int) first.view.thisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.thisWorldRec.getY(), pointer, false);
 		if (TOUCH_DEBUG)
 		    // log.debug("GL_Listner => onTouchDraggedBase : " + behandelt);
 		    if (!behandelt && first.view.getParent() != null) {
 			// Wenn der Parent eine ScrollBox hat -> Scroll-Events dahin weiterleiten
-			first.view.getParent().touchDragged(x - (int) first.view.getParent().ThisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.getParent().ThisWorldRec.getY(), pointer, false);
+			first.view.getParent().touchDragged(x - (int) first.view.getParent().thisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.getParent().thisWorldRec.getY(), pointer, false);
 		    }
 		if (touchDownPos.size() == 1) {
 		    if (first.kineticPan == null)
@@ -884,12 +884,11 @@ public class GL implements ApplicationListener, InputProcessor {
 	try {
 	    Point akt = new Point(x, y);
 	    if (distance(akt, first.point) < first.view.getClickTolerance()) {
-		// Finger wurde losgelassen ohne viel Bewegung -> onClick erzeugen
-		// glListener.onClick(akt.x, akt.y, pointer, 0);
+		// Finger wurde losgelassen ohne viel Bewegung
 		if (first.view.isClickable()) {
 		    // Testen, ob dies ein Doppelklick ist
-		    if (first.view.isDblClickable() && (System.currentTimeMillis() < lastClickTime + mDoubleClickTime) && (lastClickPoint != null) && (distance(akt, lastClickPoint) < first.view.getClickTolerance())) {
-			boolean handled = first.view.doubleClick(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.ThisWorldRec.getY(), pointer, button);
+		    if (first.view.isDoubleClickable() && (System.currentTimeMillis() < lastClickTime + mDoubleClickTime) && (lastClickPoint != null) && (distance(akt, lastClickPoint) < first.view.getClickTolerance())) {
+			boolean handled = first.view.doubleClick(x - (int) first.view.thisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.thisWorldRec.getY(), pointer, button);
 			if (handled)
 			    platformConector.vibrate();
 
@@ -897,7 +896,7 @@ public class GL implements ApplicationListener, InputProcessor {
 			lastClickPoint = null;
 		    } else {
 			// normaler Click
-			boolean handled = first.view.click(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.ThisWorldRec.getY(), pointer, button);
+			boolean handled = first.view.click(x - (int) first.view.thisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.thisWorldRec.getY(), pointer, button);
 			if (handled)
 			    platformConector.vibrate();
 
@@ -916,7 +915,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	try {
 	    if (first.kineticPan != null) {
 		first.kineticPan.start();
-		first.startKinetic(this, x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.ThisWorldRec.getY());
+		first.startKinetic(this, x - (int) first.view.thisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.thisWorldRec.getY());
 	    } else {
 		// onTouchUp immer auslösen
 		first.view.touchUp(x, (int) testingView.getHeight() - y, pointer, button);
@@ -1224,7 +1223,7 @@ public class GL implements ApplicationListener, InputProcessor {
 		Point akt = new Point(x, y);
 		if (distance(akt, first.point) < first.view.getClickTolerance()) {
 		    if (first.view.isLongClickable()) {
-			boolean handled = first.view.longClick(x - (int) first.view.ThisWorldRec.getX(), (int) child.getHeight() - y - (int) first.view.ThisWorldRec.getY(), pointer, 0);
+			boolean handled = first.view.longClick(x - (int) first.view.thisWorldRec.getX(), (int) child.getHeight() - y - (int) first.view.thisWorldRec.getY(), pointer, 0);
 			// log.debug("GL_Listner => onLongClick : " + first.view.getName());
 			// für diesen TouchDownn darf kein normaler Click mehr ausgeführt werden
 			touchDownPos.remove(pointer);

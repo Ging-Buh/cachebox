@@ -27,7 +27,7 @@ import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Util.iChanged;
 
 /**
- * Diese Klasse Kapselt die Werte, welche in der OpenGL Map ben�tigt werden. Auch die Benutzen Fonts werden hier gespeichert, da die Gr�sse
+ * Diese Klasse Kapselt die Werte, welche in der OpenGL Map benötigt werden. Auch die Benutzen Fonts werden hier gespeichert, da die Grösse
  * hier berechnet wird.
  * 
  * @author Longri
@@ -35,18 +35,8 @@ import CB_Utils.Util.iChanged;
 public class GL_UISizes implements SizeChangedEvent {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(GL_UISizes.class);
 
-    // /**
-    // * Initialisiert die Gr��en und Positionen der UI-Elemente der OpenGL Map, anhand der zur Verf�gung stehenden Gr��e und des
-    // * Eingestellten DPI Faktors. F�r die Berechnung wird die Gr��e von Gdx.graphics genommen.
-    // */
-    // public static void initial(Color FontColor)
-    // {
-    // initial(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), FontColor);
-    // }
-
     /**
-     * Initialisiert die Gr��en und Positionen der UI-Elemente der OpenGL Map, anhand der �bergebenen Gr��e und des Eingestellten DPI
-     * Faktors.
+     * Initialisiert die Größen und Positionen der UI-Elemente der OpenGL Map, anhand der übergebenen Größe und des Eingestellten DPI Faktors.
      * 
      * @param width
      * @param height
@@ -63,7 +53,7 @@ public class GL_UISizes implements SizeChangedEvent {
 	    log.debug("DPI != MapViewDPIFaktor " + DPI);
 
 	    FontFaktor = (float) (0.666666666667 * DPI * CB_UI_Base_Settings.MapViewFontFaktor.getValue());
-	    isInitial = false; // gr�ssen m�ssen neu Berechnet werden
+	    isInitial = false; // Grössen müssen neu berechnet werden
 	}
 
 	log.debug("Initial UISizes => isInitial" + isInitial);
@@ -75,7 +65,7 @@ public class GL_UISizes implements SizeChangedEvent {
 
 	} else {
 	    if (SurfaceSize.setSize(width, height)) {
-		// Surface gr�sse hat sich ge�ndert, die Positionen der UI-Elemente m�ssen neu Berechnet werden.
+		// Surface grösse hat sich geändert, die Positionen der UI-Elemente müssen neu Berechnet werden.
 		calcSizes();
 		calcPos();
 	    }
@@ -122,25 +112,25 @@ public class GL_UISizes implements SizeChangedEvent {
     }
 
     /**
-     * das Rechteck, welches die Gr��e und Position aller GL_View�s auf der linken Seite darstellt. Dieses Rechteck ist immer G�ltig! Das
-     * Rechteck UI_Reight hat die Gleiche Gr��e und Position wie UI_Left, wenn es sich nicht um ein Tablet Layout handelt.
+     * das Rechteck, welches die Größe und Position aller GL_View's auf der linken Seite darstellt. Dieses Rechteck ist immer Gültig! Das
+     * Rechteck UI_Reight hat die Gleiche Größe und Position wie UI_Left, wenn es sich nicht um ein Tablet Layout handelt.
      */
     public static CB_RectF UI_Left;
 
     /**
-     * Das Rechteck, welches die Gr��e und Position aller GL_View�s auf der rechten Seite darstellt, wenn es sich um ein Tablet Layout
-     * handelt. Wenn es sich nicht um ein Tablet Layout handelt, hat dieses Rechteck die selbe Gr��e und Position wie UI_Left.
+     * Das Rechteck, welches die Größe und Position aller GL_View's auf der rechten Seite darstellt, wenn es sich um ein Tablet Layout
+     * handelt. Wenn es sich nicht um ein Tablet Layout handelt, hat dieses Rechteck die selbe Größe und Position wie UI_Left.
      */
     public static CB_RectF UI_Right;
 
     /**
-     * Ist false solange die Gr��en nicht berechnet sind. Diese m�ssen nur einmal berechnet Werden, oder wenn ein Faktor (DPI oder
-     * FontFaktor) in den Settings ge�ndert Wurde.
+     * Ist false solange die Größen nicht berechnet sind. Diese müssen nur einmal berechnet Werden, oder wenn ein Faktor (DPI oder
+     * FontFaktor) in den Settings geändert Wurde.
      */
     private static boolean isInitial = false;
 
     /**
-     * Die H�he des Schattens des Info Panels. Diese muss Berechnet werden, da sie f�r die Berechnung der Inhalt Positionen gebraucht wird.
+     * Die Höhe des Schattens des Info Panels. Diese muss Berechnet werden, da sie für die Berechnung der Inhalt Positionen gebraucht wird.
      */
     public static float infoShadowHeight;
 
@@ -149,17 +139,17 @@ public class GL_UISizes implements SizeChangedEvent {
     public static Vector2 InfoLine2;
 
     /**
-     * Dpi Faktor, welcher �ber die Settings eingestellt werden kann und mit dem HandyDisplay Wert vorbelegt ist. (HD2= 1.5)
+     * Dpi Faktor, welcher über die Settings eingestellt werden kann und mit dem HandyDisplay Wert vorbelegt ist. (HD2= 1.5)
      */
     public static float DPI;
 
     /**
-     * DPI Wert des Displays, kann nicht �ber die Settings ver�ndert werden
+     * DPI Wert des Displays, kann nicht über die Settings verändert werden
      */
     public static float defaultDPI = 1;
 
     /**
-     * Die Font Gr��e wird �ber den DPI Faktor berechnet und kann �ber den FontFaktor zus�tzlich beeinflusst werden.
+     * Die Font Größe wird über den DPI Faktor berechnet und kann über den FontFaktor zusätzlich beeinflusst werden.
      */
     public static float FontFaktor;
 
@@ -179,42 +169,42 @@ public class GL_UISizes implements SizeChangedEvent {
     public static CB_RectF ZoomBtn;
 
     /**
-     * Die Gr��e des Compass Icons. Welche Abh�ngig von der H�he des Info Panels ist.
+     * Die Größe des Compass Icons. Welche Abhängig von der Höhe des Info Panels ist.
      */
     public static CB_RectF Compass;
 
     /**
-     * Halbe Compass gr�sse welche den Mittelpunkt darstellt.
+     * Halbe Compass grösse welche den Mittelpunkt darstellt.
      */
     public static float halfCompass;
 
     /**
-     * Die Gr��e des zur Verf�gung stehenden Bereiches von Gdx.graphics
+     * Die Größe des zur Verfügung stehenden Bereiches von Gdx.graphics
      */
     public static CB_RectF SurfaceSize;
 
     /**
-     * Gr��e des position Markers
+     * Größe des position Markers
      */
     public static float PosMarkerSize;
 
     /**
-     * Halbe Gr��e des Position Markers, welche den Mittelpunkt darstellt
+     * Halbe Größe des Position Markers, welche den Mittelpunkt darstellt
      */
     public static float halfPosMarkerSize;
 
     /**
-     * Array der drei m�glichen Gr�ssen eines WP Icons
+     * Array der drei möglichen Grössen eines WP Icons
      */
     public static SizeF[] WPSizes;
 
     /**
-     * Array der drei m�glichen Gr�ssen eines WP Underlay
+     * Array der drei möglichen Grössen eines WP Underlay
      */
     public static SizeF[] UnderlaySizes;
 
     /**
-     * Gr��e der Cache Info Bubble
+     * Größe der Cache Info Bubble
      */
     public static SizeF Bubble;
 
@@ -229,12 +219,12 @@ public class GL_UISizes implements SizeChangedEvent {
     public static SizeF bubbleCorrect;
 
     /**
-     * Gr��e des Target Arrows
+     * Größe des Target Arrows
      */
     public static SizeF TargetArrow;
 
     // /**
-    // * Die Gr��e der D/T Wertungs Stars
+    // * Die Größe der D/T Wertungs Stars
     // */
     // public static SizeF DT_Size;
 
@@ -263,7 +253,7 @@ public class GL_UISizes implements SizeChangedEvent {
 	GlyphLayout bounds;
 	if (Fonts.getNormal() != null) {
 	    bounds = new GlyphLayout();
-	    bounds.setText(Fonts.getSmall(), "52� 34,806N ");
+	    bounds.setText(Fonts.getSmall(), "52° 34,806N ");
 	} else {
 	    bounds = new GlyphLayout();
 	    bounds.height = 20;
@@ -277,7 +267,7 @@ public class GL_UISizes implements SizeChangedEvent {
 	InfoLine1.y = Info.getMaxY() - T1;
 	InfoLine2.y = Info.getY() + T1 + bounds.height;
 
-	// Aufr�umen
+	// Aufräumen
 	CompassMargin = null;
 
     }
@@ -286,11 +276,11 @@ public class GL_UISizes implements SizeChangedEvent {
     public static float TopButtonHeight = convertDip2Pix(35);
 
     /**
-     * Berechnet die Gr��en der UI-Elemente
+     * Berechnet die Größen der UI-Elemente
      */
     private static void calcSizes() {
 	log.debug("GL_UISizes.calcSizes()");
-	// gr��e der Frames berechnen
+	// größe der Frames berechnen
 	int frameLeftwidth = UI_Size_Base.that.RefWidth;
 
 	int WindowWidth = UI_Size_Base.that.getWindowWidth();

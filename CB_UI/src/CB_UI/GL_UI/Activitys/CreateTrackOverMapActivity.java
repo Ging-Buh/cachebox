@@ -255,7 +255,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
 
 	batch.setProjectionMatrix(mapView.myParentInfo.Matrix());
 
-	Gdx.gl.glScissor((int) mapView.ThisWorldRec.getX(), (int) mapView.ThisWorldRec.getY(), (int) mapView.ThisWorldRec.getWidth() + 1, (int) mapView.ThisWorldRec.getHeight() + 1);
+	Gdx.gl.glScissor((int) mapView.thisWorldRec.getX(), (int) mapView.thisWorldRec.getY(), (int) mapView.thisWorldRec.getWidth() + 1, (int) mapView.thisWorldRec.getHeight() + 1);
 	Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
 
 	SizeF drawingSize = new SizeF(40, 40);

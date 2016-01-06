@@ -683,7 +683,7 @@ public class EditTextField extends EditTextFieldBase {
     }
 
     /**
-     * setting cursorposition at x,y 
+     * click
      */
     @Override
     public boolean click(int X, int Y, int pointer, int button) {

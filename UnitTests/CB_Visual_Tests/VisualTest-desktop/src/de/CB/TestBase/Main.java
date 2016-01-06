@@ -26,7 +26,7 @@ import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Listener_Interface;
 import CB_UI_Base.Math.Size;
-import CB_UI_Base.Math.devicesSizes;
+import CB_UI_Base.Math.DevicesSizes;
 import CB_Utils.Config_Core;
 import CB_Utils.Plattform;
 import CB_Utils.Util.iChanged;
@@ -55,7 +55,7 @@ public class Main {
 
 	Settings.SkinFolder.setValue("default");
 
-	devicesSizes ui = new devicesSizes();
+	DevicesSizes ui = new DevicesSizes();
 
 	float DENSITY = 1f;
 

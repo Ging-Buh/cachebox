@@ -18,7 +18,7 @@ import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.Events.platformConector.IQuit;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.Size;
-import CB_UI_Base.Math.devicesSizes;
+import CB_UI_Base.Math.DevicesSizes;
 import CB_Utils.Plattform;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.FileIO;
@@ -76,7 +76,7 @@ public class MainActivity extends AndroidApplication implements LocationListener
 		cfg.numSamples = 16;
 
 		Resources res = this.getResources();
-		devicesSizes ui = new devicesSizes();
+		DevicesSizes ui = new DevicesSizes();
 
 		DisplayMetrics displaymetrics = res.getDisplayMetrics();
 

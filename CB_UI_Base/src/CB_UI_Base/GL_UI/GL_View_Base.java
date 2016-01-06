@@ -269,7 +269,7 @@ public abstract class GL_View_Base extends CB_RectF {
      */
     protected void chkChildClickable() {
 	boolean tmpClickable = false;
-	boolean tmpDblClickable = false;
+	boolean tmpDoubleClickable = false;
 	boolean tmpLongClickable = false;
 	if (childs != null) {
 
@@ -282,8 +282,8 @@ public abstract class GL_View_Base extends CB_RectF {
 			    tmpClickable = true;
 			if (tmp.isLongClickable())
 			    tmpLongClickable = true;
-			if (tmp.isDblClickable())
-			    tmpDblClickable = true;
+			if (tmp.isDoubleClickable())
+			    tmpDoubleClickable = true;
 		    }
 
 		}
@@ -292,7 +292,7 @@ public abstract class GL_View_Base extends CB_RectF {
 	}
 
 	ChildIsClickable = tmpClickable;
-	ChildIsDoubleClickable = tmpDblClickable;
+	ChildIsDoubleClickable = tmpDoubleClickable;
 	ChildIsLongClickable = tmpLongClickable;
     }
 
@@ -578,7 +578,7 @@ public abstract class GL_View_Base extends CB_RectF {
 	}
     }
 
-    public CB_RectF ThisWorldRec = new CB_RectF();
+    public CB_RectF thisWorldRec = new CB_RectF();
     public CB_RectF intersectRec = new CB_RectF();
     public ParentInfo myParentInfo = new ParentInfo();
     private boolean mustSetScissor = false;
@@ -586,28 +586,29 @@ public abstract class GL_View_Base extends CB_RectF {
     protected boolean thisInvalidate = true;
 
     public CB_RectF getWorldRec() {
-	if (ThisWorldRec == null)
+	if (thisWorldRec == null)
 	    return new CB_RectF();
-	return ThisWorldRec.copy();
+	return thisWorldRec.copy();
     }
 
     /**
      * Berechnet das Scissor Rechteck und die Infos fuer die Childs immer dann wenn sich etwas an Position oder Groesse dieses GL_View_Base
-     * geaendert hat. Wenn sich etwas geaendert hat, wird auch ein Invalidate an die Childs uebergeben, da diese auch neu berechnet werden
-     * muessen. Die detection wann sich etwas geaendert hat, kommt von der ueberschriebenen CB_RectF Methode CalcCrossPos, da diese bei
+     * geaendert hat.<br>
+     * Wenn sich etwas geaendert hat, wird auch ein Invalidate an die Childs uebergeben, da diese auch neu berechnet werden
+     * muessen.<br>
+     * Die detection, wann sich etwas geaendert hat, kommt von der ueberschriebenen CB_RectF Methode CalcCrossPos, da diese bei
      * jeder Aenderung aufgerufen wird.
      */
     protected void CalcMyInfoForChild() {
 	childsInvalidate = true;
-	ThisWorldRec.setRec(this);// .copy().offset(myParentInfo.Vector());
-	// ThisWorldRec.offset(myParentInfo.Vector());
-	ThisWorldRec.offset(-this.getX() + myParentInfo.Vector().x, -this.getY() + myParentInfo.Vector().y);
-	mustSetScissor = !myParentInfo.drawRec().contains(ThisWorldRec);
+	thisWorldRec.setRec(this);
+	thisWorldRec.offset(-this.getX() + myParentInfo.Vector().x, -this.getY() + myParentInfo.Vector().y);
+	mustSetScissor = !myParentInfo.drawRec().contains(thisWorldRec);
 
 	if (mustSetScissor) {
-	    intersectRec.setRec(myParentInfo.drawRec().createIntersection(ThisWorldRec));
+	    intersectRec.setRec(myParentInfo.drawRec().createIntersection(thisWorldRec));
 	} else {
-	    intersectRec.setRec(ThisWorldRec);
+	    intersectRec.setRec(thisWorldRec);
 	}
 
 	thisInvalidate = false;
@@ -741,8 +742,9 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     public boolean click(int x, int y, int pointer, int button) {
-	// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
-	// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
+	// final gives errors
+	// Achtung: dieser click ist nicht virtual und darf nicht überschrieben werden!!!
+	// das Ereignis wird dann in der richtigen View an click übergeben!!!
 	boolean handled = false;
 	try {
 	    if (childs != null && childs.size() > 0) {
@@ -782,8 +784,9 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     public boolean doubleClick(int x, int y, int pointer, int button) {
-	// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
-	// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
+	// final gives errors
+	// Achtung: dieser doubleClick ist nicht virtual und darf nicht überschrieben werden!!!
+	// das Ereignis wird dann in der richtigen View an doubleClick übergeben!!!
 	boolean behandelt = false;
 	try {
 	    if (childs != null && childs.size() > 0) {
@@ -821,8 +824,9 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     public boolean longClick(int x, int y, int pointer, int button) {
-	// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
-	// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
+	// final gives errors
+	// Achtung: dieser longClick ist nicht virtual und darf nicht überschrieben werden!!!
+	// das Ereignis wird dann in der richtigen View an longClick übergeben!!!
 	boolean behandelt = false;
 
 	try {
@@ -909,7 +913,7 @@ public abstract class GL_View_Base extends CB_RectF {
      * @return
      */
     public final boolean touchDragged(int x, int y, int pointer, boolean KineticPan) {
-	// Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
+	// Achtung: dieser touchDragged ist nicht virtual und darf nicht überschrieben werden!!!
 	// das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
 	boolean behandelt = false;
 
@@ -1094,7 +1098,7 @@ public abstract class GL_View_Base extends CB_RectF {
 	return mOnLongClickListener;
     }
 
-    public OnClickListener getOnDblClickListner() {
+    public OnClickListener getOnDoubleClickListner() {
 	return mOnDoubleClickListener;
     }
 
@@ -1122,7 +1126,7 @@ public abstract class GL_View_Base extends CB_RectF {
 	mOnDoubleClickListener = l;
     }
 
-    public boolean isDblClickable() {
+    public boolean isDoubleClickable() {
 	if (!this.isVisible())
 	    return false;
 	return isDoubleClickable | ChildIsDoubleClickable;

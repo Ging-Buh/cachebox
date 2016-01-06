@@ -131,8 +131,8 @@ public class SelectionMarker extends CB_View_Base {
     public void moveTo(float x, float y) {
 	final EditTextField tv = GL.that.getFocusedEditTextField();
 	if (tv != null) {
-	    x = x + tv.ThisWorldRec.getX();
-	    y = y + tv.ThisWorldRec.getY();
+	    x = x + tv.thisWorldRec.getX();
+	    y = y + tv.thisWorldRec.getY();
 	    this.setPos(x - markerXPos, y - getHeight());
 	}
     }

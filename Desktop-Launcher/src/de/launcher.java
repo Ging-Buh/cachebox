@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Math.Size;
-import CB_UI_Base.Math.devicesSizes;
+import CB_UI_Base.Math.DevicesSizes;
 import CB_Utils.Log.CB_SLF4J;
 import CB_Utils.Log.LogLevel;
 import CB_Utils.Util.iChanged;
@@ -239,90 +239,90 @@ class Gui extends Frame implements ActionListener, WindowListener
 	{
 	}
 
-	public static devicesSizes iniDesktop()
+	public static DevicesSizes iniDesktop()
 	{
 
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
 		Size myInitialSize = new Size(dim.width, dim.height);
-		devicesSizes ui = getLDPI(myInitialSize);
+		DevicesSizes ui = getLDPI(myInitialSize);
 
 		return ui;
 
 	}
 
-	public static devicesSizes iniPhone()
+	public static DevicesSizes iniPhone()
 	{
 		Size myInitialSize = new Size(480, 772);
-		devicesSizes ui = getHDPI(myInitialSize);
+		DevicesSizes ui = getHDPI(myInitialSize);
 
 		return ui;
 
 	}
 
-	public static devicesSizes iniTab()
+	public static DevicesSizes iniTab()
 	{
 
 		Size myInitialSize = new Size(1280, 752);
-		devicesSizes ui = getMDPI(myInitialSize);
+		DevicesSizes ui = getMDPI(myInitialSize);
 
 		return ui;
 
 	}
 
-	public static devicesSizes iniPad10()
+	public static DevicesSizes iniPad10()
 	{
 
 		Size myInitialSize = new Size(1024, 768);
-		devicesSizes ui = getMDPI(myInitialSize);
+		DevicesSizes ui = getMDPI(myInitialSize);
 
 		return ui;
 
 	}
 
-	public static devicesSizes iniLowPhone()
+	public static DevicesSizes iniLowPhone()
 	{
 
 		Size myInitialSize = new Size(240, 381);
-		devicesSizes ui = getLDPI(myInitialSize);
+		DevicesSizes ui = getLDPI(myInitialSize);
 
 		return ui;
 
 	}
 
-	public static devicesSizes iniHighPhone()
+	public static DevicesSizes iniHighPhone()
 	{
 
 		Size myInitialSize = new Size(720, 1230);
-		devicesSizes ui = getXHDPI(myInitialSize);
+		DevicesSizes ui = getXHDPI(myInitialSize);
 
 		return ui;
 
 	}
 
-	public static devicesSizes iniNexus7()
+	public static DevicesSizes iniNexus7()
 	{
 
 		Size myInitialSize = new Size(1280, 703);
-		devicesSizes ui = getNexus7(myInitialSize);
+		DevicesSizes ui = getNexus7(myInitialSize);
 
 		return ui;
 
 	}
 
-	public static devicesSizes iniMacEmulator()
+	public static DevicesSizes iniMacEmulator()
 	{
 
 		Size myInitialSize = new Size(420, 700);
-		devicesSizes ui = getMac(myInitialSize);
+		DevicesSizes ui = getMac(myInitialSize);
 
 		return ui;
 
 	}
 
-	public static devicesSizes getMac(Size myInitialSize)
+	public static DevicesSizes getMac(Size myInitialSize)
 	{
-		devicesSizes ui = new devicesSizes();
+		DevicesSizes ui = new DevicesSizes();
 
 		ui.Window = myInitialSize;
 		ui.Density = 1.5f;
@@ -331,9 +331,9 @@ class Gui extends Frame implements ActionListener, WindowListener
 		return ui;
 	}
 
-	public static devicesSizes getLDPI(Size myInitialSize)
+	public static DevicesSizes getLDPI(Size myInitialSize)
 	{
-		devicesSizes ui = new devicesSizes();
+		DevicesSizes ui = new DevicesSizes();
 
 		ui.Window = myInitialSize;
 		ui.Density = 0.75f;
@@ -342,9 +342,9 @@ class Gui extends Frame implements ActionListener, WindowListener
 		return ui;
 	}
 
-	public static devicesSizes getMDPI(Size myInitialSize)
+	public static DevicesSizes getMDPI(Size myInitialSize)
 	{
-		devicesSizes ui = new devicesSizes();
+		DevicesSizes ui = new DevicesSizes();
 
 		ui.Window = myInitialSize;
 		ui.Density = 1.0f;
@@ -353,9 +353,9 @@ class Gui extends Frame implements ActionListener, WindowListener
 		return ui;
 	}
 
-	public static devicesSizes getHDPI(Size myInitialSize)
+	public static DevicesSizes getHDPI(Size myInitialSize)
 	{
-		devicesSizes ui = new devicesSizes();
+		DevicesSizes ui = new DevicesSizes();
 
 		ui.Window = myInitialSize;
 		ui.Density = 1.5f;
@@ -364,9 +364,9 @@ class Gui extends Frame implements ActionListener, WindowListener
 		return ui;
 	}
 
-	public static devicesSizes getXHDPI(Size myInitialSize)
+	public static DevicesSizes getXHDPI(Size myInitialSize)
 	{
-		devicesSizes ui = new devicesSizes();
+		DevicesSizes ui = new DevicesSizes();
 
 		ui.Window = myInitialSize;
 		ui.Density = 2f;
@@ -375,9 +375,9 @@ class Gui extends Frame implements ActionListener, WindowListener
 		return ui;
 	}
 
-	public static devicesSizes getNexus7(Size myInitialSize)
+	public static DevicesSizes getNexus7(Size myInitialSize)
 	{
-		devicesSizes ui = new devicesSizes();
+		DevicesSizes ui = new DevicesSizes();
 
 		ui.Window = myInitialSize;
 		ui.Density = 1.3312501f;

@@ -402,8 +402,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		batch.disableBlending();
 
 		float faktor = camera.zoom;
-		float dx = this.ThisWorldRec.getCenterPosX() - MainViewBase.mainView.getCenterPosX();
-		float dy = this.ThisWorldRec.getCenterPosY() - MainViewBase.mainView.getCenterPosY();
+		float dx = this.thisWorldRec.getCenterPosX() - MainViewBase.mainView.getCenterPosX();
+		float dy = this.thisWorldRec.getCenterPosY() - MainViewBase.mainView.getCenterPosY();
 
 		dy -= ySpeedVersatz;
 
@@ -589,7 +589,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	protected void renderDebugInfo(Batch batch)
 	{
 
-		CB_RectF r = this.ThisWorldRec;
+		CB_RectF r = this.thisWorldRec;
 
 		Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
 

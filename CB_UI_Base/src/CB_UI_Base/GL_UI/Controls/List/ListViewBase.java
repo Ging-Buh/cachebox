@@ -72,17 +72,17 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     protected abstract float getListViewLength();
 
     /**
-     * Wen True, können die Items verschoben werden
+     * Wen True, kï¿½nnen die Items verschoben werden
      */
     protected Boolean mIsDrageble = true;
 
     /**
-     * Ermöglicht den Zugriff auf die Liste, welche Dargestellt werden soll.
+     * Ermï¿½glicht den Zugriff auf die Liste, welche Dargestellt werden soll.
      */
     protected Adapter mBaseAdapter;
 
     /**
-     * Enthällt die Indexes, welche schon als Child exestieren.
+     * Enthï¿½llt die Indexes, welche schon als Child exestieren.
      */
     protected CB_List<Integer> mAddeedIndexList = new CB_List<Integer>();
 
@@ -395,7 +395,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     }
 
     /**
-     * überpüft ob die Liste oben oder unten Platz hat und lässt eine Animation aus, in der die Liste auf die erste oder letzte Position
+     * ï¿½berpï¿½ft ob die Liste oben oder unten Platz hat und lï¿½sst eine Animation aus, in der die Liste auf die erste oder letzte Position
      * scrollt.
      */
     @Override
@@ -608,7 +608,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	    int lastFoundedVisible = 0;
 	    for (int j = 0, m = visibleList.size(); j < m; j++) {
 		ListViewItemBase lv = visibleList.get(j);
-		if (this.ThisWorldRec.contains(lv.ThisWorldRec)) {
+		if (this.thisWorldRec.contains(lv.thisWorldRec)) {
 		    if (!foundFirstVisible)
 			ret.x = lv.getIndex();
 		    foundFirstVisible = true;

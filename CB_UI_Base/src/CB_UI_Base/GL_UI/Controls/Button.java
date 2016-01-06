@@ -33,6 +33,11 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Util.MoveableList;
 
+/**
+ * 
+ * @author Longri
+ *
+ */
 public class Button extends CB_View_Base {
     protected BitmapFont mFont;
 

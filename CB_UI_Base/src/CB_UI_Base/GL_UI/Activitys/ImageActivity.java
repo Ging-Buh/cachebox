@@ -160,10 +160,10 @@ public class ImageActivity extends ActivityBase {
 	float y = Gdx.input.getAccelerometerY();
 	float z = Gdx.input.getAccelerometerZ();
 
-	// • (|Gpz| < 0.5g) AND (Gpx > 0.5g) AND (|Gpy| < 0.4g): Change orientation to Left
-	// • (|Gpz| < 0.5g) AND (Gpx < -0.5g) AND (|Gpy| < 0.4g): Change orientation to Right
-	// • (|Gpz| < 0.5g) AND (Gpy > 0.5g) AND (|Gpx| < 0.4g): Change orientation to Bottom
-	// • (|Gpz| < 0.5g) AND (Gpy < -0.5g) AND (|Gpx| < 0.4g): Change orientation to Top.
+	// ï¿½ (|Gpz| < 0.5g) AND (Gpx > 0.5g) AND (|Gpy| < 0.4g): Change orientation to Left
+	// ï¿½ (|Gpz| < 0.5g) AND (Gpx < -0.5g) AND (|Gpy| < 0.4g): Change orientation to Right
+	// ï¿½ (|Gpz| < 0.5g) AND (Gpy > 0.5g) AND (|Gpx| < 0.4g): Change orientation to Bottom
+	// ï¿½ (|Gpz| < 0.5g) AND (Gpy < -0.5g) AND (|Gpx| < 0.4g): Change orientation to Top.
 
 	if (z < 5 && x > 5 && y < 4) {
 	    imageHeading = -90;
@@ -225,8 +225,8 @@ public class ImageActivity extends ActivityBase {
 	//	batch.disableBlending();
 
 	float faktor = camera.zoom;
-	float dx = this.ThisWorldRec.getCenterPosX() - MainViewBase.mainView.getCenterPosX();
-	float dy = this.ThisWorldRec.getCenterPosY() - MainViewBase.mainView.getCenterPosY();
+	float dx = this.thisWorldRec.getCenterPosX() - MainViewBase.mainView.getCenterPosX();
+	float dy = this.thisWorldRec.getCenterPosY() - MainViewBase.mainView.getCenterPosY();
 	camera.position.set(0, 0, 0);
 	float dxr = dx;
 	float dyr = dy;

@@ -1,6 +1,7 @@
 package de.CB.TestBase;
 
 import CB_Utils.Settings.SettingsList;
+import de.cb.sqlite.Database_Core;
 
 public class SettingsClass extends SettingsList
 {
