@@ -17,7 +17,7 @@ import CB_UI_Base.GL_UI.Controls.ImageLoader;
 import CB_UI_Base.GL_UI.Controls.RadioButton;
 import CB_UI_Base.GL_UI.Controls.RadioGroup;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog.iCancelListner;
+import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog.ICancelListener;
 import CB_UI_Base.GL_UI.Controls.PopUps.PopUpMenu;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Menu.Menu;
@@ -336,10 +336,10 @@ public class TestView extends CB_View_Base {
 
 	PD = ProgressDialog.Show("Upload FieldNotes", UploadFieldNotesdThread);
 
-	PD.setCancelListner(new iCancelListner() {
+	PD.setCancelListener(new ICancelListener() {
 
 	    @Override
-	    public void isCanceld() {
+	    public void isCanceled() {
 		Timer t = new Timer();
 		TimerTask tt = new TimerTask() {
 

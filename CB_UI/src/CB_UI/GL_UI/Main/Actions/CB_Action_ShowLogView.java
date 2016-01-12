@@ -69,7 +69,7 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView
 	{
 		Menu cm = new Menu("LogListContextMenu");
 
-		cm.addItemClickListner(new OnClickListener()
+		cm.addOnClickListener(new OnClickListener()
 		{
 
 			@Override

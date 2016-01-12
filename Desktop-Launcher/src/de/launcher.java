@@ -37,7 +37,7 @@ import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.DevicesSizes;
 import CB_Utils.Log.CB_SLF4J;
 import CB_Utils.Log.LogLevel;
-import CB_Utils.Util.iChanged;
+import CB_Utils.Util.IChanged;
 
 class Ex_1
 {
@@ -53,7 +53,7 @@ class Ex_1
 		Config.settings.ReadFromDB();
 		new CB_SLF4J(Config.WorkPath);
 		CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
-		Config.AktLogLevel.addChangedEventListner(new iChanged()
+		Config.AktLogLevel.addChangedEventListener(new IChanged()
 		{
 			@Override
 			public void isChanged()

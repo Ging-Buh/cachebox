@@ -7,8 +7,8 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
-import CB_UI_Base.Events.platformConector;
-import CB_UI_Base.Events.platformConector.iStartPictureApp;
+import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformConnector.iStartPictureApp;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -78,7 +78,7 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 
 		spoilerFilename.setTextColor(Color.BLACK);
 
-		platformConector.setStartPictureApp(new iStartPictureApp()
+		PlatformConnector.setStartPictureApp(new iStartPictureApp()
 		{
 			@Override
 			public void Start(String file)

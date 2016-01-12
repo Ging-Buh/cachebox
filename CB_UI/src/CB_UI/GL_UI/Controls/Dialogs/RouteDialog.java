@@ -32,15 +32,15 @@ public class RouteDialog extends ButtonDialog {
     private ImageMultiToggleButton btMotoWay, btCycleWay, btFootWay;
     private chkBox chkTmc;
 
-    public interface returnListner {
+    public interface IReturnListener {
 	public void returnFromRoute_Dialog(boolean canceld, boolean Motoway, boolean CycleWay, boolean FootWay, boolean UseTmc);
     }
 
-    private returnListner mReturnListner;
+    private IReturnListener mReturnListener;
 
-    public RouteDialog(returnListner listner) {
+    public RouteDialog(IReturnListener listener) {
 	super(Menu.getMenuRec(), "PW-Dialog", "", Translation.Get("RouteToWaypoit"), MessageBoxButtons.OKCancel, null, null);
-	mReturnListner = listner;
+	mReturnListener = listener;
 
 	msgBoxContentSize = getContentSize();
 	// initial VariableField
@@ -95,17 +95,17 @@ public class RouteDialog extends ButtonDialog {
 	msgBoxSize.height = (int) (msgBoxSize.height + layout.getHeight() - (TextFieldHeight / 2));
 	this.setSize(msgBoxSize.asFloat());
 
-	mMsgBoxClickListner = new OnMsgBoxClickListener() {
+	mMsgBoxClickListener = new OnMsgBoxClickListener() {
 
 	    @Override
 	    public boolean onClick(int which, Object data) {
 		if (which == BUTTON_POSITIVE) {
 
-		    if (mReturnListner != null)
-			mReturnListner.returnFromRoute_Dialog(false, state == 0, state == 1, state == 2, chkTmc.isChecked());
+		    if (mReturnListener != null)
+			mReturnListener.returnFromRoute_Dialog(false, state == 0, state == 1, state == 2, chkTmc.isChecked());
 		} else {
-		    if (mReturnListner != null)
-			mReturnListner.returnFromRoute_Dialog(true, false, false, false, false);
+		    if (mReturnListener != null)
+			mReturnListener.returnFromRoute_Dialog(true, false, false, false, false);
 		}
 
 		return true;

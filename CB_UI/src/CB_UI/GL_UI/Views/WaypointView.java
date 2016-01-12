@@ -31,7 +31,7 @@ import CB_UI.SelectedCacheEventList;
 import CB_UI.WaypointListChangedEvent;
 import CB_UI.WaypointListChangedEventList;
 import CB_UI.GL_UI.Activitys.EditWaypoint;
-import CB_UI.GL_UI.Activitys.EditWaypoint.ReturnListner;
+import CB_UI.GL_UI.Activitys.EditWaypoint.IReturnListener;
 import CB_UI.GL_UI.Activitys.MeasureCoordinate;
 import CB_UI.GL_UI.Activitys.ProjectionCoordinate;
 import CB_UI.GL_UI.Activitys.ProjectionCoordinate.Type;
@@ -90,7 +90,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
     }
 
-    private OnClickListener onItemClickListner = new OnClickListener() {
+    private final OnClickListener onItemClickListener = new OnClickListener() {
 
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -113,7 +113,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 	}
     };
 
-    private SizeChangedEvent onItemSizeChanged = new SizeChangedEvent() {
+    private final SizeChangedEvent onItemSizeChanged = new SizeChangedEvent() {
 
 	@Override
 	public void sizeChanged() {
@@ -124,7 +124,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 	}
     };
 
-    private OnClickListener onItemLongClickListner = new OnClickListener() {
+    private final OnClickListener onItemLongClickListener = new OnClickListener() {
 
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -174,6 +174,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 	    this.items.ensureCapacity(cache.waypoints.size() + 1, true);
 	}
 
+	@Override
 	public int getCount() {
 	    if (cache != null && cache.waypoints != null)
 		return cache.waypoints.size() + 1;
@@ -203,8 +204,8 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		    if (items.get(position) == null || items.get(position).isDisposed()) {
 			WaypointViewItem v = new WaypointViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache, null);
 			v.setClickable(true);
-			v.setOnClickListener(onItemClickListner);
-			v.setOnLongClickListener(onItemLongClickListner);
+			v.setOnClickListener(onItemClickListener);
+			v.setOnLongClickListener(onItemLongClickListener);
 			v.Add(onItemSizeChanged);
 			items.replace(v, position);
 		    }
@@ -215,8 +216,8 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 			Waypoint waypoint = cache.waypoints.get(position - 1);
 			WaypointViewItem v = new WaypointViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache, waypoint);
 			v.setClickable(true);
-			v.setOnClickListener(onItemClickListner);
-			v.setOnLongClickListener(onItemLongClickListner);
+			v.setOnClickListener(onItemClickListener);
+			v.setOnLongClickListener(onItemLongClickListener);
 			v.Add(onItemSizeChanged);
 			items.replace(v, position);
 		    }
@@ -328,7 +329,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
     public Menu getContextMenu() {
 	Menu cm = new Menu("CacheListContextMenu");
 
-	cm.addItemClickListner(new OnClickListener() {
+	cm.addOnClickListener(new OnClickListener() {
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		switch (((MenuItem) v).getMenuItemId()) {
@@ -399,7 +400,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
     private void editWP(Waypoint wp, boolean showCoordinateDialog) {
 
-	EditWaypoint EdWp = new EditWaypoint(wp, new ReturnListner() {
+	EditWaypoint EdWp = new EditWaypoint(wp, new IReturnListener() {
 
 	    @Override
 	    public void returnedWP(Waypoint waypoint) {
@@ -506,7 +507,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 	log.debug("   AktCache:" + ((aktCache == null) ? "null" : aktCache.toString()));
 	log.debug("   using Coord:" + coord.toString());
 
-	ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), "Projection", coord, new CB_UI.GL_UI.Activitys.ProjectionCoordinate.ReturnListner() {
+	ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), "Projection", coord, new CB_UI.GL_UI.Activitys.ProjectionCoordinate.ICoordReturnListener() {
 
 	    @Override
 	    public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance) {
@@ -540,7 +541,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
     private void addMeasure() {
 	createNewWaypoint = true;
 
-	MeasureCoordinate mC = new MeasureCoordinate(ActivityBase.ActivityRec(), "Projection", new MeasureCoordinate.ReturnListner() {
+	MeasureCoordinate mC = new MeasureCoordinate(ActivityBase.ActivityRec(), "Projection", new MeasureCoordinate.ICoordReturnListener() {
 
 	    @Override
 	    public void returnCoord(Coordinate returnCoord) {

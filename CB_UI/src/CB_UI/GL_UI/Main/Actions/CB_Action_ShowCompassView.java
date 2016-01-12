@@ -65,7 +65,7 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 	public Menu getContextMenu()
 	{
 		Menu icm = new Menu("menu_compassView");
-		icm.addItemClickListner(onItemClickListner);
+		icm.addOnClickListener(onItemClickListener);
 
 		icm.addItem(MenuID.MI_COMPASS_SHOW, "view");
 
@@ -75,7 +75,7 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 	private void showOtionMenu()
 	{
 		OptionMenu icm = new OptionMenu("menu_compassView");
-		icm.addItemClickListner(onItemClickListner);
+		icm.addOnClickListener(onItemClickListener);
 		MenuItem mi;
 
 		mi = icm.addItem(MenuID.MI_COMPASS_SHOW_MAP, "CompassShowMap");
@@ -130,7 +130,7 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 
 	}
 
-	private OnClickListener onItemClickListner = new OnClickListener()
+	private OnClickListener onItemClickListener = new OnClickListener()
 	{
 
 		@Override

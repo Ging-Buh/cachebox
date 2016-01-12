@@ -60,7 +60,7 @@ public class CB_Action_ShowTrackableListView extends CB_Action_ShowView
 	{
 		final Menu cm = new Menu("TBListContextMenu");
 
-		cm.addItemClickListner(new OnClickListener()
+		cm.addOnClickListener(new OnClickListener()
 		{
 
 			@Override

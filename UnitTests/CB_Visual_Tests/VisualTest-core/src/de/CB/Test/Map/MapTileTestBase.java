@@ -383,7 +383,7 @@ public abstract class MapTileTestBase extends TestCaseBase
 
 				togl.setSize(togl.getHeight() * 2, togl.getHeight() * 2);
 
-				togl.setOnStateChangedListner(new OnStateChangeListener()
+				togl.setOnStateChangedListener(new OnStateChangeListener()
 				{
 
 					@Override

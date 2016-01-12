@@ -194,7 +194,7 @@ public class EditFilterSettings extends ActivityBase {
 	    }
 	});
 
-	btPre.setOnStateChangedListner(new OnStateChangeListener() {
+	btPre.setOnStateChangedListener(new OnStateChangeListener() {
 	    @Override
 	    public void onStateChange(GL_View_Base v, int State) {
 		if (State == 1)
@@ -202,21 +202,21 @@ public class EditFilterSettings extends ActivityBase {
 	    }
 	});
 
-	btSet.setOnStateChangedListner(new OnStateChangeListener() {
+	btSet.setOnStateChangedListener(new OnStateChangeListener() {
 	    @Override
 	    public void onStateChange(GL_View_Base v, int State) {
 		if (State == 1)
 		    switchVisibility(1);
 	    }
 	});
-	btCat.setOnStateChangedListner(new OnStateChangeListener() {
+	btCat.setOnStateChangedListener(new OnStateChangeListener() {
 	    @Override
 	    public void onStateChange(GL_View_Base v, int State) {
 		if (State == 1)
 		    switchVisibility(2);
 	    }
 	});
-	btTxt.setOnStateChangedListner(new OnStateChangeListener() {
+	btTxt.setOnStateChangedListener(new OnStateChangeListener() {
 	    @Override
 	    public void onStateChange(GL_View_Base v, int State) {
 		if (State == 1)

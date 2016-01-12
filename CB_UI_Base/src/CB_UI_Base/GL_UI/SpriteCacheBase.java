@@ -37,7 +37,7 @@ import CB_UI_Base.GL_UI.Skin.SkinSettings;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
-import CB_Utils.Util.iChanged;
+import CB_Utils.Util.IChanged;
 
 /**
  * Enthält die geladenen Sprites und das Handling für Laden und Entladen.
@@ -505,7 +505,7 @@ public class SpriteCacheBase {
 	    MapOverlay.add(live);
 	    MapOverlay.add(liveSelected);
 
-	    CB_UI_Base_Settings.LiveMapBackgroundColor.addChangedEventListner(new iChanged() {
+	    CB_UI_Base_Settings.LiveMapBackgroundColor.addChangedEventListener(new IChanged() {
 
 		@Override
 		public void isChanged() {
@@ -846,7 +846,7 @@ public class SpriteCacheBase {
 	BigIcons.get(21).setColor(solvedColor);
 	MapIconsSmall.get(5).setColor(solvedColor);
 	MapIconsSmall.get(13).setColor(solvedColor);
-	CB_UI_Base_Settings.SolvedMysteryColor.addChangedEventListner(new iChanged() {
+	CB_UI_Base_Settings.SolvedMysteryColor.addChangedEventListener(new IChanged() {
 	    @Override
 	    public void isChanged() {
 		Color solvedColor = CB_UI_Base_Settings.SolvedMysteryColor.getValue();

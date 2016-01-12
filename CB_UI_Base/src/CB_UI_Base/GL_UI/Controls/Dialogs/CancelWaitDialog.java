@@ -42,38 +42,38 @@ public class CancelWaitDialog extends WaitDialog {
 
     // CancelWaitDialog that;
 
-    public interface IcancelListner {
+    public interface IcancelListener {
 	public void isCanceld();
     }
 
-    public interface IReadyListner {
+    public interface IReadyListener {
 	public void isReady();
     }
 
-    protected IcancelListner cancelListner;
-    private IReadyListner readyListner;
+    protected IcancelListener cancelListener;
+    private IReadyListener readyListener;
     private final cancelRunnable runnable;
 
-    public CancelWaitDialog(Size size, String name, IcancelListner listner, cancelRunnable runnable) {
+    public CancelWaitDialog(Size size, String name, IcancelListener listener, cancelRunnable runnable) {
 	super(size, name);
-	this.cancelListner = listner;
+	this.cancelListener = listener;
 	this.runnable = runnable;
     }
 
-    public static CancelWaitDialog ShowWait(String Msg, IcancelListner listner, cancelRunnable runnable) {
-	final CancelWaitDialog wd = ShowWait(Msg, WorkAnimation.GetINSTANCE(), listner, runnable);
+    public static CancelWaitDialog ShowWait(String Msg, IcancelListener listener, cancelRunnable runnable) {
+	final CancelWaitDialog wd = ShowWait(Msg, WorkAnimation.GetINSTANCE(), listener, runnable);
 	wd.setCallerName(Trace.getCallerName(2));
 	return wd;
     }
 
-    public static CancelWaitDialog ShowWait(String Msg, AnimationBase Animation, IcancelListner listner, cancelRunnable runnable) {
-	final CancelWaitDialog wd = createDialog(Msg, listner, runnable);
+    public static CancelWaitDialog ShowWait(String Msg, AnimationBase Animation, IcancelListener listener, cancelRunnable runnable) {
+	final CancelWaitDialog wd = createDialog(Msg, listener, runnable);
 	wd.setCallerName(Trace.getCallerName(1));
 	CB_RectF animationRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
 	Animation.setRec(animationRec);
 	wd.animation = Animation;
 	wd.setButtonCaptions(MessageBoxButtons.Cancel);
-	wd.mMsgBoxClickListner = new GL_MsgBox.OnMsgBoxClickListener() {
+	wd.mMsgBoxClickListener = new GL_MsgBox.OnMsgBoxClickListener() {
 
 	    @Override
 	    public boolean onClick(int which, Object data) {
@@ -94,14 +94,14 @@ public class CancelWaitDialog extends WaitDialog {
 	return wd;
     }
 
-    protected static CancelWaitDialog createDialog(String msg, IcancelListner listner, cancelRunnable runnable) {
+    protected static CancelWaitDialog createDialog(String msg, IcancelListener listener, cancelRunnable runnable) {
 
 	if (msg == null)
 	    msg = "";
 
 	Size size = calcMsgBoxSize(msg, false, false, true, false);
 
-	CancelWaitDialog waitDialog = new CancelWaitDialog(size, "WaitDialog", listner, runnable);
+	CancelWaitDialog waitDialog = new CancelWaitDialog(size, "WaitDialog", listener, runnable);
 	waitDialog.setTitle("");
 	waitDialog.setButtonCaptions(MessageBoxButtons.Cancel);
 
@@ -146,12 +146,12 @@ public class CancelWaitDialog extends WaitDialog {
 		@Override
 		public void RunnableReady(boolean isCanceld) {
 		    // CancelWaitDialog.this.close();
-		    if (isCanceld && cancelListner != null) {
-			cancelListner.isCanceld();
+		    if (isCanceld && cancelListener != null) {
+			cancelListener.isCanceld();
 		    }
 
-		    if (readyListner != null) {
-			readyListner.isReady();
+		    if (readyListener != null) {
+			readyListener.isReady();
 		    }
 
 		}
@@ -159,8 +159,8 @@ public class CancelWaitDialog extends WaitDialog {
 		@Override
 		public void run() {
 		    runnable.run();
-		    if (readyListner != null)
-			readyListner.isReady();
+		    if (readyListener != null)
+			readyListener.isReady();
 		    CancelWaitDialog.this.close();
 		}
 
@@ -173,7 +173,7 @@ public class CancelWaitDialog extends WaitDialog {
 	}
     }
 
-    public void setReadyListner(IReadyListner ReadyListner) {
-	readyListner = ReadyListner;
+    public void setReadyListener(IReadyListener readyListener) {
+	this.readyListener = readyListener;
     }
 }

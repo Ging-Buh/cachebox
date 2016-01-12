@@ -17,7 +17,7 @@ import CB_UI_Base.GL_UI.Controls.ImageButton;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.ButtonDialog;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -75,7 +75,7 @@ public class DeleteDialog extends ButtonDialog
 			{
 				close();
 
-				wd = CancelWaitDialog.ShowWait(Translation.Get("DelActFilter"), new IcancelListner()
+				wd = CancelWaitDialog.ShowWait(Translation.Get("DelActFilter"), new IcancelListener()
 				{
 
 					@Override
@@ -122,7 +122,7 @@ public class DeleteDialog extends ButtonDialog
 			{
 				close();
 
-				wd = CancelWaitDialog.ShowWait(Translation.Get("DelArchived"), new IcancelListner()
+				wd = CancelWaitDialog.ShowWait(Translation.Get("DelArchived"), new IcancelListener()
 				{
 
 					@Override
@@ -168,7 +168,7 @@ public class DeleteDialog extends ButtonDialog
 			{
 				close();
 
-				wd = CancelWaitDialog.ShowWait(Translation.Get("DelFound"), new IcancelListner()
+				wd = CancelWaitDialog.ShowWait(Translation.Get("DelFound"), new IcancelListener()
 				{
 
 					@Override

@@ -162,8 +162,6 @@ public class Label extends CB_View_Base {
     }
 
     private void initLabel() {
-	mTextObject = new BitmapFontCache(mFont, false);
-	mTextObject.setColor(mColor);
 	setText();
     }
 
@@ -183,8 +181,10 @@ public class Label extends CB_View_Base {
 
 	try {
 	    if (mTextObject != null) {
-		mTextObject.draw(batch);
+		if (mTextObject.usesIntegerPositions())
+		    mTextObject.draw(batch);
 	    }
+
 	    //Draw Underline
 	    if (underline | strikeout) {
 		if (underlineStrikeoutDrawable == null) {
@@ -326,11 +326,11 @@ public class Label extends CB_View_Base {
 
     private void setText() {
 	if (mTextObject == null) {
-	    mTextObject = new BitmapFontCache(mFont, false);
+	    mTextObject = new BitmapFontCache(mFont, true);
 	} else if (!mTextObject.getFont().equals(mFont)) {
-	    mTextObject = new BitmapFontCache(mFont, false);
+	    mTextObject = new BitmapFontCache(mFont, true);
 	}
-	if (!mTextObject.getColor().equals(mColor)) {
+	if (!mColor.equals(mTextObject.getColor())) {
 	    mTextObject.setColor(mColor);
 	}
 	try {
@@ -381,16 +381,16 @@ public class Label extends CB_View_Base {
 		log.debug("Label Text is too long: " + mText);
 	    }
 	}
-	// bottom : text starts at yPosition
-	float yPosition = bounds.height; // VAlignment.BOTTOM
+	// bottom : text starts at yPosition, Text wird von hier aus unterhalb geschrieben (Descent ist negativ, daher -)
+	float yPosition = bottomBorder + mFont.getCapHeight() - mFont.getDescent(); // VAlignment.BOTTOM
 	if (mVAlignment == null)
 	    mVAlignment = VAlignment.CENTER;
 	switch (mVAlignment) {
 	case TOP:
-	    yPosition = innerHeight;
+	    yPosition = innerHeight - topBorder - mFont.getAscent();
 	    break;
 	case CENTER:
-	    yPosition = (bounds.height + innerHeight) / 2f;
+	    yPosition = (innerHeight + mFont.getCapHeight()) / 2f - topBorder - mFont.getAscent(); // bounds.height
 	    break;
 	default:
 	    break;
@@ -472,8 +472,6 @@ public class Label extends CB_View_Base {
 	if (Font != null) {
 	    if (Font != mFont) {
 		mFont = Font;
-		mTextObject = new BitmapFontCache(mFont, false);
-		mTextObject.setColor(mColor);
 		setText();
 	    }
 	}
@@ -494,7 +492,7 @@ public class Label extends CB_View_Base {
 	if (VAlignment != null) {
 	    if (mVAlignment != VAlignment) {
 		mVAlignment = VAlignment;
-		setText(); // setTextPosition
+		setText();
 	    }
 	}
 	return this;
@@ -502,7 +500,7 @@ public class Label extends CB_View_Base {
 
     public Label setTextColor(Color color) {
 	if (color != null) {
-	    if (color != mColor) {
+	    if (!mColor.equals(color)) {
 		mColor = color;
 		setText();
 	    }
@@ -526,6 +524,7 @@ public class Label extends CB_View_Base {
 
     public float getTextHeight() {
 	if (bounds != null) {
+	    // return mFont.getLineHeight();
 	    return bounds.height + mFont.getAscent() - mFont.getDescent();
 	}
 	return 0f;
@@ -574,9 +573,8 @@ public class Label extends CB_View_Base {
     }
 
     public void setText(String text, HSV_Color color) {
-	// TODO Auto-generated method stub
 	if (color != null) {
-	    if (color != mColor) {
+	    if (!color.equals(mColor)) {
 		mColor = color;
 	    }
 	}

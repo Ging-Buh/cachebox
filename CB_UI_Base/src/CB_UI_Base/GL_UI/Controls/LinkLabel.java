@@ -24,7 +24,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 
-import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Controls.html.HyperLinkText;
 import CB_Utils.Lists.CB_List;
@@ -63,7 +63,7 @@ public class LinkLabel extends MultiColorLabel {
 			    log.debug("Link found call: " + hl.url + " (" + hl.content + ")");
 
 			    String url = hl.url.replaceAll("<", "").replace(">", "");
-			    platformConector.callUrl(url);
+			    PlatformConnector.callUrl(url);
 
 			    error = false;
 			    break;

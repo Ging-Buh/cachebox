@@ -34,8 +34,8 @@ import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.TrackListView;
 import CB_UI.GL_UI.Views.TrackListViewItem;
 import CB_UI_Base.Enums.WrapType;
-import CB_UI_Base.Events.platformConector;
-import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
+import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
@@ -104,7 +104,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 	{
 		Menu cm = new Menu("TrackListContextMenu");
 
-		cm.addItemClickListner(new OnClickListener()
+		cm.addOnClickListener(new OnClickListener()
 		{
 
 			@Override
@@ -151,10 +151,10 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					return true;
 
 				case MenuID.MI_LOAD:
-					platformConector.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.Get("LoadTrack"), Translation.Get("load"), new IgetFileReturnListner()
+					PlatformConnector.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.Get("LoadTrack"), Translation.Get("load"), new IgetFileReturnListener()
 					{
 						@Override
-						public void getFieleReturn(String Path)
+						public void getFileReturn(String Path)
 						{
 							if (Path != null)
 							{
@@ -170,12 +170,12 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					return true;
 
 				case MenuID.MI_SAVE:
-					platformConector.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.Get("SaveTrack"), Translation.Get("save"), new IgetFileReturnListner()
+					PlatformConnector.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.Get("SaveTrack"), Translation.Get("save"), new IgetFileReturnListener()
 					{
 						TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
 
 						@Override
-						public void getFieleReturn(String Path)
+						public void getFileReturn(String Path)
 						{
 							if (Path != null)
 							{
@@ -241,7 +241,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 	private void showMenuCreate()
 	{
 		Menu cm2 = new Menu("TrackListCreateContextMenu");
-		cm2.addItemClickListner(new OnClickListener()
+		cm2.addOnClickListener(new OnClickListener()
 		{
 
 			@Override
@@ -275,7 +275,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 		if (coord == null) coord = Locator.getCoordinate();
 
-		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("fromPoint"), coord, new CB_UI.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
+		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("fromPoint"), coord, new CB_UI.GL_UI.Activitys.ProjectionCoordinate.ICoordReturnListener()
 		{
 
 			@Override
@@ -309,7 +309,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 		Coordinate coord = GlobalCore.getSelectedCoord();
 		if (coord == null) coord = Locator.getCoordinate();
 
-		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("Projection"), coord, new CB_UI.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
+		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("Projection"), coord, new CB_UI.GL_UI.Activitys.ProjectionCoordinate.ICoordReturnListener()
 		{
 
 			@Override
@@ -345,7 +345,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 		Coordinate coord = GlobalCore.getSelectedCoord();
 		if (coord == null) coord = Locator.getCoordinate();
 
-		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("centerPoint"), coord, new CB_UI.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
+		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("centerPoint"), coord, new CB_UI.GL_UI.Activitys.ProjectionCoordinate.ICoordReturnListener()
 		{
 
 			@Override

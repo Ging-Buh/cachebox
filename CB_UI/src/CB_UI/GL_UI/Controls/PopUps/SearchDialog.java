@@ -65,7 +65,7 @@ import CB_UI_Base.GL_UI.Controls.ImageButton;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
@@ -575,7 +575,7 @@ public class SearchDialog extends PopUp_Base {
 		    GL.that.Toast(ConnectionError.INSTANCE);
 		} else {
 
-		    wd = CancelWaitDialog.ShowWait(Translation.Get("search"), DownloadAnimation.GetINSTANCE(), new IcancelListner() {
+		    wd = CancelWaitDialog.ShowWait(Translation.Get("search"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
 			@Override
 			public void isCanceld() {
@@ -630,7 +630,7 @@ public class SearchDialog extends PopUp_Base {
 
     private void searchOnlineNow() {
 	log.debug("SEARCH Show WD searchOverAPI");
-	wd = CancelWaitDialog.ShowWait(Translation.Get("searchOverAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListner() {
+	wd = CancelWaitDialog.ShowWait(Translation.Get("searchOverAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
 	    @Override
 	    public void isCanceld() {
@@ -855,19 +855,19 @@ public class SearchDialog extends PopUp_Base {
 	    e.printStackTrace();
 	}
 
-	Slider.that.registerPosChangedEvent(listner);
+	Slider.that.registerPosChangedEvent(listener);
     }
 
     @Override
     public void onHide() {
-	Slider.that.removePosChangedEvent(listner);
+	Slider.that.removePosChangedEvent(listener);
 
 	if (TabMainView.cacheListView != null) {
 	    TabMainView.cacheListView.resetPlaceHolder();
 	}
     }
 
-    private final YPositionChanged listner = new YPositionChanged() {
+    private final YPositionChanged listener = new YPositionChanged() {
 
 	@Override
 	public void Position(float SliderTop, float SliderBottom) {

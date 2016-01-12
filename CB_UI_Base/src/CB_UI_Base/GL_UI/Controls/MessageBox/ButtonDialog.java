@@ -51,7 +51,7 @@ public class ButtonDialog extends Dialog {
     protected Label label;
     protected Object data;
 
-    public OnMsgBoxClickListener mMsgBoxClickListner;
+    public OnMsgBoxClickListener mMsgBoxClickListener;
 
     protected OnClickListener positiveButtonClickListener;
 
@@ -83,7 +83,7 @@ public class ButtonDialog extends Dialog {
 	label.setWrappedText(msg);
 	addChild(label);
 
-	mMsgBoxClickListner = Listener;
+	mMsgBoxClickListener = Listener;
 
 	// setFooterHeight(80);
     }
@@ -144,7 +144,7 @@ public class ButtonDialog extends Dialog {
     }
 
     protected void createButtons(int anzahl, String t1, String t2, String t3) {
-	setButtonListner();
+	setButtonListener();
 
 	this.setBorders(margin, margin);
 	this.setMargins(margin, margin);
@@ -189,7 +189,7 @@ public class ButtonDialog extends Dialog {
 	FooterItems.add(view);
     }
 
-    private void setButtonListner() {
+    private void setButtonListener() {
 	positiveButtonClickListener = new OnClickListener() {
 
 	    @Override
@@ -217,8 +217,8 @@ public class ButtonDialog extends Dialog {
 
     private boolean ButtonClick(int button) {
 	GL.that.closeDialog(this);
-	if (mMsgBoxClickListner != null)
-	    return mMsgBoxClickListner.onClick(button, data);
+	if (mMsgBoxClickListener != null)
+	    return mMsgBoxClickListener.onClick(button, data);
 	return false;
     }
 

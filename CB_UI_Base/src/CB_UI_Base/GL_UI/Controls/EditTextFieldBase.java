@@ -376,17 +376,17 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 	public void becomesFocus();
     }
 
-    protected IBecomesFocus becomesFocusListner;
+    protected IBecomesFocus becomesFocusListener;
 
-    public void setBecomsFocusListner(IBecomesFocus becomesFocusListner) {
-	this.becomesFocusListner = becomesFocusListner;
+    public void setBecomesFocusListener(IBecomesFocus becomesFocusListener) {
+	this.becomesFocusListener = becomesFocusListener;
     }
 
     /**
      * 
      */
     public void becomesFocus() {
-	if (becomesFocusListner != null)
-	    becomesFocusListner.becomesFocus();
+	if (becomesFocusListener != null)
+	    becomesFocusListener.becomesFocus();
     }
 }

@@ -35,12 +35,12 @@ import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.TemplateFormatter;
 import CB_UI.GL_UI.Activitys.EditFieldNotes;
-import CB_UI.GL_UI.Activitys.EditFieldNotes.ReturnListner;
+import CB_UI.GL_UI.Activitys.EditFieldNotes.IReturnListener;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GL_UI.Controls.PopUps.QuickFieldNoteFeedbackPopUp;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Main.Actions.CB_Action_UploadFieldNote;
-import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
@@ -48,7 +48,7 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
 import CB_UI_Base.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
@@ -146,6 +146,7 @@ public class FieldNotesView extends V_ListView {
 	    this.fieldNoteList = fieldNoteList;
 	}
 
+	@Override
 	public int getCount() {
 	    int count = fieldNoteList.size();
 	    if (fieldNoteList.isCropped())
@@ -187,7 +188,7 @@ public class FieldNotesView extends V_ListView {
 		    }
 		});
 	    } else {
-		v.setOnLongClickListener(itemLogClickListner);
+		v.setOnLongClickListener(itemLogClickListener);
 	    }
 
 	    return v;
@@ -241,7 +242,7 @@ public class FieldNotesView extends V_ListView {
 
 	final Menu cm = new Menu("FieldNoteContextMenu");
 
-	cm.addItemClickListner(new OnClickListener() {
+	cm.addOnClickListener(new OnClickListener() {
 
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -328,7 +329,7 @@ public class FieldNotesView extends V_ListView {
 	Menu sm = new Menu("FieldNoteContextMenu/2");
 	MenuItem mi;
 	boolean IM_owner = GlobalCore.getSelectedCache().ImTheOwner();
-	sm.addItemClickListner(new OnClickListener() {
+	sm.addOnClickListener(new OnClickListener() {
 
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -401,7 +402,7 @@ public class FieldNotesView extends V_ListView {
 		    cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
 		    QuickFieldNoteFeedbackPopUp pop = new QuickFieldNoteFeedbackPopUp(true);
 		    pop.show(PopUp_Base.SHOW_TIME_SHORT);
-		    platformConector.vibrate();
+		    PlatformConnector.vibrate();
 		}
 	    } else if (type == LogTypes.didnt_find) {
 		// DidNotFound -> fremden Cache als nicht gefunden markieren
@@ -411,7 +412,7 @@ public class FieldNotesView extends V_ListView {
 		    cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
 		    QuickFieldNoteFeedbackPopUp pop2 = new QuickFieldNoteFeedbackPopUp(false);
 		    pop2.show(PopUp_Base.SHOW_TIME_SHORT);
-		    platformConector.vibrate();
+		    PlatformConnector.vibrate();
 		}
 	    }
 
@@ -497,7 +498,7 @@ public class FieldNotesView extends V_ListView {
 	}
 
 	if (!witoutShowEdit) {
-	    efnActivity = new EditFieldNotes(newFieldNote, returnListner, true);
+	    efnActivity = new EditFieldNotes(newFieldNote, returnListener, true);
 	    efnActivity.show();
 	} else {
 
@@ -537,7 +538,7 @@ public class FieldNotesView extends V_ListView {
 	}
     }
 
-    private static EditFieldNotes.ReturnListner returnListner = new ReturnListner() {
+    private static EditFieldNotes.IReturnListener returnListener = new IReturnListener() {
 
 	@Override
 	public void returnedFieldNote(FieldNoteEntry fieldNote, boolean isNewFieldNote, boolean directlog) {
@@ -611,7 +612,7 @@ public class FieldNotesView extends V_ListView {
 
     private static void logOnline(final FieldNoteEntry fieldNote, final boolean isNewFieldNote) {
 
-	wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), new IcancelListner() {
+	wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
 	    @Override
 	    public void isCanceld() {
@@ -711,9 +712,9 @@ public class FieldNotesView extends V_ListView {
 
     private void editFieldNote() {
 	if (efnActivity != null && !efnActivity.isDisposed()) {
-	    efnActivity.setFieldNote(aktFieldNote, returnListner, false);
+	    efnActivity.setFieldNote(aktFieldNote, returnListener, false);
 	} else {
-	    efnActivity = new EditFieldNotes(aktFieldNote, returnListner, false);
+	    efnActivity = new EditFieldNotes(aktFieldNote, returnListener, false);
 	}
 
 	efnActivity.show();
@@ -889,7 +890,7 @@ public class FieldNotesView extends V_ListView {
 	}
     }
 
-    private OnClickListener itemLogClickListner = new OnClickListener() {
+    private final OnClickListener itemLogClickListener = new OnClickListener() {
 
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -900,7 +901,7 @@ public class FieldNotesView extends V_ListView {
 
 	    Menu cm = new Menu("CacheListContextMenu");
 
-	    cm.addItemClickListner(new OnClickListener() {
+	    cm.addOnClickListener(new OnClickListener() {
 
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {

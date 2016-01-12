@@ -3,7 +3,7 @@ package CB_Utils.Settings;
 public class PlatformSettings
 {
 	// ------ setPlatformSetting ------
-	public interface iPlatformSettings
+	public interface IPlatformSettings
 	{
 		public SettingBase<?> Read(SettingBase<?> setting);
 
@@ -11,22 +11,22 @@ public class PlatformSettings
 
 	}
 
-	public static iPlatformSettings platformSettingsListner;
+	public static IPlatformSettings platformSettingsListener;
 
-	public static void setPlatformSettings(iPlatformSettings listner)
+	public static void setPlatformSettings(IPlatformSettings listener)
 	{
-		platformSettingsListner = listner;
+		platformSettingsListener = listener;
 	}
 
 	public static SettingBase<?> ReadSetting(SettingBase<?> setting)
 	{
-		if (platformSettingsListner != null) setting = platformSettingsListner.Read(setting);
+		if (platformSettingsListener != null) setting = platformSettingsListener.Read(setting);
 		return setting;
 	}
 
 	public static <T> void WriteSetting(SettingBase<T> setting)
 	{
-		if (platformSettingsListner != null) platformSettingsListner.Write(setting);
+		if (platformSettingsListener != null) platformSettingsListener.Write(setting);
 	}
 
 	/**
@@ -34,7 +34,7 @@ public class PlatformSettings
 	 */
 	public static boolean canUsePlatformSettings()
 	{
-		return (platformSettingsListner != null);
+		return (platformSettingsListener != null);
 	}
 
 }

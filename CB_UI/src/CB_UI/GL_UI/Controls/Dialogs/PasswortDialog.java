@@ -27,15 +27,15 @@ public class PasswortDialog extends ButtonDialog {
     private float LabelHeight;
     private SizeF msgBoxContentSize;
 
-    public interface returnListner {
+    public interface IReturnListener {
 	public void returnFromPW_Dialog(String User, String PW);
     }
 
-    private returnListner mReturnListner;
+    private IReturnListener mReturnListener;
 
-    public PasswortDialog(returnListner listner) {
+    public PasswortDialog(IReturnListener listener) {
 	super(Menu.getMenuRec(), "PW-Dialog", "", Translation.Get("enterPW"), MessageBoxButtons.OKCancel, MessageBoxIcon.GC_Live, null);
-	mReturnListner = listner;
+	mReturnListener = listener;
 
 	msgBoxContentSize = getContentSize();
 	// initial VariableField
@@ -71,18 +71,18 @@ public class PasswortDialog extends ButtonDialog {
 	msgBoxSize.height = (int) (msgBoxSize.height + layout.getHeight());
 	this.setSize(msgBoxSize.asFloat());
 
-	mMsgBoxClickListner = new OnMsgBoxClickListener() {
+	mMsgBoxClickListener = new OnMsgBoxClickListener() {
 
 	    @Override
 	    public boolean onClick(int which, Object data) {
 		if (which == BUTTON_POSITIVE) {
 
-		    if (mReturnListner != null)
-			mReturnListner.returnFromPW_Dialog(editTextUser.getText(), editTextPW.getText());
+		    if (mReturnListener != null)
+			mReturnListener.returnFromPW_Dialog(editTextUser.getText(), editTextPW.getText());
 		    close();
 		} else {
-		    if (mReturnListner != null)
-			mReturnListner.returnFromPW_Dialog(null, null);
+		    if (mReturnListener != null)
+			mReturnListener.returnFromPW_Dialog(null, null);
 		    close();
 		}
 

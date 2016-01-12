@@ -14,12 +14,12 @@ public class FloatControl extends CB_View_Base
 		public void ValueChanged(int value);
 	}
 
-	iValueChanged changeListner;
+	iValueChanged changeListener;
 
-	public FloatControl(CB_RectF rec, String Name, iValueChanged listner)
+	public FloatControl(CB_RectF rec, String Name, iValueChanged listener)
 	{
 		super(rec, Name);
-		changeListner = listner;
+		changeListener = listener;
 		progressbar = new ProgressBar(rec, "");
 		progressbar.setHeight(this.getHeight() * 0.75f);
 		progressbar.setText("");
@@ -78,7 +78,7 @@ public class FloatControl extends CB_View_Base
 	public boolean onTouchUp(int x, int y, int pointer, int button)
 	{
 		if (slideButton.isDisabled()) return false;
-		if (changeListner != null) changeListner.ValueChanged(progressbar.getProgress());
+		if (changeListener != null) changeListener.ValueChanged(progressbar.getProgress());
 		return true;
 	}
 

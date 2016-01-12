@@ -39,7 +39,7 @@ import CB_UI.GL_UI.Controls.CacheInfo;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI_Base.Global;
-import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -240,7 +240,7 @@ public class DescriptionView extends CB_View_Base {
 
 	try {
 	    CB_RectF world = this.getWorldRec();
-	    platformConector.setContentSize((int) world.getX(), (int) ((GL_UISizes.SurfaceSize.getHeight() - (world.getMaxY() - infoHeight))), (int) (GL_UISizes.SurfaceSize.getWidth() - world.getMaxX()), (int) world.getY());
+	    PlatformConnector.setContentSize((int) world.getX(), (int) ((GL_UISizes.SurfaceSize.getHeight() - (world.getMaxY() - infoHeight))), (int) (GL_UISizes.SurfaceSize.getWidth() - world.getMaxX()), (int) world.getY());
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}

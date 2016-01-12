@@ -39,7 +39,7 @@ import CB_UI.SelectedCacheEventList;
 import CB_UI.GL_UI.Controls.SatBarChart;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI_Base.Enums.WrapType;
-import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
@@ -51,9 +51,9 @@ import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
-import CB_UI_Base.GL_UI.Controls.Dialogs.NumerikInputBox;
-import CB_UI_Base.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListner;
+import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
+import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox;
+import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox.IReturnValueListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
@@ -98,7 +98,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	    chart.onShow();
 	refreshText();
 
-	platformConector.hideForDialog();
+	PlatformConnector.hideForDialog();
     }
 
     @Override
@@ -165,7 +165,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 			switch (which) {
 			case 1:
 			    ms.close();
-			    pd = CancelWaitDialog.ShowWait(Translation.Get("LoadFounds"), DownloadAnimation.GetINSTANCE(), new IcancelListner() {
+			    pd = CancelWaitDialog.ShowWait(Translation.Get("LoadFounds"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
 				@Override
 				public void isCanceld() {
@@ -208,7 +208,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 				@Override
 				public void run() {
-				    NumerikInputBox.Show(Translation.Get("TelMeFounds"), Translation.Get("AdjustFinds"), Config.FoundOffset.getValue(), DialogListner);
+				    NumericInputBox.Show(Translation.Get("TelMeFounds"), Translation.Get("AdjustFinds"), Config.FoundOffset.getValue(), mDialogListener);
 				}
 			    });
 
@@ -298,7 +298,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		if (GlobalCore.getSelectedCache() == null)
 		    return true;
-		platformConector.callUrl(GlobalCore.getSelectedCache().getUrl());
+		PlatformConnector.callUrl(GlobalCore.getSelectedCache().getUrl());
 		return true;
 	    }
 	});
@@ -365,7 +365,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	GL.that.renderOnce();
     }
 
-    protected final returnValueListner DialogListner = new returnValueListner() {
+    protected final IReturnValueListener mDialogListener = new IReturnValueListener() {
 	@Override
 	public void returnValue(int value) {
 	    Config.FoundOffset.setValue(value);
@@ -383,7 +383,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
     @Override
     public void GpsStateChanged() {
 	if (Locator.getCoordinate().hasAccuracy()) {
-	    int radius = (int) Locator.getCoordinate().getAccuracy();
+	    int radius = Locator.getCoordinate().getAccuracy();
 
 	    if (Accuracy != null)
 		Accuracy.setText("+/- " + UnitFormatter.DistanceString(radius) + " (" + Locator.getProvider().toString() + ")");

@@ -44,7 +44,7 @@ public class CB_Action_RecTrack extends CB_ActionCommand
 	{
 		MenuItem mi;
 		Menu cm2 = new Menu("TrackRecordContextMenu");
-		cm2.addItemClickListner(new OnClickListener()
+		cm2.addOnClickListener(new OnClickListener()
 		{
 
 			@Override

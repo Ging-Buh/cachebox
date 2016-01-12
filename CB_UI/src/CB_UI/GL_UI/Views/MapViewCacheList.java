@@ -23,7 +23,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
 import CB_Core.CacheListChangedEventList;
-import CB_Core.CacheListChangedEventListner;
+import CB_Core.CacheListChangedEventListener;
 import CB_Core.CacheTypes;
 import CB_Core.Database;
 import CB_Core.Types.Cache;
@@ -38,7 +38,7 @@ import CB_Utils.Util.MoveableList;
  * @author ging-buh
  * @author Longri
  */
-public class MapViewCacheList implements CacheListChangedEventListner {
+public class MapViewCacheList implements CacheListChangedEventListener {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(MapViewCacheList.class);
     private final int maxZoomLevel;
     private queueProcessor queueProcessor = null;
@@ -70,7 +70,7 @@ public class MapViewCacheList implements CacheListChangedEventListner {
 
 	StartQueueProcessor();
 
-	// register as CacheListChangedEventListner
+	// register as CacheListChangedEventListener
 	CacheListChangedEventList.Add(this);
 
     }

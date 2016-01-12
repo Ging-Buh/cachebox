@@ -50,7 +50,7 @@ import CB_Utils.Math.Point;
 import CB_Utils.Math.PointD;
 import CB_Utils.Math.PointL;
 import CB_Utils.Util.FileIO;
-import CB_Utils.Util.iChanged;
+import CB_Utils.Util.IChanged;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -133,7 +133,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	protected final Descriptor lo = new Descriptor();
 	protected final Descriptor ru = new Descriptor();
 
-	protected iChanged themeChangedEventHandler = new iChanged()
+	protected IChanged themeChangedEventHandler = new IChanged()
 	{
 
 		@Override

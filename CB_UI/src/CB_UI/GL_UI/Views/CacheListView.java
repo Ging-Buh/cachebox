@@ -26,7 +26,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.utils.Align;
 
 import CB_Core.CacheListChangedEventList;
-import CB_Core.CacheListChangedEventListner;
+import CB_Core.CacheListChangedEventListener;
 import CB_Core.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
@@ -54,7 +54,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Math.Point;
 
-public class CacheListView extends CB_View_Base implements CacheListChangedEventListner, SelectedCacheEvent, PositionChangedEvent {
+public class CacheListView extends CB_View_Base implements CacheListChangedEventListener, SelectedCacheEvent, PositionChangedEvent {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(CacheListView.class);
     private V_ListView listView;
     private Scrollbar scrollBar;
@@ -241,7 +241,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	listView.setBaseAdapter(lvAdapter);
     }
 
-    private OnClickListener onItemClickListner = new OnClickListener() {
+    private OnClickListener onItemClickListener = new OnClickListener() {
 
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -264,7 +264,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	}
     };
 
-    private OnClickListener onItemLongClickListner = new OnClickListener() {
+    private OnClickListener onItemLongClickListener = new OnClickListener() {
 
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -303,6 +303,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	    log.debug("CacheListView ctor CustomAdapter " + Count + " Caches");
 	}
 
+	@Override
 	public int getCount() {
 	    if (cacheList == null)
 		return 0;
@@ -323,8 +324,8 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 		CacheListViewItem v = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache);
 		v.setClickable(true);
-		v.setOnClickListener(onItemClickListner);
-		v.setOnLongClickListener(onItemLongClickListner);
+		v.setOnClickListener(onItemClickListener);
+		v.setOnLongClickListener(onItemLongClickListener);
 
 		return v;
 	    }
@@ -467,8 +468,8 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
     @Override
     public void dispose() {
 
-	onItemLongClickListner = null;
-	onItemClickListner = null;
+	onItemLongClickListener = null;
+	onItemClickListener = null;
 
 	if (listView != null)
 	    listView.dispose();

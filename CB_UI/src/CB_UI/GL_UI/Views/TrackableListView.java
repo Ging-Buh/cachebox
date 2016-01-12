@@ -16,7 +16,7 @@ import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.ImageButton;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
@@ -85,7 +85,7 @@ public class TrackableListView extends CB_View_Base {
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		final String TBCode = txtSearch.getText().trim();
 		if (TBCode.length() > 0) {
-		    wd = CancelWaitDialog.ShowWait(Translation.Get("search"), DownloadAnimation.GetINSTANCE(), new IcancelListner() {
+		    wd = CancelWaitDialog.ShowWait(Translation.Get("search"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
 			@Override
 			public void isCanceld() {
@@ -182,7 +182,7 @@ public class TrackableListView extends CB_View_Base {
     }
 
     public void RefreshTbList() {
-	wd = CancelWaitDialog.ShowWait(Translation.Get("RefreshInventory"), DownloadAnimation.GetINSTANCE(), new IcancelListner() {
+	wd = CancelWaitDialog.ShowWait(Translation.Get("RefreshInventory"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
 	    @Override
 	    public void isCanceld() {

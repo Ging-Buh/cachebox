@@ -26,7 +26,7 @@ import CB_Utils.Lists.CB_List;
 /// 
 /// 
 ///  <example>
-///  <para><b>Der Aufruf folgender Methoden lösen ein Changed Event aus:</b></para>
+///  <para><b>Der Aufruf folgender Methoden lï¿½sen ein Changed Event aus:</b></para>
 /// 
 /// <para>
 ///  Add / 
@@ -41,7 +41,7 @@ import CB_Utils.Lists.CB_List;
 ///  </para>
 /// 
 /// 
-/// <para><b>Neu implementierte Methoden, welche ein Changed Event aus lösen:</b></para>
+/// <para><b>Neu implementierte Methoden, welche ein Changed Event aus lï¿½sen:</b></para>
 /// <para >
 ///  MoveItem /
 ///  MoveItemFirst /
@@ -72,7 +72,7 @@ public class MoveableList<T> extends CB_List<T>
 {
 
 	private static final long serialVersionUID = -3030926604332765746L;
-	protected CB_List<iChanged> ChangedEventList = new CB_List<iChanged>();
+	protected CB_List<IChanged> ChangedEventList = new CB_List<IChanged>();
 
 	public MoveableList()
 	{
@@ -91,26 +91,26 @@ public class MoveableList<T> extends CB_List<T>
 		{
 			for (int i = 0, n = ChangedEventList.size(); i < n; i++)
 			{
-				iChanged event = ChangedEventList.get(i);
+				IChanged event = ChangedEventList.get(i);
 				event.isChanged();
 			}
 		}
 
 	}
 
-	public void addChangedEventListner(iChanged listner)
+	public void addChangedEventListener(IChanged listener)
 	{
 		synchronized (ChangedEventList)
 		{
-			if (!ChangedEventList.contains(listner)) ChangedEventList.add(listner);
+			if (!ChangedEventList.contains(listener)) ChangedEventList.add(listener);
 		}
 	}
 
-	public void removeChangedEventListner(iChanged listner)
+	public void removeChangedEventListener(IChanged listener)
 	{
 		synchronized (ChangedEventList)
 		{
-			ChangedEventList.remove(listner);
+			ChangedEventList.remove(listener);
 		}
 	}
 
@@ -263,7 +263,7 @@ public class MoveableList<T> extends CB_List<T>
 	private int _MoveResultIndex;
 
 	// / <summary>
-	// / Gigbt die Position der letzten Move Methode zurück.
+	// / Gigbt die Position der letzten Move Methode zurï¿½ck.
 	// / </summary>
 	// / <returns>Null-Basierender Index, des Ergebnisses der letzten Move Nethode</returns>
 	// / <remarks>Bei den Methoden <see cref="MoveItemsLeft">[MoveItemsLeft]</see> und <see cref="MoveItemsRight">[MoveItemsRight]</see>

@@ -29,7 +29,7 @@ import CB_Core.Types.Categories;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.SelectDB;
-import CB_UI.GL_UI.Activitys.SelectDB.ReturnListner;
+import CB_UI.GL_UI.Activitys.SelectDB.IReturnListener;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
@@ -67,7 +67,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand {
 	}
 
 	SelectDB selectDBDialog = new SelectDB(new CB_RectF(0, 0, GL.that.getWidth(), GL.that.getHeight()), "SelectDbDialog", false);
-	selectDBDialog.setReturnListner(new ReturnListner() {
+	selectDBDialog.setReturnListener(new IReturnListener() {
 	    @Override
 	    public void back() {
 		returnFromSelectDB();

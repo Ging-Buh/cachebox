@@ -77,7 +77,7 @@ public class HintDialog extends GL_MsgBox {
 
 	msgBox.addChild(scrollBox);
 
-	msgBox.mMsgBoxClickListner = null; // todo
+	msgBox.mMsgBoxClickListener = null; // todo
 	msgBox.button1.setOnClickListener(new OnClickListener() {
 
 	    @Override

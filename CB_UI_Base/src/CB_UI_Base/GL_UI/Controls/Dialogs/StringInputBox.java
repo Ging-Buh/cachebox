@@ -22,7 +22,7 @@ public class StringInputBox extends GL_MsgBox {
 
 	StringInputBox msgBox = new StringInputBox(msgBoxSize, "MsgBox");
 	msgBox.setTitle(title);
-	msgBox.mMsgBoxClickListner = Listener;
+	msgBox.mMsgBoxClickListener = Listener;
 	CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
 
 	editText = new EditTextField(msgBox, textFieldRec, type, "MsgBoxLabel");

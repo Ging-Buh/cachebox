@@ -31,7 +31,7 @@ import CB_Core.Types.Cache;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Views.DescriptionView;
-import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
@@ -87,7 +87,7 @@ public class CB_Action_ShowDescExt extends CB_Action {
 		out.write(html);
 		out.close();
 
-		platformConector.callUrl("file://" + filePath);
+		PlatformConnector.callUrl("file://" + filePath);
 
 	    } catch (IOException e) {
 		e.printStackTrace();

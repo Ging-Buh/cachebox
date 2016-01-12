@@ -67,7 +67,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
      * Such Eingabe Feld
      */
     private EditTextField mEingabe;
-    private float lineHeight;
+    private final float lineHeight;
 
     private volatile Thread thread;
     private ImportAnimation dis;
@@ -184,7 +184,6 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
 	this.addChild(gsLogo);
 
 	lblTitle = new Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - (margin * 4) - gsLogo.getWidth(), lineHeight);
-	lblTitle.setWrapType(WrapType.WRAPPED);
 	lblTitle.setFont(Fonts.getBig());
 	lblTitle.setWrappedText(Translation.Get("API_IMPORT_NAME_OWNER_CODE"));
 	this.addChild(lblTitle);

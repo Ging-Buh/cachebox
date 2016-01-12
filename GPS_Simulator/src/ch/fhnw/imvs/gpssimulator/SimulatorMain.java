@@ -38,12 +38,12 @@ import javax.swing.filechooser.FileFilter;
 import org.apache.log4j.Logger;
 import org.mapsforge.map.swing.view.MapPanel;
 
-import CB_UI_Base.Events.platformConector;
-import CB_UI_Base.Events.platformConector.ICallUrl;
-import CB_UI_Base.Events.platformConector.IgetFileListner;
-import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
-import CB_UI_Base.Events.platformConector.IgetFolderListner;
-import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
+import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformConnector.ICallUrl;
+import CB_UI_Base.Events.PlatformConnector.IgetFileListener;
+import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
+import CB_UI_Base.Events.PlatformConnector.IgetFolderListener;
+import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
 import ch.fhnw.imvs.gpssimulator.components.BluetoothPanel;
 import ch.fhnw.imvs.gpssimulator.components.CoursePanel;
 import ch.fhnw.imvs.gpssimulator.components.GeneralPanel;
@@ -126,9 +126,9 @@ public class SimulatorMain {
 
 	GPSData.start();
 
-	platformConector.setGetFileListner(new IgetFileListner() {
+	PlatformConnector.setGetFileListener(new IgetFileListener() {
 	    @Override
-	    public void getFile(String initialPath, final String extension, String TitleText, String ButtonText, IgetFileReturnListner returnListner) {
+	    public void getFile(String initialPath, final String extension, String TitleText, String ButtonText, IgetFileReturnListener returnListener) {
 
 		final String ext = extension.replace("*", "");
 
@@ -157,18 +157,18 @@ public class SimulatorMain {
 
 		int returnVal = chooser.showOpenDialog(null);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-		    if (returnListner != null)
-			returnListner.getFieleReturn(chooser.getSelectedFile().getAbsolutePath());
+		    if (returnListener != null)
+			returnListener.getFileReturn(chooser.getSelectedFile().getAbsolutePath());
 		    System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
 		}
 
 	    }
 	});
 
-	platformConector.setGetFolderListner(new IgetFolderListner() {
+	PlatformConnector.setGetFolderListener(new IgetFolderListener() {
 
 	    @Override
-	    public void getfolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListner returnListner) {
+	    public void getfolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener) {
 
 		JFileChooser chooser = new JFileChooser();
 
@@ -178,15 +178,15 @@ public class SimulatorMain {
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int returnVal = chooser.showOpenDialog(null);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-		    if (returnListner != null)
-			returnListner.getFolderReturn(chooser.getSelectedFile().getAbsolutePath());
+		    if (returnListener != null)
+			returnListener.getFolderReturn(chooser.getSelectedFile().getAbsolutePath());
 		    System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
 		}
 
 	    }
 	});
 
-	platformConector.setCallUrlListner(new ICallUrl() {
+	PlatformConnector.setCallUrlListener(new ICallUrl() {
 
 	    /**
 	     * call

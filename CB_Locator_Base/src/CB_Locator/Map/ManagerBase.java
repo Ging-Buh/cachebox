@@ -61,7 +61,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.GL_GraphicFactory;
 import CB_UI_Base.graphics.GL_RenderType;
 import CB_Utils.Util.FileIO;
-import CB_Utils.Util.iChanged;
+import CB_Utils.Util.IChanged;
 
 /**
  * @author ging-buh
@@ -113,7 +113,7 @@ public abstract class ManagerBase
 		PROCESSOR_COUNT = 1;
 		DISPLAY_MODEL = displaymodel;
 
-		LocatorSettings.MapsforgeRenderType.addChangedEventListner(new iChanged()
+		LocatorSettings.MapsforgeRenderType.addChangedEventListener(new IChanged()
 		{
 			@Override
 			public void isChanged()

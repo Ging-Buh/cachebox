@@ -18,7 +18,7 @@ package CB_UI.GL_UI.Controls;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GcApiLogin;
-import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.Button;
@@ -93,7 +93,7 @@ public class API_Button extends Button {
 	    if (Plattform.used == Plattform.Desktop) {
 		(new GcApiLogin()).RunRequest();
 	    } else {
-		platformConector.callGetApiKeyt();
+		PlatformConnector.callGetApiKeyt();
 	    }
 
 	    return true;

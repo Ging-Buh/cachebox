@@ -54,7 +54,7 @@ public class SettingsItemBase extends ListViewItemBackground {
     public boolean click(int x, int y, int pointer, int button) {
 	// wenn Item disabled ein Behandelt zurück schicken,
 	// damit keine weiteren Abfragen durchgereicht werden.
-	// Auch wenn dieses Item ein OnClickListner hat.
+	// Auch wenn dieses Item ein OnClickListener hat.
 	if (isDisabled)
 	    return true;
 	else

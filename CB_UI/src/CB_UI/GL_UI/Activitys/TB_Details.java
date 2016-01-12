@@ -266,7 +266,7 @@ public class TB_Details extends ActivityBase {
     private void showLogMenu() {
 
 	final Menu cm = new Menu("TBLogContextMenu");
-	cm.addItemClickListner(menuItemClickListner);
+	cm.addOnClickListener(menuItemClickListener);
 
 	cm.addItem(MenuID.MI_TB_NOTE, "note", SpriteCacheBase.Icons.get(IconName.tbNote_63.ordinal()));
 
@@ -288,7 +288,7 @@ public class TB_Details extends ActivityBase {
 	cm.Show();
     }
 
-    private OnClickListener menuItemClickListner = new OnClickListener() {
+    private OnClickListener menuItemClickListener = new OnClickListener() {
 
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {

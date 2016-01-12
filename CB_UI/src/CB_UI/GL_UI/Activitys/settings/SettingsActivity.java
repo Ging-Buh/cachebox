@@ -27,18 +27,18 @@ import CB_UI.GL_UI.Views.AdvancedSettingsView.SettingsListButtonSkinSpinner;
 import CB_UI.GL_UI.Views.AdvancedSettingsView.SettingsListCategoryButton;
 import CB_UI.GL_UI.Views.AdvancedSettingsView.SettingsListGetApiButton;
 import CB_UI_Base.Enums.WrapType;
-import CB_UI_Base.Events.platformConector;
-import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
-import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
+import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
+import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Activitys.ColorPicker;
-import CB_UI_Base.GL_UI.Activitys.ColorPicker.IReturnListner;
+import CB_UI_Base.GL_UI.Activitys.ColorPicker.IReturnListener;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Button;
-import CB_UI_Base.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
+import CB_UI_Base.GL_UI.Controls.CollapseBox.IAnimatedHeightChangedListener;
 import CB_UI_Base.GL_UI.Controls.FloatControl;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
@@ -46,14 +46,14 @@ import CB_UI_Base.GL_UI.Controls.LinearCollapseBox;
 import CB_UI_Base.GL_UI.Controls.Linearlayout;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.Spinner;
-import CB_UI_Base.GL_UI.Controls.Spinner.selectionChangedListner;
+import CB_UI_Base.GL_UI.Controls.Spinner.ISelectionChangedListener;
 import CB_UI_Base.GL_UI.Controls.SpinnerAdapter;
 import CB_UI_Base.GL_UI.Controls.chkBox;
-import CB_UI_Base.GL_UI.Controls.chkBox.OnCheckedChangeListener;
-import CB_UI_Base.GL_UI.Controls.Dialogs.NumerikInputBox;
-import CB_UI_Base.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListner;
-import CB_UI_Base.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListnerDouble;
-import CB_UI_Base.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListnerTime;
+import CB_UI_Base.GL_UI.Controls.chkBox.OnCheckChangedListener;
+import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox;
+import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox.IReturnValueListener;
+import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox.IReturnValueListenerDouble;
+import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox.IReturnValueListenerTime;
 import CB_UI_Base.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
@@ -151,7 +151,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		Menu icm = new Menu("menu_mapviewgl");
-		icm.addItemClickListner(new OnClickListener() {
+		icm.addOnClickListener(new OnClickListener() {
 
 		    @Override
 		    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -215,7 +215,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		    MapView.that.setNewSettings(MapView.INITIAL_NEW_SETTINGS);
 
 		int Time = Config.ScreenLock.getValue();
-		platformConector.callsetScreenLockTimet(Time);
+		PlatformConnector.setScreenLockTime(Time);
 
 		finish();
 		return true;
@@ -281,7 +281,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		// add Cat einträge
 		final LinearCollapseBox lay = new LinearCollapseBox(btn, "");
 		lay.setClickable(true);
-		lay.setAnimationListner(new animatetHeightChangedListner() {
+		lay.setAnimationListener(new IAnimatedHeightChangedListener() {
 
 		    @Override
 		    public void animatedHeightChanged(float Height) {
@@ -495,7 +495,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 		    @Override
 		    public void run() {
-			ColorPicker clrPick = new ColorPicker(ActivityBase.ActivityRec(), SB.getValue(), new IReturnListner() {
+			ColorPicker clrPick = new ColorPicker(ActivityBase.ActivityRec(), SB.getValue(), new IReturnListener() {
 
 			    @Override
 			    public void returnColor(Color color) {
@@ -525,7 +525,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		// zeige Beschreibung der Einstellung
 
-		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
 		return false;
 	    }
@@ -592,7 +592,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		// zeige Beschreibung der Einstellung
 
-		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
 		return true;
 	    }
@@ -634,7 +634,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	spinner.setAdapter(adapter);
 	spinner.setSelection(SB.getValues().indexOf(SB.getValue()));
 
-	spinner.setSelectionChangedListner(new selectionChangedListner() {
+	spinner.setSelectionChangedListener(new ISelectionChangedListener() {
 	    @Override
 	    public void selectionChanged(int index) {
 		SB.setValue((String) SB.getValues().get(index));
@@ -647,7 +647,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		// zeige Beschreibung der Einstellung
 
-		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
 		return false;
 	    }
@@ -688,7 +688,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	spinner.setAdapter(adapter);
 	spinner.setSelection(SB.getIndex());
 
-	spinner.setSelectionChangedListner(new selectionChangedListner() {
+	spinner.setSelectionChangedListener(new ISelectionChangedListener() {
 	    @Override
 	    public void selectionChanged(int index) {
 		SB.setValue(SB.getValueFromIndex(index));
@@ -701,7 +701,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		// zeige Beschreibung der Einstellung
 
-		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
 		return false;
 	    }
@@ -743,7 +743,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	spinner.setAdapter(adapter);
 	spinner.setSelection(SB.getIndexOfValue());
 
-	spinner.setSelectionChangedListner(new selectionChangedListner() {
+	spinner.setSelectionChangedListener(new ISelectionChangedListener() {
 	    @Override
 	    public void selectionChanged(int index) {
 		SB.setValue(SB.getValueFromIndex(index));
@@ -756,7 +756,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		// zeige Beschreibung der Einstellung
 
-		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
 		return false;
 	    }
@@ -782,7 +782,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		EditKey = Config.settings.indexOf(SB);
 
 		// Show NumPad Int Edit
-		NumerikInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(), new returnValueListner() {
+		NumericInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(), new IReturnValueListener() {
 		    @Override
 		    public void returnValue(int value) {
 			SettingInt SetValue = (SettingInt) Config.settings.get(EditKey);
@@ -811,7 +811,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		// zeige Beschreibung der Einstellung
 
-		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
 		return false;
 	    }
@@ -834,7 +834,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		EditKey = Config.settings.indexOf(SB);
 
 		// Show NumPad Int Edit
-		NumerikInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(), new returnValueListnerDouble() {
+		NumericInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(), new IReturnValueListenerDouble() {
 		    @Override
 		    public void returnValue(double value) {
 			SettingDouble SetValue = (SettingDouble) Config.settings.get(EditKey);
@@ -862,7 +862,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		// zeige Beschreibung der Einstellung
 
-		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
 		return false;
 	    }
@@ -886,7 +886,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		EditKey = Config.settings.indexOf(SB);
 
 		// Show NumPad Int Edit
-		NumerikInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(), new returnValueListnerDouble() {
+		NumericInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(), new IReturnValueListenerDouble() {
 		    @Override
 		    public void returnValue(double value) {
 			SettingFloat SetValue = (SettingFloat) Config.settings.get(EditKey);
@@ -914,7 +914,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		// zeige Beschreibung der Einstellung
 
-		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
 		return false;
 	    }
@@ -947,13 +947,13 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		final String ApsolutePath = (file != null) ? file.getAbsolutePath() : "";
 
 		Menu icm = new Menu("FileactionMenu");
-		icm.addItemClickListner(new OnClickListener() {
+		icm.addOnClickListener(new OnClickListener() {
 
 		    @Override
 		    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 			switch (((MenuItem) v).getMenuItemId()) {
 			case MenuID.MI_SELECT_PATH:
-			    platformConector.getFolder(ApsolutePath, Translation.Get("select_folder"), Translation.Get("select"), new IgetFolderReturnListner() {
+			    PlatformConnector.getFolder(ApsolutePath, Translation.Get("select_folder"), Translation.Get("select"), new IgetFolderReturnListener() {
 
 				@Override
 				public void getFolderReturn(String Path) {
@@ -994,7 +994,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		// zeige Beschreibung der Einstellung
 
-		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
 		return false;
 	    }
@@ -1021,15 +1021,15 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		final String Path = (file.getParent() != null) ? file.getParent() : "";
 
 		Menu icm = new Menu("FileactionMenu");
-		icm.addItemClickListner(new OnClickListener() {
+		icm.addOnClickListener(new OnClickListener() {
 
 		    @Override
 		    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 			switch (((MenuItem) v).getMenuItemId()) {
 			case MenuID.MI_SELECT_PATH:
-			    platformConector.getFile(Path, SB.getExt(), Translation.Get("select_file"), Translation.Get("select"), new IgetFileReturnListner() {
+			    PlatformConnector.getFile(Path, SB.getExt(), Translation.Get("select_file"), Translation.Get("select"), new IgetFileReturnListener() {
 				@Override
-				public void getFieleReturn(String Path) {
+				public void getFileReturn(String Path) {
 				    SB.setValue(Path);
 				    resortList();
 				}
@@ -1059,7 +1059,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		// zeige Beschreibung der Einstellung
 
-		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
 		return false;
 	    }
@@ -1093,7 +1093,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 			info += "GPS min pos Time= " + String.valueOf(PositionChangedEventList.minPosEventTime) + GlobalCore.br;
 			info += "GPS min Orientation Time= " + String.valueOf(PositionChangedEventList.minOrientationEventTime) + GlobalCore.br;
 
-			GL_MsgBox.Show(info, MsgBoxreturnListner);
+			GL_MsgBox.Show(info, msgBoxReturnListener);
 
 			return true;
 		    }
@@ -1110,7 +1110,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		// zeige Beschreibung der Einstellung
 
-		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
 		return false;
 	    }
@@ -1170,7 +1170,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	}
 
 	chk.setChecked(SB.getValue().Mute);
-	chk.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+	chk.setOnCheckChangedListener(new OnCheckChangedListener() {
 	    @Override
 	    public void onCheckedChanged(chkBox view, boolean isChecked) {
 		Audio aud = new Audio(SB.getValue());
@@ -1193,7 +1193,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		// zeige Beschreibung der Einstellung
 
-		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
 		return true;
 	    }
@@ -1236,7 +1236,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		int intValueSec = Integer.parseInt(s[1]);
 
 		// Show NumPad Int Edit
-		NumerikInputBox.Show("default: " + GlobalCore.br + intToTime(SB.getDefaultValue()), trans, intValueMin, intValueSec, new returnValueListnerTime() {
+		NumericInputBox.Show("default: " + GlobalCore.br + intToTime(SB.getDefaultValue()), trans, intValueMin, intValueSec, new IReturnValueListenerTime() {
 		    @Override
 		    public void returnValue(int min, int sec) {
 			SettingTime SetValue = (SettingTime) Config.settings.get(EditKey);
@@ -1265,7 +1265,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		// zeige Beschreibung der Einstellung
 
-		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
 		return false;
 	    }
@@ -1325,7 +1325,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	    }
 	};
 
-	final Spinner spinner = new Spinner(ButtonRec, "LangSpinner", adapter, new selectionChangedListner() {
+	final Spinner spinner = new Spinner(ButtonRec, "LangSpinner", adapter, new ISelectionChangedListener() {
 
 	    @Override
 	    public void selectionChanged(int index) {
@@ -1423,7 +1423,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	    }
 	};
 
-	final Spinner spinner = new Spinner(itemRec, "SkinSpinner", adapter, new selectionChangedListner() {
+	final Spinner spinner = new Spinner(itemRec, "SkinSpinner", adapter, new ISelectionChangedListener() {
 
 	    @Override
 	    public void selectionChanged(int index) {
@@ -1469,7 +1469,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	chkBox chk = item.getCheckBox();
 
 	chk.setChecked(SB.getValue());
-	chk.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+	chk.setOnCheckChangedListener(new OnCheckChangedListener() {
 	    @Override
 	    public void onCheckedChanged(chkBox view, boolean isChecked) {
 		SB.setValue(isChecked);
@@ -1485,7 +1485,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		// zeige Beschreibung der Einstellung
 
-		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+		GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
 		return true;
 	    }
@@ -1496,7 +1496,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
     }
 
-    OnMsgBoxClickListener MsgBoxreturnListner = new OnMsgBoxClickListener() {
+    OnMsgBoxClickListener msgBoxReturnListener = new OnMsgBoxClickListener() {
 
 	@Override
 	public boolean onClick(int which, Object data) {

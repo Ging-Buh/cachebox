@@ -228,12 +228,12 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 			}
 
 			MessageBox.Show(Translation.Get("insertVars") + "\n" + message, Translation.Get("missingVars"), MessageBoxButtons.YesNo,
-					MessageBoxIcon.Asterisk, DialogListner);
+					MessageBoxIcon.Asterisk, mDialogListener);
 		}
 
 	}
 
-	private final DialogInterface.OnClickListener DialogListner = new DialogInterface.OnClickListener()
+	private final DialogInterface.OnClickListener mDialogListener = new DialogInterface.OnClickListener()
 	{
 		@Override
 		public void onClick(DialogInterface dialog, int button)

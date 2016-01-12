@@ -7,8 +7,8 @@ import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Map.Layer;
 import CB_Locator.Map.ManagerBase;
-import CB_UI_Base.Events.platformConector;
-import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
+import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
@@ -65,11 +65,11 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 	@Override
 	public Menu getContextMenu()
 	{
-		platformConector.getFile("", "", "", "", new IgetFileReturnListner()
+		PlatformConnector.getFile("", "", "", "", new IgetFileReturnListener()
 		{
 
 			@Override
-			public void getFieleReturn(String arg0)
+			public void getFileReturn(String arg0)
 			{
 				loadMap(arg0);
 			}

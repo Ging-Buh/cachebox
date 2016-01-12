@@ -19,7 +19,7 @@ import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog.iCancelListner;
+import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog.ICancelListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
@@ -44,7 +44,7 @@ public class CB_Action_UploadFieldNote extends CB_ActionCommand {
     @Override
     public void Execute() {
 	// GL_MsgBox.Show(Translation.Get("uploadFieldNotes?"), Translation.Get("uploadFieldNotes"), MessageBoxButtons.YesNo,
-	// MessageBoxIcon.GC_Live, UploadFieldnotesDialogListner, Config.RememberAsk_API_Coast);
+	// MessageBoxIcon.GC_Live, UploadFieldnotesDialogListener, Config.RememberAsk_API_Coast);
 	UploadFieldNotes();
     }
 
@@ -169,10 +169,10 @@ public class CB_Action_UploadFieldNote extends CB_ActionCommand {
 	    @Override
 	    public void run() {
 		PD = ProgressDialog.Show("Upload FieldNotes", UploadFieldNotesdThread);
-		PD.setCancelListner(new iCancelListner() {
+		PD.setCancelListener(new ICancelListener() {
 
 		    @Override
-		    public void isCanceld() {
+		    public void isCanceled() {
 			cancel.set(true);
 		    }
 		});

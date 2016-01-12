@@ -6,11 +6,11 @@ public class RadioGroup {
     private final ArrayList<RadioButton> radios;
     RadioButton aktSelected;
 
-    public interface selectionChangedListner {
+    public interface ISelectionChangedListener {
 	public void selectionChanged(RadioButton radio, int idx);
     }
 
-    private selectionChangedListner listner = null;
+    private ISelectionChangedListener listener = null;
 
     public RadioGroup() {
 	radios = new ArrayList<RadioButton>();
@@ -40,8 +40,8 @@ public class RadioGroup {
 	    }
 	    tmp.setChecked(false);
 	}
-	if (listner != null) {
-	    listner.selectionChanged(aktSelected, selectedIdx);
+	if (listener != null) {
+	    listener.selectionChanged(aktSelected, selectedIdx);
 	}
     }
 
@@ -49,8 +49,8 @@ public class RadioGroup {
 	return aktSelected;
     }
 
-    public void addSelectionChangedListner(selectionChangedListner listner) {
-	this.listner = listner;
+    public void addSelectionChangedListener(ISelectionChangedListener listener) {
+	this.listener = listener;
     }
 
 }

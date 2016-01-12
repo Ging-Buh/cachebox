@@ -15,21 +15,21 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 import CB_Locator.Location.ProviderType;
-import CB_UI_Base.Events.platformConector;
-import CB_UI_Base.Events.platformConector.ICallUrl;
-import CB_UI_Base.Events.platformConector.IHardwarStateListner;
-import CB_UI_Base.Events.platformConector.IQuit;
-import CB_UI_Base.Events.platformConector.IgetFileListner;
-import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
-import CB_UI_Base.Events.platformConector.IgetFolderListner;
-import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
+import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformConnector.ICallUrl;
+import CB_UI_Base.Events.PlatformConnector.IHardwarStateListener;
+import CB_UI_Base.Events.PlatformConnector.IQuit;
+import CB_UI_Base.Events.PlatformConnector.IgetFileListener;
+import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
+import CB_UI_Base.Events.PlatformConnector.IgetFolderListener;
+import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Listener_Interface;
-import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.DevicesSizes;
+import CB_UI_Base.Math.Size;
 import CB_Utils.Config_Core;
 import CB_Utils.Plattform;
-import CB_Utils.Util.iChanged;
+import CB_Utils.Util.IChanged;
 import de.CB.TestBase.Map.DesktopManager;
 import de.CB.TestBase.Views.MainView;
 import de.CB.TestBase.Views.splash;
@@ -120,7 +120,7 @@ public class Main {
 	timer.schedule(task, 600);
 
 	// ''''''''''''''''''''''
-	platformConector.setisOnlineListner(new IHardwarStateListner() {
+	PlatformConnector.setisOnlineListener(new IHardwarStateListener() {
 
 	    @Override
 	    public boolean isOnline() {
@@ -168,9 +168,9 @@ public class Main {
 
 	});
 
-	platformConector.setGetFileListner(new IgetFileListner() {
+	PlatformConnector.setGetFileListener(new IgetFileListener() {
 	    @Override
-	    public void getFile(String initialPath, final String extension, String TitleText, String ButtonText, IgetFileReturnListner returnListner) {
+	    public void getFile(String initialPath, final String extension, String TitleText, String ButtonText, IgetFileReturnListener returnListener) {
 
 		final String ext = extension.replace("*", "");
 
@@ -198,18 +198,18 @@ public class Main {
 
 		int returnVal = chooser.showOpenDialog(null);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-		    if (returnListner != null)
-			returnListner.getFieleReturn(chooser.getSelectedFile().getAbsolutePath());
+		    if (returnListener != null)
+			returnListener.getFileReturn(chooser.getSelectedFile().getAbsolutePath());
 		    System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
 		}
 
 	    }
 	});
 
-	platformConector.setGetFolderListner(new IgetFolderListner() {
+	PlatformConnector.setGetFolderListener(new IgetFolderListener() {
 
 	    @Override
-	    public void getfolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListner returnListner) {
+	    public void getfolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener) {
 
 		JFileChooser chooser = new JFileChooser();
 
@@ -219,15 +219,15 @@ public class Main {
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int returnVal = chooser.showOpenDialog(null);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-		    if (returnListner != null)
-			returnListner.getFolderReturn(chooser.getSelectedFile().getAbsolutePath());
+		    if (returnListener != null)
+			returnListener.getFolderReturn(chooser.getSelectedFile().getAbsolutePath());
 		    System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
 		}
 
 	    }
 	});
 
-	platformConector.setQuitListner(new IQuit() {
+	PlatformConnector.setQuitListener(new IQuit() {
 
 	    @Override
 	    public void Quit() {
@@ -236,7 +236,7 @@ public class Main {
 	    }
 	});
 
-	platformConector.setCallUrlListner(new ICallUrl() {
+	PlatformConnector.setCallUrlListener(new ICallUrl() {
 	    /**
 	     * call
 	     */
@@ -291,7 +291,7 @@ public class Main {
 
 	// Use Imperial units?
 	CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
-	Config.ImperialUnits.addChangedEventListner(new iChanged() {
+	Config.ImperialUnits.addChangedEventListener(new IChanged() {
 	    @Override
 	    public void isChanged() {
 		CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
@@ -300,7 +300,7 @@ public class Main {
 
 	// GPS update time?
 	CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
-	Config.gpsUpdateTime.addChangedEventListner(new iChanged() {
+	Config.gpsUpdateTime.addChangedEventListener(new IChanged() {
 
 	    @Override
 	    public void isChanged() {
@@ -310,7 +310,7 @@ public class Main {
 
 	// Use magnetic Compass?
 	CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
-	Config.HardwareCompass.addChangedEventListner(new iChanged() {
+	Config.HardwareCompass.addChangedEventListener(new IChanged() {
 	    @Override
 	    public void isChanged() {
 		CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
@@ -319,7 +319,7 @@ public class Main {
 
 	// Magnetic compass level
 	CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
-	Config.HardwareCompassLevel.addChangedEventListner(new iChanged() {
+	Config.HardwareCompassLevel.addChangedEventListener(new IChanged() {
 	    @Override
 	    public void isChanged() {
 		CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());

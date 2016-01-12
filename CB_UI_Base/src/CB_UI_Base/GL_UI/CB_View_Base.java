@@ -84,8 +84,9 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
     }
 
     /**
-     * Da die meisten Sprite Initialisierungen von Sprites im Render Thread durchgeführt werden müssen,
-     * wird diese Methode, zur Initialisierung im ersten Render Durchgang ausgeführt.
+     * Diese Initialisierung wird, abhängig von isInitial, im render(batch) ausgeführt.<br>
+     * Die Implematation sollte alles enthalten, was vor dem ersten Rendern eingestellt werden muss.<br>
+     * Achtung! Im überschreibenden render(batch) muß Initial() implizit über super oder explizit aufgerufen werden.<br>  
      */
     protected abstract void Initial();
 

@@ -23,7 +23,7 @@ import CB_UI.GlobalCore;
 import CB_UI.SelectedCacheEventList;
 import CB_UI.GL_UI.Controls.PopUps.QuickFieldNoteFeedbackPopUp;
 import CB_UI.GL_UI.Views.FieldNotesView;
-import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -54,7 +54,7 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand {
     public void Execute() {
 	Menu cm = new Menu("QuickFieldNote");
 
-	cm.addItemClickListner(new OnClickListener() {
+	cm.addOnClickListener(new OnClickListener() {
 
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -68,7 +68,7 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand {
 		    SelectedCacheEventList.Call(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 		    QuickFieldNoteFeedbackPopUp pop = new QuickFieldNoteFeedbackPopUp(true);
 		    pop.show(PopUp_Base.SHOW_TIME_SHORT);
-		    platformConector.vibrate();
+		    PlatformConnector.vibrate();
 		    return true;
 		case MenuID.MI_QUICK_NOT_FOUND:
 		    FieldNotesView.addNewFieldnote(LogTypes.didnt_find, true);
@@ -79,7 +79,7 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand {
 		    SelectedCacheEventList.Call(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 		    QuickFieldNoteFeedbackPopUp pop2 = new QuickFieldNoteFeedbackPopUp(false);
 		    pop2.show(PopUp_Base.SHOW_TIME_SHORT);
-		    platformConector.vibrate();
+		    PlatformConnector.vibrate();
 		    return true;
 		}
 		return false;

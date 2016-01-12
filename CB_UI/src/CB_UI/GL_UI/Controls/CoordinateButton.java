@@ -8,7 +8,7 @@ import CB_Locator.CoordinateGPS;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.EditCoord;
-import CB_UI.GL_UI.Activitys.EditCoord.ReturnListner;
+import CB_UI.GL_UI.Activitys.EditCoord.ReturnListener;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
@@ -25,11 +25,11 @@ public class CoordinateButton extends Button implements ICopyPaste {
     protected Clipboard clipboard;
     private EditCoord edCo;
 
-    public interface CoordinateChangeListner {
+    public interface ICoordinateChangedListener {
 	public void coordinateChanged(Coordinate coord);
     }
 
-    private CoordinateChangeListner mCoordinateChangedListner;
+    private ICoordinateChangedListener mCoordinateChangedListener;
 
     public CoordinateButton(CB_RectF rec, String name, Coordinate coordinate, String wpName) {
 	super(rec, name);
@@ -51,8 +51,8 @@ public class CoordinateButton extends Button implements ICopyPaste {
 	clipboard = GlobalCore.getDefaultClipboard();
     }
 
-    public void setCoordinateChangedListner(CoordinateChangeListner listner) {
-	mCoordinateChangedListner = listner;
+    public void setCoordinateChangedListener(ICoordinateChangedListener listener) {
+	mCoordinateChangedListener = listener;
     }
 
     private void setText() {
@@ -73,14 +73,14 @@ public class CoordinateButton extends Button implements ICopyPaste {
 
     private void initialEdCo() {
 
-	edCo = new EditCoord(ActivityBase.ActivityRec(), "EditCoord", mActCoord, new ReturnListner() {
+	edCo = new EditCoord(ActivityBase.ActivityRec(), "EditCoord", mActCoord, new ReturnListener() {
 
 	    @Override
 	    public void returnCoord(Coordinate coord) {
 		if (coord != null && coord.isValid()) {
 		    mActCoord = coord;
-		    if (mCoordinateChangedListner != null)
-			mCoordinateChangedListner.coordinateChanged(coord);
+		    if (mCoordinateChangedListener != null)
+			mCoordinateChangedListener.coordinateChanged(coord);
 		    setText();
 		}
 		if (edCo != null)
@@ -170,8 +170,8 @@ public class CoordinateButton extends Button implements ICopyPaste {
 	    if (coord != null) {
 		if (coord != null && coord.isValid()) {
 		    mActCoord = coord;
-		    if (mCoordinateChangedListner != null)
-			mCoordinateChangedListner.coordinateChanged(coord);
+		    if (mCoordinateChangedListener != null)
+			mCoordinateChangedListener.coordinateChanged(coord);
 		    setText();
 		}
 		return content;

@@ -88,15 +88,15 @@ public class Menu extends ButtonDialog {
 	initialDialog();
     }
 
-    protected OnClickListener MenuItemClickListner = new OnClickListener() {
+    protected OnClickListener menuItemClickListener = new OnClickListener() {
 
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 	    GL.that.closeDialog(Menu.this);
 	    if (isMoreMenu)
 		GL.that.closeDialog(mParentMenu);
-	    if (mOnItemClickListner != null) {
-		for (OnClickListener tmp : mOnItemClickListner) {
+	    if (mOnItemClickListeners != null) {
+		for (OnClickListener tmp : mOnItemClickListeners) {
 		    if (tmp.onClick(v, x, y, pointer, button))
 			break;
 		}
@@ -335,7 +335,7 @@ public class Menu extends ButtonDialog {
     }
 
     public void addItem(MenuItemBase menuItem) {
-	menuItem.setOnClickListener(MenuItemClickListner);
+	menuItem.setOnClickListener(menuItemClickListener);
 	mItems.add(menuItem);
 	mListView.notifyDataSetChanged();
 	//resetInitial();
@@ -469,22 +469,22 @@ public class Menu extends ButtonDialog {
 	return item;
     }
 
-    protected ArrayList<OnClickListener> mOnItemClickListner;
+    protected ArrayList<OnClickListener> mOnItemClickListeners;
 
-    public void addItemClickListner(OnClickListener onItemClickListner) {
-	if (this.mOnItemClickListner == null)
-	    this.mOnItemClickListner = new ArrayList<GL_View_Base.OnClickListener>();
-	this.mOnItemClickListner.add(onItemClickListner);
+    public void addOnClickListener(OnClickListener onItemClickListener) {
+	if (this.mOnItemClickListeners == null)
+	    this.mOnItemClickListeners = new ArrayList<GL_View_Base.OnClickListener>();
+	this.mOnItemClickListeners.add(onItemClickListener);
     }
 
-    public void addItemClickListner(ArrayList<OnClickListener> onItemClickListner) {
-	if (this.mOnItemClickListner == null)
-	    this.mOnItemClickListner = new ArrayList<GL_View_Base.OnClickListener>();
-	this.mOnItemClickListner.addAll(onItemClickListner);
+    public void addOnClickListeners(ArrayList<OnClickListener> onItemClickListeners) {
+	if (this.mOnItemClickListeners == null)
+	    this.mOnItemClickListeners = new ArrayList<GL_View_Base.OnClickListener>();
+	this.mOnItemClickListeners.addAll(onItemClickListeners);
     }
 
-    public ArrayList<OnClickListener> getItemClickListner() {
-	return this.mOnItemClickListner;
+    public ArrayList<OnClickListener> getOnItemClickListeners() {
+	return this.mOnItemClickListeners;
     }
 
     @Override
@@ -510,7 +510,7 @@ public class Menu extends ButtonDialog {
 
     public void addItems(ArrayList<MenuItemBase> items) {
 	for (MenuItemBase menuItem : items) {
-	    menuItem.setOnClickListener(MenuItemClickListner);
+	    menuItem.setOnClickListener(menuItemClickListener);
 	    mItems.add(menuItem);
 	    mListView.notifyDataSetChanged();
 	}

@@ -44,14 +44,14 @@ public class CB_Button extends Button implements OnClickListener {
 	super(rec, Name);
 	mButtonActions = ButtonActions;
 	this.setOnClickListener(this);
-	this.setOnLongClickListener(longClickListner);
+	this.setOnLongClickListener(longClickListener);
     }
 
     public CB_Button(CB_RectF rec, String Name) {
 	super(rec, Name);
 	mButtonActions = new ArrayList<CB_ActionButton>();
 	this.setOnClickListener(this);
-	this.setOnLongClickListener(longClickListner);
+	this.setOnLongClickListener(longClickListener);
     }
 
     public CB_Button(CB_RectF rec, String Name, ButtonSprites sprites) {
@@ -59,7 +59,7 @@ public class CB_Button extends Button implements OnClickListener {
 	super(rec, Name);
 	mButtonActions = new ArrayList<CB_ActionButton>();
 	this.setOnClickListener(this);
-	this.setOnLongClickListener(longClickListner);
+	this.setOnLongClickListener(longClickListener);
 	this.setButtonSprites(sprites);
     }
 
@@ -105,18 +105,18 @@ public class CB_Button extends Button implements OnClickListener {
 
     }
 
-    private final OnClickListener longClickListner = new OnClickListener() {
+    private final OnClickListener longClickListener = new OnClickListener() {
 
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 	    // GL_MsgBox.Show("Button " + Me.getName() + " recivet a LongClick Event");
-	    // Wenn diesem Button mehrere Actions zugeordnet sind dann wird nach einem Lang-Click ein Men� angezeigt aus dem eine dieser
-	    // Actions gew�hlt werden kann
+	    // Wenn diesem Button mehrere Actions zugeordnet sind dann wird nach einem Lang-Click ein Menü angezeigt aus dem eine dieser
+	    // Actions gewählt werden kann
 
 	    if (mButtonActions.size() > 1) {
 		getLongClickMenu().Show();
 	    } else if (mButtonActions.size() == 1) {
-		// nur eine Action dem Button zugeordnet -> diese Action gleich ausf�hren
+		// nur eine Action dem Button zugeordnet -> diese Action gleich ausführen
 		CB_ActionButton ba = mButtonActions.get(0);
 		CB_Action action = ba.getAction();
 		if (action != null) {
@@ -145,7 +145,7 @@ public class CB_Button extends Button implements OnClickListener {
     private Menu getLongClickMenu() {
 	Menu cm = new Menu("Name");
 
-	cm.addItemClickListner(new OnClickListener() {
+	cm.addOnClickListener(new OnClickListener() {
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 
@@ -194,11 +194,11 @@ public class CB_Button extends Button implements OnClickListener {
 		if (ba.getAction() == aktActionView) {
 		    if (aktActionView.getView() != null && aktActionView.getView().isVisible()) {
 			// Dieses View ist aktuell das Sichtbare
-			// -> ein Click auf den Men�-Button zeigt das Contextmen�
+			// -> ein Click auf den Menü-Button zeigt das Contextmenü
 			// if (aktActionView.ShowContextMenu()) return true;
 
 			if (aktActionView.HasContextMenu()) {
-			    // das View Context Men� mit dem LongKlick Men� zusammen f�hren!
+			    // das View Context Menü mit dem LongKlick Menü zusammen führen!
 
 			    // Menu zusammen stellen!
 			    // zuerst das View Context Menu
@@ -207,7 +207,7 @@ public class CB_Button extends Button implements OnClickListener {
 			    Menu viewContextMenu = aktActionView.getContextMenu();
 			    if (viewContextMenu != null) {
 				compoundMenu.addItems(viewContextMenu.getItems());
-				compoundMenu.addItemClickListner(viewContextMenu.getItemClickListner());
+				compoundMenu.addOnClickListeners(viewContextMenu.getOnItemClickListeners());
 
 				// add divider
 				compoundMenu.addDivider();
@@ -219,7 +219,7 @@ public class CB_Button extends Button implements OnClickListener {
 			    Menu LongClickMenu = getLongClickMenu();
 			    if (LongClickMenu != null) {
 				compoundMenu.addItems(LongClickMenu.getItems());
-				compoundMenu.addItemClickListner(LongClickMenu.getItemClickListner());
+				compoundMenu.addOnClickListeners(LongClickMenu.getOnItemClickListeners());
 
 			    }
 
@@ -249,11 +249,11 @@ public class CB_Button extends Button implements OnClickListener {
 	    }
 	}
 
-	// wenn keine Default Action defeniert ist, dann einen LongClick (Zeige ContextMenu) ausf�hren
+	// wenn keine Default Action defeniert ist, dann einen LongClick (Zeige ContextMenu) ausführen
 	if (!actionExecuted) {
-	    OnClickListener listner = this.getOnLongClickListner();
-	    if (listner != null) {
-		return listner.onClick(v, x, y, pointer, button);
+	    OnClickListener listener = this.getOnLongClickListener();
+	    if (listener != null) {
+		return listener.onClick(v, x, y, pointer, button);
 	    }
 	}
 
@@ -265,7 +265,7 @@ public class CB_Button extends Button implements OnClickListener {
 	onClick(null, 0, 0, 0, 0);
     }
 
-    // ---------- �berschreiben des isPresed, weil dies zur Anzeige der Activen View benutzt wird ---------
+    // ---------- überschreiben des isPresed, weil dies zur Anzeige der Activen View benutzt wird ---------
 
     protected static Sprite menuSprite;
     protected static Sprite menuSpriteFilterd;

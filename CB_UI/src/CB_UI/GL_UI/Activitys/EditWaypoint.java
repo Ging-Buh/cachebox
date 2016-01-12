@@ -12,7 +12,7 @@ import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Controls.CoordinateButton;
-import CB_UI.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
+import CB_UI.GL_UI.Controls.CoordinateButton.ICoordinateChangedListener;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.Enums.WrapType;
@@ -32,7 +32,7 @@ import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.Spinner;
-import CB_UI_Base.GL_UI.Controls.Spinner.selectionChangedListner;
+import CB_UI_Base.GL_UI.Controls.Spinner.ISelectionChangedListener;
 import CB_UI_Base.GL_UI.Controls.SpinnerAdapter;
 import CB_UI_Base.GL_UI.Controls.chkBox;
 import CB_UI_Base.Math.CB_RectF;
@@ -65,20 +65,20 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     private ScrollBox scrollBox;
     float virtualHeight = 0;
 
-    public interface ReturnListner {
+    public interface IReturnListener {
 	public void returnedWP(Waypoint wp);
     }
 
-    private ReturnListner mReturnListner;
+    private IReturnListener mReturnListener;
 
-    public EditWaypoint(Waypoint waypoint, ReturnListner listner, boolean showCoordinateDialog, boolean showWaypointViewAfterFinish) {
+    public EditWaypoint(Waypoint waypoint, IReturnListener listener, boolean showCoordinateDialog, boolean showWaypointViewAfterFinish) {
 	super(ActivityRec(), "EditWpActivity");
 	this.showWaypointListAfterFinish = showWaypointViewAfterFinish;
 
 	scrollBox = new ScrollBox(ActivityRec());
 	this.addChild(scrollBox);
 	this.waypoint = waypoint;
-	this.mReturnListner = listner;
+	this.mReturnListener = listener;
 	this.showCoordinateDialog = showCoordinateDialog;
 
 	// this.setBorders(margin, margin);
@@ -143,7 +143,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 	}
 	bCoord = new CoordinateButton(rec, "CoordButton", coordinate, null);
 
-	bCoord.setCoordinateChangedListner(new CoordinateChangeListner() {
+	bCoord.setCoordinateChangedListener(new ICoordinateChangedListener() {
 
 	    @Override
 	    public void coordinateChanged(Coordinate coord) {
@@ -171,7 +171,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
     private void iniTypeSpinner() {
 	CB_RectF rec = new CB_RectF(leftBorder, tvTyp.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth - cbStartPointWidth, UI_Size_Base.that.getButtonHeight());
-	sType = new Spinner(rec, "CoordButton", getSpinerAdapter(), new selectionChangedListner() {
+	sType = new Spinner(rec, "CoordButton", getSpinerAdapter(), new ISelectionChangedListener() {
 
 	    @Override
 	    public void selectionChanged(int index) {
@@ -379,13 +379,13 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		if (mReturnListner != null) {
+		if (mReturnListener != null) {
 		    waypoint.Pos = bCoord.getCoordinate();
 		    waypoint.setTitle(etTitle.getText());
 		    waypoint.setDescription(etDescription.getText());
 		    waypoint.setClue(etClue.getText());
 		    waypoint.IsStart = cbStartPoint.isChecked();
-		    mReturnListner.returnedWP(waypoint);
+		    mReturnListener.returnedWP(waypoint);
 		}
 
 		// Änderungen auch an die MapView melden
@@ -408,8 +408,8 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		if (mReturnListner != null)
-		    mReturnListner.returnedWP(null);
+		if (mReturnListener != null)
+		    mReturnListener.returnedWP(null);
 		finish();
 		return true;
 	    }
@@ -434,9 +434,9 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 	cbStartPoint.setVisible(visible);
     }
 
-    private ArrayList<EditTextField> allTextFields = new ArrayList<EditTextField>();
+    private final ArrayList<EditTextField> allTextFields = new ArrayList<EditTextField>();
 
-    private OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
+    private final OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 
     public void registerTextField(final EditTextField textField) {
 	textField.setOnscreenKeyboard(new OnscreenKeyboard() {

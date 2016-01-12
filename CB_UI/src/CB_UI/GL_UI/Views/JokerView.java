@@ -1,6 +1,6 @@
 package CB_UI.GL_UI.Views;
 
-import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -27,12 +27,12 @@ public class JokerView extends CB_View_Base {
     @Override
     public void onShow() {
 	// Rufe ANDROID VIEW auf
-	platformConector.showView(ViewConst.JOKER_VIEW, 0, 0, this.getWidth(), this.getHeight());
+	PlatformConnector.showView(ViewConst.JOKER_VIEW, 0, 0, this.getWidth(), this.getHeight());
     }
 
     @Override
     public void onHide() {
-	platformConector.hideView(ViewConst.JOKER_VIEW);
+	PlatformConnector.hideView(ViewConst.JOKER_VIEW);
     }
 
     @Override

@@ -6,7 +6,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Controls.QuickButtonList;
 import CB_UI.GL_UI.Main.Actions.QuickButton.QuickActions;
 import CB_UI.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
-import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -80,7 +80,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
 	for (QuickActions item : tmp) {
 	    // don't show QuickButton Torch if Torch not available
 	    if (item == QuickActions.torch) {
-		if (!platformConector.isTorchAvailable())
+		if (!PlatformConnector.isTorchAvailable())
 		    continue;
 	    }
 
@@ -95,7 +95,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
 	}
 
 	Menu icm = new Menu("Select QuickButtonItem");
-	icm.addItemClickListner(new OnClickListener() {
+	icm.addOnClickListener(new OnClickListener() {
 
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {

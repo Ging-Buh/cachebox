@@ -41,8 +41,8 @@ import CB_RpcCore.ClientCB.RpcClientCB;
 import CB_RpcCore.Functions.RpcAnswer_ExportChangesToServer;
 import CB_RpcCore.Functions.RpcAnswer_GetExportList;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.Config;
+import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Activitys.APIs.ExportCBServerListItem;
 import CB_UI.GL_UI.Activitys.APIs.ImportAPIListItem;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
@@ -53,19 +53,19 @@ import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.CollapseBox;
-import CB_UI_Base.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
+import CB_UI_Base.GL_UI.Controls.CollapseBox.IAnimatedHeightChangedListener;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.Spinner;
-import CB_UI_Base.GL_UI.Controls.Spinner.selectionChangedListner;
+import CB_UI_Base.GL_UI.Controls.Spinner.ISelectionChangedListener;
 import CB_UI_Base.GL_UI.Controls.SpinnerAdapter;
 import CB_UI_Base.GL_UI.Controls.chkBox;
-import CB_UI_Base.GL_UI.Controls.chkBox.OnCheckedChangeListener;
-import CB_UI_Base.GL_UI.Controls.Dialogs.NumerikInputBox;
-import CB_UI_Base.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListner;
+import CB_UI_Base.GL_UI.Controls.chkBox.OnCheckChangedListener;
+import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox;
+import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox.IReturnValueListener;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
@@ -93,7 +93,9 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
     boolean DB_LINE_ACTIVE = true;
     private V_ListView lvCBServer, lvExport;
     private Button bOK, bCancel, refreshCBServerList, refreshExportList;
-    private float innerLeft, innerHeight, CollapseBoxHeight, CollapseBoxLogsMaxHeight;
+    private float innerLeft, innerHeight;
+    private final float CollapseBoxHeight;
+    private float CollapseBoxLogsMaxHeight;
     private Label lblTitle, lblCBServer, lblExportCBServer, lblImage, lblProgressMsg, lblLogs, lblCompact;
     private ProgressBar pgBar;
     private chkBox checkImportFromCBServer, checkBoxExportToCBServer, checkBoxPreloadImages, checkBoxCleanLogs, checkBoxCompactDB;
@@ -101,7 +103,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
     private Spinner spinner;
 
     private Timer mAnimationTimer;
-    private long ANIMATION_TICK = 450;
+    private final long ANIMATION_TICK = 450;
     private int animationValue = 0;
 
     private Date ImportStart;
@@ -114,7 +116,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
     private CB_RectF itemRecCBServer;
     private float itemHeight = -1;
 
-    private ScrollBox scrollBox;
+    private final ScrollBox scrollBox;
     private ImportAnimation dis;
 
     public Import_CBServer() {
@@ -275,7 +277,8 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 	    checkBoxExportToCBServer.setVisible(false);
 	if (!EXPORT_LINE_ACTIVE)
 	    checkBoxExportToCBServer.setHeight(0);
-	lblExportCBServer = new Label(this.name + " lblExportCBServer", checkBoxExportToCBServer.getMaxX() + margin, checkBoxExportToCBServer.getY(), innerWidth - margin * 3 - checkBoxExportToCBServer.getWidth(), checkBoxExportToCBServer.getHeight());
+	lblExportCBServer = new Label(this.name + " lblExportCBServer", checkBoxExportToCBServer.getMaxX() + margin, checkBoxExportToCBServer.getY(), innerWidth - margin * 3 - checkBoxExportToCBServer.getWidth(),
+		checkBoxExportToCBServer.getHeight());
 	lblExportCBServer.setFont(Fonts.getNormal());
 	lblExportCBServer.setText(Translation.Get("ToCBServer"));
 	if (!EXPORT_LINE_ACTIVE)
@@ -426,7 +429,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 	    }
 	};
 
-	spinner = new Spinner(margin, LogCollapseBox.getHeight() - margin - checkBoxCleanLogs.getHeight(), LogCollapseBox.getWidth() - margin - margin, checkBoxCleanLogs.getHeight(), "LogLifeSpinner", adapter, new selectionChangedListner() {
+	spinner = new Spinner(margin, LogCollapseBox.getHeight() - margin - checkBoxCleanLogs.getHeight(), LogCollapseBox.getWidth() - margin - margin, checkBoxCleanLogs.getHeight(), "LogLifeSpinner", adapter, new ISelectionChangedListener() {
 
 	    @Override
 	    public void selectionChanged(int index) {
@@ -452,7 +455,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 	    @Override
 	    public void show(boolean visible) {
 		if (visible) {
-		    NumerikInputBox.Show(Translation.Get("ButKeepLeast"), Translation.Get("DeleteLogs"), Config.LogMinCount.getValue(), new returnValueListner() {
+		    NumericInputBox.Show(Translation.Get("ButKeepLeast"), Translation.Get("DeleteLogs"), Config.LogMinCount.getValue(), new IReturnValueListener() {
 
 			@Override
 			public void returnValue(int value) {
@@ -522,8 +525,8 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
     private void initialForm() {
 	checkBoxPreloadImages.setChecked(Config.CacheImageData.getValue());
-	checkImportFromCBServer.setOnCheckedChangeListener(checkImportFromCBServer_CheckStateChanged);
-	checkBoxExportToCBServer.setOnCheckedChangeListener(checkBoxExportToCBServer_CheckStateChanged);
+	checkImportFromCBServer.setOnCheckChangedListener(checkImportFromCBServer_CheckStateChanged);
+	checkBoxExportToCBServer.setOnCheckChangedListener(checkBoxExportToCBServer_CheckStateChanged);
 
 	checkBoxCompactDB.setChecked(DB_LINE_ACTIVE ? Config.CompactDB.getValue() : false);
 
@@ -539,13 +542,13 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 	    ExportCollapseBox.collapse();
 	}
 
-	CBServerCollapseBox.setAnimationListner(Animationlistner);
-	ExportCollapseBox.setAnimationListner(Animationlistner);
-	LogCollapseBox.setAnimationListner(Animationlistner);
+	CBServerCollapseBox.setAnimationListener(animationListener);
+	ExportCollapseBox.setAnimationListener(animationListener);
+	LogCollapseBox.setAnimationListener(animationListener);
 
 	checkBoxCleanLogs.setChecked(LOG_LINE_ACTIVE ? Config.DeleteLogs.getValue() : false);
 
-	checkBoxCleanLogs.setOnCheckedChangeListener(checkLog_CheckStateChanged);
+	checkBoxCleanLogs.setOnCheckChangedListener(checkLog_CheckStateChanged);
 
 	if (checkBoxCleanLogs.isChecked()) {
 	    LogCollapseBox.setAnimationHeight(CollapseBoxLogsMaxHeight);
@@ -564,14 +567,14 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
     }
 
-    animatetHeightChangedListner Animationlistner = new animatetHeightChangedListner() {
+    IAnimatedHeightChangedListener animationListener = new IAnimatedHeightChangedListener() {
 	@Override
 	public void animatedHeightChanged(float Height) {
 	    Layout();
 	}
     };
 
-    private OnCheckedChangeListener checkLog_CheckStateChanged = new OnCheckedChangeListener() {
+    private final OnCheckChangedListener checkLog_CheckStateChanged = new OnCheckChangedListener() {
 
 	@Override
 	public void onCheckedChanged(chkBox view, boolean isChecked) {
@@ -587,7 +590,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 	}
     };
 
-    private OnCheckedChangeListener checkImportFromCBServer_CheckStateChanged = new OnCheckedChangeListener() {
+    private final OnCheckChangedListener checkImportFromCBServer_CheckStateChanged = new OnCheckChangedListener() {
 	@Override
 	public void onCheckedChanged(chkBox view, boolean isChecked) {
 	    if (checkImportFromCBServer.isChecked()) {
@@ -598,7 +601,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 	}
     };
 
-    private OnCheckedChangeListener checkBoxExportToCBServer_CheckStateChanged = new OnCheckedChangeListener() {
+    private final OnCheckChangedListener checkBoxExportToCBServer_CheckStateChanged = new OnCheckChangedListener() {
 	@Override
 	public void onCheckedChanged(chkBox view, boolean isChecked) {
 	    if (checkBoxExportToCBServer.isChecked()) {
@@ -614,6 +617,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 	public CustomAdapterCBServer() {
 	}
 
+	@Override
 	public int getCount() {
 	    if (cbServerExportList != null)
 		return cbServerExportList.size();
@@ -649,6 +653,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 	public CustomAdapterExportCBServer() {
 	}
 
+	@Override
 	public int getCount() {
 	    if (exportList != null) {
 		return exportList.size();
@@ -830,6 +835,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
     public void ImportThread(final String directoryPath, final File directory) {
 	importThread = new BreakawayImportThread() {
+	    @Override
 	    public void run() {
 		importStarted = true;
 

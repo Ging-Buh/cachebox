@@ -18,6 +18,13 @@ package CB_UI_Base.GL_UI.Controls;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -25,13 +32,6 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Util.HSV_Color;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 
 public class MultiToggleButton extends Button {
 
@@ -58,7 +58,7 @@ public class MultiToggleButton extends Button {
     private OnStateChangeListener mOnStateChangeListener;
 
     /**
-     * wenn True wird der letzte State nur über ein LongClick angewählt
+     * wenn True wird der letzte State nur Ã¼ber ein LongClick angewÃ¤hlt
      */
     private boolean lastStateWithLongClick = false;
 
@@ -69,7 +69,7 @@ public class MultiToggleButton extends Button {
 	if (lblTxt == null)
 	    return;
 
-	// verschiebe Text nach oben, wegen Platz für LED
+	// verschiebe Text nach oben, wegen Platz fÃ¼r LED
 	CB_RectF r = this.ScaleCenter(0.9f);
 	float l = (r.getHeight() / 2);
 	lblTxt.setY(l);
@@ -78,9 +78,9 @@ public class MultiToggleButton extends Button {
 
     @Override
     public boolean click(int x, int y, int pointer, int button) {
-	// wenn Button disabled ein Behandelt zurück schicken,
+	// wenn Button disabled ein Behandelt zurÃ¼ck schicken,
 	// damit keine weiteren Abfragen durchgereicht werden.
-	// Auch wenn dieser Button ein OnClickListner hat.
+	// Auch wenn dieser Button ein OnClickListener hat.
 	if (isDisabled || wasLongClicked) {
 	    return true;
 	}
@@ -112,9 +112,9 @@ public class MultiToggleButton extends Button {
     @Override
     public boolean longClick(int x, int y, int pointer, int button) {
 	wasLongClicked = true;
-	// wenn Button disabled ein Behandelt zurück schicken,
+	// wenn Button disabled ein Behandelt zurÃ¼ck schicken,
 	// damit keine weiteren Abfragen durchgereicht werden.
-	// Auch wenn dieser Button ein OnClickListner hat.
+	// Auch wenn dieser Button ein OnClickListener hat.
 	if (isDisabled) {
 	    return true;
 	}
@@ -235,7 +235,7 @@ public class MultiToggleButton extends Button {
 
     }
 
-    public void setOnStateChangedListner(OnStateChangeListener l) {
+    public void setOnStateChangedListener(OnStateChangeListener l) {
 	setClickable(true);
 	mOnStateChangeListener = l;
     }

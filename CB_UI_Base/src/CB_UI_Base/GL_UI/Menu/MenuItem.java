@@ -27,16 +27,16 @@ import CB_UI_Base.Math.SizeF;
 
 public class MenuItem extends MenuItemBase {
 
+    private Label mLabel;
+    private Image checkImage;
+    private Drawable mIcon;
+
     private String mTitle;
     private boolean mIsEnabled = true;
-    private Drawable mIcon;
-    private Label mLabel;
 
     protected boolean mIsCheckable = false;
     protected boolean mIsChecked = false;
     protected boolean mLeft = false;
-
-    private Image checkImage;
 
     private final int mID;
 
@@ -77,11 +77,9 @@ public class MenuItem extends MenuItemBase {
 	super.Initial();
 	this.removeChilds();
 
-	// float left = (mIsCheckable || mLeft) ? this.height * 0.97f : this.height * 0.2f;
+	mLabel = new Label(this.name + " mLabel", this);
 
-	mLabel = new Label(this.name + " mLabel", this.ScaleCenter(0.97f));
 	boolean hasIcon = (mIcon != null);
-
 	if (hasIcon) {
 	    CB_RectF rec = new CB_RectF(this.getWidth() - this.getHeight(), 0, this.getHeight(), this.getHeight()).ScaleCenter(0.75f);
 	    iconImage = new Image(rec, "MenuItemImage", false);
@@ -135,7 +133,7 @@ public class MenuItem extends MenuItemBase {
 
 	float left = this.getHeight() * 0.2f;
 	float right = hasIcon ? this.getHeight() : 0;
-	float labelWidth = (this.getWidth() - right - left) * 0.97f;
+	float labelWidth = this.getWidth() - right - left;
 	mLabel.setWidth(labelWidth);
 
 	if (hasIcon && iconImage != null) {
@@ -168,8 +166,9 @@ public class MenuItem extends MenuItemBase {
     public MenuItem setTitle(String title) {
 	mTitle = title;
 	if (mLabel == null)
-	    mLabel = new Label(this.name + " mLabel", this.ScaleCenter(0.97f));
-	mLabel.setText(title);
+	    mLabel = new Label(this.name + " mLabel", this, title);
+	else
+	    mLabel.setText(title);
 	return this;
     }
 
@@ -223,7 +222,7 @@ public class MenuItem extends MenuItemBase {
 	mIsEnabled = enabled;
 
 	if (!mIsEnabled) {
-	    // l�sche ClickListner
+	    // lösche ClickListener
 	    setOnClickListener(null);
 	    setOnLongClickListener(null);
 	}

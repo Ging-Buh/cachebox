@@ -49,19 +49,19 @@ import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.CollapseBox;
-import CB_UI_Base.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
+import CB_UI_Base.GL_UI.Controls.CollapseBox.IAnimatedHeightChangedListener;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.Spinner;
-import CB_UI_Base.GL_UI.Controls.Spinner.selectionChangedListner;
+import CB_UI_Base.GL_UI.Controls.Spinner.ISelectionChangedListener;
 import CB_UI_Base.GL_UI.Controls.SpinnerAdapter;
 import CB_UI_Base.GL_UI.Controls.chkBox;
-import CB_UI_Base.GL_UI.Controls.chkBox.OnCheckedChangeListener;
-import CB_UI_Base.GL_UI.Controls.Dialogs.NumerikInputBox;
-import CB_UI_Base.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListner;
+import CB_UI_Base.GL_UI.Controls.chkBox.OnCheckChangedListener;
+import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox;
+import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox.IReturnValueListener;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
@@ -82,7 +82,9 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
     final static org.slf4j.Logger log = LoggerFactory.getLogger(ShowAPIImportList.class);
     private V_ListView lvPQs;
     private Button bOK, bCancel, refreshPqList;
-    private float innerLeft, innerHeight, CollapseBoxHeight, CollapseBoxMaxHeight, CollapseBoxLogsMaxHeight;
+    private float innerLeft, innerHeight, CollapseBoxHeight;
+    private final float CollapseBoxMaxHeight;
+    private float CollapseBoxLogsMaxHeight;
     private Label lblTitle, lblPQ, lblGPX, lblGcVote, lblImage, lblSpoiler, lblMaps, lblProgressMsg, lblLogs, lblCompact;
     private ProgressBar pgBar;
     private chkBox checkImportPQfromGC, checkBoxImportGPX, checkBoxGcVote, checkBoxPreloadImages, checkBoxPreloadSpoiler, checkBoxImportMaps, checkBoxCleanLogs, checkBoxCompactDB;
@@ -90,7 +92,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
     private Spinner spinner;
 
     private Timer mAnimationTimer;
-    private long ANIMATION_TICK = 450;
+    private final long ANIMATION_TICK = 450;
     private int animationValue = 0;
 
     private Date ImportStart;
@@ -105,7 +107,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
     private CB_RectF itemRec;
     private float itemHeight = -1;
 
-    private ScrollBox scrollBox;
+    private final ScrollBox scrollBox;
     private ImportAnimation dis;
 
     public static boolean isCanceld() {
@@ -392,7 +394,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 	    }
 	};
 
-	spinner = new Spinner(margin, LogCollapseBox.getHeight() - margin - checkBoxCleanLogs.getHeight(), LogCollapseBox.getWidth() - margin - margin, checkBoxCleanLogs.getHeight(), "LogLifeSpinner", adapter, new selectionChangedListner() {
+	spinner = new Spinner(margin, LogCollapseBox.getHeight() - margin - checkBoxCleanLogs.getHeight(), LogCollapseBox.getWidth() - margin - margin, checkBoxCleanLogs.getHeight(), "LogLifeSpinner", adapter, new ISelectionChangedListener() {
 
 	    @Override
 	    public void selectionChanged(int index) {
@@ -418,7 +420,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 	    @Override
 	    public void show(boolean visible) {
 		if (visible) {
-		    NumerikInputBox.Show(Translation.Get("ButKeepLeast"), Translation.Get("DeleteLogs"), Config.LogMinCount.getValue(), new returnValueListner() {
+		    NumericInputBox.Show(Translation.Get("ButKeepLeast"), Translation.Get("DeleteLogs"), Config.LogMinCount.getValue(), new IReturnValueListener() {
 
 			@Override
 			public void returnValue(int value) {
@@ -495,7 +497,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 	checkBoxPreloadImages.setChecked(Config.CacheImageData.getValue());
 	checkBoxPreloadSpoiler.setChecked(Config.CacheSpoilerData.getValue());
 	checkBoxImportGPX.setChecked(Config.ImportGpx.getValue());
-	checkImportPQfromGC.setOnCheckedChangeListener(checkImportPQfromGC_CheckStateChanged);
+	checkImportPQfromGC.setOnCheckChangedListener(checkImportPQfromGC_CheckStateChanged);
 	checkBoxGcVote.setChecked(Config.ImportRatings.getValue());
 
 	// First check API-Key with visual Feedback
@@ -548,11 +550,11 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 	    checkBoxImportGPX.setEnabled(false);
 	}
 
-	PQ_ListCollapseBox.setAnimationListner(Animationlistner);
-	LogCollapseBox.setAnimationListner(Animationlistner);
+	PQ_ListCollapseBox.setAnimationListener(animationListener);
+	LogCollapseBox.setAnimationListener(animationListener);
 
 	checkBoxCleanLogs.setChecked(Config.DeleteLogs.getValue());
-	checkBoxCleanLogs.setOnCheckedChangeListener(checkLog_CheckStateChanged);
+	checkBoxCleanLogs.setOnCheckChangedListener(checkLog_CheckStateChanged);
 
 	if (checkBoxCleanLogs.isChecked()) {
 	    LogCollapseBox.setAnimationHeight(CollapseBoxLogsMaxHeight);
@@ -573,14 +575,14 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 
     }
 
-    animatetHeightChangedListner Animationlistner = new animatetHeightChangedListner() {
+    IAnimatedHeightChangedListener animationListener = new IAnimatedHeightChangedListener() {
 	@Override
 	public void animatedHeightChanged(float Height) {
 	    Layout();
 	}
     };
 
-    private OnCheckedChangeListener checkLog_CheckStateChanged = new OnCheckedChangeListener() {
+    private final OnCheckChangedListener checkLog_CheckStateChanged = new OnCheckChangedListener() {
 
 	@Override
 	public void onCheckedChanged(chkBox view, boolean isChecked) {
@@ -596,7 +598,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 	}
     };
 
-    private OnCheckedChangeListener checkImportPQfromGC_CheckStateChanged = new OnCheckedChangeListener() {
+    private final OnCheckChangedListener checkImportPQfromGC_CheckStateChanged = new OnCheckChangedListener() {
 	@Override
 	public void onCheckedChanged(chkBox view, boolean isChecked) {
 	    if (checkImportPQfromGC.isChecked()) {
@@ -615,6 +617,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 	public CustomAdapter() {
 	}
 
+	@Override
 	public int getCount() {
 	    if (PqList != null)
 		return PqList.size();
@@ -733,6 +736,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 
     public void ImportThread(final String directoryPath, final File directory) {
 	thread = new Thread() {
+	    @Override
 	    public void run() {
 		importStarted = true;
 
@@ -778,7 +782,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 			    ArrayList<PQ> downloadPqList = new ArrayList<PocketQuery.PQ>();
 
 			    for (PQ pq : PqList) {
-				if (pq.downloadAvible)
+				if (pq.downloadAvailable)
 				    downloadPqList.add(pq);
 			    }
 
@@ -797,7 +801,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 
 				    PQ pq = iterator.next();
 
-				    if (pq.downloadAvible) {
+				    if (pq.downloadAvailable) {
 					ip.ProgressInkrement("importGC", "Download: " + pq.Name, false);
 					try {
 					    PocketQuery.DownloadSinglePocketQuery(pq, Config.PocketQueryFolder.getValue());

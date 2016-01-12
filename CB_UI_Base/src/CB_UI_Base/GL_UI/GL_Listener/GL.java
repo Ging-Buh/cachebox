@@ -50,7 +50,7 @@ import CB_UI_Base.Energy;
 import CB_UI_Base.Global;
 import CB_UI_Base.Events.KeyCodes;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
-import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
@@ -82,7 +82,7 @@ import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Log.Trace;
 import CB_Utils.Math.Point;
 import CB_Utils.Util.HSV_Color;
-import CB_Utils.Util.iChanged;
+import CB_Utils.Util.IChanged;
 
 public class GL implements ApplicationListener, InputProcessor {
 
@@ -186,8 +186,8 @@ public class GL implements ApplicationListener, InputProcessor {
      */
     protected SortedMap<Integer, TouchDownPointer> touchDownPos = Collections.synchronizedSortedMap((new TreeMap<Integer, TouchDownPointer>()));
 
-    // private Listner
-    protected renderStartet renderStartetListner = null;
+    // private Listener
+    protected RenderStarted renderStartedListener = null;
 
     // Protected Member
     protected MainViewBase child;
@@ -222,7 +222,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	GL_UISizes.initial(width, height);
 
 	Initialize();
-	CB_UI_Base_Settings.nightMode.addChangedEventListner(new iChanged() {
+	CB_UI_Base_Settings.nightMode.addChangedEventListener(new IChanged() {
 	    @Override
 	    public void isChanged() {
 		mDarknesSprite = null;// for new creation with changed color
@@ -365,7 +365,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	    grayFader.setAlwaysOn(CB_UI_Base_Settings.dontUseAmbient.getValue());
 	    grayFader.setTimeToFadeOut(CB_UI_Base_Settings.ambientTime.getValue() * 1000);
 
-	    iChanged ce = new iChanged() {
+	    IChanged ce = new IChanged() {
 
 		@Override
 		public void isChanged() {
@@ -375,8 +375,8 @@ public class GL implements ApplicationListener, InputProcessor {
 		}
 	    };
 
-	    CB_UI_Base_Settings.dontUseAmbient.addChangedEventListner(ce);
-	    CB_UI_Base_Settings.ambientTime.addChangedEventListner(ce);
+	    CB_UI_Base_Settings.dontUseAmbient.addChangedEventListener(ce);
+	    CB_UI_Base_Settings.ambientTime.addChangedEventListener(ce);
 	}
 
 	setGrayscale(ambientMode.get() ? 0f : grayFader.getValue());
@@ -395,9 +395,9 @@ public class GL implements ApplicationListener, InputProcessor {
 
 	lastRenderBegin = System.currentTimeMillis();
 
-	if (renderStartetListner != null) {
-	    renderStartetListner.renderIsStartet();
-	    renderStartetListner = null;
+	if (renderStartedListener != null) {
+	    renderStartedListener.renderIsStartet();
+	    renderStartedListener = null;
 	    removeRenderView(child);
 	}
 
@@ -522,12 +522,12 @@ public class GL implements ApplicationListener, InputProcessor {
 
 	if (ActivityIsShown && mActivity.getCildCount() <= 0) {
 	    ActivityIsShown = false;
-	    platformConector.hideForDialog();
+	    PlatformConnector.hideForDialog();
 	    renderOnce();
 	}
 	if (DialogIsShown && mDialog.getCildCount() <= 0) {
 	    DialogIsShown = false;
-	    platformConector.hideForDialog();
+	    PlatformConnector.hideForDialog();
 	    renderOnce();
 	}
 
@@ -699,14 +699,14 @@ public class GL implements ApplicationListener, InputProcessor {
 
     public void onStart() {
 	// App wird wiederhergestellt oder Gerät eingeschaltet
-	// log.debug("GL_Listner => onStart");
+	// log.debug("GL_Listener => onStart");
 	started.set(true);
 	if (listenerInterface != null)
 	    listenerInterface.RenderDirty();
-	// startTimer(FRAME_RATE_ACTION, "GL_Listner onStart()");
+	// startTimer(FRAME_RATE_ACTION, "GL_Listener onStart()");
 
 	if (ActivityIsShown || DialogIsShown) {
-	    platformConector.showForDialog();
+	    PlatformConnector.showForDialog();
 	} else if (child != null) {
 	    child.onShow();
 	}
@@ -726,7 +726,7 @@ public class GL implements ApplicationListener, InputProcessor {
 
     public void onStop() {
 	// App wird verkleinert oder Gerät ausgeschaltet
-	// log.debug("GL_Listner => onStop");
+	// log.debug("GL_Listener => onStop");
 	stopTimer();
 	if (listenerInterface != null)
 	    listenerInterface.RenderContinous();
@@ -848,7 +848,7 @@ public class GL implements ApplicationListener, InputProcessor {
 		// touchDragged Event an das View, das den onTouchDown bekommen hat
 		boolean behandelt = first.view.touchDragged(x - (int) first.view.thisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.thisWorldRec.getY(), pointer, false);
 		if (TOUCH_DEBUG)
-		    // log.debug("GL_Listner => onTouchDraggedBase : " + behandelt);
+		    // log.debug("GL_Listener => onTouchDraggedBase : " + behandelt);
 		    if (!behandelt && first.view.getParent() != null) {
 			// Wenn der Parent eine ScrollBox hat -> Scroll-Events dahin weiterleiten
 			first.view.getParent().touchDragged(x - (int) first.view.getParent().thisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.getParent().thisWorldRec.getY(), pointer, false);
@@ -890,7 +890,7 @@ public class GL implements ApplicationListener, InputProcessor {
 		    if (first.view.isDoubleClickable() && (System.currentTimeMillis() < lastClickTime + mDoubleClickTime) && (lastClickPoint != null) && (distance(akt, lastClickPoint) < first.view.getClickTolerance())) {
 			boolean handled = first.view.doubleClick(x - (int) first.view.thisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.thisWorldRec.getY(), pointer, button);
 			if (handled)
-			    platformConector.vibrate();
+			    PlatformConnector.vibrate();
 
 			lastClickTime = 0;
 			lastClickPoint = null;
@@ -898,7 +898,7 @@ public class GL implements ApplicationListener, InputProcessor {
 			// normaler Click
 			boolean handled = first.view.click(x - (int) first.view.thisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.thisWorldRec.getY(), pointer, button);
 			if (handled)
-			    platformConector.vibrate();
+			    PlatformConnector.vibrate();
 
 			lastClickTime = System.currentTimeMillis();
 			lastClickPoint = akt;
@@ -909,7 +909,7 @@ public class GL implements ApplicationListener, InputProcessor {
 		y -= touchDraggedCorrect.y;
 	    }
 	} catch (Exception e) {
-	    // log.error("GL_Listner.onTouchUpBase()", "", e);
+	    // log.error("GL_Listener.onTouchUpBase()", "", e);
 	}
 
 	try {
@@ -922,7 +922,7 @@ public class GL implements ApplicationListener, InputProcessor {
 		touchDownPos.remove(pointer);
 	    }
 	} catch (Exception e) {
-	    // log.error("GL_Listner.onTouchUpBase()", "", e);
+	    // log.error("GL_Listener.onTouchUpBase()", "", e);
 	}
 
 	return true;
@@ -989,12 +989,12 @@ public class GL implements ApplicationListener, InputProcessor {
 	timerValue = 0;
     }
 
-    public interface renderStartet {
+    public interface RenderStarted {
 	public void renderIsStartet();
     }
 
-    public void registerRenderStartetListner(renderStartet listner) {
-	renderStartetListner = listner;
+    public void registerRenderStartetListener(RenderStarted listener) {
+	renderStartedListener = listener;
 
 	// wenn kein Render Auftrag kommt, wird auch der waitDialog nicht ausgeblendet!
 	addRenderView(child, FRAME_RATE_FAST_ACTION);
@@ -1036,7 +1036,7 @@ public class GL implements ApplicationListener, InputProcessor {
     }
 
     public void Initialize() {
-	// log.debug("GL_Listner => Initialize");
+	// log.debug("GL_Listener => Initialize");
 
 	if (Gdx.graphics.getGL20() == null)
 	    return;// kann nicht initialisiert werden
@@ -1203,7 +1203,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	    if (minDelay == 0)
 		stopTimer();
 	    else
-		startTimer(minDelay, "GL_Listner calcNewRenderSpeed()");
+		startTimer(minDelay, "GL_Listener calcNewRenderSpeed()");
 	}
 
     }
@@ -1224,14 +1224,14 @@ public class GL implements ApplicationListener, InputProcessor {
 		if (distance(akt, first.point) < first.view.getClickTolerance()) {
 		    if (first.view.isLongClickable()) {
 			boolean handled = first.view.longClick(x - (int) first.view.thisWorldRec.getX(), (int) child.getHeight() - y - (int) first.view.thisWorldRec.getY(), pointer, 0);
-			// log.debug("GL_Listner => onLongClick : " + first.view.getName());
+			// log.debug("GL_Listener => onLongClick : " + first.view.getName());
 			// für diesen TouchDownn darf kein normaler Click mehr ausgeführt werden
 			touchDownPos.remove(pointer);
 			// onTouchUp nach Long-Click direkt auslösen
 			first.view.touchUp(x, (int) child.getHeight() - y, pointer, 0);
-			// log.debug("GL_Listner => onTouchUpBase : " + first.view.getName());
+			// log.debug("GL_Listener => onTouchUpBase : " + first.view.getName());
 			if (handled)
-			    platformConector.vibrate();
+			    PlatformConnector.vibrate();
 		    }
 		}
 	    }
@@ -1493,7 +1493,7 @@ public class GL implements ApplicationListener, InputProcessor {
 
     public void showDialog(final Dialog dialog) {
 	if (dialog instanceof ActivityBase)
-	    throw new IllegalArgumentException("don't show an Activity as Dialog. Use \"GL_listner.showActivity()\"");
+	    throw new IllegalArgumentException("don't show an Activity as Dialog. Use \"GL_listener.showActivity()\"");
 
 	showDialog(dialog, false);
     }
@@ -1503,7 +1503,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	setFocusedEditTextField(null);
 
 	if (dialog instanceof ActivityBase)
-	    throw new IllegalArgumentException("don't show an Activity as Dialog. Use \"GL_listner.showActivity()\"");
+	    throw new IllegalArgumentException("don't show an Activity as Dialog. Use \"GL_listener.showActivity()\"");
 
 	clearRenderViews();
 
@@ -1569,7 +1569,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	} catch (Exception e) {
 
 	}
-	platformConector.showForDialog();
+	PlatformConnector.showForDialog();
 
 	renderOnce();
 
@@ -1578,7 +1578,7 @@ public class GL implements ApplicationListener, InputProcessor {
     public void showActivity(final ActivityBase activity) {
 	setFocusedEditTextField(null);
 	clearRenderViews();
-	platformConector.showForDialog();
+	PlatformConnector.showForDialog();
 
 	if (aktPopUp != null) {
 	    closePopUp(aktPopUp);
@@ -1614,7 +1614,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	    child.onHide();
 	actActivity.onShow();
 
-	platformConector.showForDialog();
+	PlatformConnector.showForDialog();
     }
 
     public void closeActivity() {
@@ -1641,7 +1641,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	    ActivityIsShown = true;
 	    mActivity.addChildDirekt(actActivity);
 	    if (MsgToPlatformConector)
-		platformConector.showForDialog();
+		PlatformConnector.showForDialog();
 	} else {
 	    actActivity.onHide();
 
@@ -1667,7 +1667,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	    ActivityIsShown = false;
 	    darknesAlpha = 0f;
 	    if (MsgToPlatformConector)
-		platformConector.hideForDialog();
+		PlatformConnector.hideForDialog();
 	    if (!Global.isTab)
 		child.onShow();
 	}
@@ -1699,7 +1699,7 @@ public class GL implements ApplicationListener, InputProcessor {
 
     public void closeDialog(CB_View_Base dialog) {
 	if (dialog instanceof ActivityBase)
-	    throw new IllegalArgumentException("don't show an Activity as Dialog. Use \"GL_listner.showActivity()\"");
+	    throw new IllegalArgumentException("don't show an Activity as Dialog. Use \"GL_listener.showActivity()\"");
 	closeDialog(dialog, true);
     }
 
@@ -1722,7 +1722,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	}
 
 	if (MsgToPlatformConector)
-	    platformConector.hideForDialog();
+	    PlatformConnector.hideForDialog();
 	if (actDialog != null) {
 	    //check if KeyboardFocus on this Dialog
 	    if (focusedEditTextField != null && focusedEditTextField.getParent() == actDialog) {
@@ -1759,7 +1759,7 @@ public class GL implements ApplicationListener, InputProcessor {
 
 	clearRenderViews();
 	if (ActivityIsShown) {
-	    platformConector.showForDialog();
+	    PlatformConnector.showForDialog();
 
 	}
 	renderOnce();
@@ -1888,12 +1888,12 @@ public class GL implements ApplicationListener, InputProcessor {
 	if (focusedEditTextField != null) {
 	    if (!focusedEditTextField.dontShowKeyBoard()) {
 		if (!dontOpenKeybord) {
-		    platformConector.callsetKeybordFocus(true);
+		    PlatformConnector.callsetKeybordFocus(true);
 		}
 	    }
 	} else {
 	    if (dontOpenKeybord) {
-		platformConector.callsetKeybordFocus(false);
+		PlatformConnector.callsetKeybordFocus(false);
 	    }
 
 	}
@@ -2012,7 +2012,7 @@ public class GL implements ApplicationListener, InputProcessor {
     }
 
     // ##########################################
-    // Imput Listner
+    // Imput Listener
     // ##########################################
 
     /**

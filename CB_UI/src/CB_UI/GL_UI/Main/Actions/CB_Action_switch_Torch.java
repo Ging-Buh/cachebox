@@ -15,7 +15,7 @@
  */
 package CB_UI.GL_UI.Main.Actions;
 
-import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Main.Actions.CB_ActionCommand;
@@ -34,13 +34,13 @@ public class CB_Action_switch_Torch extends CB_ActionCommand
 	@Override
 	public boolean getEnabled()
 	{
-		return platformConector.isTorchAvailable();
+		return PlatformConnector.isTorchAvailable();
 	}
 
 	@Override
 	public Sprite getIcon()
 	{
-		if (platformConector.isTorchOn())
+		if (PlatformConnector.isTorchOn())
 		{
 			return SpriteCacheBase.Icons.get(IconName.torch_on_67.ordinal());
 		}
@@ -53,6 +53,6 @@ public class CB_Action_switch_Torch extends CB_ActionCommand
 	@Override
 	public void Execute()
 	{
-		platformConector.switchTorch();
+		PlatformConnector.switchTorch();
 	}
 }

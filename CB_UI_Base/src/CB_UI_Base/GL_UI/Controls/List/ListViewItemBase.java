@@ -25,6 +25,10 @@ public abstract class ListViewItemBase extends CB_View_Base implements Comparabl
 	return mIndex;
     }
 
+    public void setIndex(int Index) {
+	mIndex = Index;
+    }
+
     public boolean isSelected = false;
 
     @Override

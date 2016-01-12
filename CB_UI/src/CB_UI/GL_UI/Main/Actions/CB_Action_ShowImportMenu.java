@@ -19,8 +19,8 @@ import CB_UI.GL_UI.Activitys.Import_CBServer;
 import CB_UI.GL_UI.Activitys.SearchOverNameOwnerGcCode;
 import CB_UI.GL_UI.Activitys.SearchOverPosition;
 import CB_UI_Base.Enums.WrapType;
-import CB_UI_Base.Events.platformConector;
-import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
+import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
@@ -28,7 +28,7 @@ import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog.iCancelListner;
+import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog.ICancelListener;
 import CB_UI_Base.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
@@ -87,7 +87,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
     public Menu getContextMenu() {
 	Menu icm = new Menu("CacheListShowImportMenu");
 
-	icm.addItemClickListner(new OnClickListener() {
+	icm.addOnClickListener(new OnClickListener() {
 
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -145,7 +145,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
     }
 
     private void ExportGetFolderStep(final String FileName) {
-	platformConector.getFolder("", Translation.Get("selectExportFolder".hashCode()), Translation.Get("select".hashCode()), new IgetFolderReturnListner() {
+	PlatformConnector.getFolder("", Translation.Get("selectExportFolder".hashCode()), Translation.Get("select".hashCode()), new IgetFolderReturnListener() {
 
 	    @Override
 	    public void getFolderReturn(final String Path) {
@@ -225,10 +225,10 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
 		}
 	    });
 
-	    pD.setCancelListner(new iCancelListner() {
+	    pD.setCancelListener(new ICancelListener() {
 
 		@Override
-		public void isCanceld() {
+		public void isCanceled() {
 		    cancel = true;
 		    if (pD.isCanceld())
 			ser.cancel();
@@ -244,7 +244,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
     protected void showImportMenu_GCV() {
 	Menu icm = new Menu("CacheListShowImportMenu");
 
-	icm.addItemClickListner(new OnClickListener() {
+	icm.addOnClickListener(new OnClickListener() {
 
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -268,7 +268,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
     protected void showImportMenu_GPX() {
 	Menu icm = new Menu("CacheListShowImportMenu");
 
-	icm.addItemClickListner(new OnClickListener() {
+	icm.addOnClickListener(new OnClickListener() {
 
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -291,7 +291,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
     protected void showImportMenu_CBS() {
 	Menu icm = new Menu("CacheListShowImportMenu");
 
-	icm.addItemClickListner(new OnClickListener() {
+	icm.addOnClickListener(new OnClickListener() {
 
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -314,7 +314,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
     private void showImportMenu_GS() {
 	Menu icm = new Menu("CacheListShowImportMenu");
 
-	icm.addItemClickListner(new OnClickListener() {
+	icm.addOnClickListener(new OnClickListener() {
 
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {

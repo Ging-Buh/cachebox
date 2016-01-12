@@ -1,6 +1,6 @@
 package CB_UI.GL_UI.Main.Actions;
 
-import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.ViewID;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
@@ -22,7 +22,7 @@ public class CB_Action_ShowActivity extends CB_Action_ShowView
 	@Override
 	public void Execute()
 	{
-		platformConector.showView(viewConst, 0, 0, 0, 0);
+		PlatformConnector.showView(viewConst, 0, 0, 0, 0);
 	}
 
 	@Override

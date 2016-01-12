@@ -34,11 +34,11 @@ import CB_Locator.Coordinate;
 import CB_Locator.Map.Track;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
-import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
@@ -177,7 +177,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 	    log.info("GlobalCore.APIisOnline() - no GC - API AccessToken");
 	    return false;
 	}
-	if (platformConector.isOnline()) {
+	if (PlatformConnector.isOnline()) {
 	    return true;
 	}
 	return false;
@@ -200,7 +200,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 	    // log.info("GlobalCore.JokerisOnline() - no Joker Password");
 	    return false;
 	}
-	if (platformConector.isOnline()) {
+	if (PlatformConnector.isOnline()) {
 	    return true;
 	}
 	return false;
@@ -253,7 +253,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     public static boolean RunFromSplash = false;
 
     public static CancelWaitDialog ImportSpoiler() {
-	wd = CancelWaitDialog.ShowWait(Translation.Get("chkApiState"), DownloadAnimation.GetINSTANCE(), new IcancelListner() {
+	wd = CancelWaitDialog.ShowWait(Translation.Get("chkApiState"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
 	    @Override
 	    public void isCanceld() {
@@ -313,7 +313,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 	}
 
 	if (!GroundspeakAPI.API_isCheked()) {
-	    dia = CancelWaitDialog.ShowWait("chk API Key", DownloadAnimation.GetINSTANCE(), new IcancelListner() {
+	    dia = CancelWaitDialog.ShowWait("chk API Key", DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
 		@Override
 		public void isCanceld() {

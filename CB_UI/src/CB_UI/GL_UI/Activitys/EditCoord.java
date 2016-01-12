@@ -32,7 +32,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
     private CopyPastePopUp popUp;
     private Coordinate cancelCoord;
     private Coordinate coord;
-    private ReturnListner mReturnListner;
+    private ReturnListener mReturnListener;
     private Clipboard clipboard;
 
     // Allgemein
@@ -70,15 +70,15 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
     private Button[] btnUTMZone;
     Button Leertaste; // additional to numeric input (for "deleting" input)
 
-    public interface ReturnListner {
+    public interface ReturnListener {
 	public void returnCoord(Coordinate coord);
     }
 
-    public EditCoord(CB_RectF rec, String Name, Coordinate mActCoord, ReturnListner returnListner) {
+    public EditCoord(CB_RectF rec, String Name, Coordinate mActCoord, ReturnListener returnListener) {
 	super(rec, Name);
 	coord = mActCoord;
 	cancelCoord = coord.copy();
-	mReturnListner = returnListner;
+	mReturnListener = returnListener;
 
 	clipboard = GlobalCore.getDefaultClipboard();
 
@@ -131,7 +131,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 		    return true;
 		}
 
-		if (mReturnListner != null) {
+		if (mReturnListener != null) {
 		    GL.that.RunOnGL(new IRunOnGL() {
 			@Override
 			public void run() {
@@ -139,7 +139,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 			}
 		    });
 
-		    mReturnListner.returnCoord(coord);
+		    mReturnListener.returnCoord(coord);
 		} else {
 		    GL.that.RunOnGL(new IRunOnGL() {
 			@Override
@@ -154,20 +154,20 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 	btnCancel.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		if (mReturnListner != null) {
+		if (mReturnListener != null) {
 		    GL.that.closeActivity();
-		    mReturnListner.returnCoord(cancelCoord);
+		    mReturnListener.returnCoord(cancelCoord);
 		} else
 		    GL.that.closeActivity();
 		return true;
 	    }
 	});
 
-	this.setOnLongClickListener(LongClickListner);
+	this.setOnLongClickListener(mLongClickListener);
 
     }
 
-    OnClickListener LongClickListner = new OnClickListener() {
+    OnClickListener mLongClickListener = new OnClickListener() {
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 	    showPopUp(x, y);
@@ -208,7 +208,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 
     @Override
     protected void Initial() {
-	this.pnlNumPad.setOnLongClickListener(LongClickListner);
+	this.pnlNumPad.setOnLongClickListener(mLongClickListener);
 
 	bDec.setOnClickListener(new OnClickListener() {
 	    @Override
@@ -248,7 +248,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
     }
 
     private void createD(Box panel) {
-	panel.setOnLongClickListener(LongClickListner);
+	panel.setOnLongClickListener(mLongClickListener);
 
 	this.btnDLat = new Button[9]; // N_48[.]46270[°]
 	this.btnDLon = new Button[9]; // E009[.]28468[°]
@@ -279,7 +279,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
     }
 
     private void createDM(Box panel) {
-	panel.setOnLongClickListener(LongClickListner);
+	panel.setOnLongClickListener(mLongClickListener);
 
 	this.btnDMLat = new Button[9]; // N_48[°]29[.]369
 	this.btnDMLon = new Button[9]; // E__9[°]15[.]807
@@ -315,7 +315,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
     }
 
     private void createDMS(Box panel) {
-	panel.setOnLongClickListener(LongClickListner);
+	panel.setOnLongClickListener(mLongClickListener);
 
 	this.btnDMSLat = new Button[10]; // N_48[°]28[']56[.]16["]
 	this.btnDMSLon = new Button[10]; // E__9[°]19[']40[.]14["]
@@ -360,7 +360,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
     }
 
     private void createUTM(Box panel) {
-	panel.setOnLongClickListener(LongClickListner);
+	panel.setOnLongClickListener(mLongClickListener);
 
 	this.btnUTMLat = new Button[8]; // N < 10,000,000
 	this.btnUTMLon = new Button[8]; // E > 160,000 and < 834,000 (2 unsichtbar)

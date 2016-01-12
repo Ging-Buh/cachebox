@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 import org.slf4j.LoggerFactory;
 
-import CB_Utils.Util.iChanged;
+import CB_Utils.Util.IChanged;
 
 /**
  * Contains the static queries of the state of CacheBox, for the decision whether a job being processed has to do. Thus delivers
@@ -87,27 +87,27 @@ public class Energy {
 
     }
 
-    protected static ArrayList<iChanged> ChangedEventList = new ArrayList<iChanged>();
+    protected static ArrayList<IChanged> ChangedEventList = new ArrayList<IChanged>();
 
     protected static void fireChangedEvent() {
 	synchronized (ChangedEventList) {
-	    for (iChanged event : ChangedEventList) {
+	    for (IChanged event : ChangedEventList) {
 		event.isChanged();
 	    }
 	}
 
     }
 
-    public static void addChangedEventListner(iChanged listner) {
+    public static void addChangedEventListener(IChanged listener) {
 	synchronized (ChangedEventList) {
-	    if (!ChangedEventList.contains(listner))
-		ChangedEventList.add(listner);
+	    if (!ChangedEventList.contains(listener))
+		ChangedEventList.add(listener);
 	}
     }
 
-    public static void removeChangedEventListner(iChanged listner) {
+    public static void removeChangedEventListener(IChanged listener) {
 	synchronized (ChangedEventList) {
-	    ChangedEventList.remove(listner);
+	    ChangedEventList.remove(listener);
 	}
     }
 

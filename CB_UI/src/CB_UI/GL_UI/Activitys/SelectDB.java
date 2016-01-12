@@ -75,7 +75,7 @@ public class SelectDB extends ActivityBase {
     private File AktFile = null;
     private String[] countList;
     private boolean MustSelect = false;
-    private ReturnListner returnListner;
+    private IReturnListener returnListener;
 
     public SelectDB(CB_RectF rec, String Name, boolean mustSelect) {
 	super(rec, Name);
@@ -136,7 +136,7 @@ public class SelectDB extends ActivityBase {
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		stopTimer();
-		NewDB_InputBox.Show(WrapType.SINGLELINE, Translation.Get("NewDB"), Translation.Get("InsNewDBName"), "NewDB", DialogListnerNewDB);
+		NewDB_InputBox.Show(WrapType.SINGLELINE, Translation.Get("NewDB"), Translation.Get("InsNewDBName"), "NewDB", mDialogListenerNewDB);
 		return true;
 	    }
 	});
@@ -339,7 +339,7 @@ public class SelectDB extends ActivityBase {
 	}
     }
 
-    OnClickListener onItemClickListner = new OnClickListener() {
+    OnClickListener onItemClickListener = new OnClickListener() {
 
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -364,7 +364,7 @@ public class SelectDB extends ActivityBase {
     protected void SkinIsChanged() {
     }
 
-    OnMsgBoxClickListener DialogListnerNewDB = new OnMsgBoxClickListener() {
+    OnMsgBoxClickListener mDialogListenerNewDB = new OnMsgBoxClickListener() {
 
 	@Override
 	public boolean onClick(int which, Object data) {
@@ -456,8 +456,8 @@ public class SelectDB extends ActivityBase {
 	ManagerBase.Manager.initialMapPacks();
 
 	finish();
-	if (returnListner != null)
-	    returnListner.back();
+	if (returnListener != null)
+	    returnListener.back();
 
     }
 
@@ -511,7 +511,7 @@ public class SelectDB extends ActivityBase {
 	@Override
 	public ListViewItemBase getView(int position) {
 	    SelectDBItem v = new SelectDBItem(recItem, position, files.get(position), countList[position]);
-	    v.setOnClickListener(onItemClickListner);
+	    v.setOnClickListener(onItemClickListener);
 	    return v;
 	}
 
@@ -528,11 +528,11 @@ public class SelectDB extends ActivityBase {
 	// bAutostart.setText(Translation.Get("confirm"));
     }
 
-    public void setReturnListner(ReturnListner listner) {
-	returnListner = listner;
+    public void setReturnListener(IReturnListener listener) {
+	returnListener = listener;
     }
 
-    public interface ReturnListner {
+    public interface IReturnListener {
 	public void back();
     }
 
@@ -549,7 +549,7 @@ public class SelectDB extends ActivityBase {
 
 	Menu cm = new Menu("MiscContextMenu");
 
-	cm.addItemClickListner(new OnClickListener() {
+	cm.addOnClickListener(new OnClickListener() {
 
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -628,7 +628,7 @@ public class SelectDB extends ActivityBase {
 	AktFile = null;
 	countList = null;
 
-	returnListner = null;
+	returnListener = null;
 	super.dispose();
     }
 

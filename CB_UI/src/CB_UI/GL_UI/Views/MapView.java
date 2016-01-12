@@ -63,7 +63,7 @@ import CB_UI.SelectedCacheEventList;
 import CB_UI.WaypointListChangedEventList;
 import CB_UI.GL_UI.SpriteCache.IconName;
 import CB_UI.GL_UI.Activitys.EditWaypoint;
-import CB_UI.GL_UI.Activitys.EditWaypoint.ReturnListner;
+import CB_UI.GL_UI.Activitys.EditWaypoint.IReturnListener;
 import CB_UI.GL_UI.Controls.InfoBubble;
 import CB_UI.GL_UI.Controls.LiveButton;
 import CB_UI.GL_UI.Controls.MapInfoPanel;
@@ -79,7 +79,7 @@ import CB_UI_Base.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_UI_Base.GL_UI.Controls.ZoomButtons;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.utils.KineticZoom;
 import CB_UI_Base.Math.CB_RectF;
@@ -96,7 +96,7 @@ import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.HSV_Color;
-import CB_Utils.Util.iChanged;
+import CB_Utils.Util.IChanged;
 
 /**
  * @author ging-buh
@@ -159,8 +159,8 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 	this.Mode = Mode;
 
-	Config.MapsforgeDayTheme.addChangedEventListner(themeChangedEventHandler);
-	Config.MapsforgeNightTheme.addChangedEventListner(themeChangedEventHandler);
+	Config.MapsforgeDayTheme.addChangedEventListener(themeChangedEventHandler);
+	Config.MapsforgeNightTheme.addChangedEventListener(themeChangedEventHandler);
 
 	registerSkinChangedEvent();
 	setBackground(SpriteCacheBase.ListBack);
@@ -236,7 +236,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	    zoomBtn.setMinimumFadeValue(0.25f);
 	}
 
-	this.setOnClickListener(onClickListner);
+	this.setOnClickListener(onClickListener);
 
 	float InfoHeight = 0;
 	if (Mode == MapMode.Normal) {
@@ -283,7 +283,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 	liveButton = new LiveButton();
 	liveButton.setState(Config.LiveMapEnabeld.getDefaultValue());
-	Config.DisableLiveMap.addChangedEventListner(new iChanged() {
+	Config.DisableLiveMap.addChangedEventListener(new IChanged() {
 	    @Override
 	    public void isChanged() {
 		requestLayout();
@@ -302,7 +302,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	MapState last = MapState.values()[Config.LastMapToggleBtnState.getValue()];
 	togBtn.setState(last.ordinal());
 
-	togBtn.setOnStateChangedListner(new OnStateChangeListener() {
+	togBtn.setOnStateChangedListener(new OnStateChangeListener() {
 
 	    @Override
 	    public void onStateChange(GL_View_Base v, int State) {
@@ -358,7 +358,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		if (infoBubble.SaveButtonCliced(x, y)) {
-		    wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListner() {
+		    wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
 			@Override
 			public void isCanceld() {
@@ -444,7 +444,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 	// Initial SettingsChanged Events
 	MapView.that.SetNightMode(Config.nightMode.getValue());
-	Config.nightMode.addChangedEventListner(new iChanged() {
+	Config.nightMode.addChangedEventListener(new IChanged() {
 	    @Override
 	    public void isChanged() {
 		MapView.this.SetNightMode(Config.nightMode.getValue());
@@ -452,7 +452,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	});
 
 	MapView.that.SetNorthOriented(Config.MapNorthOriented.getValue());
-	Config.MapNorthOriented.addChangedEventListner(new iChanged() {
+	Config.MapNorthOriented.addChangedEventListener(new IChanged() {
 
 	    @Override
 	    public void isChanged() {
@@ -463,6 +463,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
     }
 
+    @Override
     protected void renderSyncronOverlay(Batch batch) {
 	batch.setProjectionMatrix(myParentInfo.Matrix());
 
@@ -480,6 +481,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	RenderTargetArrow(batch);
     }
 
+    @Override
     protected void renderNonSyncronOverlay(Batch batch) {
 	renderUI(batch);
     }
@@ -848,7 +850,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	    return;
 	Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
 
-	EditWaypoint EdWp = new EditWaypoint(newWP, new ReturnListner() {
+	EditWaypoint EdWp = new EditWaypoint(newWP, new IReturnListener() {
 
 	    @Override
 	    public void returnedWP(Waypoint waypoint) {
@@ -895,6 +897,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	super.onHide();
     }
 
+    @Override
     protected void loadTiles() {
 	MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, false);
 	data.hideMyFinds = this.hideMyFinds;
@@ -913,6 +916,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	}
     }
 
+    @Override
     public void setCenter(CoordinateGPS value) {
 	if (Mode == MapMode.Normal)
 	    info.setCoord(value);
@@ -950,11 +954,13 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	}
     }
 
+    @Override
     public void InitializeMap() {
 	zoomCross = Config.ZoomCross.getValue();
 	super.InitializeMap();
     }
 
+    @Override
     protected void setZoomScale(int zoom) {
 	// log.debug("set zoom");
 	if (Mode == MapMode.Normal)
@@ -963,6 +969,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	    mapScale.zoomChanged();
     }
 
+    @Override
     protected void calcCenter() {
 	super.calcCenter();
 	if (Mode == MapMode.Normal) {
@@ -970,17 +977,18 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	}
     }
 
+    @Override
     public void requestLayout() {
 	// log.debug("MapView clacLayout()");
 	float margin = GL_UISizes.margin;
 
 	float infoHeight = 0;
 	if (Mode == MapMode.Normal) {
-	    info.setPos(new Vector2(margin, (float) (this.mapIntHeight - margin - info.getHeight())));
+	    info.setPos(new Vector2(margin, this.mapIntHeight - margin - info.getHeight()));
 	    info.setVisible(showCompass);
 	    infoHeight = info.getHeight();
 	}
-	togBtn.setPos(new Vector2((float) (this.mapIntWidth - margin - togBtn.getWidth()), this.mapIntHeight - margin - togBtn.getHeight()));
+	togBtn.setPos(new Vector2(this.mapIntWidth - margin - togBtn.getWidth(), this.mapIntHeight - margin - togBtn.getHeight()));
 
 	if (Config.DisableLiveMap.getValue()) {
 	    liveButton.setInvisible();
@@ -996,7 +1004,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	GL.that.renderOnce();
     }
 
-    protected OnClickListener onClickListner = new OnClickListener() {
+    protected OnClickListener onClickListener = new OnClickListener() {
 
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -1254,7 +1262,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		info.setVisible(showCompass);
 
 	    if (InitialFlags == INITIAL_ALL) {
-		iconFactor = (float) Config.MapViewDPIFaktor.getValue();
+		iconFactor = Config.MapViewDPIFaktor.getValue();
 
 		int setAktZoom = Mode == MapMode.Compass ? Config.lastZoomLevel.getValue() : Config.lastZoomLevel.getValue();
 		int setMaxZoom = Mode == MapMode.Compass ? Config.CompassMapMaxZommLevel.getValue() : Config.OsmMaxLevel.getValue();

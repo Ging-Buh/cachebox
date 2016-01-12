@@ -6,7 +6,7 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
-import CB_UI_Base.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
+import CB_UI_Base.GL_UI.Controls.CollapseBox.IAnimatedHeightChangedListener;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
@@ -142,7 +142,7 @@ public class SyncActivity extends ActivityBase implements ProgressChangedEvent {
 
     }
 
-    animatetHeightChangedListner Animationlistner = new animatetHeightChangedListner() {
+    IAnimatedHeightChangedListener mAnimationListener = new IAnimatedHeightChangedListener() {
 	@Override
 	public void animatedHeightChanged(float Height) {
 	    Layout();

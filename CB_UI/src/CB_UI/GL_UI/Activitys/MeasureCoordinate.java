@@ -34,7 +34,7 @@ import CB_Locator.Events.PositionChangedEventList;
 import CB_Locator.Map.Descriptor;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Controls.SatBarChart;
-import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
@@ -64,15 +64,15 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
     // Erdradius / anzahl Kacheln = Meter pro Kachel
     private final double metersPerTile = 6378137.0 / Math.pow(2, projectionZoom);
 
-    private ReturnListner mReturnListner;
+    private ICoordReturnListener mCoordReturnListener;
 
-    public interface ReturnListner {
+    public interface ICoordReturnListener {
 	public void returnCoord(Coordinate coord);
     }
 
-    public MeasureCoordinate(CB_RectF rec, String Name, ReturnListner listner) {
+    public MeasureCoordinate(CB_RectF rec, String Name, ICoordReturnListener listener) {
 	super(rec, Name);
-	mReturnListner = listner;
+	mCoordReturnListener = listener;
 
 	MeasuredCoord.Referenz = Locator.getCoordinate(ProviderType.GPS);
 
@@ -104,12 +104,12 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		if (mReturnListner != null) {
+		if (mCoordReturnListener != null) {
 		    synchronized (mMeasureList) {
 			GL.that.RunOnGL(new IRunOnGL() {
 			    @Override
 			    public void run() {
-				mReturnListner.returnCoord(mMeasureList.getAccuWeightedAverageCoord());
+				mCoordReturnListener.returnCoord(mMeasureList.getAccuWeightedAverageCoord());
 			    }
 			});
 
@@ -124,8 +124,8 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		if (mReturnListner != null)
-		    mReturnListner.returnCoord(null);
+		if (mCoordReturnListener != null)
+		    mCoordReturnListener.returnCoord(null);
 		finish();
 		return true;
 	    }
@@ -363,7 +363,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	if (chart != null) {
 	    chart.onShow();
 	    chart.setDrawWithAlpha(false);
-	    platformConector.switchToGpsMeasure();
+	    PlatformConnector.switchToGpsMeasure();
 	}
 
     }
@@ -374,7 +374,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	PositionChangedEventList.Remove(this);
 	if (chart != null)
 	    chart.onHide();
-	platformConector.switchToGpsDefault();
+	PlatformConnector.switchToGpsDefault();
     }
 
     @Override

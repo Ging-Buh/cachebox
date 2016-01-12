@@ -4,8 +4,8 @@ import java.io.File;
 
 
 
-import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
-import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
+import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
+import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -20,7 +20,7 @@ public class Android_FileExplorer_ES extends CB_FileExplorer_Base
 	}
 
 	@Override
-	public boolean getFile(String initialPath, String extension, String TitleText, String ButtonText, IgetFileReturnListner returnListner)
+	public boolean getFile(String initialPath, String extension, String TitleText, String ButtonText, IgetFileReturnListener returnListener)
 	{
 		Intent intent = new Intent("com.estrongs.action.PICK_FILE");
 
@@ -45,7 +45,7 @@ public class Android_FileExplorer_ES extends CB_FileExplorer_Base
 	}
 
 	@Override
-	public boolean getfolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListner returnListner)
+	public boolean getfolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener)
 	{
 		Intent intent = new Intent("com.estrongs.action.PICK_DIRECTORY");
 

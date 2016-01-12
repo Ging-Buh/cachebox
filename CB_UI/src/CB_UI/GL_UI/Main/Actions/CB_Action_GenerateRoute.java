@@ -36,14 +36,14 @@ import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.RouteOverlay;
 import CB_UI.GL_UI.Controls.Dialogs.RouteDialog;
-import CB_UI.GL_UI.Controls.Dialogs.RouteDialog.returnListner;
+import CB_UI.GL_UI.Controls.Dialogs.RouteDialog.IReturnListener;
 import CB_UI.GL_UI.Views.TrackListView;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
@@ -107,7 +107,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand {
 	    return;
 	}
 
-	routeDia = new RouteDialog(new returnListner() {
+	routeDia = new RouteDialog(new IReturnListener() {
 
 	    @Override
 	    public void returnFromRoute_Dialog(final boolean canceld, final boolean Motoway, final boolean CycleWay, final boolean FootWay, boolean UseTmc) {
@@ -118,7 +118,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand {
 
 			@Override
 			public void run() {
-			    wd = CancelWaitDialog.ShowWait(Translation.Get("generateRoute"), DownloadAnimation.GetINSTANCE(), new IcancelListner() {
+			    wd = CancelWaitDialog.ShowWait(Translation.Get("generateRoute"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
 				@Override
 				public void isCanceld() {

@@ -20,7 +20,7 @@ public class LinearCollapseBox extends CollapseBox
 		linearLayout = new Linearlayout(rec.getWidth(), "LinearLayout-" + Name);
 		this.childs.add(linearLayout);
 
-		linearLayout.setLayoutChangedListner(new LayoutChanged()
+		linearLayout.setLayoutChangedListener(new LayoutChanged()
 		{
 
 			@Override

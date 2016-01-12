@@ -11,7 +11,7 @@ import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Activitys.ColorPicker;
-import CB_UI_Base.GL_UI.Activitys.ColorPicker.IReturnListner;
+import CB_UI_Base.GL_UI.Activitys.ColorPicker.IReturnListener;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -37,16 +37,16 @@ public class TrackListViewItem extends ListViewItemBackground {
     private boolean Clicked = false;
     public Vector2 lastItemTouchPos;
 
-    private RouteChangedListner mRouteChangedListner;
+    private final IRouteChangedListener mRouteChangedListener;
 
-    public interface RouteChangedListner {
-	public void RouteChanged(Track route);
+    public interface IRouteChangedListener {
+	public void routeChanged(Track route);
     }
 
-    public TrackListViewItem(CB_RectF rec, int Index, Track route, RouteChangedListner listner) {
+    public TrackListViewItem(CB_RectF rec, int Index, Track route, IRouteChangedListener listener) {
 	super(rec, Index, route.Name);
 	mRoute = route;
-	mRouteChangedListner = listner;
+	mRouteChangedListener = listener;
     }
 
     @Override
@@ -181,8 +181,8 @@ public class TrackListViewItem extends ListViewItemBackground {
 	    @Override
 	    public void run() {
 		mRoute.ShowRoute = !mRoute.ShowRoute;
-		if (mRouteChangedListner != null)
-		    mRouteChangedListner.RouteChanged(mRoute);
+		if (mRouteChangedListener != null)
+		    mRouteChangedListener.routeChanged(mRoute);
 	    }
 	});
 	GL.that.renderOnce();
@@ -195,7 +195,7 @@ public class TrackListViewItem extends ListViewItemBackground {
 
 	    @Override
 	    public void run() {
-		ColorPicker clrPick = new ColorPicker(ActivityBase.ActivityRec(), mRoute.getColor(), new IReturnListner() {
+		ColorPicker clrPick = new ColorPicker(ActivityBase.ActivityRec(), mRoute.getColor(), new IReturnListener() {
 
 		    @Override
 		    public void returnColor(Color color) {

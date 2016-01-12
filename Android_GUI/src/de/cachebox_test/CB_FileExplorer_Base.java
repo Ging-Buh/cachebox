@@ -1,14 +1,12 @@
 package de.cachebox_test;
 
-import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
-import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
+import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
+import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
 
-public abstract class CB_FileExplorer_Base
-{
+public abstract class CB_FileExplorer_Base {
 
-	public abstract boolean getFile(String initialPath, String extension, String TitleText, String ButtonText,
-			IgetFileReturnListner returnListner);
+    public abstract boolean getFile(String initialPath, String extension, String TitleText, String ButtonText, IgetFileReturnListener returnListener);
 
-	public abstract boolean getfolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListner returnListner);
+    public abstract boolean getfolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener);
 
 }

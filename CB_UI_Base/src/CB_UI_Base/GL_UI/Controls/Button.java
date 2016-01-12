@@ -210,9 +210,9 @@ public class Button extends CB_View_Base {
 
     @Override
     public boolean click(int x, int y, int pointer, int button) {
-	// wenn Button disabled ein Behandelt zur�ck schicken,
+	// wenn Button disabled ein Behandelt zurück schicken,
 	// damit keine weiteren Abfragen durchgereicht werden.
-	// Auch wenn dieser Button ein OnClickListner hat.
+	// Auch wenn dieser Button ein OnClickListener hat.
 	if (isDisabled) {
 	    return true;
 	}

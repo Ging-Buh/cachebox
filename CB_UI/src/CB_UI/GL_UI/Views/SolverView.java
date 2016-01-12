@@ -359,11 +359,11 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 		message += s;
 	    }
 
-	    GL_MsgBox.Show(Translation.Get("insertVars") + "\n" + message, Translation.Get("missingVars"), MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk, DialogListner);
+	    GL_MsgBox.Show(Translation.Get("insertVars") + "\n" + message, Translation.Get("missingVars"), MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk, mDialogListener);
 	}
     }
 
-    private final OnMsgBoxClickListener DialogListner = new OnMsgBoxClickListener() {
+    private final OnMsgBoxClickListener mDialogListener = new OnMsgBoxClickListener() {
 	@Override
 	public boolean onClick(int which, Object data) {
 	    {

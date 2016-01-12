@@ -64,15 +64,15 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
     // Controls for OperatorView
     // Controls for WaypointView
 
-    public interface SolverBackStringListner {
+    public interface ISolverBackStringListener {
 	public void BackString(String backString);
     }
 
     private EditTextField mVariableField;
-    private String mSolverString;
+    private final String mSolverString;
 
-    private SolverBackStringListner mBackStringListner;
-    private Solver solver;
+    private ISolverBackStringListener mBackStringListener;
+    private final Solver solver;
 
     public SolverDialog(CB_RectF rec, String name, Solver solver, String SolverString) {
 	super(rec, name, "Solver", Translation.Get("solver_formula"), MessageBoxButtons.OKCancel, MessageBoxIcon.None, null);
@@ -140,36 +140,36 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 	btnTxt.setText(caption);
 	btnTxt.addState(caption, new HSV_Color(Color.GRAY));
 	btnTxt.addState(caption, new HSV_Color(Color.GREEN));
-	btnTxt.setOnStateChangedListner(this);
+	btnTxt.setOnStateChangedListener(this);
 
 	caption = Translation.Get("f(x)");
 	btnFx.setText(caption);
 	btnFx.addState(caption, new HSV_Color(Color.GRAY));
 	btnFx.addState(caption, new HSV_Color(Color.GREEN));
-	btnFx.setOnStateChangedListner(this);
+	btnFx.setOnStateChangedListener(this);
 
 	caption = Translation.Get("@");
 	btnVar.setText(caption);
 	btnVar.addState(caption, new HSV_Color(Color.GRAY));
 	btnVar.addState(caption, new HSV_Color(Color.GREEN));
-	btnVar.setOnStateChangedListner(this);
+	btnVar.setOnStateChangedListener(this);
 
 	caption = Translation.Get("+-*/");
 	btnOp.setText(caption);
 	btnOp.addState(caption, new HSV_Color(Color.GRAY));
 	btnOp.addState(caption, new HSV_Color(Color.GREEN));
-	btnOp.setOnStateChangedListner(this);
+	btnOp.setOnStateChangedListener(this);
 
 	caption = Translation.Get("$GC");
 	btnWp.setText(caption);
 	btnWp.addState(caption, new HSV_Color(Color.GRAY));
 	btnWp.addState(caption, new HSV_Color(Color.GREEN));
-	btnWp.setOnStateChangedListner(this);
+	btnWp.setOnStateChangedListener(this);
 
 	button3.setText(Translation.Get("close"));
 	button1.setText(Translation.Get("ok"));
 
-	button1.setOnClickListener(OnOkClickListner);
+	button1.setOnClickListener(mOnOkClickListener);
 
 	// y -= UiSizes.getButtonHeight();
 	float restPlatz = this.getHeight() - y;
@@ -194,7 +194,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 	showPage(pages.Text);
     }
 
-    private OnClickListener OnOkClickListner = new OnClickListener() {
+    private final OnClickListener mOnOkClickListener = new OnClickListener() {
 
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -204,15 +204,15 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 	    if (result.length() > 0)
 		result += "=";
 	    result += sForm;
-	    if (mBackStringListner != null)
-		mBackStringListner.BackString(result);
+	    if (mBackStringListener != null)
+		mBackStringListener.BackString(result);
 	    GL.that.closeDialog(SolverDialog.this);
 	    return true;
 	}
     };
 
-    public void show(SolverBackStringListner listner) {
-	mBackStringListner = listner;
+    public void show(ISolverBackStringListener listener) {
+	mBackStringListener = listener;
 	initialLayout();
 	GL.that.showDialog(this);
 

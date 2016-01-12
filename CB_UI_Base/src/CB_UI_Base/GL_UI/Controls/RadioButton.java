@@ -64,8 +64,8 @@ public class RadioButton extends chkBox {
 	if (!isDisabled) {
 	    if (!isChk || group == null) {
 		isChk = !isChk;
-		if (changeListner != null)
-		    changeListner.onCheckedChanged(this, isChk);
+		if (changeListener != null)
+		    changeListener.onCheckedChanged(this, isChk);
 		if (group != null)
 		    group.aktivate(this);
 

@@ -54,7 +54,7 @@ public class ButtonScrollDialog extends Dialog {
     protected Label label;
     protected ScrollBox scrollBox;
 
-    protected OnMsgBoxClickListener mMsgBoxClickListner;
+    protected OnMsgBoxClickListener mMsgBoxClickListener;
 
     protected OnClickListener positiveButtonClickListener;
 
@@ -72,16 +72,16 @@ public class ButtonScrollDialog extends Dialog {
 	SizeF contentSize = getContentSize();
 
 	rec = new CB_RectF(0, 0, contentSize.width - leftBorder - rightBorder, contentSize.height);
-	// initial ScrollBox mit einer Inneren Höhe des halben rec´s.
-	// Die Innere Höhe muss angepasst werden, wenn sich die Höhe des LinearLayouts verändert hat.
-	// Entweder wenn ein Control hinzugefügt wurde oder wenn eine CollapseBox geöffnrt oder geschlossen wird!
+	// initial ScrollBox mit einer Inneren Hï¿½he des halben recï¿½s.
+	// Die Innere Hï¿½he muss angepasst werden, wenn sich die Hï¿½he des LinearLayouts verï¿½ndert hat.
+	// Entweder wenn ein Control hinzugefï¿½gt wurde oder wenn eine CollapseBox geï¿½ffnrt oder geschlossen wird!
 	scrollBox = new ScrollBox(rec);
-	// die ScrollBox erhält den Selben Hintergrund wie die Activity und wird damit ein wenig abgegrenzt von den Restlichen Controls
+	// die ScrollBox erhï¿½lt den Selben Hintergrund wie die Activity und wird damit ein wenig abgegrenzt von den Restlichen Controls
 	// scrollBox.setBackground(this.getBackground());
 	scrollBox.setMargins(margin, margin);
 	scrollBox.initRow();
 
-	// damit die Scrollbox auch Events erhällt
+	// damit die Scrollbox auch Events erhï¿½llt
 	scrollBox.setClickable(true);
 
 	CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
@@ -98,7 +98,7 @@ public class ButtonScrollDialog extends Dialog {
 	label.setY(-margin);
 	label.setWrappedText(msg);
 	// scrollBox.addChild(label);
-	mMsgBoxClickListner = Listener;
+	mMsgBoxClickListener = Listener;
 	scrollBox.setVirtualHeight(1000);
 	this.addChild(scrollBox);
     }
@@ -149,7 +149,7 @@ public class ButtonScrollDialog extends Dialog {
     }
 
     protected void createButtons(int anzahl, String t1, String t2, String t3) {
-	setButtonListner();
+	setButtonListener();
 
 	this.setBorders(margin, margin);
 	this.setMargins(margin, margin);
@@ -194,7 +194,7 @@ public class ButtonScrollDialog extends Dialog {
 	FooterItems.add(view);
     }
 
-    private void setButtonListner() {
+    private void setButtonListener() {
 	positiveButtonClickListener = new OnClickListener() {
 
 	    @Override
@@ -222,8 +222,8 @@ public class ButtonScrollDialog extends Dialog {
 
     private boolean ButtonClick(int button) {
 	GL.that.closeDialog(this);
-	if (mMsgBoxClickListner != null)
-	    return mMsgBoxClickListner.onClick(button, data);
+	if (mMsgBoxClickListener != null)
+	    return mMsgBoxClickListener.onClick(button, data);
 	return false;
     }
 

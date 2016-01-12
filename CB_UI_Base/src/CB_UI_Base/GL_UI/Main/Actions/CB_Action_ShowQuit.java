@@ -18,7 +18,7 @@ package CB_UI_Base.GL_UI.Main.Actions;
 import org.slf4j.LoggerFactory;
 
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
@@ -75,7 +75,7 @@ public class CB_Action_ShowQuit extends CB_Action
 					{
 
 						log.debug("\r\n Quit");
-						platformConector.callQuitt();
+						PlatformConnector.callQuit();
 					}
 					return true;
 				}
@@ -83,7 +83,7 @@ public class CB_Action_ShowQuit extends CB_Action
 		}
 		catch (Exception e)
 		{
-			platformConector.callQuitt();
+			PlatformConnector.callQuit();
 		}
 	}
 

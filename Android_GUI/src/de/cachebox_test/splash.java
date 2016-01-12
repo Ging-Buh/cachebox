@@ -37,8 +37,8 @@ import CB_Locator.LocatorSettings;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
-import CB_UI_Base.Events.platformConector;
-import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
+import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
 import CB_UI_Base.GL_UI.DisplayType;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
@@ -51,14 +51,14 @@ import CB_UI_Base.graphics.GL_RenderType;
 import CB_Utils.Log.CB_SLF4J;
 import CB_Utils.Log.LogLevel;
 import CB_Utils.Settings.PlatformSettings;
-import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
+import CB_Utils.Settings.PlatformSettings.IPlatformSettings;
 import CB_Utils.Settings.SettingBase;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingModus;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileIO;
-import CB_Utils.Util.iChanged;
+import CB_Utils.Util.IChanged;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -113,12 +113,10 @@ public class splash extends Activity {
     private SharedPreferences androidSetting;
     private SharedPreferences.Editor androidSettingEditor;
     String workPath;
-    IgetFolderReturnListner getFolderReturnListner;
+    IgetFolderReturnListener getFolderReturnListener;
     int AdditionalWorkPathCount;
     MessageBox msg;
-
     ArrayList<String> AdditionalWorkPathArray;
-
     private boolean mOriantationRestart = false;
     private static DevicesSizes ui;
     private boolean isLandscape = false;
@@ -285,8 +283,8 @@ public class splash extends Activity {
 	Global.InitIcons(this);
 
 	CB_Android_FileExplorer fileExplorer = new CB_Android_FileExplorer(this);
-	platformConector.setGetFileListner(fileExplorer);
-	platformConector.setGetFolderListner(fileExplorer);
+	PlatformConnector.setGetFileListener(fileExplorer);
+	PlatformConnector.setGetFolderListener(fileExplorer);
 
 	String LangPath = androidSetting.getString("Sel_LanguagePath", "");
 	if (LangPath.length() == 0) {
@@ -579,7 +577,7 @@ public class splash extends Activity {
 		    public void onClick(View v) {
 			// close select dialog
 			dialog.dismiss();
-			getFolderReturnListner = new IgetFolderReturnListner() {
+			getFolderReturnListener = new IgetFolderReturnListener() {
 
 			    @Override
 			    public void getFolderReturn(String Path) {
@@ -596,7 +594,7 @@ public class splash extends Activity {
 			    }
 			};
 
-			platformConector.getFolder("", Translation.Get("select_folder"), Translation.Get("select"), getFolderReturnListner);
+			PlatformConnector.getFolder("", Translation.Get("select_folder"), Translation.Get("select"), getFolderReturnListener);
 
 		    }
 		});
@@ -825,8 +823,8 @@ public class splash extends Activity {
 		if (fileUri != null) {
 		    String filePath = fileUri.getPath();
 		    if (filePath != null) {
-			if (getFolderReturnListner != null)
-			    getFolderReturnListner.getFolderReturn(filePath);
+			if (getFolderReturnListener != null)
+			    getFolderReturnListener.getFolderReturn(filePath);
 		    }
 		}
 	    }
@@ -1029,7 +1027,7 @@ public class splash extends Activity {
 	Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
 
 	// initialisieren der PlattformSettings
-	PlatformSettings.setPlatformSettings(new iPlatformSettings() {
+	PlatformSettings.setPlatformSettings(new IPlatformSettings() {
 
 	    @Override
 	    public void Write(SettingBase<?> setting) {
@@ -1086,7 +1084,7 @@ public class splash extends Activity {
 
 	new CB_SLF4J(workPath);
 	CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
-	Config.AktLogLevel.addChangedEventListner(new iChanged() {
+	Config.AktLogLevel.addChangedEventListener(new IChanged() {
 	    @Override
 	    public void isChanged() {
 		CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());

@@ -9,7 +9,7 @@ import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
 import CB_UI_Base.GL_UI.Controls.RadioButton;
 import CB_UI_Base.GL_UI.Controls.RadioGroup;
-import CB_UI_Base.GL_UI.Controls.RadioGroup.selectionChangedListner;
+import CB_UI_Base.GL_UI.Controls.RadioGroup.ISelectionChangedListener;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -94,7 +94,7 @@ public class TestLabelView extends CB_View_Base {
 	Group.add(rb9);
 	Group.aktivate(rb);
 
-	Group.addSelectionChangedListner(new selectionChangedListner() {
+	Group.addSelectionChangedListener(new ISelectionChangedListener() {
 
 	    @Override
 	    public void selectionChanged(RadioButton radio, int idx) {

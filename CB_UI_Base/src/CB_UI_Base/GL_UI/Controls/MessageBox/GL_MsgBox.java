@@ -55,7 +55,7 @@ public class GL_MsgBox extends Dialog {
     public Button button1;
     public Button button2;
     public Button button3;
-    public OnMsgBoxClickListener mMsgBoxClickListner;
+    public OnMsgBoxClickListener mMsgBoxClickListener;
     public OnClickListener positiveButtonClickListener;
     public OnClickListener neutralButtonClickListener;
     public OnClickListener negativeButtonClickListener;
@@ -108,7 +108,7 @@ public class GL_MsgBox extends Dialog {
 
 	GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), false, (remember != null)), "MsgBox" + title);
 	msgBox.rememberSetting = remember;
-	msgBox.mMsgBoxClickListner = Listener;
+	msgBox.mMsgBoxClickListener = Listener;
 	msgBox.setButtonCaptions(buttons);
 	msgBox.setTitle(title);
 	msgBox.label = new Label("msgBox" + " label", msgBox.getContentSize().getBounds());
@@ -137,7 +137,7 @@ public class GL_MsgBox extends Dialog {
 	final GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), true, (remember != null)), "MsgBox" + title);
 
 	msgBox.rememberSetting = remember;
-	msgBox.mMsgBoxClickListner = Listener;
+	msgBox.mMsgBoxClickListener = Listener;
 	msgBox.setTitle(title);
 
 	msgBox.setButtonCaptions(buttons);
@@ -205,8 +205,8 @@ public class GL_MsgBox extends Dialog {
 	}
 
 	boolean retValue = false;
-	if (mMsgBoxClickListner != null) {
-	    retValue = mMsgBoxClickListner.onClick(button, that.data);
+	if (mMsgBoxClickListener != null) {
+	    retValue = mMsgBoxClickListener.onClick(button, that.data);
 	}
 	GL.that.closeDialog(that);
 	return retValue;
@@ -417,7 +417,7 @@ public class GL_MsgBox extends Dialog {
 	button1 = null;
 	button2 = null;
 	button3 = null;
-	mMsgBoxClickListner = null;
+	mMsgBoxClickListener = null;
 	positiveButtonClickListener = null;
 	neutralButtonClickListener = null;
 	negativeButtonClickListener = null;

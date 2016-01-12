@@ -8,14 +8,14 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.SpoilerView;
-import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IReadyListner;
+import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IReadyListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
@@ -74,21 +74,21 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
     @Override
     public Menu getContextMenu() {
 	Menu icm = new Menu("menu_compassView");
-	icm.addItemClickListner(onItemClickListner);
+	icm.addOnClickListener(onItemClickListener);
 	icm.addItem(MenuID.MI_RELOAD_SPOILER, "reloadSpoiler");
 	icm.addItem(MenuID.MI_START_PICTUREAPP, "startPictureApp", SpriteCacheBase.getThemedSprite("image-export"));
 
 	return icm;
     }
 
-    private OnClickListener onItemClickListner = new OnClickListener() {
+    private final OnClickListener onItemClickListener = new OnClickListener() {
 
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 
 	    switch (((MenuItem) v).getMenuItemId()) {
 	    case MenuID.MI_RELOAD_SPOILER:
-		GlobalCore.ImportSpoiler().setReadyListner(new IReadyListner() {
+		GlobalCore.ImportSpoiler().setReadyListener(new IReadyListener() {
 		    @Override
 		    public void isReady() {
 			// erst die Lokalen Images für den Cache neu laden
@@ -115,7 +115,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
 		String file = TabMainView.spoilerView.getSelectedFilePath();
 		if (file == null)
 		    return true;
-		platformConector.StartPictureApp(file);
+		PlatformConnector.StartPictureApp(file);
 		return true;
 	    }
 	    return false;

@@ -28,10 +28,10 @@ import CB_Core.Api.CB_Api;
 import CB_Core.Api.GroundspeakAPI;
 import CB_UI.GL_UI.Activitys.settings.SettingsActivity;
 import CB_UI.GL_UI.Controls.Dialogs.PasswortDialog;
-import CB_UI.GL_UI.Controls.Dialogs.PasswortDialog.returnListner;
+import CB_UI.GL_UI.Controls.Dialogs.PasswortDialog.IReturnListener;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Interfaces.cancelRunnable;
 
@@ -64,7 +64,7 @@ public class GcApiLogin {
 
 	lastCall = System.currentTimeMillis();
 
-	WD = CancelWaitDialog.ShowWait("Please Wait", new IcancelListner() {
+	WD = CancelWaitDialog.ShowWait("Please Wait", new IcancelListener() {
 
 	    @Override
 	    public void isCanceld() {
@@ -336,7 +336,7 @@ public class GcApiLogin {
 
 	// Ask for User/PW
 
-	final PasswortDialog PWD = new PasswortDialog(new returnListner() {
+	final PasswortDialog PWD = new PasswortDialog(new IReturnListener() {
 
 	    @Override
 	    public void returnFromPW_Dialog(String User, String PW) {
@@ -357,7 +357,7 @@ public class GcApiLogin {
 
     private void nextStep2(final String Url, final String viewstate, final CookieStore cookieStore, final String User, final String PW) {
 
-	WD = CancelWaitDialog.ShowWait("Please Wait", new IcancelListner() {
+	WD = CancelWaitDialog.ShowWait("Please Wait", new IcancelListener() {
 
 	    @Override
 	    public void isCanceld() {

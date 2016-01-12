@@ -4,7 +4,7 @@ import CB_Locator.Coordinate;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.CB_UI_Settings;
 import CB_UI.GL_UI.Controls.CoordinateButton;
-import CB_UI.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
+import CB_UI.GL_UI.Controls.CoordinateButton.ICoordinateChangedListener;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
@@ -22,7 +22,7 @@ import CB_Utils.MathUtils.CalculationType;
 public class ProjectionCoordinate extends ActivityBase {
     private Coordinate coord;
     private Coordinate projCoord;
-    private String wpName;
+    private final String wpName;
 
     private double Bearing;
     private double Distance;
@@ -45,13 +45,13 @@ public class ProjectionCoordinate extends ActivityBase {
     private boolean ImperialUnits = false;
     private NumPad numPad;
 
-    private ReturnListner mReturnListner;
+    private final ICoordReturnListener mCoordReturnListener;
 
     public enum Type {
 	projetion, circle, p2p
     }
 
-    public interface ReturnListner {
+    public interface ICoordReturnListener {
 	/**
 	 * Return from ProjectionCoordinate Dialog
 	 * 
@@ -63,13 +63,13 @@ public class ProjectionCoordinate extends ActivityBase {
 	public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance);
     }
 
-    public ProjectionCoordinate(CB_RectF rec, String Name, Coordinate coord2, ReturnListner listner, Type type, String WP_Name) {
+    public ProjectionCoordinate(CB_RectF rec, String Name, Coordinate coord2, ICoordReturnListener listener, Type type, String WP_Name) {
 	super(rec, Name);
 	coord = coord2;
 	wpName = WP_Name;
 	radius = (type == Type.circle);
 	p2p = (type == Type.p2p);
-	mReturnListner = listner;
+	mCoordReturnListener = listener;
 	ImperialUnits = CB_UI_Settings.ImperialUnits.getValue();
 
 	if (p2p)
@@ -113,7 +113,7 @@ public class ProjectionCoordinate extends ActivityBase {
 	CB_RectF rec = new CB_RectF(leftBorder, Title.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
 	bCoord = new CoordinateButton(rec, "CoordButton", coord, wpName);
 
-	bCoord.setCoordinateChangedListner(new CoordinateChangeListner() {
+	bCoord.setCoordinateChangedListener(new ICoordinateChangedListener() {
 
 	    @Override
 	    public void coordinateChanged(Coordinate Coord) {
@@ -135,7 +135,7 @@ public class ProjectionCoordinate extends ActivityBase {
 	CB_RectF rec = new CB_RectF(leftBorder, lblP2P.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
 	bCoord2 = new CoordinateButton(rec, "CoordButton2", projCoord, null);
 
-	bCoord2.setCoordinateChangedListner(new CoordinateChangeListner() {
+	bCoord2.setCoordinateChangedListener(new ICoordinateChangedListener() {
 
 	    @Override
 	    public void coordinateChanged(Coordinate Coord) {
@@ -190,7 +190,7 @@ public class ProjectionCoordinate extends ActivityBase {
 	    this.addChild(lblBearingUnit);
 	this.addChild(lblDistanceUnit);
 
-	valueDistance.setBecomsFocusListner(new IBecomesFocus() {
+	valueDistance.setBecomesFocusListener(new IBecomesFocus() {
 
 	    @Override
 	    public void becomesFocus() {
@@ -205,7 +205,7 @@ public class ProjectionCoordinate extends ActivityBase {
 	    }
 	});
 
-	valueBearing.setBecomsFocusListner(new IBecomesFocus() {
+	valueBearing.setBecomesFocusListener(new IBecomesFocus() {
 
 	    @Override
 	    public void becomesFocus() {
@@ -244,8 +244,8 @@ public class ProjectionCoordinate extends ActivityBase {
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		if (!parseView())
 		    return true;
-		if (mReturnListner != null)
-		    mReturnListner.returnCoord(projCoord, coord, Bearing, Distance);
+		if (mCoordReturnListener != null)
+		    mCoordReturnListener.returnCoord(projCoord, coord, Bearing, Distance);
 		finish();
 		return true;
 	    }
@@ -255,8 +255,8 @@ public class ProjectionCoordinate extends ActivityBase {
 
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		if (mReturnListner != null)
-		    mReturnListner.returnCoord(null, null, 0, 0);
+		if (mCoordReturnListener != null)
+		    mCoordReturnListener.returnCoord(null, null, 0, 0);
 		finish();
 		return true;
 	    }

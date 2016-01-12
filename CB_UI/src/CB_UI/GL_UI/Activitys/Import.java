@@ -41,13 +41,13 @@ import CB_Core.Import.ImporterProgress;
 import CB_RpcCore.ClientCB.RpcClientCB;
 import CB_RpcCore.Functions.RpcAnswer_GetExportList;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.Config;
+import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Activitys.APIs.ImportAPIListItem;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
-import CB_UI_Base.Events.platformConector;
-import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
+import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -55,7 +55,7 @@ import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.CollapseBox;
-import CB_UI_Base.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
+import CB_UI_Base.GL_UI.Controls.CollapseBox.IAnimatedHeightChangedListener;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_UI_Base.GL_UI.Controls.Label;
@@ -63,12 +63,12 @@ import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.Spinner;
-import CB_UI_Base.GL_UI.Controls.Spinner.selectionChangedListner;
+import CB_UI_Base.GL_UI.Controls.Spinner.ISelectionChangedListener;
 import CB_UI_Base.GL_UI.Controls.SpinnerAdapter;
 import CB_UI_Base.GL_UI.Controls.chkBox;
-import CB_UI_Base.GL_UI.Controls.chkBox.OnCheckedChangeListener;
-import CB_UI_Base.GL_UI.Controls.Dialogs.NumerikInputBox;
-import CB_UI_Base.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListner;
+import CB_UI_Base.GL_UI.Controls.chkBox.OnCheckChangedListener;
+import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox;
+import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox.IReturnValueListener;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
@@ -103,7 +103,9 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
     private V_ListView lvPQs, lvCBServer;
     private Button bOK, bCancel, refreshPqList, refreshCBServerList, btnSelectFile;
-    private float innerLeft, innerHeight, CollapseBoxHeight, CollapseBoxMaxHeight, CollapseBoxLogsMaxHeight;
+    private float innerLeft, innerHeight, CollapseBoxHeight;
+    private final float CollapseBoxMaxHeight;
+    private float CollapseBoxLogsMaxHeight;
     private Label lblTitle, lblPQ, lblCBServer, lblGPX, lblGcVote, lblImage, lblSpoiler, lblMaps, lblProgressMsg, lblLogs, lblCompact;
     private ProgressBar pgBar;
     private chkBox checkImportPQfromGC, checkImportFromCBServer, checkBoxImportGPX, checkBoxGcVote, checkBoxPreloadImages, checkBoxPreloadSpoiler, checkBoxImportMaps, checkBoxCleanLogs, checkBoxCompactDB;
@@ -111,7 +113,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     private Spinner spinner;
 
     private Timer mAnimationTimer;
-    private long ANIMATION_TICK = 450;
+    private final long ANIMATION_TICK = 450;
     private int animationValue = 0;
 
     protected Date ImportStart;
@@ -125,7 +127,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     private CB_RectF itemRecCBServer;
     private float itemHeight = -1;
 
-    private ScrollBox scrollBox;
+    private final ScrollBox scrollBox;
     private ImportAnimation dis;
 
     public Import() {
@@ -427,10 +429,10 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		platformConector.getFile("", "", "", "", new IgetFileReturnListner() {
+		PlatformConnector.getFile("", "", "", "", new IgetFileReturnListener() {
 
 		    @Override
-		    public void getFieleReturn(String Path) {
+		    public void getFileReturn(String Path) {
 			copyGPX2PQ_Folder(Path);
 		    }
 		});
@@ -568,7 +570,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 	    }
 	};
 
-	spinner = new Spinner(margin, LogCollapseBox.getHeight() - margin - checkBoxCleanLogs.getHeight(), LogCollapseBox.getWidth() - margin - margin, checkBoxCleanLogs.getHeight(), "LogLifeSpinner", adapter, new selectionChangedListner() {
+	spinner = new Spinner(margin, LogCollapseBox.getHeight() - margin - checkBoxCleanLogs.getHeight(), LogCollapseBox.getWidth() - margin - margin, checkBoxCleanLogs.getHeight(), "LogLifeSpinner", adapter, new ISelectionChangedListener() {
 
 	    @Override
 	    public void selectionChanged(int index) {
@@ -594,7 +596,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 	    @Override
 	    public void show(boolean visible) {
 		if (visible) {
-		    NumerikInputBox.Show(Translation.Get("ButKeepLeast"), Translation.Get("DeleteLogs"), Config.LogMinCount.getValue(), new returnValueListner() {
+		    NumericInputBox.Show(Translation.Get("ButKeepLeast"), Translation.Get("DeleteLogs"), Config.LogMinCount.getValue(), new IReturnValueListener() {
 
 			@Override
 			public void returnValue(int value) {
@@ -685,8 +687,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 	checkBoxPreloadImages.setChecked(Config.CacheImageData.getValue());
 	checkBoxPreloadSpoiler.setChecked(Config.CacheSpoilerData.getValue());
 	checkBoxImportGPX.setChecked(GPX_LINE_ACTIVE ? Config.ImportGpx.getValue() : false);
-	checkImportPQfromGC.setOnCheckedChangeListener(checkImportPQfromGC_CheckStateChanged);
-	checkImportFromCBServer.setOnCheckedChangeListener(checkImportFromCBServer_CheckStateChanged);
+	checkImportPQfromGC.setOnCheckChangedListener(checkImportPQfromGC_CheckStateChanged);
+	checkImportFromCBServer.setOnCheckChangedListener(checkImportFromCBServer_CheckStateChanged);
 	checkBoxGcVote.setChecked(GCV_LINE_ACTIVE ? Config.ImportRatings.getValue() : false);
 
 	checkImportPQfromGC.setChecked(PQ_LINE_ACTIVE ? Config.ImportPQsFromGeocachingCom.getValue() : false);
@@ -717,13 +719,13 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 	    CBServerCollapseBox.setAnimationHeight(0);
 	}
 
-	PQ_ListCollapseBox.setAnimationListner(Animationlistner);
-	CBServerCollapseBox.setAnimationListner(Animationlistner);
-	LogCollapseBox.setAnimationListner(Animationlistner);
+	PQ_ListCollapseBox.setAnimationListener(mAnimationListener);
+	CBServerCollapseBox.setAnimationListener(mAnimationListener);
+	LogCollapseBox.setAnimationListener(mAnimationListener);
 
 	checkBoxCleanLogs.setChecked(LOG_LINE_ACTIVE ? Config.DeleteLogs.getValue() : false);
 
-	checkBoxCleanLogs.setOnCheckedChangeListener(checkLog_CheckStateChanged);
+	checkBoxCleanLogs.setOnCheckChangedListener(checkLog_CheckStateChanged);
 
 	if (checkBoxCleanLogs.isChecked()) {
 	    LogCollapseBox.setAnimationHeight(CollapseBoxLogsMaxHeight);
@@ -742,14 +744,14 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
     }
 
-    animatetHeightChangedListner Animationlistner = new animatetHeightChangedListner() {
+    IAnimatedHeightChangedListener mAnimationListener = new IAnimatedHeightChangedListener() {
 	@Override
 	public void animatedHeightChanged(float Height) {
 	    Layout();
 	}
     };
 
-    private OnCheckedChangeListener checkLog_CheckStateChanged = new OnCheckedChangeListener() {
+    private final OnCheckChangedListener checkLog_CheckStateChanged = new OnCheckChangedListener() {
 
 	@Override
 	public void onCheckedChanged(chkBox view, boolean isChecked) {
@@ -765,7 +767,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 	}
     };
 
-    private OnCheckedChangeListener checkImportPQfromGC_CheckStateChanged = new OnCheckedChangeListener() {
+    private final OnCheckChangedListener checkImportPQfromGC_CheckStateChanged = new OnCheckChangedListener() {
 	@Override
 	public void onCheckedChanged(chkBox view, boolean isChecked) {
 	    if ((importType == MenuID.MI_IMPORT_GS_PQ) || (checkImportPQfromGC.isChecked())) {
@@ -779,7 +781,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 	}
     };
 
-    private OnCheckedChangeListener checkImportFromCBServer_CheckStateChanged = new OnCheckedChangeListener() {
+    private final OnCheckChangedListener checkImportFromCBServer_CheckStateChanged = new OnCheckChangedListener() {
 	@Override
 	public void onCheckedChanged(chkBox view, boolean isChecked) {
 	    if (checkImportFromCBServer.isChecked()) {
@@ -795,6 +797,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 	public CustomAdapter() {
 	}
 
+	@Override
 	public int getCount() {
 	    if (PqList != null)
 		return PqList.size();
@@ -830,6 +833,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 	public CustomAdapterCBServer() {
 	}
 
+	@Override
 	public int getCount() {
 	    if (cbServerExportList != null)
 		return cbServerExportList.size();
@@ -1012,6 +1016,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
     public void ImportThread(final String directoryPath, final File directory) {
 	importThread = new BreakawayImportThread() {
+	    @Override
 	    public void run() {
 		importStarted = true;
 
@@ -1060,7 +1065,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 			    ArrayList<PQ> downloadPqList = new ArrayList<PocketQuery.PQ>();
 
 			    for (PQ pq : PqList) {
-				if (pq.downloadAvible)
+				if (pq.downloadAvailable)
 				    downloadPqList.add(pq);
 			    }
 
@@ -1080,7 +1085,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
 				    PQ pq = iterator.next();
 
-				    if (pq.downloadAvible) {
+				    if (pq.downloadAvailable) {
 					ip.ProgressInkrement("importGC", "Download: " + pq.Name, false);
 					try {
 					    PocketQuery.DownloadSinglePocketQuery(pq, Config.PocketQueryFolder.getValue());
@@ -1268,6 +1273,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 	importThread.start();
     }
 
+    @Override
     protected void finish() {
 	super.finish();
 

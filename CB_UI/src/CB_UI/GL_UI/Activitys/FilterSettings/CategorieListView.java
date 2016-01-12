@@ -30,17 +30,17 @@ public class CategorieListView extends V_ListView {
 
     private ArrayList<CategorieEntry> lCategories;
     private ArrayList<CategorieListViewItem> lCategorieListViewItems;
-    private CustomAdapter lvAdapter;
+    private final CustomAdapter lvAdapter;
 
     public static class CategorieEntry {
-	private GpxFilename mFile;
+	private final GpxFilename mFile;
 	private Category mCat;
 	private Sprite mIcon;
 	private Sprite[] mIconArray;
 	private int mState = 0;
 
-	private int mItemType;
-	private int ID;
+	private final int mItemType;
+	private final int ID;
 	private static int IdCounter;
 
 	private double mNumerickMax;
@@ -229,7 +229,7 @@ public class CategorieListView extends V_ListView {
 
     }
 
-    OnClickListener onItemClickListner = new OnClickListener() {
+    OnClickListener onItemClickListener = new OnClickListener() {
 
 	@Override
 	public boolean onClick(GL_View_Base v, int lastTouchX, int lastTouchY, int pointer, int button) {
@@ -267,14 +267,15 @@ public class CategorieListView extends V_ListView {
 
     public class CustomAdapter implements Adapter {
 
-	private ArrayList<CategorieEntry> categorieList;
-	private ArrayList<CategorieListViewItem> lCategoriesListViewItems;
+	private final ArrayList<CategorieEntry> categorieList;
+	private final ArrayList<CategorieListViewItem> lCategoriesListViewItems;
 
 	public CustomAdapter(ArrayList<CategorieEntry> lCategories, ArrayList<CategorieListViewItem> CategorieListViewItems) {
 	    this.categorieList = lCategories;
 	    this.lCategoriesListViewItems = CategorieListViewItems;
 	}
 
+	@Override
 	public int getCount() {
 	    if (categorieList == null)
 		return 0;
@@ -367,7 +368,7 @@ public class CategorieListView extends V_ListView {
 	CategorieListViewItem v = new CategorieListViewItem(EditFilterSettings.ItemRec, Index, tmp);
 	// inital mit INVISIBLE
 	v.setInvisible();
-	v.setOnClickListener(onItemClickListner);
+	v.setOnClickListener(onItemClickListener);
 	lCategorieListViewItems.add(v);
 	return v;
     }

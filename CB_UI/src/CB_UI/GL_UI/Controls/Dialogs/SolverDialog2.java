@@ -29,7 +29,7 @@ import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.chkBox;
-import CB_UI_Base.GL_UI.Controls.chkBox.OnCheckedChangeListener;
+import CB_UI_Base.GL_UI.Controls.chkBox.OnCheckChangedListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Util.HSV_Color;
@@ -82,7 +82,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	    case Waypoint:
 		return (dataType == DataType.Coordinate) || (dataType == DataType.Waypoint);
 	    case Zahl:
-		return (dataType == DataType.Integer) || (dataType == dataType.Float);
+		return (dataType == DataType.Integer) || (dataType == DataType.Float);
 	    default:
 		break;
 
@@ -91,17 +91,17 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	}
     }
 
-    private SolverDialog2BuildFormula buildFormula;
-    private TreeMap<buttons, MultiToggleButton> visibleButtons = new TreeMap<buttons, MultiToggleButton>();
+    //private final SolverDialog2BuildFormula buildFormula;
+    private final TreeMap<buttons, MultiToggleButton> visibleButtons = new TreeMap<buttons, MultiToggleButton>();
     private float visibleButtonsHeight = 0;
-    private SolverBackStringListner mBackStringListner;
-    private Cache aktCache;
-    private String solverString;
-    private DataType dataType; // DataType of Parameter which must be returned
+    private ISolverBackStringListener mBackStringListener;
+    private final Cache aktCache;
+    private final String solverString;
+    private final DataType dataType; // DataType of Parameter which must be returned
     private String sVar;
     private String sForm;
     private pages page;
-    private ScrollBox scrollBox;
+    private final ScrollBox scrollBox;
     private Button bOK, bCancel;
     private Label lblTitle;
     private float innerLeft;
@@ -113,7 +113,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     private chkBox cbFormulaAsText;
     private Label lFormulaAsText;
     // Page Zahl
-    private String[] lZahl = new String[] { "0", ",", "<-", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+    private final String[] lZahl = new String[] { "0", ",", "<-", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
     private EditTextField tbZahl;
     private Button[] bZahl;
     // Page Function
@@ -133,16 +133,16 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     private Label[] lWaypoints = null;
     // Page Coordinate
     private CoordinateButton bCoord = null;
-    private Solver solver; // Solver Object dieses Caches für die Functions, Variablen...
+    private final Solver solver; // Solver Object dieses Caches für die Functions, Variablen...
 
-    public interface SolverBackStringListner {
+    public interface ISolverBackStringListener {
 	public void BackString(String backString);
     }
 
     public SolverDialog2(Cache aktCache, Solver solver, String solverString, boolean showVariableField, DataType dataType) {
 	super(ActivityRec(), "solverActivity");
 	this.solver = solver;
-	this.buildFormula = null;
+	//this.buildFormula = null;
 	this.solverString = solverString;
 	this.aktCache = aktCache;
 	this.dataType = dataType;
@@ -170,8 +170,6 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	    createVariableLines();
 	}
 	createButtonsLine();
-
-	initialForm();
 
 	Layout();
 
@@ -255,8 +253,8 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	return true;
     }
 
-    public void show(SolverBackStringListner listner) {
-	mBackStringListner = listner;
+    public void show(ISolverBackStringListener listener) {
+	mBackStringListener = listener;
 
 	show();
     }
@@ -278,10 +276,10 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	bVariableWaypoint.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public boolean onClick(final GL_View_Base v, int x, int y, int pointer, int button) {
-		String param = "";
+		//String param = "";
 		DataType type = DataType.Waypoint;
 		SolverDialog2 sd2 = new SolverDialog2(aktCache, solver, mVariableField.getText(), false, type);
-		sd2.show(new SolverBackStringListner() {
+		sd2.show(new ISolverBackStringListener() {
 		    @Override
 		    public void BackString(String backString) {
 			mVariableField.setText(backString);
@@ -311,7 +309,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		MultiToggleButton button = new MultiToggleButton(0, 0, 0, UI_Size_Base.that.getButtonHeight(), btn.description);
 		button.addState(btn.description, new HSV_Color(Color.GRAY));
 		button.addState(btn.description, new HSV_Color(Color.GREEN));
-		button.setOnStateChangedListner(this);
+		button.setOnStateChangedListener(this);
 		visibleButtons.put(btn, button);
 		scrollBox.addChild(button);
 		visibleButtonsHeight = button.getHeight();
@@ -460,11 +458,6 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
     }
 
-    private void initialForm() {
-	// TODO Auto-generated method stub
-
-    }
-
     private void createOkCancelBtn() {
 	bOK = new Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
 	bCancel = new Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
@@ -487,8 +480,8 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		}
 		result += sForm;
 		finish();
-		if (mBackStringListner != null)
-		    mBackStringListner.BackString(result);
+		if (mBackStringListener != null)
+		    mBackStringListener.BackString(result);
 		return true;
 	    }
 	});
@@ -603,11 +596,13 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     }
 
     // überprüft für alle pages, ob der aktuell eingegebene String einen gültigen Wert für diese Page darstellt
+    /*
     private void checkDataTypes() {
-	for (pages p : pages.values()) {
-	    checkDataType(p);
-	}
+    for (pages p : pages.values()) {
+        checkDataType(p);
     }
+    }
+    */
 
     private boolean checkDataType(pages p) {
 	boolean valid = true;
@@ -957,7 +952,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		    }
 		}
 		SolverDialog2 sd2 = new SolverDialog2(aktCache, solver, param, false, type);
-		sd2.show(new SolverBackStringListner() {
+		sd2.show(new ISolverBackStringListener() {
 		    @Override
 		    public void BackString(String backString) {
 			Integer i = (Integer) v.getData();
@@ -971,14 +966,16 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	});
     }
 
+    /*
     private DataType getFunctionDataType(String functionName) {
-	Function function = solver.functions.getFunction(functionName);
-	if (function == null) {
-	    return DataType.None;
-	} else {
-	    return function.getReturnType();
-	}
+    Function function = solver.functions.getFunction(functionName);
+    if (function == null) {
+        return DataType.None;
+    } else {
+        return function.getReturnType();
     }
+    }
+    */
 
     private void addFunctionParamLine(String functionString, int i, String string) {
 	Function function = solver.functions.getFunction(functionString);
@@ -1048,7 +1045,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	    lVariables[i] = new Label(variable + " (" + value + ")");
 	    scrollBox.addChild(lVariables[i]);
 	    cbVariables[i].setChecked(sForm.equalsIgnoreCase(variable));
-	    cbVariables[i].setOnCheckedChangeListener(new OnCheckedChangeListener() {
+	    cbVariables[i].setOnCheckChangedListener(new OnCheckChangedListener() {
 		@Override
 		public void onCheckedChanged(chkBox view, boolean isChecked) {
 		    if (doNotChangeCBVariable)
@@ -1111,7 +1108,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		param = tb.getText();
 	    }
 	    SolverDialog2 sd2 = new SolverDialog2(aktCache, solver, param, false, DataType.Float);
-	    sd2.show(new SolverBackStringListner() {
+	    sd2.show(new ISolverBackStringListener() {
 		@Override
 		public void BackString(String backString) {
 		    if (tb != null) {
@@ -1145,7 +1142,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	    String data = "";
 	    String description = "";
 	    if (i > 0) {
-		waypoint = (Waypoint) aktCache.waypoints.get(i - 1);
+		waypoint = aktCache.waypoints.get(i - 1);
 		data = "$" + waypoint.getGcCode();
 		description = "$" + waypoint.getGcCode() + " - " + waypoint.getTitle();
 	    } else {
@@ -1160,7 +1157,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	    scrollBox.addChild(lWaypoints[i]);
 	    cbWaypoints[i].setChecked(sForm.equalsIgnoreCase(data));
 
-	    cbWaypoints[i].setOnCheckedChangeListener(new OnCheckedChangeListener() {
+	    cbWaypoints[i].setOnCheckChangedListener(new OnCheckChangedListener() {
 		@Override
 		public void onCheckedChanged(chkBox view, boolean isChecked) {
 		    if (doNotChangeCBVariable)

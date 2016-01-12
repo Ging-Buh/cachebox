@@ -29,20 +29,20 @@ import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeChangedEvent;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Util.HSV_Color;
-import CB_Utils.Util.iChanged;
+import CB_Utils.Util.IChanged;
 
 public class Slider extends CB_View_Base implements SelectedCacheEvent {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(Slider.class);
     private final int ANIMATION_TIME = 50;// 50;
     public static Slider that;
-    private QuickButtonList quickButtonList;
+    private final QuickButtonList quickButtonList;
 
     private Cache actCache;
     private Waypoint actWaypoint;
 
-    private Label mLblCacheName;
+    private final Label mLblCacheName;
     private static Box mSlideBox, mSlideBoxContent;
-    private int QuickButtonMaxHeight;
+    private final int QuickButtonMaxHeight;
     private int QuickButtonHeight;
 
     private boolean swipeUp = false;
@@ -53,20 +53,20 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
     private int AnimationDirection = -1;
     private int AnimationTarget = 0;
     private boolean isKinetigPan = false;
-    private Handler handler = new Handler();
-    private ArrayList<YPositionChanged> eventList = new ArrayList<YPositionChanged>();
+    private final Handler handler = new Handler();
+    private final ArrayList<YPositionChanged> eventList = new ArrayList<YPositionChanged>();
 
     public interface YPositionChanged {
 	public void Position(float top, float Bottom);
     }
 
-    public void registerPosChangedEvent(YPositionChanged listner) {
-	if (!eventList.contains(listner))
-	    eventList.add(listner);
+    public void registerPosChangedEvent(YPositionChanged listener) {
+	if (!eventList.contains(listener))
+	    eventList.add(listener);
     }
 
-    public void removePosChangedEvent(YPositionChanged listner) {
-	eventList.remove(listner);
+    public void removePosChangedEvent(YPositionChanged listener) {
+	eventList.remove(listener);
     }
 
     private void callPosChangedEvent() {
@@ -105,7 +105,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 	this.addChild(mSlideBox);
 
 	//register QuickButtonStateChangedEvent
-	CB_UI_Settings.quickButtonShow.addChangedEventListner(new iChanged() {
+	CB_UI_Settings.quickButtonShow.addChangedEventListener(new IChanged() {
 
 	    @Override
 	    public void isChanged() {
@@ -361,6 +361,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 
     }
 
+    @Override
     public void onResized(CB_RectF rec) {
 	super.onResized(rec);
     }
@@ -396,7 +397,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 	layout();
     }
 
-    private SizeChangedEvent onItemSizeChanged = new SizeChangedEvent() {
+    private final SizeChangedEvent onItemSizeChanged = new SizeChangedEvent() {
 
 	@Override
 	public void sizeChanged() {

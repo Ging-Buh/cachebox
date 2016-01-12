@@ -32,14 +32,14 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent {
 
     private boolean isCanceld = false;
 
-    public interface iCancelListner {
-	public void isCanceld();
+    public interface ICancelListener {
+	public void isCanceled();
     }
 
-    private iCancelListner mCancelListner;
+    private ICancelListener mCancelListener;
 
-    public void setCancelListner(iCancelListner listner) {
-	mCancelListner = listner;
+    public void setCancelListener(ICancelListener listener) {
+	mCancelListener = listener;
     }
 
     public ProgressDialog(Size size, String name) {
@@ -56,8 +56,8 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent {
 		button3.disable();
 		button3.setText(Translation.Get("waitForCancel"));
 		isCanceld = true;
-		if (mCancelListner != null)
-		    mCancelListner.isCanceld();
+		if (mCancelListener != null)
+		    mCancelListener.isCanceled();
 		return true;
 	    }
 	});
@@ -164,7 +164,7 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent {
 
     @Override
     public void onHide() {
-	// lösche Registrierung Progress Changed Event
+	// lï¿½sche Registrierung Progress Changed Event
 	ProgresssChangedEventList.Remove(this);
     }
 

@@ -73,17 +73,17 @@ import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.DescriptionView;
 import CB_UI.GL_UI.Views.splash;
 import CB_UI_Base.Energy;
+import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformConnector.ICallUrl;
+import CB_UI_Base.Events.PlatformConnector.IGetApiKey;
+import CB_UI_Base.Events.PlatformConnector.IHardwarStateListener;
+import CB_UI_Base.Events.PlatformConnector.IQuit;
+import CB_UI_Base.Events.PlatformConnector.IShowViewListener;
+import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
+import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
+import CB_UI_Base.Events.PlatformConnector.IsetScreenLockTime;
+import CB_UI_Base.Events.PlatformConnector.iStartPictureApp;
 import CB_UI_Base.Events.invalidateTextureEventList;
-import CB_UI_Base.Events.platformConector;
-import CB_UI_Base.Events.platformConector.ICallUrl;
-import CB_UI_Base.Events.platformConector.IGetApiKey;
-import CB_UI_Base.Events.platformConector.IHardwarStateListner;
-import CB_UI_Base.Events.platformConector.IQuit;
-import CB_UI_Base.Events.platformConector.IShowViewListner;
-import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
-import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
-import CB_UI_Base.Events.platformConector.IsetScreenLockTime;
-import CB_UI_Base.Events.platformConector.iStartPictureApp;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.ViewConst;
@@ -91,7 +91,7 @@ import CB_UI_Base.GL_UI.ViewID;
 import CB_UI_Base.GL_UI.ViewID.UI_Pos;
 import CB_UI_Base.GL_UI.ViewID.UI_Type;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
@@ -105,13 +105,13 @@ import CB_Utils.Plattform;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Settings.PlatformSettings;
-import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
+import CB_Utils.Settings.PlatformSettings.IPlatformSettings;
 import CB_Utils.Settings.SettingBase;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileIO;
-import CB_Utils.Util.iChanged;
+import CB_Utils.Util.IChanged;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.Service;
@@ -200,7 +200,7 @@ import de.cb.sqlite.AndroidDB;
  */
 @SuppressLint("Wakelock")
 @SuppressWarnings("deprecation")
-public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.CacheListChangedEventListner, GpsStatus.NmeaListener, GpsStatus.Listener {
+public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.CacheListChangedEventListener, GpsStatus.NmeaListener, GpsStatus.Listener {
 
     private static AndroidApplicationConfiguration gdxConfig = new AndroidApplicationConfiguration();
 
@@ -514,7 +514,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	Config.AcceptChanges();
 
-	AndroidSettings.RunOverLockScreen.addChangedEventListner(new iChanged() {
+	AndroidSettings.RunOverLockScreen.addChangedEventListener(new IChanged() {
 	    @Override
 	    public void isChanged() {
 		setLockScreenProperty();
@@ -690,7 +690,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		    runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-			    wd = CancelWaitDialog.ShowWait(Translation.Get("ImportGPX"), new IcancelListner() {
+			    wd = CancelWaitDialog.ShowWait(Translation.Get("ImportGPX"), new IcancelListener() {
 
 				@Override
 				public void isCanceld() {
@@ -1099,7 +1099,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	    this.mWakeLock.acquire();
 	}
 
-	Config.SuppressPowerSaving.addChangedEventListner(new iChanged() {
+	Config.SuppressPowerSaving.addChangedEventListener(new IChanged() {
 
 	    @Override
 	    public void isChanged() {
@@ -1119,9 +1119,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	});
 
 	try {
-	    initialOnTouchListner();
+	    initialOnTouchListener();
 	} catch (Exception e) {
-	    log.error("onResume", "initialOnTouchListner", e);
+	    log.error("onResume", "initialOnTouchListener", e);
 	}
 
 	// Initial PlugIn
@@ -1140,7 +1140,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		// ACB running call search
 		if (TabMainView.that.isInitial()) {
-		    platformConector.FirstShow();
+		    PlatformConnector.FirstShow();
 		}
 	    }
 
@@ -1574,7 +1574,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	    int updateTime = Config.gpsUpdateTime.getValue();
 
-	    Config.gpsUpdateTime.addChangedEventListner(new iChanged() {
+	    Config.gpsUpdateTime.addChangedEventListener(new IChanged() {
 
 		@Override
 		public void isChanged() {
@@ -1621,7 +1621,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		break;
 	    }
 
-	    initialOnTouchListner();
+	    initialOnTouchListener();
 
 	    if (viewGL == null)
 		viewGL = new ViewGL(this, inflater, gdxView, glListener);
@@ -1644,7 +1644,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
     }
 
-    private void initialOnTouchListner() throws Exception {
+    private void initialOnTouchListener() throws Exception {
 
 	if (gdxView == null)
 	    throw new Exception("gdx view nicht initialisiert");
@@ -2434,7 +2434,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	initialLocatorBase();
 
-	platformConector.setisOnlineListner(new IHardwarStateListner() {
+	PlatformConnector.setisOnlineListener(new IHardwarStateListener() {
 	    /*
 	     * isOnline Liefert TRUE wenn die Möglichkeit besteht auf das
 	     * Internet zuzugreifen
@@ -2511,7 +2511,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	});
 
-	platformConector.setShowViewListner(new IShowViewListner() {
+	PlatformConnector.setShowViewListener(new IShowViewListener() {
 
 	    @Override
 	    public void show(final ViewID viewID, final int left, final int top, final int right, final int bottom) {
@@ -2726,10 +2726,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	    GlobalCore.setDefaultClipboard(acb);
 
 	CB_Android_FileExplorer fileExplorer = new CB_Android_FileExplorer(this);
-	platformConector.setGetFileListner(fileExplorer);
-	platformConector.setGetFolderListner(fileExplorer);
+	PlatformConnector.setGetFileListener(fileExplorer);
+	PlatformConnector.setGetFolderListener(fileExplorer);
 
-	platformConector.setQuitListner(new IQuit() {
+	PlatformConnector.setQuitListener(new IQuit() {
 
 	    @Override
 	    public void Quit() {
@@ -2744,15 +2744,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	    }
 	});
 
-	platformConector.setGetApiKeyListner(new IGetApiKey() {
+	PlatformConnector.setGetApiKeyListener(new IGetApiKey() {
 
 	    @Override
-	    public void GetApiKey() {
+	    public void getApiKey() {
 		GetApiAuth();
 	    }
 	});
 
-	platformConector.setsetScreenLockTimeListner(new IsetScreenLockTime() {
+	PlatformConnector.setsetScreenLockTimeListener(new IsetScreenLockTime() {
 
 	    @Override
 	    public void setScreenLockTime(int value) {
@@ -2760,7 +2760,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	    }
 	});
 
-	platformConector.setCallUrlListner(new ICallUrl() {
+	PlatformConnector.setCallUrlListener(new ICallUrl() {
 
 	    /**
 	     * call
@@ -2779,7 +2779,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	    }
 	});
 
-	platformConector.setStartPictureApp(new iStartPictureApp() {
+	PlatformConnector.setStartPictureApp(new iStartPictureApp() {
 	    @Override
 	    public void Start(String file) {
 		Uri uriToImage = Uri.fromFile(new File(file));
@@ -2789,7 +2789,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	    }
 	});
 
-	PlatformSettings.setPlatformSettings(new iPlatformSettings() {
+	PlatformSettings.setPlatformSettings(new IPlatformSettings() {
 
 	    @Override
 	    public void Write(SettingBase<?> setting) {
@@ -2834,10 +2834,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
     }
 
-    IgetFileReturnListner getFileReturnListner = null;
-    IgetFolderReturnListner getFolderReturnListner = null;
-
-    // #########################################################
+    IgetFileReturnListener getFileReturnListener = null;
+    IgetFolderReturnListener getFolderReturnListener = null;
 
     // ########### Reload CacheInfo ##########################
 
@@ -2891,7 +2889,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	// Use Imperial units?
 	CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
-	Config.ImperialUnits.addChangedEventListner(new iChanged() {
+	Config.ImperialUnits.addChangedEventListener(new IChanged() {
 	    @Override
 	    public void isChanged() {
 		CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
@@ -2900,7 +2898,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	// GPS update time?
 	CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
-	Config.gpsUpdateTime.addChangedEventListner(new iChanged() {
+	Config.gpsUpdateTime.addChangedEventListener(new IChanged() {
 
 	    @Override
 	    public void isChanged() {
@@ -2910,7 +2908,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	// Use magnetic Compass?
 	CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
-	Config.HardwareCompass.addChangedEventListner(new iChanged() {
+	Config.HardwareCompass.addChangedEventListener(new IChanged() {
 	    @Override
 	    public void isChanged() {
 		CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
@@ -2919,7 +2917,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	// Magnetic compass level
 	CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
-	Config.HardwareCompassLevel.addChangedEventListner(new iChanged() {
+	Config.HardwareCompassLevel.addChangedEventListener(new IChanged() {
 	    @Override
 	    public void isChanged() {
 		CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());

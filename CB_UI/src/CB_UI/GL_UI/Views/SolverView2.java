@@ -31,9 +31,9 @@ import CB_UI.SelectedCacheEvent;
 import CB_UI.SelectedCacheEventList;
 import CB_UI.WaypointListChangedEventList;
 import CB_UI.GL_UI.Activitys.EditWaypoint;
-import CB_UI.GL_UI.Activitys.EditWaypoint.ReturnListner;
+import CB_UI.GL_UI.Activitys.EditWaypoint.IReturnListener;
 import CB_UI.GL_UI.Controls.Dialogs.SolverDialog2;
-import CB_UI.GL_UI.Controls.Dialogs.SolverDialog2.SolverBackStringListner;
+import CB_UI.GL_UI.Controls.Dialogs.SolverDialog2.ISolverBackStringListener;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -149,7 +149,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 	GL.that.renderOnce();
     }
 
-    private OnClickListener onItemClickListner = new OnClickListener() {
+    private final OnClickListener onItemClickListener = new OnClickListener() {
 
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -162,7 +162,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 	}
     };
 
-    private OnClickListener onItemLongClickListner = new OnClickListener() {
+    private final OnClickListener onItemLongClickListener = new OnClickListener() {
 
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -180,7 +180,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
     public Menu getContextMenu() {
 	Menu cm = new Menu("SolverViewItemContextMenu");
 
-	cm.addItemClickListner(new OnClickListener() {
+	cm.addOnClickListener(new OnClickListener() {
 
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -227,12 +227,13 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
     }
 
     public class CustomAdapter implements Adapter {
-	private Solver solver;
+	private final Solver solver;
 
 	public CustomAdapter(Solver solver) {
 	    this.solver = solver;
 	}
 
+	@Override
 	public int getCount() {
 	    if (solver == null)
 		return 0;
@@ -255,8 +256,8 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 	    SolverZeile solverZeile = solver.get(position);
 	    SolverViewItem v = new SolverViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, solverZeile);
 	    v.setClickable(true);
-	    v.setOnClickListener(onItemClickListner);
-	    v.setOnLongClickListener(onItemLongClickListner);
+	    v.setOnClickListener(onItemClickListener);
+	    v.setOnLongClickListener(onItemLongClickListener);
 
 	    return v;
 	}
@@ -301,12 +302,12 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 	SolverDialog2 solverDialog = new SolverDialog2(cache, solver, SolverString, true, DataType.None);
 
 	neu = false;
-	solverDialog.show(backListner);
+	solverDialog.show(backListener);
     }
 
     boolean neu = false;
 
-    final SolverBackStringListner backListner = new SolverBackStringListner() {
+    final ISolverBackStringListener backListener = new ISolverBackStringListener() {
 
 	@Override
 	public void BackString(String backString) {
@@ -354,7 +355,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 	SolverDialog2 solverDialog = new SolverDialog2(cache, solver, SolverString, true, DataType.None);
 
 	neu = true;
-	solverDialog.show(backListner);
+	solverDialog.show(backListener);
     }
 
     final OnMsgBoxClickListener deleteListener = new OnMsgBoxClickListener() {
@@ -427,7 +428,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 	    } catch (Exception e) {
 		return;
 	    }
-	    EditWaypoint EdWp = new EditWaypoint(wp, new ReturnListner() {
+	    EditWaypoint EdWp = new EditWaypoint(wp, new IReturnListener() {
 		@Override
 		public void returnedWP(Waypoint waypoint) {
 		    if (waypoint != null) {

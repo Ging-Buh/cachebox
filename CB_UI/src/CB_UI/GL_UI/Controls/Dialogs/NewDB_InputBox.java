@@ -26,7 +26,7 @@ public class NewDB_InputBox extends GL_MsgBox {
 	msgBox.setTitle(title);
 
 	final chkBox chk = new chkBox("");
-	msgBox.mMsgBoxClickListner = new OnMsgBoxClickListener() {
+	msgBox.mMsgBoxClickListener = new OnMsgBoxClickListener() {
 
 	    @Override
 	    public boolean onClick(int which, Object data) {

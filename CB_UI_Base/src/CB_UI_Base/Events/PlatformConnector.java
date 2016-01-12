@@ -21,11 +21,11 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 /**
  * @author Longri
  */
-public class platformConector {
+public class PlatformConnector {
     /**
      * Interface definition for a callback to be invoked when a platform must show a view.
      */
-    public interface IShowViewListner {
+    public interface IShowViewListener {
 	void show(ViewID viewID, int left, int top, int right, int bottom);
 
 	void setContentSize(int left, int top, int right, int bottom);
@@ -42,10 +42,10 @@ public class platformConector {
 
     }
 
-    private static IShowViewListner showViewListner;
+    private static IShowViewListener showViewListener;
 
-    public static void setShowViewListner(IShowViewListner listner) {
-	showViewListner = listner;
+    public static void setShowViewListener(IShowViewListener listener) {
+	showViewListener = listener;
     }
 
     public static void showView(ViewID viewID, float x, float y, float width, float height) {
@@ -53,7 +53,7 @@ public class platformConector {
     }
 
     public static void showView(ViewID viewID, float x, float y, float width, float height, float leftMargin, float topMargin, float rightMargin, float bottomMargin) {
-	if (showViewListner != null) {
+	if (showViewListener != null) {
 	    GL.that.clearRenderViews();
 
 	    int left = (int) (x + leftMargin);
@@ -61,48 +61,48 @@ public class platformConector {
 	    int bottom = (int) (y + bottomMargin);
 	    int top = (int) topMargin;
 
-	    showViewListner.show(viewID, left, top, right, bottom);
+	    showViewListener.show(viewID, left, top, right, bottom);
 	}
     }
 
     public static void FirstShow() {
-	if (showViewListner != null) {
-	    showViewListner.firstShow();
+	if (showViewListener != null) {
+	    showViewListener.firstShow();
 	}
     }
 
     public static void DayNightSwitched() {
-	if (showViewListner != null) {
-	    showViewListner.dayNightSwitched();
+	if (showViewListener != null) {
+	    showViewListener.dayNightSwitched();
 	}
     }
 
     public static void hideView(ViewID viewID) {
-	if (showViewListner != null) {
-	    showViewListner.hide(viewID);
+	if (showViewListener != null) {
+	    showViewListener.hide(viewID);
 	}
     }
 
     public static void showForDialog() {
-	if (showViewListner != null) {
+	if (showViewListener != null) {
 	    GL.that.clearRenderViews();
-	    showViewListner.showForDialog();
+	    showViewListener.showForDialog();
 	}
     }
 
     public static void hideForDialog() {
-	if (showViewListner != null) {
-	    showViewListner.hideForDialog();
+	if (showViewListener != null) {
+	    showViewListener.hideForDialog();
 	}
     }
 
     public static void setContentSize(final int left, final int top, final int right, final int bottom) {
-	if (showViewListner != null) {
-	    showViewListner.setContentSize(left, top, right, bottom);
+	if (showViewListener != null) {
+	    showViewListener.setContentSize(left, top, right, bottom);
 	}
     }
 
-    public interface IHardwarStateListner {
+    public interface IHardwarStateListener {
 	boolean isOnline();
 
 	boolean isGPSon();
@@ -121,22 +121,22 @@ public class platformConector {
 
     }
 
-    private static IHardwarStateListner hardwareListner;
+    private static IHardwarStateListener hardwareListener;
 
-    public static void setisOnlineListner(IHardwarStateListner listner) {
-	hardwareListner = listner;
+    public static void setisOnlineListener(IHardwarStateListener listener) {
+	hardwareListener = listener;
     }
 
     static Thread threadVibrate;
 
     public static void vibrate() {
-	if (hardwareListner != null) {
+	if (hardwareListener != null) {
 	    if (threadVibrate == null)
 		threadVibrate = new Thread(new Runnable() {
 
 		    @Override
 		    public void run() {
-			hardwareListner.vibrate();
+			hardwareListener.vibrate();
 		    }
 		});
 	    threadVibrate.run();
@@ -145,44 +145,44 @@ public class platformConector {
     }
 
     public static boolean isOnline() {
-	if (hardwareListner != null) {
-	    return hardwareListner.isOnline();
+	if (hardwareListener != null) {
+	    return hardwareListener.isOnline();
 	}
 
 	return false;
     }
 
     public static boolean isGPSon() {
-	if (hardwareListner != null) {
-	    return hardwareListner.isGPSon();
+	if (hardwareListener != null) {
+	    return hardwareListener.isGPSon();
 	}
 
 	return false;
     }
 
     public static boolean isTorchAvailable() {
-	if (hardwareListner != null) {
-	    return hardwareListner.isTorchAvailable();
+	if (hardwareListener != null) {
+	    return hardwareListener.isTorchAvailable();
 	}
 	return false;
     }
 
     public static boolean isTorchOn() {
-	if (hardwareListner != null) {
-	    return hardwareListner.isTorchOn();
+	if (hardwareListener != null) {
+	    return hardwareListener.isTorchOn();
 	}
 	return false;
     }
 
     public static void switchTorch() {
-	if (hardwareListner != null) {
-	    hardwareListner.switchTorch();
+	if (hardwareListener != null) {
+	    hardwareListener.switchTorch();
 	}
     }
 
-    private static KeyEventListner mKeyListner;
+    private static KeyEventListener mKeyListener;
 
-    public interface KeyEventListner {
+    public interface KeyEventListener {
 	public boolean onKeyPressed(Character character);
 
 	public boolean keyUp(int KeyCode);
@@ -190,95 +190,93 @@ public class platformConector {
 	public boolean keyDown(int keycode);
     }
 
-    public static void setKeyEventListner(KeyEventListner listner) {
-	mKeyListner = listner;
+    public static void setKeyEventListener(KeyEventListener listener) {
+	mKeyListener = listener;
     }
 
     public static boolean sendKey(Character character) {
-	if (mKeyListner != null) {
-	    return mKeyListner.onKeyPressed(character);
+	if (mKeyListener != null) {
+	    return mKeyListener.onKeyPressed(character);
 	}
 
 	return false;
     }
 
     public static boolean sendKeyDown(int KeyCode) {
-	if (mKeyListner != null) {
-	    return mKeyListner.keyDown(KeyCode);
+	if (mKeyListener != null) {
+	    return mKeyListener.keyDown(KeyCode);
 	}
 
 	return false;
     }
 
     public static boolean sendKeyUp(int KeyCode) {
-	if (mKeyListner != null) {
-	    return mKeyListner.keyUp(KeyCode);
+	if (mKeyListener != null) {
+	    return mKeyListener.keyUp(KeyCode);
 	}
 
 	return false;
     }
 
-    // ------ get File from Fiele Dialog ------
+    // ------ get File from File Dialog ------
 
-    public interface IgetFileReturnListner {
-	public void getFieleReturn(String Path);
+    public interface IgetFileReturnListener {
+	public void getFileReturn(String Path);
     }
 
-    public interface IgetFileListner {
-	public void getFile(String initialPath, String extension, String TitleText, String ButtonText, IgetFileReturnListner returnListner);
+    public interface IgetFileListener {
+	public void getFile(String initialPath, String extension, String TitleText, String ButtonText, IgetFileReturnListener returnListener);
     }
 
-    private static IgetFileListner getFileListner;
+    private static IgetFileListener getFileListener;
 
-    public static void setGetFileListner(IgetFileListner listner) {
-	getFileListner = listner;
+    public static void setGetFileListener(IgetFileListener listener) {
+	getFileListener = listener;
     }
 
-    public static void getFile(String initialPath, String extension, String TitleText, String ButtonText, IgetFileReturnListner returnListner) {
-	if (getFileListner != null)
-	    getFileListner.getFile(initialPath, extension, TitleText, ButtonText, returnListner);
+    public static void getFile(String initialPath, String extension, String TitleText, String ButtonText, IgetFileReturnListener returnListener) {
+	if (getFileListener != null)
+	    getFileListener.getFile(initialPath, extension, TitleText, ButtonText, returnListener);
     }
-
-    // ----------------------------------------
 
     // ------ get folder from Folder Dialog ------
 
-    public interface IgetFolderReturnListner {
+    public interface IgetFolderReturnListener {
 	public void getFolderReturn(String Path);
     }
 
-    public interface IgetFolderListner {
-	public void getfolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListner returnListner);
+    public interface IgetFolderListener {
+	public void getfolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener);
     }
 
-    private static IgetFolderListner getfolderListner;
+    private static IgetFolderListener getFolderListener;
 
-    public static void setGetFolderListner(IgetFolderListner listner) {
-	getfolderListner = listner;
+    public static void setGetFolderListener(IgetFolderListener listener) {
+	getFolderListener = listener;
     }
 
-    public static void getFolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListner returnListner) {
-	if (getfolderListner != null)
-	    getfolderListner.getfolder(initialPath, TitleText, ButtonText, returnListner);
+    public static void getFolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener) {
+	if (getFolderListener != null)
+	    getFolderListener.getfolder(initialPath, TitleText, ButtonText, returnListener);
     }
 
     // ----------------------------------------
 
-    // ------ Quitt ------
+    // ------ Quit ------
 
     public interface IQuit {
 	public void Quit();
     }
 
-    static IQuit quitListner;
+    static IQuit quitListener;
 
-    public static void setQuitListner(IQuit listner) {
-	quitListner = listner;
+    public static void setQuitListener(IQuit listener) {
+	quitListener = listener;
     }
 
-    public static void callQuitt() {
-	if (quitListner != null)
-	    quitListner.Quit();
+    public static void callQuit() {
+	if (quitListener != null)
+	    quitListener.Quit();
     }
 
     // ----------------------------------------
@@ -286,18 +284,18 @@ public class platformConector {
     // ------ GetApiKey ------
 
     public interface IGetApiKey {
-	public void GetApiKey();
+	public void getApiKey();
     }
 
-    static IGetApiKey GetApiKeyListner;
+    static IGetApiKey getApiKeyListener;
 
-    public static void setGetApiKeyListner(IGetApiKey listner) {
-	GetApiKeyListner = listner;
+    public static void setGetApiKeyListener(IGetApiKey listener) {
+	getApiKeyListener = listener;
     }
 
     public static void callGetApiKeyt() {
-	if (GetApiKeyListner != null)
-	    GetApiKeyListner.GetApiKey();
+	if (getApiKeyListener != null)
+	    getApiKeyListener.getApiKey();
     }
 
     // ----------------------------------------
@@ -308,15 +306,15 @@ public class platformConector {
 	public void setScreenLockTime(int value);
     }
 
-    static IsetScreenLockTime setScreenLockTimeListner;
+    static IsetScreenLockTime setScreenLockTimeListener;
 
-    public static void setsetScreenLockTimeListner(IsetScreenLockTime listner) {
-	setScreenLockTimeListner = listner;
+    public static void setsetScreenLockTimeListener(IsetScreenLockTime listener) {
+	setScreenLockTimeListener = listener;
     }
 
-    public static void callsetScreenLockTimet(int value) {
-	if (setScreenLockTimeListner != null)
-	    setScreenLockTimeListner.setScreenLockTime(value);
+    public static void setScreenLockTime(int value) {
+	if (setScreenLockTimeListener != null)
+	    setScreenLockTimeListener.setScreenLockTime(value);
     }
 
     // ----------------------------------------
@@ -327,15 +325,15 @@ public class platformConector {
 	public void setKeybordFocus(boolean value);
     }
 
-    static IsetKeybordFocus setKeybordFocusListner;
+    static IsetKeybordFocus setKeybordFocusListener;
 
-    public static void setsetKeybordFocusListner(IsetKeybordFocus listner) {
-	setKeybordFocusListner = listner;
+    public static void setsetKeybordFocusListener(IsetKeybordFocus listener) {
+	setKeybordFocusListener = listener;
     }
 
     public static void callsetKeybordFocus(boolean value) {
-	if (setKeybordFocusListner != null)
-	    setKeybordFocusListner.setKeybordFocus(value);
+	if (setKeybordFocusListener != null)
+	    setKeybordFocusListener.setKeybordFocus(value);
     }
 
     // ----------------------------------------
@@ -346,15 +344,15 @@ public class platformConector {
 	public void call(String url);
     }
 
-    static ICallUrl CallUrlListner;
+    static ICallUrl CallUrlListener;
 
-    public static void setCallUrlListner(ICallUrl listner) {
-	CallUrlListner = listner;
+    public static void setCallUrlListener(ICallUrl listener) {
+	CallUrlListener = listener;
     }
 
     public static void callUrl(String url) {
-	if (CallUrlListner != null)
-	    CallUrlListner.call(url);
+	if (CallUrlListener != null)
+	    CallUrlListener.call(url);
     }
 
     // ----------------------------------------
@@ -378,15 +376,15 @@ public class platformConector {
     // -----------------------------------------
 
     public static void switchToGpsMeasure() {
-	if (hardwareListner != null) {
-	    hardwareListner.switchToGpsMeasure();
+	if (hardwareListener != null) {
+	    hardwareListener.switchToGpsMeasure();
 	    ;
 	}
     }
 
     public static void switchToGpsDefault() {
-	if (hardwareListner != null) {
-	    hardwareListner.switchtoGpsDefault();
+	if (hardwareListener != null) {
+	    hardwareListener.switchtoGpsDefault();
 	}
     }
 

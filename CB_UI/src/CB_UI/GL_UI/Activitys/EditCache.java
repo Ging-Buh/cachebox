@@ -16,7 +16,7 @@ import CB_Locator.Coordinate;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Controls.CoordinateButton;
-import CB_UI.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
+import CB_UI.GL_UI.Controls.CoordinateButton.ICoordinateChangedListener;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.Enums.WrapType;
@@ -31,7 +31,7 @@ import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldStyle;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.Spinner;
-import CB_UI_Base.GL_UI.Controls.Spinner.selectionChangedListner;
+import CB_UI_Base.GL_UI.Controls.Spinner.ISelectionChangedListener;
 import CB_UI_Base.GL_UI.Controls.SpinnerAdapter;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
@@ -102,7 +102,7 @@ public class EditCache extends ActivityBase
 	registerTextField(cacheOwner);
 	// --- Coords
 	cacheCoords = new CoordinateButton("cacheCoords");
-	setCacheCoordsChangeListner();
+	setCacheCoordsChangeListener();
 	mainPanel.addLast(cacheCoords);
 	// --- Title
 	cacheTitle = (new EditTextField(this, this.name + " cacheTitle")).setWrapType(WrapType.MULTILINE);
@@ -149,7 +149,7 @@ public class EditCache extends ActivityBase
 
     }
 
-    public void Update(Cache cache) {
+    public void update(Cache cache) {
 	newValues = new Cache(true);
 	newValues.copyFrom(cache);
 	newValues.setShortDescription("");
@@ -159,7 +159,7 @@ public class EditCache extends ActivityBase
 	doShow();
     }
 
-    public void Create() {
+    public void create() {
 	newValues = new Cache(true);
 	newValues.Type = CacheTypes.Traditional;
 	newValues.Size = CacheSizes.micro;
@@ -300,8 +300,8 @@ public class EditCache extends ActivityBase
 	};
     }
 
-    private selectionChangedListner cacheTypSelection() {
-	return new selectionChangedListner() {
+    private ISelectionChangedListener cacheTypSelection() {
+	return new ISelectionChangedListener() {
 	    @Override
 	    public void selectionChanged(int index) {
 		EditCache.this.show();
@@ -331,8 +331,8 @@ public class EditCache extends ActivityBase
 	};
     }
 
-    private selectionChangedListner cacheSizeSelection() {
-	return new selectionChangedListner() {
+    private ISelectionChangedListener cacheSizeSelection() {
+	return new ISelectionChangedListener() {
 	    @Override
 	    public void selectionChanged(int index) {
 		EditCache.this.show();
@@ -341,8 +341,8 @@ public class EditCache extends ActivityBase
 	};
     }
 
-    private void setCacheCoordsChangeListner() {
-	cacheCoords.setCoordinateChangedListner(new CoordinateChangeListner() {
+    private void setCacheCoordsChangeListener() {
+	cacheCoords.setCoordinateChangedListener(new ICoordinateChangedListener() {
 	    @Override
 	    public void coordinateChanged(Coordinate coord) {
 		EditCache.this.show();
@@ -370,8 +370,8 @@ public class EditCache extends ActivityBase
 	};
     }
 
-    private selectionChangedListner cacheDifficultySelection() {
-	return new selectionChangedListner() {
+    private ISelectionChangedListener cacheDifficultySelection() {
+	return new ISelectionChangedListener() {
 	    @Override
 	    public void selectionChanged(int index) {
 		EditCache.this.show();
@@ -399,8 +399,8 @@ public class EditCache extends ActivityBase
 	};
     }
 
-    private selectionChangedListner cacheTerrainSelection() {
-	return new selectionChangedListner() {
+    private ISelectionChangedListener cacheTerrainSelection() {
+	return new ISelectionChangedListener() {
 	    @Override
 	    public void selectionChanged(int index) {
 		EditCache.this.show();

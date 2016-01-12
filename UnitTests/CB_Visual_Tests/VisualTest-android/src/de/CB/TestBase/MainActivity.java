@@ -14,15 +14,15 @@ import CB_Locator.GpsStrength;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
 import CB_Locator.Events.GpsStateChangeEventList;
-import CB_UI_Base.Events.platformConector;
-import CB_UI_Base.Events.platformConector.IQuit;
+import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformConnector.IQuit;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.DevicesSizes;
 import CB_Utils.Plattform;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.FileIO;
-import CB_Utils.Util.iChanged;
+import CB_Utils.Util.IChanged;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -227,7 +227,7 @@ public class MainActivity extends AndroidApplication implements LocationListener
 
 		// Use Imperial units?
 		CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
-		Config.ImperialUnits.addChangedEventListner(new iChanged()
+		Config.ImperialUnits.addChangedEventListener(new IChanged()
 		{
 			@Override
 			public void isChanged()
@@ -238,7 +238,7 @@ public class MainActivity extends AndroidApplication implements LocationListener
 
 		// GPS update time?
 		CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
-		Config.gpsUpdateTime.addChangedEventListner(new iChanged()
+		Config.gpsUpdateTime.addChangedEventListener(new IChanged()
 		{
 
 			@Override
@@ -250,7 +250,7 @@ public class MainActivity extends AndroidApplication implements LocationListener
 
 		// Use magnetic Compass?
 		CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
-		Config.HardwareCompass.addChangedEventListner(new iChanged()
+		Config.HardwareCompass.addChangedEventListener(new IChanged()
 		{
 			@Override
 			public void isChanged()
@@ -261,7 +261,7 @@ public class MainActivity extends AndroidApplication implements LocationListener
 
 		// Magnetic compass level
 		CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
-		Config.HardwareCompassLevel.addChangedEventListner(new iChanged()
+		Config.HardwareCompassLevel.addChangedEventListener(new IChanged()
 		{
 			@Override
 			public void isChanged()
@@ -560,10 +560,10 @@ public class MainActivity extends AndroidApplication implements LocationListener
 		if (cm != null) Global.setDefaultClipboard(acb);
 
 		CB_Android_FileExplorer fileExplorer = new CB_Android_FileExplorer(this);
-		platformConector.setGetFileListner(fileExplorer);
-		platformConector.setGetFolderListner(fileExplorer);
+		PlatformConnector.setGetFileListener(fileExplorer);
+		PlatformConnector.setGetFolderListener(fileExplorer);
 
-		platformConector.setQuitListner(new IQuit()
+		PlatformConnector.setQuitListener(new IQuit()
 		{
 			@Override
 			public void Quit()

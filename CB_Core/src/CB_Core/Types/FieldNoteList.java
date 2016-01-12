@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 import CB_Core.CB_Core_Settings;
 import CB_Core.Database;
 import CB_Core.LogTypes;
-import CB_Utils.Util.iChanged;
+import CB_Utils.Util.IChanged;
 import de.cb.sqlite.CoreCursor;
 
 public class FieldNoteList extends ArrayList<FieldNoteEntry> {
@@ -43,11 +43,11 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
     private int actCropedLength = -1;
 
     public FieldNoteList() {
-	CB_Core_Settings.FieldNotesLoadAll.addChangedEventListner(settingsChangedListner);
-	CB_Core_Settings.FieldNotesLoadLength.addChangedEventListner(settingsChangedListner);
+	CB_Core_Settings.FieldNotesLoadAll.addChangedEventListener(settingsChangedListener);
+	CB_Core_Settings.FieldNotesLoadLength.addChangedEventListener(settingsChangedListener);
     }
 
-    iChanged settingsChangedListner = new iChanged() {
+    IChanged settingsChangedListener = new IChanged() {
 
 	@Override
 	public void isChanged() {

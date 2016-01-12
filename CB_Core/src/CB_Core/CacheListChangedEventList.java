@@ -25,9 +25,9 @@ import CB_Core.Types.Cache;
  */
 public class CacheListChangedEventList
 {
-	public static ArrayList<CacheListChangedEventListner> list = new ArrayList<CacheListChangedEventListner>();
+	public static ArrayList<CacheListChangedEventListener> list = new ArrayList<CacheListChangedEventListener>();
 
-	public static void Add(CacheListChangedEventListner event)
+	public static void Add(CacheListChangedEventListener event)
 	{
 		synchronized (list)
 		{
@@ -35,7 +35,7 @@ public class CacheListChangedEventList
 		}
 	}
 
-	public static void Remove(CacheListChangedEventListner event)
+	public static void Remove(CacheListChangedEventListener event)
 	{
 		synchronized (list)
 		{
@@ -105,7 +105,7 @@ public class CacheListChangedEventList
 			{
 				synchronized (list)
 				{
-					for (CacheListChangedEventListner event : list)
+					for (CacheListChangedEventListener event : list)
 					{
 						if (event == null) continue;
 						event.CacheListChangedEvent();

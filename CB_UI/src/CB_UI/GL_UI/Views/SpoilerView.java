@@ -112,14 +112,14 @@ public class SpoilerView extends CB_View_Base {
 		    loader.setImage(imageEntry.LocalPath);
 
 		    GalleryItem item = new GalleryItem(gallery.copy(), i, loader);
-		    item.setOnDoubleClickListener(onItemClickListner);
+		    item.setOnDoubleClickListener(onItemClickListener);
 
 		    galaryItems.add(item);
 
 		    ImageLoader overviewloader = new ImageLoader();
 		    overviewloader.setImage(imageEntry.LocalPath);
 		    GalleryItem overviewItem = new GalleryItem(orItemRec, i, loader);
-		    overviewItem.setOnClickListener(onItemselectClickListner);
+		    overviewItem.setOnClickListener(onItemselectClickListener);
 		    if (firstItem == null)
 			firstItem = overviewItem;
 		    overviewItems.add(overviewItem);
@@ -249,7 +249,7 @@ public class SpoilerView extends CB_View_Base {
 	}
     }
 
-    private OnClickListener onItemClickListner = new OnClickListener() {
+    private final OnClickListener onItemClickListener = new OnClickListener() {
 
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -260,7 +260,7 @@ public class SpoilerView extends CB_View_Base {
 	}
     };
 
-    private OnClickListener onItemselectClickListner = new OnClickListener() {
+    private final OnClickListener onItemselectClickListener = new OnClickListener() {
 
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {

@@ -24,7 +24,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import CB_UI.GlobalCore;
-import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
@@ -148,10 +148,10 @@ public class QuickButtonItem extends ListViewItemBase {
 	    }
 	} else if (mAction.getId() == MenuID.AID_TORCH) {
 
-	    if (platformConector.isTorchOn() && torchState != 1) {
+	    if (PlatformConnector.isTorchOn() && torchState != 1) {
 		mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.torch_on_67.ordinal())));
 		torchState = 1;
-	    } else if (!platformConector.isTorchOn() && torchState != 0) {
+	    } else if (!PlatformConnector.isTorchOn() && torchState != 0) {
 		mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.torch_Off_68.ordinal())));
 		torchState = 0;
 	    }

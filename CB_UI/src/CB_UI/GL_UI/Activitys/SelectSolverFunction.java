@@ -12,7 +12,7 @@ import CB_Core.Solver.Solver;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Controls.Button;
-import CB_UI_Base.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
+import CB_UI_Base.GL_UI.Controls.CollapseBox.IAnimatedHeightChangedListener;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.LinearCollapseBox;
 import CB_UI_Base.GL_UI.Controls.Linearlayout;
@@ -27,22 +27,22 @@ import CB_UI_Base.Math.UI_Size_Base;
 
 public class SelectSolverFunction extends ButtonDialog {
     private Label desc;
-    private IFunctionResult mResultListner;
+    private final IFunctionResult mResultListener;
     private ScrollBox scrollBox;
     private Linearlayout mLinearLayout;
-    private CB_RectF categoryBtnRec, itemBtnRec;
+    private final CB_RectF categoryBtnRec, itemBtnRec;
     private Function selectedFunction;
-    private DataType dataType;
-    private Solver solver;
+    private final DataType dataType;
+    private final Solver solver;
 
     public interface IFunctionResult {
 	public void selectedFunction(Function function);
     }
 
-    public SelectSolverFunction(Solver solver, DataType dataType, IFunctionResult resultListner) {
+    public SelectSolverFunction(Solver solver, DataType dataType, IFunctionResult resultListener) {
 	super(ActivityRec(), "SelectSolverFunctionActivity", "", "", MessageBoxButtons.OKCancel, MessageBoxIcon.None, null);
 	this.solver = solver;
-	mResultListner = resultListner;
+	mResultListener = resultListener;
 	this.dataType = dataType;
 
 	// Grössen für die CategoryButtons und ItemButtons berechnen!
@@ -76,11 +76,11 @@ public class SelectSolverFunction extends ButtonDialog {
 	button1.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		if (mResultListner != null) {
+		if (mResultListener != null) {
 		    try {
-			mResultListner.selectedFunction(selectedFunction);
+			mResultListener.selectedFunction(selectedFunction);
 		    } catch (NullPointerException e) {
-			throw new IllegalArgumentException("Der Returnlistner kann hier die Rückgabe von NULL nicht verarbeiten!");
+			throw new IllegalArgumentException("Der Returnlistener kann hier die Rückgabe von NULL nicht verarbeiten!");
 		    }
 		}
 		GL.that.closeDialog(SelectSolverFunction.this);
@@ -91,11 +91,11 @@ public class SelectSolverFunction extends ButtonDialog {
 	button3.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		if (mResultListner != null)
+		if (mResultListener != null)
 		    try {
-			mResultListner.selectedFunction(null);
+			mResultListener.selectedFunction(null);
 		    } catch (NullPointerException e) {
-			throw new IllegalArgumentException("Der Returnlistner kann hier die Rückgabe von NULL nicht verarbeiten!");
+			throw new IllegalArgumentException("Der Returnlistener kann hier die Rückgabe von NULL nicht verarbeiten!");
 		    }
 		GL.that.closeDialog(SelectSolverFunction.this);
 		return true;
@@ -120,15 +120,15 @@ public class SelectSolverFunction extends ButtonDialog {
 	// @Override
 	// public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 	// {
-	// if (mResultListner != null)
+	// if (mResultListener != null)
 	// {
 	// try
 	// {
-	// mResultListner.selectedFunction(selectedFunction);
+	// mResultListener.selectedFunction(selectedFunction);
 	// }
 	// catch (NullPointerException e)
 	// {
-	// throw new IllegalArgumentException("Der Returnlistner kann hier die Rückgabe von NULL nicht verarbeiten!");
+	// throw new IllegalArgumentException("Der Returnlistener kann hier die Rückgabe von NULL nicht verarbeiten!");
 	// }
 	// }
 	// GL.that.closeDialog(SelectSolverFunction.this);
@@ -142,13 +142,13 @@ public class SelectSolverFunction extends ButtonDialog {
 	// @Override
 	// public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 	// {
-	// if (mResultListner != null) try
+	// if (mResultListener != null) try
 	// {
-	// mResultListner.selectedFunction(null);
+	// mResultListener.selectedFunction(null);
 	// }
 	// catch (NullPointerException e)
 	// {
-	// throw new IllegalArgumentException("Der Returnlistner kann hier die Rückgabe von NULL nicht verarbeiten!");
+	// throw new IllegalArgumentException("Der Returnlistener kann hier die Rückgabe von NULL nicht verarbeiten!");
 	// }
 	// GL.that.closeDialog(SelectSolverFunction.this);
 	// return true;
@@ -197,8 +197,8 @@ public class SelectSolverFunction extends ButtonDialog {
 
 	mLinearLayout.setZeroPos();
 
-	// hier setzen wir ein LayoutChanged Listner, um die innere Höhe der ScrollBox bei einer veränderung der Höhe zu setzen!
-	mLinearLayout.setLayoutChangedListner(new LayoutChanged() {
+	// hier setzen wir ein LayoutChanged Listener, um die innere Höhe der ScrollBox bei einer Veränderung der Höhe zu setzen!
+	mLinearLayout.setLayoutChangedListener(new LayoutChanged() {
 	    @Override
 	    public void LayoutIsChanged(Linearlayout linearLayout, float newHeight) {
 		mLinearLayout.setZeroPos();
@@ -324,7 +324,7 @@ public class SelectSolverFunction extends ButtonDialog {
 
 		    // Wenn die CollapseBox ihre größe verändert, muss dies noch dem LinearLayout mitgeteilt werden und auch der ScrollBox,
 		    // dass sich die innere Höhe geändert hat!
-		    lay.setAnimationListner(new animatetHeightChangedListner() {
+		    lay.setAnimationListener(new IAnimatedHeightChangedListener() {
 			@Override
 			public void animatedHeightChanged(float Height) {
 			    mLinearLayout.layout();

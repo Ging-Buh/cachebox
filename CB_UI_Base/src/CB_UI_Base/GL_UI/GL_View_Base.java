@@ -381,9 +381,9 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     /**
-     * Die renderChilds() Methode wird vom GL_Listner bei jedem Render-Vorgang aufgerufen.
+     * Die renderChilds() Methode wird vom GL_Listener bei jedem Render-Vorgang aufgerufen.
      * Hier wird dann zuerst die render() Methode dieser View aufgerufen. 
-     * Danach werden alle Childs iteriert und dessen renderChilds() Methode aufgerufen, wenn die View sichtbar ist (Visibility).
+     * Danach werden alle Childs iteriert und deren renderChilds() Methode aufgerufen, wenn die View sichtbar ist (Visibility).
      * 
      * @param batch
      */
@@ -1090,15 +1090,15 @@ public abstract class GL_View_Base extends CB_RectF {
 	mOnClickListener = listener;
     }
 
-    public OnClickListener getOnClickListner() {
+    public OnClickListener getOnClickListener() {
 	return mOnClickListener;
     }
 
-    public OnClickListener getOnLongClickListner() {
+    public OnClickListener getOnLongClickListener() {
 	return mOnLongClickListener;
     }
 
-    public OnClickListener getOnDoubleClickListner() {
+    public OnClickListener getOnDoubleClickListener() {
 	return mOnDoubleClickListener;
     }
 
@@ -1219,18 +1219,18 @@ public abstract class GL_View_Base extends CB_RectF {
 
     // ############# Skin changed ################
 
-    private interface skinChangedEventListner {
+    private interface SkinChangedEventListener {
 	public void SkinChanged();
     }
 
-    private static ArrayList<skinChangedEventListner> skinChangedEventList = new ArrayList<GL_View_Base.skinChangedEventListner>();
+    private static ArrayList<SkinChangedEventListener> skinChangedEventList = new ArrayList<GL_View_Base.SkinChangedEventListener>();
 
     public void registerSkinChangedEvent() {
 	if (calling)
 	    return;
 	// synchronized (skinChangedEventList)
 	// {
-	skinChangedEventList.add(listner);
+	skinChangedEventList.add(mSkinChangedEventListener);
 	// }
     }
 
@@ -1240,15 +1240,15 @@ public abstract class GL_View_Base extends CB_RectF {
 	// synchronized (skinChangedEventList)
 	// {
 	calling = true;
-	for (skinChangedEventListner listner : skinChangedEventList) {
-	    if (listner != null)
-		listner.SkinChanged();
+	for (SkinChangedEventListener listener : skinChangedEventList) {
+	    if (listener != null)
+		listener.SkinChanged();
 	}
 	calling = false;
 	// }
     }
 
-    protected skinChangedEventListner listner = new skinChangedEventListner() {
+    protected SkinChangedEventListener mSkinChangedEventListener = new SkinChangedEventListener() {
 
 	@Override
 	public void SkinChanged() {

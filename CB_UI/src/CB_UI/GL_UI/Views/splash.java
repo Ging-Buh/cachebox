@@ -41,7 +41,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.SelectDB;
-import CB_UI.GL_UI.Activitys.SelectDB.ReturnListner;
+import CB_UI.GL_UI.Activitys.SelectDB.IReturnListener;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.Image;
@@ -339,7 +339,7 @@ public class splash extends MainViewBase {
 	if ((fileList.size() > 1) && Config.MultiDBAsk.getValue() && !GlobalCore.restartAfterKill) {
 	    breakForWait = true;
 	    SelectDB selectDBDialog = new SelectDB(this, "SelectDbDialog", true);
-	    selectDBDialog.setReturnListner(new ReturnListner() {
+	    selectDBDialog.setReturnListener(new IReturnListener() {
 		@Override
 		public void back() {
 		    returnFromSelectDB();

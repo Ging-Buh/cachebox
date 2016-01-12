@@ -22,18 +22,6 @@ import java.util.HashMap;
 
 import org.slf4j.LoggerFactory;
 
-import CB_UI_Base.CB_Texturepacker.Settings;
-import CB_UI_Base.CB_Texturepacker.TexturePacker_Base;
-import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
-import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.utils.GifDecoder;
-import CB_UI_Base.Math.UI_Size_Base;
-import CB_UI_Base.settings.CB_UI_Base_Settings;
-import CB_Utils.Util.Downloader;
-import CB_Utils.Util.FileIO;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
@@ -46,6 +34,18 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
+import CB_UI_Base.CB_Texturepacker.Settings;
+import CB_UI_Base.CB_Texturepacker.TexturePacker_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.utils.GifDecoder;
+import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
+import CB_Utils.Util.Downloader;
+import CB_Utils.Util.FileIO;
 
 /**
  * 
@@ -83,16 +83,16 @@ public class ImageLoader {
 	public void sizechanged(float width, float height);
     }
 
-    private resize resizeListner;
+    private resize resizeListener;
     private float resizeWidth = 0;
 
-    public void setResizeListner(resize listner, float width) {
-	resizeListner = listner;
+    public void setResizeListener(resize listener, float width) {
+	resizeListener = listener;
 	resizeWidth = width;
     }
 
-    public resize getResizeListner() {
-	return resizeListner;
+    public resize getResizeListener() {
+	return resizeListener;
     }
 
     /**
@@ -331,7 +331,7 @@ public class ImageLoader {
 	mPath = Path.replace("file://", "");
 	if (getDrawable(0) != null) {
 	    dispose();
-	    // das laden des Images in das Sprite darf erst in der Render Methode passieren, damit es aus dem GL_Thread herraus läuft.
+	    // das laden des Images in das Sprite darf erst in der Render Methode passieren, damit es aus dem GL_Thread herraus lï¿½uft.
 	}
 	generate();
     }
@@ -343,7 +343,7 @@ public class ImageLoader {
 	spriteWidth = sprite.getWidth();
 	spriteHeight = sprite.getHeight();
 
-	if (this.resizeListner != null) {
+	if (this.resizeListener != null) {
 	    float proportionWidth = resizeWidth / spriteWidth;
 	    if (proportionWidth > UI_Size_Base.that.getScale()) {
 		proportionWidth = UI_Size_Base.that.getScale();
@@ -352,7 +352,7 @@ public class ImageLoader {
 	    float newWidth = spriteWidth * proportionWidth;//* UI_Size_Base.that.getScale();
 	    float newHeight = spriteHeight * proportionWidth;//* UI_Size_Base.that.getScale();
 	    sprite.scale(proportionWidth);
-	    this.resizeListner.sizechanged(newWidth, newHeight);
+	    this.resizeListener.sizechanged(newWidth, newHeight);
 
 	}
 
@@ -432,7 +432,7 @@ public class ImageLoader {
 		spriteWidth = animSprite.getWidth();
 		spriteHeight = animSprite.getHeight();
 
-		if (this.resizeListner != null) {
+		if (this.resizeListener != null) {
 		    float proportionWidth = resizeWidth / spriteWidth;
 		    if (proportionWidth > UI_Size_Base.that.getScale()) {
 			proportionWidth = UI_Size_Base.that.getScale();
@@ -441,7 +441,7 @@ public class ImageLoader {
 		    float newWidth = spriteWidth * proportionWidth;
 		    float newHeight = spriteHeight * proportionWidth;
 		    animSprite.scale(proportionWidth);
-		    this.resizeListner.sizechanged(newWidth, newHeight);
+		    this.resizeListener.sizechanged(newWidth, newHeight);
 
 		}
 

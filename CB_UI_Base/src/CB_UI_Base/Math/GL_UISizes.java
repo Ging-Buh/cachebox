@@ -24,7 +24,7 @@ import CB_UI_Base.Global;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Skin.CB_Skin;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
-import CB_Utils.Util.iChanged;
+import CB_Utils.Util.IChanged;
 
 /**
  * Diese Klasse Kapselt die Werte, welche in der OpenGL Map benötigt werden. Auch die Benutzen Fonts werden hier gespeichert, da die Grösse
@@ -90,7 +90,7 @@ public class GL_UISizes implements SizeChangedEvent {
 	if (!isInitial) {
 	    calcSizes();
 
-	    CB_UI_Base_Settings.nightMode.addChangedEventListner(new iChanged() {
+	    CB_UI_Base_Settings.nightMode.addChangedEventListener(new IChanged() {
 
 		@Override
 		public void isChanged() {

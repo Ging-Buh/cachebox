@@ -32,8 +32,8 @@ import org.mapsforge.map.swing.util.JavaUtilPreferences;
 
 import CB_Locator.Location;
 import CB_Locator.Location.ProviderType;
-import CB_UI_Base.Events.platformConector;
-import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
+import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
 import ch.fhnw.imvs.gpssimulator.SimulatorMain;
 import ch.fhnw.imvs.gpssimulator.data.GPSData;
 import ch.fhnw.imvs.gpssimulator.data.GPSDataListener;
@@ -141,10 +141,10 @@ public class MapPanel extends JPanel implements ActionListener
 		if (event.getActionCommand().equals("Load Map"))
 		{
 			// load Map
-			platformConector.getFile("", "", "Load Map", "Load", new IgetFileReturnListner()
+			PlatformConnector.getFile("", "", "Load Map", "Load", new IgetFileReturnListener()
 			{
 				@Override
-				public void getFieleReturn(String Path)
+				public void getFileReturn(String Path)
 				{
 					SimulatorMain.prefs.put("loadedMap", Path);
 					try

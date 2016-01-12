@@ -7,7 +7,7 @@ import java.util.TimerTask;
 import org.slf4j.LoggerFactory;
 
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
@@ -105,7 +105,7 @@ public class AppRater
 
 					sb.append(APP_PACKAGE_NAME);
 
-					platformConector.callUrl(sb.toString());
+					PlatformConnector.callUrl(sb.toString());
 					break;
 				case 2:
 					// later

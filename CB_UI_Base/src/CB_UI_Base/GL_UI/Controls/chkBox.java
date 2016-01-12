@@ -13,7 +13,7 @@ public class chkBox extends Button
 
 	protected Drawable drawableDisabledChk;
 	protected boolean isChk = false;
-	protected OnCheckedChangeListener changeListner;
+	protected OnCheckChangedListener changeListener;
 
 	public chkBox(String name)
 	{
@@ -71,7 +71,7 @@ public class chkBox extends Button
 	protected void Initial()
 	{
 
-		// die einzelnen Hintergründe werden hier anders benutzt
+		// die einzelnen Hintergrï¿½nde werden hier anders benutzt
 		// drawableNormal= unchecked
 		// drawablePressed= checked
 		// drawableDisabled= unchecked Disabled
@@ -129,7 +129,7 @@ public class chkBox extends Button
 		if (!isDisabled)
 		{
 			isChk = !isChk;
-			if (changeListner != null) changeListner.onCheckedChanged(this, isChk);
+			if (changeListener != null) changeListener.onCheckedChanged(this, isChk);
 		}
 		if (mOnClickListener != null) mOnClickListener.onClick(this, x, y, pointer, button);
 		return true;
@@ -138,7 +138,7 @@ public class chkBox extends Button
 	public void setChecked(boolean b)
 	{
 		isChk = b;
-		if (changeListner != null) changeListner.onCheckedChanged(this, isChk);
+		if (changeListener != null) changeListener.onCheckedChanged(this, isChk);
 	}
 
 	@Override
@@ -155,7 +155,7 @@ public class chkBox extends Button
 	/**
 	 * Interface definition for a callback to be invoked when the checked state of a compound button changed.
 	 */
-	public static interface OnCheckedChangeListener
+	public static interface OnCheckChangedListener
 	{
 		/**
 		 * Called when the checked state of a compound button has changed.
@@ -168,9 +168,9 @@ public class chkBox extends Button
 		void onCheckedChanged(chkBox view, boolean isChecked);
 	}
 
-	public void setOnCheckedChangeListener(OnCheckedChangeListener listner)
+	public void setOnCheckChangedListener(OnCheckChangedListener listener)
 	{
-		changeListner = listner;
+		changeListener = listener;
 	}
 
 }

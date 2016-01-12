@@ -13,7 +13,7 @@ import CB_Core.Types.Categories;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_Utils.Settings.PlatformSettings;
-import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
+import CB_Utils.Settings.PlatformSettings.IPlatformSettings;
 import CB_Utils.Settings.SettingBase;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingInt;
@@ -30,7 +30,7 @@ public class InitTestDBs {
     static Preferences prefs = Preferences.userNodeForPackage(InitTestDBs.class);
 
     /**
-     * Initialisiert die Config für die Tests! initialisiert wird die Config mit der unter Testdata abgelegten config.db3
+     * Initialisiert die Config fï¿½r die Tests! initialisiert wird die Config mit der unter Testdata abgelegten config.db3
      */
     public static void InitalConfig() {
 
@@ -66,7 +66,7 @@ public class InitTestDBs {
     }
 
     private static void initialPlatformSettings() {
-	PlatformSettings.setPlatformSettings(new iPlatformSettings() {
+	PlatformSettings.setPlatformSettings(new IPlatformSettings() {
 
 	    @Override
 	    public void Write(SettingBase<?> setting) {
@@ -110,7 +110,7 @@ public class InitTestDBs {
     }
 
     /**
-     * Initialisiert eine CacheBox DB für die Tests
+     * Initialisiert eine CacheBox DB fï¿½r die Tests
      * 
      * @param database
      *            Pfad zur DB

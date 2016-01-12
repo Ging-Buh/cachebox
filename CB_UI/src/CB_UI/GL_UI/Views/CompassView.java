@@ -23,7 +23,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import CB_Core.CacheListChangedEventList;
-import CB_Core.CacheListChangedEventListner;
+import CB_Core.CacheListChangedEventListener;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
@@ -58,10 +58,10 @@ import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
+import CB_Utils.Util.IChanged;
 import CB_Utils.Util.UnitFormatter;
-import CB_Utils.Util.iChanged;
 
-public class CompassView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent, invalidateTextureEvent, CacheListChangedEventListner {
+public class CompassView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent, invalidateTextureEvent, CacheListChangedEventListener {
     private CB_RectF imageRec;
     private Image frame, scale, arrow, att[], Icon, Sun, Moon;
 
@@ -121,28 +121,28 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	if (isInitial)
 	    return;
 	readSettings();
-	registerSetingsChangedListners();
+	registerSetingsChangedListeners();
 	createControls();
 	Layout();
 	isInitial = true;
     }
 
-    private void registerSetingsChangedListners() {
-	Config.CompassShowMap.addChangedEventListner(SettingChangedListner);
-	Config.CompassShowWP_Name.addChangedEventListner(SettingChangedListner);
-	Config.CompassShowWP_Icon.addChangedEventListner(SettingChangedListner);
-	Config.CompassShowAttributes.addChangedEventListner(SettingChangedListner);
-	Config.CompassShowGcCode.addChangedEventListner(SettingChangedListner);
-	Config.CompassShowCoords.addChangedEventListner(SettingChangedListner);
-	Config.CompassShowWpDesc.addChangedEventListner(SettingChangedListner);
-	Config.CompassShowSatInfos.addChangedEventListner(SettingChangedListner);
-	Config.CompassShowSunMoon.addChangedEventListner(SettingChangedListner);
-	Config.CompassShowTargetDirection.addChangedEventListner(SettingChangedListner);
-	Config.CompassShowSDT.addChangedEventListner(SettingChangedListner);
-	Config.CompassShowLastFound.addChangedEventListner(SettingChangedListner);
+    private void registerSetingsChangedListeners() {
+	Config.CompassShowMap.addChangedEventListener(settingChangedListener);
+	Config.CompassShowWP_Name.addChangedEventListener(settingChangedListener);
+	Config.CompassShowWP_Icon.addChangedEventListener(settingChangedListener);
+	Config.CompassShowAttributes.addChangedEventListener(settingChangedListener);
+	Config.CompassShowGcCode.addChangedEventListener(settingChangedListener);
+	Config.CompassShowCoords.addChangedEventListener(settingChangedListener);
+	Config.CompassShowWpDesc.addChangedEventListener(settingChangedListener);
+	Config.CompassShowSatInfos.addChangedEventListener(settingChangedListener);
+	Config.CompassShowSunMoon.addChangedEventListener(settingChangedListener);
+	Config.CompassShowTargetDirection.addChangedEventListener(settingChangedListener);
+	Config.CompassShowSDT.addChangedEventListener(settingChangedListener);
+	Config.CompassShowLastFound.addChangedEventListener(settingChangedListener);
     }
 
-    iChanged SettingChangedListner = new iChanged() {
+    IChanged settingChangedListener = new IChanged() {
 	@Override
 	public void isChanged() {
 	    readSettings();
@@ -936,20 +936,20 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	}
 
 	// release all EventHandler
-	Config.CompassShowMap.removeChangedEventListner(SettingChangedListner);
-	Config.CompassShowWP_Name.removeChangedEventListner(SettingChangedListner);
-	Config.CompassShowWP_Icon.removeChangedEventListner(SettingChangedListner);
-	Config.CompassShowAttributes.removeChangedEventListner(SettingChangedListner);
-	Config.CompassShowGcCode.removeChangedEventListner(SettingChangedListner);
-	Config.CompassShowCoords.removeChangedEventListner(SettingChangedListner);
-	Config.CompassShowWpDesc.removeChangedEventListner(SettingChangedListner);
-	Config.CompassShowSatInfos.removeChangedEventListner(SettingChangedListner);
-	Config.CompassShowSunMoon.removeChangedEventListner(SettingChangedListner);
-	Config.CompassShowTargetDirection.removeChangedEventListner(SettingChangedListner);
-	Config.CompassShowSDT.removeChangedEventListner(SettingChangedListner);
-	Config.CompassShowLastFound.removeChangedEventListner(SettingChangedListner);
+	Config.CompassShowMap.removeChangedEventListener(settingChangedListener);
+	Config.CompassShowWP_Name.removeChangedEventListener(settingChangedListener);
+	Config.CompassShowWP_Icon.removeChangedEventListener(settingChangedListener);
+	Config.CompassShowAttributes.removeChangedEventListener(settingChangedListener);
+	Config.CompassShowGcCode.removeChangedEventListener(settingChangedListener);
+	Config.CompassShowCoords.removeChangedEventListener(settingChangedListener);
+	Config.CompassShowWpDesc.removeChangedEventListener(settingChangedListener);
+	Config.CompassShowSatInfos.removeChangedEventListener(settingChangedListener);
+	Config.CompassShowSunMoon.removeChangedEventListener(settingChangedListener);
+	Config.CompassShowTargetDirection.removeChangedEventListener(settingChangedListener);
+	Config.CompassShowSDT.removeChangedEventListener(settingChangedListener);
+	Config.CompassShowLastFound.removeChangedEventListener(settingChangedListener);
 
-	SettingChangedListner = null;
+	settingChangedListener = null;
 	SelectedCacheEventList.Remove(this);
 	CacheListChangedEventList.Remove(this);
 	PositionChangedEventList.Remove(this);

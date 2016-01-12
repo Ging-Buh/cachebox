@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2011-2014 team-cachebox.de
+ * Copyright (C) 2011-2016 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,7 @@ import API.GenAttributes;
 import API.GenCacheTypes;
 
 @RunWith(Suite.class)
-@SuiteClasses(
-	{ GenCacheTypes.class, GenAttributes.class })
-public class Download_GC_Type_Attribute_Icons
-{
+@SuiteClasses({ GenCacheTypes.class, GenAttributes.class })
+public class Download_GC_Type_Attribute_Icons {
 
 }

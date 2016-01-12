@@ -3,7 +3,7 @@ package CB_UI;
 import CB_Core.Api.SearchForGeocaches_Core;
 import CB_Core.Types.Cache;
 import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IReadyListner;
+import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IReadyListener;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 
@@ -25,7 +25,7 @@ public class SearchForGeocaches extends SearchForGeocaches_Core {
 	// damit die Anzeige in der Description und SpoilerView aktualisiert wird
 	if (GlobalCore.isSetSelectedCache()) {
 	    if (GlobalCore.getSelectedCache().getGcCode().equals(cache.getGcCode())) {
-		GlobalCore.ImportSpoiler().setReadyListner(new IReadyListner() {
+		GlobalCore.ImportSpoiler().setReadyListener(new IReadyListener() {
 		    @Override
 		    public void isReady() {
 			GL.that.RunOnGL(new IRunOnGL() {

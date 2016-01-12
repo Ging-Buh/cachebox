@@ -15,6 +15,9 @@
  */
 package CB_UI_Base.GL_UI.Activitys;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -32,16 +35,13 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Util.HSV_Color;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-
 public class ColorPicker extends ActivityBase {
     private HSV_Color InitialColor;
     private HSV_Color actColor;
     private Button bOK;
     private Button bCancel;
 
-    private IReturnListner mReturnListner;
+    private IReturnListener mReturnListener;
 
     private ColorDrawable actColorDrawable;
 
@@ -55,16 +55,16 @@ public class ColorPicker extends ActivityBase {
 
     private Image viewHue;
 
-    public interface IReturnListner {
+    public interface IReturnListener {
 	public void returnColor(Color color);
     }
 
-    public ColorPicker(CB_RectF rec, Color color, IReturnListner listner) {
+    public ColorPicker(CB_RectF rec, Color color, IReturnListener listener) {
 	super(rec, "ColorPicker");
 	actColor = new HSV_Color(color);
 	InitialColor = new HSV_Color(color);
 
-	mReturnListner = listner;
+	mReturnListener = listener;
 	this.setClickable(true);
 	createOkCancelBtn();
 	createColorPreviewLine();
@@ -96,8 +96,8 @@ public class ColorPicker extends ActivityBase {
 			finish();
 		    }
 		});
-		if (mReturnListner != null)
-		    mReturnListner.returnColor(actColor);
+		if (mReturnListener != null)
+		    mReturnListener.returnColor(actColor);
 		return true;
 	    }
 	});
@@ -106,8 +106,8 @@ public class ColorPicker extends ActivityBase {
 	bCancel.setOnClickListener(new OnClickListener() {
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		if (mReturnListner != null)
-		    mReturnListner.returnColor(null);
+		if (mReturnListener != null)
+		    mReturnListener.returnColor(null);
 		finish();
 		return true;
 	    }
@@ -328,8 +328,8 @@ public class ColorPicker extends ActivityBase {
 	return false;
     }
 
-    public void setRerurnListner(IReturnListner iReturnListner) {
-	mReturnListner = iReturnListner;
+    public void setReturnListener(IReturnListener iReturnListener) {
+	mReturnListener = iReturnListener;
     }
 
     public void setColor(Color color) {

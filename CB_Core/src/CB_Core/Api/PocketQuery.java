@@ -59,7 +59,7 @@ public class PocketQuery {
 	public int PQCount;
 	public Date DateLastGenerated;
 	public double SizeMB;
-	public boolean downloadAvible = false;
+	public boolean downloadAvailable = false;
     }
 
     /**

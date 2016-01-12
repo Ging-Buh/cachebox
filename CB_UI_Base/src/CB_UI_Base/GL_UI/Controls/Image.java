@@ -20,6 +20,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
@@ -27,12 +33,6 @@ import CB_UI_Base.GL_UI.Controls.Animation.AnimationBase;
 import CB_UI_Base.GL_UI.Controls.Animation.WorkAnimation;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 /**
  * Ein Control, welches ein Bild aus einem Pfad Darstellt.
@@ -51,8 +51,8 @@ public class Image extends CB_View_Base {
 	super(X, Y, Width, Height, Name);
 	this.imageLoader = new ImageLoader();
 	this.imageLoader.reziseHeight = reziseHeight;
-	if (this.imageLoader.reziseHeight && this.imageLoader.getResizeListner() == null) {
-	    this.imageLoader.setResizeListner(new CB_UI_Base.GL_UI.Controls.ImageLoader.resize() {
+	if (this.imageLoader.reziseHeight && this.imageLoader.getResizeListener() == null) {
+	    this.imageLoader.setResizeListener(new CB_UI_Base.GL_UI.Controls.ImageLoader.resize() {
 
 		@Override
 		public void sizechanged(float newWidth, float newHeight) {
@@ -67,8 +67,8 @@ public class Image extends CB_View_Base {
 	super(rec, Name);
 	this.imageLoader = new ImageLoader();
 	this.imageLoader.reziseHeight = reziseHeight;
-	if (this.imageLoader.reziseHeight && this.imageLoader.getResizeListner() == null) {
-	    this.imageLoader.setResizeListner(new CB_UI_Base.GL_UI.Controls.ImageLoader.resize() {
+	if (this.imageLoader.reziseHeight && this.imageLoader.getResizeListener() == null) {
+	    this.imageLoader.setResizeListener(new CB_UI_Base.GL_UI.Controls.ImageLoader.resize() {
 
 		@Override
 		public void sizechanged(float newWidth, float newHeight) {
@@ -82,8 +82,8 @@ public class Image extends CB_View_Base {
 	super(rec, Name);
 	this.imageLoader = img;
 	this.imageLoader.reziseHeight = reziseHeight;
-	if (this.imageLoader.reziseHeight && this.imageLoader.getResizeListner() == null) {
-	    this.imageLoader.setResizeListner(new CB_UI_Base.GL_UI.Controls.ImageLoader.resize() {
+	if (this.imageLoader.reziseHeight && this.imageLoader.getResizeListener() == null) {
+	    this.imageLoader.setResizeListener(new CB_UI_Base.GL_UI.Controls.ImageLoader.resize() {
 
 		@Override
 		public void sizechanged(float newWidth, float newHeight) {

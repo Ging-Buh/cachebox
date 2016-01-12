@@ -68,7 +68,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
     public Menu getContextMenu() {
 	Menu cm = new Menu("CacheListContextMenu");
 
-	cm.addItemClickListner(new OnClickListener() {
+	cm.addOnClickListener(new OnClickListener() {
 
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -147,7 +147,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
 		case MenuID.MI_NEW_CACHE:
 		    if (editCache == null)
 			editCache = new EditCache(ActivityBase.ActivityRec(), "editCache");
-		    editCache.Create();
+		    editCache.create();
 		    return true;
 
 		case MenuID.AID_SHOW_DELETE_DIALOG:

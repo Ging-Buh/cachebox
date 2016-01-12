@@ -96,7 +96,7 @@ public class CreditsView extends CB_View_Base {
 	this.addChild(scrollBox);
 
 	layout = new Linearlayout(rec.getWidth(), "LinearLayout");
-	layout.setLayoutChangedListner(new LayoutChanged() {
+	layout.setLayoutChangedListener(new LayoutChanged() {
 
 	    @Override
 	    public void LayoutIsChanged(Linearlayout linearLayout, float newHeight) {

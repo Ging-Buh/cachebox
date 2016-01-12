@@ -91,8 +91,8 @@ import CB_UI.GL_UI.Views.TrackableListView;
 import CB_UI.GL_UI.Views.WaypointView;
 import CB_UI.GL_UI.Views.TestViews.TestView;
 import CB_UI_Base.Energy;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.Events.invalidateTextureEventList;
-import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.ParentInfo;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -117,8 +117,8 @@ import CB_UI_Base.Math.UiSizes;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Settings.SettingModus;
 import CB_Utils.Util.FileIO;
+import CB_Utils.Util.IChanged;
 import CB_Utils.Util.UnitFormatter;
-import CB_Utils.Util.iChanged;
 
 /**
  * @author ging-buh
@@ -264,13 +264,13 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
     protected void Initial() {
 	GlobalCore.receiver = new CB_UI.GlobalLocationReceiver();
 
-	initialSettingsChangedListner();
+	initialSettingsChangedListener();
 	ini();
 	isInitial = true;
 
 	// Settings changed handling for forward to core
 
-	iChanged settingChangedHandler = new iChanged() {
+	IChanged settingChangedHandler = new IChanged() {
 	    @Override
 	    public void isChanged() {
 		CoreSettingsForward.VersionString = GlobalCore.getVersionString();
@@ -282,7 +282,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 	settingChangedHandler.isChanged();
 
 	// add changed handler
-	Energy.addChangedEventListner(settingChangedHandler);
+	Energy.addChangedEventListener(settingChangedHandler);
 
 	// change CBS settings Type from Develop to normal with TestVersion
 	if (GlobalCore.isTestVersion()) {
@@ -293,9 +293,9 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 
     private boolean isInitial = false;
 
-    private void initialSettingsChangedListner() {
+    private void initialSettingsChangedListener() {
 
-	Config.ImperialUnits.addChangedEventListner(new iChanged() {
+	Config.ImperialUnits.addChangedEventListener(new IChanged() {
 
 	    @Override
 	    public void isChanged() {
@@ -303,7 +303,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 	    }
 	});
 
-	Config.ShowAllWaypoints.addChangedEventListner(new iChanged() {
+	Config.ShowAllWaypoints.addChangedEventListener(new IChanged() {
 
 	    @Override
 	    public void isChanged() {
@@ -380,7 +380,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 
 	autoLoadTrack();
 
-	if (Config.TrackRecorderStartup.getValue() && platformConector.isGPSon()) {
+	if (Config.TrackRecorderStartup.getValue() && PlatformConnector.isGPSon()) {
 	    TrackRecorder.StartRecording();
 	}
 
@@ -406,7 +406,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 	TabMainView.mapView = new MapView(mapTap.getContentRec(), MapMode.Normal, "MapView");
 	MapView.that.SetZoom(Config.lastZoomLevel.getValue());
 
-	platformConector.FirstShow();
+	PlatformConnector.FirstShow();
 	filterSetChanged();
 	GL.that.removeRenderView(this);
 
@@ -748,7 +748,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 
 	    GL.that.Toast("Switch to " + state, Toast.LENGTH_SHORT);
 
-	    platformConector.DayNightSwitched();
+	    PlatformConnector.DayNightSwitched();
 
 	    synchronized (childs) {
 		for (int i = 0, n = childs.size(); i < n; i++) {
@@ -831,7 +831,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 			@Override
 			public boolean onClick(int which, Object data) {
 			    if (which == GL_MsgBox.BUTTON_POSITIVE)
-				platformConector.callGetApiKeyt();
+				PlatformConnector.callGetApiKeyt();
 			    return true;
 			}
 		    });
@@ -855,7 +855,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 			@Override
 			public boolean onClick(int which, Object data) {
 			    if (which == GL_MsgBox.BUTTON_POSITIVE)
-				platformConector.callGetApiKeyt();
+				PlatformConnector.callGetApiKeyt();
 			    return true;
 			}
 		    });
@@ -880,7 +880,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 			@Override
 			public boolean onClick(int which, Object data) {
 			    if (which == GL_MsgBox.BUTTON_POSITIVE)
-				platformConector.callGetApiKeyt();
+				PlatformConnector.callGetApiKeyt();
 			    return true;
 			}
 		    }, Config.RememberAsk_Get_API_Key);

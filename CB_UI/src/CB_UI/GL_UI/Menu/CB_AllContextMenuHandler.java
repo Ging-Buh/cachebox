@@ -31,7 +31,7 @@ import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
@@ -52,7 +52,7 @@ public class CB_AllContextMenuHandler {
 	}
 
 	Menu icm = new Menu("BtnCacheContextMenu");
-	icm.addItemClickListner(onItemClickListner);
+	icm.addOnClickListener(onItemClickListener);
 	MenuItem mi;
 
 	mi = icm.addItem(MenuID.MI_RELOAD_CACHE_INFO, "ReloadCacheAPI", SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal()));
@@ -117,7 +117,7 @@ public class CB_AllContextMenuHandler {
 
     static CancelWaitDialog wd;
 
-    private static OnClickListener onItemClickListner = new OnClickListener() {
+    private static OnClickListener onItemClickListener = new OnClickListener() {
 
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -129,7 +129,7 @@ public class CB_AllContextMenuHandler {
 		return true;
 
 	    case MenuID.MI_RELOAD_CACHE_INFO:
-		wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListner() {
+		wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
 		    @Override
 		    public void isCanceld() {
@@ -204,7 +204,7 @@ public class CB_AllContextMenuHandler {
 	    case MenuID.MI_EDIT_CACHE:
 		if (editCache == null)
 		    editCache = new EditCache(ActivityBase.ActivityRec(), "editCache");
-		editCache.Update(GlobalCore.getSelectedCache());
+		editCache.update(GlobalCore.getSelectedCache());
 		return true;
 
 	    case MenuID.MI_FAVORIT:

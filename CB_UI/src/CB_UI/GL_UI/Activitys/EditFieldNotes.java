@@ -81,15 +81,15 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
     private RadioButton rbDirectLog;
     private RadioButton rbOnlyFieldNote;
 
-    public interface ReturnListner {
+    public interface IReturnListener {
 	public void returnedFieldNote(FieldNoteEntry fn, boolean isNewFieldNote, boolean directlog);
     }
 
-    private ReturnListner mReturnListner;
+    private IReturnListener mReturnListener;
 
-    public EditFieldNotes(FieldNoteEntry note, ReturnListner listner, boolean isNewFieldNote) {
+    public EditFieldNotes(FieldNoteEntry note, IReturnListener listener, boolean isNewFieldNote) {
 	super(ActivityBase.ActivityRec(), "");
-	setFieldNote(note, listner, isNewFieldNote);
+	setFieldNote(note, listener, isNewFieldNote);
 
 	if (note.type.isDirectLogType())
 	    iniOptions(note, isNewFieldNote);// show only if possible
@@ -151,7 +151,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		if (mReturnListner != null) {
+		if (mReturnListener != null) {
 
 		    if (fieldNote.type.isDirectLogType()) {
 			fieldNote.isDirectLog = rbDirectLog.isChecked();
@@ -176,7 +176,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 			DateFormat formatter;
 
 			formatter = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
-			timestamp = (Date) formatter.parse(date + "." + time + ".00");
+			timestamp = formatter.parse(date + "." + time + ".00");
 
 			fieldNote.timestamp = timestamp;
 		    } catch (ParseException e) {
@@ -223,7 +223,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		    if (fieldNote.isDirectLog)
 			dl = true;
 
-		    mReturnListner.returnedFieldNote(fieldNote, isNewFieldNote, dl);
+		    mReturnListener.returnedFieldNote(fieldNote, isNewFieldNote, dl);
 		}
 		finish();
 		return true;
@@ -234,8 +234,8 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		if (mReturnListner != null)
-		    mReturnListner.returnedFieldNote(null, false, false);
+		if (mReturnListener != null)
+		    mReturnListener.returnedFieldNote(null, false, false);
 		finish();
 		return true;
 	    }
@@ -384,7 +384,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 	registerTextField(tvTime);
     }
 
-    private ArrayList<EditTextField> allTextFields = new ArrayList<EditTextField>();
+    private final ArrayList<EditTextField> allTextFields = new ArrayList<EditTextField>();
 
     public void registerTextField(final EditTextField textField) {
 	textField.setOnscreenKeyboard(new OnscreenKeyboard() {
@@ -456,7 +456,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
     @Override
     public void dispose() {
 	super.dispose();
-	mReturnListner = null;
+	mReturnListener = null;
 	fieldNote = null;
 	bOK = null;
 	bCancel = null;
@@ -490,9 +490,9 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 	}
     }
 
-    public void setFieldNote(FieldNoteEntry note, ReturnListner listner, boolean isNewFieldNote) {
+    public void setFieldNote(FieldNoteEntry note, IReturnListener listener, boolean isNewFieldNote) {
 	this.isNewFieldNote = isNewFieldNote;
-	mReturnListner = listner;
+	mReturnListener = listener;
 	fieldNote = note;
 	altfieldNote = note.copy();
 	setDefaultValues();

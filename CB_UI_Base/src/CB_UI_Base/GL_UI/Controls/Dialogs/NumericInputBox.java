@@ -10,16 +10,16 @@ import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.NumPad;
-import CB_UI_Base.GL_UI.Controls.NumPad.keyEventListner;
+import CB_UI_Base.GL_UI.Controls.NumPad.IKeyEventListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.UI_Size_Base;
 
-public class NumerikInputBox extends CB_View_Base {
+public class NumericInputBox extends CB_View_Base {
 
-    public NumerikInputBox(String name) {
+    public NumericInputBox(String name) {
 	super(name);
     }
 
@@ -31,15 +31,15 @@ public class NumerikInputBox extends CB_View_Base {
 
     private static EditTextField editText;
 
-    public static returnValueListner mReturnListner;
-    public static returnValueListnerDouble mReturnListnerDouble;
-    public static returnValueListnerTime mReturnListnerTime;
+    public static IReturnValueListener mReturnListener;
+    public static IReturnValueListenerDouble mReturnListenerDouble;
+    public static IReturnValueListenerTime mReturnListenerTime;
 
     /**
      ** show msgbox for input of int
      **/
-    public static GL_MsgBox Show(String msg, String title, int initialValue, returnValueListner Listner) {
-	mReturnListner = Listner;
+    public static GL_MsgBox Show(String msg, String title, int initialValue, IReturnValueListener listener) {
+	mReturnListener = listener;
 	mType = type.intType;
 
 	Size msgBoxSize = GL_MsgBox.calcMsgBoxSize(msg, true, true, false);
@@ -60,7 +60,7 @@ public class NumerikInputBox extends CB_View_Base {
 	msgBox.setMargins(0, margin);
 	msgBox.setBorders(margin, margin);
 
-	NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withoutDotOkCancel, getkeyListner(msgBox));
+	NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withoutDotOkCancel, getKeyListener(msgBox));
 
 	msgBox.initRow(BOTTOMUP, margin);
 	msgBox.addLast(numPad);
@@ -84,7 +84,7 @@ public class NumerikInputBox extends CB_View_Base {
 
 	    @Override
 	    public void show(boolean arg0) {
-		// do nothing, don´t show Keybord
+		// do nothing, donï¿½t show Keybord
 	    }
 	});
 	editText.setFocus(true);
@@ -96,8 +96,8 @@ public class NumerikInputBox extends CB_View_Base {
     /**
      ** show msgbox for input of double
      **/
-    public static GL_MsgBox Show(String msg, String title, double initialValue, returnValueListnerDouble Listner) {
-	mReturnListnerDouble = Listner;
+    public static GL_MsgBox Show(String msg, String title, double initialValue, IReturnValueListenerDouble listener) {
+	mReturnListenerDouble = listener;
 	mType = type.doubleType;
 	Size msgBoxSize = GL_MsgBox.calcMsgBoxSize(msg, true, true, false);
 
@@ -127,7 +127,7 @@ public class NumerikInputBox extends CB_View_Base {
 
 	    @Override
 	    public void show(boolean arg0) {
-		// do nothing, don´t show Keybord
+		// do nothing, donï¿½t show Keybord
 	    }
 	});
 	editText.setFocus(true);
@@ -147,7 +147,7 @@ public class NumerikInputBox extends CB_View_Base {
 
 	// ######### NumPad ################
 
-	NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withOkCancel, getkeyListner(msgBox));
+	NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withOkCancel, getKeyListener(msgBox));
 	numPad.setY(margin);
 
 	msgBox.initRow(BOTTOMUP, margin);
@@ -162,8 +162,8 @@ public class NumerikInputBox extends CB_View_Base {
     /**
      ** show msgbox for input of min + sec (int)
      **/
-    public static GL_MsgBox Show(String msg, String title, int initialMin, int initialSec, returnValueListnerTime Listner) {
-	mReturnListnerTime = Listner;
+    public static GL_MsgBox Show(String msg, String title, int initialMin, int initialSec, IReturnValueListenerTime listener) {
+	mReturnListenerTime = listener;
 	mType = type.timeType;
 
 	Size msgBoxSize = GL_MsgBox.calcMsgBoxSize(msg, true, true, false);
@@ -197,7 +197,7 @@ public class NumerikInputBox extends CB_View_Base {
 
 	    @Override
 	    public void show(boolean arg0) {
-		// do nothing, don´t show Keybord
+		// do nothing, donï¿½t show Keybord
 	    }
 	});
 	editText.setFocus(true);
@@ -217,7 +217,7 @@ public class NumerikInputBox extends CB_View_Base {
 
 	// ######### NumPad ################
 
-	NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withDoubleDotOkCancel, getkeyListner(msgBox));
+	NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withDoubleDotOkCancel, getKeyListener(msgBox));
 	numPad.setY(margin);
 
 	msgBox.initRow(BOTTOMUP, margin);
@@ -229,27 +229,27 @@ public class NumerikInputBox extends CB_View_Base {
 	return msgBox;
     }
 
-    public interface returnValueListner {
+    public interface IReturnValueListener {
 	public void returnValue(int value);
 
 	public void cancelClicked();
     }
 
-    public interface returnValueListnerDouble {
+    public interface IReturnValueListenerDouble {
 	public void returnValue(double value);
 
 	public void cancelClicked();
     }
 
-    public interface returnValueListnerTime {
+    public interface IReturnValueListenerTime {
 	public void returnValue(int min, int sec);
 
 	public void cancelClicked();
     }
 
-    static keyEventListner getkeyListner(final GL_MsgBox msgBox) {
+    static IKeyEventListener getKeyListener(final GL_MsgBox msgBox) {
 
-	keyEventListner keyListner = new keyEventListner() {
+	IKeyEventListener keyListener = new IKeyEventListener() {
 
 	    @Override
 	    public void KeyPressed(String value) {
@@ -268,20 +268,20 @@ public class NumerikInputBox extends CB_View_Base {
 		    boolean ParseError = false;
 
 		    if (mType == type.doubleType) {
-			if (mReturnListnerDouble != null) {
+			if (mReturnListenerDouble != null) {
 			    try {
 				double dblValue = Double.parseDouble(StringValue);
-				mReturnListnerDouble.returnValue(dblValue);
+				mReturnListenerDouble.returnValue(dblValue);
 			    } catch (NumberFormatException e) {
 				ParseError = true;
 			    }
 			}
 		    } else if (mType == type.intType) {
-			if (mReturnListner != null) {
+			if (mReturnListener != null) {
 			    try {
 
 				int intValue = Integer.parseInt(StringValue);
-				mReturnListner.returnValue(intValue);
+				mReturnListener.returnValue(intValue);
 			    } catch (NumberFormatException e) {
 				ParseError = true;
 			    }
@@ -289,13 +289,13 @@ public class NumerikInputBox extends CB_View_Base {
 		    }
 
 		    else if (mType == type.timeType) {
-			if (mReturnListnerTime != null) {
+			if (mReturnListenerTime != null) {
 			    try {
 				String[] s = StringValue.split(":");
 
 				int intValueMin = Integer.parseInt(s[0]);
 				int intValueSec = Integer.parseInt(s[1]);
-				mReturnListnerTime.returnValue(intValueMin, intValueSec);
+				mReturnListenerTime.returnValue(intValueMin, intValueSec);
 			    } catch (NumberFormatException e) {
 				ParseError = true;
 			    }
@@ -313,16 +313,16 @@ public class NumerikInputBox extends CB_View_Base {
 		    if (mType == type.doubleType)
 
 		    {
-			if (mReturnListnerDouble != null) {
-			    mReturnListnerDouble.cancelClicked();
+			if (mReturnListenerDouble != null) {
+			    mReturnListenerDouble.cancelClicked();
 			}
 		    } else if (mType == type.intType) {
-			if (mReturnListner != null) {
-			    mReturnListner.cancelClicked();
+			if (mReturnListener != null) {
+			    mReturnListener.cancelClicked();
 			}
 		    } else if (mType == type.timeType) {
-			if (mReturnListnerTime != null) {
-			    mReturnListnerTime.cancelClicked();
+			if (mReturnListenerTime != null) {
+			    mReturnListenerTime.cancelClicked();
 			}
 		    }
 
@@ -350,7 +350,7 @@ public class NumerikInputBox extends CB_View_Base {
 
 	    }
 	};
-	return keyListner;
+	return keyListener;
     }
 
     @Override

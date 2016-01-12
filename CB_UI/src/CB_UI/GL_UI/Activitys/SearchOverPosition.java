@@ -36,9 +36,8 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Controls.CoordinateButton;
-import CB_UI.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
+import CB_UI.GL_UI.Controls.CoordinateButton.ICoordinateChangedListener;
 import CB_UI.GL_UI.Views.MapView;
-import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -63,7 +62,7 @@ public class SearchOverPosition extends ActivityBase {
     private CoordinateButton coordBtn;
     private chkBox checkBoxExcludeFounds, checkBoxOnlyAvailable, checkBoxExcludeHides;
     private EditTextField Radius;
-    private float lineHeight;
+    private final float lineHeight;
     private MultiToggleButton tglBtnGPS, tglBtnMap;
     private Coordinate actSearchPos;
     private volatile Thread thread;
@@ -149,7 +148,6 @@ public class SearchOverPosition extends ActivityBase {
 	this.addChild(gsLogo);
 
 	lblTitle = new Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - (margin * 4) - gsLogo.getWidth(), lineHeight);
-	lblTitle.setWrapType(WrapType.WRAPPED);
 	lblTitle.setFont(Fonts.getBig());
 	lblTitle.setWrappedText(Translation.Get("importCachesOverPosition"));
 	this.addChild(lblTitle);
@@ -294,7 +292,7 @@ public class SearchOverPosition extends ActivityBase {
 	    }
 	});
 
-	coordBtn.setCoordinateChangedListner(new CoordinateChangeListner() {
+	coordBtn.setCoordinateChangedListener(new ICoordinateChangedListener() {
 
 	    @Override
 	    public void coordinateChanged(Coordinate coord) {

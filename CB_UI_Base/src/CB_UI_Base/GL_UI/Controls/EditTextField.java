@@ -1718,8 +1718,8 @@ public class EditTextField extends EditTextFieldBase {
      */
     @Override
     public void becomesFocus() {
-	if (becomesFocusListner != null)
-	    becomesFocusListner.becomesFocus();
+	if (becomesFocusListener != null)
+	    becomesFocusListener.becomesFocus();
 	this.calculateSizeDependencies(true);
     }
 

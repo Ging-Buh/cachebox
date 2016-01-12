@@ -23,7 +23,7 @@ import CB_Locator.LocatorSettings;
 import CB_Utils.MathUtils;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Math.PointD;
-import CB_Utils.Util.iChanged;
+import CB_Utils.Util.IChanged;
 
 /**
  * @author hwinkelmann
@@ -41,7 +41,7 @@ public class Descriptor implements Comparable<Descriptor>
 	public Object Data = null;
 	private long BuffertHash = 0;
 
-	private static final iChanged TileCacheFolderSettingChanged = new iChanged()
+	private static final IChanged TileCacheFolderSettingChanged = new IChanged()
 	{
 
 		@Override
@@ -72,8 +72,8 @@ public class Descriptor implements Comparable<Descriptor>
 		TileCacheFolder = LocatorSettings.TileCacheFolder.getValue();
 		if (LocatorSettings.TileCacheFolderLocal.getValue().length() > 0) TileCacheFolder = LocatorSettings.TileCacheFolderLocal.getValue();
 
-		LocatorSettings.TileCacheFolderLocal.addChangedEventListner(TileCacheFolderSettingChanged);
-		LocatorSettings.TileCacheFolder.addChangedEventListner(TileCacheFolderSettingChanged);
+		LocatorSettings.TileCacheFolderLocal.addChangedEventListener(TileCacheFolderSettingChanged);
+		LocatorSettings.TileCacheFolder.addChangedEventListener(TileCacheFolderSettingChanged);
 	}
 
 	/**

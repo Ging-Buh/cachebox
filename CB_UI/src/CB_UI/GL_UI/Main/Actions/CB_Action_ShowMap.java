@@ -87,7 +87,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 	{
 
 		Menu icm = new Menu("menu_mapviewgl");
-		icm.addItemClickListner(onItemClickListner);
+		icm.addOnClickListener(onItemClickListener);
 		MenuItem mi;
 
 		mi = icm.addItem(MenuID.MI_LAYER, "Layer");
@@ -111,7 +111,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 	{
 		Menu icm = new Menu("MapViewShowLayerContextMenu");
 
-		icm.addItemClickListner(new OnClickListener()
+		icm.addOnClickListener(new OnClickListener()
 		{
 
 			@Override
@@ -155,7 +155,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 	{
 		final OptionMenu icm = new OptionMenu("MapViewShowMapOverlayMenu");
 
-		icm.addItemClickListner(new OnClickListener()
+		icm.addOnClickListener(new OnClickListener()
 		{
 
 			@Override
@@ -201,7 +201,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 	{
 		OptionMenu icm = new OptionMenu("MapViewShowLayerContextMenu");
 
-		icm.addItemClickListner(onItemClickListner);
+		icm.addOnClickListener(onItemClickListener);
 		MenuItem mi;
 
 		mi = icm.addItem(MenuID.MI_HIDE_FINDS, "HideFinds");
@@ -243,7 +243,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 		icm.Show();
 	}
 
-	private OnClickListener onItemClickListner = new OnClickListener()
+	private OnClickListener onItemClickListener = new OnClickListener()
 	{
 
 		@Override
@@ -346,7 +346,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 	{
 		MenuItem mi;
 		Menu cm2 = new Menu("TrackRecordContextMenu");
-		cm2.addItemClickListner(new OnClickListener()
+		cm2.addOnClickListener(new OnClickListener()
 		{
 
 			@Override
