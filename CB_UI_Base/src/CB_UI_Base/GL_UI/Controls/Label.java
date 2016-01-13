@@ -390,7 +390,7 @@ public class Label extends CB_View_Base {
 	    yPosition = innerHeight - topBorder - mFont.getAscent();
 	    break;
 	case CENTER:
-	    yPosition = (innerHeight + mFont.getCapHeight()) / 2f - topBorder - mFont.getAscent(); // bounds.height
+	    yPosition = (innerHeight + bounds.height) / 2f - topBorder - mFont.getAscent(); // 
 	    break;
 	default:
 	    break;
@@ -515,7 +515,8 @@ public class Label extends CB_View_Base {
     public int getLineCount() {
 	if (bounds == null)
 	    return 0;
-	return (int) (bounds.height / mFont.getCapHeight());
+	int lc = 1 + (int) ((bounds.height - mFont.getCapHeight()) / mFont.getLineHeight());
+	return lc;
     }
 
     public BitmapFont getFont() {
@@ -523,10 +524,8 @@ public class Label extends CB_View_Base {
     }
 
     public float getTextHeight() {
-	if (bounds != null) {
-	    // return mFont.getLineHeight();
+	if (bounds == null)
 	    return bounds.height + mFont.getAscent() - mFont.getDescent();
-	}
 	return 0f;
     }
 
