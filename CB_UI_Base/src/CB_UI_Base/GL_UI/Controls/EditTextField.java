@@ -709,6 +709,8 @@ public class EditTextField extends EditTextFieldBase {
 	return true;
     }
 
+    boolean selectionIsActive = false;
+
     /**
      * mark the word at the clicked position 
      */
@@ -717,55 +719,71 @@ public class EditTextField extends EditTextFieldBase {
 	// Doppelklick markiert Wort unter dem Cursor und setzt 2 Marker
 	if (pointer != 0)
 	    return false;
-	clearSelection();
+	if (selectionIsActive) {
+	    // ein Wort ist schon markiert, dann markiere ganze Zeile
+	    selectionIsActive = false;
+	    hideSelectionMarker();
+	    int clickedLine = topLine + (int) ((this.getHeight() - bgTopHeight - y) / (this.getStyle().font.getLineHeight()));
+	    if (clickedLine < 0)
+		clickedLine = 0;
+	    if (clickedLine >= lines.size())
+		clickedLine = lines.size() - 1;
+	    int endOfClickedLine = getNthLine(clickedLine).displayText.length();
+	    selection = new Selection(new Point(0, clickedLine), new Point(endOfClickedLine, clickedLine));
+	} else {
+	    selectionIsActive = true;
+	    Point newCursor = getClickedCursor(x, y);
 
-	Point newCursor = getClickedCursor(x, y);
+	    Line line = getNthLine(newCursor.y);
+	    if (line == null)
+		return false;
 
-	Line line = getNthLine(newCursor.y);
-	if (line == null)
-	    return false;
+	    if (newCursor.x >= line.displayText.length())
+		newCursor.x = line.displayText.length() - 1;
+	    if (newCursor.x < 0)
+		newCursor.x = 0;
 
-	if (newCursor.x >= line.displayText.length())
-	    newCursor.x = line.displayText.length() - 1;
-	if (newCursor.x < 0)
-	    newCursor.x = 0;
-
-	Point cursorStart = null;
-	Point cursorEnd = null;
-	// Wortanfang und Wortende suchen
-	if (line.displayText.length() > 0) {
-	    for (int i = newCursor.x; i >= 0; i--) {
-		if (line.displayText.charAt(i) == ' ') {
-		    cursorStart = new Point(i + 1, newCursor.y);
-		    break;
+	    Point cursorStart = null;
+	    Point cursorEnd = null;
+	    // Wortanfang und Wortende suchen
+	    if (line.displayText.length() > 0) {
+		for (int i = newCursor.x; i >= 0; i--) {
+		    if (line.displayText.charAt(i) == ' ') {
+			cursorStart = new Point(i + 1, newCursor.y);
+			break;
+		    }
 		}
 	    }
-	}
-	if (cursorStart == null)
-	    cursorStart = new Point(0, newCursor.y);
-	if (line.displayText.length() > 0) {
-	    for (int i = newCursor.x; i < line.displayText.length(); i++) {
-		if (line.displayText.charAt(i) == ' ') {
-		    cursorEnd = new Point(i, newCursor.y);
-		    break;
+	    if (cursorStart == null)
+		cursorStart = new Point(0, newCursor.y);
+	    if (line.displayText.length() > 0) {
+		for (int i = newCursor.x; i < line.displayText.length(); i++) {
+		    if (line.displayText.charAt(i) == ' ') {
+			cursorEnd = new Point(i, newCursor.y);
+			break;
+		    }
 		}
 	    }
-	}
-	if (cursorEnd == null)
-	    cursorEnd = new Point(line.displayText.length(), newCursor.y);
-	if ((cursorStart == null) || (cursorEnd == null))
+	    if (cursorEnd == null)
+		cursorEnd = new Point(line.displayText.length(), newCursor.y);
+	    if ((cursorStart == null) || (cursorEnd == null))
+		return false;
+	    /*
+	     * noch nichts markiert
+	    if (cursorStart.x >= cursorEnd.x)
 	    return false;
-	/*
-	 * noch nichts markiert
-	if (cursorStart.x >= cursorEnd.x)
-	    return false;
-	 */
+	     */
 
-	hideSelectionMarker();
-	selection = new Selection(cursorStart, cursorEnd);
+	    hideSelectionMarker();
+	    selection = new Selection(cursorStart, cursorEnd);
+	}
 	showSelectionMarker(SelectionMarker.Type.Left, selection.cursorStart);
 	showSelectionMarker(SelectionMarker.Type.Right, selection.cursorEnd);
-	showCopyPastePopUp(x, y);
+	if (isEditable)
+	    showCopyPastePopUp(x, y);
+	else {
+	    showCopyPopUp(x, y);
+	}
 	return true;
     }
 
@@ -790,7 +808,6 @@ public class EditTextField extends EditTextFieldBase {
 		    GL.that.selectionMarkerRightMoveTo(getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getCursorY(tmpCursor.y));
 		    break;
 		}
-
 	    }
 	};
 	v.schedule(ta, 700);
@@ -1899,8 +1916,15 @@ public class EditTextField extends EditTextFieldBase {
 	     */
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+		hideSelectionMarker();
+		selection = new Selection(getClickedCursor(x, y), getClickedCursor(x, y));
+		showSelectionMarker(SelectionMarker.Type.Left, selection.cursorStart);
+		showSelectionMarker(SelectionMarker.Type.Right, selection.cursorEnd);
 		if (isEditable)
-		    showPastePopUp(x, y);
+		    showCopyPastePopUp(x, y);
+		else {
+		    showCopyPopUp(x, y);
+		}
 		return true;
 	    }
 	});

@@ -133,4 +133,10 @@ public class CopyPastePopUp extends PopUp_Base {
 	btnCut.disable();
 	btnCopy.disable();
     }
+
+    public void setOnlyCopy() {
+	btnCut.enable();
+	btnCopy.enable();
+	btnPaste.disable();
+    }
 }
