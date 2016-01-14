@@ -524,7 +524,7 @@ public class Label extends CB_View_Base {
     }
 
     public float getTextHeight() {
-	if (bounds == null)
+	if (bounds != null)
 	    return bounds.height + mFont.getAscent() - mFont.getDescent();
 	return 0f;
     }
