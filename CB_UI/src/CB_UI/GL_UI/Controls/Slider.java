@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 
+import CB_Core.CacheSizes;
+import CB_Core.CacheTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_UI.CB_UI_Settings;
@@ -148,11 +150,23 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 	actWaypoint = waypoint;
 
 	if (cache != null) {
-	    if (mLblCacheName != null)
-		mLblCacheName.setText(cache.getName());
+	    if (mLblCacheName != null) {
+		mLblCacheName.setText(CacheTypes.toShortString(cache) + terrDiffToShortString(cache.getDifficulty()) + "/" + terrDiffToShortString(cache.getTerrain()) + CacheSizes.toShortString(cache) + " " + cache.getName());
+	    }
 	    fillCacheWpInfo();
 	}
 
+    }
+
+    private String terrDiffToShortString(float value) {
+	int intValue = (int) value;
+	String retValue;
+	if (value == intValue) {
+	    retValue = "" + intValue;
+	} else {
+	    retValue = "" + value;
+	}
+	return retValue;
     }
 
     private void setSliderPos(float value) {

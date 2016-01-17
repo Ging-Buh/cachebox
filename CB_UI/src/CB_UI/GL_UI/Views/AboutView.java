@@ -137,7 +137,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	CB_Logo.setDrawable(new SpriteDrawable(SpriteCacheBase.getSpriteDrawable("cachebox-logo")));
 	this.addChild(CB_Logo);
 
-	String VersionString = GlobalCore.getVersionString() + GlobalCore.br + GlobalCore.br + GlobalCore.AboutMsg;
+	String VersionString = GlobalCore.getVersionString() + GlobalCore.br + GlobalCore.br + GlobalCore.aboutMsg;
 
 	GlyphLayout layout = new GlyphLayout();
 	layout.setText(Fonts.getSmall(), VersionString);

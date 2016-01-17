@@ -1,5 +1,7 @@
 package CB_Core;
 
+import CB_Core.Types.Cache;
+
 public enum CacheSizes {
     other, // 0
     micro, // 1
@@ -77,6 +79,24 @@ public enum CacheSizes {
 	}
 
 	return super.toString();
+    }
+
+    public static String toShortString(Cache cache) {
+	switch (cache.Size) {
+	case large:
+	    return "L";
+	case micro:
+	    return "M";
+	case other:
+	    return "O";
+	case regular:
+	    return "R";
+	case small:
+	    return "S";
+	default:
+	    break;
+	}
+	return "?";
     }
 
 }

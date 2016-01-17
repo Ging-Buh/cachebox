@@ -15,12 +15,12 @@
  */
 package CB_UI_Base.GL_UI.Controls;
 
-import CB_UI_Base.Math.CB_RectF;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
+import CB_UI_Base.Math.CB_RectF;
 
 public class ImageButton extends Button {
     protected final Image image;
@@ -42,6 +42,17 @@ public class ImageButton extends Button {
 	super("");
 	this.setText("");
 	image = new Image(img, this.ScaleCenter(0.8f), "", false);
+	this.addChild(image);
+    }
+
+    public ImageButton(Image image) {
+	super("");
+	this.setText("");
+	if (image == null) {
+	    this.image = new Image(this.ScaleCenter(0.8f), "", false);
+	} else {
+	    this.image = image;
+	}
 	this.addChild(image);
     }
 

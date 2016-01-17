@@ -475,6 +475,7 @@ public class splash extends MainViewBase {
 	GL.setIsInitial();
     }
 
+    @Override
     public void dispose() {
 	this.removeChildsDirekt();
 

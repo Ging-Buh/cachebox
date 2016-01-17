@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
 import CB_Core.Attributes;
+import CB_Core.CacheSizes;
 import CB_Core.CacheTypes;
 import CB_Core.Database;
 import CB_Core.LogTypes;
@@ -242,24 +243,7 @@ public class CacheInfo extends CB_View_Base {
 	    mStarSize = new SizeF(starHeight * 5, starHeight);
 
 	    if (ifModeFlag(SHOW_S_D_T)) {
-		String CacheSize = "";
-		switch ((int) (mCache.Size.ordinal())) {
-		case 1:
-		    CacheSize = "M"; // micro;
-		    break;
-		case 2:
-		    CacheSize = "S"; // small;
-		    break;
-		case 3:
-		    CacheSize = "R"; // regular;
-		    break;
-		case 4:
-		    CacheSize = "L"; // large;
-		    break;
-		default:
-		    CacheSize = "O"; // other;
-		    break;
-		}
+		String CacheSize = CacheSizes.toShortString(mCache);
 		mS_FontCache.setText(CacheSize, 0, 0);
 		mBottom += mS_FontCache.getLayouts().first().height;
 		float mSpriteBottom = mMargin;
@@ -267,7 +251,7 @@ public class CacheInfo extends CB_View_Base {
 		mLeft += mS_FontCache.getLayouts().first().width + mMargin;
 
 		mStarSize.scale(mScaleFactor);
-		mSSprite = new Sprite(SpriteCacheBase.SizesIcons.get((int) (mCache.Size.ordinal())));
+		mSSprite = new Sprite(SpriteCacheBase.SizesIcons.get((mCache.Size.ordinal())));
 		mSSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
 		// Difficulty
 		mLeft += mSSprite.getWidth() + mMargin + mMargin;

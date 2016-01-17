@@ -378,7 +378,7 @@ public class Label extends CB_View_Base {
 		xPosition += scrollPos;
 	    } else {
 		// no horizontal scrolling and Text out of limits
-		log.debug("Label Text is too long: " + mText);
+		// log.debug("Label Text is too long: " + mText);
 	    }
 	}
 	// bottom : text starts at yPosition, Text wird von hier aus unterhalb geschrieben (Descent ist negativ, daher -)

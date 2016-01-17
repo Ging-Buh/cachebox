@@ -227,11 +227,15 @@ public class LinkLabel extends MultiColorLabel {
 	inParse.set(false);
     }
 
-    public void addHyperlinks(CB_List<HyperLinkText> HyperLinkList) {
-	this.hyperLinkList = HyperLinkList;
+    public void addHyperlink(HyperLinkText hyperLink) {
+	this.hyperLinkList.add(hyperLink);
     }
 
-    public void setMarkupEnabled(boolean IsMarkUp) {
-	//	this.isMarkup = IsMarkUp;
+    public void addHyperlinks(CB_List<HyperLinkText> HyperLinkList) {
+	this.hyperLinkList.addAll(HyperLinkList);
+    }
+
+    public void setMarkupEnabled(boolean isMarkUp) {
+	this.isMarkup = isMarkUp;
     }
 }
