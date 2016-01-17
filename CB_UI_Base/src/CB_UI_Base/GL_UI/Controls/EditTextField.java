@@ -256,7 +256,7 @@ public class EditTextField extends EditTextFieldBase {
 	}
 	textHeight = getHeight() - bgTopHeight - bgBottomHeight;
 	float lineHeight = this.style.font.getLineHeight();
-	maxLineCount = (int) (0.5 + textHeight / lineHeight);
+	maxLineCount = (int) (textHeight / lineHeight); // !angebrochene Zeile nicht mitzählen
 	textWidth = getWidth() - bgLeftWidth - bgRightWidth;
     }
 
