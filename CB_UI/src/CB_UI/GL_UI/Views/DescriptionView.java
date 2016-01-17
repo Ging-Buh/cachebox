@@ -75,9 +75,9 @@ public class DescriptionView extends CB_View_Base {
     private GlyphLayout layout;
 
     private Cache aktCache;
-    private LinkedList<String> NonLocalImages = new LinkedList<String>();
-    private LinkedList<String> NonLocalImagesUrl = new LinkedList<String>();
-    private int downloadTryCounter = 0;
+    private final LinkedList<String> NonLocalImages = new LinkedList<String>();
+    private final LinkedList<String> NonLocalImagesUrl = new LinkedList<String>();
+    private final int downloadTryCounter = 0;
 
     private CacheListViewItem cacheInfo;
     private Button downloadButton;
@@ -87,14 +87,14 @@ public class DescriptionView extends CB_View_Base {
     private float margin;
     private boolean forceReload = false;
 
-    private HtmlView htmlView;
+    private final HtmlView htmlView;
 
     public DescriptionView(CB_RectF rec, String Name) {
 	super(rec, Name);
 	htmlView = new HtmlView(this);
 	htmlView.setZeroPos();
 	this.addChild(htmlView);
-
+	//log.info("DescriptionView create");
     }
 
     final static org.slf4j.Logger htmllog = LoggerFactory.getLogger("HTML_PARSER");
@@ -102,6 +102,7 @@ public class DescriptionView extends CB_View_Base {
     @Override
     public void onShow() {
 	super.onShow();
+	//log.info("DescriptionView onShow");
 	margin = GL_UISizes.margin;
 
 	Cache sel = GlobalCore.getSelectedCache();
@@ -128,8 +129,19 @@ public class DescriptionView extends CB_View_Base {
 	if (cache == null)
 	    return;
 
-	if (cache.equals(aktCache) && !force)
+	if (cache.equals(aktCache) && !force) {
+	    //log.info("setCache " + cache.getGcCode() + " no change.");
 	    return;
+	}
+
+	/*
+	String logstr = "setCache " + cache.getGcCode();
+	if (aktCache != null) {
+	    logstr = logstr + " old:" + aktCache.getGcCode();
+	}
+	logstr = logstr + " must:" + force;
+	log.info(logstr);
+	*/
 
 	aktCache = cache;
 
@@ -183,6 +195,7 @@ public class DescriptionView extends CB_View_Base {
 	// erlaubt ist, diese laden und Bilder erneut auflösen
 	if (NonLocalImagesUrl.size() > 0) {
 	    downloadThread = new Thread() {
+		@Override
 		public void run() {
 
 		    if (downloadTryCounter > 0) {
@@ -439,9 +452,11 @@ public class DescriptionView extends CB_View_Base {
     Thread downloadThread;
 
     final Runnable downloadComplete = new Runnable() {
+	@Override
 	public void run() {
-	    if (downloadTryCounter < 10) // nur 10 Download versuche zu lassen
+	    if (downloadTryCounter < 10) { // nur 10 Download versuche zu lassen
 		setCache(aktCache, false);
+	    }
 	}
     };
 
