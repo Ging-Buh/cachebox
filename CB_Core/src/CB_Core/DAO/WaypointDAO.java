@@ -47,7 +47,7 @@ public class WaypointDAO {
 
 	try {
 	    long count = Database.Data.insert("Waypoint", args);
-	    if (count == 0) {
+	    if (count <= 0) {
 		Database.Data.update("Waypoint", args, "cacheid=" + WP.CacheId, null);
 	    }
 	    if (WP.IsUserWaypoint) {
