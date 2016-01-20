@@ -53,7 +53,7 @@ import CB_Utils.Interfaces.cancelRunnable;
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(GlobalCore.class);
-    public static final int CurrentRevision = 20160117;
+    public static final int CurrentRevision = 20160120;
 
     public static final String CurrentVersion = "0.8.";
     public static final String VersionPrefix = "test";
@@ -121,13 +121,14 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     /**
      * if changeAutoResort == false -> do not change state of autoResort Flag
      * 
-     * @param Cache
+     * @param cache
      * @param waypoint
      * @param changeAutoResort
      */
-    public static void setSelectedWaypoint(Cache Cache, Waypoint waypoint, boolean changeAutoResort) {
+    public static void setSelectedWaypoint(Cache cache, Waypoint waypoint, boolean changeAutoResort) {
 
-	if (Cache == null) {
+	if (cache == null) {
+	    log.info("[GlobalCore]setSelectedWaypoint: cache=null");
 	    selectedCache = null;
 	    selectedWaypoint = null;
 	    return;
@@ -144,10 +145,11 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 	// }
 
 	// remove Detail Info from old selectedCache
-	if ((selectedCache != Cache) && (selectedCache != null) && (selectedCache.detail != null)) {
+	if ((selectedCache != cache) && (selectedCache != null) && (selectedCache.detail != null)) {
 	    selectedCache.deleteDetail(Config.ShowAllWaypoints.getValue());
 	}
-	selectedCache = Cache;
+	selectedCache = cache;
+	log.info("[GlobalCore]setSelectedWaypoint: cache=" + cache.getGcCode());
 	selectedWaypoint = waypoint;
 
 	// load Detail Info if not available

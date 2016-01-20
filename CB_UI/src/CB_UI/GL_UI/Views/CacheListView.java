@@ -300,7 +300,6 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 		Count = cacheList.size();
 	    }
-	    log.debug("CacheListView ctor CustomAdapter " + Count + " Caches");
 	}
 
 	@Override

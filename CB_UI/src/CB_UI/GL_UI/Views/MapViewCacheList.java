@@ -78,14 +78,14 @@ public class MapViewCacheList implements CacheListChangedEventListener {
     private void StartQueueProcessor() {
 
 	try {
-	    log.debug("MapCacheList.queueProcessor Create");
+	    // log.debug("MapCacheList.queueProcessor Create");
 	    queueProcessor = new queueProcessor();
 	    queueProcessor.setPriority(Thread.MIN_PRIORITY);
 	} catch (Exception ex) {
 	    log.error("MapCacheList.queueProcessor", "onCreate", ex);
 	}
 
-	log.debug("MapCacheList.queueProcessor Start");
+	// log.debug("MapCacheList.queueProcessor Start");
 	queueProcessor.start();
 
 	state.set(0);

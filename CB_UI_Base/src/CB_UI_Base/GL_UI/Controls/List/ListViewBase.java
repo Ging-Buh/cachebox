@@ -21,6 +21,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.utils.Align;
+
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -31,11 +36,6 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Math.Point;
 import CB_Utils.Util.MoveableList;
-
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.utils.Align;
 
 public abstract class ListViewBase extends CB_View_Base implements IScrollbarParent {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(ListViewBase.class);
@@ -492,7 +492,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 			    return;
 			}
 			setListPos(mAnimationTarget, true);
-			log.debug("ListAnimation ready mPos=" + mPos);
+			//log.info("ListAnimation ready mPos=" + mPos);
 
 			stopTimer();
 			return;

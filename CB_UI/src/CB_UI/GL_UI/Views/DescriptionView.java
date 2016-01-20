@@ -231,6 +231,10 @@ public class DescriptionView extends CB_View_Base {
 
     }
 
+    public Cache getCache() {
+	return aktCache;
+    }
+
     @Override
     public void onResized(CB_RectF rec) {
 	super.onResized(rec);

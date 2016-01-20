@@ -132,7 +132,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	float ref = UI_Size_Base.that.getWindowHeight() / 13;
 	margin = UI_Size_Base.that.getMargin();
 	CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref - margin - margin, ref * 5, (ref * 5) / 4.11f);
-	log.debug("CB_Logo" + CB_LogoRec.toString());
+	//log.debug("CB_Logo" + CB_LogoRec.toString());
 	CB_Logo = new Image(CB_LogoRec, "CB_Logo", false);
 	CB_Logo.setDrawable(new SpriteDrawable(SpriteCacheBase.getSpriteDrawable("cachebox-logo")));
 	this.addChild(CB_Logo);
