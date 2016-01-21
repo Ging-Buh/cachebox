@@ -119,7 +119,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
     protected SortedMap<Integer, Integer> DistanceZoomLevel;
     CancelWaitDialog wd = null;
 
-    public MapViewCacheList mapCacheList;
+    private MapViewCacheList mapCacheList;
     int zoomCross = 16;
 
     // private GL_ZoomScale zoomScale;
@@ -357,7 +357,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 	    @Override
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		if (infoBubble.SaveButtonCliced(x, y)) {
+		if (infoBubble.saveButtonClicked(x, y)) {
 		    wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
 			@Override
@@ -636,12 +636,13 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	    po.draw(batch, 0, 0, this.mapIntWidth, this.mapIntHeight, 0);
 	    po.dispose();
 	}
-
 	// Don't render if outside of screen !!
-	if (screen.x < 0 - WpSize.width || screen.x > this.getWidth() + WpSize.height)
+	if ((screen.x < 0 - WpSize.width || screen.x > this.getWidth() + WpSize.height) || (screen.y < 0 - WpSize.height || screen.y > this.getHeight() + WpSize.height)) {
+	    if (wpi.Cache != null && (wpi.Cache.Id == infoBubble.getCacheId()) && infoBubble.isVisible()) {
+		infoBubble.setInvisible();
+	    }
 	    return;
-	if (screen.y < 0 - WpSize.height || screen.y > this.getHeight() + WpSize.height)
-	    return;
+	}
 
 	float NameYMovement = 0;
 

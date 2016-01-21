@@ -145,7 +145,7 @@ public class InfoBubble extends CB_View_Base {
 	setCache(mCache, mWaypoint, true);
     }
 
-    public boolean SaveButtonCliced(int x, int y) {
+    public boolean saveButtonClicked(int x, int y) {
 	if (mCache == null || !mCache.isLive())
 	    return false;
 
