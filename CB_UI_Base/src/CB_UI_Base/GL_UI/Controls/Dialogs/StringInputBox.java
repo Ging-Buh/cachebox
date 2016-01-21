@@ -31,7 +31,7 @@ public class StringInputBox extends GL_MsgBox {
 	editText.setText(initialString);
 	editText.setCursorPosition(initialString.length());
 
-	float topBottom = editText.getStyle().background.getTopHeight() + editText.getStyle().background.getBottomHeight();
+	float topBottom = editText.getStyle().getTopHeight(true) + editText.getStyle().getBottomHeight(true);
 
 	float SingleLineHeight = editText.getFont().getLineHeight() + (editText.getFont().getAscent() * 4);
 

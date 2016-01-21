@@ -48,7 +48,7 @@ public class NumericInputBox extends CB_View_Base {
 	GL_MsgBox msgBox = new GL_MsgBox(msgBoxSize, "MsgBox");
 
 	editText = new EditTextField("NumerikInputBox editText");
-	float topBottom = editText.getStyle().background.getTopHeight() + editText.getStyle().background.getBottomHeight();
+	float topBottom = editText.getStyle().getTopHeight(true) + editText.getStyle().getBottomHeight(true); // true if focused
 	float SingleLineHeight = editText.getFont().getLineHeight() + (editText.getFont().getAscent() * 4);
 	editText.setHeight(topBottom + SingleLineHeight);
 
@@ -118,7 +118,7 @@ public class NumericInputBox extends CB_View_Base {
 	editText.setText(String.valueOf(initialValue));
 	editText.setCursorPosition((String.valueOf(initialValue)).length());
 
-	float topBottom = editText.getStyle().background.getTopHeight() + editText.getStyle().background.getBottomHeight();
+	float topBottom = editText.getStyle().getTopHeight(true) + editText.getStyle().getBottomHeight(true); // true if focused
 	float SingleLineHeight = editText.getFont().getLineHeight() + (editText.getFont().getAscent() * 4);
 
 	editText.setHeight(topBottom + SingleLineHeight);
@@ -188,7 +188,7 @@ public class NumericInputBox extends CB_View_Base {
 	editText.setText(String.valueOf(initialValue));
 	editText.setCursorPosition((String.valueOf(initialValue)).length());
 
-	float topBottom = editText.getStyle().background.getTopHeight() + editText.getStyle().background.getBottomHeight();
+	float topBottom = editText.getStyle().getTopHeight(true) + editText.getStyle().getBottomHeight(true); // true if focused
 	float SingleLineHeight = editText.getFont().getLineHeight() + (editText.getFont().getAscent() * 4);
 
 	editText.setHeight(topBottom + SingleLineHeight);

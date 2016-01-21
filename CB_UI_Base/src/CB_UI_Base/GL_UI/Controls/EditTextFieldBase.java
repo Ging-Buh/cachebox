@@ -47,6 +47,7 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 
     protected boolean dontShowKeyBoard = false;
     protected boolean isEditable = true;
+    // protected boolean disabled = false; // same as isEditable ?
 
     public EditTextFieldBase(CB_RectF rec, CB_View_Base parent, String Name) {
 	super(rec, Name);
@@ -76,7 +77,6 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
     protected OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
     protected Clipboard clipboard;
     protected CopyPastePopUp popUp;
-    protected boolean disabled = false;
 
     protected boolean cursorOn = true;
     protected long blinkTime = 420;
@@ -105,13 +105,15 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 	blinkTimer = null;
     }
 
+    /*
     public void disable() {
-	disabled = true;
+    disabled = true;
     }
-
+    
     public void enable() {
-	disabled = false;
+    disabled = false;
     }
+    */
 
     /**
      * Interface for listening to typed characters.
@@ -183,9 +185,11 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
      */
     static public class TextFieldStyle {
 	/** Optional. */
-	public Drawable background, cursor, backgroundFocused, selection;
+	public Drawable cursor, selection;
 	public BitmapFont font;
 	public Color fontColor;
+
+	private Drawable background, backgroundFocused;
 
 	/** Optional. */
 	public BitmapFont messageFont;
@@ -217,13 +221,72 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 		this.fontColor = new Color(style.fontColor);
 	    this.selection = style.selection;
 	}
+
+	public Drawable getBackground(boolean focused) {
+	    if (focused)
+		return this.backgroundFocused;
+	    else
+		return this.background;
+	}
+
+	public void setBackground(Drawable background, Drawable backgroundFocused) {
+	    this.background = background;
+	    this.backgroundFocused = backgroundFocused;
+	}
+
+	public float getLeftWidth(boolean focused) {
+	    Drawable whichBackground;
+	    if (focused)
+		whichBackground = this.backgroundFocused;
+	    else
+		whichBackground = this.background;
+	    if (whichBackground == null)
+		return 0f;
+	    else
+		return whichBackground.getLeftWidth();
+	}
+
+	public float getRightWidth(boolean focused) {
+	    Drawable whichBackground;
+	    if (focused)
+		whichBackground = this.backgroundFocused;
+	    else
+		whichBackground = this.background;
+	    if (whichBackground == null)
+		return 0f;
+	    else
+		return whichBackground.getRightWidth();
+	}
+
+	public float getTopHeight(boolean focused) {
+	    Drawable whichBackground;
+	    if (focused)
+		whichBackground = this.backgroundFocused;
+	    else
+		whichBackground = this.background;
+	    if (whichBackground == null)
+		return 0f;
+	    else
+		return whichBackground.getTopHeight();
+	}
+
+	public float getBottomHeight(boolean focused) {
+	    Drawable whichBackground;
+	    if (focused)
+		whichBackground = this.backgroundFocused;
+	    else
+		whichBackground = this.background;
+	    if (whichBackground == null)
+		return 0f;
+	    else
+		return whichBackground.getBottomHeight();
+	}
     }
 
     public static TextFieldStyle getDefaultStyle() {
 	TextFieldStyle ret = new TextFieldStyle();
 
-	ret.background = SpriteCacheBase.textFiledBackground;
-	ret.backgroundFocused = SpriteCacheBase.textFiledBackgroundFocus;
+	ret.setBackground(SpriteCacheBase.textFieldBackground, SpriteCacheBase.textFieldBackgroundFocus);
 	ret.font = Fonts.getNormal();
 	ret.fontColor = COLOR.getFontColor();
 

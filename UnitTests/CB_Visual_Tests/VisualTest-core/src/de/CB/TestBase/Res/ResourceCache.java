@@ -331,9 +331,9 @@ public class ResourceCache extends SpriteCacheBase
 		radioOn = new SpriteDrawable(getThemedSprite("RadioButtonSet"));
 		radioBack = new SpriteDrawable(getThemedSprite("RadioButtonBack"));
 
-		textFiledBackground = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("text-field-back"), patch, patch, patch,
+		textFieldBackground = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("text-field-back"), patch, patch, patch,
 				patch));
-		textFiledBackgroundFocus = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("text-field-back-focus"), patch,
+		textFieldBackgroundFocus = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("text-field-back-focus"), patch,
 				patch, patch, patch));
 
 		selection = new SpriteDrawable(getThemedSprite("Selection"));

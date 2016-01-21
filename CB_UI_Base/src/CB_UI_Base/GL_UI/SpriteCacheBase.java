@@ -217,8 +217,8 @@ public class SpriteCacheBase {
     public static Drawable selection_left;
     public static Drawable selection_right;
     public static Drawable textFieldCursor;
-    public static Drawable textFiledBackground;
-    public static Drawable textFiledBackgroundFocus;
+    public static Drawable textFieldBackground;
+    public static Drawable textFieldBackgroundFocus;
     public static Drawable logo;
 
     public static Drawable copy;
@@ -892,8 +892,8 @@ public class SpriteCacheBase {
 	radioOn = new SpriteDrawable(getThemedSprite("RadioButtonSet"));
 	radioBack = new SpriteDrawable(getThemedSprite("RadioButtonBack"));
 
-	textFiledBackground = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("text-field-back"), patch, patch, patch, patch));
-	textFiledBackgroundFocus = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("text-field-back-focus"), patch, patch, patch, patch));
+	textFieldBackground = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("text-field-back"), patch, patch, patch, patch));
+	textFieldBackgroundFocus = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("text-field-back-focus"), patch, patch, patch, patch));
 
 	selection = new SpriteDrawable(getThemedSprite("Selection"));
 	selection_set = new SpriteDrawable(getThemedSprite("Selection-set"));

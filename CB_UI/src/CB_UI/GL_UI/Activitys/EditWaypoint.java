@@ -460,7 +460,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
     private void layoutTextFields() {
 	float maxTextFieldHeight = this.getHeight() / 2.3f;
-	float rand = etClue.getStyle().background.getBottomHeight() + etClue.getStyle().background.getTopHeight();
+	float rand = etClue.getStyle().getBottomHeight(true) + etClue.getStyle().getTopHeight(true); //if focused
 	float descriptionHeight = Math.min(maxTextFieldHeight, etDescription.getMeasuredHeight() + rand);
 	float clueHeight = Math.min(maxTextFieldHeight, etClue.getMeasuredHeight() + rand);
 

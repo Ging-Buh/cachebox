@@ -28,11 +28,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import CB_Core.LogTypes;
 import CB_Core.Types.FieldNoteEntry;
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.Button;
+import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
@@ -45,9 +47,9 @@ public class FieldNoteViewItem extends ListViewItemBackground {
     private Image ivTyp;
     private Label lblDate;
     private Image ivCacheType;
-    private Label lblCacheName;
-    private Label lblGcCode;
-    private Label lblComment;
+    private EditTextField mCacheName;
+    private EditTextField mGcCode;
+    private EditTextField mComment;
 
     private static float MeasuredLabelHeight = 0;
 
@@ -145,7 +147,8 @@ public class FieldNoteViewItem extends ListViewItemBackground {
     private void iniCacheTypeImage() {
 	if (this.fieldnote == null)
 	    return;
-	ivCacheType = new Image(getLeftWidth() + UI_Size_Base.that.getMargin(), this.getHeight() - headHeight - (UI_Size_Base.that.getButtonHeight()) - UI_Size_Base.that.getMargin(), UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), "", false);
+	ivCacheType = new Image(getLeftWidth() + UI_Size_Base.that.getMargin(), this.getHeight() - headHeight - (UI_Size_Base.that.getButtonHeight()) - UI_Size_Base.that.getMargin(), UI_Size_Base.that.getButtonHeight(),
+		UI_Size_Base.that.getButtonHeight(), "", false);
 	this.addChild(ivCacheType);
 
 	if (fieldnote.isTbFieldNote) {
@@ -158,30 +161,37 @@ public class FieldNoteViewItem extends ListViewItemBackground {
     private void iniCacheNameLabel() {
 	if (this.fieldnote == null)
 	    return;
-	lblCacheName = new Label(this.name + " lblCacheName", ivCacheType.getMaxX() + UI_Size_Base.that.getMargin(), this.getHeight() - headHeight - MeasuredLabelHeight - UI_Size_Base.that.getMargin(), this.getWidth() - ivCacheType.getMaxX() - (UI_Size_Base.that.getMargin() * 2), MeasuredLabelHeight);
-	lblCacheName.setFont(Fonts.getNormal());
-	lblCacheName.setText(fieldnote.isTbFieldNote ? fieldnote.TbName : fieldnote.CacheName);
-	this.addChild(lblCacheName);
-
+	CB_RectF rectF = new CB_RectF(ivCacheType.getMaxX() + UI_Size_Base.that.getMargin(), this.getHeight() - headHeight - MeasuredLabelHeight - UI_Size_Base.that.getMargin(),
+		this.getWidth() - ivCacheType.getMaxX() - (UI_Size_Base.that.getMargin() * 2), MeasuredLabelHeight);
+	mCacheName = new EditTextField(rectF, this, this.name + " lblCacheName");
+	mCacheName.setText(fieldnote.isTbFieldNote ? fieldnote.TbName : fieldnote.CacheName);
+	mCacheName.setEditable(false);
+	mCacheName.setBackground(null, null);
+	this.addChild(mCacheName);
     }
 
     private void iniGcCodeLabel() {
 	if (this.fieldnote == null)
 	    return;
-	lblGcCode = new Label(this.name + " lblGcCode", lblCacheName.getX(), lblCacheName.getY() - MeasuredLabelHeight - UI_Size_Base.that.getMargin(), this.getWidth() - ivCacheType.getMaxX() - (UI_Size_Base.that.getMargin() * 2), MeasuredLabelHeight);
-	lblGcCode.setFont(Fonts.getNormal());
-	lblGcCode.setText(fieldnote.gcCode);
-	this.addChild(lblGcCode);
-
+	CB_RectF rectF = new CB_RectF(mCacheName.getX(), mCacheName.getY() - MeasuredLabelHeight - UI_Size_Base.that.getMargin(), this.getWidth() - ivCacheType.getMaxX() - (UI_Size_Base.that.getMargin() * 2), MeasuredLabelHeight);
+	mGcCode = new EditTextField(rectF, this, this.name + " lblGcCode");
+	mGcCode.setText(fieldnote.gcCode);
+	mGcCode.setEditable(false);
+	mGcCode.setBackground(null, null);
+	this.addChild(mGcCode);
     }
 
     private void iniCommentLabel() {
 	if (this.fieldnote == null)
 	    return;
-	lblComment = new Label(this.name + " lblComment", getLeftWidth() + UI_Size_Base.that.getMargin(), 0, this.getWidth() - getLeftWidth() - getRightWidth() - (UI_Size_Base.that.getMargin() * 2), this.getHeight() - (this.getHeight() - lblGcCode.getY()) - UI_Size_Base.that.getMargin());
-	lblComment.setFont(Fonts.getNormal());
-	lblComment.setWrappedText(fieldnote.comment);
-	this.addChild(lblComment);
+	CB_RectF rectF = new CB_RectF(getLeftWidth() + UI_Size_Base.that.getMargin(), 0, this.getWidth() - getLeftWidth() - getRightWidth() - (UI_Size_Base.that.getMargin() * 2),
+		this.getHeight() - (this.getHeight() - mGcCode.getY()) - UI_Size_Base.that.getMargin());
+	mComment = new EditTextField(rectF, this, this.name + " lblComment");
+	mComment.setWrapType(WrapType.WRAPPED);
+	mComment.setText(fieldnote.comment);
+	mComment.setEditable(false);
+	mComment.setBackground(null, null);
+	this.addChild(mComment);
 
     }
 

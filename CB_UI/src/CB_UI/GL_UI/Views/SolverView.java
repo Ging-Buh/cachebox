@@ -158,7 +158,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 	this.addChild(edInput);
 	edResult = new EditTextField(this.name + " edResult");
 	edResult.setWrapType(WrapType.MULTILINE);
-	edResult.disable();
+	//edResult.disable();
 	edResult.setEditable(false);
 	edResult.dontShowSoftKeyBoardOnFocus(true);
 	this.addChild(edResult);
@@ -333,7 +333,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 
     protected void solve() {
 
-	edResult.enable();
+	edResult.setEditable(true);
 
 	solver = new Solver(edInput.getText());
 	if (!solver.Solve()) {
@@ -347,7 +347,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 
 	edResult.setText(result);
 	edResult.showFromLineNo(edInput.getTopLineNo());
-	edResult.disable();
+	edResult.setEditable(false);
 
 	if ((solver.MissingVariables != null) && (solver.MissingVariables.size() > 0)) {
 	    // es sind nicht alle Variablen zugewiesen

@@ -39,8 +39,8 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
 	Loadall, LoadNew, loadMore, loadNewLastLength
     }
 
-    private boolean cropedList = false;
-    private int actCropedLength = -1;
+    private boolean croppedList = false;
+    private int actCroppedLength = -1;
 
     public FieldNoteList() {
 	CB_Core_Settings.FieldNotesLoadAll.addChangedEventListener(settingsChangedListener);
@@ -53,14 +53,14 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
 	public void isChanged() {
 	    synchronized (FieldNoteList.this) {
 		FieldNoteList.this.clear();
-		cropedList = false;
-		actCropedLength = -1;
+		croppedList = false;
+		actCroppedLength = -1;
 	    }
 	}
     };
 
     public boolean isCropped() {
-	return cropedList;
+	return croppedList;
     }
 
     public void LoadFieldNotes(String where, LoadingType loadingType) {
@@ -95,17 +95,17 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
 		    // do nothing
 		    break;
 		case LoadNew:
-		    actCropedLength = CB_Core_Settings.FieldNotesLoadLength.getValue();
-		    sql += " LIMIT " + String.valueOf(actCropedLength + 1);
+		    actCroppedLength = CB_Core_Settings.FieldNotesLoadLength.getValue();
+		    sql += " LIMIT " + String.valueOf(actCroppedLength + 1);
 		    break;
 		case loadNewLastLength:
-		    if (actCropedLength == -1)
-			actCropedLength = CB_Core_Settings.FieldNotesLoadLength.getValue();
-		    sql += " LIMIT " + String.valueOf(actCropedLength + 1);
+		    if (actCroppedLength == -1)
+			actCroppedLength = CB_Core_Settings.FieldNotesLoadLength.getValue();
+		    sql += " LIMIT " + String.valueOf(actCroppedLength + 1);
 		    break;
 		case loadMore:
-		    int Offset = actCropedLength;
-		    actCropedLength += CB_Core_Settings.FieldNotesLoadLength.getValue();
+		    int Offset = actCroppedLength;
+		    actCroppedLength += CB_Core_Settings.FieldNotesLoadLength.getValue();
 		    sql += " LIMIT " + String.valueOf(CB_Core_Settings.FieldNotesLoadLength.getValue() + 1);
 		    sql += " OFFSET " + String.valueOf(Offset);
 		}
@@ -130,12 +130,12 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
 
 	    // check Cropped
 	    if (maybeCropped) {
-		if (this.size() > actCropedLength) {
-		    cropedList = true;
+		if (this.size() > actCroppedLength) {
+		    croppedList = true;
 		    // remove last item
 		    this.remove(this.size() - 1);
 		} else {
-		    cropedList = false;
+		    croppedList = false;
 		}
 	    }
 	}

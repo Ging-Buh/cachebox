@@ -30,6 +30,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
 
@@ -219,45 +220,27 @@ public class EditTextField extends EditTextFieldBase {
 	return style;
     }
 
+    public void setBackground(Drawable background, Drawable backgroundFocused) {
+	style.setBackground(background, backgroundFocused);
+    }
+
     /**
      * calculates bgLeftWidth, bgRightWidth, bgTopHeight, bgBottomHeight
      * @param focused
      */
     private void calculateSizeDependencies(boolean focused) {
-	bgLeftWidth = 0;
-	bgRightWidth = 0;
-	bgTopHeight = 0;
-	bgBottomHeight = 0;
-
-	if (focused) {
-	    if (style.backgroundFocused != null) {
-		bgLeftWidth = style.backgroundFocused.getLeftWidth();
-		bgRightWidth = style.backgroundFocused.getRightWidth();
-		if (mWrapType == WrapType.SINGLELINE) {
-		    bgTopHeight = (getHeight() - this.style.font.getLineHeight()) / 2;
-		    bgBottomHeight = (getHeight() - this.style.font.getLineHeight()) / 2;
-		} else {
-		    bgTopHeight = style.background.getTopHeight();
-		    bgBottomHeight = style.background.getBottomHeight();
-		}
-	    }
+	bgLeftWidth = style.getLeftWidth(focused);
+	bgRightWidth = style.getRightWidth(focused);
+	if (mWrapType == WrapType.SINGLELINE) {
+	    bgTopHeight = (getHeight() - this.style.font.getLineHeight()) / 2;
+	    bgBottomHeight = (getHeight() - this.style.font.getLineHeight()) / 2;
 	} else {
-	    if (style.background != null) {
-		bgLeftWidth = style.background.getLeftWidth();
-		bgRightWidth = style.background.getRightWidth();
-		if (mWrapType == WrapType.SINGLELINE) {
-		    bgTopHeight = (getHeight() - this.style.font.getLineHeight()) / 2;
-		    bgBottomHeight = (getHeight() - this.style.font.getLineHeight()) / 2;
-		} else {
-		    bgTopHeight = style.background.getTopHeight();
-		    bgBottomHeight = style.background.getBottomHeight();
-		}
-	    }
+	    bgTopHeight = style.getTopHeight(focused);
+	    bgBottomHeight = style.getBottomHeight(focused);
 	}
-	textHeight = getHeight() - bgTopHeight - bgBottomHeight;
-	float lineHeight = this.style.font.getLineHeight();
-	maxLineCount = (int) (textHeight / lineHeight); // !angebrochene Zeile nicht mitzählen
 	textWidth = getWidth() - bgLeftWidth - bgRightWidth;
+	textHeight = getHeight() - bgTopHeight - bgBottomHeight;
+	maxLineCount = (int) (textHeight / this.style.font.getLineHeight()); // !angebrochene Zeile nicht mitzählen
     }
 
     @Override
@@ -268,14 +251,8 @@ public class EditTextField extends EditTextFieldBase {
 	displayTextLock.lock();
 	try {
 	    boolean focused = GL.that.hasFocus(this);
-	    if (focused) {
-		if (style.backgroundFocused != null) {
-		    style.backgroundFocused.draw(batch, 0f, 0f, getWidth(), getHeight());
-		}
-	    } else {
-		if (style.background != null) {
-		    style.background.draw(batch, 0f, 0f, getWidth(), getHeight());
-		}
+	    if (style.getBackground(focused) != null) {
+		style.getBackground(focused).draw(batch, 0f, 0f, getWidth(), getHeight());
 	    }
 
 	    batch.end();
@@ -673,7 +650,7 @@ public class EditTextField extends EditTextFieldBase {
 	    return new Point(0, lines.size() - 1);
 	// Spalte bestimmen, in die geklickt wurde.
 	Line line = getNthLine(clickedLine);
-	float lx = X - style.backgroundFocused.getLeftWidth() + leftPos;
+	float lx = X - style.getLeftWidth(true) + leftPos; // isClicked=isFocused
 	for (int i = 0; i < line.glyphPositions.size; i++) {
 	    if (line.glyphPositions.items[i] > lx) {
 		return new Point(Math.max(0, i - 1), clickedLine);
@@ -1316,7 +1293,7 @@ public class EditTextField extends EditTextFieldBase {
 
     public boolean keyTyped(char character, boolean ignoreFocus) {
 
-	if (disabled)
+	if (!isEditable)
 	    return false;
 
 	final BitmapFont font = style.font;
