@@ -390,7 +390,7 @@ public class Label extends CB_View_Base {
 	    yPosition = innerHeight - topBorder - mFont.getAscent();
 	    break;
 	case CENTER:
-	    yPosition = (innerHeight + bounds.height) / 2f - topBorder - mFont.getAscent(); // 
+	    yPosition = (innerHeight + bounds.height) / 2f;
 	    break;
 	default:
 	    break;
