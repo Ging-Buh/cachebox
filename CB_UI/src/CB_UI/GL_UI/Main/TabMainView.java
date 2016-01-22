@@ -115,6 +115,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.MathUtils.CalculationType;
+import CB_Utils.Settings.SettingBase;
 import CB_Utils.Settings.SettingModus;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.IChanged;
@@ -301,17 +302,19 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
     private boolean isInitial = false;
 
     private void initialSettingsChangedListener() {
-
 	Config.ImperialUnits.addChangedEventListener(new IChanged() {
-
 	    @Override
 	    public void isChanged() {
 		UnitFormatter.setUseImperialUnits(Config.ImperialUnits.getValue());
 	    }
 	});
+	addSettingChangedListener(Config.ShowAllWaypoints);
+	// Set settings first
+	UnitFormatter.setUseImperialUnits(Config.ImperialUnits.getValue());
+    }
 
-	Config.ShowAllWaypoints.addChangedEventListener(new IChanged() {
-
+    private void addSettingChangedListener(SettingBase<?> setting) {
+	setting.addChangedEventListener(new IChanged() {
 	    @Override
 	    public void isChanged() {
 		reloadCacheList();
@@ -321,9 +324,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 		    MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
 	    }
 	});
-
-	// Set settings first
-	UnitFormatter.setUseImperialUnits(Config.ImperialUnits.getValue());
     }
 
     public static void reloadCacheList() {
@@ -334,7 +334,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 	    cacheListDAO = null;
 	}
 	CacheListChangedEventList.Call();
-
     }
 
     private void ini() {

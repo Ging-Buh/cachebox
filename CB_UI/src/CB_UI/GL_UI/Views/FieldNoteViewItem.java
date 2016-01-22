@@ -167,6 +167,8 @@ public class FieldNoteViewItem extends ListViewItemBackground {
 	mCacheName.setText(fieldnote.isTbFieldNote ? fieldnote.TbName : fieldnote.CacheName);
 	mCacheName.setEditable(false);
 	mCacheName.setBackground(null, null);
+	mCacheName.showFromLineNo(0);
+	mCacheName.setCursorPosition(0);
 	this.addChild(mCacheName);
     }
 
@@ -191,6 +193,8 @@ public class FieldNoteViewItem extends ListViewItemBackground {
 	mComment.setText(fieldnote.comment);
 	mComment.setEditable(false);
 	mComment.setBackground(null, null);
+	mComment.showFromLineNo(0);
+	mComment.setCursorPosition(0);
 	this.addChild(mComment);
 
     }

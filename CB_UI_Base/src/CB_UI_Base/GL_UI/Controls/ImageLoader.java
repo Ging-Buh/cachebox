@@ -141,7 +141,7 @@ public class ImageLoader {
 	    ImageLoadError = true;
 	}
 
-	Sprite spt = tryToLoadFromCreatetdAtlas(ImagePath);
+	Sprite spt = tryToLoadFromCreatedAtlas(ImagePath);
 	if (spt != null)
 	    setSprite(spt, reziseHeight);
 
@@ -157,7 +157,7 @@ public class ImageLoader {
 	return Name;
     }
 
-    private Sprite tryToLoadFromCreatetdAtlas(String ImagePath) {
+    private Sprite tryToLoadFromCreatedAtlas(String ImagePath) {
 
 	if (Atlanten == null)
 	    Atlanten = new HashMap<String, TextureAtlas>();
@@ -216,7 +216,7 @@ public class ImageLoader {
 
 	    @Override
 	    public void run() {
-		Sprite spt = tryToLoadFromCreatetdAtlas(mPath);
+		Sprite spt = tryToLoadFromCreatedAtlas(mPath);
 
 		if (spt != null) {
 		    setSprite(spt, reziseHeight);

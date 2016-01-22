@@ -1371,7 +1371,9 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	if ((InitialFlags & INITIAL_WP_LIST) != 0) {
 	    if (mapCacheList != null) {
 		MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
+		this.hideMyFinds = Config.MapHideMyFinds.getValue();
 		data.hideMyFinds = this.hideMyFinds;
+		this.showAllWaypoints = Mode == MapMode.Compass ? false : Config.ShowAllWaypoints.getValue();
 		data.showAllWaypoints = this.showAllWaypoints;
 		mapCacheList.update(data);
 	    }
