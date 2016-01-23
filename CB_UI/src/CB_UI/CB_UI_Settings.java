@@ -40,7 +40,7 @@ import CB_Utils.Settings.SettingsList;
  */
 
 public interface CB_UI_Settings {
-    public static final String Work = Config.WorkPath;
+    public static final String Work = Config.mWorkPath;
 
     // Abkürzende Schreibweisen für die übersichlichkeit bei den add Methoden
     public static final SettingModus INVISIBLE = SettingModus.Invisible;

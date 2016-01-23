@@ -85,7 +85,7 @@ public abstract class Global
 		if (mIsDevelopChecked) return mIsDevelop;
 
 		// Chk is Develop
-		mIsDevelop = Gdx.files.absolute(Config_Core.WorkPath + "/deve.lop").exists();
+		mIsDevelop = Gdx.files.absolute(Config_Core.mWorkPath + "/deve.lop").exists();
 		mIsDevelopChecked = true;
 		return mIsDevelop;
 	}

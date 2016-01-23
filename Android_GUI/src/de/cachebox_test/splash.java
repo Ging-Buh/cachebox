@@ -999,7 +999,7 @@ public class splash extends Activity {
 		String line;
 
 		while ((line = Filereader.readLine()) != null) {
-		    // chk ob der umleitungs Ordner exestiert
+		    // chk ob der umleitungs Ordner existiert
 		    if (FileIO.FileExists(line)) {
 			workPath = line;
 		    }
@@ -1020,11 +1020,11 @@ public class splash extends Activity {
 	// hier muss die Config Db initialisiert werden
 	Database.Settings = new AndroidDB(DatabaseType.Settings, this);
 
-	boolean userFolderExists = FileIO.createDirectory(Config.WorkPath + "/User");
+	boolean userFolderExists = FileIO.createDirectory(Config.mWorkPath + "/User");
 
 	if (!userFolderExists)
 	    return;
-	Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
+	Database.Settings.StartUp(Config.mWorkPath + "/User/Config.db3");
 
 	// initialisieren der PlattformSettings
 	PlatformSettings.setPlatformSettings(new IPlatformSettings() {
@@ -1118,7 +1118,7 @@ public class splash extends Activity {
 	    String[] exclude = new String[] { "webkit", "sound", "sounds", "images", "skins", "lang", "kioskmode", "string-files", "" };
 	    copyAssetFolder myCopie = new copyAssetFolder();
 
-	    myCopie.copyAll(getAssets(), Config.WorkPath, exclude);
+	    myCopie.copyAll(getAssets(), Config.mWorkPath, exclude);
 	    Config.installRev.setValue(GlobalCore.CurrentRevision);
 	    Config.newInstall.setValue(true);
 	    Config.AcceptChanges();

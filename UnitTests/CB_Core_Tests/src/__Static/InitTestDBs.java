@@ -48,9 +48,9 @@ public class InitTestDBs {
 	} catch (ClassNotFoundException e) {
 	    e.printStackTrace();
 	}
-	if (!FileIO.createDirectory(Config.WorkPath))
+	if (!FileIO.createDirectory(Config.mWorkPath))
 	    return;
-	Database.Settings.StartUp(Config.WorkPath + "/Config.db3");
+	Database.Settings.StartUp(Config.mWorkPath + "/Config.db3");
 
 	initialPlatformSettings();
 
@@ -138,9 +138,9 @@ public class InitTestDBs {
 
 	InitalConfig();
 
-	new Translation(Config.WorkPath, FileType.Absolute);
+	new Translation(Config.mWorkPath, FileType.Absolute);
 	try {
-	    Translation.LoadTranslation(Config.WorkPath + "/lang/" + lang + "/strings.ini");
+	    Translation.LoadTranslation(Config.mWorkPath + "/lang/" + lang + "/strings.ini");
 	} catch (IOException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();

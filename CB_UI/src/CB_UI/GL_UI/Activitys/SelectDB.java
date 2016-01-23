@@ -90,7 +90,7 @@ public class SelectDB extends ActivityBase {
 
 	String DBFile = FileIO.GetFileName(Config.DatabasePath.getValue());
 
-	final FileList files = new FileList(Config.WorkPath, "DB3", true);
+	final FileList files = new FileList(Config.mWorkPath, "DB3", true);
 	countList = new String[files.size()];
 
 	int index = 0;
@@ -379,7 +379,7 @@ public class SelectDB extends ActivityBase {
 
 		// initialize Database
 
-		String database = Config.WorkPath + GlobalCore.fs + NewDB_Name + ".db3";
+		String database = Config.mWorkPath + GlobalCore.fs + NewDB_Name + ".db3";
 		Config.DatabasePath.setValue(database);
 		Database.Data.Close();
 		Database.Data.StartUp(database);
@@ -412,9 +412,9 @@ public class SelectDB extends ActivityBase {
 		    GlobalCore.checkSelectedCacheValid();
 		}
 
-		if (!FileIO.createDirectory(Config.WorkPath + "/User"))
+		if (!FileIO.createDirectory(Config.mWorkPath + "/User"))
 		    return true;
-		Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
+		Database.FieldNotes.StartUp(Config.mWorkPath + "/User/FieldNotes.db3");
 
 		Config.AcceptChanges();
 		AktFile = new File(database);

@@ -80,7 +80,7 @@ public class MainView extends MainViewBase {
     public void Initial() {
 	// Override default Settings and load only Mapsforge Maps
 	{
-	    Settings.MapPackFolder.ForceDefaultChange(Config_Core.WorkPath + "/maps");
+	    Settings.MapPackFolder.ForceDefaultChange(Config_Core.mWorkPath + "/maps");
 
 	    ManagerBase.Manager.initialMapPacks();
 

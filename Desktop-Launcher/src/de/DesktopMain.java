@@ -38,8 +38,8 @@ import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Listener_Interface;
-import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.Math.DevicesSizes;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Plattform;
 import CB_Utils.Settings.PlatformSettings;
 import CB_Utils.Settings.PlatformSettings.IPlatformSettings;
@@ -50,7 +50,7 @@ import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.IChanged;
 import ch.fhnw.imvs.gpssimulator.SimulatorMain;
-import de.CB_Texturepacker.Desctop_Packer;
+import de.CB_Texturepacker.Desktop_Packer;
 import de.Map.DesktopManager;
 import de.cb.sqlite.DesktopDB;
 
@@ -67,7 +67,7 @@ public class DesktopMain {
 	frame.setVisible(false);
 
 	// Initial Desctop TexturePacker
-	new Desctop_Packer();
+	new Desktop_Packer();
 
 	PlatformSettings.setPlatformSettings(new IPlatformSettings() {
 
@@ -423,6 +423,7 @@ public class DesktopMain {
 	String base = new File("").getAbsolutePath();
 	String workPath = base + "/cachebox";
 	workPath = "C:/Daten/_WCB";
+	log.debug("workPath=" + workPath);
 
 	new Config(workPath);
 
@@ -440,7 +441,7 @@ public class DesktopMain {
 	    e.printStackTrace();
 	}
 
-	Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
+	Database.Settings.StartUp(Config.mWorkPath + "/User/Config.db3");
 
 	try {
 	    Database.Data = new DesktopDB(DatabaseType.CacheBox);
@@ -453,9 +454,9 @@ public class DesktopMain {
 	} catch (ClassNotFoundException e) {
 	    e.printStackTrace();
 	}
-	if (!FileIO.createDirectory(Config.WorkPath + "/User"))
+	if (!FileIO.createDirectory(Config.mWorkPath + "/User"))
 	    return;
-	Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
+	Database.FieldNotes.StartUp(Config.mWorkPath + "/User/FieldNotes.db3");
     }
 
     /**

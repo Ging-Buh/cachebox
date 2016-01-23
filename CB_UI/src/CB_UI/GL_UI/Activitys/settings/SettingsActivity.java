@@ -1360,7 +1360,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
     private CB_View_Base getSkinSpinnerView(final SettingsListButtonSkinSpinner<?> SB) {
 
-	String SkinFolder = Config.WorkPath + "/skins";
+	String SkinFolder = Config.mWorkPath + "/skins";
 	File dir = new File(SkinFolder);
 
 	final ArrayList<String> skinFolders = new ArrayList<String>();

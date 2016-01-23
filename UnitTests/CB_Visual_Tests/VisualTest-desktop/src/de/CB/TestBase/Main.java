@@ -50,7 +50,7 @@ public class Main {
 	// Initial Config
 	new Config(workPath);
 
-	Config_Core.WorkPath = workPath;
+	Config_Core.mWorkPath = workPath;
 	Config.Initialize(workPath, workPath + "/freizeitkarte.config");
 
 	Settings.SkinFolder.setValue("default");

@@ -19,86 +19,74 @@ import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action
-{
-	final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_Action.class);
+public class CB_Action {
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_Action.class);
 
-	protected String name;
-	protected int id;
-	protected String nameExtention = "";
+    protected String name;
+    protected int id;
+    protected String nameExtention = "";
 
-	/**
-	 * Constructor
-	 * 
-	 * @param name
-	 *            = Translation ID
-	 * @param id
-	 *            = Action ID ( AID_xxxx )
-	 */
-	public CB_Action(String name, int id)
-	{
-		super();
-		this.name = name;
-		this.id = id;
-	}
+    /**
+     * Constructor
+     * 
+     * @param name
+     *            = Translation ID
+     * @param id
+     *            = Action ID ( AID_xxxx )
+     */
+    public CB_Action(String name, int id) {
+	//super();
+	this.name = name;
+	this.id = id;
+    }
 
-	public CB_Action(String name, String nameExtention, int id)
-	{
-		super();
-		this.name = name;
-		this.id = id;
-		this.nameExtention = nameExtention;
-	}
+    public CB_Action(String name, String nameExtention, int id) {
+	//super();
+	this.name = name;
+	this.id = id;
+	this.nameExtention = nameExtention;
+    }
 
-	public void CallExecute()
-	{
-		log.debug("ACTION => " + name + " execute");
-		Execute();
-	}
+    public void CallExecute() {
+	log.debug("ACTION => " + name + " execute");
+	Execute();
+    }
 
-	protected void Execute()
-	{
-		return;
-	}
+    protected void Execute() {
+	return;
+    }
 
-	public String getName()
-	{
-		return name;
-	}
+    public String getName() {
+	return name;
+    }
 
-	public String getNameExtention()
-	{
-		return nameExtention;
-	}
+    public String getNameExtention() {
+	return nameExtention;
+    }
 
-	public int getId()
-	{
-		return id;
-	}
+    public int getId() {
+	return id;
+    }
 
-	/**
-	 * hiermit kann der Men�punkt enabled oder disabled werden
-	 * 
-	 * @return
-	 */
-	public boolean getEnabled()
-	{
-		return true;
-	}
+    /**
+     * hiermit kann der Menüpunkt enabled oder disabled werden
+     * 
+     * @return
+     */
+    public boolean getEnabled() {
+	return true;
+    }
 
-	public Sprite getIcon()
-	{
-		return null;
-	}
+    public Sprite getIcon() {
+	return null;
+    }
 
-	public boolean getIsCheckable()
-	{
-		return false;
-	}
+    public boolean getIsCheckable() {
+	return false;
+    }
 
-	public boolean getIsChecked()
-	{
-		return false;
-	}
+    public boolean getIsChecked() {
+	return false;
+    }
 
 }

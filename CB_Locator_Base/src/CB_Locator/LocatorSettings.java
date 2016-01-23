@@ -26,10 +26,10 @@ public interface LocatorSettings {
     public Integer Level[] = new Integer[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
     public Integer CrossLevel[] = new Integer[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
 
-    public static final SettingFolder TileCacheFolder = new SettingFolder("TileCacheFolder", SettingCategory.Folder, NORMAL, Config_Core.WorkPath + "/repository/cache", SettingStoreType.Global, SettingUsage.ALL, true);
+    public static final SettingFolder TileCacheFolder = new SettingFolder("TileCacheFolder", SettingCategory.Folder, NORMAL, Config_Core.mWorkPath + "/repository/cache", SettingStoreType.Global, SettingUsage.ALL, true);
     public static final SettingFolder TileCacheFolderLocal = new SettingFolder("TileCacheFolderLocal", SettingCategory.Folder, NEVER, "", SettingStoreType.Local, SettingUsage.ALL, true);
-    public static final SettingFolder MapPackFolder = new SettingFolder("MapPackFolder", SettingCategory.Folder, NORMAL, Config_Core.WorkPath + "/repository/maps", SettingStoreType.Global, SettingUsage.ALL, false);
-    public static final SettingFolder MapPackFolderLocal = new SettingFolder("MapPackFolderLocal", SettingCategory.Folder, NEVER, Config_Core.WorkPath + "/repository/maps", SettingStoreType.Local, SettingUsage.ALL, false);
+    public static final SettingFolder MapPackFolder = new SettingFolder("MapPackFolder", SettingCategory.Folder, NORMAL, Config_Core.mWorkPath + "/repository/maps", SettingStoreType.Global, SettingUsage.ALL, false);
+    public static final SettingFolder MapPackFolderLocal = new SettingFolder("MapPackFolderLocal", SettingCategory.Folder, NEVER, Config_Core.mWorkPath + "/repository/maps", SettingStoreType.Local, SettingUsage.ALL, false);
 
     public static final SettingString CurrentMapLayer = (SettingString) SettingsList.addSetting(new SettingString("CurrentMapLayer", SettingCategory.Map, EXPERT, "Mapnik", SettingStoreType.Global, SettingUsage.ACB));
     public static final SettingString CurrentMapOverlayLayer = (SettingString) SettingsList.addSetting(new SettingString("CurrentMapOverlayLayer", SettingCategory.Map, EXPERT, "", SettingStoreType.Global, SettingUsage.ACB));

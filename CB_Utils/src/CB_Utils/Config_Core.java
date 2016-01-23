@@ -11,10 +11,10 @@ public abstract class Config_Core
 	public Config_Core(String workPath)
 	{
 		that = this;
-		WorkPath = workPath;
+		mWorkPath = workPath;
 	}
 
-	public static String WorkPath = "";
+	public static String mWorkPath = "";
 
 	static final int[] Key =
 		{ 128, 56, 20, 78, 33, 225 };

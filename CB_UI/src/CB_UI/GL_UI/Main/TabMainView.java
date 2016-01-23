@@ -43,6 +43,7 @@ import CB_UI.RouteOverlay;
 import CB_UI.TrackRecorder;
 import CB_UI.GL_UI.Controls.Slider;
 import CB_UI.GL_UI.Main.Actions.CB_Action_GenerateRoute;
+import CB_UI.GL_UI.Main.Actions.CB_Action_Help;
 import CB_UI.GL_UI.Main.Actions.CB_Action_QuickFieldNote;
 import CB_UI.GL_UI.Main.Actions.CB_Action_RecTrack;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowAbout;
@@ -170,7 +171,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
     private CB_Action_ShowActivity actionRecVideo;
 
     private CB_Action_switch_DayNight actionDayNight;
-    // private CB_Action_ShowActivity actionScreenLock;
+    private CB_Action_Help actionHelp;
 
     public static MapView mapView = null;
     public static CacheListView cacheListView = null;
@@ -371,6 +372,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 	actionRecVideo = new CB_Action_ShowActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC, SpriteCacheBase.Icons.get(IconName.video_10.ordinal()));
 
 	actionDayNight = new CB_Action_switch_DayNight();
+	actionHelp = new CB_Action_Help();
 	// actionScreenLock = new CB_Action_ShowActivity("screenlock", MenuID.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));
 
 	if (GlobalCore.isTab)
@@ -520,7 +522,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 	btn5.addAction(new CB_ActionButton(actionShowCreditsView, false));
 	btn5.addAction(new CB_ActionButton(actionShowSettings, false, GestureDirection.Left));
 	btn5.addAction(new CB_ActionButton(actionDayNight, false));
-	// btn5.addAction(new CB_ActionButton(actionScreenLock, false));
+	btn5.addAction(new CB_ActionButton(actionHelp, false));
 	btn5.addAction(new CB_ActionButton(actionClose, false, GestureDirection.Down));
 
 	actionShowAboutView.Execute();
@@ -614,7 +616,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 	btn5.addAction(new CB_ActionButton(actionShowCreditsView, false));
 	btn5.addAction(new CB_ActionButton(actionShowSettings, false, GestureDirection.Left));
 	btn5.addAction(new CB_ActionButton(actionDayNight, false));
-	// btn5.addAction(new CB_ActionButton(actionScreenLock, false));
+	btn5.addAction(new CB_ActionButton(actionHelp, false));
 	btn5.addAction(new CB_ActionButton(actionClose, false));
 
 	actionShowAboutView.Execute();

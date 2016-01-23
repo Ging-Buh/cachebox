@@ -16,7 +16,7 @@
 package CB_UI_Base.GL_UI.Menu;
 
 /**
- * Diese Klasse enthält alle Menu Item ID´s.</br></br> Da ein Menü auch aus mehreren Menüs zusammengesetzt werden kann, müssen die Items
+ * Diese Klasse enthï¿½lt alle Menu Item IDï¿½s.</br></br> Da ein Menï¿½ auch aus mehreren Menï¿½s zusammengesetzt werden kann, mï¿½ssen die Items
  * eine Eindeutige ID haben.</br>
  * 
  * @author Longri
@@ -129,7 +129,7 @@ public class MenuID {
 
     public static final int MI_SHOW_ALL_WAYPOINTS = 81;
 
-    // Action ID´s
+    // Action IDï¿½s
 
     public static final int AID_TEST_VIEW = -1;
     public static final int AID_TEST2 = -2;
@@ -257,4 +257,6 @@ public class MenuID {
     public static final int AID_SWITCH_DESCRIPTION = 206;
     public static final int AID_SHOW_DescExt = 207;
     public static final int MI_TOGGLE_DEC__TXT_HTML = 208;
+
+    public static final int AID_HELP = 209;
 }

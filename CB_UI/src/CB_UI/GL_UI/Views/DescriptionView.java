@@ -474,7 +474,7 @@ public class DescriptionView extends CB_View_Base {
 
 	    do {
 		Attributes attribute = attrs.next();
-		File result = new File(Config.WorkPath + "/data/Attributes/" + attribute.getImageName() + ".png");
+		File result = new File(Config.mWorkPath + "/data/Attributes/" + attribute.getImageName() + ".png");
 
 		sb.append("<input name=\"Button\" type=\"image\" src=\"file://" + result.getAbsolutePath() + "\" value=\" " + attribute.getImageName() + " \">");
 

@@ -37,7 +37,7 @@ public interface CB_UI_Base_Settings extends CB_Utils_Settings {
 
     public static final SettingBool nightMode = new SettingBool("nightMode", SettingCategory.Internal, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
 
-    public static final SettingFolder SkinFolder = new SettingFolder("SkinFolder", SettingCategory.Folder, INVISIBLE, Config_Core.WorkPath + "/skins/default", SettingStoreType.Global, SettingUsage.ACB, false);
+    public static final SettingFolder SkinFolder = new SettingFolder("SkinFolder", SettingCategory.Folder, INVISIBLE, Config_Core.mWorkPath + "/skins/default", SettingStoreType.Global, SettingUsage.ACB, false);
 
     public static final SettingInt FONT_SIZE_COMPASS_DISTANCE = new SettingInt("FONT_SIZE_COMPASS_DISTANCE", SettingCategory.Skin, EXPERT, 25, SettingStoreType.Global, SettingUsage.ACB);
     public static final SettingInt FONT_SIZE_BIG = new SettingInt("FONT_SIZE_BIG", SettingCategory.Skin, EXPERT, 16, SettingStoreType.Global, SettingUsage.ACB);
@@ -57,7 +57,7 @@ public interface CB_UI_Base_Settings extends CB_Utils_Settings {
 
     public static final SettingFloat MapViewDPIFaktor = new SettingFloat("MapViewDPIFaktor", SettingCategory.Map, EXPERT, (float) Global.displayDensity, SettingStoreType.Global, SettingUsage.ACB);
 
-    public static final SettingFolder ImageCacheFolderLocal = new SettingFolder("ImageCacheFolderLocal", SettingCategory.Folder, NEVER, Config_Core.WorkPath + "/repository/cache", SettingStoreType.Local, SettingUsage.ACB, true);
+    public static final SettingFolder ImageCacheFolderLocal = new SettingFolder("ImageCacheFolderLocal", SettingCategory.Folder, NEVER, Config_Core.mWorkPath + "/repository/cache", SettingStoreType.Local, SettingUsage.ACB, true);
 
     public static final SettingBool GestureOn = new SettingBool("GestureOn", SettingCategory.Misc, NORMAL, false, SettingStoreType.Global, SettingUsage.ACB);
 

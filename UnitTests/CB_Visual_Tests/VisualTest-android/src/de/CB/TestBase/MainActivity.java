@@ -440,7 +440,7 @@ public class MainActivity extends AndroidApplication implements LocationListener
 			{ "webkit", "sound", "sounds", "images", "skins", "lang", "kioskmode", "string-files", "" };
 		copyAssetFolder myCopie = new copyAssetFolder();
 
-		myCopie.copyAll(getAssets(), Config.WorkPath, exclude);
+		myCopie.copyAll(getAssets(), Config.mWorkPath, exclude);
 
 	}
 

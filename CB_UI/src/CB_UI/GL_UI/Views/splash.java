@@ -252,8 +252,8 @@ public class splash extends MainViewBase {
 	    // Load from Assets changes
 	    // delete work path from settings value
 	    String altValue = Config.Sel_LanguagePath.getValue();
-	    if (altValue.contains(Config.WorkPath)) {
-		String newValue = altValue.replace(Config.WorkPath + "/", "");
+	    if (altValue.contains(Config.mWorkPath)) {
+		String newValue = altValue.replace(Config.mWorkPath + "/", "");
 		Config.Sel_LanguagePath.setValue(newValue);
 		Config.AcceptChanges();
 	    }
@@ -266,7 +266,7 @@ public class splash extends MainViewBase {
 
 	    FileType fileType = (Plattform.used == Plattform.Android) ? FileType.Internal : FileType.Classpath;
 
-	    new Translation(Config.WorkPath, fileType);
+	    new Translation(Config.mWorkPath, fileType);
 	    try {
 		Translation.LoadTranslation(Config.Sel_LanguagePath.getValue());
 	    } catch (Exception e) {
@@ -296,16 +296,16 @@ public class splash extends MainViewBase {
 	log.debug("ini_Dirs");
 	ini_Dir(Config.PocketQueryFolder.getValue());
 	ini_Dir(Config.TileCacheFolder.getValue());
-	ini_Dir(Config.WorkPath + "/User");
+	ini_Dir(Config.mWorkPath + "/User");
 	ini_Dir(Config.TrackFolder.getValue());
 	ini_Dir(Config.UserImageFolder.getValue());
-	ini_Dir(Config.WorkPath + "/repository");
+	ini_Dir(Config.mWorkPath + "/repository");
 	ini_Dir(Config.DescriptionImageFolder.getValue());
 	ini_Dir(Config.MapPackFolder.getValue());
 	ini_Dir(Config.SpoilerFolder.getValue());
 
 	// prevent mediascanner to parse all the images in the cachebox folder
-	File nomedia = new File(Config.WorkPath, ".nomedia");
+	File nomedia = new File(Config.mWorkPath, ".nomedia");
 	if (!nomedia.exists()) {
 	    try {
 		nomedia.createNewFile();
@@ -332,7 +332,7 @@ public class splash extends MainViewBase {
 	// search number of DB3 files
 	FileList fileList = null;
 	try {
-	    fileList = new FileList(Config.WorkPath, "DB3");
+	    fileList = new FileList(Config.mWorkPath, "DB3");
 	} catch (Exception ex) {
 	    log.error("slpash.Initial()", "search number of DB3 files", ex);
 	}
@@ -402,7 +402,7 @@ public class splash extends MainViewBase {
 
 	CacheListChangedEventList.Call();
 
-	Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
+	Database.FieldNotes.StartUp(Config.mWorkPath + "/User/FieldNotes.db3");
 
     }
 

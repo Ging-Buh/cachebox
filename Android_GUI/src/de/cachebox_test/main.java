@@ -353,7 +353,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	savedInstanceState.putBoolean("isTab", GlobalCore.isTab);
 	savedInstanceState.putBoolean("useSmallSkin", GlobalCore.useSmallSkin);
-	savedInstanceState.putString("WorkPath", Config.WorkPath);
+	savedInstanceState.putString("WorkPath", Config.mWorkPath);
 
 	savedInstanceState.putInt("WindowWidth", UI_Size_Base.that.getWindowWidth());
 	savedInstanceState.putInt("WindowHeight", UI_Size_Base.that.getWindowHeight());
@@ -401,9 +401,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	    // hier muss die Config Db initialisiert werden
 	    Database.Settings = new AndroidDB(DatabaseType.Settings, this);
-	    if (!FileIO.createDirectory(Config.WorkPath + "/User"))
+	    if (!FileIO.createDirectory(Config.mWorkPath + "/User"))
 		return;
-	    Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
+	    Database.Settings.StartUp(Config.mWorkPath + "/User/Config.db3");
 	    // initialize Database
 	    Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
 	    Database.FieldNotes = new AndroidDB(DatabaseType.FieldNotes, this);
@@ -2157,7 +2157,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
     private void CheckTranslationIsLoaded() {
 	if (!Translation.isInitial()) {
-	    new Translation(Config.WorkPath, FileType.Internal);
+	    new Translation(Config.mWorkPath, FileType.Internal);
 	    try {
 		Translation.LoadTranslation(Config.Sel_LanguagePath.getValue());
 	    } catch (Exception e) {

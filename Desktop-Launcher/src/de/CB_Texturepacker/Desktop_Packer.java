@@ -40,16 +40,16 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
 /** @author Nathan Sweet */
-public class Desctop_Packer extends TexturePacker_Base
+public class Desktop_Packer extends TexturePacker_Base
 {
 
 	@Override
 	public TexturePacker_Base getInstanz(File rootDir, Settings settings)
 	{
-		return new Desctop_Packer(rootDir, settings);
+		return new Desktop_Packer(rootDir, settings);
 	}
 
-	public Desctop_Packer(File rootDir, Settings settings)
+	public Desktop_Packer(File rootDir, Settings settings)
 	{
 		this.settings = settings;
 
@@ -65,7 +65,7 @@ public class Desctop_Packer extends TexturePacker_Base
 		imageProcessor = new ImageProcessor(rootDir, settings);
 	}
 
-	public Desctop_Packer()
+	public Desktop_Packer()
 	{
 		super();
 		that = this;

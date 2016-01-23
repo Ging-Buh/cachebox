@@ -43,7 +43,7 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
     public static String ConfigName = "";
 
     public static void Initialize(String workPath, String configName) {
-	WorkPath = workPath;
+	mWorkPath = workPath;
 	ConfigName = configName;
 	settings = new SettingsClass();
 
@@ -155,18 +155,18 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
     }
 
     public static void validateDefaultConfigFile() {
-	validateSetting("LanguagePath", WorkPath + "/data/lang");
-	validateSetting("Sel_LanguagePath", WorkPath + "/data/lang/en.lan");
-	validateSetting("DatabasePath", WorkPath + "/cachebox.db3");
-	validateSetting("TileCacheFolder", WorkPath + "/cache");
-	validateSetting("PocketQueryFolder", WorkPath + "/PocketQuery");
-	validateSetting("DescriptionImageFolder", WorkPath + "/repository/images");
-	validateSetting("MapPackFolder", WorkPath + "/repository/maps");
-	validateSetting("SpoilerFolder", WorkPath + "/repository/spoilers");
-	validateSetting("UserImageFolder", WorkPath + "/User/Media");
-	validateSetting("TrackFolder", WorkPath + "/User/Tracks");
+	validateSetting("LanguagePath", mWorkPath + "/data/lang");
+	validateSetting("Sel_LanguagePath", mWorkPath + "/data/lang/en.lan");
+	validateSetting("DatabasePath", mWorkPath + "/cachebox.db3");
+	validateSetting("TileCacheFolder", mWorkPath + "/cache");
+	validateSetting("PocketQueryFolder", mWorkPath + "/PocketQuery");
+	validateSetting("DescriptionImageFolder", mWorkPath + "/repository/images");
+	validateSetting("MapPackFolder", mWorkPath + "/repository/maps");
+	validateSetting("SpoilerFolder", mWorkPath + "/repository/spoilers");
+	validateSetting("UserImageFolder", mWorkPath + "/User/Media");
+	validateSetting("TrackFolder", mWorkPath + "/User/Tracks");
 
-	validateSetting("FieldNotesGarminPath", WorkPath + "/User/geocache_visits.txt");
+	validateSetting("FieldNotesGarminPath", mWorkPath + "/User/geocache_visits.txt");
 
 	validateSetting("SaveFieldNotesHtml", "true");
 
