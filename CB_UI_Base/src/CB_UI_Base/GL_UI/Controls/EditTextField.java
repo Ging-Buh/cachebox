@@ -1492,10 +1492,13 @@ public class EditTextField extends EditTextFieldBase {
 
 	this.text = "";
 
+	boolean stateIsEditable = isEditable;
+	isEditable = true;
 	for (int i = 0; i < bText.length(); i++) {
 	    char c = bText.charAt(i);
 	    keyTyped(c, true);
 	}
+	isEditable = stateIsEditable;
 
 	setCursorPosition(inputText.length());
 

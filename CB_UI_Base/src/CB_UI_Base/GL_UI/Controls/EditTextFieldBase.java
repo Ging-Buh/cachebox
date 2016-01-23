@@ -399,6 +399,9 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 
     public void setEditable(boolean value) {
 	isEditable = value;
+	if (!isEditable) {
+	    dontShowKeyBoard = true;
+	}
     }
 
     protected void sendKeyTyped(final char character) {

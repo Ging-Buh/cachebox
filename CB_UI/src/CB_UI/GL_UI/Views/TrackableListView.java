@@ -32,7 +32,7 @@ public class TrackableListView extends CB_View_Base {
     public static TrackableListView that;
     private V_ListView listView;
     private CustomAdapter lvAdapter;
-    private TbList TB_List;
+    private TbList mTB_List;
     private Box searchBox;
     private EditTextField txtSearch;
     private ImageButton btnSearch;
@@ -51,7 +51,7 @@ public class TrackableListView extends CB_View_Base {
     }
 
     public void reloadTB_List() {
-	TB_List = TrackableListDAO.ReadTbList("");
+	mTB_List = TrackableListDAO.ReadTbList("");
 	lvAdapter = new CustomAdapter();
 	if (listView != null)
 	    listView.setBaseAdapter(lvAdapter);
@@ -225,20 +225,20 @@ public class TrackableListView extends CB_View_Base {
 
 	@Override
 	public int getCount() {
-	    if (TB_List == null)
+	    if (mTB_List == null)
 		return 0;
-	    return TB_List.size();
+	    return mTB_List.size();
 	}
 
 	@Override
 	public ListViewItemBase getView(final int position) {
-	    TrackableListViewItem v = new TrackableListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, TB_List.get(position));
+	    TrackableListViewItem v = new TrackableListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, mTB_List.get(position));
 	    v.setOnClickListener(new OnClickListener() {
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		    if (TB_Details.that == null)
 			new TB_Details();
-		    TB_Details.that.Show(TB_List.get(position));
+		    TB_Details.that.Show(mTB_List.get(position));
 		    return true;
 		}
 	    });

@@ -28,6 +28,7 @@ import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Button;
+import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
@@ -45,7 +46,8 @@ public class TB_Details extends ActivityBase {
     private Button btnClose, btnAction;
     private Trackable TB;
     private Image icon, image;
-    private Label lblName, lblAbout, lblAboutDesc, lblGoal, lblGoalDesc;
+    private Label lblAbout, lblAboutDesc, lblGoal, lblGoalDesc;
+    private EditTextField lblName;
     private Label lblTypeName, lblTbCode, lblOwner, lblBirth;
     // TODO Visit,Home und Distance müssen noch angezeigt werden!
     private Label TypeName, TbCode, Owner, Birth;
@@ -95,7 +97,7 @@ public class TB_Details extends ActivityBase {
 	iconRec = iconRec.ScaleCenter(0.8f);
 
 	icon = new Image(iconRec, "Icon", false);
-	lblName = new Label(this.name + " lblName", iconRec);
+	lblName = new EditTextField(iconRec, this, this.name + " lblName");
 
 	image = new Image(iconRec, "Image", false);
 	lblAbout = new Label(Translation.Get("AboutThisItem"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
@@ -135,9 +137,13 @@ public class TB_Details extends ActivityBase {
 	this.setMargins(margin * 2, 0);
 	this.addNext(icon, FIXED);
 	icon.setImageURL(TB.getIconUrl());
+	lblName.setWrapType(WrapType.WRAPPED);
+	lblName.setBackground(null, null);
 	this.addLast(lblName);
-	// lblName.setVAlignment(VAlignment.CENTER);
-	lblName.setWrappedText(TB.getName());
+	lblName.setText(TB.getName());
+	lblName.setEditable(false);
+	lblName.showFromLineNo(0);
+	lblName.setCursorPosition(0);
 
 	scrollBox.setWidth(getWidth());
 	scrollBox.setMargins(margin, 0);
@@ -288,7 +294,7 @@ public class TB_Details extends ActivityBase {
 	cm.Show();
     }
 
-    private OnClickListener menuItemClickListener = new OnClickListener() {
+    private final OnClickListener menuItemClickListener = new OnClickListener() {
 
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {

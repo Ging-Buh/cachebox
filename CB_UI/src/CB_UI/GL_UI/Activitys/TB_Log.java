@@ -62,7 +62,8 @@ public class TB_Log extends ActivityBase {
     private Button btnClose;
     private ImageButton btnAction;
     private Image icon, CacheIcon;
-    private Label lblName, lblPlaced;
+    private Label lblPlaced;
+    private EditTextField lblName;
     private Box contentBox;
     private LogTypes LT;
     private EditTextField edit;
@@ -111,7 +112,7 @@ public class TB_Log extends ActivityBase {
 	iconRec = iconRec.ScaleCenter(0.8f);
 
 	icon = new Image(iconRec, "Icon", false);
-	lblName = new Label(this.name + " lblName", iconRec);
+	lblName = new EditTextField(iconRec, this, this.name + " lblName");
 
 	CacheIcon = new Image(iconRec, "CacheIcon", false);
 	lblPlaced = new Label(this.name + " lblPlaced", iconRec);
@@ -199,8 +200,13 @@ public class TB_Log extends ActivityBase {
 	this.setMargins(margin * 2, 0);
 	this.addNext(icon, FIXED);
 	icon.setImageURL(TB.getIconUrl());
-	lblName.setWrappedText(TB.getName());
+	lblName.setWrapType(WrapType.WRAPPED);
+	lblName.setBackground(null, null);
 	this.addLast(lblName);
+	lblName.setText(TB.getName());
+	lblName.setEditable(false);
+	lblName.showFromLineNo(0);
+	lblName.setCursorPosition(0);
 
 	switch (this.LT) {
 	case discovered:
