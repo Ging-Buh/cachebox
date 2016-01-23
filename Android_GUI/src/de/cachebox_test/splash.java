@@ -649,6 +649,8 @@ public class splash extends Activity {
 	    externalSd += Folder;
 	} else if ((externalSd = testExtSdPath(prev + "/MicroSD")) != null) {
 	    externalSd += Folder;
+	} else if ((externalSd = testExtSdPath(prev + "/ext_sdcard")) != null) {
+	    externalSd += Folder;
 	} else if ((externalSd = testExtSdPath(prev + "/sdcard/ext_sd")) != null) {
 	    externalSd += Folder;
 	} else if ((externalSd = testExtSdPath(prev + "/ext_card")) != null) {
