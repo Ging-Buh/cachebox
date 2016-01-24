@@ -836,7 +836,7 @@ public class SpriteCacheBase {
 	Accuracy[1] = getThemedSprite("Accuracy-1");
 	Accuracy[2] = getThemedSprite("Accuracy-2");
 
-	loadButtnSprites();
+	loadButtonSprites();
 
 	createDrawables();
 
@@ -922,7 +922,7 @@ public class SpriteCacheBase {
 	return new SpriteDrawable(getThemedSprite(name));
     }
 
-    protected static void loadButtnSprites() {
+    protected static void loadButtonSprites() {
 	CacheList = new ButtonSprites(getThemedSprite("db"), getThemedSprite("db-pressed"), null, getThemedSprite("db-pressed"));
 	CacheListFilter = new ButtonSprites(getThemedSprite("db-filter-active"), getThemedSprite("db-pressed-filter-active"), null, getThemedSprite("db-pressed-filter-active"));
 	Cache = new ButtonSprites(getThemedSprite("cache"), getThemedSprite("cache-pressed"), null, getThemedSprite("cache-pressed"));
@@ -930,7 +930,6 @@ public class SpriteCacheBase {
 	Tool = new ButtonSprites(getThemedSprite("tool"), getThemedSprite("tool-pressed"), null, getThemedSprite("tool-pressed"));
 	Misc = new ButtonSprites(getThemedSprite("misc"), getThemedSprite("misc-pressed"), null, getThemedSprite("misc-pressed"));
 	QuickButton = new ButtonSprites(getThemedSprite("button"), getThemedSprite("btn-pressed"), null, getThemedSprite("btn-pressed"));
-
     }
 
     /**

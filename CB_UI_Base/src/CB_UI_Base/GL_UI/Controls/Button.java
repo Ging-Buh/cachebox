@@ -79,12 +79,6 @@ public class Button extends CB_View_Base {
 	this.setClickable(true);
     }
 
-    public Button(CB_RectF rec, String name, ButtonSprites sprites) {
-	super(rec, name);
-	setButtonSprites(sprites);
-	this.setClickable(true);
-    }
-
     public Button(CB_RectF cb_RectF, OnClickListener onClik) {
 	this(cb_RectF, "");
 	this.setOnClickListener(onClik);
@@ -289,11 +283,11 @@ public class Button extends CB_View_Base {
 
     }
 
-    public void setDrageble() {
-	setDrageble(true);
+    public void setDraggable() {
+	setDraggable(true);
     }
 
-    public void setDrageble(boolean value) {
+    public void setDraggable(boolean value) {
 	dragableButton = value;
     }
 

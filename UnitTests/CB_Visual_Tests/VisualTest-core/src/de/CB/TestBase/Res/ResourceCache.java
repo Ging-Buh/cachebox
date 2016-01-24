@@ -300,7 +300,7 @@ public class ResourceCache extends SpriteCacheBase
 
 	protected static void loadButtnSprites()
 	{
-		SpriteCacheBase.loadButtnSprites();
+		SpriteCacheBase.loadButtonSprites();
 		btnSpritesHome = new ButtonSprites(getThemedSprite("InstBack-Normal"), getThemedSprite("InstBack-Pressed"),
 				getThemedSprite("InstBack-Disabled"), getThemedSprite("InstBack-Focus"));
 	}

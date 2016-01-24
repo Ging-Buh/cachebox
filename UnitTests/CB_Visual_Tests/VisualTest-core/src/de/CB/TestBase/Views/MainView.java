@@ -37,7 +37,7 @@ public class MainView extends MainViewBase {
 
     public static MainView that;
     public static String actTheme = "";
-    public static CB_TabView TAB;
+    public static CB_TabView mTabView;
 
     public static MapView mapView;
 
@@ -107,7 +107,7 @@ public class MainView extends MainViewBase {
 	rec.setHeight(this.getHeight());
 	rec.setPos(0, 0);
 
-	TAB = new ThisTabView(rec, "Phone Tab");
+	mTabView = new ThisTabView(rec, "Phone Tab");
 
 	btn1 = new CB_Button(btnRec, "Button1", ResourceCache.btnSpritesHome);
 	btn2 = new CB_Button(btnRec, "Button2", ResourceCache.btnSpritesHome);
@@ -142,14 +142,14 @@ public class MainView extends MainViewBase {
 
 	disableRotateButton();
 
-	TAB.addButtonList(btnList);
+	mTabView.setButtonList(btnList);
 
-	this.addChild(TAB);
+	this.addChild(mTabView);
 
 	// Tab den entsprechneden Actions zuweisen
-	actionShowMap.setTab(this, TAB);
-	actionShowNextTest.setTab(this, TAB);
-	actionShowPrevTest.setTab(this, TAB);
+	actionShowMap.setTab(this, mTabView);
+	actionShowNextTest.setTab(this, mTabView);
+	actionShowPrevTest.setTab(this, mTabView);
 	// override App Name
 	actionClose.OverrideAppName("Graphic-Test");
 

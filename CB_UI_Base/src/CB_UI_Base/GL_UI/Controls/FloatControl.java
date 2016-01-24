@@ -29,7 +29,7 @@ public class FloatControl extends CB_View_Base
 		slideButton = new Button(rec, "");
 		slideButton.setWidth(this.getHeight());
 		slideButton.setZeroPos();
-		slideButton.setDrageble();
+		slideButton.setDraggable();
 		this.addChild(slideButton);
 	}
 

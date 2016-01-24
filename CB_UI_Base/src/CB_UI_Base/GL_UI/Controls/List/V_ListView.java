@@ -245,9 +245,9 @@ public class V_ListView extends ListViewBase {
 		mMaxItemCount = 1;
 
 	    if (mAllSize > this.getHeight()) {
-		this.setDragable();
+		this.setDraggable();
 	    } else {
-		this.setUndragable();
+		this.setUnDraggable();
 	    }
 	} catch (Exception e) {
 	}
@@ -257,11 +257,11 @@ public class V_ListView extends ListViewBase {
 
     @Override
     public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
-	if (!mIsDrageble)
+	if (!mIsDraggable)
 	    return false;
-	mDraged = y - mLastTouch;
+	mDragged = y - mLastTouch;
 
-	float sollPos = mLastPos_onTouch - mDraged;
+	float sollPos = mLastPos_onTouch - mDragged;
 	float toMuch = 0;
 	if (sollPos - firstItemSize > 0 || sollPos < mcalcAllSizeBase) {
 	    if (sollPos - (firstItemSize * 3) > 0 || sollPos + (lastItemSize * 3) < mcalcAllSizeBase) {
@@ -286,7 +286,7 @@ public class V_ListView extends ListViewBase {
     @Override
     public boolean onTouchDown(int x, int y, int pointer, int button) {
 	// super.onTouchDown(x, y, pointer, button);
-	if (!mIsDrageble)
+	if (!mIsDraggable)
 	    return true;
 	mLastTouch = y;
 	mLastPos_onTouch = mPos;

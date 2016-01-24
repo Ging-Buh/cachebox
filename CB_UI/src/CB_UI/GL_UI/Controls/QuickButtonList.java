@@ -53,15 +53,15 @@ public class QuickButtonList extends H_ListView {
     @Override
     public void Initial() {
 	super.Initial();
-	chkIsDrageble();
+	chkIsDraggable();
     }
 
-    private void chkIsDrageble() {
+    private void chkIsDraggable() {
 	if (quickButtonList != null) {
 	    if (this.getMaxItemCount() < quickButtonList.size()) {
-		this.setDragable();
+		this.setDraggable();
 	    } else {
-		this.setUndragable();
+		this.setUnDraggable();
 	    }
 	}
     }
@@ -174,7 +174,7 @@ public class QuickButtonList extends H_ListView {
 	    String[] ConfigList = ConfigActionList.split(",");
 	    quickButtonList = QuickActions.getListFromConfig(ConfigList, btnHeight);
 	}
-	chkIsDrageble();
+	chkIsDraggable();
     }
 
     @Override

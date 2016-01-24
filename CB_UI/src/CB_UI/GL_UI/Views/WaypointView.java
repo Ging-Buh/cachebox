@@ -270,9 +270,9 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 	int itemSpace = this.getMaxItemCount();
 
 	if (itemSpace >= itemCount) {
-	    this.setUndragable();
+	    this.setUnDraggable();
 	} else {
-	    this.setDragable();
+	    this.setDraggable();
 	}
 
 	if (GlobalCore.getSelectedWaypoint() != null) {
@@ -477,9 +477,9 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		    int itemSpace = that.getMaxItemCount();
 
 		    if (itemSpace >= itemCount) {
-			that.setUndragable();
+			that.setUnDraggable();
 		    } else {
-			that.setDragable();
+			that.setDraggable();
 		    }
 
 		    that.scrollToItem(0);

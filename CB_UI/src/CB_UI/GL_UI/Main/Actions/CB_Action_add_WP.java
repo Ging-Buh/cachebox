@@ -40,7 +40,7 @@ public class CB_Action_add_WP extends CB_ActionCommand
 			return;
 		}
 
-		if ((TabMainView.waypointView == null)) TabMainView.waypointView = new WaypointView(TabMainView.LeftTab.getContentRec(),
+		if ((TabMainView.waypointView == null)) TabMainView.waypointView = new WaypointView(TabMainView.leftTab.getContentRec(),
 				"WaypointView");
 		WaypointView.that.addWP();
 	}

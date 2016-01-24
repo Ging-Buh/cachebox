@@ -176,19 +176,19 @@ public class H_ListView extends ListViewBase {
 	    mMaxItemCount = 1;
 
 	if (mAllSize > this.getWidth()) {
-	    this.setDragable();
+	    this.setDraggable();
 	} else {
-	    this.setUndragable();
+	    this.setUnDraggable();
 	}
 
     }
 
     @Override
     public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
-	if (!mIsDrageble)
+	if (!mIsDraggable)
 	    return false;
-	mDraged = x - mLastTouch;
-	float sollPos = mLastPos_onTouch - mDraged;
+	mDragged = x - mLastTouch;
+	float sollPos = mLastPos_onTouch - mDragged;
 	float toMuch = 0;
 	if (sollPos - firstItemSize > 0 || sollPos < mcalcAllSizeBase) {
 	    if (sollPos - (firstItemSize * 3) > 0 || sollPos + (lastItemSize * 3) < mcalcAllSizeBase) {
@@ -215,11 +215,11 @@ public class H_ListView extends ListViewBase {
     @Override
     public boolean onTouchDown(int x, int y, int pointer, int button) {
 	super.onTouchDown(x, y, pointer, button);
-	if (!mIsDrageble)
+	if (!mIsDraggable)
 	    return true;
 	mLastTouch = x;
 	mLastPos_onTouch = mPos;
-	return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgelösst wird.
+	return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgelï¿½sst wird.
     }
 
     @Override
@@ -238,9 +238,9 @@ public class H_ListView extends ListViewBase {
 	reloadItems();
 
 	if (mAllSize > this.getWidth()) {
-	    this.setDragable();
+	    this.setDraggable();
 	} else {
-	    this.setUndragable();
+	    this.setUnDraggable();
 	}
 
 	if (mBaseAdapter.getCount() <= mSelectedIndex)
@@ -251,7 +251,7 @@ public class H_ListView extends ListViewBase {
     public void chkSlideBack() {
 	log.debug("chkSlideBack()");
 
-	if (!mIsDrageble) {
+	if (!mIsDraggable) {
 	    startAnimationToBottom();
 
 	} else {

@@ -77,7 +77,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
     }
 
     @Override
-    public boolean HasContextMenu() {
+    public boolean hasContextMenu() {
 	return true;
     }
 

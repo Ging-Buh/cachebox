@@ -231,7 +231,7 @@ public class SelectSolverFunction extends ButtonDialog {
 		categoryButton.setText(Translation.Get(cat.getName()));
 
 		// alle Buttons müssen das Atribut Dragable habe, da sie sich in einer Dragable View befinden.
-		categoryButton.setDrageble();
+		categoryButton.setDraggable();
 
 		// Category Button Gelb einfärben, damit sie sich von den Function Buttons unterscheiden
 		categoryButton.setColorFilter(new Color(1f, 0.8f, 0.0f, 1));
@@ -267,7 +267,7 @@ public class SelectSolverFunction extends ButtonDialog {
 			btnFct.setText(fct.getName());
 
 			// alle Buttons müssen das Atribut Dragable habe, da sie sich in einer Dragable View befinden.
-			btnFct.setDrageble();
+			btnFct.setDraggable();
 
 			// Wenn Der Button geclickt wurd, wird dieser als Selecktiert Markiert
 			btnFct.setOnClickListener(new OnClickListener() {

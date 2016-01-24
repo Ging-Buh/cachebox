@@ -74,7 +74,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     /**
      * Wen True, k�nnen die Items verschoben werden
      */
-    protected Boolean mIsDrageble = true;
+    protected Boolean mIsDraggable = true;
 
     /**
      * Erm�glicht den Zugriff auf die Liste, welche Dargestellt werden soll.
@@ -171,7 +171,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
      */
     protected Boolean mCanDispose = true;
 
-    protected int mDraged = 0;
+    protected int mDragged = 0;
     protected int mLastTouch = 0;
     protected float mLastPos_onTouch = 0;
 
@@ -260,18 +260,18 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     }
 
     /**
-     * Setzt die ListView in in den unDrageble Modus
+     * Setzt die ListView in in den UnDraggable Modus
      */
-    public void setUndragable() {
+    public void setUnDraggable() {
 	mPos = 0;
-	mIsDrageble = false;
+	mIsDraggable = false;
     }
 
     /**
-     * Setzt die ListView in in den Drageble Modus
+     * Setzt die ListView in in den Draggable Modus
      */
-    public void setDragable() {
-	mIsDrageble = true;
+    public void setDraggable() {
+	mIsDraggable = true;
     }
 
     public void setDisposeFlag(Boolean CanDispose) {
@@ -401,7 +401,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
     @Override
     public void chkSlideBack() {
 	//log.debug("chkSlideBack()");
-	if (!mIsDrageble) {
+	if (!mIsDraggable) {
 	    startAnimationtoTop();
 	    return;
 	}
@@ -416,7 +416,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
     @Override
     public boolean isDragable() {
-	return mIsDrageble;
+	return mIsDraggable;
     }
 
     @Override

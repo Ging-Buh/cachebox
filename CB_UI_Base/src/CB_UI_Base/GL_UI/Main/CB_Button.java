@@ -189,7 +189,7 @@ public class CB_Button extends Button implements OnClickListener {
     public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 
 	// Einfacher Click -> alle Actions durchsuchen, ob die aktActionView darin enthalten ist und diese sichtbar ist
-	if ((aktActionView != null) && (aktActionView.HasContextMenu())) {
+	if ((aktActionView != null) && (aktActionView.hasContextMenu())) {
 	    for (CB_ActionButton ba : mButtonActions) {
 		if (ba.getAction() == aktActionView) {
 		    if (aktActionView.getView() != null && aktActionView.getView().isVisible()) {
@@ -197,7 +197,7 @@ public class CB_Button extends Button implements OnClickListener {
 			// -> ein Click auf den Menü-Button zeigt das Contextmenü
 			// if (aktActionView.ShowContextMenu()) return true;
 
-			if (aktActionView.HasContextMenu()) {
+			if (aktActionView.hasContextMenu()) {
 			    // das View Context Menü mit dem LongKlick Menü zusammen führen!
 
 			    // Menu zusammen stellen!
@@ -282,7 +282,7 @@ public class CB_Button extends Button implements OnClickListener {
 	try {
 	    if (aktActionView != null && aktActionView.getView() != null) {
 		isFocused = aktActionView.getView().isVisible();
-		hasContextMenu = aktActionView.HasContextMenu();
+		hasContextMenu = aktActionView.hasContextMenu();
 	    } else {
 		isFocused = false;
 		hasContextMenu = false;

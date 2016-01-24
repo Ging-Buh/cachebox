@@ -2534,8 +2534,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) tabFrame.getLayoutParams();
 
 				    int versatz = 0;
-				    if (TabMainView.LeftTab != null) {
-					versatz = (int) (TabMainView.LeftTab.getWidth() - frame.getWidth());
+				    if (TabMainView.leftTab != null) {
+					versatz = (int) (TabMainView.leftTab.getWidth() - frame.getWidth());
 				    }
 
 				    params.setMargins(versatz + left, top, right, bottom);

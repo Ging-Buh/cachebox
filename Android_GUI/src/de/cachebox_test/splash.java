@@ -1178,7 +1178,8 @@ public class splash extends Activity {
 
 	// UiSize Structur für die Berechnung der Größen zusammen stellen!
 
-	log.debug("Mesure FrameLayout w/h:" + String.valueOf(width) + "/" + String.valueOf(height));
+	log.debug(GlobalCore.getVersionString());
+	//log.debug("Mesure FrameLayout w/h:" + String.valueOf(width) + "/" + String.valueOf(height));
 
 	if (ui == null) {
 	    Resources res = splash.this.getResources();

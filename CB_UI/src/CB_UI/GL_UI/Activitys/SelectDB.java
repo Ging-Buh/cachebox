@@ -249,9 +249,9 @@ public class SelectDB extends ActivityBase {
 	int itemSpace = lvFiles.getMaxItemCount();
 
 	if (itemSpace >= lvAdapter.getCount()) {
-	    lvFiles.setUndragable();
+	    lvFiles.setUnDraggable();
 	} else {
-	    lvFiles.setDragable();
+	    lvFiles.setDraggable();
 	}
 
 	TimerTask task = new TimerTask() {

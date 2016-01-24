@@ -212,11 +212,11 @@ public class ScrollBox extends CB_View_Base {
     }
 
     public void setDragable() {
-	lv.setDragable();
+	lv.setDraggable();
     }
 
     public void setUndragable() {
-	lv.setUndragable();
+	lv.setUnDraggable();
     }
 
     public float getScrollY() {

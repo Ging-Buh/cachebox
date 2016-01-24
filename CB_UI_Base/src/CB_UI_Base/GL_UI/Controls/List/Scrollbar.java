@@ -15,16 +15,16 @@
  */
 package CB_UI_Base.GL_UI.Controls.List;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.Animation.Fader;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 /**
  * 
@@ -241,7 +241,7 @@ public class Scrollbar extends CB_View_Base {
 
 	    this.ListView.setListPos(lp);
 
-	    // log.debug("SliderScrollValue:" + " Draged:" + lp + " LastTouch:" + mLastTouch + " Y=" + y);
+	    // log.debug("SliderScrollValue:" + " Dragged:" + lp + " LastTouch:" + mLastTouch + " Y=" + y);
 	    return true;
 	}
 

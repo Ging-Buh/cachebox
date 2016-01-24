@@ -145,9 +145,9 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		int itemSpace = listView.getMaxItemCount();
 
 		if (itemSpace >= itemCount) {
-		    listView.setUndragable();
+		    listView.setUnDraggable();
 		} else {
-		    listView.setDragable();
+		    listView.setDraggable();
 		}
 	    } catch (Exception e) {
 		e.printStackTrace();
@@ -368,9 +368,9 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	    int itemSpace = listView.getMaxItemCount();
 
 	    if (itemSpace >= itemCount) {
-		listView.setUndragable();
+		listView.setUnDraggable();
 	    } else {
-		listView.setDragable();
+		listView.setDraggable();
 	    }
 	}
 

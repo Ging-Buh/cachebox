@@ -14,6 +14,11 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 
+/**
+ * the CB_TabView shows the aktView<br>
+ * which is shown by clicking a button of the mButtonList
+ *
+ */
 public class CB_TabView extends CB_View_Base {
 
     private final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_TabView.class);
@@ -24,26 +29,22 @@ public class CB_TabView extends CB_View_Base {
 
     private final CB_RectF mContentRec;
 
-    public void addButtonList(CB_ButtonList ButtonList) {
-	mButtonList = ButtonList;
-	AddButtonsAsChild();
-    }
-
-    private void AddButtonsAsChild() {
-	if (mButtonList == null)
-	    return;
-	buttonListView = new H_ListView(new CB_RectF(0, 0, this.getWidth(), GL_UISizes.BottomButtonHeight), "ButtonList von " + this.getName());
-	buttonListView.setBaseAdapter(new CustomAdapter());
-	buttonListView.setUndragable();
-	buttonListView.setBackground(SpriteCacheBase.ButtonBack);
-	buttonListView.setDisposeFlag(false);
-	this.addChild(buttonListView);
-    }
-
     public CB_TabView(CB_RectF rec, String Name) {
 	super(rec, Name);
 	mContentRec = rec.copy();
 	layout();
+    }
+
+    public void setButtonList(CB_ButtonList buttonList) {
+	mButtonList = buttonList;
+	if (mButtonList == null)
+	    return;
+	buttonListView = new H_ListView(new CB_RectF(0, 0, this.getWidth(), GL_UISizes.BottomButtonHeight), "ButtonList von " + this.getName());
+	buttonListView.setBaseAdapter(new CustomAdapter());
+	buttonListView.setUnDraggable();
+	buttonListView.setBackground(SpriteCacheBase.ButtonBack);
+	buttonListView.setDisposeFlag(false);
+	this.addChild(buttonListView);
     }
 
     @Override

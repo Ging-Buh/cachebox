@@ -47,7 +47,7 @@ public class CB_Action_ShowFieldNotesView extends CB_Action_ShowView
 	}
 
 	@Override
-	public boolean HasContextMenu()
+	public boolean hasContextMenu()
 	{
 		return true;
 	}

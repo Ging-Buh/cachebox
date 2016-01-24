@@ -105,7 +105,7 @@ public class GalleryView extends H_ListView {
 	    return;
 	}
 
-	if (!mIsDrageble) {
+	if (!mIsDraggable) {
 	    startAnimationToBottom();
 
 	} else {
@@ -165,10 +165,10 @@ public class GalleryView extends H_ListView {
 
     @Override
     public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
-	if (!mIsDrageble)
+	if (!mIsDraggable)
 	    return false;
-	mDraged = x - mLastTouch;
-	float sollPos = mLastPos_onTouch - mDraged;
+	mDragged = x - mLastTouch;
+	float sollPos = mLastPos_onTouch - mDragged;
 	float toMuch = 0;
 	if (sollPos - firstItemSize > 0 || sollPos < mcalcAllSizeBase) {
 	    if (sollPos - (firstItemSize * 3) > 0 || sollPos + (lastItemSize * 3) < mcalcAllSizeBase) {

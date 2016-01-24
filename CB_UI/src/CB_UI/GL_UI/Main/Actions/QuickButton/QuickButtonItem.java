@@ -72,7 +72,7 @@ public class QuickButtonItem extends ListViewItemBase {
 
 	mButton = new Button(rec, "QuickListItemButton");
 	mButton.setButtonSprites(SpriteCacheBase.QuickButton);
-	mButton.setDrageble();
+	mButton.setDraggable();
 	this.addChild(mButton);
 	this.addChild(mButtonIcon);
 

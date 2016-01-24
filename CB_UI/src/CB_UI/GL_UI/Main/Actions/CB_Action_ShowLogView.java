@@ -59,7 +59,7 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView
 	}
 
 	@Override
-	public boolean HasContextMenu()
+	public boolean hasContextMenu()
 	{
 		return true;
 	}

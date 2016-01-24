@@ -104,9 +104,9 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 	int itemSpace = this.getMaxItemCount();
 
 	if (itemSpace >= itemCount) {
-	    this.setUndragable();
+	    this.setUnDraggable();
 	} else {
-	    this.setDragable();
+	    this.setDraggable();
 	}
 
 	this.setSelection(0);
@@ -123,9 +123,9 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 	int itemSpace = this.getMaxItemCount();
 
 	if (itemSpace >= itemCount) {
-	    this.setUndragable();
+	    this.setUnDraggable();
 	} else {
-	    this.setDragable();
+	    this.setDraggable();
 	}
 
 	this.invalidate();

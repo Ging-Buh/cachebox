@@ -611,7 +611,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 	final Spinner spinner = item.getSpinner();
 
-	spinner.setDrageble();
+	spinner.setDraggable();
 
 	final SpinnerAdapter adapter = new SpinnerAdapter() {
 
@@ -665,7 +665,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 	final Spinner spinner = item.getSpinner();
 
-	spinner.setDrageble();
+	spinner.setDraggable();
 
 	final SpinnerAdapter adapter = new SpinnerAdapter() {
 
@@ -720,7 +720,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 	final Spinner spinner = item.getSpinner();
 
-	spinner.setDrageble();
+	spinner.setDraggable();
 
 	final SpinnerAdapter adapter = new SpinnerAdapter() {
 
@@ -1073,7 +1073,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     private CB_View_Base getButtonView(final SettingsListCategoryButton<?> SB, int backgroundChanger) {
 	Button btn = new Button(ButtonRec, "Button");
 
-	btn.setDrageble();
+	btn.setDraggable();
 
 	btn.setText(Translation.Get(SB.getName()));
 
@@ -1353,7 +1353,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 	spinner.setPrompt(Translation.Get("SelectLanguage"));
 
-	spinner.setDrageble();
+	spinner.setDraggable();
 
 	return spinner;
     }
@@ -1454,7 +1454,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 	spinner.setPrompt(Translation.Get("SelectSkin"));
 
-	spinner.setDrageble();
+	spinner.setDraggable();
 
 	return spinner;
     }
