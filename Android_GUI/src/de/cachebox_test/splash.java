@@ -1094,13 +1094,11 @@ public class splash extends Activity {
 	});
 
 	if (GlobalCore.isTab) {
-	    // Tab Modus only Landscape
 	    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-	    log.debug("GlobalCore.isTab => setRequestedOrientation SCREEN_ORIENTATION_LANDSCAPE");
+	    log.debug("setRequestedOrientation SCREEN_ORIENTATION_LANDSCAPE");
 	} else {
-	    // Phone Modus only Landscape
 	    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-	    log.debug("!GlobalCore.isTab => setRequestedOrientation SCREEN_ORIENTATION_PORTRAIT");
+	    log.debug("setRequestedOrientation SCREEN_ORIENTATION_PORTRAIT");
 	}
 
 	log.debug("Android Version = " + android.os.Build.VERSION.SDK_INT);
@@ -1179,7 +1177,7 @@ public class splash extends Activity {
 	// UiSize Structur für die Berechnung der Größen zusammen stellen!
 
 	log.debug(GlobalCore.getVersionString());
-	//log.debug("Mesure FrameLayout w/h:" + String.valueOf(width) + "/" + String.valueOf(height));
+	log.debug("Screen width/height:" + width + "/" + height);
 
 	if (ui == null) {
 	    Resources res = splash.this.getResources();

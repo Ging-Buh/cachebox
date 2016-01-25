@@ -134,7 +134,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
 
 				@Override
 				public void run() {
-				    new CB_Action_Command_chkState().Execute();
+				    new CB_Action_chkState().Execute();
 				}
 			    };
 			    Timer t = new Timer();

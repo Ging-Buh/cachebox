@@ -25,12 +25,12 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.Main.Actions.CB_ActionCommand;
+import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Utils.Events.ProgresssChangedEventList;
 
-public class CB_Action_UploadFieldNote extends CB_ActionCommand {
+public class CB_Action_UploadFieldNote extends CB_Action {
     private Boolean ThreadCancel = false;
     private String UploadMeldung = "";
     private boolean API_Key_error = false;

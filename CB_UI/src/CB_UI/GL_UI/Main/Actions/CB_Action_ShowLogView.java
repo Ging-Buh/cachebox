@@ -131,11 +131,11 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView
 					{
 						if (all)
 						{
-							new CB_Action_Command_LoadLogs().Execute();
+							new CB_Action_LoadLogs().Execute();
 						}
 						else
 						{
-							new CB_Action_Command_LoadFriendLogs().Execute();
+							new CB_Action_LoadFriendLogs().Execute();
 						}
 
 					}

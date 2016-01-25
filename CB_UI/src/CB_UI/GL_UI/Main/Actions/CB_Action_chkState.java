@@ -24,14 +24,14 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.Main.Actions.CB_ActionCommand;
+import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Utils.Events.ProgresssChangedEventList;
 
-public class CB_Action_Command_chkState extends CB_ActionCommand {
+public class CB_Action_chkState extends CB_Action {
 
-    public CB_Action_Command_chkState() {
+    public CB_Action_chkState() {
 	super("chkState", MenuID.AID_CHK_STATE);
 
     }
@@ -56,7 +56,7 @@ public class CB_Action_Command_chkState extends CB_ActionCommand {
     int ChangedCount = 0;
     int result = 0;
     private boolean cancel = false;
-    private RunnableReadyHandler ChkStatRunnable = new RunnableReadyHandler() {
+    private final RunnableReadyHandler ChkStatRunnable = new RunnableReadyHandler() {
 	final int BlockSize = 100; // die API lässt nur maximal 100 zu!
 
 	@Override
@@ -114,7 +114,6 @@ public class CB_Action_Command_chkState extends CB_ActionCommand {
 			index++;
 		    } while (Iterator2.hasNext());
 
-		    // result = GroundspeakAPI.GetGeocacheStatus("WERTWEE", chkList100);
 		    result = GroundspeakAPI.GetGeocacheStatus(chkList100, this);
 		    if (result == -1)
 			break;// API Error

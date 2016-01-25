@@ -81,7 +81,7 @@ public class GroundspeakAPI {
     private static boolean DownloadLimit = false;
 
     /**
-     * Read the encrypted AccessToken from the config and check wheter it is correct for Andorid CB
+     * Read the encrypted AccessToken from the config and check whether it is correct for Android CB
      * 
      * @return
      */
@@ -307,7 +307,7 @@ public class GroundspeakAPI {
 		if (status.getInt("StatusCode") == 0) {
 		    result = "";
 		    JSONObject profile = json.getJSONObject("Profile");
-		    JSONObject user = (JSONObject) profile.getJSONObject("User");
+		    JSONObject user = profile.getJSONObject("User");
 		    return user.getInt("FindCount");
 
 		} else {
@@ -388,8 +388,8 @@ public class GroundspeakAPI {
 		if (status == 0) {
 		    result = "";
 		    JSONObject profile = json.getJSONObject("Profile");
-		    JSONObject user = (JSONObject) profile.getJSONObject("User");
-		    JSONObject memberType = (JSONObject) user.getJSONObject("MemberType");
+		    JSONObject user = profile.getJSONObject("User");
+		    JSONObject memberType = user.getJSONObject("MemberType");
 		    int memberTypeId = memberType.getInt("MemberTypeId");
 		    MemberName = user.getString("UserName");
 		    membershipType = memberTypeId;
@@ -483,14 +483,14 @@ public class GroundspeakAPI {
     /**
      * Gets the Status for the given Caches
      * 
-     * @param Staging
+     * Staging
      *            Config.settings.StagingAPI.getValue()
-     * @param accessToken
-     * @param conectionTimeout
+     * accessToken
+     * conectionTimeout
      *            Config.settings.conection_timeout.getValue()
-     * @param socketTimeout
+     * socketTimeout
      *            Config.settings.socket_timeout.getValue()
-     * @param caches
+     * @param caches is also for return
      * @return
      */
     public static int GetGeocacheStatus(ArrayList<Cache> caches, final ICancel icancel) {
@@ -549,14 +549,17 @@ public class GroundspeakAPI {
 			JSONObject jCache = (JSONObject) geocacheStatuses.get(ii);
 
 			Iterator<Cache> iterator = caches.iterator();
-
 			do {
 			    Cache tmp = iterator.next();
-
 			    if (jCache.getString("CacheCode").equals(tmp.getGcCode())) {
 				tmp.setArchived(jCache.getBoolean("Archived"));
 				tmp.setAvailable(jCache.getBoolean("Available"));
 				tmp.NumTravelbugs = jCache.getInt("TrackableCount");
+				// weitere Infos in diesem Json record
+				// CacheName (getString)
+				// CacheType (getDouble / getLong ?)
+				// Premium   (getBoolean)
+				break;
 			    }
 			} while (iterator.hasNext());
 
@@ -1428,7 +1431,7 @@ public class GroundspeakAPI {
 
 	    for (int i = 0, n = cache.waypoints.size(); i < n; i++) {
 		// must Cast to Full Waypoint. If Waypoint, is wrong createt!
-		Waypoint waypoint = (Waypoint) cache.waypoints.get(i);
+		Waypoint waypoint = cache.waypoints.get(i);
 		boolean update = true;
 
 		// dont refresh wp if aktCache.wp is user changed

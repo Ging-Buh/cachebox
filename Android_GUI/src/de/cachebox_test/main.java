@@ -464,7 +464,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	}
 
 	if (GlobalCore.isTab) {
-	    // Tab Modus nur Landscape
 	    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 	} else {
 	    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

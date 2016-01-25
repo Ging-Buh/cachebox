@@ -65,7 +65,7 @@ public class CacheDAO {
 
 	    cache.NumTravelbugs = reader.getInt(13);
 	    cache.setGcId(reader.getString(14).trim());
-	    cache.Rating = ((float) reader.getShort(15)) / 100.0f;
+	    cache.Rating = (reader.getShort(15)) / 100.0f;
 	    if (reader.getInt(16) > 0)
 		cache.setFavorit(true);
 	    else
@@ -427,9 +427,7 @@ public class CacheDAO {
 	    Replication.NumTravelbugsChanged(writeTmp.Id, writeTmp.NumTravelbugs);
 	}
 
-	if (changed) // Wir brauchen die DB nur Updaten, wenn sich auch etwas
-		     // geändert hat.
-	{
+	if (changed) {
 
 	    Parameters args = new Parameters();
 
@@ -440,7 +438,7 @@ public class CacheDAO {
 	    try {
 		Database.Data.update("Caches", args, "Id = ?", new String[] { String.valueOf(writeTmp.Id) });
 	    } catch (Exception exc) {
-		log.error("Ubdate Cache", "", exc);
+		log.error("Update Cache", "", exc);
 
 	    }
 	}

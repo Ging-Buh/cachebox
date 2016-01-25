@@ -48,14 +48,14 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.Main.Actions.CB_ActionCommand;
+import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Util.UnitFormatter;
 
-public class CB_Action_GenerateRoute extends CB_ActionCommand {
+public class CB_Action_GenerateRoute extends CB_Action {
 
     Color TrackColor;
 
@@ -196,7 +196,8 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand {
 							FromPosition = new Coordinate(lastAcceptedCoordinate);
 							FromPosition.setValid(true);
 						    } else {
-							MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, FromPosition.getLatitude(), FromPosition.getLongitude(), lastAcceptedCoordinate.getLatitude(), lastAcceptedCoordinate.getLongitude(), dist);
+							MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, FromPosition.getLatitude(), FromPosition.getLongitude(), lastAcceptedCoordinate.getLatitude(),
+								lastAcceptedCoordinate.getLongitude(), dist);
 							Distance += dist[0];
 							FromPosition = new Coordinate(lastAcceptedCoordinate);
 							IsRoute = true; // min. 2 Punkte, damit es eine gültige Route ist

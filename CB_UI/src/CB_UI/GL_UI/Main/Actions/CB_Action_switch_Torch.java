@@ -15,44 +15,36 @@
  */
 package CB_UI.GL_UI.Main.Actions;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
-import CB_UI_Base.GL_UI.Main.Actions.CB_ActionCommand;
+import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
+public class CB_Action_switch_Torch extends CB_Action {
 
-public class CB_Action_switch_Torch extends CB_ActionCommand
-{
+    public CB_Action_switch_Torch() {
+	super("Torch", MenuID.AID_TORCH);
+    }
 
-	public CB_Action_switch_Torch()
-	{
-		super("Torch", MenuID.AID_TORCH);
+    @Override
+    public boolean getEnabled() {
+	return PlatformConnector.isTorchAvailable();
+    }
+
+    @Override
+    public Sprite getIcon() {
+	if (PlatformConnector.isTorchOn()) {
+	    return SpriteCacheBase.Icons.get(IconName.torch_on_67.ordinal());
+	} else {
+	    return SpriteCacheBase.Icons.get(IconName.torch_Off_68.ordinal());
 	}
+    }
 
-	@Override
-	public boolean getEnabled()
-	{
-		return PlatformConnector.isTorchAvailable();
-	}
-
-	@Override
-	public Sprite getIcon()
-	{
-		if (PlatformConnector.isTorchOn())
-		{
-			return SpriteCacheBase.Icons.get(IconName.torch_on_67.ordinal());
-		}
-		else
-		{
-			return SpriteCacheBase.Icons.get(IconName.torch_Off_68.ordinal());
-		}
-	}
-
-	@Override
-	public void Execute()
-	{
-		PlatformConnector.switchTorch();
-	}
+    @Override
+    public void Execute() {
+	PlatformConnector.switchTorch();
+    }
 }
