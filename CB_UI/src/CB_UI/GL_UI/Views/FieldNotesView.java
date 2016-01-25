@@ -237,8 +237,6 @@ public class FieldNotesView extends V_ListView {
 
 	Cache cache = GlobalCore.getSelectedCache();
 
-	// if (cache == null) return null;
-
 	final Menu cm = new Menu("FieldNoteContextMenu");
 
 	cm.addOnClickListener(new OnClickListener() {
@@ -254,6 +252,9 @@ public class FieldNotesView extends V_ListView {
 		case MenuID.MI_ATTENDED:
 		    addNewFieldnote(LogTypes.attended);
 		    return true;
+		case MenuID.MI_WEBCAM_FOTO_TAKEN:
+		    addNewFieldnote(LogTypes.webcam_photo_taken);
+		    return true;
 		case MenuID.MI_WILL_ATTENDED:
 		    addNewFieldnote(LogTypes.will_attend);
 		    return true;
@@ -266,12 +267,11 @@ public class FieldNotesView extends V_ListView {
 		case MenuID.MI_NOTE:
 		    addNewFieldnote(LogTypes.note);
 		    return true;
-
 		case MenuID.MI_UPLOAD_FIELDNOTE:
 		    CB_Action_UploadFieldNote.INSTANCE.Execute();
 		    return true;
 		case MenuID.MI_DELETE_ALL_FIELDNOTES:
-		    deleteAllFieldNote();
+		    deleteAllFieldNotes();
 		    return true;
 		}
 		return false;
@@ -293,6 +293,10 @@ public class FieldNotesView extends V_ListView {
 		cm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCacheBase.getThemedSprite("log9icon"));
 		break;
 	    case Event:
+		cm.addItem(MenuID.MI_WILL_ATTENDED, "will-attended", SpriteCacheBase.getThemedSprite("log8icon"));
+		cm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCacheBase.getThemedSprite("log9icon"));
+		break;
+	    case CITO:
 		cm.addItem(MenuID.MI_WILL_ATTENDED, "will-attended", SpriteCacheBase.getThemedSprite("log8icon"));
 		cm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCacheBase.getThemedSprite("log9icon"));
 		break;
@@ -390,10 +394,10 @@ public class FieldNotesView extends V_ListView {
 	    return;
 	}
 
-	// GC fremder Cache gefunden?
+	// kein GC Cache
 	if (!cache.getGcCode().toLowerCase().startsWith("gc")) {
 
-	    if (type == LogTypes.found) {
+	    if (type == LogTypes.found || type == LogTypes.attended || type == LogTypes.webcam_photo_taken) {
 		// Found it! -> fremden Cache als gefunden markieren
 		if (!GlobalCore.getSelectedCache().isFound()) {
 		    GlobalCore.getSelectedCache().setFound(true);
@@ -424,14 +428,14 @@ public class FieldNotesView extends V_ListView {
 	tmpFieldNotes.LoadFieldNotes("", LoadingType.Loadall);
 
 	FieldNoteEntry newFieldNote = null;
-	if ((type == LogTypes.found) || (type == LogTypes.didnt_find)) {
-	    // nachsehen, ob für diesen Cache bereits eine FieldNote des Types
-	    // angelegt wurde
+	if ((type == LogTypes.found) //
+		|| (type == LogTypes.attended) //
+		|| (type == LogTypes.webcam_photo_taken) //
+		|| (type == LogTypes.didnt_find)) {
+	    // nachsehen, ob für diesen Cache bereits eine FieldNote des Types angelegt wurde
 	    // und gegebenenfalls diese ändern und keine neue anlegen
 	    // gilt nur für Found It! und DNF.
 	    // needMaintance oder Note können zusätzlich angelegt werden
-
-	    // .LoadFieldNotes("", false);
 
 	    for (FieldNoteEntry nfne : tmpFieldNotes) {
 		if ((nfne.CacheId == cache.Id) && (nfne.type == type)) {
@@ -480,6 +484,15 @@ public class FieldNotesView extends V_ListView {
 	    // wenn eine FieldNote Found erzeugt werden soll und der Cache noch
 	    // nicht gefunden war -> foundNumber um 1 erhöhen
 	    break;
+	case webcam_photo_taken:
+	    if (!cache.isFound())
+		newFieldNote.foundNumber++; //
+	    newFieldNote.fillType();
+	    if (newFieldNote.comment.equals(""))
+		newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.FoundTemplate.getValue(), newFieldNote);
+	    // wenn eine FieldNote Found erzeugt werden soll und der Cache noch
+	    // nicht gefunden war -> foundNumber um 1 erhöhen
+	    break;
 	case didnt_find:
 	    if (newFieldNote.comment.equals(""))
 		newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.DNFTemplate.getValue(), newFieldNote);
@@ -505,7 +518,7 @@ public class FieldNotesView extends V_ListView {
 	    tmpFieldNotes.add(0, newFieldNote);
 	    newFieldNote.WriteToDatabase();
 	    aktFieldNote = newFieldNote;
-	    if (newFieldNote.type == LogTypes.found) {
+	    if (newFieldNote.type == LogTypes.found || newFieldNote.type == LogTypes.attended || newFieldNote.type == LogTypes.webcam_photo_taken) {
 		// Found it! -> Cache als gefunden markieren
 		if (!GlobalCore.getSelectedCache().isFound()) {
 		    GlobalCore.getSelectedCache().setFound(true);
@@ -564,7 +577,10 @@ public class FieldNotesView extends V_ListView {
 		lFieldNotes.add(0, fieldNote);
 
 		// eine evtl. vorhandene FieldNote /DNF löschen
-		if (fieldNote.type == LogTypes.attended || fieldNote.type == LogTypes.found || fieldNote.type == LogTypes.didnt_find) {
+		if (fieldNote.type == LogTypes.attended //
+			|| fieldNote.type == LogTypes.found //
+			|| fieldNote.type == LogTypes.webcam_photo_taken //
+			|| fieldNote.type == LogTypes.didnt_find) {
 		    lFieldNotes.DeleteFieldNoteByCacheId(fieldNote.CacheId, LogTypes.found);
 		    lFieldNotes.DeleteFieldNoteByCacheId(fieldNote.CacheId, LogTypes.didnt_find);
 		}
@@ -577,7 +593,10 @@ public class FieldNotesView extends V_ListView {
 		// nur, wenn eine FieldNote neu angelegt wurde
 		// wenn eine FieldNote neu angelegt werden soll dann kann hier auf SelectedCache zugegriffen werden, da nur für den
 		// SelectedCache eine fieldNote angelegt wird
-		if (fieldNote.type == LogTypes.found || fieldNote.type == LogTypes.attended) { // Found it! -> Cache als gefunden markieren
+		if (fieldNote.type == LogTypes.found //
+			|| fieldNote.type == LogTypes.attended //
+			|| fieldNote.type == LogTypes.webcam_photo_taken) {
+		    // Found it! -> Cache als gefunden markieren
 		    if (!GlobalCore.getSelectedCache().isFound()) {
 			GlobalCore.getSelectedCache().setFound(true);
 			CacheDAO cacheDAO = new CacheDAO();
@@ -795,7 +814,7 @@ public class FieldNotesView extends V_ListView {
 	    message = Translation.Get("confirmFieldnoteDeletionTB", aktFieldNote.typeString, aktFieldNote.TbName);
 	} else {
 	    message = Translation.Get("confirmFieldnoteDeletion", aktFieldNote.typeString, aktFieldNote.CacheName);
-	    if (aktFieldNote.type == LogTypes.found)
+	    if (aktFieldNote.type == LogTypes.found || aktFieldNote.type == LogTypes.attended || aktFieldNote.type == LogTypes.webcam_photo_taken)
 		message += Translation.Get("confirmFieldnoteDeletionRst");
 	}
 
@@ -803,16 +822,15 @@ public class FieldNotesView extends V_ListView {
 
     }
 
-    private void deleteAllFieldNote() {
+    private void deleteAllFieldNotes() {
 	final GL_MsgBox.OnMsgBoxClickListener dialogClickListener = new GL_MsgBox.OnMsgBoxClickListener() {
 	    @Override
 	    public boolean onClick(int which, Object data) {
 		switch (which) {
 		case GL_MsgBox.BUTTON_POSITIVE:
 		    // Yes button clicked
-		    // delete all FieldNote
-
-		    // reload all Fieladnotes!
+		    // delete all FieldNotes
+		    // reload all Fieldnotes!
 		    lFieldNotes.LoadFieldNotes("", LoadingType.Loadall);
 
 		    for (FieldNoteEntry entry : lFieldNotes) {

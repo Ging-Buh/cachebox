@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import CB_Core.CacheListChangedEventList;
 import CB_Core.LogTypes;
+import CB_Core.Types.Cache;
 import CB_UI.GlobalCore;
 import CB_UI.SelectedCacheEventList;
 import CB_UI.GL_UI.Controls.PopUps.QuickFieldNoteFeedbackPopUp;
@@ -60,11 +61,26 @@ public class CB_Action_QuickFieldNote extends CB_Action {
 	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 		switch (((MenuItem) v).getMenuItemId()) {
 		case MenuID.MI_QUICK_FOUND:
-		    FieldNotesView.addNewFieldnote(LogTypes.found, true);
+		    Cache cache = GlobalCore.getSelectedCache();
+		    switch (cache.Type) {
+		    case Event:
+		    case MegaEvent:
+		    case Giga:
+		    case CITO:
+			FieldNotesView.addNewFieldnote(LogTypes.attended, true);
+			break;
+		    case Camera:
+			FieldNotesView.addNewFieldnote(LogTypes.webcam_photo_taken, true);
+			break;
+		    default:
+			FieldNotesView.addNewFieldnote(LogTypes.found, true);
+			break;
+		    }
 		    if (FieldNotesView.that != null)
 			FieldNotesView.that.notifyDataSetChanged();
-		    CacheListChangedEventList.Call(); // damit der Status geändert wird
+		    // damit der Status geändert wird
 		    // damit die Icons in der Map aktualisiert werden
+		    CacheListChangedEventList.Call();
 		    SelectedCacheEventList.Call(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 		    QuickFieldNoteFeedbackPopUp pop = new QuickFieldNoteFeedbackPopUp(true);
 		    pop.show(PopUp_Base.SHOW_TIME_SHORT);
@@ -86,8 +102,23 @@ public class CB_Action_QuickFieldNote extends CB_Action {
 	    }
 	});
 
-	cm.addItem(MenuID.MI_QUICK_FOUND, "found", SpriteCacheBase.getThemedSprite("log0icon"));
-	cm.addItem(MenuID.MI_QUICK_NOT_FOUND, "DNF", SpriteCacheBase.getThemedSprite("log1icon"));
+	Cache cache = GlobalCore.getSelectedCache();
+	switch (cache.Type) {
+	case Event:
+	case MegaEvent:
+	case Giga:
+	case CITO:
+	    cm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCacheBase.getThemedSprite("log9icon"));
+	    break;
+	case Camera:
+	    cm.addItem(MenuID.MI_WEBCAM_FOTO_TAKEN, "webCamFotoTaken", SpriteCacheBase.getThemedSprite("log10icon"));
+	    cm.addItem(MenuID.MI_QUICK_NOT_FOUND, "DNF", SpriteCacheBase.getThemedSprite("log1icon"));
+	    break;
+	default:
+	    cm.addItem(MenuID.MI_QUICK_FOUND, "found", SpriteCacheBase.getThemedSprite("log0icon"));
+	    cm.addItem(MenuID.MI_QUICK_NOT_FOUND, "DNF", SpriteCacheBase.getThemedSprite("log1icon"));
+	    break;
+	}
 
 	cm.Show();
 
