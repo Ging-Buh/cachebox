@@ -103,6 +103,7 @@ public class GcApiLogin {
 		} else {
 		    GC_AuthUrl = CB_UI_Settings.OverrideUrl.getValue();
 		}
+		GC_AuthUrl = GC_AuthUrl.trim();
 
 		if (GC_AuthUrl.equals("")) {
 		    // Error = ERROR_API_URL_NOT_FOUND;
@@ -214,9 +215,9 @@ public class GcApiLogin {
 
 	    // Execute HTTP Post Request
 	    HttpResponse response = httpclient.execute(httppost, localContext);
+	    // if (response.getStatusLine().getStatusCode() == 302) { todo handle moved,...
 
 	    BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-
 	    String line = "";
 	    try {
 		while ((line = reader.readLine()) != null) {
@@ -240,12 +241,15 @@ public class GcApiLogin {
 
 		AskForUserPW(Url, cookieStore, page);
 	    } else {
+		if (page.contains("moved")) {
+		    int pos1 = page.indexOf("Object moved to <a href=\"") + 25;
+		    int pos2 = page.indexOf("\"", pos1);
+		    Url = page.substring(pos1, pos2);
 
-		int pos1 = page.indexOf("Object moved to <a href=\"") + 25;
-		int pos2 = page.indexOf("\"", pos1);
-		Url = page.substring(pos1, pos2);
-
-		nextStep(Url, cookieStore);
+		    nextStep(Url, cookieStore);
+		} else {
+		    // page empty, possibly moved
+		}
 	    }
 
 	} catch (ClientProtocolException e) {
@@ -315,8 +319,7 @@ public class GcApiLogin {
 	    System.out.println("Move");
 	    nextStep(moveUrl, cookieStore);
 	} else {
-	    AskForUserPW(Url, cookieStore, page);
-
+	    AskForUserPW(Url, cookieStore, page); // ?
 	}
 
     }
