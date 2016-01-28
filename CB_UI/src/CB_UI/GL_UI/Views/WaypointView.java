@@ -361,7 +361,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 	    cm.addItem(MenuID.MI_WP_SHOW, "show");
 	if (aktWaypoint != null)
 	    cm.addItem(MenuID.MI_EDIT, "edit");
-	cm.addItem(MenuID.MI_ADD, "addWaypoint");
+	cm.addItem(MenuID.MI_ADD, "AddWaypoint");
 	if ((aktWaypoint != null) && (aktWaypoint.IsUserWaypoint))
 	    cm.addItem(MenuID.MI_DELETE, "delete");
 	if (aktWaypoint != null || aktCache != null)

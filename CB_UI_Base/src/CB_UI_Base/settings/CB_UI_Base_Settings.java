@@ -57,7 +57,8 @@ public interface CB_UI_Base_Settings extends CB_Utils_Settings {
 
     public static final SettingFloat MapViewDPIFaktor = new SettingFloat("MapViewDPIFaktor", SettingCategory.Map, EXPERT, (float) Global.displayDensity, SettingStoreType.Global, SettingUsage.ACB);
 
-    public static final SettingFolder ImageCacheFolderLocal = new SettingFolder("ImageCacheFolderLocal", SettingCategory.Folder, NEVER, Config_Core.mWorkPath + "/repository/cache", SettingStoreType.Local, SettingUsage.ACB, true);
+    // überprüfen
+    public static final SettingFolder ImageCacheFolder = new SettingFolder("ImageCacheFolder", SettingCategory.Folder, NEVER, Config_Core.mWorkPath + "/repository/cache", SettingStoreType.Local, SettingUsage.ACB, true);
 
     public static final SettingBool GestureOn = new SettingBool("GestureOn", SettingCategory.Misc, NORMAL, false, SettingStoreType.Global, SettingUsage.ACB);
 

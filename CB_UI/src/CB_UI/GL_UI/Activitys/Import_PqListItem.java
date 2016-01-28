@@ -13,8 +13,8 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
 public class Import_PqListItem extends ListViewItemBackground {
-    private chkBox chk;
-    private Label lblName, lblInfo;
+    private final chkBox chk;
+    private final Label lblName, lblInfo;
 
     public Import_PqListItem(CB_RectF rec, int Index, final PQ pq) {
 	super(rec, Index, "");

@@ -101,13 +101,17 @@ public class FileIO {
 
 	// remove extention
 	int extPos = folder.lastIndexOf("/");
-	String ext = folder.substring(extPos);
+	String ext = "";
+	if (extPos > -1)
+	    ext = folder.substring(extPos);
+
 	if (ext.length() > 0 && ext.contains(".")) {
 	    folder = folder.replace(ext, "");
 	}
 
-	if (!checkWritePermission(folder))
+	if (!checkWritePermission(folder)) {
 	    return false;
+	}
 
 	File f = new File(folder);
 

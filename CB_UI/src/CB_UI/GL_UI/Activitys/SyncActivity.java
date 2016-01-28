@@ -87,7 +87,7 @@ public class SyncActivity extends ActivityBase implements ProgressChangedEvent {
 		    return true;
 
 		if (importStarted) {
-		    GL_MsgBox.Show(Translation.Get("WontCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, new OnMsgBoxClickListener() {
+		    GL_MsgBox.Show(Translation.Get("WantCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, new OnMsgBoxClickListener() {
 
 			@Override
 			public boolean onClick(int which, Object data) {

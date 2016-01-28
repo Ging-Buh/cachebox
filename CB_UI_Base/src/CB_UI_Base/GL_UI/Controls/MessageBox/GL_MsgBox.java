@@ -404,7 +404,7 @@ public class GL_MsgBox extends Dialog {
 
     @Override
     public void dispose() {
-	log.debug("Dispose GL_MsgBox=> " + name);
+	//log.debug("Dispose GL_MsgBox=> " + name);
 
 	if (FooterItems != null) {
 	    for (CB_View_Base t : FooterItems) {

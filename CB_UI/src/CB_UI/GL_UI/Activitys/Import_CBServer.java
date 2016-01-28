@@ -201,7 +201,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 		}
 
 		if (importStarted) {
-		    GL_MsgBox.Show(Translation.Get("WontCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, new OnMsgBoxClickListener() {
+		    GL_MsgBox.Show(Translation.Get("WantCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, new OnMsgBoxClickListener() {
 
 			@Override
 			public boolean onClick(int which, Object data) {
@@ -794,7 +794,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 		    s += ".";
 		}
 
-		lvExport.setEmptyMsg(Translation.Get("LoadExport CBServerList") + s);
+		lvExport.setEmptyMsg(Translation.Get("LoadExportCBServerList") + s);
 
 	    }
 

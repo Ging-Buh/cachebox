@@ -393,12 +393,25 @@ public class SelectDB extends ActivityBase {
 		    Config.SpoilerFolderLocal.setValue(folder + "Spoilers");
 		    Config.TileCacheFolderLocal.setValue(folder + "Cache");
 		    Config.AcceptChanges();
+		    log.debug(NewDB_Name + " has own Repository:\n" + //
+			    Config.DescriptionImageFolderLocal.getValue() + ", \n" + //
+			    Config.MapPackFolderLocal.getValue() + ", \n" + //
+			    Config.SpoilerFolderLocal.getValue() + ", \n" + //
+			    Config.TileCacheFolderLocal.getValue()//
+		    );
 
 		    // Create Folder?
-		    FileIO.createDirectory(Config.DescriptionImageFolderLocal.getValue());
-		    FileIO.createDirectory(Config.MapPackFolderLocal.getValue());
-		    FileIO.createDirectory(Config.SpoilerFolderLocal.getValue());
-		    FileIO.createDirectory(Config.TileCacheFolderLocal.getValue());
+		    boolean creationOK = FileIO.createDirectory(Config.DescriptionImageFolderLocal.getValue());
+		    creationOK = creationOK && FileIO.createDirectory(Config.MapPackFolderLocal.getValue());
+		    creationOK = creationOK && FileIO.createDirectory(Config.SpoilerFolderLocal.getValue());
+		    creationOK = creationOK && FileIO.createDirectory(Config.TileCacheFolderLocal.getValue());
+		    if (!creationOK)
+			log.debug("Problem with creation of one of the Directories:" + //
+				Config.DescriptionImageFolderLocal.getValue() + ", " + //
+				Config.MapPackFolderLocal.getValue() + ", " + //
+				Config.SpoilerFolderLocal.getValue() + ", " + //
+				Config.TileCacheFolderLocal.getValue()//
+			);
 		}
 
 		Config.AcceptChanges();

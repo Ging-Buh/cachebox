@@ -904,7 +904,7 @@ public class splash extends Activity {
 
     @Override
     public void onDestroy() {
-	log.debug("onDestroiy");
+	log.debug("onDestroy");
 	if (isFinishing()) {
 	    ReleaseImages();
 	    // versionTextView = null;

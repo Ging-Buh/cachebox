@@ -1926,10 +1926,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	if (GlobalCore.isSetSelectedCache()) {
 	    double lat = GlobalCore.getSelectedCache().Latitude();
 	    double lon = GlobalCore.getSelectedCache().Pos.getLongitude();
+	    String targetName = GlobalCore.getSelectedCache().getGcCode();
 
 	    if (GlobalCore.getSelectedWaypoint() != null) {
 		lat = GlobalCore.getSelectedWaypoint().Pos.getLatitude();
 		lon = GlobalCore.getSelectedWaypoint().Pos.getLongitude();
+		targetName = GlobalCore.getSelectedWaypoint().getGcCode();
 	    }
 
 	    String selectedNavi = Config.Navis.getValue();
@@ -1944,66 +1946,61 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		selectedNavi = Config.Navis.getValue(); // =Ask=do nothing
 	    }
 
+	    Intent intent = null;
 	    if (selectedNavi.equals("Navigon")) {
-		startNavigon(lat, lon);
-	    } else if (selectedNavi.equals("OsmAnd")) {
-		startNaviActivity("geo:" + lat + "," + lon);
-	    } else if (selectedNavi.equals("OsmAnd2")) {
-		startNaviActivity("http://download.osmand.net/go?lat=" + lat + "&lon=" + lon + "&z=14");
-	    } else if (selectedNavi.equals("Copilot") || selectedNavi.equals("Google")) {
-		startNaviActivity("http://maps.google.com/maps?daddr=" + lat + "," + lon);
-	    } else if (selectedNavi.equals("Waze")) {
-		startNaviActivity("waze://?ll=" + lat + "," + lon);
-	    }
-	}
-    }
-
-    private void startNavigon(double lat, double lon) {
-
-	Intent intent = null;
-	try {
-	    intent = getPackageManager().getLaunchIntentForPackage("com.navigon.navigator");
-	} catch (Exception e) {
-	    // Kein Navigon ohne public intent Instaliert
-	    e.printStackTrace();
-	}
-
-	if (intent == null) {
-	    try {
-		intent = new Intent("android.intent.action.navigon.START_PUBLIC");
-	    } catch (Exception e) {
-		// Kein Navigon mit public intent Instaliert
-		e.printStackTrace();
-	    }
-	}
-
-	try {
-	    if (intent != null) {
-		try {
+		intent = getIntent("com.navigon.navigator", "android.intent.action.navigon.START_PUBLIC");
+		if (intent != null) {
 		    intent.putExtra("latitude", (float) lat);
 		    intent.putExtra("longitude", (float) lon);
-		    startActivity(intent);
-		} catch (Exception e) {
 		}
+	    } else if (selectedNavi.equals("Orux")) {
+		intent = getIntent("", "com.oruxmaps.VIEW_MAP_ONLINE");
+		// from http://www.oruxmaps.com/oruxmapsmanual_en.pdf
+		if (intent != null) {
+		    double[] targetLat = { lat };
+		    double[] targetLon = { lon };
+		    String[] targetNames = { targetName };
+		    intent.putExtra("targetLat", targetLat);
+		    intent.putExtra("targetLon", targetLon);
+		    intent.putExtra("targetName", targetNames);
+		    intent.putExtra("navigatetoindex", 1);
+		}
+	    } else if (selectedNavi.equals("OsmAnd")) {
+		intent = getIntent(Intent.ACTION_VIEW, "geo:" + lat + "," + lon);
+	    } else if (selectedNavi.equals("OsmAnd2")) {
+		intent = getIntent(Intent.ACTION_VIEW, "http://download.osmand.net/go?lat=" + lat + "&lon=" + lon + "&z=14");
+	    } else if (selectedNavi.equals("Copilot") || selectedNavi.equals("Google")) {
+		intent = getIntent(Intent.ACTION_VIEW, "http://maps.google.com/maps?daddr=" + lat + "," + lon);
+	    } else if (selectedNavi.equals("Waze")) {
+		intent = getIntent(Intent.ACTION_VIEW, "waze://?ll=" + lat + "," + lon);
 	    }
-	} catch (Exception e) {
-	    log.error("main.NavigateTo()", "Start Navigon Fehler", e);
+	    try {
+		if (intent != null)
+		    startActivity(intent);
+	    } catch (Exception e) {
+		log.error("main.NavigateTo()", "Error Start " + selectedNavi, e);
+	    }
 	}
     }
 
-    private void startNaviActivity(String uri) {
+    private Intent getIntent(String mode, String from) {
 	Intent intent = null;
 	try {
-	    intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-
+	    if (mode != null) {
+		if (mode.equals(Intent.ACTION_VIEW)) {
+		    intent = new Intent(Intent.ACTION_VIEW, Uri.parse(from));
+		    return intent;
+		} else {
+		    intent = getPackageManager().getLaunchIntentForPackage(mode);
+		}
+	    }
+	    if (intent == null) {
+		intent = new Intent(from);
+	    }
 	} catch (Exception e) {
-	    e.printStackTrace();
+	    intent = null;
 	}
-
-	if (intent != null) {
-	    startActivity(intent);
-	}
-
+	return intent;
     }
 
     public void setVoiceRecIsStart(Boolean value) {

@@ -240,7 +240,7 @@ public enum QuickActions {
 	case 20:
 	    return Translation.Get("TBList");
 	case 21:
-	    return Translation.Get("addWaypoint");
+	    return Translation.Get("AddWaypoint");
 	case 22:
 	    return Translation.Get("Solver") + " 2";
 	case 23:

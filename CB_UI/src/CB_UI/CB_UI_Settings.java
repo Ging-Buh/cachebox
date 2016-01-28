@@ -59,7 +59,7 @@ public interface CB_UI_Settings {
 
     public static final Integer[] approach = new Integer[] { 0, 2, 10, 25, 50, 100, 200, 500, 1000 };
     public static final Integer[] TrackDistanceArray = new Integer[] { 1, 3, 5, 10, 20 };
-    public static final String[] navis = new String[] { "Navigon", "Google", "Copilot", "OsmAnd", "OsmAnd2", "Waze", "Ask" };
+    public static final String[] navis = new String[] { "Navigon", "Google", "Copilot", "OsmAnd", "OsmAnd2", "Waze", "Orux", "Ask" };
 
     // Settings Compass
     public static final SettingInt HardwareCompassLevel = (SettingInt) SettingsList.addSetting(new SettingInt("HardwareCompassLevel", SettingCategory.Gps, NORMAL, 5, SettingStoreType.Global, SettingUsage.ACB));

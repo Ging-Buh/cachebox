@@ -79,7 +79,7 @@ public class CB_Action_ShowDescExt extends CB_Action {
 	    // add trailer
 	    html += "</br></br>" + "</body></html>";
 
-	    String filePath = CB_UI_Base_Settings.ImageCacheFolderLocal.getValue() + "/" + TEMP_CACHE_HTML_FILE;
+	    String filePath = CB_UI_Base_Settings.ImageCacheFolder.getValue() + "/" + TEMP_CACHE_HTML_FILE;
 
 	    try {
 

@@ -220,7 +220,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 	cm.addItem(MenuID.MI_CHANGE_LINE, "editLine");
 	cm.addItem(MenuID.MI_INSERT_LINE, "addLine");
 	cm.addItem(MenuID.MI_DELETE_LINE, "delLine");
-	cm.addItem(MenuID.MI_SET_AS_WAYPOINT, "addWaypoint");
+	cm.addItem(MenuID.MI_SET_AS_WAYPOINT, "AddWaypoint");
 	cm.addItem(MenuID.MI_SET_AS_MAPCENTER, "setMapCenter");
 	cm.addItem(MenuID.MI_ADD_MISSING_VARIABLES, "addMissingVariables");
 	return cm;

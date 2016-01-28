@@ -43,7 +43,7 @@ public interface CB_Core_Settings {
 
     // Folder Settings
     public static final SettingFolder DescriptionImageFolder = new SettingFolder("DescriptionImageFolder", SettingCategory.Folder, EXPERT, Config_Core.mWorkPath + "/repository/images", SettingStoreType.Global, SettingUsage.ALL, true);
-    public static final SettingFolder DescriptionImageFolderLocal = new SettingFolder("DescriptionImageFolder", SettingCategory.Folder, NEVER, "", SettingStoreType.Local, SettingUsage.ALL, true);
+    public static final SettingFolder DescriptionImageFolderLocal = new SettingFolder("DescriptionImageFolderLocal", SettingCategory.Folder, NEVER, "", SettingStoreType.Local, SettingUsage.ALL, true);
     public static final SettingFolder SpoilerFolder = new SettingFolder("SpoilerFolder", SettingCategory.Folder, EXPERT, Config_Core.mWorkPath + "/repository/spoilers", SettingStoreType.Global, SettingUsage.ALL, true);
     public static final SettingFolder SpoilerFolderLocal = new SettingFolder("SpoilerFolderLocal", SettingCategory.Folder, NEVER, "", SettingStoreType.Local, SettingUsage.ALL, true);
     public static final SettingFolder PocketQueryFolder = new SettingFolder("PocketQueryFolder", SettingCategory.Folder, INVISIBLE, Config_Core.mWorkPath + "/PocketQuery", SettingStoreType.Global, SettingUsage.ALL, true);
