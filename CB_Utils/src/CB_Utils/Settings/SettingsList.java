@@ -154,7 +154,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
 	    boolean isPlattformoverride = false;
 
 	    if (SettingStoreType.Local == setting.getStoreType()) {
-		if (getDataDB().getDatabasePath() == null)
+		if (getDataDB() == null || getDataDB().getDatabasePath() == null)
 		    setting.loadDefault();
 		else
 		    setting = dao.ReadFromDatabase(getDataDB(), setting);
