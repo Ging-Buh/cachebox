@@ -56,9 +56,9 @@ public class H_ListView extends ListViewBase {
 	if (clearList.size() > 0) {
 	    for (int i = 0; i < clearList.size(); i++) {
 		ListViewItemBase tmp = clearList.get(i);
-		int index = mAddeedIndexList.indexOf(tmp.getIndex());
-		if (index >= 0 && index < mAddeedIndexList.size()) {
-		    mAddeedIndexList.remove(index);
+		int index = mAddedIndexList.indexOf(tmp.getIndex());
+		if (index >= 0 && index < mAddedIndexList.size()) {
+		    mAddedIndexList.remove(index);
 		    // log.debug("Remove Item " + tmp.getIndex());
 		    this.removeChild(tmp);
 		    if (mCanDispose)
@@ -70,10 +70,10 @@ public class H_ListView extends ListViewBase {
 	    clearList.clear();
 
 	    // setze First Index, damit nicht alle Items durchlaufen werden m�ssen
-	    mAddeedIndexList.sort();
+	    mAddedIndexList.sort();
 
-	    if (mAddeedIndexList.size() > 0) {
-		mFirstIndex = mAddeedIndexList.get(0) - mMaxItemCount;
+	    if (mAddedIndexList.size() > 0) {
+		mFirstIndex = mAddedIndexList.get(0) - mMaxItemCount;
 		if (mFirstIndex < 0)
 		    mFirstIndex = 0;
 	    } else {
@@ -97,7 +97,7 @@ public class H_ListView extends ListViewBase {
 	    calcDefaultPosList();
 
 	for (int i = mFirstIndex; i < mBaseAdapter.getCount(); i++) {
-	    if (!mAddeedIndexList.contains(i)) {
+	    if (!mAddedIndexList.contains(i)) {
 
 		if (mPosDefault.size() - 1 < i || mBaseAdapter.getCount() < i)
 		    return;
@@ -121,7 +121,7 @@ public class H_ListView extends ListViewBase {
 				tmp.resetInitial();
 			    }
 			    this.addChild(tmp);
-			    mAddeedIndexList.add(tmp.getIndex());
+			    mAddedIndexList.add(tmp.getIndex());
 			} else
 			    break;
 		    }

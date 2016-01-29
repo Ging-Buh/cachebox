@@ -52,7 +52,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
 	setBackground(SpriteCacheBase.ListBack);
 
 	this.setBaseAdapter(null);
-	SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+	setCache(GlobalCore.getSelectedCache());
 	this.setDisposeFlag(false);
     }
 
@@ -62,10 +62,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
 	if (GlobalCore.isTab) {
 	    SelectedCacheEventList.Add(this);
 	}
-
-	SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
-
-	resetInitial();
+	setCache(GlobalCore.getSelectedCache());
     }
 
     @Override
@@ -75,12 +72,11 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
 
     @Override
     public void Initial() {
-	super.Initial();
+	// super.Initial(); does nothing at the moment
 
-	createItemList(aktCache);
+	createItemList();
 
-	this.setBaseAdapter(null);
-	lvAdapter = new CustomAdapter();
+	lvAdapter = new ListViewBaseAdapter();
 	this.setBaseAdapter(lvAdapter);
 
 	this.setEmptyMsg(Translation.Get("EmptyLogList"));
@@ -94,20 +90,20 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
     }
 
     Cache aktCache;
-    CustomAdapter lvAdapter;
+    ListViewBaseAdapter lvAdapter;
 
     CB_List<LogViewItem> itemList;
 
-    private void createItemList(Cache cache) {
+    private void createItemList() {
 	if (itemList == null)
 	    itemList = new CB_List<LogViewItem>();
 	itemList.clear();
 
-	if (cache == null)
-	    return; // Kein Cache angewählt
+	if (aktCache == null)
+	    return;
 
 	CB_List<LogEntry> cleanLogs = new CB_List<LogEntry>();
-	cleanLogs = Database.Logs(cache);// cache.Logs();
+	cleanLogs = Database.Logs(aktCache);
 
 	String finders = Config.Friends.getValue();
 	String[] finder = finders.split("\\|");
@@ -158,15 +154,14 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
 	return headHeight + commentHeight;
     }
 
-    public class CustomAdapter implements Adapter {
-	public CustomAdapter() {
+    public class ListViewBaseAdapter implements Adapter {
+	public ListViewBaseAdapter() {
 	}
 
+	@Override
 	public int getCount() {
 	    if (itemList != null) {
-
 		return itemList.size();
-
 	    } else {
 		return 0;
 	    }
@@ -176,7 +171,6 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
 	public ListViewItemBase getView(int position) {
 	    if (itemList != null) {
 		return itemList.get(position);
-
 	    } else
 		return null;
 	}
@@ -190,19 +184,20 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
 
     }
 
-    public void SetSelectedCache(Cache cache, Waypoint waypoint) {
-	Cache c = cache;
+    public Cache getCache() {
+	return aktCache;
+    }
 
-	if (aktCache != c) {
-	    aktCache = c;
+    public void setCache(Cache cache) {
+	if (aktCache != cache) {
+	    aktCache = cache;
+	    resetInitial();
 	}
-
-	resetInitial();
     }
 
     @Override
     public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
-	SetSelectedCache(cache, waypoint);
+	setCache(cache);
     }
 
     @Override
@@ -214,6 +209,6 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
 	    itemList.clear();
 	itemList = null;
 	super.dispose();
-	log.debug("LogView disposed");
+	//log.debug("LogView disposed");
     }
 }

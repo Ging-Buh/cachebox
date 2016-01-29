@@ -159,7 +159,7 @@ public class GalleryView extends H_ListView {
 
     public void reloadItemsNow() {
 	this.removeChildsDirekt();
-	this.mAddeedIndexList.clear();
+	this.mAddedIndexList.clear();
 	this.addVisibleItems(true);
     }
 

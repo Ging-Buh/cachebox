@@ -37,7 +37,7 @@ public class V_ListView extends ListViewBase {
 	    // alle childs verschieben
 
 	    if (mReloadItems) {
-		mAddeedIndexList.clear();
+		mAddedIndexList.clear();
 		if (mCanDispose) {
 		    synchronized (childs) {
 			for (int i = 0, n = childs.size(); i < n; i++) {
@@ -68,12 +68,12 @@ public class V_ListView extends ListViewBase {
 	    // afr�umen
 	    if (clearList.size() > 0) {
 
-		synchronized (mAddeedIndexList) {
+		synchronized (mAddedIndexList) {
 		    for (int i = 0; i < clearList.size(); i++) {
 			ListViewItemBase tmp = clearList.get(i);
-			int index = mAddeedIndexList.indexOf(tmp.getIndex());
-			if (index >= 0 && index < mAddeedIndexList.size()) {
-			    mAddeedIndexList.remove(index);
+			int index = mAddedIndexList.indexOf(tmp.getIndex());
+			if (index >= 0 && index < mAddedIndexList.size()) {
+			    mAddedIndexList.remove(index);
 			    // log.debug("Remove Item " + tmp.getIndex());
 			    this.removeChild(tmp);
 			    if (mCanDispose)
@@ -90,10 +90,10 @@ public class V_ListView extends ListViewBase {
 	}
 
 	// setze First Index, damit nicht alle Items durchlaufen werden m�ssen
-	synchronized (mAddeedIndexList) {
-	    mAddeedIndexList.sort();
-	    if (mAddeedIndexList.size() > 0) {
-		mFirstIndex = mAddeedIndexList.get(0) - mMaxItemCount;
+	synchronized (mAddedIndexList) {
+	    mAddedIndexList.sort();
+	    if (mAddedIndexList.size() > 0) {
+		mFirstIndex = mAddedIndexList.get(0) - mMaxItemCount;
 		if (mFirstIndex < 0)
 		    mFirstIndex = 0;
 	    } else {
@@ -131,7 +131,7 @@ public class V_ListView extends ListViewBase {
 
 	    synchronized (childs) {
 		for (int i = mFirstIndex; i < mBaseAdapter.getCount(); i++) {
-		    if (!mAddeedIndexList.contains(i)) {
+		    if (!mAddedIndexList.contains(i)) {
 			if (mPosDefault.size() - 1 < i)
 			    return;
 
@@ -150,7 +150,7 @@ public class V_ListView extends ListViewBase {
 			    }
 
 			    // log.debug("Add Item " + i);
-			    mAddeedIndexList.add(i);
+			    mAddedIndexList.add(i);
 			} else if (itemPos + mBaseAdapter.getItemSize(i) < -(mMaxItemCount * minimumItemSize)) {
 			    mLastIndex = i;
 			    break;

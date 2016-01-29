@@ -253,9 +253,16 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 	}
 
 	if (logView != null && !logView.isVisible()) {
-	    //log.debug("Release logView");
-	    logView.dispose();
-	    logView = null;
+	    boolean doRelease = true;
+	    if (logView.getCache() != null)
+		if (GlobalCore.isSetSelectedCache())
+		    if (logView.getCache().equals(GlobalCore.getSelectedCache()))
+			doRelease = false;
+	    if (doRelease) {
+		//log.debug("Release logView");
+		logView.dispose();
+		logView = null;
+	    }
 	}
 
 	if (waypointView != null && !waypointView.isVisible()) {
