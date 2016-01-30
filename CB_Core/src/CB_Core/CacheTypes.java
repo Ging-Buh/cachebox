@@ -33,7 +33,9 @@ public enum CacheTypes {
     public static CacheTypes parseString(String string) {
 
 	if (string.toLowerCase().contains("virtual cache")) {
-	    string = "Virtual";
+	    return Virtual;
+	} else if (string.equalsIgnoreCase("Cache In Trash Out Event")) {
+	    return CITO;
 	} else {
 	    // Remove trailing " cache" or " hybrid" fragments
 	    if (string.contains(" "))
@@ -44,44 +46,49 @@ public enum CacheTypes {
 
 	    // Replace some opencaching.de / geotoad cache types
 	    if (string.toLowerCase().contains("unknown"))
-		string = "Mystery";
+		return Mystery;
 	    if (string.toLowerCase().contains("multicache"))
-		string = "Multi";
+		return Multi;
 	    if (string.toLowerCase().contains("whereigo"))
-		string = "Wherigo"; // note the additional "e"
+		return Wherigo; // note the additional "e"
 	    if (string.toLowerCase().contains("other"))
-		string = "Mystery";
+		return Mystery;
 	    if (string.toLowerCase().contains("earthcache"))
-		string = "Earth";
+		return Earth;
 	    if (string.toLowerCase().contains("webcam"))
-		string = "Camera";
+		return Camera;
 	    if (string.toLowerCase().contains("question"))
-		string = "MultiQuestion";
+		return MultiQuestion;
 	    if (string.toLowerCase().contains("reference"))
-		string = "ReferencePoint";
+		return ReferencePoint;
 	    if (string.toLowerCase().contains("referenzpunkt"))
-		string = "ReferencePoint";
+		return ReferencePoint;
 	    if (string.toLowerCase().contains("parking"))
-		string = "ParkingArea";
+		return ParkingArea;
 	    if (string.toLowerCase().contains("stages"))
-		string = "MultiStage";
+		return MultiStage;
 	    if (string.toLowerCase().contains("munzee"))
-		string = "Munzee";
+		return Munzee;
 	    if (string.toLowerCase().contains("mega"))
-		string = "MegaEvent";
+		return MegaEvent;
 	    if (string.toLowerCase().contains("virtual"))
-		string = "MultiQuestion"; // Import Virtual Stage as Question of a Multi
+		return MultiQuestion; // Import Virtual Stage as Question of a Multi
 	    if (string.toLowerCase().contains("physical"))
-		string = "MultiStage"; // Import Physical Stage as a Multi Stage
-	    // If no cache type is given, use "Unknown"
+		return MultiStage; // Import Physical Stage as a Multi Stage
 	    if (string.length() == 0)
-		string = "Unknown";
+		return Undefined;
 	}
 
-	try {
+	try
+
+	{
 	    return valueOf(string);
-	} catch (Exception ex) {
-	    CacheTypes cacheType = CacheTypes.Undefined;
+	} catch (
+
+	Exception ex)
+
+	{
+	    CacheTypes cacheType = Undefined;
 	    Boolean blnCacheTypeFound = false;
 	    for (CacheTypes ct : CacheTypes.values()) {
 		if (ct.toString().toLowerCase().equals(string.toLowerCase())) {
@@ -94,13 +101,14 @@ public enum CacheTypes {
 		System.out.println("Handle cache type: " + string);
 	    return cacheType;
 	}
+
     }
 
     @Override
     public String toString() {
 	switch (this) {
 	case CITO:
-	    break;
+	    return "Cache In Trash Out Event";
 	case Cache:
 	    break;
 	case Camera:

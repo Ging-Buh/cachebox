@@ -62,17 +62,17 @@ public class GPXFileImporter {
 	DATE_PATTERN_3.setTimeZone(TimeZone.getTimeZone("EST"));
     }
 
-    private File mGpxFile;
-    private String mDisplayFilename;
+    private final File mGpxFile;
+    private final String mDisplayFilename;
     private IImportHandler mImportHandler;
-    private ImporterProgress mip;
+    private final ImporterProgress mip;
     private Integer currentwpt = 0;
     private Integer countwpt = 0;
     private Integer errors = 0;
 
     private Cache cache = new Cache(true);
-    private Waypoint waypoint = new Waypoint(true);
-    private LogEntry log = new LogEntry();
+    private final Waypoint waypoint = new Waypoint(true);
+    private final LogEntry log = new LogEntry();
     private Category category = new Category();
     private GpxFilename gpxFilename = null;
 
@@ -1118,7 +1118,7 @@ public class GPXFileImporter {
 	    if (cache.getGcCode().indexOf("MZ") == 0)
 		cache.Type = CacheTypes.Munzee;
 	} else {
-	    cache.Type = CacheTypes.Traditional;
+	    cache.Type = CacheTypes.Undefined;
 	}
 
 	if (values.containsKey("cache_container")) {
