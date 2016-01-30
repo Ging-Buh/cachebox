@@ -15,7 +15,6 @@ package CB_UI;
  * limitations under the License.
  */
 
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -244,13 +243,11 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
 	validateSetting("quickButtonShow", "true");
 	validateSetting("quickButtonList", "5,0,1,3,2");
 	validateSetting("PremiumMember", "false");
-	validateSetting("SearchWithoutFounds", "true");
-	validateSetting("SearchWithoutOwns", "true");
 
 	// api search settings
 	validateSetting("SearchWithoutFounds", "true");
 	validateSetting("SearchWithoutOwns", "true");
-	validateSetting("SearchOnlyAvible", "true");
+	validateSetting("SearchOnlyAvailable", "true");
 
 	// validateSetting("OtherRepositoriesFolder", Global.AppPath +
 	// "/Repositories");

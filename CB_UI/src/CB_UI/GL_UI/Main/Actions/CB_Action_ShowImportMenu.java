@@ -137,7 +137,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
 	icm.addItem(MenuID.MI_IMPORT_GS, "API_IMPORT");
 	if (!StringH.isEmpty(Config.CBS_IP.getValue()))
 	    icm.addItem(MenuID.MI_IMPORT_CBS, "CB-Server");
-	icm.addItem(MenuID.MI_IMPORT_GPX, "GPX");
+	icm.addItem(MenuID.MI_IMPORT_GPX, "GPX_IMPORT");
 	icm.addItem(MenuID.MI_IMPORT_GCV, "GC_Vote");
 	icm.addItem(MenuID.MI_IMPORT, "moreImport");
 	icm.addItem(MenuID.MI_EXPORT_RUN, "export");

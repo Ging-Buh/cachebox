@@ -95,7 +95,7 @@ public class SearchForGeocaches_Core {
 	}
 
 	if (!isLite) {
-	    // Chek if search a lite request
+	    // Check if search a lite request
 	    isLite = search.isLite;
 	}
 
@@ -264,11 +264,11 @@ public class SearchForGeocaches_Core {
 
 	// save result, if this a Live-Request
 	if (search instanceof SearchLiveMap) {
-	    SearchLiveMap se = (SearchLiveMap) search;
+	    SearchLiveMap mSearchLiveMap = (SearchLiveMap) search;
 
 	    Writer writer = null;
 	    try {
-		String Path = se.descriptor.getLocalCachePath(LiveMapQue.LIVE_CACHE_NAME) + LiveMapQue.LIVE_CACHE_EXTENTION;
+		String Path = mSearchLiveMap.descriptor.getLocalCachePath(LiveMapQue.LIVE_CACHE_NAME) + LiveMapQue.LIVE_CACHE_EXTENTION;
 
 		if (FileIO.createDirectory(Path)) {
 		    writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Path), "utf-8"));
@@ -451,7 +451,7 @@ public class SearchForGeocaches_Core {
 		    cache.setTourName("");
 		    cache.setNoteChecksum(0);
 		    cache.NumTravelbugs = jCache.getInt("TrackableCount");
-		    JSONObject jOwner = (JSONObject) jCache.getJSONObject("Owner");
+		    JSONObject jOwner = jCache.getJSONObject("Owner");
 		    cache.setOwner(jOwner.getString("UserName"));
 		    cache.setPlacedBy(cache.getOwner());
 		    try {
@@ -675,6 +675,16 @@ public class SearchForGeocaches_Core {
 
 	    requestString += "},";
 	}
+	/*
+	"BookmarksExclude":{
+		"BookmarkListIDs":[2147483647],
+		"ExcludeIgnoreList":true
+	},
+	*/
+	requestString += "\"BookmarksExclude\":{";
+	requestString += "\"ExcludeIgnoreList\":true";
+	requestString += "},";
+
 	return requestString;
     }
 
@@ -719,13 +729,13 @@ public class SearchForGeocaches_Core {
 
 		    WaypointDAO waypointDAO = new WaypointDAO();
 		    for (int i = 0, n = newCache.waypoints.size(); i < n; i++) {
-			Waypoint waypoint = (Waypoint) newCache.waypoints.get(i);
+			Waypoint waypoint = newCache.waypoints.get(i);
 
 			boolean update = true;
 
 			// dont refresh wp if aktCache.wp is user changed
 			for (int j = 0, m = aktCache.waypoints.size(); j < m; j++) {
-			    Waypoint wp = (Waypoint) aktCache.waypoints.get(j);
+			    Waypoint wp = aktCache.waypoints.get(j);
 			    if (wp.getGcCode().equalsIgnoreCase(waypoint.getGcCode())) {
 				if (wp.IsUserWaypoint)
 				    update = false;
