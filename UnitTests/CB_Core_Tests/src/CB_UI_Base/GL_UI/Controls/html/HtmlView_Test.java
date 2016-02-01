@@ -136,7 +136,7 @@ public class HtmlView_Test {
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(new HSV_Color("333399")));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 14 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatedText.startsWith(br + br + "Viel Spaß bei der Suche"));
+	assertTrue(testSeg.formatedText.startsWith(br + br + "Viel SpaÃŸ bei der Suche"));
 
 	testSeg = segmentList.get(6);
 	testSeg.resolveAtributes();
@@ -242,7 +242,7 @@ public class HtmlView_Test {
 	assertTrue(testSeg.hAlignment == HAlignment.CENTER);
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(new HSV_Color("333399")));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 14 * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR);
-	assertTrue(testSeg.formatedText.startsWith(br + br + "Viel Spaß bei der Suche"));
+	assertTrue(testSeg.formatedText.startsWith(br + br + "Viel SpaÃŸ bei der Suche"));
 
 	testSeg = segmentList.get(6);
 	testSeg.resolveAtributes();
@@ -398,7 +398,7 @@ public class HtmlView_Test {
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 25.2f);
 	assertFalse(((Html_Segment_TextBlock) testSeg).underline);
-	assertTrue(testSeg.formatedText.trim().startsWith("Mit hin und Rückweg dürfte die gesamte Wegstre"));
+	assertTrue(testSeg.formatedText.trim().startsWith("Mit hin und RÃ¼ckweg dÃ¼rfte die gesamte Wegstre"));
 
 	testSeg = segmentList.get(6);
 	testSeg.resolveAtributes();
@@ -421,7 +421,7 @@ public class HtmlView_Test {
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 32.4f);
 	assertFalse(((Html_Segment_TextBlock) testSeg).underline);
-	assertTrue(testSeg.formatedText.trim().startsWith("Bleibt bitte auf den Pfaden, ihr müsst nicht in den Fluss steig"));
+	assertTrue(testSeg.formatedText.trim().startsWith("Bleibt bitte auf den Pfaden, ihr mÃ¼sst nicht in den Fluss steig"));
 
 	testSeg = segmentList.get(9);
 	testSeg.resolveAtributes();
@@ -429,7 +429,7 @@ public class HtmlView_Test {
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 32.4f);
 	assertFalse(((Html_Segment_TextBlock) testSeg).underline);
-	assertTrue(testSeg.formatedText.trim().startsWith("Petlinge mässen nicht geöffnet werden, die In"));
+	assertTrue(testSeg.formatedText.trim().startsWith("Petlinge mÃ¤ssen nicht geÃ¶ffnet werden, die In"));
 
 	testSeg = segmentList.get(10);
 	testSeg.resolveAtributes();
@@ -437,7 +437,7 @@ public class HtmlView_Test {
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 32.4f);
 	assertFalse(((Html_Segment_TextBlock) testSeg).underline);
-	assertTrue(testSeg.formatedText.trim().startsWith("An Stage 2 das Behätnis wieder an den Fun"));
+	assertTrue(testSeg.formatedText.trim().startsWith("An Stage 2 das BehÃ¤tnis wieder an den Fun"));
 
 	testSeg = segmentList.get(11);
 	testSeg.resolveAtributes();
@@ -468,7 +468,7 @@ public class HtmlView_Test {
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 	assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 25.2f);
 	assertFalse(((Html_Segment_TextBlock) testSeg).underline);
-	assertTrue(testSeg.formatedText.trim().startsWith("Die T-Wertung könnte je nach Wetterlage variieren und ersch"));
+	assertTrue(testSeg.formatedText.trim().startsWith("Die T-Wertung kÃ¶nnte je nach Wetterlage variieren und ersch"));
 
 	assertTrue(segmentList.size() == 16);
     }
