@@ -20,6 +20,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
+
+import CB_UI_Base.Math.Stack;
+import CB_Utils.Lists.CB_List;
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.EndTag;
 import net.htmlparser.jericho.Processor;
@@ -29,11 +33,6 @@ import net.htmlparser.jericho.Renderer.RemoveElementHandler;
 import net.htmlparser.jericho.Renderer.StandardInlineElementHandler;
 import net.htmlparser.jericho.Segment;
 import net.htmlparser.jericho.Tag;
-
-import org.slf4j.LoggerFactory;
-
-import CB_UI_Base.Math.Stack;
-import CB_Utils.Lists.CB_List;
 
 /**
  * @author Longri
@@ -49,7 +48,8 @@ public class CB_HtmlProcessor extends Processor {
 
     boolean isImage = false;
 
-    public CB_HtmlProcessor(Renderer renderer, Segment rootSegment, int hrLineLength, String newLine, boolean includeHyperlinkURLs, boolean includeAlternateText, boolean decorateFontStyles, boolean convertNonBreakingSpaces, int blockIndentSize, int listIndentSize, char[] listBullets, String tableCellSeparator) {
+    public CB_HtmlProcessor(Renderer renderer, Segment rootSegment, int hrLineLength, String newLine, boolean includeHyperlinkURLs, boolean includeAlternateText, boolean decorateFontStyles, boolean convertNonBreakingSpaces, int blockIndentSize,
+	    int listIndentSize, char[] listBullets, String tableCellSeparator) {
 	super(renderer, rootSegment, Integer.MAX_VALUE, hrLineLength, newLine, includeHyperlinkURLs, includeAlternateText, decorateFontStyles, convertNonBreakingSpaces, blockIndentSize, listIndentSize, listBullets, tableCellSeparator);
     }
 

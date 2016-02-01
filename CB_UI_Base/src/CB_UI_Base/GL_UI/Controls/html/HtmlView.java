@@ -43,8 +43,10 @@ import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.graphics.FontCache;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Trace;
+import CB_Utils.Util.HSV_Color;
 import net.htmlparser.jericho.Source;
 
 /**
@@ -68,7 +70,6 @@ public class HtmlView extends ScrollBox implements ListLayout {
     }
 
     public void showHtml(final String html) throws Exception {
-
 	clearHtml();
 	if (textOnly) {
 
@@ -284,7 +285,7 @@ public class HtmlView extends ScrollBox implements ListLayout {
 
 	HrView hrView = new HrView(0, 0, innerWidth, seg.hrsize, "hr");
 
-	hrView.setBackground(new ColorDrawable(seg.getColor()));
+	hrView.setBackground(new ColorDrawable((HSV_Color) getColor(seg.getColor())));
 
 	segmentViewList.add(hrView);
 	return hrView.getHeight();
@@ -325,7 +326,7 @@ public class HtmlView extends ScrollBox implements ListLayout {
 
 	BitmapFont font = FontCache.get(markUp, seg.getFontFamily(), seg.getFontStyle(), seg.getFontSize());
 	GlyphLayout layout = new GlyphLayout(); //dont do this every frame! Store it as member
-	layout.setText(font, seg.formatedText, Color.BLACK, innerWidth - (margin * 2), Align.left, true);
+	layout.setText(font, seg.formatedText, getColor(Color.BLACK), innerWidth - (margin * 2), Align.left, true);
 
 	float segHeight = layout.height + (margin * 2);
 
@@ -338,7 +339,7 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	    lbl.setMarkupEnabled(true);
 	}
 
-	lbl.setTextColor(seg.getFontColor());
+	lbl.setTextColor(getColor(seg.getFontColor()));
 	lbl.setFont(font).setHAlignment(seg.hAlignment);
 
 	if (markUp) {
@@ -350,6 +351,12 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	lbl.setStrikeout(seg.strikeOut);
 	segmentViewList.add(lbl);
 	return segHeight;
+    }
+
+    private static Color getColor(Color color) {
+	if (CB_UI_Base_Settings.nightMode.getValue())
+	    color = HSV_Color.colorMatrixManipulation(color, HSV_Color.NIGHT_COLOR_MATRIX);
+	return color;
     }
 
     private static void parseHyperLinks(Html_Segment_TextBlock seg, String hyperLinkTag) {

@@ -95,6 +95,7 @@ public class DescriptionView extends CB_View_Base {
 	htmlView.setZeroPos();
 	this.addChild(htmlView);
 	//log.info("DescriptionView create");
+	registerSkinChangedEvent();
     }
 
     final static org.slf4j.Logger htmllog = LoggerFactory.getLogger("HTML_PARSER");
@@ -276,7 +277,7 @@ public class DescriptionView extends CB_View_Base {
 
     @Override
     protected void SkinIsChanged() {
-
+	setCache(aktCache, true);
     }
 
     private void resetUi() {
