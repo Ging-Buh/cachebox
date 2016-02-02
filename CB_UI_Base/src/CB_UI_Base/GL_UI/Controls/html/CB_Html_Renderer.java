@@ -20,16 +20,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.LoggerFactory;
+
+import CB_UI_Base.GL_UI.Controls.html.elementhandler.H_ElementHandler;
+import CB_Utils.Exceptions.NotImplementedException;
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Processor;
 import net.htmlparser.jericho.Renderer;
 import net.htmlparser.jericho.Segment;
-
-import org.slf4j.LoggerFactory;
-
-import CB_UI_Base.GL_UI.Controls.html.elementhandler.H_ElementHandler;
-import CB_Utils.Exceptions.NotImplementedException;
 
 /**
  * @author Longri
@@ -38,6 +37,7 @@ public class CB_Html_Renderer extends Renderer {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_Html_Renderer.class);
 
     public static Map<String, ElementHandler> ELEMENT_HANDLERS = new HashMap<String, ElementHandler>();
+
     static {
 
 	boolean IMPLEMENTED = true;
@@ -97,14 +97,15 @@ public class CB_Html_Renderer extends Renderer {
     }
 
     public List<Html_Segment> getElementList() {
-	List<Html_Segment> segList = new CB_HtmlProcessor(this, rootSegment, getHRLineLength(), getNewLine(), getIncludeHyperlinkURLs(), getIncludeAlternateText(), getDecorateFontStyles(), getConvertNonBreakingSpaces(), getBlockIndentSize(), getListIndentSize(), getListBullets(), getTableCellSeparator()).getElementList();
+	List<Html_Segment> segList = new CB_HtmlProcessor(this, rootSegment, getHRLineLength(), getNewLine(), getIncludeHyperlinkURLs(), getIncludeAlternateText(), getDecorateFontStyles(), getConvertNonBreakingSpaces(), getBlockIndentSize(),
+		getListIndentSize(), getListBullets(), getTableCellSeparator()).getElementList();
 
 	//remove last line brakes
 
 	for (int i = segList.size() - 1; i > 0; i--) {
 	    Html_Segment seg = segList.get(i);
 
-	    if (seg.formatedText.isEmpty() || hasOnlyLineBreakes(seg.formatedText)) {
+	    if (!(seg instanceof HTML_Segment_List) && (seg.formatedText.isEmpty() || hasOnlyLineBreakes(seg.formatedText))) {
 		segList.remove(i);
 	    } else {
 		break;
@@ -245,6 +246,9 @@ public class CB_Html_Renderer extends Renderer {
 	    x.appendElementContent(element);
 	    x.listIndentLevel--;
 	    x.listBulletNumber = oldListBulletNumber;
+
+	    ((CB_HtmlProcessor) x).addListToSegments();
+
 	}
 
 	@Override
@@ -268,7 +272,7 @@ public class CB_Html_Renderer extends Renderer {
 	protected void processBlockContent(Processor x, Element element) throws IOException {
 	    if (x.listBulletNumber != UNORDERED_LIST)
 		x.listBulletNumber++;
-	    //	    x.bullet = true;
+	    //x.bullet = true;
 	    ((CB_HtmlProcessor) x).listelement = true;
 
 	    x.appendElementContent(element);

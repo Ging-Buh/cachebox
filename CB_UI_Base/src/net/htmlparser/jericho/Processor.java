@@ -42,7 +42,8 @@ public class Processor {
 
     private static final int NO_MARGIN = -1;
 
-    public Processor(final Renderer renderer, final Segment rootSegment, final int maxLineLength, final int hrLineLength, final String newLine, final boolean includeHyperlinkURLs, final boolean includeAlternateText, final boolean decorateFontStyles, final boolean convertNonBreakingSpaces, final int blockIndentSize, final int listIndentSize, final char[] listBullets, final String tableCellSeparator) {
+    public Processor(final Renderer renderer, final Segment rootSegment, final int maxLineLength, final int hrLineLength, final String newLine, final boolean includeHyperlinkURLs, final boolean includeAlternateText, final boolean decorateFontStyles,
+	    final boolean convertNonBreakingSpaces, final int blockIndentSize, final int listIndentSize, final char[] listBullets, final String tableCellSeparator) {
 	this.renderer = renderer;
 	this.rootSegment = rootSegment;
 	source = rootSegment.source;

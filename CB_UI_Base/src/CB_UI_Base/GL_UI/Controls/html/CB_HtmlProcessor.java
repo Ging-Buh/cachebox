@@ -137,6 +137,7 @@ public class CB_HtmlProcessor extends Processor {
     }
 
     void createNewSegment(boolean force) {
+
 	if (!force && (spanelement || listelement)) {
 	    return;
 	}
@@ -169,11 +170,8 @@ public class CB_HtmlProcessor extends Processor {
 
 		appendable = new StringBuilder();
 		isImage = false;
-
 		hyperLinkList.clear();
-
 		return;
-
 	    }
 
 	    if (actList != null && !actList.getSegmentList().isEmpty()) {
@@ -201,6 +199,13 @@ public class CB_HtmlProcessor extends Processor {
 	    hyperLinkList.clear();
 
 	    isImage = false;
+	}
+    }
+
+    public void addListToSegments() {
+	if (actList != null && !actList.getSegmentList().isEmpty()) {
+	    segmentList.add(actList);
+	    actList = null;
 	}
     }
 
@@ -277,6 +282,7 @@ public class CB_HtmlProcessor extends Processor {
 
 	    index = Math.max(renderedIndex, childElement.getEnd());
 	}
+
 	if (index < end) {
 	    appendSegmentRemovingTags(index, end);
 	}
