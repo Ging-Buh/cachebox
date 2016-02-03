@@ -199,6 +199,11 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	this.setClickable(true);
     }
 
+    public ListViewBase(CB_RectF rec, GL_View_Base parent, String name) {
+	super(rec, parent, name);
+	this.setClickable(true);
+    }
+
     public void setBaseAdapter(Adapter adapter) {
 	mBaseAdapter = adapter;
 

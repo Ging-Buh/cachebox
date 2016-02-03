@@ -1,5 +1,7 @@
 package CB_UI_Base.GL_UI.Controls;
 
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
@@ -7,8 +9,6 @@ import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Util.MoveableList;
-
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class ScrollBox extends CB_View_Base {
     private V_ListView lv;
@@ -30,7 +30,7 @@ public class ScrollBox extends CB_View_Base {
 	// todo: check to have no scroll(? - margin) oder rec.getHalfHeight()
 	virtualHeight = this.getHeight();
 
-	lv = new V_ListView(this, "ListView-" + name);
+	lv = new V_ListView(this, this, "ListView-" + name);
 	lv.setClickable(true);
 
 	item = new ListViewItemBase(this, 0, "ListViewItem-" + name) {
@@ -239,4 +239,17 @@ public class ScrollBox extends CB_View_Base {
 	lv.setLongClickable(value);
 	super.setLongClickable(value);
     }
+
+    @Override
+    public boolean onTouchDown(int x, int y, int pointer, int button) {
+
+	return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgel�st wird.
+    }
+
+    @Override
+    public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
+
+	return true;
+    }
+
 }

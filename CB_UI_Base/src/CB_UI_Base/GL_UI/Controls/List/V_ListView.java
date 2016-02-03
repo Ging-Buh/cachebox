@@ -17,6 +17,7 @@ package CB_UI_Base.GL_UI.Controls.List;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Lists.CB_List;
@@ -24,8 +25,12 @@ import CB_Utils.Math.Point;
 
 public class V_ListView extends ListViewBase {
 
-    public V_ListView(CB_RectF rec, String Name) {
-	super(rec, Name);
+    public V_ListView(CB_RectF rec, String name) {
+	super(rec, name);
+    }
+
+    public V_ListView(CB_RectF rec, GL_View_Base parent, String name) {
+	super(rec, parent, name);
     }
 
     @Override
@@ -280,7 +285,7 @@ public class V_ListView extends ListViewBase {
 	}
 
 	setListPos(sollPos + toMuch, KineticPan);
-	return true;
+	return false;
     }
 
     @Override
