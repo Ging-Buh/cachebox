@@ -472,12 +472,12 @@ public class FilterSetListView extends V_ListView
 		minRating.setValue(props.MinRating);
 		maxRating.setValue(props.MaxRating);
 
-		for (int i = 0; i < props.cacheTypes.length; i++)
-			Types.getChild(i).setValue(props.cacheTypes[i]);
+		for (int i = 0; i < props.mCacheTypes.length; i++)
+			Types.getChild(i).setValue(props.mCacheTypes[i]);
 
 		for (int i = 0; i < Attr.getChildLength(); i++)
 		{
-			if (i < props.attributesFilter.length) Attr.getChild(i).setValue(props.attributesFilter[i]);
+			if (i < props.mAttributes.length) Attr.getChild(i).setValue(props.mAttributes[i]);
 		}
 
 	}
@@ -504,12 +504,12 @@ public class FilterSetListView extends V_ListView
 		props.MinRating = minRating.getValue();
 		props.MaxRating = maxRating.getValue();
 
-		for (int i = 0; i < props.cacheTypes.length; i++)
-			props.cacheTypes[i] = Types.getChild(i).getBoolean();
+		for (int i = 0; i < props.mCacheTypes.length; i++)
+			props.mCacheTypes[i] = Types.getChild(i).getBoolean();
 
 		for (int i = 0; i < Attr.getChildLength(); i++)
 		{
-			if (i < props.attributesFilter.length) props.attributesFilter[i] = Attr.getChild(i).getChecked();
+			if (i < props.mAttributes.length) props.mAttributes[i] = Attr.getChild(i).getChecked();
 		}
 
 		// FIXME at Categorie

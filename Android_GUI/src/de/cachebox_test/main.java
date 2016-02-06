@@ -47,6 +47,7 @@ import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.Database;
 import CB_Core.Database.DatabaseType;
+import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.Importer;
@@ -724,7 +725,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 				    log.debug(Msg);
 
-				    FilterProperties props = FilterProperties.LastFilter;
+				    FilterProperties props = FilterInstances.LastFilter;
 
 				    EditFilterSettings.ApplyFilter(props);
 

@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import CB_Core.CacheListChangedEventList;
 import CB_Core.Database;
-import CB_Core.FilterProperties;
+import CB_Core.FilterInstances;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.SearchGC;
 import CB_Core.DAO.CacheDAO;
@@ -147,7 +147,7 @@ public class CB_AllContextMenuHandler {
 			ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 			ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
-			CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, GlobalCore.getSelectedCache().GPXFilename_ID, this);
+			CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, GlobalCore.getSelectedCache().getGPXFilename_ID(), this);
 
 			try {
 			    GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
@@ -157,7 +157,7 @@ public class CB_AllContextMenuHandler {
 
 			// Reload result from DB
 			synchronized (Database.Data.Query) {
-			    String sqlWhere = FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+			    String sqlWhere = FilterInstances.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 			    CacheListDAO cacheListDAO = new CacheListDAO();
 			    cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 			}
@@ -209,7 +209,7 @@ public class CB_AllContextMenuHandler {
 
 	    case MenuID.MI_FAVORIT:
 		if (GlobalCore.isSetSelectedCache()) {
-		    GlobalCore.getSelectedCache().setFavorit(!GlobalCore.getSelectedCache().isFavorite());
+		    GlobalCore.getSelectedCache().setFavorite(!GlobalCore.getSelectedCache().isFavorite());
 		    if (dao == null)
 			dao = new CacheDAO();
 		    dao.UpdateDatabase(GlobalCore.getSelectedCache());

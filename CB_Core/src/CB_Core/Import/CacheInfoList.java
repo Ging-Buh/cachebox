@@ -298,7 +298,7 @@ public class CacheInfoList {
      * @param cache
      */
     public static void putNewInfo(Cache cache) {
-	CacheInfo info = new CacheInfo(cache.Id, cache.GPXFilename_ID);
+	CacheInfo info = new CacheInfo(cache.Id, cache.getGPXFilename_ID());
 	String stringForListingCheckSum = Database.GetDescription(cache);
 	String recentOwnerLogString = "";
 

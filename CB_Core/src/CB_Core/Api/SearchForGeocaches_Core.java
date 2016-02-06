@@ -402,7 +402,7 @@ public class SearchForGeocaches_Core {
 
 		    // Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
 		    Boolean Favorite = LoadBooleanValueFromDB("select Favorit from Caches where GcCode = \"" + gcCode + "\"");
-		    cache.setFavorit(Favorite);
+		    cache.setFavorite(Favorite);
 
 		    // Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
 		    Boolean Found = LoadBooleanValueFromDB("select found from Caches where GcCode = \"" + gcCode + "\"");
@@ -419,7 +419,7 @@ public class SearchForGeocaches_Core {
 			// CacheERROR = true; gibt bei jedem Cache ein
 			// Fehler ???
 		    }
-		    cache.GPXFilename_ID = gpxFilenameId;
+		    cache.setGPXFilename_ID(gpxFilenameId);
 
 		    // Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
 		    Boolean userData = LoadBooleanValueFromDB("select HasUserData from Caches where GcCode = \"" + gcCode + "\"");
@@ -494,7 +494,7 @@ public class SearchForGeocaches_Core {
 
 		    // Ein evtl. in der Datenbank vorhandenen "Favorit" nicht überschreiben
 		    Boolean fav = LoadBooleanValueFromDB("select favorit from Caches where GcCode = \"" + gcCode + "\"");
-		    cache.setFavorit(fav);
+		    cache.setFavorite(fav);
 
 		    // Chk if Own or Found
 		    Boolean exclude = false;
@@ -703,7 +703,7 @@ public class SearchForGeocaches_Core {
 	    CB_List<Cache> apiCaches = new CB_List<Cache>();
 	    ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 	    ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
-	    SearchForGeocachesJSON(search, apiCaches, apiLogs, apiImages, aktCache.GPXFilename_ID, icancel);
+	    SearchForGeocachesJSON(search, apiCaches, apiLogs, apiImages, aktCache.getGPXFilename_ID(), icancel);
 	    synchronized (Database.Data.Query) {
 		if (apiCaches.size() == 1) {
 		    Database.Data.beginTransaction();

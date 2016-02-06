@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.CoreSettingsForward;
 import CB_Core.Database;
+import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.Search;
@@ -771,22 +772,22 @@ public class SearchDialog extends PopUp_Base {
     private void setFilter() {
 	String searchPattern = mEingabe.getText().toLowerCase();
 
-	FilterProperties.LastFilter.filterName = "";
-	FilterProperties.LastFilter.filterGcCode = "";
-	FilterProperties.LastFilter.filterOwner = "";
+	FilterInstances.LastFilter.filterName = "";
+	FilterInstances.LastFilter.filterGcCode = "";
+	FilterInstances.LastFilter.filterOwner = "";
 
 	if (mSearchState == 0)
-	    FilterProperties.LastFilter.filterName = searchPattern;
+	    FilterInstances.LastFilter.filterName = searchPattern;
 	else if (mSearchState == 1)
-	    FilterProperties.LastFilter.filterGcCode = searchPattern;
+	    FilterInstances.LastFilter.filterGcCode = searchPattern;
 	if (mSearchState == 2)
-	    FilterProperties.LastFilter.filterOwner = searchPattern;
+	    FilterInstances.LastFilter.filterOwner = searchPattern;
 
 	ApplyFilter();
     }
 
     public void ApplyFilter() {
-	ApplyFilter(FilterProperties.LastFilter);
+	ApplyFilter(FilterInstances.LastFilter);
     }
 
     public void ApplyFilter(FilterProperties filter) {

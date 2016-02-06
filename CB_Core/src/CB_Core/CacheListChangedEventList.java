@@ -23,99 +23,89 @@ import CB_Core.Types.Cache;
 /**
  * @author Longri
  */
-public class CacheListChangedEventList
-{
-	public static ArrayList<CacheListChangedEventListener> list = new ArrayList<CacheListChangedEventListener>();
+public class CacheListChangedEventList {
+    public static ArrayList<CacheListChangedEventListener> list = new ArrayList<CacheListChangedEventListener>();
 
-	public static void Add(CacheListChangedEventListener event)
-	{
-		synchronized (list)
-		{
-			if (!list.contains(event)) list.add(event);
+    public static void Add(CacheListChangedEventListener event) {
+	synchronized (list) {
+	    if (!list.contains(event))
+		list.add(event);
+	}
+    }
+
+    public static void Remove(CacheListChangedEventListener event) {
+	synchronized (list) {
+	    list.remove(event);
+	}
+    }
+
+    private static Thread threadCall;
+
+    public static void Call() {
+	if (CoreSettingsForward.DisplayOff)
+	    return;
+
+	synchronized (Database.Data.Query) {
+	    Cache cache = Database.Data.Query.GetCacheByGcCode("CBPark");
+
+	    if (cache != null)
+		Database.Data.Query.remove(cache);
+
+	    // add Parking Cache
+	    if (CB_Core_Settings.ParkingLatitude.getValue() != 0) {
+		cache = new Cache(CB_Core_Settings.ParkingLatitude.getValue(), CB_Core_Settings.ParkingLongitude.getValue(), "My Parking area", CacheTypes.MyParking, "CBPark");
+		Database.Data.Query.add(0, cache);
+	    }
+
+	    // add all Live Caches
+	    for (int i = 0; i < LiveMapQue.LiveCaches.getSize(); i++) {
+		if (FilterInstances.isLastFilterSet()) {
+		    Cache ca = LiveMapQue.LiveCaches.get(i);
+		    if (ca == null)
+			continue;
+		    if (!Database.Data.Query.contains(ca)) {
+			if (FilterInstances.LastFilter.passed(ca)) {
+			    ca.setLive(true);
+			    Database.Data.Query.add(ca);
+			}
+		    }
+		} else {
+		    Cache ca = LiveMapQue.LiveCaches.get(i);
+		    if (ca == null)
+			continue;
+		    if (!Database.Data.Query.contains(ca)) {
+			ca.setLive(true);
+			Database.Data.Query.add(ca);
+		    }
 		}
+
+	    }
 	}
 
-	public static void Remove(CacheListChangedEventListener event)
-	{
-		synchronized (list)
-		{
-			list.remove(event);
-		}
+	if (threadCall != null) {
+	    if (threadCall.getState() != Thread.State.TERMINATED)
+		return;
+	    else
+		threadCall = null;
 	}
 
-	private static Thread threadCall;
+	if (threadCall == null)
+	    threadCall = new Thread(new Runnable() {
 
-	public static void Call()
-	{
-		if (CoreSettingsForward.DisplayOff) return;
-
-		synchronized (Database.Data.Query)
-		{
-			Cache cache = Database.Data.Query.GetCacheByGcCode("CBPark");
-
-			if (cache != null) Database.Data.Query.remove(cache);
-
-			// add Parking Cache
-			if (CB_Core_Settings.ParkingLatitude.getValue() != 0)
-			{
-				cache = new Cache(CB_Core_Settings.ParkingLatitude.getValue(), CB_Core_Settings.ParkingLongitude.getValue(), "My Parking area", CacheTypes.MyParking, "CBPark");
-				Database.Data.Query.add(0, cache);
+		@Override
+		public void run() {
+		    synchronized (list) {
+			for (CacheListChangedEventListener event : list) {
+			    if (event == null)
+				continue;
+			    event.CacheListChangedEvent();
 			}
+		    }
 
-			// add all Live Caches
-			for (int i = 0; i < LiveMapQue.LiveCaches.getSize(); i++)
-			{
-				if (FilterProperties.isFilterSet())
-				{
-					Cache ca = LiveMapQue.LiveCaches.get(i);
-					if (ca == null) continue;
-					if (!Database.Data.Query.contains(ca))
-					{
-						if (!ca.correspondToFilter(FilterProperties.LastFilter)) continue;
-						ca.setLive(true);
-						Database.Data.Query.add(ca);
-					}
-				}
-				else
-				{
-					Cache ca = LiveMapQue.LiveCaches.get(i);
-					if (ca == null) continue;
-					if (!Database.Data.Query.contains(ca))
-					{
-						ca.setLive(true);
-						Database.Data.Query.add(ca);
-					}
-				}
-
-			}
 		}
+	    });
 
-		if (threadCall != null)
-		{
-			if (threadCall.getState() != Thread.State.TERMINATED) return;
-			else
-				threadCall = null;
-		}
-
-		if (threadCall == null) threadCall = new Thread(new Runnable()
-		{
-
-			@Override
-			public void run()
-			{
-				synchronized (list)
-				{
-					for (CacheListChangedEventListener event : list)
-					{
-						if (event == null) continue;
-						event.CacheListChangedEvent();
-					}
-				}
-
-			}
-		});
-
-		threadCall.start();
-	}
+	threadCall.start();
+    }
 
 }

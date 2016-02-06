@@ -1,5 +1,8 @@
 package CB_UI.GL_UI.Activitys.FilterSettings;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+
 import CB_Core.FilterProperties;
 import CB_UI.GL_UI.Activitys.FilterSettings.PresetListView.PresetEntry;
 import CB_UI_Base.GL_UI.COLOR;
@@ -7,13 +10,9 @@ import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
-
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 
 public class PresetListViewItem extends ListViewItemBackground {
-    private PresetEntry mPresetEntry;
+    private final PresetEntry mPresetEntry;
 
     public PresetListViewItem(CB_RectF rec, int Index, PresetEntry fne) {
 	super(rec, Index, fne.getName());
@@ -31,7 +30,7 @@ public class PresetListViewItem extends ListViewItemBackground {
 
 	if (EditFilterSettings.tmpFilterProps != null) {
 	    if (chkPresetFilter(mPresetEntry.getFilterProperties(), EditFilterSettings.tmpFilterProps)) {
-		if (!EditFilterSettings.tmpFilterProps.isExtendsFilter()) {
+		if (!EditFilterSettings.tmpFilterProps.isExtendedFilter()) {
 		    isSelected = true;
 		} else {
 		    isSelected = false;
@@ -47,7 +46,7 @@ public class PresetListViewItem extends ListViewItemBackground {
 
 	// initial
 	left = getLeftWidth();
-	top = this.getHeight() - this.getTopHeight();
+	top = (this.getHeight() + Fonts.getNormal().getLineHeight()) / 2f; //this.getTopHeight();
 
 	drawIcon(batch);
 
@@ -65,9 +64,10 @@ public class PresetListViewItem extends ListViewItemBackground {
 	if (mPresetEntry.getIcon() != null) {
 	    float iconHeight = this.getHeight() * 0.8f;
 	    float iconWidth = iconHeight;
-	    mPresetEntry.getIcon().setBounds(left, UI_Size_Base.that.getMargin(), iconWidth, iconHeight);
+	    float y = (this.getHeight() - iconHeight) / 2f; // UI_Size_Base.that.getMargin()
+	    mPresetEntry.getIcon().setBounds(left, y, iconWidth, iconHeight);
 	    mPresetEntry.getIcon().draw(batch);
-	    left += iconWidth + UI_Size_Base.that.getMargin() + getLeftWidth();
+	    left = left + iconWidth + y + getLeftWidth();
 	}
     }
 

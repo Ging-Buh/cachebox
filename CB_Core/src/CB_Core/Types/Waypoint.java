@@ -116,7 +116,6 @@ public class Waypoint implements Serializable {
 	    }
 
 	}
-	// Log.d(TAG, "Waypoint type: " + this.mWaypointType.toString());
     }
 
     public void clear() {

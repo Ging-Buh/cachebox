@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import CB_Core.CacheListChangedEventList;
 import CB_Core.Database;
-import CB_Core.FilterProperties;
+import CB_Core.FilterInstances;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
@@ -173,7 +173,7 @@ public class CB_Action_chkState extends CB_Action {
 
 		// Reload result from DB
 		synchronized (Database.Data.Query) {
-		    String sqlWhere = FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+		    String sqlWhere = FilterInstances.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 		    CacheListDAO cacheListDAO = new CacheListDAO();
 		    cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 		    cacheListDAO = null;

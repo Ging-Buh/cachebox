@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import CB_Core.CacheListChangedEventList;
 import CB_Core.Database;
+import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -72,7 +73,7 @@ public class EditFilterSettings extends ActivityBase {
 	that = this;
 	ItemRec = new CB_RectF(leftBorder, 0, innerWidth, UI_Size_Base.that.getButtonHeight() * 1.1f);
 
-	tmpFilterProps = FilterProperties.LastFilter;
+	tmpFilterProps = FilterInstances.LastFilter;
 
 	float myWidth = this.getWidth() - leftBorder;
 
@@ -89,28 +90,28 @@ public class EditFilterSettings extends ActivityBase {
 		    @Override
 		    public void run() {
 			lvCat.SetCategory();
-			FilterProperties.LastFilter = tmpFilterProps;
+			FilterInstances.LastFilter = tmpFilterProps;
 
 			// Text Filter ?
 			String txtFilter = vTxt.getFilterString();
 			if (txtFilter.length() > 0) {
 			    int FilterMode = vTxt.getFilterState();
 			    if (FilterMode == 0)
-				FilterProperties.LastFilter.filterName = txtFilter;
+				FilterInstances.LastFilter.filterName = txtFilter;
 			    else if (FilterMode == 1)
-				FilterProperties.LastFilter.filterGcCode = txtFilter;
+				FilterInstances.LastFilter.filterGcCode = txtFilter;
 			    else if (FilterMode == 2)
-				FilterProperties.LastFilter.filterOwner = txtFilter;
+				FilterInstances.LastFilter.filterOwner = txtFilter;
 			} else {
-			    FilterProperties.LastFilter.filterName = "";
-			    FilterProperties.LastFilter.filterGcCode = "";
-			    FilterProperties.LastFilter.filterOwner = "";
+			    FilterInstances.LastFilter.filterName = "";
+			    FilterInstances.LastFilter.filterGcCode = "";
+			    FilterInstances.LastFilter.filterOwner = "";
 			}
 
-			ApplyFilter(FilterProperties.LastFilter);
+			ApplyFilter(FilterInstances.LastFilter);
 
 			// Save selected filter (new JSON Format)
-			Config.FilterNew.setValue(FilterProperties.LastFilter.toString());
+			Config.FilterNew.setValue(FilterInstances.LastFilter.toString());
 			Config.AcceptChanges();
 		    }
 		};
@@ -456,7 +457,7 @@ public class EditFilterSettings extends ActivityBase {
 
     @Override
     public void onShow() {
-	//	tmpFilterProps = FilterProperties.LastFilter;
+	//	tmpFilterProps = FilterInstances.LastFilter;
 
 	if (lvPre != null) {
 	    lvPre.notifyDataSetChanged();
@@ -464,12 +465,12 @@ public class EditFilterSettings extends ActivityBase {
 
 	// Load and set TxtFilter
 	if (vTxt != null) {
-	    if (FilterProperties.LastFilter.filterName.length() > 0)
-		vTxt.setFilterString(FilterProperties.LastFilter.filterName, 0);
-	    else if (FilterProperties.LastFilter.filterGcCode.length() > 0)
-		vTxt.setFilterString(FilterProperties.LastFilter.filterGcCode, 1);
-	    else if (FilterProperties.LastFilter.filterOwner.length() > 0)
-		vTxt.setFilterString(FilterProperties.LastFilter.filterOwner, 2);
+	    if (FilterInstances.LastFilter.filterName.length() > 0)
+		vTxt.setFilterString(FilterInstances.LastFilter.filterName, 0);
+	    else if (FilterInstances.LastFilter.filterGcCode.length() > 0)
+		vTxt.setFilterString(FilterInstances.LastFilter.filterGcCode, 1);
+	    else if (FilterInstances.LastFilter.filterOwner.length() > 0)
+		vTxt.setFilterString(FilterInstances.LastFilter.filterOwner, 2);
 	}
     }
 }

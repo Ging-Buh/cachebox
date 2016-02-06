@@ -123,7 +123,7 @@ public class CB_Action_LoadFriendLogs extends CB_Action {
 	    if (result != -1) {
 		/*
 		 * // Reload result from DB synchronized (Database.Data.Query) { String sqlWhere =
-		 * GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue()); CacheListDAO cacheListDAO = new CacheListDAO();
+		 * FilterInstances.LastFilter.getSqlWhere(Config.GcLogin.getValue()); CacheListDAO cacheListDAO = new CacheListDAO();
 		 * cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere); }
 		 * 
 		 * CachListChangedEventList.Call();

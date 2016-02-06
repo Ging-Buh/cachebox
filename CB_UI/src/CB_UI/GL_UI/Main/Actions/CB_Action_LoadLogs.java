@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import CB_Core.CacheListChangedEventList;
 import CB_Core.Database;
-import CB_Core.FilterProperties;
+import CB_Core.FilterInstances;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.SearchGC;
 import CB_Core.DAO.CacheListDAO;
@@ -79,7 +79,7 @@ public class CB_Action_LoadLogs extends CB_Action {
 		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 		ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
-		CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, GlobalCore.getSelectedCache().GPXFilename_ID, this);
+		CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, GlobalCore.getSelectedCache().getGPXFilename_ID(), this);
 
 		try {
 		    GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
@@ -89,7 +89,7 @@ public class CB_Action_LoadLogs extends CB_Action {
 
 		// Reload result from DB
 		synchronized (Database.Data.Query) {
-		    String sqlWhere = FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+		    String sqlWhere = FilterInstances.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 		    CacheListDAO cacheListDAO = new CacheListDAO();
 		    cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 		}

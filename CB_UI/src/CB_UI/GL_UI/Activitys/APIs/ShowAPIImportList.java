@@ -28,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import CB_Core.CacheListChangedEventList;
 import CB_Core.Database;
+import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.PocketQuery;
@@ -869,7 +870,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 			dis.setAnimationType(AnimationType.Download);
 			Database.Data.beginTransaction();
 			try {
-			    importer.importGcVote(FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue()), ip);
+			    importer.importGcVote(FilterInstances.LastFilter.getSqlWhere(Config.GcLogin.getValue()), ip);
 
 			    Database.Data.setTransactionSuccessful();
 			} catch (Exception exc) {
@@ -885,7 +886,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 
 		    if (checkBoxPreloadImages.isChecked() || checkBoxPreloadSpoiler.isChecked()) {
 			dis.setAnimationType(AnimationType.Download);
-			int result = importer.importImagesNew(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(), FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue()));
+			int result = importer.importImagesNew(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(), FilterInstances.LastFilter.getSqlWhere(Config.GcLogin.getValue()));
 
 			if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
 			    GL.that.Toast(ConnectionError.INSTANCE);
@@ -945,7 +946,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 
 		log.debug(Msg);
 
-		FilterProperties props = FilterProperties.LastFilter;
+		FilterProperties props = FilterInstances.LastFilter;
 
 		EditFilterSettings.ApplyFilter(props);
 

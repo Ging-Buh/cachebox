@@ -1062,7 +1062,7 @@ public class GPXFileImporter {
 	// Read from IndexDBList
 	boolean fav = CacheInfoList.CacheIsFavoriteInDB(cache.getGcCode());
 
-	cache.setFavorit(fav);
+	cache.setFavorite(fav);
 
 	if (values.containsKey("wpt_sym")) {
 	    // Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
@@ -1289,7 +1289,7 @@ public class GPXFileImporter {
 	    }
 	}
 
-	cache.GPXFilename_ID = gpxFilename.Id;
+	cache.setGPXFilename_ID(gpxFilename.Id);
 
 	currentwpt++;
 

@@ -67,9 +67,9 @@ public class CacheDAO {
 	    cache.setGcId(reader.getString(14).trim());
 	    cache.Rating = (reader.getShort(15)) / 100.0f;
 	    if (reader.getInt(16) > 0)
-		cache.setFavorit(true);
+		cache.setFavorite(true);
 	    else
-		cache.setFavorit(false);
+		cache.setFavorite(false);
 
 	    if (reader.getInt(17) > 0)
 		cache.setHasUserData(true);
@@ -232,7 +232,7 @@ public class CacheDAO {
 	    }
 	    args.put("Url", cache.getUrl());
 	    args.put("TourName", cache.getTourName());
-	    args.put("GPXFilename_Id", cache.GPXFilename_ID);
+	    args.put("GPXFilename_Id", cache.getGPXFilename_ID());
 	    args.put("AttributesPositive", cache.getAttributesPositive().getLow());
 	    args.put("AttributesPositiveHigh", cache.getAttributesPositive().getHigh());
 	    args.put("AttributesNegative", cache.getAttributesNegative().getLow());
@@ -318,7 +318,7 @@ public class CacheDAO {
 	args.put("AttributesNegative", cache.getAttributesNegative().getLow());
 	args.put("AttributesNegativeHigh", cache.getAttributesNegative().getHigh());
 	// args.put("ListingCheckSum", cache.);
-	args.put("GPXFilename_Id", cache.GPXFilename_ID);
+	args.put("GPXFilename_Id", cache.getGPXFilename_ID());
 	args.put("Favorit", cache.isFavorite() ? 1 : 0);
 	args.put("ApiStatus", cache.getApiStatus());
 	args.put("CorrectedCoordinates", cache.hasCorrectedCoordinates() ? 1 : 0);
@@ -360,16 +360,16 @@ public class CacheDAO {
 
     }
 
-    public Cache getFromDbByGcCode(String GcCode, boolean witDetail) // NO_UCD (test only)
+    public Cache getFromDbByGcCode(String GcCode, boolean withDetail) // NO_UCD (test only)
     {
-	String where = SQL_GET_CACHE + (witDetail ? ", " + SQL_DETAILS : "") + SQL_BY_GC_CODE;
+	String where = SQL_GET_CACHE + (withDetail ? ", " + SQL_DETAILS : "") + SQL_BY_GC_CODE;
 
 	CoreCursor reader = Database.Data.rawQuery(where, new String[] { GcCode });
 
 	try {
 	    if (reader != null && reader.getCount() > 0) {
 		reader.moveToFirst();
-		Cache ret = ReadFromCursor(reader, witDetail, false);
+		Cache ret = ReadFromCursor(reader, withDetail, false);
 
 		reader.close();
 		return ret;

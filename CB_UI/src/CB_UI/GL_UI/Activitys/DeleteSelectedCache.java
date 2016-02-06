@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import CB_Core.CB_Core_Settings;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.Database;
-import CB_Core.FilterProperties;
+import CB_Core.FilterInstances;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.Types.Waypoint;
@@ -60,7 +60,7 @@ public class DeleteSelectedCache {
 	// Database.Data.execSQL("vacuum");
 	// Filter Liste neu aufbauen oder gibt es eine schnellere Möglichkeit?
 	log.debug("Execute LastFilter");
-	EditFilterSettings.ApplyFilter(FilterProperties.LastFilter);
+	EditFilterSettings.ApplyFilter(FilterInstances.LastFilter);
 	log.debug("unselect Cache");
 	GlobalCore.setSelectedCache(null);
 	log.debug("Rebuild View");

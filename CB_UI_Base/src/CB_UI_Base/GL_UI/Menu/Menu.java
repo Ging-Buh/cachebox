@@ -38,7 +38,7 @@ public class Menu extends ButtonDialog {
     private ArrayList<MenuItemBase> mItems = new ArrayList<MenuItemBase>();
     private V_ListView mListView;
 
-    private static CB_RectF MENU_REC = null;
+    private static CB_RectF sMenuRec = null;
     private static boolean MENU_REC_IsInitial = false;
     private Menu mMoreMenu = null;
     private boolean mMoreMenuVisible = false;
@@ -69,10 +69,10 @@ public class Menu extends ButtonDialog {
 	    if (!Global.isTab)
 		sollWidth /= 1.2f;
 	    sollWidth *= 0.83;
-	    MENU_REC = new CB_RectF(new SizeF(sollWidth, 50));
+	    sMenuRec = new CB_RectF(new SizeF(sollWidth, 50));
 	    MENU_REC_IsInitial = true;
 	}
-	return MENU_REC;
+	return sMenuRec;
     }
 
     public Menu(String Name) {
@@ -117,7 +117,7 @@ public class Menu extends ButtonDialog {
 	mMoreMenuTextLeft = TextLeft;
 	mMoreMenu = menu;
 	mMoreMenu.isMoreMenu = true;
-	mMoreMenu.setParrentMenu(this);
+	mMoreMenu.setParentMenu(this);
 	mMoreMenu.setVisible(false);
 	mMoreMenu.Level = this.Level + 1;
 	mMoreMenu.setBackground(new ColorDrawable(COLOR.getMenuBackColor()));
@@ -135,7 +135,7 @@ public class Menu extends ButtonDialog {
 	return mMoreMenuTextRight;
     }
 
-    private void setParrentMenu(Menu menu) {
+    private void setParentMenu(Menu menu) {
 	mParentMenu = menu;
     }
 
@@ -379,11 +379,11 @@ public class Menu extends ButtonDialog {
 	if (StringId == null || StringId.equals("")) {
 	    trans = anhang;
 	} else {
-	    trans = Translation.Get(StringId) + anhang;
+	    if (withoutTranslation)
+		trans = StringId + anhang;
+	    else
+		trans = Translation.Get(StringId) + anhang;
 	}
-
-	if (withoutTranslation)
-	    trans = StringId;
 
 	// layout();
 	MenuItem item = new MenuItem(new SizeF(mListView.getWidth(), ItemHeight), mItems.size(), ID, "Menu Item@" + ID);
@@ -493,8 +493,9 @@ public class Menu extends ButtonDialog {
     }
 
     public void setPrompt(String Prompt) {
-	// set Title with full width, add many blanks
-	this.setTitle(Prompt + "                                                       ");
+	// set Title with full width, add many blanks: that is bad
+	// this.setTitle(Prompt + "                                                       ");
+	this.setTitle(Prompt);
 	layout();
     }
 

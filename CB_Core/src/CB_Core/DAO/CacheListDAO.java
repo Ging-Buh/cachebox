@@ -42,6 +42,15 @@ import de.cb.sqlite.CoreCursor;
 public class CacheListDAO {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(CacheListDAO.class);
 
+    /**
+     * !!! only exportBatch 
+     * @param cacheList
+     * @param GC_Codes
+     * @param withDescription
+     * @param fullDetails
+     * @param loadAllWaypoints
+     * @return
+     */
     public CacheList ReadCacheList(CacheList cacheList, ArrayList<String> GC_Codes, boolean withDescription, boolean fullDetails, boolean loadAllWaypoints) {
 	ArrayList<String> orParts = new ArrayList<String>();
 

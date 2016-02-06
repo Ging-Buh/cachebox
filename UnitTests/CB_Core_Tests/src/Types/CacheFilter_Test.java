@@ -1,8 +1,10 @@
 package Types;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import CB_Core.CacheTypes;
+import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
 import CB_Core.Types.Cache;
 import CB_UI.Config;
@@ -24,47 +26,58 @@ public class CacheFilter_Test extends TestCase {
 	ca.setFound(true);
 	ca.NumTravelbugs = 2;
 
-	assertTrue("must correspond to Filter", ca.correspondToFilter(FilterProperties.presets[0]));
-	assertFalse("must correspond to Filter", ca.correspondToFilter(FilterProperties.presets[1]));
-	assertFalse("must correspond to Filter", ca.correspondToFilter(FilterProperties.presets[2]));
-	assertFalse("must correspond to Filter", ca.correspondToFilter(FilterProperties.presets[3]));
-	assertFalse("must correspond to Filter", ca.correspondToFilter(FilterProperties.presets[4]));
-	assertFalse("must correspond to Filter", ca.correspondToFilter(FilterProperties.presets[5]));
+	assertTrue("must correspond to Filter", FilterInstances.ALL.passed(ca));
+	assertFalse("must correspond to Filter", FilterInstances.ACTIVE.passed(ca));
+	assertFalse("must correspond to Filter", FilterInstances.QUICK.passed(ca));
+	assertFalse("must correspond to Filter", FilterInstances.WITHTB.passed(ca));
+	assertFalse("must correspond to Filter", FilterInstances.DROPTB.passed(ca));
+	assertFalse("must correspond to Filter", FilterInstances.HIGHLIGHTS.passed(ca));
+	// assertFalse("must correspond to Filter", FilterInstances.FAVORITES.passed(ca));
+	// assertFalse("must correspond to Filter", FilterInstances.TOARCHIVE.passed(ca));
+	// assertFalse("must correspond to Filter", FilterInstances.LISTINGCHANGED.passed(ca));
 
 	ca.setAvailable(true);
 	ca.setArchived(false);
 	ca.setOwner("katipa");
 	ca.setFound(true);
 
-	assertTrue("must correspond to Filter", ca.correspondToFilter(FilterProperties.presets[0]));
-	assertFalse("must correspond to Filter", ca.correspondToFilter(FilterProperties.presets[1]));
-	assertFalse("must correspond to Filter", ca.correspondToFilter(FilterProperties.presets[2]));
-	assertTrue("must correspond to Filter", ca.correspondToFilter(FilterProperties.presets[3]));
-	assertTrue("must correspond to Filter", ca.correspondToFilter(FilterProperties.presets[4]));
-	assertFalse("must correspond to Filter", ca.correspondToFilter(FilterProperties.presets[5]));
+	assertTrue("must correspond to Filter", FilterInstances.ALL.passed(ca));
+	assertFalse("must correspond to Filter", FilterInstances.ACTIVE.passed(ca));
+	assertFalse("must correspond to Filter", FilterInstances.QUICK.passed(ca));
+	assertTrue("must correspond to Filter", FilterInstances.WITHTB.passed(ca));
+	assertTrue("must correspond to Filter", FilterInstances.DROPTB.passed(ca));
+	assertFalse("must correspond to Filter", FilterInstances.HIGHLIGHTS.passed(ca));
 
-	FilterProperties cacheTypeFilter = new FilterProperties(FilterProperties.presets[0].toString());
-
-	CacheTypes[] types = new CacheTypes[] { CacheTypes.Traditional, CacheTypes.Multi, CacheTypes.Mystery, CacheTypes.Camera, CacheTypes.Earth, CacheTypes.Event, CacheTypes.MegaEvent, CacheTypes.CITO, CacheTypes.Virtual, CacheTypes.Letterbox, CacheTypes.Wherigo, CacheTypes.Munzee, CacheTypes.Giga };
+	FilterProperties cacheTypeFilter = new FilterProperties();
 
 	ArrayList<CacheTypes> typesTrue = new ArrayList<CacheTypes>();
 	ArrayList<CacheTypes> typesFalse = new ArrayList<CacheTypes>();
-	for (CacheTypes type : types) {
+	for (CacheTypes type : CacheTypes.values()) {
 	    typesTrue.add(type);
 	}
 
 	for (int i = 0, n = typesTrue.size(); i < n; i++) {
 	    for (CacheTypes type : typesTrue) {
 		ca.Type = type;
-		assertTrue("must correspond to Filter", ca.correspondToFilter(cacheTypeFilter));
+		assertTrue("must correspond to Filter", cacheTypeFilter.passed(ca));
 	    }
 
 	    for (CacheTypes type : typesFalse) {
 		ca.Type = type;
-		assertFalse("must correspond to Filter", ca.correspondToFilter(cacheTypeFilter));
+		assertFalse("must correspond to Filter", cacheTypeFilter.passed(ca));
 	    }
 	    typesFalse.add(typesTrue.remove(0));
-	    cacheTypeFilter.setCachtypes(typesTrue);
+	    setCacheTypes(typesTrue, cacheTypeFilter);
 	}
     }
+
+    private FilterProperties setCacheTypes(ArrayList<CacheTypes> types, FilterProperties cacheTypeFilter) {
+	Arrays.fill(cacheTypeFilter.mCacheTypes, false);
+	for (CacheTypes type : types) {
+	    int TypeIndex = type.ordinal();
+	    cacheTypeFilter.mCacheTypes[TypeIndex] = true;
+	}
+	return cacheTypeFilter;
+    }
+
 }

@@ -26,7 +26,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.CoreSettingsForward;
 import CB_Core.Database;
-import CB_Core.FilterProperties;
+import CB_Core.FilterInstances;
 import CB_Core.Api.API_ErrorEventHandler;
 import CB_Core.Api.API_ErrorEventHandlerList;
 import CB_Core.Api.API_ErrorEventHandlerList.API_ERROR;
@@ -350,7 +350,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
     }
 
     public static void reloadCacheList() {
-	String sqlWhere = FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+	String sqlWhere = FilterInstances.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 	synchronized (Database.Data.Query) {
 	    CacheListDAO cacheListDAO = new CacheListDAO();
 	    cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
@@ -793,7 +793,8 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
     }
 
     public void filterSetChanged() {
-	if (!FilterProperties.isFilterSet()) {
+	// change the icon
+	if (!FilterInstances.isLastFilterSet()) {
 	    mCacheListButtonOnLeftTab.setButtonSprites(SpriteCacheBase.CacheList);
 	    isFilterd = false;
 	} else {
@@ -813,12 +814,12 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 		--filterCount;
 
 	    int DBCount = Database.Data.getCacheCountInDB();
-	    String Filtert = "";
+	    String strFilterCount = "";
 	    if (filterCount != DBCount) {
-		Filtert = String.valueOf(filterCount) + "/";
+		strFilterCount = String.valueOf(filterCount) + "/";
 	    }
 
-	    Name = "  (" + Filtert + String.valueOf(DBCount) + ")";
+	    Name = "  (" + strFilterCount + String.valueOf(DBCount) + ")";
 	}
 	actionShowCacheList.setNameExtention(Name);
     }

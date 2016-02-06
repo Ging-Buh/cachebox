@@ -31,11 +31,12 @@ public class CB_Action_switch_Autoresort extends CB_Action {
 	GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
 	if (GlobalCore.getAutoResort()) {
 	    synchronized (Database.Data.Query) {
-		CacheWithWP ret = Database.Data.Query.Resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
-
-		GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
-		GlobalCore.setNearestCache(ret.getCache());
-		ret.dispose();
+		if (GlobalCore.isSetSelectedCache()) {
+		    CacheWithWP ret = Database.Data.Query.Resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
+		    GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
+		    GlobalCore.setNearestCache(ret.getCache());
+		    ret.dispose();
+		}
 	    }
 	}
     }

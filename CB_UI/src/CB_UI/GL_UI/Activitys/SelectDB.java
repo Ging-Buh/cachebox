@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import CB_Core.CoreSettingsForward;
 import CB_Core.Database;
+import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.Types.Categories;
@@ -373,9 +374,8 @@ public class SelectDB extends ActivityBase {
 	    switch (which) {
 	    case 1: // ok clicked
 
-		String FilterString = Config.FilterNew.getValue();
-		FilterProperties.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0].toString()) : new FilterProperties(FilterString);
-		String sqlWhere = FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+		FilterInstances.LastFilter = new FilterProperties(Config.FilterNew.getValue());
+		String sqlWhere = FilterInstances.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 
 		// initialize Database
 

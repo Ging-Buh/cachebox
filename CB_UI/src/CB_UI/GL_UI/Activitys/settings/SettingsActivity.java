@@ -359,7 +359,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 			// dies auch zu lässt.
 			if (settingItem.getModus() != SettingModus.develop || GlobalCore.isDevelop()) {
 
-			    if (((settingItem.getModus() == SettingModus.Normal) || (settingItem.getModus() == SettingModus.Expert && Config.SettingsShowExpert.getValue()) || Config.SettingsShowAll.getValue()) && (settingItem.getModus() != SettingModus.Never)) {
+			    if (((settingItem.getModus() == SettingModus.Normal) || (settingItem.getModus() == SettingModus.Expert && Config.SettingsShowExpert.getValue()) || Config.SettingsShowAll.getValue())
+				    && (settingItem.getModus() != SettingModus.Never)) {
 
 				final CB_View_Base view = getView(settingItem, position++);
 
@@ -637,7 +638,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	spinner.setSelectionChangedListener(new ISelectionChangedListener() {
 	    @Override
 	    public void selectionChanged(int index) {
-		SB.setValue((String) SB.getValues().get(index));
+		SB.setValue(SB.getValues().get(index));
 	    }
 	});
 
@@ -1140,7 +1141,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	    @Override
 	    public void ValueChanged(int value) {
 		Audio aud = new Audio(SB.getValue());
-		aud.Volume = (float) value / 100f;
+		aud.Volume = value / 100f;
 		SB.setValue(aud);
 
 		// play Audio now
@@ -1277,8 +1278,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
     }
 
     private String intToTime(int milliseconds) {
-	int seconds = (int) (milliseconds / 1000) % 60;
-	int minutes = (int) ((milliseconds / (1000 * 60)) % 60);
+	int seconds = milliseconds / 1000 % 60;
+	int minutes = (milliseconds / (1000 * 60)) % 60;
 	// int hours = (int) ((milliseconds / (1000*60*60)) % 24);
 
 	return String.valueOf(minutes) + ":" + String.valueOf(seconds);
@@ -1325,7 +1326,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	    }
 	};
 
-	final Spinner spinner = new Spinner(ButtonRec, "LangSpinner", adapter, new ISelectionChangedListener() {
+	Spinner spinner = new Spinner(ButtonRec, "LangSpinner", adapter, new ISelectionChangedListener() {
 
 	    @Override
 	    public void selectionChanged(int index) {
@@ -1366,6 +1367,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	final ArrayList<String> skinFolders = new ArrayList<String>();
 	dir.listFiles(new FileFilter() {
 
+	    @Override
 	    public boolean accept(File f) {
 		if (f.isDirectory()) {
 		    String Path = f.getAbsolutePath();

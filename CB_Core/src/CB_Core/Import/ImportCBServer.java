@@ -95,7 +95,7 @@ public class ImportCBServer {
 			for (int i = 0, n = gclAnswer.getCacheList().size(); i < n; i++) {
 			    Cache cache = gclAnswer.getCacheList().get(i);
 			    // System.out.println(cache.getName());
-			    cache.GPXFilename_ID = gpxFilename.Id;
+			    cache.setGPXFilename_ID(gpxFilename.Id);
 
 			    // Falls das Update nicht klappt (Cache noch nicht in der DB) Insert machen
 			    if (!dao.UpdateDatabase(cache)) {
@@ -121,7 +121,7 @@ public class ImportCBServer {
 			    }
 
 			    for (int j = 0, m = cache.waypoints.size(); j < m; j++) {
-				Waypoint waypoint = (Waypoint) cache.waypoints.get(j);
+				Waypoint waypoint = cache.waypoints.get(j);
 				wayDao.WriteToDatabase(waypoint, false); // do not store replication information
 			    }
 			    if (importImages && (cache.getSpoilerRessources() != null)) {

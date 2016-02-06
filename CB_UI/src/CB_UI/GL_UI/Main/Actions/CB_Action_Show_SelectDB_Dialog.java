@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.CoreSettingsForward;
 import CB_Core.Database;
+import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.Types.Cache;
@@ -95,10 +96,9 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_Action {
 
 		CoreSettingsForward.Categories = new Categories();
 
-		String FilterString = Config.FilterNew.getValue();
-		FilterProperties.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0].toString()) : new FilterProperties(FilterString);
+		FilterInstances.LastFilter = new FilterProperties(Config.FilterNew.getValue());
 
-		String sqlWhere = FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+		String sqlWhere = FilterInstances.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 		Database.Data.GPXFilenameUpdateCacheCount();
 
 		synchronized (Database.Data.Query) {

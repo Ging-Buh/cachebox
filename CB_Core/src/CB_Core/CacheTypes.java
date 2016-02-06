@@ -1,3 +1,4 @@
+
 package CB_Core;
 
 public enum CacheTypes {
@@ -97,8 +98,9 @@ public enum CacheTypes {
 		    break;
 		}
 	    }
-	    if (!blnCacheTypeFound)
+	    if (!blnCacheTypeFound) {
 		System.out.println("Handle cache type: " + string);
+	    }
 	    return cacheType;
 	}
 

@@ -44,11 +44,11 @@ import CB_Locator.CoordinateGPS;
  */
 public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak {
     final static org.slf4j.Logger logger = LoggerFactory.getLogger(ApiGroundspeak_SearchForGeocaches.class);
-    private Search search;
-    private long gpxFilenameId;
-    private ArrayList<Cache> cacheList;
-    private ArrayList<LogEntry> logList;
-    private ArrayList<ImageEntry> imageList;
+    private final Search search;
+    private final long gpxFilenameId;
+    private final ArrayList<Cache> cacheList;
+    private final ArrayList<LogEntry> logList;
+    private final ArrayList<ImageEntry> imageList;
 
     public ApiGroundspeak_SearchForGeocaches(Search search, ArrayList<Cache> cacheList, ArrayList<LogEntry> logList, ArrayList<ImageEntry> imageList, long gpxFilenameId) {
 	super();
@@ -147,7 +147,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak {
 	    CacheDAO dao = new CacheDAO();
 	    // Ein evtl. in der Datenbank vorhandenen "Favorit" nicht überschreiben
 	    Boolean Favorite = dao.loadBooleanValue(gcCode, "Favorit");
-	    cache.setFavorit(Favorite);
+	    cache.setFavorite(Favorite);
 
 	    // Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
 	    Boolean Found = dao.loadBooleanValue(gcCode, "found");
@@ -164,7 +164,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak {
 		// CacheERROR = true; gibt bei jedem Cache ein
 		// Fehler ???
 	    }
-	    cache.GPXFilename_ID = gpxFilenameId;
+	    cache.setGPXFilename_ID(gpxFilenameId);
 
 	    // Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
 	    Boolean userData = dao.loadBooleanValue(gcCode, "HasUserData");
@@ -192,7 +192,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak {
 	    cache.setName(jCache.getString("Name"));
 	    cache.setNoteChecksum(0);
 	    cache.NumTravelbugs = jCache.getInt("TrackableCount");
-	    JSONObject jOwner = (JSONObject) jCache.getJSONObject("Owner");
+	    JSONObject jOwner = jCache.getJSONObject("Owner");
 	    cache.setOwner(jOwner.getString("UserName"));
 	    cache.setPlacedBy(cache.getOwner());
 	    try {

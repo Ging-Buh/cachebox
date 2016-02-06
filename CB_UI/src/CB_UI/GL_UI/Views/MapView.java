@@ -33,7 +33,7 @@ import com.badlogic.gdx.math.Vector2;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.CacheTypes;
 import CB_Core.Database;
-import CB_Core.FilterProperties;
+import CB_Core.FilterInstances;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.LiveMapQue;
 import CB_Core.Api.SearchGC;
@@ -379,7 +379,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			    ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
 			    try {
-				CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, infoBubble.getCache().GPXFilename_ID, this);
+				CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, infoBubble.getCache().getGPXFilename_ID(), this);
 				GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
 			    } catch (InterruptedException e) {
 				e.printStackTrace();
@@ -387,7 +387,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 			    // Reload result from DB
 			    synchronized (Database.Data.Query) {
-				String sqlWhere = FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+				String sqlWhere = FilterInstances.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 				CacheListDAO cacheListDAO = new CacheListDAO();
 				cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 			    }

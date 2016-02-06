@@ -3,7 +3,10 @@ package CB_UI.GL_UI.Main.Actions;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import CB_Core.Database;
+import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Types.CacheWithWP;
@@ -26,8 +29,6 @@ import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
-
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowCacheList extends CB_Action_ShowView {
 
@@ -88,8 +89,8 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
 		    TabMainView.actionShowFilter.Execute();
 		    return true;
 		case MenuID.MI_RESET_FILTER:
-		    FilterProperties.LastFilter = new FilterProperties(FilterProperties.presets[0].toString());
-		    EditFilterSettings.ApplyFilter(FilterProperties.LastFilter);
+		    FilterInstances.LastFilter = new FilterProperties();
+		    EditFilterSettings.ApplyFilter(FilterInstances.LastFilter);
 		    return true;
 		case MenuID.MI_SEARCH_LIST:
 

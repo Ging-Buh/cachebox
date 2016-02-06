@@ -19,9 +19,11 @@ import java.util.ArrayList;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import CB_Core.CacheListChangedEventList;
 import CB_Core.Database;
-import CB_Core.FilterProperties;
+import CB_Core.FilterInstances;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.SearchGC;
 import CB_Core.DAO.CacheDAO;
@@ -52,8 +54,6 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
-
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
@@ -109,7 +109,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 			return true;
 		    }
 
-		    GlobalCore.getSelectedCache().setFavorit(!GlobalCore.getSelectedCache().isFavorite());
+		    GlobalCore.getSelectedCache().setFavorite(!GlobalCore.getSelectedCache().isFavorite());
 		    CacheDAO dao = new CacheDAO();
 		    dao.UpdateDatabase(GlobalCore.getSelectedCache());
 
@@ -193,7 +193,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 		ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
-		String result = CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, GlobalCore.getSelectedCache().GPXFilename_ID, this);
+		String result = CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, GlobalCore.getSelectedCache().getGPXFilename_ID(), this);
 
 		if (result.length() > 0) {
 
@@ -207,7 +207,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
 		    // Reload result from DB
 		    synchronized (Database.Data.Query) {
-			String sqlWhere = FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+			String sqlWhere = FilterInstances.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 			CacheListDAO cacheListDAO = new CacheListDAO();
 			cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 		    }

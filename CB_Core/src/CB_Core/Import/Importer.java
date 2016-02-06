@@ -451,7 +451,7 @@ public class Importer {
      * @param importImages
      * @param importSpoiler
      * @param where
-     *            [Last Filter]GlobalCore.LastFilter.getSqlWhere();
+     *            [Last Filter]FilterInstances.LastFilter.getSqlWhere();
      * @param DescriptionImageFolder
      *            Config.settings.SpoilerFolder.getValue()
      * @param DescriptionImageFolderLocal

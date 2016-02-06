@@ -27,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import CB_Core.CacheListChangedEventList;
 import CB_Core.Database;
+import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.WaypointDAO;
@@ -945,14 +946,14 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 		} catch (InterruptedException e) {
 		    // import canceld
 		    cancelImport();
-		    FilterProperties props = FilterProperties.LastFilter;
+		    FilterProperties props = FilterInstances.LastFilter;
 		    EditFilterSettings.ApplyFilter(props);
 		    ip.ProgressChangeMsg("", "");
 		    return;
 		}
 
 		if (BreakawayImportThread.isCanceld()) {
-		    FilterProperties props = FilterProperties.LastFilter;
+		    FilterProperties props = FilterInstances.LastFilter;
 		    EditFilterSettings.ApplyFilter(props);
 		    ip.ProgressChangeMsg("", "");
 		    return;
@@ -971,7 +972,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 		log.debug(Msg);
 
-		FilterProperties props = FilterProperties.LastFilter;
+		FilterProperties props = FilterInstances.LastFilter;
 		EditFilterSettings.ApplyFilter(props);
 
 		GL.that.Toast(Msg, 3000);

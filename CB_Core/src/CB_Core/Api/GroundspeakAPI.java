@@ -906,7 +906,7 @@ public class GroundspeakAPI {
 	    return CacheTypes.Giga;
 
 	default:
-	    return CacheTypes.Cache;
+	    return CacheTypes.Undefined;
 
 	}
     }
