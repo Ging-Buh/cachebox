@@ -146,11 +146,7 @@ class BSHPrimarySuffix extends SimpleNode
 			// (LHS or non LHS evaluation can both encounter method calls)
 			Object[] oa = ((BSHArguments) jjtGetChild(0)).getArguments(callstack, interpreter);
 
-			// TODO:
-			// Note: this try/catch block is copied from BSHMethodInvocation
-			// we need to factor out this common functionality and make sure
-			// we handle all cases ... (e.g. property style access, etc.)
-			// maybe move this to Reflect ?
+			
 			try
 			{
 				return Reflect.invokeObjectMethod(obj, field, oa, interpreter, callstack, this);

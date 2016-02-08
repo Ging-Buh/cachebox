@@ -152,10 +152,7 @@ public class Remote
 		outPipe.flush();
 	}
 
-	/*
-	 * TODO: this is not unicode friendly, nor is getFile() The output is urlencoded 8859_1 text. should probably be urlencoded UTF-8... how
-	 * does the servlet determine the encoded charset? I guess we're supposed to add a ";charset" clause to the content type?
-	 */
+	
 	@SuppressWarnings("deprecation")
 	static String doHttp(String postURL, String text)
 	{

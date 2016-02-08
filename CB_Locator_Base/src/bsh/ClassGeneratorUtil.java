@@ -1052,12 +1052,9 @@ public class ClassGeneratorUtil implements Constants
 		Interpreter interpreter;
 		NameSpace instanceNameSpace;
 
-		// check to see if the instance has already been initialized
-		// (the case if using a this() alternate constuctor)
-		// todo PeJoBo70 write test for this
+	
 		This instanceThis = getClassInstanceThis(instance, className);
 
-		// XXX clean up this conditional
 		if (instanceThis == null)
 		{
 			// Create the instance 'This' namespace, set it on the object
@@ -1090,7 +1087,7 @@ public class ClassGeneratorUtil implements Constants
 			}
 			else
 			{
-				instanceNameSpace = new NameSpace(classStaticThis.getNameSpace(), className); // todo: old code
+				instanceNameSpace = new NameSpace(classStaticThis.getNameSpace(), className); 
 			}
 			instanceNameSpace.isClass = true;
 

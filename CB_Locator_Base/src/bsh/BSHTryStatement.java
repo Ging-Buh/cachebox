@@ -124,11 +124,7 @@ class BSHTryStatement extends SimpleNode
 				}
 				catch (UtilEvalError e)
 				{
-					/*
-					 * Catch the mismatch and continue to try the next Note: this is innefficient, should have an isAssignableFrom() that
-					 * doesn't throw // TODO: we do now have a way to test assignment // in castObject(), use it?
-					 */
-					continue;
+										continue;
 				}
 
 				// Found match, execute catch block
