@@ -37,7 +37,9 @@ import CB_UI_Base.GL_UI.Controls.ImageButton;
 import CB_UI_Base.GL_UI.Controls.ImageLoader;
 import CB_UI_Base.GL_UI.Controls.LinkLabel;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
+import CB_UI_Base.GL_UI.Controls.List.ListViewBase.IListPosChanged;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
+import CB_UI_Base.GL_UI.Controls.List.Scrollbar;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -517,16 +519,16 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	lv.setBaseAdapter(thisAdapter);
 	Layout();
 
-	//	final Scrollbar scrollBar = new Scrollbar(lv);
-	//	lv.addListPosChangedEventHandler(new IListPosChanged() {
-	//	    @Override
-	//	    public void ListPosChanged() {
-	//		scrollBar.ScrollPositionChanged();
-	//	    }
-	//	});
+	final Scrollbar scrollBar = new Scrollbar(lv);
+	lv.addListPosChangedEventHandler(new IListPosChanged() {
+	    @Override
+	    public void ListPosChanged() {
+		scrollBar.ScrollPositionChanged();
+	    }
+	});
 
 	this.childs.add(lv);
-	//	this.childs.add(scrollBar);
+	this.childs.add(scrollBar);
     }
 
 }
