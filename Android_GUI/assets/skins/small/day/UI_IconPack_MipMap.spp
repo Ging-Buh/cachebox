@@ -1,6 +1,6 @@
 
 UI_IconPack-1.png
-format: RGBA4444
+format: RGBA8888
 filter: MipMapLinearNearest,Nearest
 repeat: none
 0
@@ -3051,14 +3051,14 @@ tools-icon
   orig: 24, 24
   offset: 0, 0
   index: -1
-torch_off_Kopie
+torch_off
   rotate: false
   xy: 789, 692
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
-torch_on_Kopie
+torch_on
   rotate: false
   xy: 821, 715
   size: 24, 24

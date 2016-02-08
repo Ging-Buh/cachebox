@@ -1,6 +1,6 @@
 
 UI_IconPack-1.png
-format: RGBA4444
+format: RGBA8888
 filter: MipMapLinearNearest,Nearest
 repeat: none
 1to4bubble
