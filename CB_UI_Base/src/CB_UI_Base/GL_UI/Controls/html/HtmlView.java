@@ -129,6 +129,7 @@ public class HtmlView extends ScrollBox implements ListLayout {
 
     static int test = 0;
 
+    //TODO Calculate innerWidth to max line width! HtmlView can scroll horizontal
     public static void addViewsToBox(List<Html_Segment> segmentList, CB_List<CB_View_Base> segmentViewList, float innerWidth, final ListLayout relayout) {
 	for (int i = 0, n = segmentList.size(); i < n; i++) {
 	    Html_Segment seg = segmentList.get(i);
