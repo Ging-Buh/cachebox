@@ -51,28 +51,28 @@ public class GL_Canvas implements ext_Canvas
 	@Override
 	public void destroy()
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public Dimension getDimension()
 	{
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public int getHeight()
 	{
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
 	@Override
 	public int getWidth()
 	{
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
@@ -85,28 +85,28 @@ public class GL_Canvas implements ext_Canvas
 	@Override
 	public void drawBitmap(Bitmap bitmap, int left, int top)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void drawBitmap(Bitmap bitmap, Matrix matrix)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void drawCircle(int x, int y, int radius, Paint paint)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void drawLine(int x1, int y1, int x2, int y2, Paint paint)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
@@ -210,49 +210,49 @@ public class GL_Canvas implements ext_Canvas
 	@Override
 	public void drawText(String text, int x, int y, Paint paint)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void drawTextRotated(String text, int x1, int y1, int x2, int y2, Paint paint)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void fillColor(Color color)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void fillColor(int color)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void resetClip()
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void setClip(int left, int top, int width, int height)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void drawText(String text, float x, float y, Paint paint)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
@@ -300,14 +300,14 @@ public class GL_Canvas implements ext_Canvas
 	@Override
 	public void drawRoundRect(RectF rect, float rx, float ry, ext_Paint strokePaint)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void drawOval(RectF rect, ext_Paint fillPaint)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
@@ -351,28 +351,28 @@ public class GL_Canvas implements ext_Canvas
 	@Override
 	public void drawTextOnPath(String text, ext_Path path, float x, float y, ext_Paint fillPaint)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void clipRect(float left, float top, float right, float bottom)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void clipPath(ext_Path path)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void translate(float stepX, float stepY)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
@@ -385,7 +385,7 @@ public class GL_Canvas implements ext_Canvas
 	@Override
 	public void setMatrix(Matrix matrix)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 

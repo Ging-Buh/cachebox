@@ -164,7 +164,7 @@ public class DesktopDB extends Database
 			}
 			catch (SQLException e)
 			{
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 		}
@@ -198,7 +198,7 @@ public class DesktopDB extends Database
 			}
 			catch (SQLException e)
 			{
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 		}
@@ -287,7 +287,7 @@ public class DesktopDB extends Database
 			}
 			catch (SQLException e)
 			{
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 		}
@@ -420,7 +420,7 @@ public class DesktopDB extends Database
 			}
 			catch (SQLException e)
 			{
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 		}
@@ -539,7 +539,7 @@ public class DesktopDB extends Database
 			}
 			catch (SQLException e)
 			{
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 		}
@@ -614,7 +614,7 @@ public class DesktopDB extends Database
 			}
 			catch (SQLException e)
 			{
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 		}

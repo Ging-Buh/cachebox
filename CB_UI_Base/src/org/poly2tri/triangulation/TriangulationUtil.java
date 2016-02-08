@@ -30,7 +30,7 @@
  */package org.poly2tri.triangulation;
 
 /**
- * @author Thomas Åhlén, thahlen@gmail.com
+ * @author Thomas ï¿½hlï¿½n, thahlen@gmail.com
  */
 public class TriangulationUtil
 {
@@ -188,7 +188,7 @@ public class TriangulationUtil
 		}
 		catch (Throwable e)
 		{
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 			return false;
 		}

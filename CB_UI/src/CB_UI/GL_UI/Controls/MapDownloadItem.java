@@ -176,7 +176,7 @@ public class MapDownloadItem extends CB_View_Base {
 			    try {
 				Thread.sleep(100);
 			    } catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			    }
 
@@ -194,7 +194,7 @@ public class MapDownloadItem extends CB_View_Base {
 		} catch (ZipException e) {
 		    e.printStackTrace();
 		} catch (IOException e) {
-		    // TODO Auto-generated catch block
+		    
 		    e.printStackTrace();
 		}
 

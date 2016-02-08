@@ -180,7 +180,7 @@ public class GL_Path implements ext_Path, Disposable
 	@Override
 	public void setFillRule(FillRule fillRule)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
@@ -324,14 +324,14 @@ public class GL_Path implements ext_Path, Disposable
 	@Override
 	public void transform(ext_Matrix currentMatrix, ext_Path transformedPath)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void computeBounds(RectF pathBounds, boolean b)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
@@ -379,35 +379,35 @@ public class GL_Path implements ext_Path, Disposable
 	@Override
 	public void addPath(ext_Path path, ext_Matrix combinedPathMatrix)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void setFillType(FillType clipRuleFromState)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public FillType getFillType()
 	{
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public void addPath(ext_Path spanPath)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void transform(ext_Matrix transform)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 

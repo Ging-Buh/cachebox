@@ -49,7 +49,7 @@ public class WaypointDetail implements Serializable {
     }
 
     public void dispose() {
-	// TODO Auto-generated method stub
+	
 
     }
 

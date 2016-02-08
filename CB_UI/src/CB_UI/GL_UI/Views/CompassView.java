@@ -227,7 +227,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			    }
 			}
 		    } catch (Exception e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		    }
 		}

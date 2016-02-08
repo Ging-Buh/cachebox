@@ -370,7 +370,7 @@ public class SVGAndroidRenderer
 		}
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		// Restore style state
@@ -380,7 +380,7 @@ public class SVGAndroidRenderer
 		}
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 	}

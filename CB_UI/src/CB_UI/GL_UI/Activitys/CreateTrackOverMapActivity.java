@@ -147,7 +147,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
     private OnClickListener onOkClik = new OnClickListener() {
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-	    // TODO Auto-generated method stub
+	    
 	    return false;
 	}
     };

@@ -35,12 +35,12 @@ public class ext_AndroidPaint extends AndroidPaint implements ext_Paint
 
 	public ext_AndroidPaint(ext_Paint paint)
 	{
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public ext_AndroidPaint()
 	{
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	// ############################################################################################
@@ -50,70 +50,70 @@ public class ext_AndroidPaint extends AndroidPaint implements ext_Paint
 	@Override
 	public void setAlpha(int i)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void setStrokeJoin(Join join)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void setRadialGradiant(float x, float y, float radius, int[] colors, float[] positions, TileMode tileMode)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void setGradientMatrix(ext_Matrix matrix)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void setLinearGradient(float x1, float y1, float x2, float y2, int[] colors, float[] positions, TileMode tileMode)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public GL_Style getGL_Style()
 	{
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public void setDashPathEffect(float[] strokeDasharray, float offset)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void delDashPathEffect()
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public ext_Matrix getGradiantMatrix()
 	{
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public void setStyle(GL_Style fill)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 

@@ -655,7 +655,7 @@ public abstract class Database extends Database_Core {
 	    reader.moveToFirst();
 	    count = reader.getInt(0);
 	} catch (Exception e) {
-	    // TODO Auto-generated catch block
+	    
 	    e.printStackTrace();
 	}
 	if (reader != null)

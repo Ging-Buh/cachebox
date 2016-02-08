@@ -255,13 +255,13 @@ public class DesktopMain {
 
 	    @Override
 	    public void switchToGpsMeasure() {
-		// TODO Auto-generated method stub
+		
 
 	    }
 
 	    @Override
 	    public void switchtoGpsDefault() {
-		// TODO Auto-generated method stub
+		
 
 	    }
 
@@ -410,7 +410,7 @@ public class DesktopMain {
 
 	    // SimulatorMain.startListener();
 	} catch (Exception e) {
-	    // TODO Auto-generated catch block
+	    
 	    e.printStackTrace();
 	}
 

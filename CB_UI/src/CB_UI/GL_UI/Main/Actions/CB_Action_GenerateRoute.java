@@ -281,7 +281,7 @@ public class CB_Action_GenerateRoute extends CB_Action {
 
 				@Override
 				public boolean cancel() {
-				    // TODO Auto-generated method stub
+				    
 				    return false;
 				}
 			    });

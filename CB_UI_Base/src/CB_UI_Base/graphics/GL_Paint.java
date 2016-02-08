@@ -238,18 +238,18 @@ public class GL_Paint implements ext_Paint {
 
     @Override
     public void setRadialGradiant(float x, float y, float radius, int[] colors, float[] positions, TileMode tileMode) {
-	// TODO Auto-generated method stub
+	
 
     }
 
     public void setGradientMatrix(GL_Matrix matrix) {
-	// TODO Auto-generated method stub
+	
 
     }
 
     @Override
     public void setLinearGradient(float x1, float y1, float x2, float y2, int[] colors, float[] positions, TileMode tileMode) {
-	// TODO Auto-generated method stub
+	
 
     }
 
@@ -270,7 +270,7 @@ public class GL_Paint implements ext_Paint {
 
     @Override
     public ext_Matrix getGradiantMatrix() {
-	// TODO Auto-generated method stub
+	
 	return null;
     }
 
@@ -311,19 +311,19 @@ public class GL_Paint implements ext_Paint {
 
     @Override
     public void setTextAlign(Align align) {
-	// TODO Auto-generated method stub
+	
 
     }
 
     @Override
     public void setTypeface(FontFamily fontFamily, FontStyle fontStyle) {
-	// TODO Auto-generated method stub
+	
 
     }
 
     @Override
     public void setGradientMatrix(ext_Matrix matrix) {
-	// TODO Auto-generated method stub
+	
 
     }
 

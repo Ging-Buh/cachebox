@@ -240,7 +240,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
 	    @Override
 	    public boolean cancel() {
-		// TODO Auto-generated method stub
+		
 		return false;
 	    }
 	});

@@ -188,7 +188,7 @@ public class BitmapDrawable implements ext_Bitmap, Disposable
 		}
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 
@@ -231,14 +231,14 @@ public class BitmapDrawable implements ext_Bitmap, Disposable
 	@Override
 	public void compress(OutputStream outputStream) throws IOException
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void decrementRefCount()
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
@@ -263,42 +263,42 @@ public class BitmapDrawable implements ext_Bitmap, Disposable
 	@Override
 	public void incrementRefCount()
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void scaleTo(int width, int height)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void setBackgroundColor(int color)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void recycle()
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void getPixels(int[] maskBuf, int i, int w, int j, int y, int w2, int k)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void setPixels(int[] maskedContentBuf, int i, int w, int j, int y, int w2, int k)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 

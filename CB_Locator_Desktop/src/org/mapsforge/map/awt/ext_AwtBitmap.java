@@ -90,14 +90,14 @@ public class ext_AwtBitmap extends AwtBitmap implements ext_Bitmap, TileBitmap
 	@Override
 	public void getPixels(int[] maskBuf, int i, int w, int j, int y, int w2, int k)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void setPixels(int[] maskedContentBuf, int i, int w, int j, int y, int w2, int k)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 

@@ -132,7 +132,7 @@ public class XMLParser extends DefaultHandler
 				}
 				catch (Exception e)
 				{
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				}
 			}
@@ -144,7 +144,7 @@ public class XMLParser extends DefaultHandler
 			}
 			catch (Exception e)
 			{
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 		}
@@ -186,7 +186,7 @@ public class XMLParser extends DefaultHandler
 
 	private static Date parseDateWithFormat(SimpleDateFormat df, String text) throws Exception
 	{
-		// TODO hier müsste mal über die Zeitzone nachgedacht werden -
+		// TODO hier mï¿½sste mal ï¿½ber die Zeitzone nachgedacht werden -
 		// irgendwas ist an den Daten, die von GC.com kommen, komisch
 		Date date = null;
 		try

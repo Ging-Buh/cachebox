@@ -83,14 +83,14 @@ public class GL_GraphicFactory implements ext_GraphicFactory
 
 	public float getScaleFactor()
 	{
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
 	@Override
 	public InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException
 	{
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
@@ -190,14 +190,14 @@ public class GL_GraphicFactory implements ext_GraphicFactory
 	@Override
 	public TileBitmap createTileBitmap(int tileSize, boolean isTransparent)
 	{
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public TileBitmap createTileBitmap(InputStream inputStream, int tileSize, boolean isTransparent) throws IOException
 	{
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
@@ -218,7 +218,7 @@ public class GL_GraphicFactory implements ext_GraphicFactory
 		}
 		catch (SVGParseException e)
 		{
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		return null;

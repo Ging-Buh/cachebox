@@ -54,7 +54,7 @@ public class ext_AwtGraphicFactory extends AwtGraphicFactory implements ext_Grap
 
     @Override
     public int setColorAlpha(int color, float paintOpacity) {
-	// TODO Auto-generated method stub
+	
 	return 0;
     }
 

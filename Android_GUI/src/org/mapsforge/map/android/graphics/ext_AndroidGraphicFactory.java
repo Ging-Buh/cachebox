@@ -70,7 +70,7 @@ public class ext_AndroidGraphicFactory extends AndroidGraphicFactory implements 
 
     @Override
     public ext_Matrix createMatrix(ext_Matrix matrix) {
-	// TODO Auto-generated method stub
+	
 	return null;
     }
 
@@ -81,7 +81,7 @@ public class ext_AndroidGraphicFactory extends AndroidGraphicFactory implements 
 
     @Override
     public int setColorAlpha(int color, float paintOpacity) {
-	// TODO Auto-generated method stub
+	
 	return 0;
     }
 

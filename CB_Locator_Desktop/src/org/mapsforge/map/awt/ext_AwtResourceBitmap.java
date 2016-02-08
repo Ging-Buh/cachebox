@@ -72,21 +72,21 @@ public class ext_AwtResourceBitmap extends AwtResourceBitmap implements ext_Bitm
 	@Override
 	public void recycle()
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void getPixels(int[] maskBuf, int i, int w, int j, int y, int w2, int k)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void setPixels(int[] maskedContentBuf, int i, int w, int j, int y, int w2, int k)
 	{
-		// TODO Auto-generated method stub
+		
 
 	}
 

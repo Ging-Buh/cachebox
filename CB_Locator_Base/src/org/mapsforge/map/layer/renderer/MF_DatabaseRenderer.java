@@ -520,7 +520,7 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		return null;

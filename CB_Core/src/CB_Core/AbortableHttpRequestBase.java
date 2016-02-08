@@ -9,7 +9,7 @@ public abstract class AbortableHttpRequestBase
 
 	public AbortableHttpRequestBase(HttpPost httppost)
 	{
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public abstract boolean abort();

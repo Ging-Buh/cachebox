@@ -296,19 +296,19 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable {
 
     @Override
     public void compress(OutputStream outputStream) throws IOException {
-	// TODO Auto-generated method stub
+	
 
     }
 
     @Override
     public void incrementRefCount() {
-	// TODO Auto-generated method stub
+	
 
     }
 
     @Override
     public void decrementRefCount() {
-	// TODO Auto-generated method stub
+	
 
     }
 
@@ -332,7 +332,7 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable {
 
     @Override
     public void scaleTo(int width, int height) {
-	// TODO Auto-generated method stub
+	
 
     }
 
@@ -343,19 +343,19 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable {
 
     @Override
     public void recycle() {
-	// TODO Auto-generated method stub
+	
 
     }
 
     @Override
     public void getPixels(int[] maskBuf, int i, int w, int j, int y, int w2, int k) {
-	// TODO Auto-generated method stub
+	
 
     }
 
     @Override
     public void setPixels(int[] maskedContentBuf, int i, int w, int j, int y, int w2, int k) {
-	// TODO Auto-generated method stub
+	
 
     }
 
@@ -418,73 +418,73 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable {
 
     @Override
     public float getBottomHeight() {
-	// TODO Auto-generated method stub
+	
 	return 0;
     }
 
     @Override
     public float getLeftWidth() {
-	// TODO Auto-generated method stub
+	
 	return 0;
     }
 
     @Override
     public float getMinHeight() {
-	// TODO Auto-generated method stub
+	
 	return 0;
     }
 
     @Override
     public float getMinWidth() {
-	// TODO Auto-generated method stub
+	
 	return 0;
     }
 
     @Override
     public float getRightWidth() {
-	// TODO Auto-generated method stub
+	
 	return 0;
     }
 
     @Override
     public float getTopHeight() {
-	// TODO Auto-generated method stub
+	
 	return 0;
     }
 
     @Override
     public void setBottomHeight(float arg0) {
-	// TODO Auto-generated method stub
+	
 
     }
 
     @Override
     public void setLeftWidth(float arg0) {
-	// TODO Auto-generated method stub
+	
 
     }
 
     @Override
     public void setMinHeight(float arg0) {
-	// TODO Auto-generated method stub
+	
 
     }
 
     @Override
     public void setMinWidth(float arg0) {
-	// TODO Auto-generated method stub
+	
 
     }
 
     @Override
     public void setRightWidth(float arg0) {
-	// TODO Auto-generated method stub
+	
 
     }
 
     @Override
     public void setTopHeight(float arg0) {
-	// TODO Auto-generated method stub
+	
 
     }
 
@@ -492,13 +492,13 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable {
 
     @Override
     public BitmapDrawable getGlBmpHandle() {
-	// TODO Auto-generated method stub
+	
 	return null;
     }
 
     @Override
     public Texture getTexture() {
-	// TODO Auto-generated method stub
+	
 	return null;
     }
 

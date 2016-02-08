@@ -474,7 +474,7 @@ public class GroundspeakAPI {
 	    }
 
 	} catch (JSONException e) {
-	    // TODO Auto-generated catch block
+	    
 	    e.printStackTrace();
 	}
 	return -1;
