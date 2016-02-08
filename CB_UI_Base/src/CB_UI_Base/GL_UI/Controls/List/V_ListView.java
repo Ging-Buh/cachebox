@@ -295,7 +295,7 @@ public class V_ListView extends ListViewBase {
 	    return true;
 	mLastTouch = y;
 	mLastPos_onTouch = mPos;
-	return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgel�st wird.
+	return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgelösst wird.
     }
 
     @Override

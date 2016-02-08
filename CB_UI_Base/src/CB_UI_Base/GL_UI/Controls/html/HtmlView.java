@@ -37,6 +37,8 @@ import CB_UI_Base.GL_UI.Controls.ImageButton;
 import CB_UI_Base.GL_UI.Controls.ImageLoader;
 import CB_UI_Base.GL_UI.Controls.LinkLabel;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
+import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
+import CB_UI_Base.GL_UI.Controls.List.V_ListView;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
@@ -112,7 +114,7 @@ public class HtmlView extends ScrollBox implements ListLayout {
 		Source source = new CB_FormatedHtmlSource(html);
 		segmentList = new CB_Html_Renderer(source).getElementList();
 
-		addViewsToBox(segmentList, segmentViewList, this.getWidth(), this);
+		addViewsToBox(segmentList, segmentViewList, this.getWidth() * 2, this);
 	    } catch (Exception e) {
 		any = e;
 	    }
@@ -233,7 +235,7 @@ public class HtmlView extends ScrollBox implements ListLayout {
 
 	    contentHeight += (attLines * UI_Size_Base.that.getButtonHeight());
 
-	    contentBox.setWidth(innerWidth);
+	    contentBox.setWidth(innerWidth * 2);
 	    contentBox.setClickable(true);
 	    contentBox.setHeight(contentHeight);
 	    contentBox.setZeroPos();
@@ -455,6 +457,76 @@ public class HtmlView extends ScrollBox implements ListLayout {
 
     public void setTextOnly(boolean value) {
 	textOnly = value;
+    }
+
+    private int touchXPos;
+    private float lastContentXPos;
+
+    @Override
+    public boolean onTouchDown(int x, int y, int pointer, int button) {
+	touchXPos = x;
+	lastContentXPos = contentBox.getX();
+	return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgelösst wird.
+    }
+
+    @Override
+    public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
+	int draged = x - touchXPos;
+	contentBox.setX(lastContentXPos + draged);
+
+	if (contentBox.getX() > margin)
+	    contentBox.setX(margin);
+	else if (contentBox.getMaxX() < this.innerWidth)
+	    contentBox.setX(this.innerWidth - contentBox.getWidth());
+
+	return true;
+    }
+
+    @Override
+    protected void initScrollBox() {
+	// todo: check to have no scroll(? - margin) oder rec.getHalfHeight()
+	virtualHeight = this.getHeight();
+
+	// Override onTouDown from ListView and return false for consume onTouchDown Event on HtmlView!
+	lv = new V_ListView(this, this, "ListView-" + name) {
+	    @Override
+	    public boolean onTouchDown(int x, int y, int pointer, int button) {
+		super.onTouchDown(x, y, pointer, button);
+		return false;
+	    }
+	};
+	lv.setClickable(true);
+
+	item = new ListViewItemBase(this, 0, "ListViewItem-" + name) {
+
+	    @Override
+	    protected void SkinIsChanged() {
+	    }
+
+	    @Override
+	    protected void Initial() {
+		isInitial = true;
+	    }
+
+	};
+
+	item.setHeight(virtualHeight);
+	item.setClickable(true);
+	thisAdapter = new CustomAdapter();
+	lv.setDisposeFlag(false);
+	lv.setBaseAdapter(thisAdapter);
+	Layout();
+
+	//	final Scrollbar scrollBar = new Scrollbar(lv);
+	//	lv.addListPosChangedEventHandler(new IListPosChanged() {
+	//	    @Override
+	//	    public void ListPosChanged() {
+	//		scrollBar.ScrollPositionChanged();
+	//	    }
+	//	});
+
+	this.childs.add(lv);
+	//	this.childs.add(scrollBar);
     }
 
 }

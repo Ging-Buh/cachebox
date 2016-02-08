@@ -48,7 +48,7 @@ public class Html_ListView extends Box implements ListLayout {
 	float calcWidth = innerWidth - ((tapMargin * tabCount) + this.bulletWidth);
 
 	this.setWidth(calcWidth);
-	HtmlView.addViewsToBox(segmentList, segmentViewList, calcWidth, this);
+	HtmlView.addViewsToBox(segmentList, segmentViewList, calcWidth * 2, this);
 
 	layout(segmentViewList);
 

@@ -11,10 +11,10 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Util.MoveableList;
 
 public class ScrollBox extends CB_View_Base {
-    private V_ListView lv;
-    private float virtualHeight;
-    private ListViewItemBase item;
-    private CustomAdapter thisAdapter;
+    protected V_ListView lv;
+    protected float virtualHeight;
+    protected ListViewItemBase item;
+    protected CustomAdapter thisAdapter;
 
     public ScrollBox(CB_RectF rec) {
 	super(rec, "ScrollBox");
@@ -26,7 +26,7 @@ public class ScrollBox extends CB_View_Base {
 	initScrollBox();
     }
 
-    private void initScrollBox() {
+    protected void initScrollBox() {
 	// todo: check to have no scroll(? - margin) oder rec.getHalfHeight()
 	virtualHeight = this.getHeight();
 
@@ -61,7 +61,7 @@ public class ScrollBox extends CB_View_Base {
 	Layout();
     }
 
-    private void Layout() {
+    protected void Layout() {
 
 	//if this is disposed do nothing
 	if (this.isDisposed())
