@@ -148,6 +148,7 @@ public class launch extends JFrame {
 
 	    DefaultMutableTreeNode node;
 	    File[] roots = File.listRoots();
+	    // String basedir = System.getProperty("user.dir");
 	    for (int k = 0; k < roots.length; k++) {
 		node = new DefaultMutableTreeNode(new IconData(ICON_DISK, null, new FileNode(roots[k])));
 		top.add(node);
@@ -195,11 +196,9 @@ public class launch extends JFrame {
 
 	Thread t = new Thread() {
 	    public void run() {
-
 		CreateTextureAndCopy("/default");
 		CreateTextureAndCopy("/small");
 		JOptionPane.showMessageDialog(null, "Ready", "", JOptionPane.OK_OPTION);
-
 	    }
 
 	};
@@ -250,48 +249,9 @@ public class launch extends JFrame {
 	String Name;
 	ArrayList<String> outPutFolders = new ArrayList<String>();
 
-	//	// Pack Default day
-	//	String inputFolder = selectedPath + skinFolderName + "/input/day/UI_IconPack";
-	//	String outputFolder = selectedPath + skinFolderName + "/Output/day";
-	//	String Name = "UI_IconPack.spp";
-	//	
-	//
-	//	try {
-	//	    TexturePacker.process(textureSettings, inputFolder, outputFolder, Name);
-	//	} catch (Exception e1) {
-	//	    writeMsg(BR + BR);
-	//	    writeMsg("#######################################################");
-	//	    writeMsg(e1.getCause().getMessage());
-	//	    try {
-	//		writeMsg(e1.getCause().getCause().getMessage());
-	//	    } catch (Exception e) {
-	//	    }
-	//	    writeMsg("#######################################################");
-	//	    writeMsg(BR + BR);
-	//	}
-	//
-	//	// Pack Default night
-	//	inputFolder = selectedPath + skinFolderName + "/input/night/UI_IconPack";
-	//	outputFolder = selectedPath + skinFolderName + "/Output/night";
-	//	outPutFolders.add(outputFolder);
-	//	Name = "UI_IconPack.spp";
-	//	try {
-	//	    TexturePacker.process(textureSettings, inputFolder, outputFolder, Name);
-	//	} catch (Exception e1) {
-	//	    writeMsg(BR + BR);
-	//	    writeMsg("#######################################################");
-	//	    writeMsg(e1.getCause().getMessage());
-	//	    try {
-	//		writeMsg(e1.getCause().getCause().getMessage());
-	//	    } catch (Exception e) {
-	//	    }
-	//	    writeMsg("#######################################################");
-	//	    writeMsg(BR + BR);
-	//	}
-
 	// Pack Day
-	inputFolder = selectedPath + skinFolderName + "/input/day/UI_IconPack";
-	outputFolder = selectedPath + skinFolderName + "/Output/day";
+	inputFolder = selectedPath + "/Icons" + skinFolderName + "/day/UI_IconPack";
+	outputFolder = selectedPath + "/skins" + skinFolderName + "/day";
 	outPutFolders.add(outputFolder);
 	Name = "UI_IconPack.spp";
 	try {
@@ -309,8 +269,8 @@ public class launch extends JFrame {
 	}
 
 	// Pack Night
-	inputFolder = selectedPath + skinFolderName + "/input/night/UI_IconPack";
-	outputFolder = selectedPath + skinFolderName + "/Output/night";
+	inputFolder = selectedPath + "/Icons" + skinFolderName + "/night/UI_IconPack";
+	outputFolder = selectedPath + "/skins" + skinFolderName + "/night";
 	outPutFolders.add(outputFolder);
 	Name = "UI_IconPack.spp";
 	try {
@@ -329,8 +289,8 @@ public class launch extends JFrame {
 
 	// Pack Splash
 	if (skinFolderName.equals("/default")) {
-	    inputFolder = selectedPath + skinFolderName + "/input/splash";
-	    outputFolder = selectedPath + skinFolderName + "/Output/day";
+	    inputFolder = selectedPath + "/Icons" + skinFolderName + "/splash";
+	    outputFolder = selectedPath + "/skins" + skinFolderName + "/day";
 	    outPutFolders.add(outputFolder);
 	    Name = "SplashPack.spp";
 	    try {
@@ -404,10 +364,10 @@ public class launch extends JFrame {
 		    writer.close();
 
 		} catch (FileNotFoundException e) {
-		    
+
 		    e.printStackTrace();
 		} catch (IOException e) {
-		    
+
 		    e.printStackTrace();
 		}
 
@@ -522,8 +482,8 @@ public class launch extends JFrame {
 
 		File folder = new File(selectedPath);
 		if (folder.isDirectory()) {
-		    File defaultFolder = new File(selectedPath + "/default");
-		    File smallFolder = new File(selectedPath + "/small");
+		    File defaultFolder = new File(selectedPath + "/Icons/default");
+		    File smallFolder = new File(selectedPath + "/Icons/small");
 		    if (defaultFolder.isDirectory() && smallFolder.isDirectory()) {
 			btnPackNow.setEnabled(true);
 		    } else {
@@ -536,8 +496,17 @@ public class launch extends JFrame {
 		btnPackNow.setEnabled(false);
 		selectedPath = "";
 	    }
-
-	    writeMsg("Select: " + selectedPath);
+	    if (btnPackNow.isEnabled()) {
+		writeMsg("Select: " + selectedPath);
+		try {
+		    File folder = new File(selectedPath + "/skins");
+		    if (folder.exists()) {
+			folder.delete();
+		    }
+		} catch (Exception e) {
+		    writeMsg("Could not delete Output Folder!");
+		}
+	    }
 	}
     }
 

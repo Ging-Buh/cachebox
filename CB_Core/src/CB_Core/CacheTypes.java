@@ -20,7 +20,7 @@ public enum CacheTypes {
     MultiQuestion, // = 15,
     Trailhead, // = 16,
     ParkingArea, // = 17,
-    Final, // = 18,
+    Final, // = 18, !!! 18 used in CacheListDAO 
     Cache, // = 19,
     MyParking, // = 20
     Munzee, // 21

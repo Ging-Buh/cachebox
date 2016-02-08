@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 public class FilterInstances {
 
-    private FilterProperties tmp;
     // All Caches 0
     public final static FilterProperties ALL = new FilterProperties("{" + //
 	    "\"gpxfilenameids\":\"\"," + //

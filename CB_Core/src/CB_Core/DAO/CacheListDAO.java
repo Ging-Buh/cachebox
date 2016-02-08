@@ -88,7 +88,7 @@ public class CacheListDAO {
 	if (!((fullDetails || loadAllWaypoints))) {
 	    // when CacheList should be loaded without full details and without all Waypoints
 	    // do not load all waypoints from db!
-	    sql += " where IsStart=\"true\" or Type=18"; // StartWaypoint or Final
+	    sql += " where IsStart=\"true\" or Type=18"; // StartWaypoint or CacheTypes.Final
 	}
 	sql += " order by CacheId";
 	CoreCursor reader = Database.Data.rawQuery(sql, null);

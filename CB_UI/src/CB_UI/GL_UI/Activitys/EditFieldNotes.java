@@ -301,7 +301,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 	if (!CB_Core_Settings.GcVotePassword.getEncryptedValue().equalsIgnoreCase("")) {
 	    float itemHeight = UI_Size_Base.that.getButtonHeight() * 1.1f;
 
-	    FilterSetEntry tmp = new FilterSetEntry(Translation.Get("maxRating"), SpriteCacheBase.Stars.toArray(), FilterSetListView.NUMERICK_ITEM, 0, 5, fieldNote.gc_Vote / 100.0, 0.5f);
+	    FilterSetEntry tmp = new FilterSetEntry(Translation.Get("maxRating"), SpriteCacheBase.Stars.toArray(), FilterSetListView.NUMERIC_ITEM, 0, 5, fieldNote.gc_Vote / 100.0, 0.5f);
 	    GcVote = new FilterSetListViewItem(new CB_RectF(leftBorder, lblTime.getY() - itemHeight - margin, innerWidth, itemHeight), 0, tmp);
 	    scrollBox.addChild(GcVote);
 	}

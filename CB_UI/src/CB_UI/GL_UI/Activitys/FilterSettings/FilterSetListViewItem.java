@@ -84,7 +84,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 	    case FilterSetListView.THREE_STATE_ITEM:
 		drawThreeStateItem(batch);
 		break;
-	    case FilterSetListView.NUMERICK_ITEM:
+	    case FilterSetListView.NUMERIC_ITEM:
 		drawNumerickItem(batch);
 		break;
 	    }
@@ -101,7 +101,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 	    }
 	    EntryName.draw(batch);
 
-	    if (this.mFilterSetEntry.getItemType() == FilterSetListView.NUMERICK_ITEM) {
+	    if (this.mFilterSetEntry.getItemType() == FilterSetListView.NUMERIC_ITEM) {
 		if (Value == null) {
 		    Value = new BitmapFontCache(Fonts.getBig());
 		    Value.setColor(COLOR.getFontColor());
