@@ -252,17 +252,17 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 	    public Drawable getIcon(int Position) {
 		switch (Position) {
 		case 0:
-		    return new SpriteDrawable(SpriteCacheBase.BigIcons.get(CacheTypes.ReferencePoint.ordinal()));
+		    return new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + CacheTypes.ReferencePoint.name()));
 		case 1:
-		    return new SpriteDrawable(SpriteCacheBase.BigIcons.get(CacheTypes.MultiStage.ordinal()));
+		    return new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + CacheTypes.MultiStage.name()));
 		case 2:
-		    return new SpriteDrawable(SpriteCacheBase.BigIcons.get(CacheTypes.MultiQuestion.ordinal()));
+		    return new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + CacheTypes.MultiQuestion.name()));
 		case 3:
-		    return new SpriteDrawable(SpriteCacheBase.BigIcons.get(CacheTypes.Trailhead.ordinal()));
+		    return new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + CacheTypes.Trailhead.name()));
 		case 4:
-		    return new SpriteDrawable(SpriteCacheBase.BigIcons.get(CacheTypes.ParkingArea.ordinal()));
+		    return new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + CacheTypes.ParkingArea.name()));
 		case 5:
-		    return new SpriteDrawable(SpriteCacheBase.BigIcons.get(CacheTypes.Final.ordinal()));
+		    return new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + CacheTypes.Final.name()));
 
 		}
 

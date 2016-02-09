@@ -33,6 +33,7 @@ public class PresetListView extends V_ListView {
 	    FilterInstances.ALL, //
 	    FilterInstances.ACTIVE, //
 	    FilterInstances.QUICK, //
+	    FilterInstances.BEGINNER, //
 	    FilterInstances.WITHTB, //
 	    FilterInstances.DROPTB, //
 	    FilterInstances.HIGHLIGHTS, //
@@ -126,7 +127,8 @@ public class PresetListView extends V_ListView {
 
 	addPresetItem(SpriteCacheBase.getThemedSprite("earth"), Translation.Get("AllCaches"), FilterInstances.ALL);
 	addPresetItem(SpriteCacheBase.getThemedSprite("log0icon"), Translation.Get("AllCachesToFind"), FilterInstances.ACTIVE);
-	addPresetItem(SpriteCacheBase.getThemedSprite("big0icon"), Translation.Get("QuickCaches"), FilterInstances.QUICK);
+	addPresetItem(SpriteCacheBase.getThemedSprite("QuickCaches"), Translation.Get("QuickCaches"), FilterInstances.QUICK);
+	addPresetItem(SpriteCacheBase.getThemedSprite("BEGINNER"), Translation.Get("BEGINNER"), FilterInstances.BEGINNER);
 	addPresetItem(SpriteCacheBase.getThemedSprite("tb-grab"), Translation.Get("GrabTB"), FilterInstances.WITHTB);
 	addPresetItem(SpriteCacheBase.getThemedSprite("tb-drop"), Translation.Get("DropTB"), FilterInstances.DROPTB);
 	addPresetItem(SpriteCacheBase.getThemedSprite("star"), Translation.Get("Highlights"), FilterInstances.HIGHLIGHTS);

@@ -3,6 +3,7 @@ package CB_UI.GL_UI.Main.Actions;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import CB_Core.CacheTypes;
 import CB_UI.GL_UI.Controls.Dialogs.ParkingDialog;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
@@ -23,7 +24,7 @@ public class CB_Action_Show_Parking_Dialog extends CB_Action {
 
     @Override
     public Sprite getIcon() {
-	return SpriteCacheBase.BigIcons.get(20);
+	return SpriteCacheBase.getThemedSprite("big" + CacheTypes.MyParking.name());
     }
 
     @Override

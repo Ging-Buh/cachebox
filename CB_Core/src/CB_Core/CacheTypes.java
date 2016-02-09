@@ -1,31 +1,49 @@
 
 package CB_Core;
 
+import java.util.ArrayList;
+
 public enum CacheTypes {
-    Traditional, // = 0,
-    Multi, // = 1,
-    Mystery, // = 2,
-    Camera, // = 3,
-    Earth, // = 4,
-    Event, // = 5,
-    MegaEvent, // = 6,
-    CITO, // = 7,
-    Virtual, // = 8,
-    Letterbox, // = 9,
-    Wherigo, // = 10,
-    ReferencePoint, // = 11,
-    Wikipedia, // = 12,
-    Undefined, // = 13,
-    MultiStage, // = 14,
-    MultiQuestion, // = 15,
-    Trailhead, // = 16,
-    ParkingArea, // = 17,
-    Final, // = 18, !!! 18 used in CacheListDAO 
-    Cache, // = 19,
-    MyParking, // = 20
-    Munzee, // 21
-    Giga, // 22
+    Traditional(true), // = 0,
+    Multi(true), // = 1,
+    Mystery(true), // = 2,
+    Camera(true), // = 3,
+    Earth(true), // = 4,
+    Event(true), // = 5,
+    MegaEvent(true), // = 6,
+    CITO(true), // = 7,
+    Virtual(true), // = 8,
+    Letterbox(true), // = 9,
+    Wherigo(true), // = 10,
+    ReferencePoint(false), // = 11,
+    Wikipedia(false), // = 12,
+    Undefined(true), // = 13,
+    MultiStage(false), // = 14,
+    MultiQuestion(false), // = 15,
+    Trailhead(false), // = 16,
+    ParkingArea(false), // = 17,
+    Final(false), // = 18, !!! 18 used in CacheListDAO 
+    Cache(false), // = 19,
+    MyParking(true), // = 20
+    Munzee(true), // 21
+    Giga(true), // 22
     ;
+
+    private boolean isCache;
+
+    CacheTypes(boolean isCache) {
+	this.isCache = isCache;
+    }
+
+    public final static CacheTypes[] caches() {
+	ArrayList<CacheTypes> result = new ArrayList<CacheTypes>();
+	for (CacheTypes c : CacheTypes.values()) {
+	    if (c.isCache) {
+		result.add(c);
+	    }
+	}
+	return result.toArray(new CacheTypes[result.size()]);
+    }
 
     /**
      * @param string

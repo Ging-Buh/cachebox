@@ -329,19 +329,15 @@ public class CacheInfo extends CB_View_Base {
 	    if (ifModeFlag(SHOW_ICON)) { // Icon Sprite erstellen
 
 		if (mCache.CorrectedCoordiantesOrMysterySolved()) {
-		    mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(21));
+		    mIconSprite = new Sprite(SpriteCacheBase.getThemedSprite("big" + CacheTypes.Mystery.name() + "Solved"));
 		} else if ((mCache.Type == CacheTypes.Multi) && mCache.HasStartWaypoint()) {
 		    // Multi anders darstellen wenn dieser einen definierten Startpunkt hat
-		    mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(22));
+		    mIconSprite = new Sprite(SpriteCacheBase.getThemedSprite("big" + CacheTypes.Multi.name() + "StartP"));
 		} else if ((mCache.Type == CacheTypes.Mystery) && mCache.HasStartWaypoint()) {
 		    // Mystery anders darstellen wenn dieser keinen Final aber einen definierten Startpunkt hat
-		    mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(24));
-		} else if (mCache.Type == CacheTypes.Munzee) {
-		    mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(25));
-		} else if (mCache.Type == CacheTypes.Giga) {
-		    mIconSprite = new Sprite(SpriteCacheBase.MapIcons.get(27));
+		    mIconSprite = new Sprite(SpriteCacheBase.getThemedSprite("big" + CacheTypes.Mystery.name() + "StartP"));
 		} else {
-		    mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(mCache.Type.ordinal()));
+		    mIconSprite = new Sprite(SpriteCacheBase.getThemedSprite("big" + mCache.Type.name()));
 		}
 		mIconSprite.setSize(mIconSize, mIconSize);
 		mIconSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);
@@ -351,7 +347,7 @@ public class CacheInfo extends CB_View_Base {
 		float infoSize = mIconSize / 2;
 
 		if (mCache.isFound()) {
-		    mFoundOwnerSprite = new Sprite(SpriteCacheBase.BigIcons.get(19));
+		    mFoundOwnerSprite = new Sprite(SpriteCacheBase.getThemedSprite("log0icon"));
 		} else if (mCache.ImTheOwner()) {
 		    mFoundOwnerSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.star_43.ordinal()));
 		}

@@ -52,6 +52,7 @@ public final class SpriteCache extends SpriteCacheBase {
 	    new ArrayList<Sprite>();
 	}
 
+	@Override
 	public Sprite[] toArray() {
 	    Sprite[] tmp = new Sprite[this.size()];
 
@@ -75,7 +76,6 @@ public final class SpriteCache extends SpriteCacheBase {
     public static ArrayList<Sprite> ToggleBtn = null;
     public static ArrayList<Sprite> ZoomBtn = null;
     public static Sprite ZoomValueBack = null;
-    public static ArrayList<Sprite> BigIcons = null;
 
     public static enum IconName {
 	btnNormal_0, // not used
@@ -646,39 +646,6 @@ public final class SpriteCache extends SpriteCacheBase {
 	    SizesIcons.add(getThemedSprite("small"));
 	    SizesIcons.add(getThemedSprite("regular"));
 	    SizesIcons.add(getThemedSprite("large"));
-
-	}
-
-	if (BigIcons == null)
-	    BigIcons = new ArrayList<Sprite>();
-	synchronized (BigIcons) {
-	    BigIcons.clear();
-	    BigIcons.add(getThemedSprite("big0icon")); // 0
-	    BigIcons.add(getThemedSprite("big1icon")); // 1
-	    BigIcons.add(getThemedSprite("big2icon")); // 2
-	    BigIcons.add(getThemedSprite("big3icon")); // 3
-	    BigIcons.add(getThemedSprite("big4icon")); // 4
-	    BigIcons.add(getThemedSprite("big5icon")); // 5
-	    BigIcons.add(getThemedSprite("big6icon")); // 6
-	    BigIcons.add(getThemedSprite("big7icon")); // 7
-	    BigIcons.add(getThemedSprite("big8icon")); // 8
-	    BigIcons.add(getThemedSprite("big9icon")); // 9
-	    BigIcons.add(getThemedSprite("big10icon")); // 10
-	    BigIcons.add(getThemedSprite("big11icon")); // 11
-	    BigIcons.add(getThemedSprite("big12icon")); // 12
-	    BigIcons.add(getThemedSprite("big13icon")); // 13
-	    BigIcons.add(getThemedSprite("big14icon")); // 14
-	    BigIcons.add(getThemedSprite("big15icon")); // 15
-	    BigIcons.add(getThemedSprite("big16icon")); // 16
-	    BigIcons.add(getThemedSprite("big17icon")); // 17
-	    BigIcons.add(getThemedSprite("big18icon")); // 18
-	    BigIcons.add(getThemedSprite("log0icon")); // 19
-	    BigIcons.add(getThemedSprite("my-parking")); // 20
-	    BigIcons.add(getThemedSprite("big19icon")); // 21
-	    BigIcons.add(getThemedSprite("big22icon")); // 22
-	    BigIcons.add(getThemedSprite("big23icon")); // 23
-	    BigIcons.add(getThemedSprite("big24icon")); // 24
-	    BigIcons.add(getThemedSprite("big21icon")); // 25
 
 	}
 

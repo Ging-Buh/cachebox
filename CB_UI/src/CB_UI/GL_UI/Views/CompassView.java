@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import CB_Core.CacheListChangedEventList;
 import CB_Core.CacheListChangedEventListener;
+import CB_Core.CacheTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
@@ -227,7 +228,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			    }
 			}
 		    } catch (Exception e) {
-			
+
 			e.printStackTrace();
 		    }
 		}
@@ -235,12 +236,12 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		if (showIcon && Icon != null) {
 		    if (aktWaypoint == null) {
 			if (aktCache.CorrectedCoordiantesOrMysterySolved()) {
-			    Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.BigIcons.get(21)));
+			    Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + CacheTypes.Mystery.name() + "Solved")));
 			} else {
-			    Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.BigIcons.get(aktCache.Type.ordinal())));
+			    Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + aktCache.Type.name())));
 			}
 		    } else {
-			Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.BigIcons.get(aktWaypoint.Type.ordinal())));
+			Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + aktWaypoint.Type.name())));
 		    }
 		}
 

@@ -86,7 +86,8 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 		drawThreeStateItem(batch);
 		break;
 	    case FilterSetListView.NUMERIC_ITEM:
-		drawNumerickItem(batch);
+		top = this.getHeight() - this.getTopHeight();
+		drawNumericItem(batch);
 		break;
 	    }
 	    // draw Name
@@ -236,7 +237,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     private BitmapFontCache Value;
     private boolean Clicked = false;
 
-    private void drawNumerickItem(Batch batch) {
+    private void drawNumericItem(Batch batch) {
 	lBounds = new CB_RectF(0, 0, getHeight(), getHeight());
 	lBounds = lBounds.ScaleCenter(0.95f);
 

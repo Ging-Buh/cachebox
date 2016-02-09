@@ -84,11 +84,11 @@ public class FilterProperties {
 	WithManualWaypoint = 0;
 	HasUserData = 0;
 
-	MinDifficulty = 0;
+	MinDifficulty = 1;
 	MaxDifficulty = 5;
-	MinTerrain = 0;
+	MinTerrain = 1;
 	MaxTerrain = 5;
-	MinContainerSize = 0;
+	MinContainerSize = 1;
 	MaxContainerSize = 4;
 	MinRating = 0;
 	MaxRating = 5;
@@ -288,26 +288,26 @@ public class FilterProperties {
 
     private boolean[] parseCacheTypes(String types) {
 	String[] parts = types.split(SEPARATOR);
-	final boolean[] values = new boolean[CacheTypes.values().length];
+	final boolean[] result = new boolean[CacheTypes.values().length];
 	if (parts.length < CacheTypes.values().length) {
 	    // old (json) version
-	    for (int i = 0; i < values.length; i++) {
+	    for (int i = 0; i < result.length; i++) {
 		if (i < parts.length) {
-		    values[i] = Boolean.parseBoolean(parts[i]);
+		    result[i] = Boolean.parseBoolean(parts[i]);
 		} else {
-		    values[i] = true;
+		    result[i] = true;
 		}
 	    }
-	    values[CacheTypes.Munzee.ordinal()] = values[11];
-	    values[CacheTypes.Giga.ordinal()] = values[12];
-	    values[11] = true;
-	    values[12] = true;
+	    result[CacheTypes.Munzee.ordinal()] = result[11];
+	    result[CacheTypes.Giga.ordinal()] = result[12];
+	    result[11] = true;
+	    result[12] = true;
 	} else {
-	    for (int i = 0; i < values.length; i++) {
-		values[i] = Boolean.parseBoolean(parts[i]);
+	    for (int i = 0; i < result.length; i++) {
+		result[i] = Boolean.parseBoolean(parts[i]);
 	    }
 	}
-	return values;
+	return result;
     }
 
     /**
@@ -622,6 +622,8 @@ public class FilterProperties {
 	if (chkFilterBoolean(this.ListingChanged, cache.isListingChanged()))
 	    return false;
 	if (chkFilterBoolean(this.HasUserData, cache.isHasUserData()))
+	    return false;
+	if (chkFilterBoolean(this.hasCorrectedCoordinates, cache.hasCorrectedCoordinates()))
 	    return false;
 	// TODO implement => if (chkFilterBoolean(this.WithManualWaypoint, cache.)) return false;
 	// TODO ? the other restrictions?

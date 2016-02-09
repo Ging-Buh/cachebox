@@ -80,7 +80,6 @@ public class SpriteCacheBase {
     public static ArrayList<Sprite> LiveBtn = null;
     public static ArrayList<Sprite> ZoomBtn = null;
     public static Sprite ZoomValueBack = null;
-    public static ArrayList<Sprite> BigIcons = null;
 
     public static enum IconName {
 	btnNormal_0, // not used
@@ -334,6 +333,14 @@ public class SpriteCacheBase {
 
 	if (tmp != null)
 	    tmp.setScale(scale);
+
+	if (tmp == null) {
+	    log.info("missing icon " + name);
+	} else {
+	    if (name.endsWith("Solved")) {
+		tmp.setColor(CB_UI_Base_Settings.SolvedMysteryColor.getValue());
+	    }
+	}
 
 	return tmp;
     }
@@ -709,39 +716,6 @@ public class SpriteCacheBase {
 
 	}
 
-	if (BigIcons == null)
-	    BigIcons = new ArrayList<Sprite>();
-	synchronized (BigIcons) {
-	    BigIcons.clear();
-	    BigIcons.add(getThemedSprite("big0icon")); // 0
-	    BigIcons.add(getThemedSprite("big1icon")); // 1
-	    BigIcons.add(getThemedSprite("big2icon")); // 2
-	    BigIcons.add(getThemedSprite("big3icon")); // 3
-	    BigIcons.add(getThemedSprite("big4icon")); // 4
-	    BigIcons.add(getThemedSprite("big5icon")); // 5
-	    BigIcons.add(getThemedSprite("big6icon")); // 6
-	    BigIcons.add(getThemedSprite("big7icon")); // 7
-	    BigIcons.add(getThemedSprite("big8icon")); // 8
-	    BigIcons.add(getThemedSprite("big9icon")); // 9
-	    BigIcons.add(getThemedSprite("big10icon")); // 10
-	    BigIcons.add(getThemedSprite("big11icon")); // 11
-	    BigIcons.add(getThemedSprite("big12icon")); // 12
-	    BigIcons.add(getThemedSprite("big13icon")); // 13
-	    BigIcons.add(getThemedSprite("big14icon")); // 14
-	    BigIcons.add(getThemedSprite("big15icon")); // 15
-	    BigIcons.add(getThemedSprite("big16icon")); // 16
-	    BigIcons.add(getThemedSprite("big17icon")); // 17
-	    BigIcons.add(getThemedSprite("big18icon")); // 18
-	    BigIcons.add(getThemedSprite("log0icon")); // 19
-	    BigIcons.add(getThemedSprite("my-parking")); // 20
-	    BigIcons.add(getThemedSprite("big19icon")); // 21
-	    BigIcons.add(getThemedSprite("big22icon")); // 22
-	    BigIcons.add(getThemedSprite("big23icon")); // 23
-	    BigIcons.add(getThemedSprite("big24icon")); // 24
-	    BigIcons.add(getThemedSprite("big21icon")); // 25
-
-	}
-
 	if (Icons == null)
 	    Icons = new ArrayList<Sprite>();
 	synchronized (Icons) {
@@ -749,7 +723,7 @@ public class SpriteCacheBase {
 	    Icons.add(getThemedSprite("btn-normal"));// 0
 	    Icons.add(getThemedSprite("button"));// 1
 	    Icons.add(getThemedSprite("doc-icon"));// 2
-	    Icons.add(getThemedSprite("big16icon"));// 3
+	    Icons.add(getThemedSprite("manualwaypoint"));// 3
 	    Icons.add(getThemedSprite("list-icon")); // 4 LogView braucht noch ein Icon
 	    Icons.add(getThemedSprite("map")); // 5
 	    Icons.add(getThemedSprite("compass"));// 6
@@ -843,7 +817,7 @@ public class SpriteCacheBase {
 	// Change solved Mystery icon color
 	Color solvedColor = CB_UI_Base_Settings.SolvedMysteryColor.getValue();
 	MapIcons.get(21).setColor(solvedColor);
-	BigIcons.get(21).setColor(solvedColor);
+	// BigIcons.get(21).setColor(solvedColor);
 	MapIconsSmall.get(5).setColor(solvedColor);
 	MapIconsSmall.get(13).setColor(solvedColor);
 	CB_UI_Base_Settings.SolvedMysteryColor.addChangedEventListener(new IChanged() {
@@ -851,7 +825,7 @@ public class SpriteCacheBase {
 	    public void isChanged() {
 		Color solvedColor = CB_UI_Base_Settings.SolvedMysteryColor.getValue();
 		MapIcons.get(21).setColor(solvedColor);
-		BigIcons.get(21).setColor(solvedColor);
+		// BigIcons.get(21).setColor(solvedColor);
 		MapIconsSmall.get(5).setColor(solvedColor);
 		MapIconsSmall.get(13).setColor(solvedColor);
 	    }

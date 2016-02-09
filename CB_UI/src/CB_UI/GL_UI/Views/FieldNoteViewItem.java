@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
+import CB_Core.CacheTypes;
 import CB_Core.LogTypes;
 import CB_Core.Types.FieldNoteEntry;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -154,7 +155,7 @@ public class FieldNoteViewItem extends ListViewItemBackground {
 	if (fieldnote.isTbFieldNote) {
 	    ivCacheType.setImageURL(fieldnote.TbIconUrl);
 	} else {
-	    ivCacheType.setDrawable(new SpriteDrawable(SpriteCacheBase.BigIcons.get(fieldnote.cacheType)));
+	    ivCacheType.setDrawable(new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + CacheTypes.values()[fieldnote.cacheType].name())));
 	}
     }
 

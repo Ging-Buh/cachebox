@@ -1,5 +1,15 @@
 package CB_UI.GL_UI.Views;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Align;
+
 import CB_Core.CacheTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
@@ -18,16 +28,6 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.UnitFormatter;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Align;
 
 public class WaypointViewItem extends ListViewItemBackground implements PositionChangedEvent {
     private Cache mCache;
@@ -279,9 +279,9 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 	    { // Icon Sprite erstellen
 	      // MultiStage Waypoint anders darstellen wenn dieser als Startpunkt definiert ist
 		if ((mWaypoint.Type == CacheTypes.MultiStage) && mWaypoint.IsStart)
-		    mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(23));
+		    mIconSprite = new Sprite(SpriteCacheBase.getThemedSprite("big" + CacheTypes.Multi + "StartP"));
 		else
-		    mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(mWaypoint.Type.ordinal()));
+		    mIconSprite = new Sprite(SpriteCacheBase.getThemedSprite("big" + mWaypoint.Type.name()));
 
 		mIconSprite.setSize(mIconSize, mIconSize);
 		mIconSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import CB_Core.CacheListChangedEventList;
+import CB_Core.CacheTypes;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
 import CB_Core.Api.GroundspeakAPI;
@@ -61,7 +62,7 @@ public class CB_AllContextMenuHandler {
 	if (selectedCacheIsNoGC)
 	    mi.setEnabled(false);
 
-	mi = icm.addItem(MenuID.MI_WAYPOINTS, "Waypoints", SpriteCacheBase.BigIcons.get(16));
+	mi = icm.addItem(MenuID.MI_WAYPOINTS, "Waypoints", SpriteCacheBase.getThemedSprite("big" + CacheTypes.Trailhead.name())); //16
 	if (selectedCacheIsNull)
 	    mi.setEnabled(false);
 

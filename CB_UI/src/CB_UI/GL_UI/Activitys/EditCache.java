@@ -40,17 +40,7 @@ public class EditCache extends ActivityBase
 // implements KeyboardFocusChangedEvent
 {
     // Allgemein
-    private final CacheTypes[] CacheTypNumbers = new CacheTypes[] { CacheTypes.Traditional, // = 0,
-	    CacheTypes.Multi, // = 1,
-	    CacheTypes.Mystery, // = 2,
-	    CacheTypes.Camera, // = 3,
-	    CacheTypes.Earth, // = 4,
-	    CacheTypes.Event, // = 5,
-	    CacheTypes.MegaEvent, // = 6,
-	    CacheTypes.CITO, // = 7,
-	    CacheTypes.Virtual, // = 8,
-	    CacheTypes.Letterbox, // = 9,
-	    CacheTypes.Wherigo }; // = 10,
+    private final CacheTypes[] CacheTypNumbers = CacheTypes.caches();
     private final CacheSizes[] CacheSizeNumbers = new CacheSizes[] { CacheSizes.other, // 0
 	    CacheSizes.micro, // 1
 	    CacheSizes.small, // 2
@@ -290,7 +280,7 @@ public class EditCache extends ActivityBase
 
 	    @Override
 	    public Drawable getIcon(int index) {
-		return new SpriteDrawable(SpriteCacheBase.BigIcons.get(CacheTypNumbers[index].ordinal()));
+		return new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + CacheTypNumbers[index].name()));
 	    }
 
 	    @Override

@@ -39,6 +39,7 @@ public class FilterSetListView extends V_ListView {
     private static FilterSetListViewItem HasUserData;
     private static FilterSetListViewItem ListingChanged;
     private static FilterSetListViewItem WithManualWaypoint;
+    private static FilterSetListViewItem hasCorrectedCoordinates;
 
     private static FilterSetListViewItem minTerrain;
     private static FilterSetListViewItem maxTerrain;
@@ -249,7 +250,8 @@ public class FilterSetListView extends V_ListView {
 	Favorites = general.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("favorit"), Translation.Get("Favorites"), THREE_STATE_ITEM));
 	HasUserData = general.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("userdata"), Translation.Get("hasuserdata"), THREE_STATE_ITEM));
 	ListingChanged = general.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("warning-icon"), Translation.Get("ListingChanged"), THREE_STATE_ITEM));
-	WithManualWaypoint = general.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("big16icon"), Translation.Get("manualwaypoint"), THREE_STATE_ITEM));
+	WithManualWaypoint = general.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("manualwaypoint"), Translation.Get("manualwaypoint"), THREE_STATE_ITEM));
+	hasCorrectedCoordinates = general.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("hasCorrectedCoordinates"), Translation.Get("hasCorrectedCoordinates"), THREE_STATE_ITEM));
 
 	// add D/T
 	FilterSetListViewItem dt = addFilterSetCollapseItem(null, "D / T" + String.format("%n") + "GC-Vote", COLLAPSE_BUTTON_ITEM);
@@ -264,6 +266,10 @@ public class FilterSetListView extends V_ListView {
 
 	// add CacheTypes
 	types = addFilterSetCollapseItem(null, "Cache Types", COLLAPSE_BUTTON_ITEM);
+	for (int i = 0; i < CacheTypes.caches().length; i++) {
+	    types.addChild(addFilterSetItem(CacheTypes.caches()[i]));
+	}
+	/**
 	types.addChild(addFilterSetItem(CacheTypes.Traditional, SpriteCacheBase.BigIcons.get(0), "Traditional", CHECK_ITEM));
 	types.addChild(addFilterSetItem(CacheTypes.Multi, SpriteCacheBase.BigIcons.get(1), "Multi-Cache", CHECK_ITEM));
 	types.addChild(addFilterSetItem(CacheTypes.Mystery, SpriteCacheBase.BigIcons.get(2), "Mystery", CHECK_ITEM));
@@ -277,6 +283,7 @@ public class FilterSetListView extends V_ListView {
 	types.addChild(addFilterSetItem(CacheTypes.Wherigo, SpriteCacheBase.BigIcons.get(10), "Wherigo", CHECK_ITEM));
 	types.addChild(addFilterSetItem(CacheTypes.Munzee, SpriteCacheBase.BigIcons.get(25), "Munzee", CHECK_ITEM));
 	types.addChild(addFilterSetItem(CacheTypes.Giga, SpriteCacheBase.MapIcons.get(27), "Giga", CHECK_ITEM));
+	**/
 
 	// add Attributes
 	attribs = addFilterSetCollapseItem(null, "Attributes", COLLAPSE_BUTTON_ITEM);
@@ -320,12 +327,15 @@ public class FilterSetListView extends V_ListView {
 	return v;
     }
 
-    private FilterSetListViewItem addFilterSetItem(CacheTypes enumType, Sprite Icon, String Name, int ItemType) {
+    private FilterSetListViewItem addFilterSetItem(CacheTypes cacheType) {
+	Sprite icon = SpriteCacheBase.getThemedSprite("big" + cacheType.name());
+	String name = cacheType.name();
+	int itemType = CHECK_ITEM;
 	if (lFilterSets == null) {
 	    lFilterSets = new ArrayList<FilterSetListView.FilterSetEntry>();
 	    lFilterSetListViewItems = new ArrayList<FilterSetListViewItem>();
 	}
-	FilterSetEntry tmp = new FilterSetEntry(enumType, Name, Icon, ItemType);
+	FilterSetEntry tmp = new FilterSetEntry(cacheType, name, icon, itemType);
 	lFilterSets.add(tmp);
 
 	FilterSetListViewItem v = new FilterSetListViewItem(EditFilterSettings.ItemRec, index++, tmp);
@@ -374,6 +384,7 @@ public class FilterSetListView extends V_ListView {
 	HasUserData.setValue(props.HasUserData);
 	ListingChanged.setValue(props.ListingChanged);
 	WithManualWaypoint.setValue(props.WithManualWaypoint);
+	hasCorrectedCoordinates.setValue(props.hasCorrectedCoordinates);
 
 	minTerrain.setValue(props.MinTerrain);
 	maxTerrain.setValue(props.MaxTerrain);
@@ -407,6 +418,7 @@ public class FilterSetListView extends V_ListView {
 	props.HasUserData = HasUserData.getChecked();
 	props.ListingChanged = ListingChanged.getChecked();
 	props.WithManualWaypoint = WithManualWaypoint.getChecked();
+	props.hasCorrectedCoordinates = hasCorrectedCoordinates.getChecked();
 
 	props.MinDifficulty = minDifficulty.getValue();
 	props.MaxDifficulty = maxDifficulty.getValue();
