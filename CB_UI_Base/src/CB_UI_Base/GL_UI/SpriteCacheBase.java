@@ -305,6 +305,11 @@ public class SpriteCacheBase {
     }
 
     public static Sprite getThemedSprite(String name, float scale) {
+	boolean solved = false;
+	if (name.endsWith("Solved")) {
+	    solved = true;
+	    name = "big19icon";
+	}
 	Sprite tmp = null;
 	if (CB_UI_Base_Settings.nightMode.getValue()) {
 	    tmp = createSprite(atlasCustomtNight, name);
@@ -337,7 +342,7 @@ public class SpriteCacheBase {
 	if (tmp == null) {
 	    log.info("missing icon " + name);
 	} else {
-	    if (name.endsWith("Solved")) {
+	    if (solved) {
 		tmp.setColor(CB_UI_Base_Settings.SolvedMysteryColor.getValue());
 	    }
 	}
