@@ -2,6 +2,13 @@ package CB_UI.GL_UI.Activitys.FilterSettings;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Align;
+
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListView.FilterSetEntry;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
@@ -11,19 +18,12 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Align;
-
 public class FilterSetListViewItem extends ListViewItemBackground {
-    private FilterSetEntry mFilterSetEntry;
+    private final FilterSetEntry mFilterSetEntry;
 
     public Vector2 lastItemTouchPos;
 
-    private ArrayList<FilterSetListViewItem> mChildList = new ArrayList<FilterSetListViewItem>();
+    private final ArrayList<FilterSetListViewItem> mChildList = new ArrayList<FilterSetListViewItem>();
 
     public FilterSetListViewItem(CB_RectF rec, int Index, FilterSetEntry fne) {
 	super(rec, Index, fne.getName());
@@ -72,7 +72,8 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 
 	    // initial
 	    left = getLeftWidth();
-	    top = this.getHeight() - this.getTopHeight();
+	    //top = this.getHeight() - this.getTopHeight();
+	    top = (this.getHeight() + Fonts.getNormal().getLineHeight()) / 2f; //this.getTopHeight();
 
 	    switch (this.mFilterSetEntry.getItemType()) {
 	    case FilterSetListView.COLLAPSE_BUTTON_ITEM:
@@ -311,7 +312,9 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 	if (mFilterSetEntry.getIcon() != null) {
 	    float iconHeight = this.getHeight() * 0.8f;
 	    float iconWidth = iconHeight;
-	    mFilterSetEntry.getIcon().setBounds(left, UI_Size_Base.that.getMargin(), iconWidth, iconHeight);
+	    float y = (this.getHeight() - iconHeight) / 2f; // UI_Size_Base.that.getMargin()
+	    mFilterSetEntry.getIcon().setBounds(left, y, iconWidth, iconHeight);
+	    // mFilterSetEntry.getIcon().setBounds(left, UI_Size_Base.that.getMargin(), iconWidth, iconHeight);
 	    mFilterSetEntry.getIcon().draw(batch);
 	    left += iconWidth + UI_Size_Base.that.getMargin() + getLeftWidth();
 	}
@@ -381,6 +384,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 	return (float) mFilterSetEntry.getNumState();
     }
 
+    @Override
     public FilterSetListViewItem getChild(int i) {
 	return mChildList.get(i);
     }

@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
+import CB_Core.Attributes;
+import CB_Core.CacheTypes;
 import CB_Core.FilterProperties;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -69,10 +71,11 @@ public class FilterSetListView extends V_ListView {
 	private double mNumericMin;
 	private double mNumericStep;
 	private double mNumericState;
+	private CacheTypes cacheType;
 
-	public FilterSetEntry(String Name, Sprite Icon, int itemType) {
-	    mName = Name;
-	    mIcon = Icon;
+	public FilterSetEntry(String name, Sprite icon, int itemType) {
+	    mName = name;
+	    mIcon = icon;
 	    mItemType = itemType;
 	    ID = IdCounter++;
 	}
@@ -85,6 +88,14 @@ public class FilterSetListView extends V_ListView {
 	    mNumericMax = max;
 	    mNumericState = iniValue;
 	    mNumericStep = Step;
+	    ID = IdCounter++;
+	}
+
+	public FilterSetEntry(CacheTypes enumType, String name, Sprite icon, int itemType) {
+	    mName = name;
+	    mIcon = icon;
+	    mItemType = itemType;
+	    cacheType = enumType;
 	    ID = IdCounter++;
 	}
 
@@ -253,99 +264,36 @@ public class FilterSetListView extends V_ListView {
 
 	// add CacheTypes
 	types = addFilterSetCollapseItem(null, "Cache Types", COLLAPSE_BUTTON_ITEM);
-	types.addChild(addFilterSetItem(SpriteCacheBase.BigIcons.get(0), "Traditional", CHECK_ITEM));
-	types.addChild(addFilterSetItem(SpriteCacheBase.BigIcons.get(1), "Multi-Cache", CHECK_ITEM));
-	types.addChild(addFilterSetItem(SpriteCacheBase.BigIcons.get(2), "Mystery", CHECK_ITEM));
-	types.addChild(addFilterSetItem(SpriteCacheBase.BigIcons.get(3), "Webcam Cache", CHECK_ITEM));
-	types.addChild(addFilterSetItem(SpriteCacheBase.BigIcons.get(4), "Earthcache", CHECK_ITEM));
-	types.addChild(addFilterSetItem(SpriteCacheBase.BigIcons.get(5), "Event", CHECK_ITEM));
-	types.addChild(addFilterSetItem(SpriteCacheBase.BigIcons.get(6), "Mega Event", CHECK_ITEM));
-	types.addChild(addFilterSetItem(SpriteCacheBase.BigIcons.get(7), "Cache In Trash Out", CHECK_ITEM));
-	types.addChild(addFilterSetItem(SpriteCacheBase.BigIcons.get(8), "Virtual Cache", CHECK_ITEM));
-	types.addChild(addFilterSetItem(SpriteCacheBase.BigIcons.get(9), "Letterbox", CHECK_ITEM));
-	types.addChild(addFilterSetItem(SpriteCacheBase.BigIcons.get(10), "Wherigo", CHECK_ITEM));
-	types.addChild(addFilterSetItem(SpriteCacheBase.BigIcons.get(25), "Munzee", CHECK_ITEM));
-	types.addChild(addFilterSetItem(SpriteCacheBase.MapIcons.get(27), "Giga", CHECK_ITEM));
+	types.addChild(addFilterSetItem(CacheTypes.Traditional, SpriteCacheBase.BigIcons.get(0), "Traditional", CHECK_ITEM));
+	types.addChild(addFilterSetItem(CacheTypes.Multi, SpriteCacheBase.BigIcons.get(1), "Multi-Cache", CHECK_ITEM));
+	types.addChild(addFilterSetItem(CacheTypes.Mystery, SpriteCacheBase.BigIcons.get(2), "Mystery", CHECK_ITEM));
+	types.addChild(addFilterSetItem(CacheTypes.Camera, SpriteCacheBase.BigIcons.get(3), "Webcam Cache", CHECK_ITEM));
+	types.addChild(addFilterSetItem(CacheTypes.Earth, SpriteCacheBase.BigIcons.get(4), "Earthcache", CHECK_ITEM));
+	types.addChild(addFilterSetItem(CacheTypes.Event, SpriteCacheBase.BigIcons.get(5), "Event", CHECK_ITEM));
+	types.addChild(addFilterSetItem(CacheTypes.MegaEvent, SpriteCacheBase.BigIcons.get(6), "Mega Event", CHECK_ITEM));
+	types.addChild(addFilterSetItem(CacheTypes.CITO, SpriteCacheBase.BigIcons.get(7), "Cache In Trash Out", CHECK_ITEM));
+	types.addChild(addFilterSetItem(CacheTypes.Virtual, SpriteCacheBase.BigIcons.get(8), "Virtual Cache", CHECK_ITEM));
+	types.addChild(addFilterSetItem(CacheTypes.Letterbox, SpriteCacheBase.BigIcons.get(9), "Letterbox", CHECK_ITEM));
+	types.addChild(addFilterSetItem(CacheTypes.Wherigo, SpriteCacheBase.BigIcons.get(10), "Wherigo", CHECK_ITEM));
+	types.addChild(addFilterSetItem(CacheTypes.Munzee, SpriteCacheBase.BigIcons.get(25), "Munzee", CHECK_ITEM));
+	types.addChild(addFilterSetItem(CacheTypes.Giga, SpriteCacheBase.MapIcons.get(27), "Giga", CHECK_ITEM));
 
 	// add Attributes
 	attribs = addFilterSetCollapseItem(null, "Attributes", COLLAPSE_BUTTON_ITEM);
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-1-1Icon"), Translation.Get("att_1_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-2-1Icon"), Translation.Get("att_2_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-3-1Icon"), Translation.Get("att_3_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-4-1Icon"), Translation.Get("att_4_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-5-1Icon"), Translation.Get("att_5_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-6-1Icon"), Translation.Get("att_6_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-7-1Icon"), Translation.Get("att_7_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-8-1Icon"), Translation.Get("att_8_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-9-1Icon"), Translation.Get("att_9_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-10-1Icon"), Translation.Get("att_10_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-11-1Icon"), Translation.Get("att_11_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-12-1Icon"), Translation.Get("att_12_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-13-1Icon"), Translation.Get("att_13_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-14-1Icon"), Translation.Get("att_14_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-15-1Icon"), Translation.Get("att_15_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-16-1Icon"), Translation.Get("att_16_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-17-1Icon"), Translation.Get("att_17_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-18-1Icon"), Translation.Get("att_18_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-19-1Icon"), Translation.Get("att_19_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-20-1Icon"), Translation.Get("att_20_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-21-1Icon"), Translation.Get("att_21_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-22-1Icon"), Translation.Get("att_22_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-23-1Icon"), Translation.Get("att_23_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-24-1Icon"), Translation.Get("att_24_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-25-1Icon"), Translation.Get("att_25_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-26-1Icon"), Translation.Get("att_26_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-27-1Icon"), Translation.Get("att_27_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-28-1Icon"), Translation.Get("att_28_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-29-1Icon"), Translation.Get("att_29_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-30-1Icon"), Translation.Get("att_30_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-31-1Icon"), Translation.Get("att_31_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-32-1Icon"), Translation.Get("att_32_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-33-1Icon"), Translation.Get("att_33_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-34-1Icon"), Translation.Get("att_34_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-35-1Icon"), Translation.Get("att_35_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-36-1Icon"), Translation.Get("att_36_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-37-1Icon"), Translation.Get("att_37_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-38-1Icon"), Translation.Get("att_38_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-39-1Icon"), Translation.Get("att_39_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-40-1Icon"), Translation.Get("att_40_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-41-1Icon"), Translation.Get("att_41_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-42-1Icon"), Translation.Get("att_42_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-43-1Icon"), Translation.Get("att_43_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-44-1Icon"), Translation.Get("att_44_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-45-1Icon"), Translation.Get("att_45_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-46-1Icon"), Translation.Get("att_46_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-47-1Icon"), Translation.Get("att_47_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-48-1Icon"), Translation.Get("att_48_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-49-1Icon"), Translation.Get("att_49_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-50-1Icon"), Translation.Get("att_50_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-51-1Icon"), Translation.Get("att_51_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-52-1Icon"), Translation.Get("att_52_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-53-1Icon"), Translation.Get("att_53_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-54-1Icon"), Translation.Get("att_54_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-55-1Icon"), Translation.Get("att_55_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-56-1Icon"), Translation.Get("att_56_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-57-1Icon"), Translation.Get("att_57_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-58-1Icon"), Translation.Get("att_58_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-59-1Icon"), Translation.Get("att_59_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-60-1Icon"), Translation.Get("att_60_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-61-1Icon"), Translation.Get("att_61_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-62-1Icon"), Translation.Get("att_62_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-63-1Icon"), Translation.Get("att_63_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-64-1Icon"), Translation.Get("att_64_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-65-1Icon"), Translation.Get("att_65_1"), THREE_STATE_ITEM));
-	attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-66-1Icon"), Translation.Get("att_66_1"), THREE_STATE_ITEM));
+	for (int i = 1; i < Attributes.values().length; i++) {
+	    attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-" + i + "-1Icon"), Translation.Get("att_" + i + "_1"), THREE_STATE_ITEM));
+	}
 
     }
 
     int index = 0;
 
     private FilterSetListViewItem addFilterSetItem(Sprite[] Icons, String Name, int ItemType, double i, double j, double k, double f) {
-
 	if (lFilterSets == null) {
 	    lFilterSets = new ArrayList<FilterSetListView.FilterSetEntry>();
 	    lFilterSetListViewItems = new ArrayList<FilterSetListViewItem>();
 	}
+	//String Name, Sprite[] Icons, int itemType, double min = i, double max = j, double iniValue = k, double Step = f
 	FilterSetEntry tmp = new FilterSetEntry(Name, Icons, ItemType, i, j, k, f);
 	lFilterSets.add(tmp);
 
@@ -363,6 +311,21 @@ public class FilterSetListView extends V_ListView {
 	    lFilterSetListViewItems = new ArrayList<FilterSetListViewItem>();
 	}
 	FilterSetEntry tmp = new FilterSetEntry(Name, Icon, ItemType);
+	lFilterSets.add(tmp);
+
+	FilterSetListViewItem v = new FilterSetListViewItem(EditFilterSettings.ItemRec, index++, tmp);
+	// inital mit GONE
+	v.setInvisible();
+	lFilterSetListViewItems.add(v);
+	return v;
+    }
+
+    private FilterSetListViewItem addFilterSetItem(CacheTypes enumType, Sprite Icon, String Name, int ItemType) {
+	if (lFilterSets == null) {
+	    lFilterSets = new ArrayList<FilterSetListView.FilterSetEntry>();
+	    lFilterSetListViewItems = new ArrayList<FilterSetListViewItem>();
+	}
+	FilterSetEntry tmp = new FilterSetEntry(enumType, Name, Icon, ItemType);
 	lFilterSets.add(tmp);
 
 	FilterSetListViewItem v = new FilterSetListViewItem(EditFilterSettings.ItemRec, index++, tmp);
@@ -421,12 +384,14 @@ public class FilterSetListView extends V_ListView {
 	minRating.setValue(props.MinRating);
 	maxRating.setValue(props.MaxRating);
 
-	for (int i = 0; i < props.mCacheTypes.length; i++)
-	    types.getChild(i).setValue(props.mCacheTypes[i]);
+	for (int i = 0; i < types.getChildLength(); i++) {
+	    FilterSetListViewItem itm = types.getChild(i);
+	    int ct = itm.getFilterSetEntry().cacheType.ordinal();
+	    itm.setValue(props.mCacheTypes[ct]);
+	}
 
 	for (int i = 0; i < attribs.getChildLength(); i++) {
-	    if (i < props.mAttributes.length)
-		attribs.getChild(i).setValue(props.mAttributes[i]);
+	    attribs.getChild(i).setValue(props.mAttributes[i + 1]);
 	}
 
     }
@@ -452,15 +417,15 @@ public class FilterSetListView extends V_ListView {
 	props.MinRating = minRating.getValue();
 	props.MaxRating = maxRating.getValue();
 
-	for (int i = 0; i < props.mCacheTypes.length; i++)
-	    props.mCacheTypes[i] = types.getChild(i).getBoolean();
-
-	for (int i = 0; i < attribs.getChildLength(); i++) {
-	    if (i < props.mAttributes.length)
-		props.mAttributes[i] = attribs.getChild(i).getChecked();
+	for (int i = 0; i < types.getChildLength(); i++) {
+	    FilterSetListViewItem itm = types.getChild(i);
+	    int ct = itm.getFilterSetEntry().cacheType.ordinal();
+	    props.mCacheTypes[ct] = itm.getBoolean();
 	}
 
-	// FIXME at Categorie
+	for (int i = 0; i < attribs.getChildLength(); i++) {
+	    props.mAttributes[i + 1] = attribs.getChild(i).getChecked();
+	}
 
 	return props;
     }

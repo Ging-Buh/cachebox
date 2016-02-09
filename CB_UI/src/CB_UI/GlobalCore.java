@@ -91,8 +91,8 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     private static Cache selectedCache = null;
     private static boolean autoResort;
 
-    public static void setSelectedCache(Cache Cache) {
-	setSelectedWaypoint(Cache, null);
+    public static void setSelectedCache(Cache cache) {
+	setSelectedWaypoint(cache, null);
     }
 
     public static Cache getSelectedCache() {

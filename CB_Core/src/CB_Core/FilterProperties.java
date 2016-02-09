@@ -103,7 +103,7 @@ public class FilterProperties {
 	}
 	*/
 
-	mAttributes = new int[Attributes.values().length];
+	mAttributes = new int[Attributes.values().length]; // !!! attention: Attributes 0 not used
 	Arrays.fill(mAttributes, 0);
 	/*
 	for (int i = 0; i < Attributes.values().length; i++) {
@@ -166,12 +166,17 @@ public class FilterProperties {
 
 		String attributes = json.getString("attributes");
 		parts = attributes.split(SEPARATOR);
-		cnt = 0;
 		mAttributes = new int[Attributes.values().length];
-		for (int i = 0; i < parts.length; i++)
-		    mAttributes[i] = Integer.parseInt(parts[cnt++]);
-		for (int i = parts.length; i < mAttributes.length; i++)
-		    mAttributes[i] = 0;
+		mAttributes[0] = 0; // gibts nicht
+		int og = parts.length;
+		if (parts.length == mAttributes.length) {
+		    og = parts.length - 1; // falls doch schon mal mit mehr gespeichert
+		}
+		for (int i = 0; i < (og); i++)
+		    mAttributes[i + 1] = Integer.parseInt(parts[i]);
+		// aus älteren Versionen
+		for (int i = og; i < mAttributes.length - 1; i++)
+		    mAttributes[i + 1] = 0;
 
 		GPXFilenameIds = new ArrayList<Long>();
 		String gpxfilenames = json.getString("gpxfilenameids");
@@ -235,12 +240,13 @@ public class FilterProperties {
 		}
 
 		mAttributes = new int[Attributes.values().length];
+		mAttributes[0] = 0;
 		for (int i = 0; i < 66; i++) {
 		    if (parts.length > cnt)
-			mAttributes[i] = Integer.parseInt(parts[cnt++]);
+			mAttributes[i + 1] = Integer.parseInt(parts[cnt++]);
 		}
 		for (int i = 66; i < mAttributes.length; i++)
-		    mAttributes[i] = 0;
+		    mAttributes[i + 1] = 0;
 
 		GPXFilenameIds = new ArrayList<Long>();
 		GPXFilenameIds.clear();
@@ -350,7 +356,7 @@ public class FilterProperties {
 	    json.put("types", tmp);
 	    // add Cache Attributes
 	    tmp = "";
-	    for (int i = 0; i < mAttributes.length; i++) {
+	    for (int i = 1; i < mAttributes.length; i++) {
 		if (tmp.length() > 0)
 		    tmp += SEPARATOR;
 		tmp += String.valueOf(mAttributes[i]);
@@ -462,18 +468,16 @@ public class FilterProperties {
 	    andParts.add("Type in (" + csvTypes + ")");
 	}
 
-	for (int i = 0; i < mAttributes.length; i++) {
+	for (int i = 1; i < mAttributes.length; i++) {
 	    if (mAttributes[i] != 0) {
 		if (i < 62) {
-		    long shift = DLong.UL1 << (i + 1);
-
+		    long shift = DLong.UL1 << (i);
 		    if (mAttributes[i] == 1)
 			andParts.add("(AttributesPositive & " + shift + ") > 0");
 		    else
 			andParts.add("(AttributesNegative &  " + shift + ") > 0");
 		} else {
-		    long shift = DLong.UL1 << (i - 62);
-
+		    long shift = DLong.UL1 << (i - 61);
 		    if (mAttributes[i] == 1)
 			andParts.add("(AttributesPositiveHigh &  " + shift + ") > 0");
 		    else
@@ -573,7 +577,7 @@ public class FilterProperties {
 		return false; // nicht gleich!!!
 	}
 
-	for (int i = 0; i < mAttributes.length; i++) {
+	for (int i = 1; i < mAttributes.length; i++) {
 	    if (filter.mAttributes.length <= i)
 		break;
 	    if (filter.mAttributes[i] != this.mAttributes[i])
