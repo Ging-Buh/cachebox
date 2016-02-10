@@ -77,7 +77,7 @@ public class CacheListDAO {
 	// Clear List before read
 	cacheList.clear();
 
-	log.debug("ReadCacheList 1.Waypoints");
+	log.info("ReadCacheList 1.Waypoints");
 	SortedMap<Long, CB_List<Waypoint>> waypoints;
 	waypoints = new TreeMap<Long, CB_List<Waypoint>>();
 	// zuerst alle Waypoints einlesen

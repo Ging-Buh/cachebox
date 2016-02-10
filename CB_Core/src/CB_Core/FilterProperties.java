@@ -184,8 +184,7 @@ public class FilterProperties {
 		cnt = 0;
 		if (parts.length > cnt) {
 		    String tempGPX = parts[cnt++];
-		    String[] partsGPX = new String[] {};
-		    partsGPX = tempGPX.split(GPXSEPARATOR);
+		    String[] partsGPX = tempGPX.split(GPXSEPARATOR);
 		    for (int i = 1; i < partsGPX.length; i++) {
 			GPXFilenameIds.add(Long.parseLong(partsGPX[i]));
 		    }
@@ -198,11 +197,14 @@ public class FilterProperties {
 		Categories = new ArrayList<Long>();
 		String filtercategories = json.getString("categories");
 		if (filtercategories.length() > 0) {
-		    String tempGPX = filtercategories;
-		    String[] partsGPX = new String[] {};
-		    partsGPX = tempGPX.split(GPXSEPARATOR);
-		    for (int i = 1; i < partsGPX.length; i++) {
-			Categories.add(Long.parseLong(partsGPX[i]));
+		    String[] partsGPX = filtercategories.split(GPXSEPARATOR);
+		    for (int i = 0; i < partsGPX.length; i++) {
+			if (partsGPX[i].length() > 0) {
+			    if (partsGPX[i].startsWith(GPXSEPARATOR)) {
+				partsGPX[i] = partsGPX[i].substring(1);
+			    }
+			    Categories.add(Long.parseLong(partsGPX[i]));
+			}
 		    }
 		}
 	    } catch (JSONException e) {
