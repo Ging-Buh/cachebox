@@ -88,7 +88,7 @@ public class FilterProperties {
 	MaxDifficulty = 5;
 	MinTerrain = 1;
 	MaxTerrain = 5;
-	MinContainerSize = 1;
+	MinContainerSize = 0;
 	MaxContainerSize = 4;
 	MinRating = 0;
 	MaxRating = 5;
