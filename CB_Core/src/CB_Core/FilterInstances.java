@@ -177,6 +177,8 @@ public class FilterInstances {
 
     public static FilterProperties LastFilter = null;
 
+    public static int hasCorrectedCoordinates = 0;
+
     public static boolean isLastFilterSet() {
 	return LastFilter != null && !LastFilter.toString().equals("") && !ALL.equals(LastFilter) && !LastFilter.isExtendedFilter();
     }
@@ -187,7 +189,7 @@ public class FilterInstances {
 	    if (i > 0)
 		result = result + "," + with;
 	    else
-	    result = result + with;
+		result = result + with;
 	}
 	return result;
     }

@@ -27,6 +27,7 @@ import com.badlogic.gdx.files.FileHandle;
 
 import CB_Core.CacheTypes;
 import CB_Core.Database;
+import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
@@ -139,19 +140,38 @@ public class CacheListDAO {
 
 	while (!reader.isAfterLast()) {
 	    Cache cache = cacheDAO.ReadFromCursor(reader, fullDetails, withDescription);
-
-	    cacheList.add(cache);
-	    cache.waypoints.clear();
-	    if (waypoints.containsKey(cache.Id)) {
-		CB_List<Waypoint> tmpwaypoints = waypoints.get(cache.Id);
-
-		for (int i = 0, n = tmpwaypoints.size(); i < n; i++) {
-		    cache.waypoints.add(tmpwaypoints.get(i));
+	    boolean doAdd = true;
+	    if (FilterInstances.hasCorrectedCoordinates != 0) {
+		if (waypoints.containsKey(cache.Id)) {
+		    CB_List<Waypoint> tmpwaypoints = waypoints.get(cache.Id);
+		    for (int i = 0, n = tmpwaypoints.size(); i < n; i++) {
+			cache.waypoints.add(tmpwaypoints.get(i));
+		    }
 		}
-
-		waypoints.remove(cache.Id);
+		boolean hasCorrectedCoordinates = cache.CorrectedCoordiantesOrMysterySolved();
+		if (FilterInstances.hasCorrectedCoordinates < 0) {
+		    // show only those without corrected ones
+		    if (hasCorrectedCoordinates)
+			doAdd = false;
+		} else if (FilterInstances.hasCorrectedCoordinates > 0) {
+		    // only those with corrected ones
+		    if (!hasCorrectedCoordinates)
+			doAdd = false;
+		}
 	    }
+	    if (doAdd) {
+		cacheList.add(cache);
+		cache.waypoints.clear();
+		if (waypoints.containsKey(cache.Id)) {
+		    CB_List<Waypoint> tmpwaypoints = waypoints.get(cache.Id);
 
+		    for (int i = 0, n = tmpwaypoints.size(); i < n; i++) {
+			cache.waypoints.add(tmpwaypoints.get(i));
+		    }
+
+		    waypoints.remove(cache.Id);
+		}
+	    }
 	    // ++Global.CacheCount;
 	    reader.moveToNext();
 
@@ -164,13 +184,20 @@ public class CacheListDAO {
 
 	// do it manual (or automated after fix), got hanging app on startup
 	// log.debug("ReadCacheList 3.Sorting");
-	try {
+	try
+
+	{
 	    // Collections.sort(cacheList);
-	} catch (Exception e) {
+	} catch (
+
+	Exception e)
+
+	{
 	    // log.error("CacheListDAO.ReadCacheList()", "Sort ERROR", e);
 	}
 	// log.debug("ReadCacheList 4. ready");
 	return cacheList;
+
     }
 
     /**

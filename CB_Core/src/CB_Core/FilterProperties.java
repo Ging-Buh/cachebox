@@ -441,10 +441,7 @@ public class FilterProperties {
 	andParts.add("Rating >= " + String.valueOf(MinRating * 100));
 	andParts.add("Rating <= " + String.valueOf(MaxRating * 100));
 
-	if (hasCorrectedCoordinates == 1)
-	    andParts.add("CorrectedCoordinates=1");
-	if (hasCorrectedCoordinates == -1)
-	    andParts.add("(CorrectedCoordinates=0 or CorrectedCoordinates is null)");
+	FilterInstances.hasCorrectedCoordinates = hasCorrectedCoordinates;
 
 	String csvTypes = "";
 	for (int i = 0; i < mCacheTypes.length; i++) {
