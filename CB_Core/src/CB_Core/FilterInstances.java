@@ -187,14 +187,14 @@ public class FilterInstances {
 	    if (i > 0)
 		result = result + "," + with;
 	    else
-		result = result + with;
+	    result = result + with;
 	}
 	return result;
     }
 
     private final static String setAttributes() {
 	String result = "0";
-	for (int i = 1; i < CacheTypes.values().length; i++) {
+	for (int i = 1; i < Attributes.values().length; i++) {
 	    result = result + ",0";
 	}
 	return result;

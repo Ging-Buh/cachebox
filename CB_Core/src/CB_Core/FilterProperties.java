@@ -97,19 +97,9 @@ public class FilterProperties {
 
 	mCacheTypes = new boolean[CacheTypes.values().length];
 	Arrays.fill(mCacheTypes, true);
-	/*
-	for (int i = 0; i < CacheTypes.values().length; i++) {
-	    mCacheTypes[i] = true;
-	}
-	*/
 
 	mAttributes = new int[Attributes.values().length]; // !!! attention: Attributes 0 not used
 	Arrays.fill(mAttributes, 0);
-	/*
-	for (int i = 0; i < Attributes.values().length; i++) {
-	    mAttributes[i] = 0;
-	}
-	*/
 
 	GPXFilenameIds = new ArrayList<Long>();
 	filterName = "";
@@ -184,7 +174,7 @@ public class FilterProperties {
 		cnt = 0;
 		if (parts.length > cnt) {
 		    String tempGPX = parts[cnt++];
-		    String[] partsGPX = tempGPX.split(GPXSEPARATOR);
+		    String[] partsGPX = tempGPX.split("\\" + GPXSEPARATOR);
 		    for (int i = 1; i < partsGPX.length; i++) {
 			GPXFilenameIds.add(Long.parseLong(partsGPX[i]));
 		    }
@@ -197,14 +187,10 @@ public class FilterProperties {
 		Categories = new ArrayList<Long>();
 		String filtercategories = json.getString("categories");
 		if (filtercategories.length() > 0) {
-		    String[] partsGPX = filtercategories.split(GPXSEPARATOR);
-		    for (int i = 0; i < partsGPX.length; i++) {
-			if (partsGPX[i].length() > 0) {
-			    if (partsGPX[i].startsWith(GPXSEPARATOR)) {
-				partsGPX[i] = partsGPX[i].substring(1);
-			    }
-			    Categories.add(Long.parseLong(partsGPX[i]));
-			}
+		    String[] partsGPX = filtercategories.split("\\" + GPXSEPARATOR);
+		    for (int i = 1; i < partsGPX.length; i++) {
+			// log.info("parts[" + i + "]=" + partsGPX[i]);
+			Categories.add(Long.parseLong(partsGPX[i]));
 		    }
 		}
 	    } catch (JSONException e) {
@@ -255,7 +241,7 @@ public class FilterProperties {
 		if (parts.length > cnt) {
 		    String tempGPX = parts[cnt++];
 		    String[] partsGPX = new String[] {};
-		    partsGPX = tempGPX.split(GPXSEPARATOR);
+		    partsGPX = tempGPX.split("\\" + GPXSEPARATOR);
 		    for (int i = 1; i < partsGPX.length; i++) {
 			GPXFilenameIds.add(Long.parseLong(partsGPX[i]));
 		    }
@@ -276,7 +262,7 @@ public class FilterProperties {
 		if (parts.length > cnt) {
 		    String tempGPX = parts[cnt++];
 		    String[] partsGPX = new String[] {};
-		    partsGPX = tempGPX.split(GPXSEPARATOR);
+		    partsGPX = tempGPX.split("\\" + GPXSEPARATOR);
 		    Categories = new ArrayList<Long>();
 		    for (int i = 1; i < partsGPX.length; i++) {
 			Categories.add(Long.parseLong(partsGPX[i]));
