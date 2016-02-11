@@ -211,10 +211,13 @@ public class CacheListDAO {
      *            Config.settings.DescriptionImageFolderLocal.getValue()
      * @return
      */
-    public long DelArchiv(String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
+    public long deleteArchived(String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
 	try {
 	    delCacheImages(getGcCodeList("Archived=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
 	    long ret = Database.Data.delete("Caches", "Archived=1", null);
+	    CategoryDAO categoryDAO = new CategoryDAO();
+	    categoryDAO.LoadCategoriesFromDatabase();
+	    categoryDAO.DeleteEmptyCategories();
 	    return ret;
 	} catch (Exception e) {
 	    log.error("CacheListDAO.DelArchiv()", "Archiv ERROR", e);
@@ -233,10 +236,13 @@ public class CacheListDAO {
      *            Config.settings.DescriptionImageFolderLocal.getValue()
      * @return
      */
-    public long DelFound(String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
+    public long deleteFinds(String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
 	try {
 	    delCacheImages(getGcCodeList("Found=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
 	    long ret = Database.Data.delete("Caches", "Found=1", null);
+	    CategoryDAO categoryDAO = new CategoryDAO();
+	    categoryDAO.LoadCategoriesFromDatabase();
+	    categoryDAO.DeleteEmptyCategories();
 	    return ret;
 	} catch (Exception e) {
 	    log.error("CacheListDAO.DelFound()", "Found ERROR", e);
@@ -256,10 +262,13 @@ public class CacheListDAO {
      *            Config.settings.DescriptionImageFolderLocal.getValue()
      * @return
      */
-    public long DelFilter(String Where, String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
+    public long deleteFiltered(String Where, String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
 	try {
 	    delCacheImages(getGcCodeList(Where), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
 	    long ret = Database.Data.delete("Caches", Where, null);
+	    CategoryDAO categoryDAO = new CategoryDAO();
+	    categoryDAO.LoadCategoriesFromDatabase();
+	    categoryDAO.DeleteEmptyCategories();
 	    return ret;
 	} catch (Exception e) {
 	    log.error("CacheListDAO.DelFilter()", "Filter ERROR", e);

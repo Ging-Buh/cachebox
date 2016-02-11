@@ -64,7 +64,7 @@ public class CacheDAO {
 	    cache.setOwner(reader.getString(12).trim());
 
 	    cache.NumTravelbugs = reader.getInt(13);
-	    cache.setGcId(reader.getString(14).trim());
+	    cache.setGcId(reader.getString(14));
 	    cache.Rating = (reader.getShort(15)) / 100.0f;
 	    if (reader.getInt(16) > 0)
 		cache.setFavorite(true);

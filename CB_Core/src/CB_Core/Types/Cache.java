@@ -673,7 +673,7 @@ public class Cache implements Comparable<Cache>, Serializable {
 	    GcId = null;
 	    return;
 	}
-	GcId = gcId.getBytes(UTF_8);
+	GcId = gcId.trim().getBytes(UTF_8);
     }
 
     public String getHint() {

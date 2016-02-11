@@ -24,7 +24,7 @@ public class CategorieListView extends V_ListView {
     public static final int COLLAPSE_BUTTON_ITEM = 0;
     public static final int CHECK_ITEM = 1;
     public static final int THREE_STATE_ITEM = 2;
-    public static final int NUMERICK_ITEM = 3;
+    public static final int NUMERIC_ITEM = 3;
     public static int windowW = 0;
     public static int windowH = 0;
 
@@ -43,10 +43,9 @@ public class CategorieListView extends V_ListView {
 	private final int ID;
 	private static int IdCounter;
 
-	private double mNumerickMax;
-	// private double mNumerickMin;
-	private double mNumerickStep;
-	private double mNumerickState;
+	private double mNumericMax;
+	private double mNumericStep;
+	private double mNumericState;
 
 	public CategorieEntry(GpxFilename file, Sprite Icon, int itemType) {
 	    mCat = null;
@@ -70,10 +69,9 @@ public class CategorieListView extends V_ListView {
 	    mFile = file;
 	    mIconArray = Icons;
 	    mItemType = itemType;
-	    // mNumerickMin = min;
-	    mNumerickMax = max;
-	    mNumerickState = iniValue;
-	    mNumerickStep = Step;
+	    mNumericMax = max;
+	    mNumericState = iniValue;
+	    mNumericStep = Step;
 	    ID = IdCounter++;
 	}
 
@@ -82,7 +80,7 @@ public class CategorieListView extends V_ListView {
 	}
 
 	public void setState(float State) {
-	    mNumerickState = State;
+	    mNumericState = State;
 	}
 
 	public GpxFilename getFile() {
@@ -90,11 +88,11 @@ public class CategorieListView extends V_ListView {
 	}
 
 	public Sprite getIcon() {
-	    if (mItemType == NUMERICK_ITEM) {
+	    if (mItemType == NUMERIC_ITEM) {
 		try {
 		    double ArrayMultiplier = (mIconArray.length > 5) ? 2 : 1;
 
-		    return mIconArray[(int) (mNumerickState * ArrayMultiplier)];
+		    return mIconArray[(int) (mNumericState * ArrayMultiplier)];
 		} catch (Exception e) {
 		}
 
@@ -115,7 +113,7 @@ public class CategorieListView extends V_ListView {
 	}
 
 	public double getNumState() {
-	    return mNumerickState;
+	    return mNumericState;
 	}
 
 	public void plusClick() {
@@ -138,8 +136,6 @@ public class CategorieListView extends V_ListView {
 		}
 	    } else {
 		stateClick();
-		// mNumerickState += mNumerickStep;
-		// if (mNumerickState > mNumerickMax) mNumerickState = mNumerickMin;
 	    }
 
 	}
@@ -152,9 +148,9 @@ public class CategorieListView extends V_ListView {
 		// this.mCat.pinned = !this.mCat.pinned;
 
 	    } else {
-		mNumerickState -= mNumerickStep;
-		if (mNumerickState < 0)
-		    mNumerickState = mNumerickMax;
+		mNumericState -= mNumericStep;
+		if (mNumericState < 0)
+		    mNumericState = mNumericMax;
 	    }
 	}
 

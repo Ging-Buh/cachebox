@@ -83,7 +83,7 @@ public class DeleteDialog extends ButtonDialog {
 		    @Override
 		    public void run() {
 			CacheListDAO dao = new CacheListDAO();
-			long nun = dao.DelFilter(FilterInstances.LastFilter.getSqlWhere(CB_Core_Settings.GcLogin.getValue()), CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(),
+			long nun = dao.deleteFiltered(FilterInstances.LastFilter.getSqlWhere(CB_Core_Settings.GcLogin.getValue()), CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(),
 				CB_Core_Settings.DescriptionImageFolder.getValue(), CB_Core_Settings.DescriptionImageFolderLocal.getValue());
 			cleanupLogs();
 			cleanupWaypoints();
@@ -124,7 +124,7 @@ public class DeleteDialog extends ButtonDialog {
 		    @Override
 		    public void run() {
 			CacheListDAO dao = new CacheListDAO();
-			long nun = dao.DelArchiv(Config.SpoilerFolder.getValue(), Config.SpoilerFolderLocal.getValue(), Config.DescriptionImageFolder.getValue(), Config.DescriptionImageFolderLocal.getValue());
+			long nun = dao.deleteArchived(Config.SpoilerFolder.getValue(), Config.SpoilerFolderLocal.getValue(), Config.DescriptionImageFolder.getValue(), Config.DescriptionImageFolderLocal.getValue());
 
 			cleanupLogs();
 			cleanupWaypoints();
@@ -163,7 +163,7 @@ public class DeleteDialog extends ButtonDialog {
 		    @Override
 		    public void run() {
 			CacheListDAO dao = new CacheListDAO();
-			long nun = dao.DelFound(Config.SpoilerFolder.getValue(), Config.SpoilerFolderLocal.getValue(), Config.DescriptionImageFolder.getValue(), Config.DescriptionImageFolderLocal.getValue());
+			long nun = dao.deleteFinds(Config.SpoilerFolder.getValue(), Config.SpoilerFolderLocal.getValue(), Config.DescriptionImageFolder.getValue(), Config.DescriptionImageFolderLocal.getValue());
 			cleanupLogs();
 			cleanupWaypoints();
 			wd.close();
