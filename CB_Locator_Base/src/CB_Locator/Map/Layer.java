@@ -1,10 +1,8 @@
 package CB_Locator.Map;
 
-public class Layer
-{
+public class Layer {
 
-	public enum Type
-	{
+	public enum Type {
 		normal, overlay
 	}
 
@@ -18,22 +16,19 @@ public class Layer
 
 	public boolean isMapsForge = false;
 
-	public Layer(Type LayerType, String name, String friendlyName, String url)
-	{
+	public Layer(Type LayerType, String name, String friendlyName, String url) {
 		Name = name;
 		FriendlyName = friendlyName;
 		Url = url;
 		mLayerType = LayerType;
 	}
 
-	public boolean DownloadTile(Descriptor desc)
-	{
+	public boolean DownloadTile(Descriptor desc) {
 		// return DownloadFile(GetUrl(desc), GetLocalFilename(desc));
 		return false;
 	}
 
-	public static boolean DownloadFile(String Url, String Filename)
-	{
+	public static boolean DownloadFile(String Url, String Filename) {
 		return false;
 		/*
 		 * String path = Filename.Substring(0, Filename.LastIndexOf("\\")); // Verzeichnis anlegen if (!Directory.Exists(path))
@@ -49,17 +44,18 @@ public class Layer
 		 */
 	}
 
-	public String GetUrl(Descriptor desc)
-	{
-		if (desc == null) return null;
-		if (Name.contains("HillShade")) return Url + "?x=" + desc.getX() + "&y=" + desc.getY() + "&z=" + desc.getZoom();
+	public String GetUrl(Descriptor desc) {
+		if (desc == null)
+			return null;
+		if (Name.contains("HillShade"))
+			return Url + "?x=" + desc.getX() + "&y=" + desc.getY() + "&z=" + desc.getZoom();
 		else
 			return Url + desc.getZoom() + "/" + desc.getX() + "/" + desc.getY() + ".png";
 	}
 
-	public String GetLocalFilename(Descriptor desc)
-	{
-		if (desc == null) return null;
+	public String GetLocalFilename(Descriptor desc) {
+		if (desc == null)
+			return null;
 		return desc.getLocalCachePath(Name) + ".png";
 	}
 
@@ -73,8 +69,7 @@ public class Layer
 	// return TileCacheFolder + "/" + Name + "/" + desc.getZoom() + "/" + desc.getX();
 	// }
 
-	public boolean isOverlay()
-	{
+	public boolean isOverlay() {
 		return mLayerType == Type.overlay;
 	}
 }

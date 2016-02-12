@@ -1,21 +1,18 @@
 package CB_Utils.Util;
 
-public abstract class LoopThread
-{
+public abstract class LoopThread {
 
 	private boolean isAlive;
 	private Thread loop;
 	private Thread lifeCycle;
 	private final long sleepTime;
 
-	public LoopThread(long LoopBreakTime)
-	{
+	public LoopThread(long LoopBreakTime) {
 		super();
 		sleepTime = LoopBreakTime;
 	}
 
-	public boolean Alive()
-	{
+	public boolean Alive() {
 		return this.isAlive;
 	}
 
@@ -23,72 +20,53 @@ public abstract class LoopThread
 
 	protected abstract boolean LoopBraek();
 
-	public void start()
-	{
-		if (isAlive) return;
-		if (loop == null)
-		{
-			loop = new Thread(new Runnable()
-			{
+	public void start() {
+		if (isAlive)
+			return;
+		if (loop == null) {
+			loop = new Thread(new Runnable() {
 				@Override
-				public void run()
-				{
-					do
-					{
+				public void run() {
+					do {
 						isAlive = true;
-						if (!LoopBraek()) Loop();
-						try
-						{
+						if (!LoopBraek())
+							Loop();
+						try {
 							Thread.sleep(sleepTime);
-						}
-						catch (InterruptedException e)
-						{
+						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
-					}
-					while (isAlive);
+					} while (isAlive);
 				}
 			});
 		}
-		try
-		{
+		try {
 			loop.start();
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		if (lifeCycle == null) lifeCycleStart();
+		if (lifeCycle == null)
+			lifeCycleStart();
 	}
 
-	private void lifeCycleStart()
-	{
-		if (lifeCycle == null)
-		{
-			lifeCycle = new Thread(new Runnable()
-			{
+	private void lifeCycleStart() {
+		if (lifeCycle == null) {
+			lifeCycle = new Thread(new Runnable() {
 
 				@Override
-				public void run()
-				{
-					do
-					{
-						if (!loop.isAlive())
-						{
+				public void run() {
+					do {
+						if (!loop.isAlive()) {
 							stop();
 							start();
 						}
-						try
-						{
+						try {
 							Thread.sleep(700);
-						}
-						catch (InterruptedException e)
-						{
+						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
-					}
-					while (isAlive);
+					} while (isAlive);
 				}
 			});
 			lifeCycle.setPriority(Thread.MIN_PRIORITY);
@@ -96,8 +74,7 @@ public abstract class LoopThread
 		}
 	}
 
-	public void stop()
-	{
+	public void stop() {
 		isAlive = false;
 		loop = null;
 		lifeCycle = null;

@@ -21,9 +21,9 @@
 package net.htmlparser.jericho;
 
 final class StartTagTypeMasonComponentCall extends StartTagTypeGenericImplementation {
-	protected static final StartTagTypeMasonComponentCall INSTANCE=new StartTagTypeMasonComponentCall();
+	protected static final StartTagTypeMasonComponentCall INSTANCE = new StartTagTypeMasonComponentCall();
 
 	private StartTagTypeMasonComponentCall() {
-		super("mason component call","<&","&>",null,true);
+		super("mason component call", "<&", "&>", null, true);
 	}
 }

@@ -5,12 +5,10 @@ import CB_UI_Base.Math.CB_RectF;
 
 import com.badlogic.gdx.math.Vector2;
 
-public class Cb_RectF_Test extends TestCase
-{
-	public void test_Intersection()
-	{
+public class Cb_RectF_Test extends TestCase {
+	public void test_Intersection() {
 
-		// zwei Rechtecke erstellen und das zureschtgeschnittene Rechteck überprüfen
+		// zwei Rechtecke erstellen und das zureschtgeschnittene Rechteck ï¿½berprï¿½fen
 		CB_RectF rec1 = new CB_RectF(50, 50, 200, 200);
 		CB_RectF rec2 = new CB_RectF(10, 10, 100, 100);
 
@@ -22,10 +20,9 @@ public class Cb_RectF_Test extends TestCase
 		assertEquals(60f, result.getHeight());
 	}
 
-	public void test_Intersection2()
-	{
+	public void test_Intersection2() {
 
-		// zwei Rechtecke erstellen und das zureschtgeschnittene Rechteck überprüfen
+		// zwei Rechtecke erstellen und das zureschtgeschnittene Rechteck ï¿½berprï¿½fen
 		CB_RectF rec1 = new CB_RectF(50, 50, 200, 200);
 		CB_RectF rec2 = new CB_RectF(100, 10, 150, 100);
 
@@ -37,8 +34,7 @@ public class Cb_RectF_Test extends TestCase
 		assertEquals(60f, result.getHeight());
 	}
 
-	public void test_Translation()
-	{
+	public void test_Translation() {
 		// testet die verschiebung von Positionen
 		CB_RectF rec1 = new CB_RectF(50, 100, 400, 200);
 

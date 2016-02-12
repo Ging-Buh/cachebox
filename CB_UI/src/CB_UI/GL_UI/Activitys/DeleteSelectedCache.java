@@ -30,40 +30,40 @@ import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 
 public class DeleteSelectedCache {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(DeleteSelectedCache.class);
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(DeleteSelectedCache.class);
 
-    public static void Execute() {
-	// Images
-	log.debug("Delete Images");
-	ArrayList<String> GcCodeList = new ArrayList<String>();
-	GcCodeList.add(GlobalCore.getSelectedCache().getGcCode());
-	CacheListDAO dao = new CacheListDAO();
-	dao.delCacheImages(GcCodeList, CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(), CB_Core_Settings.DescriptionImageFolder.getValue(), CB_Core_Settings.DescriptionImageFolderLocal.getValue());
-	GcCodeList = null;
-	dao = null;
-	// Waypoints
-	log.debug("Delete Waypoints");
-	for (int i = 0, n = GlobalCore.getSelectedCache().waypoints.size(); i < n; i++) {
-	    Waypoint wp = GlobalCore.getSelectedCache().waypoints.get(i);
-	    Database.DeleteFromDatabase(wp);
+	public static void Execute() {
+		// Images
+		log.debug("Delete Images");
+		ArrayList<String> GcCodeList = new ArrayList<String>();
+		GcCodeList.add(GlobalCore.getSelectedCache().getGcCode());
+		CacheListDAO dao = new CacheListDAO();
+		dao.delCacheImages(GcCodeList, CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(), CB_Core_Settings.DescriptionImageFolder.getValue(), CB_Core_Settings.DescriptionImageFolderLocal.getValue());
+		GcCodeList = null;
+		dao = null;
+		// Waypoints
+		log.debug("Delete Waypoints");
+		for (int i = 0, n = GlobalCore.getSelectedCache().waypoints.size(); i < n; i++) {
+			Waypoint wp = GlobalCore.getSelectedCache().waypoints.get(i);
+			Database.DeleteFromDatabase(wp);
+		}
+		// Cache
+		log.debug("Delete Cache " + GlobalCore.getSelectedCache().getGcCode());
+		Database.Data.delete("Caches", "GcCode='" + GlobalCore.getSelectedCache().getGcCode() + "'", null);
+		// Logs
+		log.debug("Delete Logs");
+		LogDAO logdao = new LogDAO();
+		logdao.ClearOrphanedLogs();
+		logdao = null;
+		// compact DB hangs : commented out
+		// log.debug("Delete compact DB");
+		// Database.Data.execSQL("vacuum");
+		// Filter Liste neu aufbauen oder gibt es eine schnellere Möglichkeit?
+		log.debug("Execute LastFilter");
+		EditFilterSettings.ApplyFilter(FilterInstances.LastFilter);
+		log.debug("unselect Cache");
+		GlobalCore.setSelectedCache(null);
+		log.debug("Rebuild View");
+		CacheListChangedEventList.Call();
 	}
-	// Cache
-	log.debug("Delete Cache " + GlobalCore.getSelectedCache().getGcCode());
-	Database.Data.delete("Caches", "GcCode='" + GlobalCore.getSelectedCache().getGcCode() + "'", null);
-	// Logs
-	log.debug("Delete Logs");
-	LogDAO logdao = new LogDAO();
-	logdao.ClearOrphanedLogs();
-	logdao = null;
-	// compact DB hangs : commented out
-	// log.debug("Delete compact DB");
-	// Database.Data.execSQL("vacuum");
-	// Filter Liste neu aufbauen oder gibt es eine schnellere Möglichkeit?
-	log.debug("Execute LastFilter");
-	EditFilterSettings.ApplyFilter(FilterInstances.LastFilter);
-	log.debug("unselect Cache");
-	GlobalCore.setSelectedCache(null);
-	log.debug("Rebuild View");
-	CacheListChangedEventList.Call();
-    }
 }

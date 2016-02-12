@@ -33,27 +33,23 @@
 
 package bsh;
 
-public class ClassIdentifier
-{
+public class ClassIdentifier {
 	@SuppressWarnings("rawtypes")
 	Class clas;
 
 	@SuppressWarnings("rawtypes")
-	public ClassIdentifier(Class clas)
-	{
+	public ClassIdentifier(Class clas) {
 		this.clas = clas;
 	}
 
 	// Can't call it getClass()
 	@SuppressWarnings("rawtypes")
-	public Class getTargetClass()
-	{
+	public Class getTargetClass() {
 		return clas;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "Class Identifier: " + clas.getName();
 	}
 }

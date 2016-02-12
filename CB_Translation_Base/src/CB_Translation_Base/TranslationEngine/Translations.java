@@ -24,8 +24,7 @@ import java.util.Arrays;
  * 
  * @author Longri
  */
-public class Translations
-{
+public class Translations {
 
 	public final static int lang = "lang".hashCode();
 	public final static int Misc = "Misc".hashCode();
@@ -45,8 +44,7 @@ public class Translations
 	 *            as String
 	 * @param defaultLang
 	 */
-	public Translations(String ID, String Trans)
-	{
+	public Translations(String ID, String Trans) {
 		this.Id = ID.hashCode();
 
 		byte[] b = Trans.getBytes(UTF_8);
@@ -55,25 +53,23 @@ public class Translations
 		TranslationByteIndex = lastIndex;
 		lastIndex += TranslationByteLength;
 
-		if (TranslationBytes.length < lastIndex) ensureCapacity(TranslationByteIndex + TranslationByteLength);
+		if (TranslationBytes.length < lastIndex)
+			ensureCapacity(TranslationByteIndex + TranslationByteLength);
 		System.arraycopy(b, 0, TranslationBytes, TranslationByteIndex, TranslationByteLength);
 	}
 
-	private void ensureCapacity(int newSize)
-	{
+	private void ensureCapacity(int newSize) {
 		TranslationBytes = Arrays.copyOf(TranslationBytes, newSize);
 	}
 
-	public String getTranslation()
-	{
+	public String getTranslation() {
 		byte[] b = new byte[TranslationByteLength];
 		System.arraycopy(TranslationBytes, TranslationByteIndex, b, 0, TranslationByteLength);
 		return new String(b, UTF_8);
 		// return Translation;
 	}
 
-	public int getIdString()
-	{
+	public int getIdString() {
 		return Id;
 	}
 

@@ -1,7 +1,6 @@
 package CB_UI_Base.GL_UI.utils;
 
-public class KineticZoom
-{
+public class KineticZoom {
 
 	private final float startZoom;
 	private final float endZoom;
@@ -9,8 +8,7 @@ public class KineticZoom
 	private final long endTime;
 	private boolean fertig;
 
-	public KineticZoom(float startZoom, float endZoom, long startTime, long endTime)
-	{
+	public KineticZoom(float startZoom, float endZoom, long startTime, long endTime) {
 		// KineticZoom = mapViewBase;
 		this.startTime = startTime;
 		this.endTime = endTime;
@@ -19,21 +17,18 @@ public class KineticZoom
 		fertig = false;
 	}
 
-	public float getAktZoom()
-	{
+	public float getAktZoom() {
 		long aktTime = System.currentTimeMillis();
 		float faktor = (float) (aktTime - startTime) / (float) (endTime - startTime);
 		faktor = com.badlogic.gdx.math.Interpolation.fade.apply(faktor);
-		if (faktor >= 1)
-		{
+		if (faktor >= 1) {
 			fertig = true;
 			faktor = 1;
 		}
 		return startZoom + (endZoom - startZoom) * faktor;
 	}
 
-	public boolean getFertig()
-	{
+	public boolean getFertig() {
 		return fertig;
 	}
 }

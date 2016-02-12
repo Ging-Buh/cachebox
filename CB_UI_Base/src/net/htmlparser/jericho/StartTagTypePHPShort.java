@@ -20,12 +20,11 @@
 
 package net.htmlparser.jericho;
 
- // note this has the same startdelimiter as processing instruction, so overrides it if registered
- final class StartTagTypePHPShort extends StartTagTypeGenericImplementation {
-	protected static final StartTagTypePHPShort INSTANCE=new StartTagTypePHPShort();
+// note this has the same startdelimiter as processing instruction, so overrides it if registered
+final class StartTagTypePHPShort extends StartTagTypeGenericImplementation {
+	protected static final StartTagTypePHPShort INSTANCE = new StartTagTypePHPShort();
 
 	private StartTagTypePHPShort() {
-		super("PHP short tag","<?","?>",null,true);
+		super("PHP short tag", "<?", "?>", null, true);
 	}
 }
-

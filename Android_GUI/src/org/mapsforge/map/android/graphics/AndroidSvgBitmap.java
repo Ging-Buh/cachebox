@@ -30,13 +30,11 @@ import com.applantation.android.svg.SVGParser;
 class AndroidSvgBitmap extends AndroidResourceBitmap {
 	static final float DEFAULT_SIZE = 400f;
 
-	private static android.graphics.Bitmap getResourceBitmap(InputStream inputStream, int hash, float scaleFactor)
-			throws IOException {
+	private static android.graphics.Bitmap getResourceBitmap(InputStream inputStream, int hash, float scaleFactor) throws IOException {
 		synchronized (RESOURCE_BITMAPS) {
 			Pair<Bitmap, Integer> data = RESOURCE_BITMAPS.get(hash);
 			if (data != null) {
-				Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(data.first,
-						data.second + 1);
+				Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(data.first, data.second + 1);
 				RESOURCE_BITMAPS.put(hash, updated);
 				return data.first;
 			} else {
@@ -48,12 +46,10 @@ class AndroidSvgBitmap extends AndroidResourceBitmap {
 				float bitmapWidth = (float) (picture.getWidth() * scale);
 				float bitmapHeight = (float) (picture.getHeight() * scale);
 
-				android.graphics.Bitmap bitmap = android.graphics.Bitmap.createBitmap((int) Math.ceil(bitmapWidth),
-						(int) Math.ceil(bitmapHeight), android.graphics.Bitmap.Config.ARGB_8888);
+				android.graphics.Bitmap bitmap = android.graphics.Bitmap.createBitmap((int) Math.ceil(bitmapWidth), (int) Math.ceil(bitmapHeight), android.graphics.Bitmap.Config.ARGB_8888);
 				Canvas canvas = new Canvas(bitmap);
 				canvas.drawPicture(picture, new RectF(0, 0, bitmapWidth, bitmapHeight));
-				Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(bitmap,
-						Integer.valueOf(1));
+				Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(bitmap, Integer.valueOf(1));
 				RESOURCE_BITMAPS.put(hash, updated);
 				if (AndroidGraphicFactory.DEBUG_BITMAPS) {
 					rInstances.incrementAndGet();

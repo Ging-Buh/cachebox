@@ -21,7 +21,6 @@ package org.apache.xmlrpc.client;
 import org.apache.xmlrpc.common.XmlRpcWorker;
 import org.apache.xmlrpc.common.XmlRpcWorkerFactory;
 
-
 /** A worker factory for the client, creating instances of
  * {@link org.apache.xmlrpc.client.XmlRpcClientWorker}.
  */

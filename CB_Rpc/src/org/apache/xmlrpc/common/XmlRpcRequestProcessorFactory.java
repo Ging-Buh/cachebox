@@ -18,7 +18,6 @@
  */
 package org.apache.xmlrpc.common;
 
-
 /** Interface of an object, which may be used
  * to create instances of {@link XmlRpcRequestProcessor}.
  */

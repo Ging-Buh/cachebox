@@ -29,9 +29,10 @@ import java.nio.*;
  * See the documentation of the {@link CharStreamSource} class for details.
  */
 public final class CharStreamSourceUtil {
-	private static final int DEFAULT_ESTIMATED_MAXIMUM_OUTPUT_LENGTH=2048;
+	private static final int DEFAULT_ESTIMATED_MAXIMUM_OUTPUT_LENGTH = 2048;
 
-	private CharStreamSourceUtil() {}
+	private CharStreamSourceUtil() {
+	}
 
 	/**
 	 * Returns a <code>Reader</code> that reads the output of the specified {@link CharStreamSource}.
@@ -56,12 +57,15 @@ public final class CharStreamSourceUtil {
 	 * @return the output of the specified {@link CharStreamSource} as a string.
 	 */
 	public static String toString(final CharStreamSource charStreamSource) {
-		long estimatedMaximumOutputLength=charStreamSource.getEstimatedMaximumOutputLength();
-		if (estimatedMaximumOutputLength<=-1L) estimatedMaximumOutputLength=DEFAULT_ESTIMATED_MAXIMUM_OUTPUT_LENGTH;
-		final StringBuilder sb=new StringBuilder((int)(estimatedMaximumOutputLength));
+		long estimatedMaximumOutputLength = charStreamSource.getEstimatedMaximumOutputLength();
+		if (estimatedMaximumOutputLength <= -1L)
+			estimatedMaximumOutputLength = DEFAULT_ESTIMATED_MAXIMUM_OUTPUT_LENGTH;
+		final StringBuilder sb = new StringBuilder((int) (estimatedMaximumOutputLength));
 		try {
 			charStreamSource.appendTo(sb);
-		} catch (IOException ex) {throw new RuntimeException(ex);} // assume the IOException is not thrown explicitly by the charStreamSource.output method
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		} // assume the IOException is not thrown explicitly by the charStreamSource.output method
 		return sb.toString();
 	}
 }

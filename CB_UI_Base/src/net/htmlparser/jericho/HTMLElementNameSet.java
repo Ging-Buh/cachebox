@@ -23,19 +23,20 @@ package net.htmlparser.jericho;
 import java.util.*;
 
 final class HTMLElementNameSet extends HashSet<String> {
-	private static final long serialVersionUID=1L;
+	private static final long serialVersionUID = 1L;
 
 	public HTMLElementNameSet() {
 		super(1);
 	}
 
 	public HTMLElementNameSet(String... items) {
-		super(items.length*2);
-		for (int i=0; i<items.length; i++) add(items[i]);
+		super(items.length * 2);
+		for (int i = 0; i < items.length; i++)
+			add(items[i]);
 	}
 
 	public HTMLElementNameSet(final Collection<String> collection) {
-		super(collection.size()*2);
+		super(collection.size() * 2);
 		union(collection);
 	}
 
@@ -50,7 +51,8 @@ final class HTMLElementNameSet extends HashSet<String> {
 	}
 
 	HTMLElementNameSet union(final Collection<String> collection) {
-		for (String item : collection) add(item);
+		for (String item : collection)
+			add(item);
 		return this;
 	}
 
@@ -60,7 +62,8 @@ final class HTMLElementNameSet extends HashSet<String> {
 	}
 
 	HTMLElementNameSet minus(final Collection<String> collection) {
-		for (String item : collection) remove(item);
+		for (String item : collection)
+			remove(item);
 		return this;
 	}
 }

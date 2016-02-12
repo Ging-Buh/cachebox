@@ -18,13 +18,12 @@
  */
 package org.apache.xmlrpc.common;
 
-
 /** A {@link TypeConverterFactory} is called for creating instances
  * of {@link TypeConverter}.
  */
 public interface TypeConverterFactory {
-    /** Creates an instance of {@link TypeFactory}, which may be
-     * used to create instances of the given class.
-     */
-    TypeConverter getTypeConverter(Class pClass);
+	/** Creates an instance of {@link TypeFactory}, which may be
+	 * used to create instances of the given class.
+	 */
+	TypeConverter getTypeConverter(Class pClass);
 }

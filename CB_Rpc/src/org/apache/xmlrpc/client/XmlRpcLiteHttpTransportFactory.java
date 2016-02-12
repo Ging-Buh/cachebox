@@ -18,7 +18,6 @@
  */
 package org.apache.xmlrpc.client;
 
-
 /** Factory for the lite HTTP transport,
  * {@link org.apache.xmlrpc.client.XmlRpcLiteHttpTransport}.
  */
@@ -31,5 +30,7 @@ public class XmlRpcLiteHttpTransportFactory extends XmlRpcTransportFactoryImpl {
 		super(pClient);
 	}
 
-	public XmlRpcTransport getTransport() { return new XmlRpcLiteHttpTransport(getClient()); }
+	public XmlRpcTransport getTransport() {
+		return new XmlRpcLiteHttpTransport(getClient());
+	}
 }

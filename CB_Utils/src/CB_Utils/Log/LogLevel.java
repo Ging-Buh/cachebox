@@ -35,8 +35,7 @@ import ch.qos.logback.classic.Logger;
  * 
  * @author Longri 2014
  */
-public enum LogLevel
-{
+public enum LogLevel {
 	OFF, ERROR, WARN, INFO, DEBUG, TRACE, ALL;
 
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(LogLevel.class);
@@ -47,10 +46,8 @@ public enum LogLevel
 	 * 
 	 * @return
 	 */
-	public int toInt()
-	{
-		switch (this)
-		{
+	public int toInt() {
+		switch (this) {
 		case ALL:
 			return Level.ALL_INT;
 		case DEBUG:
@@ -76,8 +73,7 @@ public enum LogLevel
 	 * @param level
 	 *            {@link #LogLevel}
 	 */
-	static void setLogLevel(LogLevel level)
-	{
+	static void setLogLevel(LogLevel level) {
 		act = Level.toLevel(level.toInt(), Level.OFF);
 
 		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
@@ -96,8 +92,7 @@ public enum LogLevel
 	 *            {@link #LogLevel}
 	 * @return
 	 */
-	public static boolean isLogLevel(LogLevel level)
-	{
+	public static boolean isLogLevel(LogLevel level) {
 		return act.levelInt <= level.toInt();
 	}
 }

@@ -41,40 +41,33 @@ import org.xml.sax.InputSource;
 
 import CB_Core.CB_Core_Settings;
 
-public class GCVote
-{
+public class GCVote {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(GCVote.class);
 
-	public static RatingData GetRating(String User, String password, String Waypoint)
-	{
+	public static RatingData GetRating(String User, String password, String Waypoint) {
 		ArrayList<String> waypoint = new ArrayList<String>();
 		waypoint.add(Waypoint);
 		ArrayList<RatingData> result = GetRating(User, password, waypoint);
 
-		if (result == null || result.size() == 0)
-		{
+		if (result == null || result.size() == 0) {
 			return new RatingData();
-		}
-		else
-		{
+		} else {
 			return result.get(0);
 		}
 
 	}
 
-	public static ArrayList<RatingData> GetRating(String User, String password, ArrayList<String> Waypoints)
-	{
+	public static ArrayList<RatingData> GetRating(String User, String password, ArrayList<String> Waypoints) {
 		ArrayList<RatingData> result = new ArrayList<RatingData>();
 
 		String data = "userName=" + User + "&password=" + password + "&waypoints=";
-		for (int i = 0; i < Waypoints.size(); i++)
-		{
+		for (int i = 0; i < Waypoints.size(); i++) {
 			data += Waypoints.get(i);
-			if (i < (Waypoints.size() - 1)) data += ",";
+			if (i < (Waypoints.size() - 1))
+				data += ",";
 		}
 
-		try
-		{
+		try {
 			HttpPost httppost = new HttpPost("http://gcvote.de/getVotes.php");
 
 			httppost.setEntity(new ByteArrayEntity(data.getBytes("UTF8")));
@@ -94,8 +87,7 @@ public class GCVote
 
 			NodeList nodelist = doc.getElementsByTagName("vote");
 
-			for (Integer i = 0; i < nodelist.getLength(); i++)
-			{
+			for (Integer i = 0; i < nodelist.getLength(); i++) {
 				Node node = nodelist.item(i);
 
 				RatingData ratingData = new RatingData();
@@ -107,14 +99,13 @@ public class GCVote
 
 			}
 
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			String Ex = "";
-			if (e != null)
-			{
-				if (e != null && e.getMessage() != null) Ex = "Ex = [" + e.getMessage() + "]";
-				else if (e != null && e.getLocalizedMessage() != null) Ex = "Ex = [" + e.getLocalizedMessage() + "]";
+			if (e != null) {
+				if (e != null && e.getMessage() != null)
+					Ex = "Ex = [" + e.getMessage() + "]";
+				else if (e != null && e.getLocalizedMessage() != null)
+					Ex = "Ex = [" + e.getLocalizedMessage() + "]";
 				else
 					Ex = "Ex = [" + e.toString() + "]";
 			}
@@ -125,8 +116,7 @@ public class GCVote
 
 	}
 
-	private static String Execute(HttpRequestBase httprequest) throws IOException, ClientProtocolException
-	{
+	private static String Execute(HttpRequestBase httprequest) throws IOException, ClientProtocolException {
 		httprequest.setHeader("Content-type", "application/x-www-form-urlencoded");
 		// httprequest.setHeader("UserAgent", "cachebox");
 
@@ -152,22 +142,19 @@ public class GCVote
 
 		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 		String line = "";
-		while ((line = rd.readLine()) != null)
-		{
+		while ((line = rd.readLine()) != null) {
 			result += line + "\n";
 		}
 		return result;
 
 	}
 
-	public static Boolean SendVotes(String User, String password, int vote, String url, String waypoint)
-	{
+	public static Boolean SendVotes(String User, String password, int vote, String url, String waypoint) {
 		String guid = url.substring(url.indexOf("guid=") + 5).trim();
 
 		String data = "userName=" + User + "&password=" + password + "&voteUser=" + String.valueOf(vote / 100.0) + "&cacheId=" + guid + "&waypoint=" + waypoint;
 
-		try
-		{
+		try {
 			HttpPost httppost = new HttpPost("http://dosensuche.de/GCVote/setVote.php");
 
 			httppost.setEntity(new ByteArrayEntity(data.getBytes("UTF8")));
@@ -177,9 +164,7 @@ public class GCVote
 
 			return responseString.equals("OK\n");
 
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			return false;
 		}
 

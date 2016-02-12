@@ -62,10 +62,8 @@ public final class CB_RenderThemeHandler extends DefaultHandler {
 	private static final Logger LOGGER = Logger.getLogger(CB_RenderThemeHandler.class.getName());
 	private static final String UNEXPECTED_ELEMENT = "unexpected element: ";
 
-	public static CB_RenderTheme getRenderTheme(GraphicFactory graphicFactory, DisplayModel displayModel,
-			XmlRenderTheme xmlRenderTheme) throws SAXException, ParserConfigurationException, IOException {
-		CB_RenderThemeHandler renderThemeHandler = new CB_RenderThemeHandler(graphicFactory, displayModel,
-				xmlRenderTheme.getRelativePathPrefix());
+	public static CB_RenderTheme getRenderTheme(GraphicFactory graphicFactory, DisplayModel displayModel, XmlRenderTheme xmlRenderTheme) throws SAXException, ParserConfigurationException, IOException {
+		CB_RenderThemeHandler renderThemeHandler = new CB_RenderThemeHandler(graphicFactory, displayModel, xmlRenderTheme.getRelativePathPrefix());
 		XMLReader xmlReader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
 		xmlReader.setContentHandler(renderThemeHandler);
 		InputStream inputStream = null;
@@ -147,8 +145,7 @@ public final class CB_RenderThemeHandler extends DefaultHandler {
 
 			else if ("area".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Area area = new AreaBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.level++,
-						this.relativePathPrefix).build();
+				Area area = new AreaBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.level++, this.relativePathPrefix).build();
 				this.currentRule.addRenderingInstruction(area);
 			}
 
@@ -160,36 +157,31 @@ public final class CB_RenderThemeHandler extends DefaultHandler {
 
 			else if ("circle".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Circle circle = new CircleBuilder(this.graphicFactory, this.displayModel, qName, attributes,
-						this.level++).build();
+				Circle circle = new CircleBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.level++).build();
 				this.currentRule.addRenderingInstruction(circle);
 			}
 
 			else if ("line".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Line line = new LineBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.level++,
-						this.relativePathPrefix).build();
+				Line line = new LineBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.level++, this.relativePathPrefix).build();
 				this.currentRule.addRenderingInstruction(line);
 			}
 
 			else if ("lineSymbol".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				LineSymbol lineSymbol = new LineSymbolBuilder(this.graphicFactory, this.displayModel, qName,
-						attributes, this.relativePathPrefix).build();
+				LineSymbol lineSymbol = new LineSymbolBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.relativePathPrefix).build();
 				this.currentRule.addRenderingInstruction(lineSymbol);
 			}
 
 			else if ("pathText".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				PathText pathText = new PathTextBuilder(this.graphicFactory, this.displayModel, qName, attributes)
-						.build();
+				PathText pathText = new PathTextBuilder(this.graphicFactory, this.displayModel, qName, attributes).build();
 				this.currentRule.addRenderingInstruction(pathText);
 			}
 
 			else if ("symbol".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Symbol symbol = new SymbolBuilder(this.graphicFactory, this.displayModel, qName, attributes,
-						this.relativePathPrefix).build();
+				Symbol symbol = new SymbolBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.relativePathPrefix).build();
 				this.currentRule.addRenderingInstruction(symbol);
 			}
 
@@ -208,24 +200,24 @@ public final class CB_RenderThemeHandler extends DefaultHandler {
 
 	private void checkElement(String elementName, Element element) throws SAXException {
 		switch (element) {
-			case RENDER_THEME:
-				if (!this.elementStack.empty()) {
-					throw new SAXException(UNEXPECTED_ELEMENT + elementName);
-				}
-				return;
+		case RENDER_THEME:
+			if (!this.elementStack.empty()) {
+				throw new SAXException(UNEXPECTED_ELEMENT + elementName);
+			}
+			return;
 
-			case RULE:
-				Element parentElement = this.elementStack.peek();
-				if (parentElement != Element.RENDER_THEME && parentElement != Element.RULE) {
-					throw new SAXException(UNEXPECTED_ELEMENT + elementName);
-				}
-				return;
+		case RULE:
+			Element parentElement = this.elementStack.peek();
+			if (parentElement != Element.RENDER_THEME && parentElement != Element.RULE) {
+				throw new SAXException(UNEXPECTED_ELEMENT + elementName);
+			}
+			return;
 
-			case RENDERING_INSTRUCTION:
-				if (this.elementStack.peek() != Element.RULE) {
-					throw new SAXException(UNEXPECTED_ELEMENT + elementName);
-				}
-				return;
+		case RENDERING_INSTRUCTION:
+			if (this.elementStack.peek() != Element.RULE) {
+				throw new SAXException(UNEXPECTED_ELEMENT + elementName);
+			}
+			return;
 		}
 
 		throw new SAXException("unknown enum value: " + element);

@@ -2,17 +2,14 @@ package org.mapsforge.map.layer.renderer;
 
 import java.io.ByteArrayOutputStream;
 
-public class UnsaveByteArrayOutputStream extends ByteArrayOutputStream
-{
+public class UnsaveByteArrayOutputStream extends ByteArrayOutputStream {
 	private byte[] EMPTY;
 
-	public UnsaveByteArrayOutputStream()
-	{
+	public UnsaveByteArrayOutputStream() {
 		this(32);
 	}
 
-	public UnsaveByteArrayOutputStream(int size)
-	{
+	public UnsaveByteArrayOutputStream(int size) {
 		super(size);
 		EMPTY = new byte[size];
 	}
@@ -23,14 +20,12 @@ public class UnsaveByteArrayOutputStream extends ByteArrayOutputStream
 	// return buf;
 	// }
 
-	public void dispose()
-	{
+	public void dispose() {
 		EMPTY = null;
 		buf = null;
 	}
 
-	public void clear()
-	{
+	public void clear() {
 		System.arraycopy(EMPTY, 0, buf, 0, EMPTY.length);
 		count = 0;
 	}

@@ -53,8 +53,7 @@ public class MapViewProjection {
 		pixelY -= this.mapView.getHeight() >> 1;
 
 		// convert the pixel coordinates to a LatLong and return it
-		return new LatLong(MercatorProjection.pixelYToLatitude(pixelY + y, mapPosition.zoomLevel, tileSize),
-				MercatorProjection.pixelXToLongitude(pixelX + x, mapPosition.zoomLevel, tileSize));
+		return new LatLong(MercatorProjection.pixelYToLatitude(pixelY + y, mapPosition.zoomLevel, tileSize), MercatorProjection.pixelXToLongitude(pixelX + x, mapPosition.zoomLevel, tileSize));
 	}
 
 	/**
@@ -108,9 +107,7 @@ public class MapViewProjection {
 		pixelY -= this.mapView.getHeight() >> 1;
 
 		// create a new point and return it
-		return new Point(
-				(int) (MercatorProjection.longitudeToPixelX(in.getLongitude(), mapPosition.zoomLevel, tileSize) - pixelX),
-				(int) (MercatorProjection.latitudeToPixelY(in.getLatitude(), mapPosition.zoomLevel, tileSize) - pixelY));
+		return new Point((int) (MercatorProjection.longitudeToPixelX(in.getLongitude(), mapPosition.zoomLevel, tileSize) - pixelX), (int) (MercatorProjection.latitudeToPixelY(in.getLatitude(), mapPosition.zoomLevel, tileSize) - pixelY));
 	}
 
 }

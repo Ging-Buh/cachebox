@@ -24,15 +24,14 @@ import org.xml.sax.SAXException;
 /** A {@link TypeSerializer} for BigInteger.
  */
 public class BigIntegerSerializer extends TypeSerializerImpl {
-    /** Tag name of a BigDecimal value.
-     */
-    public static final String BIGINTEGER_TAG = "biginteger";
+	/** Tag name of a BigDecimal value.
+	 */
+	public static final String BIGINTEGER_TAG = "biginteger";
 
-    private static final String EX_BIGINTEGER_TAG = "ex:" + BIGINTEGER_TAG;
+	private static final String EX_BIGINTEGER_TAG = "ex:" + BIGINTEGER_TAG;
 
-    public void write(ContentHandler pHandler, Object pObject) throws SAXException {
-        write(pHandler, BIGINTEGER_TAG, EX_BIGINTEGER_TAG, pObject.toString());
-    }
+	public void write(ContentHandler pHandler, Object pObject) throws SAXException {
+		write(pHandler, BIGINTEGER_TAG, EX_BIGINTEGER_TAG, pObject.toString());
+	}
 
 }
-

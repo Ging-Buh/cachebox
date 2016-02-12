@@ -7,8 +7,7 @@ import CB_Utils.MathUtils;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class GradiantFilledRectangle extends CB_View_Base
-{
+public class GradiantFilledRectangle extends CB_View_Base {
 
 	private GradiantFill gradiant;
 	private TextureRegion tex;
@@ -20,40 +19,33 @@ public class GradiantFilledRectangle extends CB_View_Base
 	private float drawX = 0;
 	private float drawY = 0;
 
-	public GradiantFilledRectangle(CB_RectF rec, GradiantFill fill)
-	{
+	public GradiantFilledRectangle(CB_RectF rec, GradiantFill fill) {
 		super(rec, "");
 		gradiant = fill;
 	}
 
 	@Override
-	protected void Initial()
-	{
+	protected void Initial() {
 
 	}
 
 	@Override
-	protected void SkinIsChanged()
-	{
+	protected void SkinIsChanged() {
 
 	}
 
-	public void setGradiant(GradiantFill fill)
-	{
+	public void setGradiant(GradiantFill fill) {
 		gradiant = fill;
 		tex = null;
 	}
 
 	@Override
-	protected void render(Batch batch)
-	{
-		if (tex == null || tex != gradiant.getTexture())
-		{
-			if (gradiant.getTexture() != null)
-			{
+	protected void render(Batch batch) {
+		if (tex == null || tex != gradiant.getTexture()) {
+			if (gradiant.getTexture() != null) {
 				tex = gradiant.getTexture();
 
-				// TODO handle angle over 90°
+				// TODO handle angle over 90ï¿½
 
 				double alpha = (gradiant.getDirection() * MathUtils.DEG_RAD);
 
@@ -75,7 +67,8 @@ public class GradiantFilledRectangle extends CB_View_Base
 			}
 		}
 
-		if (tex != null) batch.draw(tex, drawX, drawY, drawCX, drawCY, drawW, drawH, 1f, 1f, gradiant.getDirection());
+		if (tex != null)
+			batch.draw(tex, drawX, drawY, drawCX, drawCY, drawW, drawH, 1f, 1f, gradiant.getDirection());
 
 	}
 }

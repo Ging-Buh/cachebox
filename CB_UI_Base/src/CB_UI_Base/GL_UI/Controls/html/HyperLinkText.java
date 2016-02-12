@@ -22,17 +22,17 @@ package CB_UI_Base.GL_UI.Controls.html;
  */
 public class HyperLinkText {
 
-    final public String content;
-    final public String url;
+	final public String content;
+	final public String url;
 
-    public HyperLinkText(String Content, String Url) {
-	this.content = Content;
-	this.url = Url;
-    }
+	public HyperLinkText(String Content, String Url) {
+		this.content = Content;
+		this.url = Url;
+	}
 
-    public void dispose() {
-	// all member are final
-	// nothing to do
-    }
+	public void dispose() {
+		// all member are final
+		// nothing to do
+	}
 
 }

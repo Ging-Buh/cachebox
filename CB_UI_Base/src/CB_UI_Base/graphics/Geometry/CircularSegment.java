@@ -24,8 +24,7 @@ import com.badlogic.gdx.math.MathUtils;
  * 
  * @author Longri
  */
-public class CircularSegment extends Circle
-{
+public class CircularSegment extends Circle {
 	private float start;
 	private float end;
 
@@ -43,8 +42,7 @@ public class CircularSegment extends Circle
 	 * @param endAngle
 	 *            end angle of the segment
 	 */
-	public CircularSegment(float x, float y, float r, float startAngle, float endAngle)
-	{
+	public CircularSegment(float x, float y, float r, float startAngle, float endAngle) {
 		super(x, y, r);
 		this.start = startAngle;
 		this.end = endAngle;
@@ -67,10 +65,10 @@ public class CircularSegment extends Circle
 	 * @param compute
 	 *            true for call Compute() with constructor
 	 */
-	public CircularSegment(float x, float y, float r, float startAngle, float endAngle, boolean compute)
-	{
+	public CircularSegment(float x, float y, float r, float startAngle, float endAngle, boolean compute) {
 		this(x, y, r, startAngle, endAngle);
-		if (compute) Compute();
+		if (compute)
+			Compute();
 	}
 
 	/**
@@ -80,8 +78,7 @@ public class CircularSegment extends Circle
 	 * 
 	 * @param x
 	 */
-	public void setStartAngle(float startAngle)
-	{
+	public void setStartAngle(float startAngle) {
 		this.start = startAngle;
 		chkStartEnd();
 		isDirty = true;
@@ -94,15 +91,13 @@ public class CircularSegment extends Circle
 	 * 
 	 * @param y
 	 */
-	public void setEndAngle(float endAngle)
-	{
+	public void setEndAngle(float endAngle) {
 		this.end = endAngle;
 		chkStartEnd();
 		isDirty = true;
 	}
 
-	private void chkStartEnd()
-	{
+	private void chkStartEnd() {
 		while (start < 0)
 			start += 360;
 
@@ -124,9 +119,9 @@ public class CircularSegment extends Circle
 	 * For every segment are compute a triangle from the segment start, end and the center of this circle.
 	 */
 	@Override
-	public void Compute()
-	{
-		if (!isDirty) return; // Nothing todo
+	public void Compute() {
+		if (!isDirty)
+			return; // Nothing todo
 
 		chkStartEnd();
 
@@ -159,21 +154,19 @@ public class CircularSegment extends Circle
 		short verticeIdex = 1;
 		boolean beginnTriangles = false;
 
-		for (float i = thetaBeginn; !(i > thetaEnd); i += thetaStep)
-		{
+		for (float i = thetaBeginn; !(i > thetaEnd); i += thetaStep) {
 
 			float rad = MathUtils.degreesToRadians * i;
 
 			vertices[index++] = centerX + radius * MathUtils.cos(rad);
 			vertices[index++] = centerY + radius * MathUtils.sin(rad);
 
-			if (!beginnTriangles)
-			{
-				if (index % 6 == 0) beginnTriangles = true;
+			if (!beginnTriangles) {
+				if (index % 6 == 0)
+					beginnTriangles = true;
 			}
 
-			if (beginnTriangles)
-			{
+			if (beginnTriangles) {
 				triangleIndices[triangleIndex++] = 0;
 				triangleIndices[triangleIndex++] = verticeIdex++;
 				triangleIndices[triangleIndex++] = verticeIdex;
@@ -190,16 +183,16 @@ public class CircularSegment extends Circle
 	}
 
 	@Override
-	public float[] getVertices()
-	{
-		if (isDirty) Compute();
+	public float[] getVertices() {
+		if (isDirty)
+			Compute();
 		return vertices;
 	}
 
 	@Override
-	public short[] getTriangles()
-	{
-		if (isDirty) Compute();
+	public short[] getTriangles() {
+		if (isDirty)
+			Compute();
 		return triangleIndices;
 	}
 }

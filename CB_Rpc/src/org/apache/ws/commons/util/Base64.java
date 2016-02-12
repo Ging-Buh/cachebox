@@ -25,7 +25,6 @@ import java.lang.reflect.UndeclaredThrowableException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-
 /** Performs Base64 encoding and/or decoding. This is an on-the-fly decoder: Unlike,
  * for example, the commons-codec classes, it doesn't depend on byte arrays. In
  * other words, it has an extremely low memory profile. This is well suited even
@@ -37,7 +36,10 @@ public class Base64 {
 	 */
 	public static class DecodingException extends IOException {
 		private static final long serialVersionUID = 3257006574836135478L;
-		DecodingException(String pMessage) { super(pMessage); }
+
+		DecodingException(String pMessage) {
+			super(pMessage);
+		}
 	}
 
 	/** An exception of this type is thrown by the {@link SAXEncoder},
@@ -48,17 +50,20 @@ public class Base64 {
 	public static class SAXIOException extends IOException {
 		private static final long serialVersionUID = 3258131345216451895L;
 		final SAXException saxException;
+
 		SAXIOException(SAXException e) {
 			super();
 			saxException = e;
 		}
+
 		/** Returns the encapsulated {@link SAXException}.
 		 * @return An exception, which was thrown when invoking
 		 * {@link ContentHandler#characters(char[], int, int)}.
 		 */
-		public SAXException getSAXException() { return saxException; }
+		public SAXException getSAXException() {
+			return saxException;
+		}
 	}
-
 
 	/** Default line separator: \n
 	 */
@@ -69,34 +74,23 @@ public class Base64 {
 	public static final int LINE_SIZE = 76;
 
 	/**
-     * This array is a lookup table that translates 6-bit positive integer
-     * index values into their "Base64 Alphabet" equivalents as specified 
-     * in Table 1 of RFC 2045.
-     */
-    private static final char intToBase64[] = {
-        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
-    };
+	 * This array is a lookup table that translates 6-bit positive integer
+	 * index values into their "Base64 Alphabet" equivalents as specified 
+	 * in Table 1 of RFC 2045.
+	 */
+	private static final char intToBase64[] = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+			'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/' };
 
-    /**
-     * This array is a lookup table that translates unicode characters
-     * drawn from the "Base64 Alphabet" (as specified in Table 1 of RFC 2045)
-     * into their 6-bit positive integer equivalents.  Characters that
-     * are not in the Base64 alphabet but fall within the bounds of the
-     * array are translated to -1.
-     */
-    private static final byte base64ToInt[] = {
-        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-        -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63, 52, 53, 54,
-        55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4,
-        5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
-        24, 25, -1, -1, -1, -1, -1, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34,
-        35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51
-    };
+	/**
+	 * This array is a lookup table that translates unicode characters
+	 * drawn from the "Base64 Alphabet" (as specified in Table 1 of RFC 2045)
+	 * into their 6-bit positive integer equivalents.  Characters that
+	 * are not in the Base64 alphabet but fall within the bounds of the
+	 * array are translated to -1.
+	 */
+	private static final byte base64ToInt[] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63, 52, 53,
+			54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+			41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51 };
 
 	/** An encoder is an object, which is able to encode byte array
 	 * in blocks of three bytes. Any such block is converted into an
@@ -110,6 +104,7 @@ public class Base64 {
 		private final int skipChars;
 		private final String sep;
 		private int lineChars = 0;
+
 		/** Creates a new instance.
 		 * @param pBuffer The encoders buffer. The encoder will
 		 * write to the buffer as long as possible. If the
@@ -130,15 +125,14 @@ public class Base64 {
 			sep = pSep == null ? null : Base64.LINE_SEPARATOR;
 			skipChars = pWrapSize == 0 ? 4 : 4 + sep.length();
 			wrapSize = skipChars == 4 ? 0 : pWrapSize;
-			if (wrapSize < 0  ||  wrapSize %4 > 0) {
-				throw new IllegalArgumentException("Illegal argument for wrap size: " + pWrapSize
-												   + "(Expected nonnegative multiple of 4)");
+			if (wrapSize < 0 || wrapSize % 4 > 0) {
+				throw new IllegalArgumentException("Illegal argument for wrap size: " + pWrapSize + "(Expected nonnegative multiple of 4)");
 			}
 			if (pBuffer.length < skipChars) {
-				throw new IllegalArgumentException("The buffer must contain at least " + skipChars
-												   + " characters, but has " + pBuffer.length);
+				throw new IllegalArgumentException("The buffer must contain at least " + skipChars + " characters, but has " + pBuffer.length);
 			}
 		}
+
 		/** Called for writing the buffer contents to the target.
 		 * @param pChars The buffer being written.
 		 * @param pOffset Offset of first character being written.
@@ -148,7 +142,7 @@ public class Base64 {
 		protected abstract void writeBuffer(char[] pChars, int pOffset, int pLen) throws IOException;
 
 		private void wrap() {
-			for (int j = 0;  j < sep.length();  j++) {
+			for (int j = 0; j < sep.length(); j++) {
 				charBuffer[charOffset++] = sep.charAt(j);
 			}
 			lineChars = 0;
@@ -162,9 +156,11 @@ public class Base64 {
 		 * for writing the encoded data failed.
 		 */
 		public void write(byte[] pBuffer, int pOffset, int pLen) throws IOException {
-			for(int i = 0;  i < pLen;  i++) {
+			for (int i = 0; i < pLen; i++) {
 				int b = pBuffer[pOffset++];
-				if (b < 0) { b += 256; }
+				if (b < 0) {
+					b += 256;
+				}
 				num = (num << 8) + b;
 				if (++numBytes == 3) {
 					charBuffer[charOffset++] = intToBase64[num >> 18];
@@ -186,6 +182,7 @@ public class Base64 {
 				}
 			}
 		}
+
 		/** Writes any currently buffered data to the destination.
 		 * @throws IOException Invoking the {@link #writeBuffer(char[],int,int)}
 		 * method for writing the encoded data failed.
@@ -207,7 +204,7 @@ public class Base64 {
 				num = 0;
 				numBytes = 0;
 			}
-			if (wrapSize > 0  &&  lineChars > 0) {
+			if (wrapSize > 0 && lineChars > 0) {
 				wrap();
 			}
 			if (charOffset > 0) {
@@ -222,6 +219,7 @@ public class Base64 {
 	 */
 	public static class EncoderOutputStream extends OutputStream {
 		private final Encoder encoder;
+
 		/** Creates a new instance, which is creating
 		 * output using the given {@link Encoder}.
 		 * @param pEncoder The base64 encoder being used.
@@ -229,14 +227,18 @@ public class Base64 {
 		public EncoderOutputStream(Encoder pEncoder) {
 			encoder = pEncoder;
 		}
+
 		private final byte[] oneByte = new byte[1];
+
 		public void write(int b) throws IOException {
 			oneByte[0] = (byte) b;
 			encoder.write(oneByte, 0, 1);
 		}
+
 		public void write(byte[] pBuffer, int pOffset, int pLen) throws IOException {
 			encoder.write(pBuffer, pOffset, pLen);
 		}
+
 		public void close() throws IOException {
 			encoder.flush();
 		}
@@ -269,7 +271,7 @@ public class Base64 {
 	 * the output to the writer <code>pWriter</code>.
 	 */
 	public static OutputStream newEncoder(final Writer pWriter, int pLineSize, String pSeparator) {
-		final Encoder encoder = new Encoder(new char[4096], pLineSize, pSeparator){
+		final Encoder encoder = new Encoder(new char[4096], pLineSize, pSeparator) {
 			protected void writeBuffer(char[] pBuffer, int pOffset, int pLen) throws IOException {
 				pWriter.write(pBuffer, pOffset, pLen);
 			}
@@ -283,6 +285,7 @@ public class Base64 {
 	 */
 	public static class SAXEncoder extends Encoder {
 		private final ContentHandler handler;
+
 		/** Creates a new instance.
 		 * @param pBuffer The encoders buffer.
 		 * @param pWrapSize A nonzero value indicates, that a line
@@ -295,11 +298,11 @@ public class Base64 {
 		 * is being used.
 		 * @param pHandler The target handler.
 		 */
-		public SAXEncoder(char[] pBuffer, int pWrapSize, String pSep,
-						  ContentHandler pHandler) {
+		public SAXEncoder(char[] pBuffer, int pWrapSize, String pSep, ContentHandler pHandler) {
 			super(pBuffer, pWrapSize, pSep);
 			handler = pHandler;
 		}
+
 		/** Writes to the content handler.
 		 * @throws SAXIOException Writing to the content handler
 		 * caused a SAXException.
@@ -335,8 +338,7 @@ public class Base64 {
 	 * {@link #LINE_SEPARATOR} is used.
 	 * @return Character array of encoded bytes.
 	 */
-	public static String encode(byte[] pBuffer, int pOffset, int pLength,
-								int pLineSize, String pSeparator) {
+	public static String encode(byte[] pBuffer, int pOffset, int pLength, int pLineSize, String pSeparator) {
 		StringWriter sw = new StringWriter();
 		OutputStream ostream = newEncoder(sw, pLineSize, pSeparator);
 		try {
@@ -367,6 +369,7 @@ public class Base64 {
 		private int byteBufferOffset;
 		private int num, numBytes;
 		private int eofBytes;
+
 		/** Creates a new instance.
 		 * @param pBufLen The decoders buffer size. The decoder will
 		 * store up to this number of decoded bytes before invoking
@@ -375,6 +378,7 @@ public class Base64 {
 		protected Decoder(int pBufLen) {
 			byteBuffer = new byte[pBufLen];
 		}
+
 		/** Called for writing the decoded bytes to the destination.
 		 * @param pBuffer The byte array being written.
 		 * @param pOffset Offset of the first byte being written.
@@ -382,6 +386,7 @@ public class Base64 {
 		 * @throws IOException Writing to the destination failed.
 		 */
 		protected abstract void writeBuffer(byte[] pBuffer, int pOffset, int pLen) throws IOException;
+
 		/** Converts the Base64 encoded character array.
 		 * @param pData The character array being decoded.
 		 * @param pOffset Offset of first character being decoded.
@@ -391,7 +396,7 @@ public class Base64 {
 		 * method failed.
 		 */
 		public void write(char[] pData, int pOffset, int pLen) throws IOException {
-			for (int i = 0;  i < pLen;  i++) {
+			for (int i = 0; i < pLen; i++) {
 				char c = pData[pOffset++];
 				if (Character.isWhitespace(c)) {
 					continue;
@@ -399,32 +404,32 @@ public class Base64 {
 				if (c == '=') {
 					++eofBytes;
 					num = num << 6;
-					switch(++numBytes) {
-						case 1:
-						case 2:
-							throw new DecodingException("Unexpected end of stream character (=)");
-						case 3:
-							// Wait for the next '='
-							break;
-						case 4:
-							byteBuffer[byteBufferOffset++] = (byte) (num >> 16);
-							if (eofBytes == 1) {
-								byteBuffer[byteBufferOffset++] = (byte) (num >> 8);
-							}
-							writeBuffer(byteBuffer, 0, byteBufferOffset);
-							byteBufferOffset = 0;
-							break;
-						case 5:
-							throw new DecodingException("Trailing garbage detected");
-						default:
-							throw new IllegalStateException("Invalid value for numBytes");
+					switch (++numBytes) {
+					case 1:
+					case 2:
+						throw new DecodingException("Unexpected end of stream character (=)");
+					case 3:
+						// Wait for the next '='
+						break;
+					case 4:
+						byteBuffer[byteBufferOffset++] = (byte) (num >> 16);
+						if (eofBytes == 1) {
+							byteBuffer[byteBufferOffset++] = (byte) (num >> 8);
+						}
+						writeBuffer(byteBuffer, 0, byteBufferOffset);
+						byteBufferOffset = 0;
+						break;
+					case 5:
+						throw new DecodingException("Trailing garbage detected");
+					default:
+						throw new IllegalStateException("Invalid value for numBytes");
 					}
 				} else {
 					if (eofBytes > 0) {
 						throw new DecodingException("Base64 characters after end of stream character (=) detected.");
 					}
 					int result;
-					if (c >= 0  &&  c < base64ToInt.length) {
+					if (c >= 0 && c < base64ToInt.length) {
 						result = base64ToInt[c];
 						if (result >= 0) {
 							num = (num << 6) + result;
@@ -441,20 +446,21 @@ public class Base64 {
 							}
 							continue;
 						}
-				    }
+					}
 					if (!Character.isWhitespace(c)) {
 						throw new DecodingException("Invalid Base64 character: " + (int) c);
 					}
 				}
 			}
 		}
+
 		/** Indicates, that no more data is being expected. Writes all currently
 		 * buffered data to the destination by invoking {@link #writeBuffer(byte[],int,int)}.
 		 * @throws DecodingException Decoding failed (Unexpected end of file).
 		 * @throws IOException An invocation of the {@link #writeBuffer(byte[],int,int)} method failed.
 		 */
 		public void flush() throws IOException {
-			if (numBytes != 0  &&  numBytes != 4) {
+			if (numBytes != 0 && numBytes != 4) {
 				throw new DecodingException("Unexpected end of file");
 			}
 			if (byteBufferOffset > 0) {
@@ -473,19 +479,22 @@ public class Base64 {
 	 * the output to the writer <code>pWriter</code>.
 	 */
 	public static Writer newDecoder(final OutputStream pStream) {
-		return new Writer(){
-			private final Decoder decoder = new Decoder(1024){
+		return new Writer() {
+			private final Decoder decoder = new Decoder(1024) {
 				protected void writeBuffer(byte[] pBytes, int pOffset, int pLen) throws IOException {
 					pStream.write(pBytes, pOffset, pLen);
 				}
 			};
+
 			public void close() throws IOException {
 				flush();
 			}
+
 			public void flush() throws IOException {
 				decoder.flush();
 				pStream.flush();
 			}
+
 			public void write(char[] cbuf, int off, int len) throws IOException {
 				decoder.write(cbuf, off, len);
 			}
@@ -501,7 +510,7 @@ public class Base64 {
 	 */
 	public static byte[] decode(char[] pBuffer, int pOffset, int pLength) throws DecodingException {
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		Decoder d = new Decoder(1024){
+		Decoder d = new Decoder(1024) {
 			protected void writeBuffer(byte[] pBuf, int pOff, int pLen) throws IOException {
 				baos.write(pBuf, pOff, pLen);
 			}

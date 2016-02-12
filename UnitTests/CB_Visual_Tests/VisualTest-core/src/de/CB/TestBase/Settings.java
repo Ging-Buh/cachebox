@@ -23,32 +23,25 @@ import CB_Utils.Settings.SettingStoreType;
 import CB_Utils.Settings.SettingUsage;
 import CB_Utils.Settings.SettingsList;
 
-public interface Settings extends CB_UI_Base.settings.CB_UI_Base_Settings, CB_Locator.LocatorSettings
-{
+public interface Settings extends CB_UI_Base.settings.CB_UI_Base_Settings, CB_Locator.LocatorSettings {
 
-	// Abkürzende Schreibweisen für die Übersichlichkeit bei den add Methoden
+	// Abkï¿½rzende Schreibweisen fï¿½r die ï¿½bersichlichkeit bei den add Methoden
 	public static final SettingModus INVISIBLE = SettingModus.Invisible;
 	public static final SettingModus NORMAL = SettingModus.Normal;
 	public static final SettingModus EXPERT = SettingModus.Expert;
 	public static final SettingModus NEVER = SettingModus.Never;
 
-	public static final SettingBool test = (SettingBool) SettingsList.addSetting(new SettingBool("test", SettingCategory.Internal, NEVER,
-			false, SettingStoreType.Global,SettingUsage.ALL));
+	public static final SettingBool test = (SettingBool) SettingsList.addSetting(new SettingBool("test", SettingCategory.Internal, NEVER, false, SettingStoreType.Global, SettingUsage.ALL));
 
-	public static final SettingBool MapNorthOriented = new SettingBool("MapNorthOriented", SettingCategory.Map, NORMAL, true,
-			SettingStoreType.Global,SettingUsage.ALL);
+	public static final SettingBool MapNorthOriented = new SettingBool("MapNorthOriented", SettingCategory.Map, NORMAL, true, SettingStoreType.Global, SettingUsage.ALL);
 
-	public static final SettingBool ImperialUnits = new SettingBool("ImperialUnits", SettingCategory.Misc, NORMAL, false,
-			SettingStoreType.Global,SettingUsage.ALL);
+	public static final SettingBool ImperialUnits = new SettingBool("ImperialUnits", SettingCategory.Misc, NORMAL, false, SettingStoreType.Global, SettingUsage.ALL);
 
 	// Settings Compass
-	public static final SettingInt HardwareCompassLevel = (SettingInt) SettingsList.addSetting(new SettingInt("HardwareCompassLevel",
-			SettingCategory.Gps, NORMAL, 5, SettingStoreType.Global,SettingUsage.ALL));
+	public static final SettingInt HardwareCompassLevel = (SettingInt) SettingsList.addSetting(new SettingInt("HardwareCompassLevel", SettingCategory.Gps, NORMAL, 5, SettingStoreType.Global, SettingUsage.ALL));
 
-	public static final SettingBool HardwareCompass = new SettingBool("HardwareCompass", SettingCategory.Gps, NORMAL, true,
-			SettingStoreType.Global,SettingUsage.ALL);
+	public static final SettingBool HardwareCompass = new SettingBool("HardwareCompass", SettingCategory.Gps, NORMAL, true, SettingStoreType.Global, SettingUsage.ALL);
 
-	public static final SettingInt gpsUpdateTime = (SettingInt) SettingsList.addSetting(new SettingInt("gpsUpdateTime",
-			SettingCategory.Gps, NORMAL, 500, SettingStoreType.Global,SettingUsage.ALL));
+	public static final SettingInt gpsUpdateTime = (SettingInt) SettingsList.addSetting(new SettingInt("gpsUpdateTime", SettingCategory.Gps, NORMAL, 500, SettingStoreType.Global, SettingUsage.ALL));
 
 }

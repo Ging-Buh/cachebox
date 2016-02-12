@@ -21,9 +21,9 @@
 package net.htmlparser.jericho;
 
 class StartTagTypeCDATASection extends StartTagTypeGenericImplementation {
-	static final StartTagTypeCDATASection INSTANCE=new StartTagTypeCDATASection();
+	static final StartTagTypeCDATASection INSTANCE = new StartTagTypeCDATASection();
 
 	private StartTagTypeCDATASection() {
-		super("CDATA section","<![cdata[","]]>",null,false);
+		super("CDATA section", "<![cdata[", "]]>", null, false);
 	}
 }

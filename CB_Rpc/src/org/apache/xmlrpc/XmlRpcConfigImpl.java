@@ -22,7 +22,6 @@ import java.util.TimeZone;
 
 import org.apache.xmlrpc.common.XmlRpcHttpConfig;
 
-
 /** Default implementation of {@link org.apache.xmlrpc.XmlRpcConfig}.
  */
 public abstract class XmlRpcConfigImpl implements XmlRpcConfig, XmlRpcHttpConfig {
@@ -30,9 +29,11 @@ public abstract class XmlRpcConfigImpl implements XmlRpcConfig, XmlRpcHttpConfig
 	private boolean contentLengthOptional;
 	private String basicEncoding;
 	private String encoding;
-    private TimeZone timeZone = TimeZone.getDefault();
+	private TimeZone timeZone = TimeZone.getDefault();
 
-	public boolean isEnabledForExtensions() { return enabledForExtensions; }
+	public boolean isEnabledForExtensions() {
+		return enabledForExtensions;
+	}
 
 	/** Sets, whether extensions are enabled. By default, the
 	 * client or server is strictly compliant to the XML-RPC
@@ -51,7 +52,9 @@ public abstract class XmlRpcConfigImpl implements XmlRpcConfig, XmlRpcHttpConfig
 		basicEncoding = pEncoding;
 	}
 
-	public String getBasicEncoding() { return basicEncoding; }
+	public String getBasicEncoding() {
+		return basicEncoding;
+	}
 
 	/** Sets the requests encoding.
 	 * @param pEncoding The requests encoding or null (default
@@ -61,7 +64,9 @@ public abstract class XmlRpcConfigImpl implements XmlRpcConfig, XmlRpcHttpConfig
 		encoding = pEncoding;
 	}
 
-	public String getEncoding() { return encoding; }
+	public String getEncoding() {
+		return encoding;
+	}
 
 	public boolean isContentLengthOptional() {
 		return contentLengthOptional;
@@ -76,14 +81,14 @@ public abstract class XmlRpcConfigImpl implements XmlRpcConfig, XmlRpcHttpConfig
 		contentLengthOptional = pContentLengthOptional;
 	}
 
-    public TimeZone getTimeZone() {
-        return timeZone;
-    }
+	public TimeZone getTimeZone() {
+		return timeZone;
+	}
 
-    /** Returns the timezone, which is used to interpret date/time
-     * values. Defaults to {@link TimeZone#getDefault()}.
-     */
-    public void setTimeZone(TimeZone pTimeZone) {
-        timeZone = pTimeZone;
-    }
+	/** Returns the timezone, which is used to interpret date/time
+	 * values. Defaults to {@link TimeZone#getDefault()}.
+	 */
+	public void setTimeZone(TimeZone pTimeZone) {
+		timeZone = pTimeZone;
+	}
 }

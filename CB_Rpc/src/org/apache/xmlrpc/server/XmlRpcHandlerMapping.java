@@ -21,7 +21,6 @@ package org.apache.xmlrpc.server;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.XmlRpcHandler;
 
-
 /** Maps from a handler name to a handler object.
  * @since 1.2
  */
@@ -33,6 +32,5 @@ public interface XmlRpcHandlerMapping {
 	 * @throws XmlRpcNoSuchHandlerException The handler is not available.
 	 * @throws XmlRpcException An internal error occurred.
 	 */
-	public XmlRpcHandler getHandler(String handlerName)
-		throws XmlRpcNoSuchHandlerException, XmlRpcException;
+	public XmlRpcHandler getHandler(String handlerName) throws XmlRpcNoSuchHandlerException, XmlRpcException;
 }

@@ -38,293 +38,293 @@ import net.htmlparser.jericho.Tag;
  * @author Longri
  */
 public class CB_HtmlProcessor extends Processor {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_HtmlProcessor.class);
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_HtmlProcessor.class);
 
-    final static Stack<Tag> AtributeStack = new Stack<Tag>();
-    List<Appendable> apendableList = new ArrayList<Appendable>();
-    List<Html_Segment> segmentList;
+	final static Stack<Tag> AtributeStack = new Stack<Tag>();
+	List<Appendable> apendableList = new ArrayList<Appendable>();
+	List<Html_Segment> segmentList;
 
-    HTML_Segment_List actList = null;
+	HTML_Segment_List actList = null;
 
-    boolean isImage = false;
+	boolean isImage = false;
 
-    public CB_HtmlProcessor(Renderer renderer, Segment rootSegment, int hrLineLength, String newLine, boolean includeHyperlinkURLs, boolean includeAlternateText, boolean decorateFontStyles, boolean convertNonBreakingSpaces, int blockIndentSize,
-	    int listIndentSize, char[] listBullets, String tableCellSeparator) {
-	super(renderer, rootSegment, Integer.MAX_VALUE, hrLineLength, newLine, includeHyperlinkURLs, includeAlternateText, decorateFontStyles, convertNonBreakingSpaces, blockIndentSize, listIndentSize, listBullets, tableCellSeparator);
-    }
-
-    public List<Html_Segment> getElementList() {
-	reset();
-	segmentList = new ArrayList<Html_Segment>();
-	{// CB-CHANGE
-	    super.appendable = new StringBuilder();// = appendable;
-	}
-	List<Element> elements = rootSegment instanceof Element ? Collections.singletonList((Element) rootSegment) : rootSegment.getChildElements();
-	try {
-	    appendSegmentProcessingChildElements(rootSegment.getBegin(), rootSegment.getEnd(), elements);
-	} catch (IOException e) {
-	    e.printStackTrace();
+	public CB_HtmlProcessor(Renderer renderer, Segment rootSegment, int hrLineLength, String newLine, boolean includeHyperlinkURLs, boolean includeAlternateText, boolean decorateFontStyles, boolean convertNonBreakingSpaces, int blockIndentSize,
+			int listIndentSize, char[] listBullets, String tableCellSeparator) {
+		super(renderer, rootSegment, Integer.MAX_VALUE, hrLineLength, newLine, includeHyperlinkURLs, includeAlternateText, decorateFontStyles, convertNonBreakingSpaces, blockIndentSize, listIndentSize, listBullets, tableCellSeparator);
 	}
 
-	createNewSegment();
-
-	return segmentList;
-
-    }
-
-    @Override
-    protected void appendSegment(int begin, final int end) throws IOException {
-
-	Tag tag = source.getPreviousTag(begin);
-
-	if (isOpenStartTag(tag)) {
-
-	    createNewSegment();
-	    //	    log.debug("Push Tag >" + tag.toString());
-	    AtributeStack.push(tag);
-
-	    //	    if (tag.getName().equals("pre") || tag.getName().equals("span")) {
-	    if (tag.getName().equals("span")) {
-		preformatted = false;
-	    }
-
-	} else if (isClosedEndTag(tag)) {
-
-	    if (!tag.getName().toLowerCase().equals("a") && !nextIsLI) {
-
-		//close Span?
-		if (tag.getName().equals("span")) {
-		    this.spanelement = false;
+	public List<Html_Segment> getElementList() {
+		reset();
+		segmentList = new ArrayList<Html_Segment>();
+		{// CB-CHANGE
+			super.appendable = new StringBuilder();// = appendable;
+		}
+		List<Element> elements = rootSegment instanceof Element ? Collections.singletonList((Element) rootSegment) : rootSegment.getChildElements();
+		try {
+			appendSegmentProcessingChildElements(rootSegment.getBegin(), rootSegment.getEnd(), elements);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 
 		createNewSegment();
-	    }
 
-	    AtributeStack.pop();
-
-	    //	    Tag pop = AtributeStack.pop();
-	    //	    if (pop != null) {
-	    //		log.debug("Pop Tag >" + pop.toString());
-	    //	    } else {
-	    //		log.error("Pop Tag > ERROR Stack are empty");
-	    //	    }
+		return segmentList;
 
 	}
 
-	assert begin <= end;
-	if (begin < renderedIndex)
-	    begin = renderedIndex;
-	if (begin >= end)
-	    return;
-	try {
-	    if (preformatted) {
-		appendPreformattedSegment(begin, end);
-	    } else
-		appendNonPreformattedSegment(begin, end);
-	} finally {
-	    if (renderedIndex < end)
-		renderedIndex = end;
-	}
-    }
+	@Override
+	protected void appendSegment(int begin, final int end) throws IOException {
 
-    boolean nextIsLI = false;
+		Tag tag = source.getPreviousTag(begin);
 
-    public boolean spanelement;
-    public boolean listelement;
+		if (isOpenStartTag(tag)) {
 
-    void createNewSegment() {
-	createNewSegment(false);
-    }
+			createNewSegment();
+			//	    log.debug("Push Tag >" + tag.toString());
+			AtributeStack.push(tag);
 
-    void createNewSegment(boolean force) {
+			//	    if (tag.getName().equals("pre") || tag.getName().equals("span")) {
+			if (tag.getName().equals("span")) {
+				preformatted = false;
+			}
 
-	if (!force && (spanelement || listelement)) {
-	    return;
-	}
+		} else if (isClosedEndTag(tag)) {
 
-	// Truncate to 2500 chars
-	CB_List<String> innerTexts = turncate2500(appendable.toString());
-	for (String innerText : innerTexts) {
-	    handleInnerText(innerText);
-	}
+			if (!tag.getName().toLowerCase().equals("a") && !nextIsLI) {
 
-    }
+				//close Span?
+				if (tag.getName().equals("span")) {
+					this.spanelement = false;
+				}
 
-    private void handleInnerText(String innerText) {
-	if (innerText != null && !innerText.isEmpty() && isNotSpace(innerText)) {
+				createNewSegment();
+			}
 
-	    Html_Segment segment;
+			AtributeStack.pop();
 
-	    if (nextIsLI && actList != null) {
-		//		log.debug("Append new LI element:" + innerText);
+			//	    Tag pop = AtributeStack.pop();
+			//	    if (pop != null) {
+			//		log.debug("Pop Tag >" + pop.toString());
+			//	    } else {
+			//		log.error("Pop Tag > ERROR Stack are empty");
+			//	    }
 
-		while (innerText.startsWith(" "))
-		    innerText = innerText.replaceFirst(" ", "");
-
-		segment = new Html_Segment_TextBlock(AtributeStack, innerText);
-		if (!hyperLinkList.isEmpty()) {
-		    ((Html_Segment_TextBlock) segment).add(hyperLinkList);
 		}
-		if (!(segment.formatedText == null || segment.formatedText.isEmpty()))
-		    actList.addListEntry(segment);
 
+		assert begin <= end;
+		if (begin < renderedIndex)
+			begin = renderedIndex;
+		if (begin >= end)
+			return;
+		try {
+			if (preformatted) {
+				appendPreformattedSegment(begin, end);
+			} else
+				appendNonPreformattedSegment(begin, end);
+		} finally {
+			if (renderedIndex < end)
+				renderedIndex = end;
+		}
+	}
+
+	boolean nextIsLI = false;
+
+	public boolean spanelement;
+	public boolean listelement;
+
+	void createNewSegment() {
+		createNewSegment(false);
+	}
+
+	void createNewSegment(boolean force) {
+
+		if (!force && (spanelement || listelement)) {
+			return;
+		}
+
+		// Truncate to 2500 chars
+		CB_List<String> innerTexts = turncate2500(appendable.toString());
+		for (String innerText : innerTexts) {
+			handleInnerText(innerText);
+		}
+
+	}
+
+	private void handleInnerText(String innerText) {
+		if (innerText != null && !innerText.isEmpty() && isNotSpace(innerText)) {
+
+			Html_Segment segment;
+
+			if (nextIsLI && actList != null) {
+				//		log.debug("Append new LI element:" + innerText);
+
+				while (innerText.startsWith(" "))
+					innerText = innerText.replaceFirst(" ", "");
+
+				segment = new Html_Segment_TextBlock(AtributeStack, innerText);
+				if (!hyperLinkList.isEmpty()) {
+					((Html_Segment_TextBlock) segment).add(hyperLinkList);
+				}
+				if (!(segment.formatedText == null || segment.formatedText.isEmpty()))
+					actList.addListEntry(segment);
+
+				appendable = new StringBuilder();
+				isImage = false;
+				hyperLinkList.clear();
+				return;
+			}
+
+			if (actList != null && !actList.getSegmentList().isEmpty()) {
+				segmentList.add(actList);
+				actList = null;
+			}
+
+			//	    log.debug("Append Text:" + innerText);
+
+			if (isImage) {
+				segment = new Html_Segment_Image(AtributeStack, innerText);
+			} else {
+
+				segment = new Html_Segment_TextBlock(AtributeStack, innerText);
+				if (!hyperLinkList.isEmpty()) {
+					((Html_Segment_TextBlock) segment).add(hyperLinkList);
+				}
+			}
+
+			if (!(segment.formatedText == null || segment.formatedText.isEmpty()))
+				segmentList.add(segment);
+			apendableList.add(appendable);
+			appendable = new StringBuilder();
+
+			hyperLinkList.clear();
+
+			isImage = false;
+		}
+	}
+
+	public void addListToSegments() {
+		if (actList != null && !actList.getSegmentList().isEmpty()) {
+			segmentList.add(actList);
+			actList = null;
+		}
+	}
+
+	CB_List<String> turncate2500(String text) {
+
+		if (text.length() < 2500) {
+			CB_List<String> ret = new CB_List<String>();
+			ret.add(text);
+			return ret;
+		}
+
+		CB_List<String> textList = new CB_List<String>();
+		String[] split = null;
+		while (text != null && text.length() > 2500) {
+			split = split(text);
+			textList.add(split[0]);
+			text = split[1];
+		}
+		textList.add(split[1]);
+
+		return textList;
+
+	}
+
+	private final int MAX_TEXT_LENGTH = 2500;
+
+	private String[] split(String text) {
+		//search first line break before 2500 char
+		int pos = text.lastIndexOf(this.newLine, MAX_TEXT_LENGTH);
+		String first = null;
+		String second = null;
+		if (pos < 2) {
+			//	    search for Space
+			pos = text.lastIndexOf(" ", MAX_TEXT_LENGTH);
+			if (pos < 2) {
+				log.debug("Cant split HTML Text");
+				first = text; // can't split
+			} else {
+				first = text.substring(0, pos);
+				second = text.substring(pos);
+			}
+
+		} else {
+			first = text.substring(0, pos);
+			second = text.substring(pos);
+		}
+
+		return new String[] { first, second };
+	}
+
+	void createNewHrSegment() {
+		//	log.debug("Append HR segment:");
+
+		Html_Segment segment = new Html_Segment_HR(AtributeStack);
+		segmentList.add(segment);
 		appendable = new StringBuilder();
 		isImage = false;
-		hyperLinkList.clear();
-		return;
-	    }
 
-	    if (actList != null && !actList.getSegmentList().isEmpty()) {
-		segmentList.add(actList);
-		actList = null;
-	    }
+	}
 
-	    //	    log.debug("Append Text:" + innerText);
+	@Override
+	protected void appendSegmentProcessingChildElements(final int begin, final int end, final List<Element> childElements) throws IOException {
+		int index = begin;
+		for (Element childElement : childElements) {
+			if (index >= childElement.getEnd())
+				continue;
+			if (index < childElement.getBegin())
+				appendSegmentRemovingTags(index, childElement.getBegin());
+			ElementHandler handler = getElementHandler(childElement);
+			handler.process(this, childElement);
+			if (isImage) {
+				createNewSegment();
+			}
 
-	    if (isImage) {
-		segment = new Html_Segment_Image(AtributeStack, innerText);
-	    } else {
-
-		segment = new Html_Segment_TextBlock(AtributeStack, innerText);
-		if (!hyperLinkList.isEmpty()) {
-		    ((Html_Segment_TextBlock) segment).add(hyperLinkList);
+			index = Math.max(renderedIndex, childElement.getEnd());
 		}
-	    }
 
-	    if (!(segment.formatedText == null || segment.formatedText.isEmpty()))
-		segmentList.add(segment);
-	    apendableList.add(appendable);
-	    appendable = new StringBuilder();
-
-	    hyperLinkList.clear();
-
-	    isImage = false;
-	}
-    }
-
-    public void addListToSegments() {
-	if (actList != null && !actList.getSegmentList().isEmpty()) {
-	    segmentList.add(actList);
-	    actList = null;
-	}
-    }
-
-    CB_List<String> turncate2500(String text) {
-
-	if (text.length() < 2500) {
-	    CB_List<String> ret = new CB_List<String>();
-	    ret.add(text);
-	    return ret;
+		if (index < end) {
+			appendSegmentRemovingTags(index, end);
+		}
 	}
 
-	CB_List<String> textList = new CB_List<String>();
-	String[] split = null;
-	while (text != null && text.length() > 2500) {
-	    split = split(text);
-	    textList.add(split[0]);
-	    text = split[1];
-	}
-	textList.add(split[1]);
+	private boolean isNotSpace(String innerText) {
 
-	return textList;
-
-    }
-
-    private final int MAX_TEXT_LENGTH = 2500;
-
-    private String[] split(String text) {
-	//search first line break before 2500 char
-	int pos = text.lastIndexOf(this.newLine, MAX_TEXT_LENGTH);
-	String first = null;
-	String second = null;
-	if (pos < 2) {
-	    //	    search for Space
-	    pos = text.lastIndexOf(" ", MAX_TEXT_LENGTH);
-	    if (pos < 2) {
-		log.debug("Cant split HTML Text");
-		first = text; // can't split
-	    } else {
-		first = text.substring(0, pos);
-		second = text.substring(pos);
-	    }
-
-	} else {
-	    first = text.substring(0, pos);
-	    second = text.substring(pos);
+		if (innerText.equals(" "))
+			return false;
+		return true;
 	}
 
-	return new String[] { first, second };
-    }
+	private boolean isClosedEndTag(Tag tag) {
+		if (tag == null)
+			return false;
+		if (tag instanceof EndTag)
+			return true;
+		return false;
 
-    void createNewHrSegment() {
-	//	log.debug("Append HR segment:");
-
-	Html_Segment segment = new Html_Segment_HR(AtributeStack);
-	segmentList.add(segment);
-	appendable = new StringBuilder();
-	isImage = false;
-
-    }
-
-    @Override
-    protected void appendSegmentProcessingChildElements(final int begin, final int end, final List<Element> childElements) throws IOException {
-	int index = begin;
-	for (Element childElement : childElements) {
-	    if (index >= childElement.getEnd())
-		continue;
-	    if (index < childElement.getBegin())
-		appendSegmentRemovingTags(index, childElement.getBegin());
-	    ElementHandler handler = getElementHandler(childElement);
-	    handler.process(this, childElement);
-	    if (isImage) {
-		createNewSegment();
-	    }
-
-	    index = Math.max(renderedIndex, childElement.getEnd());
 	}
 
-	if (index < end) {
-	    appendSegmentRemovingTags(index, end);
+	private boolean isOpenStartTag(Tag tag) {
+		if (tag == null)
+			return false;
+		if (tag instanceof EndTag)
+			return false;
+		if (tag.toString().endsWith("/>"))
+			return false;
+		return true;
 	}
-    }
 
-    private boolean isNotSpace(String innerText) {
+	@Override
+	protected ElementHandler getElementHandler(final Element element) {
+		if (element.getStartTag().getStartTagType().isServerTag())
+			return RemoveElementHandler.INSTANCE; // hard-coded configuration
+		ElementHandler elementHandler = CB_Html_Renderer.ELEMENT_HANDLERS.get(element.getName());
+		return (elementHandler != null) ? elementHandler : StandardInlineElementHandler.INSTANCE;
+	}
 
-	if (innerText.equals(" "))
-	    return false;
-	return true;
-    }
+	CB_List<HyperLinkText> hyperLinkList = new CB_List<HyperLinkText>();
 
-    private boolean isClosedEndTag(Tag tag) {
-	if (tag == null)
-	    return false;
-	if (tag instanceof EndTag)
-	    return true;
-	return false;
-
-    }
-
-    private boolean isOpenStartTag(Tag tag) {
-	if (tag == null)
-	    return false;
-	if (tag instanceof EndTag)
-	    return false;
-	if (tag.toString().endsWith("/>"))
-	    return false;
-	return true;
-    }
-
-    @Override
-    protected ElementHandler getElementHandler(final Element element) {
-	if (element.getStartTag().getStartTagType().isServerTag())
-	    return RemoveElementHandler.INSTANCE; // hard-coded configuration
-	ElementHandler elementHandler = CB_Html_Renderer.ELEMENT_HANDLERS.get(element.getName());
-	return (elementHandler != null) ? elementHandler : StandardInlineElementHandler.INSTANCE;
-    }
-
-    CB_List<HyperLinkText> hyperLinkList = new CB_List<HyperLinkText>();
-
-    public void add(HyperLinkText hyperLinkText) {
-	hyperLinkList.add(hyperLinkText);
-    }
+	public void add(HyperLinkText hyperLinkText) {
+		hyperLinkList.add(hyperLinkText);
+	}
 }

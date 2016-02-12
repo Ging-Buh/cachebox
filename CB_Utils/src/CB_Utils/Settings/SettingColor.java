@@ -22,39 +22,31 @@ import CB_Utils.Util.HSV_Color;
 /**
  * @author Longri
  */
-public class SettingColor extends SettingBase<Color>
-{
+public class SettingColor extends SettingBase<Color> {
 
-	public SettingColor(String name, SettingCategory category, SettingModus modus, Color defaultValue, SettingStoreType StoreType, SettingUsage usage)
-	{
+	public SettingColor(String name, SettingCategory category, SettingModus modus, Color defaultValue, SettingStoreType StoreType, SettingUsage usage) {
 		super(name, category, modus, StoreType, usage);
 		this.defaultValue = defaultValue;
 	}
 
 	@Override
-	public String toDBString()
-	{
+	public String toDBString() {
 		return value.toString();
 	}
 
 	@Override
-	public boolean fromDBString(String dbString)
-	{
-		try
-		{
+	public boolean fromDBString(String dbString) {
+		try {
 			value = new HSV_Color(dbString);
 			return true;
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			value = defaultValue;
 			return false;
 		}
 	}
 
 	@Override
-	public SettingBase<Color> copy()
-	{
+	public SettingBase<Color> copy() {
 		SettingBase<Color> ret = new SettingColor(this.name, this.category, this.modus, this.defaultValue, this.storeType, this.usage);
 		ret.value = this.value;
 		ret.lastValue = this.lastValue;
@@ -62,13 +54,16 @@ public class SettingColor extends SettingBase<Color>
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (obj == null) return false;
-		if (!(obj instanceof SettingColor)) return false;
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		if (!(obj instanceof SettingColor))
+			return false;
 		SettingColor inst = (SettingColor) obj;
-		if (!(inst.name.equals(this.name))) return false;
-		if (!inst.value.equals(this.value)) return false;
+		if (!(inst.name.equals(this.name)))
+			return false;
+		if (!inst.value.equals(this.value))
+			return false;
 
 		return true;
 	}

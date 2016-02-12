@@ -16,15 +16,13 @@ package org.mapsforge.core.model;
 
 import java.io.Serializable;
 
-
 /**
  * A LatLong represents an immutable pair of latitude and longitude coordinates.
  */
 public class LatLong implements Comparable<LatLong>, Serializable {
 	private static final long serialVersionUID = 1L;
-	
-	private static final double CONVERSIONFACTOR=1e6;
-	
+
+	private static final double CONVERSIONFACTOR = 1e6;
 
 	/**
 	 * The latitude coordinate of this LatLong in degrees.
@@ -44,16 +42,14 @@ public class LatLong implements Comparable<LatLong>, Serializable {
 		return longitude / CONVERSIONFACTOR;
 	}
 
-	public int getIntLatitude()
-	{
+	public int getIntLatitude() {
 		return latitude;
 	}
 
-	public int getIntLongitude()
-	{
+	public int getIntLongitude() {
 		return longitude;
 	}
-	
+
 	/**
 	 * @param latitude
 	 *            the latitude coordinate in degrees.
@@ -63,16 +59,16 @@ public class LatLong implements Comparable<LatLong>, Serializable {
 	 *             if a coordinate is invalid.
 	 */
 	public LatLong(double latitude, double longitude) {
-//		LatLongUtils.validateLatitude(latitude);
-//		LatLongUtils.validateLongitude(longitude);
+		//		LatLongUtils.validateLatitude(latitude);
+		//		LatLongUtils.validateLongitude(longitude);
 
 		this.latitude = (int) (latitude * CONVERSIONFACTOR);
 		this.longitude = (int) (longitude * CONVERSIONFACTOR);
 	}
-	
+
 	public LatLong(int latitude, int longitude) {
 		this.latitude = latitude;
-		this.longitude =longitude;
+		this.longitude = longitude;
 	}
 
 	public LatLong(LatLong tileLatLong, int deltaLatitude, int deltaLongitude) {

@@ -55,8 +55,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
  * 
  * @author Longri 2014
  */
-public class CB_SLF4J
-{
+public class CB_SLF4J {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_SLF4J.class);
 	public static final String br = System.getProperty("line.separator");
 	private final String WORKPATH;
@@ -78,8 +77,7 @@ public class CB_SLF4J
 	 * The config file will be changed the property value <code>property name="LOG_DIR"</code> to the path of the given<br>
 	 * WorkPath eG. <code> sdCard/cachebox/Logs</code> if the given WorkPath <code> cdCard/cachebox</code>
 	 */
-	public CB_SLF4J(String workpath)
-	{
+	public CB_SLF4J(String workpath) {
 		that = this;
 		WORKPATH = workpath;
 
@@ -88,50 +86,40 @@ public class CB_SLF4J
 
 		File logFolderFiile = new File(logFolder);
 
-		if (logFolderFiile.exists() && logFolderFiile.isDirectory())
-		{// delete all logs are not from today
+		if (logFolderFiile.exists() && logFolderFiile.isDirectory()) {// delete all logs are not from today
 
 			String fileNames[] = logFolderFiile.list();
-			for (String fileName : fileNames)
-			{
-				if (!fileName.endsWith("logback.xml"))
-				{
+			for (String fileName : fileNames) {
+				if (!fileName.endsWith("logback.xml")) {
 					File file = new File(logFolder + "/" + fileName);
 
-					if (file.isFile() && file.lastModified() < System.currentTimeMillis() - (24 * 60 * 60 * 100))
-					{
+					if (file.isFile() && file.lastModified() < System.currentTimeMillis() - (24 * 60 * 60 * 100)) {
 						// file is older then 24h, so we delete
 						file.delete();
 					}
 				}
 			}
-		}
-		else
-		{// create folder
+		} else {// create folder
 			logFolderFiile.mkdirs();
 		}
 
-		if (new File(logBackXmlFile).exists() || LogLevel.isLogLevel(LogLevel.ERROR))
-		{
+		if (new File(logBackXmlFile).exists() || LogLevel.isLogLevel(LogLevel.ERROR)) {
 			Initial();
 		}
 	}
 
-	private void Initial()
-	{
+	private void Initial() {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd._HH_mm_ss");
 		String logfile = logFolder + "/log_" + simpleDateFormat.format(new Date()) + ".txt";
 
 		boolean xmlLogbackInitial = false;
 
-		if (new File(logBackXmlFile).exists())
-		{// if logback.xml exists then initial with this
+		if (new File(logBackXmlFile).exists()) {// if logback.xml exists then initial with this
 
 			// first change <property name="LOG_DIR" inside logback.xml to workpath/Logs
 			String xml = null;
 			InputStream instream = null;
-			try
-			{
+			try {
 
 				StringBuilder sb = new StringBuilder();
 
@@ -139,8 +127,7 @@ public class CB_SLF4J
 				instream = new FileInputStream(logBackXmlFile);
 
 				// if file the available for reading
-				if (instream != null)
-				{
+				if (instream != null) {
 					// prepare the file for reading
 					InputStreamReader inputreader = new InputStreamReader(instream);
 					BufferedReader buffreader = new BufferedReader(inputreader);
@@ -148,72 +135,53 @@ public class CB_SLF4J
 					String line;
 
 					// read every line of the file into the line-variable, on line at the time
-					do
-					{
+					do {
 						line = buffreader.readLine();
 						boolean red = false;
-						if (red || line != null)
-						{
-							if (line.contains("<property name=\"LOG_DIR\""))
-							{
+						if (red || line != null) {
+							if (line.contains("<property name=\"LOG_DIR\"")) {
 								int pos = line.indexOf("value=\"") + 7;
 								int endpos = line.lastIndexOf("\"");
 								line = line.substring(0, pos) + logFolder + line.substring(endpos, line.length());
 								sb.append(line);
 								sb.append(br);
 								red = true;
-							}
-							else
-							{
+							} else {
 								sb.append(line);
 								sb.append(br);
 							}
 						}
 
 						// do something with the line
-					}
-					while (line != null);
+					} while (line != null);
 					xml = sb.toString();
 					buffreader.close();
 				}
-			}
-			catch (Exception ex)
-			{
+			} catch (Exception ex) {
 				// print stack trace.
-			}
-			finally
-			{
+			} finally {
 				// close the file.
-				try
-				{
-					if (instream != null) instream.close();
-				}
-				catch (IOException e)
-				{
+				try {
+					if (instream != null)
+						instream.close();
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 
 			FileWriter writer = null;
-			try
-			{
+			try {
 				writer = new FileWriter(logBackXmlFile, false);
 				writer.write(xml);
-			}
-			catch (IOException e)
-			{
+			} catch (IOException e) {
 				e.printStackTrace();
-			}
-			finally
-			{
-				if (writer != null) try
-				{
-					writer.close();
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
+			} finally {
+				if (writer != null)
+					try {
+						writer.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 			}
 
 			// reset the default context (which may already have been initialized)
@@ -224,21 +192,17 @@ public class CB_SLF4J
 			JoranConfigurator config = new JoranConfigurator();
 			config.setContext(lc);
 
-			try
-			{
+			try {
 				config.doConfigure(logBackXmlFile);
 				xmlLogbackInitial = true;
-			}
-			catch (JoranException e)
-			{
+			} catch (JoranException e) {
 				e.printStackTrace();
 				xmlLogbackInitial = false;
 			}
 
 		}
 
-		if (!xmlLogbackInitial)
-		{// initial with default
+		if (!xmlLogbackInitial) {// initial with default
 			initialDefaultLogBack(logfile);
 		}
 
@@ -249,8 +213,7 @@ public class CB_SLF4J
 		log.info("logger initial");
 	}
 
-	private void initialDefaultLogBack(String logfile)
-	{
+	private void initialDefaultLogBack(String logfile) {
 		// reset the default context (which may already have been initialized)
 		// since we want to reconfigure it
 		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
@@ -273,8 +236,7 @@ public class CB_SLF4J
 		fileAppender.start();
 		root.addAppender(fileAppender);
 
-		if (Plattform.used != Plattform.Android)
-		{
+		if (Plattform.used != Plattform.Android) {
 
 			// setup ConsoleAppender
 			PatternLayoutEncoder encoder2 = new PatternLayoutEncoder();
@@ -287,9 +249,7 @@ public class CB_SLF4J
 			consoleAppender.setEncoder(encoder2);
 			consoleAppender.start();
 			root.addAppender(consoleAppender);
-		}
-		else
-		{
+		} else {
 			// setup LogcatAppender
 			PatternLayoutEncoder encoder3 = new PatternLayoutEncoder();
 			encoder3.setContext(lc);
@@ -304,11 +264,9 @@ public class CB_SLF4J
 		}
 	}
 
-	public static void setLogLevel(LogLevel level)
-	{
+	public static void setLogLevel(LogLevel level) {
 		LogLevel.setLogLevel(level);
-		if (that != null && (new File(that.logBackXmlFile).exists() || LogLevel.isLogLevel(LogLevel.ERROR)))
-		{
+		if (that != null && (new File(that.logBackXmlFile).exists() || LogLevel.isLogLevel(LogLevel.ERROR))) {
 			that.Initial();
 		}
 	}

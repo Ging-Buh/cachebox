@@ -33,7 +33,6 @@ import org.apache.xmlrpc.server.PropertyHandlerMapping;
 import org.apache.xmlrpc.server.XmlRpcStreamServer;
 import org.apache.xmlrpc.util.ThreadPool;
 
-
 /**
  * <p>This is a subclass of the {@link WebServer}, which offers a minimal
  * servlet API. It is recommended to use this class, rather than the
@@ -79,18 +78,24 @@ public class ServletWebServer extends WebServer {
 			description = pDescription;
 		}
 
-		public String getMessage() { return statusCode + " " + super.getMessage(); }
+		public String getMessage() {
+			return statusCode + " " + super.getMessage();
+		}
 
 		/** Returns the error description. The server will send the description
 		 * as plain text in the response body.
 		 * @return The error description.
 		 */
-		public String getDescription() { return description; }
+		public String getDescription() {
+			return description;
+		}
 
 		/** Returns the HTTP status code.
 		 * @return The status code.
 		 */
-		public int getStatusCode() { return statusCode; }
+		public int getStatusCode() {
+			return statusCode;
+		}
 	}
 
 	private final HttpServlet servlet;
@@ -114,34 +119,38 @@ public class ServletWebServer extends WebServer {
 	 * @param pAddr The servers IP address.
 	 * @throws ServletException Initializing the servlet failed.
 	 */
-	public ServletWebServer(HttpServlet pServlet, int pPort, InetAddress pAddr)
-			throws ServletException {
+	public ServletWebServer(HttpServlet pServlet, int pPort, InetAddress pAddr) throws ServletException {
 		super(pPort, pAddr);
 		servlet = pServlet;
-		servlet.init(new ServletConfig(){
-			public String getServletName() { return servlet.getClass().getName(); }
+		servlet.init(new ServletConfig() {
+			public String getServletName() {
+				return servlet.getClass().getName();
+			}
+
 			public ServletContext getServletContext() {
 				throw new IllegalStateException("Context not available");
 			}
+
 			public String getInitParameter(String pArg0) {
 				return null;
 			}
-		
+
 			public Enumeration getInitParameterNames() {
-				return new Enumeration(){
-					public boolean hasMoreElements() { return false; }
+				return new Enumeration() {
+					public boolean hasMoreElements() {
+						return false;
+					}
+
 					public Object nextElement() {
 						throw new NoSuchElementException();
 					}
 				};
 			}
-			
+
 		});
 	}
 
-	protected ThreadPool.Task newTask(WebServer pWebServer,
-									  XmlRpcStreamServer pXmlRpcServer,
-									  Socket pSocket) throws IOException {
+	protected ThreadPool.Task newTask(WebServer pWebServer, XmlRpcStreamServer pXmlRpcServer, Socket pSocket) throws IOException {
 		return new ServletConnection(servlet, pSocket);
 	}
 }

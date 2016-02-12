@@ -6,10 +6,8 @@ import CB_UI_Base.graphics.Join;
 
 import com.badlogic.gdx.graphics.Color;
 
-public class PolyJoin1 extends PolylineTestBase
-{
-	public PolyJoin1()
-	{
+public class PolyJoin1 extends PolylineTestBase {
+	public PolyJoin1() {
 		super(" PolyLine Test" + br + "Red / Join.Mitter / StrokeWidth=30");
 		paint = new GL_Paint();
 		paint.setColor(Color.RED);
@@ -18,8 +16,7 @@ public class PolyJoin1 extends PolylineTestBase
 
 		paint.setStrokeJoin(Join.MITER);
 
-		vertices = new float[]
-			{ 30, 30, 140, 100, 220, 30 };
+		vertices = new float[] { 30, 30, 140, 100, 220, 30 };
 
 	}
 

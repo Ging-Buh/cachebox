@@ -20,14 +20,13 @@ package org.apache.xmlrpc.client;
 
 import org.apache.commons.httpclient.HttpClient;
 
-
 /** An HTTP transport factory, which is based on the Jakarta Commons
  * HTTP Client.
  */
 public class XmlRpcCommonsTransportFactory extends XmlRpcTransportFactoryImpl {
-    private HttpClient httpClient;
+	private HttpClient httpClient;
 
-    /** Creates a new instance.
+	/** Creates a new instance.
 	 * @param pClient The client, which is controlling the factory.
 	 */
 	public XmlRpcCommonsTransportFactory(XmlRpcClient pClient) {
@@ -39,28 +38,28 @@ public class XmlRpcCommonsTransportFactory extends XmlRpcTransportFactoryImpl {
 	}
 
 	/**
-     * <p>Sets the factories {@link HttpClient}. By default, a new instance
-     * of {@link HttpClient} is created for any request.</p>
-     * <p>Reusing the {@link HttpClient} is required, if you want to preserve
-     * some state between requests. This applies, in particular, if you want
-     * to use cookies: In that case, create an instance of {@link HttpClient},
-     * give it to the factory, and use {@link HttpClient#getState()} to
-     * read or set cookies.
+	 * <p>Sets the factories {@link HttpClient}. By default, a new instance
+	 * of {@link HttpClient} is created for any request.</p>
+	 * <p>Reusing the {@link HttpClient} is required, if you want to preserve
+	 * some state between requests. This applies, in particular, if you want
+	 * to use cookies: In that case, create an instance of {@link HttpClient},
+	 * give it to the factory, and use {@link HttpClient#getState()} to
+	 * read or set cookies.
 	 */
-    public void setHttpClient(HttpClient pHttpClient) {
-        httpClient = pHttpClient;
-    }
+	public void setHttpClient(HttpClient pHttpClient) {
+		httpClient = pHttpClient;
+	}
 
-    /**
-     * <p>Returns the factories {@link HttpClient}. By default, a new instance
-     * of {@link HttpClient} is created for any request.</p>
-     * <p>Reusing the {@link HttpClient} is required, if you want to preserve
-     * some state between requests. This applies, in particular, if you want
-     * to use cookies: In that case, create an instance of {@link HttpClient},
-     * give it to the factory, and use {@link HttpClient#getState()} to
-     * read or set cookies.
-     */
-    public HttpClient getHttpClient() {
-        return httpClient;
-    }
+	/**
+	 * <p>Returns the factories {@link HttpClient}. By default, a new instance
+	 * of {@link HttpClient} is created for any request.</p>
+	 * <p>Reusing the {@link HttpClient} is required, if you want to preserve
+	 * some state between requests. This applies, in particular, if you want
+	 * to use cookies: In that case, create an instance of {@link HttpClient},
+	 * give it to the factory, and use {@link HttpClient#getState()} to
+	 * read or set cookies.
+	 */
+	public HttpClient getHttpClient() {
+		return httpClient;
+	}
 }

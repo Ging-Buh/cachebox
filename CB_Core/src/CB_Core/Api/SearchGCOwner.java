@@ -24,19 +24,16 @@ import CB_Locator.Coordinate;
 /**
  * @author Hubert
  */
-public class SearchGCOwner extends SearchCoordinate
-{
+public class SearchGCOwner extends SearchCoordinate {
 	public String OwnerName;
 
-	public SearchGCOwner(int number, Coordinate pos, float distanceInMeters, String ownerName)
-	{
+	public SearchGCOwner(int number, Coordinate pos, float distanceInMeters, String ownerName) {
 		super(number, pos, distanceInMeters);
 		this.OwnerName = ownerName;
 	}
 
 	@Override
-	protected void getRequest(JSONObject request, boolean isLite) throws JSONException
-	{
+	protected void getRequest(JSONObject request, boolean isLite) throws JSONException {
 		super.getRequest(request, isLite);
 		JSONObject jhidden = new JSONObject();
 		JSONArray jusers = new JSONArray();

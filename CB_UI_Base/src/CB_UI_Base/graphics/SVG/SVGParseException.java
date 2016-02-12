@@ -20,25 +20,21 @@ package CB_UI_Base.graphics.SVG;
  * Thrown by the parser if a problem is found in the SVG file.
  */
 
-public class SVGParseException extends Exception
-{
+public class SVGParseException extends Exception {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1381234039776504035L;
 
-	public SVGParseException(String msg)
-	{
+	public SVGParseException(String msg) {
 		super(msg);
 	}
 
-	public SVGParseException(String msg, Throwable cause)
-	{
+	public SVGParseException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 
-	public SVGParseException(Throwable cause)
-	{
+	public SVGParseException(Throwable cause) {
 		super(cause);
 	}
 }

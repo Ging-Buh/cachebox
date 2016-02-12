@@ -20,10 +20,8 @@ import CB_UI_Base.graphics.fromAndroid.RectF;
 /**
  * @author Longri
  */
-public interface ext_Path extends org.mapsforge.core.graphics.Path
-{
-	public enum FillType
-	{
+public interface ext_Path extends org.mapsforge.core.graphics.Path {
+	public enum FillType {
 		WINDING, EVEN_ODD
 
 	}

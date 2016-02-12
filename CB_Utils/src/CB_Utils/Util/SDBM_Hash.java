@@ -8,17 +8,16 @@ public class SDBM_Hash {
 	 * @param str
 	 * @return
 	 */
-	public static long sdbm(String str)
-	{
-		if (str == null || str.equals("")) return 0;
+	public static long sdbm(String str) {
+		if (str == null || str.equals(""))
+			return 0;
 
 		long hash = 0;
 		// set mask to 2^32!!!???!!!
 		long mask = 42949672;
 		mask = mask * 100 + 95;
 
-		for (int i = 0; i < str.length(); i++)
-		{
+		for (int i = 0; i < str.length(); i++) {
 			char c = str.charAt(i);
 			hash = (c + (hash << 6) + (hash << 16) - hash) & mask;
 		}

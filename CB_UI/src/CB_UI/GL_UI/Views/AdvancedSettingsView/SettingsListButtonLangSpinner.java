@@ -26,45 +26,41 @@ import CB_Utils.Settings.SettingUsage;
  * 
  * @author Longri
  */
-public class SettingsListButtonLangSpinner<T> extends SettingBase<T>
-{
+public class SettingsListButtonLangSpinner<T> extends SettingBase<T> {
 
-	public SettingsListButtonLangSpinner(String name, SettingCategory category, SettingModus modus, SettingStoreType StoreType,
-			SettingUsage usage)
-	{
+	public SettingsListButtonLangSpinner(String name, SettingCategory category, SettingModus modus, SettingStoreType StoreType, SettingUsage usage) {
 		super(name, category, modus, StoreType, usage);
 
 	}
 
 	@Override
-	public String toDBString()
-	{
+	public String toDBString() {
 
 		return null;
 	}
 
 	@Override
-	public boolean fromDBString(String dbString)
-	{
+	public boolean fromDBString(String dbString) {
 
 		return false;
 	}
 
 	@Override
-	public SettingBase<T> copy()
-	{
+	public SettingBase<T> copy() {
 		// can't copy this obj
 		return null;
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (!(obj instanceof SettingsListButtonLangSpinner<?>)) return false;
+	public boolean equals(Object obj) {
+		if (!(obj instanceof SettingsListButtonLangSpinner<?>))
+			return false;
 
 		SettingsListButtonLangSpinner<?> inst = (SettingsListButtonLangSpinner<?>) obj;
-		if (!(inst.name.equals(this.name))) return false;
-		if (inst.value != this.value) return false;
+		if (!(inst.name.equals(this.name)))
+			return false;
+		if (inst.value != this.value)
+			return false;
 
 		return true;
 	}

@@ -26,11 +26,9 @@ import org.apache.xmlrpc.server.AbstractReflectiveHandlerMapping;
 import org.apache.xmlrpc.server.ReflectiveXmlRpcHandler;
 import org.apache.xmlrpc.server.RequestProcessorFactoryFactory.RequestProcessorFactory;
 
-
 /** Default implementation of {@link XmlRpcMetaDataHandler}.
  */
-public class ReflectiveXmlRpcMetaDataHandler extends ReflectiveXmlRpcHandler
-		implements XmlRpcMetaDataHandler {
+public class ReflectiveXmlRpcMetaDataHandler extends ReflectiveXmlRpcHandler implements XmlRpcMetaDataHandler {
 	private final String[][] signatures;
 	private final String methodHelp;
 
@@ -47,10 +45,7 @@ public class ReflectiveXmlRpcMetaDataHandler extends ReflectiveXmlRpcHandler
 	 * @param pMethodHelp The help string, which will be returned
 	 * by {@link #getMethodHelp()}.
 	 */
-	public ReflectiveXmlRpcMetaDataHandler(AbstractReflectiveHandlerMapping pMapping,
-                TypeConverterFactory pTypeConverterFactory,
-			    Class pClass, RequestProcessorFactory pFactory, Method[] pMethods,
-			    String[][] pSignatures, String pMethodHelp) {
+	public ReflectiveXmlRpcMetaDataHandler(AbstractReflectiveHandlerMapping pMapping, TypeConverterFactory pTypeConverterFactory, Class pClass, RequestProcessorFactory pFactory, Method[] pMethods, String[][] pSignatures, String pMethodHelp) {
 		super(pMapping, pTypeConverterFactory, pClass, pFactory, pMethods);
 		signatures = pSignatures;
 		methodHelp = pMethodHelp;

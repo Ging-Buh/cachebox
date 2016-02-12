@@ -20,7 +20,6 @@ package CB_UI_Base.graphics;
  * 
  * @author Longri
  */
-public enum GL_FontStyle
-{
+public enum GL_FontStyle {
 	BOLD, BOLD_ITALIC, ITALIC, NORMAL;
 }

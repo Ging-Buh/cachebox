@@ -41,145 +41,145 @@ import CB_UI_Base.Math.CB_RectF;
  * @author Longri
  */
 public class QuickButtonItem extends ListViewItemBase {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(QuickButtonItem.class);
-    private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(QuickButtonItem.class);
+	private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
 
-    private CB_Action mAction;
-    private Image mButtonIcon;
-    private String mActionDesc;
-    private Button mButton;
-    private QuickActions quickActionsEnum;
+	private CB_Action mAction;
+	private Image mButtonIcon;
+	private String mActionDesc;
+	private Button mButton;
+	private QuickActions quickActionsEnum;
 
-    /**
-     * Constructor
-     * 
-     * @param Action
-     *            Action Enum
-     * @param Icon
-     *            Action icon
-     * @param Desc
-     *            Action Beschreibung
-     */
-    public QuickButtonItem(CB_RectF rec, int Index, CB_Action action, String Desc, QuickActions type) {
-	super(rec, Index, action.getName());
-	quickActionsEnum = type;
-	mAction = action;
-	mButtonIcon = new Image(rec.ScaleCenter(0.7f), "QuickListItemImage", false);
-	mButtonIcon.setDrawable(new SpriteDrawable(action.getIcon()));
-	mButtonIcon.setClickable(false);
+	/**
+	 * Constructor
+	 * 
+	 * @param Action
+	 *            Action Enum
+	 * @param Icon
+	 *            Action icon
+	 * @param Desc
+	 *            Action Beschreibung
+	 */
+	public QuickButtonItem(CB_RectF rec, int Index, CB_Action action, String Desc, QuickActions type) {
+		super(rec, Index, action.getName());
+		quickActionsEnum = type;
+		mAction = action;
+		mButtonIcon = new Image(rec.ScaleCenter(0.7f), "QuickListItemImage", false);
+		mButtonIcon.setDrawable(new SpriteDrawable(action.getIcon()));
+		mButtonIcon.setClickable(false);
 
-	mActionDesc = Desc;
+		mActionDesc = Desc;
 
-	mButton = new Button(rec, "QuickListItemButton");
-	mButton.setButtonSprites(SpriteCacheBase.QuickButton);
-	mButton.setDraggable();
-	this.addChild(mButton);
-	this.addChild(mButtonIcon);
+		mButton = new Button(rec, "QuickListItemButton");
+		mButton.setButtonSprites(SpriteCacheBase.QuickButton);
+		mButton.setDraggable();
+		this.addChild(mButton);
+		this.addChild(mButtonIcon);
 
-	mButton.setOnClickListener(new OnClickListener() {
+		mButton.setOnClickListener(new OnClickListener() {
 
-	    @Override
-	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		mAction.CallExecute();
-		return true;
-	    }
-	});
-    }
-
-    /**
-     * Gibt die Beschreibung dieses Items wieder
-     * 
-     * @return String
-     */
-    public String getDesc() {
-	return mActionDesc;
-    }
-
-    @Override
-    protected void Initial() {
-    }
-
-    @Override
-    public boolean onTouchUp(int x, int y, int pointer, int button) {
-	return mButton.onTouchUp(x, y, pointer, button);
-    }
-
-    @Override
-    public boolean click(int x, int y, int pointer, int button) {
-	return mButton.click(x, y, pointer, button);
-    }
-
-    private int autoResortState = -1;
-    private int spoilerState = -1;
-    private int hintState = -1;
-    private int torchState = -1;
-
-    @Override
-    protected void render(Batch batch) {
-	if (childs.size() == 0) {
-	    this.addChild(mButton);
-	    this.addChild(mButtonIcon);
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				mAction.CallExecute();
+				return true;
+			}
+		});
 	}
 
-	super.render(batch);
-
-	if (mAction.getId() == MenuID.AID_AUTO_RESORT) {
-	    if (GlobalCore.getAutoResort() && autoResortState != 1) {
-		mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.autoSelectOn_15.ordinal())));
-		autoResortState = 1;
-	    } else if (!GlobalCore.getAutoResort() && autoResortState != 0) {
-		mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.autoSelectOff_16.ordinal())));
-		autoResortState = 0;
-	    }
-	} else if (mAction.getId() == MenuID.AID_SHOW_SPOILER) {
-	    boolean hasSpoiler = false;
-	    if (GlobalCore.isSetSelectedCache()) {
-		hasSpoiler = GlobalCore.selectedCachehasSpoiler();
-	    }
-
-	    if (hasSpoiler && spoilerState != 1) {
-		mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.images_18.ordinal())));
-		spoilerState = 1;
-	    } else if (!hasSpoiler && spoilerState != 0) {
-		Sprite sprite = new Sprite(SpriteCacheBase.Icons.get(IconName.images_18.ordinal()));
-		sprite.setColor(DISABLE_COLOR);
-		mButtonIcon.setDrawable(new SpriteDrawable(sprite));
-		spoilerState = 0;
-	    }
-	} else if (mAction.getId() == MenuID.AID_TORCH) {
-
-	    if (PlatformConnector.isTorchOn() && torchState != 1) {
-		mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.torch_on_67.ordinal())));
-		torchState = 1;
-	    } else if (!PlatformConnector.isTorchOn() && torchState != 0) {
-		mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.torch_Off_68.ordinal())));
-		torchState = 0;
-	    }
-	} else if (mAction.getId() == MenuID.AID_SHOW_HINT) {
-
-	    if (mAction.getEnabled() && hintState != 1) {
-		mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.hint_19.ordinal())));
-		hintState = 1;
-	    } else if (!mAction.getEnabled() && hintState != 0) {
-		Sprite sprite = new Sprite(SpriteCacheBase.Icons.get(IconName.hint_19.ordinal()));
-		sprite.setColor(DISABLE_COLOR);
-		mButtonIcon.setDrawable(new SpriteDrawable(sprite));
-		hintState = 0;
-	    }
+	/**
+	 * Gibt die Beschreibung dieses Items wieder
+	 * 
+	 * @return String
+	 */
+	public String getDesc() {
+		return mActionDesc;
 	}
-    }
 
-    @Override
-    protected void SkinIsChanged() {
-    }
+	@Override
+	protected void Initial() {
+	}
 
-    public QuickActions getAction() {
-	return quickActionsEnum;
-    }
+	@Override
+	public boolean onTouchUp(int x, int y, int pointer, int button) {
+		return mButton.onTouchUp(x, y, pointer, button);
+	}
 
-    @Override
-    public void setY(float i) {
-	super.setY(i);
-    }
+	@Override
+	public boolean click(int x, int y, int pointer, int button) {
+		return mButton.click(x, y, pointer, button);
+	}
+
+	private int autoResortState = -1;
+	private int spoilerState = -1;
+	private int hintState = -1;
+	private int torchState = -1;
+
+	@Override
+	protected void render(Batch batch) {
+		if (childs.size() == 0) {
+			this.addChild(mButton);
+			this.addChild(mButtonIcon);
+		}
+
+		super.render(batch);
+
+		if (mAction.getId() == MenuID.AID_AUTO_RESORT) {
+			if (GlobalCore.getAutoResort() && autoResortState != 1) {
+				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.autoSelectOn_15.ordinal())));
+				autoResortState = 1;
+			} else if (!GlobalCore.getAutoResort() && autoResortState != 0) {
+				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.autoSelectOff_16.ordinal())));
+				autoResortState = 0;
+			}
+		} else if (mAction.getId() == MenuID.AID_SHOW_SPOILER) {
+			boolean hasSpoiler = false;
+			if (GlobalCore.isSetSelectedCache()) {
+				hasSpoiler = GlobalCore.selectedCachehasSpoiler();
+			}
+
+			if (hasSpoiler && spoilerState != 1) {
+				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.images_18.ordinal())));
+				spoilerState = 1;
+			} else if (!hasSpoiler && spoilerState != 0) {
+				Sprite sprite = new Sprite(SpriteCacheBase.Icons.get(IconName.images_18.ordinal()));
+				sprite.setColor(DISABLE_COLOR);
+				mButtonIcon.setDrawable(new SpriteDrawable(sprite));
+				spoilerState = 0;
+			}
+		} else if (mAction.getId() == MenuID.AID_TORCH) {
+
+			if (PlatformConnector.isTorchOn() && torchState != 1) {
+				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.torch_on_67.ordinal())));
+				torchState = 1;
+			} else if (!PlatformConnector.isTorchOn() && torchState != 0) {
+				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.torch_Off_68.ordinal())));
+				torchState = 0;
+			}
+		} else if (mAction.getId() == MenuID.AID_SHOW_HINT) {
+
+			if (mAction.getEnabled() && hintState != 1) {
+				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.hint_19.ordinal())));
+				hintState = 1;
+			} else if (!mAction.getEnabled() && hintState != 0) {
+				Sprite sprite = new Sprite(SpriteCacheBase.Icons.get(IconName.hint_19.ordinal()));
+				sprite.setColor(DISABLE_COLOR);
+				mButtonIcon.setDrawable(new SpriteDrawable(sprite));
+				hintState = 0;
+			}
+		}
+	}
+
+	@Override
+	protected void SkinIsChanged() {
+	}
+
+	public QuickActions getAction() {
+		return quickActionsEnum;
+	}
+
+	@Override
+	public void setY(float i) {
+		super.setY(i);
+	}
 
 }

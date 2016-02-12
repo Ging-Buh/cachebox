@@ -24,8 +24,7 @@ import com.badlogic.gdx.graphics.Texture;
 /**
  * @author Longri
  */
-public interface ext_Bitmap extends ResourceBitmap
-{
+public interface ext_Bitmap extends ResourceBitmap {
 	void recycle();
 
 	void getPixels(int[] maskBuf, int i, int w, int j, int y, int w2, int k);

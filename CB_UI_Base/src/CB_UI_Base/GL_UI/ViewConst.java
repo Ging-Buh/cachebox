@@ -3,8 +3,7 @@ package CB_UI_Base.GL_UI;
 import CB_UI_Base.GL_UI.ViewID.UI_Pos;
 import CB_UI_Base.GL_UI.ViewID.UI_Type;
 
-public class ViewConst
-{
+public class ViewConst {
 	public static final ViewID MAP_VIEW = new ViewID(ViewID.MAP_VIEW, UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Right);
 	public static final ViewID CACHE_LIST_VIEW = new ViewID(ViewID.CACHE_LIST_VIEW, UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Left);
 	public static final ViewID LOG_VIEW = new ViewID(ViewID.LOG_VIEW, UI_Type.OpenGl, UI_Pos.Left, UI_Pos.Left);

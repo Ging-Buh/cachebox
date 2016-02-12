@@ -20,7 +20,6 @@ package CB_UI_Base.graphics;
  * 
  * @author Longri
  */
-public enum GL_Cap
-{
+public enum GL_Cap {
 	BUTT, ROUND, SQUARE, DEFAULT;
 }

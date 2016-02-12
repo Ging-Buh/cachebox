@@ -21,10 +21,10 @@
 package net.htmlparser.jericho;
 
 final class EndTagTypeMasonComponentCalledWithContent extends EndTagTypeGenericImplementation {
-	protected static final EndTagTypeMasonComponentCalledWithContent INSTANCE=new EndTagTypeMasonComponentCalledWithContent();
+	protected static final EndTagTypeMasonComponentCalledWithContent INSTANCE = new EndTagTypeMasonComponentCalledWithContent();
 
 	private EndTagTypeMasonComponentCalledWithContent() {
-		super("/mason component called with content","</&",">",true,true);
+		super("/mason component called with content", "</&", ">", true, true);
 	}
 
 	public StartTagType getCorrespondingStartTagType() {

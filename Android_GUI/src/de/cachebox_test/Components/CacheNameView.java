@@ -8,17 +8,14 @@ import android.util.AttributeSet;
 import android.view.View;
 import de.cachebox_test.Global;
 
-public class CacheNameView extends View
-{
+public class CacheNameView extends View {
 
-	public CacheNameView(Context context)
-	{
+	public CacheNameView(Context context) {
 		super(context);
 
 	}
 
-	public CacheNameView(Context context, AttributeSet attrs)
-	{
+	public CacheNameView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
 	}
@@ -27,8 +24,7 @@ public class CacheNameView extends View
 	private int width;
 
 	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-	{
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		this.width = measure(widthMeasureSpec);
 		height = measure(heightMeasureSpec);
 
@@ -42,8 +38,7 @@ public class CacheNameView extends View
 	 *            A measureSpec packed into an int
 	 * @return The width of the view, honoring constraints from measureSpec
 	 */
-	private int measure(int measureSpec)
-	{
+	private int measure(int measureSpec) {
 		int result = 0;
 
 		int specSize = MeasureSpec.getSize(measureSpec);
@@ -53,8 +48,7 @@ public class CacheNameView extends View
 		return result;
 	}
 
-	protected void onDraw(Canvas canvas)
-	{
+	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 
 		final Drawable Slide = Global.BtnIcons[0];
@@ -71,8 +65,7 @@ public class CacheNameView extends View
 	// setMeasuredDimension(this.width, height);
 	// }
 
-	public static int getMyHeight()
-	{
+	public static int getMyHeight() {
 		return height;
 	}
 

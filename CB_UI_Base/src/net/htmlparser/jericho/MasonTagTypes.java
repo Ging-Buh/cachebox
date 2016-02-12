@@ -36,7 +36,7 @@ public final class MasonTagTypes {
 	 * The tag type given to a
 	 * <a target="_blank" href="http://www.masonbook.com/book/chapter-2.mhtml#CHP-2-SECT-3.3">Mason component call</a>
 	 * (<code>&lt;&amp;<var> &#46;&#46;&#46; </var>&amp;&gt;</code>).
- 	 * <p>
+	 * <p>
 	 * <dl>
 	 *  <dt>Properties:</dt>
 	 *   <dd>
@@ -55,13 +55,13 @@ public final class MasonTagTypes {
 	 *   <dd><code>&lt;&amp; menu &amp;&gt;</code></dd>
 	 * </dl>
 	 */
-	public static final StartTagType MASON_COMPONENT_CALL=StartTagTypeMasonComponentCall.INSTANCE;
+	public static final StartTagType MASON_COMPONENT_CALL = StartTagTypeMasonComponentCall.INSTANCE;
 
 	/**
 	 * The tag type given to the start tag of a
 	 * <a target="_blank" href="http://www.masonbook.com/book/chapter-2.mhtml#CHP-2-SECT-3.3.1">Mason component called with content</a>
 	 * (<code>&lt;&amp;|<var> &#46;&#46;&#46; </var>&amp;&gt;<var> &#46;&#46;&#46; </var>&lt;/&amp;&gt;</code>).
- 	 * <p>
+	 * <p>
 	 * <dl>
 	 *  <dt>Properties:</dt>
 	 *   <dd>
@@ -82,7 +82,7 @@ public final class MasonTagTypes {
 	 * &lt;/&amp;&gt;</pre></dd>
 	 * </dl>
 	 */
-	public static final StartTagType MASON_COMPONENT_CALLED_WITH_CONTENT=StartTagTypeMasonComponentCalledWithContent.INSTANCE;
+	public static final StartTagType MASON_COMPONENT_CALLED_WITH_CONTENT = StartTagTypeMasonComponentCalledWithContent.INSTANCE;
 	// THIS ELEMENT TYPICALLY CONTAINS MARKUP
 
 	/**
@@ -110,8 +110,8 @@ public final class MasonTagTypes {
 	 * </dl>
 	 * @see #MASON_COMPONENT_CALLED_WITH_CONTENT
 	 */
-	public static final EndTagType MASON_COMPONENT_CALLED_WITH_CONTENT_END=EndTagTypeMasonComponentCalledWithContent.INSTANCE;
-	
+	public static final EndTagType MASON_COMPONENT_CALLED_WITH_CONTENT_END = EndTagTypeMasonComponentCalledWithContent.INSTANCE;
+
 	/**
 	 * The tag type given to the start tag of a
 	 * <a target="_blank" href="http://www.masonbook.com/book/chapter-2.mhtml#CHP-2-SECT-3.4">Mason named block</a>
@@ -142,7 +142,7 @@ public final class MasonTagTypes {
 	 *   <dd><code>&lt;%perl&gt; print "hello world"; &lt;/%perl&gt;</code></dd>
 	 * </dl>
 	 */
-	public static final StartTagType MASON_NAMED_BLOCK=StartTagTypeMasonNamedBlock.INSTANCE;
+	public static final StartTagType MASON_NAMED_BLOCK = StartTagTypeMasonNamedBlock.INSTANCE;
 	// THIS ELEMENT TYPICALLY CONTAINS CODE, EXCEPT FOR THE <%def> VARIETY WHICH CONTAINS SOME MARKUP AND SOME OTHER SERVER ELEMENTS
 
 	/**
@@ -170,32 +170,29 @@ public final class MasonTagTypes {
 	 * </dl>
 	 * @see #MASON_NAMED_BLOCK
 	 */
-	public static final EndTagType MASON_NAMED_BLOCK_END=EndTagTypeMasonNamedBlock.INSTANCE;
+	public static final EndTagType MASON_NAMED_BLOCK_END = EndTagTypeMasonNamedBlock.INSTANCE;
 
-	private static final TagType[] TAG_TYPES={
-		MASON_COMPONENT_CALL,
-		MASON_COMPONENT_CALLED_WITH_CONTENT,
-		MASON_COMPONENT_CALLED_WITH_CONTENT_END,
-		MASON_NAMED_BLOCK,
-		MASON_NAMED_BLOCK_END
-	};
+	private static final TagType[] TAG_TYPES = { MASON_COMPONENT_CALL, MASON_COMPONENT_CALLED_WITH_CONTENT, MASON_COMPONENT_CALLED_WITH_CONTENT_END, MASON_NAMED_BLOCK, MASON_NAMED_BLOCK_END };
 
-	private MasonTagTypes() {}
-	
+	private MasonTagTypes() {
+	}
+
 	/** 
 	 * {@linkplain TagType#register() Registers} all of the tag types defined in this class at once.
 	 * <p>
 	 * The tag types must be registered before the parser will recognise them.
 	 */
 	public static void register() {
-		for (TagType tagType : TAG_TYPES) tagType.register();
+		for (TagType tagType : TAG_TYPES)
+			tagType.register();
 	}
 
 	/** 
 	 * {@linkplain TagType#deregister() Deregisters} all of the tag types defined in this class at once.
 	 */
 	public static void deregister() {
-		for (TagType tagType : TAG_TYPES) tagType.deregister();
+		for (TagType tagType : TAG_TYPES)
+			tagType.deregister();
 	}
 
 	/**
@@ -205,10 +202,12 @@ public final class MasonTagTypes {
 	 * @return <code>true</code> if the specified tag type is defined in this class, otherwise <code>false</code>.
 	 */
 	public static boolean defines(final TagType tagType) {
-		for (TagType definedTagType : TAG_TYPES) if (tagType==definedTagType) return true;
+		for (TagType definedTagType : TAG_TYPES)
+			if (tagType == definedTagType)
+				return true;
 		return false;
 	}
-	
+
 	/** 
 	 * Indicates whether the specified tag type is recognised by a <a target="_blank" href="http://www.masonhq.com/">Mason</a> parser.
 	 * <p>
@@ -219,6 +218,6 @@ public final class MasonTagTypes {
 	 * @return <code>true</code> if the specified tag type is recognised by a <a target="_blank" href="http://www.masonhq.com/">Mason</a> parser, otherwise <code>false</code>.
 	 */
 	public static boolean isParsedByMason(final TagType tagType) {
-		return tagType==StartTagType.SERVER_COMMON || defines(tagType);
+		return tagType == StartTagType.SERVER_COMMON || defines(tagType);
 	}
 }

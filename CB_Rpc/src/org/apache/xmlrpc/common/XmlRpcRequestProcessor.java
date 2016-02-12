@@ -21,7 +21,6 @@ package org.apache.xmlrpc.common;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.XmlRpcRequest;
 
-
 /** Interface of an object, which is able to process
  * XML-RPC requests.
  */
@@ -34,5 +33,5 @@ public interface XmlRpcRequestProcessor {
 
 	/** Returns the request processors {@link TypeConverterFactory}.
 	 */
-    TypeConverterFactory getTypeConverterFactory();
+	TypeConverterFactory getTypeConverterFactory();
 }

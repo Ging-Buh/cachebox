@@ -23,11 +23,11 @@ import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-
 /** The node serializer is serializing a DOM node.
  */
 public class NodeSerializer extends ExtSerializer {
 	private static final DOMSerializer ser = new DOMSerializer();
+
 	static {
 		ser.setStartingDocument(false);
 	}
@@ -36,7 +36,9 @@ public class NodeSerializer extends ExtSerializer {
 	 */
 	public static final String DOM_TAG = "dom";
 
-	protected String getTagName() { return DOM_TAG; }
+	protected String getTagName() {
+		return DOM_TAG;
+	}
 
 	protected void serialize(ContentHandler pHandler, Object pObject) throws SAXException {
 		ser.serialize((Node) pObject, pHandler);

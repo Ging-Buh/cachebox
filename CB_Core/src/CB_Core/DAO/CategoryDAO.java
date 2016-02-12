@@ -30,12 +30,10 @@ import CB_Core.Types.GpxFilename;
 import de.cb.sqlite.CoreCursor;
 import de.cb.sqlite.Database_Core.Parameters;
 
-public class CategoryDAO
-{
+public class CategoryDAO {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(CategoryDAO.class);
 
-	public Category ReadFromCursor(CoreCursor reader)
-	{
+	public Category ReadFromCursor(CoreCursor reader) {
 		Category result = new Category();
 
 		result.Id = reader.getLong(0);
@@ -43,11 +41,9 @@ public class CategoryDAO
 		result.pinned = reader.getInt(2) != 0;
 
 		// alle GpxFilenames einlesen
-		CoreCursor reader2 = Database.Data.rawQuery("select ID, GPXFilename, Imported, CacheCount from GpxFilenames where CategoryId=?", new String[]
-			{ String.valueOf(result.Id) });
+		CoreCursor reader2 = Database.Data.rawQuery("select ID, GPXFilename, Imported, CacheCount from GpxFilenames where CategoryId=?", new String[] { String.valueOf(result.Id) });
 		reader2.moveToFirst();
-		while (reader2.isAfterLast() == false)
-		{
+		while (reader2.isAfterLast() == false) {
 			GpxFilenameDAO gpxFilenameDAO = new GpxFilenameDAO();
 			GpxFilename gpx = gpxFilenameDAO.ReadFromCursor(reader2);
 			result.add(gpx);
@@ -58,8 +54,7 @@ public class CategoryDAO
 		return result;
 	}
 
-	public Category CreateNewCategory(String filename)
-	{
+	public Category CreateNewCategory(String filename) {
 		filename = new File(filename).getName();
 
 		// neue Category in DB anlegen
@@ -67,12 +62,9 @@ public class CategoryDAO
 
 		Parameters args = new Parameters();
 		args.put("GPXFilename", filename);
-		try
-		{
+		try {
 			Database.Data.insert("Category", args);
-		}
-		catch (Exception exc)
-		{
+		} catch (Exception exc) {
 			log.error("CreateNewCategory", filename, exc);
 		}
 
@@ -80,8 +72,7 @@ public class CategoryDAO
 
 		CoreCursor reader = Database.Data.rawQuery("Select max(ID) from Category", null);
 		reader.moveToFirst();
-		if (reader.isAfterLast() == false)
-		{
+		if (reader.isAfterLast() == false) {
 			Category_ID = reader.getLong(0);
 		}
 		reader.close();
@@ -93,8 +84,7 @@ public class CategoryDAO
 		return result;
 	}
 
-	public GpxFilename CreateNewGpxFilename(Category category, String filename)
-	{
+	public GpxFilename CreateNewGpxFilename(Category category, String filename) {
 		filename = new File(filename).getName();
 
 		Parameters args = new Parameters();
@@ -103,12 +93,9 @@ public class CategoryDAO
 		DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String stimestamp = iso8601Format.format(new Date());
 		args.put("Imported", stimestamp);
-		try
-		{
+		try {
 			Database.Data.insert("GpxFilenames", args);
-		}
-		catch (Exception exc)
-		{
+		} catch (Exception exc) {
 			log.error("CreateNewGpxFilename", filename, exc);
 		}
 
@@ -116,8 +103,7 @@ public class CategoryDAO
 
 		CoreCursor reader = Database.Data.rawQuery("Select max(ID) from GpxFilenames", null);
 		reader.moveToFirst();
-		if (reader.isAfterLast() == false)
-		{
+		if (reader.isAfterLast() == false) {
 			GPXFilename_ID = reader.getLong(0);
 		}
 		reader.close();
@@ -126,37 +112,31 @@ public class CategoryDAO
 		return result;
 	}
 
-	public void SetPinned(Category category, boolean pinned)
-	{
-		if (category.pinned == pinned) return;
+	public void SetPinned(Category category, boolean pinned) {
+		if (category.pinned == pinned)
+			return;
 		category.pinned = pinned;
 
 		Parameters args = new Parameters();
 		args.put("pinned", pinned);
-		try
-		{
+		try {
 			Database.Data.update("Category", args, "Id=" + String.valueOf(category.Id), null);
-		}
-		catch (Exception exc)
-		{
+		} catch (Exception exc) {
 			log.error("SetPinned", "CategoryDAO", exc);
 		}
 	}
 
 	// Categories
-	public void LoadCategoriesFromDatabase()
-	{
+	public void LoadCategoriesFromDatabase() {
 		// read all Categories
 
 		CoreSettingsForward.Categories.beginnTransaction();
 		CoreSettingsForward.Categories.clear();
 
 		CoreCursor reader = Database.Data.rawQuery("select ID, GPXFilename, Pinned from Category", null);
-		if (reader != null)
-		{
+		if (reader != null) {
 			reader.moveToFirst();
-			while (reader.isAfterLast() == false)
-			{
+			while (reader.isAfterLast() == false) {
 				Category category = ReadFromCursor(reader);
 				CoreSettingsForward.Categories.add(category);
 				reader.moveToNext();
@@ -167,14 +147,11 @@ public class CategoryDAO
 		CoreSettingsForward.Categories.endTransaction();
 	}
 
-	public Category GetCategory(Categories categories, String filename)
-	{
+	public Category GetCategory(Categories categories, String filename) {
 		filename = new File(filename).getName();
-		for (int i = 0, n = categories.size(); i < n; i++)
-		{
+		for (int i = 0, n = categories.size(); i < n; i++) {
 			Category category = categories.get(i);
-			if (filename.toUpperCase().equals(category.GpxFilename.toUpperCase()))
-			{
+			if (filename.toUpperCase().equals(category.GpxFilename.toUpperCase())) {
 				return category;
 			}
 		}
@@ -184,24 +161,19 @@ public class CategoryDAO
 		return cat;
 	}
 
-	public void DeleteEmptyCategories()
-	{
+	public void DeleteEmptyCategories() {
 		CoreSettingsForward.Categories.beginnTransaction();
 
 		Categories delete = new Categories();
-		for (int i = 0, n = CoreSettingsForward.Categories.size(); i < n; i++)
-		{
+		for (int i = 0, n = CoreSettingsForward.Categories.size(); i < n; i++) {
 			Category cat = CoreSettingsForward.Categories.get(i);
-			if (cat.CacheCount() == 0)
-			{
-				Database.Data.delete("Category", "Id=?", new String[]
-					{ String.valueOf(cat.Id) });
+			if (cat.CacheCount() == 0) {
+				Database.Data.delete("Category", "Id=?", new String[] { String.valueOf(cat.Id) });
 				delete.add(cat);
 			}
 		}
 
-		for (int i = 0, n = delete.size(); i < n; i++)
-		{
+		for (int i = 0, n = delete.size(); i < n; i++) {
 			CoreSettingsForward.Categories.remove(delete.get(i));
 		}
 		CoreSettingsForward.Categories.endTransaction();

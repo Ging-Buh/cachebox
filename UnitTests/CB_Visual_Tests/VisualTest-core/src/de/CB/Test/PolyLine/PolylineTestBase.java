@@ -18,28 +18,24 @@ import com.badlogic.gdx.math.EarClippingTriangulator;
 
 import de.CB.TestBase.Actions.TestCaseBase;
 
-public abstract class PolylineTestBase extends TestCaseBase
-{
+public abstract class PolylineTestBase extends TestCaseBase {
 	protected PolylineDrawable line;
 	protected final static EarClippingTriangulator ECT = new EarClippingTriangulator();
 
 	protected GL_Paint paint;
 	protected float[] vertices;
 
-	public PolylineTestBase(String TopTestMsg)
-	{
+	public PolylineTestBase(String TopTestMsg) {
 		super(TopTestMsg + br + "Mapsforge", "Cachebox");
 
-		vertices = new float[]
-			{ 10, 10, 100, 50, 50, 100, 50, 150, 200, 200 };
+		vertices = new float[] { 10, 10, 100, 50, 50, 100, 50, 150, 200, 200 };
 
 		// vertices = new float[]
 		// { 10, 50, 100, 50 };
 	}
 
 	@Override
-	public void work()
-	{
+	public void work() {
 
 		Color color = paint.getHSV_Color();
 
@@ -55,8 +51,7 @@ public abstract class PolylineTestBase extends TestCaseBase
 		// Flip Y (256-y)
 		path.moveTo(vertices[0], 256 - vertices[1]);
 
-		for (int i = 2; i < vertices.length - 1; i += 2)
-		{
+		for (int i = 2; i < vertices.length - 1; i += 2) {
 			path.lineTo(vertices[i], 256 - vertices[i + 1]);
 		}
 
@@ -66,8 +61,7 @@ public abstract class PolylineTestBase extends TestCaseBase
 
 		MF_Paint.setColor(factory.createColor((int) (color.a * 255), (int) (color.r * 255), (int) (color.g * 255), (int) (color.b * 255)));
 
-		switch (paint.getCap())
-		{
+		switch (paint.getCap()) {
 		case BUTT:
 			MF_Paint.setStrokeCap(Cap.BUTT);
 		case ROUND:
@@ -78,8 +72,7 @@ public abstract class PolylineTestBase extends TestCaseBase
 			break;
 		}
 
-		if (paint.getDashArray() != null)
-		{
+		if (paint.getDashArray() != null) {
 			MF_Paint.setDashPathEffect(paint.getDashArray());
 		}
 
@@ -89,24 +82,19 @@ public abstract class PolylineTestBase extends TestCaseBase
 	}
 
 	@Override
-	public void draw(Batch batch)
-	{
+	public void draw(Batch batch) {
 		boolean test = true;
 
-		if (line != null)
-		{
+		if (line != null) {
 			line.draw(batch, firstPoint.x, firstPoint.y, 256, 256, 0);
 			line.draw(batch, firstPoint.x + 200, firstPoint.y, 512, 512, 0);
-		}
-		else
+		} else
 			test = false;
 
-		if (tex != null)
-		{
+		if (tex != null) {
 			batch.draw(tex, secondPoint.x, secondPoint.y, 256, 256);
 			batch.draw(tex, secondPoint.x + 200, secondPoint.y, 512, 512);
-		}
-		else
+		} else
 			test = false;
 
 		isReady = test;
@@ -116,17 +104,15 @@ public abstract class PolylineTestBase extends TestCaseBase
 	private final AtomicBoolean isDisposed = new AtomicBoolean(false);
 
 	@Override
-	public boolean isDisposed()
-	{
+	public boolean isDisposed() {
 		return isDisposed.get();
 	}
 
 	@Override
-	public void dispose()
-	{
-		synchronized (isDisposed)
-		{
-			if (isDisposed.get()) return;
+	public void dispose() {
+		synchronized (isDisposed) {
+			if (isDisposed.get())
+				return;
 			// TODO Dispose
 			isDisposed.set(true);
 		}

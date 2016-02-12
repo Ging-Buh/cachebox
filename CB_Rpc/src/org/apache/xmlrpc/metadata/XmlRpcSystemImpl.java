@@ -23,7 +23,6 @@ import org.apache.xmlrpc.XmlRpcRequest;
 import org.apache.xmlrpc.server.PropertyHandlerMapping;
 import org.apache.xmlrpc.server.RequestProcessorFactoryFactory;
 
-
 /** This class implements the various "system" calls,
  * as specifies by {@link XmlRpcListableHandlerMapping}.
  * Suggested use is to create an instance and add it to
@@ -61,28 +60,25 @@ public class XmlRpcSystemImpl {
 	}
 
 	/**
-     * Adds an instance of this class to the given handler
-     * mapping.
+	 * Adds an instance of this class to the given handler
+	 * mapping.
 	 */
-	public static void addSystemHandler(final PropertyHandlerMapping pMapping)
-            throws XmlRpcException {
-	    final RequestProcessorFactoryFactory factory = pMapping.getRequestProcessorFactoryFactory();
-        final XmlRpcSystemImpl systemHandler = new XmlRpcSystemImpl(pMapping);
-        pMapping.setRequestProcessorFactoryFactory(new RequestProcessorFactoryFactory(){
-            public RequestProcessorFactory getRequestProcessorFactory(Class pClass)
-                    throws XmlRpcException {
-                if (XmlRpcSystemImpl.class.equals(pClass)) {
-                    return new RequestProcessorFactory(){
-                        public Object getRequestProcessor(XmlRpcRequest request)
-                                throws XmlRpcException {
-                            return systemHandler;
-                        }
-                    };
-                } else {
-                    return factory.getRequestProcessorFactory(pClass);
-                }
-            }
-        });
-        pMapping.addHandler("system", XmlRpcSystemImpl.class);
-    }
+	public static void addSystemHandler(final PropertyHandlerMapping pMapping) throws XmlRpcException {
+		final RequestProcessorFactoryFactory factory = pMapping.getRequestProcessorFactoryFactory();
+		final XmlRpcSystemImpl systemHandler = new XmlRpcSystemImpl(pMapping);
+		pMapping.setRequestProcessorFactoryFactory(new RequestProcessorFactoryFactory() {
+			public RequestProcessorFactory getRequestProcessorFactory(Class pClass) throws XmlRpcException {
+				if (XmlRpcSystemImpl.class.equals(pClass)) {
+					return new RequestProcessorFactory() {
+						public Object getRequestProcessor(XmlRpcRequest request) throws XmlRpcException {
+							return systemHandler;
+						}
+					};
+				} else {
+					return factory.getRequestProcessorFactory(pClass);
+				}
+			}
+		});
+		pMapping.addHandler("system", XmlRpcSystemImpl.class);
+	}
 }

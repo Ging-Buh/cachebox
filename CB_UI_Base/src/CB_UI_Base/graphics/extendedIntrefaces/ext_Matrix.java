@@ -21,8 +21,7 @@ import com.badlogic.gdx.utils.Disposable;
 /**
  * @author Longri
  */
-public interface ext_Matrix extends Disposable
-{
+public interface ext_Matrix extends Disposable {
 
 	/** Set the matrix to identity */
 	public abstract void reset();

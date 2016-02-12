@@ -24,57 +24,46 @@ import android.content.Context;
 /**
  * An AssetRenderTheme is an XmlRenderTheme that is picked up from the Android apk assets folder.
  */
-public class AssetsRenderTheme implements XmlRenderTheme
-{
+public class AssetsRenderTheme implements XmlRenderTheme {
 	private final String assetName;
 	private final InputStream inputStream;
 	private final String relativePathPrefix;
 
-	public AssetsRenderTheme(Context context, String relativePathPrefix, String fileName) throws IOException
-	{
+	public AssetsRenderTheme(Context context, String relativePathPrefix, String fileName) throws IOException {
 		this.assetName = fileName;
 		this.relativePathPrefix = relativePathPrefix;
 		this.inputStream = context.getAssets().open(this.assetName);
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
-		}
-		else if (!(obj instanceof AssetsRenderTheme))
-		{
+		} else if (!(obj instanceof AssetsRenderTheme)) {
 			return false;
 		}
 		AssetsRenderTheme other = (AssetsRenderTheme) obj;
-		if (this.assetName != other.assetName)
-		{
+		if (this.assetName != other.assetName) {
 			return false;
 		}
-		if (this.relativePathPrefix != other.relativePathPrefix)
-		{
+		if (this.relativePathPrefix != other.relativePathPrefix) {
 			return false;
 		}
 		return true;
 	}
 
 	@Override
-	public String getRelativePathPrefix()
-	{
+	public String getRelativePathPrefix() {
 		return this.relativePathPrefix;
 	}
 
 	@Override
-	public InputStream getRenderThemeAsStream()
-	{
+	public InputStream getRenderThemeAsStream() {
 		return this.inputStream;
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((this.assetName == null) ? 0 : this.assetName.hashCode());
@@ -83,8 +72,7 @@ public class AssetsRenderTheme implements XmlRenderTheme
 	}
 
 	@Override
-	public boolean isFreizeitkarte()
-	{
+	public boolean isFreizeitkarte() {
 		return false;
 	}
 }

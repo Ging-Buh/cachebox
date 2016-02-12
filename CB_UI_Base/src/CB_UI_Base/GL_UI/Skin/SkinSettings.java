@@ -2,8 +2,7 @@ package CB_UI_Base.GL_UI.Skin;
 
 import com.badlogic.gdx.files.FileHandle;
 
-public class SkinSettings
-{
+public class SkinSettings {
 	public FileHandle SkinFolder;
 	public FileHandle DefaultSkinFolder;
 	public boolean Nightmode = false;

@@ -21,9 +21,9 @@
 package net.htmlparser.jericho;
 
 final class StartTagTypeXMLDeclaration extends StartTagTypeGenericImplementation {
-	static final StartTagTypeXMLDeclaration INSTANCE=new StartTagTypeXMLDeclaration();
+	static final StartTagTypeXMLDeclaration INSTANCE = new StartTagTypeXMLDeclaration();
 
 	private StartTagTypeXMLDeclaration() {
-		super("XML declaration","<?xml","?>",null,false,true,false);
+		super("XML declaration", "<?xml", "?>", null, false, true, false);
 	}
 }

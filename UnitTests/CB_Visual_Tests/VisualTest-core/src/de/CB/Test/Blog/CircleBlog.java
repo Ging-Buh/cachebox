@@ -9,8 +9,7 @@ import com.badlogic.gdx.math.Matrix4;
 
 import de.CB.Test.Geometry.GeometryTestCaseBase;
 
-public class CircleBlog extends GeometryTestCaseBase
-{
+public class CircleBlog extends GeometryTestCaseBase {
 
 	final static float MIN_CIRCLE_SEGMENTH_LENGTH = 10;
 	final static int MIN_CIRCLE_SEGMENTH_COUNT = 18;
@@ -19,14 +18,12 @@ public class CircleBlog extends GeometryTestCaseBase
 	protected float centerY = 80;
 	protected float radius = 70;
 
-	public CircleBlog()
-	{
+	public CircleBlog() {
 		super("Circle Blog");
 	}
 
 	@Override
-	public void work()
-	{
+	public void work() {
 		// calculate segment count
 		double alpha = (360 * MIN_CIRCLE_SEGMENTH_LENGTH) / (MathUtils.PI2 * radius);
 		int segmente = Math.max(MIN_CIRCLE_SEGMENTH_COUNT, (int) (360 / alpha));
@@ -49,18 +46,16 @@ public class CircleBlog extends GeometryTestCaseBase
 		int triangleIndex = 0;
 		short verticeIdex = 1;
 		boolean beginnTriangles = false;
-		for (float i = 0; index < (segmente + 1) * 2; i += thetaStep)
-		{
+		for (float i = 0; index < (segmente + 1) * 2; i += thetaStep) {
 			vertices[index++] = centerX + radius * MathUtils.cos(i);
 			vertices[index++] = centerY + radius * MathUtils.sin(i);
 
-			if (!beginnTriangles)
-			{
-				if (index % 6 == 0) beginnTriangles = true;
+			if (!beginnTriangles) {
+				if (index % 6 == 0)
+					beginnTriangles = true;
 			}
 
-			if (beginnTriangles)
-			{
+			if (beginnTriangles) {
 				triangles[triangleIndex++] = 0;
 				triangles[triangleIndex++] = verticeIdex++;
 				triangles[triangleIndex++] = verticeIdex;
@@ -76,8 +71,7 @@ public class CircleBlog extends GeometryTestCaseBase
 	}
 
 	@Override
-	public void draw(Batch batch)
-	{
+	public void draw(Batch batch) {
 		super.draw(batch);
 
 		// draw lines
@@ -93,8 +87,7 @@ public class CircleBlog extends GeometryTestCaseBase
 		float[] polyLine = new float[vertices.length];
 
 		int index = 2;
-		while (index < vertices.length)
-		{
+		while (index < vertices.length) {
 			polyLine[index - 2] = vertices[index++];
 			polyLine[index - 2] = vertices[index++];
 

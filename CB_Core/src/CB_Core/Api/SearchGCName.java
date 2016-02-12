@@ -23,19 +23,16 @@ import CB_Locator.Coordinate;
 /**
  * @author Hubert
  */
-public class SearchGCName extends SearchCoordinate
-{
+public class SearchGCName extends SearchCoordinate {
 	public String gcName;
 
-	public SearchGCName(int number, Coordinate pos, float distanceInMeters, String gcName)
-	{
+	public SearchGCName(int number, Coordinate pos, float distanceInMeters, String gcName) {
 		super(number, pos, distanceInMeters);
 		this.gcName = gcName;
 	}
 
 	@Override
-	protected void getRequest(JSONObject request, boolean isLite) throws JSONException
-	{
+	protected void getRequest(JSONObject request, boolean isLite) throws JSONException {
 		super.getRequest(request, isLite);
 		JSONObject jgc = new JSONObject();
 		jgc.put("GeocacheName", gcName);

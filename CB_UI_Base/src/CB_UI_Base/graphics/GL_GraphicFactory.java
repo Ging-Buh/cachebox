@@ -43,22 +43,18 @@ import com.badlogic.gdx.math.EarClippingTriangulator;
 /**
  * @author Longri
  */
-public class GL_GraphicFactory implements ext_GraphicFactory
-{
+public class GL_GraphicFactory implements ext_GraphicFactory {
 	public final static EarClippingTriangulator ECT = new EarClippingTriangulator();
 	public final static HSV_Color TRANSPARENT = new HSV_Color(0, 0, 0, 0);
 	private final float scaleFactor;
 	private final Hashtable<Integer, ResourceBitmap> BmpBuffer = new Hashtable<Integer, ResourceBitmap>();
 
-	public GL_GraphicFactory(float ScaleFactor)
-	{
+	public GL_GraphicFactory(float ScaleFactor) {
 		this.scaleFactor = ScaleFactor;
 	}
 
-	static HSV_Color getColor(Color color)
-	{
-		switch (color)
-		{
+	static HSV_Color getColor(Color color) {
+		switch (color) {
 		case BLACK:
 			return new HSV_Color(com.badlogic.gdx.graphics.Color.BLACK);
 		case BLUE:
@@ -76,108 +72,90 @@ public class GL_GraphicFactory implements ext_GraphicFactory
 		throw new IllegalArgumentException("unknown color: " + color);
 	}
 
-	public int createColor(HSV_Color color)
-	{
+	public int createColor(HSV_Color color) {
 		return color.toInt();
 	}
 
-	public float getScaleFactor()
-	{
-		
+	public float getScaleFactor() {
+
 		return 0;
 	}
 
 	@Override
-	public InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException
-	{
-		
+	public InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException {
+
 		return null;
 	}
 
-	public GL_Matrix createMatrix(GL_Matrix matrix)
-	{
+	public GL_Matrix createMatrix(GL_Matrix matrix) {
 		return new GL_Matrix(matrix);
 	}
 
-	public Paint createPaint(Paint paint)
-	{
+	public Paint createPaint(Paint paint) {
 		return new GL_Paint(paint);
 	}
 
 	@Override
-	public int setColorAlpha(int color, float paintOpacity)
-	{
+	public int setColorAlpha(int color, float paintOpacity) {
 		HSV_Color c = new HSV_Color(color);
 		c.a = paintOpacity;
 		return c.toInt();
 	}
 
 	@Override
-	public ext_Bitmap createBitmap(int width, int height)
-	{
+	public ext_Bitmap createBitmap(int width, int height) {
 		return new VectorDrawable(width, height);
 	}
 
 	@Override
-	public Bitmap createBitmap(int width, int height, boolean isTransparent)
-	{
+	public Bitmap createBitmap(int width, int height, boolean isTransparent) {
 		return createBitmap(width, height);
 	}
 
 	@Override
-	public Matrix createMatrix()
-	{
+	public Matrix createMatrix() {
 		return new GL_Matrix();
 	}
 
 	@Override
-	public ext_Path createPath()
-	{
+	public ext_Path createPath() {
 		return new GL_Path();
 	}
 
 	@Override
-	public ext_Paint createPaint()
-	{
+	public ext_Paint createPaint() {
 		return new GL_Paint();
 	}
 
 	@Override
-	public ext_Canvas createCanvas()
-	{
+	public ext_Canvas createCanvas() {
 		return new GL_Canvas();
 	}
 
 	@Override
-	public ext_Matrix createMatrix(ext_Matrix matrix)
-	{
+	public ext_Matrix createMatrix(ext_Matrix matrix) {
 		return new GL_Matrix(matrix);
 	}
 
 	@Override
-	public ext_Paint createPaint(ext_Paint paint)
-	{
+	public ext_Paint createPaint(ext_Paint paint) {
 		return new GL_Paint(paint);
 	}
 
 	@Override
-	public int createColor(Color color)
-	{
+	public int createColor(Color color) {
 		return getColor(color).toInt();
 	}
 
 	@Override
-	public int createColor(int alpha, int red, int green, int blue)
-	{
+	public int createColor(int alpha, int red, int green, int blue) {
 		return new HSV_Color(alpha, red, green, blue).toInt();
 	}
 
 	@Override
-	public ResourceBitmap createResourceBitmap(InputStream inputStream, int HashCode) throws IOException
-	{
+	public ResourceBitmap createResourceBitmap(InputStream inputStream, int HashCode) throws IOException {
 		// First show at Buffer
-		if (BmpBuffer.containsKey(HashCode))
-		{
+		if (BmpBuffer.containsKey(HashCode)) {
 			return BmpBuffer.get(HashCode);
 		}
 
@@ -188,37 +166,30 @@ public class GL_GraphicFactory implements ext_GraphicFactory
 	}
 
 	@Override
-	public TileBitmap createTileBitmap(int tileSize, boolean isTransparent)
-	{
-		
+	public TileBitmap createTileBitmap(int tileSize, boolean isTransparent) {
+
 		return null;
 	}
 
 	@Override
-	public TileBitmap createTileBitmap(InputStream inputStream, int tileSize, boolean isTransparent) throws IOException
-	{
-		
+	public TileBitmap createTileBitmap(InputStream inputStream, int tileSize, boolean isTransparent) throws IOException {
+
 		return null;
 	}
 
 	@Override
-	public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int HashCode) throws IOException
-	{
+	public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int HashCode) throws IOException {
 		// First show at Buffer
-		if (BmpBuffer.containsKey(HashCode))
-		{
+		if (BmpBuffer.containsKey(HashCode)) {
 			return BmpBuffer.get(HashCode);
 		}
 
-		try
-		{
+		try {
 			ResourceBitmap bmp = SVG.createBmpFromSVG(this, inputStream, scaleFactor);
 			BmpBuffer.put(HashCode, bmp);
 			return bmp;
-		}
-		catch (SVGParseException e)
-		{
-			
+		} catch (SVGParseException e) {
+
 			e.printStackTrace();
 		}
 		return null;

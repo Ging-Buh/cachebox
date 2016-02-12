@@ -25,8 +25,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 /**
  * @author Longri
  */
-public class SymbolDrawable implements IRotateDrawable
-{
+public class SymbolDrawable implements IRotateDrawable {
 
 	private BitmapDrawable BITMAP;
 	private final float DEFAULT_WIDTH;
@@ -50,8 +49,7 @@ public class SymbolDrawable implements IRotateDrawable
 	 * @param scale
 	 * @param alignCenter
 	 */
-	public SymbolDrawable(BitmapDrawable bmp, float pointX, float pointY, float defaultWidth, float defaultHeight, boolean alignCenter)
-	{
+	public SymbolDrawable(BitmapDrawable bmp, float pointX, float pointY, float defaultWidth, float defaultHeight, boolean alignCenter) {
 		BITMAP = bmp;
 		DEFAULT_WIDTH = defaultWidth;
 		DEFAULT_HEIGHT = defaultHeight;
@@ -61,9 +59,7 @@ public class SymbolDrawable implements IRotateDrawable
 		this.postRotate = 0;
 	}
 
-	public SymbolDrawable(BitmapDrawable bmp, float pointX, float pointY, int defaultWidth, int defaultHeight, boolean alignCenter,
-			float theta)
-	{
+	public SymbolDrawable(BitmapDrawable bmp, float pointX, float pointY, int defaultWidth, int defaultHeight, boolean alignCenter, float theta) {
 		BITMAP = bmp;
 		DEFAULT_WIDTH = defaultWidth;
 		DEFAULT_HEIGHT = defaultHeight;
@@ -74,10 +70,11 @@ public class SymbolDrawable implements IRotateDrawable
 	}
 
 	@Override
-	public boolean draw(Batch batch, float x, float y, float width, float height, float rotate)
-	{
-		if (isDisposed.get()) return true;
-		if (BITMAP == null) return true;
+	public boolean draw(Batch batch, float x, float y, float width, float height, float rotate) {
+		if (isDisposed.get())
+			return true;
+		if (BITMAP == null)
+			return true;
 
 		float scaleWidth = width / DEFAULT_WIDTH;
 		float scaleHeight = height / DEFAULT_HEIGHT;
@@ -92,29 +89,30 @@ public class SymbolDrawable implements IRotateDrawable
 		float pivotX = (BITMAP.getWidth()) / 2;
 		float pivotY = (BITMAP.getHeight()) / 2;
 
-		if (alignCenter)
-		{
+		if (alignCenter) {
 			matrix.setTranslate(-pivotX, pivotY);
 			matrix.setTranslate(-offsetX, -offsetY);
-			if (scaled) matrix.setScale(1 / scaleWidth, 1 / scaleHeight);
+			if (scaled)
+				matrix.setScale(1 / scaleWidth, 1 / scaleHeight);
 			// matrix.rotate(rotate);
-			if (scaled) matrix.setScale(scaleWidth, scaleHeight);
+			if (scaled)
+				matrix.setScale(scaleWidth, scaleHeight);
 			matrix.setTranslate(pointX + pivotX, pointY - pivotY);
 			matrix.setTranslate(-pivotX, -pivotY);
-		}
-		else
-		{
+		} else {
 			matrix.setTranslate(-pivotX, pivotY);
 			matrix.setTranslate(-offsetX, -offsetY);
-			if (scaled) matrix.setScale(1 / scaleWidth, 1 / scaleHeight);
-			if (scaled) matrix.setScale(scaleWidth, scaleHeight);
+			if (scaled)
+				matrix.setScale(1 / scaleWidth, 1 / scaleHeight);
+			if (scaled)
+				matrix.setScale(scaleWidth, scaleHeight);
 			matrix.setTranslate(pointX + pivotX, pointY - pivotY);
 		}
 
-		if (scaled) matrix.setScale(scaleWidth, scaleHeight);
+		if (scaled)
+			matrix.setScale(scaleWidth, scaleHeight);
 
-		float[] pos = new float[]
-			{ this.pointX, this.pointY };
+		float[] pos = new float[] { this.pointX, this.pointY };
 
 		matrix.mapPoints(pos);
 
@@ -122,18 +120,17 @@ public class SymbolDrawable implements IRotateDrawable
 		return false;
 	}
 
-	public boolean isDisposed()
-	{
+	public boolean isDisposed() {
 		return isDisposed.get();
 	}
 
 	@Override
-	public void dispose()
-	{
-		synchronized (isDisposed)
-		{
-			if (isDisposed.get()) return;
-			if (BITMAP != null) BITMAP.dispose();
+	public void dispose() {
+		synchronized (isDisposed) {
+			if (isDisposed.get())
+				return;
+			if (BITMAP != null)
+				BITMAP.dispose();
 			BITMAP = null;
 			isDisposed.set(true);
 		}

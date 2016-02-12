@@ -24,10 +24,8 @@ import com.badlogic.gdx.utils.Disposable;
  * @author ging-buh
  * @author Longri
  */
-public abstract class TileGL implements Disposable
-{
-	public enum TileState
-	{
+public abstract class TileGL implements Disposable {
+	public enum TileState {
 		Scheduled, Present, LowResolution, Disposed
 	}
 
@@ -57,8 +55,7 @@ public abstract class TileGL implements Disposable
 
 	public abstract long getHeight();
 
-	public float getScaleFactor()
-	{
+	public float getScaleFactor() {
 		return getWidth() / DEFAULT_TILE_SIZE;
 	}
 

@@ -41,78 +41,62 @@ import CB_UI_Base.graphics.fromAndroid.RectF;
 /**
  * @author Longri
  */
-public class GL_Canvas implements ext_Canvas
-{
+public class GL_Canvas implements ext_Canvas {
 	ext_Matrix aktMatrix = new GL_Matrix();
 	Stack<ext_Matrix> matrixStack = new Stack<ext_Matrix>();
 
 	private VectorDrawable bitmap;
 
 	@Override
-	public void destroy()
-	{
-		
+	public void destroy() {
 
 	}
 
 	@Override
-	public Dimension getDimension()
-	{
-		
+	public Dimension getDimension() {
+
 		return null;
 	}
 
 	@Override
-	public int getHeight()
-	{
-		
+	public int getHeight() {
+
 		return 0;
 	}
 
 	@Override
-	public int getWidth()
-	{
-		
+	public int getWidth() {
+
 		return 0;
 	}
 
 	@Override
-	public void setBitmap(Bitmap bitmap)
-	{
+	public void setBitmap(Bitmap bitmap) {
 		this.bitmap = (VectorDrawable) bitmap;
 	}
 
 	@Override
-	public void drawBitmap(Bitmap bitmap, int left, int top)
-	{
-		
+	public void drawBitmap(Bitmap bitmap, int left, int top) {
 
 	}
 
 	@Override
-	public void drawBitmap(Bitmap bitmap, Matrix matrix)
-	{
-		
+	public void drawBitmap(Bitmap bitmap, Matrix matrix) {
 
 	}
 
 	@Override
-	public void drawCircle(int x, int y, int radius, Paint paint)
-	{
-		
+	public void drawCircle(int x, int y, int radius, Paint paint) {
 
 	}
 
 	@Override
-	public void drawLine(int x1, int y1, int x2, int y2, Paint paint)
-	{
-		
+	public void drawLine(int x1, int y1, int x2, int y2, Paint paint) {
 
 	}
 
 	@Override
-	public void drawPath(Path path, Paint paint)
-	{
+	public void drawPath(Path path, Paint paint) {
 		// Cast
 		GL_Path pat = (GL_Path) path;
 		GL_Paint pai = (GL_Paint) paint;
@@ -121,8 +105,7 @@ public class GL_Canvas implements ext_Canvas
 
 		ArrayList<float[]> pathes = pat.getVertices();
 
-		switch (style)
-		{
+		switch (style) {
 		case FILL:
 			float[] Vertices = null;
 			short[] Triangles = null;
@@ -130,23 +113,17 @@ public class GL_Canvas implements ext_Canvas
 			// GL_Matrix m = new GL_Matrix();
 			// m.scale(100, 100);
 
-			if (pathes.size() > 1)
-			{
-				try
-				{
+			if (pathes.size() > 1) {
+				try {
 					Polygon polygon = null;
-					for (float[] singlePath : pathes)
-					{
+					for (float[] singlePath : pathes) {
 
 						// m.mapPoints(singlePath);
 
 						Polygon poly = new Polygon(singlePath);
-						if (polygon == null)
-						{
+						if (polygon == null) {
 							polygon = poly;
-						}
-						else
-						{
+						} else {
 							polygon.addHole(poly);
 						}
 					}
@@ -160,46 +137,38 @@ public class GL_Canvas implements ext_Canvas
 					int index = 0;
 					short TriangleIndex = 0;
 
-					for (DelaunayTriangle tri : computedTriangles)
-					{
+					for (DelaunayTriangle tri : computedTriangles) {
 						TriangulationPoint[] tp = tri.points;
-						for (int i = 0; i < 3; i++)
-						{
+						for (int i = 0; i < 3; i++) {
 							Vertices[index++] = tp[i].getXf();
 							Vertices[index++] = tp[i].getYf();
 							Triangles[TriangleIndex] = TriangleIndex++;
 						}
 					}
-				}
-				catch (Exception e)
-				{
+				} catch (Exception e) {
 					Vertices = pathes.get(0);
-					if (Vertices.length < 6) return; // Nothing to Draw
+					if (Vertices.length < 6)
+						return; // Nothing to Draw
 					Triangles = GL_GraphicFactory.ECT.computeTriangles(Vertices).toArray();
 				}
 
 				// m.invert();
 				// m.mapPoints(Vertices);
-			}
-			else
-			{
+			} else {
 				Vertices = pathes.get(0);
-				if (Vertices.length < 6) return; // Nothing to Draw
+				if (Vertices.length < 6)
+					return; // Nothing to Draw
 				Triangles = GL_GraphicFactory.ECT.computeTriangles(Vertices).toArray();
 			}
 
-			if (Vertices != null && Triangles != null)
-			{
-				this.bitmap.addDrawable(new PolygonDrawable(Vertices, Triangles, pai, this.bitmap.getWidth(), this.bitmap.getHeight()),
-						aktMatrix, false);
+			if (Vertices != null && Triangles != null) {
+				this.bitmap.addDrawable(new PolygonDrawable(Vertices, Triangles, pai, this.bitmap.getWidth(), this.bitmap.getHeight()), aktMatrix, false);
 			}
 			break;
 
 		case STROKE:
-			for (float[] singlePath : pathes)
-			{
-				this.bitmap.addDrawable(new PolylineDrawable(singlePath, pai, this.bitmap.getWidth(), this.bitmap.getHeight()), aktMatrix,
-						true);
+			for (float[] singlePath : pathes) {
+				this.bitmap.addDrawable(new PolylineDrawable(singlePath, pai, this.bitmap.getWidth(), this.bitmap.getHeight()), aktMatrix, true);
 			}
 			break;
 
@@ -208,63 +177,47 @@ public class GL_Canvas implements ext_Canvas
 	}
 
 	@Override
-	public void drawText(String text, int x, int y, Paint paint)
-	{
-		
+	public void drawText(String text, int x, int y, Paint paint) {
 
 	}
 
 	@Override
-	public void drawTextRotated(String text, int x1, int y1, int x2, int y2, Paint paint)
-	{
-		
+	public void drawTextRotated(String text, int x1, int y1, int x2, int y2, Paint paint) {
 
 	}
 
 	@Override
-	public void fillColor(Color color)
-	{
-		
+	public void fillColor(Color color) {
 
 	}
 
 	@Override
-	public void fillColor(int color)
-	{
-		
+	public void fillColor(int color) {
 
 	}
 
 	@Override
-	public void resetClip()
-	{
-		
+	public void resetClip() {
 
 	}
 
 	@Override
-	public void setClip(int left, int top, int width, int height)
-	{
-		
+	public void setClip(int left, int top, int width, int height) {
 
 	}
 
 	@Override
-	public void drawText(String text, float x, float y, Paint paint)
-	{
-		
+	public void drawText(String text, float x, float y, Paint paint) {
 
 	}
 
 	@Override
-	public void drawRect(RectF rect, ext_Paint paint)
-	{
+	public void drawRect(RectF rect, ext_Paint paint) {
 		// Cast
 		GL_Paint pai = (GL_Paint) paint;
 
 		GL_Style style = pai.getGL_Style();
-		switch (style)
-		{
+		switch (style) {
 		case FILL:
 			Quadrangle qu = new Quadrangle(rect);
 
@@ -272,16 +225,13 @@ public class GL_Canvas implements ext_Canvas
 			// first transform Rect with matrix!
 			float[] rp = qu.getVertices();
 			aktMatrix.mapPoints(rp);
-			if (rp[0] <= 0 && rp[1] <= 0 && rp[0] + rp[4] >= this.bitmap.getWidth() && rp[1] + rp[5] >= this.bitmap.getHeight())
-			{
+			if (rp[0] <= 0 && rp[1] <= 0 && rp[0] + rp[4] >= this.bitmap.getWidth() && rp[1] + rp[5] >= this.bitmap.getHeight()) {
 				this.bitmap.clearDrawables();
 				this.bitmap.setBackgroundColor(pai.color);
 				return;
 			}
 
-			this.bitmap.addDrawable(
-					new PolygonDrawable(qu.getVertices(), qu.getTriangles(), pai, this.bitmap.getWidth(), this.bitmap.getHeight()),
-					aktMatrix, false);
+			this.bitmap.addDrawable(new PolygonDrawable(qu.getVertices(), qu.getTriangles(), pai, this.bitmap.getWidth(), this.bitmap.getHeight()), aktMatrix, false);
 			return;
 
 		case STROKE:
@@ -298,94 +248,74 @@ public class GL_Canvas implements ext_Canvas
 	}
 
 	@Override
-	public void drawRoundRect(RectF rect, float rx, float ry, ext_Paint strokePaint)
-	{
-		
+	public void drawRoundRect(RectF rect, float rx, float ry, ext_Paint strokePaint) {
 
 	}
 
 	@Override
-	public void drawOval(RectF rect, ext_Paint fillPaint)
-	{
-		
+	public void drawOval(RectF rect, ext_Paint fillPaint) {
 
 	}
 
 	@Override
-	public void scale(float sx, float sy)
-	{
+	public void scale(float sx, float sy) {
 		aktMatrix.scale(sx, sy);
 	}
 
 	@Override
-	public void setMatrix(ext_Matrix matrix)
-	{
+	public void setMatrix(ext_Matrix matrix) {
 		aktMatrix.set(matrix);
 	}
 
 	@Override
-	public ext_Matrix getMatrix()
-	{
+	public ext_Matrix getMatrix() {
 		return aktMatrix;
 	}
 
 	@Override
-	public void save()
-	{
+	public void save() {
 		matrixStack.push(new GL_Matrix(aktMatrix));
 		aktMatrix = new GL_Matrix(aktMatrix);
 	}
 
 	@Override
-	public void restore()
-	{
-		if (!matrixStack.empty()) aktMatrix = matrixStack.pop();
+	public void restore() {
+		if (!matrixStack.empty())
+			aktMatrix = matrixStack.pop();
 	}
 
 	@Override
-	public void concat(ext_Matrix matrix)
-	{
+	public void concat(ext_Matrix matrix) {
 		aktMatrix.postConcat(matrix);
 	}
 
 	@Override
-	public void drawTextOnPath(String text, ext_Path path, float x, float y, ext_Paint fillPaint)
-	{
-		
+	public void drawTextOnPath(String text, ext_Path path, float x, float y, ext_Paint fillPaint) {
 
 	}
 
 	@Override
-	public void clipRect(float left, float top, float right, float bottom)
-	{
-		
+	public void clipRect(float left, float top, float right, float bottom) {
 
 	}
 
 	@Override
-	public void clipPath(ext_Path path)
-	{
-		
+	public void clipPath(ext_Path path) {
 
 	}
 
 	@Override
-	public void translate(float stepX, float stepY)
-	{
-		
+	public void translate(float stepX, float stepY) {
 
 	}
 
 	@Override
-	public void saveMatrix()
-	{
+	public void saveMatrix() {
 		matrixStack.push(aktMatrix);
 	}
 
 	@Override
-	public void setMatrix(Matrix matrix)
-	{
-		
+	public void setMatrix(Matrix matrix) {
 
 	}
 

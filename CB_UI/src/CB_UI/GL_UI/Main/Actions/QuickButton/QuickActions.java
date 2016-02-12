@@ -40,243 +40,243 @@ import CB_Utils.Util.MoveableList;
  * @author Longri
  */
 public enum QuickActions {
-    DescriptionView, // 0
-    WaypointView, // 1
-    LogView, // 2
-    MapView, // 3
-    CompassView, // 4
-    CacheListView, // 5
-    TrackListView, // 6
-    TakePhoto, // 7
-    TakeVideo, // 8
-    VoiceRecord, // 9
-    LiveSearch, // 10
-    Filter, // 11
-    AutoResort, // 12
-    Solver, // 13
-    Spoiler, // 14
-    Hint, // 15
-    Parking, // 16
-    Day_Night, // 17
-    FieldNotes, // 18
-    QuickFieldNotes, // 19
-    TrackableListView, // 20
-    addWP, // 21
-    Solver2, // 22
-    Notesview, // 23
-    uploadFieldNote, // 24
-    torch, // 25
+	DescriptionView, // 0
+	WaypointView, // 1
+	LogView, // 2
+	MapView, // 3
+	CompassView, // 4
+	CacheListView, // 5
+	TrackListView, // 6
+	TakePhoto, // 7
+	TakeVideo, // 8
+	VoiceRecord, // 9
+	LiveSearch, // 10
+	Filter, // 11
+	AutoResort, // 12
+	Solver, // 13
+	Spoiler, // 14
+	Hint, // 15
+	Parking, // 16
+	Day_Night, // 17
+	FieldNotes, // 18
+	QuickFieldNotes, // 19
+	TrackableListView, // 20
+	addWP, // 21
+	Solver2, // 22
+	Notesview, // 23
+	uploadFieldNote, // 24
+	torch, // 25
 
-    // ScreenLock, // 21
+	// ScreenLock, // 21
 
-    empty,;
+	empty,;
 
-    /**
-     * Gibt eine ArrayList von Actions zurück aus einem übergebenen String Array
-     * 
-     * @param String
-     *            []
-     * @return ArrayList <Actions>
-     */
-    public static MoveableList<QuickButtonItem> getListFromConfig(String[] configList, float height) {
-	InitialActions();
-	MoveableList<QuickButtonItem> retList = new MoveableList<QuickButtonItem>();
-	if (configList == null || configList.length == 0) {
-	    return retList;
-	}
-
-	boolean invalidEnumId = false;
-	try {
-	    int index = 0;
-
-	    for (String s : configList) {
-		s = s.replace(",", "");
-		int EnumId = Integer.parseInt(s);
-		if (EnumId > -1) {
-
-		    QuickActions type = QuickActions.values()[EnumId];
-		    if (QuickActions.getActionEnumById(EnumId) != null) {
-			QuickButtonItem tmp = new QuickButtonItem(new CB_RectF(0, 0, height, height), index++, QuickActions.getActionEnumById(EnumId), QuickActions.getName(EnumId), type);
-			retList.add(tmp);
-		    } else
-			invalidEnumId = true;
+	/**
+	 * Gibt eine ArrayList von Actions zurück aus einem übergebenen String Array
+	 * 
+	 * @param String
+	 *            []
+	 * @return ArrayList <Actions>
+	 */
+	public static MoveableList<QuickButtonItem> getListFromConfig(String[] configList, float height) {
+		InitialActions();
+		MoveableList<QuickButtonItem> retList = new MoveableList<QuickButtonItem>();
+		if (configList == null || configList.length == 0) {
+			return retList;
 		}
-	    }
-	} catch (Exception e)// wenn ein Fehler auftritt, gib die bis dorthin
-			     // gelesenen Items zurück
-	{
 
-	}
-	if (invalidEnumId) {
-	    //	    write valid id's back
+		boolean invalidEnumId = false;
+		try {
+			int index = 0;
 
-	    String ActionsString = "";
-	    int counter = 0;
-	    for (int i = 0, n = retList.size(); i < n; i++) {
-		QuickButtonItem tmp = retList.get(i);
-		ActionsString += String.valueOf(tmp.getAction().ordinal());
-		if (counter < retList.size() - 1) {
-		    ActionsString += ",";
+			for (String s : configList) {
+				s = s.replace(",", "");
+				int EnumId = Integer.parseInt(s);
+				if (EnumId > -1) {
+
+					QuickActions type = QuickActions.values()[EnumId];
+					if (QuickActions.getActionEnumById(EnumId) != null) {
+						QuickButtonItem tmp = new QuickButtonItem(new CB_RectF(0, 0, height, height), index++, QuickActions.getActionEnumById(EnumId), QuickActions.getName(EnumId), type);
+						retList.add(tmp);
+					} else
+						invalidEnumId = true;
+				}
+			}
+		} catch (Exception e)// wenn ein Fehler auftritt, gib die bis dorthin
+		// gelesenen Items zurück
+		{
+
 		}
-		counter++;
-	    }
-	    Config.quickButtonList.setValue(ActionsString);
-	    Config.AcceptChanges();
+		if (invalidEnumId) {
+			//	    write valid id's back
+
+			String ActionsString = "";
+			int counter = 0;
+			for (int i = 0, n = retList.size(); i < n; i++) {
+				QuickButtonItem tmp = retList.get(i);
+				ActionsString += String.valueOf(tmp.getAction().ordinal());
+				if (counter < retList.size() - 1) {
+					ActionsString += ",";
+				}
+				counter++;
+			}
+			Config.quickButtonList.setValue(ActionsString);
+			Config.AcceptChanges();
+		}
+		return retList;
 	}
-	return retList;
-    }
 
-    /**
-     * Gibt die ID des übergebenen Enums zurück
-     * 
-     * @param attrib
-     * @return long
-     */
-    public static int GetIndex(QuickActions attrib) {
-	return attrib.ordinal();
-    }
+	/**
+	 * Gibt die ID des übergebenen Enums zurück
+	 * 
+	 * @param attrib
+	 * @return long
+	 */
+	public static int GetIndex(QuickActions attrib) {
+		return attrib.ordinal();
+	}
 
-    public static CB_Action getActionEnumById(int id) {
-	switch (id) {
-	case 0:
-	    return TabMainView.actionShowDescriptionView;
-	case 1:
-	    return TabMainView.actionShowWaypointView;
-	case 2:
-	    return TabMainView.actionShowLogView;
-	case 3:
-	    return TabMainView.actionShowMap;
-	case 4:
-	    return TabMainView.actionShowCompassView;
-	case 5:
-	    return TabMainView.actionShowCacheList;
-	case 6:
-	    return TabMainView.actionShowTrackListView;
-	case 7:
-	    return action_TakePhoto;
-	case 8:
-	    return action_TakeVideo;
-	case 9:
-	    return action_Voicerec;
-	case 10:
-	    return action_Search;
-	case 11:
-	    return TabMainView.actionShowFilter;
-	case 12:
-	    return action_SwitchAutoResort;
-	case 13:
-	    return TabMainView.actionShowSolverView;
-	case 14:
-	    return TabMainView.actionShowSpoilerView;
-	case 15:
-	    return action_Hint;
-	case 16:
-	    return TabMainView.actionParking;
-	case 17:
-	    return action_DayNight;
-	case 18:
-	    return TabMainView.actionShowFieldNotesView;
-	case 19:
-	    return TabMainView.actionQuickFieldNote;
-	case 20:
-	    return TabMainView.actionShowTrackableListView;
-	case 21:
-	    return action_add_WP;
-	case 22:
-	    return TabMainView.actionShowSolverView2;
-	case 23:
-	    return TabMainView.actionShowNotesView;
-	case 24:
-	    return CB_Action_UploadFieldNote.INSTANCE;
-	case 25:
-	    return action_Torch;
+	public static CB_Action getActionEnumById(int id) {
+		switch (id) {
+		case 0:
+			return TabMainView.actionShowDescriptionView;
+		case 1:
+			return TabMainView.actionShowWaypointView;
+		case 2:
+			return TabMainView.actionShowLogView;
+		case 3:
+			return TabMainView.actionShowMap;
+		case 4:
+			return TabMainView.actionShowCompassView;
+		case 5:
+			return TabMainView.actionShowCacheList;
+		case 6:
+			return TabMainView.actionShowTrackListView;
+		case 7:
+			return action_TakePhoto;
+		case 8:
+			return action_TakeVideo;
+		case 9:
+			return action_Voicerec;
+		case 10:
+			return action_Search;
+		case 11:
+			return TabMainView.actionShowFilter;
+		case 12:
+			return action_SwitchAutoResort;
+		case 13:
+			return TabMainView.actionShowSolverView;
+		case 14:
+			return TabMainView.actionShowSpoilerView;
+		case 15:
+			return action_Hint;
+		case 16:
+			return TabMainView.actionParking;
+		case 17:
+			return action_DayNight;
+		case 18:
+			return TabMainView.actionShowFieldNotesView;
+		case 19:
+			return TabMainView.actionQuickFieldNote;
+		case 20:
+			return TabMainView.actionShowTrackableListView;
+		case 21:
+			return action_add_WP;
+		case 22:
+			return TabMainView.actionShowSolverView2;
+		case 23:
+			return TabMainView.actionShowNotesView;
+		case 24:
+			return CB_Action_UploadFieldNote.INSTANCE;
+		case 25:
+			return action_Torch;
+
+		}
+		return null;
+	}
+
+	public static String getName(int id) {
+		switch (id) {
+		case 0:
+			return Translation.Get("Description");
+		case 1:
+			return Translation.Get("Waypoints");
+		case 2:
+			return Translation.Get("ShowLogs");
+		case 3:
+			return Translation.Get("Map");
+		case 4:
+			return Translation.Get("Compass");
+		case 5:
+			return Translation.Get("cacheList");
+		case 6:
+			return Translation.Get("Tracks");
+		case 7:
+			return Translation.Get("TakePhoto");
+		case 8:
+			return Translation.Get("RecVideo");
+		case 9:
+			return Translation.Get("VoiceRec");
+		case 10:
+			return Translation.Get("Search");
+		case 11:
+			return Translation.Get("filter");
+		case 12:
+			return Translation.Get("AutoResort");
+		case 13:
+			return Translation.Get("Solver");
+		case 14:
+			return Translation.Get("spoiler");
+		case 15:
+			return Translation.Get("hint");
+		case 16:
+			return Translation.Get("MyParking");
+		case 17:
+			return Translation.Get("DayNight");
+		case 18:
+			return Translation.Get("Fieldnotes");
+		case 19:
+			return Translation.Get("QuickFieldNote");
+		case 20:
+			return Translation.Get("TBList");
+		case 21:
+			return Translation.Get("AddWaypoint");
+		case 22:
+			return Translation.Get("Solver") + " 2";
+		case 23:
+			return Translation.Get("Notes");
+		case 24:
+			return Translation.Get("uploadFieldNotes");
+		case 25:
+			return Translation.Get("torch");
+
+		}
+		return "empty";
+	}
+
+	public static void InitialActions() {
+		action_TakePhoto = new CB_Action_ShowActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO, SpriteCacheBase.Icons.get(IconName.log10_47.ordinal()));
+
+		action_TakeVideo = new CB_Action_ShowActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC, SpriteCacheBase.Icons.get(IconName.video_10.ordinal()));
+
+		action_Voicerec = new CB_Action_ShowActivity("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC, SpriteCacheBase.Icons.get(IconName.voiceRec_11.ordinal()));
+
+		action_Search = new CB_Action_Show_Search();
+		action_add_WP = new CB_Action_add_WP();
+		// action_ScreenLock = new CB_Action_ShowActivity("screenlock", MenuID.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));
 
 	}
-	return null;
-    }
 
-    public static String getName(int id) {
-	switch (id) {
-	case 0:
-	    return Translation.Get("Description");
-	case 1:
-	    return Translation.Get("Waypoints");
-	case 2:
-	    return Translation.Get("ShowLogs");
-	case 3:
-	    return Translation.Get("Map");
-	case 4:
-	    return Translation.Get("Compass");
-	case 5:
-	    return Translation.Get("cacheList");
-	case 6:
-	    return Translation.Get("Tracks");
-	case 7:
-	    return Translation.Get("TakePhoto");
-	case 8:
-	    return Translation.Get("RecVideo");
-	case 9:
-	    return Translation.Get("VoiceRec");
-	case 10:
-	    return Translation.Get("Search");
-	case 11:
-	    return Translation.Get("filter");
-	case 12:
-	    return Translation.Get("AutoResort");
-	case 13:
-	    return Translation.Get("Solver");
-	case 14:
-	    return Translation.Get("spoiler");
-	case 15:
-	    return Translation.Get("hint");
-	case 16:
-	    return Translation.Get("MyParking");
-	case 17:
-	    return Translation.Get("DayNight");
-	case 18:
-	    return Translation.Get("Fieldnotes");
-	case 19:
-	    return Translation.Get("QuickFieldNote");
-	case 20:
-	    return Translation.Get("TBList");
-	case 21:
-	    return Translation.Get("AddWaypoint");
-	case 22:
-	    return Translation.Get("Solver") + " 2";
-	case 23:
-	    return Translation.Get("Notes");
-	case 24:
-	    return Translation.Get("uploadFieldNotes");
-	case 25:
-	    return Translation.Get("torch");
+	private static CB_Action action_TakePhoto;
+	private static CB_Action action_TakeVideo;
 
-	}
-	return "empty";
-    }
+	private static CB_Action action_Voicerec;
+	private static CB_Action action_Search;
+	private static CB_Action_add_WP action_add_WP;
+	// private static CB_Action action_ScreenLock;
 
-    public static void InitialActions() {
-	action_TakePhoto = new CB_Action_ShowActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO, SpriteCacheBase.Icons.get(IconName.log10_47.ordinal()));
-
-	action_TakeVideo = new CB_Action_ShowActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC, SpriteCacheBase.Icons.get(IconName.video_10.ordinal()));
-
-	action_Voicerec = new CB_Action_ShowActivity("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC, SpriteCacheBase.Icons.get(IconName.voiceRec_11.ordinal()));
-
-	action_Search = new CB_Action_Show_Search();
-	action_add_WP = new CB_Action_add_WP();
-	// action_ScreenLock = new CB_Action_ShowActivity("screenlock", MenuID.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));
-
-    }
-
-    private static CB_Action action_TakePhoto;
-    private static CB_Action action_TakeVideo;
-
-    private static CB_Action action_Voicerec;
-    private static CB_Action action_Search;
-    private static CB_Action_add_WP action_add_WP;
-    // private static CB_Action action_ScreenLock;
-
-    private static CB_Action action_SwitchAutoResort = new CB_Action_switch_Autoresort();
-    private static CB_Action action_Hint = new CB_Action_ShowHint();
-    private static CB_Action action_DayNight = new CB_Action_switch_DayNight();
-    private static CB_Action action_Torch = new CB_Action_switch_Torch();
+	private static CB_Action action_SwitchAutoResort = new CB_Action_switch_Autoresort();
+	private static CB_Action action_Hint = new CB_Action_ShowHint();
+	private static CB_Action action_DayNight = new CB_Action_switch_DayNight();
+	private static CB_Action action_Torch = new CB_Action_switch_Torch();
 }

@@ -35,40 +35,32 @@ import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.core.graphics.TileBitmap;
 
-public class AwtGraphicFactory implements GraphicFactory
-{
+public class AwtGraphicFactory implements GraphicFactory {
 	public static final GraphicFactory INSTANCE = new AwtGraphicFactory();
 	private static final java.awt.Color TRANSPARENT = new java.awt.Color(0, 0, 0, 0);
 
-	public static GraphicContext createGraphicContext(Graphics graphics)
-	{
+	public static GraphicContext createGraphicContext(Graphics graphics) {
 		return new AwtCanvas((Graphics2D) graphics);
 	}
 
-	static AffineTransform getAffineTransform(Matrix matrix)
-	{
+	static AffineTransform getAffineTransform(Matrix matrix) {
 		return ((AwtMatrix) matrix).affineTransform;
 	}
 
-	static AwtPaint getAwtPaint(Paint paint)
-	{
+	static AwtPaint getAwtPaint(Paint paint) {
 		return (AwtPaint) paint;
 	}
 
-	static AwtPath getAwtPath(Path path)
-	{
+	static AwtPath getAwtPath(Path path) {
 		return (AwtPath) path;
 	}
 
-	static BufferedImage getBufferedImage(Bitmap bitmap)
-	{
+	static BufferedImage getBufferedImage(Bitmap bitmap) {
 		return ((AwtBitmap) bitmap).bufferedImage;
 	}
 
-	static java.awt.Color getColor(Color color)
-	{
-		switch (color)
-		{
+	static java.awt.Color getColor(Color color) {
+		switch (color) {
 		case BLACK:
 			return java.awt.Color.BLACK;
 		case BLUE:
@@ -86,89 +78,74 @@ public class AwtGraphicFactory implements GraphicFactory
 		throw new IllegalArgumentException("unknown color: " + color);
 	}
 
-	public AwtGraphicFactory()
-	{
+	public AwtGraphicFactory() {
 	}
 
 	@Override
-	public Bitmap createBitmap(int width, int height)
-	{
+	public Bitmap createBitmap(int width, int height) {
 		return new AwtBitmap(width, height);
 	}
 
 	@Override
-	public Bitmap createBitmap(int width, int height, boolean isTransparent)
-	{
-		if (isTransparent)
-		{
+	public Bitmap createBitmap(int width, int height, boolean isTransparent) {
+		if (isTransparent) {
 			throw new UnsupportedOperationException("No transparencies in AWT implementation");
 		}
 		return new AwtBitmap(width, height);
 	}
 
 	@Override
-	public Canvas createCanvas()
-	{
+	public Canvas createCanvas() {
 		return new AwtCanvas();
 	}
 
 	@Override
-	public int createColor(Color color)
-	{
+	public int createColor(Color color) {
 		return getColor(color).getRGB();
 	}
 
 	@Override
-	public int createColor(int alpha, int red, int green, int blue)
-	{
+	public int createColor(int alpha, int red, int green, int blue) {
 		return new java.awt.Color(red, green, blue, alpha).getRGB();
 	}
 
 	@Override
-	public Matrix createMatrix()
-	{
+	public Matrix createMatrix() {
 		return new AwtMatrix();
 	}
 
 	@Override
-	public Paint createPaint()
-	{
+	public Paint createPaint() {
 		return new AwtPaint();
 	}
 
 	@Override
-	public Path createPath()
-	{
+	public Path createPath() {
 		return new AwtPath();
 	}
 
 	@Override
-	public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException
-	{
+	public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException {
 		return new AwtResourceBitmap(inputStream);
 	}
 
 	@Override
-	public TileBitmap createTileBitmap(InputStream inputStream, int tileSize, boolean hasAlpha) throws IOException
-	{
+	public TileBitmap createTileBitmap(InputStream inputStream, int tileSize, boolean hasAlpha) throws IOException {
 		return new AwtTileBitmap(inputStream);
 	}
 
 	@Override
-	public TileBitmap createTileBitmap(int tileSize, boolean hasAlpha)
-	{
+	public TileBitmap createTileBitmap(int tileSize, boolean hasAlpha) {
 		return new AwtTileBitmap(tileSize);
 	}
 
 	@Override
-	public InputStream platformSpecificSources(String relativePathPrefix, String src) throws FileNotFoundException
-	{
+	public InputStream platformSpecificSources(String relativePathPrefix, String src) throws FileNotFoundException {
 		return null;
 	}
 
 	@Override
-	public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int hash)
-	{
+	public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int hash) {
 		return null;
 	}
 

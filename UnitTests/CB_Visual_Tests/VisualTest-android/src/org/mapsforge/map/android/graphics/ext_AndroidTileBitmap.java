@@ -21,19 +21,14 @@ import android.graphics.Bitmap.Config;
 /**
  * @author Longri
  */
-public class ext_AndroidTileBitmap extends ext_AndroidBitmap
-{
+public class ext_AndroidTileBitmap extends ext_AndroidBitmap {
 	static CB_List<android.graphics.Bitmap> ReusebleList = new CB_List<android.graphics.Bitmap>();
 
-	private static android.graphics.Bitmap getReusable(int tileSize)
-	{
-		synchronized (ReusebleList)
-		{
-			for (int i = 0, n = ReusebleList.size(); i < n; i++)
-			{
+	private static android.graphics.Bitmap getReusable(int tileSize) {
+		synchronized (ReusebleList) {
+			for (int i = 0, n = ReusebleList.size(); i < n; i++) {
 				android.graphics.Bitmap reuse = ReusebleList.get(i);
-				if (reuse != null && reuse.getWidth() == tileSize && reuse.getHeight() == tileSize)
-				{
+				if (reuse != null && reuse.getWidth() == tileSize && reuse.getHeight() == tileSize) {
 					ReusebleList.remove(reuse);
 					return reuse;
 				}
@@ -42,15 +37,11 @@ public class ext_AndroidTileBitmap extends ext_AndroidBitmap
 		return null;
 	}
 
-	public ext_AndroidTileBitmap(int tileSize)
-	{
+	public ext_AndroidTileBitmap(int tileSize) {
 		android.graphics.Bitmap reuse = getReusable(tileSize);
-		if (reuse != null)
-		{
+		if (reuse != null) {
 			this.bitmap = reuse;
-		}
-		else
-		{
+		} else {
 			this.bitmap = super.createAndroidBitmap(tileSize, tileSize, Config.RGB_565);
 			;
 		}
@@ -59,19 +50,14 @@ public class ext_AndroidTileBitmap extends ext_AndroidBitmap
 	static int DEBUG_MAX_REUSABLE_COUNT = 0;
 
 	@Override
-	public void recycle()
-	{
+	public void recycle() {
 
 		// chk if reuseList full or cann put BufferdImage to ReuseList?
-		synchronized (ReusebleList)
-		{
+		synchronized (ReusebleList) {
 
-			if (ReusebleList.size() < 15)
-			{
+			if (ReusebleList.size() < 15) {
 				ReusebleList.add(this.bitmap);
-			}
-			else
-			{
+			} else {
 				this.bitmap.recycle();
 			}
 

@@ -6,8 +6,7 @@ import java.net.URI;
 import CB_Core.Import.DescriptionImageGrabber;
 import de.cb.sqlite.CoreCursor;
 
-public class ImageEntry implements Serializable
-{
+public class ImageEntry implements Serializable {
 
 	private static final long serialVersionUID = 4216092006574290607L;
 
@@ -51,8 +50,7 @@ public class ImageEntry implements Serializable
 	 */
 	public Boolean IsCacheImage = false;
 
-	public ImageEntry()
-	{
+	public ImageEntry() {
 	}
 
 	/**
@@ -62,8 +60,7 @@ public class ImageEntry implements Serializable
 	 * @param DescriptionImageFolderLocal
 	 *            Config.settings.DescriptionImageFolderLocal.getValue()
 	 */
-	public ImageEntry(CoreCursor reader)
-	{
+	public ImageEntry(CoreCursor reader) {
 		CacheId = reader.getLong(0);
 		GcCode = reader.getString(1).trim();
 		Name = reader.getString(2);
@@ -74,8 +71,7 @@ public class ImageEntry implements Serializable
 		LocalPath = DescriptionImageGrabber.BuildImageFilename(GcCode, URI.create(ImageUrl));
 	}
 
-	public void clear()
-	{
+	public void clear() {
 		Description = "";
 		Name = "";
 		ImageUrl = "";
@@ -85,8 +81,7 @@ public class ImageEntry implements Serializable
 		LocalPath = "";
 	}
 
-	public void dispose()
-	{
+	public void dispose() {
 		Description = null;
 		Name = null;
 		ImageUrl = null;

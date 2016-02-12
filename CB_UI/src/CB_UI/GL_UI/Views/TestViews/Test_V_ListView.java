@@ -7,11 +7,9 @@ import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
 import CB_UI_Base.Math.CB_RectF;
 
-public class Test_V_ListView extends V_ListView
-{
+public class Test_V_ListView extends V_ListView {
 
-	public Test_V_ListView(CB_RectF rec, String Name)
-	{
+	public Test_V_ListView(CB_RectF rec, String Name) {
 		super(rec, Name);
 
 		// ein Liste zusammen stellen
@@ -40,44 +38,36 @@ public class Test_V_ListView extends V_ListView
 	}
 
 	@Override
-	public void Initial()
-	{
+	public void Initial() {
 		super.Initial();
 	}
 
 	ArrayList<String> TestArray = new ArrayList<String>();
 
-	public class CustomAdapter implements Adapter
-	{
+	public class CustomAdapter implements Adapter {
 
-		public CustomAdapter()
-		{
+		public CustomAdapter() {
 
 		}
 
-		public long getItemId(int position)
-		{
+		public long getItemId(int position) {
 			return position;
 		}
 
-		public ListViewItemBase getView(int position)
-		{
+		public ListViewItemBase getView(int position) {
 
 			Boolean BackGroundChanger = ((position % 2) == 1);
-			TestListView_Item v = new TestListView_Item(position, TestArray.get(position), BackGroundChanger, "TestListView Item "
-					+ position);
+			TestListView_Item v = new TestListView_Item(position, TestArray.get(position), BackGroundChanger, "TestListView Item " + position);
 			return v;
 		}
 
 		@Override
-		public int getCount()
-		{
+		public int getCount() {
 			return TestArray.size();
 		}
 
 		@Override
-		public float getItemSize(int position)
-		{
+		public float getItemSize(int position) {
 			return 100;
 		}
 	}

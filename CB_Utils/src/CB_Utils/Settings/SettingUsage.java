@@ -22,7 +22,6 @@ package CB_Utils.Settings;
  * 
  * @author Longri
  */
-public enum SettingUsage
-{
+public enum SettingUsage {
 	ACB, CBS, ALL, FZK
 }

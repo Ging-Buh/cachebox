@@ -24,63 +24,52 @@ import javax.imageio.ImageIO;
 
 import org.mapsforge.core.graphics.Bitmap;
 
-class AwtBitmap implements Bitmap
-{
+class AwtBitmap implements Bitmap {
 	BufferedImage bufferedImage;
 
-	AwtBitmap(InputStream inputStream) throws IOException
-	{
+	AwtBitmap(InputStream inputStream) throws IOException {
 		this.bufferedImage = ImageIO.read(inputStream);
-		if (this.bufferedImage == null)
-		{
+		if (this.bufferedImage == null) {
 			throw new IOException("ImageIO filed to read inputStream");
 		}
 	}
 
-	AwtBitmap(int width, int height)
-	{
+	AwtBitmap(int width, int height) {
 		this.bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 	}
 
 	@Override
-	public void compress(OutputStream outputStream) throws IOException
-	{
+	public void compress(OutputStream outputStream) throws IOException {
 		ImageIO.write(this.bufferedImage, "png", outputStream);
 	}
 
 	@Override
-	public void decrementRefCount()
-	{
+	public void decrementRefCount() {
 		// no-op
 	}
 
 	@Override
-	public int getHeight()
-	{
+	public int getHeight() {
 		return this.bufferedImage.getHeight();
 	}
 
 	@Override
-	public int getWidth()
-	{
+	public int getWidth() {
 		return this.bufferedImage.getWidth();
 	}
 
 	@Override
-	public void incrementRefCount()
-	{
+	public void incrementRefCount() {
 		// no-op
 	}
 
 	@Override
-	public void scaleTo(int width, int height)
-	{
+	public void scaleTo(int width, int height) {
 		// TODO implement
 	}
 
 	@Override
-	public void setBackgroundColor(int color)
-	{
+	public void setBackgroundColor(int color) {
 		// TODO implement
 	}
 

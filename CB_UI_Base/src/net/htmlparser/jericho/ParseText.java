@@ -38,7 +38,7 @@ package net.htmlparser.jericho;
  */
 public interface ParseText extends CharSequence {
 	/** A value to use as the <code>breakAtIndex</code> argument in certain methods to indicate that the search should continue to the start or end of the parse text. */
-	public static final int NO_BREAK=-1;
+	public static final int NO_BREAK = -1;
 
 	/**
 	 * Returns the character at the specified index.
@@ -69,7 +69,7 @@ public interface ParseText extends CharSequence {
 	 * @return the index within this parse text of the first occurrence of the specified character within the specified range, or -1 if the character is not found.
 	 */
 	public int indexOf(char searchChar, int fromIndex);
-	
+
 	/**
 	 * Returns the index within this parse text of the first occurrence of the specified character,
 	 * starting the search at the position specified by <code>fromIndex</code>,
@@ -131,7 +131,7 @@ public interface ParseText extends CharSequence {
 	 * @return the index within this parse text of the last occurrence of the specified character within the specified range, or -1 if the character is not found.
 	 */
 	public int lastIndexOf(char searchChar, int fromIndex);
-	
+
 	/**
 	 * Returns the index within this parse text of the last occurrence of the specified character,
 	 * searching backwards starting at the position specified by <code>fromIndex</code>,
@@ -181,7 +181,7 @@ public interface ParseText extends CharSequence {
 	 * @return the index within this parse text of the last occurrence of the specified string within the specified range, or -1 if the string is not found.
 	 */
 	public int lastIndexOf(String searchString, int fromIndex, int breakAtIndex);
-	
+
 	/**
 	 * Returns the length of the parse text.
 	 * @return the length of the parse text.

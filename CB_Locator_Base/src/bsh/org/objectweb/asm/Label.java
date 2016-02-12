@@ -31,249 +31,237 @@ package bsh.org.objectweb.asm;
 
 public class Label {
 
-  /**
-   * The code writer to which this label belongs, or <tt>null</tt> if unknown.
-   */
+	/**
+	 * The code writer to which this label belongs, or <tt>null</tt> if unknown.
+	 */
 
-  CodeWriter owner;
+	CodeWriter owner;
 
-  /**
-   * Indicates if the position of this label is known.
-   */
+	/**
+	 * Indicates if the position of this label is known.
+	 */
 
-  boolean resolved;
+	boolean resolved;
 
-  /**
-   * The position of this label in the code, if known.
-   */
+	/**
+	 * The position of this label in the code, if known.
+	 */
 
-  int position;
+	int position;
 
-  /**
-   * Number of forward references to this label, times two.
-   */
+	/**
+	 * Number of forward references to this label, times two.
+	 */
 
-  private int referenceCount;
+	private int referenceCount;
 
-  /**
-   * Informations about forward references. Each forward reference is described
-   * by two consecutive integers in this array: the first one is the position
-   * of the first byte of the bytecode instruction that contains the forward
-   * reference, while the second is the position of the first byte of the
-   * forward reference itself. In fact the sign of the first integer indicates
-   * if this reference uses 2 or 4 bytes, and its absolute value gives the
-   * position of the bytecode instruction.
-   */
+	/**
+	 * Informations about forward references. Each forward reference is described
+	 * by two consecutive integers in this array: the first one is the position
+	 * of the first byte of the bytecode instruction that contains the forward
+	 * reference, while the second is the position of the first byte of the
+	 * forward reference itself. In fact the sign of the first integer indicates
+	 * if this reference uses 2 or 4 bytes, and its absolute value gives the
+	 * position of the bytecode instruction.
+	 */
 
-  private int[] srcAndRefPositions;
+	private int[] srcAndRefPositions;
 
-  // --------------------------------------------------------------------------
-  // Fields for the control flow graph analysis algorithm (used to compute the
-  // maximum stack size). A control flow graph contains one node per "basic
-  // block", and one edge per "jump" from one basic block to another. Each node
-  // (i.e., each basic block) is represented by the Label object that
-  // corresponds to the first instruction of this basic block. Each node also
-  // stores the list of it successors in the graph, as a linked list of Edge
-  // objects.
-  // --------------------------------------------------------------------------
+	// --------------------------------------------------------------------------
+	// Fields for the control flow graph analysis algorithm (used to compute the
+	// maximum stack size). A control flow graph contains one node per "basic
+	// block", and one edge per "jump" from one basic block to another. Each node
+	// (i.e., each basic block) is represented by the Label object that
+	// corresponds to the first instruction of this basic block. Each node also
+	// stores the list of it successors in the graph, as a linked list of Edge
+	// objects.
+	// --------------------------------------------------------------------------
 
-  /**
-   * The stack size at the beginning of this basic block.
-   * This size is initially unknown. It is computed by the control flow
-   * analysis algorithm (see {@link CodeWriter#visitMaxs visitMaxs}).
-   */
+	/**
+	 * The stack size at the beginning of this basic block.
+	 * This size is initially unknown. It is computed by the control flow
+	 * analysis algorithm (see {@link CodeWriter#visitMaxs visitMaxs}).
+	 */
 
-  int beginStackSize;
+	int beginStackSize;
 
-  /**
-   * The (relative) maximum stack size corresponding to this basic block. This
-   * size is relative to the stack size at the beginning of the basic block,
-   * i.e., the true maximum stack size is equal to {@link #beginStackSize
-   * beginStackSize} + {@link #maxStackSize maxStackSize}.
-   */
+	/**
+	 * The (relative) maximum stack size corresponding to this basic block. This
+	 * size is relative to the stack size at the beginning of the basic block,
+	 * i.e., the true maximum stack size is equal to {@link #beginStackSize
+	 * beginStackSize} + {@link #maxStackSize maxStackSize}.
+	 */
 
-  int maxStackSize;
+	int maxStackSize;
 
-  /**
-   * The successors of this node in the control flow graph. These successors
-   * are stored in a linked list of {@link Edge Edge} objects, linked to each
-   * other by their {@link Edge#next} field.
-   */
+	/**
+	 * The successors of this node in the control flow graph. These successors
+	 * are stored in a linked list of {@link Edge Edge} objects, linked to each
+	 * other by their {@link Edge#next} field.
+	 */
 
-  Edge successors;
+	Edge successors;
 
-  /**
-   * The next basic block in the basic block stack.
-   * See {@link CodeWriter#visitMaxs visitMaxs}.
-   */
+	/**
+	 * The next basic block in the basic block stack.
+	 * See {@link CodeWriter#visitMaxs visitMaxs}.
+	 */
 
-  Label next;
+	Label next;
 
-  /**
-   * <tt>true</tt> if this basic block has been pushed in the basic block stack.
-   * See {@link CodeWriter#visitMaxs visitMaxs}.
-   */
+	/**
+	 * <tt>true</tt> if this basic block has been pushed in the basic block stack.
+	 * See {@link CodeWriter#visitMaxs visitMaxs}.
+	 */
 
-  boolean pushed;
+	boolean pushed;
 
-  // --------------------------------------------------------------------------
-  // Constructor
-  // --------------------------------------------------------------------------
+	// --------------------------------------------------------------------------
+	// Constructor
+	// --------------------------------------------------------------------------
 
-  /**
-   * Constructs a new label.
-   */
+	/**
+	 * Constructs a new label.
+	 */
 
-  public Label () {
-  }
+	public Label() {
+	}
 
-  // --------------------------------------------------------------------------
-  // Methods to compute offsets and to manage forward references
-  // --------------------------------------------------------------------------
+	// --------------------------------------------------------------------------
+	// Methods to compute offsets and to manage forward references
+	// --------------------------------------------------------------------------
 
-  /**
-   * Puts a reference to this label in the bytecode of a method. If the position
-   * of the label is known, the offset is computed and written directly.
-   * Otherwise, a null offset is written and a new forward reference is declared
-   * for this label.
-   *
-   * @param owner the code writer that calls this method.
-   * @param out the bytecode of the method.
-   * @param source the position of first byte of the bytecode instruction that
-   *      contains this label.
-   * @param wideOffset <tt>true</tt> if the reference must be stored in 4 bytes,
-   *      or <tt>false</tt> if it must be stored with 2 bytes.
-   * @throws IllegalArgumentException if this label has not been created by the
-   *      given code writer.
-   */
+	/**
+	 * Puts a reference to this label in the bytecode of a method. If the position
+	 * of the label is known, the offset is computed and written directly.
+	 * Otherwise, a null offset is written and a new forward reference is declared
+	 * for this label.
+	 *
+	 * @param owner the code writer that calls this method.
+	 * @param out the bytecode of the method.
+	 * @param source the position of first byte of the bytecode instruction that
+	 *      contains this label.
+	 * @param wideOffset <tt>true</tt> if the reference must be stored in 4 bytes,
+	 *      or <tt>false</tt> if it must be stored with 2 bytes.
+	 * @throws IllegalArgumentException if this label has not been created by the
+	 *      given code writer.
+	 */
 
-  void put (
-    final CodeWriter owner,
-    final ByteVector out,
-    final int source,
-    final boolean wideOffset)
-  {
-    if (CodeWriter.CHECK) {
-      if (this.owner == null) {
-        this.owner = owner;
-      } else if (this.owner != owner) {
-        throw new IllegalArgumentException();
-      }
-    }
-    if (resolved) {
-      if (wideOffset) {
-        out.put4(position - source);
-      } else {
-        out.put2(position - source);
-      }
-    } else {
-      if (wideOffset) {
-        addReference(-1 - source, out.length);
-        out.put4(-1);
-      } else {
-        addReference(source, out.length);
-        out.put2(-1);
-      }
-    }
-  }
+	void put(final CodeWriter owner, final ByteVector out, final int source, final boolean wideOffset) {
+		if (CodeWriter.CHECK) {
+			if (this.owner == null) {
+				this.owner = owner;
+			} else if (this.owner != owner) {
+				throw new IllegalArgumentException();
+			}
+		}
+		if (resolved) {
+			if (wideOffset) {
+				out.put4(position - source);
+			} else {
+				out.put2(position - source);
+			}
+		} else {
+			if (wideOffset) {
+				addReference(-1 - source, out.length);
+				out.put4(-1);
+			} else {
+				addReference(source, out.length);
+				out.put2(-1);
+			}
+		}
+	}
 
-  /**
-   * Adds a forward reference to this label. This method must be called only for
-   * a true forward reference, i.e. only if this label is not resolved yet. For
-   * backward references, the offset of the reference can be, and must be,
-   * computed and stored directly.
-   *
-   * @param sourcePosition the position of the referencing instruction. This
-   *      position will be used to compute the offset of this forward reference.
-   * @param referencePosition the position where the offset for this forward
-   *      reference must be stored.
-   */
+	/**
+	 * Adds a forward reference to this label. This method must be called only for
+	 * a true forward reference, i.e. only if this label is not resolved yet. For
+	 * backward references, the offset of the reference can be, and must be,
+	 * computed and stored directly.
+	 *
+	 * @param sourcePosition the position of the referencing instruction. This
+	 *      position will be used to compute the offset of this forward reference.
+	 * @param referencePosition the position where the offset for this forward
+	 *      reference must be stored.
+	 */
 
-  private void addReference (
-    final int sourcePosition,
-    final int referencePosition)
-  {
-    if (srcAndRefPositions == null) {
-      srcAndRefPositions = new int[6];
-    }
-    if (referenceCount >= srcAndRefPositions.length) {
-      int[] a = new int[srcAndRefPositions.length + 6];
-      System.arraycopy(srcAndRefPositions, 0, a, 0, srcAndRefPositions.length);
-      srcAndRefPositions = a;
-    }
-    srcAndRefPositions[referenceCount++] = sourcePosition;
-    srcAndRefPositions[referenceCount++] = referencePosition;
-  }
+	private void addReference(final int sourcePosition, final int referencePosition) {
+		if (srcAndRefPositions == null) {
+			srcAndRefPositions = new int[6];
+		}
+		if (referenceCount >= srcAndRefPositions.length) {
+			int[] a = new int[srcAndRefPositions.length + 6];
+			System.arraycopy(srcAndRefPositions, 0, a, 0, srcAndRefPositions.length);
+			srcAndRefPositions = a;
+		}
+		srcAndRefPositions[referenceCount++] = sourcePosition;
+		srcAndRefPositions[referenceCount++] = referencePosition;
+	}
 
-  /**
-   * Resolves all forward references to this label. This method must be called
-   * when this label is added to the bytecode of the method, i.e. when its
-   * position becomes known. This method fills in the blanks that where left in
-   * the bytecode by each forward reference previously added to this label.
-   *
-   * @param owner the code writer that calls this method.
-   * @param position the position of this label in the bytecode.
-   * @param data the bytecode of the method.
-   * @return <tt>true</tt> if a blank that was left for this label was to small
-   *      to store the offset. In such a case the corresponding jump instruction
-   *      is replaced with a pseudo instruction (using unused opcodes) using an
-   *      unsigned two bytes offset. These pseudo instructions will need to be
-   *      replaced with true instructions with wider offsets (4 bytes instead of
-   *      2). This is done in {@link CodeWriter#resizeInstructions}.
-   * @throws IllegalArgumentException if this label has already been resolved,
-   *      or if it has not been created by the given code writer.
-   */
+	/**
+	 * Resolves all forward references to this label. This method must be called
+	 * when this label is added to the bytecode of the method, i.e. when its
+	 * position becomes known. This method fills in the blanks that where left in
+	 * the bytecode by each forward reference previously added to this label.
+	 *
+	 * @param owner the code writer that calls this method.
+	 * @param position the position of this label in the bytecode.
+	 * @param data the bytecode of the method.
+	 * @return <tt>true</tt> if a blank that was left for this label was to small
+	 *      to store the offset. In such a case the corresponding jump instruction
+	 *      is replaced with a pseudo instruction (using unused opcodes) using an
+	 *      unsigned two bytes offset. These pseudo instructions will need to be
+	 *      replaced with true instructions with wider offsets (4 bytes instead of
+	 *      2). This is done in {@link CodeWriter#resizeInstructions}.
+	 * @throws IllegalArgumentException if this label has already been resolved,
+	 *      or if it has not been created by the given code writer.
+	 */
 
-  boolean resolve (
-    final CodeWriter owner,
-    final int position,
-    final byte[] data)
-  {
-    if (CodeWriter.CHECK) {
-      if (this.owner == null) {
-        this.owner = owner;
-      }
-      if (resolved || this.owner != owner) {
-        throw new IllegalArgumentException();
-      }
-    }
-    boolean needUpdate = false;
-    this.resolved = true;
-    this.position = position;
-    int i = 0;
-    while (i < referenceCount) {
-      int source = srcAndRefPositions[i++];
-      int reference = srcAndRefPositions[i++];
-      int offset;
-      if (source >= 0) {
-        offset = position - source;
-        if (offset < Short.MIN_VALUE || offset > Short.MAX_VALUE) {
-          // changes the opcode of the jump instruction, in order to be able to
-          // find it later (see resizeInstructions in CodeWriter). These
-          // temporary opcodes are similar to jump instruction opcodes, except
-          // that the 2 bytes offset is unsigned (and can therefore represent
-          // values from 0 to 65535, which is sufficient since the size of a
-          // method is limited to 65535 bytes).
-          int opcode = data[reference - 1] & 0xFF;
-          if (opcode <= Constants.JSR) {
-            // changes IFEQ ... JSR to opcodes 202 to 217 (inclusive)
-            data[reference - 1] = (byte)(opcode + 49);
-          } else {
-            // changes IFNULL and IFNONNULL to opcodes 218 and 219 (inclusive)
-            data[reference - 1] = (byte)(opcode + 20);
-          }
-          needUpdate = true;
-        }
-        data[reference++] = (byte)(offset >>> 8);
-        data[reference] = (byte)offset;
-      } else {
-        offset = position + source + 1;
-        data[reference++] = (byte)(offset >>> 24);
-        data[reference++] = (byte)(offset >>> 16);
-        data[reference++] = (byte)(offset >>> 8);
-        data[reference] = (byte)offset;
-      }
-    }
-    return needUpdate;
-  }
+	boolean resolve(final CodeWriter owner, final int position, final byte[] data) {
+		if (CodeWriter.CHECK) {
+			if (this.owner == null) {
+				this.owner = owner;
+			}
+			if (resolved || this.owner != owner) {
+				throw new IllegalArgumentException();
+			}
+		}
+		boolean needUpdate = false;
+		this.resolved = true;
+		this.position = position;
+		int i = 0;
+		while (i < referenceCount) {
+			int source = srcAndRefPositions[i++];
+			int reference = srcAndRefPositions[i++];
+			int offset;
+			if (source >= 0) {
+				offset = position - source;
+				if (offset < Short.MIN_VALUE || offset > Short.MAX_VALUE) {
+					// changes the opcode of the jump instruction, in order to be able to
+					// find it later (see resizeInstructions in CodeWriter). These
+					// temporary opcodes are similar to jump instruction opcodes, except
+					// that the 2 bytes offset is unsigned (and can therefore represent
+					// values from 0 to 65535, which is sufficient since the size of a
+					// method is limited to 65535 bytes).
+					int opcode = data[reference - 1] & 0xFF;
+					if (opcode <= Constants.JSR) {
+						// changes IFEQ ... JSR to opcodes 202 to 217 (inclusive)
+						data[reference - 1] = (byte) (opcode + 49);
+					} else {
+						// changes IFNULL and IFNONNULL to opcodes 218 and 219 (inclusive)
+						data[reference - 1] = (byte) (opcode + 20);
+					}
+					needUpdate = true;
+				}
+				data[reference++] = (byte) (offset >>> 8);
+				data[reference] = (byte) offset;
+			} else {
+				offset = position + source + 1;
+				data[reference++] = (byte) (offset >>> 24);
+				data[reference++] = (byte) (offset >>> 16);
+				data[reference++] = (byte) (offset >>> 8);
+				data[reference] = (byte) offset;
+			}
+		}
+		return needUpdate;
+	}
 }

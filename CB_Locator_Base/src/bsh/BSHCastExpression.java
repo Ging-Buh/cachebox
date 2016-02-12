@@ -38,11 +38,9 @@ package bsh;
  * haven't looked into it.
  */
 @SuppressWarnings("serial")
-class BSHCastExpression extends SimpleNode
-{
+class BSHCastExpression extends SimpleNode {
 
-	public BSHCastExpression(int id)
-	{
+	public BSHCastExpression(int id) {
 		super(id);
 	}
 
@@ -50,10 +48,8 @@ class BSHCastExpression extends SimpleNode
 	 * @return the result of the cast.
 	 */
 	@Override
-	@SuppressWarnings(
-		{ "unused", "rawtypes" })
-	public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError
-	{
+	@SuppressWarnings({ "unused", "rawtypes" })
+	public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError {
 		NameSpace namespace = callstack.top();
 		Class toType = ((BSHType) jjtGetChild(0)).getType(callstack, interpreter);
 		SimpleNode expression = (SimpleNode) jjtGetChild(1);
@@ -62,13 +58,9 @@ class BSHCastExpression extends SimpleNode
 		Object fromValue = expression.eval(callstack, interpreter);
 		Class fromType = fromValue.getClass();
 
-		
-		try
-		{
+		try {
 			return Types.castObject(fromValue, toType, Types.CAST);
-		}
-		catch (UtilEvalError e)
-		{
+		} catch (UtilEvalError e) {
 			throw e.toEvalError(this, callstack);
 		}
 	}

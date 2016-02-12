@@ -32,8 +32,7 @@ import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Views.Forms.MessageBox;
 
-public class SolverView extends FrameLayout implements ViewOptionsMenu
-{
+public class SolverView extends FrameLayout implements ViewOptionsMenu {
 	Context context;
 	EditText edSolver;
 	EditText edResult;
@@ -50,12 +49,10 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 	LinearLayout ButtonsLayout;
 	private Solver solver = new Solver("");
 
-	public SolverView(Context context, LayoutInflater inflater)
-	{
+	public SolverView(Context context, LayoutInflater inflater) {
 		super(context);
 		mustLoadSolver = false;
-		LinearLayout solverLayout = (LinearLayout) inflater
-				.inflate(CB_UI_Base_Settings.nightMode.getValue() ? R.layout.night_solverview : R.layout.solverview, null, false);
+		LinearLayout solverLayout = (LinearLayout) inflater.inflate(CB_UI_Base_Settings.nightMode.getValue() ? R.layout.night_solverview : R.layout.solverview, null, false);
 
 		this.addView(solverLayout);
 
@@ -63,62 +60,48 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 		setLang();
 		SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 
-		bSolve.setOnClickListener(new OnClickListener()
-		{
+		bSolve.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v)
-			{
+			public void onClick(View v) {
 				solve();
 			}
 		});
 
-		bFunct.setOnClickListener(new OnClickListener()
-		{
+		bFunct.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View arg0)
-			{
-				SelectSolverFunction ssf = new SelectSolverFunction(solver, DataType.None, new IFunctionResult()
-				{
+			public void onClick(View arg0) {
+				SelectSolverFunction ssf = new SelectSolverFunction(solver, DataType.None, new IFunctionResult() {
 
 					@Override
-					public void selectedFunction(final Function function)
-					{
+					public void selectedFunction(final Function function) {
 						// ausgewählte Funktion verarbeiten!
 						// wenn funktion==null wurde Cancel gedrückt
 
-						if (function != null)
-						{
+						if (function != null) {
 
 							// muss in UI-Thread verarbeitet werden nicht im GL-Thread, wo wir gerade her kommen!
 
-							main.mainActivity.runOnUiThread(new Runnable()
-							{
+							main.mainActivity.runOnUiThread(new Runnable() {
 								@Override
-								public void run()
-								{
-									CharSequence selection = edSolver.getText().subSequence(edSolver.getSelectionStart(),
-											edSolver.getSelectionEnd());
+								public void run() {
+									CharSequence selection = edSolver.getText().subSequence(edSolver.getSelectionStart(), edSolver.getSelectionEnd());
 									// String newFunction = function.getShortcut();
 									String newFunction = function.getLongLocalName();
 									int newFunctionLength = newFunction.length();
 									String zeichen = "";
-									if (function.needsTextArgument())
-									{
+									if (function.needsTextArgument()) {
 										zeichen = "\"";
-										if ((selection.length() > 0) && (selection.charAt(0) == '"'))
-										{
+										if ((selection.length() > 0) && (selection.charAt(0) == '"')) {
 											// Anführungszeichen bereits vorhanden
 											zeichen = "";
 										}
 									}
 									newFunction += "(" + zeichen + selection + zeichen + ")";
-									int newSelectionStart = edSolver.getSelectionStart() + newFunctionLength + 1 + zeichen.length()
-											+ selection.length();
+									int newSelectionStart = edSolver.getSelectionStart() + newFunctionLength + 1 + zeichen.length() + selection.length();
 
 									int start = edSolver.getSelectionStart();
 									int end = edSolver.getSelectionEnd();
-									edSolver.getText().replace(Math.min(start, end), Math.max(start, end), newFunction, 0,
-											newFunction.length());
+									edSolver.getText().replace(Math.min(start, end), Math.max(start, end), newFunction, 0, newFunction.length());
 									edSolver.setSelection(newSelectionStart);
 									edSolver.invalidate();
 
@@ -133,11 +116,9 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 			}
 		});
 
-		bLeft.setOnClickListener(new OnClickListener()
-		{
+		bLeft.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v)
-			{
+			public void onClick(View v) {
 				LinearLayout.LayoutParams PO = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, .20f);
 				LinearLayout.LayoutParams MO = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 1f);
 				edSolver.setLayoutParams(PO);
@@ -145,11 +126,9 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 			}
 		});
 
-		bMiddle.setOnClickListener(new OnClickListener()
-		{
+		bMiddle.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v)
-			{
+			public void onClick(View v) {
 				LinearLayout.LayoutParams PO = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 1f);
 				LinearLayout.LayoutParams MO = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 1f);
 				edSolver.setLayoutParams(PO);
@@ -157,11 +136,9 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 			}
 		});
 
-		bRight.setOnClickListener(new OnClickListener()
-		{
+		bRight.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v)
-			{
+			public void onClick(View v) {
 				LinearLayout.LayoutParams PO = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 1f);
 				LinearLayout.LayoutParams MO = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, .20f);
 				edSolver.setLayoutParams(PO);
@@ -171,8 +148,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 
 	}
 
-	private void findViewById()
-	{
+	private void findViewById() {
 		edSolver = (EditText) findViewById(R.id.solverText);
 		edResult = (EditText) findViewById(R.id.solverResult);
 		bSolve = (Button) findViewById(R.id.solverButtonSolve);
@@ -186,8 +162,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 		ButtonsLayout = (LinearLayout) findViewById(R.id.solverViewButtons);
 	}
 
-	private void setLang()
-	{
+	private void setLang() {
 
 		bSolve.setText(Translation.Get("Solve"));
 		bFunct.setText(Translation.Get("Funct."));
@@ -198,54 +173,45 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 		bRight.setText(Translation.Get("RightWindow"));
 	}
 
-	protected void solve()
-	{
+	protected void solve() {
 		// Hide Keyboard when Calculating
 		// showVirturalKeyboard(false);
 		solver = new Solver(edSolver.getText().toString());
-		if (!solver.Solve())
-		{
+		if (!solver.Solve()) {
 			Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
 		}
 		edResult.setText("");
 		String result = "";
-		for (SolverZeile zeile : solver)
-		{
+		for (SolverZeile zeile : solver) {
 			result += zeile.Solution + "\n";
 		}
 
 		edResult.setText(result);
 
-		if ((solver.MissingVariables != null) && (solver.MissingVariables.size() > 0))
-		{
+		if ((solver.MissingVariables != null) && (solver.MissingVariables.size() > 0)) {
 			// es sind nicht alle Variablen zugewiesen
 			// Abfrage, ob die Deklarationen eingefügt werden sollen
 			String message = "";
-			for (String s : solver.MissingVariables.keySet())
-			{
-				if (message != "") message += ", ";
+			for (String s : solver.MissingVariables.keySet()) {
+				if (message != "")
+					message += ", ";
 				message += s;
 			}
 
-			MessageBox.Show(Translation.Get("insertVars") + "\n" + message, Translation.Get("missingVars"), MessageBoxButtons.YesNo,
-					MessageBoxIcon.Asterisk, mDialogListener);
+			MessageBox.Show(Translation.Get("insertVars") + "\n" + message, Translation.Get("missingVars"), MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk, mDialogListener);
 		}
 
 	}
 
-	private final DialogInterface.OnClickListener mDialogListener = new DialogInterface.OnClickListener()
-	{
+	private final DialogInterface.OnClickListener mDialogListener = new DialogInterface.OnClickListener() {
 		@Override
-		public void onClick(DialogInterface dialog, int button)
-		{
+		public void onClick(DialogInterface dialog, int button) {
 			// Behandle das ergebniss
-			switch (button)
-			{
+			switch (button) {
 			case -1:
 				/* User clicked OK so do some stuff */
 				String missing = "";
-				for (String s : solver.MissingVariables.keySet())
-				{
+				for (String s : solver.MissingVariables.keySet()) {
 					missing += s + "=\n";
 					edResult.setText("\n" + edSolver.getText().toString());
 				}
@@ -264,43 +230,35 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 
 	};
 
-	public void SetSelectedCache(Cache cache, Waypoint waypoint)
-	{
-		if (aktCache != cache)
-		{
+	public void SetSelectedCache(Cache cache, Waypoint waypoint) {
+		if (aktCache != cache) {
 			mustLoadSolver = true;
 			aktCache = cache;
 		}
 	}
 
 	@Override
-	public boolean ItemSelected(MenuItem item)
-	{
+	public boolean ItemSelected(MenuItem item) {
 		return false;
 	}
 
 	@Override
-	public void BeforeShowMenu(Menu menu)
-	{
+	public void BeforeShowMenu(Menu menu) {
 
 	}
 
 	@Override
-	public void OnShow()
-	{
-		if (mustLoadSolver)
-		{
+	public void OnShow() {
+		if (mustLoadSolver) {
 			edSolver.setText(Database.GetSolver(aktCache));
 			mustLoadSolver = false;
 		}
 	}
 
 	@Override
-	public void OnHide()
-	{
+	public void OnHide() {
 		// Save changed Solver text
-		if (aktCache != null)
-		{
+		if (aktCache != null) {
 			Database.SetSolver(aktCache, edSolver.getText().toString());
 			// When Solve 1 changes -> Solver 2 must reload the information from DB to get the changes from Solver 1
 			aktCache.setSolver1Changed(true);
@@ -308,14 +266,12 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 	}
 
 	@Override
-	public void OnFree()
-	{
+	public void OnFree() {
 
 	}
 
 	@Override
-	public int GetMenuId()
-	{
+	public int GetMenuId() {
 		return 0;
 	}
 
@@ -341,20 +297,17 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 	// }
 
 	@Override
-	public int GetContextMenuId()
-	{
+	public int GetContextMenuId() {
 		return 0;
 	}
 
 	@Override
-	public void BeforeShowContextMenu(Menu menu)
-	{
+	public void BeforeShowContextMenu(Menu menu) {
 
 	}
 
 	@Override
-	public boolean ContextMenuItemSelected(MenuItem item)
-	{
+	public boolean ContextMenuItemSelected(MenuItem item) {
 		return false;
 	}
 
@@ -381,8 +334,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 	// }
 
 	@Override
-	public void ActivityResult(int requestCode, int resultCode, Intent data)
-	{
+	public void ActivityResult(int requestCode, int resultCode, Intent data) {
 
 	}
 

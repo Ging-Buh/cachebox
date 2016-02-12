@@ -21,17 +21,19 @@
 package net.htmlparser.jericho;
 
 final class StartTagTypeUnregistered extends StartTagType {
-	static final StartTagTypeUnregistered INSTANCE=new StartTagTypeUnregistered();
+	static final StartTagTypeUnregistered INSTANCE = new StartTagTypeUnregistered();
 
 	private StartTagTypeUnregistered() {
-		super("unregistered",START_DELIMITER_PREFIX,">",null,false,false,false);
+		super("unregistered", START_DELIMITER_PREFIX, ">", null, false, false, false);
 	}
 
 	protected Tag constructTagAt(final Source source, final int pos) {
-		final int closingDelimiterPos=source.getParseText().indexOf('>',pos+1);
-		if (closingDelimiterPos==-1) return null;
-		final Tag tag=constructStartTag(source,pos,closingDelimiterPos+1,"",null);
-		if (source.logger.isErrorEnabled()) source.logger.error(source.getRowColumnVector(tag.getBegin()).appendTo(new StringBuilder(200).append("Encountered possible StartTag at ")).append(" whose content does not match a registered StartTagType").toString());
+		final int closingDelimiterPos = source.getParseText().indexOf('>', pos + 1);
+		if (closingDelimiterPos == -1)
+			return null;
+		final Tag tag = constructStartTag(source, pos, closingDelimiterPos + 1, "", null);
+		if (source.logger.isErrorEnabled())
+			source.logger.error(source.getRowColumnVector(tag.getBegin()).appendTo(new StringBuilder(200).append("Encountered possible StartTag at ")).append(" whose content does not match a registered StartTagType").toString());
 		return tag;
 	}
 }

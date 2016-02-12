@@ -25,8 +25,7 @@ import org.mapsforge.core.model.Point;
  * 
  * @author Longri
  */
-public class Mixed_WayDecorator
-{
+public class Mixed_WayDecorator {
 	/**
 	 * Minimum distance in pixels before the symbol is repeated.
 	 */
@@ -44,12 +43,9 @@ public class Mixed_WayDecorator
 
 	private static float ScaleFactor = -1;
 
-	static void renderSymbol(float scale, Bitmap symbolBitmap, boolean alignCenter, boolean repeatSymbol, Point[][] coordinates,
-			List<SymbolContainer> waySymbols)
-	{
+	static void renderSymbol(float scale, Bitmap symbolBitmap, boolean alignCenter, boolean repeatSymbol, Point[][] coordinates, List<SymbolContainer> waySymbols) {
 
-		if (ScaleFactor == -1 || ScaleFactor != scale)
-		{
+		if (ScaleFactor == -1 || ScaleFactor != scale) {
 			ScaleFactor = scale;
 			DISTANCE_BETWEEN_SYMBOLS = (int) (200 * ScaleFactor);
 			DISTANCE_BETWEEN_WAY_NAMES = (int) (500 * ScaleFactor);
@@ -66,8 +62,7 @@ public class Mixed_WayDecorator
 		float segmentLengthRemaining;
 		float segmentSkipPercentage;
 		float theta;
-		for (int i = 1; i < coordinates[0].length; ++i)
-		{
+		for (int i = 1; i < coordinates[0].length; ++i) {
 			// get the current way point coordinates
 			double currentX = coordinates[0][i].x;
 			double currentY = coordinates[0][i].y;
@@ -78,8 +73,7 @@ public class Mixed_WayDecorator
 			double segmentLengthInPixel = Math.sqrt(diffX * diffX + diffY * diffY);
 			segmentLengthRemaining = (float) segmentLengthInPixel;
 
-			while (segmentLengthRemaining - skipPixels > SEGMENT_SAFETY_DISTANCE)
-			{
+			while (segmentLengthRemaining - skipPixels > SEGMENT_SAFETY_DISTANCE) {
 				// calculate the percentage of the current segment to skip
 				segmentSkipPercentage = skipPixels / segmentLengthRemaining;
 
@@ -92,8 +86,7 @@ public class Mixed_WayDecorator
 				waySymbols.add(new SymbolContainer(symbolBitmap, point, alignCenter, theta));
 
 				// check if the symbol should only be rendered once
-				if (!repeatSymbol)
-				{
+				if (!repeatSymbol) {
 					return;
 				}
 
@@ -109,8 +102,7 @@ public class Mixed_WayDecorator
 			}
 
 			skipPixels -= segmentLengthRemaining;
-			if (skipPixels < SEGMENT_SAFETY_DISTANCE)
-			{
+			if (skipPixels < SEGMENT_SAFETY_DISTANCE) {
 				skipPixels = SEGMENT_SAFETY_DISTANCE;
 			}
 

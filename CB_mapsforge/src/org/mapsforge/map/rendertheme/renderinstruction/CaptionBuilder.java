@@ -48,8 +48,7 @@ public class CaptionBuilder {
 	final Paint stroke;
 	TextKey textKey;
 
-	public CaptionBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
-			Attributes attributes) throws SAXException {
+	public CaptionBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, Attributes attributes) throws SAXException {
 		this.fill = graphicFactory.createPaint();
 		this.fill.setColor(Color.BLACK);
 		this.fill.setStyle(Style.FILL);
@@ -70,8 +69,7 @@ public class CaptionBuilder {
 		return new Caption(this);
 	}
 
-	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
-			Attributes attributes) throws SAXException {
+	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, Attributes attributes) throws SAXException {
 		FontFamily fontFamily = FontFamily.DEFAULT;
 		FontStyle fontStyle = FontStyle.NORMAL;
 

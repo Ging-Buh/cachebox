@@ -27,124 +27,124 @@ import CB_Utils.Util.FileIO;
  */
 public class InitTestDBs {
 
-    static Preferences prefs = Preferences.userNodeForPackage(InitTestDBs.class);
+	static Preferences prefs = Preferences.userNodeForPackage(InitTestDBs.class);
 
-    /**
-     * Initialisiert die Config f�r die Tests! initialisiert wird die Config mit der unter Testdata abgelegten config.db3
-     */
-    public static void InitalConfig() {
+	/**
+	 * Initialisiert die Config f�r die Tests! initialisiert wird die Config mit der unter Testdata abgelegten config.db3
+	 */
+	public static void InitalConfig() {
 
-	if (Database.Settings != null)
-	    return;
+		if (Database.Settings != null)
+			return;
 
-	// Read Config
-	String workPath = "./testdata";
+		// Read Config
+		String workPath = "./testdata";
 
-	Config.Initialize(workPath, workPath + "/cachebox.config");
+		Config.Initialize(workPath, workPath + "/cachebox.config");
 
-	// hier muss die Config Db initialisiert werden
-	try {
-	    Database.Settings = new TestDB(DatabaseType.Settings);
-	} catch (ClassNotFoundException e) {
-	    e.printStackTrace();
-	}
-	if (!FileIO.createDirectory(Config.mWorkPath))
-	    return;
-	Database.Settings.StartUp(Config.mWorkPath + "/Config.db3");
-
-	initialPlatformSettings();
-
-	Config.settings.ReadFromDB();
-
-	String database = "./testdata/test.db3";
-	try {
-	    InitTestDBs.InitTestDB(database);
-	} catch (ClassNotFoundException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
-    }
-
-    private static void initialPlatformSettings() {
-	PlatformSettings.setPlatformSettings(new IPlatformSettings() {
-
-	    @Override
-	    public void Write(SettingBase<?> setting) {
-
-		if (setting instanceof SettingBool) {
-		    prefs.putBoolean(setting.getName(), ((SettingBool) setting).getValue());
-		}
-
-		else if (setting instanceof SettingString) {
-		    prefs.put(setting.getName(), ((SettingString) setting).getValue());
-		} else if (setting instanceof SettingInt) {
-		    prefs.putInt(setting.getName(), ((SettingInt) setting).getValue());
-		}
-
-		// Commit the edits!
+		// hier muss die Config Db initialisiert werden
 		try {
-		    prefs.flush();
-		} catch (BackingStoreException e) {
-
-		    e.printStackTrace();
+			Database.Settings = new TestDB(DatabaseType.Settings);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 		}
+		if (!FileIO.createDirectory(Config.mWorkPath))
+			return;
+		Database.Settings.StartUp(Config.mWorkPath + "/Config.db3");
 
-	    }
+		initialPlatformSettings();
 
-	    @Override
-	    public SettingBase<?> Read(SettingBase<?> setting) {
-		if (setting instanceof SettingString) {
-		    String value = prefs.get(setting.getName(), ((SettingString) setting).getDefaultValue());
-		    ((SettingString) setting).setValue(value);
-		} else if (setting instanceof SettingBool) {
-		    boolean value = prefs.getBoolean(setting.getName(), ((SettingBool) setting).getDefaultValue());
-		    ((SettingBool) setting).setValue(value);
-		} else if (setting instanceof SettingInt) {
-		    int value = prefs.getInt(setting.getName(), ((SettingInt) setting).getDefaultValue());
-		    ((SettingInt) setting).setValue(value);
+		Config.settings.ReadFromDB();
+
+		String database = "./testdata/test.db3";
+		try {
+			InitTestDBs.InitTestDB(database);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		setting.clearDirty();
-		return setting;
-	    }
-	});
-    }
-
-    /**
-     * Initialisiert eine CacheBox DB f�r die Tests
-     * 
-     * @param database
-     *            Pfad zur DB
-     * @throws ClassNotFoundException
-     */
-    public static void InitTestDB(String database) throws ClassNotFoundException {
-
-	if (Database.Data != null)
-	    return;
-	Database.Data = new TestDB(DatabaseType.CacheBox);
-	Database.Data.StartUp(database);
-	CoreSettingsForward.Categories = new Categories();
-	Database.Data.GPXFilenameUpdateCacheCount();
-    }
-
-    private static String lastLoadedTranslation;
-
-    public static void InitialTranslations(String lang) {
-	if (Translation.that != null) {
-	    if (lastLoadedTranslation.equals(lang))
-		return;
 	}
 
-	lastLoadedTranslation = lang;
+	private static void initialPlatformSettings() {
+		PlatformSettings.setPlatformSettings(new IPlatformSettings() {
 
-	InitalConfig();
+			@Override
+			public void Write(SettingBase<?> setting) {
 
-	new Translation(Config.mWorkPath, FileType.Absolute);
-	try {
-	    Translation.LoadTranslation(Config.mWorkPath + "/lang/" + lang + "/strings.ini");
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
+				if (setting instanceof SettingBool) {
+					prefs.putBoolean(setting.getName(), ((SettingBool) setting).getValue());
+				}
+
+				else if (setting instanceof SettingString) {
+					prefs.put(setting.getName(), ((SettingString) setting).getValue());
+				} else if (setting instanceof SettingInt) {
+					prefs.putInt(setting.getName(), ((SettingInt) setting).getValue());
+				}
+
+				// Commit the edits!
+				try {
+					prefs.flush();
+				} catch (BackingStoreException e) {
+
+					e.printStackTrace();
+				}
+
+			}
+
+			@Override
+			public SettingBase<?> Read(SettingBase<?> setting) {
+				if (setting instanceof SettingString) {
+					String value = prefs.get(setting.getName(), ((SettingString) setting).getDefaultValue());
+					((SettingString) setting).setValue(value);
+				} else if (setting instanceof SettingBool) {
+					boolean value = prefs.getBoolean(setting.getName(), ((SettingBool) setting).getDefaultValue());
+					((SettingBool) setting).setValue(value);
+				} else if (setting instanceof SettingInt) {
+					int value = prefs.getInt(setting.getName(), ((SettingInt) setting).getDefaultValue());
+					((SettingInt) setting).setValue(value);
+				}
+				setting.clearDirty();
+				return setting;
+			}
+		});
 	}
 
-    }
+	/**
+	 * Initialisiert eine CacheBox DB f�r die Tests
+	 * 
+	 * @param database
+	 *            Pfad zur DB
+	 * @throws ClassNotFoundException
+	 */
+	public static void InitTestDB(String database) throws ClassNotFoundException {
+
+		if (Database.Data != null)
+			return;
+		Database.Data = new TestDB(DatabaseType.CacheBox);
+		Database.Data.StartUp(database);
+		CoreSettingsForward.Categories = new Categories();
+		Database.Data.GPXFilenameUpdateCacheCount();
+	}
+
+	private static String lastLoadedTranslation;
+
+	public static void InitialTranslations(String lang) {
+		if (Translation.that != null) {
+			if (lastLoadedTranslation.equals(lang))
+				return;
+		}
+
+		lastLoadedTranslation = lang;
+
+		InitalConfig();
+
+		new Translation(Config.mWorkPath, FileType.Absolute);
+		try {
+			Translation.LoadTranslation(Config.mWorkPath + "/lang/" + lang + "/strings.ini");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 }

@@ -29,8 +29,8 @@ final class HTMLElementTerminatingTagNameSets {
 	public final Set<String> NonterminatingElementNameSet; // Set of elements that can be inside this element, which may contain tags from TerminatingStartTagNameSet and TerminatingEndTagNameSet that must be ignored
 
 	public HTMLElementTerminatingTagNameSets(final Set<String> terminatingStartTagNameSet, final Set<String> terminatingEndTagNameSet, final Set<String> nonterminatingElementNameSet) {
-		this.TerminatingStartTagNameSet=terminatingStartTagNameSet;
-		this.TerminatingEndTagNameSet=terminatingEndTagNameSet;
-		this.NonterminatingElementNameSet=nonterminatingElementNameSet;
+		this.TerminatingStartTagNameSet = terminatingStartTagNameSet;
+		this.TerminatingEndTagNameSet = terminatingEndTagNameSet;
+		this.NonterminatingElementNameSet = nonterminatingElementNameSet;
 	}
 }

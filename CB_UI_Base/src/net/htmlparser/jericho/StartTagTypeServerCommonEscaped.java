@@ -21,32 +21,36 @@
 package net.htmlparser.jericho;
 
 final class StartTagTypeServerCommonEscaped extends StartTagTypeGenericImplementation {
-	static final StartTagTypeServerCommonEscaped INSTANCE=new StartTagTypeServerCommonEscaped();
+	static final StartTagTypeServerCommonEscaped INSTANCE = new StartTagTypeServerCommonEscaped();
 
 	private StartTagTypeServerCommonEscaped() {
-		super("escaped common server tag","<\\%","%>",null,true);
+		super("escaped common server tag", "<\\%", "%>", null, true);
 	}
 
 	protected int getEnd(final Source source, int pos) {
 		// Make sure there are no interloping unescaped server tags or server comment tags
-		Tag nextServerCommonTag=source.getNextTag(pos,StartTagTypeServerCommon.INSTANCE);
-		Tag nextServerCommonCommentTag=source.getNextTag(pos,StartTagTypeServerCommonComment.INSTANCE);
+		Tag nextServerCommonTag = source.getNextTag(pos, StartTagTypeServerCommon.INSTANCE);
+		Tag nextServerCommonCommentTag = source.getNextTag(pos, StartTagTypeServerCommonComment.INSTANCE);
 		while (true) {
-			int potentialEnd=super.getEnd(source,pos);
-			if (potentialEnd==-1) return -1;
+			int potentialEnd = super.getEnd(source, pos);
+			if (potentialEnd == -1)
+				return -1;
 			do {
-				int skipToPos=pos;
-				if (nextServerCommonTag!=null && nextServerCommonTag.getEnd()<=potentialEnd) {
-					skipToPos=nextServerCommonTag.getEnd()+1;
+				int skipToPos = pos;
+				if (nextServerCommonTag != null && nextServerCommonTag.getEnd() <= potentialEnd) {
+					skipToPos = nextServerCommonTag.getEnd() + 1;
 				}
-				if (nextServerCommonCommentTag!=null && nextServerCommonCommentTag.getEnd()<=potentialEnd) {
-					skipToPos=Math.max(skipToPos,nextServerCommonCommentTag.getEnd()+1);
+				if (nextServerCommonCommentTag != null && nextServerCommonCommentTag.getEnd() <= potentialEnd) {
+					skipToPos = Math.max(skipToPos, nextServerCommonCommentTag.getEnd() + 1);
 				}
-				if (skipToPos==pos) return potentialEnd;
-				pos=skipToPos;
-				if (nextServerCommonTag!=null && nextServerCommonTag.getEnd()<=pos) nextServerCommonTag=source.getNextTag(pos,StartTagTypeServerCommon.INSTANCE);
-				if (nextServerCommonCommentTag!=null && nextServerCommonCommentTag.getEnd()<=pos) nextServerCommonCommentTag=source.getNextTag(pos,StartTagTypeServerCommonComment.INSTANCE);
-			} while (pos<potentialEnd);
+				if (skipToPos == pos)
+					return potentialEnd;
+				pos = skipToPos;
+				if (nextServerCommonTag != null && nextServerCommonTag.getEnd() <= pos)
+					nextServerCommonTag = source.getNextTag(pos, StartTagTypeServerCommon.INSTANCE);
+				if (nextServerCommonCommentTag != null && nextServerCommonCommentTag.getEnd() <= pos)
+					nextServerCommonCommentTag = source.getNextTag(pos, StartTagTypeServerCommonComment.INSTANCE);
+			} while (pos < potentialEnd);
 		}
 	}
 }

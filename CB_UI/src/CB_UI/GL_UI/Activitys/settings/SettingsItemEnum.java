@@ -4,13 +4,11 @@ import CB_UI_Base.GL_UI.Controls.Spinner;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
-public class SettingsItemEnum extends SettingsItemBase
-{
+public class SettingsItemEnum extends SettingsItemBase {
 
 	Spinner spinner;
 
-	public SettingsItemEnum(CB_RectF rec, int Index, String Name)
-	{
+	public SettingsItemEnum(CB_RectF rec, int Index, String Name) {
 		super(rec, Index, Name);
 
 		spinner = new Spinner(lblDefault, "", null, null);
@@ -21,14 +19,12 @@ public class SettingsItemEnum extends SettingsItemBase
 
 	}
 
-	public Spinner getSpinner()
-	{
+	public Spinner getSpinner() {
 		return spinner;
 	}
 
 	@Override
-	protected void layout()
-	{
+	protected void layout() {
 		lblDefault.setHeight(spinner.getHeight());
 		super.layout();
 		spinner.setY(lblDefault.getY() + UI_Size_Base.that.getMargin());

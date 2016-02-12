@@ -79,15 +79,13 @@ public final class MercatorProjection {
 		return Math.cos(latitude * (Math.PI / 180)) * EARTH_CIRCUMFERENCE / mapSize;
 	}
 
-
 	/**
 	 * Get LatLong form Pixels.
 	 *
 	 * @author Stephan Brandt <stephan@contagt.com>
 	 */
 	public static LatLong fromPixels(double pixelX, double pixelY, double scaleFactor, int tileSize) {
-		return new LatLong(pixelYToLatitude(pixelY, scaleFactor, tileSize),
-				pixelXToLongitude(pixelX, scaleFactor, tileSize));
+		return new LatLong(pixelYToLatitude(pixelY, scaleFactor, tileSize), pixelXToLongitude(pixelX, scaleFactor, tileSize));
 	}
 
 	/**
@@ -96,8 +94,7 @@ public final class MercatorProjection {
 	 * @author Stephan Brandt <stephan@contagt.com>
 	 */
 	public static LatLong fromPixels(double pixelX, double pixelY, byte zoomLevel, int tileSize) {
-		return new LatLong(pixelYToLatitude(pixelY, zoomLevel, tileSize),
-				pixelXToLongitude(pixelX, zoomLevel, tileSize));
+		return new LatLong(pixelYToLatitude(pixelY, zoomLevel, tileSize), pixelXToLongitude(pixelX, zoomLevel, tileSize));
 	}
 
 	/**
@@ -302,6 +299,7 @@ public final class MercatorProjection {
 		}
 		return 360 * ((pixelX / mapSize) - 0.5);
 	}
+
 	/**
 	 * Converts a pixel X coordinate at a certain zoom level to a longitude coordinate.
 	 *

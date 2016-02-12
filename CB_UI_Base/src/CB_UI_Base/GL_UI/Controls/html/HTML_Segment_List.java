@@ -32,106 +32,106 @@ import CB_UI_Base.Math.UiSizes;
  */
 public class HTML_Segment_List extends Html_Segment {
 
-    private final List<Html_Segment> listEntrys = new ArrayList<Html_Segment>();
-    private final int listBulletNumber;
-    private final int tabLeveL;
-    private float scaledfontSize;
+	private final List<Html_Segment> listEntrys = new ArrayList<Html_Segment>();
+	private final int listBulletNumber;
+	private final int tabLeveL;
+	private float scaledfontSize;
 
-    public HTML_Segment_List(Stack<Tag> atributeStack, int bulletNumber, int tabLevel, boolean ordert) {
-	super(Html_Segment_Typ.List, atributeStack, "");
+	public HTML_Segment_List(Stack<Tag> atributeStack, int bulletNumber, int tabLevel, boolean ordert) {
+		super(Html_Segment_Typ.List, atributeStack, "");
 
-	this.tabLeveL = tabLevel;
-	if (ordert) {
-	    this.listBulletNumber = -1;
-	} else {
-	    this.listBulletNumber = bulletNumber;
+		this.tabLeveL = tabLevel;
+		if (ordert) {
+			this.listBulletNumber = -1;
+		} else {
+			this.listBulletNumber = bulletNumber;
+		}
+		resolveAtributes();
 	}
-	resolveAtributes();
-    }
 
-    @Override
-    public void resolveAtributes() {
-	resolveHAlignment();
+	@Override
+	public void resolveAtributes() {
+		resolveHAlignment();
 
-	int size = 3;
-	for (Tag tag : tags) {
-	    if (!tag.getName().toLowerCase().equals("font"))
-		continue;
-	    List<Element> elements = tag.getAllElements();
+		int size = 3;
+		for (Tag tag : tags) {
+			if (!tag.getName().toLowerCase().equals("font"))
+				continue;
+			List<Element> elements = tag.getAllElements();
 
-	    if (elements.isEmpty())
-		elements.add(tag.getElement());
+			if (elements.isEmpty())
+				elements.add(tag.getElement());
 
-	    for (Element ele : elements) {
-		// tag.getElement().
-		Attributes attributes = ele.getAttributes();
-		for (Attribute attr : attributes) {
-		    if (attr.getKey().equals("size")) {
+			for (Element ele : elements) {
+				// tag.getElement().
+				Attributes attributes = ele.getAttributes();
+				for (Attribute attr : attributes) {
+					if (attr.getKey().equals("size")) {
 
-			/*
-			    * The following values are acceptable:
-			   *
-			   * 1, 2, 3, 4, 5, 6, 7
-			   * +1, +2, +3, +4, +5, +6
-			   * -1, -2, -3, -4, -5, -6
-			    */
+						/*
+						    * The following values are acceptable:
+						   *
+						   * 1, 2, 3, 4, 5, 6, 7
+						   * +1, +2, +3, +4, +5, +6
+						   * -1, -2, -3, -4, -5, -6
+						    */
 
-			String value = attr.getValue();
-			if (value.startsWith("+")) {
-			    int intSize = Integer.parseInt(value.replace("+", ""));
-			    size += intSize;
-			} else if (value.startsWith("-")) {
-			    int intSize = Integer.parseInt(value.replace("-", ""));
-			    size -= intSize;
-			} else {
-			    size = Integer.parseInt(value);
+						String value = attr.getValue();
+						if (value.startsWith("+")) {
+							int intSize = Integer.parseInt(value.replace("+", ""));
+							size += intSize;
+						} else if (value.startsWith("-")) {
+							int intSize = Integer.parseInt(value.replace("-", ""));
+							size -= intSize;
+						} else {
+							size = Integer.parseInt(value);
+						}
+
+					}
+				}
 			}
-
-		    }
 		}
-	    }
+		if (size < 1)
+			size = 1;
+		if (size > 7)
+			size = 7;
+
+		this.scaledfontSize = Html_Segment_TextBlock.getFontPx(size) * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR;
+
 	}
-	if (size < 1)
-	    size = 1;
-	if (size > 7)
-	    size = 7;
 
-	this.scaledfontSize = Html_Segment_TextBlock.getFontPx(size) * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR;
+	public void addListEntry(Html_Segment entry) {
+		listEntrys.add(entry);
+	}
 
-    }
+	public List<Html_Segment> getSegmentList() {
+		return listEntrys;
+	}
 
-    public void addListEntry(Html_Segment entry) {
-	listEntrys.add(entry);
-    }
+	public int getTabLevel() {
+		return tabLeveL;
+	}
 
-    public List<Html_Segment> getSegmentList() {
-	return listEntrys;
-    }
+	public int getBulletNumber() {
+		return listBulletNumber;
+	}
 
-    public int getTabLevel() {
-	return tabLeveL;
-    }
+	public float getFondSize() {
+		return this.scaledfontSize;
+	}
 
-    public int getBulletNumber() {
-	return listBulletNumber;
-    }
-
-    public float getFondSize() {
-	return this.scaledfontSize;
-    }
-
-    @Override
-    public void dispose() {
-	super.dispose();
-	if (listEntrys != null) {
-	    for (Html_Segment entry : listEntrys) {
-		if (entry != null) {
-		    entry.dispose();
-		    entry = null;
+	@Override
+	public void dispose() {
+		super.dispose();
+		if (listEntrys != null) {
+			for (Html_Segment entry : listEntrys) {
+				if (entry != null) {
+					entry.dispose();
+					entry = null;
+				}
+			}
+			listEntrys.clear();
 		}
-	    }
-	    listEntrys.clear();
 	}
-    }
 
 }

@@ -4,10 +4,8 @@ import junit.framework.TestCase;
 import CB_Locator.Map.PolylineReduction;
 import CB_Utils.Math.PointD;
 
-public class PolylineReduction_Test extends TestCase
-{
-	public void test_PerpendicularDistance()
-	{
+public class PolylineReduction_Test extends TestCase {
+	public void test_PerpendicularDistance() {
 
 		PointD point1 = new PointD(0.0, 0.0);
 		PointD point2 = new PointD(0.0, 0.0);

@@ -15,41 +15,32 @@
  */
 package CB_Utils.Settings;
 
-public class SettingDouble extends SettingBase<Double>
-{
+public class SettingDouble extends SettingBase<Double> {
 
-	public SettingDouble(String name, SettingCategory category, SettingModus modus, double defaultValue, SettingStoreType StoreType,
-			SettingUsage usage)
-	{
+	public SettingDouble(String name, SettingCategory category, SettingModus modus, double defaultValue, SettingStoreType StoreType, SettingUsage usage) {
 		super(name, category, modus, StoreType, usage);
 		this.defaultValue = defaultValue;
 		this.value = defaultValue;
 	}
 
 	@Override
-	public String toDBString()
-	{
+	public String toDBString() {
 		return String.valueOf(value);
 	}
 
 	@Override
-	public boolean fromDBString(String dbString)
-	{
-		try
-		{
+	public boolean fromDBString(String dbString) {
+		try {
 			value = Double.valueOf(dbString);
 			return true;
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			value = defaultValue;
 			return false;
 		}
 	}
 
 	@Override
-	public SettingBase<Double> copy()
-	{
+	public SettingBase<Double> copy() {
 		SettingBase<Double> ret = new SettingDouble(this.name, this.category, this.modus, this.defaultValue, this.storeType, this.usage);
 
 		ret.value = this.value;
@@ -59,13 +50,15 @@ public class SettingDouble extends SettingBase<Double>
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (!(obj instanceof SettingDouble)) return false;
+	public boolean equals(Object obj) {
+		if (!(obj instanceof SettingDouble))
+			return false;
 
 		SettingDouble inst = (SettingDouble) obj;
-		if (!(inst.name.equals(this.name))) return false;
-		if (inst.value != this.value) return false;
+		if (!(inst.name.equals(this.name)))
+			return false;
+		if (inst.value != this.value)
+			return false;
 
 		return true;
 	}

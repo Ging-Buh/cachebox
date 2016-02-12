@@ -34,10 +34,10 @@ public class WriterLogger implements Logger {
 	private final Writer writer;
 	private final String name;
 
-	private boolean errorEnabled=true;
-	private boolean warnEnabled=true;
-	private boolean infoEnabled=true;
-	private boolean debugEnabled=true;
+	private boolean errorEnabled = true;
+	private boolean warnEnabled = true;
+	private boolean infoEnabled = true;
+	private boolean debugEnabled = true;
 
 	/**
 	 * Constructs a new <code>WriterLogger</code> with the specified <code>Writer</code> and the default name.
@@ -47,7 +47,7 @@ public class WriterLogger implements Logger {
 	 * @param writer  the <code>Writer</code> to which all output is sent.
 	 */
 	public WriterLogger(final Writer writer) {
-		this(writer,Source.PACKAGE_NAME);
+		this(writer, Source.PACKAGE_NAME);
 	}
 
 	/**
@@ -60,8 +60,8 @@ public class WriterLogger implements Logger {
 	 * @param name  the logger name, may be <code>null</code>.
 	 */
 	public WriterLogger(final Writer writer, final String name) {
-		this.writer=writer;
-		this.name=name;
+		this.writer = writer;
+		this.name = name;
 	}
 
 	/**
@@ -82,22 +82,26 @@ public class WriterLogger implements Logger {
 
 	// Documentation inherited from Logger
 	public void error(final String message) {
-		if (isErrorEnabled()) log("ERROR",message);
+		if (isErrorEnabled())
+			log("ERROR", message);
 	}
 
 	// Documentation inherited from Logger
 	public void warn(final String message) {
-		if (isWarnEnabled()) log("WARN",message);
+		if (isWarnEnabled())
+			log("WARN", message);
 	}
 
 	// Documentation inherited from Logger
 	public void info(final String message) {
-		if (isInfoEnabled()) log("INFO",message);
+		if (isInfoEnabled())
+			log("INFO", message);
 	}
 
 	// Documentation inherited from Logger
 	public void debug(final String message) {
-		if (isDebugEnabled()) log("DEBUG",message);
+		if (isDebugEnabled())
+			log("DEBUG", message);
 	}
 
 	// Documentation inherited from Logger
@@ -110,7 +114,7 @@ public class WriterLogger implements Logger {
 	 * @param errorEnabled  determines whether logging is enabled at the ERROR level.
 	 */
 	public void setErrorEnabled(final boolean errorEnabled) {
-		this.errorEnabled=errorEnabled;
+		this.errorEnabled = errorEnabled;
 	}
 
 	// Documentation inherited from Logger
@@ -123,7 +127,7 @@ public class WriterLogger implements Logger {
 	 * @param warnEnabled  determines whether logging is enabled at the WARN level.
 	 */
 	public void setWarnEnabled(final boolean warnEnabled) {
-		this.warnEnabled=warnEnabled;
+		this.warnEnabled = warnEnabled;
 	}
 
 	// Documentation inherited from Logger
@@ -136,7 +140,7 @@ public class WriterLogger implements Logger {
 	 * @param infoEnabled  determines whether logging is enabled at the INFO level.
 	 */
 	public void setInfoEnabled(final boolean infoEnabled) {
-		this.infoEnabled=infoEnabled;
+		this.infoEnabled = infoEnabled;
 	}
 
 	// Documentation inherited from Logger
@@ -149,7 +153,7 @@ public class WriterLogger implements Logger {
 	 * @param debugEnabled  determines whether logging is enabled at the DEBUG level.
 	 */
 	public void setDebugEnabled(final boolean debugEnabled) {
-		this.debugEnabled=debugEnabled;
+		this.debugEnabled = debugEnabled;
 	}
 
 	/**
@@ -169,7 +173,7 @@ public class WriterLogger implements Logger {
 	 */
 	protected void log(final String level, final String message) {
 		try {
-			writer.write(BasicLogFormatter.format(level,message,name));
+			writer.write(BasicLogFormatter.format(level, message, name));
 			writer.flush();
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);

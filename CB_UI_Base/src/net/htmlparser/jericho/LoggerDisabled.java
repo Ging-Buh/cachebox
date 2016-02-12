@@ -21,17 +21,22 @@
 package net.htmlparser.jericho;
 
 final class LoggerDisabled implements Logger {
-	public static final LoggerDisabled INSTANCE=new LoggerDisabled();
+	public static final LoggerDisabled INSTANCE = new LoggerDisabled();
 
-	private LoggerDisabled() {}
+	private LoggerDisabled() {
+	}
 
-	public void error(String message) {}
+	public void error(String message) {
+	}
 
-	public void warn(String message) {}
+	public void warn(String message) {
+	}
 
-	public void info(String message) {}
+	public void info(String message) {
+	}
 
-	public void debug(String message) {}
+	public void debug(String message) {
+	}
 
 	public boolean isErrorEnabled() {
 		return false;
@@ -49,4 +54,3 @@ final class LoggerDisabled implements Logger {
 		return false;
 	}
 }
-

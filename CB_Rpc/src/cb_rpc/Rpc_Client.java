@@ -11,26 +11,26 @@ import cb_rpc.Functions.RpcMessage;
 import cb_rpc.Settings.CB_Rpc_Settings;
 
 public class Rpc_Client {
-	// XmlRpc Objecte für den Zugriff auf den RPC-Server
+	// XmlRpc Objecte fï¿½r den Zugriff auf den RPC-Server
 	private XmlRpcClient client = null;
 
 	public Rpc_Client() {
-		
+
 	}
-	
+
 	/**
-	 * Erstellt die Config-Objecte für den Zugriff auf den PCharge-Server über XmlRpc
+	 * Erstellt die Config-Objecte fï¿½r den Zugriff auf den PCharge-Server ï¿½ber XmlRpc
 	 */
 	private void createRpcConfig() {
 		client = null;
 		// create configuration
 		XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-		
+
 		try {
 			System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
-			URL url = new URL("http://"+CB_Rpc_Settings.CBS_IP.getValue()+"/xmlrpc");	
+			URL url = new URL("http://" + CB_Rpc_Settings.CBS_IP.getValue() + "/xmlrpc");
 			config.setServerURL(url);
-		//	config.setEncoding("UTF-8");
+			//	config.setEncoding("UTF-8");
 			config.setGzipCompressing(false);
 			config.setGzipRequesting(true);
 			config.setEnabledForExceptions(true);
@@ -40,14 +40,14 @@ public class Rpc_Client {
 		}
 		config.setEnabledForExtensions(true);
 		config.setEncoding("UTF-8");
-		
+
 		client = new XmlRpcClient();
-		client.setConfig(config);		
+		client.setConfig(config);
 	}
 
 	/**
 	 * Sendet eine XmlRpc-Nachricht an den RPC-Server und liefert dessen
-	 * Antwort zurück
+	 * Antwort zurï¿½ck
 	 * 
 	 * @param message
 	 * @return
@@ -76,7 +76,4 @@ public class Rpc_Client {
 
 	}
 
-
 }
-
-

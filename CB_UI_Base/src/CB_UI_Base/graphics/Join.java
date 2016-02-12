@@ -18,7 +18,6 @@ package CB_UI_Base.graphics;
 /**
  * @author Longri
  */
-public enum Join
-{
+public enum Join {
 	MITER, ROUND, BEVEL
 }

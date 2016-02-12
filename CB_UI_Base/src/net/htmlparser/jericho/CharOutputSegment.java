@@ -40,9 +40,9 @@ final class CharOutputSegment implements OutputSegment {
 	 * @param ch  the character output of the new <code>OutputSegment</code>.
 	 */
 	public CharOutputSegment(final int begin, final int end, final char ch) {
-		this.begin=begin;
-		this.end=end;
-		this.ch=ch;
+		this.begin = begin;
+		this.end = end;
+		this.ch = ch;
 	}
 
 	/**
@@ -51,9 +51,9 @@ final class CharOutputSegment implements OutputSegment {
 	 * @param ch  the character output of the new <code>OutputSegment</code>.
 	 */
 	public CharOutputSegment(final Segment segment, final char ch) {
-		begin=segment.begin;
-		end=segment.end;
-		this.ch=ch;
+		begin = segment.begin;
+		end = segment.end;
+		this.ch = ch;
 	}
 
 	public int getBegin() {
@@ -81,6 +81,6 @@ final class CharOutputSegment implements OutputSegment {
 	}
 
 	public String getDebugInfo() {
-		return "Replace: (p"+begin+"-p"+end+") "+ch;
+		return "Replace: (p" + begin + "-p" + end + ") " + ch;
 	}
 }

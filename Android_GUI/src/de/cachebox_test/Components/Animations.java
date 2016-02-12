@@ -11,77 +11,60 @@ import android.view.animation.AnimationUtils;
 import android.widget.ScrollView;
 import de.cachebox_test.R;
 
-public class Animations
-{
+public class Animations {
 	/*
 	 * Schaltet die Visibility eines View um und animiert dabei ein Slidedown/Slideup
 	 */
-	public static void ToggleViewSlideUp_Down(final View v, Context context, final ScrollView scrollView, final View button)
-	{
+	public static void ToggleViewSlideUp_Down(final View v, Context context, final ScrollView scrollView, final View button) {
 		ToggleViewSlideUp_Down(v, context, scrollView, button, null);
 	}
 
-	public static void ToggleViewSlideUp_Down(final View v, Context context, final ScrollView scrollView, final View button,
-			final Callback AnimationReadyCallBack)
-	{
-		if (v.getVisibility() == View.VISIBLE)
-		{
+	public static void ToggleViewSlideUp_Down(final View v, Context context, final ScrollView scrollView, final View button, final Callback AnimationReadyCallBack) {
+		if (v.getVisibility() == View.VISIBLE) {
 			Animation mShowAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_up);
 			v.startAnimation(mShowAnimation);
-			mShowAnimation.setAnimationListener(new AnimationListener()
-			{
+			mShowAnimation.setAnimationListener(new AnimationListener() {
 				@Override
-				public void onAnimationStart(Animation animation)
-				{
+				public void onAnimationStart(Animation animation) {
 
 				}
 
 				@Override
-				public void onAnimationRepeat(Animation animation)
-				{
+				public void onAnimationRepeat(Animation animation) {
 				}
 
 				@Override
-				public void onAnimationEnd(Animation animation)
-				{
+				public void onAnimationEnd(Animation animation) {
 					v.setVisibility(View.GONE);
 				}
 			});
 
-		}
-		else
-		{
+		} else {
 			Animation mShowAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_out_down);
 			v.startAnimation(mShowAnimation);
 			v.setVisibility(View.VISIBLE);
-			mShowAnimation.setAnimationListener(new AnimationListener()
-			{
+			mShowAnimation.setAnimationListener(new AnimationListener() {
 				@Override
-				public void onAnimationStart(Animation animation)
-				{
+				public void onAnimationStart(Animation animation) {
 
 				}
 
 				@Override
-				public void onAnimationRepeat(Animation animation)
-				{
+				public void onAnimationRepeat(Animation animation) {
 				}
 
 				@Override
-				public void onAnimationEnd(Animation animation)
-				{
+				public void onAnimationEnd(Animation animation) {
 					Rect r = new Rect();
 					Point offset = new Point();
 
-					if (scrollView != null)
-					{
+					if (scrollView != null) {
 						scrollView.requestLayout();
 						scrollView.getChildVisibleRect(button, r, offset);
 						scrollView.scrollTo(0, offset.y + scrollView.getScrollY());
 					}
 
-					if (AnimationReadyCallBack != null)
-					{
+					if (AnimationReadyCallBack != null) {
 						AnimationReadyCallBack.handleMessage(null);
 					}
 				}

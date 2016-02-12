@@ -18,12 +18,11 @@
 package CB_UI_Base.Math;
 
 /**
- * Die Size Structur enthält die Member width und height
+ * Die Size Structur enthï¿½lt die Member width und height
  * 
  * @author Longri
  */
-public class SizeF
-{
+public class SizeF {
 	public float width = 0;
 	public float height = 0;
 
@@ -39,8 +38,7 @@ public class SizeF
 	 * @param float Width
 	 * @param float Height
 	 */
-	public SizeF(float Width, float Height)
-	{
+	public SizeF(float Width, float Height) {
 		this.width = Width;
 		this.height = Height;
 		this.halfWidth = Width / 2;
@@ -49,28 +47,26 @@ public class SizeF
 		this.Height4_8 = (float) (Height / 4.8);
 	}
 
-	public SizeF()
-	{
+	public SizeF() {
 		this.width = 0f;
 		this.height = 0f;
 	}
 
-	public SizeF(SizeF size)
-	{
+	public SizeF(SizeF size) {
 		this.width = size.width;
 		this.height = size.height;
 	}
 
 	/**
-	 * Setzt die Werte für Height und Width. Wenn sich einer der Werte geändert hat, wird ein True zurück gegeben, ansonsten False.
+	 * Setzt die Werte fï¿½r Height und Width. Wenn sich einer der Werte geï¿½ndert hat, wird ein True zurï¿½ck gegeben, ansonsten False.
 	 * 
 	 * @param Width
 	 * @param Height
 	 * @return
 	 */
-	public boolean setSize(float Width, float Height)
-	{
-		if (this.width == Width && this.height == Height) return false;
+	public boolean setSize(float Width, float Height) {
+		if (this.width == Width && this.height == Height)
+			return false;
 		this.width = Width;
 		this.height = Height;
 		this.halfWidth = Width / 2;
@@ -80,23 +76,19 @@ public class SizeF
 		return true;
 	}
 
-	public CB_RectF getBounds()
-	{
+	public CB_RectF getBounds() {
 		return getBounds(0, 0);
 	}
 
-	public CB_RectF getBounds(int x, int y)
-	{
+	public CB_RectF getBounds(int x, int y) {
 		return new CB_RectF(x, y, width + x, height + y);
 	}
 
-	public CB_RectF getBounds(int x, int y, int k, int l)
-	{
+	public CB_RectF getBounds(int x, int y, int k, int l) {
 		return new CB_RectF(x, y, width + x + k, height + y + l);
 	}
 
-	public void scale(float f)
-	{
+	public void scale(float f) {
 		width *= f;
 		height *= f;
 	}

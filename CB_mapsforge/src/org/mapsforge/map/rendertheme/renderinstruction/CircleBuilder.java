@@ -41,8 +41,7 @@ public class CircleBuilder {
 	final Paint stroke;
 	float strokeWidth;
 
-	public CircleBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
-			Attributes attributes, int level) throws SAXException {
+	public CircleBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, Attributes attributes, int level) throws SAXException {
 		this.level = level;
 
 		this.fill = graphicFactory.createPaint();
@@ -63,8 +62,7 @@ public class CircleBuilder {
 		return new Circle(this);
 	}
 
-	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
-			Attributes attributes) throws SAXException {
+	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, Attributes attributes) throws SAXException {
 		for (int i = 0; i < attributes.getLength(); ++i) {
 			String name = attributes.getQName(i);
 			String value = attributes.getValue(i);

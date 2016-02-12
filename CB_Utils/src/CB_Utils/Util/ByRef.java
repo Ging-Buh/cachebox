@@ -2,7 +2,6 @@ package CB_Utils.Util;
 
 import java.util.ArrayList;
 
-
 /**
  * Usage: <br>
  * <br>
@@ -33,27 +32,22 @@ import java.util.ArrayList;
  *
  * @param <T>
  */
-public class ByRef<t> extends ArrayList<t>
-{
+public class ByRef<t> extends ArrayList<t> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4250037651008928615L;
 
-	
-	public ByRef(t value)
-	{
+	public ByRef(t value) {
 		this.add(value);
 	}
-	
-	public t get()
-	{
+
+	public t get() {
 		return this.get(0);
 	}
-	
-	public void set(t value)
-	{
+
+	public void set(t value) {
 		this.clear();
 		this.add(value);
 	}

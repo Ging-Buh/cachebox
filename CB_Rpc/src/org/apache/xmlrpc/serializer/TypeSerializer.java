@@ -21,7 +21,6 @@ package org.apache.xmlrpc.serializer;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-
 /** A <code>TypeSerializer</code> is able to write a parameter
  * or result object to the XML RPC request or response.
  */

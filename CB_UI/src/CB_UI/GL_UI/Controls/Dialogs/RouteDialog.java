@@ -25,149 +25,149 @@ import CB_UI_Base.Math.UI_Size_Base;
 
 public class RouteDialog extends ButtonDialog {
 
-    private Linearlayout layout;
+	private Linearlayout layout;
 
-    private float TextFieldHeight;
-    private SizeF msgBoxContentSize;
-    private ImageMultiToggleButton btMotoWay, btCycleWay, btFootWay;
-    private chkBox chkTmc;
+	private float TextFieldHeight;
+	private SizeF msgBoxContentSize;
+	private ImageMultiToggleButton btMotoWay, btCycleWay, btFootWay;
+	private chkBox chkTmc;
 
-    public interface IReturnListener {
-	public void returnFromRoute_Dialog(boolean canceld, boolean Motoway, boolean CycleWay, boolean FootWay, boolean UseTmc);
-    }
+	public interface IReturnListener {
+		public void returnFromRoute_Dialog(boolean canceld, boolean Motoway, boolean CycleWay, boolean FootWay, boolean UseTmc);
+	}
 
-    private IReturnListener mReturnListener;
+	private IReturnListener mReturnListener;
 
-    public RouteDialog(IReturnListener listener) {
-	super(Menu.getMenuRec(), "PW-Dialog", "", Translation.Get("RouteToWaypoit"), MessageBoxButtons.OKCancel, null, null);
-	mReturnListener = listener;
+	public RouteDialog(IReturnListener listener) {
+		super(Menu.getMenuRec(), "PW-Dialog", "", Translation.Get("RouteToWaypoit"), MessageBoxButtons.OKCancel, null, null);
+		mReturnListener = listener;
 
-	msgBoxContentSize = getContentSize();
-	// initial VariableField
-	TextFieldHeight = Fonts.getNormal().getLineHeight() * 2.4f;
+		msgBoxContentSize = getContentSize();
+		// initial VariableField
+		TextFieldHeight = Fonts.getNormal().getLineHeight() * 2.4f;
 
-	float innerWidth = msgBoxContentSize.width + leftBorder + rightBorder;
+		float innerWidth = msgBoxContentSize.width + leftBorder + rightBorder;
 
-	layout = new Linearlayout(innerWidth, "Layout");
-	layout.setX(0);
-	// layout.setBackground(new ColorDrawable(Color.GREEN));
+		layout = new Linearlayout(innerWidth, "Layout");
+		layout.setX(0);
+		// layout.setBackground(new ColorDrawable(Color.GREEN));
 
-	CB_RectF MTBRec = new CB_RectF(0, 0, innerWidth / 3, UI_Size_Base.that.getButtonHeight() * 2);
+		CB_RectF MTBRec = new CB_RectF(0, 0, innerWidth / 3, UI_Size_Base.that.getButtonHeight() * 2);
 
-	btMotoWay = new ImageMultiToggleButton(MTBRec, "btMotoWay");
-	btCycleWay = new ImageMultiToggleButton(MTBRec, "btCycleWay");
-	btFootWay = new ImageMultiToggleButton(MTBRec, "btFootWay");
+		btMotoWay = new ImageMultiToggleButton(MTBRec, "btMotoWay");
+		btCycleWay = new ImageMultiToggleButton(MTBRec, "btCycleWay");
+		btFootWay = new ImageMultiToggleButton(MTBRec, "btFootWay");
 
-	btMotoWay.setImage(new SpriteDrawable(SpriteCacheBase.getThemedSprite("pictureBox2")));
-	btCycleWay.setImage(new SpriteDrawable(SpriteCacheBase.getThemedSprite("pictureBox1")));
-	btFootWay.setImage(new SpriteDrawable(SpriteCacheBase.getThemedSprite("pictureBox3")));
+		btMotoWay.setImage(new SpriteDrawable(SpriteCacheBase.getThemedSprite("pictureBox2")));
+		btCycleWay.setImage(new SpriteDrawable(SpriteCacheBase.getThemedSprite("pictureBox1")));
+		btFootWay.setImage(new SpriteDrawable(SpriteCacheBase.getThemedSprite("pictureBox3")));
 
-	btMotoWay.setX(0);
-	btCycleWay.setX(btMotoWay.getMaxX());
-	btFootWay.setX(btCycleWay.getMaxX());
+		btMotoWay.setX(0);
+		btCycleWay.setX(btMotoWay.getMaxX());
+		btFootWay.setX(btCycleWay.getMaxX());
 
-	Box box = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight() * 2), "");
+		Box box = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight() * 2), "");
 
-	box.addChild(btMotoWay);
-	box.addChild(btCycleWay);
-	box.addChild(btFootWay);
+		box.addChild(btMotoWay);
+		box.addChild(btCycleWay);
+		box.addChild(btFootWay);
 
-	layout.addChild(box);
+		layout.addChild(box);
 
-	MultiToggleButton.initialOn_Off_ToggleStates(btMotoWay, "", "");
-	MultiToggleButton.initialOn_Off_ToggleStates(btCycleWay, "", "");
-	MultiToggleButton.initialOn_Off_ToggleStates(btFootWay, "", "");
+		MultiToggleButton.initialOn_Off_ToggleStates(btMotoWay, "", "");
+		MultiToggleButton.initialOn_Off_ToggleStates(btCycleWay, "", "");
+		MultiToggleButton.initialOn_Off_ToggleStates(btFootWay, "", "");
 
-	Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight()), "");
-	chkTmc = new chkBox("TMC");
-	box2.addChild(chkTmc);
+		Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight()), "");
+		chkTmc = new chkBox("TMC");
+		box2.addChild(chkTmc);
 
-	Label lblPW = new Label(this.name + " lblPW", chkTmc.getMaxX() + margin, 0, innerWidth - chkTmc.getWidth() - margin, chkTmc.getHeight());
-	lblPW.setVAlignment(VAlignment.CENTER);
-	lblPW.setText(Translation.Get("UseTmc"));
-	box2.addChild(lblPW);
+		Label lblPW = new Label(this.name + " lblPW", chkTmc.getMaxX() + margin, 0, innerWidth - chkTmc.getWidth() - margin, chkTmc.getHeight());
+		lblPW.setVAlignment(VAlignment.CENTER);
+		lblPW.setText(Translation.Get("UseTmc"));
+		box2.addChild(lblPW);
 
-	layout.addChild(box2);
+		layout.addChild(box2);
 
-	this.addChild(layout);
+		this.addChild(layout);
 
-	Size msgBoxSize = GL_MsgBox.calcMsgBoxSize("teste", true, true, false);
-	msgBoxSize.height = (int) (msgBoxSize.height + layout.getHeight() - (TextFieldHeight / 2));
-	this.setSize(msgBoxSize.asFloat());
+		Size msgBoxSize = GL_MsgBox.calcMsgBoxSize("teste", true, true, false);
+		msgBoxSize.height = (int) (msgBoxSize.height + layout.getHeight() - (TextFieldHeight / 2));
+		this.setSize(msgBoxSize.asFloat());
 
-	mMsgBoxClickListener = new OnMsgBoxClickListener() {
+		mMsgBoxClickListener = new OnMsgBoxClickListener() {
 
-	    @Override
-	    public boolean onClick(int which, Object data) {
-		if (which == BUTTON_POSITIVE) {
+			@Override
+			public boolean onClick(int which, Object data) {
+				if (which == BUTTON_POSITIVE) {
 
-		    if (mReturnListener != null)
-			mReturnListener.returnFromRoute_Dialog(false, state == 0, state == 1, state == 2, chkTmc.isChecked());
-		} else {
-		    if (mReturnListener != null)
-			mReturnListener.returnFromRoute_Dialog(true, false, false, false, false);
+					if (mReturnListener != null)
+						mReturnListener.returnFromRoute_Dialog(false, state == 0, state == 1, state == 2, chkTmc.isChecked());
+				} else {
+					if (mReturnListener != null)
+						mReturnListener.returnFromRoute_Dialog(true, false, false, false, false);
+				}
+
+				return true;
+			}
+		};
+
+		btMotoWay.setOnClickListener(new OnClickListener() {
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				switchVisibility(0);
+				return true;
+			}
+		});
+
+		btCycleWay.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				switchVisibility(1);
+				return true;
+			}
+		});
+
+		btFootWay.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				switchVisibility(2);
+				return true;
+			}
+		});
+
+		switchVisibility(0);
+
+	}
+
+	int state = -1;
+
+	private void switchVisibility(int state) {
+		this.state = state;
+
+		if (state == 0) {
+			btMotoWay.setState(1);
+			btCycleWay.setState(0);
+			btFootWay.setState(0);
+		}
+		if (state == 1) {
+			btMotoWay.setState(0);
+			btCycleWay.setState(1);
+			btFootWay.setState(0);
+		}
+		if (state == 2) {
+			btMotoWay.setState(0);
+			btCycleWay.setState(0);
+			btFootWay.setState(1);
 		}
 
-		return true;
-	    }
-	};
-
-	btMotoWay.setOnClickListener(new OnClickListener() {
-	    @Override
-	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		switchVisibility(0);
-		return true;
-	    }
-	});
-
-	btCycleWay.setOnClickListener(new OnClickListener() {
-
-	    @Override
-	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		switchVisibility(1);
-		return true;
-	    }
-	});
-
-	btFootWay.setOnClickListener(new OnClickListener() {
-
-	    @Override
-	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		switchVisibility(2);
-		return true;
-	    }
-	});
-
-	switchVisibility(0);
-
-    }
-
-    int state = -1;
-
-    private void switchVisibility(int state) {
-	this.state = state;
-
-	if (state == 0) {
-	    btMotoWay.setState(1);
-	    btCycleWay.setState(0);
-	    btFootWay.setState(0);
-	}
-	if (state == 1) {
-	    btMotoWay.setState(0);
-	    btCycleWay.setState(1);
-	    btFootWay.setState(0);
-	}
-	if (state == 2) {
-	    btMotoWay.setState(0);
-	    btCycleWay.setState(0);
-	    btFootWay.setState(1);
 	}
 
-    }
+	@Override
+	protected void SkinIsChanged() {
 
-    @Override
-    protected void SkinIsChanged() {
-
-    }
+	}
 
 }

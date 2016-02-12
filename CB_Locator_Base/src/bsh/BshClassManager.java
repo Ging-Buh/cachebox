@@ -68,8 +68,7 @@ import java.util.WeakHashMap;
  * reference value and use that to detect changes in the namespace. This puts the burden on the consumer to check at appropriate times, but
  * could eliminate the need for the listener system in many places and the necessity of weak references in this package. <p>
  */
-public class BshClassManager
-{
+public class BshClassManager {
 	/**
 	 * The interpreter which created the class manager This is used to load scripted classes from source files.
 	 */
@@ -102,14 +101,11 @@ public class BshClassManager
 	private transient Set<String> definingClasses = Collections.synchronizedSet(new HashSet<String>());
 	protected transient Map<String, String> definingClassesBaseNames = new Hashtable<String, String>();
 
-	private static final Map<BshClassManager, Object> classManagers = Collections
-			.synchronizedMap(new WeakHashMap<BshClassManager, Object>());
+	private static final Map<BshClassManager, Object> classManagers = Collections.synchronizedMap(new WeakHashMap<BshClassManager, Object>());
 
-	static void clearResolveCache()
-	{
+	static void clearResolveCache() {
 		BshClassManager[] managers = classManagers.keySet().toArray(new BshClassManager[0]);
-		for (BshClassManager m : managers)
-		{
+		for (BshClassManager m : managers) {
 			m.resolvedObjectMethods = new Hashtable<SignatureKey, Method>();
 			m.resolvedStaticMethods = new Hashtable<SignatureKey, Method>();
 		}
@@ -122,33 +118,30 @@ public class BshClassManager
 	 * @see bsh.Interpreter.setClassLoader( ClassLoader )
 	 */
 	@SuppressWarnings("rawtypes")
-	public static BshClassManager createClassManager(Interpreter interpreter)
-	{
+	public static BshClassManager createClassManager(Interpreter interpreter) {
 		BshClassManager manager;
 
 		// Do we have the optional package?
-		if (Capabilities.classExists("bsh.classpath.ClassManagerImpl")) try
-		{
-			// Try to load the module
-			// don't refer to it directly here or we're dependent upon it
-			Class clazz = Class.forName("bsh.classpath.ClassManagerImpl");
-			manager = (BshClassManager) clazz.newInstance();
-		}
-		catch (Exception e)
-		{
-			throw new InterpreterError("Error loading classmanager", e);
-		}
+		if (Capabilities.classExists("bsh.classpath.ClassManagerImpl"))
+			try {
+				// Try to load the module
+				// don't refer to it directly here or we're dependent upon it
+				Class clazz = Class.forName("bsh.classpath.ClassManagerImpl");
+				manager = (BshClassManager) clazz.newInstance();
+			} catch (Exception e) {
+				throw new InterpreterError("Error loading classmanager", e);
+			}
 		else
 			manager = new BshClassManager();
 
-		if (interpreter == null) interpreter = new Interpreter();
+		if (interpreter == null)
+			interpreter = new Interpreter();
 		manager.declaringInterpreter = interpreter;
 		classManagers.put(manager, null);
 		return manager;
 	}
 
-	public boolean classExists(String name)
-	{
+	public boolean classExists(String name) {
 		return (classForName(name) != null);
 	}
 
@@ -159,52 +152,41 @@ public class BshClassManager
 	 * @return the class or null
 	 */
 	@SuppressWarnings("rawtypes")
-	public Class classForName(String name)
-	{
-		if (isClassBeingDefined(name)) throw new InterpreterError("Attempting to load class in the process of being defined: " + name);
+	public Class classForName(String name) {
+		if (isClassBeingDefined(name))
+			throw new InterpreterError("Attempting to load class in the process of being defined: " + name);
 
 		Class clas = null;
-		try
-		{
+		try {
 			clas = plainClassForName(name);
-		}
-		catch (ClassNotFoundException e)
-		{ /* ignore */
+		} catch (ClassNotFoundException e) { /* ignore */
 		}
 
 		// try scripted class
-		if (clas == null && declaringInterpreter.getCompatibility()) clas = loadSourceClass(name);
+		if (clas == null && declaringInterpreter.getCompatibility())
+			clas = loadSourceClass(name);
 
 		return clas;
 	}
 
 	// Move me to classpath/ClassManagerImpl???
-	protected Class<?> loadSourceClass(final String name)
-	{
+	protected Class<?> loadSourceClass(final String name) {
 		final String fileName = '/' + name.replace('.', '/') + ".java";
 		final InputStream in = getResourceAsStream(fileName);
-		if (in == null)
-		{
+		if (in == null) {
 			return null;
 		}
-		try
-		{
+		try {
 			Interpreter.debug("Loading class from source file: " + fileName);
 			declaringInterpreter.eval(new InputStreamReader(in));
-		}
-		catch (EvalError e)
-		{
-			if (Interpreter.DEBUG)
-			{
+		} catch (EvalError e) {
+			if (Interpreter.DEBUG) {
 				e.printStackTrace();
 			}
 		}
-		try
-		{
+		try {
 			return plainClassForName(name);
-		}
-		catch (final ClassNotFoundException e)
-		{
+		} catch (final ClassNotFoundException e) {
 			Interpreter.debug("Class not found in source file: " + name);
 			return null;
 		}
@@ -221,11 +203,11 @@ public class BshClassManager
 	 * @return the class
 	 */
 	@SuppressWarnings("rawtypes")
-	public Class plainClassForName(String name) throws ClassNotFoundException
-	{
+	public Class plainClassForName(String name) throws ClassNotFoundException {
 		Class c = null;
 
-		if (externalClassLoader != null) c = externalClassLoader.loadClass(name);
+		if (externalClassLoader != null)
+			c = externalClassLoader.loadClass(name);
 		else
 			c = Class.forName(name);
 
@@ -240,15 +222,14 @@ public class BshClassManager
 	 * @param path
 	 *            should be an absolute path
 	 */
-	public URL getResource(String path)
-	{
+	public URL getResource(String path) {
 		URL url = null;
-		if (externalClassLoader != null)
-		{
+		if (externalClassLoader != null) {
 			// classloader wants no leading slash
 			url = externalClassLoader.getResource(path.substring(1));
 		}
-		if (url == null) url = Interpreter.class.getResource(path);
+		if (url == null)
+			url = Interpreter.class.getResource(path);
 
 		return url;
 	}
@@ -259,15 +240,14 @@ public class BshClassManager
 	 * @param path
 	 *            should be an absolute path
 	 */
-	public InputStream getResourceAsStream(String path)
-	{
+	public InputStream getResourceAsStream(String path) {
 		InputStream in = null;
-		if (externalClassLoader != null)
-		{
+		if (externalClassLoader != null) {
 			// classloader wants no leading slash
 			in = externalClassLoader.getResourceAsStream(path.substring(1));
 		}
-		if (in == null) in = Interpreter.class.getResourceAsStream(path);
+		if (in == null)
+			in = Interpreter.class.getResourceAsStream(path);
 
 		return in;
 	}
@@ -279,9 +259,9 @@ public class BshClassManager
 	 *            if value is non-null, cache the class if value is null, set the flag that it is *not* a class to speed later resolution
 	 */
 	@SuppressWarnings("rawtypes")
-	public void cacheClassInfo(String name, Class value)
-	{
-		if (value != null) absoluteClassCache.put(name, value);
+	public void cacheClassInfo(String name, Class value) {
+		if (value != null)
+			absoluteClassCache.put(name, value);
 		else
 			absoluteNonClasses.add(name);
 	}
@@ -291,12 +271,13 @@ public class BshClassManager
 	 * and Object methods are cached separately to support fast lookup in the general case where either will do.
 	 */
 	@SuppressWarnings("rawtypes")
-	public void cacheResolvedMethod(Class clas, Class[] types, Method method)
-	{
-		if (Interpreter.DEBUG) Interpreter.debug("cacheResolvedMethod putting: " + clas + " " + method);
+	public void cacheResolvedMethod(Class clas, Class[] types, Method method) {
+		if (Interpreter.DEBUG)
+			Interpreter.debug("cacheResolvedMethod putting: " + clas + " " + method);
 
 		SignatureKey sk = new SignatureKey(clas, method.getName(), types);
-		if (Modifier.isStatic(method.getModifiers())) resolvedStaticMethods.put(sk, method);
+		if (Modifier.isStatic(method.getModifiers()))
+			resolvedStaticMethods.put(sk, method);
 		else
 			resolvedObjectMethods.put(sk, method);
 	}
@@ -309,18 +290,18 @@ public class BshClassManager
 	 * @return the Method or null
 	 */
 	@SuppressWarnings("rawtypes")
-	protected Method getResolvedMethod(Class clas, String methodName, Class[] types, boolean onlyStatic)
-	{
+	protected Method getResolvedMethod(Class clas, String methodName, Class[] types, boolean onlyStatic) {
 		SignatureKey sk = new SignatureKey(clas, methodName, types);
 
 		// Try static and then object, if allowed
 		// Note that the Java compiler should not allow both.
 		Method method = resolvedStaticMethods.get(sk);
-		if (method == null && !onlyStatic) method = resolvedObjectMethods.get(sk);
+		if (method == null && !onlyStatic)
+			method = resolvedObjectMethods.get(sk);
 
-		if (Interpreter.DEBUG)
-		{
-			if (method == null) Interpreter.debug("getResolvedMethod cache MISS: " + clas + " - " + methodName);
+		if (Interpreter.DEBUG) {
+			if (method == null)
+				Interpreter.debug("getResolvedMethod cache MISS: " + clas + " - " + methodName);
 			else
 				Interpreter.debug("getResolvedMethod cache HIT: " + clas + " - " + method);
 		}
@@ -333,8 +314,7 @@ public class BshClassManager
 	 * @see public void #reset() for external usage
 	 */
 	@SuppressWarnings("rawtypes")
-	protected void clearCaches()
-	{
+	protected void clearCaches() {
 		absoluteNonClasses = Collections.synchronizedSet(new HashSet<String>());
 		absoluteClassCache = new Hashtable<String, Class>();
 		resolvedObjectMethods = new Hashtable<SignatureKey, Method>();
@@ -347,29 +327,25 @@ public class BshClassManager
 	 * the supplied classloader. If additional classpath management is done then BeanShell will perform that in addition to the supplied
 	 * external classloader. However BeanShell is not currently able to reload classes supplied through the external classloader.
 	 */
-	public void setClassLoader(ClassLoader externalCL)
-	{
+	public void setClassLoader(ClassLoader externalCL) {
 		externalClassLoader = externalCL;
 		classLoaderChanged();
 	}
 
-	public void addClassPath(URL path) throws IOException
-	{
+	public void addClassPath(URL path) throws IOException {
 	}
 
 	/**
 	 * Clear all loaders and start over. No class loading.
 	 */
-	public void reset()
-	{
+	public void reset() {
 		clearCaches();
 	}
 
 	/**
 	 * Set a new base classpath and create a new base classloader. This means all types change.
 	 */
-	public void setClassPath(URL[] cp) throws UtilEvalError
-	{
+	public void setClassPath(URL[] cp) throws UtilEvalError {
 		throw cmUnavailable();
 	}
 
@@ -377,8 +353,7 @@ public class BshClassManager
 	 * Overlay the entire path with a new class loader. Set the base path to the user path + base path. No point in including the boot class
 	 * path (can't reload thos).
 	 */
-	public void reloadAllClasses() throws UtilEvalError
-	{
+	public void reloadAllClasses() throws UtilEvalError {
 		throw cmUnavailable();
 	}
 
@@ -386,8 +361,7 @@ public class BshClassManager
 	 * Reloading classes means creating a new classloader and using it whenever we are asked for classes in the appropriate space. For this
 	 * we use a DiscreteFilesClassLoader
 	 */
-	public void reloadClasses(String[] classNames) throws UtilEvalError
-	{
+	public void reloadClasses(String[] classNames) throws UtilEvalError {
 		throw cmUnavailable();
 	}
 
@@ -395,8 +369,7 @@ public class BshClassManager
 	 * Reload all classes in the specified package: e.g. "com.sun.tools" The special package name "<unpackaged>" can be used to refer to
 	 * unpackaged classes.
 	 */
-	public void reloadPackage(String pack) throws UtilEvalError
-	{
+	public void reloadPackage(String pack) throws UtilEvalError {
 		throw cmUnavailable();
 	}
 
@@ -408,37 +381,31 @@ public class BshClassManager
 	/**
 	 * Support for "import *;" Hide details in here as opposed to NameSpace.
 	 */
-	protected void doSuperImport() throws UtilEvalError
-	{
+	protected void doSuperImport() throws UtilEvalError {
 		throw cmUnavailable();
 	}
 
 	/**
 	 * A "super import" ("import *") operation has been performed.
 	 */
-	protected boolean hasSuperImport()
-	{
+	protected boolean hasSuperImport() {
 		return false;
 	}
 
 	/**
 	 * Return the name or null if none is found, Throw an ClassPathException containing detail if name is ambigous.
 	 */
-	protected String getClassNameByUnqName(String name) throws UtilEvalError
-	{
+	protected String getClassNameByUnqName(String name) throws UtilEvalError {
 		throw cmUnavailable();
 	}
 
-	public void addListener(Listener l)
-	{
+	public void addListener(Listener l) {
 	}
 
-	public void removeListener(Listener l)
-	{
+	public void removeListener(Listener l) {
 	}
 
-	public void dump(PrintWriter pw)
-	{
+	public void dump(PrintWriter pw) {
 		pw.println("BshClassManager: no class manager.");
 	}
 
@@ -451,29 +418,26 @@ public class BshClassManager
 	 * through namespace imports in an analogous (or using the same path) as regular class import resolution. This workaround should handle
 	 * most cases so we'll try it for now.
 	 */
-	protected void definingClass(String className)
-	{
+	protected void definingClass(String className) {
 		String baseName = Name.suffix(className, 1);
 		int i = baseName.indexOf("$");
-		if (i != -1) baseName = baseName.substring(i + 1);
+		if (i != -1)
+			baseName = baseName.substring(i + 1);
 		String cur = definingClassesBaseNames.get(baseName);
-		if (cur != null) throw new InterpreterError("Defining class problem: " + className
-				+ ": BeanShell cannot yet simultaneously define two or more " + "dependant classes of the same name.  Attempt to define: "
-				+ className + " while defining: " + cur);
+		if (cur != null)
+			throw new InterpreterError("Defining class problem: " + className + ": BeanShell cannot yet simultaneously define two or more " + "dependant classes of the same name.  Attempt to define: " + className + " while defining: " + cur);
 		definingClasses.add(className);
 		definingClassesBaseNames.put(baseName, className);
 	}
 
-	protected boolean isClassBeingDefined(String className)
-	{
+	protected boolean isClassBeingDefined(String className) {
 		return definingClasses.contains(className);
 	}
 
 	/**
 	 * This method is a temporary workaround used with definingClass. It is to be removed at some point.
 	 */
-	protected String getClassBeingDefined(String className)
-	{
+	protected String getClassBeingDefined(String className) {
 		String baseName = Name.suffix(className, 1);
 		return definingClassesBaseNames.get(baseName);
 	}
@@ -481,8 +445,7 @@ public class BshClassManager
 	/**
 	 * Indicate that the specified class name has been defined and may be loaded normally.
 	 */
-	protected void doneDefiningClass(String className)
-	{
+	protected void doneDefiningClass(String className) {
 		String baseName = Name.suffix(className, 1);
 		definingClasses.remove(className);
 		definingClassesBaseNames.remove(baseName);
@@ -492,8 +455,7 @@ public class BshClassManager
 	 * The real implementation in the classpath.ClassManagerImpl handles reloading of the generated classes.
 	 */
 	@SuppressWarnings("rawtypes")
-	public Class defineClass(String name, byte[] code)
-	{
+	public Class defineClass(String name, byte[] code) {
 		throw new InterpreterError("Can't create class (" + name + ") without class manager package.");
 		/*
 		 * Old implementation injected classes into the parent classloader. This was incorrect behavior for several reasons. The biggest
@@ -507,17 +469,14 @@ public class BshClassManager
 		 */
 	}
 
-	protected void classLoaderChanged()
-	{
+	protected void classLoaderChanged() {
 	}
 
-	protected static UtilEvalError cmUnavailable()
-	{
+	protected static UtilEvalError cmUnavailable() {
 		return new Capabilities.Unavailable("ClassLoading features unavailable.");
 	}
 
-	public static interface Listener
-	{
+	public static interface Listener {
 		public void classLoaderChanged();
 	}
 
@@ -533,31 +492,26 @@ public class BshClassManager
 	 * There is also the overhead of creating one of these for every method dispatched. What is the alternative?
 	 */
 	@SuppressWarnings("rawtypes")
-	static class SignatureKey
-	{
+	static class SignatureKey {
 
 		Class clas;
 		Class[] types;
 		String methodName;
 		int hashCode = 0;
 
-		SignatureKey(Class clas, String methodName, Class[] types)
-		{
+		SignatureKey(Class clas, String methodName, Class[] types) {
 			this.clas = clas;
 			this.methodName = methodName;
 			this.types = types;
 		}
 
 		@Override
-		public int hashCode()
-		{
-			if (hashCode == 0)
-			{
+		public int hashCode() {
+			if (hashCode == 0) {
 				hashCode = clas.hashCode() * methodName.hashCode();
 				if (types == null) // no args method
-				return hashCode;
-				for (int i = 0; i < types.length; i++)
-				{
+					return hashCode;
+				for (int i = 0; i < types.length; i++) {
 					int hc = types[i] == null ? 21 : types[i].hashCode();
 					hashCode = hashCode * (i + 1) + hc;
 				}
@@ -566,20 +520,22 @@ public class BshClassManager
 		}
 
 		@Override
-		public boolean equals(Object o)
-		{
+		public boolean equals(Object o) {
 			SignatureKey target = (SignatureKey) o;
-			if (types == null) return target.types == null;
-			if (clas != target.clas) return false;
-			if (!methodName.equals(target.methodName)) return false;
-			if (types.length != target.types.length) return false;
-			for (int i = 0; i < types.length; i++)
-			{
-				if (types[i] == null)
-				{
-					if (!(target.types[i] == null)) return false;
-				}
-				else if (!types[i].equals(target.types[i])) return false;
+			if (types == null)
+				return target.types == null;
+			if (clas != target.clas)
+				return false;
+			if (!methodName.equals(target.methodName))
+				return false;
+			if (types.length != target.types.length)
+				return false;
+			for (int i = 0; i < types.length; i++) {
+				if (types[i] == null) {
+					if (!(target.types[i] == null))
+						return false;
+				} else if (!types[i].equals(target.types[i]))
+					return false;
 			}
 
 			return true;

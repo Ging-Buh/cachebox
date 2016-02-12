@@ -35,277 +35,277 @@ import de.CB.TestBase.Res.ResourceCache;
  */
 public class MainView extends MainViewBase {
 
-    public static MainView that;
-    public static String actTheme = "";
-    public static CB_TabView mTabView;
+	public static MainView that;
+	public static String actTheme = "";
+	public static CB_TabView mTabView;
 
-    public static MapView mapView;
+	public static MapView mapView;
 
-    public static CB_Action_ShowMap actionShowMap = new CB_Action_ShowMap();
+	public static CB_Action_ShowMap actionShowMap = new CB_Action_ShowMap();
 
-    public static CB_Action_ShowNextTest actionShowNextTest = new CB_Action_ShowNextTest();
-    public static CB_Action_ShowPrevTest actionShowPrevTest = new CB_Action_ShowPrevTest();
+	public static CB_Action_ShowNextTest actionShowNextTest = new CB_Action_ShowNextTest();
+	public static CB_Action_ShowPrevTest actionShowPrevTest = new CB_Action_ShowPrevTest();
 
-    private final boolean NextClicked = false;
+	private final boolean NextClicked = false;
 
-    static CB_Button btn1;
-    static CB_Button btn2;
-    static CB_Button btn5;
-    static CB_Button btn6;
-    static CB_Button btn7;
+	static CB_Button btn1;
+	static CB_Button btn2;
+	static CB_Button btn5;
+	static CB_Button btn6;
+	static CB_Button btn7;
 
-    // ######## Button Actions ###########
+	// ######## Button Actions ###########
 
-    // ######## Views ###########
+	// ######## Views ###########
 
-    public static float Width() {
-	if (that != null)
-	    return that.getWidth();
-	return 0;
-    }
-
-    public static float Height() {
-	if (that != null)
-	    return that.getHeight();
-	return 0;
-    }
-
-    public MainView(float X, float Y, float Width, float Height, String Name) {
-	super(X, Y, Width, Height, Name);
-	that = this;
-	mainView = this;
-    }
-
-    @Override
-    public void Initial() {
-	// Override default Settings and load only Mapsforge Maps
-	{
-	    Settings.MapPackFolder.ForceDefaultChange(Config_Core.mWorkPath + "/maps");
-
-	    ManagerBase.Manager.initialMapPacks();
-
-	    ArrayList<Layer> MapsforgeOnlyList = new ArrayList<Layer>();
-
-	    for (Layer layer : ManagerBase.Manager.getLayers()) {
-		if (layer.isMapsForge)
-		    MapsforgeOnlyList.add(layer);
-	    }
-
-	    ManagerBase.Manager.getLayers().clear();
-
-	    for (Layer layer : MapsforgeOnlyList) {
-		ManagerBase.Manager.getLayers().add(layer);
-	    }
+	public static float Width() {
+		if (that != null)
+			return that.getWidth();
+		return 0;
 	}
 
-	// mit f�nf Buttons
-	CB_RectF btnRec = new CB_RectF(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight);
-
-	CB_RectF rec = this.copy();
-	rec.setWidth(GL_UISizes.UI_Left.getWidth());
-
-	rec.setHeight(this.getHeight());
-	rec.setPos(0, 0);
-
-	mTabView = new ThisTabView(rec, "Phone Tab");
-
-	btn1 = new CB_Button(btnRec, "Button1", ResourceCache.btnSpritesHome);
-	btn2 = new CB_Button(btnRec, "Button2", ResourceCache.btnSpritesHome);
-	btn5 = new CB_Button(btnRec, "Button5", ResourceCache.btnSpritesHome);
-	btn6 = new CB_Button(btnRec, "Button5", ResourceCache.btnSpritesHome);
-	btn7 = new CB_Button(btnRec, "Button5", ResourceCache.btnSpritesHome);
-
-	// set Button Overlays
-	{
-	    btn1.setText("PREV");
-	    btn2.setText("NEXT");
-	    btn5.setText("EXTIT");
-	    btn6.setText("CCW");
-	    btn7.setText("CW");
-
-	    // btn1.addOverlayDrawable(ResourceCache.getSpriteDrawable("LoadMap"));
-	    // btn2.addOverlayDrawable(ResourceCache.getSpriteDrawable("LoadTheme"));
-	    // btn3.addOverlayDrawable(ResourceCache.getSpriteDrawable("ConfigTheme"));
-	    // btn4.addOverlayDrawable(ResourceCache.getSpriteDrawable("SaveTheme"));
-	    // btn5.addOverlayDrawable(ResourceCache.getSpriteDrawable("misc"));
-
+	public static float Height() {
+		if (that != null)
+			return that.getHeight();
+		return 0;
 	}
 
-	CB_ButtonList btnList = new CB_ButtonList();
-	btnList.addButton(btn1);
-	btnList.addButton(btn2);
-	// btnList.addButton(btn3);
-	// btnList.addButton(btn4);
-	btnList.addButton(btn5);
-	btnList.addButton(btn6);
-	btnList.addButton(btn7);
-
-	disableRotateButton();
-
-	mTabView.setButtonList(btnList);
-
-	this.addChild(mTabView);
-
-	// Tab den entsprechneden Actions zuweisen
-	actionShowMap.setTab(this, mTabView);
-	actionShowNextTest.setTab(this, mTabView);
-	actionShowPrevTest.setTab(this, mTabView);
-	// override App Name
-	actionClose.OverrideAppName("Graphic-Test");
-
-	btn1.setOnClickListener(new OnClickListener() {
-
-	    @Override
-	    public boolean onClick(GL_View_Base arg0, int arg1, int arg2, int arg3, int arg4) {
-		actionShowPrevTest.Execute();
-		return true;
-	    }
-	});
-
-	btn2.setOnClickListener(new OnClickListener() {
-	    @Override
-	    public boolean onClick(GL_View_Base arg0, int arg1, int arg2, int arg3, int arg4) {
-		actionShowNextTest.Execute();
-		return true;
-	    }
-	});
-
-	btn5.addAction(new CB_ActionButton(actionClose, false));
-
-	// actionShowMap.Execute();
-	actionShowNextTest.Execute();
-
-    }
-
-    public void disableRotateButton() {
-	btn6.disable();
-	btn7.disable();
-    }
-
-    public void enableRotateButton(OnClickListener listener) {
-
-	btn6.setOnClickListener(listener);
-	btn7.setOnClickListener(listener);
-	btn6.enable();
-	btn7.enable();
-    }
-
-    static class ThisTabView extends CB_TabView {
-
-	public ThisTabView(CB_RectF rec, String Name) {
-	    super(rec, Name);
+	public MainView(float X, float Y, float Width, float Height, String Name) {
+		super(X, Y, Width, Height, Name);
+		that = this;
+		mainView = this;
 	}
 
 	@Override
-	public void ShowView(CB_View_Base view) {
-	    super.ShowView(view);
+	public void Initial() {
+		// Override default Settings and load only Mapsforge Maps
+		{
+			Settings.MapPackFolder.ForceDefaultChange(Config_Core.mWorkPath + "/maps");
 
-	    Timer timer = new Timer();
-	    TimerTask task = new TimerTask() {
-		@Override
-		public void run() {
-		    GL.that.RunOnGL(new IRunOnGL() {
+			ManagerBase.Manager.initialMapPacks();
+
+			ArrayList<Layer> MapsforgeOnlyList = new ArrayList<Layer>();
+
+			for (Layer layer : ManagerBase.Manager.getLayers()) {
+				if (layer.isMapsForge)
+					MapsforgeOnlyList.add(layer);
+			}
+
+			ManagerBase.Manager.getLayers().clear();
+
+			for (Layer layer : MapsforgeOnlyList) {
+				ManagerBase.Manager.getLayers().add(layer);
+			}
+		}
+
+		// mit f�nf Buttons
+		CB_RectF btnRec = new CB_RectF(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight);
+
+		CB_RectF rec = this.copy();
+		rec.setWidth(GL_UISizes.UI_Left.getWidth());
+
+		rec.setHeight(this.getHeight());
+		rec.setPos(0, 0);
+
+		mTabView = new ThisTabView(rec, "Phone Tab");
+
+		btn1 = new CB_Button(btnRec, "Button1", ResourceCache.btnSpritesHome);
+		btn2 = new CB_Button(btnRec, "Button2", ResourceCache.btnSpritesHome);
+		btn5 = new CB_Button(btnRec, "Button5", ResourceCache.btnSpritesHome);
+		btn6 = new CB_Button(btnRec, "Button5", ResourceCache.btnSpritesHome);
+		btn7 = new CB_Button(btnRec, "Button5", ResourceCache.btnSpritesHome);
+
+		// set Button Overlays
+		{
+			btn1.setText("PREV");
+			btn2.setText("NEXT");
+			btn5.setText("EXTIT");
+			btn6.setText("CCW");
+			btn7.setText("CW");
+
+			// btn1.addOverlayDrawable(ResourceCache.getSpriteDrawable("LoadMap"));
+			// btn2.addOverlayDrawable(ResourceCache.getSpriteDrawable("LoadTheme"));
+			// btn3.addOverlayDrawable(ResourceCache.getSpriteDrawable("ConfigTheme"));
+			// btn4.addOverlayDrawable(ResourceCache.getSpriteDrawable("SaveTheme"));
+			// btn5.addOverlayDrawable(ResourceCache.getSpriteDrawable("misc"));
+
+		}
+
+		CB_ButtonList btnList = new CB_ButtonList();
+		btnList.addButton(btn1);
+		btnList.addButton(btn2);
+		// btnList.addButton(btn3);
+		// btnList.addButton(btn4);
+		btnList.addButton(btn5);
+		btnList.addButton(btn6);
+		btnList.addButton(btn7);
+
+		disableRotateButton();
+
+		mTabView.setButtonList(btnList);
+
+		this.addChild(mTabView);
+
+		// Tab den entsprechneden Actions zuweisen
+		actionShowMap.setTab(this, mTabView);
+		actionShowNextTest.setTab(this, mTabView);
+		actionShowPrevTest.setTab(this, mTabView);
+		// override App Name
+		actionClose.OverrideAppName("Graphic-Test");
+
+		btn1.setOnClickListener(new OnClickListener() {
 
 			@Override
+			public boolean onClick(GL_View_Base arg0, int arg1, int arg2, int arg3, int arg4) {
+				actionShowPrevTest.Execute();
+				return true;
+			}
+		});
+
+		btn2.setOnClickListener(new OnClickListener() {
+			@Override
+			public boolean onClick(GL_View_Base arg0, int arg1, int arg2, int arg3, int arg4) {
+				actionShowNextTest.Execute();
+				return true;
+			}
+		});
+
+		btn5.addAction(new CB_ActionButton(actionClose, false));
+
+		// actionShowMap.Execute();
+		actionShowNextTest.Execute();
+
+	}
+
+	public void disableRotateButton() {
+		btn6.disable();
+		btn7.disable();
+	}
+
+	public void enableRotateButton(OnClickListener listener) {
+
+		btn6.setOnClickListener(listener);
+		btn7.setOnClickListener(listener);
+		btn6.enable();
+		btn7.enable();
+	}
+
+	static class ThisTabView extends CB_TabView {
+
+		public ThisTabView(CB_RectF rec, String Name) {
+			super(rec, Name);
+		}
+
+		@Override
+		public void ShowView(CB_View_Base view) {
+			super.ShowView(view);
+
+			Timer timer = new Timer();
+			TimerTask task = new TimerTask() {
+				@Override
+				public void run() {
+					GL.that.RunOnGL(new IRunOnGL() {
+
+						@Override
+						public void run() {
+
+							btn1.setText("PREV");
+							btn2.setText("NEXT");
+							btn5.setText("EXTIT");
+						}
+					});
+				}
+			};
+			timer.schedule(task, 200);
+
+		}
+
+	}
+
+	private boolean vorward = true;
+
+	@Override
+	public void renderChilds(Batch batch, ParentInfo parentInfo) {
+
+		GL_View_Base.disableScissor = true;
+
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
+
+		GL.that.renderOnce();
+		super.renderChilds(batch, parentInfo);
+
+		if (actionShowNextTest.size() > 0) {
+			if (CB_Action_ShowNextTest.actTest == null) {
+				actionShowNextTest.CallExecute();
+				return;
+			}
+			if (!wait && CB_Action_ShowNextTest.actTest.getIsReady()) {
+				if (MultiTestList.FastTest) {
+					if (vorward) {
+						if (CB_Action_ShowNextTest.actTestIndex < CB_Action_ShowNextTest.testList.size() - 1) {
+							callNext();
+						} else {
+							vorward = !vorward;
+							callPrev();
+						}
+
+					} else {
+						if (CB_Action_ShowNextTest.actTestIndex > 0) {
+							callPrev();
+						} else {
+							vorward = !vorward;
+							callNext();
+						}
+					}
+				}
+			}
+		}
+		//		batch.flush();
+	}
+
+	private boolean wait = false;
+
+	private void callNext() {
+		if (wait)
+			return;
+		wait = true;
+		Timer timer = new Timer();
+		TimerTask task = new TimerTask() {
+			@Override
 			public void run() {
+				GL.that.RunOnGL(new IRunOnGL() {
 
-			    btn1.setText("PREV");
-			    btn2.setText("NEXT");
-			    btn5.setText("EXTIT");
+					@Override
+					public void run() {
+						actionShowNextTest.CallExecute();
+						wait = false;
+					}
+				});
 			}
-		    });
-		}
-	    };
-	    timer.schedule(task, 200);
+		};
+		timer.schedule(task, 10000);
 
 	}
 
-    }
+	private void callPrev() {
+		if (wait)
+			return;
+		wait = true;
+		Timer timer = new Timer();
+		TimerTask task = new TimerTask() {
+			@Override
+			public void run() {
+				GL.that.RunOnGL(new IRunOnGL() {
 
-    private boolean vorward = true;
-
-    @Override
-    public void renderChilds(Batch batch, ParentInfo parentInfo) {
-
-	GL_View_Base.disableScissor = true;
-
-	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
-
-	GL.that.renderOnce();
-	super.renderChilds(batch, parentInfo);
-
-	if (actionShowNextTest.size() > 0) {
-	    if (CB_Action_ShowNextTest.actTest == null) {
-		actionShowNextTest.CallExecute();
-		return;
-	    }
-	    if (!wait && CB_Action_ShowNextTest.actTest.getIsReady()) {
-		if (MultiTestList.FastTest) {
-		    if (vorward) {
-			if (CB_Action_ShowNextTest.actTestIndex < CB_Action_ShowNextTest.testList.size() - 1) {
-			    callNext();
-			} else {
-			    vorward = !vorward;
-			    callPrev();
+					@Override
+					public void run() {
+						actionShowPrevTest.CallExecute();
+						wait = false;
+					}
+				});
 			}
-
-		    } else {
-			if (CB_Action_ShowNextTest.actTestIndex > 0) {
-			    callPrev();
-			} else {
-			    vorward = !vorward;
-			    callNext();
-			}
-		    }
-		}
-	    }
+		};
+		timer.schedule(task, 10000);
 	}
-	//		batch.flush();
-    }
-
-    private boolean wait = false;
-
-    private void callNext() {
-	if (wait)
-	    return;
-	wait = true;
-	Timer timer = new Timer();
-	TimerTask task = new TimerTask() {
-	    @Override
-	    public void run() {
-		GL.that.RunOnGL(new IRunOnGL() {
-
-		    @Override
-		    public void run() {
-			actionShowNextTest.CallExecute();
-			wait = false;
-		    }
-		});
-	    }
-	};
-	timer.schedule(task, 10000);
-
-    }
-
-    private void callPrev() {
-	if (wait)
-	    return;
-	wait = true;
-	Timer timer = new Timer();
-	TimerTask task = new TimerTask() {
-	    @Override
-	    public void run() {
-		GL.that.RunOnGL(new IRunOnGL() {
-
-		    @Override
-		    public void run() {
-			actionShowPrevTest.CallExecute();
-			wait = false;
-		    }
-		});
-	    }
-	};
-	timer.schedule(task, 10000);
-    }
 
 }

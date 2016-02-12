@@ -21,8 +21,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import de.CB.TestBase.Actions.TestCaseBase;
 import de.CB.TestBase.Views.MapView;
 
-public class MapQueueTest extends TestCaseBase
-{
+public class MapQueueTest extends TestCaseBase {
 
 	private MapView dummyMapView;
 	private final MapTileLoader mapTileLoader = new MapTileLoader();
@@ -32,35 +31,27 @@ public class MapQueueTest extends TestCaseBase
 	int Y = 42955;
 	int Z = 17;
 
-	Descriptor[] descs = new Descriptor[]
-		{ new Descriptor(X, Y + 1, Z, false), new Descriptor(X + 1, Y + 1, Z, false), new Descriptor(X, Y, Z, false),
-				new Descriptor(X + 1, Y, Z, false) };
+	Descriptor[] descs = new Descriptor[] { new Descriptor(X, Y + 1, Z, false), new Descriptor(X + 1, Y + 1, Z, false), new Descriptor(X, Y, Z, false), new Descriptor(X + 1, Y, Z, false) };
 
 	private boolean iniMap = true;
 
-	public MapQueueTest()
-	{
+	public MapQueueTest() {
 		super("MapTileLoader Test", "");
 	}
 
 	@Override
-	public void work()
-	{
+	public void work() {
 
-		if (iniMap)
-		{
+		if (iniMap) {
 			dummyMapView = new MapView(this, "TestMapView");
 
 			XmlRenderTheme RenderTheme = CB_InternalRenderTheme.OSMARENDER;
 			ManagerBase.Manager.setRenderTheme(RenderTheme);
 
 			String AbsolutePath;
-			if (Plattform.used == Plattform.Desktop)
-			{
+			if (Plattform.used == Plattform.Desktop) {
 				AbsolutePath = Gdx.files.internal("assets/pankow.map").file().getAbsolutePath();
-			}
-			else
-			{
+			} else {
 				// cant Read from Asset use external
 				AbsolutePath = new File("storage/extSdCard/GL_RENDER_TEST/pankow.map").getAbsolutePath();
 			}
@@ -85,31 +76,26 @@ public class MapQueueTest extends TestCaseBase
 	}
 
 	@Override
-	public void draw(Batch batch)
-	{
+	public void draw(Batch batch) {
 		float u = 0;
 		float v = 0;
 		CB_List<TileGL_RotateDrawables> rotateList = new CB_List<TileGL_RotateDrawables>();
 
-		for (Descriptor desc : descs)
-		{
+		for (Descriptor desc : descs) {
 			TileGL tile = mapTileLoader.getLoadedTile(desc);
-			if (tile != null)
-			{
+			if (tile != null) {
 				tile.canDraw();
 				tile.draw(batch, u, v, 512, 512, rotateList);
 			}
 
 			u += 512;
-			if (u >= 512)
-			{
+			if (u >= 512) {
 				v += 512;
 				u = 0;
 			}
 		}
 
-		for (int i = 0, n = rotateList.size(); i < n; i++)
-		{
+		for (int i = 0, n = rotateList.size(); i < n; i++) {
 			TileGL_RotateDrawables drw = rotateList.get(i);
 			drw.draw(batch, 0);
 		}
@@ -117,8 +103,7 @@ public class MapQueueTest extends TestCaseBase
 	}
 
 	@Override
-	public void dispose()
-	{
+	public void dispose() {
 		mapTileLoader.clearLoadedTiles();
 
 	}

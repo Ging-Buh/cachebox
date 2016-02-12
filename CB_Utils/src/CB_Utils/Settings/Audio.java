@@ -1,14 +1,11 @@
 package CB_Utils.Settings;
 
-public class Audio
-{
-	protected Audio()
-	{
+public class Audio {
+	protected Audio() {
 		// dont Use
 	}
 
-	public Audio(String path, boolean absolute, boolean mute, float volume)
-	{
+	public Audio(String path, boolean absolute, boolean mute, float volume) {
 		super();
 		this.Path = path;
 		this.Class_Absolute = absolute;
@@ -16,8 +13,7 @@ public class Audio
 		this.Volume = volume;
 	}
 
-	public Audio(Audio value)
-	{
+	public Audio(Audio value) {
 		Path = value.Path;
 		Volume = value.Volume;
 		Mute = value.Mute;
@@ -30,17 +26,19 @@ public class Audio
 	public boolean Class_Absolute;
 
 	@Override
-	public boolean equals(Object obj)
-	{
+	public boolean equals(Object obj) {
 		boolean ret = false;
-		if (obj instanceof Audio)
-		{
+		if (obj instanceof Audio) {
 			ret = true;
 			Audio aud = (Audio) obj;
-			if (!Path.equalsIgnoreCase(aud.Path)) ret = false;
-			if (Class_Absolute != aud.Class_Absolute) ret = false;
-			if (Mute != aud.Mute) ret = false;
-			if (Volume != aud.Volume) ret = false;
+			if (!Path.equalsIgnoreCase(aud.Path))
+				ret = false;
+			if (Class_Absolute != aud.Class_Absolute)
+				ret = false;
+			if (Mute != aud.Mute)
+				ret = false;
+			if (Volume != aud.Volume)
+				ret = false;
 		}
 
 		return ret;

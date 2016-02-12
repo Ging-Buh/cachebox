@@ -31,14 +31,11 @@ class PositiveRule extends Rule {
 
 	@Override
 	boolean matchesNode(List<Tag> tags, byte zoomLevel) {
-		return this.zoomMin <= zoomLevel && this.zoomMax >= zoomLevel && this.elementMatcher.matches(Element.NODE)
-				&& this.keyMatcher.matches(tags) && this.valueMatcher.matches(tags);
+		return this.zoomMin <= zoomLevel && this.zoomMax >= zoomLevel && this.elementMatcher.matches(Element.NODE) && this.keyMatcher.matches(tags) && this.valueMatcher.matches(tags);
 	}
 
 	@Override
 	boolean matchesWay(List<Tag> tags, byte zoomLevel, Closed closed) {
-		return this.zoomMin <= zoomLevel && this.zoomMax >= zoomLevel && this.elementMatcher.matches(Element.WAY)
-				&& this.closedMatcher.matches(closed) && this.keyMatcher.matches(tags)
-				&& this.valueMatcher.matches(tags);
+		return this.zoomMin <= zoomLevel && this.zoomMax >= zoomLevel && this.elementMatcher.matches(Element.WAY) && this.closedMatcher.matches(closed) && this.keyMatcher.matches(tags) && this.valueMatcher.matches(tags);
 	}
 }

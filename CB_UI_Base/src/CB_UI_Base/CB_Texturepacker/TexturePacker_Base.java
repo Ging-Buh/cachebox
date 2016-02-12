@@ -11,21 +11,16 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public abstract class TexturePacker_Base
-{
+public abstract class TexturePacker_Base {
 
 	protected Settings settings;
 	protected MaxRectsPacker maxRectsPacker;
 	protected IImageprozessor imageProcessor;
 
-	public static void process(String input, String output, String packFileName)
-	{
-		try
-		{
+	public static void process(String input, String output, String packFileName) {
+		try {
 			new TexturePackerFileProcessor(new Settings(), packFileName).process(new File(input), new File(output));
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			throw new RuntimeException("Error packing files.", ex);
 		}
 	}
@@ -36,37 +31,29 @@ public abstract class TexturePacker_Base
 
 	public abstract TexturePacker_Base getInstanz(File rootDir, Settings settings);
 
-	public void addImage(File file)
-	{
+	public void addImage(File file) {
 		imageProcessor.addImage(file);
 	}
 
-	public void pack(File outputDir, String packFileName)
-	{
+	public void pack(File outputDir, String packFileName) {
 		outputDir.mkdirs();
 
-		if (packFileName.indexOf('.') == -1) packFileName += ".atlas";
+		if (packFileName.indexOf('.') == -1)
+			packFileName += ".atlas";
 
 		Array<Page> pages = maxRectsPacker.pack(imageProcessor.getImages());
 		writeImages(outputDir, pages, packFileName);
-		try
-		{
+		try {
 			writePackFile(outputDir, pages, packFileName);
-		}
-		catch (IOException ex)
-		{
+		} catch (IOException ex) {
 			throw new RuntimeException("Error writing pack file.", ex);
 		}
 	}
 
-	public static void process(Settings settings, String input, String output, String packFileName)
-	{
-		try
-		{
+	public static void process(Settings settings, String input, String output, String packFileName) {
+		try {
 			new TexturePackerFileProcessor(settings, packFileName).process(new File(input), new File(output));
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			throw new RuntimeException("Error packing files.", ex);
 		}
 	}
@@ -75,35 +62,35 @@ public abstract class TexturePacker_Base
 	 * @return true if the output file does not yet exist or its last modification date is before the last modification date of the input
 	 *         file
 	 */
-	public static boolean isModified(String input, String output, String packFileName)
-	{
+	public static boolean isModified(String input, String output, String packFileName) {
 		String packFullFileName = output;
-		if (!packFullFileName.endsWith("/")) packFullFileName += "/";
+		if (!packFullFileName.endsWith("/"))
+			packFullFileName += "/";
 		packFullFileName += packFileName;
 		File outputFile = new File(packFullFileName);
-		if (!outputFile.exists()) return true;
+		if (!outputFile.exists())
+			return true;
 
 		File inputFile = new File(input);
-		if (!inputFile.exists()) throw new IllegalArgumentException("Input file does not exist: " + inputFile.getAbsolutePath());
+		if (!inputFile.exists())
+			throw new IllegalArgumentException("Input file does not exist: " + inputFile.getAbsolutePath());
 		return inputFile.lastModified() > outputFile.lastModified();
 	}
 
-	public static void processIfModified(String input, String output, String packFileName)
-	{
-		if (isModified(input, output, packFileName)) process(input, output, packFileName);
+	public static void processIfModified(String input, String output, String packFileName) {
+		if (isModified(input, output, packFileName))
+			process(input, output, packFileName);
 	}
 
-	public static void processIfModified(Settings settings, String input, String output, String packFileName)
-	{
-		if (isModified(input, output, packFileName)) process(settings, input, output, packFileName);
+	public static void processIfModified(Settings settings, String input, String output, String packFileName) {
+		if (isModified(input, output, packFileName))
+			process(settings, input, output, packFileName);
 	}
 
-	public static void main(String[] args) throws Exception
-	{
+	public static void main(String[] args) throws Exception {
 		String input = null, output = null, packFileName = "pack.atlas";
 
-		switch (args.length)
-		{
+		switch (args.length) {
 		case 3:
 			packFileName = args[2];
 		case 2:
@@ -116,8 +103,7 @@ public abstract class TexturePacker_Base
 			System.exit(0);
 		}
 
-		if (output == null)
-		{
+		if (output == null) {
 			File inputFile = new File(input);
 			output = new File(inputFile.getParentFile(), inputFile.getName() + "-packed").getAbsolutePath();
 		}
@@ -125,26 +111,19 @@ public abstract class TexturePacker_Base
 		process(input, output, packFileName);
 	}
 
-	void writePackFile(File outputDir, Array<Page> pages, String packFileName) throws IOException
-	{
+	void writePackFile(File outputDir, Array<Page> pages, String packFileName) throws IOException {
 		File packFile = new File(outputDir, packFileName);
 
-		if (packFile.exists())
-		{
+		if (packFile.exists()) {
 			// Make sure there aren't duplicate names.
 			TextureAtlasData textureAtlasData = new TextureAtlasData(new FileHandle(packFile), new FileHandle(packFile), false);
-			for (Page page : pages)
-			{
-				for (Rect_Base rect : page.outputRects)
-				{
+			for (Page page : pages) {
+				for (Rect_Base rect : page.outputRects) {
 					String rectName = settings.flattenPaths ? new FileHandle(rect.name).name() : rect.name;
 					System.out.println(rectName);
-					for (Region region : textureAtlasData.getRegions())
-					{
-						if (region.name.equals(rectName))
-						{
-							throw new GdxRuntimeException("A region with the name \"" + rectName + "\" has already been packed: "
-									+ rect.name);
+					for (Region region : textureAtlasData.getRegions()) {
+						if (region.name.equals(rectName)) {
+							throw new GdxRuntimeException("A region with the name \"" + rectName + "\" has already been packed: " + rect.name);
 						}
 					}
 				}
@@ -154,18 +133,15 @@ public abstract class TexturePacker_Base
 		FileWriter writer = new FileWriter(packFile, true);
 		// if (settings.jsonOutput) {
 		// } else {
-		for (Page page : pages)
-		{
+		for (Page page : pages) {
 			writer.write("\n" + page.imageName + "\n");
 			writer.write("format: " + settings.format + "\n");
 			writer.write("filter: " + settings.filterMin + "," + settings.filterMag + "\n");
 			writer.write("repeat: " + getRepeatValue() + "\n");
 
-			for (Rect_Base rect : page.outputRects)
-			{
+			for (Rect_Base rect : page.outputRects) {
 				writeRect(writer, page, rect);
-				for (Rect_Base alias : rect.aliases)
-				{
+				for (Rect_Base alias : rect.aliases) {
 					alias.setSize(rect);
 					writeRect(writer, page, alias);
 				}
@@ -175,20 +151,18 @@ public abstract class TexturePacker_Base
 		writer.close();
 	}
 
-	private void writeRect(FileWriter writer, Page page, Rect_Base rect) throws IOException
-	{
+	private void writeRect(FileWriter writer, Page page, Rect_Base rect) throws IOException {
 		String rectName = settings.flattenPaths ? new FileHandle(rect.name).name() : rect.name;
 		writer.write(rectName + "\n");
 		writer.write(" rotate: " + rect.rotated + "\n");
 		writer.write(" xy: " + (page.x + rect.x) + ", " + (page.y + page.height - rect.height - rect.y) + "\n");
 		writer.write(" size: " + rect.getWidth() + ", " + rect.getHeight() + "\n");
-		if (rect.splits != null)
-		{
+		if (rect.splits != null) {
 			writer.write(" split: " + rect.splits[0] + ", " + rect.splits[1] + ", " + rect.splits[2] + ", " + rect.splits[3] + "\n");
 		}
-		if (rect.pads != null)
-		{
-			if (rect.splits == null) writer.write(" split: 0, 0, 0, 0\n");
+		if (rect.pads != null) {
+			if (rect.splits == null)
+				writer.write(" split: 0, 0, 0, 0\n");
 			writer.write(" pad: " + rect.pads[0] + ", " + rect.pads[1] + ", " + rect.pads[2] + ", " + rect.pads[3] + "\n");
 		}
 		writer.write(" orig: " + rect.originalWidth + ", " + rect.originalHeight + "\n");
@@ -196,18 +170,19 @@ public abstract class TexturePacker_Base
 		writer.write(" index: " + rect.index + "\n");
 	}
 
-	private String getRepeatValue()
-	{
-		if (settings.wrapX == TextureWrap.Repeat && settings.wrapY == TextureWrap.Repeat) return "xy";
-		if (settings.wrapX == TextureWrap.Repeat && settings.wrapY == TextureWrap.ClampToEdge) return "x";
-		if (settings.wrapX == TextureWrap.ClampToEdge && settings.wrapY == TextureWrap.Repeat) return "y";
+	private String getRepeatValue() {
+		if (settings.wrapX == TextureWrap.Repeat && settings.wrapY == TextureWrap.Repeat)
+			return "xy";
+		if (settings.wrapX == TextureWrap.Repeat && settings.wrapY == TextureWrap.ClampToEdge)
+			return "x";
+		if (settings.wrapX == TextureWrap.ClampToEdge && settings.wrapY == TextureWrap.Repeat)
+			return "y";
 		return "none";
 	}
 
 	public static TexturePacker_Base that;
 
-	public TexturePacker_Base()
-	{
+	public TexturePacker_Base() {
 		super();
 		that = this;
 	}

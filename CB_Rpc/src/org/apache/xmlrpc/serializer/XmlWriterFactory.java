@@ -25,7 +25,6 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.common.XmlRpcStreamConfig;
 import org.xml.sax.ContentHandler;
 
-
 /** This factory is responsible for creating instances of
  * {@link org.apache.ws.commons.serialize.XMLWriter}.
  */
@@ -38,6 +37,5 @@ public interface XmlWriterFactory {
 	 * @param pConfig The request or response configuration.
 	 * @throws XmlRpcException Creating the handler failed.
 	 */
-	public ContentHandler getXmlWriter(XmlRpcStreamConfig pConfig,
-									   OutputStream pStream) throws XmlRpcException;
+	public ContentHandler getXmlWriter(XmlRpcStreamConfig pConfig, OutputStream pStream) throws XmlRpcException;
 }

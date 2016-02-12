@@ -3,10 +3,8 @@ package CB_Core;
 import junit.framework.TestCase;
 import CB_UI.Config;
 
-public class Config_Crypt extends TestCase
-{
-	public void test_crypt()
-	{
+public class Config_Crypt extends TestCase {
+	public void test_crypt() {
 		// String encrypt = "8jrcNgBkNHcUfe4FAhlQ23e6CXntl83EvxXiSg==";
 		// String decrypt = "I0FLLWuncFfOr9Hz0yRYL/X6SXM=";
 

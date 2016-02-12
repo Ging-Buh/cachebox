@@ -81,12 +81,12 @@ import java.net.*;
  */
 public final class SourceFormatter implements CharStreamSource {
 	private final Segment segment;
-	private String indentString="\t";
-	private boolean tidyTags=false;
-	private boolean collapseWhiteSpace=false;
-	private boolean removeLineBreaks=false;
-	private boolean indentAllElements=false;
-	private String newLine=null;
+	private String indentString = "\t";
+	private boolean tidyTags = false;
+	private boolean collapseWhiteSpace = false;
+	private boolean removeLineBreaks = false;
+	private boolean indentAllElements = false;
+	private String newLine = null;
 
 	/**
 	 * Constructs a new <code>SourceFormatter</code> based on the specified {@link Segment}.
@@ -94,7 +94,7 @@ public final class SourceFormatter implements CharStreamSource {
 	 * @see Source#getSourceFormatter()
 	 */
 	public SourceFormatter(final Segment segment) {
-		this.segment=segment;
+		this.segment = segment;
 	}
 
 	// Documentation inherited from CharStreamSource
@@ -105,12 +105,12 @@ public final class SourceFormatter implements CharStreamSource {
 
 	// Documentation inherited from CharStreamSource
 	public void appendTo(final Appendable appendable) throws IOException {
-		new Processor(segment,getIndentString(),getTidyTags(),getCollapseWhiteSpace(),getRemoveLineBreaks(),getIndentAllElements(),getIndentAllElements(),getNewLine()).appendTo(appendable);
+		new Processor(segment, getIndentString(), getTidyTags(), getCollapseWhiteSpace(), getRemoveLineBreaks(), getIndentAllElements(), getIndentAllElements(), getNewLine()).appendTo(appendable);
 	}
 
 	// Documentation inherited from CharStreamSource
 	public long getEstimatedMaximumOutputLength() {
-		return segment.length()*2;
+		return segment.length() * 2;
 	}
 
 	// Documentation inherited from CharStreamSource
@@ -130,8 +130,9 @@ public final class SourceFormatter implements CharStreamSource {
 	 * @see #getIndentString()
 	 */
 	public SourceFormatter setIndentString(final String indentString) {
-		if (indentString==null) throw new IllegalArgumentException("indentString property must not be null");
-		this.indentString=indentString;
+		if (indentString == null)
+			throw new IllegalArgumentException("indentString property must not be null");
+		this.indentString = indentString;
 		return this;
 	}
 
@@ -159,7 +160,7 @@ public final class SourceFormatter implements CharStreamSource {
 	 * @see #getTidyTags()
 	 */
 	public SourceFormatter setTidyTags(final boolean tidyTags) {
-		this.tidyTags=tidyTags;
+		this.tidyTags = tidyTags;
 		return this;
 	}
 
@@ -188,10 +189,10 @@ public final class SourceFormatter implements CharStreamSource {
 	 * @see #getCollapseWhiteSpace()
 	 */
 	public SourceFormatter setCollapseWhiteSpace(final boolean collapseWhiteSpace) {
-		this.collapseWhiteSpace=collapseWhiteSpace;
+		this.collapseWhiteSpace = collapseWhiteSpace;
 		return this;
 	}
-	
+
 	/**
 	 * Indicates whether {@linkplain Segment#isWhiteSpace(char) white space} in the text between the tags is to be collapsed.
 	 * <p>
@@ -219,10 +220,10 @@ public final class SourceFormatter implements CharStreamSource {
 	 * @see #getRemoveLineBreaks()
 	 */
 	SourceFormatter setRemoveLineBreaks(final boolean removeLineBreaks) {
-		this.removeLineBreaks=removeLineBreaks;
+		this.removeLineBreaks = removeLineBreaks;
 		return this;
 	}
-	
+
 	/**
 	 * Indicates whether all non-essential line breaks are removed.
 	 * <p>
@@ -250,7 +251,7 @@ public final class SourceFormatter implements CharStreamSource {
 	 * @see #getIndentAllElements()
 	 */
 	public SourceFormatter setIndentAllElements(final boolean indentAllElements) {
-		this.indentAllElements=indentAllElements;
+		this.indentAllElements = indentAllElements;
 		return this;
 	}
 
@@ -264,7 +265,7 @@ public final class SourceFormatter implements CharStreamSource {
 	public boolean getIndentAllElements() {
 		return indentAllElements;
 	}
-	
+
 	/**
 	 * Sets the string to be used to represent a <a target="_blank" href="http://en.wikipedia.org/wiki/Newline">newline</a> in the output.
 	 * <p>
@@ -279,7 +280,7 @@ public final class SourceFormatter implements CharStreamSource {
 	 * @see #getNewLine()
 	 */
 	public SourceFormatter setNewLine(final String newLine) {
-		this.newLine=newLine;
+		this.newLine = newLine;
 		return this;
 	}
 
@@ -291,7 +292,8 @@ public final class SourceFormatter implements CharStreamSource {
 	 * @return the string to be used to represent a <a target="_blank" href="http://en.wikipedia.org/wiki/Newline">newline</a> in the output.
 	 */
 	public String getNewLine() {
-		if (newLine==null) newLine=segment.source.getBestGuessNewLine();
+		if (newLine == null)
+			newLine = segment.source.getBestGuessNewLine();
 		return newLine;
 	}
 
@@ -306,433 +308,482 @@ public final class SourceFormatter implements CharStreamSource {
 		private final boolean indentAllElements;
 		private final boolean indentScriptElements; // at present this parameter is tied to indentAllElements.  SCRIPT elements need to be inline to keep functional equivalency of output
 		private final String newLine;
-	
+
 		private Appendable appendable;
 		private Tag nextTag;
 		private int index;
-	
-		public Processor(final Segment segment, final String indentString, final boolean tidyTags, final boolean collapseWhiteSpace, final boolean removeLineBreaks, final boolean indentAllElements, final boolean indentScriptElements, final String newLine) {
-			this.segment=segment;
-			sourceText=segment.source.toString();
-			this.indentString=indentString;
-			this.tidyTags=tidyTags;
-			this.collapseWhiteSpace=collapseWhiteSpace || removeLineBreaks;
-			this.removeLineBreaks=removeLineBreaks;
-			this.indentAllElements=indentAllElements;
-			this.indentScriptElements=indentScriptElements;
-			this.newLine=newLine;
+
+		public Processor(final Segment segment, final String indentString, final boolean tidyTags, final boolean collapseWhiteSpace, final boolean removeLineBreaks, final boolean indentAllElements, final boolean indentScriptElements,
+				final String newLine) {
+			this.segment = segment;
+			sourceText = segment.source.toString();
+			this.indentString = indentString;
+			this.tidyTags = tidyTags;
+			this.collapseWhiteSpace = collapseWhiteSpace || removeLineBreaks;
+			this.removeLineBreaks = removeLineBreaks;
+			this.indentAllElements = indentAllElements;
+			this.indentScriptElements = indentScriptElements;
+			this.newLine = newLine;
 		}
-	
+
 		public void appendTo(final Appendable appendable) throws IOException {
-			this.appendable=appendable;
-			if (segment instanceof Source) ((Source)segment).fullSequentialParse();
-			nextTag=segment.source.getNextTag(segment.begin);
-			index=segment.begin;
-			appendContent(segment.end,segment.getChildElements(),0);
+			this.appendable = appendable;
+			if (segment instanceof Source)
+				((Source) segment).fullSequentialParse();
+			nextTag = segment.source.getNextTag(segment.begin);
+			index = segment.begin;
+			appendContent(segment.end, segment.getChildElements(), 0);
 		}
-	
+
 		private void appendContent(final int end, final List<Element> childElements, final int depth) throws IOException {
-			assert index<=end;
+			assert index <= end;
 			for (Element element : childElements) {
-				final int elementBegin=element.begin;
-				if (elementBegin>=end) break;
+				final int elementBegin = element.begin;
+				if (elementBegin >= end)
+					break;
 				if (indentAllElements) {
-					appendText(elementBegin,depth);
-					appendElement(element,depth,end,false,false);
+					appendText(elementBegin, depth);
+					appendElement(element, depth, end, false, false);
 				} else {
-					if (inlinable(element)) continue; // skip over elements that can be inlined.
-					appendText(elementBegin,depth);
-					final String elementName=element.getName();
-					if (elementName==HTMLElementName.PRE || elementName==HTMLElementName.TEXTAREA) {
-						appendElement(element,depth,end,true,true);
-					} else if (elementName==HTMLElementName.SCRIPT) {
-						appendElement(element,depth,end,true,false);
+					if (inlinable(element))
+						continue; // skip over elements that can be inlined.
+					appendText(elementBegin, depth);
+					final String elementName = element.getName();
+					if (elementName == HTMLElementName.PRE || elementName == HTMLElementName.TEXTAREA) {
+						appendElement(element, depth, end, true, true);
+					} else if (elementName == HTMLElementName.SCRIPT) {
+						appendElement(element, depth, end, true, false);
 					} else {
-						appendElement(element,depth,end,false,!removeLineBreaks && containsOnlyInlineLevelChildElements(element));
+						appendElement(element, depth, end, false, !removeLineBreaks && containsOnlyInlineLevelChildElements(element));
 					}
 				}
 			}
-			appendText(end,depth);
-			assert index==end;
+			appendText(end, depth);
+			assert index == end;
 		}
-	
+
 		private boolean inlinable(final Element element) {
 			// returns true if the specified element should be inlined
-			final StartTagType startTagType=element.getStartTag().getStartTagType();
+			final StartTagType startTagType = element.getStartTag().getStartTagType();
 			// if (startTagType==StartTagType.DOCTYPE_DECLARATION) return false; // this was removed because it caused an extra line break if the DOCTYPE is preceeded by a server tag
-			if (startTagType!=StartTagType.NORMAL) return true;
+			if (startTagType != StartTagType.NORMAL)
+				return true;
 			// element is a normal type
-			final String elementName=element.getName();
-			if (elementName==HTMLElementName.SCRIPT) return !indentScriptElements;
-			if (removeLineBreaks && !HTMLElements.getElementNames().contains(elementName)) return true; // inline non-HTML elements if removing line breaks
-			if (!HTMLElements.getInlineLevelElementNames().contains(elementName)) return false;
+			final String elementName = element.getName();
+			if (elementName == HTMLElementName.SCRIPT)
+				return !indentScriptElements;
+			if (removeLineBreaks && !HTMLElements.getElementNames().contains(elementName))
+				return true; // inline non-HTML elements if removing line breaks
+			if (!HTMLElements.getInlineLevelElementNames().contains(elementName))
+				return false;
 			// element is inline type
-			if (elementName==HTMLElementName.TEXTAREA) return false; // TEXTAREA is theoretically inlinable but we want to format its content in the same was as PRE, and this is easiest when the entire element is treated like a block PRE element.
-			if (removeLineBreaks) return true;
+			if (elementName == HTMLElementName.TEXTAREA)
+				return false; // TEXTAREA is theoretically inlinable but we want to format its content in the same was as PRE, and this is easiest when the entire element is treated like a block PRE element.
+			if (removeLineBreaks)
+				return true;
 			return containsOnlyInlineLevelChildElements(element); // only inline if it doesn't illegally contain non-inline elements
 		}
-	
+
 		private void appendText(final int end, int depth) throws IOException {
-			assert index<=end;
-			if (index==end) return;
-			while (Segment.isWhiteSpace(sourceText.charAt(index))) if (++index==end) return; // trim whitespace.
+			assert index <= end;
+			if (index == end)
+				return;
+			while (Segment.isWhiteSpace(sourceText.charAt(index)))
+				if (++index == end)
+					return; // trim whitespace.
 			appendIndent(depth);
 			if (collapseWhiteSpace) {
-				appendTextCollapseWhiteSpace(end,depth);
+				appendTextCollapseWhiteSpace(end, depth);
 			} else {
-				appendTextInline(end,depth,false);
+				appendTextInline(end, depth, false);
 			}
 			appendFormattingNewLine();
-			assert index==end;
+			assert index == end;
 		}
-	
+
 		private void appendElement(final Element element, final int depth, final int end, final boolean preformatted, boolean renderContentInline) throws IOException {
-			assert index==element.begin;
-			assert index<end;
-			final StartTag startTag=element.getStartTag();
-			final EndTag endTag=element.getEndTag();
+			assert index == element.begin;
+			assert index < end;
+			final StartTag startTag = element.getStartTag();
+			final EndTag endTag = element.getEndTag();
 			appendIndent(depth);
-			appendTag(startTag,depth,end);
-			if (index==end) {
+			appendTag(startTag, depth, end);
+			if (index == end) {
 				appendFormattingNewLine();
-				assert index==Math.min(element.end,end) : index;
+				assert index == Math.min(element.end, end) : index;
 				return;
 			}
-			if (!renderContentInline) appendFormattingNewLine();
-			int contentEnd=element.getContentEnd();
-			if (end<contentEnd) contentEnd=end;
-			if (index<contentEnd) {
+			if (!renderContentInline)
+				appendFormattingNewLine();
+			int contentEnd = element.getContentEnd();
+			if (end < contentEnd)
+				contentEnd = end;
+			if (index < contentEnd) {
 				if (preformatted) {
 					if (renderContentInline) {
 						// Preformatted element such as PRE, TEXTAREA
-						appendContentPreformatted(contentEnd,depth);
+						appendContentPreformatted(contentEnd, depth);
 					} else {
 						// SCRIPT element
-						appendIndentedScriptContent(contentEnd,depth+1);
+						appendIndentedScriptContent(contentEnd, depth + 1);
 					}
 				} else {
 					if (renderContentInline) {
 						// Element contains only inline-level elements, so don't bother putting start and end tags on separate lines
 						if (collapseWhiteSpace) {
-							appendTextCollapseWhiteSpace(contentEnd,depth);
+							appendTextCollapseWhiteSpace(contentEnd, depth);
 						} else {
-							if (!appendTextInline(contentEnd,depth,true)) {
+							if (!appendTextInline(contentEnd, depth, true)) {
 								appendFormattingNewLine();
-								renderContentInline=false;
+								renderContentInline = false;
 							}
 						}
 					} else {
-						appendContent(contentEnd,element.getChildElements(),depth+1);
+						appendContent(contentEnd, element.getChildElements(), depth + 1);
 					}
 				}
 			}
-			if (endTag!=null && end>endTag.begin) {
-				if (!renderContentInline) appendIndent(depth);
-				assert index==endTag.begin;
-				appendTag(endTag,depth,end);
+			if (endTag != null && end > endTag.begin) {
+				if (!renderContentInline)
+					appendIndent(depth);
+				assert index == endTag.begin;
+				appendTag(endTag, depth, end);
 				appendFormattingNewLine();
 			} else if (renderContentInline) {
 				appendFormattingNewLine();
 			}
-			assert index==Math.min(element.end,end) : index;
+			assert index == Math.min(element.end, end) : index;
 		}
-	
+
 		private void updateNextTag() {
 			// ensures that nextTag is up to date
-			while (nextTag!=null) {
-				if (nextTag.begin>=index) return;
-				nextTag=nextTag.getNextTag();
+			while (nextTag != null) {
+				if (nextTag.begin >= index)
+					return;
+				nextTag = nextTag.getNextTag();
 			}
 		}
-	
+
 		private void appendIndentedScriptContent(final int end, final int depth) throws IOException {
-			assert index<end;
+			assert index < end;
 			if (removeLineBreaks) {
 				appendTextRemoveIndentation(end);
-				assert index==end;
+				assert index == end;
 				return;
 			}
-			int startOfLinePos=getStartOfLinePos(end,false);
-			if (index==end) return;
-			if (startOfLinePos==-1) {
+			int startOfLinePos = getStartOfLinePos(end, false);
+			if (index == end)
+				return;
+			if (startOfLinePos == -1) {
 				// Script started on same line as start tag.  Use the start of the next line to determine the original indent.
 				appendIndent(depth);
-				appendLineKeepWhiteSpace(end,depth);
+				appendLineKeepWhiteSpace(end, depth);
 				appendEssentialNewLine();
-				if (index==end) return;
-				startOfLinePos=getStartOfLinePos(end,true);
-				if (index==end) return;
+				if (index == end)
+					return;
+				startOfLinePos = getStartOfLinePos(end, true);
+				if (index == end)
+					return;
 			}
-			appendTextPreserveIndentation(end,depth,index-startOfLinePos);
+			appendTextPreserveIndentation(end, depth, index - startOfLinePos);
 			appendEssentialNewLine();
-			assert index==end;
+			assert index == end;
 		}
-	
+
 		private boolean appendTextPreserveIndentation(final int end, final int depth) throws IOException {
 			// returns true if all text was on one line, otherwise false
-			assert index<end;
-			if (removeLineBreaks) return appendTextRemoveIndentation(end);
+			assert index < end;
+			if (removeLineBreaks)
+				return appendTextRemoveIndentation(end);
 			// Use the start of the next line to determine the original indent.
-			appendLineKeepWhiteSpace(end,depth);
-			if (index==end) return true;
-			int startOfLinePos=getStartOfLinePos(end,true);
-			if (index==end) return true;
+			appendLineKeepWhiteSpace(end, depth);
+			if (index == end)
+				return true;
+			int startOfLinePos = getStartOfLinePos(end, true);
+			if (index == end)
+				return true;
 			appendEssentialNewLine();
-			appendTextPreserveIndentation(end,depth+1,index-startOfLinePos);
-			assert index==end;
+			appendTextPreserveIndentation(end, depth + 1, index - startOfLinePos);
+			assert index == end;
 			return false;
 		}
-	
+
 		private void appendTextPreserveIndentation(final int end, final int depth, final int originalIndentLength) throws IOException {
-			assert index<end;
+			assert index < end;
 			appendIndent(depth);
-			appendLineKeepWhiteSpace(end,depth);
-			while (index!=end) {
+			appendLineKeepWhiteSpace(end, depth);
+			while (index != end) {
 				// Skip over the original indent:
-				for (int x=0; x<originalIndentLength; x++) {
-					final char ch=sourceText.charAt(index);
-					if (!(ch==' ' || ch=='\t')) break;
-					if (++index==end) return;
+				for (int x = 0; x < originalIndentLength; x++) {
+					final char ch = sourceText.charAt(index);
+					if (!(ch == ' ' || ch == '\t'))
+						break;
+					if (++index == end)
+						return;
 				}
 				appendEssentialNewLine();
 				// Insert our indent:
 				appendIndent(depth);
 				// Write the rest of the line including any indent greater than the first line's indent:
-				appendLineKeepWhiteSpace(end,depth);
+				appendLineKeepWhiteSpace(end, depth);
 			}
-			assert index==end;
+			assert index == end;
 		}
 
 		private boolean appendTextRemoveIndentation(final int end) throws IOException {
-			assert index<end;
-			appendLineKeepWhiteSpace(end,0);
-			if (index==end) return true;
-			while (index!=end) {
+			assert index < end;
+			appendLineKeepWhiteSpace(end, 0);
+			if (index == end)
+				return true;
+			while (index != end) {
 				// Skip over the original indent:
 				while (true) {
-					final char ch=sourceText.charAt(index);
-					if (!(ch==' ' || ch=='\t')) break;
-					if (++index==end) return false;
+					final char ch = sourceText.charAt(index);
+					if (!(ch == ' ' || ch == '\t'))
+						break;
+					if (++index == end)
+						return false;
 				}
 				appendEssentialNewLine();
 				// Write the rest of the line including any indent greater than the first line's indent:
-				appendLineKeepWhiteSpace(end,0);
+				appendLineKeepWhiteSpace(end, 0);
 			}
-			assert index==end;
+			assert index == end;
 			return false;
 		}
-	
+
 		private int getStartOfLinePos(final int end, final boolean atStartOfLine) {
 			// returns the starting position of the next complete line containing text, or -1 if texts starts on the current line (hence not a complete line).
 			// sets index to the start of the text following the returned position, or end, whichever comes first.
-			int startOfLinePos=atStartOfLine ? index : -1;
+			int startOfLinePos = atStartOfLine ? index : -1;
 			while (true) {
-				final char ch=sourceText.charAt(index);
-				if (ch=='\n' || ch=='\r') {
-					startOfLinePos=index+1;
-				} else if (!(ch==' ' || ch=='\t')) break;
-				if (++index==end) break;
+				final char ch = sourceText.charAt(index);
+				if (ch == '\n' || ch == '\r') {
+					startOfLinePos = index + 1;
+				} else if (!(ch == ' ' || ch == '\t'))
+					break;
+				if (++index == end)
+					break;
 			}
 			return startOfLinePos;
 		}
-	
+
 		private void appendSpecifiedTextInline(final CharSequence text, int depth) throws IOException {
-			final int textLength=text.length();
-			int i=appendSpecifiedLine(text,0);
-			if (i<textLength) {
-				final int subsequentLineDepth=depth+1;
+			final int textLength = text.length();
+			int i = appendSpecifiedLine(text, 0);
+			if (i < textLength) {
+				final int subsequentLineDepth = depth + 1;
 				do {
-					while (Segment.isWhiteSpace(text.charAt(i))) if (++i>=textLength) return; // trim whitespace.
+					while (Segment.isWhiteSpace(text.charAt(i)))
+						if (++i >= textLength)
+							return; // trim whitespace.
 					appendEssentialNewLine();
 					appendIndent(subsequentLineDepth);
-					i=appendSpecifiedLine(text,i);
-				} while (i<textLength);
+					i = appendSpecifiedLine(text, i);
+				} while (i < textLength);
 			}
 		}
-	
+
 		private int appendSpecifiedLine(final CharSequence text, int i) throws IOException {
 			// Writes the first line from the specified text starting from the specified position.
 			// The line break characters are not written.
 			// Returns the position following the first line break character(s), or text.length() if the text contains no line breaks.
-			final int textLength=text.length();
+			final int textLength = text.length();
 			while (true) {
-				final char ch=text.charAt(i);
-				if (ch=='\r') {
-					final int nexti=i+1;
-					if (nexti<textLength && text.charAt(nexti)=='\n') return i+2;
+				final char ch = text.charAt(i);
+				if (ch == '\r') {
+					final int nexti = i + 1;
+					if (nexti < textLength && text.charAt(nexti) == '\n')
+						return i + 2;
 				}
-				if (ch=='\n') return i+1;
+				if (ch == '\n')
+					return i + 1;
 				appendable.append(ch);
-				if (++i>=textLength) return i;
+				if (++i >= textLength)
+					return i;
 			}
 		}
-	
+
 		private boolean appendTextInline(final int end, int depth, final boolean increaseIndentAfterFirstLineBreak) throws IOException {
 			// returns true if all text was on one line, otherwise false
-			assert index<end;
-			appendLineKeepWhiteSpace(end,depth);
-			if (index==end) return true;
-			final int subsequentLineDepth=increaseIndentAfterFirstLineBreak ? depth+1 : depth;
+			assert index < end;
+			appendLineKeepWhiteSpace(end, depth);
+			if (index == end)
+				return true;
+			final int subsequentLineDepth = increaseIndentAfterFirstLineBreak ? depth + 1 : depth;
 			do {
-				while (Segment.isWhiteSpace(sourceText.charAt(index))) if (++index==end) return false; // trim whitespace.
+				while (Segment.isWhiteSpace(sourceText.charAt(index)))
+					if (++index == end)
+						return false; // trim whitespace.
 				appendEssentialNewLine(); // essential because we might be inside a tag attribute value.  If new lines in normal text aren't required this method wouldn't have been called.
 				appendIndent(subsequentLineDepth);
-				appendLineKeepWhiteSpace(end,subsequentLineDepth);
-			} while (index<end);
-			assert index==end;
+				appendLineKeepWhiteSpace(end, subsequentLineDepth);
+			} while (index < end);
+			assert index == end;
 			return false;
 		}
-	
+
 		private void appendLineKeepWhiteSpace(final int end, final int depth) throws IOException {
 			// Writes the first line from the source text starting from index, ending at the specified end position.
 			// The line break characters are not written.
 			// Sets index to the position following the first line break character(s), or end if the text contains no line breaks, guaranteed index<=end.
 			// Any tags encountered are written using the appendTag method, whose output may include line breaks.
-			assert index<end;
+			assert index < end;
 			updateNextTag();
 			while (true) {
-				while (nextTag!=null && index==nextTag.begin) {
-					appendTag(nextTag,depth,end);
-					if (index==end) return;
+				while (nextTag != null && index == nextTag.begin) {
+					appendTag(nextTag, depth, end);
+					if (index == end)
+						return;
 				}
-				final char ch=sourceText.charAt(index);
-				if (ch=='\r') {
-					final int nextindex=index+1;
-					if (nextindex<end && sourceText.charAt(nextindex)=='\n') {
-						index+=2;
-						assert index<=end;
+				final char ch = sourceText.charAt(index);
+				if (ch == '\r') {
+					final int nextindex = index + 1;
+					if (nextindex < end && sourceText.charAt(nextindex) == '\n') {
+						index += 2;
+						assert index <= end;
 						return;
 					}
 				}
-				if (ch=='\n') {
+				if (ch == '\n') {
 					index++;
-					assert index<=end;
+					assert index <= end;
 					return;
 				}
 				appendable.append(ch);
-				if (++index==end) return;
+				if (++index == end)
+					return;
 			}
-		}		
-	
+		}
+
 		private void appendTextCollapseWhiteSpace(final int end, final int depth) throws IOException {
-			assert index<end;
-			boolean lastWasWhiteSpace=false;
+			assert index < end;
+			boolean lastWasWhiteSpace = false;
 			updateNextTag();
-			while (index<end) {
-				while (nextTag!=null && index==nextTag.begin) {
+			while (index < end) {
+				while (nextTag != null && index == nextTag.begin) {
 					if (lastWasWhiteSpace) {
 						appendable.append(' ');
-						lastWasWhiteSpace=false;
+						lastWasWhiteSpace = false;
 					}
-					appendTag(nextTag,depth,end);
-					if (index==end) return;
+					appendTag(nextTag, depth, end);
+					if (index == end)
+						return;
 				}
-				final char ch=sourceText.charAt(index++);
+				final char ch = sourceText.charAt(index++);
 				if (Segment.isWhiteSpace(ch)) {
-					lastWasWhiteSpace=true;
+					lastWasWhiteSpace = true;
 				} else {
 					if (lastWasWhiteSpace) {
 						appendable.append(' ');
-						lastWasWhiteSpace=false;
+						lastWasWhiteSpace = false;
 					}
 					appendable.append(ch);
 				}
 			}
-			if (lastWasWhiteSpace) appendable.append(' ');
-			assert index==end;
+			if (lastWasWhiteSpace)
+				appendable.append(' ');
+			assert index == end;
 		}
-	
+
 		private void appendContentPreformatted(final int end, final int depth) throws IOException {
-			assert index<end;
+			assert index < end;
 			updateNextTag();
 			do {
-				while (nextTag!=null && index==nextTag.begin) {
-					appendTag(nextTag,depth,end);
-					if (index==end) return;
+				while (nextTag != null && index == nextTag.begin) {
+					appendTag(nextTag, depth, end);
+					if (index == end)
+						return;
 				}
 				appendable.append(sourceText.charAt(index));
-			} while (++index<end);
-			assert index==end;
+			} while (++index < end);
+			assert index == end;
 		}
-	
+
 		private void appendTag(final Tag tag, final int depth, final int end) throws IOException {
 			// sets index to last position written
-			assert index==tag.begin;
-			assert index<end;
-			nextTag=tag.getNextTag();
-			final int tagEnd=(tag.end<end) ? tag.end : end;
-			assert index<tagEnd;
-			if (tag.getTagType()==StartTagType.COMMENT || tag.getTagType()==StartTagType.CDATA_SECTION || tag.getTagType().isServerTag()) {
-				appendTextPreserveIndentation(tagEnd,depth);
+			assert index == tag.begin;
+			assert index < end;
+			nextTag = tag.getNextTag();
+			final int tagEnd = (tag.end < end) ? tag.end : end;
+			assert index < tagEnd;
+			if (tag.getTagType() == StartTagType.COMMENT || tag.getTagType() == StartTagType.CDATA_SECTION || tag.getTagType().isServerTag()) {
+				appendTextPreserveIndentation(tagEnd, depth);
 			} else if (tidyTags) {
-				final String tidyTag=tag.tidy();
-				if ((tag instanceof StartTag) && ((StartTag)tag).getAttributes()!=null)
+				final String tidyTag = tag.tidy();
+				if ((tag instanceof StartTag) && ((StartTag) tag).getAttributes() != null)
 					appendable.append(tidyTag);
 				else
-					appendSpecifiedTextInline(tidyTag,depth);
-				index=tagEnd;
+					appendSpecifiedTextInline(tidyTag, depth);
+				index = tagEnd;
 			} else {
-				appendTextInline(tagEnd,depth,true); // Write tag keeping linefeeds. This will add an indent to any attribute values containing linefeeds, but the normal situation where line breaks are between attributes will look nice.
+				appendTextInline(tagEnd, depth, true); // Write tag keeping linefeeds. This will add an indent to any attribute values containing linefeeds, but the normal situation where line breaks are between attributes will look nice.
 			}
-			if (end<=tag.end || !(tag instanceof StartTag)) {
-				assert index<=end;
+			if (end <= tag.end || !(tag instanceof StartTag)) {
+				assert index <= end;
 				return;
 			}
-			if ((tag.name==HTMLElementName.SCRIPT && !indentScriptElements) || tag.getTagType().isServerTag()) {
+			if ((tag.name == HTMLElementName.SCRIPT && !indentScriptElements) || tag.getTagType().isServerTag()) {
 				// NOTE SERVER ELEMENTS CONTAINING NON-INLINE TAGS WILL NOT FORMAT PROPERLY. NEED TO INVESTIGATE INCLUDING SUCH SERVER ELEMENTS IN DOCUMENT HIERARCHY.
 				// this is a script or server start tag, we may need to append the whole element:
-				final Element element=tag.getElement();
-				final EndTag endTag=element.getEndTag();
-				if (endTag==null) {
-					assert index<=end;
+				final Element element = tag.getElement();
+				final EndTag endTag = element.getEndTag();
+				if (endTag == null) {
+					assert index <= end;
 					return;
 				}
-				final int contentEnd=(end<endTag.begin) ? end : endTag.begin;
-				boolean singleLineContent=true;
-				if (index!=contentEnd) {
+				final int contentEnd = (end < endTag.begin) ? end : endTag.begin;
+				boolean singleLineContent = true;
+				if (index != contentEnd) {
 					// elementContainsMarkup should be made into a TagType property one day.
 					// for the time being assume all server element content is code, although this is not true for some Mason elements.
-					final boolean elementContainsMarkup=false;
+					final boolean elementContainsMarkup = false;
 					if (elementContainsMarkup) {
-						singleLineContent=appendTextInline(contentEnd,depth+1,false);
+						singleLineContent = appendTextInline(contentEnd, depth + 1, false);
 					} else {
-						singleLineContent=appendTextPreserveIndentation(contentEnd,depth);
+						singleLineContent = appendTextPreserveIndentation(contentEnd, depth);
 					}
 				}
-				if (endTag.begin>=end) {
-					assert index<=end;
+				if (endTag.begin >= end) {
+					assert index <= end;
 					return;
 				}
 				if (!singleLineContent) {
 					appendEssentialNewLine(); // some server or client side scripting languages might need the final new line
 					appendIndent(depth);
 				}
-				assert index==endTag.begin;
-				appendTag(endTag,depth,end);
+				assert index == endTag.begin;
+				appendTag(endTag, depth, end);
 			}
-			assert index<=end;
+			assert index <= end;
 		}
-		
-	  private void appendIndent(final int depth) throws IOException {
-			if (!removeLineBreaks) for (int x=0; x<depth; x++) appendable.append(indentString);
-	  }
-	
+
+		private void appendIndent(final int depth) throws IOException {
+			if (!removeLineBreaks)
+				for (int x = 0; x < depth; x++)
+					appendable.append(indentString);
+		}
+
 		private void appendFormattingNewLine() throws IOException {
-			if (!removeLineBreaks) appendable.append(newLine);
+			if (!removeLineBreaks)
+				appendable.append(newLine);
 		}
 
 		private void appendEssentialNewLine() throws IOException {
 			appendable.append(newLine);
 		}
-	
+
 		private boolean containsOnlyInlineLevelChildElements(final Element element) {
 			// returns true if the element contains only inline-level elements except for SCRIPT elements.
-			final Collection<Element> childElements=element.getChildElements();
-			if (childElements.isEmpty()) return true;
+			final Collection<Element> childElements = element.getChildElements();
+			if (childElements.isEmpty())
+				return true;
 			for (Element childElement : childElements) {
-				final String elementName=childElement.getName();
-				if (elementName==HTMLElementName.SCRIPT || !HTMLElements.getInlineLevelElementNames().contains(elementName)) return false;
-				if (!containsOnlyInlineLevelChildElements(childElement)) return false;
+				final String elementName = childElement.getName();
+				if (elementName == HTMLElementName.SCRIPT || !HTMLElements.getInlineLevelElementNames().contains(elementName))
+					return false;
+				if (!containsOnlyInlineLevelChildElements(childElement))
+					return false;
 			}
 			return true;
 		}

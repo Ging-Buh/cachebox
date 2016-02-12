@@ -41,18 +41,18 @@ public final class Attribute extends Segment {
 	private final Segment nameSegment;
 	private final Segment valueSegment;
 	private final Segment valueSegmentIncludingQuotes;
-	StartTag startTag=StartTag.NOT_CACHED;
+	StartTag startTag = StartTag.NOT_CACHED;
 
-	static final String CHECKED="checked";
-	static final String CLASS="class";
-	static final String DISABLED="disabled";
-	static final String ID="id";
-	static final String MULTIPLE="multiple";
-	static final String NAME="name";
-	static final String SELECTED="selected";
-	static final String STYLE="style";
-	static final String TYPE="type";
-	static final String VALUE="value";
+	static final String CHECKED = "checked";
+	static final String CLASS = "class";
+	static final String DISABLED = "disabled";
+	static final String ID = "id";
+	static final String MULTIPLE = "multiple";
+	static final String NAME = "name";
+	static final String SELECTED = "selected";
+	static final String STYLE = "style";
+	static final String TYPE = "type";
+	static final String VALUE = "value";
 
 	/**
 	 * Constructs a new Attribute with no value part, called from Attributes class.
@@ -64,7 +64,7 @@ public final class Attribute extends Segment {
 	 * @param nameSegment  the segment representing the name.
 	 */
 	Attribute(final Source source, final String key, final Segment nameSegment) {
-		this(source,key,nameSegment,null,null);
+		this(source, key, nameSegment, null, null);
 	}
 
 	/**
@@ -84,11 +84,11 @@ public final class Attribute extends Segment {
 	 * @param valueSegmentIncludingQuotes  the segment spanning the value, including quotation marks if any.
 	 */
 	Attribute(final Source source, final String key, final Segment nameSegment, final Segment valueSegment, final Segment valueSegmentIncludingQuotes) {
-		super(source,nameSegment.getBegin(),(valueSegmentIncludingQuotes==null ? nameSegment.getEnd() : valueSegmentIncludingQuotes.getEnd()));
-		this.key=key;
-		this.nameSegment=nameSegment;
-		this.valueSegment=valueSegment;
-		this.valueSegmentIncludingQuotes=valueSegmentIncludingQuotes;
+		super(source, nameSegment.getBegin(), (valueSegmentIncludingQuotes == null ? nameSegment.getEnd() : valueSegmentIncludingQuotes.getEnd()));
+		this.key = key;
+		this.nameSegment = nameSegment;
+		this.valueSegment = valueSegment;
+		this.valueSegmentIncludingQuotes = valueSegmentIncludingQuotes;
 	}
 
 	/**
@@ -137,7 +137,7 @@ public final class Attribute extends Segment {
 	 * @return <code>true</code> if this attribute has a value, otherwise <code>false</code>.
 	 */
 	public boolean hasValue() {
-		return valueSegment!=null;
+		return valueSegment != null;
 	}
 
 	/**
@@ -172,8 +172,8 @@ public final class Attribute extends Segment {
 	 * <p>
 	 * Most browsers recognise <a href="CharacterReference.html#Unterminated">unterminated</a> character entity references
 	 * in attribute values representing a codepoint of U+00FF or below, but ignore those representing codepoints above this value.
- 	 * One relatively popular browser only recognises those representing a codepoint of U+003E or below, meaning it would
- 	 * have interpreted the URL in the above example differently to most other browsers.
+	 * One relatively popular browser only recognises those representing a codepoint of U+003E or below, meaning it would
+	 * have interpreted the URL in the above example differently to most other browsers.
 	 * Most browsers also use different rules depending on whether the unterminated character reference is inside or outside
 	 * of an attribute value, with both of these possibilities further split into different rules for
 	 * {@linkplain CharacterEntityReference character entity references},
@@ -186,7 +186,7 @@ public final class Attribute extends Segment {
 	 * @return the {@linkplain CharacterReference#decode(CharSequence,boolean) decoded} value of this attribute, or <code>null</code> if it {@linkplain #hasValue() has no value}.
 	 */
 	public String getValue() {
-		return CharacterReference.decode(valueSegment,true);
+		return CharacterReference.decode(valueSegment, true);
 	}
 
 	/**
@@ -218,7 +218,8 @@ public final class Attribute extends Segment {
 	 * @return the character used to quote the value, or a space if the value is not quoted or this attribute has no value.
 	 */
 	public char getQuoteChar() {
-		if (valueSegment==valueSegmentIncludingQuotes) return ' '; // no quotes
+		if (valueSegment == valueSegmentIncludingQuotes)
+			return ' '; // no quotes
 		return source.charAt(valueSegmentIncludingQuotes.getBegin());
 	}
 
@@ -227,9 +228,9 @@ public final class Attribute extends Segment {
 	 * @return the start tag to which this attribute belongs, or <code>null</code> if it is not within a start tag.
 	 */
 	public StartTag getStartTag() {
-		if (startTag==StartTag.NOT_CACHED) {
-			final Tag tag=source.getEnclosingTag(begin);
-			startTag=(tag==null || tag instanceof EndTag) ? null : (StartTag)tag;
+		if (startTag == StartTag.NOT_CACHED) {
+			final Tag tag = source.getEnclosingTag(begin);
+			startTag = (tag == null || tag instanceof EndTag) ? null : (StartTag) tag;
 		}
 		return startTag;
 	}
@@ -239,7 +240,7 @@ public final class Attribute extends Segment {
 	 * @return a string representation of this object useful for debugging purposes.
 	 */
 	public String getDebugInfo() {
-		final StringBuilder sb=new StringBuilder().append(key).append(super.getDebugInfo()).append(",name=").append(nameSegment.getDebugInfo());
+		final StringBuilder sb = new StringBuilder().append(key).append(super.getDebugInfo()).append(",name=").append(nameSegment.getDebugInfo());
 		if (hasValue())
 			sb.append(",value=").append(valueSegment.getDebugInfo()).append('"').append(valueSegment).append('"').append(Config.NewLine);
 		else
@@ -249,24 +250,26 @@ public final class Attribute extends Segment {
 
 	Tag appendTidy(final Appendable appendable, Tag nextTag) throws IOException {
 		appendable.append(' ').append(nameSegment);
-		if (valueSegment!=null) {
+		if (valueSegment != null) {
 			appendable.append("=\"");
-			while (nextTag!=null && nextTag.begin<valueSegment.begin) nextTag=nextTag.getNextTag();
-			if (nextTag==null || nextTag.begin>=valueSegment.end) {
-				appendTidyValue(appendable,valueSegment);
+			while (nextTag != null && nextTag.begin < valueSegment.begin)
+				nextTag = nextTag.getNextTag();
+			if (nextTag == null || nextTag.begin >= valueSegment.end) {
+				appendTidyValue(appendable, valueSegment);
 			} else {
-				int i=valueSegment.begin;
-				while (nextTag!=null && nextTag.begin<valueSegment.end) {
-					appendTidyValue(appendable,new Segment(source,i,nextTag.begin));
-					if (nextTag.end>valueSegment.end) {
-						appendable.append(new Segment(source,nextTag.begin,i=valueSegment.end));
+				int i = valueSegment.begin;
+				while (nextTag != null && nextTag.begin < valueSegment.end) {
+					appendTidyValue(appendable, new Segment(source, i, nextTag.begin));
+					if (nextTag.end > valueSegment.end) {
+						appendable.append(new Segment(source, nextTag.begin, i = valueSegment.end));
 						break;
 					}
 					appendable.append(nextTag);
-					i=nextTag.end;
-					nextTag=nextTag.getNextTag();
+					i = nextTag.end;
+					nextTag = nextTag.getNextTag();
 				}
-				if (i<valueSegment.end) appendTidyValue(appendable,new Segment(source,i,valueSegment.end));
+				if (i < valueSegment.end)
+					appendTidyValue(appendable, new Segment(source, i, valueSegment.end));
 			}
 			appendable.append('"');
 		}
@@ -274,14 +277,14 @@ public final class Attribute extends Segment {
 	}
 
 	private static void appendTidyValue(final Appendable appendable, final CharSequence unencodedValue) throws IOException {
-		CharacterReference.appendEncode(appendable,CharacterReference.decode(unencodedValue,true),false);
+		CharacterReference.appendEncode(appendable, CharacterReference.decode(unencodedValue, true), false);
 	}
 
 	static Appendable appendHTML(final Appendable appendable, final CharSequence name, final CharSequence value) throws IOException {
 		appendable.append(' ').append(name);
-		if (value!=null) {
+		if (value != null) {
 			appendable.append("=\"");
-			CharacterReference.appendEncode(appendable,value,false);
+			CharacterReference.appendEncode(appendable, value, false);
 			appendable.append('"');
 		}
 		return appendable;

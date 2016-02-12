@@ -103,16 +103,16 @@ public abstract class TagType {
 	private final String namePrefix;
 	final String startDelimiterPrefix;
 
-	private static Logger logger=null;
+	private static Logger logger = null;
 
 	TagType(final String description, final String startDelimiter, final String closingDelimiter, final boolean isServerTag, final String startDelimiterPrefix) {
 		// startDelimiterPrefix is either "<" or "</"
-		this.description=description;
-		this.startDelimiter=startDelimiter;
-		this.closingDelimiter=closingDelimiter;
-		this.isServerTag=isServerTag;
-		this.namePrefix=startDelimiter.substring(startDelimiterPrefix.length());
-		this.startDelimiterPrefix=startDelimiterPrefix;
+		this.description = description;
+		this.startDelimiter = startDelimiter;
+		this.closingDelimiter = closingDelimiter;
+		this.isServerTag = isServerTag;
+		this.namePrefix = startDelimiter.substring(startDelimiterPrefix.length());
+		this.startDelimiterPrefix = startDelimiterPrefix;
 	}
 
 	/**
@@ -124,10 +124,10 @@ public abstract class TagType {
 	 * @see #deregister()
 	 */
 	public final void register() {
-		getLogger().debug("Register tag type: "+this);
+		getLogger().debug("Register tag type: " + this);
 		TagTypeRegister.add(this);
 	}
-	
+
 	/**
 	 * Deregisters this tag type.
 	 * <br />(<a href="TagType.html#RegistrationRelated">registration related</a> method)
@@ -135,7 +135,7 @@ public abstract class TagType {
 	 * @see #register()
 	 */
 	public final void deregister() {
-		getLogger().debug("Deregister tag type "+this);
+		getLogger().debug("Deregister tag type " + this);
 		TagTypeRegister.remove(this);
 	}
 
@@ -503,37 +503,40 @@ public abstract class TagType {
 	protected boolean isValidPosition(final Source source, final int pos, final int[] fullSequentialParseData) {
 		if (isServerTag()) {
 			// the only thing preventing inclusion of a server tag is if it is enclosed by a server comment.
-			if (fullSequentialParseData!=null) return true; // full sequential parse skips over segments enclosed by server comments so no need to check.
-			return !StartTagType.SERVER_COMMON_COMMENT.tagEncloses(source,pos);
+			if (fullSequentialParseData != null)
+				return true; // full sequential parse skips over segments enclosed by server comments so no need to check.
+			return !StartTagType.SERVER_COMMON_COMMENT.tagEncloses(source, pos);
 		}
-		if (fullSequentialParseData!=null) {
+		if (fullSequentialParseData != null) {
 			// use simplified check when doing full sequential parse.  Normally we are only able to check whether a tag is inside specially cached
 			// tag types for efficiency reasons, but during a full sequential parse we can reject a tag if it is inside any other tag.
-			if (fullSequentialParseData[0]==Integer.MAX_VALUE) { // we are in a SCRIPT element
-				if (this==EndTagType.NORMAL && source.getParseText().containsAt("</script",pos)) {
+			if (fullSequentialParseData[0] == Integer.MAX_VALUE) { // we are in a SCRIPT element
+				if (this == EndTagType.NORMAL && source.getParseText().containsAt("</script", pos)) {
 					// The character sequence "</script" terminates the implicit CDATA section inside the SCRIPT element
 					// Note the tag parsing code will set fullSequentialParseData[0] to the end of the tag if it is parsed successfully. Setting it to pos is just a means to turn off the implicit CDATA section.
-					fullSequentialParseData[0]=pos;
+					fullSequentialParseData[0] = pos;
 					return true;
 				}
-				if (this==StartTagType.COMMENT) {
- 					// Uncomment the following line if you really want the parser to recognise comments inside script elements, as was the behaviour in v3.0 to v3.2
- 					//return true;
+				if (this == StartTagType.COMMENT) {
+					// Uncomment the following line if you really want the parser to recognise comments inside script elements, as was the behaviour in v3.0 to v3.2
+					//return true;
 				}
 				return false; // reject any other tags inside SCRIPT element
 			}
-			return pos>=fullSequentialParseData[0]; // accept the non-server tag only if it is after the end of the last found non-server tag
+			return pos >= fullSequentialParseData[0]; // accept the non-server tag only if it is after the end of the last found non-server tag
 		}
 		// Use the normal method of checking whether the position is inside a tag of a tag type that ignores enclosed markup:
-		final TagType[] tagTypesIgnoringEnclosedMarkup=getTagTypesIgnoringEnclosedMarkup();
-		for (int i=0; i<tagTypesIgnoringEnclosedMarkup.length; i++) {
-			final TagType tagTypeIgnoringEnclosedMarkup=tagTypesIgnoringEnclosedMarkup[i];
+		final TagType[] tagTypesIgnoringEnclosedMarkup = getTagTypesIgnoringEnclosedMarkup();
+		for (int i = 0; i < tagTypesIgnoringEnclosedMarkup.length; i++) {
+			final TagType tagTypeIgnoringEnclosedMarkup = tagTypesIgnoringEnclosedMarkup[i];
 			// If this tag type is a comment, don't bother checking whether it is inside another comment.
 			// See javadocs for getTagTypesIgnoringEnclosedMarkup() for more explanation.
 			// Allowing it might result in multiple comments being recognised with the same end delimiter, but the risk of this occuring in a syntactically invalid document
 			// is outweighed by the benefit of not recursively checking all previous comments in a document, risking stack overflow.
-			if (this==StartTagType.COMMENT && tagTypeIgnoringEnclosedMarkup==StartTagType.COMMENT) continue;
-			if (tagTypeIgnoringEnclosedMarkup.tagEncloses(source,pos)) return false;
+			if (this == StartTagType.COMMENT && tagTypeIgnoringEnclosedMarkup == StartTagType.COMMENT)
+				continue;
+			if (tagTypeIgnoringEnclosedMarkup.tagEncloses(source, pos))
+				return false;
 		}
 		return true;
 	}
@@ -613,8 +616,9 @@ public abstract class TagType {
 	 * @param tagTypes  an array of tag types.
 	 */
 	public static final void setTagTypesIgnoringEnclosedMarkup(TagType[] tagTypes) {
-		if (tagTypes==null) throw new IllegalArgumentException();
-		TagTypesIgnoringEnclosedMarkup.array=tagTypes;
+		if (tagTypes == null)
+			throw new IllegalArgumentException();
+		TagTypesIgnoringEnclosedMarkup.array = tagTypes;
 	}
 
 	/**
@@ -657,9 +661,10 @@ public abstract class TagType {
 	 * @return <code>true</code> if a tag of this type encloses the specified position of the specified source document, otherwise <code>false</code>.
 	 */
 	protected final boolean tagEncloses(final Source source, final int pos) {
-		if (pos==0) return false;
-		final Tag enclosingTag=source.getEnclosingTag(pos-1,this); // use pos-1 otherwise a tag at pos could cause infinite recursion when this is called from constructTagAt
-		return enclosingTag!=null && pos!=enclosingTag.getEnd(); // make sure pos!=enclosingTag.getEnd() to compensate for using pos-1 above (important if the tag in question immediately follows an end tag delimiter)
+		if (pos == 0)
+			return false;
+		final Tag enclosingTag = source.getEnclosingTag(pos - 1, this); // use pos-1 otherwise a tag at pos could cause infinite recursion when this is called from constructTagAt
+		return enclosingTag != null && pos != enclosingTag.getEnd(); // make sure pos!=enclosingTag.getEnd() to compensate for using pos-1 above (important if the tag in question immediately follows an end tag delimiter)
 	}
 
 	/**
@@ -671,34 +676,35 @@ public abstract class TagType {
 	}
 
 	static final Tag getTagAt(final Source source, final int pos, final boolean serverTagOnly, final boolean assumeNoNestedTags) {
-		final TagTypeRegister.ProspectiveTagTypeIterator prospectiveTagTypeIterator=new TagTypeRegister.ProspectiveTagTypeIterator(source,pos);
+		final TagTypeRegister.ProspectiveTagTypeIterator prospectiveTagTypeIterator = new TagTypeRegister.ProspectiveTagTypeIterator(source, pos);
 		// prospectiveTagTypeIterator is empty if pos is out of range.
 		while (prospectiveTagTypeIterator.hasNext()) {
-			final TagType tagType=prospectiveTagTypeIterator.next();
-			if (serverTagOnly && !tagType.isServerTag()) continue;
-			if (!assumeNoNestedTags && !tagType.isValidPosition(source,pos,source.fullSequentialParseData)) continue;
+			final TagType tagType = prospectiveTagTypeIterator.next();
+			if (serverTagOnly && !tagType.isServerTag())
+				continue;
+			if (!assumeNoNestedTags && !tagType.isValidPosition(source, pos, source.fullSequentialParseData))
+				continue;
 			try {
-				final Tag tag=tagType.constructTagAt(source,pos);
-				if (tag!=null) return tag;
+				final Tag tag = tagType.constructTagAt(source, pos);
+				if (tag != null)
+					return tag;
 			} catch (IndexOutOfBoundsException ex) {
-				if (source.logger.isErrorEnabled()) source.logger.error(source.getRowColumnVector(pos).appendTo(new StringBuilder(200).append("Tag at ")).append(" not recognised as type '").append(tagType.getDescription()).append("' because it has no end delimiter").toString());
+				if (source.logger.isErrorEnabled())
+					source.logger.error(source.getRowColumnVector(pos).appendTo(new StringBuilder(200).append("Tag at ")).append(" not recognised as type '").append(tagType.getDescription()).append("' because it has no end delimiter").toString());
 			}
 		}
 		return null;
 	}
 
 	private static Logger getLogger() {
-		if (logger==null) logger=Source.newLogger();
+		if (logger == null)
+			logger = Source.newLogger();
 		return logger;
 	}
-	
+
 	private static final class TagTypesIgnoringEnclosedMarkup {
 		// This internal class is used to contain the array because its static initialisation can occur after
 		// the StartTagType.COMMENT and StartTagType.CDATA_SECTION members have been created.
-		public static TagType[] array=new TagType[] {
-			StartTagType.COMMENT,
-			StartTagType.CDATA_SECTION
-		};
+		public static TagType[] array = new TagType[] { StartTagType.COMMENT, StartTagType.CDATA_SECTION };
 	}
 }
-

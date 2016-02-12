@@ -7,8 +7,7 @@ import CB_UI_Base.Math.CB_RectF;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 
-public abstract class ListViewItemBackground extends ListViewItemBase
-{
+public abstract class ListViewItemBackground extends ListViewItemBase {
 
 	/**
 	 * Constructor
@@ -18,8 +17,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 	 *            Index in der List
 	 * @param Name
 	 */
-	public ListViewItemBackground(CB_RectF rec, int Index, String Name)
-	{
+	public ListViewItemBackground(CB_RectF rec, int Index, String Name) {
 		super(rec, Index, Name);
 	}
 
@@ -29,16 +27,13 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 	protected static boolean mBackIsInitial = false;
 	protected boolean isPressed = false;
 
-	public static void ResetBackground()
-	{
+	public static void ResetBackground() {
 		mBackIsInitial = false;
 	}
 
 	@Override
-	protected void Initial()
-	{
-		if (!mBackIsInitial)
-		{
+	protected void Initial() {
+		if (!mBackIsInitial) {
 			backSelect = new NinePatch(SpriteCacheBase.getThemedSprite("listrec-selected"), 13, 13, 13, 13);
 			back1 = new NinePatch(SpriteCacheBase.getThemedSprite("listrec-first"), 13, 13, 13, 13);
 			back2 = new NinePatch(SpriteCacheBase.getThemedSprite("listrec-secend"), 13, 13, 13, 13);
@@ -48,42 +43,32 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 	}
 
 	@Override
-	protected void render(Batch batch)
-	{
-		if (isPressed)
-		{
+	protected void render(Batch batch) {
+		if (isPressed) {
 			isPressed = GL.getIsTouchDown();
 		}
 
-		if (this.isDisposed() || !this.isVisible()) return;
+		if (this.isDisposed() || !this.isVisible())
+			return;
 		super.render(batch);
 		// Draw Background
-		if (mBackIsInitial)
-		{
+		if (mBackIsInitial) {
 			Boolean BackGroundChanger = ((this.getIndex() % 2) == 1);
-			if (isSelected)
-			{
+			if (isSelected) {
 				backSelect.draw(batch, 0, 0, this.getWidth(), this.getHeight());
-			}
-			else if (BackGroundChanger)
-			{
+			} else if (BackGroundChanger) {
 				back1.draw(batch, 0, 0, this.getWidth(), this.getHeight());
-			}
-			else
-			{
+			} else {
 				back2.draw(batch, 0, 0, this.getWidth(), this.getHeight());
 			}
-		}
-		else
-		{
+		} else {
 			Initial();
 		}
 
 	}
 
 	@Override
-	public boolean onTouchDown(int x, int y, int pointer, int button)
-	{
+	public boolean onTouchDown(int x, int y, int pointer, int button) {
 		isPressed = true;
 		GL.that.renderOnce();
 
@@ -91,11 +76,9 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 	}
 
 	@Override
-	public boolean onTouchUp(int x, int y, int pointer, int button)
-	{
+	public boolean onTouchUp(int x, int y, int pointer, int button) {
 
-		if (isPressed)
-		{
+		if (isPressed) {
 			isPressed = false;
 		}
 
@@ -104,99 +87,75 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 		return false;
 	}
 
-	public static float getLeftWidthStatic()
-	{
-		if (mBackIsInitial)
-		{
+	public static float getLeftWidthStatic() {
+		if (mBackIsInitial) {
 			return backSelect.getLeftWidth();
 		}
 		return 0;
 	}
 
-	public static float getRightWidthStatic()
-	{
-		if (mBackIsInitial)
-		{
+	public static float getRightWidthStatic() {
+		if (mBackIsInitial) {
 			return backSelect.getRightWidth();
 		}
 		return 0;
 	}
 
 	@Override
-	public float getLeftWidth()
-	{
+	public float getLeftWidth() {
 
-		if (!mBackIsInitial) Initial();
+		if (!mBackIsInitial)
+			Initial();
 
-		if (isSelected)
-		{
+		if (isSelected) {
 			return backSelect.getLeftWidth();
-		}
-		else if ((this.getIndex() % 2) == 1)
-		{
+		} else if ((this.getIndex() % 2) == 1) {
 			return back1.getLeftWidth();
-		}
-		else
-		{
+		} else {
 			return back2.getLeftWidth();
 		}
 	}
 
 	@Override
-	public float getBottomHeight()
-	{
-		if (!mBackIsInitial) Initial();
+	public float getBottomHeight() {
+		if (!mBackIsInitial)
+			Initial();
 
-		if (isSelected)
-		{
+		if (isSelected) {
 			return backSelect.getBottomHeight();
-		}
-		else if ((this.getIndex() % 2) == 1)
-		{
+		} else if ((this.getIndex() % 2) == 1) {
 			return back1.getBottomHeight();
-		}
-		else
-		{
+		} else {
 			return back2.getBottomHeight();
 		}
 	}
 
 	@Override
-	public float getRightWidth()
-	{
+	public float getRightWidth() {
 
-		if (!mBackIsInitial) Initial();
+		if (!mBackIsInitial)
+			Initial();
 
-		if (isSelected)
-		{
+		if (isSelected) {
 			return backSelect.getRightWidth();
-		}
-		else if ((this.getIndex() % 2) == 1)
-		{
+		} else if ((this.getIndex() % 2) == 1) {
 			return back1.getRightWidth();
-		}
-		else
-		{
+		} else {
 			return back2.getRightWidth();
 		}
 	}
 
 	@Override
-	public float getTopHeight()
-	{
+	public float getTopHeight() {
 
-		if (!mBackIsInitial) Initial();
+		if (!mBackIsInitial)
+			Initial();
 
-		if (isSelected)
-		{
+		if (isSelected) {
 			return backSelect.getTopHeight();
-		}
-		else if ((this.getIndex() % 2) == 1)
-		{
+		} else if ((this.getIndex() % 2) == 1) {
 			return back1.getTopHeight();
-		}
-		else
-		{
+		} else {
 			return back2.getTopHeight();
 		}
 	}

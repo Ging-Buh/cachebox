@@ -31,12 +31,9 @@ import org.mapsforge.core.graphics.FontStyle;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 
-class AwtPaint implements Paint
-{
-	private static int getCap(Cap cap)
-	{
-		switch (cap)
-		{
+class AwtPaint implements Paint {
+	private static int getCap(Cap cap) {
+		switch (cap) {
 		case BUTT:
 			return BasicStroke.CAP_BUTT;
 		case ROUND:
@@ -48,10 +45,8 @@ class AwtPaint implements Paint
 		throw new IllegalArgumentException("unknown cap: " + cap);
 	}
 
-	private static String getFontName(FontFamily fontFamily)
-	{
-		switch (fontFamily)
-		{
+	private static String getFontName(FontFamily fontFamily) {
+		switch (fontFamily) {
 		case MONOSPACE:
 			return Font.MONOSPACED;
 		case DEFAULT:
@@ -65,10 +60,8 @@ class AwtPaint implements Paint
 		throw new IllegalArgumentException("unknown fontFamily: " + fontFamily);
 	}
 
-	private static int getFontStyle(FontStyle fontStyle)
-	{
-		switch (fontStyle)
-		{
+	private static int getFontStyle(FontStyle fontStyle) {
+		switch (fontStyle) {
 		case BOLD:
 			return Font.BOLD;
 		case BOLD_ITALIC:
@@ -94,174 +87,148 @@ class AwtPaint implements Paint
 	protected float strokeWidth;
 	protected float textSize;
 
-	AwtPaint()
-	{
+	AwtPaint() {
 		this.cap = getCap(Cap.ROUND);
 		this.color = java.awt.Color.BLACK;
 		this.style = Style.FILL;
 	}
 
 	@Override
-	public int getTextHeight(String text)
-	{
+	public int getTextHeight(String text) {
 		BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		FontMetrics fontMetrics = bufferedImage.getGraphics().getFontMetrics(this.font);
 		return fontMetrics.getHeight();
 	}
 
 	@Override
-	public int getTextWidth(String text)
-	{
+	public int getTextWidth(String text) {
 		BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		FontMetrics fontMetrics = bufferedImage.getGraphics().getFontMetrics(this.font);
 		return fontMetrics.stringWidth(text);
 	}
 
 	@Override
-	public boolean isTransparent()
-	{
+	public boolean isTransparent() {
 		return this.texturePaint == null && this.color.getAlpha() == 0;
 	}
 
 	@Override
-	public void setBitmapShader(Bitmap bitmap)
-	{
+	public void setBitmapShader(Bitmap bitmap) {
 		Rectangle rectangle = new Rectangle(0, 0, bitmap.getWidth(), bitmap.getHeight());
 		this.texturePaint = new TexturePaint(AwtGraphicFactory.getBufferedImage(bitmap), rectangle);
 	}
 
 	@Override
-	public void setColor(Color color)
-	{
+	public void setColor(Color color) {
 		this.color = AwtGraphicFactory.getColor(color);
 	}
 
 	@Override
-	public void setColor(int color)
-	{
+	public void setColor(int color) {
 		this.color = new java.awt.Color(color, true);
 	}
 
 	@Override
-	public void setDashPathEffect(float[] strokeDasharray)
-	{
+	public void setDashPathEffect(float[] strokeDasharray) {
 		this.strokeDasharray = strokeDasharray;
 		createStroke();
 	}
 
 	@Override
-	public void setStrokeCap(Cap cap)
-	{
+	public void setStrokeCap(Cap cap) {
 		this.cap = getCap(cap);
 		createStroke();
 	}
 
 	@Override
-	public void setStrokeWidth(float strokeWidth)
-	{
+	public void setStrokeWidth(float strokeWidth) {
 		this.strokeWidth = strokeWidth;
 		createStroke();
 	}
 
 	@Override
-	public void setStyle(Style style)
-	{
+	public void setStyle(Style style) {
 		this.style = style;
 	}
 
 	@Override
-	public void setTextAlign(Align align)
-	{
+	public void setTextAlign(Align align) {
 		// this.align = align; //never read
 	}
 
 	@Override
-	public void setTextSize(float textSize)
-	{
+	public void setTextSize(float textSize) {
 		this.textSize = textSize;
 		createFont();
 	}
 
 	@Override
-	public void setTypeface(FontFamily fontFamily, FontStyle fontStyle)
-	{
+	public void setTypeface(FontFamily fontFamily, FontStyle fontStyle) {
 		this.fontName = getFontName(fontFamily);
 		this.fontStyle = getFontStyle(fontStyle);
 		createFont();
 	}
 
-	private void createFont()
-	{
-		if (this.textSize > 0)
-		{
+	private void createFont() {
+		if (this.textSize > 0) {
 			this.font = new Font(this.fontName, this.fontStyle, (int) this.textSize);
-		}
-		else
-		{
+		} else {
 			this.font = null;
 		}
 	}
 
-	private void createStroke()
-	{
-		if (this.strokeWidth <= 0)
-		{
+	private void createStroke() {
+		if (this.strokeWidth <= 0) {
 			return;
 		}
 		this.stroke = new BasicStroke(this.strokeWidth, this.cap, BasicStroke.JOIN_ROUND, 0, this.strokeDasharray, 0);
 	}
 
 	@Override
-	public Cap getCap()
-	{
-		switch(this.cap)
-		{
-		 case BasicStroke.CAP_BUTT:return Cap.BUTT;
-		 case BasicStroke.CAP_ROUND:return Cap.ROUND;
-		 case BasicStroke.CAP_SQUARE:return Cap.SQUARE;
+	public Cap getCap() {
+		switch (this.cap) {
+		case BasicStroke.CAP_BUTT:
+			return Cap.BUTT;
+		case BasicStroke.CAP_ROUND:
+			return Cap.ROUND;
+		case BasicStroke.CAP_SQUARE:
+			return Cap.SQUARE;
 		}
 		return Cap.BUTT;
 	}
 
 	@Override
-	public int getColor()
-	{
+	public int getColor() {
 		return this.color.getRGB();
 	}
 
 	@Override
-	public Style getStyle()
-	{
+	public Style getStyle() {
 		return this.style;
 	}
 
 	@Override
-	public float getTextSize()
-	{
+	public float getTextSize() {
 		return this.textSize;
 	}
 
 	@Override
-	public float getStrokeWidth()
-	{
+	public float getStrokeWidth() {
 		return this.strokeWidth;
 	}
 
 	@Override
-	public float[] getDashArray()
-	{
+	public float[] getDashArray() {
 		return this.strokeDasharray;
 	}
 
 	@Override
-	public FontFamily getFontFamily()
-	{
+	public FontFamily getFontFamily() {
 		return FontFamily.valueOf(fontName);
 	}
 
 	@Override
-	public FontStyle getFontStyle()
-	{
+	public FontStyle getFontStyle() {
 		return FontStyle.valueOf(fontName);
 	}
 }

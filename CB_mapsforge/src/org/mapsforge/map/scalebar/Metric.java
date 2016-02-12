@@ -17,8 +17,7 @@ package org.mapsforge.map.scalebar;
 public final class Metric implements Adapter {
 	public static final Metric INSTANCE = new Metric();
 	private static final int ONE_KILOMETER = 1000;
-	private static final int[] SCALE_BAR_VALUES = { 10000000, 5000000, 2000000, 1000000, 500000, 200000, 100000, 50000,
-			20000, 10000, 5000, 2000, 1000, 500, 200, 100, 50, 20, 10, 5, 2, 1 };
+	private static final int[] SCALE_BAR_VALUES = { 10000000, 5000000, 2000000, 1000000, 500000, 200000, 100000, 50000, 20000, 10000, 5000, 2000, 1000, 500, 200, 100, 50, 20, 10, 5, 2, 1 };
 
 	private Metric() {
 		// do nothing

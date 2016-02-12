@@ -32,7 +32,7 @@ public interface XmlRenderTheme {
 	 *             if the render theme file cannot be found.
 	 */
 	InputStream getRenderThemeAsStream() throws FileNotFoundException;
-	
+
 	/**
 	 * 
 	 * @return True if the Theme from Freizeitkarte

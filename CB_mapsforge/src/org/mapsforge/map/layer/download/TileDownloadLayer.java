@@ -35,8 +35,7 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	private TileDownloadThread[] tileDownloadThreads;
 	private final TileSource tileSource;
 
-	public TileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition, TileSource tileSource,
-			GraphicFactory graphicFactory) {
+	public TileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition, TileSource tileSource, GraphicFactory graphicFactory) {
 		super(tileCache, mapViewPosition, graphicFactory.createMatrix(), tileSource.hasAlpha());
 
 		this.tileCache = tileCache;
@@ -84,8 +83,7 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 		if (this.displayModel != null) {
 			this.tileDownloadThreads = new TileDownloadThread[numberOfDownloadThreads];
 			for (int i = 0; i < numberOfDownloadThreads; ++i) {
-				this.tileDownloadThreads[i] = new TileDownloadThread(this.tileCache, this.jobQueue, this,
-						this.graphicFactory, this.displayModel);
+				this.tileDownloadThreads[i] = new TileDownloadThread(this.tileCache, this.jobQueue, this, this.graphicFactory, this.displayModel);
 			}
 		} else {
 			if (this.tileDownloadThreads != null) {

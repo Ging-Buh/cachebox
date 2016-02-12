@@ -13,11 +13,11 @@ package ch.fhnw.imvs.gpssimulator.tools;
 
 // Immutable
 public class XMLData {
-	private int    time;
+	private int time;
 	private double latitude;
 	private double longitude;
 	private double altitude;
-	
+
 	public XMLData(int time, double latitude, double longitude, double altitude) {
 		this.time = time;
 		this.latitude = latitude;
@@ -25,10 +25,10 @@ public class XMLData {
 		this.altitude = altitude;
 	}
 
-	public int getTime(){
+	public int getTime() {
 		return time;
 	}
-	
+
 	public double getAltitude() {
 		return altitude;
 	}

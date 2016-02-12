@@ -1,9 +1,7 @@
 package de.cb.sqlite;
 
-public abstract class CoreCursor
-{
-	public CoreCursor()
-	{
+public abstract class CoreCursor {
+	public CoreCursor() {
 	}
 
 	public abstract boolean moveToFirst();

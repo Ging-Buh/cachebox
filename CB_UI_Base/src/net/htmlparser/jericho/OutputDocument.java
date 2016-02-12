@@ -80,7 +80,7 @@ import java.util.*;
  */
 public final class OutputDocument implements CharStreamSource {
 	private CharSequence sourceText;
-	private ArrayList<OutputSegment> outputSegments=new ArrayList<OutputSegment>();
+	private ArrayList<OutputSegment> outputSegments = new ArrayList<OutputSegment>();
 	private final Segment segment;
 
 	/**
@@ -88,9 +88,10 @@ public final class OutputDocument implements CharStreamSource {
 	 * @param source  the source document.
 	 */
 	public OutputDocument(final Source source) {
-	  if (source==null) throw new IllegalArgumentException("source argument must not be null");
-		this.segment=source;
-		this.sourceText=source;
+		if (source == null)
+			throw new IllegalArgumentException("source argument must not be null");
+		this.segment = source;
+		this.sourceText = source;
 	}
 
 	/**
@@ -98,17 +99,20 @@ public final class OutputDocument implements CharStreamSource {
 	 * @param segment  the original {@link Segment}.
 	 */
 	public OutputDocument(final Segment segment) {
-	  if (segment==null) throw new IllegalArgumentException("segment argument must not be null");
-	  this.segment=segment;
-	  Source source=segment.source;
-		this.sourceText=source;
-		if (segment.begin>0) remove(0,segment.begin);
-		if (segment.end<source.end) remove(segment.end,source.end);
+		if (segment == null)
+			throw new IllegalArgumentException("segment argument must not be null");
+		this.segment = segment;
+		Source source = segment.source;
+		this.sourceText = source;
+		if (segment.begin > 0)
+			remove(0, segment.begin);
+		if (segment.end < source.end)
+			remove(segment.end, source.end);
 	}
 
 	OutputDocument(final ParseText parseText) {
-		this.sourceText=parseText;
-		this.segment=null; // segment is not used internally and this constructor is only used internally so users will never encounter segment==null.
+		this.sourceText = parseText;
+		this.segment = null; // segment is not used internally and this constructor is only used internally so users will never encounter segment==null.
 	}
 
 	/**
@@ -142,7 +146,7 @@ public final class OutputDocument implements CharStreamSource {
 	 * @param end  the character position at which to end the removal.
 	 */
 	public void remove(final int begin, final int end) {
-		register(new RemoveOutputSegment(begin,end));
+		register(new RemoveOutputSegment(begin, end));
 	}
 
 	/**
@@ -166,7 +170,8 @@ public final class OutputDocument implements CharStreamSource {
 	 * @param segments  a collection of segments to remove, represented by source {@link Segment} objects.
 	 */
 	public void remove(final Collection<? extends Segment> segments) {
-		for (Segment segment : segments) remove(segment);
+		for (Segment segment : segments)
+			remove(segment);
 	}
 
 	/**
@@ -175,7 +180,7 @@ public final class OutputDocument implements CharStreamSource {
 	 * @param text  the replacement text.
 	 */
 	public void insert(final int pos, final CharSequence text) {
-		register(new StringOutputSegment(pos,pos,text));
+		register(new StringOutputSegment(pos, pos, text));
 	}
 
 	/**
@@ -188,7 +193,7 @@ public final class OutputDocument implements CharStreamSource {
 	 * @param text  the replacement text, or <code>null</code> to remove the segment.
 	 */
 	public void replace(final Segment segment, final CharSequence text) {
-		replace(segment.getBegin(),segment.getEnd(),text);
+		replace(segment.getBegin(), segment.getEnd(), text);
 	}
 
 	/**
@@ -202,7 +207,7 @@ public final class OutputDocument implements CharStreamSource {
 	 * @param text  the replacement text, or <code>null</code> to remove the segment.
 	 */
 	public void replace(final int begin, final int end, final CharSequence text) {
-		register(new StringOutputSegment(begin,end,text));
+		register(new StringOutputSegment(begin, end, text));
 	}
 
 	/**
@@ -213,7 +218,7 @@ public final class OutputDocument implements CharStreamSource {
 	 * @param ch  the replacement character.
 	 */
 	public void replace(final int begin, final int end, final char ch) {
-		register(new CharOutputSegment(begin,end,ch));
+		register(new CharOutputSegment(begin, end, ch));
 	}
 
 	/**
@@ -302,8 +307,8 @@ public final class OutputDocument implements CharStreamSource {
 	 * @return a <code>Map</code> containing the name/value entries to be output.
 	 * @see #replace(Attributes,Map)
 	 */
-	public Map<String,String> replace(final Attributes attributes, boolean convertNamesToLowerCase) {
-		AttributesOutputSegment attributesOutputSegment=new AttributesOutputSegment(attributes,convertNamesToLowerCase);
+	public Map<String, String> replace(final Attributes attributes, boolean convertNamesToLowerCase) {
+		AttributesOutputSegment attributesOutputSegment = new AttributesOutputSegment(attributes, convertNamesToLowerCase);
 		register(attributesOutputSegment);
 		return attributesOutputSegment.getMap();
 	}
@@ -330,8 +335,8 @@ public final class OutputDocument implements CharStreamSource {
 	 * @param map  the <code>Map</code> containing the name/value entries.
 	 * @see #replace(Attributes, boolean convertNamesToLowerCase)
 	 */
-	public void replace(final Attributes attributes, final Map<String,String> map) {
-		register(new AttributesOutputSegment(attributes,map));
+	public void replace(final Attributes attributes, final Map<String, String> map) {
+		register(new AttributesOutputSegment(attributes, map));
 	}
 
 	/**
@@ -347,7 +352,7 @@ public final class OutputDocument implements CharStreamSource {
 	 * @param end  the character position at which to end the replacement.
 	 */
 	public void replaceWithSpaces(final int begin, final int end) {
-		register(new BlankOutputSegment(begin,end));
+		register(new BlankOutputSegment(begin, end));
 	}
 
 	/**
@@ -379,7 +384,7 @@ public final class OutputDocument implements CharStreamSource {
 			writer.flush();
 		}
 	}
-	
+
 	/**
 	 * Writes the specified portion of the final content of this output document to the specified <code>Writer</code>.
 	 * <p>
@@ -393,7 +398,7 @@ public final class OutputDocument implements CharStreamSource {
 	 */
 	public void writeTo(final Writer writer, final int begin, final int end) throws IOException {
 		try {
-			appendTo(writer,begin,end);
+			appendTo(writer, begin, end);
 		} finally {
 			writer.flush();
 		}
@@ -409,7 +414,7 @@ public final class OutputDocument implements CharStreamSource {
 	 * @see #toString()
 	 */
 	public void appendTo(final Appendable appendable) throws IOException {
-		appendTo(appendable,0,sourceText.length());
+		appendTo(appendable, 0, sourceText.length());
 	}
 
 	/**
@@ -425,38 +430,44 @@ public final class OutputDocument implements CharStreamSource {
 	 */
 	public void appendTo(final Appendable appendable, final int begin, final int end) throws IOException {
 		if (outputSegments.isEmpty()) {
-			appendable.append(sourceText,begin,end);
+			appendable.append(sourceText, begin, end);
 			return;
 		}
-		int pos=begin;
-		Collections.sort(outputSegments,OutputSegment.COMPARATOR);
+		int pos = begin;
+		Collections.sort(outputSegments, OutputSegment.COMPARATOR);
 		for (OutputSegment outputSegment : outputSegments) {
-			if (outputSegment.getEnd()<pos) continue; // skip output segments before begin, and any that are enclosed by other output segments
-			if (outputSegment.getEnd()==pos && outputSegment.getBegin()<pos) continue; // skip output segments that end at pos unless they are zero length
-			if (outputSegment.getBegin()>end) break; // stop processing output segments if they are not longer in the desired output range
-			if (outputSegment.getBegin()==end && outputSegment.getEnd()>end) break; // stop processing output segments if they start at end unless they are zero length
-			if (outputSegment.getBegin()>pos) {
-				appendable.append(sourceText,pos,outputSegment.getBegin());
+			if (outputSegment.getEnd() < pos)
+				continue; // skip output segments before begin, and any that are enclosed by other output segments
+			if (outputSegment.getEnd() == pos && outputSegment.getBegin() < pos)
+				continue; // skip output segments that end at pos unless they are zero length
+			if (outputSegment.getBegin() > end)
+				break; // stop processing output segments if they are not longer in the desired output range
+			if (outputSegment.getBegin() == end && outputSegment.getEnd() > end)
+				break; // stop processing output segments if they start at end unless they are zero length
+			if (outputSegment.getBegin() > pos) {
+				appendable.append(sourceText, pos, outputSegment.getBegin());
 			}
-			if (outputSegment.getBegin()<pos && outputSegment instanceof BlankOutputSegment) {
+			if (outputSegment.getBegin() < pos && outputSegment instanceof BlankOutputSegment) {
 				// Overlapping BlankOutputSegments requires special handling to ensure the correct number of blanks are inserted.
-				for (final int outputSegmentEnd=outputSegment.getEnd(); pos<outputSegmentEnd; pos++) appendable.append(' ');
+				for (final int outputSegmentEnd = outputSegment.getEnd(); pos < outputSegmentEnd; pos++)
+					appendable.append(' ');
 			} else {
 				outputSegment.appendTo(appendable);
-				pos=outputSegment.getEnd();
+				pos = outputSegment.getEnd();
 			}
 		}
-		if (pos<end) appendable.append(sourceText,pos,end);
+		if (pos < end)
+			appendable.append(sourceText, pos, end);
 	}
 
 	// Documentation inherited from CharStreamSource
 	public long getEstimatedMaximumOutputLength() {
-		long estimatedMaximumOutputLength=sourceText.length();
+		long estimatedMaximumOutputLength = sourceText.length();
 		for (OutputSegment outputSegment : outputSegments) {
-			final int outputSegmentOriginalLength=outputSegment.getEnd()-outputSegment.getBegin();
-			estimatedMaximumOutputLength+=(outputSegment.getEstimatedMaximumOutputLength()-outputSegmentOriginalLength);
+			final int outputSegmentOriginalLength = outputSegment.getEnd() - outputSegment.getBegin();
+			estimatedMaximumOutputLength += (outputSegment.getEstimatedMaximumOutputLength() - outputSegmentOriginalLength);
 		}
-		return estimatedMaximumOutputLength>=0L ? estimatedMaximumOutputLength : -1L;
+		return estimatedMaximumOutputLength >= 0L ? estimatedMaximumOutputLength : -1L;
 	}
 
 	/**
@@ -476,7 +487,7 @@ public final class OutputDocument implements CharStreamSource {
 	 * @return a string representation of this object useful for debugging purposes.
 	 */
 	public String getDebugInfo() {
-		StringBuilder sb=new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		for (OutputSegment outputSegment : getRegisteredOutputSegments()) {
 			if (outputSegment instanceof BlankOutputSegment)
 				sb.append("Replace with Spaces: ");
@@ -485,7 +496,7 @@ public final class OutputDocument implements CharStreamSource {
 			else
 				sb.append("Replace: ");
 			if (sourceText instanceof Source) {
-				Source source=(Source)sourceText;
+				Source source = (Source) sourceText;
 				sb.append('(');
 				source.getRowColumnVector(outputSegment.getBegin()).appendTo(sb);
 				sb.append('-');
@@ -495,11 +506,11 @@ public final class OutputDocument implements CharStreamSource {
 				sb.append("(p").append(outputSegment.getBegin()).append("-p").append(outputSegment.getEnd()).append(')');
 			}
 			sb.append(' ');
-			String outputFromSegment=outputSegment.toString();
-			if (outputFromSegment.length()<=20) {
+			String outputFromSegment = outputSegment.toString();
+			if (outputFromSegment.length() <= 20) {
 				sb.append(outputFromSegment);
 			} else {
-				sb.append(outputFromSegment.substring(0,20)).append("...");
+				sb.append(outputFromSegment.substring(0, 20)).append("...");
 			}
 			sb.append(Config.NewLine);
 		}
@@ -516,7 +527,7 @@ public final class OutputDocument implements CharStreamSource {
 	 * @return a list all of the {@linkplain #register(OutputSegment) registered} {@link OutputSegment} objects in this output document.
 	 */
 	public List<OutputSegment> getRegisteredOutputSegments() {
-		Collections.sort(outputSegments,OutputSegment.COMPARATOR);
+		Collections.sort(outputSegments, OutputSegment.COMPARATOR);
 		return outputSegments;
 	}
 }

@@ -28,21 +28,18 @@ import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 
 import de.CB.TestBase.Config;
 
-public abstract class TestCaseBase extends CB_View_Base
-{
+public abstract class TestCaseBase extends CB_View_Base {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(TestCaseBase.class);
 	protected final String MSG_TOP;
 	protected final String MSG_BOTOM;
 	protected int TestIndex;
-	
 
 	public static DisplayModel dispModel = new DisplayModel();
 	public static DisplayModel GL_dispModel = new DisplayModel();
 	public static ext_GraphicFactory GL_Factory;
 	public static GraphicFactory Mapsforge_Factory;
 
-	public TestCaseBase(String TopTestMsg, String BotomTestMsg)
-	{
+	public TestCaseBase(String TopTestMsg, String BotomTestMsg) {
 		super("");
 
 		MSG_TOP = TopTestMsg;
@@ -60,40 +57,33 @@ public abstract class TestCaseBase extends CB_View_Base
 
 	public static final String br = System.getProperty("line.separator");
 
-	public void setTestIndex(int index){
-		this.TestIndex=index;
+	public void setTestIndex(int index) {
+		this.TestIndex = index;
 	}
-	
-	public boolean getIsReady()
-	{
+
+	public boolean getIsReady() {
 		return isReady;
 	}
 
 	public abstract void work();
 
-	public TileGL_Bmp Bitmap2Drawable(Bitmap bmp)
-	{
-		if (bmp == null) return null;
+	public TileGL_Bmp Bitmap2Drawable(Bitmap bmp) {
+		if (bmp == null)
+			return null;
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try
-		{
+		try {
 			bmp.compress(baos);
-		}
-		catch (IOException e1)
-		{
+		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 
 		byte[] bytes = new byte[baos.toByteArray().length];
 		System.arraycopy(baos.toByteArray(), 0, bytes, 0, baos.toByteArray().length);
 
-		try
-		{
+		try {
 			baos.close();
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
@@ -102,43 +92,32 @@ public abstract class TestCaseBase extends CB_View_Base
 		return tile;
 	}
 
-	public Texture Bmp2Texture(Bitmap bmp)
-	{
+	public Texture Bmp2Texture(Bitmap bmp) {
 		byte[] byteArray = null;
 
-		try
-		{
-			if (bmp != null)
-			{
+		try {
+			if (bmp != null) {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				bmp.compress(baos);
 
 				byteArray = baos.toByteArray();
 
-				try
-				{
+				try {
 					baos.close();
-				}
-				catch (IOException e)
-				{
+				} catch (IOException e) {
 				}
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		try
-		{
+		try {
 			Pixmap pixmap = new Pixmap(byteArray, 0, byteArray.length);
 			Texture texture = new Texture(pixmap);
 			pixmap.dispose();
 			return texture;
-		}
-		catch (Exception ex)
-		{
-			log.error("[TileGL] can't create Pixmap or Texture: " , ex);
+		} catch (Exception ex) {
+			log.error("[TileGL] can't create Pixmap or Texture: ", ex);
 		}
 		return null;
 	}
@@ -151,10 +130,8 @@ public abstract class TestCaseBase extends CB_View_Base
 	public static PointF firstPoint;
 	public static PointF secondPoint;
 
-	public class PointF
-	{
-		public PointF(float X, float Y)
-		{
+	public class PointF {
+		public PointF(float X, float Y) {
 			this.x = X;
 			this.y = Y;
 		}
@@ -164,18 +141,13 @@ public abstract class TestCaseBase extends CB_View_Base
 	}
 
 	@Override
-	public void render(Batch batch)
-	{
-		if (firstPoint == null)
-		{
+	public void render(Batch batch) {
+		if (firstPoint == null) {
 			firstPoint = new PointF(5, 5);
-			if (this.getWidth() > this.getHeight())
-			{
+			if (this.getWidth() > this.getHeight()) {
 				secondPoint = new PointF(this.getHalfWidth() + 5, 5);
 				secondPoint = new PointF(20 + 5, 5);
-			}
-			else
-			{
+			} else {
 				secondPoint = new PointF(5, this.getHalfHeight() + 5);
 			}
 
@@ -184,17 +156,15 @@ public abstract class TestCaseBase extends CB_View_Base
 		draw(batch);
 
 		// Draw MSG
-		if (topMsg == null)
-		{
+		if (topMsg == null) {
 
 			topMsg = new BitmapFontCache(Fonts.getNormal());
 			topMsg.setColor(COLOR.getFontColor());
-			topMsg.setText("("+ TestIndex+")  " +   MSG_TOP, 20, getHeight() - 20);
+			topMsg.setText("(" + TestIndex + ")  " + MSG_TOP, 20, getHeight() - 20);
 
 		}
 
-		if (botomMsg == null)
-		{
+		if (botomMsg == null) {
 
 			botomMsg = new BitmapFontCache(Fonts.getNormal());
 			botomMsg.setColor(COLOR.getFontColor());
@@ -210,20 +180,17 @@ public abstract class TestCaseBase extends CB_View_Base
 	public abstract void draw(Batch batch);
 
 	@Override
-	protected void Initial()
-	{
+	protected void Initial() {
 
 	}
 
 	@Override
-	protected void SkinIsChanged()
-	{
+	protected void SkinIsChanged() {
 
 	}
 
 	@Override
-	public void onResized(CB_RectF rec)
-	{
+	public void onResized(CB_RectF rec) {
 
 	}
 

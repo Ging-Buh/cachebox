@@ -4,8 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Color;
 
-public class Track
-{
+public class Track {
 	public ArrayList<TrackPoint> Points;
 	public String Name;
 	public String FileName;
@@ -15,20 +14,17 @@ public class Track
 	public double TrackLength;
 	public double AltitudeDifference;
 
-	public Track(String name, Color color)
-	{
+	public Track(String name, Color color) {
 		Points = new ArrayList<TrackPoint>();
 		Name = name;
 		mColor = color;
 	}
 
-	public Color getColor()
-	{
+	public Color getColor() {
 		return mColor;
 	}
 
-	public void setColor(Color color)
-	{
+	public void setColor(Color color) {
 		mColor = color;
 	}
 

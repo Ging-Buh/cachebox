@@ -20,7 +20,6 @@ package org.apache.xmlrpc;
 
 import java.util.TimeZone;
 
-
 /** A common base interface for
  * {@link org.apache.xmlrpc.client.XmlRpcClientConfig}, and
  * {@link org.apache.xmlrpc.server.XmlRpcServerConfig}.
@@ -37,7 +36,7 @@ public interface XmlRpcConfig {
 	boolean isEnabledForExtensions();
 
 	/** Returns the timezone, which is used to interpret date/time
-     * values. Defaults to {@link TimeZone#getDefault()}.
+	 * values. Defaults to {@link TimeZone#getDefault()}.
 	 */
-    TimeZone getTimeZone();
+	TimeZone getTimeZone();
 }

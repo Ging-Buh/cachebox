@@ -17,8 +17,7 @@ import de.cachebox_test.Components.CacheDraw;
 import de.cachebox_test.Components.CacheDraw.DrawStyle;
 import de.cachebox_test.Ui.ActivityUtils;
 
-public class JokerViewItem extends View
-{
+public class JokerViewItem extends View {
 	private Cache cache;
 	private JokerEntry joker;
 	// private int mAscent;
@@ -35,8 +34,7 @@ public class JokerViewItem extends View
 	private TextPaint LayoutTextPaintBold;
 	private int LineSep;
 
-	public JokerViewItem(Context context, Cache cache, JokerEntry joker, Boolean BackColorId)
-	{
+	public JokerViewItem(Context context, Cache cache, JokerEntry joker, Boolean BackColorId) {
 		super(context);
 		this.cache = cache;
 		this.joker = joker;
@@ -45,8 +43,7 @@ public class JokerViewItem extends View
 	}
 
 	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-	{
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		measureWidth(widthMeasureSpec);
 		this.imgSize = (int) ((JokerView.windowH / 5) * 0.6);
 		this.rightBorder = (int) (JokerView.windowH / 5);
@@ -64,20 +61,15 @@ public class JokerViewItem extends View
 		if (joker.Tage == -1) // this Joker is Owner
 		{
 			LayoutTage = new StaticLayout("Owner von diesem Cache", LayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-		}
-		else
-		{
-			LayoutTage = new StaticLayout("gefunden vor " + String.valueOf(joker.Tage) + " Tagen", LayoutTextPaint, TextWidth,
-					Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+		} else {
+			LayoutTage = new StaticLayout("gefunden vor " + String.valueOf(joker.Tage) + " Tagen", LayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 		}
 		LayoutTelefon = new StaticLayout("Tel: " + joker.Telefon, LayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 		LayoutBemerkung = new StaticLayout("Bem.:" + joker.Bemerkung, LayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 		LayoutTextPaintBold = new TextPaint(LayoutTextPaint);
 		LayoutTextPaintBold.setFakeBoldText(true);
-		LayoutName = new StaticLayout(joker.GCLogin + " (" + joker.Vorname + ", " + joker.Name + ")", LayoutTextPaintBold, TextWidth,
-				Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-		this.height = (LineSep * 5) + LayoutTage.getHeight() + LayoutTelefon.getHeight() + LayoutBemerkung.getHeight()
-				+ LayoutName.getHeight();
+		LayoutName = new StaticLayout(joker.GCLogin + " (" + joker.Vorname + ", " + joker.Name + ")", LayoutTextPaintBold, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+		this.height = (LineSep * 5) + LayoutTage.getHeight() + LayoutTelefon.getHeight() + LayoutBemerkung.getHeight() + LayoutName.getHeight();
 
 		setMeasuredDimension(this.width, this.height);
 
@@ -90,23 +82,18 @@ public class JokerViewItem extends View
 	 *            A measureSpec packed into an int
 	 * @return The width of the view, honoring constraints from measureSpec
 	 */
-	private int measureWidth(int measureSpec)
-	{
+	private int measureWidth(int measureSpec) {
 		int result = 0;
 		int specMode = MeasureSpec.getMode(measureSpec);
 		int specSize = MeasureSpec.getSize(measureSpec);
 
-		if (specMode == MeasureSpec.EXACTLY)
-		{
+		if (specMode == MeasureSpec.EXACTLY) {
 			// We were told how big to be
 			result = specSize;
-		}
-		else
-		{
+		} else {
 			// Measure the text
 			result = (int) Global.Paints.measurePaint.measureText(cache.getName()) + getPaddingLeft() + getPaddingRight();
-			if (specMode == MeasureSpec.AT_MOST)
-			{
+			if (specMode == MeasureSpec.AT_MOST) {
 				// Respect AT_MOST value if that was what is called for by
 				// measureSpec
 				result = Math.min(result, specSize);
@@ -155,8 +142,7 @@ public class JokerViewItem extends View
 	 * @see android.view.View#onDraw(android.graphics.Canvas)
 	 */
 	@Override
-	protected void onDraw(Canvas canvas)
-	{
+	protected void onDraw(Canvas canvas) {
 
 		Boolean isSelected = false;
 		// if (Global.SelectedWaypoint() == waypoint ||((
@@ -168,12 +154,9 @@ public class JokerViewItem extends View
 
 		canvas.drawColor(Global.getColor(R.attr.myBackground));
 		int BackgroundColor;
-		if (BackColorChanger)
-		{
+		if (BackColorChanger) {
 			BackgroundColor = (isSelected) ? Global.getColor(R.attr.ListBackground_select) : Global.getColor(R.attr.ListBackground);
-		}
-		else
-		{
+		} else {
 			BackgroundColor = (isSelected) ? Global.getColor(R.attr.ListBackground_select) : Global.getColor(R.attr.ListBackground_secend);
 		}
 
@@ -184,9 +167,7 @@ public class JokerViewItem extends View
 		if (joker == null) // this Item is the Cache
 		{
 			CacheDraw.DrawInfo(cache, canvas, DrawingRec, BackgroundColor, DrawStyle.withoutSeparator, false);
-		}
-		else
-		{
+		} else {
 
 			int left = 15;
 			int top = LineSep * 2;

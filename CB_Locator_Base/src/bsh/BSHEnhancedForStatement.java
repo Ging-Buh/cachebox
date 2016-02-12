@@ -10,19 +10,16 @@ import java.util.Iterator;
  * @author Pat Niemeyer
  */
 @SuppressWarnings("serial")
-class BSHEnhancedForStatement extends SimpleNode implements ParserConstants
-{
+class BSHEnhancedForStatement extends SimpleNode implements ParserConstants {
 	String varName;
 
-	BSHEnhancedForStatement(int id)
-	{
+	BSHEnhancedForStatement(int id) {
 		super(id);
 	}
 
 	@Override
 	@SuppressWarnings("rawtypes")
-	public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError
-	{
+	public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError {
 		Class elementType = null;
 		SimpleNode expression, statement = null;
 
@@ -30,16 +27,15 @@ class BSHEnhancedForStatement extends SimpleNode implements ParserConstants
 		SimpleNode firstNode = ((SimpleNode) jjtGetChild(0));
 		int nodeCount = jjtGetNumChildren();
 
-		if (firstNode instanceof BSHType)
-		{
+		if (firstNode instanceof BSHType) {
 			elementType = ((BSHType) firstNode).getType(callstack, interpreter);
 			expression = ((SimpleNode) jjtGetChild(1));
-			if (nodeCount > 2) statement = ((SimpleNode) jjtGetChild(2));
-		}
-		else
-		{
+			if (nodeCount > 2)
+				statement = ((SimpleNode) jjtGetChild(2));
+		} else {
 			expression = firstNode;
-			if (nodeCount > 1) statement = ((SimpleNode) jjtGetChild(1));
+			if (nodeCount > 1)
+				statement = ((SimpleNode) jjtGetChild(1));
 		}
 
 		BlockNameSpace eachNameSpace = new BlockNameSpace(enclosingNameSpace);
@@ -47,27 +43,25 @@ class BSHEnhancedForStatement extends SimpleNode implements ParserConstants
 
 		final Object iteratee = expression.eval(callstack, interpreter);
 
-		if (iteratee == Primitive.NULL) throw new EvalError("The collection, array, map, iterator, or "
-				+ "enumeration portion of a for statement cannot be null.", this, callstack);
+		if (iteratee == Primitive.NULL)
+			throw new EvalError("The collection, array, map, iterator, or " + "enumeration portion of a for statement cannot be null.", this, callstack);
 
 		CollectionManager cm = CollectionManager.getCollectionManager();
-		if (!cm.isBshIterable(iteratee)) throw new EvalError("Can't iterate over type: " + iteratee.getClass(), this, callstack);
+		if (!cm.isBshIterable(iteratee))
+			throw new EvalError("Can't iterate over type: " + iteratee.getClass(), this, callstack);
 		Iterator iterator = cm.getBshIterator(iteratee);
 
 		Object returnControl = Primitive.VOID;
-		while (iterator.hasNext())
-		{
-			try
-			{
+		while (iterator.hasNext()) {
+			try {
 				Object value = iterator.next();
-				if (value == null) value = Primitive.NULL;
-				if (elementType != null) eachNameSpace
-						.setTypedVariable(varName/* name */, elementType/* type */, value, new Modifiers()/* none */);
+				if (value == null)
+					value = Primitive.NULL;
+				if (elementType != null)
+					eachNameSpace.setTypedVariable(varName/* name */, elementType/* type */, value, new Modifiers()/* none */);
 				else
 					eachNameSpace.setVariable(varName, value, false);
-			}
-			catch (UtilEvalError e)
-			{
+			} catch (UtilEvalError e) {
 				throw e.toEvalError("for loop iterator variable:" + varName, this, callstack);
 			}
 
@@ -76,10 +70,8 @@ class BSHEnhancedForStatement extends SimpleNode implements ParserConstants
 			{
 				Object ret = statement.eval(callstack, interpreter);
 
-				if (ret instanceof ReturnControl)
-				{
-					switch (((ReturnControl) ret).kind)
-					{
+				if (ret instanceof ReturnControl) {
+					switch (((ReturnControl) ret).kind) {
 					case RETURN:
 						returnControl = ret;
 						breakout = true;
@@ -95,7 +87,8 @@ class BSHEnhancedForStatement extends SimpleNode implements ParserConstants
 				}
 			}
 
-			if (breakout) break;
+			if (breakout)
+				break;
 		}
 
 		callstack.swap(enclosingNameSpace);

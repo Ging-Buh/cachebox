@@ -7,58 +7,49 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-public class Copy
-{
+public class Copy {
 	ArrayList<CopyRule> mRules;
 
-	public Copy(ArrayList<CopyRule> rules)
-	{
+	public Copy(ArrayList<CopyRule> rules) {
 		mRules = rules;
 	}
 
-	public Copy(CopyRule rule)
-	{
+	public Copy(CopyRule rule) {
 		mRules = new ArrayList<CopyRule>();
 		mRules.add(rule);
 	}
 
-	public interface CopyMsg
-	{
+	public interface CopyMsg {
 		public void Msg(String msg);
 	}
 
-	public void Run() throws IOException
-	{
+	public void Run() throws IOException {
 		Run(null);
 	}
 
-	public void Run(CopyMsg MsgCallBack) throws IOException
-	{
-		for (CopyRule rule : mRules)
-		{
-			if (MsgCallBack != null) MsgCallBack.Msg("Copy: " + rule.Name);
+	public void Run(CopyMsg MsgCallBack) throws IOException {
+		for (CopyRule rule : mRules) {
+			if (MsgCallBack != null)
+				MsgCallBack.Msg("Copy: " + rule.Name);
 			copyFolder(rule.sourcePath, rule.targetPath);
 		}
 	}
 
-	public static void copyFolder(File src, File dest) throws IOException
-	{
+	public static void copyFolder(File src, File dest) throws IOException {
 
-		if (src.isDirectory())
-		{
+		if (src.isDirectory()) {
 
 			// if directory not exists, create it
-			if (!dest.exists())
-			{
+			if (!dest.exists()) {
 				dest.mkdir();
 			}
 
 			// list all the directory contents
 			String files[] = src.list();
 
-			for (String file : files)
-			{
-				if (file.contains(".svn")) continue;
+			for (String file : files) {
+				if (file.contains(".svn"))
+					continue;
 				// construct the src and dest file structure
 				File srcFile = new File(src, file);
 				File destFile = new File(dest, file);
@@ -66,13 +57,12 @@ public class Copy
 				copyFolder(srcFile, destFile);
 			}
 
-		}
-		else
-		{
+		} else {
 
 			File parent = new File(dest.getParent());
 
-			if (!parent.exists()) parent.mkdir();
+			if (!parent.exists())
+				parent.mkdir();
 
 			// if file, then copy it
 			// Use bytes stream to support all file types
@@ -83,8 +73,7 @@ public class Copy
 
 			int length;
 			// copy the file content in bytes
-			while ((length = in.read(buffer)) > 0)
-			{
+			while ((length = in.read(buffer)) > 0) {
 				out.write(buffer, 0, length);
 			}
 

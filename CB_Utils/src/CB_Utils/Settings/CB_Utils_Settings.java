@@ -17,8 +17,7 @@ package CB_Utils.Settings;
 
 import CB_Utils.Log.LogLevel;
 
-public interface CB_Utils_Settings
-{
+public interface CB_Utils_Settings {
 	public static final SettingModus INVISIBLE = SettingModus.Invisible;
 	public static final SettingModus NORMAL = SettingModus.Normal;
 	public static final SettingModus EXPERT = SettingModus.Expert;

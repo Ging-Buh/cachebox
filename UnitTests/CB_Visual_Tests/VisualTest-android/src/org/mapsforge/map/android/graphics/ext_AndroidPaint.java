@@ -30,16 +30,13 @@ import CB_Utils.Util.HSV_Color;
 /**
  * @author Longri
  */
-public class ext_AndroidPaint extends AndroidPaint implements ext_Paint
-{
+public class ext_AndroidPaint extends AndroidPaint implements ext_Paint {
 
-	public ext_AndroidPaint(ext_Paint paint)
-	{
+	public ext_AndroidPaint(ext_Paint paint) {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ext_AndroidPaint()
-	{
+	public ext_AndroidPaint() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -48,81 +45,69 @@ public class ext_AndroidPaint extends AndroidPaint implements ext_Paint
 	// ############################################################################################
 
 	@Override
-	public void setAlpha(int i)
-	{
+	public void setAlpha(int i) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void setStrokeJoin(Join join)
-	{
+	public void setStrokeJoin(Join join) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void setRadialGradiant(float x, float y, float radius, int[] colors, float[] positions, TileMode tileMode)
-	{
+	public void setRadialGradiant(float x, float y, float radius, int[] colors, float[] positions, TileMode tileMode) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void setGradientMatrix(ext_Matrix matrix)
-	{
+	public void setGradientMatrix(ext_Matrix matrix) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void setLinearGradient(float x1, float y1, float x2, float y2, int[] colors, float[] positions, TileMode tileMode)
-	{
+	public void setLinearGradient(float x1, float y1, float x2, float y2, int[] colors, float[] positions, TileMode tileMode) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public GL_Style getGL_Style()
-	{
+	public GL_Style getGL_Style() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void setDashPathEffect(float[] strokeDasharray, float offset)
-	{
+	public void setDashPathEffect(float[] strokeDasharray, float offset) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void delDashPathEffect()
-	{
+	public void delDashPathEffect() {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public ext_Matrix getGradiantMatrix()
-	{
+	public ext_Matrix getGradiantMatrix() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void setStyle(GL_Style fill)
-	{
+	public void setStyle(GL_Style fill) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public GL_FontStyle getGLFontStyle()
-	{
+	public GL_FontStyle getGLFontStyle() {
 
-		switch (fontStyle)
-		{
+		switch (fontStyle) {
 		case BOLD:
 			return GL_FontStyle.BOLD;
 		case BOLD_ITALIC:
@@ -138,11 +123,9 @@ public class ext_AndroidPaint extends AndroidPaint implements ext_Paint
 	}
 
 	@Override
-	public GL_FontFamily getGLFontFamily()
-	{
+	public GL_FontFamily getGLFontFamily() {
 
-		switch (fontFamily)
-		{
+		switch (fontFamily) {
 		case DEFAULT:
 			return GL_FontFamily.DEFAULT;
 		case MONOSPACE:
@@ -157,8 +140,7 @@ public class ext_AndroidPaint extends AndroidPaint implements ext_Paint
 	}
 
 	@Override
-	public HSV_Color getHSV_Color()
-	{
+	public HSV_Color getHSV_Color() {
 		HSV_Color c = new HSV_Color(this.paint.getColor());
 		return c;
 	}
@@ -171,14 +153,12 @@ public class ext_AndroidPaint extends AndroidPaint implements ext_Paint
 	FontFamily fontFamily;
 
 	@Override
-	public float getTextSize()
-	{
+	public float getTextSize() {
 		return this.paint.getTextSize();
 	}
 
 	@Override
-	public float getStrokeWidth()
-	{
+	public float getStrokeWidth() {
 		return this.paint.getStrokeWidth();
 	}
 

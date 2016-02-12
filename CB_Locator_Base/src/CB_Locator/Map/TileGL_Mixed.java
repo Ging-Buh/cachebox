@@ -27,28 +27,22 @@ import com.badlogic.gdx.graphics.g2d.Batch;
  * 
  * @author Longri
  */
-public class TileGL_Mixed extends TileGL_Bmp
-{
+public class TileGL_Mixed extends TileGL_Bmp {
 	SortedRotateList rotateList;
 	TileGL_RotateDrawables rotateDrawable;
 
-	public TileGL_Mixed(CB_Locator.Map.Descriptor desc, byte[] bytes, TileState state, Format format)
-	{
+	public TileGL_Mixed(CB_Locator.Map.Descriptor desc, byte[] bytes, TileState state, Format format) {
 		super(desc, bytes, state, format);
 
 	}
 
 	@Override
-	public void draw(Batch batch, float x, float y, float width, float height, CB_List<TileGL_RotateDrawables> returnDrawableList)
-	{
+	public void draw(Batch batch, float x, float y, float width, float height, CB_List<TileGL_RotateDrawables> returnDrawableList) {
 		super.draw(batch, x, y, width, height, returnDrawableList);
 
-		if (returnDrawableList != null)
-		{
-			if (rotateList != null)
-			{
-				if (rotateDrawable == null)
-				{
+		if (returnDrawableList != null) {
+			if (rotateList != null) {
+				if (rotateDrawable == null) {
 					rotateDrawable = new TileGL_RotateDrawables(x, y, width, height, this, rotateList);
 				}
 
@@ -59,20 +53,16 @@ public class TileGL_Mixed extends TileGL_Bmp
 
 	}
 
-	public void add(SortedRotateList rotateList)
-	{
+	public void add(SortedRotateList rotateList) {
 		this.rotateList = rotateList;
 	}
 
 	@Override
-	public void dispose()
-	{
+	public void dispose() {
 		super.dispose();
 
-		if (rotateList != null)
-		{
-			for (MatrixDrawable drw : rotateList)
-			{
+		if (rotateList != null) {
+			for (MatrixDrawable drw : rotateList) {
 				drw.dispose();
 			}
 		}

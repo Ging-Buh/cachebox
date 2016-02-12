@@ -30,12 +30,11 @@ import org.apache.xmlrpc.serializer.TypeSerializer;
 import org.apache.xmlrpc.serializer.XmlRpcWriter;
 import org.xml.sax.SAXException;
 
-
 /** A type factory with support for JAXB objects.
  */
 public class JaxbTypeFactory extends TypeFactoryImpl {
 	private final JAXBContext context;
-	private final JaxbSerializer serializer; 
+	private final JaxbSerializer serializer;
 
 	/** Creates a new instance with the given controller and
 	 * JAXB context.
@@ -52,7 +51,7 @@ public class JaxbTypeFactory extends TypeFactoryImpl {
 	public TypeParser getParser(XmlRpcStreamConfig pConfig, NamespaceContextImpl pContext, String pURI, String pLocalName) {
 		TypeParser tp = super.getParser(pConfig, pContext, pURI, pLocalName);
 		if (tp == null) {
-			if (XmlRpcWriter.EXTENSIONS_URI.equals(pURI)  &&  JaxbSerializer.JAXB_TAG.equals(pLocalName)) {
+			if (XmlRpcWriter.EXTENSIONS_URI.equals(pURI) && JaxbSerializer.JAXB_TAG.equals(pLocalName)) {
 				return new JaxbParser(context);
 			}
 		}

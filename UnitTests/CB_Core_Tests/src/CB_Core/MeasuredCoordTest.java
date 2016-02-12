@@ -27,34 +27,29 @@ import CB_Utils.MathUtils.CalculationType;
  * 
  * @author Longri
  */
-public class MeasuredCoordTest extends TestCase
-{
+public class MeasuredCoordTest extends TestCase {
 
 	private MeasuredCoord mMeasuredCoord;
 
 	@Override
-	public void setUp() throws Exception
-	{
+	public void setUp() throws Exception {
 
 		super.setUp();
 		mMeasuredCoord = new MeasuredCoord(49.428333, 6.203333, 12.0f);
 	}
 
 	@Override
-	protected void tearDown() throws Exception
-	{
+	protected void tearDown() throws Exception {
 
 		super.tearDown();
 		mMeasuredCoord = null;
 	}
 
-	public void testConstructor()
-	{
+	public void testConstructor() {
 		assertTrue("Objekt muss konstruierbar sein", mMeasuredCoord != null);
 	}
 
-	public void testDistance()
-	{
+	public void testDistance() {
 
 		Coordinate Referenz = new CoordinateGPS(49.427700, 6.204300);
 		assertTrue("Objekt muss konstruierbar sein", Referenz != null);

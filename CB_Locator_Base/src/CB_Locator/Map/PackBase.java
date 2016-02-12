@@ -12,8 +12,7 @@ import org.apache.http.util.EncodingUtils;
 
 import CB_Utils.Util.FileIO;
 
-public abstract class PackBase implements Comparable<PackBase>
-{
+public abstract class PackBase implements Comparable<PackBase> {
 
 	public long MaxAge = 0;
 	public static boolean Cancel = false;
@@ -27,20 +26,17 @@ public abstract class PackBase implements Comparable<PackBase>
 	/**
 	 * Gets the subarray of length <tt>length</tt> from <tt>array</tt> that starts at <tt>offset</tt>.
 	 */
-	protected static byte[] get(byte[] array, int offset, int length)
-	{
+	protected static byte[] get(byte[] array, int offset, int length) {
 		byte[] result = new byte[length];
 		System.arraycopy(array, offset, result, 0, length);
 		return result;
 	}
 
-	public PackBase(Layer layer)
-	{
+	public PackBase(Layer layer) {
 		this.Layer = layer;
 	}
 
-	public PackBase(ManagerBase manager, String file) throws IOException
-	{
+	public PackBase(ManagerBase manager, String file) throws IOException {
 		Filename = file;
 
 		File queryFile = new File(file);
@@ -70,8 +66,7 @@ public abstract class PackBase implements Comparable<PackBase>
 
 	// make a new one from the existing BoundingBoxes
 	// WritePackFromBoundingBoxes();
-	public void WritePackFromBoundingBoxes() throws IOException
-	{
+	public void WritePackFromBoundingBoxes() throws IOException {
 		/*
 		 * FileStream stream = new FileStream(filename, FileMode.Create); BinaryWriter writer = new BinaryWriter(stream);
 		 */
@@ -82,29 +77,27 @@ public abstract class PackBase implements Comparable<PackBase>
 		writer.flush();
 		writer.close();
 
-		if (Cancel)
-		{
+		if (Cancel) {
 			File file = new File(Filename);
 			file.delete();
 		}
 	}
 
 	// / <summary>
-	// / Überprüft, ob der Descriptor in diesem Map Pack enthalten ist und liefert
+	// / ï¿½berprï¿½ft, ob der Descriptor in diesem Map Pack enthalten ist und liefert
 	// / die BoundingBox, falls dies der Fall ist, bzw. null
 	// / </summary>
 	// / <param name="desc">Deskriptor, dessen </param>
 	// / <returns></returns>
-	public BoundingBox Contains(Descriptor desc)
-	{
+	public BoundingBox Contains(Descriptor desc) {
 		for (BoundingBox bbox : BoundingBoxes)
-			if (bbox.Zoom == desc.getZoom() && desc.getX() <= bbox.MaxX && desc.getX() >= bbox.MinX && desc.getY() <= bbox.MaxY && desc.getY() >= bbox.MinY) return bbox;
+			if (bbox.Zoom == desc.getZoom() && desc.getX() <= bbox.MaxX && desc.getX() >= bbox.MinX && desc.getY() <= bbox.MaxY && desc.getY() >= bbox.MinY)
+				return bbox;
 
 		return null;
 	}
 
-	public int NumTilesTotal()
-	{
+	public int NumTilesTotal() {
 		int result = 0;
 		for (BoundingBox bbox : BoundingBoxes)
 			result += bbox.NumTilesTotal();
@@ -115,9 +108,9 @@ public abstract class PackBase implements Comparable<PackBase>
 	/*
 	 * public delegate void ProgressDelegate(String msg, int zoom, int x, int y, int num, int total);
 	 */
-	protected void writeString(String text, DataOutputStream writer, int length) throws IOException
-	{
-		if (text.length() > length) text = text.substring(0, length);
+	protected void writeString(String text, DataOutputStream writer, int length) throws IOException {
+		if (text.length() > length)
+			text = text.substring(0, length);
 		else
 			while (text.length() < length)
 				text += " ";
@@ -126,22 +119,19 @@ public abstract class PackBase implements Comparable<PackBase>
 			writer.write(asciiBytes[i]);
 	}
 
-	protected String readString(DataInputStream reader, int length) throws IOException
-	{
+	protected String readString(DataInputStream reader, int length) throws IOException {
 		byte[] asciiBytes = new byte[length];
 		int last = 0;
-		for (int i = 0; i < length; i++)
-		{
+		for (int i = 0; i < length; i++) {
 			asciiBytes[i] = reader.readByte();
-			if (asciiBytes[i] > 32) last = i;
+			if (asciiBytes[i] > 32)
+				last = i;
 		}
 		return EncodingUtils.getAsciiString(asciiBytes, 0, last + 1).trim();
 	}
 
-	public void CreateBoudingBoxesFromBounds(int minZoom, int maxZoom, double minLat, double maxLat, double minLon, double maxLon)
-	{
-		for (int zoom = minZoom; zoom <= maxZoom; zoom++)
-		{
+	public void CreateBoudingBoxesFromBounds(int minZoom, int maxZoom, double minLat, double maxLat, double minLon, double maxLon) {
+		for (int zoom = minZoom; zoom <= maxZoom; zoom++) {
 			int minX = (int) Descriptor.LongitudeToTileX(zoom, minLon);
 			int maxX = (int) Descriptor.LongitudeToTileX(zoom, maxLon);
 
@@ -152,9 +142,7 @@ public abstract class PackBase implements Comparable<PackBase>
 		}
 	}
 
-	public void GeneratePack(String filename, long maxAge, int minZoom, int maxZoom, double minLat, double maxLat, double minLon,
-			double maxLon) throws IOException
-	{
+	public void GeneratePack(String filename, long maxAge, int minZoom, int maxZoom, double minLat, double maxLat, double minLon, double maxLon) throws IOException {
 		MaxAge = maxAge;
 		Filename = filename;
 
@@ -169,8 +157,7 @@ public abstract class PackBase implements Comparable<PackBase>
 		writer.flush();
 		writer.close();
 
-		if (Cancel)
-		{
+		if (Cancel) {
 			File file = new File(filename);
 			file.delete();
 		}
@@ -180,8 +167,7 @@ public abstract class PackBase implements Comparable<PackBase>
 	// / Speichert ein im lokalen Dateisystem vorliegendes Pack in den writer
 	// / </summary>
 	// / <param name="writer"></param>
-	public void Write(DataOutputStream writer) throws IOException
-	{
+	public void Write(DataOutputStream writer) throws IOException {
 		// int numTilesTotal = NumTilesTotal();
 
 		// Header
@@ -193,8 +179,7 @@ public abstract class PackBase implements Comparable<PackBase>
 
 		// Offsets berechnen
 		long offset = 32 + 128 + 256 + 8 + 4 + 8 + BoundingBoxes.size() * 28 /* BoundingBox.SizeOf */;
-		for (int i = 0; i < BoundingBoxes.size(); i++)
-		{
+		for (int i = 0; i < BoundingBoxes.size(); i++) {
 			BoundingBoxes.get(i).OffsetToIndex = offset;
 			offset += BoundingBoxes.get(i).NumTilesTotal() * 8;
 		}
@@ -204,34 +189,30 @@ public abstract class PackBase implements Comparable<PackBase>
 			BoundingBoxes.get(i).Write(writer);
 
 		// Indexe erzeugen
-		for (int i = 0; i < BoundingBoxes.size(); i++)
-		{
+		for (int i = 0; i < BoundingBoxes.size(); i++) {
 			BoundingBox bbox = BoundingBoxes.get(i);
 
-			for (int y = bbox.MinY; y <= bbox.MaxY && !Cancel; y++)
-			{
-				for (int x = bbox.MinX; x <= bbox.MaxX && !Cancel; x++)
-				{
+			for (int y = bbox.MinY; y <= bbox.MaxY && !Cancel; y++) {
+				for (int x = bbox.MinX; x <= bbox.MaxX && !Cancel; x++) {
 					// Offset zum Bild absaven
 					writer.writeLong(Long.reverseBytes(offset));
 
 					Descriptor desc = new Descriptor(x, y, bbox.Zoom, false);
 
-					// Dateigröße ermitteln
+					// Dateigrï¿½ï¿½e ermitteln
 					String local = Layer.GetLocalFilename(desc);
 
-					if (FileIO.FileExists(local))
-					{
+					if (FileIO.FileExists(local)) {
 						File info = new File(local);
-						if (info.lastModified() < MaxAge) Layer.DownloadTile(desc);
-					}
-					else
+						if (info.lastModified() < MaxAge)
+							Layer.DownloadTile(desc);
+					} else
 						Layer.DownloadTile(desc);
 
-					// Nicht vorhandene Tiles haben die Länge 0
-					if (!FileIO.FileExists(local)) offset += 0;
-					else
-					{
+					// Nicht vorhandene Tiles haben die Lï¿½nge 0
+					if (!FileIO.FileExists(local))
+						offset += 0;
+					else {
 						File info = new File(local);
 						offset += info.length();
 					}
@@ -246,23 +227,22 @@ public abstract class PackBase implements Comparable<PackBase>
 			}
 		}
 
-		// Zur Längenberechnung
+		// Zur Lï¿½ngenberechnung
 		writer.writeLong(Long.reverseBytes(offset));
 
 		// So, und nun kopieren wir noch den Mist rein
-		for (int i = 0; i < BoundingBoxes.size() && !Cancel; i++)
-		{
+		for (int i = 0; i < BoundingBoxes.size() && !Cancel; i++) {
 			BoundingBox bbox = BoundingBoxes.get(i);
 
-			for (int y = bbox.MinY; y <= bbox.MaxY && !Cancel; y++)
-			{
-				for (int x = bbox.MinX; x <= bbox.MaxX && !Cancel; x++)
-				{
+			for (int y = bbox.MinY; y <= bbox.MaxY && !Cancel; y++) {
+				for (int x = bbox.MinX; x <= bbox.MaxX && !Cancel; x++) {
 					Descriptor desc = new Descriptor(x, y, bbox.Zoom, false);
 
 					String local = Layer.GetLocalFilename(desc);
 					File f = new File(local);
-					if (!f.exists() || f.lastModified() < MaxAge) if (!Layer.DownloadTile(desc)) continue;
+					if (!f.exists() || f.lastModified() < MaxAge)
+						if (!Layer.DownloadTile(desc))
+							continue;
 					FileInputStream imageStream = new FileInputStream(local);
 					int anzAvailable = (int) f.length();
 					byte[] temp = new byte[anzAvailable];
@@ -278,11 +258,12 @@ public abstract class PackBase implements Comparable<PackBase>
 	}
 
 	@Override
-	public int compareTo(PackBase arg0)
-	{
-		if (this.MaxAge < arg0.MaxAge) return -1;
+	public int compareTo(PackBase arg0) {
+		if (this.MaxAge < arg0.MaxAge)
+			return -1;
 
-		if (this.MaxAge > arg0.MaxAge) return 1;
+		if (this.MaxAge > arg0.MaxAge)
+			return 1;
 
 		return 0;
 	}

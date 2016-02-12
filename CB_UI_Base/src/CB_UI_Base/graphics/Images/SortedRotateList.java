@@ -27,96 +27,77 @@ import CB_Utils.Lists.CB_List;
  * 
  * @author Longri
  */
-public class SortedRotateList implements Iterable<MatrixDrawable>
-{
+public class SortedRotateList implements Iterable<MatrixDrawable> {
 	CB_List<MatrixDrawable> symbols = new CB_List<MatrixDrawable>();
 	CB_List<MatrixDrawable> Text = new CB_List<MatrixDrawable>();
 
-	public SortedRotateList()
-	{
+	public SortedRotateList() {
 
 	}
 
-	public void add(MatrixDrawable drws)
-	{
-		if (drws.drawable instanceof SymbolDrawable)
-		{
+	public void add(MatrixDrawable drws) {
+		if (drws.drawable instanceof SymbolDrawable) {
 			symbols.add(drws);
-		}
-		else
-		{
+		} else {
 			Text.add(drws);
 		}
 	}
 
 	@Override
-	public Iterator<MatrixDrawable> iterator()
-	{
+	public Iterator<MatrixDrawable> iterator() {
 		return new Itr();
 	}
 
 	/**
 	 * An optimized version of AbstractList.Itr
 	 */
-	private class Itr implements Iterator<MatrixDrawable>
-	{
+	private class Itr implements Iterator<MatrixDrawable> {
 
 		int cursor = 0; // index of next element to return
 
 		@Override
-		public boolean hasNext()
-		{
+		public boolean hasNext() {
 			return cursor != symbols.size() + Text.size();
 		}
 
 		@Override
-		public MatrixDrawable next()
-		{
-			if (cursor >= symbols.size() + Text.size()) throw new ConcurrentModificationException();
+		public MatrixDrawable next() {
+			if (cursor >= symbols.size() + Text.size())
+				throw new ConcurrentModificationException();
 
-			if (cursor >= symbols.size())
-			{
+			if (cursor >= symbols.size()) {
 				return Text.get(cursor++ - symbols.size());
-			}
-			else
-			{
+			} else {
 				return symbols.get(cursor++);
 			}
 		}
 
 		@Override
-		public void remove()
-		{
+		public void remove() {
 			throw new UnsupportedOperationException("remove is not supported by this Iterator");
 
 		}
 
 	}
 
-	public boolean isEmpty()
-	{
-		if (symbols.isEmpty() && Text.isEmpty()) return true;
+	public boolean isEmpty() {
+		if (symbols.isEmpty() && Text.isEmpty())
+			return true;
 		else
 			return false;
 	}
 
-	public void clear()
-	{
+	public void clear() {
 		symbols.clear();
 		Text.clear();
 	}
 
-	public void remove(CB_List<MatrixDrawable> clearList)
-	{
-		for (int i = 0, n = clearList.size(); i < n; i++)
-		{
+	public void remove(CB_List<MatrixDrawable> clearList) {
+		for (int i = 0, n = clearList.size(); i < n; i++) {
 			MatrixDrawable drw = clearList.get(i);
-			if (drw.drawable instanceof SymbolDrawable)
-			{
+			if (drw.drawable instanceof SymbolDrawable) {
 				symbols.remove(drw);
-			}
-			else
-			{
+			} else {
 				Text.remove(drw);
 			}
 		}

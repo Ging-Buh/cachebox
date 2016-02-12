@@ -7,31 +7,25 @@ import CB_Utils.Interfaces.cancelRunnable;
  * 
  * @author Longri
  */
-public abstract class RunnableReadyHandler implements cancelRunnable
-{
+public abstract class RunnableReadyHandler implements cancelRunnable {
 
 	// cancelRunable mRunnable;
 	Thread mRunThread;
 	boolean isCanceld = false;
 	boolean isRunning = false;
 
-	public RunnableReadyHandler()
-	{
+	public RunnableReadyHandler() {
 		// mRunnable = runnable;
 	}
 
 	public abstract void RunnableReady(boolean canceld);
 
-	public void start()
-	{
-		if (!isRunning)
-		{
+	public void start() {
+		if (!isRunning) {
 			isRunning = true;
-			mRunThread = new Thread(new Runnable()
-			{
+			mRunThread = new Thread(new Runnable() {
 				@Override
-				public void run()
-				{
+				public void run() {
 					RunnableReadyHandler.this.run();
 					RunnableReady(isCanceld);
 				}
@@ -41,12 +35,12 @@ public abstract class RunnableReadyHandler implements cancelRunnable
 	}
 
 	/*
-	 * Bricht den Thread, in dem das Runnable läuft ab!
+	 * Bricht den Thread, in dem das Runnable lï¿½uft ab!
 	 */
-	public void Cancel()
-	{
+	public void Cancel() {
 		isCanceld = true;
-		if (mRunThread != null) mRunThread.interrupt();
+		if (mRunThread != null)
+			mRunThread.interrupt();
 	}
 
 }

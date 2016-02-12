@@ -63,19 +63,19 @@ public final class CallStack implements Serializable {
 
 	private final Stack<NameSpace> stack = new Stack<NameSpace>();
 
+	public CallStack() {
+	}
 
-	public CallStack() { }
-
-	public CallStack( NameSpace namespace ) { 
-		push( namespace );
+	public CallStack(NameSpace namespace) {
+		push(namespace);
 	}
 
 	public void clear() {
 		stack.removeAllElements();
 	}
 
-	public void push( NameSpace ns ) {
-		stack.push( ns );
+	public void push(NameSpace ns) {
+		stack.push(ns);
 	}
 
 	public NameSpace top() {
@@ -87,24 +87,24 @@ public final class CallStack implements Serializable {
 	*/
 	public NameSpace get(int depth) {
 		int size = stack.size();
-		if ( depth >= size )
+		if (depth >= size)
 			return NameSpace.JAVACODE;
 		else
-			return stack.get(size-1-depth);
+			return stack.get(size - 1 - depth);
 	}
-	
+
 	/**
 		This is kind of crazy, but used by the setNameSpace command.
 		zero based.
 	*/
 	public void set(int depth, NameSpace ns) {
-		stack.set( stack.size()-1-depth, ns );
+		stack.set(stack.size() - 1 - depth, ns);
 	}
 
 	public NameSpace pop() {
 		try {
 			return stack.pop();
-		} catch(EmptyStackException e) {
+		} catch (EmptyStackException e) {
 			throw new InterpreterError("pop on empty CallStack");
 		}
 	}
@@ -113,28 +113,29 @@ public final class CallStack implements Serializable {
 		Swap in the value as the new top of the stack and return the old
 		value.
 	*/
-	public NameSpace swap( NameSpace newTop ) {
+	public NameSpace swap(NameSpace newTop) {
 		int last = stack.size() - 1;
 		NameSpace oldTop = stack.get(last);
-		stack.set( last, newTop );
+		stack.set(last, newTop);
 		return oldTop;
 	}
 
 	public int depth() {
 		return stack.size();
 	}
-/*
-	public NameSpace [] toArray() {
-		NameSpace [] nsa = new NameSpace [ depth() ];
-		stack.copyInto( nsa );
-		return nsa;
-	}
-*/
+
+	/*
+		public NameSpace [] toArray() {
+			NameSpace [] nsa = new NameSpace [ depth() ];
+			stack.copyInto( nsa );
+			return nsa;
+		}
+	*/
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("CallStack:\n");
-		for( int i=stack.size()-1; i>=0; i-- )
-			sb.append("\t"+stack.get(i)+"\n");
+		for (int i = stack.size() - 1; i >= 0; i--)
+			sb.append("\t" + stack.get(i) + "\n");
 
 		return sb.toString();
 	}

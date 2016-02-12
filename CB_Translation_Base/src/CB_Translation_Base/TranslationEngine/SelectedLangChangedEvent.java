@@ -21,7 +21,6 @@ package CB_Translation_Base.TranslationEngine;
  * 
  * @author Longri
  */
-public interface SelectedLangChangedEvent
-{
+public interface SelectedLangChangedEvent {
 	public void SelectedLangChangedEventCalled();
 }

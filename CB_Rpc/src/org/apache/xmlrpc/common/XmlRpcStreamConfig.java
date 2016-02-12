@@ -20,7 +20,6 @@ package org.apache.xmlrpc.common;
 
 import org.apache.xmlrpc.XmlRpcConfig;
 
-
 /** Interface of a configuration for a stream based transport.
  */
 public interface XmlRpcStreamConfig extends XmlRpcConfig {

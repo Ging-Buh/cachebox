@@ -28,7 +28,6 @@ import org.apache.ws.commons.util.Base64.EncoderOutputStream;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-
 /** A {@link org.apache.xmlrpc.serializer.TypeSerializer} for
  * instances of {@link java.io.Serializable}.
  */

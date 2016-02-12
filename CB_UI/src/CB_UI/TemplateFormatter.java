@@ -7,21 +7,17 @@ import java.util.Date;
 import CB_Core.Types.FieldNoteEntry;
 import CB_Core.Types.Trackable;
 
-public class TemplateFormatter
-{
-	public static String ReplaceTemplate(String template, FieldNoteEntry fieldNote)
-	{
+public class TemplateFormatter {
+	public static String ReplaceTemplate(String template, FieldNoteEntry fieldNote) {
 		template = template.replace("##finds##", String.valueOf(fieldNote.foundNumber));
 		return ReplaceTemplate(template, fieldNote.timestamp);
 	}
 
-	public static String ReplaceTemplate(String template, Trackable TB)
-	{
+	public static String ReplaceTemplate(String template, Trackable TB) {
 		return ReplaceTemplate(template, new Date());
 	}
 
-	private static String ReplaceTemplate(String template, Date timestamp)
-	{
+	private static String ReplaceTemplate(String template, Date timestamp) {
 		DateFormat iso8601Format = new SimpleDateFormat("HH:mm");
 		String stime = iso8601Format.format(timestamp);
 		iso8601Format = new SimpleDateFormat("dd-MM-yyyy");
@@ -30,12 +26,9 @@ public class TemplateFormatter
 		template = template.replace("<br>", "\n");
 		template = template.replace("##date##", sdate);
 		template = template.replace("##time##", stime);
-		if (GlobalCore.isSetSelectedCache())
-		{
+		if (GlobalCore.isSetSelectedCache()) {
 			template = template.replace("##owner##", GlobalCore.getSelectedCache().getOwner());
-		}
-		else
-		{
+		} else {
 			template = template.replace("##owner##", "????????");
 		}
 

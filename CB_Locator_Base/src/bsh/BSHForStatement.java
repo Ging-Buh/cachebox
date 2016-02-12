@@ -36,8 +36,7 @@ package bsh;
 /**
  * Implementation of the for(;;) statement.
  */
-class BSHForStatement extends SimpleNode implements ParserConstants
-{
+class BSHForStatement extends SimpleNode implements ParserConstants {
 	/**
 	 * 
 	 */
@@ -53,20 +52,21 @@ class BSHForStatement extends SimpleNode implements ParserConstants
 
 	// private boolean parsed;
 
-	BSHForStatement(int id)
-	{
+	BSHForStatement(int id) {
 		super(id);
 	}
 
 	@Override
-	public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError
-	{
+	public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError {
 		int i = 0;
-		if (hasForInit) forInit = ((SimpleNode) jjtGetChild(i++));
-		if (hasExpression) expression = ((SimpleNode) jjtGetChild(i++));
-		if (hasForUpdate) forUpdate = ((SimpleNode) jjtGetChild(i++));
+		if (hasForInit)
+			forInit = ((SimpleNode) jjtGetChild(i++));
+		if (hasExpression)
+			expression = ((SimpleNode) jjtGetChild(i++));
+		if (hasForUpdate)
+			forUpdate = ((SimpleNode) jjtGetChild(i++));
 		if (i < jjtGetNumChildren()) // should normally be
-		statement = ((SimpleNode) jjtGetChild(i));
+			statement = ((SimpleNode) jjtGetChild(i));
 
 		NameSpace enclosingNameSpace = callstack.top();
 		BlockNameSpace forNameSpace = new BlockNameSpace(enclosingNameSpace);
@@ -88,16 +88,16 @@ class BSHForStatement extends SimpleNode implements ParserConstants
 		callstack.swap(forNameSpace);
 
 		// Do the for init
-		if (hasForInit) forInit.eval(callstack, interpreter);
+		if (hasForInit)
+			forInit.eval(callstack, interpreter);
 
 		Object returnControl = Primitive.VOID;
-		while (true)
-		{
-			if (hasExpression)
-			{
+		while (true) {
+			if (hasExpression) {
 				boolean cond = BSHIfStatement.evaluateCondition(expression, callstack, interpreter);
 
-				if (!cond) break;
+				if (!cond)
+					break;
 			}
 
 			boolean breakout = false; // switch eats a multi-level break here?
@@ -106,10 +106,8 @@ class BSHForStatement extends SimpleNode implements ParserConstants
 				// do *not* invoke special override for block... (see above)
 				Object ret = statement.eval(callstack, interpreter);
 
-				if (ret instanceof ReturnControl)
-				{
-					switch (((ReturnControl) ret).kind)
-					{
+				if (ret instanceof ReturnControl) {
+					switch (((ReturnControl) ret).kind) {
 					case RETURN:
 						returnControl = ret;
 						breakout = true;
@@ -125,9 +123,11 @@ class BSHForStatement extends SimpleNode implements ParserConstants
 				}
 			}
 
-			if (breakout) break;
+			if (breakout)
+				break;
 
-			if (hasForUpdate) forUpdate.eval(callstack, interpreter);
+			if (hasForUpdate)
+				forUpdate.eval(callstack, interpreter);
 		}
 
 		callstack.swap(enclosingNameSpace); // put it back

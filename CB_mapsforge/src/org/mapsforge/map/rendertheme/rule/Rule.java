@@ -76,8 +76,7 @@ abstract class Rule {
 		}
 	}
 
-	void matchWay(RenderCallback renderCallback, List<Tag> tags, byte zoomLevel, Closed closed,
-			List<RenderInstruction> matchingList) {
+	void matchWay(RenderCallback renderCallback, List<Tag> tags, byte zoomLevel, Closed closed, List<RenderInstruction> matchingList) {
 		if (matchesWay(tags, zoomLevel, closed)) {
 			for (int i = 0, n = this.renderInstructions.size(); i < n; ++i) {
 				this.renderInstructions.get(i).renderWay(renderCallback, tags);

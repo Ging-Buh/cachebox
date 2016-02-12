@@ -31,8 +31,7 @@ import CB_Utils.Util.IChanged;
  * @author ging-buh
  * @author Longri
  */
-public class Descriptor implements Comparable<Descriptor>
-{
+public class Descriptor implements Comparable<Descriptor> {
 	public static String TileCacheFolder;
 	public static int[] TilesPerLine = null;
 	public static int[] TilesPerColumn = null;
@@ -41,19 +40,17 @@ public class Descriptor implements Comparable<Descriptor>
 	public Object Data = null;
 	private long BuffertHash = 0;
 
-	private static final IChanged TileCacheFolderSettingChanged = new IChanged()
-	{
+	private static final IChanged TileCacheFolderSettingChanged = new IChanged() {
 
 		@Override
-		public void isChanged()
-		{
+		public void isChanged() {
 			TileCacheFolder = LocatorSettings.TileCacheFolder.getValue();
-			if (LocatorSettings.TileCacheFolderLocal.getValue().length() > 0) TileCacheFolder = LocatorSettings.TileCacheFolderLocal.getValue();
+			if (LocatorSettings.TileCacheFolderLocal.getValue().length() > 0)
+				TileCacheFolder = LocatorSettings.TileCacheFolderLocal.getValue();
 		}
 	};
 
-	static
-	{
+	static {
 		int maxZoom = 25;
 
 		TilesPerLine = new int[maxZoom];
@@ -62,15 +59,15 @@ public class Descriptor implements Comparable<Descriptor>
 
 		tileOffset[0] = 0;
 
-		for (int i = 0; i < maxZoom - 1; i++)
-		{
+		for (int i = 0; i < maxZoom - 1; i++) {
 			TilesPerLine[i] = (int) (2 * Math.pow(2, i));
 			TilesPerColumn[i] = (int) Math.pow(2, i);
 			tileOffset[i + 1] = tileOffset[i] + (TilesPerLine[i] * TilesPerColumn[i]);
 		}
 
 		TileCacheFolder = LocatorSettings.TileCacheFolder.getValue();
-		if (LocatorSettings.TileCacheFolderLocal.getValue().length() > 0) TileCacheFolder = LocatorSettings.TileCacheFolderLocal.getValue();
+		if (LocatorSettings.TileCacheFolderLocal.getValue().length() > 0)
+			TileCacheFolder = LocatorSettings.TileCacheFolderLocal.getValue();
 
 		LocatorSettings.TileCacheFolderLocal.addChangedEventListener(TileCacheFolderSettingChanged);
 		LocatorSettings.TileCacheFolder.addChangedEventListener(TileCacheFolderSettingChanged);
@@ -103,8 +100,7 @@ public class Descriptor implements Comparable<Descriptor>
 	 * @param zoom
 	 *            Zoom-Stufe
 	 */
-	public Descriptor(int x, int y, int zoom, boolean NightMode)
-	{
+	public Descriptor(int x, int y, int zoom, boolean NightMode) {
 		this.X = x;
 		this.Y = y;
 		this.Zoom = zoom;
@@ -118,8 +114,7 @@ public class Descriptor implements Comparable<Descriptor>
 	 * @param coord
 	 * @param zoom
 	 */
-	public Descriptor(Coordinate coord, int zoom)
-	{
+	public Descriptor(Coordinate coord, int zoom) {
 		this.X = (int) LongitudeToTileX(zoom, coord.getLongitude());
 		this.Y = (int) LatitudeToTileY(zoom, coord.getLatitude());
 		this.Zoom = zoom;
@@ -133,8 +128,7 @@ public class Descriptor implements Comparable<Descriptor>
 	 * @param original
 	 *            Zu klonende Instanz
 	 */
-	public Descriptor(Descriptor original)
-	{
+	public Descriptor(Descriptor original) {
 		this.X = original.X;
 		this.Y = original.Y;
 		this.Zoom = original.Zoom;
@@ -142,8 +136,7 @@ public class Descriptor implements Comparable<Descriptor>
 		BuffertHash = 0;
 	}
 
-	public Descriptor()
-	{
+	public Descriptor() {
 		this.X = 0;
 		this.Y = 0;
 		this.Zoom = 0;
@@ -154,31 +147,25 @@ public class Descriptor implements Comparable<Descriptor>
 	/**
 	 * Erzeugt einen neuen Deskriptor mit anderer Zoom-Stufe
 	 */
-	public CB_List<Descriptor> AdjustZoom(int newZoomLevel)
-	{
+	public CB_List<Descriptor> AdjustZoom(int newZoomLevel) {
 		int zoomDiff = newZoomLevel - getZoom();
 		int pow = (int) Math.pow(2, Math.abs(zoomDiff));
 
 		CB_List<Descriptor> ret = new CB_List<Descriptor>();
 
-		if (zoomDiff > 0)
-		{
+		if (zoomDiff > 0) {
 
 			Descriptor def = new Descriptor(getX() * pow, getY() * pow, newZoomLevel, this.NightMode);
 
 			int count = pow / 2;
 
-			for (int i = 0; i <= count; i++)
-			{
-				for (int j = 0; j <= count; j++)
-				{
+			for (int i = 0; i <= count; i++) {
+				for (int j = 0; j <= count; j++) {
 					ret.add(new Descriptor(def.getX() + i, def.getY() + j, newZoomLevel, this.NightMode));
 				}
 			}
 
-		}
-		else
-		{
+		} else {
 			ret.add(new Descriptor(getX() / pow, getY() / pow, newZoomLevel, this.NightMode));
 		}
 
@@ -197,8 +184,7 @@ public class Descriptor implements Comparable<Descriptor>
 	 *            zoom
 	 * @return PointD
 	 */
-	public static PointD projectCoordinate(double latitude, double longitude, int projectionZoom)
-	{
+	public static PointD projectCoordinate(double latitude, double longitude, int projectionZoom) {
 		PointD result = new PointD(LongitudeToTileX(projectionZoom, longitude), LatitudeToTileY(projectionZoom, latitude));
 
 		return result;
@@ -213,19 +199,16 @@ public class Descriptor implements Comparable<Descriptor>
 	 *            Longitude
 	 * @return double
 	 */
-	public static double LongitudeToTileX(double zoom, double longitude)
-	{
+	public static double LongitudeToTileX(double zoom, double longitude) {
 		return (longitude + 180.0) / 360.0 * Math.pow(2, zoom);
 
 	}
 
-	public static double LongitudeToTileX(byte zoom, double longitude)
-	{
+	public static double LongitudeToTileX(byte zoom, double longitude) {
 		return LongitudeToTileX(zoom, longitude, 1);
 	}
 
-	public static double LongitudeToTileX(byte zoom, double longitude, int TileSize)
-	{
+	public static double LongitudeToTileX(byte zoom, double longitude, int TileSize) {
 
 		long mapSize = TileSize << zoom;
 		return (longitude + 180) / 360 * mapSize;
@@ -240,23 +223,20 @@ public class Descriptor implements Comparable<Descriptor>
 	 *            Latitude
 	 * @return double
 	 */
-	public static double LatitudeToTileY(double zoom, double latitude)
-	{
+	public static double LatitudeToTileY(double zoom, double latitude) {
 		double latRad = latitude * MathUtils.DEG_RAD;
 
 		return (1 - Math.log(Math.tan(latRad) + (1.0 / Math.cos(latRad))) / Math.PI) / 2 * Math.pow(2, zoom);
 	}
 
-	public static double LatitudeToTileY(byte zoom, double latitude)
-	{
+	public static double LatitudeToTileY(byte zoom, double latitude) {
 		return LatitudeToTileY(zoom, latitude, 1);
 	}
 
 	public final static double PI_180 = (Math.PI / 180);
 	public final static double PI_4 = (Math.PI * 4);
 
-	public static double LatitudeToTileY(byte zoom, double latitude, int TileSize)
-	{
+	public static double LatitudeToTileY(byte zoom, double latitude, int TileSize) {
 		double sinLatitude = Math.sin(latitude * (Math.PI / 180));
 		long mapSize = TileSize << zoom;
 		// FIXME improve this formula so that it works correctly without the clipping
@@ -268,8 +248,7 @@ public class Descriptor implements Comparable<Descriptor>
 	/**
 	 * Berechnet aus der �bergebenen OSM-X-Koordinate den entsprechenden L�ngengrad
 	 */
-	public static double TileXToLongitude(double zoom, double x)
-	{
+	public static double TileXToLongitude(double zoom, double x) {
 
 		return -180.0 + (360.0 * x) / Math.pow(2, zoom);
 	}
@@ -277,8 +256,7 @@ public class Descriptor implements Comparable<Descriptor>
 	/**
 	 * Berechnet aus der �bergebenen OSM-Y-Koordinate den entsprechenden Breitengrad
 	 */
-	public static double TileYToLatitude(double zoom, double y)
-	{
+	public static double TileYToLatitude(double zoom, double y) {
 		double xNom = Math.exp(2 * Math.PI) - Math.exp(4 * Math.PI * Math.pow(2, -zoom) * y);
 		double xDen = Math.exp(2 * Math.PI) + Math.exp(4 * Math.PI * Math.pow(2, -zoom) * y);
 
@@ -297,106 +275,93 @@ public class Descriptor implements Comparable<Descriptor>
 	 * @param desiredZoom
 	 * @return PointD
 	 */
-	public PointD ToWorld(int xOffset, int yOffset, int desiredZoom)
-	{
+	public PointD ToWorld(int xOffset, int yOffset, int desiredZoom) {
 		double adjust = Math.pow(2, (desiredZoom - getZoom()));
 		return new PointD((getX() + xOffset) * adjust * 256, (getY() + yOffset) * adjust * 256);
 	}
 
-	public static PointD ToWorld(double X, double Y, int zoom, int desiredZoom)
-	{
+	public static PointD ToWorld(double X, double Y, int zoom, int desiredZoom) {
 		double adjust = Math.pow(2, (desiredZoom - zoom));
 		return new PointD(X * adjust * 256, Y * adjust * 256);
 	}
 
-	public static PointD FromWorld(double X, double Y, int zoom, int desiredZoom)
-	{
+	public static PointD FromWorld(double X, double Y, int zoom, int desiredZoom) {
 		double adjust = Math.pow(2, (desiredZoom - zoom));
 		return new PointD(X / (adjust * 256), Y / (adjust * 256));
 	}
 
-	public long GetHashCode()
-	{
-		if (BuffertHash != 0) return BuffertHash;
+	public long GetHashCode() {
+		if (BuffertHash != 0)
+			return BuffertHash;
 		BuffertHash = ((tileOffset[Zoom]) + (long) (TilesPerLine[Zoom]) * Y + X);
 		return BuffertHash;
 	}
 
-	public String ToString()
-	{
+	public String ToString() {
 		return "X = " + X + ", Y = " + Y + ", Zoom = " + Zoom;
 	}
 
 	@Override
-	public int compareTo(Descriptor another)
-	{
+	public int compareTo(Descriptor another) {
 		Long hashcode = this.GetHashCode();
 		Long objHashcode = another.GetHashCode();
 
-		if (hashcode.longValue() == objHashcode.longValue()) return 0;
+		if (hashcode.longValue() == objHashcode.longValue())
+			return 0;
 
-		if (hashcode.longValue() < objHashcode.longValue()) return -1;
+		if (hashcode.longValue() < objHashcode.longValue())
+			return -1;
 
 		return 1;
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (obj instanceof Descriptor)
-		{
+	public boolean equals(Object obj) {
+		if (obj instanceof Descriptor) {
 			Descriptor desc = (Descriptor) obj;
-			if (this.GetHashCode() == desc.GetHashCode()) return true;
+			if (this.GetHashCode() == desc.GetHashCode())
+				return true;
 		}
 		return false;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "X=" + this.getX() + " Y=" + this.getY() + " Zoom=" + this.getZoom();
 	}
 
-	public void dispose()
-	{
+	public void dispose() {
 		Data = null;
 	}
 
-	public int getZoom()
-	{
+	public int getZoom() {
 		return Zoom;
 	}
 
-	public void setZoom(int zoom)
-	{
+	public void setZoom(int zoom) {
 		Zoom = zoom;
 		BuffertHash = 0; // Hash must new calculated
 	}
 
-	public int getY()
-	{
+	public int getY() {
 		return Y;
 	}
 
-	public void setY(int y)
-	{
+	public void setY(int y) {
 		Y = y;
 		BuffertHash = 0; // Hash must new calculated
 	}
 
-	public int getX()
-	{
+	public int getX() {
 		return X;
 	}
 
-	public void setX(int x)
-	{
+	public void setX(int x) {
 		X = x;
 		BuffertHash = 0; // Hash must new calculated
 	}
 
-	public void set(int x2, int y2, int zoom2, boolean nightMode2)
-	{
+	public void set(int x2, int y2, int zoom2, boolean nightMode2) {
 		this.X = x2;
 		this.Y = y2;
 		this.Zoom = zoom2;
@@ -405,8 +370,7 @@ public class Descriptor implements Comparable<Descriptor>
 
 	}
 
-	public void set(Descriptor descripter)
-	{
+	public void set(Descriptor descripter) {
 		this.X = descripter.X;
 		this.Y = descripter.Y;
 		this.Zoom = descripter.Zoom;
@@ -419,8 +383,7 @@ public class Descriptor implements Comparable<Descriptor>
 	 * 
 	 * @return
 	 */
-	public Coordinate getCenterCoordinate()
-	{
+	public Coordinate getCenterCoordinate() {
 		double lon = TileXToLongitude(Zoom, X);
 		double lat = TileYToLatitude(Zoom, Y);
 
@@ -440,8 +403,7 @@ public class Descriptor implements Comparable<Descriptor>
 	 * @param Name
 	 * @return
 	 */
-	public String getLocalCachePath(String Name)
-	{
+	public String getLocalCachePath(String Name) {
 		return TileCacheFolder + "/" + Name + "/" + this.getZoom() + "/" + this.getX() + "/" + this.getY();
 	}
 
@@ -451,8 +413,7 @@ public class Descriptor implements Comparable<Descriptor>
 	 * @param desc
 	 * @return
 	 */
-	public int getDistance(Descriptor desc)
-	{
+	public int getDistance(Descriptor desc) {
 		int xDistance = Math.abs(desc.X - this.X);
 		int yDistance = Math.abs(desc.Y - this.Y);
 		return Math.max(xDistance, yDistance);

@@ -11,14 +11,12 @@ import com.thebuzzmedia.sjxp.rule.DefaultRule;
 import com.thebuzzmedia.sjxp.rule.IRule;
 import com.thebuzzmedia.sjxp.rule.IRule.Type;
 
-public class TmsMap
-{
+public class TmsMap {
 	private String Filename;
 	public String url;
 	public String name;
 
-	public TmsMap(String file) throws Exception
-	{
+	public TmsMap(String file) throws Exception {
 		Filename = file;
 
 		System.setProperty("sjxp.namespaces", "false");
@@ -36,26 +34,20 @@ public class TmsMap
 		parserCache.parse(new FileInputStream(Filename), values);
 	}
 
-	private List<IRule<Map<String, String>>> createCustomMultiLayerMapSourceRules(List<IRule<Map<String, String>>> ruleList)
-			throws Exception
-	{
+	private List<IRule<Map<String, String>>> createCustomMultiLayerMapSourceRules(List<IRule<Map<String, String>>> ruleList) throws Exception {
 
 		// Basic GPX Rules
 
-		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMultiLayerMapSource/name")
-		{
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMultiLayerMapSource/name") {
 			@Override
-			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
-			{
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
 				// String layerName = text;
 			}
 		});
 
-		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMultiLayerMapSource/tileType")
-		{
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMultiLayerMapSource/tileType") {
 			@Override
-			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
-			{
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
 				// String tileType = text;
 			}
 		});
@@ -63,26 +55,18 @@ public class TmsMap
 		return ruleList;
 	}
 
-	private List<IRule<Map<String, String>>> createMultiLayersRules(List<IRule<Map<String, String>>> ruleList)
-	{
-		ruleList.add(new DefaultRule<Map<String, String>>(Type.TAG, "/customMultiLayerMapSource/layers/customMapSource")
-		{
+	private List<IRule<Map<String, String>>> createMultiLayersRules(List<IRule<Map<String, String>>> ruleList) {
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.TAG, "/customMultiLayerMapSource/layers/customMapSource") {
 			@Override
-			public void handleTag(XMLParser<Map<String, String>> parser, boolean isStartTag, Map<String, String> values)
-			{
+			public void handleTag(XMLParser<Map<String, String>> parser, boolean isStartTag, Map<String, String> values) {
 
-				if (isStartTag)
-				{
+				if (isStartTag) {
 					values.clear();
-				}
-				else
-				{
-					if (name == null)
-					{
+				} else {
+					if (name == null) {
 						name = values.get("name");
 					}
-					if (url == null)
-					{
+					if (url == null) {
 						url = values.get("url");
 					}
 				}
@@ -90,43 +74,33 @@ public class TmsMap
 			}
 		});
 
-		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMultiLayerMapSource/layers/customMapSource/name")
-		{
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMultiLayerMapSource/layers/customMapSource/name") {
 			@Override
-			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
-			{
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
 				values.put("name", text);
 			}
 		});
-		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMultiLayerMapSource/layers/customMapSource/minZoom")
-		{
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMultiLayerMapSource/layers/customMapSource/minZoom") {
 			@Override
-			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
-			{
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
 				values.put("minZoom", text);
 			}
 		});
-		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMultiLayerMapSource/layers/customMapSource/maxZoom")
-		{
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMultiLayerMapSource/layers/customMapSource/maxZoom") {
 			@Override
-			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
-			{
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
 				values.put("maxZoom", text);
 			}
 		});
-		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMultiLayerMapSource/layers/customMapSource/tileType")
-		{
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMultiLayerMapSource/layers/customMapSource/tileType") {
 			@Override
-			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
-			{
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
 				values.put("tileType", text);
 			}
 		});
-		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMultiLayerMapSource/layers/customMapSource/url")
-		{
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMultiLayerMapSource/layers/customMapSource/url") {
 			@Override
-			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
-			{
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
 				values.put("url", text);
 			}
 		});
@@ -134,26 +108,18 @@ public class TmsMap
 		return ruleList;
 	}
 
-	private List<IRule<Map<String, String>>> createCustomMapSourceRules(List<IRule<Map<String, String>>> ruleList)
-	{
-		ruleList.add(new DefaultRule<Map<String, String>>(Type.TAG, "/customMapSource")
-		{
+	private List<IRule<Map<String, String>>> createCustomMapSourceRules(List<IRule<Map<String, String>>> ruleList) {
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.TAG, "/customMapSource") {
 			@Override
-			public void handleTag(XMLParser<Map<String, String>> parser, boolean isStartTag, Map<String, String> values)
-			{
+			public void handleTag(XMLParser<Map<String, String>> parser, boolean isStartTag, Map<String, String> values) {
 
-				if (isStartTag)
-				{
+				if (isStartTag) {
 					values.clear();
-				}
-				else
-				{
-					if (name == null)
-					{
+				} else {
+					if (name == null) {
 						name = values.get("name");
 					}
-					if (url == null)
-					{
+					if (url == null) {
 						url = values.get("url");
 					}
 				}
@@ -161,43 +127,33 @@ public class TmsMap
 			}
 		});
 
-		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMapSource/name")
-		{
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMapSource/name") {
 			@Override
-			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
-			{
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
 				values.put("name", text);
 			}
 		});
-		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMapSource/minZoom")
-		{
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMapSource/minZoom") {
 			@Override
-			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
-			{
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
 				values.put("minZoom", text);
 			}
 		});
-		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMapSource/maxZoom")
-		{
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMapSource/maxZoom") {
 			@Override
-			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
-			{
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
 				values.put("maxZoom", text);
 			}
 		});
-		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMapSource/tileType")
-		{
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMapSource/tileType") {
 			@Override
-			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
-			{
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
 				values.put("tileType", text);
 			}
 		});
-		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMapSource/url")
-		{
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/customMapSource/url") {
 			@Override
-			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
-			{
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values) {
 				values.put("url", text);
 			}
 		});

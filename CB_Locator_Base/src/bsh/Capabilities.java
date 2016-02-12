@@ -42,12 +42,10 @@ import java.util.Hashtable;
  * <p>
  * Note that tests for class existence here do *not* use the BshClassManager, as it may require other optional class files to be loaded.
  */
-public class Capabilities
-{
+public class Capabilities {
 	private static volatile boolean accessibility = false;
 
-	public static boolean haveSwing()
-	{
+	public static boolean haveSwing() {
 
 		return false;
 	}
@@ -59,27 +57,19 @@ public class Capabilities
 	 * 
 	 * @see bsh.ReflectManager
 	 */
-	public static boolean haveAccessibility()
-	{
+	public static boolean haveAccessibility() {
 		return accessibility;
 	}
 
-	public static void setAccessibility(boolean b) throws Unavailable
-	{
-		if (b == false)
-		{
+	public static void setAccessibility(boolean b) throws Unavailable {
+		if (b == false) {
 			accessibility = false;
-		}
-		else
-		{
+		} else {
 
 			// test basic access
-			try
-			{
+			try {
 				String.class.getDeclaredMethods();
-			}
-			catch (SecurityException e)
-			{
+			} catch (SecurityException e) {
 				throw new Unavailable("Accessibility unavailable: " + e);
 			}
 
@@ -97,25 +87,21 @@ public class Capabilities
 	 * capabilities code must be light enough to be used by any system **including the remote applet**.
 	 */
 	@SuppressWarnings("unchecked")
-	public static boolean classExists(String name)
-	{
+	public static boolean classExists(String name) {
 		Object c = classes.get(name);
 
-		if (c == null)
-		{
-			try
-			{
+		if (c == null) {
+			try {
 				/*
 				 * Note: do *not* change this to BshClassManager plainClassForName() or equivalent. This class must not touch any other bsh
 				 * classes.
 				 */
 				c = Class.forName(name);
-			}
-			catch (ClassNotFoundException e)
-			{
+			} catch (ClassNotFoundException e) {
 			}
 
-			if (c != null) classes.put(c, "unused");
+			if (c != null)
+				classes.put(c, "unused");
 		}
 
 		return c != null;
@@ -126,10 +112,8 @@ public class Capabilities
 	 * attempting to use these packages... so this is runtime exception.
 	 */
 	@SuppressWarnings("serial")
-	public static class Unavailable extends UtilEvalError
-	{
-		public Unavailable(String s)
-		{
+	public static class Unavailable extends UtilEvalError {
+		public Unavailable(String s) {
 			super(s);
 		}
 	}

@@ -10,37 +10,32 @@ import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_ShowCreditsView extends CB_Action_ShowView
-{
-	public CB_Action_ShowCreditsView()
-	{
+public class CB_Action_ShowCreditsView extends CB_Action_ShowView {
+	public CB_Action_ShowCreditsView() {
 		super("Credits", MenuID.AID_SHOW_CREDITS);
 	}
 
 	@Override
-	public void Execute()
-	{
-		if ((TabMainView.creditsView == null) && (tabMainView != null) && (tab != null)) TabMainView.creditsView = new CreditsView(
-				tab.getContentRec(), "CreditsView");
+	public void Execute() {
+		if ((TabMainView.creditsView == null) && (tabMainView != null) && (tab != null))
+			TabMainView.creditsView = new CreditsView(tab.getContentRec(), "CreditsView");
 
-		if ((TabMainView.creditsView != null) && (tab != null)) tab.ShowView(TabMainView.creditsView);
+		if ((TabMainView.creditsView != null) && (tab != null))
+			tab.ShowView(TabMainView.creditsView);
 	}
 
 	@Override
-	public boolean getEnabled()
-	{
+	public boolean getEnabled() {
 		return true;
 	}
 
 	@Override
-	public Sprite getIcon()
-	{
+	public Sprite getIcon() {
 		return SpriteCacheBase.Icons.get(IconName.cb_49.ordinal());
 	}
 
 	@Override
-	public CB_View_Base getView()
-	{
+	public CB_View_Base getView() {
 		return TabMainView.creditsView;
 	}
 

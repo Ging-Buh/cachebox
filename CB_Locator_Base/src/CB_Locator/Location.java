@@ -23,31 +23,32 @@ import java.util.Date;
  * 
  * @author Longri
  */
-public class Location extends CoordinateGPS
-{
+public class Location extends CoordinateGPS {
 	private static final long serialVersionUID = 3339644242602640422L;
 
 	/**
 	 * @author Longri
 	 */
-	public enum ProviderType
-	{
+	public enum ProviderType {
 		/**
 		 * @uml.property name="gPS"
 		 * @uml.associationEnd
 		 */
-		GPS, /**
-		 * @uml.property name="network"
-		 * @uml.associationEnd
-		 */
-		Network, /**
-		 * @uml.property name="saved"
-		 * @uml.associationEnd
-		 */
-		Saved, /**
-		 * @uml.property name="nULL"
-		 * @uml.associationEnd
-		 */
+		GPS,
+		/**
+		* @uml.property name="network"
+		* @uml.associationEnd
+		*/
+		Network,
+		/**
+		* @uml.property name="saved"
+		* @uml.associationEnd
+		*/
+		Saved,
+		/**
+		* @uml.property name="nULL"
+		* @uml.associationEnd
+		*/
 		NULL,
 
 		any
@@ -95,8 +96,7 @@ public class Location extends CoordinateGPS
 	 * @param altitude
 	 * @param provider
 	 */
-	public Location(double latitude, double longitude, float accuracy, boolean hasSpeed, float speed, boolean hasBearing, float bearing, double altitude, ProviderType provider)
-	{
+	public Location(double latitude, double longitude, float accuracy, boolean hasSpeed, float speed, boolean hasBearing, float bearing, double altitude, ProviderType provider) {
 		super(latitude, longitude, (int) accuracy);
 		this.hasSpeed = hasSpeed;
 		this.speed = speed;
@@ -106,13 +106,11 @@ public class Location extends CoordinateGPS
 		this.provider = provider;
 	}
 
-	public Location(int latitude, int longitude, int accuracy)
-	{
+	public Location(int latitude, int longitude, int accuracy) {
 		super(latitude, longitude, accuracy);
 	}
 
-	public Location(double latitude, double longitude, float accuracy)
-	{
+	public Location(double latitude, double longitude, float accuracy) {
 		super(latitude, longitude);
 		this.Accuracy = (int) accuracy;
 	}
@@ -130,8 +128,7 @@ public class Location extends CoordinateGPS
 	 * 
 	 * @return ProviderType as ProviderType
 	 */
-	public ProviderType getProviderType()
-	{
+	public ProviderType getProviderType() {
 		return provider;
 	}
 
@@ -141,8 +138,7 @@ public class Location extends CoordinateGPS
 	 * @return Timestamp as date
 	 * @uml.property name="timeStamp"
 	 */
-	public Date getTimeStamp()
-	{
+	public Date getTimeStamp() {
 		return TimeStamp;
 	}
 
@@ -152,8 +148,7 @@ public class Location extends CoordinateGPS
 	 * @return Latitude as double
 	 */
 	@Override
-	public double getLatitude()
-	{
+	public double getLatitude() {
 		return super.getLatitude();
 	}
 
@@ -163,8 +158,7 @@ public class Location extends CoordinateGPS
 	 * @return Longitude as double
 	 */
 	@Override
-	public double getLongitude()
-	{
+	public double getLongitude() {
 		return super.getLongitude();
 	}
 
@@ -174,8 +168,7 @@ public class Location extends CoordinateGPS
 	 * @return boolean
 	 * @uml.property name="hasBearing"
 	 */
-	public boolean getHasBearing()
-	{
+	public boolean getHasBearing() {
 		return hasBearing;
 	}
 
@@ -185,8 +178,7 @@ public class Location extends CoordinateGPS
 	 * @return float
 	 * @uml.property name="bearing"
 	 */
-	public float getBearing()
-	{
+	public float getBearing() {
 		return bearing;
 	}
 
@@ -196,8 +188,7 @@ public class Location extends CoordinateGPS
 	 * @return boolean
 	 * @uml.property name="hasSpeed"
 	 */
-	public boolean getHasSpeed()
-	{
+	public boolean getHasSpeed() {
 		return hasSpeed;
 	}
 
@@ -207,8 +198,7 @@ public class Location extends CoordinateGPS
 	 * @return float
 	 * @uml.property name="speed"
 	 */
-	public float getSpeed()
-	{
+	public float getSpeed() {
 		return speed;
 	}
 
@@ -218,54 +208,44 @@ public class Location extends CoordinateGPS
 	 * @return
 	 * @uml.property name="altitude"
 	 */
-	public float getAltitude()
-	{
+	public float getAltitude() {
 		return altitude;
 	}
 
-	public CoordinateGPS toCordinate()
-	{
+	public CoordinateGPS toCordinate() {
 		return new CoordinateGPS(this);
 	}
 
 	@Override
-	public void setAccuracy(float accuracy)
-	{
+	public void setAccuracy(float accuracy) {
 		super.setAccuracy(accuracy);
 	}
 
-	public void setHasSpeed(boolean hasSpeed)
-	{
+	public void setHasSpeed(boolean hasSpeed) {
 		this.hasSpeed = hasSpeed;
 	}
 
-	public void setSpeed(float speed)
-	{
+	public void setSpeed(float speed) {
 		this.speed = speed;
 	}
 
-	public void setHasBearing(boolean hasBearing)
-	{
+	public void setHasBearing(boolean hasBearing) {
 		this.hasBearing = hasBearing;
 	}
 
-	public void setBearing(float bearing)
-	{
+	public void setBearing(float bearing) {
 		this.bearing = bearing;
 	}
 
-	public void setAltitude(double altitude)
-	{
+	public void setAltitude(double altitude) {
 		this.altitude = (float) altitude;
 	}
 
-	public void setProvider(ProviderType provider)
-	{
+	public void setProvider(ProviderType provider) {
 		this.provider = provider;
 	}
 
-	public Location cpy()
-	{
+	public Location cpy() {
 		Location ret = new Location(this.latitude, this.longitude, this.Accuracy);
 
 		ret.hasSpeed = this.hasSpeed;
@@ -278,8 +258,7 @@ public class Location extends CoordinateGPS
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("Location Typ:");
 		sb.append(this.provider);

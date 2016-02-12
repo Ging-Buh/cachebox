@@ -22,44 +22,34 @@ import CB_Utils.Lists.CB_List;
 
 import com.badlogic.gdx.Gdx;
 
-public class KeyboardFocusChangedEventList
-{
+public class KeyboardFocusChangedEventList {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(KeyboardFocusChangedEventList.class);
 	public static CB_List<KeyboardFocusChangedEvent> list = new CB_List<KeyboardFocusChangedEvent>();
 
-	public static void Add(KeyboardFocusChangedEvent event)
-	{
-		synchronized (list)
-		{
+	public static void Add(KeyboardFocusChangedEvent event) {
+		synchronized (list) {
 			log.debug("FocusChangedEventList register" + event.toString());
-			if (!list.contains(event)) list.add(event);
+			if (!list.contains(event))
+				list.add(event);
 		}
 	}
 
-	public static void Remove(KeyboardFocusChangedEvent event)
-	{
-		synchronized (list)
-		{
+	public static void Remove(KeyboardFocusChangedEvent event) {
+		synchronized (list) {
 			log.debug("FocusChangedEventList unregister" + event.toString());
 			list.remove(event);
 		}
 	}
 
-	public static void Call(final EditTextFieldBase focus)
-	{
-		if (focus != null && !focus.dontShowKeyBoard())
-		{
+	public static void Call(final EditTextFieldBase focus) {
+		if (focus != null && !focus.dontShowKeyBoard()) {
 			Gdx.input.setOnscreenKeyboardVisible(true);
-		}
-		else
-		{
+		} else {
 			Gdx.input.setOnscreenKeyboardVisible(false);
 		}
-		synchronized (list)
-		{
+		synchronized (list) {
 
-			for (int i = 0, n = list.size(); i < n; i++)
-			{
+			for (int i = 0, n = list.size(); i < n; i++) {
 				KeyboardFocusChangedEvent event = list.get(i);
 				// log.debug("FocusChangedEventList fire to " + event.toString());
 				event.KeyboardFocusChanged(focus);

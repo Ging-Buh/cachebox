@@ -20,7 +20,6 @@ package org.apache.xmlrpc.common;
 
 import org.apache.xmlrpc.XmlRpcException;
 
-
 /** This exception is thrown, if the clients or servers maximum
  * number of concurrent threads is exceeded.
  */

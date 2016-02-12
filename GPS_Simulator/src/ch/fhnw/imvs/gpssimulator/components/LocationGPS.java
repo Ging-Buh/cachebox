@@ -33,8 +33,7 @@ import ch.fhnw.imvs.gpssimulator.data.GPSData.Orientation;
 import ch.fhnw.imvs.gpssimulator.data.GPSDataListener;
 
 @SuppressWarnings("serial")
-public class LocationGPS extends JPanel implements GPSDataListener
-{
+public class LocationGPS extends JPanel implements GPSDataListener {
 
 	static Logger log4j = Logger.getLogger("root");
 
@@ -45,8 +44,7 @@ public class LocationGPS extends JPanel implements GPSDataListener
 	private final JComboBox<Orientation> ew = new JComboBox<Orientation>();
 	private final JComboBox<Orientation> ns = new JComboBox<Orientation>();
 
-	public LocationGPS()
-	{
+	public LocationGPS() {
 		GPSData.addChangeListener(this);
 
 		JPanel labels = new JPanel(new GridLayout(4, 1));
@@ -104,11 +102,9 @@ public class LocationGPS extends JPanel implements GPSDataListener
 			p4.add(spacer);
 		}
 
-		ChangeListener latitudeChangeListener = new ChangeListener()
-		{
+		ChangeListener latitudeChangeListener = new ChangeListener() {
 			@Override
-			public void stateChanged(ChangeEvent e)
-			{
+			public void stateChanged(ChangeEvent e) {
 				GPSData.setLatitude((Double) latitude.getValue());
 			}
 		};
@@ -118,20 +114,16 @@ public class LocationGPS extends JPanel implements GPSDataListener
 
 		ns.addItem(GPSData.Orientation.NORTH);
 		ns.addItem(GPSData.Orientation.SOUTH);
-		ns.addActionListener(new ActionListener()
-		{
+		ns.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
 				GPSData.setNS((GPSData.Orientation) ns.getSelectedItem());
 			}
 		});
 
-		ChangeListener longitudeChangeListener = new ChangeListener()
-		{
+		ChangeListener longitudeChangeListener = new ChangeListener() {
 			@Override
-			public void stateChanged(ChangeEvent e)
-			{
+			public void stateChanged(ChangeEvent e) {
 				GPSData.setLongitude((Double) longitude.getValue());
 			}
 		};
@@ -141,31 +133,25 @@ public class LocationGPS extends JPanel implements GPSDataListener
 
 		ew.addItem(GPSData.Orientation.EAST);
 		ew.addItem(GPSData.Orientation.WEST);
-		ew.addActionListener(new ActionListener()
-		{
+		ew.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
 				GPSData.setEW((GPSData.Orientation) ew.getSelectedItem());
 			}
 		});
 
 		speed.setModel(new SpinnerNumberModel(GPSData.getSpeed(), 0, 1000, 1));
-		speed.addChangeListener(new ChangeListener()
-		{
+		speed.addChangeListener(new ChangeListener() {
 			@Override
-			public void stateChanged(ChangeEvent e)
-			{
+			public void stateChanged(ChangeEvent e) {
 				GPSData.setSpeed((Double) speed.getValue());
 			}
 		});
 
 		altitude.setModel(new SpinnerNumberModel(GPSData.getAltitude(), -100, 10000, 1));
-		altitude.addChangeListener(new ChangeListener()
-		{
+		altitude.addChangeListener(new ChangeListener() {
 			@Override
-			public void stateChanged(ChangeEvent e)
-			{
+			public void stateChanged(ChangeEvent e) {
 				GPSData.setAltitude((Double) altitude.getValue());
 			}
 		});
@@ -203,8 +189,7 @@ public class LocationGPS extends JPanel implements GPSDataListener
 	}
 
 	@Override
-	public void valueChanged()
-	{
+	public void valueChanged() {
 		latitude.setValue(GPSData.getLatitude());
 		longitude.setValue(GPSData.getLongitude());
 

@@ -29,8 +29,7 @@ import CB_UI.Config;
 import CB_UI.RouteOverlay;
 import CB_Utils.Lists.CB_List;
 
-public class simulateForm extends Frame implements ActionListener, WindowListener
-{
+public class simulateForm extends Frame implements ActionListener, WindowListener {
 
 	/**
 	 * 
@@ -43,8 +42,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 	private static Checkbox chekRealSpeed;
 	private static float speed = 50;
 
-	public simulateForm(String s)
-	{
+	public simulateForm(String s) {
 		super(s);
 		setBackground(java.awt.Color.LIGHT_GRAY);
 		setLayout(new FlowLayout());
@@ -89,14 +87,10 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 
 		File dir = new File(Config.TrackFolder.getValue());
 		String[] files = dir.list();
-		if (!(files == null))
-		{
-			if (files.length > 0)
-			{
-				for (String file : files)
-				{
-					if (file.equalsIgnoreCase("simulation.gpx"))
-					{
+		if (!(files == null)) {
+			if (files.length > 0) {
+				for (String file : files) {
+					if (file.equalsIgnoreCase("simulation.gpx")) {
 						// Simmulations GPX gefunden Punkte Laden
 
 						file = Config.TrackFolder.getValue() + "/" + file;
@@ -109,72 +103,59 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 	}
 
 	@Override
-	public void windowActivated(WindowEvent arg0)
-	{
+	public void windowActivated(WindowEvent arg0) {
 
 	}
 
 	@Override
-	public void windowClosed(WindowEvent arg0)
-	{
+	public void windowClosed(WindowEvent arg0) {
 
 	}
 
 	@Override
-	public void windowClosing(WindowEvent arg0)
-	{
+	public void windowClosing(WindowEvent arg0) {
 		System.exit(0);
 	}
 
 	@Override
-	public void windowDeactivated(WindowEvent arg0)
-	{
+	public void windowDeactivated(WindowEvent arg0) {
 	}
 
 	@Override
-	public void windowDeiconified(WindowEvent arg0)
-	{
+	public void windowDeiconified(WindowEvent arg0) {
 	}
 
 	@Override
-	public void windowIconified(WindowEvent arg0)
-	{
+	public void windowIconified(WindowEvent arg0) {
 	}
 
 	@Override
-	public void windowOpened(WindowEvent arg0)
-	{
+	public void windowOpened(WindowEvent arg0) {
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void actionPerformed(ActionEvent event)
-	{
-		if (event.getActionCommand().equals("Load GPX"))
-		{
+	public void actionPerformed(ActionEvent event) {
+		if (event.getActionCommand().equals("Load GPX")) {
 			FileDialog filedia = new FileDialog(this, "öffnen");
 			// filedia.setDirectory(initialPath);
 			filedia.setFile("*.gpx");
 			filedia.show();
 			String filename = filedia.getDirectory() + filedia.getFile();
-			if (filename != null)
-			{
+			if (filename != null) {
 				loadSimulateRoute(filename);
 			}
 			filedia.dispose();
 		}
 
-		else if (event.getActionCommand().equals("Send GPS Signal"))
-		{
+		else if (event.getActionCommand().equals("Send GPS Signal")) {
 			// Parse Coordinate
 			Coordinate pos = new CoordinateGPS(txt.getText());
-			if (pos != null)
-			{
+			if (pos != null) {
 
 				Bearing += 5;
 
-				CB_Locator.Locator.setNewLocation(
-						new CB_Locator.Location(pos.getLatitude(), pos.getLongitude(), 100, true, 2, true, Bearing, 95, ProviderType.GPS));
+				CB_Locator.Locator.setNewLocation(new CB_Locator.Location(pos.getLatitude(), pos.getLongitude(), 100, true, 2, true, Bearing, 95, ProviderType.GPS));
 
 				CB_List<GpsStrength> satList = new CB_List<GpsStrength>(8);
 
@@ -193,22 +174,18 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 
 		}
 
-		else if (event.getActionCommand().equals("Start simulate"))
-		{
+		else if (event.getActionCommand().equals("Start simulate")) {
 			NetworkSend = false;
 			simulateGpsWithGpxFile();
 			pushButton5.setLabel("Stop simulate");
 
 		}
 
-		else if (event.getActionCommand().equals("Stop simulate"))
-		{
+		else if (event.getActionCommand().equals("Stop simulate")) {
 			BreakSimulate = true;
 			pushButton5.setLabel("Start simulate");
 
-		}
-		else if (event.getActionCommand().equals("Set Speed"))
-		{
+		} else if (event.getActionCommand().equals("Set Speed")) {
 
 			float d = Float.parseFloat(speedTxt.getText());
 
@@ -220,8 +197,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 	private static int Bearing = 45;
 
 	@SuppressWarnings("deprecation")
-	private void loadSimulateRoute(String Path)
-	{
+	private void loadSimulateRoute(String Path) {
 
 		simulationRoute = RouteOverlay.MultiLoadRoute(Path, Color.BLACK);
 
@@ -229,21 +205,19 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 		RouteOverlay.remove(simulationRoute);
 
 		// TODO set GPX File Name to lblGPX
-		if (simulationRoute != null && simulationRoute.Name != null)
-		{
+		if (simulationRoute != null && simulationRoute.Name != null) {
 			trackPointIndex = 0;
 			int idx = simulationRoute.FileName.lastIndexOf("\\");
 
 			String Name = "";
 
-			if (idx == -1) Name = simulationRoute.FileName;
+			if (idx == -1)
+				Name = simulationRoute.FileName;
 			else
 				Name = simulationRoute.FileName.substring(idx + 1);
 
 			lblGPX.setText(Name);
-		}
-		else
-		{
+		} else {
 			lblGPX.setText("");
 		}
 
@@ -252,11 +226,9 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 
 	private static Track simulationRoute = null;
 
-	private static void simulateGpsWithGpxFile()
-	{
+	private static void simulateGpsWithGpxFile() {
 
-		if (simulationRoute != null)
-		{
+		if (simulationRoute != null) {
 			// Run simulation
 			BreakSimulate = false;
 			runSimulation();
@@ -272,13 +244,10 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 
 	private static boolean NetworkSend = false;
 
-	private static void runSimulation()
-	{
+	private static void runSimulation() {
 
-		if (BreakSimulate)
-		{
-			if (!NetworkSend)
-			{
+		if (BreakSimulate) {
+			if (!NetworkSend) {
 
 				NetworkSend = true;
 			}
@@ -289,28 +258,25 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 		NetworkSend = false;
 
 		trackPointIndexEnd = simulationRoute.Points.size() - 1;
-		long nextTimeStamp = (simulationRoute.Points.get(trackPointIndex + 1).TimeStamp.getTime()
-				- simulationRoute.Points.get(trackPointIndex).TimeStamp.getTime());
+		long nextTimeStamp = (simulationRoute.Points.get(trackPointIndex + 1).TimeStamp.getTime() - simulationRoute.Points.get(trackPointIndex).TimeStamp.getTime());
 
-		if (!chekRealSpeed.getState()) nextTimeStamp /= 8; // ein wenig schneller ablaufen lassen?
+		if (!chekRealSpeed.getState())
+			nextTimeStamp /= 8; // ein wenig schneller ablaufen lassen?
 
-		if (nextTimeStamp < 0) nextTimeStamp = 10;
+		if (nextTimeStamp < 0)
+			nextTimeStamp = 10;
 
 		Timer timer = new Timer();
-		TimerTask task = new TimerTask()
-		{
+		TimerTask task = new TimerTask() {
 			@Override
-			public void run()
-			{
+			public void run() {
 				TrackPoint trk = simulationRoute.Points.get(trackPointIndex);
 				Coordinate pos = new CoordinateGPS(trk.Y, trk.X);
-				CB_Locator.Locator.setNewLocation(new CB_Locator.Location(pos.getLatitude(), pos.getLongitude(), 100, true, speed, true,
-						(float) trk.Direction, 95, ProviderType.GPS));
+				CB_Locator.Locator.setNewLocation(new CB_Locator.Location(pos.getLatitude(), pos.getLongitude(), 100, true, speed, true, (float) trk.Direction, 95, ProviderType.GPS));
 
 				DesktopMain.compassheading = (float) trk.Direction;
 
-				if (trackPointIndex < trackPointIndexEnd - 2)
-				{
+				if (trackPointIndex < trackPointIndexEnd - 2) {
 					trackPointIndex++;
 					runSimulation();
 				}

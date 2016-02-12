@@ -2,8 +2,7 @@ package CB_Core;
 
 import java.io.Serializable;
 
-public enum ChangeType implements Serializable
-{
+public enum ChangeType implements Serializable {
 	Undefined, // 0
 	SolverText, // 1
 	NotesText, // 2

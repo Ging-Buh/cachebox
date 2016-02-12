@@ -22,18 +22,16 @@ import __Static.InitTestDBs;
 
 /**
  * Der Test ist kein Wirklicher Test. Hier werden die GS CacheTypes Herrunter geladen . Damit die Cache Types immer Aktuell gehalten werden
- * können.
+ * kï¿½nnen.
  * 
  * @author Longri
  */
-public class GenCacheTypes extends TestCase
-{
+public class GenCacheTypes extends TestCase {
 
 	public static String LastAPIError = "";
 
 	@Test
-	public void testGetAllAttributes() throws IOException
-	{
+	public void testGetAllAttributes() throws IOException {
 
 		InitTestDBs.InitalConfig();
 		String accessToken = Config.GetAccessToken();
@@ -42,8 +40,7 @@ public class GenCacheTypes extends TestCase
 		// read all GS Attributes
 		ArrayList<GsCacheTypes> attList = new ArrayList<GsCacheTypes>();
 
-		try
-		{
+		try {
 			HttpGet httppost = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetGeocacheTypes?AccessToken=" + accessToken + "&format=json");
 
 			String result = HttpUtils.Execute(httppost, null);
@@ -54,25 +51,21 @@ public class GenCacheTypes extends TestCase
 				JSONTokener tokener = new JSONTokener(result);
 				JSONObject json = (JSONObject) tokener.nextValue();
 				JSONObject status = json.getJSONObject("Status");
-				if (status.getInt("StatusCode") == 0)
-				{
+				if (status.getInt("StatusCode") == 0) {
 					LastAPIError = "";
 					JSONArray jAttributes = json.getJSONArray("GeocacheTypes");
 
-					for (int ii = 0; ii < jAttributes.length(); ii++)
-					{
+					for (int ii = 0; ii < jAttributes.length(); ii++) {
 						JSONObject jAtt = (JSONObject) jAttributes.get(ii);
 
 						GsCacheTypes tmp = new GsCacheTypes();
-						try
-						{
+						try {
 							tmp.ID = jAtt.getInt("GeocacheTypeId");
 
 							String Name = jAtt.getString("GeocacheTypeName");
 							Name = Name.replace(" ", "_").trim();
 							int Pos1 = Name.indexOf("(");
-							if (Pos1 > 0)
-							{
+							if (Pos1 > 0) {
 								int Pos2 = Name.indexOf(")");
 								String clear = Name.substring(Pos1, Pos2);
 								Name = Name.replace(clear, "").trim();
@@ -83,17 +76,13 @@ public class GenCacheTypes extends TestCase
 							tmp.Url = jAtt.getString("ImageURL");
 
 							tmp.Description = jAtt.getString("Description");
-						}
-						catch (JSONException e)
-						{
+						} catch (JSONException e) {
 						}
 
 						attList.add(tmp);
 					}
 
-				}
-				else
-				{
+				} else {
 					LastAPIError = "";
 					LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
 					LastAPIError += status.getString("StatusMessage") + "\n";
@@ -102,16 +91,12 @@ public class GenCacheTypes extends TestCase
 					return;
 				}
 
-			}
-			catch (JSONException e)
-			{
+			} catch (JSONException e) {
 
 				e.printStackTrace();
 			}
 
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 			return;
 		}
@@ -128,20 +113,17 @@ public class GenCacheTypes extends TestCase
 		// Download ATTR Images
 
 		iterator = attList.iterator();
-		do
-		{
+		do {
 			GsCacheTypes tmp = iterator.next();
 			String lacalName = "./testdata/CacheTypes/" + tmp.Name + ".png";
 
 			FileIO.Download(tmp.Url, lacalName);
 
-		}
-		while (iterator.hasNext());
+		} while (iterator.hasNext());
 
 	}
 
-	class GsCacheTypes
-	{
+	class GsCacheTypes {
 		int ID;
 		String Name;
 

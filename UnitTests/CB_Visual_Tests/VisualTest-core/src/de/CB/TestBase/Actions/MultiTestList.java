@@ -2,7 +2,6 @@ package de.CB.TestBase.Actions;
 
 import java.util.ArrayList;
 
-
 import de.CB.Test.Blog.CircleBlog;
 import de.CB.Test.Geometry.CircleSegmentFull;
 import de.CB.Test.Geometry.CircleSegmentTest;
@@ -31,8 +30,7 @@ import de.CB.Test.Polygon.RedFilled;
 import de.CB.Test.SVG.SVG_Postbox;
 import de.CB.Test.String.TextOnPathTest;
 
-public class MultiTestList extends ArrayList<TestCaseBase>
-{
+public class MultiTestList extends ArrayList<TestCaseBase> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -42,29 +40,26 @@ public class MultiTestList extends ArrayList<TestCaseBase>
 
 	public static final boolean FastTest = false;
 
-	private MultiTestList()
-	{
+	private MultiTestList() {
 		Multi_SVG_Test SVGs = new Multi_SVG_Test();
 
-		
-		 add(new RedFilled());
-		 add(new BmpFilled());
-		
-//		addAll(SVGs);
-//		
+		add(new RedFilled());
+		add(new BmpFilled());
+
+		//		addAll(SVGs);
+		//		
 		add(new PixmapPackertest());
-//			
-//		add(new SVG_Postbox());
-//		add(new TextOnPathTest());
-		
+		//			
+		//		add(new SVG_Postbox());
+		//		add(new TextOnPathTest());
+
 		// add 100 MapTileTests
-//		 for (int i = 0; i < COUNT_PER_TEST; i++)
-//		 {
-//		 add(new Map_freizeitkarte(false));
-//		 }
-//		 add(new MapViewTest());
-		
-		
+		//		 for (int i = 0; i < COUNT_PER_TEST; i++)
+		//		 {
+		//		 add(new Map_freizeitkarte(false));
+		//		 }
+		//		 add(new MapViewTest());
+
 		//
 		add(new Red20Default());
 		add(new green20Butt());
@@ -79,7 +74,7 @@ public class MultiTestList extends ArrayList<TestCaseBase>
 		add(new Red2Dash84());
 		add(new Red2Dash1_15());
 
-		 add(new CircleBlog());
+		add(new CircleBlog());
 		//
 		// // // add 100 MapTileTests
 		// // for (int i = 0; i < COUNT_PER_TEST; i++)
@@ -87,11 +82,11 @@ public class MultiTestList extends ArrayList<TestCaseBase>
 		// // add(new Map_freizeitkarte(false));
 		// // }
 		//
-		 
+
 		add(new CircleSegmentFull());
-		 add(new CircleSegmentTest());
+		add(new CircleSegmentTest());
 		//
-		
+
 		add(new RingSegmentTest());
 		add(new CircleSegmentTest());
 		add(new QuadrangleTest());
@@ -100,24 +95,21 @@ public class MultiTestList extends ArrayList<TestCaseBase>
 		add(new RingTest());
 		add(new GeometryListTest());
 		add(new PolylineOffset());
-		
-		
+
 	}
-	
-	private static int IndexCount=0;
-	
-	public boolean add(TestCaseBase test){
+
+	private static int IndexCount = 0;
+
+	public boolean add(TestCaseBase test) {
 		super.add(test);
 		test.setTestIndex(IndexCount++);
 		return true;
 	}
-	
-	public boolean addAll(ArrayList<TestCaseBase> list)
-	{
+
+	public boolean addAll(ArrayList<TestCaseBase> list) {
 		super.addAll(list);
-		
-		for(TestCaseBase t:list)
-		{
+
+		for (TestCaseBase t : list) {
 			t.setTestIndex(IndexCount);
 		}
 		IndexCount++;

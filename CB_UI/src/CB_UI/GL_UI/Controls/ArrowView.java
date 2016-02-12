@@ -29,50 +29,50 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
  */
 public class ArrowView extends CB_View_Base {
 
-    int arrowX = 200;
-    int arrowY = 300;
+	int arrowX = 200;
+	int arrowY = 300;
 
-    // # Constructors
-    /**
-     * Constructor für ein neues TestView mit Angabe der linken unteren Ecke und der Höhe und Breite
-     * 
-     * @param X
-     * @param Y
-     * @param Width
-     * @param Height
-     */
-    public ArrowView(float X, float Y, float Width, float Height, String Name) {
-	super(X, Y, Width, Height, Name);
+	// # Constructors
+	/**
+	 * Constructor für ein neues TestView mit Angabe der linken unteren Ecke und der Höhe und Breite
+	 * 
+	 * @param X
+	 * @param Y
+	 * @param Width
+	 * @param Height
+	 */
+	public ArrowView(float X, float Y, float Width, float Height, String Name) {
+		super(X, Y, Width, Height, Name);
 
-    }
+	}
 
-    @Override
-    public void render(Batch batch) {
+	@Override
+	public void render(Batch batch) {
 
-	Sprite arrow = SpriteCacheBase.Arrows.get(0);
-	arrow.setRotation(0);
-	arrow.setBounds(-(getWidth() / 2), 0, getWidth(), getHeight());
-	arrow.setOrigin(this.getCenterPosX(), this.getCenterPosY());
-	arrow.draw(batch);
+		Sprite arrow = SpriteCacheBase.Arrows.get(0);
+		arrow.setRotation(0);
+		arrow.setBounds(-(getWidth() / 2), 0, getWidth(), getHeight());
+		arrow.setOrigin(this.getCenterPosX(), this.getCenterPosY());
+		arrow.draw(batch);
 
-    }
+	}
 
-    @Override
-    public boolean onTouchDown(int x, int y, int pointer, int button) {
-	// Pfeil auf Touch-Positon setzen zum Test
-	arrowX = x;
-	arrowY = y;
-	return true;
-    }
+	@Override
+	public boolean onTouchDown(int x, int y, int pointer, int button) {
+		// Pfeil auf Touch-Positon setzen zum Test
+		arrowX = x;
+		arrowY = y;
+		return true;
+	}
 
-    @Override
-    protected void Initial() {
+	@Override
+	protected void Initial() {
 
-    }
+	}
 
-    @Override
-    protected void SkinIsChanged() {
+	@Override
+	protected void SkinIsChanged() {
 
-    }
+	}
 
 }

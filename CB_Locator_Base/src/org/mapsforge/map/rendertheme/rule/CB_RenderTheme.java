@@ -26,8 +26,7 @@ import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
 /**
  * A RenderTheme defines how ways and nodes are drawn.
  */
-public class CB_RenderTheme
-{
+public class CB_RenderTheme {
 	private static final int MATCHING_CACHE_SIZE = 512;
 
 	private final float baseStrokeWidth;
@@ -38,8 +37,7 @@ public class CB_RenderTheme
 	private final AtomicInteger refCount = new AtomicInteger();
 	private final ArrayList<Rule> rulesList; // NOPMD we need specific interface
 
-	CB_RenderTheme(CB_RenderThemeBuilder renderThemeBuilder)
-	{
+	CB_RenderTheme(CB_RenderThemeBuilder renderThemeBuilder) {
 		this.baseStrokeWidth = renderThemeBuilder.baseStrokeWidth;
 		this.baseTextSize = renderThemeBuilder.baseTextSize;
 		this.mapBackground = renderThemeBuilder.mapBackground;
@@ -50,13 +48,10 @@ public class CB_RenderTheme
 	/**
 	 * Must be called when this RenderTheme gets destroyed to clean up and free resources.
 	 */
-	public void destroy()
-	{
-		if (this.refCount.decrementAndGet() < 0)
-		{
+	public void destroy() {
+		if (this.refCount.decrementAndGet() < 0) {
 			this.matchingCache.clear();
-			for (Rule r : this.rulesList)
-			{
+			for (Rule r : this.rulesList) {
 				r.destroy();
 			}
 		}
@@ -65,21 +60,18 @@ public class CB_RenderTheme
 	/**
 	 * @return the number of distinct drawing levels required by this RenderTheme.
 	 */
-	public int getLevels()
-	{
+	public int getLevels() {
 		return this.levels;
 	}
 
 	/**
 	 * @return the map background color of this RenderTheme.
 	 */
-	public int getMapBackground()
-	{
+	public int getMapBackground() {
 		return this.mapBackground;
 	}
 
-	public void incrementRefCount()
-	{
+	public void incrementRefCount() {
 		this.refCount.incrementAndGet();
 	}
 
@@ -93,8 +85,7 @@ public class CB_RenderTheme
 	 * @param zoomLevel
 	 *            the zoom level at which the way should be matched.
 	 */
-	public void matchClosedWay(RenderCallback renderCallback, List<Tag> tags, byte zoomLevel)
-	{
+	public void matchClosedWay(RenderCallback renderCallback, List<Tag> tags, byte zoomLevel) {
 		matchWay(renderCallback, tags, zoomLevel, Closed.YES);
 	}
 
@@ -108,8 +99,7 @@ public class CB_RenderTheme
 	 * @param zoomLevel
 	 *            the zoom level at which the way should be matched.
 	 */
-	public void matchLinearWay(RenderCallback renderCallback, List<Tag> tags, byte zoomLevel)
-	{
+	public void matchLinearWay(RenderCallback renderCallback, List<Tag> tags, byte zoomLevel) {
 		matchWay(renderCallback, tags, zoomLevel, Closed.NO);
 	}
 
@@ -123,10 +113,8 @@ public class CB_RenderTheme
 	 * @param zoomLevel
 	 *            the zoom level at which the node should be matched.
 	 */
-	public void matchNode(RenderCallback renderCallback, List<Tag> tags, byte zoomLevel)
-	{
-		for (int i = 0, n = this.rulesList.size(); i < n; ++i)
-		{
+	public void matchNode(RenderCallback renderCallback, List<Tag> tags, byte zoomLevel) {
+		for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
 			this.rulesList.get(i).matchNode(renderCallback, tags, zoomLevel);
 		}
 	}
@@ -137,10 +125,8 @@ public class CB_RenderTheme
 	 * @param scaleFactor
 	 *            the factor by which the stroke width should be scaled.
 	 */
-	public void scaleStrokeWidth(float scaleFactor)
-	{
-		for (int i = 0, n = this.rulesList.size(); i < n; ++i)
-		{
+	public void scaleStrokeWidth(float scaleFactor) {
+		for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
 			this.rulesList.get(i).scaleStrokeWidth(scaleFactor * this.baseStrokeWidth);
 		}
 	}
@@ -151,45 +137,36 @@ public class CB_RenderTheme
 	 * @param scaleFactor
 	 *            the factor by which the text size should be scaled.
 	 */
-	public void scaleTextSize(float scaleFactor)
-	{
-		for (int i = 0, n = this.rulesList.size(); i < n; ++i)
-		{
+	public void scaleTextSize(float scaleFactor) {
+		for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
 			this.rulesList.get(i).scaleTextSize(scaleFactor * this.baseTextSize);
 		}
 	}
 
-	void addRule(Rule rule)
-	{
+	void addRule(Rule rule) {
 		this.rulesList.add(rule);
 	}
 
-	void complete()
-	{
+	void complete() {
 		this.rulesList.trimToSize();
-		for (int i = 0, n = this.rulesList.size(); i < n; ++i)
-		{
+		for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
 			this.rulesList.get(i).onComplete();
 		}
 	}
 
-	void setLevels(int levels)
-	{
+	void setLevels(int levels) {
 		this.levels = levels;
 	}
 
-	private void matchWay(RenderCallback renderCallback, List<Tag> tags, byte zoomLevel, Closed closed)
-	{
+	private void matchWay(RenderCallback renderCallback, List<Tag> tags, byte zoomLevel, Closed closed) {
 		// FIXME Use wildcard for MatchingCacheKey
 
 		CB_MatchingCacheKey matchingCacheKey = new CB_MatchingCacheKey(tags, zoomLevel, closed);
 
 		List<RenderInstruction> matchingList = this.matchingCache.get(matchingCacheKey);
-		if (matchingList != null)
-		{
+		if (matchingList != null) {
 			// cache hit
-			for (int i = 0, n = matchingList.size(); i < n; ++i)
-			{
+			for (int i = 0, n = matchingList.size(); i < n; ++i) {
 				matchingList.get(i).renderWay(renderCallback, tags);
 			}
 			return;
@@ -197,8 +174,7 @@ public class CB_RenderTheme
 
 		// cache miss
 		matchingList = new ArrayList<RenderInstruction>();
-		for (int i = 0, n = this.rulesList.size(); i < n; ++i)
-		{
+		for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
 			this.rulesList.get(i).matchWay(renderCallback, tags, zoomLevel, closed, matchingList);
 		}
 

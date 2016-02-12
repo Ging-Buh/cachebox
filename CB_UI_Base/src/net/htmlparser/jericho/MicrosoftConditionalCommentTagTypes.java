@@ -81,7 +81,7 @@ public final class MicrosoftConditionalCommentTagTypes {
 	 *   <dd><code>&lt;!--[if IE]&gt;</code></dd>
 	 * </dl>
 	 */
-	public static final StartTagType DOWNLEVEL_HIDDEN_IF=StartTagTypeMicrosoftDownlevelHiddenConditionalCommentIf.INSTANCE;
+	public static final StartTagType DOWNLEVEL_HIDDEN_IF = StartTagTypeMicrosoftDownlevelHiddenConditionalCommentIf.INSTANCE;
 
 	/**
 	 * The tag type given to a <a target="_blank" href="http://en.wikipedia.org/wiki/Conditional_comment#Downlevel-hidden_conditional_comment">downlevel-hidden conditional comment</a> <code>endif</code> tag
@@ -109,7 +109,7 @@ public final class MicrosoftConditionalCommentTagTypes {
 	 *   <dd><code>&lt;![endif]&gt;</code></dd>
 	 * </dl>
 	 */
-	public static final StartTagType DOWNLEVEL_HIDDEN_ENDIF=StartTagTypeMicrosoftDownlevelHiddenConditionalCommentEndif.INSTANCE;
+	public static final StartTagType DOWNLEVEL_HIDDEN_ENDIF = StartTagTypeMicrosoftDownlevelHiddenConditionalCommentEndif.INSTANCE;
 
 	/**
 	 * The tag type given to a <a target="_blank" href="http://en.wikipedia.org/wiki/Conditional_comment#Downlevel-revealed_conditional_comment">downlevel-revealed conditional comment</a> <code>if</code> tag
@@ -135,7 +135,7 @@ public final class MicrosoftConditionalCommentTagTypes {
 	 *   <dd><code>&lt;![if !IE]&gt;</code></dd>
 	 * </dl>
 	 */
-	public static final StartTagType DOWNLEVEL_REVEALED_IF=StartTagTypeMicrosoftDownlevelRevealedConditionalCommentIf.INSTANCE;
+	public static final StartTagType DOWNLEVEL_REVEALED_IF = StartTagTypeMicrosoftDownlevelRevealedConditionalCommentIf.INSTANCE;
 
 	/**
 	 * The tag type given to a <a target="_blank" href="http://en.wikipedia.org/wiki/Conditional_comment#Downlevel-revealed_conditional_comment">downlevel-revealed conditional comment</a> <code>endif</code> tag
@@ -163,7 +163,7 @@ public final class MicrosoftConditionalCommentTagTypes {
 	 *   <dd><code>&lt;![endif]&gt;</code></dd>
 	 * </dl>
 	 */
-	public static final StartTagType DOWNLEVEL_REVEALED_ENDIF=StartTagTypeMicrosoftDownlevelRevealedConditionalCommentEndif.INSTANCE;
+	public static final StartTagType DOWNLEVEL_REVEALED_ENDIF = StartTagTypeMicrosoftDownlevelRevealedConditionalCommentEndif.INSTANCE;
 
 	/**
 	 * The tag type given to a validating <a target="_blank" href="http://en.wikipedia.org/wiki/Conditional_comment#Downlevel-revealed_conditional_comment">downlevel-revealed conditional comment</a> <code>if</code> tag
@@ -192,7 +192,7 @@ public final class MicrosoftConditionalCommentTagTypes {
 	 *   <dd><code>&lt;!--[if !(IE 5)]&gt;&lt;!--&gt;</code></dd>
 	 * </dl>
 	 */
-	public static final StartTagType DOWNLEVEL_REVEALED_VALIDATING_IF=StartTagTypeMicrosoftDownlevelRevealedValidatingConditionalCommentIf.INSTANCE;
+	public static final StartTagType DOWNLEVEL_REVEALED_VALIDATING_IF = StartTagTypeMicrosoftDownlevelRevealedValidatingConditionalCommentIf.INSTANCE;
 
 	/**
 	 * The tag type given to a validating <a target="_blank" href="http://en.wikipedia.org/wiki/Conditional_comment#Downlevel-revealed_conditional_comment">downlevel-revealed conditional comment</a> <code>endif</code> tag
@@ -223,7 +223,7 @@ public final class MicrosoftConditionalCommentTagTypes {
 	 *   <dd><code>&lt;!--&lt;![endif]--&gt;</code></dd>
 	 * </dl>
 	 */
-	public static final StartTagType DOWNLEVEL_REVEALED_VALIDATING_ENDIF=StartTagTypeMicrosoftDownlevelRevealedValidatingConditionalCommentEndif.INSTANCE;
+	public static final StartTagType DOWNLEVEL_REVEALED_VALIDATING_ENDIF = StartTagTypeMicrosoftDownlevelRevealedValidatingConditionalCommentEndif.INSTANCE;
 
 	/**
 	 * The tag type given to a validating simplified <a target="_blank" href="http://en.wikipedia.org/wiki/Conditional_comment#Downlevel-revealed_conditional_comment">downlevel-revealed conditional comment</a> <code>if</code> tag
@@ -255,19 +255,14 @@ public final class MicrosoftConditionalCommentTagTypes {
 	 *   <dd><code>&lt;!--[if !IE]&gt;--&gt;</code></dd>
 	 * </dl>
 	 */
-	public static final StartTagType DOWNLEVEL_REVEALED_VALIDATING_SIMPLIFIED_IF=StartTagTypeMicrosoftDownlevelRevealedValidatingSimplifiedConditionalCommentIf.INSTANCE;
+	public static final StartTagType DOWNLEVEL_REVEALED_VALIDATING_SIMPLIFIED_IF = StartTagTypeMicrosoftDownlevelRevealedValidatingSimplifiedConditionalCommentIf.INSTANCE;
 
-	private static final TagType[] TAG_TYPES={
-		DOWNLEVEL_HIDDEN_IF,
-		DOWNLEVEL_HIDDEN_ENDIF,
-		DOWNLEVEL_REVEALED_IF,
-		DOWNLEVEL_REVEALED_ENDIF,
-		DOWNLEVEL_REVEALED_VALIDATING_IF, // this must come after DOWNLEVEL_HIDDEN_IF so it has higher precedence
-		DOWNLEVEL_REVEALED_VALIDATING_SIMPLIFIED_IF, // this must come after DOWNLEVEL_HIDDEN_IF so it has higher precedence
-		DOWNLEVEL_REVEALED_VALIDATING_ENDIF
-	};
+	private static final TagType[] TAG_TYPES = { DOWNLEVEL_HIDDEN_IF, DOWNLEVEL_HIDDEN_ENDIF, DOWNLEVEL_REVEALED_IF, DOWNLEVEL_REVEALED_ENDIF, DOWNLEVEL_REVEALED_VALIDATING_IF, // this must come after DOWNLEVEL_HIDDEN_IF so it has higher precedence
+			DOWNLEVEL_REVEALED_VALIDATING_SIMPLIFIED_IF, // this must come after DOWNLEVEL_HIDDEN_IF so it has higher precedence
+			DOWNLEVEL_REVEALED_VALIDATING_ENDIF };
 
-	private MicrosoftConditionalCommentTagTypes() {}
+	private MicrosoftConditionalCommentTagTypes() {
+	}
 
 	/** 
 	 * {@linkplain TagType#register() Registers} all of the tag types defined in this class at once.
@@ -275,16 +270,18 @@ public final class MicrosoftConditionalCommentTagTypes {
 	 * The tag types must be registered before the parser will recognise them.
 	 */
 	public static void register() {
-		for (TagType tagType : TAG_TYPES) tagType.register();
+		for (TagType tagType : TAG_TYPES)
+			tagType.register();
 	}
 
 	/** 
 	 * {@linkplain TagType#deregister() Deregisters} all of the tag types defined in this class at once.
 	 */
 	public static void deregister() {
-		for (TagType tagType : TAG_TYPES) tagType.deregister();
+		for (TagType tagType : TAG_TYPES)
+			tagType.deregister();
 	}
-	
+
 	/**
 	 * Indicates whether the specified tag type is defined in this class.
 	 *
@@ -292,9 +289,10 @@ public final class MicrosoftConditionalCommentTagTypes {
 	 * @return <code>true</code> if the specified tag type is defined in this class, otherwise <code>false</code>.
 	 */
 	public static boolean defines(final TagType tagType) {
-		for (TagType definedTagType : TAG_TYPES) if (tagType==definedTagType) return true;
+		for (TagType definedTagType : TAG_TYPES)
+			if (tagType == definedTagType)
+				return true;
 		return false;
 	}
-	
-}
 
+}

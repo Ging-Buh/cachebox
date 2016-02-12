@@ -26,9 +26,7 @@ import CB_Core.CB_Core.Import.IndexDBTest;
 import CB_Core.CB_Core.Import.UnzipTest;
 
 @RunWith(Suite.class)
-@SuiteClasses(
-	{ GPX_Unzip_Import_Test.class, GpxImportTest.class, GSAKGpxImportTest.class, UnzipTest.class, IndexDBTest.class })
-public class Import_tests
-{
+@SuiteClasses({ GPX_Unzip_Import_Test.class, GpxImportTest.class, GSAKGpxImportTest.class, UnzipTest.class, IndexDBTest.class })
+public class Import_tests {
 
 }

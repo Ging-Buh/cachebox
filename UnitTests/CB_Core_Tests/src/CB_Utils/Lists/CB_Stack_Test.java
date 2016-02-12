@@ -9,11 +9,9 @@ import CB_UI_Base.Global;
 import CB_Utils.Lists.CB_Stack.iCompare;
 import __Static.InitTestDBs;
 
-public class CB_Stack_Test extends TestCase
-{
+public class CB_Stack_Test extends TestCase {
 	@Test
-	public void test_Stack()
-	{
+	public void test_Stack() {
 		InitTestDBs.InitalConfig();
 
 		CB_Stack<Descriptor> stack = new CB_Stack<Descriptor>();
@@ -131,8 +129,7 @@ public class CB_Stack_Test extends TestCase
 	}
 
 	@Test
-	public void test_Stack_Sort()
-	{
+	public void test_Stack_Sort() {
 		InitTestDBs.InitalConfig();
 
 		CB_Stack<Descriptor> stack = new CB_Stack<Descriptor>();
@@ -165,25 +162,23 @@ public class CB_Stack_Test extends TestCase
 		assertTrue("Stack must contain this Descriptor", stack.contains(desc_6));
 		assertTrue("Stack must contain this Descriptor", stack.contains(desc_7));
 
-		stack.sort(new iCompare<Descriptor>()
-		{
+		stack.sort(new iCompare<Descriptor>() {
 
 			@Override
-			public int compare(Descriptor item1, Descriptor item2)
-			{
+			public int compare(Descriptor item1, Descriptor item2) {
 				int distanceFromCenter1 = item1.getDistance(desc_3);
 				int distanceFromCenter2 = item2.getDistance(desc_3);
-				if (distanceFromCenter1 == distanceFromCenter2) return 0;
-				if (distanceFromCenter1 > distanceFromCenter2) return 1;
+				if (distanceFromCenter1 == distanceFromCenter2)
+					return 0;
+				if (distanceFromCenter1 > distanceFromCenter2)
+					return 1;
 				return -1;
 			}
 		});
 
-		Descriptor[] test = new Descriptor[]
-			{ desc_3, desc_1, desc_4, desc_5, desc_6, desc_2, desc_7 };
+		Descriptor[] test = new Descriptor[] { desc_3, desc_1, desc_4, desc_5, desc_6, desc_2, desc_7 };
 
-		for (int i = 0; i < 7; i++)
-		{
+		for (int i = 0; i < 7; i++) {
 			Descriptor desc = stack.get();
 			System.out.print(desc.toString() + " == " + test[i].toString() + Global.br);
 			assertEquals("wrong sequence", desc, test[i]);

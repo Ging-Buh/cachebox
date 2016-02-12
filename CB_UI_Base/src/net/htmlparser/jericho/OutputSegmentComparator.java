@@ -24,11 +24,14 @@ import java.util.*;
 
 final class OutputSegmentComparator implements Comparator<OutputSegment> {
 	public int compare(final OutputSegment outputSegment1, final OutputSegment outputSegment2) {
-		if (outputSegment1.getBegin()<outputSegment2.getBegin()) return -1;
-		if (outputSegment1.getBegin()>outputSegment2.getBegin()) return 1;
-		if (outputSegment1.getEnd()<outputSegment2.getEnd()) return -1;
-		if (outputSegment1.getEnd()>outputSegment2.getEnd()) return 1;
+		if (outputSegment1.getBegin() < outputSegment2.getBegin())
+			return -1;
+		if (outputSegment1.getBegin() > outputSegment2.getBegin())
+			return 1;
+		if (outputSegment1.getEnd() < outputSegment2.getEnd())
+			return -1;
+		if (outputSegment1.getEnd() > outputSegment2.getEnd())
+			return 1;
 		return 0;
 	}
 }
-

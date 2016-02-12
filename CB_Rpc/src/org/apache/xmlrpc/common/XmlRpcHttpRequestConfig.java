@@ -21,7 +21,6 @@ package org.apache.xmlrpc.common;
 import org.apache.xmlrpc.common.XmlRpcHttpConfig;
 import org.apache.xmlrpc.common.XmlRpcStreamRequestConfig;
 
-
 /** Extension of {@link org.apache.xmlrpc.client.XmlRpcClientConfig}
  * for HTTP based transport. Provides details like server URL,
  * user credentials, and so on.
@@ -31,19 +30,20 @@ public interface XmlRpcHttpRequestConfig extends XmlRpcStreamRequestConfig, XmlR
 	 * @return User name or null, if no basic HTTP authentication is being used.
 	 */
 	String getBasicUserName();
+
 	/** Returns the password being used for basic HTTP authentication.
 	 * @return Password or null, if no basic HTTP authentication is beind used.
 	 * @throws IllegalStateException A user name is configured, but no password.
-	 */ 
+	 */
 	String getBasicPassword();
-    
-    /** Return the connection timeout in milliseconds
-     * @return connection timeout in milliseconds or 0 if no set
-     */
-    int getConnectionTimeout();
-    
-    /** Return the reply timeout in milliseconds
-     * @return reply timeout in milliseconds or 0 if no set
-     */
-    int getReplyTimeout();
+
+	/** Return the connection timeout in milliseconds
+	 * @return connection timeout in milliseconds or 0 if no set
+	 */
+	int getConnectionTimeout();
+
+	/** Return the reply timeout in milliseconds
+	 * @return reply timeout in milliseconds or 0 if no set
+	 */
+	int getReplyTimeout();
 }

@@ -5,22 +5,18 @@ import java.util.ArrayList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 
-public class SelectedCacheEventList
-{
+public class SelectedCacheEventList {
 	public static ArrayList<SelectedCacheEvent> list = new ArrayList<SelectedCacheEvent>();
 
-	public static void Add(SelectedCacheEvent event)
-	{
-		synchronized (list)
-		{
-			if (!list.contains(event)) list.add(event);
+	public static void Add(SelectedCacheEvent event) {
+		synchronized (list) {
+			if (!list.contains(event))
+				list.add(event);
 		}
 	}
 
-	public static void Remove(SelectedCacheEvent event)
-	{
-		synchronized (list)
-		{
+	public static void Remove(SelectedCacheEvent event) {
+		synchronized (list) {
 			list.remove(event);
 		}
 	}
@@ -28,46 +24,38 @@ public class SelectedCacheEventList
 	private static Cache lastSelectedCache;
 	private static Waypoint lastSelectedWayPoint;
 
-	public static void Call(final Cache selectedCache, final Waypoint waypoint)
-	{
+	public static void Call(final Cache selectedCache, final Waypoint waypoint) {
 		boolean change = true;
 
-		if (lastSelectedCache != null)
-		{
-			if (lastSelectedCache == selectedCache)
-			{
-				if (lastSelectedWayPoint != null)
-				{
-					if (lastSelectedWayPoint == waypoint) change = false;
-				}
-				else
-				{
-					if (waypoint == null) change = false;
+		if (lastSelectedCache != null) {
+			if (lastSelectedCache == selectedCache) {
+				if (lastSelectedWayPoint != null) {
+					if (lastSelectedWayPoint == waypoint)
+						change = false;
+				} else {
+					if (waypoint == null)
+						change = false;
 				}
 			}
 		}
 
-		if (change) GlobalLocationReceiver.resetApprouch();
+		if (change)
+			GlobalLocationReceiver.resetApprouch();
 
-		if (selectChangeThread != null)
-		{
-			if (selectChangeThread.getState() != Thread.State.TERMINATED) return;
+		if (selectChangeThread != null) {
+			if (selectChangeThread.getState() != Thread.State.TERMINATED)
+				return;
 			else
 				selectChangeThread = null;
 		}
 
-		if (selectedCache != null)
-		{
-			selectChangeThread = new Thread(new Runnable()
-			{
+		if (selectedCache != null) {
+			selectChangeThread = new Thread(new Runnable() {
 
 				@Override
-				public void run()
-				{
-					synchronized (list)
-					{
-						for (SelectedCacheEvent event : list)
-						{
+				public void run() {
+					synchronized (list) {
+						for (SelectedCacheEvent event : list) {
 							event.SelectedCacheChanged(selectedCache, waypoint);
 						}
 

@@ -45,8 +45,7 @@ import de.cachebox_test.main;
 
 ;
 
-public class ActivityUtils
-{
+public class ActivityUtils {
 	private static int sTheme = 1;
 
 	public final static int THEME_DEFAULT = 0;
@@ -55,16 +54,14 @@ public class ActivityUtils
 	public final static int THEME_DAY_TRANSPARENT = 3;
 	public final static int THEME_NIGHT_TRANSPARENT = 4;
 
-	public static void changeToTheme(AndroidApplication activity, int theme)
-	{
+	public static void changeToTheme(AndroidApplication activity, int theme) {
 		changeToTheme(activity, theme, false);
 	}
 
 	/**
 	 * Set the theme of the Activity, and restart it by creating a new Activity of the same type.
 	 */
-	public static void changeToTheme(AndroidApplication activity, int theme, boolean firstStart)
-	{
+	public static void changeToTheme(AndroidApplication activity, int theme, boolean firstStart) {
 		sTheme = theme;
 		main.isRestart = true;
 		main.isFirstStart = firstStart;
@@ -74,10 +71,8 @@ public class ActivityUtils
 	}
 
 	/** Set the theme of the activity, according to the configuration. */
-	public static void onActivityCreateSetTheme(AndroidApplication activity)
-	{
-		switch (sTheme)
-		{
+	public static void onActivityCreateSetTheme(AndroidApplication activity) {
+		switch (sTheme) {
 		default:
 		case THEME_DEFAULT:
 			break;
@@ -100,16 +95,14 @@ public class ActivityUtils
 
 	}
 
-	public static void changeToTheme(Activity activity, int theme)
-	{
+	public static void changeToTheme(Activity activity, int theme) {
 		changeToTheme(activity, theme, false);
 	}
 
 	/**
 	 * Set the theme of the Activity, and restart it by creating a new Activity of the same type.
 	 */
-	public static void changeToTheme(Activity activity, int theme, boolean firstStart)
-	{
+	public static void changeToTheme(Activity activity, int theme, boolean firstStart) {
 		sTheme = theme;
 		main.isRestart = true;
 		main.isFirstStart = firstStart;
@@ -119,10 +112,8 @@ public class ActivityUtils
 	}
 
 	/** Set the theme of the activity, according to the configuration. */
-	public static void onActivityCreateSetTheme(Activity activity)
-	{
-		switch (sTheme)
-		{
+	public static void onActivityCreateSetTheme(Activity activity) {
+		switch (sTheme) {
 		default:
 		case THEME_DEFAULT:
 			break;
@@ -145,22 +136,18 @@ public class ActivityUtils
 
 	}
 
-	public static int drawStaticLayout(Canvas canvas, StaticLayout layout, int x, int y)
-	{
+	public static int drawStaticLayout(Canvas canvas, StaticLayout layout, int x, int y) {
 		canvas.translate(x, y);
 		layout.draw(canvas);
 		canvas.translate(-x, -y);
 		return layout.getHeight();
 	}
 
-	public static void drawFillRoundRecWithBorder(Canvas canvas, CB_Rect rec, int BorderSize, int BorderColor, int FillColor)
-	{
+	public static void drawFillRoundRecWithBorder(Canvas canvas, CB_Rect rec, int BorderSize, int BorderColor, int FillColor) {
 		drawFillRoundRecWithBorder(canvas, rec, BorderSize, BorderColor, FillColor, UiSizes.that.getCornerSize());
 	}
 
-	public static void drawFillRoundRecWithBorder(Canvas canvas, CB_Rect rec, int BorderSize, int BorderColor, int FillColor,
-			int CornerSize)
-	{
+	public static void drawFillRoundRecWithBorder(Canvas canvas, CB_Rect rec, int BorderSize, int BorderColor, int FillColor, int CornerSize) {
 		Paint drawPaint = new Paint();
 		drawPaint.setAntiAlias(true);
 		drawPaint.setStyle(Style.STROKE);
@@ -175,8 +162,7 @@ public class ActivityUtils
 		// final Rect rect = new Rect(rec.getLeft() + BorderSize, rec.getBottom() + BorderSize, rec.getRight() - BorderSize, rec.getTop()
 		// - BorderSize);
 
-		final Rect rect = new Rect(rec.getPos().x + BorderSize, rec.getPos().y + BorderSize, rec.getCrossPos().x - BorderSize * 2,
-				rec.getCrossPos().y - BorderSize * 2);
+		final Rect rect = new Rect(rec.getPos().x + BorderSize, rec.getPos().y + BorderSize, rec.getCrossPos().x - BorderSize * 2, rec.getCrossPos().y - BorderSize * 2);
 
 		final RectF rectF = new RectF(rect);
 
@@ -197,8 +183,7 @@ public class ActivityUtils
 	// / <param name="x"></param>
 	// / <param name="y"></param>
 	// / <param name="height"></param>
-	public static int PutImageTargetHeight(Canvas canvas, Drawable image, int x, int y, int height)
-	{
+	public static int PutImageTargetHeight(Canvas canvas, Drawable image, int x, int y, int height) {
 		// float scale = (float)height / (float)image.getBounds().height();
 		// int width = (int)Math.round(image.getBounds().width() * scale);
 
@@ -213,13 +198,11 @@ public class ActivityUtils
 		return width;
 	}
 
-	public static int PutImageTargetHeightColor(Canvas canvas, Drawable image, int x, int y, int height, int color)
-	{
+	public static int PutImageTargetHeightColor(Canvas canvas, Drawable image, int x, int y, int height, int color) {
 		return PutImageTargetHeightColor(canvas, image, x, y, height, color, Mode.MULTIPLY);
 	}
 
-	public static int PutImageTargetHeightColor(Canvas canvas, Drawable image, int x, int y, int height, int color, Mode porterDuff)
-	{
+	public static int PutImageTargetHeightColor(Canvas canvas, Drawable image, int x, int y, int height, int color, Mode porterDuff) {
 
 		float scale = (float) height / (float) image.getIntrinsicHeight();
 		int width = (int) Math.round(image.getIntrinsicWidth() * scale);
@@ -243,8 +226,7 @@ public class ActivityUtils
 	// / <param name="y"></param>
 	// / <param name="height"></param>
 	@SuppressWarnings("deprecation")
-	public static int PutImageTargetHeight(Canvas canvas, Drawable image, double Angle, int x, int y, int newHeight)
-	{
+	public static int PutImageTargetHeight(Canvas canvas, Drawable image, double Angle, int x, int y, int newHeight) {
 
 		float scale = (float) newHeight / (float) image.getIntrinsicHeight();
 		float newWidth = (int) Math.round((float) image.getIntrinsicWidth() * scale);
@@ -275,10 +257,10 @@ public class ActivityUtils
 	}
 
 	@SuppressWarnings("deprecation")
-	public static int PutImageScale(Canvas canvas, Drawable image, double Angle, int x, int y, double scale)
-	{
+	public static int PutImageScale(Canvas canvas, Drawable image, double Angle, int x, int y, double scale) {
 
-		if (scale == 0.0) return 0;
+		if (scale == 0.0)
+			return 0;
 
 		float newWidth = (int) Math.round((float) image.getIntrinsicWidth() * scale);
 		float newHeight = (int) Math.round((float) image.getIntrinsicHeight() * scale);
@@ -313,19 +295,16 @@ public class ActivityUtils
 	 * 
 	 * @param listView
 	 */
-	public static void setListViewHeightBasedOnChildren(ListView listView)
-	{
+	public static void setListViewHeightBasedOnChildren(ListView listView) {
 		ListAdapter listAdapter = listView.getAdapter();
-		if (listAdapter == null)
-		{
+		if (listAdapter == null) {
 			// pre-condition
 			return;
 		}
 
 		int totalHeight = 0;
 		int desiredWidth = MeasureSpec.makeMeasureSpec(listView.getWidth(), MeasureSpec.AT_MOST);
-		for (int i = 0; i < listAdapter.getCount(); i++)
-		{
+		for (int i = 0; i < listAdapter.getCount(); i++) {
 			View listItem = listAdapter.getView(i, null, listView);
 			listItem.measure(desiredWidth, MeasureSpec.UNSPECIFIED);
 			totalHeight += listItem.getMeasuredHeight();
@@ -337,16 +316,14 @@ public class ActivityUtils
 		listView.requestLayout();
 	}
 
-	public static void drawIconBounds(Canvas canvas, Drawable icon, CB_Rect bounds)
-	{
+	public static void drawIconBounds(Canvas canvas, Drawable icon, CB_Rect bounds) {
 		Rect oldBounds = icon.getBounds();
 		icon.setBounds(bounds.getX(), bounds.getY(), bounds.getCrossPos().x, bounds.getCrossPos().y);
 		icon.draw(canvas);
 		icon.setBounds(oldBounds);
 	}
 
-	public static void setListViewPropertys(ListView list)
-	{
+	public static void setListViewPropertys(ListView list) {
 		list.setBackgroundColor(Global.getColor(R.attr.EmptyBackground));
 		list.setCacheColorHint(0);
 		list.setDividerHeight(UiSizes.that.getHalfCornerSize() * 2);
@@ -360,14 +337,10 @@ public class ActivityUtils
 	 * @param btn
 	 *            (Button)
 	 */
-	public static void chkBtnState(Button btn)
-	{
-		if (btn.isEnabled())
-		{
+	public static void chkBtnState(Button btn) {
+		if (btn.isEnabled()) {
 			btn.setTextColor(Global.getColor(R.attr.TextColor));
-		}
-		else
-		{
+		} else {
 			btn.setTextColor(Global.getColor(R.attr.TextColor_disable));
 		}
 	}
@@ -381,16 +354,12 @@ public class ActivityUtils
 	 * @param state
 	 *            (boolean)
 	 */
-	public static void setBtnState(Button btn, boolean state)
-	{
+	public static void setBtnState(Button btn, boolean state) {
 		btn.setEnabled(state);
 
-		if (state)
-		{
+		if (state) {
 			btn.setTextColor(Global.getColor(R.attr.TextColor));
-		}
-		else
-		{
+		} else {
 			btn.setTextColor(Global.getColor(R.attr.TextColor_disable));
 		}
 	}

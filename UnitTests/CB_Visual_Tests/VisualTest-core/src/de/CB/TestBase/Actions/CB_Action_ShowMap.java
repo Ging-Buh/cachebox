@@ -21,64 +21,54 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.CB.TestBase.Views.MainView;
 import de.CB.TestBase.Views.MapView;
 
-public class CB_Action_ShowMap extends CB_Action_ShowView
-{
+public class CB_Action_ShowMap extends CB_Action_ShowView {
 
-	public CB_Action_ShowMap()
-	{
+	public CB_Action_ShowMap() {
 		super("Map", MenuID.AID_SHOW_MAP);
 	}
 
 	@Override
-	public void Execute()
-	{
-		if ((MainView.mapView == null) && (tabMainView != null) && (tab != null)) MainView.mapView = new MapView(tab.getContentRec(),
-				"MapView");
+	public void Execute() {
+		if ((MainView.mapView == null) && (tabMainView != null) && (tab != null))
+			MainView.mapView = new MapView(tab.getContentRec(), "MapView");
 
-		if ((MainView.mapView != null) && (tab != null)) tab.ShowView(MainView.mapView);
+		if ((MainView.mapView != null) && (tab != null))
+			tab.ShowView(MainView.mapView);
 	}
 
 	@Override
-	public CB_View_Base getView()
-	{
+	public CB_View_Base getView() {
 		return MainView.mapView;
 	}
 
 	@Override
-	public boolean getEnabled()
-	{
+	public boolean getEnabled() {
 		return true;
 	}
 
 	@Override
-	public Sprite getIcon()
-	{
+	public Sprite getIcon() {
 		return SpriteCacheBase.Icons.get(IconName.map_5.ordinal());
 	}
 
 	@Override
-	public boolean hasContextMenu()
-	{
+	public boolean hasContextMenu() {
 		return true;
 	}
 
 	@Override
-	public Menu getContextMenu()
-	{
-		PlatformConnector.getFile("", "", "", "", new IgetFileReturnListener()
-		{
+	public Menu getContextMenu() {
+		PlatformConnector.getFile("", "", "", "", new IgetFileReturnListener() {
 
 			@Override
-			public void getFileReturn(String arg0)
-			{
+			public void getFileReturn(String arg0) {
 				loadMap(arg0);
 			}
 		});
 		return null;
 	}
 
-	public void loadMap(String AbsolutePath)
-	{
+	public void loadMap(String AbsolutePath) {
 		Layer newLayer = new Layer(Layer.Type.normal, AbsolutePath, AbsolutePath, AbsolutePath);
 		newLayer.isMapsForge = true;
 		ManagerBase.Manager.getLayers().add(newLayer);
@@ -87,8 +77,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 
 		MapFileInfo info = ManagerBase.Manager.getMapsforgeLodedMapFileInfo(newLayer);
 
-		if (info != null)
-		{
+		if (info != null) {
 			LatLong lalo = info.boundingBox.getCenterPoint();
 			CoordinateGPS cor = new CoordinateGPS(lalo.getLatitude(), lalo.getLongitude());
 			MainView.mapView.setCenter(cor);

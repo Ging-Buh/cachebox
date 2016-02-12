@@ -11,19 +11,14 @@ import CB_UI_Base.Math.UI_Size_Base;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-public class QuickFieldNoteFeedbackPopUp extends PopUp_Base
-{
+public class QuickFieldNoteFeedbackPopUp extends PopUp_Base {
 
-	public QuickFieldNoteFeedbackPopUp(boolean found)
-	{
+	public QuickFieldNoteFeedbackPopUp(boolean found) {
 		super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth() * 2.5f, UI_Size_Base.that.getButtonWidth() * 2.5f), "QuickFieldnoteFeedback");
 
-		if (found)
-		{
+		if (found) {
 			setBackground(new SpriteDrawable(SpriteCacheBase.LogIcons.get(0)));
-		}
-		else
-		{
+		} else {
 			setBackground(new SpriteDrawable(SpriteCacheBase.LogIcons.get(1)));
 		}
 
@@ -34,21 +29,19 @@ public class QuickFieldNoteFeedbackPopUp extends PopUp_Base
 	}
 
 	@Override
-	public void Initial()
-	{
+	public void Initial() {
 	}
 
 	@Override
-	protected void SkinIsChanged()
-	{
+	protected void SkinIsChanged() {
 
 	}
 
 	@Override
-	public void dispose()
-	{
+	public void dispose() {
 		setBackground(null);
-		if (AnimateTimer != null) AnimateTimer.cancel();
+		if (AnimateTimer != null)
+			AnimateTimer.cancel();
 		AnimateTimer = null;
 		super.dispose();
 	}
@@ -56,38 +49,26 @@ public class QuickFieldNoteFeedbackPopUp extends PopUp_Base
 	Timer AnimateTimer;
 	int counter = 0;
 	boolean toSmall = true;
-	TimerTask AnimateTimertask = new TimerTask()
-	{
+	TimerTask AnimateTimertask = new TimerTask() {
 		@Override
-		public void run()
-		{
+		public void run() {
 
-			if (isDisposed())
-			{
+			if (isDisposed()) {
 				GL.that.renderOnce();
 				return;
 			}
 
-			if (toSmall)
-			{
-				if (counter < -5)
-				{
+			if (toSmall) {
+				if (counter < -5) {
 					toSmall = false;
-				}
-				else
-				{
+				} else {
 					QuickFieldNoteFeedbackPopUp.this.setRec(QuickFieldNoteFeedbackPopUp.this.ScaleCenter(0.9f));
 					counter--;
 				}
-			}
-			else
-			{
-				if (counter > 0)
-				{
+			} else {
+				if (counter > 0) {
 					toSmall = true;
-				}
-				else
-				{
+				} else {
 					QuickFieldNoteFeedbackPopUp.this.setRec(QuickFieldNoteFeedbackPopUp.this.ScaleCenter(1.1111f));
 					counter++;
 				}

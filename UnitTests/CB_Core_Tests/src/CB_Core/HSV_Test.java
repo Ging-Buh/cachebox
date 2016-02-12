@@ -6,11 +6,9 @@ import org.junit.Test;
 
 import CB_Utils.Util.HSV_Color;
 
-public class HSV_Test extends TestCase
-{
+public class HSV_Test extends TestCase {
 
-	public void testHSV2Int()
-	{
+	public void testHSV2Int() {
 		HSV_Color color = new HSV_Color(127, 127, 0, 0);
 
 		int integer = color.toInt();
@@ -24,14 +22,10 @@ public class HSV_Test extends TestCase
 		int g = 0;
 		int b = 0;
 
-		for (; a <= 255; a += 2)
-		{
-			for (; r <= 255; r += 2)
-			{
-				for (; g <= 255; g += 2)
-				{
-					for (; b <= 255; b += 2)
-					{
+		for (; a <= 255; a += 2) {
+			for (; r <= 255; r += 2) {
+				for (; g <= 255; g += 2) {
+					for (; b <= 255; b += 2) {
 						HSV_Color testcolor = new HSV_Color(a, r, g, b);
 						int intColor = testcolor.toInt();
 						HSV_Color compareColor = new HSV_Color(intColor);
@@ -48,8 +42,7 @@ public class HSV_Test extends TestCase
 	}
 
 	@Test
-	public void testHSV_String_Constructor()
-	{
+	public void testHSV_String_Constructor() {
 		HSV_Color c = new HSV_Color("bfbfbfff");
 		HSV_Color c2 = new HSV_Color(0.7490196f, 0.7490196f, 0.7490196f, 1f);
 		assertEquals(c2, c);

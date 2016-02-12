@@ -29,8 +29,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import com.sun.org.apache.xerces.internal.xni.parser.XMLParseException;
 
-public class XMLParser extends DefaultHandler
-{
+public class XMLParser extends DefaultHandler {
 
 	private static SimpleDateFormat datePattern1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
 	private static SimpleDateFormat datePattern2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -39,16 +38,13 @@ public class XMLParser extends DefaultHandler
 	private final List<XMLData> xmlData;
 	private int time = 0;
 
-	private XMLParser()
-	{
+	private XMLParser() {
 		time = 0;
 		xmlData = new ArrayList<XMLData>();
 	}
 
-	public static List<XMLData> parse(File file) throws IOException
-	{
-		try
-		{
+	public static List<XMLData> parse(File file) throws IOException {
+		try {
 			XMLParser h = new XMLParser();
 
 			XMLReader xr = XMLReaderFactory.createXMLReader();
@@ -58,9 +54,7 @@ public class XMLParser extends DefaultHandler
 			xr.parse(new InputSource(r));
 
 			return h.xmlData;
-		}
-		catch (SAXException e)
-		{
+		} catch (SAXException e) {
 			return null;
 		}
 	}
@@ -74,10 +68,8 @@ public class XMLParser extends DefaultHandler
 	// }
 
 	@Override
-	public void startElement(String uri, String name, String qName, Attributes atts)
-	{
-		if (qName.equals("waypoint"))
-		{
+	public void startElement(String uri, String name, String qName, Attributes atts) {
+		if (qName.equals("waypoint")) {
 			int timeDiff = Integer.parseInt(atts.getValue("time"));
 			double latitude = Double.parseDouble(atts.getValue("latitude"));
 			double longitude = Double.parseDouble(atts.getValue("longitude"));
@@ -86,14 +78,12 @@ public class XMLParser extends DefaultHandler
 			xmlData.add(new XMLData(time, latitude, longitude, altitude));
 		}
 
-		if (qName.equals("trkpt"))
-		{
+		if (qName.equals("trkpt")) {
 			lastLatitude = Double.parseDouble(atts.getValue("lat"));
 			lastLongitude = Double.parseDouble(atts.getValue("lon"));
 		}
 
-		if (qName.equals("ele"))
-		{
+		if (qName.equals("ele")) {
 
 		}
 	}
@@ -106,95 +96,69 @@ public class XMLParser extends DefaultHandler
 	private String LastValue;
 
 	@Override
-	public void characters(char ch[], int start, int length) throws SAXException
-	{
+	public void characters(char ch[], int start, int length) throws SAXException {
 		LastValue = new String(ch, start, length);
 		System.out.println("start characters : " + LastValue);
 	}
 
 	@Override
-	public void endElement(String uri, String name, String qName)
-	{
+	public void endElement(String uri, String name, String qName) {
 
-		if (qName.equals("ele"))
-		{
+		if (qName.equals("ele")) {
 			lastAltitude = Double.parseDouble(LastValue);
 		}
 
-		if (qName.equals("time"))
-		{
-			if (beginnTime == null)
-			{
-				try
-				{
+		if (qName.equals("time")) {
+			if (beginnTime == null) {
+				try {
 					beginnTime = parseDate(LastValue);
 					return;
-				}
-				catch (Exception e)
-				{
-					
+				} catch (Exception e) {
+
 					e.printStackTrace();
 				}
 			}
 
-			try
-			{
+			try {
 				// lastTime = (int) (Math.abs(parseDate(LastValue).getTime() - beginnTime.getTime()) / 1000);
 				lastTime = (int) (Math.abs(parseDate(LastValue).getTime() - beginnTime.getTime()));
-			}
-			catch (Exception e)
-			{
-				
+			} catch (Exception e) {
+
 				e.printStackTrace();
 			}
 		}
 
-		if (qName.equals("trkpt"))
-		{
+		if (qName.equals("trkpt")) {
 			xmlData.add(new XMLData(lastTime, lastLatitude, lastLongitude, lastAltitude));
 		}
 	}
 
-	private static Date parseDate(String text) throws Exception
-	{
+	private static Date parseDate(String text) throws Exception {
 		Date date = parseDateWithFormat(datePattern1, text);
-		if (date != null)
-		{
+		if (date != null) {
 			return date;
-		}
-		else
-		{
+		} else {
 			date = parseDateWithFormat(datePattern2, text);
-			if (date != null)
-			{
+			if (date != null) {
 				return date;
-			}
-			else
-			{
+			} else {
 				date = parseDateWithFormat(datePattern3, text);
-				if (date != null)
-				{
+				if (date != null) {
 					return date;
-				}
-				else
-				{
+				} else {
 					throw new XMLParseException(null, "Illegal date format");
 				}
 			}
 		}
 	}
 
-	private static Date parseDateWithFormat(SimpleDateFormat df, String text) throws Exception
-	{
+	private static Date parseDateWithFormat(SimpleDateFormat df, String text) throws Exception {
 		// TODO hier m�sste mal �ber die Zeitzone nachgedacht werden -
 		// irgendwas ist an den Daten, die von GC.com kommen, komisch
 		Date date = null;
-		try
-		{
+		try {
 			date = df.parse(text);
-		}
-		catch (ParseException e)
-		{
+		} catch (ParseException e) {
 		}
 		return date;
 	}

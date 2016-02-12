@@ -1,13 +1,10 @@
 package CB_Core;
 
-public enum Live_Cache_Time
-{
+public enum Live_Cache_Time {
 	min_10, min_30, min_60, h_6, h_12, h_24;
 
-	public int getMinuten()
-	{
-		switch (this)
-		{
+	public int getMinuten() {
+		switch (this) {
 		case h_24:
 			return 1440;
 		case h_12:

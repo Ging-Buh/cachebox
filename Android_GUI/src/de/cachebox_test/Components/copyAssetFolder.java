@@ -14,79 +14,56 @@ import java.util.ArrayList;
 import android.content.res.AssetManager;
 
 // Kopiert die OrdnerStructur des Asset-Ordners auf die SD-Karte (Cachbox Arbeitsverzeichniss)
-public class copyAssetFolder
-{
-	public void copyAll(AssetManager assets, String targetPath, String[] exludeFolder)
-	{
+public class copyAssetFolder {
+	public void copyAll(AssetManager assets, String targetPath, String[] exludeFolder) {
 		FileList = new ArrayList<String>();
-		try
-		{
+		try {
 			listDir(assets, "", exludeFolder);
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 
 			e.printStackTrace();
 		}
 
-		try
-		{
-			for (String tmp : FileList)
-			{
-				try
-				{
+		try {
+			for (String tmp : FileList) {
+				try {
 					copyFile(assets, tmp, targetPath);
-				}
-				catch (IOException e)
-				{
+				} catch (IOException e) {
 
 					e.printStackTrace();
 				}
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 
 			e.printStackTrace();
 		}
 	}
 
-	public void copyAll(AssetManager assets, String targetPath)
-	{
-		String[] leer = new String[]
-			{ "" };
+	public void copyAll(AssetManager assets, String targetPath) {
+		String[] leer = new String[] { "" };
 		copyAll(assets, targetPath, leer);
 	}
 
 	public static ArrayList<String> FileList = new ArrayList<String>();
 
-	private void listDir(AssetManager assets, String dir, String[] excludeFolder) throws IOException
-	{
+	private void listDir(AssetManager assets, String dir, String[] excludeFolder) throws IOException {
 		String[] files = assets.list(dir);
-		if (files != null)
-		{
-			for (int i = 0; i < files.length; i++)
-			{
+		if (files != null) {
+			for (int i = 0; i < files.length; i++) {
 				boolean exclude = false;
-				for (String tmp : excludeFolder)
-				{
-					if (files[i].equals(tmp))
-					{
+				for (String tmp : excludeFolder) {
+					if (files[i].equals(tmp)) {
 						exclude = true;
 						break;
 					}
 				}
-				if (!exclude)
-				{
+				if (!exclude) {
 					String Entry = (dir.equals("")) ? files[i] : dir + "/" + files[i];
-					if (!Entry.contains("."))
-					{
+					if (!Entry.contains(".")) {
 						// System.out.print(" (Ordner)\n");
 						listDir(assets, Entry, excludeFolder); // ruft sich selbst mit dem
 						// Unterverzeichnis als Parameter auf
-					}
-					else
-					{
+					} else {
 						FileList.add(Entry);
 
 					}
@@ -95,8 +72,7 @@ public class copyAssetFolder
 		}
 	}
 
-	private static void copyFile(AssetManager assets, String source, String targetPath) throws IOException
-	{
+	private static void copyFile(AssetManager assets, String source, String targetPath) throws IOException {
 		String target = targetPath + "/" + source;
 
 		InputStream myInput = assets.open(source);
@@ -107,8 +83,7 @@ public class copyAssetFolder
 
 		int dotposition = target.lastIndexOf(".");
 		String ext = target.substring(dotposition + 1, target.length()).toLowerCase();
-		if (ext.equals("xml") && !targetPath.toLowerCase().equals("/mnt/sdcard/cachebox"))
-		{
+		if (ext.equals("xml") && !targetPath.toLowerCase().equals("/mnt/sdcard/cachebox")) {
 			// in xml files replace the fixed path "/mnt/sdcard/cachebox" by the actual workpath
 			// Reson for this: in the mapsforge theme files (xml) the path to the image files must be entered absolute, no relative paths
 			// are allowed
@@ -119,8 +94,7 @@ public class copyAssetFolder
 
 			BufferedWriter w = new BufferedWriter(new OutputStreamWriter(myOutput));
 
-			while (x != null)
-			{
+			while (x != null) {
 				// case insensitive replace of the orginal path by the new workPath
 				x = x.replaceAll("(?i)/mnt/sdcard/cachebox", targetPath);
 				w.write(x + "\n");
@@ -128,14 +102,11 @@ public class copyAssetFolder
 			}
 			w.close();
 			r.close();
-		}
-		else
-		{
+		} else {
 			// transfer bytes from the inputfile to the outputfile
 			byte[] buffer = new byte[1024];
 			int length;
-			while ((length = myInput.read(buffer)) > 0)
-			{
+			while ((length = myInput.read(buffer)) > 0) {
 				myOutput.write(buffer, 0, length);
 			}
 		}

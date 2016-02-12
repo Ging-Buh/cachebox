@@ -35,126 +35,126 @@ import com.badlogic.gdx.graphics.Color;
  */
 public class Html_Segment_HR extends Html_Segment {
 
-    HSV_Color color = new HSV_Color(Color.BLACK);
-    float hrsize = 0;
+	HSV_Color color = new HSV_Color(Color.BLACK);
+	float hrsize = 0;
 
-    public Html_Segment_HR(Stack<Tag> atributeStack) {
-	super(Html_Segment_Typ.HR, atributeStack, "--Todo--HR----Todo--HR-");
-	resolveAtributes();
-    }
-
-    @Override
-    public void resolveAtributes() {
-
-	/* TODO
-	 * all priviose Attributes are ignored 
-	 * use only Tag attribute values 
-	 *   > noshade 
-	 *   > width="300" 
-	 *   > size="3" 
-	 *   > align="left"
-	 *   > color="#009900"
-	 */
-
-	String color = null;
-	for (Tag tag : tags) {
-	    if (!tag.getName().equals("font"))
-		continue;
-	    List<Element> elements = tag.getAllElements();
-	    if (elements.isEmpty())
-		elements.add(tag.getElement());
-	    for (Element ele : elements) {
-		Attributes attributes = ele.getAttributes();
-		for (Attribute attr : attributes) {
-		    if (attr.getKey().equals("color")) {
-			color = attr.getValue();
-		    }
-		}
-	    }
-	}
-	if (color != null) {
-
-	    if (color.startsWith("#")) {
-		try {
-		    this.color = new HSV_Color(color.replace("#", ""));
-		} catch (Exception e) {
-		    this.color = new HSV_Color(Color.BLACK);
-		    throw new NotImplementedException("HTML Renderer Color <" + color + "> is not implemented");
-		}
-	    } else {
-		try {
-		    this.color = HTMLColors.getColor(color);
-		    if (this.color == null) {
-			this.color = new HSV_Color(Color.BLACK);
-			throw new NotImplementedException("HTML Renderer Color <" + color + "> is not implemented");
-		    }
-		} catch (Exception e) {
-		    this.color = new HSV_Color(Color.BLACK);
-		    throw new NotImplementedException("HTML Renderer Color <" + color + "> is not implemented");
-		}
-	    }
-
+	public Html_Segment_HR(Stack<Tag> atributeStack) {
+		super(Html_Segment_Typ.HR, atributeStack, "--Todo--HR----Todo--HR-");
+		resolveAtributes();
 	}
 
-	// resolve Font Size
+	@Override
+	public void resolveAtributes() {
 
-	int size = 3;
-	for (Tag tag : tags) {
-	    if (!tag.getName().toLowerCase().equals("font"))
-		continue;
-	    List<Element> elements = tag.getAllElements();
+		/* TODO
+		 * all priviose Attributes are ignored 
+		 * use only Tag attribute values 
+		 *   > noshade 
+		 *   > width="300" 
+		 *   > size="3" 
+		 *   > align="left"
+		 *   > color="#009900"
+		 */
 
-	    if (elements.isEmpty())
-		elements.add(tag.getElement());
+		String color = null;
+		for (Tag tag : tags) {
+			if (!tag.getName().equals("font"))
+				continue;
+			List<Element> elements = tag.getAllElements();
+			if (elements.isEmpty())
+				elements.add(tag.getElement());
+			for (Element ele : elements) {
+				Attributes attributes = ele.getAttributes();
+				for (Attribute attr : attributes) {
+					if (attr.getKey().equals("color")) {
+						color = attr.getValue();
+					}
+				}
+			}
+		}
+		if (color != null) {
 
-	    for (Element ele : elements) {
-		// tag.getElement().
-		Attributes attributes = ele.getAttributes();
-		for (Attribute attr : attributes) {
-		    if (attr.getKey().equals("size")) {
-
-			/*
-			    * The following values are acceptable:
-			   *
-			   * 1, 2, 3, 4, 5, 6, 7
-			   * +1, +2, +3, +4, +5, +6
-			   * -1, -2, -3, -4, -5, -6
-			    */
-
-			String value = attr.getValue();
-			if (value.startsWith("+")) {
-			    int intSize = Integer.parseInt(value.replace("+", ""));
-			    size += intSize;
-			} else if (value.startsWith("-")) {
-			    int intSize = Integer.parseInt(value.replace("-", ""));
-			    size -= intSize;
+			if (color.startsWith("#")) {
+				try {
+					this.color = new HSV_Color(color.replace("#", ""));
+				} catch (Exception e) {
+					this.color = new HSV_Color(Color.BLACK);
+					throw new NotImplementedException("HTML Renderer Color <" + color + "> is not implemented");
+				}
 			} else {
-			    size = Integer.parseInt(value);
+				try {
+					this.color = HTMLColors.getColor(color);
+					if (this.color == null) {
+						this.color = new HSV_Color(Color.BLACK);
+						throw new NotImplementedException("HTML Renderer Color <" + color + "> is not implemented");
+					}
+				} catch (Exception e) {
+					this.color = new HSV_Color(Color.BLACK);
+					throw new NotImplementedException("HTML Renderer Color <" + color + "> is not implemented");
+				}
 			}
 
-		    }
 		}
-	    }
+
+		// resolve Font Size
+
+		int size = 3;
+		for (Tag tag : tags) {
+			if (!tag.getName().toLowerCase().equals("font"))
+				continue;
+			List<Element> elements = tag.getAllElements();
+
+			if (elements.isEmpty())
+				elements.add(tag.getElement());
+
+			for (Element ele : elements) {
+				// tag.getElement().
+				Attributes attributes = ele.getAttributes();
+				for (Attribute attr : attributes) {
+					if (attr.getKey().equals("size")) {
+
+						/*
+						    * The following values are acceptable:
+						   *
+						   * 1, 2, 3, 4, 5, 6, 7
+						   * +1, +2, +3, +4, +5, +6
+						   * -1, -2, -3, -4, -5, -6
+						    */
+
+						String value = attr.getValue();
+						if (value.startsWith("+")) {
+							int intSize = Integer.parseInt(value.replace("+", ""));
+							size += intSize;
+						} else if (value.startsWith("-")) {
+							int intSize = Integer.parseInt(value.replace("-", ""));
+							size -= intSize;
+						} else {
+							size = Integer.parseInt(value);
+						}
+
+					}
+				}
+			}
+		}
+		if (size < 1)
+			size = 1;
+		if (size > 7)
+			size = 7;
+
+		this.hrsize = (Html_Segment_TextBlock.getFontPx(size) * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR) / 10;
 	}
-	if (size < 1)
-	    size = 1;
-	if (size > 7)
-	    size = 7;
 
-	this.hrsize = (Html_Segment_TextBlock.getFontPx(size) * UiSizes.that.getScale() * Html_Segment_TextBlock.DEFAULT_FONT_SIZE_FACTOR) / 10;
-    }
-
-    public HSV_Color getColor() {
-	return color;
-    }
-
-    @Override
-    public void dispose() {
-	super.dispose();
-	if (color != null) {
-	    color.dispose();
-	    color = null;
+	public HSV_Color getColor() {
+		return color;
 	}
-    }
+
+	@Override
+	public void dispose() {
+		super.dispose();
+		if (color != null) {
+			color.dispose();
+			color = null;
+		}
+	}
 
 }

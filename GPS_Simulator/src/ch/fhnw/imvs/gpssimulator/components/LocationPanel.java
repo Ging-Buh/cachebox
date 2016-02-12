@@ -21,13 +21,13 @@ public class LocationPanel extends JPanel {
 	public LocationPanel() {
 
 		this.setBorder(BorderFactory.createTitledBorder("Location"));
-		
+
 		JTabbedPane tabs = new JTabbedPane();
-		
+
 		tabs.addTab("Normal", new LocationNormal());
 		tabs.addTab("NMEA Format", new LocationNMEA());
 		tabs.addTab("GPS Format", new LocationGPS());
-		
+
 		this.add(tabs);
 	}
 }

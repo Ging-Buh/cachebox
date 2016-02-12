@@ -72,52 +72,59 @@ public abstract class FormControl extends Segment {
 	FormControlType formControlType;
 	String name;
 	ElementContainer elementContainer;
-	FormControlOutputStyle outputStyle=FormControlOutputStyle.NORMAL;
+	FormControlOutputStyle outputStyle = FormControlOutputStyle.NORMAL;
 
-	private static final String CHECKBOX_NULL_DEFAULT_VALUE="on";
-	private static Comparator<FormControl> COMPARATOR=new PositionComparator();
+	private static final String CHECKBOX_NULL_DEFAULT_VALUE = "on";
+	private static Comparator<FormControl> COMPARATOR = new PositionComparator();
 
 	static FormControl construct(final Element element) {
-		final String tagName=element.getStartTag().getName();
-		if (tagName==HTMLElementName.INPUT) {
-			final String typeAttributeValue=element.getAttributes().getRawValue(Attribute.TYPE);
-			if (typeAttributeValue==null) return new InputFormControl(element,FormControlType.TEXT);
-			FormControlType formControlType=FormControlType.getFromInputElementType(typeAttributeValue);
-			if (formControlType==null) {
-				if (formControlType.isNonFormControl(typeAttributeValue)) return null;
-				if (element.source.logger.isErrorEnabled()) element.source.logger.error(element.source.getRowColumnVector(element.begin).appendTo(new StringBuilder(200)).append(": INPUT control with unrecognised type \"").append(typeAttributeValue).append("\" assumed to be type \"text\"").toString());
-				formControlType=FormControlType.TEXT;
+		final String tagName = element.getStartTag().getName();
+		if (tagName == HTMLElementName.INPUT) {
+			final String typeAttributeValue = element.getAttributes().getRawValue(Attribute.TYPE);
+			if (typeAttributeValue == null)
+				return new InputFormControl(element, FormControlType.TEXT);
+			FormControlType formControlType = FormControlType.getFromInputElementType(typeAttributeValue);
+			if (formControlType == null) {
+				if (formControlType.isNonFormControl(typeAttributeValue))
+					return null;
+				if (element.source.logger.isErrorEnabled())
+					element.source.logger
+							.error(element.source.getRowColumnVector(element.begin).appendTo(new StringBuilder(200)).append(": INPUT control with unrecognised type \"").append(typeAttributeValue).append("\" assumed to be type \"text\"").toString());
+				formControlType = FormControlType.TEXT;
 			}
 			switch (formControlType) {
-				case TEXT:
-					return new InputFormControl(element,formControlType);
-				case CHECKBOX: case RADIO:
-					return new RadioCheckboxFormControl(element,formControlType);
-				case SUBMIT:
-					return new SubmitFormControl(element,formControlType);
-				case IMAGE:
-					return new ImageSubmitFormControl(element);
-				case HIDDEN: case PASSWORD: case FILE:
-					return new InputFormControl(element,formControlType);
-				default:
-					throw new AssertionError(formControlType);
+			case TEXT:
+				return new InputFormControl(element, formControlType);
+			case CHECKBOX:
+			case RADIO:
+				return new RadioCheckboxFormControl(element, formControlType);
+			case SUBMIT:
+				return new SubmitFormControl(element, formControlType);
+			case IMAGE:
+				return new ImageSubmitFormControl(element);
+			case HIDDEN:
+			case PASSWORD:
+			case FILE:
+				return new InputFormControl(element, formControlType);
+			default:
+				throw new AssertionError(formControlType);
 			}
-		} else if (tagName==HTMLElementName.SELECT) {
+		} else if (tagName == HTMLElementName.SELECT) {
 			return new SelectFormControl(element);
-		} else if (tagName==HTMLElementName.TEXTAREA) {
+		} else if (tagName == HTMLElementName.TEXTAREA) {
 			return new TextAreaFormControl(element);
-		} else if (tagName==HTMLElementName.BUTTON) {
-			return "submit".equalsIgnoreCase(element.getAttributes().getRawValue(Attribute.TYPE)) ? new SubmitFormControl(element,FormControlType.BUTTON) : null;
+		} else if (tagName == HTMLElementName.BUTTON) {
+			return "submit".equalsIgnoreCase(element.getAttributes().getRawValue(Attribute.TYPE)) ? new SubmitFormControl(element, FormControlType.BUTTON) : null;
 		} else {
 			return null;
 		}
 	}
 
 	private FormControl(final Element element, final FormControlType formControlType, final boolean loadPredefinedValue) {
-		super(element.source,element.begin,element.end);
-		elementContainer=new ElementContainer(element,loadPredefinedValue);
-		this.formControlType=formControlType;
-		name=element.getAttributes().getValue(Attribute.NAME);
+		super(element.source, element.begin, element.end);
+		elementContainer = new ElementContainer(element, loadPredefinedValue);
+		this.formControlType = formControlType;
+		name = element.getAttributes().getValue(Attribute.NAME);
 		verifyName();
 	}
 
@@ -200,7 +207,7 @@ public abstract class FormControl extends Segment {
 	 * @param outputStyle  the new {@linkplain FormControlOutputStyle output style} of this form control.
 	 */
 	public void setOutputStyle(final FormControlOutputStyle outputStyle) {
-		this.outputStyle=outputStyle;
+		this.outputStyle = outputStyle;
 	}
 
 	/**
@@ -231,7 +238,7 @@ public abstract class FormControl extends Segment {
 	 *
 	 * @return a map of the names and values of this form control's <a href="#OutputAttributes">output attributes</a>.
 	 */
-	public final Map<String,String> getAttributesMap() {
+	public final Map<String, String> getAttributesMap() {
 		return elementContainer.getAttributesMap();
 	}
 
@@ -266,7 +273,7 @@ public abstract class FormControl extends Segment {
 	 * @param disabled  the new value of this property.
 	 */
 	public final void setDisabled(final boolean disabled) {
-		elementContainer.setBooleanAttribute(Attribute.DISABLED,disabled);
+		elementContainer.setBooleanAttribute(Attribute.DISABLED, disabled);
 	}
 
 	/**
@@ -374,7 +381,8 @@ public abstract class FormControl extends Segment {
 	 * @see FormField#getPredefinedValues()
 	 */
 	public Collection<String> getPredefinedValues() {
-		if (getPredefinedValue()==null) Collections.emptySet();
+		if (getPredefinedValue() == null)
+			Collections.emptySet();
 		return Collections.singleton(getPredefinedValue());
 	}
 
@@ -443,7 +451,7 @@ public abstract class FormControl extends Segment {
 	 * @see #getPredefinedValues()
 	 */
 	public List<String> getValues() {
-		final List<String> values=new ArrayList<String>();
+		final List<String> values = new ArrayList<String>();
 		addValuesTo(values);
 		return values;
 	}
@@ -454,9 +462,9 @@ public abstract class FormControl extends Segment {
 	 * This is equivalent to {@link #setValue(String) setValue(null)}.
 	 * <p>
 	 * NOTE: The {@link FormFields} and {@link FormField} classes provide a more appropriate abstraction level for the modification of form control submission values.
- 	 *
- 	 * @see FormFields#clearValues()
- 	 * @see FormField#clearValues()
+	 *
+	 * @see FormFields#clearValues()
+	 * @see FormField#clearValues()
 	 */
 	public final void clearValues() {
 		setValue(null);
@@ -528,13 +536,16 @@ public abstract class FormControl extends Segment {
 	}
 
 	abstract void addValuesTo(Collection<String> collection); // should not add null values
+
 	abstract void addToFormFields(FormFields formFields);
+
 	abstract void replaceInOutputDocument(OutputDocument outputDocument);
 
 	public String getDebugInfo() {
-		final StringBuilder sb=new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append(formControlType).append(" name=\"").append(name).append('"');
-		if (elementContainer.predefinedValue!=null) sb.append(" PredefinedValue=\"").append(elementContainer.predefinedValue).append('"');
+		if (elementContainer.predefinedValue != null)
+			sb.append(" PredefinedValue=\"").append(elementContainer.predefinedValue).append('"');
 		sb.append(" - ").append(getElement().getDebugInfo());
 		return sb.toString();
 	}
@@ -542,29 +553,34 @@ public abstract class FormControl extends Segment {
 	static final class InputFormControl extends FormControl {
 		// TEXT, HIDDEN, PASSORD or FILE
 		public InputFormControl(final Element element, final FormControlType formControlType) {
-			super(element,formControlType,false);
+			super(element, formControlType, false);
 		}
+
 		public boolean setValue(final String value) {
-			elementContainer.setAttributeValue(Attribute.VALUE,value);
+			elementContainer.setAttributeValue(Attribute.VALUE, value);
 			return true;
 		}
+
 		void addValuesTo(final Collection<String> collection) {
-			addValueTo(collection,elementContainer.getAttributeValue(Attribute.VALUE));
+			addValueTo(collection, elementContainer.getAttributeValue(Attribute.VALUE));
 		}
+
 		void addToFormFields(final FormFields formFields) {
 			formFields.add(this);
 		}
+
 		void replaceInOutputDocument(final OutputDocument outputDocument) {
-			if (outputStyle==FormControlOutputStyle.REMOVE) {
+			if (outputStyle == FormControlOutputStyle.REMOVE) {
 				outputDocument.remove(getElement());
-			} else if (outputStyle==FormControlOutputStyle.DISPLAY_VALUE) {
-				String output=null;
-				if (formControlType!=FormControlType.HIDDEN) {
-					String value=elementContainer.getAttributeValue(Attribute.VALUE);
-					if (formControlType==FormControlType.PASSWORD && value!=null) value=getString(FormControlOutputStyle.ConfigDisplayValue.PasswordChar,value.length());
-					output=getDisplayValueHTML(value,false);
+			} else if (outputStyle == FormControlOutputStyle.DISPLAY_VALUE) {
+				String output = null;
+				if (formControlType != FormControlType.HIDDEN) {
+					String value = elementContainer.getAttributeValue(Attribute.VALUE);
+					if (formControlType == FormControlType.PASSWORD && value != null)
+						value = getString(FormControlOutputStyle.ConfigDisplayValue.PasswordChar, value.length());
+					output = getDisplayValueHTML(value, false);
 				}
-				outputDocument.replace(getElement(),output);
+				outputDocument.replace(getElement(), output);
 			} else {
 				replaceAttributesInOutputDocumentIfModified(outputDocument);
 			}
@@ -573,69 +589,84 @@ public abstract class FormControl extends Segment {
 
 	static final class TextAreaFormControl extends FormControl {
 		// TEXTAREA
-		public String value=UNCHANGED;
-		private static final String UNCHANGED=new String();
+		public String value = UNCHANGED;
+		private static final String UNCHANGED = new String();
+
 		public TextAreaFormControl(final Element element) {
-			super(element,FormControlType.TEXTAREA,false);
+			super(element, FormControlType.TEXTAREA, false);
 		}
+
 		public boolean setValue(final String value) {
-			this.value=value;
+			this.value = value;
 			return true;
 		}
+
 		void addValuesTo(final Collection<String> collection) {
-			addValueTo(collection,getValue());
+			addValueTo(collection, getValue());
 		}
+
 		void addToFormFields(final FormFields formFields) {
 			formFields.add(this);
 		}
+
 		void replaceInOutputDocument(final OutputDocument outputDocument) {
-			if (outputStyle==FormControlOutputStyle.REMOVE) {
+			if (outputStyle == FormControlOutputStyle.REMOVE) {
 				outputDocument.remove(getElement());
-			} else if (outputStyle==FormControlOutputStyle.DISPLAY_VALUE) {
-				outputDocument.replace(getElement(),getDisplayValueHTML(getValue(),true));
+			} else if (outputStyle == FormControlOutputStyle.DISPLAY_VALUE) {
+				outputDocument.replace(getElement(), getDisplayValueHTML(getValue(), true));
 			} else {
 				replaceAttributesInOutputDocumentIfModified(outputDocument);
-				if (value!=UNCHANGED)
-					outputDocument.replace(getElement().getContent(),CharacterReference.encode(value));
+				if (value != UNCHANGED)
+					outputDocument.replace(getElement().getContent(), CharacterReference.encode(value));
 			}
 		}
+
 		private String getValue() {
-			return (value==UNCHANGED) ? CharacterReference.decode(getElement().getContent()) : value;
+			return (value == UNCHANGED) ? CharacterReference.decode(getElement().getContent()) : value;
 		}
 	}
 
 	static final class RadioCheckboxFormControl extends FormControl {
 		// RADIO or CHECKBOX
 		public RadioCheckboxFormControl(final Element element, final FormControlType formControlType) {
-			super(element,formControlType,true);
-			if (elementContainer.predefinedValue==null) {
-				elementContainer.predefinedValue=CHECKBOX_NULL_DEFAULT_VALUE;
-				if (element.source.logger.isErrorEnabled()) element.source.logger.error(element.source.getRowColumnVector(element.begin).appendTo(new StringBuilder(200)).append(": compulsory \"value\" attribute of ").append(formControlType).append(" control \"").append(name).append("\" is missing, assuming the value \"").append(CHECKBOX_NULL_DEFAULT_VALUE).append('"').toString());
+			super(element, formControlType, true);
+			if (elementContainer.predefinedValue == null) {
+				elementContainer.predefinedValue = CHECKBOX_NULL_DEFAULT_VALUE;
+				if (element.source.logger.isErrorEnabled())
+					element.source.logger.error(element.source.getRowColumnVector(element.begin).appendTo(new StringBuilder(200)).append(": compulsory \"value\" attribute of ").append(formControlType).append(" control \"").append(name)
+							.append("\" is missing, assuming the value \"").append(CHECKBOX_NULL_DEFAULT_VALUE).append('"').toString());
 			}
 		}
+
 		public boolean setValue(final String value) {
-			return elementContainer.setSelected(value,Attribute.CHECKED,false);
+			return elementContainer.setSelected(value, Attribute.CHECKED, false);
 		}
+
 		public boolean addValue(final String value) {
-			return elementContainer.setSelected(value,Attribute.CHECKED,formControlType==FormControlType.CHECKBOX);
+			return elementContainer.setSelected(value, Attribute.CHECKED, formControlType == FormControlType.CHECKBOX);
 		}
+
 		void addValuesTo(final Collection<String> collection) {
-			if (isChecked()) addValueTo(collection,getPredefinedValue());
+			if (isChecked())
+				addValueTo(collection, getPredefinedValue());
 		}
+
 		public boolean isChecked() {
 			return elementContainer.getBooleanAttribute(Attribute.CHECKED);
 		}
+
 		void addToFormFields(final FormFields formFields) {
 			formFields.add(this);
 		}
+
 		void replaceInOutputDocument(final OutputDocument outputDocument) {
-			if (outputStyle==FormControlOutputStyle.REMOVE) {
+			if (outputStyle == FormControlOutputStyle.REMOVE) {
 				outputDocument.remove(getElement());
 			} else {
-				if (outputStyle==FormControlOutputStyle.DISPLAY_VALUE) {
-					final String html=isChecked() ? FormControlOutputStyle.ConfigDisplayValue.CheckedHTML : FormControlOutputStyle.ConfigDisplayValue.UncheckedHTML;
-					if (html!=null) {
-						outputDocument.replace(getElement(),html);
+				if (outputStyle == FormControlOutputStyle.DISPLAY_VALUE) {
+					final String html = isChecked() ? FormControlOutputStyle.ConfigDisplayValue.CheckedHTML : FormControlOutputStyle.ConfigDisplayValue.UncheckedHTML;
+					if (html != null) {
+						outputDocument.replace(getElement(), html);
 						return;
 					}
 					setDisabled(true);
@@ -648,20 +679,27 @@ public abstract class FormControl extends Segment {
 	static class SubmitFormControl extends FormControl {
 		// BUTTON, SUBMIT or (in subclass) IMAGE
 		public SubmitFormControl(final Element element, final FormControlType formControlType) {
-			super(element,formControlType,true);
+			super(element, formControlType, true);
 		}
+
 		public boolean setValue(final String value) {
 			return false;
 		}
-		void addValuesTo(final Collection<String> collection) {}
-		void addToFormFields(final FormFields formFields) {
-			if (getPredefinedValue()!=null) formFields.add(this);
+
+		void addValuesTo(final Collection<String> collection) {
 		}
+
+		void addToFormFields(final FormFields formFields) {
+			if (getPredefinedValue() != null)
+				formFields.add(this);
+		}
+
 		void replaceInOutputDocument(final OutputDocument outputDocument) {
-			if (outputStyle==FormControlOutputStyle.REMOVE) {
+			if (outputStyle == FormControlOutputStyle.REMOVE) {
 				outputDocument.remove(getElement());
 			} else {
-				if (outputStyle==FormControlOutputStyle.DISPLAY_VALUE) setDisabled(true);
+				if (outputStyle == FormControlOutputStyle.DISPLAY_VALUE)
+					setDisabled(true);
 				replaceAttributesInOutputDocumentIfModified(outputDocument);
 			}
 		}
@@ -670,100 +708,120 @@ public abstract class FormControl extends Segment {
 	static final class ImageSubmitFormControl extends SubmitFormControl {
 		// IMAGE
 		public ImageSubmitFormControl(final Element element) {
-			super(element,FormControlType.IMAGE);
+			super(element, FormControlType.IMAGE);
 		}
+
 		void addToFormFields(final FormFields formFields) {
 			super.addToFormFields(formFields);
-			formFields.addName(this,name+".x");
-			formFields.addName(this,name+".y");
+			formFields.addName(this, name + ".x");
+			formFields.addName(this, name + ".y");
 		}
 	}
 
 	static final class SelectFormControl extends FormControl {
 		// SELECT_MULTIPLE or SELECT_SINGLE
 		public ElementContainer[] optionElementContainers;
+
 		public SelectFormControl(final Element element) {
-			super(element,element.getAttributes().get(Attribute.MULTIPLE)!=null ? FormControlType.SELECT_MULTIPLE : FormControlType.SELECT_SINGLE,false);
-			final List<Element> optionElements=element.getAllElements(HTMLElementName.OPTION);
-			optionElementContainers=new ElementContainer[optionElements.size()];
-			int x=0;
+			super(element, element.getAttributes().get(Attribute.MULTIPLE) != null ? FormControlType.SELECT_MULTIPLE : FormControlType.SELECT_SINGLE, false);
+			final List<Element> optionElements = element.getAllElements(HTMLElementName.OPTION);
+			optionElementContainers = new ElementContainer[optionElements.size()];
+			int x = 0;
 			for (Element optionElement : optionElements) {
-				final ElementContainer optionElementContainer=new ElementContainer(optionElement,true);
-				if (optionElementContainer.predefinedValue==null)
+				final ElementContainer optionElementContainer = new ElementContainer(optionElement, true);
+				if (optionElementContainer.predefinedValue == null)
 					// use the content of the element if it has no value attribute
-					optionElementContainer.predefinedValue=CharacterReference.decodeCollapseWhiteSpace(optionElementContainer.element.getContent());
-				optionElementContainers[x++]=optionElementContainer;
+					optionElementContainer.predefinedValue = CharacterReference.decodeCollapseWhiteSpace(optionElementContainer.element.getContent());
+				optionElementContainers[x++] = optionElementContainer;
 			}
 		}
+
 		public String getPredefinedValue() {
 			throw new UnsupportedOperationException("Use getPredefinedValues() method instead on SELECT controls");
 		}
+
 		public Collection<String> getPredefinedValues() {
-			final LinkedHashSet<String> linkedHashSet=new LinkedHashSet<String>(optionElementContainers.length*2,1.0F);
-			for (int i=0; i<optionElementContainers.length; i++)
-			linkedHashSet.add(optionElementContainers[i].predefinedValue);
+			final LinkedHashSet<String> linkedHashSet = new LinkedHashSet<String>(optionElementContainers.length * 2, 1.0F);
+			for (int i = 0; i < optionElementContainers.length; i++)
+				linkedHashSet.add(optionElementContainers[i].predefinedValue);
 			return linkedHashSet;
 		}
+
 		public Iterator<Element> getOptionElementIterator() {
 			return new OptionElementIterator();
 		}
+
 		public boolean setValue(final String value) {
-			return addValue(value,false);
+			return addValue(value, false);
 		}
+
 		public boolean addValue(final String value) {
-			return addValue(value,formControlType==FormControlType.SELECT_MULTIPLE);
+			return addValue(value, formControlType == FormControlType.SELECT_MULTIPLE);
 		}
+
 		private boolean addValue(final String value, final boolean allowMultipleValues) {
-			boolean valueFound=false;
-			for (int i=0; i<optionElementContainers.length; i++) {
-				if (optionElementContainers[i].setSelected(value,Attribute.SELECTED,allowMultipleValues)) valueFound=true;
+			boolean valueFound = false;
+			for (int i = 0; i < optionElementContainers.length; i++) {
+				if (optionElementContainers[i].setSelected(value, Attribute.SELECTED, allowMultipleValues))
+					valueFound = true;
 			}
 			return valueFound;
 		}
+
 		void addValuesTo(final Collection<String> collection) {
-			for (int i=0; i<optionElementContainers.length; i++) {
+			for (int i = 0; i < optionElementContainers.length; i++) {
 				if (optionElementContainers[i].getBooleanAttribute(Attribute.SELECTED))
-					addValueTo(collection,optionElementContainers[i].predefinedValue);
+					addValueTo(collection, optionElementContainers[i].predefinedValue);
 			}
 		}
+
 		void addToFormFields(final FormFields formFields) {
-			for (int i=0; i<optionElementContainers.length; i++)
-				formFields.add(this,optionElementContainers[i].predefinedValue);
+			for (int i = 0; i < optionElementContainers.length; i++)
+				formFields.add(this, optionElementContainers[i].predefinedValue);
 		}
+
 		void replaceInOutputDocument(final OutputDocument outputDocument) {
-			if (outputStyle==FormControlOutputStyle.REMOVE) {
+			if (outputStyle == FormControlOutputStyle.REMOVE) {
 				outputDocument.remove(getElement());
-			} else if (outputStyle==FormControlOutputStyle.DISPLAY_VALUE) {
-				final StringBuilder sb=new StringBuilder(100);
-				for (int i=0; i<optionElementContainers.length; i++) {
+			} else if (outputStyle == FormControlOutputStyle.DISPLAY_VALUE) {
+				final StringBuilder sb = new StringBuilder(100);
+				for (int i = 0; i < optionElementContainers.length; i++) {
 					if (optionElementContainers[i].getBooleanAttribute(Attribute.SELECTED)) {
 						sb.append(getOptionLabel(optionElementContainers[i].element));
 						sb.append(FormControlOutputStyle.ConfigDisplayValue.MultipleValueSeparator);
 					}
 				}
-				if (sb.length()>0) sb.setLength(sb.length()-FormControlOutputStyle.ConfigDisplayValue.MultipleValueSeparator.length()); // remove last separator
-				outputDocument.replace(getElement(),getDisplayValueHTML(sb,false));
+				if (sb.length() > 0)
+					sb.setLength(sb.length() - FormControlOutputStyle.ConfigDisplayValue.MultipleValueSeparator.length()); // remove last separator
+				outputDocument.replace(getElement(), getDisplayValueHTML(sb, false));
 			} else {
 				replaceAttributesInOutputDocumentIfModified(outputDocument);
-				for (int i=0; i<optionElementContainers.length; i++) {
+				for (int i = 0; i < optionElementContainers.length; i++) {
 					optionElementContainers[i].replaceAttributesInOutputDocumentIfModified(outputDocument);
 				}
 			}
 		}
+
 		private static String getOptionLabel(final Element optionElement) {
-			final String labelAttributeValue=optionElement.getAttributeValue("label");
-			if (labelAttributeValue!=null) return labelAttributeValue;
+			final String labelAttributeValue = optionElement.getAttributeValue("label");
+			if (labelAttributeValue != null)
+				return labelAttributeValue;
 			return CharacterReference.decodeCollapseWhiteSpace(optionElement.getContent());
 		}
+
 		private final class OptionElementIterator implements Iterator<Element> {
-			private int i=0;
+			private int i = 0;
+
 			public boolean hasNext() {
-				return i<optionElementContainers.length;
+				return i < optionElementContainers.length;
 			}
+
 			public Element next() {
-				if (!hasNext()) throw new NoSuchElementException();
+				if (!hasNext())
+					throw new NoSuchElementException();
 				return optionElementContainers[i++].element;
 			}
+
 			public void remove() {
 				throw new UnsupportedOperationException();
 			}
@@ -771,20 +829,23 @@ public abstract class FormControl extends Segment {
 	}
 
 	final String getDisplayValueHTML(final CharSequence text, final boolean whiteSpaceFormatting) {
-		final StringBuilder sb=new StringBuilder((text==null ? 0 : text.length()*2)+50);
+		final StringBuilder sb = new StringBuilder((text == null ? 0 : text.length() * 2) + 50);
 		sb.append('<').append(FormControlOutputStyle.ConfigDisplayValue.ElementName);
 		try {
 			for (String attributeName : FormControlOutputStyle.ConfigDisplayValue.AttributeNames) {
-				final CharSequence attributeValue=elementContainer.getAttributeValue(attributeName);
-				if (attributeValue==null) continue;
-				Attribute.appendHTML(sb,attributeName,attributeValue);
+				final CharSequence attributeValue = elementContainer.getAttributeValue(attributeName);
+				if (attributeValue == null)
+					continue;
+				Attribute.appendHTML(sb, attributeName, attributeValue);
 			}
 			sb.append('>');
-			if (text==null || text.length()==0)
+			if (text == null || text.length() == 0)
 				sb.append(FormControlOutputStyle.ConfigDisplayValue.EmptyHTML);
 			else
-				CharacterReference.appendEncode(sb,text,whiteSpaceFormatting);
-		} catch (IOException ex) {throw new RuntimeException(ex);} // never happens
+				CharacterReference.appendEncode(sb, text, whiteSpaceFormatting);
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		} // never happens
 		sb.append(EndTagType.START_DELIMITER_PREFIX).append(FormControlOutputStyle.ConfigDisplayValue.ElementName).append('>');
 		return sb.toString();
 	}
@@ -794,52 +855,61 @@ public abstract class FormControl extends Segment {
 	}
 
 	static List<FormControl> getAll(final Segment segment) {
-		final ArrayList<FormControl> list=new ArrayList<FormControl>();
-		getAll(segment,list,HTMLElementName.INPUT);
-		getAll(segment,list,HTMLElementName.TEXTAREA);
-		getAll(segment,list,HTMLElementName.SELECT);
-		getAll(segment,list,HTMLElementName.BUTTON);
-		Collections.sort(list,COMPARATOR);
+		final ArrayList<FormControl> list = new ArrayList<FormControl>();
+		getAll(segment, list, HTMLElementName.INPUT);
+		getAll(segment, list, HTMLElementName.TEXTAREA);
+		getAll(segment, list, HTMLElementName.SELECT);
+		getAll(segment, list, HTMLElementName.BUTTON);
+		Collections.sort(list, COMPARATOR);
 		return list;
 	}
 
 	private static void getAll(final Segment segment, final ArrayList<FormControl> list, final String tagName) {
 		for (Element element : segment.getAllElements(tagName)) {
-			final FormControl formControl=element.getFormControl();
-			if (formControl!=null) list.add(formControl);
+			final FormControl formControl = element.getFormControl();
+			if (formControl != null)
+				list.add(formControl);
 		}
 	}
 
 	private static String getString(final char ch, final int length) {
-		if (length==0) return "";
-		final StringBuilder sb=new StringBuilder(length);
-		for (int i=0; i<length; i++) sb.append(ch);
+		if (length == 0)
+			return "";
+		final StringBuilder sb = new StringBuilder(length);
+		for (int i = 0; i < length; i++)
+			sb.append(ch);
 		return sb.toString();
 	}
 
 	private void verifyName() {
-		if (formControlType.isSubmit()) return;
+		if (formControlType.isSubmit())
+			return;
 		String missingOrBlank;
-		if (name==null) {
-			missingOrBlank="missing";
+		if (name == null) {
+			missingOrBlank = "missing";
 		} else {
-			if (name.length()!=0) return;
-			missingOrBlank="blank";
+			if (name.length() != 0)
+				return;
+			missingOrBlank = "blank";
 		}
-		final Source source=getElement().source;
-		if (source.logger.isErrorEnabled()) source.logger.error(getElement().source.getRowColumnVector(getElement().begin).appendTo(new StringBuilder(200)).append(": compulsory \"name\" attribute of ").append(formControlType).append(" control is ").append(missingOrBlank).toString());
+		final Source source = getElement().source;
+		if (source.logger.isErrorEnabled())
+			source.logger
+					.error(getElement().source.getRowColumnVector(getElement().begin).appendTo(new StringBuilder(200)).append(": compulsory \"name\" attribute of ").append(formControlType).append(" control is ").append(missingOrBlank).toString());
 	}
 
 	private static final void addValueTo(final Collection<String> collection, final String value) {
-		collection.add(value!=null ? value : "");
+		collection.add(value != null ? value : "");
 	}
 
 	private static final class PositionComparator implements Comparator<FormControl> {
 		public int compare(final FormControl formControl1, final FormControl formControl2) {
-			final int formControl1Begin=formControl1.getElement().getBegin();
-			final int formControl2Begin=formControl2.getElement().getBegin();
-			if (formControl1Begin<formControl2Begin) return -1;
-			if (formControl1Begin>formControl2Begin) return 1;
+			final int formControl1Begin = formControl1.getElement().getBegin();
+			final int formControl2Begin = formControl2.getElement().getBegin();
+			if (formControl1Begin < formControl2Begin)
+				return -1;
+			if (formControl1Begin > formControl2Begin)
+				return 1;
 			return 0;
 		}
 	}
@@ -850,30 +920,32 @@ public abstract class FormControl extends Segment {
 		// Contains the information common to both a FormControl and to each OPTION element
 		// within a SELECT FormControl
 		public final Element element;
-		public Map<String,String> attributesMap=null;
+		public Map<String, String> attributesMap = null;
 		public String predefinedValue; // never null for option, checkbox or radio elements
 
 		public ElementContainer(final Element element, final boolean loadPredefinedValue) {
-			this.element=element;
-			predefinedValue=loadPredefinedValue ? element.getAttributes().getValue(Attribute.VALUE) : null;
+			this.element = element;
+			predefinedValue = loadPredefinedValue ? element.getAttributes().getValue(Attribute.VALUE) : null;
 		}
 
-		public Map<String,String> getAttributesMap() {
-			if (attributesMap==null) attributesMap=element.getAttributes().getMap(true);
+		public Map<String, String> getAttributesMap() {
+			if (attributesMap == null)
+				attributesMap = element.getAttributes().getMap(true);
 			return attributesMap;
 		}
 
 		public boolean setSelected(final String value, final String selectedOrChecked, final boolean allowMultipleValues) {
-			if (value!=null && predefinedValue.equals(value.toString())) {
-				setBooleanAttribute(selectedOrChecked,true);
+			if (value != null && predefinedValue.equals(value.toString())) {
+				setBooleanAttribute(selectedOrChecked, true);
 				return true;
 			}
-			if (!allowMultipleValues) setBooleanAttribute(selectedOrChecked,false);
+			if (!allowMultipleValues)
+				setBooleanAttribute(selectedOrChecked, false);
 			return false;
 		}
 
 		public String getAttributeValue(final String attributeName) {
-			if (attributesMap!=null)
+			if (attributesMap != null)
 				return attributesMap.get(attributeName);
 			else
 				return element.getAttributes().getValue(attributeName);
@@ -881,37 +953,40 @@ public abstract class FormControl extends Segment {
 
 		public void setAttributeValue(final String attributeName, final String value) {
 			// null value indicates attribute should be removed.
-			if (value==null) {
-				setBooleanAttribute(attributeName,false);
+			if (value == null) {
+				setBooleanAttribute(attributeName, false);
 				return;
 			}
-			if (attributesMap!=null) {
-				attributesMap.put(attributeName,value);
+			if (attributesMap != null) {
+				attributesMap.put(attributeName, value);
 				return;
 			}
-			final String existingValue=getAttributeValue(attributeName);
-			if (existingValue!=null && existingValue.equals(value)) return;
-			getAttributesMap().put(attributeName,value);
+			final String existingValue = getAttributeValue(attributeName);
+			if (existingValue != null && existingValue.equals(value))
+				return;
+			getAttributesMap().put(attributeName, value);
 		}
 
 		public boolean getBooleanAttribute(final String attributeName) {
-			if (attributesMap!=null)
+			if (attributesMap != null)
 				return attributesMap.containsKey(attributeName);
 			else
-				return element.getAttributes().get(attributeName)!=null;
+				return element.getAttributes().get(attributeName) != null;
 		}
 
 		public void setBooleanAttribute(final String attributeName, final boolean value) {
-			final boolean oldValue=getBooleanAttribute(attributeName);
-			if (value==oldValue) return;
+			final boolean oldValue = getBooleanAttribute(attributeName);
+			if (value == oldValue)
+				return;
 			if (value)
-				getAttributesMap().put(attributeName,attributeName); // xhtml compatible attribute
+				getAttributesMap().put(attributeName, attributeName); // xhtml compatible attribute
 			else
 				getAttributesMap().remove(attributeName);
 		}
 
 		public void replaceAttributesInOutputDocumentIfModified(final OutputDocument outputDocument) {
-			if (attributesMap!=null) outputDocument.replace(element.getAttributes(),attributesMap);
+			if (attributesMap != null)
+				outputDocument.replace(element.getAttributes(), attributesMap);
 		}
 	}
 }

@@ -27,8 +27,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Longri, based on FloatArray from Nathan Sweet (LibGdx)
  */
-public class CB_List<T> implements Serializable, Iterable<T>
-{
+public class CB_List<T> implements Serializable, Iterable<T> {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_List.class);
 	private static final long serialVersionUID = 4378819539487000418L;
 	protected T[] items;
@@ -36,14 +35,12 @@ public class CB_List<T> implements Serializable, Iterable<T>
 	private final int INITIAL_SIZE = 5;
 
 	/** Creates an ordered array with a capacity of 16. */
-	public CB_List()
-	{
+	public CB_List() {
 		items = this.createNewItems(INITIAL_SIZE);
 	}
 
 	/** Creates an ordered array with the specified capacity. */
-	public CB_List(int capacity)
-	{
+	public CB_List(int capacity) {
 		items = this.createNewItems(capacity);
 	}
 
@@ -51,50 +48,45 @@ public class CB_List<T> implements Serializable, Iterable<T>
 	 * Creates a new array containing the elements in the specific array. The new array will be ordered if the specific array is ordered.
 	 * The capacity is set to the number of elements, so any subsequent elements added will cause the backing array to be grown.
 	 */
-	public CB_List(CB_List<T> array)
-	{
+	public CB_List(CB_List<T> array) {
 		size = array.size;
 		items = this.createNewItems(size);
-		if (array.size > 0) System.arraycopy(array.items, 0, items, 0, size);
+		if (array.size > 0)
+			System.arraycopy(array.items, 0, items, 0, size);
 	}
 
-	public CB_List(T[] values)
-	{
+	public CB_List(T[] values) {
 		size = values.length - 1;
 		items = values;
 	}
 
 	@SuppressWarnings("unchecked")
-	protected T[] createNewItems(int size)
-	{
-		if (size <= 0) return null;
+	protected T[] createNewItems(int size) {
+		if (size <= 0)
+			return null;
 		return (T[]) new Object[size];
 	}
 
-	private int getItemLength()
-	{
-		if (this.items == null) return 0;
+	private int getItemLength() {
+		if (this.items == null)
+			return 0;
 		return items.length;
 	}
 
-	public void add(int index, T t)
-	{
-		if (size == getItemLength()) ensureCapacity(size + 1);
-		if (index != size) System.arraycopy(items, index, items, index + 1, size - index);
+	public void add(int index, T t) {
+		if (size == getItemLength())
+			ensureCapacity(size + 1);
+		if (index != size)
+			System.arraycopy(items, index, items, index + 1, size - index);
 		items[index] = t;
 		size++;
 	}
 
-	public int add(T value)
-	{
-		if (size == getItemLength())
-		{
-			if (size == 0)
-			{
+	public int add(T value) {
+		if (size == getItemLength()) {
+			if (size == 0) {
 				resize(INITIAL_SIZE);
-			}
-			else
-			{
+			} else {
 				resize(size + (size >> 1));
 			}
 		}
@@ -103,70 +95,67 @@ public class CB_List<T> implements Serializable, Iterable<T>
 		return ID;
 	}
 
-	public void addAll(CB_List<T> array)
-	{
+	public void addAll(CB_List<T> array) {
 		addAll(array, 0, array.size);
 	}
 
-	public void addAll(int index, CB_List<T> array)
-	{
+	public void addAll(int index, CB_List<T> array) {
 		int csize = array.size();
 
-		if (csize + size > getItemLength()) ensureCapacity(size + csize);
+		if (csize + size > getItemLength())
+			ensureCapacity(size + csize);
 		int end = index + csize;
-		if (size > 0 && index != size) System.arraycopy(items, index, items, end, size - index);
+		if (size > 0 && index != size)
+			System.arraycopy(items, index, items, end, size - index);
 		size += csize;
 		for (int i = 0, n = items.length; i < n; i++)
 			items[index++] = array.get(i);
 	}
 
-	public void addAll(CB_List<T> array, int offset, int length)
-	{
-		if (offset + length > array.size) throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
+	public void addAll(CB_List<T> array, int offset, int length) {
+		if (offset + length > array.size)
+			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
 		addAll(array.items, offset, length);
 	}
 
-	public void addAll(T... array)
-	{
+	public void addAll(T... array) {
 		addAll(array, 0, array.length);
 	}
 
-	public void addAll(T[] array, int offset, int length)
-	{
+	public void addAll(T[] array, int offset, int length) {
 		int sizeNeeded = (size + length);
-		if (sizeNeeded > getItemLength()) resize(sizeNeeded + (size >> 1));
+		if (sizeNeeded > getItemLength())
+			resize(sizeNeeded + (size >> 1));
 		System.arraycopy(array, offset, this.items, size, length);
 		size += length;
 	}
 
-	public T get(int index)
-	{
-		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
+	public T get(int index) {
+		if (index >= size)
+			throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		return items[index];
 	}
 
-	public boolean contains(T value)
-	{
+	public boolean contains(T value) {
 		return indexOf(value) >= 0;
 	}
 
-	public int indexOf(T value)
-	{
-		if (this.items == null) return -1;
+	public int indexOf(T value) {
+		if (this.items == null)
+			return -1;
 		T[] items = this.items;
 		for (int i = 0, n = size; i < n; i++)
-			if (items[i].equals(value)) return i;
+			if (items[i].equals(value))
+				return i;
 		return -1;
 	}
 
-	public T remove(T value)
-	{
-		if (this.items == null) return null;
+	public T remove(T value) {
+		if (this.items == null)
+			return null;
 		T[] items = this.items;
-		for (int i = 0, n = size; i < n; i++)
-		{
-			if (items[i].equals(value))
-			{
+		for (int i = 0, n = size; i < n; i++) {
+			if (items[i].equals(value)) {
 				return remove(i);
 			}
 		}
@@ -174,9 +163,9 @@ public class CB_List<T> implements Serializable, Iterable<T>
 	}
 
 	/** Removes and returns the item at the specified index. */
-	public T remove(int index)
-	{
-		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
+	public T remove(int index) {
+		if (index >= size)
+			throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		T[] items = this.items;
 		T value = items[index];
 		size--;
@@ -189,19 +178,16 @@ public class CB_List<T> implements Serializable, Iterable<T>
 	 * 
 	 * @return true if this array was modified.
 	 */
-	public boolean removeAll(CB_List<T> array)
-	{
-		if (array == null || array.size == 0) return false;
+	public boolean removeAll(CB_List<T> array) {
+		if (array == null || array.size == 0)
+			return false;
 		int size = this.size;
 		int startSize = size;
 		T[] items = this.items;
-		for (int i = 0, n = array.size; i < n; i++)
-		{
+		for (int i = 0, n = array.size; i < n; i++) {
 			T item = array.get(i);
-			for (int ii = 0; ii < size; ii++)
-			{
-				if (item.equals(items[ii]))
-				{
+			for (int ii = 0; ii < size; ii++) {
+				if (item.equals(items[ii])) {
 					remove(ii);
 					size--;
 					break;
@@ -212,33 +198,30 @@ public class CB_List<T> implements Serializable, Iterable<T>
 	}
 
 	/** Removes and returns the last item. */
-	public T pop()
-	{
+	public T pop() {
 		return items[--size];
 	}
 
 	/** Returns the last item. */
-	public T peek()
-	{
+	public T peek() {
 		return items[size - 1];
 	}
 
 	/** Returns the first item. */
-	public T first()
-	{
-		if (size == 0) throw new IllegalStateException("Array is empty.");
+	public T first() {
+		if (size == 0)
+			throw new IllegalStateException("Array is empty.");
 		return items[0];
 	}
 
 	/** Returns the first item. */
-	public T last()
-	{
-		if (size == 0) throw new IllegalStateException("Array is empty.");
+	public T last() {
+		if (size == 0)
+			throw new IllegalStateException("Array is empty.");
 		return items[size - 1];
 	}
 
-	public void clear()
-	{
+	public void clear() {
 		Arrays.fill(items, null);
 		size = 0;
 	}
@@ -247,9 +230,9 @@ public class CB_List<T> implements Serializable, Iterable<T>
 	 * Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items have been
 	 * removed, or if it is known that more items will not be added.
 	 */
-	public void shrink()
-	{
-		if (getItemLength() == size) return;
+	public void shrink() {
+		if (getItemLength() == size)
+			return;
 		resize(size);
 	}
 
@@ -259,8 +242,7 @@ public class CB_List<T> implements Serializable, Iterable<T>
 	 * 
 	 * @return {@link #items}
 	 */
-	public T[] ensureCapacity(int additionalCapacity)
-	{
+	public T[] ensureCapacity(int additionalCapacity) {
 		return ensureCapacity(additionalCapacity, false);
 	}
 
@@ -270,23 +252,21 @@ public class CB_List<T> implements Serializable, Iterable<T>
 	 * 
 	 * @return {@link #items}
 	 */
-	public T[] ensureCapacity(int additionalCapacity, boolean set)
-	{
+	public T[] ensureCapacity(int additionalCapacity, boolean set) {
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded > getItemLength()) resize(Math.max(INITIAL_SIZE, sizeNeeded));
-		if (set) size = sizeNeeded;
+		if (sizeNeeded > getItemLength())
+			resize(Math.max(INITIAL_SIZE, sizeNeeded));
+		if (set)
+			size = sizeNeeded;
 		return items;
 	}
 
-	protected T[] resize(int newSize)
-	{
-		if (newSize < INITIAL_SIZE) newSize = INITIAL_SIZE;
-		if (this.items == null)
-		{
+	protected T[] resize(int newSize) {
+		if (newSize < INITIAL_SIZE)
+			newSize = INITIAL_SIZE;
+		if (this.items == null) {
 			this.items = createNewItems(newSize);
-		}
-		else
-		{
+		} else {
 			this.items = Arrays.copyOf(this.items, newSize);
 		}
 		return this.items;
@@ -295,10 +275,8 @@ public class CB_List<T> implements Serializable, Iterable<T>
 	/**
 	 * Reduces the size of the array to the specified size. If the array is already smaller than the specified size, no action is taken.
 	 */
-	public void truncate(int newSize)
-	{
-		if (size > newSize)
-		{
+	public void truncate(int newSize) {
+		if (size > newSize) {
 
 			for (int i = newSize; i < size; i++)
 				items[i] = null;
@@ -308,43 +286,44 @@ public class CB_List<T> implements Serializable, Iterable<T>
 	}
 
 	/** Returns a random item from the array, or zero if the array is empty. */
-	public T random()
-	{
-		if (size == 0) return null;
+	public T random() {
+		if (size == 0)
+			return null;
 		return items[(int) (Math.random() * (size - 1))];
 	}
 
-	public T[] toArray()
-	{
+	public T[] toArray() {
 		T[] array = this.createNewItems(size);
 		System.arraycopy(items, 0, array, 0, size);
 		return array;
 	}
 
 	@Override
-	public boolean equals(Object object)
-	{
-		if (object == this) return true;
-		if (!(object instanceof CB_List)) return false;
+	public boolean equals(Object object) {
+		if (object == this)
+			return true;
+		if (!(object instanceof CB_List))
+			return false;
 		@SuppressWarnings("unchecked")
 		CB_List<T> array = (CB_List<T>) object;
 		int n = size;
-		if (n != array.size) return false;
+		if (n != array.size)
+			return false;
 		for (int i = 0; i < n; i++)
-			if (items[i] != array.items[i]) return false;
+			if (items[i] != array.items[i])
+				return false;
 		return true;
 	}
 
 	@Override
-	public String toString()
-	{
-		if (size == 0) return "[]";
+	public String toString() {
+		if (size == 0)
+			return "[]";
 		T[] items = this.items;
 		StringBuilder buffer = new StringBuilder(32);
 		buffer.append('[');
 		buffer.append(items[0]);
-		for (int i = 1; i < size; i++)
-		{
+		for (int i = 1; i < size; i++) {
 			buffer.append(", ");
 			buffer.append(items[i]);
 		}
@@ -352,53 +331,46 @@ public class CB_List<T> implements Serializable, Iterable<T>
 		return buffer.toString();
 	}
 
-	public String toString(String separator)
-	{
-		if (size == 0) return "";
+	public String toString(String separator) {
+		if (size == 0)
+			return "";
 		T[] items = this.items;
 		StringBuilder buffer = new StringBuilder(32);
 		buffer.append(items[0]);
-		for (int i = 1; i < size; i++)
-		{
+		for (int i = 1; i < size; i++) {
 			buffer.append(separator);
 			buffer.append(items[i]);
 		}
 		return buffer.toString();
 	}
 
-	public int size()
-	{
+	public int size() {
 		return size;
 	}
 
-	public boolean isEmpty()
-	{
+	public boolean isEmpty() {
 		return size <= 0;
 	}
 
-	public void sort()
-	{
-		if (size == 0) return;
-		try
-		{
+	public void sort() {
+		if (size == 0)
+			return;
+		try {
 			Arrays.sort(items, 0, size);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			log.error("Sort", e);
 		}
 	}
 
-	public void set(int index, T value)
-	{
-		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
+	public void set(int index, T value) {
+		if (index >= size)
+			throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] = value;
 	}
 
 	boolean reverse = false;
 
-	public CB_List<T> reverse()
-	{
+	public CB_List<T> reverse() {
 		reverse = true;
 		return this;
 	}
@@ -410,8 +382,7 @@ public class CB_List<T> implements Serializable, Iterable<T>
 	 * @param end
 	 * @return
 	 */
-	public Object[] get(int begin, int end)
-	{
+	public Object[] get(int begin, int end) {
 		int length = end - begin;
 		Object[] ret = createNewItems(length);
 
@@ -420,51 +391,44 @@ public class CB_List<T> implements Serializable, Iterable<T>
 		return ret;
 	}
 
-	public void dispose()
-	{
-		if (items != null)
-		{
+	public void dispose() {
+		if (items != null) {
 			Arrays.fill(items, null);
 		}
 		items = null;
 	}
 
-	public void trimToSize()
-	{
+	public void trimToSize() {
 		T[] array = this.createNewItems(size);
 		System.arraycopy(items, 0, array, 0, size);
 		items = array;
 	}
 
-	public void replace(T value, int index)
-	{
-		if (index < 0 || index > size) return;
+	public void replace(T value, int index) {
+		if (index < 0 || index > size)
+			return;
 		items[index] = value;
 	}
 
 	@Override
-	public Iterator<T> iterator()
-	{
-		return new Iterator<T>()
-		{
+	public Iterator<T> iterator() {
+		return new Iterator<T>() {
 			int idx = 0;
 
 			@Override
-			public boolean hasNext()
-			{
-				if (idx < size) return true;
+			public boolean hasNext() {
+				if (idx < size)
+					return true;
 				return false;
 			}
 
 			@Override
-			public T next()
-			{
+			public T next() {
 				return items[idx++];
 			}
 
 			@Override
-			public void remove()
-			{
+			public void remove() {
 				// notImplemented
 			}
 		};

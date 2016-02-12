@@ -11,29 +11,23 @@ import junit.framework.TestCase;
  * 
  * @author Longri
  */
-public class Base64_Test extends TestCase
-{
+public class Base64_Test extends TestCase {
 
-	public void testDE_Encrypt()
-	{
+	public void testDE_Encrypt() {
 		final String value = "Test";
 		final String enc = "VGVzdA==";
 
 		String encrypted = Base64.encodeBytes(value.getBytes());
 		assertEquals("must", enc, encrypted);
 		byte[] decrypted = null;
-		try
-		{
+		try {
 			decrypted = Base64.decode(encrypted.getBytes());
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		char[] c = new char[decrypted.length];
-		for (int x = 0; x < decrypted.length; x++)
-		{
+		for (int x = 0; x < decrypted.length; x++) {
 			c[x] = (char) decrypted[x];
 		}
 

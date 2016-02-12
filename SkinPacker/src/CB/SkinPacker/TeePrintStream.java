@@ -3,12 +3,10 @@ package CB.SkinPacker;
 import java.io.IOException;
 import java.io.PrintStream;
 
-public class TeePrintStream extends PrintStream
-{
+public class TeePrintStream extends PrintStream {
 	private final PrintStream second;
 
-	public TeePrintStream(PrintStream second)
-	{
+	public TeePrintStream(PrintStream second) {
 		super(second);
 		this.second = second;
 	}
@@ -19,15 +17,13 @@ public class TeePrintStream extends PrintStream
 	 * @see java.io.PrintStream#close()
 	 */
 	@Override
-	public void close()
-	{
+	public void close() {
 		// just for documentation
 		super.close();
 	}
 
 	@Override
-	public void flush()
-	{
+	public void flush() {
 		super.flush();
 		second.flush();
 	}
@@ -35,19 +31,15 @@ public class TeePrintStream extends PrintStream
 	private String last = "";
 
 	@Override
-	public void write(byte[] buf, int off, int len)
-	{
+	public void write(byte[] buf, int off, int len) {
 		super.write(buf, off, len);
 
 		String intermediate = (new String(buf)).substring(0, len);
 
-		if (!intermediate.contains("\r\n"))
-		{
+		if (!intermediate.contains("\r\n")) {
 			last += intermediate;
 			launch.that.writeMsg(last);
-		}
-		else
-		{
+		} else {
 			last += intermediate;
 			launch.that.writeMsg(last, false);
 			last = "";
@@ -56,14 +48,12 @@ public class TeePrintStream extends PrintStream
 	}
 
 	@Override
-	public void write(int b)
-	{
+	public void write(int b) {
 		super.write(b);
 	}
 
 	@Override
-	public void write(byte[] b) throws IOException
-	{
+	public void write(byte[] b) throws IOException {
 		super.write(b);
 	}
 }

@@ -42,110 +42,110 @@ import android.view.WindowManager;
  * @author Longri
  */
 public class ext_AndroidGraphicFactory extends AndroidGraphicFactory implements ext_GraphicFactory {
-    public static Application aplication;
-    private final float ScaleFactor;
+	public static Application aplication;
+	private final float ScaleFactor;
 
-    public static void createInstance(Application app) {
-	aplication = app;
-	INSTANCE = new AndroidGraphicFactory(app);
-    }
+	public static void createInstance(Application app) {
+		aplication = app;
+		INSTANCE = new AndroidGraphicFactory(app);
+	}
 
-    protected ext_AndroidGraphicFactory(Application app) {
-	super(app);
-	aplication = app;
-	DisplayMetrics metrics = new DisplayMetrics();
-	((WindowManager) app.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
-	this.ScaleFactor = metrics.scaledDensity;
-    }
+	protected ext_AndroidGraphicFactory(Application app) {
+		super(app);
+		aplication = app;
+		DisplayMetrics metrics = new DisplayMetrics();
+		((WindowManager) app.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
+		this.ScaleFactor = metrics.scaledDensity;
+	}
 
-    protected ext_AndroidGraphicFactory(float scaleFactor) {
-	super(aplication);
-	DisplayModel.setDeviceScaleFactor(scaleFactor);
-	this.ScaleFactor = scaleFactor;
-    }
+	protected ext_AndroidGraphicFactory(float scaleFactor) {
+		super(aplication);
+		DisplayModel.setDeviceScaleFactor(scaleFactor);
+		this.ScaleFactor = scaleFactor;
+	}
 
-    // ############################################################################################
-    // Overrides for CB.ext_GraphicFactory
-    // ############################################################################################
+	// ############################################################################################
+	// Overrides for CB.ext_GraphicFactory
+	// ############################################################################################
 
-    @Override
-    public ext_Matrix createMatrix(ext_Matrix matrix) {
-	// TODO Auto-generated method stub
-	return null;
-    }
+	@Override
+	public ext_Matrix createMatrix(ext_Matrix matrix) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    @Override
-    public ext_Paint createPaint(ext_Paint paint) {
-	return new ext_AndroidPaint(paint);
-    }
+	@Override
+	public ext_Paint createPaint(ext_Paint paint) {
+		return new ext_AndroidPaint(paint);
+	}
 
-    @Override
-    public int setColorAlpha(int color, float paintOpacity) {
-	// TODO Auto-generated method stub
-	return 0;
-    }
+	@Override
+	public int setColorAlpha(int color, float paintOpacity) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
-    public static ext_GraphicFactory getInstance(float ScaleFactor) {
-	if (FactoryList.containsKey(ScaleFactor))
-	    return FactoryList.get(ScaleFactor);
+	public static ext_GraphicFactory getInstance(float ScaleFactor) {
+		if (FactoryList.containsKey(ScaleFactor))
+			return FactoryList.get(ScaleFactor);
 
-	ext_AndroidGraphicFactory factory = new ext_AndroidGraphicFactory(ScaleFactor);
-	FactoryList.put(ScaleFactor, factory);
-	return factory;
-    }
+		ext_AndroidGraphicFactory factory = new ext_AndroidGraphicFactory(ScaleFactor);
+		FactoryList.put(ScaleFactor, factory);
+		return factory;
+	}
 
-    // ############################################################################################
-    // Overrides for mapsforge.AndroidGraphicFactory
-    // ############################################################################################
+	// ############################################################################################
+	// Overrides for mapsforge.AndroidGraphicFactory
+	// ############################################################################################
 
-    @Override
-    public Paint createPaint() {
-	return new ext_AndroidPaint();
-    }
+	@Override
+	public Paint createPaint() {
+		return new ext_AndroidPaint();
+	}
 
-    @Override
-    public Matrix createMatrix() {
-	return new ext_AndroidMatrix();
-    }
+	@Override
+	public Matrix createMatrix() {
+		return new ext_AndroidMatrix();
+	}
 
-    @Override
-    public ext_Bitmap createBitmap(int width, int height) {
-	return new ext_AndroidBitmap(width, height);
-    }
+	@Override
+	public ext_Bitmap createBitmap(int width, int height) {
+		return new ext_AndroidBitmap(width, height);
+	}
 
-    @Override
-    public TileBitmap createTileBitmap(int tileSize, boolean hasAlpha) {
-	return new ext_AndroidTileBitmap(tileSize);
-    }
+	@Override
+	public TileBitmap createTileBitmap(int tileSize, boolean hasAlpha) {
+		return new ext_AndroidTileBitmap(tileSize);
+	}
 
-    @Override
-    public ext_Canvas createCanvas() {
-	return new ext_AndroidCanvas();
-    }
+	@Override
+	public ext_Canvas createCanvas() {
+		return new ext_AndroidCanvas();
+	}
 
-    @Override
-    public ext_Path createPath() {
-	return new ext_AndroidPath();
-    }
+	@Override
+	public ext_Path createPath() {
+		return new ext_AndroidPath();
+	}
 
-    @Override
-    public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException {
-	return new ext_AndroidResourceBitmap(inputStream, hash, this.ScaleFactor);
-    }
+	@Override
+	public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException {
+		return new ext_AndroidResourceBitmap(inputStream, hash, this.ScaleFactor);
+	}
 
-    @Override
-    public int createColor(Color color) {
-	int c = getColor(color);
-	if (CB_UI_Base_Settings.nightMode.getValue())
-	    c = HSV_Color.colorMatrixManipulation(c, HSV_Color.NIGHT_COLOR_MATRIX);
-	return c;
-    }
+	@Override
+	public int createColor(Color color) {
+		int c = getColor(color);
+		if (CB_UI_Base_Settings.nightMode.getValue())
+			c = HSV_Color.colorMatrixManipulation(c, HSV_Color.NIGHT_COLOR_MATRIX);
+		return c;
+	}
 
-    @Override
-    public int createColor(int alpha, int red, int green, int blue) {
-	int c = android.graphics.Color.argb(alpha, red, green, blue);
-	if (CB_UI_Base_Settings.nightMode.getValue())
-	    c = HSV_Color.colorMatrixManipulation(c, HSV_Color.NIGHT_COLOR_MATRIX);
-	return c;
-    }
+	@Override
+	public int createColor(int alpha, int red, int green, int blue) {
+		int c = android.graphics.Color.argb(alpha, red, green, blue);
+		if (CB_UI_Base_Settings.nightMode.getValue())
+			c = HSV_Color.colorMatrixManipulation(c, HSV_Color.NIGHT_COLOR_MATRIX);
+		return c;
+	}
 }

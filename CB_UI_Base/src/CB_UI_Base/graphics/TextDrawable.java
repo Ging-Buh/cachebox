@@ -29,8 +29,7 @@ import com.badlogic.gdx.utils.Disposable;
 /**
  * @author Longri
  */
-public class TextDrawable implements IRotateDrawable, Disposable
-{
+public class TextDrawable implements IRotateDrawable, Disposable {
 
 	protected TextOnPath Cache;
 	protected final float DEFAULT_WIDTH;
@@ -44,13 +43,10 @@ public class TextDrawable implements IRotateDrawable, Disposable
 	protected final ext_Paint stroke;
 	protected final boolean center;
 
-	public TextDrawable(final String text, GL_Path path, float defaultWidth, float defaultHeight, final ext_Paint fill,
-			final ext_Paint stroke, final boolean center)
-	{
+	public TextDrawable(final String text, GL_Path path, float defaultWidth, float defaultHeight, final ext_Paint fill, final ext_Paint stroke, final boolean center) {
 		super();
 
-		if (path == null || path.size < 4)
-		{
+		if (path == null || path.size < 4) {
 			System.out.print("not valid Path for TextDrawable");
 			this.Text = null;
 			this.DEFAULT_WIDTH = 0;
@@ -76,66 +72,58 @@ public class TextDrawable implements IRotateDrawable, Disposable
 
 	}
 
-	public boolean isDisposed()
-	{
+	public boolean isDisposed() {
 		return isDisposed;
 	}
 
 	@Override
-	public void dispose()
-	{
-		if (isDisposed) return;
-		if (Cache != null) Cache.dispose();
+	public void dispose() {
+		if (isDisposed)
+			return;
+		if (Cache != null)
+			Cache.dispose();
 		Cache = null;
-		if (workPath != null) workPath.dispose();
+		if (workPath != null)
+			workPath.dispose();
 		workPath = null;
 		isDisposed = true;
 	}
 
 	@Override
-	public boolean draw(Batch batch, float x, float y, float width, float height, float rotated)
-	{
-		if (isDisposed) return true;
+	public boolean draw(Batch batch, float x, float y, float width, float height, float rotated) {
+		if (isDisposed)
+			return true;
 
-		if (Cache == null)
-		{
+		if (Cache == null) {
 			Cache = new TextOnPath(Text, workPath, fill, stroke, center);
-			GL.that.RunOnGL(new IRunOnGL()
-			{
+			GL.that.RunOnGL(new IRunOnGL() {
 				@Override
-				public void run()
-				{
+				public void run() {
 					workPath.dispose();
 				}
 			});
 		}
-		if (Cache != null)
-		{
+		if (Cache != null) {
 
 			float scaleWidth = width / DEFAULT_WIDTH;
 			float scaleHeight = height / DEFAULT_HEIGHT;
 
 			transform.setToTranslation(x, y, 0);
 
-			if (rotated != 0)
-			{
+			if (rotated != 0) {
 
 				float[] center = Cache.getCenterPoint();
 				transform.scale(scaleWidth, scaleHeight, 1);
 				transform.translate(center[0], center[1], 0);
 				transform.rotate(0, 0, 1, rotated);
 				transform.translate(-center[0], -center[1], 0);
-			}
-			else
-			{
+			} else {
 				transform.scale(scaleWidth, scaleHeight, 1);
 			}
 
 			Cache.draw(batch, transform);
 			return false;
-		}
-		else
-		{
+		} else {
 			return true;
 		}
 	}

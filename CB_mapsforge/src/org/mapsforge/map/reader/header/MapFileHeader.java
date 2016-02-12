@@ -155,8 +155,7 @@ public class MapFileHeader {
 		return FileOpenResult.SUCCESS;
 	}
 
-	private FileOpenResult readSubFileParameters(ReadBuffer readBuffer, long fileSize,
-			MapFileInfoBuilder mapFileInfoBuilder) {
+	private FileOpenResult readSubFileParameters(ReadBuffer readBuffer, long fileSize, MapFileInfoBuilder mapFileInfoBuilder) {
 		// get and check the number of sub-files (1 byte)
 		byte numberOfSubFiles = readBuffer.readByte();
 		if (numberOfSubFiles < 1) {

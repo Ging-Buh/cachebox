@@ -6,24 +6,19 @@ import __Static.InitTestDBs;
 import junit.framework.TestCase;
 import CB_Core.Import.CacheInfoList;
 
-public class IndexDBTest extends TestCase
-{
+public class IndexDBTest extends TestCase {
 
-	public static void testGpxImport() throws Exception
-	{
+	public static void testGpxImport() throws Exception {
 
 		// initialize Database
 		String database = "./testdata/test.db3";
 		File dbFile = new File(database);
 
-		if (!dbFile.exists())
-		{
-			// Um diesen Test ausführen zu können, muss eine db3 exestieren.
-			// Sollte sie nicht exestieren, wird sie über den ImportTest angelegt.
+		if (!dbFile.exists()) {
+			// Um diesen Test ausfï¿½hren zu kï¿½nnen, muss eine db3 exestieren.
+			// Sollte sie nicht exestieren, wird sie ï¿½ber den ImportTest angelegt.
 			GpxImportTest.testGpxImport();
-		}
-		else
-		{
+		} else {
 			// die DB muss erstmal geladen werden.
 			InitTestDBs.InitTestDB(database);
 		}

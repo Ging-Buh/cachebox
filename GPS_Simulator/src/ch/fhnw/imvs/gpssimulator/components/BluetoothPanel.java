@@ -25,14 +25,12 @@ import javax.swing.JPanel;
 import ch.fhnw.imvs.gpssimulator.SimulatorMain.ConnectionHandler;
 
 @SuppressWarnings("serial")
-public class BluetoothPanel extends JPanel
-{
+public class BluetoothPanel extends JPanel {
 
 	private final JComboBox<ConnectionHandler> bluetoothConnections;
 	private final JButton closeConnection;
 
-	public BluetoothPanel()
-	{
+	public BluetoothPanel() {
 		this.setBorder(BorderFactory.createTitledBorder("Bluetooth Devices"));
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -48,18 +46,14 @@ public class BluetoothPanel extends JPanel
 
 		closeConnection = new JButton("Close Connection");
 		closeConnection.setEnabled(false);
-		closeConnection.addActionListener(new ActionListener()
-		{
+		closeConnection.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				synchronized (bluetoothConnections)
-				{
+			public void actionPerformed(ActionEvent e) {
+				synchronized (bluetoothConnections) {
 					ConnectionHandler connection = (ConnectionHandler) bluetoothConnections.getSelectedItem();
 					connection.stopRunning();
 					bluetoothConnections.removeItem(connection);
-					if (bluetoothConnections.getItemCount() == 0)
-					{
+					if (bluetoothConnections.getItemCount() == 0) {
 						closeConnection.setEnabled(false);
 					}
 				}
@@ -70,17 +64,14 @@ public class BluetoothPanel extends JPanel
 		this.add(aroundCloseConnection);
 	}
 
-	public synchronized void addConnection(ConnectionHandler connection)
-	{
+	public synchronized void addConnection(ConnectionHandler connection) {
 		bluetoothConnections.addItem(connection);
 		closeConnection.setEnabled(true);
 	}
 
-	public synchronized void removeConnection(ConnectionHandler connection)
-	{
+	public synchronized void removeConnection(ConnectionHandler connection) {
 		bluetoothConnections.removeItem(connection);
-		if (bluetoothConnections.getItemCount() == 0)
-		{
+		if (bluetoothConnections.getItemCount() == 0) {
 			closeConnection.setEnabled(false);
 		}
 	}

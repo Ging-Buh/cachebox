@@ -30,7 +30,7 @@ public class DOMSerializer {
 	private boolean namespaceDeclarationAttribute;
 	private boolean parentsNamespaceDeclarationDisabled;
 	private boolean startingDocument = true;
-	
+
 	/** Sets whether XML namespace declarations are being serialized as
 	 * attributes or as SAX events (default).
 	 * @param pXmlDeclarationAttribute True, if a namespace declaration
@@ -39,7 +39,7 @@ public class DOMSerializer {
 	public void setNamespaceDeclarationAttribute(boolean pXmlDeclarationAttribute) {
 		namespaceDeclarationAttribute = pXmlDeclarationAttribute;
 	}
-	
+
 	/** Returns whether XML declarations are being serialized as
 	 * attributes or as SAX events (default).
 	 * @return True, if a namespace declaration
@@ -48,7 +48,7 @@ public class DOMSerializer {
 	public boolean isNamespaceDeclarationAttribute() {
 		return namespaceDeclarationAttribute;
 	}
-	
+
 	/** Returns whether XML declarations present in the parent nodes
 	 * are being serialized (default) or not. This option takes effect
 	 * only if the namespace declarations are sent as events. In other
@@ -60,7 +60,7 @@ public class DOMSerializer {
 	public void setParentsNamespaceDeclarationDisabled(boolean pParentsXmlDeclarationDisabled) {
 		parentsNamespaceDeclarationDisabled = pParentsXmlDeclarationDisabled;
 	}
-	
+
 	/** Sets whether XML declarations present in the parent nodes
 	 * are being serialized (default) or not. This option takes effect
 	 * only if the namespace declarations are sent as events. In other
@@ -101,10 +101,8 @@ public class DOMSerializer {
 	 * @param pHandler The target handler.
 	 * @throws SAXException The target handler reported an error.
 	 */
-	protected void doSerializeChilds(Node pNode, ContentHandler pHandler)
-			throws SAXException {
-		for (Node child = pNode.getFirstChild();  child != null;
-		child = child.getNextSibling()) {
+	protected void doSerializeChilds(Node pNode, ContentHandler pHandler) throws SAXException {
+		for (Node child = pNode.getFirstChild(); child != null; child = child.getNextSibling()) {
 			doSerialize(child, pHandler);
 		}
 	}
@@ -117,8 +115,7 @@ public class DOMSerializer {
 	 * @param pHandler The target handler.
 	 * @throws SAXException The target handler reported an error.
 	 */
-	private void parentsStartPrefixMappingEvents(Node pNode, ContentHandler pHandler)
-			throws SAXException {
+	private void parentsStartPrefixMappingEvents(Node pNode, ContentHandler pHandler) throws SAXException {
 		if (pNode != null) {
 			parentsStartPrefixMappingEvents(pNode.getParentNode(), pHandler);
 			if (pNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -135,8 +132,7 @@ public class DOMSerializer {
 	 * @param pHandler The target handler.
 	 * @throws SAXException The target handler reported an error.
 	 */
-	private void parentsEndPrefixMappingEvents(Node pNode, ContentHandler pHandler)
-			throws SAXException {
+	private void parentsEndPrefixMappingEvents(Node pNode, ContentHandler pHandler) throws SAXException {
 		if (pNode != null) {
 			if (pNode.getNodeType() == Node.ELEMENT_NODE) {
 				endPrefixMappingEvents(pNode, pHandler);
@@ -150,11 +146,10 @@ public class DOMSerializer {
 	 * @param pHandler The target handler.
 	 * @throws SAXException The target handler reported an error.
 	 */
-	private void startPrefixMappingEvents(Node pNode, ContentHandler pHandler)
-			throws SAXException {
+	private void startPrefixMappingEvents(Node pNode, ContentHandler pHandler) throws SAXException {
 		NamedNodeMap nnm = pNode.getAttributes();
 		if (nnm != null) {
-			for (int i = 0;  i < nnm.getLength();  i++) {
+			for (int i = 0; i < nnm.getLength(); i++) {
 				Node attr = nnm.item(i);
 				if (XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(attr.getNamespaceURI())) {
 					String prefix;
@@ -174,17 +169,16 @@ public class DOMSerializer {
 			}
 		}
 	}
-	
+
 	/** Creates endPrefixMapping events for the node <code>pNode</code>.
 	 * @param pNode The node being serialized.
 	 * @param pHandler The target handler.
 	 * @throws SAXException The target handler reported an error.
 	 */
-	private void endPrefixMappingEvents(Node pNode, ContentHandler pHandler)
-			throws SAXException {
+	private void endPrefixMappingEvents(Node pNode, ContentHandler pHandler) throws SAXException {
 		NamedNodeMap nnm = pNode.getAttributes();
 		if (nnm != null) {
-			for (int i = nnm.getLength()-1;  i >= 0;  i--) {
+			for (int i = nnm.getLength() - 1; i >= 0; i--) {
 				Node attr = nnm.item(i);
 				if (XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(attr.getNamespaceURI())) {
 					String prefix = attr.getLocalName();
@@ -194,8 +188,7 @@ public class DOMSerializer {
 		}
 	}
 
-	private void characters(ContentHandler pHandler, String pValue, boolean pCdata)
-			throws SAXException {
+	private void characters(ContentHandler pHandler, String pValue, boolean pCdata) throws SAXException {
 		LexicalHandler lh;
 		if (pCdata) {
 			lh = (pHandler instanceof LexicalHandler) ? (LexicalHandler) pHandler : null;
@@ -218,15 +211,12 @@ public class DOMSerializer {
 	 * @param pHandler The target handler.
 	 * @throws SAXException The target handler reported an error.
 	 */
-	public void serialize(Node pNode, ContentHandler pHandler)
-			throws SAXException {
-		if (!isNamespaceDeclarationAttribute()  &&
-				!isParentsNamespaceDeclarationDisabled()) {
+	public void serialize(Node pNode, ContentHandler pHandler) throws SAXException {
+		if (!isNamespaceDeclarationAttribute() && !isParentsNamespaceDeclarationDisabled()) {
 			parentsStartPrefixMappingEvents(pNode.getParentNode(), pHandler);
 		}
 		doSerialize(pNode, pHandler);
-		if (!isNamespaceDeclarationAttribute()  &&
-				!isParentsNamespaceDeclarationDisabled()) {
+		if (!isNamespaceDeclarationAttribute() && !isParentsNamespaceDeclarationDisabled()) {
 			parentsEndPrefixMappingEvents(pNode.getParentNode(), pHandler);
 		}
 	}
@@ -243,82 +233,77 @@ public class DOMSerializer {
 	 * @param pHandler The target handler.
 	 * @throws SAXException The target handler reported an error.
 	 */
-	protected void doSerialize(Node pNode, ContentHandler pHandler)
-			throws SAXException {
+	protected void doSerialize(Node pNode, ContentHandler pHandler) throws SAXException {
 		switch (pNode.getNodeType()) {
-			case Node.DOCUMENT_NODE:
-				boolean startDocumentEvent = isStartingDocument();
-				if (startDocumentEvent) {
-					pHandler.startDocument();
-				}
-				doSerializeChilds(pNode, pHandler);
-				if (startDocumentEvent) {
-					pHandler.endDocument();
-				}
-				break;
-			case Node.DOCUMENT_FRAGMENT_NODE:
-				doSerializeChilds(pNode, pHandler);
-				break;
-			case Node.ELEMENT_NODE:
-				AttributesImpl attr = new AttributesImpl();
-				boolean isNamespaceDeclarationAttribute = isNamespaceDeclarationAttribute();
-				if (!isNamespaceDeclarationAttribute) {
-					startPrefixMappingEvents(pNode, pHandler);
-				}
-				NamedNodeMap nnm = pNode.getAttributes();
-				if (nnm != null) {
-					for (int i = 0;  i < nnm.getLength();  i++) {
-						Node a = nnm.item(i);
-						if (isNamespaceDeclarationAttribute  ||
-								!XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(a.getNamespaceURI())) {
-							String aUri = a.getNamespaceURI();
-							String aLocalName = a.getLocalName();
-							String aNodeName = a.getNodeName();
-							if (aLocalName == null) {
-								if (aUri == null  ||  aUri.length() == 0) {
-									aLocalName = aNodeName;
-								} else {
-									throw new IllegalStateException("aLocalName is null");
-								}
+		case Node.DOCUMENT_NODE:
+			boolean startDocumentEvent = isStartingDocument();
+			if (startDocumentEvent) {
+				pHandler.startDocument();
+			}
+			doSerializeChilds(pNode, pHandler);
+			if (startDocumentEvent) {
+				pHandler.endDocument();
+			}
+			break;
+		case Node.DOCUMENT_FRAGMENT_NODE:
+			doSerializeChilds(pNode, pHandler);
+			break;
+		case Node.ELEMENT_NODE:
+			AttributesImpl attr = new AttributesImpl();
+			boolean isNamespaceDeclarationAttribute = isNamespaceDeclarationAttribute();
+			if (!isNamespaceDeclarationAttribute) {
+				startPrefixMappingEvents(pNode, pHandler);
+			}
+			NamedNodeMap nnm = pNode.getAttributes();
+			if (nnm != null) {
+				for (int i = 0; i < nnm.getLength(); i++) {
+					Node a = nnm.item(i);
+					if (isNamespaceDeclarationAttribute || !XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(a.getNamespaceURI())) {
+						String aUri = a.getNamespaceURI();
+						String aLocalName = a.getLocalName();
+						String aNodeName = a.getNodeName();
+						if (aLocalName == null) {
+							if (aUri == null || aUri.length() == 0) {
+								aLocalName = aNodeName;
+							} else {
+								throw new IllegalStateException("aLocalName is null");
 							}
-							attr.addAttribute(aUri == null ? "" : aUri, aNodeName,
-									aLocalName, "CDATA", a.getNodeValue());
 						}
+						attr.addAttribute(aUri == null ? "" : aUri, aNodeName, aLocalName, "CDATA", a.getNodeValue());
 					}
 				}
-				String nUri = pNode.getNamespaceURI();
-				if (nUri == null) {
-					nUri = "";
-				}
-				pHandler.startElement(nUri, pNode.getLocalName(),
-						pNode.getNodeName(), attr);
-				doSerializeChilds(pNode, pHandler);
-				pHandler.endElement(nUri, pNode.getLocalName(),
-						pNode.getNodeName());
-				if (!isNamespaceDeclarationAttribute) {
-					endPrefixMappingEvents(pNode, pHandler);
-				}
-				break;
-			case Node.TEXT_NODE:
-				characters(pHandler, pNode.getNodeValue(), false);
-				break;
-			case Node.CDATA_SECTION_NODE:
-				characters(pHandler, pNode.getNodeValue(), true);
-				break;
-			case Node.PROCESSING_INSTRUCTION_NODE:
-				pHandler.processingInstruction(pNode.getNodeName(), pNode.getNodeValue());
-				break;
-			case Node.ENTITY_REFERENCE_NODE:
-				pHandler.skippedEntity(pNode.getNodeName());
-				break;
-			case Node.COMMENT_NODE:
-				if (pHandler instanceof LexicalHandler) {
-					String s = pNode.getNodeValue();
-					((LexicalHandler) pHandler).comment(s.toCharArray(), 0, s.length());
-				}
-				break;
-			default:
-				throw new IllegalStateException("Unknown node type: " + pNode.getNodeType());
+			}
+			String nUri = pNode.getNamespaceURI();
+			if (nUri == null) {
+				nUri = "";
+			}
+			pHandler.startElement(nUri, pNode.getLocalName(), pNode.getNodeName(), attr);
+			doSerializeChilds(pNode, pHandler);
+			pHandler.endElement(nUri, pNode.getLocalName(), pNode.getNodeName());
+			if (!isNamespaceDeclarationAttribute) {
+				endPrefixMappingEvents(pNode, pHandler);
+			}
+			break;
+		case Node.TEXT_NODE:
+			characters(pHandler, pNode.getNodeValue(), false);
+			break;
+		case Node.CDATA_SECTION_NODE:
+			characters(pHandler, pNode.getNodeValue(), true);
+			break;
+		case Node.PROCESSING_INSTRUCTION_NODE:
+			pHandler.processingInstruction(pNode.getNodeName(), pNode.getNodeValue());
+			break;
+		case Node.ENTITY_REFERENCE_NODE:
+			pHandler.skippedEntity(pNode.getNodeName());
+			break;
+		case Node.COMMENT_NODE:
+			if (pHandler instanceof LexicalHandler) {
+				String s = pNode.getNodeValue();
+				((LexicalHandler) pHandler).comment(s.toCharArray(), 0, s.length());
+			}
+			break;
+		default:
+			throw new IllegalStateException("Unknown node type: " + pNode.getNodeType());
 		}
 	}
 }

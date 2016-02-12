@@ -18,7 +18,6 @@
  */
 package org.apache.xmlrpc.client;
 
-
 /** Abstract base implementation of a factory for stream transports.
  */
 public abstract class XmlRpcStreamTransportFactory extends XmlRpcTransportFactoryImpl {

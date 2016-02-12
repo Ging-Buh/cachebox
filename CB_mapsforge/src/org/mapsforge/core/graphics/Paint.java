@@ -14,7 +14,6 @@
  */
 package org.mapsforge.core.graphics;
 
-
 public interface Paint {
 	int getTextHeight(String text);
 

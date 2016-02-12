@@ -43,11 +43,9 @@ import java.io.Reader;
  * more pleasant to be able to hit return on an empty line and see the prompt reappear. This is *not* used when text is sourced from a file
  * non-interactively.
  */
-class CommandLineReader extends FilterReader
-{
+class CommandLineReader extends FilterReader {
 
-	public CommandLineReader(Reader in)
-	{
+	public CommandLineReader(Reader in) {
 		super(in);
 	}
 
@@ -56,12 +54,10 @@ class CommandLineReader extends FilterReader
 	int state = lastCharNL;
 
 	@Override
-	public int read() throws IOException
-	{
+	public int read() throws IOException {
 		int b;
 
-		if (state == sentSemi)
-		{
+		if (state == sentSemi) {
 			state = lastCharNL;
 			return '\n';
 		}
@@ -70,13 +66,12 @@ class CommandLineReader extends FilterReader
 		while ((b = in.read()) == '\r')
 			;
 
-		if (b == '\n') if (state == lastCharNL)
-		{
-			b = ';';
-			state = sentSemi;
-		}
-		else
-			state = lastCharNL;
+		if (b == '\n')
+			if (state == lastCharNL) {
+				b = ';';
+				state = sentSemi;
+			} else
+				state = lastCharNL;
 		else
 			state = normal;
 
@@ -88,12 +83,11 @@ class CommandLineReader extends FilterReader
 	 * available() for Readers ??
 	 */
 	@Override
-	public int read(char buff[], int off, int len) throws IOException
-	{
+	public int read(char buff[], int off, int len) throws IOException {
 		int b = read();
-		if (b == -1) return -1; // EOF, not zero read apparently
-		else
-		{
+		if (b == -1)
+			return -1; // EOF, not zero read apparently
+		else {
 			buff[off] = (char) b;
 			return 1;
 		}
@@ -101,8 +95,7 @@ class CommandLineReader extends FilterReader
 
 	// Test it
 	@SuppressWarnings("resource")
-	public static void main(String[] args) throws Exception
-	{
+	public static void main(String[] args) throws Exception {
 		Reader in = new CommandLineReader(new InputStreamReader(System.in));
 		while (true)
 			System.out.println(in.read());

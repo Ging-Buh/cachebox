@@ -21,18 +21,21 @@
 package net.htmlparser.jericho;
 
 final class StartTagTypeMasonNamedBlock extends StartTagTypeGenericImplementation {
-	protected static final StartTagTypeMasonNamedBlock INSTANCE=new StartTagTypeMasonNamedBlock();
+	protected static final StartTagTypeMasonNamedBlock INSTANCE = new StartTagTypeMasonNamedBlock();
 
 	private StartTagTypeMasonNamedBlock() {
-		super("mason named block","<%",">",EndTagTypeMasonNamedBlock.INSTANCE,true,false,true);
+		super("mason named block", "<%", ">", EndTagTypeMasonNamedBlock.INSTANCE, true, false, true);
 	}
 
 	protected Tag constructTagAt(final Source source, final int pos) {
-		final Tag tag=super.constructTagAt(source,pos);
-		if (tag==null) return null;
+		final Tag tag = super.constructTagAt(source, pos);
+		if (tag == null)
+			return null;
 		// A mason named block does not have a '%' before its closing '>' delimiter and requires a matching end tag.
-		if (source.charAt(tag.getEnd()-2)=='%') return null; // this is a common server tag, not a named block
-		if (source.getNextEndTag(tag.getEnd(),tag.getName(),getCorrespondingEndTagType())==null) return null;
+		if (source.charAt(tag.getEnd() - 2) == '%')
+			return null; // this is a common server tag, not a named block
+		if (source.getNextEndTag(tag.getEnd(), tag.getName(), getCorrespondingEndTagType()) == null)
+			return null;
 		return tag;
 	}
 }

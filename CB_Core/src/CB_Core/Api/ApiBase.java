@@ -1,6 +1,5 @@
 package CB_Core.Api;
 
-public class ApiBase
-{
+public class ApiBase {
 
 }

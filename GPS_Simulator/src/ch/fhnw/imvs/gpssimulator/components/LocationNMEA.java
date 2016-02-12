@@ -33,8 +33,7 @@ import ch.fhnw.imvs.gpssimulator.data.GPSData.Orientation;
 import ch.fhnw.imvs.gpssimulator.data.GPSDataListener;
 
 @SuppressWarnings("serial")
-public class LocationNMEA extends JPanel implements GPSDataListener
-{
+public class LocationNMEA extends JPanel implements GPSDataListener {
 
 	static Logger log4j = Logger.getLogger("root");
 
@@ -45,8 +44,7 @@ public class LocationNMEA extends JPanel implements GPSDataListener
 	private final JComboBox<Orientation> ew = new JComboBox<Orientation>();
 	private final JComboBox<Orientation> ns = new JComboBox<Orientation>();
 
-	public LocationNMEA()
-	{
+	public LocationNMEA() {
 		GPSData.addChangeListener(this);
 
 		JPanel labels = new JPanel(new GridLayout(4, 1));
@@ -104,11 +102,9 @@ public class LocationNMEA extends JPanel implements GPSDataListener
 			p4.add(spacer);
 		}
 
-		ChangeListener latitudeChangeListener = new ChangeListener()
-		{
+		ChangeListener latitudeChangeListener = new ChangeListener() {
 			@Override
-			public void stateChanged(ChangeEvent e)
-			{
+			public void stateChanged(ChangeEvent e) {
 				GPSData.setLatitude(nmea2degree((Double) latitude.getValue()));
 				// log4j.debug("Latitude: " + GPSData.getLatitude());
 				// log4j.debug("Latitude (NMEA): " + NMEASentence.getNMEALatitude());
@@ -120,20 +116,16 @@ public class LocationNMEA extends JPanel implements GPSDataListener
 
 		ns.addItem(GPSData.Orientation.NORTH);
 		ns.addItem(GPSData.Orientation.SOUTH);
-		ns.addActionListener(new ActionListener()
-		{
+		ns.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
 				GPSData.setNS((GPSData.Orientation) ns.getSelectedItem());
 			}
 		});
 
-		ChangeListener longitudeChangeListener = new ChangeListener()
-		{
+		ChangeListener longitudeChangeListener = new ChangeListener() {
 			@Override
-			public void stateChanged(ChangeEvent e)
-			{
+			public void stateChanged(ChangeEvent e) {
 				GPSData.setLongitude(nmea2degree((Double) longitude.getValue()));
 				// log4j.debug("Longitude: " + GPSData.getLongitude());
 				// log4j.debug("Longitude NMEA: " + NMEASentence.getNMEALongitude());
@@ -145,31 +137,25 @@ public class LocationNMEA extends JPanel implements GPSDataListener
 
 		ew.addItem(GPSData.Orientation.EAST);
 		ew.addItem(GPSData.Orientation.WEST);
-		ew.addActionListener(new ActionListener()
-		{
+		ew.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
 				GPSData.setEW((GPSData.Orientation) ew.getSelectedItem());
 			}
 		});
 
 		speed.setModel(new SpinnerNumberModel(GPSData.getSpeed(), 0, 1000, 1));
-		speed.addChangeListener(new ChangeListener()
-		{
+		speed.addChangeListener(new ChangeListener() {
 			@Override
-			public void stateChanged(ChangeEvent e)
-			{
+			public void stateChanged(ChangeEvent e) {
 				GPSData.setSpeed((Double) speed.getValue());
 			}
 		});
 
 		altitude.setModel(new SpinnerNumberModel(GPSData.getAltitude(), -100, 10000, 1));
-		altitude.addChangeListener(new ChangeListener()
-		{
+		altitude.addChangeListener(new ChangeListener() {
 			@Override
-			public void stateChanged(ChangeEvent e)
-			{
+			public void stateChanged(ChangeEvent e) {
 				GPSData.setAltitude((Double) altitude.getValue());
 			}
 		});
@@ -207,8 +193,7 @@ public class LocationNMEA extends JPanel implements GPSDataListener
 	}
 
 	@Override
-	public void valueChanged()
-	{
+	public void valueChanged() {
 		latitude.setValue(degree2nmea(GPSData.getLatitude()));
 		longitude.setValue(degree2nmea(GPSData.getLongitude()));
 
@@ -219,8 +204,7 @@ public class LocationNMEA extends JPanel implements GPSDataListener
 		speed.setValue(GPSData.getSpeed());
 	}
 
-	private double degree2nmea(double value)
-	{
+	private double degree2nmea(double value) {
 		double degree = (int) value;
 		double minute = (int) (value * 60 - degree * 60);
 		double second = value * 60 - (int) (value * 60);
@@ -228,8 +212,7 @@ public class LocationNMEA extends JPanel implements GPSDataListener
 		return (double) Math.round((degree * 100 + minute + second) * 1000) / 1000;
 	}
 
-	private double nmea2degree(double value)
-	{
+	private double nmea2degree(double value) {
 		int degree = (int) value / 100;
 		int minute = (int) (value - degree * 100);
 		double second = ((value - (int) value) * 60);

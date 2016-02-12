@@ -7,8 +7,7 @@ import CB_UI_Base.Math.SizeF;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 
-public abstract class AnimationBase extends CB_View_Base
-{
+public abstract class AnimationBase extends CB_View_Base {
 
 	protected boolean mPlaying = false;
 	protected int mDuration = 1;
@@ -16,33 +15,27 @@ public abstract class AnimationBase extends CB_View_Base
 	protected float mSpriteHeight;
 	protected boolean mPause = false;
 
-	public AnimationBase(String Name)
-	{
+	public AnimationBase(String Name) {
 		super(Name);
 	}
 
-	public AnimationBase(float X, float Y, float Width, float Height, String Name)
-	{
+	public AnimationBase(float X, float Y, float Width, float Height, String Name) {
 		super(X, Y, Width, Height, Name);
 	}
 
-	public AnimationBase(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name)
-	{
+	public AnimationBase(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name) {
 		super(X, Y, Width, Height, Parent, Name);
 	}
 
-	public AnimationBase(CB_RectF rec, String Name)
-	{
+	public AnimationBase(CB_RectF rec, String Name) {
 		super(rec, Name);
 	}
 
-	public AnimationBase(CB_RectF rec, GL_View_Base Parent, String Name)
-	{
+	public AnimationBase(CB_RectF rec, GL_View_Base Parent, String Name) {
 		super(rec, Parent, Name);
 	}
 
-	public AnimationBase(SizeF size, String Name)
-	{
+	public AnimationBase(SizeF size, String Name) {
 		super(size, Name);
 	}
 

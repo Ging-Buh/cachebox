@@ -28,61 +28,51 @@ import CB_Utils.Log.LogLevel;
  * 
  * @author Longri
  */
-public class GPS
-{
+public class GPS {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(GPS.class);
 	private static int mSatVisible;
 	private static int mSatFixed;
 
 	private static CB_List<GpsStrength> mSatList;
 
-	public static int getVisibleSats()
-	{
+	public static int getVisibleSats() {
 		return mSatVisible;
 	}
 
-	public static int getFixedSats()
-	{
+	public static int getFixedSats() {
 		return mSatFixed;
 	}
 
-	public static CB_List<GpsStrength> getSatList()
-	{
+	public static CB_List<GpsStrength> getSatList() {
 		return mSatList;
 	}
 
-	public static String getSatAndFix()
-	{
+	public static String getSatAndFix() {
 		return String.valueOf(mSatVisible) + "/" + String.valueOf(mSatFixed);
 	}
 
-	public static void setStatus(GpsStatus status)
-	{
-		if (status == null) return;
+	public static void setStatus(GpsStatus status) {
+		if (status == null)
+			return;
 
 		Iterator<GpsSatellite> statusIterator = status.getSatellites().iterator();
 
 		int satellites = 0;
 		int fixed = 0;
 		CB_List<GpsStrength> SatList = new CB_List<GpsStrength>();
-		while (statusIterator.hasNext())
-		{
+		while (statusIterator.hasNext()) {
 			GpsSatellite sat = statusIterator.next();
-			if (sat.usedInFix() == true)
-			{
+			if (sat.usedInFix() == true) {
 				fixed++;
 			}
 			satellites++;
 
 			// satellite signal strength
 
-			if (sat.usedInFix())
-			{
+			if (sat.usedInFix()) {
 				// Log.d("Cachbox satellite signal strength", "Sat #" + satellites + ": " + sat.getSnr() + " FIX");
 				SatList.add(new GpsStrength(true, sat.getSnr()));
-			}
-			else
-			{
+			} else {
 				// Log.d("Cachbox satellite signal strength", "Sat #" + satellites + ": " + sat.getSnr());
 				SatList.add(new GpsStrength(false, sat.getSnr()));
 			}
@@ -95,19 +85,17 @@ public class GPS
 		mSatList = SatList;
 	}
 
-	public static void setSatFixes(int fixed)
-	{
-		if (LogLevel.isLogLevel(LogLevel.TRACE)) log.trace("set SatFixes to:" + fixed);
+	public static void setSatFixes(int fixed) {
+		if (LogLevel.isLogLevel(LogLevel.TRACE))
+			log.trace("set SatFixes to:" + fixed);
 		mSatFixed = fixed;
 	}
 
-	public static void setSatVisible(int satellites)
-	{
+	public static void setSatVisible(int satellites) {
 		mSatVisible = satellites;
 	}
 
-	public static void setSatList(CB_List<GpsStrength> coreSatList)
-	{
+	public static void setSatList(CB_List<GpsStrength> coreSatList) {
 		mSatList = coreSatList;
 	}
 

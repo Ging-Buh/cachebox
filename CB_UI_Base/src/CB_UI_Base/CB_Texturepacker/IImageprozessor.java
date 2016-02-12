@@ -4,8 +4,7 @@ import java.io.File;
 
 import com.badlogic.gdx.utils.Array;
 
-public interface IImageprozessor
-{
+public interface IImageprozessor {
 
 	public abstract void addImage(File file);
 

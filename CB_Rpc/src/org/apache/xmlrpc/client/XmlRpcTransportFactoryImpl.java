@@ -18,7 +18,6 @@
  */
 package org.apache.xmlrpc.client;
 
-
 /** Abstract base implementation of an {@link XmlRpcTransportFactory}.
  */
 public abstract class XmlRpcTransportFactoryImpl implements XmlRpcTransportFactory {
@@ -34,5 +33,7 @@ public abstract class XmlRpcTransportFactoryImpl implements XmlRpcTransportFacto
 	/** Returns the client operating this factory.
 	 * @return The client.
 	 */
-	public XmlRpcClient getClient() { return client; }
+	public XmlRpcClient getClient() {
+		return client;
+	}
 }

@@ -11,25 +11,25 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 
 public class CB_Action_Show_Parking_Dialog extends CB_Action {
 
-    Color TrackColor;
+	Color TrackColor;
 
-    public CB_Action_Show_Parking_Dialog() {
-	super("MyParking", MenuID.AID_SHOW_PARKING_DIALOG);
-    }
+	public CB_Action_Show_Parking_Dialog() {
+		super("MyParking", MenuID.AID_SHOW_PARKING_DIALOG);
+	}
 
-    @Override
-    public boolean getEnabled() {
-	return true;
-    }
+	@Override
+	public boolean getEnabled() {
+		return true;
+	}
 
-    @Override
-    public Sprite getIcon() {
-	return SpriteCacheBase.getThemedSprite("big" + CacheTypes.MyParking.name());
-    }
+	@Override
+	public Sprite getIcon() {
+		return SpriteCacheBase.getThemedSprite("big" + CacheTypes.MyParking.name());
+	}
 
-    @Override
-    public void Execute() {
-	ParkingDialog d = new ParkingDialog();
-	d.Show();
-    }
+	@Override
+	public void Execute() {
+		ParkingDialog d = new ParkingDialog();
+		d.Show();
+	}
 }

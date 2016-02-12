@@ -21,18 +21,19 @@
 package net.htmlparser.jericho;
 
 final class StartTagTypePHPScript extends StartTagTypeGenericImplementation {
-	protected static final StartTagTypePHPScript INSTANCE=new StartTagTypePHPScript();
+	protected static final StartTagTypePHPScript INSTANCE = new StartTagTypePHPScript();
 
 	private StartTagTypePHPScript() {
-		super("PHP script","<script",">",EndTagType.NORMAL,true,true,false);
+		super("PHP script", "<script", ">", EndTagType.NORMAL, true, true, false);
 	}
 
 	protected Tag constructTagAt(final Source source, final int pos) {
-		final StartTag startTag=(StartTag)super.constructTagAt(source,pos);
-		if (startTag==null) return null;
+		final StartTag startTag = (StartTag) super.constructTagAt(source, pos);
+		if (startTag == null)
+			return null;
 		// A PHP script element requires the attribute language="php".
-		if (!"php".equalsIgnoreCase(startTag.getAttributes().getValue("language"))) return null;
+		if (!"php".equalsIgnoreCase(startTag.getAttributes().getValue("language")))
+			return null;
 		return startTag;
 	}
 }
-

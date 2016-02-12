@@ -19,8 +19,7 @@ package CB_Locator;
 /**
  * This class represents the current state of a GPS satellite. This class is used in conjunction with the {@link GpsStatus} class.
  */
-public final class GpsSatellite
-{
+public final class GpsSatellite {
 	/* These package private values are modified by the GpsStatus class */
 	boolean mValid;
 	boolean mHasEphemeris;
@@ -31,16 +30,14 @@ public final class GpsSatellite
 	float mElevation;
 	float mAzimuth;
 
-	public GpsSatellite(int prn)
-	{
+	public GpsSatellite(int prn) {
 		mPrn = prn;
 	}
 
 	/**
 	 * Used by {@link LocationManager#getGpsStatus} to copy LocationManager's cached GpsStatus instance to the client's copy.
 	 */
-	void setStatus(GpsSatellite satellite)
-	{
+	void setStatus(GpsSatellite satellite) {
 		mValid = satellite.mValid;
 		mHasEphemeris = satellite.mHasEphemeris;
 		mHasAlmanac = satellite.mHasAlmanac;
@@ -55,8 +52,7 @@ public final class GpsSatellite
 	 * 
 	 * @return PRN number
 	 */
-	public int getPrn()
-	{
+	public int getPrn() {
 		return mPrn;
 	}
 
@@ -65,8 +61,7 @@ public final class GpsSatellite
 	 * 
 	 * @return the signal to noise ratio
 	 */
-	public float getSnr()
-	{
+	public float getSnr() {
 		return mSnr;
 	}
 
@@ -75,8 +70,7 @@ public final class GpsSatellite
 	 * 
 	 * @return the elevation in degrees
 	 */
-	public float getElevation()
-	{
+	public float getElevation() {
 		return mElevation;
 	}
 
@@ -85,8 +79,7 @@ public final class GpsSatellite
 	 * 
 	 * @return the azimuth in degrees
 	 */
-	public float getAzimuth()
-	{
+	public float getAzimuth() {
 		return mAzimuth;
 	}
 
@@ -95,8 +88,7 @@ public final class GpsSatellite
 	 * 
 	 * @return true if the satellite has ephemeris data
 	 */
-	public boolean hasEphemeris()
-	{
+	public boolean hasEphemeris() {
 		return mHasEphemeris;
 	}
 
@@ -105,8 +97,7 @@ public final class GpsSatellite
 	 * 
 	 * @return true if the satellite has almanac data
 	 */
-	public boolean hasAlmanac()
-	{
+	public boolean hasAlmanac() {
 		return mHasAlmanac;
 	}
 
@@ -115,23 +106,19 @@ public final class GpsSatellite
 	 * 
 	 * @return true if the satellite was used to compute the most recent fix.
 	 */
-	public boolean usedInFix()
-	{
+	public boolean usedInFix() {
 		return mUsedInFix;
 	}
 
-	public void setSnr(float snr)
-	{
+	public void setSnr(float snr) {
 		mSnr = snr;
 	}
 
-	public void setElevation(float elevation)
-	{
+	public void setElevation(float elevation) {
 		mElevation = elevation;
 	}
 
-	public void setAzimuth(float azimuth)
-	{
+	public void setAzimuth(float azimuth) {
 		mAzimuth = azimuth;
 	}
 }

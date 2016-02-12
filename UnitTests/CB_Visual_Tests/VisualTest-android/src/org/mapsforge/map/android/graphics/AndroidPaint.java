@@ -30,12 +30,9 @@ import android.graphics.Rect;
 import android.graphics.Shader.TileMode;
 import android.graphics.Typeface;
 
-class AndroidPaint implements Paint
-{
-	private static android.graphics.Paint.Align getAndroidAlign(Align align)
-	{
-		switch (align)
-		{
+class AndroidPaint implements Paint {
+	private static android.graphics.Paint.Align getAndroidAlign(Align align) {
+		switch (align) {
 		case CENTER:
 			return android.graphics.Paint.Align.CENTER;
 		case LEFT:
@@ -47,10 +44,8 @@ class AndroidPaint implements Paint
 		throw new IllegalArgumentException("unknown align: " + align);
 	}
 
-	private static android.graphics.Paint.Cap getAndroidCap(Cap cap)
-	{
-		switch (cap)
-		{
+	private static android.graphics.Paint.Cap getAndroidCap(Cap cap) {
+		switch (cap) {
 		case BUTT:
 			return android.graphics.Paint.Cap.BUTT;
 		case ROUND:
@@ -62,10 +57,8 @@ class AndroidPaint implements Paint
 		throw new IllegalArgumentException("unknown cap: " + cap);
 	}
 
-	private static android.graphics.Paint.Style getAndroidStyle(Style style)
-	{
-		switch (style)
-		{
+	private static android.graphics.Paint.Style getAndroidStyle(Style style) {
+		switch (style) {
 		case FILL:
 			return android.graphics.Paint.Style.FILL;
 		case STROKE:
@@ -75,10 +68,8 @@ class AndroidPaint implements Paint
 		throw new IllegalArgumentException("unknown style: " + style);
 	}
 
-	private static int getFontStyle(FontStyle fontStyle)
-	{
-		switch (fontStyle)
-		{
+	private static int getFontStyle(FontStyle fontStyle) {
+		switch (fontStyle) {
 		case BOLD:
 			return Typeface.BOLD;
 		case BOLD_ITALIC:
@@ -92,10 +83,8 @@ class AndroidPaint implements Paint
 		throw new IllegalArgumentException("unknown font style: " + fontStyle);
 	}
 
-	private static Typeface getTypeface(org.mapsforge.core.graphics.FontFamily fontFamily)
-	{
-		switch (fontFamily)
-		{
+	private static Typeface getTypeface(org.mapsforge.core.graphics.FontFamily fontFamily) {
+		switch (fontFamily) {
 		case DEFAULT:
 			return Typeface.DEFAULT;
 		case MONOSPACE:
@@ -111,8 +100,7 @@ class AndroidPaint implements Paint
 
 	final android.graphics.Paint paint = new android.graphics.Paint();
 
-	AndroidPaint()
-	{
+	AndroidPaint() {
 		this.paint.setAntiAlias(true);
 		this.paint.setStrokeCap(getAndroidCap(Cap.ROUND));
 		this.paint.setStrokeJoin(Join.ROUND);
@@ -120,32 +108,27 @@ class AndroidPaint implements Paint
 	}
 
 	@Override
-	public int getTextHeight(String text)
-	{
+	public int getTextHeight(String text) {
 		Rect rect = new Rect();
 		this.paint.getTextBounds(text, 0, text.length(), rect);
 		return rect.height();
 	}
 
 	@Override
-	public int getTextWidth(String text)
-	{
+	public int getTextWidth(String text) {
 		Rect rect = new Rect();
 		this.paint.getTextBounds(text, 0, text.length(), rect);
 		return rect.width();
 	}
 
 	@Override
-	public boolean isTransparent()
-	{
+	public boolean isTransparent() {
 		return this.paint.getShader() == null && this.paint.getAlpha() == 0;
 	}
 
 	@Override
-	public void setBitmapShader(org.mapsforge.core.graphics.Bitmap bitmap)
-	{
-		if (bitmap == null)
-		{
+	public void setBitmapShader(org.mapsforge.core.graphics.Bitmap bitmap) {
+		if (bitmap == null) {
 			return;
 		}
 
@@ -154,54 +137,46 @@ class AndroidPaint implements Paint
 	}
 
 	@Override
-	public void setColor(Color color)
-	{
+	public void setColor(Color color) {
 		this.paint.setColor(AndroidGraphicFactory.getColor(color));
 	}
 
 	@Override
-	public void setColor(int color)
-	{
+	public void setColor(int color) {
 		this.paint.setColor(color);
 	}
 
 	float[] strokeDasharray;
 
 	@Override
-	public void setDashPathEffect(float[] strokeDasharray)
-	{
+	public void setDashPathEffect(float[] strokeDasharray) {
 		this.strokeDasharray = strokeDasharray;
 		PathEffect pathEffect = new DashPathEffect(this.strokeDasharray, 0);
 		this.paint.setPathEffect(pathEffect);
 	}
 
 	@Override
-	public void setStrokeCap(Cap cap)
-	{
+	public void setStrokeCap(Cap cap) {
 		this.paint.setStrokeCap(getAndroidCap(cap));
 	}
 
 	@Override
-	public void setStrokeWidth(float strokeWidth)
-	{
+	public void setStrokeWidth(float strokeWidth) {
 		this.paint.setStrokeWidth(strokeWidth);
 	}
 
 	@Override
-	public void setStyle(Style style)
-	{
+	public void setStyle(Style style) {
 		this.paint.setStyle(getAndroidStyle(style));
 	}
 
 	@Override
-	public void setTextAlign(Align align)
-	{
+	public void setTextAlign(Align align) {
 		this.paint.setTextAlign(getAndroidAlign(align));
 	}
 
 	@Override
-	public void setTextSize(float textSize)
-	{
+	public void setTextSize(float textSize) {
 		this.paint.setTextSize(textSize);
 	}
 
@@ -209,18 +184,15 @@ class AndroidPaint implements Paint
 	FontStyle fontStyle;
 
 	@Override
-	public void setTypeface(FontFamily fontFamily, FontStyle fontStyle)
-	{
+	public void setTypeface(FontFamily fontFamily, FontStyle fontStyle) {
 		this.fontFamily = fontFamily;
 		this.fontStyle = fontStyle;
 		this.paint.setTypeface(Typeface.create(getTypeface(fontFamily), getFontStyle(fontStyle)));
 	}
 
 	@Override
-	public Cap getCap()
-	{
-		switch (this.paint.getStrokeCap())
-		{
+	public Cap getCap() {
+		switch (this.paint.getStrokeCap()) {
 		case BUTT:
 			return Cap.BUTT;
 		case ROUND:
@@ -234,16 +206,13 @@ class AndroidPaint implements Paint
 	}
 
 	@Override
-	public int getColor()
-	{
+	public int getColor() {
 		return this.paint.getColor();
 	}
 
 	@Override
-	public Style getStyle()
-	{
-		switch (this.paint.getStyle())
-		{
+	public Style getStyle() {
+		switch (this.paint.getStyle()) {
 		case FILL:
 			return Style.FILL;
 		case FILL_AND_STROKE:
@@ -256,32 +225,27 @@ class AndroidPaint implements Paint
 	}
 
 	@Override
-	public float getTextSize()
-	{
+	public float getTextSize() {
 		return this.paint.getTextSize();
 	}
 
 	@Override
-	public float getStrokeWidth()
-	{
+	public float getStrokeWidth() {
 		return this.paint.getTextSize();
 	}
 
 	@Override
-	public float[] getDashArray()
-	{
+	public float[] getDashArray() {
 		return this.strokeDasharray;
 	}
 
 	@Override
-	public FontFamily getFontFamily()
-	{
+	public FontFamily getFontFamily() {
 		return this.fontFamily;
 	}
 
 	@Override
-	public FontStyle getFontStyle()
-	{
+	public FontStyle getFontStyle() {
 		return this.fontStyle;
 	}
 }

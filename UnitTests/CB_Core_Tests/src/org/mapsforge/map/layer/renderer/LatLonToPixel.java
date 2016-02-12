@@ -9,8 +9,7 @@ import org.mapsforge.core.util.MercatorProjection;
 
 import CB_UI_Base.Global;
 
-public class LatLonToPixel extends TestCase
-{
+public class LatLonToPixel extends TestCase {
 	private double tileLatLon_0_x, tileLatLon_0_y, tileLatLon_1_x, tileLatLon_1_y;
 	private double divLon, divLat;
 
@@ -22,8 +21,7 @@ public class LatLonToPixel extends TestCase
 	private final int TEST_COUNT = 10000000;
 
 	@Test
-	public void test_LatLonToPixel()
-	{
+	public void test_LatLonToPixel() {
 
 		tileLatLon_0_x = MercatorProjection.tileXToLongitude(tile.tileX, tile.zoomLevel);
 		tileLatLon_0_y = MercatorProjection.tileYToLatitude(tile.tileY, tile.zoomLevel);
@@ -35,8 +33,7 @@ public class LatLonToPixel extends TestCase
 
 		long begin = System.currentTimeMillis();
 
-		for (int i = 0; i < TEST_COUNT; i++)
-		{
+		for (int i = 0; i < TEST_COUNT; i++) {
 			Cachebox();
 		}
 
@@ -44,8 +41,7 @@ public class LatLonToPixel extends TestCase
 
 		begin = System.currentTimeMillis();
 
-		for (int i = 0; i < TEST_COUNT; i++)
-		{
+		for (int i = 0; i < TEST_COUNT; i++) {
 			Mapsforge();
 		}
 
@@ -59,8 +55,7 @@ public class LatLonToPixel extends TestCase
 		// #############################################################
 		begin = System.currentTimeMillis();
 
-		for (int i = 0; i < TEST_COUNT; i++)
-		{
+		for (int i = 0; i < TEST_COUNT; i++) {
 			CacheboxY();
 		}
 
@@ -68,8 +63,7 @@ public class LatLonToPixel extends TestCase
 
 		begin = System.currentTimeMillis();
 
-		for (int i = 0; i < TEST_COUNT; i++)
-		{
+		for (int i = 0; i < TEST_COUNT; i++) {
 			MapsforgeY();
 		}
 
@@ -83,8 +77,7 @@ public class LatLonToPixel extends TestCase
 		// #############################################################
 		begin = System.currentTimeMillis();
 
-		for (int i = 0; i < TEST_COUNT; i++)
-		{
+		for (int i = 0; i < TEST_COUNT; i++) {
 			LatLonInitFast();
 		}
 
@@ -92,8 +85,7 @@ public class LatLonToPixel extends TestCase
 
 		begin = System.currentTimeMillis();
 
-		for (int i = 0; i < TEST_COUNT; i++)
-		{
+		for (int i = 0; i < TEST_COUNT; i++) {
 			LatLonInit();
 		}
 
@@ -106,46 +98,39 @@ public class LatLonToPixel extends TestCase
 
 	}
 
-	private float Mapsforge()
-	{
+	private float Mapsforge() {
 		float pixelX = (float) (MercatorProjection.longitudeToPixelX(latLong.getLongitude(), tile.zoomLevel, tileSize) - (tile.tileX * tileSize));
 		return pixelX;
 	}
 
-	private float Cachebox()
-	{
+	private float Cachebox() {
 		// double pixelX = Descriptor.LongitudeToTileX(zoomLevel, latLong.longitude, tileSize) - (tileX * tileSize);
 		float pixelX = (float) ((tileLatLon_0_x - latLong.getLongitude()) / divLon);
 		return pixelX;
 	}
 
-	private float MapsforgeY()
-	{
+	private float MapsforgeY() {
 
 		float pixelY = (float) (MercatorProjection.latitudeToPixelY(latLong.getLatitude(), tile.zoomLevel, tileSize) - (tile.tileY * tileSize));
 		return pixelY;
 	}
 
-	private float CacheboxY()
-	{
+	private float CacheboxY() {
 
 		// double pixelY = Descriptor.LatitudeToTileY(zoomLevel, latLong.latitude, tileSize) - (tileY * tileSize);
 		float pixelY = (float) ((tileLatLon_0_y - latLong.getLatitude()) / divLat);
 		return pixelY;
 	}
 
-	LatLong LatLonInit()
-	{
+	LatLong LatLonInit() {
 		return new LatLong(52.57133375654519, 13.400573730475);
 	}
 
-	fastLatLong LatLonInitFast()
-	{
+	fastLatLong LatLonInitFast() {
 		return new fastLatLong(52.57133375654519, 13.400573730475);
 	}
 
-	private class fastLatLong implements Comparable<fastLatLong>
-	{
+	private class fastLatLong implements Comparable<fastLatLong> {
 		/**
 		 * The latitude coordinate of this LatLong in degrees.
 		 */
@@ -164,61 +149,44 @@ public class LatLonToPixel extends TestCase
 		 * @throws IllegalArgumentException
 		 *             if a coordinate is invalid.
 		 */
-		public fastLatLong(double latitude, double longitude)
-		{
+		public fastLatLong(double latitude, double longitude) {
 
 			this.latitude = latitude;
 			this.longitude = longitude;
 		}
 
 		@Override
-		public int compareTo(fastLatLong latLong)
-		{
-			if (this.longitude > latLong.longitude)
-			{
+		public int compareTo(fastLatLong latLong) {
+			if (this.longitude > latLong.longitude) {
 				return 1;
-			}
-			else if (this.longitude < latLong.longitude)
-			{
+			} else if (this.longitude < latLong.longitude) {
 				return -1;
-			}
-			else if (this.latitude > latLong.latitude)
-			{
+			} else if (this.latitude > latLong.latitude) {
 				return 1;
-			}
-			else if (this.latitude < latLong.latitude)
-			{
+			} else if (this.latitude < latLong.latitude) {
 				return -1;
 			}
 			return 0;
 		}
 
 		@Override
-		public boolean equals(Object obj)
-		{
-			if (this == obj)
-			{
+		public boolean equals(Object obj) {
+			if (this == obj) {
 				return true;
-			}
-			else if (!(obj instanceof LatLong))
-			{
+			} else if (!(obj instanceof LatLong)) {
 				return false;
 			}
 			LatLong other = (LatLong) obj;
-			if (Double.doubleToLongBits(this.latitude) != Double.doubleToLongBits(other.getLatitude()))
-			{
+			if (Double.doubleToLongBits(this.latitude) != Double.doubleToLongBits(other.getLatitude())) {
 				return false;
-			}
-			else if (Double.doubleToLongBits(this.longitude) != Double.doubleToLongBits(other.getLongitude()))
-			{
+			} else if (Double.doubleToLongBits(this.longitude) != Double.doubleToLongBits(other.getLongitude())) {
 				return false;
 			}
 			return true;
 		}
 
 		@Override
-		public int hashCode()
-		{
+		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
 			long temp;

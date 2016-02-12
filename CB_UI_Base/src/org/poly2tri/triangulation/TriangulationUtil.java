@@ -32,8 +32,7 @@
 /**
  * @author Thomas �hl�n, thahlen@gmail.com
  */
-public class TriangulationUtil
-{
+public class TriangulationUtil {
 	public final static double EPSILON = 1e-12;
 
 	// Returns triangle circumcircle point and radius
@@ -95,9 +94,7 @@ public class TriangulationUtil
 	 *            - point opposite a
 	 * @return true if d is inside circle, false if on circle edge
 	 */
-	public static boolean smartIncircle(final TriangulationPoint pa, final TriangulationPoint pb, final TriangulationPoint pc,
-			final TriangulationPoint pd)
-	{
+	public static boolean smartIncircle(final TriangulationPoint pa, final TriangulationPoint pb, final TriangulationPoint pc, final TriangulationPoint pd) {
 		final double pdx = pd.getX();
 		final double pdy = pd.getY();
 		final double adx = pa.getX() - pdx;
@@ -109,8 +106,7 @@ public class TriangulationUtil
 		final double bdxady = bdx * ady;
 		final double oabd = adxbdy - bdxady;
 		// oabd = orient2d(pa,pb,pd);
-		if (oabd <= 0)
-		{
+		if (oabd <= 0) {
 			return false;
 		}
 
@@ -121,8 +117,7 @@ public class TriangulationUtil
 		final double adxcdy = adx * cdy;
 		final double ocad = cdxady - adxcdy;
 		// ocad = orient2d(pc,pa,pd);
-		if (ocad <= 0)
-		{
+		if (ocad <= 0) {
 			return false;
 		}
 
@@ -146,17 +141,14 @@ public class TriangulationUtil
 	 * @param pd
 	 * @return
 	 */
-	public static boolean inScanArea(final TriangulationPoint pa, final TriangulationPoint pb, final TriangulationPoint pc,
-			final TriangulationPoint pd)
-	{
+	public static boolean inScanArea(final TriangulationPoint pa, final TriangulationPoint pb, final TriangulationPoint pc, final TriangulationPoint pd) {
 		double pdx = 0;
 		double pdy = 0;
 		double adx = 0;
 		double ady = 0;
 		double bdx = 0;
 		double bdy = 0;
-		try
-		{
+		try {
 			pdx = pd.getX();
 			pdy = pd.getY();
 			adx = pa.getX() - pdx;
@@ -168,8 +160,7 @@ public class TriangulationUtil
 			final double bdxady = bdx * ady;
 			final double oabd = adxbdy - bdxady;
 			// oabd = orient2d(pa,pb,pd);
-			if (oabd <= 0)
-			{
+			if (oabd <= 0) {
 				return false;
 			}
 
@@ -180,15 +171,12 @@ public class TriangulationUtil
 			final double adxcdy = adx * cdy;
 			final double ocad = cdxady - adxcdy;
 			// ocad = orient2d(pc,pa,pd);
-			if (ocad <= 0)
-			{
+			if (ocad <= 0) {
 				return false;
 			}
 			return true;
-		}
-		catch (Throwable e)
-		{
-			
+		} catch (Throwable e) {
+
 			e.printStackTrace();
 			return false;
 		}
@@ -205,24 +193,19 @@ public class TriangulationUtil
 	 *              =  (x1-x3)*(y2-y3) - (y1-y3)*(x2-x3)
 	 * </pre>
 	 */
-	public static Orientation orient2d(TriangulationPoint pa, TriangulationPoint pb, TriangulationPoint pc)
-	{
+	public static Orientation orient2d(TriangulationPoint pa, TriangulationPoint pb, TriangulationPoint pc) {
 		double detleft = (pa.getX() - pc.getX()) * (pb.getY() - pc.getY());
 		double detright = (pa.getY() - pc.getY()) * (pb.getX() - pc.getX());
 		double val = detleft - detright;
-		if (val > -EPSILON && val < EPSILON)
-		{
+		if (val > -EPSILON && val < EPSILON) {
 			return Orientation.Collinear;
-		}
-		else if (val > 0)
-		{
+		} else if (val > 0) {
 			return Orientation.CCW;
 		}
 		return Orientation.CW;
 	}
 
-	public enum Orientation
-	{
+	public enum Orientation {
 		CW, CCW, Collinear;
 	}
 }

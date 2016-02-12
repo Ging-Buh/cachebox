@@ -23,19 +23,18 @@ import __Static.InitTestDBs;
 
 /**
  * Der Test ist kein Wirklicher Test. Hier werden die GS Attribute Herrunter geladen und es wird die "Attributes.java" daraus generiert.
- * Damit die Attribute immer Aktuell gehalten werden können.
+ * Damit die Attribute immer Aktuell gehalten werden kï¿½nnen.
  * 
  * @author Longri
  */
-public class GenAttributes extends TestCase
-{
+public class GenAttributes extends TestCase {
 	private Boolean NotRun = false;
 
 	public static String LastAPIError = "";
 
-	public void testGetAllAttributes() throws IOException
-	{
-		if (NotRun) return;
+	public void testGetAllAttributes() throws IOException {
+		if (NotRun)
+			return;
 
 		InitTestDBs.InitalConfig();
 		String accessToken = Config.GetAccessToken();
@@ -44,8 +43,7 @@ public class GenAttributes extends TestCase
 		// read all GS Attributes
 		ArrayList<GsAttributes> attList = new ArrayList<GsAttributes>();
 
-		try
-		{
+		try {
 			HttpGet httppost = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetAttributeTypesData?AccessToken=" + accessToken + "&format=json");
 
 			String result = HttpUtils.Execute(httppost, null);
@@ -56,18 +54,15 @@ public class GenAttributes extends TestCase
 				JSONTokener tokener = new JSONTokener(result);
 				JSONObject json = (JSONObject) tokener.nextValue();
 				JSONObject status = json.getJSONObject("Status");
-				if (status.getInt("StatusCode") == 0)
-				{
+				if (status.getInt("StatusCode") == 0) {
 					LastAPIError = "";
 					JSONArray jAttributes = json.getJSONArray("AttributeTypes");
 
-					for (int ii = 0; ii < jAttributes.length(); ii++)
-					{
+					for (int ii = 0; ii < jAttributes.length(); ii++) {
 						JSONObject jAtt = (JSONObject) jAttributes.get(ii);
 
 						GsAttributes tmp = new GsAttributes();
-						try
-						{
+						try {
 							tmp.ID = jAtt.getInt("ID");
 							tmp.hasNo = jAtt.getBoolean("HasNoOption");
 							tmp.hasYes = jAtt.getBoolean("HasYesOption");
@@ -75,8 +70,7 @@ public class GenAttributes extends TestCase
 							String Name = jAtt.getString("Name");
 							Name = Name.replace(" ", "_").trim();
 							int Pos1 = Name.indexOf("(");
-							if (Pos1 > 0)
-							{
+							if (Pos1 > 0) {
 								int Pos2 = Name.indexOf(")");
 								String clear = Name.substring(Pos1, Pos2);
 								Name = Name.replace(clear, "").trim();
@@ -87,17 +81,13 @@ public class GenAttributes extends TestCase
 							tmp.UrlNoIcon = jAtt.getString("NoIconName");
 							tmp.UrlYesIcon = jAtt.getString("YesIconName");
 							tmp.Description = jAtt.getString("Description");
-						}
-						catch (JSONException e)
-						{
+						} catch (JSONException e) {
 						}
 
 						attList.add(tmp);
 					}
 
-				}
-				else
-				{
+				} else {
 					LastAPIError = "";
 					LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
 					LastAPIError += status.getString("StatusMessage") + "\n";
@@ -106,16 +96,12 @@ public class GenAttributes extends TestCase
 					return;
 				}
 
-			}
-			catch (JSONException e)
-			{
+			} catch (JSONException e) {
 
 				e.printStackTrace();
 			}
 
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 			return;
 		}
@@ -134,21 +120,16 @@ public class GenAttributes extends TestCase
 		java += BR + "{";
 		java += BR + "  Default, ";
 		Iterator<GsAttributes> iterator = attList.iterator();
-		do
-		{
+		do {
 			java += " ";
 			java += iterator.next().Name;
-			if (iterator.hasNext())
-			{
+			if (iterator.hasNext()) {
 				java += ",";
-			}
-			else
-			{
+			} else {
 				java += ";";
 			}
 
-		}
-		while (iterator.hasNext());
+		} while (iterator.hasNext());
 
 		java += BR + "";
 		java += BR + "";
@@ -169,15 +150,13 @@ public class GenAttributes extends TestCase
 		java += BR + "{";
 
 		iterator = attList.iterator();
-		do
-		{
+		do {
 			GsAttributes tmp = iterator.next();
 
 			java += BR + "case " + String.valueOf(tmp.ID) + ":";
 			java += BR + "return CB_Core.Enums.Attributes." + tmp.Name + ";";
 
-		}
-		while (iterator.hasNext());
+		} while (iterator.hasNext());
 
 		java += BR + "}";
 		java += BR + "";
@@ -192,12 +171,10 @@ public class GenAttributes extends TestCase
 		java += BR + "	attributeLookup = new HashMap<Attributes, Integer>();";
 		java += BR + "	attributeLookup.put(Attributes.Default, 0);";
 		iterator = attList.iterator();
-		do
-		{
+		do {
 			GsAttributes tmp = iterator.next();
 			java += BR + "	attributeLookup.put(Attributes." + tmp.Name + ", " + String.valueOf(tmp.ID) + ");";
-		}
-		while (iterator.hasNext());
+		} while (iterator.hasNext());
 
 		java += BR + "}";
 		java += BR + "";
@@ -254,13 +231,10 @@ public class GenAttributes extends TestCase
 		// Write to File
 		String FilePath = "./testdata/Attributes/Attributes.java";
 		BufferedWriter writer = null;
-		try
-		{
+		try {
 			writer = new BufferedWriter(new FileWriter(FilePath));
 			writer.write(java);
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			writer.close();
 		}
 		writer.close();
@@ -268,62 +242,52 @@ public class GenAttributes extends TestCase
 		// Download ATTR Images
 
 		iterator = attList.iterator();
-		do
-		{
+		do {
 			GsAttributes tmp = iterator.next();
 			String lacalNo = "./testdata/Attributes/att_" + String.valueOf(tmp.ID) + "_0.png";
 			String lacalYes = "./testdata/Attributes/att_" + String.valueOf(tmp.ID) + "_1.png";
 
-			if (tmp.hasYes)
-			{
+			if (tmp.hasYes) {
 				FileIO.Download(tmp.UrlYesIcon, lacalYes);
 			}
 
-			if (tmp.hasNo)
-			{
+			if (tmp.hasNo) {
 				FileIO.Download(tmp.UrlNoIcon, lacalNo);
 			}
-		}
-		while (iterator.hasNext());
+		} while (iterator.hasNext());
 
 		// Write EN Description for Lang File
 
 		String Lang = "";
 		iterator = attList.iterator();
-		do
-		{
+		do {
 			GsAttributes tmp = iterator.next();
-			if (tmp.hasYes)
-			{
+			if (tmp.hasYes) {
 				String descYes = tmp.Description;
-				if (descYes.length() > 0) Lang += "att_" + String.valueOf(tmp.ID) + "_1 = " + descYes + BR;
+				if (descYes.length() > 0)
+					Lang += "att_" + String.valueOf(tmp.ID) + "_1 = " + descYes + BR;
 			}
 
-			if (tmp.hasNo)
-			{
+			if (tmp.hasNo) {
 				String descNo = tmp.Description;
-				if (descNo.length() > 0) Lang += "att_" + String.valueOf(tmp.ID) + "_0 = NO " + descNo + BR;
+				if (descNo.length() > 0)
+					Lang += "att_" + String.valueOf(tmp.ID) + "_0 = NO " + descNo + BR;
 			}
-		}
-		while (iterator.hasNext());
+		} while (iterator.hasNext());
 
 		String enFilePath = "./testdata/Attributes/en.lan";
 		BufferedWriter enwriter = null;
-		try
-		{
+		try {
 			enwriter = new BufferedWriter(new FileWriter(enFilePath));
 			enwriter.write(Lang);
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			enwriter.close();
 		}
 		enwriter.close();
 
 	}
 
-	class GsAttributes
-	{
+	class GsAttributes {
 		int ID;
 		String Name;
 

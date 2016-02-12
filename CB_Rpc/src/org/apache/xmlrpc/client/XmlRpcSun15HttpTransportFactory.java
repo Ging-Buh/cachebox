@@ -26,39 +26,39 @@ import java.net.Proxy;
  * {@link java.net.HttpURLConnection} class.
  */
 public class XmlRpcSun15HttpTransportFactory extends XmlRpcSun14HttpTransportFactory {
-    private Proxy proxy;
+	private Proxy proxy;
 
-    /**
-     * Creates a new factory, which creates transports for the given client.
-     * @param pClient The client, which is operating the factory.
-     */
-    public XmlRpcSun15HttpTransportFactory(XmlRpcClient pClient) {
-        super(pClient);
-    }
+	/**
+	 * Creates a new factory, which creates transports for the given client.
+	 * @param pClient The client, which is operating the factory.
+	 */
+	public XmlRpcSun15HttpTransportFactory(XmlRpcClient pClient) {
+		super(pClient);
+	}
 
-    /**
-     * Sets the proxy to use.
-     * @param proxyHost The proxy hostname.
-     * @param proxyPort The proxy port number.
-     * @throws IllegalArgumentException if the proxyHost parameter is null or if
-     *     the proxyPort parameter is outside the range of valid port values.
-     */
-    public void setProxy(String proxyHost, int proxyPort) {
-        setProxy(new Proxy(Proxy.Type.HTTP,new InetSocketAddress(proxyHost,proxyPort)));
-    }
+	/**
+	 * Sets the proxy to use.
+	 * @param proxyHost The proxy hostname.
+	 * @param proxyPort The proxy port number.
+	 * @throws IllegalArgumentException if the proxyHost parameter is null or if
+	 *     the proxyPort parameter is outside the range of valid port values.
+	 */
+	public void setProxy(String proxyHost, int proxyPort) {
+		setProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)));
+	}
 
-    /**
-     * Sets the proxy to use.
-     * @param pProxy The proxy settings.
-     */
-    public void setProxy(Proxy pProxy) {
-        proxy = pProxy;
-    }
+	/**
+	 * Sets the proxy to use.
+	 * @param pProxy The proxy settings.
+	 */
+	public void setProxy(Proxy pProxy) {
+		proxy = pProxy;
+	}
 
-    public XmlRpcTransport getTransport() {
-        XmlRpcSun15HttpTransport transport = new XmlRpcSun15HttpTransport(getClient());
-        transport.setSSLSocketFactory(getSSLSocketFactory());
-        transport.setProxy(proxy);
-        return transport;
-    }
+	public XmlRpcTransport getTransport() {
+		XmlRpcSun15HttpTransport transport = new XmlRpcSun15HttpTransport(getClient());
+		transport.setSSLSocketFactory(getSSLSocketFactory());
+		transport.setProxy(proxy);
+		return transport;
+	}
 }

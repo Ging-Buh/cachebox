@@ -35,8 +35,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
-public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
-{
+public class ZoomScale extends CB_View_Base implements invalidateTextureEvent {
 	private int minzoom = 6;
 	private int maxzoom = 20;
 	private float zoom = 13;
@@ -65,8 +64,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 
 	private final ZoomScale THIS;
 
-	public ZoomScale(CB_RectF rec, String Name, int minzoom, int maxzoom, float zoom)
-	{
+	public ZoomScale(CB_RectF rec, String Name, int minzoom, int maxzoom, float zoom) {
 		super(rec, Name);
 		this.minzoom = minzoom;
 		this.maxzoom = maxzoom;
@@ -75,34 +73,32 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 	}
 
 	@Override
-	protected void render(Batch batch)
-	{
-		if (this.getWidth() < 1 || this.getHeight() < 1) return;
+	protected void render(Batch batch) {
+		if (this.getWidth() < 1 || this.getHeight() < 1)
+			return;
 
 		int valueRecHeight = (int) (this.getWidth() / 2);
 
-		if (ScaleDrawRec == null)
-		{
+		if (ScaleDrawRec == null) {
 			ScaleDrawRec = this.copy();
 			ScaleDrawRec.setHeight(this.getHeight() - valueRecHeight);
 			ScaleDrawRec.setPos(new Vector2(0, valueRecHeight / 2));
 		}
 
-		if (!isVisible) return;
+		if (!isVisible)
+			return;
 		checkFade();
 
 		// Draw Scale
 
 		Sprite scale = drawSprite(ScaleDrawRec);
-		if (scale != null)
-		{
+		if (scale != null) {
 			scale.setY(valueRecHeight / 2);
 			scale.draw(batch, FadeValue);
 		}
 
 		// Draw Value Background
-		if (ValueRec != null)
-		{
+		if (ValueRec != null) {
 			Sprite valueBack;
 			valueBack = SpriteCacheBase.ZoomValueBack;
 			valueBack.setBounds(ValueRec.getX() + 1.5f, ValueRec.getY(), ValueRec.getWidth(), ValueRec.getHeight());
@@ -111,36 +107,30 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 
 		int intZoom = (int) zoom;
 
-		try
-		{
+		try {
 			com.badlogic.gdx.graphics.Color c = COLOR.getFontColor();
 			Fonts.getNormal().setColor(c.r, c.g, c.b, FadeValue);
 			Fonts.getNormal().draw(batch, String.valueOf(intZoom), ValueRec.getX() + (ValueRec.getWidth() / 3), ValueRec.getY() + ValueRec.getHeight() / 1.15f);
 			Fonts.getNormal().setColor(c.r, c.g, c.b, 1f);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		invalidateTextureEventList.Add(this);
 	}
 
-	public void setZoom(float value)
-	{
+	public void setZoom(float value) {
 		zoom = value;
 		resetFadeOut();
 	}
 
-	public void setMaxZoom(int value)
-	{
+	public void setMaxZoom(int value) {
 		maxzoom = value;
 		ValueRec = null;
 		CachedScaleSprite = null;
 	}
 
-	public void setMinZoom(int value)
-	{
+	public void setMinZoom(int value) {
 		minzoom = value;
 		ValueRec = null;
 		CachedScaleSprite = null;
@@ -153,20 +143,18 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 	 * 
 	 * @param rect
 	 */
-	private Sprite drawSprite(CB_RectF rect)
-	{
-		if (rect == null) return null;
+	private Sprite drawSprite(CB_RectF rect) {
+		if (rect == null)
+			return null;
 
-		if (storedRec == null || !(storedRec.equals(rect)))
-		{
+		if (storedRec == null || !(storedRec.equals(rect))) {
 			storedRec = rect.copy();
 			ValueRec = null;
 		}
 
 		int y = 0;
 
-		if (ValueRec == null)
-		{
+		if (ValueRec == null) {
 			topRow = (int) rect.getHeight() - 2;
 			bottomRow = 2;
 			centerColumn = (int) (rect.getWidth() / 2);
@@ -180,14 +168,13 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 			y = (int) ((1 - ((zoom) - minzoom) / numSteps) * (bottomRow - topRow)) + topRow;
 
 			ValueRec = new CB_RectF(rect.getX() + GL_UISizes.infoShadowHeight + centerColumn - rect.getWidth() / 2 - lineHeight / 2, grundY + y, rect.getWidth(), rect.getWidth() / 2);
-		}
-		else
-		{
+		} else {
 			y = (int) ((1 - ((zoom) - minzoom) / numSteps) * (bottomRow - topRow)) + topRow;
 			ValueRec.setY(grundY + y);
 		}
 
-		if (CachedScaleSprite != null) return CachedScaleSprite;
+		if (CachedScaleSprite != null)
+			return CachedScaleSprite;
 
 		disposeTexture();
 
@@ -202,8 +189,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 
 		CachedScalePixmap.drawLine(centerColumn, bottomRow, centerColumn, topRow);
 
-		for (int i = minzoom; i <= maxzoom; i++)
-		{
+		for (int i = minzoom; i <= maxzoom; i++) {
 			y = (int) ((1 - (i - minzoom) / numSteps) * (bottomRow - topRow)) + topRow;
 			CachedScalePixmap.drawRectangle(3, y, (int) getWidth() - 3, 1);
 
@@ -217,10 +203,11 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 
 	}
 
-	private void disposeTexture()
-	{
-		if (CachedScalePixmap != null) CachedScalePixmap.dispose();
-		if (CachedScaleTexture != null) CachedScaleTexture.dispose();
+	private void disposeTexture() {
+		if (CachedScalePixmap != null)
+			CachedScalePixmap.dispose();
+		if (CachedScaleTexture != null)
+			CachedScaleTexture.dispose();
 		CachedScaleTexture = null;
 		CachedScalePixmap = null;
 		CachedScaleSprite = null;
@@ -229,23 +216,18 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 	/**
 	 * Irgend eine Zoom Funktion ausgef�hrt, also FadeOut zur�ck setzen und die Scala Einblenden!
 	 */
-	public void resetFadeOut()
-	{
+	public void resetFadeOut() {
 		// Log.d("CACHEBOX", "Reset Fade Out");
-		if (fadeIn && !fadeOut)
-		{
+		if (fadeIn && !fadeOut) {
 			fadeIn = false;
 			FadeValue = 1.0f;
-		}
-		else if (!this.isVisible())
-		{
+		} else if (!this.isVisible()) {
 			// Log.d("CACHEBOX", "Start Fade In");
 			this.setVisible(true);
 			fadeIn = true;
 			FadeValue = 0f;
 		}
-		if (fadeOut)
-		{
+		if (fadeOut) {
 			fadeOut = false;
 			FadeValue = 1.0f;
 		}
@@ -256,65 +238,48 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 
 	Timer timer;
 
-	private void cancelTimerToFadeOut()
-	{
+	private void cancelTimerToFadeOut() {
 
-		if (timer != null)
-		{
+		if (timer != null) {
 			timer.cancel();
 			timer = null;
 		}
 	}
 
-	private void startTimerToFadeOut()
-	{
+	private void startTimerToFadeOut() {
 		cancelTimerToFadeOut();
 
 		timer = new Timer();
-		TimerTask task = new TimerTask()
-		{
+		TimerTask task = new TimerTask() {
 			@Override
-			public void run()
-			{
+			public void run() {
 				GL.that.addRenderView(THIS, GL.FRAME_RATE_ACTION);
 				cancelTimerToFadeOut();
 			}
 		};
-		try
-		{
+		try {
 			timer.schedule(task, timeToFadeOut);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void checkFade()
-	{
-		if (!fadeOut && !fadeIn && !this.isVisible())
-		{
+	private void checkFade() {
+		if (!fadeOut && !fadeIn && !this.isVisible()) {
 			GL.that.removeRenderView(this);
-		}
-		else if (!fadeOut && !fadeIn && this.isVisible())
-		{
+		} else if (!fadeOut && !fadeIn && this.isVisible()) {
 			Date now = new Date();
-			if (now.getTime() - timeLastAction.getTime() > timeToFadeOut)
-			{
+			if (now.getTime() - timeLastAction.getTime() > timeToFadeOut) {
 				// Log.d("CACHEBOX", "Start Fade Out");
 				// Zeit abgelaufen start Fade Out
 				fadeOut = true;
 				timeLastAction = new Date();
 			}
-		}
-		else if (fadeOut)
-		{
+		} else if (fadeOut) {
 			Date now = new Date();
-			if (now.getTime() - timeLastAction.getTime() > fadeStep)
-			{
+			if (now.getTime() - timeLastAction.getTime() > fadeStep) {
 				FadeValue -= 0.05f;
-				if (FadeValue <= 0f)
-				{
+				if (FadeValue <= 0f) {
 					// Log.d("CACHEBOX", "Ende Fade Out");
 					FadeValue = 0f;
 					fadeOut = false;
@@ -323,15 +288,11 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 				}
 				timeLastAction = new Date();
 			}
-		}
-		else if (fadeIn)
-		{
+		} else if (fadeIn) {
 			Date now = new Date();
-			if (now.getTime() - timeLastAction.getTime() > fadeStep)
-			{
+			if (now.getTime() - timeLastAction.getTime() > fadeStep) {
 				FadeValue += 0.1f;
-				if (FadeValue >= 1f)
-				{
+				if (FadeValue >= 1f) {
 					// Log.d("CACHEBOX", "Ende Fade In");
 					FadeValue = 1f;
 					fadeIn = false;
@@ -342,27 +303,23 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 		}
 	}
 
-	public boolean isShown()
-	{
+	public boolean isShown() {
 		return isVisible;
 	}
 
 	@Override
-	protected void Initial()
-	{
+	protected void Initial() {
 
 	}
 
 	@Override
-	public void onStop()
-	{
+	public void onStop() {
 		super.onStop();
 		CachedScaleSprite = null;
 	}
 
 	@Override
-	public void onResized(CB_RectF rec)
-	{
+	public void onResized(CB_RectF rec) {
 		// log.debug("ZoomScale Rezised");
 		ScaleDrawRec = null;
 		storedRec = null;
@@ -370,16 +327,14 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 	}
 
 	@Override
-	protected void SkinIsChanged()
-	{
+	protected void SkinIsChanged() {
 		CachedScaleSprite = null;
 		ValueRec = null;
 		storedRec = null;
 	}
 
 	@Override
-	public void setVisible(boolean On)
-	{
+	public void setVisible(boolean On) {
 		super.setVisible(On);
 
 		cancelTimerToFadeOut();
@@ -387,22 +342,19 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 	}
 
 	@Override
-	public void invalidateTexture()
-	{
+	public void invalidateTexture() {
 		ScaleDrawRec = null;
 		storedRec = null;
 		disposeTexture();
 	}
 
 	@Override
-	public void onShow()
-	{
+	public void onShow() {
 		super.onShow();
 	}
 
 	@Override
-	public void onHide()
-	{
+	public void onHide() {
 		super.onHide();
 		GL.that.removeRenderView(this);
 	}

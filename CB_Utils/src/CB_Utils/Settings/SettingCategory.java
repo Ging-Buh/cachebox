@@ -19,60 +19,35 @@ package CB_Utils.Settings;
  * Login("Login"), Map("Map"), Gps("Gps"), Skin("Skin"), Internal("Internal"), Folder("Folder"), Button("Button"), Misc("Misc"),
  * Templates("Templates"), API("API"), Debug("Debug")
  */
-public enum SettingCategory
-{
-	Login("Login"),
-	QuickList("QuickList"),
-	Map("Map"),
-	LiveMap("LiveMap"),
-	Gps("Gps"),
-	Compass("Compass"),
-	Misc("Misc"),
-	Sounds("Sounds"),
-	Skin("Skin"),
-	API("API"),
-	Folder("Folder"),
-	Templates("Templates"),
-	Fieldnotes("Fieldnotes"),
-	Internal("Internal"),
-	CarMode("CarMode"),
-	RememberAsk("RememberAsk"),
-	Debug("Debug"),
-	Button("Button"),
-	Positions("Positions"),
-	CBS("CBS"), ;
+public enum SettingCategory {
+	Login("Login"), QuickList("QuickList"), Map("Map"), LiveMap("LiveMap"), Gps("Gps"), Compass("Compass"), Misc("Misc"), Sounds("Sounds"), Skin("Skin"), API("API"), Folder("Folder"), Templates("Templates"), Fieldnotes("Fieldnotes"), Internal(
+			"Internal"), CarMode("CarMode"), RememberAsk("RememberAsk"), Debug("Debug"), Button("Button"), Positions("Positions"), CBS("CBS"),;
 
 	private String langString;
 
-	SettingCategory(String langString)
-	{
+	SettingCategory(String langString) {
 		this.setLangString(langString);
 	}
 
-	public String getLangString()
-	{
+	public String getLangString() {
 		return langString;
 	}
 
-	public void setLangString(String langString)
-	{
+	public void setLangString(String langString) {
 		this.langString = langString;
 	}
 
 	private boolean mIsCollapse = false;
 
-	public boolean IsCollapse()
-	{
+	public boolean IsCollapse() {
 		return mIsCollapse;
 	}
 
-	public void Toggle()
-	{
+	public void Toggle() {
 		mIsCollapse = !mIsCollapse;
 	}
 
-	public void Toggle(boolean value)
-	{
+	public void Toggle(boolean value) {
 		mIsCollapse = value;
 	}
 

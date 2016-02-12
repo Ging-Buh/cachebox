@@ -5,10 +5,8 @@ import CB_UI_Base.graphics.GL_Paint;
 
 import com.badlogic.gdx.graphics.Color;
 
-public class Red20Square extends PolylineTestBase
-{
-	public Red20Square()
-	{
+public class Red20Square extends PolylineTestBase {
+	public Red20Square() {
 		super(" PolyLine Test" + br + "Red / CAP.SQUARE / StrokeWidth=20");
 		paint = new GL_Paint();
 		paint.setColor(Color.RED);

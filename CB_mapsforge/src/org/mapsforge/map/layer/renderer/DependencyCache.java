@@ -183,8 +183,7 @@ class DependencyCache {
 	 * @param areaLabels
 	 *            current areaLabels, that will be displayed.
 	 */
-	void fillDependencyOnTile(List<PointTextContainer> labels, List<SymbolContainer> symbols,
-			List<PointTextContainer> areaLabels, int tileSize) {
+	void fillDependencyOnTile(List<PointTextContainer> labels, List<SymbolContainer> symbols, List<PointTextContainer> areaLabels, int tileSize) {
 		this.currentDependencyOnTile.drawn = true;
 
 		if ((!labels.isEmpty()) || (!symbols.isEmpty()) || (!areaLabels.isEmpty())) {
@@ -309,8 +308,7 @@ class DependencyCache {
 	 * @param symbols
 	 *            symbols from the current object
 	 */
-	void removeOverlappingObjectsWithDependencyOnTile(List<PointTextContainer> labels,
-			List<PointTextContainer> areaLabels, List<SymbolContainer> symbols) {
+	void removeOverlappingObjectsWithDependencyOnTile(List<PointTextContainer> labels, List<PointTextContainer> areaLabels, List<SymbolContainer> symbols) {
 		if (this.currentDependencyOnTile.labels != null && !this.currentDependencyOnTile.labels.isEmpty()) {
 			removeOverlappingLabelsWithDependencyLabels(labels);
 			removeOverlappingSymbolsWithDependencyLabels(symbols);
@@ -418,15 +416,12 @@ class DependencyCache {
 			if (this.currentDependencyOnTile.labels != null) {
 				for (int i = 0; i < this.currentDependencyOnTile.labels.size(); i++) {
 					this.depLabel = this.currentDependencyOnTile.labels.get(i);
-					this.rect1 = new Rectangle((int) this.depLabel.point.x - dis,
-							(int) (this.depLabel.point.y - this.depLabel.value.boundary.getHeight()) - dis,
-							(int) (this.depLabel.point.x + this.depLabel.value.boundary.getWidth() + dis),
+					this.rect1 = new Rectangle((int) this.depLabel.point.x - dis, (int) (this.depLabel.point.y - this.depLabel.value.boundary.getHeight()) - dis, (int) (this.depLabel.point.x + this.depLabel.value.boundary.getWidth() + dis),
 							(int) (this.depLabel.point.y + dis));
 
 					for (int y = 0; y < refPos.length; y++) {
 						if (refPos[y] != null) {
-							this.rect2 = new Rectangle((int) refPos[y].x, (int) (refPos[y].y - refPos[y].height),
-									(int) (refPos[y].x + refPos[y].width), (int) (refPos[y].y));
+							this.rect2 = new Rectangle((int) refPos[y].x, (int) (refPos[y].y - refPos[y].height), (int) (refPos[y].x + refPos[y].width), (int) (refPos[y].y));
 
 							if (this.rect2.intersects(this.rect1)) {
 								refPos[y] = null;
@@ -437,14 +432,11 @@ class DependencyCache {
 			}
 			if (this.currentDependencyOnTile.symbols != null) {
 				for (Dependency<DependencySymbol> symbols2 : this.currentDependencyOnTile.symbols) {
-					this.rect1 = new Rectangle((int) symbols2.point.x, (int) (symbols2.point.y),
-							(int) (symbols2.point.x + symbols2.value.symbol.getWidth()),
-							(int) (symbols2.point.y + symbols2.value.symbol.getHeight()));
+					this.rect1 = new Rectangle((int) symbols2.point.x, (int) (symbols2.point.y), (int) (symbols2.point.x + symbols2.value.symbol.getWidth()), (int) (symbols2.point.y + symbols2.value.symbol.getHeight()));
 
 					for (int y = 0; y < refPos.length; y++) {
 						if (refPos[y] != null) {
-							this.rect2 = new Rectangle((int) refPos[y].x, (int) (refPos[y].y - refPos[y].height),
-									(int) (refPos[y].x + refPos[y].width), (int) (refPos[y].y));
+							this.rect2 = new Rectangle((int) refPos[y].x, (int) (refPos[y].y - refPos[y].height), (int) (refPos[y].x + refPos[y].width), (int) (refPos[y].y));
 
 							if (this.rect2.intersects(this.rect1)) {
 								refPos[y] = null;
@@ -540,11 +532,9 @@ class DependencyCache {
 		for (int i = 0; i < this.currentDependencyOnTile.labels.size(); i++) {
 			this.depLabel = this.currentDependencyOnTile.labels.get(i);
 			if (this.depLabel.value.paintBack != null) {
-				labels.add(new PointTextContainer(this.depLabel.value.text, this.depLabel.point.x,
-						this.depLabel.point.y, this.depLabel.value.paintFront, this.depLabel.value.paintBack));
+				labels.add(new PointTextContainer(this.depLabel.value.text, this.depLabel.point.x, this.depLabel.point.y, this.depLabel.value.paintFront, this.depLabel.value.paintBack));
 			} else {
-				labels.add(new PointTextContainer(this.depLabel.value.text, this.depLabel.point.x,
-						this.depLabel.point.y, this.depLabel.value.paintFront));
+				labels.add(new PointTextContainer(this.depLabel.value.text, this.depLabel.point.x, this.depLabel.point.y, this.depLabel.value.paintFront));
 			}
 		}
 	}
@@ -587,11 +577,9 @@ class DependencyCache {
 			if ((label.y - label.boundary.getHeight() < 0.0f) && (!this.dependencyTable.get(up).drawn)) {
 				linkedDep = this.dependencyTable.get(up);
 
-				toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary,
-						this.currentTile);
+				toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary, this.currentTile);
 
-				this.currentDependencyOnTile
-						.addText(new Dependency<DependencyText>(toAdd, new Point(label.x, label.y)));
+				this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new Point(label.x, label.y)));
 
 				linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x, label.y + tileSize)));
 
@@ -600,8 +588,7 @@ class DependencyCache {
 				if ((label.x < 0.0f) && (!this.dependencyTable.get(leftup).drawn)) {
 					linkedDep = this.dependencyTable.get(leftup);
 
-					linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x + tileSize, label.y
-							+ tileSize)));
+					linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x + tileSize, label.y + tileSize)));
 
 					toAdd.addTile(leftup);
 				}
@@ -609,8 +596,7 @@ class DependencyCache {
 				if ((label.x + label.boundary.getWidth() > tileSize) && (!this.dependencyTable.get(rightup).drawn)) {
 					linkedDep = this.dependencyTable.get(rightup);
 
-					linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x - tileSize, label.y
-							+ tileSize)));
+					linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x - tileSize, label.y + tileSize)));
 
 					toAdd.addTile(rightup);
 				}
@@ -621,11 +607,9 @@ class DependencyCache {
 				linkedDep = this.dependencyTable.get(down);
 
 				if (toAdd == null) {
-					toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary,
-							this.currentTile);
+					toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary, this.currentTile);
 
-					this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new Point(label.x,
-							label.y)));
+					this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new Point(label.x, label.y)));
 				}
 
 				linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x, label.y - tileSize)));
@@ -635,8 +619,7 @@ class DependencyCache {
 				if ((label.x < 0.0f) && (!this.dependencyTable.get(leftdown).drawn)) {
 					linkedDep = this.dependencyTable.get(leftdown);
 
-					linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x + tileSize, label.y
-							- tileSize)));
+					linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x + tileSize, label.y - tileSize)));
 
 					toAdd.addTile(leftdown);
 				}
@@ -644,8 +627,7 @@ class DependencyCache {
 				if ((label.x + label.boundary.getWidth() > tileSize) && (!this.dependencyTable.get(rightdown).drawn)) {
 					linkedDep = this.dependencyTable.get(rightdown);
 
-					linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x - tileSize, label.y
-							- tileSize)));
+					linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x - tileSize, label.y - tileSize)));
 
 					toAdd.addTile(rightdown);
 				}
@@ -656,11 +638,9 @@ class DependencyCache {
 				linkedDep = this.dependencyTable.get(left);
 
 				if (toAdd == null) {
-					toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary,
-							this.currentTile);
+					toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary, this.currentTile);
 
-					this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new Point(label.x,
-							label.y)));
+					this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new Point(label.x, label.y)));
 				}
 
 				linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x + tileSize, label.y)));
@@ -672,11 +652,9 @@ class DependencyCache {
 				linkedDep = this.dependencyTable.get(right);
 
 				if (toAdd == null) {
-					toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary,
-							this.currentTile);
+					toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary, this.currentTile);
 
-					this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new Point(label.x,
-							label.y)));
+					this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new Point(label.x, label.y)));
 				}
 
 				linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x - tileSize, label.y)));
@@ -690,11 +668,9 @@ class DependencyCache {
 				if ((label.symbol.point.y <= 0.0f) && (!this.dependencyTable.get(up).drawn)) {
 					linkedDep = this.dependencyTable.get(up);
 
-					toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary,
-							this.currentTile);
+					toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary, this.currentTile);
 
-					this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new Point(label.x,
-							label.y)));
+					this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new Point(label.x, label.y)));
 
 					linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x, label.y + tileSize)));
 
@@ -703,33 +679,27 @@ class DependencyCache {
 					if ((label.symbol.point.x < 0.0f) && (!this.dependencyTable.get(leftup).drawn)) {
 						linkedDep = this.dependencyTable.get(leftup);
 
-						linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x + tileSize, label.y
-								+ tileSize)));
+						linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x + tileSize, label.y + tileSize)));
 
 						toAdd.addTile(leftup);
 					}
 
-					if ((label.symbol.point.x + label.symbol.symbol.getWidth() > tileSize)
-							&& (!this.dependencyTable.get(rightup).drawn)) {
+					if ((label.symbol.point.x + label.symbol.symbol.getWidth() > tileSize) && (!this.dependencyTable.get(rightup).drawn)) {
 						linkedDep = this.dependencyTable.get(rightup);
 
-						linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x - tileSize, label.y
-								+ tileSize)));
+						linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x - tileSize, label.y + tileSize)));
 
 						toAdd.addTile(rightup);
 					}
 				}
 
-				if ((label.symbol.point.y + label.symbol.symbol.getHeight() >= tileSize)
-						&& (!this.dependencyTable.get(down).drawn)) {
+				if ((label.symbol.point.y + label.symbol.symbol.getHeight() >= tileSize) && (!this.dependencyTable.get(down).drawn)) {
 					linkedDep = this.dependencyTable.get(down);
 
 					if (toAdd == null) {
-						toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary,
-								this.currentTile);
+						toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary, this.currentTile);
 
-						this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new Point(label.x,
-								label.y)));
+						this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new Point(label.x, label.y)));
 					}
 
 					linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x, label.y + tileSize)));
@@ -739,18 +709,15 @@ class DependencyCache {
 					if ((label.symbol.point.x < 0.0f) && (!this.dependencyTable.get(leftdown).drawn)) {
 						linkedDep = this.dependencyTable.get(leftdown);
 
-						linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x + tileSize, label.y
-								- tileSize)));
+						linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x + tileSize, label.y - tileSize)));
 
 						toAdd.addTile(leftdown);
 					}
 
-					if ((label.symbol.point.x + label.symbol.symbol.getWidth() > tileSize)
-							&& (!this.dependencyTable.get(rightdown).drawn)) {
+					if ((label.symbol.point.x + label.symbol.symbol.getWidth() > tileSize) && (!this.dependencyTable.get(rightdown).drawn)) {
 						linkedDep = this.dependencyTable.get(rightdown);
 
-						linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x - tileSize, label.y
-								- tileSize)));
+						linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x - tileSize, label.y - tileSize)));
 
 						toAdd.addTile(rightdown);
 					}
@@ -760,11 +727,9 @@ class DependencyCache {
 					linkedDep = this.dependencyTable.get(left);
 
 					if (toAdd == null) {
-						toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary,
-								this.currentTile);
+						toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary, this.currentTile);
 
-						this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new Point(label.x,
-								label.y)));
+						this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new Point(label.x, label.y)));
 					}
 
 					linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x - tileSize, label.y)));
@@ -772,16 +737,13 @@ class DependencyCache {
 					toAdd.addTile(left);
 				}
 
-				if ((label.symbol.point.x + label.symbol.symbol.getWidth() >= tileSize)
-						&& (!this.dependencyTable.get(right).drawn)) {
+				if ((label.symbol.point.x + label.symbol.symbol.getWidth() >= tileSize) && (!this.dependencyTable.get(right).drawn)) {
 					linkedDep = this.dependencyTable.get(right);
 
 					if (toAdd == null) {
-						toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary,
-								this.currentTile);
+						toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary, this.currentTile);
 
-						this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new Point(label.x,
-								label.y)));
+						this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new Point(label.x, label.y)));
 					}
 
 					linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x + tileSize, label.y)));
@@ -792,8 +754,7 @@ class DependencyCache {
 		}
 	}
 
-	private void fillDependencyOnTile2(List<PointTextContainer> labels, List<SymbolContainer> symbols,
-			List<PointTextContainer> areaLabels, int tileSize) {
+	private void fillDependencyOnTile2(List<PointTextContainer> labels, List<SymbolContainer> symbols, List<PointTextContainer> areaLabels, int tileSize) {
 		Tile left = new Tile(this.currentTile.tileX - 1, this.currentTile.tileY, this.currentTile.zoomLevel);
 		Tile right = new Tile(this.currentTile.tileX + 1, this.currentTile.tileY, this.currentTile.zoomLevel);
 		Tile up = new Tile(this.currentTile.tileX, this.currentTile.tileY - 1, this.currentTile.zoomLevel);
@@ -843,27 +804,22 @@ class DependencyCache {
 				linkedDep = this.dependencyTable.get(up);
 
 				addSmb = new DependencySymbol(symbol.symbol, this.currentTile);
-				this.currentDependencyOnTile.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(
-						symbol.point.x, symbol.point.y)));
+				this.currentDependencyOnTile.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x, symbol.point.y)));
 
-				linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x, symbol.point.y
-						+ tileSize)));
+				linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x, symbol.point.y + tileSize)));
 				addSmb.addTile(up);
 
 				if ((symbol.point.x < 0.0f) && (!this.dependencyTable.get(leftup).drawn)) {
 					linkedDep = this.dependencyTable.get(leftup);
 
-					linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x + tileSize,
-							symbol.point.y + tileSize)));
+					linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x + tileSize, symbol.point.y + tileSize)));
 					addSmb.addTile(leftup);
 				}
 
-				if ((symbol.point.x + symbol.symbol.getWidth() > tileSize)
-						&& (!this.dependencyTable.get(rightup).drawn)) {
+				if ((symbol.point.x + symbol.symbol.getWidth() > tileSize) && (!this.dependencyTable.get(rightup).drawn)) {
 					linkedDep = this.dependencyTable.get(rightup);
 
-					linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x - tileSize,
-							symbol.point.y + tileSize)));
+					linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x - tileSize, symbol.point.y + tileSize)));
 					addSmb.addTile(rightup);
 				}
 			}
@@ -874,28 +830,23 @@ class DependencyCache {
 
 				if (addSmb == null) {
 					addSmb = new DependencySymbol(symbol.symbol, this.currentTile);
-					this.currentDependencyOnTile.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(
-							symbol.point.x, symbol.point.y)));
+					this.currentDependencyOnTile.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x, symbol.point.y)));
 				}
 
-				linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x, symbol.point.y
-						- tileSize)));
+				linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x, symbol.point.y - tileSize)));
 				addSmb.addTile(down);
 
 				if ((symbol.point.x < 0.0f) && (!this.dependencyTable.get(leftdown).drawn)) {
 					linkedDep = this.dependencyTable.get(leftdown);
 
-					linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x + tileSize,
-							symbol.point.y - tileSize)));
+					linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x + tileSize, symbol.point.y - tileSize)));
 					addSmb.addTile(leftdown);
 				}
 
-				if ((symbol.point.x + symbol.symbol.getWidth() > tileSize)
-						&& (!this.dependencyTable.get(rightdown).drawn)) {
+				if ((symbol.point.x + symbol.symbol.getWidth() > tileSize) && (!this.dependencyTable.get(rightdown).drawn)) {
 					linkedDep = this.dependencyTable.get(rightdown);
 
-					linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x - tileSize,
-							symbol.point.y - tileSize)));
+					linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x - tileSize, symbol.point.y - tileSize)));
 					addSmb.addTile(rightdown);
 				}
 			}
@@ -906,12 +857,10 @@ class DependencyCache {
 
 				if (addSmb == null) {
 					addSmb = new DependencySymbol(symbol.symbol, this.currentTile);
-					this.currentDependencyOnTile.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(
-							symbol.point.x, symbol.point.y)));
+					this.currentDependencyOnTile.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x, symbol.point.y)));
 				}
 
-				linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x + tileSize,
-						symbol.point.y)));
+				linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x + tileSize, symbol.point.y)));
 				addSmb.addTile(left);
 			}
 
@@ -920,12 +869,10 @@ class DependencyCache {
 				linkedDep = this.dependencyTable.get(right);
 				if (addSmb == null) {
 					addSmb = new DependencySymbol(symbol.symbol, this.currentTile);
-					this.currentDependencyOnTile.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(
-							symbol.point.x, symbol.point.y)));
+					this.currentDependencyOnTile.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x, symbol.point.y)));
 				}
 
-				linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x - tileSize,
-						symbol.point.y)));
+				linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x - tileSize, symbol.point.y)));
 				addSmb.addTile(right);
 			}
 		}
@@ -936,16 +883,12 @@ class DependencyCache {
 
 		for (int i = 0; i < this.currentDependencyOnTile.labels.size(); i++) {
 			this.depLabel = this.currentDependencyOnTile.labels.get(i);
-			this.rect1 = new Rectangle((int) (this.depLabel.point.x),
-					(int) (this.depLabel.point.y - this.depLabel.value.boundary.getHeight()),
-					(int) (this.depLabel.point.x + this.depLabel.value.boundary.getWidth()),
-					(int) (this.depLabel.point.y));
+			this.rect1 = new Rectangle((int) (this.depLabel.point.x), (int) (this.depLabel.point.y - this.depLabel.value.boundary.getHeight()), (int) (this.depLabel.point.x + this.depLabel.value.boundary.getWidth()), (int) (this.depLabel.point.y));
 
 			for (int x = 0; x < areaLabels.size(); x++) {
 				pTC = areaLabels.get(x);
 
-				this.rect2 = new Rectangle((int) pTC.x, (int) pTC.y - pTC.boundary.getHeight(), (int) pTC.x
-						+ pTC.boundary.getWidth(), (int) pTC.y);
+				this.rect2 = new Rectangle((int) pTC.x, (int) pTC.y - pTC.boundary.getHeight(), (int) pTC.x + pTC.boundary.getWidth(), (int) pTC.y);
 
 				if (this.rect2.intersects(this.rect1)) {
 					areaLabels.remove(x);
@@ -959,14 +902,12 @@ class DependencyCache {
 		PointTextContainer label;
 
 		for (Dependency<DependencySymbol> depSmb : this.currentDependencyOnTile.symbols) {
-			this.rect1 = new Rectangle((int) depSmb.point.x, (int) depSmb.point.y, (int) depSmb.point.x
-					+ depSmb.value.symbol.getWidth(), (int) depSmb.point.y + depSmb.value.symbol.getHeight());
+			this.rect1 = new Rectangle((int) depSmb.point.x, (int) depSmb.point.y, (int) depSmb.point.x + depSmb.value.symbol.getWidth(), (int) depSmb.point.y + depSmb.value.symbol.getHeight());
 
 			for (int x = 0; x < areaLabels.size(); x++) {
 				label = areaLabels.get(x);
 
-				this.rect2 = new Rectangle((int) (label.x), (int) (label.y - label.boundary.getHeight()),
-						(int) (label.x + label.boundary.getWidth()), (int) (label.y));
+				this.rect2 = new Rectangle((int) (label.x), (int) (label.y - label.boundary.getHeight()), (int) (label.x + label.boundary.getWidth()), (int) (label.y));
 
 				if (this.rect2.intersects(this.rect1)) {
 					areaLabels.remove(x);
@@ -979,9 +920,7 @@ class DependencyCache {
 	private void removeOverlappingLabelsWithDependencyLabels(List<PointTextContainer> labels) {
 		for (int i = 0; i < this.currentDependencyOnTile.labels.size(); i++) {
 			for (int x = 0; x < labels.size(); x++) {
-				if ((labels.get(x).text.equals(this.currentDependencyOnTile.labels.get(i).value.text))
-						&& (labels.get(x).paintFront
-								.equals(this.currentDependencyOnTile.labels.get(i).value.paintFront))
+				if ((labels.get(x).text.equals(this.currentDependencyOnTile.labels.get(i).value.text)) && (labels.get(x).paintFront.equals(this.currentDependencyOnTile.labels.get(i).value.paintFront))
 						&& (labels.get(x).paintBack.equals(this.currentDependencyOnTile.labels.get(i).value.paintBack))) {
 					labels.remove(x);
 					i--;
@@ -997,14 +936,11 @@ class DependencyCache {
 
 		for (int x = 0; x < this.currentDependencyOnTile.symbols.size(); x++) {
 			sym2 = this.currentDependencyOnTile.symbols.get(x);
-			this.rect1 = new Rectangle((int) sym2.point.x - dis, (int) sym2.point.y - dis, (int) sym2.point.x
-					+ sym2.value.symbol.getWidth() + dis, (int) sym2.point.y + sym2.value.symbol.getHeight() + dis);
+			this.rect1 = new Rectangle((int) sym2.point.x - dis, (int) sym2.point.y - dis, (int) sym2.point.x + sym2.value.symbol.getWidth() + dis, (int) sym2.point.y + sym2.value.symbol.getHeight() + dis);
 
 			for (int y = 0; y < symbols.size(); y++) {
 				symbolContainer = symbols.get(y);
-				this.rect2 = new Rectangle((int) symbolContainer.point.x, (int) symbolContainer.point.y,
-						(int) symbolContainer.point.x + symbolContainer.symbol.getWidth(),
-						(int) symbolContainer.point.y + symbolContainer.symbol.getHeight());
+				this.rect2 = new Rectangle((int) symbolContainer.point.x, (int) symbolContainer.point.y, (int) symbolContainer.point.x + symbolContainer.symbol.getWidth(), (int) symbolContainer.point.y + symbolContainer.symbol.getHeight());
 
 				if (this.rect2.intersects(this.rect1)) {
 					symbols.remove(y);
@@ -1017,16 +953,12 @@ class DependencyCache {
 	private void removeOverlappingSymbolsWithDependencyLabels(List<SymbolContainer> symbols) {
 		for (int i = 0; i < this.currentDependencyOnTile.labels.size(); i++) {
 			this.depLabel = this.currentDependencyOnTile.labels.get(i);
-			this.rect1 = new Rectangle((int) (this.depLabel.point.x),
-					(int) (this.depLabel.point.y - this.depLabel.value.boundary.getHeight()),
-					(int) (this.depLabel.point.x + this.depLabel.value.boundary.getWidth()),
-					(int) (this.depLabel.point.y));
+			this.rect1 = new Rectangle((int) (this.depLabel.point.x), (int) (this.depLabel.point.y - this.depLabel.value.boundary.getHeight()), (int) (this.depLabel.point.x + this.depLabel.value.boundary.getWidth()), (int) (this.depLabel.point.y));
 
 			for (int x = 0; x < symbols.size(); x++) {
 				this.smb = symbols.get(x);
 
-				this.rect2 = new Rectangle((int) this.smb.point.x, (int) this.smb.point.y, (int) this.smb.point.x
-						+ this.smb.symbol.getWidth(), (int) this.smb.point.y + this.smb.symbol.getHeight());
+				this.rect2 = new Rectangle((int) this.smb.point.x, (int) this.smb.point.y, (int) this.smb.point.x + this.smb.symbol.getWidth(), (int) this.smb.point.y + this.smb.symbol.getHeight());
 
 				if (this.rect2.intersects(this.rect1)) {
 					symbols.remove(x);

@@ -36,7 +36,7 @@ import java.util.*;
  * @see StartTagType
  */
 public abstract class EndTagType extends TagType {
-	static final String START_DELIMITER_PREFIX="</";
+	static final String START_DELIMITER_PREFIX = "</";
 
 	/**
 	 * The tag type given to an {@linkplain Tag#isUnregistered() unregistered} {@linkplain EndTag end tag} (<code>&lt;/<var> &#46;&#46;&#46; </var>&gt;</code>).
@@ -61,7 +61,7 @@ public abstract class EndTagType extends TagType {
 	 * </dl>
 	 * @see StartTagType#UNREGISTERED
 	 */
-	public static final EndTagType UNREGISTERED=EndTagTypeUnregistered.INSTANCE;
+	public static final EndTagType UNREGISTERED = EndTagTypeUnregistered.INSTANCE;
 
 	/**
 	 * The tag type given to a normal HTML or XML {@linkplain EndTag end tag} (<code>&lt;/<var>name</var>&gt;</code>).
@@ -83,7 +83,7 @@ public abstract class EndTagType extends TagType {
 	 *   <dd><code>&lt;/div&gt;</code></dd>
 	 * </dl>
 	 */
-	public static final EndTagType NORMAL=EndTagTypeNormal.INSTANCE;
+	public static final EndTagType NORMAL = EndTagTypeNormal.INSTANCE;
 
 	/**
 	 * Constructs a new <code>EndTagType</code> object with the specified properties.
@@ -97,8 +97,9 @@ public abstract class EndTagType extends TagType {
 	 * @param isServerTag  indicates whether the new end tag type is a {@linkplain #isServerTag() server tag}.
 	 */
 	protected EndTagType(final String description, final String startDelimiter, final String closingDelimiter, final boolean isServerTag) {
-		super(description,startDelimiter.toLowerCase(),closingDelimiter,isServerTag,START_DELIMITER_PREFIX);
-		if (!getStartDelimiter().startsWith(START_DELIMITER_PREFIX)) throw new IllegalArgumentException("startDelimiter of an end tag must start with \""+START_DELIMITER_PREFIX+'"');
+		super(description, startDelimiter.toLowerCase(), closingDelimiter, isServerTag, START_DELIMITER_PREFIX);
+		if (!getStartDelimiter().startsWith(START_DELIMITER_PREFIX))
+			throw new IllegalArgumentException("startDelimiter of an end tag must start with \"" + START_DELIMITER_PREFIX + '"');
 	}
 
 	/**
@@ -176,9 +177,9 @@ public abstract class EndTagType extends TagType {
 	 * @return the HTML text of an {@linkplain EndTag end tag} of this type given the {@linkplain StartTag#getName() name} of a {@linkplain #getCorrespondingStartTagType() corresponding} {@linkplain StartTag start tag}.
 	 */
 	public String generateHTML(final String startTagName) {
-		return START_DELIMITER_PREFIX+getEndTagName(startTagName)+getClosingDelimiter();
+		return START_DELIMITER_PREFIX + getEndTagName(startTagName) + getClosingDelimiter();
 	}
-	
+
 	/**
 	 * Internal method for the construction of an {@link EndTag} object of this type.
 	 * <br />(<a href="TagType.html#ImplementationAssistance">implementation assistance</a> method)
@@ -192,6 +193,6 @@ public abstract class EndTagType extends TagType {
 	 * @return the new {@link EndTag} object.
 	 */
 	protected final EndTag constructEndTag(final Source source, final int begin, final int end, final String name) {
-		return new EndTag(source,begin,end,this,name);
+		return new EndTag(source, begin, end, this, name);
 	}
 }

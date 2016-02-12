@@ -13,38 +13,38 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 
 public class CB_Action_ShowJokerView extends CB_Action_ShowView {
 
-    public CB_Action_ShowJokerView() {
-	super("joker", MenuID.AID_SHOW_JOKERS);
-    }
-
-    @Override
-    public void Execute() {
-	if ((TabMainView.jokerView == null) && (tabMainView != null) && (tab != null))
-	    TabMainView.jokerView = new JokerView(tab.getContentRec(), "JokerView");
-
-	if ((TabMainView.jokerView != null) && (tab != null))
-	    tab.ShowView(TabMainView.jokerView);
-    }
-
-    @Override
-    public boolean getEnabled() {
-	if (GlobalCore.getSelectedCache() == null)
-	    return false;
-	if (GlobalCore.getSelectedCache().getGcCode().startsWith("GC")) // GC-Joker nur zulässig wenn es ein Cache von geocaching.com ist
-	{
-	    return GlobalCore.JokerisOnline();
-	} else {
-	    return (false);
+	public CB_Action_ShowJokerView() {
+		super("joker", MenuID.AID_SHOW_JOKERS);
 	}
-    }
 
-    @Override
-    public Sprite getIcon() {
-	return SpriteCacheBase.Icons.get(IconName.jokerPhone_25.ordinal());
-    }
+	@Override
+	public void Execute() {
+		if ((TabMainView.jokerView == null) && (tabMainView != null) && (tab != null))
+			TabMainView.jokerView = new JokerView(tab.getContentRec(), "JokerView");
 
-    @Override
-    public CB_View_Base getView() {
-	return TabMainView.jokerView;
-    }
+		if ((TabMainView.jokerView != null) && (tab != null))
+			tab.ShowView(TabMainView.jokerView);
+	}
+
+	@Override
+	public boolean getEnabled() {
+		if (GlobalCore.getSelectedCache() == null)
+			return false;
+		if (GlobalCore.getSelectedCache().getGcCode().startsWith("GC")) // GC-Joker nur zulässig wenn es ein Cache von geocaching.com ist
+		{
+			return GlobalCore.JokerisOnline();
+		} else {
+			return (false);
+		}
+	}
+
+	@Override
+	public Sprite getIcon() {
+		return SpriteCacheBase.Icons.get(IconName.jokerPhone_25.ordinal());
+	}
+
+	@Override
+	public CB_View_Base getView() {
+		return TabMainView.jokerView;
+	}
 }

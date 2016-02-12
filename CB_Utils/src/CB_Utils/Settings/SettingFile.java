@@ -15,25 +15,19 @@
  */
 package CB_Utils.Settings;
 
-public class SettingFile extends SettingLongString
-{
+public class SettingFile extends SettingLongString {
 	private String ext = "*";
 
-	public SettingFile(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType,
-			SettingUsage usage)
-	{
+	public SettingFile(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage) {
 		super(name, category, modus, defaultValue, StoreType, usage);
 	}
 
-	public SettingFile(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType,
-			SettingUsage usage, String ext)
-	{
+	public SettingFile(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage, String ext) {
 		super(name, category, modus, defaultValue, StoreType, usage);
 		this.ext = ext;
 	}
 
-	public String getExt()
-	{
+	public String getExt() {
 		return ext;
 	}
 }

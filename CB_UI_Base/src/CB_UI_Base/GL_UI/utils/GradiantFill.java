@@ -11,42 +11,35 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class GradiantFill
-{
+public class GradiantFill {
 
-	static public class GradiantStop implements Comparable<GradiantStop>
-	{
+	static public class GradiantStop implements Comparable<GradiantStop> {
 		public Color StopColor;
 		public float Stop;
 
-		public GradiantStop(Color stopColor, float stop)
-		{
+		public GradiantStop(Color stopColor, float stop) {
 			StopColor = stopColor;
 			Stop = stop;
 		}
 
 		@Override
-		public int compareTo(GradiantStop stop)
-		{
+		public int compareTo(GradiantStop stop) {
 			float dist1 = this.Stop;
 			float dist2 = stop.Stop;
 			return (dist1 < dist2 ? -1 : (dist1 == dist2 ? 0 : 1));
 		}
 	}
 
-	private class GradiantStopList extends ArrayList<GradiantStop>
-	{
+	private class GradiantStopList extends ArrayList<GradiantStop> {
 		private static final long serialVersionUID = -7471890376233678292L;
 		private float minDistance;
 
-		public float getMinDistance()
-		{
+		public float getMinDistance() {
 			return minDistance;
 		}
 
 		@Override
-		public boolean add(GradiantStop stop)
-		{
+		public boolean add(GradiantStop stop) {
 			boolean ret = super.add(stop);
 
 			Collections.sort(this);
@@ -55,10 +48,8 @@ public class GradiantFill
 
 			float lastStop = 0;
 
-			for (GradiantStop tmp : this)
-			{
-				if (tmp.Stop != 0)
-				{
+			for (GradiantStop tmp : this) {
+				if (tmp.Stop != 0) {
 					minDistance = Math.min(minDistance, tmp.Stop - lastStop);
 				}
 				lastStop = tmp.Stop;
@@ -75,15 +66,13 @@ public class GradiantFill
 	private Pixmap mPixmap;
 	private Texture mTexture;
 
-	public TextureRegion getTexture()
-	{
+	public TextureRegion getTexture() {
 		return mTextureRegion;
 	}
 
 	public GradiantStopList stops = new GradiantStopList();
 
-	public GradiantFill(Color color1, Color color2, float direction)
-	{
+	public GradiantFill(Color color1, Color color2, float direction) {
 		stops.add(new GradiantStop(color1, 0f));
 		stops.add(new GradiantStop(color2, 1f));
 		Direction = direction;
@@ -91,34 +80,30 @@ public class GradiantFill
 		regenarateTexture();
 	}
 
-	public void setStartColor(Color color)
-	{
+	public void setStartColor(Color color) {
 		stops.get(0).StopColor = color;
 		regenarateTexture();
 	}
 
-	public void setEndColor(Color color)
-	{
+	public void setEndColor(Color color) {
 		stops.get(stops.size()).StopColor = color;
 		regenarateTexture();
 	}
 
-	public void setDirection(float direction)
-	{
+	public void setDirection(float direction) {
 		Direction = direction;
 		regenarateTexture();
 	}
 
-	public void addStop(GradiantStop stop)
-	{
+	public void addStop(GradiantStop stop) {
 		stops.add(stop);
 		regenarateTexture();
 	}
 
-	private void regenarateTexture()
-	{
+	private void regenarateTexture() {
 
-		if (stops.size() <= 1) return;
+		if (stops.size() <= 1)
+			return;
 
 		disposeTexture();
 
@@ -127,8 +112,7 @@ public class GradiantFill
 		// calc line steps
 		int lineSteps = (int) ((255 * (1 / stops.getMinDistance())) * (stops.size() - 1));
 
-		for (int i = 0; i < stops.size() - 1; i++)
-		{
+		for (int i = 0; i < stops.size() - 1; i++) {
 			colorArray.addAll(getColorsFromStep(stops.get(i), stops.get(i + 1), lineSteps));
 		}
 
@@ -138,8 +122,7 @@ public class GradiantFill
 
 		int index = 0;
 
-		for (Color color : colorArray)
-		{
+		for (Color color : colorArray) {
 
 			mPixmap.setColor(color);
 			mPixmap.drawLine(index, 0, index, 1);
@@ -153,8 +136,7 @@ public class GradiantFill
 
 	}
 
-	private ArrayList<Color> getColorsFromStep(GradiantStop stop1, GradiantStop stop2, int lineSteps)
-	{
+	private ArrayList<Color> getColorsFromStep(GradiantStop stop1, GradiantStop stop2, int lineSteps) {
 		float steps = (stop2.Stop - stop1.Stop) * lineSteps;
 
 		float R1 = stop1.StopColor.r * 255;
@@ -176,8 +158,7 @@ public class GradiantFill
 
 		list.add(stop1.StopColor);
 
-		for (int i = 0; i < steps; i++)
-		{
+		for (int i = 0; i < steps; i++) {
 			R1 += R_stepValue;
 			G1 += G_stepValue;
 			B1 += B_stepValue;
@@ -190,37 +171,28 @@ public class GradiantFill
 		return list;
 	}
 
-	public float getDirection()
-	{
+	public float getDirection() {
 		return Direction;
 	}
 
-	public void dispose()
-	{
+	public void dispose() {
 		disposeTexture();
 	}
 
-	private void disposeTexture()
-	{
-		GL.that.RunOnGLWithThreadCheck(new IRunOnGL()
-		{
+	private void disposeTexture() {
+		GL.that.RunOnGLWithThreadCheck(new IRunOnGL() {
 			@Override
-			public void run()
-			{
-				try
-				{
-					if (mPixmap != null) mPixmap.dispose();
-				}
-				catch (Exception e)
-				{
+			public void run() {
+				try {
+					if (mPixmap != null)
+						mPixmap.dispose();
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				try
-				{
-					if (mTexture != null) mTexture.dispose();
-				}
-				catch (Exception e)
-				{
+				try {
+					if (mTexture != null)
+						mTexture.dispose();
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				mPixmap = null;

@@ -54,8 +54,8 @@ public class NumericCharacterReference extends CharacterReference {
 	private boolean hex;
 
 	private NumericCharacterReference(final Source source, final int begin, final int end, final int codePoint, final boolean hex) {
-		super(source,begin,end,codePoint);
-		this.hex=hex;
+		super(source, begin, end, codePoint);
+		this.hex = hex;
 	}
 
 	/**
@@ -103,14 +103,17 @@ public class NumericCharacterReference extends CharacterReference {
 	 * @see #decode(CharSequence)
 	 */
 	public static String encode(final CharSequence unencodedText) {
-		if (unencodedText==null) return null;
-		final StringBuilder sb=new StringBuilder(unencodedText.length()*2);
-		for (int i=0; i<unencodedText.length(); i++) {
-			final char ch=unencodedText.charAt(i);
+		if (unencodedText == null)
+			return null;
+		final StringBuilder sb = new StringBuilder(unencodedText.length() * 2);
+		for (int i = 0; i < unencodedText.length(); i++) {
+			final char ch = unencodedText.charAt(i);
 			if (requiresEncoding(ch)) {
 				try {
-					appendDecimalCharacterReferenceString(sb,ch);
-				} catch (IOException ex) {throw new RuntimeException(ex);} // never happens
+					appendDecimalCharacterReferenceString(sb, ch);
+				} catch (IOException ex) {
+					throw new RuntimeException(ex);
+				} // never happens
 			} else {
 				sb.append(ch);
 			}
@@ -153,14 +156,17 @@ public class NumericCharacterReference extends CharacterReference {
 	 * @see #decode(CharSequence)
 	 */
 	public static String encodeHexadecimal(final CharSequence unencodedText) {
-		if (unencodedText==null) return null;
-		final StringBuilder sb=new StringBuilder(unencodedText.length()*2);
-		for (int i=0; i<unencodedText.length(); i++) {
-			final char ch=unencodedText.charAt(i);
+		if (unencodedText == null)
+			return null;
+		final StringBuilder sb = new StringBuilder(unencodedText.length() * 2);
+		for (int i = 0; i < unencodedText.length(); i++) {
+			final char ch = unencodedText.charAt(i);
 			if (requiresEncoding(ch)) {
 				try {
-					appendHexadecimalCharacterReferenceString(sb,ch);
-				} catch (IOException ex) {throw new RuntimeException(ex);} // never happens
+					appendHexadecimalCharacterReferenceString(sb, ch);
+				} catch (IOException ex) {
+					throw new RuntimeException(ex);
+				} // never happens
 			} else {
 				sb.append(ch);
 			}
@@ -218,76 +224,82 @@ public class NumericCharacterReference extends CharacterReference {
 
 	static CharacterReference construct(final Source source, final int begin, final Config.UnterminatedCharacterReferenceSettings unterminatedCharacterReferenceSettings) {
 		// only called from CharacterReference.construct(), so we can assume that first characters are "&#"
-		final ParseText parseText=source.getParseText();
-		int codePointStringBegin=begin+2;
+		final ParseText parseText = source.getParseText();
+		int codePointStringBegin = begin + 2;
 		boolean hex;
-		if (hex=(parseText.charAt(codePointStringBegin)=='x')) codePointStringBegin++;
-		final int unterminatedMaxCodePoint=hex ? unterminatedCharacterReferenceSettings.hexadecimalCharacterReferenceMaxCodePoint : unterminatedCharacterReferenceSettings.decimalCharacterReferenceMaxCodePoint;
-		final int maxSourcePos=source.end-1;
+		if (hex = (parseText.charAt(codePointStringBegin) == 'x'))
+			codePointStringBegin++;
+		final int unterminatedMaxCodePoint = hex ? unterminatedCharacterReferenceSettings.hexadecimalCharacterReferenceMaxCodePoint : unterminatedCharacterReferenceSettings.decimalCharacterReferenceMaxCodePoint;
+		final int maxSourcePos = source.end - 1;
 		String codePointString;
 		int end;
-		int x=codePointStringBegin;
-		boolean unterminated=false;
+		int x = codePointStringBegin;
+		boolean unterminated = false;
 		while (true) {
-			final char ch=parseText.charAt(x);
-			if (ch==';') {
-				end=x+1;
-				codePointString=source.substring(codePointStringBegin,x);
+			final char ch = parseText.charAt(x);
+			if (ch == ';') {
+				end = x + 1;
+				codePointString = source.substring(codePointStringBegin, x);
 				break;
 			}
-			if ((ch>='0' && ch<='9') || (hex && ((ch>='a' && ch<='f') || (ch>='A' && ch<='F')))) {
+			if ((ch >= '0' && ch <= '9') || (hex && ((ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F')))) {
 				// We have a valid decimal digit (if hex is false), or a hexadecimal digit (if hex is true)
-				if (x==maxSourcePos) {
+				if (x == maxSourcePos) {
 					// We are at the last position in the source text without the terminating semicolon.
-					unterminated=true;
+					unterminated = true;
 					x++; // include this digit
 				}
 			} else {
 				// We don't have a valid digit, meaning the character reference is unterminated.
-				unterminated=true;
+				unterminated = true;
 			}
 			if (unterminated) {
 				// Different browsers react differently to unterminated numeric character references.
 				// The behaviour of this method is determined by the settings in the unterminatedCharacterReferenceSettings parameter.
-				if (unterminatedMaxCodePoint==INVALID_CODE_POINT) {
+				if (unterminatedMaxCodePoint == INVALID_CODE_POINT) {
 					// reject:
 					return null;
 				} else {
 					// accept:
-					end=x;
-					codePointString=source.substring(codePointStringBegin,x);
+					end = x;
+					codePointString = source.substring(codePointStringBegin, x);
 					break;
 				}
 			}
 			x++;
 		}
-		if (codePointString.length()==0) return null;
-		int codePoint=INVALID_CODE_POINT;
+		if (codePointString.length() == 0)
+			return null;
+		int codePoint = INVALID_CODE_POINT;
 		try {
-			codePoint=Integer.parseInt(codePointString,hex?16:10);
-			if (unterminated && codePoint>unterminatedMaxCodePoint) return null;
-			if (codePoint>Character.MAX_CODE_POINT) codePoint=INVALID_CODE_POINT;
+			codePoint = Integer.parseInt(codePointString, hex ? 16 : 10);
+			if (unterminated && codePoint > unterminatedMaxCodePoint)
+				return null;
+			if (codePoint > Character.MAX_CODE_POINT)
+				codePoint = INVALID_CODE_POINT;
 		} catch (NumberFormatException ex) {
 			// This should only happen if number is larger than Integer.MAX_VALUE.
-			if (unterminated) return null;
+			if (unterminated)
+				return null;
 			// If it is a terminated reference just ignore the exception as codePoint will remain with its value of INVALID_CODE_POINT.
 		}
-		return new NumericCharacterReference(source,begin,end,codePoint,hex);
+		return new NumericCharacterReference(source, begin, end, codePoint, hex);
 	}
 
 	public String getDebugInfo() {
-		final StringBuilder sb=new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append('"');
 		try {
 			if (hex)
-				appendHexadecimalCharacterReferenceString(sb,codePoint);
+				appendHexadecimalCharacterReferenceString(sb, codePoint);
 			else
-				appendDecimalCharacterReferenceString(sb,codePoint);
+				appendDecimalCharacterReferenceString(sb, codePoint);
 			sb.append("\" ");
-			appendUnicodeText(sb,codePoint);
-		} catch (IOException ex) {throw new RuntimeException(ex);} // never happens
+			appendUnicodeText(sb, codePoint);
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		} // never happens
 		sb.append(' ').append(super.getDebugInfo());
 		return sb.toString();
 	}
 }
-

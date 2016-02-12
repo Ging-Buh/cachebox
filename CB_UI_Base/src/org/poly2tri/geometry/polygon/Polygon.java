@@ -10,8 +10,7 @@ import org.poly2tri.triangulation.TriangulationMode;
 import org.poly2tri.triangulation.TriangulationPoint;
 import org.poly2tri.triangulation.delaunay.DelaunayTriangle;
 
-public class Polygon implements Triangulatable
-{
+public class Polygon implements Triangulatable {
 
 	protected ArrayList<TriangulationPoint> _points = new ArrayList<TriangulationPoint>();
 	protected ArrayList<TriangulationPoint> _steinerPoints;
@@ -28,8 +27,7 @@ public class Polygon implements Triangulatable
 	 * @param p2
 	 * @param p3
 	 */
-	public Polygon(PolygonPoint p1, PolygonPoint p2, PolygonPoint p3)
-	{
+	public Polygon(PolygonPoint p1, PolygonPoint p2, PolygonPoint p3) {
 		p1._next = p2;
 		p2._next = p3;
 		p3._next = p1;
@@ -47,12 +45,10 @@ public class Polygon implements Triangulatable
 	 * @param points
 	 *            - ordered list of points forming the polygon. No duplicates are allowed
 	 */
-	public Polygon(List<PolygonPoint> points)
-	{
+	public Polygon(List<PolygonPoint> points) {
 		// Lets do one sanity check that first and last point hasn't got same position
 		// Its something that often happen when importing polygon data from other formats
-		if (points.get(0).equals(points.get(points.size() - 1)))
-		{
+		if (points.get(0).equals(points.get(points.size() - 1))) {
 			// logger.warn("Removed duplicate point");
 			points.remove(points.size() - 1);
 		}
@@ -64,27 +60,23 @@ public class Polygon implements Triangulatable
 	 * 
 	 * @param points
 	 */
-	public Polygon(PolygonPoint[] points)
-	{
+	public Polygon(PolygonPoint[] points) {
 		this(Arrays.asList(points));
 	}
 
-	public Polygon(float[] vertices)
-	{
+	public Polygon(float[] vertices) {
 		ArrayList<PolygonPoint> poPoints = new ArrayList<PolygonPoint>();
 
 		int Length = 0;
 
-		do
-		{
+		do {
 			float x = vertices[Length++];
 			float y = vertices[Length++];
-			if (!ifSameWithLast(x, y)) poPoints.add(new PolygonPoint(x, y));
-		}
-		while (Length < vertices.length);
+			if (!ifSameWithLast(x, y))
+				poPoints.add(new PolygonPoint(x, y));
+		} while (Length < vertices.length);
 
-		if (poPoints.get(0).equals(poPoints.get(poPoints.size() - 1)))
-		{
+		if (poPoints.get(0).equals(poPoints.get(poPoints.size() - 1))) {
 			poPoints.remove(poPoints.size() - 1);
 		}
 
@@ -94,8 +86,7 @@ public class Polygon implements Triangulatable
 
 	private float lastX, lastY;
 
-	private boolean ifSameWithLast(float x, float y)
-	{
+	private boolean ifSameWithLast(float x, float y) {
 		boolean ret = (lastX == x && lastY == y);
 		lastX = x;
 		lastY = y;
@@ -104,43 +95,34 @@ public class Polygon implements Triangulatable
 	}
 
 	@Override
-	public TriangulationMode getTriangulationMode()
-	{
+	public TriangulationMode getTriangulationMode() {
 		return TriangulationMode.POLYGON;
 	}
 
-	public int pointCount()
-	{
+	public int pointCount() {
 		int count = _points.size();
-		if (_steinerPoints != null)
-		{
+		if (_steinerPoints != null) {
 			count += _steinerPoints.size();
 		}
 		return count;
 	}
 
-	public void addSteinerPoint(TriangulationPoint point)
-	{
-		if (_steinerPoints == null)
-		{
+	public void addSteinerPoint(TriangulationPoint point) {
+		if (_steinerPoints == null) {
 			_steinerPoints = new ArrayList<TriangulationPoint>();
 		}
 		_steinerPoints.add(point);
 	}
 
-	public void addSteinerPoints(List<TriangulationPoint> points)
-	{
-		if (_steinerPoints == null)
-		{
+	public void addSteinerPoints(List<TriangulationPoint> points) {
+		if (_steinerPoints == null) {
 			_steinerPoints = new ArrayList<TriangulationPoint>();
 		}
 		_steinerPoints.addAll(points);
 	}
 
-	public void clearSteinerPoints()
-	{
-		if (_steinerPoints != null)
-		{
+	public void clearSteinerPoints() {
+		if (_steinerPoints != null) {
 			_steinerPoints.clear();
 		}
 	}
@@ -151,10 +133,8 @@ public class Polygon implements Triangulatable
 	 * @param poly
 	 *            - a subtraction polygon
 	 */
-	public void addHole(Polygon poly)
-	{
-		if (_holes == null)
-		{
+	public void addHole(Polygon poly) {
+		if (_holes == null) {
 			_holes = new ArrayList<Polygon>();
 		}
 		_holes.add(poly);
@@ -169,32 +149,25 @@ public class Polygon implements Triangulatable
 	 * @param b
 	 * @param p
 	 */
-	public void insertPointAfter(PolygonPoint a, PolygonPoint newPoint)
-	{
+	public void insertPointAfter(PolygonPoint a, PolygonPoint newPoint) {
 		// Validate that
 		int index = _points.indexOf(a);
-		if (index != -1)
-		{
+		if (index != -1) {
 			newPoint.setNext(a.getNext());
 			newPoint.setPrevious(a);
 			a.getNext().setPrevious(newPoint);
 			a.setNext(newPoint);
 			_points.add(index + 1, newPoint);
-		}
-		else
-		{
+		} else {
 			throw new RuntimeException("Tried to insert a point into a Polygon after a point not belonging to the Polygon");
 		}
 	}
 
-	public void addPoints(List<PolygonPoint> list)
-	{
+	public void addPoints(List<PolygonPoint> list) {
 		PolygonPoint first;
-		for (PolygonPoint p : list)
-		{
+		for (PolygonPoint p : list) {
 			p.setPrevious(_last);
-			if (_last != null)
-			{
+			if (_last != null) {
 				p.setNext(_last.getNext());
 				_last.setNext(p);
 			}
@@ -211,16 +184,14 @@ public class Polygon implements Triangulatable
 	 * 
 	 * @param p
 	 */
-	public void addPoint(PolygonPoint p)
-	{
+	public void addPoint(PolygonPoint p) {
 		p.setPrevious(_last);
 		p.setNext(_last.getNext());
 		_last.setNext(p);
 		_points.add(p);
 	}
 
-	public void removePoint(PolygonPoint p)
-	{
+	public void removePoint(PolygonPoint p) {
 		PolygonPoint next, prev;
 
 		next = p.getNext();
@@ -230,40 +201,33 @@ public class Polygon implements Triangulatable
 		_points.remove(p);
 	}
 
-	public PolygonPoint getPoint()
-	{
+	public PolygonPoint getPoint() {
 		return _last;
 	}
 
 	@Override
-	public List<TriangulationPoint> getPoints()
-	{
+	public List<TriangulationPoint> getPoints() {
 		return _points;
 	}
 
 	@Override
-	public List<DelaunayTriangle> getTriangles()
-	{
+	public List<DelaunayTriangle> getTriangles() {
 		return m_triangles;
 	}
 
 	@Override
-	public void addTriangle(DelaunayTriangle t)
-	{
+	public void addTriangle(DelaunayTriangle t) {
 		m_triangles.add(t);
 	}
 
 	@Override
-	public void addTriangles(List<DelaunayTriangle> list)
-	{
+	public void addTriangles(List<DelaunayTriangle> list) {
 		m_triangles.addAll(list);
 	}
 
 	@Override
-	public void clearTriangulation()
-	{
-		if (m_triangles != null)
-		{
+	public void clearTriangulation() {
+		if (m_triangles != null) {
 			m_triangles.clear();
 		}
 	}
@@ -272,32 +236,24 @@ public class Polygon implements Triangulatable
 	 * Creates constraints and populates the context with points
 	 */
 	@Override
-	public void prepareTriangulation(TriangulationContext<?> tcx)
-	{
-		if (m_triangles == null)
-		{
+	public void prepareTriangulation(TriangulationContext<?> tcx) {
+		if (m_triangles == null) {
 			m_triangles = new ArrayList<DelaunayTriangle>(_points.size());
-		}
-		else
-		{
+		} else {
 			m_triangles.clear();
 		}
 
 		// Outer constraints
-		for (int i = 0; i < _points.size() - 1; i++)
-		{
+		for (int i = 0; i < _points.size() - 1; i++) {
 			tcx.newConstraint(_points.get(i), _points.get(i + 1));
 		}
 		tcx.newConstraint(_points.get(0), _points.get(_points.size() - 1));
 		tcx.addPoints(_points);
 
 		// Hole constraints
-		if (_holes != null)
-		{
-			for (Polygon p : _holes)
-			{
-				for (int i = 0; i < p._points.size() - 1; i++)
-				{
+		if (_holes != null) {
+			for (Polygon p : _holes) {
+				for (int i = 0; i < p._points.size() - 1; i++) {
 					tcx.newConstraint(p._points.get(i), p._points.get(i + 1));
 				}
 				tcx.newConstraint(p._points.get(0), p._points.get(p._points.size() - 1));
@@ -305,8 +261,7 @@ public class Polygon implements Triangulatable
 			}
 		}
 
-		if (_steinerPoints != null)
-		{
+		if (_steinerPoints != null) {
 			tcx.addPoints(_steinerPoints);
 		}
 	}

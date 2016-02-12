@@ -15,41 +15,32 @@
  */
 package CB_Utils.Settings;
 
-public class SettingInt extends SettingBase<Integer>
-{
+public class SettingInt extends SettingBase<Integer> {
 
-	public SettingInt(String name, SettingCategory category, SettingModus modus, int defaultValue, SettingStoreType StoreType,
-			SettingUsage usage)
-	{
+	public SettingInt(String name, SettingCategory category, SettingModus modus, int defaultValue, SettingStoreType StoreType, SettingUsage usage) {
 		super(name, category, modus, StoreType, usage);
 		this.defaultValue = defaultValue;
 		this.value = defaultValue;
 	}
 
 	@Override
-	public String toDBString()
-	{
+	public String toDBString() {
 		return String.valueOf(value);
 	}
 
 	@Override
-	public boolean fromDBString(String dbString)
-	{
-		try
-		{
+	public boolean fromDBString(String dbString) {
+		try {
 			value = Integer.valueOf(dbString);
 			return true;
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			value = defaultValue;
 			return false;
 		}
 	}
 
 	@Override
-	public SettingBase<Integer> copy()
-	{
+	public SettingBase<Integer> copy() {
 		SettingBase<Integer> ret = new SettingInt(this.name, this.category, this.modus, this.defaultValue, this.storeType, this.usage);
 		ret.value = this.value;
 		ret.lastValue = this.lastValue;
@@ -57,13 +48,15 @@ public class SettingInt extends SettingBase<Integer>
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (!(obj instanceof SettingInt)) return false;
+	public boolean equals(Object obj) {
+		if (!(obj instanceof SettingInt))
+			return false;
 
 		SettingInt inst = (SettingInt) obj;
-		if (!(inst.name.equals(this.name))) return false;
-		if (inst.value != this.value) return false;
+		if (!(inst.name.equals(this.name)))
+			return false;
+		if (inst.value != this.value)
+			return false;
 
 		return true;
 	}

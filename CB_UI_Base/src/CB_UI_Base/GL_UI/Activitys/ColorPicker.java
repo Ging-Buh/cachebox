@@ -36,309 +36,309 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Util.HSV_Color;
 
 public class ColorPicker extends ActivityBase {
-    private HSV_Color InitialColor;
-    private HSV_Color actColor;
-    private Button bOK;
-    private Button bCancel;
+	private HSV_Color InitialColor;
+	private HSV_Color actColor;
+	private Button bOK;
+	private Button bCancel;
 
-    private IReturnListener mReturnListener;
+	private IReturnListener mReturnListener;
 
-    private ColorDrawable actColorDrawable;
+	private ColorDrawable actColorDrawable;
 
-    private Box lastColorBox;
-    private Box actColorBox;
-    private Image arrow;
-    private ColorPickerRec viewSatVal;
+	private Box lastColorBox;
+	private Box actColorBox;
+	private Image arrow;
+	private ColorPickerRec viewSatVal;
 
-    private Image viewCursor;
-    private Image viewTarget;
+	private Image viewCursor;
+	private Image viewTarget;
 
-    private Image viewHue;
+	private Image viewHue;
 
-    public interface IReturnListener {
-	public void returnColor(Color color);
-    }
-
-    public ColorPicker(CB_RectF rec, Color color, IReturnListener listener) {
-	super(rec, "ColorPicker");
-	actColor = new HSV_Color(color);
-	InitialColor = new HSV_Color(color);
-
-	mReturnListener = listener;
-	this.setClickable(true);
-	createOkCancelBtn();
-	createColorPreviewLine();
-	createViewHue();
-	createTest();
-
-	hueChanged();
-
-	moveCursor();
-	moveTarget();
-
-    }
-
-    private void createOkCancelBtn() {
-	bOK = new Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
-	bCancel = new Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
-
-	// Translations
-	bOK.setText(Translation.Get("ok"));
-	bCancel.setText(Translation.Get("cancel"));
-
-	this.addChild(bOK);
-	bOK.setOnClickListener(new OnClickListener() {
-	    @Override
-	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		GL.that.RunOnGL(new IRunOnGL() {
-		    @Override
-		    public void run() {
-			finish();
-		    }
-		});
-		if (mReturnListener != null)
-		    mReturnListener.returnColor(actColor);
-		return true;
-	    }
-	});
-
-	this.addChild(bCancel);
-	bCancel.setOnClickListener(new OnClickListener() {
-	    @Override
-	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		if (mReturnListener != null)
-		    mReturnListener.returnColor(null);
-		finish();
-		return true;
-	    }
-	});
-
-    }
-
-    @Override
-    public void dispose() {
-	gradiantWhite.dispose();
-	gradiantBlack.dispose();
-    }
-
-    private void createColorPreviewLine() {
-	CB_RectF rec = new CB_RectF(0, bOK.getMaxY() + margin, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight());
-	lastColorBox = new Box(rec, "LastColor");
-	actColorBox = new Box(rec, "aktColor");
-
-	rec.setWidth(rec.getHeight());
-	arrow = new Image(rec, "arrowImage", false);
-	arrow.setDrawable(new SpriteDrawable(SpriteCacheBase.Arrows.get(11)));
-
-	float lineWidth = lastColorBox.getWidth() + margin + arrow.getWidth() + margin + actColorBox.getWidth();
-	float left = this.getHalfWidth() - (lineWidth / 2);
-	lastColorBox.setX(left);
-	arrow.setX(lastColorBox.getMaxX() + margin);
-	actColorBox.setX(arrow.getMaxX() + margin);
-
-	lastColorBox.setBackground(new ColorDrawable(InitialColor));
-	actColorBox.setBackground(new ColorDrawable(InitialColor));
-
-	this.addChild(lastColorBox);
-	this.addChild(arrow);
-	this.addChild(actColorBox);
-    }
-
-    private void createViewHue() {
-	float vWidth = bOK.getHeight();
-
-	viewHue = new Image(this.getWidth() - rightBorder - margin - vWidth, actColorBox.getMaxY() + margin, vWidth, this.getHeight() - this.getTopHeight() - actColorBox.getMaxY() - margin * 2, "viewHue", false);
-	viewHue.setDrawable(new SpriteDrawable(SpriteCacheBase.ambilwarna_hue));
-	this.addChild(viewHue);
-
-	float cursorSize = Fonts.Measure("T").height;
-
-	viewCursor = new Image(0, 0, cursorSize, cursorSize, "", false);
-	viewCursor.setDrawable(new SpriteDrawable(SpriteCacheBase.ambilwarna_cursor));
-	this.addChild(viewCursor);
-
-    }
-
-    private GradiantFill gradiantWhite;
-    private GradiantFill gradiantBlack;
-
-    private void createTest() {
-	CB_RectF rec = new CB_RectF(leftBorder + margin, viewHue.getY(), viewHue.getX() - margin * 3 - leftBorder, viewHue.getHeight());
-
-	viewSatVal = new ColorPickerRec(rec, "");
-	this.addChild(viewSatVal);
-
-	{
-	    // Gradiant Test
-
-	    // Color blackTransparent = new Color(1f, 1f, 0f, 0.2f);
-	    // gradiantBlack = new GradiantFill(Color.BLACK, blackTransparent, -30);
-	    // rectangle FillRecBlack = new rectangle(rec, gradiantBlack);
-	    // this.addChild(FillRecBlack);
+	public interface IReturnListener {
+		public void returnColor(Color color);
 	}
 
-	Color whiteTransparent = new Color(1f, 1f, 1f, 0f);
-	gradiantWhite = new GradiantFill(Color.WHITE, whiteTransparent, 0);
-	GradiantFilledRectangle FillRecWhite = new GradiantFilledRectangle(rec, gradiantWhite);
-	this.addChild(FillRecWhite);
+	public ColorPicker(CB_RectF rec, Color color, IReturnListener listener) {
+		super(rec, "ColorPicker");
+		actColor = new HSV_Color(color);
+		InitialColor = new HSV_Color(color);
 
-	Color blackTransparent = new Color(0f, 0f, 0f, 0f);
-	gradiantBlack = new GradiantFill(Color.BLACK, blackTransparent, 90);
-	GradiantFilledRectangle FillRecBlack = new GradiantFilledRectangle(rec, gradiantBlack);
-	this.addChild(FillRecBlack);
+		mReturnListener = listener;
+		this.setClickable(true);
+		createOkCancelBtn();
+		createColorPreviewLine();
+		createViewHue();
+		createTest();
 
-	float cursorSize = Fonts.Measure("T").height;
+		hueChanged();
 
-	viewTarget = new Image(0, 0, cursorSize, cursorSize, "", false);
-	viewTarget.setDrawable(new SpriteDrawable(SpriteCacheBase.ambilwarna_target));
-	this.addChild(viewTarget);
+		moveCursor();
+		moveTarget();
 
-    }
+	}
 
-    private void hueChanged() {
-	if (viewSatVal != null)
-	    viewSatVal.setHue(actColor.getHue());
-    }
+	private void createOkCancelBtn() {
+		bOK = new Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
+		bCancel = new Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
 
-    protected void moveCursor() {
-	float y = viewHue.getHeight() - (getHue() * viewHue.getHeight() / 360.f);
-	if (y == viewHue.getHeight())
-	    y = 0.f;
+		// Translations
+		bOK.setText(Translation.Get("ok"));
+		bCancel.setText(Translation.Get("cancel"));
 
-	viewCursor.setX((float) (viewHue.getX() - Math.floor(viewCursor.getWidth() / 2)));
+		this.addChild(bOK);
+		bOK.setOnClickListener(new OnClickListener() {
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				GL.that.RunOnGL(new IRunOnGL() {
+					@Override
+					public void run() {
+						finish();
+					}
+				});
+				if (mReturnListener != null)
+					mReturnListener.returnColor(actColor);
+				return true;
+			}
+		});
 
-	viewCursor.setY((float) (viewHue.getMaxY() - y - Math.floor(viewCursor.getHeight() / 2)));
+		this.addChild(bCancel);
+		bCancel.setOnClickListener(new OnClickListener() {
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				if (mReturnListener != null)
+					mReturnListener.returnColor(null);
+				finish();
+				return true;
+			}
+		});
 
-    }
+	}
 
-    protected void moveTarget() {
-	float x = getSat() * viewSatVal.getWidth();
-	float y = getVal() * viewSatVal.getHeight();
+	@Override
+	public void dispose() {
+		gradiantWhite.dispose();
+		gradiantBlack.dispose();
+	}
 
-	viewTarget.setX((float) (viewSatVal.getX() + x - Math.floor(viewTarget.getWidth() / 2)));
-	viewTarget.setY((float) (viewSatVal.getY() + y - Math.floor(viewTarget.getHeight() / 2)));
+	private void createColorPreviewLine() {
+		CB_RectF rec = new CB_RectF(0, bOK.getMaxY() + margin, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight());
+		lastColorBox = new Box(rec, "LastColor");
+		actColorBox = new Box(rec, "aktColor");
 
-    }
+		rec.setWidth(rec.getHeight());
+		arrow = new Image(rec, "arrowImage", false);
+		arrow.setDrawable(new SpriteDrawable(SpriteCacheBase.Arrows.get(11)));
 
-    private float getHue() {
-	return actColor.getHue();
-    }
+		float lineWidth = lastColorBox.getWidth() + margin + arrow.getWidth() + margin + actColorBox.getWidth();
+		float left = this.getHalfWidth() - (lineWidth / 2);
+		lastColorBox.setX(left);
+		arrow.setX(lastColorBox.getMaxX() + margin);
+		actColorBox.setX(arrow.getMaxX() + margin);
 
-    private float getSat() {
-	return actColor.getSat();
-    }
+		lastColorBox.setBackground(new ColorDrawable(InitialColor));
+		actColorBox.setBackground(new ColorDrawable(InitialColor));
 
-    private float getVal() {
-	return actColor.getVal();
-    }
+		this.addChild(lastColorBox);
+		this.addChild(arrow);
+		this.addChild(actColorBox);
+	}
 
-    private void setHue(float hue) {
-	actColor.setHue(hue);
-    }
+	private void createViewHue() {
+		float vWidth = bOK.getHeight();
 
-    private void setSat(float sat) {
-	actColor.setSat(sat);
-    }
+		viewHue = new Image(this.getWidth() - rightBorder - margin - vWidth, actColorBox.getMaxY() + margin, vWidth, this.getHeight() - this.getTopHeight() - actColorBox.getMaxY() - margin * 2, "viewHue", false);
+		viewHue.setDrawable(new SpriteDrawable(SpriteCacheBase.ambilwarna_hue));
+		this.addChild(viewHue);
 
-    private void setVal(float val) {
-	actColor.setVal(val);
-    }
+		float cursorSize = Fonts.Measure("T").height;
 
-    private void onClick_DracgHueView(float y) {
-	if (y < 0.f)
-	    y = 0.f;
-	if (y > viewHue.getHeight())
-	    y = viewHue.getHeight() - 0.001f; // to avoid looping from end to start.
-	float hue = 360.f / viewHue.getHeight() * y;
-	if (hue == 360.f)
-	    hue = 0.f;
-	setHue(hue);
+		viewCursor = new Image(0, 0, cursorSize, cursorSize, "", false);
+		viewCursor.setDrawable(new SpriteDrawable(SpriteCacheBase.ambilwarna_cursor));
+		this.addChild(viewCursor);
 
-	// update view
-	viewSatVal.setHue(getHue());
-	moveCursor();
-	regenarateActColorBox();
-    }
+	}
 
-    private void onClickDragg_Sat(float x, float y) {
-	if (x < 0.f)
-	    x = 0.f;
-	if (x > viewSatVal.getWidth())
-	    x = viewSatVal.getWidth();
-	if (y < 0.f)
-	    y = 0.f;
-	if (y > viewSatVal.getHeight())
-	    y = viewSatVal.getHeight();
+	private GradiantFill gradiantWhite;
+	private GradiantFill gradiantBlack;
 
-	setSat(1.f / viewSatVal.getWidth() * x);
-	setVal(1.f / viewSatVal.getHeight() * y);
+	private void createTest() {
+		CB_RectF rec = new CB_RectF(leftBorder + margin, viewHue.getY(), viewHue.getX() - margin * 3 - leftBorder, viewHue.getHeight());
 
-	// update view
-	moveTarget();
-	regenarateActColorBox();
-    }
+		viewSatVal = new ColorPickerRec(rec, "");
+		this.addChild(viewSatVal);
 
-    private void regenarateActColorBox() {
+		{
+			// Gradiant Test
 
-	GL.that.RunOnGL(new IRunOnGL() {
-
-	    @Override
-	    public void run() {
-		if (actColorDrawable == null) {
-		    actColorDrawable = new ColorDrawable(actColor);
-		} else {
-		    actColorDrawable.setColor(actColor);
+			// Color blackTransparent = new Color(1f, 1f, 0f, 0.2f);
+			// gradiantBlack = new GradiantFill(Color.BLACK, blackTransparent, -30);
+			// rectangle FillRecBlack = new rectangle(rec, gradiantBlack);
+			// this.addChild(FillRecBlack);
 		}
 
-		actColorBox.setBackground(actColorDrawable);
-	    }
-	});
+		Color whiteTransparent = new Color(1f, 1f, 1f, 0f);
+		gradiantWhite = new GradiantFill(Color.WHITE, whiteTransparent, 0);
+		GradiantFilledRectangle FillRecWhite = new GradiantFilledRectangle(rec, gradiantWhite);
+		this.addChild(FillRecWhite);
 
-    }
+		Color blackTransparent = new Color(0f, 0f, 0f, 0f);
+		gradiantBlack = new GradiantFill(Color.BLACK, blackTransparent, 90);
+		GradiantFilledRectangle FillRecBlack = new GradiantFilledRectangle(rec, gradiantBlack);
+		this.addChild(FillRecBlack);
 
-    @Override
-    public boolean click(int x, int y, int pointer, int button) {
+		float cursorSize = Fonts.Measure("T").height;
 
-	if (viewHue.contains(x, y)) {
-	    onClick_DracgHueView(y - viewHue.getY());
-	    return true;
+		viewTarget = new Image(0, 0, cursorSize, cursorSize, "", false);
+		viewTarget.setDrawable(new SpriteDrawable(SpriteCacheBase.ambilwarna_target));
+		this.addChild(viewTarget);
+
 	}
 
-	if (viewSatVal.contains(x, y)) {
-	    onClickDragg_Sat(x - viewSatVal.getX(), y - viewSatVal.getY());
-	    return true;
+	private void hueChanged() {
+		if (viewSatVal != null)
+			viewSatVal.setHue(actColor.getHue());
 	}
 
-	return super.click(x, y, pointer, button);
-    }
+	protected void moveCursor() {
+		float y = viewHue.getHeight() - (getHue() * viewHue.getHeight() / 360.f);
+		if (y == viewHue.getHeight())
+			y = 0.f;
 
-    @Override
-    public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
+		viewCursor.setX((float) (viewHue.getX() - Math.floor(viewCursor.getWidth() / 2)));
 
-	if (!KineticPan && viewHue.contains(x, y)) {
-	    onClick_DracgHueView(y - viewHue.getY());
-	    return true;
+		viewCursor.setY((float) (viewHue.getMaxY() - y - Math.floor(viewCursor.getHeight() / 2)));
+
 	}
 
-	if (!KineticPan && viewSatVal.contains(x, y)) {
-	    onClickDragg_Sat(x - viewSatVal.getX(), y - viewSatVal.getY());
-	    return true;
+	protected void moveTarget() {
+		float x = getSat() * viewSatVal.getWidth();
+		float y = getVal() * viewSatVal.getHeight();
+
+		viewTarget.setX((float) (viewSatVal.getX() + x - Math.floor(viewTarget.getWidth() / 2)));
+		viewTarget.setY((float) (viewSatVal.getY() + y - Math.floor(viewTarget.getHeight() / 2)));
+
 	}
 
-	return false;
-    }
+	private float getHue() {
+		return actColor.getHue();
+	}
 
-    public void setReturnListener(IReturnListener iReturnListener) {
-	mReturnListener = iReturnListener;
-    }
+	private float getSat() {
+		return actColor.getSat();
+	}
 
-    public void setColor(Color color) {
-	actColor = InitialColor = new HSV_Color(color);
-	hueChanged();
+	private float getVal() {
+		return actColor.getVal();
+	}
 
-	moveCursor();
-	moveTarget();
-	lastColorBox.setBackground(new ColorDrawable(InitialColor));
-    }
+	private void setHue(float hue) {
+		actColor.setHue(hue);
+	}
+
+	private void setSat(float sat) {
+		actColor.setSat(sat);
+	}
+
+	private void setVal(float val) {
+		actColor.setVal(val);
+	}
+
+	private void onClick_DracgHueView(float y) {
+		if (y < 0.f)
+			y = 0.f;
+		if (y > viewHue.getHeight())
+			y = viewHue.getHeight() - 0.001f; // to avoid looping from end to start.
+		float hue = 360.f / viewHue.getHeight() * y;
+		if (hue == 360.f)
+			hue = 0.f;
+		setHue(hue);
+
+		// update view
+		viewSatVal.setHue(getHue());
+		moveCursor();
+		regenarateActColorBox();
+	}
+
+	private void onClickDragg_Sat(float x, float y) {
+		if (x < 0.f)
+			x = 0.f;
+		if (x > viewSatVal.getWidth())
+			x = viewSatVal.getWidth();
+		if (y < 0.f)
+			y = 0.f;
+		if (y > viewSatVal.getHeight())
+			y = viewSatVal.getHeight();
+
+		setSat(1.f / viewSatVal.getWidth() * x);
+		setVal(1.f / viewSatVal.getHeight() * y);
+
+		// update view
+		moveTarget();
+		regenarateActColorBox();
+	}
+
+	private void regenarateActColorBox() {
+
+		GL.that.RunOnGL(new IRunOnGL() {
+
+			@Override
+			public void run() {
+				if (actColorDrawable == null) {
+					actColorDrawable = new ColorDrawable(actColor);
+				} else {
+					actColorDrawable.setColor(actColor);
+				}
+
+				actColorBox.setBackground(actColorDrawable);
+			}
+		});
+
+	}
+
+	@Override
+	public boolean click(int x, int y, int pointer, int button) {
+
+		if (viewHue.contains(x, y)) {
+			onClick_DracgHueView(y - viewHue.getY());
+			return true;
+		}
+
+		if (viewSatVal.contains(x, y)) {
+			onClickDragg_Sat(x - viewSatVal.getX(), y - viewSatVal.getY());
+			return true;
+		}
+
+		return super.click(x, y, pointer, button);
+	}
+
+	@Override
+	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
+
+		if (!KineticPan && viewHue.contains(x, y)) {
+			onClick_DracgHueView(y - viewHue.getY());
+			return true;
+		}
+
+		if (!KineticPan && viewSatVal.contains(x, y)) {
+			onClickDragg_Sat(x - viewSatVal.getX(), y - viewSatVal.getY());
+			return true;
+		}
+
+		return false;
+	}
+
+	public void setReturnListener(IReturnListener iReturnListener) {
+		mReturnListener = iReturnListener;
+	}
+
+	public void setColor(Color color) {
+		actColor = InitialColor = new HSV_Color(color);
+		hueChanged();
+
+		moveCursor();
+		moveTarget();
+		lastColorBox.setBackground(new ColorDrawable(InitialColor));
+	}
 
 }

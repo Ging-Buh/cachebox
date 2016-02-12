@@ -21,7 +21,6 @@ package org.apache.xmlrpc.server;
 import org.apache.xmlrpc.common.XmlRpcWorker;
 import org.apache.xmlrpc.common.XmlRpcWorkerFactory;
 
-
 /** Server specific worker factory.
  */
 public class XmlRpcServerWorkerFactory extends XmlRpcWorkerFactory {

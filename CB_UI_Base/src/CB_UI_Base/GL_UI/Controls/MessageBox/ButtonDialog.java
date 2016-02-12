@@ -39,262 +39,262 @@ import CB_UI_Base.Math.UI_Size_Base;
 
 public class ButtonDialog extends Dialog {
 
-    public final int BUTTON_POSITIVE = 1;
-    public final int BUTTON_NEUTRAL = 2;
-    public final int BUTTON_NEGATIVE = 3;
+	public final int BUTTON_POSITIVE = 1;
+	public final int BUTTON_NEUTRAL = 2;
+	public final int BUTTON_NEGATIVE = 3;
 
-    private final ArrayList<CB_View_Base> FooterItems = new ArrayList<CB_View_Base>();
+	private final ArrayList<CB_View_Base> FooterItems = new ArrayList<CB_View_Base>();
 
-    public Button button1;
-    public Button button2;
-    public Button button3;
-    protected Label label;
-    protected Object data;
+	public Button button1;
+	public Button button2;
+	public Button button3;
+	protected Label label;
+	protected Object data;
 
-    public OnMsgBoxClickListener mMsgBoxClickListener;
+	public OnMsgBoxClickListener mMsgBoxClickListener;
 
-    protected OnClickListener positiveButtonClickListener;
+	protected OnClickListener positiveButtonClickListener;
 
-    protected OnClickListener neutralButtonClickListener;
-    protected OnClickListener negativeButtonClickListener;
+	protected OnClickListener neutralButtonClickListener;
+	protected OnClickListener negativeButtonClickListener;
 
-    public ButtonDialog(String Name, String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener) {
-	this(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), (icon != MessageBoxIcon.None), false).getBounds().asFloat(), Name, msg, title, buttons, icon, Listener);
-    }
-
-    public ButtonDialog(CB_RectF rec, String Name, String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener) {
-	super(rec, Name);
-	setTitle(title);
-	setButtonCaptions(buttons);
-	SizeF contentSize = getContentSize();
-
-	CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
-
-	if (icon != MessageBoxIcon.None && icon != null) {
-	    Image iconImage = new Image(imageRec, "MsgBoxIcon", false);
-	    iconImage.setDrawable(new SpriteDrawable(getIcon(icon)));
-	    addChild(iconImage);
+	public ButtonDialog(String Name, String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener) {
+		this(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), (icon != MessageBoxIcon.None), false).getBounds().asFloat(), Name, msg, title, buttons, icon, Listener);
 	}
 
-	label = new Label(this.name + " label", contentSize.getBounds());
-	label.setWidth(contentSize.getBounds().getWidth() - 5 - UI_Size_Base.that.getButtonHeight());
-	label.setX(imageRec.getMaxX() + 5);
-	label.setY(-margin);
-	label.setWrappedText(msg);
-	addChild(label);
+	public ButtonDialog(CB_RectF rec, String Name, String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener) {
+		super(rec, Name);
+		setTitle(title);
+		setButtonCaptions(buttons);
+		SizeF contentSize = getContentSize();
 
-	mMsgBoxClickListener = Listener;
+		CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
 
-	// setFooterHeight(80);
-    }
+		if (icon != MessageBoxIcon.None && icon != null) {
+			Image iconImage = new Image(imageRec, "MsgBoxIcon", false);
+			iconImage.setDrawable(new SpriteDrawable(getIcon(icon)));
+			addChild(iconImage);
+		}
 
-    public ButtonDialog(CB_RectF rec, String Name) {
-	super(rec, Name);
-    }
+		label = new Label(this.name + " label", contentSize.getBounds());
+		label.setWidth(contentSize.getBounds().getWidth() - 5 - UI_Size_Base.that.getButtonHeight());
+		label.setX(imageRec.getMaxX() + 5);
+		label.setY(-margin);
+		label.setWrappedText(msg);
+		addChild(label);
 
-    @Override
-    protected void Initial() {
-	super.Initial();
-	synchronized (childs) {
-	    for (Iterator<CB_View_Base> iterator = FooterItems.iterator(); iterator.hasNext();) {
-		childs.add(iterator.next());
-	    }
+		mMsgBoxClickListener = Listener;
+
+		// setFooterHeight(80);
 	}
-    }
 
-    public void setText(String text) {
-	label.setWrappedText(text);
-
-    }
-
-    public void close() {
-	GL.that.RunOnGL(new IRunOnGL() {
-	    @Override
-	    public void run() {
-		GL.that.closeDialog(ButtonDialog.this);
-	    }
-	});
-
-    }
-
-    public void setButtonCaptions(MessageBoxButtons buttons) {
-	if (buttons == null)
-	    buttons = MessageBoxButtons.NOTHING;
-
-	if (buttons == MessageBoxButtons.AbortRetryIgnore) {
-	    createButtons(3, Translation.Get("abort"), Translation.Get("retry"), Translation.Get("ignore"));
-	} else if (buttons == MessageBoxButtons.OK) {
-	    createButtons(1, Translation.Get("ok"), "", "");
-	} else if (buttons == MessageBoxButtons.OKCancel) {
-	    createButtons(2, Translation.Get("ok"), "", Translation.Get("cancel"));
-	} else if (buttons == MessageBoxButtons.RetryCancel) {
-	    createButtons(2, Translation.Get("retry"), "", Translation.Get("cancel"));
-	} else if (buttons == MessageBoxButtons.YesNo) {
-	    createButtons(2, Translation.Get("yes"), "", Translation.Get("no"));
-	} else if (buttons == MessageBoxButtons.YesNoCancel) {
-	    createButtons(3, Translation.Get("yes"), Translation.Get("no"), Translation.Get("cancel"));
-	} else if (buttons == MessageBoxButtons.Cancel) {
-	    createButtons(3, "", "", Translation.Get("cancel"));
-	    button1.setInvisible();
-	    button2.setInvisible();
-	} else {
-	    // no Buttons
-	    setFooterHeight(calcFooterHeight(false));
+	public ButtonDialog(CB_RectF rec, String Name) {
+		super(rec, Name);
 	}
-    }
 
-    protected void createButtons(int anzahl, String t1, String t2, String t3) {
-	setButtonListener();
-
-	this.setBorders(margin, margin);
-	this.setMargins(margin, margin);
-	this.initRow(BOTTOMUP);
-
-	switch (anzahl) {
-	case 1:
-	    button1 = new Button(t1);
-	    this.addLast(button1);
-	    button1.setOnClickListener(positiveButtonClickListener);
-	    // addFooterChild(button1);
-	    break;
-	case 2:
-	    button1 = new Button(t1);
-	    button3 = new Button(t3);
-	    this.addNext(button1);
-	    this.addLast(button3);
-	    button1.setOnClickListener(positiveButtonClickListener);
-	    button3.setOnClickListener(negativeButtonClickListener);
-	    // addFooterChild(button1);
-	    // addFooterChild(button3);
-	    break;
-	case 3:
-	    button1 = new Button(t1);
-	    button2 = new Button(t2);
-	    button3 = new Button(t3);
-	    this.addNext(button1);
-	    this.addNext(button2);
-	    this.addLast(button3);
-	    button1.setOnClickListener(positiveButtonClickListener);
-	    button2.setOnClickListener(neutralButtonClickListener);
-	    button3.setOnClickListener(negativeButtonClickListener);
-	    // addFooterChild(button1);
-	    // addFooterChild(button2);
-	    // addFooterChild(button3);
-	    break;
+	@Override
+	protected void Initial() {
+		super.Initial();
+		synchronized (childs) {
+			for (Iterator<CB_View_Base> iterator = FooterItems.iterator(); iterator.hasNext();) {
+				childs.add(iterator.next());
+			}
+		}
 	}
-	setFooterHeight(this.getHeightFromBottom());
-    }
 
-    public void addFooterChild(CB_View_Base view) {
-	FooterItems.add(view);
-    }
+	public void setText(String text) {
+		label.setWrappedText(text);
 
-    private void setButtonListener() {
-	positiveButtonClickListener = new OnClickListener() {
+	}
 
-	    @Override
-	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		return ButtonClick(1);
-	    }
-	};
+	public void close() {
+		GL.that.RunOnGL(new IRunOnGL() {
+			@Override
+			public void run() {
+				GL.that.closeDialog(ButtonDialog.this);
+			}
+		});
 
-	neutralButtonClickListener = new OnClickListener() {
+	}
 
-	    @Override
-	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		return ButtonClick(2);
-	    }
-	};
+	public void setButtonCaptions(MessageBoxButtons buttons) {
+		if (buttons == null)
+			buttons = MessageBoxButtons.NOTHING;
 
-	negativeButtonClickListener = new OnClickListener() {
+		if (buttons == MessageBoxButtons.AbortRetryIgnore) {
+			createButtons(3, Translation.Get("abort"), Translation.Get("retry"), Translation.Get("ignore"));
+		} else if (buttons == MessageBoxButtons.OK) {
+			createButtons(1, Translation.Get("ok"), "", "");
+		} else if (buttons == MessageBoxButtons.OKCancel) {
+			createButtons(2, Translation.Get("ok"), "", Translation.Get("cancel"));
+		} else if (buttons == MessageBoxButtons.RetryCancel) {
+			createButtons(2, Translation.Get("retry"), "", Translation.Get("cancel"));
+		} else if (buttons == MessageBoxButtons.YesNo) {
+			createButtons(2, Translation.Get("yes"), "", Translation.Get("no"));
+		} else if (buttons == MessageBoxButtons.YesNoCancel) {
+			createButtons(3, Translation.Get("yes"), Translation.Get("no"), Translation.Get("cancel"));
+		} else if (buttons == MessageBoxButtons.Cancel) {
+			createButtons(3, "", "", Translation.Get("cancel"));
+			button1.setInvisible();
+			button2.setInvisible();
+		} else {
+			// no Buttons
+			setFooterHeight(calcFooterHeight(false));
+		}
+	}
 
-	    @Override
-	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		return ButtonClick(3);
-	    }
-	};
-    }
+	protected void createButtons(int anzahl, String t1, String t2, String t3) {
+		setButtonListener();
 
-    private boolean ButtonClick(int button) {
-	GL.that.closeDialog(this);
-	if (mMsgBoxClickListener != null)
-	    return mMsgBoxClickListener.onClick(button, data);
-	return false;
-    }
+		this.setBorders(margin, margin);
+		this.setMargins(margin, margin);
+		this.initRow(BOTTOMUP);
 
-    @Override
-    protected void SkinIsChanged() {
+		switch (anzahl) {
+		case 1:
+			button1 = new Button(t1);
+			this.addLast(button1);
+			button1.setOnClickListener(positiveButtonClickListener);
+			// addFooterChild(button1);
+			break;
+		case 2:
+			button1 = new Button(t1);
+			button3 = new Button(t3);
+			this.addNext(button1);
+			this.addLast(button3);
+			button1.setOnClickListener(positiveButtonClickListener);
+			button3.setOnClickListener(negativeButtonClickListener);
+			// addFooterChild(button1);
+			// addFooterChild(button3);
+			break;
+		case 3:
+			button1 = new Button(t1);
+			button2 = new Button(t2);
+			button3 = new Button(t3);
+			this.addNext(button1);
+			this.addNext(button2);
+			this.addLast(button3);
+			button1.setOnClickListener(positiveButtonClickListener);
+			button2.setOnClickListener(neutralButtonClickListener);
+			button3.setOnClickListener(negativeButtonClickListener);
+			// addFooterChild(button1);
+			// addFooterChild(button2);
+			// addFooterChild(button3);
+			break;
+		}
+		setFooterHeight(this.getHeightFromBottom());
+	}
 
-    }
+	public void addFooterChild(CB_View_Base view) {
+		FooterItems.add(view);
+	}
 
-    public static ButtonDialog Show(String msg) {
-	ButtonDialog msgBox = new ButtonDialog("MsgBox", msg, "Title", MessageBoxButtons.NOTHING, MessageBoxIcon.None, null);
-	GL.that.showDialog(msgBox);
-	return msgBox;
-    }
+	private void setButtonListener() {
+		positiveButtonClickListener = new OnClickListener() {
 
-    public void Show() {
-	GL.that.RunOnGL(new IRunOnGL() {
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				return ButtonClick(1);
+			}
+		};
 
-	    @Override
-	    public void run() {
-		try {
-		    GL.that.showDialog(ButtonDialog.this);
-		} catch (Exception e) {
+		neutralButtonClickListener = new OnClickListener() {
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				return ButtonClick(2);
+			}
+		};
+
+		negativeButtonClickListener = new OnClickListener() {
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				return ButtonClick(3);
+			}
+		};
+	}
+
+	private boolean ButtonClick(int button) {
+		GL.that.closeDialog(this);
+		if (mMsgBoxClickListener != null)
+			return mMsgBoxClickListener.onClick(button, data);
+		return false;
+	}
+
+	@Override
+	protected void SkinIsChanged() {
+
+	}
+
+	public static ButtonDialog Show(String msg) {
+		ButtonDialog msgBox = new ButtonDialog("MsgBox", msg, "Title", MessageBoxButtons.NOTHING, MessageBoxIcon.None, null);
+		GL.that.showDialog(msgBox);
+		return msgBox;
+	}
+
+	public void Show() {
+		GL.that.RunOnGL(new IRunOnGL() {
+
+			@Override
+			public void run() {
+				try {
+					GL.that.showDialog(ButtonDialog.this);
+				} catch (Exception e) {
+
+				}
+			}
+		});
+
+	}
+
+	private Sprite getIcon(MessageBoxIcon msgIcon) {
+		if (msgIcon == null)
+			return null;
+
+		Sprite icon;
+
+		switch (msgIcon.ordinal()) {
+		case 0:
+			icon = SpriteCacheBase.Icons.get(IconName.info_32.ordinal());
+			break;
+		case 1:
+			icon = SpriteCacheBase.Icons.get(IconName.close_31.ordinal());
+			break;
+		case 2:
+			icon = SpriteCacheBase.Icons.get(IconName.warning_33.ordinal());
+			break;
+		case 3:
+			icon = SpriteCacheBase.Icons.get(IconName.close_31.ordinal());
+			break;
+		case 4:
+			icon = SpriteCacheBase.Icons.get(IconName.info_32.ordinal());
+			break;
+		case 5:
+			icon = null;
+			break;
+		case 6:
+			icon = SpriteCacheBase.Icons.get(IconName.help_34.ordinal());
+			break;
+		case 7:
+			icon = SpriteCacheBase.Icons.get(IconName.close_31.ordinal());
+			break;
+		case 8:
+			icon = SpriteCacheBase.Icons.get(IconName.warning_33.ordinal());
+			break;
+		case 9:
+			icon = SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal());
+			break;
+		case 10:
+			icon = SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal());
+			break;
+
+		default:
+			icon = null;
 
 		}
-	    }
-	});
 
-    }
-
-    private Sprite getIcon(MessageBoxIcon msgIcon) {
-	if (msgIcon == null)
-	    return null;
-
-	Sprite icon;
-
-	switch (msgIcon.ordinal()) {
-	case 0:
-	    icon = SpriteCacheBase.Icons.get(IconName.info_32.ordinal());
-	    break;
-	case 1:
-	    icon = SpriteCacheBase.Icons.get(IconName.close_31.ordinal());
-	    break;
-	case 2:
-	    icon = SpriteCacheBase.Icons.get(IconName.warning_33.ordinal());
-	    break;
-	case 3:
-	    icon = SpriteCacheBase.Icons.get(IconName.close_31.ordinal());
-	    break;
-	case 4:
-	    icon = SpriteCacheBase.Icons.get(IconName.info_32.ordinal());
-	    break;
-	case 5:
-	    icon = null;
-	    break;
-	case 6:
-	    icon = SpriteCacheBase.Icons.get(IconName.help_34.ordinal());
-	    break;
-	case 7:
-	    icon = SpriteCacheBase.Icons.get(IconName.close_31.ordinal());
-	    break;
-	case 8:
-	    icon = SpriteCacheBase.Icons.get(IconName.warning_33.ordinal());
-	    break;
-	case 9:
-	    icon = SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal());
-	    break;
-	case 10:
-	    icon = SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal());
-	    break;
-
-	default:
-	    icon = null;
-
+		return icon;
 	}
-
-	return icon;
-    }
 
 }

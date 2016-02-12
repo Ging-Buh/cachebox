@@ -24,30 +24,24 @@ import com.badlogic.gdx.graphics.g2d.TextOnPath;
 /**
  * @author Longri
  */
-public class TextDrawableFlipped extends TextDrawable
-{
+public class TextDrawableFlipped extends TextDrawable {
 	TextOnPath flippedCache;
 	private boolean isFlipped = false;
 
-	public TextDrawableFlipped(final String text, GL_Path path, float defaultWidth, float defaultHeight, final ext_Paint fill,
-			final ext_Paint stroke, final boolean center)
-	{
+	public TextDrawableFlipped(final String text, GL_Path path, float defaultWidth, float defaultHeight, final ext_Paint fill, final ext_Paint stroke, final boolean center) {
 		super(text, path, defaultWidth, defaultHeight, fill, stroke, center);
 	}
 
 	@Override
-	public boolean draw(Batch batch, float x, float y, float width, float height, float rotated)
-	{
-		if (isDisposed) return true;
+	public boolean draw(Batch batch, float x, float y, float width, float height, float rotated) {
+		if (isDisposed)
+			return true;
 
 		float direction = MathUtils.LegalizeDegreese(pathDirection + rotated);
 
-		if (direction >= 180)
-		{
+		if (direction >= 180) {
 			isFlipped = true;
-		}
-		else
-		{
+		} else {
 			isFlipped = false;
 		}
 
@@ -57,43 +51,33 @@ public class TextDrawableFlipped extends TextDrawable
 		transform.setToTranslation(x, y, 0);
 		transform.scale(scaleWidth, scaleHeight, 1);
 
-		if (isFlipped)
-		{
-			if (flippedCache == null)
-			{
+		if (isFlipped) {
+			if (flippedCache == null) {
 				workPath.revert();
 				flippedCache = new TextOnPath(this.Text, workPath, fill, stroke, center);
 			}
-			if (flippedCache != null)
-			{
-				if (flippedCache.PathToClose()) return true;
+			if (flippedCache != null) {
+				if (flippedCache.PathToClose())
+					return true;
 				flippedCache.draw(batch, transform);
-			}
-			else
-			{
+			} else {
 				return true;
 			}
-		}
-		else
-		{
-			if (Cache == null)
-			{
+		} else {
+			if (Cache == null) {
 				Cache = new TextOnPath(Text, workPath, fill, stroke, center);
 			}
-			if (Cache != null)
-			{
+			if (Cache != null) {
 
-				if (Cache.PathToClose()) return true;
+				if (Cache.PathToClose())
+					return true;
 				Cache.draw(batch, transform);
-			}
-			else
-			{
+			} else {
 				return true;
 			}
 		}
 
-		if (workPath != null && Cache != null && flippedCache != null)
-		{
+		if (workPath != null && Cache != null && flippedCache != null) {
 			// all Caches created, can dispose Path
 			workPath.dispose();
 			workPath = null;
@@ -102,9 +86,9 @@ public class TextDrawableFlipped extends TextDrawable
 	}
 
 	@Override
-	public void dispose()
-	{
-		if (flippedCache != null) flippedCache.dispose();
+	public void dispose() {
+		if (flippedCache != null)
+			flippedCache.dispose();
 		flippedCache = null;
 		super.dispose();
 	}

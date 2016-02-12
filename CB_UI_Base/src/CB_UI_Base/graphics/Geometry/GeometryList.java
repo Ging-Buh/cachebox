@@ -25,27 +25,23 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 
  * @author Longri
  */
-public class GeometryList implements IGeometry
-{
+public class GeometryList implements IGeometry {
 	private ArrayList<IGeometry> list = new ArrayList<IGeometry>();
 	public boolean isDirty = true;
 	private float[] vertices;
 	private short[] triangles;
 	protected AtomicBoolean isDisposed = new AtomicBoolean(false);
 
-	public void add(IGeometry geometry)
-	{
+	public void add(IGeometry geometry) {
 		list.add(geometry);
 		isDirty = true;
 	}
 
-	public void Compute()
-	{
+	public void Compute() {
 		// calculate array length
 		int verticesCount = 0;
 		int triangleCount = 0;
-		for (IGeometry element : list)
-		{
+		for (IGeometry element : list) {
 			verticesCount += element.getVertices().length;
 			triangleCount += element.getTriangles().length;
 		}
@@ -56,17 +52,14 @@ public class GeometryList implements IGeometry
 		int verticesIndex = 0;
 		short triangleIndex = 0;
 		short lastTriangleIndex = 0;
-		for (IGeometry element : list)
-		{
+		for (IGeometry element : list) {
 			int verticeCount = 0;
-			for (float value : element.getVertices())
-			{
+			for (float value : element.getVertices()) {
 				vertices[verticesIndex++] = value;
 				verticeCount++;
 			}
 
-			for (short value : element.getTriangles())
-			{
+			for (short value : element.getTriangles()) {
 				triangles[triangleIndex++] = (short) (lastTriangleIndex + value);
 			}
 			lastTriangleIndex += (verticeCount / 2);
@@ -75,36 +68,32 @@ public class GeometryList implements IGeometry
 	}
 
 	@Override
-	public float[] getVertices()
-	{
-		if (isDirty) Compute();
+	public float[] getVertices() {
+		if (isDirty)
+			Compute();
 		return vertices;
 	}
 
 	@Override
-	public short[] getTriangles()
-	{
-		if (isDirty) Compute();
+	public short[] getTriangles() {
+		if (isDirty)
+			Compute();
 		return triangles;
 	}
 
-	public boolean isDisposed()
-	{
+	public boolean isDisposed() {
 		return isDisposed.get();
 	}
 
 	@Override
-	public void dispose()
-	{
-		synchronized (isDisposed)
-		{
-			if (isDisposed.get()) return;
+	public void dispose() {
+		synchronized (isDisposed) {
+			if (isDisposed.get())
+				return;
 			vertices = null;
 			triangles = null;
-			if (list != null)
-			{
-				for (IGeometry ge : list)
-				{
+			if (list != null) {
+				for (IGeometry ge : list) {
 					ge.dispose();
 				}
 				list.clear();

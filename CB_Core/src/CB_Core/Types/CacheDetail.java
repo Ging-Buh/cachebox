@@ -14,8 +14,7 @@ import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.FileIO;
 import de.cb.sqlite.CoreCursor;
 
-public class CacheDetail implements Serializable
-{
+public class CacheDetail implements Serializable {
 	private static final long serialVersionUID = 2088367633865443637L;
 
 	/*
@@ -113,26 +112,21 @@ public class CacheDetail implements Serializable
 	/**
 	 * Constructor
 	 */
-	public CacheDetail()
-	{
+	public CacheDetail() {
 		this.DateHidden = new Date();
 		AttributeList = null;
 
 	}
 
-	public void dispose()
-	{
+	public void dispose() {
 		// clear all Lists
-		if (AttributeList != null)
-		{
+		if (AttributeList != null) {
 			AttributeList.clear();
 			AttributeList = null;
 		}
 
-		if (spoilerRessources != null)
-		{
-			for (int i = 0, n = spoilerRessources.size(); i < n; i++)
-			{
+		if (spoilerRessources != null) {
+			for (int i = 0, n = spoilerRessources.size(); i < n; i++) {
 				ImageEntry entry = spoilerRessources.get(i);
 				entry.dispose();
 			}
@@ -166,52 +160,45 @@ public class CacheDetail implements Serializable
 
 	}
 
-	public boolean isAttributePositiveSet(Attributes attribute)
-	{
+	public boolean isAttributePositiveSet(Attributes attribute) {
 		return attributesPositive.BitAndBiggerNull(Attributes.GetAttributeDlong(attribute));
 		// return (attributesPositive & Attributes.GetAttributeDlong(attribute))
 		// > 0;
 	}
 
-	public boolean isAttributeNegativeSet(Attributes attribute)
-	{
+	public boolean isAttributeNegativeSet(Attributes attribute) {
 		return attributesNegative.BitAndBiggerNull(Attributes.GetAttributeDlong(attribute));
 		// return (attributesNegative & Attributes.GetAttributeDlong(attribute))
 		// > 0;
 	}
 
-	public void addAttributeNegative(Attributes attribute)
-	{
-		if (attributesNegative == null) attributesNegative = new DLong(0, 0);
+	public void addAttributeNegative(Attributes attribute) {
+		if (attributesNegative == null)
+			attributesNegative = new DLong(0, 0);
 		attributesNegative.BitOr(Attributes.GetAttributeDlong(attribute));
 	}
 
-	public void addAttributePositive(Attributes attribute)
-	{
-		if (attributesPositive == null) attributesPositive = new DLong(0, 0);
+	public void addAttributePositive(Attributes attribute) {
+		if (attributesPositive == null)
+			attributesPositive = new DLong(0, 0);
 		attributesPositive.BitOr(Attributes.GetAttributeDlong(attribute));
 	}
 
-	public void setAttributesPositive(DLong i)
-	{
+	public void setAttributesPositive(DLong i) {
 		attributesPositive = i;
 	}
 
-	public void setAttributesNegative(DLong i)
-	{
+	public void setAttributesNegative(DLong i) {
 		attributesNegative = i;
 	}
 
-	public DLong getAttributesNegative(long Id)
-	{
-		if (this.attributesNegative == null)
-		{
-			CoreCursor c = Database.Data.rawQuery("select AttributesNegative,AttributesNegativeHigh from Caches where Id=?", new String[]
-				{ String.valueOf(Id) });
+	public DLong getAttributesNegative(long Id) {
+		if (this.attributesNegative == null) {
+			CoreCursor c = Database.Data.rawQuery("select AttributesNegative,AttributesNegativeHigh from Caches where Id=?", new String[] { String.valueOf(Id) });
 			c.moveToFirst();
-			while (c.isAfterLast() == false)
-			{
-				if (!c.isNull(0)) this.attributesNegative = new DLong(c.getLong(1), c.getLong(0));
+			while (c.isAfterLast() == false) {
+				if (!c.isNull(0))
+					this.attributesNegative = new DLong(c.getLong(1), c.getLong(0));
 				else
 					this.attributesNegative = new DLong(0, 0);
 				break;
@@ -222,16 +209,13 @@ public class CacheDetail implements Serializable
 		return this.attributesNegative;
 	}
 
-	public DLong getAttributesPositive(long Id)
-	{
-		if (this.attributesPositive == null)
-		{
-			CoreCursor c = Database.Data.rawQuery("select AttributesPositive,AttributesPositiveHigh from Caches where Id=?", new String[]
-				{ String.valueOf(Id) });
+	public DLong getAttributesPositive(long Id) {
+		if (this.attributesPositive == null) {
+			CoreCursor c = Database.Data.rawQuery("select AttributesPositive,AttributesPositiveHigh from Caches where Id=?", new String[] { String.valueOf(Id) });
 			c.moveToFirst();
-			while (c.isAfterLast() == false)
-			{
-				if (!c.isNull(0)) this.attributesPositive = new DLong(c.getLong(1), c.getLong(0));
+			while (c.isAfterLast() == false) {
+				if (!c.isNull(0))
+					this.attributesPositive = new DLong(c.getLong(1), c.getLong(0));
 				else
 					this.attributesPositive = new DLong(0, 0);
 				break;
@@ -244,23 +228,19 @@ public class CacheDetail implements Serializable
 
 	private ArrayList<Attributes> AttributeList = null;
 
-	public ArrayList<Attributes> getAttributes(long Id)
-	{
-		if (AttributeList == null)
-		{
+	public ArrayList<Attributes> getAttributes(long Id) {
+		if (AttributeList == null) {
 			AttributeList = Attributes.getAttributes(this.getAttributesPositive(Id), this.getAttributesNegative(Id));
 		}
 
 		return AttributeList;
 	}
 
-	public String getHint()
-	{
+	public String getHint() {
 		return hint;
 	}
 
-	public void setHint(String hint2)
-	{
+	public void setHint(String hint2) {
 		this.hint = hint2;
 
 	}
@@ -270,10 +250,8 @@ public class CacheDetail implements Serializable
 	 * 
 	 * @return ArrayList of String
 	 */
-	public CB_List<ImageEntry> getSpoilerRessources(Cache cache)
-	{
-		if (spoilerRessources == null)
-		{
+	public CB_List<ImageEntry> getSpoilerRessources(Cache cache) {
+		if (spoilerRessources == null) {
 			ReloadSpoilerRessources(cache);
 		}
 
@@ -286,8 +264,7 @@ public class CacheDetail implements Serializable
 	 * @param value
 	 *            ArrayList of String
 	 */
-	public void setSpoilerRessources(CB_List<ImageEntry> value)
-	{
+	public void setSpoilerRessources(CB_List<ImageEntry> value) {
 		spoilerRessources = value;
 	}
 
@@ -296,21 +273,17 @@ public class CacheDetail implements Serializable
 	 * 
 	 * @return Boolean
 	 */
-	public boolean SpoilerExists(Cache cache)
-	{
-		try
-		{
-			if (spoilerRessources == null) ReloadSpoilerRessources(cache);
+	public boolean SpoilerExists(Cache cache) {
+		try {
+			if (spoilerRessources == null)
+				ReloadSpoilerRessources(cache);
 			return spoilerRessources.size() > 0;
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			return false;
 		}
 	}
 
-	public void SpoilerForceReEvaluate(Cache cache)
-	{
+	public void SpoilerForceReEvaluate(Cache cache) {
 		spoilerRessources = null;
 	}
 
@@ -324,102 +297,81 @@ public class CacheDetail implements Serializable
 	 * @param UserImageFolder
 	 *            Config.settings.UserImageFolder.getValue()
 	 */
-	public void ReloadSpoilerRessources(Cache cache)
-	{
+	public void ReloadSpoilerRessources(Cache cache) {
 
 		String gcCode = cache.getGcCode();
-		if (gcCode.length() < 4) return;
+		if (gcCode.length() < 4)
+			return;
 
 		spoilerRessources = new CB_List<ImageEntry>();
 
-		synchronized (spoilerRessources)
-		{
+		synchronized (spoilerRessources) {
 
 			String directory = "";
 
 			// from own Repository
 			String path = CB_Core_Settings.SpoilerFolderLocal.getValue();
-			try
-			{
-				if (path != null && path.length() > 0)
-				{
+			try {
+				if (path != null && path.length() > 0) {
 					directory = path + "/" + gcCode.substring(0, 4);
 					reloadSpoilerResourcesFromPath(directory, spoilerRessources, cache);
 				}
-			}
-			catch (Exception e)
-			{
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
 			// from Global Repository
-			try
-			{
+			try {
 				path = CB_Core_Settings.DescriptionImageFolder.getValue();
 				directory = path + "/" + gcCode.substring(0, 4);
 				reloadSpoilerResourcesFromPath(directory, spoilerRessources, cache);
-			}
-			catch (Exception e)
-			{
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
 			// Spoilers are always loaden from global Repository too
 			// from globalUser changed Repository
-			try
-			{
+			try {
 				path = CB_Core_Settings.SpoilerFolder.getValue();
 				directory = path + "/" + gcCode.substring(0, 4);
 				reloadSpoilerResourcesFromPath(directory, spoilerRessources, cache);
-			}
-			catch (Exception e)
-			{
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
 			// Add own taken photo
 			directory = CB_Core_Settings.UserImageFolder.getValue();
-			if (directory != null)
-			{
-				try
-				{
+			if (directory != null) {
+				try {
 					reloadSpoilerResourcesFromPath(directory, spoilerRessources, cache);
-				}
-				catch (Exception e)
-				{
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		}
 	}
 
-	private void reloadSpoilerResourcesFromPath(String directory, CB_List<ImageEntry> spoilerRessources2, final Cache cache)
-	{
-		if (!FileIO.DirectoryExists(directory)) return;
+	private void reloadSpoilerResourcesFromPath(String directory, CB_List<ImageEntry> spoilerRessources2, final Cache cache) {
+		if (!FileIO.DirectoryExists(directory))
+			return;
 		File dir = new File(directory);
-		FilenameFilter filter = new FilenameFilter()
-		{
+		FilenameFilter filter = new FilenameFilter() {
 			@Override
-			public boolean accept(File dir, String filename)
-			{
+			public boolean accept(File dir, String filename) {
 				filename = filename.toLowerCase(Locale.getDefault());
-				if (filename.indexOf(cache.getGcCode().toLowerCase(Locale.getDefault())) >= 0)
-				{
-					if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".bmp") || filename.endsWith(".png") || filename.endsWith(".gif")) return true;
+				if (filename.indexOf(cache.getGcCode().toLowerCase(Locale.getDefault())) >= 0) {
+					if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".bmp") || filename.endsWith(".png") || filename.endsWith(".gif"))
+						return true;
 				}
 				return false;
 			}
 		};
 		String[] files = dir.list(filter);
-		if (!(files == null))
-		{
-			if (files.length > 0)
-			{
-				for (String file : files)
-				{
+		if (!(files == null)) {
+			if (files.length > 0) {
+				for (String file : files) {
 					String ext = FileIO.GetFileExtension(file);
-					if (ext.equalsIgnoreCase("jpg") || ext.equalsIgnoreCase("jpeg") || ext.equalsIgnoreCase("bmp") || ext.equalsIgnoreCase("png") || ext.equalsIgnoreCase("gif"))
-					{
+					if (ext.equalsIgnoreCase("jpg") || ext.equalsIgnoreCase("jpeg") || ext.equalsIgnoreCase("bmp") || ext.equalsIgnoreCase("png") || ext.equalsIgnoreCase("gif")) {
 						ImageEntry imageEntry = new ImageEntry();
 						imageEntry.LocalPath = directory + "/" + file;
 						imageEntry.Name = file;
@@ -430,23 +382,19 @@ public class CacheDetail implements Serializable
 		}
 	}
 
-	public void setLongDescription(String value)
-	{
+	public void setLongDescription(String value) {
 		longDescription = value;
 	}
 
-	public String getLongDescription()
-	{
+	public String getLongDescription() {
 		return longDescription;
 	}
 
-	public void setShortDescription(String value)
-	{
+	public void setShortDescription(String value) {
 		shortDescription = value;
 	}
 
-	public String getShortDescription()
-	{
+	public String getShortDescription() {
 		return shortDescription;
 	}
 

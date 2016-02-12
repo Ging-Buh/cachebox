@@ -1,9 +1,7 @@
 package CB_Locator.Events;
 
-public interface PositionChangedEvent
-{
-	public enum Priority
-	{
+public interface PositionChangedEvent {
+	public enum Priority {
 		Low, Normal, High
 	}
 

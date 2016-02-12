@@ -55,7 +55,7 @@ import java.io.*;
 class AttributesOutputSegment implements OutputSegment {
 	private final int begin;
 	private final int end;
-	private final Map<String,String> map;
+	private final Map<String, String> map;
 
 	/**
 	 * Constructs a new <code>AttributesOutputSegment</code> with the same span and initial name/value entries as the specified source {@link Attributes}.
@@ -81,7 +81,7 @@ class AttributesOutputSegment implements OutputSegment {
 	 * @see #AttributesOutputSegment(Attributes,Map)
 	 */
 	public AttributesOutputSegment(final Attributes attributes, final boolean convertNamesToLowerCase) {
-		this(attributes,attributes.getMap(convertNamesToLowerCase));
+		this(attributes, attributes.getMap(convertNamesToLowerCase));
 	}
 
 	/**
@@ -97,11 +97,12 @@ class AttributesOutputSegment implements OutputSegment {
 	 * @param map  the <code>Map</code> containing the name/value entries.
 	 * @see #AttributesOutputSegment(Attributes, boolean convertNamesToLowerCase)
 	 */
-	public AttributesOutputSegment(final Attributes attributes, final Map<String,String> map) {
-		if (map==null || attributes==null) throw new IllegalArgumentException("both arguments must be non-null");
-		begin=attributes.getBegin();
-		end=attributes.getEnd();
-		this.map=map;
+	public AttributesOutputSegment(final Attributes attributes, final Map<String, String> map) {
+		if (map == null || attributes == null)
+			throw new IllegalArgumentException("both arguments must be non-null");
+		begin = attributes.getBegin();
+		end = attributes.getEnd();
+		this.map = map;
 	}
 
 	public int getBegin() {
@@ -116,7 +117,7 @@ class AttributesOutputSegment implements OutputSegment {
 	 * Returns the <code>Map</code> containing the name/value entries to be output.
 	 * @return the <code>Map</code> containing the name/value entries to be output.
 	 */
-	public Map<String,String> getMap() {
+	public Map<String, String> getMap() {
 		return map;
 	}
 
@@ -130,7 +131,7 @@ class AttributesOutputSegment implements OutputSegment {
 	 * @see Attributes#generateHTML(Map attributesMap)
 	 */
 	public void writeTo(final Writer writer) throws IOException {
-		Attributes.appendHTML(writer,map);
+		Attributes.appendHTML(writer, map);
 	}
 
 	/**
@@ -144,11 +145,11 @@ class AttributesOutputSegment implements OutputSegment {
 	 * @see Attributes#generateHTML(Map attributesMap)
 	 */
 	public void appendTo(final Appendable appendable) throws IOException {
-		Attributes.appendHTML(appendable,map);
+		Attributes.appendHTML(appendable, map);
 	}
 
 	public long getEstimatedMaximumOutputLength() {
-		return (end-begin)*2;
+		return (end - begin) * 2;
 	}
 
 	public String toString() {
@@ -156,11 +157,13 @@ class AttributesOutputSegment implements OutputSegment {
 	}
 
 	public String getDebugInfo() {
-		StringBuilder sb=new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		sb.append("(p").append(begin).append("-p").append(end).append("):");
 		try {
 			appendTo(sb);
-		} catch (IOException ex) {throw new RuntimeException(ex);} // never happens
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		} // never happens
 		return sb.toString();
 	}
 }

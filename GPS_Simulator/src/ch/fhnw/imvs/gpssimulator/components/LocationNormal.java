@@ -33,8 +33,7 @@ import ch.fhnw.imvs.gpssimulator.data.GPSData.Orientation;
 import ch.fhnw.imvs.gpssimulator.data.GPSDataListener;
 
 @SuppressWarnings("serial")
-public class LocationNormal extends JPanel implements GPSDataListener
-{
+public class LocationNormal extends JPanel implements GPSDataListener {
 
 	static Logger log4j = Logger.getLogger("root");
 
@@ -49,8 +48,7 @@ public class LocationNormal extends JPanel implements GPSDataListener
 	private final JComboBox<Orientation> ew = new JComboBox<Orientation>();
 	private final JComboBox<Orientation> ns = new JComboBox<Orientation>();
 
-	public LocationNormal()
-	{
+	public LocationNormal() {
 		GPSData.addChangeListener(this);
 
 		JPanel labels = new JPanel(new GridLayout(4, 1));
@@ -107,13 +105,10 @@ public class LocationNormal extends JPanel implements GPSDataListener
 			p4.add(spacer);
 		}
 
-		ChangeListener latitudeChangeListener = new ChangeListener()
-		{
+		ChangeListener latitudeChangeListener = new ChangeListener() {
 			@Override
-			public void stateChanged(ChangeEvent e)
-			{
-				if (valueChangedNotification > 0)
-				{
+			public void stateChanged(ChangeEvent e) {
+				if (valueChangedNotification > 0) {
 					double latitude = GPSData.getLatitude();
 					assert latitude >= 0;
 					int lat = (int) Math.round(latitude * 3600);
@@ -122,82 +117,50 @@ public class LocationNormal extends JPanel implements GPSDataListener
 					latitudeMinute.setValue(lat % 60);
 					lat = lat / 60;
 					latitudeDegree.setValue(lat);
-				}
-				else
-				{
+				} else {
 					Integer degree = (Integer) latitudeDegree.getValue();
 					Integer minute = (Integer) latitudeMinute.getValue();
 					Integer second = (Integer) latitudeSecond.getValue();
 
-					if (degree == 90)
-					{
-						if (minute == -1 && second == 0)
-						{
+					if (degree == 90) {
+						if (minute == -1 && second == 0) {
 							latitudeSecond.setValue(59);
-						}
-						else if (minute == 0 && second == -1)
-						{
+						} else if (minute == 0 && second == -1) {
 							latitudeMinute.setValue(59);
-						}
-						else if (minute == -1 && second == 59)
-						{
+						} else if (minute == -1 && second == 59) {
 							latitudeMinute.setValue(59);
-						}
-						else if (minute == 59 && second == -1)
-						{
+						} else if (minute == 59 && second == -1) {
 							latitudeSecond.setValue(59);
-						}
-						else if (minute == 59 && second == 59)
-						{
+						} else if (minute == 59 && second == 59) {
 							latitudeDegree.setValue(89);
-						}
-						else if (minute == 0 && second == 0)
-						{
+						} else if (minute == 0 && second == 0) {
 							Double tmp = allInOne(degree, minute, second);
 							GPSData.setLatitude(tmp);
-						}
-						else
-						{
+						} else {
 							latitudeSecond.setValue(0);
 							latitudeMinute.setValue(0);
 						}
-					}
-					else if (second == 60)
-					{
+					} else if (second == 60) {
 						latitudeSecond.setValue(0);
 						latitudeMinute.setValue((Integer) latitudeMinute.getValue() + 1);
-					}
-					else if (second == -1)
-					{
-						if (minute == 0)
-						{
+					} else if (second == -1) {
+						if (minute == 0) {
 							latitudeSecond.setValue(0);
-						}
-						else
-						{
+						} else {
 							latitudeSecond.setValue(59);
 							latitudeMinute.setValue((Integer) latitudeMinute.getValue() - 1);
 						}
-					}
-					else if (minute == 60)
-					{
+					} else if (minute == 60) {
 						latitudeMinute.setValue(0);
 						latitudeDegree.setValue((Integer) latitudeDegree.getValue() + 1);
-					}
-					else if (minute == -1)
-					{
-						if (degree == 0)
-						{
+					} else if (minute == -1) {
+						if (degree == 0) {
 							latitudeMinute.setValue(0);
-						}
-						else
-						{
+						} else {
 							latitudeMinute.setValue(59);
 							latitudeDegree.setValue((Integer) latitudeDegree.getValue() - 1);
 						}
-					}
-					else
-					{
+					} else {
 						GPSData.setLatitude(allInOne(degree, minute, second));
 					}
 					// log4j.debug("Latitude: " + GPSData.getLatitude());
@@ -217,22 +180,17 @@ public class LocationNormal extends JPanel implements GPSDataListener
 
 		ns.addItem(GPSData.Orientation.NORTH);
 		ns.addItem(GPSData.Orientation.SOUTH);
-		ns.addActionListener(new ActionListener()
-		{
+		ns.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
 				GPSData.setNS((GPSData.Orientation) ns.getSelectedItem());
 			}
 		});
 
-		ChangeListener longitudeChangeListener = new ChangeListener()
-		{
+		ChangeListener longitudeChangeListener = new ChangeListener() {
 			@Override
-			public void stateChanged(ChangeEvent e)
-			{
-				if (valueChangedNotification > 0)
-				{
+			public void stateChanged(ChangeEvent e) {
+				if (valueChangedNotification > 0) {
 					double longitude = GPSData.getLongitude();
 					assert longitude >= 0;
 					int lng = (int) Math.round(longitude * 3600);
@@ -241,82 +199,50 @@ public class LocationNormal extends JPanel implements GPSDataListener
 					longitudeMinute.setValue(lng % 60);
 					lng = lng / 60;
 					longitudeDegree.setValue(lng);
-				}
-				else
-				{
+				} else {
 					Integer degree = (Integer) longitudeDegree.getValue();
 					Integer minute = (Integer) longitudeMinute.getValue();
 					Integer second = (Integer) longitudeSecond.getValue();
 
-					if (degree == 180)
-					{
-						if (minute == -1 && second == 0)
-						{
+					if (degree == 180) {
+						if (minute == -1 && second == 0) {
 							longitudeSecond.setValue(59);
-						}
-						else if (minute == 0 && second == -1)
-						{
+						} else if (minute == 0 && second == -1) {
 							longitudeMinute.setValue(59);
-						}
-						else if (minute == -1 && second == 59)
-						{
+						} else if (minute == -1 && second == 59) {
 							longitudeMinute.setValue(59);
-						}
-						else if (minute == 59 && second == -1)
-						{
+						} else if (minute == 59 && second == -1) {
 							longitudeSecond.setValue(59);
-						}
-						else if (minute == 59 && second == 59)
-						{
+						} else if (minute == 59 && second == 59) {
 							longitudeDegree.setValue(179);
-						}
-						else if (minute == 0 && second == 0)
-						{
+						} else if (minute == 0 && second == 0) {
 							Double tmp = allInOne(degree, minute, second);
 							GPSData.setLongitude(tmp);
-						}
-						else
-						{
+						} else {
 							longitudeSecond.setValue(0);
 							longitudeMinute.setValue(0);
 						}
-					}
-					else if (second == 60)
-					{
+					} else if (second == 60) {
 						longitudeSecond.setValue(0);
 						longitudeMinute.setValue((Integer) longitudeMinute.getValue() + 1);
-					}
-					else if (second == -1)
-					{
-						if (minute == 0)
-						{
+					} else if (second == -1) {
+						if (minute == 0) {
 							longitudeSecond.setValue(0);
-						}
-						else
-						{
+						} else {
 							longitudeSecond.setValue(59);
 							longitudeMinute.setValue((Integer) longitudeMinute.getValue() - 1);
 						}
-					}
-					else if (minute == 60)
-					{
+					} else if (minute == 60) {
 						longitudeMinute.setValue(0);
 						longitudeDegree.setValue((Integer) longitudeDegree.getValue() + 1);
-					}
-					else if (minute == -1)
-					{
-						if (degree == 0)
-						{
+					} else if (minute == -1) {
+						if (degree == 0) {
 							longitudeMinute.setValue(0);
-						}
-						else
-						{
+						} else {
 							longitudeMinute.setValue(59);
 							longitudeDegree.setValue((Integer) longitudeDegree.getValue() - 1);
 						}
-					}
-					else
-					{
+					} else {
 						GPSData.setLongitude(allInOne(degree, minute, second));
 					}
 					// log4j.debug("Longitude: " + GPSData.getLongitude());
@@ -336,31 +262,25 @@ public class LocationNormal extends JPanel implements GPSDataListener
 
 		ew.addItem(GPSData.Orientation.EAST);
 		ew.addItem(GPSData.Orientation.WEST);
-		ew.addActionListener(new ActionListener()
-		{
+		ew.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
 				GPSData.setEW((GPSData.Orientation) ew.getSelectedItem());
 			}
 		});
 
 		speed.setModel(new SpinnerNumberModel(GPSData.getSpeed(), 0, 1000, 1));
-		speed.addChangeListener(new ChangeListener()
-		{
+		speed.addChangeListener(new ChangeListener() {
 			@Override
-			public void stateChanged(ChangeEvent e)
-			{
+			public void stateChanged(ChangeEvent e) {
 				GPSData.setSpeed((Double) speed.getValue());
 			}
 		});
 
 		altitude.setModel(new SpinnerNumberModel(GPSData.getAltitude(), -100, 10000, 1));
-		altitude.addChangeListener(new ChangeListener()
-		{
+		altitude.addChangeListener(new ChangeListener() {
 			@Override
-			public void stateChanged(ChangeEvent e)
-			{
+			public void stateChanged(ChangeEvent e) {
 				GPSData.setAltitude((Double) altitude.getValue());
 			}
 		});
@@ -400,8 +320,7 @@ public class LocationNormal extends JPanel implements GPSDataListener
 	private int valueChangedNotification = 0;
 
 	@Override
-	public void valueChanged()
-	{
+	public void valueChanged() {
 		valueChangedNotification++;
 		latitudeDegree.setValue(degree(GPSData.getLatitude()));
 		longitudeDegree.setValue(degree(GPSData.getLongitude()));
@@ -420,23 +339,19 @@ public class LocationNormal extends JPanel implements GPSDataListener
 		valueChangedNotification--;
 	}
 
-	private double allInOne(int degree, int minute, int second)
-	{
+	private double allInOne(int degree, int minute, int second) {
 		return degree + ((double) minute / 60) + (double) second / 60 / 60;
 	}
 
-	private int degree(double value)
-	{
+	private int degree(double value) {
 		return (int) (Math.round(value * 3600) / 3600);
 	}
 
-	private int minute(double value)
-	{
+	private int minute(double value) {
 		return (int) (Math.round(value * 3600) / 60 % 60);
 	}
 
-	private int second(double value)
-	{
+	private int second(double value) {
 		return (int) (Math.round(value * 3600) % 60);
 	}
 

@@ -16,22 +16,19 @@
 
 package CB_Locator;
 
-
 /**
- * Structur für die Signal Stärken der Satteliten
+ * Structur fï¿½r die Signal Stï¿½rken der Satteliten
  * 
  * @author Longri
  */
-public class GpsStrength implements Comparable<GpsStrength>
-{
+public class GpsStrength implements Comparable<GpsStrength> {
 	/**
 	 * Constructor
 	 * 
 	 * @param fixed
 	 * @param value
 	 */
-	public GpsStrength(boolean fixed, float value)
-	{
+	public GpsStrength(boolean fixed, float value) {
 		mFixed = fixed;
 		mSnr = value;
 	}
@@ -40,45 +37,35 @@ public class GpsStrength implements Comparable<GpsStrength>
 	private float mSnr = 0.0f;
 
 	/**
-	 * Gibt zurück ob der Sattelit ein Fix hat
+	 * Gibt zurï¿½ck ob der Sattelit ein Fix hat
 	 * 
 	 * @return boolean
 	 */
-	public boolean getFixed()
-	{
+	public boolean getFixed() {
 		return mFixed;
 	}
 
 	/**
-	 * Gibt die Signal Stärke des Sateliten zurück
+	 * Gibt die Signal Stï¿½rke des Sateliten zurï¿½ck
 	 * 
 	 * @return float
 	 */
-	public float getStrength()
-	{
+	public float getStrength() {
 		return mSnr;
 	}
 
 	@Override
-	public int compareTo(GpsStrength c2)
-	{
+	public int compareTo(GpsStrength c2) {
 		int ret = 0;
 
-		if (this.mFixed == c2.mFixed)
-		{
-			if (this.mSnr > c2.mSnr)
-			{
+		if (this.mFixed == c2.mFixed) {
+			if (this.mSnr > c2.mSnr) {
 				ret = -1;
-			}
-			else if (this.mSnr < c2.mSnr)
-			{
+			} else if (this.mSnr < c2.mSnr) {
 				ret = 1;
 			}
-		}
-		else
-		{
-			if (this.mFixed)
-			{
+		} else {
+			if (this.mFixed) {
 				ret = -1;
 			}
 		}

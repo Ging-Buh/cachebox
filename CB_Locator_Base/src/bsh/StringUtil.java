@@ -37,11 +37,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public class StringUtil
-{
+public class StringUtil {
 
-	public static String[] split(String s, String delim)
-	{
+	public static String[] split(String s, String delim) {
 		List<String> v = new ArrayList<String>();
 		StringTokenizer st = new StringTokenizer(s, delim);
 		while (st.hasMoreTokens())
@@ -49,8 +47,7 @@ public class StringUtil
 		return v.toArray(new String[0]);
 	}
 
-	public static String maxCommonPrefix(String one, String two)
-	{
+	public static String maxCommonPrefix(String one, String two) {
 		int i = 0;
 		while (one.regionMatches(0, two, 0, i))
 			i++;
@@ -58,12 +55,11 @@ public class StringUtil
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static String methodString(String name, Class[] types)
-	{
+	public static String methodString(String name, Class[] types) {
 		StringBuilder sb = new StringBuilder(name + "(");
-		if (types.length > 0) sb.append(" ");
-		for (int i = 0; i < types.length; i++)
-		{
+		if (types.length > 0)
+			sb.append(" ");
+		for (int i = 0; i < types.length; i++) {
 			Class c = types[i];
 			sb.append(((c == null) ? "null" : c.getName()) + (i < (types.length - 1) ? ", " : " "));
 		}
@@ -83,8 +79,7 @@ public class StringUtil
 	 * Hack - The real method is in Reflect.java which is not public.
 	 */
 	@SuppressWarnings("rawtypes")
-	public static String normalizeClassName(Class type)
-	{
+	public static String normalizeClassName(Class type) {
 		return Reflect.normalizeClassName(type);
 	}
 }

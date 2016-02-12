@@ -35,8 +35,7 @@ import com.badlogic.gdx.graphics.Color;
 /**
  * @author Longri
  */
-public class HtmlSegment
-{
+public class HtmlSegment {
 	public static final String br = System.getProperty("line.separator");
 	private static final float DEFAULT_FONT_SIZE = 14;
 	public static final float DEFAULT_FONT_SIZE_FACTOR = 1.3f;
@@ -56,56 +55,50 @@ public class HtmlSegment
 	GL_FontStyle fontStyle = GL_FontStyle.NORMAL;
 	GL_FontFamily fontFamily = GL_FontFamily.DEFAULT;
 
-	public HtmlSegment()
-	{
+	public HtmlSegment() {
 	}
 
-	public HtmlSegment(Stack<Tag> atributeStack, String string)
-	{
+	public HtmlSegment(Stack<Tag> atributeStack, String string) {
 		this.formatetText = string;
 
-		for (int i = atributeStack.size() - 1; i >= 0; i--)
-		{
+		for (int i = atributeStack.size() - 1; i >= 0; i--) {
 			tags.add((StartTag) atributeStack.get(i));
 		}
 		resolveAtributes();
 	}
 
-	public HtmlSegment setIsImage(boolean value)
-	{
+	public HtmlSegment setIsImage(boolean value) {
 		isImage = value;
 		return this;
 	}
 
-	public void addStartTags(List<StartTag> allStartTags)
-	{
+	public void addStartTags(List<StartTag> allStartTags) {
 		attDirty = true;
 		int idx = 0;
-		for (StartTag tag : allStartTags)
-		{
-			if (tag.getName().equals("br")) continue;
+		for (StartTag tag : allStartTags) {
+			if (tag.getName().equals("br"))
+				continue;
 			tags.add(idx++, tag);
 		}
 	}
 
-	public void resolveAtributes()
-	{
+	public void resolveAtributes() {
 		// resolve HAlignment
-		for (Tag tag : tags)
-		{
+		for (Tag tag : tags) {
 			List<Element> elements = tag.getAllElements();
-			if (elements.isEmpty()) elements.add(tag.getElement());
-			for (Element ele : elements)
-			{
+			if (elements.isEmpty())
+				elements.add(tag.getElement());
+			for (Element ele : elements) {
 				Attributes attributes = ele.getAttributes();
-				for (Attribute attr : attributes)
-				{
-					if (attr.getKey().equals("align"))
-					{
+				for (Attribute attr : attributes) {
+					if (attr.getKey().equals("align")) {
 						String val = attr.getValue();
-						if (val.contains("center")) hAlignment = HAlignment.CENTER;
-						else if (val.contains("left")) hAlignment = HAlignment.LEFT;
-						else if (val.contains("right")) hAlignment = HAlignment.RIGHT;
+						if (val.contains("center"))
+							hAlignment = HAlignment.CENTER;
+						else if (val.contains("left"))
+							hAlignment = HAlignment.LEFT;
+						else if (val.contains("right"))
+							hAlignment = HAlignment.RIGHT;
 						else
 							hAlignment = HAlignment.LEFT;
 					}
@@ -115,74 +108,64 @@ public class HtmlSegment
 
 		// resolve Font Color
 		String color = null;
-		for (Tag tag : tags)
-		{
-			if (!tag.getName().equals("font")) continue;
+		for (Tag tag : tags) {
+			if (!tag.getName().equals("font"))
+				continue;
 			List<Element> elements = tag.getAllElements();
-			if (elements.isEmpty()) elements.add(tag.getElement());
-			for (Element ele : elements)
-			{
+			if (elements.isEmpty())
+				elements.add(tag.getElement());
+			for (Element ele : elements) {
 				Attributes attributes = ele.getAttributes();
-				for (Attribute attr : attributes)
-				{
-					if (attr.getKey().equals("color"))
-					{
+				for (Attribute attr : attributes) {
+					if (attr.getKey().equals("color")) {
 						color = attr.getValue();
 					}
 				}
 			}
 		}
-		if (color != null)
-		{
+		if (color != null) {
 			String hex = (color.startsWith("#")) ? color.replace("#", "") : color;
 			this.fontColor = new HSV_Color(hex);
 		}
 
 		// resolve Font Size
 		String size = null;
-		for (Tag tag : tags)
-		{
-			if (!tag.getName().equals("font")) continue;
+		for (Tag tag : tags) {
+			if (!tag.getName().equals("font"))
+				continue;
 			List<Element> elements = tag.getAllElements();
 
-			if (elements.isEmpty()) elements.add(tag.getElement());
+			if (elements.isEmpty())
+				elements.add(tag.getElement());
 
-			for (Element ele : elements)
-			{
+			for (Element ele : elements) {
 				// tag.getElement().
 				Attributes attributes = ele.getAttributes();
-				for (Attribute attr : attributes)
-				{
-					if (attr.getKey().equals("size"))
-					{
+				for (Attribute attr : attributes) {
+					if (attr.getKey().equals("size")) {
 						size = attr.getValue();
 					}
 				}
 			}
 		}
-		if (size != null)
-		{
+		if (size != null) {
 			int intSize = Integer.parseInt(size);
 			this.fontSize = getFontPx(intSize) * UiSizes.that.getScale() * DEFAULT_FONT_SIZE_FACTOR;
-		}
-		else
-		{
+		} else {
 			this.fontSize = DEFAULT_FONT_SIZE * UiSizes.that.getScale() * DEFAULT_FONT_SIZE_FACTOR;
 		}
 
 		// resolve Font Style
-		for (Tag tag : tags)
-		{
-			if (!tag.getName().equals("strong")) continue;
+		for (Tag tag : tags) {
+			if (!tag.getName().equals("strong"))
+				continue;
 			this.fontStyle = GL_FontStyle.BOLD;
 		}
 
 	}
 
-	private static float getFontPx(int value)
-	{
-		switch (value)
-		{
+	private static float getFontPx(int value) {
+		switch (value) {
 		case 1:
 			return 7;
 		case 2:
@@ -203,15 +186,12 @@ public class HtmlSegment
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		if (tags != null && !tags.isEmpty())
-		{
+		if (tags != null && !tags.isEmpty()) {
 			sb.append("[Attributes: ");
-			for (Tag tag : tags)
-			{
+			for (Tag tag : tags) {
 				sb.append(tag);
 			}
 			sb.append("]" + br);

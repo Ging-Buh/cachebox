@@ -24,7 +24,6 @@ import java.io.ObjectInputStream;
 
 import org.apache.xmlrpc.XmlRpcException;
 
-
 /** A parser for serializable objects.
  */
 public class SerializableParser extends ByteArrayParser {

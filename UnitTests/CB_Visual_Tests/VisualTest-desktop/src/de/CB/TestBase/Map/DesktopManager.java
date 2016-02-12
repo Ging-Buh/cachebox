@@ -28,52 +28,42 @@ import CB_Utils.Util.FileIO;
 
 import com.badlogic.gdx.graphics.Pixmap.Format;
 
-public class DesktopManager extends ManagerBase
-{
+public class DesktopManager extends ManagerBase {
 
-	public DesktopManager(DisplayModel displaymodel)
-	{
+	public DesktopManager(DisplayModel displaymodel) {
 		super(displaymodel);
 	}
 
 	@Override
-	public ext_GraphicFactory getGraphicFactory(float Scalefactor)
-	{
+	public ext_GraphicFactory getGraphicFactory(float Scalefactor) {
 		return ext_AwtGraphicFactory.getInstance(Scalefactor);
 	}
 
 	@Override
-	public TileGL LoadLocalPixmap(Layer layer, Descriptor desc, int ThreadIndex)
-	{
+	public TileGL LoadLocalPixmap(Layer layer, Descriptor desc, int ThreadIndex) {
 
-		if (layer.isMapsForge)
-		{
+		if (layer.isMapsForge) {
 			return getMapsforgePixMap(layer, desc, ThreadIndex);
 		}
 
-		try
-		{
+		try {
 			// Schauen, ob Tile im Cache liegt
 			String cachedTileFilename = layer.GetLocalFilename(desc);
 
 			long cachedTileAge = 0;
 
-			if (FileIO.FileExists(cachedTileFilename))
-			{
+			if (FileIO.FileExists(cachedTileFilename)) {
 				File info = new File(cachedTileFilename);
 				cachedTileAge = info.lastModified();
 			}
 			Format format = layer.isOverlay() ? Format.RGBA4444 : Format.RGB565;
 			// Kachel im Pack suchen
-			for (int i = 0; i < mapPacks.size(); i++)
-			{
+			for (int i = 0; i < mapPacks.size(); i++) {
 				PackBase mapPack = mapPacks.get(i);
-				if ((mapPack.Layer.Name.equalsIgnoreCase(layer.Name)) && (mapPack.MaxAge >= cachedTileAge))
-				{
+				if ((mapPack.Layer.Name.equalsIgnoreCase(layer.Name)) && (mapPack.MaxAge >= cachedTileAge)) {
 					BoundingBox bbox = mapPacks.get(i).Contains(desc);
 
-					if (bbox != null)
-					{
+					if (bbox != null) {
 						byte[] b = mapPacks.get(i).LoadFromBoundingBoxByteArray(bbox, desc);
 						TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present, format);
 						return bmpTile;
@@ -82,8 +72,7 @@ public class DesktopManager extends ManagerBase
 			}
 			// Kein Map Pack am Start!
 			// Falls Kachel im Cache liegt, diese von dort laden!
-			if (cachedTileAge != 0)
-			{
+			if (cachedTileAge != 0) {
 				File myImageFile = new File(cachedTileFilename);
 				BufferedImage img = ImageIO.read(myImageFile);
 				ByteArrayOutputStream bas = new ByteArrayOutputStream();
@@ -94,9 +83,7 @@ public class DesktopManager extends ManagerBase
 
 				return bmpTile;
 			}
-		}
-		catch (Exception exc)
-		{
+		} catch (Exception exc) {
 			/*
 			 * #if DEBUG Global.AddLog("Manager.LoadLocalBitmap: " + exc.ToString()); #endif
 			 */
@@ -105,16 +92,12 @@ public class DesktopManager extends ManagerBase
 	}
 
 	@Override
-	protected ImageData getImagePixel(byte[] img)
-	{
+	protected ImageData getImagePixel(byte[] img) {
 		InputStream in = new ByteArrayInputStream(img);
 		BufferedImage bImage;
-		try
-		{
+		try {
 			bImage = ImageIO.read(in);
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			return null;
 		}
 
@@ -136,27 +119,22 @@ public class DesktopManager extends ManagerBase
 	}
 
 	@Override
-	protected byte[] getImageFromData(ImageData imgData)
-	{
+	protected byte[] getImageFromData(ImageData imgData) {
 
 		BufferedImage dstImage = new BufferedImage(imgData.width, imgData.height, BufferedImage.TYPE_INT_RGB);
 
 		dstImage.getRaster().setDataElements(0, 0, imgData.width, imgData.height, imgData.PixelColorArray);
 		ByteArrayOutputStream bas = new ByteArrayOutputStream();
-		try
-		{
+		try {
 			ImageIO.write(dstImage, "png", bas);
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			return null;
 		}
 		return bas.toByteArray();
 	}
 
 	@Override
-	public PackBase CreatePack(String file) throws IOException
-	{
+	public PackBase CreatePack(String file) throws IOException {
 		return new DesktopPack(this, file);
 	}
 

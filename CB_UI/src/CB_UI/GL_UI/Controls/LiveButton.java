@@ -13,16 +13,14 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 
-public class LiveButton extends ImageButton implements QueStateChanged
-{
+public class LiveButton extends ImageButton implements QueStateChanged {
 
 	private static final int Duration = 2000;
 	private static final int Frames = 8;
 	private boolean state = false;
 	private int Animation;
 
-	public LiveButton()
-	{
+	public LiveButton() {
 		super("");
 		this.name = "LiveButton";
 		this.setClickable(true);
@@ -30,41 +28,29 @@ public class LiveButton extends ImageButton implements QueStateChanged
 	}
 
 	@Override
-	public void Initial()
-	{
+	public void Initial() {
 		super.Initial();
 	}
 
-	public void setState(boolean newState)
-	{
+	public void setState(boolean newState) {
 		state = newState;
 		Config.LiveMapEnabeld.setValue(newState);
 		Config.AcceptChanges();
 		switchImage();
 	}
 
-	private void switchImage()
-	{
-		if (state)
-		{
-			if (LiveMapQue.DownloadIsActive.get())
-			{
-				try
-				{
+	private void switchImage() {
+		if (state) {
+			if (LiveMapQue.DownloadIsActive.get()) {
+				try {
 					this.setImage(SpriteCache.LiveBtn.get(1 + Animation));
-				}
-				catch (Exception e)
-				{
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			}
-			else
-			{
+			} else {
 				this.setImage(SpriteCache.LiveBtn.get(0));
 			}
-		}
-		else
-		{
+		} else {
 			this.setImage(SpriteCache.LiveBtn.get(1));
 		}
 		GL.that.renderOnce();
@@ -73,32 +59,27 @@ public class LiveButton extends ImageButton implements QueStateChanged
 	private int lastAnimation = 0;
 
 	@Override
-	public void render(Batch batch)
-	{
-		if (state && GroundspeakAPI.ApiLimit())
-		{
+	public void render(Batch batch) {
+		if (state && GroundspeakAPI.ApiLimit()) {
 			GlobalCore.MsgDownloadLimit();
 			setState(false);
 		}
 		Animation = (1 + ((int) (GL.that.getStateTime() * 1000) % Duration) / (Duration / Frames));
-		if (lastAnimation != Animation)
-		{
+		if (lastAnimation != Animation) {
 			lastAnimation = Animation;
 			switchImage();
 		}
 		super.render(batch);
-		if (LiveMapQue.DownloadIsActive.get()) GL.that.renderOnce(true);
+		if (LiveMapQue.DownloadIsActive.get())
+			GL.that.renderOnce(true);
 	}
 
 	@Override
-	public boolean click(int x, int y, int pointer, int button)
-	{
+	public boolean click(int x, int y, int pointer, int button) {
 
 		setState(!state);
-		if (state)
-		{
-			if (MapView.that != null)
-			{
+		if (state) {
+			if (MapView.that != null) {
 				Coordinate center = MapView.that.center;
 				LiveMapQue.quePosition(center);
 			}
@@ -107,17 +88,12 @@ public class LiveButton extends ImageButton implements QueStateChanged
 	}
 
 	@Override
-	public void stateChanged()
-	{
+	public void stateChanged() {
 		switchImage();
-		if (state)
-		{
-			if (LiveMapQue.DownloadIsActive.get())
-			{
+		if (state) {
+			if (LiveMapQue.DownloadIsActive.get()) {
 				GL.that.addRenderView(this, GL.FRAME_RATE_ACTION);
-			}
-			else
-			{
+			} else {
 				GL.that.removeRenderView(this);
 			}
 		}

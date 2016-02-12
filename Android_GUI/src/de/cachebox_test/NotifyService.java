@@ -10,8 +10,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-public class NotifyService extends Service implements GPS_FallBackEvent
-{
+public class NotifyService extends Service implements GPS_FallBackEvent {
 
 	int mStartMode; // indicates how to behave if the service is killed
 	boolean mAllowRebind; // indicates whether onRebind should be used
@@ -24,37 +23,32 @@ public class NotifyService extends Service implements GPS_FallBackEvent
 	/**
 	 * Usere verschachtelte Klasse
 	 */
-	class LocalBinder extends Binder
-	{
+	class LocalBinder extends Binder {
 
 		/**
 		 * Damit erhalten wir Zugriff auf unseren Service. Gibt unsere Instanz des NotifyService zurück.
 		 */
-		NotifyService getService()
-		{
+		NotifyService getService() {
 			return NotifyService.this;
 		}
 	}
 
 	@Override
-	public void onCreate()
-	{
+	public void onCreate() {
 		// The service is being created
 		super.onCreate();
 		GPS_FallBackEventList.Add(this);
 	}
 
 	@Override
-	public int onStartCommand(Intent intent, int flags, int startId)
-	{
+	public int onStartCommand(Intent intent, int flags, int startId) {
 		// The service is starting, due to a call to startService()
 		return mStartMode;
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public IBinder onBind(Intent intent)
-	{
+	public IBinder onBind(Intent intent) {
 		// A client is binding to the service with bindService()
 
 		Intent mainIntent = new Intent(this, main.class);
@@ -80,17 +74,13 @@ public class NotifyService extends Service implements GPS_FallBackEvent
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean onUnbind(Intent intent)
-	{
+	public boolean onUnbind(Intent intent) {
 		// All clients have unbound with unbindService()
 
-		if (finish)
-		{
+		if (finish) {
 			// CB is closing from User
 			stopForeground(true);
-		}
-		else
-		{
+		} else {
 			// CB is killing
 			Log.d("CACHEBOX", "Service => ACB is killed");
 			Intent mainIntent = new Intent(this, main.class);
@@ -115,20 +105,17 @@ public class NotifyService extends Service implements GPS_FallBackEvent
 	}
 
 	@Override
-	public void onRebind(Intent intent)
-	{
+	public void onRebind(Intent intent) {
 		// A client is binding to the service with bindService(),
 		// after onUnbind() has already been called
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void onDestroy()
-	{
+	public void onDestroy() {
 		// The service is no longer used and is being destroyed
 
-		if (!finish)
-		{
+		if (!finish) {
 			Log.d("CACHEBOX", "Service => ACB is killed");
 			Intent mainIntent = new Intent(this, main.class);
 			mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -145,8 +132,7 @@ public class NotifyService extends Service implements GPS_FallBackEvent
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void FallBackToNetworkProvider()
-	{
+	public void FallBackToNetworkProvider() {
 		Intent mainIntent = new Intent(this, main.class);
 		mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		PendingIntent pendIntent = PendingIntent.getActivity(this, 0, mainIntent, 0);
@@ -166,8 +152,7 @@ public class NotifyService extends Service implements GPS_FallBackEvent
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void Fix()
-	{
+	public void Fix() {
 		Intent mainIntent = new Intent(this, main.class);
 		mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		PendingIntent pendIntent = PendingIntent.getActivity(this, 0, mainIntent, 0);

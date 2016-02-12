@@ -22,50 +22,38 @@ import CB_Utils.Lists.CB_List;
 /**
  * @author Longri
  */
-public class ext_AwtTileBitmap extends ext_AwtBitmap
-{
+public class ext_AwtTileBitmap extends ext_AwtBitmap {
 
 	static CB_List<BufferedImage> ReusebleList = new CB_List<BufferedImage>();
 
-	private static BufferedImage getReusable(int tileSize)
-	{
-		synchronized (ReusebleList)
-		{
-			for (int i = 0, n = ReusebleList.size(); i < n; i++)
-			{
+	private static BufferedImage getReusable(int tileSize) {
+		synchronized (ReusebleList) {
+			for (int i = 0, n = ReusebleList.size(); i < n; i++) {
 				BufferedImage reuse = ReusebleList.get(i);
-				if (reuse != null && reuse.getWidth() == tileSize && reuse.getHeight() == tileSize)
-				{
+				if (reuse != null && reuse.getWidth() == tileSize && reuse.getHeight() == tileSize) {
 					ReusebleList.remove(reuse);
 					return reuse;
 				}
 			}
-		} 
+		}
 		return null;
 	}
 
-	public ext_AwtTileBitmap(int tileSize)
-	{
+	public ext_AwtTileBitmap(int tileSize) {
 		BufferedImage reuse = getReusable(tileSize);
-		if (reuse != null)
-		{
+		if (reuse != null) {
 			this.bufferedImage = reuse;
-		}
-		else
-		{
+		} else {
 			this.bufferedImage = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_INT_ARGB);
 		}
 	}
 
 	@Override
-	public void recycle()
-	{
+	public void recycle() {
 
 		// chk if reuseList full or cann put BufferdImage to ReuseList?
-		synchronized (ReusebleList)
-		{
-			if (ReusebleList.size() < 15)
-			{
+		synchronized (ReusebleList) {
+			if (ReusebleList.size() < 15) {
 				ReusebleList.add(bufferedImage);
 			}
 		}

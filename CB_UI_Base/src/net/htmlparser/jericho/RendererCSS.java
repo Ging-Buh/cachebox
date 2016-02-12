@@ -27,32 +27,33 @@ final class RendererCSS {
 		top, right, bottom, left
 	}
 
-	private static Map<String,Float> UNIT_FACTOR=new HashMap<String,Float>();
+	private static Map<String, Float> UNIT_FACTOR = new HashMap<String, Float>();
+
 	static {
-		UNIT_FACTOR.put("em",1.0F);
-		UNIT_FACTOR.put("ex",1.0F);
-		UNIT_FACTOR.put("px",0.125F);
-		UNIT_FACTOR.put("in",8F);
-		UNIT_FACTOR.put("cm",3F);
-		UNIT_FACTOR.put("mm",0.3F);
-		UNIT_FACTOR.put("pt",0.1F);
-		UNIT_FACTOR.put("pc",1.2F);
+		UNIT_FACTOR.put("em", 1.0F);
+		UNIT_FACTOR.put("ex", 1.0F);
+		UNIT_FACTOR.put("px", 0.125F);
+		UNIT_FACTOR.put("in", 8F);
+		UNIT_FACTOR.put("cm", 3F);
+		UNIT_FACTOR.put("mm", 0.3F);
+		UNIT_FACTOR.put("pt", 0.1F);
+		UNIT_FACTOR.put("pc", 1.2F);
 	}
 
 	public static int getTopMargin(final Element element, int defaultValue) {
-		return getMargin(get(element),Side.top,defaultValue);
+		return getMargin(get(element), Side.top, defaultValue);
 	}
 
 	public static int getBottomMargin(final Element element, int defaultValue) {
-		return getMargin(get(element),Side.bottom,defaultValue);
+		return getMargin(get(element), Side.bottom, defaultValue);
 	}
 
 	public static int getLeftMargin(final Element element, int defaultValue) {
-		return getMargin(get(element),Side.left,defaultValue);
+		return getMargin(get(element), Side.left, defaultValue);
 	}
 
 	public static int getRightMargin(final Element element, int defaultValue) {
-		return getMargin(get(element),Side.right,defaultValue);
+		return getMargin(get(element), Side.right, defaultValue);
 	}
 
 	private static String get(final Element element) {
@@ -60,70 +61,86 @@ final class RendererCSS {
 	}
 
 	private static int getMargin(final String css, final Side side, final int defaultValue) {
-		if (css==null) return defaultValue;
-		String[] styles=css.split(";");
-		for (int i=0; i<styles.length; i++) styles[i]=styles[i].toLowerCase().trim();
-		int margin=getStyleValue(styles,side,"margin");
-		int padding=getStyleValue(styles,side,"padding");
-		if (margin==-1) return padding!=-1 ? padding : defaultValue;
-		return padding!=-1 ? margin+padding : margin;
+		if (css == null)
+			return defaultValue;
+		String[] styles = css.split(";");
+		for (int i = 0; i < styles.length; i++)
+			styles[i] = styles[i].toLowerCase().trim();
+		int margin = getStyleValue(styles, side, "margin");
+		int padding = getStyleValue(styles, side, "padding");
+		if (margin == -1)
+			return padding != -1 ? padding : defaultValue;
+		return padding != -1 ? margin + padding : margin;
 	}
 
 	private static int getStyleValue(final String[] styles, final Side side, final String styleName) {
-		int combinedStyleValue=-1;
-		for (int i=0; i<styles.length; i++) {
-			final String style=styles[i];
-			if (style.length()<=styleName.length()+1 || !style.startsWith(styleName)) continue;
-			int colonPos=style.indexOf(':');
-			if (colonPos==-1) continue;
-			String styleValue=style.substring(colonPos+1).trim();
-			if (styleValue.length()==0) continue;
-			boolean explicitSide=false;
-			int styleNameEnd=styleName.length();
-			if (style.charAt(styleName.length())=='-' && style.startsWith(side.name(),styleName.length()+1)) {
+		int combinedStyleValue = -1;
+		for (int i = 0; i < styles.length; i++) {
+			final String style = styles[i];
+			if (style.length() <= styleName.length() + 1 || !style.startsWith(styleName))
+				continue;
+			int colonPos = style.indexOf(':');
+			if (colonPos == -1)
+				continue;
+			String styleValue = style.substring(colonPos + 1).trim();
+			if (styleValue.length() == 0)
+				continue;
+			boolean explicitSide = false;
+			int styleNameEnd = styleName.length();
+			if (style.charAt(styleName.length()) == '-' && style.startsWith(side.name(), styleName.length() + 1)) {
 				// eg margin-top: 1em
-				explicitSide=true;
-				styleNameEnd=styleName.length()+1+side.name().length();
-				if (style.length()<=styleNameEnd+1) continue;
+				explicitSide = true;
+				styleNameEnd = styleName.length() + 1 + side.name().length();
+				if (style.length() <= styleNameEnd + 1)
+					continue;
 			}
-			if (styleNameEnd!=colonPos && !Segment.isWhiteSpace(style.charAt(styleNameEnd))) continue;
+			if (styleNameEnd != colonPos && !Segment.isWhiteSpace(style.charAt(styleNameEnd)))
+				continue;
 			if (!explicitSide) {
 				// eg margin: 1em 0 2px 0
-				final String[] styleValueItems=styleValue.split("\\s+");
-				int itemIndex=side.ordinal();
-				final int itemCount=styleValueItems.length;
-				if (itemCount==0) continue;
-				if (itemCount==1) {
+				final String[] styleValueItems = styleValue.split("\\s+");
+				int itemIndex = side.ordinal();
+				final int itemCount = styleValueItems.length;
+				if (itemCount == 0)
+					continue;
+				if (itemCount == 1) {
 					// top/right/bottom/left all in one item
-					itemIndex=0;
-				} else if (itemCount==2) {
+					itemIndex = 0;
+				} else if (itemCount == 2) {
 					// top/bottom, left/right
-					itemIndex=side.ordinal()%2;
-				} else if (itemCount==3) {
+					itemIndex = side.ordinal() % 2;
+				} else if (itemCount == 3) {
 					// top, left/right, bottom
-					if (side==Side.left) itemIndex=1;
+					if (side == Side.left)
+						itemIndex = 1;
 				}
-				styleValue=styleValueItems[itemIndex].trim();
+				styleValue = styleValueItems[itemIndex].trim();
 			}
-			int value=0;
-			if (styleValue.length()==0) continue;
-			if (styleValue.charAt(styleValue.length()-1)=='%') continue;
-			if (styleValue.equals("auto") || styleValue.equals("inherit")) continue;
-			if (styleValue.length()<3) {
-				if (!styleValue.equals("0")) continue;
+			int value = 0;
+			if (styleValue.length() == 0)
+				continue;
+			if (styleValue.charAt(styleValue.length() - 1) == '%')
+				continue;
+			if (styleValue.equals("auto") || styleValue.equals("inherit"))
+				continue;
+			if (styleValue.length() < 3) {
+				if (!styleValue.equals("0"))
+					continue;
 			} else {
-				Float unitFactor=UNIT_FACTOR.get(styleValue.substring(styleValue.length()-2));
-				if (unitFactor==null) continue;
+				Float unitFactor = UNIT_FACTOR.get(styleValue.substring(styleValue.length() - 2));
+				if (unitFactor == null)
+					continue;
 				float rawValue;
 				try {
-					rawValue=Float.parseFloat(styleValue.substring(0,styleValue.length()-2));
+					rawValue = Float.parseFloat(styleValue.substring(0, styleValue.length() - 2));
 				} catch (NumberFormatException ex) {
 					continue;
 				}
-				value=Math.round(rawValue*unitFactor);
+				value = Math.round(rawValue * unitFactor);
 			}
-			if (explicitSide) return value;
-			combinedStyleValue=value;
+			if (explicitSide)
+				return value;
+			combinedStyleValue = value;
 		}
 		return combinedStyleValue;
 	}

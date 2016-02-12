@@ -6,8 +6,7 @@ package CB_UI;
  * 
  * @author Longri
  */
-public class Disable
-{
+public class Disable {
 	// public final static boolean HillShading = false;
 
 }

@@ -41,12 +41,12 @@ public class RuleBuilder {
 
 	private static ClosedMatcher getClosedMatcher(Closed closed) {
 		switch (closed) {
-			case YES:
-				return ClosedWayMatcher.INSTANCE;
-			case NO:
-				return LinearWayMatcher.INSTANCE;
-			case ANY:
-				return AnyMatcher.INSTANCE;
+		case YES:
+			return ClosedWayMatcher.INSTANCE;
+		case NO:
+			return LinearWayMatcher.INSTANCE;
+		case ANY:
+			return AnyMatcher.INSTANCE;
 		}
 
 		throw new IllegalArgumentException("unknown closed value: " + closed);
@@ -54,12 +54,12 @@ public class RuleBuilder {
 
 	private static ElementMatcher getElementMatcher(Element element) {
 		switch (element) {
-			case NODE:
-				return ElementNodeMatcher.INSTANCE;
-			case WAY:
-				return ElementWayMatcher.INSTANCE;
-			case ANY:
-				return AnyMatcher.INSTANCE;
+		case NODE:
+			return ElementNodeMatcher.INSTANCE;
+		case WAY:
+			return ElementWayMatcher.INSTANCE;
+		case ANY:
+			return AnyMatcher.INSTANCE;
 		}
 
 		throw new IllegalArgumentException("unknown element value: " + element);

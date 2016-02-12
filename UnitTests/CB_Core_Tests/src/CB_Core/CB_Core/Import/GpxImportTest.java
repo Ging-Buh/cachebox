@@ -36,86 +36,86 @@ import junit.framework.TestCase;
  * @author Longri
  */
 public class GpxImportTest extends TestCase {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(GpxImportTest.class);
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(GpxImportTest.class);
 
-    public static void testGpxImport() throws Exception {
+	public static void testGpxImport() throws Exception {
 
-	InitTestDBs.InitalConfig();
+		InitTestDBs.InitalConfig();
 
-	// initialize Database
-	String database = "./testdata/test.db3";
-	InitTestDBs.InitTestDB(database);
+		// initialize Database
+		String database = "./testdata/test.db3";
+		InitTestDBs.InitTestDB(database);
 
-	// First must delete DB entry from last TestRun
-	{
-	    Database.Data.delete("Caches", "GcCode='" + "GC2T9RW" + "'", null);
-	    // Logs
-	    log.debug("Delete Logs");
-	    LogDAO logdao = new LogDAO();
-	    logdao.ClearOrphanedLogs();
-	    logdao = null;
+		// First must delete DB entry from last TestRun
+		{
+			Database.Data.delete("Caches", "GcCode='" + "GC2T9RW" + "'", null);
+			// Logs
+			log.debug("Delete Logs");
+			LogDAO logdao = new LogDAO();
+			logdao.ClearOrphanedLogs();
+			logdao = null;
+		}
+
+		ImportHandler importHandler = new ImportHandler();
+
+		Database.Data.beginTransaction();
+
+		try {
+			GPXFileImporter importer = new GPXFileImporter(new File("./testdata/gpx/GC2T9RW.gpx"));
+			assertTrue("Objekt muss konstruierbar sein", importer != null);
+			importer.doImport(importHandler, 0);
+
+			Database.Data.setTransactionSuccessful();
+		} finally {
+		}
+
+		Database.Data.endTransaction();
+
+		CacheTest.assertCache_GC2T9RW_with_details(true);
 	}
 
-	ImportHandler importHandler = new ImportHandler();
+	public static void testGpxImportShortDesc() throws Exception {
+		// issue # 999 => http://mantis.team-cachebox.de/view.php?id=999
 
-	Database.Data.beginTransaction();
+		InitTestDBs.InitalConfig();
 
-	try {
-	    GPXFileImporter importer = new GPXFileImporter(new File("./testdata/gpx/GC2T9RW.gpx"));
-	    assertTrue("Objekt muss konstruierbar sein", importer != null);
-	    importer.doImport(importHandler, 0);
+		// initialize Database
+		String database = "./testdata/test.db3";
+		InitTestDBs.InitTestDB(database);
 
-	    Database.Data.setTransactionSuccessful();
-	} finally {
+		// First must delete DB entry from last TestRun
+		{
+			Database.Data.delete("Caches", "GcCode='" + "GC52BKF" + "'", null);
+			// Logs
+			log.debug("Delete Logs");
+			LogDAO logdao = new LogDAO();
+			logdao.ClearOrphanedLogs();
+			logdao = null;
+		}
+
+		ImportHandler importHandler = new ImportHandler();
+
+		Database.Data.beginTransaction();
+
+		try {
+			GPXFileImporter importer = new GPXFileImporter(new File("./testdata/gpx/GC52BKF.gpx"));
+			assertTrue("Objekt muss konstruierbar sein", importer != null);
+			importer.doImport(importHandler, 0);
+
+			Database.Data.setTransactionSuccessful();
+		} finally {
+		}
+
+		Database.Data.endTransaction();
+
+		CacheDAO cacheDAO = new CacheDAO();
+		Cache cache = cacheDAO.getFromDbByGcCode("GC52BKF", true);
+
+		assertEquals("", cache.getLongDescription());
+
+		String sd = "<p>Drive In. Eine nette Zusatzeule. Bewohner ist informiert. Dennoch oft ï¿½muggelig. Das Grundstï¿½ck muss nicht betreten werden!ï¿½<img alt=\"enlightened\" src=\"http://www.geocaching.com/static/js/CKEditor/4.1.2/plugins/smiley/images/lightbulb.gif\" title=\"enlightened\" style=\"height:20px;width:20px;\" /></p>";
+		assertEquals(sd, cache.getShortDescription());
+
 	}
-
-	Database.Data.endTransaction();
-
-	CacheTest.assertCache_GC2T9RW_with_details(true);
-    }
-
-    public static void testGpxImportShortDesc() throws Exception {
-	// issue # 999 => http://mantis.team-cachebox.de/view.php?id=999
-
-	InitTestDBs.InitalConfig();
-
-	// initialize Database
-	String database = "./testdata/test.db3";
-	InitTestDBs.InitTestDB(database);
-
-	// First must delete DB entry from last TestRun
-	{
-	    Database.Data.delete("Caches", "GcCode='" + "GC52BKF" + "'", null);
-	    // Logs
-	    log.debug("Delete Logs");
-	    LogDAO logdao = new LogDAO();
-	    logdao.ClearOrphanedLogs();
-	    logdao = null;
-	}
-
-	ImportHandler importHandler = new ImportHandler();
-
-	Database.Data.beginTransaction();
-
-	try {
-	    GPXFileImporter importer = new GPXFileImporter(new File("./testdata/gpx/GC52BKF.gpx"));
-	    assertTrue("Objekt muss konstruierbar sein", importer != null);
-	    importer.doImport(importHandler, 0);
-
-	    Database.Data.setTransactionSuccessful();
-	} finally {
-	}
-
-	Database.Data.endTransaction();
-
-	CacheDAO cacheDAO = new CacheDAO();
-	Cache cache = cacheDAO.getFromDbByGcCode("GC52BKF", true);
-
-	assertEquals("", cache.getLongDescription());
-
-	String sd = "<p>Drive In. Eine nette Zusatzeule. Bewohner ist informiert. Dennoch oft  muggelig. Das Grundstück muss nicht betreten werden! <img alt=\"enlightened\" src=\"http://www.geocaching.com/static/js/CKEditor/4.1.2/plugins/smiley/images/lightbulb.gif\" title=\"enlightened\" style=\"height:20px;width:20px;\" /></p>";
-	assertEquals(sd, cache.getShortDescription());
-
-    }
 
 }

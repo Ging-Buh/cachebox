@@ -36,7 +36,7 @@ import java.util.*;
  */
 public abstract class SequentialListSegment<E> extends Segment implements List<E> {
 	public SequentialListSegment(final Source source, final int begin, final int end) {
-		super(source,begin,end);
+		super(source, begin, end);
 	}
 
 	/**
@@ -68,11 +68,11 @@ public abstract class SequentialListSegment<E> extends Segment implements List<E
 	 * @throws IndexOutOfBoundsException if the specified index is out of range (<code>index &lt; 0 || index &gt;= size()</code>).
 	 */
 	public E get(final int index) {
-		final ListIterator<E> li=listIterator(index);
+		final ListIterator<E> li = listIterator(index);
 		try {
-			return(li.next());
-		} catch(NoSuchElementException ex) {
-			throw(new IndexOutOfBoundsException("index="+index));
+			return (li.next());
+		} catch (NoSuchElementException ex) {
+			throw (new IndexOutOfBoundsException("index=" + index));
 		}
 	}
 
@@ -93,7 +93,7 @@ public abstract class SequentialListSegment<E> extends Segment implements List<E
 	 * @return <code>true</code> if there are no items in the list, otherwise <code>false</code>.
 	 */
 	public boolean isEmpty() {
-		return getCount()==0;
+		return getCount() == 0;
 	}
 
 	/**
@@ -103,7 +103,7 @@ public abstract class SequentialListSegment<E> extends Segment implements List<E
 	 * @return <code>true</code> if this list contains the specified object, otherwise <code>false</code>.
 	 */
 	public boolean contains(final Object o) {
-		return indexOf(o)>=0;
+		return indexOf(o) >= 0;
 	}
 
 	/**
@@ -111,9 +111,10 @@ public abstract class SequentialListSegment<E> extends Segment implements List<E
 	 * @return an array containing all of the items in this list.
 	 */
 	public Object[] toArray() {
-		final Object[] array=new Object[getCount()];
-		int x=0;
-		for (E e : this) array[x++]=e;
+		final Object[] array = new Object[getCount()];
+		int x = 0;
+		for (E e : this)
+			array[x++] = e;
 		return array;
 	}
 
@@ -135,11 +136,14 @@ public abstract class SequentialListSegment<E> extends Segment implements List<E
 	 */
 	@SuppressWarnings("unchecked") // There is no way to implement this without using unchecked casts
 	public <T> T[] toArray(T[] a) {
-		final int count=getCount();
-		if (a.length<count) a=(T[])java.lang.reflect.Array.newInstance(a.getClass().getComponentType(),count);
-		int x=0;
-		for (E e : this) a[x++]=(T)e;
-		if (a.length>count) a[count]=null;
+		final int count = getCount();
+		if (a.length < count)
+			a = (T[]) java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), count);
+		int x = 0;
+		for (E e : this)
+			a[x++] = (T) e;
+		if (a.length > count)
+			a[count] = null;
 		return a;
 	}
 
@@ -160,7 +164,8 @@ public abstract class SequentialListSegment<E> extends Segment implements List<E
 	 */
 	public boolean containsAll(final Collection<?> collection) {
 		for (Object o : collection)
-			if(!contains(o)) return false;
+			if (!contains(o))
+				return false;
 		return true;
 	}
 
@@ -227,11 +232,15 @@ public abstract class SequentialListSegment<E> extends Segment implements List<E
 	 * @return the index in this list of the first occurence of the specified object, or -1 if the list does not contain this object.
 	 */
 	public int indexOf(final Object o) {
-		final ListIterator<E> li=listIterator(0);
-		if (o==null) {
-			while (li.hasNext()) if (li.next()==null) return li.previousIndex();
+		final ListIterator<E> li = listIterator(0);
+		if (o == null) {
+			while (li.hasNext())
+				if (li.next() == null)
+					return li.previousIndex();
 		} else {
-			while (li.hasNext()) if (o.equals(li.next())) return li.previousIndex();
+			while (li.hasNext())
+				if (o.equals(li.next()))
+					return li.previousIndex();
 		}
 		return -1;
 	}
@@ -243,11 +252,15 @@ public abstract class SequentialListSegment<E> extends Segment implements List<E
 	 * @return the index in this list of the last occurence of the specified object, or -1 if the list does not contain this object.
 	 */
 	public int lastIndexOf(final Object o) {
-		final ListIterator<E> li=listIterator(getCount());
-		if (o==null) {
-			while (li.hasPrevious()) if (li.previous()==null) return li.nextIndex();
+		final ListIterator<E> li = listIterator(getCount());
+		if (o == null) {
+			while (li.hasPrevious())
+				if (li.previous() == null)
+					return li.nextIndex();
 		} else {
-			while (li.hasPrevious()) if (o.equals(li.previous())) return li.nextIndex();
+			while (li.hasPrevious())
+				if (o.equals(li.previous()))
+					return li.nextIndex();
 		}
 		return -1;
 	}
@@ -299,7 +312,7 @@ public abstract class SequentialListSegment<E> extends Segment implements List<E
 	 * @see java.util.List#subList(int fromIndex, int toIndex)
 	 */
 	public List<E> subList(final int fromIndex, final int toIndex) {
-		return (new SubList<E>(this,fromIndex,toIndex));
+		return (new SubList<E>(this, fromIndex, toIndex));
 	}
 
 	private static class SubList<E> extends AbstractList<E> {
@@ -308,12 +321,15 @@ public abstract class SequentialListSegment<E> extends Segment implements List<E
 		private final int size;
 
 		SubList(final List<E> list, final int fromIndex, final int toIndex) {
-			if (fromIndex<0) throw new IndexOutOfBoundsException("fromIndex="+fromIndex);
-			if (toIndex>list.size()) throw new IndexOutOfBoundsException("toIndex="+toIndex);
-			if (fromIndex>toIndex) throw new IllegalArgumentException("fromIndex("+fromIndex+") > toIndex("+toIndex+")");
-			this.list=list;
-			offset=fromIndex;
-			size=toIndex-fromIndex;
+			if (fromIndex < 0)
+				throw new IndexOutOfBoundsException("fromIndex=" + fromIndex);
+			if (toIndex > list.size())
+				throw new IndexOutOfBoundsException("toIndex=" + toIndex);
+			if (fromIndex > toIndex)
+				throw new IllegalArgumentException("fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")");
+			this.list = list;
+			offset = fromIndex;
+			size = toIndex - fromIndex;
 		}
 
 		public E get(final int index) {
@@ -330,33 +346,44 @@ public abstract class SequentialListSegment<E> extends Segment implements List<E
 
 		public ListIterator<E> listIterator(final int index) {
 			return new ListIterator<E>() {
-				private final ListIterator<E> i=list.listIterator(getSuperListIndex(index));
+				private final ListIterator<E> i = list.listIterator(getSuperListIndex(index));
+
 				public boolean hasNext() {
-					return nextIndex()<size;
+					return nextIndex() < size;
 				}
+
 				public E next() {
-					if (!hasNext()) throw new NoSuchElementException();
+					if (!hasNext())
+						throw new NoSuchElementException();
 					return i.next();
 				}
+
 				public boolean hasPrevious() {
-					return previousIndex()>=0;
+					return previousIndex() >= 0;
 				}
+
 				public E previous() {
-					if (!hasPrevious()) throw new NoSuchElementException();
+					if (!hasPrevious())
+						throw new NoSuchElementException();
 					return i.previous();
 				}
+
 				public int nextIndex() {
-					return i.nextIndex()-offset;
+					return i.nextIndex() - offset;
 				}
+
 				public int previousIndex() {
-					return i.previousIndex()-offset;
+					return i.previousIndex() - offset;
 				}
+
 				public void remove() {
 					throw new UnsupportedOperationException();
 				}
+
 				public void set(E o) {
 					throw new UnsupportedOperationException();
 				}
+
 				public void add(E o) {
 					throw new UnsupportedOperationException();
 				}
@@ -364,12 +391,13 @@ public abstract class SequentialListSegment<E> extends Segment implements List<E
 		}
 
 		public List<E> subList(final int fromIndex, final int toIndex) {
-			return new SubList<E>(this,fromIndex,toIndex);
+			return new SubList<E>(this, fromIndex, toIndex);
 		}
 
 		private int getSuperListIndex(final int index) {
-			if (index<0 || index>=size) throw new IndexOutOfBoundsException("index="+index+", size="+size);
-			return index+offset;
+			if (index < 0 || index >= size)
+				throw new IndexOutOfBoundsException("index=" + index + ", size=" + size);
+			return index + offset;
 		}
 	}
 }

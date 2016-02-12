@@ -28,8 +28,8 @@ public interface XmlRpcHttpServerConfig extends XmlRpcServerConfig, XmlRpcHttpCo
 	 */
 	boolean isKeepAliveEnabled();
 
-    /** Returns, whether the server may create a "faultCause" element in an error
-     * response. Note, that this may be a security issue!
-     */
-    boolean isEnabledForExceptions();
+	/** Returns, whether the server may create a "faultCause" element in an error
+	 * response. Note, that this may be a security issue!
+	 */
+	boolean isEnabledForExceptions();
 }

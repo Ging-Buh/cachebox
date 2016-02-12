@@ -11,24 +11,24 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 
 public class CB_Action_ShowFilterSettings extends CB_Action {
 
-    public CB_Action_ShowFilterSettings() {
-	super("filter", MenuID.AID_SHOW_FILTER_DIALOG);
-    }
+	public CB_Action_ShowFilterSettings() {
+		super("filter", MenuID.AID_SHOW_FILTER_DIALOG);
+	}
 
-    @Override
-    public boolean getEnabled() {
-	return true;
-    }
+	@Override
+	public boolean getEnabled() {
+		return true;
+	}
 
-    @Override
-    public Sprite getIcon() {
-	return SpriteCacheBase.Icons.get(IconName.filter_13.ordinal());
-    }
+	@Override
+	public Sprite getIcon() {
+		return SpriteCacheBase.Icons.get(IconName.filter_13.ordinal());
+	}
 
-    @Override
-    public void Execute() {
-	EditFilterSettings edFi = new EditFilterSettings(ActivityBase.ActivityRec(), "Filter");
-	edFi.show();
+	@Override
+	public void Execute() {
+		EditFilterSettings edFi = new EditFilterSettings(ActivityBase.ActivityRec(), "Filter");
+		edFi.show();
 
-    }
+	}
 }

@@ -1,21 +1,18 @@
 package CB_Utils.Exceptions;
 
-public class NullArgumentException extends RuntimeException
-{
+public class NullArgumentException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
 	private String argumentName;
 
-	public String getArgumentName()
-	{
+	public String getArgumentName() {
 
 		return argumentName;
 
 	}
 
-	public NullArgumentException(String argumentName)
-	{
+	public NullArgumentException(String argumentName) {
 
 		super(getMessage(argumentName));
 
@@ -23,22 +20,19 @@ public class NullArgumentException extends RuntimeException
 
 	}
 
-	private static String getMessage(String argumentName)
-	{
+	private static String getMessage(String argumentName) {
 
-		if (argumentName == null)
-		{
+		if (argumentName == null) {
 
 			throw new IllegalArgumentException("The NullArgumentException constructor \"argumentName\" cannot be null!");
 
 		}
 
-		if (argumentName.trim().length() == 0)
-		{
+		if (argumentName.trim().length() == 0) {
 
 			throw new IllegalArgumentException(
 
-			"The NullArgumentException constructor \"argumentName\" cannot be an Empty (zero-length) String!");
+					"The NullArgumentException constructor \"argumentName\" cannot be an Empty (zero-length) String!");
 
 		}
 

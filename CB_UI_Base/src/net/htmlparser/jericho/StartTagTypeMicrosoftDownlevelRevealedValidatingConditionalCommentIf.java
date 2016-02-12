@@ -21,14 +21,14 @@
 package net.htmlparser.jericho;
 
 class StartTagTypeMicrosoftDownlevelRevealedValidatingConditionalCommentIf extends StartTagTypeGenericImplementation {
-	static final StartTagTypeMicrosoftDownlevelRevealedValidatingConditionalCommentIf INSTANCE=new StartTagTypeMicrosoftDownlevelRevealedValidatingConditionalCommentIf();
+	static final StartTagTypeMicrosoftDownlevelRevealedValidatingConditionalCommentIf INSTANCE = new StartTagTypeMicrosoftDownlevelRevealedValidatingConditionalCommentIf();
 
 	private StartTagTypeMicrosoftDownlevelRevealedValidatingConditionalCommentIf() {
-		this("Microsoft downlevel-revealed validating conditional comment IF","<!--[if","]><!-->");
+		this("Microsoft downlevel-revealed validating conditional comment IF", "<!--[if", "]><!-->");
 	}
 
 	protected StartTagTypeMicrosoftDownlevelRevealedValidatingConditionalCommentIf(final String description, final String startDelimiter, final String closingDelimiter) {
-		super(description,startDelimiter,closingDelimiter,null,false);
+		super(description, startDelimiter, closingDelimiter, null, false);
 	}
 
 	protected int getEnd(final Source source, final int pos) {
@@ -38,9 +38,11 @@ class StartTagTypeMicrosoftDownlevelRevealedValidatingConditionalCommentIf exten
 		// <!--[if IE]> ... <![endif]--> ... <!--[if !(IE 5)]><!--> ... <!--<![endif]-->
 		// If the default implementation were used, then the parser would recognise the first tag as:
 		// <!--[if IE]> ... <![endif]--> ... <!--[if !(IE 5)]><!-->
-		final int delimiterBegin=source.getParseText().indexOf(MicrosoftConditionalCommentTagTypes.DOWNLEVEL_HIDDEN_IF.getClosingDelimiter(),pos);
-		if (delimiterBegin==-1) return -1;
-		if (source.getParseText().containsAt(getClosingDelimiter(),delimiterBegin)) return delimiterBegin+getClosingDelimiter().length();
+		final int delimiterBegin = source.getParseText().indexOf(MicrosoftConditionalCommentTagTypes.DOWNLEVEL_HIDDEN_IF.getClosingDelimiter(), pos);
+		if (delimiterBegin == -1)
+			return -1;
+		if (source.getParseText().containsAt(getClosingDelimiter(), delimiterBegin))
+			return delimiterBegin + getClosingDelimiter().length();
 		// this is a downlevel hidden conditional comment, so fail this tag type silently without displaying a log message
 		return -2;
 	}

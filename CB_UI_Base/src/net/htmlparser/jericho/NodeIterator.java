@@ -33,71 +33,78 @@ class NodeIterator implements Iterator<Segment> {
 	private final Source source;
 	private int pos;
 	private Tag nextTag;
-	private CharacterReference characterReferenceAtCurrentPosition=null;
+	private CharacterReference characterReferenceAtCurrentPosition = null;
 
 	@SuppressWarnings("deprecation")
-	private final boolean legacyIteratorCompatabilityMode=Source.LegacyIteratorCompatabilityMode;
+	private final boolean legacyIteratorCompatabilityMode = Source.LegacyIteratorCompatabilityMode;
 
 	public NodeIterator(final Segment segment) {
-		this.segment=segment;
-		source=segment.source;
-		if (segment==source) source.fullSequentialParse();
-		pos=segment.begin;
-		nextTag=source.getNextTag(pos);
-		if (nextTag!=null && nextTag.begin>=segment.end) nextTag=null;
+		this.segment = segment;
+		source = segment.source;
+		if (segment == source)
+			source.fullSequentialParse();
+		pos = segment.begin;
+		nextTag = source.getNextTag(pos);
+		if (nextTag != null && nextTag.begin >= segment.end)
+			nextTag = null;
 	}
 
 	public boolean hasNext() {
-		return pos<segment.end || nextTag!=null;
-	}	
+		return pos < segment.end || nextTag != null;
+	}
 
 	public Segment next() {
-		final int oldPos=pos;
-		if (nextTag!=null) {
-			if (oldPos<nextTag.begin) return nextNonTagSegment(oldPos,nextTag.begin);
-			final Tag tag=nextTag;
-			nextTag=nextTag.getNextTag();
-			if (nextTag!=null && nextTag.begin>=segment.end) nextTag=null;
-			if (pos<tag.end) pos=tag.end;
+		final int oldPos = pos;
+		if (nextTag != null) {
+			if (oldPos < nextTag.begin)
+				return nextNonTagSegment(oldPos, nextTag.begin);
+			final Tag tag = nextTag;
+			nextTag = nextTag.getNextTag();
+			if (nextTag != null && nextTag.begin >= segment.end)
+				nextTag = null;
+			if (pos < tag.end)
+				pos = tag.end;
 			return tag;
 		} else {
-			if (!hasNext()) throw new NoSuchElementException();
-			return nextNonTagSegment(oldPos,segment.end);
+			if (!hasNext())
+				throw new NoSuchElementException();
+			return nextNonTagSegment(oldPos, segment.end);
 		}
 	}
 
 	private Segment nextNonTagSegment(final int begin, final int end) {
 		if (!legacyIteratorCompatabilityMode) {
-			final CharacterReference characterReference=characterReferenceAtCurrentPosition;
-			if (characterReference!=null) {
-				characterReferenceAtCurrentPosition=null;
-				pos=characterReference.end;
+			final CharacterReference characterReference = characterReferenceAtCurrentPosition;
+			if (characterReference != null) {
+				characterReferenceAtCurrentPosition = null;
+				pos = characterReference.end;
 				return characterReference;
 			}
-			final ParseText parseText=source.getParseText();
-			int potentialCharacterReferenceBegin=parseText.indexOf('&',begin,end);
-			while (potentialCharacterReferenceBegin!=-1) {
-				final CharacterReference nextCharacterReference=CharacterReference.construct(source,potentialCharacterReferenceBegin,Config.UnterminatedCharacterReferenceSettings.ACCEPT_ALL);
-				if (nextCharacterReference!=null) {
-					if (potentialCharacterReferenceBegin==begin) {
-						pos=nextCharacterReference.end;
+			final ParseText parseText = source.getParseText();
+			int potentialCharacterReferenceBegin = parseText.indexOf('&', begin, end);
+			while (potentialCharacterReferenceBegin != -1) {
+				final CharacterReference nextCharacterReference = CharacterReference.construct(source, potentialCharacterReferenceBegin, Config.UnterminatedCharacterReferenceSettings.ACCEPT_ALL);
+				if (nextCharacterReference != null) {
+					if (potentialCharacterReferenceBegin == begin) {
+						pos = nextCharacterReference.end;
 						return nextCharacterReference;
 					} else {
-						pos=nextCharacterReference.begin;
-						characterReferenceAtCurrentPosition=nextCharacterReference;
-						return new Segment(source,begin,pos);
+						pos = nextCharacterReference.begin;
+						characterReferenceAtCurrentPosition = nextCharacterReference;
+						return new Segment(source, begin, pos);
 					}
 				}
-				potentialCharacterReferenceBegin=parseText.indexOf('&',potentialCharacterReferenceBegin+1,end);
+				potentialCharacterReferenceBegin = parseText.indexOf('&', potentialCharacterReferenceBegin + 1, end);
 			}
 		}
-		return new Segment(source,begin,pos=end);
+		return new Segment(source, begin, pos = end);
 	}
 
 	public void skipToPos(final int pos) {
-		if (pos<this.pos) return; // can't go backwards
-		this.pos=pos;
-		nextTag=source.getNextTag(pos);
+		if (pos < this.pos)
+			return; // can't go backwards
+		this.pos = pos;
+		nextTag = source.getNextTag(pos);
 	}
 
 	public void remove() {

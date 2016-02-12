@@ -23,7 +23,6 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /** Abstract base implementation of a type serializer.
  */
 public abstract class TypeSerializerImpl implements TypeSerializer {
@@ -48,8 +47,7 @@ public abstract class TypeSerializerImpl implements TypeSerializer {
 		pHandler.endElement("", TypeSerializerImpl.VALUE_TAG, TypeSerializerImpl.VALUE_TAG);
 	}
 
-	protected void write(ContentHandler pHandler, String pLocalName, String pQName,
-						 String pValue) throws SAXException {
+	protected void write(ContentHandler pHandler, String pLocalName, String pQName, String pValue) throws SAXException {
 		pHandler.startElement("", TypeSerializerImpl.VALUE_TAG, TypeSerializerImpl.VALUE_TAG, ZERO_ATTRIBUTES);
 		pHandler.startElement(XmlRpcWriter.EXTENSIONS_URI, pLocalName, pQName, ZERO_ATTRIBUTES);
 		char[] value = pValue.toCharArray();

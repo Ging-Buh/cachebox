@@ -25,26 +25,26 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 
 public class CB_Action_switch_Torch extends CB_Action {
 
-    public CB_Action_switch_Torch() {
-	super("Torch", MenuID.AID_TORCH);
-    }
-
-    @Override
-    public boolean getEnabled() {
-	return PlatformConnector.isTorchAvailable();
-    }
-
-    @Override
-    public Sprite getIcon() {
-	if (PlatformConnector.isTorchOn()) {
-	    return SpriteCacheBase.Icons.get(IconName.torch_on_67.ordinal());
-	} else {
-	    return SpriteCacheBase.Icons.get(IconName.torch_Off_68.ordinal());
+	public CB_Action_switch_Torch() {
+		super("Torch", MenuID.AID_TORCH);
 	}
-    }
 
-    @Override
-    public void Execute() {
-	PlatformConnector.switchTorch();
-    }
+	@Override
+	public boolean getEnabled() {
+		return PlatformConnector.isTorchAvailable();
+	}
+
+	@Override
+	public Sprite getIcon() {
+		if (PlatformConnector.isTorchOn()) {
+			return SpriteCacheBase.Icons.get(IconName.torch_on_67.ordinal());
+		} else {
+			return SpriteCacheBase.Icons.get(IconName.torch_Off_68.ordinal());
+		}
+	}
+
+	@Override
+	public void Execute() {
+		PlatformConnector.switchTorch();
+	}
 }

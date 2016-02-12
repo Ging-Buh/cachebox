@@ -181,31 +181,38 @@ import static net.htmlparser.jericho.HTMLElementName.*;
  * @see Element
  */
 public final class HTMLElements {
-	private static final List<String> ALL=new ArrayList<String>(Arrays.asList(A,ABBR,ACRONYM,ADDRESS,APPLET,AREA,ARTICLE,ASIDE,AUDIO,B,BASE,BASEFONT,BDI,BDO,BIG,BLOCKQUOTE,BODY,BR,BUTTON,CANVAS,CAPTION,CENTER,CITE,CODE,COL,COLGROUP,COMMAND,DATALIST,DD,DEL,DETAILS,DFN,DIR,DIV,DL,DT,EM,EMBED,FIELDSET,FIGCAPTION,FIGURE,FONT,FOOTER,FORM,FRAME,FRAMESET,H1,H2,H3,H4,H5,H6,HEAD,HEADER,HGROUP,HR,HTML,I,IFRAME,IMG,INPUT,INS,ISINDEX,KBD,KEYGEN,LABEL,LEGEND,LI,LINK,MAP,MARK,MENU,META,METER,NAV,NOFRAMES,NOSCRIPT,OBJECT,OL,OPTGROUP,OPTION,OUTPUT,P,PARAM,PRE,PROGRESS,Q,RP,RT,RUBY,S,SAMP,SCRIPT,SECTION,SELECT,SMALL,SOURCE,SPAN,STRIKE,STRONG,STYLE,SUB,SUMMARY,SUP,TABLE,TBODY,TD,TEXTAREA,TFOOT,TH,THEAD,TIME,TITLE,TR,TT,U,UL,VAR,VIDEO,WBR));
-	private static final HTMLElementNameSet BLOCK=new HTMLElementNameSet(ARTICLE,ASIDE,FOOTER,DETAILS,SECTION,HEADER,HGROUP,NAV,P,H1,H2,H3,H4,H5,H6,UL,OL,DIR,MENU,PRE,DL,DIV,CENTER,NOSCRIPT,NOFRAMES,BLOCKQUOTE,FORM,ISINDEX,HR,TABLE,FIELDSET,ADDRESS);
-	private static final HTMLElementNameSet INLINE=new HTMLElementNameSet(BDI,KEYGEN,MARK,METER,OUTPUT,PROGRESS,RP,RT,RUBY,TIME,WBR,TT,I,B,U,S,STRIKE,BIG,SMALL,EM,STRONG,DFN,CODE,SAMP,KBD,VAR,CITE,ABBR,ACRONYM,A,IMG,APPLET,OBJECT,FONT,BASEFONT,BR,SCRIPT,MAP,Q,SUB,SUP,SPAN,BDO,IFRAME,INPUT,SELECT,TEXTAREA,LABEL,BUTTON,INS,DEL);
+	private static final List<String> ALL = new ArrayList<String>(Arrays.asList(A, ABBR, ACRONYM, ADDRESS, APPLET, AREA, ARTICLE, ASIDE, AUDIO, B, BASE, BASEFONT, BDI, BDO, BIG, BLOCKQUOTE, BODY, BR, BUTTON, CANVAS, CAPTION, CENTER, CITE, CODE, COL,
+			COLGROUP, COMMAND, DATALIST, DD, DEL, DETAILS, DFN, DIR, DIV, DL, DT, EM, EMBED, FIELDSET, FIGCAPTION, FIGURE, FONT, FOOTER, FORM, FRAME, FRAMESET, H1, H2, H3, H4, H5, H6, HEAD, HEADER, HGROUP, HR, HTML, I, IFRAME, IMG, INPUT, INS,
+			ISINDEX, KBD, KEYGEN, LABEL, LEGEND, LI, LINK, MAP, MARK, MENU, META, METER, NAV, NOFRAMES, NOSCRIPT, OBJECT, OL, OPTGROUP, OPTION, OUTPUT, P, PARAM, PRE, PROGRESS, Q, RP, RT, RUBY, S, SAMP, SCRIPT, SECTION, SELECT, SMALL, SOURCE, SPAN,
+			STRIKE, STRONG, STYLE, SUB, SUMMARY, SUP, TABLE, TBODY, TD, TEXTAREA, TFOOT, TH, THEAD, TIME, TITLE, TR, TT, U, UL, VAR, VIDEO, WBR));
+	private static final HTMLElementNameSet BLOCK = new HTMLElementNameSet(ARTICLE, ASIDE, FOOTER, DETAILS, SECTION, HEADER, HGROUP, NAV, P, H1, H2, H3, H4, H5, H6, UL, OL, DIR, MENU, PRE, DL, DIV, CENTER, NOSCRIPT, NOFRAMES, BLOCKQUOTE, FORM,
+			ISINDEX, HR, TABLE, FIELDSET, ADDRESS);
+	private static final HTMLElementNameSet INLINE = new HTMLElementNameSet(BDI, KEYGEN, MARK, METER, OUTPUT, PROGRESS, RP, RT, RUBY, TIME, WBR, TT, I, B, U, S, STRIKE, BIG, SMALL, EM, STRONG, DFN, CODE, SAMP, KBD, VAR, CITE, ABBR, ACRONYM, A, IMG,
+			APPLET, OBJECT, FONT, BASEFONT, BR, SCRIPT, MAP, Q, SUB, SUP, SPAN, BDO, IFRAME, INPUT, SELECT, TEXTAREA, LABEL, BUTTON, INS, DEL);
 
-	private static final HTMLElementNameSet END_TAG_FORBIDDEN_SET=new HTMLElementNameSet(AREA,BASE,BASEFONT,BR,COL,FRAME,HR,IMG,INPUT,ISINDEX,LINK,META,PARAM);
+	private static final HTMLElementNameSet END_TAG_FORBIDDEN_SET = new HTMLElementNameSet(AREA, BASE, BASEFONT, BR, COL, FRAME, HR, IMG, INPUT, ISINDEX, LINK, META, PARAM);
 
-	private static final HTMLElementNameSet _UL_OL=new HTMLElementNameSet(UL).union(OL);
-	private static final HTMLElementNameSet _DD_DT=new HTMLElementNameSet(DD).union(DT);
-	private static final HTMLElementNameSet _THEAD_TBODY_TFOOT_TR=new HTMLElementNameSet(THEAD).union(TBODY).union(TFOOT).union(TR);
-	private static final HTMLElementNameSet _THEAD_TBODY_TFOOT_TR_TD_TH=new HTMLElementNameSet(_THEAD_TBODY_TFOOT_TR).union(TD).union(TH);
+	private static final HTMLElementNameSet _UL_OL = new HTMLElementNameSet(UL).union(OL);
+	private static final HTMLElementNameSet _DD_DT = new HTMLElementNameSet(DD).union(DT);
+	private static final HTMLElementNameSet _THEAD_TBODY_TFOOT_TR = new HTMLElementNameSet(THEAD).union(TBODY).union(TFOOT).union(TR);
+	private static final HTMLElementNameSet _THEAD_TBODY_TFOOT_TR_TD_TH = new HTMLElementNameSet(_THEAD_TBODY_TFOOT_TR).union(TD).union(TH);
 
-	private static final HTMLElementNameSet DEPRECATED=new HTMLElementNameSet().union(APPLET).union(BASEFONT).union(CENTER).union(DIR).union(FONT).union(ISINDEX).union(MENU).union(S).union(STRIKE).union(U);
-	private static final HTMLElementNameSet START_TAG_OPTIONAL_SET=new HTMLElementNameSet().union(BODY).union(HEAD).union(HTML).union(TBODY);
+	private static final HTMLElementNameSet DEPRECATED = new HTMLElementNameSet().union(APPLET).union(BASEFONT).union(CENTER).union(DIR).union(FONT).union(ISINDEX).union(MENU).union(S).union(STRIKE).union(U);
+	private static final HTMLElementNameSet START_TAG_OPTIONAL_SET = new HTMLElementNameSet().union(BODY).union(HEAD).union(HTML).union(TBODY);
 
-	private static final HashMap<String,String> CONSTANT_NAME_MAP=buildTagMap(); // contains a map of tag names to the tag constants, allowing standard tags to be tested using == operator instead of equals()
-	private static final HashMap<String,HTMLElementTerminatingTagNameSets> TERMINATING_TAG_NAME_SETS_MAP=buildTerminatingTagNameSetsMap(); // contains a map of tags having optional end tags to the HTMLElementTerminatingTagNameSets that can terminate the element if the end tag is not present
-	private static final Set<String> END_TAG_OPTIONAL_SET=TERMINATING_TAG_NAME_SETS_MAP.keySet();
-	private static final HTMLElementNameSet END_TAG_REQUIRED_SET=new HTMLElementNameSet().union(ALL).minus(END_TAG_FORBIDDEN_SET).minus(END_TAG_OPTIONAL_SET);
-	private static final HTMLElementNameSet CLOSING_SLASH_IGNORED_SET=new HTMLElementNameSet().union(END_TAG_OPTIONAL_SET).union(END_TAG_REQUIRED_SET);
+	private static final HashMap<String, String> CONSTANT_NAME_MAP = buildTagMap(); // contains a map of tag names to the tag constants, allowing standard tags to be tested using == operator instead of equals()
+	private static final HashMap<String, HTMLElementTerminatingTagNameSets> TERMINATING_TAG_NAME_SETS_MAP = buildTerminatingTagNameSetsMap(); // contains a map of tags having optional end tags to the HTMLElementTerminatingTagNameSets that can terminate the element if the end tag is not present
+	private static final Set<String> END_TAG_OPTIONAL_SET = TERMINATING_TAG_NAME_SETS_MAP.keySet();
+	private static final HTMLElementNameSet END_TAG_REQUIRED_SET = new HTMLElementNameSet().union(ALL).minus(END_TAG_FORBIDDEN_SET).minus(END_TAG_OPTIONAL_SET);
+	private static final HTMLElementNameSet CLOSING_SLASH_IGNORED_SET = new HTMLElementNameSet().union(END_TAG_OPTIONAL_SET).union(END_TAG_REQUIRED_SET);
 
-	static final HTMLElementNameSet END_TAG_REQUIRED_NESTING_FORBIDDEN_SET=new HTMLElementNameSet().union(A).union(ADDRESS).union(APPLET).union(BUTTON).union(CAPTION).union(DATALIST).union(FORM).union(HGROUP).union(IFRAME).union(LABEL).union(LEGEND).union(OPTGROUP).union(SCRIPT).union(SELECT).union(STYLE).union(TEXTAREA).union(TITLE);
-	private static final HTMLElementNameSet END_TAG_OPTIONAL_NESTING_FORBIDDEN_SET=new HTMLElementNameSet().union(BODY).union(COLGROUP).union(HEAD).union(HTML).union(OPTION).union(P).union(RP).union(RT);
-	private static final HTMLElementNameSet NESTING_FORBIDDEN_SET=new HTMLElementNameSet().union(END_TAG_REQUIRED_NESTING_FORBIDDEN_SET).union(END_TAG_OPTIONAL_NESTING_FORBIDDEN_SET).union(END_TAG_FORBIDDEN_SET);
+	static final HTMLElementNameSet END_TAG_REQUIRED_NESTING_FORBIDDEN_SET = new HTMLElementNameSet().union(A).union(ADDRESS).union(APPLET).union(BUTTON).union(CAPTION).union(DATALIST).union(FORM).union(HGROUP).union(IFRAME).union(LABEL)
+			.union(LEGEND).union(OPTGROUP).union(SCRIPT).union(SELECT).union(STYLE).union(TEXTAREA).union(TITLE);
+	private static final HTMLElementNameSet END_TAG_OPTIONAL_NESTING_FORBIDDEN_SET = new HTMLElementNameSet().union(BODY).union(COLGROUP).union(HEAD).union(HTML).union(OPTION).union(P).union(RP).union(RT);
+	private static final HTMLElementNameSet NESTING_FORBIDDEN_SET = new HTMLElementNameSet().union(END_TAG_REQUIRED_NESTING_FORBIDDEN_SET).union(END_TAG_OPTIONAL_NESTING_FORBIDDEN_SET).union(END_TAG_FORBIDDEN_SET);
 
-	private HTMLElements() {}
+	private HTMLElements() {
+	}
 
 	/**
 	 * Returns a list containing all of the {@linkplain HTMLElementName HTML element names}.
@@ -407,8 +414,9 @@ public final class HTMLElements {
 	 * @see #getNonterminatingElementNames(String endTagOptionalElementName)
 	 */
 	public static Set<String> getTerminatingStartTagNames(final String endTagOptionalElementName) {
-		final HTMLElementTerminatingTagNameSets terminatingTagNameSets=getTerminatingTagNameSets(endTagOptionalElementName);
-		if (terminatingTagNameSets==null) return null;
+		final HTMLElementTerminatingTagNameSets terminatingTagNameSets = getTerminatingTagNameSets(endTagOptionalElementName);
+		if (terminatingTagNameSets == null)
+			return null;
 		return terminatingTagNameSets.TerminatingStartTagNameSet;
 	}
 
@@ -430,8 +438,9 @@ public final class HTMLElements {
 	 * @see #getNonterminatingElementNames(String endTagOptionalElementName)
 	 */
 	public static Set<String> getTerminatingEndTagNames(final String endTagOptionalElementName) {
-		final HTMLElementTerminatingTagNameSets terminatingTagNameSets=getTerminatingTagNameSets(endTagOptionalElementName);
-		if (terminatingTagNameSets==null) return null;
+		final HTMLElementTerminatingTagNameSets terminatingTagNameSets = getTerminatingTagNameSets(endTagOptionalElementName);
+		if (terminatingTagNameSets == null)
+			return null;
 		return terminatingTagNameSets.TerminatingEndTagNameSet;
 	}
 
@@ -453,8 +462,9 @@ public final class HTMLElements {
 	 * @see #getTerminatingEndTagNames(String endTagOptionalElementName)
 	 */
 	public static Set<String> getNonterminatingElementNames(final String endTagOptionalElementName) {
-		final HTMLElementTerminatingTagNameSets terminatingTagNameSets=getTerminatingTagNameSets(endTagOptionalElementName);
-		if (terminatingTagNameSets==null) return null;
+		final HTMLElementTerminatingTagNameSets terminatingTagNameSets = getTerminatingTagNameSets(endTagOptionalElementName);
+		if (terminatingTagNameSets == null)
+			return null;
 		return terminatingTagNameSets.NonterminatingElementNameSet;
 	}
 
@@ -469,12 +479,13 @@ public final class HTMLElements {
 	}
 
 	static final String getConstantElementName(final String elementName) {
-		final String elementNameConstant=CONSTANT_NAME_MAP.get(elementName);
-		return elementNameConstant!=null ? elementNameConstant : elementName;
+		final String elementNameConstant = CONSTANT_NAME_MAP.get(elementName);
+		return elementNameConstant != null ? elementNameConstant : elementName;
 	}
 
 	static final boolean isClosingSlashIgnored(final String elementName) {
-		if (Config.IsHTMLEmptyElementTagRecognised) return false;
+		if (Config.IsHTMLEmptyElementTagRecognised)
+			return false;
 		return CLOSING_SLASH_IGNORED_SET.contains(elementName);
 	}
 
@@ -482,38 +493,40 @@ public final class HTMLElements {
 		return TERMINATING_TAG_NAME_SETS_MAP.get(endTagOptionalElementName);
 	}
 
-	private static HashMap<String,HTMLElementTerminatingTagNameSets> buildTerminatingTagNameSetsMap() {
+	private static HashMap<String, HTMLElementTerminatingTagNameSets> buildTerminatingTagNameSetsMap() {
 		// HTML is included in the NonterminatingElementNameSet of BODY and HTML in case the source contains (illegaly) nested HTML documents
-		final HashMap<String,HTMLElementTerminatingTagNameSets> map=new HashMap<String,HTMLElementTerminatingTagNameSets>(20,1.0F); // 15 entries in total
-		map.put(BODY,new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(), new HTMLElementNameSet(HTML).union(BODY), new HTMLElementNameSet(HTML)));
-		map.put(COLGROUP,new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(_THEAD_TBODY_TFOOT_TR).union(COLGROUP), new HTMLElementNameSet(TABLE).union(COLGROUP), new HTMLElementNameSet(TABLE)));
-		map.put(DD,new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(_DD_DT), new HTMLElementNameSet(DL).union(DD), new HTMLElementNameSet(DL)));
-		map.put(DT,new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(_DD_DT), new HTMLElementNameSet(DL).union(DT), new HTMLElementNameSet(DL)));
-		map.put(HEAD,new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(BODY).union(FRAMESET), new HTMLElementNameSet(HTML).union(HEAD), new HTMLElementNameSet()));
-		map.put(HTML,new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(), new HTMLElementNameSet(HTML), new HTMLElementNameSet(HTML)));
-		map.put(LI,new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(LI), new HTMLElementNameSet(_UL_OL).union(LI), new HTMLElementNameSet(_UL_OL)));
-		map.put(OPTION,new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(OPTION).union(OPTGROUP), new HTMLElementNameSet(SELECT).union(OPTION), new HTMLElementNameSet()));
-		map.put(P,new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(BLOCK).union(_DD_DT).union(TH).union(TD).union(LI), new HTMLElementNameSet(BLOCK).union(_DD_DT).union(BODY).union(HTML).union(_THEAD_TBODY_TFOOT_TR_TD_TH).union(CAPTION).union(LEGEND), new HTMLElementNameSet()));
-		map.put(RP,new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(RP).union(RT), new HTMLElementNameSet(RUBY), new HTMLElementNameSet()));
-		map.put(RT,new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(RP).union(RT), new HTMLElementNameSet(RUBY), new HTMLElementNameSet()));
-		map.put(TBODY,new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(TBODY).union(TFOOT).union(THEAD), new HTMLElementNameSet(TABLE).union(TBODY), new HTMLElementNameSet(TABLE)));
-		map.put(TD,new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(_THEAD_TBODY_TFOOT_TR_TD_TH), new HTMLElementNameSet(_THEAD_TBODY_TFOOT_TR).union(TABLE).union(TD), new HTMLElementNameSet(TABLE)));
-		map.put(TFOOT,new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(TBODY).union(TFOOT).union(THEAD), new HTMLElementNameSet(TABLE).union(TFOOT), new HTMLElementNameSet(TABLE)));
-		map.put(TH,new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(_THEAD_TBODY_TFOOT_TR_TD_TH), new HTMLElementNameSet(_THEAD_TBODY_TFOOT_TR).union(TABLE).union(TH), new HTMLElementNameSet(TABLE)));
-		map.put(THEAD,new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(TBODY).union(TFOOT).union(THEAD), new HTMLElementNameSet(TABLE).union(THEAD), new HTMLElementNameSet(TABLE)));
-		map.put(TR,new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(_THEAD_TBODY_TFOOT_TR), new HTMLElementNameSet(_THEAD_TBODY_TFOOT_TR).union(TABLE), new HTMLElementNameSet(TABLE)));
+		final HashMap<String, HTMLElementTerminatingTagNameSets> map = new HashMap<String, HTMLElementTerminatingTagNameSets>(20, 1.0F); // 15 entries in total
+		map.put(BODY, new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(), new HTMLElementNameSet(HTML).union(BODY), new HTMLElementNameSet(HTML)));
+		map.put(COLGROUP, new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(_THEAD_TBODY_TFOOT_TR).union(COLGROUP), new HTMLElementNameSet(TABLE).union(COLGROUP), new HTMLElementNameSet(TABLE)));
+		map.put(DD, new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(_DD_DT), new HTMLElementNameSet(DL).union(DD), new HTMLElementNameSet(DL)));
+		map.put(DT, new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(_DD_DT), new HTMLElementNameSet(DL).union(DT), new HTMLElementNameSet(DL)));
+		map.put(HEAD, new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(BODY).union(FRAMESET), new HTMLElementNameSet(HTML).union(HEAD), new HTMLElementNameSet()));
+		map.put(HTML, new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(), new HTMLElementNameSet(HTML), new HTMLElementNameSet(HTML)));
+		map.put(LI, new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(LI), new HTMLElementNameSet(_UL_OL).union(LI), new HTMLElementNameSet(_UL_OL)));
+		map.put(OPTION, new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(OPTION).union(OPTGROUP), new HTMLElementNameSet(SELECT).union(OPTION), new HTMLElementNameSet()));
+		map.put(P, new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(BLOCK).union(_DD_DT).union(TH).union(TD).union(LI),
+				new HTMLElementNameSet(BLOCK).union(_DD_DT).union(BODY).union(HTML).union(_THEAD_TBODY_TFOOT_TR_TD_TH).union(CAPTION).union(LEGEND), new HTMLElementNameSet()));
+		map.put(RP, new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(RP).union(RT), new HTMLElementNameSet(RUBY), new HTMLElementNameSet()));
+		map.put(RT, new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(RP).union(RT), new HTMLElementNameSet(RUBY), new HTMLElementNameSet()));
+		map.put(TBODY, new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(TBODY).union(TFOOT).union(THEAD), new HTMLElementNameSet(TABLE).union(TBODY), new HTMLElementNameSet(TABLE)));
+		map.put(TD, new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(_THEAD_TBODY_TFOOT_TR_TD_TH), new HTMLElementNameSet(_THEAD_TBODY_TFOOT_TR).union(TABLE).union(TD), new HTMLElementNameSet(TABLE)));
+		map.put(TFOOT, new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(TBODY).union(TFOOT).union(THEAD), new HTMLElementNameSet(TABLE).union(TFOOT), new HTMLElementNameSet(TABLE)));
+		map.put(TH, new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(_THEAD_TBODY_TFOOT_TR_TD_TH), new HTMLElementNameSet(_THEAD_TBODY_TFOOT_TR).union(TABLE).union(TH), new HTMLElementNameSet(TABLE)));
+		map.put(THEAD, new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(TBODY).union(TFOOT).union(THEAD), new HTMLElementNameSet(TABLE).union(THEAD), new HTMLElementNameSet(TABLE)));
+		map.put(TR, new HTMLElementTerminatingTagNameSets(new HTMLElementNameSet(_THEAD_TBODY_TFOOT_TR), new HTMLElementNameSet(_THEAD_TBODY_TFOOT_TR).union(TABLE), new HTMLElementNameSet(TABLE)));
 		return map;
 	}
-	
-	private static HashMap<String,String> buildTagMap() {
-		final HashMap<String,String> map=new HashMap<String,String>(132,1.0F); // 99 tags total
-		for (String tagName : ALL) map.put(tagName,tagName);
-		map.put(StartTagTypeMarkupDeclaration.ELEMENT,StartTagTypeMarkupDeclaration.ELEMENT);
-		map.put(StartTagTypeMarkupDeclaration.ATTLIST,StartTagTypeMarkupDeclaration.ATTLIST);
-		map.put(StartTagTypeMarkupDeclaration.ENTITY,StartTagTypeMarkupDeclaration.ENTITY);
-		map.put(StartTagTypeMarkupDeclaration.NOTATION,StartTagTypeMarkupDeclaration.NOTATION);
-		map.put(StartTagTypeMicrosoftDownlevelRevealedConditionalComment.IF,StartTagTypeMicrosoftDownlevelRevealedConditionalComment.IF);
-		map.put(StartTagTypeMicrosoftDownlevelRevealedConditionalComment.ENDIF,StartTagTypeMicrosoftDownlevelRevealedConditionalComment.ENDIF);
+
+	private static HashMap<String, String> buildTagMap() {
+		final HashMap<String, String> map = new HashMap<String, String>(132, 1.0F); // 99 tags total
+		for (String tagName : ALL)
+			map.put(tagName, tagName);
+		map.put(StartTagTypeMarkupDeclaration.ELEMENT, StartTagTypeMarkupDeclaration.ELEMENT);
+		map.put(StartTagTypeMarkupDeclaration.ATTLIST, StartTagTypeMarkupDeclaration.ATTLIST);
+		map.put(StartTagTypeMarkupDeclaration.ENTITY, StartTagTypeMarkupDeclaration.ENTITY);
+		map.put(StartTagTypeMarkupDeclaration.NOTATION, StartTagTypeMarkupDeclaration.NOTATION);
+		map.put(StartTagTypeMicrosoftDownlevelRevealedConditionalComment.IF, StartTagTypeMicrosoftDownlevelRevealedConditionalComment.IF);
+		map.put(StartTagTypeMicrosoftDownlevelRevealedConditionalComment.ENDIF, StartTagTypeMicrosoftDownlevelRevealedConditionalComment.ENDIF);
 		return map;
 	}
 }

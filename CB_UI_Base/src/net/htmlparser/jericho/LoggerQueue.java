@@ -25,27 +25,27 @@ import java.util.Queue;
 import java.util.LinkedList;
 
 class LoggerQueue implements Logger {
-	private static final String ERROR="ERROR";
-	private static final String WARN="WARN";
-	private static final String INFO="INFO";
-	private static final String DEBUG="DEBUG";
+	private static final String ERROR = "ERROR";
+	private static final String WARN = "WARN";
+	private static final String INFO = "INFO";
+	private static final String DEBUG = "DEBUG";
 
-	private final Queue<String[]> queue=new LinkedList<String[]>();
+	private final Queue<String[]> queue = new LinkedList<String[]>();
 
 	public void error(final String message) {
-		queue.add(new String[] {ERROR,message});
+		queue.add(new String[] { ERROR, message });
 	}
 
 	public void warn(final String message) {
-		queue.add(new String[] {WARN,message});
+		queue.add(new String[] { WARN, message });
 	}
 
 	public void info(final String message) {
-		queue.add(new String[] {INFO,message});
+		queue.add(new String[] { INFO, message });
 	}
 
 	public void debug(final String message) {
-		queue.add(new String[] {DEBUG,message});
+		queue.add(new String[] { DEBUG, message });
 	}
 
 	public boolean isErrorEnabled() {
@@ -82,17 +82,18 @@ class LoggerQueue implements Logger {
 
 	public void outputTo(Logger logger) {
 		while (true) {
-			String[] item=queue.poll();
-			if (item==null) return;
-			String level=item[0];
-			String message=item[1];
-			if (level==ERROR)
+			String[] item = queue.poll();
+			if (item == null)
+				return;
+			String level = item[0];
+			String message = item[1];
+			if (level == ERROR)
 				logger.error(message);
-			else if (level==WARN)
+			else if (level == WARN)
 				logger.warn(message);
-			else if (level==INFO)
+			else if (level == INFO)
 				logger.info(message);
-			else if (level==DEBUG)
+			else if (level == DEBUG)
 				logger.debug(message);
 		}
 	}

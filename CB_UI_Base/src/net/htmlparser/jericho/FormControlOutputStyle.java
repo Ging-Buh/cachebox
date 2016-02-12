@@ -138,7 +138,7 @@ public enum FormControlOutputStyle {
 		 * <p>
 		 * The default value is "<code>, </code>".
 		 */
-		public static volatile String MultipleValueSeparator=", ";
+		public static volatile String MultipleValueSeparator = ", ";
 
 		/**
 		 * Defines the {@linkplain Element#getName() name} of
@@ -157,7 +157,7 @@ public enum FormControlOutputStyle {
 		 * over their positioning.  In this case replacing the original inline form control with the block <code>DIV</code>
 		 * element does not alter its position.
 		 */
-		public static volatile String ElementName=HTMLElementName.DIV;
+		public static volatile String ElementName = HTMLElementName.DIV;
 
 		/**
 		 * Defines the names of the {@linkplain Attributes attributes} that are copied from the normal form control
@@ -170,7 +170,7 @@ public enum FormControlOutputStyle {
 		 * <p>
 		 * The default list is modifiable.
 		 */
-		public static volatile List<String> AttributeNames=new ArrayList<String>(Arrays.asList(new String[] {Attribute.ID,Attribute.CLASS,Attribute.STYLE}));
+		public static volatile List<String> AttributeNames = new ArrayList<String>(Arrays.asList(new String[] { Attribute.ID, Attribute.CLASS, Attribute.STYLE }));
 
 		/**
 		 * Defines the content of a <a href="FormControlOutputStyle.html#DisplayValueElement">display value element</a>
@@ -180,8 +180,8 @@ public enum FormControlOutputStyle {
 		 * <p>
 		 * The default content is "<code>&amp;nbsp;</code>".
 		 */
-		public static volatile String EmptyHTML="&nbsp;";
-		
+		public static volatile String EmptyHTML = "&nbsp;";
+
 		/**
 		 * Defines the character used to represent the value of a {@link FormControlType#PASSWORD PASSWORD} form control
 		 * in a <a href="#DisplayValueElement">display value element</a>.
@@ -193,8 +193,8 @@ public enum FormControlOutputStyle {
 		 * <p>
 		 * The default password character is '<code>*</code>'.
 		 */
-		public static volatile char PasswordChar='*';
-		
+		public static volatile char PasswordChar = '*';
+
 		/**
 		 * Defines the HTML which replaces the {@linkplain #NORMAL normal} <a href="FormControl.html#OutputElement">output element</a>
 		 * of a {@link FormControlType#CHECKBOX CHECKBOX} or {@link FormControlType#RADIO RADIO} form control if it contains a
@@ -207,7 +207,7 @@ public enum FormControlOutputStyle {
 		 * <p>
 		 * The default value is <code>null</code>.
 		 */
-		public static volatile String CheckedHTML=null;
+		public static volatile String CheckedHTML = null;
 
 		/**
 		 * Defines the HTML which replaces the {@linkplain #NORMAL normal} <a href="FormControl.html#OutputElement">output element</a>
@@ -221,8 +221,9 @@ public enum FormControlOutputStyle {
 		 * <p>
 		 * The default value is <code>null</code>.
 		 */
-		public static volatile String UncheckedHTML=null;
+		public static volatile String UncheckedHTML = null;
 
-		private ConfigDisplayValue() {}
+		private ConfigDisplayValue() {
+		}
 	}
 }

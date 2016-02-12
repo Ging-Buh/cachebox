@@ -29,16 +29,14 @@ import de.CB.TestBase.Ex;
 import de.CB.TestBase.Global;
 import de.CB.TestBase.Res.ResourceCache;
 
-public class splash extends MainViewBase
-{
+public class splash extends MainViewBase {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(splash.class);
-	
+
 	private final long SPLASH_MIN_SHOW_TIME = 10;
 	private boolean nextClicked = false;
 	private long splashEndTime = 0;
 
-	public splash(float X, float Y, float Width, float Height, String Name)
-	{
+	public splash(float X, float Y, float Width, float Height, String Name) {
 		super(X, Y, Width, Height, Name);
 		splashEndTime = System.currentTimeMillis() + SPLASH_MIN_SHOW_TIME;
 
@@ -55,21 +53,17 @@ public class splash extends MainViewBase
 	boolean breakForWait = false;
 
 	@Override
-	public void onShow()
-	{
+	public void onShow() {
 		GL.that.addRenderView(this, GL.FRAME_RATE_FAST_ACTION);
 
 	}
 
 	@Override
-	protected void Initial()
-	{
+	protected void Initial() {
 		switcher = !switcher;
-		if (switcher && !breakForWait)
-		{
+		if (switcher && !breakForWait) {
 			// in jedem Render Vorgang einen Step ausf�hren
-			switch (step)
-			{
+			switch (step) {
 			case 0:
 				atlas = new TextureAtlas(Gdx.files.internal("skins/default/day/SplashPack.spp"));
 				setBackground(new SpriteDrawable(atlas.createSprite("splash-back")));
@@ -116,12 +110,12 @@ public class splash extends MainViewBase
 			step++;
 		}
 
-		if (step <= 101) resetInitial();
+		if (step <= 101)
+			resetInitial();
 	}
 
 	@Override
-	protected void SkinIsChanged()
-	{
+	protected void SkinIsChanged() {
 
 	}
 
@@ -129,20 +123,18 @@ public class splash extends MainViewBase
 	 * Step 1 <br>
 	 * add Progressbar
 	 */
-	private void ini_Progressbar()
-	{
+	private void ini_Progressbar() {
 
 		float ref = UiSizes.that.getWindowHeight() / 13;
-		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref, ref * 5,
-				(ref * 5) / 4.11f);
+		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref, ref * 5, (ref * 5) / 4.11f);
 
-		String VersionString = Global.getVersionString()+ Global.br + Global.br + Global.splashMsg;
-		GlyphLayout layout = new GlyphLayout(); 
-		layout.setText( Fonts.getNormal(),VersionString);
-		
+		String VersionString = Global.getVersionString() + Global.br + Global.br + Global.splashMsg;
+		GlyphLayout layout = new GlyphLayout();
+		layout.setText(Fonts.getNormal(), VersionString);
+
 		descTextView = new Label(this.name + " descTextView", 0, CB_LogoRec.getY() - ref - layout.height, this.getWidth(), layout.height + 10);
 
-		descTextView.setWrappedText(VersionString );
+		descTextView.setWrappedText(VersionString);
 		descTextView.setHAlignment(CB_UI_Base.GL_UI.Controls.Label.HAlignment.CENTER);
 		this.addChild(descTextView);
 
@@ -159,8 +151,7 @@ public class splash extends MainViewBase
 
 		float logoCalcRef = ref * 1.5f;
 		float w = logoCalcRef * 2.892655367231638f;
-		CB_RectF rec_Mapsforge_Logo = new CB_RectF(w, descTextView.getMinY() - (50 + logoCalcRef / 1.142f), logoCalcRef,
-				logoCalcRef / 1.142f);
+		CB_RectF rec_Mapsforge_Logo = new CB_RectF(w, descTextView.getMinY() - (50 + logoCalcRef / 1.142f), logoCalcRef, logoCalcRef / 1.142f);
 		CB_RectF rec_FX2_Logo = new CB_RectF(rec_Mapsforge_Logo);
 
 		float margin = UiSizes.that.getMargin() * 6;
@@ -168,15 +159,15 @@ public class splash extends MainViewBase
 		final float fXPos = xPos;
 		rec_Mapsforge_Logo.setX(xPos);
 
-		boolean resizeHeight=false;
-		
-		Mapsforge_Logo = new Image(rec_Mapsforge_Logo, "mapsforge_logo",resizeHeight);
+		boolean resizeHeight = false;
+
+		Mapsforge_Logo = new Image(rec_Mapsforge_Logo, "mapsforge_logo", resizeHeight);
 		Mapsforge_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("mapsforge_logo")));
 		this.addChild(Mapsforge_Logo);
 
 		rec_Mapsforge_Logo.setX(xPos + rec_Mapsforge_Logo.getWidth() + (margin * 2));
 
-		OSM_Logo = new Image(rec_Mapsforge_Logo, "osm_logo",resizeHeight);
+		OSM_Logo = new Image(rec_Mapsforge_Logo, "osm_logo", resizeHeight);
 		OSM_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("osm_logo")));
 		this.addChild(OSM_Logo);
 
@@ -184,7 +175,7 @@ public class splash extends MainViewBase
 		rec_Mapsforge_Logo.setX(xPos);
 		rec_Mapsforge_Logo.setY(rec_Mapsforge_Logo.getMinY() - rec_Mapsforge_Logo.getHeight() - margin);
 
-		CGeo_Logo = new Image(rec_Mapsforge_Logo, "cgeo",resizeHeight);
+		CGeo_Logo = new Image(rec_Mapsforge_Logo, "cgeo", resizeHeight);
 		CGeo_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("cgeo")));
 		this.addChild(CGeo_Logo);
 
@@ -194,7 +185,7 @@ public class splash extends MainViewBase
 		rec_Mapsforge_Logo.setX(xPos + rec_Mapsforge_Logo.getWidth() + (margin * 2) + div);
 		rec_Mapsforge_Logo.setY(rec_Mapsforge_Logo.getY() + div);
 
-		CB_Logo = new Image(rec_Mapsforge_Logo, "CB_Icon",resizeHeight);
+		CB_Logo = new Image(rec_Mapsforge_Logo, "CB_Icon", resizeHeight);
 		CB_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("CB_Icon")));
 		this.addChild(CB_Logo);
 
@@ -204,16 +195,12 @@ public class splash extends MainViewBase
 	 * Step 3 <br>
 	 * Load Translations
 	 */
-	private void ini_Translations()
-	{
+	private void ini_Translations() {
 		log.debug("ini_Translations");
 		new Translation("data", FileType.Internal);
-		try
-		{
+		try {
 			Translation.LoadTranslation("data/lang/en-GB/strings.ini");
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -222,8 +209,7 @@ public class splash extends MainViewBase
 	 * Step 4 <br>
 	 * Load Sprites
 	 */
-	private void ini_Sprites()
-	{
+	private void ini_Sprites() {
 		log.debug("ini_Sprites");
 		ResourceCache.LoadSprites(false);
 		GL_UISizes.initial(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight());
@@ -233,8 +219,7 @@ public class splash extends MainViewBase
 	 * Step 5 <br>
 	 * show select DB Dialog
 	 */
-	private void ini_SelectDB()
-	{
+	private void ini_SelectDB() {
 
 	}
 
@@ -242,8 +227,7 @@ public class splash extends MainViewBase
 	 * Step 6<br>
 	 * Load Cache DB3
 	 */
-	private void ini_CacheDB()
-	{
+	private void ini_CacheDB() {
 		log.debug("ini_CacheDB");
 		// chk if exist filter preset splitter "#" and Replace
 
@@ -253,8 +237,7 @@ public class splash extends MainViewBase
 	 * Step 7 <br>
 	 * chk installed map packs/layers
 	 */
-	private void ini_MapPaks()
-	{
+	private void ini_MapPaks() {
 		log.debug("ini_MapPaks");
 		ManagerBase.Manager.initialMapPacks();
 	}
@@ -263,11 +246,9 @@ public class splash extends MainViewBase
 	 * Last Step <br>
 	 * Show TabMainView
 	 */
-	private void ini_TabMainView()
-	{
+	private void ini_TabMainView() {
 
-		if (splashEndTime > System.currentTimeMillis() && !nextClicked)
-		{
+		if (splashEndTime > System.currentTimeMillis() && !nextClicked) {
 			this.removeChild(progress);
 			GL.that.renderOnce();
 			return;
@@ -281,15 +262,18 @@ public class splash extends MainViewBase
 	}
 
 	@Override
-	public void dispose()
-	{
+	public void dispose() {
 		this.removeChildsDirekt();
 
-		if (descTextView != null) descTextView.dispose();
+		if (descTextView != null)
+			descTextView.dispose();
 
-		if (Mapsforge_Logo != null) Mapsforge_Logo.dispose();
-		if (progress != null) progress.dispose();
-		if (atlas != null) atlas.dispose();
+		if (Mapsforge_Logo != null)
+			Mapsforge_Logo.dispose();
+		if (progress != null)
+			progress.dispose();
+		if (atlas != null)
+			atlas.dispose();
 
 		descTextView = null;
 
@@ -300,8 +284,7 @@ public class splash extends MainViewBase
 	}
 
 	@Override
-	public boolean onTouchDown(int x, int y, int pointer, int button)
-	{
+	public boolean onTouchDown(int x, int y, int pointer, int button) {
 		nextClicked = true;
 		return super.onTouchDown(x, y, pointer, button);
 	}

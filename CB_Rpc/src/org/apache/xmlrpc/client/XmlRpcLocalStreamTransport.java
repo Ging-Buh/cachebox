@@ -30,7 +30,6 @@ import org.apache.xmlrpc.common.XmlRpcStreamRequestConfig;
 import org.apache.xmlrpc.common.XmlRpcStreamRequestProcessor;
 import org.xml.sax.SAXException;
 
-
 /** Another local transport for debugging and testing. This one is
  * similar to the {@link org.apache.xmlrpc.client.XmlRpcLocalTransport},
  * except that it adds request serialization. In other words, it is
@@ -40,14 +39,13 @@ import org.xml.sax.SAXException;
 public class XmlRpcLocalStreamTransport extends XmlRpcStreamTransport {
 	private final XmlRpcStreamRequestProcessor localServer;
 	private LocalStreamConnection conn;
-    private XmlRpcRequest request;
-	
+	private XmlRpcRequest request;
+
 	/** Creates a new instance.
 	 * @param pClient The client, which is controlling the transport.
 	 * @param pServer An instance of {@link XmlRpcStreamRequestProcessor}.
 	 */
-	public XmlRpcLocalStreamTransport(XmlRpcClient pClient,
-			XmlRpcStreamRequestProcessor pServer) {
+	public XmlRpcLocalStreamTransport(XmlRpcClient pClient, XmlRpcStreamRequestProcessor pServer) {
 		super(pClient);
 		localServer = pServer;
 	}
@@ -64,15 +62,13 @@ public class XmlRpcLocalStreamTransport extends XmlRpcStreamTransport {
 		return new ByteArrayInputStream(conn.getResponse().toByteArray());
 	}
 
-	protected ReqWriter newReqWriter(XmlRpcRequest pRequest)
-            throws XmlRpcException, IOException, SAXException {
-	    request = pRequest;
-        return super.newReqWriter(pRequest);
-    }
+	protected ReqWriter newReqWriter(XmlRpcRequest pRequest) throws XmlRpcException, IOException, SAXException {
+		request = pRequest;
+		return super.newReqWriter(pRequest);
+	}
 
-    protected void writeRequest(ReqWriter pWriter)
-            throws XmlRpcException, IOException, SAXException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();		
+	protected void writeRequest(ReqWriter pWriter) throws XmlRpcException, IOException, SAXException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		pWriter.write(baos);
 		XmlRpcStreamRequestConfig config = (XmlRpcStreamRequestConfig) request.getConfig();
 		conn = new LocalStreamConnection(config, new ByteArrayInputStream(baos.toByteArray()));

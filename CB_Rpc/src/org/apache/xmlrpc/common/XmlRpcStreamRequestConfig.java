@@ -20,7 +20,6 @@ package org.apache.xmlrpc.common;
 
 import org.apache.xmlrpc.XmlRpcRequestConfig;
 
-
 /** Interface of a client configuration for a transport, which
  * is implemented by writing to a stream.
  */
@@ -31,6 +30,7 @@ public interface XmlRpcStreamRequestConfig extends XmlRpcStreamConfig, XmlRpcReq
 	 * @see #isGzipRequesting()
 	 */
 	boolean isGzipCompressing();
+
 	/** Returns, whether compression is requested for the response stream.
 	 * Note, that the request is stull uncompressed, unless
 	 * {@link #isGzipCompressing()} is activated. Also note, that the
@@ -39,10 +39,11 @@ public interface XmlRpcStreamRequestConfig extends XmlRpcStreamConfig, XmlRpcReq
 	 * @see #isGzipCompressing()
 	 */
 	boolean isGzipRequesting();
+
 	/** Returns, whether the response should contain a "faultCause" element
-     * in case of errors. The "faultCause" is an exception, which the
-     * server has trapped and written into a byte stream as a serializable
-     * object.
+	 * in case of errors. The "faultCause" is an exception, which the
+	 * server has trapped and written into a byte stream as a serializable
+	 * object.
 	 */
 	boolean isEnabledForExceptions();
 }

@@ -21,7 +21,6 @@ package org.apache.xmlrpc.parser;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
 /** Parser for byte values.
  */
 public class I1Parser extends AtomicParser {
@@ -29,8 +28,7 @@ public class I1Parser extends AtomicParser {
 		try {
 			super.setResult(new Byte(pResult.trim()));
 		} catch (NumberFormatException e) {
-			throw new SAXParseException("Failed to parse byte value: " + pResult,
-										getDocumentLocator());
+			throw new SAXParseException("Failed to parse byte value: " + pResult, getDocumentLocator());
 		}
 	}
 }

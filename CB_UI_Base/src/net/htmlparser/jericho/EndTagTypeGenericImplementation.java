@@ -53,10 +53,10 @@ public class EndTagTypeGenericImplementation extends EndTagType {
 	 * @param isStatic  determines whether the end tag text {@linkplain #isStatic() is static}.
 	 */
 	protected EndTagTypeGenericImplementation(final String description, final String startDelimiter, final String closingDelimiter, final boolean isServerTag, final boolean isStatic) {
-		super(description,startDelimiter,closingDelimiter,isServerTag);
-		staticString=isStatic ? (startDelimiter+closingDelimiter) : null;
+		super(description, startDelimiter, closingDelimiter, isServerTag);
+		staticString = isStatic ? (startDelimiter + closingDelimiter) : null;
 	}
-	
+
 	/**
 	 * Indicates whether the {@linkplain #generateHTML(String) end tag text} is static.
 	 * <br />(<a href="TagType.html#Property">property</a> and <a href="#ImplementationAssistance">implementation assistance</a> method)
@@ -76,7 +76,7 @@ public class EndTagTypeGenericImplementation extends EndTagType {
 	 * @return <code>true</code> if the {@linkplain #generateHTML(String) end tag text} is static, otherwise <code>false</code>.
 	 */
 	protected final boolean isStatic() {
-		return staticString!=null;
+		return staticString != null;
 	}
 
 	/**
@@ -136,30 +136,36 @@ public class EndTagTypeGenericImplementation extends EndTagType {
 	 * @return a tag of this type at the specified position in the specified source document if it meets all of the required features, or <code>null</code> if it does not meet the criteria.
 	 */
 	protected Tag constructTagAt(final Source source, final int pos) {
-		final ParseText parseText=source.getParseText();
-		final int nameBegin=pos+START_DELIMITER_PREFIX.length();
-		String name=null;
-		final int startDelimiterEnd=pos+getStartDelimiter().length();
-		int end=-1;
+		final ParseText parseText = source.getParseText();
+		final int nameBegin = pos + START_DELIMITER_PREFIX.length();
+		String name = null;
+		final int startDelimiterEnd = pos + getStartDelimiter().length();
+		int end = -1;
 		if (isStatic()) {
-			name=getNamePrefix();
-			if (!parseText.containsAt(getClosingDelimiter(),startDelimiterEnd)) {
-				if (source.logger.isErrorEnabled()) source.logger.error(source.getRowColumnVector(pos).appendTo(new StringBuilder(200).append("EndTag of expected format ").append(staticString).append(" at ")).append(" not recognised as type '").append(getDescription()).append("' because it is missing the closing delimiter").toString());
+			name = getNamePrefix();
+			if (!parseText.containsAt(getClosingDelimiter(), startDelimiterEnd)) {
+				if (source.logger.isErrorEnabled())
+					source.logger.error(source.getRowColumnVector(pos).appendTo(new StringBuilder(200).append("EndTag of expected format ").append(staticString).append(" at ")).append(" not recognised as type '").append(getDescription())
+							.append("' because it is missing the closing delimiter").toString());
 				return null;
 			}
-			end=startDelimiterEnd+getClosingDelimiter().length();
+			end = startDelimiterEnd + getClosingDelimiter().length();
 		} else {
-			final int nameEnd=source.getNameEnd(startDelimiterEnd);
-			if (nameEnd==-1) return null;
-			name=source.getName(nameBegin,nameEnd);
-			int expectedClosingDelimiterPos=nameEnd;
-			while (Segment.isWhiteSpace(parseText.charAt(expectedClosingDelimiterPos))) expectedClosingDelimiterPos++;
-			if (!parseText.containsAt(getClosingDelimiter(),expectedClosingDelimiterPos)) {
-				if (source.logger.isErrorEnabled()) source.logger.error(source.getRowColumnVector(pos).appendTo(new StringBuilder(200).append("EndTag ").append(name).append(" at ")).append(" not recognised as type '").append(getDescription()).append("' because its name and closing delimiter are separated by characters other than white space").toString());
+			final int nameEnd = source.getNameEnd(startDelimiterEnd);
+			if (nameEnd == -1)
+				return null;
+			name = source.getName(nameBegin, nameEnd);
+			int expectedClosingDelimiterPos = nameEnd;
+			while (Segment.isWhiteSpace(parseText.charAt(expectedClosingDelimiterPos)))
+				expectedClosingDelimiterPos++;
+			if (!parseText.containsAt(getClosingDelimiter(), expectedClosingDelimiterPos)) {
+				if (source.logger.isErrorEnabled())
+					source.logger.error(source.getRowColumnVector(pos).appendTo(new StringBuilder(200).append("EndTag ").append(name).append(" at ")).append(" not recognised as type '").append(getDescription())
+							.append("' because its name and closing delimiter are separated by characters other than white space").toString());
 				return null;
 			}
-			end=expectedClosingDelimiterPos+getClosingDelimiter().length();
+			end = expectedClosingDelimiterPos + getClosingDelimiter().length();
 		}
-		return constructEndTag(source,pos,end,name);
+		return constructEndTag(source, pos, end, name);
 	}
 }

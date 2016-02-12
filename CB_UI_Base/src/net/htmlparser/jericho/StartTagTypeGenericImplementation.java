@@ -51,7 +51,7 @@ public class StartTagTypeGenericImplementation extends StartTagType {
 	 * @param isServerTag  indicates whether the new start tag type is a {@linkplain #isServerTag() server tag}.
 	 */
 	protected StartTagTypeGenericImplementation(final String description, final String startDelimiter, final String closingDelimiter, final EndTagType correspondingEndTagType, final boolean isServerTag) {
-		this(description,startDelimiter,closingDelimiter,correspondingEndTagType,isServerTag,false,false);
+		this(description, startDelimiter, closingDelimiter, correspondingEndTagType, isServerTag, false, false);
 	}
 
 	/**
@@ -66,9 +66,10 @@ public class StartTagTypeGenericImplementation extends StartTagType {
 	 * @param hasAttributes  indicates whether the new start tag type {@linkplain #hasAttributes() has attributes}.
 	 * @param isNameAfterPrefixRequired  indicates whether a {@linkplain #isNameAfterPrefixRequired() name is required after the prefix}.
 	 */
-	protected StartTagTypeGenericImplementation(final String description, final String startDelimiter, final String closingDelimiter, final EndTagType correspondingEndTagType, final boolean isServerTag, final boolean hasAttributes, final boolean isNameAfterPrefixRequired) {
-		super(description,startDelimiter,closingDelimiter,correspondingEndTagType,isServerTag,hasAttributes,isNameAfterPrefixRequired);
-		nameCharAfterPrefixAllowed=(getNamePrefix().length()==0 || !Character.isLetter(getNamePrefix().charAt(getNamePrefix().length()-1)));
+	protected StartTagTypeGenericImplementation(final String description, final String startDelimiter, final String closingDelimiter, final EndTagType correspondingEndTagType, final boolean isServerTag, final boolean hasAttributes,
+			final boolean isNameAfterPrefixRequired) {
+		super(description, startDelimiter, closingDelimiter, correspondingEndTagType, isServerTag, hasAttributes, isNameAfterPrefixRequired);
+		nameCharAfterPrefixAllowed = (getNamePrefix().length() == 0 || !Character.isLetter(getNamePrefix().charAt(getNamePrefix().length() - 1)));
 	}
 
 	/**
@@ -112,34 +113,38 @@ public class StartTagTypeGenericImplementation extends StartTagType {
 	 * @return a tag of this type at the specified position in the specified source document if it meets all of the required features, or <code>null</code> if it does not meet the criteria.
 	 */
 	protected Tag constructTagAt(final Source source, final int pos) {
-		final ParseText parseText=source.getParseText();
-		final int nameBegin=pos+1;
-		String name=getNamePrefix();
-		int nameEnd=nameBegin+getNamePrefix().length();
+		final ParseText parseText = source.getParseText();
+		final int nameBegin = pos + 1;
+		String name = getNamePrefix();
+		int nameEnd = nameBegin + getNamePrefix().length();
 		if (isNameAfterPrefixRequired()) {
-			final int extendedNameEnd=source.getNameEnd(nameEnd);
-			if (extendedNameEnd==-1) return null;
-			name=source.getName(nameBegin,extendedNameEnd);
-			nameEnd=extendedNameEnd;
+			final int extendedNameEnd = source.getNameEnd(nameEnd);
+			if (extendedNameEnd == -1)
+				return null;
+			name = source.getName(nameBegin, extendedNameEnd);
+			nameEnd = extendedNameEnd;
 		} else if (!nameCharAfterPrefixAllowed && Tag.isXMLNameChar(parseText.charAt(nameEnd))) {
 			return null;
 		}
 		int end;
-		Attributes attributes=null;
+		Attributes attributes = null;
 		if (hasAttributes()) {
 			// it is necessary to get the attributes so that we can be sure that the search on the closing delimiter doesn't pick up
 			// anything from the attribute values, which can legally contain ">" characters.
-			attributes=parseAttributes(source,pos,name);
-			if (attributes==null) return null; // happens if attributes not properly formed
-			end=getEnd(source,attributes.getEnd()); // should always return a valid end
+			attributes = parseAttributes(source, pos, name);
+			if (attributes == null)
+				return null; // happens if attributes not properly formed
+			end = getEnd(source, attributes.getEnd()); // should always return a valid end
 		} else {
-			end=getEnd(source,nameEnd);
-			if (end<0) {
-				if (end==-1 && source.logger.isErrorEnabled()) source.logger.error(source.getRowColumnVector(pos).appendTo(new StringBuilder(200).append("StartTag ").append(name).append(" at ")).append(" not recognised as type '").append(getDescription()).append("' because it has no closing delimiter").toString());
+			end = getEnd(source, nameEnd);
+			if (end < 0) {
+				if (end == -1 && source.logger.isErrorEnabled())
+					source.logger.error(source.getRowColumnVector(pos).appendTo(new StringBuilder(200).append("StartTag ").append(name).append(" at ")).append(" not recognised as type '").append(getDescription())
+							.append("' because it has no closing delimiter").toString());
 				return null;
 			}
 		}
-		return constructStartTag(source,pos,end,name,attributes);
+		return constructStartTag(source, pos, end, name, attributes);
 	}
 
 	/**
@@ -157,7 +162,7 @@ public class StartTagTypeGenericImplementation extends StartTagType {
 	 * @return the {@linkplain Tag#getEnd() end} of a tag of this type, starting from the specified position in the specified source document, or <code>-1</code> if the end of the tag can not be found.
 	 */
 	protected int getEnd(final Source source, final int pos) {
-		final int delimiterBegin=source.getParseText().indexOf(getClosingDelimiter(),pos);
-		return (delimiterBegin==-1 ? -1 : delimiterBegin+getClosingDelimiter().length());
+		final int delimiterBegin = source.getParseText().indexOf(getClosingDelimiter(), pos);
+		return (delimiterBegin == -1 ? -1 : delimiterBegin + getClosingDelimiter().length());
 	}
 }

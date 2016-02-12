@@ -22,10 +22,10 @@ import org.mapsforge.core.graphics.Path;
 class AwtPath implements Path {
 	private static int getWindingRule(FillRule fillRule) {
 		switch (fillRule) {
-			case EVEN_ODD:
-				return Path2D.WIND_EVEN_ODD;
-			case NON_ZERO:
-				return Path2D.WIND_NON_ZERO;
+		case EVEN_ODD:
+			return Path2D.WIND_EVEN_ODD;
+		case NON_ZERO:
+			return Path2D.WIND_NON_ZERO;
 		}
 
 		throw new IllegalArgumentException("unknown fill rule:" + fillRule);

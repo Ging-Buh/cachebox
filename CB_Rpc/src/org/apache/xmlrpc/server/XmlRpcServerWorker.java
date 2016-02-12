@@ -24,7 +24,6 @@ import org.apache.xmlrpc.XmlRpcRequest;
 import org.apache.xmlrpc.common.XmlRpcController;
 import org.apache.xmlrpc.common.XmlRpcWorker;
 
-
 /** Server specific implementation of {@link XmlRpcWorker}.
  */
 public class XmlRpcServerWorker implements XmlRpcWorker {
@@ -37,7 +36,9 @@ public class XmlRpcServerWorker implements XmlRpcWorker {
 		factory = pFactory;
 	}
 
-	public XmlRpcController getController() { return factory.getController(); }
+	public XmlRpcController getController() {
+		return factory.getController();
+	}
 
 	public Object execute(XmlRpcRequest pRequest) throws XmlRpcException {
 		XmlRpcServer server = (XmlRpcServer) getController();

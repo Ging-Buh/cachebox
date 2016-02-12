@@ -23,8 +23,7 @@ import org.mapsforge.core.graphics.Paint;
 /**
  * @author Longri
  */
-public interface ext_GraphicFactory extends org.mapsforge.core.graphics.GraphicFactory
-{
+public interface ext_GraphicFactory extends org.mapsforge.core.graphics.GraphicFactory {
 
 	final static HashMap<Float, ext_GraphicFactory> FactoryList = new HashMap<Float, ext_GraphicFactory>();
 

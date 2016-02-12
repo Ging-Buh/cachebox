@@ -29,8 +29,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
  * 
  * @author Longri
  */
-public interface render3D
-{
+public interface render3D {
 	public void render3d(ModelBatch modelBatch);
 
 	/**

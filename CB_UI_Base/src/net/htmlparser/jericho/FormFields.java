@@ -168,8 +168,8 @@ import java.util.*;
  * @see FormControl
  */
 public final class FormFields extends AbstractCollection<FormField> {
-	private final LinkedHashMap<String,FormField> map=new LinkedHashMap<String,FormField>();
-	private final ArrayList<FormControl> formControls=new ArrayList<FormControl>();
+	private final LinkedHashMap<String, FormField> map = new LinkedHashMap<String, FormField>();
+	private final ArrayList<FormControl> formControls = new ArrayList<FormControl>();
 
 	/**
 	 * Constructs a new <code>FormFields</code> object consisting of the specified {@linkplain FormControl form controls}.
@@ -181,7 +181,7 @@ public final class FormFields extends AbstractCollection<FormField> {
 		// but it seems to work here and there is no explicit mention in the Java language spec about any potential problems.
 		// The alternative is an ugly static FormFields constructFrom(List formControls) method.
 		for (FormControl formControl : formControls) {
-			if (formControl.getName()!=null && formControl.getName().length()!=0) {
+			if (formControl.getName() != null && formControl.getName().length() != 0) {
 				formControl.addToFormFields(this);
 				this.formControls.add(formControl);
 			}
@@ -218,7 +218,8 @@ public final class FormFields extends AbstractCollection<FormField> {
 	 * @return the <code>FormField</code> with the specified {@linkplain FormField#getName() name}, or <code>null</code> if no <code>FormField</code> with the specified name exists.
 	 */
 	public FormField get(String fieldName) {
-		if (Config.CurrentCompatibilityMode.isFormFieldNameCaseInsensitive()) fieldName=fieldName.toLowerCase();
+		if (Config.CurrentCompatibilityMode.isFormFieldNameCaseInsensitive())
+			fieldName = fieldName.toLowerCase();
 		return map.get(fieldName);
 	}
 
@@ -250,8 +251,8 @@ public final class FormFields extends AbstractCollection<FormField> {
 	 * @see FormField#getValues()
 	 */
 	public List<String> getValues(final String fieldName) {
-		final FormField formField=get(fieldName);
-		return formField==null ? null : formField.getValues();
+		final FormField formField = get(fieldName);
+		return formField == null ? null : formField.getValues();
 	}
 
 	/**
@@ -269,12 +270,13 @@ public final class FormFields extends AbstractCollection<FormField> {
 	 * @return the entire <a href="#FieldDataSet">field data set</a> represented by the {@linkplain FormField#getValues() values} of the constituent form fields.
 	 * @see #setDataSet(Map)
 	 */
-	public Map<String,String[]> getDataSet() {
-		final LinkedHashMap<String,String[]> map=new LinkedHashMap<String,String[]>((int)(getCount()/0.7));
+	public Map<String, String[]> getDataSet() {
+		final LinkedHashMap<String, String[]> map = new LinkedHashMap<String, String[]>((int) (getCount() / 0.7));
 		for (FormField formField : this) {
-			final List<String> values=formField.getValues();
-			if (values.isEmpty()) continue;
-			map.put(formField.getName(),values.toArray(new String[values.size()]));
+			final List<String> values = formField.getValues();
+			if (values.isEmpty())
+				continue;
+			map.put(formField.getName(), values.toArray(new String[values.size()]));
 		}
 		return map;
 	}
@@ -284,7 +286,8 @@ public final class FormFields extends AbstractCollection<FormField> {
 	 * @see FormControl#clearValues()
 	 */
 	public void clearValues() {
-		for (FormControl formControl : formControls) formControl.clearValues();
+		for (FormControl formControl : formControls)
+			formControl.clearValues();
 	}
 
 	/**
@@ -305,13 +308,15 @@ public final class FormFields extends AbstractCollection<FormField> {
 	 * @param dataSet  the <a href="#FieldDataSet">field data set</a> containing the new {@linkplain FormField#setValues(Collection) values} of the constituent form fields.
 	 * @see #getDataSet()
 	 */
-	public void setDataSet(final Map<String,String[]> dataSet) {
+	public void setDataSet(final Map<String, String[]> dataSet) {
 		clearValues();
-		if (map==null) return;
-		for (Map.Entry<String,String[]> entry : dataSet.entrySet()) {
-			final String fieldName=entry.getKey();
-			final FormField formField=get(fieldName);
-			if (formField!=null) formField.addValues(entry.getValue());
+		if (map == null)
+			return;
+		for (Map.Entry<String, String[]> entry : dataSet.entrySet()) {
+			final String fieldName = entry.getKey();
+			final FormField formField = get(fieldName);
+			if (formField != null)
+				formField.addValues(entry.getValue());
 		}
 	}
 
@@ -321,7 +326,7 @@ public final class FormFields extends AbstractCollection<FormField> {
 	 * <p>
 	 * This is equivalent to {@link #get(String) get(fieldName)}<code>.</code>{@link FormField#setValue(String) setValue(value)},
 	 * assuming that a field with the specified name exists in this collection.
- 	 * <p>
+	 * <p>
 	 * The return value indicates whether the specified form field "accepted" the value.
 	 * A return value of <code>false</code> implies an error condition as either no field with the specified name exists, or
 	 * the specified value is not compatible with the specified field.
@@ -331,8 +336,8 @@ public final class FormFields extends AbstractCollection<FormField> {
 	 * @return <code>true</code> if a field of the specified name exists in this collection and it accepts the specified value, otherwise <code>false</code>.
 	 */
 	public boolean setValue(final String fieldName, final String value) {
-		final FormField formField=get(fieldName);
-		return formField==null ? false : formField.setValue(value);
+		final FormField formField = get(fieldName);
+		return formField == null ? false : formField.setValue(value);
 	}
 
 	/**
@@ -341,7 +346,7 @@ public final class FormFields extends AbstractCollection<FormField> {
 	 * <p>
 	 * This is equivalent to {@link #get(String) get(fieldName)}<code>.</code>{@link FormField#addValue(String) addValue(value)},
 	 * assuming that a field with the specified name exists in this collection.
- 	 * <p>
+	 * <p>
 	 * The return value indicates whether the specified form field "accepted" the value.
 	 * A return value of <code>false</code> implies an error condition as either no field with the specified name exists, or
 	 * the specified value is not compatible with the specified field.
@@ -351,8 +356,8 @@ public final class FormFields extends AbstractCollection<FormField> {
 	 * @return <code>true</code> if a field of the specified name exists in this collection and it accepts the specified value, otherwise <code>false</code>.
 	 */
 	public boolean addValue(final String fieldName, final String value) {
-		final FormField formField=get(fieldName);
-		return formField==null ? false : formField.addValue(value);
+		final FormField formField = get(fieldName);
+		return formField == null ? false : formField.addValue(value);
 	}
 
 	/**
@@ -370,13 +375,11 @@ public final class FormFields extends AbstractCollection<FormField> {
 	 */
 	public String[] getColumnLabels() {
 		initColumns();
-		final String[] columnLabels=new String[columns.length];
-		for (int i=0 ; i<columns.length; i++) {
-			final Column column=columns[i];
-			final String fieldName=column.formField.getFirstFormControl().getName(); // use this instead of formControl.getName() so that the original case is used even if Config.CurrentCompatibilityMode.isFormFieldNameCaseInsensitive() is true.
-			columnLabels[i]=column.predefinedValue!=null
-				? fieldName+'.'+column.predefinedValue
-				: fieldName;
+		final String[] columnLabels = new String[columns.length];
+		for (int i = 0; i < columns.length; i++) {
+			final Column column = columns[i];
+			final String fieldName = column.formField.getFirstFormControl().getName(); // use this instead of formControl.getName() so that the original case is used even if Config.CurrentCompatibilityMode.isFormFieldNameCaseInsensitive() is true.
+			columnLabels[i] = column.predefinedValue != null ? fieldName + '.' + column.predefinedValue : fieldName;
 		}
 		return columnLabels;
 	}
@@ -415,8 +418,8 @@ public final class FormFields extends AbstractCollection<FormField> {
 	 *      <li>
 	 *       If the form field has only one {@linkplain FormField#getPredefinedValues() predefined value},
 	 *       such as a single {@linkplain FormControlType#CHECKBOX checkbox}, then:
- 	 *       <ul>
- 	 *        <li>
+	 *       <ul>
+	 *        <li>
 	 *         Add a single boolean column:
 	 *         <table class="CompactDL">
 	 *          <tr><td>{@linkplain #getColumnLabels() Label}:<td>the {@linkplain FormField#getName() name} of the form field in original case
@@ -428,8 +431,8 @@ public final class FormFields extends AbstractCollection<FormField> {
 	 *      <li>
 	 *       Otherwise, if the form field has more than one {@linkplain FormField#getPredefinedValues() predefined value},
 	 *       such as a set of {@linkplain FormControlType#RADIO radio buttons}, then:
- 	 *       <ul>
- 	 *        <li>
+	 *       <ul>
+	 *        <li>
 	 *         Add a single column:
 	 *         <table class="CompactDL">
 	 *          <tr><td>{@linkplain #getColumnLabels() Label}:<td>the {@linkplain FormField#getName() name} of the form field in original case
@@ -460,8 +463,8 @@ public final class FormFields extends AbstractCollection<FormField> {
 	 *       </ul>
 	 *      <li>
 	 *       In addition, if the form field can also contain user values ({@link FormField#getUserValueCount()}<code>&gt;0</code>), then:
- 	 *       <ul>
- 	 *        <li>
+	 *       <ul>
+	 *        <li>
 	 *         Add another column:
 	 *         <table class="CompactDL">
 	 *          <tr><td>{@linkplain #getColumnLabels() Label}:<td>the {@linkplain FormField#getName() name} of the form field in original case
@@ -482,33 +485,37 @@ public final class FormFields extends AbstractCollection<FormField> {
 	 * @see #getColumnLabels()
 	 * @see #getColumnValues()
 	 */
-	public String[] getColumnValues(final Map<String,String[]> dataSet) {
+	public String[] getColumnValues(final Map<String, String[]> dataSet) {
 		initColumns();
-		final String[] columnValues=new String[columns.length];
-		if (Config.ColumnValueFalse!=null) {
+		final String[] columnValues = new String[columns.length];
+		if (Config.ColumnValueFalse != null) {
 			// initialise all boolean columns with false string
-			for (int i=0; i<columns.length; i++)
-				if (columns[i].isBoolean) columnValues[i]=Config.ColumnValueFalse;
+			for (int i = 0; i < columns.length; i++)
+				if (columns[i].isBoolean)
+					columnValues[i] = Config.ColumnValueFalse;
 		}
-		for (Map.Entry<String,String[]> entry : dataSet.entrySet()) {
-			final String fieldName=entry.getKey();
-			final FormField formField=get(fieldName);
-			if (formField!=null) {
-				final int columnIndex=formField.columnIndex;
+		for (Map.Entry<String, String[]> entry : dataSet.entrySet()) {
+			final String fieldName = entry.getKey();
+			final FormField formField = get(fieldName);
+			if (formField != null) {
+				final int columnIndex = formField.columnIndex;
 				for (String value : entry.getValue()) {
-					for (int ci=columnIndex; ci<columns.length; ci++) {
-						final Column column=columns[ci];
-						if (column.formField!=formField) break;
-						if (column.predefinedValue!=null) {
-							if (!column.predefinedValue.equals(value)) continue;
-							columnValues[ci]=Config.ColumnValueTrue;
+					for (int ci = columnIndex; ci < columns.length; ci++) {
+						final Column column = columns[ci];
+						if (column.formField != formField)
+							break;
+						if (column.predefinedValue != null) {
+							if (!column.predefinedValue.equals(value))
+								continue;
+							columnValues[ci] = Config.ColumnValueTrue;
 						} else {
 							if (column.isBoolean) {
-								if (value!=null) columnValues[ci]=Config.ColumnValueTrue;
-							} else if (columnValues[ci]==null) {
-								columnValues[ci]=value;
+								if (value != null)
+									columnValues[ci] = Config.ColumnValueTrue;
+							} else if (columnValues[ci] == null) {
+								columnValues[ci] = value;
 							} else {
-								columnValues[ci]=columnValues[ci]+Config.ColumnMultipleValueSeparator+value;
+								columnValues[ci] = columnValues[ci] + Config.ColumnMultipleValueSeparator + value;
 							}
 						}
 						break;
@@ -532,31 +539,35 @@ public final class FormFields extends AbstractCollection<FormField> {
 	}
 
 	private void initColumns() {
-		if (columns!=null) return;
-		final ArrayList<Column> columnList=new ArrayList<Column>();
+		if (columns != null)
+			return;
+		final ArrayList<Column> columnList = new ArrayList<Column>();
 		for (FormField formField : this) {
-			formField.columnIndex=columnList.size();
+			formField.columnIndex = columnList.size();
 			if (!formField.allowsMultipleValues() || formField.getPredefinedValues().isEmpty()) {
-				columnList.add(new Column(formField,formField.getPredefinedValues().size()==1,null));
+				columnList.add(new Column(formField, formField.getPredefinedValues().size() == 1, null));
 			} else {
 				// add a column for every predefined value
 				for (String predefinedValue : formField.getPredefinedValues())
-					columnList.add(new Column(formField,true,predefinedValue));
-				if (formField.getUserValueCount()>0) columnList.add(new Column(formField,false,null)); // add a column for user values, must come after predefined values for algorithm in getColumnValues to work
+					columnList.add(new Column(formField, true, predefinedValue));
+				if (formField.getUserValueCount() > 0)
+					columnList.add(new Column(formField, false, null)); // add a column for user values, must come after predefined values for algorithm in getColumnValues to work
 			}
 		}
-		columns=columnList.toArray(new Column[columnList.size()]);
+		columns = columnList.toArray(new Column[columnList.size()]);
 	}
-	private Column[] columns=null;
+
+	private Column[] columns = null;
 
 	private static class Column {
 		public FormField formField;
 		public boolean isBoolean;
 		public String predefinedValue;
+
 		public Column(final FormField formField, final boolean isBoolean, final String predefinedValue) {
-			this.formField=formField;
-			this.isBoolean=isBoolean;
-			this.predefinedValue=predefinedValue;
+			this.formField = formField;
+			this.isBoolean = isBoolean;
+			this.predefinedValue = predefinedValue;
 		}
 	}
 
@@ -585,10 +596,10 @@ public final class FormFields extends AbstractCollection<FormField> {
 	 */
 	public void merge(final FormFields formFields) {
 		for (FormField formField : formFields) {
-			final String fieldName=formField.getName();
-			final FormField existingFormField=get(fieldName);
-			if (existingFormField==null)
-				map.put(formField.getName(),formField);
+			final String fieldName = formField.getName();
+			final FormField existingFormField = get(fieldName);
+			if (existingFormField == null)
+				map.put(formField.getName(), formField);
 			else
 				existingFormField.merge(formField);
 		}
@@ -599,8 +610,9 @@ public final class FormFields extends AbstractCollection<FormField> {
 	 * @return a string representation of this object useful for debugging purposes.
 	 */
 	public String getDebugInfo() {
-		final StringBuilder sb=new StringBuilder();
-		for (FormField formField : this) sb.append(formField);
+		final StringBuilder sb = new StringBuilder();
+		for (FormField formField : this)
+			sb.append(formField);
 		return sb.toString();
 	}
 
@@ -616,28 +628,30 @@ public final class FormFields extends AbstractCollection<FormField> {
 	}
 
 	void add(final FormControl formControl) {
-		add(formControl,formControl.getPredefinedValue());
+		add(formControl, formControl.getPredefinedValue());
 	}
 
 	void add(final FormControl formControl, final String predefinedValue) {
-		add(formControl,predefinedValue,formControl.name);
+		add(formControl, predefinedValue, formControl.name);
 	}
 
 	void addName(final FormControl formControl, final String fieldName) {
-		add(formControl,null,fieldName);
+		add(formControl, null, fieldName);
 	}
 
 	void add(final FormControl formControl, final String predefinedValue, String fieldName) {
-		if (Config.CurrentCompatibilityMode.isFormFieldNameCaseInsensitive()) fieldName=fieldName.toLowerCase();
-		FormField formField=map.get(fieldName);
-		if (formField==null) {
-			formField=new FormField(fieldName);
-			map.put(formField.getName(),formField);
+		if (Config.CurrentCompatibilityMode.isFormFieldNameCaseInsensitive())
+			fieldName = fieldName.toLowerCase();
+		FormField formField = map.get(fieldName);
+		if (formField == null) {
+			formField = new FormField(fieldName);
+			map.put(formField.getName(), formField);
 		}
-		formField.addFormControl(formControl,predefinedValue);
+		formField.addFormControl(formControl, predefinedValue);
 	}
 
 	void replaceInOutputDocument(final OutputDocument outputDocument) {
-		for (FormControl formControl : formControls) outputDocument.replace(formControl);
+		for (FormControl formControl : formControls)
+			outputDocument.replace(formControl);
 	}
 }

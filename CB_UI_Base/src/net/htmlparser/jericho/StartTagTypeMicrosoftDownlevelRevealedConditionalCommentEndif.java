@@ -21,9 +21,9 @@
 package net.htmlparser.jericho;
 
 final class StartTagTypeMicrosoftDownlevelRevealedConditionalCommentEndif extends StartTagTypeGenericImplementation {
-	static final StartTagTypeMicrosoftDownlevelRevealedConditionalCommentEndif INSTANCE=new StartTagTypeMicrosoftDownlevelRevealedConditionalCommentEndif();
+	static final StartTagTypeMicrosoftDownlevelRevealedConditionalCommentEndif INSTANCE = new StartTagTypeMicrosoftDownlevelRevealedConditionalCommentEndif();
 
 	private StartTagTypeMicrosoftDownlevelRevealedConditionalCommentEndif() {
-		super("Microsoft downlevel-revealed conditional comment ENDIF","<![endif]>","",null,false);
+		super("Microsoft downlevel-revealed conditional comment ENDIF", "<![endif]>", "", null, false);
 	}
 }

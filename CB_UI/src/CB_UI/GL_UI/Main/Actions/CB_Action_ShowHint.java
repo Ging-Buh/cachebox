@@ -26,29 +26,29 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 
 public class CB_Action_ShowHint extends CB_Action {
 
-    public CB_Action_ShowHint() {
-	super("hint", MenuID.AID_SHOW_HINT);
-    }
+	public CB_Action_ShowHint() {
+		super("hint", MenuID.AID_SHOW_HINT);
+	}
 
-    @Override
-    public void Execute() {
-	if (getEnabled())
-	    HintDialog.show();
-    }
+	@Override
+	public void Execute() {
+		if (getEnabled())
+			HintDialog.show();
+	}
 
-    @Override
-    public boolean getEnabled() {
-	// liefert true zurück wenn ein Cache gewählt ist und dieser einen Hint hat
-	if (GlobalCore.getSelectedCache() == null)
-	    return false;
-	String hintText = GlobalCore.getSelectedCache().getHint();
-	if ((hintText == null) || (hintText.length() == 0))
-	    return false;
-	return true;
-    }
+	@Override
+	public boolean getEnabled() {
+		// liefert true zurück wenn ein Cache gewählt ist und dieser einen Hint hat
+		if (GlobalCore.getSelectedCache() == null)
+			return false;
+		String hintText = GlobalCore.getSelectedCache().getHint();
+		if ((hintText == null) || (hintText.length() == 0))
+			return false;
+		return true;
+	}
 
-    @Override
-    public Sprite getIcon() {
-	return SpriteCacheBase.Icons.get(IconName.hint_19.ordinal());
-    }
+	@Override
+	public Sprite getIcon() {
+		return SpriteCacheBase.Icons.get(IconName.hint_19.ordinal());
+	}
 }

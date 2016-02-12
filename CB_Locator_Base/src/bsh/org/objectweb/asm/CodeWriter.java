@@ -29,8 +29,7 @@ package bsh.org.objectweb.asm;
  * corresponding to the visited instruction to a byte vector, in the order these methods are called.
  */
 
-public class CodeWriter implements CodeVisitor
-{
+public class CodeWriter implements CodeVisitor {
 
 	/**
 	 * <tt>true</tt> if preconditions must be checked at runtime or not.
@@ -235,15 +234,11 @@ public class CodeWriter implements CodeVisitor
 	 * Computes the stack size variation corresponding to each JVM instruction.
 	 */
 
-	static
-	{
+	static {
 		int i;
 		int[] b = new int[202];
-		String s = "EFFFFFFFFGGFFFGGFFFEEFGFGFEEEEEEEEEEEEEEEEEEEEDEDEDDDDDCDCDEEEEEEEEE"
-				+ "EEEEEEEEEEEBABABBBBDCFFFGGGEDCDCDCDCDCDCDCDCDCDCEEEEDDDDDDDCDCDCEFEF"
-				+ "DDEEFFDEDEEEBDDBBDDDDDDCCCCCCCCEFEDDDCDCDEEEEEEEEEEFEEEEEEDDEEDDEE";
-		for (i = 0; i < b.length; ++i)
-		{
+		String s = "EFFFFFFFFGGFFFGGFFFEEFGFGFEEEEEEEEEEEEEEEEEEEEDEDEDDDDDCDCDEEEEEEEEE" + "EEEEEEEEEEEBABABBBBDCFFFGGGEDCDCDCDCDCDCDCDCDCDCEEEEDDDDDDDCDCDCEFEF" + "DDEEFFDEDEEEBDDBBDDDDDDCCCCCCCCEFEDDDCDCDEEEEEEEEEEFEEEEEEDDEEDDEE";
+		for (i = 0; i < b.length; ++i) {
 			b[i] = s.charAt(i) - 'E';
 		}
 		SIZE = b;
@@ -303,22 +298,17 @@ public class CodeWriter implements CodeVisitor
 	 *            <tt>true</tt> if the maximum stack size and number of local variables must be automatically computed.
 	 */
 
-	protected CodeWriter(final ClassWriter cw, final boolean computeMaxs)
-	{
-		if (cw.firstMethod == null)
-		{
+	protected CodeWriter(final ClassWriter cw, final boolean computeMaxs) {
+		if (cw.firstMethod == null) {
 			cw.firstMethod = this;
 			cw.lastMethod = this;
-		}
-		else
-		{
+		} else {
 			cw.lastMethod.next = this;
 			cw.lastMethod = this;
 		}
 		this.cw = cw;
 		this.computeMaxs = computeMaxs;
-		if (computeMaxs)
-		{
+		if (computeMaxs) {
 			// pushes the first block onto the stack of blocks to be visited
 			currentBlock = new Label();
 			currentBlock.pushed = true;
@@ -339,30 +329,24 @@ public class CodeWriter implements CodeVisitor
 	 *            the internal names of the method's exceptions. May be <tt>null</tt>.
 	 */
 
-	protected void init(final int access, final String name, final String desc, final String[] exceptions)
-	{
+	protected void init(final int access, final String name, final String desc, final String[] exceptions) {
 		this.access = access;
 		this.name = cw.newUTF8(name);
 		this.desc = cw.newUTF8(desc);
-		if (exceptions != null && exceptions.length > 0)
-		{
+		if (exceptions != null && exceptions.length > 0) {
 			exceptionCount = exceptions.length;
 			this.exceptions = new int[exceptionCount];
-			for (int i = 0; i < exceptionCount; ++i)
-			{
+			for (int i = 0; i < exceptionCount; ++i) {
 				this.exceptions[i] = cw.newClass(exceptions[i]).index;
 			}
 		}
-		if (computeMaxs)
-		{
+		if (computeMaxs) {
 			// updates maxLocals
 			int size = getArgumentsAndReturnSizes(desc) >> 2;
-			if ((access & Constants.ACC_STATIC) != 0)
-			{
+			if ((access & Constants.ACC_STATIC) != 0) {
 				--size;
 			}
-			if (size > maxLocals)
-			{
+			if (size > maxLocals) {
 				maxLocals = size;
 			}
 		}
@@ -373,22 +357,17 @@ public class CodeWriter implements CodeVisitor
 	// --------------------------------------------------------------------------
 
 	@Override
-	public void visitInsn(final int opcode)
-	{
-		if (computeMaxs)
-		{
+	public void visitInsn(final int opcode) {
+		if (computeMaxs) {
 			// updates current and max stack sizes
 			int size = stackSize + SIZE[opcode];
-			if (size > maxStackSize)
-			{
+			if (size > maxStackSize) {
 				maxStackSize = size;
 			}
 			stackSize = size;
 			// if opcode == ATHROW or xRETURN, ends current block (no successor)
-			if ((opcode >= Constants.IRETURN && opcode <= Constants.RETURN) || opcode == Constants.ATHROW)
-			{
-				if (currentBlock != null)
-				{
+			if ((opcode >= Constants.IRETURN && opcode <= Constants.RETURN) || opcode == Constants.ATHROW) {
+				if (currentBlock != null) {
 					currentBlock.maxStackSize = maxStackSize;
 					currentBlock = null;
 				}
@@ -399,103 +378,75 @@ public class CodeWriter implements CodeVisitor
 	}
 
 	@Override
-	public void visitIntInsn(final int opcode, final int operand)
-	{
-		if (computeMaxs && opcode != Constants.NEWARRAY)
-		{
+	public void visitIntInsn(final int opcode, final int operand) {
+		if (computeMaxs && opcode != Constants.NEWARRAY) {
 			// updates current and max stack sizes only if opcode == NEWARRAY
 			// (stack size variation = 0 for BIPUSH or SIPUSH)
 			int size = stackSize + 1;
-			if (size > maxStackSize)
-			{
+			if (size > maxStackSize) {
 				maxStackSize = size;
 			}
 			stackSize = size;
 		}
 		// adds the instruction to the bytecode of the method
-		if (opcode == Constants.SIPUSH)
-		{
+		if (opcode == Constants.SIPUSH) {
 			code.put12(opcode, operand);
-		}
-		else
-		{ // BIPUSH or NEWARRAY
+		} else { // BIPUSH or NEWARRAY
 			code.put11(opcode, operand);
 		}
 	}
 
 	@Override
-	public void visitVarInsn(final int opcode, final int var)
-	{
-		if (computeMaxs)
-		{
+	public void visitVarInsn(final int opcode, final int var) {
+		if (computeMaxs) {
 			// updates current and max stack sizes
-			if (opcode == Constants.RET)
-			{
+			if (opcode == Constants.RET) {
 				// no stack change, but end of current block (no successor)
-				if (currentBlock != null)
-				{
+				if (currentBlock != null) {
 					currentBlock.maxStackSize = maxStackSize;
 					currentBlock = null;
 				}
-			}
-			else
-			{ // xLOAD or xSTORE
+			} else { // xLOAD or xSTORE
 				int size = stackSize + SIZE[opcode];
-				if (size > maxStackSize)
-				{
+				if (size > maxStackSize) {
 					maxStackSize = size;
 				}
 				stackSize = size;
 			}
 			// updates max locals
 			int n;
-			if (opcode == Constants.LLOAD || opcode == Constants.DLOAD || opcode == Constants.LSTORE || opcode == Constants.DSTORE)
-			{
+			if (opcode == Constants.LLOAD || opcode == Constants.DLOAD || opcode == Constants.LSTORE || opcode == Constants.DSTORE) {
 				n = var + 2;
-			}
-			else
-			{
+			} else {
 				n = var + 1;
 			}
-			if (n > maxLocals)
-			{
+			if (n > maxLocals) {
 				maxLocals = n;
 			}
 		}
 		// adds the instruction to the bytecode of the method
-		if (var < 4 && opcode != Constants.RET)
-		{
+		if (var < 4 && opcode != Constants.RET) {
 			int opt;
-			if (opcode < Constants.ISTORE)
-			{
-				opt = 26 /* ILOAD_0 */+ ((opcode - Constants.ILOAD) << 2) + var;
-			}
-			else
-			{
-				opt = 59 /* ISTORE_0 */+ ((opcode - Constants.ISTORE) << 2) + var;
+			if (opcode < Constants.ISTORE) {
+				opt = 26 /* ILOAD_0 */ + ((opcode - Constants.ILOAD) << 2) + var;
+			} else {
+				opt = 59 /* ISTORE_0 */ + ((opcode - Constants.ISTORE) << 2) + var;
 			}
 			code.put1(opt);
-		}
-		else if (var >= 256)
-		{
+		} else if (var >= 256) {
 			code.put1(196 /* WIDE */).put12(opcode, var);
-		}
-		else
-		{
+		} else {
 			code.put11(opcode, var);
 		}
 	}
 
 	@Override
-	public void visitTypeInsn(final int opcode, final String desc)
-	{
-		if (computeMaxs && opcode == Constants.NEW)
-		{
+	public void visitTypeInsn(final int opcode, final String desc) {
+		if (computeMaxs && opcode == Constants.NEW) {
 			// updates current and max stack sizes only if opcode == NEW
 			// (stack size variation = 0 for ANEWARRAY, CHECKCAST, INSTANCEOF)
 			int size = stackSize + 1;
-			if (size > maxStackSize)
-			{
+			if (size > maxStackSize) {
 				maxStackSize = size;
 			}
 			stackSize = size;
@@ -505,15 +456,12 @@ public class CodeWriter implements CodeVisitor
 	}
 
 	@Override
-	public void visitFieldInsn(final int opcode, final String owner, final String name, final String desc)
-	{
-		if (computeMaxs)
-		{
+	public void visitFieldInsn(final int opcode, final String owner, final String name, final String desc) {
+		if (computeMaxs) {
 			int size;
 			// computes the stack size variation
 			char c = desc.charAt(0);
-			switch (opcode)
-			{
+			switch (opcode) {
 			case Constants.GETSTATIC:
 				size = stackSize + (c == 'D' || c == 'J' ? 2 : 1);
 				break;
@@ -529,8 +477,7 @@ public class CodeWriter implements CodeVisitor
 				break;
 			}
 			// updates current and max stack sizes
-			if (size > maxStackSize)
-			{
+			if (size > maxStackSize) {
 				maxStackSize = size;
 			}
 			stackSize = size;
@@ -540,137 +487,100 @@ public class CodeWriter implements CodeVisitor
 	}
 
 	@Override
-	public void visitMethodInsn(final int opcode, final String owner, final String name, final String desc)
-	{
+	public void visitMethodInsn(final int opcode, final String owner, final String name, final String desc) {
 		Item i;
-		if (opcode == Constants.INVOKEINTERFACE)
-		{
+		if (opcode == Constants.INVOKEINTERFACE) {
 			i = cw.newItfMethod(owner, name, desc);
-		}
-		else
-		{
+		} else {
 			i = cw.newMethod(owner, name, desc);
 		}
 		int argSize = i.intVal;
-		if (computeMaxs)
-		{
+		if (computeMaxs) {
 			// computes the stack size variation. In order not to recompute several
 			// times this variation for the same Item, we use the intVal field of
 			// this item to store this variation, once it has been computed. More
 			// precisely this intVal field stores the sizes of the arguments and of
 			// the return value corresponding to desc.
-			if (argSize == 0)
-			{
+			if (argSize == 0) {
 				// the above sizes have not been computed yet, so we compute them...
 				argSize = getArgumentsAndReturnSizes(desc);
 				// ... and we save them in order not to recompute them in the future
 				i.intVal = argSize;
 			}
 			int size;
-			if (opcode == Constants.INVOKESTATIC)
-			{
+			if (opcode == Constants.INVOKESTATIC) {
 				size = stackSize - (argSize >> 2) + (argSize & 0x03) + 1;
-			}
-			else
-			{
+			} else {
 				size = stackSize - (argSize >> 2) + (argSize & 0x03);
 			}
 			// updates current and max stack sizes
-			if (size > maxStackSize)
-			{
+			if (size > maxStackSize) {
 				maxStackSize = size;
 			}
 			stackSize = size;
 		}
 		// adds the instruction to the bytecode of the method
-		if (opcode == Constants.INVOKEINTERFACE)
-		{
-			if (!computeMaxs)
-			{
-				if (argSize == 0)
-				{
+		if (opcode == Constants.INVOKEINTERFACE) {
+			if (!computeMaxs) {
+				if (argSize == 0) {
 					argSize = getArgumentsAndReturnSizes(desc);
 					i.intVal = argSize;
 				}
 			}
 			code.put12(Constants.INVOKEINTERFACE, i.index).put11(argSize >> 2, 0);
-		}
-		else
-		{
+		} else {
 			code.put12(opcode, i.index);
 		}
 	}
 
 	@Override
-	public void visitJumpInsn(final int opcode, final Label label)
-	{
-		if (CHECK)
-		{
-			if (label.owner == null)
-			{
+	public void visitJumpInsn(final int opcode, final Label label) {
+		if (CHECK) {
+			if (label.owner == null) {
 				label.owner = this;
-			}
-			else if (label.owner != this)
-			{
+			} else if (label.owner != this) {
 				throw new IllegalArgumentException();
 			}
 		}
-		if (computeMaxs)
-		{
-			if (opcode == Constants.GOTO)
-			{
+		if (computeMaxs) {
+			if (opcode == Constants.GOTO) {
 				// no stack change, but end of current block (with one new successor)
-				if (currentBlock != null)
-				{
+				if (currentBlock != null) {
 					currentBlock.maxStackSize = maxStackSize;
 					addSuccessor(stackSize, label);
 					currentBlock = null;
 				}
-			}
-			else if (opcode == Constants.JSR)
-			{
-				if (currentBlock != null)
-				{
+			} else if (opcode == Constants.JSR) {
+				if (currentBlock != null) {
 					addSuccessor(stackSize + 1, label);
 				}
-			}
-			else
-			{
+			} else {
 				// updates current stack size (max stack size unchanged because stack
 				// size variation always negative in this case)
 				stackSize += SIZE[opcode];
-				if (currentBlock != null)
-				{
+				if (currentBlock != null) {
 					addSuccessor(stackSize, label);
 				}
 			}
 		}
 		// adds the instruction to the bytecode of the method
-		if (label.resolved && label.position - code.length < Short.MIN_VALUE)
-		{
+		if (label.resolved && label.position - code.length < Short.MIN_VALUE) {
 			// case of a backward jump with an offset < -32768. In this case we
 			// automatically replace GOTO with GOTO_W, JSR with JSR_W and IFxxx <l>
 			// with IFNOTxxx <l'> GOTO_W <l>, where IFNOTxxx is the "opposite" opcode
 			// of IFxxx (i.e., IFNE for IFEQ) and where <l'> designates the
 			// instruction just after the GOTO_W.
-			if (opcode == Constants.GOTO)
-			{
+			if (opcode == Constants.GOTO) {
 				code.put1(200); // GOTO_W
-			}
-			else if (opcode == Constants.JSR)
-			{
+			} else if (opcode == Constants.JSR) {
 				code.put1(201); // JSR_W
-			}
-			else
-			{
+			} else {
 				code.put1(opcode <= 166 ? ((opcode + 1) ^ 1) - 1 : opcode ^ 1);
 				code.put2(8); // jump offset
 				code.put1(200); // GOTO_W
 			}
 			label.put(this, code, code.length - 1, true);
-		}
-		else
-		{
+		} else {
 			// case of a backward jump with an offset >= -32768, or of a forward jump
 			// with, of course, an unknown offset. In these cases we store the offset
 			// in 2 bytes (which will be increased in resizeInstructions, if needed).
@@ -680,23 +590,16 @@ public class CodeWriter implements CodeVisitor
 	}
 
 	@Override
-	public void visitLabel(final Label label)
-	{
-		if (CHECK)
-		{
-			if (label.owner == null)
-			{
+	public void visitLabel(final Label label) {
+		if (CHECK) {
+			if (label.owner == null) {
 				label.owner = this;
-			}
-			else if (label.owner != this)
-			{
+			} else if (label.owner != this) {
 				throw new IllegalArgumentException();
 			}
 		}
-		if (computeMaxs)
-		{
-			if (currentBlock != null)
-			{
+		if (computeMaxs) {
+			if (currentBlock != null) {
 				// ends current block (with one new successor)
 				currentBlock.maxStackSize = maxStackSize;
 				addSuccessor(stackSize, label);
@@ -712,81 +615,60 @@ public class CodeWriter implements CodeVisitor
 	}
 
 	@Override
-	public void visitLdcInsn(final Object cst)
-	{
+	public void visitLdcInsn(final Object cst) {
 		Item i = cw.newCst(cst);
-		if (computeMaxs)
-		{
+		if (computeMaxs) {
 			int size;
 			// computes the stack size variation
-			if (i.type == ClassWriter.LONG || i.type == ClassWriter.DOUBLE)
-			{
+			if (i.type == ClassWriter.LONG || i.type == ClassWriter.DOUBLE) {
 				size = stackSize + 2;
-			}
-			else
-			{
+			} else {
 				size = stackSize + 1;
 			}
 			// updates current and max stack sizes
-			if (size > maxStackSize)
-			{
+			if (size > maxStackSize) {
 				maxStackSize = size;
 			}
 			stackSize = size;
 		}
 		// adds the instruction to the bytecode of the method
 		int index = i.index;
-		if (i.type == ClassWriter.LONG || i.type == ClassWriter.DOUBLE)
-		{
+		if (i.type == ClassWriter.LONG || i.type == ClassWriter.DOUBLE) {
 			code.put12(20 /* LDC2_W */, index);
-		}
-		else if (index >= 256)
-		{
+		} else if (index >= 256) {
 			code.put12(19 /* LDC_W */, index);
-		}
-		else
-		{
+		} else {
 			code.put11(Constants.LDC, index);
 		}
 	}
 
 	@Override
-	public void visitIincInsn(final int var, final int increment)
-	{
-		if (computeMaxs)
-		{
+	public void visitIincInsn(final int var, final int increment) {
+		if (computeMaxs) {
 			// updates max locals only (no stack change)
 			int n = var + 1;
-			if (n > maxLocals)
-			{
+			if (n > maxLocals) {
 				maxLocals = n;
 			}
 		}
 		// adds the instruction to the bytecode of the method
-		if ((var > 255) || (increment > 127) || (increment < -128))
-		{
+		if ((var > 255) || (increment > 127) || (increment < -128)) {
 			code.put1(196 /* WIDE */).put12(Constants.IINC, var).put2(increment);
-		}
-		else
-		{
+		} else {
 			code.put1(Constants.IINC).put11(var, increment);
 		}
 	}
 
 	@Override
-	public void visitTableSwitchInsn(final int min, final int max, final Label dflt, final Label labels[])
-	{
-		if (computeMaxs)
-		{
+	public void visitTableSwitchInsn(final int min, final int max, final Label dflt, final Label labels[]) {
+		if (computeMaxs) {
 			// updates current stack size (max stack size unchanged)
 			--stackSize;
 			// ends current block (with many new successors)
-			if (currentBlock != null)
-			{
+			if (currentBlock != null) {
 				currentBlock.maxStackSize = maxStackSize;
 				addSuccessor(stackSize, dflt);
-				for (int i = 0; i < labels.length; ++i)
-				{
+				for (int i = 0; i < labels.length; ++i) {
 					addSuccessor(stackSize, labels[i]);
 				}
 				currentBlock = null;
@@ -795,32 +677,26 @@ public class CodeWriter implements CodeVisitor
 		// adds the instruction to the bytecode of the method
 		int source = code.length;
 		code.put1(Constants.TABLESWITCH);
-		while (code.length % 4 != 0)
-		{
+		while (code.length % 4 != 0) {
 			code.put1(0);
 		}
 		dflt.put(this, code, source, true);
 		code.put4(min).put4(max);
-		for (int i = 0; i < labels.length; ++i)
-		{
+		for (int i = 0; i < labels.length; ++i) {
 			labels[i].put(this, code, source, true);
 		}
 	}
 
 	@Override
-	public void visitLookupSwitchInsn(final Label dflt, final int keys[], final Label labels[])
-	{
-		if (computeMaxs)
-		{
+	public void visitLookupSwitchInsn(final Label dflt, final int keys[], final Label labels[]) {
+		if (computeMaxs) {
 			// updates current stack size (max stack size unchanged)
 			--stackSize;
 			// ends current block (with many new successors)
-			if (currentBlock != null)
-			{
+			if (currentBlock != null) {
 				currentBlock.maxStackSize = maxStackSize;
 				addSuccessor(stackSize, dflt);
-				for (int i = 0; i < labels.length; ++i)
-				{
+				for (int i = 0; i < labels.length; ++i) {
 					addSuccessor(stackSize, labels[i]);
 				}
 				currentBlock = null;
@@ -829,24 +705,20 @@ public class CodeWriter implements CodeVisitor
 		// adds the instruction to the bytecode of the method
 		int source = code.length;
 		code.put1(Constants.LOOKUPSWITCH);
-		while (code.length % 4 != 0)
-		{
+		while (code.length % 4 != 0) {
 			code.put1(0);
 		}
 		dflt.put(this, code, source, true);
 		code.put4(labels.length);
-		for (int i = 0; i < labels.length; ++i)
-		{
+		for (int i = 0; i < labels.length; ++i) {
 			code.put4(keys[i]);
 			labels[i].put(this, code, source, true);
 		}
 	}
 
 	@Override
-	public void visitMultiANewArrayInsn(final String desc, final int dims)
-	{
-		if (computeMaxs)
-		{
+	public void visitMultiANewArrayInsn(final String desc, final int dims) {
+		if (computeMaxs) {
 			// updates current stack size (max stack size unchanged because stack
 			// size variation always negative or null)
 			stackSize += 1 - dims;
@@ -857,24 +729,18 @@ public class CodeWriter implements CodeVisitor
 	}
 
 	@Override
-	public void visitTryCatchBlock(final Label start, final Label end, final Label handler, final String type)
-	{
-		if (CHECK)
-		{
-			if (start.owner != this || end.owner != this || handler.owner != this)
-			{
+	public void visitTryCatchBlock(final Label start, final Label end, final Label handler, final String type) {
+		if (CHECK) {
+			if (start.owner != this || end.owner != this || handler.owner != this) {
 				throw new IllegalArgumentException();
 			}
-			if (!start.resolved || !end.resolved || !handler.resolved)
-			{
+			if (!start.resolved || !end.resolved || !handler.resolved) {
 				throw new IllegalArgumentException();
 			}
 		}
-		if (computeMaxs)
-		{
+		if (computeMaxs) {
 			// pushes handler block onto the stack of blocks to be visited
-			if (!handler.pushed)
-			{
+			if (!handler.pushed) {
 				handler.beginStackSize = 1;
 				handler.pushed = true;
 				handler.next = blockStack;
@@ -882,8 +748,7 @@ public class CodeWriter implements CodeVisitor
 			}
 		}
 		++catchCount;
-		if (catchTable == null)
-		{
+		if (catchTable == null) {
 			catchTable = new ByteVector();
 		}
 		catchTable.put2(start.position);
@@ -893,10 +758,8 @@ public class CodeWriter implements CodeVisitor
 	}
 
 	@Override
-	public void visitMaxs(final int maxStack, final int maxLocals)
-	{
-		if (computeMaxs)
-		{
+	public void visitMaxs(final int maxStack, final int maxLocals) {
+		if (computeMaxs) {
 			// true (non relative) max stack size
 			int max = 0;
 			// control flow analysis algorithm: while the block stack is not empty,
@@ -907,8 +770,7 @@ public class CodeWriter implements CodeVisitor
 			// Label#beginStackSize} of the blocks in the block stack are the true
 			// (non relative) beginning stack sizes of these blocks.
 			Label stack = blockStack;
-			while (stack != null)
-			{
+			while (stack != null) {
 				// pops a block from the stack
 				Label l = stack;
 				stack = stack.next;
@@ -916,18 +778,15 @@ public class CodeWriter implements CodeVisitor
 				int start = l.beginStackSize;
 				int blockMax = start + l.maxStackSize;
 				// updates the global max stack size
-				if (blockMax > max)
-				{
+				if (blockMax > max) {
 					max = blockMax;
 				}
 				// analyses the successors of the block
 				Edge b = l.successors;
-				while (b != null)
-				{
+				while (b != null) {
 					l = b.successor;
 					// if this successor has not already been pushed onto the stack...
-					if (!l.pushed)
-					{
+					if (!l.pushed) {
 						// computes the true beginning stack size of this successor block
 						l.beginStackSize = start + b.stackSize;
 						// pushes this successor onto the stack
@@ -940,39 +799,30 @@ public class CodeWriter implements CodeVisitor
 			}
 			this.maxStack = max;
 			// releases all the Edge objects used by this CodeWriter
-			synchronized (SIZE)
-			{
+			synchronized (SIZE) {
 				// appends the [head ... tail] list at the beginning of the pool list
-				if (tail != null)
-				{
+				if (tail != null) {
 					tail.poolNext = pool;
 					pool = head;
 				}
 			}
-		}
-		else
-		{
+		} else {
 			this.maxStack = maxStack;
 			this.maxLocals = maxLocals;
 		}
 	}
 
 	@Override
-	public void visitLocalVariable(final String name, final String desc, final Label start, final Label end, final int index)
-	{
-		if (CHECK)
-		{
-			if (start.owner != this || !start.resolved)
-			{
+	public void visitLocalVariable(final String name, final String desc, final Label start, final Label end, final int index) {
+		if (CHECK) {
+			if (start.owner != this || !start.resolved) {
 				throw new IllegalArgumentException();
 			}
-			if (end.owner != this || !end.resolved)
-			{
+			if (end.owner != this || !end.resolved) {
 				throw new IllegalArgumentException();
 			}
 		}
-		if (localVar == null)
-		{
+		if (localVar == null) {
 			cw.newUTF8("LocalVariableTable");
 			localVar = new ByteVector();
 		}
@@ -985,17 +835,13 @@ public class CodeWriter implements CodeVisitor
 	}
 
 	@Override
-	public void visitLineNumber(final int line, final Label start)
-	{
-		if (CHECK)
-		{
-			if (start.owner != this || !start.resolved)
-			{
+	public void visitLineNumber(final int line, final Label start) {
+		if (CHECK) {
+			if (start.owner != this || !start.resolved) {
 				throw new IllegalArgumentException();
 			}
 		}
-		if (lineNumber == null)
-		{
+		if (lineNumber == null) {
 			cw.newUTF8("LineNumberTable");
 			lineNumber = new ByteVector();
 		}
@@ -1018,42 +864,28 @@ public class CodeWriter implements CodeVisitor
 	 *         retSize to <tt>i & 0x03</tt>).
 	 */
 
-	private static int getArgumentsAndReturnSizes(final String desc)
-	{
+	private static int getArgumentsAndReturnSizes(final String desc) {
 		int n = 1;
 		int c = 1;
-		while (true)
-		{
+		while (true) {
 			char car = desc.charAt(c++);
-			if (car == ')')
-			{
+			if (car == ')') {
 				car = desc.charAt(c);
 				return n << 2 | (car == 'V' ? 0 : (car == 'D' || car == 'J' ? 2 : 1));
-			}
-			else if (car == 'L')
-			{
-				while (desc.charAt(c++) != ';')
-				{
+			} else if (car == 'L') {
+				while (desc.charAt(c++) != ';') {
 				}
 				n += 1;
-			}
-			else if (car == '[')
-			{
-				while ((car = desc.charAt(c)) == '[')
-				{
+			} else if (car == '[') {
+				while ((car = desc.charAt(c)) == '[') {
 					++c;
 				}
-				if (car == 'D' || car == 'J')
-				{
+				if (car == 'D' || car == 'J') {
 					n -= 1;
 				}
-			}
-			else if (car == 'D' || car == 'J')
-			{
+			} else if (car == 'D' || car == 'J') {
 				n += 2;
-			}
-			else
-			{
+			} else {
 				n += 1;
 			}
 		}
@@ -1068,26 +900,20 @@ public class CodeWriter implements CodeVisitor
 	 *            the successor block to be added to the current block.
 	 */
 
-	private void addSuccessor(final int stackSize, final Label successor)
-	{
+	private void addSuccessor(final int stackSize, final Label successor) {
 		Edge b;
 		// creates a new Edge object or reuses one from the shared pool
-		synchronized (SIZE)
-		{
-			if (pool == null)
-			{
+		synchronized (SIZE) {
+			if (pool == null) {
 				b = new Edge();
-			}
-			else
-			{
+			} else {
 				b = pool;
 				// removes b from the pool
 				pool = pool.poolNext;
 			}
 		}
 		// adds the previous Edge to the list of Edges used by this CodeWriter
-		if (tail == null)
-		{
+		if (tail == null) {
 			tail = b;
 		}
 		b.poolNext = head;
@@ -1110,39 +936,31 @@ public class CodeWriter implements CodeVisitor
 	 * @return the size of the bytecode of this method.
 	 */
 
-	final int getSize()
-	{
-		if (resize)
-		{
+	final int getSize() {
+		if (resize) {
 			// replaces the temporary jump opcodes introduced by Label.resolve.
 			resizeInstructions(new int[0], new int[0], 0);
 		}
 		int size = 8;
-		if (code.length > 0)
-		{
+		if (code.length > 0) {
 			cw.newUTF8("Code");
 			size += 18 + code.length + 8 * catchCount;
-			if (localVar != null)
-			{
+			if (localVar != null) {
 				size += 8 + localVar.length;
 			}
-			if (lineNumber != null)
-			{
+			if (lineNumber != null) {
 				size += 8 + lineNumber.length;
 			}
 		}
-		if (exceptionCount > 0)
-		{
+		if (exceptionCount > 0) {
 			cw.newUTF8("Exceptions");
 			size += 8 + 2 * exceptionCount;
 		}
-		if ((access & Constants.ACC_SYNTHETIC) != 0)
-		{
+		if ((access & Constants.ACC_SYNTHETIC) != 0) {
 			cw.newUTF8("Synthetic");
 			size += 6;
 		}
-		if ((access & Constants.ACC_DEPRECATED) != 0)
-		{
+		if ((access & Constants.ACC_DEPRECATED) != 0) {
 			cw.newUTF8("Deprecated");
 			size += 6;
 		}
@@ -1156,84 +974,67 @@ public class CodeWriter implements CodeVisitor
 	 *            the byte vector into which the bytecode of this method must be copied.
 	 */
 
-	final void put(final ByteVector out)
-	{
+	final void put(final ByteVector out) {
 		out.put2(access).put2(name.index).put2(desc.index);
 		int attributeCount = 0;
-		if (code.length > 0)
-		{
+		if (code.length > 0) {
 			++attributeCount;
 		}
-		if (exceptionCount > 0)
-		{
+		if (exceptionCount > 0) {
 			++attributeCount;
 		}
-		if ((access & Constants.ACC_SYNTHETIC) != 0)
-		{
+		if ((access & Constants.ACC_SYNTHETIC) != 0) {
 			++attributeCount;
 		}
-		if ((access & Constants.ACC_DEPRECATED) != 0)
-		{
+		if ((access & Constants.ACC_DEPRECATED) != 0) {
 			++attributeCount;
 		}
 		out.put2(attributeCount);
-		if (code.length > 0)
-		{
+		if (code.length > 0) {
 			int size = 12 + code.length + 8 * catchCount;
-			if (localVar != null)
-			{
+			if (localVar != null) {
 				size += 8 + localVar.length;
 			}
-			if (lineNumber != null)
-			{
+			if (lineNumber != null) {
 				size += 8 + lineNumber.length;
 			}
 			out.put2(cw.newUTF8("Code").index).put4(size);
 			out.put2(maxStack).put2(maxLocals);
 			out.put4(code.length).putByteArray(code.data, 0, code.length);
 			out.put2(catchCount);
-			if (catchCount > 0)
-			{
+			if (catchCount > 0) {
 				out.putByteArray(catchTable.data, 0, catchTable.length);
 			}
 			attributeCount = 0;
-			if (localVar != null)
-			{
+			if (localVar != null) {
 				++attributeCount;
 			}
-			if (lineNumber != null)
-			{
+			if (lineNumber != null) {
 				++attributeCount;
 			}
 			out.put2(attributeCount);
-			if (localVar != null)
-			{
+			if (localVar != null) {
 				out.put2(cw.newUTF8("LocalVariableTable").index);
 				out.put4(localVar.length + 2).put2(localVarCount);
 				out.putByteArray(localVar.data, 0, localVar.length);
 			}
-			if (lineNumber != null)
-			{
+			if (lineNumber != null) {
 				out.put2(cw.newUTF8("LineNumberTable").index);
 				out.put4(lineNumber.length + 2).put2(lineNumberCount);
 				out.putByteArray(lineNumber.data, 0, lineNumber.length);
 			}
 		}
-		if (exceptionCount > 0)
-		{
+		if (exceptionCount > 0) {
 			out.put2(cw.newUTF8("Exceptions").index).put4(2 * exceptionCount + 2);
 			out.put2(exceptionCount);
-			for (int i = 0; i < exceptionCount; ++i)
-			{
+			for (int i = 0; i < exceptionCount; ++i) {
 				out.put2(exceptions[i]);
 			}
 		}
-		if ((access & Constants.ACC_SYNTHETIC) != 0)
-		{
+		if ((access & Constants.ACC_SYNTHETIC) != 0) {
 			out.put2(cw.newUTF8("Synthetic").index).put4(0);
 		}
-		if ((access & Constants.ACC_DEPRECATED) != 0)
-		{
+		if ((access & Constants.ACC_DEPRECATED) != 0) {
 			out.put2(cw.newUTF8("Deprecated").index).put4(0);
 		}
 	}
@@ -1268,8 +1069,7 @@ public class CodeWriter implements CodeVisitor
 	 */
 
 	@SuppressWarnings("unused")
-	protected int[] resizeInstructions(final int[] indexes, final int[] sizes, final int len)
-	{
+	protected int[] resizeInstructions(final int[] indexes, final int[] sizes, final int len) {
 		byte[] b = code.data; // bytecode of the method
 		int u, v, label; // indexes in b
 		int i, j; // loop indexes
@@ -1306,49 +1106,37 @@ public class CodeWriter implements CodeVisitor
 		resize = new boolean[code.length];
 
 		int state = 3; // 3 = loop again, 2 = loop ended, 1 = last pass, 0 = done
-		do
-		{
-			if (state == 3)
-			{
+		do {
+			if (state == 3) {
 				state = 2;
 			}
 			u = 0;
-			while (u < b.length)
-			{
+			while (u < b.length) {
 				int opcode = b[u] & 0xFF; // opcode of current instruction
 				int insert = 0; // bytes to be added after this instruction
 
-				switch (ClassWriter.TYPE[opcode])
-				{
+				switch (ClassWriter.TYPE[opcode]) {
 				case ClassWriter.NOARG_INSN:
 				case ClassWriter.IMPLVAR_INSN:
 					u += 1;
 					break;
 				case ClassWriter.LABEL_INSN:
-					if (opcode > 201)
-					{
+					if (opcode > 201) {
 						// converts temporary opcodes 202 to 217 (inclusive), 218 and 219
 						// to IFEQ ... JSR (inclusive), IFNULL and IFNONNULL
 						opcode = opcode < 218 ? opcode - 49 : opcode - 20;
 						label = u + readUnsignedShort(b, u + 1);
-					}
-					else
-					{
+					} else {
 						label = u + readShort(b, u + 1);
 					}
 					newOffset = getNewOffset(allIndexes, allSizes, u, label);
-					if (newOffset < Short.MIN_VALUE || newOffset > Short.MAX_VALUE)
-					{
-						if (!resize[u])
-						{
-							if (opcode == Constants.GOTO || opcode == Constants.JSR)
-							{
+					if (newOffset < Short.MIN_VALUE || newOffset > Short.MAX_VALUE) {
+						if (!resize[u]) {
+							if (opcode == Constants.GOTO || opcode == Constants.JSR) {
 								// two additional bytes will be required to replace this
 								// GOTO or JSR instruction with a GOTO_W or a JSR_W
 								insert = 2;
-							}
-							else
-							{
+							} else {
 								// five additional bytes will be required to replace this
 								// IFxxx <l> instruction with IFNOTxxx <l'> GOTO_W <l>, where
 								// IFNOTxxx is the "opposite" opcode of IFxxx (i.e., IFNE for
@@ -1365,8 +1153,7 @@ public class CodeWriter implements CodeVisitor
 					u += 5;
 					break;
 				case ClassWriter.TABL_INSN:
-					if (state == 1)
-					{
+					if (state == 1) {
 						// true number of bytes to be added (or removed) from this
 						// instruction = (future number of padding bytes - current number
 						// of padding byte) - previously over estimated variation =
@@ -1375,9 +1162,7 @@ public class CodeWriter implements CodeVisitor
 						// = -(newOffset & 3)
 						newOffset = getNewOffset(allIndexes, allSizes, 0, u);
 						insert = -(newOffset & 3);
-					}
-					else if (!resize[u])
-					{
+					} else if (!resize[u]) {
 						// over estimation of the number of bytes to be added to this
 						// instruction = 3 - current number of padding bytes = 3 - (3 -
 						// u%4) = u%4 = u & 3
@@ -1389,14 +1174,11 @@ public class CodeWriter implements CodeVisitor
 					u += 4 * (readInt(b, u + 8) - readInt(b, u + 4) + 1) + 12;
 					break;
 				case ClassWriter.LOOK_INSN:
-					if (state == 1)
-					{
+					if (state == 1) {
 						// like TABL_INSN
 						newOffset = getNewOffset(allIndexes, allSizes, 0, u);
 						insert = -(newOffset & 3);
-					}
-					else if (!resize[u])
-					{
+					} else if (!resize[u]) {
 						// like TABL_INSN
 						insert = u & 3;
 						resize[u] = true;
@@ -1407,12 +1189,9 @@ public class CodeWriter implements CodeVisitor
 					break;
 				case ClassWriter.WIDE_INSN:
 					opcode = b[u + 1] & 0xFF;
-					if (opcode == Constants.IINC)
-					{
+					if (opcode == Constants.IINC) {
 						u += 6;
-					}
-					else
-					{
+					} else {
 						u += 4;
 					}
 					break;
@@ -1436,8 +1215,7 @@ public class CodeWriter implements CodeVisitor
 					u += 4;
 					break;
 				}
-				if (insert != 0)
-				{
+				if (insert != 0) {
 					// adds a new (u, insert) entry in the allIndexes and allSizes arrays
 					int[] newIndexes = new int[allIndexes.length + 1];
 					int[] newSizes = new int[allSizes.length + 1];
@@ -1447,18 +1225,15 @@ public class CodeWriter implements CodeVisitor
 					newSizes[allSizes.length] = insert;
 					allIndexes = newIndexes;
 					allSizes = newSizes;
-					if (insert > 0)
-					{
+					if (insert > 0) {
 						state = 3;
 					}
 				}
 			}
-			if (state < 3)
-			{
+			if (state < 3) {
 				--state;
 			}
-		}
-		while (state != 0);
+		} while (state != 0);
 
 		// 2nd step:
 		// copies the bytecode of the method into a new bytevector, updates the
@@ -1467,20 +1242,13 @@ public class CodeWriter implements CodeVisitor
 		ByteVector newCode = new ByteVector(code.length);
 
 		u = 0;
-		while (u < code.length)
-		{
-			for (i = allIndexes.length - 1; i >= 0; --i)
-			{
-				if (allIndexes[i] == u)
-				{
-					if (i < len)
-					{
-						if (sizes[i] > 0)
-						{
+		while (u < code.length) {
+			for (i = allIndexes.length - 1; i >= 0; --i) {
+				if (allIndexes[i] == u) {
+					if (i < len) {
+						if (sizes[i] > 0) {
 							newCode.putByteArray(null, 0, sizes[i]);
-						}
-						else
-						{
+						} else {
 							newCode.length += sizes[i];
 						}
 						indexes[i] = newCode.length;
@@ -1488,51 +1256,39 @@ public class CodeWriter implements CodeVisitor
 				}
 			}
 			int opcode = b[u] & 0xFF;
-			switch (ClassWriter.TYPE[opcode])
-			{
+			switch (ClassWriter.TYPE[opcode]) {
 			case ClassWriter.NOARG_INSN:
 			case ClassWriter.IMPLVAR_INSN:
 				newCode.put1(opcode);
 				u += 1;
 				break;
 			case ClassWriter.LABEL_INSN:
-				if (opcode > 201)
-				{
+				if (opcode > 201) {
 					// changes temporary opcodes 202 to 217 (inclusive), 218 and 219
 					// to IFEQ ... JSR (inclusive), IFNULL and IFNONNULL
 					opcode = opcode < 218 ? opcode - 49 : opcode - 20;
 					label = u + readUnsignedShort(b, u + 1);
-				}
-				else
-				{
+				} else {
 					label = u + readShort(b, u + 1);
 				}
 				newOffset = getNewOffset(allIndexes, allSizes, u, label);
-				if (newOffset < Short.MIN_VALUE || newOffset > Short.MAX_VALUE)
-				{
+				if (newOffset < Short.MIN_VALUE || newOffset > Short.MAX_VALUE) {
 					// replaces GOTO with GOTO_W, JSR with JSR_W and IFxxx <l> with
 					// IFNOTxxx <l'> GOTO_W <l>, where IFNOTxxx is the "opposite" opcode
 					// of IFxxx (i.e., IFNE for IFEQ) and where <l'> designates the
 					// instruction just after the GOTO_W.
-					if (opcode == Constants.GOTO)
-					{
+					if (opcode == Constants.GOTO) {
 						newCode.put1(200); // GOTO_W
-					}
-					else if (opcode == Constants.JSR)
-					{
+					} else if (opcode == Constants.JSR) {
 						newCode.put1(201); // JSR_W
-					}
-					else
-					{
+					} else {
 						newCode.put1(opcode <= 166 ? ((opcode + 1) ^ 1) - 1 : opcode ^ 1);
 						newCode.put2(8); // jump offset
 						newCode.put1(200); // GOTO_W
 						newOffset -= 3; // newOffset now computed from start of GOTO_W
 					}
 					newCode.put4(newOffset);
-				}
-				else
-				{
+				} else {
 					newCode.put1(opcode);
 					newCode.put2(newOffset);
 				}
@@ -1552,8 +1308,7 @@ public class CodeWriter implements CodeVisitor
 				// reads and copies instruction
 				int source = newCode.length;
 				newCode.put1(Constants.TABLESWITCH);
-				while (newCode.length % 4 != 0)
-				{
+				while (newCode.length % 4 != 0) {
 					newCode.put1(0);
 				}
 				label = v + readInt(b, u);
@@ -1566,8 +1321,7 @@ public class CodeWriter implements CodeVisitor
 				j = readInt(b, u) - j + 1;
 				u += 4;
 				newCode.put4(readInt(b, u - 4));
-				for (; j > 0; --j)
-				{
+				for (; j > 0; --j) {
 					label = v + readInt(b, u);
 					u += 4;
 					newOffset = getNewOffset(allIndexes, allSizes, v, label);
@@ -1581,8 +1335,7 @@ public class CodeWriter implements CodeVisitor
 				// reads and copies instruction
 				source = newCode.length;
 				newCode.put1(Constants.LOOKUPSWITCH);
-				while (newCode.length % 4 != 0)
-				{
+				while (newCode.length % 4 != 0) {
 					newCode.put1(0);
 				}
 				label = v + readInt(b, u);
@@ -1592,8 +1345,7 @@ public class CodeWriter implements CodeVisitor
 				j = readInt(b, u);
 				u += 4;
 				newCode.put4(j);
-				for (; j > 0; --j)
-				{
+				for (; j > 0; --j) {
 					newCode.put4(readInt(b, u));
 					u += 4;
 					label = v + readInt(b, u);
@@ -1604,13 +1356,10 @@ public class CodeWriter implements CodeVisitor
 				break;
 			case ClassWriter.WIDE_INSN:
 				opcode = b[u + 1] & 0xFF;
-				if (opcode == Constants.IINC)
-				{
+				if (opcode == Constants.IINC) {
 					newCode.putByteArray(b, u, 6);
 					u += 6;
-				}
-				else
-				{
+				} else {
 					newCode.putByteArray(b, u, 4);
 					u += 4;
 				}
@@ -1643,24 +1392,20 @@ public class CodeWriter implements CodeVisitor
 
 		// updates the instructions addresses in the
 		// catch, local var and line number tables
-		if (catchTable != null)
-		{
+		if (catchTable != null) {
 			b = catchTable.data;
 			u = 0;
-			while (u < catchTable.length)
-			{
+			while (u < catchTable.length) {
 				writeShort(b, u, getNewOffset(allIndexes, allSizes, 0, readUnsignedShort(b, u)));
 				writeShort(b, u + 2, getNewOffset(allIndexes, allSizes, 0, readUnsignedShort(b, u + 2)));
 				writeShort(b, u + 4, getNewOffset(allIndexes, allSizes, 0, readUnsignedShort(b, u + 4)));
 				u += 8;
 			}
 		}
-		if (localVar != null)
-		{
+		if (localVar != null) {
 			b = localVar.data;
 			u = 0;
-			while (u < localVar.length)
-			{
+			while (u < localVar.length) {
 				label = readUnsignedShort(b, u);
 				newOffset = getNewOffset(allIndexes, allSizes, 0, label);
 				writeShort(b, u, newOffset);
@@ -1670,12 +1415,10 @@ public class CodeWriter implements CodeVisitor
 				u += 10;
 			}
 		}
-		if (lineNumber != null)
-		{
+		if (lineNumber != null) {
 			b = lineNumber.data;
 			u = 0;
-			while (u < lineNumber.length)
-			{
+			while (u < lineNumber.length) {
 				writeShort(b, u, getNewOffset(allIndexes, allSizes, 0, readUnsignedShort(b, u)));
 				u += 4;
 			}
@@ -1698,8 +1441,7 @@ public class CodeWriter implements CodeVisitor
 	 * @return the read value.
 	 */
 
-	static int readUnsignedShort(final byte[] b, final int index)
-	{
+	static int readUnsignedShort(final byte[] b, final int index) {
 		return ((b[index] & 0xFF) << 8) | (b[index + 1] & 0xFF);
 	}
 
@@ -1713,8 +1455,7 @@ public class CodeWriter implements CodeVisitor
 	 * @return the read value.
 	 */
 
-	static short readShort(final byte[] b, final int index)
-	{
+	static short readShort(final byte[] b, final int index) {
 		return (short) (((b[index] & 0xFF) << 8) | (b[index + 1] & 0xFF));
 	}
 
@@ -1728,8 +1469,7 @@ public class CodeWriter implements CodeVisitor
 	 * @return the read value.
 	 */
 
-	static int readInt(final byte[] b, final int index)
-	{
+	static int readInt(final byte[] b, final int index) {
 		return ((b[index] & 0xFF) << 24) | ((b[index + 1] & 0xFF) << 16) | ((b[index + 2] & 0xFF) << 8) | (b[index + 3] & 0xFF);
 	}
 
@@ -1744,8 +1484,7 @@ public class CodeWriter implements CodeVisitor
 	 *            the value to be written in the given byte array.
 	 */
 
-	static void writeShort(final byte[] b, final int index, final int s)
-	{
+	static void writeShort(final byte[] b, final int index, final int s) {
 		b[index] = (byte) (s >>> 8);
 		b[index + 1] = (byte) s;
 	}
@@ -1771,17 +1510,12 @@ public class CodeWriter implements CodeVisitor
 	 * @return the future value of the given bytecode offset.
 	 */
 
-	static int getNewOffset(final int[] indexes, final int[] sizes, final int begin, final int end)
-	{
+	static int getNewOffset(final int[] indexes, final int[] sizes, final int begin, final int end) {
 		int offset = end - begin;
-		for (int i = 0; i < indexes.length; ++i)
-		{
-			if (begin < indexes[i] && indexes[i] <= end)
-			{ // forward jump
+		for (int i = 0; i < indexes.length; ++i) {
+			if (begin < indexes[i] && indexes[i] <= end) { // forward jump
 				offset += sizes[i];
-			}
-			else if (end < indexes[i] && indexes[i] <= begin)
-			{ // backward jump
+			} else if (end < indexes[i] && indexes[i] <= begin) { // backward jump
 				offset -= sizes[i];
 			}
 		}
@@ -1795,8 +1529,7 @@ public class CodeWriter implements CodeVisitor
 	 * @return the current size of the bytecode of this method.
 	 */
 
-	protected int getCodeSize()
-	{
+	protected int getCodeSize() {
 		return code.length;
 	}
 
@@ -1808,8 +1541,7 @@ public class CodeWriter implements CodeVisitor
 	 *         {@link #getCodeSize getCodeSize} (exclusive).
 	 */
 
-	protected byte[] getCode()
-	{
+	protected byte[] getCode() {
 		return code.data;
 	}
 }

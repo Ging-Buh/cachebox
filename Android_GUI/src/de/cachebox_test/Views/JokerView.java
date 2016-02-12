@@ -23,8 +23,7 @@ import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Ui.ActivityUtils;
 
-public class JokerView extends ListView implements SelectedCacheEvent, ViewOptionsMenu
-{
+public class JokerView extends ListView implements SelectedCacheEvent, ViewOptionsMenu {
 
 	CustomAdapter lvAdapter;
 	Activity parentActivity;
@@ -34,33 +33,28 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 	/**
 	 * Constructor
 	 */
-	public JokerView(final Context context, final Activity parentActivity)
-	{
+	public JokerView(final Context context, final Activity parentActivity) {
 		super(context);
 		this.parentActivity = parentActivity;
 		SelectedCacheEventList.Add(this);
 		this.setAdapter(null);
 		lvAdapter = new CustomAdapter(getContext(), GlobalCore.getSelectedCache());
 		this.setAdapter(lvAdapter);
-		this.setOnItemLongClickListener(new OnItemLongClickListener()
-		{
+		this.setOnItemLongClickListener(new OnItemLongClickListener() {
 			@Override
-			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
-			{
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 				String TelephoneNumber;
 
 				TelephoneNumber = null;
 				if (arg2 >= 0) // Nummer raussuchen und unzulässige Zeichen entfernen
 					TelephoneNumber = Global.Jokers.get(arg2).Telefon.replaceAll("[^\\d\\+]", "");
 
-				if (Global.iPlugin == null || Global.iPlugin[0] == null) return true;
+				if (Global.iPlugin == null || Global.iPlugin[0] == null)
+					return true;
 
-				try
-				{
+				try {
 					return Global.iPlugin[0].call(TelephoneNumber);
-				}
-				catch (RemoteException e)
-				{
+				} catch (RemoteException e) {
 					e.printStackTrace();
 					return true;
 				}
@@ -72,8 +66,7 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 
 	}
 
-	public JokerView()
-	{
+	public JokerView() {
 		super(null);
 	}
 
@@ -81,8 +74,7 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 	static public int windowH = 0;
 
 	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-	{
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		// we overriding onMeasure because this is where the application gets its right size.
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 		windowW = getMeasuredWidth();
@@ -90,15 +82,11 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 	}
 
 	@Override
-	public void SelectedCacheChanged(final Cache cache, Waypoint waypoint)
-	{
-		main.mainActivity.runOnUiThread(new Runnable()
-		{
+	public void SelectedCacheChanged(final Cache cache, Waypoint waypoint) {
+		main.mainActivity.runOnUiThread(new Runnable() {
 			@Override
-			public void run()
-			{
-				if (aktCache == null || aktCache.Id != cache.Id)
-				{
+			public void run() {
+				if (aktCache == null || aktCache.Id != cache.Id) {
 					// Wwenn der aktuelle Cache geändert wurde, Telefonjokerliste löschen
 					aktCache = cache;
 					Global.Jokers.ClearList();
@@ -106,20 +94,18 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 					lvAdapter = new CustomAdapter(getContext(), cache);
 					JokerView.this.setAdapter(lvAdapter);
 					lvAdapter.notifyDataSetChanged();
-				}
-				else
+				} else
 					invalidate();
 			}
 		});
 
 	}
 
-	public void ActivityResult(int requestCode, int resultCode, Intent data)
-	{
-		if (data == null) return;
+	public void ActivityResult(int requestCode, int resultCode, Intent data) {
+		if (data == null)
+			return;
 		Bundle bundle = data.getExtras();
-		if (bundle != null)
-		{
+		if (bundle != null) {
 		}
 	}
 
@@ -134,50 +120,41 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 		private Context context;
 		private Cache cache;
 
-		public CustomAdapter(Context context, Cache cache)
-		{
+		public CustomAdapter(Context context, Cache cache) {
 			this.context = context;
 			this.cache = cache;
 		}
 
-		public void setCache(Cache cache)
-		{
+		public void setCache(Cache cache) {
 			this.cache = cache;
 
 		}
 
-		public int getCount()
-		{
-			if (cache != null) return Global.Jokers.size();
+		public int getCount() {
+			if (cache != null)
+				return Global.Jokers.size();
 			else
 				return 0;
 		}
 
-		public Object getItem(int position)
-		{
-			if (cache != null)
-			{
+		public Object getItem(int position) {
+			if (cache != null) {
 				return Global.Jokers.get(position);
-			}
-			else
+			} else
 				return null;
 		}
 
-		public long getItemId(int position)
-		{
+		public long getItemId(int position) {
 			return position;
 		}
 
-		public View getView(int position, View convertView, ViewGroup parent)
-		{
-			if (cache != null)
-			{
+		public View getView(int position, View convertView, ViewGroup parent) {
+			if (cache != null) {
 				Boolean BackGroundChanger = ((position % 2) == 1);
 				JokerEntry joker = Global.Jokers.get(position);
 				JokerViewItem v = new JokerViewItem(context, cache, joker, BackGroundChanger);
 				return v;
-			}
-			else
+			} else
 				return null;
 		}
 
@@ -188,56 +165,47 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 	}
 
 	@Override
-	public boolean ItemSelected(MenuItem item)
-	{
+	public boolean ItemSelected(MenuItem item) {
 		return false;
 	}
 
 	@Override
-	public void BeforeShowMenu(Menu menu)
-	{
+	public void BeforeShowMenu(Menu menu) {
 	}
 
 	@Override
-	public void OnShow()
-	{
+	public void OnShow() {
 		ActivityUtils.setListViewPropertys(this);
 	}
 
 	@Override
-	public void OnHide()
-	{
+	public void OnHide() {
 
 	}
 
 	@Override
-	public void OnFree()
-	{
+	public void OnFree() {
 
 	}
 
 	@Override
-	public int GetMenuId()
-	{
+	public int GetMenuId() {
 		return 0;
 	}
 
 	@Override
-	public int GetContextMenuId()
-	{
+	public int GetContextMenuId() {
 
 		return 0;
 	}
 
 	@Override
-	public void BeforeShowContextMenu(Menu menu)
-	{
+	public void BeforeShowContextMenu(Menu menu) {
 
 	}
 
 	@Override
-	public boolean ContextMenuItemSelected(MenuItem item)
-	{
+	public boolean ContextMenuItemSelected(MenuItem item) {
 
 		return false;
 	}

@@ -27,35 +27,33 @@ import de.CB.TestBase.Actions.TestCaseBase;
 import de.CB.TestBase.Views.MainView;
 import de.CB.TestBase.Views.MapView;
 
-public class MapViewTest extends TestCaseBase
-{
+public class MapViewTest extends TestCaseBase {
 	MapView mapView;
 
 	private int Angle;
 
-	public MapViewTest()
-	{
+	public MapViewTest() {
 		super("Compleete Mapview", "");
 
 	}
 
 	@Override
-	public void work()
-	{
+	public void work() {
 		// Enable Rotate Buttons
-		MainView.that.enableRotateButton(new OnClickListener()
-		{
+		MainView.that.enableRotateButton(new OnClickListener() {
 
 			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 				CB_Button b = (CB_Button) v;
-				if (b.getText().equals("CW")) Angle -= 5;
+				if (b.getText().equals("CW"))
+					Angle -= 5;
 				else
 					Angle += 5;
 
-				if (Angle < 0) Angle = 360 + Angle;
-				if (Angle > 360) Angle = Angle - 360;
+				if (Angle < 0)
+					Angle = 360 + Angle;
+				if (Angle > 360)
+					Angle = Angle - 360;
 
 				Locator.setHeading(Angle, CompassType.Magnetic);
 				mapView.OrientationChanged();
@@ -65,19 +63,15 @@ public class MapViewTest extends TestCaseBase
 		});
 	}
 
-	public void loadMap()
-	{
+	public void loadMap() {
 
 		XmlRenderTheme RenderTheme = CB_InternalRenderTheme.OSMARENDER;
 		ManagerBase.Manager.setRenderTheme(RenderTheme);
 
 		String AbsolutePath;
-		if (Plattform.used == Plattform.Desktop)
-		{
+		if (Plattform.used == Plattform.Desktop) {
 			AbsolutePath = Gdx.files.internal("assets/pankow.map").file().getAbsolutePath();
-		}
-		else
-		{
+		} else {
 			// cant Read from Asset use external
 			AbsolutePath = new File("storage/extSdCard/GL_RENDER_TEST/pankow.map").getAbsolutePath();
 		}
@@ -90,8 +84,7 @@ public class MapViewTest extends TestCaseBase
 
 		MapFileInfo info = ManagerBase.Manager.getMapsforgeLodedMapFileInfo(newLayer);
 
-		if (info != null)
-		{
+		if (info != null) {
 			LatLong lalo = info.boundingBox.getCenterPoint();
 			CoordinateGPS cor = new CoordinateGPS(lalo.getLatitude(), lalo.getLongitude());
 			mapView.setCenter(cor);
@@ -102,10 +95,8 @@ public class MapViewTest extends TestCaseBase
 	}
 
 	@Override
-	public void draw(Batch batch)
-	{
-		if (mapView == null)
-		{
+	public void draw(Batch batch) {
+		if (mapView == null) {
 			// Inital Map
 			mapView = new MapView(this, "mapView");
 			mapView.setPos(0, 0);
@@ -122,16 +113,13 @@ public class MapViewTest extends TestCaseBase
 			FontCache.get(GL_FontFamily.DEFAULT, GL_FontStyle.NORMAL, 40);
 			FontCache.get(GL_FontFamily.DEFAULT, GL_FontStyle.NORMAL, 50);
 
-		}
-		else
-		{
+		} else {
 			mapView.renderChilds(batch, myParentInfo);
 		}
 	}
 
 	@Override
-	public void dispose()
-	{
+	public void dispose() {
 		// TODO Auto-generated method stub
 
 	}

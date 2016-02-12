@@ -75,11 +75,11 @@ import java.net.*;
  */
 public class TextExtractor implements CharStreamSource {
 	private final Segment segment;
-	private boolean convertNonBreakingSpaces=Config.ConvertNonBreakingSpaces;
-	private boolean includeAttributes=false;
-	private boolean excludeNonHTMLElements=false;
+	private boolean convertNonBreakingSpaces = Config.ConvertNonBreakingSpaces;
+	private boolean includeAttributes = false;
+	private boolean excludeNonHTMLElements = false;
 
-	private static final Map<String,AttributeIncludeChecker> map; // maps each possibly included attribute name to an AttributeIncludeChecker instance, initialised in static block below.
+	private static final Map<String, AttributeIncludeChecker> map; // maps each possibly included attribute name to an AttributeIncludeChecker instance, initialised in static block below.
 
 	/**
 	 * Constructs a new <code>TextExtractor</code> based on the specified {@link Segment}.
@@ -87,7 +87,7 @@ public class TextExtractor implements CharStreamSource {
 	 * @see Segment#getTextExtractor()
 	 */
 	public TextExtractor(final Segment segment) {
-		this.segment=segment;
+		this.segment = segment;
 	}
 
 	// Documentation inherited from CharStreamSource
@@ -108,7 +108,7 @@ public class TextExtractor implements CharStreamSource {
 
 	// Documentation inherited from CharStreamSource
 	public String toString() {
-		return new Processor(segment,getConvertNonBreakingSpaces(),getIncludeAttributes(),getExcludeNonHTMLElements()).toString();
+		return new Processor(segment, getConvertNonBreakingSpaces(), getIncludeAttributes(), getExcludeNonHTMLElements()).toString();
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class TextExtractor implements CharStreamSource {
 	 * @see #getConvertNonBreakingSpaces()
 	 */
 	public TextExtractor setConvertNonBreakingSpaces(boolean convertNonBreakingSpaces) {
-		this.convertNonBreakingSpaces=convertNonBreakingSpaces;
+		this.convertNonBreakingSpaces = convertNonBreakingSpaces;
 		return this;
 	}
 
@@ -149,10 +149,10 @@ public class TextExtractor implements CharStreamSource {
 	 * @see #getIncludeAttributes()
 	 */
 	public TextExtractor setIncludeAttributes(boolean includeAttributes) {
-		this.includeAttributes=includeAttributes;
+		this.includeAttributes = includeAttributes;
 		return this;
 	}
-	
+
 	/**
 	 * Indicates whether any attribute values are included in the output.
 	 * <p>
@@ -209,9 +209,10 @@ public class TextExtractor implements CharStreamSource {
 	 * @return <true> if the text inside the {@link Element} of the specified start tag should be excluded from the output, otherwise <code>false</code>.
 	 */
 	public boolean includeAttribute(final StartTag startTag, final Attribute attribute) {
-		AttributeIncludeChecker attributeIncludeChecker=map.get(attribute.getKey());
-		if (attributeIncludeChecker==null) return false;
-		return attributeIncludeChecker.includeAttribute(startTag,attribute);
+		AttributeIncludeChecker attributeIncludeChecker = map.get(attribute.getKey());
+		if (attributeIncludeChecker == null)
+			return false;
+		return attributeIncludeChecker.includeAttribute(startTag, attribute);
 	}
 
 	/**
@@ -224,10 +225,10 @@ public class TextExtractor implements CharStreamSource {
 	 * @see #getExcludeNonHTMLElements()
 	 */
 	public TextExtractor setExcludeNonHTMLElements(boolean excludeNonHTMLElements) {
-		this.excludeNonHTMLElements=excludeNonHTMLElements;
+		this.excludeNonHTMLElements = excludeNonHTMLElements;
 		return this;
 	}
-	
+
 	/**
 	 * Indicates whether the content of <a href="HTMLElements.html#NonHTMLElement">non-HTML elements</a> is excluded from the output.
 	 * <p>
@@ -277,26 +278,26 @@ public class TextExtractor implements CharStreamSource {
 		boolean includeAttribute(final StartTag startTag, final Attribute attribute);
 	}
 
-	private static AttributeIncludeChecker ALWAYS_INCLUDE=new AttributeIncludeChecker() {
+	private static AttributeIncludeChecker ALWAYS_INCLUDE = new AttributeIncludeChecker() {
 		public boolean includeAttribute(final StartTag startTag, final Attribute attribute) {
 			return true;
 		}
 	};
 
-	private static AttributeIncludeChecker INCLUDE_IF_NAME_ATTRIBUTE_PRESENT=new AttributeIncludeChecker() {
+	private static AttributeIncludeChecker INCLUDE_IF_NAME_ATTRIBUTE_PRESENT = new AttributeIncludeChecker() {
 		public boolean includeAttribute(final StartTag startTag, final Attribute attribute) {
-			return startTag.getAttributes().get("name")!=null;
+			return startTag.getAttributes().get("name") != null;
 		}
 	};
 
 	static {
-		map=new HashMap<String,AttributeIncludeChecker>();
-		map.put("title",ALWAYS_INCLUDE); // add title attribute
-		map.put("alt",ALWAYS_INCLUDE); // add alt attribute (APPLET, AREA, IMG and INPUT elements)
-		map.put("label",ALWAYS_INCLUDE); // add label attribute (OPTION and OPTGROUP elements)
-		map.put("summary",ALWAYS_INCLUDE); // add summary attribute (TABLE element)
-		map.put("content",INCLUDE_IF_NAME_ATTRIBUTE_PRESENT); // add content attribute (META element)
-		map.put("href",ALWAYS_INCLUDE); // add href attribute (A, AREA and LINK elements)
+		map = new HashMap<String, AttributeIncludeChecker>();
+		map.put("title", ALWAYS_INCLUDE); // add title attribute
+		map.put("alt", ALWAYS_INCLUDE); // add alt attribute (APPLET, AREA, IMG and INPUT elements)
+		map.put("label", ALWAYS_INCLUDE); // add label attribute (OPTION and OPTGROUP elements)
+		map.put("summary", ALWAYS_INCLUDE); // add summary attribute (TABLE element)
+		map.put("content", INCLUDE_IF_NAME_ATTRIBUTE_PRESENT); // add content attribute (META element)
+		map.put("href", ALWAYS_INCLUDE); // add href attribute (A, AREA and LINK elements)
 		// don't bother with the prompt attribute from the ININDEX element as the element is deprecated and very rarely used.
 	}
 
@@ -314,48 +315,51 @@ public class TextExtractor implements CharStreamSource {
 		private final boolean excludeNonHTMLElements;
 
 		public Processor(final Segment segment, final boolean convertNonBreakingSpaces, final boolean includeAttributes, final boolean excludeNonHTMLElements) {
-			this.segment=segment;
-			source=segment.source;
-			this.convertNonBreakingSpaces=convertNonBreakingSpaces;
-			this.includeAttributes=includeAttributes;
-			this.excludeNonHTMLElements=excludeNonHTMLElements;
+			this.segment = segment;
+			source = segment.source;
+			this.convertNonBreakingSpaces = convertNonBreakingSpaces;
+			this.includeAttributes = includeAttributes;
+			this.excludeNonHTMLElements = excludeNonHTMLElements;
 		}
 
 		public String toString() {
-			final StringBuilder sb=new StringBuilder(segment.length());
-			for (NodeIterator nodeIterator=new NodeIterator(segment); nodeIterator.hasNext();) {
-				Segment segment=nodeIterator.next();
+			final StringBuilder sb = new StringBuilder(segment.length());
+			for (NodeIterator nodeIterator = new NodeIterator(segment); nodeIterator.hasNext();) {
+				Segment segment = nodeIterator.next();
 				if (segment instanceof Tag) {
-					final Tag tag=(Tag)segment;
+					final Tag tag = (Tag) segment;
 					if (tag.getTagType().isServerTag()) {
 						// elementContainsMarkup should be made into a TagType property one day.
 						// for the time being assume all server element content is code, although this is not true for some Mason elements.
-						final boolean elementContainsMarkup=false;
+						final boolean elementContainsMarkup = false;
 						if (!elementContainsMarkup) {
-							final Element element=tag.getElement();
-							if (element!=null && element.getEnd()>tag.getEnd()) nodeIterator.skipToPos(element.getEnd());
+							final Element element = tag.getElement();
+							if (element != null && element.getEnd() > tag.getEnd())
+								nodeIterator.skipToPos(element.getEnd());
 						}
 						continue;
 					}
-					if (tag.getTagType()==StartTagType.NORMAL) {
-						final StartTag startTag=(StartTag)tag;
-						if (tag.name==HTMLElementName.SCRIPT || tag.name==HTMLElementName.STYLE || excludeElement(startTag) || (excludeNonHTMLElements && !HTMLElements.getElementNames().contains(tag.name))) {
+					if (tag.getTagType() == StartTagType.NORMAL) {
+						final StartTag startTag = (StartTag) tag;
+						if (tag.name == HTMLElementName.SCRIPT || tag.name == HTMLElementName.STYLE || excludeElement(startTag) || (excludeNonHTMLElements && !HTMLElements.getElementNames().contains(tag.name))) {
 							nodeIterator.skipToPos(startTag.getElement().getEnd());
 							continue;
 						}
 						if (includeAttributes) {
 							for (Attribute attribute : startTag.getAttributes()) {
-								if (includeAttribute(startTag,attribute)) sb.append(' ').append(attribute.getValueSegment()).append(' ');
+								if (includeAttribute(startTag, attribute))
+									sb.append(' ').append(attribute.getValueSegment()).append(' ');
 							}
 						}
 					}
 					// Treat both start and end tags not belonging to inline-level elements as whitespace:
-					if (tag.getName()==HTMLElementName.BR || !HTMLElements.getInlineLevelElementNames().contains(tag.getName())) sb.append(' ');
+					if (tag.getName() == HTMLElementName.BR || !HTMLElements.getInlineLevelElementNames().contains(tag.getName()))
+						sb.append(' ');
 				} else {
 					sb.append(segment);
 				}
 			}
-			final String decodedText=CharacterReference.decodeCollapseWhiteSpace(sb,convertNonBreakingSpaces);
+			final String decodedText = CharacterReference.decodeCollapseWhiteSpace(sb, convertNonBreakingSpaces);
 			return decodedText;
 		}
 	}

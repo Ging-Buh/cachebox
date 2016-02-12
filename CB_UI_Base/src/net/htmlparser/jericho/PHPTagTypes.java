@@ -71,7 +71,7 @@ public final class PHPTagTypes {
 	 *   <dd><code>&lt;?php echo '&lt;p&gt;Hello World&lt;/p&gt;'; ?&gt;</code></dd>
 	 * </dl>
 	 */
-	public static final StartTagType PHP_STANDARD=StartTagTypePHPStandard.INSTANCE;
+	public static final StartTagType PHP_STANDARD = StartTagTypePHPStandard.INSTANCE;
 
 	/**
 	 * The tag type given to a 
@@ -102,7 +102,7 @@ public final class PHPTagTypes {
 	 *   <dd><code>&lt;? echo '&lt;p&gt;Hello World&lt;/p&gt;'; ?&gt;</code></dd>
 	 * </dl>
 	 */
-	public static final StartTagType PHP_SHORT=StartTagTypePHPShort.INSTANCE;
+	public static final StartTagType PHP_SHORT = StartTagTypePHPShort.INSTANCE;
 
 	/**
 	 * The tag type given to a 
@@ -127,15 +127,12 @@ public final class PHPTagTypes {
 	 *   <dd><code>&lt;script language="php"&gt; echo '&lt;p&gt;Hello World&lt;/p&gt;'; &lt;/script&gt;</code></dd>
 	 * </dl>
 	 */
-	public static final StartTagType PHP_SCRIPT=StartTagTypePHPScript.INSTANCE;
+	public static final StartTagType PHP_SCRIPT = StartTagTypePHPScript.INSTANCE;
 
-	private static final TagType[] TAG_TYPES={
-		PHP_STANDARD,
-		PHP_SHORT,
-		PHP_SCRIPT
-	};
+	private static final TagType[] TAG_TYPES = { PHP_STANDARD, PHP_SHORT, PHP_SCRIPT };
 
-	private PHPTagTypes() {}
+	private PHPTagTypes() {
+	}
 
 	/** 
 	 * {@linkplain TagType#register() Registers} all of the tag types defined in this class at once.
@@ -143,16 +140,18 @@ public final class PHPTagTypes {
 	 * The tag types must be registered before the parser will recognise them.
 	 */
 	public static void register() {
-		for (TagType tagType : TAG_TYPES) tagType.register();
+		for (TagType tagType : TAG_TYPES)
+			tagType.register();
 	}
 
 	/** 
 	 * {@linkplain TagType#deregister() Deregisters} all of the tag types defined in this class at once.
 	 */
 	public static void deregister() {
-		for (TagType tagType : TAG_TYPES) tagType.deregister();
+		for (TagType tagType : TAG_TYPES)
+			tagType.deregister();
 	}
-	
+
 	/**
 	 * Indicates whether the specified tag type is defined in this class.
 	 *
@@ -160,10 +159,12 @@ public final class PHPTagTypes {
 	 * @return <code>true</code> if the specified tag type is defined in this class, otherwise <code>false</code>.
 	 */
 	public static boolean defines(final TagType tagType) {
-		for (TagType definedTagType : TAG_TYPES) if (tagType==definedTagType) return true;
+		for (TagType definedTagType : TAG_TYPES)
+			if (tagType == definedTagType)
+				return true;
 		return false;
 	}
-	
+
 	/** 
 	 * Indicates whether the specified tag type is recognised by a <a target="_blank" href="http://www.php.net">PHP</a> parser.
 	 * <p>
@@ -174,6 +175,6 @@ public final class PHPTagTypes {
 	 * @return <code>true</code> if the specified tag type is recognised by a <a target="_blank" href="http://www.php.net">PHP</a> parser, otherwise <code>false</code>.
 	 */
 	public static boolean isParsedByPHP(final TagType tagType) {
-		return tagType==StartTagType.SERVER_COMMON || defines(tagType);
+		return tagType == StartTagType.SERVER_COMMON || defines(tagType);
 	}
 }

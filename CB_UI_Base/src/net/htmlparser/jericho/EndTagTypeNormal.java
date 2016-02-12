@@ -21,10 +21,10 @@
 package net.htmlparser.jericho;
 
 final class EndTagTypeNormal extends EndTagTypeGenericImplementation {
-	static final EndTagTypeNormal INSTANCE=new EndTagTypeNormal();
+	static final EndTagTypeNormal INSTANCE = new EndTagTypeNormal();
 
 	private EndTagTypeNormal() {
-		super("/normal",START_DELIMITER_PREFIX,">",false,false);
+		super("/normal", START_DELIMITER_PREFIX, ">", false, false);
 	}
 
 	public StartTagType getCorrespondingStartTagType() {

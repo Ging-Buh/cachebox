@@ -2,8 +2,7 @@ package CB_Core.Types;
 
 import java.io.Serializable;
 
-public class JokerEntry implements Serializable
-{
+public class JokerEntry implements Serializable {
 	/**
 	 * 
 	 */
@@ -27,8 +26,7 @@ public class JokerEntry implements Serializable
 	// / Bemerkung
 	public String Bemerkung;
 
-	JokerEntry(String vorname, String name, String gclogin, String telefon, long tage, String bemerkung)
-	{
+	JokerEntry(String vorname, String name, String gclogin, String telefon, long tage, String bemerkung) {
 		Vorname = vorname;
 		Name = name;
 		GCLogin = gclogin;

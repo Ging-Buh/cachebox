@@ -4,11 +4,9 @@ import CB_UI_Base.CB_Texturepacker.Rect_Base;
 import android.graphics.Bitmap;
 
 /** @author Nathan Sweet */
-class Rect extends Rect_Base
-{
+class Rect extends Rect_Base {
 
-	Rect(Bitmap source, int left, int top, int newWidth, int newHeight)
-	{
+	Rect(Bitmap source, int left, int top, int newWidth, int newHeight) {
 		// image = Bitmap.createBitmap(newWidth, newHeight, source.getConfig());
 
 		image = source.copy(source.getConfig(), true);
@@ -21,37 +19,31 @@ class Rect extends Rect_Base
 		height = newHeight;
 	}
 
-	public Rect()
-	{
+	public Rect() {
 		that = this;
 	}
 
-	public Rect(Rect_Base freeNode)
-	{
+	public Rect(Rect_Base freeNode) {
 		super(freeNode);
 	}
 
 	@Override
-	public int getWidth()
-	{
+	public int getWidth() {
 		return ((Bitmap) image).getWidth();
 	}
 
 	@Override
-	public int getHeight()
-	{
+	public int getHeight() {
 		return ((Bitmap) image).getHeight();
 	}
 
 	@Override
-	public Rect_Base getInstanz()
-	{
+	public Rect_Base getInstanz() {
 		return new Rect();
 	}
 
 	@Override
-	public Rect_Base getInstanz(Rect_Base freeNode)
-	{
+	public Rect_Base getInstanz(Rect_Base freeNode) {
 		return new Rect(freeNode);
 	}
 

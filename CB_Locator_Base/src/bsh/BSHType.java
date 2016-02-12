@@ -36,8 +36,7 @@ package bsh;
 import java.lang.reflect.Array;
 
 @SuppressWarnings("serial")
-class BSHType extends SimpleNode implements BshClassManager.Listener
-{
+class BSHType extends SimpleNode implements BshClassManager.Listener {
 	/**
 	 * baseType is used during evaluation of full type and retained for the case where we are an array type. In the case where we are not an
 	 * array this will be the same as type.
@@ -57,21 +56,18 @@ class BSHType extends SimpleNode implements BshClassManager.Listener
 
 	String descriptor;
 
-	BSHType(int id)
-	{
+	BSHType(int id) {
 		super(id);
 	}
 
 	/**
 	 * Used by the grammar to indicate dimensions of array types during parsing.
 	 */
-	public void addArrayDimension()
-	{
+	public void addArrayDimension() {
 		arrayDims++;
 	}
 
-	SimpleNode getTypeNode()
-	{
+	SimpleNode getTypeNode() {
 		return (SimpleNode) jjtGetChild(0);
 	}
 
@@ -80,17 +76,17 @@ class BSHType extends SimpleNode implements BshClassManager.Listener
 	 * namespace in order to resolve imports. If it is not found and the name is non-compound we assume the default package for the name.
 	 */
 	@SuppressWarnings("rawtypes")
-	public String getTypeDescriptor(CallStack callstack, Interpreter interpreter, String defaultPackage)
-	{
+	public String getTypeDescriptor(CallStack callstack, Interpreter interpreter, String defaultPackage) {
 		// return cached type if available
-		if (descriptor != null) return descriptor;
+		if (descriptor != null)
+			return descriptor;
 
 		String descriptor;
 		// first node will either be PrimitiveType or AmbiguousName
 		SimpleNode node = getTypeNode();
-		if (node instanceof BSHPrimitiveType) descriptor = getTypeDescriptor(((BSHPrimitiveType) node).type);
-		else
-		{
+		if (node instanceof BSHPrimitiveType)
+			descriptor = getTypeDescriptor(((BSHPrimitiveType) node).type);
+		else {
 			String clasName = ((BSHAmbiguousName) node).text;
 			BshClassManager bcm = interpreter.getClassManager();
 			// Note: incorrect here - we are using the hack in bsh class
@@ -100,30 +96,23 @@ class BSHType extends SimpleNode implements BshClassManager.Listener
 			String definingClass = bcm.getClassBeingDefined(clasName);
 
 			Class clas = null;
-			if (definingClass == null)
-			{
-				try
-				{
+			if (definingClass == null) {
+				try {
 					clas = ((BSHAmbiguousName) node).toClass(callstack, interpreter);
-				}
-				catch (EvalError e)
-				{
+				} catch (EvalError e) {
 					// throw new InterpreterError("unable to resolve type: "+e);
 					// ignore and try default package
 					// System.out.println("BSHType: "+node+" class not found");
 				}
-			}
-			else
+			} else
 				clasName = definingClass;
 
-			if (clas != null)
-			{
+			if (clas != null) {
 				// System.out.println("found clas: "+clas);
 				descriptor = getTypeDescriptor(clas);
-			}
-			else
-			{
-				if (defaultPackage == null || Name.isCompound(clasName)) descriptor = "L" + clasName.replace('.', '/') + ";";
+			} else {
+				if (defaultPackage == null || Name.isCompound(clasName))
+					descriptor = "L" + clasName.replace('.', '/') + ";";
 				else
 					descriptor = "L" + defaultPackage.replace('.', '/') + "/" + clasName + ";";
 			}
@@ -138,33 +127,29 @@ class BSHType extends SimpleNode implements BshClassManager.Listener
 	}
 
 	@SuppressWarnings("rawtypes")
-	public Class getType(CallStack callstack, Interpreter interpreter) throws EvalError
-	{
+	public Class getType(CallStack callstack, Interpreter interpreter) throws EvalError {
 		// return cached type if available
-		if (type != null) return type;
+		if (type != null)
+			return type;
 
 		// first node will either be PrimitiveType or AmbiguousName
 		SimpleNode node = getTypeNode();
-		if (node instanceof BSHPrimitiveType) baseType = ((BSHPrimitiveType) node).getType();
+		if (node instanceof BSHPrimitiveType)
+			baseType = ((BSHPrimitiveType) node).getType();
 		else
 			baseType = ((BSHAmbiguousName) node).toClass(callstack, interpreter);
 
-		if (arrayDims > 0)
-		{
-			try
-			{
+		if (arrayDims > 0) {
+			try {
 				// Get the type by constructing a prototype array with
 				// arbitrary (zero) length in each dimension.
 				int[] dims = new int[arrayDims]; // int array default zeros
 				Object obj = Array.newInstance(baseType, dims);
 				type = obj.getClass();
-			}
-			catch (Exception e)
-			{
+			} catch (Exception e) {
 				throw new EvalError("Couldn't construct array type", this, callstack);
 			}
-		}
-		else
+		} else
 			type = baseType;
 
 		// hack... sticking to first interpreter that resolves this
@@ -179,42 +164,48 @@ class BSHType extends SimpleNode implements BshClassManager.Listener
 	 * array this will be the same as type.
 	 */
 	@SuppressWarnings("rawtypes")
-	public Class getBaseType()
-	{
+	public Class getBaseType() {
 		return baseType;
 	}
 
 	/**
 	 * If we are an array type this will be non zero and indicate the dimensionality of the array. e.g. 2 for String[][];
 	 */
-	public int getArrayDims()
-	{
+	public int getArrayDims() {
 		return arrayDims;
 	}
 
 	@Override
-	public void classLoaderChanged()
-	{
+	public void classLoaderChanged() {
 		type = null;
 		baseType = null;
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static String getTypeDescriptor(Class clas)
-	{
-		if (clas == Boolean.TYPE) return "Z";
-		if (clas == Character.TYPE) return "C";
-		if (clas == Byte.TYPE) return "B";
-		if (clas == Short.TYPE) return "S";
-		if (clas == Integer.TYPE) return "I";
-		if (clas == Long.TYPE) return "J";
-		if (clas == Float.TYPE) return "F";
-		if (clas == Double.TYPE) return "D";
-		if (clas == Void.TYPE) return "V";
+	public static String getTypeDescriptor(Class clas) {
+		if (clas == Boolean.TYPE)
+			return "Z";
+		if (clas == Character.TYPE)
+			return "C";
+		if (clas == Byte.TYPE)
+			return "B";
+		if (clas == Short.TYPE)
+			return "S";
+		if (clas == Integer.TYPE)
+			return "I";
+		if (clas == Long.TYPE)
+			return "J";
+		if (clas == Float.TYPE)
+			return "F";
+		if (clas == Double.TYPE)
+			return "D";
+		if (clas == Void.TYPE)
+			return "V";
 		// Is getName() ok? test with 1.1
 		String name = clas.getName().replace('.', '/');
 
-		if (name.startsWith("[") || name.endsWith(";")) return name;
+		if (name.startsWith("[") || name.endsWith(";"))
+			return name;
 		else
 			return "L" + name.replace('.', '/') + ";";
 	}

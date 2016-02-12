@@ -44,9 +44,9 @@ final class StringOutputSegment implements OutputSegment {
 	 * @param text  the textual content of the new output segment, or <code>null</code> if no content.
 	 */
 	public StringOutputSegment(final int begin, final int end, final CharSequence text) {
-		this.begin=begin;
-		this.end=end;
-		this.text=(text==null ? "" : text);
+		this.begin = begin;
+		this.end = end;
+		this.text = (text == null ? "" : text);
 	}
 
 	/**
@@ -59,7 +59,7 @@ final class StringOutputSegment implements OutputSegment {
 	 * @param text  the textual content of the new output segment, or <code>null</code> if no content.
 	 */
 	public StringOutputSegment(final Segment segment, final CharSequence text) {
-		this(segment.begin,segment.end,text);
+		this(segment.begin, segment.end, text);
 	}
 
 	public int getBegin() {
@@ -87,7 +87,7 @@ final class StringOutputSegment implements OutputSegment {
 	}
 
 	public String getDebugInfo() {
-		return "Replace: (p"+begin+"-p"+end+") "+text;
+		return "Replace: (p" + begin + "-p" + end + ") " + text;
 	}
 
 	public void output(final Writer writer) throws IOException {

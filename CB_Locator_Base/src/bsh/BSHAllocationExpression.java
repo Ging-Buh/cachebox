@@ -40,45 +40,39 @@ import java.lang.reflect.InvocationTargetException;
  * New object, new array, or inner class style allocation with body.
  */
 @SuppressWarnings("serial")
-class BSHAllocationExpression extends SimpleNode
-{
-	BSHAllocationExpression(int id)
-	{
+class BSHAllocationExpression extends SimpleNode {
+	BSHAllocationExpression(int id) {
 		super(id);
 	}
 
 	private static int innerClassCount = 0;
 
 	@Override
-	public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError
-	{
+	public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError {
 		// type is either a class name or a primitive type
 		SimpleNode type = (SimpleNode) jjtGetChild(0);
 
 		// args is either constructor arguments or array dimensions
 		SimpleNode args = (SimpleNode) jjtGetChild(1);
 
-		if (type instanceof BSHAmbiguousName)
-		{
+		if (type instanceof BSHAmbiguousName) {
 			BSHAmbiguousName name = (BSHAmbiguousName) type;
 
-			if (args instanceof BSHArguments) return objectAllocation(name, (BSHArguments) args, callstack, interpreter);
+			if (args instanceof BSHArguments)
+				return objectAllocation(name, (BSHArguments) args, callstack, interpreter);
 			else
 				return objectArrayAllocation(name, (BSHArrayDimensions) args, callstack, interpreter);
-		}
-		else
+		} else
 			return primitiveArrayAllocation((BSHPrimitiveType) type, (BSHArrayDimensions) args, callstack, interpreter);
 	}
 
-	@SuppressWarnings(
-		{ "unused", "rawtypes" })
-	private Object objectAllocation(BSHAmbiguousName nameNode, BSHArguments argumentsNode, CallStack callstack, Interpreter interpreter)
-			throws EvalError
-	{
+	@SuppressWarnings({ "unused", "rawtypes" })
+	private Object objectAllocation(BSHAmbiguousName nameNode, BSHArguments argumentsNode, CallStack callstack, Interpreter interpreter) throws EvalError {
 		NameSpace namespace = callstack.top();
 
 		Object[] args = argumentsNode.getArguments(callstack, interpreter);
-		if (args == null) throw new EvalError("Null args in new.", this, callstack);
+		if (args == null)
+			throw new EvalError("Null args in new.", this, callstack);
 
 		// Look for scripted class object
 		Object obj = nameNode.toObject(callstack, interpreter, false/* force class */);
@@ -88,57 +82,48 @@ class BSHAllocationExpression extends SimpleNode
 		obj = nameNode.toObject(callstack, interpreter, true/* force class */);
 
 		Class type = null;
-		if (obj instanceof ClassIdentifier) type = ((ClassIdentifier) obj).getTargetClass();
+		if (obj instanceof ClassIdentifier)
+			type = ((ClassIdentifier) obj).getTargetClass();
 		else
 			throw new EvalError("Unknown class: " + nameNode.text, this, callstack);
 
 		// Is an inner class style object allocation
 		boolean hasBody = jjtGetNumChildren() > 2;
 
-		if (hasBody)
-		{
+		if (hasBody) {
 			BSHBlock body = (BSHBlock) jjtGetChild(2);
-			if (type.isInterface()) return constructWithInterfaceBody(type, args, body, callstack, interpreter);
+			if (type.isInterface())
+				return constructWithInterfaceBody(type, args, body, callstack, interpreter);
 			else
 				return constructWithClassBody(type, args, body, callstack, interpreter);
-		}
-		else
+		} else
 			return constructObject(type, args, callstack, interpreter);
 	}
 
-	private Object constructObject(Class<?> type, Object[] args, CallStack callstack, Interpreter interpreter) throws EvalError
-	{
+	private Object constructObject(Class<?> type, Object[] args, CallStack callstack, Interpreter interpreter) throws EvalError {
 		final boolean isGeneratedClass = GeneratedClass.class.isAssignableFrom(type);
-		if (isGeneratedClass)
-		{
+		if (isGeneratedClass) {
 			ClassGeneratorUtil.registerConstructorContext(callstack, interpreter);
 		}
 		Object obj;
-		try
-		{
+		try {
 			obj = Reflect.constructObject(type, args);
-		}
-		catch (ReflectError e)
-		{
+		} catch (ReflectError e) {
 			throw new EvalError("Constructor error: " + e.getMessage(), this, callstack);
-		}
-		catch (InvocationTargetException e)
-		{
+		} catch (InvocationTargetException e) {
 			// No need to wrap this debug
 			Interpreter.debug("The constructor threw an exception:\n\t" + e.getTargetException());
 			throw new TargetError("Object constructor", e.getTargetException(), this, callstack, true);
-		}
-		finally
-		{
-			if (isGeneratedClass)
-			{
+		} finally {
+			if (isGeneratedClass) {
 				ClassGeneratorUtil.registerConstructorContext(null, null); // clean up, prevent memory leak
 			}
 		}
 
 		String className = type.getName();
 		// Is it an inner class?
-		if (className.indexOf("$") == -1) return obj;
+		if (className.indexOf("$") == -1)
+			return obj;
 
 		// Temporary hack to support inner classes
 		// If the obj is a non-static inner class then import the context...
@@ -153,8 +138,7 @@ class BSHAllocationExpression extends SimpleNode
 		// We really need to check if we're a static inner class here first...
 		// but for some reason Java won't show the static modifier on our
 		// fake inner classes... could generate a flag field.
-		if (instanceNameSpace != null && className.startsWith(instanceNameSpace.getName() + "$"))
-		{
+		if (instanceNameSpace != null && className.startsWith(instanceNameSpace.getName() + "$")) {
 			ClassGenerator.getClassGenerator().setInstanceNameSpaceParent(obj, className, instanceNameSpace);
 		}
 
@@ -162,23 +146,16 @@ class BSHAllocationExpression extends SimpleNode
 	}
 
 	@SuppressWarnings("rawtypes")
-	private Object constructWithClassBody(Class type, Object[] args, BSHBlock block, CallStack callstack, Interpreter interpreter)
-			throws EvalError
-	{
+	private Object constructWithClassBody(Class type, Object[] args, BSHBlock block, CallStack callstack, Interpreter interpreter) throws EvalError {
 		String name = callstack.top().getName() + "$" + (++innerClassCount);
 		Modifiers modifiers = new Modifiers();
 		modifiers.addModifier(Modifiers.CLASS, "public");
-		Class clas = ClassGenerator.getClassGenerator().generateClass(name, modifiers, null/* interfaces */, type/* superClass */, block,
-				false/* isInterface */, callstack, interpreter);
-		try
-		{
+		Class clas = ClassGenerator.getClassGenerator().generateClass(name, modifiers, null/* interfaces */, type/* superClass */, block, false/* isInterface */, callstack, interpreter);
+		try {
 			return Reflect.constructObject(clas, args);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			Throwable cause = e;
-			if (e instanceof InvocationTargetException)
-			{
+			if (e instanceof InvocationTargetException) {
 				cause = ((InvocationTargetException) e).getTargetException();
 			}
 			throw new EvalError("Error constructing inner class instance: " + e, this, callstack, cause);
@@ -186,9 +163,7 @@ class BSHAllocationExpression extends SimpleNode
 	}
 
 	@SuppressWarnings("rawtypes")
-	private Object constructWithInterfaceBody(Class type, Object[] args, BSHBlock body, CallStack callstack, Interpreter interpreter)
-			throws EvalError
-	{
+	private Object constructWithInterfaceBody(Class type, Object[] args, BSHBlock body, CallStack callstack, Interpreter interpreter) throws EvalError {
 		NameSpace namespace = callstack.top();
 		NameSpace local = new NameSpace(namespace, "AnonymousBlock");
 		callstack.push(local);
@@ -201,35 +176,31 @@ class BSHAllocationExpression extends SimpleNode
 	}
 
 	@SuppressWarnings("rawtypes")
-	private Object objectArrayAllocation(BSHAmbiguousName nameNode, BSHArrayDimensions dimensionsNode, CallStack callstack,
-			Interpreter interpreter) throws EvalError
-	{
+	private Object objectArrayAllocation(BSHAmbiguousName nameNode, BSHArrayDimensions dimensionsNode, CallStack callstack, Interpreter interpreter) throws EvalError {
 		NameSpace namespace = callstack.top();
 		Class type = nameNode.toClass(callstack, interpreter);
-		if (type == null) throw new EvalError("Class " + nameNode.getName(namespace) + " not found.", this, callstack);
+		if (type == null)
+			throw new EvalError("Class " + nameNode.getName(namespace) + " not found.", this, callstack);
 
 		return arrayAllocation(dimensionsNode, type, callstack, interpreter);
 	}
 
 	@SuppressWarnings("rawtypes")
-	private Object primitiveArrayAllocation(BSHPrimitiveType typeNode, BSHArrayDimensions dimensionsNode, CallStack callstack,
-			Interpreter interpreter) throws EvalError
-	{
+	private Object primitiveArrayAllocation(BSHPrimitiveType typeNode, BSHArrayDimensions dimensionsNode, CallStack callstack, Interpreter interpreter) throws EvalError {
 		Class type = typeNode.getType();
 
 		return arrayAllocation(dimensionsNode, type, callstack, interpreter);
 	}
 
 	@SuppressWarnings("rawtypes")
-	private Object arrayAllocation(BSHArrayDimensions dimensionsNode, Class type, CallStack callstack, Interpreter interpreter)
-			throws EvalError
-	{
+	private Object arrayAllocation(BSHArrayDimensions dimensionsNode, Class type, CallStack callstack, Interpreter interpreter) throws EvalError {
 		/*
 		 * dimensionsNode can return either a fully intialized array or VOID. when VOID the prescribed array dimensions (defined and
 		 * undefined) are contained in the node.
 		 */
 		Object result = dimensionsNode.eval(type, callstack, interpreter);
-		if (result != Primitive.VOID) return result;
+		if (result != Primitive.VOID)
+			return result;
 		else
 			return arrayNewInstance(type, dimensionsNode, callstack);
 	}
@@ -252,24 +223,17 @@ class BSHAllocationExpression extends SimpleNode
 	 * explanation... see below.
 	 */
 	@SuppressWarnings("rawtypes")
-	private Object arrayNewInstance(Class type, BSHArrayDimensions dimensionsNode, CallStack callstack) throws EvalError
-	{
-		if (dimensionsNode.numUndefinedDims > 0)
-		{
+	private Object arrayNewInstance(Class type, BSHArrayDimensions dimensionsNode, CallStack callstack) throws EvalError {
+		if (dimensionsNode.numUndefinedDims > 0) {
 			Object proto = Array.newInstance(type, new int[dimensionsNode.numUndefinedDims]); // zeros
 			type = proto.getClass();
 		}
 
-		try
-		{
+		try {
 			return Array.newInstance(type, dimensionsNode.definedDimensions);
-		}
-		catch (NegativeArraySizeException e1)
-		{
+		} catch (NegativeArraySizeException e1) {
 			throw new TargetError(e1, this, callstack);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			throw new EvalError("Can't construct primitive array: " + e.getMessage(), this, callstack);
 		}
 	}

@@ -25,75 +25,75 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class RadioButton extends chkBox {
 
-    private RadioGroup group;
-    private final Image radioBack;
-    private final Image radioSet;
+	private RadioGroup group;
+	private final Image radioBack;
+	private final Image radioSet;
 
-    public RadioButton(String Name) {
-	super(Name);
-	radioBack = new Image(new CB_RectF(UI_Size_Base.that.getChkBoxSize()), name, false);
-	radioBack.setDrawable(SpriteCacheBase.radioBack);
-	this.addChild(radioBack);
+	public RadioButton(String Name) {
+		super(Name);
+		radioBack = new Image(new CB_RectF(UI_Size_Base.that.getChkBoxSize()), name, false);
+		radioBack.setDrawable(SpriteCacheBase.radioBack);
+		this.addChild(radioBack);
 
-	radioSet = new Image(new CB_RectF(UI_Size_Base.that.getChkBoxSize()), name, false);
-	radioSet.setDrawable(SpriteCacheBase.radioOn);
-	this.addChild(radioSet);
-    }
-
-    public void setRadioGroup(RadioGroup Group) {
-	group = Group;
-    }
-
-    @Override
-    protected void render(Batch batch) {
-	if (lblTxt != null && lblTxt.getX() < radioBack.getMaxX()) {
-	    lblTxt.setX(radioBack.getMaxX() + UI_Size_Base.that.getMargin());
+		radioSet = new Image(new CB_RectF(UI_Size_Base.that.getChkBoxSize()), name, false);
+		radioSet.setDrawable(SpriteCacheBase.radioOn);
+		this.addChild(radioSet);
 	}
 
-	if (isChk && !radioSet.isVisible()) {
-	    radioSet.setVisible();
-	} else if (!isChk && radioSet.isVisible()) {
-	    radioSet.setVisible(false);
+	public void setRadioGroup(RadioGroup Group) {
+		group = Group;
 	}
 
-	super.render(batch);
-    }
+	@Override
+	protected void render(Batch batch) {
+		if (lblTxt != null && lblTxt.getX() < radioBack.getMaxX()) {
+			lblTxt.setX(radioBack.getMaxX() + UI_Size_Base.that.getMargin());
+		}
 
-    @Override
-    public boolean click(int x, int y, int pointer, int button) {
-	if (!isDisabled) {
-	    if (!isChk || group == null) {
-		isChk = !isChk;
-		if (changeListener != null)
-		    changeListener.onCheckedChanged(this, isChk);
-		if (group != null)
-		    group.aktivate(this);
+		if (isChk && !radioSet.isVisible()) {
+			radioSet.setVisible();
+		} else if (!isChk && radioSet.isVisible()) {
+			radioSet.setVisible(false);
+		}
 
-	    }
+		super.render(batch);
 	}
-	return true;
-    }
 
-    @Override
-    protected void Initial() {
+	@Override
+	public boolean click(int x, int y, int pointer, int button) {
+		if (!isDisabled) {
+			if (!isChk || group == null) {
+				isChk = !isChk;
+				if (changeListener != null)
+					changeListener.onCheckedChanged(this, isChk);
+				if (group != null)
+					group.aktivate(this);
 
-    }
+			}
+		}
+		return true;
+	}
 
-    @Override
-    protected void SkinIsChanged() {
-    }
+	@Override
+	protected void Initial() {
 
-    @Override
-    public void setText(String Text, Color color) {
-	setText(Text, null, color, HAlignment.LEFT);
-    }
+	}
 
-    @Override
-    public void setText(String Text) {
-	setText(Text, null, null, HAlignment.LEFT);
-    }
+	@Override
+	protected void SkinIsChanged() {
+	}
 
-    public void setText(String Text, HAlignment alignment) {
-	setText(Text, null, null, alignment);
-    }
+	@Override
+	public void setText(String Text, Color color) {
+		setText(Text, null, color, HAlignment.LEFT);
+	}
+
+	@Override
+	public void setText(String Text) {
+		setText(Text, null, null, HAlignment.LEFT);
+	}
+
+	public void setText(String Text, HAlignment alignment) {
+		setText(Text, null, null, alignment);
+	}
 }

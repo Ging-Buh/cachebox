@@ -44,15 +44,13 @@ package bsh;
  * probably fold this functionality back into the base NameSpace as a special case. But this has changed a few times so I'd like to leave
  * this abstraction for now.
  */
-class BlockNameSpace extends NameSpace
-{
+class BlockNameSpace extends NameSpace {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public BlockNameSpace(NameSpace parent) throws EvalError
-	{
+	public BlockNameSpace(NameSpace parent) throws EvalError {
 		super(parent, parent.getName() + "/BlockNameSpace");
 	}
 
@@ -68,11 +66,10 @@ class BlockNameSpace extends NameSpace
 	 * the variable in our parent, not here.
 	 */
 	@Override
-	public void setVariable(String name, Object value, boolean strictJava, boolean recurse) throws UtilEvalError
-	{
+	public void setVariable(String name, Object value, boolean strictJava, boolean recurse) throws UtilEvalError {
 		if (weHaveVar(name))
-		// set the var here in the block namespace
-		super.setVariable(name, value, strictJava, false);
+			// set the var here in the block namespace
+			super.setVariable(name, value, strictJava, false);
 		else
 			// set the var in the enclosing (parent) namespace
 			getParent().setVariable(name, value, strictJava, recurse);
@@ -82,8 +79,7 @@ class BlockNameSpace extends NameSpace
 	 * Set an untyped variable in the block namespace. The BlockNameSpace would normally delegate this set to the parent. Typed variables
 	 * are naturally set locally. This is used in try/catch block argument.
 	 */
-	public void setBlockVariable(String name, Object value) throws UtilEvalError
-	{
+	public void setBlockVariable(String name, Object value) throws UtilEvalError {
 		super.setVariable(name, value, false/* strict? */, false);
 	}
 
@@ -91,15 +87,11 @@ class BlockNameSpace extends NameSpace
 	 * We have the variable: either it was declared here with a type, giving it block local scope or an untyped var was explicitly set here
 	 * via setBlockVariable().
 	 */
-	private boolean weHaveVar(String name)
-	{
+	private boolean weHaveVar(String name) {
 		// super.variables.containsKey( name ) not any faster, I checked
-		try
-		{
+		try {
 			return super.getVariableImpl(name, false) != null;
-		}
-		catch (UtilEvalError e)
-		{
+		} catch (UtilEvalError e) {
 			return false;
 		}
 	}
@@ -123,10 +115,10 @@ class BlockNameSpace extends NameSpace
 	 * super.getParent(); if ( parent instanceof BlockNameSpace ) return parent.getParent(); else return parent; }
 	 */
 	/** do we need this? */
-	private NameSpace getNonBlockParent()
-	{
+	private NameSpace getNonBlockParent() {
 		NameSpace parent = super.getParent();
-		if (parent instanceof BlockNameSpace) return ((BlockNameSpace) parent).getNonBlockParent();
+		if (parent instanceof BlockNameSpace)
+			return ((BlockNameSpace) parent).getNonBlockParent();
 		else
 			return parent;
 	}
@@ -138,8 +130,7 @@ class BlockNameSpace extends NameSpace
 	 * @see #getBlockThis(Interpreter )
 	 */
 	@Override
-	public This getThis(Interpreter declaringInterpreter)
-	{
+	public This getThis(Interpreter declaringInterpreter) {
 		return getNonBlockParent().getThis(declaringInterpreter);
 	}
 
@@ -147,8 +138,7 @@ class BlockNameSpace extends NameSpace
 	 * super is our parent's super
 	 */
 	@Override
-	public This getSuper(Interpreter declaringInterpreter)
-	{
+	public This getSuper(Interpreter declaringInterpreter) {
 		return getNonBlockParent().getSuper(declaringInterpreter);
 	}
 
@@ -156,8 +146,7 @@ class BlockNameSpace extends NameSpace
 	 * delegate import to our parent
 	 */
 	@Override
-	public void importClass(String name)
-	{
+	public void importClass(String name) {
 		getParent().importClass(name);
 	}
 
@@ -165,14 +154,12 @@ class BlockNameSpace extends NameSpace
 	 * delegate import to our parent
 	 */
 	@Override
-	public void importPackage(String name)
-	{
+	public void importPackage(String name) {
 		getParent().importPackage(name);
 	}
 
 	@Override
-	public void setMethod(BshMethod method) throws UtilEvalError
-	{
+	public void setMethod(BshMethod method) throws UtilEvalError {
 		getParent().setMethod(method);
 	}
 }

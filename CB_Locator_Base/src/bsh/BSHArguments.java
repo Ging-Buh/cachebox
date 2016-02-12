@@ -33,15 +33,13 @@
 
 package bsh;
 
-class BSHArguments extends SimpleNode
-{
+class BSHArguments extends SimpleNode {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	BSHArguments(int id)
-	{
+	BSHArguments(int id) {
 		super(id);
 	}
 
@@ -55,15 +53,13 @@ class BSHArguments extends SimpleNode
 	 * overloaded forms of the methods or throw an exception subtype including the argument position back up, where the error message would
 	 * be compounded.
 	 */
-	public Object[] getArguments(CallStack callstack, Interpreter interpreter) throws EvalError
-	{
+	public Object[] getArguments(CallStack callstack, Interpreter interpreter) throws EvalError {
 		// evaluate each child
 		Object[] args = new Object[jjtGetNumChildren()];
-		for (int i = 0; i < args.length; i++)
-		{
+		for (int i = 0; i < args.length; i++) {
 			args[i] = ((SimpleNode) jjtGetChild(i)).eval(callstack, interpreter);
-			if (args[i] == Primitive.VOID) throw new EvalError("Undefined argument: " + ((SimpleNode) jjtGetChild(i)).getText(), this,
-					callstack);
+			if (args[i] == Primitive.VOID)
+				throw new EvalError("Undefined argument: " + ((SimpleNode) jjtGetChild(i)).getText(), this, callstack);
 		}
 
 		return args;

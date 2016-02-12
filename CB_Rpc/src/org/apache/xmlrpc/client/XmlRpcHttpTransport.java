@@ -32,80 +32,88 @@ import org.apache.xmlrpc.XmlRpcRequest;
 import org.apache.xmlrpc.util.HttpUtil;
 import org.xml.sax.SAXException;
 
-
 /** Abstract base implementation of an HTTP transport. Base class for the
  * concrete implementations, like {@link org.apache.xmlrpc.client.XmlRpcSunHttpTransport},
  * or {@link org.apache.xmlrpc.client.XmlRpcCommonsTransport}.
  */
 public abstract class XmlRpcHttpTransport extends XmlRpcStreamTransport {
-    protected class ByteArrayReqWriter implements ReqWriter {
-        private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ByteArrayReqWriter(XmlRpcRequest pRequest)
-                throws XmlRpcException, IOException, SAXException {
-            new ReqWriterImpl(pRequest).write(baos);
-        }
+	protected class ByteArrayReqWriter implements ReqWriter {
+		private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-        protected int getContentLength() {
-            return baos.size();
-        }
+		ByteArrayReqWriter(XmlRpcRequest pRequest) throws XmlRpcException, IOException, SAXException {
+			new ReqWriterImpl(pRequest).write(baos);
+		}
 
-        public void write(OutputStream pStream) throws IOException {
-            try {
-                baos.writeTo(pStream);
-                pStream.close();
-                pStream = null;
-            } finally {
-                if (pStream != null) { try { pStream.close(); } catch (Throwable ignore) {} }
-            }
-        }
-    }
+		protected int getContentLength() {
+			return baos.size();
+		}
 
-    /** The user agent string.
-     */
-    public static final String USER_AGENT;
-    static {
-        final String p = "XmlRpcClient.properties";
-        final URL url = XmlRpcHttpTransport.class.getResource(p);
-        if (url == null) {
-            throw new IllegalStateException("Failed to locate resource: " + p);
-        }
-        InputStream stream = null;
-        try {
-            stream = url.openStream();
-            final Properties props = new Properties();
-            props.load(stream);
-            USER_AGENT = props.getProperty("user.agent");
-            if (USER_AGENT == null  ||  USER_AGENT.trim().length() == 0) {
-                throw new IllegalStateException("The property user.agent is not set.");
-            }
-            stream.close();
-            stream = null;
-        } catch (IOException e) {
-            throw new UndeclaredThrowableException(e, "Failed to load resource " + url + ": " + e.getMessage());
-        } finally {
-            if (stream != null) { try { stream.close(); } catch (Throwable t) { /* Ignore me */ } }
-        }
-    }
+		public void write(OutputStream pStream) throws IOException {
+			try {
+				baos.writeTo(pStream);
+				pStream.close();
+				pStream = null;
+			} finally {
+				if (pStream != null) {
+					try {
+						pStream.close();
+					} catch (Throwable ignore) {
+					}
+				}
+			}
+		}
+	}
 
-    private String userAgent;
+	/** The user agent string.
+	 */
+	public static final String USER_AGENT;
 
+	static {
+		final String p = "XmlRpcClient.properties";
+		final URL url = XmlRpcHttpTransport.class.getResource(p);
+		if (url == null) {
+			throw new IllegalStateException("Failed to locate resource: " + p);
+		}
+		InputStream stream = null;
+		try {
+			stream = url.openStream();
+			final Properties props = new Properties();
+			props.load(stream);
+			USER_AGENT = props.getProperty("user.agent");
+			if (USER_AGENT == null || USER_AGENT.trim().length() == 0) {
+				throw new IllegalStateException("The property user.agent is not set.");
+			}
+			stream.close();
+			stream = null;
+		} catch (IOException e) {
+			throw new UndeclaredThrowableException(e, "Failed to load resource " + url + ": " + e.getMessage());
+		} finally {
+			if (stream != null) {
+				try {
+					stream.close();
+				} catch (Throwable t) {
+					/* Ignore me */ }
+			}
+		}
+	}
+
+	private String userAgent;
 
 	protected XmlRpcHttpTransport(XmlRpcClient pClient, String pUserAgent) {
 		super(pClient);
 		userAgent = pUserAgent;
 	}
 
-	protected String getUserAgent() { return userAgent; }
+	protected String getUserAgent() {
+		return userAgent;
+	}
 
 	protected abstract void setRequestHeader(String pHeader, String pValue);
 
-	protected void setCredentials(XmlRpcHttpClientConfig pConfig)
-			throws XmlRpcClientException {
+	protected void setCredentials(XmlRpcHttpClientConfig pConfig) throws XmlRpcClientException {
 		String auth;
 		try {
-			auth = HttpUtil.encodeBasicAuthentication(pConfig.getBasicUserName(),
-													  pConfig.getBasicPassword(),
-													  pConfig.getBasicEncoding());
+			auth = HttpUtil.encodeBasicAuthentication(pConfig.getBasicUserName(), pConfig.getBasicPassword(), pConfig.getBasicEncoding());
 		} catch (UnsupportedEncodingException e) {
 			throw new XmlRpcClientException("Unsupported encoding: " + pConfig.getBasicEncoding(), e);
 		}
@@ -130,10 +138,10 @@ public abstract class XmlRpcHttpTransport extends XmlRpcStreamTransport {
 	protected void initHttpHeaders(XmlRpcRequest pRequest) throws XmlRpcClientException {
 		XmlRpcHttpClientConfig config = (XmlRpcHttpClientConfig) pRequest.getConfig();
 		setRequestHeader("Content-Type", "text/xml");
-        if(config.getUserAgent() != null)
-            setRequestHeader("User-Agent", config.getUserAgent());
-        else
-            setRequestHeader("User-Agent", getUserAgent());
+		if (config.getUserAgent() != null)
+			setRequestHeader("User-Agent", config.getUserAgent());
+		else
+			setRequestHeader("User-Agent", getUserAgent());
 		setCredentials(config);
 		setCompressionHeaders(config);
 	}
@@ -144,20 +152,18 @@ public abstract class XmlRpcHttpTransport extends XmlRpcStreamTransport {
 	}
 
 	protected boolean isUsingByteArrayOutput(XmlRpcHttpClientConfig pConfig) {
-		return !pConfig.isEnabledForExtensions()
-			|| !pConfig.isContentLengthOptional();
+		return !pConfig.isEnabledForExtensions() || !pConfig.isContentLengthOptional();
 	}
 
-	protected ReqWriter newReqWriter(XmlRpcRequest pRequest)
-			throws XmlRpcException, IOException, SAXException {
+	protected ReqWriter newReqWriter(XmlRpcRequest pRequest) throws XmlRpcException, IOException, SAXException {
 		final XmlRpcHttpClientConfig config = (XmlRpcHttpClientConfig) pRequest.getConfig();
-        if (isUsingByteArrayOutput(config)) {
-            ByteArrayReqWriter reqWriter = new ByteArrayReqWriter(pRequest);
-            setContentLength(reqWriter.getContentLength());
-            if (isCompressingRequest(config)) {
-                return new GzipReqWriter(reqWriter);
-            }
-            return reqWriter;
+		if (isUsingByteArrayOutput(config)) {
+			ByteArrayReqWriter reqWriter = new ByteArrayReqWriter(pRequest);
+			setContentLength(reqWriter.getContentLength());
+			if (isCompressingRequest(config)) {
+				return new GzipReqWriter(reqWriter);
+			}
+			return reqWriter;
 		} else {
 			return super.newReqWriter(pRequest);
 		}

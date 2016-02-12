@@ -23,8 +23,7 @@ import java.io.File;
  * 
  * @author Longri
  */
-public class CopyRule
-{
+public class CopyRule {
 	public File sourcePath;
 	public File targetPath;
 	public String Name;
@@ -37,8 +36,7 @@ public class CopyRule
 	 * @param target
 	 *            TargetPath as String
 	 */
-	public CopyRule(String source, String target)
-	{
+	public CopyRule(String source, String target) {
 		sourcePath = new File(source);
 		Name = sourcePath.getName();
 		targetPath = new File(target + "/" + Name);

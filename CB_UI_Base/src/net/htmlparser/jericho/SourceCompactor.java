@@ -41,14 +41,14 @@ import java.net.*;
  */
 public final class SourceCompactor implements CharStreamSource {
 	private final Segment segment;
-	private String newLine=null;
+	private String newLine = null;
 
 	/**
 	 * Constructs a new <code>SourceCompactor</code> based on the specified {@link Segment}.
 	 * @param segment  the segment containing the HTML to be compacted.
 	 */
 	public SourceCompactor(final Segment segment) {
-		this.segment=segment;
+		this.segment = segment;
 	}
 
 	// Documentation inherited from CharStreamSource
@@ -86,7 +86,7 @@ public final class SourceCompactor implements CharStreamSource {
 	 * @see #getNewLine()
 	 */
 	public SourceCompactor setNewLine(final String newLine) {
-		this.newLine=newLine;
+		this.newLine = newLine;
 		return this;
 	}
 
@@ -98,7 +98,8 @@ public final class SourceCompactor implements CharStreamSource {
 	 * @return the string to be used to represent a <a target="_blank" href="http://en.wikipedia.org/wiki/Newline">newline</a> in the output.
 	 */
 	public String getNewLine() {
-		if (newLine==null) newLine=segment.source.getBestGuessNewLine();
+		if (newLine == null)
+			newLine = segment.source.getBestGuessNewLine();
 		return newLine;
 	}
 

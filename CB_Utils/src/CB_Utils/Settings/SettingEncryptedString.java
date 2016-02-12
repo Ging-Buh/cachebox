@@ -17,57 +17,52 @@ package CB_Utils.Settings;
 
 import CB_Utils.Config_Core;
 
-public class SettingEncryptedString extends SettingLongString
-{
-	// im value intern ist die Einstellung verschlüsselt abgespeichert
+public class SettingEncryptedString extends SettingLongString {
+	// im value intern ist die Einstellung verschlï¿½sselt abgespeichert
 	// so wie sie dann in die DB geschrieben wird.
-	public SettingEncryptedString(String name, SettingCategory category, SettingModus modus, String defaultValue,
-			SettingStoreType StoreType, SettingUsage usage)
-	{
+	public SettingEncryptedString(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage) {
 		super(name, category, modus, defaultValue, StoreType, usage);
 	}
 
 	// liefert die Einstellung im Klartext
-	public String getValue()
-	{
-		if (value == null) return value;
+	public String getValue() {
+		if (value == null)
+			return value;
 		else
 			return Config_Core.decrypt(this.value);
 	}
 
-	// Liefert die verschlüsselte Einstellung zurück
-	public String getEncryptedValue()
-	{
+	// Liefert die verschlï¿½sselte Einstellung zurï¿½ck
+	public String getEncryptedValue() {
 		return this.value;
 	}
 
 	// liefert den Standardwert im Klartext
-	public String getDefaultValue()
-	{
+	public String getDefaultValue() {
 		return Config_Core.decrypt(this.defaultValue);
 	}
 
-	// liefert den verschlüsselten Standadwert
-	public String getEncryptedDefaultValue()
-	{
+	// liefert den verschlï¿½sselten Standadwert
+	public String getEncryptedDefaultValue() {
 		return this.defaultValue;
 	}
 
-	// hiermit kann die Einstellung im Klartext übergeben werden und wird sofort
-	// verschlüsselt
-	public void setValue(String value)
-	{
+	// hiermit kann die Einstellung im Klartext ï¿½bergeben werden und wird sofort
+	// verschlï¿½sselt
+	public void setValue(String value) {
 		String encrypted = "";
-		if (value.length() > 0) encrypted = Config_Core.encrypt(value);
-		if ((this.value != null) && (this.value.equals(encrypted))) return;
+		if (value.length() > 0)
+			encrypted = Config_Core.encrypt(value);
+		if ((this.value != null) && (this.value.equals(encrypted)))
+			return;
 		this.value = encrypted;
 		setDirty();
 	}
 
-	// hier kann die schon verschlüsselte Einstellung übergeben werden.
-	public void setEncryptedValue(String value)
-	{
-		if ((this.value != null) && (this.value.equals(value))) return;
+	// hier kann die schon verschlï¿½sselte Einstellung ï¿½bergeben werden.
+	public void setEncryptedValue(String value) {
+		if ((this.value != null) && (this.value.equals(value)))
+			return;
 		this.value = value;
 		setDirty();
 	}

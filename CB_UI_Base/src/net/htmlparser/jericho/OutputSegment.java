@@ -45,13 +45,13 @@ public interface OutputSegment extends CharStreamSource {
 	 *  <li>If both output segments begin at the same position, the one that has zero length comes first.
 	 *   If neither or both have zero length then neither is guaranteed to come before the other.
 	 * </ol>
- 	 * <p>
+	 * <p>
 	 * Note: this comparator has a natural ordering that may be inconsistent with the <code>equals</code>
 	 * method of classes implementing this interface.
 	 * This means that the comparator may treat two output segments as equal where calling the
 	 * <code>equals(Object)</code> method with the same two output segments returns <code>false</code>.
 	 */
-	public static final Comparator<OutputSegment> COMPARATOR=new OutputSegmentComparator();
+	public static final Comparator<OutputSegment> COMPARATOR = new OutputSegmentComparator();
 
 	/**
 	 * Returns the character position in the {@linkplain OutputDocument#getSourceText() source text of the output document} where this segment begins.

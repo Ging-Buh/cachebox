@@ -24,13 +24,11 @@ import CB_Locator.Map.Descriptor;
  * 
  * @author Longri
  */
-public class SearchLiveMap extends SearchCoordinate
-{
+public class SearchLiveMap extends SearchCoordinate {
 
 	public final Descriptor descriptor;
 
-	public SearchLiveMap(int number, Descriptor desc, float distanceInMeters)
-	{
+	public SearchLiveMap(int number, Descriptor desc, float distanceInMeters) {
 		super(number, desc.getCenterCoordinate(), distanceInMeters);
 		geocacheLogCount = 0;
 		trackableLogCount = 0;

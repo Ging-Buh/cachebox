@@ -22,7 +22,6 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.XmlRpcHandler;
 import org.apache.xmlrpc.server.AbstractReflectiveHandlerMapping;
 
-
 /** A metadata handler is able to provide metadata about
  * itself, as specified
  * <a href="http://scripts.incutio.com/xmlrpc/introspection.html">
@@ -46,13 +45,13 @@ public interface XmlRpcMetaDataHandler extends XmlRpcHandler {
 	 * first element is the return type, followed by the
 	 * parameter types.
 	 */
-    String[][] getSignatures() throws XmlRpcException;
+	String[][] getSignatures() throws XmlRpcException;
 
 	/** <p>This method may be used to implement
 	 * {@link XmlRpcListableHandlerMapping#getMethodHelp(String)}.
 	 * Typically, the handler mapping will pick up the
 	 * matching handler, invoke its method
 	 * {@link #getMethodHelp()}, and return the result.</p>
-     */
-    String getMethodHelp() throws XmlRpcException;
+	 */
+	String getMethodHelp() throws XmlRpcException;
 }

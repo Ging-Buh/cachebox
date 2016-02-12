@@ -59,8 +59,7 @@ class AwtCanvas implements Canvas {
 
 	@Override
 	public void drawBitmap(Bitmap bitmap, Matrix matrix) {
-		this.graphics2D.drawRenderedImage(AwtGraphicFactory.getBufferedImage(bitmap),
-				AwtGraphicFactory.getAffineTransform(matrix));
+		this.graphics2D.drawRenderedImage(AwtGraphicFactory.getBufferedImage(bitmap), AwtGraphicFactory.getAffineTransform(matrix));
 	}
 
 	@Override
@@ -75,13 +74,13 @@ class AwtCanvas implements Canvas {
 
 		Style style = awtPaint.style;
 		switch (style) {
-			case FILL:
-				this.graphics2D.fillOval(x - radius, y - radius, doubleRadius, doubleRadius);
-				return;
+		case FILL:
+			this.graphics2D.fillOval(x - radius, y - radius, doubleRadius, doubleRadius);
+			return;
 
-			case STROKE:
-				this.graphics2D.drawOval(x - radius, y - radius, doubleRadius, doubleRadius);
-				return;
+		case STROKE:
+			this.graphics2D.drawOval(x - radius, y - radius, doubleRadius, doubleRadius);
+			return;
 		}
 
 		throw new IllegalArgumentException(UNKNOWN_STYLE + style);
@@ -111,13 +110,13 @@ class AwtCanvas implements Canvas {
 
 		Style style = awtPaint.style;
 		switch (style) {
-			case FILL:
-				this.graphics2D.fill(awtPath.path2D);
-				return;
+		case FILL:
+			this.graphics2D.fill(awtPath.path2D);
+			return;
 
-			case STROKE:
-				this.graphics2D.draw(awtPath.path2D);
-				return;
+		case STROKE:
+			this.graphics2D.draw(awtPath.path2D);
+			return;
 		}
 
 		throw new IllegalArgumentException(UNKNOWN_STYLE + style);
@@ -216,8 +215,7 @@ class AwtCanvas implements Canvas {
 	private void enableAntiAliasing() {
 		this.graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		this.graphics2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		this.graphics2D.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
-				RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+		this.graphics2D.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 	}
 
 	private void fillColor(java.awt.Color color) {

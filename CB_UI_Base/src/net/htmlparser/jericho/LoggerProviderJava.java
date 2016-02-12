@@ -21,9 +21,10 @@
 package net.htmlparser.jericho;
 
 final class LoggerProviderJava implements LoggerProvider {
-	public static final LoggerProvider INSTANCE=new LoggerProviderJava();
-	
-	private LoggerProviderJava() {}
+	public static final LoggerProvider INSTANCE = new LoggerProviderJava();
+
+	private LoggerProviderJava() {
+	}
 
 	public Logger getLogger(final String name) {
 		return new JavaLogger(java.util.logging.Logger.getLogger(name));
@@ -31,39 +32,39 @@ final class LoggerProviderJava implements LoggerProvider {
 
 	private class JavaLogger implements Logger {
 		private final java.util.logging.Logger javaLogger;
-		
+
 		public JavaLogger(final java.util.logging.Logger javaLogger) {
-			this.javaLogger=javaLogger;
+			this.javaLogger = javaLogger;
 		}
 
 		public void error(final String message) {
 			javaLogger.severe(message);
 		}
-	
+
 		public void warn(final String message) {
 			javaLogger.warning(message);
 		}
-	
+
 		public void info(final String message) {
 			javaLogger.info(message);
 		}
-	
+
 		public void debug(final String message) {
 			javaLogger.fine(message);
 		}
-	
+
 		public boolean isErrorEnabled() {
 			return javaLogger.isLoggable(java.util.logging.Level.SEVERE);
 		}
-	
+
 		public boolean isWarnEnabled() {
 			return javaLogger.isLoggable(java.util.logging.Level.WARNING);
 		}
-	
+
 		public boolean isInfoEnabled() {
 			return javaLogger.isLoggable(java.util.logging.Level.INFO);
 		}
-	
+
 		public boolean isDebugEnabled() {
 			return javaLogger.isLoggable(java.util.logging.Level.FINE);
 		}

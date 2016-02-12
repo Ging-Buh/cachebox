@@ -25,8 +25,7 @@ import CB_Utils.Util.HSV_Color;
 /**
  * @author Longri
  */
-public interface ext_Paint extends org.mapsforge.core.graphics.Paint
-{
+public interface ext_Paint extends org.mapsforge.core.graphics.Paint {
 
 	void setAlpha(int i);
 

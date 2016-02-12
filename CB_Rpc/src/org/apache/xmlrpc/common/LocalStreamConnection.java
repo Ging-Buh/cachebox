@@ -23,40 +23,38 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-
 /** Implementation of {@link ServerStreamConnection} for
  * use by the
  * {@link org.apache.xmlrpc.client.XmlRpcLocalStreamTransport}.
  */
 public class LocalStreamConnection {
-    private class LocalServerStreamConnection implements ServerStreamConnection {
-        public InputStream newInputStream() throws IOException {
-            return request;
-        }
+	private class LocalServerStreamConnection implements ServerStreamConnection {
+		public InputStream newInputStream() throws IOException {
+			return request;
+		}
 
-        public OutputStream newOutputStream() throws IOException {
-            return response;
-        }
+		public OutputStream newOutputStream() throws IOException {
+			return response;
+		}
 
-        public void close() throws IOException {
-            if (response != null) {
-                response.close();
-            }
-        }
-    }
+		public void close() throws IOException {
+			if (response != null) {
+				response.close();
+			}
+		}
+	}
 
-    private final InputStream request;
+	private final InputStream request;
 	private final XmlRpcStreamRequestConfig config;
 	private final ByteArrayOutputStream response = new ByteArrayOutputStream();
-    private final ServerStreamConnection serverStreamConnection;
+	private final ServerStreamConnection serverStreamConnection;
 
 	/** Creates a new instance with the given request stream.
 	 */
-	public LocalStreamConnection(XmlRpcStreamRequestConfig pConfig, 
-			InputStream pRequest) {
+	public LocalStreamConnection(XmlRpcStreamRequestConfig pConfig, InputStream pRequest) {
 		config = pConfig;
 		request = pRequest;
-        serverStreamConnection = new LocalServerStreamConnection();
+		serverStreamConnection = new LocalServerStreamConnection();
 	}
 
 	/** Returns the request stream.
@@ -78,9 +76,9 @@ public class LocalStreamConnection {
 		return response;
 	}
 
-    /** Returns the servers connection.
-     */
-    public ServerStreamConnection getServerStreamConnection() {
-        return serverStreamConnection;
-    }
+	/** Returns the servers connection.
+	 */
+	public ServerStreamConnection getServerStreamConnection() {
+		return serverStreamConnection;
+	}
 }

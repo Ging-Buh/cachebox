@@ -1,7 +1,6 @@
 package CB_Utils.Math;
 
-public class PointD
-{
+public class PointD {
 	/**
 	 * X
 	 */
@@ -15,15 +14,13 @@ public class PointD
 	/**
 	 * Standardkonstruktor
 	 */
-	public PointD(double x, double y)
-	{
+	public PointD(double x, double y) {
 		this.X = x;
 		this.Y = y;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return this.X + " / " + this.Y;
 	}
 }

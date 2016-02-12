@@ -23,18 +23,14 @@ import CB_Utils.Settings.SettingString;
 import CB_Utils.Settings.SettingUsage;
 
 public interface CB_Rpc_Settings {
-	// Abkürzende Schreibweisen für die Übersichlichkeit bei den add Methoden
+	// Abkï¿½rzende Schreibweisen fï¿½r die ï¿½bersichlichkeit bei den add Methoden
 	public static final SettingModus INVISIBLE = SettingModus.Invisible;
 	public static final SettingModus NORMAL = SettingModus.Normal;
 	public static final SettingModus EXPERT = SettingModus.Expert;
 	public static final SettingModus NEVER = SettingModus.Never;
 	public static final SettingModus DEVELOP = SettingModus.develop;
 
-	public static final SettingString CBS_IP = new SettingString("CBS_IP",
-			SettingCategory.CBS, DEVELOP, "", SettingStoreType.Global,
-			SettingUsage.ACB);
-	public static final SettingInt CBS_BLOCK_SIZE = new SettingInt(
-			"CBS_BLOCKSIZE", SettingCategory.CBS, DEVELOP, 100,
-			SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingString CBS_IP = new SettingString("CBS_IP", SettingCategory.CBS, DEVELOP, "", SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingInt CBS_BLOCK_SIZE = new SettingInt("CBS_BLOCKSIZE", SettingCategory.CBS, DEVELOP, 100, SettingStoreType.Global, SettingUsage.ACB);
 
 }

@@ -33,7 +33,6 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /** This class is responsible for writing an XmlRpc request or an
  * XmlRpc response to an output stream.
  */
@@ -51,8 +50,7 @@ public class XmlRpcWriter {
 	 * @param pHandler The target SAX handler.
 	 * @param pTypeFactory The type factory being used to create serializers.
 	 */
-	public XmlRpcWriter(XmlRpcStreamConfig pConfig, ContentHandler pHandler,
-					    TypeFactory pTypeFactory) {
+	public XmlRpcWriter(XmlRpcStreamConfig pConfig, ContentHandler pHandler, TypeFactory pTypeFactory) {
 		config = pConfig;
 		handler = pHandler;
 		typeFactory = pTypeFactory;
@@ -75,13 +73,13 @@ public class XmlRpcWriter {
 		handler.endElement("", "methodName", "methodName");
 		handler.startElement("", "params", "params", ZERO_ATTRIBUTES);
 		int num = pRequest.getParameterCount();
-		for (int i = 0;  i < num;  i++) {
+		for (int i = 0; i < num; i++) {
 			handler.startElement("", "param", "param", ZERO_ATTRIBUTES);
 			writeValue(pRequest.getParameter(i));
 			handler.endElement("", "param", "param");
 		}
 		handler.endElement("", "params", "params");
-        handler.endElement("", "methodCall", "methodCall");
+		handler.endElement("", "methodCall", "methodCall");
 		if (extensions) {
 			handler.endPrefixMapping("ex");
 		}
@@ -112,25 +110,24 @@ public class XmlRpcWriter {
 		handler.endDocument();
 	}
 
-    /** Writes a servers error message to the output stream.
-     * @param pConfig The request configuration.
-     * @param pCode The error code
-     * @param pMessage The error message
-     * @throws SAXException Writing the error message failed.
-     */
-    public void write(XmlRpcRequestConfig pConfig, int pCode, String pMessage) throws SAXException {
-        write(pConfig, pCode, pMessage, null);
-    }
-
-        /** Writes a servers error message to the output stream.
+	/** Writes a servers error message to the output stream.
 	 * @param pConfig The request configuration.
 	 * @param pCode The error code
 	 * @param pMessage The error message
-     * @param pThrowable An exception, which is being sent to the client
 	 * @throws SAXException Writing the error message failed.
 	 */
-	public void write(XmlRpcRequestConfig pConfig, int pCode, String pMessage,
-            Throwable pThrowable) throws SAXException {
+	public void write(XmlRpcRequestConfig pConfig, int pCode, String pMessage) throws SAXException {
+		write(pConfig, pCode, pMessage, null);
+	}
+
+	/** Writes a servers error message to the output stream.
+	* @param pConfig The request configuration.
+	* @param pCode The error code
+	* @param pMessage The error message
+	* @param pThrowable An exception, which is being sent to the client
+	* @throws SAXException Writing the error message failed.
+	*/
+	public void write(XmlRpcRequestConfig pConfig, int pCode, String pMessage, Throwable pThrowable) throws SAXException {
 		handler.startDocument();
 		boolean extensions = pConfig.isEnabledForExtensions();
 		if (extensions) {
@@ -139,22 +136,21 @@ public class XmlRpcWriter {
 		handler.startElement("", "methodResponse", "methodResponse", ZERO_ATTRIBUTES);
 		handler.startElement("", "fault", "fault", ZERO_ATTRIBUTES);
 		Map map = new HashMap();
-        map.put("faultCode", new Integer(pCode));
-        map.put("faultString", pMessage == null ? "" : pMessage);
-        if (pThrowable != null  &&  extensions  &&  (pConfig instanceof XmlRpcStreamRequestConfig)  &&
-                ((XmlRpcStreamRequestConfig) pConfig).isEnabledForExceptions()) {
-            try {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                ObjectOutputStream oos = new ObjectOutputStream(baos);
-                oos.writeObject(pThrowable);
-                oos.close();
-                baos.close();
-                map.put("faultCause", baos.toByteArray());
-            } catch (Throwable t) {
-                // Ignore me
-            }
-        }
-        writeValue(map);
+		map.put("faultCode", new Integer(pCode));
+		map.put("faultString", pMessage == null ? "" : pMessage);
+		if (pThrowable != null && extensions && (pConfig instanceof XmlRpcStreamRequestConfig) && ((XmlRpcStreamRequestConfig) pConfig).isEnabledForExceptions()) {
+			try {
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				ObjectOutputStream oos = new ObjectOutputStream(baos);
+				oos.writeObject(pThrowable);
+				oos.close();
+				baos.close();
+				map.put("faultCause", baos.toByteArray());
+			} catch (Throwable t) {
+				// Ignore me
+			}
+		}
+		writeValue(map);
 		handler.endElement("", "fault", "fault");
 		handler.endElement("", "methodResponse", "methodResponse");
 		if (extensions) {

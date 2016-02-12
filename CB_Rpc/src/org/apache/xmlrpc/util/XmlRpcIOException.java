@@ -20,7 +20,6 @@ package org.apache.xmlrpc.util;
 
 import java.io.IOException;
 
-
 /** This is a subclass of {@link IOException}, which
  * allows to attach a linked exception. Throwing this
  * particular instance of {@link IOException} allows

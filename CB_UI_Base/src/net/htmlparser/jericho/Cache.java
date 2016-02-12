@@ -32,34 +32,34 @@ final class Cache {
 	private final SubCache allTagTypesSubCache;
 	private final SubCache[] subCaches; // contains allTagTypesSubCache plus a SubCache object for each separately cached tag type
 
-	static final Cache STREAMED_SOURCE_MARKER=new Cache();
+	static final Cache STREAMED_SOURCE_MARKER = new Cache();
 
 	public Cache(final Source source) {
-		this.source=source;
-		allTagTypesSubCache=new SubCache(this,null);
-		TagType[] separatelyCachedTagTypes=getSeparatelyCachedTagTypes();
-		subCaches=new SubCache[separatelyCachedTagTypes.length+1];
-		subCaches[0]=allTagTypesSubCache;
-		for (int i=0; i<separatelyCachedTagTypes.length; i++)
-			subCaches[i+1]=new SubCache(this,separatelyCachedTagTypes[i]);
+		this.source = source;
+		allTagTypesSubCache = new SubCache(this, null);
+		TagType[] separatelyCachedTagTypes = getSeparatelyCachedTagTypes();
+		subCaches = new SubCache[separatelyCachedTagTypes.length + 1];
+		subCaches[0] = allTagTypesSubCache;
+		for (int i = 0; i < separatelyCachedTagTypes.length; i++)
+			subCaches[i + 1] = new SubCache(this, separatelyCachedTagTypes[i]);
 	}
 
 	// used only to create STREAMED_SOURCE_MARKER
 	private Cache() {
-		source=null;
-		allTagTypesSubCache=null;
-		subCaches=null;
+		source = null;
+		allTagTypesSubCache = null;
+		subCaches = null;
 	}
 
 	public void clear() {
-		for (Iterator<Tag> i=allTagTypesSubCache.getTagIterator(); i.hasNext();) i.next().orphan();
-		for (int i=0; i<subCaches.length; i++) subCaches[i].clear();
+		for (Iterator<Tag> i = allTagTypesSubCache.getTagIterator(); i.hasNext();)
+			i.next().orphan();
+		for (int i = 0; i < subCaches.length; i++)
+			subCaches[i].clear();
 	}
 
 	public Tag getTagAt(final int pos, final boolean serverTagOnly) {
-		return source.useAllTypesCache
-			?	allTagTypesSubCache.getTagAt(pos,serverTagOnly)
-			: Tag.getTagAtUncached(source,pos,serverTagOnly);
+		return source.useAllTypesCache ? allTagTypesSubCache.getTagAt(pos, serverTagOnly) : Tag.getTagAtUncached(source, pos, serverTagOnly);
 	}
 
 	public Tag getPreviousTag(final int pos) {
@@ -74,27 +74,31 @@ final class Cache {
 
 	public Tag getPreviousTag(final int pos, final TagType tagType) {
 		// returns null if pos is out of range.
-		for (int i=source.useAllTypesCache ? 0 : 1; i<subCaches.length; i++)
-			if (tagType==subCaches[i].tagType) return subCaches[i].getPreviousTag(pos);
-		return Tag.getPreviousTagUncached(source,pos,tagType,ParseText.NO_BREAK);
+		for (int i = source.useAllTypesCache ? 0 : 1; i < subCaches.length; i++)
+			if (tagType == subCaches[i].tagType)
+				return subCaches[i].getPreviousTag(pos);
+		return Tag.getPreviousTagUncached(source, pos, tagType, ParseText.NO_BREAK);
 	}
 
 	public Tag getNextTag(final int pos, final TagType tagType) {
 		// returns null if pos is out of range.
-		for (int i=source.useAllTypesCache ? 0 : 1; i<subCaches.length; i++)
-			if (tagType==subCaches[i].tagType) return subCaches[i].getNextTag(pos);
-		return Tag.getNextTagUncached(source,pos,tagType,ParseText.NO_BREAK);
+		for (int i = source.useAllTypesCache ? 0 : 1; i < subCaches.length; i++)
+			if (tagType == subCaches[i].tagType)
+				return subCaches[i].getNextTag(pos);
+		return Tag.getNextTagUncached(source, pos, tagType, ParseText.NO_BREAK);
 	}
 
 	public Tag addTagAt(final int pos, final boolean serverTagOnly) {
-		final Tag tag=Tag.getTagAtUncached(source,pos,serverTagOnly);
-		if (serverTagOnly && tag==null) return null; // don't add null to cache if we were only looking for server tags
-		allTagTypesSubCache.addTagAt(pos,tag);
-		if (tag==null) return null;
-		final TagType tagType=tag.getTagType();
-		for (int i=1; i<subCaches.length; i++) {
-			if (tagType==subCaches[i].tagType) {
-				subCaches[i].addTagAt(pos,tag);
+		final Tag tag = Tag.getTagAtUncached(source, pos, serverTagOnly);
+		if (serverTagOnly && tag == null)
+			return null; // don't add null to cache if we were only looking for server tags
+		allTagTypesSubCache.addTagAt(pos, tag);
+		if (tag == null)
+			return null;
+		final TagType tagType = tag.getTagType();
+		for (int i = 1; i < subCaches.length; i++) {
+			if (tagType == subCaches[i].tagType) {
+				subCaches[i].addTagAt(pos, tag);
 				return tag;
 			}
 		}
@@ -102,7 +106,7 @@ final class Cache {
 	}
 
 	public int getTagCount() {
-		return allTagTypesSubCache.size()-2;
+		return allTagTypesSubCache.size() - 2;
 	}
 
 	public Iterator<Tag> getTagIterator() {
@@ -111,38 +115,40 @@ final class Cache {
 
 	public void loadAllTags(final List<Tag> tags, final Tag[] allRegisteredTags, final StartTag[] allRegisteredStartTags) {
 		// assumes the tags list implements RandomAccess
-		final int tagCount=tags.size();
+		final int tagCount = tags.size();
 		allTagTypesSubCache.bulkLoad_Init(tagCount);
-		int registeredTagIndex=0;
-		int registeredStartTagIndex=0;
-		for (int i=0; i<tagCount; i++) {
-			Tag tag=tags.get(i);
+		int registeredTagIndex = 0;
+		int registeredStartTagIndex = 0;
+		for (int i = 0; i < tagCount; i++) {
+			Tag tag = tags.get(i);
 			if (!tag.isUnregistered()) {
-				allRegisteredTags[registeredTagIndex++]=tag;
-				if (tag instanceof StartTag) allRegisteredStartTags[registeredStartTagIndex++]=(StartTag)tag;
+				allRegisteredTags[registeredTagIndex++] = tag;
+				if (tag instanceof StartTag)
+					allRegisteredStartTags[registeredStartTagIndex++] = (StartTag) tag;
 			}
-			allTagTypesSubCache.bulkLoad_Set(i,tag);
-			for (int x=1; x<subCaches.length; x++) {
-				if (tag.getTagType()==subCaches[x].tagType) {
+			allTagTypesSubCache.bulkLoad_Set(i, tag);
+			for (int x = 1; x < subCaches.length; x++) {
+				if (tag.getTagType() == subCaches[x].tagType) {
 					subCaches[x].bulkLoad_AddToTypeSpecificCache(tag);
 					break;
 				}
 			}
 		}
-		for (int x=1; x<subCaches.length; x++)
+		for (int x = 1; x < subCaches.length; x++)
 			subCaches[x].bulkLoad_FinaliseTypeSpecificCache();
 	}
 
 	public String toString() {
-		StringBuilder sb=new StringBuilder();
-		for (int i=0; i<subCaches.length; i++) subCaches[i].appendTo(sb);
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < subCaches.length; i++)
+			subCaches[i].appendTo(sb);
 		return sb.toString();
 	}
 
 	protected int getSourceLength() {
 		return source.end;
 	}
-	
+
 	private static TagType[] getSeparatelyCachedTagTypes() {
 		return TagType.getTagTypesIgnoringEnclosedMarkup();
 	}

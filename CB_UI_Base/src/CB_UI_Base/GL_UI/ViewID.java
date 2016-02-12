@@ -23,8 +23,7 @@ import CB_UI_Base.Global;
  * 
  * @author Longri
  */
-public class ViewID
-{
+public class ViewID {
 
 	public final static int MAP_VIEW = 0;
 	public final static int CACHE_LIST_VIEW = 1;
@@ -64,13 +63,11 @@ public class ViewID
 	public final static int DAY_NIGHT = 115;
 	public final static int LOCK = 116;
 
-	public enum UI_Pos
-	{
+	public enum UI_Pos {
 		Left, Right
 	}
 
-	public enum UI_Type
-	{
+	public enum UI_Type {
 		Android, OpenGl, Activity
 	}
 
@@ -89,26 +86,22 @@ public class ViewID
 	 * @param PosTab
 	 *            = Left or Right for Tab Layout
 	 */
-	public ViewID(int ID, UI_Type Type, UI_Pos Pos, UI_Pos PosTab)
-	{
+	public ViewID(int ID, UI_Type Type, UI_Pos Pos, UI_Pos PosTab) {
 		Id = ID;
 		type = Type;
 		pos = Pos;
 		posTab = PosTab;
 	}
 
-	public int getID()
-	{
+	public int getID() {
 		return Id;
 	}
 
-	public UI_Type getType()
-	{
+	public UI_Type getType() {
 		return type;
 	}
 
-	public UI_Pos getPos()
-	{
+	public UI_Pos getPos() {
 		return Global.isTab ? posTab : pos;
 	}
 }

@@ -45,32 +45,26 @@ import org.poly2tri.triangulation.delaunay.DelaunayTriangle;
 /**
  * Sweep-line, Constrained Delauney Triangulation (CDT) See: Domiter, V. and Zalik, B.(2008)'Sweep-line algorithm for constrained Delaunay
  * triangulation', International Journal of Geographical Information Science "FlipScan" Constrained Edge Algorithm invented by author of
- * this code. Author: Thomas Åhlén, thahlen@gmail.com
+ * this code. Author: Thomas ï¿½hlï¿½n, thahlen@gmail.com
  */
 
-public class DTSweep
-{
+public class DTSweep {
 
 	private final static double PI_div2 = Math.PI / 2;
 	private final static double PI_3div4 = 3 * Math.PI / 4;
 
-	public DTSweep()
-	{
+	public DTSweep() {
 	}
 
 	/** Triangulate simple polygon with holes **/
-	public static void triangulate(DTSweepContext tcx)
-	{
+	public static void triangulate(DTSweepContext tcx) {
 		tcx.createAdvancingFront();
 
 		sweep(tcx);
 
-		if (tcx.getTriangulationMode() == TriangulationMode.POLYGON)
-		{
+		if (tcx.getTriangulationMode() == TriangulationMode.POLYGON) {
 			finalizationPolygon(tcx);
-		}
-		else
-		{
+		} else {
 			finalizationConvexHull(tcx);
 		}
 
@@ -82,26 +76,21 @@ public class DTSweep
 	 * 
 	 * @param tcx
 	 */
-	private static void sweep(DTSweepContext tcx)
-	{
+	private static void sweep(DTSweepContext tcx) {
 		List<TriangulationPoint> points;
 		TriangulationPoint point;
 		AdvancingFrontNode node;
 
 		points = tcx.getPoints();
 
-		for (int i = 1; i < points.size(); i++)
-		{
+		for (int i = 1; i < points.size(); i++) {
 			point = points.get(i);
 
 			node = pointEvent(tcx, point);
 
-			if (point.hasEdges())
-			{
-				for (DTSweepConstraint e : point.getEdges())
-				{
-					if (tcx.isDebugEnabled())
-					{
+			if (point.hasEdges()) {
+				for (DTSweepConstraint e : point.getEdges()) {
+					if (tcx.isDebugEnabled()) {
 						tcx.getDebugContext().setActiveConstraint(e);
 					}
 					edgeEvent(tcx, e, node);
@@ -116,8 +105,7 @@ public class DTSweep
 	 * 
 	 * @param tcx
 	 */
-	private static void finalizationConvexHull(DTSweepContext tcx)
-	{
+	private static void finalizationConvexHull(DTSweepContext tcx) {
 		AdvancingFrontNode n1, n2;
 		DelaunayTriangle t1, t2;
 		TriangulationPoint first, p1;
@@ -138,16 +126,14 @@ public class DTSweep
 		// !!! If I implement ConvexHull for lower right and left boundary this fix should not be
 		// needed and the removed triangles will be added again by default
 		n1 = tcx.aFront.tail.prev;
-		if (n1.triangle.contains(n1.next.point) && n1.triangle.contains(n1.prev.point))
-		{
+		if (n1.triangle.contains(n1.next.point) && n1.triangle.contains(n1.prev.point)) {
 			t1 = n1.triangle.neighborAcross(n1.point);
 			rotateTrianglePair(n1.triangle, n1.point, t1, t1.oppositePoint(n1.triangle, n1.point));
 			tcx.mapTriangleToNodes(n1.triangle);
 			tcx.mapTriangleToNodes(t1);
 		}
 		n1 = tcx.aFront.head.next;
-		if (n1.triangle.contains(n1.prev.point) && n1.triangle.contains(n1.next.point))
-		{
+		if (n1.triangle.contains(n1.prev.point) && n1.triangle.contains(n1.next.point)) {
 			t1 = n1.triangle.neighborAcross(n1.point);
 			rotateTrianglePair(n1.triangle, n1.point, t1, t1.oppositePoint(n1.triangle, n1.point));
 			tcx.mapTriangleToNodes(n1.triangle);
@@ -160,16 +146,15 @@ public class DTSweep
 		t1 = n2.triangle;
 		p1 = n2.point;
 		n2.triangle = null;
-		do
-		{
+		do {
 			tcx.removeFromList(t1);
 			p1 = t1.pointCCW(p1);
-			if (p1 == first) break;
+			if (p1 == first)
+				break;
 			t2 = t1.neighborCCW(p1);
 			t1.clear();
 			t1 = t2;
-		}
-		while (true);
+		} while (true);
 
 		// Lower left boundary
 		first = tcx.aFront.head.next.point;
@@ -177,8 +162,7 @@ public class DTSweep
 		t2 = t1.neighborCW(tcx.aFront.head.point);
 		t1.clear();
 		t1 = t2;
-		while (p1 != first)
-		{
+		while (p1 != first) {
 			tcx.removeFromList(t1);
 			p1 = t1.pointCCW(p1);
 			t2 = t1.neighborCCW(p1);
@@ -199,33 +183,24 @@ public class DTSweep
 	/**
 	 * We will traverse the entire advancing front and fill it to form a convex hull.<br>
 	 */
-	private static void turnAdvancingFrontConvex(DTSweepContext tcx, AdvancingFrontNode b, AdvancingFrontNode c)
-	{
+	private static void turnAdvancingFrontConvex(DTSweepContext tcx, AdvancingFrontNode b, AdvancingFrontNode c) {
 		AdvancingFrontNode first = b;
-		while (c != tcx.aFront.tail)
-		{
-			if (tcx.isDebugEnabled())
-			{
+		while (c != tcx.aFront.tail) {
+			if (tcx.isDebugEnabled()) {
 				tcx.getDebugContext().setActiveNode(c);
 			}
 
-			if (orient2d(b.point, c.point, c.next.point) == Orientation.CCW)
-			{
+			if (orient2d(b.point, c.point, c.next.point) == Orientation.CCW) {
 				// [b,c,d] Concave - fill around c
 				fill(tcx, c);
 				c = c.next;
-			}
-			else
-			{
+			} else {
 				// [b,c,d] Convex
-				if (b != first && orient2d(b.prev.point, b.point, c.point) == Orientation.CCW)
-				{
+				if (b != first && orient2d(b.prev.point, b.point, c.point) == Orientation.CCW) {
 					// [a,b,c] Concave - fill around b
 					fill(tcx, b);
 					b = b.prev;
-				}
-				else
-				{
+				} else {
 					// [a,b,c] Convex - nothing to fill
 					b = c;
 					c = c.next;
@@ -234,13 +209,11 @@ public class DTSweep
 		}
 	}
 
-	private static void finalizationPolygon(DTSweepContext tcx)
-	{
+	private static void finalizationPolygon(DTSweepContext tcx) {
 		// Get an Internal triangle to start with
 		DelaunayTriangle t = tcx.aFront.head.next.triangle;
 		TriangulationPoint p = tcx.aFront.head.next.point;
-		while (!t.getConstrainedEdgeCW(p))
-		{
+		while (!t.getConstrainedEdgeCW(p)) {
 			t = t.neighborCCW(p);
 		}
 
@@ -255,21 +228,18 @@ public class DTSweep
 	 * @param point
 	 * @return
 	 */
-	private static AdvancingFrontNode pointEvent(DTSweepContext tcx, TriangulationPoint point)
-	{
+	private static AdvancingFrontNode pointEvent(DTSweepContext tcx, TriangulationPoint point) {
 		AdvancingFrontNode node, newNode;
 
 		node = tcx.locateNode(point);
-		if (tcx.isDebugEnabled())
-		{
+		if (tcx.isDebugEnabled()) {
 			tcx.getDebugContext().setActiveNode(node);
 		}
 		newNode = newFrontTriangle(tcx, point, node);
 
 		// Only need to check +epsilon since point never have smaller
 		// x value than node due to how we fetch nodes from the front
-		if (point.getX() <= node.point.getX() + EPSILON)
-		{
+		if (point.getX() <= node.point.getX() + EPSILON) {
 			fill(tcx, node);
 		}
 		tcx.addNode(newNode);
@@ -286,8 +256,7 @@ public class DTSweep
 	 * @param node
 	 * @return
 	 */
-	private static AdvancingFrontNode newFrontTriangle(DTSweepContext tcx, TriangulationPoint point, AdvancingFrontNode node)
-	{
+	private static AdvancingFrontNode newFrontTriangle(DTSweepContext tcx, TriangulationPoint point, AdvancingFrontNode node) {
 		AdvancingFrontNode newNode;
 		DelaunayTriangle triangle;
 
@@ -303,13 +272,11 @@ public class DTSweep
 
 		tcx.addNode(newNode); // XXX: BST
 
-		if (tcx.isDebugEnabled())
-		{
+		if (tcx.isDebugEnabled()) {
 			tcx.getDebugContext().setActiveNode(newNode);
 		}
 
-		if (!legalize(tcx, triangle))
-		{
+		if (!legalize(tcx, triangle)) {
 			tcx.mapTriangleToNodes(triangle);
 		}
 
@@ -321,20 +288,16 @@ public class DTSweep
 	 * @param edge
 	 * @param node
 	 */
-	private static void edgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node)
-	{
-		try
-		{
+	private static void edgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node) {
+		try {
 			tcx.edgeEvent.constrainedEdge = edge;
 			tcx.edgeEvent.right = edge.p.getX() > edge.q.getX();
 
-			if (tcx.isDebugEnabled())
-			{
+			if (tcx.isDebugEnabled()) {
 				tcx.getDebugContext().setPrimaryTriangle(node.triangle);
 			}
 
-			if (isEdgeSideOfTriangle(node.triangle, edge.p, edge.q))
-			{
+			if (isEdgeSideOfTriangle(node.triangle, edge.p, edge.q)) {
 				return;
 			}
 
@@ -344,86 +307,62 @@ public class DTSweep
 			fillEdgeEvent(tcx, edge, node);
 
 			edgeEvent(tcx, edge.p, edge.q, node.triangle, edge.q);
-		}
-		catch (PointOnEdgeException e)
-		{
+		} catch (PointOnEdgeException e) {
 			// logger.warn("Skipping edge: {}", e.getMessage());
 		}
 	}
 
-	private static void fillEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node)
-	{
-		if (tcx.edgeEvent.right)
-		{
+	private static void fillEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node) {
+		if (tcx.edgeEvent.right) {
 			fillRightAboveEdgeEvent(tcx, edge, node);
-		}
-		else
-		{
+		} else {
 			fillLeftAboveEdgeEvent(tcx, edge, node);
 		}
 	}
 
-	private static void fillRightConcaveEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node)
-	{
+	private static void fillRightConcaveEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node) {
 		fill(tcx, node.next);
-		if (node.next.point != edge.p)
-		{
+		if (node.next.point != edge.p) {
 			// Next above or below edge?
-			if (orient2d(edge.q, node.next.point, edge.p) == Orientation.CCW)
-			{
+			if (orient2d(edge.q, node.next.point, edge.p) == Orientation.CCW) {
 				// Below
-				if (orient2d(node.point, node.next.point, node.next.next.point) == Orientation.CCW)
-				{
+				if (orient2d(node.point, node.next.point, node.next.next.point) == Orientation.CCW) {
 					// Next is concave
 					fillRightConcaveEdgeEvent(tcx, edge, node);
-				}
-				else
-				{
+				} else {
 					// Next is convex
 				}
 			}
 		}
 	}
 
-	private static void fillRightConvexEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node)
-	{
+	private static void fillRightConvexEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node) {
 		// Next concave or convex?
-		if (orient2d(node.next.point, node.next.next.point, node.next.next.next.point) == Orientation.CCW)
-		{
+		if (orient2d(node.next.point, node.next.next.point, node.next.next.next.point) == Orientation.CCW) {
 			// Concave
 			fillRightConcaveEdgeEvent(tcx, edge, node.next);
-		}
-		else
-		{
+		} else {
 			// Convex
 			// Next above or below edge?
-			if (orient2d(edge.q, node.next.next.point, edge.p) == Orientation.CCW)
-			{
+			if (orient2d(edge.q, node.next.next.point, edge.p) == Orientation.CCW) {
 				// Below
 				fillRightConvexEdgeEvent(tcx, edge, node.next);
-			}
-			else
-			{
+			} else {
 				// Above
 			}
 		}
 	}
 
-	private static void fillRightBelowEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node)
-	{
-		if (tcx.isDebugEnabled())
-		{
+	private static void fillRightBelowEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node) {
+		if (tcx.isDebugEnabled()) {
 			tcx.getDebugContext().setActiveNode(node);
 		}
 		if (node.point.getX() < edge.p.getX()) // needed?
 		{
-			if (orient2d(node.point, node.next.point, node.next.next.point) == Orientation.CCW)
-			{
+			if (orient2d(node.point, node.next.point, node.next.next.point) == Orientation.CCW) {
 				// Concave
 				fillRightConcaveEdgeEvent(tcx, edge, node);
-			}
-			else
-			{
+			} else {
 				// Convex
 				fillRightConvexEdgeEvent(tcx, edge, node);
 				// Retry this one
@@ -433,88 +372,63 @@ public class DTSweep
 		}
 	}
 
-	private static void fillRightAboveEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node)
-	{
-		while (node.next.point.getX() < edge.p.getX())
-		{
-			if (tcx.isDebugEnabled())
-			{
+	private static void fillRightAboveEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node) {
+		while (node.next.point.getX() < edge.p.getX()) {
+			if (tcx.isDebugEnabled()) {
 				tcx.getDebugContext().setActiveNode(node);
 			}
 			// Check if next node is below the edge
 			Orientation o1 = orient2d(edge.q, node.next.point, edge.p);
-			if (o1 == Orientation.CCW)
-			{
+			if (o1 == Orientation.CCW) {
 				fillRightBelowEdgeEvent(tcx, edge, node);
-			}
-			else
-			{
+			} else {
 				node = node.next;
 			}
 		}
 	}
 
-	private static void fillLeftConvexEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node)
-	{
+	private static void fillLeftConvexEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node) {
 		// Next concave or convex?
-		if (orient2d(node.prev.point, node.prev.prev.point, node.prev.prev.prev.point) == Orientation.CW)
-		{
+		if (orient2d(node.prev.point, node.prev.prev.point, node.prev.prev.prev.point) == Orientation.CW) {
 			// Concave
 			fillLeftConcaveEdgeEvent(tcx, edge, node.prev);
-		}
-		else
-		{
+		} else {
 			// Convex
 			// Next above or below edge?
-			if (orient2d(edge.q, node.prev.prev.point, edge.p) == Orientation.CW)
-			{
+			if (orient2d(edge.q, node.prev.prev.point, edge.p) == Orientation.CW) {
 				// Below
 				fillLeftConvexEdgeEvent(tcx, edge, node.prev);
-			}
-			else
-			{
+			} else {
 				// Above
 			}
 		}
 	}
 
-	private static void fillLeftConcaveEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node)
-	{
+	private static void fillLeftConcaveEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node) {
 		fill(tcx, node.prev);
-		if (node.prev.point != edge.p)
-		{
+		if (node.prev.point != edge.p) {
 			// Next above or below edge?
-			if (orient2d(edge.q, node.prev.point, edge.p) == Orientation.CW)
-			{
+			if (orient2d(edge.q, node.prev.point, edge.p) == Orientation.CW) {
 				// Below
-				if (orient2d(node.point, node.prev.point, node.prev.prev.point) == Orientation.CW)
-				{
+				if (orient2d(node.point, node.prev.point, node.prev.prev.point) == Orientation.CW) {
 					// Next is concave
 					fillLeftConcaveEdgeEvent(tcx, edge, node);
-				}
-				else
-				{
+				} else {
 					// Next is convex
 				}
 			}
 		}
 	}
 
-	private static void fillLeftBelowEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node)
-	{
-		if (tcx.isDebugEnabled())
-		{
+	private static void fillLeftBelowEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node) {
+		if (tcx.isDebugEnabled()) {
 			tcx.getDebugContext().setActiveNode(node);
 		}
-		if (node.point.getX() > edge.p.getX())
-		{
-			if (orient2d(node.point, node.prev.point, node.prev.prev.point) == Orientation.CW)
-			{
+		if (node.point.getX() > edge.p.getX()) {
+			if (orient2d(node.point, node.prev.point, node.prev.prev.point) == Orientation.CW) {
 				// Concave
 				fillLeftConcaveEdgeEvent(tcx, edge, node);
-			}
-			else
-			{
+			} else {
 				// Convex
 				fillLeftConvexEdgeEvent(tcx, edge, node);
 				// Retry this one
@@ -524,38 +438,30 @@ public class DTSweep
 		}
 	}
 
-	private static void fillLeftAboveEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node)
-	{
-		while (node.prev.point.getX() > edge.p.getX())
-		{
-			if (tcx.isDebugEnabled())
-			{
+	private static void fillLeftAboveEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node) {
+		while (node.prev.point.getX() > edge.p.getX()) {
+			if (tcx.isDebugEnabled()) {
 				tcx.getDebugContext().setActiveNode(node);
 			}
 			// Check if next node is below the edge
 			Orientation o1 = orient2d(edge.q, node.prev.point, edge.p);
-			if (o1 == Orientation.CW)
-			{
+			if (o1 == Orientation.CW) {
 				fillLeftBelowEdgeEvent(tcx, edge, node);
-			}
-			else
-			{
+			} else {
 				node = node.prev;
 			}
 		}
 	}
 
-	private static boolean isEdgeSideOfTriangle(DelaunayTriangle triangle, TriangulationPoint ep, TriangulationPoint eq)
-	{
-		if (triangle == null) return false;
+	private static boolean isEdgeSideOfTriangle(DelaunayTriangle triangle, TriangulationPoint ep, TriangulationPoint eq) {
+		if (triangle == null)
+			return false;
 		int index;
 		index = triangle.edgeIndex(ep, eq);
-		if (index != -1)
-		{
+		if (index != -1) {
 			triangle.markConstrainedEdge(index);
 			triangle = triangle.neighbors[index];
-			if (triangle != null)
-			{
+			if (triangle != null) {
 				triangle.markConstrainedEdge(ep, eq);
 			}
 			return true;
@@ -564,42 +470,34 @@ public class DTSweep
 
 	}
 
-	private static void edgeEvent(DTSweepContext tcx, TriangulationPoint ep, TriangulationPoint eq, DelaunayTriangle triangle,
-			TriangulationPoint point)
-	{
-		if (triangle == null) return;
+	private static void edgeEvent(DTSweepContext tcx, TriangulationPoint ep, TriangulationPoint eq, DelaunayTriangle triangle, TriangulationPoint point) {
+		if (triangle == null)
+			return;
 
 		TriangulationPoint p1, p2;
 
-		if (tcx.isDebugEnabled())
-		{
+		if (tcx.isDebugEnabled()) {
 			tcx.getDebugContext().setPrimaryTriangle(triangle);
 		}
 
-		if (isEdgeSideOfTriangle(triangle, ep, eq))
-		{
+		if (isEdgeSideOfTriangle(triangle, ep, eq)) {
 			return;
 		}
 
 		p1 = triangle.pointCCW(point);
 		Orientation o1 = orient2d(eq, p1, ep);
-		if (o1 == Orientation.Collinear)
-		{
-			if (triangle.contains(eq, p1))
-			{
+		if (o1 == Orientation.Collinear) {
+			if (triangle.contains(eq, p1)) {
 				triangle.markConstrainedEdge(eq, p1);
 				// We are modifying the constraint maybe it would be better to
 				// not change the given constraint and just keep a variable for the new constraint
 				tcx.edgeEvent.constrainedEdge.q = p1;
 				triangle = triangle.neighborAcross(point);
 				edgeEvent(tcx, ep, p1, triangle, p1);
-			}
-			else
-			{
+			} else {
 				throw new PointOnEdgeException("EdgeEvent - Point on constrained edge not supported yet");
 			}
-			if (tcx.isDebugEnabled())
-			{
+			if (tcx.isDebugEnabled()) {
 				// logger.info("EdgeEvent - Point on constrained edge");
 			}
 			return;
@@ -607,60 +505,46 @@ public class DTSweep
 
 		p2 = triangle.pointCW(point);
 		Orientation o2 = orient2d(eq, p2, ep);
-		if (o2 == Orientation.Collinear)
-		{
-			if (triangle.contains(eq, p2))
-			{
+		if (o2 == Orientation.Collinear) {
+			if (triangle.contains(eq, p2)) {
 				triangle.markConstrainedEdge(eq, p2);
 				// We are modifying the constraint maybe it would be better to
 				// not change the given constraint and just keep a variable for the new constraint
 				tcx.edgeEvent.constrainedEdge.q = p2;
 				triangle = triangle.neighborAcross(point);
 				edgeEvent(tcx, ep, p2, triangle, p2);
-			}
-			else
-			{
+			} else {
 				throw new PointOnEdgeException("EdgeEvent - Point on constrained edge not supported yet");
 			}
-			if (tcx.isDebugEnabled())
-			{
+			if (tcx.isDebugEnabled()) {
 				// logger.info("EdgeEvent - Point on constrained edge");
 			}
 			return;
 		}
 
-		if (o1 == o2)
-		{
+		if (o1 == o2) {
 			// Need to decide if we are rotating CW or CCW to get to a triangle
 			// that will cross edge
-			if (o1 == Orientation.CW)
-			{
+			if (o1 == Orientation.CW) {
 				triangle = triangle.neighborCCW(point);
-			}
-			else
-			{
+			} else {
 				triangle = triangle.neighborCW(point);
 			}
 			edgeEvent(tcx, ep, eq, triangle, point);
-		}
-		else
-		{
+		} else {
 			// This triangle crosses constraint so lets flippin start!
 			flipEdgeEvent(tcx, ep, eq, triangle, point);
 		}
 	}
 
-	private static void flipEdgeEvent(DTSweepContext tcx, TriangulationPoint ep, TriangulationPoint eq, DelaunayTriangle t,
-			TriangulationPoint p)
-	{
+	private static void flipEdgeEvent(DTSweepContext tcx, TriangulationPoint ep, TriangulationPoint eq, DelaunayTriangle t, TriangulationPoint p) {
 		TriangulationPoint op, newP;
 		DelaunayTriangle ot;
 		boolean inScanArea;
 
 		ot = t.neighborAcross(p);
 
-		if (ot == null)
-		{
+		if (ot == null) {
 			// If we want to integrate the fillEdgeEvent do it here
 			// With current implementation we should never get here
 			throw new RuntimeException("[BUG:FIXME] FLIP failed due to missing triangle");
@@ -668,60 +552,46 @@ public class DTSweep
 
 		op = ot.oppositePoint(t, p);
 
-		if (t.getConstrainedEdgeAcross(p))
-		{
+		if (t.getConstrainedEdgeAcross(p)) {
 			throw new RuntimeException("Intersecting Constraints");
 		}
 
-		if (tcx.isDebugEnabled())
-		{
+		if (tcx.isDebugEnabled()) {
 			tcx.getDebugContext().setPrimaryTriangle(t);
 			tcx.getDebugContext().setSecondaryTriangle(ot);
 		} // TODO: remove
 
 		inScanArea = inScanArea(p, t.pointCCW(p), t.pointCW(p), op);
-		if (inScanArea)
-		{
+		if (inScanArea) {
 			// Lets rotate shared edge one vertex CW
 			rotateTrianglePair(t, p, ot, op);
 			tcx.mapTriangleToNodes(t);
 			tcx.mapTriangleToNodes(ot);
 
-			if (p == eq && op == ep)
-			{
-				if (eq == tcx.edgeEvent.constrainedEdge.q && ep == tcx.edgeEvent.constrainedEdge.p)
-				{
-					if (tcx.isDebugEnabled())
-					{
+			if (p == eq && op == ep) {
+				if (eq == tcx.edgeEvent.constrainedEdge.q && ep == tcx.edgeEvent.constrainedEdge.p) {
+					if (tcx.isDebugEnabled()) {
 						System.out.println("[FLIP] - constrained edge done");
 					} // TODO: remove
 					t.markConstrainedEdge(ep, eq);
 					ot.markConstrainedEdge(ep, eq);
 					legalize(tcx, t);
 					legalize(tcx, ot);
-				}
-				else
-				{
-					if (tcx.isDebugEnabled())
-					{
+				} else {
+					if (tcx.isDebugEnabled()) {
 						System.out.println("[FLIP] - subedge done");
 					} // TODO: remove
 						// XXX: I think one of the triangles should be legalized here?
 				}
-			}
-			else
-			{
-				if (tcx.isDebugEnabled())
-				{
+			} else {
+				if (tcx.isDebugEnabled()) {
 					System.out.println("[FLIP] - flipping and continuing with triangle still crossing edge");
 				} // TODO: remove
 				Orientation o = orient2d(eq, op, ep);
 				t = nextFlipTriangle(tcx, o, t, ot, p, op);
 				flipEdgeEvent(tcx, ep, eq, t, p);
 			}
-		}
-		else
-		{
+		} else {
 			newP = nextFlipPoint(ep, eq, ot, op);
 			flipScanEdgeEvent(tcx, ep, eq, t, ot, newP);
 			edgeEvent(tcx, ep, eq, t, p);
@@ -738,21 +608,15 @@ public class DTSweep
 	 * @param op
 	 * @return
 	 */
-	private static TriangulationPoint nextFlipPoint(TriangulationPoint ep, TriangulationPoint eq, DelaunayTriangle ot, TriangulationPoint op)
-	{
+	private static TriangulationPoint nextFlipPoint(TriangulationPoint ep, TriangulationPoint eq, DelaunayTriangle ot, TriangulationPoint op) {
 		Orientation o2d = orient2d(eq, op, ep);
-		if (o2d == Orientation.CW)
-		{
+		if (o2d == Orientation.CW) {
 			// Right
 			return ot.pointCCW(op);
-		}
-		else if (o2d == Orientation.CCW)
-		{
+		} else if (o2d == Orientation.CCW) {
 			// Left
 			return ot.pointCW(op);
-		}
-		else
-		{
+		} else {
 			// TODO: implement support for point on constraint edge
 			throw new PointOnEdgeException("Point on constrained edge not supported yet");
 		}
@@ -775,12 +639,9 @@ public class DTSweep
 	 *            - another point shared by both triangles
 	 * @return returns the triangle still intersecting the edge
 	 */
-	private static DelaunayTriangle nextFlipTriangle(DTSweepContext tcx, Orientation o, DelaunayTriangle t, DelaunayTriangle ot,
-			TriangulationPoint p, TriangulationPoint op)
-	{
+	private static DelaunayTriangle nextFlipTriangle(DTSweepContext tcx, Orientation o, DelaunayTriangle t, DelaunayTriangle ot, TriangulationPoint p, TriangulationPoint op) {
 		int edgeIndex;
-		if (o == Orientation.CCW)
-		{
+		if (o == Orientation.CCW) {
 			// ot is not crossing edge after flip
 			edgeIndex = ot.edgeIndex(p, op);
 			ot.dEdge[edgeIndex] = true;
@@ -811,9 +672,7 @@ public class DTSweep
 	 * @param t
 	 * @param p
 	 */
-	private static void flipScanEdgeEvent(DTSweepContext tcx, TriangulationPoint ep, TriangulationPoint eq, DelaunayTriangle flipTriangle,
-			DelaunayTriangle t, TriangulationPoint p)
-	{
+	private static void flipScanEdgeEvent(DTSweepContext tcx, TriangulationPoint ep, TriangulationPoint eq, DelaunayTriangle flipTriangle, DelaunayTriangle t, TriangulationPoint p) {
 		DelaunayTriangle ot;
 		TriangulationPoint op, newP;
 		boolean inScanArea;
@@ -828,16 +687,14 @@ public class DTSweep
 		// throw new RuntimeException("[BUG:FIXME] FLIP failed due to missing triangle");
 		// }
 
-		if (tcx.isDebugEnabled())
-		{
+		if (tcx.isDebugEnabled()) {
 			System.out.println("[FLIP:SCAN] - scan next point"); // TODO: remove
 			tcx.getDebugContext().setPrimaryTriangle(t);
 			tcx.getDebugContext().setSecondaryTriangle(ot);
 		}
 
 		inScanArea = inScanArea(eq, flipTriangle.pointCCW(eq), flipTriangle.pointCW(eq), op);
-		if (inScanArea)
-		{
+		if (inScanArea) {
 			// flip with new edge op->eq
 			flipEdgeEvent(tcx, eq, op, ot, op);
 			// TODO: Actually I just figured out that it should be possible to
@@ -847,9 +704,7 @@ public class DTSweep
 			// also need to set a new flipTriangle first
 			// Turns out at first glance that this is somewhat complicated
 			// so it will have to wait.
-		}
-		else
-		{
+		} else {
 			newP = nextFlipPoint(ep, eq, ot, op);
 			flipScanEdgeEvent(tcx, ep, eq, flipTriangle, ot, newP);
 		}
@@ -861,17 +716,14 @@ public class DTSweep
 	 * @param tcx
 	 * @param n
 	 */
-	private static void fillAdvancingFront(DTSweepContext tcx, AdvancingFrontNode n)
-	{
+	private static void fillAdvancingFront(DTSweepContext tcx, AdvancingFrontNode n) {
 		AdvancingFrontNode node;
 		double angle;
 
 		// Fill right holes
 		node = n.next;
-		while (node.hasNext())
-		{
-			if (isLargeHole(node))
-			{
+		while (node.hasNext()) {
+			if (isLargeHole(node)) {
 				break;
 			}
 			fill(tcx, node);
@@ -880,10 +732,8 @@ public class DTSweep
 
 		// Fill left holes
 		node = n.prev;
-		while (node.hasPrevious())
-		{
-			if (isLargeHole(node))
-			{
+		while (node.hasPrevious()) {
+			if (isLargeHole(node)) {
 				break;
 			}
 			fill(tcx, node);
@@ -891,11 +741,9 @@ public class DTSweep
 		}
 
 		// Fill right basins
-		if (n.hasNext() && n.next.hasNext())
-		{
+		if (n.hasNext() && n.next.hasNext()) {
 			angle = basinAngle(n);
-			if (angle < PI_3div4)
-			{
+			if (angle < PI_3div4) {
 				fillBasin(tcx, n);
 			}
 		}
@@ -905,8 +753,7 @@ public class DTSweep
 	 * @param node
 	 * @return true if hole angle exceeds 90 degrees
 	 */
-	private static boolean isLargeHole(AdvancingFrontNode node)
-	{
+	private static boolean isLargeHole(AdvancingFrontNode node) {
 		double angle = angle(node.point, node.next.point, node.prev.point);
 		// XXX: don't see angle being in range [-pi/2,0] due to how advancing front works
 		// return (angle > PI_div2) || (angle < -PI_div2);
@@ -982,36 +829,28 @@ public class DTSweep
 	 * @param node
 	 *            - starting node, this or next node will be left node
 	 */
-	private static void fillBasin(DTSweepContext tcx, AdvancingFrontNode node)
-	{
-		if (orient2d(node.point, node.next.point, node.next.next.point) == Orientation.CCW)
-		{
+	private static void fillBasin(DTSweepContext tcx, AdvancingFrontNode node) {
+		if (orient2d(node.point, node.next.point, node.next.next.point) == Orientation.CCW) {
 			tcx.basin.leftNode = node;
-		}
-		else
-		{
+		} else {
 			tcx.basin.leftNode = node.next;
 		}
 
 		// Find the bottom and right node
 		tcx.basin.bottomNode = tcx.basin.leftNode;
-		while (tcx.basin.bottomNode.hasNext() && tcx.basin.bottomNode.point.getY() >= tcx.basin.bottomNode.next.point.getY())
-		{
+		while (tcx.basin.bottomNode.hasNext() && tcx.basin.bottomNode.point.getY() >= tcx.basin.bottomNode.next.point.getY()) {
 			tcx.basin.bottomNode = tcx.basin.bottomNode.next;
 		}
-		if (tcx.basin.bottomNode == tcx.basin.leftNode)
-		{
+		if (tcx.basin.bottomNode == tcx.basin.leftNode) {
 			// No valid basin
 			return;
 		}
 
 		tcx.basin.rightNode = tcx.basin.bottomNode;
-		while (tcx.basin.rightNode.hasNext() && tcx.basin.rightNode.point.getY() < tcx.basin.rightNode.next.point.getY())
-		{
+		while (tcx.basin.rightNode.hasNext() && tcx.basin.rightNode.point.getY() < tcx.basin.rightNode.next.point.getY()) {
 			tcx.basin.rightNode = tcx.basin.rightNode.next;
 		}
-		if (tcx.basin.rightNode == tcx.basin.bottomNode)
-		{
+		if (tcx.basin.rightNode == tcx.basin.bottomNode) {
 			// No valid basins
 			return;
 		}
@@ -1031,66 +870,47 @@ public class DTSweep
 	 * @param cnt
 	 *            - counter used to alternate on even and odd numbers
 	 */
-	private static void fillBasinReq(DTSweepContext tcx, AdvancingFrontNode node)
-	{
+	private static void fillBasinReq(DTSweepContext tcx, AdvancingFrontNode node) {
 		// if shallow stop filling
-		if (isShallow(tcx, node))
-		{
+		if (isShallow(tcx, node)) {
 			return;
 		}
 
 		fill(tcx, node);
-		if (node.prev == tcx.basin.leftNode && node.next == tcx.basin.rightNode)
-		{
+		if (node.prev == tcx.basin.leftNode && node.next == tcx.basin.rightNode) {
 			return;
-		}
-		else if (node.prev == tcx.basin.leftNode)
-		{
+		} else if (node.prev == tcx.basin.leftNode) {
 			Orientation o = orient2d(node.point, node.next.point, node.next.next.point);
-			if (o == Orientation.CW)
-			{
+			if (o == Orientation.CW) {
 				return;
 			}
 			node = node.next;
-		}
-		else if (node.next == tcx.basin.rightNode)
-		{
+		} else if (node.next == tcx.basin.rightNode) {
 			Orientation o = orient2d(node.point, node.prev.point, node.prev.prev.point);
-			if (o == Orientation.CCW)
-			{
+			if (o == Orientation.CCW) {
 				return;
 			}
 			node = node.prev;
-		}
-		else
-		{
+		} else {
 			// Continue with the neighbor node with lowest Y value
-			if (node.prev.point.getY() < node.next.point.getY())
-			{
+			if (node.prev.point.getY() < node.next.point.getY()) {
 				node = node.prev;
-			}
-			else
-			{
+			} else {
 				node = node.next;
 			}
 		}
 		fillBasinReq(tcx, node);
 	}
 
-	private static boolean isShallow(DTSweepContext tcx, AdvancingFrontNode node)
-	{
+	private static boolean isShallow(DTSweepContext tcx, AdvancingFrontNode node) {
 		double height;
 
-		if (tcx.basin.leftHighest)
-		{
+		if (tcx.basin.leftHighest) {
 			height = tcx.basin.leftNode.getPoint().getY() - node.getPoint().getY();
-		}
-		else
-		{
+		} else {
 			height = tcx.basin.rightNode.getPoint().getY() - node.getPoint().getY();
 		}
-		if (tcx.basin.width > height)
-		{
+		if (tcx.basin.width > height) {
 			return true;
 		}
 		return false;
@@ -1101,8 +921,7 @@ public class DTSweep
 	 *            - middle node
 	 * @return the angle between p-a and p-b in range [-pi,pi]
 	 */
-	private static double angle(TriangulationPoint p, TriangulationPoint a, TriangulationPoint b)
-	{
+	private static double angle(TriangulationPoint p, TriangulationPoint a, TriangulationPoint b) {
 		// XXX: do we really need a signed angle for holeAngle?
 		// could possible save some cycles here
 		/*
@@ -1121,8 +940,7 @@ public class DTSweep
 	/**
 	 * The basin angle is decided against the horizontal line [1,0]
 	 */
-	private static double basinAngle(AdvancingFrontNode node)
-	{
+	private static double basinAngle(AdvancingFrontNode node) {
 		double ax = node.point.getX() - node.next.next.point.getX();
 		double ay = node.point.getY() - node.next.next.point.getY();
 		return Math.atan2(ay, ax);
@@ -1135,8 +953,7 @@ public class DTSweep
 	 * @param node
 	 *            - middle node, that is the bottom of the hole
 	 */
-	private static void fill(DTSweepContext tcx, AdvancingFrontNode node)
-	{
+	private static void fill(DTSweepContext tcx, AdvancingFrontNode node) {
 		DelaunayTriangle triangle = new DelaunayTriangle(node.prev.point, node.point, node.next.point);
 		// TODO: should copy the cEdge value from neighbor triangles
 		// for now cEdge values are copied during the legalize
@@ -1150,8 +967,7 @@ public class DTSweep
 		tcx.removeNode(node);
 
 		// If it was legalized the triangle has already been mapped
-		if (!legalize(tcx, triangle))
-		{
+		if (!legalize(tcx, triangle)) {
 			tcx.mapTriangleToNodes(triangle);
 		}
 	}
@@ -1159,39 +975,33 @@ public class DTSweep
 	/**
 	 * Returns true if triangle was legalized
 	 */
-	private static boolean legalize(DTSweepContext tcx, DelaunayTriangle t)
-	{
+	private static boolean legalize(DTSweepContext tcx, DelaunayTriangle t) {
 		int oi;
 		boolean inside;
 		TriangulationPoint p, op;
 		DelaunayTriangle ot;
 		// To legalize a triangle we start by finding if any of the three edges
 		// violate the Delaunay condition
-		for (int i = 0; i < 3; i++)
-		{
+		for (int i = 0; i < 3; i++) {
 			// TODO: fix so that cEdge is always valid when creating new triangles then we can check it here
 			// instead of below with ot
-			if (t.dEdge[i])
-			{
+			if (t.dEdge[i]) {
 				continue;
 			}
 			ot = t.neighbors[i];
-			if (ot != null)
-			{
+			if (ot != null) {
 				p = t.points[i];
 				op = ot.oppositePoint(t, p);
 				oi = ot.index(op);
 				// If this is a Constrained Edge or a Delaunay Edge(only during recursive legalization)
 				// then we should not try to legalize
-				if (ot.cEdge[oi] || ot.dEdge[oi])
-				{
+				if (ot.cEdge[oi] || ot.dEdge[oi]) {
 					t.cEdge[i] = ot.cEdge[oi]; // XXX: have no good way of setting this property when creating new triangles so lets set it
 												// here
 					continue;
 				}
 				inside = smartIncircle(p, t.pointCCW(p), t.pointCW(p), op);
-				if (inside)
-				{
+				if (inside) {
 					boolean notLegalized;
 
 					// Lets mark this shared edge as Delaunay
@@ -1206,13 +1016,11 @@ public class DTSweep
 
 					// Make sure that triangle to node mapping is done only one time for a specific triangle
 					notLegalized = !legalize(tcx, t);
-					if (notLegalized)
-					{
+					if (notLegalized) {
 						tcx.mapTriangleToNodes(t);
 					}
 					notLegalized = !legalize(tcx, ot);
-					if (notLegalized)
-					{
+					if (notLegalized) {
 						tcx.mapTriangleToNodes(ot);
 					}
 
@@ -1247,8 +1055,7 @@ public class DTSweep
 	 *       n4                    n4
 	 * </pre>
 	 */
-	private static void rotateTrianglePair(DelaunayTriangle t, TriangulationPoint p, DelaunayTriangle ot, TriangulationPoint op)
-	{
+	private static void rotateTrianglePair(DelaunayTriangle t, TriangulationPoint p, DelaunayTriangle ot, TriangulationPoint op) {
 		DelaunayTriangle n1, n2, n3, n4;
 		n1 = t.neighborCCW(p);
 		n2 = t.neighborCW(p);
@@ -1289,10 +1096,14 @@ public class DTSweep
 		// the right side.
 		t.clearNeighbors();
 		ot.clearNeighbors();
-		if (n1 != null) ot.markNeighbor(n1);
-		if (n2 != null) t.markNeighbor(n2);
-		if (n3 != null) t.markNeighbor(n3);
-		if (n4 != null) ot.markNeighbor(n4);
+		if (n1 != null)
+			ot.markNeighbor(n1);
+		if (n2 != null)
+			t.markNeighbor(n2);
+		if (n3 != null)
+			t.markNeighbor(n3);
+		if (n4 != null)
+			ot.markNeighbor(n4);
 		t.markNeighbor(ot);
 	}
 }

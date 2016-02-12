@@ -20,7 +20,6 @@ package org.apache.xmlrpc.server;
 
 import org.apache.xmlrpc.XmlRpcConfig;
 
-
 /** Server specific extension of {@link org.apache.xmlrpc.XmlRpcConfig}.
  */
 public interface XmlRpcServerConfig extends XmlRpcConfig {

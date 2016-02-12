@@ -2,43 +2,36 @@ package CB_RpcCore.Functions;
 
 import cb_rpc.Functions.RpcMessage;
 
-public class RpcMessage_GetCacheList extends RpcMessage
-{
+public class RpcMessage_GetCacheList extends RpcMessage {
 	private static final long serialVersionUID = -8640103804448375026L;
 
 	private long categoryId;
 	private int startIndex;
 	private int count;
 
-	public RpcMessage_GetCacheList(long categoryId, int startIndex, int count)
-	{
+	public RpcMessage_GetCacheList(long categoryId, int startIndex, int count) {
 		this.categoryId = categoryId;
 		this.setStartIndex(startIndex);
 		this.setCount(count);
 	}
 
-	public long getCategoryId()
-	{
+	public long getCategoryId() {
 		return categoryId;
 	}
 
-	public int getStartIndex()
-	{
+	public int getStartIndex() {
 		return startIndex;
 	}
 
-	public void setStartIndex(int startIndex)
-	{
+	public void setStartIndex(int startIndex) {
 		this.startIndex = startIndex;
 	}
 
-	public int getCount()
-	{
+	public int getCount() {
 		return count;
 	}
 
-	public void setCount(int count)
-	{
+	public void setCount(int count) {
 		this.count = count;
 	}
 }

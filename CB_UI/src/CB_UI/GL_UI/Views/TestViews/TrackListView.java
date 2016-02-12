@@ -39,146 +39,146 @@ import CB_UI_Base.Math.UI_Size_Base;
  * @author Longri
  */
 public class TrackListView extends V_ListView {
-    public static CB_RectF ItemRec;
-    BitmapFontCache emptyMsg;
-    int selectedTrackItem;
+	public static CB_RectF ItemRec;
+	BitmapFontCache emptyMsg;
+	int selectedTrackItem;
 
-    public static TrackListView that;
+	public static TrackListView that;
 
-    public TrackListView(CB_RectF rec, String Name) {
-	super(rec, Name);
-	that = this;
+	public TrackListView(CB_RectF rec, String Name) {
+		super(rec, Name);
+		that = this;
 
-	ItemRec = new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.1f);
+		ItemRec = new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.1f);
 
-	this.setEmptyMsg(Translation.Get("EmptyTrackList"));
+		this.setEmptyMsg(Translation.Get("EmptyTrackList"));
 
-	setBackground(SpriteCacheBase.ListBack);
+		setBackground(SpriteCacheBase.ListBack);
 
-	this.setBaseAdapter(null);
-	this.setBaseAdapter(new CustomAdapter());
+		this.setBaseAdapter(null);
+		this.setBaseAdapter(new CustomAdapter());
 
-    }
-
-    @Override
-    public void onShow() {
-	this.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onHide() {
-	// platformConector.hideView(ViewConst.TRACK_LIST_VIEW);
-    }
-
-    @Override
-    public void Initial() {
-	super.Initial();
-    }
-
-    @Override
-    protected void SkinIsChanged() {
-
-    }
-
-    TrackListViewItem aktRouteItem;
-
-    public class CustomAdapter implements Adapter {
-
-	public CustomAdapter() {
 	}
 
 	@Override
-	public int getCount() {
-	    int size = RouteOverlay.getRouteCount();
-	    if (GlobalCore.AktuelleRoute != null)
-		size++;
-	    return size;
+	public void onShow() {
+		this.notifyDataSetChanged();
 	}
 
 	@Override
-	public ListViewItemBase getView(int position) {
-	    int index = position;
-	    if (GlobalCore.AktuelleRoute != null) {
-		if (position == 0) {
-		    aktRouteItem = new TrackListViewItem(ItemRec, index, GlobalCore.AktuelleRoute, new IRouteChangedListener() {
+	public void onHide() {
+		// platformConector.hideView(ViewConst.TRACK_LIST_VIEW);
+	}
 
-			@Override
-			public void routeChanged(Track route) {
-			    // Notify Map to Reload RouteOverlay
-			    RouteOverlay.RoutesChanged();
-			}
-		    });
-		    aktRouteItem.setOnClickListener(onItemClickListener);
-		    aktRouteItem.setOnLongClickListener(TrackListView.this.getOnLongClickListener());
+	@Override
+	public void Initial() {
+		super.Initial();
+	}
 
-		    return aktRouteItem;
+	@Override
+	protected void SkinIsChanged() {
+
+	}
+
+	TrackListViewItem aktRouteItem;
+
+	public class CustomAdapter implements Adapter {
+
+		public CustomAdapter() {
 		}
-		position--;
-	    }
-
-	    TrackListViewItem v = new TrackListViewItem(ItemRec, index, RouteOverlay.getRoute(position), new IRouteChangedListener() {
 
 		@Override
-		public void routeChanged(Track route) {
-		    // Notify Map to Reload RouteOverlay
-		    RouteOverlay.RoutesChanged();
+		public int getCount() {
+			int size = RouteOverlay.getRouteCount();
+			if (GlobalCore.AktuelleRoute != null)
+				size++;
+			return size;
 		}
-	    });
 
-	    v.setOnClickListener(onItemClickListener);
-	    v.setOnLongClickListener(TrackListView.this.getOnLongClickListener());
-	    return v;
+		@Override
+		public ListViewItemBase getView(int position) {
+			int index = position;
+			if (GlobalCore.AktuelleRoute != null) {
+				if (position == 0) {
+					aktRouteItem = new TrackListViewItem(ItemRec, index, GlobalCore.AktuelleRoute, new IRouteChangedListener() {
+
+						@Override
+						public void routeChanged(Track route) {
+							// Notify Map to Reload RouteOverlay
+							RouteOverlay.RoutesChanged();
+						}
+					});
+					aktRouteItem.setOnClickListener(onItemClickListener);
+					aktRouteItem.setOnLongClickListener(TrackListView.this.getOnLongClickListener());
+
+					return aktRouteItem;
+				}
+				position--;
+			}
+
+			TrackListViewItem v = new TrackListViewItem(ItemRec, index, RouteOverlay.getRoute(position), new IRouteChangedListener() {
+
+				@Override
+				public void routeChanged(Track route) {
+					// Notify Map to Reload RouteOverlay
+					RouteOverlay.RoutesChanged();
+				}
+			});
+
+			v.setOnClickListener(onItemClickListener);
+			v.setOnLongClickListener(TrackListView.this.getOnLongClickListener());
+			return v;
+		}
+
+		@Override
+		public float getItemSize(int position) {
+			if (GlobalCore.AktuelleRoute != null && position == 1) {
+				return ItemRec.getHeight() + ItemRec.getHalfHeight();
+			}
+
+			return ItemRec.getHeight();
+		}
+
 	}
 
 	@Override
-	public float getItemSize(int position) {
-	    if (GlobalCore.AktuelleRoute != null && position == 1) {
-		return ItemRec.getHeight() + ItemRec.getHalfHeight();
-	    }
+	public boolean onTouchDown(int x, int y, int pointer, int button) {
+		super.onTouchDown(x, y, pointer, button);
 
-	    return ItemRec.getHeight();
-	}
+		// for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+		for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();) {
+			// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
+			GL_View_Base view = iterator.next();
 
-    }
-
-    @Override
-    public boolean onTouchDown(int x, int y, int pointer, int button) {
-	super.onTouchDown(x, y, pointer, button);
-
-	// for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
-	for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();) {
-	    // Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
-	    GL_View_Base view = iterator.next();
-
-	    if (view instanceof TrackListViewItem) {
-		if (view.contains(x, y)) {
-		    ((TrackListViewItem) view).lastItemTouchPos = new Vector2(x - view.getX(), y - view.getY());
+			if (view instanceof TrackListViewItem) {
+				if (view.contains(x, y)) {
+					((TrackListViewItem) view).lastItemTouchPos = new Vector2(x - view.getX(), y - view.getY());
+				}
+			}
 		}
-	    }
+		return true;
 	}
-	return true;
-    }
 
-    public void notifyActTrackChanged() {
-	if (aktRouteItem != null)
-	    aktRouteItem.notifyTrackChanged(GlobalCore.AktuelleRoute);
-	GL.that.renderOnce();
-    }
+	public void notifyActTrackChanged() {
+		if (aktRouteItem != null)
+			aktRouteItem.notifyTrackChanged(GlobalCore.AktuelleRoute);
+		GL.that.renderOnce();
+	}
 
-    private final OnClickListener onItemClickListener = new OnClickListener() {
+	private final OnClickListener onItemClickListener = new OnClickListener() {
+
+		@Override
+		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+			selectedTrackItem = ((ListViewItemBase) v).getIndex();
+			setSelection(selectedTrackItem);
+			return true;
+		}
+	};
 
 	@Override
-	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-	    selectedTrackItem = ((ListViewItemBase) v).getIndex();
-	    setSelection(selectedTrackItem);
-	    return true;
+	public TrackListViewItem getSelectedItem() {
+		return (TrackListViewItem) super.getSelectedItem();
+
 	}
-    };
-
-    @Override
-    public TrackListViewItem getSelectedItem() {
-	return (TrackListViewItem) super.getSelectedItem();
-
-    }
 
 }

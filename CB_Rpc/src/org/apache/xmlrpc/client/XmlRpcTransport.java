@@ -21,7 +21,6 @@ package org.apache.xmlrpc.client;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.XmlRpcRequest;
 
-
 /** <p>Interface from XML-RPC to an underlying transport, most likely based on HTTP.</p>
  * Replaces the interface <code>org.apache.xmlrpc.client</code> from Apache XML-RPC
  * 2.0, which has actually been a stream based transport.

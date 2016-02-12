@@ -21,9 +21,9 @@
 package net.htmlparser.jericho;
 
 final class StartTagTypeXMLProcessingInstruction extends StartTagTypeGenericImplementation {
-	static final StartTagTypeXMLProcessingInstruction INSTANCE=new StartTagTypeXMLProcessingInstruction();
+	static final StartTagTypeXMLProcessingInstruction INSTANCE = new StartTagTypeXMLProcessingInstruction();
 
 	private StartTagTypeXMLProcessingInstruction() {
-		super("XML processing instruction","<?","?>",null,false,false,true);
+		super("XML processing instruction", "<?", "?>", null, false, false, true);
 	}
 }

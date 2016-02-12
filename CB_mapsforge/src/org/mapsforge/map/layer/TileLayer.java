@@ -53,8 +53,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 
 	@Override
 	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
-		List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, topLeftPoint,
-				this.displayModel.getTileSize());
+		List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, topLeftPoint, this.displayModel.getTileSize());
 
 		// In a rotation situation it is possible that drawParentTileBitmap sets the
 		// clipping bounds to portrait, while the device is just being rotated into

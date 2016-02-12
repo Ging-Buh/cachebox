@@ -5,8 +5,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
-public interface ViewOptionsMenu
-{
+public interface ViewOptionsMenu {
 
 	public boolean ItemSelected(MenuItem item);
 

@@ -15,8 +15,7 @@ import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 
-public class ImportHandler implements IImportHandler
-{
+public class ImportHandler implements IImportHandler {
 
 	CacheDAO cacheDAO = new CacheDAO();
 	LogDAO logDAO = new LogDAO();
@@ -32,22 +31,16 @@ public class ImportHandler implements IImportHandler
 	public Categories categories;
 
 	@Override
-	public void handleCache(Cache cache)
-	{
+	public void handleCache(Cache cache) {
 
-		if (cacheDAO.cacheExists(cache.Id))
-		{
+		if (cacheDAO.cacheExists(cache.Id)) {
 			cacheDAO.UpdateDatabase(cache);
-		}
-		else
-		{
+		} else {
 			cacheDAO.WriteToDatabase(cache);
 		}
 
-		if (cache.waypoints.size() > 0)
-		{
-			for (int i = 0; i < cache.waypoints.size(); i++)
-			{
+		if (cache.waypoints.size() > 0) {
+			for (int i = 0; i < cache.waypoints.size(); i++) {
 				handleWaypoint(cache.waypoints.get(i));
 			}
 		}
@@ -58,34 +51,29 @@ public class ImportHandler implements IImportHandler
 	}
 
 	@Override
-	public void handleLog(LogEntry log)
-	{
+	public void handleLog(LogEntry log) {
 		logDAO.WriteToDatabase(log);
 		logCount++;
 	}
 
 	@Override
-	public void handleWaypoint(Waypoint waypoint)
-	{
+	public void handleWaypoint(Waypoint waypoint) {
 		waypointDAO.WriteImportToDatabase(waypoint);
 		waypointCount++;
 	}
 
 	@Override
-	public Category getCategory(String filename)
-	{
+	public Category getCategory(String filename) {
 		return categoryDAO.GetCategory(CoreSettingsForward.Categories, filename);
 	}
 
 	@Override
-	public GpxFilename NewGpxFilename(Category category, String filename)
-	{
+	public GpxFilename NewGpxFilename(Category category, String filename) {
 		return categoryDAO.CreateNewGpxFilename(category, filename);
 	}
 
 	@Override
-	public void GPXFilenameUpdateCacheCount()
-	{
+	public void GPXFilenameUpdateCacheCount() {
 		gpxFilenameDAO.GPXFilenameUpdateCacheCount();
 
 		categoryDAO.LoadCategoriesFromDatabase();
@@ -93,8 +81,7 @@ public class ImportHandler implements IImportHandler
 	}
 
 	@Override
-	public void handleImage(ImageEntry image, Boolean ignoreExisting)
-	{
+	public void handleImage(ImageEntry image, Boolean ignoreExisting) {
 		imageDAO.WriteToDatabase(image, ignoreExisting);
 	}
 

@@ -24,32 +24,27 @@ import org.json.JSONObject;
 /**
  * @author Hubert
  */
-public class SearchGC extends Search
-{
+public class SearchGC extends Search {
 	ArrayList<String> gcCodes;
 
-	public SearchGC(String gcCode)
-	{
+	public SearchGC(String gcCode) {
 		super(1);
 		// einzelner Cache wird immer voll geladen
 		this.gcCodes = new ArrayList<String>();
 		this.gcCodes.add(gcCode);
 	}
 
-	public SearchGC(ArrayList<String> gcCodes)
-	{
+	public SearchGC(ArrayList<String> gcCodes) {
 		super(gcCodes.size());
 		this.gcCodes = gcCodes;
 	}
 
 	@Override
-	protected void getRequest(JSONObject request, boolean isLite) throws JSONException
-	{
+	protected void getRequest(JSONObject request, boolean isLite) throws JSONException {
 		super.getRequest(request, isLite);
 		JSONObject requestcc = new JSONObject();
 		JSONArray requesta = new JSONArray();
-		for (String gcCode : gcCodes)
-		{
+		for (String gcCode : gcCodes) {
 			requesta.put(gcCode);
 		}
 		requestcc.put("CacheCodes", requesta);

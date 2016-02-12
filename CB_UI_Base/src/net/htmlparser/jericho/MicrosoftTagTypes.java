@@ -69,13 +69,12 @@ public final class MicrosoftTagTypes {
 	 * @deprecated  Use {@link MicrosoftConditionalCommentTagTypes#DOWNLEVEL_REVEALED_IF} and {@link MicrosoftConditionalCommentTagTypes#DOWNLEVEL_REVEALED_ENDIF} instead.
 	 */
 	@Deprecated
-	public static final StartTagType DOWNLEVEL_REVEALED_CONDITIONAL_COMMENT=StartTagTypeMicrosoftDownlevelRevealedConditionalComment.INSTANCE;
+	public static final StartTagType DOWNLEVEL_REVEALED_CONDITIONAL_COMMENT = StartTagTypeMicrosoftDownlevelRevealedConditionalComment.INSTANCE;
 
-	private static final TagType[] TAG_TYPES={
-		DOWNLEVEL_REVEALED_CONDITIONAL_COMMENT
-	};
+	private static final TagType[] TAG_TYPES = { DOWNLEVEL_REVEALED_CONDITIONAL_COMMENT };
 
-	private MicrosoftTagTypes() {}
+	private MicrosoftTagTypes() {
+	}
 
 	/**
 	 * Indicates whether the specified tag is a {@linkplain #DOWNLEVEL_REVEALED_CONDITIONAL_COMMENT downlevel-revealed conditional comment} "if" tag
@@ -85,7 +84,7 @@ public final class MicrosoftTagTypes {
 	 * @return <code>true</code> if the specified tag is a <a target="_blank" href="http://en.wikipedia.org/wiki/Conditional_comment">conditional comment</a> "if" tag, otherwise <code>false</code>.
 	 */
 	public static boolean isConditionalCommentIfTag(final Tag tag) {
-		return tag.getName()==StartTagTypeMicrosoftDownlevelRevealedConditionalComment.IF;
+		return tag.getName() == StartTagTypeMicrosoftDownlevelRevealedConditionalComment.IF;
 	}
 
 	/**
@@ -96,7 +95,7 @@ public final class MicrosoftTagTypes {
 	 * @return <code>true</code> if the specified tag is a <a target="_blank" href="http://en.wikipedia.org/wiki/Conditional_comment">conditional comment</a> "endif" tag, otherwise <code>false</code>.
 	 */
 	public static boolean isConditionalCommentEndifTag(final Tag tag) {
-		return tag.getName()==StartTagTypeMicrosoftDownlevelRevealedConditionalComment.ENDIF;
+		return tag.getName() == StartTagTypeMicrosoftDownlevelRevealedConditionalComment.ENDIF;
 	}
 
 	/** 
@@ -105,16 +104,18 @@ public final class MicrosoftTagTypes {
 	 * The tag types must be registered before the parser will recognise them.
 	 */
 	public static void register() {
-		for (TagType tagType : TAG_TYPES) tagType.register();
+		for (TagType tagType : TAG_TYPES)
+			tagType.register();
 	}
 
 	/** 
 	 * {@linkplain TagType#deregister() Deregisters} all of the tag types defined in this class at once.
 	 */
 	public static void deregister() {
-		for (TagType tagType : TAG_TYPES) tagType.deregister();
+		for (TagType tagType : TAG_TYPES)
+			tagType.deregister();
 	}
-	
+
 	/**
 	 * Indicates whether the specified tag type is defined in this class.
 	 *
@@ -122,9 +123,10 @@ public final class MicrosoftTagTypes {
 	 * @return <code>true</code> if the specified tag type is defined in this class, otherwise <code>false</code>.
 	 */
 	public static boolean defines(final TagType tagType) {
-		for (TagType definedTagType : TAG_TYPES) if (tagType==definedTagType) return true;
+		for (TagType definedTagType : TAG_TYPES)
+			if (tagType == definedTagType)
+				return true;
 		return false;
 	}
-	
-}
 
+}

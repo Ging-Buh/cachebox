@@ -52,40 +52,35 @@ import java.io.*;
  */
 public final class Attributes extends SequentialListSegment<Attribute> {
 	private final LinkedList<Attribute> attributeList; // never null
-	
+
 	final boolean containsServerTagOutsideOfAttributeValue;
 
 	private enum ParsingState {
-		AFTER_TAG_NAME,
-		BETWEEN_ATTRIBUTES,
-		IN_NAME,
-		AFTER_NAME, // this only happens if an attribute name is followed by whitespace
-		START_VALUE,
-		IN_VALUE,
-		AFTER_VALUE_FINAL_QUOTE
+		AFTER_TAG_NAME, BETWEEN_ATTRIBUTES, IN_NAME, AFTER_NAME, // this only happens if an attribute name is followed by whitespace
+		START_VALUE, IN_VALUE, AFTER_VALUE_FINAL_QUOTE
 	}
 
-	private static int defaultMaxErrorCount=2; // defines maximum number of minor errors that can be encountered in attributes before entire start tag is rejected.
+	private static int defaultMaxErrorCount = 2; // defines maximum number of minor errors that can be encountered in attributes before entire start tag is rejected.
 
 	private Attributes(final Source source, final int begin, final int end, final LinkedList<Attribute> attributeList, final boolean containsServerTagOutsideOfAttributeValue) {
-		super(source,begin,end);
-		this.attributeList=attributeList;
-		this.containsServerTagOutsideOfAttributeValue=containsServerTagOutsideOfAttributeValue;
+		super(source, begin, end);
+		this.attributeList = attributeList;
+		this.containsServerTagOutsideOfAttributeValue = containsServerTagOutsideOfAttributeValue;
 	}
 
 	/** called from StartTagType.parseAttributes(Source, int startTagBegin, String tagName) */
 	static Attributes construct(final Source source, final int startTagBegin, final StartTagType startTagType, final String tagName) {
-		return construct(source,"StartTag",ParsingState.AFTER_TAG_NAME,startTagBegin,-1,-1,startTagType,tagName,defaultMaxErrorCount);
+		return construct(source, "StartTag", ParsingState.AFTER_TAG_NAME, startTagBegin, -1, -1, startTagType, tagName, defaultMaxErrorCount);
 	}
 
 	/** called from StartTag.parseAttributes(int maxErrorCount) */
 	static Attributes construct(final Source source, final int startTagBegin, final int attributesBegin, final int maxEnd, final StartTagType startTagType, final String tagName, final int maxErrorCount) {
-		return construct(source,"Attributes for StartTag",ParsingState.BETWEEN_ATTRIBUTES,startTagBegin,attributesBegin,maxEnd,startTagType,tagName,maxErrorCount);
+		return construct(source, "Attributes for StartTag", ParsingState.BETWEEN_ATTRIBUTES, startTagBegin, attributesBegin, maxEnd, startTagType, tagName, maxErrorCount);
 	}
 
 	/** called from Source.parseAttributes(int pos, int maxEnd, int maxErrorCount) */
 	static Attributes construct(final Source source, final int begin, final int maxEnd, final int maxErrorCount) {
-		return construct(source,"Attributes",ParsingState.BETWEEN_ATTRIBUTES,begin,-1,maxEnd,StartTagType.NORMAL,null,maxErrorCount);
+		return construct(source, "Attributes", ParsingState.BETWEEN_ATTRIBUTES, begin, -1, maxEnd, StartTagType.NORMAL, null, maxErrorCount);
 	}
 
 	/**
@@ -97,200 +92,230 @@ public final class Attributes extends SequentialListSegment<Attribute> {
 	 * @param tagName  the name of the enclosing StartTag, or null if constucting attributes directly.
 	 */
 	private static Attributes construct(final Source source, final String logType, ParsingState parsingState, final int logBegin, int attributesBegin, final int maxEnd, final StartTagType startTagType, final String tagName, final int maxErrorCount) {
-		boolean isClosingSlashIgnored=false;
-		if (tagName!=null) {
+		boolean isClosingSlashIgnored = false;
+		if (tagName != null) {
 			// 'logBegin' parameter is the start of the associated start tag
-			if (attributesBegin==-1) attributesBegin=logBegin+1+tagName.length();
-			if (startTagType==StartTagType.NORMAL && HTMLElements.isClosingSlashIgnored(tagName)) isClosingSlashIgnored=true;
+			if (attributesBegin == -1)
+				attributesBegin = logBegin + 1 + tagName.length();
+			if (startTagType == StartTagType.NORMAL && HTMLElements.isClosingSlashIgnored(tagName))
+				isClosingSlashIgnored = true;
 		} else {
-			attributesBegin=logBegin;
+			attributesBegin = logBegin;
 		}
-		int attributesEnd=attributesBegin;
-		final LinkedList<Attribute> attributeList=new LinkedList<Attribute>();
-		boolean containsServerTagOutsideOfAttributeValue=false;
-		final ParseText parseText=source.getParseText();
-		int i=attributesBegin;
-		char quote=' ';
-		Segment nameSegment=null;
-		String key=null;
-		int currentBegin=-1;
-		boolean isTerminatingCharacter=false;
-		int errorCount=0;
+		int attributesEnd = attributesBegin;
+		final LinkedList<Attribute> attributeList = new LinkedList<Attribute>();
+		boolean containsServerTagOutsideOfAttributeValue = false;
+		final ParseText parseText = source.getParseText();
+		int i = attributesBegin;
+		char quote = ' ';
+		Segment nameSegment = null;
+		String key = null;
+		int currentBegin = -1;
+		boolean isTerminatingCharacter = false;
+		int errorCount = 0;
 		try {
 			while (!isTerminatingCharacter) {
-				if (i==maxEnd || startTagType.atEndOfAttributes(source,i,isClosingSlashIgnored)) isTerminatingCharacter=true;
-				final char ch=parseText.charAt(i);
+				if (i == maxEnd || startTagType.atEndOfAttributes(source, i, isClosingSlashIgnored))
+					isTerminatingCharacter = true;
+				final char ch = parseText.charAt(i);
 				// First check if there is a server tag in this position:
-				if (ch=='<') {
-					final Tag interlopingTag=Tag.getTagAt(source,i,true); // search for server tags only
-					if (interlopingTag!=null) {
+				if (ch == '<') {
+					final Tag interlopingTag = Tag.getTagAt(source, i, true); // search for server tags only
+					if (interlopingTag != null) {
 						// There is a server tag in this position. Skip over it:
-						if (parsingState==ParsingState.START_VALUE) {
-							currentBegin=i;
-							quote=' ';
-							parsingState=ParsingState.IN_VALUE;
+						if (parsingState == ParsingState.START_VALUE) {
+							currentBegin = i;
+							quote = ' ';
+							parsingState = ParsingState.IN_VALUE;
 						}
-						i=attributesEnd=interlopingTag.end;
-						if (parsingState!=ParsingState.IN_VALUE) containsServerTagOutsideOfAttributeValue=true;
+						i = attributesEnd = interlopingTag.end;
+						if (parsingState != ParsingState.IN_VALUE)
+							containsServerTagOutsideOfAttributeValue = true;
 						continue;
 					}
 				}
 				// There is no server tag in this position. Now we can parse the attributes:
 				switch (parsingState) {
-					case IN_VALUE:
-						if (isTerminatingCharacter || ch==quote || (quote==' ' && isWhiteSpace(ch))) {
-							Segment valueSegment;
-							Segment valueSegmentIncludingQuotes;
-							if (quote==' ') {
-								valueSegment=valueSegmentIncludingQuotes=new Segment(source,currentBegin,i);
-							} else {
-								if (isTerminatingCharacter) {
-									if (i==maxEnd) {
-										if (source.logger.isErrorEnabled()) log(source,logType,tagName,logBegin,"terminated in the middle of a quoted attribute value",i);
-										if (reachedMaxErrorCount(++errorCount,source,logType,tagName,logBegin,maxErrorCount)) return null;
-										valueSegment=new Segment(source,currentBegin,i);
-										valueSegmentIncludingQuotes=new Segment(source,currentBegin-1,i); // this is missing the end quote
-									} else {
-										// don't want to terminate, only encountered a terminating character in the middle of a quoted value
-										isTerminatingCharacter=false;
-										break;
-									}
-								} else {
-									valueSegment=new Segment(source,currentBegin,i);
-									valueSegmentIncludingQuotes=new Segment(source,currentBegin-1,i+1);
-								}
-							}
-							attributeList.add(new Attribute(source,key,nameSegment,valueSegment,valueSegmentIncludingQuotes));
-							attributesEnd=valueSegmentIncludingQuotes.getEnd();
-							parsingState=ParsingState.BETWEEN_ATTRIBUTES;
-						} else if (ch=='<' && quote==' ') {
-							if (source.logger.isErrorEnabled()) log(source,logType,tagName,logBegin,"rejected because of '<' character in unquoted attribute value",i);
-							return null;
-						}
-						break;
-					case IN_NAME:
-						if (isTerminatingCharacter || ch=='=' || isWhiteSpace(ch)) {
-							nameSegment=new Segment(source,currentBegin,i);
-							key=nameSegment.toString().toLowerCase();
-							if (isTerminatingCharacter) {
-								attributeList.add(new Attribute(source,key,nameSegment)); // attribute with no value
-								attributesEnd=i;
-							} else {
-								parsingState=(ch=='=' ? ParsingState.START_VALUE : ParsingState.AFTER_NAME);
-							}
-						} else if (!Tag.isXMLNameChar(ch)) {
-							// invalid character detected in attribute name.
-							if (ch=='<') {
-								if (source.logger.isErrorEnabled()) log(source,logType,tagName,logBegin,"rejected because of '<' character in attribute name",i);
-								return null;
-							}
-							if (isInvalidEmptyElementTag(startTagType,source,i,logType,tagName,logBegin)) break;
-							if (source.logger.isErrorEnabled()) log(source,logType,tagName,logBegin,"contains attribute name with invalid character",i);
-							if (reachedMaxErrorCount(++errorCount,source,logType,tagName,logBegin,maxErrorCount)) return null;
-						}
-						break;
-					case AFTER_NAME:
-						// attribute name has been followed by whitespace, but may still be followed by an '=' character.
-						if (isTerminatingCharacter || !(ch=='=' || isWhiteSpace(ch))) {
-							attributeList.add(new Attribute(source,key,nameSegment)); // attribute with no value
-							attributesEnd=nameSegment.getEnd();
-							if (isTerminatingCharacter) break;
-							// The current character is the first character of an attribute name
-							parsingState=ParsingState.BETWEEN_ATTRIBUTES;
-							i--; // want to reparse the same character again, so decrement i.  Note we could instead just fall into the next case statement without a break, but such code is always discouraged.
-						} else if (ch=='=') {
-							parsingState=ParsingState.START_VALUE;
-						} else if (ch=='<') {
-							if (source.logger.isErrorEnabled()) log(source,logType,tagName,logBegin,"rejected because of '<' character after attribute name",i);
-							return null;
-						}
-						break;
-					case BETWEEN_ATTRIBUTES:
-						if (!isTerminatingCharacter) {
-							// the quote variable is used here to make sure whitespace has come after the last quoted attribute value
-							if (isWhiteSpace(ch)) {
-								quote=' ';
-							} else {
-								if (quote!=' ') {
-									if (source.logger.isErrorEnabled()) log(source,logType,tagName,logBegin,"has missing whitespace after quoted attribute value",i);
-									// only count this as an error if there have already been other errors, otherwise allow unlimited errors of this type.
-									if (errorCount>0 && reachedMaxErrorCount(++errorCount,source,logType,tagName,logBegin,maxErrorCount)) return null;
-								}
-								if (!Tag.isXMLNameStartChar(ch)) {
-									// invalid character detected as first character of attribute name.
-									if (ch=='<') {
-										if (source.logger.isErrorEnabled()) log(source,logType,tagName,logBegin,"rejected because of '<' character",i);
-										return null;
-									}
-									if (isInvalidEmptyElementTag(startTagType,source,i,logType,tagName,logBegin)) break;
-									if (startTagType==StartTagType.NORMAL && startTagType.atEndOfAttributes(source,i,false)) {
-										// This checks whether we've found the characters "/>" but it wasn't recognised as the closing delimiter because isClosingSlashIgnored is true.
-										if (source.logger.isErrorEnabled()) log(source,logType,tagName,logBegin,"contains a '/' character before the closing '>', which is ignored because tags of this name cannot be empty-element tags");
-										break;
-									}
-									if (source.logger.isErrorEnabled()) log(source,logType,tagName,logBegin,"contains attribute name with invalid first character",i);
-									if (reachedMaxErrorCount(++errorCount,source,logType,tagName,logBegin,maxErrorCount)) return null;
-								}
-								parsingState=ParsingState.IN_NAME;
-								currentBegin=i;
-							}
-						}
-						break;
-					case START_VALUE:
-						currentBegin=i;
-						if (isTerminatingCharacter) {
-							if (source.logger.isErrorEnabled()) log(source,logType,tagName,logBegin,"has missing attribute value after '=' sign",i);
-							// only count this as an error if there have already been other errors, otherwise allow unlimited errors of this type.
-							if (errorCount>0 && reachedMaxErrorCount(++errorCount,source,logType,tagName,logBegin,maxErrorCount)) return null;
-							final Segment valueSegment=new Segment(source,i,i);
-							attributeList.add(new Attribute(source,key,nameSegment,valueSegment,valueSegment));
-							attributesEnd=i;
-							parsingState=ParsingState.BETWEEN_ATTRIBUTES;
-							break;
-						}
-						if (ch=='\'' || ch=='"') {
-							quote=ch;
-							currentBegin++;
-						} else if (isWhiteSpace(ch)) {
-							break; // just ignore whitespace after the '=' sign as nearly all browsers do.
-						} else if (ch=='<') {
-							if (source.logger.isErrorEnabled()) log(source,logType,tagName,logBegin,"rejected because of '<' character at the start of an attribute value",i);
-							return null;
+				case IN_VALUE:
+					if (isTerminatingCharacter || ch == quote || (quote == ' ' && isWhiteSpace(ch))) {
+						Segment valueSegment;
+						Segment valueSegmentIncludingQuotes;
+						if (quote == ' ') {
+							valueSegment = valueSegmentIncludingQuotes = new Segment(source, currentBegin, i);
 						} else {
-							quote=' ';
-						}
-						parsingState=ParsingState.IN_VALUE;
-						break;
-					case AFTER_TAG_NAME:
-						if (!isTerminatingCharacter) {
-							if (!isWhiteSpace(ch)) {
-								if (isInvalidEmptyElementTag(startTagType,source,i,logType,tagName,logBegin)) break;
-								if (source.logger.isErrorEnabled()) log(source,logType,tagName,logBegin,"rejected because the name contains an invalid character",i);
-								return null;
+							if (isTerminatingCharacter) {
+								if (i == maxEnd) {
+									if (source.logger.isErrorEnabled())
+										log(source, logType, tagName, logBegin, "terminated in the middle of a quoted attribute value", i);
+									if (reachedMaxErrorCount(++errorCount, source, logType, tagName, logBegin, maxErrorCount))
+										return null;
+									valueSegment = new Segment(source, currentBegin, i);
+									valueSegmentIncludingQuotes = new Segment(source, currentBegin - 1, i); // this is missing the end quote
+								} else {
+									// don't want to terminate, only encountered a terminating character in the middle of a quoted value
+									isTerminatingCharacter = false;
+									break;
+								}
+							} else {
+								valueSegment = new Segment(source, currentBegin, i);
+								valueSegmentIncludingQuotes = new Segment(source, currentBegin - 1, i + 1);
 							}
-							parsingState=ParsingState.BETWEEN_ATTRIBUTES;
 						}
+						attributeList.add(new Attribute(source, key, nameSegment, valueSegment, valueSegmentIncludingQuotes));
+						attributesEnd = valueSegmentIncludingQuotes.getEnd();
+						parsingState = ParsingState.BETWEEN_ATTRIBUTES;
+					} else if (ch == '<' && quote == ' ') {
+						if (source.logger.isErrorEnabled())
+							log(source, logType, tagName, logBegin, "rejected because of '<' character in unquoted attribute value", i);
+						return null;
+					}
+					break;
+				case IN_NAME:
+					if (isTerminatingCharacter || ch == '=' || isWhiteSpace(ch)) {
+						nameSegment = new Segment(source, currentBegin, i);
+						key = nameSegment.toString().toLowerCase();
+						if (isTerminatingCharacter) {
+							attributeList.add(new Attribute(source, key, nameSegment)); // attribute with no value
+							attributesEnd = i;
+						} else {
+							parsingState = (ch == '=' ? ParsingState.START_VALUE : ParsingState.AFTER_NAME);
+						}
+					} else if (!Tag.isXMLNameChar(ch)) {
+						// invalid character detected in attribute name.
+						if (ch == '<') {
+							if (source.logger.isErrorEnabled())
+								log(source, logType, tagName, logBegin, "rejected because of '<' character in attribute name", i);
+							return null;
+						}
+						if (isInvalidEmptyElementTag(startTagType, source, i, logType, tagName, logBegin))
+							break;
+						if (source.logger.isErrorEnabled())
+							log(source, logType, tagName, logBegin, "contains attribute name with invalid character", i);
+						if (reachedMaxErrorCount(++errorCount, source, logType, tagName, logBegin, maxErrorCount))
+							return null;
+					}
+					break;
+				case AFTER_NAME:
+					// attribute name has been followed by whitespace, but may still be followed by an '=' character.
+					if (isTerminatingCharacter || !(ch == '=' || isWhiteSpace(ch))) {
+						attributeList.add(new Attribute(source, key, nameSegment)); // attribute with no value
+						attributesEnd = nameSegment.getEnd();
+						if (isTerminatingCharacter)
+							break;
+						// The current character is the first character of an attribute name
+						parsingState = ParsingState.BETWEEN_ATTRIBUTES;
+						i--; // want to reparse the same character again, so decrement i.  Note we could instead just fall into the next case statement without a break, but such code is always discouraged.
+					} else if (ch == '=') {
+						parsingState = ParsingState.START_VALUE;
+					} else if (ch == '<') {
+						if (source.logger.isErrorEnabled())
+							log(source, logType, tagName, logBegin, "rejected because of '<' character after attribute name", i);
+						return null;
+					}
+					break;
+				case BETWEEN_ATTRIBUTES:
+					if (!isTerminatingCharacter) {
+						// the quote variable is used here to make sure whitespace has come after the last quoted attribute value
+						if (isWhiteSpace(ch)) {
+							quote = ' ';
+						} else {
+							if (quote != ' ') {
+								if (source.logger.isErrorEnabled())
+									log(source, logType, tagName, logBegin, "has missing whitespace after quoted attribute value", i);
+								// only count this as an error if there have already been other errors, otherwise allow unlimited errors of this type.
+								if (errorCount > 0 && reachedMaxErrorCount(++errorCount, source, logType, tagName, logBegin, maxErrorCount))
+									return null;
+							}
+							if (!Tag.isXMLNameStartChar(ch)) {
+								// invalid character detected as first character of attribute name.
+								if (ch == '<') {
+									if (source.logger.isErrorEnabled())
+										log(source, logType, tagName, logBegin, "rejected because of '<' character", i);
+									return null;
+								}
+								if (isInvalidEmptyElementTag(startTagType, source, i, logType, tagName, logBegin))
+									break;
+								if (startTagType == StartTagType.NORMAL && startTagType.atEndOfAttributes(source, i, false)) {
+									// This checks whether we've found the characters "/>" but it wasn't recognised as the closing delimiter because isClosingSlashIgnored is true.
+									if (source.logger.isErrorEnabled())
+										log(source, logType, tagName, logBegin, "contains a '/' character before the closing '>', which is ignored because tags of this name cannot be empty-element tags");
+									break;
+								}
+								if (source.logger.isErrorEnabled())
+									log(source, logType, tagName, logBegin, "contains attribute name with invalid first character", i);
+								if (reachedMaxErrorCount(++errorCount, source, logType, tagName, logBegin, maxErrorCount))
+									return null;
+							}
+							parsingState = ParsingState.IN_NAME;
+							currentBegin = i;
+						}
+					}
+					break;
+				case START_VALUE:
+					currentBegin = i;
+					if (isTerminatingCharacter) {
+						if (source.logger.isErrorEnabled())
+							log(source, logType, tagName, logBegin, "has missing attribute value after '=' sign", i);
+						// only count this as an error if there have already been other errors, otherwise allow unlimited errors of this type.
+						if (errorCount > 0 && reachedMaxErrorCount(++errorCount, source, logType, tagName, logBegin, maxErrorCount))
+							return null;
+						final Segment valueSegment = new Segment(source, i, i);
+						attributeList.add(new Attribute(source, key, nameSegment, valueSegment, valueSegment));
+						attributesEnd = i;
+						parsingState = ParsingState.BETWEEN_ATTRIBUTES;
 						break;
+					}
+					if (ch == '\'' || ch == '"') {
+						quote = ch;
+						currentBegin++;
+					} else if (isWhiteSpace(ch)) {
+						break; // just ignore whitespace after the '=' sign as nearly all browsers do.
+					} else if (ch == '<') {
+						if (source.logger.isErrorEnabled())
+							log(source, logType, tagName, logBegin, "rejected because of '<' character at the start of an attribute value", i);
+						return null;
+					} else {
+						quote = ' ';
+					}
+					parsingState = ParsingState.IN_VALUE;
+					break;
+				case AFTER_TAG_NAME:
+					if (!isTerminatingCharacter) {
+						if (!isWhiteSpace(ch)) {
+							if (isInvalidEmptyElementTag(startTagType, source, i, logType, tagName, logBegin))
+								break;
+							if (source.logger.isErrorEnabled())
+								log(source, logType, tagName, logBegin, "rejected because the name contains an invalid character", i);
+							return null;
+						}
+						parsingState = ParsingState.BETWEEN_ATTRIBUTES;
+					}
+					break;
 				}
 				i++;
 			}
-			return new Attributes(source,attributesBegin,attributesEnd,attributeList,containsServerTagOutsideOfAttributeValue);
+			return new Attributes(source, attributesBegin, attributesEnd, attributeList, containsServerTagOutsideOfAttributeValue);
 		} catch (IndexOutOfBoundsException ex) {
-			if (source.logger.isErrorEnabled()) log(source,logType,tagName,logBegin,"rejected because it has no closing '>' character");
+			if (source.logger.isErrorEnabled())
+				log(source, logType, tagName, logBegin, "rejected because it has no closing '>' character");
 			return null;
 		}
 	}
 
 	private static boolean reachedMaxErrorCount(final int errorCount, final Source source, final String logType, final String tagName, final int logBegin, final int maxErrorCount) {
-		if (errorCount<=maxErrorCount) return false;
-		if (source.logger.isErrorEnabled()) log(source,logType,tagName,logBegin,"rejected because it contains too many errors");
+		if (errorCount <= maxErrorCount)
+			return false;
+		if (source.logger.isErrorEnabled())
+			log(source, logType, tagName, logBegin, "rejected because it contains too many errors");
 		return true;
 	}
 
 	private static boolean isInvalidEmptyElementTag(final StartTagType startTagType, final Source source, final int i, final String logType, final String tagName, final int logBegin) {
 		// This checks whether we've found the characters "/>" but it wasn't recognised as the closing delimiter because isClosingSlashIgnored is true.
-		if (startTagType!=StartTagType.NORMAL || !startTagType.atEndOfAttributes(source,i,false)) return false;
-		if (source.logger.isErrorEnabled()) log(source,logType,tagName,logBegin,"contains a '/' character before the closing '>', which is ignored because tags of this name cannot be empty-element tags");
+		if (startTagType != StartTagType.NORMAL || !startTagType.atEndOfAttributes(source, i, false))
+			return false;
+		if (source.logger.isErrorEnabled())
+			log(source, logType, tagName, logBegin, "contains a '/' character before the closing '>', which is ignored because tags of this name cannot be empty-element tags");
 		return true;
 	}
 
@@ -305,10 +330,12 @@ public final class Attributes extends SequentialListSegment<Attribute> {
 	 * @see #getValue(String name)
 	 */
 	public Attribute get(final String name) {
-		if (size()==0) return null;
-		for (int i=0; i<size(); i++) {
-			final Attribute attribute=get(i);
-			if (attribute.getKey().equalsIgnoreCase(name)) return attribute;
+		if (size() == 0)
+			return null;
+		for (int i = 0; i < size(); i++) {
+			final Attribute attribute = get(i);
+			if (attribute.getKey().equalsIgnoreCase(name))
+				return attribute;
 		}
 		return null;
 	}
@@ -328,8 +355,8 @@ public final class Attributes extends SequentialListSegment<Attribute> {
 	 * @see Attribute#getValue()
 	 */
 	public String getValue(final String name) {
-		final Attribute attribute=get(name);
-		return attribute==null ? null : attribute.getValue();
+		final Attribute attribute = get(name);
+		return attribute == null ? null : attribute.getValue();
 	}
 
 	/**
@@ -340,8 +367,8 @@ public final class Attributes extends SequentialListSegment<Attribute> {
 	 * @return the raw (not {@linkplain CharacterReference#decode(CharSequence) decoded}) value of the attribute, or null if the attribute {@linkplain Attribute#hasValue() has no value}.
 	 */
 	String getRawValue(final String name) {
-		final Attribute attribute=get(name);
-		return attribute==null || !attribute.hasValue() ? null : attribute.getValueSegment().toString();
+		final Attribute attribute = get(name);
+		return attribute == null || !attribute.hasValue() ? null : attribute.getValueSegment().toString();
 	}
 
 	/**
@@ -399,9 +426,9 @@ public final class Attributes extends SequentialListSegment<Attribute> {
 	 * @return the same map specified as the argument to the <code>attributesMap</code> parameter, populated with the name/value pairs from these attributes.
 	 * @see #generateHTML(Map attributesMap)
 	 */
-	public Map<String,String> populateMap(final Map<String,String> attributesMap, final boolean convertNamesToLowerCase) {
+	public Map<String, String> populateMap(final Map<String, String> attributesMap, final boolean convertNamesToLowerCase) {
 		for (Attribute attribute : this) {
-			attributesMap.put(convertNamesToLowerCase ? attribute.getKey() : attribute.getName(),attribute.getValue());
+			attributesMap.put(convertNamesToLowerCase ? attribute.getKey() : attribute.getName(), attribute.getValue());
 		}
 		return attributesMap;
 	}
@@ -411,7 +438,7 @@ public final class Attributes extends SequentialListSegment<Attribute> {
 	 * @return a string representation of this object useful for debugging purposes.
 	 */
 	public String getDebugInfo() {
-		final StringBuilder sb=new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append("Attributes ").append(super.getDebugInfo()).append(": ");
 		if (isEmpty()) {
 			sb.append("EMPTY");
@@ -473,7 +500,7 @@ public final class Attributes extends SequentialListSegment<Attribute> {
 	 * @param value  the default maximum error count allowed when parsing attributes.
 	 */
 	public static void setDefaultMaxErrorCount(final int value) {
-		defaultMaxErrorCount=value;
+		defaultMaxErrorCount = value;
 	}
 
 	/**
@@ -490,9 +517,12 @@ public final class Attributes extends SequentialListSegment<Attribute> {
 	 * @return the contents of the specified {@linkplain #populateMap(Map,boolean) attributes map} as HTML attribute name/value pairs.
 	 * @see StartTag#generateHTML(String tagName, Map attributesMap, boolean emptyElementTag)
 	 */
-	public static String generateHTML(final Map<String,String> attributesMap) {
-		final StringBuilder sb=new StringBuilder();
-		try {appendHTML(sb,attributesMap);} catch (IOException ex) {} // IOException never occurs in StringWriter
+	public static String generateHTML(final Map<String, String> attributesMap) {
+		final StringBuilder sb = new StringBuilder();
+		try {
+			appendHTML(sb, attributesMap);
+		} catch (IOException ex) {
+		} // IOException never occurs in StringWriter
 		return sb.toString();
 	}
 
@@ -507,29 +537,31 @@ public final class Attributes extends SequentialListSegment<Attribute> {
 	 * @throws IOException if an I/O exception occurs.
 	 * @see #populateMap(Map attributesMap, boolean convertNamesToLowerCase)
 	 */
-	static void appendHTML(final Appendable appendable, final Map<String,String> attributesMap) throws IOException {
-		for (Map.Entry<String,String> entry : attributesMap.entrySet()) {
-			Attribute.appendHTML(appendable,entry.getKey(),entry.getValue());
+	static void appendHTML(final Appendable appendable, final Map<String, String> attributesMap) throws IOException {
+		for (Map.Entry<String, String> entry : attributesMap.entrySet()) {
+			Attribute.appendHTML(appendable, entry.getKey(), entry.getValue());
 		}
 	}
 
 	Appendable appendTidy(final Appendable appendable, Tag nextTag) throws IOException {
-		for (Attribute attribute : this) 
-			nextTag=attribute.appendTidy(appendable,nextTag);
+		for (Attribute attribute : this)
+			nextTag = attribute.appendTidy(appendable, nextTag);
 		return appendable;
 	}
 
-	Map<String,String> getMap(final boolean convertNamesToLowerCase) {
-		return populateMap(new LinkedHashMap<String,String>(getCount()*2,1.0F),convertNamesToLowerCase);
+	Map<String, String> getMap(final boolean convertNamesToLowerCase) {
+		return populateMap(new LinkedHashMap<String, String>(getCount() * 2, 1.0F), convertNamesToLowerCase);
 	}
-	
+
 	void setStartTag(final StartTag startTag) {
 		// this just preloads the startTag cache in each Attribute so we don't have to go looking for it if it is requested.
-		for (Attribute attribute : attributeList) attribute.startTag=startTag;
+		for (Attribute attribute : attributeList)
+			attribute.startTag = startTag;
 	}
 
 	private static void log(final Source source, final String part1, final CharSequence part2, final int begin, final String part3, final int pos) {
-		source.logger.error(source.getRowColumnVector(pos).appendTo(source.getRowColumnVector(begin).appendTo(new StringBuilder(200).append(part1).append(' ').append(part2).append(" at ")).append(' ').append(part3).append(" at position ")).toString());
+		source.logger
+				.error(source.getRowColumnVector(pos).appendTo(source.getRowColumnVector(begin).appendTo(new StringBuilder(200).append(part1).append(' ').append(part2).append(" at ")).append(' ').append(part3).append(" at position ")).toString());
 	}
 
 	private static void log(final Source source, final String part1, final CharSequence part2, final int begin, final String part3) {

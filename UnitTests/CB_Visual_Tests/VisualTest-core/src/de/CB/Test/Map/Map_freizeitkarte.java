@@ -2,8 +2,7 @@ package de.CB.Test.Map;
 
 import org.mapsforge.core.model.Tile;
 
-public class Map_freizeitkarte extends MapTileTestBase
-{
+public class Map_freizeitkarte extends MapTileTestBase {
 
 	private static byte zoom = 16;
 	private static int x = 35207;
@@ -11,11 +10,9 @@ public class Map_freizeitkarte extends MapTileTestBase
 
 	private static int count = 0;
 
-	public Map_freizeitkarte(boolean deleteTheme)
-	{
+	public Map_freizeitkarte(boolean deleteTheme) {
 		super(new Tile(x--, y--, zoom), deleteTheme);
-		if (count++ > 3)
-		{
+		if (count++ > 3) {
 			count = 0;
 
 			zoom = 16;

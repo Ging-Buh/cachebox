@@ -28,23 +28,22 @@ import CB_Utils.Util.UnitFormatter;
 /**
  * @author Longri
  */
-public class Locator
-{
+public class Locator {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(Locator.class);
 
 	/**
 	 * @author Longri
 	 */
-	public enum CompassType
-	{
+	public enum CompassType {
 		/**
 		 * @uml.property name="gPS"
 		 * @uml.associationEnd
 		 */
-		GPS, /**
-		 * @uml.property name="magnetic"
-		 * @uml.associationEnd
-		 */
+		GPS,
+		/**
+		* @uml.property name="magnetic"
+		* @uml.associationEnd
+		*/
 		Magnetic,
 
 		any
@@ -81,31 +80,28 @@ public class Locator
 	 * @param initialLocation
 	 *            as GPS_Location
 	 */
-	public Locator(Location initialLocation)
-	{
+	public Locator(Location initialLocation) {
 		that = this;
-		if (initialLocation == null) initialLocation = Location.NULL_LOCATION;
+		if (initialLocation == null)
+			initialLocation = Location.NULL_LOCATION;
 		setNewLocation(initialLocation);
 	}
 
-	public static boolean isFixed()
-	{
+	public static boolean isFixed() {
 		return fix;
 	}
 
 	/**
 	 * Set Display Off. </br>Only events with priority High will fire!
 	 */
-	public static void setDisplayOff()
-	{
+	public static void setDisplayOff() {
 		DisplayOff = true;
 	}
 
 	/**
 	 * Set Display on. </br> All events will fire!
 	 */
-	public static void setDisplayOn()
-	{
+	public static void setDisplayOn() {
 		DisplayOff = false;
 	}
 
@@ -115,8 +111,7 @@ public class Locator
 	 * @return
 	 * @uml.property name="displayOff"
 	 */
-	public static boolean isDisplayOff()
-	{
+	public static boolean isDisplayOff() {
 		return DisplayOff;
 	}
 
@@ -126,8 +121,7 @@ public class Locator
 	 * @param value
 	 *            as long
 	 */
-	public static void setMinUpdateTime(Long value)
-	{
+	public static void setMinUpdateTime(Long value) {
 		minGpsUpdateTime = value;
 	}
 
@@ -136,8 +130,7 @@ public class Locator
 	 * 
 	 * @return long
 	 */
-	public static long getMinUpdateTime()
-	{
+	public static long getMinUpdateTime() {
 		return minGpsUpdateTime;
 	}
 
@@ -146,8 +139,7 @@ public class Locator
 	 * 
 	 * @param value
 	 */
-	public static void setHardwareCompassLevel(int value)
-	{
+	public static void setHardwareCompassLevel(int value) {
 		mMagneticCompassLevel = value;
 	}
 
@@ -156,8 +148,7 @@ public class Locator
 	 * 
 	 * @param value
 	 */
-	public static void setUseHardwareCompass(boolean value)
-	{
+	public static void setUseHardwareCompass(boolean value) {
 		mUseMagneticCompass = value;
 	}
 
@@ -168,15 +159,13 @@ public class Locator
 	 * 
 	 * @param location
 	 */
-	public static void setNewLocation(Location location)
-	{
+	public static void setNewLocation(Location location) {
 		boolean GPSTRACE = LogLevel.isLogLevel(LogLevel.TRACE);
-		if (GPSTRACE) log.trace("new Location:" + location.toString());
+		if (GPSTRACE)
+			log.trace("new Location:" + location.toString());
 
-		synchronized (that)
-		{
-			switch (location.getProviderType())
-			{
+		synchronized (that) {
+			switch (location.getProviderType()) {
 			case Saved:
 				that.mSaveLocation = location;
 				that.hasSpeed = false;
@@ -186,8 +175,7 @@ public class Locator
 				that.mNetworkLocation = location;
 				// reset Speed only if last Speed value old
 				long time = new Date().getTime();
-				if (that.mTimeStampSpeed + (minGpsUpdateTime * 3) < time)
-				{
+				if (that.mTimeStampSpeed + (minGpsUpdateTime * 3) < time) {
 					that.hasSpeed = false;
 					that.speed = 0;
 				}
@@ -200,13 +188,11 @@ public class Locator
 				that.hasSpeed = location.getHasSpeed();
 				that.speed = location.getSpeed();
 				that.mTimeStampSpeed = (new Date()).getTime();
-				if (location.getHasBearing())
-				{
+				if (location.getHasBearing()) {
 					setHeading(location.getBearing(), CompassType.GPS);
 				}
 
-				if (!fix && location != null)
-				{
+				if (!fix && location != null) {
 					fix = true;
 					GPS_FallBackEventList.CallFix();
 				}
@@ -228,10 +214,8 @@ public class Locator
 	 * 
 	 * @return
 	 */
-	public static Location getLastSavedFineLocation()
-	{
-		synchronized (that)
-		{
+	public static Location getLastSavedFineLocation() {
+		synchronized (that) {
 			return that.mLastSavedFineLocation;
 		}
 	}
@@ -241,8 +225,7 @@ public class Locator
 	 * 
 	 * @return Latitude as double
 	 */
-	public static double getLatitude()
-	{
+	public static double getLatitude() {
 		return getLatitude(ProviderType.any);
 	}
 
@@ -252,8 +235,7 @@ public class Locator
 	 * @param type
 	 * @return
 	 */
-	public static double getLatitude(ProviderType type)
-	{
+	public static double getLatitude(ProviderType type) {
 		return getLocation(type).getLatitude();
 	}
 
@@ -262,8 +244,7 @@ public class Locator
 	 * 
 	 * @return Longitude as double
 	 */
-	public static double getLongitude()
-	{
+	public static double getLongitude() {
 		return getLongitude(ProviderType.any);
 	}
 
@@ -273,8 +254,7 @@ public class Locator
 	 * @param type
 	 * @return
 	 */
-	public static double getLongitude(ProviderType type)
-	{
+	public static double getLongitude(ProviderType type) {
 		return getLocation(type).getLongitude();
 	}
 
@@ -283,36 +263,29 @@ public class Locator
 	 * 
 	 * @return
 	 */
-	public static Location getLocation()
-	{
+	public static Location getLocation() {
 		return getLocation(ProviderType.any);
 	}
 
 	/**
 	 * Returns the last valid position of the given ProviderType
 	 */
-	public static Location getLocation(ProviderType type)
-	{
-		synchronized (that)
-		{
+	public static Location getLocation(ProviderType type) {
+		synchronized (that) {
 
-			if (type == ProviderType.any)
-			{
-				if (that.mFineLocation != null) return that.mFineLocation;
-				if (that.mNetworkLocation != null) return that.mNetworkLocation;
-				if (that.mSaveLocation != null) return that.mSaveLocation;
+			if (type == ProviderType.any) {
+				if (that.mFineLocation != null)
+					return that.mFineLocation;
+				if (that.mNetworkLocation != null)
+					return that.mNetworkLocation;
+				if (that.mSaveLocation != null)
+					return that.mSaveLocation;
 				return Location.NULL_LOCATION;
-			}
-			else if (type == ProviderType.GPS)
-			{
+			} else if (type == ProviderType.GPS) {
 				return that.mLastSavedFineLocation;
-			}
-			else if (type == ProviderType.Network)
-			{
+			} else if (type == ProviderType.Network) {
 				return that.mNetworkLocation;
-			}
-			else if (type == ProviderType.Saved)
-			{
+			} else if (type == ProviderType.Saved) {
 				return that.mSaveLocation;
 			}
 			return Location.NULL_LOCATION;
@@ -324,8 +297,7 @@ public class Locator
 	 * 
 	 * @return
 	 */
-	public static CoordinateGPS getCoordinate()
-	{
+	public static CoordinateGPS getCoordinate() {
 		return getLocation(ProviderType.any).toCordinate();
 	}
 
@@ -334,8 +306,7 @@ public class Locator
 	 * 
 	 * @return
 	 */
-	public static boolean Valid()
-	{
+	public static boolean Valid() {
 		return getLocation().getProviderType() == ProviderType.GPS || getLocation().getProviderType() == ProviderType.Network;
 	}
 
@@ -345,10 +316,10 @@ public class Locator
 	 * @param type
 	 * @return
 	 */
-	public static Coordinate getCoordinate(ProviderType type)
-	{
+	public static Coordinate getCoordinate(ProviderType type) {
 		Location loc = getLocation(type);
-		if (loc == null) return null;
+		if (loc == null)
+			return null;
 		return loc.toCordinate();
 	}
 
@@ -358,8 +329,7 @@ public class Locator
 	 * @param value
 	 *            as boolean
 	 */
-	public static void setUseImperialUnits(boolean value)
-	{
+	public static void setUseImperialUnits(boolean value) {
 		mUseImperialUnits = value;
 	}
 
@@ -368,11 +338,10 @@ public class Locator
 	 * 
 	 * @return
 	 */
-	public static String SpeedString()
-	{
-		synchronized (that)
-		{
-			if (that.hasSpeed) return Formatter.SpeedString(SpeedOverGround(), mUseImperialUnits);
+	public static String SpeedString() {
+		synchronized (that) {
+			if (that.hasSpeed)
+				return Formatter.SpeedString(SpeedOverGround(), mUseImperialUnits);
 			else
 				return "-----";
 		}
@@ -383,15 +352,11 @@ public class Locator
 	 * 
 	 * @return
 	 */
-	public static float SpeedOverGround()
-	{
-		synchronized (that)
-		{
-			if (that.hasSpeed)
-			{
+	public static float SpeedOverGround() {
+		synchronized (that) {
+			if (that.hasSpeed) {
 				return that.speed * 3600 / 1000;
-			}
-			else
+			} else
 				return 0;
 		}
 	}
@@ -401,8 +366,7 @@ public class Locator
 	 * 
 	 * @return
 	 */
-	public static boolean isGPSprovided()
-	{
+	public static boolean isGPSprovided() {
 		return getLocation().getProviderType() == ProviderType.GPS;
 	}
 
@@ -412,8 +376,7 @@ public class Locator
 	 * @param value
 	 * @uml.property name="altCorrection"
 	 */
-	public static void setAltCorrection(double value)
-	{
+	public static void setAltCorrection(double value) {
 		log.debug("set alt corection to: " + value);
 		altCorrection = value;
 	}
@@ -423,14 +386,11 @@ public class Locator
 	/**
 	 * Call this if GPS state changed to no sat have a fix
 	 */
-	public static void FallBack2Network()
-	{
-		synchronized (that)
-		{
+	public static void FallBack2Network() {
+		synchronized (that) {
 			// check if last GPS position older then 20 sec
 
-			if (that.mTimeStampSpeed + 20000 >= (new Date()).getTime())
-			{
+			if (that.mTimeStampSpeed + 20000 >= (new Date()).getTime()) {
 				log.trace("no fall back");
 				return;
 			}
@@ -448,10 +408,8 @@ public class Locator
 	 * 
 	 * @return
 	 */
-	public static boolean hasSpeed()
-	{
-		synchronized (that)
-		{
+	public static boolean hasSpeed() {
+		synchronized (that) {
 			return that.hasSpeed;
 		}
 	}
@@ -462,10 +420,8 @@ public class Locator
 	 * @return
 	 * @uml.property name="speed"
 	 */
-	public static double getSpeed()
-	{
-		synchronized (that)
-		{
+	public static double getSpeed() {
+		synchronized (that) {
 			return that.speed;
 		}
 	}
@@ -475,8 +431,7 @@ public class Locator
 	 * 
 	 * @return
 	 */
-	public static double getAlt()
-	{
+	public static double getAlt() {
 		return getLocation().getAltitude() - altCorrection;
 	}
 
@@ -485,11 +440,12 @@ public class Locator
 	 * 
 	 * @return
 	 */
-	public static String getAltStringWithCorection()
-	{
+	public static String getAltStringWithCorection() {
 		String result = getAltString();
-		if (altCorrection > 0) result += " (+" + UnitFormatter.AltString((float) altCorrection);
-		else if (altCorrection < 0) result += " (" + UnitFormatter.AltString((float) altCorrection);
+		if (altCorrection > 0)
+			result += " (+" + UnitFormatter.AltString((float) altCorrection);
+		else if (altCorrection < 0)
+			result += " (" + UnitFormatter.AltString((float) altCorrection);
 		return result;
 	}
 
@@ -498,8 +454,7 @@ public class Locator
 	 * 
 	 * @return
 	 */
-	public static String getAltString()
-	{
+	public static String getAltString() {
 		return UnitFormatter.AltString((float) getAlt());
 	}
 
@@ -508,8 +463,7 @@ public class Locator
 	 * 
 	 * @return
 	 */
-	public static ProviderType getProvider()
-	{
+	public static ProviderType getProvider() {
 		return getLocation().getProviderType();
 	}
 
@@ -518,11 +472,10 @@ public class Locator
 	 * 
 	 * @return
 	 */
-	public static boolean UseMagneticCompass()
-	{
-		if (that == null) return false;
-		synchronized (that)
-		{
+	public static boolean UseMagneticCompass() {
+		if (that == null)
+			return false;
+		synchronized (that) {
 			return that.mLastUsedCompassType == CompassType.Magnetic;
 		}
 	}
@@ -532,8 +485,7 @@ public class Locator
 	 * 
 	 * @return
 	 */
-	public static float getHeading()
-	{
+	public static float getHeading() {
 		return getHeading(CompassType.any);
 	}
 
@@ -543,20 +495,17 @@ public class Locator
 	 * @param type
 	 * @return
 	 */
-	public static float getHeading(CompassType type)
-	{
-		synchronized (that)
-		{
+	public static float getHeading(CompassType type) {
+		synchronized (that) {
 
-			if (type == CompassType.GPS || !mUseMagneticCompass) return that.mlastGPSHeading;
-			if (type == CompassType.Magnetic) return that.mlastGPSHeading;
+			if (type == CompassType.GPS || !mUseMagneticCompass)
+				return that.mlastGPSHeading;
+			if (type == CompassType.Magnetic)
+				return that.mlastGPSHeading;
 
-			if (UseMagneticCompass())
-			{
+			if (UseMagneticCompass()) {
 				return that.mlastMagneticHeading;
-			}
-			else
-			{
+			} else {
 				return that.mlastGPSHeading;
 			}
 		}
@@ -568,26 +517,19 @@ public class Locator
 	 * @param heading
 	 * @param type
 	 */
-	public static void setHeading(float heading, CompassType type)
-	{
+	public static void setHeading(float heading, CompassType type) {
 
-		if (type == CompassType.GPS)
-		{
+		if (type == CompassType.GPS) {
 			that.mlastGPSHeading = heading;
-		}
-		else
-		{
+		} else {
 			that.mlastMagneticHeading = heading;
 		}
 
 		// set last used compass Type
 
-		if ((that.mlastGPSHeading > -1 && SpeedOverGround() > mMagneticCompassLevel) || !mUseMagneticCompass)
-		{
+		if ((that.mlastGPSHeading > -1 && SpeedOverGround() > mMagneticCompassLevel) || !mUseMagneticCompass) {
 			that.mLastUsedCompassType = CompassType.GPS;
-		}
-		else
-		{
+		} else {
 			that.mLastUsedCompassType = CompassType.Magnetic;
 		}
 

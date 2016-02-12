@@ -27,40 +27,34 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-public class ImportAnimation extends Box
-{
+public class ImportAnimation extends Box {
 
-	public enum AnimationType
-	{
+	public enum AnimationType {
 		Work, Download
 	}
 
 	AnimationBase mAnimation;
 	private Drawable back;
 
-	public ImportAnimation(CB_RectF rec)
-	{
+	public ImportAnimation(CB_RectF rec) {
 		super(rec, "");
 		setAnimationType(AnimationType.Work);
 	}
 
-	public void setAnimationType(final AnimationType Type)
-	{
-		GL.that.RunOnGL(new IRunOnGL()
-		{
+	public void setAnimationType(final AnimationType Type) {
+		GL.that.RunOnGL(new IRunOnGL() {
 
 			@Override
-			public void run()
-			{
-				if (ImportAnimation.this.isDisposed()) return;
+			public void run() {
+				if (ImportAnimation.this.isDisposed())
+					return;
 				float size = ImportAnimation.this.getHalfWidth() / 2;
 				float halfSize = ImportAnimation.this.getHalfWidth() / 4;
 				CB_RectF imageRec = new CB_RectF(ImportAnimation.this.getHalfWidth() - halfSize, ImportAnimation.this.getHalfHeight() - halfSize, size, size);
 
 				ImportAnimation.this.removeChilds();
 
-				switch (Type)
-				{
+				switch (Type) {
 				case Work:
 					mAnimation = WorkAnimation.GetINSTANCE(imageRec);
 					break;
@@ -76,16 +70,13 @@ public class ImportAnimation extends Box
 
 	}
 
-	public void render(Batch batch)
-	{
-		if (drawableBackground != null)
-		{
+	public void render(Batch batch) {
+		if (drawableBackground != null) {
 			back = drawableBackground;
 			drawableBackground = null;
 		}
 
-		if (back != null)
-		{
+		if (back != null) {
 			Color c = batch.getColor();
 
 			float a = c.a;
@@ -103,40 +94,34 @@ public class ImportAnimation extends Box
 	}
 
 	@Override
-	public void onHide()
-	{
+	public void onHide() {
 		mAnimation.dispose();
 	}
 
 	// alle Touch events abfangen
 
 	@Override
-	public boolean onTouchDown(int x, int y, int pointer, int button)
-	{
+	public boolean onTouchDown(int x, int y, int pointer, int button) {
 		return true;
 	}
 
 	@Override
-	public boolean onLongClick(int x, int y, int pointer, int button)
-	{
+	public boolean onLongClick(int x, int y, int pointer, int button) {
 		return true;
 	}
 
 	@Override
-	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
-	{
+	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
 		return true;
 	}
 
 	@Override
-	public boolean onTouchUp(int x, int y, int pointer, int button)
-	{
+	public boolean onTouchUp(int x, int y, int pointer, int button) {
 		return true;
 	}
 
 	@Override
-	public boolean click(int x, int y, int pointer, int button)
-	{
+	public boolean click(int x, int y, int pointer, int button) {
 		return true;
 	}
 }

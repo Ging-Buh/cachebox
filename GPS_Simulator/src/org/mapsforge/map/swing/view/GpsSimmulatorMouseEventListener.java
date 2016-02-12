@@ -10,17 +10,14 @@ import org.mapsforge.map.swing.controller.MouseEventListener;
 import ch.fhnw.imvs.gpssimulator.SimulatorMain;
 import ch.fhnw.imvs.gpssimulator.data.GPSData;
 
-public class GpsSimmulatorMouseEventListener extends MouseEventListener
-{
+public class GpsSimmulatorMouseEventListener extends MouseEventListener {
 
-	public GpsSimmulatorMouseEventListener(Model model)
-	{
+	public GpsSimmulatorMouseEventListener(Model model) {
 		super(model);
 	}
 
 	@Override
-	public void mouseDragged(MouseEvent mouseEvent)
-	{
+	public void mouseDragged(MouseEvent mouseEvent) {
 		super.mouseDragged(mouseEvent);
 		// Save last Point
 		LatLong pos = this.mapViewPosition.getCenter();
@@ -28,12 +25,9 @@ public class GpsSimmulatorMouseEventListener extends MouseEventListener
 		SimulatorMain.prefs.putInt("zoom", zoom);
 		SimulatorMain.prefs.putDouble("lat", pos.getLatitude());
 		SimulatorMain.prefs.putDouble("lon", pos.getLongitude());
-		try
-		{
+		try {
 			SimulatorMain.prefs.flush();
-		}
-		catch (BackingStoreException e)
-		{
+		} catch (BackingStoreException e) {
 			e.printStackTrace();
 		}
 

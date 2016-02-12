@@ -23,8 +23,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * @author Longri
  */
-class QueueData
-{
+class QueueData {
 	MapTileCache loadedTiles = new MapTileCache((short) 10);
 	MapTileCache loadedOverlayTiles = new MapTileCache((short) 10);
 	final Lock loadedTilesLock = new ReentrantLock();
@@ -36,8 +35,7 @@ class QueueData
 	Layer CurrentLayer = null;
 	Layer CurrentOverlayLayer = null;
 
-	public void setLoadedTilesCacheCapacity(int capacity)
-	{
+	public void setLoadedTilesCacheCapacity(int capacity) {
 		loadedTiles = new MapTileCache((short) capacity);
 		loadedOverlayTiles = new MapTileCache((short) capacity);
 

@@ -13,57 +13,57 @@ import CB_UI_Base.Math.CB_RectF;
  */
 public class Sample_Control extends GL_View_Base {
 
-    // must overrides
+	// must overrides
 
-    public Sample_Control(float X, float Y, float Width, float Height, String Name) {
-	super(X, Y, Width, Height, Name);
-    }
+	public Sample_Control(float X, float Y, float Width, float Height, String Name) {
+		super(X, Y, Width, Height, Name);
+	}
 
-    @Override
-    public void render(Batch batch) {
-    }
+	@Override
+	public void render(Batch batch) {
+	}
 
-    @Override
-    public void onResized(CB_RectF rec) {
-    }
+	@Override
+	public void onResized(CB_RectF rec) {
+	}
 
-    // can override
+	// can override
 
-    @Override
-    public void onStop() {
-    }
+	@Override
+	public void onStop() {
+	}
 
-    @Override
-    public boolean onTouchDown(int x, int y, int pointer, int button) {
+	@Override
+	public boolean onTouchDown(int x, int y, int pointer, int button) {
 
-	return false;
-    }
+		return false;
+	}
 
-    @Override
-    public boolean onLongClick(int x, int y, int pointer, int button) {
-	return false;
-    }
+	@Override
+	public boolean onLongClick(int x, int y, int pointer, int button) {
+		return false;
+	}
 
-    @Override
-    public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
-	return false;
-    }
+	@Override
+	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
+		return false;
+	}
 
-    @Override
-    public boolean onTouchUp(int x, int y, int pointer, int button) {
-	return false;
-    }
+	@Override
+	public boolean onTouchUp(int x, int y, int pointer, int button) {
+		return false;
+	}
 
-    @Override
-    public void dispose() {
-    }
+	@Override
+	public void dispose() {
+	}
 
-    @Override
-    public void onParentResized(CB_RectF rec) {
-    }
+	@Override
+	public void onParentResized(CB_RectF rec) {
+	}
 
-    @Override
-    protected void SkinIsChanged() {
-    }
+	@Override
+	protected void SkinIsChanged() {
+	}
 
 }

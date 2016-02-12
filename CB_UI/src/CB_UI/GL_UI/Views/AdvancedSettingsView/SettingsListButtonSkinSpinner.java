@@ -26,45 +26,41 @@ import CB_Utils.Settings.SettingUsage;
  * 
  * @author Longri
  */
-public class SettingsListButtonSkinSpinner<T> extends SettingBase<T>
-{
+public class SettingsListButtonSkinSpinner<T> extends SettingBase<T> {
 
-	public SettingsListButtonSkinSpinner(String name, SettingCategory category, SettingModus modus, SettingStoreType StoreType,
-			SettingUsage usage)
-	{
+	public SettingsListButtonSkinSpinner(String name, SettingCategory category, SettingModus modus, SettingStoreType StoreType, SettingUsage usage) {
 		super(name, category, modus, StoreType, usage);
 
 	}
 
 	@Override
-	public String toDBString()
-	{
+	public String toDBString() {
 
 		return null;
 	}
 
 	@Override
-	public boolean fromDBString(String dbString)
-	{
+	public boolean fromDBString(String dbString) {
 
 		return false;
 	}
 
 	@Override
-	public SettingBase<T> copy()
-	{
+	public SettingBase<T> copy() {
 		// can't copy this obj
 		return null;
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (!(obj instanceof SettingsListButtonSkinSpinner<?>)) return false;
+	public boolean equals(Object obj) {
+		if (!(obj instanceof SettingsListButtonSkinSpinner<?>))
+			return false;
 
 		SettingsListButtonSkinSpinner<?> inst = (SettingsListButtonSkinSpinner<?>) obj;
-		if (!(inst.name.equals(this.name))) return false;
-		if (inst.value != this.value) return false;
+		if (!(inst.name.equals(this.name)))
+			return false;
+		if (inst.value != this.value)
+			return false;
 
 		return true;
 	}

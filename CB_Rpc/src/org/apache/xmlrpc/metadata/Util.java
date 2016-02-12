@@ -29,7 +29,6 @@ import java.util.Map;
 import org.apache.xmlrpc.XmlRpcException;
 import org.w3c.dom.Node;
 
-
 /** Utility class, which provides services to meta data
  * handlers and handler mappings.
  */
@@ -39,6 +38,7 @@ public class Util {
 	 * it is available, we want to support it.
 	 */
 	private static final Class jaxbElementClass;
+
 	static {
 		Class c;
 		try {
@@ -48,7 +48,7 @@ public class Util {
 		}
 		jaxbElementClass = c;
 	}
-	
+
 	/** Returns a signature for the given return type or
 	 * parameter class.
 	 * @param pType The class for which a signature is being
@@ -64,13 +64,11 @@ public class Util {
 			return "boolean";
 		if (pType == String.class)
 			return "string";
-		if (Object[].class.isAssignableFrom(pType)
-			||  List.class.isAssignableFrom(pType))
+		if (Object[].class.isAssignableFrom(pType) || List.class.isAssignableFrom(pType))
 			return "array";
 		if (Map.class.isAssignableFrom(pType))
 			return "struct";
-		if (Date.class.isAssignableFrom(pType)
-			||  Calendar.class.isAssignableFrom(pType))
+		if (Date.class.isAssignableFrom(pType) || Calendar.class.isAssignableFrom(pType))
 			return "dateTime.iso8601";
 		if (pType == byte[].class)
 			return "base64";
@@ -88,8 +86,7 @@ public class Util {
 			return "ex:float";
 		if (Node.class.isAssignableFrom(pType))
 			return "ex:node";
-		if (jaxbElementClass != null
-			&&  jaxbElementClass.isAssignableFrom(pType)) {
+		if (jaxbElementClass != null && jaxbElementClass.isAssignableFrom(pType)) {
 			return "ex:jaxbElement";
 		}
 		if (Serializable.class.isAssignableFrom(pType))
@@ -106,23 +103,23 @@ public class Util {
 	 * is available.
 	 */
 	public static String[][] getSignature(Method[] pMethods) {
-        final List result = new ArrayList();
-        for (int i = 0;  i < pMethods.length;  i++) {
-            String[] sig = getSignature(pMethods[i]);
-            if (sig != null) {
-                result.add(sig);
-            }
-        }
-        return (String[][]) result.toArray(new String[result.size()][]);
-    }
+		final List result = new ArrayList();
+		for (int i = 0; i < pMethods.length; i++) {
+			String[] sig = getSignature(pMethods[i]);
+			if (sig != null) {
+				result.add(sig);
+			}
+		}
+		return (String[][]) result.toArray(new String[result.size()][]);
+	}
 
-    /** Returns a signature for the given methods.
-     * @param pMethod Method, for which a signature is
-     * being queried.
-     * @return Signature string, or null, if no signature
-     * is available.
-     */
-    public static String[] getSignature(Method pMethod) {    
+	/** Returns a signature for the given methods.
+	 * @param pMethod Method, for which a signature is
+	 * being queried.
+	 * @return Signature string, or null, if no signature
+	 * is available.
+	 */
+	public static String[] getSignature(Method pMethod) {
 		Class[] paramClasses = pMethod.getParameterTypes();
 		String[] sig = new String[paramClasses.length + 1];
 		String s = getSignatureType(pMethod.getReturnType());
@@ -130,45 +127,45 @@ public class Util {
 			return null;
 		}
 		sig[0] = s;
-		for (int i = 0;  i < paramClasses.length;  i++) {
+		for (int i = 0; i < paramClasses.length; i++) {
 			s = getSignatureType(paramClasses[i]);
 			if (s == null) {
 				return null;
 			}
-			sig[i+1] = s;
+			sig[i + 1] = s;
 		}
 		return sig;
 	}
 
-    /** Returns a help string for the given method, which
-     * is applied to the given class.
-     */
-    public static String getMethodHelp(Class pClass, Method[] pMethods) {
-        final List result = new ArrayList();
-        for (int i = 0;  i < pMethods.length;  i++) {
-            String help = getMethodHelp(pClass, pMethods[i]);
-            if (help != null) {
-                result.add(help);
-            }
-        }
-        switch (result.size()) {
-            case 0:
-                return null;
-            case 1:
-                return (String) result.get(0);
-            default:
-                StringBuffer sb = new StringBuffer();
-                for (int i = 0;  i < result.size();  i++) {
-                    sb.append(i+1);
-                    sb.append(": ");
-                    sb.append(result.get(i));
-                    sb.append("\n");
-                }
-                return sb.toString();
-        }
-    }
+	/** Returns a help string for the given method, which
+	 * is applied to the given class.
+	 */
+	public static String getMethodHelp(Class pClass, Method[] pMethods) {
+		final List result = new ArrayList();
+		for (int i = 0; i < pMethods.length; i++) {
+			String help = getMethodHelp(pClass, pMethods[i]);
+			if (help != null) {
+				result.add(help);
+			}
+		}
+		switch (result.size()) {
+		case 0:
+			return null;
+		case 1:
+			return (String) result.get(0);
+		default:
+			StringBuffer sb = new StringBuffer();
+			for (int i = 0; i < result.size(); i++) {
+				sb.append(i + 1);
+				sb.append(": ");
+				sb.append(result.get(i));
+				sb.append("\n");
+			}
+			return sb.toString();
+		}
+	}
 
-    /** Returns a help string for the given method, which
+	/** Returns a help string for the given method, which
 	 * is applied to the given class.
 	 */
 	public static String getMethodHelp(Class pClass, Method pMethod) {
@@ -179,7 +176,7 @@ public class Util {
 		sb.append(pMethod.getName());
 		sb.append("(");
 		Class[] paramClasses = pMethod.getParameterTypes();
-		for (int i = 0;  i < paramClasses.length;  i++) {
+		for (int i = 0; i < paramClasses.length; i++) {
 			if (i > 0) {
 				sb.append(", ");
 			}
@@ -189,34 +186,34 @@ public class Util {
 		return sb.toString();
 	}
 
-    /** Returns a signature for the given parameter set. This is used
-     * in error messages.
-     */
-    public static String getSignature(Object[] args) {
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0;  i < args.length;  i++) {
-            if (i > 0) {
-                sb.append(", ");
-            }
-            if (args[i] == null) {
-                sb.append("null");
-            } else {
-                sb.append(args[i].getClass().getName());
-            }
-        }
-        return sb.toString();
-    }
+	/** Returns a signature for the given parameter set. This is used
+	 * in error messages.
+	 */
+	public static String getSignature(Object[] args) {
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < args.length; i++) {
+			if (i > 0) {
+				sb.append(", ");
+			}
+			if (args[i] == null) {
+				sb.append("null");
+			} else {
+				sb.append(args[i].getClass().getName());
+			}
+		}
+		return sb.toString();
+	}
 
-    /**
-     * Creates a new instance of <code>pClass</code>.
-     */
-    public static Object newInstance(Class pClass) throws XmlRpcException {
-        try {
-            return pClass.newInstance();
-        } catch (InstantiationException e) {
-            throw new XmlRpcException("Failed to instantiate class " + pClass.getName(), e);
-        } catch (IllegalAccessException e) {
-            throw new XmlRpcException("Illegal access when instantiating class " + pClass.getName(), e);
-        }
-    }
+	/**
+	 * Creates a new instance of <code>pClass</code>.
+	 */
+	public static Object newInstance(Class pClass) throws XmlRpcException {
+		try {
+			return pClass.newInstance();
+		} catch (InstantiationException e) {
+			throw new XmlRpcException("Failed to instantiate class " + pClass.getName(), e);
+		} catch (IllegalAccessException e) {
+			throw new XmlRpcException("Illegal access when instantiating class " + pClass.getName(), e);
+		}
+	}
 }

@@ -19,5 +19,5 @@ package CB_UI_Base.GL_UI.Controls.html;
  * @author Longri
  */
 public enum Html_Segment_Typ {
-    TextBlock, Image, HR, List, Input
+	TextBlock, Image, HR, List, Input
 }

@@ -28,7 +28,7 @@ final class StreamedParseText extends CharSequenceParseText {
 
 	public StreamedParseText(final StreamedText streamedText) {
 		super(streamedText);
-		this.streamedText=streamedText;
+		this.streamedText = streamedText;
 	}
 
 	protected int getEnd() {
@@ -36,6 +36,6 @@ final class StreamedParseText extends CharSequenceParseText {
 	}
 
 	protected String substring(final int begin, final int end) {
-		return streamedText.substring(begin,end).toLowerCase();
-	}	
+		return streamedText.substring(begin, end).toLowerCase();
+	}
 }

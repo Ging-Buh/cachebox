@@ -8,59 +8,43 @@ import CB_UI_Base.Math.UI_Size_Base;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-public class chkBox extends Button
-{
+public class chkBox extends Button {
 
 	protected Drawable drawableDisabledChk;
 	protected boolean isChk = false;
 	protected OnCheckChangedListener changeListener;
 
-	public chkBox(String name)
-	{
+	public chkBox(String name) {
 		super(new CB_RectF(UI_Size_Base.that.getChkBoxSize()), name);
 		this.setClickable(true);
 	}
 
-	public chkBox(CB_RectF rec, String name)
-	{
+	public chkBox(CB_RectF rec, String name) {
 		super(rec, name);
 		this.setClickable(true);
 	}
 
 	@Override
-	protected void render(Batch batch)
-	{
-		if (drawableNormal == null || drawablePressed == null || drawableDisabledChk == null || drawableDisabled == null)
-		{
+	protected void render(Batch batch) {
+		if (drawableNormal == null || drawablePressed == null || drawableDisabledChk == null || drawableDisabled == null) {
 			Initial();
 			GL.that.renderOnce();
 		}
 
-		if (!isChk && !isDisabled)
-		{
-			if (drawableNormal != null)
-			{
+		if (!isChk && !isDisabled) {
+			if (drawableNormal != null) {
 				drawableNormal.draw(batch, 0, 0, getWidth(), getHeight());
 			}
-		}
-		else if (isChk && isDisabled)
-		{
-			if (drawableDisabledChk != null)
-			{
+		} else if (isChk && isDisabled) {
+			if (drawableDisabledChk != null) {
 				drawableDisabledChk.draw(batch, 0, 0, getWidth(), getHeight());
 			}
-		}
-		else if (isChk)
-		{
-			if (drawablePressed != null)
-			{
+		} else if (isChk) {
+			if (drawablePressed != null) {
 				drawablePressed.draw(batch, 0, 0, getWidth(), getHeight());
 			}
-		}
-		else
-		{
-			if (drawableDisabled != null)
-			{
+		} else {
+			if (drawableDisabled != null) {
 				drawableDisabled.draw(batch, 0, 0, getWidth(), getHeight());
 			}
 		}
@@ -68,8 +52,7 @@ public class chkBox extends Button
 	}
 
 	@Override
-	protected void Initial()
-	{
+	protected void Initial() {
 
 		// die einzelnen Hintergr�nde werden hier anders benutzt
 		// drawableNormal= unchecked
@@ -77,30 +60,24 @@ public class chkBox extends Button
 		// drawableDisabled= unchecked Disabled
 		// drawableDisabledChk = checked Disabled
 
-		if (drawableNormal == null)
-		{
+		if (drawableNormal == null) {
 			drawableNormal = SpriteCacheBase.chkOff;
 		}
-		if (drawablePressed == null)
-		{
+		if (drawablePressed == null) {
 			drawablePressed = SpriteCacheBase.chkOn;
 		}
-		if (drawableDisabled == null)
-		{
+		if (drawableDisabled == null) {
 			drawableDisabled = SpriteCacheBase.chkOffDisabled;
 		}
 
-		if (drawableDisabledChk == null)
-		{
+		if (drawableDisabledChk == null) {
 			drawableDisabledChk = SpriteCacheBase.chkOnDisabled;
 		}
 	}
 
 	@Override
-	public boolean onTouchDown(int x, int y, int pointer, int button)
-	{
-		if (!isDisabled)
-		{
+	public boolean onTouchDown(int x, int y, int pointer, int button) {
+		if (!isDisabled) {
 
 			GL.that.renderOnce();
 		}
@@ -108,55 +85,50 @@ public class chkBox extends Button
 	}
 
 	@Override
-	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
-	{
+	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
 
 		GL.that.renderOnce();
 		return false;
 	}
 
 	@Override
-	public boolean onTouchUp(int x, int y, int pointer, int button)
-	{
+	public boolean onTouchUp(int x, int y, int pointer, int button) {
 
 		GL.that.renderOnce();
 		return dragableButton ? false : true;
 	}
 
 	@Override
-	public boolean click(int x, int y, int pointer, int button)
-	{
-		if (!isDisabled)
-		{
+	public boolean click(int x, int y, int pointer, int button) {
+		if (!isDisabled) {
 			isChk = !isChk;
-			if (changeListener != null) changeListener.onCheckedChanged(this, isChk);
+			if (changeListener != null)
+				changeListener.onCheckedChanged(this, isChk);
 		}
-		if (mOnClickListener != null) mOnClickListener.onClick(this, x, y, pointer, button);
+		if (mOnClickListener != null)
+			mOnClickListener.onClick(this, x, y, pointer, button);
 		return true;
 	}
 
-	public void setChecked(boolean b)
-	{
+	public void setChecked(boolean b) {
 		isChk = b;
-		if (changeListener != null) changeListener.onCheckedChanged(this, isChk);
+		if (changeListener != null)
+			changeListener.onCheckedChanged(this, isChk);
 	}
 
 	@Override
-	public void setEnabled(boolean b)
-	{
+	public void setEnabled(boolean b) {
 		isDisabled = !b;
 	}
 
-	public boolean isChecked()
-	{
+	public boolean isChecked() {
 		return isChk;
 	}
 
 	/**
 	 * Interface definition for a callback to be invoked when the checked state of a compound button changed.
 	 */
-	public static interface OnCheckChangedListener
-	{
+	public static interface OnCheckChangedListener {
 		/**
 		 * Called when the checked state of a compound button has changed.
 		 * 
@@ -168,8 +140,7 @@ public class chkBox extends Button
 		void onCheckedChanged(chkBox view, boolean isChecked);
 	}
 
-	public void setOnCheckChangedListener(OnCheckChangedListener listener)
-	{
+	public void setOnCheckChangedListener(OnCheckChangedListener listener) {
 		changeListener = listener;
 	}
 

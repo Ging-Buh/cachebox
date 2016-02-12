@@ -63,8 +63,7 @@ import CB_Utils.Lists.CB_List;
  * @author JSON.org
  * @version 2011-05-04
  */
-public class JSONArray
-{
+public class JSONArray {
 
 	/**
 	 * The arrayList where the JSONArray's properties are kept.
@@ -74,8 +73,7 @@ public class JSONArray
 	/**
 	 * Construct an empty JSONArray.
 	 */
-	public JSONArray()
-	{
+	public JSONArray() {
 		this.myArrayList = new CB_List<Object>();
 	}
 
@@ -87,34 +85,25 @@ public class JSONArray
 	 * @throws JSONException
 	 *             If there is a syntax error.
 	 */
-	JSONArray(JSONTokener x) throws JSONException
-	{
+	JSONArray(JSONTokener x) throws JSONException {
 		this();
-		if (x.nextClean() != '[')
-		{
+		if (x.nextClean() != '[') {
 			throw x.syntaxError("A JSONArray text must start with '['");
 		}
-		if (x.nextClean() != ']')
-		{
+		if (x.nextClean() != ']') {
 			x.back();
-			for (;;)
-			{
-				if (x.nextClean() == ',')
-				{
+			for (;;) {
+				if (x.nextClean() == ',') {
 					x.back();
 					this.myArrayList.add(JSONObject.NULL);
-				}
-				else
-				{
+				} else {
 					x.back();
 					this.myArrayList.add(x.nextValue());
 				}
-				switch (x.nextClean())
-				{
+				switch (x.nextClean()) {
 				case ';':
 				case ',':
-					if (x.nextClean() == ']')
-					{
+					if (x.nextClean() == ']') {
 						return;
 					}
 					x.back();
@@ -137,8 +126,7 @@ public class JSONArray
 	 * @throws JSONException
 	 *             If there is a syntax error.
 	 */
-	public JSONArray(String source) throws JSONException
-	{
+	public JSONArray(String source) throws JSONException {
 		this(new JSONTokener(source));
 	}
 
@@ -148,20 +136,15 @@ public class JSONArray
 	 * @param collection
 	 *            A Collection.
 	 */
-	JSONArray(Collection<Object> collection)
-	{
+	JSONArray(Collection<Object> collection) {
 
-		if (collection != null)
-		{
+		if (collection != null) {
 			this.myArrayList = new CB_List<Object>(collection.size());
 			Iterator<Object> iter = collection.iterator();
-			while (iter.hasNext())
-			{
+			while (iter.hasNext()) {
 				this.myArrayList.add(JSONObject.wrap(iter.next()));
 			}
-		}
-		else
-		{
+		} else {
 			this.myArrayList = new CB_List<Object>();
 		}
 	}
@@ -172,19 +155,14 @@ public class JSONArray
 	 * @throws JSONException
 	 *             If not an array.
 	 */
-	JSONArray(Object array) throws JSONException
-	{
+	JSONArray(Object array) throws JSONException {
 		this();
-		if (array.getClass().isArray())
-		{
+		if (array.getClass().isArray()) {
 			int length = Array.getLength(array);
-			for (int i = 0; i < length; i += 1)
-			{
+			for (int i = 0; i < length; i += 1) {
 				this.put(JSONObject.wrap(Array.get(array, i)));
 			}
-		}
-		else
-		{
+		} else {
 			throw new JSONException("JSONArray initial value should be a string or collection or array.");
 		}
 	}
@@ -198,11 +176,9 @@ public class JSONArray
 	 * @throws JSONException
 	 *             If there is no value for the index.
 	 */
-	public Object get(int index) throws JSONException
-	{
+	public Object get(int index) throws JSONException {
 		Object object = opt(index);
-		if (object == null)
-		{
+		if (object == null) {
 			throw new JSONException("JSONArray[" + index + "] not found.");
 		}
 		return object;
@@ -217,15 +193,11 @@ public class JSONArray
 	 * @throws JSONException
 	 *             If there is no value for the index or if the value is not convertible to boolean.
 	 */
-	public boolean getBoolean(int index) throws JSONException
-	{
+	public boolean getBoolean(int index) throws JSONException {
 		Object object = get(index);
-		if (object.equals(Boolean.FALSE) || (object instanceof String && ((String) object).equalsIgnoreCase("false")))
-		{
+		if (object.equals(Boolean.FALSE) || (object instanceof String && ((String) object).equalsIgnoreCase("false"))) {
 			return false;
-		}
-		else if (object.equals(Boolean.TRUE) || (object instanceof String && ((String) object).equalsIgnoreCase("true")))
-		{
+		} else if (object.equals(Boolean.TRUE) || (object instanceof String && ((String) object).equalsIgnoreCase("true"))) {
 			return true;
 		}
 		throw new JSONException("JSONArray[" + index + "] is not a boolean.");
@@ -240,15 +212,11 @@ public class JSONArray
 	 * @throws JSONException
 	 *             If the key is not found or if the value cannot be converted to a number.
 	 */
-	public double getDouble(int index) throws JSONException
-	{
+	public double getDouble(int index) throws JSONException {
 		Object object = get(index);
-		try
-		{
+		try {
 			return object instanceof Number ? ((Number) object).doubleValue() : Double.parseDouble((String) object);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			throw new JSONException("JSONArray[" + index + "] is not a number.");
 		}
 	}
@@ -262,15 +230,11 @@ public class JSONArray
 	 * @throws JSONException
 	 *             If the key is not found or if the value is not a number.
 	 */
-	public int getInt(int index) throws JSONException
-	{
+	public int getInt(int index) throws JSONException {
 		Object object = get(index);
-		try
-		{
+		try {
 			return object instanceof Number ? ((Number) object).intValue() : Integer.parseInt((String) object);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			throw new JSONException("JSONArray[" + index + "] is not a number.");
 		}
 	}
@@ -284,11 +248,9 @@ public class JSONArray
 	 * @throws JSONException
 	 *             If there is no value for the index. or if the value is not a JSONArray
 	 */
-	public JSONArray getJSONArray(int index) throws JSONException
-	{
+	public JSONArray getJSONArray(int index) throws JSONException {
 		Object object = get(index);
-		if (object instanceof JSONArray)
-		{
+		if (object instanceof JSONArray) {
 			return (JSONArray) object;
 		}
 		throw new JSONException("JSONArray[" + index + "] is not a JSONArray.");
@@ -303,11 +265,9 @@ public class JSONArray
 	 * @throws JSONException
 	 *             If there is no value for the index or if the value is not a JSONObject
 	 */
-	public JSONObject getJSONObject(int index) throws JSONException
-	{
+	public JSONObject getJSONObject(int index) throws JSONException {
 		Object object = get(index);
-		if (object instanceof JSONObject)
-		{
+		if (object instanceof JSONObject) {
 			return (JSONObject) object;
 		}
 		throw new JSONException("JSONArray[" + index + "] is not a JSONObject.");
@@ -322,15 +282,11 @@ public class JSONArray
 	 * @throws JSONException
 	 *             If the key is not found or if the value cannot be converted to a number.
 	 */
-	public long getLong(int index) throws JSONException
-	{
+	public long getLong(int index) throws JSONException {
 		Object object = get(index);
-		try
-		{
+		try {
 			return object instanceof Number ? ((Number) object).longValue() : Long.parseLong((String) object);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			throw new JSONException("JSONArray[" + index + "] is not a number.");
 		}
 	}
@@ -344,11 +300,9 @@ public class JSONArray
 	 * @throws JSONException
 	 *             If there is no string value for the index.
 	 */
-	public String getString(int index) throws JSONException
-	{
+	public String getString(int index) throws JSONException {
 		Object object = get(index);
-		if (object instanceof String)
-		{
+		if (object instanceof String) {
 			return (String) object;
 		}
 		throw new JSONException("JSONArray[" + index + "] not a string.");
@@ -361,8 +315,7 @@ public class JSONArray
 	 *            The index must be between 0 and length() - 1.
 	 * @return true if the value at the index is null, or if there is no value.
 	 */
-	public boolean isNull(int index)
-	{
+	public boolean isNull(int index) {
 		return JSONObject.NULL.equals(opt(index));
 	}
 
@@ -376,15 +329,12 @@ public class JSONArray
 	 * @throws JSONException
 	 *             If the array contains an invalid number.
 	 */
-	public String join(String separator) throws JSONException
-	{
+	public String join(String separator) throws JSONException {
 		int len = length();
 		StringBuffer sb = new StringBuffer();
 
-		for (int i = 0; i < len; i += 1)
-		{
-			if (i > 0)
-			{
+		for (int i = 0; i < len; i += 1) {
+			if (i > 0) {
 				sb.append(separator);
 			}
 			sb.append(JSONObject.valueToString(this.myArrayList.get(i)));
@@ -397,8 +347,7 @@ public class JSONArray
 	 * 
 	 * @return The length (or size).
 	 */
-	public int length()
-	{
+	public int length() {
 		return this.myArrayList.size();
 	}
 
@@ -409,8 +358,7 @@ public class JSONArray
 	 *            The index must be between 0 and length() - 1.
 	 * @return An object value, or null if there is no object at that index.
 	 */
-	public Object opt(int index)
-	{
+	public Object opt(int index) {
 		return (index < 0 || index >= length()) ? null : this.myArrayList.get(index);
 	}
 
@@ -422,8 +370,7 @@ public class JSONArray
 	 *            The index must be between 0 and length() - 1.
 	 * @return The truth.
 	 */
-	public boolean optBoolean(int index)
-	{
+	public boolean optBoolean(int index) {
 		return optBoolean(index, false);
 	}
 
@@ -437,14 +384,10 @@ public class JSONArray
 	 *            A boolean default.
 	 * @return The truth.
 	 */
-	public boolean optBoolean(int index, boolean defaultValue)
-	{
-		try
-		{
+	public boolean optBoolean(int index, boolean defaultValue) {
+		try {
 			return getBoolean(index);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			return defaultValue;
 		}
 	}
@@ -457,8 +400,7 @@ public class JSONArray
 	 *            The index must be between 0 and length() - 1.
 	 * @return The value.
 	 */
-	public double optDouble(int index)
-	{
+	public double optDouble(int index) {
 		return optDouble(index, Double.NaN);
 	}
 
@@ -472,14 +414,10 @@ public class JSONArray
 	 *            The default value.
 	 * @return The value.
 	 */
-	public double optDouble(int index, double defaultValue)
-	{
-		try
-		{
+	public double optDouble(int index, double defaultValue) {
+		try {
 			return getDouble(index);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			return defaultValue;
 		}
 	}
@@ -492,8 +430,7 @@ public class JSONArray
 	 *            The index must be between 0 and length() - 1.
 	 * @return The value.
 	 */
-	public int optInt(int index)
-	{
+	public int optInt(int index) {
 		return optInt(index, 0);
 	}
 
@@ -507,14 +444,10 @@ public class JSONArray
 	 *            The default value.
 	 * @return The value.
 	 */
-	public int optInt(int index, int defaultValue)
-	{
-		try
-		{
+	public int optInt(int index, int defaultValue) {
+		try {
 			return getInt(index);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			return defaultValue;
 		}
 	}
@@ -526,8 +459,7 @@ public class JSONArray
 	 *            subscript
 	 * @return A JSONArray value, or null if the index has no value, or if the value is not a JSONArray.
 	 */
-	public JSONArray optJSONArray(int index)
-	{
+	public JSONArray optJSONArray(int index) {
 		Object o = opt(index);
 		return o instanceof JSONArray ? (JSONArray) o : null;
 	}
@@ -540,8 +472,7 @@ public class JSONArray
 	 *            The index must be between 0 and length() - 1.
 	 * @return A JSONObject value.
 	 */
-	public JSONObject optJSONObject(int index)
-	{
+	public JSONObject optJSONObject(int index) {
 		Object o = opt(index);
 		return o instanceof JSONObject ? (JSONObject) o : null;
 	}
@@ -554,8 +485,7 @@ public class JSONArray
 	 *            The index must be between 0 and length() - 1.
 	 * @return The value.
 	 */
-	public long optLong(int index)
-	{
+	public long optLong(int index) {
 		return optLong(index, 0);
 	}
 
@@ -569,14 +499,10 @@ public class JSONArray
 	 *            The default value.
 	 * @return The value.
 	 */
-	public long optLong(int index, long defaultValue)
-	{
-		try
-		{
+	public long optLong(int index, long defaultValue) {
+		try {
 			return getLong(index);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			return defaultValue;
 		}
 	}
@@ -589,8 +515,7 @@ public class JSONArray
 	 *            The index must be between 0 and length() - 1.
 	 * @return A String value.
 	 */
-	public String optString(int index)
-	{
+	public String optString(int index) {
 		return optString(index, "");
 	}
 
@@ -603,8 +528,7 @@ public class JSONArray
 	 *            The default value.
 	 * @return A String value.
 	 */
-	public String optString(int index, String defaultValue)
-	{
+	public String optString(int index, String defaultValue) {
 		Object object = opt(index);
 		return object != null ? object.toString() : defaultValue;
 	}
@@ -616,8 +540,7 @@ public class JSONArray
 	 *            A boolean value.
 	 * @return this.
 	 */
-	public JSONArray put(boolean value)
-	{
+	public JSONArray put(boolean value) {
 		put(value ? Boolean.TRUE : Boolean.FALSE);
 		return this;
 	}
@@ -629,8 +552,7 @@ public class JSONArray
 	 *            A Collection value.
 	 * @return this.
 	 */
-	public JSONArray put(Collection<Object> value)
-	{
+	public JSONArray put(Collection<Object> value) {
 		put(new JSONArray(value));
 		return this;
 	}
@@ -644,8 +566,7 @@ public class JSONArray
 	 *             if the value is not finite.
 	 * @return this.
 	 */
-	public JSONArray put(double value) throws JSONException
-	{
+	public JSONArray put(double value) throws JSONException {
 		Double d = new Double(value);
 		JSONObject.testValidity(d);
 		put(d);
@@ -659,8 +580,7 @@ public class JSONArray
 	 *            An int value.
 	 * @return this.
 	 */
-	public JSONArray put(int value)
-	{
+	public JSONArray put(int value) {
 		put(new Integer(value));
 		return this;
 	}
@@ -672,8 +592,7 @@ public class JSONArray
 	 *            A long value.
 	 * @return this.
 	 */
-	public JSONArray put(long value)
-	{
+	public JSONArray put(long value) {
 		put(new Long(value));
 		return this;
 	}
@@ -685,8 +604,7 @@ public class JSONArray
 	 *            A Map value.
 	 * @return this.
 	 */
-	public JSONArray put(Map<Object, Object> value)
-	{
+	public JSONArray put(Map<Object, Object> value) {
 		put(new JSONObject(value));
 		return this;
 	}
@@ -699,8 +617,7 @@ public class JSONArray
 	 *            JSONObject.NULL object.
 	 * @return this.
 	 */
-	public JSONArray put(Object value)
-	{
+	public JSONArray put(Object value) {
 		this.myArrayList.add(value);
 		return this;
 	}
@@ -717,8 +634,7 @@ public class JSONArray
 	 * @throws JSONException
 	 *             If the index is negative.
 	 */
-	public JSONArray put(int index, boolean value) throws JSONException
-	{
+	public JSONArray put(int index, boolean value) throws JSONException {
 		put(index, value ? Boolean.TRUE : Boolean.FALSE);
 		return this;
 	}
@@ -734,8 +650,7 @@ public class JSONArray
 	 * @throws JSONException
 	 *             If the index is negative or if the value is not finite.
 	 */
-	public JSONArray put(int index, Collection<Object> value) throws JSONException
-	{
+	public JSONArray put(int index, Collection<Object> value) throws JSONException {
 		put(index, new JSONArray(value));
 		return this;
 	}
@@ -752,8 +667,7 @@ public class JSONArray
 	 * @throws JSONException
 	 *             If the index is negative or if the value is not finite.
 	 */
-	public JSONArray put(int index, double value) throws JSONException
-	{
+	public JSONArray put(int index, double value) throws JSONException {
 		put(index, new Double(value));
 		return this;
 	}
@@ -770,8 +684,7 @@ public class JSONArray
 	 * @throws JSONException
 	 *             If the index is negative.
 	 */
-	public JSONArray put(int index, int value) throws JSONException
-	{
+	public JSONArray put(int index, int value) throws JSONException {
 		put(index, new Integer(value));
 		return this;
 	}
@@ -788,8 +701,7 @@ public class JSONArray
 	 * @throws JSONException
 	 *             If the index is negative.
 	 */
-	public JSONArray put(int index, long value) throws JSONException
-	{
+	public JSONArray put(int index, long value) throws JSONException {
 		put(index, new Long(value));
 		return this;
 	}
@@ -805,8 +717,7 @@ public class JSONArray
 	 * @throws JSONException
 	 *             If the index is negative or if the the value is an invalid number.
 	 */
-	public JSONArray put(int index, Map<Object, Object> value) throws JSONException
-	{
+	public JSONArray put(int index, Map<Object, Object> value) throws JSONException {
 		put(index, new JSONObject(value));
 		return this;
 	}
@@ -824,21 +735,15 @@ public class JSONArray
 	 * @throws JSONException
 	 *             If the index is negative or if the the value is an invalid number.
 	 */
-	public JSONArray put(int index, Object value) throws JSONException
-	{
+	public JSONArray put(int index, Object value) throws JSONException {
 		JSONObject.testValidity(value);
-		if (index < 0)
-		{
+		if (index < 0) {
 			throw new JSONException("JSONArray[" + index + "] not found.");
 		}
-		if (index < length())
-		{
+		if (index < length()) {
 			this.myArrayList.set(index, value);
-		}
-		else
-		{
-			while (index != length())
-			{
+		} else {
+			while (index != length()) {
 				put(JSONObject.NULL);
 			}
 			put(value);
@@ -853,8 +758,7 @@ public class JSONArray
 	 *            The index of the element to be removed.
 	 * @return The value that was associated with the index, or null if there was no value.
 	 */
-	public Object remove(int index)
-	{
+	public Object remove(int index) {
 		Object o = opt(index);
 		this.myArrayList.remove(index);
 		return o;
@@ -869,15 +773,12 @@ public class JSONArray
 	 * @throws JSONException
 	 *             If any of the names are null.
 	 */
-	public JSONObject toJSONObject(JSONArray names) throws JSONException
-	{
-		if (names == null || names.length() == 0 || length() == 0)
-		{
+	public JSONObject toJSONObject(JSONArray names) throws JSONException {
+		if (names == null || names.length() == 0 || length() == 0) {
 			return null;
 		}
 		JSONObject jo = new JSONObject();
-		for (int i = 0; i < names.length(); i += 1)
-		{
+		for (int i = 0; i < names.length(); i += 1) {
 			jo.put(names.getString(i), this.opt(i));
 		}
 		return jo;
@@ -891,14 +792,10 @@ public class JSONArray
 	 * 
 	 * @return a printable, displayable, transmittable representation of the array.
 	 */
-	public String toString()
-	{
-		try
-		{
+	public String toString() {
+		try {
 			return '[' + join(",") + ']';
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			return null;
 		}
 	}
@@ -912,8 +809,7 @@ public class JSONArray
 	 *         bracket)</small> and ending with <code>]</code>&nbsp;<small>(right bracket)</small>.
 	 * @throws JSONException
 	 */
-	public String toString(int indentFactor) throws JSONException
-	{
+	public String toString(int indentFactor) throws JSONException {
 		return toString(indentFactor, 0);
 	}
 
@@ -927,38 +823,29 @@ public class JSONArray
 	 * @return a printable, displayable, transmittable representation of the array.
 	 * @throws JSONException
 	 */
-	String toString(int indentFactor, int indent) throws JSONException
-	{
+	String toString(int indentFactor, int indent) throws JSONException {
 		int len = length();
-		if (len == 0)
-		{
+		if (len == 0) {
 			return "[]";
 		}
 		int i;
 		StringBuffer sb = new StringBuffer("[");
-		if (len == 1)
-		{
+		if (len == 1) {
 			sb.append(JSONObject.valueToString(this.myArrayList.get(0), indentFactor, indent));
-		}
-		else
-		{
+		} else {
 			int newindent = indent + indentFactor;
 			sb.append('\n');
-			for (i = 0; i < len; i += 1)
-			{
-				if (i > 0)
-				{
+			for (i = 0; i < len; i += 1) {
+				if (i > 0) {
 					sb.append(",\n");
 				}
-				for (int j = 0; j < newindent; j += 1)
-				{
+				for (int j = 0; j < newindent; j += 1) {
 					sb.append(' ');
 				}
 				sb.append(JSONObject.valueToString(this.myArrayList.get(i), indentFactor, newindent));
 			}
 			sb.append('\n');
-			for (i = 0; i < indent; i += 1)
-			{
+			for (i = 0; i < indent; i += 1) {
 				sb.append(' ');
 			}
 		}
@@ -974,41 +861,30 @@ public class JSONArray
 	 * @return The writer.
 	 * @throws JSONException
 	 */
-	public Writer write(Writer writer) throws JSONException
-	{
-		try
-		{
+	public Writer write(Writer writer) throws JSONException {
+		try {
 			boolean b = false;
 			int len = length();
 
 			writer.write('[');
 
-			for (int i = 0; i < len; i += 1)
-			{
-				if (b)
-				{
+			for (int i = 0; i < len; i += 1) {
+				if (b) {
 					writer.write(',');
 				}
 				Object v = this.myArrayList.get(i);
-				if (v instanceof JSONObject)
-				{
+				if (v instanceof JSONObject) {
 					((JSONObject) v).write(writer);
-				}
-				else if (v instanceof JSONArray)
-				{
+				} else if (v instanceof JSONArray) {
 					((JSONArray) v).write(writer);
-				}
-				else
-				{
+				} else {
 					writer.write(JSONObject.valueToString(v));
 				}
 				b = true;
 			}
 			writer.write(']');
 			return writer;
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			throw new JSONException(e);
 		}
 	}

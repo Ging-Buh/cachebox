@@ -23,7 +23,6 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
 /** Abstract base implementation of a {@link org.apache.xmlrpc.parser.TypeParser},
  * for derivation of subclasses.
  */
@@ -34,15 +33,25 @@ public abstract class TypeParserImpl implements TypeParser {
 	/** Sets the result object.
 	 * @param pResult The result object.
 	 */
-	public void setResult(Object pResult) { result = pResult; }
-	public Object getResult() throws XmlRpcException { return result; }
+	public void setResult(Object pResult) {
+		result = pResult;
+	}
+
+	public Object getResult() throws XmlRpcException {
+		return result;
+	}
 
 	/** Returns the document locator.
 	 * @return Locator object describing the current location within the
 	 * document.
 	 */
-	public Locator getDocumentLocator() { return locator; }
-	public void setDocumentLocator(Locator pLocator) { locator = pLocator; }
+	public Locator getDocumentLocator() {
+		return locator;
+	}
+
+	public void setDocumentLocator(Locator pLocator) {
+		locator = pLocator;
+	}
 
 	/** PI's are by default ignored.
 	 */
@@ -52,8 +61,7 @@ public abstract class TypeParserImpl implements TypeParser {
 	/** Skipped entities raise an exception by default.
 	 */
 	public void skippedEntity(String pName) throws SAXException {
-		throw new SAXParseException("Don't know how to handle entity " + pName,
-									getDocumentLocator());
+		throw new SAXParseException("Don't know how to handle entity " + pName, getDocumentLocator());
 	}
 
 	public void startPrefixMapping(String pPrefix, String pURI) throws SAXException {
@@ -69,8 +77,8 @@ public abstract class TypeParserImpl implements TypeParser {
 	}
 
 	protected static boolean isEmpty(char[] pChars, int pStart, int pLength) {
-		for (int i = 0;  i < pLength;  i++) {
-			if (!Character.isWhitespace(pChars[pStart+i])) {
+		for (int i = 0; i < pLength; i++) {
+			if (!Character.isWhitespace(pChars[pStart + i])) {
 				return false;
 			}
 		}
@@ -79,8 +87,7 @@ public abstract class TypeParserImpl implements TypeParser {
 
 	public void characters(char[] pChars, int pOffset, int pLength) throws SAXException {
 		if (!isEmpty(pChars, pOffset, pLength)) {
-			throw new SAXParseException("Unexpected non-whitespace character data",
-										getDocumentLocator());
+			throw new SAXParseException("Unexpected non-whitespace character data", getDocumentLocator());
 		}
 	}
 

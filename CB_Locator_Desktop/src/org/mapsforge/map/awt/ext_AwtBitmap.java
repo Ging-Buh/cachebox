@@ -32,24 +32,20 @@ import com.badlogic.gdx.graphics.Texture;
  * 
  * @author Longri
  */
-public class ext_AwtBitmap extends AwtBitmap implements ext_Bitmap, TileBitmap
-{
+public class ext_AwtBitmap extends AwtBitmap implements ext_Bitmap, TileBitmap {
 	int instCount = 0;
 	protected final BitmapDrawable GL_image;
 
-	protected ext_AwtBitmap()
-	{
+	protected ext_AwtBitmap() {
 		super(1, 1);
 		this.GL_image = null;
 		this.bufferedImage = null;
 	}
 
-	ext_AwtBitmap(InputStream inputStream, int HashCode, float scaleFactor) throws IOException
-	{
+	ext_AwtBitmap(InputStream inputStream, int HashCode, float scaleFactor) throws IOException {
 		super(inputStream);
 
-		if (scaleFactor != 1)
-		{
+		if (scaleFactor != 1) {
 			int w = (int) (this.getWidth() * scaleFactor);
 			int h = (int) (this.getHeight() * scaleFactor);
 			this.scaleTo(w, h);
@@ -58,8 +54,7 @@ public class ext_AwtBitmap extends AwtBitmap implements ext_Bitmap, TileBitmap
 		GL_RenderType RENDERING_TYPE = LocatorSettings.MapsforgeRenderType.getEnumValue();
 
 		// Don't create GL_Image with renderType Mapsforge! GL_Images are not needed!
-		if (RENDERING_TYPE == GL_RenderType.Mapsforge)
-		{
+		if (RENDERING_TYPE == GL_RenderType.Mapsforge) {
 			GL_image = null;
 			return;
 		}
@@ -68,49 +63,41 @@ public class ext_AwtBitmap extends AwtBitmap implements ext_Bitmap, TileBitmap
 		instCount++;
 	}
 
-	ext_AwtBitmap(int width, int height)
-	{
+	ext_AwtBitmap(int width, int height) {
 		super(width, height);
 		GL_image = null;
 		instCount++;
 	}
 
-	public ext_AwtBitmap(int tileSize)
-	{
+	public ext_AwtBitmap(int tileSize) {
 		this(tileSize, tileSize);
 	}
 
 	@Override
-	public void recycle()
-	{
+	public void recycle() {
 		instCount++;
 		this.bufferedImage = null;
 	}
 
 	@Override
-	public void getPixels(int[] maskBuf, int i, int w, int j, int y, int w2, int k)
-	{
-		
+	public void getPixels(int[] maskBuf, int i, int w, int j, int y, int w2, int k) {
 
 	}
 
 	@Override
-	public void setPixels(int[] maskedContentBuf, int i, int w, int j, int y, int w2, int k)
-	{
-		
+	public void setPixels(int[] maskedContentBuf, int i, int w, int j, int y, int w2, int k) {
 
 	}
 
 	@Override
-	public BitmapDrawable getGlBmpHandle()
-	{
+	public BitmapDrawable getGlBmpHandle() {
 		return GL_image;
 	}
 
 	@Override
-	public Texture getTexture()
-	{
-		if (GL_image == null) return null;
+	public Texture getTexture() {
+		if (GL_image == null)
+			return null;
 		return GL_image.getTexture();
 	}
 

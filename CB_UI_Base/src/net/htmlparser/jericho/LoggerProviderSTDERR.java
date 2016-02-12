@@ -24,11 +24,12 @@ import java.util.logging.*;
 import java.io.*;
 
 final class LoggerProviderSTDERR implements LoggerProvider {
-	public static final LoggerProvider INSTANCE=new LoggerProviderSTDERR();
-	
-	private LoggerProviderSTDERR() {}
+	public static final LoggerProvider INSTANCE = new LoggerProviderSTDERR();
+
+	private LoggerProviderSTDERR() {
+	}
 
 	public Logger getLogger(final String name) {
-		return new WriterLogger(new OutputStreamWriter(System.err),name);
+		return new WriterLogger(new OutputStreamWriter(System.err), name);
 	}
 }

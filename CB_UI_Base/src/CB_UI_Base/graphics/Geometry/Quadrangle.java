@@ -33,17 +33,14 @@ import com.badlogic.gdx.math.Vector2;
  * 
  * @author Longri
  */
-public class Quadrangle implements IGeometry
-{
+public class Quadrangle implements IGeometry {
 	public float[] cor;
 	public float[] vertices = new float[8];
-	public short[] triangleIndices = new short[]
-		{ 0, 1, 2, 2, 3, 0 };
+	public short[] triangleIndices = new short[] { 0, 1, 2, 2, 3, 0 };
 
 	protected AtomicBoolean isDisposed = new AtomicBoolean(false);
 
-	public Quadrangle(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
-	{
+	public Quadrangle(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
 		this.cor = null;
 
 		vertices[0] = x1;
@@ -59,8 +56,7 @@ public class Quadrangle implements IGeometry
 		vertices[7] = y4;
 	}
 
-	public Quadrangle(CB_RectF rec)
-	{
+	public Quadrangle(CB_RectF rec) {
 		this.cor = null;
 
 		vertices[0] = rec.getX();
@@ -76,8 +72,7 @@ public class Quadrangle implements IGeometry
 		vertices[7] = rec.getY();
 	}
 
-	public Quadrangle(Line line, float strokeWidth)
-	{
+	public Quadrangle(Line line, float strokeWidth) {
 		this.cor = line.getVertices();
 		float dX = cor[2] - cor[0];
 		float dY = cor[3] - cor[1];
@@ -99,8 +94,7 @@ public class Quadrangle implements IGeometry
 
 	}
 
-	public Quadrangle(RectF rec)
-	{
+	public Quadrangle(RectF rec) {
 		this.cor = null;
 
 		vertices[0] = rec.left;
@@ -116,17 +110,14 @@ public class Quadrangle implements IGeometry
 		vertices[7] = rec.bottom;
 	}
 
-	public Quadrangle(float[] vertices2)
-	{
+	public Quadrangle(float[] vertices2) {
 		System.arraycopy(vertices2, 0, vertices, 0, 8);
 		this.cor = null;
 	}
 
-	public Quadrangle(float x1, float y1, float x2, float y2, float strokeWidth)
-	{
+	public Quadrangle(float x1, float y1, float x2, float y2, float strokeWidth) {
 
-		this.cor = new float[]
-			{ x1, y1, x2, y2 };
+		this.cor = new float[] { x1, y1, x2, y2 };
 
 		float dX = cor[2] - cor[0];
 		float dY = cor[3] - cor[1];
@@ -148,14 +139,12 @@ public class Quadrangle implements IGeometry
 	}
 
 	@Override
-	public float[] getVertices()
-	{
+	public float[] getVertices() {
 		return vertices;
 	}
 
 	@Override
-	public short[] getTriangles()
-	{
+	public short[] getTriangles() {
 		return triangleIndices;
 	}
 
@@ -166,27 +155,25 @@ public class Quadrangle implements IGeometry
 	 * @param y
 	 * @return
 	 */
-	public boolean containsPoint(float x, float y)
-	{
+	public boolean containsPoint(float x, float y) {
 		Triangle t1 = new Triangle(vertices[0], vertices[1], vertices[2], vertices[3], vertices[4], vertices[5]);
-		if (t1.containsPoint(x, y)) return true;
+		if (t1.containsPoint(x, y))
+			return true;
 
 		Triangle t2 = new Triangle(vertices[4], vertices[5], vertices[6], vertices[7], vertices[0], vertices[1]);
-		if (t2.containsPoint(x, y)) return true;
+		if (t2.containsPoint(x, y))
+			return true;
 
 		return false;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		String ret = "";
-		if (cor != null)
-		{
+		if (cor != null) {
 			ret = "[l " + cor[0] + "," + cor[1] + "-" + cor[2] + "," + cor[3] + "]" + Global.br;
 		}
-		return ret + "[" + vertices[0] + "," + vertices[1] + " | " + vertices[2] + "," + vertices[3] + " | " + vertices[4] + ","
-				+ vertices[5] + " | " + vertices[6] + "," + vertices[7] + "]";
+		return ret + "[" + vertices[0] + "," + vertices[1] + " | " + vertices[2] + "," + vertices[3] + " | " + vertices[4] + "," + vertices[5] + " | " + vertices[6] + "," + vertices[7] + "]";
 	}
 
 	/**
@@ -198,9 +185,9 @@ public class Quadrangle implements IGeometry
 	 * @param join
 	 * @return
 	 */
-	public static IGeometry getJoin(Quadrangle qua, Quadrangle qua2, Join join)
-	{
-		if (qua.cor == null || qua2.cor == null || qua.cor[2] != qua2.cor[0] || qua.cor[3] != qua2.cor[1]) return null;// Can't calculate
+	public static IGeometry getJoin(Quadrangle qua, Quadrangle qua2, Join join) {
+		if (qua.cor == null || qua2.cor == null || qua.cor[2] != qua2.cor[0] || qua.cor[3] != qua2.cor[1])
+			return null;// Can't calculate
 
 		float JoinX = qua.cor[2];
 		float JoinY = qua.cor[3];
@@ -210,15 +197,12 @@ public class Quadrangle implements IGeometry
 		float Out1EndX;
 		float Out1EndY;
 
-		if (qua2.containsPoint(qua.vertices[4], qua.vertices[5]))
-		{
+		if (qua2.containsPoint(qua.vertices[4], qua.vertices[5])) {
 			Out1StartX = qua.vertices[6];
 			Out1StartY = qua.vertices[7];
 			Out1EndX = qua.vertices[0];
 			Out1EndY = qua.vertices[1];
-		}
-		else
-		{
+		} else {
 			Out1StartX = qua.vertices[4];
 			Out1StartY = qua.vertices[5];
 			Out1EndX = qua.vertices[2];
@@ -230,15 +214,12 @@ public class Quadrangle implements IGeometry
 		float Out2EndX;
 		float Out2EndY;
 
-		if (qua.containsPoint(qua2.vertices[0], qua2.vertices[1]))
-		{
+		if (qua.containsPoint(qua2.vertices[0], qua2.vertices[1])) {
 			Out2StartX = qua2.vertices[2];
 			Out2StartY = qua2.vertices[3];
 			Out2EndX = qua2.vertices[4];
 			Out2EndY = qua2.vertices[5];
-		}
-		else
-		{
+		} else {
 			Out2StartX = qua2.vertices[0];
 			Out2StartY = qua2.vertices[1];
 			Out2EndX = qua2.vertices[6];
@@ -247,8 +228,7 @@ public class Quadrangle implements IGeometry
 
 		float r = new Line(JoinX, JoinY, Out1StartX, Out1StartY).length();
 
-		switch (join)
-		{
+		switch (join) {
 		case BEVEL:
 			// return Triangle Out1, Out2, Join
 			return new Triangle(Out1StartX, Out1StartY, Out2StartX, Out2StartY, JoinX, JoinY);
@@ -258,19 +238,16 @@ public class Quadrangle implements IGeometry
 
 			// get intersection of outer lines
 			Vector2 intersection = new Vector2();
-			boolean intersect = Intersector.intersectLines(Out1StartX, Out1StartY, Out1EndX, Out1EndY, Out2StartX, Out2StartY, Out2EndX,
-					Out2EndY, intersection);
+			boolean intersect = Intersector.intersectLines(Out1StartX, Out1StartY, Out1EndX, Out1EndY, Out2StartX, Out2StartY, Out2EndX, Out2EndY, intersection);
 
-			if (!intersect)
-			{// no intersection, then return BEVEL
+			if (!intersect) {// no intersection, then return BEVEL
 				return new Triangle(Out1StartX, Out1StartY, Out2StartX, Out2StartY, JoinX, JoinY);
 			}
 
 			// chek Line length
 			Line li = new Line(JoinX, JoinY, intersection.x, intersection.y);
 			Line li2 = new Line(qua2.vertices[0], qua2.vertices[1], qua2.vertices[6], qua2.vertices[7]);
-			if (li.length() > li2.length())
-			{
+			if (li.length() > li2.length()) {
 				// TODO cut the Triangle
 
 				// use BEVEL, is wrong and must change
@@ -289,9 +266,9 @@ public class Quadrangle implements IGeometry
 		}
 	}
 
-	public static IGeometry getCap(Quadrangle qua, GL_Cap cap, boolean beginn)
-	{
-		if (qua.cor == null) return null;// Can't calculate
+	public static IGeometry getCap(Quadrangle qua, GL_Cap cap, boolean beginn) {
+		if (qua.cor == null)
+			return null;// Can't calculate
 
 		float JoinX;
 		float JoinY;
@@ -302,8 +279,7 @@ public class Quadrangle implements IGeometry
 		float Out2StartX;
 		float Out2StartY;
 
-		if (beginn)
-		{
+		if (beginn) {
 			JoinX = qua.cor[0];
 			JoinY = qua.cor[1];
 
@@ -312,9 +288,7 @@ public class Quadrangle implements IGeometry
 
 			Out2StartX = qua.vertices[2];
 			Out2StartY = qua.vertices[3];
-		}
-		else
-		{
+		} else {
 			JoinX = qua.cor[2];
 			JoinY = qua.cor[3];
 
@@ -327,8 +301,7 @@ public class Quadrangle implements IGeometry
 
 		float r = new Line(JoinX, JoinY, Out1StartX, Out1StartY).length();
 
-		switch (cap)
-		{
+		switch (cap) {
 		case BUTT:
 			return null; // nothing todo
 
@@ -340,8 +313,7 @@ public class Quadrangle implements IGeometry
 
 		case SQUARE:
 
-			float[] cor = new float[]
-				{ Out1StartX, Out1StartY, Out2StartX, Out2StartY };
+			float[] cor = new float[] { Out1StartX, Out1StartY, Out2StartX, Out2StartY };
 			float[] vertices = new float[8];
 
 			float dX = cor[2] - cor[0];
@@ -369,17 +341,15 @@ public class Quadrangle implements IGeometry
 		return null;
 	}
 
-	public boolean isDisposed()
-	{
+	public boolean isDisposed() {
 		return isDisposed.get();
 	}
 
 	@Override
-	public void dispose()
-	{
-		synchronized (isDisposed)
-		{
-			if (isDisposed.get()) return;
+	public void dispose() {
+		synchronized (isDisposed) {
+			if (isDisposed.get())
+				return;
 			vertices = null;
 			triangleIndices = null;
 			cor = null;

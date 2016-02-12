@@ -57,8 +57,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 /**
  * @author Longri
  */
-public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
-{
+public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback {
 
 	private double tileLatLon_0_x, tileLatLon_0_y, tileLatLon_1_x, tileLatLon_1_y;
 	private double divLon, divLat;
@@ -71,29 +70,20 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 	private static final Tag TAG_NATURAL_WATER = new Tag("natural", "water");
 	private static final byte ZOOM_MAX = 22;
 
-	private static Point[][] getTilePixelCoordinates(int tileSize)
-	{
+	private static Point[][] getTilePixelCoordinates(int tileSize) {
 		Point point1 = new Point(0, 0);
 		Point point2 = new Point(tileSize, 0);
 		Point point3 = new Point(tileSize, tileSize);
 		Point point4 = new Point(0, tileSize);
-		return new Point[][]
-			{
-				{ point1, point2, point3, point4, point1 } };
+		return new Point[][] { { point1, point2, point3, point4, point1 } };
 	}
 
-	private static byte getValidLayer(byte layer)
-	{
-		if (layer < 0)
-		{
+	private static byte getValidLayer(byte layer) {
+		if (layer < 0) {
 			return 0;
-		}
-		else if (layer >= LAYERS)
-		{
+		} else if (layer >= LAYERS) {
 			return LAYERS - 1;
-		}
-		else
-		{
+		} else {
 			return layer;
 		}
 	}
@@ -125,8 +115,7 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 	 * @param mapDatabase
 	 *            the MapDatabase from which the map data will be read.
 	 */
-	public MF_DatabaseRenderer(MapDatabase mapDatabase, GraphicFactory graphicFactory)
-	{
+	public MF_DatabaseRenderer(MapDatabase mapDatabase, GraphicFactory graphicFactory) {
 		this.mapDatabase = mapDatabase;
 		this.graphicFactory = graphicFactory;
 
@@ -141,20 +130,16 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 		this.pointSymbols = new F_List<SymbolContainer>(64);
 	}
 
-	public void destroy()
-	{
+	public void destroy() {
 		this.canvasRasterer.destroy();
 		// there is a chance that the renderer is being destroyed from the
 		// DestroyThread before the rendertheme has been completely created
 		// and assigned. If that happens bitmap memory held by the
 		// RenderThemeHandler
 		// will be leaked
-		if (this.renderTheme != null)
-		{
+		if (this.renderTheme != null) {
 			this.renderTheme.destroy();
-		}
-		else
-		{
+		} else {
 			LOGGER.log(Level.SEVERE, "RENDERTHEME Could not destroy RenderTheme");
 		}
 	}
@@ -165,16 +150,13 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 	 * @param rendererJob
 	 *            the job that should be executed.
 	 */
-	public TileBitmap executeJob(RendererJob rendererJob)
-	{
+	public TileBitmap executeJob(RendererJob rendererJob) {
 		this.currentRendererJob = rendererJob;
 
 		XmlRenderTheme jobTheme = rendererJob.xmlRenderTheme;
-		if (!jobTheme.equals(this.previousJobTheme))
-		{
+		if (!jobTheme.equals(this.previousJobTheme)) {
 			this.renderTheme = getRenderTheme(jobTheme, rendererJob.displayModel);
-			if (this.renderTheme == null)
-			{
+			if (this.renderTheme == null) {
 				this.previousJobTheme = null;
 				return null;
 			}
@@ -184,21 +166,18 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 		}
 
 		byte zoomLevel = rendererJob.tile.zoomLevel;
-		if (zoomLevel != this.previousZoomLevel)
-		{
+		if (zoomLevel != this.previousZoomLevel) {
 			setScaleStrokeWidth(zoomLevel);
 			this.previousZoomLevel = zoomLevel;
 		}
 
 		float textScale = rendererJob.textScale;
-		if (Float.compare(textScale, this.previousTextScale) != 0)
-		{
+		if (Float.compare(textScale, this.previousTextScale) != 0) {
 			this.renderTheme.scaleTextSize(textScale);
 			this.previousTextScale = textScale;
 		}
 
-		if (this.mapDatabase != null)
-		{
+		if (this.mapDatabase != null) {
 			MapReadResult mapReadResult = this.mapDatabase.readMapData(rendererJob.tile);
 			processReadMapData(mapReadResult);
 		}
@@ -207,8 +186,7 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 
 		TileBitmap bitmap = this.graphicFactory.createTileBitmap(rendererJob.displayModel.getTileSize(), rendererJob.hasAlpha);
 		this.canvasRasterer.setCanvasBitmap(bitmap);
-		if (rendererJob.displayModel.getBackgroundColor() != this.renderTheme.getMapBackground())
-		{
+		if (rendererJob.displayModel.getBackgroundColor() != this.renderTheme.getMapBackground()) {
 			this.canvasRasterer.fill(this.renderTheme.getMapBackground());
 		}
 		this.canvasRasterer.drawWays(this.ways);
@@ -222,21 +200,17 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 		return bitmap;
 	}
 
-	public MapDatabase getMapDatabase()
-	{
+	public MapDatabase getMapDatabase() {
 		return this.mapDatabase;
 	}
 
 	/**
 	 * @return the start point (may be null).
 	 */
-	public LatLong getStartPoint()
-	{
-		if (this.mapDatabase != null && this.mapDatabase.hasOpenFile())
-		{
+	public LatLong getStartPoint() {
+		if (this.mapDatabase != null && this.mapDatabase.hasOpenFile()) {
 			MapFileInfo mapFileInfo = this.mapDatabase.getMapFileInfo();
-			if (mapFileInfo.startPosition != null)
-			{
+			if (mapFileInfo.startPosition != null) {
 				return mapFileInfo.startPosition;
 			}
 			return mapFileInfo.boundingBox.getCenterPoint();
@@ -248,13 +222,10 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 	/**
 	 * @return the start zoom level (may be null).
 	 */
-	public Byte getStartZoomLevel()
-	{
-		if (this.mapDatabase != null && this.mapDatabase.hasOpenFile())
-		{
+	public Byte getStartZoomLevel() {
+		if (this.mapDatabase != null && this.mapDatabase.hasOpenFile()) {
 			MapFileInfo mapFileInfo = this.mapDatabase.getMapFileInfo();
-			if (mapFileInfo.startZoomLevel != null)
-			{
+			if (mapFileInfo.startZoomLevel != null) {
 				return mapFileInfo.startZoomLevel;
 			}
 		}
@@ -265,29 +236,25 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 	/**
 	 * @return the maximum zoom level.
 	 */
-	public byte getZoomLevelMax()
-	{
+	public byte getZoomLevelMax() {
 		return ZOOM_MAX;
 	}
 
 	@Override
-	public void renderArea(Paint fill, Paint stroke, int level)
-	{
+	public void renderArea(Paint fill, Paint stroke, int level) {
 		List<ShapePaintContainer> list = this.drawingLayers.get(level);
 		list.add(new ShapePaintContainer(this.shapeContainer, stroke));
 		list.add(new ShapePaintContainer(this.shapeContainer, fill));
 	}
 
 	@Override
-	public void renderAreaCaption(String caption, float verticalOffset, Paint fill, Paint stroke)
-	{
+	public void renderAreaCaption(String caption, float verticalOffset, Paint fill, Paint stroke) {
 		Point centerPosition = GeometryUtils.calculateCenterOfBoundingBox(this.coordinates[0]);
 		this.areaLabels.add(new PointTextContainer(caption, centerPosition.x, centerPosition.y, fill, stroke));
 	}
 
 	@Override
-	public void renderAreaSymbol(Bitmap symbol)
-	{
+	public void renderAreaSymbol(Bitmap symbol) {
 		Point centerPosition = GeometryUtils.calculateCenterOfBoundingBox(this.coordinates[0]);
 		int halfSymbolWidth = symbol.getWidth() / 2;
 		int halfSymbolHeight = symbol.getHeight() / 2;
@@ -298,22 +265,19 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 	}
 
 	@Override
-	public void renderPointOfInterestCaption(String caption, float verticalOffset, Paint fill, Paint stroke)
-	{
+	public void renderPointOfInterestCaption(String caption, float verticalOffset, Paint fill, Paint stroke) {
 		this.nodes.add(new PointTextContainer(caption, this.poiPosition.x, this.poiPosition.y + verticalOffset, fill, stroke));
 	}
 
 	@Override
-	public void renderPointOfInterestCircle(float radius, Paint fill, Paint stroke, int level)
-	{
+	public void renderPointOfInterestCircle(float radius, Paint fill, Paint stroke, int level) {
 		List<ShapePaintContainer> list = this.drawingLayers.get(level);
 		list.add(new ShapePaintContainer(new CircleContainer(this.poiPosition, radius), stroke));
 		list.add(new ShapePaintContainer(new CircleContainer(this.poiPosition, radius), fill));
 	}
 
 	@Override
-	public void renderPointOfInterestSymbol(Bitmap symbol)
-	{
+	public void renderPointOfInterestSymbol(Bitmap symbol) {
 		int halfSymbolWidth = symbol.getWidth() / 2;
 		int halfSymbolHeight = symbol.getHeight() / 2;
 		double pointX = this.poiPosition.x - halfSymbolWidth;
@@ -323,30 +287,24 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 	}
 
 	@Override
-	public void renderWay(Paint stroke, int level)
-	{
+	public void renderWay(Paint stroke, int level) {
 		this.drawingLayers.get(level).add(new ShapePaintContainer(this.shapeContainer, stroke));
 	}
 
 	@Override
-	public void renderWaySymbol(Bitmap symbolBitmap, boolean alignCenter, boolean repeatSymbol)
-	{
+	public void renderWaySymbol(Bitmap symbolBitmap, boolean alignCenter, boolean repeatSymbol) {
 		WayDecorator.renderSymbol(symbolBitmap, alignCenter, repeatSymbol, this.coordinates, this.waySymbols);
 	}
 
 	@Override
-	public void renderWayText(String textKey, Paint fill, Paint stroke)
-	{
+	public void renderWayText(String textKey, Paint fill, Paint stroke) {
 		WayDecorator.renderText(textKey, fill, stroke, this.coordinates, this.wayNames);
 	}
 
-	private void clearLists()
-	{
-		for (int i = this.ways.size() - 1; i >= 0; --i)
-		{
+	private void clearLists() {
+		for (int i = this.ways.size() - 1; i >= 0; --i) {
 			List<List<ShapePaintContainer>> innerWayList = this.ways.get(i);
-			for (int j = innerWayList.size() - 1; j >= 0; --j)
-			{
+			for (int j = innerWayList.size() - 1; j >= 0; --j) {
 				innerWayList.get(j).clear();
 			}
 		}
@@ -358,108 +316,83 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 		this.waySymbols.clear();
 	}
 
-	private void createWayLists()
-	{
+	private void createWayLists() {
 		int levels = this.renderTheme.getLevels();
 		this.ways.clear();
 
-		for (byte i = LAYERS - 1; i >= 0; --i)
-		{
+		for (byte i = LAYERS - 1; i >= 0; --i) {
 			List<List<ShapePaintContainer>> innerWayList = new F_List<List<ShapePaintContainer>>(levels);
-			for (int j = levels - 1; j >= 0; --j)
-			{
+			for (int j = levels - 1; j >= 0; --j) {
 				innerWayList.add(new F_List<ShapePaintContainer>(0));
 			}
 			this.ways.add(innerWayList);
 		}
 	}
 
-	private CB_RenderTheme getRenderTheme(XmlRenderTheme jobTheme, DisplayModel displayModel)
-	{
-		try
-		{
+	private CB_RenderTheme getRenderTheme(XmlRenderTheme jobTheme, DisplayModel displayModel) {
+		try {
 			return CB_RenderThemeHandler.getRenderTheme(this.graphicFactory, displayModel, jobTheme);
-		}
-		catch (ParserConfigurationException e)
-		{
+		} catch (ParserConfigurationException e) {
 			LOGGER.log(Level.SEVERE, null, e);
-		}
-		catch (SAXException e)
-		{
+		} catch (SAXException e) {
 			LOGGER.log(Level.SEVERE, null, e);
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, null, e);
 		}
 		return null;
 	}
 
-	private void processReadMapData(MapReadResult mapReadResult)
-	{
-		if (mapReadResult == null)
-		{
+	private void processReadMapData(MapReadResult mapReadResult) {
+		if (mapReadResult == null) {
 			return;
 		}
 
-		for (PointOfInterest pointOfInterest : mapReadResult.pointOfInterests)
-		{
+		for (PointOfInterest pointOfInterest : mapReadResult.pointOfInterests) {
 			renderPointOfInterest(pointOfInterest);
 		}
 
-		for (Way way : mapReadResult.ways)
-		{
+		for (Way way : mapReadResult.ways) {
 			renderWay(way);
 		}
 
-		if (mapReadResult.isWater)
-		{
+		if (mapReadResult.isWater) {
 			renderWaterBackground();
 		}
 	}
 
-	private void renderPointOfInterest(PointOfInterest pointOfInterest)
-	{
+	private void renderPointOfInterest(PointOfInterest pointOfInterest) {
 		this.drawingLayers = this.ways.get(getValidLayer(pointOfInterest.layer));
 		this.poiPosition = scaleLatLong(pointOfInterest.position, this.currentRendererJob.displayModel.getTileSize());
 		this.renderTheme.matchNode(this, pointOfInterest.tags, this.currentRendererJob.tile.zoomLevel);
 	}
 
-	private void renderWaterBackground()
-	{
+	private void renderWaterBackground() {
 		this.drawingLayers = this.ways.get(0);
 		this.coordinates = getTilePixelCoordinates(this.currentRendererJob.displayModel.getTileSize());
 		this.shapeContainer = new PolylineContainer(this.coordinates);
 		this.renderTheme.matchClosedWay(this, Arrays.asList(TAG_NATURAL_WATER), this.currentRendererJob.tile.zoomLevel);
 	}
 
-	private void renderWay(Way way)
-	{
+	private void renderWay(Way way) {
 		this.drawingLayers = this.ways.get(getValidLayer(way.layer));
 		// TODO what about the label position?
 
 		LatLong[][] latLongs = way.latLongs;
 		this.coordinates = new Point[latLongs.length][];
-		for (int i = 0; i < this.coordinates.length; ++i)
-		{
-			if (latLongs[i] == null)
-			{
+		for (int i = 0; i < this.coordinates.length; ++i) {
+			if (latLongs[i] == null) {
 				return;
 			}
 			this.coordinates[i] = new Point[latLongs[i].length];
-			for (int j = 0; j < this.coordinates[i].length; ++j)
-			{
+			for (int j = 0; j < this.coordinates[i].length; ++j) {
 				this.coordinates[i][j] = scaleLatLong(latLongs[i][j], this.currentRendererJob.displayModel.getTileSize());
 			}
 		}
 		this.shapeContainer = new PolylineContainer(this.coordinates);
 
-		if (GeometryUtils.isClosedWay(this.coordinates[0]))
-		{
+		if (GeometryUtils.isClosedWay(this.coordinates[0])) {
 			this.renderTheme.matchClosedWay(this, way.tags, this.currentRendererJob.tile.zoomLevel);
-		}
-		else
-		{
+		} else {
 			this.renderTheme.matchLinearWay(this, way.tags, this.currentRendererJob.tile.zoomLevel);
 		}
 	}
@@ -470,15 +403,13 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 	 * @param zoomLevel
 	 *            the zoom level for which the scale stroke factor should be set.
 	 */
-	private void setScaleStrokeWidth(byte zoomLevel)
-	{
+	private void setScaleStrokeWidth(byte zoomLevel) {
 		int zoomLevelDiff = Math.max(zoomLevel - STROKE_MIN_ZOOM_LEVEL, 0);
 		this.renderTheme.scaleStrokeWidth((float) Math.pow(STROKE_INCREASE, zoomLevelDiff));
 	}
 
 	@Override
-	public TileGL execute(RendererJob rendererJob)
-	{
+	public TileGL execute(RendererJob rendererJob) {
 
 		// Fixme direct Buffer swap
 		/*
@@ -505,8 +436,7 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 
 		TileBitmap bmp = executeJob(rendererJob);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try
-		{
+		try {
 			bmp.compress(baos);
 			byte[] b = baos.toByteArray();
 
@@ -517,10 +447,8 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 			((ext_Bitmap) bmp).recycle();
 
 			return bmpTile;
-		}
-		catch (IOException e)
-		{
-			
+		} catch (IOException e) {
+
 			e.printStackTrace();
 		}
 		return null;
@@ -533,8 +461,7 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 	 *            the LatLong to convert.
 	 * @return the XY coordinates on the current object.
 	 */
-	private Point scaleLatLong(LatLong latLong, int tileSize)
-	{
+	private Point scaleLatLong(LatLong latLong, int tileSize) {
 		double pixelX = (tileLatLon_0_x - latLong.getLongitude()) / divLon;
 		double pixelY = (tileLatLon_0_y - latLong.getLatitude()) / divLat;
 

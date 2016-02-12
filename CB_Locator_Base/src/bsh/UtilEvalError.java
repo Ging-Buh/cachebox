@@ -48,24 +48,20 @@ package bsh;
  * 
  * @see UtilTargetError
  */
-public class UtilEvalError extends Exception
-{
+public class UtilEvalError extends Exception {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	protected UtilEvalError()
-	{
+	protected UtilEvalError() {
 	}
 
-	public UtilEvalError(String s)
-	{
+	public UtilEvalError(String s) {
 		super(s);
 	}
 
-	public UtilEvalError(String s, Throwable cause)
-	{
+	public UtilEvalError(String s, Throwable cause) {
 		super(s, cause);
 	}
 
@@ -76,18 +72,18 @@ public class UtilEvalError extends Exception
 	 * @param msg
 	 *            may be null for no additional message.
 	 */
-	public EvalError toEvalError(String msg, SimpleNode node, CallStack callstack)
-	{
-		if (Interpreter.DEBUG) printStackTrace();
+	public EvalError toEvalError(String msg, SimpleNode node, CallStack callstack) {
+		if (Interpreter.DEBUG)
+			printStackTrace();
 
-		if (msg == null) msg = "";
+		if (msg == null)
+			msg = "";
 		else
 			msg = msg + ": ";
 		return new EvalError(msg + getMessage(), node, callstack, this);
 	}
 
-	public EvalError toEvalError(SimpleNode node, CallStack callstack)
-	{
+	public EvalError toEvalError(SimpleNode node, CallStack callstack) {
 		return toEvalError(null, node, callstack);
 	}
 

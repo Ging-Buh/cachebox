@@ -39,25 +39,21 @@ import CB_Utils.Log.CB_SLF4J;
 import CB_Utils.Log.LogLevel;
 import CB_Utils.Util.IChanged;
 
-class Ex_1
-{
+class Ex_1 {
 
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(Ex_1.class);
 	public static final String br = System.getProperty("line.separator");
 
-	public static void main(String[] args)
-	{
+	public static void main(String[] args) {
 
 		DesktopMain.InitalConfig();
 
 		Config.settings.ReadFromDB();
 		new CB_SLF4J(Config.mWorkPath);
 		CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
-		Config.AktLogLevel.addChangedEventListener(new IChanged()
-		{
+		Config.AktLogLevel.addChangedEventListener(new IChanged() {
 			@Override
-			public void isChanged()
-			{
+			public void isChanged() {
 				CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
 			}
 		});
@@ -65,43 +61,36 @@ class Ex_1
 		File Dir = new File("./");
 		final String[] files;
 
-		files = Dir.list(new FilenameFilter()
-		{
+		files = Dir.list(new FilenameFilter() {
 			@Override
-			public boolean accept(File dir, String filename)
-			{
-				if (filename.contains("src")) return true;
-				if (filename.contains("DCB") && filename.endsWith("jar")) return true;
+			public boolean accept(File dir, String filename) {
+				if (filename.contains("src"))
+					return true;
+				if (filename.contains("DCB") && filename.endsWith("jar"))
+					return true;
 				return false;
 			}
 		});
 
-		if (files.length > 0 && Config.installRev.getValue() < GlobalCore.CurrentRevision)
-		{
+		if (files.length > 0 && Config.installRev.getValue() < GlobalCore.CurrentRevision) {
 			Config.installRev.setValue(GlobalCore.CurrentRevision);
 			Config.newInstall.setValue(true);
 			Config.AcceptChanges();
-		}
-		else
-		{
+		} else {
 			Config.newInstall.setValue(false);
 			Config.AcceptChanges();
 		}
 
-		if (files.length > 0 && !files[0].contains("src"))
-		{
+		if (files.length > 0 && !files[0].contains("src")) {
 			File workJar = new File(files[0]);
-			if (workJar.exists())
-			{
+			if (workJar.exists()) {
 				// don't show Launcher
 				final Gui screen = new Gui("Device Launcher");
 				screen.setSize(250, 500);
 				screen.setVisible(true);
 				// DesktopMain.start(Gui.iniPhone(), false, false, true, screen);
 			}
-		}
-		else
-		{
+		} else {
 			final Gui screen = new Gui("Device Launcher");
 			screen.setSize(250, 500);
 			screen.setVisible(true);
@@ -111,8 +100,7 @@ class Ex_1
 
 } // class Ex_1
 
-class Gui extends Frame implements ActionListener, WindowListener
-{
+class Gui extends Frame implements ActionListener, WindowListener {
 
 	/**
 	 * 
@@ -123,8 +111,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 	Checkbox simulateChkBox;
 
 	// constructor
-	public Gui(String s)
-	{
+	public Gui(String s) {
 		super(s);
 		setBackground(Color.LIGHT_GRAY);
 		setLayout(new FlowLayout());
@@ -173,74 +160,50 @@ class Gui extends Frame implements ActionListener, WindowListener
 	}
 
 	// define action for Button press
-	public void actionPerformed(ActionEvent event)
-	{
-		if (event.getActionCommand().equals("Phone 480x800 HDPI"))
-		{
+	public void actionPerformed(ActionEvent event) {
+		if (event.getActionCommand().equals("Phone 480x800 HDPI")) {
 			DesktopMain.start(iniPhone(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
-		}
-		else if (event.getActionCommand().equals("Tab 1280x752 MDPI"))
-		{
+		} else if (event.getActionCommand().equals("Tab 1280x752 MDPI")) {
 			DesktopMain.start(iniTab(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
-		}
-		else if (event.getActionCommand().equals("Tab 1024x768 MDPI"))
-		{
+		} else if (event.getActionCommand().equals("Tab 1024x768 MDPI")) {
 			DesktopMain.start(iniPad10(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
-		}
-		else if (event.getActionCommand().equals("Phone 240x400 LDPI"))
-		{
+		} else if (event.getActionCommand().equals("Phone 240x400 LDPI")) {
 			DesktopMain.start(iniLowPhone(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
-		}
-		else if (event.getActionCommand().equals("Phone 720x1280 XHDPI"))
-		{
+		} else if (event.getActionCommand().equals("Phone 720x1280 XHDPI")) {
 			DesktopMain.start(iniHighPhone(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
-		}
-		else if (event.getActionCommand().equals("Desctop Full"))
-		{
+		} else if (event.getActionCommand().equals("Desctop Full")) {
 			DesktopMain.start(iniDesktop(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
-		}
-		else if (event.getActionCommand().equals("Tab Nexus7"))
-		{
+		} else if (event.getActionCommand().equals("Tab Nexus7")) {
 			DesktopMain.start(iniNexus7(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
-		}
-		else if (event.getActionCommand().equals("Phone on MAC HDPI"))
-		{
+		} else if (event.getActionCommand().equals("Phone on MAC HDPI")) {
 			DesktopMain.start(iniMacEmulator(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
 		}
 	}
 
 	// define methods in WindowListener interface
-	public void windowClosing(WindowEvent event)
-	{
+	public void windowClosing(WindowEvent event) {
 		System.exit(0);
 	}
 
-	public void windowClosed(WindowEvent event)
-	{
+	public void windowClosed(WindowEvent event) {
 	} // do nothing for now
 
-	public void windowDeiconified(WindowEvent event)
-	{
+	public void windowDeiconified(WindowEvent event) {
 	}
 
-	public void windowIconified(WindowEvent event)
-	{
+	public void windowIconified(WindowEvent event) {
 	}
 
-	public void windowActivated(WindowEvent event)
-	{
+	public void windowActivated(WindowEvent event) {
 	}
 
-	public void windowDeactivated(WindowEvent event)
-	{
+	public void windowDeactivated(WindowEvent event) {
 	}
 
-	public void windowOpened(WindowEvent event)
-	{
+	public void windowOpened(WindowEvent event) {
 	}
 
-	public static DevicesSizes iniDesktop()
-	{
+	public static DevicesSizes iniDesktop() {
 
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -251,8 +214,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 	}
 
-	public static DevicesSizes iniPhone()
-	{
+	public static DevicesSizes iniPhone() {
 		Size myInitialSize = new Size(480, 772);
 		DevicesSizes ui = getHDPI(myInitialSize);
 
@@ -260,8 +222,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 	}
 
-	public static DevicesSizes iniTab()
-	{
+	public static DevicesSizes iniTab() {
 
 		Size myInitialSize = new Size(1280, 752);
 		DevicesSizes ui = getMDPI(myInitialSize);
@@ -270,8 +231,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 	}
 
-	public static DevicesSizes iniPad10()
-	{
+	public static DevicesSizes iniPad10() {
 
 		Size myInitialSize = new Size(1024, 768);
 		DevicesSizes ui = getMDPI(myInitialSize);
@@ -280,8 +240,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 	}
 
-	public static DevicesSizes iniLowPhone()
-	{
+	public static DevicesSizes iniLowPhone() {
 
 		Size myInitialSize = new Size(240, 381);
 		DevicesSizes ui = getLDPI(myInitialSize);
@@ -290,8 +249,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 	}
 
-	public static DevicesSizes iniHighPhone()
-	{
+	public static DevicesSizes iniHighPhone() {
 
 		Size myInitialSize = new Size(720, 1230);
 		DevicesSizes ui = getXHDPI(myInitialSize);
@@ -300,8 +258,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 	}
 
-	public static DevicesSizes iniNexus7()
-	{
+	public static DevicesSizes iniNexus7() {
 
 		Size myInitialSize = new Size(1280, 703);
 		DevicesSizes ui = getNexus7(myInitialSize);
@@ -310,8 +267,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 	}
 
-	public static DevicesSizes iniMacEmulator()
-	{
+	public static DevicesSizes iniMacEmulator() {
 
 		Size myInitialSize = new Size(420, 700);
 		DevicesSizes ui = getMac(myInitialSize);
@@ -320,8 +276,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 	}
 
-	public static DevicesSizes getMac(Size myInitialSize)
-	{
+	public static DevicesSizes getMac(Size myInitialSize) {
 		DevicesSizes ui = new DevicesSizes();
 
 		ui.Window = myInitialSize;
@@ -331,8 +286,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 		return ui;
 	}
 
-	public static DevicesSizes getLDPI(Size myInitialSize)
-	{
+	public static DevicesSizes getLDPI(Size myInitialSize) {
 		DevicesSizes ui = new DevicesSizes();
 
 		ui.Window = myInitialSize;
@@ -342,8 +296,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 		return ui;
 	}
 
-	public static DevicesSizes getMDPI(Size myInitialSize)
-	{
+	public static DevicesSizes getMDPI(Size myInitialSize) {
 		DevicesSizes ui = new DevicesSizes();
 
 		ui.Window = myInitialSize;
@@ -353,8 +306,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 		return ui;
 	}
 
-	public static DevicesSizes getHDPI(Size myInitialSize)
-	{
+	public static DevicesSizes getHDPI(Size myInitialSize) {
 		DevicesSizes ui = new DevicesSizes();
 
 		ui.Window = myInitialSize;
@@ -364,8 +316,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 		return ui;
 	}
 
-	public static DevicesSizes getXHDPI(Size myInitialSize)
-	{
+	public static DevicesSizes getXHDPI(Size myInitialSize) {
 		DevicesSizes ui = new DevicesSizes();
 
 		ui.Window = myInitialSize;
@@ -375,8 +326,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 		return ui;
 	}
 
-	public static DevicesSizes getNexus7(Size myInitialSize)
-	{
+	public static DevicesSizes getNexus7(Size myInitialSize) {
 		DevicesSizes ui = new DevicesSizes();
 
 		ui.Window = myInitialSize;

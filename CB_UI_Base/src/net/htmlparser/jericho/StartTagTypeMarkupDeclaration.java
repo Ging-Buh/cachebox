@@ -23,36 +23,38 @@ package net.htmlparser.jericho;
 import java.util.*;
 
 class StartTagTypeMarkupDeclaration extends StartTagTypeGenericImplementation {
-	static final StartTagTypeMarkupDeclaration INSTANCE=new StartTagTypeMarkupDeclaration();
+	static final StartTagTypeMarkupDeclaration INSTANCE = new StartTagTypeMarkupDeclaration();
 
-	static final String ELEMENT="!element";
-	static final String ATTLIST="!attlist";
-	static final String ENTITY="!entity";
-	static final String NOTATION="!notation";
+	static final String ELEMENT = "!element";
+	static final String ATTLIST = "!attlist";
+	static final String ENTITY = "!entity";
+	static final String NOTATION = "!notation";
 
 	private StartTagTypeMarkupDeclaration() {
-		super("markup declaration","<!",">",null,false,false,true);
+		super("markup declaration", "<!", ">", null, false, false, true);
 	}
 
 	protected Tag constructTagAt(final Source source, final int pos) {
-		final Tag tag=super.constructTagAt(source,pos);
-		if (tag==null) return null;
-		final String name=tag.getName();
-		if (name!=ELEMENT && name!=ATTLIST && name!=ENTITY && name!=NOTATION) return null; // can use == instead of .equals() because the names are in HtmlElements.CONSTANT_NAME_MAP
+		final Tag tag = super.constructTagAt(source, pos);
+		if (tag == null)
+			return null;
+		final String name = tag.getName();
+		if (name != ELEMENT && name != ATTLIST && name != ENTITY && name != NOTATION)
+			return null; // can use == instead of .equals() because the names are in HtmlElements.CONSTANT_NAME_MAP
 		return tag;
 	}
 
 	protected int getEnd(final Source source, int pos) {
-		final ParseText parseText=source.getParseText();
-		boolean insideQuotes=false;
+		final ParseText parseText = source.getParseText();
+		boolean insideQuotes = false;
 		do {
-			final char c=parseText.charAt(pos);
-			if (c=='"') {
-				insideQuotes=!insideQuotes;
-			} else if (c=='>' && !insideQuotes) {
-				return pos+1;
+			final char c = parseText.charAt(pos);
+			if (c == '"') {
+				insideQuotes = !insideQuotes;
+			} else if (c == '>' && !insideQuotes) {
+				return pos + 1;
 			}
-		} while ((++pos)<source.getEnd());
+		} while ((++pos) < source.getEnd());
 		return -1;
 	}
 }

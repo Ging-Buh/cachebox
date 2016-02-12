@@ -7,8 +7,7 @@ import org.junit.Test;
 import CB_Locator.Coordinate;
 import CB_Locator.TestCoordinate;
 
-public class Test_TestCoordinate extends TestCase
-{
+public class Test_TestCoordinate extends TestCase {
 
 	/**
 	 * Maximum possible latitude coordinate.
@@ -32,11 +31,9 @@ public class Test_TestCoordinate extends TestCase
 	private static final double DELTA = 1e-6;
 
 	@Test
-	public void testConvertIntToByteToInt()
-	{
+	public void testConvertIntToByteToInt() {
 		// Test all Values are possible for Latitude
-		for (double i = LATITUDE_MIN; i < LATITUDE_MAX; i += 0.000001)
-		{
+		for (double i = LATITUDE_MIN; i < LATITUDE_MAX; i += 0.000001) {
 			// convert Latitude to Integer
 			final int a = TestCoordinate.degreesToMicrodegrees(i);
 
@@ -51,8 +48,7 @@ public class Test_TestCoordinate extends TestCase
 
 		// Test all Values are possible for Longitude
 
-		for (double i = LONGITUDE_MIN; i < LONGITUDE_MAX; i += 0.000001)
-		{
+		for (double i = LONGITUDE_MIN; i < LONGITUDE_MAX; i += 0.000001) {
 			// convert Latitude to Integer
 			final int a = TestCoordinate.degreesToMicrodegrees(i);
 
@@ -68,9 +64,8 @@ public class Test_TestCoordinate extends TestCase
 	}
 
 	@Test
-	public void testCoordinateStorrage()
-	{
-		Coordinate corPankow = new Coordinate("52° 34,982N / 13° 23,540E");
+	public void testCoordinateStorrage() {
+		Coordinate corPankow = new Coordinate("52ï¿½ 34,982N / 13ï¿½ 23,540E");
 		TestCoordinate coor = new TestCoordinate(corPankow.getLatitude(), corPankow.getLongitude());
 
 		double la = coor.getLatitude();
@@ -84,8 +79,7 @@ public class Test_TestCoordinate extends TestCase
 	public static double test;
 
 	@Test
-	public void testPerformance()
-	{
+	public void testPerformance() {
 		long count = 0;
 
 		long time1;
@@ -96,10 +90,8 @@ public class Test_TestCoordinate extends TestCase
 		double coordStep = 1.45;// 0.0001;
 
 		// performance Coordinate
-		for (double x = LATITUDE_MIN; x < LATITUDE_MAX; x += coordStep)
-		{
-			for (double y = LONGITUDE_MIN; y < LONGITUDE_MAX; y += coordStep)
-			{
+		for (double x = LATITUDE_MIN; x < LATITUDE_MAX; x += coordStep) {
+			for (double y = LONGITUDE_MIN; y < LONGITUDE_MAX; y += coordStep) {
 				// create the Coordinate
 				Coordinate t = new Coordinate(x, y);
 
@@ -114,10 +106,8 @@ public class Test_TestCoordinate extends TestCase
 		time1 = System.currentTimeMillis() - start;
 		start = System.currentTimeMillis();
 		// performance TestCoordinate
-		for (double x = LATITUDE_MIN; x < LATITUDE_MAX; x += coordStep)
-		{
-			for (double y = LONGITUDE_MIN; y < LONGITUDE_MAX; y += coordStep)
-			{
+		for (double x = LATITUDE_MIN; x < LATITUDE_MAX; x += coordStep) {
+			for (double y = LONGITUDE_MIN; y < LONGITUDE_MAX; y += coordStep) {
 				// create the Coordinate
 				TestCoordinate t = new TestCoordinate(x, y);
 

@@ -25,32 +25,26 @@ import com.badlogic.gdx.utils.Disposable;
 /**
  * @author Longri
  */
-public class QuadranglePath extends CB_List<Quadrangle> implements Disposable
-{
+public class QuadranglePath extends CB_List<Quadrangle> implements Disposable {
 	private static final long serialVersionUID = 2368800461989756291L;
 	protected AtomicBoolean isDisposed = new AtomicBoolean(false);
 
-	public QuadranglePath(PathLine pathLine, GL_Paint paint)
-	{
-		for (int i = 0, n = pathLine.size(); i < n; i++)
-		{
+	public QuadranglePath(PathLine pathLine, GL_Paint paint) {
+		for (int i = 0, n = pathLine.size(); i < n; i++) {
 			this.add(new Quadrangle(pathLine.get(i), paint.getStrokeWidth()));
 		}
 	}
 
-	public boolean isDisposed()
-	{
+	public boolean isDisposed() {
 		return isDisposed.get();
 	}
 
 	@Override
-	public void dispose()
-	{
-		synchronized (isDisposed)
-		{
-			if (isDisposed.get()) return;
-			for (int i = 0, n = this.size(); i < n; i++)
-			{
+	public void dispose() {
+		synchronized (isDisposed) {
+			if (isDisposed.get())
+				return;
+			for (int i = 0, n = this.size(); i < n; i++) {
 				this.get(i).dispose();
 			}
 			this.clear();

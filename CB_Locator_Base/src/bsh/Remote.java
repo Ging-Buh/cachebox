@@ -52,12 +52,9 @@ import java.net.URLEncoder;
  * Remote executor class. Posts a script from the command line to a BshServlet or embedded interpreter using (respectively) HTTP or the bsh
  * telnet service. Output is printed to stdout and a numeric return value is scraped from the result.
  */
-public class Remote
-{
-	public static void main(String args[]) throws Exception
-	{
-		if (args.length < 2)
-		{
+public class Remote {
+	public static void main(String args[]) throws Exception {
+		if (args.length < 2) {
 			System.out.println("usage: Remote URL(http|bsh) file [ file ] ... ");
 			System.exit(1);
 		}
@@ -70,34 +67,25 @@ public class Remote
 	/**
 	 * Evaluate text in the interpreter at url, returning a possible integer return value.
 	 */
-	public static int eval(String url, String text) throws IOException
-	{
+	public static int eval(String url, String text) throws IOException {
 		String returnValue = null;
-		if (url.startsWith("http:"))
-		{
+		if (url.startsWith("http:")) {
 			returnValue = doHttp(url, text);
-		}
-		else if (url.startsWith("bsh:"))
-		{
+		} else if (url.startsWith("bsh:")) {
 			returnValue = doBsh(url, text);
-		}
-		else
+		} else
 			throw new IOException("Unrecognized URL type." + "Scheme must be http:// or bsh://");
 
-		try
-		{
+		try {
 			return Integer.parseInt(returnValue);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			// this convention may change...
 			return 0;
 		}
 	}
 
 	@SuppressWarnings("resource")
-	static String doBsh(String url, String text)
-	{
+	static String doBsh(String url, String text) {
 		OutputStream out;
 		InputStream in;
 		String host = "";
@@ -106,22 +94,18 @@ public class Remote
 		String orgURL = url;
 
 		// Need some format checking here
-		try
-		{
+		try {
 			url = url.substring(6); // remove the bsh://
 			// get the index of the : between the host and the port is located
 			int index = url.indexOf(":");
 			host = url.substring(0, index);
 			port = url.substring(index + 1, url.length());
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			System.err.println("Bad URL: " + orgURL + ": " + ex);
 			return returnValue;
 		}
 
-		try
-		{
+		try {
 			System.out.println("Connecting to host : " + host + " at port : " + port);
 			Socket s = new Socket(host, Integer.parseInt(port) + 1);
 
@@ -138,24 +122,19 @@ public class Remote
 			// Need to scrape a value from the last line?
 			returnValue = "1";
 			return returnValue;
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			System.err.println("Error communicating with server: " + ex);
 			return returnValue;
 		}
 	}
 
-	private static void sendLine(String line, OutputStream outPipe) throws IOException
-	{
+	private static void sendLine(String line, OutputStream outPipe) throws IOException {
 		outPipe.write(line.getBytes());
 		outPipe.flush();
 	}
 
-	
 	@SuppressWarnings("deprecation")
-	static String doHttp(String postURL, String text)
-	{
+	static String doHttp(String postURL, String text) {
 		String returnValue = null;
 		StringBuilder sb = new StringBuilder();
 		sb.append("bsh.client=Remote");
@@ -167,8 +146,7 @@ public class Remote
 		 */
 		String formData = sb.toString();
 
-		try
-		{
+		try {
 			URL url = new URL(postURL);
 			HttpURLConnection urlcon = (HttpURLConnection) url.openConnection();
 			urlcon.setRequestMethod("POST");
@@ -181,7 +159,8 @@ public class Remote
 
 			// read results...
 			int rc = urlcon.getResponseCode();
-			if (rc != HttpURLConnection.HTTP_OK) System.out.println("Error, HTTP response: " + rc);
+			if (rc != HttpURLConnection.HTTP_OK)
+				System.out.println("Error, HTTP response: " + rc);
 
 			returnValue = urlcon.getHeaderField("Bsh-Return");
 
@@ -192,13 +171,9 @@ public class Remote
 
 			System.out.println("Return Value: " + returnValue);
 
-		}
-		catch (MalformedURLException e)
-		{
+		} catch (MalformedURLException e) {
 			System.out.println(e); // bad postURL
-		}
-		catch (IOException e2)
-		{
+		} catch (IOException e2) {
 			System.out.println(e2); // I/O error
 		}
 
@@ -209,8 +184,7 @@ public class Remote
 	 * Note: assumes default character encoding
 	 */
 	@SuppressWarnings("resource")
-	static String getFile(String name) throws FileNotFoundException, IOException
-	{
+	static String getFile(String name) throws FileNotFoundException, IOException {
 		StringBuilder sb = new StringBuilder();
 		BufferedReader bin = new BufferedReader(new FileReader(name));
 		String line;

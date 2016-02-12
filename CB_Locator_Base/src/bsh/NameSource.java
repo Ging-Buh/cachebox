@@ -45,14 +45,12 @@ package bsh;
  * @see bsh.util.NameCompletion
  * @see bsh.util.NameCompletionTable
  */
-public interface NameSource
-{
+public interface NameSource {
 	public String[] getAllNames();
 
 	public void addNameSourceListener(NameSource.Listener listener);
 
-	public static interface Listener
-	{
+	public static interface Listener {
 		public void nameSourceChanged(NameSource src);
 		/**
 		 * Provide feedback on the progress of mapping a namespace

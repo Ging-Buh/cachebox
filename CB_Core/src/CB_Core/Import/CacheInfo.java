@@ -1,7 +1,6 @@
 package CB_Core.Import;
 
-public class CacheInfo
-{
+public class CacheInfo {
 	public long id;
 	public int ListingCheckSum;
 	public boolean ListingChanged = true;
@@ -14,14 +13,12 @@ public class CacheInfo
 	public boolean favorite = false;
 	public long GpxFilename_Id = 0;
 
-	public CacheInfo(long ID, long GpxFilename_Id)
-	{
+	public CacheInfo(long ID, long GpxFilename_Id) {
 		this.id = ID;
 		this.GpxFilename_Id = GpxFilename_Id;
 	}
 
-	public CacheInfo()
-	{
+	public CacheInfo() {
 
 	}
 }

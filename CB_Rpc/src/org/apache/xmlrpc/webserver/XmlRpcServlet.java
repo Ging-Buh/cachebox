@@ -41,7 +41,6 @@ import org.apache.xmlrpc.util.ReflectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /** <p>A default servlet implementation The typical use would
  * be to derive a subclass, which is overwriting at least the
  * method {@link #newXmlRpcHandlerMapping()}.</p>
@@ -57,10 +56,10 @@ import org.slf4j.LoggerFactory;
 public class XmlRpcServlet extends HttpServlet {
 	private static final long serialVersionUID = 2348768267234L;
 	private static final Logger log = LoggerFactory.getLogger(XmlRpcServlet.class);
-    private XmlRpcServletServer server;
-    private AbstractReflectiveHandlerMapping.AuthenticationHandler authenticationHandler;
-    private RequestProcessorFactoryFactory requestProcessorFactoryFactory;
-    private TypeConverterFactory typeConverterFactory;
+	private XmlRpcServletServer server;
+	private AbstractReflectiveHandlerMapping.AuthenticationHandler authenticationHandler;
+	private RequestProcessorFactoryFactory requestProcessorFactoryFactory;
+	private TypeConverterFactory typeConverterFactory;
 
 	/** Returns the servlets instance of {@link XmlRpcServletServer}. 
 	 * @return The configurable instance of {@link XmlRpcServletServer}.
@@ -69,35 +68,30 @@ public class XmlRpcServlet extends HttpServlet {
 		return server;
 	}
 
-    private void handleInitParameters(ServletConfig pConfig) throws ServletException {
-        for (Enumeration en = pConfig.getInitParameterNames();  en.hasMoreElements();  ) {
-            String name = (String) en.nextElement();
-            String value = pConfig.getInitParameter(name);
-            try {
-                if (!ReflectionUtil.setProperty(this, name, value)
-                    &&  !ReflectionUtil.setProperty(server, name, value)
-                    &&  !ReflectionUtil.setProperty(server.getConfig(), name, value)) {
-                    throw new ServletException("Unknown init parameter " + name);
-                }
-            } catch (IllegalAccessException e) {
-                throw new ServletException("Illegal access to instance of " + server.getClass().getName()
-                        + " while setting property " + name + ": " + e.getMessage(), e);
-            } catch (InvocationTargetException e) {
-                Throwable t = e.getTargetException();
-                throw new ServletException("Failed to invoke setter for property " + name
-                        + " on instance of " + server.getClass().getName()
-                        + ": " + t.getMessage(), t);
-            }
-        }
-    }
+	private void handleInitParameters(ServletConfig pConfig) throws ServletException {
+		for (Enumeration en = pConfig.getInitParameterNames(); en.hasMoreElements();) {
+			String name = (String) en.nextElement();
+			String value = pConfig.getInitParameter(name);
+			try {
+				if (!ReflectionUtil.setProperty(this, name, value) && !ReflectionUtil.setProperty(server, name, value) && !ReflectionUtil.setProperty(server.getConfig(), name, value)) {
+					throw new ServletException("Unknown init parameter " + name);
+				}
+			} catch (IllegalAccessException e) {
+				throw new ServletException("Illegal access to instance of " + server.getClass().getName() + " while setting property " + name + ": " + e.getMessage(), e);
+			} catch (InvocationTargetException e) {
+				Throwable t = e.getTargetException();
+				throw new ServletException("Failed to invoke setter for property " + name + " on instance of " + server.getClass().getName() + ": " + t.getMessage(), t);
+			}
+		}
+	}
 
 	public void init(ServletConfig pConfig) throws ServletException {
 		super.init(pConfig);
 		try {
-            server = newXmlRpcServer(pConfig);
-            handleInitParameters(pConfig);
+			server = newXmlRpcServer(pConfig);
+			handleInitParameters(pConfig);
 			server.setHandlerMapping(newXmlRpcHandlerMapping());
-        } catch (XmlRpcException e) {
+		} catch (XmlRpcException e) {
 			try {
 				log("Failed to create XmlRpcServer: " + e.getMessage(), e);
 			} catch (Throwable ignore) {
@@ -109,47 +103,46 @@ public class XmlRpcServlet extends HttpServlet {
 	/** Sets the servlets {@link AbstractReflectiveHandlerMapping.AuthenticationHandler}.
 	 */
 	public void setAuthenticationHandler(AbstractReflectiveHandlerMapping.AuthenticationHandler pHandler) {
-	    authenticationHandler = pHandler;
+		authenticationHandler = pHandler;
 	}
 
 	/** Returns the servlets {@link AbstractReflectiveHandlerMapping.AuthenticationHandler}.
 	 */
 	public AbstractReflectiveHandlerMapping.AuthenticationHandler getAuthenticationHandler() {
-	    return authenticationHandler;
+		return authenticationHandler;
 	}
 
 	/** Sets the servlets {@link RequestProcessorFactoryFactory}.
 	 */
 	public void setRequestProcessorFactoryFactory(RequestProcessorFactoryFactory pFactory) {
-        requestProcessorFactoryFactory = pFactory;
+		requestProcessorFactoryFactory = pFactory;
 	}
 
 	/** Returns the servlets {@link RequestProcessorFactoryFactory}.
 	 */
 	public RequestProcessorFactoryFactory getRequestProcessorFactoryFactory() {
-        return requestProcessorFactoryFactory;
+		return requestProcessorFactoryFactory;
 	}
 
 	/** Sets the servlets {@link TypeConverterFactory}.
 	 */
 	public void setTypeConverterFactory(TypeConverterFactory pFactory) {
-	    typeConverterFactory = pFactory;
+		typeConverterFactory = pFactory;
 	}
 
-    /** Returns the servlets {@link TypeConverterFactory}.
-     */
-    public TypeConverterFactory getTypeConverterFactory() {
-        return typeConverterFactory;
-    }
+	/** Returns the servlets {@link TypeConverterFactory}.
+	 */
+	public TypeConverterFactory getTypeConverterFactory() {
+		return typeConverterFactory;
+	}
 
-    /** Creates a new instance of {@link XmlRpcServer},
+	/** Creates a new instance of {@link XmlRpcServer},
 	 * which is being used to process the requests. The default implementation
 	 * will simply invoke <code>new {@link XmlRpcServer}.
 	 * @param pConfig The servlets configuration.
 	 * @throws XmlRpcException
 	 */
-	protected XmlRpcServletServer newXmlRpcServer(ServletConfig pConfig)
-			throws XmlRpcException {
+	protected XmlRpcServletServer newXmlRpcServer(ServletConfig pConfig) throws XmlRpcException {
 		return new XmlRpcServletServer();
 	}
 
@@ -174,19 +167,19 @@ public class XmlRpcServlet extends HttpServlet {
 	 * {@link #newXmlRpcHandlerMapping()}.
 	 */
 	protected PropertyHandlerMapping newPropertyHandlerMapping(URL url) throws IOException, XmlRpcException {
-        PropertyHandlerMapping mapping = new PropertyHandlerMapping();
-        mapping.setAuthenticationHandler(authenticationHandler);
-        if (requestProcessorFactoryFactory != null) {
-            mapping.setRequestProcessorFactoryFactory(requestProcessorFactoryFactory);
-        }
-        if (typeConverterFactory != null) {
-            mapping.setTypeConverterFactory(typeConverterFactory);
-        } else {
-            mapping.setTypeConverterFactory(server.getTypeConverterFactory());
-        }
-        mapping.setVoidMethodEnabled(server.getConfig().isEnabledForExtensions());
-        mapping.load(Thread.currentThread().getContextClassLoader(), url);
-        return mapping;
+		PropertyHandlerMapping mapping = new PropertyHandlerMapping();
+		mapping.setAuthenticationHandler(authenticationHandler);
+		if (requestProcessorFactoryFactory != null) {
+			mapping.setRequestProcessorFactoryFactory(requestProcessorFactoryFactory);
+		}
+		if (typeConverterFactory != null) {
+			mapping.setTypeConverterFactory(typeConverterFactory);
+		} else {
+			mapping.setTypeConverterFactory(server.getTypeConverterFactory());
+		}
+		mapping.setVoidMethodEnabled(server.getConfig().isEnabledForExtensions());
+		mapping.load(Thread.currentThread().getContextClassLoader(), url);
+		return mapping;
 	}
 
 	/** Creates a new instance of {@link org.apache.xmlrpc.webserver.RequestData}
@@ -196,11 +189,11 @@ public class XmlRpcServlet extends HttpServlet {
 		server.execute(pRequest, pResponse);
 	}
 
-    public void log(String pMessage, Throwable pThrowable) {
-        server.getErrorLogger().log(pMessage, pThrowable);
-    }
+	public void log(String pMessage, Throwable pThrowable) {
+		server.getErrorLogger().log(pMessage, pThrowable);
+	}
 
-    public void log(String pMessage) {
-        log.info(pMessage);
-    }
+	public void log(String pMessage) {
+		log.info(pMessage);
+	}
 }

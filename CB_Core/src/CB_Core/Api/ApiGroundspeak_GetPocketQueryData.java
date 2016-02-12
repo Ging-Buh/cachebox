@@ -34,53 +34,43 @@ import CB_Core.Api.PocketQuery.PQ;
  *         <p>
  *         HTTP Method: GET
  */
-public class ApiGroundspeak_GetPocketQueryData extends ApiGroundspeak
-{
+public class ApiGroundspeak_GetPocketQueryData extends ApiGroundspeak {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(ApiGroundspeak_GetPocketQueryData.class);
 	private PQ pocketQuery;
 	private ArrayList<String> caches;
 
-	public ApiGroundspeak_GetPocketQueryData()
-	{
+	public ApiGroundspeak_GetPocketQueryData() {
 		super();
 		caches = new ArrayList<String>();
 	}
 
-	public void setPQ(PQ pocketQuery)
-	{
+	public void setPQ(PQ pocketQuery) {
 		this.pocketQuery = pocketQuery;
 	}
 
-	public ArrayList<String> getCaches()
-	{
+	public ArrayList<String> getCaches() {
 		return caches;
 	}
 
 	@Override
-	protected queryType getQueryType()
-	{
+	protected queryType getQueryType() {
 		return queryType.GET;
 	}
 
 	@Override
-	protected String getApiFunction()
-	{
+	protected String getApiFunction() {
 		return "GetPocketQueryData";
 	}
 
 	@Override
-	protected boolean getRequest(JSONObject request)
-	{
+	protected boolean getRequest(JSONObject request) {
 		// create Request String here
-		try
-		{
+		try {
 			request.put("PocketQueryGuid", pocketQuery.GUID);
 			request.put("StartItem", 0);
 			request.put("MaxItems", 1000);
 			request.put("GCListOnly", true);
-		}
-		catch (JSONException e)
-		{
+		} catch (JSONException e) {
 			log.error("ApiGS_GetPocketQueryData", e.getMessage());
 			return false;
 		}
@@ -89,16 +79,14 @@ public class ApiGroundspeak_GetPocketQueryData extends ApiGroundspeak
 	}
 
 	@Override
-	protected ApiGroundspeakResult parseJson(JSONObject json) throws JSONException
-	{
+	protected ApiGroundspeakResult parseJson(JSONObject json) throws JSONException {
 		caches.clear();
 		ApiGroundspeakResult result = new ApiGroundspeakResult(-1, "");
 
 		JSONArray jCaches = json.getJSONArray("CacheCodes");
 		log.debug("got " + jCaches.length() + " Caches from gc");
 
-		for (int i = 0; i < jCaches.length(); i++)
-		{
+		for (int i = 0; i < jCaches.length(); i++) {
 			String gcCode = (String) jCaches.get(i);
 
 			log.debug("handling " + gcCode);

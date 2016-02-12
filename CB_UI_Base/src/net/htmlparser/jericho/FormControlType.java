@@ -148,7 +148,7 @@ public enum FormControlType {
 	 *    <code>{@link #isSubmit()} = true</code><br />
 	 * </dl>
 	 */
-	BUTTON (HTMLElementName.BUTTON,true,true),
+	BUTTON(HTMLElementName.BUTTON, true, true),
 
 	/**
 	 * The form control type given to a <a href="#checkbox-control">checkbox</a> control.
@@ -163,7 +163,7 @@ public enum FormControlType {
 	 *    <code>{@link #isSubmit()} = false</code><br />
 	 * </dl>
 	 */
-	CHECKBOX (HTMLElementName.INPUT,true,false),
+	CHECKBOX(HTMLElementName.INPUT, true, false),
 
 	/**
 	 * The form control type given to a <a href="#file-select-control">file select</a> control.
@@ -194,7 +194,7 @@ public enum FormControlType {
 	 *    <code>{@link #isSubmit()} = false</code><br />
 	 * </dl>
 	 */
-	FILE (HTMLElementName.INPUT,false,false),
+	FILE(HTMLElementName.INPUT, false, false),
 
 	/**
 	 * The form control type given to a <a href="#hidden-control">hidden</a> control.
@@ -211,7 +211,7 @@ public enum FormControlType {
 	 * Note that {@link #hasPredefinedValue()} returns <code>false</code> for this control type
 	 * because the value of hidden fields is usually set via server or client side scripting.
 	 */
-	HIDDEN (HTMLElementName.INPUT,false,false),
+	HIDDEN(HTMLElementName.INPUT, false, false),
 
 	/**
 	 * The form control type given to a <a href="#submit-button">submit button</a> control implemented using an
@@ -244,7 +244,7 @@ public enum FormControlType {
 	 *    <code>{@link #isSubmit()} = true</code><br />
 	 * </dl>
 	 */
-	IMAGE (HTMLElementName.INPUT,true,true),
+	IMAGE(HTMLElementName.INPUT, true, true),
 
 	/**
 	 * The form control type given to a <a href="#text-input-control">text input</a> control implemented using an
@@ -261,7 +261,7 @@ public enum FormControlType {
 	 *    <code>{@link #isSubmit()} = false</code><br />
 	 * </dl>
 	 */
-	PASSWORD (HTMLElementName.INPUT,false,false),
+	PASSWORD(HTMLElementName.INPUT, false, false),
 
 	/**
 	 * The form control type given to a <a href="#radio-button-control">radio button</a> control.
@@ -276,7 +276,7 @@ public enum FormControlType {
 	 *    <code>{@link #isSubmit()} = false</code><br />
 	 * </dl>
 	 */
-	RADIO (HTMLElementName.INPUT,true,false),
+	RADIO(HTMLElementName.INPUT, true, false),
 
 	/**
 	 * The form control type given to a <a href="#menu-control">menu</a> control implemented using a
@@ -313,7 +313,7 @@ public enum FormControlType {
 	 *    <code>{@link #isSubmit()} = false</code><br />
 	 * </dl>
 	 */
-	SELECT_MULTIPLE (HTMLElementName.SELECT,true,false),
+	SELECT_MULTIPLE(HTMLElementName.SELECT, true, false),
 
 	/**
 	 * The form control type given to a <a href="#menu-control">menu</a> control implemented using a
@@ -345,7 +345,7 @@ public enum FormControlType {
 	 *    <code>{@link #isSubmit()} = false</code><br />
 	 * </dl>
 	 */
-	SELECT_SINGLE (HTMLElementName.SELECT,true,false),
+	SELECT_SINGLE(HTMLElementName.SELECT, true, false),
 
 	/**
 	 * The form control type given to a <a href="#submit-button">submit button</a> control implemented using an
@@ -362,7 +362,7 @@ public enum FormControlType {
 	 *    <code>{@link #isSubmit()} = true</code><br />
 	 * </dl>
 	 */
-	SUBMIT (HTMLElementName.INPUT,true,true),
+	SUBMIT(HTMLElementName.INPUT, true, true),
 
 	/**
 	 * The form control type given to a <a href="#text-input-control">text input</a> control implemented using an
@@ -379,7 +379,7 @@ public enum FormControlType {
 	 *    <code>{@link #isSubmit()} = false</code><br />
 	 * </dl>
 	 */
-	TEXT (HTMLElementName.INPUT,false,false),
+	TEXT(HTMLElementName.INPUT, false, false),
 
 	/**
 	 * The form control type given to a <a href="#text-input-control">text input</a> control implemented using a
@@ -395,34 +395,34 @@ public enum FormControlType {
 	 *    <code>{@link #isSubmit()} = false</code><br />
 	 * </dl>
 	 */
-	TEXTAREA (HTMLElementName.TEXTAREA,false,false);
+	TEXTAREA(HTMLElementName.TEXTAREA, false, false);
 
 	private String elementName;
 	private boolean hasPredefinedValue;
 	private boolean submit;
 
-	private static final HashMap<String,FormControlType> INPUT_ELEMENT_TYPE_MAP=new HashMap<String,FormControlType>(11,1.0F); // 8 input element types in total
-	private static final HashSet<String> NON_FORM_CONTROL_TYPE_ATTRIBUTE_SET=new HashSet<String>(3,1.0F); // 2 non form control input element types in total
+	private static final HashMap<String, FormControlType> INPUT_ELEMENT_TYPE_MAP = new HashMap<String, FormControlType>(11, 1.0F); // 8 input element types in total
+	private static final HashSet<String> NON_FORM_CONTROL_TYPE_ATTRIBUTE_SET = new HashSet<String>(3, 1.0F); // 2 non form control input element types in total
 
 	static {
 		// Map each INPUT element "type" attribute value to a FormControlType:
-		INPUT_ELEMENT_TYPE_MAP.put("checkbox",CHECKBOX);
-		INPUT_ELEMENT_TYPE_MAP.put("file",FILE);
-		INPUT_ELEMENT_TYPE_MAP.put("hidden",HIDDEN);
-		INPUT_ELEMENT_TYPE_MAP.put("image",IMAGE);
-		INPUT_ELEMENT_TYPE_MAP.put("password",PASSWORD);
-		INPUT_ELEMENT_TYPE_MAP.put("radio",RADIO);
-		INPUT_ELEMENT_TYPE_MAP.put("submit",SUBMIT);
-		INPUT_ELEMENT_TYPE_MAP.put("text",TEXT);
+		INPUT_ELEMENT_TYPE_MAP.put("checkbox", CHECKBOX);
+		INPUT_ELEMENT_TYPE_MAP.put("file", FILE);
+		INPUT_ELEMENT_TYPE_MAP.put("hidden", HIDDEN);
+		INPUT_ELEMENT_TYPE_MAP.put("image", IMAGE);
+		INPUT_ELEMENT_TYPE_MAP.put("password", PASSWORD);
+		INPUT_ELEMENT_TYPE_MAP.put("radio", RADIO);
+		INPUT_ELEMENT_TYPE_MAP.put("submit", SUBMIT);
+		INPUT_ELEMENT_TYPE_MAP.put("text", TEXT);
 		// The following INPUT element "type" attributes do not produce a form control:
 		NON_FORM_CONTROL_TYPE_ATTRIBUTE_SET.add("button");
 		NON_FORM_CONTROL_TYPE_ATTRIBUTE_SET.add("reset");
 	}
 
 	private FormControlType(final String elementName, final boolean hasPredefinedValue, final boolean submit) {
-		this.elementName=elementName;
-		this.hasPredefinedValue=hasPredefinedValue;
-		this.submit=submit;
+		this.elementName = elementName;
+		this.hasPredefinedValue = hasPredefinedValue;
+		this.submit = submit;
 	}
 
 	/**

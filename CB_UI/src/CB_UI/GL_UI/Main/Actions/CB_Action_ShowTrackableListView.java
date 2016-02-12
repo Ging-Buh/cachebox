@@ -14,60 +14,50 @@ import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_ShowTrackableListView extends CB_Action_ShowView
-{
+public class CB_Action_ShowTrackableListView extends CB_Action_ShowView {
 
-	public CB_Action_ShowTrackableListView()
-	{
+	public CB_Action_ShowTrackableListView() {
 		super("TBList", MenuID.AID_SHOW_TRACKABLELIST);
 	}
 
 	@Override
-	public void Execute()
-	{
-		if ((TabMainView.trackableListView == null) && (tabMainView != null) && (tab != null)) TabMainView.trackableListView = new TrackableListView(
-				tab.getContentRec(), "TrackableListView");
+	public void Execute() {
+		if ((TabMainView.trackableListView == null) && (tabMainView != null) && (tab != null))
+			TabMainView.trackableListView = new TrackableListView(tab.getContentRec(), "TrackableListView");
 
-		if ((TabMainView.trackableListView != null) && (tab != null)) tab.ShowView(TabMainView.trackableListView);
+		if ((TabMainView.trackableListView != null) && (tab != null))
+			tab.ShowView(TabMainView.trackableListView);
 	}
 
 	@Override
-	public boolean getEnabled()
-	{
+	public boolean getEnabled() {
 		return true;
 	}
 
 	@Override
-	public Sprite getIcon()
-	{
+	public Sprite getIcon() {
 		return SpriteCacheBase.Icons.get(IconName.tbList_38.ordinal());
 	}
 
 	@Override
-	public CB_View_Base getView()
-	{
+	public CB_View_Base getView() {
 		return TabMainView.trackableListView;
 	}
 
 	@Override
-	public boolean hasContextMenu()
-	{
+	public boolean hasContextMenu() {
 		return true;
 	}
 
 	@Override
-	public Menu getContextMenu()
-	{
+	public Menu getContextMenu() {
 		final Menu cm = new Menu("TBListContextMenu");
 
-		cm.addOnClickListener(new OnClickListener()
-		{
+		cm.addOnClickListener(new OnClickListener() {
 
 			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				switch (((MenuItem) v).getMenuItemId())
-				{
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				switch (((MenuItem) v).getMenuItemId()) {
 
 				case MenuID.MI_REFRECH_TB_LIST:
 

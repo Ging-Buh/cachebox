@@ -31,73 +31,73 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
  */
 public class GalleryItem extends ListViewItemBackground {
 
-    private final ImageLoader iloader;
-    private final Image img;
+	private final ImageLoader iloader;
+	private final Image img;
 
-    public GalleryItem(CB_RectF rec, int Index, ImageLoader loader) {
-	super(rec, Index, "");
-	iloader = loader;
+	public GalleryItem(CB_RectF rec, int Index, ImageLoader loader) {
+		super(rec, Index, "");
+		iloader = loader;
 
-	CB_RectF imgRec = rec.copy();
-	imgRec.setPos(0, 0);
+		CB_RectF imgRec = rec.copy();
+		imgRec.setPos(0, 0);
 
-	img = new Image(iloader, imgRec.ScaleCenter(0.95f), "", false);
-	img.setHAlignment(HAlignment.CENTER);
-	this.addChild(img);
-    }
-
-    @Override
-    public void onResized(CB_RectF rec) {
-	super.onResized(rec);
-	CB_RectF imgRec = rec.copy();
-	imgRec.setPos(0, 0);
-	img.setRec(imgRec.ScaleCenter(0.95f));
-    }
-
-    @Override
-    protected void SkinIsChanged() {
-    }
-
-    public Image getImage() {
-	return img;
-    }
-
-    private static NinePatch backSelect;
-
-    protected static boolean mBackIsInitial = false;
-    protected boolean isPressed = false;
-
-    public static void ResetBackground() {
-	mBackIsInitial = false;
-    }
-
-    @Override
-    protected void Initial() {
-	if (!mBackIsInitial) {
-	    backSelect = new NinePatch(SpriteCacheBase.getThemedSprite("listrec-first"), 13, 13, 13, 13);
-	    mBackIsInitial = true;
-	}
-    }
-
-    @Override
-    protected void render(Batch batch) {
-	if (isPressed) {
-	    isPressed = GL.getIsTouchDown();
+		img = new Image(iloader, imgRec.ScaleCenter(0.95f), "", false);
+		img.setHAlignment(HAlignment.CENTER);
+		this.addChild(img);
 	}
 
-	if (this.isDisposed() || !this.isVisible())
-	    return;
-	super.render(batch);
-	// Draw Background
-	if (mBackIsInitial) {
-	    if (isSelected) {
-		backSelect.draw(batch, 0, 0, this.getWidth(), this.getHeight());
-	    }
-
-	} else {
-	    Initial();
+	@Override
+	public void onResized(CB_RectF rec) {
+		super.onResized(rec);
+		CB_RectF imgRec = rec.copy();
+		imgRec.setPos(0, 0);
+		img.setRec(imgRec.ScaleCenter(0.95f));
 	}
 
-    }
+	@Override
+	protected void SkinIsChanged() {
+	}
+
+	public Image getImage() {
+		return img;
+	}
+
+	private static NinePatch backSelect;
+
+	protected static boolean mBackIsInitial = false;
+	protected boolean isPressed = false;
+
+	public static void ResetBackground() {
+		mBackIsInitial = false;
+	}
+
+	@Override
+	protected void Initial() {
+		if (!mBackIsInitial) {
+			backSelect = new NinePatch(SpriteCacheBase.getThemedSprite("listrec-first"), 13, 13, 13, 13);
+			mBackIsInitial = true;
+		}
+	}
+
+	@Override
+	protected void render(Batch batch) {
+		if (isPressed) {
+			isPressed = GL.getIsTouchDown();
+		}
+
+		if (this.isDisposed() || !this.isVisible())
+			return;
+		super.render(batch);
+		// Draw Background
+		if (mBackIsInitial) {
+			if (isSelected) {
+				backSelect.draw(batch, 0, 0, this.getWidth(), this.getHeight());
+			}
+
+		} else {
+			Initial();
+		}
+
+	}
 
 }

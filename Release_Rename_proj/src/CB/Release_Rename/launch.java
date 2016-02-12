@@ -44,17 +44,13 @@ import com.thebuzzmedia.sjxp.rule.IRule;
  * COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR ANY CORPORATE OR COMMERCIAL
  * PURPOSE.
  */
-public class launch extends JFrame
-{
+public class launch extends JFrame {
 
 	{
 		// Set Look & Feel
-		try
-		{
+		try {
 			javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -86,19 +82,13 @@ public class launch extends JFrame
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args)
-	{
-		EventQueue.invokeLater(new Runnable()
-		{
-			public void run()
-			{
-				try
-				{
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
 					launch frame = new launch();
 					frame.setVisible(true);
-				}
-				catch (Exception e)
-				{
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -108,8 +98,7 @@ public class launch extends JFrame
 	/**
 	 * Create the frame.
 	 */
-	public launch()
-	{
+	public launch() {
 		setTitle("Rename Cachebox Workspce for Release");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 795, 611);
@@ -123,10 +112,8 @@ public class launch extends JFrame
 				jDesktopPane1.add(jButton1, JLayeredPane.DEFAULT_LAYER);
 				jButton1.setText("to Test");
 				jButton1.setBounds(162, 78, 89, 23);
-				jButton1.addMouseListener(new MouseAdapter()
-				{
-					public void mouseClicked(MouseEvent evt)
-					{
+				jButton1.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent evt) {
 						jButton1MouseClicked(evt);
 					}
 				});
@@ -143,10 +130,8 @@ public class launch extends JFrame
 				jDesktopPane1.add(jButton2, JLayeredPane.DEFAULT_LAYER);
 				jButton2.setText("to Release");
 				jButton2.setBounds(342, 79, 88, 23);
-				jButton2.addMouseListener(new MouseAdapter()
-				{
-					public void mouseClicked(MouseEvent evt)
-					{
+				jButton2.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent evt) {
 						jButton2MouseClicked(evt);
 					}
 				});
@@ -182,10 +167,8 @@ public class launch extends JFrame
 				jDesktopPane1.add(jButton3, JLayeredPane.DEFAULT_LAYER);
 				jButton3.setText("Run");
 				jButton3.setBounds(18, 190, 51, 28);
-				jButton3.addMouseListener(new MouseAdapter()
-				{
-					public void mouseClicked(MouseEvent evt)
-					{
+				jButton3.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent evt) {
 						jButton3MouseClicked(evt);
 					}
 				});
@@ -222,7 +205,7 @@ public class launch extends JFrame
 			{
 				jLabel7 = new JLabel();
 				jDesktopPane1.add(jLabel7, JLayeredPane.DEFAULT_LAYER);
-				jLabel7.setText("Versions Präfix:");
+				jLabel7.setText("Versions Prï¿½fix:");
 				jLabel7.setForeground(new java.awt.Color(255, 255, 255));
 				jLabel7.setBounds(12, 161, 111, 16);
 			}
@@ -237,10 +220,8 @@ public class launch extends JFrame
 					jPanel1.add(jRadioButtonRelease);
 					jRadioButtonRelease.setText("Release Icon");
 					jRadioButtonRelease.setBounds(31, 29, 108, 20);
-					jRadioButtonRelease.addMouseListener(new MouseAdapter()
-					{
-						public void mouseClicked(MouseEvent evt)
-						{
+					jRadioButtonRelease.addMouseListener(new MouseAdapter() {
+						public void mouseClicked(MouseEvent evt) {
 							iconState = 0;
 							setIconState();
 						}
@@ -252,10 +233,8 @@ public class launch extends JFrame
 					jPanel1.add(jRadioButton2);
 					jRadioButton2.setText("Donate Icon");
 					jRadioButton2.setBounds(31, 6, 108, 24);
-					jRadioButton2.addMouseListener(new MouseAdapter()
-					{
-						public void mouseClicked(MouseEvent evt)
-						{
+					jRadioButton2.addMouseListener(new MouseAdapter() {
+						public void mouseClicked(MouseEvent evt) {
 							iconState = 2;
 							setIconState();
 						}
@@ -267,10 +246,8 @@ public class launch extends JFrame
 					jPanel1.add(jRadioButton1);
 					jRadioButton1.setText("Test Icon");
 					jRadioButton1.setBounds(31, 52, 72, 18);
-					jRadioButton1.addMouseListener(new MouseAdapter()
-					{
-						public void mouseClicked(MouseEvent evt)
-						{
+					jRadioButton1.addMouseListener(new MouseAdapter() {
+						public void mouseClicked(MouseEvent evt) {
 							iconState = 1;
 							setIconState();
 						}
@@ -308,10 +285,8 @@ public class launch extends JFrame
 				jDesktopPane1.add(jButton4, JLayeredPane.DEFAULT_LAYER);
 				jButton4.setText("to Donate");
 				jButton4.setBounds(252, 79, 89, 23);
-				jButton4.addMouseListener(new MouseAdapter()
-				{
-					public void mouseClicked(MouseEvent evt)
-					{
+				jButton4.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent evt) {
 						jButton4MouseClicked(evt);
 					}
 				});
@@ -341,8 +316,7 @@ public class launch extends JFrame
 	private static String newIcon;
 	private static String newMainfestVersionString;
 
-	private void init()
-	{
+	private void init() {
 
 		iconState = 0;
 		setIconState();
@@ -354,50 +328,36 @@ public class launch extends JFrame
 
 		List<IRule<Map<String, String>>> ruleList = new ArrayList<IRule<Map<String, String>>>();
 
-		ruleList.add(new DefaultRule<Map<String, String>>(com.thebuzzmedia.sjxp.rule.IRule.Type.ATTRIBUTE, "/manifest", "package",
-				"android:versionName")
-		{
+		ruleList.add(new DefaultRule<Map<String, String>>(com.thebuzzmedia.sjxp.rule.IRule.Type.ATTRIBUTE, "/manifest", "package", "android:versionName") {
 			@Override
-			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values)
-			{
+			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values) {
 
 				values.put("attribute_" + this.getAttributeNames()[index], value);
 			}
 		});
 
-		ruleList.add(new DefaultRule<Map<String, String>>(com.thebuzzmedia.sjxp.rule.IRule.Type.ATTRIBUTE, "/manifest/application",
-				"android:icon")
-		{
+		ruleList.add(new DefaultRule<Map<String, String>>(com.thebuzzmedia.sjxp.rule.IRule.Type.ATTRIBUTE, "/manifest/application", "android:icon") {
 			@Override
-			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values)
-			{
+			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values) {
 
 				values.put("attribute_" + this.getAttributeNames()[index], value);
 			}
 		});
 
 		@SuppressWarnings("unchecked")
-		XMLParser<Map<String, String>> parserCache = new XMLParser<Map<String, String>>(
-				ruleList.toArray(new com.thebuzzmedia.sjxp.rule.IRule[0]));
+		XMLParser<Map<String, String>> parserCache = new XMLParser<Map<String, String>>(ruleList.toArray(new com.thebuzzmedia.sjxp.rule.IRule[0]));
 		boolean error = false;
 
-		try
-		{
+		try {
 			// parserCache.parse(new FileInputStream("Android_GUI/AndroidManifest.xml"), values);
 			parserCache.parse(new FileInputStream(directoryPath + "AndroidManifest.xml"), values);
-		}
-		catch (IllegalArgumentException e)
-		{
+		} catch (IllegalArgumentException e) {
 
 			e.printStackTrace();
-		}
-		catch (XMLParserException e)
-		{
+		} catch (XMLParserException e) {
 
 			e.printStackTrace();
-		}
-		catch (FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			jLabel5.setText("Mainfest not found.");
 			jLabel5.setForeground(Color.RED);
 			jButton3.setEnabled(false);
@@ -409,49 +369,42 @@ public class launch extends JFrame
 		currentPackageName = values.get("attribute_package");
 		currentIcon = values.get("attribute_android:icon");
 
-		if (!error)
-		{
+		if (!error) {
 			jLabel5.setText(currentPackageName);
 			jLabel6.setText(currentMainfestVersionString);
 		}
 
 	}
 
-	private void jButton1MouseClicked(MouseEvent evt)
-	{
+	private void jButton1MouseClicked(MouseEvent evt) {
 		jTextFieldPackageName.setText("de.cachebox_test");
 		jTextField2.setText("Cachebox");
 		iconState = 1;
 		setIconState();
 	}
 
-	private void jButton2MouseClicked(MouseEvent evt)
-	{
+	private void jButton2MouseClicked(MouseEvent evt) {
 		jTextFieldPackageName.setText("de.droidcachebox");
 		jTextField2.setText("Cachebox");
 		iconState = 0;
 		setIconState();
 	}
 
-	private void jButton4MouseClicked(MouseEvent evt)
-	{
+	private void jButton4MouseClicked(MouseEvent evt) {
 		jTextFieldPackageName.setText("de.cachebox_donate");
 		jTextField2.setText("Cachebox");
 		iconState = 2;
 		setIconState();
 	}
 
-	private void jButton3MouseClicked(MouseEvent evt)
-	{
+	private void jButton3MouseClicked(MouseEvent evt) {
 		run();
 	}
 
 	private int iconState = 0;
 
-	private void setIconState()
-	{
-		switch (iconState)
-		{
+	private void setIconState() {
+		switch (iconState) {
 		case 0:
 			jRadioButtonRelease.setSelected(true);
 			jRadioButton1.setSelected(false);
@@ -470,15 +423,13 @@ public class launch extends JFrame
 		}
 	}
 
-	private void run()
-	{
+	private void run() {
 
 		// set new values
 		newPackageName = jTextFieldPackageName.getText();
 		newMainfestVersionString = jTextFieldVers.getText() + " (" + jTextField1.getText() + ")";
 
-		switch (iconState)
-		{
+		switch (iconState) {
 		case 0:
 			newIcon = "@drawable/cb";
 			break;
@@ -490,13 +441,10 @@ public class launch extends JFrame
 			break;
 		}
 
-		Thread t = new Thread()
-		{
-			public void run()
-			{
+		Thread t = new Thread() {
+			public void run() {
 
-				try
-				{
+				try {
 					String newSourceFolder = "";
 
 					// Replace Package Name in Files
@@ -506,17 +454,14 @@ public class launch extends JFrame
 					// Rename Package Folder
 					String[] packageFolder = currentPackageName.split("\\.");
 					String[] newpackageFolder = newPackageName.split("\\.");
-					for (int i = packageFolder.length; i > 0; i--)
-					{
+					for (int i = packageFolder.length; i > 0; i--) {
 						String pathname = "";
-						for (int j = 0; j < i; j++)
-						{
+						for (int j = 0; j < i; j++) {
 							pathname += packageFolder[j] + "/";
 						}
 
 						String newPathname = "";
-						for (int j = 0; j < i; j++)
-						{
+						for (int j = 0; j < i; j++) {
 							newPathname += newpackageFolder[j] + "/";
 						}
 
@@ -532,8 +477,7 @@ public class launch extends JFrame
 					}
 
 					// Rename Values at Mainfest.xml
-					try
-					{
+					try {
 
 						File file = new File(directoryPath + "AndroidManifest.xml");
 						BufferedReader reader = null;
@@ -542,8 +486,7 @@ public class launch extends JFrame
 
 						String line = "", oldtext = "";
 
-						while ((line = reader.readLine()) != null)
-						{
+						while ((line = reader.readLine()) != null) {
 							oldtext += line + "\r\n";
 						}
 
@@ -562,15 +505,12 @@ public class launch extends JFrame
 
 						writer.close();
 
-					}
-					catch (IOException ioe)
-					{
+					} catch (IOException ioe) {
 						ioe.printStackTrace();
 					}
 
 					// Rename Version Values at GlobalCore.java
-					try
-					{
+					try {
 
 						File file = new File(newSourceFolder + "../../../../CB_UI/src/CB_UI/GlobalCore.java");
 						BufferedReader reader = null;
@@ -582,13 +522,15 @@ public class launch extends JFrame
 						String altCurrentVersion = null;
 						String altVersionPrefix = null;
 
-						while ((line = reader.readLine()) != null)
-						{
+						while ((line = reader.readLine()) != null) {
 							oldtext += line + "\r\n";
 
-							if (line.contains("public static final int CurrentRevision")) altCurrentRevision = line;
-							if (line.contains("public static final String CurrentVersion")) altCurrentVersion = line;
-							if (line.contains("public static final String VersionPrefix")) altVersionPrefix = line;
+							if (line.contains("public static final int CurrentRevision"))
+								altCurrentRevision = line;
+							if (line.contains("public static final String CurrentVersion"))
+								altCurrentVersion = line;
+							if (line.contains("public static final String VersionPrefix"))
+								altVersionPrefix = line;
 
 						}
 
@@ -599,12 +541,9 @@ public class launch extends JFrame
 						String newCurrentRevision = splitedVersion[splitedVersion.length - 1];
 						String newCurrentVersion = jTextFieldVers.getText().replace(newCurrentRevision, "");
 						String newVersionPrefix = jTextField1.getText();
-						String newtext = oldtext.replace(altCurrentRevision, "public static final int CurrentRevision = "
-								+ newCurrentRevision + ";");
-						newtext = newtext.replace(altCurrentVersion, "public static final String CurrentVersion = \"" + newCurrentVersion
-								+ "\"" + ";");
-						newtext = newtext.replace(altVersionPrefix, "public static final String VersionPrefix = \"" + newVersionPrefix
-								+ "\"" + ";");
+						String newtext = oldtext.replace(altCurrentRevision, "public static final int CurrentRevision = " + newCurrentRevision + ";");
+						newtext = newtext.replace(altCurrentVersion, "public static final String CurrentVersion = \"" + newCurrentVersion + "\"" + ";");
+						newtext = newtext.replace(altVersionPrefix, "public static final String VersionPrefix = \"" + newVersionPrefix + "\"" + ";");
 
 						addMsg("[Replace in:] " + file.getPath());
 						FileWriter writer = null;
@@ -615,15 +554,12 @@ public class launch extends JFrame
 
 						writer.close();
 
-					}
-					catch (IOException ioe)
-					{
+					} catch (IOException ioe) {
 						ioe.printStackTrace();
 					}
 
 					// Rename AppName at strings.xml
-					try
-					{
+					try {
 
 						File file = new File(directoryPath + "/res/values/strings.xml");
 						BufferedReader reader = null;
@@ -633,11 +569,11 @@ public class launch extends JFrame
 						String line = "", oldtext = "";
 						String altAppName = "";
 
-						while ((line = reader.readLine()) != null)
-						{
+						while ((line = reader.readLine()) != null) {
 							oldtext += line + "\r\n";
 
-							if (line.contains("<string name=\"app_name\">")) altAppName = line;
+							if (line.contains("<string name=\"app_name\">"))
+								altAppName = line;
 
 						}
 
@@ -654,14 +590,10 @@ public class launch extends JFrame
 
 						writer.close();
 
-					}
-					catch (IOException ioe)
-					{
+					} catch (IOException ioe) {
 						ioe.printStackTrace();
 					}
-				}
-				catch (Exception e)
-				{
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -676,23 +608,22 @@ public class launch extends JFrame
 
 	}
 
-	private String getVersionFromGlobalCore()
-	{
+	private String getVersionFromGlobalCore() {
 		File file = new File(directoryPath + "../CB_UI/src/CB_UI/GlobalCore.java");
 		BufferedReader reader = null;
-		try
-		{
+		try {
 			reader = new BufferedReader(new FileReader(file));
 
 			String line = "";
 			String altCurrentRevision = null;
 			String altCurrentVersion = null;
 
-			while ((line = reader.readLine()) != null)
-			{
+			while ((line = reader.readLine()) != null) {
 
-				if (line.contains("public static final int CurrentRevision")) altCurrentRevision = line;
-				if (line.contains("public static final String CurrentVersion")) altCurrentVersion = line;
+				if (line.contains("public static final int CurrentRevision"))
+					altCurrentRevision = line;
+				if (line.contains("public static final String CurrentVersion"))
+					altCurrentVersion = line;
 
 			}
 
@@ -706,9 +637,7 @@ public class launch extends JFrame
 
 			return ver + rev;
 
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -717,22 +646,18 @@ public class launch extends JFrame
 
 	}
 
-	private String getVersionPrefixFromGlobalCore()
-	{
+	private String getVersionPrefixFromGlobalCore() {
 		File file = new File(directoryPath + "../CB_UI/src/CB_UI/GlobalCore.java");
 		BufferedReader reader = null;
-		try
-		{
+		try {
 			reader = new BufferedReader(new FileReader(file));
 
 			String line = "";
 			String altVersionPrefix = null;
 
-			while ((line = reader.readLine()) != null)
-			{
+			while ((line = reader.readLine()) != null) {
 
-				if (line.contains("public static final String VersionPrefix"))
-				{
+				if (line.contains("public static final String VersionPrefix")) {
 					altVersionPrefix = line;
 					break;
 				}
@@ -747,9 +672,7 @@ public class launch extends JFrame
 
 			return pre;
 
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -758,28 +681,23 @@ public class launch extends JFrame
 
 	}
 
-	private void replaceInFiles(String Ext)
-	{
+	private void replaceInFiles(String Ext) {
 		ArrayList<File> files = new ArrayList<File>();
 		files = FileIO.recursiveDirectoryReader(new File(directoryPath), files, Ext, true);
 
-		for (Iterator<File> it = files.iterator(); it.hasNext();)
-		{
+		for (Iterator<File> it = files.iterator(); it.hasNext();) {
 
-			try
-			{
+			try {
 				File file = it.next();
 				BufferedReader reader = new BufferedReader(new FileReader(file));
 				String line = "", oldtext = "";
-				while ((line = reader.readLine()) != null)
-				{
+				while ((line = reader.readLine()) != null) {
 					oldtext += line + "\r\n";
 				}
 				reader.close();
 				// replace a word in a file
 
-				if (oldtext.contains(currentPackageName))
-				{
+				if (oldtext.contains(currentPackageName)) {
 					String newtext = oldtext.replaceAll(currentPackageName, newPackageName);
 					addMsg("[Replace in:] " + file.getPath());
 					FileWriter writer = new FileWriter(file);
@@ -787,17 +705,14 @@ public class launch extends JFrame
 					writer.close();
 				}
 
-			}
-			catch (IOException ioe)
-			{
+			} catch (IOException ioe) {
 				ioe.printStackTrace();
 			}
 
 		}
 	}
 
-	private void addMsg(String msg)
-	{
+	private void addMsg(String msg) {
 		// String alt = jTextArea1.getText();
 		// alt += msg + String.format("%n");
 
@@ -807,12 +722,9 @@ public class launch extends JFrame
 		jTextArea1.select(x, x);
 		jTextArea1.invalidate();
 
-		try
-		{
+		try {
 			Thread.sleep(20);
-		}
-		catch (InterruptedException e)
-		{
+		} catch (InterruptedException e) {
 
 			e.printStackTrace();
 		}

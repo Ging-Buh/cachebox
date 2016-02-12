@@ -21,10 +21,9 @@
 package net.htmlparser.jericho;
 
 final class StartTagTypePHPStandard extends StartTagTypeGenericImplementation {
-	protected static final StartTagTypePHPStandard INSTANCE=new StartTagTypePHPStandard();
+	protected static final StartTagTypePHPStandard INSTANCE = new StartTagTypePHPStandard();
 
 	private StartTagTypePHPStandard() {
-		super("PHP standard tag","<?php","?>",null,true);
+		super("PHP standard tag", "<?php", "?>", null, true);
 	}
 }
-

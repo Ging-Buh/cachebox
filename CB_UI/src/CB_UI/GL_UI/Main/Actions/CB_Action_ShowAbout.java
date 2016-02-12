@@ -11,50 +11,43 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_ShowAbout extends CB_Action_ShowView
-{
+public class CB_Action_ShowAbout extends CB_Action_ShowView {
 
-	public CB_Action_ShowAbout()
-	{
+	public CB_Action_ShowAbout() {
 		super("about", MenuID.AID_SHOW_ABOUT);
 	}
 
 	@Override
-	public void Execute()
-	{
-		if ((TabMainView.aboutView == null) && (tabMainView != null) && (tab != null)) TabMainView.aboutView = new AboutView(
-				tab.getContentRec(), "AboutView");
+	public void Execute() {
+		if ((TabMainView.aboutView == null) && (tabMainView != null) && (tab != null))
+			TabMainView.aboutView = new AboutView(tab.getContentRec(), "AboutView");
 
-		if ((TabMainView.aboutView != null) && (tab != null)) tab.ShowView(TabMainView.aboutView);
+		if ((TabMainView.aboutView != null) && (tab != null))
+			tab.ShowView(TabMainView.aboutView);
 	}
 
 	@Override
-	public boolean getEnabled()
-	{
+	public boolean getEnabled() {
 		return true;
 	}
 
 	@Override
-	public Sprite getIcon()
-	{
+	public Sprite getIcon() {
 		return SpriteCacheBase.Icons.get(IconName.cb_49.ordinal());
 	}
 
 	@Override
-	public CB_View_Base getView()
-	{
+	public CB_View_Base getView() {
 		return TabMainView.aboutView;
 	}
 
 	@Override
-	public boolean hasContextMenu()
-	{
+	public boolean hasContextMenu() {
 		return true;
 	}
 
 	@Override
-	public Menu getContextMenu()
-	{
+	public Menu getContextMenu() {
 		return null;
 	}
 }

@@ -20,13 +20,11 @@ package org.apache.xmlrpc.server;
 
 import org.apache.xmlrpc.XmlRpcConfigImpl;
 
-
 /** Default implementation of {@link org.apache.xmlrpc.server.XmlRpcServerConfig}.
  */
-public class XmlRpcServerConfigImpl extends XmlRpcConfigImpl
-		implements XmlRpcServerConfig, XmlRpcHttpServerConfig {
+public class XmlRpcServerConfigImpl extends XmlRpcConfigImpl implements XmlRpcServerConfig, XmlRpcHttpServerConfig {
 	private boolean isKeepAliveEnabled;
-    private boolean isEnabledForExceptions;
+	private boolean isEnabledForExceptions;
 
 	/** Sets, whether HTTP keepalive is enabled for this server.
 	 * @param pKeepAliveEnabled True, if keepalive is enabled. False otherwise.
@@ -35,14 +33,18 @@ public class XmlRpcServerConfigImpl extends XmlRpcConfigImpl
 		isKeepAliveEnabled = pKeepAliveEnabled;
 	}
 
-	public boolean isKeepAliveEnabled() { return isKeepAliveEnabled; }
+	public boolean isKeepAliveEnabled() {
+		return isKeepAliveEnabled;
+	}
 
-    /** Sets, whether the server may create a "faultCause" element in an error
-     * response. Note, that this may be a security issue!
-     */
-    public void setEnabledForExceptions(boolean pEnabledForExceptions) {
-        isEnabledForExceptions = pEnabledForExceptions;
-    }
+	/** Sets, whether the server may create a "faultCause" element in an error
+	 * response. Note, that this may be a security issue!
+	 */
+	public void setEnabledForExceptions(boolean pEnabledForExceptions) {
+		isEnabledForExceptions = pEnabledForExceptions;
+	}
 
-    public boolean isEnabledForExceptions() { return isEnabledForExceptions; }
+	public boolean isEnabledForExceptions() {
+		return isEnabledForExceptions;
+	}
 }

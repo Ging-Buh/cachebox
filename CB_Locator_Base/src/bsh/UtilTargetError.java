@@ -40,22 +40,19 @@ package bsh;
  * 
  * @see UtilEvalError
  */
-public class UtilTargetError extends UtilEvalError
-{
+public class UtilTargetError extends UtilEvalError {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	public Throwable t;
 
-	public UtilTargetError(String message, Throwable t)
-	{
+	public UtilTargetError(String message, Throwable t) {
 		super(message);
 		this.t = t;
 	}
 
-	public UtilTargetError(Throwable t)
-	{
+	public UtilTargetError(Throwable t) {
 		this(null, t);
 	}
 
@@ -63,9 +60,9 @@ public class UtilTargetError extends UtilEvalError
 	 * Override toEvalError to throw TargetError type.
 	 */
 	@Override
-	public EvalError toEvalError(String msg, SimpleNode node, CallStack callstack)
-	{
-		if (msg == null) msg = getMessage();
+	public EvalError toEvalError(String msg, SimpleNode node, CallStack callstack) {
+		if (msg == null)
+			msg = getMessage();
 		else
 			msg = msg + ": " + getMessage();
 

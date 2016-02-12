@@ -29,163 +29,163 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
 public class Spinner extends Button {
-    private NinePatch triangle;
-    private int mSelectedIndex = -1;
-    private final Spinner that;
-    private String prompt;
-    private Image icon;
+	private NinePatch triangle;
+	private int mSelectedIndex = -1;
+	private final Spinner that;
+	private String prompt;
+	private Image icon;
 
-    private SpinnerAdapter mAdapter;
+	private SpinnerAdapter mAdapter;
 
-    public interface ISelectionChangedListener {
-	public void selectionChanged(int index);
-    }
-
-    private ISelectionChangedListener mListener;
-
-    public Spinner(String Name, SpinnerAdapter adapter, ISelectionChangedListener listener) {
-	super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight()), Name);
-	mAdapter = adapter;
-	that = this;
-	mListener = listener;
-    }
-
-    public Spinner(float X, float Y, float Width, float Height, String Name, SpinnerAdapter adapter, ISelectionChangedListener listener) {
-	super(X, Y, Width, Height, Name);
-	mAdapter = adapter;
-	that = this;
-	mListener = listener;
-    }
-
-    public Spinner(CB_RectF rec, String Name, SpinnerAdapter adapter, ISelectionChangedListener listener) {
-	super(rec, Name);
-	mAdapter = adapter;
-	that = this;
-	mListener = listener;
-    }
-
-    @Override
-    protected void Initial() {
-	super.Initial();
-
-	if (triangle == null) {
-	    Sprite tr = SpriteCacheBase.getThemedSprite("spinner-triangle");
-	    int patch = (int) tr.getWidth() / 2;
-	    triangle = new NinePatch(tr, 0, patch, patch, 0);
+	public interface ISelectionChangedListener {
+		public void selectionChanged(int index);
 	}
 
-	this.setOnClickListener(new OnClickListener() {
+	private ISelectionChangedListener mListener;
 
-	    @Override
-	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		if (mAdapter == null)
-		    return true; // kann nix anzeigen
+	public Spinner(String Name, SpinnerAdapter adapter, ISelectionChangedListener listener) {
+		super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight()), Name);
+		mAdapter = adapter;
+		that = this;
+		mListener = listener;
+	}
 
-		// show Menu to select
-		Menu icm = new Menu("SpinnerSelection" + that.name);
-		icm.addOnClickListener(new OnClickListener() {
-		    @Override
-		    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-			int sel = ((MenuItem) v).getIndex();
-			setSelection(sel);
-			if (mListener != null)
-			    mListener.selectionChanged(sel);
-			return false;
-		    }
+	public Spinner(float X, float Y, float Width, float Height, String Name, SpinnerAdapter adapter, ISelectionChangedListener listener) {
+		super(X, Y, Width, Height, Name);
+		mAdapter = adapter;
+		that = this;
+		mListener = listener;
+	}
+
+	public Spinner(CB_RectF rec, String Name, SpinnerAdapter adapter, ISelectionChangedListener listener) {
+		super(rec, Name);
+		mAdapter = adapter;
+		that = this;
+		mListener = listener;
+	}
+
+	@Override
+	protected void Initial() {
+		super.Initial();
+
+		if (triangle == null) {
+			Sprite tr = SpriteCacheBase.getThemedSprite("spinner-triangle");
+			int patch = (int) tr.getWidth() / 2;
+			triangle = new NinePatch(tr, 0, patch, patch, 0);
+		}
+
+		this.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				if (mAdapter == null)
+					return true; // kann nix anzeigen
+
+				// show Menu to select
+				Menu icm = new Menu("SpinnerSelection" + that.name);
+				icm.addOnClickListener(new OnClickListener() {
+					@Override
+					public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+						int sel = ((MenuItem) v).getIndex();
+						setSelection(sel);
+						if (mListener != null)
+							mListener.selectionChanged(sel);
+						return false;
+					}
+				});
+
+				for (int index = 0; index < mAdapter.getCount(); index++) {
+					String text = mAdapter.getText(index);
+					Drawable drawable = mAdapter.getIcon(index);
+
+					icm.addItem(index, text, drawable, true);
+				}
+
+				if (prompt != null && !prompt.equalsIgnoreCase("")) {
+					icm.setPrompt(prompt);
+				}
+
+				icm.Show();
+				return true;
+			}
 		});
 
-		for (int index = 0; index < mAdapter.getCount(); index++) {
-		    String text = mAdapter.getText(index);
-		    Drawable drawable = mAdapter.getIcon(index);
-
-		    icm.addItem(index, text, drawable, true);
-		}
-
-		if (prompt != null && !prompt.equalsIgnoreCase("")) {
-		    icm.setPrompt(prompt);
-		}
-
-		icm.Show();
-		return true;
-	    }
-	});
-
-    }
-
-    @Override
-    protected void render(Batch batch) {
-	super.render(batch);
-	triangle.draw(batch, 0, 0, getWidth(), getHeight());
-    }
-
-    @Override
-    protected void SkinIsChanged() {
-	triangle = null;
-	resetInitial();
-    }
-
-    public void setSelection(int i) {
-
-	if (mAdapter != null && mAdapter.getCount() >= i && i > -1) {
-	    String Text = mAdapter.getText(i);
-	    mSelectedIndex = i;
-	    this.setText(Text);
-
-	    Drawable drw = mAdapter.getIcon(i);
-
-	    if (lblTxt == null)
-		return;
-
-	    if (drw != null) {
-		lblTxt.setHAlignment(HAlignment.LEFT);
-		if (icon == null) {
-		    CB_RectF rec = (new CB_RectF(0, 0, this.getHeight(), this.getHeight())).ScaleCenter(0.7f);
-
-		    icon = new Image(rec, "", false);
-		    icon.setY(this.getHalfHeight() - icon.getHalfHeight());
-
-		    float margin = UI_Size_Base.that.getMargin();
-
-		    icon.setX(margin * 2);
-
-		    this.addChild(icon);
-
-		    lblTxt.setX(icon.getMaxX() + margin);
-		}
-		float margin = UI_Size_Base.that.getMargin();
-
-		icon.setX(margin * 2);
-
-		this.addChild(icon);
-
-		lblTxt.setX(icon.getMaxX() + margin);
-		icon.setDrawable(drw);
-	    } else {
-		lblTxt.setHAlignment(HAlignment.CENTER);
-	    }
-	    lblTxt.setText(Text);
 	}
 
-    }
+	@Override
+	protected void render(Batch batch) {
+		super.render(batch);
+		triangle.draw(batch, 0, 0, getWidth(), getHeight());
+	}
 
-    public int getSelectedItem() {
-	return mSelectedIndex;
-    }
+	@Override
+	protected void SkinIsChanged() {
+		triangle = null;
+		resetInitial();
+	}
 
-    public void setPrompt(String Prompt) {
-	prompt = Prompt;
-    }
+	public void setSelection(int i) {
 
-    public SpinnerAdapter getAdapter() {
-	return mAdapter;
-    }
+		if (mAdapter != null && mAdapter.getCount() >= i && i > -1) {
+			String Text = mAdapter.getText(i);
+			mSelectedIndex = i;
+			this.setText(Text);
 
-    public void setAdapter(SpinnerAdapter adapter) {
-	mAdapter = adapter;
-    }
+			Drawable drw = mAdapter.getIcon(i);
 
-    public void setSelectionChangedListener(ISelectionChangedListener selectionChangedListener) {
-	mListener = selectionChangedListener;
-    }
+			if (lblTxt == null)
+				return;
+
+			if (drw != null) {
+				lblTxt.setHAlignment(HAlignment.LEFT);
+				if (icon == null) {
+					CB_RectF rec = (new CB_RectF(0, 0, this.getHeight(), this.getHeight())).ScaleCenter(0.7f);
+
+					icon = new Image(rec, "", false);
+					icon.setY(this.getHalfHeight() - icon.getHalfHeight());
+
+					float margin = UI_Size_Base.that.getMargin();
+
+					icon.setX(margin * 2);
+
+					this.addChild(icon);
+
+					lblTxt.setX(icon.getMaxX() + margin);
+				}
+				float margin = UI_Size_Base.that.getMargin();
+
+				icon.setX(margin * 2);
+
+				this.addChild(icon);
+
+				lblTxt.setX(icon.getMaxX() + margin);
+				icon.setDrawable(drw);
+			} else {
+				lblTxt.setHAlignment(HAlignment.CENTER);
+			}
+			lblTxt.setText(Text);
+		}
+
+	}
+
+	public int getSelectedItem() {
+		return mSelectedIndex;
+	}
+
+	public void setPrompt(String Prompt) {
+		prompt = Prompt;
+	}
+
+	public SpinnerAdapter getAdapter() {
+		return mAdapter;
+	}
+
+	public void setAdapter(SpinnerAdapter adapter) {
+		mAdapter = adapter;
+	}
+
+	public void setSelectionChangedListener(ISelectionChangedListener selectionChangedListener) {
+		mListener = selectionChangedListener;
+	}
 
 }

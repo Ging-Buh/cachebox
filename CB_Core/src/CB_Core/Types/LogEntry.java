@@ -5,8 +5,7 @@ import java.util.Date;
 
 import CB_Core.LogTypes;
 
-public class LogEntry implements Serializable
-{
+public class LogEntry implements Serializable {
 
 	private static final long serialVersionUID = -4269566289864187308L;
 
@@ -45,8 +44,7 @@ public class LogEntry implements Serializable
 	 */
 	public long Id = -1;
 
-	public void clear()
-	{
+	public void clear() {
 		Finder = "";
 		Type = null;
 		// TypeIcon = -1;
@@ -56,8 +54,7 @@ public class LogEntry implements Serializable
 		Id = -1;
 	}
 
-	public void dispose()
-	{
+	public void dispose() {
 		Finder = null;
 		Type = null;
 		Comment = null;

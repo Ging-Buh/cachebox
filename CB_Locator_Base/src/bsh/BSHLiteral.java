@@ -33,8 +33,7 @@
 
 package bsh;
 
-public final class BSHLiteral extends SimpleNode
-{
+public final class BSHLiteral extends SimpleNode {
 	/**
 	 * 
 	 */
@@ -44,23 +43,20 @@ public final class BSHLiteral extends SimpleNode
 
 	public Object value;
 
-	BSHLiteral(int id)
-	{
+	BSHLiteral(int id) {
 		super(id);
 	}
 
 	@Override
-	public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError
-	{
-		if (value == null) throw new InterpreterError("Null in bsh literal: " + value);
+	public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError {
+		if (value == null)
+			throw new InterpreterError("Null in bsh literal: " + value);
 
 		return value;
 	}
 
-	private char getEscapeChar(char ch)
-	{
-		switch (ch)
-		{
+	private char getEscapeChar(char ch) {
+		switch (ch) {
 		case 'b':
 			ch = '\b';
 			break;
@@ -91,15 +87,14 @@ public final class BSHLiteral extends SimpleNode
 		return ch;
 	}
 
-	public void charSetup(String str)
-	{
+	public void charSetup(String str) {
 		char ch = str.charAt(0);
-		if (ch == '\\')
-		{
+		if (ch == '\\') {
 			// get next character
 			ch = str.charAt(1);
 
-			if (Character.isDigit(ch)) ch = (char) Integer.parseInt(str.substring(1), 8);
+			if (Character.isDigit(ch))
+				ch = (char) Integer.parseInt(str.substring(1), 8);
 			else
 				ch = getEscapeChar(ch);
 		}
@@ -107,35 +102,30 @@ public final class BSHLiteral extends SimpleNode
 		value = new Primitive(new Character(ch).charValue());
 	}
 
-	void stringSetup(String str)
-	{
+	void stringSetup(String str) {
 		StringBuilder buffer = new StringBuilder();
 		int len = str.length();
-		for (int i = 0; i < len; i++)
-		{
+		for (int i = 0; i < len; i++) {
 			char ch = str.charAt(i);
-			if (ch == '\\')
-			{
+			if (ch == '\\') {
 				// get next character
 				ch = str.charAt(++i);
 
-				if (Character.isDigit(ch))
-				{
+				if (Character.isDigit(ch)) {
 					int endPos = i;
 
 					// check the next two characters
 					int max = Math.min(i + 2, len - 1);
-					while (endPos < max)
-					{
-						if (Character.isDigit(str.charAt(endPos + 1))) endPos++;
+					while (endPos < max) {
+						if (Character.isDigit(str.charAt(endPos + 1)))
+							endPos++;
 						else
 							break;
 					}
 
 					ch = (char) Integer.parseInt(str.substring(i, endPos + 1), 8);
 					i = endPos;
-				}
-				else
+				} else
 					ch = getEscapeChar(ch);
 			}
 
@@ -143,7 +133,8 @@ public final class BSHLiteral extends SimpleNode
 		}
 
 		String s = buffer.toString();
-		if (internStrings) s = s.intern();
+		if (internStrings)
+			s = s.intern();
 		value = s;
 	}
 }

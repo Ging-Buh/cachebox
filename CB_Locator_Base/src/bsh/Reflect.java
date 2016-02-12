@@ -51,8 +51,7 @@ import java.util.List;
  * NoSuchField exceptions during their searches. These should be rewritten to avoid having to catch the exceptions. Method lookups are now
  * cached at a high level so they are less important, however the logic is messy.
  */
-final class Reflect
-{
+final class Reflect {
 
 	/**
 	 * Invoke method on arbitrary object instance. invocation may be static (through the object instance) or dynamic. Object may be a bsh
@@ -61,27 +60,21 @@ final class Reflect
 	 * @return the result of the method call
 	 */
 	@SuppressWarnings("rawtypes")
-	public static Object invokeObjectMethod(Object object, String methodName, Object[] args, Interpreter interpreter, CallStack callstack,
-			SimpleNode callerInfo) throws ReflectError, EvalError, InvocationTargetException
-	{
+	public static Object invokeObjectMethod(Object object, String methodName, Object[] args, Interpreter interpreter, CallStack callstack, SimpleNode callerInfo) throws ReflectError, EvalError, InvocationTargetException {
 		// Bsh scripted object
-		if (object instanceof This && !This.isExposedThisMethod(methodName))
-		{
+		if (object instanceof This && !This.isExposedThisMethod(methodName)) {
 			return ((This) object).invokeMethod(methodName, args, interpreter, callstack, callerInfo, false/* delcaredOnly */);
 		}
 
 		// Plain Java object, find the java method
-		try
-		{
+		try {
 			BshClassManager bcm = interpreter == null ? null : interpreter.getClassManager();
 			Class clas = object.getClass();
 
 			Method method = resolveExpectedJavaMethod(bcm, clas, object, methodName, args, false);
 
 			return invokeMethod(method, object, args);
-		}
-		catch (UtilEvalError e)
-		{
+		} catch (UtilEvalError e) {
 			throw e.toEvalError(callerInfo, callstack);
 		}
 	}
@@ -91,9 +84,7 @@ final class Reflect
 	 * method.
 	 */
 	@SuppressWarnings("rawtypes")
-	public static Object invokeStaticMethod(BshClassManager bcm, Class clas, String methodName, Object[] args) throws ReflectError,
-			UtilEvalError, InvocationTargetException
-	{
+	public static Object invokeStaticMethod(BshClassManager bcm, Class clas, String methodName, Object[] args) throws ReflectError, UtilEvalError, InvocationTargetException {
 		Interpreter.debug("invoke static Method");
 		Method method = resolveExpectedJavaMethod(bcm, clas, null, methodName, args, true);
 		return invokeMethod(method, null, args);
@@ -105,12 +96,9 @@ final class Reflect
 	 * @param args
 	 *            may be null
 	 */
-	@SuppressWarnings(
-		{ "rawtypes", "unchecked" })
-	static Object invokeMethod(Method method, Object object, Object[] args) throws ReflectError, InvocationTargetException
-	{
-		if (args == null)
-		{
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	static Object invokeMethod(Method method, Object object, Object[] args) throws ReflectError, InvocationTargetException {
+		if (args == null) {
 			args = new Object[0];
 		}
 
@@ -122,36 +110,26 @@ final class Reflect
 		Class[] types = method.getParameterTypes();
 		Object[] tmpArgs = new Object[types.length];
 		int fixedArgLen = types.length;
-		if (isVarArgs)
-		{
-			if (fixedArgLen == args.length && types[fixedArgLen - 1].isAssignableFrom(args[fixedArgLen - 1].getClass()))
-			{
+		if (isVarArgs) {
+			if (fixedArgLen == args.length && types[fixedArgLen - 1].isAssignableFrom(args[fixedArgLen - 1].getClass())) {
 				isVarArgs = false;
-			}
-			else
-			{
+			} else {
 				fixedArgLen--;
 			}
 		}
-		try
-		{
-			for (int i = 0; i < fixedArgLen; i++)
-			{
+		try {
+			for (int i = 0; i < fixedArgLen; i++) {
 				tmpArgs[i] = Types.castObject(args[i]/* rhs */, types[i]/* lhsType */, Types.ASSIGNMENT);
 			}
-			if (isVarArgs)
-			{
+			if (isVarArgs) {
 				Class varType = types[fixedArgLen].getComponentType();
 				Object varArgs = Array.newInstance(varType, args.length - fixedArgLen);
-				for (int i = fixedArgLen, j = 0; i < args.length; i++, j++)
-				{
+				for (int i = fixedArgLen, j = 0; i < args.length; i++, j++) {
 					Array.set(varArgs, j, Primitive.unwrap(Types.castObject(args[i]/* rhs */, varType/* lhsType */, Types.ASSIGNMENT)));
 				}
 				tmpArgs[fixedArgLen] = varArgs;
 			}
-		}
-		catch (UtilEvalError e)
-		{
+		} catch (UtilEvalError e) {
 			throw new InterpreterError("illegal argument type in method invocation: " + e);
 		}
 
@@ -160,102 +138,69 @@ final class Reflect
 
 		logInvokeMethod("Invoking method (after massaging values): ", method, tmpArgs);
 
-		try
-		{
+		try {
 			Object returnValue = method.invoke(object, tmpArgs);
-			if (returnValue == null)
-			{
+			if (returnValue == null) {
 				returnValue = Primitive.NULL;
 			}
 			Class returnType = method.getReturnType();
 
 			return Primitive.wrap(returnValue, returnType);
-		}
-		catch (IllegalAccessException e)
-		{
-			throw new ReflectError("Cannot access method " + StringUtil.methodString(method.getName(), method.getParameterTypes())
-					+ " in '" + method.getDeclaringClass() + "' :" + e, e);
+		} catch (IllegalAccessException e) {
+			throw new ReflectError("Cannot access method " + StringUtil.methodString(method.getName(), method.getParameterTypes()) + " in '" + method.getDeclaringClass() + "' :" + e, e);
 		}
 	}
 
-	public static Object getIndex(Object array, int index) throws ReflectError, UtilTargetError
-	{
-		if (Interpreter.DEBUG)
-		{
+	public static Object getIndex(Object array, int index) throws ReflectError, UtilTargetError {
+		if (Interpreter.DEBUG) {
 			Interpreter.debug("getIndex: " + array + ", index=" + index);
 		}
-		try
-		{
+		try {
 			Object val = Array.get(array, index);
 			return Primitive.wrap(val, array.getClass().getComponentType());
-		}
-		catch (ArrayIndexOutOfBoundsException e1)
-		{
+		} catch (ArrayIndexOutOfBoundsException e1) {
 			throw new UtilTargetError(e1);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			throw new ReflectError("Array access:" + e);
 		}
 	}
 
-	public static void setIndex(Object array, int index, Object val) throws ReflectError, UtilTargetError
-	{
-		try
-		{
+	public static void setIndex(Object array, int index, Object val) throws ReflectError, UtilTargetError {
+		try {
 			val = Primitive.unwrap(val);
 			Array.set(array, index, val);
-		}
-		catch (ArrayStoreException e2)
-		{
+		} catch (ArrayStoreException e2) {
 			throw new UtilTargetError(e2);
-		}
-		catch (IllegalArgumentException e1)
-		{
+		} catch (IllegalArgumentException e1) {
 			// noinspection ThrowableInstanceNeverThrown
 			throw new UtilTargetError(new ArrayStoreException(e1.toString()));
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			throw new ReflectError("Array access:" + e);
 		}
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static Object getStaticFieldValue(Class clas, String fieldName) throws UtilEvalError, ReflectError
-	{
+	public static Object getStaticFieldValue(Class clas, String fieldName) throws UtilEvalError, ReflectError {
 		return getFieldValue(clas, null, fieldName, true/* onlystatic */);
 	}
 
 	/**
 	 */
-	public static Object getObjectFieldValue(Object object, String fieldName) throws UtilEvalError, ReflectError
-	{
-		if (object instanceof This)
-		{
+	public static Object getObjectFieldValue(Object object, String fieldName) throws UtilEvalError, ReflectError {
+		if (object instanceof This) {
 			return ((This) object).namespace.getVariable(fieldName);
-		}
-		else if (object == Primitive.NULL)
-		{
+		} else if (object == Primitive.NULL) {
 			// noinspection ThrowableInstanceNeverThrown
 			throw new UtilTargetError(new NullPointerException("Attempt to access field '" + fieldName + "' on null value"));
-		}
-		else
-		{
-			try
-			{
+		} else {
+			try {
 				return getFieldValue(object.getClass(), object, fieldName, false/* onlystatic */);
-			}
-			catch (ReflectError e)
-			{
+			} catch (ReflectError e) {
 				// no field, try property acces
 
-				if (hasObjectPropertyGetter(object.getClass(), fieldName))
-				{
+				if (hasObjectPropertyGetter(object.getClass(), fieldName)) {
 					return getObjectProperty(object, fieldName);
-				}
-				else
-				{
+				} else {
 					throw e;
 				}
 			}
@@ -263,8 +208,7 @@ final class Reflect
 	}
 
 	@SuppressWarnings("rawtypes")
-	static LHS getLHSStaticField(Class clas, String fieldName) throws UtilEvalError, ReflectError
-	{
+	static LHS getLHSStaticField(Class clas, String fieldName) throws UtilEvalError, ReflectError {
 		Field f = resolveExpectedJavaField(clas, fieldName, true/* onlystatic */);
 		return new LHS(f);
 	}
@@ -274,53 +218,39 @@ final class Reflect
 	 * <p/>
 	 * This method also deals with the field style property access. In the field does not exist we check for a property setter.
 	 */
-	static LHS getLHSObjectField(Object object, String fieldName) throws UtilEvalError, ReflectError
-	{
-		if (object instanceof This)
-		{
+	static LHS getLHSObjectField(Object object, String fieldName) throws UtilEvalError, ReflectError {
+		if (object instanceof This) {
 			// I guess this is when we pass it as an argument?
 			// Setting locally
 			boolean recurse = false;
 			return new LHS(((This) object).namespace, fieldName, recurse);
 		}
 
-		try
-		{
+		try {
 			Field f = resolveExpectedJavaField(object.getClass(), fieldName, false/* staticOnly */);
 			return new LHS(object, f);
-		}
-		catch (ReflectError e)
-		{
+		} catch (ReflectError e) {
 			// not a field, try property access
-			if (hasObjectPropertySetter(object.getClass(), fieldName))
-			{
+			if (hasObjectPropertySetter(object.getClass(), fieldName)) {
 				return new LHS(object, fieldName);
-			}
-			else
-			{
+			} else {
 				throw e;
 			}
 		}
 	}
 
 	@SuppressWarnings("rawtypes")
-	private static Object getFieldValue(Class clas, Object object, String fieldName, boolean staticOnly) throws UtilEvalError, ReflectError
-	{
-		try
-		{
+	private static Object getFieldValue(Class clas, Object object, String fieldName, boolean staticOnly) throws UtilEvalError, ReflectError {
+		try {
 			Field f = resolveExpectedJavaField(clas, fieldName, staticOnly);
 
 			Object value = f.get(object);
 			Class returnType = f.getType();
 			return Primitive.wrap(value, returnType);
 
-		}
-		catch (NullPointerException e)
-		{ // shouldn't happen
+		} catch (NullPointerException e) { // shouldn't happen
 			throw new ReflectError("???" + fieldName + " is not a static field.");
-		}
-		catch (IllegalAccessException e)
-		{
+		} catch (IllegalAccessException e) {
 			throw new ReflectError("Can't access field: " + fieldName);
 		}
 	}
@@ -333,14 +263,10 @@ final class Reflect
 	 */
 
 	@SuppressWarnings("rawtypes")
-	protected static Field resolveJavaField(Class clas, String fieldName, boolean staticOnly) throws UtilEvalError
-	{
-		try
-		{
+	protected static Field resolveJavaField(Class clas, String fieldName, boolean staticOnly) throws UtilEvalError {
+		try {
 			return resolveExpectedJavaField(clas, fieldName, staticOnly);
-		}
-		catch (ReflectError e)
-		{
+		} catch (ReflectError e) {
 			return null;
 		}
 	}
@@ -353,32 +279,23 @@ final class Reflect
 	 * Note: this should really just throw NoSuchFieldException... need to change related signatures and code.
 	 */
 	@SuppressWarnings("rawtypes")
-	protected static Field resolveExpectedJavaField(Class clas, String fieldName, boolean staticOnly) throws UtilEvalError, ReflectError
-	{
+	protected static Field resolveExpectedJavaField(Class clas, String fieldName, boolean staticOnly) throws UtilEvalError, ReflectError {
 		Field field;
-		try
-		{
-			if (Capabilities.haveAccessibility())
-			{
+		try {
+			if (Capabilities.haveAccessibility()) {
 				field = findAccessibleField(clas, fieldName);
-			}
-			else
+			} else
 			// Class getField() finds only public (and in interfaces, etc.)
 			{
 				field = clas.getField(fieldName);
 			}
-		}
-		catch (NoSuchFieldException e)
-		{
+		} catch (NoSuchFieldException e) {
 			throw new ReflectError("No such field: " + fieldName, e);
-		}
-		catch (SecurityException e)
-		{
+		} catch (SecurityException e) {
 			throw new UtilTargetError("Security Exception while searching fields of: " + clas, e);
 		}
 
-		if (staticOnly && !Modifier.isStatic(field.getModifiers()))
-		{
+		if (staticOnly && !Modifier.isStatic(field.getModifiers())) {
 			throw new UtilEvalError("Can't reach instance field: " + fieldName + " from static context: " + clas.getName());
 		}
 
@@ -400,36 +317,28 @@ final class Reflect
 	 * This method should be rewritten to use getFields() and avoid catching exceptions during the search.
 	 */
 	@SuppressWarnings("rawtypes")
-	private static Field findAccessibleField(Class clas, String fieldName) throws UtilEvalError, NoSuchFieldException
-	{
+	private static Field findAccessibleField(Class clas, String fieldName) throws UtilEvalError, NoSuchFieldException {
 		Field field;
 
 		// Quick check catches public fields include those in interfaces
-		try
-		{
+		try {
 			field = clas.getField(fieldName);
 			field.setAccessible(true);
 			return field;
-		}
-		catch (NoSuchFieldException e)
-		{
+		} catch (NoSuchFieldException e) {
 			// fallthrough
 		}
 
 		// Now, on with the hunt...
-		while (clas != null)
-		{
-			try
-			{
+		while (clas != null) {
+			try {
 				field = clas.getDeclaredField(fieldName);
 				field.setAccessible(true);
 				return field;
 
 				// Not found, fall through to next class
 
-			}
-			catch (NoSuchFieldException e)
-			{
+			} catch (NoSuchFieldException e) {
 				// fallthrough
 			}
 
@@ -443,11 +352,8 @@ final class Reflect
 	 * ReflectError.
 	 */
 	@SuppressWarnings("rawtypes")
-	protected static Method resolveExpectedJavaMethod(BshClassManager bcm, Class clas, Object object, String name, Object[] args,
-			boolean staticOnly) throws ReflectError, UtilEvalError
-	{
-		if (object == Primitive.NULL)
-		{
+	protected static Method resolveExpectedJavaMethod(BshClassManager bcm, Class clas, Object object, String name, Object[] args, boolean staticOnly) throws ReflectError, UtilEvalError {
+		if (object == Primitive.NULL) {
 			// noinspection ThrowableInstanceNeverThrown
 			throw new UtilTargetError(new NullPointerException("Attempt to invoke method " + name + " on null value"));
 		}
@@ -455,10 +361,8 @@ final class Reflect
 		Class[] types = Types.getTypes(args);
 		Method method = resolveJavaMethod(bcm, clas, name, types, staticOnly);
 
-		if (method == null)
-		{
-			throw new ReflectError((staticOnly ? "Static method " : "Method ") + StringUtil.methodString(name, types)
-					+ " not found in class'" + clas.getName() + "'");
+		if (method == null) {
+			throw new ReflectError((staticOnly ? "Static method " : "Method ") + StringUtil.methodString(name, types) + " not found in class'" + clas.getName() + "'");
 		}
 
 		return method;
@@ -486,35 +390,25 @@ final class Reflect
 	 * @return the method or null if no matching method was found.
 	 */
 	@SuppressWarnings("rawtypes")
-	protected static Method resolveJavaMethod(BshClassManager bcm, Class clas, String name, Class[] types, boolean staticOnly)
-			throws UtilEvalError
-	{
-		if (clas == null)
-		{
+	protected static Method resolveJavaMethod(BshClassManager bcm, Class clas, String name, Class[] types, boolean staticOnly) throws UtilEvalError {
+		if (clas == null) {
 			throw new InterpreterError("null class");
 		}
 
 		// Lookup previously cached method
 		Method method = null;
-		if (bcm == null)
-		{
+		if (bcm == null) {
 			Interpreter.debug("resolveJavaMethod UNOPTIMIZED lookup");
-		}
-		else
-		{
+		} else {
 			method = bcm.getResolvedMethod(clas, name, types, staticOnly);
 		}
 
-		if (method == null)
-		{
+		if (method == null) {
 			boolean publicOnly = !Capabilities.haveAccessibility();
 			// Searching for the method may, itself be a priviledged action
-			try
-			{
+			try {
 				method = findOverloadedMethod(clas, name, types, publicOnly);
-			}
-			catch (SecurityException e)
-			{
+			} catch (SecurityException e) {
 				throw new UtilTargetError("Security Exception while searching methods of: " + clas, e);
 			}
 
@@ -523,14 +417,12 @@ final class Reflect
 			// This is the first time we've seen this method, set accessibility
 			// Note: even if it's a public method, we may have found it in a
 			// non-public class
-			if (method != null && (!publicOnly || isPublic(method)))
-			{
+			if (method != null && (!publicOnly || isPublic(method))) {
 				method.setAccessible(true);
 			}
 
 			// If succeeded cache the resolved method.
-			if (method != null && bcm != null)
-			{
+			if (method != null && bcm != null) {
 				bcm.cacheResolvedMethod(clas, types, method);
 			}
 		}
@@ -544,10 +436,8 @@ final class Reflect
 	 * @return the method or null for not found
 	 */
 	@SuppressWarnings("rawtypes")
-	private static Method findOverloadedMethod(Class baseClass, String methodName, Class[] types, boolean publicOnly)
-	{
-		if (Interpreter.DEBUG)
-		{
+	private static Method findOverloadedMethod(Class baseClass, String methodName, Class[] types, boolean publicOnly) {
+		if (Interpreter.DEBUG) {
 			Interpreter.debug("Searching for method: " + StringUtil.methodString(methodName, types) + " in '" + baseClass.getName() + "'");
 		}
 
@@ -555,13 +445,11 @@ final class Reflect
 		List<Method> nonPublicMethods = publicOnly ? null : new ArrayList<Method>();
 		gatherMethodsRecursive(baseClass, methodName, types.length, publicMethods, nonPublicMethods);
 
-		if (Interpreter.DEBUG)
-		{
+		if (Interpreter.DEBUG) {
 			Interpreter.debug("Looking for most specific method: " + methodName);
 		}
 		Method method = findMostSpecificMethod(types, publicMethods);
-		if (method == null && nonPublicMethods != null)
-		{
+		if (method == null && nonPublicMethods != null) {
 			method = findMostSpecificMethod(types, nonPublicMethods);
 		}
 
@@ -589,13 +477,10 @@ final class Reflect
 	 * @return the candidate methods vector
 	 */
 	@SuppressWarnings("rawtypes")
-	private static void gatherMethodsRecursive(Class baseClass, String methodName, int numArgs, List<Method> publicMethods,
-			List<Method> nonPublicMethods)
-	{
+	private static void gatherMethodsRecursive(Class baseClass, String methodName, int numArgs, List<Method> publicMethods, List<Method> nonPublicMethods) {
 		// Do we have a superclass? (interfaces don't, etc.)
 		Class superclass = baseClass.getSuperclass();
-		if (superclass != null)
-		{
+		if (superclass != null) {
 			gatherMethodsRecursive(superclass, methodName, numArgs, publicMethods, nonPublicMethods);
 		}
 
@@ -604,20 +489,13 @@ final class Reflect
 		// and to use getMethods() instead of getDeclaredMethods()
 		// (This addresses secure environments)
 		boolean isPublicClass = isPublic(baseClass);
-		if (isPublicClass || nonPublicMethods != null)
-		{
+		if (isPublicClass || nonPublicMethods != null) {
 			Method[] methods = nonPublicMethods == null ? baseClass.getMethods() : baseClass.getDeclaredMethods();
-			for (Method m : methods)
-			{
-				if (m.getName().equals(methodName)
-						&& (m.isVarArgs() ? m.getParameterTypes().length - 1 <= numArgs : m.getParameterTypes().length == numArgs))
-				{
-					if (isPublicClass && isPublic(m))
-					{
+			for (Method m : methods) {
+				if (m.getName().equals(methodName) && (m.isVarArgs() ? m.getParameterTypes().length - 1 <= numArgs : m.getParameterTypes().length == numArgs)) {
+					if (isPublicClass && isPublic(m)) {
 						publicMethods.add(m);
-					}
-					else if (nonPublicMethods != null)
-					{
+					} else if (nonPublicMethods != null) {
 						nonPublicMethods.add(m);
 					}
 				}
@@ -625,8 +503,7 @@ final class Reflect
 		}
 
 		// Does the class or interface implement interfaces?
-		for (Class intf : baseClass.getInterfaces())
-		{
+		for (Class intf : baseClass.getInterfaces()) {
 			gatherMethodsRecursive(intf, methodName, numArgs, publicMethods, nonPublicMethods);
 		}
 	}
@@ -640,10 +517,8 @@ final class Reflect
 	 * <p/>
 	 */
 	@SuppressWarnings("rawtypes")
-	static Object constructObject(Class clas, Object[] args) throws ReflectError, InvocationTargetException
-	{
-		if (clas.isInterface())
-		{
+	static Object constructObject(Class clas, Object[] args) throws ReflectError, InvocationTargetException {
+		if (clas.isInterface()) {
 			throw new ReflectError("Can't create instance of an interface: " + clas);
 		}
 
@@ -653,36 +528,26 @@ final class Reflect
 		// (there are no inherited constructors to worry about)
 		Constructor[] constructors = Capabilities.haveAccessibility() ? clas.getDeclaredConstructors() : clas.getConstructors();
 
-		if (Interpreter.DEBUG)
-		{
+		if (Interpreter.DEBUG) {
 			Interpreter.debug("Looking for most specific constructor: " + clas);
 		}
 		Constructor con = findMostSpecificConstructor(types, constructors);
-		if (con == null)
-		{
+		if (con == null) {
 			throw cantFindConstructor(clas, types);
 		}
 
-		if (!isPublic(con))
-		{
+		if (!isPublic(con)) {
 			con.setAccessible(true);
 		}
 
 		args = Primitive.unwrap(args);
-		try
-		{
+		try {
 			return con.newInstance(args);
-		}
-		catch (InstantiationException e)
-		{
+		} catch (InstantiationException e) {
 			throw new ReflectError("The class " + clas + " is abstract ");
-		}
-		catch (IllegalAccessException e)
-		{
+		} catch (IllegalAccessException e) {
 			throw new ReflectError("We don't have permission to create an instance." + "Use setAccessibility(true) to enable access.");
-		}
-		catch (IllegalArgumentException e)
-		{
+		} catch (IllegalArgumentException e) {
 			throw new ReflectError("The number of arguments was wrong");
 		}
 	}
@@ -692,18 +557,15 @@ final class Reflect
 	 * common interface for their signatures
 	 */
 	@SuppressWarnings("rawtypes")
-	static Constructor findMostSpecificConstructor(Class[] idealMatch, Constructor[] constructors)
-	{
+	static Constructor findMostSpecificConstructor(Class[] idealMatch, Constructor[] constructors) {
 		int match = findMostSpecificConstructorIndex(idealMatch, constructors);
 		return (match == -1) ? null : constructors[match];
 	}
 
 	@SuppressWarnings("rawtypes")
-	static int findMostSpecificConstructorIndex(Class[] idealMatch, Constructor[] constructors)
-	{
+	static int findMostSpecificConstructorIndex(Class[] idealMatch, Constructor[] constructors) {
 		Class[][] candidates = new Class[constructors.length][];
-		for (int i = 0; i < candidates.length; i++)
-		{
+		for (int i = 0; i < candidates.length; i++) {
 			candidates[i] = constructors[i].getParameterTypes();
 		}
 
@@ -720,27 +582,22 @@ final class Reflect
 	 * @see #findMostSpecificSignature(Class[], Class[][])
 	 */
 	@SuppressWarnings("rawtypes")
-	private static Method findMostSpecificMethod(Class[] idealMatch, List<Method> methods)
-	{
+	private static Method findMostSpecificMethod(Class[] idealMatch, List<Method> methods) {
 		// copy signatures into array for findMostSpecificMethod()
 		List<Class[]> candidateSigs = new ArrayList<Class[]>();
 		List<Method> methodList = new ArrayList<Method>();
-		for (Method method : methods)
-		{
+		for (Method method : methods) {
 			Class[] parameterTypes = method.getParameterTypes();
 			methodList.add(method);
 			candidateSigs.add(parameterTypes);
-			if (method.isVarArgs())
-			{
+			if (method.isVarArgs()) {
 				Class[] candidateSig = new Class[idealMatch.length];
 				int j = 0;
-				for (; j < parameterTypes.length - 1; j++)
-				{
+				for (; j < parameterTypes.length - 1; j++) {
 					candidateSig[j] = parameterTypes[j];
 				}
 				Class varType = parameterTypes[j].getComponentType();
-				for (; j < idealMatch.length; j++)
-				{
+				for (; j < idealMatch.length; j++) {
 					candidateSig[j] = varType;
 				}
 				methodList.add(method);
@@ -766,30 +623,24 @@ final class Reflect
 	 * now cached at a high level, so a few friendly extraneous tests shouldn't be a problem.
 	 */
 	@SuppressWarnings("rawtypes")
-	static int findMostSpecificSignature(Class[] idealMatch, Class[][] candidates)
-	{
-		for (int round = Types.FIRST_ROUND_ASSIGNABLE; round <= Types.LAST_ROUND_ASSIGNABLE; round++)
-		{
+	static int findMostSpecificSignature(Class[] idealMatch, Class[][] candidates) {
+		for (int round = Types.FIRST_ROUND_ASSIGNABLE; round <= Types.LAST_ROUND_ASSIGNABLE; round++) {
 			Class[] bestMatch = null;
 			int bestMatchIndex = -1;
 
-			for (int i = 0; i < candidates.length; i++)
-			{
+			for (int i = 0; i < candidates.length; i++) {
 				Class[] targetMatch = candidates[i];
 
 				// If idealMatch fits targetMatch and this is the first match
 				// or targetMatch is more specific than the best match, make it
 				// the new best match.
-				if (Types.isSignatureAssignable(idealMatch, targetMatch, round)
-						&& ((bestMatch == null) || Types.isSignatureAssignable(targetMatch, bestMatch, Types.JAVA_BASE_ASSIGNABLE)))
-				{
+				if (Types.isSignatureAssignable(idealMatch, targetMatch, round) && ((bestMatch == null) || Types.isSignatureAssignable(targetMatch, bestMatch, Types.JAVA_BASE_ASSIGNABLE))) {
 					bestMatch = targetMatch;
 					bestMatchIndex = i;
 				}
 			}
 
-			if (bestMatch != null)
-			{
+			if (bestMatch != null) {
 				return bestMatchIndex;
 			}
 		}
@@ -797,120 +648,89 @@ final class Reflect
 		return -1;
 	}
 
-	private static String accessorName(String getorset, String propName)
-	{
+	private static String accessorName(String getorset, String propName) {
 		return getorset + String.valueOf(Character.toUpperCase(propName.charAt(0))) + propName.substring(1);
 	}
 
-	@SuppressWarnings(
-		{ "rawtypes", "unchecked" })
-	public static boolean hasObjectPropertyGetter(Class clas, String propName)
-	{
-		if (clas == Primitive.class)
-		{
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static boolean hasObjectPropertyGetter(Class clas, String propName) {
+		if (clas == Primitive.class) {
 			return false;
 		}
 		String getterName = accessorName("get", propName);
-		try
-		{
+		try {
 			clas.getMethod(getterName, new Class[0]);
 			return true;
-		}
-		catch (NoSuchMethodException e)
-		{ /* fall through */
+		} catch (NoSuchMethodException e) { /* fall through */
 		}
 		getterName = accessorName("is", propName);
-		try
-		{
+		try {
 			Method m = clas.getMethod(getterName, new Class[0]);
 			return (m.getReturnType() == Boolean.TYPE);
-		}
-		catch (NoSuchMethodException e)
-		{
+		} catch (NoSuchMethodException e) {
 			return false;
 		}
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static boolean hasObjectPropertySetter(Class clas, String propName)
-	{
+	public static boolean hasObjectPropertySetter(Class clas, String propName) {
 		String setterName = accessorName("set", propName);
 		Method[] methods = clas.getMethods();
 
 		// we don't know the right hand side of the assignment yet.
 		// has at least one setter of the right name?
-		for (Method method : methods)
-		{
-			if (method.getName().equals(setterName))
-			{
+		for (Method method : methods) {
+			if (method.getName().equals(setterName)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public static Object getObjectProperty(Object obj, String propName) throws UtilEvalError, ReflectError
-	{
+	public static Object getObjectProperty(Object obj, String propName) throws UtilEvalError, ReflectError {
 		Object[] args = new Object[] {};
 
 		Interpreter.debug("property access: ");
 		Method method = null;
 
 		Exception e1 = null, e2 = null;
-		try
-		{
+		try {
 			String accessorName = accessorName("get", propName);
 			method = resolveExpectedJavaMethod(null/* bcm */, obj.getClass(), obj, accessorName, args, false);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e1 = e;
 		}
-		if (method == null)
-		{
-			try
-			{
+		if (method == null) {
+			try {
 				String accessorName = accessorName("is", propName);
 				method = resolveExpectedJavaMethod(null/* bcm */, obj.getClass(), obj, accessorName, args, false);
-				if (method.getReturnType() != Boolean.TYPE)
-				{
+				if (method.getReturnType() != Boolean.TYPE) {
 					method = null;
 				}
-			}
-			catch (Exception e)
-			{
+			} catch (Exception e) {
 				e2 = e;
 			}
 		}
-		if (method == null)
-		{
+		if (method == null) {
 			throw new ReflectError("Error in property getter: " + e1 + (e2 != null ? " : " + e2 : ""));
 		}
 
-		try
-		{
+		try {
 			return invokeMethod(method, obj, args);
-		}
-		catch (InvocationTargetException e)
-		{
+		} catch (InvocationTargetException e) {
 			throw new UtilEvalError("Property accessor threw exception: " + e.getTargetException());
 		}
 	}
 
-	public static void setObjectProperty(Object obj, String propName, Object value) throws ReflectError, UtilEvalError
-	{
+	public static void setObjectProperty(Object obj, String propName, Object value) throws ReflectError, UtilEvalError {
 		String accessorName = accessorName("set", propName);
-		Object[] args = new Object[]
-			{ value };
+		Object[] args = new Object[] { value };
 
 		Interpreter.debug("property access: ");
-		try
-		{
+		try {
 			Method method = resolveExpectedJavaMethod(null/* bcm */, obj.getClass(), obj, accessorName, args, false);
 			invokeMethod(method, obj, args);
-		}
-		catch (InvocationTargetException e)
-		{
+		} catch (InvocationTargetException e) {
 			throw new UtilEvalError("Property accessor threw exception: " + e.getTargetException());
 		}
 	}
@@ -920,23 +740,17 @@ final class Reflect
 	 * return "int []" for integer array instead of "class [I" as would be returned by Class getName() in that case.
 	 */
 	@SuppressWarnings("rawtypes")
-	public static String normalizeClassName(Class type)
-	{
-		if (!type.isArray())
-		{
+	public static String normalizeClassName(Class type) {
+		if (!type.isArray()) {
 			return type.getName();
 		}
 		StringBuilder className = new StringBuilder();
-		try
-		{
+		try {
 			className.append(getArrayBaseType(type).getName()).append(' ');
-			for (int i = 0; i < getArrayDimensions(type); i++)
-			{
+			for (int i = 0; i < getArrayDimensions(type); i++) {
 				className.append("[]");
 			}
-		}
-		catch (ReflectError e)
-		{
+		} catch (ReflectError e) {
 			/* shouldn't happen */
 		}
 
@@ -947,10 +761,8 @@ final class Reflect
 	 * returns the dimensionality of the Class returns 0 if the Class is not an array class
 	 */
 	@SuppressWarnings("rawtypes")
-	public static int getArrayDimensions(Class arrayClass)
-	{
-		if (!arrayClass.isArray())
-		{
+	public static int getArrayDimensions(Class arrayClass) {
+		if (!arrayClass.isArray()) {
 			return 0;
 		}
 
@@ -961,10 +773,8 @@ final class Reflect
 	 * Returns the base type of an array Class. throws ReflectError if the Class is not an array class.
 	 */
 	@SuppressWarnings("rawtypes")
-	public static Class getArrayBaseType(Class arrayClass) throws ReflectError
-	{
-		if (!arrayClass.isArray())
-		{
+	public static Class getArrayBaseType(Class arrayClass) throws ReflectError {
+		if (!arrayClass.isArray()) {
 			throw new ReflectError("The class is not an array.");
 		}
 
@@ -978,36 +788,26 @@ final class Reflect
 	 * invoke(interpreter, callstack, ... ) This method adds the arguments and invokes the static method, returning the result.
 	 */
 	@SuppressWarnings("rawtypes")
-	public static Object invokeCompiledCommand(Class commandClass, Object[] args, Interpreter interpreter, CallStack callstack)
-			throws UtilEvalError
-	{
+	public static Object invokeCompiledCommand(Class commandClass, Object[] args, Interpreter interpreter, CallStack callstack) throws UtilEvalError {
 		// add interpereter and namespace to args list
 		Object[] invokeArgs = new Object[args.length + 2];
 		invokeArgs[0] = interpreter;
 		invokeArgs[1] = callstack;
 		System.arraycopy(args, 0, invokeArgs, 2, args.length);
 		BshClassManager bcm = interpreter.getClassManager();
-		try
-		{
+		try {
 			return Reflect.invokeStaticMethod(bcm, commandClass, "invoke", invokeArgs);
-		}
-		catch (InvocationTargetException e)
-		{
+		} catch (InvocationTargetException e) {
 			throw new UtilEvalError("Error in compiled command: " + e.getTargetException(), e);
-		}
-		catch (ReflectError e)
-		{
+		} catch (ReflectError e) {
 			throw new UtilEvalError("Error invoking compiled command: " + e, e);
 		}
 	}
 
-	private static void logInvokeMethod(String msg, Method method, Object[] args)
-	{
-		if (Interpreter.DEBUG)
-		{
+	private static void logInvokeMethod(String msg, Method method, Object[] args) {
+		if (Interpreter.DEBUG) {
 			Interpreter.debug(msg + method + " with args:");
-			for (int i = 0; i < args.length; i++)
-			{
+			for (int i = 0; i < args.length; i++) {
 				final Object arg = args[i];
 				Interpreter.debug("args[" + i + "] = " + arg + " type = " + (arg == null ? "<unkown>" : arg.getClass()));
 			}
@@ -1015,49 +815,37 @@ final class Reflect
 	}
 
 	@SuppressWarnings("rawtypes")
-	private static void checkFoundStaticMethod(Method method, boolean staticOnly, Class clas) throws UtilEvalError
-	{
+	private static void checkFoundStaticMethod(Method method, boolean staticOnly, Class clas) throws UtilEvalError {
 		// We're looking for a static method but found an instance method
-		if (method != null && staticOnly && !isStatic(method))
-		{
-			throw new UtilEvalError("Cannot reach instance method: "
-					+ StringUtil.methodString(method.getName(), method.getParameterTypes()) + " from static context: " + clas.getName());
+		if (method != null && staticOnly && !isStatic(method)) {
+			throw new UtilEvalError("Cannot reach instance method: " + StringUtil.methodString(method.getName(), method.getParameterTypes()) + " from static context: " + clas.getName());
 		}
 	}
 
 	@SuppressWarnings("rawtypes")
-	private static ReflectError cantFindConstructor(Class clas, Class[] types)
-	{
-		if (types.length == 0)
-		{
+	private static ReflectError cantFindConstructor(Class clas, Class[] types) {
+		if (types.length == 0) {
 			return new ReflectError("Can't find default constructor for: " + clas);
-		}
-		else
-		{
-			return new ReflectError("Can't find constructor: " + StringUtil.methodString(clas.getName(), types) + " in class: "
-					+ clas.getName());
+		} else {
+			return new ReflectError("Can't find constructor: " + StringUtil.methodString(clas.getName(), types) + " in class: " + clas.getName());
 		}
 	}
 
 	@SuppressWarnings("rawtypes")
-	private static boolean isPublic(Class c)
-	{
+	private static boolean isPublic(Class c) {
 		return Modifier.isPublic(c.getModifiers());
 	}
 
-	private static boolean isPublic(Method m)
-	{
+	private static boolean isPublic(Method m) {
 		return Modifier.isPublic(m.getModifiers());
 	}
 
 	@SuppressWarnings("rawtypes")
-	private static boolean isPublic(Constructor c)
-	{
+	private static boolean isPublic(Constructor c) {
 		return Modifier.isPublic(c.getModifiers());
 	}
 
-	private static boolean isStatic(Method m)
-	{
+	private static boolean isStatic(Method m) {
 		return Modifier.isStatic(m.getModifiers());
 	}
 }

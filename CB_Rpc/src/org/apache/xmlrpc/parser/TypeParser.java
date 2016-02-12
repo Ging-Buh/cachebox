@@ -21,7 +21,6 @@ package org.apache.xmlrpc.parser;
 import org.apache.xmlrpc.XmlRpcException;
 import org.xml.sax.ContentHandler;
 
-
 /** Interface of a SAX handler parsing a single parameter or
  * result object.
  */

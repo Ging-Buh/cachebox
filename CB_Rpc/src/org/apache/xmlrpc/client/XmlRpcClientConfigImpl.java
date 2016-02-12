@@ -24,15 +24,13 @@ import java.net.URL;
 import org.apache.xmlrpc.common.XmlRpcHttpRequestConfigImpl;
 import org.apache.xmlrpc.common.XmlRpcRequestProcessor;
 
-
 /** Default implementation of a clients request configuration.
  */
-public class XmlRpcClientConfigImpl extends XmlRpcHttpRequestConfigImpl
-		implements XmlRpcHttpClientConfig, XmlRpcLocalClientConfig, Cloneable, Serializable {
+public class XmlRpcClientConfigImpl extends XmlRpcHttpRequestConfigImpl implements XmlRpcHttpClientConfig, XmlRpcLocalClientConfig, Cloneable, Serializable {
 	private static final long serialVersionUID = 4121131450507800889L;
 	private URL serverURL;
 	private XmlRpcRequestProcessor xmlRpcServer;
-    private String userAgent;
+	private String userAgent;
 
 	/** Creates a new client configuration with default settings.
 	 */
@@ -56,7 +54,11 @@ public class XmlRpcClientConfigImpl extends XmlRpcHttpRequestConfigImpl
 	public void setServerURL(URL pURL) {
 		serverURL = pURL;
 	}
-	public URL getServerURL() { return serverURL; }
+
+	public URL getServerURL() {
+		return serverURL;
+	}
+
 	/** Returns the {@link XmlRpcRequestProcessor} being invoked.
 	 * @param pServer Server object being invoked. This will typically
 	 * be a singleton instance, but could as well create a new
@@ -65,20 +67,23 @@ public class XmlRpcClientConfigImpl extends XmlRpcHttpRequestConfigImpl
 	public void setXmlRpcServer(XmlRpcRequestProcessor pServer) {
 		xmlRpcServer = pServer;
 	}
-	public XmlRpcRequestProcessor getXmlRpcServer() { return xmlRpcServer; }
 
-    /**
-     * Returns the user agent header to use 
-     * @return the http user agent header to set when doing xmlrpc requests
-     */
-    public String getUserAgent() {
-        return userAgent;
-    }
-    
-    /**
-     * @param pUserAgent the http user agent header to set when doing xmlrpc requests
-     */
-    public void setUserAgent(String pUserAgent) {
-        userAgent = pUserAgent;
-    }
+	public XmlRpcRequestProcessor getXmlRpcServer() {
+		return xmlRpcServer;
+	}
+
+	/**
+	 * Returns the user agent header to use 
+	 * @return the http user agent header to set when doing xmlrpc requests
+	 */
+	public String getUserAgent() {
+		return userAgent;
+	}
+
+	/**
+	 * @param pUserAgent the http user agent header to set when doing xmlrpc requests
+	 */
+	public void setUserAgent(String pUserAgent) {
+		userAgent = pUserAgent;
+	}
 }

@@ -28,8 +28,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
  * 
  * @author Longri
  */
-public class AccuracyDrawable
-{
+public class AccuracyDrawable {
 
 	private final int CIRCLE_COUNT = 7;
 
@@ -39,23 +38,20 @@ public class AccuracyDrawable
 	final float size;
 	final float step;
 
-	AccuracyDrawable(float maxWidth, float maxHeight)
-	{
+	AccuracyDrawable(float maxWidth, float maxHeight) {
 
 		size = Math.max(maxWidth, maxHeight);
 		// create CIRCLE_COUNT circle with different radius
 		step = size / (CIRCLE_COUNT);
 
 		int index = 0;
-		for (float radius = step; index < CIRCLE_COUNT; radius += step)
-		{
+		for (float radius = step; index < CIRCLE_COUNT; radius += step) {
 			createDrawablesFor(index++, radius);
 		}
 
 	}
 
-	private void createDrawablesFor(int index, float radius)
-	{
+	private void createDrawablesFor(int index, float radius) {
 
 		GL_Paint paint = new GL_Paint();
 		paint.setColor(Color.BLUE);
@@ -71,15 +67,15 @@ public class AccuracyDrawable
 		radien[index] = radius;
 	}
 
-	public void draw(Batch batch, float x, float y, float radius)
-	{
+	public void draw(Batch batch, float x, float y, float radius) {
 
 		int index = 0;
-		while (true)
-		{
-			if (radius <= radien[index]) break;
+		while (true) {
+			if (radius <= radien[index])
+				break;
 			index++;
-			if (index == CIRCLE_COUNT - 1) break;
+			if (index == CIRCLE_COUNT - 1)
+				break;
 		}
 
 		float scale = (radius / radien[index]) * size;

@@ -26,7 +26,6 @@ import org.apache.xmlrpc.serializer.NodeSerializer;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-
 /** A parser for DOM document.
  */
 public class NodeParser extends ExtParser {

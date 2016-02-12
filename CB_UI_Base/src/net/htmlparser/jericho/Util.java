@@ -27,10 +27,11 @@ import java.io.*;
  * Contains miscellaneous utility methods not directly associated with the HTML Parser library.
  */
 public final class Util {
-	private static final int BUFFER_SIZE=2048;
-	private static final String CSVNewLine=System.getProperty("line.separator");
+	private static final int BUFFER_SIZE = 2048;
+	private static final String CSVNewLine = System.getProperty("line.separator");
 
-	private Util() {}
+	private Util() {
+	}
 
 	/**
 	 * Returns the text loaded from the specified <code>Reader</code> as a string.
@@ -44,13 +45,14 @@ public final class Util {
 	 * @throws java.io.IOException if an I/O error occurs.
 	 */
 	public static String getString(final Reader reader) throws IOException {
-		if (reader==null) return "";
+		if (reader == null)
+			return "";
 		try {
 			int charsRead;
-			final char[] copyBuffer=new char[BUFFER_SIZE];
-			final StringBuilder sb=new StringBuilder();
-			while ((charsRead=reader.read(copyBuffer,0,BUFFER_SIZE))!=-1)
-				sb.append(copyBuffer,0,charsRead);
+			final char[] copyBuffer = new char[BUFFER_SIZE];
+			final StringBuilder sb = new StringBuilder();
+			while ((charsRead = reader.read(copyBuffer, 0, BUFFER_SIZE)) != -1)
+				sb.append(copyBuffer, 0, charsRead);
 			return sb.toString();
 		} finally {
 			reader.close();
@@ -93,35 +95,37 @@ public final class Util {
 	 * @see FormFields#getColumnLabels()
 	 * @see FormFields#getColumnValues(Map)
 	 */
-  public static void outputCSVLine(final Writer writer, final String[] values) throws IOException {
-  	for (int i=0; i<values.length;) {
-			final String value=values[i];
-  		if (value!=null) {
-				if (value==Config.ColumnValueTrue || value==Config.ColumnValueFalse) {
+	public static void outputCSVLine(final Writer writer, final String[] values) throws IOException {
+		for (int i = 0; i < values.length;) {
+			final String value = values[i];
+			if (value != null) {
+				if (value == Config.ColumnValueTrue || value == Config.ColumnValueFalse) {
 					writer.write(value); // assumes neither ColumnTrue or ColumnFalse contain double quotes.
 				} else {
-		 			writer.write('"');
-					outputValueEscapeQuotes(writer,value);
+					writer.write('"');
+					outputValueEscapeQuotes(writer, value);
 					writer.write('"');
 				}
 			}
-			if (++i!=values.length) writer.write(',');
-  	}
-		writer.write(CSVNewLine);
-  }
-
-  private static void outputValueEscapeQuotes(final Writer writer, final String text) throws IOException {
-		for (int i=0; i<text.length(); i++) {
-			final char ch=text.charAt(i);
-			writer.write(ch);
-			if (ch=='"') writer.write(ch);
+			if (++i != values.length)
+				writer.write(',');
 		}
-  }
+		writer.write(CSVNewLine);
+	}
+
+	private static void outputValueEscapeQuotes(final Writer writer, final String text) throws IOException {
+		for (int i = 0; i < text.length(); i++) {
+			final char ch = text.charAt(i);
+			writer.write(ch);
+			if (ch == '"')
+				writer.write(ch);
+		}
+	}
 
 	static char[] getConcatenatedCharArray(final String string1, final String string2) {
-		final char[] charArray=new char[string1.length()+string2.length()];
-		string1.getChars(0,string1.length(),charArray,0);
-		string2.getChars(0,string2.length(),charArray,string1.length());
+		final char[] charArray = new char[string1.length() + string2.length()];
+		string1.getChars(0, string1.length(), charArray, 0);
+		string2.getChars(0, string2.length(), charArray, string1.length());
 		return charArray;
 	}
 }

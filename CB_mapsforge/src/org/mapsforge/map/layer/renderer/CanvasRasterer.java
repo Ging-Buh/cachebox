@@ -45,12 +45,10 @@ class CanvasRasterer {
 			PointTextContainer pointTextContainer = pointTextContainers.get(index);
 
 			if (pointTextContainer.paintBack != null) {
-				this.canvas.drawText(pointTextContainer.text, (int) pointTextContainer.x, (int) pointTextContainer.y,
-						pointTextContainer.paintBack);
+				this.canvas.drawText(pointTextContainer.text, (int) pointTextContainer.x, (int) pointTextContainer.y, pointTextContainer.paintBack);
 			}
 
-			this.canvas.drawText(pointTextContainer.text, (int) pointTextContainer.x, (int) pointTextContainer.y,
-					pointTextContainer.paintFront);
+			this.canvas.drawText(pointTextContainer.text, (int) pointTextContainer.x, (int) pointTextContainer.y, pointTextContainer.paintFront);
 		}
 	}
 
@@ -78,8 +76,7 @@ class CanvasRasterer {
 	void drawWayNames(List<WayTextContainer> wayTextContainers) {
 		for (int index = wayTextContainers.size() - 1; index >= 0; --index) {
 			WayTextContainer wayTextContainer = wayTextContainers.get(index);
-			this.canvas.drawTextRotated(wayTextContainer.text, wayTextContainer.x1, wayTextContainer.y1,
-					wayTextContainer.x2, wayTextContainer.y2, wayTextContainer.paint);
+			this.canvas.drawTextRotated(wayTextContainer.text, wayTextContainer.x1, wayTextContainer.y1, wayTextContainer.x2, wayTextContainer.y2, wayTextContainer.paint);
 		}
 	}
 
@@ -136,14 +133,14 @@ class CanvasRasterer {
 	private void drawShapePaintContainer(ShapePaintContainer shapePaintContainer) {
 		ShapeType shapeType = shapePaintContainer.shapeContainer.getShapeType();
 		switch (shapeType) {
-			case CIRCLE:
-				drawCircleContainer(shapePaintContainer);
-				return;
+		case CIRCLE:
+			drawCircleContainer(shapePaintContainer);
+			return;
 
-			case POLYLINE:
-				PolylineContainer polylineContainer = (PolylineContainer) shapePaintContainer.shapeContainer;
-				drawPath(shapePaintContainer, polylineContainer.coordinates);
-				return;
+		case POLYLINE:
+			PolylineContainer polylineContainer = (PolylineContainer) shapePaintContainer.shapeContainer;
+			drawPath(shapePaintContainer, polylineContainer.coordinates);
+			return;
 		}
 	}
 }

@@ -6,28 +6,20 @@ import CB_UI_Base.settings.CB_UI_Base_Settings;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
-public abstract class CB_Skin extends SkinBase
-{
+public abstract class CB_Skin extends SkinBase {
 
-	public static final CB_Skin INSTANCE = new CB_Skin()
-	{
+	public static final CB_Skin INSTANCE = new CB_Skin() {
 		@Override
-		protected void initial()
-		{
+		protected void initial() {
 			SkinSettings cfg = new SkinSettings();
 
 			FileHandle fh;
-			if (CB_UI_Base_Settings.SkinFolder.getValue().contains("default"))
-			{
+			if (CB_UI_Base_Settings.SkinFolder.getValue().contains("default")) {
 				// fh = Gdx.files.internal("skins/default");
 				fh = Global.getInternalFileHandle("skins/default");
-			}
-			else if (CB_UI_Base_Settings.SkinFolder.getValue().contains("small"))
-			{
+			} else if (CB_UI_Base_Settings.SkinFolder.getValue().contains("small")) {
 				fh = Global.getInternalFileHandle("skins/small");
-			}
-			else
-			{
+			} else {
 				fh = Gdx.files.absolute(CB_UI_Base_Settings.SkinFolder.getValue());
 			}
 
@@ -47,8 +39,7 @@ public abstract class CB_Skin extends SkinBase
 
 	};
 
-	private CB_Skin()
-	{
+	private CB_Skin() {
 		super();
 		initial();
 		that = this;

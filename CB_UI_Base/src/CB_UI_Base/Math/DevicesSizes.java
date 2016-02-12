@@ -9,23 +9,23 @@ import java.io.Serializable;
  * @author Longri
  */
 public class DevicesSizes implements Serializable {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -5441749943486589905L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5441749943486589905L;
 
-    /**
-     * Die Größe die CB im gesamten zur Verfügung steht.
-     */
-    public Size Window;
+	/**
+	 * Die Größe die CB im gesamten zur Verfügung steht.
+	 */
+	public Size Window;
 
-    /**
-     * die Auflösung die das Display hat
-     */
-    public float Density;
+	/**
+	 * die Auflösung die das Display hat
+	 */
+	public float Density;
 
-    /**
-     * True wenn die Berechnung für Landscape durchgeführt werden soll.
-     */
-    public boolean isLandscape;
+	/**
+	 * True wenn die Berechnung für Landscape durchgeführt werden soll.
+	 */
+	public boolean isLandscape;
 }

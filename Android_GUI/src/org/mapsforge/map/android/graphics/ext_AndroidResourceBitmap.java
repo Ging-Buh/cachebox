@@ -30,27 +30,23 @@ import com.badlogic.gdx.graphics.Texture;
 /**
  * @author Longri
  */
-public class ext_AndroidResourceBitmap extends AndroidResourceBitmap implements ext_Bitmap
-{
+public class ext_AndroidResourceBitmap extends AndroidResourceBitmap implements ext_Bitmap {
 
 	protected final BitmapDrawable GL_image;
 
-	ext_AndroidResourceBitmap(InputStream inputStream, int HashCode, float scaleFactor) throws IOException
-	{
+	ext_AndroidResourceBitmap(InputStream inputStream, int HashCode, float scaleFactor) throws IOException {
 		super(inputStream, HashCode);
 
 		GL_RenderType RENDERING_TYPE = LocatorSettings.MapsforgeRenderType.getEnumValue();
 
 		// Don't create GL_Image with renderType Mapsforge! GL_Images are not needed!
-		if (RENDERING_TYPE == GL_RenderType.Mapsforge)
-		{
+		if (RENDERING_TYPE == GL_RenderType.Mapsforge) {
 			GL_image = null;
 			return;
 		}
 
 		byte[] bytes = null;
-		if (!BitmapDrawable.AtlasContains(HashCode))
-		{
+		if (!BitmapDrawable.AtlasContains(HashCode)) {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			this.bitmap.compress(CompressFormat.PNG, 1, baos);
 
@@ -63,36 +59,29 @@ public class ext_AndroidResourceBitmap extends AndroidResourceBitmap implements 
 	}
 
 	@Override
-	public void recycle()
-	{
-		
+	public void recycle() {
 
 	}
 
 	@Override
-	public void getPixels(int[] maskBuf, int i, int w, int j, int y, int w2, int k)
-	{
-		
+	public void getPixels(int[] maskBuf, int i, int w, int j, int y, int w2, int k) {
 
 	}
 
 	@Override
-	public void setPixels(int[] maskedContentBuf, int i, int w, int j, int y, int w2, int k)
-	{
-		
+	public void setPixels(int[] maskedContentBuf, int i, int w, int j, int y, int w2, int k) {
 
 	}
 
 	@Override
-	public BitmapDrawable getGlBmpHandle()
-	{
+	public BitmapDrawable getGlBmpHandle() {
 		return GL_image;
 	}
 
 	@Override
-	public Texture getTexture()
-	{
-		if (GL_image == null) return null;
+	public Texture getTexture() {
+		if (GL_image == null)
+			return null;
 		return GL_image.getTexture();
 	}
 

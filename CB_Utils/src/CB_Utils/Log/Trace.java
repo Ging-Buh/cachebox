@@ -16,7 +16,6 @@
 
 package CB_Utils.Log;
 
-
 /**
  * Der Logger basiert auf einem Interface als CallBack und kann damit auch von nicht GUI Klassen implementiert werden, damit sie einen
  * Fehler Melden können. Wenn keine GUI zur Darstellung diese Meldung empfängt, ist es halt so. Also benutzt so häufig wie möglich den
@@ -24,16 +23,14 @@ package CB_Utils.Log;
  * 
  * @author Longri
  */
-public class Trace
-{
+public class Trace {
 
 	/**
 	 * Get the Name of Class, Name of method and the linenumber of th Caller.
 	 * 
 	 * @return
 	 */
-	public static String getCallerName()
-	{
+	public static String getCallerName() {
 		return getCallerName(1);
 	}
 
@@ -43,20 +40,16 @@ public class Trace
 	 * @param i
 	 * @return
 	 */
-	public static String getCallerName(int i)
-	{
+	public static String getCallerName(int i) {
 		String ret = "NoInfo";
 
-		try
-		{
+		try {
 			StackTraceElement Caller = Thread.currentThread().getStackTrace()[3 + i];
 			String Name = Caller.getClassName();
 			String Methode = Caller.getMethodName();
 			int Line = Caller.getLineNumber();
 			ret = Name + "." + Methode + " [Line:" + Line + "]";
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 
 		}
 

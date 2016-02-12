@@ -10,50 +10,43 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_ShowSolverView2 extends CB_Action_ShowView
-{
+public class CB_Action_ShowSolverView2 extends CB_Action_ShowView {
 
-	public CB_Action_ShowSolverView2()
-	{
+	public CB_Action_ShowSolverView2() {
 		super("Solver v2", MenuID.AID_SHOW_SOLVER2);
 	}
 
 	@Override
-	public void Execute()
-	{
-		if ((TabMainView.solverView2 == null) && (tabMainView != null) && (tab != null)) TabMainView.solverView2 = new SolverView2(
-				tab.getContentRec(), "SolverView2");
+	public void Execute() {
+		if ((TabMainView.solverView2 == null) && (tabMainView != null) && (tab != null))
+			TabMainView.solverView2 = new SolverView2(tab.getContentRec(), "SolverView2");
 
-		if ((TabMainView.solverView2 != null) && (tab != null)) tab.ShowView(TabMainView.solverView2);
+		if ((TabMainView.solverView2 != null) && (tab != null))
+			tab.ShowView(TabMainView.solverView2);
 	}
 
 	@Override
-	public boolean getEnabled()
-	{
+	public boolean getEnabled() {
 		return true;
 	}
 
 	@Override
-	public Sprite getIcon()
-	{
+	public Sprite getIcon() {
 		return SpriteCacheBase.getThemedSprite("solver-icon-2");
 	}
 
 	@Override
-	public CB_View_Base getView()
-	{
+	public CB_View_Base getView() {
 		return TabMainView.solverView2;
 	}
 
 	@Override
-	public boolean hasContextMenu()
-	{
+	public boolean hasContextMenu() {
 		return true;
 	}
 
 	@Override
-	public Menu getContextMenu()
-	{
+	public Menu getContextMenu() {
 		return TabMainView.solverView2.getContextMenu();
 	}
 }

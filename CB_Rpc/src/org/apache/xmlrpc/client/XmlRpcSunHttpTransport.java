@@ -30,7 +30,6 @@ import org.apache.xmlrpc.common.XmlRpcStreamRequestConfig;
 import org.apache.xmlrpc.util.HttpUtil;
 import org.xml.sax.SAXException;
 
-
 /** Default implementation of an HTTP transport, based on the
  * {@link java.net.HttpURLConnection} class.
  */
@@ -45,21 +44,21 @@ public class XmlRpcSunHttpTransport extends XmlRpcHttpTransport {
 		super(pClient, userAgent);
 	}
 
-    protected URLConnection newURLConnection(URL pURL) throws IOException {
-        return pURL.openConnection();
-    }
+	protected URLConnection newURLConnection(URL pURL) throws IOException {
+		return pURL.openConnection();
+	}
 
-    /**
-     * For use by subclasses.
-     */
-    protected URLConnection getURLConnection() {
-        return conn;
-    }
+	/**
+	 * For use by subclasses.
+	 */
+	protected URLConnection getURLConnection() {
+		return conn;
+	}
 
-    public Object sendRequest(XmlRpcRequest pRequest) throws XmlRpcException {
+	public Object sendRequest(XmlRpcRequest pRequest) throws XmlRpcException {
 		XmlRpcHttpClientConfig config = (XmlRpcHttpClientConfig) pRequest.getConfig();
 		try {
-		    final URLConnection c = conn = newURLConnection(config.getServerURL());
+			final URLConnection c = conn = newURLConnection(config.getServerURL());
 			c.setUseCaches(false);
 			c.setDoInput(true);
 			c.setDoOutput(true);
@@ -70,11 +69,11 @@ public class XmlRpcSunHttpTransport extends XmlRpcHttpTransport {
 	}
 
 	protected void setRequestHeader(String pHeader, String pValue) {
-	    getURLConnection().setRequestProperty(pHeader, pValue);
+		getURLConnection().setRequestProperty(pHeader, pValue);
 	}
 
 	protected void close() throws XmlRpcClientException {
-	    final URLConnection c = getURLConnection();
+		final URLConnection c = getURLConnection();
 		if (c instanceof HttpURLConnection) {
 			((HttpURLConnection) c).disconnect();
 		}
@@ -86,14 +85,14 @@ public class XmlRpcSunHttpTransport extends XmlRpcHttpTransport {
 
 	protected InputStream getInputStream() throws XmlRpcException {
 		try {
-		    URLConnection connection = getURLConnection();
-		    if ( connection instanceof HttpURLConnection ) {
-		        HttpURLConnection httpConnection = (HttpURLConnection) connection;
-		        int responseCode = httpConnection.getResponseCode();
-		        if (responseCode < 200  ||  responseCode > 299) {
-		            throw new XmlRpcHttpTransportException(responseCode, httpConnection.getResponseMessage());
-		        }
-		    }
+			URLConnection connection = getURLConnection();
+			if (connection instanceof HttpURLConnection) {
+				HttpURLConnection httpConnection = (HttpURLConnection) connection;
+				int responseCode = httpConnection.getResponseCode();
+				if (responseCode < 200 || responseCode > 299) {
+					throw new XmlRpcHttpTransportException(responseCode, httpConnection.getResponseMessage());
+				}
+			}
 			return connection.getInputStream();
 		} catch (IOException e) {
 			throw new XmlRpcException("Failed to create input stream: " + e.getMessage(), e);
@@ -101,6 +100,6 @@ public class XmlRpcSunHttpTransport extends XmlRpcHttpTransport {
 	}
 
 	protected void writeRequest(ReqWriter pWriter) throws IOException, XmlRpcException, SAXException {
-        pWriter.write(getURLConnection().getOutputStream());
+		pWriter.write(getURLConnection().getOutputStream());
 	}
 }

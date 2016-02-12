@@ -24,8 +24,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 /**
  * @author Longri
  */
-public abstract class RotateAnimation extends AnimationBase
-{
+public abstract class RotateAnimation extends AnimationBase {
 	private float mOriginX;
 	private float mOriginY;
 	private float mScale = 1f;
@@ -34,74 +33,64 @@ public abstract class RotateAnimation extends AnimationBase
 
 	protected static final int ANIMATION_DURATION = 2000;
 
-	public RotateAnimation(float X, float Y, float Width, float Height, String Name)
-	{
+	public RotateAnimation(float X, float Y, float Width, float Height, String Name) {
 		super(X, Y, Width, Height, Name);
 	}
 
-	public RotateAnimation(CB_RectF rec, String Name)
-	{
+	public RotateAnimation(CB_RectF rec, String Name) {
 		super(rec, Name);
 	}
 
 	/**
-	 * Time for 360°
+	 * Time for 360ï¿½
 	 */
-	protected void play(int duration)
-	{
+	protected void play(int duration) {
 		this.mDuration = duration;
 		mPlaying = true;
 		mPause = false;
 	}
 
 	@Override
-	public void stop()
-	{
+	public void stop() {
 		mPlaying = false;
 		mPause = false;
 	}
 
 	@Override
-	public void pause()
-	{
+	public void pause() {
 		mPause = true;
 	}
 
 	@Override
-	protected void Initial()
-	{
+	protected void Initial() {
 	}
 
 	@Override
-	protected void SkinIsChanged()
-	{
+	protected void SkinIsChanged() {
 	}
 
 	@Override
-	public void setOrigin(float x, float y)
-	{
+	public void setOrigin(float x, float y) {
 		mOriginX = x;
 		mOriginY = y;
 	}
 
 	@Override
-	public void setScale(float scale)
-	{
+	public void setScale(float scale) {
 		mScale = scale;
 	}
 
-	public void setSprite(Sprite sprite)
-	{
+	public void setSprite(Sprite sprite) {
 		mSpriteWidth = sprite.getWidth();
 		mSpriteHeight = sprite.getHeight();
 		mDrawable = sprite;// new SpriteDrawable(sprite);
 	}
 
 	@Override
-	protected void render(Batch batch)
-	{
+	protected void render(Batch batch) {
 
-		if (mDrawable == null) return;
+		if (mDrawable == null)
+			return;
 
 		// ####################################################################
 		// calc Rotation
@@ -118,8 +107,7 @@ public abstract class RotateAnimation extends AnimationBase
 		float drawX = 0;
 		float drawY = 0;
 
-		if (mSpriteWidth > 0 && mSpriteHeight > 0)
-		{
+		if (mSpriteWidth > 0 && mSpriteHeight > 0) {
 			float proportionWidth = getWidth() / mSpriteWidth;
 			float proportionHeight = getHeight() / mSpriteHeight;
 

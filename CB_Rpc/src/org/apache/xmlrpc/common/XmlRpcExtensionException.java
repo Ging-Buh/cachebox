@@ -20,7 +20,6 @@ package org.apache.xmlrpc.common;
 
 import org.apache.xmlrpc.XmlRpcException;
 
-
 /** This exception is thrown, if an attempt to use extensions
  * is made, but extensions aren't explicitly enabled.
  */

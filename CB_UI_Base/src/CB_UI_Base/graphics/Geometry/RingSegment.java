@@ -24,8 +24,7 @@ import com.badlogic.gdx.math.MathUtils;
  * 
  * @author Longri
  */
-public class RingSegment extends Ring
-{
+public class RingSegment extends Ring {
 
 	private float start;
 	private float end;
@@ -42,8 +41,7 @@ public class RingSegment extends Ring
 	 * @param outerRadius
 	 *            radius away from center point
 	 */
-	public RingSegment(float x, float y, float innerRadius, float outerRadius, float startAngle, float endAngle)
-	{
+	public RingSegment(float x, float y, float innerRadius, float outerRadius, float startAngle, float endAngle) {
 		super(x, y, innerRadius, outerRadius);
 		this.start = startAngle;
 		this.end = endAngle;
@@ -64,10 +62,10 @@ public class RingSegment extends Ring
 	 * @param compute
 	 *            true for call Compute() with constructor
 	 */
-	public RingSegment(float x, float y, float innerRadius, float outerRadius, float startAngle, float endAngle, boolean compute)
-	{
+	public RingSegment(float x, float y, float innerRadius, float outerRadius, float startAngle, float endAngle, boolean compute) {
 		this(x, y, innerRadius, outerRadius, startAngle, endAngle);
-		if (compute) Compute();
+		if (compute)
+			Compute();
 	}
 
 	/**
@@ -77,8 +75,7 @@ public class RingSegment extends Ring
 	 * 
 	 * @param x
 	 */
-	public void setStartAngle(float startAngle)
-	{
+	public void setStartAngle(float startAngle) {
 		this.start = startAngle;
 		chkStartEnd();
 		isDirty = true;
@@ -91,15 +88,13 @@ public class RingSegment extends Ring
 	 * 
 	 * @param y
 	 */
-	public void setEndAngle(float endAngle)
-	{
+	public void setEndAngle(float endAngle) {
 		this.end = endAngle;
 		chkStartEnd();
 		isDirty = true;
 	}
 
-	private void chkStartEnd()
-	{
+	private void chkStartEnd() {
 		while (start < 0)
 			start += 360;
 
@@ -121,15 +116,14 @@ public class RingSegment extends Ring
 	 * For every segment are compute a triangle from the segment start, end and the center of this circle.
 	 */
 	@Override
-	public void Compute()
-	{
-		if (!isDirty) return; // Nothing todo
+	public void Compute() {
+		if (!isDirty)
+			return; // Nothing todo
 
 		// calculate segment count
 		double alpha = (360 * MIN_CIRCLE_SEGMENTH_LENGTH) / (MathUtils.PI2 * outerRadius);
 
-		if (start > end)
-		{
+		if (start > end) {
 			alpha *= -1;
 		}
 
@@ -148,21 +142,20 @@ public class RingSegment extends Ring
 		int triangleIndex = 0;
 		short verticeIdex = 0;
 		boolean beginnTriangles = false;
-		for (float i = start; index < ((segmente + 1) * 4); i += thetaStep)
-		{
-			if (i > end) i = end;
+		for (float i = start; index < ((segmente + 1) * 4); i += thetaStep) {
+			if (i > end)
+				i = end;
 			vertices[index++] = centerX + innerRadius * MathUtils.cos(i * MathUtils.degRad);
 			vertices[index++] = centerY + innerRadius * MathUtils.sin(i * MathUtils.degRad);
 			vertices[index++] = centerX + outerRadius * MathUtils.cos(i * MathUtils.degRad);
 			vertices[index++] = centerY + outerRadius * MathUtils.sin(i * MathUtils.degRad);
 
-			if (!beginnTriangles)
-			{
-				if (index % 8 == 0) beginnTriangles = true;
+			if (!beginnTriangles) {
+				if (index % 8 == 0)
+					beginnTriangles = true;
 			}
 
-			if (beginnTriangles)
-			{
+			if (beginnTriangles) {
 				triangleIndices[triangleIndex++] = verticeIdex++;
 				triangleIndices[triangleIndex++] = verticeIdex++;
 				triangleIndices[triangleIndex++] = verticeIdex--;
@@ -178,16 +171,16 @@ public class RingSegment extends Ring
 	}
 
 	@Override
-	public float[] getVertices()
-	{
-		if (isDirty) Compute();
+	public float[] getVertices() {
+		if (isDirty)
+			Compute();
 		return vertices;
 	}
 
 	@Override
-	public short[] getTriangles()
-	{
-		if (isDirty) Compute();
+	public short[] getTriangles() {
+		if (isDirty)
+			Compute();
 		return triangleIndices;
 	}
 }

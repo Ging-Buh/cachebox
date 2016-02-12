@@ -36,22 +36,19 @@ package bsh;
 import java.util.ArrayList;
 import java.util.List;
 
-class BSHTryStatement extends SimpleNode
-{
+class BSHTryStatement extends SimpleNode {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	BSHTryStatement(int id)
-	{
+	BSHTryStatement(int id) {
 		super(id);
 	}
 
 	@SuppressWarnings("unused")
 	@Override
-	public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError
-	{
+	public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError {
 		BSHBlock tryBlock = ((BSHBlock) jjtGetChild(0));
 
 		List<BSHFormalParameter> catchParams = new ArrayList<BSHFormalParameter>();
@@ -60,15 +57,15 @@ class BSHTryStatement extends SimpleNode
 		int nchild = jjtGetNumChildren();
 		Node node = null;
 		int i = 1;
-		while ((i < nchild) && ((node = jjtGetChild(i++)) instanceof BSHFormalParameter))
-		{
+		while ((i < nchild) && ((node = jjtGetChild(i++)) instanceof BSHFormalParameter)) {
 			catchParams.add((BSHFormalParameter) node);
 			catchBlocks.add((BSHBlock) jjtGetChild(i++));
 			node = null;
 		}
 		// finaly block
 		BSHBlock finallyBlock = null;
-		if (node != null) finallyBlock = (BSHBlock) node;
+		if (node != null)
+			finallyBlock = (BSHBlock) node;
 
 		// Why both of these?
 
@@ -84,12 +81,9 @@ class BSHTryStatement extends SimpleNode
 		 * Note: we the stack info... what do we do with it? append to exception message?
 		 */
 		int callstackDepth = callstack.depth();
-		try
-		{
+		try {
 			ret = tryBlock.eval(callstack, interpreter);
-		}
-		catch (TargetError e)
-		{
+		} catch (TargetError e) {
 			target = e;
 			String stackInfo = "Bsh Stack: ";
 			while (callstack.depth() > callstackDepth)
@@ -97,14 +91,13 @@ class BSHTryStatement extends SimpleNode
 		}
 
 		// unwrap the target error
-		if (target != null) thrown = target.getTarget();
+		if (target != null)
+			thrown = target.getTarget();
 
 		// If we have an exception, find a catch
-		if (thrown != null)
-		{
+		if (thrown != null) {
 			int n = catchParams.size();
-			for (i = 0; i < n; i++)
-			{
+			for (i = 0; i < n; i++) {
 				// Get catch block
 				BSHFormalParameter fp = catchParams.get(i);
 
@@ -114,18 +107,16 @@ class BSHTryStatement extends SimpleNode
 				// namespace.
 				fp.eval(callstack, interpreter);
 
-				if (fp.type == null && interpreter.getStrictJava()) throw new EvalError("(Strict Java) Untyped catch block", this,
-						callstack);
+				if (fp.type == null && interpreter.getStrictJava())
+					throw new EvalError("(Strict Java) Untyped catch block", this, callstack);
 
 				// If the param is typed check assignability
-				if (fp.type != null) try
-				{
-					thrown = (Throwable) Types.castObject(thrown/* rsh */, fp.type/* lhsType */, Types.ASSIGNMENT);
-				}
-				catch (UtilEvalError e)
-				{
-										continue;
-				}
+				if (fp.type != null)
+					try {
+						thrown = (Throwable) Types.castObject(thrown/* rsh */, fp.type/* lhsType */, Types.ASSIGNMENT);
+					} catch (UtilEvalError e) {
+						continue;
+					}
 
 				// Found match, execute catch block
 				BSHBlock cb = catchBlocks.get(i);
@@ -137,31 +128,24 @@ class BSHTryStatement extends SimpleNode
 				NameSpace enclosingNameSpace = callstack.top();
 				BlockNameSpace cbNameSpace = new BlockNameSpace(enclosingNameSpace);
 
-				try
-				{
+				try {
 					if (fp.type == BSHFormalParameter.UNTYPED)
-					// set an untyped variable directly in the block
-					cbNameSpace.setBlockVariable(fp.name, thrown);
-					else
-					{
+						// set an untyped variable directly in the block
+						cbNameSpace.setBlockVariable(fp.name, thrown);
+					else {
 						// set a typed variable (directly in the block)
 						Modifiers modifiers = new Modifiers();
 						cbNameSpace.setTypedVariable(fp.name, fp.type, thrown, new Modifiers()/* none */);
 					}
-				}
-				catch (UtilEvalError e)
-				{
+				} catch (UtilEvalError e) {
 					throw new InterpreterError("Unable to set var in catch block namespace.");
 				}
 
 				// put cbNameSpace on the top of the stack
 				callstack.swap(cbNameSpace);
-				try
-				{
+				try {
 					ret = cb.eval(callstack, interpreter);
-				}
-				finally
-				{
+				} finally {
 					// put it back
 					callstack.swap(enclosingNameSpace);
 				}
@@ -172,16 +156,18 @@ class BSHTryStatement extends SimpleNode
 		}
 
 		// evaluate finally block
-		if (finallyBlock != null)
-		{
+		if (finallyBlock != null) {
 			Object result = finallyBlock.eval(callstack, interpreter);
-			if (result instanceof ReturnControl) return result;
+			if (result instanceof ReturnControl)
+				return result;
 		}
 
 		// exception fell through, throw it upward...
-		if (target != null) throw target;
+		if (target != null)
+			throw target;
 
-		if (ret instanceof ReturnControl) return ret;
+		if (ret instanceof ReturnControl)
+			return ret;
 		else
 			return Primitive.VOID;
 	}

@@ -21,14 +21,14 @@
 package net.htmlparser.jericho;
 
 final class StartTagTypeNormal extends StartTagTypeGenericImplementation {
-	static final StartTagTypeNormal INSTANCE=new StartTagTypeNormal();
+	static final StartTagTypeNormal INSTANCE = new StartTagTypeNormal();
 
 	private StartTagTypeNormal() {
-		super("normal",START_DELIMITER_PREFIX,">",EndTagType.NORMAL,false,true,true);
+		super("normal", START_DELIMITER_PREFIX, ">", EndTagType.NORMAL, false, true, true);
 	}
-	
+
 	public boolean atEndOfAttributes(final Source source, final int pos, final boolean isClosingSlashIgnored) {
-		final ParseText parseText=source.getParseText();
-		return parseText.charAt(pos)=='>' || (!isClosingSlashIgnored && parseText.containsAt("/>",pos));
+		final ParseText parseText = source.getParseText();
+		return parseText.charAt(pos) == '>' || (!isClosingSlashIgnored && parseText.containsAt("/>", pos));
 	}
 }

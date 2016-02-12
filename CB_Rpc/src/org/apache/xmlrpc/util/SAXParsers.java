@@ -25,28 +25,28 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
-
 /** Utility class for working with SAX parsers.
  */
 public class SAXParsers {
 	private static SAXParserFactory spf;
+
 	static {
 		spf = SAXParserFactory.newInstance();
 		spf.setNamespaceAware(true);
 		spf.setValidating(false);
 		try {
-		    spf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+			spf.setFeature("http://xml.org/sax/features/external-general-entities", false);
 		} catch (javax.xml.parsers.ParserConfigurationException e) {
-		    // Ignore it
-        } catch (org.xml.sax.SAXException e) {
-            // Ignore it
+			// Ignore it
+		} catch (org.xml.sax.SAXException e) {
+			// Ignore it
 		}
 		try {
-		    spf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-        } catch (javax.xml.parsers.ParserConfigurationException e) {
-            // Ignore it
-        } catch (org.xml.sax.SAXException e) {
-            // Ignore it
+			spf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+		} catch (javax.xml.parsers.ParserConfigurationException e) {
+			// Ignore it
+		} catch (org.xml.sax.SAXException e) {
+			// Ignore it
 		}
 	}
 
@@ -67,14 +67,14 @@ public class SAXParsers {
 	 * use this to configure the factory.
 	 */
 	public static SAXParserFactory getSAXParserFactory() {
-	    return spf;
+		return spf;
 	}
 
 	/**
-     * Sets the SAX parser factory, which is used by Apache XML-RPC. You may use
-     * this to configure another instance than the default.
-     */
+	 * Sets the SAX parser factory, which is used by Apache XML-RPC. You may use
+	 * this to configure another instance than the default.
+	 */
 	public static void setSAXParserFactory(SAXParserFactory pFactory) {
-        spf = pFactory;
-    }
+		spf = pFactory;
+	}
 }

@@ -21,49 +21,50 @@
 package net.htmlparser.jericho;
 
 final class LoggerProviderSLF4J implements LoggerProvider {
-	public static final LoggerProvider INSTANCE=new LoggerProviderSLF4J();
-	
-	private LoggerProviderSLF4J() {}
+	public static final LoggerProvider INSTANCE = new LoggerProviderSLF4J();
+
+	private LoggerProviderSLF4J() {
+	}
 
 	public Logger getLogger(final String name) {
 		return new SLF4JLogger(org.slf4j.LoggerFactory.getLogger(name));
 	}
-	
+
 	private static class SLF4JLogger implements Logger {
 		private final org.slf4j.Logger slf4jLogger;
-		
+
 		public SLF4JLogger(final org.slf4j.Logger slf4jLogger) {
-			this.slf4jLogger=slf4jLogger;
+			this.slf4jLogger = slf4jLogger;
 		}
 
 		public void error(final String message) {
 			slf4jLogger.error(message);
 		}
-	
+
 		public void warn(final String message) {
 			slf4jLogger.warn(message);
 		}
-	
+
 		public void info(final String message) {
 			slf4jLogger.info(message);
 		}
-	
+
 		public void debug(final String message) {
 			slf4jLogger.debug(message);
 		}
-	
+
 		public boolean isErrorEnabled() {
 			return slf4jLogger.isErrorEnabled();
 		}
-	
+
 		public boolean isWarnEnabled() {
 			return slf4jLogger.isWarnEnabled();
 		}
-	
+
 		public boolean isInfoEnabled() {
 			return slf4jLogger.isInfoEnabled();
 		}
-	
+
 		public boolean isDebugEnabled() {
 			return slf4jLogger.isDebugEnabled();
 		}

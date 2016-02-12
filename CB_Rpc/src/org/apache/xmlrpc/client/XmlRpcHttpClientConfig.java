@@ -22,7 +22,6 @@ import java.net.URL;
 
 import org.apache.xmlrpc.common.XmlRpcHttpRequestConfig;
 
-
 /** Extension of {@link org.apache.xmlrpc.client.XmlRpcClientConfig}
  * for HTTP based transport. Provides details like server URL,
  * user credentials, and so on.
@@ -33,10 +32,10 @@ public interface XmlRpcHttpClientConfig extends XmlRpcHttpRequestConfig {
 	 * servlet
 	 */
 	URL getServerURL();
-    
-    /**
-     * Returns the user agent header to use 
-     * @return the http user agent header to set when doing xmlrpc requests
-     */
-    String getUserAgent();
+
+	/**
+	 * Returns the user agent header to use 
+	 * @return the http user agent header to set when doing xmlrpc requests
+	 */
+	String getUserAgent();
 }

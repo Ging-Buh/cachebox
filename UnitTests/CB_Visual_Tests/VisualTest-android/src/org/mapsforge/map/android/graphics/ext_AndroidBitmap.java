@@ -28,8 +28,7 @@ import com.badlogic.gdx.graphics.Texture;
  * 
  * @author Longri
  */
-public class ext_AndroidBitmap extends AndroidBitmap implements ext_Bitmap, TileBitmap
-{
+public class ext_AndroidBitmap extends AndroidBitmap implements ext_Bitmap, TileBitmap {
 	int instCount = 0;
 
 	protected final BitmapDrawable GL_image;
@@ -58,51 +57,45 @@ public class ext_AndroidBitmap extends AndroidBitmap implements ext_Bitmap, Tile
 	//
 	// }
 
-	ext_AndroidBitmap(int width, int height)
-	{
+	ext_AndroidBitmap(int width, int height) {
 		super(width, height, Config.RGB_565);
 		GL_image = null;
 		instCount++;
 	}
 
-	protected ext_AndroidBitmap()
-	{
+	protected ext_AndroidBitmap() {
 		super(1, 1, Config.ALPHA_8);
 		this.GL_image = null;
 		this.bitmap = null;
 	}
 
 	@Override
-	public void recycle()
-	{
+	public void recycle() {
 		instCount++;
 		this.destroyBitmap();
 	}
 
 	@Override
-	public void getPixels(int[] maskBuf, int i, int w, int j, int y, int w2, int k)
-	{
+	public void getPixels(int[] maskBuf, int i, int w, int j, int y, int w2, int k) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void setPixels(int[] maskedContentBuf, int i, int w, int j, int y, int w2, int k)
-	{
+	public void setPixels(int[] maskedContentBuf, int i, int w, int j, int y, int w2, int k) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public BitmapDrawable getGlBmpHandle()
-	{
+	public BitmapDrawable getGlBmpHandle() {
 		return GL_image;
 	}
 
 	@Override
-	public Texture getTexture()
-	{
-		if (GL_image == null) return null;
+	public Texture getTexture() {
+		if (GL_image == null)
+			return null;
 		return GL_image.getTexture();
 	}
 

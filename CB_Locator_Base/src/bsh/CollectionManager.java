@@ -41,113 +41,96 @@ import java.util.Map;
 /**
  * The default CollectionManager supports iteration over objects of type: Enumeration, Iterator, Iterable, CharSequence, and array.
  */
-public final class CollectionManager
-{
+public final class CollectionManager {
 	private static final CollectionManager manager = new CollectionManager();
 
-	public synchronized static CollectionManager getCollectionManager()
-	{
+	public synchronized static CollectionManager getCollectionManager() {
 		return manager;
 	}
 
 	/**
 	*/
-	public boolean isBshIterable(Object obj)
-	{
+	public boolean isBshIterable(Object obj) {
 		// This could be smarter...
-		try
-		{
+		try {
 			getBshIterator(obj);
 			return true;
-		}
-		catch (IllegalArgumentException e)
-		{
+		} catch (IllegalArgumentException e) {
 			return false;
 		}
 	}
 
 	@SuppressWarnings("rawtypes")
-	public Iterator getBshIterator(Object obj) throws IllegalArgumentException
-	{
-		if (obj == null) throw new NullPointerException("Cannot iterate over null.");
+	public Iterator getBshIterator(Object obj) throws IllegalArgumentException {
+		if (obj == null)
+			throw new NullPointerException("Cannot iterate over null.");
 
-		if (obj instanceof Enumeration)
-		{
+		if (obj instanceof Enumeration) {
 			final Enumeration enumeration = (Enumeration) obj;
-			return new Iterator<Object>()
-			{
+			return new Iterator<Object>() {
 				@Override
-				public boolean hasNext()
-				{
+				public boolean hasNext() {
 					return enumeration.hasMoreElements();
 				}
 
 				@Override
-				public Object next()
-				{
+				public Object next() {
 					return enumeration.nextElement();
 				}
 
 				@Override
-				public void remove()
-				{
+				public void remove() {
 					throw new UnsupportedOperationException();
 				}
 			};
 		}
 
-		if (obj instanceof Iterator) return (Iterator) obj;
+		if (obj instanceof Iterator)
+			return (Iterator) obj;
 
-		if (obj instanceof Iterable) return ((Iterable) obj).iterator();
+		if (obj instanceof Iterable)
+			return ((Iterable) obj).iterator();
 
-		if (obj.getClass().isArray())
-		{
+		if (obj.getClass().isArray()) {
 			final Object array = obj;
-			return new Iterator()
-			{
+			return new Iterator() {
 				private int index = 0;
 				private final int length = Array.getLength(array);
 
 				@Override
-				public boolean hasNext()
-				{
+				public boolean hasNext() {
 					return index < length;
 				}
 
 				@Override
-				public Object next()
-				{
+				public Object next() {
 					return Array.get(array, index++);
 				}
 
 				@Override
-				public void remove()
-				{
+				public void remove() {
 					throw new UnsupportedOperationException();
 				}
 			};
 		}
 
-		if (obj instanceof CharSequence) return getBshIterator(obj.toString().toCharArray());
+		if (obj instanceof CharSequence)
+			return getBshIterator(obj.toString().toCharArray());
 
 		throw new IllegalArgumentException("Cannot iterate over object of type " + obj.getClass());
 	}
 
-	public boolean isMap(Object obj)
-	{
+	public boolean isMap(Object obj) {
 		return obj instanceof Map;
 	}
 
 	@SuppressWarnings("rawtypes")
-	public Object getFromMap(Object map, Object key)
-	{
+	public Object getFromMap(Object map, Object key) {
 		return ((Map) map).get(key);
 	}
 
-	@SuppressWarnings(
-		{ "unchecked", "rawtypes" })
-	public Object putInMap(Object map, Object key, Object value)
-	{
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public Object putInMap(Object map, Object key, Object value) {
 		return ((Map) map).put(key, value);
 	}
 

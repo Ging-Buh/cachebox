@@ -24,8 +24,8 @@ import org.mapsforge.core.util.LatLongUtils;
 public class BoundingBox implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private static final double C=1e6;
-	
+	private static final double C = 1e6;
+
 	/**
 	 * Creates a new BoundingBox from a comma-separated string of coordinates in the order minLat, minLon, maxLat,
 	 * maxLon. All coordinate values must be in degrees.
@@ -85,12 +85,12 @@ public class BoundingBox implements Serializable {
 			throw new IllegalArgumentException("invalid longitude range: " + minLongitude + ' ' + maxLongitude);
 		}
 
-		this.minLatitude = (int) (minLatitude*C);
-		this.minLongitude = (int) (minLongitude*C);
-		this.maxLatitude = (int) (maxLatitude*C);
-		this.maxLongitude = (int) (maxLongitude*C);
+		this.minLatitude = (int) (minLatitude * C);
+		this.minLongitude = (int) (minLongitude * C);
+		this.maxLatitude = (int) (maxLatitude * C);
+		this.maxLongitude = (int) (maxLongitude * C);
 	}
-	
+
 	/**
 	 * @param minLatitude
 	 *            the minimum latitude coordinate in degrees.
@@ -104,7 +104,6 @@ public class BoundingBox implements Serializable {
 	 *             if a coordinate is invalid.
 	 */
 	public BoundingBox(int minLatitude, int minLongitude, int maxLatitude, int maxLongitude) {
-	
 
 		if (minLatitude > maxLatitude) {
 			throw new IllegalArgumentException("invalid latitude range: " + minLatitude + ' ' + maxLatitude);
@@ -115,9 +114,8 @@ public class BoundingBox implements Serializable {
 		this.minLatitude = minLatitude;
 		this.minLongitude = minLongitude;
 		this.maxLatitude = maxLatitude;
-		this.maxLongitude =maxLongitude;
+		this.maxLongitude = maxLongitude;
 	}
-
 
 	/**
 	 * @param latLong
@@ -125,8 +123,7 @@ public class BoundingBox implements Serializable {
 	 * @return true if this BoundingBox contains the given LatLong, false otherwise.
 	 */
 	public boolean contains(LatLong latLong) {
-		return this.minLatitude <= latLong.getIntLatitude() && this.maxLatitude >= latLong.getIntLatitude()
-				&& this.minLongitude <= latLong.getIntLongitude() && this.maxLongitude >= latLong.getIntLongitude();
+		return this.minLatitude <= latLong.getIntLatitude() && this.maxLatitude >= latLong.getIntLatitude() && this.minLongitude <= latLong.getIntLongitude() && this.maxLongitude >= latLong.getIntLongitude();
 	}
 
 	@Override
@@ -198,8 +195,7 @@ public class BoundingBox implements Serializable {
 			return true;
 		}
 
-		return this.getMaxLatitude() >= boundingBox.getMinLatitude() && this.getMaxLongitude() >= boundingBox.getMinLongitude()
-				&& this.getMinLatitude() <= boundingBox.getMaxLatitude() && this.getMinLongitude() <= boundingBox.getMaxLongitude();
+		return this.getMaxLatitude() >= boundingBox.getMinLatitude() && this.getMaxLongitude() >= boundingBox.getMinLongitude() && this.getMinLatitude() <= boundingBox.getMaxLatitude() && this.getMinLongitude() <= boundingBox.getMaxLongitude();
 	}
 
 	@Override
@@ -217,18 +213,18 @@ public class BoundingBox implements Serializable {
 	}
 
 	public double getMaxLatitude() {
-		return maxLatitude/C;
+		return maxLatitude / C;
 	}
 
 	public double getMaxLongitude() {
-		return maxLongitude/C;
+		return maxLongitude / C;
 	}
 
 	public double getMinLatitude() {
-		return minLatitude/C;
+		return minLatitude / C;
 	}
 
 	public double getMinLongitude() {
-		return minLongitude/C;
+		return minLongitude / C;
 	}
 }

@@ -2,8 +2,7 @@ package CB_Core.Types;
 
 import java.util.Date;
 
-public class TrackableLogEntry
-{
+public class TrackableLogEntry {
 	protected int Id;
 	protected long TrackableId;
 	protected long CacheId;

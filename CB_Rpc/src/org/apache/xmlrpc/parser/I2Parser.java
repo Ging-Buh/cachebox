@@ -21,7 +21,6 @@ package org.apache.xmlrpc.parser;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
 /** Parser for short values.
  */
 public class I2Parser extends AtomicParser {
@@ -29,8 +28,7 @@ public class I2Parser extends AtomicParser {
 		try {
 			super.setResult(new Short(pResult.trim()));
 		} catch (NumberFormatException e) {
-			throw new SAXParseException("Failed to parse short value: " + pResult,
-										getDocumentLocator());
+			throw new SAXParseException("Failed to parse short value: " + pResult, getDocumentLocator());
 		}
 	}
 }

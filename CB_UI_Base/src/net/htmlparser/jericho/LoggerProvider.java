@@ -30,8 +30,7 @@ package net.htmlparser.jericho;
  * {@link Config#LoggerProvider} property. This automatic choice can be overridden by setting the {@link Config#LoggerProvider} property
  * manually with an instance of this interface, but this is also usually not necessary.
  */
-public interface LoggerProvider
-{
+public interface LoggerProvider {
 	/**
 	 * A {@link LoggerProvider} implementation that disables all log messages.
 	 */

@@ -10,31 +10,21 @@ import android.media.MediaRecorder;
 import android.media.MediaRecorder.AudioSource;
 import android.util.Log;
 
-public class ExtAudioRecorder
-{
-	private final static int[] sampleRates =
-		{ 44100, 22050, 11025, 8000 };
+public class ExtAudioRecorder {
+	private final static int[] sampleRates = { 44100, 22050, 11025, 8000 };
 
 	@SuppressWarnings("deprecation")
-	public static ExtAudioRecorder getInstanse(Boolean recordingCompressed)
-	{
+	public static ExtAudioRecorder getInstanse(Boolean recordingCompressed) {
 		ExtAudioRecorder result = null;
 
-		if (recordingCompressed)
-		{
-			result = new ExtAudioRecorder(false, AudioSource.MIC, sampleRates[3], AudioFormat.CHANNEL_CONFIGURATION_MONO,
-					AudioFormat.ENCODING_PCM_16BIT);
-		}
-		else
-		{
+		if (recordingCompressed) {
+			result = new ExtAudioRecorder(false, AudioSource.MIC, sampleRates[3], AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT);
+		} else {
 			int i = 0;
-			do
-			{
-				result = new ExtAudioRecorder(true, AudioSource.MIC, sampleRates[i], AudioFormat.CHANNEL_CONFIGURATION_MONO,
-						AudioFormat.ENCODING_PCM_16BIT);
+			do {
+				result = new ExtAudioRecorder(true, AudioSource.MIC, sampleRates[i], AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT);
 
-			}
-			while ((++i < sampleRates.length) & !(result.getState() == ExtAudioRecorder.State.INITIALIZING));
+			} while ((++i < sampleRates.length) & !(result.getState() == ExtAudioRecorder.State.INITIALIZING));
 		}
 		return result;
 	}
@@ -43,8 +33,7 @@ public class ExtAudioRecorder
 	 * INITIALIZING : recorder is initializing; READY : recorder has been initialized, recorder not yet started RECORDING : recording ERROR
 	 * : reconstruction needed STOPPED: reset needed
 	 */
-	public enum State
-	{
+	public enum State {
 		INITIALIZING, READY, RECORDING, ERROR, STOPPED
 	};
 
@@ -99,8 +88,7 @@ public class ExtAudioRecorder
 	 * 
 	 * @return recorder state
 	 */
-	public State getState()
-	{
+	public State getState() {
 		return state;
 	}
 
@@ -108,46 +96,33 @@ public class ExtAudioRecorder
 	 * 
 	 * Method used for recording.
 	 */
-	private AudioRecord.OnRecordPositionUpdateListener updateListener = new AudioRecord.OnRecordPositionUpdateListener()
-	{
-		public void onPeriodicNotification(AudioRecord recorder)
-		{
+	private AudioRecord.OnRecordPositionUpdateListener updateListener = new AudioRecord.OnRecordPositionUpdateListener() {
+		public void onPeriodicNotification(AudioRecord recorder) {
 			audioRecorder.read(buffer, 0, buffer.length); // Fill buffer
-			try
-			{
+			try {
 				randomAccessWriter.write(buffer); // Write buffer to file
 				payloadSize += buffer.length;
-				if (bSamples == 16)
-				{
-					for (int i = 0; i < buffer.length / 2; i++)
-					{ // 16bit sample size
+				if (bSamples == 16) {
+					for (int i = 0; i < buffer.length / 2; i++) { // 16bit sample size
 						short curSample = getShort(buffer[i * 2], buffer[i * 2 + 1]);
-						if (curSample > cAmplitude)
-						{ // Check amplitude
+						if (curSample > cAmplitude) { // Check amplitude
 							cAmplitude = curSample;
 						}
 					}
-				}
-				else
-				{ // 8bit sample size
-					for (int i = 0; i < buffer.length; i++)
-					{
-						if (buffer[i] > cAmplitude)
-						{ // Check amplitude
+				} else { // 8bit sample size
+					for (int i = 0; i < buffer.length; i++) {
+						if (buffer[i] > cAmplitude) { // Check amplitude
 							cAmplitude = buffer[i];
 						}
 					}
 				}
-			}
-			catch (IOException e)
-			{
+			} catch (IOException e) {
 				Log.e(ExtAudioRecorder.class.getName(), "Error occured in updateListener, recording is aborted");
 				// stop();
 			}
 		}
 
-		public void onMarkerReached(AudioRecord recorder)
-		{
+		public void onMarkerReached(AudioRecord recorder) {
 			// NOT USED
 		}
 	};
@@ -157,28 +132,19 @@ public class ExtAudioRecorder
 	 * no exception is thrown, but the state is set to ERROR
 	 */
 	@SuppressWarnings("deprecation")
-	public ExtAudioRecorder(boolean uncompressed, int audioSource, int sampleRate, int channelConfig, int audioFormat)
-	{
-		try
-		{
+	public ExtAudioRecorder(boolean uncompressed, int audioSource, int sampleRate, int channelConfig, int audioFormat) {
+		try {
 			rUncompressed = uncompressed;
-			if (rUncompressed)
-			{ // RECORDING_UNCOMPRESSED
-				if (audioFormat == AudioFormat.ENCODING_PCM_16BIT)
-				{
+			if (rUncompressed) { // RECORDING_UNCOMPRESSED
+				if (audioFormat == AudioFormat.ENCODING_PCM_16BIT) {
 					bSamples = 16;
-				}
-				else
-				{
+				} else {
 					bSamples = 8;
 				}
 
-				if (channelConfig == AudioFormat.CHANNEL_CONFIGURATION_MONO)
-				{
+				if (channelConfig == AudioFormat.CHANNEL_CONFIGURATION_MONO) {
 					nChannels = 1;
-				}
-				else
-				{
+				} else {
 					nChannels = 2;
 				}
 
@@ -188,8 +154,7 @@ public class ExtAudioRecorder
 
 				framePeriod = sampleRate * TIMER_INTERVAL / 1000;
 				bufferSize = framePeriod * 2 * bSamples * nChannels / 8;
-				if (bufferSize < AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat))
-				{ // Check to make sure buffer size is not smaller than the smallest allowed one
+				if (bufferSize < AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat)) { // Check to make sure buffer size is not smaller than the smallest allowed one
 					bufferSize = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat);
 					// Set frame period and timer interval accordingly
 					framePeriod = bufferSize / (2 * bSamples * nChannels / 8);
@@ -198,12 +163,11 @@ public class ExtAudioRecorder
 
 				audioRecorder = new AudioRecord(audioSource, sampleRate, channelConfig, audioFormat, bufferSize);
 
-				if (audioRecorder.getState() != AudioRecord.STATE_INITIALIZED) throw new Exception("AudioRecord initialization failed");
+				if (audioRecorder.getState() != AudioRecord.STATE_INITIALIZED)
+					throw new Exception("AudioRecord initialization failed");
 				audioRecorder.setRecordPositionUpdateListener(updateListener);
 				audioRecorder.setPositionNotificationPeriod(framePeriod);
-			}
-			else
-			{ // RECORDING_COMPRESSED
+			} else { // RECORDING_COMPRESSED
 				mediaRecorder = new MediaRecorder();
 				mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 				mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -212,15 +176,10 @@ public class ExtAudioRecorder
 			cAmplitude = 0;
 			filePath = null;
 			state = State.INITIALIZING;
-		}
-		catch (Exception e)
-		{
-			if (e.getMessage() != null)
-			{
+		} catch (Exception e) {
+			if (e.getMessage() != null) {
 				Log.e(ExtAudioRecorder.class.getName(), e.getMessage());
-			}
-			else
-			{
+			} else {
 				Log.e(ExtAudioRecorder.class.getName(), "Unknown error occured while initializing recording");
 			}
 			state = State.ERROR;
@@ -233,27 +192,18 @@ public class ExtAudioRecorder
 	 * @param output
 	 *            file path
 	 */
-	public void setOutputFile(String argPath)
-	{
-		try
-		{
-			if (state == State.INITIALIZING)
-			{
+	public void setOutputFile(String argPath) {
+		try {
+			if (state == State.INITIALIZING) {
 				filePath = argPath;
-				if (!rUncompressed)
-				{
+				if (!rUncompressed) {
 					mediaRecorder.setOutputFile(filePath);
 				}
 			}
-		}
-		catch (Exception e)
-		{
-			if (e.getMessage() != null)
-			{
+		} catch (Exception e) {
+			if (e.getMessage() != null) {
 				Log.e(ExtAudioRecorder.class.getName(), e.getMessage());
-			}
-			else
-			{
+			} else {
 				Log.e(ExtAudioRecorder.class.getName(), "Unknown error occured while setting output path");
 			}
 			state = State.ERROR;
@@ -265,30 +215,20 @@ public class ExtAudioRecorder
 	 * 
 	 * @return returns the largest amplitude since the last call, or 0 when not in recording state.
 	 */
-	public int getMaxAmplitude()
-	{
-		if (state == State.RECORDING)
-		{
-			if (rUncompressed)
-			{
+	public int getMaxAmplitude() {
+		if (state == State.RECORDING) {
+			if (rUncompressed) {
 				int result = cAmplitude;
 				cAmplitude = 0;
 				return result;
-			}
-			else
-			{
-				try
-				{
+			} else {
+				try {
 					return mediaRecorder.getMaxAmplitude();
-				}
-				catch (IllegalStateException e)
-				{
+				} catch (IllegalStateException e) {
 					return 0;
 				}
 			}
-		}
-		else
-		{
+		} else {
 			return 0;
 		}
 	}
@@ -298,16 +238,11 @@ public class ExtAudioRecorder
 	 * is set to the ERROR state, which makes a reconstruction necessary. In case uncompressed recording is toggled, the header of the wave
 	 * file is written. In case of an exception, the state is changed to ERROR
 	 */
-	public void prepare()
-	{
-		try
-		{
-			if (state == State.INITIALIZING)
-			{
-				if (rUncompressed)
-				{
-					if ((audioRecorder.getState() == AudioRecord.STATE_INITIALIZED) & (filePath != null))
-					{
+	public void prepare() {
+		try {
+			if (state == State.INITIALIZING) {
+				if (rUncompressed) {
+					if ((audioRecorder.getState() == AudioRecord.STATE_INITIALIZED) & (filePath != null)) {
 						// write file header
 
 						randomAccessWriter = new RandomAccessFile(filePath, "rw");
@@ -332,34 +267,23 @@ public class ExtAudioRecorder
 
 						buffer = new byte[framePeriod * bSamples / 8 * nChannels];
 						state = State.READY;
-					}
-					else
-					{
+					} else {
 						Log.e(ExtAudioRecorder.class.getName(), "prepare() method called on uninitialized recorder");
 						state = State.ERROR;
 					}
-				}
-				else
-				{
+				} else {
 					mediaRecorder.prepare();
 					state = State.READY;
 				}
-			}
-			else
-			{
+			} else {
 				Log.e(ExtAudioRecorder.class.getName(), "prepare() method called on illegal state");
 				release();
 				state = State.ERROR;
 			}
-		}
-		catch (Exception e)
-		{
-			if (e.getMessage() != null)
-			{
+		} catch (Exception e) {
+			if (e.getMessage() != null) {
 				Log.e(ExtAudioRecorder.class.getName(), e.getMessage());
-			}
-			else
-			{
+			} else {
 				Log.e(ExtAudioRecorder.class.getName(), "Unknown error occured in prepare()");
 			}
 			state = State.ERROR;
@@ -369,39 +293,26 @@ public class ExtAudioRecorder
 	/**
 	 * Releases the resources associated with this class, and removes the unnecessary files, when necessary
 	 */
-	public void release()
-	{
-		if (state == State.RECORDING)
-		{
+	public void release() {
+		if (state == State.RECORDING) {
 			stop();
-		}
-		else
-		{
-			if ((state == State.READY) & (rUncompressed))
-			{
-				try
-				{
+		} else {
+			if ((state == State.READY) & (rUncompressed)) {
+				try {
 					randomAccessWriter.close(); // Remove prepared file
-				}
-				catch (IOException e)
-				{
+				} catch (IOException e) {
 					Log.e(ExtAudioRecorder.class.getName(), "I/O exception occured while closing output file");
 				}
 				(new File(filePath)).delete();
 			}
 		}
 
-		if (rUncompressed)
-		{
-			if (audioRecorder != null)
-			{
+		if (rUncompressed) {
+			if (audioRecorder != null) {
 				audioRecorder.release();
 			}
-		}
-		else
-		{
-			if (mediaRecorder != null)
-			{
+		} else {
+			if (mediaRecorder != null) {
 				mediaRecorder.release();
 			}
 		}
@@ -411,21 +322,15 @@ public class ExtAudioRecorder
 	 * Resets the recorder to the INITIALIZING state, as if it was just created. In case the class was in RECORDING state, the recording is
 	 * stopped. In case of exceptions the class is set to the ERROR state.
 	 */
-	public void reset()
-	{
-		try
-		{
-			if (state != State.ERROR)
-			{
+	public void reset() {
+		try {
+			if (state != State.ERROR) {
 				release();
 				filePath = null; // Reset file path
 				cAmplitude = 0; // Reset amplitude
-				if (rUncompressed)
-				{
+				if (rUncompressed) {
 					audioRecorder = new AudioRecord(aSource, sRate, nChannels + 1, aFormat, bufferSize);
-				}
-				else
-				{
+				} else {
 					mediaRecorder = new MediaRecorder();
 					mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 					mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -433,9 +338,7 @@ public class ExtAudioRecorder
 				}
 				state = State.INITIALIZING;
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			Log.e(ExtAudioRecorder.class.getName(), e.getMessage());
 			state = State.ERROR;
 		}
@@ -444,24 +347,17 @@ public class ExtAudioRecorder
 	/**
 	 * Starts the recording, and sets the state to RECORDING. Call after prepare().
 	 */
-	public void start()
-	{
-		if (state == State.READY)
-		{
-			if (rUncompressed)
-			{
+	public void start() {
+		if (state == State.READY) {
+			if (rUncompressed) {
 				payloadSize = 0;
 				audioRecorder.startRecording();
 				audioRecorder.read(buffer, 0, buffer.length);
-			}
-			else
-			{
+			} else {
 				mediaRecorder.start();
 			}
 			state = State.RECORDING;
-		}
-		else
-		{
+		} else {
 			Log.e(ExtAudioRecorder.class.getName(), "start() called on illegal state");
 			state = State.ERROR;
 		}
@@ -471,16 +367,12 @@ public class ExtAudioRecorder
 	 * Stops the recording, and sets the state to STOPPED. In case of further usage, a reset is needed. Also finalizes the wave file in case
 	 * of uncompressed recording.
 	 */
-	public void stop()
-	{
-		if (state == State.RECORDING)
-		{
-			if (rUncompressed)
-			{
+	public void stop() {
+		if (state == State.RECORDING) {
+			if (rUncompressed) {
 				audioRecorder.stop();
 
-				try
-				{
+				try {
 					randomAccessWriter.seek(4); // Write size to RIFF header
 					randomAccessWriter.writeInt(Integer.reverseBytes(36 + payloadSize));
 
@@ -488,21 +380,15 @@ public class ExtAudioRecorder
 					randomAccessWriter.writeInt(Integer.reverseBytes(payloadSize));
 
 					randomAccessWriter.close();
-				}
-				catch (IOException e)
-				{
+				} catch (IOException e) {
 					Log.e(ExtAudioRecorder.class.getName(), "I/O exception occured while closing output file");
 					state = State.ERROR;
 				}
-			}
-			else
-			{
+			} else {
 				mediaRecorder.stop();
 			}
 			state = State.STOPPED;
-		}
-		else
-		{
+		} else {
 			Log.e(ExtAudioRecorder.class.getName(), "stop() called on illegal state");
 			state = State.ERROR;
 		}
@@ -512,8 +398,7 @@ public class ExtAudioRecorder
 	 * 
 	 * Converts a byte[2] to a short, in LITTLE_ENDIAN format
 	 */
-	private short getShort(byte argB1, byte argB2)
-	{
+	private short getShort(byte argB1, byte argB2) {
 		return (short) (argB1 | (argB2 << 8));
 	}
 

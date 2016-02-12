@@ -30,7 +30,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
 /** Abstract base class of a parser, that invokes other type
  * parsers recursively.
  */
@@ -40,16 +39,14 @@ public abstract class RecursiveTypeParserImpl extends TypeParserImpl {
 	private final TypeFactory factory;
 	private boolean inValueTag;
 	private TypeParser typeParser;
-    private StringBuffer text = new StringBuffer();
+	private StringBuffer text = new StringBuffer();
 
 	/** Creates a new instance.
 	 * @param pContext The namespace context.
 	 * @param pConfig The request or response configuration.
 	 * @param pFactory The type factory.
 	 */
-	protected RecursiveTypeParserImpl(XmlRpcStreamConfig pConfig,
-									  NamespaceContextImpl pContext,
-									  TypeFactory pFactory) {
+	protected RecursiveTypeParserImpl(XmlRpcStreamConfig pConfig, NamespaceContextImpl pContext, TypeFactory pFactory) {
 		cfg = pConfig;
 		context = pContext;
 		factory = pFactory;
@@ -71,7 +68,7 @@ public abstract class RecursiveTypeParserImpl extends TypeParserImpl {
 		if (inValueTag) {
 			if (typeParser == null) {
 				addResult(text.toString());
-                text.setLength(0);
+				text.setLength(0);
 			} else {
 				typeParser.endDocument();
 				try {
@@ -82,65 +79,57 @@ public abstract class RecursiveTypeParserImpl extends TypeParserImpl {
 				typeParser = null;
 			}
 		} else {
-			throw new SAXParseException("Invalid state: Not inside value tag.",
-										getDocumentLocator());
+			throw new SAXParseException("Invalid state: Not inside value tag.", getDocumentLocator());
 		}
 	}
 
 	public void startDocument() throws SAXException {
 		inValueTag = false;
-        text.setLength(0);
+		text.setLength(0);
 		typeParser = null;
 	}
 
-	public void endElement(String pURI, String pLocalName, String pQName)
-			throws SAXException {
+	public void endElement(String pURI, String pLocalName, String pQName) throws SAXException {
 		if (inValueTag) {
 			if (typeParser == null) {
-				throw new SAXParseException("Invalid state: No type parser configured.",
-											getDocumentLocator());
+				throw new SAXParseException("Invalid state: No type parser configured.", getDocumentLocator());
 			} else {
 				typeParser.endElement(pURI, pLocalName, pQName);
 			}
 		} else {
-			throw new SAXParseException("Invalid state: Not inside value tag.",
-					getDocumentLocator());
+			throw new SAXParseException("Invalid state: Not inside value tag.", getDocumentLocator());
 		}
 	}
 
-	public void startElement(String pURI, String pLocalName,
-							 String pQName, Attributes pAttrs) throws SAXException {
+	public void startElement(String pURI, String pLocalName, String pQName, Attributes pAttrs) throws SAXException {
 		if (inValueTag) {
 			if (typeParser == null) {
 				typeParser = factory.getParser(cfg, context, pURI, pLocalName);
 				if (typeParser == null) {
-					if (XmlRpcWriter.EXTENSIONS_URI.equals(pURI)  &&  !cfg.isEnabledForExtensions()) {
+					if (XmlRpcWriter.EXTENSIONS_URI.equals(pURI) && !cfg.isEnabledForExtensions()) {
 						String msg = "The tag " + new QName(pURI, pLocalName) + " is invalid, if isEnabledForExtensions() == false.";
-						throw new SAXParseException(msg, getDocumentLocator(),
-													new XmlRpcExtensionException(msg));
+						throw new SAXParseException(msg, getDocumentLocator(), new XmlRpcExtensionException(msg));
 					} else {
-						throw new SAXParseException("Unknown type: " + new QName(pURI, pLocalName),
-													getDocumentLocator());
+						throw new SAXParseException("Unknown type: " + new QName(pURI, pLocalName), getDocumentLocator());
 					}
 				}
 				typeParser.setDocumentLocator(getDocumentLocator());
 				typeParser.startDocument();
 				if (text.length() > 0) {
 					typeParser.characters(text.toString().toCharArray(), 0, text.length());
-                    text.setLength(0);
+					text.setLength(0);
 				}
 			}
 			typeParser.startElement(pURI, pLocalName, pQName, pAttrs);
 		} else {
-			throw new SAXParseException("Invalid state: Not inside value tag.",
-					getDocumentLocator());
+			throw new SAXParseException("Invalid state: Not inside value tag.", getDocumentLocator());
 		}
 	}
 
 	public void characters(char[] pChars, int pOffset, int pLength) throws SAXException {
 		if (typeParser == null) {
 			if (inValueTag) {
-			    text.append(pChars, pOffset, pLength);
+				text.append(pChars, pOffset, pLength);
 			} else {
 				super.characters(pChars, pOffset, pLength);
 			}
@@ -152,7 +141,7 @@ public abstract class RecursiveTypeParserImpl extends TypeParserImpl {
 	public void ignorableWhitespace(char[] pChars, int pOffset, int pLength) throws SAXException {
 		if (typeParser == null) {
 			if (inValueTag) {
-			    text.append(pChars, pOffset, pLength);
+				text.append(pChars, pOffset, pLength);
 			} else {
 				super.ignorableWhitespace(pChars, pOffset, pLength);
 			}

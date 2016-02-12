@@ -22,7 +22,6 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.XmlRpcRequest;
 import org.apache.xmlrpc.metadata.Util;
 
-
 /**
  * <p>The request processor is the object, which is actually performing
  * the request. There is nothing magic about the request processor:
@@ -63,96 +62,95 @@ import org.apache.xmlrpc.metadata.Util;
  * {@link RequestProcessorFactory#getRequestProcessor(XmlRpcRequest)}.</p>
  */
 public interface RequestProcessorFactoryFactory {
-    /**
-     * This is the factory for request processors. This factory is itself
-     * created by a call to
-     * {@link RequestProcessorFactoryFactory#getRequestProcessorFactory(Class)}.
-     */
-    public interface RequestProcessorFactory {
-        /**
-         * This method is invoked for any request in order to create and
-         * configure the request processor. The returned object is an
-         * instance of the class parameter in
-         * {@link RequestProcessorFactoryFactory#getRequestProcessorFactory(Class)}.
-         */
-        public Object getRequestProcessor(XmlRpcRequest pRequest) throws XmlRpcException;
-    }
+	/**
+	 * This is the factory for request processors. This factory is itself
+	 * created by a call to
+	 * {@link RequestProcessorFactoryFactory#getRequestProcessorFactory(Class)}.
+	 */
+	public interface RequestProcessorFactory {
+		/**
+		 * This method is invoked for any request in order to create and
+		 * configure the request processor. The returned object is an
+		 * instance of the class parameter in
+		 * {@link RequestProcessorFactoryFactory#getRequestProcessorFactory(Class)}.
+		 */
+		public Object getRequestProcessor(XmlRpcRequest pRequest) throws XmlRpcException;
+	}
 
-    /**
-     * This method is invoked at startup. It creates a factory for instances of
-     * <code>pClass</code>.
-     */
-    public RequestProcessorFactory getRequestProcessorFactory(Class pClass) throws XmlRpcException;
+	/**
+	 * This method is invoked at startup. It creates a factory for instances of
+	 * <code>pClass</code>.
+	 */
+	public RequestProcessorFactory getRequestProcessorFactory(Class pClass) throws XmlRpcException;
 
-    /**
-     * This is the default implementation of {@link RequestProcessorFactoryFactory}.
-     * A new instance is created and initialized for any request. The instance may
-     * be configured by overwriting {@link #getRequestProcessor(Class, XmlRpcRequest)}.
-     */
-    public static class RequestSpecificProcessorFactoryFactory
-            implements RequestProcessorFactoryFactory {
-        /**
-         * Subclasses may override this method for request specific configuration.
-         * A typical subclass will look like this:
-         * <pre>
-         *   public class MyRequestProcessorFactoryFactory
-         *           extends RequestProcessorFactoryFactory {
-         *       protected Object getRequestProcessor(Class pClass, XmlRpcRequest pRequest) {
-         *           Object result = super.getRequestProcessor(pClass, pRequest);
-         *           // Configure the object here
-         *           ...
-         *           return result;
-         *       }
-         *   }
-         * </pre>
-         * @param pRequest The request object.
-         */
-        protected Object getRequestProcessor(Class pClass, XmlRpcRequest pRequest) throws XmlRpcException {
-            return Util.newInstance(pClass);
-        }
-        public RequestProcessorFactory getRequestProcessorFactory(final Class pClass) throws XmlRpcException {
-            return new RequestProcessorFactory(){
-                public Object getRequestProcessor(XmlRpcRequest pRequest) throws XmlRpcException {
-                    return RequestSpecificProcessorFactoryFactory.this.getRequestProcessor(pClass, pRequest);
-                }
-            };
-        }
-    }
+	/**
+	 * This is the default implementation of {@link RequestProcessorFactoryFactory}.
+	 * A new instance is created and initialized for any request. The instance may
+	 * be configured by overwriting {@link #getRequestProcessor(Class, XmlRpcRequest)}.
+	 */
+	public static class RequestSpecificProcessorFactoryFactory implements RequestProcessorFactoryFactory {
+		/**
+		 * Subclasses may override this method for request specific configuration.
+		 * A typical subclass will look like this:
+		 * <pre>
+		 *   public class MyRequestProcessorFactoryFactory
+		 *           extends RequestProcessorFactoryFactory {
+		 *       protected Object getRequestProcessor(Class pClass, XmlRpcRequest pRequest) {
+		 *           Object result = super.getRequestProcessor(pClass, pRequest);
+		 *           // Configure the object here
+		 *           ...
+		 *           return result;
+		 *       }
+		 *   }
+		 * </pre>
+		 * @param pRequest The request object.
+		 */
+		protected Object getRequestProcessor(Class pClass, XmlRpcRequest pRequest) throws XmlRpcException {
+			return Util.newInstance(pClass);
+		}
 
-    /**
-     * This is an alternative implementation of {@link RequestProcessorFactoryFactory}.
-     * It creates stateless request processors, which are able to process concurrent
-     * requests without request specific initialization.
-     */
-    public static class StatelessProcessorFactoryFactory
-            implements RequestProcessorFactoryFactory {
-        /**
-         * Subclasses may override this method for class specific configuration. Note,
-         * that this method will be called at startup only! A typical subclass will
-         * look like this:
-         * <pre>
-         *   public class MyRequestProcessorFactoryFactory
-         *           extends StatelessProcessorFactoryFactory {
-         *       protected Object getRequestProcessor(Class pClass) {
-         *           Object result = super.getRequestProcessor(pClass);
-         *           // Configure the object here
-         *           ...
-         *           return result;
-         *       }
-         *   }
-         * </pre>
-         */
-        protected Object getRequestProcessor(Class pClass) throws XmlRpcException {
-            return Util.newInstance(pClass);
-        }
-        public RequestProcessorFactory getRequestProcessorFactory(Class pClass)
-                throws XmlRpcException {
-            final Object processor = getRequestProcessor(pClass);
-            return new RequestProcessorFactory(){
-                public Object getRequestProcessor(XmlRpcRequest pRequest) throws XmlRpcException {
-                    return processor;
-                }
-            };
-        }
-    }
+		public RequestProcessorFactory getRequestProcessorFactory(final Class pClass) throws XmlRpcException {
+			return new RequestProcessorFactory() {
+				public Object getRequestProcessor(XmlRpcRequest pRequest) throws XmlRpcException {
+					return RequestSpecificProcessorFactoryFactory.this.getRequestProcessor(pClass, pRequest);
+				}
+			};
+		}
+	}
+
+	/**
+	 * This is an alternative implementation of {@link RequestProcessorFactoryFactory}.
+	 * It creates stateless request processors, which are able to process concurrent
+	 * requests without request specific initialization.
+	 */
+	public static class StatelessProcessorFactoryFactory implements RequestProcessorFactoryFactory {
+		/**
+		 * Subclasses may override this method for class specific configuration. Note,
+		 * that this method will be called at startup only! A typical subclass will
+		 * look like this:
+		 * <pre>
+		 *   public class MyRequestProcessorFactoryFactory
+		 *           extends StatelessProcessorFactoryFactory {
+		 *       protected Object getRequestProcessor(Class pClass) {
+		 *           Object result = super.getRequestProcessor(pClass);
+		 *           // Configure the object here
+		 *           ...
+		 *           return result;
+		 *       }
+		 *   }
+		 * </pre>
+		 */
+		protected Object getRequestProcessor(Class pClass) throws XmlRpcException {
+			return Util.newInstance(pClass);
+		}
+
+		public RequestProcessorFactory getRequestProcessorFactory(Class pClass) throws XmlRpcException {
+			final Object processor = getRequestProcessor(pClass);
+			return new RequestProcessorFactory() {
+				public Object getRequestProcessor(XmlRpcRequest pRequest) throws XmlRpcException {
+					return processor;
+				}
+			};
+		}
+	}
 }

@@ -41,10 +41,9 @@ import org.poly2tri.triangulation.sets.ConstrainedPointSet;
 import org.poly2tri.triangulation.sets.PointSet;
 
 /**
- * @author Thomas Åhlén, thahlen@gmail.com
+ * @author Thomas ï¿½hlï¿½n, thahlen@gmail.com
  */
-public class TriangulationProcess implements Runnable
-{
+public class TriangulationProcess implements Runnable {
 
 	private final TriangulationAlgorithm _algorithm;
 
@@ -62,18 +61,15 @@ public class TriangulationProcess implements Runnable
 
 	private final ArrayList<TriangulationProcessListener> _listeners = new ArrayList<TriangulationProcessListener>();
 
-	public void addListener(TriangulationProcessListener listener)
-	{
+	public void addListener(TriangulationProcessListener listener) {
 		_listeners.add(listener);
 	}
 
-	public void removeListener(TriangulationProcessListener listener)
-	{
+	public void removeListener(TriangulationProcessListener listener) {
 		_listeners.remove(listener);
 	}
 
-	public void clearListeners()
-	{
+	public void clearListeners() {
 		_listeners.clear();
 	}
 
@@ -82,26 +78,21 @@ public class TriangulationProcess implements Runnable
 	 * 
 	 * @param event
 	 */
-	private void sendEvent(TriangulationProcessEvent event)
-	{
-		for (TriangulationProcessListener l : _listeners)
-		{
+	private void sendEvent(TriangulationProcessEvent event) {
+		for (TriangulationProcessListener l : _listeners) {
 			l.triangulationEvent(event, _tcx.getTriangulatable());
 		}
 	}
 
-	public int getStepCount()
-	{
+	public int getStepCount() {
 		return _tcx.getStepCount();
 	}
 
-	public long getTimestamp()
-	{
+	public long getTimestamp() {
 		return _timestamp;
 	}
 
-	public double getTriangulationTime()
-	{
+	public double getTriangulationTime() {
 		return _triangulationTime;
 	}
 
@@ -110,13 +101,11 @@ public class TriangulationProcess implements Runnable
 	 * 
 	 * @param algorithm
 	 */
-	public TriangulationProcess()
-	{
+	public TriangulationProcess() {
 		this(TriangulationAlgorithm.DTSweep);
 	}
 
-	public TriangulationProcess(TriangulationAlgorithm algorithm)
-	{
+	public TriangulationProcess(TriangulationAlgorithm algorithm) {
 		_algorithm = algorithm;
 		_tcx = Poly2Tri.createContext(algorithm);
 	}
@@ -135,8 +124,7 @@ public class TriangulationProcess implements Runnable
 	 * 
 	 * @param cps
 	 */
-	public void triangulate(PointSet ps)
-	{
+	public void triangulate(PointSet ps) {
 		_triangulations.clear();
 		_triangulations.add(ps);
 		start();
@@ -147,8 +135,7 @@ public class TriangulationProcess implements Runnable
 	 * 
 	 * @param cps
 	 */
-	public void triangulate(ConstrainedPointSet cps)
-	{
+	public void triangulate(ConstrainedPointSet cps) {
 		_triangulations.clear();
 		_triangulations.add(cps);
 		start();
@@ -159,8 +146,7 @@ public class TriangulationProcess implements Runnable
 	 * 
 	 * @param ps
 	 */
-	public void triangulate(PolygonSet ps)
-	{
+	public void triangulate(PolygonSet ps) {
 		_triangulations.clear();
 		_triangulations.addAll(ps.getPolygons());
 		start();
@@ -171,8 +157,7 @@ public class TriangulationProcess implements Runnable
 	 * 
 	 * @param ps
 	 */
-	public void triangulate(Polygon polygon)
-	{
+	public void triangulate(Polygon polygon) {
 		_triangulations.clear();
 		_triangulations.add(polygon);
 		start();
@@ -183,48 +168,38 @@ public class TriangulationProcess implements Runnable
 	 * 
 	 * @param ps
 	 */
-	public void triangulate(List<Triangulatable> list)
-	{
+	public void triangulate(List<Triangulatable> list) {
 		_triangulations.clear();
 		_triangulations.addAll(list);
 		start();
 	}
 
-	private void start()
-	{
-		if (_thread == null || _thread.getState() == State.TERMINATED)
-		{
+	private void start() {
+		if (_thread == null || _thread.getState() == State.TERMINATED) {
 			_isTerminated = false;
 			_thread = new Thread(this, _algorithm.name() + "." + _tcx.getTriangulationMode());
 			_thread.start();
 			sendEvent(TriangulationProcessEvent.Started);
-		}
-		else
-		{
+		} else {
 			// Triangulation already running. Terminate it so we can start a new
 			shutdown();
 			_restart = true;
 		}
 	}
 
-	public boolean isWaiting()
-	{
-		if (_thread != null && _thread.getState() == State.WAITING)
-		{
+	public boolean isWaiting() {
+		if (_thread != null && _thread.getState() == State.WAITING) {
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public void run()
-	{
+	public void run() {
 		_pointCount = 0;
-		try
-		{
+		try {
 			long time = System.nanoTime();
-			for (Triangulatable t : _triangulations)
-			{
+			for (Triangulatable t : _triangulations) {
 				_tcx.clear();
 				_tcx.prepareTriangulation(t);
 				_pointCount += _tcx._points.size();
@@ -233,99 +208,71 @@ public class TriangulationProcess implements Runnable
 			_triangulationTime = (System.nanoTime() - time) / 1e6;
 			// logger.info("Triangulation of {} points [{}ms]", _pointCount, _triangulationTime);
 			sendEvent(TriangulationProcessEvent.Done);
-		}
-		catch (RuntimeException e)
-		{
-			if (_awaitingTermination)
-			{
+		} catch (RuntimeException e) {
+			if (_awaitingTermination) {
 				_awaitingTermination = false;
 				// logger.info("Thread[{}] : {}", _thread.getName(), e.getMessage());
 				sendEvent(TriangulationProcessEvent.Aborted);
-			}
-			else
-			{
+			} else {
 				e.printStackTrace();
 				sendEvent(TriangulationProcessEvent.Failed);
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 			// logger.info("Triangulation exception {}", e.getMessage());
 			sendEvent(TriangulationProcessEvent.Failed);
-		}
-		finally
-		{
+		} finally {
 			_timestamp = System.currentTimeMillis();
 			_isTerminated = true;
 			_thread = null;
 		}
 
 		// Autostart a new triangulation?
-		if (_restart)
-		{
+		if (_restart) {
 			_restart = false;
 			start();
 		}
 	}
 
-	public void resume()
-	{
-		if (_thread != null)
-		{
+	public void resume() {
+		if (_thread != null) {
 			// Only force a resume when process is waiting for a notification
-			if (_thread.getState() == State.WAITING)
-			{
-				synchronized (_tcx)
-				{
+			if (_thread.getState() == State.WAITING) {
+				synchronized (_tcx) {
 					_tcx.notify();
 				}
-			}
-			else if (_thread.getState() == State.TIMED_WAITING)
-			{
+			} else if (_thread.getState() == State.TIMED_WAITING) {
 				_tcx.waitUntilNotified(false);
 			}
 		}
 	}
 
-	public void shutdown()
-	{
+	public void shutdown() {
 		_awaitingTermination = true;
 		_tcx.terminateTriangulation();
 		resume();
 	}
 
-	public TriangulationContext<?> getContext()
-	{
+	public TriangulationContext<?> getContext() {
 		return _tcx;
 	}
 
-	public boolean isDone()
-	{
+	public boolean isDone() {
 		return _isTerminated;
 	}
 
-	public void requestRead()
-	{
+	public void requestRead() {
 		_tcx.waitUntilNotified(true);
 	}
 
-	public boolean isReadable()
-	{
-		if (_thread == null)
-		{
+	public boolean isReadable() {
+		if (_thread == null) {
 			return true;
-		}
-		else
-		{
-			synchronized (_thread)
-			{
-				if (_thread.getState() == State.WAITING)
-				{
+		} else {
+			synchronized (_thread) {
+				if (_thread.getState() == State.WAITING) {
 					return true;
-				}
-				else if (_thread.getState() == State.TIMED_WAITING)
-				{
+				} else if (_thread.getState() == State.TIMED_WAITING) {
 					// Make sure that it stays readable
 					_tcx.waitUntilNotified(true);
 					return true;
@@ -335,8 +282,7 @@ public class TriangulationProcess implements Runnable
 		}
 	}
 
-	public int getPointCount()
-	{
+	public int getPointCount() {
 		return _pointCount;
 	}
 }

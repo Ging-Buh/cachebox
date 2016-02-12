@@ -11,8 +11,6 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.graphics.ResourceBitmap;
 
-
-
 import CB_UI_Base.graphics.PolygonDrawable;
 import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_Utils.Plattform;
@@ -21,49 +19,37 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
-public class BmpFilled extends PolygonTestBase
-{
+public class BmpFilled extends PolygonTestBase {
 	BitmapDrawable StreamBMP;
 
 	String FilledBmpPath = "assets/freizeitkarte/patterns/1-watt.png";
 
-	public BmpFilled()
-	{
+	public BmpFilled() {
 		super(" Polygone Test Bitmap filled" + br + "Mapsforge", "Cachebox");
 
-		if (Plattform.used == Plattform.Android)
-		{
+		if (Plattform.used == Plattform.Android) {
 			FilledBmpPath = "storage/extSdCard/freizeitkarte/themes/freizeitkarte/patterns/1-watt.png";
-		}
-		else
-		{
+		} else {
 			FilledBmpPath = "assets/themes/freizeitkarte/patterns/1-watt.png";
 		}
 	}
 
 	@Override
-	public void work()
-	{
+	public void work() {
 
 		// ################# GDX
 
-		if (Plattform.used == Plattform.Android)
-		{
+		if (Plattform.used == Plattform.Android) {
 			InputStream stream;
-			try
-			{
+			try {
 				stream = new FileInputStream(FilledBmpPath);
 				StreamBMP = new BitmapDrawable(stream, FilledBmpPath.hashCode(), 1f);
-			}
-			catch (FileNotFoundException e)
-			{
+			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-		}
-		else
-		{
+		} else {
 			InputStream stream;
 			FileHandle fh = Gdx.files.internal(FilledBmpPath);
 			stream = fh.read();
@@ -86,35 +72,27 @@ public class BmpFilled extends PolygonTestBase
 		// Flip Y (256-y)
 		path.moveTo(vertices[0], 256 - vertices[1]);
 
-		for (int i = 2; i < vertices.length - 1; i += 2)
-		{
+		for (int i = 2; i < vertices.length - 1; i += 2) {
 			path.lineTo(vertices[i], 256 - vertices[i + 1]);
 		}
 
 		Paint MF_Paint = factory.createPaint();
 
-		try
-		{
+		try {
 
 			InputStream MFstream = null;
 
-			if (Plattform.used == Plattform.Android)
-			{
+			if (Plattform.used == Plattform.Android) {
 
-				try
-				{
+				try {
 					MFstream = new FileInputStream(FilledBmpPath);
 
-				}
-				catch (FileNotFoundException e)
-				{
+				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
-			}
-			else
-			{
+			} else {
 
 				FileHandle fh = Gdx.files.internal(FilledBmpPath);
 				MFstream = fh.read();
@@ -130,32 +108,26 @@ public class BmpFilled extends PolygonTestBase
 
 			tex = Bmp2Texture(bmp);
 
-		}
-		catch (FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public void render(Batch batch)
-	{
+	public void render(Batch batch) {
 		super.render(batch);
 
-		if (StreamBMP != null)
-		{
+		if (StreamBMP != null) {
 
 			float w = StreamBMP.getWidth();
 			float h = StreamBMP.getHeight();
-			 StreamBMP.draw(batch, 200, 600, w, h);
-			
-			 StreamBMP.draw(batch, 300, 600, w * 2, h * 2);
+			StreamBMP.draw(batch, 200, 600, w, h);
+
+			StreamBMP.draw(batch, 300, 600, w * 2, h * 2);
 			isReady = true;
 		}
 	}

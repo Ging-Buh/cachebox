@@ -2,8 +2,7 @@ package CB_Core.Types;
 
 import java.io.Serializable;
 
-public class DLong implements Serializable
-{
+public class DLong implements Serializable {
 	private static final long serialVersionUID = -3369610485833873224L;
 	public static final long UL1 = 1l;
 	private long low;
@@ -14,83 +13,69 @@ public class DLong implements Serializable
 	// / </summary>
 	// / <param name="High">higher Long</param>
 	// / <param name="Low">lower Long</param>
-	public DLong(long High, long Low)
-	{
+	public DLong(long High, long Low) {
 		low = Low;
 		high = High;
 	}
 
-	public long getLow()
-	{
+	public long getLow() {
 		return low;
 	}
 
-	public long getHigh()
-	{
+	public long getHigh() {
 		return high;
 	}
 
-	public void setLow(long value)
-	{
+	public void setLow(long value) {
 		low = value;
 	}
 
-	public void setHigh(long value)
-	{
+	public void setHigh(long value) {
 		high = value;
 	}
 
-	public static DLong shift(int value)
-	{
+	public static DLong shift(int value) {
 		long low = 0;
 		long high = 0;
 
-		if (value > 62)
-		{
+		if (value > 62) {
 			high = UL1 << (value - 63);
-		}
-		else
-		{
+		} else {
 			low = UL1 << value;
 		}
 
 		return new DLong(high, low);
 	}
 
-	public DLong bitAdd(DLong value)
-	{
+	public DLong bitAdd(DLong value) {
 		low = this.low + value.getLow();
 		high = this.high + value.getHigh();
 
 		return this;
 	}
 
-	public DLong BitAnd(DLong value)
-	{
+	public DLong BitAnd(DLong value) {
 		low = this.low & value.getLow();
 		high = this.high & value.getHigh();
 
 		return this;
 	}
 
-	public DLong BitOr(DLong value)
-	{
+	public DLong BitOr(DLong value) {
 		low = this.low | value.getLow();
 		high = this.high | value.getHigh();
 
 		return this;
 	}
 
-	public boolean BitAndBiggerNull(DLong value)
-	{
+	public boolean BitAndBiggerNull(DLong value) {
 		boolean bLow = (this.low & value.getLow()) > 0;
 		boolean bHigh = (this.high & value.getHigh()) > 0;
 
 		return (bLow || bHigh) ? true : false;
 	}
 
-	public String ToString()
-	{
+	public String ToString() {
 		StringBuilder Sb = new StringBuilder();
 
 		Sb.append("low =" + String.valueOf(this.low));
@@ -101,27 +86,22 @@ public class DLong implements Serializable
 		return Sb.toString();
 	}
 
-	private String getUInt64BitString(long value)
-	{
+	private String getUInt64BitString(long value) {
 		String bin = Long.toBinaryString(value);
 
 		return bin;
 	}
 
-	private String getTrueArray(long value)
-	{
+	private String getTrueArray(long value) {
 		return getTrueArray(value, 0);
 	}
 
-	private String getTrueArray(long value, int add)
-	{
+	private String getTrueArray(long value, int add) {
 		StringBuilder Sb = new StringBuilder();
 
-		for (int i = 0; i < 64; i++)
-		{
+		for (int i = 0; i < 64; i++) {
 			long mask = UL1 << i;
-			if ((mask & value) > 0)
-			{
+			if ((mask & value) > 0) {
 				Sb.append("[" + String.valueOf((add + i)) + "],");
 			}
 

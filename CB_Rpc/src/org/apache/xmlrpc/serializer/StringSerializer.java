@@ -21,7 +21,6 @@ package org.apache.xmlrpc.serializer;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-
 /** A {@link TypeSerializer} for strings.
  */
 public class StringSerializer extends TypeSerializerImpl {

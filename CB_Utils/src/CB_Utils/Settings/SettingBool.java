@@ -15,41 +15,32 @@
  */
 package CB_Utils.Settings;
 
-public class SettingBool extends SettingBase<Boolean>
-{
+public class SettingBool extends SettingBase<Boolean> {
 
-	public SettingBool(String name, SettingCategory category, SettingModus modus, boolean defaultValue, SettingStoreType StoreType,
-			SettingUsage usage)
-	{
+	public SettingBool(String name, SettingCategory category, SettingModus modus, boolean defaultValue, SettingStoreType StoreType, SettingUsage usage) {
 		super(name, category, modus, StoreType, usage);
 		this.defaultValue = defaultValue;
 		this.value = defaultValue;
 	}
 
 	@Override
-	public String toDBString()
-	{
+	public String toDBString() {
 		return String.valueOf(value);
 	}
 
 	@Override
-	public boolean fromDBString(String dbString)
-	{
-		try
-		{
+	public boolean fromDBString(String dbString) {
+		try {
 			value = Boolean.valueOf(dbString);
 			return true;
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			value = defaultValue;
 			return false;
 		}
 	}
 
 	@Override
-	public SettingBase<Boolean> copy()
-	{
+	public SettingBase<Boolean> copy() {
 		SettingBase<Boolean> ret = new SettingBool(this.name, this.category, this.modus, this.defaultValue, this.storeType, this.usage);
 
 		ret.value = this.value;
@@ -59,13 +50,15 @@ public class SettingBool extends SettingBase<Boolean>
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (!(obj instanceof SettingBool)) return false;
+	public boolean equals(Object obj) {
+		if (!(obj instanceof SettingBool))
+			return false;
 
 		SettingBool inst = (SettingBool) obj;
-		if (!(inst.name.equals(this.name))) return false;
-		if (inst.value != this.value) return false;
+		if (!(inst.name.equals(this.name)))
+			return false;
+		if (inst.value != this.value)
+			return false;
 
 		return true;
 	}

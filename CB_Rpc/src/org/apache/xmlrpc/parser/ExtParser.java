@@ -30,7 +30,6 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
 /** Base class for parsing external XML representations, like DOM,
  * or JAXB.
  */
@@ -58,20 +57,17 @@ public abstract class ExtParser implements TypeParser {
 	public void startDocument() throws SAXException {
 	}
 
-	public void characters(char[] pChars, int pOffset, int pLength)
-			throws SAXException {
+	public void characters(char[] pChars, int pOffset, int pLength) throws SAXException {
 		if (handler == null) {
 			if (!TypeParserImpl.isEmpty(pChars, pOffset, pLength)) {
-				throw new SAXParseException("Unexpected non-whitespace content: " + new String(pChars, pOffset, pLength),
-											locator);
+				throw new SAXParseException("Unexpected non-whitespace content: " + new String(pChars, pOffset, pLength), locator);
 			}
 		} else {
 			handler.characters(pChars, pOffset, pLength);
 		}
 	}
 
-	public void ignorableWhitespace(char[] pChars, int pOffset, int pLength)
-			throws SAXException {
+	public void ignorableWhitespace(char[] pChars, int pOffset, int pLength) throws SAXException {
 		if (handler != null) {
 			ignorableWhitespace(pChars, pOffset, pLength);
 		}
@@ -85,8 +81,7 @@ public abstract class ExtParser implements TypeParser {
 
 	public void skippedEntity(String pName) throws SAXException {
 		if (handler == null) {
-			throw new SAXParseException("Don't know how to handle entity " + pName,
-										locator);
+			throw new SAXParseException("Don't know how to handle entity " + pName, locator);
 		} else {
 			handler.skippedEntity(pName);
 		}
@@ -99,15 +94,13 @@ public abstract class ExtParser implements TypeParser {
 		}
 	}
 
-	public void processingInstruction(String pTarget, String pData)
-			throws SAXException {
+	public void processingInstruction(String pTarget, String pData) throws SAXException {
 		if (handler != null) {
 			handler.processingInstruction(pTarget, pData);
 		}
 	}
 
-	public void startPrefixMapping(String pPrefix, String pURI)
-			throws SAXException {
+	public void startPrefixMapping(String pPrefix, String pURI) throws SAXException {
 		if (handler == null) {
 			prefixes.add(pPrefix);
 			prefixes.add(pURI);
@@ -116,45 +109,37 @@ public abstract class ExtParser implements TypeParser {
 		}
 	}
 
-	public void startElement(String pURI, String pLocalName,
-							 String pQName, Attributes pAttrs) throws SAXException {
+	public void startElement(String pURI, String pLocalName, String pQName, Attributes pAttrs) throws SAXException {
 		switch (level++) {
-			case 0:
-				final String tag = getTagName();
-				if (!XmlRpcWriter.EXTENSIONS_URI.equals(pURI)  ||
-					!tag.equals(pLocalName)) {
-					throw new SAXParseException("Expected " +
-												new QName(XmlRpcWriter.EXTENSIONS_URI, tag) +
-												", got " +
-												new QName(pURI, pLocalName),
-												locator);
-				}
-				handler = getExtHandler();
-				handler.startDocument();
-				for (int i = 0;  i < prefixes.size();  i += 2) {
-					handler.startPrefixMapping((String) prefixes.get(i),
-											   (String) prefixes.get(i+1));
-				}
-				break;
-			default:
-				handler.startElement(pURI, pLocalName, pQName, pAttrs);
-				break;
+		case 0:
+			final String tag = getTagName();
+			if (!XmlRpcWriter.EXTENSIONS_URI.equals(pURI) || !tag.equals(pLocalName)) {
+				throw new SAXParseException("Expected " + new QName(XmlRpcWriter.EXTENSIONS_URI, tag) + ", got " + new QName(pURI, pLocalName), locator);
+			}
+			handler = getExtHandler();
+			handler.startDocument();
+			for (int i = 0; i < prefixes.size(); i += 2) {
+				handler.startPrefixMapping((String) prefixes.get(i), (String) prefixes.get(i + 1));
+			}
+			break;
+		default:
+			handler.startElement(pURI, pLocalName, pQName, pAttrs);
+			break;
 		}
 	}
 
-	public void endElement(String pURI, String pLocalName, String pQName)
-			throws SAXException {
+	public void endElement(String pURI, String pLocalName, String pQName) throws SAXException {
 		switch (--level) {
-			case 0:
-				for (int i = 0;  i < prefixes.size();  i += 2) {
-					handler.endPrefixMapping((String) prefixes.get(i));
-				}
-				handler.endDocument();
-				handler = null;
-				break;
-			default:
-				handler.endElement(pURI, pLocalName, pQName);
-				break;
+		case 0:
+			for (int i = 0; i < prefixes.size(); i += 2) {
+				handler.endPrefixMapping((String) prefixes.get(i));
+			}
+			handler.endDocument();
+			handler = null;
+			break;
+		default:
+			handler.endElement(pURI, pLocalName, pQName);
+			break;
 		}
 	}
 }

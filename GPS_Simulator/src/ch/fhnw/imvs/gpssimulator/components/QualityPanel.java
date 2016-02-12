@@ -33,8 +33,7 @@ import ch.fhnw.imvs.gpssimulator.data.GPSData.Status;
 import ch.fhnw.imvs.gpssimulator.data.GPSDataListener;
 
 @SuppressWarnings("serial")
-public class QualityPanel extends JPanel implements GPSDataListener
-{
+public class QualityPanel extends JPanel implements GPSDataListener {
 
 	// combo box for the states A / V
 	private final JComboBox<Status> status = new JComboBox<Status>();
@@ -60,31 +59,24 @@ public class QualityPanel extends JPanel implements GPSDataListener
 	private final JCheckBox automaticStatus = new JCheckBox();
 
 	@Override
-	public void valueChanged()
-	{
+	public void valueChanged() {
 		satellites.setSelectedIndex(GPSData.getSatellites());
 		hdop.setValue(GPSData.getHDOP());
 		vdop.setValue(GPSData.getVDOP());
-		if (automaticPDOP.isSelected())
-		{
+		if (automaticPDOP.isSelected()) {
 			double hd = GPSData.getHDOP();
 			double vd = GPSData.getVDOP();
 			double pd = Math.round(10 * Math.sqrt(hd * hd + vd * vd)) / 10.0;
 			pdop.setValue(pd);
 			GPSData.setPDOP(pd);
-		}
-		else
-		{
+		} else {
 			pdop.setValue(GPSData.getPDOP());
 		}
-		if (automaticStatus.isSelected())
-		{
+		if (automaticStatus.isSelected()) {
 			GPSData.Status s = GPSData.getSatellites() < 4 ? GPSData.Status.V : GPSData.Status.A;
 			status.setSelectedItem(s);
 			GPSData.setStatus(s);
-		}
-		else
-		{
+		} else {
 			status.setSelectedItem(GPSData.getStatus());
 		}
 		int q = GPSData.getQuality();
@@ -94,8 +86,7 @@ public class QualityPanel extends JPanel implements GPSDataListener
 		fixType.setSelectedIndex(ft.ordinal());
 	}
 
-	public QualityPanel()
-	{
+	public QualityPanel() {
 		GPSData.addChangeListener(this);
 		this.setBorder(BorderFactory.createTitledBorder("Quality"));
 
@@ -110,21 +101,17 @@ public class QualityPanel extends JPanel implements GPSDataListener
 
 		status.addItem(GPSData.Status.A);
 		status.addItem(GPSData.Status.V);
-		status.addActionListener(new ActionListener()
-		{
+		status.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
 				GPSData.setStatus((GPSData.Status) status.getSelectedItem());
 			}
 		});
 
 		automaticStatus.setSelected(false);
-		automaticStatus.addActionListener(new ActionListener()
-		{
+		automaticStatus.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent arg0)
-			{
+			public void actionPerformed(ActionEvent arg0) {
 				status.setEnabled(!automaticStatus.isSelected());
 				valueChanged();
 			}
@@ -137,16 +124,13 @@ public class QualityPanel extends JPanel implements GPSDataListener
 		p2.add(quality);
 		this.add(p2);
 
-		for (int i = 0; i <= 12; i++)
-		{
+		for (int i = 0; i <= 12; i++) {
 			satellites.addItem(i);
 		}
 		satellites.setSelectedIndex(GPSData.getSatellites());
-		satellites.addActionListener(new ActionListener()
-		{
+		satellites.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
 				GPSData.setSatellites(satellites.getSelectedIndex());
 			}
 		});
@@ -159,15 +143,16 @@ public class QualityPanel extends JPanel implements GPSDataListener
 		fixType.addItem("3D"); // 2
 
 		fixType.setSelectedIndex(2);
-		fixType.addActionListener(new ActionListener()
-		{
+		fixType.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
 				int index = fixType.getSelectedIndex();
-				if (index == 0) GPSData.setFixType(FixType.FIX_NONE);
-				else if (index == 1) GPSData.setFixType(FixType.FIX_2D);
-				else if (index == 2) GPSData.setFixType(FixType.FIX_3D);
+				if (index == 0)
+					GPSData.setFixType(FixType.FIX_NONE);
+				else if (index == 1)
+					GPSData.setFixType(FixType.FIX_2D);
+				else if (index == 2)
+					GPSData.setFixType(FixType.FIX_3D);
 				else
 					throw new IllegalStateException();
 			}
@@ -181,13 +166,12 @@ public class QualityPanel extends JPanel implements GPSDataListener
 		quality.addItem("Simulation"); // 8
 
 		quality.setSelectedIndex(GPSData.getQuality());
-		quality.addActionListener(new ActionListener()
-		{
+		quality.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
 				int index = quality.getSelectedIndex();
-				if (index > 2) index += 3;
+				if (index > 2)
+					index += 3;
 				GPSData.setQuality(index);
 			}
 		});
@@ -210,22 +194,18 @@ public class QualityPanel extends JPanel implements GPSDataListener
 		this.add(p3);
 
 		hdop.setModel(new SpinnerNumberModel(GPSData.getHDOP(), 0, 10, 0.1));
-		hdop.addChangeListener(new ChangeListener()
-		{
+		hdop.addChangeListener(new ChangeListener() {
 			@Override
-			public void stateChanged(ChangeEvent e)
-			{
+			public void stateChanged(ChangeEvent e) {
 				Double tmp = (Double) hdop.getValue();
 				GPSData.setHDOP(tmp.doubleValue());
 			}
 		});
 
 		vdop.setModel(new SpinnerNumberModel(GPSData.getVDOP(), 0, 10, 0.1));
-		vdop.addChangeListener(new ChangeListener()
-		{
+		vdop.addChangeListener(new ChangeListener() {
 			@Override
-			public void stateChanged(ChangeEvent e)
-			{
+			public void stateChanged(ChangeEvent e) {
 				Double tmp = (Double) vdop.getValue();
 				GPSData.setVDOP(tmp.doubleValue());
 			}
@@ -233,22 +213,18 @@ public class QualityPanel extends JPanel implements GPSDataListener
 
 		pdop.setEnabled(false);
 		pdop.setModel(new SpinnerNumberModel(GPSData.getPDOP(), 0, 10, 0.1));
-		pdop.addChangeListener(new ChangeListener()
-		{
+		pdop.addChangeListener(new ChangeListener() {
 			@Override
-			public void stateChanged(ChangeEvent e)
-			{
+			public void stateChanged(ChangeEvent e) {
 				Double tmp = (Double) pdop.getValue();
 				GPSData.setPDOP(tmp.doubleValue());
 			}
 		});
 
 		automaticPDOP.setSelected(true);
-		automaticPDOP.addActionListener(new ActionListener()
-		{
+		automaticPDOP.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent arg0)
-			{
+			public void actionPerformed(ActionEvent arg0) {
 				pdop.setEnabled(!automaticPDOP.isSelected());
 				valueChanged();
 			}

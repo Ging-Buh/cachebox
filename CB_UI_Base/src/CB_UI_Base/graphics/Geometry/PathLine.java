@@ -27,36 +27,29 @@ import com.badlogic.gdx.utils.Disposable;
  * 
  * @author Longri
  */
-public class PathLine extends CB_List<Line> implements Disposable
-{
+public class PathLine extends CB_List<Line> implements Disposable {
 	private static final long serialVersionUID = -6613969555300557959L;
 
 	protected AtomicBoolean isDisposed = new AtomicBoolean(false);
 
-	public PathLine(float[] coords)
-	{
-		if (coords.length < 4) throw new IllegalArgumentException("Line Coords can not < 4");
+	public PathLine(float[] coords) {
+		if (coords.length < 4)
+			throw new IllegalArgumentException("Line Coords can not < 4");
 
-		if (coords.length == 4)
-		{
+		if (coords.length == 4) {
 			this.add(new Line(coords[0], coords[1], coords[2], coords[3]));
-		}
-		else
-		{
-			for (int i = 0; i < coords.length - 2; i += 2)
-			{
+		} else {
+			for (int i = 0; i < coords.length - 2; i += 2) {
 				this.add(new Line(coords, i));
 			}
 		}
 	}
 
-	public PathLine()
-	{
+	public PathLine() {
 		// do nothing
 	}
 
-	public void splittWithDashArray(float[] dashArray)
-	{
+	public void splittWithDashArray(float[] dashArray) {
 		// splitt
 		PathLine tmp = new PathLine();
 
@@ -71,48 +64,39 @@ public class PathLine extends CB_List<Line> implements Disposable
 		for (int i = 0; i < dashArray.length; i++)
 			dashLength += dashArray[i];
 
-		do
-		{
-			if (rest >= 0)
-			{
-				if (lineIndex > this.size - 1) break;
+		do {
+			if (rest >= 0) {
+				if (lineIndex > this.size - 1)
+					break;
 				actWorkLine = this.get(lineIndex++);
 			}
-			if (dashValue == 0)
-			{
+			if (dashValue == 0) {
 				dashValue = dashArray[dashIndex++];
 				dash = !dash;
-				if (dashIndex >= dashArray.length)
-				{
+				if (dashIndex >= dashArray.length) {
 					dashIndex = 0;
 				}
 			}
 			SplittResult result = actWorkLine.splitt(dashValue);
 
-			if (dash)
-			{
+			if (dash) {
 				tmp.add(result.splittLine1);
 			}
 
-			if (result.rest == -1)
-			{
+			if (result.rest == -1) {
 				actWorkLine = result.splittLine2;
 				dashValue = 0;
-			}
-			else
-			{
+			} else {
 				dashValue = result.rest;
 			}
 			rest = result.rest;
 
 			// safty break
-			if (tmp.size > (this.getPathLength() / dashLength) * 2)
-			{
+			if (tmp.size > (this.getPathLength() / dashLength) * 2) {
 				break;
 			}
 
-		}
-		while (lineIndex < this.size || rest != 0);
+		} while (lineIndex < this.size || rest != 0);
 
 		this.clear();
 		this.addAll(tmp);
@@ -124,32 +108,27 @@ public class PathLine extends CB_List<Line> implements Disposable
 	 * 
 	 * @return
 	 */
-	public float getPathLength()
-	{
+	public float getPathLength() {
 		float l = 0;
 
-		for (int i = 0, n = this.size(); i < n; i++)
-		{
+		for (int i = 0, n = this.size(); i < n; i++) {
 			l += this.get(i).length();
 		}
 
 		return l;
 	}
 
-	public boolean isDisposed()
-	{
+	public boolean isDisposed() {
 		return isDisposed.get();
 	}
 
 	@Override
-	public void dispose()
-	{
-		synchronized (isDisposed)
-		{
-			if (isDisposed.get()) return;
+	public void dispose() {
+		synchronized (isDisposed) {
+			if (isDisposed.get())
+				return;
 
-			for (int i = 0, n = this.size(); i < n; i++)
-			{
+			for (int i = 0, n = this.size(); i < n; i++) {
 				this.get(i).dispose();
 			}
 			this.clear();

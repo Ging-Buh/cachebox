@@ -71,8 +71,8 @@ public final class EndTag extends Tag {
 	 * @param name  the {@linkplain Tag#getName() name} of the tag.
 	 */
 	EndTag(final Source source, final int begin, final int end, final EndTagType endTagType, final String name) {
-		super(source,begin,end,name);
-		this.endTagType=endTagType;
+		super(source, begin, end, name);
+		this.endTagType = endTagType;
 	}
 
 	/**
@@ -92,16 +92,19 @@ public final class EndTag extends Tag {
 	 * @return the {@linkplain Element element} that is ended by this end tag.
 	 */
 	public Element getElement() {
-		if (element!=Element.NOT_CACHED) return element;
-		int pos=begin;
-		while (pos!=0) {
-			StartTag startTag=source.getPreviousStartTag(pos-1);
-			if (startTag==null) break;
-			Element foundElement=startTag.getElement(); // this automatically sets foundElement.getEndTag().element cache
-			if (foundElement.getEndTag()==this) return foundElement; // no need to set element as it was already done in previous statement
-			pos=startTag.begin;
+		if (element != Element.NOT_CACHED)
+			return element;
+		int pos = begin;
+		while (pos != 0) {
+			StartTag startTag = source.getPreviousStartTag(pos - 1);
+			if (startTag == null)
+				break;
+			Element foundElement = startTag.getElement(); // this automatically sets foundElement.getEndTag().element cache
+			if (foundElement.getEndTag() == this)
+				return foundElement; // no need to set element as it was already done in previous statement
+			pos = startTag.begin;
 		}
-		return element=null;
+		return element = null;
 	}
 
 	/**
@@ -122,7 +125,7 @@ public final class EndTag extends Tag {
 
 	// Documentation inherited from Tag
 	public boolean isUnregistered() {
-		return endTagType==EndTagType.UNREGISTERED;
+		return endTagType == EndTagType.UNREGISTERED;
 	}
 
 	/**
@@ -138,12 +141,15 @@ public final class EndTag extends Tag {
 	 * @see StartTag#tidy()
 	 */
 	public String tidy() {
-		final String string=toString();
-		if (endTagType!=EndTagType.NORMAL) return string;
-		if (!CharacterReference.isWhiteSpace(string.charAt(string.length()-2))) return string;
-		int i=string.length()-3;
-		while (i>0 && CharacterReference.isWhiteSpace(string.charAt(i))) i--;
-		return string.substring(0,i+1)+'>';
+		final String string = toString();
+		if (endTagType != EndTagType.NORMAL)
+			return string;
+		if (!CharacterReference.isWhiteSpace(string.charAt(string.length() - 2)))
+			return string;
+		int i = string.length() - 3;
+		while (i > 0 && CharacterReference.isWhiteSpace(string.charAt(i)))
+			i--;
+		return string.substring(0, i + 1) + '>';
 	}
 
 	/**
@@ -173,9 +179,10 @@ public final class EndTag extends Tag {
 	}
 
 	public String getDebugInfo() {
-		final StringBuilder sb=new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append(this).append(' ');
-		if (endTagType!=EndTagType.NORMAL) sb.append('(').append(endTagType.getDescription()).append(") ");
+		if (endTagType != EndTagType.NORMAL)
+			sb.append('(').append(endTagType.getDescription()).append(") ");
 		sb.append(super.getDebugInfo());
 		return sb.toString();
 	}
@@ -192,18 +199,22 @@ public final class EndTag extends Tag {
 	 * @return the previous end tag matching the specified {@linkplain #getName() name} and {@linkplain EndTagType type}, starting at the specified position, or null if none is found.
 	 */
 	static EndTag getPrevious(final Source source, final int pos, final String name, final EndTagType endTagType) {
-		if (name==null) return (EndTag)Tag.getPreviousTag(source,pos,endTagType);
-		if (name.length()==0) throw new IllegalArgumentException("name argument must not be zero length");
-		final String searchString=endTagType.START_DELIMITER_PREFIX+name;
+		if (name == null)
+			return (EndTag) Tag.getPreviousTag(source, pos, endTagType);
+		if (name.length() == 0)
+			throw new IllegalArgumentException("name argument must not be zero length");
+		final String searchString = endTagType.START_DELIMITER_PREFIX + name;
 		try {
-			final ParseText parseText=source.getParseText();
-			int begin=pos;
+			final ParseText parseText = source.getParseText();
+			int begin = pos;
 			do {
-				begin=parseText.lastIndexOf(searchString,begin);
-				if (begin==-1) return null;
-				final EndTag endTag=(EndTag)source.getTagAt(begin);
-				if (endTag!=null && endTag.getEndTagType()==endTagType && name.equals(endTag.getName())) return endTag;
-			} while ((begin-=1)>=0);
+				begin = parseText.lastIndexOf(searchString, begin);
+				if (begin == -1)
+					return null;
+				final EndTag endTag = (EndTag) source.getTagAt(begin);
+				if (endTag != null && endTag.getEndTagType() == endTagType && name.equals(endTag.getName()))
+					return endTag;
+			} while ((begin -= 1) >= 0);
 		} catch (IndexOutOfBoundsException ex) {
 			// this should never happen during a get previous operation so rethrow it:
 			throw ex;
@@ -223,18 +234,22 @@ public final class EndTag extends Tag {
 	 * @return the next end tag matching the specified {@linkplain #getName() name} and {@linkplain EndTagType type}, starting at the specified position, or null if none is found.
 	 */
 	static EndTag getNext(final Source source, final int pos, final String name, final EndTagType endTagType) {
-		if (name==null) return (EndTag)Tag.getNextTag(source,pos,endTagType);
-		if (name.length()==0) throw new IllegalArgumentException("name argument must not be zero length");
-		final String searchString=endTagType.START_DELIMITER_PREFIX+name;
+		if (name == null)
+			return (EndTag) Tag.getNextTag(source, pos, endTagType);
+		if (name.length() == 0)
+			throw new IllegalArgumentException("name argument must not be zero length");
+		final String searchString = endTagType.START_DELIMITER_PREFIX + name;
 		try {
-			final ParseText parseText=source.getParseText();
-			int begin=pos;
+			final ParseText parseText = source.getParseText();
+			int begin = pos;
 			do {
-				begin=parseText.indexOf(searchString,begin);
-				if (begin==-1) return null;
-				final EndTag endTag=(EndTag)source.getTagAt(begin);
-				if (endTag!=null && endTag.getEndTagType()==endTagType && name.equals(endTag.getName())) return endTag;
-			} while ((begin+=1)<source.end);
+				begin = parseText.indexOf(searchString, begin);
+				if (begin == -1)
+					return null;
+				final EndTag endTag = (EndTag) source.getTagAt(begin);
+				if (endTag != null && endTag.getEndTagType() == endTagType && name.equals(endTag.getName()))
+					return endTag;
+			} while ((begin += 1) < source.end);
 		} catch (IndexOutOfBoundsException ex) {
 			// this should only happen when the end of file is reached in the middle of a tag.
 			// we don't have to do anything to handle it as there will be no more tags anyway.
@@ -244,20 +259,23 @@ public final class EndTag extends Tag {
 
 	static EndTag getPrevious(final Source source, int pos) {
 		while (true) {
-			final Tag tag=Tag.getPreviousTag(source,pos);
-			if (tag==null) return null;
-			if (tag instanceof EndTag) return (EndTag)tag;
-			pos-=1;
+			final Tag tag = Tag.getPreviousTag(source, pos);
+			if (tag == null)
+				return null;
+			if (tag instanceof EndTag)
+				return (EndTag) tag;
+			pos -= 1;
 		}
 	}
 
 	static EndTag getNext(final Source source, int pos) {
 		while (true) {
-			final Tag tag=Tag.getNextTag(source,pos);
-			if (tag==null) return null;
-			if (tag instanceof EndTag) return (EndTag)tag;
-			pos+=1;
+			final Tag tag = Tag.getNextTag(source, pos);
+			if (tag == null)
+				return null;
+			if (tag instanceof EndTag)
+				return (EndTag) tag;
+			pos += 1;
 		}
 	}
 }
-

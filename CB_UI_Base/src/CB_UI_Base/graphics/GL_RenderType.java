@@ -28,7 +28,6 @@ package CB_UI_Base.graphics;
  * 
  * @author Longri
  */
-public enum GL_RenderType
-{
+public enum GL_RenderType {
 	Mapsforge, OpenGl, Mixing
 }

@@ -38,25 +38,20 @@ import ch.fhnw.imvs.gpssimulator.SimulatorMain;
 import ch.fhnw.imvs.gpssimulator.data.GPSData;
 import ch.fhnw.imvs.gpssimulator.data.GPSDataListener;
 
-public class MapPanel extends JPanel implements ActionListener
-{
+public class MapPanel extends JPanel implements ActionListener {
 
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 	private static final long serialVersionUID = 6067211877479396433L;
 
 	private static AwtMapView mapView;
 
-	public MapPanel()
-	{
+	public MapPanel() {
 		mapView = createMapView();
 		String MapPath = SimulatorMain.prefs.get("loadedMap", "");
-		try
-		{
+		try {
 			addLayers(mapView, MapPath);
-		}
-		catch (Exception e)
-		{
-			
+		} catch (Exception e) {
+
 			e.printStackTrace();
 		}
 		PreferencesFacade preferencesFacade = new JavaUtilPreferences(Preferences.userNodeForPackage(MapViewer.class));
@@ -78,14 +73,11 @@ public class MapPanel extends JPanel implements ActionListener
 		model.mapViewPosition.setCenter(pos);
 		model.mapViewPosition.setZoomLevel((byte) SimulatorMain.prefs.getInt("zoom", 16));
 
-		GPSData.addChangeListener(new GPSDataListener()
-		{
+		GPSData.addChangeListener(new GPSDataListener() {
 
 			@Override
-			public void valueChanged()
-			{
-				if (CB_Locator.Locator.that != null)
-				{
+			public void valueChanged() {
+				if (CB_Locator.Locator.that != null) {
 					LatLong pos = new LatLong(GPSData.getLatitude(), GPSData.getLongitude());
 					model.mapViewPosition.setCenter(pos);
 					CB_Locator.Locator.setNewLocation(new Location(pos.getLatitude(), pos.getLongitude(), GPSData.getQuality(), true, (float) GPSData.getSpeed(), true, GPSData.getCourse(), GPSData.getAltitude(), ProviderType.GPS));
@@ -95,8 +87,7 @@ public class MapPanel extends JPanel implements ActionListener
 		});
 	}
 
-	private static void addLayers(MapView mapView, String MapPath)
-	{
+	private static void addLayers(MapView mapView, String MapPath) {
 		LayerManager layerManager = mapView.getLayerManager();
 		Layers layers = layerManager.getLayers();
 		TileCache tileCache = createTileCache();
@@ -104,16 +95,14 @@ public class MapPanel extends JPanel implements ActionListener
 		layers.add(createTileRendererLayer(tileCache, mapView.getModel().mapViewPosition, layerManager, MapPath));
 	}
 
-	private static Layer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, LayerManager layerManager, String MapPath)
-	{
+	private static Layer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, LayerManager layerManager, String MapPath) {
 		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, false, GRAPHIC_FACTORY);
 		tileRendererLayer.setMapFile(new File(MapPath));
 		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
 		return tileRendererLayer;
 	}
 
-	private static AwtMapView createMapView()
-	{
+	private static AwtMapView createMapView() {
 		AwtMapView mapView = new AwtMapView();
 		mapView.getFpsCounter().setVisible(true);
 		// mapView.addComponentListener(new MapViewComponentListener(mapView,new Dimension(600, 600)));
@@ -127,8 +116,7 @@ public class MapPanel extends JPanel implements ActionListener
 		return mapView;
 	}
 
-	private static TileCache createTileCache()
-	{
+	private static TileCache createTileCache() {
 		TileCache firstLevelTileCache = new InMemoryTileCache(64);
 		File cacheDirectory = new File(System.getProperty("java.io.tmpdir"), "mapsforge");
 		TileCache secondLevelTileCache = new FileSystemTileCache(1024, cacheDirectory, GRAPHIC_FACTORY);
@@ -136,23 +124,16 @@ public class MapPanel extends JPanel implements ActionListener
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent event)
-	{
-		if (event.getActionCommand().equals("Load Map"))
-		{
+	public void actionPerformed(ActionEvent event) {
+		if (event.getActionCommand().equals("Load Map")) {
 			// load Map
-			PlatformConnector.getFile("", "", "Load Map", "Load", new IgetFileReturnListener()
-			{
+			PlatformConnector.getFile("", "", "Load Map", "Load", new IgetFileReturnListener() {
 				@Override
-				public void getFileReturn(String Path)
-				{
+				public void getFileReturn(String Path) {
 					SimulatorMain.prefs.put("loadedMap", Path);
-					try
-					{
+					try {
 						SimulatorMain.prefs.flush();
-					}
-					catch (BackingStoreException e)
-					{
+					} catch (BackingStoreException e) {
 						e.printStackTrace();
 					}
 

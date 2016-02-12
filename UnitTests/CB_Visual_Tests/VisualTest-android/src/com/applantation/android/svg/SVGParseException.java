@@ -24,23 +24,19 @@ import java.io.IOException;
  * 
  * @author Larva Labs, LLC
  */
-public class SVGParseException extends IOException
-{
+public class SVGParseException extends IOException {
 
 	private static final long serialVersionUID = -4297609695673665796L;
 
-	public SVGParseException(String s)
-	{
+	public SVGParseException(String s) {
 		super(s);
 	}
 
-	public SVGParseException(String s, Throwable throwable)
-	{
+	public SVGParseException(String s, Throwable throwable) {
 		super(s, throwable);
 	}
 
-	public SVGParseException(Throwable throwable)
-	{
+	public SVGParseException(Throwable throwable) {
 		super(throwable);
 	}
 }

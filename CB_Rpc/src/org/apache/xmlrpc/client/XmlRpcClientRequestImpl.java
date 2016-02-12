@@ -23,13 +23,12 @@ import java.util.List;
 import org.apache.xmlrpc.XmlRpcRequest;
 import org.apache.xmlrpc.XmlRpcRequestConfig;
 
-
 /** Default implementation of
  * {@link org.apache.xmlrpc.XmlRpcRequest}.
  */
 public class XmlRpcClientRequestImpl implements XmlRpcRequest {
-    private static final Object[] ZERO_PARAMS = new Object[0];
-    private final XmlRpcRequestConfig config;
+	private static final Object[] ZERO_PARAMS = new Object[0];
+	private final XmlRpcRequestConfig config;
 	private final String methodName;
 	private final Object[] params;
 
@@ -39,8 +38,7 @@ public class XmlRpcClientRequestImpl implements XmlRpcRequest {
 	 * @param pParams The parameters.
 	 * @throws NullPointerException One of the parameters is null.
 	 */
-	public XmlRpcClientRequestImpl(XmlRpcRequestConfig pConfig,
-								   String pMethodName, Object[] pParams) {
+	public XmlRpcClientRequestImpl(XmlRpcRequestConfig pConfig, String pMethodName, Object[] pParams) {
 		config = pConfig;
 		if (config == null) {
 			throw new NullPointerException("The request configuration must not be null.");
@@ -58,16 +56,23 @@ public class XmlRpcClientRequestImpl implements XmlRpcRequest {
 	 * @param pParams The parameters.
 	 * @throws NullPointerException The method name or the parameters are null.
 	 */
-	public XmlRpcClientRequestImpl(XmlRpcRequestConfig pConfig,
-								   String pMethodName, List pParams) {
+	public XmlRpcClientRequestImpl(XmlRpcRequestConfig pConfig, String pMethodName, List pParams) {
 		this(pConfig, pMethodName, pParams == null ? null : pParams.toArray());
 	}
 
-	public String getMethodName() { return methodName; }
+	public String getMethodName() {
+		return methodName;
+	}
 
-	public int getParameterCount() { return params.length; }
+	public int getParameterCount() {
+		return params.length;
+	}
 
-	public Object getParameter(int pIndex) { return params[pIndex]; }
+	public Object getParameter(int pIndex) {
+		return params[pIndex];
+	}
 
-	public XmlRpcRequestConfig getConfig() { return config; }
+	public XmlRpcRequestConfig getConfig() {
+		return config;
+	}
 }

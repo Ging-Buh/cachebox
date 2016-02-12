@@ -20,8 +20,7 @@ import java.io.Serializable;
 /**
  * @author Longri
  */
-public class CoordinateGPS extends Coordinate implements Serializable
-{
+public class CoordinateGPS extends Coordinate implements Serializable {
 
 	private static final long serialVersionUID = 1235642315487L;
 
@@ -37,43 +36,42 @@ public class CoordinateGPS extends Coordinate implements Serializable
 	 */
 	protected int Accuracy = -1;
 
-	public CoordinateGPS(double latitude, double longitude)
-	{
+	public CoordinateGPS(double latitude, double longitude) {
 		super(latitude, longitude);
 		this.setElevation(0);
-		if (latitude == 0 && longitude == 0) return;
+		if (latitude == 0 && longitude == 0)
+			return;
 		Valid = true;
 	}
 
-	public CoordinateGPS(double latitude, double longitude, int accuracy)
-	{
-		super(latitude, longitude);
-		this.setElevation(0);
-		this.Accuracy = accuracy;
-		if (latitude == 0 && longitude == 0) return;
-		Valid = true;
-	}
-
-	public CoordinateGPS(int latitude, int longitude, int accuracy)
-	{
+	public CoordinateGPS(double latitude, double longitude, int accuracy) {
 		super(latitude, longitude);
 		this.setElevation(0);
 		this.Accuracy = accuracy;
-		if (latitude == 0 && longitude == 0) return;
+		if (latitude == 0 && longitude == 0)
+			return;
 		Valid = true;
 	}
 
-	public CoordinateGPS(CoordinateGPS parent)
-	{
+	public CoordinateGPS(int latitude, int longitude, int accuracy) {
+		super(latitude, longitude);
+		this.setElevation(0);
+		this.Accuracy = accuracy;
+		if (latitude == 0 && longitude == 0)
+			return;
+		Valid = true;
+	}
+
+	public CoordinateGPS(CoordinateGPS parent) {
 		super(parent.latitude, parent.longitude);
 		this.setElevation(parent.getElevation());
 		this.Accuracy = parent.getAccuracy();
 		this.Valid = parent.Valid;
 	}
 
-	public boolean hasAccuracy()
-	{
-		if (Accuracy == -1) return false;
+	public boolean hasAccuracy() {
+		if (Accuracy == -1)
+			return false;
 		return true;
 	}
 
@@ -81,14 +79,12 @@ public class CoordinateGPS extends Coordinate implements Serializable
 	 * @return
 	 * @uml.property name="accuracy"
 	 */
-	public int getAccuracy()
-	{
+	public int getAccuracy() {
 		return Accuracy;
 	}
 
 	// Parse Coordinates from String
-	public CoordinateGPS(String text)
-	{
+	public CoordinateGPS(String text) {
 		super(text);
 	}
 
@@ -96,8 +92,7 @@ public class CoordinateGPS extends Coordinate implements Serializable
 	 * @return
 	 * @uml.property name="elevation"
 	 */
-	public double getElevation()
-	{
+	public double getElevation() {
 		return Elevation;
 	}
 
@@ -105,13 +100,11 @@ public class CoordinateGPS extends Coordinate implements Serializable
 	 * @param elevation
 	 * @uml.property name="elevation"
 	 */
-	public void setElevation(double elevation)
-	{
+	public void setElevation(double elevation) {
 		Elevation = elevation;
 	}
 
-	public void setAccuracy(float accuracy)
-	{
+	public void setAccuracy(float accuracy) {
 		Accuracy = (int) accuracy;
 	}
 

@@ -36,65 +36,74 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
-
 /** Implementation of a transport class, which is based on an output
  * stream for sending the request and an input stream for receiving
  * the response,
  */
 public abstract class XmlRpcStreamTransport extends XmlRpcTransportImpl {
-    protected interface ReqWriter {
-        /**
-         * Writes the requests data to the given output stream.
-         * The method ensures, that the target is being closed.
-         */
-        void write(OutputStream pStream) throws XmlRpcException, IOException, SAXException;
-    }
+	protected interface ReqWriter {
+		/**
+		 * Writes the requests data to the given output stream.
+		 * The method ensures, that the target is being closed.
+		 */
+		void write(OutputStream pStream) throws XmlRpcException, IOException, SAXException;
+	}
 
-    protected class ReqWriterImpl implements ReqWriter {
-        private final XmlRpcRequest request;
+	protected class ReqWriterImpl implements ReqWriter {
+		private final XmlRpcRequest request;
 
-        protected ReqWriterImpl(XmlRpcRequest pRequest) {
-            request = pRequest;
-        }
+		protected ReqWriterImpl(XmlRpcRequest pRequest) {
+			request = pRequest;
+		}
 
-        /** Writes the requests uncompressed XML data to the given
-         * output stream. Ensures, that the output stream is being
-         * closed.
-         */
-        public void write(OutputStream pStream)
-                throws XmlRpcException, IOException, SAXException {
-            final XmlRpcStreamConfig config = (XmlRpcStreamConfig) request.getConfig();
-            try {
-                ContentHandler h = getClient().getXmlWriterFactory().getXmlWriter(config, pStream);
-                XmlRpcWriter xw = new XmlRpcWriter(config, h, getClient().getTypeFactory());
-                xw.write(request);
-                pStream.close();
-                pStream = null;
-            } finally {
-                if (pStream != null) { try { pStream.close(); } catch (Throwable ignore) {} }
-            }
-        }
-    }
+		/** Writes the requests uncompressed XML data to the given
+		 * output stream. Ensures, that the output stream is being
+		 * closed.
+		 */
+		public void write(OutputStream pStream) throws XmlRpcException, IOException, SAXException {
+			final XmlRpcStreamConfig config = (XmlRpcStreamConfig) request.getConfig();
+			try {
+				ContentHandler h = getClient().getXmlWriterFactory().getXmlWriter(config, pStream);
+				XmlRpcWriter xw = new XmlRpcWriter(config, h, getClient().getTypeFactory());
+				xw.write(request);
+				pStream.close();
+				pStream = null;
+			} finally {
+				if (pStream != null) {
+					try {
+						pStream.close();
+					} catch (Throwable ignore) {
+					}
+				}
+			}
+		}
+	}
 
-    protected class GzipReqWriter implements ReqWriter {
-        private final ReqWriter reqWriter;
-        protected GzipReqWriter(ReqWriter pReqWriter) {
-            reqWriter = pReqWriter;
-        }
+	protected class GzipReqWriter implements ReqWriter {
+		private final ReqWriter reqWriter;
 
-        public void write(OutputStream pStream) throws XmlRpcException, IOException, SAXException {
-            try {
-                GZIPOutputStream gStream = new GZIPOutputStream(pStream);
-                reqWriter.write(gStream);
-                pStream.close();
-                pStream = null;
-            } catch (IOException e) {
-                throw new XmlRpcException("Failed to write request: " + e.getMessage(), e);
-            } finally {
-                if (pStream != null) { try { pStream.close(); } catch (Throwable ignore) {} }
-            }
-        }
-    }
+		protected GzipReqWriter(ReqWriter pReqWriter) {
+			reqWriter = pReqWriter;
+		}
+
+		public void write(OutputStream pStream) throws XmlRpcException, IOException, SAXException {
+			try {
+				GZIPOutputStream gStream = new GZIPOutputStream(pStream);
+				reqWriter.write(gStream);
+				pStream.close();
+				pStream = null;
+			} catch (IOException e) {
+				throw new XmlRpcException("Failed to write request: " + e.getMessage(), e);
+			} finally {
+				if (pStream != null) {
+					try {
+						pStream.close();
+					} catch (Throwable ignore) {
+					}
+				}
+			}
+		}
+	}
 
 	/** Creates a new instance on behalf of the given client.
 	 */
@@ -119,8 +128,7 @@ public abstract class XmlRpcStreamTransport extends XmlRpcTransportImpl {
 	protected abstract InputStream getInputStream() throws XmlRpcException;
 
 	protected boolean isCompressingRequest(XmlRpcStreamRequestConfig pConfig) {
-		return pConfig.isEnabledForExtensions()
-			&& pConfig.isGzipCompressing();
+		return pConfig.isEnabledForExtensions() && pConfig.isGzipCompressing();
 	}
 
 	/**
@@ -131,23 +139,21 @@ public abstract class XmlRpcStreamTransport extends XmlRpcTransportImpl {
 	 * @throws SAXException Creating the instance failed, because
 	 *   the request could not be parsed.
 	 */
-    protected ReqWriter newReqWriter(XmlRpcRequest pRequest)
-            throws XmlRpcException, IOException, SAXException {
-        ReqWriter reqWriter = new ReqWriterImpl(pRequest);
-        if (isCompressingRequest((XmlRpcStreamRequestConfig) pRequest.getConfig())) {
-            reqWriter = new GzipReqWriter(reqWriter);
-        }
-        return reqWriter;
-    }
+	protected ReqWriter newReqWriter(XmlRpcRequest pRequest) throws XmlRpcException, IOException, SAXException {
+		ReqWriter reqWriter = new ReqWriterImpl(pRequest);
+		if (isCompressingRequest((XmlRpcStreamRequestConfig) pRequest.getConfig())) {
+			reqWriter = new GzipReqWriter(reqWriter);
+		}
+		return reqWriter;
+	}
 
-    protected abstract void writeRequest(ReqWriter pWriter)
-        throws XmlRpcException, IOException, SAXException;
-    
+	protected abstract void writeRequest(ReqWriter pWriter) throws XmlRpcException, IOException, SAXException;
+
 	public Object sendRequest(XmlRpcRequest pRequest) throws XmlRpcException {
 		XmlRpcStreamRequestConfig config = (XmlRpcStreamRequestConfig) pRequest.getConfig();
 		boolean closed = false;
 		try {
-            ReqWriter reqWriter = newReqWriter(pRequest);
+			ReqWriter reqWriter = newReqWriter(pRequest);
 			writeRequest(reqWriter);
 			InputStream istream = getInputStream();
 			if (isResponseGzipCompressed(config)) {
@@ -158,17 +164,20 @@ public abstract class XmlRpcStreamTransport extends XmlRpcTransportImpl {
 			close();
 			return result;
 		} catch (IOException e) {
-			throw new XmlRpcException("Failed to read server's response: "
-					+ e.getMessage(), e);
-        } catch (SAXException e) {
-            Exception ex = e.getException();
-            if (ex != null  &&  ex instanceof XmlRpcException) {
-                throw (XmlRpcException) ex;
-            }
-            throw new XmlRpcException("Failed to generate request: "
-                    + e.getMessage(), e);
+			throw new XmlRpcException("Failed to read server's response: " + e.getMessage(), e);
+		} catch (SAXException e) {
+			Exception ex = e.getException();
+			if (ex != null && ex instanceof XmlRpcException) {
+				throw (XmlRpcException) ex;
+			}
+			throw new XmlRpcException("Failed to generate request: " + e.getMessage(), e);
 		} finally {
-			if (!closed) { try { close(); } catch (Throwable ignore) {} }
+			if (!closed) {
+				try {
+					close();
+				} catch (Throwable ignore) {
+				}
+			}
 		}
 	}
 
@@ -183,7 +192,7 @@ public abstract class XmlRpcStreamTransport extends XmlRpcTransportImpl {
 		try {
 			xp = new XmlRpcResponseParser(pConfig, getClient().getTypeFactory());
 			xr.setContentHandler(xp);
-            xr.parse(isource);
+			xr.parse(isource);
 		} catch (SAXException e) {
 			throw new XmlRpcClientException("Failed to parse server's response: " + e.getMessage(), e);
 		} catch (IOException e) {
@@ -193,15 +202,15 @@ public abstract class XmlRpcStreamTransport extends XmlRpcTransportImpl {
 			return xp.getResult();
 		}
 		Throwable t = xp.getErrorCause();
-        if (t == null) {
-            throw new XmlRpcException(xp.getErrorCode(), xp.getErrorMessage());
-        }
-        if (t instanceof XmlRpcException) {
-            throw (XmlRpcException) t;
-        }
-        if (t instanceof RuntimeException) {
-            throw (RuntimeException) t;
-        }
-        throw new XmlRpcException(xp.getErrorCode(), xp.getErrorMessage(), t);
+		if (t == null) {
+			throw new XmlRpcException(xp.getErrorCode(), xp.getErrorMessage());
+		}
+		if (t instanceof XmlRpcException) {
+			throw (XmlRpcException) t;
+		}
+		if (t instanceof RuntimeException) {
+			throw (RuntimeException) t;
+		}
+		throw new XmlRpcException(xp.getErrorCode(), xp.getErrorMessage(), t);
 	}
 }

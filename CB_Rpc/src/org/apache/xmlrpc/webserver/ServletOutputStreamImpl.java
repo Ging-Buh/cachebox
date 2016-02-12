@@ -23,7 +23,6 @@ import java.io.OutputStream;
 
 import javax.servlet.ServletOutputStream;
 
-
 /** Default implementation of a servlet output stream.
  * Handles output of HTTP headers.
  */

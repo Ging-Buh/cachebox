@@ -37,21 +37,18 @@ package bsh;
 /**
  * An internal error in the interpreter has occurred.
  */
-public class InterpreterError extends RuntimeException
-{
+public class InterpreterError extends RuntimeException {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public InterpreterError(final String s)
-	{
+	public InterpreterError(final String s) {
 		super(s);
 	}
 
-	public InterpreterError(final String s, final Throwable cause)
-	{
+	public InterpreterError(final String s, final Throwable cause) {
 		super(s, cause);
 	}
 

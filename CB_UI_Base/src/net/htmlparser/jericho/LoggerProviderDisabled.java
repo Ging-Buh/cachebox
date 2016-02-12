@@ -23,9 +23,10 @@ package net.htmlparser.jericho;
 import java.util.logging.*;
 
 final class LoggerProviderDisabled implements LoggerProvider {
-	public static final LoggerProvider INSTANCE=new LoggerProviderDisabled();
-	
-	private LoggerProviderDisabled() {}
+	public static final LoggerProvider INSTANCE = new LoggerProviderDisabled();
+
+	private LoggerProviderDisabled() {
+	}
 
 	public Logger getLogger(final String name) {
 		return null;

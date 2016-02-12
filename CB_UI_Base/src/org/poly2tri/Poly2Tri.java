@@ -42,49 +42,40 @@ import org.poly2tri.triangulation.sets.ConstrainedPointSet;
 import org.poly2tri.triangulation.sets.PointSet;
 import org.poly2tri.triangulation.util.PolygonGenerator;
 
-public class Poly2Tri
-{
+public class Poly2Tri {
 
 	private static final TriangulationAlgorithm _defaultAlgorithm = TriangulationAlgorithm.DTSweep;
 
-	public static void triangulate(PolygonSet ps)
-	{
+	public static void triangulate(PolygonSet ps) {
 		TriangulationContext<?> tcx = createContext(_defaultAlgorithm);
-		for (Polygon p : ps.getPolygons())
-		{
+		for (Polygon p : ps.getPolygons()) {
 			tcx.prepareTriangulation(p);
 			triangulate(tcx);
 			tcx.clear();
 		}
 	}
 
-	public static void triangulate(Polygon p)
-	{
+	public static void triangulate(Polygon p) {
 		triangulate(_defaultAlgorithm, p);
 	}
 
-	public static void triangulate(ConstrainedPointSet cps)
-	{
+	public static void triangulate(ConstrainedPointSet cps) {
 		triangulate(_defaultAlgorithm, cps);
 	}
 
-	public static void triangulate(PointSet ps)
-	{
+	public static void triangulate(PointSet ps) {
 		triangulate(_defaultAlgorithm, ps);
 	}
 
-	public static TriangulationContext<?> createContext(TriangulationAlgorithm algorithm)
-	{
-		switch (algorithm)
-		{
+	public static TriangulationContext<?> createContext(TriangulationAlgorithm algorithm) {
+		switch (algorithm) {
 		case DTSweep:
 		default:
 			return new DTSweepContext();
 		}
 	}
 
-	public static void triangulate(TriangulationAlgorithm algorithm, Triangulatable t)
-	{
+	public static void triangulate(TriangulationAlgorithm algorithm, Triangulatable t) {
 		TriangulationContext<?> tcx;
 
 		// long time = System.nanoTime();
@@ -94,10 +85,8 @@ public class Poly2Tri
 		// logger.info( "Triangulation of {} points [{}ms]", tcx.getPoints().size(), ( System.nanoTime() - time ) / 1e6 );
 	}
 
-	public static void triangulate(TriangulationContext<?> tcx)
-	{
-		switch (tcx.algorithm())
-		{
+	public static void triangulate(TriangulationContext<?> tcx) {
+		switch (tcx.algorithm()) {
 		case DTSweep:
 		default:
 			DTSweep.triangulate((DTSweepContext) tcx);
@@ -107,8 +96,7 @@ public class Poly2Tri
 	/**
 	 * Will do a warmup run to let the JVM optimize the triangulation code
 	 */
-	public static void warmup()
-	{
+	public static void warmup() {
 		/*
 		 * After a method is run 10000 times, the Hotspot compiler will compile it into native code. Periodically, the Hotspot compiler may
 		 * recompile the method. After an unspecified amount of time, then the compilation system should become quiet.

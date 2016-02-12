@@ -20,8 +20,7 @@ import com.badlogic.gdx.utils.Disposable;
 /**
  * @author Longri
  */
-public interface IGeometry extends Disposable
-{
+public interface IGeometry extends Disposable {
 	final static float MIN_CIRCLE_SEGMENTH_LENGTH = 10;
 	final static int MIN_CIRCLE_SEGMENTH_COUNT = 18;
 

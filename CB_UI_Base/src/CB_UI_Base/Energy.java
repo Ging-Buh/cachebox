@@ -29,86 +29,86 @@ import CB_Utils.Util.IChanged;
  * @author Longri
  */
 public class Energy {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(Energy.class);
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(Energy.class);
 
-    // ##########################
-    // Dont Render
-    // ##########################
+	// ##########################
+	// Dont Render
+	// ##########################
 
-    /**
-     * Explain of no Render jobs!
-     */
-    private static boolean displayOff = false;
+	/**
+	 * Explain of no Render jobs!
+	 */
+	private static boolean displayOff = false;
 
-    /**
-     * Explain of no Render jobs!
-     */
-    public static boolean DisplayOff() {
-	return displayOff;
-    }
-
-    /**
-     * Set DisplayOff to 'True'
-     */
-    public static void setDisplayOff() {
-	displayOff = true;
-	fireChangedEvent();
-	log.info("ENERGY setDisplayOff");
-    }
-
-    /**
-     * Set DisplayOff to 'False'
-     */
-    public static void setDisplayOn() {
-	displayOff = false;
-	fireChangedEvent();
-	log.info("ENERGY setDisplayOn");
-    }
-
-    // ##############################
-    // Slider is Shown
-    // ##############################
-
-    private static boolean sliderIsShown = false;
-
-    public static boolean SliderIsShown() {
-	if (displayOff)
-	    return true;
-	return sliderIsShown;
-    }
-
-    public static void setSliderIsShown() {
-	sliderIsShown = true;
-
-    }
-
-    public static void resetSliderIsShown() {
-	sliderIsShown = false;
-
-    }
-
-    protected static ArrayList<IChanged> ChangedEventList = new ArrayList<IChanged>();
-
-    protected static void fireChangedEvent() {
-	synchronized (ChangedEventList) {
-	    for (IChanged event : ChangedEventList) {
-		event.isChanged();
-	    }
+	/**
+	 * Explain of no Render jobs!
+	 */
+	public static boolean DisplayOff() {
+		return displayOff;
 	}
 
-    }
-
-    public static void addChangedEventListener(IChanged listener) {
-	synchronized (ChangedEventList) {
-	    if (!ChangedEventList.contains(listener))
-		ChangedEventList.add(listener);
+	/**
+	 * Set DisplayOff to 'True'
+	 */
+	public static void setDisplayOff() {
+		displayOff = true;
+		fireChangedEvent();
+		log.info("ENERGY setDisplayOff");
 	}
-    }
 
-    public static void removeChangedEventListener(IChanged listener) {
-	synchronized (ChangedEventList) {
-	    ChangedEventList.remove(listener);
+	/**
+	 * Set DisplayOff to 'False'
+	 */
+	public static void setDisplayOn() {
+		displayOff = false;
+		fireChangedEvent();
+		log.info("ENERGY setDisplayOn");
 	}
-    }
+
+	// ##############################
+	// Slider is Shown
+	// ##############################
+
+	private static boolean sliderIsShown = false;
+
+	public static boolean SliderIsShown() {
+		if (displayOff)
+			return true;
+		return sliderIsShown;
+	}
+
+	public static void setSliderIsShown() {
+		sliderIsShown = true;
+
+	}
+
+	public static void resetSliderIsShown() {
+		sliderIsShown = false;
+
+	}
+
+	protected static ArrayList<IChanged> ChangedEventList = new ArrayList<IChanged>();
+
+	protected static void fireChangedEvent() {
+		synchronized (ChangedEventList) {
+			for (IChanged event : ChangedEventList) {
+				event.isChanged();
+			}
+		}
+
+	}
+
+	public static void addChangedEventListener(IChanged listener) {
+		synchronized (ChangedEventList) {
+			if (!ChangedEventList.contains(listener))
+				ChangedEventList.add(listener);
+		}
+	}
+
+	public static void removeChangedEventListener(IChanged listener) {
+		synchronized (ChangedEventList) {
+			ChangedEventList.remove(listener);
+		}
+	}
 
 }

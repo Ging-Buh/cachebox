@@ -59,16 +59,14 @@ public class MapScaleBar {
 	private boolean redrawNeeded;
 	private boolean visible;
 
-	public MapScaleBar(MapViewPosition mapViewPosition, MapViewDimension mapViewDimension,
-			GraphicFactory graphicFactory, DisplayModel displayModel) {
+	public MapScaleBar(MapViewPosition mapViewPosition, MapViewDimension mapViewDimension, GraphicFactory graphicFactory, DisplayModel displayModel) {
 		this.mapViewPosition = mapViewPosition;
 		this.mapViewDimension = mapViewDimension;
 		this.displayModel = displayModel;
 		this.graphicFactory = graphicFactory;
 
 		float scaleFactor = this.displayModel.getScaleFactor();
-		this.mapScaleBitmap = graphicFactory.createBitmap((int) (BITMAP_WIDTH * scaleFactor),
-				(int) (BITMAP_HEIGHT * scaleFactor));
+		this.mapScaleBitmap = graphicFactory.createBitmap((int) (BITMAP_WIDTH * scaleFactor), (int) (BITMAP_HEIGHT * scaleFactor));
 		this.mapScaleCanvas = graphicFactory.createCanvas();
 		this.mapScaleCanvas.setBitmap(this.mapScaleBitmap);
 		this.adapter = Metric.INSTANCE;
@@ -160,19 +158,15 @@ public class MapScaleBar {
 
 	private void drawScaleBar(int scaleBarLength, Paint paint, float scale) {
 		final float startX = (STROKE_EXTERNAL * scale - STROKE_INTERNAL * scale) * 0.5f + STROKE_INTERNAL * scale;
-		this.mapScaleCanvas.drawLine(Math.round(startX), Math.round(mapScaleBitmap.getHeight() * 0.5f),
-				Math.round(startX + scaleBarLength), Math.round(mapScaleBitmap.getHeight() * 0.5f), paint);
+		this.mapScaleCanvas.drawLine(Math.round(startX), Math.round(mapScaleBitmap.getHeight() * 0.5f), Math.round(startX + scaleBarLength), Math.round(mapScaleBitmap.getHeight() * 0.5f), paint);
 		final float startY = 10 * scale;
-		this.mapScaleCanvas.drawLine(Math.round(STROKE_EXTERNAL * scale * 0.5f), Math.round(startY),
-				Math.round(STROKE_EXTERNAL * scale * 0.5f), Math.round(mapScaleBitmap.getHeight() - startY), paint);
-		this.mapScaleCanvas.drawLine(Math.round(startX + scaleBarLength + STROKE_INTERNAL * scale * 0.5f),
-				Math.round(startY), Math.round(startX + scaleBarLength + STROKE_INTERNAL * scale * 0.5f),
-				Math.round(mapScaleBitmap.getHeight() - startY), paint);
+		this.mapScaleCanvas.drawLine(Math.round(STROKE_EXTERNAL * scale * 0.5f), Math.round(startY), Math.round(STROKE_EXTERNAL * scale * 0.5f), Math.round(mapScaleBitmap.getHeight() - startY), paint);
+		this.mapScaleCanvas.drawLine(Math.round(startX + scaleBarLength + STROKE_INTERNAL * scale * 0.5f), Math.round(startY), Math.round(startX + scaleBarLength + STROKE_INTERNAL * scale * 0.5f), Math.round(mapScaleBitmap.getHeight() - startY),
+				paint);
 	}
 
 	private void drawScaleText(String scaleText, Paint paint, float scale) {
-		this.mapScaleCanvas.drawText(scaleText, Math.round(STROKE_EXTERNAL * scale + MARGIN_LEFT),
-				Math.round(18 * scale), paint);
+		this.mapScaleCanvas.drawText(scaleText, Math.round(STROKE_EXTERNAL * scale + MARGIN_LEFT), Math.round(18 * scale), paint);
 	}
 
 	private boolean isRedrawNecessary() {
@@ -195,8 +189,7 @@ public class MapScaleBar {
 		}
 
 		this.mapPosition = this.mapViewPosition.getMapPosition();
-		double groundResolution = MercatorProjection.calculateGroundResolution(this.mapPosition.latLong.getLatitude(),
-				this.mapPosition.zoomLevel, this.displayModel.getTileSize());
+		double groundResolution = MercatorProjection.calculateGroundResolution(this.mapPosition.latLong.getLatitude(), this.mapPosition.zoomLevel, this.displayModel.getTileSize());
 
 		groundResolution = groundResolution / this.adapter.getMeterRatio();
 		int[] scaleBarValues = this.adapter.getScaleBarValues();

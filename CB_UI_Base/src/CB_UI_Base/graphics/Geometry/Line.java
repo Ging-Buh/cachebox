@@ -25,33 +25,31 @@ import com.badlogic.gdx.utils.Disposable;
  * 
  * @author Longri
  */
-public class Line implements IGeometry
-{
+public class Line implements IGeometry {
 	/**
 	 * Holds the result of splitting a Line
 	 * 
 	 * @author Longri
 	 */
-	public class SplittResult implements Disposable
-	{
+	public class SplittResult implements Disposable {
 		public Line splittLine1, splittLine2;
 		public float rest;
 		protected AtomicBoolean isDisposed = new AtomicBoolean(false);
 
-		public boolean isDisposed()
-		{
+		public boolean isDisposed() {
 			return isDisposed.get();
 		}
 
 		@Override
-		public void dispose()
-		{
-			synchronized (isDisposed)
-			{
-				if (isDisposed.get()) return;
-				if (splittLine1 != null) splittLine1.dispose();
+		public void dispose() {
+			synchronized (isDisposed) {
+				if (isDisposed.get())
+					return;
+				if (splittLine1 != null)
+					splittLine1.dispose();
 				splittLine1 = null;
-				if (splittLine2 != null) splittLine2.dispose();
+				if (splittLine2 != null)
+					splittLine2.dispose();
 				splittLine2 = null;
 				isDisposed.set(true);
 			}
@@ -77,16 +75,14 @@ public class Line implements IGeometry
 	 * @param x2
 	 * @param y2
 	 */
-	public Line(float x1, float y1, float x2, float y2)
-	{
+	public Line(float x1, float y1, float x2, float y2) {
 		points[0] = x1;
 		points[1] = y1;
 		points[2] = x2;
 		points[3] = y2;
 	}
 
-	public Line(float[] coords, int offset)
-	{
+	public Line(float[] coords, int offset) {
 		for (int i = 0; i < 4; i++)
 			points[i] = coords[i + offset];
 	}
@@ -97,12 +93,10 @@ public class Line implements IGeometry
 	 * @param value
 	 * @return
 	 */
-	public SplittResult splitt(float value)
-	{
+	public SplittResult splitt(float value) {
 		SplittResult ret = new SplittResult();
 
-		if (this.length() <= value)
-		{
+		if (this.length() <= value) {
 			ret.splittLine1 = this;
 			ret.splittLine2 = null;
 			ret.rest = value - this.length();
@@ -137,9 +131,9 @@ public class Line implements IGeometry
 	 * @param Y
 	 * @return
 	 */
-	public boolean lineBeginn(float X, float Y)
-	{
-		if (points[0] == X && points[1] == Y) return true;
+	public boolean lineBeginn(float X, float Y) {
+		if (points[0] == X && points[1] == Y)
+			return true;
 		return false;
 	}
 
@@ -148,47 +142,40 @@ public class Line implements IGeometry
 	 * 
 	 * @return
 	 */
-	public float length()
-	{
+	public float length() {
 		return (float) Math.sqrt((points[2] - points[0]) * (points[2] - points[0]) + (points[3] - points[1]) * (points[3] - points[1]));
 	}
 
 	@Override
-	public float[] getVertices()
-	{
+	public float[] getVertices() {
 		return points;
 	}
 
 	@Override
-	public short[] getTriangles()
-	{
+	public short[] getTriangles() {
 		return null; // a line has no triangles
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "[l " + points[0] + "," + points[1] + "-" + points[2] + "," + points[3] + "]";
 	}
 
-	public boolean isDisposed()
-	{
+	public boolean isDisposed() {
 		return isDisposed.get();
 	}
 
 	@Override
-	public void dispose()
-	{
-		synchronized (isDisposed)
-		{
-			if (isDisposed.get()) return;
+	public void dispose() {
+		synchronized (isDisposed) {
+			if (isDisposed.get())
+				return;
 			points = null;
 			isDisposed.set(true);
 		}
 	}
 
-	public float getAngle()
-	{
+	public float getAngle() {
 		float ret = MathUtils.atan2((points[2] - points[0]), (points[3] - points[1])) * MathUtils.radiansToDegrees;
 		ret = 90 - ret;
 		return ret;

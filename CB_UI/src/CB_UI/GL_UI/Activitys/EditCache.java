@@ -39,381 +39,381 @@ import CB_UI_Base.Math.CB_RectF;
 public class EditCache extends ActivityBase
 // implements KeyboardFocusChangedEvent
 {
-    // Allgemein
-    private final CacheTypes[] CacheTypNumbers = CacheTypes.caches();
-    private final CacheSizes[] CacheSizeNumbers = new CacheSizes[] { CacheSizes.other, // 0
-	    CacheSizes.micro, // 1
-	    CacheSizes.small, // 2
-	    CacheSizes.regular, // 3
-	    CacheSizes.large // 4
-    };
+	// Allgemein
+	private final CacheTypes[] CacheTypNumbers = CacheTypes.caches();
+	private final CacheSizes[] CacheSizeNumbers = new CacheSizes[] { CacheSizes.other, // 0
+			CacheSizes.micro, // 1
+			CacheSizes.small, // 2
+			CacheSizes.regular, // 3
+			CacheSizes.large // 4
+	};
 
-    private Cache cache;
-    private Cache newValues;
-    private ScrollBox mainPanel;
-    private Button btnOK;
-    private Button btnCancel;
-    private Spinner cacheTyp;
-    private Spinner cacheSize;
-    private Spinner cacheDifficulty;
-    private Spinner cacheTerrain;
-    private CoordinateButton cacheCoords;
-    private EditTextField cacheCode; // SingleLine
-    private EditTextField cacheTitle; // MultiLine
-    private EditTextField cacheOwner; // SingleLine
-    private EditTextField cacheDescription; // MultiLineWraped
+	private Cache cache;
+	private Cache newValues;
+	private ScrollBox mainPanel;
+	private Button btnOK;
+	private Button btnCancel;
+	private Spinner cacheTyp;
+	private Spinner cacheSize;
+	private Spinner cacheDifficulty;
+	private Spinner cacheTerrain;
+	private CoordinateButton cacheCoords;
+	private EditTextField cacheCode; // SingleLine
+	private EditTextField cacheTitle; // MultiLine
+	private EditTextField cacheOwner; // SingleLine
+	private EditTextField cacheDescription; // MultiLineWraped
 
-    // ctor
-    public EditCache(CB_RectF rec, String Name) {
-	super(rec, Name);
-	// das übliche
-	btnOK = new Button(Translation.Get("ok"));
-	btnOKClickHandler();
-	btnCancel = new Button(Translation.Get("cancel"));
-	btnCancelClickHandler();
-	this.initRow(BOTTOMUP);
-	this.addNext(btnOK);
-	this.addLast(btnCancel);
-	mainPanel = new ScrollBox(innerWidth, getAvailableHeight()); // (innerWidth, getAvailableHeight(), "mainPanel");
-	this.addLast(mainPanel);
-	mainPanel.initRow(BOTTOMUP);
-	// --- Description
-	cacheDescription = new EditTextField(this, this.name + " cacheDescription").setWrapType(WrapType.WRAPPED);
-	cacheDescription.setHeight(mainPanel.getAvailableHeight() / 2);
-	mainPanel.addLast(cacheDescription);
-	registerTextField(cacheDescription);
-	// --- Hint
-	// --- Notes
-	// --- Status
-	// --- versteckt am
-	// --- Owner
-	cacheOwner = new EditTextField(this, this.name + " cacheOwner");
-	mainPanel.addLast(cacheOwner);
-	registerTextField(cacheOwner);
-	// --- Coords
-	cacheCoords = new CoordinateButton("cacheCoords");
-	setCacheCoordsChangeListener();
-	mainPanel.addLast(cacheCoords);
-	// --- Title
-	cacheTitle = (new EditTextField(this, this.name + " cacheTitle")).setWrapType(WrapType.MULTILINE);
-	TextFieldStyle s = cacheTitle.getStyle();
-	s.font = Fonts.getBig();
-	cacheTitle.setStyle(s);
-	mainPanel.addLast(cacheTitle);
-	registerTextField(cacheTitle);
-	// --- Size
-	cacheSize = new Spinner("cacheSize", cacheSizeList(), cacheSizeSelection());
-	mainPanel.addNext(cacheSize);
-	// --- Terrain
-	cacheTerrain = new Spinner("cacheTerrain", cacheTerrainList(), cacheTerrainSelection());
-	mainPanel.addLast(cacheTerrain, 0.3f);
-	// --- Type
-	// Label lblType = new Label("lblType");
-	// mainPanel.addNext(lblType, 0.2f);
-	// lblType.setText(tl.Get("type"));
-	cacheTyp = new Spinner("cacheTyp", cacheTypList(), cacheTypSelection());
-	mainPanel.addNext(cacheTyp);
-	// --- Difficulty
-	cacheDifficulty = new Spinner("cacheDifficulty", cacheDifficultyList(), cacheDifficultySelection());
-	mainPanel.addLast(cacheDifficulty, 0.3f);
-	// --- Code
-	cacheCode = new EditTextField(this.name + " cacheCode");
-	s.font = Fonts.getCompass();
-	cacheCode.setStyle(s);
-	mainPanel.addLast(cacheCode);
-	registerTextField(cacheCode);
+	// ctor
+	public EditCache(CB_RectF rec, String Name) {
+		super(rec, Name);
+		// das übliche
+		btnOK = new Button(Translation.Get("ok"));
+		btnOKClickHandler();
+		btnCancel = new Button(Translation.Get("cancel"));
+		btnCancelClickHandler();
+		this.initRow(BOTTOMUP);
+		this.addNext(btnOK);
+		this.addLast(btnCancel);
+		mainPanel = new ScrollBox(innerWidth, getAvailableHeight()); // (innerWidth, getAvailableHeight(), "mainPanel");
+		this.addLast(mainPanel);
+		mainPanel.initRow(BOTTOMUP);
+		// --- Description
+		cacheDescription = new EditTextField(this, this.name + " cacheDescription").setWrapType(WrapType.WRAPPED);
+		cacheDescription.setHeight(mainPanel.getAvailableHeight() / 2);
+		mainPanel.addLast(cacheDescription);
+		registerTextField(cacheDescription);
+		// --- Hint
+		// --- Notes
+		// --- Status
+		// --- versteckt am
+		// --- Owner
+		cacheOwner = new EditTextField(this, this.name + " cacheOwner");
+		mainPanel.addLast(cacheOwner);
+		registerTextField(cacheOwner);
+		// --- Coords
+		cacheCoords = new CoordinateButton("cacheCoords");
+		setCacheCoordsChangeListener();
+		mainPanel.addLast(cacheCoords);
+		// --- Title
+		cacheTitle = (new EditTextField(this, this.name + " cacheTitle")).setWrapType(WrapType.MULTILINE);
+		TextFieldStyle s = cacheTitle.getStyle();
+		s.font = Fonts.getBig();
+		cacheTitle.setStyle(s);
+		mainPanel.addLast(cacheTitle);
+		registerTextField(cacheTitle);
+		// --- Size
+		cacheSize = new Spinner("cacheSize", cacheSizeList(), cacheSizeSelection());
+		mainPanel.addNext(cacheSize);
+		// --- Terrain
+		cacheTerrain = new Spinner("cacheTerrain", cacheTerrainList(), cacheTerrainSelection());
+		mainPanel.addLast(cacheTerrain, 0.3f);
+		// --- Type
+		// Label lblType = new Label("lblType");
+		// mainPanel.addNext(lblType, 0.2f);
+		// lblType.setText(tl.Get("type"));
+		cacheTyp = new Spinner("cacheTyp", cacheTypList(), cacheTypSelection());
+		mainPanel.addNext(cacheTyp);
+		// --- Difficulty
+		cacheDifficulty = new Spinner("cacheDifficulty", cacheDifficultyList(), cacheDifficultySelection());
+		mainPanel.addLast(cacheDifficulty, 0.3f);
+		// --- Code
+		cacheCode = new EditTextField(this.name + " cacheCode");
+		s.font = Fonts.getCompass();
+		cacheCode.setStyle(s);
+		mainPanel.addLast(cacheCode);
+		registerTextField(cacheCode);
 
-	mainPanel.setVirtualHeight(mainPanel.getHeightFromBottom());
+		mainPanel.setVirtualHeight(mainPanel.getHeightFromBottom());
 
-	this.setOnClickListener(new OnClickListener() {
+		this.setOnClickListener(new OnClickListener() {
 
-	    @Override
-	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		for (EditTextField tmp : allTextFields) {
-		    tmp.getOnscreenKeyboard().show(false);
-		    tmp.setFocus(false);
-		}
-		return true;
-	    }
-	});
-
-    }
-
-    public void update(Cache cache) {
-	newValues = new Cache(true);
-	newValues.copyFrom(cache);
-	newValues.setShortDescription("");
-	newValues.setLongDescription(Database.GetDescription(cache));
-	cache.setLongDescription(newValues.getLongDescription());
-	this.cache = cache;
-	doShow();
-    }
-
-    public void create() {
-	newValues = new Cache(true);
-	newValues.Type = CacheTypes.Traditional;
-	newValues.Size = CacheSizes.micro;
-	newValues.setDifficulty(1);
-	newValues.setTerrain(1);
-	newValues.Pos = MapView.that.center; // Locator.getLocation().toCordinate();
-	if (!newValues.Pos.isValid())
-	    newValues.Pos = GlobalCore.getSelectedCoord();
-	// GC - Code bestimmen für freies CWxxxx = CustomWaypint
-	String prefix = "CW";
-	int count = 0;
-	do {
-	    count++;
-	    newValues.setGcCode(prefix + String.format("%04d", count));
-	} while (Database.Data.Query.GetCacheById(Cache.GenerateCacheId(newValues.getGcCode())) != null);
-	newValues.setName(newValues.getGcCode());
-	newValues.setOwner("Unbekannt");
-	newValues.setDateHidden(new Date());
-	newValues.setArchived(false);
-	newValues.setAvailable(true);
-	newValues.setFound(false);
-	newValues.NumTravelbugs = 0;
-	newValues.setShortDescription("");
-	newValues.setLongDescription("");
-	this.cache = newValues;
-	doShow();
-    }
-
-    private void doShow() {
-	cacheCode.setText(cache.getGcCode());
-	cacheTyp.setSelection(0);
-	for (int i = 0; i < CacheTypNumbers.length; i++) {
-	    if (CacheTypNumbers[i] == cache.Type) {
-		cacheTyp.setSelection(i);
-	    }
-	}
-	cacheSize.setSelection(0);
-	for (int i = 0; i < CacheSizeNumbers.length; i++) {
-	    if (CacheSizeNumbers[i] == cache.Size) {
-		cacheSize.setSelection(i);
-	    }
-	}
-	cacheDifficulty.setSelection((int) (cache.getDifficulty() * 2 - 2));
-	cacheTerrain.setSelection((int) (cache.getTerrain() * 2 - 2));
-	cacheCoords.setCoordinate(cache.Pos);
-	cacheTitle.setText(cache.getName());
-	cacheOwner.setText(cache.getOwner());
-	if (cache.getLongDescription().equals(GlobalCore.br))
-	    cache.setLongDescription("");
-	cacheDescription.setText(cache.getLongDescription());
-	this.show();
-    }
-
-    private void btnOKClickHandler() {
-	this.btnOK.setOnClickListener(new OnClickListener() {
-	    @Override
-	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		boolean update = false;
-		CacheDAO cacheDAO = new CacheDAO();
-		String gcc = cacheCode.getText().toUpperCase(); // nur wenn kein Label
-		cache.Id = Cache.GenerateCacheId(gcc);
-
-		Cache cl = Database.Data.Query.GetCacheById(cache.Id);
-
-		if (cl != null) {
-		    update = true;
-		    if (newValues.Type == CacheTypes.Mystery) {
-			if (!(cache.Pos.equals(newValues.Pos))) {
-			    cache.setCorrectedCoordinates(true);
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				for (EditTextField tmp : allTextFields) {
+					tmp.getOnscreenKeyboard().show(false);
+					tmp.setFocus(false);
+				}
+				return true;
 			}
-		    }
-		}
-
-		cache.setGcCode(gcc);
-		cache.Type = newValues.Type;
-		cache.Size = newValues.Size;
-		cache.setDifficulty(newValues.getDifficulty());
-		cache.setTerrain(newValues.getTerrain());
-		cache.Pos = newValues.Pos;
-		cache.setName(cacheTitle.getText());
-		cache.setOwner(cacheOwner.getText());
-		cache.setLongDescription(cacheDescription.getText());
-		if (update) {
-		    cacheDAO.UpdateDatabase(cache);
-		    CacheListChangedEventList.Call();
-		} else {
-		    Database.Data.Query.add(cache);
-		    cacheDAO.WriteToDatabase(cache);
-		    CacheListChangedEventList.Call();
-		    GlobalCore.setSelectedCache(cache);
-		    if (TabMainView.cacheListView != null)
-			TabMainView.cacheListView.setSelectedCacheVisible();
-		}
-
-		// Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
-		cache.setLongDescription("");
-		GL.that.RunOnGL(new IRunOnGL() {
-
-		    @Override
-		    public void run() {
-			finish();
-		    }
 		});
 
-		return true;
-	    }
-	});
-    }
+	}
 
-    private void btnCancelClickHandler() {
-	this.btnCancel.setOnClickListener(new OnClickListener() {
+	public void update(Cache cache) {
+		newValues = new Cache(true);
+		newValues.copyFrom(cache);
+		newValues.setShortDescription("");
+		newValues.setLongDescription(Database.GetDescription(cache));
+		cache.setLongDescription(newValues.getLongDescription());
+		this.cache = cache;
+		doShow();
+	}
 
-	    @Override
-	    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-		finish();
-		return true;
-	    }
-	});
-    }
+	public void create() {
+		newValues = new Cache(true);
+		newValues.Type = CacheTypes.Traditional;
+		newValues.Size = CacheSizes.micro;
+		newValues.setDifficulty(1);
+		newValues.setTerrain(1);
+		newValues.Pos = MapView.that.center; // Locator.getLocation().toCordinate();
+		if (!newValues.Pos.isValid())
+			newValues.Pos = GlobalCore.getSelectedCoord();
+		// GC - Code bestimmen für freies CWxxxx = CustomWaypint
+		String prefix = "CW";
+		int count = 0;
+		do {
+			count++;
+			newValues.setGcCode(prefix + String.format("%04d", count));
+		} while (Database.Data.Query.GetCacheById(Cache.GenerateCacheId(newValues.getGcCode())) != null);
+		newValues.setName(newValues.getGcCode());
+		newValues.setOwner("Unbekannt");
+		newValues.setDateHidden(new Date());
+		newValues.setArchived(false);
+		newValues.setAvailable(true);
+		newValues.setFound(false);
+		newValues.NumTravelbugs = 0;
+		newValues.setShortDescription("");
+		newValues.setLongDescription("");
+		this.cache = newValues;
+		doShow();
+	}
 
-    public SpinnerAdapter cacheTypList() {
-	return new SpinnerAdapter() {
-	    @Override
-	    public String getText(int index) {
-		return CacheTypNumbers[index].name();
-		// return "";nur Icons geht nicht
-	    }
+	private void doShow() {
+		cacheCode.setText(cache.getGcCode());
+		cacheTyp.setSelection(0);
+		for (int i = 0; i < CacheTypNumbers.length; i++) {
+			if (CacheTypNumbers[i] == cache.Type) {
+				cacheTyp.setSelection(i);
+			}
+		}
+		cacheSize.setSelection(0);
+		for (int i = 0; i < CacheSizeNumbers.length; i++) {
+			if (CacheSizeNumbers[i] == cache.Size) {
+				cacheSize.setSelection(i);
+			}
+		}
+		cacheDifficulty.setSelection((int) (cache.getDifficulty() * 2 - 2));
+		cacheTerrain.setSelection((int) (cache.getTerrain() * 2 - 2));
+		cacheCoords.setCoordinate(cache.Pos);
+		cacheTitle.setText(cache.getName());
+		cacheOwner.setText(cache.getOwner());
+		if (cache.getLongDescription().equals(GlobalCore.br))
+			cache.setLongDescription("");
+		cacheDescription.setText(cache.getLongDescription());
+		this.show();
+	}
 
-	    @Override
-	    public Drawable getIcon(int index) {
-		return new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + CacheTypNumbers[index].name()));
-	    }
+	private void btnOKClickHandler() {
+		this.btnOK.setOnClickListener(new OnClickListener() {
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				boolean update = false;
+				CacheDAO cacheDAO = new CacheDAO();
+				String gcc = cacheCode.getText().toUpperCase(); // nur wenn kein Label
+				cache.Id = Cache.GenerateCacheId(gcc);
 
-	    @Override
-	    public int getCount() {
-		return CacheTypNumbers.length;
-	    }
-	};
-    }
+				Cache cl = Database.Data.Query.GetCacheById(cache.Id);
 
-    private ISelectionChangedListener cacheTypSelection() {
-	return new ISelectionChangedListener() {
-	    @Override
-	    public void selectionChanged(int index) {
-		EditCache.this.show();
-		newValues.Type = CacheTypNumbers[index];
-	    }
-	};
-    }
+				if (cl != null) {
+					update = true;
+					if (newValues.Type == CacheTypes.Mystery) {
+						if (!(cache.Pos.equals(newValues.Pos))) {
+							cache.setCorrectedCoordinates(true);
+						}
+					}
+				}
 
-    public SpinnerAdapter cacheSizeList() {
-	return new SpinnerAdapter() {
-	    @Override
-	    public String getText(int index) {
-		return CacheSizeNumbers[index].name();
-	    }
+				cache.setGcCode(gcc);
+				cache.Type = newValues.Type;
+				cache.Size = newValues.Size;
+				cache.setDifficulty(newValues.getDifficulty());
+				cache.setTerrain(newValues.getTerrain());
+				cache.Pos = newValues.Pos;
+				cache.setName(cacheTitle.getText());
+				cache.setOwner(cacheOwner.getText());
+				cache.setLongDescription(cacheDescription.getText());
+				if (update) {
+					cacheDAO.UpdateDatabase(cache);
+					CacheListChangedEventList.Call();
+				} else {
+					Database.Data.Query.add(cache);
+					cacheDAO.WriteToDatabase(cache);
+					CacheListChangedEventList.Call();
+					GlobalCore.setSelectedCache(cache);
+					if (TabMainView.cacheListView != null)
+						TabMainView.cacheListView.setSelectedCacheVisible();
+				}
 
-	    @Override
-	    public Drawable getIcon(int index) {
-		return null;
-		// Die folgenden Icons sind zu klein
-		// return new SpriteDrawable(SpriteCache.SizesIcons.get(CacheSizeNumbers[index].ordinal()));
-	    }
+				// Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
+				cache.setLongDescription("");
+				GL.that.RunOnGL(new IRunOnGL() {
 
-	    @Override
-	    public int getCount() {
-		return CacheSizeNumbers.length;
-	    }
-	};
-    }
+					@Override
+					public void run() {
+						finish();
+					}
+				});
 
-    private ISelectionChangedListener cacheSizeSelection() {
-	return new ISelectionChangedListener() {
-	    @Override
-	    public void selectionChanged(int index) {
-		EditCache.this.show();
-		newValues.Size = CacheSizeNumbers[index];
-	    }
-	};
-    }
+				return true;
+			}
+		});
+	}
 
-    private void setCacheCoordsChangeListener() {
-	cacheCoords.setCoordinateChangedListener(new ICoordinateChangedListener() {
-	    @Override
-	    public void coordinateChanged(Coordinate coord) {
-		EditCache.this.show();
-		newValues.Pos = coord; // oder = cacheCoords.getCoordinate()
-	    }
-	});
-    }
+	private void btnCancelClickHandler() {
+		this.btnCancel.setOnClickListener(new OnClickListener() {
 
-    public SpinnerAdapter cacheDifficultyList() {
-	return new SpinnerAdapter() {
-	    @Override
-	    public String getText(int index) {
-		return "D:" + ((index + 2.0f) / 2.0f);
-	    }
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				finish();
+				return true;
+			}
+		});
+	}
 
-	    @Override
-	    public Drawable getIcon(int index) {
-		return null;
-	    }
+	public SpinnerAdapter cacheTypList() {
+		return new SpinnerAdapter() {
+			@Override
+			public String getText(int index) {
+				return CacheTypNumbers[index].name();
+				// return "";nur Icons geht nicht
+			}
 
-	    @Override
-	    public int getCount() {
-		return 9;
-	    }
-	};
-    }
+			@Override
+			public Drawable getIcon(int index) {
+				return new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + CacheTypNumbers[index].name()));
+			}
 
-    private ISelectionChangedListener cacheDifficultySelection() {
-	return new ISelectionChangedListener() {
-	    @Override
-	    public void selectionChanged(int index) {
-		EditCache.this.show();
-		newValues.setDifficulty((index + 2.0f) / 2.0f);
-	    }
-	};
-    }
+			@Override
+			public int getCount() {
+				return CacheTypNumbers.length;
+			}
+		};
+	}
 
-    public SpinnerAdapter cacheTerrainList() {
-	return new SpinnerAdapter() {
-	    @Override
-	    public String getText(int index) {
-		return "T:" + ((index + 2.0f) / 2.0f);
-	    }
+	private ISelectionChangedListener cacheTypSelection() {
+		return new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(int index) {
+				EditCache.this.show();
+				newValues.Type = CacheTypNumbers[index];
+			}
+		};
+	}
 
-	    @Override
-	    public Drawable getIcon(int index) {
-		return null;
-	    }
+	public SpinnerAdapter cacheSizeList() {
+		return new SpinnerAdapter() {
+			@Override
+			public String getText(int index) {
+				return CacheSizeNumbers[index].name();
+			}
 
-	    @Override
-	    public int getCount() {
-		return 9;
-	    }
-	};
-    }
+			@Override
+			public Drawable getIcon(int index) {
+				return null;
+				// Die folgenden Icons sind zu klein
+				// return new SpriteDrawable(SpriteCache.SizesIcons.get(CacheSizeNumbers[index].ordinal()));
+			}
 
-    private ISelectionChangedListener cacheTerrainSelection() {
-	return new ISelectionChangedListener() {
-	    @Override
-	    public void selectionChanged(int index) {
-		EditCache.this.show();
-		newValues.setTerrain((index + 2.0f) / 2.0f);
-	    }
-	};
-    }
+			@Override
+			public int getCount() {
+				return CacheSizeNumbers.length;
+			}
+		};
+	}
 
-    private final ArrayList<EditTextField> allTextFields = new ArrayList<EditTextField>();
+	private ISelectionChangedListener cacheSizeSelection() {
+		return new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(int index) {
+				EditCache.this.show();
+				newValues.Size = CacheSizeNumbers[index];
+			}
+		};
+	}
 
-    public void registerTextField(final EditTextField textField) {
-	textField.setOnscreenKeyboard(new OnscreenKeyboard() {
-	    @Override
-	    public void show(boolean arg0) {
-		scrollToY(textField);
-		textField.setCursorPosition(textField.getText().length());
-	    }
-	});
-	allTextFields.add(textField);
-    }
+	private void setCacheCoordsChangeListener() {
+		cacheCoords.setCoordinateChangedListener(new ICoordinateChangedListener() {
+			@Override
+			public void coordinateChanged(Coordinate coord) {
+				EditCache.this.show();
+				newValues.Pos = coord; // oder = cacheCoords.getCoordinate()
+			}
+		});
+	}
 
-    private void scrollToY(final EditTextField textField) {
-	mainPanel.scrollTo(-mainPanel.getVirtualHeight() + textField.getY() + textField.getHeight());
-    }
+	public SpinnerAdapter cacheDifficultyList() {
+		return new SpinnerAdapter() {
+			@Override
+			public String getText(int index) {
+				return "D:" + ((index + 2.0f) / 2.0f);
+			}
+
+			@Override
+			public Drawable getIcon(int index) {
+				return null;
+			}
+
+			@Override
+			public int getCount() {
+				return 9;
+			}
+		};
+	}
+
+	private ISelectionChangedListener cacheDifficultySelection() {
+		return new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(int index) {
+				EditCache.this.show();
+				newValues.setDifficulty((index + 2.0f) / 2.0f);
+			}
+		};
+	}
+
+	public SpinnerAdapter cacheTerrainList() {
+		return new SpinnerAdapter() {
+			@Override
+			public String getText(int index) {
+				return "T:" + ((index + 2.0f) / 2.0f);
+			}
+
+			@Override
+			public Drawable getIcon(int index) {
+				return null;
+			}
+
+			@Override
+			public int getCount() {
+				return 9;
+			}
+		};
+	}
+
+	private ISelectionChangedListener cacheTerrainSelection() {
+		return new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(int index) {
+				EditCache.this.show();
+				newValues.setTerrain((index + 2.0f) / 2.0f);
+			}
+		};
+	}
+
+	private final ArrayList<EditTextField> allTextFields = new ArrayList<EditTextField>();
+
+	public void registerTextField(final EditTextField textField) {
+		textField.setOnscreenKeyboard(new OnscreenKeyboard() {
+			@Override
+			public void show(boolean arg0) {
+				scrollToY(textField);
+				textField.setCursorPosition(textField.getText().length());
+			}
+		});
+		allTextFields.add(textField);
+	}
+
+	private void scrollToY(final EditTextField textField) {
+		mainPanel.scrollTo(-mainPanel.getVirtualHeight() + textField.getY() + textField.getHeight());
+	}
 
 }

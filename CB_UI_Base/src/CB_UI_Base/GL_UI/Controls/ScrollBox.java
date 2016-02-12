@@ -11,245 +11,245 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Util.MoveableList;
 
 public class ScrollBox extends CB_View_Base {
-    protected V_ListView lv;
-    protected float virtualHeight;
-    protected ListViewItemBase item;
-    protected CustomAdapter thisAdapter;
+	protected V_ListView lv;
+	protected float virtualHeight;
+	protected ListViewItemBase item;
+	protected CustomAdapter thisAdapter;
 
-    public ScrollBox(CB_RectF rec) {
-	super(rec, "ScrollBox");
-	initScrollBox();
-    }
-
-    public ScrollBox(float Width, float Height) {
-	super(0, 0, Width, Height, "ScrollBox");
-	initScrollBox();
-    }
-
-    protected void initScrollBox() {
-	// todo: check to have no scroll(? - margin) oder rec.getHalfHeight()
-	virtualHeight = this.getHeight();
-
-	lv = new V_ListView(this, this, "ListView-" + name);
-	lv.setClickable(true);
-
-	item = new ListViewItemBase(this, 0, "ListViewItem-" + name) {
-
-	    @Override
-	    protected void SkinIsChanged() {
-	    }
-
-	    @Override
-	    protected void Initial() {
-		isInitial = true;
-	    }
-
-	};
-
-	item.setHeight(virtualHeight);
-	item.setClickable(true);
-	thisAdapter = new CustomAdapter();
-	lv.setDisposeFlag(false);
-	lv.setBaseAdapter(thisAdapter);
-	Layout();
-	this.childs.add(lv);
-    }
-
-    @Override
-    public void setBorders(float l, float r) {
-	super.setBorders(l, r);
-	Layout();
-    }
-
-    protected void Layout() {
-
-	//if this is disposed do nothing
-	if (this.isDisposed())
-	    return;
-
-	//if Listview NULL initial
-	if (lv == null) {
-	    initScrollBox();
-	    return;
+	public ScrollBox(CB_RectF rec) {
+		super(rec, "ScrollBox");
+		initScrollBox();
 	}
 
-	// if Listview disposed do nothing!
-	// THIS will dispose soon!
-	if (lv.isDisposed())
-	    return;
+	public ScrollBox(float Width, float Height) {
+		super(0, 0, Width, Height, "ScrollBox");
+		initScrollBox();
+	}
 
-	lv.setSize(innerWidth, innerHeight);
+	protected void initScrollBox() {
+		// todo: check to have no scroll(? - margin) oder rec.getHalfHeight()
+		virtualHeight = this.getHeight();
 
-	item.setHeight(virtualHeight);
-	lv.calcDefaultPosList();
+		lv = new V_ListView(this, this, "ListView-" + name);
+		lv.setClickable(true);
 
-	lv.setPos(leftBorder, bottomBorder);
+		item = new ListViewItemBase(this, 0, "ListViewItem-" + name) {
 
-	lv.scrollTo(lv.getScrollPos());
-    }
+			@Override
+			protected void SkinIsChanged() {
+			}
 
-    @Override
-    public void setBackground(Drawable background) {
-	super.setBackground(background);
-	Layout();
-    }
+			@Override
+			protected void Initial() {
+				isInitial = true;
+			}
 
-    /**
-     ** virtualHeight to take all placed objects (scrolls if > height)
-     **/
-    public void setVirtualHeight(float virtualHeight) {
-	this.virtualHeight = virtualHeight;
-	Layout();
-    }
+		};
 
-    public float getVirtualHeight() {
-	return virtualHeight;
-    }
-
-    @Override
-    public void onResized(CB_RectF rec) {
-	lv.setSize(innerWidth, innerHeight);
-	item.setWidth(innerWidth);
-    }
-
-    public class CustomAdapter implements Adapter {
-
-	public CustomAdapter() {
+		item.setHeight(virtualHeight);
+		item.setClickable(true);
+		thisAdapter = new CustomAdapter();
+		lv.setDisposeFlag(false);
+		lv.setBaseAdapter(thisAdapter);
+		Layout();
+		this.childs.add(lv);
 	}
 
 	@Override
-	public int getCount() {
-	    return 1;
+	public void setBorders(float l, float r) {
+		super.setBorders(l, r);
+		Layout();
+	}
+
+	protected void Layout() {
+
+		//if this is disposed do nothing
+		if (this.isDisposed())
+			return;
+
+		//if Listview NULL initial
+		if (lv == null) {
+			initScrollBox();
+			return;
+		}
+
+		// if Listview disposed do nothing!
+		// THIS will dispose soon!
+		if (lv.isDisposed())
+			return;
+
+		lv.setSize(innerWidth, innerHeight);
+
+		item.setHeight(virtualHeight);
+		lv.calcDefaultPosList();
+
+		lv.setPos(leftBorder, bottomBorder);
+
+		lv.scrollTo(lv.getScrollPos());
 	}
 
 	@Override
-	public ListViewItemBase getView(int position) {
-	    return item;
+	public void setBackground(Drawable background) {
+		super.setBackground(background);
+		Layout();
+	}
+
+	/**
+	 ** virtualHeight to take all placed objects (scrolls if > height)
+	 **/
+	public void setVirtualHeight(float virtualHeight) {
+		this.virtualHeight = virtualHeight;
+		Layout();
+	}
+
+	public float getVirtualHeight() {
+		return virtualHeight;
 	}
 
 	@Override
-	public float getItemSize(int position) {
-	    return item.getHeight();
+	public void onResized(CB_RectF rec) {
+		lv.setSize(innerWidth, innerHeight);
+		item.setWidth(innerWidth);
 	}
-    }
 
-    // ################ add / remove overrides ############################################
-    @Override
-    public int getCildCount() {
-	return item.getCildCount();
-    }
+	public class CustomAdapter implements Adapter {
 
-    @Override
-    public GL_View_Base addChildDirekt(final GL_View_Base view) {
-	item.addChildDirekt(view);
-	lv.notifyDataSetChanged();
-	return view;
-    }
+		public CustomAdapter() {
+		}
 
-    @Override
-    public GL_View_Base addChildDirektLast(final GL_View_Base view) {
-	item.addChildDirektLast(view);
-	lv.notifyDataSetChanged();
-	return view;
-    }
+		@Override
+		public int getCount() {
+			return 1;
+		}
 
-    @Override
-    public void removeChildsDirekt() {
-	item.removeChildsDirekt();
-	lv.notifyDataSetChanged();
-    }
+		@Override
+		public ListViewItemBase getView(int position) {
+			return item;
+		}
 
-    @Override
-    public GL_View_Base getChild(int i) {
-	return item.getChild(i);
-    }
-
-    @Override
-    public GL_View_Base addChild(final GL_View_Base view) {
-	item.addChildDirekt(view);
-	lv.notifyDataSetChanged();
-	return view;
-    }
-
-    @Override
-    public GL_View_Base addChild(final GL_View_Base view, final boolean last) {
-	if (last) {
-	    item.addChildDirektLast(view);
-	} else {
-	    item.addChildDirekt(view);
+		@Override
+		public float getItemSize(int position) {
+			return item.getHeight();
+		}
 	}
-	lv.notifyDataSetChanged();
-	return view;
-    }
 
-    @Override
-    public void removeChild(final GL_View_Base view) {
-	item.removeChild(view);
-	lv.notifyDataSetChanged();
-    }
+	// ################ add / remove overrides ############################################
+	@Override
+	public int getCildCount() {
+		return item.getCildCount();
+	}
 
-    @Override
-    public void removeChilds() {
-	item.removeChilds();
-	lv.notifyDataSetChanged();
-    }
+	@Override
+	public GL_View_Base addChildDirekt(final GL_View_Base view) {
+		item.addChildDirekt(view);
+		lv.notifyDataSetChanged();
+		return view;
+	}
 
-    @Override
-    public void removeChilds(final MoveableList<GL_View_Base> Childs) {
-	item.removeChilds(Childs);
-	lv.notifyDataSetChanged();
-    }
+	@Override
+	public GL_View_Base addChildDirektLast(final GL_View_Base view) {
+		item.addChildDirektLast(view);
+		lv.notifyDataSetChanged();
+		return view;
+	}
 
-    @Override
-    protected void Initial() {
-	super.isInitial = true;
+	@Override
+	public void removeChildsDirekt() {
+		item.removeChildsDirekt();
+		lv.notifyDataSetChanged();
+	}
 
-    }
+	@Override
+	public GL_View_Base getChild(int i) {
+		return item.getChild(i);
+	}
 
-    @Override
-    protected void SkinIsChanged() {
+	@Override
+	public GL_View_Base addChild(final GL_View_Base view) {
+		item.addChildDirekt(view);
+		lv.notifyDataSetChanged();
+		return view;
+	}
 
-    }
+	@Override
+	public GL_View_Base addChild(final GL_View_Base view, final boolean last) {
+		if (last) {
+			item.addChildDirektLast(view);
+		} else {
+			item.addChildDirekt(view);
+		}
+		lv.notifyDataSetChanged();
+		return view;
+	}
 
-    public void setDragable() {
-	lv.setDraggable();
-    }
+	@Override
+	public void removeChild(final GL_View_Base view) {
+		item.removeChild(view);
+		lv.notifyDataSetChanged();
+	}
 
-    public void setUndragable() {
-	lv.setUnDraggable();
-    }
+	@Override
+	public void removeChilds() {
+		item.removeChilds();
+		lv.notifyDataSetChanged();
+	}
 
-    public float getScrollY() {
-	return lv.getScrollPos();
-    }
+	@Override
+	public void removeChilds(final MoveableList<GL_View_Base> Childs) {
+		item.removeChilds(Childs);
+		lv.notifyDataSetChanged();
+	}
 
-    public void scrollTo(float scrollPos) {
-	lv.scrollTo(scrollPos);
-    }
+	@Override
+	protected void Initial() {
+		super.isInitial = true;
 
-    @Override
-    public void setClickable(boolean value) {
-	lv.setClickable(value);
-	super.setClickable(value);
-    }
+	}
 
-    @Override
-    public void setLongClickable(boolean value) {
+	@Override
+	protected void SkinIsChanged() {
 
-	lv.setLongClickable(value);
-	super.setLongClickable(value);
-    }
+	}
 
-    @Override
-    public boolean onTouchDown(int x, int y, int pointer, int button) {
+	public void setDragable() {
+		lv.setDraggable();
+	}
 
-	return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgel�st wird.
-    }
+	public void setUndragable() {
+		lv.setUnDraggable();
+	}
 
-    @Override
-    public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
+	public float getScrollY() {
+		return lv.getScrollPos();
+	}
 
-	return true;
-    }
+	public void scrollTo(float scrollPos) {
+		lv.scrollTo(scrollPos);
+	}
+
+	@Override
+	public void setClickable(boolean value) {
+		lv.setClickable(value);
+		super.setClickable(value);
+	}
+
+	@Override
+	public void setLongClickable(boolean value) {
+
+		lv.setLongClickable(value);
+		super.setLongClickable(value);
+	}
+
+	@Override
+	public boolean onTouchDown(int x, int y, int pointer, int button) {
+
+		return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgel�st wird.
+	}
+
+	@Override
+	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
+
+		return true;
+	}
 
 }

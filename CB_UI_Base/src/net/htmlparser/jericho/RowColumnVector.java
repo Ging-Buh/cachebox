@@ -31,19 +31,19 @@ public final class RowColumnVector {
 	private final int row;
 	private final int column;
 	private final int pos;
-	
-	private static final RowColumnVector FIRST=new RowColumnVector(1,1,0);
-	private static final RowColumnVector[] STREAMED=new RowColumnVector[0];
+
+	private static final RowColumnVector FIRST = new RowColumnVector(1, 1, 0);
+	private static final RowColumnVector[] STREAMED = new RowColumnVector[0];
 
 	private RowColumnVector(final int row, final int column, final int pos) {
-		this.row=row;
-		this.column=column;
-		this.pos=pos;
+		this.row = row;
+		this.column = column;
+		this.pos = pos;
 	}
 
 	private RowColumnVector(final int pos) {
 		// used in Streamed source where row and column aren't available.
-		this(-1,-1,pos);
+		this(-1, -1, pos);
 	}
 
 	/**
@@ -56,7 +56,7 @@ public final class RowColumnVector {
 	public int getRow() {
 		return row;
 	}
-	
+
 	/**
 	 * Returns the column number of this character position in the source document.
 	 * <p>
@@ -75,7 +75,7 @@ public final class RowColumnVector {
 	public int getPos() {
 		return pos;
 	}
-	
+
 	/**
 	 * Returns a string representation of this character position.
 	 * <p>
@@ -88,37 +88,42 @@ public final class RowColumnVector {
 	}
 
 	StringBuilder appendTo(final StringBuilder sb) {
-		if (row!=-1) return sb.append("(r").append(row).append(",c").append(column).append(",p").append(pos).append(')');
+		if (row != -1)
+			return sb.append("(r").append(row).append(",c").append(column).append(",p").append(pos).append(')');
 		return sb.append("(p").append(pos).append(')');
 	}
-	
+
 	static RowColumnVector[] getCacheArray(final Source source) {
-		if (source.isStreamed()) return STREAMED;
-		final int lastSourcePos=source.end-1;
-		final ArrayList<RowColumnVector> list=new ArrayList<RowColumnVector>();
-		int pos=0;
+		if (source.isStreamed())
+			return STREAMED;
+		final int lastSourcePos = source.end - 1;
+		final ArrayList<RowColumnVector> list = new ArrayList<RowColumnVector>();
+		int pos = 0;
 		list.add(FIRST);
-		int row=1;
-		while (pos<=lastSourcePos) {
-			final char ch=source.charAt(pos);
-			if (ch=='\n' || (ch=='\r' && (pos==lastSourcePos || source.charAt(pos+1)!='\n'))) list.add(new RowColumnVector(++row,1,pos+1));
+		int row = 1;
+		while (pos <= lastSourcePos) {
+			final char ch = source.charAt(pos);
+			if (ch == '\n' || (ch == '\r' && (pos == lastSourcePos || source.charAt(pos + 1) != '\n')))
+				list.add(new RowColumnVector(++row, 1, pos + 1));
 			pos++;
 		}
 		return list.toArray(new RowColumnVector[list.size()]);
 	}
 
 	static RowColumnVector get(final RowColumnVector[] cacheArray, final int pos) {
-		if (cacheArray==STREAMED) return new RowColumnVector(pos);
-		int low=0;
-		int high=cacheArray.length-1;
+		if (cacheArray == STREAMED)
+			return new RowColumnVector(pos);
+		int low = 0;
+		int high = cacheArray.length - 1;
 		while (true) {
-			int mid=(low+high) >> 1;
-			final RowColumnVector rowColumnVector=cacheArray[mid];
-			if (rowColumnVector.pos<pos) {
-				if (mid==high) return new RowColumnVector(rowColumnVector.row,pos-rowColumnVector.pos+1,pos);
-				low=mid+1;
-			} else if (rowColumnVector.pos>pos) {
-				high=mid-1;
+			int mid = (low + high) >> 1;
+			final RowColumnVector rowColumnVector = cacheArray[mid];
+			if (rowColumnVector.pos < pos) {
+				if (mid == high)
+					return new RowColumnVector(rowColumnVector.row, pos - rowColumnVector.pos + 1, pos);
+				low = mid + 1;
+			} else if (rowColumnVector.pos > pos) {
+				high = mid - 1;
 			} else {
 				return rowColumnVector;
 			}

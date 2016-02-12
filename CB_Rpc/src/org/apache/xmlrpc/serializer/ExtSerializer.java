@@ -21,7 +21,6 @@ package org.apache.xmlrpc.serializer;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-
 /** Base class for external XML representations, like DOM,
  * or JAXB.
  */
@@ -29,18 +28,18 @@ public abstract class ExtSerializer implements TypeSerializer {
 	/** Returns the unqualied tag name.
 	 */
 	protected abstract String getTagName();
+
 	/** Performs the actual serialization.
 	 */
 	protected abstract void serialize(ContentHandler pHandler, Object pObject) throws SAXException;
 
-	public void write(ContentHandler pHandler, Object pObject)
-			throws SAXException {
+	public void write(ContentHandler pHandler, Object pObject) throws SAXException {
 		final String tag = getTagName();
 		final String exTag = "ex:" + getTagName();
-		pHandler.startElement("", TypeSerializerImpl.VALUE_TAG, TypeSerializerImpl.VALUE_TAG, TypeSerializerImpl.ZERO_ATTRIBUTES); 
+		pHandler.startElement("", TypeSerializerImpl.VALUE_TAG, TypeSerializerImpl.VALUE_TAG, TypeSerializerImpl.ZERO_ATTRIBUTES);
 		pHandler.startElement(XmlRpcWriter.EXTENSIONS_URI, tag, exTag, TypeSerializerImpl.ZERO_ATTRIBUTES);
 		serialize(pHandler, pObject);
 		pHandler.endElement(XmlRpcWriter.EXTENSIONS_URI, tag, exTag);
-		pHandler.endElement("", TypeSerializerImpl.VALUE_TAG, TypeSerializerImpl.VALUE_TAG); 
+		pHandler.endElement("", TypeSerializerImpl.VALUE_TAG, TypeSerializerImpl.VALUE_TAG);
 	}
 }

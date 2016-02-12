@@ -22,8 +22,7 @@ import java.net.URL;
 import org.mapsforge.core.model.Tile;
 
 public class OpenCycleMap extends AbstractTileSource {
-	public static final OpenCycleMap INSTANCE = new OpenCycleMap(new String[] {
-			"a.tile.opencyclemap.org", "b.tile.opencyclemap.org", "c.tile.opencyclemap.org" }, 80);
+	public static final OpenCycleMap INSTANCE = new OpenCycleMap(new String[] { "a.tile.opencyclemap.org", "b.tile.opencyclemap.org", "c.tile.opencyclemap.org" }, 80);
 	private static final int PARALLEL_REQUESTS_LIMIT = 8;
 	private static final String PROTOCOL = "http";
 	private static final int ZOOM_LEVEL_MAX = 18;

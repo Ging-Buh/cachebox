@@ -23,7 +23,6 @@ import org.apache.xmlrpc.parser.TypeParser;
 import org.apache.xmlrpc.serializer.TypeSerializer;
 import org.xml.sax.SAXException;
 
-
 /** A type factory creates serializers or handlers, based on the object
  * type.
  */

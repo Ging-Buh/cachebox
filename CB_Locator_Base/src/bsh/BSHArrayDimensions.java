@@ -39,8 +39,7 @@ import java.lang.reflect.Array;
  * The name of this class is somewhat misleading. This covers both the case where there is an array initializer and
  */
 @SuppressWarnings("serial")
-class BSHArrayDimensions extends SimpleNode
-{
+class BSHArrayDimensions extends SimpleNode {
 	@SuppressWarnings("rawtypes")
 	public Class baseType;
 	public int numDefinedDims;
@@ -51,25 +50,22 @@ class BSHArrayDimensions extends SimpleNode
 	 */
 	public int[] definedDimensions;
 
-	BSHArrayDimensions(int id)
-	{
+	BSHArrayDimensions(int id) {
 		super(id);
 	}
 
-	public void addDefinedDimension()
-	{
+	public void addDefinedDimension() {
 		numDefinedDims++;
 	}
 
-	public void addUndefinedDimension()
-	{
+	public void addUndefinedDimension() {
 		numUndefinedDims++;
 	}
 
 	@SuppressWarnings("rawtypes")
-	public Object eval(Class type, CallStack callstack, Interpreter interpreter) throws EvalError
-	{
-		if (Interpreter.DEBUG) Interpreter.debug("array base type = " + type);
+	public Object eval(Class type, CallStack callstack, Interpreter interpreter) throws EvalError {
+		if (Interpreter.DEBUG)
+			Interpreter.debug("array base type = " + type);
 		baseType = type;
 		return eval(callstack, interpreter);
 	}
@@ -81,17 +77,16 @@ class BSHArrayDimensions extends SimpleNode
 	 */
 	@Override
 	@SuppressWarnings("rawtypes")
-	public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError
-	{
+	public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError {
 		SimpleNode child = (SimpleNode) jjtGetChild(0);
 
 		/*
 		 * Child is array initializer. Evaluate it and fill in the dimensions it returns. Initialized arrays are always fully defined (no
 		 * undefined dimensions to worry about). The syntax uses the undefinedDimension count. e.g. int [][] { 1, 2 };
 		 */
-		if (child instanceof BSHArrayInitializer)
-		{
-			if (baseType == null) throw new EvalError("Internal Array Eval err:  unknown base type", this, callstack);
+		if (child instanceof BSHArrayInitializer) {
+			if (baseType == null)
+				throw new EvalError("Internal Array Eval err:  unknown base type", this, callstack);
 
 			Object initValue = ((BSHArrayInitializer) child).eval(baseType, numUndefinedDims, callstack, interpreter);
 
@@ -101,34 +96,28 @@ class BSHArrayDimensions extends SimpleNode
 
 			// Compare with number of dimensions actually created with the
 			// number specified (syntax uses the undefined ones here)
-			if (definedDimensions.length != numUndefinedDims) throw new EvalError("Incompatible initializer. Allocation calls for a "
-					+ numUndefinedDims + " dimensional array, but initializer is a " + actualDimensions + " dimensional array", this,
-					callstack);
+			if (definedDimensions.length != numUndefinedDims)
+				throw new EvalError("Incompatible initializer. Allocation calls for a " + numUndefinedDims + " dimensional array, but initializer is a " + actualDimensions + " dimensional array", this, callstack);
 
 			// fill in definedDimensions [] lengths
 			Object arraySlice = initValue;
-			for (int i = 0; i < definedDimensions.length; i++)
-			{
+			for (int i = 0; i < definedDimensions.length; i++) {
 				definedDimensions[i] = Array.getLength(arraySlice);
-				if (definedDimensions[i] > 0) arraySlice = Array.get(arraySlice, 0);
+				if (definedDimensions[i] > 0)
+					arraySlice = Array.get(arraySlice, 0);
 			}
 
 			return initValue;
-		}
-		else
+		} else
 		// Evaluate the defined dimensions of the array
 		{
 			definedDimensions = new int[numDefinedDims];
 
-			for (int i = 0; i < numDefinedDims; i++)
-			{
-				try
-				{
+			for (int i = 0; i < numDefinedDims; i++) {
+				try {
 					Object length = ((SimpleNode) jjtGetChild(i)).eval(callstack, interpreter);
 					definedDimensions[i] = ((Primitive) length).intValue();
-				}
-				catch (Exception e)
-				{
+				} catch (Exception e) {
 					throw new EvalError("Array index: " + i + " does not evaluate to an integer", this, callstack);
 				}
 			}

@@ -5,8 +5,7 @@ package de.cachebox_test.Views.Forms;
  * 
  * @author Longri
  */
-public class DialogID
-{
+public class DialogID {
 	public static final int MSG_BOX_1 = 1;
 	public static final int MSG_BOX_2 = 2;
 	public static final int MSG_BOX_3 = 3;

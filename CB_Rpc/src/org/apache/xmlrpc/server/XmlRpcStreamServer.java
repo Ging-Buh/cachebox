@@ -45,20 +45,17 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
-
 /** Extension of {@link XmlRpcServer} with support for reading
  * requests from a stream and writing the response to another
  * stream.
  */
-public abstract class XmlRpcStreamServer extends XmlRpcServer
-		implements XmlRpcStreamRequestProcessor {
+public abstract class XmlRpcStreamServer extends XmlRpcServer implements XmlRpcStreamRequestProcessor {
 	private static final Logger log = LoggerFactory.getLogger(XmlRpcStreamServer.class);
 	private XmlWriterFactory writerFactory = new DefaultXMLWriterFactory();
 	private static final XmlRpcErrorLogger theErrorLogger = new XmlRpcErrorLogger();
 	private XmlRpcErrorLogger errorLogger = theErrorLogger;
-	
-	protected XmlRpcRequest getRequest(final XmlRpcStreamRequestConfig pConfig,
-									   InputStream pStream) throws XmlRpcException {
+
+	protected XmlRpcRequest getRequest(final XmlRpcStreamRequestConfig pConfig, InputStream pStream) throws XmlRpcException {
 		final XmlRpcRequestParser parser = new XmlRpcRequestParser(pConfig, getTypeFactory());
 		final XMLReader xr = SAXParsers.newXMLReader();
 		xr.setContentHandler(parser);
@@ -66,7 +63,7 @@ public abstract class XmlRpcStreamServer extends XmlRpcServer
 			xr.parse(new InputSource(pStream));
 		} catch (SAXException e) {
 			Exception ex = e.getException();
-			if (ex != null  &&  ex instanceof XmlRpcException) {
+			if (ex != null && ex instanceof XmlRpcException) {
 				throw (XmlRpcException) ex;
 			}
 			throw new XmlRpcException("Failed to parse XML-RPC request: " + e.getMessage(), e);
@@ -74,23 +71,31 @@ public abstract class XmlRpcStreamServer extends XmlRpcServer
 			throw new XmlRpcException("Failed to read XML-RPC request: " + e.getMessage(), e);
 		}
 		final List params = parser.getParams();
-		return new XmlRpcRequest(){
-			public XmlRpcRequestConfig getConfig() { return pConfig; }
-			public String getMethodName() { return parser.getMethodName(); }
-			public int getParameterCount() { return params == null ? 0 : params.size(); }
-			public Object getParameter(int pIndex) { return params.get(pIndex); }
+		return new XmlRpcRequest() {
+			public XmlRpcRequestConfig getConfig() {
+				return pConfig;
+			}
+
+			public String getMethodName() {
+				return parser.getMethodName();
+			}
+
+			public int getParameterCount() {
+				return params == null ? 0 : params.size();
+			}
+
+			public Object getParameter(int pIndex) {
+				return params.get(pIndex);
+			}
 		};
 	}
 
-	protected XmlRpcWriter getXmlRpcWriter(XmlRpcStreamRequestConfig pConfig,
-										   OutputStream pStream)
-			throws XmlRpcException {
+	protected XmlRpcWriter getXmlRpcWriter(XmlRpcStreamRequestConfig pConfig, OutputStream pStream) throws XmlRpcException {
 		ContentHandler w = getXMLWriterFactory().getXmlWriter(pConfig, pStream);
 		return new XmlRpcWriter(pConfig, w, getTypeFactory());
 	}
 
-	protected void writeResponse(XmlRpcStreamRequestConfig pConfig, OutputStream pStream,
-								 Object pResult) throws XmlRpcException {
+	protected void writeResponse(XmlRpcStreamRequestConfig pConfig, OutputStream pStream, Object pResult) throws XmlRpcException {
 		try {
 			getXmlRpcWriter(pConfig, pStream).write(pConfig, pResult);
 		} catch (SAXException e) {
@@ -99,18 +104,16 @@ public abstract class XmlRpcStreamServer extends XmlRpcServer
 	}
 
 	/**
-     * This method allows to convert the error into another error. For example, this
-     * may be an error, which could be deserialized by the client.
+	 * This method allows to convert the error into another error. For example, this
+	 * may be an error, which could be deserialized by the client.
 	 */
-    protected Throwable convertThrowable(Throwable pError) {
-        return pError;
-    }
+	protected Throwable convertThrowable(Throwable pError) {
+		return pError;
+	}
 
-    protected void writeError(XmlRpcStreamRequestConfig pConfig, OutputStream pStream,
-							  Throwable pError)
-			throws XmlRpcException {
-        final Throwable error = convertThrowable(pError);
-        final int code;
+	protected void writeError(XmlRpcStreamRequestConfig pConfig, OutputStream pStream, Throwable pError) throws XmlRpcException {
+		final Throwable error = convertThrowable(pError);
+		final int code;
 		final String message;
 		if (error instanceof XmlRpcException) {
 			XmlRpcException ex = (XmlRpcException) error;
@@ -140,11 +143,10 @@ public abstract class XmlRpcStreamServer extends XmlRpcServer
 		return writerFactory;
 	}
 
-	protected InputStream getInputStream(XmlRpcStreamRequestConfig pConfig,
-										 ServerStreamConnection pConnection) throws IOException {
+	protected InputStream getInputStream(XmlRpcStreamRequestConfig pConfig, ServerStreamConnection pConnection) throws IOException {
 		InputStream istream = pConnection.newInputStream();
 
-		if (pConfig.isEnabledForExtensions()  &&  pConfig.isGzipCompressing()) {
+		if (pConfig.isEnabledForExtensions() && pConfig.isGzipCompressing()) {
 			istream = new GZIPInputStream(istream);
 		}
 		return istream;
@@ -154,14 +156,13 @@ public abstract class XmlRpcStreamServer extends XmlRpcServer
 	 * compression, or similar filters.
 	 * @param pConnection The connection object.
 	 */
-	protected OutputStream getOutputStream(ServerStreamConnection pConnection,
-										   XmlRpcStreamRequestConfig pConfig, OutputStream pStream) throws IOException {
-		if (pConfig.isEnabledForExtensions()  &&  pConfig.isGzipRequesting()) {
+	protected OutputStream getOutputStream(ServerStreamConnection pConnection, XmlRpcStreamRequestConfig pConfig, OutputStream pStream) throws IOException {
+		if (pConfig.isEnabledForExtensions() && pConfig.isGzipRequesting()) {
 			return new GZIPOutputStream(pStream);
 		} else {
 			return pStream;
 		}
-		
+
 	}
 
 	/** Called to prepare the output stream, if content length is
@@ -169,10 +170,8 @@ public abstract class XmlRpcStreamServer extends XmlRpcServer
 	 * @param pConfig The configuration object.
 	 * @param pSize The requests size.
 	 */
-	protected OutputStream getOutputStream(XmlRpcStreamRequestConfig pConfig,
-										   ServerStreamConnection pConnection,
-										   int pSize) throws IOException {
-	    return pConnection.newOutputStream();
+	protected OutputStream getOutputStream(XmlRpcStreamRequestConfig pConfig, ServerStreamConnection pConnection, int pSize) throws IOException {
+		return pConnection.newOutputStream();
 	}
 
 	/** Returns, whether the requests content length is required.
@@ -189,9 +188,7 @@ public abstract class XmlRpcStreamServer extends XmlRpcServer
 	 * @param pConnection The "connection" being processed.
 	 * @throws XmlRpcException Processing the request failed.
 	 */
-	public void execute(XmlRpcStreamRequestConfig pConfig,
-						ServerStreamConnection pConnection)
-			throws XmlRpcException {
+	public void execute(XmlRpcStreamRequestConfig pConfig, ServerStreamConnection pConnection) throws XmlRpcException {
 		log.debug("execute: ->");
 		try {
 			Object result;
@@ -210,7 +207,12 @@ public abstract class XmlRpcStreamServer extends XmlRpcServer
 				result = null;
 				error = t;
 			} finally {
-				if (istream != null) { try { istream.close(); } catch (Throwable ignore) {} }
+				if (istream != null) {
+					try {
+						istream.close();
+					} catch (Throwable ignore) {
+					}
+				}
 			}
 			boolean contentLengthRequired = isContentLengthRequired(pConfig);
 			ByteArrayOutputStream baos;
@@ -224,8 +226,8 @@ public abstract class XmlRpcStreamServer extends XmlRpcServer
 			}
 			// Hier schon den HTTP Header schreiben, dan bei getOutputStream der GZIP-Header geschrieben wird.
 			RequestData data = (RequestData) pConfig;
-			if (pConfig.isEnabledForExtensions()  &&  pConfig.isGzipRequesting()) {
-//				setResponseHeader(pConnection, "Content-Encoding", "gzip");
+			if (pConfig.isEnabledForExtensions() && pConfig.isGzipRequesting()) {
+				//				setResponseHeader(pConnection, "Content-Encoding", "gzip");
 				data.getConnection().setResponseHeader("Content-Encoding", "gzip");
 			}
 			data.getConnection().writeResponseHeader(data, -1);
@@ -240,7 +242,12 @@ public abstract class XmlRpcStreamServer extends XmlRpcServer
 				ostream.close();
 				ostream = null;
 			} finally {
-				if (ostream != null) { try { ostream.close(); } catch (Throwable ignore) {} }
+				if (ostream != null) {
+					try {
+						ostream.close();
+					} catch (Throwable ignore) {
+					}
+				}
 			}
 			if (baos != null) {
 				OutputStream dest = getOutputStream(pConfig, pConnection, baos.size());
@@ -249,36 +256,45 @@ public abstract class XmlRpcStreamServer extends XmlRpcServer
 					dest.close();
 					dest = null;
 				} finally {
-					if (dest != null) { try { dest.close(); } catch (Throwable ignore) {} }
+					if (dest != null) {
+						try {
+							dest.close();
+						} catch (Throwable ignore) {
+						}
+					}
 				}
 			}
-            pConnection.close();
+			pConnection.close();
 			pConnection = null;
 		} catch (IOException e) {
-			throw new XmlRpcException("I/O error while processing request: "
-					+ e.getMessage(), e);
+			throw new XmlRpcException("I/O error while processing request: " + e.getMessage(), e);
 		} finally {
-			if (pConnection != null) { try { pConnection.close(); } catch (Throwable ignore) {} }
+			if (pConnection != null) {
+				try {
+					pConnection.close();
+				} catch (Throwable ignore) {
+				}
+			}
 		}
 		log.debug("execute: <-");
 	}
 
-    protected void logError(Throwable t) {
-        final String msg = t.getMessage() == null ? t.getClass().getName() : t.getMessage();
-        errorLogger.log(msg, t);
-    }
+	protected void logError(Throwable t) {
+		final String msg = t.getMessage() == null ? t.getClass().getName() : t.getMessage();
+		errorLogger.log(msg, t);
+	}
 
-    /**
-     * Returns the error logger.
-     */
-    public XmlRpcErrorLogger getErrorLogger() {
-        return errorLogger;
-    }
+	/**
+	 * Returns the error logger.
+	 */
+	public XmlRpcErrorLogger getErrorLogger() {
+		return errorLogger;
+	}
 
-    /**
-     * Sets the error logger.
-     */
-    public void setErrorLogger(XmlRpcErrorLogger pErrorLogger) {
-        errorLogger = pErrorLogger;
-    }
+	/**
+	 * Sets the error logger.
+	 */
+	public void setErrorLogger(XmlRpcErrorLogger pErrorLogger) {
+		errorLogger = pErrorLogger;
+	}
 }

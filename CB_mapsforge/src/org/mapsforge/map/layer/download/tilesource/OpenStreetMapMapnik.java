@@ -22,8 +22,7 @@ import java.net.URL;
 import org.mapsforge.core.model.Tile;
 
 public class OpenStreetMapMapnik extends AbstractTileSource {
-	public static final OpenStreetMapMapnik INSTANCE = new OpenStreetMapMapnik(new String[] {
-			"a.tile.openstreetmap.org",	"b.tile.openstreetmap.org", "c.tile.openstreetmap.org" }, 80);
+	public static final OpenStreetMapMapnik INSTANCE = new OpenStreetMapMapnik(new String[] { "a.tile.openstreetmap.org", "b.tile.openstreetmap.org", "c.tile.openstreetmap.org" }, 80);
 	private static final int PARALLEL_REQUESTS_LIMIT = 8;
 	private static final String PROTOCOL = "http";
 	private static final int ZOOM_LEVEL_MAX = 18;

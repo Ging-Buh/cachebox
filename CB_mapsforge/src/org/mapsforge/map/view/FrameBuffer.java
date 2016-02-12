@@ -43,8 +43,7 @@ public class FrameBuffer {
 		this.matrix = graphicFactory.createMatrix();
 	}
 
-	public synchronized void adjustMatrix(float diffX, float diffY, float scaleFactor, Dimension mapViewDimension,
-			float pivotDistanceX, float pivotDistanceY) {
+	public synchronized void adjustMatrix(float diffX, float diffY, float scaleFactor, Dimension mapViewDimension, float pivotDistanceX, float pivotDistanceY) {
 		if (this.dimension == null) {
 			return;
 		}

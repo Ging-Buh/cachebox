@@ -34,10 +34,9 @@ import org.poly2tri.triangulation.TriangulationConstraint;
 import org.poly2tri.triangulation.TriangulationPoint;
 
 /**
- * @author Thomas Åhlén, thahlen@gmail.com
+ * @author Thomas ï¿½hlï¿½n, thahlen@gmail.com
  */
-public class DTSweepConstraint extends TriangulationConstraint
-{
+public class DTSweepConstraint extends TriangulationConstraint {
 
 	public TriangulationPoint p;
 	public TriangulationPoint q;
@@ -53,20 +52,14 @@ public class DTSweepConstraint extends TriangulationConstraint
 	{
 		p = p1;
 		q = p2;
-		if (p1.getY() > p2.getY())
-		{
+		if (p1.getY() > p2.getY()) {
 			q = p1;
 			p = p2;
-		}
-		else if (p1.getY() == p2.getY())
-		{
-			if (p1.getX() > p2.getX())
-			{
+		} else if (p1.getY() == p2.getY()) {
+			if (p1.getX() > p2.getX()) {
 				q = p1;
 				p = p2;
-			}
-			else if (p1.getX() == p2.getX())
-			{
+			} else if (p1.getX() == p2.getX()) {
 				// logger.info("Failed to create constraint {}={}", p1, p2);
 				// throw new DuplicatePointException( p1 + "=" + p2 );
 				// return;
@@ -89,14 +82,12 @@ public class DTSweepConstraint extends TriangulationConstraint
 	// }
 
 	@Override
-	public TriangulationPoint getP()
-	{
+	public TriangulationPoint getP() {
 		return p;
 	}
 
 	@Override
-	public TriangulationPoint getQ()
-	{
+	public TriangulationPoint getQ() {
 		return q;
 	}
 }

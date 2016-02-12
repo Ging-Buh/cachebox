@@ -13,8 +13,7 @@ import java.util.zip.ZipFile;
 /**
  * @author Longri from => http://stackoverflow.com/questions/981578/how-to-unzip-files-recursively-in-java
  */
-public class UnZip
-{
+public class UnZip {
 
 	/**
 	 * Extract the given ZIP-File
@@ -24,8 +23,7 @@ public class UnZip
 	 * @throws ZipException
 	 * @throws IOException
 	 */
-	static public String extractFolder(String zipFile) throws ZipException, IOException
-	{
+	static public String extractFolder(String zipFile) throws ZipException, IOException {
 		System.out.println("extract => " + zipFile);
 		int BUFFER = 2048;
 		File file = new File(zipFile);
@@ -37,8 +35,7 @@ public class UnZip
 		Enumeration<?> zipFileEntries = zip.entries();
 
 		// Process each entry
-		while (zipFileEntries.hasMoreElements())
-		{
+		while (zipFileEntries.hasMoreElements()) {
 			// grab a zip file entry
 			ZipEntry entry = (ZipEntry) zipFileEntries.nextElement();
 			String currentEntry = entry.getName();
@@ -51,8 +48,7 @@ public class UnZip
 
 			destinationParent.setLastModified(entry.getTime()); // set original Datetime to be able to import ordered oldest first
 
-			if (!entry.isDirectory())
-			{
+			if (!entry.isDirectory()) {
 				BufferedInputStream is = new BufferedInputStream(zip.getInputStream(entry));
 				int currentByte;
 				// establish buffer for writing file
@@ -63,8 +59,7 @@ public class UnZip
 				BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER);
 
 				// read and write until last byte is encountered
-				while ((currentByte = is.read(data, 0, BUFFER)) != -1)
-				{
+				while ((currentByte = is.read(data, 0, BUFFER)) != -1) {
 					dest.write(data, 0, currentByte);
 				}
 				dest.flush();
@@ -74,8 +69,7 @@ public class UnZip
 
 			destFile.setLastModified(entry.getTime()); // set original Datetime to be able to import ordered oldest first
 
-			if (currentEntry.endsWith(".zip"))
-			{
+			if (currentEntry.endsWith(".zip")) {
 				// found a zip file, try to open
 				extractFolder(destFile.getAbsolutePath());
 			}

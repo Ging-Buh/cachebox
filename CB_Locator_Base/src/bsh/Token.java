@@ -14,8 +14,7 @@ package bsh;
  */
 
 // Begin BeanShell Modification - serializable
-public class Token implements java.io.Serializable
-{
+public class Token implements java.io.Serializable {
 	// End BeanShell Modification - serializable
 
 	/**
@@ -60,8 +59,7 @@ public class Token implements java.io.Serializable
 	 * Returns the image.
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return image;
 	}
 
@@ -71,10 +69,8 @@ public class Token implements java.io.Serializable
 	 * that you want to create if ofKind is ID, simlpy add something like : case MyParserConstants.ID : return new IDToken(); to the
 	 * following switch statement. Then you can cast matchedToken variable to the appropriate type and use it in your lexical actions.
 	 */
-	public static final Token newToken(int ofKind)
-	{
-		switch (ofKind)
-		{
+	public static final Token newToken(int ofKind) {
+		switch (ofKind) {
 		default:
 			return new Token();
 		}

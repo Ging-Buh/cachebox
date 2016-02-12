@@ -45,7 +45,7 @@ public abstract class StartTagType extends TagType {
 	private final boolean hasAttributes;
 	private final boolean isNameAfterPrefixRequired;
 
-	static final String START_DELIMITER_PREFIX="<";
+	static final String START_DELIMITER_PREFIX = "<";
 
 	/**
 	 * The tag type given to an {@linkplain Tag#isUnregistered() unregistered} {@linkplain StartTag start tag}
@@ -72,7 +72,7 @@ public abstract class StartTagType extends TagType {
 	 * </dl>
 	 * @see EndTagType#UNREGISTERED
 	 */
-	public static final StartTagType UNREGISTERED=StartTagTypeUnregistered.INSTANCE;
+	public static final StartTagType UNREGISTERED = StartTagTypeUnregistered.INSTANCE;
 
 	/**
 	 * The tag type given to a normal HTML or XML {@linkplain StartTag start tag}
@@ -96,7 +96,7 @@ public abstract class StartTagType extends TagType {
 	 *   <dd><code>&lt;div class="NormalDivTag"&gt;</code></dd>
 	 * </dl>
 	 */
-	public static final StartTagType NORMAL=StartTagTypeNormal.INSTANCE;
+	public static final StartTagType NORMAL = StartTagTypeNormal.INSTANCE;
 
 	/**
 	 * The tag type given to an HTML <a target="_blank" href="http://www.w3.org/TR/html401/intro/sgmltut.html#h-3.2.4">comment</a>
@@ -131,7 +131,7 @@ public abstract class StartTagType extends TagType {
 	 *   <dd><code>&lt;!-- This is a comment --&gt;</code></dd>
 	 * </dl>
 	 */
-	public static final StartTagType COMMENT=StartTagTypeComment.INSTANCE;
+	public static final StartTagType COMMENT = StartTagTypeComment.INSTANCE;
 
 	/**
 	 * The tag type given to an <a target="_blank" href="http://www.w3.org/TR/REC-xml/#sec-prolog-dtd">XML declaration</a>
@@ -165,7 +165,7 @@ public abstract class StartTagType extends TagType {
 	 *   <dd><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</code></dd>
 	 * </dl>
 	 */
-	public static final StartTagType XML_DECLARATION=StartTagTypeXMLDeclaration.INSTANCE;
+	public static final StartTagType XML_DECLARATION = StartTagTypeXMLDeclaration.INSTANCE;
 
 	/**
 	 * The tag type given to an <a target="_blank" href="http://www.w3.org/TR/REC-xml#sec-pi">XML processing instruction</a>
@@ -211,7 +211,7 @@ public abstract class StartTagType extends TagType {
 	 *   <dd><code>&lt;?xml-stylesheet href="standardstyle.css" type="text/css"?&gt;</code></dd>
 	 * </dl>
 	 */
-	public static final StartTagType XML_PROCESSING_INSTRUCTION=StartTagTypeXMLProcessingInstruction.INSTANCE;
+	public static final StartTagType XML_PROCESSING_INSTRUCTION = StartTagTypeXMLProcessingInstruction.INSTANCE;
 
 	/**
 	 * The tag type given to a <a target="_blank" href="http://www.w3.org/TR/html401/struct/global.html#h-7.2">document type declaration</a>
@@ -242,7 +242,7 @@ public abstract class StartTagType extends TagType {
 	 *   <dd><code>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;</code></dd>
 	 * </dl>
 	 */
-	public static final StartTagType DOCTYPE_DECLARATION=StartTagTypeDoctypeDeclaration.INSTANCE;
+	public static final StartTagType DOCTYPE_DECLARATION = StartTagTypeDoctypeDeclaration.INSTANCE;
 
 	/**
 	 * The tag type given to a <a target="_blank" href="http://www.w3.org/TR/REC-xml/#dt-markupdecl">markup declaration</a>
@@ -276,7 +276,7 @@ public abstract class StartTagType extends TagType {
 	 *   <dd><code>&lt;!ELEMENT BODY O O (%flow;)* +(INS|DEL) -- document body --&gt;</code></dd>
 	 * </dl>
 	 */
-	public static final StartTagType MARKUP_DECLARATION=StartTagTypeMarkupDeclaration.INSTANCE;
+	public static final StartTagType MARKUP_DECLARATION = StartTagTypeMarkupDeclaration.INSTANCE;
 
 	/**
 	 * The tag type given to a <a target="_blank" href="http://www.w3.org/TR/html401/appendix/notes.html#h-B.3.5">CDATA section</a>
@@ -325,7 +325,7 @@ public abstract class StartTagType extends TagType {
 	 *    </div>
 	 * </dl>
 	 */
-	public static final StartTagType CDATA_SECTION=StartTagTypeCDATASection.INSTANCE;
+	public static final StartTagType CDATA_SECTION = StartTagTypeCDATASection.INSTANCE;
 
 	/**
 	 * The tag type given to a common server tag
@@ -361,7 +361,7 @@ public abstract class StartTagType extends TagType {
 	 *   <dd><code>&lt;%@ include file="header.html" %&gt;</code></dd>
 	 * </dl>
 	 */
-	public static final StartTagType SERVER_COMMON=StartTagTypeServerCommon.INSTANCE;
+	public static final StartTagType SERVER_COMMON = StartTagTypeServerCommon.INSTANCE;
 
 	/**
 	 * The tag type given to an escaped common server tag
@@ -389,7 +389,7 @@ public abstract class StartTagType extends TagType {
 	 *   <dd><code>&lt;\%@ include file="header.html" %&gt;</code></dd>
 	 * </dl>
 	 */
-	public static final StartTagType SERVER_COMMON_ESCAPED=StartTagTypeServerCommonEscaped.INSTANCE;
+	public static final StartTagType SERVER_COMMON_ESCAPED = StartTagTypeServerCommonEscaped.INSTANCE;
 
 	/**
 	 * The tag type given to a common server comment tag
@@ -416,7 +416,7 @@ public abstract class StartTagType extends TagType {
 	 *   <dd><code>&lt;%-- this server side comment contains a <%="nested"%> server tag --%&gt;</code></dd>
 	 * </dl>
 	 */
-	public static final StartTagType SERVER_COMMON_COMMENT=StartTagTypeServerCommonComment.INSTANCE;
+	public static final StartTagType SERVER_COMMON_COMMENT = StartTagTypeServerCommonComment.INSTANCE;
 
 	/**
 	 * Constructs a new <code>StartTagType</code> object with the specified properties.
@@ -432,12 +432,14 @@ public abstract class StartTagType extends TagType {
 	 * @param hasAttributes  indicates whether the new start tag type {@linkplain #hasAttributes() has attributes}.
 	 * @param isNameAfterPrefixRequired  indicates whether a {@linkplain #isNameAfterPrefixRequired() name is required after the prefix}.
 	 */
-	protected StartTagType(final String description, final String startDelimiter, final String closingDelimiter, final EndTagType correspondingEndTagType, final boolean isServerTag, final boolean hasAttributes, final boolean isNameAfterPrefixRequired) {
-		super(description,startDelimiter.toLowerCase(),closingDelimiter,isServerTag,START_DELIMITER_PREFIX);
-		if (!getStartDelimiter().startsWith(START_DELIMITER_PREFIX)) throw new IllegalArgumentException("startDelimiter of a start tag must start with \""+START_DELIMITER_PREFIX+'"');
-		this.correspondingEndTagType=correspondingEndTagType;
-		this.hasAttributes=hasAttributes;
-		this.isNameAfterPrefixRequired=isNameAfterPrefixRequired;
+	protected StartTagType(final String description, final String startDelimiter, final String closingDelimiter, final EndTagType correspondingEndTagType, final boolean isServerTag, final boolean hasAttributes,
+			final boolean isNameAfterPrefixRequired) {
+		super(description, startDelimiter.toLowerCase(), closingDelimiter, isServerTag, START_DELIMITER_PREFIX);
+		if (!getStartDelimiter().startsWith(START_DELIMITER_PREFIX))
+			throw new IllegalArgumentException("startDelimiter of a start tag must start with \"" + START_DELIMITER_PREFIX + '"');
+		this.correspondingEndTagType = correspondingEndTagType;
+		this.hasAttributes = hasAttributes;
+		this.isNameAfterPrefixRequired = isNameAfterPrefixRequired;
 	}
 
 	/**
@@ -613,11 +615,11 @@ public abstract class StartTagType extends TagType {
 	 * <p>
 	 * This method is called internally while parsing {@linkplain Attributes attributes} to detect where they should end.
 	 * <p>
- 	 * It can be assumed that the specified position is not inside a quoted attribute value.
- 	 * <p>
- 	 * The default implementation simply compares the {@linkplain ParseText parse text} at the specified
- 	 * position with the {@linkplain #getClosingDelimiter() closing delimiter}, and is equivalent to:<br />
- 	 * <code>source.</code>{@link Source#getParseText() getParseText()}<code>.containsAt(</code>{@link #getClosingDelimiter() getClosingDelimiter()}<code>,pos)</code>
+	 * It can be assumed that the specified position is not inside a quoted attribute value.
+	 * <p>
+	 * The default implementation simply compares the {@linkplain ParseText parse text} at the specified
+	 * position with the {@linkplain #getClosingDelimiter() closing delimiter}, and is equivalent to:<br />
+	 * <code>source.</code>{@link Source#getParseText() getParseText()}<code>.containsAt(</code>{@link #getClosingDelimiter() getClosingDelimiter()}<code>,pos)</code>
 	 * <p>
 	 * The <code>isClosingSlashIgnored</code> parameter is only relevant in the {@link #NORMAL} start tag type,
 	 * which makes use of it to cater for the '<code>/</code>' character that can occur before the 
@@ -630,7 +632,7 @@ public abstract class StartTagType extends TagType {
 	 * @return <code>true</code> if the specified source document position is at the end of a tag's {@linkplain Attributes attributes}, otherwise <code>false</code>.
 	 */
 	public boolean atEndOfAttributes(final Source source, final int pos, final boolean isClosingSlashIgnored) {
-		return source.getParseText().containsAt(getClosingDelimiter(),pos);
+		return source.getParseText().containsAt(getClosingDelimiter(), pos);
 	}
 
 	/**
@@ -647,9 +649,9 @@ public abstract class StartTagType extends TagType {
 	 * @return the new {@link StartTag} object.
 	 */
 	protected final StartTag constructStartTag(final Source source, final int begin, final int end, final String name, final Attributes attributes) {
-		return new StartTag(source,begin,end,this,name,attributes);
+		return new StartTag(source, begin, end, this, name, attributes);
 	}
-	
+
 	/**
 	 * Internal method for the parsing of {@link Attributes}.
 	 * <br />(<a href="TagType.html#ImplementationAssistance">implementation assistance</a> method)
@@ -669,7 +671,6 @@ public abstract class StartTagType extends TagType {
 	 * @return the {@link Attributes} of the start tag to be constructed, or <code>null</code> if too many errors occur while parsing.
 	 */
 	protected final Attributes parseAttributes(final Source source, final int startTagBegin, final String tagName) {
-		return Attributes.construct(source,startTagBegin,this,tagName);
+		return Attributes.construct(source, startTagBegin, this, tagName);
 	}
 }
-

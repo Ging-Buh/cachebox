@@ -39,7 +39,7 @@ public class BasicLogFormatter extends Formatter {
 	 * As this is a static property, changing the value will affect all <code>BasicLogFormatter</code> instances, as well as the behaviour of the
 	 * static {@link #format(String level, String message, String loggerName)} method.
 	 */
-	public static boolean OutputLevel=true;
+	public static boolean OutputLevel = true;
 
 	/**
 	 * Determines whether the logger name is included in the output.
@@ -51,10 +51,10 @@ public class BasicLogFormatter extends Formatter {
 	 * As this is a static property, changing the value will affect all <code>BasicLogFormatter</code> instances, as well as the behaviour of the
 	 * static {@link #format(String level, String message, String loggerName)} method.
 	 */
-	public static boolean OutputName=false;
-	
-	static final Formatter INSTANCE=new BasicLogFormatter();
-	
+	public static boolean OutputName = false;
+
+	static final Formatter INSTANCE = new BasicLogFormatter();
+
 	/**
 	 * Returns a formatted string representing the log entry information contained in the specified <code>java.util.logging.LogRecord</code>.
 	 * <p>
@@ -67,7 +67,7 @@ public class BasicLogFormatter extends Formatter {
 	 * @return a formatted string representing the log entry information contained in the specified <code>java.util.logging.LogRecord</code>.
 	 */
 	public String format(final LogRecord logRecord) {
-		return format(logRecord.getLevel().getName(),logRecord.getMessage(),logRecord.getLoggerName());
+		return format(logRecord.getLevel().getName(), logRecord.getMessage(), logRecord.getLoggerName());
 	}
 
 	/**
@@ -90,9 +90,11 @@ public class BasicLogFormatter extends Formatter {
 	 * @return a formatted string representing the specified log entry information.
 	 */
 	public static String format(final String level, final String message, final String loggerName) {
-		final StringBuilder sb=new StringBuilder(message.length()+40);
-		if (OutputLevel) sb.append(level).append(": ");
-		if (OutputName && loggerName!=null) sb.append('[').append(loggerName).append("] ");
+		final StringBuilder sb = new StringBuilder(message.length() + 40);
+		if (OutputLevel)
+			sb.append(level).append(": ");
+		if (OutputName && loggerName != null)
+			sb.append('[').append(loggerName).append("] ");
 		sb.append(message);
 		sb.append(Config.NewLine);
 		return sb.toString();

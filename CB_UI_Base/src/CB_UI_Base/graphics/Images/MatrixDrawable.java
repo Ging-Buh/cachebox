@@ -21,19 +21,14 @@ import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
 /**
  * @author Longri
  */
-public class MatrixDrawable
-{
-	public MatrixDrawable(IRotateDrawable drw, ext_Matrix mat, boolean realDraw)
-	{
+public class MatrixDrawable {
+	public MatrixDrawable(IRotateDrawable drw, ext_Matrix mat, boolean realDraw) {
 		this.drawable = drw;
 
-		if (!mat.isDefault())
-		{
+		if (!mat.isDefault()) {
 			this.matrix = new GL_Matrix();
 			this.matrix.set(mat);
-		}
-		else
-		{
+		} else {
 			this.matrix = null;
 		}
 
@@ -57,9 +52,9 @@ public class MatrixDrawable
 	 */
 	public ext_Matrix matrix;
 
-	public void dispose()
-	{
-		if (this.matrix != null) this.matrix.dispose();
+	public void dispose() {
+		if (this.matrix != null)
+			this.matrix.dispose();
 		// TODO chek if we cann dispose and not hold on Cache like BmpBuffer at GL_GraphicFactory // this.drawable.dispose();
 	}
 }

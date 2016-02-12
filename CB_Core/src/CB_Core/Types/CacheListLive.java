@@ -25,8 +25,7 @@ import CB_Utils.Lists.CB_List;
  * 
  * @author Longri
  */
-public class CacheListLive
-{
+public class CacheListLive {
 	private int maxCapacity = 100;
 	HashMap<Descriptor, CB_List<Cache>> map;
 	private CB_List<Descriptor> descriptorList;
@@ -37,21 +36,20 @@ public class CacheListLive
 	 * 
 	 * @param maxCapacity
 	 */
-	public CacheListLive(int maxCapacity)
-	{
+	public CacheListLive(int maxCapacity) {
 		this.maxCapacity = maxCapacity;
 		map = new HashMap<Descriptor, CB_List<Cache>>();
 		descriptorList = new CB_List<Descriptor>();
 	}
 
-	public CB_List<Cache> add(Descriptor desc, CB_List<Cache> caches)
-	{
-		synchronized (map)
-		{
-			if (getDescriptorList().contains(desc)) return null;
+	public CB_List<Cache> add(Descriptor desc, CB_List<Cache> caches) {
+		synchronized (map) {
+			if (getDescriptorList().contains(desc))
+				return null;
 
 			CB_List<Cache> cleanedCaches = removeExistCaches(caches);
-			if (map.containsKey(desc)) return null;
+			if (map.containsKey(desc))
+				return null;
 			includedList = null;
 			map.put(desc, cleanedCaches);
 			getDescriptorList().add(desc);
@@ -59,26 +57,25 @@ public class CacheListLive
 		}
 	}
 
-	private CB_List<Cache> removeExistCaches(CB_List<Cache> caches)
-	{
-		if (caches == null || caches.size() == 0) return new CB_List<Cache>();
+	private CB_List<Cache> removeExistCaches(CB_List<Cache> caches) {
+		if (caches == null || caches.size() == 0)
+			return new CB_List<Cache>();
 		CB_List<Cache> returnList = new CB_List<Cache>(caches);
-		for (CB_List<Cache> list : map.values())
-		{
+		for (CB_List<Cache> list : map.values()) {
 
-			for (int i = 0; i < caches.size(); i++)
-			{
-				if (list.contains(caches.get(i))) returnList.remove(caches.get(i));
+			for (int i = 0; i < caches.size(); i++) {
+				if (list.contains(caches.get(i)))
+					returnList.remove(caches.get(i));
 			}
 		}
 
 		// remove double
 
 		CB_List<Cache> clearList = new CB_List<Cache>();
-		for (int i = 0; i < returnList.size(); i++)
-		{
+		for (int i = 0; i < returnList.size(); i++) {
 			Cache ca = returnList.get(i);
-			if (!clearList.contains(ca)) clearList.add(ca);
+			if (!clearList.contains(ca))
+				clearList.add(ca);
 		}
 
 		return clearList;
@@ -89,40 +86,38 @@ public class CacheListLive
 	 * 
 	 * @return
 	 */
-	public int getCapacity()
-	{
+	public int getCapacity() {
 		return this.maxCapacity;
 	}
 
-	private CB_List<Cache> chkCapacity()
-	{
+	private CB_List<Cache> chkCapacity() {
 		CB_List<Cache> removeList = new CB_List<Cache>();
-		if (getDescriptorList().size() > 1)
-		{
-			if (getSize() > maxCapacity)
-			{
+		if (getDescriptorList().size() > 1) {
+			if (getSize() > maxCapacity) {
 				// delete the Descriptor-Caches with highest distance to last added Descriptor-Caches
 				Descriptor desc = getFarestDescriptorFromMapCenter();
-				if (desc == null) return removeList; // can not clear!
+				if (desc == null)
+					return removeList; // can not clear!
 
 				removeList = map.get(desc);
-				for (int i = 0; i < removeList.size(); i++)
-				{
+				for (int i = 0; i < removeList.size(); i++) {
 					Cache ca = removeList.get(i);
-					if (ca != null && ca.isDisposed()) ca.dispose();
+					if (ca != null && ca.isDisposed())
+						ca.dispose();
 				}
 				map.remove(desc);
 				getDescriptorList().remove(desc);
 				includedList = null;
 			}
-			if (getSize() > maxCapacity) removeList.addAll(chkCapacity());
+			if (getSize() > maxCapacity)
+				removeList.addAll(chkCapacity());
 		}
 		return removeList;
 	}
 
-	private Descriptor getFarestDescriptorFromMapCenter()
-	{
-		if (MapCenterDesc == null) return null;
+	private Descriptor getFarestDescriptorFromMapCenter() {
+		if (MapCenterDesc == null)
+			return null;
 
 		int descX = MapCenterDesc.getX();
 		int descY = MapCenterDesc.getY();
@@ -130,14 +125,12 @@ public class CacheListLive
 		int tmpDistance = 0;
 		Descriptor tmpDesc = null;
 
-		for (int i = 0; i < getDescriptorList().size() - 1; i++)
-		{
+		for (int i = 0; i < getDescriptorList().size() - 1; i++) {
 			Descriptor desc2 = getDescriptorList().get(i);
 
 			int distance = Math.abs(descX - desc2.getX()) + Math.abs(descY - desc2.getY());
 
-			if (distance > tmpDistance)
-			{
+			if (distance > tmpDistance) {
 				tmpDistance = distance;
 				tmpDesc = desc2;
 			}
@@ -146,30 +139,27 @@ public class CacheListLive
 		return tmpDesc;
 	}
 
-	public int getSize()
-	{
-		synchronized (map)
-		{
-			if (includedList != null) return includedList.size();
+	public int getSize() {
+		synchronized (map) {
+			if (includedList != null)
+				return includedList.size();
 
 			int count = 0;
-			for (CB_List<Cache> list : map.values())
-			{
+			for (CB_List<Cache> list : map.values()) {
 				count += list.size();
 			}
 			return count;
 		}
 	}
 
-	public boolean contains(Cache ca)
-	{
-		synchronized (map)
-		{
-			if (includedList != null) return includedList.contains(ca);
+	public boolean contains(Cache ca) {
+		synchronized (map) {
+			if (includedList != null)
+				return includedList.contains(ca);
 
-			for (CB_List<Cache> list : map.values())
-			{
-				if (list.contains(ca)) return true;
+			for (CB_List<Cache> list : map.values()) {
+				if (list.contains(ca))
+					return true;
 			}
 			return false;
 		}
@@ -177,44 +167,34 @@ public class CacheListLive
 
 	CB_List<Cache> includedList = null;
 
-	public Cache get(int i)
-	{
-		synchronized (map)
-		{
+	public Cache get(int i) {
+		synchronized (map) {
 
-			if (includedList == null)
-			{
+			if (includedList == null) {
 				includedList = new CB_List<Cache>();
 
-				for (CB_List<Cache> list : map.values())
-				{
+				for (CB_List<Cache> list : map.values()) {
 					includedList.addAll(list);
 				}
 			}
 
-			try
-			{
+			try {
 				return includedList.get(i);
-			}
-			catch (Exception e)
-			{
+			} catch (Exception e) {
 				return null;
 			}
 		}
 	}
 
-	public boolean contains(Descriptor desc)
-	{
+	public boolean contains(Descriptor desc) {
 		return getDescriptorList().contains(desc);
 	}
 
-	public CB_List<Descriptor> getDescriptorList()
-	{
+	public CB_List<Descriptor> getDescriptorList() {
 		return descriptorList;
 	}
 
-	public void setCenterDescriptor(Descriptor desc)
-	{
+	public void setCenterDescriptor(Descriptor desc) {
 		this.MapCenterDesc = desc;
 	}
 

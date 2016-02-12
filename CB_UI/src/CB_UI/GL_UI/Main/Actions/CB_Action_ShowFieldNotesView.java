@@ -11,50 +11,43 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_ShowFieldNotesView extends CB_Action_ShowView
-{
+public class CB_Action_ShowFieldNotesView extends CB_Action_ShowView {
 
-	public CB_Action_ShowFieldNotesView()
-	{
+	public CB_Action_ShowFieldNotesView() {
 		super("Fieldnotes", MenuID.AID_SHOW_FIELDNOTES);
 	}
 
 	@Override
-	public void Execute()
-	{
-		if ((TabMainView.fieldNotesView == null) && (tabMainView != null) && (tab != null)) TabMainView.fieldNotesView = new FieldNotesView(
-				tab.getContentRec(), "FieldNotesView");
+	public void Execute() {
+		if ((TabMainView.fieldNotesView == null) && (tabMainView != null) && (tab != null))
+			TabMainView.fieldNotesView = new FieldNotesView(tab.getContentRec(), "FieldNotesView");
 
-		if ((TabMainView.fieldNotesView != null) && (tab != null)) tab.ShowView(TabMainView.fieldNotesView);
+		if ((TabMainView.fieldNotesView != null) && (tab != null))
+			tab.ShowView(TabMainView.fieldNotesView);
 	}
 
 	@Override
-	public boolean getEnabled()
-	{
+	public boolean getEnabled() {
 		return true;
 	}
 
 	@Override
-	public Sprite getIcon()
-	{
+	public Sprite getIcon() {
 		return SpriteCacheBase.Icons.get(IconName.fieldNoteList_55.ordinal());
 	}
 
 	@Override
-	public CB_View_Base getView()
-	{
+	public CB_View_Base getView() {
 		return TabMainView.fieldNotesView;
 	}
 
 	@Override
-	public boolean hasContextMenu()
-	{
+	public boolean hasContextMenu() {
 		return true;
 	}
 
 	@Override
-	public Menu getContextMenu()
-	{
+	public Menu getContextMenu() {
 		return FieldNotesView.that.getContextMenu();
 	}
 }

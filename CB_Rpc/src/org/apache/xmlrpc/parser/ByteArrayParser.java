@@ -28,7 +28,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
 /** A parser for base64 elements.
  */
 public class ByteArrayParser extends TypeParserImpl {
@@ -43,8 +42,7 @@ public class ByteArrayParser extends TypeParserImpl {
 	public void characters(char[] pChars, int pStart, int pLength) throws SAXException {
 		if (baos == null) {
 			if (!isEmpty(pChars, pStart, pLength)) {
-				throw new SAXParseException("Unexpected non-whitespace characters",
-											getDocumentLocator());
+				throw new SAXParseException("Unexpected non-whitespace characters", getDocumentLocator());
 			}
 		} else {
 			try {
@@ -64,24 +62,20 @@ public class ByteArrayParser extends TypeParserImpl {
 			}
 			setResult(baos.toByteArray());
 		} else {
-			throw new SAXParseException("Unexpected end tag in atomic element: "
-										+ new QName(pURI, pLocalName),
-										getDocumentLocator());
+			throw new SAXParseException("Unexpected end tag in atomic element: " + new QName(pURI, pLocalName), getDocumentLocator());
 		}
 	}
 
 	public void startElement(String pURI, String pLocalName, String pQName, Attributes pAttrs) throws SAXException {
 		if (level++ == 0) {
 			baos = new ByteArrayOutputStream();
-			decoder = new Base64.Decoder(1024){
+			decoder = new Base64.Decoder(1024) {
 				protected void writeBuffer(byte[] pBytes, int pOffset, int pLen) throws IOException {
 					baos.write(pBytes, pOffset, pLen);
 				}
 			};
 		} else {
-			throw new SAXParseException("Unexpected start tag in atomic element: "
-										+ new QName(pURI, pLocalName),
-										getDocumentLocator());
+			throw new SAXParseException("Unexpected start tag in atomic element: " + new QName(pURI, pLocalName), getDocumentLocator());
 		}
 	}
 }

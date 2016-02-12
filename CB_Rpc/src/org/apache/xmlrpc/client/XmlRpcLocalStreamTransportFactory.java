@@ -20,7 +20,6 @@ package org.apache.xmlrpc.client;
 
 import org.apache.xmlrpc.common.XmlRpcStreamRequestProcessor;
 
-
 /** Another local transport factory for debugging and testing. This one is
  * similar to the {@link org.apache.xmlrpc.client.XmlRpcLocalTransportFactory},
  * except that it adds request serialization. In other words, it is
@@ -28,19 +27,18 @@ import org.apache.xmlrpc.common.XmlRpcStreamRequestProcessor;
  * and parsing.
  */
 public class XmlRpcLocalStreamTransportFactory extends XmlRpcStreamTransportFactory {
-    private final XmlRpcStreamRequestProcessor server;
+	private final XmlRpcStreamRequestProcessor server;
 
-    /** Creates a new instance.
+	/** Creates a new instance.
 	 * @param pClient The client controlling the factory.
 	 * @param pServer An instance of {@link XmlRpcStreamRequestProcessor}.
 	 */
-	public XmlRpcLocalStreamTransportFactory(XmlRpcClient pClient,
-			XmlRpcStreamRequestProcessor pServer) {
+	public XmlRpcLocalStreamTransportFactory(XmlRpcClient pClient, XmlRpcStreamRequestProcessor pServer) {
 		super(pClient);
 		server = pServer;
-    }
+	}
 
 	public XmlRpcTransport getTransport() {
-        return new XmlRpcLocalStreamTransport(getClient(), server);
+		return new XmlRpcLocalStreamTransport(getClient(), server);
 	}
 }

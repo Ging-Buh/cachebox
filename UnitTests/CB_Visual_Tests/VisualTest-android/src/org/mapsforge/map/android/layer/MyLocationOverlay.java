@@ -111,8 +111,7 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 	 * @param circleStroke
 	 *            the {@code Paint} used to stroke the circle that represents the current location (might be null).
 	 */
-	public MyLocationOverlay(Context context, MapViewPosition mapViewPosition, Bitmap bitmap, Paint circleFill,
-			Paint circleStroke) {
+	public MyLocationOverlay(Context context, MapViewPosition mapViewPosition, Bitmap bitmap, Paint circleFill, Paint circleStroke) {
 		super();
 
 		this.mapViewPosition = mapViewPosition;

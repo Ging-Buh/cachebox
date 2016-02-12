@@ -30,8 +30,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
-public final class AndroidUtil
-{
+public final class AndroidUtil {
 
 	/**
 	 * @param c
@@ -44,30 +43,22 @@ public final class AndroidUtil
 	 *            tile size
 	 * @return a new cache created on the external storage
 	 */
-	public static TileCache createExternalStorageTileCache(Context c, String id, int firstLevelSize, int tileSize)
-	{
+	public static TileCache createExternalStorageTileCache(Context c, String id, int firstLevelSize, int tileSize) {
 		Log.d("TILECACHE INMEMORY SIZE", Integer.toString(firstLevelSize));
 		TileCache firstLevelTileCache = new InMemoryTileCache(firstLevelSize);
 		File cacheDir = c.getExternalCacheDir();
-		if (cacheDir != null)
-		{
+		if (cacheDir != null) {
 			// cacheDir will be null if full
 			String cacheDirectoryName = cacheDir.getAbsolutePath() + File.separator + id;
 			File cacheDirectory = new File(cacheDirectoryName);
-			if (cacheDirectory.exists() || cacheDirectory.mkdir())
-			{
+			if (cacheDirectory.exists() || cacheDirectory.mkdir()) {
 				int tileCacheFiles = estimateSizeOfFileSystemCache(cacheDirectoryName, firstLevelSize, tileSize);
-				if (cacheDirectory.canWrite() && tileCacheFiles > 0)
-				{
-					try
-					{
+				if (cacheDirectory.canWrite() && tileCacheFiles > 0) {
+					try {
 						Log.d("TILECACHE FILECACHE SIZE", Integer.toString(firstLevelSize));
-						TileCache secondLevelTileCache = new FileSystemTileCache(tileCacheFiles, cacheDirectory,
-								org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE);
+						TileCache secondLevelTileCache = new FileSystemTileCache(tileCacheFiles, cacheDirectory, org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE);
 						return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
-					}
-					catch (IllegalArgumentException e)
-					{
+					} catch (IllegalArgumentException e) {
 						Log.w("TILECACHE", e.toString());
 					}
 				}
@@ -93,8 +84,7 @@ public final class AndroidUtil
 	 * @return a new cache created on the external storage
 	 */
 
-	public static TileCache createTileCache(Context c, String id, int tileSize, float screenRatio, double overdraw)
-	{
+	public static TileCache createTileCache(Context c, String id, int tileSize, float screenRatio, double overdraw) {
 		int cacheSize = Math.round(AndroidUtil.getMinimumCacheSize(c, tileSize, overdraw, screenRatio));
 		return createExternalStorageTileCache(c, id, cacheSize, tileSize);
 	}
@@ -102,8 +92,7 @@ public final class AndroidUtil
 	/**
 	 * @return true if the current thread is the UI thread, false otherwise.
 	 */
-	public static boolean currentThreadIsUiThread()
-	{
+	public static boolean currentThreadIsUiThread() {
 		return Looper.getMainLooper().getThread() == Thread.currentThread();
 	}
 
@@ -116,8 +105,7 @@ public final class AndroidUtil
 	 *            tile size
 	 * @return recommended number of files in FileSystemTileCache
 	 */
-	public static int estimateSizeOfFileSystemCache(String cacheDirectoryName, int firstLevelSize, int tileSize)
-	{
+	public static int estimateSizeOfFileSystemCache(String cacheDirectoryName, int firstLevelSize, int tileSize) {
 		// assumption on size of files in cache, on the large side as not to eat
 		// up all free space, real average probably 50K compressed
 		final int tileCacheFileSize = 4 * tileSize * tileSize;
@@ -126,8 +114,7 @@ public final class AndroidUtil
 		// result cannot be bigger than maxCacheFiles
 		int result = (int) Math.min(maxCacheFiles, getAvailableCacheSlots(cacheDirectoryName, tileCacheFileSize));
 
-		if (firstLevelSize > result)
-		{
+		if (firstLevelSize > result) {
 			// no point having a file system cache that does not even hold the memory cache
 			result = 0;
 		}
@@ -145,8 +132,7 @@ public final class AndroidUtil
 	 */
 	@SuppressWarnings("deprecation")
 	@TargetApi(18)
-	public static long getAvailableCacheSlots(String directory, int fileSize)
-	{
+	public static long getAvailableCacheSlots(String directory, int fileSize) {
 		StatFs statfs = new StatFs(directory);
 
 		// problem is overflow with devices with large storage, so order is important here
@@ -170,8 +156,7 @@ public final class AndroidUtil
 	 */
 	@SuppressWarnings("deprecation")
 	@TargetApi(13)
-	public static int getMinimumCacheSize(Context c, int tileSize, double overdrawFactor, float screenRatio)
-	{
+	public static int getMinimumCacheSize(Context c, int tileSize, double overdrawFactor, float screenRatio) {
 		WindowManager wm = (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
 		Display display = wm.getDefaultDisplay();
 		int height;
@@ -181,12 +166,10 @@ public final class AndroidUtil
 		height = display.getHeight();
 		width = display.getWidth();
 
-		return (int) (screenRatio * Math.ceil(1 + (height * overdrawFactor / tileSize)) * Math
-				.ceil(1 + (width * overdrawFactor / tileSize)));
+		return (int) (screenRatio * Math.ceil(1 + (height * overdrawFactor / tileSize)) * Math.ceil(1 + (width * overdrawFactor / tileSize)));
 	}
 
-	private AndroidUtil()
-	{
+	private AndroidUtil() {
 		// noop, for privacy
 	}
 

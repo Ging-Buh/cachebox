@@ -101,16 +101,16 @@ import java.util.*;
  */
 public final class FormField {
 	private final String name;
-	private int userValueCount=0;
-	private boolean allowsMultipleValues=false;
-	private LinkedHashSet<String> predefinedValues=null; // String objects, null if none
-	private final LinkedHashSet<FormControl> formControls=new LinkedHashSet<FormControl>();
-	private transient FormControl firstFormControl=null; // this field is simply a cache for the getFirstFormControl() method
+	private int userValueCount = 0;
+	private boolean allowsMultipleValues = false;
+	private LinkedHashSet<String> predefinedValues = null; // String objects, null if none
+	private final LinkedHashSet<FormControl> formControls = new LinkedHashSet<FormControl>();
+	private transient FormControl firstFormControl = null; // this field is simply a cache for the getFirstFormControl() method
 	int columnIndex; // see FormFields.initColumns()
 
 	/** Constructor called from FormFields class. */
 	FormField(final String name) {
-		this.name=name;
+		this.name = name;
 	}
 
 	/**
@@ -154,17 +154,21 @@ public final class FormField {
 	 * @see #getFormControls()
 	 */
 	public FormControl getFormControl(final String predefinedValue) {
-		if (predefinedValue==null) {
+		if (predefinedValue == null) {
 			for (FormControl formControl : formControls) {
-				if (!formControl.getFormControlType().hasPredefinedValue()) return formControl;
-				if (formControl.getFormControlType().getElementName()!=HTMLElementName.SELECT && formControl.getPredefinedValue()==null) return formControl;
+				if (!formControl.getFormControlType().hasPredefinedValue())
+					return formControl;
+				if (formControl.getFormControlType().getElementName() != HTMLElementName.SELECT && formControl.getPredefinedValue() == null)
+					return formControl;
 			}
 		} else {
 			for (FormControl formControl : formControls) {
-				if (formControl.getFormControlType().getElementName()==HTMLElementName.SELECT) {
-					if (formControl.getPredefinedValues().contains(predefinedValue)) return formControl;
+				if (formControl.getFormControlType().getElementName() == HTMLElementName.SELECT) {
+					if (formControl.getPredefinedValues().contains(predefinedValue))
+						return formControl;
 				} else {
-					if (predefinedValue.equals(formControl.getPredefinedValue())) return formControl;
+					if (predefinedValue.equals(formControl.getPredefinedValue()))
+						return formControl;
 				}
 			}
 		}
@@ -235,7 +239,8 @@ public final class FormField {
 	 * @see FormControl#getPredefinedValues()
 	 */
 	public Collection<String> getPredefinedValues() {
-		if (predefinedValues==null) return Collections.emptySet();
+		if (predefinedValues == null)
+			return Collections.emptySet();
 		return predefinedValues;
 	}
 
@@ -252,8 +257,9 @@ public final class FormField {
 	 * @return a list of the <a href="#FieldSubmissionValues">field submission values</a> in order of appearance, guaranteed not <code>null</code>.
 	 */
 	public List<String> getValues() {
-		final List<String> values=new ArrayList<String>();
-		for (FormControl formControl : formControls) formControl.addValuesTo(values);
+		final List<String> values = new ArrayList<String>();
+		for (FormControl formControl : formControls)
+			formControl.addValuesTo(values);
 		return values;
 	}
 
@@ -262,7 +268,8 @@ public final class FormField {
 	 * @see FormControl#clearValues()
 	 */
 	public void clearValues() {
-		for (FormControl formControl : formControls) formControl.clearValues();
+		for (FormControl formControl : formControls)
+			formControl.clearValues();
 	}
 
 	/**
@@ -299,7 +306,7 @@ public final class FormField {
 	 */
 	public boolean setValue(final String value) {
 		clearValues();
-		return value!=null ? addValue(value) : true;
+		return value != null ? addValue(value) : true;
 	}
 
 	/**
@@ -319,23 +326,29 @@ public final class FormField {
 	 * @return <code>true</code> if one of the constituent {@linkplain #getFormControls() form controls} accepts the value, otherwise <code>false</code>.
 	 */
 	public boolean addValue(final String value) {
-		if (value==null) throw new IllegalArgumentException("value argument must not be null");
-		if (formControls.size()==1) return getFirstFormControl().addValue(value);
-		List<FormControl> userValueControls=null;
+		if (value == null)
+			throw new IllegalArgumentException("value argument must not be null");
+		if (formControls.size() == 1)
+			return getFirstFormControl().addValue(value);
+		List<FormControl> userValueControls = null;
 		for (FormControl formControl : formControls) {
 			if (!formControl.getFormControlType().hasPredefinedValue()) {
 				// A user value control has been found, but is not the only control with this name.
 				// This shouldn't normally happen in a well designed form, but we will save the user value control
 				// for later and give all predefined value controls first opportunity to take the value.
-				if (userValueControls==null) userValueControls=new LinkedList<FormControl>();
+				if (userValueControls == null)
+					userValueControls = new LinkedList<FormControl>();
 				userValueControls.add(formControl);
 				continue;
 			}
-			if (formControl.addValue(value)) return true; // return value of true from formControl.addValue(value) means the value was taken by the control
+			if (formControl.addValue(value))
+				return true; // return value of true from formControl.addValue(value) means the value was taken by the control
 		}
-		if (userValueControls==null) return false;
+		if (userValueControls == null)
+			return false;
 		for (FormControl userFormControl : userValueControls) {
-			if (userFormControl.addValue(value)) return true;
+			if (userFormControl.addValue(value))
+				return true;
 		}
 		return false;
 	}
@@ -345,12 +358,14 @@ public final class FormField {
 	 * @return a string representation of this object useful for debugging purposes.
 	 */
 	public String getDebugInfo() {
-		final StringBuilder sb=new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append("Field: ").append(name).append(", UserValueCount=").append(userValueCount).append(", AllowsMultipleValues=").append(allowsMultipleValues);
-		if (predefinedValues!=null) {
-			for (String predefinedValue : predefinedValues) sb.append(Config.NewLine).append("PredefinedValue: ").append(predefinedValue);
+		if (predefinedValues != null) {
+			for (String predefinedValue : predefinedValues)
+				sb.append(Config.NewLine).append("PredefinedValue: ").append(predefinedValue);
 		}
-		for (FormControl formControl : formControls) sb.append(Config.NewLine).append("FormControl: ").append(formControl.getDebugInfo());
+		for (FormControl formControl : formControls)
+			sb.append(Config.NewLine).append("FormControl: ").append(formControl.getDebugInfo());
 		sb.append(Config.NewLine).append(Config.NewLine);
 		return sb.toString();
 	}
@@ -367,41 +382,52 @@ public final class FormField {
 	}
 
 	void addValues(final Collection<String> values) {
-		if (values!=null) for (String value : values) addValue(value);
+		if (values != null)
+			for (String value : values)
+				addValue(value);
 	}
 
 	void addValues(final String[] values) {
-		if (values!=null) for (String value : values) addValue(value);
+		if (values != null)
+			for (String value : values)
+				addValue(value);
 	}
 
 	void addFormControl(final FormControl formControl, final String predefinedValue) {
 		// predefinedValue==null if we are adding a user value
-		if (predefinedValue==null) {
+		if (predefinedValue == null) {
 			userValueCount++;
 		} else {
-			if (predefinedValues==null) predefinedValues=new LinkedHashSet<String>();
+			if (predefinedValues == null)
+				predefinedValues = new LinkedHashSet<String>();
 			predefinedValues.add(predefinedValue);
 		}
 		formControls.add(formControl);
-		allowsMultipleValues=calculateAllowsMultipleValues(formControl);
+		allowsMultipleValues = calculateAllowsMultipleValues(formControl);
 	}
 
 	private boolean calculateAllowsMultipleValues(final FormControl newFormControl) {
 		// false if only one control (unless it is a multiple select with more than one option),
 		// or all of the controls are radio buttons, or all of the controls are submit buttons
-		if (allowsMultipleValues || userValueCount>1) return true;
-		if (userValueCount==1) return predefinedValues!=null;
+		if (allowsMultipleValues || userValueCount > 1)
+			return true;
+		if (userValueCount == 1)
+			return predefinedValues != null;
 		// at this stage we know userValueCount==0  && predefinedValues.size()>=1
-		if (predefinedValues.size()==1) return false;
-		final FormControlType newFormControlType=newFormControl.getFormControlType();
-		if (formControls.size()==1) return newFormControlType==FormControlType.SELECT_MULTIPLE;
+		if (predefinedValues.size() == 1)
+			return false;
+		final FormControlType newFormControlType = newFormControl.getFormControlType();
+		if (formControls.size() == 1)
+			return newFormControlType == FormControlType.SELECT_MULTIPLE;
 		// at this stage we know there are multiple predefined values in multiple controls.
 		// if all of the controls are radio buttons or all are submit buttons, allowsMultipleValues is false, otherwise true.
 		// checking only the first control and the new control is equivalent to checking them all because if they weren't all
 		// the same allowsMultipleValues would already be true.
-		final FormControlType firstFormControlType=getFirstFormControl().getFormControlType();
-		if (newFormControlType==FormControlType.RADIO && firstFormControlType==FormControlType.RADIO) return false;
-		if (newFormControlType.isSubmit() && firstFormControlType.isSubmit()) return false;
+		final FormControlType firstFormControlType = getFirstFormControl().getFormControlType();
+		if (newFormControlType == FormControlType.RADIO && firstFormControlType == FormControlType.RADIO)
+			return false;
+		if (newFormControlType.isSubmit() && firstFormControlType.isSubmit())
+			return false;
 		return true;
 	}
 
@@ -409,20 +435,23 @@ public final class FormField {
 		// formControls must be ordered collection for this method to work.
 		// It has to return the first FormControl entered into the collection
 		// for the algorithm in calculateAllowsMultipleValues() to work.
-		if (firstFormControl==null) firstFormControl=formControls.iterator().next();
+		if (firstFormControl == null)
+			firstFormControl = formControls.iterator().next();
 		return firstFormControl;
 	}
 
 	/** only called from FormFields class */
 	void merge(final FormField formField) {
-		if (formField.userValueCount>userValueCount) userValueCount=formField.userValueCount;
-		allowsMultipleValues=allowsMultipleValues || formField.allowsMultipleValues;
-		if (predefinedValues==null) {
-			predefinedValues=formField.predefinedValues;
-		} else if (formField.predefinedValues!=null) {
-			for (String predefinedValue : predefinedValues) predefinedValues.add(predefinedValue);
+		if (formField.userValueCount > userValueCount)
+			userValueCount = formField.userValueCount;
+		allowsMultipleValues = allowsMultipleValues || formField.allowsMultipleValues;
+		if (predefinedValues == null) {
+			predefinedValues = formField.predefinedValues;
+		} else if (formField.predefinedValues != null) {
+			for (String predefinedValue : predefinedValues)
+				predefinedValues.add(predefinedValue);
 		}
-		for (FormControl formControl : formField.getFormControls()) formControls.add(formControl);
+		for (FormControl formControl : formField.getFormControls())
+			formControls.add(formControl);
 	}
 }
-

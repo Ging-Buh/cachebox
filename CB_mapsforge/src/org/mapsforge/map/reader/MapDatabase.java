@@ -326,18 +326,17 @@ public class MapDatabase {
 	}
 
 	private void decodeWayNodesDoubleDelta(LatLong[] waySegment) {
-//		// get the first way node latitude offset (VBE-S)
-//		double wayNodeLatitude = this.tileLatitude
-//				+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
-//
-//		// get the first way node longitude offset (VBE-S)
-//		double wayNodeLongitude = this.tileLongitude
-//				+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
-//
-//		// store the first way node
-//		waySegment[0] = new LatLong(wayNodeLatitude, wayNodeLongitude);
-		
-		
+		//		// get the first way node latitude offset (VBE-S)
+		//		double wayNodeLatitude = this.tileLatitude
+		//				+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+		//
+		//		// get the first way node longitude offset (VBE-S)
+		//		double wayNodeLongitude = this.tileLongitude
+		//				+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+		//
+		//		// store the first way node
+		//		waySegment[0] = new LatLong(wayNodeLatitude, wayNodeLongitude);
+
 		// get the first way node latitude offset (VBE-S)
 		int wayNodeLatitude = this.readBuffer.readSignedInt();
 
@@ -346,8 +345,6 @@ public class MapDatabase {
 
 		// store the first way node
 		waySegment[0] = new LatLong(this.tileLatLong, wayNodeLatitude, wayNodeLongitude);
-		
-		
 
 		int previousSingleDeltaLatitude = 0;
 		int previousSingleDeltaLongitude = 0;
@@ -384,7 +381,7 @@ public class MapDatabase {
 
 		for (int wayNodesIndex = 1; wayNodesIndex < waySegment.length; ++wayNodesIndex) {
 			// get the way node latitude offset (VBE-S)
-			wayNodeLatitude = wayNodeLatitude +this.readBuffer.readSignedInt();
+			wayNodeLatitude = wayNodeLatitude + this.readBuffer.readSignedInt();
 
 			// get the way node longitude offset (VBE-S)
 			wayNodeLongitude = wayNodeLongitude + this.readBuffer.readSignedInt();
@@ -464,8 +461,7 @@ public class MapDatabase {
 		return new PoiWayBundle(pois, ways);
 	}
 
-	private MapReadResult processBlocks(QueryParameters queryParameters, SubFileParameter subFileParameter)
-			throws IOException {
+	private MapReadResult processBlocks(QueryParameters queryParameters, SubFileParameter subFileParameter) throws IOException {
 		boolean queryIsWater = true;
 		boolean queryReadWaterInfo = false;
 
@@ -502,8 +498,7 @@ public class MapDatabase {
 					nextBlockPointer = subFileParameter.subFileSize;
 				} else {
 					// get and check the next block pointer
-					nextBlockPointer = this.databaseIndexCache.getIndexEntry(subFileParameter, blockNumber + 1)
-							& BITMASK_INDEX_OFFSET;
+					nextBlockPointer = this.databaseIndexCache.getIndexEntry(subFileParameter, blockNumber + 1) & BITMASK_INDEX_OFFSET;
 					if (nextBlockPointer > subFileParameter.subFileSize) {
 						LOGGER.warning("invalid next block pointer: " + nextBlockPointer);
 						LOGGER.warning("sub-file size: " + subFileParameter.subFileSize);
@@ -539,13 +534,11 @@ public class MapDatabase {
 				}
 
 				// calculate the top-left coordinates of the underlying tile
-				this.tileLatitude = MercatorProjection.tileYToLatitude(subFileParameter.boundaryTileTop + row,
-						subFileParameter.baseZoomLevel);
-				this.tileLongitude = MercatorProjection.tileXToLongitude(subFileParameter.boundaryTileLeft + column,
-						subFileParameter.baseZoomLevel);
+				this.tileLatitude = MercatorProjection.tileYToLatitude(subFileParameter.boundaryTileTop + row, subFileParameter.baseZoomLevel);
+				this.tileLongitude = MercatorProjection.tileXToLongitude(subFileParameter.boundaryTileLeft + column, subFileParameter.baseZoomLevel);
 
-				this.tileLatLong=new LatLong(this.tileLatitude, this.tileLongitude);
-				
+				this.tileLatLong = new LatLong(this.tileLatitude, this.tileLongitude);
+
 				try {
 					PoiWayBundle poiWayBundle = processBlock(queryParameters, subFileParameter);
 					if (poiWayBundle != null) {

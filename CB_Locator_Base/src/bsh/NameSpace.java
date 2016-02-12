@@ -58,14 +58,13 @@ import java.util.Map;
  * bit.
  */
 // not at all thread-safe - fschmidt
-public class NameSpace implements Serializable, BshClassManager.Listener, NameSource, Cloneable
-{
+public class NameSpace implements Serializable, BshClassManager.Listener, NameSource, Cloneable {
 
 	private static final long serialVersionUID = 5004976946651004751L;
 
 	public static final NameSpace JAVACODE = new NameSpace((BshClassManager) null, "Called from compiled Java code.");
-	static
-	{
+
+	static {
 		JAVACODE.isMethod = true;
 	}
 
@@ -119,25 +118,24 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	Object classInstance;
 
 	@SuppressWarnings("rawtypes")
-	void setClassStatic(Class clas)
-	{
+	void setClassStatic(Class clas) {
 		this.classStatic = clas;
 		importStatic(clas);
 	}
 
-	void setClassInstance(Object instance)
-	{
+	void setClassInstance(Object instance) {
 		this.classInstance = instance;
 		importObject(instance);
 	}
 
-	Object getClassInstance() throws UtilEvalError
-	{
-		if (classInstance != null) return classInstance;
+	Object getClassInstance() throws UtilEvalError {
+		if (classInstance != null)
+			return classInstance;
 
 		if (classStatic != null
 		// || ( getParent()!=null && getParent().classStatic != null )
-		) throw new UtilEvalError("Can't refer to class instance from static context.");
+		)
+			throw new UtilEvalError("Can't refer to class instance from static context.");
 		else
 			throw new InterpreterError("Can't resolve class instance 'this' in: " + this);
 	}
@@ -157,19 +155,16 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * @parent the parent namespace of this namespace. Child namespaces inherit all variables and methods of their parent and can (of
 	 *         course) override / shadow them.
 	 */
-	public NameSpace(NameSpace parent, String name)
-	{
+	public NameSpace(NameSpace parent, String name) {
 		// Note: in this case parent must have a class manager.
 		this(parent, null, name);
 	}
 
-	public NameSpace(BshClassManager classManager, String name)
-	{
+	public NameSpace(BshClassManager classManager, String name) {
 		this(null, classManager, name);
 	}
 
-	public NameSpace(NameSpace parent, BshClassManager classManager, String name)
-	{
+	public NameSpace(NameSpace parent, BshClassManager classManager, String name) {
 		// We might want to do this here rather than explicitly in Interpreter
 		// for global (see also prune())
 		// if ( classManager == null && (parent == null ) )
@@ -180,13 +175,13 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 		setClassManager(classManager);
 
 		// Register for notification of classloader change
-		if (classManager != null) classManager.addListener(this);
+		if (classManager != null)
+			classManager.addListener(this);
 	}
 
 	// End constructors
 
-	public void setName(String name)
-	{
+	public void setName(String name) {
 		this.nsName = name;
 	}
 
@@ -194,8 +189,7 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * The name of this namespace. If the namespace is a method body namespace then this is the name of the method. If it's a class or class
 	 * instance then it's the name of the class.
 	 */
-	public String getName()
-	{
+	public String getName() {
 		return this.nsName;
 	}
 
@@ -203,17 +197,17 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * Set the node associated with the creation of this namespace. This is used in debugging and to support the getInvocationLine() and
 	 * getInvocationText() methods.
 	 */
-	void setNode(SimpleNode node)
-	{
+	void setNode(SimpleNode node) {
 		callerInfoNode = node;
 	}
 
 	/**
 	*/
-	SimpleNode getNode()
-	{
-		if (callerInfoNode != null) return callerInfoNode;
-		if (parent != null) return parent.getNode();
+	SimpleNode getNode() {
+		if (callerInfoNode != null)
+			return callerInfoNode;
+		if (parent != null)
+			return parent.getNode();
 		else
 			return null;
 	}
@@ -221,8 +215,7 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	/**
 	 * Resolve name to an object through this namespace.
 	 */
-	public Object get(String name, Interpreter interpreter) throws UtilEvalError
-	{
+	public Object get(String name, Interpreter interpreter) throws UtilEvalError {
 		CallStack callstack = new CallStack(this);
 		return getNameResolver(name).toObject(callstack, interpreter);
 	}
@@ -238,8 +231,7 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * @param strictJava
 	 *            specifies whether strict java rules are applied.
 	 */
-	public void setVariable(String name, Object value, boolean strictJava) throws UtilEvalError
-	{
+	public void setVariable(String name, Object value, boolean strictJava) throws UtilEvalError {
 		// if localscoping switch follow strictJava, else recurse
 		boolean recurse = Interpreter.LOCALSCOPING ? strictJava : true;
 		setVariable(name, value, strictJava, recurse);
@@ -248,8 +240,7 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	/**
 	 * Set a variable explicitly in the local scope.
 	 */
-	void setLocalVariable(String name, Object value, boolean strictJava) throws UtilEvalError
-	{
+	void setLocalVariable(String name, Object value, boolean strictJava) throws UtilEvalError {
 		setVariable(name, value, strictJava, false/* recurse */);
 	}
 
@@ -270,32 +261,28 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * @param recurse
 	 *            determines whether we will search for the variable in our parent's scope before assigning locally.
 	 */
-	void setVariable(String name, Object value, boolean strictJava, boolean recurse) throws UtilEvalError
-	{
+	void setVariable(String name, Object value, boolean strictJava, boolean recurse) throws UtilEvalError {
 		ensureVariables();
 
 		// primitives should have been wrapped
-		if (value == null) throw new InterpreterError("null variable value");
+		if (value == null)
+			throw new InterpreterError("null variable value");
 
 		// Locate the variable definition if it exists.
 		Variable existing = getVariableImpl(name, recurse);
 
 		// Found an existing variable here (or above if recurse allowed)
-		if (existing != null)
-		{
-			try
-			{
+		if (existing != null) {
+			try {
 				existing.setValue(value, Variable.ASSIGNMENT);
-			}
-			catch (UtilEvalError e)
-			{
+			} catch (UtilEvalError e) {
 				throw new UtilEvalError("Variable assignment: " + name + ": " + e.getMessage());
 			}
-		}
-		else
+		} else
 		// No previous variable definition found here (or above if recurse)
 		{
-			if (strictJava) throw new UtilEvalError("(Strict Java mode) Assignment to undeclared variable: " + name);
+			if (strictJava)
+				throw new UtilEvalError("(Strict Java mode) Assignment to undeclared variable: " + name);
 
 			// If recurse, set global untyped var, else set it here.
 			// NameSpace varScope = recurse ? getGlobal() : this;
@@ -309,18 +296,16 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 		}
 	}
 
-	private void ensureVariables()
-	{
-		if (variables == null) variables = new HashMap<String, Variable>();
+	private void ensureVariables() {
+		if (variables == null)
+			variables = new HashMap<String, Variable>();
 	}
 
 	/**
 	 * Remove the variable from the namespace.
 	 */
-	public void unsetVariable(String name)
-	{
-		if (variables != null)
-		{
+	public void unsetVariable(String name) {
+		if (variables != null) {
 			variables.remove(name);
 			nameSpaceChanged();
 		}
@@ -329,9 +314,9 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	/**
 	 * Get the names of variables defined in this namespace. (This does not show variables in parent namespaces).
 	 */
-	public String[] getVariableNames()
-	{
-		if (variables == null) return new String[0];
+	public String[] getVariableNames() {
+		if (variables == null)
+			return new String[0];
 		else
 			return variables.keySet().toArray(new String[0]);
 	}
@@ -339,9 +324,9 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	/**
 	 * Get the names of methods declared in this namespace. (This does not include methods in parent namespaces).
 	 */
-	public String[] getMethodNames()
-	{
-		if (methods == null) return new String[0];
+	public String[] getMethodNames() {
+		if (methods == null)
+			return new String[0];
 		else
 			return methods.keySet().toArray(new String[0]);
 	}
@@ -350,17 +335,12 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * Get the methods defined in this namespace. (This does not show methods in parent namespaces). Note: This will probably be renamed
 	 * getDeclaredMethods()
 	 */
-	public BshMethod[] getMethods()
-	{
-		if (methods == null)
-		{
+	public BshMethod[] getMethods() {
+		if (methods == null) {
 			return new BshMethod[0];
-		}
-		else
-		{
+		} else {
 			List<BshMethod> ret = new ArrayList<BshMethod>();
-			for (List<BshMethod> list : methods.values())
-			{
+			for (List<BshMethod> list : methods.values()) {
 				ret.addAll(list);
 			}
 			return ret.toArray(new BshMethod[0]);
@@ -370,17 +350,16 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	/**
 	 * Get the parent namespace. Note: this isn't quite the same as getSuper(). getSuper() returns 'this' if we are at the root namespace.
 	 */
-	public NameSpace getParent()
-	{
+	public NameSpace getParent() {
 		return parent;
 	}
 
 	/**
 	 * Get the parent namespace' This reference or this namespace' This reference if we are the top.
 	 */
-	public This getSuper(Interpreter declaringInterpreter)
-	{
-		if (parent != null) return parent.getThis(declaringInterpreter);
+	public This getSuper(Interpreter declaringInterpreter) {
+		if (parent != null)
+			return parent.getThis(declaringInterpreter);
 		else
 			return getThis(declaringInterpreter);
 	}
@@ -389,9 +368,9 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * Get the top level namespace or this namespace if we are the top. Note: this method should probably return type bsh.This to be
 	 * consistent with getThis();
 	 */
-	public This getGlobal(Interpreter declaringInterpreter)
-	{
-		if (parent != null) return parent.getGlobal(declaringInterpreter);
+	public This getGlobal(Interpreter declaringInterpreter) {
+		if (parent != null)
+			return parent.getGlobal(declaringInterpreter);
 		else
 			return getThis(declaringInterpreter);
 	}
@@ -415,17 +394,18 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * interpreter basis if we had weak references... We might also look at skipping over child interpreters and going to the parent for the
 	 * declaring interpreter, so we'd be sure to get the top interpreter.
 	 */
-	public This getThis(Interpreter declaringInterpreter)
-	{
-		if (thisReference == null) thisReference = This.getThis(this, declaringInterpreter);
+	public This getThis(Interpreter declaringInterpreter) {
+		if (thisReference == null)
+			thisReference = This.getThis(this, declaringInterpreter);
 
 		return thisReference;
 	}
 
-	public BshClassManager getClassManager()
-	{
-		if (classManager != null) return classManager;
-		if (parent != null && parent != JAVACODE) return parent.getClassManager();
+	public BshClassManager getClassManager() {
+		if (classManager != null)
+			return classManager;
+		if (parent != null && parent != JAVACODE)
+			return parent.getClassManager();
 
 		classManager = BshClassManager.createClassManager(null/* interp */);
 
@@ -433,35 +413,33 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 		return classManager;
 	}
 
-	void setClassManager(BshClassManager classManager)
-	{
+	void setClassManager(BshClassManager classManager) {
 		this.classManager = classManager;
 	}
 
 	/**
 	 * Used for serialization
 	 */
-	public void prune()
-	{
+	public void prune() {
 		// Cut off from parent, we must have our own class manager.
 		// Can't do this in the run() command (needs to resolve stuff)
 		// Should we do it by default when we create a namespace will no
 		// parent of class manager?
 
 		if (this.classManager == null)
-		// XXX if we keep the createClassManager in getClassManager then we can axe
-		// this?
-		setClassManager(BshClassManager.createClassManager(null/* interp */));
+			// XXX if we keep the createClassManager in getClassManager then we can axe
+			// this?
+			setClassManager(BshClassManager.createClassManager(null/* interp */));
 
 		setParent(null);
 	}
 
-	public void setParent(NameSpace parent)
-	{
+	public void setParent(NameSpace parent) {
 		this.parent = parent;
 
 		// If we are disconnected from root we need to handle the def imports
-		if (parent == null) loadDefaultImports();
+		if (parent == null)
+			loadDefaultImports();
 	}
 
 	/**
@@ -473,8 +451,7 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * @see Primitive#unwrap(Object )
 	 * @return The variable value or Primitive.VOID if it is not defined.
 	 */
-	public Object getVariable(String name) throws UtilEvalError
-	{
+	public Object getVariable(String name) throws UtilEvalError {
 		return getVariable(name, true);
 	}
 
@@ -489,8 +466,7 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * @see Primitive#unwrap(Object )
 	 * @return The variable value or Primitive.VOID if it is not defined.
 	 */
-	public Object getVariable(String name, boolean recurse) throws UtilEvalError
-	{
+	public Object getVariable(String name, boolean recurse) throws UtilEvalError {
 		Variable var = getVariableImpl(name, recurse);
 		return unwrapVariable(var);
 	}
@@ -502,21 +478,24 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * 
 	 * @return the Variable value or null if it is not defined
 	 */
-	protected Variable getVariableImpl(String name, boolean recurse) throws UtilEvalError
-	{
+	protected Variable getVariableImpl(String name, boolean recurse) throws UtilEvalError {
 		Variable var = null;
 
 		// Change import precedence if we are a class body/instance
 		// Get imported first.
-		if (var == null && isClass) var = getImportedVar(name);
+		if (var == null && isClass)
+			var = getImportedVar(name);
 
-		if (var == null && variables != null) var = variables.get(name);
+		if (var == null && variables != null)
+			var = variables.get(name);
 
 		// Change import precedence if we are a class body/instance
-		if (var == null && !isClass) var = getImportedVar(name);
+		if (var == null && !isClass)
+			var = getImportedVar(name);
 
 		// try parent
-		if (recurse && (var == null) && (parent != null)) var = parent.getVariableImpl(name, recurse);
+		if (recurse && (var == null) && (parent != null))
+			var = parent.getVariableImpl(name, recurse);
 
 		return var;
 	}
@@ -524,9 +503,9 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	/*
 	 * Get variables declared in this namespace.
 	 */
-	public Variable[] getDeclaredVariables()
-	{
-		if (variables == null) return new Variable[0];
+	public Variable[] getDeclaredVariables() {
+		if (variables == null)
+			return new Variable[0];
 		return variables.values().toArray(new Variable[0]);
 	}
 
@@ -535,8 +514,7 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * 
 	 * @return return the variable value. A null var is mapped to Primitive.VOID
 	 */
-	protected Object unwrapVariable(Variable var) throws UtilEvalError
-	{
+	protected Object unwrapVariable(Variable var) throws UtilEvalError {
 		return (var == null) ? Primitive.VOID : var.getValue();
 	}
 
@@ -545,10 +523,10 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 */
 	@Deprecated
 	@SuppressWarnings("rawtypes")
-	public void setTypedVariable(String name, Class type, Object value, boolean isFinal) throws UtilEvalError
-	{
+	public void setTypedVariable(String name, Class type, Object value, boolean isFinal) throws UtilEvalError {
 		Modifiers modifiers = new Modifiers();
-		if (isFinal) modifiers.addModifier(Modifiers.FIELD, "final");
+		if (isFinal)
+			modifiers.addModifier(Modifiers.FIELD, "final");
 		setTypedVariable(name, type, value, modifiers);
 	}
 
@@ -568,8 +546,7 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 *            may be null
 	 */
 	@SuppressWarnings("rawtypes")
-	public void setTypedVariable(String name, Class type, Object value, Modifiers modifiers) throws UtilEvalError
-	{
+	public void setTypedVariable(String name, Class type, Object value, Modifiers modifiers) throws UtilEvalError {
 		// checkVariableModifiers( name, modifiers );
 
 		ensureVariables();
@@ -584,20 +561,15 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 		 */
 
 		// does the variable already exist?
-		if (existing != null)
-		{
+		if (existing != null) {
 			// Is it typed?
-			if (existing.getType() != null)
-			{
+			if (existing.getType() != null) {
 				// If it had a different type throw error.
 				// This allows declaring the same var again, but not with
 				// a different (even if assignable) type.
-				if (existing.getType() != type)
-				{
+				if (existing.getType() != type) {
 					throw new UtilEvalError("Typed variable: " + name + " was previously declared with type: " + existing.getType());
-				}
-				else
-				{
+				} else {
 					// else set it and return
 					existing.setValue(value, Variable.DECLARATION);
 					return;
@@ -626,23 +598,19 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * @see Interpreter#source(String )
 	 * @see Interpreter#eval(String )
 	 */
-	public void setMethod(BshMethod method) throws UtilEvalError
-	{
+	public void setMethod(BshMethod method) throws UtilEvalError {
 		// checkMethodModifiers( method );
 
-		if (methods == null) methods = new HashMap<String, List<BshMethod>>();
+		if (methods == null)
+			methods = new HashMap<String, List<BshMethod>>();
 
 		String name = method.getName();
 		List<BshMethod> list = methods.get(name);
 
-		if (list == null)
-		{
+		if (list == null) {
 			methods.put(name, Collections.singletonList(method));
-		}
-		else
-		{
-			if (!(list instanceof ArrayList))
-			{
+		} else {
+			if (!(list instanceof ArrayList)) {
 				list = new ArrayList<BshMethod>(list);
 				methods.put(name, list);
 			}
@@ -656,8 +624,7 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * @see #getMethod(String, Class [] )
 	 */
 	@SuppressWarnings("rawtypes")
-	public BshMethod getMethod(String name, Class[] sig) throws UtilEvalError
-	{
+	public BshMethod getMethod(String name, Class[] sig) throws UtilEvalError {
 		return getMethod(name, sig, false/* declaredOnly */);
 	}
 
@@ -674,34 +641,35 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 *            visible.
 	 */
 	@SuppressWarnings("rawtypes")
-	public BshMethod getMethod(String name, Class[] sig, boolean declaredOnly) throws UtilEvalError
-	{
+	public BshMethod getMethod(String name, Class[] sig, boolean declaredOnly) throws UtilEvalError {
 		BshMethod method = null;
 
 		// Change import precedence if we are a class body/instance
 		// Get import first.
-		if (method == null && isClass && !declaredOnly) method = getImportedMethod(name, sig);
+		if (method == null && isClass && !declaredOnly)
+			method = getImportedMethod(name, sig);
 
-		if (method == null && methods != null)
-		{
+		if (method == null && methods != null) {
 			List<BshMethod> list = methods.get(name);
 
-			if (list != null)
-			{
+			if (list != null) {
 				// Apply most specific signature matching
 				Class[][] candidates = new Class[list.size()][];
 				for (int i = 0; i < candidates.length; i++)
 					candidates[i] = list.get(i).getParameterTypes();
 
 				int match = Reflect.findMostSpecificSignature(sig, candidates);
-				if (match != -1) method = list.get(match);
+				if (match != -1)
+					method = list.get(match);
 			}
 		}
 
-		if (method == null && !isClass && !declaredOnly) method = getImportedMethod(name, sig);
+		if (method == null && !isClass && !declaredOnly)
+			method = getImportedMethod(name, sig);
 
 		// try parent
-		if (!declaredOnly && (method == null) && (parent != null)) return parent.getMethod(name, sig);
+		if (!declaredOnly && (method == null) && (parent != null))
+			return parent.getMethod(name, sig);
 
 		return method;
 	}
@@ -709,9 +677,9 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	/**
 	 * Import a class name. Subsequent imports override earlier ones
 	 */
-	public void importClass(String name)
-	{
-		if (importedClasses == null) importedClasses = new HashMap<String, String>();
+	public void importClass(String name) {
+		if (importedClasses == null)
+			importedClasses = new HashMap<String, String>();
 
 		importedClasses.put(Name.suffix(name, 1), name);
 		nameSpaceChanged();
@@ -720,9 +688,9 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	/**
 	 * subsequent imports override earlier ones
 	 */
-	public void importPackage(String name)
-	{
-		if (importedPackages == null) importedPackages = new ArrayList<String>();
+	public void importPackage(String name) {
+		if (importedPackages == null)
+			importedPackages = new ArrayList<String>();
 
 		// If it exists, remove it and add it at the end (avoid memory leak)
 		importedPackages.remove(name);
@@ -736,16 +704,18 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * notation. e.g. importCommands("/bsh/commands") or importCommands("bsh.commands") are equivalent. If a relative path style specifier
 	 * is used then it is made into an absolute path by prepending "/".
 	 */
-	public void importCommands(String name)
-	{
-		if (importedCommands == null) importedCommands = new ArrayList<String>();
+	public void importCommands(String name) {
+		if (importedCommands == null)
+			importedCommands = new ArrayList<String>();
 
 		// dots to slashes
 		name = name.replace('.', '/');
 		// absolute
-		if (!name.startsWith("/")) name = "/" + name;
+		if (!name.startsWith("/"))
+			name = "/" + name;
 		// remove trailing (but preserve case of simple "/")
-		if (name.length() > 1 && name.endsWith("/")) name = name.substring(0, name.length() - 1);
+		if (name.length() > 1 && name.endsWith("/"))
+			name = name.substring(0, name.length() - 1);
 
 		// If it exists, remove it and add it at the end (avoid memory leak)
 		importedCommands.remove(name);
@@ -776,20 +746,19 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 *             if loadScriptedCommand throws UtilEvalError i.e. on errors loading a script that was found
 	 */
 	@SuppressWarnings("rawtypes")
-	public Object getCommand(String name, Class[] argTypes, Interpreter interpreter) throws UtilEvalError
-	{
-		if (Interpreter.DEBUG) Interpreter.debug("getCommand: " + name);
+	public Object getCommand(String name, Class[] argTypes, Interpreter interpreter) throws UtilEvalError {
+		if (Interpreter.DEBUG)
+			Interpreter.debug("getCommand: " + name);
 		BshClassManager bcm = interpreter.getClassManager();
 
-		if (importedCommands != null)
-		{
+		if (importedCommands != null) {
 			// loop backwards for precedence
-			for (int i = importedCommands.size() - 1; i >= 0; i--)
-			{
+			for (int i = importedCommands.size() - 1; i >= 0; i--) {
 				String path = importedCommands.get(i);
 
 				String scriptPath;
-				if (path.equals("/")) scriptPath = path + name + ".bsh";
+				if (path.equals("/"))
+					scriptPath = path + name + ".bsh";
 				else
 					scriptPath = path + "/" + name + ".bsh";
 
@@ -797,67 +766,73 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 
 				InputStream in = bcm.getResourceAsStream(scriptPath);
 
-				if (in != null) return loadScriptedCommand(in, name, argTypes, scriptPath, interpreter);
+				if (in != null)
+					return loadScriptedCommand(in, name, argTypes, scriptPath, interpreter);
 
 				// Chop leading "/" and change "/" to "."
 				String className;
-				if (path.equals("/")) className = name;
+				if (path.equals("/"))
+					className = name;
 				else
 					className = path.substring(1).replace('/', '.') + "." + name;
 
 				Interpreter.debug("searching for class: " + className);
 				Class clas = bcm.classForName(className);
-				if (clas != null) return clas;
+				if (clas != null)
+					return clas;
 			}
 		}
 
-		if (parent != null) return parent.getCommand(name, argTypes, interpreter);
+		if (parent != null)
+			return parent.getCommand(name, argTypes, interpreter);
 		else
 			return null;
 	}
 
 	@SuppressWarnings("rawtypes")
-	protected BshMethod getImportedMethod(String name, Class[] sig) throws UtilEvalError
-	{
+	protected BshMethod getImportedMethod(String name, Class[] sig) throws UtilEvalError {
 		// Try object imports
-		if (importedObjects != null) for (int i = 0; i < importedObjects.size(); i++)
-		{
-			Object object = importedObjects.get(i);
-			Class clas = object.getClass();
-			Method method = Reflect.resolveJavaMethod(getClassManager(), clas, name, sig, false/* onlyStatic */);
-			if (method != null) return new BshMethod(method, object);
-		}
+		if (importedObjects != null)
+			for (int i = 0; i < importedObjects.size(); i++) {
+				Object object = importedObjects.get(i);
+				Class clas = object.getClass();
+				Method method = Reflect.resolveJavaMethod(getClassManager(), clas, name, sig, false/* onlyStatic */);
+				if (method != null)
+					return new BshMethod(method, object);
+			}
 
 		// Try static imports
-		if (importedStatic != null) for (int i = 0; i < importedStatic.size(); i++)
-		{
-			Class clas = importedStatic.get(i);
-			Method method = Reflect.resolveJavaMethod(getClassManager(), clas, name, sig, true/* onlyStatic */);
-			if (method != null) return new BshMethod(method, null/* object */);
-		}
+		if (importedStatic != null)
+			for (int i = 0; i < importedStatic.size(); i++) {
+				Class clas = importedStatic.get(i);
+				Method method = Reflect.resolveJavaMethod(getClassManager(), clas, name, sig, true/* onlyStatic */);
+				if (method != null)
+					return new BshMethod(method, null/* object */);
+			}
 
 		return null;
 	}
 
 	@SuppressWarnings("rawtypes")
-	protected Variable getImportedVar(String name) throws UtilEvalError
-	{
+	protected Variable getImportedVar(String name) throws UtilEvalError {
 		// Try object imports
-		if (importedObjects != null) for (int i = 0; i < importedObjects.size(); i++)
-		{
-			Object object = importedObjects.get(i);
-			Class clas = object.getClass();
-			Field field = Reflect.resolveJavaField(clas, name, false/* onlyStatic */);
-			if (field != null) return new Variable(name, field.getType(), new LHS(object, field));
-		}
+		if (importedObjects != null)
+			for (int i = 0; i < importedObjects.size(); i++) {
+				Object object = importedObjects.get(i);
+				Class clas = object.getClass();
+				Field field = Reflect.resolveJavaField(clas, name, false/* onlyStatic */);
+				if (field != null)
+					return new Variable(name, field.getType(), new LHS(object, field));
+			}
 
 		// Try static imports
-		if (importedStatic != null) for (int i = 0; i < importedStatic.size(); i++)
-		{
-			Class clas = importedStatic.get(i);
-			Field field = Reflect.resolveJavaField(clas, name, true/* onlyStatic */);
-			if (field != null) return new Variable(name, field.getType(), new LHS(field));
-		}
+		if (importedStatic != null)
+			for (int i = 0; i < importedStatic.size(); i++) {
+				Class clas = importedStatic.get(i);
+				Field field = Reflect.resolveJavaField(clas, name, true/* onlyStatic */);
+				if (field != null)
+					return new Variable(name, field.getType(), new LHS(field));
+			}
 
 		return null;
 	}
@@ -872,15 +847,10 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * If we want to support multiple commands in the command path we need to change this to not throw the exception.
 	 */
 	@SuppressWarnings("rawtypes")
-	private BshMethod loadScriptedCommand(InputStream in, String name, Class[] argTypes, String resourcePath, Interpreter interpreter)
-			throws UtilEvalError
-	{
-		try
-		{
+	private BshMethod loadScriptedCommand(InputStream in, String name, Class[] argTypes, String resourcePath, Interpreter interpreter) throws UtilEvalError {
+		try {
 			interpreter.eval(new InputStreamReader(in), this, resourcePath);
-		}
-		catch (EvalError e)
-		{
+		} catch (EvalError e) {
 			/*
 			 * Here we catch any EvalError from the interpreter because we are using it as a tool to load the command, not as part of the
 			 * execution path.
@@ -903,10 +873,8 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * Helper that caches class.
 	 */
 	@SuppressWarnings("rawtypes")
-	void cacheClass(String name, Class c)
-	{
-		if (classCache == null)
-		{
+	void cacheClass(String name, Class c) {
+		if (classCache == null) {
 			classCache = new HashMap<String, Class>();
 			// cacheCount++; // debug
 		}
@@ -921,13 +889,14 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * @return null if not found.
 	 */
 	@SuppressWarnings("rawtypes")
-	public Class getClass(String name) throws UtilEvalError
-	{
+	public Class getClass(String name) throws UtilEvalError {
 		Class c = getClassImpl(name);
-		if (c != null) return c;
+		if (c != null)
+			return c;
 		else
 		// implement the recursion for getClassImpl()
-		if (parent != null) return parent.getClass(name);
+		if (parent != null)
+			return parent.getClass(name);
 		else
 			return null;
 	}
@@ -944,30 +913,28 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * @return null if not found.
 	 */
 	@SuppressWarnings("rawtypes")
-	private Class getClassImpl(String name) throws UtilEvalError
-	{
+	private Class getClassImpl(String name) throws UtilEvalError {
 		Class c = null;
 
 		// Check the cache
-		if (classCache != null)
-		{
+		if (classCache != null) {
 			c = classCache.get(name);
 
-			if (c != null) return c;
+			if (c != null)
+				return c;
 		}
 
 		// Unqualified (simple, non-compound) name
 		boolean unqualifiedName = !Name.isCompound(name);
 
 		// Unqualified name check imported
-		if (unqualifiedName)
-		{
+		if (unqualifiedName) {
 			// Try imported class
-			if (c == null) c = getImportedClassImpl(name);
+			if (c == null)
+				c = getImportedClassImpl(name);
 
 			// if found as imported also cache it
-			if (c != null)
-			{
+			if (c != null) {
 				cacheClass(name, c);
 				return c;
 			}
@@ -975,15 +942,16 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 
 		// Try absolute
 		c = classForName(name);
-		if (c != null)
-		{
+		if (c != null) {
 			// Cache unqualified names to prevent import check again
-			if (unqualifiedName) cacheClass(name, c);
+			if (unqualifiedName)
+				cacheClass(name, c);
 			return c;
 		}
 
 		// Not found
-		if (Interpreter.DEBUG) Interpreter.debug("getClass(): " + name + " not	found in " + this);
+		if (Interpreter.DEBUG)
+			Interpreter.debug("getClass(): " + name + " not	found in " + this);
 		return null;
 	}
 
@@ -992,42 +960,40 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * NameSpace (no parent chain).
 	 */
 	@SuppressWarnings("rawtypes")
-	private Class getImportedClassImpl(String name) throws UtilEvalError
-	{
+	private Class getImportedClassImpl(String name) throws UtilEvalError {
 		// Try explicitly imported class, e.g. import foo.Bar;
 		String fullname = null;
-		if (importedClasses != null) fullname = importedClasses.get(name);
+		if (importedClasses != null)
+			fullname = importedClasses.get(name);
 
 		// not sure if we should really recurse here for explicitly imported
 		// class in parent...
 
-		if (fullname != null)
-		{
+		if (fullname != null) {
 			/*
 			 * Found the full name in imported classes.
 			 */
 			// Try to make the full imported name
 			Class clas = classForName(fullname);
 
-			if (clas != null) return clas;
+			if (clas != null)
+				return clas;
 
 			// Handle imported inner class case
 			// Imported full name wasn't found as an absolute class
 			// If it is compound, try to resolve to an inner class.
 			// (maybe this should happen in the BshClassManager?)
 
-			if (Name.isCompound(fullname)) try
-			{
-				clas = getNameResolver(fullname).toClass();
-			}
-			catch (ClassNotFoundException e)
-			{ /* not a class */
-			}
-			else if (Interpreter.DEBUG) Interpreter.debug("imported unpackaged name not found:" + fullname);
+			if (Name.isCompound(fullname))
+				try {
+					clas = getNameResolver(fullname).toClass();
+				} catch (ClassNotFoundException e) { /* not a class */
+				}
+			else if (Interpreter.DEBUG)
+				Interpreter.debug("imported unpackaged name not found:" + fullname);
 
 			// If found cache the full name in the BshClassManager
-			if (clas != null)
-			{
+			if (clas != null) {
 				// (should we cache info in not a class case too?)
 				getClassManager().cacheClassInfo(fullname, clas);
 				return clas;
@@ -1041,30 +1007,30 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 		/*
 		 * Try imported packages, e.g. "import foo.bar.*;" in reverse order of import... (give later imports precedence...)
 		 */
-		if (importedPackages != null) for (int i = importedPackages.size() - 1; i >= 0; i--)
-		{
-			String s = importedPackages.get(i) + "." + name;
-			Class c = classForName(s);
-			if (c != null) return c;
-		}
+		if (importedPackages != null)
+			for (int i = importedPackages.size() - 1; i >= 0; i--) {
+				String s = importedPackages.get(i) + "." + name;
+				Class c = classForName(s);
+				if (c != null)
+					return c;
+			}
 
 		BshClassManager bcm = getClassManager();
 		/*
 		 * Try super import if available Note: we do this last to allow explicitly imported classes and packages to take priority. This
 		 * method will also throw an error indicating ambiguity if it exists...
 		 */
-		if (bcm.hasSuperImport())
-		{
+		if (bcm.hasSuperImport()) {
 			String s = bcm.getClassNameByUnqName(name);
-			if (s != null) return classForName(s);
+			if (s != null)
+				return classForName(s);
 		}
 
 		return null;
 	}
 
 	@SuppressWarnings("rawtypes")
-	private Class classForName(String name)
-	{
+	private Class classForName(String name) {
 		return getClassManager().classForName(name);
 	}
 
@@ -1074,8 +1040,7 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * @return all variable and method names in this and all parent namespaces
 	 */
 	@Override
-	public String[] getAllNames()
-	{
+	public String[] getAllNames() {
 		List<String> list = new ArrayList<String>();
 		getAllNamesAux(list);
 		return list.toArray(new String[0]);
@@ -1084,11 +1049,12 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	/**
 	 * Helper for implementing NameSource
 	 */
-	protected void getAllNamesAux(List<String> list)
-	{
+	protected void getAllNamesAux(List<String> list) {
 		list.addAll(variables.keySet());
-		if (methods != null) list.addAll(methods.keySet());
-		if (parent != null) parent.getAllNamesAux(list);
+		if (methods != null)
+			list.addAll(methods.keySet());
+		if (parent != null)
+			parent.getAllNamesAux(list);
 	}
 
 	List<NameSource.Listener> nameSourceListeners;
@@ -1097,33 +1063,29 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * Implements NameSource Add a listener who is notified upon changes to names in this space.
 	 */
 	@Override
-	public void addNameSourceListener(NameSource.Listener listener)
-	{
-		if (nameSourceListeners == null) nameSourceListeners = new ArrayList<NameSource.Listener>();
+	public void addNameSourceListener(NameSource.Listener listener) {
+		if (nameSourceListeners == null)
+			nameSourceListeners = new ArrayList<NameSource.Listener>();
 		nameSourceListeners.add(listener);
 	}
 
 	/**
 	 * Perform "import *;" causing the entire classpath to be mapped. This can take a while.
 	 */
-	public void doSuperImport() throws UtilEvalError
-	{
+	public void doSuperImport() throws UtilEvalError {
 		getClassManager().doSuperImport();
 	}
 
 	@Override
-	public String toString()
-	{
-		return "NameSpace: " + (nsName == null ? super.toString() : nsName + " (" + super.toString() + ")")
-				+ (isClass ? " (isClass) " : "") + (isMethod ? " (method) " : "") + (classStatic != null ? " (class static) " : "")
+	public String toString() {
+		return "NameSpace: " + (nsName == null ? super.toString() : nsName + " (" + super.toString() + ")") + (isClass ? " (isClass) " : "") + (isMethod ? " (method) " : "") + (classStatic != null ? " (class static) " : "")
 				+ (classInstance != null ? " (class instance) " : "");
 	}
 
 	/*
 	 * For serialization. Don't serialize non-serializable objects.
 	 */
-	private synchronized void writeObject(java.io.ObjectOutputStream s) throws IOException
-	{
+	private synchronized void writeObject(java.io.ObjectOutputStream s) throws IOException {
 		// clear name resolvers... don't know if this is necessary.
 		names = null;
 
@@ -1138,8 +1100,7 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * @see bsh.This.invokeMethod( String methodName, Object [] args, Interpreter interpreter, CallStack callstack, SimpleNode callerInfo,
 	 *      boolean )
 	 */
-	public Object invokeMethod(String methodName, Object[] args, Interpreter interpreter) throws EvalError
-	{
+	public Object invokeMethod(String methodName, Object[] args, Interpreter interpreter) throws EvalError {
 		return invokeMethod(methodName, args, interpreter, null, null);
 	}
 
@@ -1149,9 +1110,7 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * 
 	 * @see bsh.This.invokeMethod( String methodName, Object [] args, Interpreter interpreter, CallStack callstack, SimpleNode callerInfo )
 	 */
-	public Object invokeMethod(String methodName, Object[] args, Interpreter interpreter, CallStack callstack, SimpleNode callerInfo)
-			throws EvalError
-	{
+	public Object invokeMethod(String methodName, Object[] args, Interpreter interpreter, CallStack callstack, SimpleNode callerInfo) throws EvalError {
 		return getThis(interpreter).invokeMethod(methodName, args, interpreter, callstack, callerInfo, false/* declaredOnly */);
 	}
 
@@ -1159,16 +1118,14 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * Clear all cached classes and names
 	 */
 	@Override
-	public void classLoaderChanged()
-	{
+	public void classLoaderChanged() {
 		nameSpaceChanged();
 	}
 
 	/**
 	 * Clear all cached classes and names
 	 */
-	public void nameSpaceChanged()
-	{
+	public void nameSpaceChanged() {
 		classCache = null;
 		names = null;
 	}
@@ -1186,8 +1143,7 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * importCommands(&quot;/bsh/commands&quot;);
 	 * </pre>
 	 */
-	public void loadDefaultImports()
-	{
+	public void loadDefaultImports() {
 		/**
 		 * Note: the resolver looks through these in reverse order, per precedence rules... so for max efficiency put the most common ones
 		 * later.
@@ -1213,14 +1169,13 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * <p>
 	 * This method was public for a time, which was a mistake. Use get() instead.
 	 */
-	Name getNameResolver(String ambigname)
-	{
-		if (names == null) names = new HashMap<String, Name>();
+	Name getNameResolver(String ambigname) {
+		if (names == null)
+			names = new HashMap<String, Name>();
 
 		Name name = names.get(ambigname);
 
-		if (name == null)
-		{
+		if (name == null) {
 			name = new Name(this, ambigname);
 			names.put(ambigname, name);
 		}
@@ -1228,18 +1183,18 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 		return name;
 	}
 
-	public int getInvocationLine()
-	{
+	public int getInvocationLine() {
 		SimpleNode node = getNode();
-		if (node != null) return node.getLineNumber();
+		if (node != null)
+			return node.getLineNumber();
 		else
 			return -1;
 	}
 
-	public String getInvocationText()
-	{
+	public String getInvocationText() {
 		SimpleNode node = getNode();
-		if (node != null) return node.getText();
+		if (node != null)
+			return node.getText();
 		else
 			return "<invoked from Java code>";
 	}
@@ -1250,8 +1205,7 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * in NameSpace for convenience (you don't have to import bsh.ClassIdentifier to use it );
 	 */
 	@SuppressWarnings("rawtypes")
-	public static Class identifierToClass(ClassIdentifier ci)
-	{
+	public static Class identifierToClass(ClassIdentifier ci) {
 		return ci.getTargetClass();
 	}
 
@@ -1261,15 +1215,15 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	 * 
 	 * @see #loadDefaultImports()
 	 */
-	public void clear()
-	{
+	public void clear() {
 		variables = null;
 		methods = null;
 		importedClasses = null;
 		importedPackages = null;
 		importedCommands = null;
 		importedObjects = null;
-		if (parent == null) loadDefaultImports();
+		if (parent == null)
+			loadDefaultImports();
 		classCache = null;
 		names = null;
 	}
@@ -1283,9 +1237,9 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	/*
 	 * Note: this impor pattern is becoming common... could factor it out into an importedObject Vector class.
 	 */
-	public void importObject(Object obj)
-	{
-		if (importedObjects == null) importedObjects = new ArrayList<Object>();
+	public void importObject(Object obj) {
+		if (importedObjects == null)
+			importedObjects = new ArrayList<Object>();
 
 		// If it exists, remove it and add it at the end (avoid memory leak)
 		importedObjects.remove(obj);
@@ -1298,9 +1252,9 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	/**
 	*/
 	@SuppressWarnings("rawtypes")
-	public void importStatic(Class clas)
-	{
-		if (importedStatic == null) importedStatic = new ArrayList<Class>();
+	public void importStatic(Class clas) {
+		if (importedStatic == null)
+			importedStatic = new ArrayList<Class>();
 
 		// If it exists, remove it and add it at the end (avoid memory leak)
 		importedStatic.remove(clas);
@@ -1312,24 +1266,22 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 	/**
 	 * Set the package name for classes defined in this namespace. Subsequent sets override the package.
 	 */
-	void setPackage(String packageName)
-	{
+	void setPackage(String packageName) {
 		this.packageName = packageName;
 	}
 
-	String getPackage()
-	{
-		if (packageName != null) return packageName;
+	String getPackage() {
+		if (packageName != null)
+			return packageName;
 
-		if (parent != null) return parent.getPackage();
+		if (parent != null)
+			return parent.getPackage();
 
 		return null;
 	}
 
-	NameSpace copy()
-	{
-		try
-		{
+	NameSpace copy() {
+		try {
 			final NameSpace clone = (NameSpace) clone();
 			clone.thisReference = null;
 			clone.variables = clone(variables);
@@ -1341,26 +1293,20 @@ public class NameSpace implements Serializable, BshClassManager.Listener, NameSo
 			clone.importedStatic = clone(importedStatic);
 			clone.names = clone(names);
 			return clone;
-		}
-		catch (CloneNotSupportedException e)
-		{
+		} catch (CloneNotSupportedException e) {
 			throw new IllegalStateException(e);
 		}
 	}
 
-	private <K, V> Map<K, V> clone(final Map<K, V> map)
-	{
-		if (map == null)
-		{
+	private <K, V> Map<K, V> clone(final Map<K, V> map) {
+		if (map == null) {
 			return null;
 		}
 		return new HashMap<K, V>(map);
 	}
 
-	private <T> List<T> clone(final List<T> list)
-	{
-		if (list == null)
-		{
+	private <T> List<T> clone(final List<T> list) {
+		if (list == null) {
 			return null;
 		}
 		return new ArrayList<T>(list);

@@ -26,8 +26,7 @@ import com.badlogic.gdx.math.MathUtils;
  * 
  * @author Longri
  */
-public class Circle implements IGeometry
-{
+public class Circle implements IGeometry {
 	private final int MIN_SEG;
 
 	protected float centerX;
@@ -53,8 +52,7 @@ public class Circle implements IGeometry
 	 * @param r
 	 *            radius
 	 */
-	public Circle(float x, float y, float r)
-	{
+	public Circle(float x, float y, float r) {
 		centerX = x;
 		centerY = y;
 		radius = r;
@@ -73,14 +71,13 @@ public class Circle implements IGeometry
 	 * @param compute
 	 *            true for call Compute() with constructor
 	 */
-	public Circle(float x, float y, float r, boolean compute)
-	{
+	public Circle(float x, float y, float r, boolean compute) {
 		this(x, y, r);
-		if (compute) Compute();
+		if (compute)
+			Compute();
 	}
 
-	public Circle(float x, float y, float r, int minimumSegmente)
-	{
+	public Circle(float x, float y, float r, int minimumSegmente) {
 		MIN_SEG = minimumSegmente;
 		centerX = x;
 		centerY = y;
@@ -95,8 +92,7 @@ public class Circle implements IGeometry
 	 * 
 	 * @param x
 	 */
-	public void setCenterX(float x)
-	{
+	public void setCenterX(float x) {
 		centerX = x;
 		isDirty = true;
 	}
@@ -108,8 +104,7 @@ public class Circle implements IGeometry
 	 * 
 	 * @param y
 	 */
-	public void setCenterY(float y)
-	{
+	public void setCenterY(float y) {
 		centerY = y;
 		isDirty = true;
 	}
@@ -122,8 +117,7 @@ public class Circle implements IGeometry
 	 * @param r
 	 *            Radius
 	 */
-	public void setRadius(float r)
-	{
+	public void setRadius(float r) {
 		radius = r;
 		isDirty = true;
 	}
@@ -134,9 +128,9 @@ public class Circle implements IGeometry
 	 * <br>
 	 * For every segment are compute a triangle from the segment start, end and the center of this circle.
 	 */
-	public void Compute()
-	{
-		if (!isDirty) return; // Nothing todo
+	public void Compute() {
+		if (!isDirty)
+			return; // Nothing todo
 
 		// calculate segment count
 		double alpha = (360 * MIN_CIRCLE_SEGMENTH_LENGTH) / (MathUtils.PI2 * radius);
@@ -158,18 +152,16 @@ public class Circle implements IGeometry
 		int triangleIndex = 0;
 		short verticeIdex = 1;
 		boolean beginnTriangles = false;
-		for (float i = 0; index < (segmente + 1) * 2; i += thetaStep)
-		{
+		for (float i = 0; index < (segmente + 1) * 2; i += thetaStep) {
 			vertices[index++] = centerX + radius * MathUtils.cos(i);
 			vertices[index++] = centerY + radius * MathUtils.sin(i);
 
-			if (!beginnTriangles)
-			{
-				if (index % 6 == 0) beginnTriangles = true;
+			if (!beginnTriangles) {
+				if (index % 6 == 0)
+					beginnTriangles = true;
 			}
 
-			if (beginnTriangles)
-			{
+			if (beginnTriangles) {
 				triangleIndices[triangleIndex++] = 0;
 				triangleIndices[triangleIndex++] = verticeIdex++;
 				triangleIndices[triangleIndex++] = verticeIdex;
@@ -186,30 +178,28 @@ public class Circle implements IGeometry
 	}
 
 	@Override
-	public float[] getVertices()
-	{
-		if (isDirty) Compute();
+	public float[] getVertices() {
+		if (isDirty)
+			Compute();
 		return vertices;
 	}
 
 	@Override
-	public short[] getTriangles()
-	{
-		if (isDirty) Compute();
+	public short[] getTriangles() {
+		if (isDirty)
+			Compute();
 		return triangleIndices;
 	}
 
-	public boolean isDisposed()
-	{
+	public boolean isDisposed() {
 		return isDisposed.get();
 	}
 
 	@Override
-	public void dispose()
-	{
-		synchronized (isDisposed)
-		{
-			if (isDisposed.get()) return;
+	public void dispose() {
+		synchronized (isDisposed) {
+			if (isDisposed.get())
+				return;
 			vertices = null;
 			triangleIndices = null;
 			isDisposed.set(true);

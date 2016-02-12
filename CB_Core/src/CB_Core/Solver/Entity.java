@@ -2,36 +2,30 @@ package CB_Core.Solver;
 
 import java.util.ArrayList;
 
-public class Entity
-{
+public class Entity {
 	protected Solver solver;
 	protected int Id;
 	protected boolean IsLinks; // wird auf true, wenn dies links vom = ist.
 
-	public Entity(Solver solver, int id)
-	{
+	public Entity(Solver solver, int id) {
 		this.solver = solver;
 		this.Id = id;
 		IsLinks = false;
 	}
 
 	// alle Vorkommen von source durch dest ersetzen, da source nur ein Verweis auf dest ist!
-	public void ReplaceTemp(Entity source, Entity dest)
-	{
+	public void ReplaceTemp(Entity source, Entity dest) {
 	}
 
 	// alle Entities herausgeben, die in diesem enthalten sind
-	public void GetAllEntities(ArrayList<Entity> list)
-	{
+	public void GetAllEntities(ArrayList<Entity> list) {
 	}
 
-	public String Berechne()
-	{
+	public String Berechne() {
 		return "";
 	}
 
-	public String ToString()
-	{
+	public String ToString() {
 		return "";
 	}
 }

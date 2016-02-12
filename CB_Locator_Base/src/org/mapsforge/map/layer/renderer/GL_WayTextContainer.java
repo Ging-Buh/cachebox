@@ -18,8 +18,7 @@ import org.mapsforge.core.graphics.Paint;
 
 import CB_UI_Base.graphics.GL_Path;
 
-public class GL_WayTextContainer
-{
+public class GL_WayTextContainer {
 	final Paint fill;
 	final Paint stroke;
 	final String text;
@@ -27,8 +26,7 @@ public class GL_WayTextContainer
 	final double averageX;
 	final double averageY;
 
-	public GL_WayTextContainer(GL_Path path, String text, Paint fill, Paint stroke, double averageX, double averageY)
-	{
+	public GL_WayTextContainer(GL_Path path, String text, Paint fill, Paint stroke, double averageX, double averageY) {
 		this.path = path;
 		this.text = text;
 		this.fill = fill;

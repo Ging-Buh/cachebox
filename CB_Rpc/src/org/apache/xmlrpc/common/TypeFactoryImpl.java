@@ -72,7 +72,6 @@ import org.apache.xmlrpc.util.XmlRpcDateTimeDateFormat;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-
 /** Default implementation of a type factory.
  */
 public class TypeFactoryImpl implements TypeFactory {
@@ -86,13 +85,13 @@ public class TypeFactoryImpl implements TypeFactory {
 	private static final TypeSerializer LONG_SERIALIZER = new I8Serializer();
 	private static final TypeSerializer FLOAT_SERIALIZER = new FloatSerializer();
 	private static final TypeSerializer NODE_SERIALIZER = new NodeSerializer();
-    private static final TypeSerializer SERIALIZABLE_SERIALIZER = new SerializableSerializer();
-    private static final TypeSerializer BIGDECIMAL_SERIALIZER = new BigDecimalSerializer();
-    private static final TypeSerializer BIGINTEGER_SERIALIZER = new BigIntegerSerializer();
-    private static final TypeSerializer CALENDAR_SERIALIZER = new CalendarSerializer();
+	private static final TypeSerializer SERIALIZABLE_SERIALIZER = new SerializableSerializer();
+	private static final TypeSerializer BIGDECIMAL_SERIALIZER = new BigDecimalSerializer();
+	private static final TypeSerializer BIGINTEGER_SERIALIZER = new BigIntegerSerializer();
+	private static final TypeSerializer CALENDAR_SERIALIZER = new CalendarSerializer();
 
 	private final XmlRpcController controller;
-    private DateSerializer dateSerializer;
+	private DateSerializer dateSerializer;
 
 	/** Creates a new instance.
 	 * @param pController The controller, which operates the type factory.
@@ -150,22 +149,23 @@ public class TypeFactoryImpl implements TypeFactory {
 		} else if (pObject instanceof Double) {
 			return DOUBLE_SERIALIZER;
 		} else if (pObject instanceof Calendar) {
-            if (pConfig.isEnabledForExtensions()) {
-                return CALENDAR_SERIALIZER;
-            } else {
-                throw new SAXException(new XmlRpcExtensionException("Calendar values aren't supported, if isEnabledForExtensions() == false"));
-            }
-        } else if (pObject instanceof Date) {
-            if (dateSerializer == null) {
-                dateSerializer = new DateSerializer(new XmlRpcDateTimeDateFormat(){
-                    private static final long serialVersionUID = 24345909123324234L;
-                    protected TimeZone getTimeZone() {
-                        return controller.getConfig().getTimeZone();
-                    }
-                });
-            }
-            return dateSerializer;
-    	} else if (pObject instanceof byte[]) {
+			if (pConfig.isEnabledForExtensions()) {
+				return CALENDAR_SERIALIZER;
+			} else {
+				throw new SAXException(new XmlRpcExtensionException("Calendar values aren't supported, if isEnabledForExtensions() == false"));
+			}
+		} else if (pObject instanceof Date) {
+			if (dateSerializer == null) {
+				dateSerializer = new DateSerializer(new XmlRpcDateTimeDateFormat() {
+					private static final long serialVersionUID = 24345909123324234L;
+
+					protected TimeZone getTimeZone() {
+						return controller.getConfig().getTimeZone();
+					}
+				});
+			}
+			return dateSerializer;
+		} else if (pObject instanceof byte[]) {
 			return new ByteArraySerializer();
 		} else if (pObject instanceof Object[]) {
 			return new ObjectArraySerializer(this, pConfig);
@@ -179,18 +179,18 @@ public class TypeFactoryImpl implements TypeFactory {
 			} else {
 				throw new SAXException(new XmlRpcExtensionException("DOM nodes aren't supported, if isEnabledForExtensions() == false"));
 			}
-        } else if (pObject instanceof BigInteger) {
-            if (pConfig.isEnabledForExtensions()) {
-                return BIGINTEGER_SERIALIZER;
-            } else {
-                throw new SAXException(new XmlRpcExtensionException("BigInteger values aren't supported, if isEnabledForExtensions() == false"));
-            }
-        } else if (pObject instanceof BigDecimal) {
-            if (pConfig.isEnabledForExtensions()) {
-                return BIGDECIMAL_SERIALIZER;
-            } else {
-                throw new SAXException(new XmlRpcExtensionException("BigDecimal values aren't supported, if isEnabledForExtensions() == false"));
-            }
+		} else if (pObject instanceof BigInteger) {
+			if (pConfig.isEnabledForExtensions()) {
+				return BIGINTEGER_SERIALIZER;
+			} else {
+				throw new SAXException(new XmlRpcExtensionException("BigInteger values aren't supported, if isEnabledForExtensions() == false"));
+			}
+		} else if (pObject instanceof BigDecimal) {
+			if (pConfig.isEnabledForExtensions()) {
+				return BIGDECIMAL_SERIALIZER;
+			} else {
+				throw new SAXException(new XmlRpcExtensionException("BigDecimal values aren't supported, if isEnabledForExtensions() == false"));
+			}
 		} else if (pObject instanceof Serializable) {
 			if (pConfig.isEnabledForExtensions()) {
 				return SERIALIZABLE_SERIALIZER;
@@ -217,31 +217,32 @@ public class TypeFactoryImpl implements TypeFactory {
 				return new I8Parser();
 			} else if (FloatSerializer.FLOAT_TAG.equals(pLocalName)) {
 				return new FloatParser();
-            } else if (NodeSerializer.DOM_TAG.equals(pLocalName)) {
-                return new NodeParser();
-            } else if (BigDecimalSerializer.BIGDECIMAL_TAG.equals(pLocalName)) {
-                return new BigDecimalParser();
-            } else if (BigIntegerSerializer.BIGINTEGER_TAG.equals(pLocalName)) {
-                return new BigIntegerParser();
+			} else if (NodeSerializer.DOM_TAG.equals(pLocalName)) {
+				return new NodeParser();
+			} else if (BigDecimalSerializer.BIGDECIMAL_TAG.equals(pLocalName)) {
+				return new BigDecimalParser();
+			} else if (BigIntegerSerializer.BIGINTEGER_TAG.equals(pLocalName)) {
+				return new BigIntegerParser();
 			} else if (SerializableSerializer.SERIALIZABLE_TAG.equals(pLocalName)) {
 				return new SerializableParser();
 			} else if (CalendarSerializer.CALENDAR_TAG.equals(pLocalName)) {
-			    return new CalendarParser();
-            }
+				return new CalendarParser();
+			}
 		} else if ("".equals(pURI)) {
-			if (I4Serializer.INT_TAG.equals(pLocalName)  ||  I4Serializer.I4_TAG.equals(pLocalName)) {
+			if (I4Serializer.INT_TAG.equals(pLocalName) || I4Serializer.I4_TAG.equals(pLocalName)) {
 				return new I4Parser();
 			} else if (BooleanSerializer.BOOLEAN_TAG.equals(pLocalName)) {
 				return new BooleanParser();
 			} else if (DoubleSerializer.DOUBLE_TAG.equals(pLocalName)) {
 				return new DoubleParser();
 			} else if (DateSerializer.DATE_TAG.equals(pLocalName)) {
-				return new DateParser(new XmlRpcDateTimeDateFormat(){
-                    private static final long serialVersionUID = 7585237706442299067L;
-                    protected TimeZone getTimeZone() {
-                        return controller.getConfig().getTimeZone();
-                    }
-                });
+				return new DateParser(new XmlRpcDateTimeDateFormat() {
+					private static final long serialVersionUID = 7585237706442299067L;
+
+					protected TimeZone getTimeZone() {
+						return controller.getConfig().getTimeZone();
+					}
+				});
 			} else if (ObjectArraySerializer.ARRAY_TAG.equals(pLocalName)) {
 				return new ObjectArrayParser(pConfig, pContext, this);
 			} else if (MapSerializer.STRUCT_TAG.equals(pLocalName)) {

@@ -44,15 +44,13 @@ import org.poly2tri.triangulation.TriangulationPoint;
  * triangulation.
  * <p>
  * 
- * @author Thomas Åhlén, thahlen@gmail.com
+ * @author Thomas ï¿½hlï¿½n, thahlen@gmail.com
  */
-public class ConstrainedPointSet extends PointSet
-{
+public class ConstrainedPointSet extends PointSet {
 	int[] _index;
 	List<TriangulationPoint> _constrainedPointList = null;
 
-	public ConstrainedPointSet(List<TriangulationPoint> points, int[] index)
-	{
+	public ConstrainedPointSet(List<TriangulationPoint> points, int[] index) {
 		super(points);
 		_index = index;
 	}
@@ -63,43 +61,34 @@ public class ConstrainedPointSet extends PointSet
 	 * @param constraints
 	 *            - Pairs of two points defining a constraint, all points <b>must</b> be part of given PointSet!
 	 */
-	public ConstrainedPointSet(List<TriangulationPoint> points, List<TriangulationPoint> constraints)
-	{
+	public ConstrainedPointSet(List<TriangulationPoint> points, List<TriangulationPoint> constraints) {
 		super(points);
 		_constrainedPointList = new ArrayList<TriangulationPoint>();
 		_constrainedPointList.addAll(constraints);
 	}
 
 	@Override
-	public TriangulationMode getTriangulationMode()
-	{
+	public TriangulationMode getTriangulationMode() {
 		return TriangulationMode.CONSTRAINED;
 	}
 
-	public int[] getEdgeIndex()
-	{
+	public int[] getEdgeIndex() {
 		return _index;
 	}
 
 	@Override
-	public void prepareTriangulation(TriangulationContext<?> tcx)
-	{
+	public void prepareTriangulation(TriangulationContext<?> tcx) {
 		super.prepareTriangulation(tcx);
-		if (_constrainedPointList != null)
-		{
+		if (_constrainedPointList != null) {
 			TriangulationPoint p1, p2;
 			Iterator<TriangulationPoint> iterator = _constrainedPointList.iterator();
-			while (iterator.hasNext())
-			{
+			while (iterator.hasNext()) {
 				p1 = iterator.next();
 				p2 = iterator.next();
 				tcx.newConstraint(p1, p2);
 			}
-		}
-		else
-		{
-			for (int i = 0; i < _index.length; i += 2)
-			{
+		} else {
+			for (int i = 0; i < _index.length; i += 2) {
 				// XXX: must change!!
 				tcx.newConstraint(_points.get(_index[i]), _points.get(_index[i + 1]));
 			}
@@ -113,8 +102,7 @@ public class ConstrainedPointSet extends PointSet
 	 * 
 	 * @return
 	 */
-	public boolean isValid()
-	{
+	public boolean isValid() {
 		return true;
 	}
 }

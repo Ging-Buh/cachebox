@@ -13,31 +13,25 @@ package ch.fhnw.imvs.gpssimulator.data;
 
 import java.util.Vector;
 
-public final class GPSData
-{
+public final class GPSData {
 
-	public enum Status
-	{
+	public enum Status {
 		A, V
 	};
 
-	public enum Orientation
-	{
+	public enum Orientation {
 		EAST, WEST, NORTH, SOUTH;
 		@Override
-		public String toString()
-		{
+		public String toString() {
 			return this.name().substring(0, 1) + this.name().substring(1).toLowerCase();
 		}
 	};
 
-	public enum FixType
-	{
+	public enum FixType {
 		FIX_NONE, FIX_2D, FIX_3D
 	};
 
-	public enum Mode
-	{
+	public enum Mode {
 		AUTONOMOUS, DIFFERENTIAL, ESTIMATED, NOT_VALID, SIMULATOR
 	}
 
@@ -59,8 +53,7 @@ public final class GPSData
 
 	// set default values
 
-	static
-	{
+	static {
 		status = GPSData.Status.A;
 		latitude = 47.48135;
 		longitude = 8.20797;
@@ -81,239 +74,191 @@ public final class GPSData
 	private static Vector<GPSDataListener> listeners = new Vector<GPSDataListener>();
 	private static boolean running = false;
 
-	public static void addChangeListener(GPSDataListener listener)
-	{
+	public static void addChangeListener(GPSDataListener listener) {
 		listeners.add(listener);
 	}
 
-	public static void start()
-	{
-		if (!running)
-		{
+	public static void start() {
+		if (!running) {
 			running = true;
 			notifyChange();
 		}
 	}
 
-	private static void notifyChange()
-	{
-		if (running) for (GPSDataListener l : listeners)
-		{
-			l.valueChanged();
-		}
+	private static void notifyChange() {
+		if (running)
+			for (GPSDataListener l : listeners) {
+				l.valueChanged();
+			}
 	}
 
-	private GPSData()
-	{
+	private GPSData() {
 	}
 
-	public static Status getStatus()
-	{
+	public static Status getStatus() {
 		return status;
 	}
 
-	public static void setStatus(Status status)
-	{
-		if (GPSData.status != status)
-		{
+	public static void setStatus(Status status) {
+		if (GPSData.status != status) {
 			GPSData.status = status;
 			notifyChange();
 		}
 	}
 
-	public synchronized static double getLatitude()
-	{
+	public synchronized static double getLatitude() {
 		return latitude;
 	}
 
-	public synchronized static void setLatitude(double latitude)
-	{
-		if (GPSData.latitude != latitude)
-		{
+	public synchronized static void setLatitude(double latitude) {
+		if (GPSData.latitude != latitude) {
 			GPSData.latitude = latitude;
 			notifyChange();
 		}
 	}
 
-	public synchronized static double getLongitude()
-	{
+	public synchronized static double getLongitude() {
 		return longitude;
 	}
 
-	public synchronized static void setLongitude(double longitude)
-	{
-		if (GPSData.longitude != longitude)
-		{
+	public synchronized static void setLongitude(double longitude) {
+		if (GPSData.longitude != longitude) {
 			GPSData.longitude = longitude;
 			notifyChange();
 		}
 	}
 
-	public static Orientation getEW()
-	{
+	public static Orientation getEW() {
 		return ew;
 	}
 
-	public static void setEW(Orientation ew)
-	{
-		if (ew == Orientation.NORTH || ew == Orientation.SOUTH) throw new IllegalArgumentException();
-		if (GPSData.ew != ew)
-		{
+	public static void setEW(Orientation ew) {
+		if (ew == Orientation.NORTH || ew == Orientation.SOUTH)
+			throw new IllegalArgumentException();
+		if (GPSData.ew != ew) {
 			GPSData.ew = ew;
 			notifyChange();
 		}
 	}
 
-	public static Orientation getNS()
-	{
+	public static Orientation getNS() {
 		return ns;
 	}
 
-	public static void setNS(Orientation ns)
-	{
-		if (ns == Orientation.EAST || ns == Orientation.WEST) throw new IllegalArgumentException();
-		if (GPSData.ns != ns)
-		{
+	public static void setNS(Orientation ns) {
+		if (ns == Orientation.EAST || ns == Orientation.WEST)
+			throw new IllegalArgumentException();
+		if (GPSData.ns != ns) {
 			GPSData.ns = ns;
 			notifyChange();
 		}
 	}
 
-	public synchronized static double getSpeed()
-	{
+	public synchronized static double getSpeed() {
 		return speed;
 	}
 
-	public synchronized static void setSpeed(double speed)
-	{
-		if (GPSData.speed != speed)
-		{
+	public synchronized static void setSpeed(double speed) {
+		if (GPSData.speed != speed) {
 			GPSData.speed = speed;
 			notifyChange();
 		}
 	}
 
-	public synchronized static double getAltitude()
-	{
+	public synchronized static double getAltitude() {
 		return altitude;
 	}
 
-	public synchronized static void setAltitude(double altitude)
-	{
-		if (GPSData.altitude != altitude)
-		{
+	public synchronized static void setAltitude(double altitude) {
+		if (GPSData.altitude != altitude) {
 			GPSData.altitude = altitude;
 			notifyChange();
 		}
 	}
 
-	public static int getCourse()
-	{
+	public static int getCourse() {
 		return course;
 	}
 
-	public static void setCourse(int course)
-	{
-		if (GPSData.course != course)
-		{
+	public static void setCourse(int course) {
+		if (GPSData.course != course) {
 			GPSData.course = course;
 			notifyChange();
 		}
 	}
 
-	public static int getSatellites()
-	{
+	public static int getSatellites() {
 		return satellites;
 	}
 
-	public static void setSatellites(int satellites)
-	{
-		if (GPSData.satellites != satellites)
-		{
+	public static void setSatellites(int satellites) {
+		if (GPSData.satellites != satellites) {
 			GPSData.satellites = satellites;
 			notifyChange();
 		}
 	}
 
-	public static int getQuality()
-	{
+	public static int getQuality() {
 		return quality;
 	}
 
-	public static void setQuality(int quality)
-	{
-		if (GPSData.quality != quality)
-		{
+	public static void setQuality(int quality) {
+		if (GPSData.quality != quality) {
 			GPSData.quality = quality;
 			notifyChange();
 		}
 	}
 
-	public synchronized static double getPDOP()
-	{
+	public synchronized static double getPDOP() {
 		return pdop;
 	}
 
-	public synchronized static void setPDOP(double pdop)
-	{
-		if (GPSData.pdop != pdop)
-		{
+	public synchronized static void setPDOP(double pdop) {
+		if (GPSData.pdop != pdop) {
 			GPSData.pdop = pdop;
 			notifyChange();
 		}
 	}
 
-	public synchronized static double getHDOP()
-	{
+	public synchronized static double getHDOP() {
 		return hdop;
 	}
 
-	public synchronized static void setHDOP(double hdop)
-	{
-		if (GPSData.hdop != hdop)
-		{
+	public synchronized static void setHDOP(double hdop) {
+		if (GPSData.hdop != hdop) {
 			GPSData.hdop = hdop;
 			notifyChange();
 		}
 	}
 
-	public synchronized static double getVDOP()
-	{
+	public synchronized static double getVDOP() {
 		return vdop;
 	}
 
-	public synchronized static void setVDOP(double vdop)
-	{
-		if (GPSData.vdop != vdop)
-		{
+	public synchronized static void setVDOP(double vdop) {
+		if (GPSData.vdop != vdop) {
 			GPSData.vdop = vdop;
 			notifyChange();
 		}
 	}
 
-	public synchronized static Mode getMode()
-	{
+	public synchronized static Mode getMode() {
 		return mode;
 	}
 
-	public synchronized static void setMode(Mode mode)
-	{
-		if (GPSData.mode != mode)
-		{
+	public synchronized static void setMode(Mode mode) {
+		if (GPSData.mode != mode) {
 			GPSData.mode = mode;
 			notifyChange();
 		}
 	}
 
-	public synchronized static FixType getFixType()
-	{
+	public synchronized static FixType getFixType() {
 		return fixType;
 	}
 
-	public synchronized static void setFixType(FixType fixType)
-	{
-		if (GPSData.fixType != fixType)
-		{
+	public synchronized static void setFixType(FixType fixType) {
+		if (GPSData.fixType != fixType) {
 			GPSData.fixType = fixType;
 			notifyChange();
 		}

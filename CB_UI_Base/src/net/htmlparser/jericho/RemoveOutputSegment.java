@@ -30,12 +30,12 @@ final class RemoveOutputSegment implements OutputSegment {
 	private final int end;
 
 	public RemoveOutputSegment(final int begin, final int end) {
-		this.begin=begin;
-		this.end=end;
+		this.begin = begin;
+		this.end = end;
 	}
 
 	public RemoveOutputSegment(final Segment segment) {
-		this(segment.begin,segment.end);
+		this(segment.begin, segment.end);
 	}
 
 	public int getBegin() {
@@ -47,10 +47,11 @@ final class RemoveOutputSegment implements OutputSegment {
 	}
 
 	public void writeTo(final Writer writer) {
-		appendTo(writer);	
+		appendTo(writer);
 	}
 
-	public void appendTo(final Appendable appendable) {}
+	public void appendTo(final Appendable appendable) {
+	}
 
 	public long getEstimatedMaximumOutputLength() {
 		return 0;
@@ -61,6 +62,6 @@ final class RemoveOutputSegment implements OutputSegment {
 	}
 
 	public String getDebugInfo() {
-		return "Remove: (p"+begin+"-p"+end+')';
+		return "Remove: (p" + begin + "-p" + end + ')';
 	}
 }

@@ -27,8 +27,7 @@ import CB_Utils.MathUtils;
 /**
  * @author Longri
  */
-public final class GL_WayDecorator
-{
+public final class GL_WayDecorator {
 	/**
 	 * Minimum distance in pixels before the symbol is repeated.
 	 */
@@ -44,23 +43,19 @@ public final class GL_WayDecorator
 	 */
 	public final float SEGMENT_SAFETY_DISTANCE;
 
-	public GL_WayDecorator(float ScaleFactor)
-	{
+	public GL_WayDecorator(float ScaleFactor) {
 		DISTANCE_BETWEEN_SYMBOLS = (int) (200 * ScaleFactor);
 		DISTANCE_BETWEEN_WAY_NAMES = (int) (500 * ScaleFactor);
 		SEGMENT_SAFETY_DISTANCE = (int) (30 * ScaleFactor);
 
 	}
 
-	public void renderSymbol(Bitmap symbolBitmap, boolean alignCenter, boolean repeatSymbol, Point[][] coordinates,
-			List<SymbolContainer> waySymbols)
-	{
+	public void renderSymbol(Bitmap symbolBitmap, boolean alignCenter, boolean repeatSymbol, Point[][] coordinates, List<SymbolContainer> waySymbols) {
 
 		GL_Path path = new GL_Path();
 
 		path.moveTo((float) coordinates[0][0].x, (float) coordinates[0][0].y);
-		for (int i = 1; i < coordinates[0].length; ++i)
-		{
+		for (int i = 1; i < coordinates[0].length; ++i) {
 			path.lineTo((float) coordinates[0][i].x, (float) coordinates[0][i].y);
 		}
 
@@ -69,7 +64,8 @@ public final class GL_WayDecorator
 		float distance = symbolWidth / 1.5f + SEGMENT_SAFETY_DISTANCE;// + DISTANCE_BETWEEN_SYMBOLS;
 		boolean finish = repeatSymbol;
 		float[] res = path.getPointOnPathAfter(distance);
-		if (res == null) return; // not enough space for the symbol
+		if (res == null)
+			return; // not enough space for the symbol
 		Point point = new Point(res[0], res[1]);
 		float angle = res[2] + 5;
 
@@ -81,43 +77,36 @@ public final class GL_WayDecorator
 
 		waySymbols.add(new SymbolContainer(symbolBitmap, point, alignCenter, angle));
 
-		while (finish)
-		{
+		while (finish) {
 			distance += symbolBitmap.getWidth() + DISTANCE_BETWEEN_SYMBOLS;
 			res = path.getPointOnPathAfter(distance);
-			if (res != null)
-			{
+			if (res != null) {
 				point = new Point(res[0], res[1]);
 				angle = res[2] + 5;
 				// check if the end of the Symbol + SEGMENT_SAFETY_DISTANCE on the Path
 				res = path.getPointOnPathAfter(distance + SEGMENT_SAFETY_DISTANCE + (symbolWidth / 1.5f));
-				if (res == null) return; // not enough space for the symbol
+				if (res == null)
+					return; // not enough space for the symbol
 				// angle = 0;
 				waySymbols.add(new SymbolContainer(symbolBitmap, point, alignCenter, angle));
-			}
-			else
-			{
+			} else {
 				finish = false;
 			}
 		}
 
 	}
 
-	public static void renderText(String textKey, Paint fill, Paint stroke, Point[][] coordinates, List<GL_WayTextContainer> wayNames,
-			float TileSize)
-	{
+	public static void renderText(String textKey, Paint fill, Paint stroke, Point[][] coordinates, List<GL_WayTextContainer> wayNames, float TileSize) {
 
 		GL_Path path = new GL_Path(coordinates[0].length);
 
 		path.moveTo((float) coordinates[0][0].x, (float) coordinates[0][0].y);
 
-		for (int i = 1; i < coordinates[0].length; ++i)
-		{
+		for (int i = 1; i < coordinates[0].length; ++i) {
 			path.lineTo((float) coordinates[0][i].x, (float) coordinates[0][i].y);
 		}
 
-		if (MathUtils.LegalizeDegreese(path.getAverageDirection()) > 180)
-		{
+		if (MathUtils.LegalizeDegreese(path.getAverageDirection()) > 180) {
 			path.revert();
 		}
 
@@ -125,8 +114,7 @@ public final class GL_WayDecorator
 		double averageX = 0;
 		double averageY = 0;
 		int averageCount = 0;
-		for (int i = 0; i < coordinates[0].length; ++i)
-		{
+		for (int i = 0; i < coordinates[0].length; ++i) {
 			// get the current way point coordinates
 			averageX += coordinates[0][i].x;
 			averageY += coordinates[0][i].y;
@@ -138,8 +126,7 @@ public final class GL_WayDecorator
 		float max = TileSize + (TileSize / 20);
 		float min = 0 - (TileSize / 20);
 
-		if (averageX < min || averageX > max || averageY < min || averageY > max)
-		{
+		if (averageX < min || averageX > max || averageY < min || averageY > max) {
 			return; // outside of Tile
 		}
 

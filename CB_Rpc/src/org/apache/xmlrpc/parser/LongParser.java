@@ -21,7 +21,6 @@ package org.apache.xmlrpc.parser;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
 /** Parser for long values.
  */
 public class LongParser extends AtomicParser {
@@ -29,8 +28,7 @@ public class LongParser extends AtomicParser {
 		try {
 			super.setResult(new Long(pResult.trim()));
 		} catch (NumberFormatException e) {
-			throw new SAXParseException("Failed to parse long value: " + pResult,
-										getDocumentLocator());
+			throw new SAXParseException("Failed to parse long value: " + pResult, getDocumentLocator());
 		}
 	}
 }

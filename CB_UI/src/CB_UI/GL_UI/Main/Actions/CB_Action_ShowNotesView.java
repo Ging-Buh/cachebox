@@ -10,38 +10,33 @@ import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_ShowNotesView extends CB_Action_ShowView
-{
+public class CB_Action_ShowNotesView extends CB_Action_ShowView {
 
-	public CB_Action_ShowNotesView()
-	{
+	public CB_Action_ShowNotesView() {
 		super("Notes", MenuID.AID_SHOW_NOTES);
 	}
 
 	@Override
-	public void Execute()
-	{
-		if ((TabMainView.notesView == null) && (tabMainView != null) && (tab != null)) TabMainView.notesView = new NotesView(
-				tab.getContentRec(), "NotesView");
+	public void Execute() {
+		if ((TabMainView.notesView == null) && (tabMainView != null) && (tab != null))
+			TabMainView.notesView = new NotesView(tab.getContentRec(), "NotesView");
 
-		if ((TabMainView.notesView != null) && (tab != null)) tab.ShowView(TabMainView.notesView);
+		if ((TabMainView.notesView != null) && (tab != null))
+			tab.ShowView(TabMainView.notesView);
 	}
 
 	@Override
-	public boolean getEnabled()
-	{
+	public boolean getEnabled() {
 		return true;
 	}
 
 	@Override
-	public Sprite getIcon()
-	{
+	public Sprite getIcon() {
 		return SpriteCacheBase.Icons.get(IconName.userdata_50.ordinal());
 	}
 
 	@Override
-	public CB_View_Base getView()
-	{
+	public CB_View_Base getView() {
 		return TabMainView.notesView;
 	}
 }

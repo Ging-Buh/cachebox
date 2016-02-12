@@ -25,28 +25,28 @@ import CB_UI_Base.Math.Stack;
  */
 public class Html_Segment_Input extends Html_Segment {
 
-    final String imagePath;
-    final String value;
+	final String imagePath;
+	final String value;
 
-    public Html_Segment_Input(Html_Segment_Typ segmentTyp, Stack<Tag> atributeStack, String ImagePath, String Value) {
-	super(segmentTyp, atributeStack, "");
-	this.imagePath = ImagePath;
-	this.value = Value;
-    }
+	public Html_Segment_Input(Html_Segment_Typ segmentTyp, Stack<Tag> atributeStack, String ImagePath, String Value) {
+		super(segmentTyp, atributeStack, "");
+		this.imagePath = ImagePath;
+		this.value = Value;
+	}
 
-    @Override
-    public void resolveAtributes() {
-	// nothing to do
-    }
+	@Override
+	public void resolveAtributes() {
+		// nothing to do
+	}
 
-    public String getValue() {
-	return value;
-    }
+	public String getValue() {
+		return value;
+	}
 
-    @Override
-    public void dispose() {
-	super.dispose();
-	// nothing to do	
-    }
+	@Override
+	public void dispose() {
+		super.dispose();
+		// nothing to do	
+	}
 
 }

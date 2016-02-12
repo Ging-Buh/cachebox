@@ -6,12 +6,10 @@ import CB_UI_Base.Math.GL_UISizes;
 
 import com.badlogic.gdx.math.Vector2;
 
-public class CB_ButtonListItem extends ListViewItemBase
-{
+public class CB_ButtonListItem extends ListViewItemBase {
 	CB_Button mCB_Button;
 
-	public CB_ButtonListItem(CB_RectF rec, int Index, String Name)
-	{
+	public CB_ButtonListItem(CB_RectF rec, int Index, String Name) {
 		super(rec, Index, Name);
 		mCB_Button = new CB_Button(this, "Button");
 		mCB_Button.setPos(new Vector2(0, 0));
@@ -20,8 +18,7 @@ public class CB_ButtonListItem extends ListViewItemBase
 		this.addChild(mCB_Button);
 	}
 
-	public CB_ButtonListItem(int Index, CB_Button Button, String Name)
-	{
+	public CB_ButtonListItem(int Index, CB_Button Button, String Name) {
 		super(new CB_RectF(Button), Index, Name);
 		mCB_Button = Button;
 		mCB_Button.setPos(new Vector2(0, 0));
@@ -31,26 +28,22 @@ public class CB_ButtonListItem extends ListViewItemBase
 	}
 
 	@Override
-	public boolean onTouchUp(int x, int y, int pointer, int button)
-	{
+	public boolean onTouchUp(int x, int y, int pointer, int button) {
 		return mCB_Button.onTouchUp(x, y, pointer, button);
 	}
 
 	@Override
-	public boolean click(int x, int y, int pointer, int button)
-	{
+	public boolean click(int x, int y, int pointer, int button) {
 		return mCB_Button.click(x, y, pointer, button);
 	}
 
 	@Override
-	protected void Initial()
-	{
+	protected void Initial() {
 
 	}
 
 	@Override
-	protected void SkinIsChanged()
-	{
+	protected void SkinIsChanged() {
 
 	}
 

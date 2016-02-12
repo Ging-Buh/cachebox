@@ -24,10 +24,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 /**
  * @author Longri
  */
-public class SolidTextureRegion extends TextureRegion
-{
-	public SolidTextureRegion(Color color, float width, float height)
-	{
+public class SolidTextureRegion extends TextureRegion {
+	public SolidTextureRegion(Color color, float width, float height) {
 		Pixmap pix = new Pixmap(2, 2, Format.RGB565);
 		pix.setColor(color);
 		pix.fill();

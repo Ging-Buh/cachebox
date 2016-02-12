@@ -50,24 +50,24 @@ public class ExternalRenderTheme implements XmlRenderTheme {
 			throw new FileNotFoundException("cannot read last modified time: " + renderThemeFile.getAbsolutePath());
 		}
 		this.renderThemeFile = renderThemeFile;
-		
+
 		// read is Freizeitkarte Theme
-		
+
 		final FileReader fileReader = new FileReader(renderThemeFile);
-        final BufferedReader bufferedReader = new BufferedReader(fileReader);
-        String line;
-        try {
+		final BufferedReader bufferedReader = new BufferedReader(fileReader);
+		String line;
+		try {
 			while ((line = bufferedReader.readLine()) != null) {
-			  if( line.contains("freizeitkarte@googlemail.com")){
-				  isFreizeit=true;
-				  break;
-			  }
+				if (line.contains("freizeitkarte@googlemail.com")) {
+					isFreizeit = true;
+					break;
+				}
 			}
-			 bufferedReader.close();
+			bufferedReader.close();
 		} catch (IOException e) {
-						e.printStackTrace();
+			e.printStackTrace();
 		}
- 	}
+	}
 
 	@Override
 	public boolean equals(Object obj) {

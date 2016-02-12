@@ -33,330 +33,330 @@ import CB_Utils.Util.IChanged;
  * @author Longri
  */
 public class GL_UISizes implements SizeChangedEvent {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(GL_UISizes.class);
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(GL_UISizes.class);
 
-    /**
-     * Initialisiert die Größen und Positionen der UI-Elemente der OpenGL Map, anhand der übergebenen Größe und des Eingestellten DPI Faktors.
-     * 
-     * @param width
-     * @param height
-     */
-    public static void initial(float width, float height) {
+	/**
+	 * Initialisiert die Größen und Positionen der UI-Elemente der OpenGL Map, anhand der übergebenen Größe und des Eingestellten DPI Faktors.
+	 * 
+	 * @param width
+	 * @param height
+	 */
+	public static void initial(float width, float height) {
 
-	log.debug("Initial UISizes => " + width + "/" + height);
-	log.debug("DPI = " + DPI);
+		log.debug("Initial UISizes => " + width + "/" + height);
+		log.debug("DPI = " + DPI);
 
-	if (DPI != CB_UI_Base_Settings.MapViewDPIFaktor.getValue() || FontFaktor != CB_UI_Base_Settings.MapViewFontFaktor.getValue()) {
+		if (DPI != CB_UI_Base_Settings.MapViewDPIFaktor.getValue() || FontFaktor != CB_UI_Base_Settings.MapViewFontFaktor.getValue()) {
 
-	    DPI = CB_UI_Base_Settings.MapViewDPIFaktor.getValue();
+			DPI = CB_UI_Base_Settings.MapViewDPIFaktor.getValue();
 
-	    log.debug("DPI != MapViewDPIFaktor " + DPI);
+			log.debug("DPI != MapViewDPIFaktor " + DPI);
 
-	    FontFaktor = (float) (0.666666666667 * DPI * CB_UI_Base_Settings.MapViewFontFaktor.getValue());
-	    isInitial = false; // Grössen müssen neu berechnet werden
-	}
-
-	log.debug("Initial UISizes => isInitial" + isInitial);
-
-	if (SurfaceSize == null) {
-	    SurfaceSize = new CB_RectF(0, 0, width, height);
-	    GL_UISizes tmp = new GL_UISizes();
-	    SurfaceSize.Add(tmp);
-
-	} else {
-	    if (SurfaceSize.setSize(width, height)) {
-		// Surface grösse hat sich geändert, die Positionen der UI-Elemente müssen neu Berechnet werden.
-		calcSizes();
-		calcPos();
-	    }
-	}
-
-	if (Info == null)
-	    Info = new CB_RectF();
-	if (Toggle == null)
-	    Toggle = new CB_RectF();
-	if (ZoomBtn == null)
-	    ZoomBtn = new CB_RectF();
-	if (Compass == null)
-	    Compass = new CB_RectF();
-	if (InfoLine1 == null)
-	    InfoLine1 = new Vector2();
-	if (InfoLine2 == null)
-	    InfoLine2 = new Vector2();
-	if (Bubble == null)
-	    Bubble = new SizeF();
-	if (bubbleCorrect == null)
-	    bubbleCorrect = new SizeF();
-	if (!isInitial) {
-	    calcSizes();
-
-	    CB_UI_Base_Settings.nightMode.addChangedEventListener(new IChanged() {
-
-		@Override
-		public void isChanged() {
-		    Fonts.setNightMode(CB_UI_Base_Settings.nightMode.getValue());
+			FontFaktor = (float) (0.666666666667 * DPI * CB_UI_Base_Settings.MapViewFontFaktor.getValue());
+			isInitial = false; // Grössen müssen neu berechnet werden
 		}
-	    });
 
-	    try {
-		Fonts.loadFonts(CB_Skin.INSTANCE);
-	    } catch (Exception e) {
-		e.printStackTrace();
-	    }
+		log.debug("Initial UISizes => isInitial" + isInitial);
 
-	    calcPos();
+		if (SurfaceSize == null) {
+			SurfaceSize = new CB_RectF(0, 0, width, height);
+			GL_UISizes tmp = new GL_UISizes();
+			SurfaceSize.Add(tmp);
 
-	    isInitial = true;
+		} else {
+			if (SurfaceSize.setSize(width, height)) {
+				// Surface grösse hat sich geändert, die Positionen der UI-Elemente müssen neu Berechnet werden.
+				calcSizes();
+				calcPos();
+			}
+		}
 
-	}
-    }
+		if (Info == null)
+			Info = new CB_RectF();
+		if (Toggle == null)
+			Toggle = new CB_RectF();
+		if (ZoomBtn == null)
+			ZoomBtn = new CB_RectF();
+		if (Compass == null)
+			Compass = new CB_RectF();
+		if (InfoLine1 == null)
+			InfoLine1 = new Vector2();
+		if (InfoLine2 == null)
+			InfoLine2 = new Vector2();
+		if (Bubble == null)
+			Bubble = new SizeF();
+		if (bubbleCorrect == null)
+			bubbleCorrect = new SizeF();
+		if (!isInitial) {
+			calcSizes();
 
-    /**
-     * das Rechteck, welches die Größe und Position aller GL_View's auf der linken Seite darstellt. Dieses Rechteck ist immer Gültig! Das
-     * Rechteck UI_Reight hat die Gleiche Größe und Position wie UI_Left, wenn es sich nicht um ein Tablet Layout handelt.
-     */
-    public static CB_RectF UI_Left;
+			CB_UI_Base_Settings.nightMode.addChangedEventListener(new IChanged() {
 
-    /**
-     * Das Rechteck, welches die Größe und Position aller GL_View's auf der rechten Seite darstellt, wenn es sich um ein Tablet Layout
-     * handelt. Wenn es sich nicht um ein Tablet Layout handelt, hat dieses Rechteck die selbe Größe und Position wie UI_Left.
-     */
-    public static CB_RectF UI_Right;
+				@Override
+				public void isChanged() {
+					Fonts.setNightMode(CB_UI_Base_Settings.nightMode.getValue());
+				}
+			});
 
-    /**
-     * Ist false solange die Größen nicht berechnet sind. Diese müssen nur einmal berechnet Werden, oder wenn ein Faktor (DPI oder
-     * FontFaktor) in den Settings geändert Wurde.
-     */
-    private static boolean isInitial = false;
+			try {
+				Fonts.loadFonts(CB_Skin.INSTANCE);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
-    /**
-     * Die Höhe des Schattens des Info Panels. Diese muss Berechnet werden, da sie für die Berechnung der Inhalt Positionen gebraucht wird.
-     */
-    public static float infoShadowHeight;
+			calcPos();
 
-    public static Vector2 InfoLine1;
+			isInitial = true;
 
-    public static Vector2 InfoLine2;
-
-    /**
-     * Dpi Faktor, welcher über die Settings eingestellt werden kann und mit dem HandyDisplay Wert vorbelegt ist. (HD2= 1.5)
-     */
-    public static float DPI;
-
-    /**
-     * DPI Wert des Displays, kann nicht über die Settings verändert werden
-     */
-    public static float defaultDPI = 1;
-
-    /**
-     * Die Font Größe wird über den DPI Faktor berechnet und kann über den FontFaktor zusätzlich beeinflusst werden.
-     */
-    public static float FontFaktor;
-
-    /**
-     * Das Rechteck in dem das Info Panel dargestellt wird.
-     */
-    public static CB_RectF Info;
-
-    /**
-     * Das Rechteck in dem der ToggleButton dargestellt wird.
-     */
-    public static CB_RectF Toggle;
-
-    /**
-     * Das Rechteck in dem die Zoom Buttons dargestellt wird.
-     */
-    public static CB_RectF ZoomBtn;
-
-    /**
-     * Die Größe des Compass Icons. Welche Abhängig von der Höhe des Info Panels ist.
-     */
-    public static CB_RectF Compass;
-
-    /**
-     * Halbe Compass grösse welche den Mittelpunkt darstellt.
-     */
-    public static float halfCompass;
-
-    /**
-     * Die Größe des zur Verfügung stehenden Bereiches von Gdx.graphics
-     */
-    public static CB_RectF SurfaceSize;
-
-    /**
-     * Größe des position Markers
-     */
-    public static float PosMarkerSize;
-
-    /**
-     * Halbe Größe des Position Markers, welche den Mittelpunkt darstellt
-     */
-    public static float halfPosMarkerSize;
-
-    /**
-     * Array der drei möglichen Grössen eines WP Icons
-     */
-    public static SizeF[] WPSizes;
-
-    /**
-     * Array der drei möglichen Grössen eines WP Underlay
-     */
-    public static SizeF[] UnderlaySizes;
-
-    /**
-     * Größe der Cache Info Bubble
-     */
-    public static SizeF Bubble;
-
-    /**
-     * halbe breite der Info Bubble, welche den Mitttelpunkt darstellt
-     */
-    public static float halfBubble;
-
-    /**
-     * Korektur Wert zwichen Bubble und deren Content
-     */
-    public static SizeF bubbleCorrect;
-
-    /**
-     * Größe des Target Arrows
-     */
-    public static SizeF TargetArrow;
-
-    // /**
-    // * Die Größe der D/T Wertungs Stars
-    // */
-    // public static SizeF DT_Size;
-
-    public static float margin;
-
-    /**
-     * Berechnet die Positionen der UI-Elemente
-     */
-    private static void calcPos() {
-	log.debug("GL_UISizes.calcPos()");
-
-	float w = Global.isTab ? UI_Right.getWidth() : UI_Left.getWidth();
-	float h = Global.isTab ? UI_Right.getHeight() : UI_Left.getHeight();
-
-	Info.setPos(new Vector2(margin, (h - margin - Info.getHeight())));
-
-	Float CompassMargin = (Info.getHeight() - Compass.getWidth()) / 2;
-
-	Compass.setPos(new Vector2(Info.getX() + CompassMargin, Info.getY() + infoShadowHeight + CompassMargin));
-
-	Toggle.setPos(new Vector2((w - margin - Toggle.getWidth()), h - margin - Toggle.getHeight()));
-
-	ZoomBtn.setPos(new Vector2((w - margin - ZoomBtn.getWidth()), margin));
-
-	InfoLine1.x = Compass.getMaxX() + margin;
-	GlyphLayout bounds;
-	if (Fonts.getNormal() != null) {
-	    bounds = new GlyphLayout();
-	    bounds.setText(Fonts.getSmall(), "52° 34,806N ");
-	} else {
-	    bounds = new GlyphLayout();
-	    bounds.height = 20;
-	    bounds.width = 100;
+		}
 	}
 
-	InfoLine2.x = Info.getX() + Info.getWidth() - bounds.width - (margin * 2);
+	/**
+	 * das Rechteck, welches die Größe und Position aller GL_View's auf der linken Seite darstellt. Dieses Rechteck ist immer Gültig! Das
+	 * Rechteck UI_Reight hat die Gleiche Größe und Position wie UI_Left, wenn es sich nicht um ein Tablet Layout handelt.
+	 */
+	public static CB_RectF UI_Left;
 
-	Float T1 = Info.getHeight() / 4;
+	/**
+	 * Das Rechteck, welches die Größe und Position aller GL_View's auf der rechten Seite darstellt, wenn es sich um ein Tablet Layout
+	 * handelt. Wenn es sich nicht um ein Tablet Layout handelt, hat dieses Rechteck die selbe Größe und Position wie UI_Left.
+	 */
+	public static CB_RectF UI_Right;
 
-	InfoLine1.y = Info.getMaxY() - T1;
-	InfoLine2.y = Info.getY() + T1 + bounds.height;
+	/**
+	 * Ist false solange die Größen nicht berechnet sind. Diese müssen nur einmal berechnet Werden, oder wenn ein Faktor (DPI oder
+	 * FontFaktor) in den Settings geändert Wurde.
+	 */
+	private static boolean isInitial = false;
 
-	// Aufräumen
-	CompassMargin = null;
+	/**
+	 * Die Höhe des Schattens des Info Panels. Diese muss Berechnet werden, da sie für die Berechnung der Inhalt Positionen gebraucht wird.
+	 */
+	public static float infoShadowHeight;
 
-    }
+	public static Vector2 InfoLine1;
 
-    public static int BottomButtonHeight = convertDip2Pix(65);
-    public static float TopButtonHeight = convertDip2Pix(35);
+	public static Vector2 InfoLine2;
 
-    /**
-     * Berechnet die Größen der UI-Elemente
-     */
-    private static void calcSizes() {
-	log.debug("GL_UISizes.calcSizes()");
-	// größe der Frames berechnen
-	int frameLeftwidth = UI_Size_Base.that.RefWidth;
+	/**
+	 * Dpi Faktor, welcher über die Settings eingestellt werden kann und mit dem HandyDisplay Wert vorbelegt ist. (HD2= 1.5)
+	 */
+	public static float DPI;
 
-	int WindowWidth = UI_Size_Base.that.getWindowWidth();
-	int frameRightWidth = WindowWidth - frameLeftwidth;
+	/**
+	 * DPI Wert des Displays, kann nicht über die Settings verändert werden
+	 */
+	public static float defaultDPI = 1;
 
-	// max 65dp
+	/**
+	 * Die Font Größe wird über den DPI Faktor berechnet und kann über den FontFaktor zusätzlich beeinflusst werden.
+	 */
+	public static float FontFaktor;
 
-	BottomButtonHeight = Math.round(Math.min(frameLeftwidth / 5.8f, convertDip2Pix(63)));
+	/**
+	 * Das Rechteck in dem das Info Panel dargestellt wird.
+	 */
+	public static CB_RectF Info;
 
-	margin = (float) (6.6666667 * DPI);
+	/**
+	 * Das Rechteck in dem der ToggleButton dargestellt wird.
+	 */
+	public static CB_RectF Toggle;
 
-	frameHeight = UI_Size_Base.that.getWindowHeight() - convertDip2Pix(35) - BottomButtonHeight;
+	/**
+	 * Das Rechteck in dem die Zoom Buttons dargestellt wird.
+	 */
+	public static CB_RectF ZoomBtn;
 
-	UI_Left = new CB_RectF(0, convertDip2Pix(65), frameLeftwidth, frameHeight);
-	UI_Right = UI_Left.copy();
-	if (Global.isTab) {
-	    UI_Right.setX(frameLeftwidth + 1);
-	    UI_Right.setWidth(frameRightWidth);
+	/**
+	 * Die Größe des Compass Icons. Welche Abhängig von der Höhe des Info Panels ist.
+	 */
+	public static CB_RectF Compass;
+
+	/**
+	 * Halbe Compass grösse welche den Mittelpunkt darstellt.
+	 */
+	public static float halfCompass;
+
+	/**
+	 * Die Größe des zur Verfügung stehenden Bereiches von Gdx.graphics
+	 */
+	public static CB_RectF SurfaceSize;
+
+	/**
+	 * Größe des position Markers
+	 */
+	public static float PosMarkerSize;
+
+	/**
+	 * Halbe Größe des Position Markers, welche den Mittelpunkt darstellt
+	 */
+	public static float halfPosMarkerSize;
+
+	/**
+	 * Array der drei möglichen Grössen eines WP Icons
+	 */
+	public static SizeF[] WPSizes;
+
+	/**
+	 * Array der drei möglichen Grössen eines WP Underlay
+	 */
+	public static SizeF[] UnderlaySizes;
+
+	/**
+	 * Größe der Cache Info Bubble
+	 */
+	public static SizeF Bubble;
+
+	/**
+	 * halbe breite der Info Bubble, welche den Mitttelpunkt darstellt
+	 */
+	public static float halfBubble;
+
+	/**
+	 * Korektur Wert zwichen Bubble und deren Content
+	 */
+	public static SizeF bubbleCorrect;
+
+	/**
+	 * Größe des Target Arrows
+	 */
+	public static SizeF TargetArrow;
+
+	// /**
+	// * Die Größe der D/T Wertungs Stars
+	// */
+	// public static SizeF DT_Size;
+
+	public static float margin;
+
+	/**
+	 * Berechnet die Positionen der UI-Elemente
+	 */
+	private static void calcPos() {
+		log.debug("GL_UISizes.calcPos()");
+
+		float w = Global.isTab ? UI_Right.getWidth() : UI_Left.getWidth();
+		float h = Global.isTab ? UI_Right.getHeight() : UI_Left.getHeight();
+
+		Info.setPos(new Vector2(margin, (h - margin - Info.getHeight())));
+
+		Float CompassMargin = (Info.getHeight() - Compass.getWidth()) / 2;
+
+		Compass.setPos(new Vector2(Info.getX() + CompassMargin, Info.getY() + infoShadowHeight + CompassMargin));
+
+		Toggle.setPos(new Vector2((w - margin - Toggle.getWidth()), h - margin - Toggle.getHeight()));
+
+		ZoomBtn.setPos(new Vector2((w - margin - ZoomBtn.getWidth()), margin));
+
+		InfoLine1.x = Compass.getMaxX() + margin;
+		GlyphLayout bounds;
+		if (Fonts.getNormal() != null) {
+			bounds = new GlyphLayout();
+			bounds.setText(Fonts.getSmall(), "52° 34,806N ");
+		} else {
+			bounds = new GlyphLayout();
+			bounds.height = 20;
+			bounds.width = 100;
+		}
+
+		InfoLine2.x = Info.getX() + Info.getWidth() - bounds.width - (margin * 2);
+
+		Float T1 = Info.getHeight() / 4;
+
+		InfoLine1.y = Info.getMaxY() - T1;
+		InfoLine2.y = Info.getY() + T1 + bounds.height;
+
+		// Aufräumen
+		CompassMargin = null;
+
 	}
 
-	infoShadowHeight = (float) (3.333333 * defaultDPI);
-	Info.setSize((UI_Size_Base.that.RefWidth - (UI_Size_Base.that.getButtonWidth() * 1.1f) - (margin * 3)), UI_Size_Base.that.getButtonHeight() * 1.1f);
-	Compass.setSize((float) (44.6666667 * DPI), (float) (44.6666667 * DPI));
-	halfCompass = Compass.getHeight() / 2;
-	Toggle.setSize(UI_Size_Base.that.getButtonWidth() * 1.1f, UI_Size_Base.that.getButtonHeight() * 1.1f);
-	ZoomBtn.setSize((158 * defaultDPI), 48 * defaultDPI);
-	PosMarkerSize = (float) (46.666667 * DPI);
-	halfPosMarkerSize = PosMarkerSize / 2;
+	public static int BottomButtonHeight = convertDip2Pix(65);
+	public static float TopButtonHeight = convertDip2Pix(35);
 
-	TargetArrow = new SizeF((float) (12.6 * DPI), (float) (38.4 * DPI));
+	/**
+	 * Berechnet die Größen der UI-Elemente
+	 */
+	private static void calcSizes() {
+		log.debug("GL_UISizes.calcSizes()");
+		// größe der Frames berechnen
+		int frameLeftwidth = UI_Size_Base.that.RefWidth;
 
-	UnderlaySizes = new SizeF[] { new SizeF(13 * DPI, 13 * DPI), new SizeF(14 * DPI, 14 * DPI), new SizeF(21 * DPI, 21 * DPI) };
-	WPSizes = new SizeF[] { new SizeF(13 * DPI, 13 * DPI), new SizeF(20 * DPI, 20 * DPI), new SizeF(32 * DPI, 32 * DPI) };
+		int WindowWidth = UI_Size_Base.that.getWindowWidth();
+		int frameRightWidth = WindowWidth - frameLeftwidth;
 
-	Bubble.setSize((float) 273.3333334 * defaultDPI, (float) 113.333334 * defaultDPI);
-	halfBubble = Bubble.width / 2;
-	bubbleCorrect.setSize((float) (6.6666667 * DPI), (float) 26.66667 * DPI);
+		// max 65dp
 
-	// DT_Size = new SizeF(37 * DPI, (37 * DPI * 0.2f));
+		BottomButtonHeight = Math.round(Math.min(frameLeftwidth / 5.8f, convertDip2Pix(63)));
 
-    }
+		margin = (float) (6.6666667 * DPI);
 
-    static float frameHeight = -1;
+		frameHeight = UI_Size_Base.that.getWindowHeight() - convertDip2Pix(35) - BottomButtonHeight;
 
-    public static void writeDebug(String name, CB_RectF rec) {
-	log.debug(name + "   ------ x/y/W/H =  " + rec.getX() + "/" + rec.getY() + "/" + rec.getWidth() + "/" + rec.getHeight());
-    }
+		UI_Left = new CB_RectF(0, convertDip2Pix(65), frameLeftwidth, frameHeight);
+		UI_Right = UI_Left.copy();
+		if (Global.isTab) {
+			UI_Right.setX(frameLeftwidth + 1);
+			UI_Right.setWidth(frameRightWidth);
+		}
 
-    public static void writeDebug(String name, float size) {
-	log.debug(name + "   ------ size =  " + size);
-    }
+		infoShadowHeight = (float) (3.333333 * defaultDPI);
+		Info.setSize((UI_Size_Base.that.RefWidth - (UI_Size_Base.that.getButtonWidth() * 1.1f) - (margin * 3)), UI_Size_Base.that.getButtonHeight() * 1.1f);
+		Compass.setSize((float) (44.6666667 * DPI), (float) (44.6666667 * DPI));
+		halfCompass = Compass.getHeight() / 2;
+		Toggle.setSize(UI_Size_Base.that.getButtonWidth() * 1.1f, UI_Size_Base.that.getButtonHeight() * 1.1f);
+		ZoomBtn.setSize((158 * defaultDPI), 48 * defaultDPI);
+		PosMarkerSize = (float) (46.666667 * DPI);
+		halfPosMarkerSize = PosMarkerSize / 2;
 
-    public static void writeDebug(String name, SizeF sizeF) {
-	log.debug(name + "   ------ W/H =  " + sizeF.width + "/" + sizeF.height);
-    }
+		TargetArrow = new SizeF((float) (12.6 * DPI), (float) (38.4 * DPI));
 
-    public static void writeDebug(String name, SizeF[] SizeArray) {
-	for (int i = 0; i < SizeArray.length; i++) {
-	    writeDebug(name + "[" + i + "]", SizeArray[i]);
+		UnderlaySizes = new SizeF[] { new SizeF(13 * DPI, 13 * DPI), new SizeF(14 * DPI, 14 * DPI), new SizeF(21 * DPI, 21 * DPI) };
+		WPSizes = new SizeF[] { new SizeF(13 * DPI, 13 * DPI), new SizeF(20 * DPI, 20 * DPI), new SizeF(32 * DPI, 32 * DPI) };
+
+		Bubble.setSize((float) 273.3333334 * defaultDPI, (float) 113.333334 * defaultDPI);
+		halfBubble = Bubble.width / 2;
+		bubbleCorrect.setSize((float) (6.6666667 * DPI), (float) 26.66667 * DPI);
+
+		// DT_Size = new SizeF(37 * DPI, (37 * DPI * 0.2f));
+
 	}
-    }
 
-    static float scale = 0;
+	static float frameHeight = -1;
 
-    public static int convertDip2Pix(float dips) {
-	// Converting dips to pixels
-	if (scale == 0)
-	    scale = UI_Size_Base.that.getScale();
-	return Math.round(dips * scale);
-    }
+	public static void writeDebug(String name, CB_RectF rec) {
+		log.debug(name + "   ------ x/y/W/H =  " + rec.getX() + "/" + rec.getY() + "/" + rec.getWidth() + "/" + rec.getHeight());
+	}
 
-    @Override
-    public void sizeChanged() {
-	log.debug("GL_UISizes.sizeChanged()");
-	calcPos();
+	public static void writeDebug(String name, float size) {
+		log.debug(name + "   ------ size =  " + size);
+	}
 
-    }
+	public static void writeDebug(String name, SizeF sizeF) {
+		log.debug(name + "   ------ W/H =  " + sizeF.width + "/" + sizeF.height);
+	}
+
+	public static void writeDebug(String name, SizeF[] SizeArray) {
+		for (int i = 0; i < SizeArray.length; i++) {
+			writeDebug(name + "[" + i + "]", SizeArray[i]);
+		}
+	}
+
+	static float scale = 0;
+
+	public static int convertDip2Pix(float dips) {
+		// Converting dips to pixels
+		if (scale == 0)
+			scale = UI_Size_Base.that.getScale();
+		return Math.round(dips * scale);
+	}
+
+	@Override
+	public void sizeChanged() {
+		log.debug("GL_UISizes.sizeChanged()");
+		calcPos();
+
+	}
 
 }

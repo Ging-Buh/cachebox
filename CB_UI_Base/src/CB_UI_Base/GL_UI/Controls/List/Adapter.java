@@ -1,7 +1,6 @@
 package CB_UI_Base.GL_UI.Controls.List;
 
-public interface Adapter
-{
+public interface Adapter {
 
 	/**
 	 * How many items are in the data set represented by this Adapter.
@@ -20,7 +19,7 @@ public interface Adapter
 	ListViewItemBase getView(int position);
 
 	/**
-	 * Gibt die Größe zur berechnung der Position eines Items zurück.</br> </br>Für V_ListView => die Höhe </br>Für H_ListView => die Breite
+	 * Gibt die Grï¿½ï¿½e zur berechnung der Position eines Items zurï¿½ck.</br> </br>Fï¿½r V_ListView => die Hï¿½he </br>Fï¿½r H_ListView => die Breite
 	 * 
 	 * @param position
 	 * @return

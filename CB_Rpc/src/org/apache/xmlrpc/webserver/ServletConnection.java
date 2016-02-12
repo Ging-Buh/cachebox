@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServlet;
 
 import org.apache.xmlrpc.util.ThreadPool.InterruptableTask;
 
-
 /** {@link org.apache.xmlrpc.webserver.ServletWebServer ServletWebServer's}
  * {@link org.apache.xmlrpc.util.ThreadPool.Task} for handling a single
  * servlet connection.
@@ -35,7 +34,7 @@ public class ServletConnection implements InterruptableTask {
 	private final Socket socket;
 	private final HttpServletRequestImpl request;
 	private final HttpServletResponseImpl response;
-    private boolean shuttingDown;
+	private boolean shuttingDown;
 
 	/** Creates a new instance.
 	 * @param pServlet The servlet, which ought to handle the request.
@@ -50,18 +49,18 @@ public class ServletConnection implements InterruptableTask {
 	}
 
 	public void run() throws Throwable {
-        try {
-            request.readHttpHeaders();
-            servlet.service(request, response);
-        } catch (Throwable t) {
-            if (!shuttingDown) {
-                throw t;
-            }
-        }
+		try {
+			request.readHttpHeaders();
+			servlet.service(request, response);
+		} catch (Throwable t) {
+			if (!shuttingDown) {
+				throw t;
+			}
+		}
 	}
 
-    public void shutdown() throws Throwable {
-        shuttingDown = true;
-        socket.close();
-    }
+	public void shutdown() throws Throwable {
+		shuttingDown = true;
+		socket.close();
+	}
 }

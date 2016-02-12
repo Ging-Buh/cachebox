@@ -7,8 +7,7 @@ import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 
-public interface IImportHandler
-{
+public interface IImportHandler {
 
 	void handleCache(Cache cache);
 

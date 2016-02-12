@@ -15,12 +15,10 @@
  */
 package CB_UI_Base.GL_UI.Controls.html;
 
-
 /**
  * @author Longri
  */
-public class Utils
-{
+public class Utils {
 	// public static List<HtmlSegment_TextBlock> getAllSegments(String html, List<HtmlSegment_TextBlock> list, List<StartTag> aditionalTags)
 	// {
 	// HtmlSegment_TextBlock segment = getDeepestSegment(html);

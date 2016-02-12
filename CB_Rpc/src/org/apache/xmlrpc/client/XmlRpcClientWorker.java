@@ -23,7 +23,6 @@ import org.apache.xmlrpc.XmlRpcRequest;
 import org.apache.xmlrpc.common.XmlRpcController;
 import org.apache.xmlrpc.common.XmlRpcWorker;
 
-
 /** Object, which performs a request on the clients behalf.
  * The client maintains a pool of workers. The main purpose of the
  * pool is limitation of the maximum number of concurrent requests.
@@ -49,8 +48,7 @@ public class XmlRpcClientWorker implements XmlRpcWorker {
 	 * @return The requests result.
 	 * @throws XmlRpcException Performing the request failed.
 	 */
-	public Object execute(XmlRpcRequest pRequest)
-			throws XmlRpcException {
+	public Object execute(XmlRpcRequest pRequest) throws XmlRpcException {
 		try {
 			XmlRpcClient client = (XmlRpcClient) getController();
 			return client.getTransportFactory().getTransport().sendRequest(pRequest);
@@ -69,10 +67,9 @@ public class XmlRpcClientWorker implements XmlRpcWorker {
 	 * @param pRequest The request being performed.
 	 * @param pCallback The callback being invoked, when the request is finished.
 	 */
-	public void execute(final XmlRpcRequest pRequest,
-						final AsyncCallback pCallback) {
-		Runnable runnable = new Runnable(){
-			public void run(){
+	public void execute(final XmlRpcRequest pRequest, final AsyncCallback pCallback) {
+		Runnable runnable = new Runnable() {
+			public void run() {
 				Object result = null;
 				Throwable th = null;
 				try {

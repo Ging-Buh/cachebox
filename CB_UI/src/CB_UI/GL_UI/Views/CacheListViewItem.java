@@ -30,237 +30,237 @@ import CB_Utils.Util.UnitFormatter;
 
 public class CacheListViewItem extends ListViewItemBackground implements PositionChangedEvent {
 
-    /**
-     * mit ausgeschaltener scissor berechnung
-     * 
-     * @author Longri
-     */
-    class extendedCacheInfo extends CacheInfo {
+	/**
+	 * mit ausgeschaltener scissor berechnung
+	 * 
+	 * @author Longri
+	 */
+	class extendedCacheInfo extends CacheInfo {
 
-	public extendedCacheInfo(CB_RectF rec, String Name, Cache value) {
-	    super(rec, Name, value);
+		public extendedCacheInfo(CB_RectF rec, String Name, Cache value) {
+			super(rec, Name, value);
+		}
+
+		@Override
+		public void renderChilds(final Batch batch, ParentInfo parentInfo) {
+			if (!disableScissor)
+				Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
+
+			batch.flush();
+
+			this.render(batch);
+			batch.flush();
+
+			Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
+		}
+	}
+
+	private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
+
+	protected extendedCacheInfo info;
+	protected boolean isPressed = false;
+
+	private Sprite liveCacheIcon;
+	private Sprite arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
+	private BitmapFontCache distance = new BitmapFontCache(Fonts.getSmall());
+
+	// private BitmapFontCache debugIndex = new BitmapFontCache(Fonts.getSmall());
+
+	private CB_RectF ArrowRec;
+
+	private Cache mCache;
+
+	public Cache getCache() {
+		return mCache;
+	}
+
+	public CacheListViewItem(CB_RectF rec, int Index, Cache cache) {
+		super(rec, Index, cache.getName());
+		mCache = cache;
+		info = new extendedCacheInfo(UiSizes.that.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.getGcCode(), cache);
+		info.setZeroPos();
+		distance.setColor(COLOR.getFontColor());
+		this.addChild(info);
+		PositionChangedEventList.Add(this);
+
+		float size = this.getHeight() / 2.3f;
+		ArrowRec = new CB_RectF(this.getWidth() - (size * 1.2f), this.getHeight() - (size * 1.6f), size, size);
+		arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
+		arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
+
+		if (!Locator.Valid()) {
+			arrow.setColor(DISABLE_COLOR);
+			setDistanceString("---");
+		} else {
+			setActLocator();
+		}
+
+		if (mCache.isLive()) {
+			liveCacheIcon = new Sprite(SpriteCacheBase.LiveBtn.get(0));
+			liveCacheIcon.setBounds(ArrowRec.getX() + (ArrowRec.getHalfWidth() / 2), ArrowRec.getMaxY(), ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
+		}
+
+	}
+
+	private String lastString = "";
+
+	private void setDistanceString(String txt) {
+		if (this.isDisposed())
+			return;
+
+		if (txt == null)
+			txt = "";
+
+		if (txt.equals(lastString)) {
+			return;
+		}
+		lastString = txt;
+		synchronized (distance) {
+			try {
+				GlyphLayout bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
+				float x = ArrowRec.getHalfWidth() - (bounds.width / 2f);
+				distance.setPosition(x, 0);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	double heading = 0;
+
+	private void setActLocator() {
+
+		// log.debug("CacheListItem set ActLocator");
+
+		if (Locator.Valid()) {
+
+			if (mCache.Pos == null) {
+				// mCache was disposed
+				Cache c = Database.Data.Query.GetCacheById(mCache.Id);
+				if (c == null) {
+					return;
+				}
+				mCache = c;
+			}
+
+			Coordinate position = Locator.getCoordinate();
+
+			Waypoint FinalWp = mCache.GetFinalWaypoint();
+
+			Coordinate Final = FinalWp != null ? FinalWp.Pos : mCache.Pos;
+			CalculationType calcType = CalculationType.FAST;
+			Cache c = GlobalCore.getSelectedCache();
+			if (c != null) {
+				calcType = mCache.Id == GlobalCore.getSelectedCache().Id ? CalculationType.ACCURATE : CalculationType.FAST;
+			}
+
+			float result[] = new float[4];
+
+			try {
+				MathUtils.computeDistanceAndBearing(calcType, position.getLatitude(), position.getLongitude(), Final.getLatitude(), Final.getLongitude(), result);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			double cacheBearing = -(result[2] - heading);
+			mCache.cachedDistance = result[0];
+			setDistanceString(UnitFormatter.DistanceString(mCache.cachedDistance));
+
+			arrow.setRotation((float) cacheBearing);
+			if (arrow.getColor() == DISABLE_COLOR) {
+				float size = this.getHeight() / 2.3f;
+				arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
+				arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
+				arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
+			}
+		} else {
+			if (mCache.cachedDistance >= 0) // (mCache.cachedDistance > 0)|| mCache == GlobalCore.getSelectedCache())
+			{
+				setDistanceString(UnitFormatter.DistanceString(mCache.cachedDistance));
+			}
+		}
 	}
 
 	@Override
-	public void renderChilds(final Batch batch, ParentInfo parentInfo) {
-	    if (!disableScissor)
-		Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
+	protected void render(Batch batch) {
+		super.render(batch);
 
-	    batch.flush();
+		if (liveCacheIcon != null)
+			liveCacheIcon.draw(batch);
+		if (arrow != null)
+			arrow.draw(batch);
+		if (distance != null) {
+			synchronized (distance) {
+				distance.draw(batch);
+			}
 
-	    this.render(batch);
-	    batch.flush();
-
-	    Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
-	}
-    }
-
-    private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
-
-    protected extendedCacheInfo info;
-    protected boolean isPressed = false;
-
-    private Sprite liveCacheIcon;
-    private Sprite arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
-    private BitmapFontCache distance = new BitmapFontCache(Fonts.getSmall());
-
-    // private BitmapFontCache debugIndex = new BitmapFontCache(Fonts.getSmall());
-
-    private CB_RectF ArrowRec;
-
-    private Cache mCache;
-
-    public Cache getCache() {
-	return mCache;
-    }
-
-    public CacheListViewItem(CB_RectF rec, int Index, Cache cache) {
-	super(rec, Index, cache.getName());
-	mCache = cache;
-	info = new extendedCacheInfo(UiSizes.that.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.getGcCode(), cache);
-	info.setZeroPos();
-	distance.setColor(COLOR.getFontColor());
-	this.addChild(info);
-	PositionChangedEventList.Add(this);
-
-	float size = this.getHeight() / 2.3f;
-	ArrowRec = new CB_RectF(this.getWidth() - (size * 1.2f), this.getHeight() - (size * 1.6f), size, size);
-	arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
-	arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
-
-	if (!Locator.Valid()) {
-	    arrow.setColor(DISABLE_COLOR);
-	    setDistanceString("---");
-	} else {
-	    setActLocator();
-	}
-
-	if (mCache.isLive()) {
-	    liveCacheIcon = new Sprite(SpriteCacheBase.LiveBtn.get(0));
-	    liveCacheIcon.setBounds(ArrowRec.getX() + (ArrowRec.getHalfWidth() / 2), ArrowRec.getMaxY(), ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
-	}
-
-    }
-
-    private String lastString = "";
-
-    private void setDistanceString(String txt) {
-	if (this.isDisposed())
-	    return;
-
-	if (txt == null)
-	    txt = "";
-
-	if (txt.equals(lastString)) {
-	    return;
-	}
-	lastString = txt;
-	synchronized (distance) {
-	    try {
-		GlyphLayout bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
-		float x = ArrowRec.getHalfWidth() - (bounds.width / 2f);
-		distance.setPosition(x, 0);
-	    } catch (Exception e) {
-		e.printStackTrace();
-	    }
-	}
-
-    }
-
-    double heading = 0;
-
-    private void setActLocator() {
-
-	// log.debug("CacheListItem set ActLocator");
-
-	if (Locator.Valid()) {
-
-	    if (mCache.Pos == null) {
-		// mCache was disposed
-		Cache c = Database.Data.Query.GetCacheById(mCache.Id);
-		if (c == null) {
-		    return;
 		}
-		mCache = c;
-	    }
-
-	    Coordinate position = Locator.getCoordinate();
-
-	    Waypoint FinalWp = mCache.GetFinalWaypoint();
-
-	    Coordinate Final = FinalWp != null ? FinalWp.Pos : mCache.Pos;
-	    CalculationType calcType = CalculationType.FAST;
-	    Cache c = GlobalCore.getSelectedCache();
-	    if (c != null) {
-		calcType = mCache.Id == GlobalCore.getSelectedCache().Id ? CalculationType.ACCURATE : CalculationType.FAST;
-	    }
-
-	    float result[] = new float[4];
-
-	    try {
-		MathUtils.computeDistanceAndBearing(calcType, position.getLatitude(), position.getLongitude(), Final.getLatitude(), Final.getLongitude(), result);
-	    } catch (Exception e) {
-		e.printStackTrace();
-	    }
-
-	    double cacheBearing = -(result[2] - heading);
-	    mCache.cachedDistance = result[0];
-	    setDistanceString(UnitFormatter.DistanceString(mCache.cachedDistance));
-
-	    arrow.setRotation((float) cacheBearing);
-	    if (arrow.getColor() == DISABLE_COLOR) {
-		float size = this.getHeight() / 2.3f;
-		arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
-		arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
-		arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
-	    }
-	} else {
-	    if (mCache.cachedDistance >= 0) // (mCache.cachedDistance > 0)|| mCache == GlobalCore.getSelectedCache())
-	    {
-		setDistanceString(UnitFormatter.DistanceString(mCache.cachedDistance));
-	    }
-	}
-    }
-
-    @Override
-    protected void render(Batch batch) {
-	super.render(batch);
-
-	if (liveCacheIcon != null)
-	    liveCacheIcon.draw(batch);
-	if (arrow != null)
-	    arrow.draw(batch);
-	if (distance != null) {
-	    synchronized (distance) {
-		distance.draw(batch);
-	    }
 
 	}
 
-    }
+	@Override
+	public void dispose() {
+		PositionChangedEventList.Remove(this);
+		if (info != null)
+			info.dispose();
+		info = null;
 
-    @Override
-    public void dispose() {
-	PositionChangedEventList.Remove(this);
-	if (info != null)
-	    info.dispose();
-	info = null;
+		arrow = null;
+		// if (distance != null) distance.dispose();
+		distance = null;
+	}
 
-	arrow = null;
-	// if (distance != null) distance.dispose();
-	distance = null;
-    }
+	@Override
+	public boolean onTouchDown(int x, int y, int pointer, int button) {
 
-    @Override
-    public boolean onTouchDown(int x, int y, int pointer, int button) {
+		isPressed = true;
 
-	isPressed = true;
+		return false;
+	}
 
-	return false;
-    }
+	@Override
+	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
+		isPressed = false;
 
-    @Override
-    public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
-	isPressed = false;
+		return false;
+	}
 
-	return false;
-    }
+	@Override
+	public boolean onTouchUp(int x, int y, int pointer, int button) {
+		isPressed = false;
 
-    @Override
-    public boolean onTouchUp(int x, int y, int pointer, int button) {
-	isPressed = false;
+		return false;
+	}
 
-	return false;
-    }
+	@Override
+	public void PositionChanged() {
+		setActLocator();
+	}
 
-    @Override
-    public void PositionChanged() {
-	setActLocator();
-    }
+	@Override
+	public void OrientationChanged() {
+		this.heading = Locator.getHeading();
+		setActLocator();
+	}
 
-    @Override
-    public void OrientationChanged() {
-	this.heading = Locator.getHeading();
-	setActLocator();
-    }
+	@Override
+	public String getReceiverName() {
+		return "Core.CacheListViewItem";
+	}
 
-    @Override
-    public String getReceiverName() {
-	return "Core.CacheListViewItem";
-    }
+	@Override
+	protected void SkinIsChanged() {
 
-    @Override
-    protected void SkinIsChanged() {
+	}
 
-    }
+	@Override
+	public Priority getPriority() {
+		return Priority.Normal;
+	}
 
-    @Override
-    public Priority getPriority() {
-	return Priority.Normal;
-    }
-
-    @Override
-    public void SpeedChanged() {
-    }
+	@Override
+	public void SpeedChanged() {
+	}
 
 }

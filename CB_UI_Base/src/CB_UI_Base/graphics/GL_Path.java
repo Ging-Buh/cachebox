@@ -34,8 +34,7 @@ import com.badlogic.gdx.utils.Disposable;
 /**
  * @author Longri
  */
-public class GL_Path implements ext_Path, Disposable
-{
+public class GL_Path implements ext_Path, Disposable {
 	final static float MIN_SEGMENTH_LENGTH = 10;
 
 	public float[] items;
@@ -48,25 +47,21 @@ public class GL_Path implements ext_Path, Disposable
 
 	private float averageDirection = Float.MAX_VALUE;
 
-	public GL_Path()
-	{
+	public GL_Path() {
 		this(4);
 	}
 
-	public GL_Path(int capacity)
-	{
+	public GL_Path(int capacity) {
 		items = new float[capacity * 2];
 		last = new float[2];
 	}
 
-	public GL_Path(GL_Path path)
-	{
+	public GL_Path(GL_Path path) {
 		this(path.size + 2);
 		size = path.size;
 		last[0] = path.last[0];
 		last[1] = path.last[1];
-		if (PathSectionLength != null)
-		{
+		if (PathSectionLength != null) {
 			PathSectionLength = new float[path.PathSectionLength.length];
 			System.arraycopy(path.PathSectionLength, 0, PathSectionLength, 0, PathSectionLength.length);
 		}
@@ -74,57 +69,51 @@ public class GL_Path implements ext_Path, Disposable
 		items = new float[path.items.length];
 		System.arraycopy(path.items, 0, items, 0, items.length);
 
-		for (int i = 0, n = path.pathBegins.size(); i < n; i++)
-		{
+		for (int i = 0, n = path.pathBegins.size(); i < n; i++) {
 
 			pathBegins.add(path.pathBegins.get(i));
 		}
 	}
 
-	private void setLast(float x, float y)
-	{
+	private void setLast(float x, float y) {
 		last[0] = x;
 		last[1] = y;
 	}
 
-	public void setToMaxItems(int value)
-	{
-		if (items.length < value * 2) resize(value * 2);
+	public void setToMaxItems(int value) {
+		if (items.length < value * 2)
+			resize(value * 2);
 	}
 
 	/**
 	 * Add a line from the last point to the specified point (x,y).
 	 */
 	@Override
-	public void lineTo(float x, float y)
-	{
-		if (!isMoveTo)
-		{
-			if (last[0] == x && last[1] == y)
-			{
+	public void lineTo(float x, float y) {
+		if (!isMoveTo) {
+			if (last[0] == x && last[1] == y) {
 				return;
 			}
 		}
 
 		isMoveTo = false;
 
-		if (size + 2 > items.length) resize(size + (Math.max(2, size >> 1)));
+		if (size + 2 > items.length)
+			resize(size + (Math.max(2, size >> 1)));
 		items[size++] = x;
 		items[size++] = y;
 		setLast(x, y);
 		averageDirection = Float.MAX_VALUE;
 	}
 
-	private void resize(int newSize)
-	{
+	private void resize(int newSize) {
 		this.items = Arrays.copyOf(this.items, newSize);
 	}
 
 	private boolean isMoveTo = false;
 
 	@Override
-	public void moveTo(float x, float y)
-	{
+	public void moveTo(float x, float y) {
 		aktBeginn = size;
 		pathBegins.add(size);
 		isMoveTo = true;
@@ -132,32 +121,25 @@ public class GL_Path implements ext_Path, Disposable
 	}
 
 	@Override
-	public void clear()
-	{
+	public void clear() {
 		size = 0;
 		aktBeginn = 0;
 		pathBegins.clear();
 	}
 
-	public ArrayList<float[]> getVertices()
-	{
+	public ArrayList<float[]> getVertices() {
 
 		ArrayList<float[]> tmp = new ArrayList<float[]>();
 
-		if (pathBegins.size() > 1)
-		{
+		if (pathBegins.size() > 1) {
 			// Multi path
-			for (int i = 0; i < pathBegins.size(); i++)
-			{
+			for (int i = 0; i < pathBegins.size(); i++) {
 				int pathBegin = pathBegins.get(i);
 
 				int pathLength = 0;
-				if (i + 1 == pathBegins.size())
-				{
+				if (i + 1 == pathBegins.size()) {
 					pathLength = size - pathBegin;
-				}
-				else
-				{
+				} else {
 					int pathEnd = pathBegins.get(i + 1);
 					pathLength = pathEnd - pathBegin;
 				}
@@ -166,9 +148,7 @@ public class GL_Path implements ext_Path, Disposable
 				System.arraycopy(items, pathBegin, array, 0, pathLength);
 				tmp.add(array);
 			}
-		}
-		else
-		{
+		} else {
 			float[] array = new float[size];
 			System.arraycopy(items, 0, array, 0, size);
 			tmp.add(array);
@@ -178,15 +158,12 @@ public class GL_Path implements ext_Path, Disposable
 	}
 
 	@Override
-	public void setFillRule(FillRule fillRule)
-	{
-		
+	public void setFillRule(FillRule fillRule) {
 
 	}
 
 	@Override
-	public void rMoveTo(float x, float y)
-	{
+	public void rMoveTo(float x, float y) {
 		moveTo(last[0] + x, last[1] + y);
 	}
 
@@ -195,20 +172,18 @@ public class GL_Path implements ext_Path, Disposable
 	 * added.
 	 */
 	@Override
-	public void close()
-	{
-		if (isClosed()) return;
+	public void close() {
+		if (isClosed())
+			return;
 		lineTo(items[aktBeginn], items[aktBeginn + 1]);
 	}
 
-	public boolean isClosed()
-	{
+	public boolean isClosed() {
 		return (items[aktBeginn] == last[0] && items[aktBeginn + 1] == last[1]);
 	}
 
 	@Override
-	public void rLineTo(float x, float y)
-	{
+	public void rLineTo(float x, float y) {
 		lineTo(last[0] + x, last[1] + y);
 	}
 
@@ -230,8 +205,7 @@ public class GL_Path implements ext_Path, Disposable
 	 *            The y-coordinate of the end point on a cubic curve
 	 */
 	@Override
-	public void cubicTo(float x1, float y1, float x2, float y2, float x3, float y3)
-	{
+	public void cubicTo(float x1, float y1, float x2, float y2, float x3, float y3) {
 
 		// calculate distance
 		float distance = calcDistance(last[0], last[1], x1, y1);
@@ -239,8 +213,7 @@ public class GL_Path implements ext_Path, Disposable
 		distance += calcDistance(x2, y2, x3, y3);
 		distance = Math.min(0.2f, 1 / (distance / MIN_SEGMENTH_LENGTH));
 
-		if (items.length == 0)
-		{
+		if (items.length == 0) {
 			throw new IllegalStateException("Missing initial moveTo()");
 		}
 
@@ -249,8 +222,7 @@ public class GL_Path implements ext_Path, Disposable
 		Vector2 vec2 = new Vector2(x2, y2);
 		Vector2 vec3 = new Vector2(x3, y3);
 
-		for (float location = distance; !(location > 1); location += distance)
-		{
+		for (float location = distance; !(location > 1); location += distance) {
 			Vector2 out = new Vector2();
 			Vector2 tmp = new Vector2();
 			Bezier.cubic(out, location, vec0, vec1, vec2, vec3, tmp);
@@ -259,22 +231,19 @@ public class GL_Path implements ext_Path, Disposable
 		lineTo(x3, y3);
 	}
 
-	private float calcDistance(float x1, float y1, float x2, float y2)
-	{
+	private float calcDistance(float x1, float y1, float x2, float y2) {
 		float dx = x1 - x2;
 		float dy = y1 - y2;
 		return (float) Math.sqrt(dx * dx + dy * dy);
 	}
 
 	@Override
-	public void addArc(RectF oval, float angleStart, float angleExtent)
-	{
+	public void addArc(RectF oval, float angleStart, float angleExtent) {
 		CircularSegment cir = new CircularSegment(oval.centerX(), oval.centerY(), oval.width(), angleStart, angleStart + angleExtent);
 
 		float[] array = cir.getVertices();
 		int insertPos = size + 1;
-		if (size + array.length + 1 >= items.length)
-		{
+		if (size + array.length + 1 >= items.length) {
 			size += array.length;
 			resize(size + (size >> 1));
 		}
@@ -322,16 +291,12 @@ public class GL_Path implements ext_Path, Disposable
 	 *            The transformed path is written here. If dst is null, then the the original path is modified
 	 */
 	@Override
-	public void transform(ext_Matrix currentMatrix, ext_Path transformedPath)
-	{
-		
+	public void transform(ext_Matrix currentMatrix, ext_Path transformedPath) {
 
 	}
 
 	@Override
-	public void computeBounds(RectF pathBounds, boolean b)
-	{
-		
+	public void computeBounds(RectF pathBounds, boolean b) {
 
 	}
 
@@ -349,16 +314,14 @@ public class GL_Path implements ext_Path, Disposable
 	 *            The y-coordinate of the end point on a quadratic curve
 	 */
 	@Override
-	public void quadTo(float x1, float y1, float x2, float y2)
-	{
+	public void quadTo(float x1, float y1, float x2, float y2) {
 
 		// calculate distance
 		float distance = calcDistance(last[0], last[1], x1, y1);
 		distance += calcDistance(x1, y1, x2, y2);
 		distance = Math.min(0.25f, 1 / (distance / MIN_SEGMENTH_LENGTH));
 
-		if (items.length == 0)
-		{
+		if (items.length == 0) {
 			throw new IllegalStateException("Missing initial moveTo()");
 		}
 
@@ -366,8 +329,7 @@ public class GL_Path implements ext_Path, Disposable
 		Vector2 vec1 = new Vector2(x1, y1);
 		Vector2 vec2 = new Vector2(x2, y2);
 
-		for (float location = 0; location < 1; location += distance)
-		{
+		for (float location = 0; location < 1; location += distance) {
 			Vector2 out = new Vector2();
 			Vector2 tmp = new Vector2();
 			Bezier.quadratic(out, location, vec0, vec1, vec2, tmp);
@@ -377,44 +339,33 @@ public class GL_Path implements ext_Path, Disposable
 	}
 
 	@Override
-	public void addPath(ext_Path path, ext_Matrix combinedPathMatrix)
-	{
-		
+	public void addPath(ext_Path path, ext_Matrix combinedPathMatrix) {
 
 	}
 
 	@Override
-	public void setFillType(FillType clipRuleFromState)
-	{
-		
+	public void setFillType(FillType clipRuleFromState) {
 
 	}
 
 	@Override
-	public FillType getFillType()
-	{
-		
+	public FillType getFillType() {
+
 		return null;
 	}
 
 	@Override
-	public void addPath(ext_Path spanPath)
-	{
-		
+	public void addPath(ext_Path spanPath) {
 
 	}
 
 	@Override
-	public void transform(ext_Matrix transform)
-	{
-		
+	public void transform(ext_Matrix transform) {
 
 	}
 
-	public float getAverageDirection()
-	{
-		if (averageDirection == Float.MAX_VALUE)
-		{
+	public float getAverageDirection() {
+		if (averageDirection == Float.MAX_VALUE) {
 			// Average direction is the direction between first and last point!
 
 			float firstX = items[0];
@@ -430,20 +381,19 @@ public class GL_Path implements ext_Path, Disposable
 		return averageDirection;
 	}
 
-	private void calcSectionLength()
-	{
+	private void calcSectionLength() {
 
 		int arrayLength = ((size - 2) / 2);
 
 		PathSectionLength = new float[arrayLength];
-		if (arrayLength == 0) return;
+		if (arrayLength == 0)
+			return;
 
 		int index = 0;
 
 		float length = PathSectionLength[index] = 0;
 
-		for (int i = 0; i < size - 2; i += 2)
-		{
+		for (int i = 0; i < size - 2; i += 2) {
 
 			float x1 = items[i];
 			float y1 = items[i + 1];
@@ -469,13 +419,13 @@ public class GL_Path implements ext_Path, Disposable
 	 *         [1]=y-value <br>
 	 *         [2]= angle of the Line segment from the point <br>
 	 */
-	public float[] getPointOnPathAfter(float distance)
-	{
-		if (size < 4) return null; // no Path
-		if (distance < 0) return null; // not on Path
+	public float[] getPointOnPathAfter(float distance) {
+		if (size < 4)
+			return null; // no Path
+		if (distance < 0)
+			return null; // not on Path
 
-		if (distance == 0)
-		{ // first Point of Path
+		if (distance == 0) { // first Point of Path
 			float[] ret = new float[3];
 			ret[0] = items[0];
 			ret[1] = items[1];
@@ -483,26 +433,21 @@ public class GL_Path implements ext_Path, Disposable
 			// calc angle
 			ret[2] = getAngle(0, 1);
 			return ret;
-		}
-		else
-		{
-			if (distance > getLength())
-			{
+		} else {
+			if (distance > getLength()) {
 				return null;
 			}
 
-			if (PathSectionLength == null) calcSectionLength();
+			if (PathSectionLength == null)
+				calcSectionLength();
 
 			int ind = 0;
-			do
-			{
-				if (ind > PathSectionLength.length - 1)
-				{
+			do {
+				if (ind > PathSectionLength.length - 1) {
 					// Path to close
 					return null;
 				}
-				if (PathSectionLength[ind] >= distance)
-				{
+				if (PathSectionLength[ind] >= distance) {
 					// calc point on path with restDis on path line[ind]
 
 					float movedLength = ind == 0 ? 0 : PathSectionLength[ind - 1];
@@ -512,15 +457,10 @@ public class GL_Path implements ext_Path, Disposable
 
 					int lineBeginn = (ind) * 2;
 
-					if (dis > 0 && distance > 0)
-					{
-						res = computePointOnLine(items[lineBeginn], items[lineBeginn + 1], items[lineBeginn + 2], items[lineBeginn + 3],
-								dis);
-					}
-					else
-					{
-						res = new float[]
-							{ items[ind], items[ind + 1] };
+					if (dis > 0 && distance > 0) {
+						res = computePointOnLine(items[lineBeginn], items[lineBeginn + 1], items[lineBeginn + 2], items[lineBeginn + 3], dis);
+					} else {
+						res = new float[] { items[ind], items[ind + 1] };
 					}
 
 					float[] ret = new float[3];
@@ -534,26 +474,21 @@ public class GL_Path implements ext_Path, Disposable
 					return ret;
 				}
 				ind++;
-			}
-			while (true);
+			} while (true);
 		}
 	}
 
-	private float getAngle(int index1, int index2)
-	{
+	private float getAngle(int index1, int index2) {
 		float ret = 0;
 
-		try
-		{
-			if (index1 >= items.length || index2 >= items.length) return 0;
+		try {
+			if (index1 >= items.length || index2 >= items.length)
+				return 0;
 
-			ret = MathUtils.atan2((items[index2 * 2] - items[index1 * 2]), (items[index2 * 2 + 1] - items[index1 * 2 + 1]))
-					* MathUtils.radiansToDegrees;
+			ret = MathUtils.atan2((items[index2 * 2] - items[index1 * 2]), (items[index2 * 2 + 1] - items[index1 * 2 + 1])) * MathUtils.radiansToDegrees;
 
 			ret = 90 - ret;
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 		}
 
 		return ret;
@@ -571,8 +506,7 @@ public class GL_Path implements ext_Path, Disposable
 	 *            Point we are looking for coordinates of
 	 * @return p Coordinate of point we are looking for
 	 */
-	private static float[] computePointOnLine(float p0x, float p0y, float p1x, float p1y, float distance)
-	{
+	private static float[] computePointOnLine(float p0x, float p0y, float p1x, float p1y, float distance) {
 		float[] p = new float[2];
 		float vectorX = p1x - p0x;
 		float vectorY = p1y - p0y;
@@ -584,11 +518,10 @@ public class GL_Path implements ext_Path, Disposable
 		return p;
 	}
 
-	public float getLength()
-	{
-		if (PathSectionLength == null) calcSectionLength();
-		if (PathSectionLength.length < 1)
-		{
+	public float getLength() {
+		if (PathSectionLength == null)
+			calcSectionLength();
+		if (PathSectionLength.length < 1) {
 			return 0;
 		}
 		return PathSectionLength[PathSectionLength.length - 1];
@@ -600,23 +533,20 @@ public class GL_Path implements ext_Path, Disposable
 	 * 
 	 * @param flipSize
 	 */
-	public void flipY(float flipSize)
-	{
-		for (int i = 1; i < size; i += 2)
-		{
+	public void flipY(float flipSize) {
+		for (int i = 1; i < size; i += 2) {
 			items[i] = flipSize - items[i];
 		}
 	}
 
-	public boolean isDisposed()
-	{
+	public boolean isDisposed() {
 		return isDisposed;
 	}
 
 	@Override
-	public void dispose()
-	{
-		if (isDisposed) return;
+	public void dispose() {
+		if (isDisposed)
+			return;
 		items = null;
 		pathBegins = null;
 		last = null;
@@ -627,11 +557,9 @@ public class GL_Path implements ext_Path, Disposable
 	/**
 	 * revert the beginn and end of this Path
 	 */
-	public void revert()
-	{
+	public void revert() {
 		float[] tmp = new float[size + 2];
-		for (int i = 0; i < size; i += 2)
-		{
+		for (int i = 0; i < size; i += 2) {
 			int rev = size - 2 - i;
 
 			tmp[i] = items[rev];

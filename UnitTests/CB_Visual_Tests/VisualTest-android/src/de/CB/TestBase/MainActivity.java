@@ -49,24 +49,19 @@ import de.CB.TestBase.Views.MainView;
 import de.CB.TestBase.Views.splash;
 import de.CB_VisualTest.android.R;
 
-
-public class MainActivity extends AndroidApplication implements LocationListener, GpsStatus.NmeaListener, GpsStatus.Listener
-{
+public class MainActivity extends AndroidApplication implements LocationListener, GpsStatus.NmeaListener, GpsStatus.Listener {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(MainActivity.class);
-	
+
 	String workPath;
 	public static LocationManager locationManager;
 
 	public static MainActivity that;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		that = this;
-
-	
 
 		GL.resetIsInitial();
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -86,8 +81,7 @@ public class MainActivity extends AndroidApplication implements LocationListener
 		setContentView(R.layout.main);
 
 		// only Portrait
-		if (h < w)
-		{
+		if (h < w) {
 			int flip = h;
 			h = w;
 			w = flip;
@@ -134,13 +128,10 @@ public class MainActivity extends AndroidApplication implements LocationListener
 		initialPlatformConector();
 	}
 
-	private void initialLocationManager()
-	{
+	private void initialLocationManager() {
 
-		try
-		{
-			if (locationManager != null)
-			{
+		try {
+			if (locationManager != null) {
 				// ist schon initialisiert
 				return;
 			}
@@ -169,9 +160,7 @@ public class MainActivity extends AndroidApplication implements LocationListener
 
 			locationManager.addNmeaListener(this);
 			locationManager.addGpsStatusListener(this);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			log.error("main.initialLocationManager()", e);
 			e.printStackTrace();
 		}
@@ -181,27 +170,20 @@ public class MainActivity extends AndroidApplication implements LocationListener
 	/**
 	 * Initial all Locator functions
 	 */
-	private void initialLocatorBase()
-	{
+	private void initialLocatorBase() {
 		// ##########################################################
 		// initial Locator with saved Location
 		// ##########################################################
 		double latitude = -1000;
 		double longitude = -1000;
 
-		if (Config.settings != null)
-		{
-			try
-			{
+		if (Config.settings != null) {
+			try {
 				latitude = Config.MapInitLatitude.getValue();
 				longitude = Config.MapInitLongitude.getValue();
+			} catch (Exception e) {
 			}
-			catch (Exception e)
-			{
-			}
-		}
-		else
-		{
+		} else {
 			// reload config
 			// TODO
 		}
@@ -210,12 +192,9 @@ public class MainActivity extends AndroidApplication implements LocationListener
 
 		CB_Locator.Location initialLocation;
 
-		if (provider == ProviderType.Saved)
-		{
+		if (provider == ProviderType.Saved) {
 			initialLocation = new CB_Locator.Location(latitude, longitude, 0, false, 0, false, 0, 0, provider);
-		}
-		else
-		{
+		} else {
 			initialLocation = CB_Locator.Location.NULL_LOCATION;
 		}
 
@@ -227,56 +206,46 @@ public class MainActivity extends AndroidApplication implements LocationListener
 
 		// Use Imperial units?
 		CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
-		Config.ImperialUnits.addChangedEventListener(new IChanged()
-		{
+		Config.ImperialUnits.addChangedEventListener(new IChanged() {
 			@Override
-			public void isChanged()
-			{
+			public void isChanged() {
 				CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
 			}
 		});
 
 		// GPS update time?
 		CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
-		Config.gpsUpdateTime.addChangedEventListener(new IChanged()
-		{
+		Config.gpsUpdateTime.addChangedEventListener(new IChanged() {
 
 			@Override
-			public void isChanged()
-			{
+			public void isChanged() {
 				CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
 			}
 		});
 
 		// Use magnetic Compass?
 		CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
-		Config.HardwareCompass.addChangedEventListener(new IChanged()
-		{
+		Config.HardwareCompass.addChangedEventListener(new IChanged() {
 			@Override
-			public void isChanged()
-			{
+			public void isChanged() {
 				CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
 			}
 		});
 
 		// Magnetic compass level
 		CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
-		Config.HardwareCompassLevel.addChangedEventListener(new IChanged()
-		{
+		Config.HardwareCompassLevel.addChangedEventListener(new IChanged() {
 			@Override
-			public void isChanged()
-			{
+			public void isChanged() {
 				CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
 			}
 		});
 	}
 
 	@Override
-	public void onDestroy()
-	{
+	public void onDestroy() {
 
-		if (isFinishing())
-		{
+		if (isFinishing()) {
 
 			// Config.settings.WriteToDB();
 
@@ -286,20 +255,17 @@ public class MainActivity extends AndroidApplication implements LocationListener
 			// Config.AcceptChanges();
 			super.onDestroy();
 			System.exit(0);
-		}
-		else
-		{
+		} else {
 			super.onDestroy();
 		}
 	}
 
 	@Override
-	public void onGpsStatusChanged(int event)
-	{
-		if (locationManager == null) return;
+	public void onGpsStatusChanged(int event) {
+		if (locationManager == null)
+			return;
 
-		if (event == GpsStatus.GPS_EVENT_SATELLITE_STATUS)
-		{
+		if (event == GpsStatus.GPS_EVENT_SATELLITE_STATUS) {
 			GpsStatus status = locationManager.getGpsStatus(null);
 			Iterator<GpsSatellite> statusIterator = status.getSatellites().iterator();
 
@@ -307,22 +273,18 @@ public class MainActivity extends AndroidApplication implements LocationListener
 			int fixed = 0;
 			CB_List<GpsStrength> SatList = new CB_List<GpsStrength>();
 			CB_List<CB_Locator.GpsStrength> coreSatList = new CB_List<CB_Locator.GpsStrength>();
-			while (statusIterator.hasNext())
-			{
+			while (statusIterator.hasNext()) {
 				GpsSatellite sat = statusIterator.next();
 				satellites++;
 
 				// satellite signal strength
 
-				if (sat.usedInFix())
-				{
+				if (sat.usedInFix()) {
 					fixed++;
 					// Log.d("Cachbox satellite signal strength", "Sat #" + satellites + ": " + sat.getSnr() + " FIX");
 					SatList.add(new GpsStrength(true, sat.getSnr()));
 					coreSatList.add(new GpsStrength(true, sat.getSnr()));
-				}
-				else
-				{
+				} else {
 					// Log.d("Cachbox satellite signal strength", "Sat #" + satellites + ": " + sat.getSnr());
 					SatList.add(new GpsStrength(false, sat.getSnr()));
 					coreSatList.add(new GpsStrength(false, sat.getSnr()));
@@ -337,18 +299,15 @@ public class MainActivity extends AndroidApplication implements LocationListener
 			CB_Locator.GPS.setSatVisible(satellites);
 			CB_Locator.GPS.setSatList(coreSatList);
 			GpsStateChangeEventList.Call();
-			if (fixed < 3 && (Locator.isFixed()))
-			{
+			if (fixed < 3 && (Locator.isFixed())) {
 
-				if (!losseChek)
-				{
+				if (!losseChek) {
 					Timer timer = new Timer();
-					TimerTask task = new TimerTask()
-					{
+					TimerTask task = new TimerTask() {
 						@Override
-						public void run()
-						{
-							if (CB_Locator.GPS.getFixedSats() < 3) Locator.FallBack2Network();
+						public void run() {
+							if (CB_Locator.GPS.getFixedSats() < 3)
+								Locator.FallBack2Network();
 							losseChek = false;
 						}
 					};
@@ -363,170 +322,128 @@ public class MainActivity extends AndroidApplication implements LocationListener
 	private boolean losseChek = false;
 
 	@Override
-	public void onNmeaReceived(long timestamp, String nmea)
-	{
-		try
-		{
-			if (nmea.length() >= 6 && nmea.substring(0, 6).equalsIgnoreCase("$GPGGA"))
-			{
+	public void onNmeaReceived(long timestamp, String nmea) {
+		try {
+			if (nmea.length() >= 6 && nmea.substring(0, 6).equalsIgnoreCase("$GPGGA")) {
 				String[] s = nmea.split(",");
-				try
-				{
-					if (s[11].equals("")) return;
-					if (!s[6].equals("1") & !s[6].equals("2")) return; // Fix ung�ltig
+				try {
+					if (s[11].equals(""))
+						return;
+					if (!s[6].equals("1") & !s[6].equals("2"))
+						return; // Fix ung�ltig
 					double altCorrection = Double.valueOf(s[11]);
-					if (altCorrection == 0) return;
+					if (altCorrection == 0)
+						return;
 					log.info("AltCorrection: " + String.valueOf(altCorrection));
 					Locator.setAltCorrection(altCorrection);
 					Log.d("NMEA.AltCorrection", Double.toString(altCorrection));
 					// H�henkorrektur �ndert sich normalerweise nicht, einmal
 					// auslesen reicht...
 					locationManager.removeNmeaListener(this);
-				}
-				catch (Exception exc)
-				{
+				} catch (Exception exc) {
 					// keine H�henkorrektur vorhanden
 				}
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			log.error("main.onNmeaReceived()", e);
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public void onLocationChanged(Location location)
-	{
+	public void onLocationChanged(Location location) {
 		ProviderType provider = ProviderType.NULL;
 
-		if (location.getProvider().toLowerCase(new Locale("en")).contains("gps")) provider = ProviderType.GPS;
-		if (location.getProvider().toLowerCase(new Locale("en")).contains("network")) provider = ProviderType.Network;
+		if (location.getProvider().toLowerCase(new Locale("en")).contains("gps"))
+			provider = ProviderType.GPS;
+		if (location.getProvider().toLowerCase(new Locale("en")).contains("network"))
+			provider = ProviderType.Network;
 
-		CB_Locator.Locator.setNewLocation(new CB_Locator.Location(location.getLatitude(), location.getLongitude(), location.getAccuracy(),
-				location.hasSpeed(), location.getSpeed(), location.hasBearing(), location.getBearing(), location.getAltitude(), provider));
+		CB_Locator.Locator.setNewLocation(
+				new CB_Locator.Location(location.getLatitude(), location.getLongitude(), location.getAccuracy(), location.hasSpeed(), location.getSpeed(), location.hasBearing(), location.getBearing(), location.getAltitude(), provider));
 	}
 
 	@Override
-	public void onProviderDisabled(String provider)
-	{
+	public void onProviderDisabled(String provider) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void onProviderEnabled(String provider)
-	{
+	public void onProviderEnabled(String provider) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras)
-	{
+	public void onStatusChanged(String provider, int status, Bundle extras) {
 		// TODO Auto-generated method stub
 
 	}
 
-	private void chkDirectoryExistAndCreate()
-	{
+	private void chkDirectoryExistAndCreate() {
 
 		// FileIO.createDirectory(Config.WorkPath);
 		//
 		// if (!FileIO.createDirectory(Config.WorkPath + "/maps")) return;
 
-		String[] exclude = new String[]
-			{ "webkit", "sound", "sounds", "images", "skins", "lang", "kioskmode", "string-files", "" };
+		String[] exclude = new String[] { "webkit", "sound", "sounds", "images", "skins", "lang", "kioskmode", "string-files", "" };
 		copyAssetFolder myCopie = new copyAssetFolder();
 
 		myCopie.copyAll(getAssets(), Config.mWorkPath, exclude);
 
 	}
 
-	private String getExternalSdPath(String Folder)
-	{
+	private String getExternalSdPath(String Folder) {
 		// check if Layout forced from User
 		workPath = Environment.getExternalStorageDirectory() + Folder;
 
 		// extract first part of path ("/mnt/" or "/storage/" ...)
 		int pos = workPath.indexOf("/", 2); // search for the second /
 		String prev = "/mnt";
-		if (pos > 0)
-		{
+		if (pos > 0) {
 			prev = workPath.substring(0, pos);
 		}
 		// search for an external SD-Card
 		String externalSd = "";
 
 		// search for an external sd card on different devices
-		if (testExtSdPath(prev + "/extSdCard"))
-		{
+		if (testExtSdPath(prev + "/extSdCard")) {
 			externalSd = prev + "/extSdCard" + Folder;
-		}
-		else if (testExtSdPath(prev + "/MicroSD"))
-		{
+		} else if (testExtSdPath(prev + "/MicroSD")) {
 			externalSd = prev + "/MicroSD" + Folder;
-		}
-		else if (testExtSdPath(prev + "/sdcard/ext_sd"))
-		{
+		} else if (testExtSdPath(prev + "/sdcard/ext_sd")) {
 			externalSd = prev + "/sdcard/ext_sd" + Folder;
-		}
-		else if (testExtSdPath(prev + "/ext_card"))
-		{
+		} else if (testExtSdPath(prev + "/ext_card")) {
 			// Sony Xperia sola
 			externalSd = prev + "/ext_card" + Folder;
-		}
-		else if (testExtSdPath(prev + "/external"))
-		{
+		} else if (testExtSdPath(prev + "/external")) {
 			externalSd = prev + "/external" + Folder;
-		}
-		else if (testExtSdPath(prev + "/sdcard2"))
-		{
+		} else if (testExtSdPath(prev + "/sdcard2")) {
 			externalSd = prev + "/sdcard2" + Folder;
-		}
-		else if (testExtSdPath(prev + "/sdcard1"))
-		{
+		} else if (testExtSdPath(prev + "/sdcard1")) {
 			externalSd = prev + "/sdcard1" + Folder;
-		}
-		else if (testExtSdPath(prev + "/sdcard/_ExternalSD"))
-		{
+		} else if (testExtSdPath(prev + "/sdcard/_ExternalSD")) {
 			externalSd = prev + "/sdcard/_ExternalSD";
-		}
-		else if (testExtSdPath(prev + "/sdcard-ext"))
-		{
+		} else if (testExtSdPath(prev + "/sdcard-ext")) {
 			externalSd = prev + "/sdcard-ext" + Folder;
-		}
-		else if (testExtSdPath(prev + "/external1"))
-		{
+		} else if (testExtSdPath(prev + "/external1")) {
 			externalSd = prev + "/external1" + Folder;
-		}
-		else if (testExtSdPath(prev + "/sdcard/external_sd"))
-		{
+		} else if (testExtSdPath(prev + "/sdcard/external_sd")) {
 			externalSd = prev + "/sdcard/external_sd" + Folder;
-		}
-		else if (testExtSdPath(prev + "/emmc"))
-		{
+		} else if (testExtSdPath(prev + "/emmc")) {
 			// for CM9
 			externalSd = prev + "/emmc" + Folder;
-		}
-		else if (testExtSdPath("/Removable/MicroSD"))
-		{
+		} else if (testExtSdPath("/Removable/MicroSD")) {
 			// Asus Transformer
 			externalSd = prev + "/Removable/MicroSD" + Folder;
-		}
-		else if (testExtSdPath("/mnt/ext_sd"))
-		{
+		} else if (testExtSdPath("/mnt/ext_sd")) {
 			// ODYS Motion
 			externalSd = prev + "/ext_sd" + Folder;
-		}
-		else if (testExtSdPath("/sdcard/tflash"))
-		{
+		} else if (testExtSdPath("/sdcard/tflash")) {
 			// Car Radio
 			externalSd = prev + "/sdcard/tflash" + Folder;
-		}
-		else if (testExtSdPath(prev + "/sdcard"))
-		{
+		} else if (testExtSdPath(prev + "/sdcard")) {
 			// on some devices it is possible that the SD-Card reported by getExternalStorageDirectory() is the extSd and the real
 			// external SD is /mnt/sdcard (Faktor2 Tablet!!!)
 			externalSd = prev + "/sdcard" + Folder;
@@ -535,39 +452,37 @@ public class MainActivity extends AndroidApplication implements LocationListener
 	}
 
 	// this will test whether the extPath is an existing path to an external sd card
-	private boolean testExtSdPath(String extPath)
-	{
-		if (extPath.equalsIgnoreCase(workPath)) return false; // if this extPath is the same than the actual workPath -> this is the
-																// internal SD, not
-		// the external!!!
-		if (FileIO.FileExists(extPath))
-		{
+	private boolean testExtSdPath(String extPath) {
+		if (extPath.equalsIgnoreCase(workPath))
+			return false; // if this extPath is the same than the actual workPath -> this is the
+							// internal SD, not
+							// the external!!!
+		if (FileIO.FileExists(extPath)) {
 			StatFs stat = new StatFs(extPath);
 			long bytesAvailable = (long) stat.getBlockSize() * (long) stat.getBlockCount();
-			if (bytesAvailable == 0) return false; // ext SD-Card is not plugged in -> do not use it
+			if (bytesAvailable == 0)
+				return false; // ext SD-Card is not plugged in -> do not use it
 			else
 				return true; // ext SD-Card is plugged in
 		}
 		return false;
 	}
 
-	private void initialPlatformConector()
-	{
+	private void initialPlatformConector() {
 		ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
 		AndroidClipboard acb = new AndroidClipboard(cm);
 
-		if (cm != null) Global.setDefaultClipboard(acb);
+		if (cm != null)
+			Global.setDefaultClipboard(acb);
 
 		CB_Android_FileExplorer fileExplorer = new CB_Android_FileExplorer(this);
 		PlatformConnector.setGetFileListener(fileExplorer);
 		PlatformConnector.setGetFolderListener(fileExplorer);
 
-		PlatformConnector.setQuitListener(new IQuit()
-		{
+		PlatformConnector.setQuitListener(new IQuit() {
 			@Override
-			public void Quit()
-			{
+			public void Quit() {
 				finish();
 			}
 		});
@@ -575,11 +490,9 @@ public class MainActivity extends AndroidApplication implements LocationListener
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-		if (requestCode == Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR)
-		{
+		if (requestCode == Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR) {
 			CB_Android_FileExplorer.onActivityResult(requestCode, resultCode, data);
 			return;
 		}

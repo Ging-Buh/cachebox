@@ -66,435 +66,435 @@ import CB_UI_Base.graphics.Geometry.Quadrangle;
  * @author Longri
  */
 public class DescriptionView extends CB_View_Base {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(DescriptionView.class);
-    final static String STRING_POWERD_BY = "Powerd by Geocaching Live";
-    final static String BASIC = "Basic";
-    final static String PREMIUM = "Premium";
-    final static String BASIC_LIMIT = "3";
-    final static String PREMIUM_LIMIT = "6000";
-    private GlyphLayout layout;
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(DescriptionView.class);
+	final static String STRING_POWERD_BY = "Powerd by Geocaching Live";
+	final static String BASIC = "Basic";
+	final static String PREMIUM = "Premium";
+	final static String BASIC_LIMIT = "3";
+	final static String PREMIUM_LIMIT = "6000";
+	private GlyphLayout layout;
 
-    private Cache aktCache;
-    private final LinkedList<String> NonLocalImages = new LinkedList<String>();
-    private final LinkedList<String> NonLocalImagesUrl = new LinkedList<String>();
-    private final int downloadTryCounter = 0;
+	private Cache aktCache;
+	private final LinkedList<String> NonLocalImages = new LinkedList<String>();
+	private final LinkedList<String> NonLocalImagesUrl = new LinkedList<String>();
+	private final int downloadTryCounter = 0;
 
-    private CacheListViewItem cacheInfo;
-    private Button downloadButton;
-    private Label MessageLabel, PowerdBy;
-    private Image LiveIcon;
-    private PolygonDrawable Line;
-    private float margin;
-    private boolean forceReload = false;
+	private CacheListViewItem cacheInfo;
+	private Button downloadButton;
+	private Label MessageLabel, PowerdBy;
+	private Image LiveIcon;
+	private PolygonDrawable Line;
+	private float margin;
+	private boolean forceReload = false;
 
-    private final HtmlView htmlView;
+	private final HtmlView htmlView;
 
-    public DescriptionView(CB_RectF rec, String Name) {
-	super(rec, Name);
-	htmlView = new HtmlView(this);
-	htmlView.setZeroPos();
-	this.addChild(htmlView);
-	//log.info("DescriptionView create");
-	registerSkinChangedEvent();
-    }
-
-    final static org.slf4j.Logger htmllog = LoggerFactory.getLogger("HTML_PARSER");
-
-    @Override
-    public void onShow() {
-	super.onShow();
-	//log.info("DescriptionView onShow");
-	margin = GL_UISizes.margin;
-
-	Cache sel = GlobalCore.getSelectedCache();
-	if (sel != null) {
-	    setCache(sel, forceReload);
-	}
-	forceReload = false;
-	Timer t = new Timer();
-	TimerTask tt = new TimerTask() {
-	    @Override
-	    public void run() {
-		DescriptionView.this.onResized(DescriptionView.this);
-	    }
-	};
-	t.schedule(tt, 70);
-    }
-
-    public void toggleTxt_Html() {
-	htmlView.setTextOnly(!htmlView.getTextOnly());
-	setCache(aktCache, true);
-    }
-
-    private void setCache(Cache cache, boolean force) {
-	if (cache == null)
-	    return;
-
-	if (cache.equals(aktCache) && !force) {
-	    //log.info("setCache " + cache.getGcCode() + " no change.");
-	    return;
+	public DescriptionView(CB_RectF rec, String Name) {
+		super(rec, Name);
+		htmlView = new HtmlView(this);
+		htmlView.setZeroPos();
+		this.addChild(htmlView);
+		//log.info("DescriptionView create");
+		registerSkinChangedEvent();
 	}
 
-	/*
-	String logstr = "setCache " + cache.getGcCode();
-	if (aktCache != null) {
-	    logstr = logstr + " old:" + aktCache.getGcCode();
-	}
-	logstr = logstr + " must:" + force;
-	log.info(logstr);
-	*/
+	final static org.slf4j.Logger htmllog = LoggerFactory.getLogger("HTML_PARSER");
 
-	aktCache = cache;
+	@Override
+	public void onShow() {
+		super.onShow();
+		//log.info("DescriptionView onShow");
+		margin = GL_UISizes.margin;
 
-	if (cacheInfo != null)
-	    this.removeChild(cacheInfo);
-	cacheInfo = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), 0, cache);
-	cacheInfo.setY(this.getHeight() - cacheInfo.getHeight());
-	cacheInfo.info.setViewMode(CacheInfo.VIEW_MODE_DESCRIPTION);
-
-	if (!Global.isTab)
-	    this.addChild(cacheInfo);
-	resetUi();
-	if (cache.isLive() || cache.getApiStatus() == 1) {
-	    showDownloadButton();
-	}
-
-	NonLocalImages.clear();
-	NonLocalImagesUrl.clear();
-	String cachehtml = Database.GetShortDescription(cache);
-	if (cachehtml.isEmpty()) {
-	    cachehtml = Database.GetDescription(cache);
-	} else {
-	    cachehtml += "<br/><hr/><br/>" + Database.GetDescription(cache);
-	}
-
-	String html = "";
-	if (cache.getApiStatus() == 1)// GC.com API lite
-	{ // Load Standard HTML
-	    String nodesc = Translation.Get("GC_NoDescription");
-	    html = "</br>" + nodesc + "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" " + Translation.Get("GC_DownloadDescription") + " \"></form>";
-	} else {
-	    html = DescriptionImageGrabber.ResolveImages(cache, cachehtml, false, NonLocalImages, NonLocalImagesUrl);
-
-	    if (!Config.DescriptionNoAttributes.getValue())
-		html = getAttributesHtml(cache) + html;
-
-	    // add 2 empty lines so that the last line of description can be selected with the markers
-	    html += "</br></br>";
-	}
-
-	final String FinalHtml = html;
-
-	try {
-	    htmlView.showHtml(FinalHtml);
-	} catch (Exception e) {
-	    e.printStackTrace();
-	    htmllog.info(cache.toString() + " " + e.toString());
-	}
-
-	// Falls nicht geladene Bilder vorliegen und eine Internetverbindung
-	// erlaubt ist, diese laden und Bilder erneut auflösen
-	if (NonLocalImagesUrl.size() > 0) {
-	    downloadThread = new Thread() {
-		@Override
-		public void run() {
-
-		    if (downloadTryCounter > 0) {
-			try {
-			    Thread.sleep(100);
-			} catch (InterruptedException e) {
-			    log.error("DescriptionViewControl.setCache()", "Thread.sleep fehler", e);
-			    e.printStackTrace();
+		Cache sel = GlobalCore.getSelectedCache();
+		if (sel != null) {
+			setCache(sel, forceReload);
+		}
+		forceReload = false;
+		Timer t = new Timer();
+		TimerTask tt = new TimerTask() {
+			@Override
+			public void run() {
+				DescriptionView.this.onResized(DescriptionView.this);
 			}
-		    }
+		};
+		t.schedule(tt, 70);
+	}
 
-		    while (NonLocalImagesUrl != null && NonLocalImagesUrl.size() > 0) {
-			String local, url;
-			local = NonLocalImages.poll();
-			url = NonLocalImagesUrl.poll();
+	public void toggleTxt_Html() {
+		htmlView.setTextOnly(!htmlView.getTextOnly());
+		setCache(aktCache, true);
+	}
 
-			try {
-			    DescriptionImageGrabber.Download(url, local);
-			} catch (Exception e) {
-			    log.error("DescriptionViewControl.setCache()", "downloadThread run()", e);
-			}
-		    }
-		    downloadReadyHandler.post(downloadComplete);
+	private void setCache(Cache cache, boolean force) {
+		if (cache == null)
+			return;
 
+		if (cache.equals(aktCache) && !force) {
+			//log.info("setCache " + cache.getGcCode() + " no change.");
+			return;
 		}
-	    };
-	    downloadThread.start();
-	}
 
-	if (cache != null) {
-	    cache.ReloadSpoilerRessources();
-	}
-
-    }
-
-    public Cache getCache() {
-	return aktCache;
-    }
-
-    @Override
-    public void onResized(CB_RectF rec) {
-	super.onResized(rec);
-	// onShow();
-	if (cacheInfo != null)
-	    cacheInfo.setY(this.getHeight() - cacheInfo.getHeight());
-	layout();
-
-	float infoHeight = -(UiSizes.that.getInfoSliderHeight());
-	if (cacheInfo != null && !Global.isTab)
-	    infoHeight += cacheInfo.getHeight();
-	infoHeight += margin * 2;
-
-	try {
-	    if (htmlView != null && cacheInfo != null)
-		htmlView.setHeight(this.getHeight() - (cacheInfo.getHeight() + (margin * 2)));
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
-
-	try {
-	    CB_RectF world = this.getWorldRec();
-	    PlatformConnector.setContentSize((int) world.getX(), (int) ((GL_UISizes.SurfaceSize.getHeight() - (world.getMaxY() - infoHeight))), (int) (GL_UISizes.SurfaceSize.getWidth() - world.getMaxX()), (int) world.getY());
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
-
-    }
-
-    @Override
-    public void onHide() {
-	super.onHide();
-    }
-
-    @Override
-    protected void Initial() {
-
-    }
-
-    @Override
-    protected void SkinIsChanged() {
-	setCache(aktCache, true);
-    }
-
-    private void resetUi() {
-	if (MessageLabel != null) {
-	    this.removeChildsDirekt(MessageLabel);
-	    MessageLabel.dispose();
-	    MessageLabel = null;
-	}
-	if (downloadButton != null) {
-	    this.removeChildsDirekt(downloadButton);
-	    downloadButton.dispose();
-	    downloadButton = null;
-	}
-	if (LiveIcon != null) {
-	    this.removeChildsDirekt(LiveIcon);
-	    LiveIcon.dispose();
-	    LiveIcon = null;
-	}
-	if (PowerdBy != null) {
-	    this.removeChildsDirekt(PowerdBy);
-	    PowerdBy.dispose();
-	    PowerdBy = null;
-	}
-    }
-
-    private void layout() {
-	if (LiveIcon != null) {
-	    float IconX = this.getHalfWidth() - LiveIcon.getHalfWidth();
-	    float IconY = this.cacheInfo.getY() - (LiveIcon.getHeight() + margin);
-	    LiveIcon.setPos(IconX, IconY);
-
-	    if (PowerdBy != null) {
-		PowerdBy.setY(LiveIcon.getY() - (PowerdBy.getHeight() + margin));
-
-		if (MessageLabel != null) {
-		    MessageLabel.setY(this.PowerdBy.getY() - (MessageLabel.getHeight() + (margin * 3)));
-		    MessageLabel.setX(this.getHalfWidth() - MessageLabel.getHalfWidth());
+		/*
+		String logstr = "setCache " + cache.getGcCode();
+		if (aktCache != null) {
+		logstr = logstr + " old:" + aktCache.getGcCode();
 		}
-		downloadButton.setX(this.getHalfWidth() - downloadButton.getHalfWidth());
-		downloadButton.setY(margin);
-	    }
-	}
-	Line = null;
-    }
+		logstr = logstr + " must:" + force;
+		log.info(logstr);
+		*/
 
-    private void showDownloadButton() {
-	final Thread getLimitThread = new Thread(new Runnable() {
-	    @Override
-	    public void run() {
-		int result = CB_Core.Api.GroundspeakAPI.GetCacheLimits(null);
-		if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
-		    GL.that.Toast(ConnectionError.INSTANCE);
-		    return;
-		}
-		if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
-		    GL.that.Toast(ApiUnavailable.INSTANCE);
-		    return;
-		}
+		aktCache = cache;
+
+		if (cacheInfo != null)
+			this.removeChild(cacheInfo);
+		cacheInfo = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), 0, cache);
+		cacheInfo.setY(this.getHeight() - cacheInfo.getHeight());
+		cacheInfo.info.setViewMode(CacheInfo.VIEW_MODE_DESCRIPTION);
+
+		if (!Global.isTab)
+			this.addChild(cacheInfo);
 		resetUi();
-		showDownloadButton();
-	    }
-	});
+		if (cache.isLive() || cache.getApiStatus() == 1) {
+			showDownloadButton();
+		}
 
-	if (CB_Core.Api.GroundspeakAPI.CachesLeft == -1)
-	    getLimitThread.start();
+		NonLocalImages.clear();
+		NonLocalImagesUrl.clear();
+		String cachehtml = Database.GetShortDescription(cache);
+		if (cachehtml.isEmpty()) {
+			cachehtml = Database.GetDescription(cache);
+		} else {
+			cachehtml += "<br/><hr/><br/>" + Database.GetDescription(cache);
+		}
 
-	float contentWidth = this.getWidth() * 0.95f;
+		String html = "";
+		if (cache.getApiStatus() == 1)// GC.com API lite
+		{ // Load Standard HTML
+			String nodesc = Translation.Get("GC_NoDescription");
+			html = "</br>" + nodesc + "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" " + Translation.Get("GC_DownloadDescription") + " \"></form>";
+		} else {
+			html = DescriptionImageGrabber.ResolveImages(cache, cachehtml, false, NonLocalImages, NonLocalImagesUrl);
 
-	LiveIcon = new Image(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight, "LIVE-ICON", false);
-	LiveIcon.setSprite(SpriteCacheBase.LiveBtn.get(0), false);
+			if (!Config.DescriptionNoAttributes.getValue())
+				html = getAttributesHtml(cache) + html;
 
-	this.addChild(LiveIcon);
+			// add 2 empty lines so that the last line of description can be selected with the markers
+			html += "</br></br>";
+		}
 
-	PowerdBy = new Label(this.name + " PowerdBy", this);
+		final String FinalHtml = html;
 
-	if (layout == null)
-	    layout = new GlyphLayout();
-	layout.setText(Fonts.getNormal(), STRING_POWERD_BY);
-	PowerdBy.setHeight(layout.height + (margin * 2));
+		try {
+			htmlView.showHtml(FinalHtml);
+		} catch (Exception e) {
+			e.printStackTrace();
+			htmllog.info(cache.toString() + " " + e.toString());
+		}
 
-	PowerdBy.setFont(Fonts.getNormal()).setHAlignment(HAlignment.CENTER);
+		// Falls nicht geladene Bilder vorliegen und eine Internetverbindung
+		// erlaubt ist, diese laden und Bilder erneut auflösen
+		if (NonLocalImagesUrl.size() > 0) {
+			downloadThread = new Thread() {
+				@Override
+				public void run() {
 
-	PowerdBy.setWrappedText(STRING_POWERD_BY);
-	this.addChild(PowerdBy);
+					if (downloadTryCounter > 0) {
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							log.error("DescriptionViewControl.setCache()", "Thread.sleep fehler", e);
+							e.printStackTrace();
+						}
+					}
 
-	MessageLabel = new Label(this.name + " MessageLabel", this);
-	MessageLabel.setWidth(contentWidth);
-	MessageLabel.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
-	MessageLabel.setHeight(this.getHalfHeight());
+					while (NonLocalImagesUrl != null && NonLocalImagesUrl.size() > 0) {
+						String local, url;
+						local = NonLocalImages.poll();
+						url = NonLocalImagesUrl.poll();
 
-	MessageLabel.setWrappedText(getMessage());
-	this.addChild(MessageLabel);
+						try {
+							DescriptionImageGrabber.Download(url, local);
+						} catch (Exception e) {
+							log.error("DescriptionViewControl.setCache()", "downloadThread run()", e);
+						}
+					}
+					downloadReadyHandler.post(downloadComplete);
 
-	downloadButton = new Button(Translation.Get("DownloadDetails"));
-	downloadButton.setWidth(this.getWidth() * 0.8f);
+				}
+			};
+			downloadThread.start();
+		}
 
-	this.addChild(downloadButton);
+		if (cache != null) {
+			cache.ReloadSpoilerRessources();
+		}
 
-	downloadButton.setOnClickListener(downloadClicked);
+	}
 
-	if (CB_Core.Api.GroundspeakAPI.CachesLeft <= 0)
-	    downloadButton.disable();
-	layout();
-    }
-
-    final static OnClickListener downloadClicked = new OnClickListener() {
+	public Cache getCache() {
+		return aktCache;
+	}
 
 	@Override
-	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-	    GL.that.RunOnGL(new IRunOnGL() {
+	public void onResized(CB_RectF rec) {
+		super.onResized(rec);
+		// onShow();
+		if (cacheInfo != null)
+			cacheInfo.setY(this.getHeight() - cacheInfo.getHeight());
+		layout();
+
+		float infoHeight = -(UiSizes.that.getInfoSliderHeight());
+		if (cacheInfo != null && !Global.isTab)
+			infoHeight += cacheInfo.getHeight();
+		infoHeight += margin * 2;
+
+		try {
+			if (htmlView != null && cacheInfo != null)
+				htmlView.setHeight(this.getHeight() - (cacheInfo.getHeight() + (margin * 2)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		try {
+			CB_RectF world = this.getWorldRec();
+			PlatformConnector.setContentSize((int) world.getX(), (int) ((GL_UISizes.SurfaceSize.getHeight() - (world.getMaxY() - infoHeight))), (int) (GL_UISizes.SurfaceSize.getWidth() - world.getMaxX()), (int) world.getY());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	@Override
+	public void onHide() {
+		super.onHide();
+	}
+
+	@Override
+	protected void Initial() {
+
+	}
+
+	@Override
+	protected void SkinIsChanged() {
+		setCache(aktCache, true);
+	}
+
+	private void resetUi() {
+		if (MessageLabel != null) {
+			this.removeChildsDirekt(MessageLabel);
+			MessageLabel.dispose();
+			MessageLabel = null;
+		}
+		if (downloadButton != null) {
+			this.removeChildsDirekt(downloadButton);
+			downloadButton.dispose();
+			downloadButton = null;
+		}
+		if (LiveIcon != null) {
+			this.removeChildsDirekt(LiveIcon);
+			LiveIcon.dispose();
+			LiveIcon = null;
+		}
+		if (PowerdBy != null) {
+			this.removeChildsDirekt(PowerdBy);
+			PowerdBy.dispose();
+			PowerdBy = null;
+		}
+	}
+
+	private void layout() {
+		if (LiveIcon != null) {
+			float IconX = this.getHalfWidth() - LiveIcon.getHalfWidth();
+			float IconY = this.cacheInfo.getY() - (LiveIcon.getHeight() + margin);
+			LiveIcon.setPos(IconX, IconY);
+
+			if (PowerdBy != null) {
+				PowerdBy.setY(LiveIcon.getY() - (PowerdBy.getHeight() + margin));
+
+				if (MessageLabel != null) {
+					MessageLabel.setY(this.PowerdBy.getY() - (MessageLabel.getHeight() + (margin * 3)));
+					MessageLabel.setX(this.getHalfWidth() - MessageLabel.getHalfWidth());
+				}
+				downloadButton.setX(this.getHalfWidth() - downloadButton.getHalfWidth());
+				downloadButton.setY(margin);
+			}
+		}
+		Line = null;
+	}
+
+	private void showDownloadButton() {
+		final Thread getLimitThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				int result = CB_Core.Api.GroundspeakAPI.GetCacheLimits(null);
+				if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
+					GL.that.Toast(ConnectionError.INSTANCE);
+					return;
+				}
+				if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
+					GL.that.Toast(ApiUnavailable.INSTANCE);
+					return;
+				}
+				resetUi();
+				showDownloadButton();
+			}
+		});
+
+		if (CB_Core.Api.GroundspeakAPI.CachesLeft == -1)
+			getLimitThread.start();
+
+		float contentWidth = this.getWidth() * 0.95f;
+
+		LiveIcon = new Image(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight, "LIVE-ICON", false);
+		LiveIcon.setSprite(SpriteCacheBase.LiveBtn.get(0), false);
+
+		this.addChild(LiveIcon);
+
+		PowerdBy = new Label(this.name + " PowerdBy", this);
+
+		if (layout == null)
+			layout = new GlyphLayout();
+		layout.setText(Fonts.getNormal(), STRING_POWERD_BY);
+		PowerdBy.setHeight(layout.height + (margin * 2));
+
+		PowerdBy.setFont(Fonts.getNormal()).setHAlignment(HAlignment.CENTER);
+
+		PowerdBy.setWrappedText(STRING_POWERD_BY);
+		this.addChild(PowerdBy);
+
+		MessageLabel = new Label(this.name + " MessageLabel", this);
+		MessageLabel.setWidth(contentWidth);
+		MessageLabel.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
+		MessageLabel.setHeight(this.getHalfHeight());
+
+		MessageLabel.setWrappedText(getMessage());
+		this.addChild(MessageLabel);
+
+		downloadButton = new Button(Translation.Get("DownloadDetails"));
+		downloadButton.setWidth(this.getWidth() * 0.8f);
+
+		this.addChild(downloadButton);
+
+		downloadButton.setOnClickListener(downloadClicked);
+
+		if (CB_Core.Api.GroundspeakAPI.CachesLeft <= 0)
+			downloadButton.disable();
+		layout();
+	}
+
+	final static OnClickListener downloadClicked = new OnClickListener() {
+
+		@Override
+		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+			GL.that.RunOnGL(new IRunOnGL() {
+				@Override
+				public void run() {
+					TabMainView.actionShowDescriptionView.ReloadSelectedCache();
+				}
+			});
+			return true;
+		}
+	};
+
+	@Override
+	public void render(Batch batch) {
+		super.render(batch);
+
+		if (PowerdBy != null) {
+			if (Line == null) {
+				float strokeWidth = 3 * UI_Size_Base.that.getScale();
+
+				Line l1 = new Line(margin, PowerdBy.getY() - margin, this.getWidth() - margin, PowerdBy.getY() - margin);
+
+				Quadrangle q1 = new Quadrangle(l1, strokeWidth);
+
+				GL_Paint paint = new GL_Paint();
+				paint.setGLColor(Color.DARK_GRAY);
+				Line = new PolygonDrawable(q1.getVertices(), q1.getTriangles(), paint, this.getWidth(), this.getHeight());
+
+				l1.dispose();
+
+				q1.dispose();
+
+			}
+
+			Line.draw(batch, 0, 0, this.getWidth(), this.getHeight(), 0);
+		}
+	}
+
+	private String getMessage() {
+		StringBuilder sb = new StringBuilder();
+		boolean basic = CB_Core.Api.GroundspeakAPI.GetMembershipType(null) == 1;
+		String MemberType = basic ? BASIC : PREMIUM;
+		String limit = basic ? BASIC_LIMIT : PREMIUM_LIMIT;
+		String actLimit = Integer.toString(CB_Core.Api.GroundspeakAPI.CachesLeft - 1);
+
+		if (CB_Core.Api.GroundspeakAPI.CachesLeft == -1) {
+			actLimit = "?";
+		}
+
+		sb.append(Translation.Get("LiveDescMessage", MemberType, limit));
+		sb.append(Global.br);
+		sb.append(Global.br);
+		if (CB_Core.Api.GroundspeakAPI.CachesLeft > 0)
+			sb.append(Translation.Get("LiveDescAfter", actLimit));
+
+		if (CB_Core.Api.GroundspeakAPI.CachesLeft == 0) {
+			sb.append(Translation.Get("LiveDescLimit"));
+			sb.append(Global.br);
+			sb.append(Global.br);
+			if (basic)
+				sb.append(Translation.Get("LiveDescLimitBasic"));
+
+		}
+
+		return sb.toString();
+
+	}
+
+	final Handler downloadReadyHandler = new Handler();
+	Thread downloadThread;
+
+	final Runnable downloadComplete = new Runnable() {
 		@Override
 		public void run() {
-		    TabMainView.actionShowDescriptionView.ReloadSelectedCache();
+			if (downloadTryCounter < 10) { // nur 10 Download versuche zu lassen
+				setCache(aktCache, false);
+			}
 		}
-	    });
-	    return true;
-	}
-    };
+	};
 
-    @Override
-    public void render(Batch batch) {
-	super.render(batch);
+	public static String getAttributesHtml(Cache cache) {
+		StringBuilder sb = new StringBuilder();
+		try {
+			Iterator<Attributes> attrs = cache.getAttributes().iterator();
 
-	if (PowerdBy != null) {
-	    if (Line == null) {
-		float strokeWidth = 3 * UI_Size_Base.that.getScale();
+			if (attrs == null || !attrs.hasNext())
+				return "";
 
-		Line l1 = new Line(margin, PowerdBy.getY() - margin, this.getWidth() - margin, PowerdBy.getY() - margin);
+			do {
+				Attributes attribute = attrs.next();
+				File result = new File(Config.mWorkPath + "/data/Attributes/" + attribute.getImageName() + ".png");
 
-		Quadrangle q1 = new Quadrangle(l1, strokeWidth);
+				sb.append("<input name=\"Button\" type=\"image\" src=\"file://" + result.getAbsolutePath() + "\" value=\" " + attribute.getImageName() + " \">");
 
-		GL_Paint paint = new GL_Paint();
-		paint.setGLColor(Color.DARK_GRAY);
-		Line = new PolygonDrawable(q1.getVertices(), q1.getTriangles(), paint, this.getWidth(), this.getHeight());
+			} while (attrs.hasNext());
 
-		l1.dispose();
-
-		q1.dispose();
-
-	    }
-
-	    Line.draw(batch, 0, 0, this.getWidth(), this.getHeight(), 0);
-	}
-    }
-
-    private String getMessage() {
-	StringBuilder sb = new StringBuilder();
-	boolean basic = CB_Core.Api.GroundspeakAPI.GetMembershipType(null) == 1;
-	String MemberType = basic ? BASIC : PREMIUM;
-	String limit = basic ? BASIC_LIMIT : PREMIUM_LIMIT;
-	String actLimit = Integer.toString(CB_Core.Api.GroundspeakAPI.CachesLeft - 1);
-
-	if (CB_Core.Api.GroundspeakAPI.CachesLeft == -1) {
-	    actLimit = "?";
+			if (sb.length() > 0)
+				sb.append("<br><hr><br><br><br>");
+			return sb.toString();
+		} catch (Exception ex) {
+			log.error("getAttributesHtml(" + cache.getGcCode() + "):", ex);
+			return "";
+		}
 	}
 
-	sb.append(Translation.Get("LiveDescMessage", MemberType, limit));
-	sb.append(Global.br);
-	sb.append(Global.br);
-	if (CB_Core.Api.GroundspeakAPI.CachesLeft > 0)
-	    sb.append(Translation.Get("LiveDescAfter", actLimit));
-
-	if (CB_Core.Api.GroundspeakAPI.CachesLeft == 0) {
-	    sb.append(Translation.Get("LiveDescLimit"));
-	    sb.append(Global.br);
-	    sb.append(Global.br);
-	    if (basic)
-		sb.append(Translation.Get("LiveDescLimitBasic"));
-
+	public void forceReload() {
+		forceReload = true;
 	}
 
-	return sb.toString();
-
-    }
-
-    final Handler downloadReadyHandler = new Handler();
-    Thread downloadThread;
-
-    final Runnable downloadComplete = new Runnable() {
-	@Override
-	public void run() {
-	    if (downloadTryCounter < 10) { // nur 10 Download versuche zu lassen
-		setCache(aktCache, false);
-	    }
+	public boolean getTxtOnly() {
+		return this.htmlView.getTextOnly();
 	}
-    };
-
-    public static String getAttributesHtml(Cache cache) {
-	StringBuilder sb = new StringBuilder();
-	try {
-	    Iterator<Attributes> attrs = cache.getAttributes().iterator();
-
-	    if (attrs == null || !attrs.hasNext())
-		return "";
-
-	    do {
-		Attributes attribute = attrs.next();
-		File result = new File(Config.mWorkPath + "/data/Attributes/" + attribute.getImageName() + ".png");
-
-		sb.append("<input name=\"Button\" type=\"image\" src=\"file://" + result.getAbsolutePath() + "\" value=\" " + attribute.getImageName() + " \">");
-
-	    } while (attrs.hasNext());
-
-	    if (sb.length() > 0)
-		sb.append("<br><hr><br><br><br>");
-	    return sb.toString();
-	} catch (Exception ex) {
-	    log.error("getAttributesHtml(" + cache.getGcCode() + "):", ex);
-	    return "";
-	}
-    }
-
-    public void forceReload() {
-	forceReload = true;
-    }
-
-    public boolean getTxtOnly() {
-	return this.htmlView.getTextOnly();
-    }
 }

@@ -19,16 +19,14 @@ import org.slf4j.LoggerFactory;
 
 import CB_Utils.Lists.CB_List;
 
-public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString
-{
+public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(SettingEnum.class);
 	private CB_List<String> values;
 
 	private EnumTyp myEnum;
 
 	@SuppressWarnings("rawtypes")
-	public SettingEnum(String name, SettingCategory category, SettingModus modus, EnumTyp defaultValue, SettingStoreType StoreType, SettingUsage usage, EnumTyp enu)
-	{
+	public SettingEnum(String name, SettingCategory category, SettingModus modus, EnumTyp defaultValue, SettingStoreType StoreType, SettingUsage usage, EnumTyp enu) {
 		super(name, category, modus, defaultValue.name(), StoreType, usage);
 		myEnum = enu;
 
@@ -39,8 +37,7 @@ public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString
 		// hier kannst du alle Zust�nde abfragen
 		Object[] oo = c.getEnumConstants();
 		// hier kannst du dann �ber alle Zust�nde iterieren
-		for (Object o : oo)
-		{
+		for (Object o : oo) {
 			// und von jedem den Namen abfragen (in unserem Beispiel "wert1",
 			// "wert2", "wert3"
 			values.add(((Enum) o).name());
@@ -48,18 +45,16 @@ public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString
 
 	}
 
-	public CB_List<String> getValues()
-	{
+	public CB_List<String> getValues() {
 		return values;
 	}
 
 	@Override
-	public void setValue(String value)
-	{
-		if (this.value.equals(value)) return;
+	public void setValue(String value) {
+		if (this.value.equals(value))
+			return;
 
-		if (value == null || value.isEmpty())
-		{
+		if (value == null || value.isEmpty()) {
 			myEnum = getEnumFromString(defaultValue);
 			setDirty();
 			return;
@@ -70,26 +65,20 @@ public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString
 		setDirty();
 	}
 
-	public EnumTyp getEnumValue()
-	{
+	public EnumTyp getEnumValue() {
 		return getEnumFromString(value);
 	}
 
-	public EnumTyp getEnumDefaultValue()
-	{
+	public EnumTyp getEnumDefaultValue() {
 		return getEnumFromString(defaultValue);
 	}
 
 	@SuppressWarnings("unchecked")
-	private EnumTyp getEnumFromString(String stringValue)
-	{
+	private EnumTyp getEnumFromString(String stringValue) {
 		EnumTyp ret = null;
-		try
-		{
+		try {
 			ret = (EnumTyp) Enum.valueOf(myEnum.getDeclaringClass(), stringValue);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			log.error("Wrong ENUM value:" + stringValue, e);
 			ret = getEnumFromString(defaultValue);
 		}
@@ -97,9 +86,9 @@ public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString
 		return ret;
 	}
 
-	public void setEnumValue(EnumTyp value)
-	{
-		if (this.myEnum == value) return;
+	public void setEnumValue(EnumTyp value) {
+		if (this.myEnum == value)
+			return;
 		this.value = value.name();
 		myEnum = value;
 		setDirty();

@@ -22,89 +22,76 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
 /** @author Nathan Sweet ; Longri */
-public class Android_Packer extends TexturePacker_Base
-{
+public class Android_Packer extends TexturePacker_Base {
 	@Override
-	public TexturePacker_Base getInstanz(File rootDir, Settings settings)
-	{
+	public TexturePacker_Base getInstanz(File rootDir, Settings settings) {
 		return new Android_Packer(rootDir, settings);
 	}
 
-	public Android_Packer(File rootDir, Settings settings)
-	{
+	public Android_Packer(File rootDir, Settings settings) {
 		this.settings = settings;
 
-		if (settings.pot)
-		{
-			if (settings.maxWidth != MathUtils.nextPowerOfTwo(settings.maxWidth)) throw new RuntimeException(
-					"If pot is true, maxWidth must be a power of two: " + settings.maxWidth);
-			if (settings.maxHeight != MathUtils.nextPowerOfTwo(settings.maxHeight)) throw new RuntimeException(
-					"If pot is true, maxHeight must be a power of two: " + settings.maxHeight);
+		if (settings.pot) {
+			if (settings.maxWidth != MathUtils.nextPowerOfTwo(settings.maxWidth))
+				throw new RuntimeException("If pot is true, maxWidth must be a power of two: " + settings.maxWidth);
+			if (settings.maxHeight != MathUtils.nextPowerOfTwo(settings.maxHeight))
+				throw new RuntimeException("If pot is true, maxHeight must be a power of two: " + settings.maxHeight);
 		}
 
 		maxRectsPacker = new MaxRectsPacker(settings);
 		imageProcessor = new ImageProcessor(rootDir, settings);
 	}
 
-	public Android_Packer()
-	{
+	public Android_Packer() {
 		super();
 		that = this;
 		// initial Rect
 		new Rect();
 	}
 
-	public void writeImages(File outputDir, Array<Page> pages, String packFileName)
-	{
+	public void writeImages(File outputDir, Array<Page> pages, String packFileName) {
 		String imageName = packFileName;
 		int dotIndex = imageName.lastIndexOf('.');
-		if (dotIndex != -1) imageName = imageName.substring(0, dotIndex);
+		if (dotIndex != -1)
+			imageName = imageName.substring(0, dotIndex);
 
 		int fileIndex = 0;
-		for (Page page : pages)
-		{
+		for (Page page : pages) {
 			int width = page.width, height = page.height;
 			int paddingX = settings.paddingX;
 			int paddingY = settings.paddingY;
-			if (settings.duplicatePadding)
-			{
+			if (settings.duplicatePadding) {
 				paddingX /= 2;
 				paddingY /= 2;
 			}
 			width -= settings.paddingX;
 			height -= settings.paddingY;
-			if (settings.edgePadding)
-			{
+			if (settings.edgePadding) {
 				page.x = paddingX;
 				page.y = paddingY;
 				width += paddingX * 2;
 				height += paddingY * 2;
 			}
-			if (settings.pot)
-			{
+			if (settings.pot) {
 				width = MathUtils.nextPowerOfTwo(width);
 				height = MathUtils.nextPowerOfTwo(height);
 			}
 			width = Math.max(settings.minWidth, width);
 			height = Math.max(settings.minHeight, height);
 
-			if (settings.forceSquareOutput)
-			{
-				if (width > height)
-				{
+			if (settings.forceSquareOutput) {
+				if (width > height) {
 					height = width;
-				}
-				else
-				{
+				} else {
 					width = height;
 				}
 			}
 
 			File outputFile;
-			while (true)
-			{
+			while (true) {
 				outputFile = new File(outputDir, imageName + (fileIndex++ == 0 ? "" : fileIndex) + "." + settings.outputFormat);
-				if (!outputFile.exists()) break;
+				if (!outputFile.exists())
+					break;
 			}
 			page.imageName = outputFile.getName();
 
@@ -121,11 +108,9 @@ public class Android_Packer extends TexturePacker_Base
 			pMag.setStrokeWidth(0);
 			pMag.setStyle(Paint.Style.STROKE);
 
-			for (Rect_Base rect : page.outputRects)
-			{
+			for (Rect_Base rect : page.outputRects) {
 				int rectX = page.x + rect.x, rectY = page.y + page.height - rect.y - rect.height;
-				if (rect.rotated)
-				{
+				if (rect.rotated) {
 					g.translate(rectX, rectY);
 					g.rotate(-90 * MathUtils.degreesToRadians);
 					g.translate(-rectX, -rectY);
@@ -139,8 +124,7 @@ public class Android_Packer extends TexturePacker_Base
 				android.graphics.Rect dst = new android.graphics.Rect();
 				Paint p = new Paint();
 
-				if (settings.duplicatePadding)
-				{
+				if (settings.duplicatePadding) {
 					int amountX = settings.paddingX / 2;
 					int amountY = settings.paddingY / 2;
 					int imageWidth = image.getWidth();
@@ -186,33 +170,28 @@ public class Android_Packer extends TexturePacker_Base
 				System.out.println("Writing " + rect.name + "x,y: " + rectX + "," + rectY);
 				g.drawBitmap(image, rectX, rectY, null);
 
-				if (rect.rotated)
-				{
+				if (rect.rotated) {
 					g.translate(rect.height - settings.paddingY, 0);
 					g.translate(rectX, rectY);
 					g.rotate(90 * MathUtils.degreesToRadians);
 					g.translate(-rectX, -rectY);
 				}
-				if (settings.debug)
-				{
+				if (settings.debug) {
 					// p.setColor(Color.MAGENTA);
 
 					g.drawRect(rectX, rectY, rect.width - settings.paddingX - 1 + rectX, rect.height - settings.paddingY - 1 + rectY, pMag);
 				}
 			}
 
-			if (settings.debug)
-			{
+			if (settings.debug) {
 				g.drawRect(0, 0, width - 1, height - 1, pMag);
 			}
 
-			try
-			{
+			try {
 
 				CompressFormat format = CompressFormat.PNG;
 
-				if (settings.outputFormat.equalsIgnoreCase("jpg"))
-				{
+				if (settings.outputFormat.equalsIgnoreCase("jpg")) {
 					format = CompressFormat.JPEG;
 				}
 
@@ -221,18 +200,14 @@ public class Android_Packer extends TexturePacker_Base
 				canvas.compress(format, (int) (settings.jpegQuality * 100), stream);
 				stream.close();
 
-			}
-			catch (IOException ex)
-			{
+			} catch (IOException ex) {
 				throw new RuntimeException("Error writing file: " + outputFile, ex);
 			}
 		}
 	}
 
-	private Config getBitmapConfig(Format format)
-	{
-		switch (settings.format)
-		{
+	private Config getBitmapConfig(Format format) {
+		switch (settings.format) {
 		case RGBA8888:
 		case RGBA4444:
 			return Bitmap.Config.ARGB_8888;

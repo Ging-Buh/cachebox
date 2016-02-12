@@ -18,7 +18,6 @@
  */
 package org.apache.xmlrpc;
 
-
 /** Interface of a request configuration. Depending on
  * the transport, implementations will also implement
  * additional interfaces like

@@ -1,6 +1,5 @@
 package CB_UI_Base.GL_UI;
 
-public enum DisplayType
-{
+public enum DisplayType {
 	xLarge, Large, Normal, Small
 }

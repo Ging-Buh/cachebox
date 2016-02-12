@@ -120,27 +120,28 @@ public final class StreamedSource implements Iterable<Segment>, Closeable {
 	private final Source source;
 	private final Closeable closeable; // internally created closeable object should be cleaned up internally.
 	private final boolean automaticClose;
-	private boolean coalescing=false;
-	private boolean handleTags=true;
-	private Config.UnterminatedCharacterReferenceSettings unterminatedCharacterReferenceSettings=Config.CurrentCompatibilityMode.getUnterminatedCharacterReferenceSettings(false);
-	private boolean isInitialised=false;
-	private Segment currentSegment=null;
-	private Segment nextParsedSegment=START_SEGMENT;
+	private boolean coalescing = false;
+	private boolean handleTags = true;
+	private Config.UnterminatedCharacterReferenceSettings unterminatedCharacterReferenceSettings = Config.CurrentCompatibilityMode.getUnterminatedCharacterReferenceSettings(false);
+	private boolean isInitialised = false;
+	private Segment currentSegment = null;
+	private Segment nextParsedSegment = START_SEGMENT;
 	private boolean isXML;
 
-	private static final boolean assumeNoNestedTags=false;
-	private static final Segment START_SEGMENT=new Segment(-1,-1);
+	private static final boolean assumeNoNestedTags = false;
+	private static final Segment START_SEGMENT = new Segment(-1, -1);
 
 	private StreamedSource(final Reader reader, final boolean automaticClose, final String encoding, final String encodingSpecificationInfo, final String preliminaryEncodingInfo) throws IOException {
-		closeable=reader;
-		this.automaticClose=automaticClose;
-		streamedText=new StreamedText(reader);
-		streamedParseText=new StreamedParseText(streamedText);
-		source=new Source(streamedText,streamedParseText,encoding,encodingSpecificationInfo,preliminaryEncodingInfo);
+		closeable = reader;
+		this.automaticClose = automaticClose;
+		streamedText = new StreamedText(reader);
+		streamedParseText = new StreamedParseText(streamedText);
+		source = new Source(streamedText, streamedParseText, encoding, encodingSpecificationInfo, preliminaryEncodingInfo);
 	}
 
 	private StreamedSource(final EncodingDetector encodingDetector, final boolean automaticClose) throws IOException {
-		this(encodingDetector.openReader(),automaticClose,encodingDetector.getEncoding(),encodingDetector.getEncodingSpecificationInfo(),encodingDetector.getPreliminaryEncoding()+": "+encodingDetector.getPreliminaryEncodingSpecificationInfo());
+		this(encodingDetector.openReader(), automaticClose, encodingDetector.getEncoding(), encodingDetector.getEncodingSpecificationInfo(),
+				encodingDetector.getPreliminaryEncoding() + ": " + encodingDetector.getPreliminaryEncodingSpecificationInfo());
 	}
 
 	/**
@@ -153,7 +154,7 @@ public final class StreamedSource implements Iterable<Segment>, Closeable {
 	 * @throws java.io.IOException if an I/O error occurs.
 	 */
 	public StreamedSource(final Reader reader) throws IOException {
-		this(reader,false,(reader instanceof InputStreamReader) ? ((InputStreamReader)reader).getEncoding() : null,(reader instanceof InputStreamReader) ? "InputStreamReader.getEncoding() of constructor argument" : null,null);
+		this(reader, false, (reader instanceof InputStreamReader) ? ((InputStreamReader) reader).getEncoding() : null, (reader instanceof InputStreamReader) ? "InputStreamReader.getEncoding() of constructor argument" : null, null);
 	}
 
 	/**
@@ -174,7 +175,7 @@ public final class StreamedSource implements Iterable<Segment>, Closeable {
 	 * @see #getEncoding()
 	 */
 	public StreamedSource(final InputStream inputStream) throws IOException {
-		this(new EncodingDetector(inputStream),false);
+		this(new EncodingDetector(inputStream), false);
 	}
 
 	/**
@@ -187,7 +188,7 @@ public final class StreamedSource implements Iterable<Segment>, Closeable {
 	 * @see #getEncoding()
 	 */
 	public StreamedSource(final URL url) throws IOException {
-		this(new EncodingDetector(url.openConnection()),true);
+		this(new EncodingDetector(url.openConnection()), true);
 	}
 
 	/**
@@ -206,7 +207,7 @@ public final class StreamedSource implements Iterable<Segment>, Closeable {
 	 * @see #getEncoding()
 	 */
 	public StreamedSource(final URLConnection urlConnection) throws IOException {
-		this(new EncodingDetector(urlConnection),true);
+		this(new EncodingDetector(urlConnection), true);
 	}
 
 	/**
@@ -225,11 +226,11 @@ public final class StreamedSource implements Iterable<Segment>, Closeable {
 	 * @param text  the source text.
 	 */
 	public StreamedSource(final CharSequence text) {
-		closeable=null;
-		automaticClose=false;
-		streamedText=new StreamedText(text);
-		streamedParseText=new StreamedParseText(streamedText);
-		source=new Source(text,streamedParseText,null,"Document specified encoding can not be determined automatically from a streamed source",null);
+		closeable = null;
+		automaticClose = false;
+		streamedText = new StreamedText(text);
+		streamedParseText = new StreamedParseText(streamedText);
+		source = new Source(text, streamedParseText, null, "Document specified encoding can not be determined automatically from a streamed source", null);
 	}
 
 	/**
@@ -252,7 +253,8 @@ public final class StreamedSource implements Iterable<Segment>, Closeable {
 	 * @throws IllegalStateException if the {@link #iterator()} method has already been called.
 	 */
 	public StreamedSource setBuffer(char[] buffer) {
-		if (isInitialised) throw new IllegalStateException("setBuffer() can only be called before iterator() is called");
+		if (isInitialised)
+			throw new IllegalStateException("setBuffer() can only be called before iterator() is called");
 		streamedText.setBuffer(buffer);
 		return this;
 	}
@@ -274,10 +276,11 @@ public final class StreamedSource implements Iterable<Segment>, Closeable {
 	 * @param coalescing  the new value of the coalescing property.
 	 * @return this <code>StreamedSource</code> instance, allowing multiple property setting methods to be chained in a single statement.
 	 * @throws IllegalStateException if the {@link #iterator()} method has already been called.
- 	 */
+	 */
 	public StreamedSource setCoalescing(final boolean coalescing) {
-		if (isInitialised) throw new IllegalStateException("setPlainTextWriter() can only be called before iterator() is called");
-		this.coalescing=coalescing;
+		if (isInitialised)
+			throw new IllegalStateException("setPlainTextWriter() can only be called before iterator() is called");
+		this.coalescing = coalescing;
 		return this;
 	}
 
@@ -289,7 +292,8 @@ public final class StreamedSource implements Iterable<Segment>, Closeable {
 	 * @throws IOException if an I/O error occurs.
 	 */
 	public void close() throws IOException {
-		if (closeable!=null) closeable.close();
+		if (closeable != null)
+			closeable.close();
 	}
 
 	/**
@@ -428,8 +432,9 @@ public final class StreamedSource implements Iterable<Segment>, Closeable {
 	 * @return an iterator over every {@linkplain Tag tag}, {@linkplain CharacterReference character reference} and plain text segment contained within the source document.
 	 */
 	public Iterator<Segment> iterator() {
-		if (isInitialised) throw new IllegalStateException("iterator() can only be called once");
-		isInitialised=true;
+		if (isInitialised)
+			throw new IllegalStateException("iterator() can only be called once");
+		isInitialised = true;
 		return new StreamedSourceIterator();
 	}
 
@@ -446,7 +451,7 @@ public final class StreamedSource implements Iterable<Segment>, Closeable {
 	public Segment getCurrentSegment() {
 		return currentSegment;
 	}
-	
+
 	/**
 	 * Returns a <code>CharBuffer</code> containing the source text of the {@linkplain #getCurrentSegment() current segment}.
 	 * <p>
@@ -468,7 +473,7 @@ public final class StreamedSource implements Iterable<Segment>, Closeable {
 	 * @return a <code>CharBuffer</code> containing the source text of the {@linkplain #getCurrentSegment() current segment}.
 	 */
 	public CharBuffer getCurrentSegmentCharBuffer() {
-		return streamedText.getCharBuffer(currentSegment.getBegin(),currentSegment.end);
+		return streamedText.getCharBuffer(currentSegment.getBegin(), currentSegment.end);
 	}
 
 	/**
@@ -493,7 +498,8 @@ public final class StreamedSource implements Iterable<Segment>, Closeable {
 	 * @throws IllegalStateException if the {@link #iterator()} method has not yet been called.
 	 */
 	public boolean isXML() {
-		if (!isInitialised) throw new IllegalStateException("isXML() method only available after iterator() has been called");
+		if (!isInitialised)
+			throw new IllegalStateException("isXML() method only available after iterator() has been called");
 		return isXML;
 	}
 
@@ -558,32 +564,40 @@ public final class StreamedSource implements Iterable<Segment>, Closeable {
 	}
 
 	StreamedSource setHandleTags(final boolean handleTags) {
-		this.handleTags=handleTags;
+		this.handleTags = handleTags;
 		return this;
 	}
 
 	StreamedSource setUnterminatedCharacterReferenceSettings(final Config.UnterminatedCharacterReferenceSettings unterminatedCharacterReferenceSettings) {
-		this.unterminatedCharacterReferenceSettings=unterminatedCharacterReferenceSettings;
+		this.unterminatedCharacterReferenceSettings = unterminatedCharacterReferenceSettings;
 		return this;
 	}
 
 	StreamedSource setSearchBegin(final int begin) {
-		if (isInitialised) throw new IllegalStateException("setSearchBegin() can only be called before iterator() is called");
-		final int segmentEnd=begin-1;
-		nextParsedSegment=new Segment(segmentEnd,segmentEnd);
+		if (isInitialised)
+			throw new IllegalStateException("setSearchBegin() can only be called before iterator() is called");
+		final int segmentEnd = begin - 1;
+		nextParsedSegment = new Segment(segmentEnd, segmentEnd);
 		return this;
 	}
 
 	private void automaticClose() {
-		if (automaticClose) try {close();} catch (IOException ex) {}
+		if (automaticClose)
+			try {
+				close();
+			} catch (IOException ex) {
+			}
 	}
 
 	private static boolean isXML(final Segment firstNonTextSegment) {
-		if (firstNonTextSegment==null || !(firstNonTextSegment instanceof Tag)) return false;
-		Tag tag=(Tag)firstNonTextSegment;
-		if (tag.getTagType()==StartTagType.XML_DECLARATION) return true;
+		if (firstNonTextSegment == null || !(firstNonTextSegment instanceof Tag))
+			return false;
+		Tag tag = (Tag) firstNonTextSegment;
+		if (tag.getTagType() == StartTagType.XML_DECLARATION)
+			return true;
 		// if document has a DOCTYPE declaration and it contains the text "xhtml", it is an XML document:
-		if (tag.source.getParseText().indexOf("xhtml",tag.begin,tag.end)!=-1) return true;
+		if (tag.source.getParseText().indexOf("xhtml", tag.begin, tag.end) != -1)
+			return true;
 		return false;
 	}
 
@@ -592,28 +606,30 @@ public final class StreamedSource implements Iterable<Segment>, Closeable {
 		private final boolean handleTags;
 		private Config.UnterminatedCharacterReferenceSettings unterminatedCharacterReferenceSettings;
 		private Segment nextSegment;
-		private int plainTextSegmentBegin=0;
-		private final char[] charByRef=new char[1]; // used to pass a single character by reference
+		private int plainTextSegmentBegin = 0;
+		private final char[] charByRef = new char[1]; // used to pass a single character by reference
 
 		public StreamedSourceIterator() {
-			coalescing=StreamedSource.this.coalescing;
-			handleTags=StreamedSource.this.handleTags;
-			unterminatedCharacterReferenceSettings=StreamedSource.this.unterminatedCharacterReferenceSettings;
+			coalescing = StreamedSource.this.coalescing;
+			handleTags = StreamedSource.this.handleTags;
+			unterminatedCharacterReferenceSettings = StreamedSource.this.unterminatedCharacterReferenceSettings;
 			loadNextParsedSegment();
-			isXML=isXML(nextParsedSegment);
+			isXML = isXML(nextParsedSegment);
 		}
 
 		public boolean hasNext() {
-			if (nextSegment==Tag.NOT_CACHED) loadNextParsedSegment();
-			return nextSegment!=null;
-		}	
-	
+			if (nextSegment == Tag.NOT_CACHED)
+				loadNextParsedSegment();
+			return nextSegment != null;
+		}
+
 		public Segment next() {
-			if (!hasNext()) throw new NoSuchElementException();
-			final Segment result=nextSegment;
-			nextSegment=(result==nextParsedSegment) ? Tag.NOT_CACHED : nextParsedSegment;
+			if (!hasNext())
+				throw new NoSuchElementException();
+			final Segment result = nextSegment;
+			nextSegment = (result == nextParsedSegment) ? Tag.NOT_CACHED : nextParsedSegment;
 			streamedText.setMinRequiredBufferBegin(result.end); // guaranteed not to be discarded until next call to loadNextParsedSegment()
-			currentSegment=result;
+			currentSegment = result;
 			return result;
 		}
 
@@ -622,40 +638,40 @@ public final class StreamedSource implements Iterable<Segment>, Closeable {
 		}
 
 		private final void loadNextParsedSegment() {
-			nextParsedSegment=findNextParsedSegment();
-			final int plainTextSegmentEnd=(nextParsedSegment!=null) ? nextParsedSegment.begin : streamedText.length();
-			nextSegment=(plainTextSegmentBegin<plainTextSegmentEnd) ? new Segment(source,plainTextSegmentBegin,plainTextSegmentEnd) : nextParsedSegment;
-			if (nextParsedSegment!=null && plainTextSegmentBegin<nextParsedSegment.end) plainTextSegmentBegin=nextParsedSegment.end;
+			nextParsedSegment = findNextParsedSegment();
+			final int plainTextSegmentEnd = (nextParsedSegment != null) ? nextParsedSegment.begin : streamedText.length();
+			nextSegment = (plainTextSegmentBegin < plainTextSegmentEnd) ? new Segment(source, plainTextSegmentBegin, plainTextSegmentEnd) : nextParsedSegment;
+			if (nextParsedSegment != null && plainTextSegmentBegin < nextParsedSegment.end)
+				plainTextSegmentBegin = nextParsedSegment.end;
 		}
-	
+
 		private final Segment findNextParsedSegment() {
 			try {
-				int i=(nextParsedSegment instanceof StartTag && ((StartTag)nextParsedSegment).getTagType()==StartTagType.SERVER_COMMON_COMMENT)
-					? nextParsedSegment.getEnd()
-					: nextParsedSegment.getBegin()+1;
-				final int searchEnd=coalescing ? streamedText.getEnd() : streamedText.getBufferOverflowPosition();
-				while (i<searchEnd) {
-					final char ch=streamedText.charAt(i);
-					if (ch=='&') {
-						if (i>=source.fullSequentialParseData[0]) { // do not handle character references inside tags or script elements
-							final CharacterReference characterReference=CharacterReference.construct(source,i,unterminatedCharacterReferenceSettings);
-							if (characterReference!=null) return characterReference;
+				int i = (nextParsedSegment instanceof StartTag && ((StartTag) nextParsedSegment).getTagType() == StartTagType.SERVER_COMMON_COMMENT) ? nextParsedSegment.getEnd() : nextParsedSegment.getBegin() + 1;
+				final int searchEnd = coalescing ? streamedText.getEnd() : streamedText.getBufferOverflowPosition();
+				while (i < searchEnd) {
+					final char ch = streamedText.charAt(i);
+					if (ch == '&') {
+						if (i >= source.fullSequentialParseData[0]) { // do not handle character references inside tags or script elements
+							final CharacterReference characterReference = CharacterReference.construct(source, i, unterminatedCharacterReferenceSettings);
+							if (characterReference != null)
+								return characterReference;
 						}
-					} else if (handleTags && ch=='<') {
-						final Tag tag=TagType.getTagAt(source,i,false,assumeNoNestedTags);
-						if (tag!=null && !tag.isUnregistered()) {
-							final TagType tagType=tag.getTagType();
-							if (tag.end>source.fullSequentialParseData[0] && tagType!=StartTagType.DOCTYPE_DECLARATION) {
-								source.fullSequentialParseData[0]=(tagType==StartTagType.NORMAL && tag.name==HTMLElementName.SCRIPT && !((StartTag)tag).isEmptyElementTag()) ? Integer.MAX_VALUE : tag.end;
+					} else if (handleTags && ch == '<') {
+						final Tag tag = TagType.getTagAt(source, i, false, assumeNoNestedTags);
+						if (tag != null && !tag.isUnregistered()) {
+							final TagType tagType = tag.getTagType();
+							if (tag.end > source.fullSequentialParseData[0] && tagType != StartTagType.DOCTYPE_DECLARATION) {
+								source.fullSequentialParseData[0] = (tagType == StartTagType.NORMAL && tag.name == HTMLElementName.SCRIPT && !((StartTag) tag).isEmptyElementTag()) ? Integer.MAX_VALUE : tag.end;
 							}
 							return tag;
 						}
 					}
 					i++;
 				}
-				if (i<streamedText.getEnd()) {
+				if (i < streamedText.getEnd()) {
 					// not coalescing, reached buffer overflow position
-					return new Segment(source,plainTextSegmentBegin,i);
+					return new Segment(source, plainTextSegmentBegin, i);
 				}
 			} catch (BufferOverflowException ex) {
 				// Unrecoverable buffer overflow - close the reader if it was created internally:

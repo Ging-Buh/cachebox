@@ -4,59 +4,49 @@ import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.ViewID;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowQuit;
 
-public class MainViewBase extends CB_View_Base
-{
+public class MainViewBase extends CB_View_Base {
 	public static CB_Action_ShowQuit actionClose = new CB_Action_ShowQuit();
 
-	public MainViewBase(float X, float Y, float Width, float Height, String Name)
-	{
+	public MainViewBase(float X, float Y, float Width, float Height, String Name) {
 		super(X, Y, Width, Height, Name);
 
 	}
 
-	public void setGLViewID(ViewID id)
-	{
+	public void setGLViewID(ViewID id) {
 	}
 
 	public static MainViewBase mainView = null;
 
-	public void requestLayout()
-	{
+	public void requestLayout() {
 	}
 
 	@Override
-	protected void Initial()
-	{
+	protected void Initial() {
 
 	}
 
 	@Override
-	public boolean onTouchDown(int x, int y, int pointer, int button)
-	{
+	public boolean onTouchDown(int x, int y, int pointer, int button) {
 		return true;
 	}
 
 	@Override
-	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
-	{
+	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
 		return true;
 	}
 
 	@Override
-	public boolean onTouchUp(int x, int y, int pointer, int button)
-	{
+	public boolean onTouchUp(int x, int y, int pointer, int button) {
 		return true;
 	}
 
 	@Override
-	protected void SkinIsChanged()
-	{
+	protected void SkinIsChanged() {
 
 	}
 
 	@Override
-	public void dispose()
-	{
+	public void dispose() {
 		throw new IllegalStateException("MainViewBase can't disposed");
 	}
 

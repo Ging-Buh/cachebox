@@ -27,7 +27,6 @@ import org.apache.xmlrpc.parser.ExtParser;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-
 /** A parser for JAXB objects.
  */
 public class JaxbParser extends ExtParser {
@@ -50,7 +49,9 @@ public class JaxbParser extends ExtParser {
 		return handler;
 	}
 
-	protected String getTagName() { return JaxbSerializer.JAXB_TAG; }
+	protected String getTagName() {
+		return JaxbSerializer.JAXB_TAG;
+	}
 
 	public Object getResult() throws XmlRpcException {
 		try {

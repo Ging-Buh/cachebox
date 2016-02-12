@@ -36,75 +36,75 @@ import CB_Utils.Util.HSV_Color;
  */
 public class ext_AwtGraphicFactory extends AwtGraphicFactory implements ext_GraphicFactory {
 
-    private final float ScaleFactor;
+	private final float ScaleFactor;
 
-    public ext_AwtGraphicFactory(float ScaleFactor) {
-	this.ScaleFactor = ScaleFactor;
-    }
+	public ext_AwtGraphicFactory(float ScaleFactor) {
+		this.ScaleFactor = ScaleFactor;
+	}
 
-    @Override
-    public ext_Matrix createMatrix(ext_Matrix matrix) {
-	return new ext_AwtMatrix(matrix);
-    }
+	@Override
+	public ext_Matrix createMatrix(ext_Matrix matrix) {
+		return new ext_AwtMatrix(matrix);
+	}
 
-    @Override
-    public ext_Paint createPaint(ext_Paint paint) {
-	return new ext_AwtPaint(paint);
-    }
+	@Override
+	public ext_Paint createPaint(ext_Paint paint) {
+		return new ext_AwtPaint(paint);
+	}
 
-    @Override
-    public int setColorAlpha(int color, float paintOpacity) {
-	
-	return 0;
-    }
+	@Override
+	public int setColorAlpha(int color, float paintOpacity) {
 
-    @Override
-    public ext_Bitmap createBitmap(int width, int height) {
-	return new ext_AwtBitmap(width, height);
-    }
+		return 0;
+	}
 
-    @Override
-    public ext_Canvas createCanvas() {
-	return new ext_AwtCanvas();
-    }
+	@Override
+	public ext_Bitmap createBitmap(int width, int height) {
+		return new ext_AwtBitmap(width, height);
+	}
 
-    @Override
-    public ext_Path createPath() {
-	return new ext_AwtPath();
-    }
+	@Override
+	public ext_Canvas createCanvas() {
+		return new ext_AwtCanvas();
+	}
 
-    @Override
-    public TileBitmap createTileBitmap(int tileSize, boolean hasAlpha) {
-	return new ext_AwtTileBitmap(tileSize);
-    }
+	@Override
+	public ext_Path createPath() {
+		return new ext_AwtPath();
+	}
 
-    @Override
-    public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException {
-	return new ext_AwtResourceBitmap(inputStream, hash, this.ScaleFactor);
-    }
+	@Override
+	public TileBitmap createTileBitmap(int tileSize, boolean hasAlpha) {
+		return new ext_AwtTileBitmap(tileSize);
+	}
 
-    public static ext_GraphicFactory getInstance(float ScaleFactor) {
-	if (FactoryList.containsKey(ScaleFactor))
-	    return FactoryList.get(ScaleFactor);
+	@Override
+	public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException {
+		return new ext_AwtResourceBitmap(inputStream, hash, this.ScaleFactor);
+	}
 
-	ext_AwtGraphicFactory factory = new ext_AwtGraphicFactory(ScaleFactor);
-	FactoryList.put(ScaleFactor, factory);
-	return factory;
-    }
+	public static ext_GraphicFactory getInstance(float ScaleFactor) {
+		if (FactoryList.containsKey(ScaleFactor))
+			return FactoryList.get(ScaleFactor);
 
-    @Override
-    public int createColor(Color color) {
-	int c = getColor(color).getRGB();
-	if (CB_UI_Base_Settings.nightMode.getValue())
-	    c = HSV_Color.colorMatrixManipulation(c, HSV_Color.NIGHT_COLOR_MATRIX);
-	return c;
-    }
+		ext_AwtGraphicFactory factory = new ext_AwtGraphicFactory(ScaleFactor);
+		FactoryList.put(ScaleFactor, factory);
+		return factory;
+	}
 
-    @Override
-    public int createColor(int alpha, int red, int green, int blue) {
-	int c = new java.awt.Color(red, green, blue, alpha).getRGB();
-	if (CB_UI_Base_Settings.nightMode.getValue())
-	    c = HSV_Color.colorMatrixManipulation(c, HSV_Color.NIGHT_COLOR_MATRIX);
-	return c;
-    }
+	@Override
+	public int createColor(Color color) {
+		int c = getColor(color).getRGB();
+		if (CB_UI_Base_Settings.nightMode.getValue())
+			c = HSV_Color.colorMatrixManipulation(c, HSV_Color.NIGHT_COLOR_MATRIX);
+		return c;
+	}
+
+	@Override
+	public int createColor(int alpha, int red, int green, int blue) {
+		int c = new java.awt.Color(red, green, blue, alpha).getRGB();
+		if (CB_UI_Base_Settings.nightMode.getValue())
+			c = HSV_Color.colorMatrixManipulation(c, HSV_Color.NIGHT_COLOR_MATRIX);
+		return c;
+	}
 }

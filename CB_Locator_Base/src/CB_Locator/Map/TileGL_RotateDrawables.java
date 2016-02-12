@@ -28,15 +28,13 @@ import com.badlogic.gdx.math.Matrix4;
  * 
  * @author Longri
  */
-public class TileGL_RotateDrawables
-{
+public class TileGL_RotateDrawables {
 	private final Float[] REC;
 	public final SortedRotateList DRAWABLELIST;
 	public final TileGL tile;
 	private final CB_List<MatrixDrawable> clearList = new CB_List<MatrixDrawable>();
 
-	public TileGL_RotateDrawables(float x, float y, float width, float height, TileGL Tile, SortedRotateList drawableList)
-	{
+	public TileGL_RotateDrawables(float x, float y, float width, float height, TileGL Tile, SortedRotateList drawableList) {
 		REC = new Float[4];
 		REC[0] = x;
 		REC[1] = y;
@@ -50,34 +48,27 @@ public class TileGL_RotateDrawables
 	private final Matrix4 thisDrawMatrix = new Matrix4();
 	private final Matrix4 workMatrix = new Matrix4();
 
-	public void draw(Batch batch, float rotated)
-	{
+	public void draw(Batch batch, float rotated) {
 		oriMatrix.set(GL.batch.getProjectionMatrix());
 
 		thisDrawMatrix.set(oriMatrix);
 
 		boolean MatrixChanged = false;
 
-		for (MatrixDrawable drw : DRAWABLELIST)
-		{
+		for (MatrixDrawable drw : DRAWABLELIST) {
 
 			boolean cantDraw = false;
 			clearList.clear();
-			if (drw.matrix == null)
-			{
+			if (drw.matrix == null) {
 				cantDraw = drw.drawable.draw(GL.batch, REC[0], REC[1], REC[2], REC[3], rotated);
-			}
-			else
-			{
+			} else {
 
 				workMatrix.set(thisDrawMatrix);
-				if (drw.matrix != null && drw.matrix.getMatrix4() != null)
-				{
+				if (drw.matrix != null && drw.matrix.getMatrix4() != null) {
 					workMatrix.mul(drw.matrix.getMatrix4());
 				}
 
-				if (!transformEquals(workMatrix, oriMatrix))
-				{
+				if (!transformEquals(workMatrix, oriMatrix)) {
 					GL.batch.setProjectionMatrix(workMatrix);
 					MatrixChanged = true;
 				}
@@ -85,36 +76,33 @@ public class TileGL_RotateDrawables
 				cantDraw = drw.drawable.draw(GL.batch, REC[0], REC[1], REC[2], REC[3], rotated);
 			}
 
-			if (cantDraw)
-			{
+			if (cantDraw) {
 				// remove from Drawable List
 				clearList.add(drw);
 			}
 
 		}
 
-		if (!clearList.isEmpty())
-		{
+		if (!clearList.isEmpty()) {
 			DRAWABLELIST.remove(clearList);
 		}
 
-		if (MatrixChanged) GL.batch.setProjectionMatrix(oriMatrix);
+		if (MatrixChanged)
+			GL.batch.setProjectionMatrix(oriMatrix);
 
 	}
 
-	private boolean transformEquals(Matrix4 transform1, Matrix4 transform2)
-	{
+	private boolean transformEquals(Matrix4 transform1, Matrix4 transform2) {
 
-		for (int i = 0; i < 16; i++)
-		{
-			if (transform1.val[i] != transform2.val[i]) return false;
+		for (int i = 0; i < 16; i++) {
+			if (transform1.val[i] != transform2.val[i])
+				return false;
 		}
 
 		return true;
 	}
 
-	public void set(float x, float y, float width, float height)
-	{
+	public void set(float x, float y, float width, float height) {
 		REC[0] = x;
 		REC[1] = y;
 		REC[2] = width;

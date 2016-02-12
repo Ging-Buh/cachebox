@@ -21,10 +21,10 @@
 package net.htmlparser.jericho;
 
 final class EndTagTypeMasonNamedBlock extends EndTagTypeGenericImplementation {
-	protected static final EndTagTypeMasonNamedBlock INSTANCE=new EndTagTypeMasonNamedBlock();
+	protected static final EndTagTypeMasonNamedBlock INSTANCE = new EndTagTypeMasonNamedBlock();
 
 	private EndTagTypeMasonNamedBlock() {
-		super("/mason named block","</%",">",true,false);
+		super("/mason named block", "</%", ">", true, false);
 	}
 
 	public StartTagType getCorrespondingStartTagType() {

@@ -12,32 +12,32 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 
 public class CB_Action_switch_Autoresort extends CB_Action {
 
-    public CB_Action_switch_Autoresort() {
-	super("AutoResort", MenuID.AID_AUTO_RESORT);
-    }
-
-    @Override
-    public boolean getEnabled() {
-	return true;
-    }
-
-    @Override
-    public Sprite getIcon() {
-	return SpriteCacheBase.Icons.get(IconName.autoSelectOff_16.ordinal());
-    }
-
-    @Override
-    public void Execute() {
-	GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
-	if (GlobalCore.getAutoResort()) {
-	    synchronized (Database.Data.Query) {
-		if (GlobalCore.isSetSelectedCache()) {
-		    CacheWithWP ret = Database.Data.Query.Resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
-		    GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
-		    GlobalCore.setNearestCache(ret.getCache());
-		    ret.dispose();
-		}
-	    }
+	public CB_Action_switch_Autoresort() {
+		super("AutoResort", MenuID.AID_AUTO_RESORT);
 	}
-    }
+
+	@Override
+	public boolean getEnabled() {
+		return true;
+	}
+
+	@Override
+	public Sprite getIcon() {
+		return SpriteCacheBase.Icons.get(IconName.autoSelectOff_16.ordinal());
+	}
+
+	@Override
+	public void Execute() {
+		GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
+		if (GlobalCore.getAutoResort()) {
+			synchronized (Database.Data.Query) {
+				if (GlobalCore.isSetSelectedCache()) {
+					CacheWithWP ret = Database.Data.Query.Resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
+					GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
+					GlobalCore.setNearestCache(ret.getCache());
+					ret.dispose();
+				}
+			}
+		}
+	}
 }

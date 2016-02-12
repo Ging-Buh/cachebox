@@ -18,7 +18,6 @@
  */
 package org.apache.xmlrpc.client;
 
-
 /** <p>A transport factory being used for local XML-RPC calls. Local XML-RPC
  * calls are mainly useful for development and unit testing: Both client
  * and server are runing within the same JVM and communication is implemented
@@ -37,5 +36,7 @@ public class XmlRpcLocalTransportFactory extends XmlRpcTransportFactoryImpl {
 
 	private final XmlRpcTransport LOCAL_TRANSPORT = new XmlRpcLocalTransport(getClient());
 
-	public XmlRpcTransport getTransport() { return LOCAL_TRANSPORT; }
+	public XmlRpcTransport getTransport() {
+		return LOCAL_TRANSPORT;
+	}
 }

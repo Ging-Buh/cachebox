@@ -27,27 +27,22 @@ package CB_Utils.Settings;
  * 
  * @author Longri
  */
-public class SettingsAudio extends SettingBase<Audio>
-{
+public class SettingsAudio extends SettingBase<Audio> {
 
-	public SettingsAudio(String name, SettingCategory category, SettingModus modus, Audio defaultValue, SettingStoreType StoreType,
-			SettingUsage usage)
-	{
+	public SettingsAudio(String name, SettingCategory category, SettingModus modus, Audio defaultValue, SettingStoreType StoreType, SettingUsage usage) {
 		super(name, category, modus, StoreType, usage);
 		this.defaultValue = defaultValue;
 		this.value = new Audio(defaultValue);
 	}
 
 	@Override
-	public int compareTo(SettingBase<Audio> arg0)
-	{
+	public int compareTo(SettingBase<Audio> arg0) {
 		// no sort
 		return 0;
 	}
 
 	@Override
-	public String toDBString()
-	{
+	public String toDBString() {
 		String ret = "";
 		ret += "#" + value.Path;
 		ret += "#" + String.valueOf(value.Volume);
@@ -57,8 +52,7 @@ public class SettingsAudio extends SettingBase<Audio>
 	}
 
 	@Override
-	public boolean fromDBString(String dbString)
-	{
+	public boolean fromDBString(String dbString) {
 		String[] values = dbString.split("#");
 		value.Path = values[1];
 		value.Volume = Float.parseFloat(values[2]);
@@ -68,8 +62,7 @@ public class SettingsAudio extends SettingBase<Audio>
 	}
 
 	@Override
-	public SettingBase<Audio> copy()
-	{
+	public SettingBase<Audio> copy() {
 		SettingBase<Audio> ret = new SettingsAudio(this.name, this.category, this.modus, this.defaultValue, this.storeType, this.usage);
 		ret.value = this.value;
 		ret.lastValue = this.lastValue;
@@ -77,16 +70,21 @@ public class SettingsAudio extends SettingBase<Audio>
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (!(obj instanceof SettingsAudio)) return false;
+	public boolean equals(Object obj) {
+		if (!(obj instanceof SettingsAudio))
+			return false;
 
 		SettingsAudio inst = (SettingsAudio) obj;
-		if (!(inst.name.equals(this.name))) return false;
-		if (inst.value.Mute != this.value.Mute) return false;
-		if (inst.value.Volume != this.value.Volume) return false;
-		if (inst.value.Class_Absolute != this.value.Class_Absolute) return false;
-		if (!inst.value.Path.equals(this.value.Path)) return false;
+		if (!(inst.name.equals(this.name)))
+			return false;
+		if (inst.value.Mute != this.value.Mute)
+			return false;
+		if (inst.value.Volume != this.value.Volume)
+			return false;
+		if (inst.value.Class_Absolute != this.value.Class_Absolute)
+			return false;
+		if (!inst.value.Path.equals(this.value.Path))
+			return false;
 
 		return true;
 	}

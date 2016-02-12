@@ -42,8 +42,7 @@ import java.io.Writer;
  * <li>{@link Segment#getAllCharacterReferences()}
  * </ul>
  */
-public abstract class CharacterReference extends Segment
-{
+public abstract class CharacterReference extends Segment {
 	int codePoint;
 
 	/**
@@ -59,8 +58,7 @@ public abstract class CharacterReference extends Segment
 	/** The number of spaces used to simulate a tab when {@linkplain #encodeWithWhiteSpaceFormatting encoding with white space formatting}. */
 	private static final int TAB_LENGTH = 4;
 
-	CharacterReference(final Source source, final int begin, final int end, final int codePoint)
-	{
+	CharacterReference(final Source source, final int begin, final int end, final int codePoint) {
 		super(source, begin, end);
 		this.codePoint = codePoint;
 	}
@@ -71,8 +69,7 @@ public abstract class CharacterReference extends Segment
 	 * @return the unicode code point represented by this character reference.
 	 * @see #appendCharTo(Appendable)
 	 */
-	public int getCodePoint()
-	{
+	public int getCodePoint() {
 		return codePoint;
 	}
 
@@ -93,8 +90,7 @@ public abstract class CharacterReference extends Segment
 	 * @see #appendCharTo(Appendable)
 	 * @see #getCodePoint()
 	 */
-	public char getChar()
-	{
+	public char getChar() {
 		return (char) codePoint;
 	}
 
@@ -113,27 +109,19 @@ public abstract class CharacterReference extends Segment
 	 * @param appendable
 	 *            the object to append this character reference to.
 	 */
-	public final void appendCharTo(Appendable appendable) throws IOException
-	{
+	public final void appendCharTo(Appendable appendable) throws IOException {
 		appendCharTo(appendable, Config.ConvertNonBreakingSpaces);
 	}
 
-	private void appendCharTo(Appendable appendable, final boolean convertNonBreakingSpaces) throws IOException
-	{
-		if (Character.isSupplementaryCodePoint(codePoint))
-		{
+	private void appendCharTo(Appendable appendable, final boolean convertNonBreakingSpaces) throws IOException {
+		if (Character.isSupplementaryCodePoint(codePoint)) {
 			appendable.append(getHighSurrogate(codePoint));
 			appendable.append(getLowSurrogate(codePoint));
-		}
-		else
-		{
+		} else {
 			final char ch = getChar();
-			if (ch == CharacterEntityReference._nbsp && convertNonBreakingSpaces)
-			{
+			if (ch == CharacterEntityReference._nbsp && convertNonBreakingSpaces) {
 				appendable.append(' ');
-			}
-			else
-			{
+			} else {
 				appendable.append(ch);
 			}
 		}
@@ -155,8 +143,7 @@ public abstract class CharacterReference extends Segment
 	 * @return <code>true</code> if this character reference is terminated by a semicolon, otherwise <code>false</code>.
 	 * @see #decode(CharSequence encodedText, boolean insideAttributeValue)
 	 */
-	public boolean isTerminated()
-	{
+	public boolean isTerminated() {
 		return source.charAt(end - 1) == ';';
 	}
 
@@ -182,15 +169,12 @@ public abstract class CharacterReference extends Segment
 	 * @return the encoded string.
 	 * @see #decode(CharSequence)
 	 */
-	public static String encode(final CharSequence unencodedText)
-	{
-		if (unencodedText == null) return null;
-		try
-		{
+	public static String encode(final CharSequence unencodedText) {
+		if (unencodedText == null)
+			return null;
+		try {
 			return appendEncode(new StringBuilder(unencodedText.length() * 2), unencodedText, false).toString();
-		}
-		catch (IOException ex)
-		{
+		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		} // never happens
 	}
@@ -204,14 +188,10 @@ public abstract class CharacterReference extends Segment
 	 *            the character to encode.
 	 * @return a character reference if appropriate, otherwise a string containing the original character.
 	 */
-	public static String encode(final char ch)
-	{
-		try
-		{
+	public static String encode(final char ch) {
+		try {
 			return appendEncode(new StringBuilder(MAX_ENTITY_REFERENCE_LENGTH), ch).toString();
-		}
-		catch (IOException ex)
-		{
+		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		} // never happens
 	}
@@ -242,15 +222,12 @@ public abstract class CharacterReference extends Segment
 	 * @return the encoded string with white space formatting converted to markup.
 	 * @see #encode(CharSequence)
 	 */
-	public static String encodeWithWhiteSpaceFormatting(final CharSequence unencodedText)
-	{
-		if (unencodedText == null) return null;
-		try
-		{
+	public static String encodeWithWhiteSpaceFormatting(final CharSequence unencodedText) {
+		if (unencodedText == null)
+			return null;
+		try {
 			return appendEncode(new StringBuilder(unencodedText.length() * 2), unencodedText, true).toString();
-		}
-		catch (IOException ex)
-		{
+		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		} // never happens
 	}
@@ -278,8 +255,7 @@ public abstract class CharacterReference extends Segment
 	 * @return the decoded string.
 	 * @see #encode(CharSequence)
 	 */
-	public static String decode(final CharSequence encodedText)
-	{
+	public static String decode(final CharSequence encodedText) {
 		return decode(encodedText, false, Config.ConvertNonBreakingSpaces);
 	}
 
@@ -307,24 +283,18 @@ public abstract class CharacterReference extends Segment
 	 * @see #decode(CharSequence)
 	 * @see #encode(CharSequence)
 	 */
-	public static String decode(final CharSequence encodedText, final boolean insideAttributeValue)
-	{
+	public static String decode(final CharSequence encodedText, final boolean insideAttributeValue) {
 		return decode(encodedText, insideAttributeValue, Config.ConvertNonBreakingSpaces);
 	}
 
-	static String decode(final CharSequence encodedText, final boolean insideAttributeValue, final boolean convertNonBreakingSpaces)
-	{
-		if (encodedText == null) return null;
-		for (int i = 0; i < encodedText.length(); i++)
-		{
-			if (encodedText.charAt(i) == '&')
-			{
-				try
-				{
+	static String decode(final CharSequence encodedText, final boolean insideAttributeValue, final boolean convertNonBreakingSpaces) {
+		if (encodedText == null)
+			return null;
+		for (int i = 0; i < encodedText.length(); i++) {
+			if (encodedText.charAt(i) == '&') {
+				try {
 					return appendDecode(new StringBuilder(encodedText.length()), encodedText, i, insideAttributeValue, convertNonBreakingSpaces).toString();
-				}
-				catch (IOException ex)
-				{
+				} catch (IOException ex) {
 					throw new RuntimeException(ex);
 				} // never happens
 			}
@@ -353,13 +323,11 @@ public abstract class CharacterReference extends Segment
 	 * @return the decoded text with collapsed white space.
 	 * @see FormControl#getPredefinedValues()
 	 */
-	public static String decodeCollapseWhiteSpace(final CharSequence text)
-	{
+	public static String decodeCollapseWhiteSpace(final CharSequence text) {
 		return decodeCollapseWhiteSpace(text, Config.ConvertNonBreakingSpaces);
 	}
 
-	public static String decodeCollapseWhiteSpace(final CharSequence text, final boolean convertNonBreakingSpaces)
-	{
+	public static String decodeCollapseWhiteSpace(final CharSequence text, final boolean convertNonBreakingSpaces) {
 		return decode(appendCollapseWhiteSpace(new StringBuilder(text.length()), text), false, convertNonBreakingSpaces);
 	}
 
@@ -376,8 +344,7 @@ public abstract class CharacterReference extends Segment
 	 *            the text to re-encode.
 	 * @return the re-encoded string.
 	 */
-	public static String reencode(final CharSequence encodedText)
-	{
+	public static String reencode(final CharSequence encodedText) {
 		return encode(decode(encodedText, true));
 	}
 
@@ -422,11 +389,12 @@ public abstract class CharacterReference extends Segment
 	 * @return the encoded form of the specified unicode code point.
 	 * @see #getHexadecimalCharacterReferenceString(int codePoint)
 	 */
-	public static String getCharacterReferenceString(final int codePoint)
-	{
+	public static String getCharacterReferenceString(final int codePoint) {
 		String characterReferenceString = null;
-		if (codePoint != CharacterEntityReference._apos) characterReferenceString = CharacterEntityReference.getCharacterReferenceString(codePoint);
-		if (characterReferenceString == null) characterReferenceString = NumericCharacterReference.getCharacterReferenceString(codePoint);
+		if (codePoint != CharacterEntityReference._apos)
+			characterReferenceString = CharacterEntityReference.getCharacterReferenceString(codePoint);
+		if (characterReferenceString == null)
+			characterReferenceString = NumericCharacterReference.getCharacterReferenceString(codePoint);
 		return characterReferenceString;
 	}
 
@@ -445,8 +413,7 @@ public abstract class CharacterReference extends Segment
 	 * @see #getCharacterReferenceString()
 	 * @see #getHexadecimalCharacterReferenceString()
 	 */
-	public String getDecimalCharacterReferenceString()
-	{
+	public String getDecimalCharacterReferenceString() {
 		return getDecimalCharacterReferenceString(codePoint);
 	}
 
@@ -465,14 +432,10 @@ public abstract class CharacterReference extends Segment
 	 * @see #getCharacterReferenceString(int codePoint)
 	 * @see #getHexadecimalCharacterReferenceString(int codePoint)
 	 */
-	public static String getDecimalCharacterReferenceString(final int codePoint)
-	{
-		try
-		{
+	public static String getDecimalCharacterReferenceString(final int codePoint) {
+		try {
 			return appendDecimalCharacterReferenceString(new StringBuilder(), codePoint).toString();
-		}
-		catch (IOException ex)
-		{
+		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		} // never happens
 	}
@@ -493,8 +456,7 @@ public abstract class CharacterReference extends Segment
 	 * @see #getCharacterReferenceString()
 	 * @see #getDecimalCharacterReferenceString()
 	 */
-	public String getHexadecimalCharacterReferenceString()
-	{
+	public String getHexadecimalCharacterReferenceString() {
 		return getHexadecimalCharacterReferenceString(codePoint);
 	}
 
@@ -513,14 +475,10 @@ public abstract class CharacterReference extends Segment
 	 * @see #getCharacterReferenceString(int codePoint)
 	 * @see #getDecimalCharacterReferenceString(int codePoint)
 	 */
-	public static String getHexadecimalCharacterReferenceString(final int codePoint)
-	{
-		try
-		{
+	public static String getHexadecimalCharacterReferenceString(final int codePoint) {
+		try {
 			return appendHexadecimalCharacterReferenceString(new StringBuilder(), codePoint).toString();
-		}
-		catch (IOException ex)
-		{
+		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		} // never happens
 	}
@@ -539,8 +497,7 @@ public abstract class CharacterReference extends Segment
 	 * @return the unicode code point of this character reference in U+ notation.
 	 * @see #getUnicodeText(int codePoint)
 	 */
-	public String getUnicodeText()
-	{
+	public String getUnicodeText() {
 		return getUnicodeText(codePoint);
 	}
 
@@ -556,20 +513,15 @@ public abstract class CharacterReference extends Segment
 	 *            the unicode code point.
 	 * @return the specified unicode code point in U+ notation.
 	 */
-	public static String getUnicodeText(final int codePoint)
-	{
-		try
-		{
+	public static String getUnicodeText(final int codePoint) {
+		try {
 			return appendUnicodeText(new StringBuilder(), codePoint).toString();
-		}
-		catch (IOException ex)
-		{
+		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		} // never happens
 	}
 
-	static final Appendable appendUnicodeText(final Appendable appendable, final int codePoint) throws IOException
-	{
+	static final Appendable appendUnicodeText(final Appendable appendable, final int codePoint) throws IOException {
 		appendable.append("U+");
 		final String hex = Integer.toString(codePoint, 16).toUpperCase();
 		for (int i = 4 - hex.length(); i > 0; i--)
@@ -602,8 +554,7 @@ public abstract class CharacterReference extends Segment
 	 *         a valid character reference.
 	 * @see #decode(CharSequence)
 	 */
-	public static CharacterReference parse(final CharSequence characterReferenceText)
-	{
+	public static CharacterReference parse(final CharSequence characterReferenceText) {
 		return construct(new Source(characterReferenceText, true), 0, Config.UnterminatedCharacterReferenceSettings.ACCEPT_ALL);
 	}
 
@@ -628,8 +579,7 @@ public abstract class CharacterReference extends Segment
 	 * @return the unicode code point representing representing the specified text, or {@link #INVALID_CODE_POINT} if the text does not
 	 *         represent a valid character reference.
 	 */
-	public static int getCodePointFromCharacterReferenceString(final CharSequence characterReferenceText)
-	{
+	public static int getCodePointFromCharacterReferenceString(final CharSequence characterReferenceText) {
 		final CharacterReference characterReference = parse(characterReferenceText);
 		return (characterReference != null) ? characterReference.getCodePoint() : INVALID_CODE_POINT;
 	}
@@ -647,8 +597,7 @@ public abstract class CharacterReference extends Segment
 	 *            the character to test.
 	 * @return <code>true</code> if the specified character would need to be encoded in HTML text, otherwise <code>false</code>.
 	 */
-	public static final boolean requiresEncoding(final char ch)
-	{
+	public static final boolean requiresEncoding(final char ch) {
 		return ch > 127 || (CharacterEntityReference.getName(ch) != null && (ch != '\'' || Config.IsApostropheEncoded));
 	}
 
@@ -662,65 +611,58 @@ public abstract class CharacterReference extends Segment
 	 *         specified <code>Writer</code>.
 	 * @see #encode(CharSequence unencodedText)
 	 */
-	public static Writer getEncodingFilterWriter(final Writer writer)
-	{
+	public static Writer getEncodingFilterWriter(final Writer writer) {
 		return new EncodingFilterWriter(writer);
 	}
 
-	private static final class EncodingFilterWriter extends FilterWriter
-	{
+	private static final class EncodingFilterWriter extends FilterWriter {
 		StringBuilder sb = new StringBuilder(MAX_ENTITY_REFERENCE_LENGTH);
 
-		public EncodingFilterWriter(final Writer writer)
-		{
+		public EncodingFilterWriter(final Writer writer) {
 			super(writer);
 		}
 
-		public void write(final char ch) throws IOException
-		{
+		public void write(final char ch) throws IOException {
 			sb.setLength(0);
 			appendEncode(sb, ch);
-			if (sb.length() == 1) out.write(sb.charAt(0));
+			if (sb.length() == 1)
+				out.write(sb.charAt(0));
 			else
 				out.append(sb);
 		}
 
 		@Override
-		public void write(final int chInt) throws IOException
-		{
+		public void write(final int chInt) throws IOException {
 			write((char) chInt);
 		}
 
 		@Override
-		public void write(final char[] cbuf, final int off, final int len) throws IOException
-		{
+		public void write(final char[] cbuf, final int off, final int len) throws IOException {
 			final int end = off + len;
 			for (int i = off; i < end; i++)
 				write(cbuf[i]);
 		}
 
 		@Override
-		public void write(final String str, final int off, final int len) throws IOException
-		{
+		public void write(final String str, final int off, final int len) throws IOException {
 			final int end = off + len;
 			for (int i = off; i < end; i++)
 				write(str.charAt(i));
 		}
 	}
 
-	private static Appendable appendEncode(final Appendable appendable, char ch) throws IOException
-	{
-		if (appendEncodeCheckForWhiteSpaceFormatting(appendable, ch, false)) return appendable;
+	private static Appendable appendEncode(final Appendable appendable, char ch) throws IOException {
+		if (appendEncodeCheckForWhiteSpaceFormatting(appendable, ch, false))
+			return appendable;
 		return appendable.append(ch);
 	}
 
-	static Appendable appendEncode(final Appendable appendable, CharSequence unencodedText, final boolean whiteSpaceFormatting) throws IOException
-	{
-		if (unencodedText == null) return appendable;
+	static Appendable appendEncode(final Appendable appendable, CharSequence unencodedText, final boolean whiteSpaceFormatting) throws IOException {
+		if (unencodedText == null)
+			return appendable;
 		int beginPos = 0;
 		int endPos = unencodedText.length();
-		if (unencodedText instanceof Segment)
-		{
+		if (unencodedText instanceof Segment) {
 			// this might improve performance slightly
 			final Segment segment = (Segment) unencodedText;
 			final int segmentOffset = segment.getBegin();
@@ -729,51 +671,46 @@ public abstract class CharacterReference extends Segment
 			unencodedText = segment.source;
 		}
 		final boolean isApostropheEncoded = Config.IsApostropheEncoded;
-		for (int i = beginPos; i < endPos; i++)
-		{
+		for (int i = beginPos; i < endPos; i++) {
 			char ch = unencodedText.charAt(i);
-			if (appendEncodeCheckForWhiteSpaceFormatting(appendable, ch, whiteSpaceFormatting)) continue;
+			if (appendEncodeCheckForWhiteSpaceFormatting(appendable, ch, whiteSpaceFormatting))
+				continue;
 			// need to process white space
 			// whiteSpaceFormatting tries to simulate the formatting characters by converting them to markup
 			int spaceCount;
 			int nexti = i + 1;
-			if (ch != ' ')
-			{
-				if (ch != '\t')
-				{
+			if (ch != ' ') {
+				if (ch != '\t') {
 					// must be line feed, carriage return or form feed, since zero-width space should have been processed as a character
 					// reference string
-					if (ch == '\r' && nexti < endPos && unencodedText.charAt(nexti) == '\n') i++; // process cr/lf pair as one line break
+					if (ch == '\r' && nexti < endPos && unencodedText.charAt(nexti) == '\n')
+						i++; // process cr/lf pair as one line break
 					appendable.append("<br />"); // add line break
 					continue;
-				}
-				else
-				{
+				} else {
 					spaceCount = TAB_LENGTH;
 				}
-			}
-			else
-			{
+			} else {
 				spaceCount = 1;
 			}
-			while (nexti < endPos)
-			{
+			while (nexti < endPos) {
 				ch = unencodedText.charAt(nexti);
-				if (ch == ' ') spaceCount += 1;
-				else if (ch == '\t') spaceCount += TAB_LENGTH;
+				if (ch == ' ')
+					spaceCount += 1;
+				else if (ch == '\t')
+					spaceCount += TAB_LENGTH;
 				else
 					break;
 				nexti++;
 			}
-			if (spaceCount == 1)
-			{
+			if (spaceCount == 1) {
 				// handle the very common case of a single character to improve efficiency slightly
 				appendable.append(' ');
 				continue;
 			}
-			if (spaceCount % 2 == 1) appendable.append(' '); // fist character is a space if we have an odd number of spaces
-			while (spaceCount >= 2)
-			{
+			if (spaceCount % 2 == 1)
+				appendable.append(' '); // fist character is a space if we have an odd number of spaces
+			while (spaceCount >= 2) {
 				appendable.append("&nbsp; "); // use alternating &nbsp; and spaces to keep original number of spaces
 				spaceCount -= 2;
 			}
@@ -784,114 +721,91 @@ public abstract class CharacterReference extends Segment
 		return appendable;
 	}
 
-	private static final boolean appendEncodeCheckForWhiteSpaceFormatting(final Appendable appendable, char ch, final boolean whiteSpaceFormatting) throws IOException
-	{
+	private static final boolean appendEncodeCheckForWhiteSpaceFormatting(final Appendable appendable, char ch, final boolean whiteSpaceFormatting) throws IOException {
 		final String characterEntityReferenceName = CharacterEntityReference.getName(ch);
-		if (characterEntityReferenceName != null)
-		{
-			if (ch == '\'')
-			{
-				if (Config.IsApostropheEncoded) appendable.append("&#39;");
+		if (characterEntityReferenceName != null) {
+			if (ch == '\'') {
+				if (Config.IsApostropheEncoded)
+					appendable.append("&#39;");
 				else
 					appendable.append(ch);
-			}
-			else
-			{
+			} else {
 				CharacterEntityReference.appendCharacterReferenceString(appendable, characterEntityReferenceName);
 			}
-		}
-		else if (ch > 127)
-		{
+		} else if (ch > 127) {
 			appendDecimalCharacterReferenceString(appendable, ch);
-		}
-		else if (!(whiteSpaceFormatting && isWhiteSpace(ch)))
-		{
+		} else if (!(whiteSpaceFormatting && isWhiteSpace(ch))) {
 			appendable.append(ch);
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 		return true;
 	}
 
-	static CharacterReference getPrevious(final Source source, final int pos)
-	{
+	static CharacterReference getPrevious(final Source source, final int pos) {
 		return getPrevious(source, pos, Config.UnterminatedCharacterReferenceSettings.ACCEPT_ALL);
 	}
 
-	static CharacterReference getNext(final Source source, final int pos)
-	{
+	static CharacterReference getNext(final Source source, final int pos) {
 		return getNext(source, pos, Config.UnterminatedCharacterReferenceSettings.ACCEPT_ALL);
 	}
 
-	private static CharacterReference getPrevious(final Source source, int pos, final Config.UnterminatedCharacterReferenceSettings unterminatedCharacterReferenceSettings)
-	{
+	private static CharacterReference getPrevious(final Source source, int pos, final Config.UnterminatedCharacterReferenceSettings unterminatedCharacterReferenceSettings) {
 		final ParseText parseText = source.getParseText();
 		pos = parseText.lastIndexOf('&', pos);
-		while (pos != -1)
-		{
+		while (pos != -1) {
 			final CharacterReference characterReference = construct(source, pos, unterminatedCharacterReferenceSettings);
-			if (characterReference != null) return characterReference;
+			if (characterReference != null)
+				return characterReference;
 			pos = parseText.lastIndexOf('&', pos - 1);
 		}
 		return null;
 	}
 
-	private static CharacterReference getNext(final Source source, int pos, final Config.UnterminatedCharacterReferenceSettings unterminatedCharacterReferenceSettings)
-	{
+	private static CharacterReference getNext(final Source source, int pos, final Config.UnterminatedCharacterReferenceSettings unterminatedCharacterReferenceSettings) {
 		final ParseText parseText = source.getParseText();
 		pos = parseText.indexOf('&', pos);
-		while (pos != -1)
-		{
+		while (pos != -1) {
 			final CharacterReference characterReference = construct(source, pos, unterminatedCharacterReferenceSettings);
-			if (characterReference != null) return characterReference;
+			if (characterReference != null)
+				return characterReference;
 			pos = parseText.indexOf('&', pos + 1);
 		}
 		return null;
 	}
 
-	static final Appendable appendHexadecimalCharacterReferenceString(final Appendable appendable, final int codePoint) throws IOException
-	{
+	static final Appendable appendHexadecimalCharacterReferenceString(final Appendable appendable, final int codePoint) throws IOException {
 		return appendable.append("&#x").append(Integer.toString(codePoint, 16)).append(';');
 	}
 
-	static final Appendable appendDecimalCharacterReferenceString(final Appendable appendable, final int codePoint) throws IOException
-	{
+	static final Appendable appendDecimalCharacterReferenceString(final Appendable appendable, final int codePoint) throws IOException {
 		return appendable.append("&#").append(Integer.toString(codePoint)).append(';');
 	}
 
-	static CharacterReference construct(final Source source, final int begin, final Config.UnterminatedCharacterReferenceSettings unterminatedCharacterReferenceSettings)
-	{
-		try
-		{
-			if (source.getParseText().charAt(begin) != '&') return null;
-			return (source.getParseText().charAt(begin + 1) == '#') ? NumericCharacterReference.construct(source, begin, unterminatedCharacterReferenceSettings) : CharacterEntityReference.construct(source, begin, unterminatedCharacterReferenceSettings.characterEntityReferenceMaxCodePoint);
-		}
-		catch (IndexOutOfBoundsException ex)
-		{
+	static CharacterReference construct(final Source source, final int begin, final Config.UnterminatedCharacterReferenceSettings unterminatedCharacterReferenceSettings) {
+		try {
+			if (source.getParseText().charAt(begin) != '&')
+				return null;
+			return (source.getParseText().charAt(begin + 1) == '#') ? NumericCharacterReference.construct(source, begin, unterminatedCharacterReferenceSettings)
+					: CharacterEntityReference.construct(source, begin, unterminatedCharacterReferenceSettings.characterEntityReferenceMaxCodePoint);
+		} catch (IndexOutOfBoundsException ex) {
 			return null;
 		}
 	}
 
-	private static Appendable appendDecode(final Appendable appendable, final CharSequence encodedText, int pos, final boolean insideAttributeValue, final boolean convertNonBreakingSpaces) throws IOException
-	{
+	private static Appendable appendDecode(final Appendable appendable, final CharSequence encodedText, int pos, final boolean insideAttributeValue, final boolean convertNonBreakingSpaces) throws IOException {
 		final Config.UnterminatedCharacterReferenceSettings unterminatedCharacterReferenceSettings = Config.CurrentCompatibilityMode.getUnterminatedCharacterReferenceSettings(insideAttributeValue);
 		int lastEnd = 0;
 		final StreamedSource streamedSource = new StreamedSource(encodedText).setHandleTags(false).setUnterminatedCharacterReferenceSettings(unterminatedCharacterReferenceSettings).setSearchBegin(pos);
-		for (Segment segment : streamedSource)
-		{
-			if (segment instanceof CharacterReference)
-			{
+		for (Segment segment : streamedSource) {
+			if (segment instanceof CharacterReference) {
 				((CharacterReference) segment).appendCharTo(appendable, convertNonBreakingSpaces);
-			}
-			else
-			{
+			} else {
 				appendable.append(segment.toString()); // benchmark tests reveal (surprisingly) that converting to a string before appending
 														// is faster than appending the specified section of the encodedText or segment
 														// directly.
-				// appendable.append(encodedText,segment.begin,segment.end);
-				// appendable.append(segment);
+														// appendable.append(encodedText,segment.begin,segment.end);
+														// appendable.append(segment);
 			}
 		}
 		return appendable;
@@ -899,13 +813,11 @@ public abstract class CharacterReference extends Segment
 
 	// pinched from
 	// http://svn.apache.org/repos/asf/abdera/java/trunk/dependencies/i18n/src/main/java/org/apache/abdera/i18n/text/CharUtils.java
-	private static char getHighSurrogate(int codePoint)
-	{
+	private static char getHighSurrogate(int codePoint) {
 		return (char) ((0xD800 - (0x10000 >> 10)) + (codePoint >> 10));
 	}
 
-	private static char getLowSurrogate(int codePoint)
-	{
+	private static char getLowSurrogate(int codePoint) {
 		return (char) (0xDC00 + (codePoint & 0x3FF));
 	}
 }

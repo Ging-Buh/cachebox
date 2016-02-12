@@ -42,10 +42,9 @@ import org.poly2tri.triangulation.delaunay.DelaunayTriangle;
 import org.poly2tri.triangulation.point.TPoint;
 
 /**
- * @author Thomas Åhlén, thahlen@gmail.com
+ * @author Thomas ï¿½hlï¿½n, thahlen@gmail.com
  */
-public class DTSweepContext extends TriangulationContext<DTSweepDebugContext>
-{
+public class DTSweepContext extends TriangulationContext<DTSweepDebugContext> {
 	// private final static Logger logger = LoggerFactory.getLogger( DTSweepContext.class );
 
 	// Inital triangle factor, seed triangle will extend 30% of
@@ -63,26 +62,21 @@ public class DTSweepContext extends TriangulationContext<DTSweepDebugContext>
 
 	private final DTSweepPointComparator _comparator = new DTSweepPointComparator();
 
-	public DTSweepContext()
-	{
+	public DTSweepContext() {
 		clear();
 	}
 
 	@Override
-	public void isDebugEnabled(boolean b)
-	{
-		if (b)
-		{
-			if (_debug == null)
-			{
+	public void isDebugEnabled(boolean b) {
+		if (b) {
+			if (_debug == null) {
 				_debug = new DTSweepDebugContext(this);
 			}
 		}
 		_debugEnabled = b;
 	}
 
-	public void removeFromList(DelaunayTriangle triangle)
-	{
+	public void removeFromList(DelaunayTriangle triangle) {
 		_triList.remove(triangle);
 		// TODO: remove all neighbor pointers to this triangle
 		// for( int i=0; i<3; i++ )
@@ -95,26 +89,20 @@ public class DTSweepContext extends TriangulationContext<DTSweepDebugContext>
 		// triangle.clearNeighbors();
 	}
 
-	protected void meshClean(DelaunayTriangle triangle)
-	{
+	protected void meshClean(DelaunayTriangle triangle) {
 		DelaunayTriangle t1, t2;
-		if (triangle != null)
-		{
+		if (triangle != null) {
 			ArrayDeque<DelaunayTriangle> deque = new ArrayDeque<DelaunayTriangle>();
 			deque.addFirst(triangle);
 			triangle.isInterior(true);
 
-			while (!deque.isEmpty())
-			{
+			while (!deque.isEmpty()) {
 				t1 = deque.removeFirst();
 				_triUnit.addTriangle(t1);
-				for (int i = 0; i < 3; ++i)
-				{
-					if (!t1.cEdge[i])
-					{
+				for (int i = 0; i < 3; ++i) {
+					if (!t1.cEdge[i]) {
 						t2 = t1.neighbors[i];
-						if (t2 != null && !t2.isInterior())
-						{
+						if (t2 != null && !t2.isInterior()) {
 							t2.isInterior(true);
 							deque.addLast(t2);
 						}
@@ -125,58 +113,48 @@ public class DTSweepContext extends TriangulationContext<DTSweepDebugContext>
 	}
 
 	@Override
-	public void clear()
-	{
+	public void clear() {
 		super.clear();
 		_triList.clear();
 	}
 
-	public AdvancingFront getAdvancingFront()
-	{
+	public AdvancingFront getAdvancingFront() {
 		return aFront;
 	}
 
-	public void setHead(TriangulationPoint p1)
-	{
+	public void setHead(TriangulationPoint p1) {
 		_head = p1;
 	}
 
-	public TriangulationPoint getHead()
-	{
+	public TriangulationPoint getHead() {
 		return _head;
 	}
 
-	public void setTail(TriangulationPoint p1)
-	{
+	public void setTail(TriangulationPoint p1) {
 		_tail = p1;
 	}
 
-	public TriangulationPoint getTail()
-	{
+	public TriangulationPoint getTail() {
 		return _tail;
 	}
 
-	public void addNode(AdvancingFrontNode node)
-	{
+	public void addNode(AdvancingFrontNode node) {
 		// System.out.println( "add:" + node.key + ":" + System.identityHashCode(node.key));
 		// m_nodeTree.put( node.getKey(), node );
 		aFront.addNode(node);
 	}
 
-	public void removeNode(AdvancingFrontNode node)
-	{
+	public void removeNode(AdvancingFrontNode node) {
 		// System.out.println( "remove:" + node.key + ":" + System.identityHashCode(node.key));
 		// m_nodeTree.delete( node.getKey() );
 		aFront.removeNode(node);
 	}
 
-	public AdvancingFrontNode locateNode(TriangulationPoint point)
-	{
+	public AdvancingFrontNode locateNode(TriangulationPoint point) {
 		return aFront.locateNode(point);
 	}
 
-	public void createAdvancingFront()
-	{
+	public void createAdvancingFront() {
 		AdvancingFrontNode head, tail, middle;
 		// Initial triangle
 		DelaunayTriangle iTriangle = new DelaunayTriangle(_points.get(0), getTail(), getHead());
@@ -199,8 +177,7 @@ public class DTSweepContext extends TriangulationContext<DTSweepDebugContext>
 		aFront.tail.prev = middle;
 	}
 
-	class Basin
-	{
+	class Basin {
 		AdvancingFrontNode leftNode;
 		AdvancingFrontNode bottomNode;
 		AdvancingFrontNode rightNode;
@@ -208,8 +185,7 @@ public class DTSweepContext extends TriangulationContext<DTSweepDebugContext>
 		public boolean leftHighest;
 	}
 
-	class EdgeEvent
-	{
+	class EdgeEvent {
 		DTSweepConstraint constrainedEdge;
 		public boolean right;
 	}
@@ -219,16 +195,12 @@ public class DTSweepContext extends TriangulationContext<DTSweepDebugContext>
 	 * 
 	 * @param t
 	 */
-	public void mapTriangleToNodes(DelaunayTriangle t)
-	{
+	public void mapTriangleToNodes(DelaunayTriangle t) {
 		AdvancingFrontNode n;
-		for (int i = 0; i < 3; i++)
-		{
-			if (t.neighbors[i] == null)
-			{
+		for (int i = 0; i < 3; i++) {
+			if (t.neighbors[i] == null) {
 				n = aFront.locatePoint(t.pointCW(t.points[i]));
-				if (n != null)
-				{
+				if (n != null) {
 					n.triangle = t;
 				}
 			}
@@ -236,8 +208,7 @@ public class DTSweepContext extends TriangulationContext<DTSweepDebugContext>
 	}
 
 	@Override
-	public void prepareTriangulation(Triangulatable t)
-	{
+	public void prepareTriangulation(Triangulatable t) {
 		super.prepareTriangulation(t);
 
 		double xmax, xmin;
@@ -246,12 +217,15 @@ public class DTSweepContext extends TriangulationContext<DTSweepDebugContext>
 		xmax = xmin = _points.get(0).getX();
 		ymax = ymin = _points.get(0).getY();
 		// Calculate bounds. Should be combined with the sorting
-		for (TriangulationPoint p : _points)
-		{
-			if (p.getX() > xmax) xmax = p.getX();
-			if (p.getX() < xmin) xmin = p.getX();
-			if (p.getY() > ymax) ymax = p.getY();
-			if (p.getY() < ymin) ymin = p.getY();
+		for (TriangulationPoint p : _points) {
+			if (p.getX() > xmax)
+				xmax = p.getX();
+			if (p.getX() < xmin)
+				xmin = p.getX();
+			if (p.getY() > ymax)
+				ymax = p.getY();
+			if (p.getY() < ymin)
+				ymin = p.getY();
 		}
 
 		double deltaX = ALPHA * (xmax - xmin);
@@ -268,21 +242,18 @@ public class DTSweepContext extends TriangulationContext<DTSweepDebugContext>
 		// logger.info( "Triangulation setup [{}ms]", ( System.nanoTime() - time ) / 1e6 );
 	}
 
-	public void finalizeTriangulation()
-	{
+	public void finalizeTriangulation() {
 		_triUnit.addTriangles(_triList);
 		_triList.clear();
 	}
 
 	@Override
-	public TriangulationConstraint newConstraint(TriangulationPoint a, TriangulationPoint b)
-	{
+	public TriangulationConstraint newConstraint(TriangulationPoint a, TriangulationPoint b) {
 		return new DTSweepConstraint(a, b);
 	}
 
 	@Override
-	public TriangulationAlgorithm algorithm()
-	{
+	public TriangulationAlgorithm algorithm() {
 		return TriangulationAlgorithm.DTSweep;
 	}
 }

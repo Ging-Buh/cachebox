@@ -21,25 +21,24 @@ import java.nio.charset.CharsetEncoder;
 
 import org.xml.sax.SAXException;
 
-
 /** An improved version of {@link org.apache.ws.commons.serialize.XMLWriterImpl},
  * using the{@link java.nio.charset.Charset} from Java 1.4.
  */
 public class CharSetXMLWriter extends XMLWriterImpl {
 	private CharsetEncoder charsetEncoder;
-	
+
 	public void startDocument() throws SAXException {
-	    String enc = getEncoding();
-        if (enc == null) {
-            enc = "UTF-8";
-        }
+		String enc = getEncoding();
+		if (enc == null) {
+			enc = "UTF-8";
+		}
 		Charset charSet = Charset.forName(enc);
 		if (charSet.canEncode()) {
 			charsetEncoder = charSet.newEncoder();
 		}
-        super.startDocument();
+		super.startDocument();
 	}
-	
+
 	public boolean canEncode(char c) {
 		return (charsetEncoder == null) ? super.canEncode(c) : charsetEncoder.canEncode(c);
 	}

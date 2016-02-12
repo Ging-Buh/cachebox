@@ -23,21 +23,18 @@ import CB_Locator.Coordinate;
 /**
  * @author Hubert
  */
-public class SearchCoordinate extends Search
-{
+public class SearchCoordinate extends Search {
 	public Coordinate pos;
 	public float distanceInMeters;
 
-	public SearchCoordinate(int number, Coordinate pos, float distanceInMeters)
-	{
+	public SearchCoordinate(int number, Coordinate pos, float distanceInMeters) {
 		super(number);
 		this.pos = pos;
 		this.distanceInMeters = distanceInMeters;
 	}
 
 	@Override
-	protected void getRequest(JSONObject request, boolean isLite) throws JSONException
-	{
+	protected void getRequest(JSONObject request, boolean isLite) throws JSONException {
 		super.getRequest(request, isLite);
 		JSONObject jpr = new JSONObject();
 		jpr.put("DistanceInMeters", String.valueOf((int) distanceInMeters));

@@ -24,17 +24,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  * 
  * @author Nathan Sweet
  */
-public abstract class EmptyDrawable implements Drawable
-{
+public abstract class EmptyDrawable implements Drawable {
 	private float leftWidth, rightWidth, topHeight, bottomHeight, minWidth, minHeight;
 
-	public EmptyDrawable()
-	{
+	public EmptyDrawable() {
 	}
 
 	/** Creates a new empty drawable with the same sizing information as the specified drawable. */
-	public EmptyDrawable(Drawable drawable)
-	{
+	public EmptyDrawable(Drawable drawable) {
 		leftWidth = drawable.getLeftWidth();
 		rightWidth = drawable.getRightWidth();
 		topHeight = drawable.getTopHeight();
@@ -47,74 +44,62 @@ public abstract class EmptyDrawable implements Drawable
 	public abstract void draw(Batch batch, float x, float y, float width, float height);
 
 	@Override
-	public float getLeftWidth()
-	{
+	public float getLeftWidth() {
 		return leftWidth;
 	}
 
 	@Override
-	public void setLeftWidth(float leftWidth)
-	{
+	public void setLeftWidth(float leftWidth) {
 		this.leftWidth = leftWidth;
 	}
 
 	@Override
-	public float getRightWidth()
-	{
+	public float getRightWidth() {
 		return rightWidth;
 	}
 
 	@Override
-	public void setRightWidth(float rightWidth)
-	{
+	public void setRightWidth(float rightWidth) {
 		this.rightWidth = rightWidth;
 	}
 
 	@Override
-	public float getTopHeight()
-	{
+	public float getTopHeight() {
 		return topHeight;
 	}
 
 	@Override
-	public void setTopHeight(float topHeight)
-	{
+	public void setTopHeight(float topHeight) {
 		this.topHeight = topHeight;
 	}
 
 	@Override
-	public float getBottomHeight()
-	{
+	public float getBottomHeight() {
 		return bottomHeight;
 	}
 
 	@Override
-	public void setBottomHeight(float bottomHeight)
-	{
+	public void setBottomHeight(float bottomHeight) {
 		this.bottomHeight = bottomHeight;
 	}
 
 	@Override
-	public float getMinWidth()
-	{
+	public float getMinWidth() {
 		return minWidth;
 	}
 
 	@Override
-	public void setMinWidth(float minWidth)
-	{
+	public void setMinWidth(float minWidth) {
 		this.minWidth = minWidth;
 	}
 
 	@Override
-	public float getMinHeight()
-	{
+	public float getMinHeight() {
 		return minHeight;
 	}
 
 	@Override
-	public void setMinHeight(float minHeight)
-	{
+	public void setMinHeight(float minHeight) {
 		this.minHeight = minHeight;
 	}
 }

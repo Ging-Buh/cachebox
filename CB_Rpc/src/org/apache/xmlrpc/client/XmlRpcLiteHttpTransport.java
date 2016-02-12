@@ -42,7 +42,6 @@ import org.apache.xmlrpc.util.HttpUtil;
 import org.apache.xmlrpc.util.LimitedInputStream;
 import org.xml.sax.SAXException;
 
-
 /**
  * A "light" HTTP transport implementation.
  */
@@ -73,10 +72,10 @@ public class XmlRpcLiteHttpTransport extends XmlRpcHttpTransport {
 		URL url = config.getServerURL();
 		ssl = "https".equals(url.getProtocol());
 		hostname = url.getHost();
-        int p = url.getPort();
+		int p = url.getPort();
 		port = p < 1 ? 80 : p;
 		String u = url.getFile();
-		uri = (u == null  ||  "".equals(u)) ? "/" : u;
+		uri = (u == null || "".equals(u)) ? "/" : u;
 		host = port == 80 ? hostname : hostname + ":" + port;
 		headers.put("Host", host);
 		return super.sendRequest(pRequest);
@@ -134,12 +133,12 @@ public class XmlRpcLiteHttpTransport extends XmlRpcHttpTransport {
 	private OutputStream getOutputStream() throws XmlRpcException {
 		try {
 			final int retries = 3;
-	        final int delayMillis = 100;
-	
-			for (int tries = 0;  ;  tries++) {
+			final int delayMillis = 100;
+
+			for (int tries = 0;; tries++) {
 				try {
 					socket = newSocket(ssl, hostname, port);
-					output = new BufferedOutputStream(socket.getOutputStream()){
+					output = new BufferedOutputStream(socket.getOutputStream()) {
 						/** Closing the output stream would close the whole socket, which we don't want,
 						 * because the don't want until the request is processed completely.
 						 * A close will later occur within
@@ -153,30 +152,28 @@ public class XmlRpcLiteHttpTransport extends XmlRpcHttpTransport {
 					break;
 				} catch (ConnectException e) {
 					if (tries >= retries) {
-						throw new XmlRpcException("Failed to connect to "
-								+ hostname + ":" + port + ": " + e.getMessage(), e);
+						throw new XmlRpcException("Failed to connect to " + hostname + ":" + port + ": " + e.getMessage(), e);
 					} else {
-	                    try {
-	                        Thread.sleep(delayMillis);
-	                    } catch (InterruptedException ignore) {
-	                    }
+						try {
+							Thread.sleep(delayMillis);
+						} catch (InterruptedException ignore) {
+						}
 					}
 				}
 			}
 			sendRequestHeaders(output);
 			return output;
 		} catch (IOException e) {
-			throw new XmlRpcException("Failed to open connection to "
-					+ hostname + ":" + port + ": " + e.getMessage(), e);
+			throw new XmlRpcException("Failed to open connection to " + hostname + ":" + port + ": " + e.getMessage(), e);
 		}
 	}
 
-    protected Socket newSocket(boolean pSSL, String pHostName, int pPort) throws UnknownHostException, IOException {
-        if (pSSL) {
-            throw new IOException("Unable to create SSL connections, use the XmlRpcLite14HttpTransportFactory.");
-        }
-        return new Socket(pHostName, pPort);
-    }
+	protected Socket newSocket(boolean pSSL, String pHostName, int pPort) throws UnknownHostException, IOException {
+		if (pSSL) {
+			throw new IOException("Unable to create SSL connections, use the XmlRpcLite14HttpTransportFactory.");
+		}
+		return new Socket(pHostName, pPort);
+	}
 
 	private byte[] toHTTPBytes(String pValue) throws UnsupportedEncodingException {
 		return pValue.getBytes("US-ASCII");
@@ -188,7 +185,7 @@ public class XmlRpcLiteHttpTransport extends XmlRpcHttpTransport {
 
 	private void sendRequestHeaders(OutputStream pOut) throws IOException {
 		pOut.write(("POST " + uri + " HTTP/1.0\r\n").getBytes("US-ASCII"));
-		for (Iterator iter = headers.entrySet().iterator();  iter.hasNext();  ) {
+		for (Iterator iter = headers.entrySet().iterator(); iter.hasNext();) {
 			Map.Entry entry = (Map.Entry) iter.next();
 			String key = (String) entry.getKey();
 			Object value = entry.getValue();
@@ -196,7 +193,7 @@ public class XmlRpcLiteHttpTransport extends XmlRpcHttpTransport {
 				sendHeader(pOut, key, (String) value);
 			} else {
 				List list = (List) value;
-				for (int i = 0;  i < list.size();  i++) {
+				for (int i = 0; i < list.size(); i++) {
 					sendHeader(pOut, key, (String) list.get(i));
 				}
 			}
@@ -211,10 +208,10 @@ public class XmlRpcLiteHttpTransport extends XmlRpcHttpTransport {
 	protected InputStream getInputStream() throws XmlRpcException {
 		final byte[] buffer = new byte[2048];
 		try {
-            // If reply timeout specified, set the socket timeout accordingly
-            if (config.getReplyTimeout() != 0)
-                socket.setSoTimeout(config.getReplyTimeout());
-            input = new BufferedInputStream(socket.getInputStream());
+			// If reply timeout specified, set the socket timeout accordingly
+			if (config.getReplyTimeout() != 0)
+				socket.setSoTimeout(config.getReplyTimeout());
+			input = new BufferedInputStream(socket.getInputStream());
 			// start reading  server response headers
 			String line = HttpUtil.readLine(input, buffer);
 			StringTokenizer tokens = new StringTokenizer(line);
@@ -223,18 +220,17 @@ public class XmlRpcLiteHttpTransport extends XmlRpcHttpTransport {
 			String statusMsg = tokens.nextToken("\n\r");
 			final int code;
 			try {
-			    code = Integer.parseInt(statusCode);
+				code = Integer.parseInt(statusCode);
 			} catch (NumberFormatException e) {
-                throw new XmlRpcClientException("Server returned invalid status code: "
-                        + statusCode + " " + statusMsg, null);
+				throw new XmlRpcClientException("Server returned invalid status code: " + statusCode + " " + statusMsg, null);
 			}
-			if (code < 200  ||  code > 299) {
-		        throw new XmlRpcHttpTransportException(code, statusMsg);
-		    }
+			if (code < 200 || code > 299) {
+				throw new XmlRpcHttpTransportException(code, statusMsg);
+			}
 			int contentLength = -1;
 			for (;;) {
 				line = HttpUtil.readLine(input, buffer);
-				if (line == null  ||  "".equals(line)) {
+				if (line == null || "".equals(line)) {
 					break;
 				}
 				line = line.toLowerCase();
@@ -257,14 +253,14 @@ public class XmlRpcLiteHttpTransport extends XmlRpcHttpTransport {
 	}
 
 	protected boolean isUsingByteArrayOutput(XmlRpcHttpClientConfig pConfig) {
-	    boolean result = super.isUsingByteArrayOutput(pConfig);
-        if (!result) {
-            throw new IllegalStateException("The Content-Length header is required with HTTP/1.0, and HTTP/1.1 is unsupported by the Lite HTTP Transport.");
-        }
-        return result;
-    }
+		boolean result = super.isUsingByteArrayOutput(pConfig);
+		if (!result) {
+			throw new IllegalStateException("The Content-Length header is required with HTTP/1.0, and HTTP/1.1 is unsupported by the Lite HTTP Transport.");
+		}
+		return result;
+	}
 
-    protected void writeRequest(ReqWriter pWriter) throws XmlRpcException, IOException, SAXException {
-        pWriter.write(getOutputStream());
+	protected void writeRequest(ReqWriter pWriter) throws XmlRpcException, IOException, SAXException {
+		pWriter.write(getOutputStream());
 	}
 }

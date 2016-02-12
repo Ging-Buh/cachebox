@@ -40,8 +40,7 @@ package bsh;
  * 
  * @see TargetError
  */
-public class EvalError extends Exception
-{
+public class EvalError extends Exception {
 	/**
 	 * 
 	 */
@@ -54,14 +53,12 @@ public class EvalError extends Exception
 
 	private final CallStack callstack;
 
-	public EvalError(String s, SimpleNode node, CallStack callstack, Throwable cause)
-	{
+	public EvalError(String s, SimpleNode node, CallStack callstack, Throwable cause) {
 		this(s, node, callstack);
 		initCause(cause);
 	}
 
-	public EvalError(String s, SimpleNode node, CallStack callstack)
-	{
+	public EvalError(String s, SimpleNode node, CallStack callstack) {
 		this.message = s;
 		this.node = node;
 		// freeze the callstack for the stack trace.
@@ -72,15 +69,16 @@ public class EvalError extends Exception
 	 * Print the error with line number and stack trace.
 	 */
 	@Override
-	public String getMessage()
-	{
+	public String getMessage() {
 		String trace;
-		if (node != null) trace = " : at Line: " + node.getLineNumber() + " : in file: " + node.getSourceFile() + " : " + node.getText();
+		if (node != null)
+			trace = " : at Line: " + node.getLineNumber() + " : in file: " + node.getSourceFile() + " : " + node.getText();
 		else
 			// Users should not normally see this.
 			trace = ": <at unknown location>";
 
-		if (callstack != null) trace = trace + "\n" + getScriptStackTrace();
+		if (callstack != null)
+			trace = trace + "\n" + getScriptStackTrace();
 
 		return getRawMessage() + trace;
 	}
@@ -88,8 +86,7 @@ public class EvalError extends Exception
 	/**
 	 * Re-throw the error, prepending the specified message.
 	 */
-	public void reThrow(String msg) throws EvalError
-	{
+	public void reThrow(String msg) throws EvalError {
 		prependMessage(msg);
 		throw this;
 	}
@@ -97,71 +94,67 @@ public class EvalError extends Exception
 	/**
 	 * The error has trace info associated with it. i.e. It has an AST node that can print its location and source text.
 	 */
-	SimpleNode getNode()
-	{
+	SimpleNode getNode() {
 		return node;
 	}
 
-	void setNode(SimpleNode node)
-	{
+	void setNode(SimpleNode node) {
 		this.node = node;
 	}
 
-	public String getErrorText()
-	{
-		if (node != null) return node.getText();
+	public String getErrorText() {
+		if (node != null)
+			return node.getText();
 		else
 			return "<unknown error>";
 	}
 
-	public int getErrorLineNumber()
-	{
-		if (node != null) return node.getLineNumber();
+	public int getErrorLineNumber() {
+		if (node != null)
+			return node.getLineNumber();
 		else
 			return -1;
 	}
 
-	public String getErrorSourceFile()
-	{
-		if (node != null) return node.getSourceFile();
+	public String getErrorSourceFile() {
+		if (node != null)
+			return node.getSourceFile();
 		else
 			return "<unknown file>";
 	}
 
-	public String getScriptStackTrace()
-	{
-		if (callstack == null) return "<Unknown>";
+	public String getScriptStackTrace() {
+		if (callstack == null)
+			return "<Unknown>";
 
 		String trace = "";
 		CallStack stack = callstack.copy();
-		while (stack.depth() > 0)
-		{
+		while (stack.depth() > 0) {
 			NameSpace ns = stack.pop();
 			SimpleNode node = ns.getNode();
-			if (ns.isMethod)
-			{
+			if (ns.isMethod) {
 				trace = trace + "\nCalled from method: " + ns.getName();
-				if (node != null) trace += " : at Line: " + node.getLineNumber() + " : in file: " + node.getSourceFile() + " : "
-						+ node.getText();
+				if (node != null)
+					trace += " : at Line: " + node.getLineNumber() + " : in file: " + node.getSourceFile() + " : " + node.getText();
 			}
 		}
 
 		return trace;
 	}
 
-	public String getRawMessage()
-	{
+	public String getRawMessage() {
 		return message;
 	}
 
 	/**
 	 * Prepend the message if it is non-null.
 	 */
-	private void prependMessage(String s)
-	{
-		if (s == null) return;
+	private void prependMessage(String s) {
+		if (s == null)
+			return;
 
-		if (message == null) message = s;
+		if (message == null)
+			message = s;
 		else
 			message = s + " : " + message;
 	}

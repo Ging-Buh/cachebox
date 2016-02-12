@@ -22,10 +22,10 @@ import android.graphics.Path.FillType;
 class AndroidPath implements Path {
 	private static FillType getWindingRule(FillRule fillRule) {
 		switch (fillRule) {
-			case EVEN_ODD:
-				return FillType.EVEN_ODD;
-			case NON_ZERO:
-				return FillType.WINDING;
+		case EVEN_ODD:
+			return FillType.EVEN_ODD;
+		case NON_ZERO:
+			return FillType.WINDING;
 		}
 
 		throw new IllegalArgumentException("unknown fill rule:" + fillRule);

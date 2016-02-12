@@ -22,150 +22,111 @@ import com.badlogic.gdx.math.Matrix4;
 /**
  * @author Longri
  */
-public class ext_AwtMatrix extends AwtMatrix implements ext_Matrix
-{
-	public ext_AwtMatrix(ext_Matrix matrix)
-	{
-		
-	}
-
-	@Override
-	public void dispose()
-	{
-		
+public class ext_AwtMatrix extends AwtMatrix implements ext_Matrix {
+	public ext_AwtMatrix(ext_Matrix matrix) {
 
 	}
 
 	@Override
-	public void set(ext_Matrix matrix)
-	{
-		
+	public void dispose() {
 
 	}
 
 	@Override
-	public void postConcat(ext_Matrix matrix)
-	{
-		
+	public void set(ext_Matrix matrix) {
 
 	}
 
 	@Override
-	public void preTranslate(float x, float y)
-	{
-		
+	public void postConcat(ext_Matrix matrix) {
 
 	}
 
 	@Override
-	public void preScale(float x, float y)
-	{
-		
+	public void preTranslate(float x, float y) {
 
 	}
 
 	@Override
-	public void preScale(float sx, float sy, float px, float py)
-	{
-		
+	public void preScale(float x, float y) {
 
 	}
 
 	@Override
-	public void postRotate(float angle)
-	{
-		
+	public void preScale(float sx, float sy, float px, float py) {
 
 	}
 
 	@Override
-	public void postScale(float rx, float ry)
-	{
-		
+	public void postRotate(float angle) {
 
 	}
 
 	@Override
-	public void postTranslate(float cx, float cy)
-	{
-		
+	public void postScale(float rx, float ry) {
 
 	}
 
 	@Override
-	public void mapPoints(float[] src)
-	{
-		
+	public void postTranslate(float cx, float cy) {
 
 	}
 
 	@Override
-	public void mapPoints(float[] dst, int dstIndex, float[] src, int srcIndex, int pointCount)
-	{
-		
+	public void mapPoints(float[] src) {
 
 	}
 
 	@Override
-	public Matrix4 getMatrix4()
-	{
-		
+	public void mapPoints(float[] dst, int dstIndex, float[] src, int srcIndex, int pointCount) {
+
+	}
+
+	@Override
+	public Matrix4 getMatrix4() {
+
 		return null;
 	}
 
 	@Override
-	public void preRotate(float angle)
-	{
-		
+	public void preRotate(float angle) {
 
 	}
 
 	@Override
-	public void setValues(float[] fs)
-	{
-		
+	public void setValues(float[] fs) {
 
 	}
 
 	@Override
-	public void preSkew(float f, float tan)
-	{
-		
+	public void preSkew(float f, float tan) {
 
 	}
 
 	@Override
-	public void preRotate(Float angle, Float cx, Float cy)
-	{
-		
+	public void preRotate(Float angle, Float cx, Float cy) {
 
 	}
 
 	@Override
-	public void getValues(float[] mValues)
-	{
-		
+	public void getValues(float[] mValues) {
 
 	}
 
 	@Override
-	public void preConcat(ext_Matrix matrix)
-	{
-		
+	public void preConcat(ext_Matrix matrix) {
 
 	}
 
 	@Override
-	public boolean invert()
-	{
-		
+	public boolean invert() {
+
 		return false;
 	}
 
 	@Override
-	public boolean isDefault()
-	{
-		
+	public boolean isDefault() {
+
 		return false;
 	}
 }

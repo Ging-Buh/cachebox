@@ -21,19 +21,20 @@
 package net.htmlparser.jericho;
 
 final class EndTagTypeUnregistered extends EndTagType {
-	static final EndTagTypeUnregistered INSTANCE=new EndTagTypeUnregistered();
+	static final EndTagTypeUnregistered INSTANCE = new EndTagTypeUnregistered();
 
 	private EndTagTypeUnregistered() {
-		super("/unregistered",START_DELIMITER_PREFIX,">",false);
+		super("/unregistered", START_DELIMITER_PREFIX, ">", false);
 	}
 
 	protected Tag constructTagAt(final Source source, final int pos) {
-		final ParseText parseText=source.getParseText();
-		final int nameBegin=pos+getStartDelimiter().length();
-		final int nameEnd=parseText.indexOf(getClosingDelimiter(),nameBegin);
-		final String name=source.getName(nameBegin,nameEnd); // throws IndexOutOfBoundsException if nameEnd==-1
-		final EndTag endTag=constructEndTag(source,pos,nameEnd+getClosingDelimiter().length(),name);
-		if (source.logger.isErrorEnabled()) source.logger.error(source.getRowColumnVector(pos).appendTo(new StringBuilder(200).append("Encountered possible EndTag at ")).append(" whose content does not match a registered EndTagType").toString());
+		final ParseText parseText = source.getParseText();
+		final int nameBegin = pos + getStartDelimiter().length();
+		final int nameEnd = parseText.indexOf(getClosingDelimiter(), nameBegin);
+		final String name = source.getName(nameBegin, nameEnd); // throws IndexOutOfBoundsException if nameEnd==-1
+		final EndTag endTag = constructEndTag(source, pos, nameEnd + getClosingDelimiter().length(), name);
+		if (source.logger.isErrorEnabled())
+			source.logger.error(source.getRowColumnVector(pos).appendTo(new StringBuilder(200).append("Encountered possible EndTag at ")).append(" whose content does not match a registered EndTagType").toString());
 		return endTag;
 	}
 }

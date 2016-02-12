@@ -5,8 +5,7 @@ import CB_Utils.Lists.CB_List;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 
-public class MapTileCache_Test extends TestCase
-{
+public class MapTileCache_Test extends TestCase {
 
 	private final MapTileCache cache = new MapTileCache((short) 5);
 	private final long Hash1 = 1;
@@ -17,56 +16,48 @@ public class MapTileCache_Test extends TestCase
 	private final long Hash6 = 6;
 	private final long Hash7 = 7;
 
-	public void test()
-	{
+	public void test() {
 
 		InstanceCount = 0;
 
 		add1SortAndClear();
 
 		createAndFill();
-		checkInerhitedTiles(new long[]
-			{ Hash1, Hash2, Hash3, Hash4, Hash5 });
+		checkInerhitedTiles(new long[] { Hash1, Hash2, Hash3, Hash4, Hash5 });
 		chekMark325();
 		changeAge();
 		sort();
 		chekMark325();
 		add2newTiles();
-		checkInerhitedTiles(new long[]
-			{ Hash6, Hash7, Hash3, Hash4, Hash5 });
+		checkInerhitedTiles(new long[] { Hash6, Hash7, Hash3, Hash4, Hash5 });
 		chekMark3657();
 
 		assertFalse("Cache Size must be 5", cache.size() != 5);
 	}
 
-	private void add1SortAndClear()
-	{
+	private void add1SortAndClear() {
 		cache.clear();
 		assertFalse("InstanceCount must be 0", InstanceCount != 0);
 
 		TileGL t1 = new DummyTile(Hash6);
 		cache.add(Hash6, t1);
 		assertFalse("InstanceCount must be 1", InstanceCount != 1);
-		checkInerhitedTiles(new long[]
-			{ Hash6 });
+		checkInerhitedTiles(new long[] { Hash6 });
 
 		cache.sort();
 		cache.clear();
 	}
 
-	private void add2newTiles()
-	{
+	private void add2newTiles() {
 		TileGL t1 = new DummyTile(Hash6);
 		cache.add(Hash6, t1);
 		TileGL t2 = new DummyTile(Hash7);
 		cache.add(Hash7, t2);
 
 		// chek holded Tiles
-		int[] targetSortList = new int[]
-			{ 7, 6, 4, 5, 3 };
+		int[] targetSortList = new int[] { 7, 6, 4, 5, 3 };
 
-		for (int i = 0, n = cache.size(); i < n; i++)
-		{
+		for (int i = 0, n = cache.size(); i < n; i++) {
 			assertEquals(cache.get(i).toString(), "Tile:" + String.valueOf(targetSortList[i]));
 		}
 
@@ -75,61 +66,50 @@ public class MapTileCache_Test extends TestCase
 
 	}
 
-	private void checkInerhitedTiles(long[] list)
-	{
-		for (int i = 0, n = list.length; i < n; i++)
-		{
+	private void checkInerhitedTiles(long[] list) {
+		for (int i = 0, n = list.length; i < n; i++) {
 			assertTrue("Tile must be included", cache.containsKey(list[i]));
 		}
 	}
 
-	private void chekMark3657()
-	{
+	private void chekMark3657() {
 		// mark Tile 3,2,5 to draw
 		cache.markToDraw(Hash3);
 		cache.markToDraw(Hash6);
 		cache.markToDraw(Hash5);
 		cache.markToDraw(Hash7);
 
-		int[] targetDrawList = new int[]
-			{ 3, 6, 5, 7 };
-		for (int i = 0, n = cache.DrawingSize(); i < n; i++)
-		{
+		int[] targetDrawList = new int[] { 3, 6, 5, 7 };
+		for (int i = 0, n = cache.DrawingSize(); i < n; i++) {
 			assertEquals(cache.getDrawingTile(i).toString(), "Tile:" + String.valueOf(targetDrawList[i]));
 		}
 
 		cache.clearDrawingList();
 
-		for (int i = 0, n = cache.DrawingSize(); i < n; i++)
-		{
+		for (int i = 0, n = cache.DrawingSize(); i < n; i++) {
 			assertFalse("Cache drawingTiles must be clear", true);
 		}
 	}
 
-	private void chekMark325()
-	{
+	private void chekMark325() {
 		// mark Tile 3,2,5 to draw
 		cache.markToDraw(Hash3);
 		cache.markToDraw(Hash2);
 		cache.markToDraw(Hash5);
 
-		int[] targetDrawList = new int[]
-			{ 3, 2, 5 };
-		for (int i = 0, n = cache.DrawingSize(); i < n; i++)
-		{
+		int[] targetDrawList = new int[] { 3, 2, 5 };
+		for (int i = 0, n = cache.DrawingSize(); i < n; i++) {
 			assertEquals(cache.getDrawingTile(i).toString(), "Tile:" + String.valueOf(targetDrawList[i]));
 		}
 
 		cache.clearDrawingList();
 
-		for (int i = 0, n = cache.DrawingSize(); i < n; i++)
-		{
+		for (int i = 0, n = cache.DrawingSize(); i < n; i++) {
 			assertFalse("Cache drawingTiles must be clear", true);
 		}
 	}
 
-	private void createAndFill()
-	{
+	private void createAndFill() {
 		cache.clear();
 
 		// fill with 5 Tiles
@@ -151,18 +131,15 @@ public class MapTileCache_Test extends TestCase
 
 	}
 
-	private void changeAge()
-	{
+	private void changeAge() {
 		cache.increaseLoadedTilesAge();
-		for (int i = 0, n = cache.size(); i < n; i++)
-		{
+		for (int i = 0, n = cache.size(); i < n; i++) {
 			assertFalse("All Tile.Age must be 1", cache.get(i).Age != 1);
 		}
 
 	}
 
-	private void sort()
-	{
+	private void sort() {
 
 		// all Ages are 1
 		cache.get(Hash3).Age = 0;
@@ -181,28 +158,23 @@ public class MapTileCache_Test extends TestCase
 		assertFalse("Tile.Age must be 1", cache.get(Hash5).Age != 1);
 
 		// check sort
-		for (int i = 0, n = cache.size(); i < n; i++)
-		{
+		for (int i = 0, n = cache.size(); i < n; i++) {
 			assertEquals(cache.get(i).toString(), "Tile:" + String.valueOf(5 - i));
 		}
 
-		for (int i = 1, n = cache.size() + 1; i < n; i++)
-		{
+		for (int i = 1, n = cache.size() + 1; i < n; i++) {
 			assertEquals(cache.get((long) i).toString(), "Tile:" + String.valueOf(i));
 		}
 
 		cache.sort();
 
-		int[] targetSortList = new int[]
-			{ 4, 5, 3, 2, 1 };
+		int[] targetSortList = new int[] { 4, 5, 3, 2, 1 };
 
-		for (int i = 0, n = cache.size(); i < n; i++)
-		{
+		for (int i = 0, n = cache.size(); i < n; i++) {
 			assertEquals(cache.get(i).toString(), "Tile:" + String.valueOf(targetSortList[i]));
 		}
 
-		for (int i = 1, n = cache.size() + 1; i < n; i++)
-		{
+		for (int i = 1, n = cache.size() + 1; i < n; i++) {
 			assertEquals(cache.get((long) i).toString(), "Tile:" + String.valueOf(i));
 		}
 
@@ -210,58 +182,49 @@ public class MapTileCache_Test extends TestCase
 
 	private static int InstanceCount = 0;
 
-	private class DummyTile extends TileGL
-	{
+	private class DummyTile extends TileGL {
 
 		private boolean isDisposed = false;
 		private final long Hash;
 
-		public DummyTile(Long Hash)
-		{
+		public DummyTile(Long Hash) {
 			this.Hash = Hash;
 			InstanceCount++;
 		}
 
 		@Override
-		public void dispose()
-		{
+		public void dispose() {
 			isDisposed = true;
 			InstanceCount--;
 		}
 
 		@Override
-		public boolean isDisposed()
-		{
+		public boolean isDisposed() {
 			return isDisposed;
 		}
 
 		@Override
-		public boolean canDraw()
-		{
+		public boolean canDraw() {
 			return true;
 		}
 
 		@Override
-		public String toString()
-		{
+		public String toString() {
 			return ("Tile:" + Hash);
 		}
 
 		@Override
-		public long getWidth()
-		{
+		public long getWidth() {
 			return 256;
 		}
 
 		@Override
-		public long getHeight()
-		{
+		public long getHeight() {
 			return 256;
 		}
 
 		@Override
-		public void draw(Batch batch, float f, float y, float tILESIZE, float tILESIZE2, CB_List<TileGL_RotateDrawables> rotateList)
-		{
+		public void draw(Batch batch, float f, float y, float tILESIZE, float tILESIZE2, CB_List<TileGL_RotateDrawables> rotateList) {
 
 		}
 

@@ -21,7 +21,6 @@ package org.apache.xmlrpc.common;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /** A factory for {@link XmlRpcWorker} instances.
  */
 public abstract class XmlRpcWorkerFactory {
@@ -59,13 +58,13 @@ public abstract class XmlRpcWorkerFactory {
 	 */
 	public synchronized XmlRpcWorker getWorker() throws XmlRpcLoadException {
 		int max = controller.getMaxThreads();
-		if (max > 0  &&  numThreads == max) {
+		if (max > 0 && numThreads == max) {
 			throw new XmlRpcLoadException("Maximum number of concurrent requests exceeded: " + max);
 		}
 		if (max == 0) {
 			return singleton;
 		}
-        ++numThreads;
+		++numThreads;
 		if (pool.size() == 0) {
 			return newWorker();
 		} else {

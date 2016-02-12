@@ -22,9 +22,9 @@ package net.htmlparser.jericho;
 
 // note that according to the spec, whitespace may be present between the "--" and ">" of the end delimiter, but ignoring this probably yields results consistent with most browsers
 final class StartTagTypeComment extends StartTagTypeGenericImplementation {
-	static final StartTagTypeComment INSTANCE=new StartTagTypeComment();
+	static final StartTagTypeComment INSTANCE = new StartTagTypeComment();
 
 	private StartTagTypeComment() {
-		super("comment","<!--","-->",null,false);
+		super("comment", "<!--", "-->", null, false);
 	}
 }

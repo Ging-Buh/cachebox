@@ -18,52 +18,45 @@ import CB_Utils.Settings.SettingBool;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_ShowCompassView extends CB_Action_ShowView
-{
+public class CB_Action_ShowCompassView extends CB_Action_ShowView {
 	public final int MI_TEST1 = 1;
 	public final int MI_TEST2 = 2;
 
-	public CB_Action_ShowCompassView()
-	{
+	public CB_Action_ShowCompassView() {
 		super("Compass", MenuID.AID_SHOW_COMPASS);
 	}
 
 	@Override
-	public void Execute()
-	{
-		if ((TabMainView.compassView == null) && (tabMainView != null) && (tab != null)) TabMainView.compassView = new CompassView(
-				tab.getContentRec(), "CompassView");
+	public void Execute() {
+		if ((TabMainView.compassView == null) && (tabMainView != null) && (tab != null))
+			TabMainView.compassView = new CompassView(tab.getContentRec(), "CompassView");
 
-		if ((TabMainView.compassView != null) && (tab != null)) tab.ShowView(TabMainView.compassView);
+		if ((TabMainView.compassView != null) && (tab != null))
+			tab.ShowView(TabMainView.compassView);
 	}
 
 	@Override
-	public CB_View_Base getView()
-	{
+	public CB_View_Base getView() {
 		return TabMainView.compassView;
 	}
 
 	@Override
-	public boolean getEnabled()
-	{
+	public boolean getEnabled() {
 		return true;
 	}
 
 	@Override
-	public Sprite getIcon()
-	{
+	public Sprite getIcon() {
 		return SpriteCacheBase.Icons.get(IconName.compass_6.ordinal());
 	}
 
 	@Override
-	public boolean hasContextMenu()
-	{
+	public boolean hasContextMenu() {
 		return true;
 	}
 
 	@Override
-	public Menu getContextMenu()
-	{
+	public Menu getContextMenu() {
 		Menu icm = new Menu("menu_compassView");
 		icm.addOnClickListener(onItemClickListener);
 
@@ -72,8 +65,7 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 		return icm;
 	}
 
-	private void showOtionMenu()
-	{
+	private void showOtionMenu() {
 		OptionMenu icm = new OptionMenu("menu_compassView");
 		icm.addOnClickListener(onItemClickListener);
 		MenuItem mi;
@@ -130,15 +122,12 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 
 	}
 
-	private OnClickListener onItemClickListener = new OnClickListener()
-	{
+	private OnClickListener onItemClickListener = new OnClickListener() {
 
 		@Override
-		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-		{
+		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 
-			switch (((MenuItem) v).getMenuItemId())
-			{
+			switch (((MenuItem) v).getMenuItemId()) {
 			case MenuID.MI_COMPASS_SHOW:
 				showOtionMenu();
 				return true;
@@ -192,8 +181,7 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 		}
 	};
 
-	private void toggleSetting(SettingBool setting)
-	{
+	private void toggleSetting(SettingBool setting) {
 		setting.setValue(!setting.getValue());
 		Config.AcceptChanges();
 	}

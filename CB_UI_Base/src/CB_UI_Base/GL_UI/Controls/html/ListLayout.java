@@ -25,6 +25,6 @@ import CB_Utils.Lists.CB_List;
  */
 public interface ListLayout {
 
-    public abstract void layout(CB_List<CB_View_Base> segmentViewList);
+	public abstract void layout(CB_List<CB_View_Base> segmentViewList);
 
 }

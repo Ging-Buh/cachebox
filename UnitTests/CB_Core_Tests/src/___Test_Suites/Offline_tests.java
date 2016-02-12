@@ -38,8 +38,8 @@ import Types.CacheTest;
 import Types.MeasuredCoordListTest;
 
 @RunWith(Suite.class)
-@SuiteClasses({ Config_Crypt.class, FilterProperties_Test.class, HSV_Test.class, MeasuredCoordTest.class, Import_tests.class, DescriptorTest.class, Base64_Test.class, MapTileCache_Test.class, computeDistanceAndBearing.class, Cb_RectF_Test.class, PolylineReduction_Test.class, CacheTest.class, MeasuredCoordListTest.class, GPX_Export.class, Coordinate_LatLong_Test.class, CB_Stack_Test.class,
-	Config_Crypt.class, HtmlView_Test.class, CircleDrawable_Test.class })
+@SuiteClasses({ Config_Crypt.class, FilterProperties_Test.class, HSV_Test.class, MeasuredCoordTest.class, Import_tests.class, DescriptorTest.class, Base64_Test.class, MapTileCache_Test.class, computeDistanceAndBearing.class, Cb_RectF_Test.class,
+		PolylineReduction_Test.class, CacheTest.class, MeasuredCoordListTest.class, GPX_Export.class, Coordinate_LatLong_Test.class, CB_Stack_Test.class, Config_Crypt.class, HtmlView_Test.class, CircleDrawable_Test.class })
 public class Offline_tests {
 
 }

@@ -24,20 +24,17 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 /**
  * @author Longri
  */
-public class TileGL_Vector extends TileGL
-{
+public class TileGL_Vector extends TileGL {
 	private VectorDrawable drawable;
 
-	public TileGL_Vector(Descriptor desc, VectorDrawable drawable, TileState state)
-	{
+	public TileGL_Vector(Descriptor desc, VectorDrawable drawable, TileState state) {
 		this.drawable = drawable;
 		this.Descriptor = desc;
 		this.State = state;
 	}
 
 	@Override
-	public boolean canDraw()
-	{
+	public boolean canDraw() {
 		return true;
 	}
 
@@ -47,50 +44,44 @@ public class TileGL_Vector extends TileGL
 	 * @see CB_Locator.Map.TileGL#ToString()
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return State.toString() + ", " + Descriptor.ToString();
 	}
 
 	@Override
-	public void draw(Batch batch, float x, float y, float width, float height, CB_List<TileGL_RotateDrawables> returnDrawableList)
-	{
-		if (drawable != null)
-		{
+	public void draw(Batch batch, float x, float y, float width, float height, CB_List<TileGL_RotateDrawables> returnDrawableList) {
+		if (drawable != null) {
 			drawable.draw(batch, x, y, width, height);
 
-			if (returnDrawableList != null)
-			{
+			if (returnDrawableList != null) {
 				SortedRotateList list = drawable.getRotateDrawables();
-				if (list != null) returnDrawableList.add(new TileGL_RotateDrawables(x, y, width, height, this, list));
+				if (list != null)
+					returnDrawableList.add(new TileGL_RotateDrawables(x, y, width, height, this, list));
 			}
 		}
 	}
 
 	@Override
-	public long getWidth()
-	{
+	public long getWidth() {
 		long w = drawable != null ? drawable.getWidth() : 0;
 		return w;
 	}
 
 	@Override
-	public long getHeight()
-	{
+	public long getHeight() {
 		long h = drawable != null ? drawable.getHeight() : 0;
 		return h;
 	}
 
 	@Override
-	public void dispose()
-	{
-		if (drawable != null) drawable.dispose();
+	public void dispose() {
+		if (drawable != null)
+			drawable.dispose();
 		drawable = null;
 	}
 
 	@Override
-	public boolean isDisposed()
-	{
+	public boolean isDisposed() {
 		return drawable == null;
 	}
 

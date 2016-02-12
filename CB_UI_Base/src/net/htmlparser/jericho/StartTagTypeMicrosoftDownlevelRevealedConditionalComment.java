@@ -21,20 +21,22 @@
 package net.htmlparser.jericho;
 
 final class StartTagTypeMicrosoftDownlevelRevealedConditionalComment extends StartTagTypeGenericImplementation {
-	static final StartTagTypeMicrosoftDownlevelRevealedConditionalComment INSTANCE=new StartTagTypeMicrosoftDownlevelRevealedConditionalComment();
+	static final StartTagTypeMicrosoftDownlevelRevealedConditionalComment INSTANCE = new StartTagTypeMicrosoftDownlevelRevealedConditionalComment();
 
-	static final String IF="![if";
-	static final String ENDIF="![endif";
+	static final String IF = "![if";
+	static final String ENDIF = "![endif";
 
 	private StartTagTypeMicrosoftDownlevelRevealedConditionalComment() {
-		super("Microsoft downlevel-revealed conditional comment","<![","]>",null,false,false,true);
+		super("Microsoft downlevel-revealed conditional comment", "<![", "]>", null, false, false, true);
 	}
 
 	protected Tag constructTagAt(final Source source, final int pos) {
-		final Tag tag=super.constructTagAt(source,pos);
-		if (tag==null) return null;
-		final String name=tag.getName();
-		if (name!=IF && name!=ENDIF) return null; // can use == instead of .equals() because the names are in HtmlElements.CONSTANT_NAME_MAP
+		final Tag tag = super.constructTagAt(source, pos);
+		if (tag == null)
+			return null;
+		final String name = tag.getName();
+		if (name != IF && name != ENDIF)
+			return null; // can use == instead of .equals() because the names are in HtmlElements.CONSTANT_NAME_MAP
 		return tag;
 	}
 }

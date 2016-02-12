@@ -76,8 +76,7 @@ import java.util.regex.Pattern;
 // 2. Make code more readable by eliminating the requirement to have super constructor as first line in every constructor
 // 3. At present can't guarantee that input streams created by the library (e.g. in Source(File) constructor) are closed if an exception
 // occurs.
-public class Source extends Segment implements Iterable<Segment>
-{
+public class Source extends Segment implements Iterable<Segment> {
 	private final CharSequence sourceText;
 	private String documentSpecifiedEncoding = UNINITIALISED;
 	private String encoding = UNINITIALISED; // null value means no encoding specified.
@@ -94,7 +93,7 @@ public class Source extends Segment implements Iterable<Segment>
 	int[] fullSequentialParseData = null; // non-null iff a fullSequentialParse is underway. In version 2.5 this was passed around as a
 											// parameter during full sequential parse, but this approach was found to be error-prone and
 											// abandoned in 2.6
-	// cached result lists:
+											// cached result lists:
 	Tag[] allTagsArray = null; // non-null iff fullSequentialParse was called
 	List<Tag> allTags = null; // non-null iff fullSequentialParse was called
 	List<StartTag> allStartTags = null;
@@ -117,16 +116,14 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @param text
 	 *            the source text.
 	 */
-	public Source(final CharSequence text)
-	{
+	public Source(final CharSequence text) {
 		super(text.length());
 		sourceText = text.toString();
 		setLogger(newLogger());
 		cache = new Cache(this);
 	}
 
-	private Source(final EncodingDetector encodingDetector) throws IOException
-	{
+	private Source(final EncodingDetector encodingDetector) throws IOException {
 		this(getString(encodingDetector));
 		encoding = encodingDetector.getEncoding();
 		encodingSpecificationInfo = encodingDetector.getEncodingSpecificationInfo();
@@ -134,25 +131,23 @@ public class Source extends Segment implements Iterable<Segment>
 		encodingDetector.getLoggerQueue().outputTo(logger);
 	}
 
-	Source(final Reader reader, final String encoding) throws IOException
-	{
+	Source(final Reader reader, final String encoding) throws IOException {
 		this(Util.getString(reader));
-		if (encoding != null)
-		{
+		if (encoding != null) {
 			this.encoding = encoding;
 			encodingSpecificationInfo = "InputStreamReader.getEncoding() of constructor argument";
 		}
 	}
 
 	// Only called from StreamedSource:
-	Source(final CharSequence sourceText, final StreamedParseText streamedParseText, final String encoding, final String encodingSpecificationInfo, final String preliminaryEncodingInfo)
-	{
+	Source(final CharSequence sourceText, final StreamedParseText streamedParseText, final String encoding, final String encodingSpecificationInfo, final String preliminaryEncodingInfo) {
 		super(streamedParseText.getEnd()); // normally Integer.MAX_VALUE unless called from StreamedSource(CharSequence)
 		cache = Cache.STREAMED_SOURCE_MARKER;
 		useAllTypesCache = false;
 		useSpecialTypesCache = false;
 		fullSequentialParseData = new int[1];
-		if (encoding != null) this.encoding = encoding;
+		if (encoding != null)
+			this.encoding = encoding;
 		this.encodingSpecificationInfo = encodingSpecificationInfo;
 		this.preliminaryEncodingInfo = preliminaryEncodingInfo;
 		this.sourceText = sourceText;
@@ -161,8 +156,7 @@ public class Source extends Segment implements Iterable<Segment>
 	}
 
 	// only called from CharacterReference.parse(CharSequence)
-	Source(final CharSequence sourceText, final boolean CHARACTER_REFERENCE_PARSE_METHOD)
-	{
+	Source(final CharSequence sourceText, final boolean CHARACTER_REFERENCE_PARSE_METHOD) {
 		super(sourceText.length());
 		this.sourceText = sourceText;
 		cache = null;
@@ -182,8 +176,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @throws java.io.IOException
 	 *             if an I/O error occurs.
 	 */
-	public Source(final Reader reader) throws IOException
-	{
+	public Source(final Reader reader) throws IOException {
 		this(reader, (reader instanceof InputStreamReader) ? ((InputStreamReader) reader).getEncoding() : null);
 	}
 
@@ -201,8 +194,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 *             if an I/O error occurs.
 	 * @see #getEncoding()
 	 */
-	public Source(final InputStream inputStream) throws IOException
-	{
+	public Source(final InputStream inputStream) throws IOException {
 		this(new EncodingDetector(inputStream));
 	}
 
@@ -220,8 +212,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 *             if an I/O error occurs.
 	 * @see #getEncoding()
 	 */
-	public Source(final File file) throws IOException
-	{
+	public Source(final File file) throws IOException {
 		this(new FileInputStream(file));
 	}
 
@@ -236,8 +227,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 *             if an I/O error occurs.
 	 * @see #getEncoding()
 	 */
-	public Source(final URL url) throws IOException
-	{
+	public Source(final URL url) throws IOException {
 		this(new EncodingDetector(url.openConnection()));
 	}
 
@@ -368,15 +358,12 @@ public class Source extends Segment implements Iterable<Segment>
 	 *             if an I/O error occurs.
 	 * @see #getEncoding()
 	 */
-	public Source(final URLConnection urlConnection) throws IOException
-	{
+	public Source(final URLConnection urlConnection) throws IOException {
 		this(new EncodingDetector(urlConnection));
 	}
 
-	private String setEncoding(final String encoding, final String encodingSpecificationInfo)
-	{
-		if (this.encoding == UNINITIALISED)
-		{
+	private String setEncoding(final String encoding, final String encodingSpecificationInfo) {
+		if (this.encoding == UNINITIALISED) {
 			this.encoding = encoding;
 			this.encodingSpecificationInfo = encodingSpecificationInfo;
 		}
@@ -425,33 +412,34 @@ public class Source extends Segment implements Iterable<Segment>
 	 *         encoding is specified.
 	 * @see #getEncoding()
 	 */
-	public String getDocumentSpecifiedEncoding()
-	{
+	public String getDocumentSpecifiedEncoding() {
 		return getDocumentSpecifiedEncoding(null);
 	}
 
-	final String getDocumentSpecifiedEncoding(EncodingDetector encodingDetector)
-	{
-		if (documentSpecifiedEncoding != UNINITIALISED) return documentSpecifiedEncoding;
+	final String getDocumentSpecifiedEncoding(EncodingDetector encodingDetector) {
+		if (documentSpecifiedEncoding != UNINITIALISED)
+			return documentSpecifiedEncoding;
 		final Tag xmlDeclarationTag = getTagAt(0);
-		if (xmlDeclarationTag != null && xmlDeclarationTag.getTagType() == StartTagType.XML_DECLARATION)
-		{
+		if (xmlDeclarationTag != null && xmlDeclarationTag.getTagType() == StartTagType.XML_DECLARATION) {
 			documentSpecifiedEncoding = ((StartTag) xmlDeclarationTag).getAttributeValue("encoding");
-			if (documentSpecifiedEncoding != null) return setEncoding(documentSpecifiedEncoding, xmlDeclarationTag.toString());
+			if (documentSpecifiedEncoding != null)
+				return setEncoding(documentSpecifiedEncoding, xmlDeclarationTag.toString());
 		}
 		// Check meta tags:
-		for (StartTag metaTag : getAllStartTags(HTMLElementName.META))
-		{
+		for (StartTag metaTag : getAllStartTags(HTMLElementName.META)) {
 			documentSpecifiedEncoding = metaTag.getAttributeValue("charset");
-			if (documentSpecifiedEncoding == null)
-			{
-				if (!"content-type".equalsIgnoreCase(metaTag.getAttributeValue("http-equiv"))) continue;
+			if (documentSpecifiedEncoding == null) {
+				if (!"content-type".equalsIgnoreCase(metaTag.getAttributeValue("http-equiv")))
+					continue;
 				final String contentValue = metaTag.getAttributeValue("content");
-				if (contentValue == null) continue;
+				if (contentValue == null)
+					continue;
 				documentSpecifiedEncoding = getCharsetParameterFromHttpHeaderValue(contentValue);
-				if (encodingDetector != null && encodingDetector.isIncompatibleWithPreliminaryEncoding(documentSpecifiedEncoding)) continue;
+				if (encodingDetector != null && encodingDetector.isIncompatibleWithPreliminaryEncoding(documentSpecifiedEncoding))
+					continue;
 			}
-			if (documentSpecifiedEncoding != null) return setEncoding(documentSpecifiedEncoding, metaTag.toString());
+			if (documentSpecifiedEncoding != null)
+				return setEncoding(documentSpecifiedEncoding, metaTag.toString());
 		}
 		return setEncoding(null, "No encoding specified in document");
 	}
@@ -484,9 +472,9 @@ public class Source extends Segment implements Iterable<Segment>
 	 *         not known.
 	 * @see #getEncodingSpecificationInfo()
 	 */
-	public String getEncoding()
-	{
-		if (encoding == UNINITIALISED) getDocumentSpecifiedEncoding();
+	public String getEncoding() {
+		if (encoding == UNINITIALISED)
+			getDocumentSpecifiedEncoding();
 		return encoding;
 	}
 
@@ -499,9 +487,9 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return a concise description of how the {@linkplain #getEncoding() encoding} of the source document was determined.
 	 * @see #getEncoding()
 	 */
-	public String getEncodingSpecificationInfo()
-	{
-		if (encoding == UNINITIALISED) getDocumentSpecifiedEncoding();
+	public String getEncodingSpecificationInfo() {
+		if (encoding == UNINITIALISED)
+			getDocumentSpecifiedEncoding();
 		return encodingSpecificationInfo;
 	}
 
@@ -586,8 +574,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 *         <code>null</code> if no preliminary encoding was required.
 	 * @see #getEncoding()
 	 */
-	public String getPreliminaryEncodingInfo()
-	{
+	public String getPreliminaryEncodingInfo() {
 		return preliminaryEncodingInfo;
 	}
 
@@ -609,13 +596,14 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return <code>true</code> if the source document is likely to be <a target="_blank" href="http://www.w3.org/TR/REC-xml/">XML</a>,
 	 *         otherwise <code>false</code>.
 	 */
-	public boolean isXML()
-	{
+	public boolean isXML() {
 		final Tag xmlDeclarationTag = getTagAt(0);
-		if (xmlDeclarationTag != null && xmlDeclarationTag.getTagType() == StartTagType.XML_DECLARATION) return true;
+		if (xmlDeclarationTag != null && xmlDeclarationTag.getTagType() == StartTagType.XML_DECLARATION)
+			return true;
 		final Tag doctypeTag = getNextTag(0, StartTagType.DOCTYPE_DECLARATION);
 		// if document has a DOCTYPE declaration and it contains the text "xhtml", it is an XML document:
-		if (doctypeTag != null && getParseText().indexOf("xhtml", doctypeTag.begin, doctypeTag.end) != -1) return true;
+		if (doctypeTag != null && getParseText().indexOf("xhtml", doctypeTag.begin, doctypeTag.end) != -1)
+			return true;
 		return false;
 	}
 
@@ -630,14 +618,15 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return the <a target="_blank" href="http://en.wikipedia.org/wiki/Newline">newline</a> character sequence used in the source
 	 *         document, or <code>null</code> if none is present.
 	 */
-	public String getNewLine()
-	{
-		if (newLine != UNINITIALISED) return newLine;
-		for (int i = 0; i < end; i++)
-		{
+	public String getNewLine() {
+		if (newLine != UNINITIALISED)
+			return newLine;
+		for (int i = 0; i < end; i++) {
 			char ch = sourceText.charAt(i);
-			if (ch == '\n') newLine = LF;
-			else if (ch == '\r') newLine = (++i < end && sourceText.charAt(i) == '\n') ? CRLF : CR;
+			if (ch == '\n')
+				newLine = LF;
+			else if (ch == '\r')
+				newLine = (++i < end && sourceText.charAt(i) == '\n') ? CRLF : CR;
 			else
 				continue;
 			lastNewLine = newLine;
@@ -646,11 +635,12 @@ public class Source extends Segment implements Iterable<Segment>
 		return newLine = null;
 	}
 
-	String getBestGuessNewLine()
-	{
+	String getBestGuessNewLine() {
 		final String newLine = getNewLine();
-		if (newLine != null) return newLine;
-		if (lastNewLine != null) return lastNewLine;
+		if (newLine != null)
+			return newLine;
+		if (lastNewLine != null)
+			return lastNewLine;
 		return Config.NewLine;
 	}
 
@@ -665,8 +655,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @see #getColumn(int pos)
 	 * @see #getRowColumnVector(int pos)
 	 */
-	public int getRow(final int pos)
-	{
+	public int getRow(final int pos) {
 		return getRowColumnVector(pos).getRow();
 	}
 
@@ -681,8 +670,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @see #getRow(int pos)
 	 * @see #getRowColumnVector(int pos)
 	 */
-	public int getColumn(final int pos)
-	{
+	public int getColumn(final int pos) {
 		return getRowColumnVector(pos).getColumn();
 	}
 
@@ -699,10 +687,11 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @see #getRow(int pos)
 	 * @see #getColumn(int pos)
 	 */
-	public RowColumnVector getRowColumnVector(final int pos)
-	{
-		if (pos > end) throw new IndexOutOfBoundsException();
-		if (rowColumnVectorCacheArray == null) rowColumnVectorCacheArray = RowColumnVector.getCacheArray(this);
+	public RowColumnVector getRowColumnVector(final int pos) {
+		if (pos > end)
+			throw new IndexOutOfBoundsException();
+		if (rowColumnVectorCacheArray == null)
+			rowColumnVectorCacheArray = RowColumnVector.getCacheArray(this);
 		return RowColumnVector.get(rowColumnVectorCacheArray, pos);
 	}
 
@@ -712,8 +701,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return the source text as a <code>String</code>.
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return sourceText.toString();
 	}
 
@@ -772,8 +760,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 *
 	 * @return an array of all {@linkplain Tag tags} in this source document.
 	 */
-	public Tag[] fullSequentialParse()
-	{
+	public Tag[] fullSequentialParse() {
 		// The assumeNoNestedTags flag tells the parser not to bother checking for tags inside other tags
 		// if the user knows that the document doesn't contain any server tags.
 		// This results in a more efficient search, but the difference during benchmark tests was only minimal -
@@ -781,22 +768,19 @@ public class Source extends Segment implements Iterable<Segment>
 		// With such a small improvement in a document specifically designed to show an an exaggerated improvement,
 		// it is not worth documenting this feature.
 		// The flag has been retained internally however as it does not have a measurable performance impact to check for it.
-		if (allTagsArray != null) return allTagsArray;
+		if (allTagsArray != null)
+			return allTagsArray;
 		final boolean assumeNoNestedTags = false;
-		if (cache.getTagCount() != 0)
-		{
+		if (cache.getTagCount() != 0) {
 			logger.info("Full sequential parse clearing all tags from cache. Consider calling Source.fullSequentialParse() manually immediately after construction of Source.");
 			cache.clear();
 		}
 		final boolean useAllTypesCacheSave = useAllTypesCache;
-		try
-		{
+		try {
 			useAllTypesCache = false;
 			useSpecialTypesCache = false;
 			return Tag.parseAll(this, assumeNoNestedTags);
-		}
-		finally
-		{
+		} finally {
 			useAllTypesCache = useAllTypesCacheSave;
 			useSpecialTypesCache = true;
 		}
@@ -867,8 +851,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 *         contained within the source document.
 	 */
 	@Override
-	public Iterator<Segment> iterator()
-	{
+	public Iterator<Segment> iterator() {
 		return getNodeIterator();
 	}
 
@@ -913,32 +896,26 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @see Element#getDepth()
 	 */
 	@Override
-	public List<Element> getChildElements()
-	{
-		if (childElements == null)
-		{
-			if (length() == 0)
-			{
+	public List<Element> getChildElements() {
+		if (childElements == null) {
+			if (length() == 0) {
 				childElements = Collections.emptyList();
-			}
-			else
-			{
-				if (allTags == null) fullSequentialParse();
+			} else {
+				if (allTags == null)
+					fullSequentialParse();
 				childElements = new ArrayList<Element>();
 				int pos = 0;
-				while (true)
-				{
+				while (true) {
 					final StartTag childStartTag = source.getNextStartTag(pos);
-					if (childStartTag == null) break;
-					if (!Config.IncludeServerTagsInElementHierarchy && childStartTag.getTagType().isServerTag())
-					{
+					if (childStartTag == null)
+						break;
+					if (!Config.IncludeServerTagsInElementHierarchy && childStartTag.getTagType().isServerTag()) {
 						pos = childStartTag.end;
 						continue;
 					}
 					final Element childElement = childStartTag.getElement();
 					childElement.getChildElements(0);
-					if (childElement.parentElement == Element.NOT_CACHED)
-					{ // make sure element was not added as a child of a descendent element (can happen with overlapping elements)
+					if (childElement.parentElement == Element.NOT_CACHED) { // make sure element was not added as a child of a descendent element (can happen with overlapping elements)
 						childElement.parentElement = null;
 						childElements.add(childElement);
 					}
@@ -960,8 +937,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * 
 	 * @return an instance of {@link SourceFormatter} based on this source document.
 	 */
-	public SourceFormatter getSourceFormatter()
-	{
+	public SourceFormatter getSourceFormatter() {
 		return new SourceFormatter(this);
 	}
 
@@ -976,9 +952,9 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return a list of all {@linkplain Tag tags} in this source document.
 	 */
 	@Override
-	public List<Tag> getAllTags()
-	{
-		if (allTags == null) fullSequentialParse();
+	public List<Tag> getAllTags() {
+		if (allTags == null)
+			fullSequentialParse();
 		return allTags;
 	}
 
@@ -993,14 +969,13 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return a list of all {@linkplain StartTag start tags} in this source document.
 	 */
 	@Override
-	public List<StartTag> getAllStartTags()
-	{
-		if (allStartTags == null)
-		{
+	public List<StartTag> getAllStartTags() {
+		if (allStartTags == null) {
 			final List<Tag> allTags = getAllTags();
 			allStartTags = new ArrayList<StartTag>(allTags.size());
 			for (Tag tag : allTags)
-				if (tag instanceof StartTag) allStartTags.add((StartTag) tag);
+				if (tag instanceof StartTag)
+					allStartTags.add((StartTag) tag);
 		}
 		return allStartTags;
 	}
@@ -1016,12 +991,11 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return a list of all {@linkplain Element elements} in this source document.
 	 */
 	@Override
-	public List<Element> getAllElements()
-	{
-		if (allElements == null)
-		{
+	public List<Element> getAllElements() {
+		if (allElements == null) {
 			final List<StartTag> allStartTags = getAllStartTags();
-			if (allStartTags.isEmpty()) return Collections.emptyList();
+			if (allStartTags.isEmpty())
+				return Collections.emptyList();
 			allElements = new ArrayList<Element>(allStartTags.size());
 			for (StartTag startTag : allStartTags)
 				allElements.add(startTag.getElement());
@@ -1044,8 +1018,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 *            the <code>id</code> attribute value (case sensitive) to search for, must not be <code>null</code>.
 	 * @return the {@link Element} with the specified <code>id</code> attribute value, or <code>null</code> if no such element exists.
 	 */
-	public Element getElementById(final String id)
-	{
+	public Element getElementById(final String id) {
 		return getFirstElement(Attribute.ID, id, true);
 	}
 
@@ -1061,8 +1034,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return the {@link Tag} at the specified position in the source document, or <code>null</code> if no tag exists at the specified
 	 *         position or it is out of bounds.
 	 */
-	public final Tag getTagAt(final int pos)
-	{
+	public final Tag getTagAt(final int pos) {
 		return Tag.getTagAt(this, pos, false);
 	}
 
@@ -1077,8 +1049,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return the {@link Tag} beginning at or immediately preceding the specified position in the source document, or <code>null</code> if
 	 *         none exists or the specified position is out of bounds.
 	 */
-	public Tag getPreviousTag(final int pos)
-	{
+	public Tag getPreviousTag(final int pos) {
 		return Tag.getPreviousTag(this, pos);
 	}
 
@@ -1095,8 +1066,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return the {@link Tag} of the specified {@linkplain TagType type} beginning at or immediately preceding the specified position in
 	 *         the source document, or <code>null</code> if none exists or the specified position is out of bounds.
 	 */
-	public Tag getPreviousTag(final int pos, final TagType tagType)
-	{
+	public Tag getPreviousTag(final int pos, final TagType tagType) {
 		return Tag.getPreviousTag(this, pos, tagType);
 	}
 
@@ -1112,29 +1082,28 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return the {@link Tag} beginning at or immediately following the specified position in the source document, or <code>null</code> if
 	 *         none exists or the specified position is out of bounds.
 	 */
-	public Tag getNextTag(final int pos)
-	{
+	public Tag getNextTag(final int pos) {
 		return Tag.getNextTag(this, pos);
 	}
 
-	Tag getNextNonServerTag(int pos)
-	{
-		while (true)
-		{
+	Tag getNextNonServerTag(int pos) {
+		while (true) {
 			final Tag tag = getNextTag(pos);
-			if (tag == null) return null;
-			if (!tag.getTagType().isServerTag()) return tag;
+			if (tag == null)
+				return null;
+			if (!tag.getTagType().isServerTag())
+				return tag;
 			pos = tag.end;
 		}
 	}
 
-	Tag getPreviousNonServerTag(int pos)
-	{
-		while (true)
-		{
+	Tag getPreviousNonServerTag(int pos) {
+		while (true) {
 			final Tag tag = getPreviousTag(pos - 1);
-			if (tag == null) return null;
-			if (!tag.getTagType().isServerTag()) return tag;
+			if (tag == null)
+				return null;
+			if (!tag.getTagType().isServerTag())
+				return tag;
 			pos = tag.begin - 1;
 		}
 	}
@@ -1152,8 +1121,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return the {@link Tag} of the specified {@linkplain TagType type} beginning at or immediately following the specified position in
 	 *         the source document, or <code>null</code> if none exists or the specified position is out of bounds.
 	 */
-	public Tag getNextTag(final int pos, final TagType tagType)
-	{
+	public Tag getNextTag(final int pos, final TagType tagType) {
 		return Tag.getNextTag(this, pos, tagType);
 	}
 
@@ -1167,8 +1135,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return the {@link Tag} that {@linkplain Segment#encloses(int) encloses} the specified position in the source document, or
 	 *         <code>null</code> if the position is not within a tag or is out of bounds.
 	 */
-	public Tag getEnclosingTag(final int pos)
-	{
+	public Tag getEnclosingTag(final int pos) {
 		return getEnclosingTag(pos, null);
 	}
 
@@ -1186,10 +1153,10 @@ public class Source extends Segment implements Iterable<Segment>
 	 *         position in the source document, or <code>null</code> if the position is not within a tag of the specified type or is out of
 	 *         bounds.
 	 */
-	public Tag getEnclosingTag(final int pos, final TagType tagType)
-	{
+	public Tag getEnclosingTag(final int pos, final TagType tagType) {
 		final Tag tag = getPreviousTag(pos, tagType);
-		if (tag == null || tag.end <= pos) return null;
+		if (tag == null || tag.end <= pos)
+			return null;
 		return tag;
 	}
 
@@ -1204,8 +1171,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return the {@link Element} beginning at or immediately following the specified position in the source document, or <code>null</code>
 	 *         if none exists or the specified position is out of bounds.
 	 */
-	public Element getNextElement(final int pos)
-	{
+	public Element getNextElement(final int pos) {
 		final StartTag startTag = getNextStartTag(pos);
 		return startTag == null ? null : startTag.getElement();
 	}
@@ -1234,8 +1200,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 *         at or immediately following the specified position in the source document, or <code>null</code> if none exists or the
 	 *         specified position is out of bounds.
 	 */
-	public Element getNextElement(final int pos, String name)
-	{
+	public Element getNextElement(final int pos, String name) {
 		final StartTag startTag = getNextStartTag(pos, name);
 		return startTag == null ? null : startTag.getElement();
 	}
@@ -1259,8 +1224,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 *         in the source document, or <code>null</code> if none exists or the specified position is out of bounds.
 	 * @see #getNextElement(int pos, String attributeName, Pattern valueRegexPattern)
 	 */
-	public Element getNextElement(final int pos, final String attributeName, final String value, final boolean valueCaseSensitive)
-	{
+	public Element getNextElement(final int pos, final String attributeName, final String value, final boolean valueCaseSensitive) {
 		final StartTag startTag = getNextStartTag(pos, attributeName, value, valueCaseSensitive);
 		return startTag == null ? null : startTag.getElement();
 	}
@@ -1286,8 +1250,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 *         position in the source document, or <code>null</code> if none exists or the specified position is out of bounds.
 	 * @see #getNextElement(int pos, String attributeName, String value, boolean valueCaseSensitive)
 	 */
-	public Element getNextElement(final int pos, final String attributeName, final Pattern valueRegexPattern)
-	{
+	public Element getNextElement(final int pos, final String attributeName, final Pattern valueRegexPattern) {
 		final StartTag startTag = getNextStartTag(pos, attributeName, valueRegexPattern);
 		return startTag == null ? null : startTag.getElement();
 	}
@@ -1309,8 +1272,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return the {@link Element} with the specified class beginning at or immediately following the specified position in the source
 	 *         document, or <code>null</code> if none exists or the specified position is out of bounds.
 	 */
-	public Element getNextElementByClass(final int pos, final String className)
-	{
+	public Element getNextElementByClass(final int pos, final String className) {
 		final StartTag startTag = getNextStartTagByClass(pos, className);
 		return startTag == null ? null : startTag.getElement();
 	}
@@ -1326,8 +1288,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return the {@link StartTag} at or immediately preceding the specified position in the source document, or <code>null</code> if none
 	 *         exists or the specified position is out of bounds.
 	 */
-	public StartTag getPreviousStartTag(final int pos)
-	{
+	public StartTag getPreviousStartTag(final int pos) {
 		return StartTag.getPrevious(this, pos);
 	}
 
@@ -1348,8 +1309,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 *         {@linkplain Segment#encloses(int) enclosing}) the specified position in the source document, or <code>null</code> if none
 	 *         exists or the specified position is out of bounds.
 	 */
-	public StartTag getPreviousStartTag(final int pos, final StartTagType startTagType)
-	{
+	public StartTag getPreviousStartTag(final int pos, final StartTagType startTagType) {
 		return (StartTag) getPreviousTag(pos, startTagType);
 	}
 
@@ -1373,8 +1333,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 *         immediately preceding the specified position in the source document, or <code>null</code> if none exists or the specified
 	 *         position is out of bounds.
 	 */
-	public StartTag getPreviousStartTag(final int pos, final String name)
-	{
+	public StartTag getPreviousStartTag(final int pos, final String name) {
 		return getPreviousStartTag(pos, name, StartTagType.NORMAL);
 	}
 
@@ -1397,9 +1356,9 @@ public class Source extends Segment implements Iterable<Segment>
 	 *         immediately preceding (or {@linkplain Segment#encloses(int) enclosing}) the specified position in the source document, or
 	 *         <code>null</code> if none exists or the specified position is out of bounds.
 	 */
-	public StartTag getPreviousStartTag(final int pos, String name, final StartTagType startTagType)
-	{
-		if (name != null) name = name.toLowerCase();
+	public StartTag getPreviousStartTag(final int pos, String name, final StartTagType startTagType) {
+		if (name != null)
+			name = name.toLowerCase();
 		return StartTag.getPrevious(this, pos, name, startTagType);
 	}
 
@@ -1413,8 +1372,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return the {@link StartTag} beginning at or immediately following the specified position in the source document, or
 	 *         <code>null</code> if none exists or the specified position is out of bounds.
 	 */
-	public StartTag getNextStartTag(final int pos)
-	{
+	public StartTag getNextStartTag(final int pos) {
 		return StartTag.getNext(this, pos);
 	}
 
@@ -1434,8 +1392,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return the {@link StartTag} of the specified {@linkplain StartTagType type} beginning at or immediately following the specified
 	 *         position in the source document, or <code>null</code> if none exists or the specified position is out of bounds.
 	 */
-	public StartTag getNextStartTag(final int pos, final StartTagType startTagType)
-	{
+	public StartTag getNextStartTag(final int pos, final StartTagType startTagType) {
 		return (StartTag) getNextTag(pos, startTagType);
 	}
 
@@ -1462,8 +1419,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 *         beginning at or immediately following the specified position in the source document, or <code>null</code> if none exists or
 	 *         the specified position is out of bounds.
 	 */
-	public StartTag getNextStartTag(final int pos, final String name)
-	{
+	public StartTag getNextStartTag(final int pos, final String name) {
 		return getNextStartTag(pos, name, StartTagType.NORMAL);
 	}
 
@@ -1486,9 +1442,9 @@ public class Source extends Segment implements Iterable<Segment>
 	 *         or immediately following the specified position in the source document, or <code>null</code> if none exists or the specified
 	 *         position is out of bounds.
 	 */
-	public StartTag getNextStartTag(final int pos, String name, final StartTagType startTagType)
-	{
-		if (name != null) name = name.toLowerCase();
+	public StartTag getNextStartTag(final int pos, String name, final StartTagType startTagType) {
+		if (name != null)
+			name = name.toLowerCase();
 		return StartTag.getNext(this, pos, name, startTagType);
 	}
 
@@ -1510,8 +1466,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 *         position in the source document, or <code>null</code> if none exists or the specified position is out of bounds.
 	 * @see #getNextStartTag(int pos, String attributeName, Pattern valueRegexPattern)
 	 */
-	public StartTag getNextStartTag(final int pos, final String attributeName, final String value, final boolean valueCaseSensitive)
-	{
+	public StartTag getNextStartTag(final int pos, final String attributeName, final String value, final boolean valueCaseSensitive) {
 		return StartTag.getNext(this, pos, attributeName, value, valueCaseSensitive);
 	}
 
@@ -1535,8 +1490,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 *         position in the source document, or <code>null</code> if none exists or the specified position is out of bounds.
 	 * @see #getNextStartTag(int pos, String attributeName, String value, boolean valueCaseSensitive)
 	 */
-	public StartTag getNextStartTag(final int pos, final String attributeName, final Pattern valueRegexPattern)
-	{
+	public StartTag getNextStartTag(final int pos, final String attributeName, final Pattern valueRegexPattern) {
 		return StartTag.getNext(this, pos, attributeName, valueRegexPattern);
 	}
 
@@ -1556,8 +1510,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return the {@link StartTag} with the specified class beginning at or immediately following the specified position in the source
 	 *         document, or <code>null</code> if none exists or the specified position is out of bounds.
 	 */
-	public StartTag getNextStartTagByClass(final int pos, final String className)
-	{
+	public StartTag getNextStartTagByClass(final int pos, final String className) {
 		return getNextStartTag(pos, "class", getClassPattern(className));
 	}
 
@@ -1572,8 +1525,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return the {@link EndTag} at or immediately preceding (or {@linkplain Segment#encloses(int) enclosing}) the specified position in
 	 *         the source document, or <code>null</code> if none exists or the specified position is out of bounds.
 	 */
-	public EndTag getPreviousEndTag(final int pos)
-	{
+	public EndTag getPreviousEndTag(final int pos) {
 		return EndTag.getPrevious(this, pos);
 	}
 
@@ -1594,8 +1546,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 *         {@linkplain Segment#encloses(int) enclosing}) the specified position in the source document, or <code>null</code> if none
 	 *         exists or the specified position is out of bounds.
 	 */
-	public EndTag getPreviousEndTag(final int pos, final EndTagType endTagType)
-	{
+	public EndTag getPreviousEndTag(final int pos, final EndTagType endTagType) {
 		return (EndTag) getPreviousTag(pos, endTagType);
 	}
 
@@ -1613,9 +1564,9 @@ public class Source extends Segment implements Iterable<Segment>
 	 *         immediately preceding (or {@linkplain Segment#encloses(int) enclosing}) the specified position in the source document, or
 	 *         <code>null</code> if none exists or the specified position is out of bounds.
 	 */
-	public EndTag getPreviousEndTag(final int pos, final String name)
-	{
-		if (name == null) throw new IllegalArgumentException("name argument must not be null");
+	public EndTag getPreviousEndTag(final int pos, final String name) {
+		if (name == null)
+			throw new IllegalArgumentException("name argument must not be null");
 		return EndTag.getPrevious(this, pos, name.toLowerCase(), EndTagType.NORMAL);
 	}
 
@@ -1629,8 +1580,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return the {@link EndTag} beginning at or immediately following the specified position in the source document, or <code>null</code>
 	 *         if none exists or the specified position is out of bounds.
 	 */
-	public EndTag getNextEndTag(final int pos)
-	{
+	public EndTag getNextEndTag(final int pos) {
 		return EndTag.getNext(this, pos);
 	}
 
@@ -1650,8 +1600,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return the {@link EndTag} of the specified {@linkplain EndTagType type} beginning at or immediately following the specified position
 	 *         in the source document, or <code>null</code> if none exists or the specified position is out of bounds.
 	 */
-	public EndTag getNextEndTag(final int pos, final EndTagType endTagType)
-	{
+	public EndTag getNextEndTag(final int pos, final EndTagType endTagType) {
 		return (EndTag) getNextTag(pos, endTagType);
 	}
 
@@ -1669,8 +1618,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 *         or immediately following the specified position in the source document, or <code>null</code> if none exists or the specified
 	 *         position is out of bounds.
 	 */
-	public EndTag getNextEndTag(final int pos, final String name)
-	{
+	public EndTag getNextEndTag(final int pos, final String name) {
 		return getNextEndTag(pos, name, EndTagType.NORMAL);
 	}
 
@@ -1690,9 +1638,9 @@ public class Source extends Segment implements Iterable<Segment>
 	 *         immediately following the specified position in the source document, or <code>null</code> if none exists or the specified
 	 *         position is out of bounds.
 	 */
-	public EndTag getNextEndTag(final int pos, final String name, final EndTagType endTagType)
-	{
-		if (name == null) throw new IllegalArgumentException("name argument must not be null");
+	public EndTag getNextEndTag(final int pos, final String name, final EndTagType endTagType) {
+		if (name == null)
+			throw new IllegalArgumentException("name argument must not be null");
 		return EndTag.getNext(this, pos, name.toLowerCase(), endTagType);
 	}
 
@@ -1711,8 +1659,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return the most nested {@linkplain StartTagType#NORMAL normal} {@link Element} that {@linkplain Segment#encloses(int) encloses} the
 	 *         specified position in the source document, or <code>null</code> if the position is not within an element or is out of bounds.
 	 */
-	public Element getEnclosingElement(final int pos)
-	{
+	public Element getEnclosingElement(final int pos) {
 		return getEnclosingElement(pos, null);
 	}
 
@@ -1737,17 +1684,18 @@ public class Source extends Segment implements Iterable<Segment>
 	 *         name} that {@linkplain Segment#encloses(int) encloses} the specified position in the source document, or <code>null</code> if
 	 *         none exists or the specified position is out of bounds.
 	 */
-	public Element getEnclosingElement(final int pos, String name)
-	{
+	public Element getEnclosingElement(final int pos, String name) {
 		int startBefore = pos;
-		if (name != null) name = name.toLowerCase();
+		if (name != null)
+			name = name.toLowerCase();
 		final boolean isXMLTagName = Tag.isXMLName(name);
-		while (true)
-		{
+		while (true) {
 			StartTag startTag = StartTag.getPrevious(this, startBefore, name, StartTagType.NORMAL, isXMLTagName);
-			if (startTag == null) return null;
+			if (startTag == null)
+				return null;
 			Element element = startTag.getElement();
-			if (pos < element.end) return element;
+			if (pos < element.end)
+				return element;
 			startBefore = startTag.begin - 1;
 		}
 	}
@@ -1763,8 +1711,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return the {@link CharacterReference} beginning at or immediately preceding the specified position in the source document, or
 	 *         <code>null</code> if none exists or the specified position is out of bounds.
 	 */
-	public CharacterReference getPreviousCharacterReference(final int pos)
-	{
+	public CharacterReference getPreviousCharacterReference(final int pos) {
 		return CharacterReference.getPrevious(this, pos);
 	}
 
@@ -1778,8 +1725,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return the {@link CharacterReference} beginning at or immediately following the specified position in the source document, or
 	 *         <code>null</code> if none exists or the specified position is out of bounds.
 	 */
-	public CharacterReference getNextCharacterReference(final int pos)
-	{
+	public CharacterReference getNextCharacterReference(final int pos) {
 		return CharacterReference.getNext(this, pos);
 	}
 
@@ -1800,17 +1746,14 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @throws IndexOutOfBoundsException
 	 *             if the specified position is not within the bounds of the document.
 	 */
-	public int getNameEnd(int pos)
-	{
-		if (!Tag.isXMLNameStartChar(sourceText.charAt(pos++))) return -1;
-		try
-		{
+	public int getNameEnd(int pos) {
+		if (!Tag.isXMLNameStartChar(sourceText.charAt(pos++)))
+			return -1;
+		try {
 			while (Tag.isXMLNameChar(sourceText.charAt(pos)))
 				pos++; // cost of IndexOutOfBoundsException in rare case of name ending at end of file is less than checking for end of file
 						// manually with each iteration.
-		}
-		catch (IndexOutOfBoundsException ex)
-		{
+		} catch (IndexOutOfBoundsException ex) {
 		}
 		return pos;
 	}
@@ -1837,8 +1780,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @see StartTag#getAttributes()
 	 * @see Segment#parseAttributes()
 	 */
-	public Attributes parseAttributes(final int pos, final int maxEnd)
-	{
+	public Attributes parseAttributes(final int pos, final int maxEnd) {
 		return parseAttributes(pos, maxEnd, Attributes.getDefaultMaxErrorCount());
 	}
 
@@ -1864,8 +1806,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @see StartTag#getAttributes()
 	 * @see #parseAttributes(int pos, int MaxEnd)
 	 */
-	public Attributes parseAttributes(final int pos, final int maxEnd, final int maxErrorCount)
-	{
+	public Attributes parseAttributes(final int pos, final int maxEnd, final int maxErrorCount) {
 		return Attributes.construct(this, pos, maxEnd, maxErrorCount);
 	}
 
@@ -1879,11 +1820,10 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @param end
 	 *            the end character position in the source text.
 	 */
-	public void ignoreWhenParsing(final int begin, final int end)
-	{
-		if (wasFullSequentialParseCalled()) throw new IllegalStateException("ignoreWhenParsing can not be used after a full sequential parse has been performed");
-		if (parseTextOutputDocument == null)
-		{
+	public void ignoreWhenParsing(final int begin, final int end) {
+		if (wasFullSequentialParseCalled())
+			throw new IllegalStateException("ignoreWhenParsing can not be used after a full sequential parse has been performed");
+		if (parseTextOutputDocument == null) {
 			parseTextOutputDocument = new OutputDocument(getParseText());
 			parseText = null;
 		}
@@ -1895,8 +1835,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * <p>
 	 * This is equivalent to calling {@link Segment#ignoreWhenParsing()} on each segment in the collection.
 	 */
-	public void ignoreWhenParsing(final Collection<? extends Segment> segments)
-	{
+	public void ignoreWhenParsing(final Collection<? extends Segment> segments) {
 		for (Segment segment : segments)
 			segment.ignoreWhenParsing();
 	}
@@ -1917,8 +1856,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 *            the logger that will handle log messages, or <code>null</code> to disable logging.
 	 * @see Config#LoggerProvider
 	 */
-	public void setLogger(final Logger logger)
-	{
+	public void setLogger(final Logger logger) {
 		this.logger = (logger != null ? logger : LoggerDisabled.INSTANCE);
 	}
 
@@ -1931,8 +1869,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 *
 	 * @return the {@link Logger} that handles log messages, or <code>null</code> if logging is disabled.
 	 */
-	public Logger getLogger()
-	{
+	public Logger getLogger() {
 		return logger != LoggerDisabled.INSTANCE ? logger : null;
 	}
 
@@ -1942,8 +1879,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * This method may be useful after calling the {@link Segment#ignoreWhenParsing()} method so that any tags previously found within the
 	 * ignored segments will no longer be returned by the <a href="Tag.html#TagSearchMethods">tag search methods</a>.
 	 */
-	public void clearCache()
-	{
+	public void clearCache() {
 		cache.clear();
 		allTagsArray = null;
 		allTags = null;
@@ -1956,8 +1892,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * 
 	 * @return a string representation of the tag cache, useful for debugging purposes.
 	 */
-	public String getCacheDebugInfo()
-	{
+	public String getCacheDebugInfo() {
 		return cache.toString();
 	}
 
@@ -1970,8 +1905,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return a list of all the tags that have been parsed so far.
 	 * @see #getCacheDebugInfo()
 	 */
-	List<Tag> getParsedTags()
-	{
+	List<Tag> getParsedTags() {
 		final ArrayList<Tag> list = new ArrayList<Tag>();
 		for (final Iterator<Tag> i = cache.getTagIterator(); i.hasNext();)
 			list.add(i.next());
@@ -1988,17 +1922,12 @@ public class Source extends Segment implements Iterable<Segment>
 	 *
 	 * @return the {@linkplain ParseText parse text} of this source document.
 	 */
-	public final ParseText getParseText()
-	{
-		if (parseText == null)
-		{
-			if (parseTextOutputDocument != null)
-			{
+	public final ParseText getParseText() {
+		if (parseText == null) {
+			if (parseTextOutputDocument != null) {
 				parseText = new CharSequenceParseText(parseTextOutputDocument.toString());
 				parseTextOutputDocument = null;
-			}
-			else
-			{
+			} else {
 				parseText = new CharSequenceParseText(sourceText);
 			}
 		}
@@ -2015,25 +1944,21 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return a new character sequence that is a subsequence of this source document.
 	 */
 	@Override
-	public final CharSequence subSequence(final int begin, final int end)
-	{
+	public final CharSequence subSequence(final int begin, final int end) {
 		return sourceText.subSequence(begin, end);
 	}
 
-	final String substring(final int begin, final int end)
-	{
+	final String substring(final int begin, final int end) {
 		return subSequence(begin, end).toString();
 	}
 
-	final String getName(final int begin, final int end)
-	{
+	final String getName(final int begin, final int end) {
 		// change this implentation if we want to provide the option for case sensitive names
 		return substring(begin, end).toLowerCase();
 	}
 
 	@Override
-	public final char charAt(final int index)
-	{
+	public final char charAt(final int index) {
 		return sourceText.charAt(index);
 	}
 
@@ -2043,8 +1968,7 @@ public class Source extends Segment implements Iterable<Segment>
 	 * @return the length of the source document.
 	 */
 	@Override
-	public final int length()
-	{
+	public final int length() {
 		return sourceText.length();
 	}
 
@@ -2069,49 +1993,41 @@ public class Source extends Segment implements Iterable<Segment>
 	@Deprecated
 	public static boolean LegacyIteratorCompatabilityMode = false;
 
-	boolean wasFullSequentialParseCalled()
-	{
+	boolean wasFullSequentialParseCalled() {
 		return allTagsArray != null;
 	}
 
-	static String getCharsetParameterFromHttpHeaderValue(final String httpHeaderValue)
-	{
+	static String getCharsetParameterFromHttpHeaderValue(final String httpHeaderValue) {
 		final int charsetParameterPos = httpHeaderValue.toLowerCase().indexOf("charset=");
-		if (charsetParameterPos == -1) return null;
+		if (charsetParameterPos == -1)
+			return null;
 		final int charsetBegin = charsetParameterPos + 8;
 		int charsetEnd = httpHeaderValue.indexOf(';', charsetBegin);
 		final String charset = (charsetEnd == -1) ? httpHeaderValue.substring(charsetBegin) : httpHeaderValue.substring(charsetBegin, charsetEnd);
 		return charset.trim();
 	}
 
-	static Logger newLogger()
-	{
+	static Logger newLogger() {
 		return LoggerFactory.getLogger(PACKAGE_NAME);
 	}
 
-	private static String getString(final EncodingDetector encodingDetector) throws IOException
-	{
-		try
-		{
+	private static String getString(final EncodingDetector encodingDetector) throws IOException {
+		try {
 			return Util.getString(encodingDetector.openReader()); // this closes the input stream
-		}
-		catch (IOException ex)
-		{
-			try
-			{
+		} catch (IOException ex) {
+			try {
 				Logger logger = newLogger();
 				encodingDetector.getLoggerQueue().outputTo(logger);
-				if (logger.isErrorEnabled()) logger.error("IOException constructing encoded source. Encoding: " + encodingDetector.getEncoding() + " - " + encodingDetector.getEncodingSpecificationInfo() + ". PreliminaryEncoding: " + encodingDetector.getPreliminaryEncoding() + " - " + encodingDetector.getPreliminaryEncodingSpecificationInfo());
-			}
-			catch (Exception ex2)
-			{
+				if (logger.isErrorEnabled())
+					logger.error("IOException constructing encoded source. Encoding: " + encodingDetector.getEncoding() + " - " + encodingDetector.getEncodingSpecificationInfo() + ". PreliminaryEncoding: " + encodingDetector.getPreliminaryEncoding()
+							+ " - " + encodingDetector.getPreliminaryEncodingSpecificationInfo());
+			} catch (Exception ex2) {
 			} // make sure attempting to log does not cause a new exception
 			throw ex;
 		}
 	}
 
-	final boolean isStreamed()
-	{
+	final boolean isStreamed() {
 		return cache == Cache.STREAMED_SOURCE_MARKER;
 	}
 }

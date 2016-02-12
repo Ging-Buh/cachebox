@@ -20,8 +20,7 @@ import CB_Locator.Map.TileGL;
 /**
  * @author Longri
  */
-public interface IDatabaseRenderer
-{
+public interface IDatabaseRenderer {
 
 	/**
 	 * Called when a job needs to be executed.

@@ -7,10 +7,8 @@ import org.apache.xmlrpc.webserver.WebServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
 public class Rpc_Server {
-	// WebServer für die RPC-Communication
+	// WebServer fï¿½r die RPC-Communication
 	private WebServer webServer = null;
 	public Logger log;
 
@@ -20,7 +18,7 @@ public class Rpc_Server {
 	}
 
 	/**
-	 * Startet den Webserver, der die XmlRpc-Meldungen empfängt
+	 * Startet den Webserver, der die XmlRpc-Meldungen empfï¿½ngt
 	 */
 	private void startWebserver(Class rpcFunctions) {
 		try {

@@ -1,7 +1,6 @@
 package CB_UI_Base.Events;
 
-public class KeyCodes
-{
+public class KeyCodes {
 	// key codes
 	public static final int KEYCODE_UNKNOWN = 0;
 	public static final int KEYCODE_SOFT_LEFT = 1;

@@ -6,27 +6,20 @@ import java.io.InputStream;
 
 import CB_Utils.Plattform;
 
+public class SVG_Airport extends SVG_TestBase {
 
-public class SVG_Airport extends SVG_TestBase
-{
-
-	public SVG_Airport()
-	{
+	public SVG_Airport() {
 		super("SVG-Airport");
 	}
 
 	@Override
-	public InputStream get_SVG_InputStream() throws FileNotFoundException
-	{
+	public InputStream get_SVG_InputStream() throws FileNotFoundException {
 
 		String path = "assets/svg/osm/museum.svg";
 
-		if (Plattform.used == Plattform.Android)
-		{
+		if (Plattform.used == Plattform.Android) {
 			path = "storage/extSdCard/freizeitkarte/svg/osm/airport.svg";
-		}
-		else
-		{
+		} else {
 			path = "assets/svg/osm/airport.svg";
 		}
 

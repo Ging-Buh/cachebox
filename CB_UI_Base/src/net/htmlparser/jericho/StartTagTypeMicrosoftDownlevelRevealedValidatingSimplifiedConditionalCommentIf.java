@@ -21,10 +21,10 @@
 package net.htmlparser.jericho;
 
 final class StartTagTypeMicrosoftDownlevelRevealedValidatingSimplifiedConditionalCommentIf extends StartTagTypeMicrosoftDownlevelRevealedValidatingConditionalCommentIf {
-	static final StartTagTypeMicrosoftDownlevelRevealedValidatingSimplifiedConditionalCommentIf INSTANCE=new StartTagTypeMicrosoftDownlevelRevealedValidatingSimplifiedConditionalCommentIf();
+	static final StartTagTypeMicrosoftDownlevelRevealedValidatingSimplifiedConditionalCommentIf INSTANCE = new StartTagTypeMicrosoftDownlevelRevealedValidatingSimplifiedConditionalCommentIf();
 
 	private StartTagTypeMicrosoftDownlevelRevealedValidatingSimplifiedConditionalCommentIf() {
-		super("Microsoft downlevel-revealed validating simplified conditional comment IF","<!--[if","]>-->");
+		super("Microsoft downlevel-revealed validating simplified conditional comment IF", "<!--[if", "]>-->");
 	}
 
 	// note this class extends StartTagTypeMicrosoftDownlevelRevealedValidatingSimplifiedConditionalCommentIf so it inherits its implementation of the getEnd method.

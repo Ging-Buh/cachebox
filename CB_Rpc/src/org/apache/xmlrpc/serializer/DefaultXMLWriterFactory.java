@@ -27,7 +27,6 @@ import org.apache.xmlrpc.common.XmlRpcStreamConfig;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
 
-
 /** The default implementation of {@link org.apache.xmlrpc.serializer.XmlWriterFactory}
  * tests, whether the {@link org.apache.xmlrpc.serializer.CharSetXmlWriterFactory}
  * is usable. This is the case, when running in Java 1.4 or later. If so,
@@ -57,8 +56,7 @@ public class DefaultXMLWriterFactory implements XmlWriterFactory {
 		factory = xwf;
 	}
 
-	public ContentHandler getXmlWriter(XmlRpcStreamConfig pConfig,
-									   OutputStream pStream) throws XmlRpcException {
+	public ContentHandler getXmlWriter(XmlRpcStreamConfig pConfig, OutputStream pStream) throws XmlRpcException {
 		return factory.getXmlWriter(pConfig, pStream);
 	}
 }

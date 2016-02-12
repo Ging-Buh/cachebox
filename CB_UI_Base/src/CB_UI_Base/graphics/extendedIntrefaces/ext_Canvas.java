@@ -23,8 +23,7 @@ import CB_UI_Base.graphics.fromAndroid.RectF;
 /**
  * @author Longri
  */
-public interface ext_Canvas extends org.mapsforge.core.graphics.Canvas
-{
+public interface ext_Canvas extends org.mapsforge.core.graphics.Canvas {
 
 	void drawText(String text, float x, float y, Paint paint);
 

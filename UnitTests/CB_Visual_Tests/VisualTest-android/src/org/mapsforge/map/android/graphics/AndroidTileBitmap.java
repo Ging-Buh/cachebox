@@ -35,18 +35,15 @@ import android.graphics.BitmapFactory;
  * reuse one of the older bitmaps from the cache, only if that fails, a new bitmap is allocated.
  */
 
-public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap
-{
+public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 	private static final Logger LOGGER = Logger.getLogger(AndroidTileBitmap.class.getName());
 	private static AtomicInteger tileInstances;
 
 	// For modern Android versions, bitmap storage can be recycled. To support different tile
 	// sizes we have a hashmap that contains the caches by tileSize/alpha
 
-	static
-	{
-		if (AndroidGraphicFactory.DEBUG_BITMAPS)
-		{
+	static {
+		if (AndroidGraphicFactory.DEBUG_BITMAPS) {
 			tileInstances = new AtomicInteger();
 		}
 	}
@@ -56,13 +53,10 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap
 	 * download or slow access to file system) and will then raise an exception. This exception must be caught by client classes. We do not
 	 * catch it here to allow proper handling in the higher levels (like redownload or reload from file storage).
 	 */
-	AndroidTileBitmap(InputStream inputStream, int tileSize, boolean isTransparent)
-	{
+	AndroidTileBitmap(InputStream inputStream, int tileSize, boolean isTransparent) {
 		super();
-		try
-		{
-			if (AndroidGraphicFactory.DEBUG_BITMAPS)
-			{
+		try {
+			if (AndroidGraphicFactory.DEBUG_BITMAPS) {
 				tileInstances.incrementAndGet();
 			}
 			this.bitmap = BitmapFactory.decodeStream(inputStream, null, createTileBitmapFactoryOptions(tileSize, isTransparent));
@@ -72,9 +66,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap
 			// so that it can be handled at this point, rather than later
 			// during bitmap painting
 			this.bitmap.getWidth();
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			// this is really stupid, the runtime system actually throws a SocketTimeoutException,
 			// but we cannot catch it, because it is not declared, so we needed to catch the base
 			// class exception
@@ -86,38 +78,30 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap
 		}
 	}
 
-	AndroidTileBitmap(int tileSize, boolean isTransparent)
-	{
+	AndroidTileBitmap(int tileSize, boolean isTransparent) {
 		super();
 
-		if (this.bitmap == null)
-		{
-			android.graphics.Bitmap.Config config = isTransparent ? AndroidGraphicFactory.TRANSPARENT_BITMAP
-					: AndroidGraphicFactory.NON_TRANSPARENT_BITMAP;
+		if (this.bitmap == null) {
+			android.graphics.Bitmap.Config config = isTransparent ? AndroidGraphicFactory.TRANSPARENT_BITMAP : AndroidGraphicFactory.NON_TRANSPARENT_BITMAP;
 			this.bitmap = AndroidBitmap.createAndroidBitmap(tileSize, tileSize, config);
 		}
-		if (AndroidGraphicFactory.DEBUG_BITMAPS)
-		{
+		if (AndroidGraphicFactory.DEBUG_BITMAPS) {
 			tileInstances.incrementAndGet();
 		}
 	}
 
 	@Override
-	protected void destroy()
-	{
+	protected void destroy() {
 		super.destroy();
-		if (AndroidGraphicFactory.DEBUG_BITMAPS)
-		{
+		if (AndroidGraphicFactory.DEBUG_BITMAPS) {
 			int i = tileInstances.decrementAndGet();
 			LOGGER.log(Level.INFO, "TILEBITMAP COUNT " + Integer.toString(i));
 		}
 	}
 
 	@Override
-	protected void destroyBitmap()
-	{
-		if (this.bitmap != null)
-		{
+	protected void destroyBitmap() {
+		if (this.bitmap != null) {
 			// bitmap can be null if there is an error creating it
 
 			this.bitmap.recycle();
@@ -127,15 +111,11 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap
 	}
 
 	@TargetApi(11)
-	private BitmapFactory.Options createTileBitmapFactoryOptions(int tileSize, boolean isTransparent)
-	{
+	private BitmapFactory.Options createTileBitmapFactoryOptions(int tileSize, boolean isTransparent) {
 		BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
-		if (isTransparent)
-		{
+		if (isTransparent) {
 			bitmapFactoryOptions.inPreferredConfig = AndroidGraphicFactory.TRANSPARENT_BITMAP;
-		}
-		else
-		{
+		} else {
 			bitmapFactoryOptions.inPreferredConfig = AndroidGraphicFactory.NON_TRANSPARENT_BITMAP;
 		}
 

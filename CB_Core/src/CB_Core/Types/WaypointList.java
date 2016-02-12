@@ -7,16 +7,14 @@ import CB_Utils.Lists.CB_List;
  * 
  * @author Longri
  */
-public class WaypointList
-{
+public class WaypointList {
 
 	CB_List<Waypoint> list = new CB_List<Waypoint>();
 
 	/**
 	 * Reload the Waypoints of Loaded Caches
 	 */
-	public void reloadList()
-	{
+	public void reloadList() {
 
 	}
 }

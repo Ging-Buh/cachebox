@@ -17,7 +17,6 @@ package org.apache.ws.commons.serialize;
 
 import java.io.Writer;
 
-
 /** A simple serializer for XML documents, which is writing to
  * an instance of {@link java.io.Writer}.
  */

@@ -17,33 +17,27 @@ package CB_Utils.Settings;
 
 import CB_Utils.Config_Core;
 
-public class SettingFolder extends SettingLongString
-{
+public class SettingFolder extends SettingLongString {
 
 	private final boolean needWritePermission;
 
-	public SettingFolder(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage, boolean needwritePermission)
-	{
+	public SettingFolder(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage, boolean needwritePermission) {
 		super(name, category, modus, defaultValue, StoreType, usage);
 		this.needWritePermission = needwritePermission;
 	}
 
 	@Override
-	public String getValue()
-	{
+	public String getValue() {
 		return replacePathSaperator(value);
 	}
 
 	@Override
-	public String getDefaultValue()
-	{
+	public String getDefaultValue() {
 		return replacePathSaperator(defaultValue);
 	}
 
-	private String replacePathSaperator(String rep)
-	{
-		if (rep.startsWith("?"))
-		{
+	private String replacePathSaperator(String rep) {
+		if (rep.startsWith("?")) {
 			rep = Config_Core.mWorkPath + System.getProperty("file.separator") + "Repositories" + rep.substring(1);
 		}
 		rep = rep.replace("\\", System.getProperty("file.separator"));
@@ -51,8 +45,7 @@ public class SettingFolder extends SettingLongString
 		return rep;
 	}
 
-	public boolean needWritePermission()
-	{
+	public boolean needWritePermission() {
 		return this.needWritePermission;
 	}
 

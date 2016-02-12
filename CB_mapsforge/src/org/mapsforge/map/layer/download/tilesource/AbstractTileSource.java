@@ -36,7 +36,6 @@ public abstract class AbstractTileSource implements TileSource {
 			}
 		}
 
-
 		this.hostNames = hostNames;
 		this.port = port;
 	}

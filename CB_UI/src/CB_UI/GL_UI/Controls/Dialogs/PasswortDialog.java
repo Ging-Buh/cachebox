@@ -18,83 +18,83 @@ import CB_UI_Base.Math.SizeF;
 
 public class PasswortDialog extends ButtonDialog {
 
-    public EditTextField editTextUser;
-    public EditTextField editTextPW;
+	public EditTextField editTextUser;
+	public EditTextField editTextPW;
 
-    private Linearlayout layout;
+	private Linearlayout layout;
 
-    private float TextFieldHeight;
-    private float LabelHeight;
-    private SizeF msgBoxContentSize;
+	private float TextFieldHeight;
+	private float LabelHeight;
+	private SizeF msgBoxContentSize;
 
-    public interface IReturnListener {
-	public void returnFromPW_Dialog(String User, String PW);
-    }
+	public interface IReturnListener {
+		public void returnFromPW_Dialog(String User, String PW);
+	}
 
-    private IReturnListener mReturnListener;
+	private IReturnListener mReturnListener;
 
-    public PasswortDialog(IReturnListener listener) {
-	super(Menu.getMenuRec(), "PW-Dialog", "", Translation.Get("enterPW"), MessageBoxButtons.OKCancel, MessageBoxIcon.GC_Live, null);
-	mReturnListener = listener;
+	public PasswortDialog(IReturnListener listener) {
+		super(Menu.getMenuRec(), "PW-Dialog", "", Translation.Get("enterPW"), MessageBoxButtons.OKCancel, MessageBoxIcon.GC_Live, null);
+		mReturnListener = listener;
 
-	msgBoxContentSize = getContentSize();
-	// initial VariableField
-	TextFieldHeight = Fonts.getNormal().getLineHeight() * 2.4f;
-	LabelHeight = Fonts.getNormal().getLineHeight();
+		msgBoxContentSize = getContentSize();
+		// initial VariableField
+		TextFieldHeight = Fonts.getNormal().getLineHeight() * 2.4f;
+		LabelHeight = Fonts.getNormal().getLineHeight();
 
-	layout = new Linearlayout(msgBoxContentSize.width, "Layout");
+		layout = new Linearlayout(msgBoxContentSize.width, "Layout");
 
-	Label lblName = new Label(this.name + " lblName", 0, 0, msgBoxContentSize.width, LabelHeight);
-	lblName.setText(Translation.Get("LogIn"));
-	layout.addChild(lblName);
+		Label lblName = new Label(this.name + " lblName", 0, 0, msgBoxContentSize.width, LabelHeight);
+		lblName.setText(Translation.Get("LogIn"));
+		layout.addChild(lblName);
 
-	CB_RectF rec = new CB_RectF(0, 0, msgBoxContentSize.width, TextFieldHeight);
+		CB_RectF rec = new CB_RectF(0, 0, msgBoxContentSize.width, TextFieldHeight);
 
-	editTextUser = new EditTextField(this, rec, WrapType.SINGLELINE, "SolverDialogTextField");
-	layout.addChild(editTextUser);
+		editTextUser = new EditTextField(this, rec, WrapType.SINGLELINE, "SolverDialogTextField");
+		layout.addChild(editTextUser);
 
-	Label lblPW = new Label(this.name + " lblPW", 0, 0, msgBoxContentSize.width, LabelHeight);
-	lblPW.setText(Translation.Get("GCPW"));
-	layout.addChild(lblPW);
+		Label lblPW = new Label(this.name + " lblPW", 0, 0, msgBoxContentSize.width, LabelHeight);
+		lblPW.setText(Translation.Get("GCPW"));
+		layout.addChild(lblPW);
 
-	editTextPW = new EditTextField(this, rec, WrapType.SINGLELINE, "SolverDialogTextField");
+		editTextPW = new EditTextField(this, rec, WrapType.SINGLELINE, "SolverDialogTextField");
 
-	// TODO set PW-Mode => hat noch einen Fehler
-	// editTextPW.setPasswordMode();
-	// editTextPW.setPasswordCharacter("*".charAt(0));
-	//
-	layout.addChild(editTextPW);
+		// TODO set PW-Mode => hat noch einen Fehler
+		// editTextPW.setPasswordMode();
+		// editTextPW.setPasswordCharacter("*".charAt(0));
+		//
+		layout.addChild(editTextPW);
 
-	this.addChild(layout);
+		this.addChild(layout);
 
-	Size msgBoxSize = GL_MsgBox.calcMsgBoxSize("teste", true, true, false);
-	msgBoxSize.height = (int) (msgBoxSize.height + layout.getHeight());
-	this.setSize(msgBoxSize.asFloat());
+		Size msgBoxSize = GL_MsgBox.calcMsgBoxSize("teste", true, true, false);
+		msgBoxSize.height = (int) (msgBoxSize.height + layout.getHeight());
+		this.setSize(msgBoxSize.asFloat());
 
-	mMsgBoxClickListener = new OnMsgBoxClickListener() {
+		mMsgBoxClickListener = new OnMsgBoxClickListener() {
 
-	    @Override
-	    public boolean onClick(int which, Object data) {
-		if (which == BUTTON_POSITIVE) {
+			@Override
+			public boolean onClick(int which, Object data) {
+				if (which == BUTTON_POSITIVE) {
 
-		    if (mReturnListener != null)
-			mReturnListener.returnFromPW_Dialog(editTextUser.getText(), editTextPW.getText());
-		    close();
-		} else {
-		    if (mReturnListener != null)
-			mReturnListener.returnFromPW_Dialog(null, null);
-		    close();
-		}
+					if (mReturnListener != null)
+						mReturnListener.returnFromPW_Dialog(editTextUser.getText(), editTextPW.getText());
+					close();
+				} else {
+					if (mReturnListener != null)
+						mReturnListener.returnFromPW_Dialog(null, null);
+					close();
+				}
 
-		return true;
-	    }
-	};
+				return true;
+			}
+		};
 
-    }
+	}
 
-    @Override
-    protected void SkinIsChanged() {
+	@Override
+	protected void SkinIsChanged() {
 
-    }
+	}
 
 }

@@ -18,7 +18,6 @@ package CB_UI_Base.graphics;
 /**
  * @author Longri
  */
-public enum GL_Align
-{
+public enum GL_Align {
 	CENTER, LEFT, RIGHT;
 }

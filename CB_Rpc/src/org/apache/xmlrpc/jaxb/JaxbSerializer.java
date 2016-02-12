@@ -27,7 +27,6 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
-
 /** A serializer for JAXB objects.
  */
 public class JaxbSerializer extends ExtSerializer {
@@ -44,39 +43,53 @@ public class JaxbSerializer extends ExtSerializer {
 		context = pContext;
 	}
 
-	protected String getTagName() { return JAXB_TAG; }
+	protected String getTagName() {
+		return JAXB_TAG;
+	}
 
 	protected void serialize(final ContentHandler pHandler, Object pObject) throws SAXException {
 		/* We must ensure, that startDocument() and endDocument() events
 		 * are suppressed. So we replace the content handler with the following:
 		 */
 		ContentHandler h = new ContentHandler() {
-			public void endDocument() throws SAXException {}
-			public void startDocument() throws SAXException {}
+			public void endDocument() throws SAXException {
+			}
+
+			public void startDocument() throws SAXException {
+			}
+
 			public void characters(char[] pChars, int pOffset, int pLength) throws SAXException {
 				pHandler.characters(pChars, pOffset, pLength);
 			}
+
 			public void ignorableWhitespace(char[] pChars, int pOffset, int pLength) throws SAXException {
 				pHandler.ignorableWhitespace(pChars, pOffset, pLength);
 			}
+
 			public void endPrefixMapping(String pPrefix) throws SAXException {
 				pHandler.endPrefixMapping(pPrefix);
 			}
+
 			public void skippedEntity(String pName) throws SAXException {
 				pHandler.endPrefixMapping(pName);
 			}
+
 			public void setDocumentLocator(Locator pLocator) {
 				pHandler.setDocumentLocator(pLocator);
 			}
+
 			public void processingInstruction(String pTarget, String pData) throws SAXException {
 				pHandler.processingInstruction(pTarget, pData);
 			}
+
 			public void startPrefixMapping(String pPrefix, String pURI) throws SAXException {
 				pHandler.startPrefixMapping(pPrefix, pURI);
 			}
+
 			public void endElement(String pURI, String pLocalName, String pQName) throws SAXException {
 				pHandler.endElement(pURI, pLocalName, pQName);
 			}
+
 			public void startElement(String pURI, String pLocalName, String pQName, Attributes pAttrs) throws SAXException {
 				pHandler.startElement(pURI, pLocalName, pQName, pAttrs);
 			}
@@ -85,7 +98,7 @@ public class JaxbSerializer extends ExtSerializer {
 			context.createMarshaller().marshal(pObject, h);
 		} catch (JAXBException e) {
 			Throwable t = e.getLinkedException();
-			if (t != null  &&  t instanceof SAXException) {
+			if (t != null && t instanceof SAXException) {
 				throw (SAXException) t;
 			} else {
 				throw new SAXException(e);

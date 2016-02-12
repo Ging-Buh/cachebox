@@ -33,8 +33,7 @@
 
 package bsh;
 
-public class DelayedEvalBshMethod extends BshMethod
-{
+public class DelayedEvalBshMethod extends BshMethod {
 	/**
 	 * 
 	 */
@@ -57,10 +56,8 @@ public class DelayedEvalBshMethod extends BshMethod
 	 * Note: technically I think we could get by passing in only the current namespace or perhaps BshClassManager here instead of CallStack
 	 * and Interpreter. However let's just play it safe in case of future changes - anywhere you eval a node you need these.
 	 */
-	DelayedEvalBshMethod(String name, String returnTypeDescriptor, BSHReturnType returnTypeNode, String[] paramNames,
-			String[] paramTypeDescriptors, BSHFormalParameters paramTypesNode, BSHBlock methodBody, NameSpace declaringNameSpace,
-			Modifiers modifiers, CallStack callstack, Interpreter interpreter)
-	{
+	DelayedEvalBshMethod(String name, String returnTypeDescriptor, BSHReturnType returnTypeNode, String[] paramNames, String[] paramTypeDescriptors, BSHFormalParameters paramTypesNode, BSHBlock methodBody, NameSpace declaringNameSpace,
+			Modifiers modifiers, CallStack callstack, Interpreter interpreter) {
 		super(name, null/* returnType */, paramNames, null/* paramTypes */, methodBody, declaringNameSpace, modifiers);
 
 		this.returnTypeDescriptor = returnTypeDescriptor;
@@ -71,44 +68,35 @@ public class DelayedEvalBshMethod extends BshMethod
 		this.interpreter = interpreter;
 	}
 
-	public String getReturnTypeDescriptor()
-	{
+	public String getReturnTypeDescriptor() {
 		return returnTypeDescriptor;
 	}
 
 	@Override
 	@SuppressWarnings("rawtypes")
-	public Class getReturnType()
-	{
-		if (returnTypeNode == null) return null;
+	public Class getReturnType() {
+		if (returnTypeNode == null)
+			return null;
 
 		// BSHType will cache the type for us
-		try
-		{
+		try {
 			return returnTypeNode.evalReturnType(callstack, interpreter);
-		}
-		catch (EvalError e)
-		{
+		} catch (EvalError e) {
 			throw new InterpreterError("can't eval return type: " + e);
 		}
 	}
 
-	public String[] getParamTypeDescriptors()
-	{
+	public String[] getParamTypeDescriptors() {
 		return paramTypeDescriptors;
 	}
 
 	@Override
 	@SuppressWarnings("rawtypes")
-	public Class[] getParameterTypes()
-	{
+	public Class[] getParameterTypes() {
 		// BSHFormalParameters will cache the type for us
-		try
-		{
+		try {
 			return (Class[]) paramTypesNode.eval(callstack, interpreter);
-		}
-		catch (EvalError e)
-		{
+		} catch (EvalError e) {
 			throw new InterpreterError("can't eval param types: " + e);
 		}
 	}

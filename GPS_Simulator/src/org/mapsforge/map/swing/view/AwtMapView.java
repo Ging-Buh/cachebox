@@ -13,13 +13,11 @@ import org.mapsforge.map.model.Model;
 import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
 
-public class AwtMapView extends MapView
-{
+public class AwtMapView extends MapView {
 
 	private static final long serialVersionUID = 1L;
 
-	public AwtMapView()
-	{
+	public AwtMapView() {
 		super();
 
 		this.model = new Model();
@@ -36,8 +34,7 @@ public class AwtMapView extends MapView
 	}
 
 	@Override
-	public void paint(Graphics graphics)
-	{
+	public void paint(Graphics graphics) {
 		super.paint(graphics);
 
 		GraphicContext graphicContext = AwtGraphicFactory.createGraphicContext(graphics);

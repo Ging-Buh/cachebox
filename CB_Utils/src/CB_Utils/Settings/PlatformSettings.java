@@ -1,10 +1,8 @@
 package CB_Utils.Settings;
 
-public class PlatformSettings
-{
+public class PlatformSettings {
 	// ------ setPlatformSetting ------
-	public interface IPlatformSettings
-	{
+	public interface IPlatformSettings {
 		public SettingBase<?> Read(SettingBase<?> setting);
 
 		public void Write(SettingBase<?> setting);
@@ -13,27 +11,25 @@ public class PlatformSettings
 
 	public static IPlatformSettings platformSettingsListener;
 
-	public static void setPlatformSettings(IPlatformSettings listener)
-	{
+	public static void setPlatformSettings(IPlatformSettings listener) {
 		platformSettingsListener = listener;
 	}
 
-	public static SettingBase<?> ReadSetting(SettingBase<?> setting)
-	{
-		if (platformSettingsListener != null) setting = platformSettingsListener.Read(setting);
+	public static SettingBase<?> ReadSetting(SettingBase<?> setting) {
+		if (platformSettingsListener != null)
+			setting = platformSettingsListener.Read(setting);
 		return setting;
 	}
 
-	public static <T> void WriteSetting(SettingBase<T> setting)
-	{
-		if (platformSettingsListener != null) platformSettingsListener.Write(setting);
+	public static <T> void WriteSetting(SettingBase<T> setting) {
+		if (platformSettingsListener != null)
+			platformSettingsListener.Write(setting);
 	}
 
 	/**
 	 * @return True, if platform settings are set
 	 */
-	public static boolean canUsePlatformSettings()
-	{
+	public static boolean canUsePlatformSettings() {
 		return (platformSettingsListener != null);
 	}
 

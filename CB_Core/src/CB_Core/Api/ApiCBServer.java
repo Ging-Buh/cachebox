@@ -1,6 +1,5 @@
 package CB_Core.Api;
 
-public class ApiCBServer extends ApiBase
-{
+public class ApiCBServer extends ApiBase {
 
 }

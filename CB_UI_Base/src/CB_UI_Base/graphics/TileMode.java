@@ -18,8 +18,7 @@ package CB_UI_Base.graphics;
 /**
  * @author Longri
  */
-public enum TileMode
-{
+public enum TileMode {
 	CLAMP, MIRROR, REPEAT
 
 }

@@ -31,73 +31,73 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class API_Button extends Button {
 
-    Image apiChk;
+	Image apiChk;
 
-    public API_Button(CB_RectF rec) {
-	super(rec, "API-Button");
+	public API_Button(CB_RectF rec) {
+		super(rec, "API-Button");
 
-	setText();
-	this.setOnClickListener(click);
+		setText();
+		this.setOnClickListener(click);
 
-	CB_RectF rec1 = new CB_RectF(this);
-	rec1.setWidth(this.getHeight());
-	rec1.setX(this.getWidth() - this.getHeight());
-	rec1 = rec1.ScaleCenter(0.7f);
+		CB_RectF rec1 = new CB_RectF(this);
+		rec1.setWidth(this.getHeight());
+		rec1.setX(this.getWidth() - this.getHeight());
+		rec1 = rec1.ScaleCenter(0.7f);
 
-	apiChk = new Image(rec1, "", false);
+		apiChk = new Image(rec1, "", false);
 
-	this.addChild(apiChk);
-	setImage();
+		this.addChild(apiChk);
+		setImage();
 
-    }
-
-    private void setText() {
-	this.setText(Translation.Get("getApiKey"));
-    }
-
-    @Override
-    protected void Initial() {
-	super.Initial();
-
-    }
-
-    public void setImage() {
-	if (apiChk != null) {
-	    Drawable drw;
-
-	    boolean Entry = false;
-
-	    if (Config.StagingAPI.getValue()) {
-		if (!Config.GcAPIStaging.getValue().equals(""))
-		    Entry = true;
-	    } else {
-		if (!Config.GcAPI.getValue().equals(""))
-		    Entry = true;
-	    }
-
-	    if (Entry) {
-		drw = new SpriteDrawable(SpriteCacheBase.getThemedSprite("chk-icon"));
-	    } else {
-		drw = new SpriteDrawable(SpriteCacheBase.getThemedSprite("chk-icon-disable"));
-	    }
-
-	    apiChk.setDrawable(drw);
 	}
 
-    }
-
-    OnClickListener click = new OnClickListener() {
+	private void setText() {
+		this.setText(Translation.Get("getApiKey"));
+	}
 
 	@Override
-	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-	    if (Plattform.used == Plattform.Desktop) {
-		(new GcApiLogin()).RunRequest();
-	    } else {
-		PlatformConnector.callGetApiKeyt();
-	    }
+	protected void Initial() {
+		super.Initial();
 
-	    return true;
 	}
-    };
+
+	public void setImage() {
+		if (apiChk != null) {
+			Drawable drw;
+
+			boolean Entry = false;
+
+			if (Config.StagingAPI.getValue()) {
+				if (!Config.GcAPIStaging.getValue().equals(""))
+					Entry = true;
+			} else {
+				if (!Config.GcAPI.getValue().equals(""))
+					Entry = true;
+			}
+
+			if (Entry) {
+				drw = new SpriteDrawable(SpriteCacheBase.getThemedSprite("chk-icon"));
+			} else {
+				drw = new SpriteDrawable(SpriteCacheBase.getThemedSprite("chk-icon-disable"));
+			}
+
+			apiChk.setDrawable(drw);
+		}
+
+	}
+
+	OnClickListener click = new OnClickListener() {
+
+		@Override
+		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+			if (Plattform.used == Plattform.Desktop) {
+				(new GcApiLogin()).RunRequest();
+			} else {
+				PlatformConnector.callGetApiKeyt();
+			}
+
+			return true;
+		}
+	};
 
 }

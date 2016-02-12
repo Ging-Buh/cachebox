@@ -5,8 +5,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 
 /** @author Nathan Sweet */
-public class Settings
-{
+public class Settings {
 	public boolean pot = true;
 	public int paddingX = 2, paddingY = 2;
 	public boolean edgePadding = true;
@@ -30,12 +29,10 @@ public class Settings
 	public boolean jsonOutput = true;
 	public boolean flattenPaths;
 
-	public Settings()
-	{
+	public Settings() {
 	}
 
-	public Settings(Settings settings)
-	{
+	public Settings(Settings settings) {
 		fast = settings.fast;
 		rotation = settings.rotation;
 		pot = settings.pot;

@@ -36,16 +36,13 @@ package bsh;
 import java.lang.reflect.Array;
 
 @SuppressWarnings("serial")
-class BSHArrayInitializer extends SimpleNode
-{
-	BSHArrayInitializer(int id)
-	{
+class BSHArrayInitializer extends SimpleNode {
+	BSHArrayInitializer(int id) {
 		super(id);
 	}
 
 	@Override
-	public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError
-	{
+	public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError {
 		throw new EvalError("Array initializer has no base type.", this, callstack);
 	}
 
@@ -58,8 +55,7 @@ class BSHArrayInitializer extends SimpleNode
 	 *            the top number of dimensions of the array e.g. 2 for a String [][];
 	 */
 	@SuppressWarnings("rawtypes")
-	public Object eval(Class baseType, int dimensions, CallStack callstack, Interpreter interpreter) throws EvalError
-	{
+	public Object eval(Class baseType, int dimensions, CallStack callstack, Interpreter interpreter) throws EvalError {
 		int numInitializers = jjtGetNumChildren();
 
 		// allocate the array to store the initializers
@@ -70,19 +66,18 @@ class BSHArrayInitializer extends SimpleNode
 		Object initializers = Array.newInstance(baseType, dima);
 
 		// Evaluate the initializers
-		for (int i = 0; i < numInitializers; i++)
-		{
+		for (int i = 0; i < numInitializers; i++) {
 			SimpleNode node = (SimpleNode) jjtGetChild(i);
 			Object currentInitializer;
-			if (node instanceof BSHArrayInitializer)
-			{
-				if (dimensions < 2) throw new EvalError("Invalid Location for Intializer, position: " + i, this, callstack);
+			if (node instanceof BSHArrayInitializer) {
+				if (dimensions < 2)
+					throw new EvalError("Invalid Location for Intializer, position: " + i, this, callstack);
 				currentInitializer = ((BSHArrayInitializer) node).eval(baseType, dimensions - 1, callstack, interpreter);
-			}
-			else
+			} else
 				currentInitializer = node.eval(callstack, interpreter);
 
-			if (currentInitializer == Primitive.VOID) throw new EvalError("Void in array initializer, position" + i, this, callstack);
+			if (currentInitializer == Primitive.VOID)
+				throw new EvalError("Void in array initializer, position" + i, this, callstack);
 
 			// Determine if any conversion is necessary on the initializers.
 			//
@@ -94,16 +89,12 @@ class BSHArrayInitializer extends SimpleNode
 			// If we have conversions on those in the future then we need to
 			// get the real base type here instead of the dimensionless one.
 			Object value = currentInitializer;
-			if (dimensions == 1)
-			{
+			if (dimensions == 1) {
 				// We do a bsh cast here. strictJava should be able to affect
 				// the cast there when we tighten control
-				try
-				{
+				try {
 					value = Types.castObject(currentInitializer, baseType, Types.CAST);
-				}
-				catch (UtilEvalError e)
-				{
+				} catch (UtilEvalError e) {
 					throw e.toEvalError("Error in array initializer", this, callstack);
 				}
 				// unwrap any primitive, map voids to null, etc.
@@ -111,17 +102,12 @@ class BSHArrayInitializer extends SimpleNode
 			}
 
 			// store the value in the array
-			try
-			{
+			try {
 				Array.set(initializers, i, value);
-			}
-			catch (IllegalArgumentException e)
-			{
+			} catch (IllegalArgumentException e) {
 				Interpreter.debug("illegal arg" + e);
 				throwTypeError(baseType, currentInitializer, i, callstack);
-			}
-			catch (ArrayStoreException e)
-			{ // I think this can happen
+			} catch (ArrayStoreException e) { // I think this can happen
 				Interpreter.debug("arraystore" + e);
 				throwTypeError(baseType, currentInitializer, i, callstack);
 			}
@@ -131,15 +117,14 @@ class BSHArrayInitializer extends SimpleNode
 	}
 
 	@SuppressWarnings("rawtypes")
-	private void throwTypeError(Class baseType, Object initializer, int argNum, CallStack callstack) throws EvalError
-	{
+	private void throwTypeError(Class baseType, Object initializer, int argNum, CallStack callstack) throws EvalError {
 		String rhsType;
-		if (initializer instanceof Primitive) rhsType = ((Primitive) initializer).getType().getName();
+		if (initializer instanceof Primitive)
+			rhsType = ((Primitive) initializer).getType().getName();
 		else
 			rhsType = Reflect.normalizeClassName(initializer.getClass());
 
-		throw new EvalError("Incompatible type: " + rhsType + " in initializer of array type: " + baseType + " at position: " + argNum,
-				this, callstack);
+		throw new EvalError("Incompatible type: " + rhsType + " in initializer of array type: " + baseType + " at position: " + argNum, this, callstack);
 	}
 
 }

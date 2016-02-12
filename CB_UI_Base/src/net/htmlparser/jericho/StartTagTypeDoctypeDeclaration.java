@@ -21,37 +21,39 @@
 package net.htmlparser.jericho;
 
 final class StartTagTypeDoctypeDeclaration extends StartTagTypeGenericImplementation {
-	static final StartTagTypeDoctypeDeclaration INSTANCE=new StartTagTypeDoctypeDeclaration();
+	static final StartTagTypeDoctypeDeclaration INSTANCE = new StartTagTypeDoctypeDeclaration();
 
 	private StartTagTypeDoctypeDeclaration() {
-		super("document type declaration","<!doctype",">",null,false,false,false);
+		super("document type declaration", "<!doctype", ">", null, false, false, false);
 	}
 
 	protected int getEnd(final Source source, int pos) {
-		final ParseText parseText=source.getParseText();
-		boolean insideQuotes=false;
-		boolean insideSquareBrackets=false;
+		final ParseText parseText = source.getParseText();
+		boolean insideQuotes = false;
+		boolean insideSquareBrackets = false;
 		do {
-			final char c=parseText.charAt(pos);
+			final char c = parseText.charAt(pos);
 			if (insideQuotes) {
-				if (c=='"') insideQuotes=false;
+				if (c == '"')
+					insideQuotes = false;
 			} else {
 				switch (c) {
-					case '>':
-						if (!insideSquareBrackets) return pos+1;
-						break;
-					case '"':
-						insideQuotes=true;
-						break;
-					case '[':
-						insideSquareBrackets=true;
-						break;
-					case ']':
-						insideSquareBrackets=false;
-						break;
+				case '>':
+					if (!insideSquareBrackets)
+						return pos + 1;
+					break;
+				case '"':
+					insideQuotes = true;
+					break;
+				case '[':
+					insideSquareBrackets = true;
+					break;
+				case ']':
+					insideSquareBrackets = false;
+					break;
 				}
 			}
-		} while ((++pos)<source.getEnd());
+		} while ((++pos) < source.getEnd());
 		return -1;
 	}
 }

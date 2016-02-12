@@ -24,7 +24,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
 /** Abstract base implementation of {@link org.apache.xmlrpc.parser.TypeParser}
  * for parsing an atomic value.
  */
@@ -44,10 +43,9 @@ public abstract class AtomicParser extends TypeParserImpl {
 	}
 
 	public void characters(char[] pChars, int pStart, int pLength) throws SAXException {
-        if (sb == null) {
+		if (sb == null) {
 			if (!isEmpty(pChars, pStart, pLength)) {
-				throw new SAXParseException("Unexpected non-whitespace characters",
-											getDocumentLocator());
+				throw new SAXParseException("Unexpected non-whitespace characters", getDocumentLocator());
 			}
 		} else {
 			sb.append(pChars, pStart, pLength);
@@ -58,9 +56,7 @@ public abstract class AtomicParser extends TypeParserImpl {
 		if (--level == 0) {
 			setResult(sb.toString());
 		} else {
-			throw new SAXParseException("Unexpected end tag in atomic element: "
-										+ new QName(pURI, pLocalName),
-										getDocumentLocator());
+			throw new SAXParseException("Unexpected end tag in atomic element: " + new QName(pURI, pLocalName), getDocumentLocator());
 		}
 	}
 
@@ -68,9 +64,7 @@ public abstract class AtomicParser extends TypeParserImpl {
 		if (level++ == 0) {
 			sb = new StringBuffer();
 		} else {
-			throw new SAXParseException("Unexpected start tag in atomic element: "
-										+ new QName(pURI, pLocalName),
-										getDocumentLocator());
+			throw new SAXParseException("Unexpected start tag in atomic element: " + new QName(pURI, pLocalName), getDocumentLocator());
 		}
 	}
 }

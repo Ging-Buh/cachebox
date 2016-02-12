@@ -2,8 +2,7 @@ package CB_UI_Base.CB_Texturepacker;
 
 import java.util.ArrayList;
 
-public abstract class Rect_Base
-{
+public abstract class Rect_Base {
 	public static Rect_Base that;
 	public Object image;
 	public String name;
@@ -28,25 +27,21 @@ public abstract class Rect_Base
 
 	public abstract Rect_Base getInstanz(Rect_Base rec);
 
-	public Rect_Base()
-	{
+	public Rect_Base() {
 	}
 
-	protected void setSize(Rect_Base freeNode)
-	{
+	protected void setSize(Rect_Base freeNode) {
 		x = freeNode.x;
 		y = freeNode.y;
 		width = freeNode.width;
 		height = freeNode.height;
 	}
 
-	protected Rect_Base(Rect_Base freeNode)
-	{
+	protected Rect_Base(Rect_Base freeNode) {
 		setSize(freeNode);
 	}
 
-	protected void set(Rect_Base rect)
-	{
+	protected void set(Rect_Base rect) {
 		name = rect.name;
 		image = rect.image;
 		offsetX = rect.offsetX;
@@ -68,23 +63,24 @@ public abstract class Rect_Base
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (getClass() != obj.getClass()) return false;
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
 		Rect_Base other = (Rect_Base) obj;
-		if (name == null)
-		{
-			if (other.name != null) return false;
-		}
-		else if (!name.equals(other.name)) return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
 		return true;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return name + "[" + x + "," + y + " " + width + "x" + height + "]";
 	}
 

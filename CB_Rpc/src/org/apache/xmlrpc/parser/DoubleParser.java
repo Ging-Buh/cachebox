@@ -21,7 +21,6 @@ package org.apache.xmlrpc.parser;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
 /** Parser for double values.
  */
 public class DoubleParser extends AtomicParser {
@@ -29,8 +28,7 @@ public class DoubleParser extends AtomicParser {
 		try {
 			super.setResult(new Double(pResult));
 		} catch (NumberFormatException e) {
-			throw new SAXParseException("Failed to parse double value: " + pResult,
-										getDocumentLocator());
+			throw new SAXParseException("Failed to parse double value: " + pResult, getDocumentLocator());
 		}
 	}
 }

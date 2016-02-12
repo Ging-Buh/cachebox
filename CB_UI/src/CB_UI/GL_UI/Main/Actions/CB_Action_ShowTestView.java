@@ -10,38 +10,33 @@ import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_ShowTestView extends CB_Action_ShowView
-{
+public class CB_Action_ShowTestView extends CB_Action_ShowView {
 
-	public CB_Action_ShowTestView()
-	{
+	public CB_Action_ShowTestView() {
 		super("TestView", MenuID.AID_TEST_VIEW);
 	}
 
 	@Override
-	public void Execute()
-	{
-		if ((TabMainView.testView == null) && (tabMainView != null) && (tab != null)) TabMainView.testView = new TestView(
-				tab.getContentRec(), "TestView");
+	public void Execute() {
+		if ((TabMainView.testView == null) && (tabMainView != null) && (tab != null))
+			TabMainView.testView = new TestView(tab.getContentRec(), "TestView");
 
-		if ((TabMainView.testView != null) && (tab != null)) tab.ShowView(TabMainView.testView);
+		if ((TabMainView.testView != null) && (tab != null))
+			tab.ShowView(TabMainView.testView);
 	}
 
 	@Override
-	public boolean getEnabled()
-	{
+	public boolean getEnabled() {
 		return true;
 	}
 
 	@Override
-	public Sprite getIcon()
-	{
+	public Sprite getIcon() {
 		return SpriteCacheBase.Icons.get(IconName.jokerPhone_25.ordinal());
 	}
 
 	@Override
-	public CB_View_Base getView()
-	{
+	public CB_View_Base getView() {
 		return TabMainView.testView;
 	}
 }

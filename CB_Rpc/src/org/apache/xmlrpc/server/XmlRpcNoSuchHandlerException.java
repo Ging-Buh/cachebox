@@ -20,7 +20,6 @@ package org.apache.xmlrpc.server;
 
 import org.apache.xmlrpc.XmlRpcException;
 
-
 /** This exception is thrown, if an unknown handler is called.
  */
 public class XmlRpcNoSuchHandlerException extends XmlRpcException {

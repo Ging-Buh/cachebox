@@ -22,58 +22,46 @@ import android.graphics.BitmapFactory;
 
 import com.badlogic.gdx.graphics.Pixmap.Format;
 
-
-public class AndroidManager extends ManagerBase
-{
+public class AndroidManager extends ManagerBase {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(AndroidManager.class);
-	
-	public AndroidManager(DisplayModel displaymodel)
-	{
+
+	public AndroidManager(DisplayModel displaymodel) {
 		super(displaymodel);
 	}
 
 	@Override
-	public PackBase CreatePack(String file) throws IOException
-	{
+	public PackBase CreatePack(String file) throws IOException {
 		return new AndroidPack(this, file);
 	}
 
-	public android.graphics.Bitmap LoadLocalBitmap(String layer, Descriptor desc)
-	{
+	public android.graphics.Bitmap LoadLocalBitmap(String layer, Descriptor desc) {
 		return LoadLocalBitmap(GetLayerByName(layer, layer, ""), desc);
 	}
 
 	@Override
-	public TileGL LoadLocalPixmap(Layer layer, Descriptor desc, int ThreadIndex)
-	{
+	public TileGL LoadLocalPixmap(Layer layer, Descriptor desc, int ThreadIndex) {
 
-		if (layer.isMapsForge)
-		{
+		if (layer.isMapsForge) {
 			return getMapsforgePixMap(layer, desc, ThreadIndex);
 		}
-		try
-		{
+		try {
 			// Schauen, ob Tile im Cache liegt
 			String cachedTileFilename = layer.GetLocalFilename(desc);
 
 			long cachedTileAge = 0;
 
-			if (FileIO.FileExists(cachedTileFilename))
-			{
+			if (FileIO.FileExists(cachedTileFilename)) {
 				File info = new File(cachedTileFilename);
 				cachedTileAge = info.lastModified();
 			}
 			Format format = layer.isOverlay() ? Format.RGBA4444 : Format.RGB565;
 			// Kachel im Pack suchen
-			for (int i = 0; i < mapPacks.size(); i++)
-			{
+			for (int i = 0; i < mapPacks.size(); i++) {
 				PackBase mapPack = mapPacks.get(i);
-				if ((mapPack.Layer.Name.equalsIgnoreCase(layer.Name)) && (mapPack.MaxAge >= cachedTileAge))
-				{
+				if ((mapPack.Layer.Name.equalsIgnoreCase(layer.Name)) && (mapPack.MaxAge >= cachedTileAge)) {
 					BoundingBox bbox = mapPacks.get(i).Contains(desc);
 
-					if (bbox != null)
-					{
+					if (bbox != null) {
 						byte[] b = mapPacks.get(i).LoadFromBoundingBoxByteArray(bbox, desc);
 						TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present, format);
 						return bmpTile;
@@ -82,8 +70,7 @@ public class AndroidManager extends ManagerBase
 			}
 			// Kein Map Pack am Start!
 			// Falls Kachel im Cache liegt, diese von dort laden!
-			if (cachedTileAge != 0)
-			{
+			if (cachedTileAge != 0) {
 				android.graphics.Bitmap result = BitmapFactory.decodeFile(cachedTileFilename);
 				ByteArrayOutputStream stream = new ByteArrayOutputStream();
 				result.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, stream);
@@ -91,9 +78,7 @@ public class AndroidManager extends ManagerBase
 				TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present, format);
 				return bmpTile;
 			}
-		}
-		catch (Exception exc)
-		{
+		} catch (Exception exc) {
 			log.error("Manager", "Exception", exc);
 			/*
 			 * #if DEBUG Global.AddLog("Manager.LoadLocalBitmap: " + exc.ToString()); #endif
@@ -102,8 +87,7 @@ public class AndroidManager extends ManagerBase
 		return null;
 	}
 
-	public android.graphics.Bitmap LoadLocalBitmap(Layer layer, Descriptor desc)
-	{
+	public android.graphics.Bitmap LoadLocalBitmap(Layer layer, Descriptor desc) {
 		/*
 		 * if (layer.isMapsForge) { if ((mapDatabase == null) || (!mapsForgeFile.equalsIgnoreCase(layer.Name))) { mapDatabase = new
 		 * MapDatabase(); mapDatabase.openFile(CB_Core.Config.settings.MapPackFolder.getValue() + "/" + layer.Name); renderer = new
@@ -124,47 +108,40 @@ public class AndroidManager extends ManagerBase
 		 * Bitmap bitj = BitmapFactory.decodeByteArray(baos.toByteArray(), 0, baos.size()); try { baos.close(); } catch (IOException e) { }
 		 * return bitj; }
 		 */
-		try
-		{
+		try {
 			// Schauen, ob Tile im Cache liegt
 			String cachedTileFilename = layer.GetLocalFilename(desc);
 
 			long cachedTileAge = 0;
 
-			if (FileIO.FileExists(cachedTileFilename))
-			{
+			if (FileIO.FileExists(cachedTileFilename)) {
 				File info = new File(cachedTileFilename);
 				cachedTileAge = info.lastModified();
 			}
 
 			// Kachel im Pack suchen
-			for (int i = 0; i < mapPacks.size(); i++)
-			{
+			for (int i = 0; i < mapPacks.size(); i++) {
 				AndroidPack mapPack = (AndroidPack) mapPacks.get(i);
-				if ((mapPack.Layer.Name.equalsIgnoreCase(layer.Name)) && (mapPack.MaxAge >= cachedTileAge))
-				{
+				if ((mapPack.Layer.Name.equalsIgnoreCase(layer.Name)) && (mapPack.MaxAge >= cachedTileAge)) {
 					BoundingBox bbox = mapPacks.get(i).Contains(desc);
 
-					if (bbox != null) return ((AndroidPack) (mapPacks.get(i))).LoadFromBoundingBox(bbox, desc);
+					if (bbox != null)
+						return ((AndroidPack) (mapPacks.get(i))).LoadFromBoundingBox(bbox, desc);
 				}
 			}
 			// Kein Map Pack am Start!
 			// Falls Kachel im Cache liegt, diese von dort laden!
-			if (cachedTileAge != 0)
-			{
+			if (cachedTileAge != 0) {
 				return BitmapFactory.decodeFile(cachedTileFilename);
 			}
-		}
-		catch (Exception exc)
-		{
+		} catch (Exception exc) {
 
 		}
 		return null;
 	}
 
 	@Override
-	protected ImageData getImagePixel(byte[] img)
-	{
+	protected ImageData getImagePixel(byte[] img) {
 		android.graphics.Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
 		// Buffer dst = null;
 		int[] pixels = new int[bitmap.getWidth() * bitmap.getHeight()];
@@ -181,10 +158,8 @@ public class AndroidManager extends ManagerBase
 	}
 
 	@Override
-	protected byte[] getImageFromData(ImageData imgData)
-	{
-		android.graphics.Bitmap bmp = android.graphics.Bitmap.createBitmap(imgData.PixelColorArray, imgData.width, imgData.height,
-				android.graphics.Bitmap.Config.RGB_565);
+	protected byte[] getImageFromData(ImageData imgData) {
+		android.graphics.Bitmap bmp = android.graphics.Bitmap.createBitmap(imgData.PixelColorArray, imgData.width, imgData.height, android.graphics.Bitmap.Config.RGB_565);
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		bmp.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, baos);
@@ -193,8 +168,7 @@ public class AndroidManager extends ManagerBase
 	}
 
 	@Override
-	public ext_GraphicFactory getGraphicFactory(float Scalefactor)
-	{
+	public ext_GraphicFactory getGraphicFactory(float Scalefactor) {
 		return ext_AndroidGraphicFactory.getInstance(Scalefactor);
 	}
 

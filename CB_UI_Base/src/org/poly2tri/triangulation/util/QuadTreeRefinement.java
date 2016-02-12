@@ -8,10 +8,8 @@ import org.poly2tri.geometry.polygon.Polygon;
  * 
  * @author thahlen@gmail.com
  */
-public class QuadTreeRefinement 
-{
-	public static final void refine( Polygon p, int depth )
-	{
-		
+public class QuadTreeRefinement {
+	public static final void refine(Polygon p, int depth) {
+
 	}
 }

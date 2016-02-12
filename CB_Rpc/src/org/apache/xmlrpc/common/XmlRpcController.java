@@ -20,7 +20,6 @@ package org.apache.xmlrpc.common;
 
 import org.apache.xmlrpc.XmlRpcConfig;
 
-
 /** A common base class for
  * {@link org.apache.xmlrpc.server.XmlRpcServer} and
  * {@link org.apache.xmlrpc.client.XmlRpcClient}.

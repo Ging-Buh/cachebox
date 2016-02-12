@@ -28,7 +28,6 @@ import org.apache.ws.commons.util.Base64;
 import org.apache.xmlrpc.common.XmlRpcHttpRequestConfigImpl;
 import org.apache.xmlrpc.common.XmlRpcStreamConfig;
 
-
 /** Provides utility functions useful in HTTP communications
  */
 public class HttpUtil {
@@ -40,16 +39,16 @@ public class HttpUtil {
 	 * @throws UnsupportedEncodingException The encoding <code>pEncoding</code> is invalid.
 	 */
 	public static String encodeBasicAuthentication(String pUser, String pPassword, String pEncoding) throws UnsupportedEncodingException {
-        if (pUser == null) {
+		if (pUser == null) {
 			return null;
-        }
-        final String s = pUser + ':' + pPassword;
+		}
+		final String s = pUser + ':' + pPassword;
 		if (pEncoding == null) {
 			pEncoding = XmlRpcStreamConfig.UTF8_ENCODING;
 		}
-        final byte[] bytes = s.getBytes(pEncoding);
+		final byte[] bytes = s.getBytes(pEncoding);
 		return Base64.encode(s.getBytes(pEncoding), 0, bytes.length, 0, null);
-    }
+	}
 
 	/** Returns, whether the HTTP header value <code>pHeaderValue</code>
 	 * indicates, that GZIP encoding is used or may be used.
@@ -61,43 +60,43 @@ public class HttpUtil {
 	public static boolean isUsingGzipEncoding(String pHeaderValue) {
 		if (pHeaderValue == null) {
 			return false;
-        }
-        for (StringTokenizer st = new StringTokenizer(pHeaderValue, ",");  st.hasMoreTokens();  ) {
-            String encoding = st.nextToken();
-            int offset = encoding.indexOf(';');
-            if (offset >= 0) {
-                encoding = encoding.substring(0, offset);
-            }
-            if ("gzip".equalsIgnoreCase(encoding.trim())) {
-            	return true;
-            }
-        }
-        return false;
-    }
+		}
+		for (StringTokenizer st = new StringTokenizer(pHeaderValue, ","); st.hasMoreTokens();) {
+			String encoding = st.nextToken();
+			int offset = encoding.indexOf(';');
+			if (offset >= 0) {
+				encoding = encoding.substring(0, offset);
+			}
+			if ("gzip".equalsIgnoreCase(encoding.trim())) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-    /**
-     * Returns, whether the HTTP header value <code>pHeaderValue</code>
-     * indicates, that another encoding than "identity" is used.
-     * This is typically the value of "Transfer-Encoding", or "TE".
-     * @return Null, if the transfer encoding in use is "identity".
-     *   Otherwise, another transfer encoding. 
-     */
-    public static String getNonIdentityTransferEncoding(String pHeaderValue) {
-        if (pHeaderValue == null) {
-            return null;
-        }
-        for (StringTokenizer st = new StringTokenizer(pHeaderValue, ",");  st.hasMoreTokens();  ) {
-            String encoding = st.nextToken();
-            int offset = encoding.indexOf(';');
-            if (offset >= 0) {
-                encoding = encoding.substring(0, offset);
-            }
-            if (!"identity".equalsIgnoreCase(encoding.trim())) {
-                return encoding.trim();
-            }
-        }
-        return null;
-    }
+	/**
+	 * Returns, whether the HTTP header value <code>pHeaderValue</code>
+	 * indicates, that another encoding than "identity" is used.
+	 * This is typically the value of "Transfer-Encoding", or "TE".
+	 * @return Null, if the transfer encoding in use is "identity".
+	 *   Otherwise, another transfer encoding. 
+	 */
+	public static String getNonIdentityTransferEncoding(String pHeaderValue) {
+		if (pHeaderValue == null) {
+			return null;
+		}
+		for (StringTokenizer st = new StringTokenizer(pHeaderValue, ","); st.hasMoreTokens();) {
+			String encoding = st.nextToken();
+			int offset = encoding.indexOf(';');
+			if (offset >= 0) {
+				encoding = encoding.substring(0, offset);
+			}
+			if (!"identity".equalsIgnoreCase(encoding.trim())) {
+				return encoding.trim();
+			}
+		}
+		return null;
+	}
 
 	/** Returns, whether the HTTP header values in <code>pValues</code>
 	 * indicate, that GZIP encoding is used or may be used.
@@ -115,7 +114,7 @@ public class HttpUtil {
 			}
 		}
 		return false;
-    }
+	}
 
 	/** Reads a header line from the input stream <code>pIn</code>
 	 * and converts it into a string.
@@ -127,22 +126,22 @@ public class HttpUtil {
 	 * @throws IOException Reading the header line failed.
 	 */
 	public static String readLine(InputStream pIn, byte[] pBuffer) throws IOException {
-        int next;
-        int count = 0;
-        while (true) {
-            next = pIn.read();
-            if (next < 0 || next == '\n') {
-                break;
-            }
-            if (next != '\r') {
-                pBuffer[count++] = (byte) next;
-            }
-            if (count >= pBuffer.length) {
-                throw new IOException ("HTTP Header too long");
-            }
-        }
-        return new String(pBuffer, 0, count, "US-ASCII");
-    }
+		int next;
+		int count = 0;
+		while (true) {
+			next = pIn.read();
+			if (next < 0 || next == '\n') {
+				break;
+			}
+			if (next != '\r') {
+				pBuffer[count++] = (byte) next;
+			}
+			if (count >= pBuffer.length) {
+				throw new IOException("HTTP Header too long");
+			}
+		}
+		return new String(pBuffer, 0, count, "US-ASCII");
+	}
 
 	/** Parses an "Authorization" header and adds the username and password
 	 * to <code>pConfig</code>.
@@ -166,19 +165,19 @@ public class HttpUtil {
 			return;
 		}
 		String auth = st.nextToken();
-	    try {
-	        byte[] c = Base64.decode(auth.toCharArray(), 0, auth.length());
-	        String enc = pConfig.getBasicEncoding();
-            if (enc == null) {
-                enc = XmlRpcStreamConfig.UTF8_ENCODING;
-            }
-            String str = new String(c, enc);
-	        int col = str.indexOf(':');
+		try {
+			byte[] c = Base64.decode(auth.toCharArray(), 0, auth.length());
+			String enc = pConfig.getBasicEncoding();
+			if (enc == null) {
+				enc = XmlRpcStreamConfig.UTF8_ENCODING;
+			}
+			String str = new String(c, enc);
+			int col = str.indexOf(':');
 			if (col >= 0) {
 				pConfig.setBasicUserName(str.substring(0, col));
-				pConfig.setBasicPassword(str.substring(col+1));
+				pConfig.setBasicPassword(str.substring(col + 1));
 			}
-	    } catch (Throwable ignore) {
-	    }
+		} catch (Throwable ignore) {
+		}
 	}
 }

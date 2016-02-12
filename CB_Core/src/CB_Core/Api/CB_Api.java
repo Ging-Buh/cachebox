@@ -36,55 +36,55 @@ import CB_Core.CB_Core_Settings;
  */
 public class CB_Api {
 
-    private static final String CB_API_URL_GET_URLS = "http://team-cachebox.de/CB_API/index.php?get=url_ACB";
-    private static final String CB_API_URL_GET_URLS_Staging = "http://team-cachebox.de/CB_API/index.php?get=url_ACB_Staging";
+	private static final String CB_API_URL_GET_URLS = "http://team-cachebox.de/CB_API/index.php?get=url_ACB";
+	private static final String CB_API_URL_GET_URLS_Staging = "http://team-cachebox.de/CB_API/index.php?get=url_ACB_Staging";
 
-    /**
-     * Gibt die bei Team-Cachebox.de hinterlegte GC Auth url zurück
-     * 
-     * @param staging
-     *            Config.settings.StagingAPI.getValue()
-     * @return String
-     */
-    public static String getGcAuthUrl() {
-	String result = "";
+	/**
+	 * Gibt die bei Team-Cachebox.de hinterlegte GC Auth url zurück
+	 * 
+	 * @param staging
+	 *            Config.settings.StagingAPI.getValue()
+	 * @return String
+	 */
+	public static String getGcAuthUrl() {
+		String result = "";
 
-	try {
-	    HttpClient httpclient = new DefaultHttpClient();
-	    HttpPost httppost = new HttpPost(CB_Core_Settings.StagingAPI.getValue() ? CB_API_URL_GET_URLS_Staging : CB_API_URL_GET_URLS);
+		try {
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpPost httppost = new HttpPost(CB_Core_Settings.StagingAPI.getValue() ? CB_API_URL_GET_URLS_Staging : CB_API_URL_GET_URLS);
 
-	    httppost.setHeader("Accept", "application/json");
-	    httppost.setHeader("Content-type", "application/json");
+			httppost.setHeader("Accept", "application/json");
+			httppost.setHeader("Content-type", "application/json");
 
-	    // Execute HTTP Post Request
-	    HttpResponse response = httpclient.execute(httppost);
+			// Execute HTTP Post Request
+			HttpResponse response = httpclient.execute(httppost);
 
-	    BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-	    String line = "";
-	    while ((line = rd.readLine()) != null) {
-		result += line + "\n";
-	    }
+			BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+			String line = "";
+			while ((line = rd.readLine()) != null) {
+				result += line + "\n";
+			}
 
-	    try
-	    // Parse JSON Result
-	    {
-		JSONTokener tokener = new JSONTokener(result);
-		JSONObject json = (JSONObject) tokener.nextValue();
-		if (CB_Core_Settings.StagingAPI.getValue())
-		    return json.getString("GcAuth_ACB_Staging");
-		return json.getString("GcAuth_ACB");
+			try
+			// Parse JSON Result
+			{
+				JSONTokener tokener = new JSONTokener(result);
+				JSONObject json = (JSONObject) tokener.nextValue();
+				if (CB_Core_Settings.StagingAPI.getValue())
+					return json.getString("GcAuth_ACB_Staging");
+				return json.getString("GcAuth_ACB");
 
-	    } catch (JSONException e) {
-		e.printStackTrace();
-	    }
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 
-	} catch (Exception ex) {
-	    ex.printStackTrace();
-	    return "";
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return "";
+		}
+
+		return "";
+
 	}
-
-	return "";
-
-    }
 
 }

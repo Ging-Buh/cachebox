@@ -30,12 +30,10 @@ import ch.fhnw.imvs.gpssimulator.data.GPSDataListener;
 import ch.fhnw.imvs.gpssimulator.nmea.NMEASentence;
 
 @SuppressWarnings("serial")
-public class GeneralPanel extends JPanel implements GPSDataListener
-{
+public class GeneralPanel extends JPanel implements GPSDataListener {
 
 	@Override
-	public void valueChanged()
-	{
+	public void valueChanged() {
 		mode.setSelectedItem(GPSData.getMode());
 	}
 
@@ -43,8 +41,7 @@ public class GeneralPanel extends JPanel implements GPSDataListener
 
 	private final List<NMEASentence> sentences;
 
-	public GeneralPanel(List<NMEASentence> list)
-	{
+	public GeneralPanel(List<NMEASentence> list) {
 		GPSData.addChangeListener(this);
 		this.setBorder(BorderFactory.createTitledBorder("General"));
 
@@ -56,25 +53,20 @@ public class GeneralPanel extends JPanel implements GPSDataListener
 		p1.add(new JLabel(""));
 		p1.add(new JLabel("Line"));
 		p1.add(new JLabel("Data"));
-		for (final NMEASentence s : list)
-		{
+		for (final NMEASentence s : list) {
 			final JCheckBox line = new JCheckBox("", true);
 			final JCheckBox data = new JCheckBox("", true);
 			s.setLinePrinted(true);
 			s.setPrintContent(true);
-			line.addActionListener(new ActionListener()
-			{
+			line.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent e)
-				{
+				public void actionPerformed(ActionEvent e) {
 					s.setLinePrinted(line.isSelected());
 				}
 			});
-			data.addActionListener(new ActionListener()
-			{
+			data.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent e)
-				{
+				public void actionPerformed(ActionEvent e) {
 					s.setPrintContent(data.isSelected());
 				}
 			});
@@ -85,15 +77,12 @@ public class GeneralPanel extends JPanel implements GPSDataListener
 		this.add(p1);
 
 		final JCheckBox checkSum = new JCheckBox("", true);
-		for (NMEASentence s : list)
-		{
+		for (NMEASentence s : list) {
 			s.setPrintChecksum(true);
 		}
-		checkSum.addActionListener(new ActionListener()
-		{
+		checkSum.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
 				boolean printChecksum = checkSum.isSelected();
 				for (NMEASentence s : sentences)
 					s.setPrintChecksum(printChecksum);
@@ -103,11 +92,9 @@ public class GeneralPanel extends JPanel implements GPSDataListener
 		for (GPSData.Mode m : GPSData.Mode.values())
 			mode.addItem(m);
 
-		mode.addActionListener(new ActionListener()
-		{
+		mode.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
 				GPSData.setMode((GPSData.Mode) mode.getSelectedItem());
 			}
 		});

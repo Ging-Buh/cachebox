@@ -3,8 +3,7 @@ package CB_Core.Solver;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 
-public interface SolverCacheInterface
-{
+public interface SolverCacheInterface {
 	public Cache sciGetSelectedCache();
 
 	public Waypoint sciGetSelectedWaypoint();

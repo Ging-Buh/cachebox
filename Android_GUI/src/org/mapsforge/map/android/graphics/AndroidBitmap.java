@@ -123,8 +123,7 @@ public class AndroidBitmap implements Bitmap {
 			// http://stackoverflow.com/questions/2895065/what-does-the-filter-parameter-to-createscaledbitmap-do
 			// passing true results in smoother edges, less pixellation.
 			// If smoother corners improve the readability of map labels is perhaps debatable.
-			android.graphics.Bitmap scaledBitmap = android.graphics.Bitmap.createScaledBitmap(this.bitmap, width,
-					height, true);
+			android.graphics.Bitmap scaledBitmap = android.graphics.Bitmap.createScaledBitmap(this.bitmap, width, height, true);
 			destroy();
 			this.bitmap = scaledBitmap;
 		}
@@ -175,9 +174,9 @@ public class AndroidBitmap implements Bitmap {
 
 	protected void destroyBitmap() {
 		if (this.bitmap != null) {
-			
-				this.bitmap.recycle();
-			
+
+			this.bitmap.recycle();
+
 			this.bitmap = null;
 		}
 	}

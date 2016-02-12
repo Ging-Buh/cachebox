@@ -34,31 +34,28 @@
 package bsh;
 
 @SuppressWarnings("serial")
-class BSHReturnType extends SimpleNode
-{
+class BSHReturnType extends SimpleNode {
 	public boolean isVoid;
 
-	BSHReturnType(int id)
-	{
+	BSHReturnType(int id) {
 		super(id);
 	}
 
-	BSHType getTypeNode()
-	{
+	BSHType getTypeNode() {
 		return (BSHType) jjtGetChild(0);
 	}
 
-	public String getTypeDescriptor(CallStack callstack, Interpreter interpreter, String defaultPackage)
-	{
-		if (isVoid) return "V";
+	public String getTypeDescriptor(CallStack callstack, Interpreter interpreter, String defaultPackage) {
+		if (isVoid)
+			return "V";
 		else
 			return getTypeNode().getTypeDescriptor(callstack, interpreter, defaultPackage);
 	}
 
 	@SuppressWarnings("rawtypes")
-	public Class evalReturnType(CallStack callstack, Interpreter interpreter) throws EvalError
-	{
-		if (isVoid) return Void.TYPE;
+	public Class evalReturnType(CallStack callstack, Interpreter interpreter) throws EvalError {
+		if (isVoid)
+			return Void.TYPE;
 		else
 			return getTypeNode().getType(callstack, interpreter);
 	}

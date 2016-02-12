@@ -20,7 +20,6 @@ package org.apache.xmlrpc.common;
 
 import org.apache.xmlrpc.XmlRpcException;
 
-
 /** This exception must be thrown, if the user isn't authenticated.
  */
 public class XmlRpcNotAuthorizedException extends XmlRpcException {

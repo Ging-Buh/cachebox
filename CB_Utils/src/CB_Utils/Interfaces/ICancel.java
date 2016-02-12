@@ -20,7 +20,6 @@ package CB_Utils.Interfaces;
  * 
  * @author Longri
  */
-public interface ICancel
-{
+public interface ICancel {
 	public boolean cancel();
 }

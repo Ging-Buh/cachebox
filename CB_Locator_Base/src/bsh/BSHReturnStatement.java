@@ -33,24 +33,22 @@
 
 package bsh;
 
-class BSHReturnStatement extends SimpleNode implements ParserConstants
-{
+class BSHReturnStatement extends SimpleNode implements ParserConstants {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	public int kind;
 
-	BSHReturnStatement(int id)
-	{
+	BSHReturnStatement(int id) {
 		super(id);
 	}
 
 	@Override
-	public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError
-	{
+	public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError {
 		Object value;
-		if (jjtGetNumChildren() > 0) value = ((SimpleNode) jjtGetChild(0)).eval(callstack, interpreter);
+		if (jjtGetNumChildren() > 0)
+			value = ((SimpleNode) jjtGetChild(0)).eval(callstack, interpreter);
 		else
 			value = Primitive.VOID;
 

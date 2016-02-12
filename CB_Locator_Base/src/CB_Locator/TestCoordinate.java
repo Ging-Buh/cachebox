@@ -21,8 +21,7 @@ package CB_Locator;
  * 
  * @author Longri
  */
-public class TestCoordinate
-{
+public class TestCoordinate {
 	/**
 	 * Conversion factor from degrees to microdegrees.
 	 */
@@ -35,8 +34,7 @@ public class TestCoordinate
 	 *            the coordinate in degrees.
 	 * @return the coordinate in microdegrees (degrees * 10^6).
 	 */
-	public static int degreesToMicrodegrees(double coordinate)
-	{
+	public static int degreesToMicrodegrees(double coordinate) {
 		return (int) (coordinate * CONVERSION_FACTOR);
 	}
 
@@ -47,8 +45,7 @@ public class TestCoordinate
 	 *            the coordinate in microdegrees (degrees * 10^6).
 	 * @return the coordinate in degrees.
 	 */
-	public static double microdegreesToDegrees(int coordinate)
-	{
+	public static double microdegreesToDegrees(int coordinate) {
 		return coordinate / CONVERSION_FACTOR;
 	}
 
@@ -59,22 +56,19 @@ public class TestCoordinate
 	 * 
 	 * @return the int value.
 	 */
-	public static int getSignedInt(byte[] Data)
-	{
+	public static int getSignedInt(byte[] Data) {
 		int bufferPosition = 0;
 		int variableByteDecode = 0;
 		byte variableByteShift = 0;
 
 		// check if the continuation bit is set
-		while ((Data[bufferPosition] & 0x80) != 0)
-		{
+		while ((Data[bufferPosition] & 0x80) != 0) {
 			variableByteDecode |= (Data[bufferPosition++] & 0x7f) << variableByteShift;
 			variableByteShift += 7;
 		}
 
 		// read the six data bits from the last byte
-		if ((Data[bufferPosition] & 0x40) != 0)
-		{
+		if ((Data[bufferPosition] & 0x40) != 0) {
 			// negative
 			return -(variableByteDecode | ((Data[bufferPosition++] & 0x3f) << variableByteShift));
 		}
@@ -92,66 +86,38 @@ public class TestCoordinate
 	 *            the int value.
 	 * @return an array with 1-5 bytes.
 	 */
-	public static byte[] getVariableByteSigned(int value)
-	{
+	public static byte[] getVariableByteSigned(int value) {
 		long absValue = Math.abs((long) value);
-		if (absValue < 64)
-		{ // 2^6
-			// encode the number in a single byte
-			if (value < 0)
-			{
-				return new byte[]
-					{ (byte) (absValue | 0x40) };
+		if (absValue < 64) { // 2^6
+								// encode the number in a single byte
+			if (value < 0) {
+				return new byte[] { (byte) (absValue | 0x40) };
 			}
-			return new byte[]
-				{ (byte) absValue };
-		}
-		else if (absValue < 8192)
-		{ // 2^13
-			// encode the number in two bytes
-			if (value < 0)
-			{
-				return new byte[]
-					{ (byte) (absValue | 0x80), (byte) ((absValue >> 7) | 0x40) };
+			return new byte[] { (byte) absValue };
+		} else if (absValue < 8192) { // 2^13
+										// encode the number in two bytes
+			if (value < 0) {
+				return new byte[] { (byte) (absValue | 0x80), (byte) ((absValue >> 7) | 0x40) };
 			}
-			return new byte[]
-				{ (byte) (absValue | 0x80), (byte) (absValue >> 7) };
-		}
-		else if (absValue < 1048576)
-		{ // 2^20
-			// encode the number in three bytes
-			if (value < 0)
-			{
-				return new byte[]
-					{ (byte) (absValue | 0x80), (byte) ((absValue >> 7) | 0x80), (byte) ((absValue >> 14) | 0x40) };
+			return new byte[] { (byte) (absValue | 0x80), (byte) (absValue >> 7) };
+		} else if (absValue < 1048576) { // 2^20
+											// encode the number in three bytes
+			if (value < 0) {
+				return new byte[] { (byte) (absValue | 0x80), (byte) ((absValue >> 7) | 0x80), (byte) ((absValue >> 14) | 0x40) };
 			}
-			return new byte[]
-				{ (byte) (absValue | 0x80), (byte) ((absValue >> 7) | 0x80), (byte) (absValue >> 14) };
-		}
-		else if (absValue < 134217728)
-		{ // 2^27
-			// encode the number in four bytes
-			if (value < 0)
-			{
-				return new byte[]
-					{ (byte) (absValue | 0x80), (byte) ((absValue >> 7) | 0x80), (byte) ((absValue >> 14) | 0x80),
-							(byte) ((absValue >> 21) | 0x40) };
+			return new byte[] { (byte) (absValue | 0x80), (byte) ((absValue >> 7) | 0x80), (byte) (absValue >> 14) };
+		} else if (absValue < 134217728) { // 2^27
+											// encode the number in four bytes
+			if (value < 0) {
+				return new byte[] { (byte) (absValue | 0x80), (byte) ((absValue >> 7) | 0x80), (byte) ((absValue >> 14) | 0x80), (byte) ((absValue >> 21) | 0x40) };
 			}
-			return new byte[]
-				{ (byte) (absValue | 0x80), (byte) ((absValue >> 7) | 0x80), (byte) ((absValue >> 14) | 0x80), (byte) (absValue >> 21) };
-		}
-		else
-		{
+			return new byte[] { (byte) (absValue | 0x80), (byte) ((absValue >> 7) | 0x80), (byte) ((absValue >> 14) | 0x80), (byte) (absValue >> 21) };
+		} else {
 			// encode the number in five bytes
-			if (value < 0)
-			{
-				return new byte[]
-					{ (byte) (absValue | 0x80), (byte) ((absValue >> 7) | 0x80), (byte) ((absValue >> 14) | 0x80),
-							(byte) ((absValue >> 21) | 0x80), (byte) ((absValue >> 28) | 0x40) };
+			if (value < 0) {
+				return new byte[] { (byte) (absValue | 0x80), (byte) ((absValue >> 7) | 0x80), (byte) ((absValue >> 14) | 0x80), (byte) ((absValue >> 21) | 0x80), (byte) ((absValue >> 28) | 0x40) };
 			}
-			return new byte[]
-				{ (byte) (absValue | 0x80), (byte) ((absValue >> 7) | 0x80), (byte) ((absValue >> 14) | 0x80),
-						(byte) ((absValue >> 21) | 0x80), (byte) (absValue >> 28) };
+			return new byte[] { (byte) (absValue | 0x80), (byte) ((absValue >> 7) | 0x80), (byte) ((absValue >> 14) | 0x80), (byte) ((absValue >> 21) | 0x80), (byte) (absValue >> 28) };
 		}
 	}
 
@@ -161,8 +127,7 @@ public class TestCoordinate
 	 */
 	private final byte[] store;
 
-	public TestCoordinate(double Lat, double Lon)
-	{
+	public TestCoordinate(double Lat, double Lon) {
 		final byte[] la = getVariableByteSigned(degreesToMicrodegrees(Lat));
 		final byte[] lo = getVariableByteSigned(degreesToMicrodegrees(Lon));
 
@@ -180,15 +145,13 @@ public class TestCoordinate
 		System.arraycopy(lo, 0, store, store[0], lo.length);
 	}
 
-	public double getLatitude()
-	{
+	public double getLatitude() {
 		final byte[] la = new byte[store[0] - 1];
 		System.arraycopy(store, 1, la, 0, la.length);
 		return microdegreesToDegrees(getSignedInt(la));
 	}
 
-	public double getLongitude()
-	{
+	public double getLongitude() {
 		final byte[] lo = new byte[store.length - store[0]];
 		System.arraycopy(store, store[0], lo, 0, lo.length);
 		return microdegreesToDegrees(getSignedInt(lo));

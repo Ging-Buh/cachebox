@@ -9,8 +9,7 @@ import CB_Locator.Map.Descriptor;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Math.PointD;
 
-public class DescriptorTest extends TestCase
-{
+public class DescriptorTest extends TestCase {
 	private MeasuredCoordList mMeasuredCoordList;
 	private Descriptor mDescriptor;
 	private final int projectionZoom = 40;
@@ -18,28 +17,24 @@ public class DescriptorTest extends TestCase
 	private final int centerY = 100;
 
 	@Override
-	public void setUp() throws Exception
-	{
+	public void setUp() throws Exception {
 		super.setUp();
 		mDescriptor = new Descriptor(0, 0, projectionZoom, false);
 		mMeasuredCoordList = new MeasuredCoordList();
 	}
 
 	@Override
-	protected void tearDown() throws Exception
-	{
+	protected void tearDown() throws Exception {
 		super.tearDown();
 		mDescriptor = null;
 		mMeasuredCoordList = null;
 	}
 
-	public void testConstructor()
-	{
+	public void testConstructor() {
 		assertTrue("Objekt muss konstruierbar sein", mDescriptor != null);
 	}
 
-	public void testDescriptor()
-	{
+	public void testDescriptor() {
 		Coordinate Referenz = new CoordinateGPS(49.427700, 6.204300);
 		assertTrue("Objekt muss konstruierbar sein", Referenz != null);
 
@@ -57,10 +52,8 @@ public class DescriptorTest extends TestCase
 		double medianLat = MeasuredCoord.Referenz.getLatitude();
 		double medianLon = MeasuredCoord.Referenz.getLongitude();
 
-		double peakLat = Math.max(Math.abs(mMeasuredCoordList.get(0).getLatitude() - medianLat),
-				Math.abs(mMeasuredCoordList.get(mMeasuredCoordList.size() - 1).getLatitude() - medianLat));
-		double peakLon = Math.max(Math.abs(mMeasuredCoordList.get(0).getLongitude() - medianLon),
-				Math.abs(mMeasuredCoordList.get(mMeasuredCoordList.size() - 1).getLongitude() - medianLon));
+		double peakLat = Math.max(Math.abs(mMeasuredCoordList.get(0).getLatitude() - medianLat), Math.abs(mMeasuredCoordList.get(mMeasuredCoordList.size() - 1).getLatitude() - medianLat));
+		double peakLon = Math.max(Math.abs(mMeasuredCoordList.get(0).getLongitude() - medianLon), Math.abs(mMeasuredCoordList.get(mMeasuredCoordList.size() - 1).getLongitude() - medianLon));
 
 		// Umrechnung in XY
 		double medianX = Descriptor.LongitudeToTileX(projectionZoom, medianLon);
@@ -79,17 +72,14 @@ public class DescriptorTest extends TestCase
 
 		int sumX = 0;
 		int sumY = 0;
-		for (int i = 1; i < mMeasuredCoordList.size(); i++)
-		{
+		for (int i = 1; i < mMeasuredCoordList.size(); i++) {
 
-			PointD lastDrawEntry = Descriptor.projectCoordinate(mMeasuredCoordList.get(i - 1).getLatitude(), mMeasuredCoordList.get(i - 1)
-					.getLongitude(), projectionZoom);
+			PointD lastDrawEntry = Descriptor.projectCoordinate(mMeasuredCoordList.get(i - 1).getLatitude(), mMeasuredCoordList.get(i - 1).getLongitude(), projectionZoom);
 
 			int lastX = (int) (centerX + (lastDrawEntry.X - medianX) * factor);
 			int lastY = (int) (centerY - (lastDrawEntry.Y - medianY) * factor);
 
-			PointD thisDrawEntry = Descriptor.projectCoordinate(mMeasuredCoordList.get(i).getLatitude(), mMeasuredCoordList.get(i)
-					.getLongitude(), projectionZoom);
+			PointD thisDrawEntry = Descriptor.projectCoordinate(mMeasuredCoordList.get(i).getLatitude(), mMeasuredCoordList.get(i).getLongitude(), projectionZoom);
 
 			int x = (int) (centerX + (thisDrawEntry.X - medianX) * factor);
 			int y = (int) (centerY - (thisDrawEntry.Y - medianY) * factor);
@@ -103,8 +93,7 @@ public class DescriptorTest extends TestCase
 		assertTrue("Die Summe der Y punkte sollte  sein", sumY == 249);
 	}
 
-	public void testAdjustDescriptor()
-	{
+	public void testAdjustDescriptor() {
 		Descriptor def = new Descriptor(4400, 2684, 13, true);
 		Descriptor def12 = new Descriptor(2200, 1342, 12, true);
 		CB_List<Descriptor> adjustDown = def.AdjustZoom(12);
@@ -118,8 +107,7 @@ public class DescriptorTest extends TestCase
 		adjustUpList.add(new Descriptor(8801, 5369, 14, true));
 		CB_List<Descriptor> adjustUp = def.AdjustZoom(14);
 		assertTrue("return must only four Descriptor", adjustUp.size() == 4);
-		for (int i = 0; i < 4; i++)
-		{
+		for (int i = 0; i < 4; i++) {
 			assertTrue("Descriptor must inside the list", adjustUp.contains(adjustUpList.get(i)));
 		}
 

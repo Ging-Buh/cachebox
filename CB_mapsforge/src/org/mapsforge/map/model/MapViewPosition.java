@@ -131,8 +131,7 @@ public class MapViewPosition extends Observable implements Persistable {
 				int signY = 1; // Define the Sign for Vertical Movement
 				int tileSize = displayModel.getTileSize();
 
-				final double targetPixelX = MercatorProjection.longitudeToPixelX(pos.getLongitude(), getZoomLevel(),
-						tileSize);
+				final double targetPixelX = MercatorProjection.longitudeToPixelX(pos.getLongitude(), getZoomLevel(), tileSize);
 				final double targetPixelY = MercatorProjection.latitudeToPixelY(pos.getLatitude(), getZoomLevel(), tileSize);
 
 				final double currentPixelX = MercatorProjection.longitudeToPixelX(longitude, getZoomLevel(), tileSize);
@@ -282,8 +281,7 @@ public class MapViewPosition extends Observable implements Persistable {
 	public void moveCenterAndZoom(double moveHorizontal, double moveVertical, byte zoomLevelDiff) {
 		synchronized (this) {
 			int tileSize = this.displayModel.getTileSize();
-			double pixelX = MercatorProjection.longitudeToPixelX(this.longitude, this.zoomLevel, tileSize)
-					- moveHorizontal;
+			double pixelX = MercatorProjection.longitudeToPixelX(this.longitude, this.zoomLevel, tileSize) - moveHorizontal;
 			double pixelY = MercatorProjection.latitudeToPixelY(this.latitude, this.zoomLevel, tileSize) - moveVertical;
 
 			long mapSize = MercatorProjection.getMapSize(this.zoomLevel, tileSize);
@@ -455,8 +453,7 @@ public class MapViewPosition extends Observable implements Persistable {
 			this.longitude = latLong.getLongitude();
 		} else {
 			this.latitude = Math.max(Math.min(latLong.getLatitude(), this.mapLimit.getMaxLatitude()), this.mapLimit.getMinLatitude());
-			this.longitude = Math.max(Math.min(latLong.getLongitude(), this.mapLimit.getMaxLongitude()),
-					this.mapLimit.getMinLongitude());
+			this.longitude = Math.max(Math.min(latLong.getLongitude(), this.mapLimit.getMaxLongitude()), this.mapLimit.getMinLongitude());
 		}
 	}
 

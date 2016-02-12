@@ -17,21 +17,17 @@ import java.util.GregorianCalendar;
 import bsh.CallStack;
 import bsh.Interpreter;
 
-public class dir
-{
-	static final String[] months =
-		{ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+public class dir {
+	static final String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
-	public static String usage()
-	{
+	public static String usage() {
 		return "usage: dir( String dir )\n       dir()";
 	}
 
 	/**
 	 * Implement dir() command.
 	 */
-	public static void invoke(Interpreter env, CallStack callstack)
-	{
+	public static void invoke(Interpreter env, CallStack callstack) {
 		String dir = ".";
 		invoke(env, callstack, dir);
 	}
@@ -39,34 +35,27 @@ public class dir
 	/**
 	 * Implement dir( String directory ) command.
 	 */
-	public static void invoke(Interpreter env, CallStack callstack, String dir)
-	{
+	public static void invoke(Interpreter env, CallStack callstack, String dir) {
 		File file;
-		try
-		{
+		try {
 			file = env.pathToFile(dir);
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			env.println("error reading path: " + e);
 			return;
 		}
 
-		if (!file.exists() || !file.canRead())
-		{
+		if (!file.exists() || !file.canRead()) {
 			env.println("Can't read " + file);
 			return;
 		}
-		if (!file.isDirectory())
-		{
+		if (!file.isDirectory()) {
 			env.println("'" + dir + "' is not a directory");
 		}
 
 		String[] files = file.list();
 		Arrays.sort(files);
 
-		for (int i = 0; i < files.length; i++)
-		{
+		for (int i = 0; i < files.length; i++) {
 			File f = new File(dir + File.separator + files[i]);
 			StringBuilder sb = new StringBuilder();
 			sb.append(f.canRead() ? "r" : "-");
@@ -79,7 +68,8 @@ public class dir
 			c.setTime(d);
 			int day = c.get(Calendar.DAY_OF_MONTH);
 			sb.append(months[c.get(Calendar.MONTH)] + " " + day);
-			if (day < 10) sb.append(" ");
+			if (day < 10)
+				sb.append(" ");
 
 			sb.append(" ");
 
@@ -92,8 +82,7 @@ public class dir
 			len.setLength(fieldlen);
 			// hack to move the spaces to the front
 			int si = len.toString().indexOf(" ");
-			if (si != -1)
-			{
+			if (si != -1) {
 				String pad = len.toString().substring(si);
 				len.setLength(si);
 				len.insert(0, pad);
@@ -102,7 +91,8 @@ public class dir
 			sb.append(len.toString());
 
 			sb.append(" " + f.getName());
-			if (f.isDirectory()) sb.append("/");
+			if (f.isDirectory())
+				sb.append("/");
 
 			env.println(sb.toString());
 		}

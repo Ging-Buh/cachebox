@@ -40,8 +40,7 @@ public class RenderThemeBuilder {
 	int mapBackground;
 	private Integer version;
 
-	public RenderThemeBuilder(GraphicFactory graphicFactory, String elementName, Attributes attributes)
-			throws SAXException {
+	public RenderThemeBuilder(GraphicFactory graphicFactory, String elementName, Attributes attributes) throws SAXException {
 		this.baseStrokeWidth = 1f;
 		this.baseTextSize = 1f;
 		this.mapBackground = graphicFactory.createColor(Color.WHITE);
@@ -56,8 +55,7 @@ public class RenderThemeBuilder {
 		return new RenderTheme(this);
 	}
 
-	private void extractValues(GraphicFactory graphicFactory, String elementName, Attributes attributes)
-			throws SAXException {
+	private void extractValues(GraphicFactory graphicFactory, String elementName, Attributes attributes) throws SAXException {
 		for (int i = 0; i < attributes.getLength(); ++i) {
 			String name = attributes.getQName(i);
 			String value = attributes.getValue(i);

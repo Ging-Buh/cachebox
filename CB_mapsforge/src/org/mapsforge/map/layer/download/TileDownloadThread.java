@@ -36,8 +36,7 @@ class TileDownloadThread extends PausableThread {
 	private final Layer layer;
 	private final TileCache tileCache;
 
-	TileDownloadThread(TileCache tileCache, JobQueue<DownloadJob> jobQueue, Layer layer, GraphicFactory graphicFactory,
-			DisplayModel displayModel) {
+	TileDownloadThread(TileCache tileCache, JobQueue<DownloadJob> jobQueue, Layer layer, GraphicFactory graphicFactory, DisplayModel displayModel) {
 		super();
 
 		this.tileCache = tileCache;

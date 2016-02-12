@@ -15,12 +15,10 @@ import CB_UI_Base.graphics.PolylineDrawable;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
-public class PolylineOffset extends PolylineTestBase
-{
+public class PolylineOffset extends PolylineTestBase {
 	PolylineDrawable polyLineDrawable;
 
-	public PolylineOffset()
-	{
+	public PolylineOffset() {
 		super(" PolyLine Offset Test" + br + "Red / CAP.DEFAULT / StrokeWidth=20");
 		paint = new GL_Paint();
 		paint.setColor(Color.RED);
@@ -29,14 +27,12 @@ public class PolylineOffset extends PolylineTestBase
 
 	}
 
-	void createLineOffset(Path path)
-	{
+	void createLineOffset(Path path) {
 
 	}
 
 	@Override
-	public void work()
-	{
+	public void work() {
 
 		Color color = paint.getHSV_Color();
 
@@ -52,8 +48,7 @@ public class PolylineOffset extends PolylineTestBase
 		path.moveTo(vertices[0], 256 - vertices[1]);
 		glPath.moveTo(vertices[0], 256 - vertices[1]);
 
-		for (int i = 2; i < vertices.length - 1; i += 2)
-		{
+		for (int i = 2; i < vertices.length - 1; i += 2) {
 			path.lineTo(vertices[i], 256 - vertices[i + 1]);
 			glPath.lineTo(vertices[i], 256 - vertices[i + 1]);
 		}
@@ -64,8 +59,7 @@ public class PolylineOffset extends PolylineTestBase
 
 		MF_Paint.setColor(factory.createColor((int) (color.a * 255), (int) (color.r * 255), (int) (color.g * 255), (int) (color.b * 255)));
 
-		switch (paint.getCap())
-		{
+		switch (paint.getCap()) {
 		case BUTT:
 			MF_Paint.setStrokeCap(Cap.BUTT);
 		case ROUND:
@@ -76,8 +70,7 @@ public class PolylineOffset extends PolylineTestBase
 			break;
 		}
 
-		if (paint.getDashArray() != null)
-		{
+		if (paint.getDashArray() != null) {
 			MF_Paint.setDashPathEffect(paint.getDashArray());
 		}
 
@@ -89,16 +82,13 @@ public class PolylineOffset extends PolylineTestBase
 	}
 
 	@Override
-	public void render(Batch batch)
-	{
-		if (polyLineDrawable != null)
-		{
+	public void render(Batch batch) {
+		if (polyLineDrawable != null) {
 			polyLineDrawable.draw(batch, firstPoint.x, firstPoint.y, 256, 256, 0);
 			polyLineDrawable.draw(batch, firstPoint.x + 200, firstPoint.y, 512, 512, 0);
 		}
 
-		if (tex != null)
-		{
+		if (tex != null) {
 			batch.draw(tex, secondPoint.x, secondPoint.y, 256, 256);
 			batch.draw(tex, secondPoint.x + 200, secondPoint.y, 512, 512);
 		}

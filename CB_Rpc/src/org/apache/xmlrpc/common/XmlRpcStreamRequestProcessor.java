@@ -20,7 +20,6 @@ package org.apache.xmlrpc.common;
 
 import org.apache.xmlrpc.XmlRpcException;
 
-
 /** An instance of {@link XmlRpcRequestProcessor},
  * which is processing an XML stream.
  */

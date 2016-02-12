@@ -11,29 +11,29 @@ import CB_UI_Base.settings.CB_UI_Base_Settings;
 
 public class CB_Action_Show_Settings extends CB_Action {
 
-    public CB_Action_Show_Settings() {
-	super("settings", MenuID.AID_SHOW_SETTINGS);
-    }
+	public CB_Action_Show_Settings() {
+		super("settings", MenuID.AID_SHOW_SETTINGS);
+	}
 
-    @Override
-    public boolean getEnabled() {
-	return true;
-    }
+	@Override
+	public boolean getEnabled() {
+		return true;
+	}
 
-    @Override
-    public Sprite getIcon() {
-	return SpriteCacheBase.Icons.get(IconName.settings_26.ordinal());
-    }
+	@Override
+	public Sprite getIcon() {
+		return SpriteCacheBase.Icons.get(IconName.settings_26.ordinal());
+	}
 
-    boolean lastNightValue;
+	boolean lastNightValue;
 
-    @Override
-    public void Execute() {
+	@Override
+	public void Execute() {
 
-	SettingsActivity settingsDialog = new SettingsActivity();
-	lastNightValue = CB_UI_Base_Settings.nightMode.getValue();
+		SettingsActivity settingsDialog = new SettingsActivity();
+		lastNightValue = CB_UI_Base_Settings.nightMode.getValue();
 
-	settingsDialog.show();
-    }
+		settingsDialog.show();
+	}
 
 }

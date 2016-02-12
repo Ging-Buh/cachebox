@@ -36,6 +36,7 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
 
 	// used for debug bitmap accounting
 	protected static AtomicInteger rInstances;
+
 	static {
 		if (AndroidGraphicFactory.DEBUG_BITMAPS) {
 			rInstances = new AtomicInteger();
@@ -69,18 +70,15 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
 		synchronized (RESOURCE_BITMAPS) {
 			Pair<android.graphics.Bitmap, Integer> data = RESOURCE_BITMAPS.get(hash);
 			if (data != null) {
-				Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(data.first,
-						data.second + 1);
+				Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(data.first, data.second + 1);
 				RESOURCE_BITMAPS.put(hash, updated);
 				return data.first;
 			} else {
-				android.graphics.Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null,
-						createBitmapFactoryOptions(AndroidGraphicFactory.TRANSPARENT_BITMAP));
+				android.graphics.Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, createBitmapFactoryOptions(AndroidGraphicFactory.TRANSPARENT_BITMAP));
 				if (bitmap == null) {
 					throw new IOException("BitmapFactory failed to decodeStream");
 				}
-				Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(bitmap,
-						Integer.valueOf(1));
+				Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(bitmap, Integer.valueOf(1));
 				RESOURCE_BITMAPS.put(hash, updated);
 				if (AndroidGraphicFactory.DEBUG_BITMAPS) {
 					LOGGER.log(Level.INFO, "RESOURCE BITMAP CREATE " + hash);
@@ -104,8 +102,7 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
 			Pair<android.graphics.Bitmap, Integer> data = RESOURCE_BITMAPS.get(hash);
 			if (data != null) {
 				if (data.second.intValue() > 1) {
-					Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(
-							data.first, data.second - 1);
+					Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(data.first, data.second - 1);
 					RESOURCE_BITMAPS.put(hash, updated);
 					return false;
 				}

@@ -24,14 +24,12 @@ import CB_Utils.Util.MoveableList;
  * @author Longri
  * @param <T>
  */
-public class CB_Stack<T>
-{
+public class CB_Stack<T> {
 
 	private MoveableList<T> items;
 	private int maxItemSize = -1;
 
-	public CB_Stack()
-	{
+	public CB_Stack() {
 		items = new MoveableList<T>();
 	}
 
@@ -40,11 +38,10 @@ public class CB_Stack<T>
 	 * 
 	 * @param item
 	 */
-	public void add(T item)
-	{
-		synchronized (items)
-		{
-			if (items.contains(item)) return;
+	public void add(T item) {
+		synchronized (items) {
+			if (items.contains(item))
+				return;
 			items.add(item);
 			// log.debug("STACK add SIZE=" + items.size + "  (item: " + item.toString() + ")");
 			checkMaxItemSize();
@@ -56,12 +53,9 @@ public class CB_Stack<T>
 	 * 
 	 * @return
 	 */
-	public T get()
-	{
-		synchronized (items)
-		{
-			if (items.size == 0)
-			{
+	public T get() {
+		synchronized (items) {
+			if (items.size == 0) {
 				// log.debug("STACK empty Get");
 				return null;
 			}
@@ -74,21 +68,17 @@ public class CB_Stack<T>
 		}
 	}
 
-	public boolean contains(T value)
-	{
-		synchronized (items)
-		{
+	public boolean contains(T value) {
+		synchronized (items) {
 			return items.contains(value);
 		}
 	}
 
-	public int getMaxItemSize()
-	{
+	public int getMaxItemSize() {
 		return maxItemSize;
 	}
 
-	public void setMaxItemSize(int size)
-	{
+	public void setMaxItemSize(int size) {
 		maxItemSize = size;
 		checkMaxItemSize();
 	}
@@ -98,71 +88,58 @@ public class CB_Stack<T>
 	 * 
 	 * @return
 	 */
-	public boolean empty()
-	{
-		synchronized (items)
-		{
+	public boolean empty() {
+		synchronized (items) {
 			return items.size <= 0;
 		}
 	}
 
-	private void checkMaxItemSize()
-	{
-		synchronized (items)
-		{
-			if (maxItemSize < 1) return;
-			if (items.size > maxItemSize)
-			{
+	private void checkMaxItemSize() {
+		synchronized (items) {
+			if (maxItemSize < 1)
+				return;
+			if (items.size > maxItemSize) {
 				int removeCount = items.size - maxItemSize;
-				for (int i = 0; i < removeCount; i++)
-				{
+				for (int i = 0; i < removeCount; i++) {
 					items.remove(0);
 				}
 			}
 		}
 	}
 
-	public int getSize()
-	{
-		synchronized (items)
-		{
+	public int getSize() {
+		synchronized (items) {
 			return items.size;
 		}
 	}
 
-	public void addAll_removeOther(CB_List<T> descList)
-	{
-		synchronized (items)
-		{
+	public void addAll_removeOther(CB_List<T> descList) {
+		synchronized (items) {
 			items.clear();
 			items.addAll(descList);
 		}
 	}
 
-	public interface iCompare<T>
-	{
+	public interface iCompare<T> {
 		public int compare(T item1, T item2);
 	}
 
-	public void sort(iCompare<T> comparable)
-	{
+	public void sort(iCompare<T> comparable) {
 
 		boolean change = false;
 
-		do
-		{
+		do {
 			change = false;
-			for (int i = 0; i < items.size - 1; i++)
-			{
+			for (int i = 0; i < items.size - 1; i++) {
 				int compare = comparable.compare(items.get(i), items.get(i + 1));
-				if (compare <= 0) continue; // no changes
+				if (compare <= 0)
+					continue; // no changes
 
 				this.items.MoveItem(i + 1, -1);
 				change = true;
 				break;
 			}
-		}
-		while (change);
+		} while (change);
 
 	}
 }

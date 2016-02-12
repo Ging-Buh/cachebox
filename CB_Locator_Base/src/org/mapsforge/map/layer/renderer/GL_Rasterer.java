@@ -40,8 +40,7 @@ import com.badlogic.gdx.math.MathUtils;
 /**
  * @author Longri
  */
-public class GL_Rasterer
-{
+public class GL_Rasterer {
 	private static final String UNKNOWN_STYLE = "unknown style: ";
 	private final int TILE_SIZE;
 	private final DisplayModel DISPLAY_MODEL;
@@ -49,8 +48,7 @@ public class GL_Rasterer
 	// private final GraphicFactory GRAPHIC_FACTORY;
 	// private final CB_RectF TILE_REG;
 
-	public GL_Rasterer(GraphicFactory graphicFactory, DisplayModel displayModel)
-	{
+	public GL_Rasterer(GraphicFactory graphicFactory, DisplayModel displayModel) {
 		// this.symbolMatrix = (ext_Matrix) graphicFactory.createMatrix();
 		// GRAPHIC_FACTORY = graphicFactory;
 		DISPLAY_MODEL = displayModel;
@@ -58,31 +56,25 @@ public class GL_Rasterer
 		TILE_SIZE = displayModel.getTileSize();
 	}
 
-	public void drawWays(VectorDrawable drw, List<List<List<ShapePaintContainer>>> ways)
-	{
+	public void drawWays(VectorDrawable drw, List<List<List<ShapePaintContainer>>> ways) {
 		int levelsPerLayer = ways.get(0).size();
 
-		for (int layer = 0, layers = ways.size(); layer < layers; ++layer)
-		{
+		for (int layer = 0, layers = ways.size(); layer < layers; ++layer) {
 			List<List<ShapePaintContainer>> shapePaintContainers = ways.get(layer);
 
-			for (int level = 0; level < levelsPerLayer; ++level)
-			{
+			for (int level = 0; level < levelsPerLayer; ++level) {
 				List<ShapePaintContainer> wayList = shapePaintContainers.get(level);
 
-				for (int index = wayList.size() - 1; index >= 0; --index)
-				{
+				for (int index = wayList.size() - 1; index >= 0; --index) {
 					drawShapePaintContainer(drw, wayList.get(index));
 				}
 			}
 		}
 	}
 
-	private void drawShapePaintContainer(VectorDrawable drw, ShapePaintContainer shapePaintContainer)
-	{
+	private void drawShapePaintContainer(VectorDrawable drw, ShapePaintContainer shapePaintContainer) {
 		ShapeType shapeType = shapePaintContainer.shapeContainer.getShapeType();
-		switch (shapeType)
-		{
+		switch (shapeType) {
 		case CIRCLE:
 			drawCircleContainer(drw, shapePaintContainer);
 			return;
@@ -94,8 +86,7 @@ public class GL_Rasterer
 		}
 	}
 
-	private void drawCircleContainer(VectorDrawable drw, ShapePaintContainer shapePaintContainer)
-	{
+	private void drawCircleContainer(VectorDrawable drw, ShapePaintContainer shapePaintContainer) {
 		CircleContainer circleContainer = (CircleContainer) shapePaintContainer.shapeContainer;
 
 		GL_Paint Paint = (GL_Paint) shapePaintContainer.paint;
@@ -121,30 +112,25 @@ public class GL_Rasterer
 		drw.addDrawable(new CircleDrawable(PointX, PointY, radius, Paint, TILE_SIZE, TILE_SIZE), true);
 	}
 
-	private void drawPath(VectorDrawable drw, ShapePaintContainer shape, Point[][] coordinates)
-	{
+	private void drawPath(VectorDrawable drw, ShapePaintContainer shape, Point[][] coordinates) {
 		GL_Paint paint = (GL_Paint) shape.paint;
 
 		// if (true) return;
 
-		if (paint.isTransparent())
-		{
+		if (paint.isTransparent()) {
 			return; // nothing to draw
 		}
 
 		GL_Path path = new GL_Path();
 
-		for (int j = 0; j < coordinates.length; ++j)
-		{
+		for (int j = 0; j < coordinates.length; ++j) {
 			Point[] points = coordinates[j];
-			if (points.length >= 2)
-			{
+			if (points.length >= 2) {
 				path.setToMaxItems(points.length);
 				Point point = points[0];
 
 				path.moveTo((float) point.x, (float) (TILE_SIZE - point.y));
-				for (int i = 1; i < points.length; ++i)
-				{
+				for (int i = 1; i < points.length; ++i) {
 					point = points[i];
 					path.lineTo((float) point.x, (float) (TILE_SIZE - point.y));
 				}
@@ -155,28 +141,24 @@ public class GL_Rasterer
 
 		ArrayList<float[]> pathes = path.getVertices();
 
-		switch (style)
-		{
+		switch (style) {
 		case FILL:
-			for (float[] singlePath : pathes)
-			{
-				try
-				{
-					if (singlePath.length < 6) break; // Nothing to Draw
+			for (float[] singlePath : pathes) {
+				try {
+					if (singlePath.length < 6)
+						break; // Nothing to Draw
 					short[] triangles = GL_GraphicFactory.ECT.computeTriangles(singlePath).toArray();
 					drw.addDrawable(new PolygonDrawable(singlePath, triangles, paint, TILE_SIZE, TILE_SIZE), false);
-				}
-				catch (Exception e)
-				{
+				} catch (Exception e) {
 
 				}
 			}
 			return;
 
 		case STROKE:
-			for (float[] singlePath : pathes)
-			{
-				if (singlePath.length < 4) break; // Nothing to Draw
+			for (float[] singlePath : pathes) {
+				if (singlePath.length < 4)
+					break; // Nothing to Draw
 				drw.addDrawable(new PolylineDrawable(singlePath, paint, TILE_SIZE, TILE_SIZE), true);
 
 				// if (paint.getStrokeWidth() < 4) return;
@@ -201,12 +183,10 @@ public class GL_Rasterer
 
 	}
 
-	public void drawSymbols(VectorDrawable drw, List<SymbolContainer> symbolContainers)
-	{
+	public void drawSymbols(VectorDrawable drw, List<SymbolContainer> symbolContainers) {
 		// FIXME use Methode from MixedDataBaseRenderer
 
-		for (int index = symbolContainers.size() - 1; index >= 0; --index)
-		{
+		for (int index = symbolContainers.size() - 1; index >= 0; --index) {
 			SymbolContainer symbolContainer = symbolContainers.get(index);
 
 			float PointX = (float) (symbolContainer.point.x);
@@ -214,17 +194,14 @@ public class GL_Rasterer
 
 			BitmapDrawable bmp = (BitmapDrawable) symbolContainer.symbol;
 
-			if (symbolContainer.theta != 0)
-			{
+			if (symbolContainer.theta != 0) {
 
 				float theta = (360 - (symbolContainer.theta * MathUtils.radiansToDegrees)) * MathUtils.degreesToRadians;
 
 				drw.addDrawable(new SymbolDrawable(bmp, PointX, PointY, TILE_SIZE, TILE_SIZE, symbolContainer.alignCenter, theta), true);
 				// drw.addRotateDrawable(new SymbolDrawable(bmp, PointX, PointY, TILE_SIZE, TILE_SIZE, symbolContainer.alignCenter));
 
-			}
-			else
-			{
+			} else {
 
 				drw.addRotateDrawable(new SymbolDrawable(bmp, PointX, PointY, TILE_SIZE, TILE_SIZE, symbolContainer.alignCenter));
 
@@ -232,12 +209,10 @@ public class GL_Rasterer
 		}
 	}
 
-	public void drawNodes(VectorDrawable drw, List<PointTextContainer> pointTextContainers)
-	{
+	public void drawNodes(VectorDrawable drw, List<PointTextContainer> pointTextContainers) {
 		// FIXME use Methode from MixedDataBaseRenderer
 
-		for (int index = pointTextContainers.size() - 1; index >= 0; --index)
-		{
+		for (int index = pointTextContainers.size() - 1; index >= 0; --index) {
 			PointTextContainer pointTextContainer = pointTextContainers.get(index);
 
 			float TextWidth = (float) (pointTextContainer.boundary.getWidth());
@@ -249,22 +224,18 @@ public class GL_Rasterer
 			path.moveTo(PointX, PointY);
 			path.lineTo(PointX + TextWidth, PointY);
 
-			drw.addRotateDrawable(new TextDrawable(pointTextContainer.text, path, DISPLAY_MODEL.getTileSize(), DISPLAY_MODEL.getTileSize(),
-					(GL_Paint) pointTextContainer.paintFront, (GL_Paint) pointTextContainer.paintBack, false));
+			drw.addRotateDrawable(new TextDrawable(pointTextContainer.text, path, DISPLAY_MODEL.getTileSize(), DISPLAY_MODEL.getTileSize(), (GL_Paint) pointTextContainer.paintFront, (GL_Paint) pointTextContainer.paintBack, false));
 
 		}
 	}
 
-	public void drawWayNames(VectorDrawable drw, List<GL_WayTextContainer> wayTextContainers)
-	{
+	public void drawWayNames(VectorDrawable drw, List<GL_WayTextContainer> wayTextContainers) {
 		// FIXME use Methode from MixedDataBaseRenderer
 
-		for (int index = wayTextContainers.size() - 1; index >= 0; --index)
-		{
+		for (int index = wayTextContainers.size() - 1; index >= 0; --index) {
 			GL_WayTextContainer wayTextContainer = wayTextContainers.get(index);
 			wayTextContainer.path.flipY(DISPLAY_MODEL.getTileSize());
-			drw.addRotateDrawable(new TextDrawableFlipped(wayTextContainer.text, wayTextContainer.path, DISPLAY_MODEL.getTileSize(),
-					DISPLAY_MODEL.getTileSize(), (GL_Paint) wayTextContainer.fill, (GL_Paint) wayTextContainer.stroke, true));
+			drw.addRotateDrawable(new TextDrawableFlipped(wayTextContainer.text, wayTextContainer.path, DISPLAY_MODEL.getTileSize(), DISPLAY_MODEL.getTileSize(), (GL_Paint) wayTextContainer.fill, (GL_Paint) wayTextContainer.stroke, true));
 
 		}
 	}

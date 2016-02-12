@@ -22,8 +22,7 @@ import java.util.NoSuchElementException;
 /**
  * This class represents the current state of the GPS engine. This class is used in conjunction with the {@link Listener} interface.
  */
-public final class GpsStatus
-{
+public final class GpsStatus {
 	private static final int NUM_SATELLITES = 255;
 
 	/* These package private values are modified by the LocationManager class */
@@ -37,8 +36,7 @@ public final class GpsStatus
 	/**
 	 * @author Longri_2
 	 */
-	private final class SatelliteIterator implements Iterator<GpsSatellite>
-	{
+	private final class SatelliteIterator implements Iterator<GpsSatellite> {
 
 		/**
 		 * @uml.property name="mSatellites"
@@ -47,18 +45,14 @@ public final class GpsStatus
 		private final GpsSatellite[] mSatellites;
 		int mIndex = 0;
 
-		SatelliteIterator(GpsSatellite[] satellites)
-		{
+		SatelliteIterator(GpsSatellite[] satellites) {
 			mSatellites = satellites;
 		}
 
 		@Override
-		public boolean hasNext()
-		{
-			for (int i = mIndex; i < mSatellites.length; i++)
-			{
-				if (mSatellites[i].mValid)
-				{
+		public boolean hasNext() {
+			for (int i = mIndex; i < mSatellites.length; i++) {
+				if (mSatellites[i].mValid) {
 					return true;
 				}
 			}
@@ -66,13 +60,10 @@ public final class GpsStatus
 		}
 
 		@Override
-		public GpsSatellite next()
-		{
-			while (mIndex < mSatellites.length)
-			{
+		public GpsSatellite next() {
+			while (mIndex < mSatellites.length) {
 				GpsSatellite satellite = mSatellites[mIndex++];
-				if (satellite.mValid)
-				{
+				if (satellite.mValid) {
 					return satellite;
 				}
 			}
@@ -80,17 +71,14 @@ public final class GpsStatus
 		}
 
 		@Override
-		public void remove()
-		{
+		public void remove() {
 			throw new UnsupportedOperationException();
 		}
 	}
 
-	private final Iterable<GpsSatellite> mSatelliteList = new Iterable<GpsSatellite>()
-	{
+	private final Iterable<GpsSatellite> mSatelliteList = new Iterable<GpsSatellite>() {
 		@Override
-		public Iterator<GpsSatellite> iterator()
-		{
+		public Iterator<GpsSatellite> iterator() {
 			return new SatelliteIterator(mSatellites);
 		}
 	};
@@ -119,8 +107,7 @@ public final class GpsStatus
 	/**
 	 * Used for receiving notifications when GPS status has changed.
 	 */
-	public interface Listener
-	{
+	public interface Listener {
 		/**
 		 * Called to report changes in the GPS status. The event number is one of:
 		 * <ul>
@@ -143,15 +130,12 @@ public final class GpsStatus
 	 * 0183</a> for more details. You can implement this interface and call {@link LocationManager#addNmeaListener} to receive NMEA data
 	 * from the GPS engine.
 	 */
-	public interface NmeaListener
-	{
+	public interface NmeaListener {
 		void onNmeaReceived(long timestamp, String nmea);
 	}
 
-	public GpsStatus()
-	{
-		for (int i = 0; i < mSatellites.length; i++)
-		{
+	public GpsStatus() {
+		for (int i = 0; i < mSatellites.length; i++) {
 			mSatellites[i] = new GpsSatellite(i + 1);
 		}
 	}
@@ -160,18 +144,14 @@ public final class GpsStatus
 	 * Used internally within {@link LocationManager} to copy GPS status data from the Location Manager Service to its cached GpsStatus
 	 * instance. Is synchronized to ensure that GPS status updates are atomic.
 	 */
-	synchronized void setStatus(int svCount, int[] prns, float[] snrs, float[] elevations, float[] azimuths, int ephemerisMask,
-			int almanacMask, int usedInFixMask)
-	{
+	synchronized void setStatus(int svCount, int[] prns, float[] snrs, float[] elevations, float[] azimuths, int ephemerisMask, int almanacMask, int usedInFixMask) {
 		int i;
 
-		for (i = 0; i < mSatellites.length; i++)
-		{
+		for (i = 0; i < mSatellites.length; i++) {
 			mSatellites[i].mValid = false;
 		}
 
-		for (i = 0; i < svCount; i++)
-		{
+		for (i = 0; i < svCount; i++) {
 			int prn = prns[i] - 1;
 			int prnShift = (1 << prn);
 			GpsSatellite satellite = mSatellites[prn];
@@ -190,18 +170,15 @@ public final class GpsStatus
 	 * Used by {@link LocationManager#getGpsStatus} to copy LocationManager's cached GpsStatus instance to the client's copy. Since this
 	 * method is only used within {@link LocationManager#getGpsStatus}, it does not need to be synchronized.
 	 */
-	void setStatus(GpsStatus status)
-	{
+	void setStatus(GpsStatus status) {
 		mTimeToFirstFix = status.getTimeToFirstFix();
 
-		for (int i = 0; i < mSatellites.length; i++)
-		{
+		for (int i = 0; i < mSatellites.length; i++) {
 			mSatellites[i].setStatus(status.mSatellites[i]);
 		}
 	}
 
-	void setTimeToFirstFix(int ttff)
-	{
+	void setTimeToFirstFix(int ttff) {
 		mTimeToFirstFix = ttff;
 	}
 
@@ -210,8 +187,7 @@ public final class GpsStatus
 	 * 
 	 * @return time to first fix in milliseconds
 	 */
-	public int getTimeToFirstFix()
-	{
+	public int getTimeToFirstFix() {
 		return mTimeToFirstFix;
 	}
 
@@ -220,8 +196,7 @@ public final class GpsStatus
 	 * 
 	 * @return the list of satellites
 	 */
-	public Iterable<GpsSatellite> getSatellites()
-	{
+	public Iterable<GpsSatellite> getSatellites() {
 		return mSatelliteList;
 	}
 
@@ -230,13 +205,11 @@ public final class GpsStatus
 	 * 
 	 * @return the maximum number of satellites
 	 */
-	public int getMaxSatellites()
-	{
+	public int getMaxSatellites() {
 		return NUM_SATELLITES;
 	}
 
-	public void setSatelite(int index, GpsSatellite coreSat)
-	{
+	public void setSatelite(int index, GpsSatellite coreSat) {
 		mSatellites[index] = coreSat;
 	}
 }

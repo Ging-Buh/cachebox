@@ -40,90 +40,77 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
 /** @author Nathan Sweet */
-public class Desktop_Packer extends TexturePacker_Base
-{
+public class Desktop_Packer extends TexturePacker_Base {
 
 	@Override
-	public TexturePacker_Base getInstanz(File rootDir, Settings settings)
-	{
+	public TexturePacker_Base getInstanz(File rootDir, Settings settings) {
 		return new Desktop_Packer(rootDir, settings);
 	}
 
-	public Desktop_Packer(File rootDir, Settings settings)
-	{
+	public Desktop_Packer(File rootDir, Settings settings) {
 		this.settings = settings;
 
-		if (settings.pot)
-		{
-			if (settings.maxWidth != MathUtils.nextPowerOfTwo(settings.maxWidth)) throw new RuntimeException(
-					"If pot is true, maxWidth must be a power of two: " + settings.maxWidth);
-			if (settings.maxHeight != MathUtils.nextPowerOfTwo(settings.maxHeight)) throw new RuntimeException(
-					"If pot is true, maxHeight must be a power of two: " + settings.maxHeight);
+		if (settings.pot) {
+			if (settings.maxWidth != MathUtils.nextPowerOfTwo(settings.maxWidth))
+				throw new RuntimeException("If pot is true, maxWidth must be a power of two: " + settings.maxWidth);
+			if (settings.maxHeight != MathUtils.nextPowerOfTwo(settings.maxHeight))
+				throw new RuntimeException("If pot is true, maxHeight must be a power of two: " + settings.maxHeight);
 		}
 
 		maxRectsPacker = new MaxRectsPacker(settings);
 		imageProcessor = new ImageProcessor(rootDir, settings);
 	}
 
-	public Desktop_Packer()
-	{
+	public Desktop_Packer() {
 		super();
 		that = this;
 		// initial Rect
 		new Rect();
 	}
 
-	public void writeImages(File outputDir, Array<Page> pages, String packFileName)
-	{
+	public void writeImages(File outputDir, Array<Page> pages, String packFileName) {
 		String imageName = packFileName;
 		int dotIndex = imageName.lastIndexOf('.');
-		if (dotIndex != -1) imageName = imageName.substring(0, dotIndex);
+		if (dotIndex != -1)
+			imageName = imageName.substring(0, dotIndex);
 
 		int fileIndex = 0;
-		for (Page page : pages)
-		{
+		for (Page page : pages) {
 			int width = page.width, height = page.height;
 			int paddingX = settings.paddingX;
 			int paddingY = settings.paddingY;
-			if (settings.duplicatePadding)
-			{
+			if (settings.duplicatePadding) {
 				paddingX /= 2;
 				paddingY /= 2;
 			}
 			width -= settings.paddingX;
 			height -= settings.paddingY;
-			if (settings.edgePadding)
-			{
+			if (settings.edgePadding) {
 				page.x = paddingX;
 				page.y = paddingY;
 				width += paddingX * 2;
 				height += paddingY * 2;
 			}
-			if (settings.pot)
-			{
+			if (settings.pot) {
 				width = MathUtils.nextPowerOfTwo(width);
 				height = MathUtils.nextPowerOfTwo(height);
 			}
 			width = Math.max(settings.minWidth, width);
 			height = Math.max(settings.minHeight, height);
 
-			if (settings.forceSquareOutput)
-			{
-				if (width > height)
-				{
+			if (settings.forceSquareOutput) {
+				if (width > height) {
 					height = width;
-				}
-				else
-				{
+				} else {
 					width = height;
 				}
 			}
 
 			File outputFile;
-			while (true)
-			{
+			while (true) {
 				outputFile = new File(outputDir, imageName + (fileIndex++ == 0 ? "" : fileIndex) + "." + settings.outputFormat);
-				if (!outputFile.exists()) break;
+				if (!outputFile.exists())
+					break;
 			}
 			page.imageName = outputFile.getName();
 
@@ -132,64 +119,51 @@ public class Desktop_Packer extends TexturePacker_Base
 
 			System.out.println("Writing " + canvas.getWidth() + "x" + canvas.getHeight() + ": " + outputFile);
 
-			for (Rect_Base rect : page.outputRects)
-			{
+			for (Rect_Base rect : page.outputRects) {
 				int rectX = page.x + rect.x, rectY = page.y + page.height - rect.y - rect.height;
-				if (rect.rotated)
-				{
+				if (rect.rotated) {
 					g.translate(rectX, rectY);
 					g.rotate(-90 * MathUtils.degreesToRadians);
 					g.translate(-rectX, -rectY);
 					g.translate(-(rect.height - settings.paddingY), 0);
 				}
 				BufferedImage image = (BufferedImage) rect.image;
-				if (settings.duplicatePadding)
-				{
+				if (settings.duplicatePadding) {
 					int amountX = settings.paddingX / 2;
 					int amountY = settings.paddingY / 2;
 					int imageWidth = image.getWidth();
 					int imageHeight = image.getHeight();
 					// Copy corner pixels to fill corners of the padding.
 					g.drawImage(image, rectX - amountX, rectY - amountY, rectX, rectY, 0, 0, 1, 1, null);
-					g.drawImage(image, rectX + imageWidth, rectY - amountY, rectX + imageWidth + amountX, rectY, imageWidth - 1, 0,
-							imageWidth, 1, null);
-					g.drawImage(image, rectX - amountX, rectY + imageHeight, rectX, rectY + imageHeight + amountY, 0, imageHeight - 1, 1,
-							imageHeight, null);
-					g.drawImage(image, rectX + imageWidth, rectY + imageHeight, rectX + imageWidth + amountX,
-							rectY + imageHeight + amountY, imageWidth - 1, imageHeight - 1, imageWidth, imageHeight, null);
+					g.drawImage(image, rectX + imageWidth, rectY - amountY, rectX + imageWidth + amountX, rectY, imageWidth - 1, 0, imageWidth, 1, null);
+					g.drawImage(image, rectX - amountX, rectY + imageHeight, rectX, rectY + imageHeight + amountY, 0, imageHeight - 1, 1, imageHeight, null);
+					g.drawImage(image, rectX + imageWidth, rectY + imageHeight, rectX + imageWidth + amountX, rectY + imageHeight + amountY, imageWidth - 1, imageHeight - 1, imageWidth, imageHeight, null);
 					// Copy edge pixels into padding.
 					g.drawImage(image, rectX, rectY - amountY, rectX + imageWidth, rectY, 0, 0, imageWidth, 1, null);
-					g.drawImage(image, rectX, rectY + imageHeight, rectX + imageWidth, rectY + imageHeight + amountY, 0, imageHeight - 1,
-							imageWidth, imageHeight, null);
+					g.drawImage(image, rectX, rectY + imageHeight, rectX + imageWidth, rectY + imageHeight + amountY, 0, imageHeight - 1, imageWidth, imageHeight, null);
 					g.drawImage(image, rectX - amountX, rectY, rectX, rectY + imageHeight, 0, 0, 1, imageHeight, null);
-					g.drawImage(image, rectX + imageWidth, rectY, rectX + imageWidth + amountX, rectY + imageHeight, imageWidth - 1, 0,
-							imageWidth, imageHeight, null);
+					g.drawImage(image, rectX + imageWidth, rectY, rectX + imageWidth + amountX, rectY + imageHeight, imageWidth - 1, 0, imageWidth, imageHeight, null);
 				}
 				g.drawImage(image, rectX, rectY, null);
-				if (rect.rotated)
-				{
+				if (rect.rotated) {
 					g.translate(rect.height - settings.paddingY, 0);
 					g.translate(rectX, rectY);
 					g.rotate(90 * MathUtils.degreesToRadians);
 					g.translate(-rectX, -rectY);
 				}
-				if (settings.debug)
-				{
+				if (settings.debug) {
 					g.setColor(Color.magenta);
 					g.drawRect(rectX, rectY, rect.width - settings.paddingX - 1, rect.height - settings.paddingY - 1);
 				}
 			}
 
-			if (settings.debug)
-			{
+			if (settings.debug) {
 				g.setColor(Color.magenta);
 				g.drawRect(0, 0, width - 1, height - 1);
 			}
 
-			try
-			{
-				if (settings.outputFormat.equalsIgnoreCase("jpg"))
-				{
+			try {
+				if (settings.outputFormat.equalsIgnoreCase("jpg")) {
 					Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
 					ImageWriter writer = writers.next();
 					ImageWriteParam param = writer.getDefaultWriteParam();
@@ -198,21 +172,16 @@ public class Desktop_Packer extends TexturePacker_Base
 					ImageOutputStream ios = ImageIO.createImageOutputStream(outputFile);
 					writer.setOutput(ios);
 					writer.write(null, new IIOImage(canvas, null, null), param);
-				}
-				else
+				} else
 					ImageIO.write(canvas, "png", outputFile);
-			}
-			catch (IOException ex)
-			{
+			} catch (IOException ex) {
 				throw new RuntimeException("Error writing file: " + outputFile, ex);
 			}
 		}
 	}
 
-	private int getBufferedImageType(Format format)
-	{
-		switch (settings.format)
-		{
+	private int getBufferedImageType(Format format) {
+		switch (settings.format) {
 		case RGBA8888:
 		case RGBA4444:
 			return BufferedImage.TYPE_INT_ARGB;

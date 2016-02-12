@@ -20,7 +20,6 @@ package org.apache.xmlrpc.webserver;
 
 import org.apache.xmlrpc.common.XmlRpcHttpRequestConfigImpl;
 
-
 /** Web servers extension of
  * {@link org.apache.xmlrpc.common.XmlRpcHttpRequestConfig},
  * which allows to store additional per request data.
@@ -42,13 +41,17 @@ public class RequestData extends XmlRpcHttpRequestConfigImpl {
 	/** Returns the connection, which is serving the request.
 	 * @return The request connection.
 	 */
-	public Connection getConnection() { return connection; }
+	public Connection getConnection() {
+		return connection;
+	}
 
 	/** Returns, whether HTTP keepAlive is enabled for this
 	 * connection.
 	 * @return True, if keepAlive is enabled, false otherwise.
 	 */
-	public boolean isKeepAlive() { return keepAlive; }
+	public boolean isKeepAlive() {
+		return keepAlive;
+	}
 
 	/** Sets, whether HTTP keepAlive is enabled for this
 	 * connection.
@@ -61,7 +64,9 @@ public class RequestData extends XmlRpcHttpRequestConfigImpl {
 	/** Returns the requests HTTP version.
 	 * @return HTTP version, for example "1.0"
 	 */
-	public String getHttpVersion() { return httpVersion; }
+	public String getHttpVersion() {
+		return httpVersion;
+	}
 
 	/** Sets the requests HTTP version.
 	 * @param pHttpVersion HTTP version, for example "1.0"
@@ -73,7 +78,9 @@ public class RequestData extends XmlRpcHttpRequestConfigImpl {
 	/** Returns the requests content length.
 	 * @return Content length, if known, or -1, if unknown.
 	 */
-	public int getContentLength() { return contentLength; }
+	public int getContentLength() {
+		return contentLength;
+	}
 
 	/** Sets the requests content length.
 	 * @param pContentLength Content length, if known, or -1, if unknown.
@@ -93,7 +100,9 @@ public class RequestData extends XmlRpcHttpRequestConfigImpl {
 	/** Returns the request method.
 	 * @return The request method, should be "POST".
 	 */
-	public String getMethod() { return method; }
+	public String getMethod() {
+		return method;
+	}
 
 	/** Sets the request method.
 	 * @param pMethod The request method, should be "POST".
@@ -105,7 +114,9 @@ public class RequestData extends XmlRpcHttpRequestConfigImpl {
 	/** Returns, whether the request was executed successfull.
 	 * @return True for success, false, if an error occurred.
 	 */
-	public boolean isSuccess() { return success; }
+	public boolean isSuccess() {
+		return success;
+	}
 
 	/** Sets, whether the request was executed successfull.
 	 * @param pSuccess True for success, false, if an error occurred.

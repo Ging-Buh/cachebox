@@ -16,16 +16,14 @@ import CB_Locator.Map.PackBase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-public class AndroidPack extends PackBase
-{
+public class AndroidPack extends PackBase {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(AndroidPack.class);
-	public AndroidPack(CB_Locator.Map.Layer layer)
-	{
+
+	public AndroidPack(CB_Locator.Map.Layer layer) {
 		super(layer);
 	}
 
-	public AndroidPack(ManagerBase manager, String file) throws IOException
-	{
+	public AndroidPack(ManagerBase manager, String file) throws IOException {
 		super(manager, file);
 	}
 
@@ -43,13 +41,12 @@ public class AndroidPack extends PackBase
 	// / <param name="bbox">Bounding Box</param>
 	// / <param name="desc">Descriptor</param>
 	// / <returns>Bitmap der Kachel</returns>
-	public Bitmap LoadFromBoundingBox(BoundingBox bbox, Descriptor desc)
-	{
+	public Bitmap LoadFromBoundingBox(BoundingBox bbox, Descriptor desc) {
 		log.debug("LoadFromBoundingBox");
-		try
-		{
+		try {
 			byte[] buffer = LoadFromBoundingBoxByteArray(bbox, desc);
-			if (buffer == null) return null;
+			if (buffer == null)
+				return null;
 
 			Bitmap result = BitmapFactory.decodeByteArray(buffer, 0, (int) buffer.length);
 
@@ -59,9 +56,7 @@ public class AndroidPack extends PackBase
 			result.recycle();
 			baos.close();
 			return bitj;
-		}
-		catch (Exception exc)
-		{
+		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
 
@@ -70,11 +65,10 @@ public class AndroidPack extends PackBase
 	}
 
 	@Override
-	public byte[] LoadFromBoundingBoxByteArray(BoundingBox bbox, Descriptor desc)
-	{
-		try
-		{
-			if (bbox.Zoom != desc.getZoom()) return null;
+	public byte[] LoadFromBoundingBoxByteArray(BoundingBox bbox, Descriptor desc) {
+		try {
+			if (bbox.Zoom != desc.getZoom())
+				return null;
 
 			int index = (desc.getY() - bbox.MinY) * bbox.Stride + (desc.getX() - bbox.MinX) - 1;
 			long offset = bbox.OffsetToIndex + index * 8;
@@ -91,8 +85,7 @@ public class AndroidPack extends PackBase
 			long nextOffset = Long.reverseBytes(reader.readLong());
 			int length = (int) (nextOffset - tileOffset);
 
-			if (length == 0)
-			{
+			if (length == 0) {
 				reader.close();
 				return null;
 			}
@@ -104,17 +97,14 @@ public class AndroidPack extends PackBase
 			reader.close();
 
 			// check for support / conversion
-			byte[] signature = new byte[]
-				{ (byte) 137, (byte) 80, (byte) 78, (byte) 71, (byte) 13, (byte) 10, (byte) 26, (byte) 10 };
-			if (Arrays.equals(signature, get(buffer, 0, 8)))
-			{
+			byte[] signature = new byte[] { (byte) 137, (byte) 80, (byte) 78, (byte) 71, (byte) 13, (byte) 10, (byte) 26, (byte) 10 };
+			if (Arrays.equals(signature, get(buffer, 0, 8))) {
 				// es ist ein png
 				byte BitDepth = buffer[24];
 				// byte ColourType = buffer[25];
 				// byte CompressionMethod = buffer[26];
 				// BitDepth not supported by pixmap
-				switch (BitDepth)
-				{
+				switch (BitDepth) {
 				case 4:
 					// Logger.DEBUG("[PackBase] unsupported png in Pack " + this.Filename + " tile: " + desc);
 					Bitmap result = BitmapFactory.decodeByteArray(buffer, 0, (int) buffer.length);
@@ -124,7 +114,7 @@ public class AndroidPack extends PackBase
 					byte[] data = bas.toByteArray();
 					bas.close();
 					return data;
-					// break;
+				// break;
 				case 8:
 					// supported
 					break;
@@ -134,9 +124,7 @@ public class AndroidPack extends PackBase
 				}
 			}
 			return buffer;
-		}
-		catch (Exception exc)
-		{
+		} catch (Exception exc) {
 			/*
 			 * #if DEBUG Global.AddLog("Pack.LoadFromBoundingBox: Out of memory!" + exc.ToString()); Global.AddMemoryLog(); #endif
 			 */

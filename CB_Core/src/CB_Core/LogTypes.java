@@ -1,7 +1,6 @@
 package CB_Core;
 
-public enum LogTypes
-{
+public enum LogTypes {
 	found, // 0
 	didnt_find, // 1
 	note, // 2
@@ -35,17 +34,24 @@ public enum LogTypes
 	 * 
 	 * @return
 	 */
-	public boolean isTbLog()
-	{
+	public boolean isTbLog() {
 		int t = this.ordinal();
-		if (t == 17) return true; // retrieve
-		if (t == 18) return true; // dropped_off
-		if (t == 19) return true; // mark_missing
-		if (t == 20) return true; // grab_it
-		if (t == 21) return true; // discovered
-		if (t == 22) return true; // move_to_collection
-		if (t == 23) return true; // move_to_inventory
-		if (t == 25) return true; // visited
+		if (t == 17)
+			return true; // retrieve
+		if (t == 18)
+			return true; // dropped_off
+		if (t == 19)
+			return true; // mark_missing
+		if (t == 20)
+			return true; // grab_it
+		if (t == 21)
+			return true; // discovered
+		if (t == 22)
+			return true; // move_to_collection
+		if (t == 23)
+			return true; // move_to_inventory
+		if (t == 25)
+			return true; // visited
 
 		return false;
 	}
@@ -55,125 +61,113 @@ public enum LogTypes
 	 * 
 	 * @return
 	 */
-	public boolean isDirectLogType()
-	{
-		if (CB_Core_Settings.DirectOnlineLog.getValue()) return true;
+	public boolean isDirectLogType() {
+		if (CB_Core_Settings.DirectOnlineLog.getValue())
+			return true;
 		int t = this.ordinal();
-		if (t == 4) return true; // enabled
-		if (t == 5) return true; // needs_maintenance
-		if (t == 6) return true; // temporarily_disabled
-		if (t == 7) return true; // owner_maintenance
-		if (t == 8) return true; // will_attend
+		if (t == 4)
+			return true; // enabled
+		if (t == 5)
+			return true; // needs_maintenance
+		if (t == 6)
+			return true; // temporarily_disabled
+		if (t == 7)
+			return true; // owner_maintenance
+		if (t == 8)
+			return true; // will_attend
 
-		if (t == 17) return true; // retrieve
-		if (t == 18) return true; // dropped_off
-		if (t == 19) return true; // mark_missing
-		if (t == 20) return true; // grab_it
-		if (t == 21) return true; // discovered
-		if (t == 22) return true; // move_to_collection
-		if (t == 23) return true; // move_to_inventory
-		if (t == 25) return true; // visited
+		if (t == 17)
+			return true; // retrieve
+		if (t == 18)
+			return true; // dropped_off
+		if (t == 19)
+			return true; // mark_missing
+		if (t == 20)
+			return true; // grab_it
+		if (t == 21)
+			return true; // discovered
+		if (t == 22)
+			return true; // move_to_collection
+		if (t == 23)
+			return true; // move_to_inventory
+		if (t == 25)
+			return true; // visited
 
 		return false;
 	}
 
-	public static LogTypes parseString(String text)
-	{
-		if (text.equalsIgnoreCase("found it"))
-		{
+	public static LogTypes parseString(String text) {
+		if (text.equalsIgnoreCase("found it")) {
 			return found;
 		}
-		if (text.equalsIgnoreCase("didn't find it"))
-		{
+		if (text.equalsIgnoreCase("didn't find it")) {
 			return didnt_find;
 		}
-		if (text.equalsIgnoreCase("not found"))
-		{
+		if (text.equalsIgnoreCase("not found")) {
 			return didnt_find;
 		}
-		if (text.equalsIgnoreCase("write note"))
-		{
+		if (text.equalsIgnoreCase("write note")) {
 			return note;
 		}
-		if (text.equalsIgnoreCase("publish listing"))
-		{
+		if (text.equalsIgnoreCase("publish listing")) {
 			return published;
 		}
-		if (text.equalsIgnoreCase("enable listing"))
-		{
+		if (text.equalsIgnoreCase("enable listing")) {
 			return enabled;
 		}
-		if (text.equalsIgnoreCase("needs maintenance"))
-		{
+		if (text.equalsIgnoreCase("needs maintenance")) {
 			return needs_maintenance;
 		}
-		if (text.equalsIgnoreCase("temporarily disable listing"))
-		{
+		if (text.equalsIgnoreCase("temporarily disable listing")) {
 			return temporarily_disabled;
 		}
-		if (text.equalsIgnoreCase("owner maintenance"))
-		{
+		if (text.equalsIgnoreCase("owner maintenance")) {
 			return owner_maintenance;
 		}
-		if (text.equalsIgnoreCase("update coordinates"))
-		{
+		if (text.equalsIgnoreCase("update coordinates")) {
 			return owner_maintenance;
 		}
-		if (text.equalsIgnoreCase("will attend"))
-		{
+		if (text.equalsIgnoreCase("will attend")) {
 			return will_attend;
 		}
-		if (text.equalsIgnoreCase("attended"))
-		{
+		if (text.equalsIgnoreCase("attended")) {
 			return attended;
 		}
-		if (text.equalsIgnoreCase("webcam photo taken"))
-		{
+		if (text.equalsIgnoreCase("webcam photo taken")) {
 			return webcam_photo_taken;
 		}
-		if (text.equalsIgnoreCase("archive"))
-		{
+		if (text.equalsIgnoreCase("archive")) {
 			return archived;
 		}
-		if (text.equalsIgnoreCase("unarchive"))
-		{
+		if (text.equalsIgnoreCase("unarchive")) {
 			return archived;
 		}
-		if (text.equalsIgnoreCase("post reviewer note"))
-		{
+		if (text.equalsIgnoreCase("post reviewer note")) {
 			return reviewer_note;
 		}
-		if (text.equalsIgnoreCase("needs archived"))
-		{
+		if (text.equalsIgnoreCase("needs archived")) {
 			return needs_archived;
 		}
-		if (text.equalsIgnoreCase("other"))
-		{
+		if (text.equalsIgnoreCase("other")) {
 			return note;
 		}
-		if (text.equalsIgnoreCase("note"))
-		{
+		if (text.equalsIgnoreCase("note")) {
 			return note;
 		}
-		if (text.equalsIgnoreCase("geocoins"))
-		{
+		if (text.equalsIgnoreCase("geocoins")) {
 			return note;
 		}
-		if (text.equalsIgnoreCase("cache disabled!"))
-		{
+		if (text.equalsIgnoreCase("cache disabled!")) {
 			return temporarily_disabled;
 		}
-		if (text.equalsIgnoreCase("retract listing"))
-		{
+		if (text.equalsIgnoreCase("retract listing")) {
 			return archived;
 		}
 		return note;
 	}
 
-	public int getIconID()
-	{
-		switch (this.ordinal())
-		{
+	public int getIconID() {
+		switch (this.ordinal()) {
 		case 0:
 			return 0; // Found
 		case 1:
@@ -232,10 +226,8 @@ public enum LogTypes
 		return -1; // Note
 	}
 
-	public static LogTypes GC2CB_LogType(int value)
-	{
-		switch (value)
-		{
+	public static LogTypes GC2CB_LogType(int value) {
+		switch (value) {
 		case 1:
 			return unarchive;
 		case 2:
@@ -295,8 +287,7 @@ public enum LogTypes
 		return note;
 	}
 
-	public int getGcLogTypeId()
-	{
+	public int getGcLogTypeId() {
 		return CB_LogType2GC(this);
 	}
 
@@ -307,10 +298,8 @@ public enum LogTypes
 	 * @param value
 	 * @return
 	 */
-	public static int CB_LogType2GC(LogTypes value)
-	{
-		switch (value)
-		{
+	public static int CB_LogType2GC(LogTypes value) {
+		switch (value) {
 		case unarchive:
 			return 1;
 		case found:
@@ -329,9 +318,9 @@ public enum LogTypes
 			return 10;
 		case webcam_photo_taken:
 			return 11;
-			// GC hat unarchive doppelt, wir nutzen nur [1]
-			// case unarchive:
-			// return 12;
+		// GC hat unarchive doppelt, wir nutzen nur [1]
+		// case unarchive:
+		// return 12;
 		case retrieve:
 			return 13;
 		case dropped_off:
@@ -358,9 +347,9 @@ public enum LogTypes
 			return 47;
 		case discovered:
 			return 48;
-			// GC hat reviewer_note doppelt, wir nutzen nur [18]
-			// case reviewer_note:
-			// return 68;
+		// GC hat reviewer_note doppelt, wir nutzen nur [18]
+		// case reviewer_note:
+		// return 68;
 		case move_to_collection:
 			return 69;
 		case move_to_inventory:
@@ -377,11 +366,9 @@ public enum LogTypes
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 
-		switch (this)
-		{
+		switch (this) {
 		case unarchive:
 			return "unarchive";
 		case found:
@@ -400,9 +387,9 @@ public enum LogTypes
 			return "attended";
 		case webcam_photo_taken:
 			return "webcam_photo_taken";
-			// GC hat unarchive doppelt, wir nutzen nur [1]
-			// case unarchive:
-			// return 12;
+		// GC hat unarchive doppelt, wir nutzen nur [1]
+		// case unarchive:
+		// return 12;
 		case retrieve:
 			return "retrieve";
 		case dropped_off:
@@ -429,9 +416,9 @@ public enum LogTypes
 			return "update_coord";
 		case discovered:
 			return "discovered";
-			// GC hat reviewer_note doppelt, wir nutzen nur [18]
-			// case reviewer_note:
-			// return 68;
+		// GC hat reviewer_note doppelt, wir nutzen nur [18]
+		// case reviewer_note:
+		// return 68;
 		case move_to_collection:
 			return "move_to_collection";
 		case move_to_inventory:

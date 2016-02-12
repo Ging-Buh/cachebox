@@ -78,8 +78,7 @@ public final class MapViewer {
 		mainFrame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent e) {
-				byte zoomLevel = LatLongUtils.zoomForBounds(model.mapViewDimension.getDimension(), boundingBox,
-						model.displayModel.getTileSize());
+				byte zoomLevel = LatLongUtils.zoomForBounds(model.mapViewDimension.getDimension(), boundingBox, model.displayModel.getTileSize());
 				model.mapViewPosition.setMapPosition(new MapPosition(boundingBox.getCenterPoint(), zoomLevel));
 			}
 		});
@@ -90,8 +89,7 @@ public final class MapViewer {
 		TileCache tileCache = createTileCache();
 
 		// layers.add(createTileDownloadLayer(tileCache, mapView.getModel().mapViewPosition));
-		TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, mapView.getModel().mapViewPosition,
-				mapFile);
+		TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, mapView.getModel().mapViewPosition, mapFile);
 		BoundingBox boundingBox = tileRendererLayer.getMapDatabase().getMapFileInfo().boundingBox;
 		layers.add(tileRendererLayer);
 		if (SHOW_DEBUG_LAYERS) {
@@ -125,17 +123,14 @@ public final class MapViewer {
 	@SuppressWarnings("unused")
 	private static Layer createTileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition) {
 		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
-		TileDownloadLayer tileDownloadLayer = new TileDownloadLayer(tileCache, mapViewPosition, tileSource,
-				GRAPHIC_FACTORY);
+		TileDownloadLayer tileDownloadLayer = new TileDownloadLayer(tileCache, mapViewPosition, tileSource, GRAPHIC_FACTORY);
 		tileDownloadLayer.start();
 		return tileDownloadLayer;
 	}
 
-	private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition,
-			File mapFile) {
+	private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, File mapFile) {
 		boolean isTransparent = false;
-		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, isTransparent,
-				GRAPHIC_FACTORY);
+		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, isTransparent, GRAPHIC_FACTORY);
 		tileRendererLayer.setMapFile(mapFile);
 		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
 		return tileRendererLayer;

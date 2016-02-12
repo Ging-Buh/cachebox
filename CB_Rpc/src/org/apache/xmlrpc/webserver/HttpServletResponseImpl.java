@@ -35,7 +35,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-
 /** Stub implementation of a {@link javax.servlet.http.HttpServletResponse}
  * with lots of unimplemented methods. I implemented only those, which
  * are required for testing the {@link org.apache.xmlrpc.webserver.XmlRpcServlet}.
@@ -62,9 +61,13 @@ public class HttpServletResponseImpl implements HttpServletResponse {
 		ostream = socket.getOutputStream();
 	}
 
-	public void addCookie(Cookie pCookie) { throw new IllegalStateException("Not implemented"); }
+	public void addCookie(Cookie pCookie) {
+		throw new IllegalStateException("Not implemented");
+	}
 
-	public void addDateHeader(String pHeader, long pDate) { throw new IllegalStateException("Not implemented"); }
+	public void addDateHeader(String pHeader, long pDate) {
+		throw new IllegalStateException("Not implemented");
+	}
 
 	public void addHeader(String pHeader, String pValue) {
 		String key = pHeader.toLowerCase();
@@ -109,13 +112,21 @@ public class HttpServletResponseImpl implements HttpServletResponse {
 		return headers.containsKey(pHeader.toLowerCase());
 	}
 
-	public String encodeRedirectURL(String pURL) { throw new IllegalStateException("Not implemented"); }
+	public String encodeRedirectURL(String pURL) {
+		throw new IllegalStateException("Not implemented");
+	}
 
-	public String encodeRedirectUrl(String pURL) { return encodeRedirectURL(pURL); }
+	public String encodeRedirectUrl(String pURL) {
+		return encodeRedirectURL(pURL);
+	}
 
-	public String encodeURL(String pURL) { throw new IllegalStateException("Not implemented"); }
+	public String encodeURL(String pURL) {
+		throw new IllegalStateException("Not implemented");
+	}
 
-	public String encodeUrl(String pURL) { return encodeUrl(pURL); }
+	public String encodeUrl(String pURL) {
+		return encodeUrl(pURL);
+	}
 
 	public void sendError(int pStatusCode) throws IOException {
 		sendError(pStatusCode, getStatusMessage(pStatusCode));
@@ -125,8 +136,7 @@ public class HttpServletResponseImpl implements HttpServletResponse {
 		sendError(pStatusCode, pMessage, null);
 	}
 
-    protected void sendError(int pStatusCode, String pMessage, String pDescription)
-    		throws IOException {
+	protected void sendError(int pStatusCode, String pMessage, String pDescription) throws IOException {
 		if (isCommitted()) {
 			throw new IllegalStateException("Can't send an error message, if the response has already been committed.");
 		}
@@ -148,9 +158,13 @@ public class HttpServletResponseImpl implements HttpServletResponse {
 		osw.close();
 	}
 
-	public void sendRedirect(String arg0) throws IOException { throw new IllegalStateException("Not implemented"); }
+	public void sendRedirect(String arg0) throws IOException {
+		throw new IllegalStateException("Not implemented");
+	}
 
-	public void setDateHeader(String arg0, long arg1) { throw new IllegalStateException("Not implemented"); }
+	public void setDateHeader(String arg0, long arg1) {
+		throw new IllegalStateException("Not implemented");
+	}
 
 	public void setHeader(String pHeader, String pValue) {
 		headers.remove(pHeader.toLowerCase());
@@ -174,7 +188,9 @@ public class HttpServletResponseImpl implements HttpServletResponse {
 		ostream.flush();
 	}
 
-	public int getBufferSize() { return BUFFER_SIZE; }
+	public int getBufferSize() {
+		return BUFFER_SIZE;
+	}
 
 	/** <p>Sets the character encoding (MIME charset) of the response being sent
 	 * to the client, for example, to UTF-8. If the character encoding has
@@ -212,7 +228,9 @@ public class HttpServletResponseImpl implements HttpServletResponse {
 		}
 	}
 
-	public Locale getLocale() { return locale; }
+	public Locale getLocale() {
+		return locale;
+	}
 
 	public ServletOutputStream getOutputStream() throws IOException {
 		if (writer != null) {
@@ -237,7 +255,7 @@ public class HttpServletResponseImpl implements HttpServletResponse {
 	}
 
 	public boolean isCommitted() {
-		return soStream != null  &&  soStream.isCommitted();
+		return soStream != null && soStream.isCommitted();
 	}
 
 	public void reset() {
@@ -257,7 +275,9 @@ public class HttpServletResponseImpl implements HttpServletResponse {
 		}
 	}
 
-	public void setBufferSize(int pBufferSize) { throw new IllegalStateException("Not implemented"); }
+	public void setBufferSize(int pBufferSize) {
+		throw new IllegalStateException("Not implemented");
+	}
 
 	public void setContentLength(int pContentLength) {
 		if (pContentLength == -1) {
@@ -283,7 +303,7 @@ public class HttpServletResponseImpl implements HttpServletResponse {
 	 */
 	public String getContentType() {
 		String s = getHeader("content-type");
-		if (s != null  &&  s.toLowerCase().startsWith("text/")) {
+		if (s != null && s.toLowerCase().startsWith("text/")) {
 			String enc = getCharacterEncoding();
 			if (enc != null) {
 				s += "; charset=" + enc;
@@ -292,12 +312,11 @@ public class HttpServletResponseImpl implements HttpServletResponse {
 		return s;
 	}
 
-
 	public void setContentType(String pType) {
 		if (pType != null) {
 			boolean charSetFound = false;
 			StringBuffer sb = new StringBuffer();
-			for (StringTokenizer st = new StringTokenizer(pType, ";");  st.hasMoreTokens();  ) {
+			for (StringTokenizer st = new StringTokenizer(pType, ";"); st.hasMoreTokens();) {
 				String t = st.nextToken();
 				if (t.toLowerCase().startsWith("charset=")) {
 					charSetFound = true;
@@ -316,7 +335,9 @@ public class HttpServletResponseImpl implements HttpServletResponse {
 		setHeader("content-type", pType);
 	}
 
-	public void setLocale(Locale pLocale) { locale = pLocale; }
+	public void setLocale(Locale pLocale) {
+		locale = pLocale;
+	}
 
 	/** Returns a default message for a given HTTP status code.
 	 * @param pStatusCode The status code being queried.
@@ -324,94 +345,94 @@ public class HttpServletResponseImpl implements HttpServletResponse {
 	 */
 	public static String getStatusMessage(int pStatusCode) {
 		switch (pStatusCode) {
-			case HttpServletResponse.SC_OK:
-				return ("OK");
-			case HttpServletResponse.SC_ACCEPTED:
-				return ("Accepted");
-			case HttpServletResponse.SC_BAD_GATEWAY:
-				return ("Bad Gateway");
-			case HttpServletResponse.SC_BAD_REQUEST:
-				return ("Bad Request");
-			case HttpServletResponse.SC_CONFLICT:
-				return ("Conflict");
-			case HttpServletResponse.SC_CONTINUE:
-				return ("Continue");
-			case HttpServletResponse.SC_CREATED:
-				return ("Created");
-			case HttpServletResponse.SC_EXPECTATION_FAILED:
-				return ("Expectation Failed");
-			case HttpServletResponse.SC_FORBIDDEN:
-				return ("Forbidden");
-			case HttpServletResponse.SC_GATEWAY_TIMEOUT:
-				return ("Gateway Timeout");
-			case HttpServletResponse.SC_GONE:
-				return ("Gone");
-			case HttpServletResponse.SC_HTTP_VERSION_NOT_SUPPORTED:
-				return ("HTTP Version Not Supported");
-			case HttpServletResponse.SC_INTERNAL_SERVER_ERROR:
-				return ("Internal Server Error");
-			case HttpServletResponse.SC_LENGTH_REQUIRED:
-				return ("Length Required");
-			case HttpServletResponse.SC_METHOD_NOT_ALLOWED:
-				return ("Method Not Allowed");
-			case HttpServletResponse.SC_MOVED_PERMANENTLY:
-				return ("Moved Permanently");
-			case HttpServletResponse.SC_MOVED_TEMPORARILY:
-				return ("Moved Temporarily");
-			case HttpServletResponse.SC_MULTIPLE_CHOICES:
-				return ("Multiple Choices");
-			case HttpServletResponse.SC_NO_CONTENT:
-				return ("No Content");
-			case HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION:
-				return ("Non-Authoritative Information");
-			case HttpServletResponse.SC_NOT_ACCEPTABLE:
-				return ("Not Acceptable");
-			case HttpServletResponse.SC_NOT_FOUND:
-				return ("Not Found");
-			case HttpServletResponse.SC_NOT_IMPLEMENTED:
-				return ("Not Implemented");
-			case HttpServletResponse.SC_NOT_MODIFIED:
-				return ("Not Modified");
-			case HttpServletResponse.SC_PARTIAL_CONTENT:
-				return ("Partial Content");
-			case HttpServletResponse.SC_PAYMENT_REQUIRED:
-				return ("Payment Required");
-			case HttpServletResponse.SC_PRECONDITION_FAILED:
-				return ("Precondition Failed");
-			case HttpServletResponse.SC_PROXY_AUTHENTICATION_REQUIRED:
-				return ("Proxy Authentication Required");
-			case HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE:
-				return ("Request Entity Too Large");
-			case HttpServletResponse.SC_REQUEST_TIMEOUT:
-				return ("Request Timeout");
-			case HttpServletResponse.SC_REQUEST_URI_TOO_LONG:
-				return ("Request URI Too Long");
-			case HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE:
-				return ("Requested Range Not Satisfiable");
-			case HttpServletResponse.SC_RESET_CONTENT:
-				return ("Reset Content");
-			case HttpServletResponse.SC_SEE_OTHER:
-				return ("See Other");
-			case HttpServletResponse.SC_SERVICE_UNAVAILABLE:
-				return ("Service Unavailable");
-			case HttpServletResponse.SC_SWITCHING_PROTOCOLS:
-				return ("Switching Protocols");
-			case HttpServletResponse.SC_UNAUTHORIZED:
-				return ("Unauthorized");
-			case HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE:
-				return ("Unsupported Media Type");
-			case HttpServletResponse.SC_USE_PROXY:
-				return ("Use Proxy");
-			case 207:       // WebDAV
-				return ("Multi-Status");
-			case 422:       // WebDAV
-				return ("Unprocessable Entity");
-			case 423:       // WebDAV
-				return ("Locked");
-			case 507:       // WebDAV
-				return ("Insufficient Storage");
-			default:
-				return ("HTTP Response Status " + pStatusCode);
+		case HttpServletResponse.SC_OK:
+			return ("OK");
+		case HttpServletResponse.SC_ACCEPTED:
+			return ("Accepted");
+		case HttpServletResponse.SC_BAD_GATEWAY:
+			return ("Bad Gateway");
+		case HttpServletResponse.SC_BAD_REQUEST:
+			return ("Bad Request");
+		case HttpServletResponse.SC_CONFLICT:
+			return ("Conflict");
+		case HttpServletResponse.SC_CONTINUE:
+			return ("Continue");
+		case HttpServletResponse.SC_CREATED:
+			return ("Created");
+		case HttpServletResponse.SC_EXPECTATION_FAILED:
+			return ("Expectation Failed");
+		case HttpServletResponse.SC_FORBIDDEN:
+			return ("Forbidden");
+		case HttpServletResponse.SC_GATEWAY_TIMEOUT:
+			return ("Gateway Timeout");
+		case HttpServletResponse.SC_GONE:
+			return ("Gone");
+		case HttpServletResponse.SC_HTTP_VERSION_NOT_SUPPORTED:
+			return ("HTTP Version Not Supported");
+		case HttpServletResponse.SC_INTERNAL_SERVER_ERROR:
+			return ("Internal Server Error");
+		case HttpServletResponse.SC_LENGTH_REQUIRED:
+			return ("Length Required");
+		case HttpServletResponse.SC_METHOD_NOT_ALLOWED:
+			return ("Method Not Allowed");
+		case HttpServletResponse.SC_MOVED_PERMANENTLY:
+			return ("Moved Permanently");
+		case HttpServletResponse.SC_MOVED_TEMPORARILY:
+			return ("Moved Temporarily");
+		case HttpServletResponse.SC_MULTIPLE_CHOICES:
+			return ("Multiple Choices");
+		case HttpServletResponse.SC_NO_CONTENT:
+			return ("No Content");
+		case HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION:
+			return ("Non-Authoritative Information");
+		case HttpServletResponse.SC_NOT_ACCEPTABLE:
+			return ("Not Acceptable");
+		case HttpServletResponse.SC_NOT_FOUND:
+			return ("Not Found");
+		case HttpServletResponse.SC_NOT_IMPLEMENTED:
+			return ("Not Implemented");
+		case HttpServletResponse.SC_NOT_MODIFIED:
+			return ("Not Modified");
+		case HttpServletResponse.SC_PARTIAL_CONTENT:
+			return ("Partial Content");
+		case HttpServletResponse.SC_PAYMENT_REQUIRED:
+			return ("Payment Required");
+		case HttpServletResponse.SC_PRECONDITION_FAILED:
+			return ("Precondition Failed");
+		case HttpServletResponse.SC_PROXY_AUTHENTICATION_REQUIRED:
+			return ("Proxy Authentication Required");
+		case HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE:
+			return ("Request Entity Too Large");
+		case HttpServletResponse.SC_REQUEST_TIMEOUT:
+			return ("Request Timeout");
+		case HttpServletResponse.SC_REQUEST_URI_TOO_LONG:
+			return ("Request URI Too Long");
+		case HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE:
+			return ("Requested Range Not Satisfiable");
+		case HttpServletResponse.SC_RESET_CONTENT:
+			return ("Reset Content");
+		case HttpServletResponse.SC_SEE_OTHER:
+			return ("See Other");
+		case HttpServletResponse.SC_SERVICE_UNAVAILABLE:
+			return ("Service Unavailable");
+		case HttpServletResponse.SC_SWITCHING_PROTOCOLS:
+			return ("Switching Protocols");
+		case HttpServletResponse.SC_UNAUTHORIZED:
+			return ("Unauthorized");
+		case HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE:
+			return ("Unsupported Media Type");
+		case HttpServletResponse.SC_USE_PROXY:
+			return ("Use Proxy");
+		case 207: // WebDAV
+			return ("Multi-Status");
+		case 422: // WebDAV
+			return ("Unprocessable Entity");
+		case 423: // WebDAV
+			return ("Locked");
+		case 507: // WebDAV
+			return ("Insufficient Storage");
+		default:
+			return ("HTTP Response Status " + pStatusCode);
 		}
 	}
 
@@ -429,7 +450,7 @@ public class HttpServletResponseImpl implements HttpServletResponse {
 			sb.append("\r\n");
 		}
 		boolean contentLengthSeen = false;
-		for (Iterator iter = headers.entrySet().iterator();  iter.hasNext();  ) {
+		for (Iterator iter = headers.entrySet().iterator(); iter.hasNext();) {
 			Map.Entry entry = (Map.Entry) iter.next();
 			String header = (String) entry.getKey();
 			if ("content-type".equalsIgnoreCase(header)) {
@@ -449,7 +470,7 @@ public class HttpServletResponseImpl implements HttpServletResponse {
 				sb.append("\r\n");
 			} else {
 				List list = (List) o;
-				for (int i = 0;  i < list.size();  i++) {
+				for (int i = 0; i < list.size(); i++) {
 					sb.append(header);
 					sb.append(": ");
 					sb.append(list.get(i));
@@ -457,7 +478,7 @@ public class HttpServletResponseImpl implements HttpServletResponse {
 				}
 			}
 		}
-		if (pContentLength != null  &&  !contentLengthSeen) {
+		if (pContentLength != null && !contentLengthSeen) {
 			sb.append("Content-Length: ");
 			sb.append(pContentLength);
 			sb.append("\r\n");

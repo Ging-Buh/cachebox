@@ -35,7 +35,6 @@ import org.apache.xmlrpc.server.XmlRpcHttpServer;
 import org.apache.xmlrpc.server.XmlRpcHttpServerConfig;
 import org.apache.xmlrpc.util.HttpUtil;
 
-
 /** An extension of {@link org.apache.xmlrpc.server.XmlRpcServer},
  * which is suitable for processing servlet requests.
  */
@@ -44,32 +43,36 @@ public class XmlRpcServletServer extends XmlRpcHttpServer {
 		private final HttpServletRequest request;
 		private final HttpServletResponse response;
 
-		protected ServletStreamConnection(HttpServletRequest pRequest,
-				HttpServletResponse pResponse) {
+		protected ServletStreamConnection(HttpServletRequest pRequest, HttpServletResponse pResponse) {
 			request = pRequest;
 			response = pResponse;
 		}
 
 		/** Returns the servlet request.
 		 */
-		public HttpServletRequest getRequest() { return request; }
+		public HttpServletRequest getRequest() {
+			return request;
+		}
+
 		/** Returns the servlet response.
 		 */
-		public HttpServletResponse getResponse() { return response; }
+		public HttpServletResponse getResponse() {
+			return response;
+		}
 
 		public InputStream newInputStream() throws IOException {
-            return request.getInputStream();
-        }
+			return request.getInputStream();
+		}
 
 		public OutputStream newOutputStream() throws IOException {
-            response.setContentType("text/xml");
-            return response.getOutputStream();
-        }
+			response.setContentType("text/xml");
+			return response.getOutputStream();
+		}
 
-        public void close() throws IOException {
-            response.getOutputStream().close();
-        }
-    }
+		public void close() throws IOException {
+			response.getOutputStream().close();
+		}
+	}
 
 	/**
 	 * @param pRequest The request object.
@@ -82,19 +85,17 @@ public class XmlRpcServletServer extends XmlRpcHttpServer {
 		XmlRpcHttpRequestConfigImpl result = newConfig(pRequest);
 		XmlRpcHttpServerConfig serverConfig = (XmlRpcHttpServerConfig) getConfig();
 		result.setBasicEncoding(serverConfig.getBasicEncoding());
-		result.setContentLengthOptional(serverConfig.isContentLengthOptional()
-		        && (pRequest.getHeader("Content-Length") == null));
+		result.setContentLengthOptional(serverConfig.isContentLengthOptional() && (pRequest.getHeader("Content-Length") == null));
 		result.setEnabledForExtensions(serverConfig.isEnabledForExtensions());
 		result.setGzipCompressing(HttpUtil.isUsingGzipEncoding(pRequest.getHeader("Content-Encoding")));
 		result.setGzipRequesting(HttpUtil.isUsingGzipEncoding(pRequest.getHeaders("Accept-Encoding")));
 		result.setEncoding(pRequest.getCharacterEncoding());
-        result.setEnabledForExceptions(serverConfig.isEnabledForExceptions());
+		result.setEnabledForExceptions(serverConfig.isEnabledForExceptions());
 		HttpUtil.parseAuthorization(result, pRequest.getHeader("Authorization"));
 		return result;
 	}
 
-	protected ServletStreamConnection newStreamConnection(HttpServletRequest pRequest,
-			HttpServletResponse pResponse) {
+	protected ServletStreamConnection newStreamConnection(HttpServletRequest pRequest, HttpServletResponse pResponse) {
 		return new ServletStreamConnection(pRequest, pResponse);
 	}
 
@@ -104,8 +105,7 @@ public class XmlRpcServletServer extends XmlRpcHttpServer {
 	 * @throws IOException Reading the request or writing the response failed.
 	 * @throws ServletException Processing the request failed.
 	 */
-	public void execute(HttpServletRequest pRequest, HttpServletResponse pResponse)
-			throws ServletException, IOException {
+	public void execute(HttpServletRequest pRequest, HttpServletResponse pResponse) throws ServletException, IOException {
 		XmlRpcHttpRequestConfigImpl config = getConfig(pRequest);
 		ServletStreamConnection ssc = newStreamConnection(pRequest, pResponse);
 		try {
@@ -123,15 +123,13 @@ public class XmlRpcServletServer extends XmlRpcHttpServer {
 			return true;
 		}
 		boolean isRequired = !((XmlRpcHttpServerConfig) getConfig()).isContentLengthOptional();
-		if(pConfig instanceof XmlRpcHttpRequestConfig) {
-		    isRequired |= !((XmlRpcHttpRequestConfig)pConfig).isContentLengthOptional();
+		if (pConfig instanceof XmlRpcHttpRequestConfig) {
+			isRequired |= !((XmlRpcHttpRequestConfig) pConfig).isContentLengthOptional();
 		}
 		return isRequired;
 	}
 
-	protected OutputStream getOutputStream(XmlRpcStreamRequestConfig pConfig,
-										   ServerStreamConnection pConnection,
-										   int pSize) throws IOException {
+	protected OutputStream getOutputStream(XmlRpcStreamRequestConfig pConfig, ServerStreamConnection pConnection, int pSize) throws IOException {
 		if (pSize != -1) {
 			((ServletStreamConnection) pConnection).getResponse().setContentLength(pSize);
 		}

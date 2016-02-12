@@ -31,7 +31,6 @@
  *                                                                           *
  *****************************************************************************/
 
-
 package bsh;
 
 /**
@@ -43,10 +42,9 @@ class ReturnControl implements ParserConstants {
 	/** The node where we returned... for printing error messages correctly */
 	public SimpleNode returnPoint;
 
-	public ReturnControl( int kind, Object value, SimpleNode returnPoint ) {
+	public ReturnControl(int kind, Object value, SimpleNode returnPoint) {
 		this.kind = kind;
 		this.value = value;
 		this.returnPoint = returnPoint;
 	}
 }
-

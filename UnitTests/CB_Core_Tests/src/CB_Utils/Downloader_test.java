@@ -26,16 +26,13 @@ import org.junit.Test;
 import CB_Utils.Util.Downloader;
 import CB_Utils.http.HttpUtils;
 
-public class Downloader_test
-{
+public class Downloader_test {
 	@Test
-	public void download()
-	{
+	public void download() {
 		// delete target temp file
 
 		File target = new File("./testdata/download.jpg");
-		if (target.exists())
-		{
+		if (target.exists()) {
 			target.delete();
 		}
 
@@ -45,13 +42,10 @@ public class Downloader_test
 		HttpUtils.conectionTimeout = 50000;
 		HttpUtils.socketTimeout = 50000;
 
-		try
-		{
+		try {
 			Downloader dl = new Downloader(new URL(testImage), target);
 			dl.run();
-		}
-		catch (MalformedURLException e)
-		{
+		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
 

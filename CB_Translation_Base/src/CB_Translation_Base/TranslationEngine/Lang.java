@@ -21,8 +21,7 @@ package CB_Translation_Base.TranslationEngine;
  * 
  * @author Longri
  */
-public class Lang
-{
+public class Lang {
 
 	/**
 	 * Constructor
@@ -32,8 +31,7 @@ public class Lang
 	 * @param Pfad
 	 *            as String
 	 */
-	public Lang(String Name, String Pfad)
-	{
+	public Lang(String Name, String Pfad) {
 		this.Name = Name;
 		this.Path = Pfad;
 	}

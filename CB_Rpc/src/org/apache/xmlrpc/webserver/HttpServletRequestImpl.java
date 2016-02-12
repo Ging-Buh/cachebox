@@ -48,7 +48,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.xmlrpc.common.XmlRpcStreamConfig;
 import org.apache.xmlrpc.util.HttpUtil;
 
-
 /** Stub implementation of a {@link javax.servlet.http.HttpServletRequest}
  * with lots of unimplemented methods. I implemented only those, which
  * are required for testing the {@link org.apache.xmlrpc.webserver.XmlRpcServlet}.
@@ -78,21 +77,21 @@ public class HttpServletRequestImpl implements HttpServletRequest {
 	 */
 	public HttpServletRequestImpl(Socket pSocket) throws IOException {
 		socket = pSocket;
-		final InputStream bis = new BufferedInputStream(socket.getInputStream()){
-    		/** It may happen, that the XML parser invokes close().
-    		 * Closing the input stream must not occur, because
-    		 * that would close the whole socket. So we suppress it.
-    		 */
-        	public void close() throws IOException {
-        	}
-        };
-		istream = new ServletInputStream(){
+		final InputStream bis = new BufferedInputStream(socket.getInputStream()) {
+			/** It may happen, that the XML parser invokes close().
+			 * Closing the input stream must not occur, because
+			 * that would close the whole socket. So we suppress it.
+			 */
+			public void close() throws IOException {
+			}
+		};
+		istream = new ServletInputStream() {
 			public int read() throws IOException {
 				if (contentBytesRemaining == 0) {
 					return -1;
 				}
 				int c = bis.read();
-				if (c != -1  &&  contentBytesRemaining > 0) {
+				if (c != -1 && contentBytesRemaining > 0) {
 					--contentBytesRemaining;
 				}
 				return c;
@@ -100,34 +99,29 @@ public class HttpServletRequestImpl implements HttpServletRequest {
 		};
 	}
 
-   /**
-    * Read the header lines, one by one. Note, that the size of
-         * the buffer is a limitation of the maximum header length!
-         */
-    public void readHttpHeaders()
-      throws IOException, ServletWebServer.Exception {
-        byte[] buffer = new byte[2048];
-        String line = readLine(buffer);
-        StringTokenizer tokens =
-          line != null ? new StringTokenizer(line) : null;
-        if (tokens == null || !tokens.hasMoreTokens()) {
-            throw new ServletWebServer.Exception(400, "Bad Request", "Unable to parse requests first line (should" +
-              " be 'METHOD uri HTTP/version', was empty.");
-        }
-        method = tokens.nextToken();
+	/**
+	* Read the header lines, one by one. Note, that the size of
+	     * the buffer is a limitation of the maximum header length!
+	     */
+	public void readHttpHeaders() throws IOException, ServletWebServer.Exception {
+		byte[] buffer = new byte[2048];
+		String line = readLine(buffer);
+		StringTokenizer tokens = line != null ? new StringTokenizer(line) : null;
+		if (tokens == null || !tokens.hasMoreTokens()) {
+			throw new ServletWebServer.Exception(400, "Bad Request", "Unable to parse requests first line (should" + " be 'METHOD uri HTTP/version', was empty.");
+		}
+		method = tokens.nextToken();
 		if (!"POST".equalsIgnoreCase(method)) {
-            throw new ServletWebServer.Exception(400, "Bad Request", "Expected 'POST' method, got " +
-              method);
+			throw new ServletWebServer.Exception(400, "Bad Request", "Expected 'POST' method, got " + method);
 		}
 		if (!tokens.hasMoreTokens()) {
-            throw new ServletWebServer.Exception(400, "Bad Request", "Unable to parse requests first line (should" +
-              " be 'METHOD uri HTTP/version', was: " + line);
+			throw new ServletWebServer.Exception(400, "Bad Request", "Unable to parse requests first line (should" + " be 'METHOD uri HTTP/version', was: " + line);
 		}
 		String u = tokens.nextToken();
 		int offset = u.indexOf('?');
 		if (offset >= 0) {
 			uri = u.substring(0, offset);
-            queryString = u.substring(offset + 1);
+			queryString = u.substring(offset + 1);
 		} else {
 			uri = u;
 			queryString = null;
@@ -135,16 +129,14 @@ public class HttpServletRequestImpl implements HttpServletRequest {
 		if (tokens.hasMoreTokens()) {
 			String v = tokens.nextToken().toUpperCase();
 			if (tokens.hasMoreTokens()) {
-                throw new ServletWebServer.Exception(400, "Bad Request", "Unable to parse requests first line (should" +
-                  " be 'METHOD uri HTTP/version', was: " + line);
+				throw new ServletWebServer.Exception(400, "Bad Request", "Unable to parse requests first line (should" + " be 'METHOD uri HTTP/version', was: " + line);
 			} else {
 				int index = v.indexOf('/');
 				if (index == -1) {
-                    throw new ServletWebServer.Exception(400, "Bad Request", "Unable to parse requests first line (should" +
-                      " be 'METHOD uri HTTP/version', was: " + line);
+					throw new ServletWebServer.Exception(400, "Bad Request", "Unable to parse requests first line (should" + " be 'METHOD uri HTTP/version', was: " + line);
 				}
 				protocol = v.substring(0, index).toUpperCase();
-                httpVersion = v.substring(index + 1);
+				httpVersion = v.substring(index + 1);
 			}
 		} else {
 			httpVersion = "1.0";
@@ -152,15 +144,14 @@ public class HttpServletRequestImpl implements HttpServletRequest {
 		}
 		for (;;) {
 			line = HttpUtil.readLine(istream, buffer);
-            if (line == null || line.length() == 0) {
+			if (line == null || line.length() == 0) {
 				break;
 			}
 			int off = line.indexOf(':');
 			if (off > 0) {
-                addHeader(line.substring(0, off), line.substring(off + 1).trim());
+				addHeader(line.substring(0, off), line.substring(off + 1).trim());
 			} else {
-                throw new ServletWebServer.Exception(400, "Bad Request", "Unable to parse header line: " +
-                  line);
+				throw new ServletWebServer.Exception(400, "Bad Request", "Unable to parse header line: " + line);
 			}
 		}
 		contentBytesRemaining = getIntHeader("content-length");
@@ -171,10 +162,8 @@ public class HttpServletRequestImpl implements HttpServletRequest {
 		if (res == -1) {
 			return null;
 		}
-		if (res == pBuffer.length  &&  pBuffer[pBuffer.length] != '\n') {
-			throw new ServletWebServer.Exception(400, "Bad Request",
-												 "Maximum header size of " + pBuffer.length +
-												 " characters exceeded.");
+		if (res == pBuffer.length && pBuffer[pBuffer.length] != '\n') {
+			throw new ServletWebServer.Exception(400, "Bad Request", "Maximum header size of " + pBuffer.length + " characters exceeded.");
 		}
 		return new String(pBuffer, 0, res, "US-ASCII");
 	}
@@ -197,10 +186,17 @@ public class HttpServletRequestImpl implements HttpServletRequest {
 		}
 	}
 
-	public String getContextPath() { return ""; }
+	public String getContextPath() {
+		return "";
+	}
 
-	public Cookie[] getCookies() { throw new IllegalStateException("Not implemented"); }
-	public long getDateHeader(String arg0) { throw new IllegalStateException("Not implemented"); }
+	public Cookie[] getCookies() {
+		throw new IllegalStateException("Not implemented");
+	}
+
+	public long getDateHeader(String arg0) {
+		throw new IllegalStateException("Not implemented");
+	}
 
 	public String getHeader(String pHeader) {
 		String key = pHeader.toLowerCase();
@@ -232,17 +228,29 @@ public class HttpServletRequestImpl implements HttpServletRequest {
 		return s == null ? -1 : Integer.parseInt(s);
 	}
 
-	public String getMethod() { return method; }
+	public String getMethod() {
+		return method;
+	}
 
-	public String getPathInfo() { return null; }
+	public String getPathInfo() {
+		return null;
+	}
 
-	public String getPathTranslated() { return null; }
+	public String getPathTranslated() {
+		return null;
+	}
 
-	public String getQueryString() { return queryString; }
+	public String getQueryString() {
+		return queryString;
+	}
 
-	public String getRemoteUser() { throw new IllegalStateException("Not implemented"); }
+	public String getRemoteUser() {
+		throw new IllegalStateException("Not implemented");
+	}
 
-	public String getRequestURI() { return uri; }
+	public String getRequestURI() {
+		return uri;
+	}
 
 	public StringBuffer getRequestURL() {
 		String scheme = getScheme().toLowerCase();
@@ -260,7 +268,7 @@ public class HttpServletRequestImpl implements HttpServletRequest {
 		if (offset != -1) {
 			host = host.substring(0, offset);
 			try {
-				port = Integer.parseInt(host.substring(offset+1));
+				port = Integer.parseInt(host.substring(offset + 1));
 			} catch (Exception e) {
 			}
 		}
@@ -280,35 +288,59 @@ public class HttpServletRequestImpl implements HttpServletRequest {
 		return sb;
 	}
 
-	public String getRequestedSessionId() { throw new IllegalStateException("Not implemented"); }
+	public String getRequestedSessionId() {
+		throw new IllegalStateException("Not implemented");
+	}
 
-	public String getServletPath() { return uri; }
+	public String getServletPath() {
+		return uri;
+	}
 
-	public HttpSession getSession() { throw new IllegalStateException("Not implemented"); }
+	public HttpSession getSession() {
+		throw new IllegalStateException("Not implemented");
+	}
 
-	public HttpSession getSession(boolean pCreate) { throw new IllegalStateException("Not implemented"); }
+	public HttpSession getSession(boolean pCreate) {
+		throw new IllegalStateException("Not implemented");
+	}
 
-	public Principal getUserPrincipal() { throw new IllegalStateException("Not implemented"); }
+	public Principal getUserPrincipal() {
+		throw new IllegalStateException("Not implemented");
+	}
 
-	public boolean isRequestedSessionIdFromCookie() { throw new IllegalStateException("Not implemented"); }
+	public boolean isRequestedSessionIdFromCookie() {
+		throw new IllegalStateException("Not implemented");
+	}
 
-	public boolean isRequestedSessionIdFromURL() { throw new IllegalStateException("Not implemented"); }
+	public boolean isRequestedSessionIdFromURL() {
+		throw new IllegalStateException("Not implemented");
+	}
 
-	public boolean isRequestedSessionIdFromUrl() { throw new IllegalStateException("Not implemented"); }
+	public boolean isRequestedSessionIdFromUrl() {
+		throw new IllegalStateException("Not implemented");
+	}
 
-	public boolean isRequestedSessionIdValid() { throw new IllegalStateException("Not implemented"); }
+	public boolean isRequestedSessionIdValid() {
+		throw new IllegalStateException("Not implemented");
+	}
 
-	public boolean isUserInRole(String pRole) { throw new IllegalStateException("Not implemented"); }
+	public boolean isUserInRole(String pRole) {
+		throw new IllegalStateException("Not implemented");
+	}
 
-	public Object getAttribute(String pKey) { return attributes.get(pKey); }
+	public Object getAttribute(String pKey) {
+		return attributes.get(pKey);
+	}
 
-	public Enumeration getAttributeNames() { return Collections.enumeration(attributes.keySet()); }
+	public Enumeration getAttributeNames() {
+		return Collections.enumeration(attributes.keySet());
+	}
 
 	public String getCharacterEncoding() {
 		if (characterEncoding == null) {
 			String contentType = getHeader("content-type");
 			if (contentType != null) {
-				for (StringTokenizer st = new StringTokenizer(contentType, ";");  st.hasMoreTokens();  ) {
+				for (StringTokenizer st = new StringTokenizer(contentType, ";"); st.hasMoreTokens();) {
 					String s = st.nextToken().trim();
 					if (s.toLowerCase().startsWith("charset=")) {
 						return s.substring("charset=".length()).trim();
@@ -321,7 +353,9 @@ public class HttpServletRequestImpl implements HttpServletRequest {
 		}
 	}
 
-	public void setCharacterEncoding(String pEncoding) { characterEncoding = pEncoding; }
+	public void setCharacterEncoding(String pEncoding) {
+		characterEncoding = pEncoding;
+	}
 
 	public int getContentLength() {
 		try {
@@ -331,7 +365,9 @@ public class HttpServletRequestImpl implements HttpServletRequest {
 		}
 	}
 
-	public String getContentType() { return getHeader("content-type"); }
+	public String getContentType() {
+		return getHeader("content-type");
+	}
 
 	public ServletInputStream getInputStream() throws IOException {
 		if (reader == null) {
@@ -347,9 +383,13 @@ public class HttpServletRequestImpl implements HttpServletRequest {
 		}
 	}
 
-	public Locale getLocale() { throw new IllegalStateException("Not implemented"); }
+	public Locale getLocale() {
+		throw new IllegalStateException("Not implemented");
+	}
 
-	public Enumeration getLocales() { throw new IllegalStateException("Not implemented"); }
+	public Enumeration getLocales() {
+		throw new IllegalStateException("Not implemented");
+	}
 
 	private void addParameter(Map pParams, String pKey, String pValue) {
 		Object o = pParams.get(pKey);
@@ -369,7 +409,7 @@ public class HttpServletRequestImpl implements HttpServletRequest {
 	}
 
 	private void parseQueryString(Map pParams, String pQueryString, String pEncoding) throws UnsupportedEncodingException {
-		for (StringTokenizer st = new StringTokenizer(pQueryString, "&");  st.hasMoreTokens();  ) {
+		for (StringTokenizer st = new StringTokenizer(pQueryString, "&"); st.hasMoreTokens();) {
 			String s = st.nextToken();
 			parseParameter(pParams, s, pEncoding);
 		}
@@ -386,7 +426,7 @@ public class HttpServletRequestImpl implements HttpServletRequest {
 			value = "";
 		} else {
 			name = pParam.substring(0, offset);
-			value = pParam.substring(offset+1);
+			value = pParam.substring(offset + 1);
 		}
 		addParameter(pParams, URLDecoder.decode(name, pEncoding), URLDecoder.decode(value, pEncoding));
 	}
@@ -396,7 +436,7 @@ public class HttpServletRequestImpl implements HttpServletRequest {
 		StringBuffer sb = new StringBuffer();
 		for (;;) {
 			int c = r.read();
-			if (c == -1  ||  c == '&') {
+			if (c == -1 || c == '&') {
 				parseParameter(pParams, sb.toString(), pEncoding);
 				if (c == -1) {
 					break;
@@ -426,12 +466,9 @@ public class HttpServletRequestImpl implements HttpServletRequest {
 				throw new UndeclaredThrowableException(e);
 			}
 		}
-		if ("POST".equals(getMethod())  &&
-			"application/x-www-form-urlencoded".equals(getContentType())) {
-			if (sistream != null  ||  reader != null) {
-				throw new IllegalStateException("POST parameters cannot be parsed, after"
-												+ " getInputStream(), or getReader(),"
-												+ " have been called.");
+		if ("POST".equals(getMethod()) && "application/x-www-form-urlencoded".equals(getContentType())) {
+			if (sistream != null || reader != null) {
+				throw new IllegalStateException("POST parameters cannot be parsed, after" + " getInputStream(), or getReader()," + " have been called.");
 			}
 			postParametersParsed = true;
 			try {
@@ -455,13 +492,13 @@ public class HttpServletRequestImpl implements HttpServletRequest {
 	public Map getParameterMap() {
 		parseParameters();
 		final Map result = new HashMap();
-		for (final Iterator iter = parameters.entrySet().iterator();  iter.hasNext();  ) {
+		for (final Iterator iter = parameters.entrySet().iterator(); iter.hasNext();) {
 			final Map.Entry entry = (Map.Entry) iter.next();
 			final String name = (String) entry.getKey();
 			final Object o = entry.getValue();
 			final String[] array;
 			if (o instanceof String) {
-				array = new String[]{(String) o};
+				array = new String[] { (String) o };
 			} else if (o instanceof List) {
 				final List list = (List) o;
 				array = (String[]) list.toArray(new String[list.size()]);
@@ -482,14 +519,16 @@ public class HttpServletRequestImpl implements HttpServletRequest {
 		parseParameters();
 		Object o = parameters.get(pName);
 		if (o instanceof String) {
-			return new String[]{(String) o};
+			return new String[] { (String) o };
 		} else {
 			List list = (List) o;
 			return (String[]) list.toArray(new String[list.size()]);
 		}
 	}
 
-	public String getProtocol() { return protocol; }
+	public String getProtocol() {
+		return protocol;
+	}
 
 	public BufferedReader getReader() throws IOException {
 		if (sistream == null) {
@@ -509,31 +548,53 @@ public class HttpServletRequestImpl implements HttpServletRequest {
 		}
 	}
 
-	public String getRealPath(String pPath) { throw new IllegalStateException("Not implemented."); }
+	public String getRealPath(String pPath) {
+		throw new IllegalStateException("Not implemented.");
+	}
 
-	public String getLocalAddr() { return socket.getLocalAddress().getHostAddress(); }
+	public String getLocalAddr() {
+		return socket.getLocalAddress().getHostAddress();
+	}
 
-	public String getLocalName() { return socket.getLocalAddress().getHostName(); }
+	public String getLocalName() {
+		return socket.getLocalAddress().getHostName();
+	}
 
-	public int getLocalPort() { return socket.getLocalPort(); }
+	public int getLocalPort() {
+		return socket.getLocalPort();
+	}
 
-	public String getRemoteAddr() { return socket.getInetAddress().getHostAddress(); }
+	public String getRemoteAddr() {
+		return socket.getInetAddress().getHostAddress();
+	}
 
-	public String getRemoteHost() { return socket.getInetAddress().getHostName(); }
+	public String getRemoteHost() {
+		return socket.getInetAddress().getHostName();
+	}
 
-	public int getRemotePort() { return socket.getPort(); }
+	public int getRemotePort() {
+		return socket.getPort();
+	}
 
 	public RequestDispatcher getRequestDispatcher(String pUri) {
 		throw new IllegalStateException("Not implemented");
 	}
 
-	public String getScheme() { return "http"; }
+	public String getScheme() {
+		return "http";
+	}
 
-	public String getServerName() { return socket.getLocalAddress().getHostName(); }
+	public String getServerName() {
+		return socket.getLocalAddress().getHostName();
+	}
 
-	public int getServerPort() { return socket.getLocalPort(); }
+	public int getServerPort() {
+		return socket.getLocalPort();
+	}
 
-	public boolean isSecure() { return false; }
+	public boolean isSecure() {
+		return false;
+	}
 
 	public void removeAttribute(String pKey) {
 		attributes.remove(pKey);
@@ -543,5 +604,7 @@ public class HttpServletRequestImpl implements HttpServletRequest {
 		attributes.put(pKey, pValue);
 	}
 
-	protected String getHttpVersion() { return httpVersion; }
+	protected String getHttpVersion() {
+		return httpVersion;
+	}
 }

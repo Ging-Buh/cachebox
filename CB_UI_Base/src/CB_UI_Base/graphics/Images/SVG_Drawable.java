@@ -20,17 +20,14 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 /**
  * @author Longri
  */
-public class SVG_Drawable extends VectorDrawable
-{
+public class SVG_Drawable extends VectorDrawable {
 
-	public SVG_Drawable(int width, int height)
-	{
+	public SVG_Drawable(int width, int height) {
 		super(width, height);
 	}
 
 	@Override
-	public void draw(Batch batch, float x, float y, float width, float height, float rotated)
-	{
+	public void draw(Batch batch, float x, float y, float width, float height, float rotated) {
 		super.draw(batch, x, y, width, height, rotated);
 	}
 

@@ -24,16 +24,13 @@ import net.htmlparser.jericho.SourceFormatter;
  * 
  * @author Longri
  */
-public class CB_FormatedHtmlSource extends net.htmlparser.jericho.Source
-{
+public class CB_FormatedHtmlSource extends net.htmlparser.jericho.Source {
 
-	CB_FormatedHtmlSource(String sourceText)
-	{
+	CB_FormatedHtmlSource(String sourceText) {
 		super(getFormattedString(sourceText));
 	}
 
-	private static String getFormattedString(String sourceText)
-	{
+	private static String getFormattedString(String sourceText) {
 		Source source = new Source(sourceText);
 		return new SourceFormatter(source).setTidyTags(true).setCollapseWhiteSpace(true).setIndentAllElements(true).toString();
 	}

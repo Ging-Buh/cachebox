@@ -2,8 +2,7 @@ package CB_UI_Base.GL_UI.Controls.List;
 
 import CB_UI_Base.GL_UI.CB_View_Base;
 
-public interface IScrollbarParent
-{
+public interface IScrollbarParent {
 	public CB_View_Base getView();
 
 	public boolean isDragable();

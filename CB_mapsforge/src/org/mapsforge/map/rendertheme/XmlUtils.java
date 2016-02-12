@@ -36,15 +36,13 @@ public final class XmlUtils {
 
 	private static final String UNSUPPORTED_COLOR_FORMAT = "unsupported color format: ";
 
-	public static void checkMandatoryAttribute(String elementName, String attributeName, Object attributeValue)
-			throws SAXException {
+	public static void checkMandatoryAttribute(String elementName, String attributeName, Object attributeValue) throws SAXException {
 		if (attributeValue == null) {
 			throw new SAXException("missing attribute '" + attributeName + "' for element: " + elementName);
 		}
 	}
 
-	public static ResourceBitmap createBitmap(GraphicFactory graphicFactory, DisplayModel displayModel,
-			String relativePathPrefix, String src) throws IOException {
+	public static ResourceBitmap createBitmap(GraphicFactory graphicFactory, DisplayModel displayModel, String relativePathPrefix, String src) throws IOException {
 		if (src == null || src.length() == 0) {
 			// no image source defined
 			return null;
@@ -58,8 +56,7 @@ public final class XmlUtils {
 			String absoluteName = getAbsoluteName(relativePathPrefix, src);
 			if (src.endsWith(".svg")) {
 				try {
-					return graphicFactory
-							.renderSvg(inputStream, displayModel.getScaleFactor(), absoluteName.hashCode());
+					return graphicFactory.renderSvg(inputStream, displayModel.getScaleFactor(), absoluteName.hashCode());
 				} catch (IOException e) {
 					throw new IOException("SVG render failed " + src, e);
 				}

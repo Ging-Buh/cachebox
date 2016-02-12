@@ -53,9 +53,8 @@ public class Marker extends Layer {
 	}
 
 	public synchronized boolean contains(Point center, Point point) {
-		Rectangle r = new Rectangle(center.x - (float) bitmap.getWidth() / 2 + this.horizontalOffset, center.y
-				- (float) bitmap.getHeight() / 2 + this.verticalOffset, center.x + (float) bitmap.getWidth() / 2
-				+ this.horizontalOffset, center.y + (float) bitmap.getHeight() / 2 + this.verticalOffset);
+		Rectangle r = new Rectangle(center.x - (float) bitmap.getWidth() / 2 + this.horizontalOffset, center.y - (float) bitmap.getHeight() / 2 + this.verticalOffset, center.x + (float) bitmap.getWidth() / 2 + this.horizontalOffset,
+				center.y + (float) bitmap.getHeight() / 2 + this.verticalOffset);
 		return r.contains(point);
 	}
 

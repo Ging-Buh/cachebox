@@ -27,7 +27,6 @@ import org.apache.xmlrpc.common.XmlRpcController;
 import org.apache.xmlrpc.common.XmlRpcWorkerFactory;
 import org.apache.xmlrpc.serializer.XmlWriterFactory;
 
-
 /** <p>The main access point of an XML-RPC client. This object serves mainly
  * as an object factory. It is designed with singletons in mind: Basically,
  * an application should be able to hold a single instance of
@@ -106,7 +105,7 @@ public class XmlRpcClient extends XmlRpcController {
 	public void setTransportFactory(XmlRpcTransportFactory pFactory) {
 		transportFactory = pFactory;
 	}
-	
+
 	/** Returns the clients transport factory. The client will use this factory
 	 * for invocation of {@link XmlRpcTransportFactory#getTransport()}
 	 * for any request.
@@ -173,8 +172,7 @@ public class XmlRpcClient extends XmlRpcController {
 	 * @param pCallback The callback being notified when the request is finished.
 	 * @throws XmlRpcException Performing the request failed.
 	 */
-	public void executeAsync(String pMethodName, Object[] pParams,
-							 AsyncCallback pCallback) throws XmlRpcException {
+	public void executeAsync(String pMethodName, Object[] pParams, AsyncCallback pCallback) throws XmlRpcException {
 		executeAsync(getClientConfig(), pMethodName, pParams, pCallback);
 	}
 
@@ -185,11 +183,8 @@ public class XmlRpcClient extends XmlRpcController {
 	 * @param pCallback The callback being notified when the request is finished.
 	 * @throws XmlRpcException Performing the request failed.
 	 */
-	public void executeAsync(XmlRpcClientConfig pConfig,
-							 String pMethodName, Object[] pParams,
-							 AsyncCallback pCallback) throws XmlRpcException {
-		executeAsync(new XmlRpcClientRequestImpl(pConfig, pMethodName, pParams),
-					 pCallback);
+	public void executeAsync(XmlRpcClientConfig pConfig, String pMethodName, Object[] pParams, AsyncCallback pCallback) throws XmlRpcException {
+		executeAsync(new XmlRpcClientRequestImpl(pConfig, pMethodName, pParams), pCallback);
 	}
 
 	/** Performs an asynchronous request with the clients default configuration.
@@ -198,8 +193,7 @@ public class XmlRpcClient extends XmlRpcController {
 	 * @param pCallback The callback being notified when the request is finished.
 	 * @throws XmlRpcException Performing the request failed.
 	 */
-	public void executeAsync(String pMethodName, List pParams,
-						 	   AsyncCallback pCallback) throws XmlRpcException {
+	public void executeAsync(String pMethodName, List pParams, AsyncCallback pCallback) throws XmlRpcException {
 		executeAsync(getClientConfig(), pMethodName, pParams, pCallback);
 	}
 
@@ -210,9 +204,7 @@ public class XmlRpcClient extends XmlRpcController {
 	 * @param pCallback The callback being notified when the request is finished.
 	 * @throws XmlRpcException Performing the request failed.
 	 */
-	public void executeAsync(XmlRpcClientConfig pConfig,
-							 String pMethodName, List pParams,
-						 	 AsyncCallback pCallback) throws XmlRpcException {
+	public void executeAsync(XmlRpcClientConfig pConfig, String pMethodName, List pParams, AsyncCallback pCallback) throws XmlRpcException {
 		executeAsync(new XmlRpcClientRequestImpl(pConfig, pMethodName, pParams), pCallback);
 	}
 
@@ -221,8 +213,7 @@ public class XmlRpcClient extends XmlRpcController {
 	 * @param pCallback The callback being notified when the request is finished.
 	 * @throws XmlRpcException Performing the request failed.
 	 */
-	public void executeAsync(XmlRpcRequest pRequest,
-							 AsyncCallback pCallback) throws XmlRpcException {
+	public void executeAsync(XmlRpcRequest pRequest, AsyncCallback pCallback) throws XmlRpcException {
 		XmlRpcClientWorker w = (XmlRpcClientWorker) getWorkerFactory().getWorker();
 		w.execute(pRequest, pCallback);
 	}

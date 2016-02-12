@@ -120,8 +120,7 @@ public class Rectangle implements Serializable {
 			return true;
 		}
 
-		return this.left <= rectangle.right && rectangle.left <= this.right && this.top <= rectangle.bottom
-				&& rectangle.top <= this.bottom;
+		return this.left <= rectangle.right && rectangle.left <= this.right && this.top <= rectangle.bottom && rectangle.top <= this.bottom;
 	}
 
 	public boolean intersectsCircle(double pointX, double pointY, double radius) {

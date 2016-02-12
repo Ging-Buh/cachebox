@@ -9,53 +9,43 @@ import CB_Utils.Util.HSV_Color;
 
 import com.badlogic.gdx.graphics.Color;
 
-public class ColorPickerRec extends CB_View_Base
-{
+public class ColorPickerRec extends CB_View_Base {
 
 	private HSV_Color mColor = new HSV_Color(Color.YELLOW);
 
-	public ColorPickerRec(CB_RectF rec, String Name)
-	{
+	public ColorPickerRec(CB_RectF rec, String Name) {
 		super(rec, Name);
 		colorChanged();
 	}
 
 	@Override
-	protected void Initial()
-	{
+	protected void Initial() {
 
 	}
 
 	@Override
-	protected void SkinIsChanged()
-	{
+	protected void SkinIsChanged() {
 
 	}
 
-	public void setHue(float hue)
-	{
+	public void setHue(float hue) {
 		mColor.setHue(hue);
 		colorChanged();
 	}
 
-	public void setColor(HSV_Color color)
-	{
+	public void setColor(HSV_Color color) {
 		mColor = color;
 	}
 
-	public void setColor(Color color)
-	{
+	public void setColor(Color color) {
 		mColor = new HSV_Color(color);
 	}
 
-	private void colorChanged()
-	{
-		GL.that.RunOnGL(new IRunOnGL()
-		{
+	private void colorChanged() {
+		GL.that.RunOnGL(new IRunOnGL() {
 
 			@Override
-			public void run()
-			{
+			public void run() {
 				setBackground(new ColorDrawable(mColor));
 			}
 		});

@@ -21,9 +21,9 @@
 package net.htmlparser.jericho;
 
 final class StartTagTypeServerCommonComment extends StartTagTypeGenericImplementation {
-	static final StartTagTypeServerCommonComment INSTANCE=new StartTagTypeServerCommonComment();
+	static final StartTagTypeServerCommonComment INSTANCE = new StartTagTypeServerCommonComment();
 
 	private StartTagTypeServerCommonComment() {
-		super("common server comment tag","<%--","--%>",null,true);
+		super("common server comment tag", "<%--", "--%>", null, true);
 	}
 }

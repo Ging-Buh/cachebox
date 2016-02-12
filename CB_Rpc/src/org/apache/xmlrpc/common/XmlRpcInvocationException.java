@@ -20,26 +20,25 @@ package org.apache.xmlrpc.common;
 
 import org.apache.xmlrpc.XmlRpcException;
 
-
 /**
  * This exception is thrown, if the server catches an exception, which
  * is thrown by the handler.
  */
 public class XmlRpcInvocationException extends XmlRpcException {
-    private static final long serialVersionUID = 7439737967784966169L;
+	private static final long serialVersionUID = 7439737967784966169L;
 
-    /**
-     * Creates a new instance with the given error code, error message
-     * and cause.
-     */
-    public XmlRpcInvocationException(int pCode, String pMessage, Throwable pLinkedException) {
-        super(pCode, pMessage, pLinkedException);
-    }
+	/**
+	 * Creates a new instance with the given error code, error message
+	 * and cause.
+	 */
+	public XmlRpcInvocationException(int pCode, String pMessage, Throwable pLinkedException) {
+		super(pCode, pMessage, pLinkedException);
+	}
 
-    /**
-     * Creates a new instance with the given error message and cause.
-     */
-    public XmlRpcInvocationException(String pMessage, Throwable pLinkedException) {
-        super(pMessage, pLinkedException);
-    }
+	/**
+	 * Creates a new instance with the given error message and cause.
+	 */
+	public XmlRpcInvocationException(String pMessage, Throwable pLinkedException) {
+		super(pMessage, pLinkedException);
+	}
 }

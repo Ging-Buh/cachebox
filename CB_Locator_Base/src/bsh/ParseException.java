@@ -36,8 +36,7 @@ package bsh;
  */
 
 // Begin BeanShell Modification - public, extend EvalError
-public final class ParseException extends EvalError
-{
+public final class ParseException extends EvalError {
 	// End BeanShell Modification - public, extend EvalError
 
 	// Begin BeanShell Modification - sourceFile
@@ -52,14 +51,12 @@ public final class ParseException extends EvalError
 	/**
 	 * Used to add source file info to exception
 	 */
-	public void setErrorSourceFile(String file)
-	{
+	public void setErrorSourceFile(String file) {
 		this.sourceFile = file;
 	}
 
 	@Override
-	public String getErrorSourceFile()
-	{
+	public String getErrorSourceFile() {
 		return sourceFile;
 	}
 
@@ -72,8 +69,7 @@ public final class ParseException extends EvalError
 	 * super class with the empty string to force the "toString" method of parent class "Throwable" to print the error message in the form:
 	 * ParseException: <result of getMessage>
 	 */
-	public ParseException(Token currentTokenVal, int[][] expectedTokenSequencesVal, String[] tokenImageVal)
-	{
+	public ParseException(Token currentTokenVal, int[][] expectedTokenSequencesVal, String[] tokenImageVal) {
 		// Begin BeanShell Modification - constructor
 		this();
 		// End BeanShell Modification - constructor
@@ -90,16 +86,14 @@ public final class ParseException extends EvalError
 	 * constructors.
 	 */
 
-	public ParseException()
-	{
+	public ParseException() {
 		// Begin BeanShell Modification - constructor
 		this("");
 		// End BeanShell Modification - constructor
 		specialConstructor = false;
 	}
 
-	public ParseException(String message)
-	{
+	public ParseException(String message) {
 		// Begin BeanShell Modification - super constructor args
 		// null node, null callstack, ParseException knows where the error is.
 		super(message, null, null);
@@ -107,8 +101,7 @@ public final class ParseException extends EvalError
 		specialConstructor = false;
 	}
 
-	public ParseException(String message, Throwable cause)
-	{
+	public ParseException(String message, Throwable cause) {
 		// Begin BeanShell Modification - super constructor args
 		// null node, null callstack, ParseException knows where the error is.
 		super(message, null, null, cause);
@@ -142,8 +135,7 @@ public final class ParseException extends EvalError
 
 	// Begin BeanShell Modification - moved body to overloaded getMessage()
 	@Override
-	public String getMessage()
-	{
+	public String getMessage() {
 		return getMessage(false);
 	}
 
@@ -156,27 +148,21 @@ public final class ParseException extends EvalError
 	 * stack trace, and hence the correct error message gets displayed.
 	 */
 	// Begin BeanShell Modification - added debug param
-	public String getMessage(boolean debug)
-	{
+	public String getMessage(boolean debug) {
 		// End BeanShell Modification - added debug param
-		if (!specialConstructor)
-		{
+		if (!specialConstructor) {
 			return super.getRawMessage();
 		}
 		String expected = "";
 		int maxSize = 0;
-		for (int i = 0; i < expectedTokenSequences.length; i++)
-		{
-			if (maxSize < expectedTokenSequences[i].length)
-			{
+		for (int i = 0; i < expectedTokenSequences.length; i++) {
+			if (maxSize < expectedTokenSequences[i].length) {
 				maxSize = expectedTokenSequences[i].length;
 			}
-			for (int j = 0; j < expectedTokenSequences[i].length; j++)
-			{
+			for (int j = 0; j < expectedTokenSequences[i].length; j++) {
 				expected += tokenImage[expectedTokenSequences[i][j]] + " ";
 			}
-			if (expectedTokenSequences[i][expectedTokenSequences[i].length - 1] != 0)
-			{
+			if (expectedTokenSequences[i][expectedTokenSequences[i].length - 1] != 0) {
 				expected += "...";
 			}
 			expected += eol + "    ";
@@ -185,11 +171,10 @@ public final class ParseException extends EvalError
 		String retval = "In file: " + sourceFile + " Encountered \"";
 		// End BeanShell Modification - added sourceFile info
 		Token tok = currentToken.next;
-		for (int i = 0; i < maxSize; i++)
-		{
-			if (i != 0) retval += " ";
-			if (tok.kind == 0)
-			{
+		for (int i = 0; i < maxSize; i++) {
+			if (i != 0)
+				retval += " ";
+			if (tok.kind == 0) {
 				retval += tokenImage[0];
 				break;
 			}
@@ -199,14 +184,10 @@ public final class ParseException extends EvalError
 		retval += "\" at line " + currentToken.next.beginLine + ", column " + currentToken.next.beginColumn + "." + eol;
 
 		// Begin BeanShell Modification - made conditional on debug
-		if (debug)
-		{
-			if (expectedTokenSequences.length == 1)
-			{
+		if (debug) {
+			if (expectedTokenSequences.length == 1) {
 				retval += "Was expecting:" + eol + "    ";
-			}
-			else
-			{
+			} else {
 				retval += "Was expecting one of:" + eol + "    ";
 			}
 
@@ -225,14 +206,11 @@ public final class ParseException extends EvalError
 	/**
 	 * Used to convert raw characters to their escaped version when these raw version cannot be used as part of an ASCII string literal.
 	 */
-	protected String add_escapes(String str)
-	{
+	protected String add_escapes(String str) {
 		StringBuilder retval = new StringBuilder();
 		char ch;
-		for (int i = 0; i < str.length(); i++)
-		{
-			switch (str.charAt(i))
-			{
+		for (int i = 0; i < str.length(); i++) {
+			switch (str.charAt(i)) {
 			case 0:
 				continue;
 			case '\b':
@@ -260,13 +238,10 @@ public final class ParseException extends EvalError
 				retval.append("\\\\");
 				continue;
 			default:
-				if ((ch = str.charAt(i)) < 0x20 || ch > 0x7e)
-				{
+				if ((ch = str.charAt(i)) < 0x20 || ch > 0x7e) {
 					String s = "0000" + Integer.toString(ch, 16);
 					retval.append("\\u" + s.substring(s.length() - 4, s.length()));
-				}
-				else
-				{
+				} else {
 					retval.append(ch);
 				}
 				continue;
@@ -278,54 +253,43 @@ public final class ParseException extends EvalError
 	// Begin BeanShell Modification - override error methods and toString
 
 	@Override
-	public int getErrorLineNumber()
-	{
-		if (currentToken == null)
-		{
+	public int getErrorLineNumber() {
+		if (currentToken == null) {
 			String message = getMessage();
 			int index = message.indexOf(" at line ");
-			if (index > -1)
-			{
+			if (index > -1) {
 				message = message.substring(index + 9);
 				index = message.indexOf(',');
-				try
-				{
-					if (index == -1)
-					{
+				try {
+					if (index == -1) {
 						return Integer.parseInt(message);
 					}
 					return Integer.parseInt(message.substring(0, index));
-				}
-				catch (NumberFormatException e)
-				{
+				} catch (NumberFormatException e) {
 					// ignore, we have no valid line information, just return -1 for now
 				}
 			}
 			return -1;
-		}
-		else
-		{
+		} else {
 			return currentToken.next.beginLine;
 		}
 	}
 
 	@Override
-	public String getErrorText()
-	{
+	public String getErrorText() {
 		// copied from generated getMessage()
 		int maxSize = 0;
-		for (int i = 0; i < expectedTokenSequences.length; i++)
-		{
-			if (maxSize < expectedTokenSequences[i].length) maxSize = expectedTokenSequences[i].length;
+		for (int i = 0; i < expectedTokenSequences.length; i++) {
+			if (maxSize < expectedTokenSequences[i].length)
+				maxSize = expectedTokenSequences[i].length;
 		}
 
 		String retval = "";
 		Token tok = currentToken.next;
-		for (int i = 0; i < maxSize; i++)
-		{
-			if (i != 0) retval += " ";
-			if (tok.kind == 0)
-			{
+		for (int i = 0; i < maxSize; i++) {
+			if (i != 0)
+				retval += " ";
+			if (tok.kind == 0) {
 				retval += tokenImage[0];
 				break;
 			}

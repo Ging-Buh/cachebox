@@ -7,50 +7,37 @@ import CB_Core.Types.TbList;
 import CB_Core.Types.Trackable;
 import de.cb.sqlite.CoreCursor;
 
-public class TrackableListDAO
-{
+public class TrackableListDAO {
 
-	public static void WriteToDatabase(TbList trackableList)
-	{
+	public static void WriteToDatabase(TbList trackableList) {
 
 		TrackableDAO tDAO = new TrackableDAO();
 
 		Iterator<Trackable> iterator = trackableList.iterator();
 
-		if (iterator != null && iterator.hasNext())
-		{
-			do
-			{
+		if (iterator != null && iterator.hasNext()) {
+			do {
 				Trackable tb = iterator.next();
 
 				Trackable tbDB = tDAO.getFromDbByGcCode(tb.getGcCode());
 
-				if (tbDB == null)
-				{
+				if (tbDB == null) {
 					tDAO.WriteToDatabase(tb);
-				}
-				else
-				{
+				} else {
 					tDAO.UpdateDatabase(tb);
 				}
 
-			}
-			while (iterator.hasNext());
+			} while (iterator.hasNext());
 		}
 
 	}
 
-	public static TbList ReadTbList(String where)
-	{
+	public static TbList ReadTbList(String where) {
 		TbList trackableList = new TbList();
-		CoreCursor reader = Database.FieldNotes
-				.rawQuery(
-						"select Id ,Archived ,GcCode ,CacheId ,CurrentGoal ,CurrentOwnerName ,DateCreated ,Description ,IconUrl ,ImageUrl ,Name ,OwnerName ,Url,TypeName, Home,TravelDistance   from Trackable",
-						null);
+		CoreCursor reader = Database.FieldNotes.rawQuery("select Id ,Archived ,GcCode ,CacheId ,CurrentGoal ,CurrentOwnerName ,DateCreated ,Description ,IconUrl ,ImageUrl ,Name ,OwnerName ,Url,TypeName, Home,TravelDistance   from Trackable", null);
 		reader.moveToFirst();
 
-		while (reader.isAfterLast() == false)
-		{
+		while (reader.isAfterLast() == false) {
 			trackableList.add(new Trackable(reader));
 			reader.moveToNext();
 		}
@@ -61,8 +48,7 @@ public class TrackableListDAO
 	/**
 	 * Deleate all TBs
 	 */
-	public static void clearDB()
-	{
+	public static void clearDB() {
 		Database.FieldNotes.delete("Trackable", "", null);
 	}
 

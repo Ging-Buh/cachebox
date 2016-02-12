@@ -20,7 +20,6 @@ package CB_UI_Base.graphics;
  * 
  * @author Longri
  */
-public enum GL_FontFamily
-{
+public enum GL_FontFamily {
 	DEFAULT, MONOSPACE, SANS_SERIF, SERIF;
 }

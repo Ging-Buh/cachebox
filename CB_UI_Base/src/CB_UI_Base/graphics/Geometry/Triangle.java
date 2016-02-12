@@ -24,17 +24,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 
  * @author Longri
  */
-public class Triangle implements IGeometry
-{
+public class Triangle implements IGeometry {
 
 	private float[] vertices = new float[6];
-	private short[] triangleIndices = new short[]
-		{ 0, 1, 2 };
+	private short[] triangleIndices = new short[] { 0, 1, 2 };
 
 	protected AtomicBoolean isDisposed = new AtomicBoolean(false);
 
-	public Triangle(float x1, float y1, float x2, float y2, float x3, float y3)
-	{
+	public Triangle(float x1, float y1, float x2, float y2, float x3, float y3) {
 		vertices[0] = x1;
 		vertices[1] = y1;
 
@@ -46,14 +43,12 @@ public class Triangle implements IGeometry
 	}
 
 	@Override
-	public float[] getVertices()
-	{
+	public float[] getVertices() {
 		return vertices;
 	}
 
 	@Override
-	public short[] getTriangles()
-	{
+	public short[] getTriangles() {
 		return triangleIndices;
 	}
 
@@ -64,8 +59,7 @@ public class Triangle implements IGeometry
 	 * @param y
 	 * @return
 	 */
-	public boolean containsPoint(float x, float y)
-	{
+	public boolean containsPoint(float x, float y) {
 		float v1X = vertices[2] - vertices[0];
 		float v1Y = vertices[3] - vertices[1];
 
@@ -78,13 +72,10 @@ public class Triangle implements IGeometry
 		float s = crossProduct(qX, qY, v2X, v2Y) / crossProduct(v1X, v1Y, v2X, v2Y);
 		float t = crossProduct(v1X, v1Y, qX, qY) / crossProduct(v1X, v1Y, v2X, v2Y);
 
-		if ((s >= 0) && (t >= 0) && (s + t <= 1))
-		{
+		if ((s >= 0) && (t >= 0) && (s + t <= 1)) {
 			/* point is inside the triangle */
 			return true;
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
@@ -98,22 +89,19 @@ public class Triangle implements IGeometry
 	 *            second point used as vector
 	 * @return crossProduct of vectors
 	 */
-	private float crossProduct(float p1X, float p1Y, float p2X, float p2Y)
-	{
+	private float crossProduct(float p1X, float p1Y, float p2X, float p2Y) {
 		return (p1X * p2Y - p1Y * p2X);
 	}
 
-	public boolean isDisposed()
-	{
+	public boolean isDisposed() {
 		return isDisposed.get();
 	}
 
 	@Override
-	public void dispose()
-	{
-		synchronized (isDisposed)
-		{
-			if (isDisposed.get()) return;
+	public void dispose() {
+		synchronized (isDisposed) {
+			if (isDisposed.get())
+				return;
 			vertices = null;
 			triangleIndices = null;
 			isDisposed.set(true);

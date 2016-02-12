@@ -24,10 +24,8 @@ import org.json.JSONObject;
  * @author Hubert
  * @author Longri
  */
-public class ApiGroundspeak extends ApiBase
-{
-	protected enum queryType
-	{
+public class ApiGroundspeak extends ApiBase {
+	protected enum queryType {
 		GET, POST
 	}
 
@@ -35,8 +33,7 @@ public class ApiGroundspeak extends ApiBase
 	protected byte apiStatus = 0;
 	protected boolean isLite = true;
 
-	public ApiGroundspeak()
-	{
+	public ApiGroundspeak() {
 		result = new ApiGroundspeakResult(-1, "not initialized");
 	}
 
@@ -189,43 +186,34 @@ public class ApiGroundspeak extends ApiBase
 	// return result;
 	// }
 
-	protected ApiGroundspeakResult parseJson(JSONObject json) throws JSONException
-	{
+	protected ApiGroundspeakResult parseJson(JSONObject json) throws JSONException {
 		return new ApiGroundspeakResult(-1, "not initialized");
 	}
 
 	/**
 	 * a special class with access to a UI can show error message here
 	 */
-	protected void showToastConnectionError()
-	{
+	protected void showToastConnectionError() {
 	}
 
-	protected boolean getRequest(JSONObject request)
-	{
+	protected boolean getRequest(JSONObject request) {
 		return false;
 	}
 
-	protected String getApiFunction()
-	{
+	protected String getApiFunction() {
 		return "";
 	}
 
-	protected queryType getQueryType()
-	{
+	protected queryType getQueryType() {
 		return queryType.GET;
 	}
 
-	private int checkApiState()
-	{
+	private int checkApiState() {
 		// check API staus
-		if (GroundspeakAPI.IsPremiumMember())
-		{
+		if (GroundspeakAPI.IsPremiumMember()) {
 			isLite = false;
 			apiStatus = 2;
-		}
-		else
-		{
+		} else {
 			isLite = true;
 			apiStatus = 1;
 		}

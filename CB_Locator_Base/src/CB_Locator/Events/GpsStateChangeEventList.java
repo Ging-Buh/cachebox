@@ -4,23 +4,19 @@ import java.util.ArrayList;
 
 import CB_Locator.Locator;
 
-public class GpsStateChangeEventList
-{
+public class GpsStateChangeEventList {
 	public static ArrayList<GpsStateChangeEvent> list = new ArrayList<GpsStateChangeEvent>();
 
-	public static void Add(GpsStateChangeEvent event)
-	{
-		synchronized (list)
-		{
-			if (!list.contains(event)) list.add(event);
+	public static void Add(GpsStateChangeEvent event) {
+		synchronized (list) {
+			if (!list.contains(event))
+				list.add(event);
 		}
 
 	}
 
-	public static void Remove(GpsStateChangeEvent event)
-	{
-		synchronized (list)
-		{
+	public static void Remove(GpsStateChangeEvent event) {
+		synchronized (list) {
 			list.remove(event);
 		}
 	}
@@ -34,48 +30,40 @@ public class GpsStateChangeEventList
 	public static long maxEventListTime = 0;
 	private static long lastChanged = 0;
 
-	public static void Call()
-	{
-		synchronized (list)
-		{
+	public static void Call() {
+		synchronized (list) {
 
 			minEventTime = Math.min(minEventTime, System.currentTimeMillis() - lastTime);
 			lastTime = System.currentTimeMillis();
 
-			if (lastChanged != 0 && lastChanged > System.currentTimeMillis() - Locator.getMinUpdateTime())
-			{
+			if (lastChanged != 0 && lastChanged > System.currentTimeMillis() - Locator.getMinUpdateTime()) {
 				return;
 			}
 			lastChanged = System.currentTimeMillis();
 
-			try
-			{
-				synchronized (list)
-				{
+			try {
+				synchronized (list) {
 					long threadStart = System.currentTimeMillis();
 					count++;
-					for (GpsStateChangeEvent event : list)
-					{
+					for (GpsStateChangeEvent event : list) {
 
 						FireEvent(event);
 
 					}
-					if (count > 10) count = 0;
+					if (count > 10)
+						count = 0;
 
 					maxEventListTime = Math.max(maxEventListTime, System.currentTimeMillis() - threadStart);
 				}
-			}
-			catch (Exception e)
-			{
-				 
+			} catch (Exception e) {
+
 				e.printStackTrace();
 			}
 
 		}
 	}
 
-	private static void FireEvent(GpsStateChangeEvent event)
-	{
+	private static void FireEvent(GpsStateChangeEvent event) {
 		event.GpsStateChanged();
 		// Log.d("CACHEBOX", "GPS State Change called " + event.toString());
 	}

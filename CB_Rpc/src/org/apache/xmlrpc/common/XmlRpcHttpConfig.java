@@ -18,7 +18,6 @@
  */
 package org.apache.xmlrpc.common;
 
-
 /** Interface of a configuration for HTTP requests.
  */
 public interface XmlRpcHttpConfig extends XmlRpcStreamConfig {
@@ -30,6 +29,7 @@ public interface XmlRpcHttpConfig extends XmlRpcStreamConfig {
 	 * is being used.
 	 */
 	String getBasicEncoding();
+
 	/** Returns, whether a "Content-Length" header may be
 	 * omitted. The XML-RPC specification demands, that such
 	 * a header be present.

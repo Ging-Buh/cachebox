@@ -18,7 +18,6 @@ package org.openintents.intents;
 
 // Version Dec 9, 2008
 
-
 /**
  * Provides OpenIntents actions, extras, and categories used by providers. 
  * <p>These specifiers extend the standard Android specifiers.</p>
@@ -44,7 +43,7 @@ public final class FileManagerIntents {
 	 * <p>Constant Value: "org.openintents.action.PICK_DIRECTORY"</p>
 	 */
 	public static final String ACTION_PICK_DIRECTORY = "org.openintents.action.PICK_DIRECTORY";
-	
+
 	/**
 	 * The title to display.
 	 * 

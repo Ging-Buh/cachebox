@@ -11,25 +11,25 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 
 public class CB_Action_Show_Delete_Dialog extends CB_Action {
 
-    Color TrackColor;
+	Color TrackColor;
 
-    public CB_Action_Show_Delete_Dialog() {
-	super("DeleteCaches", MenuID.AID_SHOW_DELETE_DIALOG);
-    }
+	public CB_Action_Show_Delete_Dialog() {
+		super("DeleteCaches", MenuID.AID_SHOW_DELETE_DIALOG);
+	}
 
-    @Override
-    public boolean getEnabled() {
-	return true;
-    }
+	@Override
+	public boolean getEnabled() {
+		return true;
+	}
 
-    @Override
-    public Sprite getIcon() {
-	return SpriteCacheBase.Icons.get(IconName.delete_28.ordinal());
-    }
+	@Override
+	public Sprite getIcon() {
+		return SpriteCacheBase.Icons.get(IconName.delete_28.ordinal());
+	}
 
-    @Override
-    public void Execute() {
-	DeleteDialog d = new DeleteDialog();
-	d.Show();
-    }
+	@Override
+	public void Execute() {
+		DeleteDialog d = new DeleteDialog();
+		d.Show();
+	}
 }

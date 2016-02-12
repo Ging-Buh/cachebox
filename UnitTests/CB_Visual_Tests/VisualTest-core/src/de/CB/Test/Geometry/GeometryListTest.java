@@ -6,16 +6,13 @@ import CB_UI_Base.graphics.Geometry.Quadrangle;
 import CB_UI_Base.graphics.Geometry.Ring;
 import CB_UI_Base.graphics.Geometry.Triangle;
 
-public class GeometryListTest extends GeometryTestCaseBase
-{
-	public GeometryListTest()
-	{
+public class GeometryListTest extends GeometryTestCaseBase {
+	public GeometryListTest() {
 		super("Multi Geometry Test");
 	}
 
 	@Override
-	public void work()
-	{
+	public void work() {
 		GeometryList list = new GeometryList();
 
 		list.add(new Circle(20, 20, 60, true));

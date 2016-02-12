@@ -35,14 +35,13 @@ import CB_Utils.Interfaces.ICancel;
 /**
  * @author Longri
  */
-public class HttpUtils
-{
+public class HttpUtils {
 	public static int conectionTimeout = 10000;
 	public static int socketTimeout = 60000;
 
 	/**
-	 * Fürt ein Http Request aus und gibt die Antwort als String zurück. Da ein HttpRequestBase übergeben wird kann ein HttpGet oder
-	 * HttpPost zum Ausführen übergeben werden.
+	 * Fï¿½rt ein Http Request aus und gibt die Antwort als String zurï¿½ck. Da ein HttpRequestBase ï¿½bergeben wird kann ein HttpGet oder
+	 * HttpPost zum Ausfï¿½hren ï¿½bergeben werden.
 	 * 
 	 * @param httprequest
 	 *            HttpGet oder HttpPost
@@ -71,8 +70,7 @@ public class HttpUtils
 	 * @throws ClientProtocolException
 	 * @throws ConnectTimeoutException
 	 */
-	public static String Execute(final HttpRequestBase httprequest, final ICancel icancel) throws IOException, ClientProtocolException, ConnectTimeoutException
-	{
+	public static String Execute(final HttpRequestBase httprequest, final ICancel icancel) throws IOException, ClientProtocolException, ConnectTimeoutException {
 
 		httprequest.setHeader("Accept", "application/json");
 		httprequest.setHeader("Content-type", "application/json");
@@ -93,25 +91,18 @@ public class HttpUtils
 		DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
 
 		final AtomicBoolean ready = new AtomicBoolean(false);
-		if (icancel != null)
-		{
-			Thread cancelChekThread = new Thread(new Runnable()
-			{
+		if (icancel != null) {
+			Thread cancelChekThread = new Thread(new Runnable() {
 				@Override
-				public void run()
-				{
-					do
-					{
-						try
-						{
+				public void run() {
+					do {
+						try {
 							Thread.sleep(200);
+						} catch (InterruptedException e) {
 						}
-						catch (InterruptedException e)
-						{
-						}
-						if (icancel.cancel()) httprequest.abort();
-					}
-					while (!ready.get());
+						if (icancel.cancel())
+							httprequest.abort();
+					} while (!ready.get());
 				}
 			});
 			cancelChekThread.start();// start abort chk thread
@@ -121,9 +112,9 @@ public class HttpUtils
 
 		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 		String line = "";
-		while ((line = rd.readLine()) != null)
-		{
-			if (Plattform.used == Plattform.Server) line = new String(line.getBytes("ISO-8859-1"), "UTF-8");
+		while ((line = rd.readLine()) != null) {
+			if (Plattform.used == Plattform.Server)
+				line = new String(line.getBytes("ISO-8859-1"), "UTF-8");
 			result += line + "\n";
 		}
 		return result;

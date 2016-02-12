@@ -3,13 +3,11 @@ package CB_UI.GL_UI.Activitys.settings;
 import CB_UI_Base.GL_UI.Controls.chkBox;
 import CB_UI_Base.Math.CB_RectF;
 
-public class SettingsItem_Bool extends SettingsItemBase
-{
+public class SettingsItem_Bool extends SettingsItemBase {
 
 	chkBox Check;
 
-	public SettingsItem_Bool(CB_RectF rec, int Index, String Name)
-	{
+	public SettingsItem_Bool(CB_RectF rec, int Index, String Name) {
 		super(rec, Index, Name);
 
 		Check = new chkBox("");
@@ -24,14 +22,12 @@ public class SettingsItem_Bool extends SettingsItemBase
 
 	}
 
-	public chkBox getCheckBox()
-	{
+	public chkBox getCheckBox() {
 		return Check;
 	}
 
 	@Override
-	protected void layout()
-	{
+	protected void layout() {
 		super.layout();
 		Check.setY(this.getHalfHeight() - Check.getHalfHeight());
 	}

@@ -21,7 +21,6 @@ package org.apache.xmlrpc.parser;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
 /** Parser for boolean values.
  */
 public class BooleanParser extends AtomicParser {
@@ -32,8 +31,7 @@ public class BooleanParser extends AtomicParser {
 		} else if ("0".equals(s)) {
 			super.setResult(Boolean.FALSE);
 		} else {
-			throw new SAXParseException("Failed to parse boolean value: " + pResult,
-										getDocumentLocator());
+			throw new SAXParseException("Failed to parse boolean value: " + pResult, getDocumentLocator());
 		}
 	}
 }

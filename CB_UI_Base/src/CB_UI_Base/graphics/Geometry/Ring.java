@@ -26,8 +26,7 @@ import com.badlogic.gdx.math.MathUtils;
  * 
  * @author Longri
  */
-public class Ring implements IGeometry
-{
+public class Ring implements IGeometry {
 
 	protected float centerX;
 	protected float centerY;
@@ -53,8 +52,7 @@ public class Ring implements IGeometry
 	 * @param outerRadius
 	 *            radius away from center point
 	 */
-	public Ring(float x, float y, float innerRadius, float outerRadius)
-	{
+	public Ring(float x, float y, float innerRadius, float outerRadius) {
 		centerX = x;
 		centerY = y;
 		this.innerRadius = innerRadius;
@@ -75,10 +73,10 @@ public class Ring implements IGeometry
 	 * @param compute
 	 *            true for call Compute() with constructor
 	 */
-	public Ring(float x, float y, float innerRadius, float outerRadius, boolean compute)
-	{
+	public Ring(float x, float y, float innerRadius, float outerRadius, boolean compute) {
 		this(x, y, innerRadius, outerRadius);
-		if (compute) Compute();
+		if (compute)
+			Compute();
 	}
 
 	/**
@@ -88,8 +86,7 @@ public class Ring implements IGeometry
 	 * 
 	 * @param x
 	 */
-	public void setCenterX(float x)
-	{
+	public void setCenterX(float x) {
 		centerX = x;
 		isDirty = true;
 	}
@@ -101,8 +98,7 @@ public class Ring implements IGeometry
 	 * 
 	 * @param y
 	 */
-	public void setCenterY(float y)
-	{
+	public void setCenterY(float y) {
 		centerY = y;
 		isDirty = true;
 	}
@@ -115,8 +111,7 @@ public class Ring implements IGeometry
 	 * @param r
 	 *            Radius
 	 */
-	public void setInnerRadius(float r)
-	{
+	public void setInnerRadius(float r) {
 		innerRadius = r;
 		isDirty = true;
 	}
@@ -129,8 +124,7 @@ public class Ring implements IGeometry
 	 * @param r
 	 *            Radius
 	 */
-	public void setOuterRadius(float r)
-	{
+	public void setOuterRadius(float r) {
 		outerRadius = r;
 		isDirty = true;
 	}
@@ -141,9 +135,9 @@ public class Ring implements IGeometry
 	 * <br>
 	 * For every segment are compute a triangle from the segment start, end and the center of this circle.
 	 */
-	public void Compute()
-	{
-		if (!isDirty) return; // Nothing todo
+	public void Compute() {
+		if (!isDirty)
+			return; // Nothing todo
 
 		// calculate segment count
 		double alpha = (360 * MIN_CIRCLE_SEGMENTH_LENGTH) / (MathUtils.PI2 * outerRadius);
@@ -162,20 +156,18 @@ public class Ring implements IGeometry
 		int triangleIndex = 0;
 		short verticeIdex = 0;
 		boolean beginnTriangles = false;
-		for (float i = 0; index < (segmente * 4); i += thetaStep)
-		{
+		for (float i = 0; index < (segmente * 4); i += thetaStep) {
 			vertices[index++] = centerX + innerRadius * MathUtils.cos(i);
 			vertices[index++] = centerY + innerRadius * MathUtils.sin(i);
 			vertices[index++] = centerX + outerRadius * MathUtils.cos(i);
 			vertices[index++] = centerY + outerRadius * MathUtils.sin(i);
 
-			if (!beginnTriangles)
-			{
-				if (index % 8 == 0) beginnTriangles = true;
+			if (!beginnTriangles) {
+				if (index % 8 == 0)
+					beginnTriangles = true;
 			}
 
-			if (beginnTriangles)
-			{
+			if (beginnTriangles) {
 				triangleIndices[triangleIndex++] = verticeIdex++;
 				triangleIndices[triangleIndex++] = verticeIdex++;
 				triangleIndices[triangleIndex++] = verticeIdex--;
@@ -200,30 +192,28 @@ public class Ring implements IGeometry
 	}
 
 	@Override
-	public float[] getVertices()
-	{
-		if (isDirty) Compute();
+	public float[] getVertices() {
+		if (isDirty)
+			Compute();
 		return vertices;
 	}
 
 	@Override
-	public short[] getTriangles()
-	{
-		if (isDirty) Compute();
+	public short[] getTriangles() {
+		if (isDirty)
+			Compute();
 		return triangleIndices;
 	}
 
-	public boolean isDisposed()
-	{
+	public boolean isDisposed() {
 		return isDisposed.get();
 	}
 
 	@Override
-	public void dispose()
-	{
-		synchronized (isDisposed)
-		{
-			if (isDisposed.get()) return;
+	public void dispose() {
+		synchronized (isDisposed) {
+			if (isDisposed.get())
+				return;
 			vertices = null;
 			triangleIndices = null;
 			isDisposed.set(true);

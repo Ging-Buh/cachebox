@@ -27,11 +27,18 @@ public class GSA extends NMEASentence {
 			StringBuffer buf = new StringBuffer(getName());
 			append(buf, GPSData.getStatus().name());
 			int ft = 0;
-			switch(GPSData.getFixType()){
-			case FIX_NONE: ft = 1; break;
-			case FIX_2D: ft = 2; break;
-			case FIX_3D: ft = 3; break;
-			default: throw new IllegalArgumentException();
+			switch (GPSData.getFixType()) {
+			case FIX_NONE:
+				ft = 1;
+				break;
+			case FIX_2D:
+				ft = 2;
+				break;
+			case FIX_3D:
+				ft = 3;
+				break;
+			default:
+				throw new IllegalArgumentException();
 			}
 			append(buf, ft); // 3: 3D-fix, 2: 2D-fix, 1: no-fix
 			for (int i = 1; i <= 12; i++) {
@@ -41,8 +48,7 @@ public class GSA extends NMEASentence {
 			append(buf, GPSData.getHDOP());
 			append(buf, GPSData.getVDOP());
 			sentence = buf.toString();
-		} 
-		else {
+		} else {
 			sentence = "GPGSA,V,,,,,,,,,,,,,,,,";
 		}
 		return sentence;
@@ -52,12 +58,10 @@ public class GSA extends NMEASentence {
 		if (number <= GPSData.getSatellites()) {
 			if (number > 9) {
 				return "" + number;
-			} 
-			else {
+			} else {
 				return "0" + number;
 			}
-		} 
-		else {
+		} else {
 			return "";
 		}
 	}

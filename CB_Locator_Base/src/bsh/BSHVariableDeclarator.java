@@ -36,8 +36,7 @@ package bsh;
 /**
  * name [ = initializer ] evaluate name and return optional initializer
  */
-class BSHVariableDeclarator extends SimpleNode
-{
+class BSHVariableDeclarator extends SimpleNode {
 	/**
 	 * 
 	 */
@@ -45,8 +44,7 @@ class BSHVariableDeclarator extends SimpleNode
 	// The token.image text of the name... never changes.
 	public String name;
 
-	BSHVariableDeclarator(int id)
-	{
+	BSHVariableDeclarator(int id) {
 		super(id);
 	}
 
@@ -60,33 +58,31 @@ class BSHVariableDeclarator extends SimpleNode
 	 *            initializer does not declare the type explicitly. e.g. int [] a = { 1, 2 }; typeNode may be null to indicate no type
 	 *            information available.
 	 */
-	public Object eval(BSHType typeNode, CallStack callstack, Interpreter interpreter) throws EvalError
-	{
+	public Object eval(BSHType typeNode, CallStack callstack, Interpreter interpreter) throws EvalError {
 		// null value means no value
 		Object value = null;
 
-		if (jjtGetNumChildren() > 0)
-		{
+		if (jjtGetNumChildren() > 0) {
 			SimpleNode initializer = (SimpleNode) jjtGetChild(0);
 
 			/*
 			 * If we have type info and the child is an array initializer pass it along... Else use the default eval style. (This allows
 			 * array initializer to handle the problem... allowing for future enhancements in loosening types there).
 			 */
-			if ((typeNode != null) && initializer instanceof BSHArrayInitializer) value = ((BSHArrayInitializer) initializer).eval(
-					typeNode.getBaseType(), typeNode.getArrayDims(), callstack, interpreter);
+			if ((typeNode != null) && initializer instanceof BSHArrayInitializer)
+				value = ((BSHArrayInitializer) initializer).eval(typeNode.getBaseType(), typeNode.getArrayDims(), callstack, interpreter);
 			else
 				value = initializer.eval(callstack, interpreter);
 		}
 
-		if (value == Primitive.VOID) throw new EvalError("Void initializer.", this, callstack);
+		if (value == Primitive.VOID)
+			throw new EvalError("Void initializer.", this, callstack);
 
 		return value;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "BSHVariableDeclarator " + name;
 	}
 }

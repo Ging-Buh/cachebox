@@ -18,7 +18,6 @@ package CB_UI_Base.graphics;
 /**
  * @author Longri
  */
-public enum GL_Style
-{
+public enum GL_Style {
 	FILL, STROKE
 }

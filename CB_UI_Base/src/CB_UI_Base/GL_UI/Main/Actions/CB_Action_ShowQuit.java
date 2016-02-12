@@ -31,59 +31,59 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 
 public class CB_Action_ShowQuit extends CB_Action {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_Action_ShowQuit.class);
-    String OverrideAppName = null;
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_Action_ShowQuit.class);
+	String OverrideAppName = null;
 
-    public CB_Action_ShowQuit() {
-	super("quit", MenuID.AID_SHOW_QUIT);
-    }
-
-    public void OverrideAppName(String name) {
-	OverrideAppName = name;
-    }
-
-    static GL_MsgBox msg;
-
-    @Override
-    public void Execute() {
-	// if (askIsShown) return;
-
-	if (msg != null && GL.that.actDialog == msg)
-	    return;
-
-	String Msg = Translation.Get("QuitReally");
-	String Title = Translation.Get("Quit?");
-
-	if (OverrideAppName != null) {
-	    Msg = Msg.replace("Cachebox", OverrideAppName);
-	    Title = Title.replace("Cachebox", OverrideAppName);
+	public CB_Action_ShowQuit() {
+		super("quit", MenuID.AID_SHOW_QUIT);
 	}
 
-	try {
-	    msg = GL_MsgBox.Show(Msg, Title, MessageBoxButtons.OKCancel, MessageBoxIcon.Stop, new OnMsgBoxClickListener() {
+	public void OverrideAppName(String name) {
+		OverrideAppName = name;
+	}
 
-		@Override
-		public boolean onClick(int which, Object data) {
-		    if (which == GL_MsgBox.BUTTON_POSITIVE) {
+	static GL_MsgBox msg;
 
-			//log.debug("\r\n Quit");
-			PlatformConnector.callQuit();
-		    }
-		    return true;
+	@Override
+	public void Execute() {
+		// if (askIsShown) return;
+
+		if (msg != null && GL.that.actDialog == msg)
+			return;
+
+		String Msg = Translation.Get("QuitReally");
+		String Title = Translation.Get("Quit?");
+
+		if (OverrideAppName != null) {
+			Msg = Msg.replace("Cachebox", OverrideAppName);
+			Title = Title.replace("Cachebox", OverrideAppName);
 		}
-	    });
-	} catch (Exception e) {
-	    PlatformConnector.callQuit();
+
+		try {
+			msg = GL_MsgBox.Show(Msg, Title, MessageBoxButtons.OKCancel, MessageBoxIcon.Stop, new OnMsgBoxClickListener() {
+
+				@Override
+				public boolean onClick(int which, Object data) {
+					if (which == GL_MsgBox.BUTTON_POSITIVE) {
+
+						//log.debug("\r\n Quit");
+						PlatformConnector.callQuit();
+					}
+					return true;
+				}
+			});
+		} catch (Exception e) {
+			PlatformConnector.callQuit();
+		}
 	}
-    }
 
-    @Override
-    public boolean getEnabled() {
-	return true;
-    }
+	@Override
+	public boolean getEnabled() {
+		return true;
+	}
 
-    @Override
-    public Sprite getIcon() {
-	return SpriteCacheBase.Icons.get(IconName.close_31.ordinal());
-    }
+	@Override
+	public Sprite getIcon() {
+		return SpriteCacheBase.Icons.get(IconName.close_31.ordinal());
+	}
 }

@@ -5,8 +5,7 @@ import java.io.Serializable;
 import CB_Core.ChangeType;
 import de.cb.sqlite.CoreCursor;
 
-public class ExportEntry implements Serializable
-{
+public class ExportEntry implements Serializable {
 	private static final long serialVersionUID = 1571599258092289354L;
 
 	public long id;
@@ -22,8 +21,7 @@ public class ExportEntry implements Serializable
 	public String note;
 	public boolean toExport;
 
-	ExportEntry(CoreCursor reader)
-	{
+	ExportEntry(CoreCursor reader) {
 		id = reader.getLong(0);
 		changeType = ChangeType.values()[reader.getInt(1)];
 		cacheId = reader.getLong(2);
@@ -35,8 +33,7 @@ public class ExportEntry implements Serializable
 		toExport = true;
 	}
 
-	public void setExport(boolean isChecked)
-	{
+	public void setExport(boolean isChecked) {
 		toExport = isChecked;
 	}
 

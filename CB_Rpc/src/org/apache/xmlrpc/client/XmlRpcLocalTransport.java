@@ -46,55 +46,50 @@ public class XmlRpcLocalTransport extends XmlRpcTransportImpl {
 			return true;
 		} else if (pObject instanceof Object[]) {
 			Object[] objects = (Object[]) pObject;
-			for (int i = 0;  i < objects.length;  i++) {
+			for (int i = 0; i < objects.length; i++) {
 				if (isExtensionType(objects[i])) {
 					return true;
 				}
 			}
 			return false;
-        } else if (pObject instanceof Collection) {
-            for (Iterator iter = ((Collection) pObject).iterator();  iter.hasNext();  ) {
-                if (isExtensionType(iter.next())) {
-                    return true;
-                }
-            }
-            return false;
+		} else if (pObject instanceof Collection) {
+			for (Iterator iter = ((Collection) pObject).iterator(); iter.hasNext();) {
+				if (isExtensionType(iter.next())) {
+					return true;
+				}
+			}
+			return false;
 		} else if (pObject instanceof Map) {
 			Map map = (Map) pObject;
-			for (Iterator iter = map.entrySet().iterator();  iter.hasNext();  ) {
+			for (Iterator iter = map.entrySet().iterator(); iter.hasNext();) {
 				Map.Entry entry = (Map.Entry) iter.next();
-				if (isExtensionType(entry.getKey())  ||  isExtensionType(entry.getValue())) {
+				if (isExtensionType(entry.getKey()) || isExtensionType(entry.getValue())) {
 					return true;
 				}
 			}
 			return false;
 		} else {
-			return !(pObject instanceof Integer
-                     ||  pObject instanceof Date
-					 ||  pObject instanceof String
-					 ||  pObject instanceof byte[]
-					 ||  pObject instanceof Double);
+			return !(pObject instanceof Integer || pObject instanceof Date || pObject instanceof String || pObject instanceof byte[] || pObject instanceof Double);
 		}
 	}
 
 	public Object sendRequest(XmlRpcRequest pRequest) throws XmlRpcException {
 		XmlRpcConfig config = pRequest.getConfig();
 		if (!config.isEnabledForExtensions()) {
-			for (int i = 0;  i < pRequest.getParameterCount();  i++) {
+			for (int i = 0; i < pRequest.getParameterCount(); i++) {
 				if (isExtensionType(pRequest.getParameter(i))) {
 					throw new XmlRpcExtensionException("Parameter " + i + " has invalid type, if isEnabledForExtensions() == false");
 				}
 			}
 		}
 		final XmlRpcRequestProcessor server = ((XmlRpcLocalClientConfig) config).getXmlRpcServer();
-        Object result;
+		Object result;
 		try {
 			result = server.execute(pRequest);
-        } catch (XmlRpcException t) {
-            throw t;
+		} catch (XmlRpcException t) {
+			throw t;
 		} catch (Throwable t) {
-		    throw new XmlRpcClientException("Failed to invoke method " + pRequest.getMethodName()
-		            + ": " + t.getMessage(), t);
+			throw new XmlRpcClientException("Failed to invoke method " + pRequest.getMethodName() + ": " + t.getMessage(), t);
 		}
 		if (!config.isEnabledForExtensions()) {
 			if (isExtensionType(result)) {
@@ -103,10 +98,10 @@ public class XmlRpcLocalTransport extends XmlRpcTransportImpl {
 		}
 
 		if (result == null) {
-		    return null;
-        }
-        final TypeConverterFactory typeConverterFactory = server.getTypeConverterFactory();
-        final TypeConverter typeConverter = typeConverterFactory.getTypeConverter(result.getClass());
-        return typeConverter.backConvert(result);
+			return null;
+		}
+		final TypeConverterFactory typeConverterFactory = server.getTypeConverterFactory();
+		final TypeConverter typeConverter = typeConverterFactory.getTypeConverter(result.getClass());
+		return typeConverter.backConvert(result);
 	}
 }

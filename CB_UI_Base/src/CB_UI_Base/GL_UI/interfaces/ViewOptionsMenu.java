@@ -1,12 +1,11 @@
 package CB_UI_Base.GL_UI.interfaces;
 
 /**
- * Das Interface, welches jedes CB View enthällt.
+ * Das Interface, welches jedes CB View enthï¿½llt.
  * 
  * @author Longri
  */
-public interface ViewOptionsMenu
-{
+public interface ViewOptionsMenu {
 
 	public void onShow();
 
@@ -14,7 +13,7 @@ public interface ViewOptionsMenu
 
 	public void onFree();
 
-	// TODO diese Methoden müssen noch implementiert werden, sobald das Context Menu im Core geschrieben wurde.
+	// TODO diese Methoden mï¿½ssen noch implementiert werden, sobald das Context Menu im Core geschrieben wurde.
 
 	// public void ActivityResult(int requestCode, int resultCode, Intent data);
 	// public boolean ItemSelected(MenuItem item);

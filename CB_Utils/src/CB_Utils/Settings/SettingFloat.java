@@ -15,41 +15,32 @@
  */
 package CB_Utils.Settings;
 
-public class SettingFloat extends SettingBase<Float>
-{
+public class SettingFloat extends SettingBase<Float> {
 
-	public SettingFloat(String name, SettingCategory category, SettingModus modus, float defaultValue, SettingStoreType StoreType,
-			SettingUsage usage)
-	{
+	public SettingFloat(String name, SettingCategory category, SettingModus modus, float defaultValue, SettingStoreType StoreType, SettingUsage usage) {
 		super(name, category, modus, StoreType, usage);
 		this.defaultValue = defaultValue;
 		this.value = defaultValue;
 	}
 
 	@Override
-	public String toDBString()
-	{
+	public String toDBString() {
 		return String.valueOf(value);
 	}
 
 	@Override
-	public boolean fromDBString(String dbString)
-	{
-		try
-		{
+	public boolean fromDBString(String dbString) {
+		try {
 			value = Float.valueOf(dbString);
 			return true;
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			value = defaultValue;
 			return false;
 		}
 	}
 
 	@Override
-	public SettingBase<Float> copy()
-	{
+	public SettingBase<Float> copy() {
 		SettingBase<Float> ret = new SettingFloat(this.name, this.category, this.modus, this.defaultValue, this.storeType, this.usage);
 		ret.value = this.value;
 		ret.lastValue = this.lastValue;
@@ -57,13 +48,15 @@ public class SettingFloat extends SettingBase<Float>
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (!(obj instanceof SettingFloat)) return false;
+	public boolean equals(Object obj) {
+		if (!(obj instanceof SettingFloat))
+			return false;
 
 		SettingFloat inst = (SettingFloat) obj;
-		if (!(inst.name.equals(this.name))) return false;
-		if (inst.value != this.value) return false;
+		if (!(inst.name.equals(this.name)))
+			return false;
+		if (inst.value != this.value)
+			return false;
 
 		return true;
 	}

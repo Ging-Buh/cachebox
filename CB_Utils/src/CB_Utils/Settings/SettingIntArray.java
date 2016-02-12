@@ -15,34 +15,28 @@
  */
 package CB_Utils.Settings;
 
-public class SettingIntArray extends SettingInt
-{
+public class SettingIntArray extends SettingInt {
 
 	private Integer values[];
 
-	public SettingIntArray(String name, SettingCategory category, SettingModus modus, int defaultValue, SettingStoreType StoreType,
-			SettingUsage usage, Integer arr[])
-	{
+	public SettingIntArray(String name, SettingCategory category, SettingModus modus, int defaultValue, SettingStoreType StoreType, SettingUsage usage, Integer arr[]) {
 		super(name, category, modus, defaultValue, StoreType, usage);
 		values = arr;
 	}
 
-	public Integer[] getValues()
-	{
+	public Integer[] getValues() {
 		return values;
 	}
 
-	public int getIndex()
-	{
-		for (int i = 0; i < values.length; i++)
-		{
-			if (values[i] == value) return i;
+	public int getIndex() {
+		for (int i = 0; i < values.length; i++) {
+			if (values[i] == value)
+				return i;
 		}
 		return -1;
 	}
 
-	public int getValueFromIndex(int index)
-	{
+	public int getValueFromIndex(int index) {
 		return values[index];
 	}
 }

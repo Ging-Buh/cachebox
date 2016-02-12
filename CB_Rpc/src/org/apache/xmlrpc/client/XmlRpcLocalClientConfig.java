@@ -20,11 +20,9 @@ package org.apache.xmlrpc.client;
 
 import org.apache.xmlrpc.common.XmlRpcRequestProcessorFactory;
 
-
 /** Interface of a client configuration for local rpc calls. Local
  * rpc calls are mainly useful for testing, because you don't need
  * a running server.
  */
-public interface XmlRpcLocalClientConfig extends XmlRpcClientConfig,
-		XmlRpcRequestProcessorFactory {
+public interface XmlRpcLocalClientConfig extends XmlRpcClientConfig, XmlRpcRequestProcessorFactory {
 }

@@ -20,8 +20,7 @@ package CB_Utils;
  * 
  * @author Longri
  */
-public class MathUtils
-{
+public class MathUtils {
 	/**
 	 * precalculation of Math.PI / 180.0
 	 */
@@ -58,15 +57,12 @@ public class MathUtils
 	 * @param value
 	 * @return
 	 */
-	static public float LegalizeDegreese(float value)
-	{
-		while (value > 360)
-		{
+	static public float LegalizeDegreese(float value) {
+		while (value > 360) {
 			value = value - 360;
 		}
 
-		while (value < 0)
-		{
+		while (value < 0) {
 			value += 360;
 		}
 
@@ -93,16 +89,12 @@ public class MathUtils
 	 * @throws IllegalArgumentException
 	 *             if results is null or has length < 1
 	 */
-	public static void computeDistanceAndBearing(CalculationType type, double startLatitude, double startLongitude, double endLatitude,
-			double endLongitude, float[] results)
-	{
-		if (results == null || results.length < 1)
-		{
+	public static void computeDistanceAndBearing(CalculationType type, double startLatitude, double startLongitude, double endLatitude, double endLongitude, float[] results) {
+		if (results == null || results.length < 1) {
 			throw new IllegalArgumentException("results is null or has length < 1");
 		}
 
-		switch (type)
-		{
+		switch (type) {
 		case ACCURATE:
 			computeDistanceAndBearingAccurate(startLatitude, startLongitude, endLatitude, endLongitude, results);
 			break;
@@ -112,8 +104,7 @@ public class MathUtils
 		}
 	}
 
-	public enum CalculationType
-	{
+	public enum CalculationType {
 		FAST, ACCURATE
 	}
 
@@ -126,8 +117,7 @@ public class MathUtils
 	 * @param lon2
 	 * @param results
 	 */
-	private static void computeDistanceAndBearingFast(double lat1, double lon1, double lat2, double lon2, float[] results)
-	{
+	private static void computeDistanceAndBearingFast(double lat1, double lon1, double lat2, double lon2, float[] results) {
 		double longitude1 = lon1;
 		double longitude2 = lon2;
 		double latitude1 = Math.toRadians(lat1);
@@ -140,13 +130,11 @@ public class MathUtils
 
 		int IntWGS84_MAJOR_AXIS = (int) WGS84_MAJOR_AXIS;
 
-		results[0] = (float) ((IntWGS84_MAJOR_AXIS) * Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2)
-				* Math.cos((lon2 - lon1))));
+		results[0] = (float) ((IntWGS84_MAJOR_AXIS) * Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos((lon2 - lon1))));
 
 		// results[0] = (float) Distance;
 
-		if (results.length > 1)
-		{
+		if (results.length > 1) {
 
 			double longDiff = Math.toRadians(longitude2 - longitude1);
 			double y = Math.sin(longDiff) * Math.cos(latitude2);
@@ -154,19 +142,16 @@ public class MathUtils
 
 			double angle = Math.toDegrees(Math.atan2(y, x));
 			results[1] = (float) (angle);
-			if (results.length > 2)
-			{
+			if (results.length > 2) {
 				results[2] = results[1];
 			}
 		}
 	}
 
 	static final double f = (WGS84_MAJOR_AXIS - WGS84_SEMI_MAJOR_AXIS) / WGS84_MAJOR_AXIS;
-	static final double aSqMinusBSqOverBSq = (WGS84_MAJOR_AXIS * WGS84_MAJOR_AXIS - WGS84_SEMI_MAJOR_AXIS * WGS84_SEMI_MAJOR_AXIS)
-			/ (WGS84_SEMI_MAJOR_AXIS * WGS84_SEMI_MAJOR_AXIS);
+	static final double aSqMinusBSqOverBSq = (WGS84_MAJOR_AXIS * WGS84_MAJOR_AXIS - WGS84_SEMI_MAJOR_AXIS * WGS84_SEMI_MAJOR_AXIS) / (WGS84_SEMI_MAJOR_AXIS * WGS84_SEMI_MAJOR_AXIS);
 
-	private static void computeDistanceAndBearingAccurate(double lat1, double lon1, double lat2, double lon2, float[] results)
-	{
+	private static void computeDistanceAndBearingAccurate(double lat1, double lon1, double lat2, double lon2, float[] results) {
 		// Based on http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf
 		// using the "Inverse Formula" (section 4)
 
@@ -199,8 +184,7 @@ public class MathUtils
 		double sinLambda = 0.0;
 
 		double lambda = L; // initial guess
-		for (int iter = 0; iter < MAXITERS; iter++)
-		{
+		for (int iter = 0; iter < MAXITERS; iter++) {
 			double lambdaOrig = lambda;
 			cosLambda = Math.cos(lambda);
 			sinLambda = Math.sin(lambda);
@@ -221,31 +205,24 @@ public class MathUtils
 					(256.0 + uSquared * (-128.0 + uSquared * (74.0 - 47.0 * uSquared)));
 			double C = (f / 16.0) * cosSqAlpha * (4.0 + f * (4.0 - 3.0 * cosSqAlpha)); // (10)
 			double cos2SMSq = cos2SM * cos2SM;
-			deltaSigma = B
-					* sinSigma
-					* // (6)
-					(cos2SM + (B / 4.0)
-							* (cosSigma * (-1.0 + 2.0 * cos2SMSq) - (B / 6.0) * cos2SM * (-3.0 + 4.0 * sinSigma * sinSigma)
-									* (-3.0 + 4.0 * cos2SMSq)));
+			deltaSigma = B * sinSigma * // (6)
+					(cos2SM + (B / 4.0) * (cosSigma * (-1.0 + 2.0 * cos2SMSq) - (B / 6.0) * cos2SM * (-3.0 + 4.0 * sinSigma * sinSigma) * (-3.0 + 4.0 * cos2SMSq)));
 
 			lambda = L + (1.0 - C) * f * sinAlpha * (sigma + C * sinSigma * (cos2SM + C * cosSigma * (-1.0 + 2.0 * cos2SM * cos2SM))); // (11)
 
 			double delta = (lambda - lambdaOrig) / lambda;
-			if (Math.abs(delta) < 1.0e-12)
-			{
+			if (Math.abs(delta) < 1.0e-12) {
 				break;
 			}
 		}
 
 		float distance = (float) (WGS84_SEMI_MAJOR_AXIS * A * (sigma - deltaSigma));
 		results[0] = distance;
-		if (results.length > 1)
-		{
+		if (results.length > 1) {
 			float initialBearing = (float) Math.atan2(cosU2 * sinLambda, cosU1 * sinU2 - sinU1 * cosU2 * cosLambda);
 			initialBearing *= MathUtils.RAD_DEG;
 			results[1] = initialBearing;
-			if (results.length > 2)
-			{
+			if (results.length > 2) {
 				float finalBearing = (float) Math.atan2(cosU1 * sinLambda, -sinU1 * cosU2 + cosU1 * sinU2 * cosLambda);
 				finalBearing *= MathUtils.RAD_DEG;
 				results[2] = finalBearing;

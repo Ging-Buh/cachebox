@@ -9,25 +9,20 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_Show_Search extends CB_Action
-{
+public class CB_Action_Show_Search extends CB_Action {
 
-	public CB_Action_Show_Search()
-	{
+	public CB_Action_Show_Search() {
 		super("search", MenuID.AID_SEARCH);
 	}
 
 	@Override
-	public void Execute()
-	{
+	public void Execute() {
 
-		if (TabMainView.cacheListView == null || !TabMainView.cacheListView.isVisible())
-		{
+		if (TabMainView.cacheListView == null || !TabMainView.cacheListView.isVisible()) {
 			TabMainView.actionShowCacheList.Execute();
 		}
 
-		if (SearchDialog.that == null)
-		{
+		if (SearchDialog.that == null) {
 			new SearchDialog();
 		}
 
@@ -36,14 +31,12 @@ public class CB_Action_Show_Search extends CB_Action
 	}
 
 	@Override
-	public boolean getEnabled()
-	{
+	public boolean getEnabled() {
 		return true;
 	}
 
 	@Override
-	public Sprite getIcon()
-	{
+	public Sprite getIcon() {
 		return SpriteCacheBase.Icons.get(IconName.lupe_27.ordinal());
 	}
 }

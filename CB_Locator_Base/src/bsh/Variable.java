@@ -1,7 +1,6 @@
 package bsh;
 
-public class Variable implements java.io.Serializable
-{
+public class Variable implements java.io.Serializable {
 	/**
 	 * 
 	 */
@@ -17,16 +16,14 @@ public class Variable implements java.io.Serializable
 	LHS lhs;
 
 	@SuppressWarnings("rawtypes")
-	Variable(String name, Class type, LHS lhs)
-	{
+	Variable(String name, Class type, LHS lhs) {
 		this.name = name;
 		this.lhs = lhs;
 		this.type = type;
 	}
 
 	@SuppressWarnings("rawtypes")
-	Variable(String name, Object value, Modifiers modifiers) throws UtilEvalError
-	{
+	Variable(String name, Object value, Modifiers modifiers) throws UtilEvalError {
 		this(name, (Class) null/* type */, value, modifiers);
 	}
 
@@ -34,8 +31,7 @@ public class Variable implements java.io.Serializable
 	 * This constructor is used in class generation.
 	 */
 	@SuppressWarnings("rawtypes")
-	Variable(String name, String typeDescriptor, Object value, Modifiers modifiers) throws UtilEvalError
-	{
+	Variable(String name, String typeDescriptor, Object value, Modifiers modifiers) throws UtilEvalError {
 		this(name, (Class) null/* type */, value, modifiers);
 		this.typeDescriptor = typeDescriptor;
 	}
@@ -45,8 +41,7 @@ public class Variable implements java.io.Serializable
 	 *            may be null if this
 	 */
 	@SuppressWarnings("rawtypes")
-	Variable(String name, Class type, Object value, Modifiers modifiers) throws UtilEvalError
-	{
+	Variable(String name, Class type, Object value, Modifiers modifiers) throws UtilEvalError {
 
 		this.name = name;
 		this.type = type;
@@ -61,21 +56,22 @@ public class Variable implements java.io.Serializable
 	 *            should be an object or wrapped bsh Primitive type. if value is null the appropriate default value will be set for the
 	 *            type: e.g. false for boolean, zero for integer types.
 	 */
-	public void setValue(Object value, int context) throws UtilEvalError
-	{
+	public void setValue(Object value, int context) throws UtilEvalError {
 
 		// check this.value
-		if (hasModifier("final") && this.value != null) throw new UtilEvalError("Final variable, can't re-assign.");
+		if (hasModifier("final") && this.value != null)
+			throw new UtilEvalError("Final variable, can't re-assign.");
 
-		if (value == null) value = Primitive.getDefaultValue(type);
+		if (value == null)
+			value = Primitive.getDefaultValue(type);
 
-		if (lhs != null)
-		{
+		if (lhs != null) {
 			lhs.assign(value, false/* strictjava */);
 			return;
 		}
 
-		if (type != null) value = Types.castObject(value, type, context == DECLARATION ? Types.CAST : Types.ASSIGNMENT);
+		if (type != null)
+			value = Types.castObject(value, type, context == DECLARATION ? Types.CAST : Types.ASSIGNMENT);
 
 		this.value = value;
 	}
@@ -84,43 +80,37 @@ public class Variable implements java.io.Serializable
 	 * Note: UtilEvalError here comes from lhs.getValue(). A Variable can represent an LHS for the case of an imported class or object
 	 * field.
 	 */
-	Object getValue() throws UtilEvalError
-	{
-		if (lhs != null) return lhs.getValue();
+	Object getValue() throws UtilEvalError {
+		if (lhs != null)
+			return lhs.getValue();
 
 		return value;
 	}
 
 	/** A type of null means loosely typed variable */
 	@SuppressWarnings("rawtypes")
-	public Class getType()
-	{
+	public Class getType() {
 		return type;
 	}
 
-	public String getTypeDescriptor()
-	{
+	public String getTypeDescriptor() {
 		return typeDescriptor;
 	}
 
-	public Modifiers getModifiers()
-	{
+	public Modifiers getModifiers() {
 		return modifiers;
 	}
 
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
-	public boolean hasModifier(String name)
-	{
+	public boolean hasModifier(String name) {
 		return modifiers != null && modifiers.hasModifier(name);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "Variable: " + super.toString() + " " + name + ", type:" + type + ", value:" + value + ", lhs = " + lhs;
 	}
 }

@@ -20,7 +20,6 @@ package org.apache.xmlrpc.client;
 
 import org.apache.xmlrpc.XmlRpcRequestConfig;
 
-
 /** This interface is being implemented by an Apache XML-RPC clients
  * configuration object. Depending on the transport factory, a
  * configuration object must implement additional methods. For

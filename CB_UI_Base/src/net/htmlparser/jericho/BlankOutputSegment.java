@@ -38,8 +38,8 @@ final class BlankOutputSegment implements OutputSegment {
 	 * @param end  the position in the {@link OutputDocument} where this <code>OutputSegment</code> ends.
 	 */
 	public BlankOutputSegment(final int begin, final int end) {
-		this.begin=begin;
-		this.end=end;
+		this.begin = begin;
+		this.end = end;
 	}
 
 	/**
@@ -47,7 +47,7 @@ final class BlankOutputSegment implements OutputSegment {
 	 * @param segment  a {@link Segment} defining the begin and end character positions of the new <code>OutputSegment</code>.
 	 */
 	public BlankOutputSegment(final Segment segment) {
-		this(segment.getBegin(),segment.getEnd());
+		this(segment.getBegin(), segment.getEnd());
 	}
 
 	public int getBegin() {
@@ -63,20 +63,22 @@ final class BlankOutputSegment implements OutputSegment {
 	}
 
 	public void appendTo(final Appendable appendable) throws IOException {
-		for (int i=begin; i<end; i++) appendable.append(' ');
+		for (int i = begin; i < end; i++)
+			appendable.append(' ');
 	}
 
 	public long getEstimatedMaximumOutputLength() {
-		return end-begin;
+		return end - begin;
 	}
 
 	public String toString() {
-		StringBuilder sb=new StringBuilder(end-begin);
-		for (int i=begin; i<end; i++) sb.append(' ');
+		StringBuilder sb = new StringBuilder(end - begin);
+		for (int i = begin; i < end; i++)
+			sb.append(' ');
 		return sb.toString();
 	}
 
 	public String getDebugInfo() {
-		return "Replace with Spaces: (p"+begin+"-p"+end+')';
+		return "Replace with Spaces: (p" + begin + "-p" + end + ')';
 	}
 }

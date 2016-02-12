@@ -11,52 +11,46 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class CB_Action_ShowWaypointView extends CB_Action_ShowView
-{
+public class CB_Action_ShowWaypointView extends CB_Action_ShowView {
 
-	public CB_Action_ShowWaypointView()
-	{
+	public CB_Action_ShowWaypointView() {
 		super("Waypoints", MenuID.AID_SHOW_WAYPOINTS);
 	}
 
 	@Override
-	public void Execute()
-	{
-		if ((TabMainView.waypointView == null) && (tabMainView != null) && (tab != null)) TabMainView.waypointView = new WaypointView(
-				tab.getContentRec(), "WaypointView");
+	public void Execute() {
+		if ((TabMainView.waypointView == null) && (tabMainView != null) && (tab != null))
+			TabMainView.waypointView = new WaypointView(tab.getContentRec(), "WaypointView");
 
-		if ((TabMainView.waypointView != null) && (tab != null)) tab.ShowView(TabMainView.waypointView);
+		if ((TabMainView.waypointView != null) && (tab != null))
+			tab.ShowView(TabMainView.waypointView);
 	}
 
 	@Override
-	public boolean getEnabled()
-	{
+	public boolean getEnabled() {
 		return true;
 	}
 
 	@Override
-	public Sprite getIcon()
-	{
+	public Sprite getIcon() {
 		return SpriteCacheBase.Icons.get(IconName.waypointList_56.ordinal());
 	}
 
 	@Override
-	public CB_View_Base getView()
-	{
+	public CB_View_Base getView() {
 		return TabMainView.waypointView;
 	}
 
 	@Override
-	public boolean hasContextMenu()
-	{
+	public boolean hasContextMenu() {
 		return true;
 	}
 
 	@Override
-	public Menu getContextMenu()
-	{
+	public Menu getContextMenu() {
 
-		if (WaypointView.that != null) return WaypointView.that.getContextMenu();
+		if (WaypointView.that != null)
+			return WaypointView.that.getContextMenu();
 		return null;
 	}
 }

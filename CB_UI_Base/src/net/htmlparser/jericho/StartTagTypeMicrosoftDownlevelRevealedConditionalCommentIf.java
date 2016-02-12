@@ -21,9 +21,9 @@
 package net.htmlparser.jericho;
 
 final class StartTagTypeMicrosoftDownlevelRevealedConditionalCommentIf extends StartTagTypeGenericImplementation {
-	static final StartTagTypeMicrosoftDownlevelRevealedConditionalCommentIf INSTANCE=new StartTagTypeMicrosoftDownlevelRevealedConditionalCommentIf();
+	static final StartTagTypeMicrosoftDownlevelRevealedConditionalCommentIf INSTANCE = new StartTagTypeMicrosoftDownlevelRevealedConditionalCommentIf();
 
 	private StartTagTypeMicrosoftDownlevelRevealedConditionalCommentIf() {
-		super("Microsoft downlevel-revealed conditional comment IF","<![if","]>",null,false);
+		super("Microsoft downlevel-revealed conditional comment IF", "<![if", "]>", null, false);
 	}
 }

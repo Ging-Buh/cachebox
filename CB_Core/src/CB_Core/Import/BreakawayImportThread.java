@@ -2,35 +2,30 @@ package CB_Core.Import;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class BreakawayImportThread extends Thread
-{
+public class BreakawayImportThread extends Thread {
 
 	private static BreakawayImportThread that;
 
 	private static AtomicBoolean isCanceld = new AtomicBoolean(false);
 
-	public BreakawayImportThread()
-	{
-		if (that != null && that.isAlive()) throw new IllegalStateException("Import is running");
+	public BreakawayImportThread() {
+		if (that != null && that.isAlive())
+			throw new IllegalStateException("Import is running");
 		that = this;
 		isCanceld.set(false);
 	}
 
-	public static boolean isCanceld()
-	{
+	public static boolean isCanceld() {
 		return isCanceld.get();
 	}
 
-	public void cancel()
-	{
+	public void cancel() {
 		isCanceld.set(true);
 		this.interrupt();
 	}
 
-	public static void reset()
-	{
-		if (that != null)
-		{
+	public static void reset() {
+		if (that != null) {
 			that.interrupt();
 			that = null;
 		}

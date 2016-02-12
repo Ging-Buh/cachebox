@@ -20,20 +20,19 @@ package org.apache.xmlrpc.client;
 
 import org.apache.xmlrpc.XmlRpcRequest;
 
-
 /** A callback interface for an asynchronous XML-RPC call.
  * @since 3.0
  */
 public interface AsyncCallback {
-    /** Call went ok, handle result.
-     * @param pRequest The request being performed.
-     * @param pResult The result object, which was returned by the server.
-     */
-    public void handleResult(XmlRpcRequest pRequest, Object pResult);
+	/** Call went ok, handle result.
+	 * @param pRequest The request being performed.
+	 * @param pResult The result object, which was returned by the server.
+	 */
+	public void handleResult(XmlRpcRequest pRequest, Object pResult);
 
-    /** Something went wrong, handle error.
-     * @param pRequest The request being performed.
-     * @param pError The error being thrown.
-     */
-    public void handleError(XmlRpcRequest pRequest, Throwable pError);
+	/** Something went wrong, handle error.
+	 * @param pRequest The request being performed.
+	 * @param pError The error being thrown.
+	 */
+	public void handleError(XmlRpcRequest pRequest, Throwable pError);
 }

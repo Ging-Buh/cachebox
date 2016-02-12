@@ -20,8 +20,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import de.CB.TestBase.Actions.TestCaseBase;
 import de.CB.TestBase.Views.MainView;
 
-public class TextOnPathTest extends TestCaseBase
-{
+public class TextOnPathTest extends TestCaseBase {
 
 	GL_Paint PAINT;
 	final String TEXT;
@@ -38,8 +37,7 @@ public class TextOnPathTest extends TestCaseBase
 
 	private int Angle;
 
-	public TextOnPathTest()
-	{
+	public TextOnPathTest() {
 		super("Draw text on Path", "");
 
 		// TEXT = "I";
@@ -50,8 +48,7 @@ public class TextOnPathTest extends TestCaseBase
 	}
 
 	@Override
-	public void Initial()
-	{
+	public void Initial() {
 		super.Initial();
 
 		PAINT = new GL_Paint();
@@ -89,17 +86,15 @@ public class TextOnPathTest extends TestCaseBase
 	}
 
 	@Override
-	public void work()
-	{
+	public void work() {
 		// Enable Rotate Buttons
-		MainView.that.enableRotateButton(new OnClickListener()
-		{
+		MainView.that.enableRotateButton(new OnClickListener() {
 
 			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 				CB_Button b = (CB_Button) v;
-				if (b.getText().equals("CW")) Angle -= 5;
+				if (b.getText().equals("CW"))
+					Angle -= 5;
 				else
 					Angle += 5;
 
@@ -113,13 +108,13 @@ public class TextOnPathTest extends TestCaseBase
 	}
 
 	@Override
-	public void draw(Batch batch)
-	{
-		if (!isInitial) Initial();
-		if (polyBack != null) polyBack.draw(batch, 0, -100, 600, 600, Angle);
+	public void draw(Batch batch) {
+		if (!isInitial)
+			Initial();
+		if (polyBack != null)
+			polyBack.draw(batch, 0, -100, 600, 600, Angle);
 
-		if (bmpFontCache == null)
-		{
+		if (bmpFontCache == null) {
 
 			GL_Paint stroke = new GL_Paint();
 			stroke.setColor(Color.GREEN);
@@ -128,17 +123,14 @@ public class TextOnPathTest extends TestCaseBase
 
 			Path.getAverageDirection();
 
-		}
-		else
-		{
+		} else {
 
 			ply.draw(batch, 0, 0, 600, 600, Angle);
 			bmpFontCache.draw(batch, 0, 0, 600, 600, Angle);
 
 		}
 
-		if (bmpFontCache2 == null)
-		{
+		if (bmpFontCache2 == null) {
 
 			GL_Paint stroke = new GL_Paint();
 			stroke.setColor(Color.GREEN);
@@ -146,9 +138,7 @@ public class TextOnPathTest extends TestCaseBase
 			bmpFontCache2 = new TextDrawableFlipped(TEXT, Path2, 600, 600, PAINT, stroke, true);
 
 			Path2.getAverageDirection();
-		}
-		else
-		{
+		} else {
 
 			ply2.draw(batch, 0, 0, 600, 600, Angle);
 			bmpFontCache2.draw(batch, 0, 0, 600, 600, Angle);
@@ -160,17 +150,15 @@ public class TextOnPathTest extends TestCaseBase
 	private final AtomicBoolean isDisposed = new AtomicBoolean(false);
 
 	@Override
-	public boolean isDisposed()
-	{
+	public boolean isDisposed() {
 		return isDisposed.get();
 	}
 
 	@Override
-	public void dispose()
-	{
-		synchronized (isDisposed)
-		{
-			if (isDisposed.get()) return;
+	public void dispose() {
+		synchronized (isDisposed) {
+			if (isDisposed.get())
+				return;
 			// TODO Dispose
 			isDisposed.set(true);
 		}

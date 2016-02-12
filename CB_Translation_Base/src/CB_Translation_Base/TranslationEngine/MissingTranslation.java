@@ -5,36 +5,33 @@ package CB_Translation_Base.TranslationEngine;
  * 
  * @author Longri
  */
-public class MissingTranslation extends Translations
-{
+public class MissingTranslation extends Translations {
 
 	final String stringId;
 
-	public MissingTranslation(String ID, String Trans)
-	{
+	public MissingTranslation(String ID, String Trans) {
 		super(ID, Trans);
 		stringId = ID;
 	}
 
-	public String getMissingString()
-	{
+	public String getMissingString() {
 		return stringId;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return stringId;
 	}
 
 	@Override
-	public boolean equals(Object other)
-	{
-		if (!(other instanceof MissingTranslation)) return false;
+	public boolean equals(Object other) {
+		if (!(other instanceof MissingTranslation))
+			return false;
 
 		MissingTranslation cast = (MissingTranslation) other;
 
-		if (stringId.equals(cast.stringId)) return true;
+		if (stringId.equals(cast.stringId))
+			return true;
 		return false;
 	}
 

@@ -23,7 +23,6 @@ import org.apache.xmlrpc.common.XmlRpcStreamConfig;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-
 /** A {@link TypeSerializer} for object arrays.
  */
 public class ObjectArraySerializer extends TypeSerializerImpl {
@@ -45,6 +44,7 @@ public class ObjectArraySerializer extends TypeSerializerImpl {
 		typeFactory = pTypeFactory;
 		config = pConfig;
 	}
+
 	protected void writeObject(ContentHandler pHandler, Object pObject) throws SAXException {
 		TypeSerializer ts = typeFactory.getSerializer(config, pObject);
 		if (ts == null) {
@@ -52,12 +52,14 @@ public class ObjectArraySerializer extends TypeSerializerImpl {
 		}
 		ts.write(pHandler, pObject);
 	}
+
 	protected void writeData(ContentHandler pHandler, Object pObject) throws SAXException {
 		Object[] data = (Object[]) pObject;
-		for (int i = 0;  i < data.length;  i++) {
+		for (int i = 0; i < data.length; i++) {
 			writeObject(pHandler, data[i]);
 		}
 	}
+
 	public void write(final ContentHandler pHandler, Object pObject) throws SAXException {
 		pHandler.startElement("", VALUE_TAG, VALUE_TAG, ZERO_ATTRIBUTES);
 		pHandler.startElement("", ARRAY_TAG, ARRAY_TAG, ZERO_ATTRIBUTES);

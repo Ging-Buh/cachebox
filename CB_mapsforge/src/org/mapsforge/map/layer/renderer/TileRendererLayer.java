@@ -37,8 +37,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	private float textScale;
 	private XmlRenderTheme xmlRenderTheme;
 
-	public TileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, boolean isTransparent,
-			GraphicFactory graphicFactory) {
+	public TileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, boolean isTransparent, GraphicFactory graphicFactory) {
 		super(tileCache, mapViewPosition, graphicFactory.createMatrix(), isTransparent);
 
 		this.mapDatabase = new MapDatabase();
@@ -101,8 +100,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 
 	@Override
 	protected RendererJob createJob(Tile tile) {
-		return new RendererJob(tile, this.mapFile, this.xmlRenderTheme, this.displayModel, this.textScale,
-				this.isTransparent);
+		return new RendererJob(tile, this.mapFile, this.xmlRenderTheme, this.displayModel, this.textScale, this.isTransparent);
 	}
 
 	@Override

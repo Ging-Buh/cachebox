@@ -35,8 +35,7 @@ import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
 
 @SuppressWarnings("deprecation")
-public class SpoilerView extends FrameLayout implements ViewOptionsMenu, AdapterView.OnItemSelectedListener
-{
+public class SpoilerView extends FrameLayout implements ViewOptionsMenu, AdapterView.OnItemSelectedListener {
 	RelativeLayout spoilerLayout;
 	Context context;
 	Gallery g;
@@ -46,8 +45,7 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 	ArrayList<Bitmap> lBitmaps;
 	String fileName;
 
-	public SpoilerView(Context context, LayoutInflater inflater)
-	{
+	public SpoilerView(Context context, LayoutInflater inflater) {
 		super(context);
 		this.context = context;
 		lBitmaps = new ArrayList<Bitmap>();
@@ -66,8 +64,7 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 		spoilerImage.setBackgroundColor(Global.getColor(R.attr.EmptyBackground));
 		spoilerImage.setFocusable(false);
 
-		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
-				RelativeLayout.LayoutParams.MATCH_PARENT);
+		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
 		params.addRule(RelativeLayout.BELOW, R.id.spoilerFilename);
 		params.addRule(RelativeLayout.ALIGN_BOTTOM);
 		spoilerImage.setLayoutParams(params);
@@ -78,11 +75,9 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 
 		spoilerFilename.setTextColor(Color.BLACK);
 
-		PlatformConnector.setStartPictureApp(new iStartPictureApp()
-		{
+		PlatformConnector.setStartPictureApp(new iStartPictureApp() {
 			@Override
-			public void Start(String file)
-			{
+			public void Start(String file) {
 				Uri uriToImage = Uri.fromFile(new File(file));
 				Intent shareIntent = new Intent(Intent.ACTION_VIEW);
 				shareIntent.setDataAndType(uriToImage, "image/*");
@@ -92,74 +87,63 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 	}
 
 	@Override
-	public boolean ItemSelected(MenuItem item)
-	{
+	public boolean ItemSelected(MenuItem item) {
 		return false;
 	}
 
 	@Override
-	public void BeforeShowMenu(Menu menu)
-	{
+	public void BeforeShowMenu(Menu menu) {
 	}
 
 	Bitmap bmp;
 	String nextBitmap = "";
 
 	@Override
-	public void onItemSelected(AdapterView<?> parent, View v, int position, long id)
-	{
-		if (aktCache == null) return;
+	public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
+		if (aktCache == null)
+			return;
 		String filename = GlobalCore.getSelectedCache().getSpoilerRessources().get(position).Name;
 
 		spoilerFilename.setText(filename);
 		String file = GlobalCore.getSelectedCache().getSpoilerRessources().get(position).LocalPath;
 
-		String html = "<html><body><div style=\"width: 100%;\"><img style=\"display: block; margin-left: auto; margin-right: auto;\" src=\"file://"
-				+ file + "\"></img></div></body></html>";
+		String html = "<html><body><div style=\"width: 100%;\"><img style=\"display: block; margin-left: auto; margin-right: auto;\" src=\"file://" + file + "\"></img></div></body></html>";
 		spoilerImage.loadDataWithBaseURL("fake://not/needed", html, "text/html", "utf-8", "");
 
 		fileName = file;
 	}
 
-	public class ImageAdapter extends BaseAdapter
-	{
-		public ImageAdapter(Context c)
-		{
+	public class ImageAdapter extends BaseAdapter {
+		public ImageAdapter(Context c) {
 			mContext = c;
 		}
 
-		public int getCount()
-		{
-			if (aktCache == null) return 0;
-			if (aktCache.SpoilerExists())
-			{
+		public int getCount() {
+			if (aktCache == null)
+				return 0;
+			if (aktCache.SpoilerExists()) {
 				return lBitmaps.size();
-			}
-			else
+			} else
 				return 0;
 			// return mThumbIds.length;
 		}
 
-		public Object getItem(int position)
-		{
+		public Object getItem(int position) {
 			return position;
 		}
 
-		public long getItemId(int position)
-		{
+		public long getItemId(int position) {
 			return position;
 		}
 
-		public View getView(int position, View convertView, ViewGroup parent)
-		{
+		public View getView(int position, View convertView, ViewGroup parent) {
 			ImageView i = new ImageView(mContext);
 
 			// String file =
 			// GlobalCore.getSelectedCache().SpoilerRessources().get(position);
 			Bitmap bit = null;
 			bit = lBitmaps.get(position);
-			if (bit == null)
-			{
+			if (bit == null) {
 				return null;
 			}
 			i.setImageBitmap(bit);
@@ -174,14 +158,14 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 
 	}
 
-	public Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth)
-	{
+	public Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth) {
 
 		int width = bm.getWidth();
 		int height = bm.getHeight();
 		float scaleWidth = ((float) newWidth) / width;
 		float scaleHeight = ((float) newHeight) / height;
-		if (scaleWidth > scaleHeight) scaleWidth = scaleHeight;
+		if (scaleWidth > scaleHeight)
+			scaleWidth = scaleHeight;
 		else
 			scaleHeight = scaleWidth;
 		// create a matrix for the manipulation
@@ -194,8 +178,7 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 	}
 
 	// decodes image and scales it to reduce memory consumption
-	private Bitmap decodeFile(String f)
-	{
+	private Bitmap decodeFile(String f) {
 		// Decode image size
 		BitmapFactory.Options o = new BitmapFactory.Options();
 		o.inJustDecodeBounds = true;
@@ -207,9 +190,9 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 		// Find the correct scale value. It should be the power of 2.
 		int width_tmp = o.outWidth, height_tmp = o.outHeight;
 		int scale = 1;
-		while (true)
-		{
-			if (width_tmp / 2 < REQUIRED_SIZE || height_tmp / 2 < REQUIRED_SIZE) break;
+		while (true) {
+			if (width_tmp / 2 < REQUIRED_SIZE || height_tmp / 2 < REQUIRED_SIZE)
+				break;
 			width_tmp /= 2;
 			height_tmp /= 2;
 			scale *= 2;
@@ -223,8 +206,7 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 	}
 
 	@Override
-	public void OnShow()
-	{
+	public void OnShow() {
 		// clear old selection
 		spoilerFilename.setText(Translation.Get("NoSpoiler"));
 		spoilerImage.loadDataWithBaseURL("fake://not/needed", "", "text/html", "utf-8", "");
@@ -232,22 +214,18 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 		aktCache = GlobalCore.getSelectedCache();
 		lBitmaps.clear();
 
-		if (aktCache == null)
-		{
+		if (aktCache == null) {
 			g.setAdapter(new ImageAdapter(context));
 			return;
 		}
 
-		for (int i = 0, n = aktCache.getSpoilerRessources().size(); i < n; i++)
-		{
+		for (int i = 0, n = aktCache.getSpoilerRessources().size(); i < n; i++) {
 			ImageEntry image = aktCache.getSpoilerRessources().get(i);
-			try
-			{
+			try {
 				Bitmap tmp = decodeFile(image.LocalPath);
-				if (tmp != null) lBitmaps.add(tmp);
-			}
-			catch (Exception exc)
-			{
+				if (tmp != null)
+					lBitmaps.add(tmp);
+			} catch (Exception exc) {
 			}
 		}
 
@@ -255,45 +233,37 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 	}
 
 	@Override
-	public void OnHide()
-	{
+	public void OnHide() {
 	}
 
 	@Override
-	public void OnFree()
-	{
+	public void OnFree() {
 	}
 
 	@Override
-	public int GetMenuId()
-	{
+	public int GetMenuId() {
 		return 0;
 	}
 
 	@Override
-	public void onNothingSelected(AdapterView<?> arg0)
-	{
+	public void onNothingSelected(AdapterView<?> arg0) {
 	}
 
 	@Override
-	public void ActivityResult(int requestCode, int resultCode, Intent data)
-	{
+	public void ActivityResult(int requestCode, int resultCode, Intent data) {
 	}
 
 	@Override
-	public int GetContextMenuId()
-	{
+	public int GetContextMenuId() {
 		return 0;
 	}
 
 	@Override
-	public void BeforeShowContextMenu(Menu menu)
-	{
+	public void BeforeShowContextMenu(Menu menu) {
 	}
 
 	@Override
-	public boolean ContextMenuItemSelected(MenuItem item)
-	{
+	public boolean ContextMenuItemSelected(MenuItem item) {
 		return false;
 	}
 

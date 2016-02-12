@@ -12,15 +12,13 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 
 import de.CB.TestBase.Actions.TestCaseBase;
 
-public abstract class SVG_TestBase extends TestCaseBase
-{
+public abstract class SVG_TestBase extends TestCaseBase {
 	VectorDrawable SVG_BMP_SCALE_1;
 	VectorDrawable SVG_BMP_SCALE_10;
 	VectorDrawable SVG_BMP_SCALE_20;
 	private final AtomicBoolean isDisposed = new AtomicBoolean(false);
 
-	public SVG_TestBase(String TopTestMsg)
-	{
+	public SVG_TestBase(String TopTestMsg) {
 		super(TopTestMsg, "");
 
 	}
@@ -28,24 +26,18 @@ public abstract class SVG_TestBase extends TestCaseBase
 	public abstract InputStream get_SVG_InputStream() throws FileNotFoundException;
 
 	@Override
-	public void work()
-	{
+	public void work() {
 
-		try
-		{
+		try {
 
 			SVG_BMP_SCALE_1 = (VectorDrawable) SVG.createBmpFromSVG(GL_Factory, get_SVG_InputStream(), 1f);
 			SVG_BMP_SCALE_10 = (VectorDrawable) SVG.createBmpFromSVG(GL_Factory, get_SVG_InputStream(), 10f);
 			SVG_BMP_SCALE_20 = (VectorDrawable) SVG.createBmpFromSVG(GL_Factory, get_SVG_InputStream(), 20f);
 
-		}
-		catch (FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		catch (SVGParseException e)
-		{
+		} catch (SVGParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -53,11 +45,9 @@ public abstract class SVG_TestBase extends TestCaseBase
 	}
 
 	@Override
-	public void draw(Batch batch)
-	{
+	public void draw(Batch batch) {
 
-		if (SVG_BMP_SCALE_1 != null)
-		{
+		if (SVG_BMP_SCALE_1 != null) {
 
 			float w = SVG_BMP_SCALE_1.getWidth();
 			float h = SVG_BMP_SCALE_1.getHeight();
@@ -67,12 +57,10 @@ public abstract class SVG_TestBase extends TestCaseBase
 			SVG_BMP_SCALE_1.draw(batch, firstPoint.x + 10, firstPoint.y + 10, w, h);
 
 			isReady = true;
-		}
-		else
+		} else
 			isReady = false;
 
-		if (SVG_BMP_SCALE_10 != null)
-		{
+		if (SVG_BMP_SCALE_10 != null) {
 
 			float w = SVG_BMP_SCALE_10.getWidth();
 			float h = SVG_BMP_SCALE_10.getHeight();
@@ -82,12 +70,10 @@ public abstract class SVG_TestBase extends TestCaseBase
 			SVG_BMP_SCALE_10.draw(batch, firstPoint.x + 60, firstPoint.y + 10, w, h);
 
 			isReady &= true;
-		}
-		else
+		} else
 			isReady = false;
 
-		if (SVG_BMP_SCALE_20 != null)
-		{
+		if (SVG_BMP_SCALE_20 != null) {
 
 			float w = SVG_BMP_SCALE_20.getWidth();
 			float h = SVG_BMP_SCALE_20.getHeight();
@@ -97,23 +83,20 @@ public abstract class SVG_TestBase extends TestCaseBase
 			SVG_BMP_SCALE_20.draw(batch, firstPoint.x + 300, firstPoint.y + 10, w, h);
 
 			isReady &= true;
-		}
-		else
+		} else
 			isReady = false;
 	}
 
 	@Override
-	public boolean isDisposed()
-	{
+	public boolean isDisposed() {
 		return isDisposed.get();
 	}
 
 	@Override
-	public void dispose()
-	{
-		synchronized (isDisposed)
-		{
-			if (isDisposed.get()) return;
+	public void dispose() {
+		synchronized (isDisposed) {
+			if (isDisposed.get())
+				return;
 
 			isDisposed.set(true);
 		}

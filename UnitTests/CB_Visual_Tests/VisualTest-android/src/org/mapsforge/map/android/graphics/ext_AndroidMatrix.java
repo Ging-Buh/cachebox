@@ -22,144 +22,123 @@ import com.badlogic.gdx.math.Matrix4;
 /**
  * @author Longri
  */
-public class ext_AndroidMatrix extends AndroidMatrix implements ext_Matrix
-{
+public class ext_AndroidMatrix extends AndroidMatrix implements ext_Matrix {
 	@Override
-	public void dispose()
-	{
+	public void dispose() {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void set(ext_Matrix matrix)
-	{
+	public void set(ext_Matrix matrix) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void postConcat(ext_Matrix matrix)
-	{
+	public void postConcat(ext_Matrix matrix) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void preTranslate(float x, float y)
-	{
+	public void preTranslate(float x, float y) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void preScale(float x, float y)
-	{
+	public void preScale(float x, float y) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void preScale(float sx, float sy, float px, float py)
-	{
+	public void preScale(float sx, float sy, float px, float py) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void postRotate(float angle)
-	{
+	public void postRotate(float angle) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void postScale(float rx, float ry)
-	{
+	public void postScale(float rx, float ry) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void postTranslate(float cx, float cy)
-	{
+	public void postTranslate(float cx, float cy) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void mapPoints(float[] src)
-	{
+	public void mapPoints(float[] src) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void mapPoints(float[] dst, int dstIndex, float[] src, int srcIndex, int pointCount)
-	{
+	public void mapPoints(float[] dst, int dstIndex, float[] src, int srcIndex, int pointCount) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public Matrix4 getMatrix4()
-	{
+	public Matrix4 getMatrix4() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void preRotate(float angle)
-	{
+	public void preRotate(float angle) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void setValues(float[] fs)
-	{
+	public void setValues(float[] fs) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void preSkew(float f, float tan)
-	{
+	public void preSkew(float f, float tan) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void preRotate(Float angle, Float cx, Float cy)
-	{
+	public void preRotate(Float angle, Float cx, Float cy) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void getValues(float[] mValues)
-	{
+	public void getValues(float[] mValues) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void preConcat(ext_Matrix matrix)
-	{
+	public void preConcat(ext_Matrix matrix) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public boolean invert()
-	{
+	public boolean invert() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean isDefault()
-	{
+	public boolean isDefault() {
 		// TODO Auto-generated method stub
 		return false;
 	}

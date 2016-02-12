@@ -8,8 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Clipboard;
 
-public abstract class Global
-{
+public abstract class Global {
 	protected static Global Instance;
 
 	/**
@@ -31,46 +30,38 @@ public abstract class Global
 
 	protected abstract String getVersionPrefix();
 
-	protected Global()
-	{
+	protected Global() {
 		Instance = this;
 	}
 
-	public static FileHandle getInternalFileHandle(String path)
-	{
-		if (Plattform.used == Plattform.undef) throw new IllegalArgumentException("Platform not def");
+	public static FileHandle getInternalFileHandle(String path) {
+		if (Plattform.used == Plattform.undef)
+			throw new IllegalArgumentException("Platform not def");
 
-		if (Plattform.used == Plattform.Android)
-		{
+		if (Plattform.used == Plattform.Android) {
 			return Gdx.files.internal(path);
-		}
-		else
-		{
+		} else {
 			return Gdx.files.classpath(path);
 		}
 	}
 
-	public static Clipboard getDefaultClipboard()
-	{
-		if (defaultClipBoard == null)
-		{
+	public static Clipboard getDefaultClipboard() {
+		if (defaultClipBoard == null) {
 			return null;
-		}
-		else
-		{
+		} else {
 			return defaultClipBoard;
 		}
 	}
 
-	public static void setDefaultClipboard(Clipboard clipBoard)
-	{
+	public static void setDefaultClipboard(Clipboard clipBoard) {
 		defaultClipBoard = clipBoard;
 	}
 
-	public static boolean isTestVersion()
-	{
-		if (isTestVersionCheked) return isTestVersion;
-		if (Instance == null) return false;
+	public static boolean isTestVersion() {
+		if (isTestVersionCheked)
+			return isTestVersion;
+		if (Instance == null)
+			return false;
 
 		isTestVersion = Instance.getVersionPrefix().contains("Test") || Instance.getVersionPrefix().contains("test");
 		isTestVersionCheked = true;
@@ -80,9 +71,9 @@ public abstract class Global
 	private static boolean mIsDevelop = false;
 	private static boolean mIsDevelopChecked = false;
 
-	public static boolean isDevelop()
-	{
-		if (mIsDevelopChecked) return mIsDevelop;
+	public static boolean isDevelop() {
+		if (mIsDevelopChecked)
+			return mIsDevelop;
 
 		// Chk is Develop
 		mIsDevelop = Gdx.files.absolute(Config_Core.mWorkPath + "/deve.lop").exists();

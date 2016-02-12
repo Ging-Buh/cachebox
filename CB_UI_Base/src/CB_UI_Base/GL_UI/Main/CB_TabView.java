@@ -21,175 +21,175 @@ import CB_UI_Base.Math.GL_UISizes;
  */
 public class CB_TabView extends CB_View_Base {
 
-    private final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_TabView.class);
+	private final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_TabView.class);
 
-    private CB_ButtonList mButtonList;
-    private H_ListView buttonListView;
-    private CB_View_Base aktView;
+	private CB_ButtonList mButtonList;
+	private H_ListView buttonListView;
+	private CB_View_Base aktView;
 
-    private final CB_RectF mContentRec;
+	private final CB_RectF mContentRec;
 
-    public CB_TabView(CB_RectF rec, String Name) {
-	super(rec, Name);
-	mContentRec = rec.copy();
-	layout();
-    }
-
-    public void setButtonList(CB_ButtonList buttonList) {
-	mButtonList = buttonList;
-	if (mButtonList == null)
-	    return;
-	buttonListView = new H_ListView(new CB_RectF(0, 0, this.getWidth(), GL_UISizes.BottomButtonHeight), "ButtonList von " + this.getName());
-	buttonListView.setBaseAdapter(new CustomAdapter());
-	buttonListView.setUnDraggable();
-	buttonListView.setBackground(SpriteCacheBase.ButtonBack);
-	buttonListView.setDisposeFlag(false);
-	this.addChild(buttonListView);
-    }
-
-    @Override
-    public void onResized(CB_RectF rec) {
-	layout();
-    }
-
-    private void layout() {
-	mContentRec.setHeight(this.getHeight() - GL_UISizes.BottomButtonHeight);
-	mContentRec.setPos(0, GL_UISizes.BottomButtonHeight);
-
-	if (aktView != null) {
-	    // set View size and pos
-	    aktView.setSize(this.getWidth(), this.getHeight() - buttonListView.getHeight());
-	    aktView.setPos(new Vector2(0, buttonListView.getHeight()));
-
-	}
-    }
-
-    @Override
-    protected void Initial() {
-	// Wenn die Anzahl der Buttons = der Anzahl der M�glichen Buttons ist, diese gleichm��ig verteilen
-	if (mButtonList.Buttons.size() <= buttonListView.getMaxItemCount()) {
-	    float sollDivider = (buttonListView.getWidth() - (GL_UISizes.BottomButtonHeight * mButtonList.Buttons.size())) / (mButtonList.Buttons.size() + 1);
-	    buttonListView.setDividerSize(sollDivider);
+	public CB_TabView(CB_RectF rec, String Name) {
+		super(rec, Name);
+		mContentRec = rec.copy();
+		layout();
 	}
 
-	// Das Button Seitenverh�ltniss ist 88x76!
-	// H�he der Buttons einstellen und diese Zentrieren!
-	float buttonHeight = GL_UISizes.BottomButtonHeight * 0.863f;
-	for (CB_Button btn : mButtonList.Buttons) {
-	    btn.setHeight(buttonHeight);
-	}
-
-    }
-
-    public class CustomAdapter implements Adapter {
-
-	public CustomAdapter() {
-
-	}
-
-	public long getItemId(int position) {
-	    return position;
+	public void setButtonList(CB_ButtonList buttonList) {
+		mButtonList = buttonList;
+		if (mButtonList == null)
+			return;
+		buttonListView = new H_ListView(new CB_RectF(0, 0, this.getWidth(), GL_UISizes.BottomButtonHeight), "ButtonList von " + this.getName());
+		buttonListView.setBaseAdapter(new CustomAdapter());
+		buttonListView.setUnDraggable();
+		buttonListView.setBackground(SpriteCacheBase.ButtonBack);
+		buttonListView.setDisposeFlag(false);
+		this.addChild(buttonListView);
 	}
 
 	@Override
-	public ListViewItemBase getView(int position) {
+	public void onResized(CB_RectF rec) {
+		layout();
+	}
 
-	    if (mButtonList == null || mButtonList.Buttons == null)
-		return null;
+	private void layout() {
+		mContentRec.setHeight(this.getHeight() - GL_UISizes.BottomButtonHeight);
+		mContentRec.setPos(0, GL_UISizes.BottomButtonHeight);
 
-	    CB_Button btn = mButtonList.Buttons.get(position);
+		if (aktView != null) {
+			// set View size and pos
+			aktView.setSize(this.getWidth(), this.getHeight() - buttonListView.getHeight());
+			aktView.setPos(new Vector2(0, buttonListView.getHeight()));
 
-	    btn.setActView(aktView);
-
-	    CB_ButtonListItem v = new CB_ButtonListItem(position, btn, "Item " + position);
-	    return v;
+		}
 	}
 
 	@Override
-	public int getCount() {
-	    return mButtonList.Buttons.size();
-	}
-
-	@Override
-	public float getItemSize(int position) {
-	    return GL_UISizes.BottomButtonHeight;
-	}
-    }
-
-    public void ShowView(final CB_View_Base view) {
-
-	Thread th = new Thread(new Runnable() {
-
-	    @Override
-	    public void run() {
-		GL.that.clearRenderViews();
-		GL.that.closeAllDialogs();
-
-		// delete all Views up to the ButtonList
-		if (aktView != null && aktView != view) {
-		    CB_TabView.this.removeChild(aktView);
-		    // aktView.onStop();
-		    aktView.onHide();
-		    aktView.setInvisible();
+	protected void Initial() {
+		// Wenn die Anzahl der Buttons = der Anzahl der M�glichen Buttons ist, diese gleichm��ig verteilen
+		if (mButtonList.Buttons.size() <= buttonListView.getMaxItemCount()) {
+			float sollDivider = (buttonListView.getWidth() - (GL_UISizes.BottomButtonHeight * mButtonList.Buttons.size())) / (mButtonList.Buttons.size() + 1);
+			buttonListView.setDividerSize(sollDivider);
 		}
 
-		try {
-		    // set View size and pos
-		    view.setSize(CB_TabView.this.getWidth(), CB_TabView.this.getHeight() - buttonListView.getHeight());
-		    view.setPos(new Vector2(0, buttonListView.getHeight()));
-		} catch (Exception e) {
-		    log.error("set view size", e);
-		    return;
+		// Das Button Seitenverh�ltniss ist 88x76!
+		// H�he der Buttons einstellen und diese Zentrieren!
+		float buttonHeight = GL_UISizes.BottomButtonHeight * 0.863f;
+		for (CB_Button btn : mButtonList.Buttons) {
+			btn.setHeight(buttonHeight);
 		}
 
-		if (aktView == view)
-		    return;
+	}
 
-		aktView = view;
-		CB_TabView.this.addChild(aktView);
+	public class CustomAdapter implements Adapter {
 
-		aktView.setVisible();
-		sendOnShow2aktView();
+		public CustomAdapter() {
 
-		GL.that.renderOnce();
-	    }
-	});
+		}
 
-	th.start();
+		public long getItemId(int position) {
+			return position;
+		}
 
-    }
+		@Override
+		public ListViewItemBase getView(int position) {
 
-    /**
-     * Beim Wechsel der View, kann es sein, dass noch nicht alle Childs der View geladen sind, da die meisten Childs erst in der initial()
-     * erstellt werden. Damit erhalten diese Childs dann kein onShow(). Als Abhilfe werden hier erst 150ms gewartet, bevor ein onShow()
-     * ausgef�hrt wird.
-     */
-    private void sendOnShow2aktView() {
-	GL.that.RunOnGL(new IRunOnGL() {
+			if (mButtonList == null || mButtonList.Buttons == null)
+				return null;
 
-	    @Override
-	    public void run() {
-		GL.that.RunOnGL(new IRunOnGL() {
+			CB_Button btn = mButtonList.Buttons.get(position);
 
-		    @Override
-		    public void run() {
-			if (aktView != null && aktView.isVisible())
-			    aktView.onShow();
-			buttonListView.notifyDataSetChanged();
-		    }
+			btn.setActView(aktView);
+
+			CB_ButtonListItem v = new CB_ButtonListItem(position, btn, "Item " + position);
+			return v;
+		}
+
+		@Override
+		public int getCount() {
+			return mButtonList.Buttons.size();
+		}
+
+		@Override
+		public float getItemSize(int position) {
+			return GL_UISizes.BottomButtonHeight;
+		}
+	}
+
+	public void ShowView(final CB_View_Base view) {
+
+		Thread th = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				GL.that.clearRenderViews();
+				GL.that.closeAllDialogs();
+
+				// delete all Views up to the ButtonList
+				if (aktView != null && aktView != view) {
+					CB_TabView.this.removeChild(aktView);
+					// aktView.onStop();
+					aktView.onHide();
+					aktView.setInvisible();
+				}
+
+				try {
+					// set View size and pos
+					view.setSize(CB_TabView.this.getWidth(), CB_TabView.this.getHeight() - buttonListView.getHeight());
+					view.setPos(new Vector2(0, buttonListView.getHeight()));
+				} catch (Exception e) {
+					log.error("set view size", e);
+					return;
+				}
+
+				if (aktView == view)
+					return;
+
+				aktView = view;
+				CB_TabView.this.addChild(aktView);
+
+				aktView.setVisible();
+				sendOnShow2aktView();
+
+				GL.that.renderOnce();
+			}
 		});
 
-	    }
-	});
-    }
+		th.start();
 
-    public CB_RectF getContentRec() {
-	return mContentRec;
-    }
+	}
 
-    @Override
-    public void SkinIsChanged() {
-	ShowView(aktView);
-    }
+	/**
+	 * Beim Wechsel der View, kann es sein, dass noch nicht alle Childs der View geladen sind, da die meisten Childs erst in der initial()
+	 * erstellt werden. Damit erhalten diese Childs dann kein onShow(). Als Abhilfe werden hier erst 150ms gewartet, bevor ein onShow()
+	 * ausgef�hrt wird.
+	 */
+	private void sendOnShow2aktView() {
+		GL.that.RunOnGL(new IRunOnGL() {
+
+			@Override
+			public void run() {
+				GL.that.RunOnGL(new IRunOnGL() {
+
+					@Override
+					public void run() {
+						if (aktView != null && aktView.isVisible())
+							aktView.onShow();
+						buttonListView.notifyDataSetChanged();
+					}
+				});
+
+			}
+		});
+	}
+
+	public CB_RectF getContentRec() {
+		return mContentRec;
+	}
+
+	@Override
+	public void SkinIsChanged() {
+		ShowView(aktView);
+	}
 
 }

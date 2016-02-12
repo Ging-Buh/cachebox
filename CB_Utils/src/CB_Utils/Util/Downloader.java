@@ -65,8 +65,7 @@ import CB_Utils.http.HttpUtils;
 /**
  * Download a remote resource.
  */
-public class Downloader implements Runnable
-{
+public class Downloader implements Runnable {
 
 	/** buffer size in number of bytes (1024) */
 	private static final int BUFFER_SIZE = 1024;
@@ -118,21 +117,16 @@ public class Downloader implements Runnable
 	 * @param target
 	 *            target object to be populated (File or StringBuilder object)
 	 */
-	public Downloader(final URL url, final Object target)
-	{
-		if ((target instanceof File) || (target instanceof StringBuilder))
-		{
+	public Downloader(final URL url, final Object target) {
+		if ((target instanceof File) || (target instanceof StringBuilder)) {
 			this.target = target;
-		}
-		else
-		{
+		} else {
 			throw new IllegalArgumentException("Target must be a File or StringBuilder object.");
 		}
 
 		this.url = url;
 
-		synchronized (stateLock)
-		{
+		synchronized (stateLock) {
 			started = false;
 			running = false;
 		}
@@ -143,10 +137,8 @@ public class Downloader implements Runnable
 	 * 
 	 * @return length of the remote resource, in number of bytes; -1 if unknown
 	 */
-	public int getLength()
-	{
-		synchronized (lengthLock)
-		{
+	public int getLength() {
+		synchronized (lengthLock) {
 			return totalLength;
 		}
 	}
@@ -156,10 +148,8 @@ public class Downloader implements Runnable
 	 * 
 	 * @return number of bytes downloaded
 	 */
-	public int getDownloadedLength()
-	{
-		synchronized (lengthLock)
-		{
+	public int getDownloadedLength() {
+		synchronized (lengthLock) {
 			return downloadedLength;
 		}
 	}
@@ -169,8 +159,7 @@ public class Downloader implements Runnable
 	 * 
 	 * @return string describing the current progress
 	 */
-	public String getProgressString()
-	{
+	public String getProgressString() {
 		return progressString;
 	}
 
@@ -179,20 +168,13 @@ public class Downloader implements Runnable
 	 * 
 	 * @return percentage describing the current progress; -1 if unknown
 	 */
-	public int getProgressPercent()
-	{
-		synchronized (lengthLock)
-		{
-			if ((totalLength <= 0) || (downloadedLength > totalLength))
-			{
+	public int getProgressPercent() {
+		synchronized (lengthLock) {
+			if ((totalLength <= 0) || (downloadedLength > totalLength)) {
 				return -1;
-			}
-			else if (downloadedLength == totalLength)
-			{
+			} else if (downloadedLength == totalLength) {
 				return 100;
-			}
-			else
-			{
+			} else {
 				return (int) (100.0 * downloadedLength / totalLength);
 			}
 		}
@@ -203,15 +185,11 @@ public class Downloader implements Runnable
 	 * 
 	 * @return true if there has been an update in the progress; false otherwise
 	 */
-	public boolean isProgressUpdated()
-	{
-		if (progressUpdated)
-		{
+	public boolean isProgressUpdated() {
+		if (progressUpdated) {
 			progressUpdated = false;
 			return true;
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
@@ -219,10 +197,8 @@ public class Downloader implements Runnable
 	/**
 	 * Pause the download.
 	 */
-	public void pause()
-	{
-		synchronized (stateLock)
-		{
+	public void pause() {
+		synchronized (stateLock) {
 			running = false;
 		}
 	}
@@ -230,12 +206,9 @@ public class Downloader implements Runnable
 	/**
 	 * Resume the download.
 	 */
-	public void resume()
-	{
-		synchronized (stateLock)
-		{
-			if (!completed)
-			{
+	public void resume() {
+		synchronized (stateLock) {
+			if (!completed) {
 				running = true;
 			}
 		}
@@ -244,10 +217,8 @@ public class Downloader implements Runnable
 	/**
 	 * Cancel the download.
 	 */
-	public void cancel()
-	{
-		synchronized (stateLock)
-		{
+	public void cancel() {
+		synchronized (stateLock) {
 			cancelled = true;
 		}
 	}
@@ -257,10 +228,8 @@ public class Downloader implements Runnable
 	 * 
 	 * @return true if download has started; false otherwise
 	 */
-	public boolean isStarted()
-	{
-		synchronized (stateLock)
-		{
+	public boolean isStarted() {
+		synchronized (stateLock) {
 			return started;
 		}
 	}
@@ -270,10 +239,8 @@ public class Downloader implements Runnable
 	 * 
 	 * @return true if downloader is running; false otherwise
 	 */
-	public boolean isRunning()
-	{
-		synchronized (stateLock)
-		{
+	public boolean isRunning() {
+		synchronized (stateLock) {
 			return running;
 		}
 	}
@@ -283,10 +250,8 @@ public class Downloader implements Runnable
 	 * 
 	 * @return true if downloader is cancelled; false otherwise
 	 */
-	public boolean isCancelled()
-	{
-		synchronized (stateLock)
-		{
+	public boolean isCancelled() {
+		synchronized (stateLock) {
 			return cancelled;
 		}
 	}
@@ -296,10 +261,8 @@ public class Downloader implements Runnable
 	 * 
 	 * @return true if download is completed; false otherwise
 	 */
-	public boolean isCompleted()
-	{
-		synchronized (stateLock)
-		{
+	public boolean isCompleted() {
+		synchronized (stateLock) {
 			return completed;
 		}
 	}
@@ -310,20 +273,13 @@ public class Downloader implements Runnable
 	 * @throws Exception
 	 *             if an error has occurred during download, or if the download was cancelled
 	 */
-	public void waitUntilCompleted() throws Exception
-	{
-		while (true)
-		{
-			synchronized (stateLock)
-			{
-				if (completed)
-				{
-					if (error == null)
-					{
+	public void waitUntilCompleted() throws Exception {
+		while (true) {
+			synchronized (stateLock) {
+				if (completed) {
+					if (error == null) {
 						return;
-					}
-					else
-					{
+					} else {
 						throw error;
 					}
 				}
@@ -336,16 +292,11 @@ public class Downloader implements Runnable
 	 * Start downloading the remote resource. The target object should not be accessed until after calling waitUntilCompleted().
 	 */
 	@Override
-	public void run()
-	{
-		synchronized (stateLock)
-		{
-			if (started)
-			{
+	public void run() {
+		synchronized (stateLock) {
+			if (started) {
 				return;
-			}
-			else
-			{
+			} else {
 				started = true;
 				running = true;
 			}
@@ -355,8 +306,7 @@ public class Downloader implements Runnable
 		BufferedOutputStream bos = null;
 		BufferedReader br = null;
 
-		try
-		{
+		try {
 			/* open connection to the URL */
 			checkState();
 			progressString = "Opening connection to remote resource";
@@ -364,13 +314,10 @@ public class Downloader implements Runnable
 
 			final URLConnection link;
 
-			try
-			{
+			try {
 				link = url.openConnection();
 				link.connect();
-			}
-			catch (Exception e)
-			{
+			} catch (Exception e) {
 				progressString = "Failed to open connection to remote resource";
 				progressUpdated = true;
 				throw e;
@@ -384,8 +331,7 @@ public class Downloader implements Runnable
 			/* get size of webpage in bytes; -1 if unknown */
 			final int length = link.getContentLength();
 
-			synchronized (lengthLock)
-			{
+			synchronized (lengthLock) {
 				totalLength = length;
 			}
 
@@ -398,111 +344,84 @@ public class Downloader implements Runnable
 
 			InputStream input = null;
 
-			try
-			{
+			try {
 
-				if (totalLength < 1)
-				{
+				if (totalLength < 1) {
 
 					// load with http Request
 					HttpGet httppost = new HttpGet(url.toString());
 
 					// Execute HTTP Post Request
-					try
-					{
+					try {
 						HttpParams httpParameters = new BasicHttpParams();
 						HttpConnectionParams.setConnectionTimeout(httpParameters, HttpUtils.conectionTimeout);
 						HttpConnectionParams.setSoTimeout(httpParameters, HttpUtils.socketTimeout);
 						DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
 						HttpResponse response = httpClient.execute(httppost);
 						input = response.getEntity().getContent();
-					}
-					catch (ConnectTimeoutException e1)
-					{
-						
+					} catch (ConnectTimeoutException e1) {
+
 						e1.printStackTrace();
-					}
-					catch (ClientProtocolException e1)
-					{
-						
+					} catch (ClientProtocolException e1) {
+
 						e1.printStackTrace();
-					}
-					catch (IOException e1)
-					{
-						
+					} catch (IOException e1) {
+
 						e1.printStackTrace();
 					}
 
-				}
-				else
-				{
+				} else {
 					input = link.getInputStream();
 				}
 
-				if (target instanceof File)
-				{
+				if (target instanceof File) {
 					bis = new BufferedInputStream(input);
-				}
-				else if (target instanceof StringBuilder)
-				{
+				} else if (target instanceof StringBuilder) {
 					final String contentType = link.getContentType().toLowerCase(Locale.ENGLISH);
 
 					/* look for charset, if specified */
 					String charset = null;
 					final Matcher m = Pattern.compile(".*charset[\\s]*=([^;]++).*").matcher(contentType);
 
-					if (m.find())
-					{
+					if (m.find()) {
 						charset = m.group(1).trim();
 					}
 
-					if ((charset != null) && charset.length() > 0)
-					{
-						try
-						{
+					if ((charset != null) && charset.length() > 0) {
+						try {
 							br = new BufferedReader(new InputStreamReader(input, charset));
-						}
-						catch (Exception e)
-						{
+						} catch (Exception e) {
 							br = null;
 						}
 					}
 
-					if (br == null)
-					{
+					if (br == null) {
 						br = new BufferedReader(new InputStreamReader(input));
 					}
 				}
-			}
-			catch (Exception e)
-			{
+			} catch (Exception e) {
 				progressString = "Failed to open input stream to remote resource";
 				progressUpdated = true;
 				throw e;
 			}
 
 			/* open output stream, if necessary */
-			if (target instanceof File)
-			{
+			if (target instanceof File) {
 				checkState();
 				progressString = "Opening output stream to local file";
 				progressUpdated = true;
 
-				try
-				{
+				try {
 					/* create parent directories, if necessary */
 					final File f = (File) target;
 					final File parent = f.getParentFile();
 
-					if ((parent != null) && !parent.exists())
-					{
+					if ((parent != null) && !parent.exists()) {
 						parent.mkdirs();
 					}
 
 					bos = new BufferedOutputStream(new FileOutputStream(f));
-				}
-				catch (Exception e)
-				{
+				} catch (Exception e) {
 					progressString = "Failed to open output stream to local file";
 					progressUpdated = true;
 					throw e;
@@ -513,62 +432,50 @@ public class Downloader implements Runnable
 			progressString = "Downloading";
 			progressUpdated = true;
 
-			try
-			{
-				if (target instanceof File)
-				{
+			try {
+				if (target instanceof File) {
 					final byte[] byteBuffer = new byte[BUFFER_SIZE];
 
-					while (true)
-					{
+					while (true) {
 						checkState();
 						final int byteCount = bis.read(byteBuffer, 0, BUFFER_SIZE);
 
 						/* check for end-of-stream */
-						if (byteCount == -1)
-						{
+						if (byteCount == -1) {
 							break;
 						}
 
 						bos.write(byteBuffer, 0, byteCount);
 
-						synchronized (lengthLock)
-						{
+						synchronized (lengthLock) {
 							downloadedLength += byteCount;
 						}
 
 						progressUpdated = true;
 					}
-				}
-				else if (target instanceof StringBuilder)
-				{
+				} else if (target instanceof StringBuilder) {
 					final char[] charBuffer = new char[BUFFER_SIZE];
 					final StringBuilder sb = (StringBuilder) target;
 
-					while (true)
-					{
+					while (true) {
 						checkState();
 						final int charCount = br.read(charBuffer, 0, BUFFER_SIZE);
 
 						/* check for end-of-stream */
-						if (charCount == -1)
-						{
+						if (charCount == -1) {
 							break;
 						}
 
 						sb.append(charBuffer, 0, charCount);
 
-						synchronized (lengthLock)
-						{
+						synchronized (lengthLock) {
 							downloadedLength += charCount; /* may be inaccurate because byte != char */
 						}
 
 						progressUpdated = true;
 					}
 				}
-			}
-			catch (Exception e)
-			{
+			} catch (Exception e) {
 				progressString = "Failed to download remote resource";
 				progressUpdated = true;
 				throw e;
@@ -577,32 +484,21 @@ public class Downloader implements Runnable
 			/* download completed successfully */
 			progressString = "Download completed";
 			progressUpdated = true;
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			error = e;
-		}
-		finally
-		{
+		} finally {
 			/* clean-up */
-			for (Closeable c : new Closeable[]
-				{ bis, br, bos })
-			{
-				if (c != null)
-				{
-					try
-					{
+			for (Closeable c : new Closeable[] { bis, br, bos }) {
+				if (c != null) {
+					try {
 						c.close();
-					}
-					catch (Exception e)
-					{
+					} catch (Exception e) {
 						/* ignore */
 					}
 				}
 			}
 
-			synchronized (stateLock)
-			{
+			synchronized (stateLock) {
 				running = false;
 				completed = true;
 			}
@@ -616,21 +512,16 @@ public class Downloader implements Runnable
 	 * @throws java.lang.Exception
 	 *             if the download is cancelled
 	 */
-	private void checkState() throws Exception
-	{
-		while (true)
-		{
-			synchronized (stateLock)
-			{
-				if (cancelled)
-				{
+	private void checkState() throws Exception {
+		while (true) {
+			synchronized (stateLock) {
+				if (cancelled) {
 					progressString = "Download cancelled";
 					progressUpdated = true;
 					throw new Exception("Download cancelled");
 				}
 
-				if (running)
-				{
+				if (running) {
 					return;
 				}
 			}

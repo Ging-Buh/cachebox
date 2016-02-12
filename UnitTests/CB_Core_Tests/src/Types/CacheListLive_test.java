@@ -6,11 +6,9 @@ import CB_Core.Types.CacheListLive;
 import CB_Locator.Map.Descriptor;
 import CB_Utils.Lists.CB_List;
 
-public class CacheListLive_test extends TestCase
-{
+public class CacheListLive_test extends TestCase {
 
-	public void test_fillAndOverload()
-	{
+	public void test_fillAndOverload() {
 
 		// 1. aa +
 		// ab +
@@ -194,8 +192,7 @@ public class CacheListLive_test extends TestCase
 		assertTrue("Cache size must be 11", s6 == 11);// first three descriptors must remove
 		assertTrue("Cache size must lower then max capacity", s < cacheList.getCapacity());
 		assertCacheAtList(cacheList, ca23, ca24, ca25, ca26, ca27, ca28, ca29, ca30, ca31, ca33, ca34);
-		assertCacheNotAtList(cacheList, ca1, ca2, ca3, ca4, ca6, ca7, ca8, ca9, ca10, ca11, ca12, ca13, ca14, ca15, ca16, ca17, ca18, ca19,
-				ca20, ca21, ca22);
+		assertCacheNotAtList(cacheList, ca1, ca2, ca3, ca4, ca6, ca7, ca8, ca9, ca10, ca11, ca12, ca13, ca14, ca15, ca16, ca17, ca18, ca19, ca20, ca21, ca22);
 
 		// -------------------------------------------------------------------------------------
 
@@ -232,38 +229,32 @@ public class CacheListLive_test extends TestCase
 
 	}
 
-	private void assertCacheAtList(CacheListLive cacheList, Cache... array)
-	{
+	private void assertCacheAtList(CacheListLive cacheList, Cache... array) {
 
 		CB_List<Cache> tmp = new CB_List<Cache>();
 
-		for (int i = 0; i < cacheList.getSize(); i++)
-		{
+		for (int i = 0; i < cacheList.getSize(); i++) {
 			Cache ca2 = cacheList.get(i);
-			assertFalse("wurde schon aus der Liste zurück gegeben", tmp.contains(ca2));
+			assertFalse("wurde schon aus der Liste zurï¿½ck gegeben", tmp.contains(ca2));
 			tmp.add(ca2);
 		}
 
-		for (Cache ca : array)
-		{
+		for (Cache ca : array) {
 			assertTrue("CacheList must contains the Cache", cacheList.contains(ca));
 			assertTrue("Getted CacheList must contains the Cache", tmp.contains(ca));
 		}
 
 	}
 
-	private void assertCacheNotAtList(CacheListLive cacheList, Cache... array)
-	{
+	private void assertCacheNotAtList(CacheListLive cacheList, Cache... array) {
 
-		for (Cache ca : array)
-		{
+		for (Cache ca : array) {
 			assertFalse("CacheList must Not contains the Cache", cacheList.contains(ca));
 		}
 
 	}
 
-	private Cache getTmpCache(String GcCode)
-	{
+	private Cache getTmpCache(String GcCode) {
 		Cache ca = new Cache(false);
 		ca.setGcCode(GcCode);
 		return ca;

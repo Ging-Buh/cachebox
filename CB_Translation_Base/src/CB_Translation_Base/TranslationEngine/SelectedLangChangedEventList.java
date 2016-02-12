@@ -18,26 +18,21 @@ package CB_Translation_Base.TranslationEngine;
 
 import java.util.ArrayList;
 
-public class SelectedLangChangedEventList
-{
+public class SelectedLangChangedEventList {
 	private static ArrayList<SelectedLangChangedEvent> list = new ArrayList<SelectedLangChangedEvent>();
 
-	public static void Add(SelectedLangChangedEvent event)
-	{
+	public static void Add(SelectedLangChangedEvent event) {
 		list.add(event);
 	}
 
-	public static void Call()
-	{
-		for (SelectedLangChangedEvent event : list)
-		{
+	public static void Call() {
+		for (SelectedLangChangedEvent event : list) {
 			event.SelectedLangChangedEventCalled();
 		}
 
 	}
 
-	public static void Remove(SelectedLangChangedEvent event)
-	{
+	public static void Remove(SelectedLangChangedEvent event) {
 		list.remove(event);
 	}
 

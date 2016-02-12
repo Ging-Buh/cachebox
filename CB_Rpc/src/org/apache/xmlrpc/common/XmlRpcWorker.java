@@ -21,7 +21,6 @@ package org.apache.xmlrpc.common;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.XmlRpcRequest;
 
-
 /** An object, which executes requests on the controllers
  * behalf. These objects are mainly used for controlling the
  * clients or servers load, which is defined in terms of the
