@@ -21,6 +21,7 @@ import java.util.TimerTask;
 import org.slf4j.LoggerFactory;
 
 import CB_Core.CacheListChangedEventList;
+import CB_Core.CoreSettingsForward;
 import CB_Core.Database;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Import.Importer;
@@ -53,7 +54,7 @@ import CB_Utils.Interfaces.cancelRunnable;
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(GlobalCore.class);
-	public static final int CurrentRevision = 20160211;
+	public static final int CurrentRevision = 20160212;
 
 	public static final String CurrentVersion = "0.8.";
 	public static final String VersionPrefix = "test";
@@ -114,8 +115,14 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 
 	private static Waypoint selectedWaypoint = null;
 
-	public static void setSelectedWaypoint(Cache Cache, Waypoint waypoint) {
-		setSelectedWaypoint(Cache, waypoint, true);
+	public static void setSelectedWaypoint(Cache cache, Waypoint waypoint) {
+		setSelectedWaypoint(cache, waypoint, true);
+		if (waypoint == null) {
+			CoreSettingsForward.cacheHistory = cache.getGcCode() + "," + CoreSettingsForward.cacheHistory;
+			if (CoreSettingsForward.cacheHistory.length() > 120) {
+				CoreSettingsForward.cacheHistory = CoreSettingsForward.cacheHistory.substring(0, CoreSettingsForward.cacheHistory.lastIndexOf(","));
+			}
+		}
 	}
 
 	/**
@@ -295,7 +302,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 	}
 
 	public interface IChkRedyHandler {
-		public void chekReady(int MemberTypeId);
+		public void checkReady(int MemberTypeId);
 	}
 
 	static CancelWaitDialog dia;
@@ -318,7 +325,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 			return;
 		}
 
-		if (!GroundspeakAPI.API_isCheked()) {
+		if (!GroundspeakAPI.mAPI_isChecked()) {
 			dia = CancelWaitDialog.ShowWait("chk API Key", DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
 				@Override
@@ -329,7 +336,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 
 				@Override
 				public void run() {
-					final int ret = GroundspeakAPI.chkMemperShip(false);
+					final int ret = GroundspeakAPI.chkMembership(false);
 					dia.close();
 
 					Timer ti = new Timer();
@@ -337,7 +344,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 
 						@Override
 						public void run() {
-							handler.chekReady(ret);
+							handler.checkReady(ret);
 						}
 					};
 					ti.schedule(task, 300);
@@ -351,7 +358,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 				}
 			});
 		} else {
-			handler.chekReady(GroundspeakAPI.chkMemperShip(true));
+			handler.checkReady(GroundspeakAPI.chkMembership(true));
 		}
 
 	}

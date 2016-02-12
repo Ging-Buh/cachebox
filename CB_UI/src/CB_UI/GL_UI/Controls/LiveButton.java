@@ -1,5 +1,7 @@
 package CB_UI.GL_UI.Controls;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.LiveMapQue;
 import CB_Core.Api.LiveMapQue.QueStateChanged;
@@ -10,8 +12,6 @@ import CB_UI.GL_UI.SpriteCache;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.GL_UI.Controls.ImageButton;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-
-import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class LiveButton extends ImageButton implements QueStateChanged {
 

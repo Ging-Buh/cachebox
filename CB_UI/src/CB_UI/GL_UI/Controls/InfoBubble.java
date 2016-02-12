@@ -11,7 +11,6 @@ import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
@@ -43,7 +42,7 @@ public class InfoBubble extends CB_View_Base {
 	private Cache mCache = null;
 	private Waypoint mWaypoint = null;
 	private CacheInfo cacheInfo;
-	private Drawable saveIcon = new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.save_66.ordinal()));
+	private final Drawable saveIcon = new SpriteDrawable(SpriteCacheBase.Icons.get(SpriteCacheBase.IconName.save_66.ordinal()));
 
 	public void setCache(Cache cache, Waypoint waypoint) {
 		setCache(cache, waypoint, false);

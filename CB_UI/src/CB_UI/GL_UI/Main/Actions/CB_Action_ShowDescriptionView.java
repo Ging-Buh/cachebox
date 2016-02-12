@@ -207,7 +207,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
 					// Reload result from DB
 					synchronized (Database.Data.Query) {
-						String sqlWhere = FilterInstances.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+						String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
 						CacheListDAO cacheListDAO = new CacheListDAO();
 						cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 					}

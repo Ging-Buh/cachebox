@@ -265,14 +265,14 @@ public class CB_Button extends Button implements OnClickListener {
 		onClick(null, 0, 0, 0, 0);
 	}
 
-	// ---------- überschreiben des isPresed, weil dies zur Anzeige der Activen View benutzt wird ---------
+	// ---------- überschreiben des isPressed, weil dies zur Anzeige der Activen View benutzt wird ---------
 
 	protected static Sprite menuSprite;
-	protected static Sprite menuSpriteFilterd;
+	protected static Sprite menuSpriteFiltered;
 
 	public static void reloadMenuSprite() {
 		menuSprite = null;
-		menuSpriteFilterd = null;
+		menuSpriteFiltered = null;
 	}
 
 	@Override
@@ -295,7 +295,7 @@ public class CB_Button extends Button implements OnClickListener {
 		if (hasContextMenu && isFocused) {
 
 			// draw Menu Sprite
-			if (menuSprite == null || menuSpriteFilterd == null) {
+			if (menuSprite == null || menuSpriteFiltered == null) {
 				float iconWidth = this.getWidth() / 5f;
 				float iconHeight = this.getHeight() / 2.3f;
 				float VersatzX = this.getHeight() / 20f;
@@ -304,8 +304,8 @@ public class CB_Button extends Button implements OnClickListener {
 				menuSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.menu_37.ordinal()));
 				menuSprite.setBounds(this.getWidth() - iconWidth - VersatzX, VersatzY, iconWidth, iconHeight);
 
-				menuSpriteFilterd = new Sprite(SpriteCacheBase.Icons.get(IconName.menuFilterd_65.ordinal()));
-				menuSpriteFilterd.setBounds(this.getWidth() - iconWidth - VersatzX, VersatzY, iconWidth, iconHeight);
+				menuSpriteFiltered = new Sprite(SpriteCacheBase.Icons.get(IconName.MENUFILTERED_65.ordinal()));
+				menuSpriteFiltered.setBounds(this.getWidth() - iconWidth - VersatzX, VersatzY, iconWidth, iconHeight);
 
 			}
 
@@ -313,8 +313,8 @@ public class CB_Button extends Button implements OnClickListener {
 
 			if (!isFilterd && menuSprite != null)
 				menuSprite.draw(batch);
-			if (isFilterd && menuSpriteFilterd != null)
-				menuSpriteFilterd.draw(batch);
+			if (isFilterd && menuSpriteFiltered != null)
+				menuSpriteFiltered.draw(batch);
 		}
 	}
 

@@ -83,15 +83,15 @@ public class DeleteDialog extends ButtonDialog {
 					@Override
 					public void run() {
 						CacheListDAO dao = new CacheListDAO();
-						long nun = dao.deleteFiltered(FilterInstances.LastFilter.getSqlWhere(CB_Core_Settings.GcLogin.getValue()), CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(),
+						long nun = dao.deleteFiltered(FilterInstances.getLastFilter().getSqlWhere(CB_Core_Settings.GcLogin.getValue()), CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(),
 								CB_Core_Settings.DescriptionImageFolder.getValue(), CB_Core_Settings.DescriptionImageFolderLocal.getValue());
 						cleanupLogs();
 						cleanupWaypoints();
 						wd.close();
 
 						// reset Filter
-						FilterInstances.LastFilter = new FilterProperties();
-						EditFilterSettings.ApplyFilter(FilterInstances.LastFilter);// all Caches
+						FilterInstances.setLastFilter(new FilterProperties());
+						EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());// all Caches
 
 						String msg = Translation.Get("DeletedCaches", String.valueOf(nun));
 						GL.that.Toast(msg);
@@ -130,7 +130,7 @@ public class DeleteDialog extends ButtonDialog {
 						cleanupWaypoints();
 						wd.close();
 
-						EditFilterSettings.ApplyFilter(FilterInstances.LastFilter);
+						EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());
 
 						String msg = Translation.Get("DeletedCaches", String.valueOf(nun));
 						GL.that.Toast(msg);
@@ -168,7 +168,7 @@ public class DeleteDialog extends ButtonDialog {
 						cleanupWaypoints();
 						wd.close();
 
-						EditFilterSettings.ApplyFilter(FilterInstances.LastFilter);
+						EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());
 
 						String msg = Translation.Get("DeletedCaches", String.valueOf(nun));
 						GL.that.Toast(msg);

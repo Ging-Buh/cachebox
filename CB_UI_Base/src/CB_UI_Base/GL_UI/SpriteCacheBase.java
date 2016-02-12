@@ -145,8 +145,8 @@ public class SpriteCacheBase {
 		tbPicked_61, // 61
 		tbVisit_62, // 62
 		tbNote_63, // 63
-		uploadFieldNote_64, // 63
-		menuFilterd_65, // 65
+		uploadFieldNote_64, // 64
+		MENUFILTERED_65, // 65
 		save_66, // 66
 		torch_on_67, // 67
 		torch_Off_68, // 68

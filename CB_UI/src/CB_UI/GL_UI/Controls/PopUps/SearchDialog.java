@@ -560,7 +560,7 @@ public class SearchDialog extends PopUp_Base {
 		GlobalCore.chkAPiLogInWithWaitDialog(new IChkRedyHandler() {
 
 			@Override
-			public void chekReady(int MemberTypeId) {
+			public void checkReady(int MemberTypeId) {
 				int ret = GroundspeakAPI.isValidAPI_Key(true);
 
 				if (ret == 0) {
@@ -772,22 +772,22 @@ public class SearchDialog extends PopUp_Base {
 	private void setFilter() {
 		String searchPattern = mEingabe.getText().toLowerCase();
 
-		FilterInstances.LastFilter.filterName = "";
-		FilterInstances.LastFilter.filterGcCode = "";
-		FilterInstances.LastFilter.filterOwner = "";
+		FilterInstances.getLastFilter().filterName = "";
+		FilterInstances.getLastFilter().filterGcCode = "";
+		FilterInstances.getLastFilter().filterOwner = "";
 
 		if (mSearchState == 0)
-			FilterInstances.LastFilter.filterName = searchPattern;
+			FilterInstances.getLastFilter().filterName = searchPattern;
 		else if (mSearchState == 1)
-			FilterInstances.LastFilter.filterGcCode = searchPattern;
+			FilterInstances.getLastFilter().filterGcCode = searchPattern;
 		if (mSearchState == 2)
-			FilterInstances.LastFilter.filterOwner = searchPattern;
+			FilterInstances.getLastFilter().filterOwner = searchPattern;
 
 		ApplyFilter();
 	}
 
 	public void ApplyFilter() {
-		ApplyFilter(FilterInstances.LastFilter);
+		ApplyFilter(FilterInstances.getLastFilter());
 	}
 
 	public void ApplyFilter(FilterProperties filter) {
@@ -887,7 +887,7 @@ public class SearchDialog extends PopUp_Base {
 		GlobalCore.chkAPiLogInWithWaitDialog(new IChkRedyHandler() {
 
 			@Override
-			public void chekReady(int MemberType) {
+			public void checkReady(int MemberType) {
 				int ret = GroundspeakAPI.isValidAPI_Key(true);
 				log.debug("SEARCH isValidAPI_Key ret=" + ret);
 				if (ret == 0) {

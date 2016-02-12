@@ -61,7 +61,6 @@ import CB_UI.RouteOverlay;
 import CB_UI.SelectedCacheEvent;
 import CB_UI.SelectedCacheEventList;
 import CB_UI.WaypointListChangedEventList;
-import CB_UI.GL_UI.SpriteCache.IconName;
 import CB_UI.GL_UI.Activitys.EditWaypoint;
 import CB_UI.GL_UI.Activitys.EditWaypoint.IReturnListener;
 import CB_UI.GL_UI.Controls.InfoBubble;
@@ -74,6 +73,7 @@ import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_UI_Base.GL_UI.Controls.ZoomButtons;
@@ -387,7 +387,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 							// Reload result from DB
 							synchronized (Database.Data.Query) {
-								String sqlWhere = FilterInstances.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+								String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
 								CacheListDAO cacheListDAO = new CacheListDAO();
 								cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 							}

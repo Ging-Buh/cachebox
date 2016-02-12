@@ -177,7 +177,7 @@ public class GroundspeakAPI {
 	 * @return
 	 */
 	public static int CreateFieldNoteAndPublish(String cacheCode, int wptLogTypeId, Date dateLogged, String note, boolean directLog, final ICancel icancel) {
-		int chk = chkMemperShip(true);
+		int chk = chkMembership(true);
 		if (chk < 0)
 			return chk;
 
@@ -269,7 +269,7 @@ public class GroundspeakAPI {
 	 */
 	public static int GetCachesFound(final ICancel icancel) {
 
-		int chk = chkMemperShip(false);
+		int chk = chkMembership(false);
 		if (chk < 0)
 			return chk;
 
@@ -494,7 +494,7 @@ public class GroundspeakAPI {
 	 * @return
 	 */
 	public static int GetGeocacheStatus(ArrayList<Cache> caches, final ICancel icancel) {
-		int chk = chkMemperShip(false);
+		int chk = chkMembership(false);
 		if (chk < 0)
 			return chk;
 
@@ -618,7 +618,7 @@ public class GroundspeakAPI {
 
 		if (cache == null)
 			return -3;
-		int chk = chkMemperShip(false);
+		int chk = chkMembership(false);
 		if (chk < 0)
 			return chk;
 
@@ -740,7 +740,7 @@ public class GroundspeakAPI {
 		if (CachesLeft > -1)
 			return 0;
 
-		int chk = chkMemperShip(false);
+		int chk = chkMembership(false);
 		if (chk < 0)
 			return chk;
 
@@ -927,7 +927,7 @@ public class GroundspeakAPI {
 	 * @return
 	 */
 	public static int getMyTbList(TbList list, ICancel icancel) {
-		int chk = chkMemperShip(false);
+		int chk = chkMembership(false);
 		if (chk < 0)
 			return chk;
 
@@ -1011,7 +1011,7 @@ public class GroundspeakAPI {
 	 * @return
 	 */
 	public static int getTBbyTreckNumber(String TrackingCode, ByRef<Trackable> TB, ICancel icancel) {
-		int chk = chkMemperShip(false);
+		int chk = chkMembership(false);
 		if (chk < 0)
 			return chk;
 
@@ -1094,7 +1094,7 @@ public class GroundspeakAPI {
 	 * @return
 	 */
 	public static int getTBbyTbCode(String TrackingNumber, ByRef<Trackable> TB, ICancel icancel) {
-		int chk = chkMemperShip(false);
+		int chk = chkMembership(false);
 		if (chk < 0)
 			return chk;
 		String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
@@ -1175,7 +1175,7 @@ public class GroundspeakAPI {
 	 * @return
 	 */
 	public static int getImagesForGeocache(String cacheCode, ArrayList<String> images, ICancel icancel) {
-		int chk = chkMemperShip(false);
+		int chk = chkMembership(false);
 		if (chk < 0)
 			return chk;
 
@@ -1252,7 +1252,7 @@ public class GroundspeakAPI {
 	 * @return
 	 */
 	public static int GetAllImageLinks(String cacheCode, HashMap<String, URI> list, ICancel icancel) {
-		int chk = chkMemperShip(false);
+		int chk = chkMembership(false);
 		if (chk < 0)
 			return chk;
 
@@ -1509,7 +1509,7 @@ public class GroundspeakAPI {
 	 *            Config.settings.socket_timeout.getValue()
 	 * @return 0=false 1=true
 	 */
-	public static int chkMemperShip(boolean withoutMsg) {
+	public static int chkMembership(boolean withoutMsg) {
 		boolean isValid = false;
 		if (API_isCheked) {
 			isValid = membershipType > 0;
@@ -1544,7 +1544,7 @@ public class GroundspeakAPI {
 		if (API_isCheked)
 			return membershipType;
 
-		return chkMemperShip(withoutMsg);
+		return chkMembership(withoutMsg);
 	}
 
 	/**
@@ -1583,7 +1583,7 @@ public class GroundspeakAPI {
 	 * @return
 	 */
 	public static int createTrackableLog(String TbCode, String TrackingNummer, String cacheCode, int LogTypeId, Date dateLogged, String note, ICancel icancel) {
-		int chk = chkMemperShip(false);
+		int chk = chkMembership(false);
 		if (chk < 0)
 			return chk;
 		String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
@@ -1656,7 +1656,7 @@ public class GroundspeakAPI {
 		return 0;
 	}
 
-	public static boolean API_isCheked() {
+	public static boolean mAPI_isChecked() {
 		return API_isCheked;
 	}
 

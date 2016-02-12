@@ -60,7 +60,7 @@ public class DeleteSelectedCache {
 		// Database.Data.execSQL("vacuum");
 		// Filter Liste neu aufbauen oder gibt es eine schnellere Möglichkeit?
 		log.debug("Execute LastFilter");
-		EditFilterSettings.ApplyFilter(FilterInstances.LastFilter);
+		EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());
 		log.debug("unselect Cache");
 		GlobalCore.setSelectedCache(null);
 		log.debug("Rebuild View");

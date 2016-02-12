@@ -25,12 +25,12 @@ public class PresetListView extends V_ListView {
 
 	public static PresetEntry aktPreset;
 
-	private ArrayList<PresetEntry> lPresets;
-	public ArrayList<PresetListViewItem> lItem;
+	private ArrayList<PresetEntry> mPresetEntries;
+	public ArrayList<PresetListViewItem> mPresetListViewItems;
 	private CustomAdapter lvAdapter;
 
 	public static final FilterProperties[] presets = new FilterProperties[] { //
-			FilterInstances.ALL, //
+			FilterInstances.HISTORY, //			
 			FilterInstances.ACTIVE, //
 			FilterInstances.QUICK, //
 			FilterInstances.BEGINNER, //
@@ -40,6 +40,7 @@ public class PresetListView extends V_ListView {
 			FilterInstances.FAVORITES, //
 			FilterInstances.TOARCHIVE, //
 			FilterInstances.LISTINGCHANGED, //
+			FilterInstances.ALL, //
 	};
 
 	public class PresetEntry {
@@ -78,7 +79,7 @@ public class PresetListView extends V_ListView {
 		fillPresetList();
 		this.setDisposeFlag(false);
 		this.setBaseAdapter(null);
-		lvAdapter = new CustomAdapter(lPresets);
+		lvAdapter = new CustomAdapter(mPresetEntries);
 		this.setBaseAdapter(lvAdapter);
 
 	}
@@ -108,7 +109,7 @@ public class PresetListView extends V_ListView {
 		@Override
 		public ListViewItemBase getView(final int position) {
 
-			ListViewItemBase v = lItem.get(position);
+			ListViewItemBase v = mPresetListViewItems.get(position);
 
 			return v;
 		}
@@ -120,23 +121,30 @@ public class PresetListView extends V_ListView {
 	}
 
 	public void fillPresetList() {
-		if (lPresets != null)
-			lPresets.clear();
-		if (lItem != null)
-			lItem.clear();
+		if (mPresetEntries != null)
+			mPresetEntries.clear();
+		else
+			mPresetEntries = new ArrayList<PresetEntry>();
+		if (mPresetListViewItems != null)
+			mPresetListViewItems.clear();
+		else
+			mPresetListViewItems = new ArrayList<PresetListViewItem>();
 
-		addPresetItem(SpriteCacheBase.getThemedSprite("earth"), Translation.Get("AllCaches"), FilterInstances.ALL);
-		addPresetItem(SpriteCacheBase.getThemedSprite("log0icon"), Translation.Get("AllCachesToFind"), FilterInstances.ACTIVE);
-		addPresetItem(SpriteCacheBase.getThemedSprite("QuickCaches"), Translation.Get("QuickCaches"), FilterInstances.QUICK);
-		addPresetItem(SpriteCacheBase.getThemedSprite("BEGINNER"), Translation.Get("BEGINNER"), FilterInstances.BEGINNER);
-		addPresetItem(SpriteCacheBase.getThemedSprite("tb-grab"), Translation.Get("GrabTB"), FilterInstances.WITHTB);
-		addPresetItem(SpriteCacheBase.getThemedSprite("tb-drop"), Translation.Get("DropTB"), FilterInstances.DROPTB);
-		addPresetItem(SpriteCacheBase.getThemedSprite("star"), Translation.Get("Highlights"), FilterInstances.HIGHLIGHTS);
-		addPresetItem(SpriteCacheBase.getThemedSprite("favorit"), Translation.Get("Favorites"), FilterInstances.FAVORITES);
-		addPresetItem(SpriteCacheBase.getThemedSprite("delete"), Translation.Get("PrepareToArchive"), FilterInstances.TOARCHIVE);
-		addPresetItem(SpriteCacheBase.getThemedSprite("warning-icon"), Translation.Get("ListingChanged"), FilterInstances.LISTINGCHANGED);
+		FilterInstances.HISTORY.isHistory = true;
 
-		// add User Presets
+		mPresetEntriesAdd("HISTORY", "HISTORY", FilterInstances.HISTORY);
+		mPresetEntriesAdd("AllCachesToFind", "log0icon", FilterInstances.ACTIVE);
+		mPresetEntriesAdd("QuickCaches", "QuickCaches", FilterInstances.QUICK);
+		mPresetEntriesAdd("BEGINNER", "BEGINNER", FilterInstances.BEGINNER);
+		mPresetEntriesAdd("GrabTB", "tb-grab", FilterInstances.WITHTB);
+		mPresetEntriesAdd("DropTB", "tb-drop", FilterInstances.DROPTB);
+		mPresetEntriesAdd("Highlights", "star", FilterInstances.HIGHLIGHTS);
+		mPresetEntriesAdd("Favorites", "favorit", FilterInstances.FAVORITES);
+		mPresetEntriesAdd("PrepareToArchive", "delete", FilterInstances.TOARCHIVE);
+		mPresetEntriesAdd("ListingChanged", "warning-icon", FilterInstances.LISTINGCHANGED);
+		mPresetEntriesAdd("AllCaches", "earth", FilterInstances.ALL);
+
+		// add User Presets from Config.UserFilter
 		if (!Config.UserFilter.getValue().equalsIgnoreCase("")) {
 			String userEntrys[] = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
 			try {
@@ -144,7 +152,7 @@ public class PresetListView extends V_ListView {
 					int pos = entry.indexOf(";");
 					String name = entry.substring(0, pos);
 					String filter = entry.substring(pos + 1);
-					addPresetItem(SpriteCacheBase.getThemedSprite("userdata"), name, new FilterProperties(filter));
+					mPresetEntries.add(new PresetEntry(name, SpriteCacheBase.getThemedSprite("userdata"), new FilterProperties(filter)));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -155,12 +163,9 @@ public class PresetListView extends V_ListView {
 	}
 
 	private void fillItemList() {
-		if (lItem == null) {
-			lItem = new ArrayList<PresetListViewItem>();
-		}
 
 		int index = 0;
-		for (PresetEntry entry : lPresets) {
+		for (PresetEntry entry : mPresetEntries) {
 			PresetListViewItem v = new PresetListViewItem(EditFilterSettings.ItemRec, index, entry);
 
 			v.setOnClickListener(new OnClickListener() {
@@ -170,8 +175,8 @@ public class PresetListView extends V_ListView {
 
 					int itemIndex = ((PresetListViewItem) v).getIndex();
 
-					for (PresetListViewItem item : lItem) {
-						((ListViewItemBase) item).isSelected = false;
+					for (PresetListViewItem presetListViewItem : mPresetListViewItems) {
+						((ListViewItemBase) presetListViewItem).isSelected = false;
 					}
 
 					if (itemIndex < presets.length) {
@@ -226,8 +231,8 @@ public class PresetListView extends V_ListView {
 										}
 										Config.UserFilter.setValue(newUserEntris);
 										Config.AcceptChanges();
-										EditFilterSettings.that.lvPre.fillPresetList();
-										EditFilterSettings.that.lvPre.notifyDataSetChanged();
+										EditFilterSettings.that.mPresetListView.fillPresetList();
+										EditFilterSettings.that.mPresetListView.notifyDataSetChanged();
 									} catch (Exception e) {
 										e.printStackTrace();
 									}
@@ -235,7 +240,7 @@ public class PresetListView extends V_ListView {
 								}
 								EditFilterSettings.that.show();
 								break;
-							case 2: // cancel clicket
+							case 2: // cancel clicked
 								EditFilterSettings.that.show();
 								break;
 							case 3:
@@ -252,15 +257,13 @@ public class PresetListView extends V_ListView {
 				}
 			});
 
-			lItem.add(v);
+			mPresetListViewItems.add(v);
 			index++;
 		}
 	}
 
-	private void addPresetItem(Sprite Icon, String Name, FilterProperties PresetFilter) {
-		if (lPresets == null)
-			lPresets = new ArrayList<PresetListView.PresetEntry>();
-		lPresets.add(new PresetEntry(Name, Icon, PresetFilter));
+	private void mPresetEntriesAdd(String name, String icon, FilterProperties PresetFilter) {
+		mPresetEntries.add(new PresetEntry(Translation.Get(name), SpriteCacheBase.getThemedSprite(icon), PresetFilter));
 	}
 
 	@Override
@@ -271,12 +274,12 @@ public class PresetListView extends V_ListView {
 	}
 
 	private void chkIsPreset() {
-		for (PresetListViewItem item : lItem) {
+		for (PresetListViewItem item : mPresetListViewItems) {
 			((ListViewItemBase) item).isSelected = false;
 		}
 
 		this.setBaseAdapter(null);
-		lvAdapter = new CustomAdapter(lPresets);
+		lvAdapter = new CustomAdapter(mPresetEntries);
 		this.setBaseAdapter(lvAdapter);
 
 	}

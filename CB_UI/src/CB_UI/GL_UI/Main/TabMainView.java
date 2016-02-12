@@ -350,7 +350,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 	}
 
 	public static void reloadCacheList() {
-		String sqlWhere = FilterInstances.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+		String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
 		synchronized (Database.Data.Query) {
 			CacheListDAO cacheListDAO = new CacheListDAO();
 			cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
@@ -782,10 +782,10 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 		GL.that.RestartRender();
 	}
 
-	private boolean isFilterd = false;
+	private boolean isFiltered = false;
 
-	public boolean isFilterd() {
-		return isFilterd;
+	public boolean isFiltered() {
+		return isFiltered;
 	}
 
 	public void mToolsButtonOnLeftTabPerformClick() {
@@ -794,12 +794,11 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 
 	public void filterSetChanged() {
 		// change the icon
-		if (!FilterInstances.isLastFilterSet()) {
-			mCacheListButtonOnLeftTab.setButtonSprites(SpriteCacheBase.CacheList);
-			isFilterd = false;
-		} else {
+		isFiltered = FilterInstances.isLastFilterSet();
+		if (isFiltered) {
 			mCacheListButtonOnLeftTab.setButtonSprites(SpriteCacheBase.CacheListFilter);
-			isFilterd = true;
+		} else {
+			mCacheListButtonOnLeftTab.setButtonSprites(SpriteCacheBase.CacheList);
 		}
 
 		// ##################################

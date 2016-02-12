@@ -173,7 +173,7 @@ public class CB_Action_chkState extends CB_Action {
 
 				// Reload result from DB
 				synchronized (Database.Data.Query) {
-					String sqlWhere = FilterInstances.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+					String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
 					CacheListDAO cacheListDAO = new CacheListDAO();
 					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 					cacheListDAO = null;

@@ -5,16 +5,7 @@ import java.util.Arrays;
 public class FilterInstances {
 
 	// All Caches 0
-	public final static FilterProperties ALL = new FilterProperties("{" + //
-			"\"gpxfilenameids\":\"\"," + //
-			"\"caches\":\"0,0,0,0,0,0,0,0,0,1.0,5.0,1.0,5.0,0.0,4.0,0.0,5.0,0\"," + //
-			"\"filtergc\":\"\"," + //
-			"\"filterowner\":\"\"," + //
-			"\"categories\":\"\"," + //
-			"\"attributes\":\"" + setAttributes() + "\"," + //
-			"\"types\":\"" + setCacheTypes(true) + "\"," + //
-			"\"filtername\":\"\"" + //
-			"}");
+	public final static FilterProperties ALL = new FilterProperties();
 
 	// All Caches to find 1
 	public final static FilterProperties ACTIVE = new FilterProperties("{" + //
@@ -174,13 +165,20 @@ public class FilterInstances {
 			"\"types\":\"" + setCacheTypes(true) + "\"," + //
 			"\"filtername\":\"\"" + //
 			"}");
-
-	public static FilterProperties LastFilter = null;
-
+	public static FilterProperties HISTORY = new FilterProperties(); // == ALL, isHistory wird vor Verwendung gesetzt daher nicht final 
 	public static int hasCorrectedCoordinates = 0;
+	private static FilterProperties mLastFilter = null;
+
+	public static FilterProperties getLastFilter() {
+		return mLastFilter;
+	}
+
+	public static void setLastFilter(FilterProperties lastFilter) {
+		mLastFilter = lastFilter;
+	}
 
 	public static boolean isLastFilterSet() {
-		return LastFilter != null && !LastFilter.toString().equals("") && !ALL.equals(LastFilter) && !LastFilter.isExtendedFilter();
+		return mLastFilter != null && !mLastFilter.toString().equals("") && !ALL.equals(mLastFilter) && !mLastFilter.isExtendedFilter();
 	}
 
 	private final static String setCacheTypes(boolean with) {

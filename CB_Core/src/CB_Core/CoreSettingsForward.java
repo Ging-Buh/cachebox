@@ -12,4 +12,6 @@ public class CoreSettingsForward {
 
 	public static boolean DisplayOff;
 
+	public static String cacheHistory = "";
+
 }

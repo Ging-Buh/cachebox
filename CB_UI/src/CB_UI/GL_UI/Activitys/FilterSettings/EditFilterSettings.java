@@ -60,10 +60,10 @@ public class EditFilterSettings extends ActivityBase {
 
 	private Box contentBox;
 
-	public PresetListView lvPre;
-	private FilterSetListView lvSet;
-	private CategorieListView lvCat;
-	private TextFilterView vTxt;
+	public PresetListView mPresetListView;
+	private FilterSetListView mFilterSetListView;
+	private CategorieListView mCategorieListView;
+	private TextFilterView mTextFilterView;
 	private Button btnAddPreset;
 	public static FilterProperties tmpFilterProps;
 	private CB_RectF ListViewRec;
@@ -73,7 +73,7 @@ public class EditFilterSettings extends ActivityBase {
 		that = this;
 		ItemRec = new CB_RectF(leftBorder, 0, innerWidth, UI_Size_Base.that.getButtonHeight() * 1.1f);
 
-		tmpFilterProps = FilterInstances.LastFilter;
+		tmpFilterProps = FilterInstances.getLastFilter();
 
 		float myWidth = this.getWidth() - leftBorder;
 
@@ -89,29 +89,38 @@ public class EditFilterSettings extends ActivityBase {
 
 					@Override
 					public void run() {
-						lvCat.SetCategory();
-						FilterInstances.LastFilter = tmpFilterProps;
+						mCategorieListView.SetCategory();
+						FilterInstances.setLastFilter(tmpFilterProps);
 
 						// Text Filter ?
-						String txtFilter = vTxt.getFilterString();
+						String txtFilter = mTextFilterView.getFilterString();
 						if (txtFilter.length() > 0) {
-							int FilterMode = vTxt.getFilterState();
+							int FilterMode = mTextFilterView.getFilterState();
 							if (FilterMode == 0)
-								FilterInstances.LastFilter.filterName = txtFilter;
+								FilterInstances.getLastFilter().filterName = txtFilter;
 							else if (FilterMode == 1)
-								FilterInstances.LastFilter.filterGcCode = txtFilter;
+								FilterInstances.getLastFilter().filterGcCode = txtFilter;
 							else if (FilterMode == 2)
-								FilterInstances.LastFilter.filterOwner = txtFilter;
+								FilterInstances.getLastFilter().filterOwner = txtFilter;
 						} else {
-							FilterInstances.LastFilter.filterName = "";
-							FilterInstances.LastFilter.filterGcCode = "";
-							FilterInstances.LastFilter.filterOwner = "";
+							FilterInstances.getLastFilter().filterName = "";
+							FilterInstances.getLastFilter().filterGcCode = "";
+							FilterInstances.getLastFilter().filterOwner = "";
 						}
 
-						ApplyFilter(FilterInstances.LastFilter);
+						ApplyFilter(FilterInstances.getLastFilter());
 
 						// Save selected filter (new JSON Format)
-						Config.FilterNew.setValue(FilterInstances.LastFilter.toString());
+						// wont save History at the Moment
+						// Marker must be removed, else isFiltered is shown
+						// wont change the LastFilter 
+						if (FilterInstances.getLastFilter().isHistory) {
+							FilterProperties tmp = new FilterProperties(FilterInstances.getLastFilter().toString());
+							tmp.isHistory = false;
+							Config.FilterNew.setValue(tmp.toString());
+						} else {
+							Config.FilterNew.setValue(FilterInstances.getLastFilter().toString());
+						}
 						Config.AcceptChanges();
 					}
 				};
@@ -259,24 +268,24 @@ public class EditFilterSettings extends ActivityBase {
 		preRec.setHeight(ListViewRec.getHeight() - UI_Size_Base.that.getButtonHeight() - margin);
 		preRec.setY(btnAddPreset.getMaxY() + margin);
 
-		lvPre = new PresetListView(preRec);
-		contentBox.addChild(lvPre);
+		mPresetListView = new PresetListView(preRec);
+		contentBox.addChild(mPresetListView);
 	}
 
 	private void initialSettings() {
-		lvSet = new FilterSetListView(ListViewRec);
-		contentBox.addChild(lvSet);
+		mFilterSetListView = new FilterSetListView(ListViewRec);
+		contentBox.addChild(mFilterSetListView);
 
 	}
 
 	private void initialCategorieView() {
-		lvCat = new CategorieListView(ListViewRec);
-		contentBox.addChild(lvCat);
+		mCategorieListView = new CategorieListView(ListViewRec);
+		contentBox.addChild(mCategorieListView);
 	}
 
 	private void initialTextView() {
-		vTxt = new TextFilterView(ListViewRec, "TextFilterView");
-		contentBox.addChild(vTxt);
+		mTextFilterView = new TextFilterView(ListViewRec, "TextFilterView");
+		contentBox.addChild(mTextFilterView);
 	}
 
 	private void fillListViews() {
@@ -284,41 +293,41 @@ public class EditFilterSettings extends ActivityBase {
 
 	private void switchVisibility() {
 		if (btPre.getState() == 1) {
-			lvSet.setInvisible();
-			lvPre.setVisible();
-			lvCat.setInvisible();
-			vTxt.setInvisible();
+			mFilterSetListView.setInvisible();
+			mPresetListView.setVisible();
+			mCategorieListView.setInvisible();
+			mTextFilterView.setInvisible();
 			btnAddPreset.setVisible();
-			if (lvCat != null)
-				lvCat.SetCategory();
-			lvPre.onShow();
+			if (mCategorieListView != null)
+				mCategorieListView.SetCategory();
+			mPresetListView.onShow();
 		}
 
 		if (btSet.getState() == 1) {
-			lvPre.setInvisible();
-			lvSet.setVisible();
-			lvCat.setInvisible();
-			vTxt.setInvisible();
+			mPresetListView.setInvisible();
+			mFilterSetListView.setVisible();
+			mCategorieListView.setInvisible();
+			mTextFilterView.setInvisible();
 			btnAddPreset.setInvisible();
-			if (lvCat != null)
-				lvCat.SetCategory();
-			lvSet.onShow();
+			if (mCategorieListView != null)
+				mCategorieListView.SetCategory();
+			mFilterSetListView.onShow();
 		}
 		if (btCat.getState() == 1) {
-			lvPre.setInvisible();
-			lvSet.setInvisible();
-			lvCat.setVisible();
-			vTxt.setInvisible();
+			mPresetListView.setInvisible();
+			mFilterSetListView.setInvisible();
+			mCategorieListView.setVisible();
+			mTextFilterView.setInvisible();
 			btnAddPreset.setInvisible();
-			lvCat.onShow();
+			mCategorieListView.onShow();
 		}
 		if (btTxt.getState() == 1) {
-			lvPre.setInvisible();
-			lvSet.setInvisible();
-			lvCat.setInvisible();
-			vTxt.setVisible();
+			mPresetListView.setInvisible();
+			mFilterSetListView.setInvisible();
+			mCategorieListView.setInvisible();
+			mTextFilterView.setVisible();
 			btnAddPreset.setInvisible();
-			vTxt.onShow();
+			mTextFilterView.onShow();
 		}
 
 	}
@@ -381,8 +390,17 @@ public class EditFilterSettings extends ActivityBase {
 					if (MapView.that != null)
 						MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
 
-					// save Filtersettings im neuen JSON Format
-					Config.FilterNew.setValue(Props.toString());
+					// Save selected filter (new JSON Format)
+					// wont save History at the Moment
+					// Marker must be removed, else isFiltered is shown
+					// wont change the LastFilter
+					if (FilterInstances.getLastFilter().isHistory) {
+						FilterProperties tmp = new FilterProperties(FilterInstances.getLastFilter().toString());
+						tmp.isHistory = false;
+						Config.FilterNew.setValue(tmp.toString());
+					} else {
+						Config.FilterNew.setValue(FilterInstances.getLastFilter().toString());
+					}
 					Config.AcceptChanges();
 				} catch (Exception e) {
 					pd.dismis();
@@ -401,7 +419,7 @@ public class EditFilterSettings extends ActivityBase {
 		// Check if Preset exist
 		boolean exist = false;
 		String existName = "";
-		for (PresetListViewItem v : lvPre.lItem) {
+		for (PresetListViewItem v : mPresetListView.mPresetListViewItems) {
 			if (PresetListViewItem.chkPresetFilter(v.getEntry().getFilterProperties(), tmpFilterProps)) {
 				exist = true;
 				existName = v.getEntry().getName();
@@ -438,8 +456,8 @@ public class EditFilterSettings extends ActivityBase {
 					uF += text + ";" + aktFilter + "#";
 					Config.UserFilter.setValue(uF);
 					Config.AcceptChanges();
-					lvPre.fillPresetList();
-					lvPre.notifyDataSetChanged();
+					mPresetListView.fillPresetList();
+					mPresetListView.notifyDataSetChanged();
 					that.show();
 					break;
 				case 2: // cancel clicket
@@ -459,18 +477,18 @@ public class EditFilterSettings extends ActivityBase {
 	public void onShow() {
 		//	tmpFilterProps = FilterInstances.LastFilter;
 
-		if (lvPre != null) {
-			lvPre.notifyDataSetChanged();
+		if (mPresetListView != null) {
+			mPresetListView.notifyDataSetChanged();
 		}
 
 		// Load and set TxtFilter
-		if (vTxt != null) {
-			if (FilterInstances.LastFilter.filterName.length() > 0)
-				vTxt.setFilterString(FilterInstances.LastFilter.filterName, 0);
-			else if (FilterInstances.LastFilter.filterGcCode.length() > 0)
-				vTxt.setFilterString(FilterInstances.LastFilter.filterGcCode, 1);
-			else if (FilterInstances.LastFilter.filterOwner.length() > 0)
-				vTxt.setFilterString(FilterInstances.LastFilter.filterOwner, 2);
+		if (mTextFilterView != null) {
+			if (FilterInstances.getLastFilter().filterName.length() > 0)
+				mTextFilterView.setFilterString(FilterInstances.getLastFilter().filterName, 0);
+			else if (FilterInstances.getLastFilter().filterGcCode.length() > 0)
+				mTextFilterView.setFilterString(FilterInstances.getLastFilter().filterGcCode, 1);
+			else if (FilterInstances.getLastFilter().filterOwner.length() > 0)
+				mTextFilterView.setFilterString(FilterInstances.getLastFilter().filterOwner, 2);
 		}
 	}
 }

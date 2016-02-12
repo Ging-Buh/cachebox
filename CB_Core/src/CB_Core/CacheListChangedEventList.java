@@ -64,7 +64,7 @@ public class CacheListChangedEventList {
 					if (ca == null)
 						continue;
 					if (!Database.Data.Query.contains(ca)) {
-						if (FilterInstances.LastFilter.passed(ca)) {
+						if (FilterInstances.getLastFilter().passed(ca)) {
 							ca.setLive(true);
 							Database.Data.Query.add(ca);
 						}

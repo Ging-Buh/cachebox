@@ -96,9 +96,9 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_Action {
 
 				CoreSettingsForward.Categories = new Categories();
 
-				FilterInstances.LastFilter = new FilterProperties(Config.FilterNew.getValue());
+				FilterInstances.setLastFilter(new FilterProperties(Config.FilterNew.getValue()));
 
-				String sqlWhere = FilterInstances.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+				String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
 				Database.Data.GPXFilenameUpdateCacheCount();
 
 				synchronized (Database.Data.Query) {

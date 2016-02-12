@@ -52,6 +52,7 @@ public class FilterProperties {
 	public float MaxRating;
 
 	public int hasCorrectedCoordinates;
+	public boolean isHistory;
 
 	public boolean[] mCacheTypes;
 
@@ -94,7 +95,7 @@ public class FilterProperties {
 		MaxRating = 5;
 
 		this.hasCorrectedCoordinates = 0;
-
+		isHistory = false;
 		mCacheTypes = new boolean[CacheTypes.values().length];
 		Arrays.fill(mCacheTypes, true);
 
@@ -124,6 +125,11 @@ public class FilterProperties {
 			JSONTokener tokener = new JSONTokener(serialization);
 			try {
 				JSONObject json = (JSONObject) tokener.nextValue();
+				try {
+					isHistory = json.getBoolean("isHistory");
+				} catch (Exception e) {
+					isHistory = false;
+				}
 				String caches = json.getString("caches");
 				String[] parts = caches.split(SEPARATOR);
 				int cnt = 0;
@@ -327,7 +333,7 @@ public class FilterProperties {
 		try {
 
 			JSONObject json = new JSONObject();
-
+			json.put("isHistory", isHistory);
 			// add Cache properties
 			json.put("caches",
 					String.valueOf(Finds) + SEPARATOR + String.valueOf(NotAvailable) + SEPARATOR + String.valueOf(Archived) + SEPARATOR + String.valueOf(Own) + SEPARATOR + String.valueOf(ContainsTravelbugs) + SEPARATOR + String.valueOf(Favorites)
@@ -383,117 +389,129 @@ public class FilterProperties {
 	 * @return
 	 */
 	public String getSqlWhere(String userName) {
-		userName = userName.replace("'", "''");
-
-		ArrayList<String> andParts = new ArrayList<String>();
-
-		if (Finds == 1)
-			andParts.add("Found=1");
-		if (Finds == -1)
-			andParts.add("(Found=0 or Found is null)");
-
-		if (NotAvailable == 1)
-			andParts.add("Available=0");
-		if (NotAvailable == -1)
-			andParts.add("Available=1");
-
-		if (Archived == 1)
-			andParts.add("Archived=1");
-		if (Archived == -1)
-			andParts.add("Archived=0");
-
-		if (Own == 1)
-			andParts.add("(Owner='" + userName + "')");
-		if (Own == -1)
-			andParts.add("(not Owner='" + userName + "')");
-
-		if (ContainsTravelbugs == 1)
-			andParts.add("NumTravelbugs > 0");
-		if (ContainsTravelbugs == -1)
-			andParts.add("NumTravelbugs = 0");
-
-		if (Favorites == 1)
-			andParts.add("Favorit=1");
-		if (Favorites == -1)
-			andParts.add("(Favorit=0 or Favorit is null)");
-
-		if (ListingChanged == 1)
-			andParts.add("ListingChanged=1");
-		if (ListingChanged == -1)
-			andParts.add("(ListingChanged=0 or ListingChanged is null)");
-
-		if (WithManualWaypoint == 1)
-			andParts.add(" ID in (select CacheId FROM Waypoint WHERE UserWaypoint = 1)");
-		if (WithManualWaypoint == -1)
-			andParts.add(" NOT ID in (select CacheId FROM Waypoint WHERE UserWaypoint = 1)");
-
-		if (HasUserData == 1)
-			andParts.add("HasUserData=1");
-		if (HasUserData == -1)
-			andParts.add("(HasUserData = 0 or HasUserData is null)");
-
-		andParts.add("Difficulty >= " + String.valueOf(MinDifficulty * 2));
-		andParts.add("Difficulty <= " + String.valueOf(MaxDifficulty * 2));
-		andParts.add("Terrain >= " + String.valueOf(MinTerrain * 2));
-		andParts.add("Terrain <= " + String.valueOf(MaxTerrain * 2));
-		andParts.add("Size >= " + String.valueOf(MinContainerSize));
-		andParts.add("Size <= " + String.valueOf(MaxContainerSize));
-		andParts.add("Rating >= " + String.valueOf(MinRating * 100));
-		andParts.add("Rating <= " + String.valueOf(MaxRating * 100));
-
-		FilterInstances.hasCorrectedCoordinates = hasCorrectedCoordinates;
-
-		String csvTypes = "";
-		for (int i = 0; i < mCacheTypes.length; i++) {
-			if (mCacheTypes[i])
-				csvTypes += String.valueOf(i) + ",";
-		}
-		if (csvTypes.length() > 0) {
-			csvTypes = csvTypes.substring(0, csvTypes.length() - 1);
-			andParts.add("Type in (" + csvTypes + ")");
-		}
-
-		for (int i = 1; i < mAttributes.length; i++) {
-			if (mAttributes[i] != 0) {
-				if (i < 62) {
-					long shift = DLong.UL1 << (i);
-					if (mAttributes[i] == 1)
-						andParts.add("(AttributesPositive & " + shift + ") > 0");
-					else
-						andParts.add("(AttributesNegative &  " + shift + ") > 0");
-				} else {
-					long shift = DLong.UL1 << (i - 61);
-					if (mAttributes[i] == 1)
-						andParts.add("(AttributesPositiveHigh &  " + shift + ") > 0");
-					else
-						andParts.add("(AttributesNegativeHigh & " + shift + ") > 0");
+		if (isHistory) {
+			ArrayList<String> orParts = new ArrayList<String>();
+			String[] gcCodes = CoreSettingsForward.cacheHistory.split(",");
+			for (int i = 0; i < gcCodes.length; i++) {
+				String gcCode = gcCodes[i];
+				if (gcCode.length() > 0) {
+					if (!orParts.contains(gcCode))
+						orParts.add("GcCode = '" + gcCode + "'");
 				}
 			}
-		}
+			return join(" or ", orParts);
+		} else {
+			userName = userName.replace("'", "''");
 
-		if (GPXFilenameIds.size() != 0) {
-			String s = "";
-			for (long id : GPXFilenameIds) {
-				s += String.valueOf(id) + ",";
+			ArrayList<String> andParts = new ArrayList<String>();
+
+			if (Finds == 1)
+				andParts.add("Found=1");
+			if (Finds == -1)
+				andParts.add("(Found=0 or Found is null)");
+
+			if (NotAvailable == 1)
+				andParts.add("Available=0");
+			if (NotAvailable == -1)
+				andParts.add("Available=1");
+
+			if (Archived == 1)
+				andParts.add("Archived=1");
+			if (Archived == -1)
+				andParts.add("Archived=0");
+
+			if (Own == 1)
+				andParts.add("(Owner='" + userName + "')");
+			if (Own == -1)
+				andParts.add("(not Owner='" + userName + "')");
+
+			if (ContainsTravelbugs == 1)
+				andParts.add("NumTravelbugs > 0");
+			if (ContainsTravelbugs == -1)
+				andParts.add("NumTravelbugs = 0");
+
+			if (Favorites == 1)
+				andParts.add("Favorit=1");
+			if (Favorites == -1)
+				andParts.add("(Favorit=0 or Favorit is null)");
+
+			if (ListingChanged == 1)
+				andParts.add("ListingChanged=1");
+			if (ListingChanged == -1)
+				andParts.add("(ListingChanged=0 or ListingChanged is null)");
+
+			if (WithManualWaypoint == 1)
+				andParts.add(" ID in (select CacheId FROM Waypoint WHERE UserWaypoint = 1)");
+			if (WithManualWaypoint == -1)
+				andParts.add(" NOT ID in (select CacheId FROM Waypoint WHERE UserWaypoint = 1)");
+
+			if (HasUserData == 1)
+				andParts.add("HasUserData=1");
+			if (HasUserData == -1)
+				andParts.add("(HasUserData = 0 or HasUserData is null)");
+
+			andParts.add("Difficulty >= " + String.valueOf(MinDifficulty * 2));
+			andParts.add("Difficulty <= " + String.valueOf(MaxDifficulty * 2));
+			andParts.add("Terrain >= " + String.valueOf(MinTerrain * 2));
+			andParts.add("Terrain <= " + String.valueOf(MaxTerrain * 2));
+			andParts.add("Size >= " + String.valueOf(MinContainerSize));
+			andParts.add("Size <= " + String.valueOf(MaxContainerSize));
+			andParts.add("Rating >= " + String.valueOf(MinRating * 100));
+			andParts.add("Rating <= " + String.valueOf(MaxRating * 100));
+
+			FilterInstances.hasCorrectedCoordinates = hasCorrectedCoordinates;
+
+			String csvTypes = "";
+			for (int i = 0; i < mCacheTypes.length; i++) {
+				if (mCacheTypes[i])
+					csvTypes += String.valueOf(i) + ",";
 			}
-			// s += "-1";
-			if (s.length() > 0) {
-				andParts.add("GPXFilename_Id not in (" + s.substring(0, s.length() - 1) + ")");
+			if (csvTypes.length() > 0) {
+				csvTypes = csvTypes.substring(0, csvTypes.length() - 1);
+				andParts.add("Type in (" + csvTypes + ")");
 			}
-		}
 
-		if (filterName != "") {
-			andParts.add("Name like '%" + filterName + "%'");
-		}
-		if (filterGcCode != "") {
-			andParts.add("GcCode like '%" + filterGcCode + "%'");
-		}
-		if (filterOwner != "") {
-			andParts.add("( PlacedBy like '%" + filterOwner + "%' or Owner like '%" + filterOwner + "%' )");
-		}
+			for (int i = 1; i < mAttributes.length; i++) {
+				if (mAttributes[i] != 0) {
+					if (i < 62) {
+						long shift = DLong.UL1 << (i);
+						if (mAttributes[i] == 1)
+							andParts.add("(AttributesPositive & " + shift + ") > 0");
+						else
+							andParts.add("(AttributesNegative &  " + shift + ") > 0");
+					} else {
+						long shift = DLong.UL1 << (i - 61);
+						if (mAttributes[i] == 1)
+							andParts.add("(AttributesPositiveHigh &  " + shift + ") > 0");
+						else
+							andParts.add("(AttributesNegativeHigh & " + shift + ") > 0");
+					}
+				}
+			}
 
-		return join(" and ", andParts);
+			if (GPXFilenameIds.size() != 0) {
+				String s = "";
+				for (long id : GPXFilenameIds) {
+					s += String.valueOf(id) + ",";
+				}
+				// s += "-1";
+				if (s.length() > 0) {
+					andParts.add("GPXFilename_Id not in (" + s.substring(0, s.length() - 1) + ")");
+				}
+			}
 
+			if (filterName != "") {
+				andParts.add("Name like '%" + filterName + "%'");
+			}
+			if (filterGcCode != "") {
+				andParts.add("GcCode like '%" + filterGcCode + "%'");
+			}
+			if (filterOwner != "") {
+				andParts.add("( PlacedBy like '%" + filterOwner + "%' or Owner like '%" + filterOwner + "%' )");
+			}
+
+			return join(" and ", andParts);
+		}
 	}
 
 	public static String join(String separator, ArrayList<String> array) {
@@ -581,6 +599,9 @@ public class FilterProperties {
 		if (!filterGcCode.equals(filter.filterGcCode))
 			return false;
 		if (!filterName.equals(filter.filterName))
+			return false;
+
+		if (isHistory != filter.isHistory)
 			return false;
 
 		return true;

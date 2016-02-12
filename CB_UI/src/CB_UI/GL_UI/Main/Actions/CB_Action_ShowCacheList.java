@@ -89,8 +89,8 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
 					TabMainView.actionShowFilter.Execute();
 					return true;
 				case MenuID.MI_RESET_FILTER:
-					FilterInstances.LastFilter = new FilterProperties();
-					EditFilterSettings.ApplyFilter(FilterInstances.LastFilter);
+					FilterInstances.setLastFilter(new FilterProperties());
+					EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());
 					return true;
 				case MenuID.MI_SEARCH_LIST:
 
@@ -130,7 +130,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
 					GlobalCore.chkAPiLogInWithWaitDialog(new IChkRedyHandler() {
 
 						@Override
-						public void chekReady(int MemberType) {
+						public void checkReady(int MemberType) {
 							TimerTask tt = new TimerTask() {
 
 								@Override

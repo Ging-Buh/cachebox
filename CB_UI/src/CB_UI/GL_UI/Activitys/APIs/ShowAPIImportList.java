@@ -870,7 +870,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 						dis.setAnimationType(AnimationType.Download);
 						Database.Data.beginTransaction();
 						try {
-							importer.importGcVote(FilterInstances.LastFilter.getSqlWhere(Config.GcLogin.getValue()), ip);
+							importer.importGcVote(FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue()), ip);
 
 							Database.Data.setTransactionSuccessful();
 						} catch (Exception exc) {
@@ -886,7 +886,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 
 					if (checkBoxPreloadImages.isChecked() || checkBoxPreloadSpoiler.isChecked()) {
 						dis.setAnimationType(AnimationType.Download);
-						int result = importer.importImagesNew(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(), FilterInstances.LastFilter.getSqlWhere(Config.GcLogin.getValue()));
+						int result = importer.importImagesNew(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(), FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue()));
 
 						if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
 							GL.that.Toast(ConnectionError.INSTANCE);
@@ -946,7 +946,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 
 				log.debug(Msg);
 
-				FilterProperties props = FilterInstances.LastFilter;
+				FilterProperties props = FilterInstances.getLastFilter();
 
 				EditFilterSettings.ApplyFilter(props);
 

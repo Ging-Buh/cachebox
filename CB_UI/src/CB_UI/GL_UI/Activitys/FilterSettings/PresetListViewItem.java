@@ -72,7 +72,7 @@ public class PresetListViewItem extends ListViewItemBackground {
 	}
 
 	/**
-	 * Vergleicht einen PresetString mit einem FilterString, wobei die Category einstellungen im FilterString ignoriert werden.
+	 * Vergleicht einen PresetString mit einem FilterString, wobei die Categoryeinstellungen im FilterString ignoriert werden.
 	 * 
 	 * @param presetString
 	 *            Der Preset String, mit dem der Filter verglichen wird.

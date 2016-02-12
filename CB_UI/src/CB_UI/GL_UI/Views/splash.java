@@ -387,8 +387,8 @@ public class splash extends MainViewBase {
 
 		Config.settings.ReadFromDB();
 
-		FilterInstances.LastFilter = new FilterProperties(Config.FilterNew.getValue());
-		String sqlWhere = FilterInstances.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+		FilterInstances.setLastFilter(new FilterProperties(Config.FilterNew.getValue()));
+		String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
 
 		CoreSettingsForward.Categories = new Categories();
 		Database.Data.GPXFilenameUpdateCacheCount();

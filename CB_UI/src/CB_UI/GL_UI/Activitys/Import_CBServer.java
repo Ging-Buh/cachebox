@@ -946,14 +946,14 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 				} catch (InterruptedException e) {
 					// import canceld
 					cancelImport();
-					FilterProperties props = FilterInstances.LastFilter;
+					FilterProperties props = FilterInstances.getLastFilter();
 					EditFilterSettings.ApplyFilter(props);
 					ip.ProgressChangeMsg("", "");
 					return;
 				}
 
 				if (BreakawayImportThread.isCanceld()) {
-					FilterProperties props = FilterInstances.LastFilter;
+					FilterProperties props = FilterInstances.getLastFilter();
 					EditFilterSettings.ApplyFilter(props);
 					ip.ProgressChangeMsg("", "");
 					return;
@@ -972,7 +972,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 				log.debug(Msg);
 
-				FilterProperties props = FilterInstances.LastFilter;
+				FilterProperties props = FilterInstances.getLastFilter();
 				EditFilterSettings.ApplyFilter(props);
 
 				GL.that.Toast(Msg, 3000);

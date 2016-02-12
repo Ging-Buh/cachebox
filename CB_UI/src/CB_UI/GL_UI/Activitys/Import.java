@@ -1189,7 +1189,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 						dis.setAnimationType(AnimationType.Download);
 						Database.Data.beginTransaction();
 						try {
-							importer.importGcVote(FilterInstances.LastFilter.getSqlWhere(Config.GcLogin.getValue()), ip);
+							importer.importGcVote(FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue()), ip);
 
 							Database.Data.setTransactionSuccessful();
 						} catch (Exception exc) {
@@ -1206,7 +1206,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
 					if (checkBoxPreloadImages.isChecked() || checkBoxPreloadSpoiler.isChecked()) {
 						dis.setAnimationType(AnimationType.Download);
-						int result = importer.importImagesNew(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(), FilterInstances.LastFilter.getSqlWhere(Config.GcLogin.getValue()));
+						int result = importer.importImagesNew(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(), FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue()));
 
 						if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
 							GL.that.Toast(ConnectionError.INSTANCE);
@@ -1251,14 +1251,14 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 				} catch (InterruptedException e) {
 					// import canceld
 					cancelImport();
-					FilterProperties props = FilterInstances.LastFilter;
+					FilterProperties props = FilterInstances.getLastFilter();
 					EditFilterSettings.ApplyFilter(props);
 					ip.ProgressChangeMsg("", "");
 					return;
 				}
 
 				if (BreakawayImportThread.isCanceld()) {
-					FilterProperties props = FilterInstances.LastFilter;
+					FilterProperties props = FilterInstances.getLastFilter();
 					EditFilterSettings.ApplyFilter(props);
 					ip.ProgressChangeMsg("", "");
 					return;
@@ -1294,7 +1294,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
 		log.debug(Msg);
 
-		FilterProperties props = FilterInstances.LastFilter;
+		FilterProperties props = FilterInstances.getLastFilter();
 		EditFilterSettings.ApplyFilter(props);
 
 		GL.that.Toast(Msg, 3000);

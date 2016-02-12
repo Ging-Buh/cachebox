@@ -374,8 +374,8 @@ public class SelectDB extends ActivityBase {
 			switch (which) {
 			case 1: // ok clicked
 
-				FilterInstances.LastFilter = new FilterProperties(Config.FilterNew.getValue());
-				String sqlWhere = FilterInstances.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+				FilterInstances.setLastFilter(new FilterProperties(Config.FilterNew.getValue()));
+				String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
 
 				// initialize Database
 
