@@ -60,7 +60,7 @@ public class ImageDAO {
 		CoreCursor reader = Database.Data.rawQuery("select CacheId, GcCode, Name, Description, ImageUrl, IsCacheImage from Images where GcCode=?", new String[] { GcCode });
 		if (reader.getCount() > 0) {
 			reader.moveToFirst();
-			while (reader.isAfterLast() == false) {
+			while (!reader.isAfterLast()) {
 				ImageEntry image = new ImageEntry(reader);
 				images.add(image);
 				reader.moveToNext();
@@ -94,7 +94,7 @@ public class ImageDAO {
 			return images;
 
 		reader.moveToFirst();
-		while (reader.isAfterLast() == false) {
+		while (!reader.isAfterLast()) {
 			ImageEntry image = new ImageEntry(reader);
 			images.add(image);
 			reader.moveToNext();
@@ -112,7 +112,7 @@ public class ImageDAO {
 		if (reader == null)
 			return images;
 		reader.moveToFirst();
-		while (reader.isAfterLast() == false) {
+		while (!reader.isAfterLast()) {
 			images.add(reader.getString(0));
 			reader.moveToNext();
 		}

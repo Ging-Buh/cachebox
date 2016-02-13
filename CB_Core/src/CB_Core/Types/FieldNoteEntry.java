@@ -170,7 +170,7 @@ public class FieldNoteEntry implements Serializable {
 				.rawQuery("select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber, directLog from FieldNotes where GcCode='" + gcCode
 						+ "' and type=" + type.getGcLogTypeId(), null);
 		reader.moveToFirst();
-		while (reader.isAfterLast() == false) {
+		while (!reader.isAfterLast()) {
 			FieldNoteEntry fne = new FieldNoteEntry(reader);
 			this.Id = fne.Id;
 			reader.moveToNext();

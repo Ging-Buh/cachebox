@@ -24,8 +24,10 @@ import java.util.HashMap;
 import org.slf4j.LoggerFactory;
 
 import CB_Core.CB_Core_Settings;
+import CB_Core.CoreSettingsForward;
 import CB_Core.Database;
 import CB_Core.Types.Cache;
+import CB_Core.Types.Category;
 import CB_Core.Types.LogEntry;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.SDBM_Hash;
@@ -38,14 +40,14 @@ public class CacheInfoList {
 	/**
 	 * Die Liste der Cache Infos, welche mit IndexDB() gefüllt und mit dispose() gelöscht wird.
 	 */
-	private static HashMap<String, CacheInfo> List = null;
+	private static HashMap<String, CacheInfo> mCacheInfoList = null;
 
 	/**
 	 * Mit dieser Methode wird die DB indexiert und die Klasse enthält dann eine Statiche Liste mit den Cache Informationen. Wenn die Liste
 	 * nicht mehr benötigt wird, sollte sie mit dispose() gelöscht werden.
 	 */
 	public static void IndexDB() {
-		List = new HashMap<String, CacheInfo>();
+		mCacheInfoList = new HashMap<String, CacheInfo>();
 
 		CoreCursor reader = Database.Data.rawQuery("select GcCode, Id, ListingCheckSum, ImagesUpdated, DescriptionImagesUpdated, ListingChanged, Found, CorrectedCoordinates, Latitude, Longitude, GpxFilename_Id, Favorit from Caches", null);
 
@@ -111,7 +113,7 @@ public class CacheInfoList {
 				cacheInfo.favorite = reader.getInt(11) != 0;
 			}
 
-			List.put(reader.getString(0), cacheInfo);
+			mCacheInfoList.put(reader.getString(0), cacheInfo);
 			reader.moveToNext();
 		}
 		reader.close();
@@ -122,10 +124,10 @@ public class CacheInfoList {
 	 * Die statische Liste der Cache Informationen wird mit diesem Aufruf gelöscht und der Speicher wieder frei gegeben.
 	 */
 	public static void dispose() {
-		if (List == null)
+		if (mCacheInfoList == null)
 			return;
-		List.clear();
-		List = null;
+		mCacheInfoList.clear();
+		mCacheInfoList = null;
 	}
 
 	/**
@@ -135,27 +137,27 @@ public class CacheInfoList {
 	 * @return
 	 */
 	public static boolean ExistCache(String GcCode) {
-		if (List == null)
+		if (mCacheInfoList == null)
 			return false;
-		return List.containsKey(GcCode);
+		return mCacheInfoList.containsKey(GcCode);
 	}
 
 	public static boolean CacheIsFavoriteInDB(String GcCode) {
-		if (List == null)
+		if (mCacheInfoList == null)
 			return false;
-		if (List.containsKey(GcCode)) {
-			CacheInfo ci = List.get(GcCode);
+		if (mCacheInfoList.containsKey(GcCode)) {
+			CacheInfo ci = mCacheInfoList.get(GcCode);
 			return ci.favorite;
 		} else
 			return false;
 	}
 
 	public static boolean CacheIsFoundInDB(String GcCode) {
-		if (List == null)
+		if (mCacheInfoList == null)
 			return false;
 
-		if (List.containsKey(GcCode)) {
-			CacheInfo ci = List.get(GcCode);
+		if (mCacheInfoList.containsKey(GcCode)) {
+			CacheInfo ci = mCacheInfoList.get(GcCode);
 			return ci.Found;
 		} else
 			return false;
@@ -172,10 +174,28 @@ public class CacheInfoList {
 	 * @throws IOException
 	 */
 	public static void mergeCacheInfo(Cache cache) throws IOException {
-		CacheInfo info = List.get(cache.getGcCode());
-		String GcCode = cache.getGcCode();
-		if (info != null) {
+		String gcCode = cache.getGcCode();
+		CacheInfo cacheInfo = mCacheInfoList.get(gcCode);
+		if (cacheInfo != null) {
+			// already exists
+			// do not use cache.GpxFilename_Id, if the category of the cache is pinned :
+			// use existing category and add the gpxfilename to the category
+			long newGpxFilename_Id = cache.getGPXFilename_ID(); // overwrites the actual, if not pinned
+			Category newCategory = CoreSettingsForward.Categories.getCategoryByGpxFilenameId(newGpxFilename_Id);
+			String newGpxFilename = newCategory.getGpxFilename(newGpxFilename_Id);
+			Category existingCategory = CoreSettingsForward.Categories.getCategoryByGpxFilenameId(cacheInfo.GpxFilename_Id);
+			if ((existingCategory != null) && (existingCategory != newCategory) && (existingCategory.pinned)) {
+				// changing cache to the existingGpxFilename_Id
+				cache.setGPXFilename_ID(cacheInfo.GpxFilename_Id);
+				// perhaps the newGpxFilename must be added to the existingCategory
+				if (!existingCategory.containsGpxFilename(newGpxFilename))
+					existingCategory.addGpxFilename(newGpxFilename);
+				// cacheInfo.GpxFilename_Id needs no change
+			} else {
+				cacheInfo.GpxFilename_Id = cache.getGPXFilename_ID();
+			}
 
+			// handling logs
 			String stringForListingCheckSum = Database.GetDescription(cache);
 			String recentOwnerLogString = "";
 
@@ -197,17 +217,17 @@ public class CacheInfoList {
 
 			int ListingCheckSum = (int) (SDBM_Hash.sdbm(stringForListingCheckSum) + SDBM_Hash.sdbm(recentOwnerLogString));
 
-			boolean ListingChanged = info.ListingChanged;
-			boolean ImagesUpdated = info.ImagesUpdated;
-			boolean DescriptionImagesUpdated = info.DescriptionImagesUpdated;
+			boolean ListingChanged = cacheInfo.ListingChanged;
+			boolean ImagesUpdated = cacheInfo.ImagesUpdated;
+			boolean DescriptionImagesUpdated = cacheInfo.DescriptionImagesUpdated;
 
-			if (info.ListingCheckSum == 0) {
+			if (cacheInfo.ListingCheckSum == 0) {
 				ImagesUpdated = false;
 				DescriptionImagesUpdated = false;
-			} else if (ListingCheckSum != info.ListingCheckSum) {
+			} else if (ListingCheckSum != cacheInfo.ListingCheckSum) {
 				int oldStyleListingCheckSum = stringForListingCheckSum.hashCode() + recentOwnerLogString.hashCode();
 
-				if (oldStyleListingCheckSum != info.ListingCheckSum) {
+				if (oldStyleListingCheckSum != cacheInfo.ListingCheckSum) {
 					ListingChanged = true;
 					ImagesUpdated = false;
 					DescriptionImagesUpdated = false;
@@ -228,23 +248,22 @@ public class CacheInfoList {
 				}
 			}
 
-			if (!info.Found) {
+			if (!cacheInfo.Found) {
 				// nur wenn der Cache nicht als gefunden markiert ist, wird der Wert aus dem GPX Import übernommen!
-				info.Found = cache.isFound();
+				cacheInfo.Found = cache.isFound();
 			}
 
 			// Schreibe info neu in die List(lösche den Eintrag vorher)
 
-			List.remove(GcCode);
-			if (!info.ListingChanged)
-				info.ListingChanged = ListingChanged; // Wenn das Flag schon gesetzt ist, dann nicht ausversehen
-			// wieder zurücksetzen!
+			mCacheInfoList.remove(gcCode);
+			// Wenn das Flag schon gesetzt ist, dann nicht ausversehen wieder zurücksetzen!
+			if (!cacheInfo.ListingChanged)
+				cacheInfo.ListingChanged = ListingChanged;
 
-			info.ImagesUpdated = ImagesUpdated;
-			info.DescriptionImagesUpdated = DescriptionImagesUpdated;
-			info.ListingCheckSum = ListingCheckSum;
-
-			List.put(GcCode, info);
+			cacheInfo.ImagesUpdated = ImagesUpdated;
+			cacheInfo.DescriptionImagesUpdated = DescriptionImagesUpdated;
+			cacheInfo.ListingCheckSum = ListingCheckSum;
+			mCacheInfoList.put(gcCode, cacheInfo);
 		}
 
 	}
@@ -253,7 +272,7 @@ public class CacheInfoList {
 	 * Schreibt die Liste der CacheInfos zurück in die DB
 	 */
 	public static void writeListToDB() {
-		for (CacheInfo info : List.values()) {
+		for (CacheInfo info : mCacheInfoList.values()) {
 			Parameters args = new Parameters();
 
 			// bei einem Update müssen nicht alle infos überschrieben werden
@@ -326,27 +345,27 @@ public class CacheInfoList {
 		info.favorite = cache.isFavorite();
 		info.CorrectedCoordinates = cache.CorrectedCoordiantesOrMysterySolved();
 
-		if (List == null)
-			List = new HashMap<String, CacheInfo>();
+		if (mCacheInfoList == null)
+			mCacheInfoList = new HashMap<String, CacheInfo>();
 
-		List.put(cache.getGcCode(), info);
+		mCacheInfoList.put(cache.getGcCode(), info);
 
 	}
 
 	public static long getIDfromGcCode(String gccode) {
-		CacheInfo info = List.get(gccode);
+		CacheInfo info = mCacheInfoList.get(gccode);
 		if (info != null)
 			return info.id;
 		return 0;
 	}
 
 	public static void setImageUpdated(String GcCode) {
-		CacheInfo info = List.get(GcCode);
-		List.remove(GcCode);
+		CacheInfo info = mCacheInfoList.get(GcCode);
+		mCacheInfoList.remove(GcCode);
 
 		info.ImagesUpdated = true;
 		info.DescriptionImagesUpdated = true;
 
-		List.put(GcCode, info);
+		mCacheInfoList.put(GcCode, info);
 	}
 }

@@ -656,11 +656,11 @@ public class SearchDialog extends PopUp_Base {
 
 				// alle per API importierten Caches landen in der Category und GpxFilename API-Import Category suchen, die dazu gehört
 				CategoryDAO categoryDAO = new CategoryDAO();
-				Category category = categoryDAO.GetCategory(CoreSettingsForward.Categories, "API-Import");
+				Category category = CoreSettingsForward.Categories.getCategory("API-Import");
 				if (category == null)
 					return; // should not happen!!!
 
-				GpxFilename gpxFilename = categoryDAO.CreateNewGpxFilename(category, "API-Import");
+				GpxFilename gpxFilename = category.addGpxFilename("API-Import");
 				if (gpxFilename == null)
 					return;
 

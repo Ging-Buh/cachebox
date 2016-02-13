@@ -385,7 +385,7 @@ public class SelectDB extends ActivityBase {
 				Database.Data.StartUp(database);
 
 				// OwnRepository?
-				if (data != null && ((Boolean) data) == false) {
+				if (data != null && !(Boolean) data) {
 					String folder = "?/" + NewDB_Name + "/";
 
 					Config.DescriptionImageFolderLocal.setValue(folder + "Images");

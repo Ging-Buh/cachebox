@@ -59,7 +59,7 @@ public class PocketqueryDAO {
 		try {
 			if (reader.getCount() > 0) {
 				reader.moveToFirst();
-				while (reader.isAfterLast() == false) {
+				while (!reader.isAfterLast()) {
 					String sDate = reader.getString(0);
 					if (sDate == null) {
 						// nicht gefunden!

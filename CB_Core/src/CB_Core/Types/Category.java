@@ -1,7 +1,14 @@
 package CB_Core.Types;
 
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import CB_Core.Database;
+import de.cb.sqlite.CoreCursor;
+import de.cb.sqlite.Database_Core.Parameters;
 
 public class Category extends ArrayList<GpxFilename> implements Comparable<Category> {
 	/**
@@ -15,6 +22,40 @@ public class Category extends ArrayList<GpxFilename> implements Comparable<Categ
 
 	public Category() {
 
+	}
+
+	/**
+	 * Does not check if filename not already exists in this category 
+	 * 
+	 * @param filename
+	 * @return
+	 */
+	public GpxFilename addGpxFilename(String filename) {
+		filename = new File(filename).getName();
+
+		Parameters args = new Parameters();
+		args.put("GPXFilename", filename);
+		args.put("CategoryId", this.Id);
+		DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String stimestamp = iso8601Format.format(new Date());
+		args.put("Imported", stimestamp);
+		try {
+			Database.Data.insert("GpxFilenames", args);
+		} catch (Exception exc) {
+			//log.error("CreateNewGpxFilename", filename, exc);
+		}
+
+		long GPXFilename_ID = 0;
+
+		CoreCursor reader = Database.Data.rawQuery("Select max(ID) from GpxFilenames", null);
+		reader.moveToFirst();
+		if (!reader.isAfterLast()) {
+			GPXFilename_ID = reader.getLong(0);
+		}
+		reader.close();
+		GpxFilename result = new GpxFilename(GPXFilename_ID, filename, this.Id);
+		this.add(result);
+		return result;
 	}
 
 	public int CacheCount() {
@@ -70,7 +111,7 @@ public class Category extends ArrayList<GpxFilename> implements Comparable<Categ
 	 * 
 	 * @return
 	 */
-	public int getChek() {
+	public int getCheck() {
 		int result = 0;
 
 		int chkCounter = 0;
@@ -90,6 +131,30 @@ public class Category extends ArrayList<GpxFilename> implements Comparable<Categ
 			result = -1;
 
 		return result;
+	}
+
+	public String getGpxFilename(long gpxFilenameId) {
+		for (GpxFilename gpx : this) {
+			if (gpx.Id == gpxFilenameId)
+				return gpx.GpxFileName;
+		}
+		return "";
+	}
+
+	public boolean containsGpxFilenameId(long gpxFilenameId) {
+		for (GpxFilename gpx : this) {
+			if (gpx.Id == gpxFilenameId)
+				return true;
+		}
+		return false;
+	}
+
+	public boolean containsGpxFilename(String gpxFilename) {
+		for (GpxFilename gpx : this) {
+			if (gpx.GpxFileName.equals(gpxFilename))
+				return true;
+		}
+		return false;
 	}
 
 }

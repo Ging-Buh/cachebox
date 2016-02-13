@@ -120,7 +120,7 @@ public class CategorieListView extends V_ListView {
 
 			if (mItemType == COLLAPSE_BUTTON_ITEM) {
 				// collabs Button chk clicked
-				int State = mCat.getChek();
+				int State = mCat.getCheck();
 				if (State == 0) {// keins ausgewählt, also alle anwählen
 
 					for (GpxFilename tmp : mCat) {

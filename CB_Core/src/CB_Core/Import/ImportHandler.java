@@ -64,12 +64,12 @@ public class ImportHandler implements IImportHandler {
 
 	@Override
 	public Category getCategory(String filename) {
-		return categoryDAO.GetCategory(CoreSettingsForward.Categories, filename);
+		return CoreSettingsForward.Categories.getCategory(filename);
 	}
 
 	@Override
 	public GpxFilename NewGpxFilename(Category category, String filename) {
-		return categoryDAO.CreateNewGpxFilename(category, filename);
+		return category.addGpxFilename(filename);
 	}
 
 	@Override

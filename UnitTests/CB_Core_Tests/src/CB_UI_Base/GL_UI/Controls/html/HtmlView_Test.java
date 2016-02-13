@@ -28,15 +28,14 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.List;
 
-import net.htmlparser.jericho.Source;
-
 import org.junit.Test;
+
+import com.badlogic.gdx.graphics.Color;
 
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Util.HSV_Color;
-
-import com.badlogic.gdx.graphics.Color;
+import net.htmlparser.jericho.Source;
 
 /**
  * @author Longri
@@ -382,14 +381,14 @@ public class HtmlView_Test {
 		assertTrue(testSeg.hAlignment == HAlignment.LEFT);
 		assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 		assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 21.6f);
-		assertTrue(((Html_Segment_TextBlock) testSeg).underline == false);
+		assertTrue(!((Html_Segment_TextBlock) testSeg).underline);
 
 		testSeg = segmentList.get(4);
 		testSeg.resolveAtributes();
 		assertTrue(testSeg.hAlignment == HAlignment.LEFT);
 		assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 		assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 25.2f);
-		assertTrue(((Html_Segment_TextBlock) testSeg).underline == false);
+		assertTrue(!((Html_Segment_TextBlock) testSeg).underline);
 		assertTrue(testSeg.formatedText.trim().startsWith("Hier erwartet euch eine kurze R"));
 
 		testSeg = segmentList.get(5);
@@ -405,7 +404,7 @@ public class HtmlView_Test {
 		assertTrue(testSeg.hAlignment == HAlignment.LEFT);
 		assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 		assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 21.6f);
-		assertTrue(((Html_Segment_TextBlock) testSeg).underline == false);
+		assertTrue(!((Html_Segment_TextBlock) testSeg).underline);
 
 		testSeg = segmentList.get(7);
 		testSeg.resolveAtributes();
@@ -444,7 +443,7 @@ public class HtmlView_Test {
 		assertTrue(testSeg.hAlignment == HAlignment.LEFT);
 		assertTrue(((Html_Segment_TextBlock) testSeg).getFontColor().equals(Color.BLACK));
 		assertTrue(((Html_Segment_TextBlock) testSeg).getFontSize() == 21.6f);
-		assertTrue(((Html_Segment_TextBlock) testSeg).underline == false);
+		assertTrue(!((Html_Segment_TextBlock) testSeg).underline);
 
 		testSeg = segmentList.get(12);
 		testSeg.resolveAtributes();

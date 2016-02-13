@@ -62,18 +62,14 @@ public class Capabilities {
 	}
 
 	public static void setAccessibility(boolean b) throws Unavailable {
-		if (b == false) {
-			accessibility = false;
-		} else {
-
+		accessibility = b;
+		if (b) {
 			// test basic access
 			try {
 				String.class.getDeclaredMethods();
 			} catch (SecurityException e) {
 				throw new Unavailable("Accessibility unavailable: " + e);
 			}
-
-			accessibility = true;
 		}
 		BshClassManager.clearResolveCache();
 	}

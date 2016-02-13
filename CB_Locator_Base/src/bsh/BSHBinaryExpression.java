@@ -89,7 +89,7 @@ class BSHBinaryExpression extends SimpleNode implements ParserConstants {
 			Object obj = lhs;
 			if (isPrimitiveValue(lhs))
 				obj = ((Primitive) lhs).getValue();
-			if (obj instanceof Boolean && (((Boolean) obj).booleanValue() == false))
+			if (obj instanceof Boolean && !((Boolean) obj).booleanValue())
 				return new Primitive(false);
 		}
 		/*
@@ -99,7 +99,7 @@ class BSHBinaryExpression extends SimpleNode implements ParserConstants {
 			Object obj = lhs;
 			if (isPrimitiveValue(lhs))
 				obj = ((Primitive) lhs).getValue();
-			if (obj instanceof Boolean && (((Boolean) obj).booleanValue() == true))
+			if (obj instanceof Boolean && (((Boolean) obj).booleanValue()))
 				return new Primitive(true);
 		}
 

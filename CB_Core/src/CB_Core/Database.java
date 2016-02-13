@@ -168,7 +168,7 @@ public abstract class Database extends Database_Core {
 
 					CoreCursor reader = rawQuery("select ID, GPXFilename from GPXFilenames", null);
 					reader.moveToFirst();
-					while (reader.isAfterLast() == false) {
+					while (!reader.isAfterLast()) {
 						long id = reader.getLong(0);
 						String gpxFilename = reader.getString(1);
 						gpxFilenames.put(id, gpxFilename);
@@ -178,8 +178,8 @@ public abstract class Database extends Database_Core {
 					for (Entry<Long, String> entry : gpxFilenames.entrySet()) {
 						if (!categories.containsKey(entry.getValue())) {
 							// add new Category
-							CategoryDAO categoryDAO = new CategoryDAO();
-							Category category = categoryDAO.CreateNewCategory(entry.getValue());
+							Categories cs = new Categories();
+							Category category = cs.createNewCategory(entry.getValue());
 							// and store
 							categories.put(entry.getValue(), category.Id);
 						}
@@ -220,10 +220,10 @@ public abstract class Database extends Database_Core {
 					// Nummber übersprungen
 					CoreCursor reader = rawQuery("select Id, AttributesPositive, AttributesNegative from Caches", new String[] {});
 					reader.moveToFirst();
-					while (reader.isAfterLast() == false) {
+					while (!reader.isAfterLast()) {
 						long id = reader.getLong(0);
-						long attributesPositive = (long) reader.getLong(1);
-						long attributesNegative = (long) reader.getLong(2);
+						long attributesPositive = reader.getLong(1);
+						long attributesNegative = reader.getLong(2);
 
 						attributesPositive = convertAttribute(attributesPositive);
 						attributesNegative = convertAttribute(attributesNegative);
@@ -401,7 +401,7 @@ public abstract class Database extends Database_Core {
 		CoreCursor c = Database.Data.rawQuery("select GcCode from Waypoint where GcCode=@gccode", new String[] { gcCode });
 		{
 			c.moveToFirst();
-			while (c.isAfterLast() == false) {
+			while (!c.isAfterLast()) {
 
 				try {
 					c.close();
@@ -441,7 +441,7 @@ public abstract class Database extends Database_Core {
 		String resultString = "";
 		CoreCursor c = Database.Data.rawQuery("select Notes from Caches where Id=?", new String[] { String.valueOf(cacheId) });
 		c.moveToFirst();
-		while (c.isAfterLast() == false) {
+		while (!c.isAfterLast()) {
 			resultString = c.getString(0);
 			break;
 		}
@@ -489,7 +489,7 @@ public abstract class Database extends Database_Core {
 			String resultString = "";
 			CoreCursor c = Database.Data.rawQuery("select Solver from Caches where Id=?", new String[] { String.valueOf(cacheId) });
 			c.moveToFirst();
-			while (c.isAfterLast() == false) {
+			while (!c.isAfterLast()) {
 				resultString = c.getString(0);
 				break;
 			}
@@ -530,7 +530,7 @@ public abstract class Database extends Database_Core {
 		CoreCursor reader = Database.Data.rawQuery("select CacheId, Timestamp, Finder, Type, Comment, Id from Logs where CacheId=@cacheid order by Timestamp desc", new String[] { Long.toString(cache.Id) });
 
 		reader.moveToFirst();
-		while (reader.isAfterLast() == false) {
+		while (!reader.isAfterLast()) {
 			LogEntry logent = getLogEntry(cache, reader, true);
 			if (logent != null)
 				result.add(logent);
@@ -584,7 +584,7 @@ public abstract class Database extends Database_Core {
 		if (reader == null)
 			return "";
 		reader.moveToFirst();
-		while (reader.isAfterLast() == false) {
+		while (!reader.isAfterLast()) {
 			if (reader.getString(0) != null)
 				description = reader.getString(0);
 			reader.moveToNext();
@@ -600,7 +600,7 @@ public abstract class Database extends Database_Core {
 		if (reader == null)
 			return "";
 		reader.moveToFirst();
-		while (reader.isAfterLast() == false) {
+		while (!reader.isAfterLast()) {
 			if (reader.getString(0) != null)
 				description = reader.getString(0);
 			reader.moveToNext();
@@ -620,7 +620,7 @@ public abstract class Database extends Database_Core {
 			CoreCursor reader = rawQuery("select GPXFilename_ID, Count(*) as CacheCount from Caches where GPXFilename_ID is not null Group by GPXFilename_ID", null);
 			reader.moveToFirst();
 
-			while (reader.isAfterLast() == false) {
+			while (!reader.isAfterLast()) {
 				long GPXFilename_ID = reader.getLong(0);
 				long CacheCount = reader.getLong(1);
 
@@ -691,7 +691,7 @@ public abstract class Database extends Database_Core {
 
 			CoreCursor reader = Database.Data.rawQuery(command, null);
 			reader.moveToFirst();
-			while (reader.isAfterLast() == false) {
+			while (!reader.isAfterLast()) {
 				long tmp = reader.getLong(0);
 				if (!oldLogCaches.contains(tmp))
 					oldLogCaches.add(reader.getLong(0));
@@ -714,7 +714,7 @@ public abstract class Database extends Database_Core {
 					int count = 0;
 					CoreCursor reader = Database.Data.rawQuery(command, null);
 					reader.moveToFirst();
-					while (reader.isAfterLast() == false) {
+					while (!reader.isAfterLast()) {
 						if (count == minToKeep)
 							break;
 						minLogIds.add(reader.getLong(0));

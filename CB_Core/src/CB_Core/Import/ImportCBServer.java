@@ -69,24 +69,12 @@ public class ImportCBServer {
 						RpcAnswer_GetCacheList gclAnswer = (RpcAnswer_GetCacheList) answer;
 						System.out.println("************* CacheList ***************");
 						// GPX-Filename und Category Eintrag prüfen
-						Category cat = null;
+						Category cat = CoreSettingsForward.Categories.getCategory(item.getDescription());
+
 						CategoryDAO catDao = new CategoryDAO();
-						// Suchen, ob diese Category schon vorhanden ist
-						for (int i = 0, n = CoreSettingsForward.Categories.size(); i < n; i++) {
-							Category tcat = CoreSettingsForward.Categories.get(i);
-							if (tcat.GpxFilename.equals(item.getDescription())) {
-								cat = tcat;
-								break;
-							}
-						}
-						// Wenn die Category noch nicht vorhanden ist -> erzeugen
-						if (cat == null) {
-							cat = catDao.CreateNewCategory(item.getDescription());
-							CoreSettingsForward.Categories.add(cat); // Category hinzufügen
-						}
 						// GpxFilenames Eintrag erzeugen
 						// Alle importierten Caches werdem diesem neuen GpxFilename zugeordnet
-						GpxFilename gpxFilename = catDao.CreateNewGpxFilename(cat, item.getDescription());
+						GpxFilename gpxFilename = cat.addGpxFilename(item.getDescription());
 
 						CacheDAO dao = new CacheDAO();
 						WaypointDAO wayDao = new WaypointDAO();

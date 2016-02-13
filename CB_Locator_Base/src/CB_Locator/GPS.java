@@ -62,7 +62,7 @@ public class GPS {
 		CB_List<GpsStrength> SatList = new CB_List<GpsStrength>();
 		while (statusIterator.hasNext()) {
 			GpsSatellite sat = statusIterator.next();
-			if (sat.usedInFix() == true) {
+			if (sat.usedInFix()) {
 				fixed++;
 			}
 			satellites++;

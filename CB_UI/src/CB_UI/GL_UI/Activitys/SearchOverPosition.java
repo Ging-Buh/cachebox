@@ -23,7 +23,6 @@ import CB_Core.CacheListChangedEventList;
 import CB_Core.CoreSettingsForward;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.SearchCoordinate;
-import CB_Core.DAO.CategoryDAO;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
@@ -421,11 +420,10 @@ public class SearchOverPosition extends ActivityBase {
 						// GpxFilename
 						// API-Import
 						// Category suchen, die dazu gehört
-						CategoryDAO categoryDAO = new CategoryDAO();
-						Category category = categoryDAO.GetCategory(CoreSettingsForward.Categories, "API-Import");
+						Category category = CoreSettingsForward.Categories.getCategory("API-Import");
 						if (category != null) // should not happen!!!
 						{
-							GpxFilename gpxFilename = categoryDAO.CreateNewGpxFilename(category, "API-Import");
+							GpxFilename gpxFilename = category.addGpxFilename("API-Import");
 							if (gpxFilename != null) {
 								CB_List<Cache> apiCaches = new CB_List<Cache>();
 								ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();

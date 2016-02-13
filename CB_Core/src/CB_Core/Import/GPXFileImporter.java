@@ -70,7 +70,7 @@ public class GPXFileImporter {
 	private Integer countwpt = 0;
 	private Integer errors = 0;
 
-	private Cache cache = new Cache(true);
+	private Cache cache;
 	private final Waypoint waypoint = new Waypoint(true);
 	private final LogEntry log = new LogEntry();
 	private Category category = new Category();
@@ -1311,8 +1311,6 @@ public class GPXFileImporter {
 		if (mip != null)
 			mip.ProgressInkrement("ImportGPX", info.toString(), false);
 
-		mImportHandler.handleCache(cache);
-
 		// Write Note and Solver
 		if (values.containsKey("cachebox-extension_solver")) {
 			Database.SetSolver(cache, values.get("cachebox-extension_solver"));
@@ -1328,6 +1326,10 @@ public class GPXFileImporter {
 			// Neue CacheInfo erstellen und zur Liste Hinzufügen
 			CacheInfoList.putNewInfo(cache);
 		}
+
+		// write to Database
+		mImportHandler.handleCache(cache);
+
 	}
 
 	private void createWaypoint(Map<String, String> values) throws Exception {

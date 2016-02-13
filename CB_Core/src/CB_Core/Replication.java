@@ -40,7 +40,7 @@ public class Replication {
 					int dbCheckSum = -1;
 					CoreCursor c = Database.Data.rawQuery("select SolverCheckSum from Replication where CacheId=? and ChangeType=?", new String[] { String.valueOf(CacheId), String.valueOf(ChangeType.SolverText.ordinal()) });
 					c.moveToFirst();
-					while (c.isAfterLast() == false) {
+					while (!c.isAfterLast()) {
 						dbCheckSum = c.getInt(0);
 						break;
 					}
@@ -84,7 +84,7 @@ public class Replication {
 					int dbCheckSum = -1;
 					CoreCursor c = Database.Data.rawQuery("select NotesCheckSum from Replication where CacheId=? and ChangeType=?", new String[] { String.valueOf(CacheId), String.valueOf(ChangeType.NotesText.ordinal()) });
 					c.moveToFirst();
-					while (c.isAfterLast() == false) {
+					while (!c.isAfterLast()) {
 						dbCheckSum = c.getInt(0);
 						break;
 					}
@@ -138,7 +138,7 @@ public class Replication {
 				int dbCheckSum = -1;
 				CoreCursor c = Database.Data.rawQuery("select " + checkSumType + " from Replication where CacheId=? and ChangeType=? and WpGcCode=?", new String[] { String.valueOf(CacheId), String.valueOf(changeType.ordinal()), WpGcCode });
 				c.moveToFirst();
-				while (c.isAfterLast() == false) {
+				while (!c.isAfterLast()) {
 					dbCheckSum = c.getInt(0);
 					break;
 				}

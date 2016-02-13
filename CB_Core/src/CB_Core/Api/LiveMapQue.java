@@ -27,7 +27,6 @@ import CB_Core.CB_Core_Settings;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.CoreSettingsForward;
 import CB_Core.Database;
-import CB_Core.DAO.CategoryDAO;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheListLive;
 import CB_Core.Types.Category;
@@ -41,8 +40,8 @@ import CB_Utils.Lists.CB_List;
 import CB_Utils.Lists.CB_Stack;
 import CB_Utils.Lists.CB_Stack.iCompare;
 import CB_Utils.Util.FileIO;
-import CB_Utils.Util.LoopThread;
 import CB_Utils.Util.IChanged;
+import CB_Utils.Util.LoopThread;
 
 /**
  * @author Longri
@@ -173,9 +172,8 @@ public class LiveMapQue {
 			if (apiCaches == null) {
 
 				if (gpxFilename == null) {
-					CategoryDAO categoryDAO = new CategoryDAO();
-					Category category = categoryDAO.GetCategory(CoreSettingsForward.Categories, "API-Import");
-					gpxFilename = categoryDAO.CreateNewGpxFilename(category, "API-Import");
+					Category category = CoreSettingsForward.Categories.getCategory("API-Import");
+					gpxFilename = category.addGpxFilename("API-Import");
 				}
 
 				apiCaches = new CB_List<Cache>();
@@ -242,9 +240,8 @@ public class LiveMapQue {
 		CB_List<Cache> cacheList = new CB_List<Cache>();
 		if (result != null && result.length() > 0) {
 			if (gpxFilename == null) {
-				CategoryDAO categoryDAO = new CategoryDAO();
-				Category category = categoryDAO.GetCategory(CoreSettingsForward.Categories, "API-Import");
-				gpxFilename = categoryDAO.CreateNewGpxFilename(category, "API-Import");
+				Category category = CoreSettingsForward.Categories.getCategory("API-Import");
+				gpxFilename = category.addGpxFilename("API-Import");
 			}
 
 			SEARCH_API.ParseJsonResult(requestSearch, cacheList, apiLogs, apiImages, gpxFilename.Id, result, (byte) 1, true);

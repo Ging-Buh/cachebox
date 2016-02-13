@@ -37,7 +37,7 @@ public class TrackableListDAO {
 		CoreCursor reader = Database.FieldNotes.rawQuery("select Id ,Archived ,GcCode ,CacheId ,CurrentGoal ,CurrentOwnerName ,DateCreated ,Description ,IconUrl ,ImageUrl ,Name ,OwnerName ,Url,TypeName, Home,TravelDistance   from Trackable", null);
 		reader.moveToFirst();
 
-		while (reader.isAfterLast() == false) {
+		while (!reader.isAfterLast()) {
 			trackableList.add(new Trackable(reader));
 			reader.moveToNext();
 		}

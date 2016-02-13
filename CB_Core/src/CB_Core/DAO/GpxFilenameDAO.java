@@ -47,7 +47,7 @@ public class GpxFilenameDAO {
 		CoreCursor reader = Database.Data.rawQuery("select GPXFilename_ID, Count(*) as CacheCount from Caches where GPXFilename_ID is not null Group by GPXFilename_ID", null);
 
 		reader.moveToFirst();
-		while (reader.isAfterLast() == false) {
+		while (!reader.isAfterLast()) {
 			Integer GPXFilename_ID = reader.getInt(0);
 			Integer CacheCount = reader.getInt(1);
 

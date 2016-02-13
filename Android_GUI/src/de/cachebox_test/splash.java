@@ -194,7 +194,7 @@ public class splash extends Activity {
 			String uriPath = uri.getPath().toLowerCase();
 			// String uriQuery = uri.getQuery();
 
-			if (uriHost.contains("geocaching.com") == true) {
+			if (uriHost.contains("geocaching.com")) {
 				GcCode = uri.getQueryParameter("wp");
 				guid = uri.getQueryParameter("guid");
 
@@ -209,8 +209,8 @@ public class splash extends Activity {
 					finish();
 					return;
 				}
-			} else if (uriHost.contains("coord.info") == true) {
-				if (uriPath != null && uriPath.startsWith("/gc") == true) {
+			} else if (uriHost.contains("coord.info")) {
+				if (uriPath != null && uriPath.startsWith("/gc")) {
 					GcCode = uriPath.substring(1).toUpperCase();
 				} else {
 					// warning.showToast(res.getString(R.string.err_detail_open));

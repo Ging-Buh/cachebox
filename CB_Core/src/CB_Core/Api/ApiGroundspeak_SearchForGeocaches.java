@@ -185,7 +185,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak {
 					logger.error("SearchForGeocaches_LongDescription:" + cache.getGcCode(), e1);
 					cache.setLongDescription("");
 				}
-				if (jCache.getBoolean("LongDescriptionIsHtml") == false) {
+				if (!jCache.getBoolean("LongDescriptionIsHtml")) {
 					cache.setLongDescription(cache.getLongDescription().replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
 				}
 			}
@@ -208,7 +208,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak {
 					logger.error("SearchForGeocaches_shortDescription:" + cache.getGcCode(), e);
 					cache.setShortDescription("");
 				}
-				if (jCache.getBoolean("ShortDescriptionIsHtml") == false) {
+				if (!jCache.getBoolean("ShortDescriptionIsHtml")) {
 					cache.setShortDescription(cache.getShortDescription().replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
 				}
 			}

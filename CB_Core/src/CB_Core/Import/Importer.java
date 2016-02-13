@@ -496,7 +496,7 @@ public class Importer {
 
 		if (reader.getCount() > 0) {
 			reader.moveToFirst();
-			while (reader.isAfterLast() == false) {
+			while (!reader.isAfterLast()) {
 				try {// for cancel/interupt Thread
 					Thread.sleep(10);
 				} catch (InterruptedException e) {
@@ -838,6 +838,7 @@ public class Importer {
 		File[] fileArray = files.toArray(new File[files.size()]);
 
 		Arrays.sort(fileArray, new Comparator<File>() {
+			@Override
 			public int compare(File f1, File f2) {
 
 				if (f1.getName().equalsIgnoreCase(f2.getName().replace(".gpx", "") + "-wpts.gpx")) {

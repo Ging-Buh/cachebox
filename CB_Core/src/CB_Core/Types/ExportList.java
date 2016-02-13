@@ -41,7 +41,7 @@ public class ExportList extends ArrayList<ExportEntry> {
 			log.error("ExportList", "LoadExportList", exc);
 		}
 		reader.moveToFirst();
-		while (reader.isAfterLast() == false) {
+		while (!reader.isAfterLast()) {
 			ExportEntry ee = new ExportEntry(reader);
 			if (!this.contains(ee)) {
 				this.add(ee);

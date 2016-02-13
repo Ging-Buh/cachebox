@@ -466,7 +466,7 @@ public class DescriptionImageGrabber {
 
 			descriptionImagesUpdated = true;
 
-			if (imageLoadError == false) {
+			if (!imageLoadError) {
 				Parameters args = new Parameters();
 				args.put("DescriptionImagesUpdated", descriptionImagesUpdated);
 				Database.Data.update("Caches", args, "Id = ?", new String[] { String.valueOf(id) });
@@ -591,7 +591,7 @@ public class DescriptionImageGrabber {
 
 				additionalImagesUpdated = true;
 
-				if (imageLoadError == false) {
+				if (!imageLoadError) {
 					Parameters args = new Parameters();
 					args.put("ImagesUpdated", additionalImagesUpdated);
 					Database.Data.update("Caches", args, "Id = ?", new String[] { String.valueOf(id) });

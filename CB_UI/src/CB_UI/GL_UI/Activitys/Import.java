@@ -695,7 +695,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 		checkImportPQfromGC.setChecked(PQ_LINE_ACTIVE ? Config.ImportPQsFromGeocachingCom.getValue() : false);
 		checkImportPQfromGC.setEnabled(true);
 
-		if (checkImportPQfromGC.isChecked() == true) {
+		if (checkImportPQfromGC.isChecked()) {
 			checkBoxImportGPX.setChecked(GPX_LINE_ACTIVE ? true : false);
 			checkBoxImportGPX.setEnabled(false);
 		}

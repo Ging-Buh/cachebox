@@ -118,7 +118,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
 				log.error("FieldNoteList", "LoadFieldNotes", exc);
 			}
 			reader.moveToFirst();
-			while (reader.isAfterLast() == false) {
+			while (!reader.isAfterLast()) {
 				FieldNoteEntry fne = new FieldNoteEntry(reader);
 				if (!this.contains(fne)) {
 					this.add(fne);

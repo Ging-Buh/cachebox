@@ -546,7 +546,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 			PQ_ListCollapseBox.setAnimationHeight(0);
 		}
 
-		if (checkImportPQfromGC.isChecked() == true) {
+		if (checkImportPQfromGC.isChecked()) {
 			checkBoxImportGPX.setChecked(true);
 			checkBoxImportGPX.setEnabled(false);
 		}

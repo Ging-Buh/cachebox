@@ -494,7 +494,7 @@ public class CacheDAO {
 
 		if (reader.getCount() > 0) {
 			reader.moveToFirst();
-			while (reader.isAfterLast() == false) {
+			while (!reader.isAfterLast()) {
 				String GcCode = reader.getString(0);
 				GcCodes.add(GcCode);
 				reader.moveToNext();

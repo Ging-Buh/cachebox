@@ -231,7 +231,7 @@ public class CategorieListViewItem extends ListViewItemBackground {
 		drawRightChkBox(batch);
 		int ChkState = 0;
 		if (this.categorieEntry.getItemType() == FilterSetListView.COLLAPSE_BUTTON_ITEM) {
-			ChkState = this.categorieEntry.getCat().getChek();
+			ChkState = this.categorieEntry.getCat().getCheck();
 		} else {
 			ChkState = this.categorieEntry.getState();
 		}
@@ -261,14 +261,14 @@ public class CategorieListViewItem extends ListViewItemBackground {
 		drawIcon(batch);
 		drawRightChkBox(batch);
 
-		if (this.categorieEntry.getCat().getChek() == 1) {
+		if (this.categorieEntry.getCat().getCheck() == 1) {
 			if (chkOn == null) {
 				chkOn = SpriteCacheBase.getThemedSprite("check-on");
 				chkOn.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 			}
 
 			chkOn.draw(batch);
-		} else if (this.categorieEntry.getCat().getChek() == 0) {
+		} else if (this.categorieEntry.getCat().getCheck() == 0) {
 			if (chkNo == null) {
 				chkNo = SpriteCacheBase.getThemedSprite("delete-icon");
 				chkNo.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());

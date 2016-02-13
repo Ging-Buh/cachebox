@@ -69,7 +69,7 @@ public abstract class Database_Core {
 		}
 		try {
 			c.moveToFirst();
-			while (c.isAfterLast() == false) {
+			while (!c.isAfterLast()) {
 				String databaseSchemeVersion = c.getString(0);
 				result = Integer.parseInt(databaseSchemeVersion);
 				c.moveToNext();
@@ -136,7 +136,7 @@ public abstract class Database_Core {
 		}
 		try {
 			c.moveToFirst();
-			while (c.isAfterLast() == false) {
+			while (!c.isAfterLast()) {
 				result = c.getString(0);
 				found = true;
 				c.moveToNext();
@@ -164,7 +164,7 @@ public abstract class Database_Core {
 		}
 		try {
 			c.moveToFirst();
-			while (c.isAfterLast() == false) {
+			while (!c.isAfterLast()) {
 				result = c.getString(0);
 				found = true;
 				c.moveToNext();
