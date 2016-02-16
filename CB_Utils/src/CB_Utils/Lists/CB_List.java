@@ -32,7 +32,7 @@ public class CB_List<T> implements Serializable, Iterable<T> {
 	private static final long serialVersionUID = 4378819539487000418L;
 	protected T[] items;
 	protected int size;
-	private final int INITIAL_SIZE = 5;
+	protected final int INITIAL_SIZE = 5;
 
 	/** Creates an ordered array with a capacity of 16. */
 	public CB_List() {
@@ -67,7 +67,7 @@ public class CB_List<T> implements Serializable, Iterable<T> {
 		return (T[]) new Object[size];
 	}
 
-	private int getItemLength() {
+	protected int getItemLength() {
 		if (this.items == null)
 			return 0;
 		return items.length;
