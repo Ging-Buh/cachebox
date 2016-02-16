@@ -85,6 +85,7 @@ public class FieldNotesView extends V_ListView {
         super(rec, Name);
         that = this;
         this.mCanDispose = false;
+        this.setForceHandleTouchEvents(true);
         ItemRec = new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.1f);
 
         setBackground(SpriteCacheBase.ListBack);
