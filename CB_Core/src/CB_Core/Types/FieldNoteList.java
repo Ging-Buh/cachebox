@@ -153,7 +153,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
         File txtFile = FileFactory.createFile(dirFileName);
         FileOutputStream writer;
         try {
-            writer = new FileOutputStream(txtFile.getJavaIoFile());
+            writer = txtFile.getFileOutputStream();
 
             // write utf8 bom EF BB BF
             byte[] bom = {(byte) 239, (byte) 187, (byte) 191};

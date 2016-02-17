@@ -115,7 +115,7 @@ public class GPX_Export extends TestCase {
         try {
             final GpxSerializer ser = new GpxSerializer();
             // final FileWriter writer = new FileWriter(exportFile);
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(exportFile.getJavaIoFile()), "UTF-8"));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(exportFile.getFileOutputStream(), "UTF-8"));
 
             ser.writeGPX(allGeocodesIn, writer, new ProgressListener() {
 
@@ -182,7 +182,7 @@ public class GPX_Export extends TestCase {
 
         try {
             final GpxSerializer ser = new GpxSerializer();
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(exportFile.getJavaIoFile()), "UTF-8"));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(exportFile.getFileOutputStream(), "UTF-8"));
 
             ser.writeGPX(allGeocodesForExport, writer, new ProgressListener() {
 
@@ -205,7 +205,7 @@ public class GPX_Export extends TestCase {
         int WptCount = 0;
         int LogCount = 0;
 
-        Scanner sc = new Scanner(exportFile.getAbsoluteFile());
+        Scanner sc = new Scanner(exportFile.getFileInputStream());
         sc.useDelimiter("(<wpt|<groundspeak:log )");
         while (sc.hasNext()) {
             String next = sc.next();
@@ -294,7 +294,7 @@ public class GPX_Export extends TestCase {
 
         try {
             final GpxSerializer ser = new GpxSerializer();
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(exportFile.getJavaIoFile()), "UTF-8"));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(exportFile.getFileOutputStream(), "UTF-8"));
 
             ser.writeGPX(allGeocodesForExport, writer, new ProgressListener() {
 

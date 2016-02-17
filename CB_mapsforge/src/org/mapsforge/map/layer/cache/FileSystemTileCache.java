@@ -100,7 +100,7 @@ public class FileSystemTileCache implements TileCache {
 
         InputStream inputStream = null;
         try {
-            inputStream = new FileInputStream(file.getJavaIoFile());
+            inputStream = file.getFileInputStream();
             return this.graphicFactory.createTileBitmap(inputStream, key.tileSize, key.hasAlpha);
         } catch (CorruptedInputStreamException e) {
             // this can happen, at least on Android, when the input stream
@@ -138,7 +138,7 @@ public class FileSystemTileCache implements TileCache {
         OutputStream outputStream = null;
         try {
             File file = getOutputFile(key);
-            outputStream = new FileOutputStream(file.getJavaIoFile());
+            outputStream = file.getFileOutputStream();
             bitmap.compress(outputStream);
             if (this.lruCache.put(key.hashCode(), file) != null) {
                 LOGGER.warning("overwriting cached entry: " + key.hashCode());

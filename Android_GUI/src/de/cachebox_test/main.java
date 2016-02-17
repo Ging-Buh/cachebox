@@ -1096,8 +1096,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         InfoDownSlider.invalidate();
 
         // Ausschalten verhindern
-		/*
-		 * This code together with the one in onDestroy() will make the screen
+        /*
+         * This code together with the one in onDestroy() will make the screen
 		 * be always on until this Activity gets destroyed.
 		 */
         if (Config.SuppressPowerSaving.getValue()) {
@@ -1723,7 +1723,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         mediafile = FileFactory.createFile(directory + "/" + basename + ".jpg");
 
         final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mediafile.getJavaIoFile()));
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new java.io.File(mediafile.getAbsolutePath())));
         intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
         startActivityForResult(intent, Global.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 
@@ -1768,7 +1768,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         cameraVideoURI = getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
 
         final Intent videointent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        videointent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mediafile.getJavaIoFile()));
+        videointent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new java.io.File(mediafile.getAbsolutePath())));
         videointent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
         // videointent.putExtra(MediaStore.EXTRA_SIZE_LIMIT,
         // MAXIMUM_VIDEO_SIZE);

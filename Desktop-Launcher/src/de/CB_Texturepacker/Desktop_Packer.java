@@ -42,7 +42,9 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
-/** @author Nathan Sweet */
+/**
+ * @author Nathan Sweet
+ */
 public class Desktop_Packer extends TexturePacker_Base {
 
     @Override
@@ -176,7 +178,7 @@ public class Desktop_Packer extends TexturePacker_Base {
                     writer.setOutput(ios);
                     writer.write(null, new IIOImage(canvas, null, null), param);
                 } else
-                    ImageIO.write(canvas, "png", outputFile.getJavaIoFile());
+                    ImageIO.write(canvas, "png", outputFile.getFileOutputStream());
             } catch (IOException ex) {
                 throw new RuntimeException("Error writing file: " + outputFile, ex);
             }

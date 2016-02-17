@@ -546,7 +546,7 @@ public class RouteOverlay {
         FileWriter writer = null;
         File gpxfile = FileFactory.createFile(Path);
         try {
-            writer = new FileWriter(gpxfile.getJavaIoFile());
+            writer = gpxfile.getFileWriter();
             try {
                 writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
                 writer.append(

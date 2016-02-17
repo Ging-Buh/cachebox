@@ -273,7 +273,7 @@ public class MapDatabase {
             }
 
             // open the file in read only mode
-            this.inputFile = new RandomAccessFile(mapFile.getJavaIoFile(), READ_ONLY_MODE);
+            this.inputFile = mapFile.getRandomAccessFile(READ_ONLY_MODE);
             this.fileSize = this.inputFile.length();
 
             this.readBuffer = new ReadBuffer(this.inputFile);

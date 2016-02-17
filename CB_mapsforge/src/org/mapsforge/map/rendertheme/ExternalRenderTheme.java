@@ -53,7 +53,7 @@ public class ExternalRenderTheme implements XmlRenderTheme {
 
         // read is Freizeitkarte Theme
 
-        final FileReader fileReader = new FileReader(renderThemeFile.getJavaIoFile());
+        final FileReader fileReader = renderThemeFile.getFileReader();
         final BufferedReader bufferedReader = new BufferedReader(fileReader);
         String line;
         try {
@@ -97,7 +97,7 @@ public class ExternalRenderTheme implements XmlRenderTheme {
 
     @Override
     public InputStream getRenderThemeAsStream() throws FileNotFoundException {
-        return new FileInputStream(this.renderThemeFile.getJavaIoFile());
+        return this.renderThemeFile.getFileInputStream();
     }
 
     @Override

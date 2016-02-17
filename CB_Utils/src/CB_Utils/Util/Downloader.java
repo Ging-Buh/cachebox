@@ -420,7 +420,7 @@ public class Downloader implements Runnable {
 						parent.mkdirs();
 					}
 
-					bos = new BufferedOutputStream(new FileOutputStream(f.getJavaIoFile()));
+					bos = new BufferedOutputStream(f.getFileOutputStream());
 				} catch (Exception e) {
 					progressString = "Failed to open output stream to local file";
 					progressUpdated = true;

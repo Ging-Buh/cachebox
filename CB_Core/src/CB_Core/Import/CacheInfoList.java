@@ -302,7 +302,7 @@ public class CacheInfoList {
                 Directory.mkdirs();
             }
 
-            PrintWriter writer = new PrintWriter(new FileWriter(file.getJavaIoFile()));
+            PrintWriter writer = new PrintWriter(file.getFileWriter());
 
             writer.write("Listing Changed!");
             writer.close();

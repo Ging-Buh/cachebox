@@ -118,7 +118,7 @@ public abstract class TexturePacker_Base {
 
         if (packFile.exists()) {
             // Make sure there aren't duplicate names.
-            TextureAtlasData textureAtlasData = new TextureAtlasData(new FileHandle(packFile.getJavaIoFile()), new FileHandle(packFile.getJavaIoFile()), false);
+            TextureAtlasData textureAtlasData = new TextureAtlasData(new FileHandle(packFile.getAbsolutePath()), new FileHandle(packFile.getAbsolutePath()), false);
             for (Page page : pages) {
                 for (Rect_Base rect : page.outputRects) {
                     String rectName = settings.flattenPaths ? new FileHandle(rect.name).name() : rect.name;
@@ -132,7 +132,7 @@ public abstract class TexturePacker_Base {
             }
         }
 
-        FileWriter writer = new FileWriter(packFile.getJavaIoFile(), true);
+        FileWriter writer = packFile.getFileWriter();
         // if (settings.jsonOutput) {
         // } else {
         for (Page page : pages) {

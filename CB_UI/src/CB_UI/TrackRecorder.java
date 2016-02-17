@@ -70,7 +70,7 @@ public class TrackRecorder {
         if (gpxfile == null) {
             gpxfile = FileFactory.createFile(directory + "/" + generateTrackFileName());
             try {
-                writer = new FileWriter(gpxfile.getJavaIoFile());
+                writer = gpxfile.getFileWriter();
                 try {
                     writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
                     writer.append(
@@ -147,7 +147,7 @@ public class TrackRecorder {
 
         RandomAccessFile rand;
         try {
-            rand = new RandomAccessFile(gpxfile.getJavaIoFile(), "rw");
+            rand = gpxfile.getRandomAccessFile("rw");
 
             int i = (int) rand.length();
 
@@ -226,7 +226,7 @@ public class TrackRecorder {
 
                 RandomAccessFile rand;
                 try {
-                    rand = new RandomAccessFile(gpxfile.getJavaIoFile(), "rw");
+                    rand = gpxfile.getRandomAccessFile("rw");
 
                     // suche letzte "</trk>"
 

@@ -199,7 +199,7 @@ public class Android_Packer extends TexturePacker_Base {
                     format = CompressFormat.JPEG;
                 }
 
-                OutputStream stream = new FileOutputStream(outputFile.getJavaIoFile());
+                OutputStream stream = outputFile.getFileOutputStream();
                 /* Write bitmap to file using JPEG or PNG and 80% quality hint for JPEG. */
                 canvas.compress(format, (int) (settings.jpegQuality * 100), stream);
                 stream.close();

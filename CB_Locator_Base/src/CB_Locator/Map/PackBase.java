@@ -43,7 +43,7 @@ public abstract class PackBase implements Comparable<PackBase> {
         Filename = file;
 
         File queryFile = FileFactory.createFile(file);
-        FileInputStream stream = new FileInputStream(queryFile.getJavaIoFile());
+        FileInputStream stream = queryFile.getFileInputStream();
         DataInputStream reader = new DataInputStream(stream);
 
 		/*
@@ -70,7 +70,7 @@ public abstract class PackBase implements Comparable<PackBase> {
     // make a new one from the existing BoundingBoxes
     // WritePackFromBoundingBoxes();
     public void WritePackFromBoundingBoxes() throws IOException {
-		/*
+        /*
 		 * FileStream stream = new FileStream(filename, FileMode.Create); BinaryWriter writer = new BinaryWriter(stream);
 		 */
         FileOutputStream stream = new FileOutputStream(Filename + ".new");

@@ -10,28 +10,28 @@ import java.net.URL;
 /**
  * Created by Longri on 17.02.2016.
  */
-public class DesktopFile extends File {
+public class AndroidFile extends File {
 
 
     private final java.io.File mFile;
 
-    private DesktopFile(java.io.File file) {
+    private AndroidFile(java.io.File file) {
         mFile = file;
     }
 
-    public DesktopFile(String path) {
+    public AndroidFile(String path) {
         mFile = new java.io.File(path);
     }
 
-    public DesktopFile(File parent) {
-        mFile = ((DesktopFile) parent).mFile;
+    public AndroidFile(File parent) {
+        mFile = ((AndroidFile) parent).mFile;
     }
 
-    public DesktopFile(File parent, String child) {
-        mFile = new java.io.File(((DesktopFile) parent).mFile, child);
+    public AndroidFile(File parent, String child) {
+        mFile = new java.io.File(((AndroidFile) parent).mFile, child);
     }
 
-    public DesktopFile(String parent, String child) {
+    public AndroidFile(String parent, String child) {
         mFile = new java.io.File(parent, child);
     }
 
@@ -48,13 +48,14 @@ public class DesktopFile extends File {
 
     @Override
     public File getParentFile() {
-        return new DesktopFile(mFile.getParentFile());
+        return new AndroidFile(mFile.getParentFile());
     }
 
     @Override
     public boolean mkdirs() {
         return mFile.mkdirs();
     }
+
 
     @Override
     public boolean isDirectory() {
@@ -82,7 +83,7 @@ public class DesktopFile extends File {
         String[] list = mFile.list(new java.io.FilenameFilter() {
             @Override
             public boolean accept(java.io.File dir, String name) {
-                return filenameFilter.accept(new DesktopFile(dir), name);
+                return filenameFilter.accept(new AndroidFile(dir), name);
             }
         });
         return list;
@@ -109,7 +110,7 @@ public class DesktopFile extends File {
         String[] list = mFile.list(new java.io.FilenameFilter() {
             @Override
             public boolean accept(java.io.File dir, String name) {
-                return filenameFilter.accept(new DesktopFile(dir), name);
+                return filenameFilter.accept(new AndroidFile(dir), name);
             }
         });
 
@@ -117,7 +118,7 @@ public class DesktopFile extends File {
 
         int index = 0;
         for (String s : list) {
-            ret[index++] = new DesktopFile(s);
+            ret[index++] = new AndroidFile(s);
         }
 
 
@@ -162,7 +163,7 @@ public class DesktopFile extends File {
 
         int index = 0;
         for (String s : list) {
-            ret[index++] = new DesktopFile(s);
+            ret[index++] = new AndroidFile(s);
         }
         return ret;
     }
@@ -174,7 +175,7 @@ public class DesktopFile extends File {
 
     @Override
     public File getCanonicalPath() throws IOException {
-        return new DesktopFile(mFile.getCanonicalPath());
+        return new AndroidFile(mFile.getCanonicalPath());
     }
 
     @Override
@@ -184,7 +185,7 @@ public class DesktopFile extends File {
 
     @Override
     public boolean renameTo(File file) {
-        return mFile.renameTo(((DesktopFile) file).mFile);
+        return mFile.renameTo(((AndroidFile) file).mFile);
     }
 
     @Override
@@ -194,19 +195,18 @@ public class DesktopFile extends File {
 
     @Override
     public File getAbsoluteFile() {
-        return new DesktopFile(mFile.getAbsoluteFile());
+        return new AndroidFile(mFile.getAbsoluteFile());
     }
 
     @Override
     public int compareTo(File otherFile) {
-        return mFile.compareTo(((DesktopFile) otherFile).mFile);
+        return mFile.compareTo(((AndroidFile) otherFile).mFile);
     }
 
     @Override
     public FileOutputStream getFileOutputStream() throws FileNotFoundException {
         return new FileOutputStream(mFile);
     }
-
 
     @Override
     public FileInputStream getFileInputStream() throws FileNotFoundException {
@@ -220,7 +220,7 @@ public class DesktopFile extends File {
 
     @Override
     public RandomAccessFile getRandomAccessFile(String mode) throws FileNotFoundException {
-        return new RandomAccessFile(mFile, mode);
+        return new RandomAccessFile(mFile,mode);
     }
 
     @Override

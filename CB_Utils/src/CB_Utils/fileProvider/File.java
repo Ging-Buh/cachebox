@@ -1,7 +1,7 @@
 package CB_Utils.fileProvider;
 
 
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -23,7 +23,6 @@ public abstract class File {
 
     public abstract boolean mkdirs();
 
-    public abstract java.io.File getJavaIoFile();
 
     public abstract boolean isDirectory();
 
@@ -70,5 +69,15 @@ public abstract class File {
     public abstract File getAbsoluteFile();
 
     public abstract int compareTo(File otherFile);
+
+    public abstract FileOutputStream getFileOutputStream() throws FileNotFoundException;
+
+    public abstract FileInputStream getFileInputStream() throws FileNotFoundException;
+
+    public abstract FileReader getFileReader() throws FileNotFoundException;
+
+    public abstract RandomAccessFile getRandomAccessFile(String mode) throws FileNotFoundException;
+
+    public abstract FileWriter getFileWriter() throws IOException;
 }
 

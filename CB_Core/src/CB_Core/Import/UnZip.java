@@ -31,7 +31,7 @@ public class UnZip {
         int BUFFER = 2048;
         File file = FileFactory.createFile(zipFile);
 
-        ZipFile zip = new ZipFile(file.getJavaIoFile());
+        ZipFile zip = new ZipFile(file.getAbsolutePath());
         String newPath = zipFile.substring(0, zipFile.length() - 4);
 
         FileFactory.createFile(newPath).mkdir();
@@ -58,7 +58,7 @@ public class UnZip {
                 byte data[] = new byte[BUFFER];
 
                 // write the current file to disk
-                FileOutputStream fos = new FileOutputStream(destFile.getJavaIoFile());
+                FileOutputStream fos = destFile.getFileOutputStream();
                 BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER);
 
                 // read and write until last byte is encountered

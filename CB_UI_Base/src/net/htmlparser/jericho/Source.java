@@ -207,7 +207,7 @@ public class Source extends Segment implements Iterable<Segment> {
      * @see #getEncoding()
      */
     public Source(final File file) throws IOException {
-        this(new FileInputStream(file.getJavaIoFile()));
+        this(file.getFileInputStream());
     }
 
     /**

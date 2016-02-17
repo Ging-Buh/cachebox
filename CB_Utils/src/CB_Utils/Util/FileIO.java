@@ -247,7 +247,7 @@ public class FileIO {
                 baf.append((byte) current);
             }
 
-            FileOutputStream fos = new FileOutputStream(file.getJavaIoFile());
+            FileOutputStream fos = file.getFileOutputStream();
             fos.write(baf.toByteArray());
             fos.close();
 

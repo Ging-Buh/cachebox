@@ -74,20 +74,30 @@ import bsh.StringUtil;
 public class BshClassPath implements ClassPathListener, NameSource {
     String name;
 
-    /** The URL path components */
+    /**
+     * The URL path components
+     */
     @SuppressWarnings("rawtypes")
     private List path;
-    /** Ordered list of components BshClassPaths */
+    /**
+     * Ordered list of components BshClassPaths
+     */
     @SuppressWarnings("rawtypes")
     private List compPaths;
 
-    /** Set of classes in a package mapped by package name */
+    /**
+     * Set of classes in a package mapped by package name
+     */
     @SuppressWarnings("rawtypes")
     private Map packageMap;
-    /** Map of source (URL or File dir) of every clas */
+    /**
+     * Map of source (URL or File dir) of every clas
+     */
     @SuppressWarnings("rawtypes")
     private Map classSource;
-    /** The packageMap and classSource maps have been built. */
+    /**
+     * The packageMap and classSource maps have been built.
+     */
     private boolean mapsInitialized;
 
     private UnqualifiedNameTable unqNameTable;
@@ -217,8 +227,7 @@ public class BshClassPath implements ClassPathListener, NameSource {
     }
 
     /**
-     * @param topPath
-     *            indicates that this is the top level classpath component and it should send the startClassMapping message
+     * @param topPath indicates that this is the top level classpath component and it should send the startClassMapping message
      */
     @SuppressWarnings("unchecked")
     protected synchronized void insureInitialized(boolean topPath) {
@@ -353,7 +362,7 @@ public class BshClassPath implements ClassPathListener, NameSource {
             map(searchJarForClasses(url), new JarClassSource(url));
         }
         /*
-		 * else if ( isClassFileName( name ) ) map( looseClass( name ), url );
+         * else if ( isClassFileName( name ) ) map( looseClass( name ), url );
 		 */
         else {
             String s = "Not a classpath component: " + name;
@@ -710,7 +719,7 @@ public class BshClassPath implements ClassPathListener, NameSource {
 
             byte[] bytes;
             try {
-                FileInputStream fis = new FileInputStream(file.getJavaIoFile());
+                FileInputStream fis = file.getFileInputStream();
                 DataInputStream dis = new DataInputStream(fis);
 
                 bytes = new byte[(int) file.length()];
@@ -816,7 +825,9 @@ public class BshClassPath implements ClassPathListener, NameSource {
         nameSourceListeners.add(listener);
     }
 
-    /** only allow one for now */
+    /**
+     * only allow one for now
+     */
     static MappingFeedback mappingFeedbackListener;
 
     /**

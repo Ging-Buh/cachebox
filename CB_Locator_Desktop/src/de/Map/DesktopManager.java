@@ -105,7 +105,7 @@ public class DesktopManager extends ManagerBase {
             // Falls Kachel im Cache liegt, diese von dort laden!
             if (cachedTileAge != 0) {
                 File myImageFile = FileFactory.createFile(cachedTileFilename);
-                BufferedImage img = ImageIO.read(myImageFile.getJavaIoFile());
+                BufferedImage img = ImageIO.read(myImageFile.getFileInputStream());
                 ByteArrayOutputStream bas = new ByteArrayOutputStream();
                 ImageIO.write(img, "png", bas);
                 byte[] data = bas.toByteArray();

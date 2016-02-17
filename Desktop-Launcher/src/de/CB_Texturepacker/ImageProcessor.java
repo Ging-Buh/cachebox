@@ -62,7 +62,7 @@ public class ImageProcessor implements IImageprozessor {
 	public void addImage(File file) {
 		BufferedImage image;
 		try {
-			image = ImageIO.read(file.getJavaIoFile());
+			image = ImageIO.read(file.getFileInputStream());
 		} catch (IOException ex) {
 			throw new RuntimeException("Error reading image: " + file, ex);
 		}

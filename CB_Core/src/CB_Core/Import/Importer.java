@@ -136,7 +136,7 @@ public class Importer {
             BufferedReader br;
             String strLine;
             try {
-                br = new BufferedReader(new InputStreamReader(new FileInputStream(File.getJavaIoFile())));
+                br = new BufferedReader(new InputStreamReader(File.getFileInputStream()));
                 while ((strLine = br.readLine()) != null) {
                     if (strLine.contains("<wpt"))
                         countwpt++;

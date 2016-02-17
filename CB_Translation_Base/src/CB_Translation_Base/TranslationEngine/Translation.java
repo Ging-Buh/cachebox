@@ -386,7 +386,7 @@ public class Translation {
 
         if (file.exists()) {
 
-            BufferedReader reader = new BufferedReader(new FileReader(file.getJavaIoFile()));
+            BufferedReader reader = new BufferedReader(file.getFileReader());
             StringBuilder sb = new StringBuilder();
             String line;
 
@@ -414,7 +414,7 @@ public class Translation {
             reader.close();
 
             // zur�ck schreiben
-            PrintWriter writer = new PrintWriter(new FileWriter(file.getJavaIoFile()));
+            PrintWriter writer = new PrintWriter(file.getFileWriter());
 
             writer.write(sb.toString());
             writer.close();
@@ -425,7 +425,7 @@ public class Translation {
 
     private void readMissing() throws IOException {
         File file = FileFactory.createFile(mWorkPath + "/debug.txt");
-        BufferedReader reader = new BufferedReader(new FileReader(file.getJavaIoFile()));
+        BufferedReader reader = new BufferedReader(file.getFileReader());
         String line;
 
         boolean read = false;

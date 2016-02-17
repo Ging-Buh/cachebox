@@ -68,8 +68,8 @@ public class Copy {
 
             // if file, then copy it
             // Use bytes stream to support all file types
-            InputStream in = new FileInputStream(src.getJavaIoFile());
-            FileOutputStream out = new FileOutputStream(dest.getJavaIoFile());
+            InputStream in = src.getFileInputStream();
+            FileOutputStream out = dest.getFileOutputStream();
 
             byte[] buffer = new byte[1024];
 

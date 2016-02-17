@@ -133,7 +133,7 @@ public class GPXFileImporter {
         @SuppressWarnings("unchecked")
         XMLParser<Map<String, String>> parserCache = new XMLParser<Map<String, String>>(ruleList.toArray(new IRule[0]));
 
-        parserCache.parse(new FileInputStream(mGpxFile.getJavaIoFile()), values);
+        parserCache.parse(mGpxFile.getFileInputStream(), values);
 
         mImportHandler = null;
     }
