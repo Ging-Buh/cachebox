@@ -1,11 +1,12 @@
 package CB_UI.GL_UI.Activitys.settings;
 
-import java.io.File;
-import java.io.FileFilter;
+import CB_Utils.fileProvider.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import CB_Utils.fileProvider.FileFactory;
+import CB_Utils.fileProvider.FilenameFilter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
@@ -943,7 +944,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 				EditKey = Config.settings.indexOf(SB);
-				File file = new File(SB.getValue());
+				File file = FileFactory.createFile(SB.getValue());
 
 				final String ApsolutePath = (file != null) ? file.getAbsolutePath() : "";
 
@@ -1017,7 +1018,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 				EditKey = Config.settings.indexOf(SB);
-				File file = new File(SB.getValue());
+				File file = FileFactory.createFile(SB.getValue());
 
 				final String Path = (file.getParent() != null) ? file.getParent() : "";
 
@@ -1297,10 +1298,10 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		int index = 0;
 		int selection = -1;
 
-		File file1 = new File(Config.Sel_LanguagePath.getValue());
+		File file1 = FileFactory.createFile(Config.Sel_LanguagePath.getValue());
 
 		for (Lang tmp : Sprachen) {
-			File file2 = new File(tmp.Path);
+			File file2 = FileFactory.createFile(tmp.Path);
 			if (file1.getAbsoluteFile().compareTo(file2.getAbsoluteFile()) == 0) {
 				selection = index;
 			}
@@ -1362,13 +1363,13 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	private CB_View_Base getSkinSpinnerView(final SettingsListButtonSkinSpinner<?> SB) {
 
 		String SkinFolder = Config.mWorkPath + "/skins";
-		File dir = new File(SkinFolder);
+		File dir = FileFactory.createFile(SkinFolder);
 
 		final ArrayList<String> skinFolders = new ArrayList<String>();
-		dir.listFiles(new FileFilter() {
+		dir.listFiles(new FilenameFilter() {
 
 			@Override
-			public boolean accept(File f) {
+			public boolean accept(File f, String name) {
 				if (f.isDirectory()) {
 					String Path = f.getAbsolutePath();
 					if (!Path.contains(".svn")) {
@@ -1376,7 +1377,6 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 					}
 
 				}
-
 				return false;
 			}
 		});

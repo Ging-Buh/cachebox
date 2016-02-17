@@ -1,12 +1,13 @@
 package API;
 
 import java.io.BufferedWriter;
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import CB_Utils.fileProvider.FileFactory;
 import junit.framework.TestCase;
 
 import org.apache.http.client.methods.HttpGet;
@@ -224,7 +225,7 @@ public class GenAttributes extends TestCase {
 		java += BR + "}";
 
 		// create folder
-		File FolderPath = new File("./testdata/Attributes");
+		File FolderPath = FileFactory.createFile("./testdata/Attributes");
 
 		FolderPath.mkdirs();
 

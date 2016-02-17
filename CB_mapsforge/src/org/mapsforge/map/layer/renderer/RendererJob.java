@@ -15,7 +15,7 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
 
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.queue.Job;

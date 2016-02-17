@@ -15,8 +15,9 @@
  */
 package org.mapsforge.map.android.util;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
 
+import CB_Utils.fileProvider.FileFactory;
 import org.mapsforge.map.layer.cache.FileSystemTileCache;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -46,11 +47,11 @@ public final class AndroidUtil {
 	public static TileCache createExternalStorageTileCache(Context c, String id, int firstLevelSize, int tileSize) {
 		Log.d("TILECACHE INMEMORY SIZE", Integer.toString(firstLevelSize));
 		TileCache firstLevelTileCache = new InMemoryTileCache(firstLevelSize);
-		File cacheDir = c.getExternalCacheDir();
+		java.io.File cacheDir = c.getExternalCacheDir();
 		if (cacheDir != null) {
 			// cacheDir will be null if full
 			String cacheDirectoryName = cacheDir.getAbsolutePath() + File.separator + id;
-			File cacheDirectory = new File(cacheDirectoryName);
+			File cacheDirectory = FileFactory.createFile(cacheDirectoryName);
 			if (cacheDirectory.exists() || cacheDirectory.mkdir()) {
 				int tileCacheFiles = estimateSizeOfFileSystemCache(cacheDirectoryName, firstLevelSize, tileSize);
 				if (cacheDirectory.canWrite() && tileCacheFiles > 0) {

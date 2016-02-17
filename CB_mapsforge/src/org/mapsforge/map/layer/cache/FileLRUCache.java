@@ -14,7 +14,9 @@
  */
 package org.mapsforge.map.layer.cache;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
+
+import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,7 +36,11 @@ class FileLRUCache<T> extends LRUCache<T, File> {
 		if (size() > this.capacity) {
 			remove(eldest.getKey());
 			File file = eldest.getValue();
-			if (file.exists() && !file.delete()) {
+			try {
+				if (file.exists() && !file.delete()) {
+                    LOGGER.log(Level.SEVERE, "could not delete file: " + file);
+                }
+			} catch (IOException e) {
 				LOGGER.log(Level.SEVERE, "could not delete file: " + file);
 			}
 			return true;

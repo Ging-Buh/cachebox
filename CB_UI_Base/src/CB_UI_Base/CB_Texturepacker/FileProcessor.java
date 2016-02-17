@@ -16,14 +16,15 @@ package CB_UI_Base.CB_Texturepacker;
  * limitations under the License.
  ******************************************************************************/
 
-import java.io.File;
-import java.io.FilenameFilter;
+import CB_Utils.fileProvider.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.regex.Pattern;
 
+import CB_Utils.fileProvider.FileFactory;
+import CB_Utils.fileProvider.FilenameFilter;
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -108,7 +109,7 @@ public class FileProcessor {
 
 	/**
 	 * Processes the specified input file or directory.
-	 * 
+	 *
 	 * @param outputRoot
 	 *            May be null if there is no output from processing the files.
 	 * @return the processed files added with {@link #addProcessedFile(Entry)}.
@@ -131,7 +132,7 @@ public class FileProcessor {
 	 */
 	public ArrayList<Entry> process(File[] files, File outputRoot) throws Exception {
 		if (outputRoot == null)
-			outputRoot = new File("");
+			outputRoot = FileFactory.createFile("");
 		outputFiles.clear();
 
 		LinkedHashMap<File, ArrayList<Entry>> dirToEntries = new LinkedHashMap<File, ArrayList<Entry>>();
@@ -157,7 +158,7 @@ public class FileProcessor {
 			entry.inputFile = mapEntry.getKey();
 			entry.outputDir = newOutputDir;
 			if (newOutputDir != null)
-				entry.outputFile = newOutputDir.length() == 0 ? new File(outputName) : new File(newOutputDir, outputName);
+				entry.outputFile = newOutputDir.length() == 0 ? FileFactory.createFile(outputName) : FileFactory.createFile(newOutputDir, outputName);
 
 			try {
 				processDir(entry, dirEntries);
@@ -219,15 +220,15 @@ public class FileProcessor {
 				entry.outputDir = outputDir;
 
 				if (flattenOutput) {
-					entry.outputFile = outputRoot.length() == 0 ? new File(outputName) : new File(outputRoot, outputName);
+					entry.outputFile = outputRoot.length() == 0 ? FileFactory.createFile(outputName) : FileFactory.createFile(outputRoot, outputName);
 				} else {
-					entry.outputFile = outputDir.length() == 0 ? new File(outputName) : new File(outputDir, outputName);
+					entry.outputFile = outputDir.length() == 0 ? FileFactory.createFile(outputName) : FileFactory.createFile(outputDir, outputName);
 				}
 
 				dirToEntries.get(dir).add(entry);
 			}
 			if (recursive && file.isDirectory()) {
-				File subdir = outputDir.getPath().length() == 0 ? new File(file.getName()) : new File(outputDir, file.getName());
+				File subdir = outputDir.getPath().length() == 0 ? FileFactory.createFile(file.getName()) : FileFactory.createFile(outputDir, file.getName());
 				process(file.listFiles(inputFilter), outputRoot, subdir, dirToEntries, depth + 1);
 			}
 		}

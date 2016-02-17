@@ -1,6 +1,8 @@
 package CB_Utils.Util;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -17,14 +19,14 @@ public class FileList extends ArrayList<File> implements Comparator<File> {
 	}
 
 	private void ini(String path, String extension, boolean AbsolutePath) {
-		File dir = new File(path);
+		File dir = FileFactory.createFile(path);
 		String[] files = dir.list();
 		String absolutePath = AbsolutePath ? path + "/" : "";
 		if (!(files == null)) {
 			if (files.length > 0) {
 				for (String file : files) {
 					if (FileIO.GetFileExtension(file).equalsIgnoreCase(extension)) {
-						File newfile = new File(absolutePath + file);
+						File newfile = FileFactory.createFile(absolutePath + file);
 						this.add(newfile);
 					}
 				}

@@ -16,9 +16,10 @@
 package de.cachebox_test.Map;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.io.IOException;
 
+import CB_Utils.fileProvider.FileFactory;
 import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
 import org.slf4j.LoggerFactory;
@@ -74,7 +75,7 @@ public class AndroidManager extends ManagerBase {
 			long cachedTileAge = 0;
 
 			if (FileIO.FileExists(cachedTileFilename)) {
-				File info = new File(cachedTileFilename);
+				File info = FileFactory.createFile(cachedTileFilename);
 				cachedTileAge = info.lastModified();
 			}
 
@@ -149,7 +150,7 @@ public class AndroidManager extends ManagerBase {
 			long cachedTileAge = 0;
 
 			if (FileIO.FileExists(cachedTileFilename)) {
-				File info = new File(cachedTileFilename);
+				File info = FileFactory.createFile(cachedTileFilename);
 				cachedTileAge = info.lastModified();
 			}
 

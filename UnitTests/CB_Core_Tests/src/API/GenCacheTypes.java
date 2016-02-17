@@ -1,10 +1,11 @@
 package API;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import CB_Utils.fileProvider.FileFactory;
 import junit.framework.TestCase;
 
 import org.apache.http.client.methods.HttpGet;
@@ -104,7 +105,7 @@ public class GenCacheTypes extends TestCase {
 		Iterator<GsCacheTypes> iterator = attList.iterator();
 
 		// create folder
-		File FolderPath = new File("./testdata/CacheTypes");
+		File FolderPath = FileFactory.createFile("./testdata/CacheTypes");
 
 		FolderPath.mkdirs();
 

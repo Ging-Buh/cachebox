@@ -2,7 +2,7 @@ package de.cachebox_test.Components;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
+import CB_Utils.fileProvider.FileFactory;
 import android.content.res.AssetManager;
 
 // Kopiert die OrdnerStructur des Asset-Ordners auf die SD-Karte (Cachbox Arbeitsverzeichniss)
@@ -77,7 +78,7 @@ public class copyAssetFolder {
 
 		InputStream myInput = assets.open(source);
 
-		File ziel = new File(target);
+		File ziel = FileFactory.createFile(target);
 		ziel.getParentFile().mkdirs();
 		final OutputStream myOutput = new FileOutputStream(target);
 

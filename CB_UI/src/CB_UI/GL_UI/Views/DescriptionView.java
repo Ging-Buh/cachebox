@@ -15,12 +15,13 @@
  */
 package CB_UI.GL_UI.Views;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_Utils.fileProvider.FileFactory;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.Color;
@@ -475,7 +476,7 @@ public class DescriptionView extends CB_View_Base {
 
 			do {
 				Attributes attribute = attrs.next();
-				File result = new File(Config.mWorkPath + "/data/Attributes/" + attribute.getImageName() + ".png");
+				File result = FileFactory.createFile(Config.mWorkPath + "/data/Attributes/" + attribute.getImageName() + ".png");
 
 				sb.append("<input name=\"Button\" type=\"image\" src=\"file://" + result.getAbsolutePath() + "\" value=\" " + attribute.getImageName() + " \">");
 

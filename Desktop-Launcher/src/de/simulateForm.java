@@ -11,10 +11,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_Utils.fileProvider.FileFactory;
 import com.badlogic.gdx.graphics.Color;
 
 import CB_Locator.Coordinate;
@@ -85,7 +86,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 		add(sendSpeed);
 		sendSpeed.addActionListener(this); // listen for Button press
 
-		File dir = new File(Config.TrackFolder.getValue());
+		File dir = FileFactory.createFile(Config.TrackFolder.getValue());
 		String[] files = dir.list();
 		if (!(files == null)) {
 			if (files.length > 0) {

@@ -1,6 +1,6 @@
 package CB_Core.CB_Core.Import;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -15,6 +15,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.fileProvider.FileFactory;
 import __Static.InitTestDBs;
 import junit.framework.TestCase;
 
@@ -30,7 +31,7 @@ public class GSAKGpxImportTest extends TestCase {
 		Database.Data.beginTransaction();
 
 		try {
-			File importFile = new File("./testdata/gpx/CorrectedCoordinates1.1.gpx");
+			File importFile = FileFactory.createFile("./testdata/gpx/CorrectedCoordinates1.1.gpx");
 			assertTrue("Import-TestFile missing", importFile.exists());
 			GPXFileImporter importer = new GPXFileImporter(importFile);
 			assertTrue("Objekt muss konstruierbar sein", importer != null);
@@ -141,7 +142,7 @@ public class GSAKGpxImportTest extends TestCase {
 		Database.Data.beginTransaction();
 
 		try {
-			GPXFileImporter importer = new GPXFileImporter(new File("./testdata/gpx/CorrectedCoordinates.gpx"));
+			GPXFileImporter importer = new GPXFileImporter(FileFactory.createFile("./testdata/gpx/CorrectedCoordinates.gpx"));
 			assertTrue("Objekt muss konstruierbar sein", importer != null);
 			importer.doImport(importHandler, 0);
 
@@ -269,7 +270,7 @@ public class GSAKGpxImportTest extends TestCase {
 		Database.Data.beginTransaction();
 
 		try {
-			GPXFileImporter importer = new GPXFileImporter(new File("./testdata/gpx/CorrectedCoordinates1.1.gpx"));
+			GPXFileImporter importer = new GPXFileImporter(FileFactory.createFile("./testdata/gpx/CorrectedCoordinates1.1.gpx"));
 			assertTrue("Objekt muss konstruierbar sein", importer != null);
 			importer.doImport(importHandler, 0);
 
@@ -395,7 +396,7 @@ public class GSAKGpxImportTest extends TestCase {
 		Database.Data.beginTransaction();
 
 		try {
-			GPXFileImporter importer = new GPXFileImporter(new File("./testdata/gpx/TestCache3_WP_Parents_1_0.gpx"));
+			GPXFileImporter importer = new GPXFileImporter(FileFactory.createFile("./testdata/gpx/TestCache3_WP_Parents_1_0.gpx"));
 			assertTrue("Objekt muss konstruierbar sein", importer != null);
 			importer.doImport(importHandler, 0);
 
@@ -528,7 +529,7 @@ public class GSAKGpxImportTest extends TestCase {
 		Database.Data.beginTransaction();
 
 		try {
-			GPXFileImporter importer = new GPXFileImporter(new File("./testdata/gpx/TestCache3_WP_Parents_1_1.gpx"));
+			GPXFileImporter importer = new GPXFileImporter(FileFactory.createFile("./testdata/gpx/TestCache3_WP_Parents_1_1.gpx"));
 			assertTrue("Objekt muss konstruierbar sein", importer != null);
 			importer.doImport(importHandler, 0);
 
@@ -661,7 +662,7 @@ public class GSAKGpxImportTest extends TestCase {
 		Database.Data.beginTransaction();
 
 		try {
-			GPXFileImporter importer = new GPXFileImporter(new File("./testdata/gpx/OCF19A.gpx"));
+			GPXFileImporter importer = new GPXFileImporter(FileFactory.createFile("./testdata/gpx/OCF19A.gpx"));
 			assertTrue("Objekt muss konstruierbar sein", importer != null);
 			importer.doImport(importHandler, 0);
 

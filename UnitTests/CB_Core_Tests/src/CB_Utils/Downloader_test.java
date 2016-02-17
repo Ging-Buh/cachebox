@@ -17,10 +17,13 @@ package CB_Utils;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
+
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import CB_Utils.fileProvider.FileFactory;
 import org.junit.Test;
 
 import CB_Utils.Util.Downloader;
@@ -31,9 +34,13 @@ public class Downloader_test {
 	public void download() {
 		// delete target temp file
 
-		File target = new File("./testdata/download.jpg");
+		File target = FileFactory.createFile("./testdata/download.jpg");
 		if (target.exists()) {
-			target.delete();
+			try {
+				target.delete();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 		String testImage = "http://img.geocaching.com/cache/e96baf07-b869-4568-a1ef-8a69d27a3e43.jpg";

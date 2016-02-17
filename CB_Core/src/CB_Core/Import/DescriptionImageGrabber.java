@@ -16,9 +16,8 @@
 package CB_Core.Import;
 
 import java.io.BufferedWriter;
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -27,6 +26,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import CB_Utils.fileProvider.FileFactory;
+import CB_Utils.fileProvider.FilenameFilter;
 import org.slf4j.LoggerFactory;
 
 import CB_Core.CB_Core_Settings;
@@ -112,10 +113,6 @@ public class DescriptionImageGrabber {
 	/**
 	 * @param GcCode
 	 * @param uri
-	 * @param DescriptionImageFolder
-	 *            Config.settings.DescriptionImageFolder.getValue()
-	 * @param DescriptionImageFolderLocal
-	 *            Config.settings.DescriptionImageFolderLocal
 	 * @return
 	 */
 	public static String BuildImageFilename(String GcCode, URI uri) {
@@ -142,10 +139,6 @@ public class DescriptionImageGrabber {
 	 * @param suppressNonLocalMedia
 	 * @param NonLocalImages
 	 * @param NonLocalImagesUrl
-	 * @param DescriptionImageFolder
-	 *            Config.settings.DescriptionImageFolder.getValue()
-	 * @param DescriptionImageFolderLocal
-	 *            Config.settings.DescriptionImageFolderLocal.getValue()
 	 * @return
 	 */
 	public static String ResolveImages(Cache Cache, String html, boolean suppressNonLocalMedia, LinkedList<String> NonLocalImages, LinkedList<String> NonLocalImagesUrl) {
@@ -240,7 +233,7 @@ public class DescriptionImageGrabber {
 
 	public static Boolean Download(String uri, String local) {
 
-		File localFile = new File(local);
+		File localFile = FileFactory.createFile(local);
 
 		try {
 			new Downloader(new URL(uri), localFile).run();
@@ -265,7 +258,7 @@ public class DescriptionImageGrabber {
 		// {
 		// return true;
 		// }
-		// File file = new File(local);
+		// File file = FileFactory.createFile(local);
 		// URLConnection con = aURL.openConnection();
 		// con.setConnectTimeout(5000);
 		// con.setReadTimeout(10000);
@@ -394,8 +387,6 @@ public class DescriptionImageGrabber {
 	}
 
 	/**
-	 * @param Staging
-	 *            Config.settings.StagingAPI.getValue()
 	 * @param ip
 	 * @param descriptionImagesUpdated
 	 * @param additionalImagesUpdated
@@ -404,18 +395,6 @@ public class DescriptionImageGrabber {
 	 * @param name
 	 * @param description
 	 * @param url
-	 * @param DescriptionImageFolder
-	 *            Config.settings.SpoilerFolder.getValue()
-	 * @param DescriptionImageFolderLocal
-	 *            Config.settings.SpoilerFolderLocal.getValue()
-	 * @param AccessToken
-	 *            Config.GetAccessToken(true)
-	 * @param DescriptionImageFolder
-	 *            Config.settings.DescriptionImageFolder.getValue()
-	 * @param DescriptionImageFolderLocal
-	 *            Config.settings.DescriptionImageFolderLocal.getValue() * @param conectionTimeout
-	 *            Config.settings.conection_timeout.getValue()
-	 * @param socketTimeout
 	 *            Config.settings.socket_timeout.getValue()
 	 * @return ErrorCode Use with<br>
 	 *         if (result == GroundspeakAPI.CONNECTION_TIMEOUT)<br>
@@ -543,9 +522,13 @@ public class DescriptionImageGrabber {
 					String decodedImageName = key;
 
 					String local = BuildAdditionalImageFilename(gcCode, decodedImageName, uri);
-					if (new File(local).exists()) {
+					if (FileFactory.createFile(local).exists()) {
 						// Spoiler ohne den Hash im Dateinamen löschen
-						new File(local).delete();
+						try {
+							FileFactory.createFile(local).delete();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 					}
 					// Local Filename mit Hash erzeugen, damit Änderungen der Datei ohne Änderungen des Dateinamens erkannt werden
 					// können
@@ -557,10 +540,10 @@ public class DescriptionImageGrabber {
 					// Hier jetzt mit @ als Eingrenzung des Hashs
 					local = BuildAdditionalImageFilenameHashNew(gcCode, decodedImageName, uri);
 					String filename = local.substring(local.lastIndexOf('/') + 1);
-					File oldFile = new File(localOld);
+					File oldFile = FileFactory.createFile(localOld);
 					if (oldFile.exists()) {
 						try {
-							oldFile.renameTo(new File(local));
+							oldFile.renameTo(FileFactory.createFile(local));
 							afiles.add(filename);
 						} catch (Exception ex) {
 							log.error("Error trying to rename Spoiler with old Name format", ex.getMessage());
@@ -606,7 +589,7 @@ public class DescriptionImageGrabber {
 							// file enthält nur den Dateinamen, nicht den Pfad. Diesen Dateinamen um den Pfad erweitern, in dem hier die
 							// Spoiler gespeichert wurden
 							String path = getSpoilerPath(gcCode);
-							File f = new File(path + '/' + file);
+							File f = FileFactory.createFile(path + '/' + file);
 							try {
 								f.delete();
 							} catch (Exception ex) {
@@ -626,7 +609,7 @@ public class DescriptionImageGrabber {
 		boolean imagePathDirExists = FileIO.DirectoryExists(imagePath);
 
 		if (imagePathDirExists) {
-			File dir = new File(imagePath);
+			File dir = FileFactory.createFile(imagePath);
 			FilenameFilter filter = new FilenameFilter() {
 				@Override
 				public boolean accept(File dir, String filename) {
@@ -657,10 +640,6 @@ public class DescriptionImageGrabber {
 	 * @param GcCode
 	 * @param ImageName
 	 * @param uri
-	 * @param SpoilerFolder
-	 *            Config.settings.SpoilerFolder.getValue()
-	 * @param SpoilerFolderLocal
-	 *            Config.settings.SpoilerFolderLocal.getValue()
 	 * @return
 	 */
 	public static String BuildAdditionalImageFilename(String GcCode, String ImageName, URI uri) {
@@ -707,10 +686,6 @@ public class DescriptionImageGrabber {
 	 * @param GcCode
 	 * @param ImageName
 	 * @param uri
-	 * @param SpoilerFolder
-	 *            Config.settings.SpoilerFolder.getValue()
-	 * @param SpoilerFolderLocal
-	 *            Config.settings.SpoilerFolderLocal.getValue()
 	 * @return
 	 */
 	public static String BuildAdditionalImageFilenameHashNew(String GcCode, String ImageName, URI uri) {
@@ -734,9 +709,9 @@ public class DescriptionImageGrabber {
 
 	private static boolean HandleMissingImages(boolean imageLoadError, URI uri, String local) {
 		try {
-			File file = new File(local + "_broken_link.txt");
+			File file = FileFactory.createFile(local + "_broken_link.txt");
 			if (!file.exists()) {
-				File file2 = new File(local + ".1st");
+				File file2 = FileFactory.createFile(local + ".1st");
 				if (file2.exists()) {
 					// After first try, we can be sure that the image cannot be loaded.
 					// At this point mark the image as loaded and go ahead.
@@ -762,14 +737,22 @@ public class DescriptionImageGrabber {
 	}
 
 	private static void DeleteMissingImageInformation(String local) {
-		File file = new File(local + "_broken_link.txt");
+		File file = FileFactory.createFile(local + "_broken_link.txt");
 		if (file.exists()) {
-			file.delete();
+			try {
+				file.delete();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
-		file = new File(local + ".1st");
+		file = FileFactory.createFile(local + ".1st");
 		if (file.exists()) {
-			file.delete();
+			try {
+				file.delete();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

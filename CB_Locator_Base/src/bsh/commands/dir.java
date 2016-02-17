@@ -7,13 +7,14 @@
  */
 package bsh.commands;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import CB_Utils.fileProvider.FileFactory;
 import bsh.CallStack;
 import bsh.Interpreter;
 
@@ -56,7 +57,7 @@ public class dir {
 		Arrays.sort(files);
 
 		for (int i = 0; i < files.length; i++) {
-			File f = new File(dir + File.separator + files[i]);
+			File f = FileFactory.createFile(dir + File.separator + files[i]);
 			StringBuilder sb = new StringBuilder();
 			sb.append(f.canRead() ? "r" : "-");
 			sb.append(f.canWrite() ? "w" : "-");
