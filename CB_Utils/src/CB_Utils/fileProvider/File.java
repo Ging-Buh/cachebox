@@ -35,9 +35,9 @@ public abstract class File {
 
     public abstract String[] list(FilenameFilter filenameFilter);
 
-    public abstract int length();
+    public abstract long length();
 
-    public abstract void createNewFile() throws IOException;
+    public abstract boolean createNewFile() throws IOException;
 
     public abstract String getName();
 
@@ -67,6 +67,8 @@ public abstract class File {
 
     public abstract void setLastModified(long time);
 
-    public abstract String getAbsoluteFile();
+    public abstract File getAbsoluteFile();
+
+    public abstract int compareTo(File otherFile);
 }
 
