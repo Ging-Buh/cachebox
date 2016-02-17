@@ -16,13 +16,14 @@
 package de.cachebox_test;
 
 import java.io.BufferedReader;
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import CB_Utils.fileProvider.FileFactory;
 import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
 import org.slf4j.LoggerFactory;
@@ -699,13 +700,13 @@ public class splash extends Activity {
 			try {
 				String testFolderName = externalSd + "/Test";
 
-				File testFolder = new File(testFolderName);
+				File testFolder = FileFactory.createFile(testFolderName);
 
-				sandboxParentPath = new File(externalSd).getParent() + "/Android/data/" + getPackageName();
+				sandboxParentPath = FileFactory.createFile(externalSd).getParent() + "/Android/data/" + getPackageName();
 
-				sandboxPath = new File(sandboxParentPath + "/files");
+				sandboxPath = FileFactory.createFile(sandboxParentPath + "/files");
 
-				File test = new File(testFolder + "/Test.txt");
+				File test = FileFactory.createFile(testFolder + "/Test.txt");
 				testFolder.mkdirs();
 				test.createNewFile();
 				if (!test.exists()) {
@@ -721,12 +722,12 @@ public class splash extends Activity {
 				// Check Sandbox Path
 				try {
 					// create Sandbox folder with getExternalFilesDir(null);
-					getExternalFilesDir(null); // new File(sandboxParentPath).mkdirs(); dosen't work
+					getExternalFilesDir(null); // FileFactory.createFile(sandboxParentPath).mkdirs(); dosen't work
 
 					String testFolderName = sandboxPath.getAbsolutePath() + File.separator + "Test";
 
-					File testFolder = new File(testFolderName);
-					File test = new File(testFolderName + File.separator + "Test.txt");
+					File testFolder = FileFactory.createFile(testFolderName);
+					File test = FileFactory.createFile(testFolderName + File.separator + "Test.txt");
 					testFolder.mkdirs();
 					test.createNewFile();
 					if (!test.exists()) {
@@ -859,7 +860,7 @@ public class splash extends Activity {
 				} else {
 					// Check can Read/Write
 
-					File f = new File(extPath);
+					File f = FileFactory.createFile(extPath);
 					if (f.canWrite()) {
 						if (f.canRead()) {
 							return f.getAbsolutePath(); // ext SD-Card is plugged in
@@ -870,7 +871,7 @@ public class splash extends Activity {
 					String appPath = this.getApplication().getApplicationContext().getExternalFilesDir(null).getAbsolutePath();
 					int Pos = appPath.indexOf("/Android/data/");
 					String p = appPath.substring(Pos);
-					File fi = new File(extPath + p);// "/Android/data/de.cachebox_test/files");
+					File fi = FileFactory.createFile(extPath + p);// "/Android/data/de.cachebox_test/files");
 					fi.mkdirs();
 					if (fi.canWrite()) {
 						if (fi.canRead()) {
@@ -1127,7 +1128,7 @@ public class splash extends Activity {
 
 			// create .nomedia Files
 			try {
-				CreateFile = new File(workPath + "/data/.nomedia");
+				CreateFile = FileFactory.createFile(workPath + "/data/.nomedia");
 				CreateFile.getParentFile().mkdirs();
 				CreateFile.createNewFile();
 			} catch (IOException e) {
@@ -1135,7 +1136,7 @@ public class splash extends Activity {
 			}
 
 			try {
-				CreateFile = new File(workPath + "/skins/.nomedia");
+				CreateFile = FileFactory.createFile(workPath + "/skins/.nomedia");
 				CreateFile.getParentFile().mkdirs();
 				CreateFile.createNewFile();
 			} catch (IOException e) {
@@ -1143,7 +1144,7 @@ public class splash extends Activity {
 			}
 
 			try {
-				CreateFile = new File(workPath + "/repository/.nomedia");
+				CreateFile = FileFactory.createFile(workPath + "/repository/.nomedia");
 				CreateFile.getParentFile().mkdirs();
 				CreateFile.createNewFile();
 			} catch (IOException e) {
@@ -1151,7 +1152,7 @@ public class splash extends Activity {
 			}
 
 			try {
-				CreateFile = new File(workPath + "/Repositories/.nomedia");
+				CreateFile = FileFactory.createFile(workPath + "/Repositories/.nomedia");
 				CreateFile.getParentFile().mkdirs();
 				CreateFile.createNewFile();
 			} catch (IOException e) {
@@ -1159,7 +1160,7 @@ public class splash extends Activity {
 			}
 
 			try {
-				CreateFile = new File(workPath + "/cache/.nomedia");
+				CreateFile = FileFactory.createFile(workPath + "/cache/.nomedia");
 				CreateFile.getParentFile().mkdirs();
 				CreateFile.createNewFile();
 			} catch (IOException e) {

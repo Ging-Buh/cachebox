@@ -16,7 +16,7 @@
 package CB_Utils.Log;
 
 import java.io.BufferedReader;
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import CB_Utils.fileProvider.FileFactory;
 import org.slf4j.LoggerFactory;
 
 import CB_Utils.Plattform;
@@ -84,18 +85,22 @@ public class CB_SLF4J {
 		logFolder = (WORKPATH + "/Logs").replace("\\", "/");
 		logBackXmlFile = logFolder + "/logback.xml";
 
-		File logFolderFiile = new File(logFolder);
+		File logFolderFiile = FileFactory.createFile(logFolder);
 
 		if (logFolderFiile.exists() && logFolderFiile.isDirectory()) {// delete all logs are not from today
 
 			String fileNames[] = logFolderFiile.list();
 			for (String fileName : fileNames) {
 				if (!fileName.endsWith("logback.xml")) {
-					File file = new File(logFolder + "/" + fileName);
+					File file = FileFactory.createFile(logFolder + "/" + fileName);
 
 					if (file.isFile() && file.lastModified() < System.currentTimeMillis() - (24 * 60 * 60 * 100)) {
 						// file is older then 24h, so we delete
-						file.delete();
+						try {
+							file.delete();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}
@@ -103,7 +108,7 @@ public class CB_SLF4J {
 			logFolderFiile.mkdirs();
 		}
 
-		if (new File(logBackXmlFile).exists() || LogLevel.isLogLevel(LogLevel.ERROR)) {
+		if (FileFactory.createFile(logBackXmlFile).exists() || LogLevel.isLogLevel(LogLevel.ERROR)) {
 			Initial();
 		}
 	}
@@ -114,7 +119,7 @@ public class CB_SLF4J {
 
 		boolean xmlLogbackInitial = false;
 
-		if (new File(logBackXmlFile).exists()) {// if logback.xml exists then initial with this
+		if (FileFactory.createFile(logBackXmlFile).exists()) {// if logback.xml exists then initial with this
 
 			// first change <property name="LOG_DIR" inside logback.xml to workpath/Logs
 			String xml = null;
@@ -266,7 +271,7 @@ public class CB_SLF4J {
 
 	public static void setLogLevel(LogLevel level) {
 		LogLevel.setLogLevel(level);
-		if (that != null && (new File(that.logBackXmlFile).exists() || LogLevel.isLogLevel(LogLevel.ERROR))) {
+		if (that != null && (FileFactory.createFile(that.logBackXmlFile).exists() || LogLevel.isLogLevel(LogLevel.ERROR))) {
 			that.Initial();
 		}
 	}

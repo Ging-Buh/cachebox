@@ -15,11 +15,12 @@
  */
 package CB_UI_Base.GL_UI.Controls;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
+import CB_Utils.fileProvider.FileFactory;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.Gdx;
@@ -257,7 +258,7 @@ public class ImageLoader {
 
             @Override
             public void run() {
-                final String CachePath = new File(CB_UI_Base_Settings.ImageCacheFolder.getValue()).getAbsolutePath();
+                final String CachePath = FileFactory.createFile(CB_UI_Base_Settings.ImageCacheFolder.getValue()).getAbsolutePath();
 
                 // Search first slash after Http or www
                 int slashPos = -1;
@@ -287,7 +288,7 @@ public class ImageLoader {
                 try {
                     URL url = new URL(iconUrl);
 
-                    final Downloader dl = new Downloader(url, new File(CachePath + LocalPath));
+                    final Downloader dl = new Downloader(url, FileFactory.createFile(CachePath + LocalPath));
 
                     Thread DLThread = new Thread(new Runnable() {
                         @Override

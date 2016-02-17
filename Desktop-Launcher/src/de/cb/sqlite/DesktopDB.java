@@ -1,6 +1,8 @@
 package de.cb.sqlite;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
+
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -11,6 +13,7 @@ import java.util.Map.Entry;
 
 import CB_Core.Database;
 import CB_Utils.Log.LogLevel;
+import CB_Utils.fileProvider.FileFactory;
 import de.cb.sqlite.CoreCursor;
 
 public class DesktopDB extends Database {
@@ -40,7 +43,7 @@ public class DesktopDB extends Database {
 	@Override
 	public void Initialize() {
 		if (myDB == null) {
-			File dbfile = new File(databasePath);
+			File dbfile = FileFactory.createFile(databasePath);
 			if (!dbfile.exists())
 				Reset();
 
@@ -57,11 +60,15 @@ public class DesktopDB extends Database {
 	@Override
 	public void Reset() {
 		// if exists, delete old database file
-		File file = new File(databasePath);
+		File file = FileFactory.createFile(databasePath);
 		if (file.exists()) {
 			if (LogLevel.isLogLevel(LogLevel.DEBUG))
 				log.debug("RESET DB, delete file: " + databasePath);
-			file.delete();
+			try {
+				file.delete();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 		try {

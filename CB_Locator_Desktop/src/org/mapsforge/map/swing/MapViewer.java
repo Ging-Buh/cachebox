@@ -19,10 +19,11 @@ package org.mapsforge.map.swing;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.util.Arrays;
 import java.util.prefs.Preferences;
 
+import CB_Utils.fileProvider.FileFactory;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.MapPosition;
@@ -115,7 +116,7 @@ public final class MapViewer {
 
 	private static TileCache createTileCache() {
 		TileCache firstLevelTileCache = new InMemoryTileCache(64);
-		File cacheDirectory = new File(System.getProperty("java.io.tmpdir"), "mapsforge");
+		File cacheDirectory = FileFactory.createFile(System.getProperty("java.io.tmpdir"), "mapsforge");
 		TileCache secondLevelTileCache = new FileSystemTileCache(1024, cacheDirectory, GRAPHIC_FACTORY);
 		return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
 	}
@@ -143,7 +144,7 @@ public final class MapViewer {
 			throw new IllegalArgumentException("too many arguments: " + Arrays.toString(args));
 		}
 
-		File mapFile = new File(args[0]);
+		File mapFile = FileFactory.createFile(args[0]);
 		if (!mapFile.exists()) {
 			throw new IllegalArgumentException("file does not exist: " + mapFile);
 		} else if (!mapFile.isFile()) {

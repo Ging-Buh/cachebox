@@ -40,7 +40,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.Closeable;
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -420,7 +420,7 @@ public class Downloader implements Runnable {
 						parent.mkdirs();
 					}
 
-					bos = new BufferedOutputStream(new FileOutputStream(f));
+					bos = new BufferedOutputStream(new FileOutputStream(f.getJavaIoFile()));
 				} catch (Exception e) {
 					progressString = "Failed to open output stream to local file";
 					progressUpdated = true;

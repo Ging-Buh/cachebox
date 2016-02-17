@@ -15,9 +15,10 @@
  */
 package CB_UI.GL_UI.Views;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.io.IOException;
 
+import CB_Utils.fileProvider.FileFactory;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.Files.FileType;
@@ -306,7 +307,7 @@ public class splash extends MainViewBase {
 		ini_Dir(Config.SpoilerFolder.getValue());
 
 		// prevent mediascanner to parse all the images in the cachebox folder
-		File nomedia = new File(Config.mWorkPath, ".nomedia");
+		File nomedia = FileFactory.createFile(Config.mWorkPath, ".nomedia");
 		if (!nomedia.exists()) {
 			try {
 				nomedia.createNewFile();
@@ -318,7 +319,7 @@ public class splash extends MainViewBase {
 	}
 
 	private void ini_Dir(String Folder) {
-		File ff = new File(Folder);
+		File ff = FileFactory.createFile(Folder);
 		if (!ff.exists()) {
 			ff.mkdir();
 		}

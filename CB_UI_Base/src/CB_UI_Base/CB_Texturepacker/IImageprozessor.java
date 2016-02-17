@@ -1,6 +1,6 @@
 package CB_UI_Base.CB_Texturepacker;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
 
 import com.badlogic.gdx.utils.Array;
 

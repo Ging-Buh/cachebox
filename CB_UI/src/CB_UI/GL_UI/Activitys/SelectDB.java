@@ -15,11 +15,12 @@
  */
 package CB_UI.GL_UI.Activitys;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.text.SimpleDateFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_Utils.fileProvider.FileFactory;
 import org.slf4j.LoggerFactory;
 
 import CB_Core.CoreSettingsForward;
@@ -430,7 +431,7 @@ public class SelectDB extends ActivityBase {
 				Database.FieldNotes.StartUp(Config.mWorkPath + "/User/FieldNotes.db3");
 
 				Config.AcceptChanges();
-				AktFile = new File(database);
+				AktFile = FileFactory.createFile(database);
 				selectDB();
 
 				break;

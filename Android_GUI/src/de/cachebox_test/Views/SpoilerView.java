@@ -1,6 +1,6 @@
 package de.cachebox_test.Views;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.util.ArrayList;
 
 import CB_Core.Types.Cache;
@@ -78,7 +78,7 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 		PlatformConnector.setStartPictureApp(new iStartPictureApp() {
 			@Override
 			public void Start(String file) {
-				Uri uriToImage = Uri.fromFile(new File(file));
+				Uri uriToImage = Uri.fromFile(new java.io.File(file));
 				Intent shareIntent = new Intent(Intent.ACTION_VIEW);
 				shareIntent.setDataAndType(uriToImage, "image/*");
 				main.mainActivity.startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.app_name)));

@@ -16,30 +16,29 @@
 
 package CB_Utils.Util.CopyHelper;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 
 /**
  * A structure inherits the Name,SourcePath and TargetPath of an Copy job
- * 
+ *
  * @author Longri
  */
 public class CopyRule {
-	public File sourcePath;
-	public File targetPath;
-	public String Name;
+    public File sourcePath;
+    public File targetPath;
+    public String Name;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param source
-	 *            SourcePath as String
-	 * @param target
-	 *            TargetPath as String
-	 */
-	public CopyRule(String source, String target) {
-		sourcePath = new File(source);
-		Name = sourcePath.getName();
-		targetPath = new File(target + "/" + Name);
-	}
+    /**
+     * Constructor
+     *
+     * @param source SourcePath as String
+     * @param target TargetPath as String
+     */
+    public CopyRule(String source, String target) {
+        sourcePath = FileFactory.createFile(source);
+        Name = sourcePath.getName();
+        targetPath = FileFactory.createFile(target + "/" + Name);
+    }
 
 }

@@ -1,6 +1,6 @@
 package CB_Core.Import;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -23,6 +23,7 @@ import CB_RpcCore.Functions.RpcAnswer_GetCacheList;
 import CB_RpcCore.Functions.RpcAnswer_GetExportList.ListItem;
 import CB_RpcCore.Functions.RpcMessage_GetCacheList;
 import CB_Utils.Util.SDBM_Hash;
+import CB_Utils.fileProvider.FileFactory;
 import cb_rpc.Functions.RpcAnswer;
 import cb_rpc.Settings.CB_Rpc_Settings;
 import de.cb.sqlite.Database_Core.Parameters;
@@ -123,7 +124,7 @@ public class ImportCBServer {
 										url = url.substring(0, pos); // Port abschneiden, da dieser bereits in der imageURL der Images steht
 									}
 									url = "http://" + url + image.ImageUrl;
-									File file = new File(image.LocalPath);
+									File file = FileFactory.createFile(image.LocalPath);
 									url += cache.getGcCode().substring(0, 4) + "/";
 
 									try {
@@ -147,7 +148,7 @@ public class ImportCBServer {
 											imagePath = CB_Core_Settings.DescriptionImageFolderLocal.getValue() + "/" + cache.getGcCode().substring(0, 4) + "/" + file.getName();
 										}
 									}
-									file = new File(imagePath);
+									file = FileFactory.createFile(imagePath);
 									if (!file.exists()) {
 										DescriptionImageGrabber.Download(url, imagePath);
 									}

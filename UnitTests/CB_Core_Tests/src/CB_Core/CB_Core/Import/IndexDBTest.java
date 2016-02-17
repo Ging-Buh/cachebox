@@ -1,7 +1,8 @@
 package CB_Core.CB_Core.Import;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
 
+import CB_Utils.fileProvider.FileFactory;
 import __Static.InitTestDBs;
 import junit.framework.TestCase;
 import CB_Core.Import.CacheInfoList;
@@ -12,7 +13,7 @@ public class IndexDBTest extends TestCase {
 
 		// initialize Database
 		String database = "./testdata/test.db3";
-		File dbFile = new File(database);
+		File dbFile = FileFactory.createFile(database);
 
 		if (!dbFile.exists()) {
 			// Um diesen Test ausf�hren zu k�nnen, muss eine db3 exestieren.

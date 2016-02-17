@@ -16,13 +16,14 @@ package CB_UI_Base.CB_Texturepacker;
  * limitations under the License.
  ******************************************************************************/
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.regex.Pattern;
 
+import CB_Utils.fileProvider.FileFactory;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
@@ -89,7 +90,7 @@ public class TexturePackerFileProcessor extends FileProcessor {
 				settings = new Settings(defaultSettings);
 			// Merge settings from current directory.
 			try {
-				json.readFields(settings, new JsonReader().parse(new FileReader(settingsFile)));
+				json.readFields(settings, new JsonReader().parse(new FileReader(settingsFile.getJavaIoFile())));
 			} catch (SerializationException ex) {
 				throw new GdxRuntimeException("Error reading settings file: " + settingsFile, ex);
 			}
@@ -103,7 +104,7 @@ public class TexturePackerFileProcessor extends FileProcessor {
 	public ArrayList<Entry> process(File[] files, File outputRoot) throws Exception {
 		// Delete pack file and images.
 		if (outputRoot.exists()) {
-			new File(outputRoot, packFileName).delete();
+			FileFactory.createFile(outputRoot, packFileName).delete();
 			FileProcessor deleteProcessor = new FileProcessor() {
 				protected void processFile(Entry inputFile) throws Exception {
 					inputFile.inputFile.delete();

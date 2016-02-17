@@ -1,11 +1,14 @@
 package de.cb.sqlite;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
+
+import java.io.IOException;
 import java.util.Map.Entry;
 
 import CB_Core.Database;
 import CB_Utils.Log.LogLevel;
 import CB_Utils.Util.FileIO;
+import CB_Utils.fileProvider.FileFactory;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -45,11 +48,15 @@ public class AndroidDB extends Database {
 	public void Reset() {
 
 		// if exists, delete old database file
-		File file = new File(databasePath);
+		File file = FileFactory.createFile(databasePath);
 		if (file.exists()) {
 			if (LogLevel.isLogLevel(LogLevel.DEBUG))
 				log.debug("RESET DB, delete file: " + databasePath);
-			file.delete();
+			try {
+				file.delete();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 		try {
@@ -64,7 +71,7 @@ public class AndroidDB extends Database {
 
 	public File getDatabasePath(String dbfile) {
 
-		File result = new File(dbfile);
+		File result = FileFactory.createFile(dbfile);
 
 		if (!result.getParentFile().exists()) {
 			result.getParentFile().mkdirs();

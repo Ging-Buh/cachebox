@@ -15,8 +15,9 @@
  */
 package CB_Core.CB_Core.Import;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
 
+import CB_Utils.fileProvider.FileFactory;
 import org.slf4j.LoggerFactory;
 
 import CB_Core.Database;
@@ -61,7 +62,7 @@ public class GpxImportTest extends TestCase {
 		Database.Data.beginTransaction();
 
 		try {
-			GPXFileImporter importer = new GPXFileImporter(new File("./testdata/gpx/GC2T9RW.gpx"));
+			GPXFileImporter importer = new GPXFileImporter(FileFactory.createFile("./testdata/gpx/GC2T9RW.gpx"));
 			assertTrue("Objekt muss konstruierbar sein", importer != null);
 			importer.doImport(importHandler, 0);
 
@@ -98,7 +99,7 @@ public class GpxImportTest extends TestCase {
 		Database.Data.beginTransaction();
 
 		try {
-			GPXFileImporter importer = new GPXFileImporter(new File("./testdata/gpx/GC52BKF.gpx"));
+			GPXFileImporter importer = new GPXFileImporter(FileFactory.createFile("./testdata/gpx/GC52BKF.gpx"));
 			assertTrue("Objekt muss konstruierbar sein", importer != null);
 			importer.doImport(importHandler, 0);
 

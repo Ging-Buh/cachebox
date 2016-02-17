@@ -1,12 +1,13 @@
 package CB_Core.Types;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 import CB_Core.Database;
+import CB_Utils.fileProvider.FileFactory;
 import de.cb.sqlite.CoreCursor;
 import de.cb.sqlite.Database_Core.Parameters;
 
@@ -31,7 +32,7 @@ public class Category extends ArrayList<GpxFilename> implements Comparable<Categ
 	 * @return
 	 */
 	public GpxFilename addGpxFilename(String filename) {
-		filename = new File(filename).getName();
+		filename = FileFactory.createFile(filename).getName();
 
 		Parameters args = new Parameters();
 		args.put("GPXFilename", filename);

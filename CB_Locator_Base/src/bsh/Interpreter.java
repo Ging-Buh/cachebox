@@ -34,7 +34,9 @@
 package bsh;
 
 import java.io.BufferedReader;
-import java.io.File;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -523,7 +525,7 @@ public class Interpreter implements Runnable, ConsoleInterface, Serializable {
 		File file = pathToFile(filename);
 		if (Interpreter.DEBUG)
 			debug("Sourcing file: " + file);
-		Reader sourceIn = new BufferedReader(new FileReader(file));
+		Reader sourceIn = new BufferedReader(new FileReader(file.getJavaIoFile()));
 		try {
 			return eval(sourceIn, nameSpace, filename);
 		} finally {
@@ -918,7 +920,7 @@ public class Interpreter implements Runnable, ConsoleInterface, Serializable {
 		try {
 			String rcfile =
 			// Default is c:\windows under win98, $HOME under Unix
-			System.getProperty("user.home") + File.separator + ".bshrc";
+			System.getProperty("user.home") + java.io.File.separator + ".bshrc";
 			source(rcfile, globalNameSpace);
 		} catch (Exception e) {
 			// squeltch security exception, filenotfoundexception
@@ -931,17 +933,17 @@ public class Interpreter implements Runnable, ConsoleInterface, Serializable {
 	 * Localize a path to the file name based on the bsh.cwd interpreter working directory.
 	 */
 	public File pathToFile(String fileName) throws IOException {
-		File file = new File(fileName);
+		File file = FileFactory.createFile(fileName);
 
 		// if relative, fix up to bsh.cwd
 		if (!file.isAbsolute()) {
 			String cwd = (String) getu("bsh.cwd");
-			file = new File(cwd + File.separator + fileName);
+			file = FileFactory.createFile(cwd + java.io.File.separator + fileName);
 		}
 
 		// The canonical file name is also absolute.
 		// No need for getAbsolutePath() here...
-		return new File(file.getCanonicalPath());
+		return FileFactory.createFile(file.getCanonicalPath());
 	}
 
 	public static void redirectOutputToFile(String filename) {

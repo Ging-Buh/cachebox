@@ -15,12 +15,13 @@
  */
 package CB_UI.GL_UI.Activitys;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_Utils.fileProvider.FileFactory;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -826,7 +827,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 		Config.AcceptChanges();
 		String directoryPath = Config.PocketQueryFolder.getValue();
 		// chk exist import folder
-		File directory = new File(directoryPath);
+		File directory = FileFactory.createFile(directoryPath);
 
 		ImportThread(directoryPath, directory);
 

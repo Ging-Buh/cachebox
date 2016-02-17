@@ -16,12 +16,13 @@
  */
 package org.mapsforge.map.rendertheme;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import CB_Utils.fileProvider.FileFactory;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.map.model.DisplayModel;
@@ -143,7 +144,7 @@ public final class XmlUtils {
 			File file = getFile(relativePathPrefix, src.substring(PREFIX_FILE.length()));
 			if (!file.exists()) {
 				final String pathName = src.substring(PREFIX_FILE.length());
-				if (pathName.length() > 0 && pathName.charAt(0) == File.separatorChar) {
+				if (pathName.length() > 0 && pathName.charAt(0) == java.io.File.separatorChar) {
 					file = getFile(relativePathPrefix, pathName.substring(1));
 				}
 				if (!file.exists()) {
@@ -154,7 +155,7 @@ public final class XmlUtils {
 			} else if (!file.canRead()) {
 				throw new FileNotFoundException("cannot read file: " + file.getAbsolutePath());
 			}
-			return new FileInputStream(file);
+			return new FileInputStream(file.getJavaIoFile());
 		}
 
 		throw new FileNotFoundException("invalid bitmap source: " + src);
@@ -176,10 +177,10 @@ public final class XmlUtils {
 	}
 
 	private static File getFile(String parentPath, String pathName) {
-		if (pathName.charAt(0) == File.separatorChar) {
-			return new File(pathName);
+		if (pathName.charAt(0) == java.io.File.separatorChar) {
+			return FileFactory.createFile(pathName);
 		}
-		return new File(parentPath, pathName);
+		return FileFactory.createFile(parentPath, pathName);
 	}
 
 	private XmlUtils() {

@@ -1,12 +1,13 @@
 package CB_UI.GL_UI.Main.Actions;
 
 import java.io.BufferedWriter;
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
+import CB_Utils.fileProvider.FileFactory;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import CB_Core.Database;
@@ -163,11 +164,15 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
 
 	private void EXPORT(final String FileName, String Path) {
 		String exportPath = Path + "/" + FileName;
-		File exportFile = new File(exportPath);
+		File exportFile = FileFactory.createFile(exportPath);
 
 		// Delete File if exist
 		if (exportFile.exists())
-			exportFile.delete();
+			try {
+				exportFile.delete();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
 		// Export all Caches from DB
 		final ArrayList<String> allGeocodesForExport = Database.Data.Query.getGcCodes();
@@ -178,7 +183,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
 
 		final GpxSerializer ser = new GpxSerializer();
 		try {
-			final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(exportFile), "UTF-8"));
+			final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(exportFile.getJavaIoFile()), "UTF-8"));
 
 			pD = ProgressDialog.Show("export", new RunnableReadyHandler() {
 

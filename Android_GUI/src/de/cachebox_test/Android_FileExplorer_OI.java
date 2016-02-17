@@ -1,6 +1,6 @@
 package de.cachebox_test;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
 
 import org.openintents.intents.FileManagerIntents;
 
@@ -22,7 +22,7 @@ public class Android_FileExplorer_OI extends CB_FileExplorer_Base {
 		Intent intent = new Intent(FileManagerIntents.ACTION_PICK_FILE);
 
 		// Construct URI from file name.
-		File file = new File(initialPath);
+		java.io.File file = new java.io.File(initialPath);
 		intent.setData(Uri.fromFile(file));
 
 		// Set fancy title and button (optional)
@@ -43,7 +43,7 @@ public class Android_FileExplorer_OI extends CB_FileExplorer_Base {
 		Intent intent = new Intent(FileManagerIntents.ACTION_PICK_DIRECTORY);
 
 		// Construct URI from file name.
-		File file = new File(initialPath);
+		java.io.File file = new java.io.File(initialPath);
 		intent.setData(Uri.fromFile(file));
 
 		// Set fancy title and button (optional)

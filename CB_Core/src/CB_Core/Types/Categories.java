@@ -1,10 +1,11 @@
 package CB_Core.Types;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
 
 import CB_Core.Database;
 import CB_Core.FilterProperties;
 import CB_Utils.Util.MoveableList;
+import CB_Utils.fileProvider.FileFactory;
 import de.cb.sqlite.CoreCursor;
 import de.cb.sqlite.Database_Core.Parameters;
 
@@ -18,7 +19,7 @@ public class Categories extends MoveableList<Category> {
 	}
 
 	public Category getCategory(String filename) {
-		filename = new File(filename).getName();
+		filename = FileFactory.createFile(filename).getName();
 		for (int i = 0, n = this.size(); i < n; i++) {
 			Category category = this.get(i);
 			if (filename.toUpperCase().equals(category.GpxFilename.toUpperCase())) {
@@ -42,7 +43,7 @@ public class Categories extends MoveableList<Category> {
 	}
 
 	public Category createNewCategory(String filename) {
-		filename = new File(filename).getName();
+		filename = FileFactory.createFile(filename).getName();
 
 		// neue Category in DB anlegen
 		Category result = new Category();

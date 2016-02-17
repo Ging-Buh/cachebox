@@ -1,9 +1,10 @@
 package de.cachebox_test;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+import CB_Utils.fileProvider.FileFactory;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -188,8 +189,6 @@ public class ExtAudioRecorder {
 
 	/**
 	 * Sets output file path, call directly after construction/reset.
-	 * 
-	 * @param output
 	 *            file path
 	 */
 	public void setOutputFile(String argPath) {
@@ -303,7 +302,11 @@ public class ExtAudioRecorder {
 				} catch (IOException e) {
 					Log.e(ExtAudioRecorder.class.getName(), "I/O exception occured while closing output file");
 				}
-				(new File(filePath)).delete();
+				try {
+					(FileFactory.createFile(filePath)).delete();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 

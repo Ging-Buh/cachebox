@@ -15,7 +15,7 @@
  */
 package CB_UI.GL_UI.Activitys;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_Utils.fileProvider.FileFactory;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -1007,7 +1008,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 		Config.AcceptChanges();
 		String directoryPath = Config.PocketQueryFolder.getValue();
 		// chk exist import folder
-		File directory = new File(directoryPath);
+		File directory = FileFactory.createFile(directoryPath);
 
 		ImportThread(directoryPath, directory);
 
@@ -1147,11 +1148,19 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 							if (tmp.isDirectory()) {
 								ArrayList<File> ordnerInhalt = FileIO.recursiveDirectoryReader(tmp, new ArrayList<File>());
 								for (File tmp2 : ordnerInhalt) {
-									tmp2.delete();
+									try {
+										tmp2.delete();
+									} catch (IOException e) {
+										e.printStackTrace();
+									}
 								}
 
 							}
-							tmp.delete();
+							try {
+								tmp.delete();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
 						}
 
 					}

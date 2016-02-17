@@ -1,69 +1,71 @@
 package CB_Core.CB_Core.Import;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
+
 import java.util.ArrayList;
 
 import CB_Core.Database;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.ImportHandler;
 import CB_Utils.Util.FileIO;
+import CB_Utils.fileProvider.FileFactory;
 import __Static.InitTestDBs;
 import junit.framework.TestCase;
 
 /**
  * Enth�lt die Tests zum Entpacken von Zip Files und deren anschliesenden GPX Import
- * 
+ *
  * @author Longri
  */
 public class GPX_Unzip_Import_Test extends TestCase {
 
-	/**
-	 * Startet den Unzip Test und Importiert dann die Entpackten GPX Files
-	 * 
-	 * @throws Exception
-	 */
-	public static void testUnzip_Import() throws Exception {
+    /**
+     * Startet den Unzip Test und Importiert dann die Entpackten GPX Files
+     *
+     * @throws Exception
+     */
+    public static void testUnzip_Import() throws Exception {
 
-		// starte Unzip Test
-		UnzipTest.testUnzip();
+        // starte Unzip Test
+        UnzipTest.testUnzip();
 
-		// initialize Database
-		String database = "./testdata/test.db3";
-		InitTestDBs.InitTestDB(database);
+        // initialize Database
+        String database = "./testdata/test.db3";
+        InitTestDBs.InitTestDB(database);
 
-		// Importiere all GPX files
-		ImportHandler importHandler = new ImportHandler();
+        // Importiere all GPX files
+        ImportHandler importHandler = new ImportHandler();
 
-		Database.Data.beginTransaction();
+        Database.Data.beginTransaction();
 
-		try {
+        try {
 
-			File Dir = new File("./testdata/gpx/GS_PQ");
-			ArrayList<File> ordnerInhalt = FileIO.recursiveDirectoryReader(Dir, new ArrayList<File>());
-			for (File tmp : ordnerInhalt) {
-				GPXFileImporter importer = new GPXFileImporter(tmp);
-				assertTrue("Objekt muss konstruierbar sein", importer != null);
-				importer.doImport(importHandler, 0);
-			}
+            File Dir = FileFactory.createFile("./testdata/gpx/GS_PQ");
+            ArrayList<File> ordnerInhalt = FileIO.recursiveDirectoryReader(Dir, new ArrayList<File>());
+            for (File tmp : ordnerInhalt) {
+                GPXFileImporter importer = new GPXFileImporter(tmp);
+                assertTrue("Objekt muss konstruierbar sein", importer != null);
+                importer.doImport(importHandler, 0);
+            }
 
-			Database.Data.setTransactionSuccessful();
-		} finally {
-		}
+            Database.Data.setTransactionSuccessful();
+        } finally {
+        }
 
-		Database.Data.endTransaction();
+        Database.Data.endTransaction();
 
-		// aufgrund der F�lle von Caches und Logs bei diesem Import
-		// wird nur auf die Anzahl getestet!
+        // aufgrund der F�lle von Caches und Logs bei diesem Import
+        // wird nur auf die Anzahl getestet!
 
-		int CacheCount = importHandler.cacheCount;
-		assertTrue("Anzahl der Importierten Caches stimmt nicht", CacheCount == 500);
+        int CacheCount = importHandler.cacheCount;
+        assertTrue("Anzahl der Importierten Caches stimmt nicht", CacheCount == 500);
 
-		int LogCount = importHandler.logCount;
-		assertTrue("Anzahl der Importierten Logs stimmt nicht", LogCount == 2534);
+        int LogCount = importHandler.logCount;
+        assertTrue("Anzahl der Importierten Logs stimmt nicht", LogCount == 2534);
 
-		int WaypointCount = importHandler.waypointCount;
-		assertTrue("Anzahl der Importierten Waypoints stimmt nicht", WaypointCount == 183);
+        int WaypointCount = importHandler.waypointCount;
+        assertTrue("Anzahl der Importierten Waypoints stimmt nicht", WaypointCount == 183);
 
-		// Database.Data.Close();
-	}
+        // Database.Data.Close();
+    }
 }

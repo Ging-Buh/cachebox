@@ -15,10 +15,11 @@
  */
 package CB_UI.GL_UI.Main;
 
-import java.io.File;
+import CB_Utils.fileProvider.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_Utils.fileProvider.FileFactory;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -700,7 +701,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 	private void autoLoadTrack() {
 		String trackPath = Config.TrackFolder.getValue() + "/Autoload";
 		if (FileIO.createDirectory(trackPath)) {
-			File dir = new File(trackPath);
+			File dir = FileFactory.createFile(trackPath);
 			String[] files = dir.list();
 			if (!(files == null)) {
 				if (files.length > 0) {
@@ -710,7 +711,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 				}
 			}
 		} else {
-			File sddir = new File(trackPath);
+			File sddir = FileFactory.createFile(trackPath);
 			sddir.mkdirs();
 		}
 	}
