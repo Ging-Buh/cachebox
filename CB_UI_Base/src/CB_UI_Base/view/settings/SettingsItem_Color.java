@@ -1,6 +1,6 @@
 package CB_UI_Base.view.settings;
 
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Settings.SettingColor;
 
@@ -28,7 +28,7 @@ public class SettingsItem_Color extends SettingsItemBase {
 			return;
 
 		if (colorRec == null) {
-			colorRec = SpriteCacheBase.getThemedSprite("text-field-back");
+			colorRec = Sprites.getSprite("text-field-back");
 			colorRec.setBounds(Bounds.getX(), Bounds.getY(), Bounds.getWidth(), Bounds.getHeight());
 			colorRec.setColor(colorSetting.getValue());
 		}

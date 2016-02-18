@@ -1,13 +1,13 @@
 package CB_UI.GL_UI.Main.Actions;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Main.TabMainView;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
-
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_Show_Search extends CB_Action {
 
@@ -37,6 +37,6 @@ public class CB_Action_Show_Search extends CB_Action {
 
 	@Override
 	public Sprite getIcon() {
-		return SpriteCacheBase.Icons.get(IconName.lupe_27.ordinal());
+		return Sprites.getSprite(IconName.lupe.name());
 	}
 }

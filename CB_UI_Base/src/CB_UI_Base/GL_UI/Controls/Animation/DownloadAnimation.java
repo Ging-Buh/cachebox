@@ -1,6 +1,6 @@
 package CB_UI_Base.GL_UI.Controls.Animation;
 
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
 
 public class DownloadAnimation extends FrameAnimation {
@@ -29,11 +29,11 @@ public class DownloadAnimation extends FrameAnimation {
 	private DownloadAnimation() {
 		super(new CB_RectF(0, 0, 50, 50), "DownloadAnimation");
 
-		addFrame(SpriteCacheBase.getThemedSprite("download-1"));
-		addFrame(SpriteCacheBase.getThemedSprite("download-2"));
-		addFrame(SpriteCacheBase.getThemedSprite("download-3"));
-		addFrame(SpriteCacheBase.getThemedSprite("download-4"));
-		addFrame(SpriteCacheBase.getThemedSprite("download-5"));
+		addFrame(Sprites.getSprite("download-1"));
+		addFrame(Sprites.getSprite("download-2"));
+		addFrame(Sprites.getSprite("download-3"));
+		addFrame(Sprites.getSprite("download-4"));
+		addFrame(Sprites.getSprite("download-5"));
 		play(ANIMATION_DURATION);
 	}
 

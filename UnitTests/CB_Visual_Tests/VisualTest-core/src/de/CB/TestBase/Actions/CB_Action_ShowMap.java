@@ -3,21 +3,19 @@ package de.CB.TestBase.Actions;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.reader.header.MapFileInfo;
 
-import CB_Locator.Coordinate;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Map.Layer;
 import CB_Locator.Map.ManagerBase;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
-
-import com.badlogic.gdx.graphics.g2d.Sprite;
-
 import de.CB.TestBase.Views.MainView;
 import de.CB.TestBase.Views.MapView;
 
@@ -48,7 +46,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 
 	@Override
 	public Sprite getIcon() {
-		return SpriteCacheBase.Icons.get(IconName.map_5.ordinal());
+		return Sprites.getSprite(IconName.map.name());
 	}
 
 	@Override

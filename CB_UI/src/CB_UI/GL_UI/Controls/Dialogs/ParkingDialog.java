@@ -9,7 +9,7 @@ import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.ImageButton;
 import CB_UI_Base.GL_UI.Controls.Label;
@@ -51,9 +51,9 @@ public class ParkingDialog extends ButtonDialog {
 		btSelectWP = new ImageButton(MTBRec, "btSelectWP");
 		btDeleteP = new ImageButton(MTBRec, "btDeleteP");
 
-		btSetGPS.setImage(SpriteCacheBase.getSpriteDrawable("my-parking-set"));
-		btSelectWP.setImage(SpriteCacheBase.getSpriteDrawable("my-parking-wp"));
-		btDeleteP.setImage(SpriteCacheBase.getSpriteDrawable("my-parking-delete"));
+		btSetGPS.setImage(Sprites.getSpriteDrawable("my-parking-set"));
+		btSelectWP.setImage(Sprites.getSpriteDrawable("my-parking-wp"));
+		btDeleteP.setImage(Sprites.getSpriteDrawable("my-parking-delete"));
 
 		btSetGPS.setX(0);
 		btSelectWP.setX(btSetGPS.getMaxX());

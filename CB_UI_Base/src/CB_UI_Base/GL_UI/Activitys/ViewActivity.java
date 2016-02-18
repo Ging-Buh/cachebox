@@ -18,7 +18,7 @@ package CB_UI_Base.GL_UI.Activitys;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -49,7 +49,7 @@ public class ViewActivity extends ActivityBase {
 		super(View.getName());
 
 		dontRenderDialogBackground = true;
-		this.setBackground(SpriteCacheBase.activityBackground);
+		this.setBackground(Sprites.activityBackground);
 
 		this.onOkClik = new OnClickListener() {
 			@Override

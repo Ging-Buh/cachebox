@@ -20,7 +20,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 
 /**
  * Eine Test GLView , die nur ein Image anzeigen soll. Im Einfachsten Fall soll der Richtungspfeil in der Mitte des Schirms plaziert werden.
@@ -49,7 +49,7 @@ public class ArrowView extends CB_View_Base {
 	@Override
 	public void render(Batch batch) {
 
-		Sprite arrow = SpriteCacheBase.Arrows.get(0);
+		Sprite arrow = Sprites.Arrows.get(0);
 		arrow.setRotation(0);
 		arrow.setBounds(-(getWidth() / 2), 0, getWidth(), getHeight());
 		arrow.setOrigin(this.getCenterPosX(), this.getCenterPosY());

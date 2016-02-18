@@ -59,7 +59,7 @@ import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.IRenderFBO;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.ParentInfo;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.ViewID;
 import CB_UI_Base.GL_UI.render3D;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
@@ -583,7 +583,7 @@ public class GL implements ApplicationListener, InputProcessor {
 		}
 
 		if (GL_View_Base.debug && misTouchDown) {
-			Sprite point = SpriteCacheBase.LogIcons.get(14);
+			Sprite point = Sprites.LogIcons.get(14);
 			TouchDownPointer first = touchDownPos.get(0);
 
 			if (first != null) {
@@ -614,10 +614,9 @@ public class GL implements ApplicationListener, InputProcessor {
 			if (FpsInfoSprite != null) {
 				batch.draw(FpsInfoSprite, FpsInfoPos, 2, FpsInfoSize, FpsInfoSize);
 			} else {
-				if (SpriteCacheBase.Stars != null)// SpriteCache is initial
+				if (Sprites.Stars != null)// SpriteCache is initial
 				{
-
-					FpsInfoSprite = new Sprite(SpriteCacheBase.getThemedSprite("pixel2x2"));
+					FpsInfoSprite = new Sprite(Sprites.getSprite("pixel2x2"));
 					FpsInfoSprite.setColor(1.0f, 1.0f, 0.0f, 1.0f);
 					FpsInfoSprite.setSize(FpsInfoSize, FpsInfoSize);
 				}
@@ -688,7 +687,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	public void dispose() {
 		disposeTexture();
 
-		SpriteCacheBase.destroyCache();
+		Sprites.destroyCache();
 		try {
 			Translation.writeMisingStringsFile();
 		} catch (IOException e) {

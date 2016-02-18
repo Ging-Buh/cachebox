@@ -30,7 +30,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Map.Descriptor;
 import CB_UI.GlobalCore;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.MoveableList;
 
@@ -162,7 +162,7 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 									wpi.MapX = (float) MapX;
 									wpi.MapY = (float) MapY;
 									if (cache.isArchived() || !cache.isAvailable())
-										wpi.OverlayIcon = SpriteCacheBase.MapOverlay.get(2);
+										wpi.OverlayIcon = Sprites.MapOverlay.get(2);
 									wpi.UnderlayIcon = getUnderlayIcon(cache, null, iconSize);
 									wpi.Icon = getCacheIcon(cache, iconSize);
 									wpi.Cache = cache;
@@ -249,9 +249,9 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 
 	private Sprite getWaypointIcon(Waypoint waypoint) {
 		if ((waypoint.Type == CacheTypes.MultiStage) && (waypoint.IsStart))
-			return SpriteCacheBase.MapIcons.get(24);
+			return Sprites.MapIcons.get(24);
 		else
-			return SpriteCacheBase.MapIcons.get(waypoint.Type.ordinal());
+			return Sprites.MapIcons.get(waypoint.Type.ordinal());
 	}
 
 	private Sprite getCacheIcon(Cache cache, int iconSize) {
@@ -281,7 +281,7 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 			IconId = 27;
 		else
 			IconId = cache.Type.ordinal();
-		return SpriteCacheBase.MapIcons.get(IconId);
+		return Sprites.MapIcons.get(IconId);
 	}
 
 	private Sprite getSmallMapIcon(Cache cache) {
@@ -348,7 +348,7 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 		if (cache.Type == CacheTypes.Munzee)
 			iconId = 17;
 
-		return SpriteCacheBase.MapIconsSmall.get(iconId);
+		return Sprites.MapIconsSmall.get(iconId);
 
 	}
 
@@ -365,22 +365,22 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 				if ((cache == null) || selectedCache) {
 					if (cache.isLive()) {// set color for underlayIcon to blue if this a LiveCache
 
-						return SpriteCacheBase.MapOverlay.get(5);
+						return Sprites.MapOverlay.get(5);
 					}
-					return SpriteCacheBase.MapOverlay.get(1);
+					return Sprites.MapOverlay.get(1);
 				} else {
 					if (cache.isLive()) {// set color for underlayIcon to blue if this a LiveCache
 
-						return SpriteCacheBase.MapOverlay.get(4);
+						return Sprites.MapOverlay.get(4);
 					}
 
-					return SpriteCacheBase.MapOverlay.get(0);
+					return Sprites.MapOverlay.get(0);
 				}
 			} else {
 				if (waypoint == GlobalCore.getSelectedWaypoint()) {
-					return SpriteCacheBase.MapOverlay.get(1);
+					return Sprites.MapOverlay.get(1);
 				} else {
-					return SpriteCacheBase.MapOverlay.get(0);
+					return Sprites.MapOverlay.get(0);
 				}
 			}
 		}

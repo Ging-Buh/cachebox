@@ -38,8 +38,8 @@ class FileLRUCache<T> extends LRUCache<T, File> {
 			File file = eldest.getValue();
 			try {
 				if (file.exists() && !file.delete()) {
-                    LOGGER.log(Level.SEVERE, "could not delete file: " + file);
-                }
+					LOGGER.log(Level.SEVERE, "could not delete file: " + file);
+				}
 			} catch (IOException e) {
 				LOGGER.log(Level.SEVERE, "could not delete file: " + file);
 			}

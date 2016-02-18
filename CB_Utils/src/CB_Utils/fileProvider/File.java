@@ -1,6 +1,5 @@
 package CB_Utils.fileProvider;
 
-
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -10,74 +9,71 @@ import java.net.URL;
  */
 public abstract class File {
 
+	public final static String separator = java.io.File.separator;
+	public final static String pathSeparator = java.io.File.pathSeparator;
+	public final static char separatorChar = java.io.File.separatorChar;
 
-    public final static String separator = java.io.File.separator;
-    public final static String pathSeparator = java.io.File.pathSeparator;
-    public final static char separatorChar = java.io.File.separatorChar;
+	public abstract boolean exists();
 
-    public abstract boolean exists();
+	public abstract boolean delete() throws IOException;
 
-    public abstract boolean delete() throws IOException;
+	public abstract File getParentFile();
 
-    public abstract File getParentFile();
+	public abstract boolean mkdirs();
 
-    public abstract boolean mkdirs();
+	public abstract boolean isDirectory();
 
+	public abstract boolean isFile();
 
-    public abstract boolean isDirectory();
+	public abstract long lastModified();
 
-    public abstract boolean isFile();
+	public abstract String[] list();
 
-    public abstract long lastModified();
+	public abstract String[] list(FilenameFilter filenameFilter);
 
-    public abstract String[] list();
+	public abstract long length();
 
-    public abstract String[] list(FilenameFilter filenameFilter);
+	public abstract boolean createNewFile() throws IOException;
 
-    public abstract long length();
+	public abstract String getName();
 
-    public abstract boolean createNewFile() throws IOException;
+	public abstract File[] listFiles(FilenameFilter filenameFilter);
 
-    public abstract String getName();
+	public abstract String getAbsolutePath();
 
-    public abstract File[] listFiles(FilenameFilter filenameFilter);
+	public abstract boolean mkdir();
 
-    public abstract String getAbsolutePath();
+	public abstract String getParent();
 
-    public abstract boolean mkdir();
+	public abstract boolean canRead();
 
-    public abstract String getParent();
+	public abstract boolean canWrite();
 
-    public abstract boolean canRead();
+	public abstract String getPath();
 
-    public abstract boolean canWrite();
+	public abstract File[] listFiles();
 
-    public abstract String getPath();
+	public abstract boolean isAbsolute();
 
-    public abstract File[] listFiles();
+	public abstract File getCanonicalPath() throws IOException;
 
-    public abstract boolean isAbsolute();
+	public abstract URL toURL() throws MalformedURLException;
 
-    public abstract File getCanonicalPath() throws IOException;
+	public abstract boolean renameTo(File file);
 
-    public abstract URL toURL() throws MalformedURLException;
+	public abstract void setLastModified(long time);
 
-    public abstract boolean renameTo(File file);
+	public abstract File getAbsoluteFile();
 
-    public abstract void setLastModified(long time);
+	public abstract int compareTo(File otherFile);
 
-    public abstract File getAbsoluteFile();
+	public abstract FileOutputStream getFileOutputStream() throws FileNotFoundException;
 
-    public abstract int compareTo(File otherFile);
+	public abstract FileInputStream getFileInputStream() throws FileNotFoundException;
 
-    public abstract FileOutputStream getFileOutputStream() throws FileNotFoundException;
+	public abstract FileReader getFileReader() throws FileNotFoundException;
 
-    public abstract FileInputStream getFileInputStream() throws FileNotFoundException;
+	public abstract RandomAccessFile getRandomAccessFile(String mode) throws FileNotFoundException;
 
-    public abstract FileReader getFileReader() throws FileNotFoundException;
-
-    public abstract RandomAccessFile getRandomAccessFile(String mode) throws FileNotFoundException;
-
-    public abstract FileWriter getFileWriter() throws IOException;
+	public abstract FileWriter getFileWriter() throws IOException;
 }
-

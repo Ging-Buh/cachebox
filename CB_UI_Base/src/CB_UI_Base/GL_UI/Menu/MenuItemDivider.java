@@ -1,7 +1,7 @@
 package CB_UI_Base.GL_UI.Menu;
 
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.DialogElement;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.DialogElement;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 
@@ -29,7 +29,7 @@ public class MenuItemDivider extends MenuItemBase {
 	@Override
 	protected void render(Batch batch) {
 		if (Image == null) {
-			Sprite s = SpriteCacheBase.Dialog.get(DialogElement.divider.ordinal());
+			Sprite s = Sprites.Dialog.get(DialogElement.divider.ordinal());
 			spriteHeight = s.getHeight();
 			spriteWidth = s.getWidth();
 			Image = new NinePatchDrawable(new NinePatch(s, 1, 1, 1, 1));

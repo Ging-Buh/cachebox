@@ -2,6 +2,8 @@ package CB_UI.GL_UI.Activitys.settings;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Controls.QuickButtonList;
 import CB_UI.GL_UI.Main.Actions.QuickButton.QuickActions;
@@ -9,8 +11,8 @@ import CB_UI.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.ImageButton;
 import CB_UI_Base.GL_UI.Controls.Label;
@@ -28,8 +30,6 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Util.HSV_Color;
 import CB_Utils.Util.MoveableList;
-
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class SettingsItem_QuickButton extends CB_View_Base {
 
@@ -141,10 +141,10 @@ public class SettingsItem_QuickButton extends CB_View_Base {
 		del.setWidth(up.getHeight());
 		add.setWidth(up.getHeight());
 
-		up.setImage(new SpriteDrawable(SpriteCacheBase.Arrows.get(11)));
-		down.setImage(new SpriteDrawable(SpriteCacheBase.Arrows.get(11)));
-		del.setImage(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.delete_28.ordinal())));
-		add.setImage(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.add_52.ordinal())));
+		up.setImage(new SpriteDrawable(Sprites.Arrows.get(11)));
+		down.setImage(new SpriteDrawable(Sprites.Arrows.get(11)));
+		del.setImage(new SpriteDrawable(Sprites.getSprite(IconName.DELETE.name())));
+		add.setImage(new SpriteDrawable(Sprites.getSprite(IconName.ADD.name())));
 
 		up.setImageScale(0.7f);
 		down.setImageScale(0.7f);
@@ -232,7 +232,7 @@ public class SettingsItem_QuickButton extends CB_View_Base {
 	private void initialListView() {
 		CB_RectF rec = new CB_RectF(0, 0, this.getWidth(), this.getHeight());
 		boxForListView = new Box(rec, "");
-		boxForListView.setBackground(SpriteCacheBase.activityBackground);
+		boxForListView.setBackground(Sprites.activityBackground);
 
 		listView = new V_ListView(rec.copy(), "");
 		listView.setDisposeFlag(false);

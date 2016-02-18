@@ -20,7 +20,7 @@ import CB_UI.GL_UI.Controls.CacheInfo;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.ParentInfo;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
@@ -61,7 +61,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 	protected boolean isPressed = false;
 
 	private Sprite liveCacheIcon;
-	private Sprite arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
+	private Sprite arrow = new Sprite(Sprites.Arrows.get(0));
 	private BitmapFontCache distance = new BitmapFontCache(Fonts.getSmall());
 
 	// private BitmapFontCache debugIndex = new BitmapFontCache(Fonts.getSmall());
@@ -96,7 +96,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 		}
 
 		if (mCache.isLive()) {
-			liveCacheIcon = new Sprite(SpriteCacheBase.LiveBtn.get(0));
+			liveCacheIcon = new Sprite(Sprites.LiveBtn.get(0));
 			liveCacheIcon.setBounds(ArrowRec.getX() + (ArrowRec.getHalfWidth() / 2), ArrowRec.getMaxY(), ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 		}
 
@@ -170,7 +170,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 			arrow.setRotation((float) cacheBearing);
 			if (arrow.getColor() == DISABLE_COLOR) {
 				float size = this.getHeight() / 2.3f;
-				arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
+				arrow = new Sprite(Sprites.Arrows.get(0));
 				arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
 				arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 			}

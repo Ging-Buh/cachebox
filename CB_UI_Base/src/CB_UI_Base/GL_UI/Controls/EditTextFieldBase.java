@@ -30,7 +30,7 @@ import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.PopUps.CopyPastePopUp;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.interfaces.ICopyPaste;
@@ -286,16 +286,16 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 	public static TextFieldStyle getDefaultStyle() {
 		TextFieldStyle ret = new TextFieldStyle();
 
-		ret.setBackground(SpriteCacheBase.textFieldBackground, SpriteCacheBase.textFieldBackgroundFocus);
+		ret.setBackground(Sprites.textFieldBackground, Sprites.textFieldBackgroundFocus);
 		ret.font = Fonts.getNormal();
 		ret.fontColor = COLOR.getFontColor();
 
 		ret.messageFont = Fonts.getSmall();
 		ret.messageFontColor = COLOR.getDisableFontColor();
 
-		ret.cursor = SpriteCacheBase.textFieldCursor;
+		ret.cursor = Sprites.textFieldCursor;
 
-		ret.selection = SpriteCacheBase.selection;
+		ret.selection = Sprites.selection;
 
 		return ret;
 	}

@@ -13,7 +13,7 @@ import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
@@ -211,7 +211,7 @@ public class Menu extends ButtonDialog {
 
 		if (mMoreMenuToggleButtonWidth == -1) {
 			float mesuredLblHeigt = Fonts.MeasureSmall("T").height;
-			mMoreMenuToggleButtonWidth = SpriteCacheBase.btn.getLeftWidth() + SpriteCacheBase.btn.getRightWidth() + (mesuredLblHeigt * 1.5f);
+			mMoreMenuToggleButtonWidth = Sprites.btn.getLeftWidth() + Sprites.btn.getRightWidth() + (mesuredLblHeigt * 1.5f);
 		}
 
 		mListView.setSize(this.getContentSize());

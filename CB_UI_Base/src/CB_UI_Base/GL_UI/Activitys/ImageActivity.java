@@ -21,7 +21,7 @@ import java.util.LinkedHashMap;
 import org.slf4j.LoggerFactory;
 
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.ImageLoader;
 import CB_UI_Base.GL_UI.Controls.ZoomButtons;
@@ -88,7 +88,7 @@ public class ImageActivity extends ActivityBase {
 
 		float wh = 30 * UI_Size_Base.that.getScale();
 		deleteImage = new Image(this.getWidth() - wh, this.getHeight() - wh, wh, wh, "", false);
-		deleteImage.setDrawable(new SpriteDrawable(SpriteCacheBase.getThemedSprite("close-icon")));
+		deleteImage.setDrawable(new SpriteDrawable(Sprites.getSprite("close-icon")));
 		this.addChild(deleteImage);
 		deleteImage.setOnClickListener(deleteClick);
 		this.setClickable(true);

@@ -3,7 +3,7 @@ package CB_UI.GL_UI.Controls.PopUps;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
@@ -17,9 +17,9 @@ public class QuickFieldNoteFeedbackPopUp extends PopUp_Base {
 		super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth() * 2.5f, UI_Size_Base.that.getButtonWidth() * 2.5f), "QuickFieldnoteFeedback");
 
 		if (found) {
-			setBackground(new SpriteDrawable(SpriteCacheBase.LogIcons.get(0)));
+			setBackground(new SpriteDrawable(Sprites.LogIcons.get(0)));
 		} else {
-			setBackground(new SpriteDrawable(SpriteCacheBase.LogIcons.get(1)));
+			setBackground(new SpriteDrawable(Sprites.LogIcons.get(1)));
 		}
 
 		AnimateTimer = new Timer();

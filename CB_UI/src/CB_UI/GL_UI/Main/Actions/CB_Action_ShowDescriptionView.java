@@ -40,8 +40,8 @@ import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
@@ -79,7 +79,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
 	@Override
 	public Sprite getIcon() {
-		return SpriteCacheBase.Icons.get(IconName.doc_2.ordinal());
+		return Sprites.getSprite(IconName.docIcon.name());
 	}
 
 	@Override
@@ -138,7 +138,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
 		boolean isSelected = (GlobalCore.isSetSelectedCache());
 
-		mi = cm.addItem(MenuID.MI_FAVORIT, "Favorite", SpriteCacheBase.Icons.get(IconName.favorit_42.ordinal()));
+		mi = cm.addItem(MenuID.MI_FAVORIT, "Favorite", Sprites.getSprite(IconName.favorit.name()));
 		mi.setCheckable(true);
 		if (isSelected) {
 			mi.setChecked(GlobalCore.getSelectedCache().isFavorite());
@@ -150,7 +150,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
 		if (isSelected)
 			selectedCacheIsNoGC = !GlobalCore.getSelectedCache().getGcCode().startsWith("GC");
-		mi = cm.addItem(MenuID.MI_RELOAD_CACHE, "ReloadCacheAPI", SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal()));
+		mi = cm.addItem(MenuID.MI_RELOAD_CACHE, "ReloadCacheAPI", Sprites.getSprite(IconName.dayGcLiveIcon.name()));
 		if (!isSelected)
 			mi.setEnabled(false);
 		if (selectedCacheIsNoGC)
@@ -158,9 +158,9 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
 		if (TabMainView.descriptionView != null) {
 			if (TabMainView.descriptionView.getTxtOnly()) {
-				mi = cm.addItem(MenuID.MI_TOGGLE_DEC__TXT_HTML, "showHtml", SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal()));
+				mi = cm.addItem(MenuID.MI_TOGGLE_DEC__TXT_HTML, "showHtml", Sprites.getSprite(IconName.dayGcLiveIcon.name()));
 			} else {
-				mi = cm.addItem(MenuID.MI_TOGGLE_DEC__TXT_HTML, "showTxtOnly", SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal()));
+				mi = cm.addItem(MenuID.MI_TOGGLE_DEC__TXT_HTML, "showTxtOnly", Sprites.getSprite(IconName.dayGcLiveIcon.name()));
 			}
 		}
 

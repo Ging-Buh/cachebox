@@ -12,7 +12,8 @@ import com.badlogic.gdx.utils.Align;
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListView.FilterSetEntry;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
@@ -135,14 +136,14 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 
 		if (this.isPressed) {
 			if (btnBack_pressed == null) {
-				btnBack_pressed = new NinePatch(SpriteCacheBase.getThemedSprite("btn-pressed"), 16, 16, 16, 16);
+				btnBack_pressed = new NinePatch(Sprites.getSprite("btn-pressed"), 16, 16, 16, 16);
 			}
 
 			btnBack_pressed.draw(batch, 0, 0, getWidth(), getHeight());
 
 		} else {
 			if (btnBack == null) {
-				btnBack = new NinePatch(SpriteCacheBase.getThemedSprite("btn-normal"), 16, 16, 16, 16);
+				btnBack = new NinePatch(Sprites.getSprite(IconName.btnNormal.name()), 16, 16, 16, 16);
 			}
 
 			btnBack.draw(batch, 0, 0, getWidth(), getHeight());
@@ -156,7 +157,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 		drawRightChkBox(batch);
 		if (this.mFilterSetEntry.getState() == 1) {
 			if (chkOn == null) {
-				chkOn = SpriteCacheBase.getThemedSprite("check-on");
+				chkOn = Sprites.getSprite("check-on");
 
 				chkOn.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 
@@ -191,7 +192,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 
 		if (this.mFilterSetEntry.getState() == 1) {
 			if (chkOn == null) {
-				chkOn = SpriteCacheBase.getThemedSprite("check-on");
+				chkOn = Sprites.getSprite("check-on");
 
 				chkOn.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 
@@ -200,7 +201,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 			chkOn.draw(batch);
 		} else if (this.mFilterSetEntry.getState() == -1) {
 			if (chkNo == null) {
-				chkNo = SpriteCacheBase.getThemedSprite("delete-icon");
+				chkNo = Sprites.getSprite("delete-icon");
 
 				chkNo.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 
@@ -266,8 +267,8 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 			}
 		}
 
-		plusBtn = rClick ? SpriteCacheBase.getThemedSprite("btn-pressed") : SpriteCacheBase.getThemedSprite("btn-normal");
-		minusBtn = lClick ? SpriteCacheBase.getThemedSprite("btn-pressed") : SpriteCacheBase.getThemedSprite("btn-normal");
+		plusBtn = rClick ? Sprites.getSprite("btn-pressed") : Sprites.getSprite(IconName.btnNormal.name());
+		minusBtn = lClick ? Sprites.getSprite("btn-pressed") : Sprites.getSprite(IconName.btnNormal.name());
 
 		minusBtn.setBounds(lBounds.getX(), lBounds.getY(), lBounds.getWidth(), lBounds.getHeight());
 
@@ -330,7 +331,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 		}
 
 		if (chkOff == null) {
-			chkOff = SpriteCacheBase.getThemedSprite("check-off");
+			chkOff = Sprites.getSprite("check-off");
 
 			chkOff.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 

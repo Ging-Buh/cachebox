@@ -39,8 +39,8 @@ import CB_UI.GL_UI.Controls.Dialogs.RouteDialog;
 import CB_UI.GL_UI.Controls.Dialogs.RouteDialog.IReturnListener;
 import CB_UI.GL_UI.Views.TrackListView;
 import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
@@ -70,7 +70,7 @@ public class CB_Action_GenerateRoute extends CB_Action {
 
 	@Override
 	public Sprite getIcon() {
-		return SpriteCacheBase.Icons.get(IconName.trackList_8.ordinal());
+		return Sprites.getSprite(IconName.trackListIcon.name());
 	}
 
 	@Override

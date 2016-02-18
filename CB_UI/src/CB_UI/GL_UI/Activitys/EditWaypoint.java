@@ -20,7 +20,7 @@ import CB_UI_Base.Events.KeyboardFocusChangedEvent;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
@@ -252,17 +252,17 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 			public Drawable getIcon(int Position) {
 				switch (Position) {
 				case 0:
-					return new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + CacheTypes.ReferencePoint.name()));
+					return new SpriteDrawable(Sprites.getSprite("big" + CacheTypes.ReferencePoint.name()));
 				case 1:
-					return new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + CacheTypes.MultiStage.name()));
+					return new SpriteDrawable(Sprites.getSprite("big" + CacheTypes.MultiStage.name()));
 				case 2:
-					return new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + CacheTypes.MultiQuestion.name()));
+					return new SpriteDrawable(Sprites.getSprite("big" + CacheTypes.MultiQuestion.name()));
 				case 3:
-					return new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + CacheTypes.Trailhead.name()));
+					return new SpriteDrawable(Sprites.getSprite("big" + CacheTypes.Trailhead.name()));
 				case 4:
-					return new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + CacheTypes.ParkingArea.name()));
+					return new SpriteDrawable(Sprites.getSprite("big" + CacheTypes.ParkingArea.name()));
 				case 5:
-					return new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + CacheTypes.Final.name()));
+					return new SpriteDrawable(Sprites.getSprite("big" + CacheTypes.Final.name()));
 
 				}
 

@@ -18,7 +18,7 @@ package CB_UI_Base.GL_UI.Activitys;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Dialog;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
@@ -38,7 +38,7 @@ public class ActivityBase extends Dialog {
 		super(rec, Name);
 		// that = this;
 		dontRenderDialogBackground = true;
-		this.setBackground(SpriteCacheBase.activityBackground);
+		this.setBackground(Sprites.activityBackground);
 
 		MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;
 		MeasuredLabelHeightBig = Fonts.MeasureBig("T").height * 1.5f;
@@ -48,7 +48,7 @@ public class ActivityBase extends Dialog {
 
 	@Override
 	protected void SkinIsChanged() {
-		this.setBackground(SpriteCacheBase.activityBackground);
+		this.setBackground(Sprites.activityBackground);
 	}
 
 	@Override

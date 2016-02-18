@@ -22,7 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.UBJsonReader;
 
 import CB_UI_Base.GL_UI.ButtonSprites;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Skin.CB_Skin;
@@ -30,7 +30,7 @@ import CB_UI_Base.GL_UI.Skin.SkinBase;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.Math.UI_Size_Base;
 
-public class ResourceCache extends SpriteCacheBase {
+public class ResourceCache extends Sprites {
 
 	private static Model model_Box, model_Box2, model_field1, model_field2, model_PortalLegBottom, model_PortalLegCenter, model_PortalLegTop, model_PortalJibLeft, model_PortalJibCenter, model_PortalJibRight, model_PortalRunWay;
 	private static float size, halfsize, dpi;
@@ -114,78 +114,6 @@ public class ResourceCache extends SpriteCacheBase {
 
 		initialPortalModels();
 
-		if (Icons == null)
-			Icons = new ArrayList<Sprite>();
-		synchronized (Icons) {
-			Icons.clear();
-			Icons.add(getThemedSprite("btn-normal"));// 0
-			Icons.add(getThemedSprite("button"));// 1
-			Icons.add(getThemedSprite("doc-icon"));// 2
-			Icons.add(getThemedSprite("manualwaypoint"));// 3
-			Icons.add(getThemedSprite("list-icon")); // 4 LogView braucht noch ein Icon
-			Icons.add(getThemedSprite("map")); // 5
-			Icons.add(getThemedSprite("compass"));// 6
-			Icons.add(getThemedSprite("cache-list-icon"));// 7
-			Icons.add(getThemedSprite("track-list-icon")); // 8
-			Icons.add(getThemedSprite("log10icon"));// 9
-			Icons.add(getThemedSprite("video-icon")); // 10
-			Icons.add(getThemedSprite("voice-rec-icon"));// 11
-			Icons.add(getThemedSprite("lupe")); // 12
-			Icons.add(getThemedSprite("filter")); // 13
-			Icons.add(getThemedSprite("lock-icon"));// 14
-			Icons.add(getThemedSprite("auto-sort-on-icon")); // 15
-			Icons.add(getThemedSprite("auto-sort-off-icon")); // 16
-			Icons.add(getThemedSprite("solver-icon")); // 17
-			Icons.add(getThemedSprite("images-icon")); // 18
-			Icons.add(getThemedSprite("hint-icon")); // 19
-			Icons.add(getThemedSprite("doc-icon")); // 20
-			Icons.add(getThemedSprite("list-icon")); // 21
-			Icons.add(getThemedSprite("images-icon")); // 22
-			Icons.add(getThemedSprite("note-icon")); // 23
-			Icons.add(getThemedSprite("solver-icon")); // 24
-			Icons.add(getThemedSprite("joker-phone")); // 25
-			Icons.add(getThemedSprite("settings")); // 26
-			Icons.add(getThemedSprite("lupe")); // 27
-			Icons.add(getThemedSprite("delete-icon")); // 28
-			Icons.add(getThemedSprite("voice-rec-icon")); // 29
-			Icons.add(getThemedSprite("satellite")); // 30
-			Icons.add(getThemedSprite("close-icon")); // 31
-			Icons.add(getThemedSprite("info-icon")); // 32
-			Icons.add(getThemedSprite("warning-icon")); // 33
-			Icons.add(getThemedSprite("help-icon")); // 34
-			Icons.add(getThemedSprite("day-gc-live-icon")); // 35
-			Icons.add(getThemedSprite("tb")); // 36
-			Icons.add(getThemedSprite("cm-icon")); // 37
-			Icons.add(getThemedSprite("tb-list-icon")); // 38
-			Icons.add(getThemedSprite("sort-icon")); // 39
-			Icons.add(getThemedSprite("import")); // 40
-			Icons.add(getThemedSprite("manage-db")); // 41
-			Icons.add(getThemedSprite("favorit")); // 42
-			Icons.add(getThemedSprite("star")); // 43
-			Icons.add(getThemedSprite("disabled")); // 44
-			Icons.add(getThemedSprite("log11icon")); // 45
-			Icons.add(getThemedSprite("navigate")); // 46
-			Icons.add(getThemedSprite("log10icon")); // 47
-			Icons.add(getThemedSprite("d-n")); // 48
-			Icons.add(getThemedSprite("cb")); // 49
-			Icons.add(getThemedSprite("note-icon")); // 50
-			Icons.add(getThemedSprite("settings")); // 51
-			Icons.add(getThemedSprite("add-icon")); // 52
-			Icons.add(getThemedSprite("target-day")); // 53
-			Icons.add(getThemedSprite("FieldNote")); // 54
-			Icons.add(getThemedSprite("fieldnote-list-icon")); // 55
-			Icons.add(getThemedSprite("waypoint-list-icon")); // 56
-			Icons.add(getThemedSprite("add_cache_icon")); // 57
-			Icons.add(getThemedSprite("tb-discover")); // 58
-			Icons.add(getThemedSprite("tb-drop")); // 59
-			Icons.add(getThemedSprite("tb-grab")); // 60
-			Icons.add(getThemedSprite("tb-picked")); // 61
-			Icons.add(getThemedSprite("tb-visit")); // 62
-			Icons.add(getThemedSprite("tb-note")); // 63
-			Icons.add(getThemedSprite("upload-fieldnote")); // 64
-			Icons.add(getThemedSprite("cm-icon-filterd")); // 65
-		}
-
 		if (Arrows == null)
 			Arrows = new ArrayList<Sprite>();
 		synchronized (Arrows) {
@@ -193,36 +121,31 @@ public class ResourceCache extends SpriteCacheBase {
 			float scale = UI_Size_Base.that.getScale();
 
 			Arrows.clear();
-			Arrows.add(getThemedSprite("arrow-Compass")); // 0
-			Arrows.add(getThemedSprite("arrow-Compass-Trans")); // 1
-			Arrows.add(getThemedSprite("arrow-GPS")); // 2
-			Arrows.add(getThemedSprite("arrow-GPS-Trans")); // 3
-			Arrows.add(getThemedSprite("target-arrow")); // 4
-			Arrows.add(getThemedSprite("track-line", scale)); // 5
-			Arrows.add(getThemedSprite("arrow-down")); // 6
-			Arrows.add(getThemedSprite("arrow-up")); // 7
-			Arrows.add(getThemedSprite("arrow-left")); // 8
-			Arrows.add(getThemedSprite("arrow-right")); // 9
-			Arrows.add(getThemedSprite("track-point", scale)); // 10
-			Arrows.add(getThemedSprite("ambilwarna-arrow-right")); // 11
-			Arrows.add(getThemedSprite("ambilwarna-arrow-down")); // 12
-			Arrows.add(getThemedSprite("draw-line", scale)); // 13
-			Arrows.add(getThemedSprite("draw-point", scale)); // 14
-			Arrows.add(getThemedSprite("arrow-Compass-car")); // 15
+			Arrows.add(getSprite("arrow-Compass")); // 0
+			Arrows.add(getSprite("arrow-Compass-Trans")); // 1
+			Arrows.add(getSprite("arrow-GPS")); // 2
+			Arrows.add(getSprite("arrow-GPS-Trans")); // 3
+			Arrows.add(getSprite("target-arrow")); // 4
+			Arrows.add(getSprite("track-line", scale)); // 5
+			Arrows.add(getSprite("arrow-down")); // 6
+			Arrows.add(getSprite("arrow-up")); // 7
+			Arrows.add(getSprite("arrow-left")); // 8
+			Arrows.add(getSprite("arrow-right")); // 9
+			Arrows.add(getSprite("track-point", scale)); // 10
+			Arrows.add(getSprite("ambilwarna-arrow-right")); // 11
+			Arrows.add(getSprite("ambilwarna-arrow-down")); // 12
+			Arrows.add(getSprite("draw-line", scale)); // 13
+			Arrows.add(getSprite("draw-point", scale)); // 14
+			Arrows.add(getSprite("arrow-Compass-car")); // 15
 
 		}
 
 		MapScale = new Drawable[3];
-		MapScale[0] = new SpriteDrawable(getThemedSprite("MapScale-3"));
-		MapScale[1] = new SpriteDrawable(getThemedSprite("MapScale-4"));
-		MapScale[2] = new SpriteDrawable(getThemedSprite("MapScale-5"));
+		MapScale[0] = new SpriteDrawable(getSprite("MapScale-3"));
+		MapScale[1] = new SpriteDrawable(getSprite("MapScale-4"));
+		MapScale[2] = new SpriteDrawable(getSprite("MapScale-5"));
 
-		Accuracy = new Sprite[3];
-		Accuracy[0] = getThemedSprite("Accuracy-0");
-		Accuracy[1] = getThemedSprite("Accuracy-1");
-		Accuracy[2] = getThemedSprite("Accuracy-2");
-
-		ZoomValueBack = getThemedSprite("zoom-back");
+		ZoomValueBack = getSprite("zoom-back");
 
 	}
 
@@ -232,8 +155,8 @@ public class ResourceCache extends SpriteCacheBase {
 		synchronized (ChkIcons) {
 
 			ChkIcons.clear();
-			ChkIcons.add(getThemedSprite("check-off"));
-			ChkIcons.add(getThemedSprite("check-on"));
+			ChkIcons.add(getSprite("check-off"));
+			ChkIcons.add(getSprite("check-on"));
 
 		}
 
@@ -241,11 +164,11 @@ public class ResourceCache extends SpriteCacheBase {
 			Dialog = new ArrayList<Sprite>();
 		synchronized (Dialog) {
 			Dialog.clear();
-			Dialog.add(getThemedSprite("dialog-header"));
-			Dialog.add(getThemedSprite("dialog-center"));
-			Dialog.add(getThemedSprite("dialog-footer"));
-			Dialog.add(getThemedSprite("dialog-title"));
-			Dialog.add(getThemedSprite("menu-divider"));
+			Dialog.add(getSprite("dialog-header"));
+			Dialog.add(getSprite("dialog-center"));
+			Dialog.add(getSprite("dialog-footer"));
+			Dialog.add(getSprite("dialog-title"));
+			Dialog.add(getSprite("menu-divider"));
 
 		}
 
@@ -253,28 +176,28 @@ public class ResourceCache extends SpriteCacheBase {
 			ToggleBtn = new ArrayList<Sprite>();
 		synchronized (ToggleBtn) {
 			ToggleBtn.clear();
-			ToggleBtn.add(getThemedSprite("btn-normal"));
-			ToggleBtn.add(getThemedSprite("btn-pressed"));
-			ToggleBtn.add(getThemedSprite("toggle-led-gr"));
+			ToggleBtn.add(getSprite(IconName.btnNormal.name()));
+			ToggleBtn.add(getSprite("btn-pressed"));
+			ToggleBtn.add(getSprite("toggle-led-gr"));
 
 		}
 
-		Progress = getThemedSprite("progress");
+		Progress = getSprite("progress");
 
 		if (ZoomBtn == null)
 			ZoomBtn = new ArrayList<Sprite>();
 		synchronized (ZoomBtn) {
 			ZoomBtn.clear();
-			ZoomBtn.add(getThemedSprite("day-btn-zoom-down-normal"));
-			ZoomBtn.add(getThemedSprite("day-btn-zoom-down-pressed"));
-			ZoomBtn.add(getThemedSprite("day-btn-zoom-down-disabled"));
-			ZoomBtn.add(getThemedSprite("day-btn-zoom-up-normal"));
-			ZoomBtn.add(getThemedSprite("day-btn-zoom-up-pressed"));
-			ZoomBtn.add(getThemedSprite("day-btn-zoom-up-disabled"));
+			ZoomBtn.add(getSprite("day-btn-zoom-down-normal"));
+			ZoomBtn.add(getSprite("day-btn-zoom-down-pressed"));
+			ZoomBtn.add(getSprite("day-btn-zoom-down-disabled"));
+			ZoomBtn.add(getSprite("day-btn-zoom-up-normal"));
+			ZoomBtn.add(getSprite("day-btn-zoom-up-pressed"));
+			ZoomBtn.add(getSprite("day-btn-zoom-up-disabled"));
 
 		}
 
-		ZoomValueBack = getThemedSprite("zoom-back");
+		ZoomValueBack = getSprite("zoom-back");
 
 		loadButtnSprites();
 
@@ -282,46 +205,46 @@ public class ResourceCache extends SpriteCacheBase {
 	}
 
 	protected static void loadButtnSprites() {
-		SpriteCacheBase.loadButtonSprites();
-		btnSpritesHome = new ButtonSprites(getThemedSprite("InstBack-Normal"), getThemedSprite("InstBack-Pressed"), getThemedSprite("InstBack-Disabled"), getThemedSprite("InstBack-Focus"));
+		Sprites.loadButtonSprites();
+		btnSpritesHome = new ButtonSprites(getSprite("InstBack-Normal"), getSprite("InstBack-Pressed"), getSprite("InstBack-Disabled"), getSprite("InstBack-Focus"));
 	}
 
 	protected static void createDrawables() {
-		patch = (int) (SpriteCacheBase.getThemedSprite("activity-back").getWidth() / 7);
+		patch = (int) (Sprites.getSprite("activity-back").getWidth() / 7);
 
-		activityBackground = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("activity-back"), patch, patch, patch, patch));
-		activityBorderMask = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("activity-border"), patch, patch, patch, patch));
+		activityBackground = new NinePatchDrawable(new NinePatch(Sprites.getSprite("activity-back"), patch, patch, patch, patch));
+		activityBorderMask = new NinePatchDrawable(new NinePatch(Sprites.getSprite("activity-border"), patch, patch, patch, patch));
 		ListBack = new ColorDrawable(SkinBase.getThemedColor("background"));
-		ButtonBack = new SpriteDrawable(getThemedSprite("button-list-back"));
+		ButtonBack = new SpriteDrawable(getSprite("button-list-back"));
 		// AboutBack = new SpriteDrawable(getThemedSprite("splash-back"));
 		// InfoBack = new NinePatchDrawable(new NinePatch(getThemedSprite("InfoPanelBack"), patch, patch, patch, patch));
 		ProgressBack = new NinePatchDrawable(new NinePatch(ToggleBtn.get(0), patch, patch, patch, patch));
-		ProgressFill = new NinePatchDrawable(new NinePatch(SpriteCacheBase.Progress, patch - 1, patch - 1, patch - 1, patch - 1));
-		btn = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("btn-normal"), patch, patch, patch, patch));
-		btnPressed = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("btn-pressed"), patch, patch, patch, patch));
-		btnDisabled = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("btn-disabled"), patch, patch, patch, patch));
+		ProgressFill = new NinePatchDrawable(new NinePatch(Sprites.Progress, patch - 1, patch - 1, patch - 1, patch - 1));
+		btn = new NinePatchDrawable(new NinePatch(Sprites.getSprite(IconName.btnNormal.name()), patch, patch, patch, patch));
+		btnPressed = new NinePatchDrawable(new NinePatch(Sprites.getSprite("btn-pressed"), patch, patch, patch, patch));
+		btnDisabled = new NinePatchDrawable(new NinePatch(Sprites.getSprite("btn-disabled"), patch, patch, patch, patch));
 
-		chkOn = new SpriteDrawable(getThemedSprite("check-on"));
-		chkOff = new SpriteDrawable(getThemedSprite("check-off"));
-		chkOnDisabled = new SpriteDrawable(getThemedSprite("check-disable"));
-		chkOffDisabled = new SpriteDrawable(getThemedSprite("check-off"));
+		chkOn = new SpriteDrawable(getSprite("check-on"));
+		chkOff = new SpriteDrawable(getSprite("check-off"));
+		chkOnDisabled = new SpriteDrawable(getSprite("check-disable"));
+		chkOffDisabled = new SpriteDrawable(getSprite("check-off"));
 
-		radioOn = new SpriteDrawable(getThemedSprite("RadioButtonSet"));
-		radioBack = new SpriteDrawable(getThemedSprite("RadioButtonBack"));
+		radioOn = new SpriteDrawable(getSprite("RadioButtonSet"));
+		radioBack = new SpriteDrawable(getSprite("RadioButtonBack"));
 
-		textFieldBackground = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("text-field-back"), patch, patch, patch, patch));
-		textFieldBackgroundFocus = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("text-field-back-focus"), patch, patch, patch, patch));
+		textFieldBackground = new NinePatchDrawable(new NinePatch(Sprites.getSprite("text-field-back"), patch, patch, patch, patch));
+		textFieldBackgroundFocus = new NinePatchDrawable(new NinePatch(Sprites.getSprite("text-field-back-focus"), patch, patch, patch, patch));
 
-		selection = new SpriteDrawable(getThemedSprite("Selection"));
-		selection_set = new SpriteDrawable(getThemedSprite("Selection-set"));
-		selection_left = new SpriteDrawable(getThemedSprite("Selection-Left"));
-		selection_right = new SpriteDrawable(getThemedSprite("Selection-Right"));
+		selection = new SpriteDrawable(getSprite("Selection"));
+		selection_set = new SpriteDrawable(getSprite("Selection-set"));
+		selection_left = new SpriteDrawable(getSprite("Selection-Left"));
+		selection_right = new SpriteDrawable(getSprite("Selection-Right"));
 
-		copy = new SpriteDrawable(getThemedSprite("tf-copy"));
-		paste = new SpriteDrawable(getThemedSprite("tf-paste"));
-		cut = new SpriteDrawable(getThemedSprite("tf-cut"));
+		copy = new SpriteDrawable(getSprite("tf-copy"));
+		paste = new SpriteDrawable(getSprite("tf-paste"));
+		cut = new SpriteDrawable(getSprite("tf-cut"));
 
-		textFieldCursor = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("selection-input-icon"), 1, 1, 2, 2));
+		textFieldCursor = new NinePatchDrawable(new NinePatch(Sprites.getSprite("selection-input-icon"), 1, 1, 2, 2));
 
 	}
 

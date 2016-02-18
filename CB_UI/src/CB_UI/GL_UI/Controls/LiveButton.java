@@ -8,8 +8,8 @@ import CB_Core.Api.LiveMapQue.QueStateChanged;
 import CB_Locator.Coordinate;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
-import CB_UI.GL_UI.SpriteCache;
 import CB_UI.GL_UI.Views.MapView;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.ImageButton;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 
@@ -43,15 +43,15 @@ public class LiveButton extends ImageButton implements QueStateChanged {
 		if (state) {
 			if (LiveMapQue.DownloadIsActive.get()) {
 				try {
-					this.setImage(SpriteCache.LiveBtn.get(1 + Animation));
+					this.setImage(Sprites.LiveBtn.get(1 + Animation));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			} else {
-				this.setImage(SpriteCache.LiveBtn.get(0));
+				this.setImage(Sprites.LiveBtn.get(0));
 			}
 		} else {
-			this.setImage(SpriteCache.LiveBtn.get(1));
+			this.setImage(Sprites.LiveBtn.get(1));
 		}
 		GL.that.renderOnce();
 	}

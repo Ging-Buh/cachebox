@@ -11,7 +11,7 @@ import CB_UI.GlobalCore;
 import CB_UI.RouteOverlay;
 import CB_UI.GL_UI.Views.TrackListViewItem.IRouteChangedListener;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
@@ -34,7 +34,7 @@ public class TrackListView extends V_ListView {
 
 		this.setEmptyMsg(Translation.Get("EmptyTrackList"));
 
-		setBackground(SpriteCacheBase.ListBack);
+		setBackground(Sprites.ListBack);
 
 		this.setBaseAdapter(null);
 		this.setBaseAdapter(new CustomAdapter());

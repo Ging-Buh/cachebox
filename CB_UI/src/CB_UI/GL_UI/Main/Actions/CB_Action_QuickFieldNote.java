@@ -27,8 +27,8 @@ import CB_UI.GL_UI.Views.FieldNotesView;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.Menu;
@@ -48,7 +48,7 @@ public class CB_Action_QuickFieldNote extends CB_Action {
 
 	@Override
 	public Sprite getIcon() {
-		return SpriteCacheBase.Icons.get(IconName.fieldNote_54.ordinal());
+		return Sprites.getSprite(IconName.FieldNote.name());
 	}
 
 	@Override
@@ -108,15 +108,15 @@ public class CB_Action_QuickFieldNote extends CB_Action {
 		case MegaEvent:
 		case Giga:
 		case CITO:
-			cm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCacheBase.getThemedSprite("log9icon"));
+			cm.addItem(MenuID.MI_ATTENDED, "attended", Sprites.getSprite("log9icon"));
 			break;
 		case Camera:
-			cm.addItem(MenuID.MI_WEBCAM_FOTO_TAKEN, "webCamFotoTaken", SpriteCacheBase.getThemedSprite("log10icon"));
-			cm.addItem(MenuID.MI_QUICK_NOT_FOUND, "DNF", SpriteCacheBase.getThemedSprite("log1icon"));
+			cm.addItem(MenuID.MI_WEBCAM_FOTO_TAKEN, "webCamFotoTaken", Sprites.getSprite("log10icon"));
+			cm.addItem(MenuID.MI_QUICK_NOT_FOUND, "DNF", Sprites.getSprite("log1icon"));
 			break;
 		default:
-			cm.addItem(MenuID.MI_QUICK_FOUND, "found", SpriteCacheBase.getThemedSprite("log0icon"));
-			cm.addItem(MenuID.MI_QUICK_NOT_FOUND, "DNF", SpriteCacheBase.getThemedSprite("log1icon"));
+			cm.addItem(MenuID.MI_QUICK_FOUND, "found", Sprites.getSprite("log0icon"));
+			cm.addItem(MenuID.MI_QUICK_NOT_FOUND, "DNF", Sprites.getSprite("log1icon"));
 			break;
 		}
 

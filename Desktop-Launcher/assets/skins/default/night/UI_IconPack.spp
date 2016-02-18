@@ -136,14 +136,14 @@ btn-disabled
   orig: 84, 87
   offset: 0, 0
   index: -1
-btn-normal
+btn-pressed
   rotate: false
   xy: 1605, 293
   size: 84, 87
   orig: 84, 87
   offset: 0, 0
   index: -1
-btn-pressed
+btnNormal
   rotate: false
   xy: 1691, 293
   size: 84, 87

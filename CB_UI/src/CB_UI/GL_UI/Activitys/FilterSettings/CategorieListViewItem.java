@@ -3,21 +3,22 @@ package CB_UI.GL_UI.Activitys.FilterSettings;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import CB_Core.Types.GpxFilename;
-import CB_UI.GL_UI.Activitys.FilterSettings.CategorieListView.CategorieEntry;
-import CB_UI_Base.GL_UI.COLOR;
-import CB_UI_Base.GL_UI.Fonts;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
-import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
-
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+
+import CB_Core.Types.GpxFilename;
+import CB_UI.GL_UI.Activitys.FilterSettings.CategorieListView.CategorieEntry;
+import CB_UI_Base.GL_UI.COLOR;
+import CB_UI_Base.GL_UI.Fonts;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
+import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.UI_Size_Base;
 
 public class CategorieListViewItem extends ListViewItemBackground {
 	public CategorieEntry categorieEntry;
@@ -31,7 +32,7 @@ public class CategorieListViewItem extends ListViewItemBackground {
 	private static Sprite chkNo;
 	private static Sprite chkBox;
 
-	private ArrayList<CategorieListViewItem> mChildList = new ArrayList<CategorieListViewItem>();
+	private final ArrayList<CategorieListViewItem> mChildList = new ArrayList<CategorieListViewItem>();
 
 	public CategorieListViewItem(CB_RectF rec, int Index, CategorieEntry fne) {
 		super(rec, Index, "");
@@ -175,14 +176,14 @@ public class CategorieListViewItem extends ListViewItemBackground {
 
 		if (this.isPressed) {
 			if (btnBack_pressed == null) {
-				btnBack_pressed = new NinePatch(SpriteCacheBase.getThemedSprite("btn-pressed"), 16, 16, 16, 16);
+				btnBack_pressed = new NinePatch(Sprites.getSprite("btn-pressed"), 16, 16, 16, 16);
 			}
 
 			btnBack_pressed.draw(batch, 0, 0, getWidth(), getHeight());
 
 		} else {
 			if (btnBack == null) {
-				btnBack = new NinePatch(SpriteCacheBase.getThemedSprite("btn-normal"), 16, 16, 16, 16);
+				btnBack = new NinePatch(Sprites.getSprite(IconName.btnNormal.name()), 16, 16, 16, 16);
 			}
 
 			btnBack.draw(batch, 0, 0, getWidth(), getHeight());
@@ -205,14 +206,14 @@ public class CategorieListViewItem extends ListViewItemBackground {
 
 		if (this.getCategorieEntry().getCat().pinned) {
 			if (sPinOn == null) {
-				sPinOn = SpriteCacheBase.getThemedSprite("pin-icon");
+				sPinOn = Sprites.getSprite("pin-icon");
 				sPinOn.setBounds(left, UI_Size_Base.that.getMargin(), iconWidth, iconHeight);
 			}
 
 			sPinOn.draw(batch);
 		} else {
 			if (sPinOff == null) {
-				sPinOff = SpriteCacheBase.getThemedSprite("pin-icon-disable");
+				sPinOff = Sprites.getSprite("pin-icon-disable");
 				sPinOff.setBounds(left, UI_Size_Base.that.getMargin(), iconWidth, iconHeight);
 			}
 			sPinOff.draw(batch);
@@ -238,7 +239,7 @@ public class CategorieListViewItem extends ListViewItemBackground {
 
 		if (ChkState == 1) {
 			if (chkOn == null) {
-				chkOn = SpriteCacheBase.getThemedSprite("check-on");
+				chkOn = Sprites.getSprite("check-on");
 
 				chkOn.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 
@@ -248,7 +249,7 @@ public class CategorieListViewItem extends ListViewItemBackground {
 		}
 		if (ChkState == -1) {
 			if (chkOff == null) {
-				chkOff = SpriteCacheBase.getThemedSprite("check-disable");
+				chkOff = Sprites.getSprite("check-disable");
 
 				chkOff.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 
@@ -263,14 +264,14 @@ public class CategorieListViewItem extends ListViewItemBackground {
 
 		if (this.categorieEntry.getCat().getCheck() == 1) {
 			if (chkOn == null) {
-				chkOn = SpriteCacheBase.getThemedSprite("check-on");
+				chkOn = Sprites.getSprite("check-on");
 				chkOn.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 			}
 
 			chkOn.draw(batch);
 		} else if (this.categorieEntry.getCat().getCheck() == 0) {
 			if (chkNo == null) {
-				chkNo = SpriteCacheBase.getThemedSprite("delete-icon");
+				chkNo = Sprites.getSprite("delete-icon");
 				chkNo.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 			}
 			chkNo.draw(batch);
@@ -294,7 +295,7 @@ public class CategorieListViewItem extends ListViewItemBackground {
 		}
 
 		if (chkBox == null) {
-			chkBox = SpriteCacheBase.getThemedSprite("check-off");
+			chkBox = Sprites.getSprite("check-off");
 
 			chkBox.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 
@@ -335,6 +336,7 @@ public class CategorieListViewItem extends ListViewItemBackground {
 		return (float) categorieEntry.getNumState();
 	}
 
+	@Override
 	public CategorieListViewItem getChild(int i) {
 		return mChildList.get(i);
 	}

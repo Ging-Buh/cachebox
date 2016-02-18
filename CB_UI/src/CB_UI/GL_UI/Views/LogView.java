@@ -30,7 +30,7 @@ import CB_UI.SelectedCacheEvent;
 import CB_UI.SelectedCacheEventList;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
@@ -49,7 +49,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
 		super(rec, Name);
 		that = this;
 		ItemRec = (new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.1f)).ScaleCenter(0.97f);
-		setBackground(SpriteCacheBase.ListBack);
+		setBackground(Sprites.ListBack);
 
 		this.setBaseAdapter(null);
 		setCache(GlobalCore.getSelectedCache());

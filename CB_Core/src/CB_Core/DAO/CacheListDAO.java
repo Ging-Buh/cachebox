@@ -215,9 +215,7 @@ public class CacheListDAO {
 		try {
 			delCacheImages(getGcCodeList("Archived=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
 			long ret = Database.Data.delete("Caches", "Archived=1", null);
-			CategoryDAO categoryDAO = new CategoryDAO();
-			categoryDAO.LoadCategoriesFromDatabase();
-			categoryDAO.DeleteEmptyCategories();
+			Database.Data.GPXFilenameUpdateCacheCount(); // CoreSettingsForward.Categories will be set
 			return ret;
 		} catch (Exception e) {
 			log.error("CacheListDAO.DelArchiv()", "Archiv ERROR", e);
@@ -240,9 +238,7 @@ public class CacheListDAO {
 		try {
 			delCacheImages(getGcCodeList("Found=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
 			long ret = Database.Data.delete("Caches", "Found=1", null);
-			CategoryDAO categoryDAO = new CategoryDAO();
-			categoryDAO.LoadCategoriesFromDatabase();
-			categoryDAO.DeleteEmptyCategories();
+			Database.Data.GPXFilenameUpdateCacheCount(); // CoreSettingsForward.Categories will be set
 			return ret;
 		} catch (Exception e) {
 			log.error("CacheListDAO.DelFound()", "Found ERROR", e);
@@ -266,9 +262,7 @@ public class CacheListDAO {
 		try {
 			delCacheImages(getGcCodeList(Where), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
 			long ret = Database.Data.delete("Caches", Where, null);
-			CategoryDAO categoryDAO = new CategoryDAO();
-			categoryDAO.LoadCategoriesFromDatabase();
-			categoryDAO.DeleteEmptyCategories();
+			Database.Data.GPXFilenameUpdateCacheCount(); // CoreSettingsForward.Categories will be set
 			return ret;
 		} catch (Exception e) {
 			log.error("CacheListDAO.DelFilter()", "Filter ERROR", e);

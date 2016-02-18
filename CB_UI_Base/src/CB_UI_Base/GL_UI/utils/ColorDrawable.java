@@ -1,6 +1,6 @@
 package CB_UI_Base.GL_UI.utils;
 
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Util.HSV_Color;
 
@@ -29,7 +29,7 @@ public class ColorDrawable extends EmptyDrawable {
 	public void draw(Batch batch, float x, float y, float width, float height) {
 		if (pixelSprite == null) {
 			try {
-				pixelSprite = SpriteCacheBase.getThemedSprite("pixel2x2");
+				pixelSprite = Sprites.getSprite("pixel2x2");
 				if (pixelSprite == null)
 					setSpriteFromPixMap();
 			} catch (Exception e) {

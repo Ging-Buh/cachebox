@@ -23,7 +23,7 @@ import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
@@ -280,7 +280,7 @@ public class EditCache extends ActivityBase
 
 			@Override
 			public Drawable getIcon(int index) {
-				return new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + CacheTypNumbers[index].name()));
+				return new SpriteDrawable(Sprites.getSprite("big" + CacheTypNumbers[index].name()));
 			}
 
 			@Override
@@ -311,7 +311,7 @@ public class EditCache extends ActivityBase
 			public Drawable getIcon(int index) {
 				return null;
 				// Die folgenden Icons sind zu klein
-				// return new SpriteDrawable(SpriteCache.SizesIcons.get(CacheSizeNumbers[index].ordinal()));
+				// return new SpriteDrawable(Sprites.SizesIcons.get(CacheSizeNumbers[index].ordinal()));
 			}
 
 			@Override

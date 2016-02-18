@@ -72,8 +72,8 @@ import CB_UI.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_UI_Base.GL_UI.Controls.ZoomButtons;
@@ -163,7 +163,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		Config.MapsforgeNightTheme.addChangedEventListener(themeChangedEventHandler);
 
 		registerSkinChangedEvent();
-		setBackground(SpriteCacheBase.ListBack);
+		setBackground(Sprites.ListBack);
 		int maxNumTiles = 0;
 		// calculate max Map Tile cache
 		try {
@@ -567,7 +567,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				direction = 180 - direction;
 
 				// draw sprite
-				Sprite arrow = SpriteCacheBase.Arrows.get(4);
+				Sprite arrow = Sprites.Arrows.get(4);
 				arrow.setRotation(direction);
 
 				float boundsX = newTarget.x - GL_UISizes.TargetArrow.halfWidth;
@@ -648,7 +648,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		if ((aktZoom >= zoomCross) && (wpi.Selected) && (wpi.Waypoint == GlobalCore.getSelectedWaypoint())) {
 			// Draw Cross and move screen vector
-			Sprite cross = SpriteCacheBase.MapOverlay.get(3);
+			Sprite cross = Sprites.MapOverlay.get(3);
 			cross.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight, WpUnderlay.width, WpUnderlay.height);
 			cross.draw(batch);
 
@@ -667,7 +667,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		// draw Favorite symbol
 		if (wpi.Cache != null && wpi.Cache.isFavorite()) {
-			batch.draw(SpriteCacheBase.Icons.get(IconName.favorit_42.ordinal()), screen.x + (WpSize.halfWidth / 2), screen.y + (WpSize.halfHeight / 2), WpSize.width, WpSize.height);
+			batch.draw(Sprites.getSprite(IconName.favorit.name()), screen.x + (WpSize.halfWidth / 2), screen.y + (WpSize.halfHeight / 2), WpSize.width, WpSize.height);
 		}
 
 		if (wpi.OverlayIcon != null) {
@@ -679,7 +679,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		// Rating des Caches darstellen
 		if (wpi.Cache != null && showRating && (!drawAsWaypoint) && (wpi.Cache.Rating > 0) && (aktZoom >= 15)) {
-			Sprite rating = SpriteCacheBase.MapStars.get((int) Math.min(wpi.Cache.Rating * 2, 5 * 2));
+			Sprite rating = Sprites.MapStars.get((int) Math.min(wpi.Cache.Rating * 2, 5 * 2));
 			rating.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight - WpUnderlay.Height4_8, WpUnderlay.width, WpUnderlay.Height4_8);
 			rating.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
 			rating.setRotation(0);
@@ -705,13 +705,13 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		// Show D/T-Rating
 		if (wpi.Cache != null && showDT && (!drawAsWaypoint) && (aktZoom >= 15)) {
-			Sprite difficulty = SpriteCacheBase.MapStars.get((int) Math.min(wpi.Cache.getDifficulty() * 2, 5 * 2));
+			Sprite difficulty = Sprites.MapStars.get((int) Math.min(wpi.Cache.getDifficulty() * 2, 5 * 2));
 			difficulty.setBounds(screen.x - WpUnderlay.width - GL_UISizes.infoShadowHeight, screen.y - (WpUnderlay.Height4_8 / 2), WpUnderlay.width, WpUnderlay.Height4_8);
 			difficulty.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
 			difficulty.setRotation(90);
 			difficulty.draw(batch);
 
-			Sprite terrain = SpriteCacheBase.MapStars.get((int) Math.min(wpi.Cache.getTerrain() * 2, 5 * 2));
+			Sprite terrain = Sprites.MapStars.get((int) Math.min(wpi.Cache.getTerrain() * 2, 5 * 2));
 			terrain.setBounds(screen.x + GL_UISizes.infoShadowHeight, screen.y - (WpUnderlay.Height4_8 / 2), WpUnderlay.width, WpUnderlay.Height4_8);
 			terrain.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
 			terrain.setRotation(90);

@@ -14,8 +14,8 @@ import CB_UI.GL_UI.Views.LogView;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
@@ -45,7 +45,7 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
 
 	@Override
 	public Sprite getIcon() {
-		return SpriteCacheBase.Icons.get(IconName.list_4.ordinal());
+		return Sprites.getSprite(IconName.listIcon.name());
 	}
 
 	@Override
@@ -86,10 +86,10 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
 		});
 
 		MenuItem mi;
-		cm.addItem(MenuID.MI_RELOADLOGS, "ReloadLogs", SpriteCacheBase.Icons.get(IconName.import_40.ordinal()));
+		cm.addItem(MenuID.MI_RELOADLOGS, "ReloadLogs", Sprites.getSprite(IconName.importIcon.name()));
 		if (CB_Core_Settings.Friends.getValue().length() > 0) {
-			cm.addItem(MenuID.MI_LOAD_FRIENDS_LOGS, "LoadLogsOfFriends", SpriteCacheBase.Icons.get(IconName.import_40.ordinal()));
-			mi = cm.addItem(MenuID.MI_FILTERLOGS, "FilterLogsOfFriends", SpriteCacheBase.Icons.get(IconName.filter_13.ordinal()));
+			cm.addItem(MenuID.MI_LOAD_FRIENDS_LOGS, "LoadLogsOfFriends", Sprites.getSprite(IconName.importIcon.name()));
+			mi = cm.addItem(MenuID.MI_FILTERLOGS, "FilterLogsOfFriends", Sprites.getSprite(IconName.filter.name()));
 			mi.setCheckable(true);
 			mi.setChecked(GlobalCore.filterLogsOfFriends);
 		}

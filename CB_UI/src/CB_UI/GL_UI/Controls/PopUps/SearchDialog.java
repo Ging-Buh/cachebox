@@ -56,8 +56,8 @@ import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
@@ -161,7 +161,7 @@ public class SearchDialog extends PopUp_Base {
 
 		this.setSize(UiSizes.that.getCacheListItemSize().asFloat());
 
-		this.setBackground(SpriteCacheBase.ListBack);
+		this.setBackground(Sprites.ListBack);
 
 		float margin = UI_Size_Base.that.getMargin();
 		if (GlobalCore.isTab)
@@ -329,7 +329,7 @@ public class SearchDialog extends PopUp_Base {
 			mBtnFilter.setText(Translation.Get("Filter"));
 		} else {
 
-			mBtnFilter.setImage(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.targetDay_53.ordinal())));
+			mBtnFilter.setImage(new SpriteDrawable(Sprites.getSprite(IconName.targetDay.name())));
 			mBtnFilter.setText("");
 		}
 	}

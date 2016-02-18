@@ -21,8 +21,8 @@ import CB_Core.Types.LogEntry;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UiSizes;
@@ -251,7 +251,7 @@ public class CacheInfo extends CB_View_Base {
 				mLeft += mS_FontCache.getLayouts().first().width + mMargin;
 
 				mStarSize.scale(mScaleFactor);
-				mSSprite = new Sprite(SpriteCacheBase.SizesIcons.get((mCache.Size.ordinal())));
+				mSSprite = new Sprite(Sprites.SizesIcons.get((mCache.Size.ordinal())));
 				mSSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
 				// Difficulty
 				mLeft += mSSprite.getWidth() + mMargin + mMargin;
@@ -259,7 +259,7 @@ public class CacheInfo extends CB_View_Base {
 				mD_FontCache.setColor(COLOR.getFontColor());
 				mD_FontCache.setText("D", mLeft, mBottom);
 				mLeft += mD_FontCache.getLayouts().first().width + mMargin;
-				mDSprite = new Sprite(SpriteCacheBase.Stars.get((int) (mCache.getDifficulty() * 2)));
+				mDSprite = new Sprite(Sprites.Stars.get((int) (mCache.getDifficulty() * 2)));
 				mDSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
 				mDSprite.setRotation(0);
 				// Terrain
@@ -268,7 +268,7 @@ public class CacheInfo extends CB_View_Base {
 				mT_FontCache.setColor(COLOR.getFontColor());
 				mT_FontCache.setText("T", mLeft, mBottom);
 				mLeft += mT_FontCache.getLayouts().first().width + mMargin;
-				mTSprite = new Sprite(SpriteCacheBase.Stars.get((int) (mCache.getTerrain() * 2)));
+				mTSprite = new Sprite(Sprites.Stars.get((int) (mCache.getTerrain() * 2)));
 				mTSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
 				mTSprite.setRotation(0);
 				// Draw TB
@@ -277,7 +277,7 @@ public class CacheInfo extends CB_View_Base {
 				if (numTb > 0) {
 					float sizes = mStarSize.width / 2.1f;
 
-					mTBSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.tb_36.ordinal()));
+					mTBSprite = new Sprite(Sprites.getSprite(IconName.tb.name()));
 					mTBSprite.setBounds(mLeft, mBottom - (sizes / 1.8f) - mMargin, sizes, sizes);
 					mTBSprite.setOrigin(sizes / 2, sizes / 2);
 					mTBSprite.setRotation(90);
@@ -301,7 +301,7 @@ public class CacheInfo extends CB_View_Base {
 				mLeft = -4 * mScaleFactor;
 
 				mStarSize.scale(0.7f);
-				mRatingSprite = new Sprite(SpriteCacheBase.Stars.get((int) Math.min(mCache.Rating * 2, 5 * 2)));
+				mRatingSprite = new Sprite(Sprites.Stars.get((int) Math.min(mCache.Rating * 2, 5 * 2)));
 				mRatingSprite.setBounds(mLeft + mStarSize.height, getHeight() - mTop - mStarSize.width - mMargin - mMargin - mMargin, mStarSize.width, mStarSize.height);
 				mRatingSprite.setOrigin(0, mStarSize.halfHeight);
 				mRatingSprite.setRotation(90);
@@ -329,15 +329,15 @@ public class CacheInfo extends CB_View_Base {
 			if (ifModeFlag(SHOW_ICON)) { // Icon Sprite erstellen
 
 				if (mCache.CorrectedCoordiantesOrMysterySolved()) {
-					mIconSprite = new Sprite(SpriteCacheBase.getThemedSprite("big" + CacheTypes.Mystery.name() + "Solved"));
+					mIconSprite = new Sprite(Sprites.getSprite("big" + CacheTypes.Mystery.name() + "Solved"));
 				} else if ((mCache.Type == CacheTypes.Multi) && mCache.HasStartWaypoint()) {
 					// Multi anders darstellen wenn dieser einen definierten Startpunkt hat
-					mIconSprite = new Sprite(SpriteCacheBase.getThemedSprite("big" + CacheTypes.Multi.name() + "StartP"));
+					mIconSprite = new Sprite(Sprites.getSprite("big" + CacheTypes.Multi.name() + "StartP"));
 				} else if ((mCache.Type == CacheTypes.Mystery) && mCache.HasStartWaypoint()) {
 					// Mystery anders darstellen wenn dieser keinen Final aber einen definierten Startpunkt hat
-					mIconSprite = new Sprite(SpriteCacheBase.getThemedSprite("big" + CacheTypes.Mystery.name() + "StartP"));
+					mIconSprite = new Sprite(Sprites.getSprite("big" + CacheTypes.Mystery.name() + "StartP"));
 				} else {
-					mIconSprite = new Sprite(SpriteCacheBase.getThemedSprite("big" + mCache.Type.name()));
+					mIconSprite = new Sprite(Sprites.getSprite("big" + mCache.Type.name()));
 				}
 				mIconSprite.setSize(mIconSize, mIconSize);
 				mIconSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);
@@ -347,9 +347,9 @@ public class CacheInfo extends CB_View_Base {
 				float infoSize = mIconSize / 2;
 
 				if (mCache.isFound()) {
-					mFoundOwnerSprite = new Sprite(SpriteCacheBase.getThemedSprite("log0icon"));
+					mFoundOwnerSprite = new Sprite(Sprites.getSprite("log0icon"));
 				} else if (mCache.ImTheOwner()) {
-					mFoundOwnerSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.star_43.ordinal()));
+					mFoundOwnerSprite = new Sprite(Sprites.getSprite(IconName.star.name()));
 				}
 				if (mFoundOwnerSprite != null) {
 					mFoundOwnerSprite.setSize(infoSize, infoSize);
@@ -357,15 +357,15 @@ public class CacheInfo extends CB_View_Base {
 				}
 
 				if (mCache.isFavorite()) {
-					mFavoriteSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.favorit_42.ordinal()));
+					mFavoriteSprite = new Sprite(Sprites.getSprite(IconName.favorit.name()));
 					mFavoriteSprite.setSize(infoSize, infoSize);
 					mFavoriteSprite.setPosition(mSpriteCachePos.x + infoSize, mSpriteCachePos.y + infoSize);
 				}
 
 				if (mCache.isArchived()) {
-					mAvailableSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.log11_45.ordinal()));
+					mAvailableSprite = new Sprite(Sprites.getSprite(IconName.log11icon.name()));
 				} else if (!mCache.isAvailable()) {
-					mAvailableSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.disabled_44.ordinal()));
+					mAvailableSprite = new Sprite(Sprites.getSprite(IconName.disabled.name()));
 				}
 				if (mAvailableSprite != null) {
 					mAvailableSprite.setSize(infoSize, infoSize);
@@ -392,7 +392,7 @@ public class CacheInfo extends CB_View_Base {
 				if (attrs != null && attrs.hasNext()) {
 					do {
 						Attributes attribute = attrs.next();
-						mAttrSprites[count] = SpriteCacheBase.getThemedSprite(attribute.getImageName().replace("_", "-") + "Icon");
+						mAttrSprites[count] = Sprites.getSprite(attribute.getImageName().replace("_", "-") + "Icon");
 						mAttrSprites[count].setSize(attSize, attSize);
 						mAttrSprites[count].setPosition(attX, attY);
 

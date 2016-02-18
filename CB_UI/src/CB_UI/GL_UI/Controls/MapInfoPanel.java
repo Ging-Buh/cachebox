@@ -27,7 +27,7 @@ import CB_Locator.Map.MapViewBase;
 import CB_UI.CB_UI_Settings;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -84,13 +84,13 @@ public class MapInfoPanel extends CB_View_Base {
 			lastCoordType = type;
 			switch (type) {
 			case Cache:
-				CoordSymbol.setDrawable(new SpriteDrawable(SpriteCacheBase.getThemedSprite("cache-icon")));
+				CoordSymbol.setDrawable(new SpriteDrawable(Sprites.getSprite("cache-icon")));
 				break;
 			case GPS:
-				CoordSymbol.setDrawable(new SpriteDrawable(SpriteCacheBase.getThemedSprite("satellite")));
+				CoordSymbol.setDrawable(new SpriteDrawable(Sprites.getSprite("satellite")));
 				break;
 			case Map:
-				CoordSymbol.setDrawable(new SpriteDrawable(SpriteCacheBase.getThemedSprite("map")));
+				CoordSymbol.setDrawable(new SpriteDrawable(Sprites.getSprite("map")));
 				break;
 			case NULL:
 				CoordSymbol.setDrawable(null);
@@ -160,20 +160,20 @@ public class MapInfoPanel extends CB_View_Base {
 	protected void Initial() {
 		this.removeChilds();
 
-		setBackground(SpriteCacheBase.InfoBack);
+		setBackground(Sprites.InfoBack);
 
 		// initial Image
 
 		CB_RectF CompassRec = new CB_RectF(0, 0, this.getHeight(), this.getHeight());
 
 		compass_frame = new Image(CompassRec, "Compass_Frame", false);
-		compass_frame.setDrawable(SpriteCacheBase.Compass.get(2));
+		compass_frame.setDrawable(Sprites.Compass.get(2));
 		compass_frame.setOrigin(CompassRec.getWidth() / 2, CompassRec.getHeight() / 2);
 		compass_frame.setScale(0.80f);
 		this.addChild(compass_frame);
 
 		compas_scale = new Image(CompassRec, "Compass_Scale", false);
-		compas_scale.setDrawable(SpriteCacheBase.Compass.get(3));
+		compas_scale.setDrawable(Sprites.Compass.get(3));
 		compas_scale.setOrigin(CompassRec.getWidth() / 2, CompassRec.getHeight() / 2);
 		compas_scale.setScale(0.80f);
 		this.addChild(compas_scale);
@@ -212,7 +212,7 @@ public class MapInfoPanel extends CB_View_Base {
 
 		CoordSymbol = new Image((new CB_RectF(0, 0, this.getHeight(), this.getHeight())).ScaleCenter(0.62f), "CoordSymbol", false);
 		CoordSymbol.setX(this.getWidth() - CoordSymbol.getWidth() - (rightBorder / 3));
-		CoordSymbol.setDrawable(new SpriteDrawable(SpriteCacheBase.getThemedSprite("cache-icon")));
+		CoordSymbol.setDrawable(new SpriteDrawable(Sprites.getSprite("cache-icon")));
 		this.addChild(CoordSymbol);
 		CoordType tmp = lastCoordType;
 		lastCoordType = CoordType.NULL;
@@ -236,7 +236,7 @@ public class MapInfoPanel extends CB_View_Base {
 		} else {
 			arrowId = 2;
 		}
-		Sprite arrowSprite = new Sprite(SpriteCacheBase.Arrows.get(arrowId));
+		Sprite arrowSprite = new Sprite(Sprites.Arrows.get(arrowId));
 		arrowSprite.setRotation(0);// reset rotation
 		arrowSprite.setOrigin(0, 0);
 		arrow.setDrawable(new SpriteDrawable(arrowSprite));

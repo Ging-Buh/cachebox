@@ -10,7 +10,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Global;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.ImageButton;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.interfaces.ICopyPaste;
@@ -26,9 +26,9 @@ public class CopyPastePopUp extends PopUp_Base {
 	public CopyPastePopUp(String Name, final ICopyPaste copyPasteControl) {
 		super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth() * 3.2f, UI_Size_Base.that.getButtonHeight() * 1.5f), Name);
 
-		int p = SpriteCacheBase.patch;
+		int p = Sprites.patch;
 
-		setBackground(new NinePatchDrawable(new NinePatch(SpriteCacheBase.Bubble.get(3), p, p, p, (int) (p * 1.432))));
+		setBackground(new NinePatchDrawable(new NinePatch(Sprites.Bubble.get(3), p, p, p, (int) (p * 1.432))));
 
 		this.setClickable(true);
 
@@ -36,7 +36,7 @@ public class CopyPastePopUp extends PopUp_Base {
 
 		btnPaste = new ImageButton(rec, "PasteButton");
 		btnPaste.setFont(Fonts.getBubbleNormal());
-		btnPaste.setImage(SpriteCacheBase.paste);
+		btnPaste.setImage(Sprites.paste);
 		btnPaste.setY(rec.getHeight() * 0.4f);
 		if (!copyPasteControl.isEditable())
 			btnPaste.disable();
@@ -57,7 +57,7 @@ public class CopyPastePopUp extends PopUp_Base {
 
 		btnCopy = new ImageButton(rec, "CopyButton");
 		btnCopy.setFont(Fonts.getBubbleNormal());
-		btnCopy.setImage(SpriteCacheBase.copy);
+		btnCopy.setImage(Sprites.copy);
 		btnCopy.setY(rec.getHeight() * 0.4f);
 		btnCopy.setOnClickListener(new OnClickListener() {
 
@@ -76,7 +76,7 @@ public class CopyPastePopUp extends PopUp_Base {
 
 		btnCut = new ImageButton(rec, "CutButton");
 		btnCut.setFont(Fonts.getBubbleNormal());
-		btnCut.setImage(SpriteCacheBase.cut);
+		btnCut.setImage(Sprites.cut);
 		btnCut.setY(rec.getHeight() * 0.4f);
 		if (!copyPasteControl.isEditable()) {
 			btnCut.disable();
@@ -112,9 +112,9 @@ public class CopyPastePopUp extends PopUp_Base {
 	}
 
 	public void flipX() {
-		int p = SpriteCacheBase.patch;
+		int p = Sprites.patch;
 
-		Drawable drawable = new NinePatchDrawable(new NinePatch(SpriteCacheBase.Bubble.get(5), p, p, (int) (p * 1.432), p));
+		Drawable drawable = new NinePatchDrawable(new NinePatch(Sprites.Bubble.get(5), p, p, (int) (p * 1.432), p));
 		setBackground(drawable);
 
 		float yValue = this.getHeight() * 0.07f;

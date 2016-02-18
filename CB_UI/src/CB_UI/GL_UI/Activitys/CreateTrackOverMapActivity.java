@@ -34,7 +34,7 @@ import CB_UI.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.ParentInfo;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
@@ -237,7 +237,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
 				WaypointRenderInfo wpi = new WaypointRenderInfo();
 				wpi.MapX = (float) MapX;
 				wpi.MapY = (float) MapY;
-				wpi.Icon = SpriteCacheBase.MapIcons.get(16);
+				wpi.Icon = Sprites.MapIcons.get(16);
 				wpi.Cache = null;
 				wpi.Waypoint = wp;
 				wpi.UnderlayIcon = null;
@@ -246,7 +246,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
 				if (selectedWP != null) {
 					if (selectedWP.getGcCode().equals(wp.getGcCode())) {
 						wpi.Selected = true;
-						wpi.UnderlayIcon = SpriteCacheBase.MapOverlay.get(1);
+						wpi.UnderlayIcon = Sprites.MapOverlay.get(1);
 					}
 				}
 				tmplist.add(wpi);

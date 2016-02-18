@@ -1,6 +1,6 @@
 package CB_UI_Base.GL_UI.Controls.List;
 
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 
@@ -34,9 +34,9 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
 	@Override
 	protected void Initial() {
 		if (!mBackIsInitial) {
-			backSelect = new NinePatch(SpriteCacheBase.getThemedSprite("listrec-selected"), 13, 13, 13, 13);
-			back1 = new NinePatch(SpriteCacheBase.getThemedSprite("listrec-first"), 13, 13, 13, 13);
-			back2 = new NinePatch(SpriteCacheBase.getThemedSprite("listrec-secend"), 13, 13, 13, 13);
+			backSelect = new NinePatch(Sprites.getSprite("listrec-selected"), 13, 13, 13, 13);
+			back1 = new NinePatch(Sprites.getSprite("listrec-first"), 13, 13, 13, 13);
+			back2 = new NinePatch(Sprites.getSprite("listrec-secend"), 13, 13, 13, 13);
 
 			mBackIsInitial = true;
 		}

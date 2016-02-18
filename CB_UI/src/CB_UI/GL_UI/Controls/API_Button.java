@@ -20,7 +20,7 @@ import CB_UI.Config;
 import CB_UI.GcApiLogin;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.Math.CB_RectF;
@@ -76,9 +76,9 @@ public class API_Button extends Button {
 			}
 
 			if (Entry) {
-				drw = new SpriteDrawable(SpriteCacheBase.getThemedSprite("chk-icon"));
+				drw = new SpriteDrawable(Sprites.getSprite("chk-icon"));
 			} else {
-				drw = new SpriteDrawable(SpriteCacheBase.getThemedSprite("chk-icon-disable"));
+				drw = new SpriteDrawable(Sprites.getSprite("chk-icon-disable"));
 			}
 
 			apiChk.setDrawable(drw);

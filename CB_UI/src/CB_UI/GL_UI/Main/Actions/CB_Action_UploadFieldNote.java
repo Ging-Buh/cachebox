@@ -16,8 +16,8 @@ import CB_UI.Config;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GL_UI.Views.FieldNotesView;
 import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog.ICancelListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
@@ -55,7 +55,7 @@ public class CB_Action_UploadFieldNote extends CB_Action {
 
 	@Override
 	public Sprite getIcon() {
-		return SpriteCacheBase.Icons.get(IconName.uploadFieldNote_64.ordinal());
+		return Sprites.getSprite(IconName.UPLOADFIELDNOTE.name());
 	}
 
 	private ProgressDialog PD;

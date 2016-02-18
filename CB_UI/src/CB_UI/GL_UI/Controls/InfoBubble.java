@@ -1,24 +1,26 @@
 package CB_UI.GL_UI.Controls;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
+
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class InfoBubble extends CB_View_Base {
 
 	public InfoBubble(SizeF Size, String Name) {
 		super(Size, Name);
+		saveIcon = new SpriteDrawable(Sprites.getSprite(IconName.SAVE.name()));
 		registerSkinChangedEvent();
 	}
 
@@ -42,7 +44,7 @@ public class InfoBubble extends CB_View_Base {
 	private Cache mCache = null;
 	private Waypoint mWaypoint = null;
 	private CacheInfo cacheInfo;
-	private final Drawable saveIcon = new SpriteDrawable(SpriteCacheBase.Icons.get(SpriteCacheBase.IconName.save_66.ordinal()));
+	private final Drawable saveIcon;
 
 	public void setCache(Cache cache, Waypoint waypoint) {
 		setCache(cache, waypoint, false);
@@ -98,7 +100,7 @@ public class InfoBubble extends CB_View_Base {
 			selectedCache = mCache.Id == GlobalCore.getSelectedCache().Id;
 		}
 
-		Sprite sprite = selectedCache ? SpriteCacheBase.Bubble.get(1) : SpriteCacheBase.Bubble.get(0);
+		Sprite sprite = selectedCache ? Sprites.Bubble.get(1) : Sprites.Bubble.get(0);
 		sprite.setPosition(0, 0);
 		sprite.setSize(getWidth(), getHeight());
 		sprite.draw(batch);

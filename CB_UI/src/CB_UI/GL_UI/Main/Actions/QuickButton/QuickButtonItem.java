@@ -26,8 +26,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
@@ -71,7 +71,7 @@ public class QuickButtonItem extends ListViewItemBase {
 		mActionDesc = Desc;
 
 		mButton = new Button(rec, "QuickListItemButton");
-		mButton.setButtonSprites(SpriteCacheBase.QuickButton);
+		mButton.setButtonSprites(Sprites.QuickButton);
 		mButton.setDraggable();
 		this.addChild(mButton);
 		this.addChild(mButtonIcon);
@@ -125,10 +125,10 @@ public class QuickButtonItem extends ListViewItemBase {
 
 		if (mAction.getId() == MenuID.AID_AUTO_RESORT) {
 			if (GlobalCore.getAutoResort() && autoResortState != 1) {
-				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.autoSelectOn_15.ordinal())));
+				mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.autoSortOnIcon.name())));
 				autoResortState = 1;
 			} else if (!GlobalCore.getAutoResort() && autoResortState != 0) {
-				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.autoSelectOff_16.ordinal())));
+				mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.autoSortOffIcon.name())));
 				autoResortState = 0;
 			}
 		} else if (mAction.getId() == MenuID.AID_SHOW_SPOILER) {
@@ -138,10 +138,10 @@ public class QuickButtonItem extends ListViewItemBase {
 			}
 
 			if (hasSpoiler && spoilerState != 1) {
-				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.images_18.ordinal())));
+				mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.imagesIcon.name())));
 				spoilerState = 1;
 			} else if (!hasSpoiler && spoilerState != 0) {
-				Sprite sprite = new Sprite(SpriteCacheBase.Icons.get(IconName.images_18.ordinal()));
+				Sprite sprite = new Sprite(Sprites.getSprite(IconName.imagesIcon.name()));
 				sprite.setColor(DISABLE_COLOR);
 				mButtonIcon.setDrawable(new SpriteDrawable(sprite));
 				spoilerState = 0;
@@ -149,19 +149,19 @@ public class QuickButtonItem extends ListViewItemBase {
 		} else if (mAction.getId() == MenuID.AID_TORCH) {
 
 			if (PlatformConnector.isTorchOn() && torchState != 1) {
-				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.torch_on_67.ordinal())));
+				mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.TORCHON.name())));
 				torchState = 1;
 			} else if (!PlatformConnector.isTorchOn() && torchState != 0) {
-				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.torch_Off_68.ordinal())));
+				mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.TORCHOFF.name())));
 				torchState = 0;
 			}
 		} else if (mAction.getId() == MenuID.AID_SHOW_HINT) {
 
 			if (mAction.getEnabled() && hintState != 1) {
-				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.hint_19.ordinal())));
+				mButtonIcon.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.hintIcon.name())));
 				hintState = 1;
 			} else if (!mAction.getEnabled() && hintState != 0) {
-				Sprite sprite = new Sprite(SpriteCacheBase.Icons.get(IconName.hint_19.ordinal()));
+				Sprite sprite = new Sprite(Sprites.getSprite(IconName.hintIcon.name()));
 				sprite.setColor(DISABLE_COLOR);
 				mButtonIcon.setDrawable(new SpriteDrawable(sprite));
 				hintState = 0;

@@ -234,6 +234,13 @@ bigGiga
   orig: 32, 32
   offset: 0, 0
   index: -1
+ADD
+  rotate: false
+  xy: 634, 596
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
 BEGINNER
   rotate: false
   xy: 1543, 1469
@@ -262,9 +269,23 @@ BubbleOverlay
   orig: 430, 170
   offset: 0, 0
   index: -1
+DELETE
+  rotate: false
+  xy: 684, 596
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+DayNight
+  rotate: false
+  xy: 795, 1259
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
 FieldNote
   rotate: false
-  xy: 634, 596
+  xy: 809, 1309
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -353,6 +374,13 @@ LiveEnabled
   orig: 87, 87
   offset: 0, 0
   index: -1
+MENUFILTERED
+  rotate: false
+  xy: 2028, 1825
+  size: 19, 42
+  orig: 19, 42
+  offset: 0, 0
+  index: -1
 MapScale-3
   rotate: false
   xy: 1609, 1644
@@ -437,6 +465,69 @@ Selection-set
   orig: 22, 30
   offset: 0, 0
   index: -1
+TBDISCOVER
+  rotate: false
+  xy: 859, 1318
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+TBDROP
+  rotate: false
+  xy: 909, 1296
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+TBGRAB
+  rotate: false
+  xy: 959, 1296
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+TBNOTE
+  rotate: false
+  xy: 1009, 1301
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+TBPICKED
+  rotate: false
+  xy: 1059, 1301
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+TBVISIT
+  rotate: false
+  xy: 1109, 1304
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+TORCHOFF
+  rotate: false
+  xy: 859, 1268
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+TORCHON
+  rotate: false
+  xy: 850, 1218
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+UPLOADFIELDNOTE
+  rotate: false
+  xy: 850, 1168
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
 activity-back
   rotate: false
   xy: 495, 1059
@@ -451,23 +542,16 @@ activity-border
   orig: 84, 87
   offset: 0, 0
   index: -1
-add-icon
-  rotate: false
-  xy: 684, 596
-  size: 48, 48
-  orig: 48, 48
-  offset: 0, 0
-  index: -1
 add-wp
   rotate: false
-  xy: 795, 1259
+  xy: 909, 1246
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-add_cache_icon
+addCacheIcon
   rotate: false
-  xy: 809, 1309
+  xy: 959, 1246
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -1361,16 +1445,16 @@ att-9-1Icon
   orig: 32, 32
   offset: 0, 0
   index: -1
-auto-sort-off-icon
+autoSortOffIcon
   rotate: false
-  xy: 859, 1318
+  xy: 1009, 1251
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-auto-sort-on-icon
+autoSortOnIcon
   rotate: false
-  xy: 909, 1296
+  xy: 1059, 1251
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -1443,7 +1527,7 @@ bigEvent
   index: -1
 bigFinal
   rotate: false
-  xy: 959, 1296
+  xy: 1109, 1254
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -1471,21 +1555,21 @@ bigMulti
   index: -1
 bigMultiQuestion
   rotate: false
-  xy: 1009, 1301
+  xy: 900, 1196
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 bigMultiStage
   rotate: false
-  xy: 1059, 1301
+  xy: 950, 1196
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 bigMultiStageStartP
   rotate: false
-  xy: 1109, 1304
+  xy: 900, 1146
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -1506,7 +1590,7 @@ bigMunzee
   index: -1
 bigMyParking
   rotate: false
-  xy: 859, 1268
+  xy: 950, 1146
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -1527,14 +1611,14 @@ bigMysteryStartP
   index: -1
 bigParkingArea
   rotate: false
-  xy: 850, 1218
+  xy: 850, 1118
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 bigReferencePoint
   rotate: false
-  xy: 909, 1250
+  xy: 900, 1100
   size: 48, 44
   orig: 48, 44
   offset: 0, 0
@@ -1548,7 +1632,7 @@ bigTraditional
   index: -1
 bigTrailhead
   rotate: false
-  xy: 850, 1168
+  xy: 950, 1096
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -1581,28 +1665,28 @@ btn-disabled
   orig: 84, 87
   offset: 0, 0
   index: -1
-btn-normal
-  rotate: false
-  xy: 584, 1148
-  size: 84, 87
-  orig: 84, 87
-  offset: 0, 0
-  index: -1
-day-btn-normal
-  rotate: false
-  xy: 584, 1148
-  size: 84, 87
-  orig: 84, 87
-  offset: 0, 0
-  index: -1
 btn-pressed
+  rotate: false
+  xy: 584, 1148
+  size: 84, 87
+  orig: 84, 87
+  offset: 0, 0
+  index: -1
+day-btn-pressed
+  rotate: false
+  xy: 584, 1148
+  size: 84, 87
+  orig: 84, 87
+  offset: 0, 0
+  index: -1
+btnNormal
   rotate: false
   xy: 581, 1059
   size: 84, 87
   orig: 84, 87
   offset: 0, 0
   index: -1
-day-btn-pressed
+day-btn-normal
   rotate: false
   xy: 581, 1059
   size: 84, 87
@@ -1632,14 +1716,7 @@ cache
   index: -1
 cache-icon
   rotate: false
-  xy: 959, 1246
-  size: 48, 48
-  orig: 48, 48
-  offset: 0, 0
-  index: -1
-cache-list-icon
-  rotate: false
-  xy: 1009, 1251
+  xy: 850, 1068
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -1649,6 +1726,13 @@ cache-pressed
   xy: 489, 892
   size: 88, 76
   orig: 88, 76
+  offset: 0, 0
+  index: -1
+cacheListIcon
+  rotate: false
+  xy: 900, 1050
+  size: 48, 48
+  orig: 48, 48
   offset: 0, 0
   index: -1
 cachebox-logo
@@ -1688,33 +1772,26 @@ check-on
   index: -1
 chk-icon
   rotate: false
-  xy: 1059, 1251
+  xy: 950, 1046
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 chk-icon-disable
   rotate: false
-  xy: 1109, 1254
+  xy: 1860, 1543
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-close-icon
+closeIcon
   rotate: false
-  xy: 900, 1200
+  xy: 1860, 1493
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-cm-icon
-  rotate: false
-  xy: 2028, 1825
-  size: 19, 42
-  orig: 19, 42
-  offset: 0, 0
-  index: -1
-cm-icon-filterd
+cmIcon
   rotate: false
   xy: 2028, 1781
   size: 19, 42
@@ -1723,7 +1800,7 @@ cm-icon-filterd
   index: -1
 compass
   rotate: false
-  xy: 950, 1196
+  xy: 1910, 1543
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -1775,13 +1852,6 @@ cross
   xy: 116, 334
   size: 60, 60
   orig: 60, 60
-  offset: 0, 0
-  index: -1
-d-n
-  rotate: false
-  xy: 900, 1150
-  size: 48, 48
-  orig: 48, 48
   offset: 0, 0
   index: -1
 day-btn-default-normal
@@ -1847,18 +1917,18 @@ day-btn-zoom-up-pressed
   orig: 79, 48
   offset: 0, 0
   index: -1
-day-gc-live-icon
-  rotate: false
-  xy: 116, 277
-  size: 48, 55
-  orig: 48, 55
-  offset: 0, 0
-  index: -1
 day-spinner
   rotate: false
   xy: 667, 1059
   size: 36, 36
   orig: 36, 36
+  offset: 0, 0
+  index: -1
+dayGcLiveIcon
+  rotate: false
+  xy: 116, 277
+  size: 48, 55
+  orig: 48, 55
   offset: 0, 0
   index: -1
 db
@@ -1891,7 +1961,7 @@ db-pressed-filter-active
   index: -1
 deact
   rotate: false
-  xy: 950, 1146
+  xy: 1910, 1493
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -1924,13 +1994,6 @@ delete-founds
   orig: 80, 80
   offset: 0, 0
   index: -1
-delete-icon
-  rotate: false
-  xy: 850, 1118
-  size: 48, 48
-  orig: 48, 48
-  offset: 0, 0
-  index: -1
 dialog-center
   rotate: false
   xy: 518, 558
@@ -1961,14 +2024,14 @@ dialog-title
   index: -1
 disabled
   rotate: false
-  xy: 900, 1100
+  xy: 667, 1097
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-doc-icon
+docIcon
   rotate: false
-  xy: 950, 1096
+  xy: 668, 1009
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -2036,9 +2099,9 @@ favorit
   orig: 32, 32
   offset: 0, 0
   index: -1
-fieldnote-list-icon
+fieldnoteListIcon
   rotate: false
-  xy: 850, 1068
+  xy: 669, 924
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -2052,7 +2115,7 @@ file
   index: -1
 filter
   rotate: false
-  xy: 900, 1050
+  xy: 1268, 1463
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -2066,7 +2129,7 @@ gc_live
   index: -1
 groundspeak
   rotate: false
-  xy: 950, 1046
+  xy: 1318, 1464
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -2078,49 +2141,49 @@ hasCorrectedCoordinates
   orig: 64, 64
   offset: 0, 0
   index: -1
-help-icon
+helpIcon
   rotate: false
-  xy: 1860, 1543
+  xy: 1368, 1464
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-hint-icon
+hintIcon
   rotate: false
-  xy: 1860, 1493
+  xy: 1418, 1464
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 image-export
   rotate: false
-  xy: 1910, 1543
+  xy: 1468, 1464
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-images-icon
+imagesIcon
   rotate: false
-  xy: 1910, 1493
+  xy: 1268, 1413
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-import
+importIcon
   rotate: false
   xy: 1761, 1645
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
-info-icon
+infoIcon
   rotate: false
-  xy: 667, 1097
+  xy: 1318, 1414
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-joker-phone
+jokerPhone
   rotate: false
   xy: 406, 1237
   size: 48, 30
@@ -2141,9 +2204,9 @@ libgdx
   orig: 159, 38
   offset: 0, 0
   index: -1
-list-icon
+listIcon
   rotate: false
-  xy: 668, 1009
+  xy: 1368, 1414
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -2183,13 +2246,6 @@ listrec-selected
   orig: 113, 113
   offset: 0, 0
   index: -1
-lock-icon
-  rotate: false
-  xy: 669, 924
-  size: 48, 48
-  orig: 48, 48
-  offset: 0, 0
-  index: -1
 lock-slider
   rotate: false
   xy: 386, 565
@@ -2197,44 +2253,51 @@ lock-slider
   orig: 64, 64
   offset: 0, 0
   index: -1
+lockIcon
+  rotate: false
+  xy: 1418, 1414
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
 log0icon
   rotate: false
-  xy: 1268, 1463
+  xy: 1468, 1414
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 log10icon
   rotate: false
-  xy: 1318, 1464
+  xy: 1264, 1363
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 log11icon
   rotate: false
-  xy: 1368, 1464
+  xy: 1518, 1419
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 log12icon
   rotate: false
-  xy: 1418, 1464
+  xy: 1159, 1304
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 log13icon
   rotate: false
-  xy: 1468, 1464
+  xy: 1159, 1254
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 log14icon
   rotate: false
-  xy: 1268, 1413
+  xy: 1209, 1307
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -2255,35 +2318,35 @@ log16icon
   index: -1
 log1icon
   rotate: false
-  xy: 1318, 1414
+  xy: 1209, 1257
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 log2icon
   rotate: false
-  xy: 1368, 1414
+  xy: 719, 924
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 log3icon
   rotate: false
-  xy: 1418, 1414
+  xy: 697, 874
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 log4icon
   rotate: false
-  xy: 1468, 1414
+  xy: 697, 824
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 log5icon
   rotate: false
-  xy: 1264, 1363
+  xy: 720, 760
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -2297,35 +2360,35 @@ log6icon
   index: -1
 log7icon
   rotate: false
-  xy: 1518, 1419
+  xy: 720, 710
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 log8icon
   rotate: false
-  xy: 1159, 1304
+  xy: 720, 660
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 log9icon
   rotate: false
-  xy: 1159, 1254
+  xy: 734, 596
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 lupe
   rotate: false
-  xy: 1209, 1307
+  xy: 747, 874
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-manage-db
+manageDb
   rotate: false
-  xy: 1209, 1257
+  xy: 747, 824
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -2339,7 +2402,7 @@ manualwaypoint
   index: -1
 map
   rotate: false
-  xy: 719, 924
+  xy: 770, 760
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -2381,49 +2444,49 @@ misc-pressed
   index: -1
 mond
   rotate: false
-  xy: 697, 874
+  xy: 770, 710
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 my-parking-delete
   rotate: false
-  xy: 697, 824
+  xy: 770, 660
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 my-parking-set
   rotate: false
-  xy: 720, 760
+  xy: 784, 596
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 my-parking-wp
   rotate: false
-  xy: 720, 710
+  xy: 1609, 1383
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 navigate
   rotate: false
-  xy: 720, 660
+  xy: 584, 542
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 not-available
   rotate: false
-  xy: 734, 596
+  xy: 634, 546
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-note-icon
+noteIcon
   rotate: false
-  xy: 747, 874
+  xy: 684, 546
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -2535,7 +2598,7 @@ regular
   index: -1
 satellite
   rotate: false
-  xy: 747, 824
+  xy: 734, 546
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -2570,21 +2633,21 @@ selection-input-icon
   index: -1
 settings
   rotate: false
-  xy: 770, 760
+  xy: 784, 546
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 shaddowrect
   rotate: false
-  xy: 770, 710
+  xy: 1960, 1581
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 shaddowrect-selected
   rotate: false
-  xy: 770, 660
+  xy: 1960, 1531
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -2682,14 +2745,14 @@ small5yes
   index: -1
 small6no
   rotate: false
-  xy: 784, 596
+  xy: 1960, 1481
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 small6yes
   rotate: false
-  xy: 1609, 1383
+  xy: 1689, 1376
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -2708,30 +2771,30 @@ small7yes
   orig: 15, 15
   offset: 0, 0
   index: -1
-solver-icon
+solver-icon-2
   rotate: false
-  xy: 584, 542
+  xy: 1739, 1376
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-solver-icon-2
+solverIcon
   rotate: false
-  xy: 634, 546
+  xy: 268, 325
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 sonne
   rotate: false
-  xy: 684, 546
+  xy: 303, 251
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-sort-icon
+sortIcon
   rotate: false
-  xy: 734, 546
+  xy: 318, 201
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -2752,7 +2815,7 @@ splash-back
   index: -1
 star
   rotate: false
-  xy: 784, 546
+  xy: 318, 151
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -2918,7 +2981,7 @@ target-arrow
   orig: 21, 64
   offset: 0, 0
   index: -1
-target-day
+targetDay
   rotate: false
   xy: 1876, 1746
   size: 68, 68
@@ -2927,56 +2990,14 @@ target-day
   index: -1
 tb
   rotate: false
-  xy: 1960, 1581
+  xy: 315, 101
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-tb-discover
+tbListIcon
   rotate: false
-  xy: 1960, 1531
-  size: 48, 48
-  orig: 48, 48
-  offset: 0, 0
-  index: -1
-tb-drop
-  rotate: false
-  xy: 1960, 1481
-  size: 48, 48
-  orig: 48, 48
-  offset: 0, 0
-  index: -1
-tb-grab
-  rotate: false
-  xy: 1689, 1376
-  size: 48, 48
-  orig: 48, 48
-  offset: 0, 0
-  index: -1
-tb-list-icon
-  rotate: false
-  xy: 1739, 1376
-  size: 48, 48
-  orig: 48, 48
-  offset: 0, 0
-  index: -1
-tb-note
-  rotate: false
-  xy: 268, 325
-  size: 48, 48
-  orig: 48, 48
-  offset: 0, 0
-  index: -1
-tb-picked
-  rotate: false
-  xy: 303, 251
-  size: 48, 48
-  orig: 48, 48
-  offset: 0, 0
-  index: -1
-tb-visit
-  rotate: false
-  xy: 318, 201
+  xy: 318, 51
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -3004,7 +3025,7 @@ tf-copy
   index: -1
 tf-cut
   rotate: false
-  xy: 318, 151
+  xy: 319, 1
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -3039,21 +3060,7 @@ tool-pressed
   index: -1
 tools-icon
   rotate: false
-  xy: 315, 101
-  size: 48, 48
-  orig: 48, 48
-  offset: 0, 0
-  index: -1
-torch_off
-  rotate: false
-  xy: 318, 51
-  size: 48, 48
-  orig: 48, 48
-  offset: 0, 0
-  index: -1
-torch_on
-  rotate: false
-  xy: 319, 1
+  xy: 1000, 1196
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
@@ -3065,13 +3072,6 @@ track-line
   orig: 5, 9
   offset: 0, 0
   index: -1
-track-list-icon
-  rotate: false
-  xy: 1000, 1196
-  size: 48, 48
-  orig: 48, 48
-  offset: 0, 0
-  index: -1
 track-point
   rotate: false
   xy: 845, 1295
@@ -3079,7 +3079,7 @@ track-point
   orig: 12, 12
   offset: 0, 0
   index: -1
-upload-fieldnote
+trackListIcon
   rotate: false
   xy: 1000, 1146
   size: 48, 48
@@ -3093,28 +3093,28 @@ userdata
   orig: 64, 64
   offset: 0, 0
   index: -1
-video-icon
+videoIcon
   rotate: false
   xy: 1000, 1096
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-voice-rec-icon
+voiceRecIcon
   rotate: false
   xy: 1000, 1046
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-warning-icon
+warningIcon
   rotate: false
   xy: 1050, 1201
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-waypoint-list-icon
+waypointListIcon
   rotate: false
   xy: 1050, 1151
   size: 48, 48

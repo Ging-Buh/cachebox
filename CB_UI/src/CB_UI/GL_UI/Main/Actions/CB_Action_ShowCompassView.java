@@ -1,5 +1,7 @@
 package CB_UI.GL_UI.Main.Actions;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import CB_UI.CB_UI_Settings;
 import CB_UI.Config;
 import CB_UI.GL_UI.Main.TabMainView;
@@ -7,16 +9,14 @@ import CB_UI.GL_UI.Views.CompassView;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Menu.OptionMenu;
 import CB_Utils.Settings.SettingBool;
-
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowCompassView extends CB_Action_ShowView {
 	public final int MI_TEST1 = 1;
@@ -47,7 +47,7 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView {
 
 	@Override
 	public Sprite getIcon() {
-		return SpriteCacheBase.Icons.get(IconName.compass_6.ordinal());
+		return Sprites.getSprite(IconName.compass.name());
 	}
 
 	@Override
@@ -122,7 +122,7 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView {
 
 	}
 
-	private OnClickListener onItemClickListener = new OnClickListener() {
+	private final OnClickListener onItemClickListener = new OnClickListener() {
 
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {

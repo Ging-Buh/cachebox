@@ -19,7 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import CB_UI_Base.GL_UI.COLOR;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.Math.CB_RectF;
@@ -63,9 +63,9 @@ public class MenuItem extends MenuItemBase {
 
 			Drawable drawable = null;
 			if (mIsChecked) {
-				drawable = new SpriteDrawable(SpriteCacheBase.ChkIcons.get(1));
+				drawable = new SpriteDrawable(Sprites.ChkIcons.get(1));
 			} else {
-				drawable = new SpriteDrawable(SpriteCacheBase.ChkIcons.get(0));
+				drawable = new SpriteDrawable(Sprites.ChkIcons.get(0));
 			}
 
 			checkImage.setDrawable(drawable);
@@ -104,9 +104,9 @@ public class MenuItem extends MenuItemBase {
 
 			Drawable drawable = null;
 			if (mIsChecked) {
-				drawable = new SpriteDrawable(SpriteCacheBase.ChkIcons.get(1));
+				drawable = new SpriteDrawable(Sprites.ChkIcons.get(1));
 			} else {
-				drawable = new SpriteDrawable(SpriteCacheBase.ChkIcons.get(0));
+				drawable = new SpriteDrawable(Sprites.ChkIcons.get(0));
 			}
 
 			checkImage.setDrawable(drawable);

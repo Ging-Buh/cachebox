@@ -13,8 +13,8 @@ import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IReadyListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
@@ -51,10 +51,10 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
 	public Sprite getIcon() {
 		boolean hasSpoiler = GlobalCore.selectedCachehasSpoiler();
 		if (hasSpoiler && spoilerState != 1) {
-			SpoilerIcon = SpriteCacheBase.Icons.get(IconName.images_18.ordinal());
+			SpoilerIcon = Sprites.getSprite(IconName.imagesIcon.name());
 			spoilerState = 1;
 		} else if (!hasSpoiler && spoilerState != 0) {
-			SpoilerIcon = new Sprite(SpriteCacheBase.Icons.get(IconName.images_18.ordinal()));
+			SpoilerIcon = new Sprite(Sprites.getSprite(IconName.imagesIcon.name()));
 			SpoilerIcon.setColor(DISABLE_COLOR);
 			spoilerState = 0;
 		}
@@ -76,7 +76,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
 		Menu icm = new Menu("menu_compassView");
 		icm.addOnClickListener(onItemClickListener);
 		icm.addItem(MenuID.MI_RELOAD_SPOILER, "reloadSpoiler");
-		icm.addItem(MenuID.MI_START_PICTUREAPP, "startPictureApp", SpriteCacheBase.getThemedSprite("image-export"));
+		icm.addItem(MenuID.MI_START_PICTUREAPP, "startPictureApp", Sprites.getSprite("image-export"));
 
 		return icm;
 	}

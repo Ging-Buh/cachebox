@@ -24,8 +24,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
@@ -38,21 +38,23 @@ import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UI_Size_Base;
 
 public class CreditsView extends CB_View_Base {
-	private float ref, lineHeight, margin;
-	private Image logo;
-	private ScrollBox scrollBox;
-	private Linearlayout layout;
+	private final float ref;
+	private float lineHeight;
+	private float margin;
+	private final Image logo;
+	private final ScrollBox scrollBox;
+	private final Linearlayout layout;
 
 	private ArrayList<Person> getPersons() {
 		ArrayList<Person> list = new ArrayList<CreditsView.Person>();
 
 		list.add(new Person("hannes!", Job.idea, "2009-2011"));
 		list.add(new Person("Stonefinger", Job.designer));
-		list.add(new Person("Groundspeak API", Job.service, SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal())));
-		list.add(new Person(null, Job.library, SpriteCacheBase.getThemedSprite("libgdx")));// Name at Logo image
-		list.add(new Person("Mapsforge", Job.library, SpriteCacheBase.getThemedSprite("mapsforge_logo")));
-		list.add(new Person("OpenRouteService.org", Job.service, SpriteCacheBase.getThemedSprite("openrouteservice_logo")));
-		list.add(new Person("OpenStreetMap", Job.service, SpriteCacheBase.getThemedSprite("osm_logo")));
+		list.add(new Person("Groundspeak API", Job.service, Sprites.getSprite(IconName.dayGcLiveIcon.name())));
+		list.add(new Person(null, Job.library, Sprites.getSprite("libgdx")));// Name at Logo image
+		list.add(new Person("Mapsforge", Job.library, Sprites.getSprite("mapsforge_logo")));
+		list.add(new Person("OpenRouteService.org", Job.service, Sprites.getSprite("openrouteservice_logo")));
+		list.add(new Person("OpenStreetMap", Job.service, Sprites.getSprite("osm_logo")));
 		list.add(new Person("Ging-Buh", Job.developer));
 		list.add(new Person("Longri", Job.developer));
 		list.add(new Person("ersthelfer", Job.developer));
@@ -79,13 +81,13 @@ public class CreditsView extends CB_View_Base {
 
 	public CreditsView(CB_RectF rec, String Name) {
 		super(rec, Name);
-		this.setBackground(SpriteCacheBase.AboutBack);
+		this.setBackground(Sprites.AboutBack);
 
 		ref = UI_Size_Base.that.getWindowHeight() / 13;
 		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref, ref * 5, (ref * 5) / 4.11f);
 
 		logo = new Image(CB_LogoRec, "Logo", false);
-		logo.setDrawable(SpriteCacheBase.logo);
+		logo.setDrawable(Sprites.logo);
 		this.addChild(logo);
 
 		scrollBox = new ScrollBox(rec);

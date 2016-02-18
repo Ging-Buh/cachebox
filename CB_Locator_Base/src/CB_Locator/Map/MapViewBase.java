@@ -33,7 +33,7 @@ import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.ZoomButtons;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.MainViewBase;
@@ -607,7 +607,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		if (CarMode)
 			arrowId = 15;
 
-		Sprite arrow = SpriteCacheBase.Arrows.get(arrowId);
+		Sprite arrow = Sprites.Arrows.get(arrowId);
 		arrow.setRotation(-arrowHeading);
 		arrow.setBounds(myPointOnScreen.x - GL_UISizes.halfPosMarkerSize, myPointOnScreen.y - GL_UISizes.halfPosMarkerSize, GL_UISizes.PosMarkerSize, GL_UISizes.PosMarkerSize);
 		arrow.setOrigin(GL_UISizes.halfPosMarkerSize, GL_UISizes.halfPosMarkerSize);
@@ -1408,7 +1408,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 	@Override
 	protected void SkinIsChanged() {
-		setBackground(SpriteCacheBase.ListBack);
+		setBackground(Sprites.ListBack);
 		invalidateTexture();
 	}
 

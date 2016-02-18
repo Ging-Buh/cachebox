@@ -46,7 +46,7 @@ import CB_UI_Base.Events.invalidateTextureEvent;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
@@ -219,7 +219,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 								try {
 									String ImageName = aktCache.getAttributes().get(i).getImageName() + "Icon";
 									ImageName = ImageName.replace("_", "-");
-									att[i].setDrawable(new SpriteDrawable(SpriteCacheBase.getThemedSprite(ImageName)));
+									att[i].setDrawable(new SpriteDrawable(Sprites.getSprite(ImageName)));
 								} catch (Exception e) {
 									att[i].setDrawable(null);
 								}
@@ -236,12 +236,12 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 				if (showIcon && Icon != null) {
 					if (aktWaypoint == null) {
 						if (aktCache.CorrectedCoordiantesOrMysterySolved()) {
-							Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + CacheTypes.Mystery.name() + "Solved")));
+							Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + CacheTypes.Mystery.name() + "Solved")));
 						} else {
-							Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + aktCache.Type.name())));
+							Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + aktCache.Type.name())));
 						}
 					} else {
-						Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + aktWaypoint.Type.name())));
+						Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + aktWaypoint.Type.name())));
 					}
 				}
 
@@ -381,7 +381,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		if (showLastFound)
 			contentHeight += Fonts.MeasureSmall("Tg").height * 1.3f;
 
-		float topH = Math.max((this.getWidth() * 0.7f), this.getHeight() - contentHeight - SpriteCacheBase.activityBackground.getTopHeight() - SpriteCacheBase.activityBackground.getBottomHeight());
+		float topH = Math.max((this.getWidth() * 0.7f), this.getHeight() - contentHeight - Sprites.activityBackground.getTopHeight() - Sprites.activityBackground.getBottomHeight());
 
 		if (showMap) {
 			topH = this.getHalfWidth();
@@ -390,7 +390,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		topBox = new ScrollBox(new CB_RectF(0, topH, this.getWidth(), this.getHeight() - topH));
 		topBox.setVirtualHeight(topH);
 
-		topBox.setBackground(SpriteCacheBase.activityBackground);
+		topBox.setBackground(Sprites.activityBackground);
 
 		topContentBox = new Box(topBox, "topContent");
 		topContentBox.setWidth(topBox.getInnerWidth());
@@ -404,13 +404,13 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		topContentBox.setZeroPos();
 
 		leftBox = new Box(new CB_RectF(0, 0, showMap ? this.getHalfWidth() : this.getWidth(), this.getHeight() - topBox.getHeight()), "left");
-		leftBox.setBackground(SpriteCacheBase.activityBackground);
+		leftBox.setBackground(Sprites.activityBackground);
 
 		if (showMap) {
 			rightBox = new Box(new CB_RectF(this.getHalfWidth(), 0, this.getHalfWidth(), this.getHalfWidth()), "right");
 			rightBoxMask = new Box(new CB_RectF(this.getHalfWidth(), 0, this.getHalfWidth(), this.getHalfWidth()), "rightMask");
-			rightBox.setBackground(SpriteCacheBase.activityBackground);
-			rightBoxMask.setBackground(SpriteCacheBase.activityBorderMask);
+			rightBox.setBackground(Sprites.activityBackground);
+			rightBoxMask.setBackground(Sprites.activityBorderMask);
 			this.addChild(rightBox);
 			this.addChild(rightBoxMask);
 
@@ -425,7 +425,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			lblDistance.setHAlignment(HAlignment.CENTER);
 
 			distanceBack = new Box(lblDistance, "DistanceBack");
-			distanceBack.setBackground(SpriteCacheBase.InfoBack);
+			distanceBack.setBackground(Sprites.InfoBack);
 			rightBox.addChild(distanceBack);
 			rightBox.addChild(lblDistance);
 		} else {
@@ -435,7 +435,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			lblDistance.setFont(font);
 			lblDistance.setHAlignment(HAlignment.LEFT);
 			distanceBack = new Box(lblDistance, "DistanceBack");
-			distanceBack.setBackground(SpriteCacheBase.InfoBack);
+			distanceBack.setBackground(Sprites.InfoBack);
 			leftBox.addChild(distanceBack);
 			lblDistance.setZeroPos();
 			lblDistance.setX(margin);
@@ -459,14 +459,14 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		topContentBox.initRow();
 
 		imageRec = (new CB_RectF(0, 0, getWidth(), getWidth())).ScaleCenter(0.6f);
-		this.setBackground(SpriteCacheBase.ListBack);
+		this.setBackground(Sprites.ListBack);
 
 		frame = new Image(imageRec, "frame", false);
-		frame.setDrawable(SpriteCacheBase.Compass.get(0));
+		frame.setDrawable(Sprites.Compass.get(0));
 		this.addChild(frame);
 
 		scale = new Image(imageRec, "scale", false);
-		scale.setDrawable(SpriteCacheBase.Compass.get(1));
+		scale.setDrawable(Sprites.Compass.get(1));
 		this.addChild(scale);
 
 		arrow = new Image(imageRec, "arrow", false);
@@ -478,12 +478,12 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			CB_RectF rec = showMap ? attRec.ScaleCenter(0.7f) : attRec.copy();
 
 			Sun = new Image(rec, "sun", false);
-			Sun.setDrawable(SpriteCacheBase.Compass.get(5));
+			Sun.setDrawable(Sprites.Compass.get(5));
 			Sun.setInvisible();
 			this.addChild(Sun);
 
 			Moon = new Image(rec, "moon", false);
-			Moon.setDrawable(SpriteCacheBase.Compass.get(6));
+			Moon.setDrawable(Sprites.Compass.get(6));
 			Moon.setInvisible();
 			this.addChild(Moon);
 		}
@@ -636,7 +636,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		} else {
 			arrowId = 2;
 		}
-		Sprite arrowSprite = new Sprite(SpriteCacheBase.Arrows.get(arrowId));
+		Sprite arrowSprite = new Sprite(Sprites.Arrows.get(arrowId));
 		arrowSprite.setRotation(0);// reset rotation
 		arrowSprite.setOrigin(0, 0);
 		arrow.setDrawable(new SpriteDrawable(arrowSprite));

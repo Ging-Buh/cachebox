@@ -15,11 +15,9 @@
  */
 package CB_UI.GL_UI.Main;
 
-import CB_Utils.fileProvider.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import CB_Utils.fileProvider.FileFactory;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -97,8 +95,8 @@ import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.ParentInfo;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.ViewConst;
 import CB_UI_Base.GL_UI.Controls.Dialogs.Toast;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
@@ -122,6 +120,8 @@ import CB_Utils.Settings.SettingModus;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.IChanged;
 import CB_Utils.Util.UnitFormatter;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 
 /**
  * the TabMainView has one tab (leftTab) on the phone<br>
@@ -387,12 +387,12 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 			actionTestView = new CB_Action_ShowTestView();
 		actionShowSettings = new CB_Action_Show_Settings();
 
-		actionNavigateTo1 = actionNavigateTo2 = new CB_Action_ShowActivity("NavigateTo", MenuID.AID_NAVIGATE_TO, ViewConst.NAVIGATE_TO, SpriteCacheBase.Icons.get(IconName.navigate_46.ordinal()));
+		actionNavigateTo1 = actionNavigateTo2 = new CB_Action_ShowActivity("NavigateTo", MenuID.AID_NAVIGATE_TO, ViewConst.NAVIGATE_TO, Sprites.getSprite(IconName.navigate.name()));
 
 		actionRecTrack = new CB_Action_RecTrack();
-		actionRecVoice = new CB_Action_ShowActivity("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC, SpriteCacheBase.Icons.get(IconName.voiceRec_11.ordinal()));
-		actionRecPicture = new CB_Action_ShowActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO, SpriteCacheBase.Icons.get(IconName.log10_47.ordinal()));
-		actionRecVideo = new CB_Action_ShowActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC, SpriteCacheBase.Icons.get(IconName.video_10.ordinal()));
+		actionRecVoice = new CB_Action_ShowActivity("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC, Sprites.getSprite(IconName.voiceRecIcon.name()));
+		actionRecPicture = new CB_Action_ShowActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO, Sprites.getSprite(IconName.log10icon.name()));
+		actionRecVideo = new CB_Action_ShowActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC, Sprites.getSprite(IconName.videoIcon.name()));
 
 		actionDayNight = new CB_Action_switch_DayNight();
 		actionHelp = new CB_Action_Help();
@@ -462,11 +462,11 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 
 		leftTab = new CB_TabView(rec, "leftTab");
 
-		mCacheListButtonOnLeftTab = new CB_Button(btnRec, "Button1", SpriteCacheBase.CacheList);
-		mDescriptionButtonOnLeftTab = new CB_Button(btnRec, "Button2", SpriteCacheBase.Cache);
-		mMapButtonOnLeftTab = new CB_Button(btnRec, "Button3", SpriteCacheBase.Nav);
-		mToolsButtonOnLeftTab = new CB_Button(btnRec, "Button4", SpriteCacheBase.Tool);
-		mAboutButtonOnLeftTab = new CB_Button(btnRec, "Button5", SpriteCacheBase.Misc);
+		mCacheListButtonOnLeftTab = new CB_Button(btnRec, "Button1", Sprites.CacheList);
+		mDescriptionButtonOnLeftTab = new CB_Button(btnRec, "Button2", Sprites.Cache);
+		mMapButtonOnLeftTab = new CB_Button(btnRec, "Button3", Sprites.Nav);
+		mToolsButtonOnLeftTab = new CB_Button(btnRec, "Button4", Sprites.Tool);
+		mAboutButtonOnLeftTab = new CB_Button(btnRec, "Button5", Sprites.Misc);
 
 		CB_ButtonList btnList = new CB_ButtonList();
 		btnList.addButton(mCacheListButtonOnLeftTab);
@@ -563,11 +563,11 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 
 		leftTab = new CB_TabView(rec, "leftTab");
 
-		mCacheListButtonOnLeftTab = new CB_Button(btnRec, "Button1", SpriteCacheBase.CacheList);
-		mDescriptionButtonOnLeftTab = new CB_Button(btnRec, "Button2", SpriteCacheBase.Cache);
-		mMapButtonOnLeftTab = new CB_Button(btnRec, "Button3", SpriteCacheBase.Nav);
-		mToolsButtonOnLeftTab = new CB_Button(btnRec, "Button4", SpriteCacheBase.Tool);
-		mAboutButtonOnLeftTab = new CB_Button(btnRec, "Button5", SpriteCacheBase.Misc);
+		mCacheListButtonOnLeftTab = new CB_Button(btnRec, "Button1", Sprites.CacheList);
+		mDescriptionButtonOnLeftTab = new CB_Button(btnRec, "Button2", Sprites.Cache);
+		mMapButtonOnLeftTab = new CB_Button(btnRec, "Button3", Sprites.Nav);
+		mToolsButtonOnLeftTab = new CB_Button(btnRec, "Button4", Sprites.Tool);
+		mAboutButtonOnLeftTab = new CB_Button(btnRec, "Button5", Sprites.Misc);
 
 		CB_ButtonList btnList = new CB_ButtonList();
 		btnList.addButton(mCacheListButtonOnLeftTab);
@@ -660,9 +660,9 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 
 		rightTab = new CB_TabView(rec, "rightTab");
 
-		mDescriptionButtonOnRightTab = new CB_Button(btnRec, "Button2", SpriteCacheBase.Cache);
-		mMapButtonOnRightTab = new CB_Button(btnRec, "Button3", SpriteCacheBase.Nav);
-		mToolsButtonOnRightTab = new CB_Button(btnRec, "Button4", SpriteCacheBase.Tool);
+		mDescriptionButtonOnRightTab = new CB_Button(btnRec, "Button2", Sprites.Cache);
+		mMapButtonOnRightTab = new CB_Button(btnRec, "Button3", Sprites.Nav);
+		mToolsButtonOnRightTab = new CB_Button(btnRec, "Button4", Sprites.Tool);
 
 		CB_ButtonList btnList = new CB_ButtonList();
 
@@ -745,7 +745,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 			ManagerBase.RenderThemeChanged = true;
 			GL.that.onStop();
 
-			SpriteCacheBase.LoadSprites(true);
+			Sprites.loadSprites(true);
 			GL.that.onStart();
 			CallSkinChanged();
 
@@ -797,9 +797,9 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 		// change the icon
 		isFiltered = FilterInstances.isLastFilterSet();
 		if (isFiltered) {
-			mCacheListButtonOnLeftTab.setButtonSprites(SpriteCacheBase.CacheListFilter);
+			mCacheListButtonOnLeftTab.setButtonSprites(Sprites.CacheListFilter);
 		} else {
-			mCacheListButtonOnLeftTab.setButtonSprites(SpriteCacheBase.CacheList);
+			mCacheListButtonOnLeftTab.setButtonSprites(Sprites.CacheList);
 		}
 
 		// ##################################

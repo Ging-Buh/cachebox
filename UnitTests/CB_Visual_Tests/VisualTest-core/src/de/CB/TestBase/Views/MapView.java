@@ -11,7 +11,7 @@ import CB_Locator.Map.ManagerBase;
 import CB_Locator.Map.MapViewBase;
 import CB_Locator.Map.ZoomScale;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.ZoomButtons;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.utils.KineticZoom;
@@ -45,7 +45,7 @@ public class MapView extends MapViewBase {
 		Config.MapsforgeDayTheme.addChangedEventListener(themeChangedEventHandler);
 		Config.MapsforgeNightTheme.addChangedEventListener(themeChangedEventHandler);
 		registerSkinChangedEvent();
-		setBackground(SpriteCacheBase.ListBack);
+		setBackground(Sprites.ListBack);
 		int maxNumTiles = 0;
 		// calculate max Map Tile cache
 		try {

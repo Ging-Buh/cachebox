@@ -9,8 +9,8 @@ import CB_UI.GL_UI.Activitys.TB_Details;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.ImageButton;
@@ -41,7 +41,7 @@ public class TrackableListView extends CB_View_Base {
 	public TrackableListView(CB_RectF rec, String Name) {
 		super(rec, Name);
 		that = this;
-		setBackground(SpriteCacheBase.ListBack);
+		setBackground(Sprites.ListBack);
 		lvAdapter = new CustomAdapter();
 	}
 
@@ -69,7 +69,7 @@ public class TrackableListView extends CB_View_Base {
 		// ##################################################################################################
 		searchBox = new Box(this.getWidth(), 10, "TB_Search Box");
 		btnSearch = new ImageButton("Search");
-		searchBox.setBackground(SpriteCacheBase.activityBackground);
+		searchBox.setBackground(Sprites.activityBackground);
 		searchBox.setHeight(btnSearch.getHeight() + searchBox.getTopHeight() + searchBox.getBottomHeight());
 		this.addChild(searchBox);
 
@@ -79,7 +79,7 @@ public class TrackableListView extends CB_View_Base {
 		txtSearch.setMessageText(Translation.Get("SearchTB_Code"));
 		searchBox.addNext(txtSearch);
 
-		btnSearch.setImage(SpriteCacheBase.Icons.get(IconName.lupe_27.ordinal()));
+		btnSearch.setImage(Sprites.getSprite(IconName.lupe.name()));
 		btnSearch.setOnClickListener(new OnClickListener() {
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
