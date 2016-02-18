@@ -271,7 +271,7 @@ public class CategorieListViewItem extends ListViewItemBackground {
 			chkOn.draw(batch);
 		} else if (this.categorieEntry.getCat().getCheck() == 0) {
 			if (chkNo == null) {
-				chkNo = Sprites.getSprite("delete-icon");
+				chkNo = Sprites.getSprite(IconName.DELETE.name());
 				chkNo.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 			}
 			chkNo.draw(batch);

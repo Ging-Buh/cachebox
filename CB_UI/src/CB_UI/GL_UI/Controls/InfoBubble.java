@@ -20,7 +20,7 @@ public class InfoBubble extends CB_View_Base {
 
 	public InfoBubble(SizeF Size, String Name) {
 		super(Size, Name);
-		saveIcon = new SpriteDrawable(Sprites.getSprite(IconName.SAVE.name()));
+		saveIcon = new SpriteDrawable(Sprites.getSprite(IconName.save.name()));
 		registerSkinChangedEvent();
 	}
 

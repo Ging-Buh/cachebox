@@ -137,12 +137,12 @@ public class PresetListView extends V_ListView {
 		mPresetEntriesAdd("AllCachesToFind", "log0icon", FilterInstances.ACTIVE);
 		mPresetEntriesAdd("QuickCaches", "QuickCaches", FilterInstances.QUICK);
 		mPresetEntriesAdd("BEGINNER", "BEGINNER", FilterInstances.BEGINNER);
-		mPresetEntriesAdd("GrabTB", "tb-grab", FilterInstances.WITHTB);
-		mPresetEntriesAdd("DropTB", "tb-drop", FilterInstances.DROPTB);
+		mPresetEntriesAdd("GrabTB", IconName.TBGRAB.name(), FilterInstances.WITHTB);
+		mPresetEntriesAdd("DropTB", IconName.TBDROP.name(), FilterInstances.DROPTB);
 		mPresetEntriesAdd("Highlights", "star", FilterInstances.HIGHLIGHTS);
 		mPresetEntriesAdd("Favorites", "favorit", FilterInstances.FAVORITES);
 		mPresetEntriesAdd("PrepareToArchive", IconName.DELETE.name(), FilterInstances.TOARCHIVE);
-		mPresetEntriesAdd("ListingChanged", "warning-icon", FilterInstances.LISTINGCHANGED);
+		mPresetEntriesAdd("ListingChanged", IconName.warningIcon.name(), FilterInstances.LISTINGCHANGED);
 		mPresetEntriesAdd("AllCaches", "earth", FilterInstances.ALL);
 
 		// add User Presets from Config.UserFilter

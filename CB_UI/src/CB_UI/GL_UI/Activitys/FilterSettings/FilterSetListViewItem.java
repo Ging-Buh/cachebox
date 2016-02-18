@@ -201,7 +201,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 			chkOn.draw(batch);
 		} else if (this.mFilterSetEntry.getState() == -1) {
 			if (chkNo == null) {
-				chkNo = Sprites.getSprite("delete-icon");
+				chkNo = Sprites.getSprite(IconName.DELETE.name());
 
 				chkNo.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 

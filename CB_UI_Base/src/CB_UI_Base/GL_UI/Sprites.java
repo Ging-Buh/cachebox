@@ -138,7 +138,7 @@ public class Sprites {
 		TBNOTE, // 63
 		UPLOADFIELDNOTE, // 64
 		MENUFILTERED, // 65
-		SAVE, // 66
+		save, // 66
 		TORCHON, // 67
 		TORCHOFF, // 68
 		userdata, //
@@ -448,12 +448,12 @@ public class Sprites {
 			LogIcons.add(getSprite("log14icon"));
 			LogIcons.add(getSprite("log15icon"));
 			LogIcons.add(getSprite("log16icon"));
-			LogIcons.add(getSprite("tb-picked"));
-			LogIcons.add(getSprite("tb-drop"));
-			LogIcons.add(getSprite("tb-grab"));
-			LogIcons.add(getSprite("tb-discover"));
-			LogIcons.add(getSprite("tb-visit"));
-			LogIcons.add(getSprite("tb-note"));
+			LogIcons.add(getSprite(IconName.TBPICKED.name()));
+			LogIcons.add(getSprite(IconName.TBDROP.name()));
+			LogIcons.add(getSprite(IconName.TBGRAB.name()));
+			LogIcons.add(getSprite(IconName.TBDISCOVER.name()));
+			LogIcons.add(getSprite(IconName.TBVISIT.name()));
+			LogIcons.add(getSprite(IconName.TBNOTE.name()));
 		}
 
 		if (MapIconsSmall == null)

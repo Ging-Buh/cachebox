@@ -250,7 +250,7 @@ public class FilterSetListView extends V_ListView {
 		ContainsTravelBugs = general.addChild(addFilterSetItem(Sprites.getSprite("tb"), Translation.Get("withtrackables"), THREE_STATE_ITEM));
 		Favorites = general.addChild(addFilterSetItem(Sprites.getSprite("favorit"), Translation.Get("Favorites"), THREE_STATE_ITEM));
 		HasUserData = general.addChild(addFilterSetItem(Sprites.getSprite("userdata"), Translation.Get("hasuserdata"), THREE_STATE_ITEM));
-		ListingChanged = general.addChild(addFilterSetItem(Sprites.getSprite("warning-icon"), Translation.Get("ListingChanged"), THREE_STATE_ITEM));
+		ListingChanged = general.addChild(addFilterSetItem(Sprites.getSprite(IconName.warningIcon.name()), Translation.Get("ListingChanged"), THREE_STATE_ITEM));
 		WithManualWaypoint = general.addChild(addFilterSetItem(Sprites.getSprite(IconName.manualwaypoint.name()), Translation.Get("manualwaypoint"), THREE_STATE_ITEM));
 		hasCorrectedCoordinates = general.addChild(addFilterSetItem(Sprites.getSprite("hasCorrectedCoordinates"), Translation.Get("hasCorrectedCoordinates"), THREE_STATE_ITEM));
 
