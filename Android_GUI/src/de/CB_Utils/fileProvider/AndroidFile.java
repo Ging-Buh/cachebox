@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FilenameFilter;
@@ -109,20 +111,21 @@ public class AndroidFile extends File {
 
 	@Override
 	public File[] listFiles(final FilenameFilter filenameFilter) {
-
-		String[] list = mFile.list(new java.io.FilenameFilter() {
-			@Override
-			public boolean accept(java.io.File dir, String name) {
-				return filenameFilter.accept(new AndroidFile(dir), name);
-			}
-		});
-
-		File[] ret = new File[list.length];
-
-		int index = 0;
-		for (String s : list) {
-			ret[index++] = new AndroidFile(s);
+		String names[] = list();
+		if (names == null || filenameFilter == null) {
+			return null;
 		}
+		List<String> v = new ArrayList<>();
+		for (int i = 0; i < names.length; i++) {
+			if (filenameFilter.accept(this, names[i])) {
+				v.add(names[i]);
+			}
+		}
+
+		if (v.isEmpty()) return null;
+		File[] ret = new File[v.size()];
+
+		for (int i = 0; i < v.size(); i++) ret[i] = new AndroidFile(this, v.get(i));
 
 		return ret;
 	}
