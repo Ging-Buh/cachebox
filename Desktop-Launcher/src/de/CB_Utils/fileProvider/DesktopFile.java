@@ -121,12 +121,11 @@ public class DesktopFile extends File {
                 v.add(names[i]);
             }
         }
-        String[] s = (new String[v.size()]);
 
-        if (s == null) return null;
-        File[] ret = new File[s.length];
+        if (v.isEmpty()) return null;
+        File[] ret = new File[v.size()];
 
-        for (int i = 0; i < s.length; i++) ret[i] = new DesktopFile(s[i]);
+        for (int i = 0; i < v.size(); i++) ret[i] = new DesktopFile(this, v.get(i));
 
         return ret;
     }
