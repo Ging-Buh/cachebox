@@ -170,7 +170,7 @@ public class DesktopFile extends File {
 
 	int index = 0;
 	for (String s : list) {
-		ret[index++] = new DesktopFile(s);
+		ret[index++] = new DesktopFile(this, s);
 	}
 	return ret;
 	}

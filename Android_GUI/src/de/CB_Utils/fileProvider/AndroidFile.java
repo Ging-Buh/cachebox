@@ -20,218 +20,218 @@ import CB_Utils.fileProvider.FilenameFilter;
  */
 public class AndroidFile extends File {
 
-	private final java.io.File mFile;
+    private final java.io.File mFile;
 
-	private AndroidFile(java.io.File file) {
+    private AndroidFile(java.io.File file) {
 	mFile = file;
-	}
+    }
 
-	public AndroidFile(String path) {
+    public AndroidFile(String path) {
 	mFile = new java.io.File(path);
-	}
+    }
 
-	public AndroidFile(File parent) {
+    public AndroidFile(File parent) {
 	mFile = ((AndroidFile) parent).mFile;
-	}
+    }
 
-	public AndroidFile(File parent, String child) {
+    public AndroidFile(File parent, String child) {
 	mFile = new java.io.File(((AndroidFile) parent).mFile, child);
-	}
+    }
 
-	public AndroidFile(String parent, String child) {
+    public AndroidFile(String parent, String child) {
 	mFile = new java.io.File(parent, child);
-	}
+    }
 
-	@Override
-	public boolean exists() {
+    @Override
+    public boolean exists() {
 	return mFile.exists();
-	}
+    }
 
-	@Override
-	public boolean delete() throws IOException {
+    @Override
+    public boolean delete() throws IOException {
 	return mFile.delete();
-	}
+    }
 
-	@Override
-	public File getParentFile() {
+    @Override
+    public File getParentFile() {
 	return new AndroidFile(mFile.getParentFile());
-	}
+    }
 
-	@Override
-	public boolean mkdirs() {
+    @Override
+    public boolean mkdirs() {
 	return mFile.mkdirs();
-	}
+    }
 
-	@Override
-	public boolean isDirectory() {
+    @Override
+    public boolean isDirectory() {
 	return mFile.isDirectory();
-	}
+    }
 
-	@Override
-	public boolean isFile() {
+    @Override
+    public boolean isFile() {
 	return mFile.isFile();
-	}
+    }
 
-	@Override
-	public long lastModified() {
+    @Override
+    public long lastModified() {
 	return mFile.lastModified();
-	}
+    }
 
-	@Override
-	public String[] list() {
+    @Override
+    public String[] list() {
 	return mFile.list();
-	}
+    }
 
-	@Override
-	public String[] list(final FilenameFilter filenameFilter) {
+    @Override
+    public String[] list(final FilenameFilter filenameFilter) {
 
 	String[] list = mFile.list(new java.io.FilenameFilter() {
-		@Override
-		public boolean accept(java.io.File dir, String name) {
+	    @Override
+	    public boolean accept(java.io.File dir, String name) {
 		return filenameFilter.accept(new AndroidFile(dir), name);
-		}
+	    }
 	});
 	return list;
-	}
+    }
 
-	@Override
-	public long length() {
+    @Override
+    public long length() {
 	return mFile.length();
-	}
+    }
 
-	@Override
-	public boolean createNewFile() throws IOException {
+    @Override
+    public boolean createNewFile() throws IOException {
 	return mFile.createNewFile();
-	}
+    }
 
-	@Override
-	public String getName() {
+    @Override
+    public String getName() {
 	return mFile.getName();
-	}
+    }
 
-	@Override
-	public File[] listFiles(final FilenameFilter filenameFilter) {
+    @Override
+    public File[] listFiles(final FilenameFilter filenameFilter) {
 	String names[] = list();
 	if (names == null || filenameFilter == null) {
-		return null;
+	    return null;
 	}
 	List<String> v = new ArrayList<String>();
 	for (int i = 0; i < names.length; i++) {
-		if (filenameFilter.accept(this, names[i])) {
+	    if (filenameFilter.accept(this, names[i])) {
 		v.add(names[i]);
-		}
+	    }
 	}
 
 	if (v.isEmpty())
-		return null;
+	    return null;
 	File[] ret = new File[v.size()];
 
 	for (int i = 0; i < v.size(); i++)
-		ret[i] = new AndroidFile(this, v.get(i));
+	    ret[i] = new AndroidFile(this, v.get(i));
 
 	return ret;
-	}
+    }
 
-	@Override
-	public String getAbsolutePath() {
+    @Override
+    public String getAbsolutePath() {
 	return mFile.getAbsolutePath();
-	}
+    }
 
-	@Override
-	public boolean mkdir() {
+    @Override
+    public boolean mkdir() {
 	return mFile.mkdir();
-	}
+    }
 
-	@Override
-	public String getParent() {
+    @Override
+    public String getParent() {
 	return mFile.getParent();
-	}
+    }
 
-	@Override
-	public boolean canRead() {
+    @Override
+    public boolean canRead() {
 	return mFile.canRead();
-	}
+    }
 
-	@Override
-	public boolean canWrite() {
+    @Override
+    public boolean canWrite() {
 	return mFile.canWrite();
-	}
+    }
 
-	@Override
-	public String getPath() {
+    @Override
+    public String getPath() {
 	return mFile.getPath();
-	}
+    }
 
-	@Override
-	public File[] listFiles() {
+    @Override
+    public File[] listFiles() {
 	String[] list = mFile.list();
 
 	File[] ret = new File[list.length];
 
 	int index = 0;
 	for (String s : list) {
-		ret[index++] = new AndroidFile(s);
+	    ret[index++] = new AndroidFile(this, s);
 	}
 	return ret;
-	}
+    }
 
-	@Override
-	public boolean isAbsolute() {
+    @Override
+    public boolean isAbsolute() {
 	return mFile.isAbsolute();
-	}
+    }
 
-	@Override
-	public File getCanonicalPath() throws IOException {
+    @Override
+    public File getCanonicalPath() throws IOException {
 	return new AndroidFile(mFile.getCanonicalPath());
-	}
+    }
 
-	@Override
-	public URL toURL() throws MalformedURLException {
+    @Override
+    public URL toURL() throws MalformedURLException {
 	return mFile.toURL();
-	}
+    }
 
-	@Override
-	public boolean renameTo(File file) {
+    @Override
+    public boolean renameTo(File file) {
 	return mFile.renameTo(((AndroidFile) file).mFile);
-	}
+    }
 
-	@Override
-	public void setLastModified(long time) {
+    @Override
+    public void setLastModified(long time) {
 	mFile.setLastModified(time);
-	}
+    }
 
-	@Override
-	public File getAbsoluteFile() {
+    @Override
+    public File getAbsoluteFile() {
 	return new AndroidFile(mFile.getAbsoluteFile());
-	}
+    }
 
-	@Override
-	public int compareTo(File otherFile) {
+    @Override
+    public int compareTo(File otherFile) {
 	return mFile.compareTo(((AndroidFile) otherFile).mFile);
-	}
+    }
 
-	@Override
-	public FileOutputStream getFileOutputStream() throws FileNotFoundException {
+    @Override
+    public FileOutputStream getFileOutputStream() throws FileNotFoundException {
 	return new FileOutputStream(mFile);
-	}
+    }
 
-	@Override
-	public FileInputStream getFileInputStream() throws FileNotFoundException {
+    @Override
+    public FileInputStream getFileInputStream() throws FileNotFoundException {
 	return new FileInputStream(mFile);
-	}
+    }
 
-	@Override
-	public FileReader getFileReader() throws FileNotFoundException {
+    @Override
+    public FileReader getFileReader() throws FileNotFoundException {
 	return new FileReader(mFile);
-	}
+    }
 
-	@Override
-	public RandomAccessFile getRandomAccessFile(String mode) throws FileNotFoundException {
+    @Override
+    public RandomAccessFile getRandomAccessFile(String mode) throws FileNotFoundException {
 	return new RandomAccessFile(mFile, mode);
-	}
+    }
 
-	@Override
-	public FileWriter getFileWriter() throws IOException {
+    @Override
+    public FileWriter getFileWriter() throws IOException {
 	return new FileWriter(mFile);
-	}
+    }
 }
