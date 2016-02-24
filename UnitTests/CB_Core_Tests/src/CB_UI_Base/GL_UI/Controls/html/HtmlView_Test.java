@@ -48,6 +48,8 @@ public class HtmlView_Test {
 	static String HTMLSOURCE_4;
 	static String HTMLSOURCE_5;
 	static String HTMLSOURCE_6;
+	static String HTMLSOURCE_TABLE;
+	static String HTMLSOURCE_TABLE2;
 	static String HTML_IMAGE_TAG = "<img src=\"http://img.geocaching.com/cache/e96baf07-b869-4568-a1ef-8a69d27a3e43.jpg\" />";
 	static float DEFAULT_FONTSIZE = 21.6f;
 
@@ -58,7 +60,8 @@ public class HtmlView_Test {
 	HTMLSOURCE_4 = getFileFromResource("HTMLSOURCE_4.html");
 	HTMLSOURCE_5 = getFileFromResource("HTMLSOURCE_ GC57YAE.html");
 	HTMLSOURCE_6 = getFileFromResource("HTMLSOURCE_GC69NH6.html");
-
+	HTMLSOURCE_TABLE = getFileFromResource("HTMLSOURCE_GCK2HR.html");
+	HTMLSOURCE_TABLE2 = getFileFromResource("HTMLSOURCE_GC65QDH.html");
 	if (UiSizes.that == null) {
 		new UiSizes().setScale(1.5f);
 	}
