@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.slf4j.LoggerFactory;
 
+import CB_UI_Base.GL_UI.Controls.html.elementhandler.ListElementHandler;
 import CB_UI_Base.Math.Stack;
 import CB_Utils.Lists.CB_List;
 import net.htmlparser.jericho.Element;
@@ -43,8 +44,6 @@ public class CB_HtmlProcessor extends Processor {
 	public final static Stack<Tag> AtributeStack = new Stack<Tag>();
 	List<Appendable> apendableList = new ArrayList<Appendable>();
 	public List<Html_Segment> segmentList;
-
-	public HTML_Segment_List actList = null;
 
 	public boolean isImage = false;
 
@@ -138,6 +137,12 @@ public class CB_HtmlProcessor extends Processor {
 
 	public void createNewSegment(boolean force) {
 
+	if (listElements != null) {
+		//add List
+		prozessList();
+		return;
+	}
+
 	if (!force && (spanelement || listelement)) {
 		return;
 	}
@@ -155,29 +160,29 @@ public class CB_HtmlProcessor extends Processor {
 
 		Html_Segment segment;
 
-		if (nextIsLI && actList != null) {
-		//		log.debug("Append new LI element:" + innerText);
+		//		if (nextIsLI && actList != null) {
+		//		//		log.debug("Append new LI element:" + innerText);
+		//
+		//		while (innerText.startsWith(" "))
+		//			innerText = innerText.replaceFirst(" ", "");
+		//
+		//		segment = new Html_Segment_TextBlock(AtributeStack, innerText);
+		//		if (!hyperLinkList.isEmpty()) {
+		//			((Html_Segment_TextBlock) segment).add(hyperLinkList);
+		//		}
+		//		if (!(segment.formatedText == null || segment.formatedText.isEmpty()))
+		//			actList.addListEntry(segment);
+		//
+		//		appendable = new StringBuilder();
+		//		isImage = false;
+		//		hyperLinkList.clear();
+		//		return;
+		//		}
 
-		while (innerText.startsWith(" "))
-			innerText = innerText.replaceFirst(" ", "");
-
-		segment = new Html_Segment_TextBlock(AtributeStack, innerText);
-		if (!hyperLinkList.isEmpty()) {
-			((Html_Segment_TextBlock) segment).add(hyperLinkList);
-		}
-		if (!(segment.formatedText == null || segment.formatedText.isEmpty()))
-			actList.addListEntry(segment);
-
-		appendable = new StringBuilder();
-		isImage = false;
-		hyperLinkList.clear();
-		return;
-		}
-
-		if (actList != null && !actList.getSegmentList().isEmpty()) {
-		segmentList.add(actList);
-		actList = null;
-		}
+		//		if (actList != null && !actList.getSegmentList().isEmpty()) {
+		//		segmentList.add(actList);
+		//		actList = null;
+		//		}
 
 		//	    log.debug("Append Text:" + innerText);
 
@@ -202,12 +207,12 @@ public class CB_HtmlProcessor extends Processor {
 	}
 	}
 
-	public void addListToSegments() {
-	if (actList != null && !actList.getSegmentList().isEmpty()) {
-		segmentList.add(actList);
-		actList = null;
-	}
-	}
+	//	public void addListToSegments() {
+	//	if (actList != null && !actList.getSegmentList().isEmpty()) {
+	//		segmentList.add(actList);
+	//		actList = null;
+	//	}
+	//	}
 
 	CB_List<String> turncate2500(String text) {
 
@@ -276,7 +281,7 @@ public class CB_HtmlProcessor extends Processor {
 		appendSegmentRemovingTags(index, childElement.getBegin());
 		ElementHandler handler = getElementHandler(childElement);
 		handler.process(this, childElement);
-		if (isImage) {
+		if (isImage || handler instanceof ListElementHandler) {
 		createNewSegment();
 		}
 
@@ -318,7 +323,7 @@ public class CB_HtmlProcessor extends Processor {
 	protected ElementHandler getElementHandler(final Element element) {
 	if (element.getStartTag().getStartTagType().isServerTag())
 		return RemoveElementHandler.INSTANCE; // hard-coded configuration
-	ElementHandler elementHandler = CB_Html_Renderer.ELEMENT_HANDLERS.get(element.getName());
+	ElementHandler elementHandler = CB_Html_Renderer.CB_ELEMENT_HANDLERS.get(element.getName());
 	return (elementHandler != null) ? elementHandler : StandardInlineElementHandler.INSTANCE;
 	}
 
@@ -326,5 +331,43 @@ public class CB_HtmlProcessor extends Processor {
 
 	public void add(HyperLinkText hyperLinkText) {
 	hyperLinkList.add(hyperLinkText);
+	}
+
+	// List implementation
+
+	private List<Element> listElements;
+
+	public void addListelement(Element element) {
+	if (listElements == null)
+		throw new RuntimeException("List is not initial");
+
+	}
+
+	int bulletNumber = 0;
+	int tabLevel = 0;
+	boolean ordert = false;
+
+	private void prozessList() {
+
+	HTML_Segment_List listSegment = new HTML_Segment_List(AtributeStack, bulletNumber, tabLevel, ordert);
+
+	for (Element e : listElements) {
+
+		List<Html_Segment> elementSegmentList = new CB_HtmlProcessor(this.renderer, e.getContent(), this.renderer.getHRLineLength(), this.renderer.getNewLine(), this.renderer.getIncludeHyperlinkURLs(), this.renderer.getIncludeAlternateText(),
+			this.renderer.getDecorateFontStyles(), this.renderer.getConvertNonBreakingSpaces(), this.renderer.getBlockIndentSize(), this.renderer.getListIndentSize(), this.renderer.getListBullets(), this.renderer.getTableCellSeparator())
+				.getElementList();
+
+		listSegment.addListItem(elementSegmentList);
+
+	}
+	listElements = null;
+
+	segmentList.add(listSegment);
+	}
+
+	public void newList(List<Element> childElements, int ListBulletNumber, boolean ordert) {
+	listElements = childElements;
+	bulletNumber = ListBulletNumber;
+	this.ordert = ordert;
 	}
 }

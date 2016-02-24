@@ -480,6 +480,9 @@ public class HtmlView_Test {
 	CB_Html_Renderer renderer = new CB_Html_Renderer(source);
 	List<Html_Segment> segmentList = renderer.getElementList();
 
+	Html_Segment testSeg = segmentList.get(14);
+	testSeg.resolveAtributes();
+
 	}
 
 }

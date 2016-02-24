@@ -10,33 +10,27 @@ import net.htmlparser.jericho.Renderer.AbstractBlockElementHandler;
 import net.htmlparser.jericho.Renderer.ElementHandler;
 
 public final class LI_ElementHandler extends AbstractBlockElementHandler {
-public static final ElementHandler INSTANCE = new LI_ElementHandler();
+	public static final ElementHandler INSTANCE = new LI_ElementHandler();
 
-private LI_ElementHandler() {
+	private LI_ElementHandler() {
 	this(0, 0, false);
-}
+	}
 
-private LI_ElementHandler(int topMargin, int bottomMargin, boolean indent) {
+	private LI_ElementHandler(int topMargin, int bottomMargin, boolean indent) {
 	super(topMargin, bottomMargin, indent);
-}
+	}
 
-@Override
-protected void processBlockContent(Processor x, Element element) throws IOException {
+	@Override
+	protected void processBlockContent(Processor x, Element element) throws IOException {
 	if (x.listBulletNumber != CB_Html_Renderer.UNORDERED_LIST)
-	x.listBulletNumber++;
+		x.listBulletNumber++;
 	//x.bullet = true;
-	((CB_HtmlProcessor) x).listelement = true;
+	((CB_HtmlProcessor) x).addListelement(element);
 
-	x.appendElementContent(element);
-	x.bullet = false;
-	((CB_HtmlProcessor) x).listelement = false;
-	((CB_HtmlProcessor) x).nextIsLI = true;
-	((CB_HtmlProcessor) x).createNewSegment();
-	((CB_HtmlProcessor) x).nextIsLI = false;
-}
+	}
 
-@Override
-protected AbstractBlockElementHandler newInstance(int topMargin, int bottomMargin, boolean indent) {
+	@Override
+	protected AbstractBlockElementHandler newInstance(int topMargin, int bottomMargin, boolean indent) {
 	return new LI_ElementHandler(topMargin, bottomMargin, indent);
-}
+	}
 }
