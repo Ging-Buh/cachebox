@@ -74,9 +74,29 @@ public class Html_ListView extends Box implements ListLayout {
 	this.setMargins(0, HtmlView.margin * 2);
 	this.initRow();
 
+	int s = this.seg.items.size();
+	int idx = 0;
+	int actBlockIdx = 0;
+	int listIndex = 1;
 	for (int i = 0, n = segmentViewList.size(); i < n; i++) {
 
-		Html_ListView_Bullet bulletView = new Html_ListView_Bullet(i + 1, this.bulletWidth, segmentViewList.get(i).getHeight(), seg.getBulletNumber());
+		int actBlocksize = this.seg.items.get(idx).size() - 1;
+
+		int listidx = 0;
+		int bullNmb = seg.getBulletNumber();
+		if (actBlockIdx == 0) {
+		listidx = listIndex++;
+		} else {
+		bullNmb = 0; // no bull
+		listidx = 0;
+		}
+
+		if (actBlockIdx++ >= actBlocksize) {
+		actBlockIdx = 0;
+		idx++;
+		}
+
+		Html_ListView_Bullet bulletView = new Html_ListView_Bullet(listidx, this.bulletWidth, segmentViewList.get(i).getHeight(), bullNmb);
 		this.addNext(bulletView, -1);
 		this.addLast(segmentViewList.get(i));
 	}
