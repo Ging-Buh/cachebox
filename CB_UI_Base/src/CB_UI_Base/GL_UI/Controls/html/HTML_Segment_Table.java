@@ -34,7 +34,7 @@ public class HTML_Segment_Table extends Html_Segment {
 
     private final List<Html_Segment> listEntrys = new ArrayList<Html_Segment>();
     private float scaledfontSize;
-    private final ArrayList<ArrayList<ArrayList<Html_Segment>>> tableSegments;
+    final ArrayList<ArrayList<ArrayList<Html_Segment>>> tableSegments;
     private final float borderSize;
     private final float cellpaddingSize;
     private final float cellspacingSize;

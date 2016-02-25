@@ -60,7 +60,7 @@ public class HtmlView extends ScrollBox implements ListLayout {
 
     private boolean textOnly = false;
     private EditTextField textOnlyField;
-    private int testcount = 0;
+
     final static org.slf4j.Logger log = LoggerFactory.getLogger(HtmlView.class);
     static int margin;
     private Box contentBox;
@@ -144,10 +144,7 @@ public class HtmlView extends ScrollBox implements ListLayout {
 		addImage(segmentViewList, seg, relayout, innerWidth);
 		break;
 	    case TextBlock:
-		if (test++ < 2)
-		    addTextBlog(segmentViewList, (Html_Segment_TextBlock) seg, innerWidth);
-		else
-		    addTextBlog(segmentViewList, (Html_Segment_TextBlock) seg, innerWidth);
+		addTextBlog(segmentViewList, (Html_Segment_TextBlock) seg, innerWidth);
 		break;
 	    case List:
 		addListBlog(segmentViewList, (HTML_Segment_List) seg, innerWidth);
@@ -218,84 +215,86 @@ public class HtmlView extends ScrollBox implements ListLayout {
 
     @Override
     public void layout(CB_List<CB_View_Base> segmentViewList) {
-	testcount = 0;
 
-	contentBox = new Box(this, "topContent");
-	synchronized (contentBox) {
+	contentBox = addViewsToContentBox(this, segmentViewList);
+	this.addChild(contentBox);
+	this.setVirtualHeight(contentBox.getHeight());
+	this.scrollTo(0);
+    }
 
-	    this.removeChilds();
+    static Box addViewsToContentBox(CB_View_Base parent, CB_List<CB_View_Base> segmentViewList) {
+	Box content = new Box(parent, "topContent");
 
-	    log.debug("HTML View Layout");
-	    log.debug("   " + Trace.getCallerName(0));
-	    log.debug("   " + Trace.getCallerName(1));
-	    log.debug("   " + Trace.getCallerName(2));
+	int testcount = 0;
 
-	    float innerWidth = this.getInnerWidth() - (margin * 2);
-	    int maxAttributeButtonsPerLine = (int) (innerWidth / (UI_Size_Base.that.getButtonHeight()));
-	    float contentHeight = 0;
-	    int attLines = 1;
-	    for (int i = 0, n = segmentViewList.size(); i < n; i++) {
+	parent.removeChilds();
 
-		CB_View_Base view = segmentViewList.get(i);
+	log.debug("HTML View Layout");
+	log.debug("   " + Trace.getCallerName(0));
+	log.debug("   " + Trace.getCallerName(1));
+	log.debug("   " + Trace.getCallerName(2));
 
-		if (view instanceof ImageButton) {
-		    if (testcount++ > maxAttributeButtonsPerLine) {
-			attLines++;
-			testcount = 0;
-		    }
-		} else {
-		    contentHeight += view.getHeight();
+	float innerWidth = parent.getInnerWidth() - (margin * 2);
+	int maxAttributeButtonsPerLine = (int) (innerWidth / (UI_Size_Base.that.getButtonHeight()));
+	float contentHeight = 0;
+	int attLines = 1;
+	for (int i = 0, n = segmentViewList.size(); i < n; i++) {
+
+	    CB_View_Base view = segmentViewList.get(i);
+
+	    if (view instanceof ImageButton) {
+		if (testcount++ > maxAttributeButtonsPerLine) {
+		    attLines++;
+		    testcount = 0;
 		}
+	    } else {
+		contentHeight += view.getHeight();
 	    }
-
-	    contentHeight += (attLines * UI_Size_Base.that.getButtonHeight());
-
-	    contentBox.setWidth(innerWidth * 2);
-	    contentBox.setClickable(true);
-	    contentBox.setHeight(contentHeight);
-	    contentBox.setZeroPos();
-	    contentBox.setX(margin);
-
-	    contentBox.setMargins(0, 0);
-	    contentBox.initRow();
-	    testcount = 0;
-	    for (int i = 0, n = segmentViewList.size(); i < n; i++) {
-
-		CB_View_Base view = segmentViewList.get(i);
-
-		if (view instanceof Image) {
-		    contentBox.addLast(segmentViewList.get(i));
-		} else if (view instanceof ImageButton) {
-		    if (testcount++ > maxAttributeButtonsPerLine) {
-			contentBox.addLast(segmentViewList.get(i), FIXED);
-			testcount = 0;
-		    } else {
-			contentBox.addNext(segmentViewList.get(i), FIXED);
-		    }
-
-		} else {
-		    contentBox.addLast(segmentViewList.get(i), FIXED);
-		}
-
-	    }
-
-	    for (int i = 0, n = contentBox.getchilds().size(); i < n; i++) {
-
-		GL_View_Base child = contentBox.getChild(i);
-		if (child instanceof Html_ListView) {
-		    // move tab on x
-		    float tabX = contentBox.getWidth() - ((Html_ListView) child).getContentWidth();
-		    child.setX(tabX);
-		    // child.setX(0);
-		}
-
-	    }
-
-	    this.addChild(contentBox);
-	    this.setVirtualHeight(contentHeight);
 	}
 
-	this.scrollTo(0);
+	contentHeight += (attLines * UI_Size_Base.that.getButtonHeight());
+
+	content.setWidth(innerWidth * 2);
+	content.setClickable(true);
+	content.setHeight(contentHeight);
+	content.setZeroPos();
+	content.setX(margin);
+
+	content.setMargins(0, 0);
+	content.initRow();
+	testcount = 0;
+	for (int i = 0, n = segmentViewList.size(); i < n; i++) {
+
+	    CB_View_Base view = segmentViewList.get(i);
+
+	    if (view instanceof Image) {
+		content.addLast(segmentViewList.get(i));
+	    } else if (view instanceof ImageButton) {
+		if (testcount++ > maxAttributeButtonsPerLine) {
+		    content.addLast(segmentViewList.get(i), FIXED);
+		    testcount = 0;
+		} else {
+		    content.addNext(segmentViewList.get(i), FIXED);
+		}
+
+	    } else {
+		content.addLast(segmentViewList.get(i), FIXED);
+	    }
+
+	}
+
+	for (int i = 0, n = content.getchilds().size(); i < n; i++) {
+
+	    GL_View_Base child = content.getChild(i);
+	    if (child instanceof Html_ListView) {
+		// move tab on x
+		float tabX = content.getWidth() - ((Html_ListView) child).getContentWidth();
+		child.setX(tabX);
+		// child.setX(0);
+	    }
+
+	}
+	return content;
     }
 
     private static float addHR(CB_List<CB_View_Base> segmentViewList, Html_Segment_HR seg, float innerWidth) {

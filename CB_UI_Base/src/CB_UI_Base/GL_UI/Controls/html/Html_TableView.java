@@ -15,6 +15,8 @@
  */
 package CB_UI_Base.GL_UI.Controls.html;
 
+import java.util.ArrayList;
+
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Label;
@@ -47,6 +49,29 @@ public class Html_TableView extends Box implements ListLayout {
     public void layout(CB_List<CB_View_Base> segmentViewList) {
 
 	this.removeChilds();
+
+	for (ArrayList<ArrayList<Html_Segment>> row : seg.tableSegments) {
+	    // create Row box
+	    Box rowBox = new Box(this, "Table Row Box");
+
+	    for (ArrayList<Html_Segment> col : row) {
+		// create Col box
+
+		// add content
+		segmentViewList = new CB_List<CB_View_Base>();
+
+		HtmlView.addViewsToBox(col, segmentViewList, innerWidth, this);
+
+		Box colBox = HtmlView.addViewsToContentBox(this, segmentViewList);
+		rowBox.addChild(colBox);
+		rowBox.setHeight(colBox.getHeight());
+		if (seg.getBorderSize() > 0) {
+		    rowBox.setBorderSize(seg.getBorderSize());
+		}
+		this.addChild(rowBox);
+	    }
+
+	}
 
 	Label test = new Label("Tabelle");
 
