@@ -227,8 +227,6 @@ public class HtmlView extends ScrollBox implements ListLayout {
 
 	int testcount = 0;
 
-	parent.removeChilds();
-
 	log.debug("HTML View Layout");
 	log.debug("   " + Trace.getCallerName(0));
 	log.debug("   " + Trace.getCallerName(1));
@@ -254,7 +252,7 @@ public class HtmlView extends ScrollBox implements ListLayout {
 
 	contentHeight += (attLines * UI_Size_Base.that.getButtonHeight());
 
-	content.setWidth(innerWidth * 2);
+	content.setWidth(innerWidth);
 	content.setClickable(true);
 	content.setHeight(contentHeight);
 	content.setZeroPos();
@@ -263,10 +261,15 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	content.setMargins(0, 0);
 	content.initRow();
 	testcount = 0;
+
+	float maxWidth = 0;
+
 	for (int i = 0, n = segmentViewList.size(); i < n; i++) {
 
 	    CB_View_Base view = segmentViewList.get(i);
 
+	    view.measureRec();
+	    maxWidth = Math.max(maxWidth, view.getWidth());
 	    if (view instanceof Image) {
 		content.addLast(segmentViewList.get(i));
 	    } else if (view instanceof ImageButton) {
@@ -282,6 +285,8 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	    }
 
 	}
+
+	content.setWidth(maxWidth);
 
 	for (int i = 0, n = content.getchilds().size(); i < n; i++) {
 
@@ -369,7 +374,8 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	lbl.setUnderline(seg.underline);
 	lbl.setStrikeout(seg.strikeOut);
 	segmentViewList.add(lbl);
-	return segHeight;
+
+	return lbl.getHeight();
     }
 
     private static Color getColor(Color color) {
