@@ -43,7 +43,37 @@ public final class TableElementHandler extends AbstractBlockElementHandler {
 	    rowIdx++;
 	}
 
-	((CB_HtmlProcessor) x).newTable(tableElements);
+	float borderSize = 1;
+	String borderString = element.getAttributeValue("border");
+	if (borderString != null && !borderString.isEmpty()) {
+	    try {
+		borderSize = Float.parseFloat(borderString);
+	    } catch (NumberFormatException e) {
+
+	    }
+	}
+
+	float cellpaddingSize = 1;
+	String cellpaddingString = element.getAttributeValue("cellpadding");
+	if (borderString != null && !cellpaddingString.isEmpty()) {
+	    try {
+		cellpaddingSize = Float.parseFloat(cellpaddingString);
+	    } catch (NumberFormatException e) {
+
+	    }
+	}
+
+	float cellspacingSize = 1;
+	String cellspacingString = element.getAttributeValue("cellpadding");
+	if (borderString != null && !cellpaddingString.isEmpty()) {
+	    try {
+		cellspacingSize = Float.parseFloat(cellspacingString);
+	    } catch (NumberFormatException e) {
+
+	    }
+	}
+
+	((CB_HtmlProcessor) x).newTable(tableElements, borderSize, cellpaddingSize, cellspacingSize);
 
 	System.out.println("new Table");
 

@@ -387,7 +387,7 @@ public class CB_HtmlProcessor extends Processor {
 	this.ordert = ordert;
     }
 
-    public void newTable(Element[][] tableElements) {
+    public void newTable(Element[][] tableElements, float borderSize, float cellpaddingSize, float cellspacingSize) {
 
 	ArrayList<ArrayList<ArrayList<Html_Segment>>> tableSegments = new ArrayList<ArrayList<ArrayList<Html_Segment>>>();
 
@@ -410,7 +410,8 @@ public class CB_HtmlProcessor extends Processor {
 	    }
 	    rowIdx++;
 	}
-	HTML_Segment_Table table = new HTML_Segment_Table(AtributeStack, tableSegments);
+	HTML_Segment_Table table = new HTML_Segment_Table(AtributeStack, tableSegments, borderSize, cellpaddingSize,
+		cellspacingSize);
 	segmentList.add(table);
     }
 }

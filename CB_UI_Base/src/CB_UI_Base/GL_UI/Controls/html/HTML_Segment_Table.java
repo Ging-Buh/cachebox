@@ -35,11 +35,18 @@ public class HTML_Segment_Table extends Html_Segment {
     private final List<Html_Segment> listEntrys = new ArrayList<Html_Segment>();
     private float scaledfontSize;
     private final ArrayList<ArrayList<ArrayList<Html_Segment>>> tableSegments;
+    private final float borderSize;
+    private final float cellpaddingSize;
+    private final float cellspacingSize;
 
-    public HTML_Segment_Table(Stack<Tag> atributeStack, ArrayList<ArrayList<ArrayList<Html_Segment>>> tableSegments) {
+    public HTML_Segment_Table(Stack<Tag> atributeStack, ArrayList<ArrayList<ArrayList<Html_Segment>>> tableSegments,
+	    float borderSize, float cellpaddingSize, float cellspacingSize) {
 	super(Html_Segment_Typ.Table, atributeStack, "");
 	this.tableSegments = tableSegments;
 	resolveAtributes();
+	this.borderSize = borderSize;
+	this.cellpaddingSize = cellpaddingSize;
+	this.cellspacingSize = cellspacingSize;
     }
 
     @Override
@@ -109,6 +116,10 @@ public class HTML_Segment_Table extends Html_Segment {
 	    }
 	    listEntrys.clear();
 	}
+    }
+
+    public float getBorderSize() {
+	return borderSize;
     }
 
 }
