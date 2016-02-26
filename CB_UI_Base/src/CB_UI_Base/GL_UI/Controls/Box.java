@@ -99,9 +99,8 @@ public class Box extends CB_View_Base {
 
 			int borderAsInt = Math.round(Box.this.borderSize);
 
-			for (int i = 1; i < borderAsInt + 1; i++) {
-			    borderRegPixmap.drawRectangle(i, i, ((int) getWidth()) - (i * 2),
-				    ((int) getHeight()) - (i * 2));
+			for (int i = 0; i < borderAsInt + 1; i++) {
+			    borderRegPixmap.drawRectangle(i, i, ((int) getWidth()) - (i), ((int) getHeight()) - (i));
 			}
 
 			borderSprite = new Sprite(new Texture(borderRegPixmap, Pixmap.Format.RGBA8888, false),
