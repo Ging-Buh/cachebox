@@ -57,7 +57,6 @@ public class Html_TableView extends Box implements ListLayout {
 	this.initRow();
 
 	float lastRowYPos = 0;
-
 	for (ArrayList<ArrayList<Html_Segment>> row : seg.tableSegments) {
 
 	    // create Row box
@@ -106,6 +105,14 @@ public class Html_TableView extends Box implements ListLayout {
 	while (reverse.hasNext()) {
 	    GL_View_Base v = reverse.next();
 	    v.setY(newYPos);
+
+	    // set all col to max height
+	    Iterator<GL_View_Base> childIterator = v.getchilds().iterator();
+	    while (childIterator.hasNext()) {
+		childIterator.next().setHeight(v.getHeight());
+		;
+	    }
+
 	    newYPos = v.getMaxY();
 	}
 
