@@ -56,7 +56,10 @@ public class Html_TableView extends Box implements ListLayout {
 
 	this.initRow();
 
-	float lastRowYPos = 0;
+	float cellSpacing = seg.getCellspacing();
+
+	float lastRowYPos = cellSpacing;
+	boolean firstRow = true;
 	for (ArrayList<ArrayList<Html_Segment>> row : seg.tableSegments) {
 
 	    // create Row box
@@ -88,18 +91,21 @@ public class Html_TableView extends Box implements ListLayout {
 
 	    }
 	    rowBox.FinaliseRow();
-
+	    if (firstRow) {
+		firstRow = false;
+		lastRowYPos = seg.getBorderSize();
+	    }
 	    rowBox.setY(lastRowYPos);
-	    lastRowYPos += rowBox.getHeight();
+	    lastRowYPos += rowBox.getHeight() + cellSpacing;
 	    this.setWidth(rowBox.getWidth());
 	    this.addChild(rowBox);
 	}
-	this.setHeight(lastRowYPos);
+	this.setHeight(lastRowYPos + cellSpacing + seg.getBorderSize() + 2);
 
 	// repos rows
 	Iterator<GL_View_Base> reverse = this.getchilds().reverseIterator();
 
-	float newYPos = 0;
+	float newYPos = cellSpacing + seg.getBorderSize() + 1;
 
 	// TODO set new ColSize and rowSize
 
@@ -113,10 +119,10 @@ public class Html_TableView extends Box implements ListLayout {
 		GL_View_Base col = childIterator.next();
 		col.setHeight(v.getHeight());
 		col.setY(0);
-		;
+
 	    }
 
-	    newYPos = v.getMaxY();
+	    newYPos = v.getMaxY() + cellSpacing;
 	}
 
     }

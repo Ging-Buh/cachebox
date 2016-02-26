@@ -44,6 +44,7 @@ public class HTML_Segment_Table extends Html_Segment {
 	super(Html_Segment_Typ.Table, atributeStack, "");
 	this.tableSegments = tableSegments;
 	resolveAtributes();
+
 	this.borderSize = borderSize;
 	this.cellpaddingSize = cellpaddingSize;
 	this.cellspacingSize = cellspacingSize;
@@ -120,6 +121,10 @@ public class HTML_Segment_Table extends Html_Segment {
 
     public float getBorderSize() {
 	return borderSize;
+    }
+
+    public float getCellspacing() {
+	return cellspacingSize;
     }
 
 }
