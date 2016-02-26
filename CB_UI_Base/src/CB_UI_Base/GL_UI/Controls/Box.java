@@ -75,7 +75,12 @@ public class Box extends CB_View_Base {
     }
 
     public void setBorderSize(float borderSize) {
+
 	this.borderSize = borderSize;
+	leftBorder = borderSize;
+	rightBorder = borderSize;
+	topBorder = borderSize;
+	bottomBorder = borderSize;
     }
 
     protected void drawBorder(Batch batch) {
@@ -91,7 +96,13 @@ public class Box extends CB_View_Base {
 
 			Pixmap borderRegPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
 			borderRegPixmap.setColor(borderColor);
-			borderRegPixmap.drawRectangle(1, 1, (int) getWidth() - 1, (int) getHeight() - 1);
+
+			int borderAsInt = Math.round(Box.this.borderSize);
+
+			for (int i = 1; i < borderAsInt + 1; i++) {
+			    borderRegPixmap.drawRectangle(i, i, ((int) getWidth()) - (i * 2),
+				    ((int) getHeight()) - (i * 2));
+			}
 
 			borderSprite = new Sprite(new Texture(borderRegPixmap, Pixmap.Format.RGBA8888, false),
 				(int) getWidth(), (int) getHeight());
