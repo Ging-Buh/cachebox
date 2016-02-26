@@ -64,7 +64,7 @@ public final class TableElementHandler extends AbstractBlockElementHandler {
 	}
 
 	float cellspacingSize = 1;
-	String cellspacingString = element.getAttributeValue("cellpadding");
+	String cellspacingString = element.getAttributeValue("cellspacing");
 	if (borderString != null && !cellpaddingString.isEmpty()) {
 	    try {
 		cellspacingSize = Float.parseFloat(cellspacingString);
