@@ -51,8 +51,9 @@ public class Html_TableView extends Box implements ListLayout {
 
 	this.removeChilds();
 
-	CB_List<Float> colWidth = new CB_List<Float>();
-	CB_List<Float> rowHight = new CB_List<Float>();
+	int colCount = seg.tableSegments.get(0).size();
+
+	float[] colWidth = new float[colCount];
 
 	this.initRow();
 
@@ -66,6 +67,7 @@ public class Html_TableView extends Box implements ListLayout {
 	    Box rowBox = new Box(this, "Table Row Box");
 	    rowBox.initRow();
 	    boolean firstCol = true;
+	    int colIdx = 0;
 	    for (ArrayList<Html_Segment> col : row) {
 		// create Col box
 
@@ -75,6 +77,8 @@ public class Html_TableView extends Box implements ListLayout {
 		HtmlView.addViewsToBox(col, segmentViewList, innerWidth, this);
 
 		Box colBox = HtmlView.addViewsToContentBox(this, segmentViewList);
+
+		colWidth[colIdx] = Math.max(colWidth[colIdx++], colBox.getWidth());
 
 		rowBox.addNext(colBox, CB_View_Base.FIXED);
 		rowBox.setHeight(Math.max(rowBox.getHeight(), colBox.getHeight()));
@@ -107,21 +111,26 @@ public class Html_TableView extends Box implements ListLayout {
 
 	float newYPos = cellSpacing + seg.getBorderSize() + 1;
 
-	// TODO set new ColSize and rowSize
-
 	while (reverse.hasNext()) {
 	    GL_View_Base v = reverse.next();
 	    v.setY(newYPos);
 
 	    // set all col to max height
 	    Iterator<GL_View_Base> childIterator = v.getchilds().iterator();
+	    float newXPos = cellSpacing + seg.getBorderSize() + 1;
+	    float rowWidth = cellSpacing + seg.getBorderSize() + 1;
+	    int colIdx = 0;
 	    while (childIterator.hasNext()) {
 		GL_View_Base col = childIterator.next();
-		col.setHeight(v.getHeight());
+		col.setSize(colWidth[colIdx++], v.getHeight());
 		col.setY(0);
-
+		col.setX(newXPos);
+		newXPos = col.getMaxX() + cellSpacing;
+		rowWidth += col.getWidth() + cellSpacing;
 	    }
 
+	    v.setWidth(rowWidth + cellSpacing + seg.getBorderSize() + 1);
+	    this.setWidth(v.getWidth());
 	    newYPos = v.getMaxY() + cellSpacing;
 	}
 
