@@ -72,6 +72,7 @@ public class Html_TableView extends Box implements ListLayout {
 		HtmlView.addViewsToBox(col, segmentViewList, innerWidth, this);
 
 		Box colBox = HtmlView.addViewsToContentBox(this, segmentViewList);
+
 		rowBox.addNext(colBox, CB_View_Base.FIXED);
 		rowBox.setHeight(Math.max(rowBox.getHeight(), colBox.getHeight()));
 		if (firstCol) {
@@ -109,7 +110,9 @@ public class Html_TableView extends Box implements ListLayout {
 	    // set all col to max height
 	    Iterator<GL_View_Base> childIterator = v.getchilds().iterator();
 	    while (childIterator.hasNext()) {
-		childIterator.next().setHeight(v.getHeight());
+		GL_View_Base col = childIterator.next();
+		col.setHeight(v.getHeight());
+		col.setY(0);
 		;
 	    }
 
