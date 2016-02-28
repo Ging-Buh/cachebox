@@ -279,7 +279,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 			{ // Icon Sprite erstellen
 				// MultiStage Waypoint anders darstellen wenn dieser als Startpunkt definiert ist
 				if ((mWaypoint.Type == CacheTypes.MultiStage) && mWaypoint.IsStart)
-					mIconSprite = new Sprite(Sprites.getSprite("big" + CacheTypes.Multi + "StartP"));
+					mIconSprite = new Sprite(Sprites.getSprite("big" + CacheTypes.MultiStage.name() + "StartP"));
 				else
 					mIconSprite = new Sprite(Sprites.getSprite("big" + mWaypoint.Type.name()));
 

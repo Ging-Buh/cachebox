@@ -120,7 +120,7 @@ public class Importer {
 		Integer countwpt = 0;
 		HashMap<String, Integer> wptCount = new HashMap<String, Integer>();
 
-		for (File File : FileList) {
+		for (File fFile : FileList) {
 
 			try {
 				Thread.sleep(10);
@@ -128,12 +128,12 @@ public class Importer {
 				return; // Thread Canceld
 			}
 
-			ip.ProgressInkrement("AnalyseGPX", File.getName(), false);
+			ip.ProgressInkrement("AnalyseGPX", fFile.getName(), false);
 
 			BufferedReader br;
 			String strLine;
 			try {
-				br = new BufferedReader(new InputStreamReader(File.getFileInputStream()));
+				br = new BufferedReader(new InputStreamReader(fFile.getFileInputStream()));
 				while ((strLine = br.readLine()) != null) {
 					if (strLine.contains("<wpt"))
 						countwpt++;
@@ -146,7 +146,7 @@ public class Importer {
 				e.printStackTrace();
 			}
 
-			wptCount.put(File.getAbsolutePath(), countwpt);
+			wptCount.put(fFile.getAbsolutePath(), countwpt);
 			countwpt = 0;
 		}
 

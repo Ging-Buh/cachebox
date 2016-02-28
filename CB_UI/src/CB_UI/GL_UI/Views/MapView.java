@@ -354,12 +354,10 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		infoBubble = new InfoBubble(GL_UISizes.Bubble, "infoBubble");
 		infoBubble.setInvisible();
 		infoBubble.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 				if (infoBubble.saveButtonClicked(x, y)) {
 					wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
-
 						@Override
 						public void isCanceld() {
 
@@ -409,7 +407,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 					if (infoBubble.getWaypoint() == null) {
 						// Wenn ein Cache einen Final waypoint hat dann soll gleich dieser aktiviert werden
 						Waypoint waypoint = infoBubble.getCache().GetFinalWaypoint();
-						// wenn ein Cache keine Final hat, aber einen StartWaypoint dann wird dieser gleich selektiert
+						// wenn ein Cache keine Final hat, aber einen StartWaypointm, dann wird dieser gleich selektiert
 						if (waypoint == null)
 							waypoint = infoBubble.getCache().GetStartWaypoint();
 						GlobalCore.setSelectedWaypoint(infoBubble.getCache(), waypoint);
@@ -1006,10 +1004,8 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	}
 
 	protected OnClickListener onClickListener = new OnClickListener() {
-
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-			double minDist = Double.MAX_VALUE;
 			WaypointRenderInfo minWpi = null;
 			Vector2 clickedAt = new Vector2(x, y);
 
@@ -1032,11 +1028,8 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			}
 
 			synchronized (mapCacheList.list) {
-				if (infoBubble.isVisible()) {
-					// Click outside Bubble -> hide Bubble
-					infoBubble.setInvisible();
-				}
 
+				double minDist = Double.MAX_VALUE;
 				for (int i = 0, n = mapCacheList.list.size(); i < n; i++) {
 					WaypointRenderInfo wpi = mapCacheList.list.get(i);
 					Vector2 screen = worldToScreen(new Vector2(Math.round(wpi.MapX), Math.round(wpi.MapY)));
@@ -1048,47 +1041,44 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 						}
 					}
 				}
-
-				if (minWpi == null || minWpi.Cache == null)
+				// empty mapCacheList
+				if (minWpi == null || minWpi.Cache == null) {
+					// log.info("empty click");
 					return true;
-				// Vector2 screen = worldToScreen(new Vector2(Math.round(minWpi.MapX), Math.round(minWpi.MapY)));
-				// log.debug("MapClick at:" + clickedAt + " minDistance: " + minDist + " screen:" + screen + " wpi:" + minWpi.Cache.Name
-				// + "/ ");
-
+				}
+				// always hide the bubble
+				if (infoBubble.isVisible()) {
+					infoBubble.setInvisible();
+				}
+				// check for showing the bubble
 				if (minDist < 40) {
-
 					if (minWpi.Waypoint != null) {
 						if (GlobalCore.getSelectedCache() != minWpi.Cache) {
-							// Show Bubble at the location of the Waypoint!!!
+							// log.info("Waypoint clicked: " + minWpi.Cache.getGcCode() + "/" + minWpi.Waypoint.getGcCode());
+							// show bubble at the location of the waypoint!!!
 							infoBubble.setCache(minWpi.Cache, minWpi.Waypoint);
 							infoBubble.setVisible();
 						} else {
-							// do not show Bubble because there will not be
-							// selected
-							// a
-							// different cache but only a different waypoint
-							// Wegpunktliste ausrichten
+							// if only waypoint changes, the bubble will not be shown. (why not ?)
+							// so we must do the selection here
 							GlobalCore.setSelectedWaypoint(minWpi.Cache, minWpi.Waypoint);
-							// FormMain.WaypointListPanel.AlignSelected();
-							// updateCacheList();
 							MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
 							data.hideMyFinds = MapView.this.hideMyFinds;
 							data.showAllWaypoints = MapView.this.showAllWaypoints;
 							mapCacheList.update(data);
 						}
-
 					} else {
-						// Show Bubble
-						// unabhängig davon, ob der angeklickte Cache == der selectedCache ist
+						// log.info("Cache clicked: " + minWpi.Cache.getGcCode());
+						// show bubble
 						infoBubble.setCache(minWpi.Cache, null);
 						infoBubble.setVisible();
 					}
 					inputState = InputState.Idle;
-					// debugString = "State: " + inputState;
-					// return false;
+				} else {
+					// Click outside Bubble -> hide Bubble
+					// log.info("outside click (hidden bubble)");
 				}
 			}
-
 			return false;
 		}
 	};
