@@ -2,6 +2,7 @@ package CB_Core.Types;
 
 import java.io.Serializable;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 
 import CB_Core.CacheTypes;
 import CB_Locator.Coordinate;
@@ -215,7 +216,7 @@ public class Waypoint implements Serializable {
 		}
 	}
 	
-	Override
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == null)
 			return false;
