@@ -214,5 +214,21 @@ public class Waypoint implements Serializable {
 			return detail.checkSum;
 		}
 	}
+	
+	Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		if (obj instanceof Waypoint) {
+
+			Waypoint wp = (Waypoint) obj;
+			if (wp.GcCode == null)
+				return false;
+			if (this.GcCode == null)
+				return false;
+			return Arrays.equals(wp.GcCode, this.GcCode);
+		}
+		return false;
+	}
 
 }

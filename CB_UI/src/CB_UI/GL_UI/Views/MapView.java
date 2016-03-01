@@ -637,7 +637,9 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		// Don't render if outside of screen !!
 		if ((screen.x < 0 - WpSize.width || screen.x > this.getWidth() + WpSize.height) || (screen.y < 0 - WpSize.height || screen.y > this.getHeight() + WpSize.height)) {
 			if (wpi.Cache != null && (wpi.Cache.Id == infoBubble.getCacheId()) && infoBubble.isVisible()) {
-				infoBubble.setInvisible();
+				// check if wp selected
+				if (wpi.Waypoint != null && wpi.Waypoint.equals(infoBubble.getWaypoint()) || wpi.Waypoint == null && infoBubble.getWaypoint() == null)
+					infoBubble.setInvisible();
 			}
 			return;
 		}
