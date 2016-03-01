@@ -98,10 +98,9 @@ public class InfoBubble extends CB_View_Base {
 
 	@Override
 	protected void render(Batch batch) {
-		// log.info("Bubble render");
 		boolean selectedCache = false;
 		if (GlobalCore.isSetSelectedCache()) {
-			selectedCache = mCache.Id == GlobalCore.getSelectedCache().Id;
+			selectedCache = mCache.equals(GlobalCore.getSelectedCache());
 		}
 
 		Sprite sprite = selectedCache ? Sprites.Bubble.get(1) : Sprites.Bubble.get(0);

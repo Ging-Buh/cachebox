@@ -15,12 +15,10 @@
  */
 package CB_UI.GL_UI.Activitys;
 
-import CB_Utils.fileProvider.File;
 import java.text.SimpleDateFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import CB_Utils.fileProvider.FileFactory;
 import org.slf4j.LoggerFactory;
 
 import CB_Core.CoreSettingsForward;
@@ -57,6 +55,8 @@ import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Math.Point;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.FileList;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 
 /**
  * @author ging-buh
@@ -187,19 +187,18 @@ public class SelectDB extends ActivityBase {
 		bNew.setText(Translation.Get("NewDB"));
 		bSelect.setText(Translation.Get("confirm"));
 		bCancel.setText(Translation.Get("cancel"));
-		bAutostart.setText(Translation.Get("StartWithoutSelection"));
 
 		autoStartTime = Config.MultiDBAutoStartTime.getValue();
 		if (autoStartTime > 0) {
 			autoStartCounter = autoStartTime;
 			bAutostart.setText(autoStartCounter + " " + Translation.Get("confirm"));
-			setAutoStartText();
 			if ((autoStartTime > 0) && (AktFile != null)) {
 				updateTimer = new Timer();
 				updateTimer.scheduleAtFixedRate(timerTask, 1000, 1000);
 			} else
 				stopTimer();
 		}
+		setAutoStartText();
 
 		this.isClickable();
 

@@ -14,7 +14,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -30,12 +29,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import CB_Utils.Util.FileIO;
-
 import com.thebuzzmedia.sjxp.XMLParser;
 import com.thebuzzmedia.sjxp.XMLParserException;
 import com.thebuzzmedia.sjxp.rule.DefaultRule;
 import com.thebuzzmedia.sjxp.rule.IRule;
+
+import CB_Utils.Util.FileIO;
+import CB_Utils.fileProvider.FileFactory;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI Builder, which is free for non-commercial use. If Jigloo is
@@ -682,14 +682,13 @@ public class launch extends JFrame {
 	}
 
 	private void replaceInFiles(String Ext) {
-		ArrayList<File> files = new ArrayList<File>();
-		files = FileIO.recursiveDirectoryReader(new File(directoryPath), files, Ext, true);
+		ArrayList<CB_Utils.fileProvider.File> files = new ArrayList<CB_Utils.fileProvider.File>();
+		CB_Utils.fileProvider.File directory = FileFactory.createFile(directoryPath);
+		files = FileIO.recursiveDirectoryReader(directory, files, Ext, true);
 
-		for (Iterator<File> it = files.iterator(); it.hasNext();) {
-
+		for (CB_Utils.fileProvider.File file : files) {
 			try {
-				File file = it.next();
-				BufferedReader reader = new BufferedReader(new FileReader(file));
+				BufferedReader reader = new BufferedReader(file.getFileReader());
 				String line = "", oldtext = "";
 				while ((line = reader.readLine()) != null) {
 					oldtext += line + "\r\n";
@@ -700,7 +699,7 @@ public class launch extends JFrame {
 				if (oldtext.contains(currentPackageName)) {
 					String newtext = oldtext.replaceAll(currentPackageName, newPackageName);
 					addMsg("[Replace in:] " + file.getPath());
-					FileWriter writer = new FileWriter(file);
+					FileWriter writer = file.getFileWriter();
 					writer.write(newtext);
 					writer.close();
 				}

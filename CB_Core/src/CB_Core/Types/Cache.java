@@ -22,8 +22,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
-import org.slf4j.LoggerFactory;
-
 import CB_Core.Attributes;
 import CB_Core.CB_Core_Settings;
 import CB_Core.CacheSizes;
@@ -39,7 +37,6 @@ import CB_Utils.Lists.CB_List;
 
 public class Cache implements Comparable<Cache>, Serializable {
 	private static final long serialVersionUID = 1015307624242318838L;
-	final static org.slf4j.Logger log = LoggerFactory.getLogger(Cache.class);
 	// ########################################################
 	// Boolean Handling
 	// one Boolean use up to 4 Bytes
@@ -430,10 +427,8 @@ public class Cache implements Comparable<Cache>, Serializable {
 	public boolean SpoilerExists() {
 		if (detail != null) {
 			boolean hasSpoiler = detail.SpoilerExists(this);
-			// log.info(this + " has Spoiler/s: " + hasSpoiler);
 			return hasSpoiler;
 		} else {
-			// log.info(this + " has no Spoiler");
 			return false;
 		}
 	}
