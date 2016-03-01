@@ -59,46 +59,34 @@ public class CB_Action_QuickFieldNote extends CB_Action {
 
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				boolean found = true;
 				switch (((MenuItem) v).getMenuItemId()) {
+				case MenuID.MI_WEBCAM_FOTO_TAKEN:
+					FieldNotesView.addNewFieldnote(LogTypes.webcam_photo_taken, true);
+					break;
+				case MenuID.MI_ATTENDED:
+					FieldNotesView.addNewFieldnote(LogTypes.attended, true);
+					break;
 				case MenuID.MI_QUICK_FOUND:
-					Cache cache = GlobalCore.getSelectedCache();
-					switch (cache.Type) {
-					case Event:
-					case MegaEvent:
-					case Giga:
-					case CITO:
-						FieldNotesView.addNewFieldnote(LogTypes.attended, true);
-						break;
-					case Camera:
-						FieldNotesView.addNewFieldnote(LogTypes.webcam_photo_taken, true);
-						break;
-					default:
-						FieldNotesView.addNewFieldnote(LogTypes.found, true);
-						break;
-					}
-					if (FieldNotesView.that != null)
-						FieldNotesView.that.notifyDataSetChanged();
-					// damit der Status geändert wird
-					// damit die Icons in der Map aktualisiert werden
-					CacheListChangedEventList.Call();
-					SelectedCacheEventList.Call(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
-					QuickFieldNoteFeedbackPopUp pop = new QuickFieldNoteFeedbackPopUp(true);
-					pop.show(PopUp_Base.SHOW_TIME_SHORT);
-					PlatformConnector.vibrate();
-					return true;
+					FieldNotesView.addNewFieldnote(LogTypes.found, true);
+					break;
 				case MenuID.MI_QUICK_NOT_FOUND:
 					FieldNotesView.addNewFieldnote(LogTypes.didnt_find, true);
-					if (FieldNotesView.that != null)
-						FieldNotesView.that.notifyDataSetChanged();
-					CacheListChangedEventList.Call(); // damit der Status geändert wird
-					// damit die Icons in der Map aktualisiert werden
-					SelectedCacheEventList.Call(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
-					QuickFieldNoteFeedbackPopUp pop2 = new QuickFieldNoteFeedbackPopUp(false);
-					pop2.show(PopUp_Base.SHOW_TIME_SHORT);
-					PlatformConnector.vibrate();
-					return true;
+					found = false;
+					break;
+				default:
+					return false;
 				}
-				return false;
+				if (FieldNotesView.that != null)
+					FieldNotesView.that.notifyDataSetChanged();
+				// damit der Status geändert wird
+				// damit die Icons in der Map aktualisiert werden
+				CacheListChangedEventList.Call();
+				SelectedCacheEventList.Call(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+				QuickFieldNoteFeedbackPopUp pop = new QuickFieldNoteFeedbackPopUp(found);
+				pop.show(PopUp_Base.SHOW_TIME_SHORT);
+				PlatformConnector.vibrate();
+				return true;
 			}
 		});
 
