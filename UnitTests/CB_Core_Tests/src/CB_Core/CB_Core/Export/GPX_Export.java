@@ -16,11 +16,7 @@
 package CB_Core.CB_Core.Export;
 
 import java.io.BufferedWriter;
-
-import CB_Utils.fileProvider.File;
-
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
@@ -28,7 +24,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Scanner;
 
-import CB_Utils.fileProvider.FileFactory;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +43,8 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_UI_Base.Global;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 import Types.CacheTest;
 import __Static.InitTestDBs;
 import junit.framework.TestCase;
@@ -277,8 +274,9 @@ public class GPX_Export extends TestCase {
 		} catch (Exception e) {
 			return;
 		}
-		Coordinate coord = new Coordinate("52� 33,301N / 13� 24,873E");
-		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), newCache.Id, "", "wyptDefTitle");
+		Coordinate coord = new Coordinate("52° 33,301N / 13° 24,873E");
+		//Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), newCache.Id, "", "wyptDefTitle");
+		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), newCache.Id, "", newGcCode);
 
 		newCache.waypoints.add(newWP);
 

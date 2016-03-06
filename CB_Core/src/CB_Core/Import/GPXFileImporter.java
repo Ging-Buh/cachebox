@@ -15,9 +15,6 @@
  */
 package CB_Core.Import;
 
-import CB_Utils.fileProvider.File;
-
-import java.io.FileInputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,6 +47,7 @@ import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.fileProvider.File;
 
 public class GPXFileImporter {
 	final static org.slf4j.Logger logger = LoggerFactory.getLogger(GPXFileImporter.class);
@@ -1271,7 +1269,8 @@ public class GPXFileImporter {
 					}
 				}
 
-				Waypoint FinalWp = new Waypoint(newGcCode, CacheTypes.Final, "", coorectedCoord.getLatitude(), coorectedCoord.getLongitude(), cache.Id, "", "Final GSAK Corrected");
+				//Waypoint FinalWp = new Waypoint(newGcCode, CacheTypes.Final, "", coorectedCoord.getLatitude(), coorectedCoord.getLongitude(), cache.Id, "", "Final GSAK Corrected");
+				Waypoint FinalWp = new Waypoint(newGcCode, CacheTypes.Final, "", coorectedCoord.getLatitude(), coorectedCoord.getLongitude(), cache.Id, "", newGcCode);
 
 				cache.waypoints.add(FinalWp);
 

@@ -17,6 +17,12 @@ package CB_UI.GL_UI.Activitys;
 
 import java.util.Date;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
+
 import CB_Core.CacheTypes;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
@@ -45,12 +51,6 @@ import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.MoveableList;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * A Activity for create a Track over the Map.<br>
@@ -161,7 +161,8 @@ public class CreateTrackOverMapActivity extends ActivityBase {
 			GL.that.RunOnGL(new IRunOnGL() {
 				@Override
 				public void run() {
-					Waypoint newWP = new Waypoint(String.valueOf(System.currentTimeMillis()), CacheTypes.MultiStage, "", coord.getLatitude(), coord.getLongitude(), -1, "", Translation.Get("wyptDefTitle"));
+					//Waypoint newWP = new Waypoint(String.valueOf(System.currentTimeMillis()), CacheTypes.MultiStage, "", coord.getLatitude(), coord.getLongitude(), -1, "", Translation.Get("wyptDefTitle"));
+					Waypoint newWP = new Waypoint(String.valueOf(System.currentTimeMillis()), CacheTypes.MultiStage, "", coord.getLatitude(), coord.getLongitude(), -1, "", String.valueOf(System.currentTimeMillis()));
 					addWP(newWP);
 				}
 			});
@@ -268,6 +269,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
 
 	}
 
+	@Override
 	public void dispose() {
 		super.dispose();
 		if (btnOk != null)

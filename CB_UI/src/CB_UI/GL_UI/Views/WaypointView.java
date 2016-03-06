@@ -385,7 +385,8 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 			coord = Locator.getCoordinate();
 		if ((coord == null) || (!coord.isValid()))
 			coord = GlobalCore.getSelectedCache().Pos;
-		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
+		//Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
+		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", newGcCode);
 
 		editWP(newWP, true);
 
@@ -521,7 +522,8 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 					return;
 				}
-				Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", targetCoord.getLatitude(), targetCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", "projiziert");
+				//Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", targetCoord.getLatitude(), targetCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", "projiziert");
+				Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", targetCoord.getLatitude(), targetCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", newGcCode);
 				GlobalCore.getSelectedCache().waypoints.add(newWP);
 				lvAdapter = new CustomAdapter(GlobalCore.getSelectedCache());
 				that.setBaseAdapter(lvAdapter);
@@ -555,7 +557,8 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 					return;
 				}
-				Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Measured", returnCoord.getLatitude(), returnCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", "Measured");
+				//Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Measured", returnCoord.getLatitude(), returnCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", "Measured");
+				Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Measured", returnCoord.getLatitude(), returnCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", newGcCode);
 				GlobalCore.getSelectedCache().waypoints.add(newWP);
 
 				lvAdapter = new CustomAdapter(GlobalCore.getSelectedCache());
