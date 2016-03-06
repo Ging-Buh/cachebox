@@ -37,7 +37,7 @@ public interface CB_UI_Base_Settings extends CB_Utils_Settings {
 
 	public static final SettingBool nightMode = new SettingBool("nightMode", SettingCategory.Internal, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
 
-	public static final SettingFolder SkinFolder = new SettingFolder("SkinFolder", SettingCategory.Folder, INVISIBLE, Config_Core.mWorkPath + "/skins/default", SettingStoreType.Global, SettingUsage.ACB, false);
+	public static final SettingFolder SkinFolder = new SettingFolder("SkinFolder", SettingCategory.Folder, DEVELOPER, Config_Core.mWorkPath + "/skins/default", SettingStoreType.Global, SettingUsage.ACB, false);
 
 	public static final SettingInt FONT_SIZE_COMPASS_DISTANCE = new SettingInt("FONT_SIZE_COMPASS_DISTANCE", SettingCategory.Skin, EXPERT, 25, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingInt FONT_SIZE_BIG = new SettingInt("FONT_SIZE_BIG", SettingCategory.Skin, EXPERT, 16, SettingStoreType.Global, SettingUsage.ACB);

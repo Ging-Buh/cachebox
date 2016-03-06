@@ -17,16 +17,10 @@
 package CB_Translation_Base.TranslationEngine;
 
 import java.io.BufferedReader;
-
-import CB_Utils.fileProvider.File;
-
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import CB_Utils.fileProvider.FileFactory;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.Files.FileType;
@@ -36,6 +30,8 @@ import com.badlogic.gdx.files.FileHandle;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Trace;
 import CB_Utils.Util.FileIO;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 
 /**
  * @author Longri
@@ -352,9 +348,15 @@ public class Translation {
 		if (Dir.type() == FileType.Classpath) {
 			// Cannot list a classpath directory
 			// so we hardcoded the lang path
-			files = new FileHandle[] { Gdx.files.classpath("data/lang/cs"), Gdx.files.classpath("data/lang/de"), Gdx.files.classpath("data/lang/en-GB"), Gdx.files.classpath("data/lang/fr"), Gdx.files.classpath("data/lang/nl"),
-					Gdx.files.classpath("data/lang/pl"), Gdx.files.classpath("data/lang/pt-PT")
-
+			files = new FileHandle[] { //
+					Gdx.files.classpath("data/lang/cs"), //
+					Gdx.files.classpath("data/lang/de"), //
+					Gdx.files.classpath("data/lang/en-GB"), //
+					Gdx.files.classpath("data/lang/fr"), //
+					Gdx.files.classpath("data/lang/hu"), //
+					Gdx.files.classpath("data/lang/nl"), //
+					Gdx.files.classpath("data/lang/pl"), //
+					Gdx.files.classpath("data/lang/pt-PT"),//
 			};
 		} else {
 			files = Dir.list();

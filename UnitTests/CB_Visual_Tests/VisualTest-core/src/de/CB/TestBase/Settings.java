@@ -25,8 +25,8 @@ import CB_Utils.Settings.SettingsList;
 
 public interface Settings extends CB_UI_Base.settings.CB_UI_Base_Settings, CB_Locator.LocatorSettings {
 
-	// Abk�rzende Schreibweisen f�r die �bersichlichkeit bei den add Methoden
-	public static final SettingModus INVISIBLE = SettingModus.Invisible;
+	// Abkürzende Schreibweisen für die Übersichlichkeit bei den add Methoden
+	public static final SettingModus DEVELOPER = SettingModus.DEVELOPER;
 	public static final SettingModus NORMAL = SettingModus.Normal;
 	public static final SettingModus EXPERT = SettingModus.Expert;
 	public static final SettingModus NEVER = SettingModus.Never;

@@ -38,6 +38,7 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Utils.StringH;
+import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 
@@ -110,7 +111,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
 					imp.show();
 				} else if (((MenuItem) v).getMenuItemId() == MenuID.MI_EXPORT_RUN) {
 					// ExportFileName
-					StringInputBox.Show(WrapType.SINGLELINE, "Message", Translation.Get("enterFileName"), "Export.gpx", new OnMsgBoxClickListener() {
+					StringInputBox.Show(WrapType.SINGLELINE, "Message", Translation.Get("enterFileName"), FileIO.GetFileName(Config.gpxExportFileName.getValue()), new OnMsgBoxClickListener() {
 						@Override
 						public boolean onClick(int which, Object data) {
 							if (which == 1) {
@@ -145,8 +146,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
 	}
 
 	private void ExportGetFolderStep(final String FileName) {
-		PlatformConnector.getFolder("", Translation.Get("selectExportFolder".hashCode()), Translation.Get("select".hashCode()), new IgetFolderReturnListener() {
-
+		PlatformConnector.getFolder(FileIO.GetDirectoryName(Config.gpxExportFileName.getValue()), Translation.Get("selectExportFolder".hashCode()), Translation.Get("select".hashCode()), new IgetFolderReturnListener() {
 			@Override
 			public void getFolderReturn(final String Path) {
 				GL.that.RunOnGL(new IRunOnGL() {
@@ -164,6 +164,8 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
 	private void EXPORT(final String FileName, String Path) {
 		String exportPath = Path + "/" + FileName;
 		File exportFile = FileFactory.createFile(exportPath);
+		Config.gpxExportFileName.setValue(exportFile.getPath());
+		Config.AcceptChanges();
 
 		// Delete File if exist
 		if (exportFile.exists())
