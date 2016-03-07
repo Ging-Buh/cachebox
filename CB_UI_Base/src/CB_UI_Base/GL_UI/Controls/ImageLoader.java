@@ -54,7 +54,7 @@ public class ImageLoader {
 
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(ImageLoader.class);
 
-	private boolean ImageLoadError = false;
+	boolean ImageLoadError = false;
 	private int State = 0;
 	private Thread loadingThread;
 	private String mPath;
@@ -329,7 +329,7 @@ public class ImageLoader {
 		mPath = Path.replace("file://", "");
 		if (getDrawable(0) != null) {
 			dispose();
-			// das laden des Images in das Sprite darf erst in der Render Methode passieren, damit es aus dem GL_Thread herraus l�uft.
+		// das laden des Images in das Sprite darf erst in der Render Methode passieren, damit es aus dem GL_Thread herraus l�uft.
 		}
 		generate();
 	}
