@@ -216,6 +216,9 @@ public class HtmlView extends ScrollBox implements ListLayout {
     @Override
     public void layout(CB_List<CB_View_Base> segmentViewList) {
 
+	if (contentBox != null)
+		contentBox.removeChildsDirekt();
+
 	contentBox = addViewsToContentBox(this, segmentViewList);
 	this.addChild(contentBox);
 	this.setVirtualHeight(contentBox.getHeight());
@@ -491,7 +494,7 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	touchXPos = x;
 	lastContentXPos = contentBox.getX();
 	return true; // muss behandelt werden, da sonnst kein onTouchDragged()
-		     // ausgelösst wird.
+			// ausgelösst wird.
     }
 
     @Override
