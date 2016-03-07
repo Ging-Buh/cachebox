@@ -209,7 +209,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 		mi.setCheckable(true);
 		mi.setChecked(Config.ShowDirektLine.getValue());
 
-		mi = icm.addItem(MenuID.MI_SHOW_ACCURACY_CIRCLE, "ShowAccuracyCircle");
+		mi = icm.addItem(MenuID.MI_SHOW_ACCURACY_CIRCLE, "MenuTextShowAccuracyCircle");
 		mi.setCheckable(true);
 		mi.setChecked(Config.ShowAccuracyCircle.getValue());
 

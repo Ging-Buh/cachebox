@@ -1269,8 +1269,8 @@ public class GPXFileImporter {
 					}
 				}
 
-				//Waypoint FinalWp = new Waypoint(newGcCode, CacheTypes.Final, "", coorectedCoord.getLatitude(), coorectedCoord.getLongitude(), cache.Id, "", "Final GSAK Corrected");
-				Waypoint FinalWp = new Waypoint(newGcCode, CacheTypes.Final, "", coorectedCoord.getLatitude(), coorectedCoord.getLongitude(), cache.Id, "", newGcCode);
+				// "Final GSAK Corrected" is used for recognition of finals from GSAK on gpx - Import
+				Waypoint FinalWp = new Waypoint(newGcCode, CacheTypes.Final, "", coorectedCoord.getLatitude(), coorectedCoord.getLongitude(), cache.Id, "", "Final GSAK Corrected");
 
 				cache.waypoints.add(FinalWp);
 

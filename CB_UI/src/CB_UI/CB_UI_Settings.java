@@ -168,9 +168,6 @@ public interface CB_UI_Settings {
 	public static final SettingIntArray ZoomCross = new SettingIntArray("ZoomCross", SettingCategory.Map, NORMAL, 16, SettingStoreType.Global, SettingUsage.ACB, LocatorSettings.CrossLevel);
 	public static final SettingIntArray SoundApproachDistance = new SettingIntArray("SoundApproachDistance", SettingCategory.Misc, NORMAL, 50, SettingStoreType.Global, SettingUsage.ACB, approach);
 	public static final SettingIntArray TrackDistance = new SettingIntArray("TrackDistance", SettingCategory.Misc, NORMAL, 3, SettingStoreType.Global, SettingUsage.ACB, TrackDistanceArray);
-	public static final SettingIntArray OsmMaxImportLevel = new SettingIntArray("OsmMaxImportLevel", SettingCategory.Map, DEVELOPER, 16, SettingStoreType.Global, SettingUsage.ACB, LocatorSettings.Level);
-	public static final SettingIntArray CompassMapMaxZommLevel = new SettingIntArray("CompassMapMaxZommLevel", SettingCategory.Map, NORMAL, 20, SettingStoreType.Global, SettingUsage.ACB, LocatorSettings.Level);
-	public static final SettingIntArray CompassMapMinZoomLevel = new SettingIntArray("CompassMapMinZoomLevel", SettingCategory.Map, NORMAL, 13, SettingStoreType.Global, SettingUsage.ACB, LocatorSettings.Level);
 
 	// double
 

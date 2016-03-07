@@ -31,7 +31,7 @@ public interface LocatorSettings {
 	public static final SettingFolder MapPackFolder = new SettingFolder("MapPackFolder", SettingCategory.Folder, EXPERT, Config_Core.mWorkPath + "/repository/maps", SettingStoreType.Global, SettingUsage.ALL, false);
 	public static final SettingFolder MapPackFolderLocal = new SettingFolder("MapPackFolderLocal", SettingCategory.Folder, NEVER, Config_Core.mWorkPath + "/repository/maps", SettingStoreType.Local, SettingUsage.ALL, false);
 
-	public static final SettingString CurrentMapLayer = (SettingString) SettingsList.addSetting(new SettingString("CurrentMapLayer", SettingCategory.Map, EXPERT, "Mapnik", SettingStoreType.Global, SettingUsage.ACB));
+	public static final SettingString CurrentMapLayer = (SettingString) SettingsList.addSetting(new SettingString("CurrentMapLayer", SettingCategory.Map, DEVELOPER, "Mapnik", SettingStoreType.Global, SettingUsage.ACB));
 	public static final SettingString CurrentMapOverlayLayer = (SettingString) SettingsList.addSetting(new SettingString("CurrentMapOverlayLayer", SettingCategory.Map, EXPERT, "", SettingStoreType.Global, SettingUsage.ACB));
 
 	public static final SettingDouble MapInitLatitude = new SettingDouble("MapInitLatitude", SettingCategory.Positions, EXPERT, -1000, SettingStoreType.Global, SettingUsage.ALL);
@@ -44,15 +44,16 @@ public interface LocatorSettings {
 
 	public static final SettingInt MoveMapCenterMaxSpeed = (SettingInt) SettingsList.addSetting(new SettingInt("MoveMapCenterMaxSpeed", SettingCategory.CarMode, NORMAL, 60, SettingStoreType.Global, SettingUsage.ACB));
 
-	public static final SettingBool ShowAccuracyCircle = new SettingBool("ShowAccuracyCircle", SettingCategory.Map, NORMAL, true, SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingBool ShowAccuracyCircle = new SettingBool("ShowAccuracyCircle", SettingCategory.Map, NEVER, true, SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingBool ShowMapCenterCross = new SettingBool("ShowMapCenterCross", SettingCategory.Map, NEVER, true, SettingStoreType.Global, SettingUsage.ACB);
 
-	public static final SettingBool ShowMapCenterCross = new SettingBool("ShowMapCenterCross", SettingCategory.Map, NORMAL, true, SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingBool PositionMarkerTransparent = new SettingBool("PositionMarkerTransparent", SettingCategory.Map, EXPERT, true, SettingStoreType.Global, SettingUsage.ACB);
 
-	public static final SettingBool PositionMarkerTransparent = new SettingBool("PositionMarkerTransparent", SettingCategory.Map, NORMAL, false, SettingStoreType.Global, SettingUsage.ACB);
-
-	public static final SettingIntArray OsmMaxLevel = new SettingIntArray("OsmMaxLevel", SettingCategory.Map, NORMAL, 19, SettingStoreType.Global, SettingUsage.ACB, Level);
-
-	public static final SettingIntArray OsmMinLevel = new SettingIntArray("OsmMinLevel", SettingCategory.Map, NORMAL, 7, SettingStoreType.Global, SettingUsage.ACB, Level);
+	public static final SettingIntArray OsmMaxImportLevel = new SettingIntArray("OsmMaxImportLevel", SettingCategory.Map, DEVELOPER, 16, SettingStoreType.Global, SettingUsage.ACB, LocatorSettings.Level);
+	public static final SettingIntArray OsmMinLevel = new SettingIntArray("OsmMinLevel", SettingCategory.Map, EXPERT, 7, SettingStoreType.Global, SettingUsage.ACB, Level);
+	public static final SettingIntArray OsmMaxLevel = new SettingIntArray("OsmMaxLevel", SettingCategory.Map, EXPERT, 19, SettingStoreType.Global, SettingUsage.ACB, Level);
+	public static final SettingIntArray CompassMapMinZoomLevel = new SettingIntArray("CompassMapMinZoomLevel", SettingCategory.Map, EXPERT, 13, SettingStoreType.Global, SettingUsage.ACB, LocatorSettings.Level);
+	public static final SettingIntArray CompassMapMaxZommLevel = new SettingIntArray("CompassMapMaxZommLevel", SettingCategory.Map, EXPERT, 20, SettingStoreType.Global, SettingUsage.ACB, LocatorSettings.Level);
 
 	public static final SettingFile MapsforgeDayTheme = (SettingFile) SettingsList.addSetting(new SettingFile("MapsforgeDayTheme", SettingCategory.Skin, NORMAL, "", SettingStoreType.Global, SettingUsage.ALL, "xml"));
 
