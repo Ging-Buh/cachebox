@@ -15,7 +15,6 @@
  */
 package CB_UI_Base.GL_UI.Controls.html;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.LoggerFactory;
@@ -106,8 +105,6 @@ public class HtmlView extends ScrollBox implements ListLayout {
 
 	    if (segmentList != null) {
 		segmentList.clear();
-	    } else {
-		segmentList = new ArrayList<Html_Segment>();
 	    }
 	    segmentViewList = new CB_List<CB_View_Base>();
 	    Exception any = null;
@@ -494,7 +491,7 @@ public class HtmlView extends ScrollBox implements ListLayout {
 	touchXPos = x;
 	lastContentXPos = contentBox.getX();
 	return true; // muss behandelt werden, da sonnst kein onTouchDragged()
-			// ausgelösst wird.
+		     // ausgelösst wird.
     }
 
     @Override

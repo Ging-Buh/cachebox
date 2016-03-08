@@ -66,7 +66,7 @@ public class CB_Html_Renderer extends Renderer {
         CB_ELEMENT_HANDLERS.put(HTMLElementName.H5, IMPLEMENTED ? H_ElementHandler.INSTANCE_H5 : Not_implemented_ElementHandler.INSTANCE);
         CB_ELEMENT_HANDLERS.put(HTMLElementName.H6, IMPLEMENTED ? H_ElementHandler.INSTANCE_H6 : Not_implemented_ElementHandler.INSTANCE);
         CB_ELEMENT_HANDLERS.put(HTMLElementName.HEAD, IMPLEMENTED ? RemoveElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
-        CB_ELEMENT_HANDLERS.put(HTMLElementName.HR, IMPLEMENTED ? HR_ElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
+
         CB_ELEMENT_HANDLERS.put(HTMLElementName.I, IMPLEMENTED ? FontStyleElementHandler.INSTANCE_I : Not_implemented_ElementHandler.INSTANCE);
         CB_ELEMENT_HANDLERS.put(HTMLElementName.IMG, IMPLEMENTED ? ImagelementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
         CB_ELEMENT_HANDLERS.put(HTMLElementName.INPUT, IMPLEMENTED ? InputElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
@@ -94,6 +94,7 @@ public class CB_Html_Renderer extends Renderer {
         CB_ELEMENT_HANDLERS.put(HTMLElementName.UL, IMPLEMENTED ? CB_UI_Base.GL_UI.Controls.html.elementhandler.ListElementHandler.INSTANCE_UL : Not_implemented_ElementHandler.INSTANCE);
         CB_ELEMENT_HANDLERS.put(HTMLElementName.OL, IMPLEMENTED ? CB_UI_Base.GL_UI.Controls.html.elementhandler.ListElementHandler.INSTANCE_OL : Not_implemented_ElementHandler.INSTANCE);
         CB_ELEMENT_HANDLERS.put(HTMLElementName.LI, IMPLEMENTED ? CB_UI_Base.GL_UI.Controls.html.elementhandler.LI_ElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
+	CB_ELEMENT_HANDLERS.put(HTMLElementName.HR, IMPLEMENTED ? CB_UI_Base.GL_UI.Controls.html.elementhandler.HR_ElementHandler.INSTANCE : Not_implemented_ElementHandler.INSTANCE);
     }
 
     public CB_Html_Renderer(Segment segment) {
