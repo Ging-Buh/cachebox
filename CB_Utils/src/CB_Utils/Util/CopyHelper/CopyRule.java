@@ -25,20 +25,20 @@ import CB_Utils.fileProvider.FileFactory;
  * @author Longri
  */
 public class CopyRule {
-    public File sourcePath;
-    public File targetPath;
-    public String Name;
+	public File sourcePath;
+	public File targetPath;
+	public String Name;
 
-    /**
-     * Constructor
-     *
-     * @param source SourcePath as String
-     * @param target TargetPath as String
-     */
-    public CopyRule(String source, String target) {
-        sourcePath = FileFactory.createFile(source);
-        Name = sourcePath.getName();
-        targetPath = FileFactory.createFile(target + "/" + Name);
-    }
+	/**
+	 * Constructor
+	 *
+	 * @param source SourcePath as String
+	 * @param target TargetPath as String
+	 */
+	public CopyRule(String source, String target) {
+		sourcePath = FileFactory.createFile(source);
+		Name = sourcePath.getName();
+		targetPath = FileFactory.createFile(target + "/" + Name);
+	}
 
 }

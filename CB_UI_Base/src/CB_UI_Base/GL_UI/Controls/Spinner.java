@@ -21,7 +21,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
@@ -69,7 +69,7 @@ public class Spinner extends Button {
 		super.Initial();
 
 		if (triangle == null) {
-			Sprite tr = SpriteCacheBase.getThemedSprite("spinner-triangle");
+			Sprite tr = Sprites.getSprite("spinner-triangle");
 			int patch = (int) tr.getWidth() / 2;
 			triangle = new NinePatch(tr, 0, patch, patch, 0);
 		}

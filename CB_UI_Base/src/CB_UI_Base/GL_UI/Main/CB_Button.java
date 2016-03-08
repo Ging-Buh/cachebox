@@ -12,8 +12,8 @@ import CB_UI_Base.GL_UI.ButtonSprites;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.GestureHelp;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -81,7 +81,7 @@ public class CB_Button extends Button implements OnClickListener {
 			if (this.drawableNormal instanceof NinePatchDrawable) {
 				ninePatch = ((NinePatchDrawable) this.drawableNormal).getPatch();
 			} else if (this.drawableNormal instanceof SpriteDrawable) {
-				int p = SpriteCacheBase.patch;
+				int p = Sprites.patch;
 				Sprite s = ((SpriteDrawable) this.drawableNormal).getSprite();
 				ninePatch = new NinePatch(s, p, p, p, p);
 			}
@@ -301,10 +301,10 @@ public class CB_Button extends Button implements OnClickListener {
 				float VersatzX = this.getHeight() / 20f;
 				float VersatzY = this.getHeight() / 30f;
 
-				menuSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.menu_37.ordinal()));
+				menuSprite = new Sprite(Sprites.getSprite(IconName.cmIcon.name()));
 				menuSprite.setBounds(this.getWidth() - iconWidth - VersatzX, VersatzY, iconWidth, iconHeight);
 
-				menuSpriteFiltered = new Sprite(SpriteCacheBase.Icons.get(IconName.MENUFILTERED_65.ordinal()));
+				menuSpriteFiltered = new Sprite(Sprites.getSprite(IconName.MENUFILTERED.name()));
 				menuSpriteFiltered.setBounds(this.getWidth() - iconWidth - VersatzX, VersatzY, iconWidth, iconHeight);
 
 			}

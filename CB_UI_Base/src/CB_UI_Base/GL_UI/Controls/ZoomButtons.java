@@ -22,7 +22,7 @@ import java.util.TimerTask;
 
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 
@@ -212,9 +212,9 @@ public class ZoomButtons extends CB_View_Base {
 		// draw down button
 		Sprite btnDown;
 		if (zoom == minzoom) {
-			btnDown = SpriteCacheBase.ZoomBtn.get(2);// disabled
+			btnDown = Sprites.ZoomBtn.get(2);// disabled
 		} else {
-			btnDown = SpriteCacheBase.ZoomBtn.get(onTouchDown ? 1 : 0);
+			btnDown = Sprites.ZoomBtn.get(onTouchDown ? 1 : 0);
 		}
 
 		float hw = HitRecDown.getWidth();
@@ -247,9 +247,9 @@ public class ZoomButtons extends CB_View_Base {
 		// draw up button
 		Sprite btnUp;
 		if (zoom == maxzoom) {
-			btnUp = SpriteCacheBase.ZoomBtn.get(5);// disabled
+			btnUp = Sprites.ZoomBtn.get(5);// disabled
 		} else {
-			btnUp = SpriteCacheBase.ZoomBtn.get(onTouchUp ? 4 : 3);
+			btnUp = Sprites.ZoomBtn.get(onTouchUp ? 4 : 3);
 		}
 
 		hw = HitRecUp.getWidth();

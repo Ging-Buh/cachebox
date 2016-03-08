@@ -16,7 +16,7 @@
 package CB_UI_Base.GL_UI.Controls;
 
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -46,7 +46,7 @@ public class GestureHelp extends CB_View_Base {
 	@Override
 	protected void render(Batch batch) {
 
-		Sprite sprite = SpriteCacheBase.Bubble.get(UseLastBtnBackground ? 4 : 3);
+		Sprite sprite = Sprites.Bubble.get(UseLastBtnBackground ? 4 : 3);
 		sprite.setPosition(0, 0);
 		sprite.setSize(getWidth(), getHeight());
 		sprite.draw(batch);
@@ -102,7 +102,7 @@ public class GestureHelp extends CB_View_Base {
 	public void addUp(Sprite icon) {
 		Up = new Image(cX, cY + h + d, h, ArrowH, "Up", false);
 		if (icon != null)
-			Up.setDrawable(new SpriteDrawable(SpriteCacheBase.Arrows.get(7)));
+			Up.setDrawable(new SpriteDrawable(Sprites.Arrows.get(7)));
 		this.addChild(Up);
 
 		UpIcon = new Image(cX, cY + h + d + ArrowH, h, h, "UpIcon", false);
@@ -114,7 +114,7 @@ public class GestureHelp extends CB_View_Base {
 	public void addDown(Sprite icon) {
 		Down = new Image(cX, cY - d - ArrowH, h, ArrowH, "Down", false);
 		if (icon != null)
-			Down.setDrawable(new SpriteDrawable(SpriteCacheBase.Arrows.get(6)));
+			Down.setDrawable(new SpriteDrawable(Sprites.Arrows.get(6)));
 		this.addChild(Down);
 
 		DownIcon = new Image(cX, cY - d - ArrowH - h, h, h, "DownIcon", false);
@@ -126,7 +126,7 @@ public class GestureHelp extends CB_View_Base {
 	public void addLeft(Sprite icon) {
 		Left = new Image(cX - d - ArrowW, cY, ArrowW, h, "Left", false);
 		if (icon != null)
-			Left.setDrawable(new SpriteDrawable(SpriteCacheBase.Arrows.get(8)));
+			Left.setDrawable(new SpriteDrawable(Sprites.Arrows.get(8)));
 		this.addChild(Left);
 
 		LeftIcon = new Image(cX - d - ArrowH - h, cY, h, h, "LeftIcon", false);
@@ -138,7 +138,7 @@ public class GestureHelp extends CB_View_Base {
 	public void addRight(Sprite icon) {
 		Right = new Image(cX + h + d, cY, ArrowW, h, "Up", false);
 		if (icon != null)
-			Right.setDrawable(new SpriteDrawable(SpriteCacheBase.Arrows.get(9)));
+			Right.setDrawable(new SpriteDrawable(Sprites.Arrows.get(9)));
 		this.addChild(Right);
 
 		RightIcon = new Image(cX + h + d + ArrowW, cY, h, h, "UpIcon", false);

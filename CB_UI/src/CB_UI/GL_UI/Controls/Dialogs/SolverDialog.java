@@ -13,7 +13,7 @@ import CB_UI_Base.Events.KeyboardFocusChangedEvent;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
@@ -111,7 +111,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		Label lbGleich = new Label(this.name + " lbGleich", CB_RectF.ScaleCenter(rec, 0.8f), "=");
 		lbGleich.setFont(Fonts.getNormal());
 		lbGleich.setText("=");
-		setBackground(SpriteCacheBase.activityBackground);
+		setBackground(Sprites.activityBackground);
 		scrollBox.addLast(lbGleich);
 		y -= TextFieldHeight * 0.8;
 

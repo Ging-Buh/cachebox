@@ -28,8 +28,8 @@ import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.ParentInfo;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.DialogElement;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.DialogElement;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.SizeF;
@@ -88,7 +88,7 @@ public abstract class Dialog extends CB_View_Base {
 			margin = UI_Size_Base.that.getMargin();
 
 		try {
-			if (SpriteCacheBase.Dialog.get(DialogElement.footer.ordinal()) == null)
+			if (Sprites.Dialog.get(DialogElement.footer.ordinal()) == null)
 				return;// noch nicht initialisiert!
 		} catch (Exception e) {
 			return;
@@ -96,11 +96,11 @@ public abstract class Dialog extends CB_View_Base {
 
 		if (mTitle9patch == null || mHeader9patch == null || mCenter9patch == null || mFooter9patch == null || lastNightMode != CB_UI_Base_Settings.nightMode.getValue()) {
 			// calcBase
-			pW = (int) (SpriteCacheBase.Dialog.get(DialogElement.footer.ordinal()).getWidth() / 8);
-			mTitle9patch = new NinePatch(SpriteCacheBase.Dialog.get(DialogElement.title.ordinal()), pW, (pW * 12 / 8), pW, pW);
-			mHeader9patch = new NinePatch(SpriteCacheBase.Dialog.get(DialogElement.header.ordinal()), pW, pW, pW, 3);
-			mCenter9patch = new NinePatch(SpriteCacheBase.Dialog.get(DialogElement.center.ordinal()), pW, pW, 1, 1);
-			mFooter9patch = new NinePatch(SpriteCacheBase.Dialog.get(DialogElement.footer.ordinal()), pW, pW, 3, pW);
+			pW = (int) (Sprites.Dialog.get(DialogElement.footer.ordinal()).getWidth() / 8);
+			mTitle9patch = new NinePatch(Sprites.Dialog.get(DialogElement.title.ordinal()), pW, (pW * 12 / 8), pW, pW);
+			mHeader9patch = new NinePatch(Sprites.Dialog.get(DialogElement.header.ordinal()), pW, pW, pW, 3);
+			mCenter9patch = new NinePatch(Sprites.Dialog.get(DialogElement.center.ordinal()), pW, pW, 1, 1);
+			mFooter9patch = new NinePatch(Sprites.Dialog.get(DialogElement.footer.ordinal()), pW, pW, 3, pW);
 			mTitleVersatz = pW;
 			lastNightMode = CB_UI_Base_Settings.nightMode.getValue();
 		}

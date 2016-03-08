@@ -46,7 +46,7 @@ import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Handler;
 import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
@@ -348,7 +348,7 @@ public class DescriptionView extends CB_View_Base {
 		float contentWidth = this.getWidth() * 0.95f;
 
 		LiveIcon = new Image(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight, "LIVE-ICON", false);
-		LiveIcon.setSprite(SpriteCacheBase.LiveBtn.get(0), false);
+		LiveIcon.setSprite(Sprites.LiveBtn.get(0), false);
 
 		this.addChild(LiveIcon);
 

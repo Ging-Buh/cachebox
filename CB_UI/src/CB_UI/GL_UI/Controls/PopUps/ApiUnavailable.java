@@ -17,7 +17,7 @@ package CB_UI.GL_UI.Controls.PopUps;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Controls.QuickButtonList;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Dialog;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Dialogs.Toast;
@@ -46,7 +46,7 @@ public class ApiUnavailable extends Toast {
 		this.setWrappedText(Translation.Get("API-offline"));
 
 		this.mIcon = new Image(0, 0, getWidth(), getHalfHeight(), "ImageIcon", false);
-		this.mIcon.setSprite(SpriteCacheBase.getThemedSprite("api-offline"), false);
+		this.mIcon.setSprite(Sprites.getSprite("api-offline"), false);
 		float top = QuickButtonList.that.getY();
 		this.setY(top - UI_Size_Base.that.getButtonHeight() - this.getHeight());
 		super.addChildToOverlay(mIcon);

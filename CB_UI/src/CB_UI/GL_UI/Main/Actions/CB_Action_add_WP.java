@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GL_UI.Views.WaypointView;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 
@@ -22,7 +22,7 @@ public class CB_Action_add_WP extends CB_Action {
 
 	@Override
 	public Sprite getIcon() {
-		return SpriteCacheBase.getThemedSprite("add-wp");
+		return Sprites.getSprite("add-wp");
 	}
 
 	@Override

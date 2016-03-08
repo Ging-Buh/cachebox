@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import CB_Locator.Map.Track;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Activitys.ColorPicker;
 import CB_UI_Base.GL_UI.Activitys.ColorPicker.IReturnListener;
@@ -137,7 +137,7 @@ public class TrackListViewItem extends ListViewItemBackground {
 		}
 
 		if (colorReck == null) {
-			colorReck = SpriteCacheBase.getThemedSprite("text-field-back");
+			colorReck = Sprites.getSprite("text-field-back");
 			colorReck.setBounds(lBounds.getX(), lBounds.getY(), lBounds.getWidth(), lBounds.getHeight());
 			colorReck.setColor(mRoute.getColor());
 		}
@@ -156,12 +156,12 @@ public class TrackListViewItem extends ListViewItemBackground {
 		}
 
 		if (chkOff == null) {
-			chkOff = SpriteCacheBase.getThemedSprite("check-off");
+			chkOff = Sprites.getSprite("check-off");
 			chkOff.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 		}
 
 		if (chkOn == null) {
-			chkOn = SpriteCacheBase.getThemedSprite("check-on");
+			chkOn = Sprites.getSprite("check-on");
 			chkOn.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 		}
 

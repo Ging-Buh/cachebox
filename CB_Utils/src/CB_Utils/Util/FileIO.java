@@ -285,13 +285,15 @@ public class FileIO {
             }
         });
 
-        for (File localFile : filelist)
-            files.add(localFile);
-
+        if (filelist != null) {
+            for (File localFile : filelist)
+                files.add(localFile);
+        }
+        
         File[] directories = directory.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String filename) {
-                return filename.contains("." + Endung);
+                return dir.isDirectory();
             }
         });
         for (File recursiveDir : directories) {

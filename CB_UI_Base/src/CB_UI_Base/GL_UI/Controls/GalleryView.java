@@ -25,9 +25,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Lists.CB_List;
 
 /**
- * 
  * @author Longri
- *
  */
 public class GalleryView extends H_ListView {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(GalleryView.class);
@@ -85,7 +83,7 @@ public class GalleryView extends H_ListView {
 				final float pos2 = mPosDefault.get(i + 1) - this.getHalfWidth() + (itemWidth / 2);
 
 				if (mPos > pos1 && mPos < pos2 || mPos < 0 || mPos > mAllSize + itemWidth) {
-					//search max Div 
+					//search max Div
 					final float div1 = Math.abs(mPos - pos1);
 					final float div2 = Math.abs(mPos - pos2);
 					final int idx = i;
@@ -127,7 +125,7 @@ public class GalleryView extends H_ListView {
 			final float pos2 = mPosDefault.get(i + 1);
 
 			if (mPos > pos1 && mPos < pos2) {
-				//search max Div 
+				//search max Div
 
 				final float div1 = Math.abs(mPos - pos1);
 				final float div2 = Math.abs(mPos - pos2);
@@ -244,7 +242,7 @@ public class GalleryView extends H_ListView {
 
 		int idx = 0;
 		for (int n = mBaseAdapter.getCount(); idx < n; idx++) {
-			if (mPosDefault.get(idx) == mPos)
+			if (mPosDefault.get(idx) > mPos - 50 && mPosDefault.get(idx) < mPos + 50)
 				break;
 		}
 
@@ -254,5 +252,4 @@ public class GalleryView extends H_ListView {
 			return null;
 		return mBaseAdapter.getView(idx);
 	}
-
 }

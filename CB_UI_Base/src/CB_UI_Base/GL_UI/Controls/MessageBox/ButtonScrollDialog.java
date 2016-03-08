@@ -26,8 +26,8 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Dialog;
 import CB_UI_Base.GL_UI.Controls.Image;
@@ -250,37 +250,37 @@ public class ButtonScrollDialog extends Dialog {
 
 		switch (msgIcon.ordinal()) {
 		case 0:
-			icon = SpriteCacheBase.Icons.get(IconName.info_32.ordinal());
+			icon = Sprites.getSprite(IconName.infoIcon.name());
 			break;
 		case 1:
-			icon = SpriteCacheBase.Icons.get(IconName.close_31.ordinal());
+			icon = Sprites.getSprite(IconName.closeIcon.name());
 			break;
 		case 2:
-			icon = SpriteCacheBase.Icons.get(IconName.warning_33.ordinal());
+			icon = Sprites.getSprite(IconName.warningIcon.name());
 			break;
 		case 3:
-			icon = SpriteCacheBase.Icons.get(IconName.close_31.ordinal());
+			icon = Sprites.getSprite(IconName.closeIcon.name());
 			break;
 		case 4:
-			icon = SpriteCacheBase.Icons.get(IconName.info_32.ordinal());
+			icon = Sprites.getSprite(IconName.infoIcon.name());
 			break;
 		case 5:
 			icon = null;
 			break;
 		case 6:
-			icon = SpriteCacheBase.Icons.get(IconName.help_34.ordinal());
+			icon = Sprites.getSprite(IconName.helpIcon.name());
 			break;
 		case 7:
-			icon = SpriteCacheBase.Icons.get(IconName.close_31.ordinal());
+			icon = Sprites.getSprite(IconName.closeIcon.name());
 			break;
 		case 8:
-			icon = SpriteCacheBase.Icons.get(IconName.warning_33.ordinal());
+			icon = Sprites.getSprite(IconName.warningIcon.name());
 			break;
 		case 9:
-			icon = SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal());
+			icon = Sprites.getSprite(IconName.dayGcLiveIcon.name());
 			break;
 		case 10:
-			icon = SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal());
+			icon = Sprites.getSprite(IconName.dayGcLiveIcon.name());
 			break;
 		default:
 			icon = null;

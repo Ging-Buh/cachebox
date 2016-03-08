@@ -3,8 +3,8 @@ package CB_UI.GL_UI.Main.Actions;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
@@ -22,7 +22,7 @@ public class CB_Action_ShowFilterSettings extends CB_Action {
 
 	@Override
 	public Sprite getIcon() {
-		return SpriteCacheBase.Icons.get(IconName.filter_13.ordinal());
+		return Sprites.getSprite(IconName.filter.name());
 	}
 
 	@Override

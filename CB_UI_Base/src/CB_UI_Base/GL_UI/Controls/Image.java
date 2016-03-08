@@ -28,6 +28,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.Animation.AnimationBase;
 import CB_UI_Base.GL_UI.Controls.Animation.WorkAnimation;
@@ -182,7 +184,7 @@ public class Image extends CB_View_Base {
 					GL.that.addRenderView(this, imageLoader.getAnimDelay());
 					isAsRenderViewRegisted.set(true);
 				}
-			} else if (imageLoader.inLoad) {
+		} else if (imageLoader.inLoad & !imageLoader.ImageLoadError) {
 				if (Wait == null) {
 					CB_RectF animationRec = new CB_RectF(0, 0, this.getWidth(), this.getHeight());
 					Wait = WorkAnimation.GetINSTANCE(animationRec);
@@ -191,6 +193,16 @@ public class Image extends CB_View_Base {
 				}
 
 				GL.that.renderOnce();
+		} else if (imageLoader.ImageLoadError) {
+		if (Wait != null) {
+			this.removeChild(Wait);
+
+			//set error image
+			this.setSprite(new Sprite(Sprites.getSprite(IconName.disabled.name())), false);
+
+		}
+
+		GL.that.renderOnce();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

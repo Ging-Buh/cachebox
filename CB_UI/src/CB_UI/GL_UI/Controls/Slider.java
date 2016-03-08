@@ -20,7 +20,7 @@ import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Handler;
 import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
@@ -91,7 +91,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 		quickButtonList = new QuickButtonList(new CB_RectF(0, this.getHeight() - QuickButtonMaxHeight, this.getWidth(), QuickButtonMaxHeight), "QuickButtonList");
 
 		mSlideBox = new Box(new CB_RectF(-15, 100, this.getWidth() + 30, UiSizes.that.getInfoSliderHeight()), "SlideBox");
-		mSlideBox.setBackground(SpriteCacheBase.ProgressBack);
+		mSlideBox.setBackground(Sprites.ProgressBack);
 		mLblCacheName = new Label(this.name + " mLblCacheName", new CB_RectF(20, 0, this.getWidth() - 30, mSlideBox.getHeight())).setFont(Fonts.getBig());
 		mLblCacheName.setPos(30, 0);
 		mLblCacheName.setHAlignment(HAlignment.SCROLL_CENTER);
@@ -371,7 +371,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 
 	@Override
 	protected void SkinIsChanged() {
-		mSlideBox.setBackground(SpriteCacheBase.ProgressBack);
+		mSlideBox.setBackground(Sprites.ProgressBack);
 
 	}
 

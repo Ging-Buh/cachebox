@@ -10,7 +10,7 @@ FXzwei
   orig: 84, 64
   offset: 0, 0
   index: -1
-btn-normal
+btnNormal
   rotate: false
   xy: 103, 90
   size: 84, 87

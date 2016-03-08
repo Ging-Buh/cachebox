@@ -15,10 +15,8 @@
  */
 package CB_UI.GL_UI.Views;
 
-import CB_Utils.fileProvider.File;
 import java.io.IOException;
 
-import CB_Utils.fileProvider.FileFactory;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.Files.FileType;
@@ -45,7 +43,8 @@ import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.SelectDB;
 import CB_UI.GL_UI.Activitys.SelectDB.IReturnListener;
 import CB_UI_Base.Enums.WrapType;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
@@ -58,6 +57,8 @@ import CB_Utils.Plattform;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileList;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 
 /**
  * @author ging-buh
@@ -165,7 +166,7 @@ public class splash extends MainViewBase {
 		descTextView.setHeight(descTextView.getTextHeight());
 		this.addLast(descTextView);
 
-		Drawable ProgressBack = new NinePatchDrawable(atlas.createPatch("btn-normal"));
+		Drawable ProgressBack = new NinePatchDrawable(atlas.createPatch(IconName.btnNormal.name()));
 		Drawable ProgressFill = new NinePatchDrawable(atlas.createPatch("progress"));
 
 		float ProgressHeight = Math.max(ProgressBack.getBottomHeight() + ProgressBack.getTopHeight(), ref / 1.5f);
@@ -287,7 +288,7 @@ public class splash extends MainViewBase {
 	 */
 	private void ini_Sprites() {
 		log.debug("ini_Sprites");
-		SpriteCacheBase.LoadSprites(false);
+		Sprites.loadSprites(false);
 	}
 
 	/**

@@ -1,14 +1,14 @@
 package CB_UI.GL_UI.Main.Actions;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.CreditsView;
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.MenuID;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
-
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowCreditsView extends CB_Action_ShowView {
 	public CB_Action_ShowCreditsView() {
@@ -31,7 +31,7 @@ public class CB_Action_ShowCreditsView extends CB_Action_ShowView {
 
 	@Override
 	public Sprite getIcon() {
-		return SpriteCacheBase.Icons.get(IconName.cb_49.ordinal());
+		return Sprites.getSprite(IconName.cb.name());
 	}
 
 	@Override

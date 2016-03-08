@@ -15,7 +15,7 @@
  */
 package CB_UI_Base.GL_UI.Controls;
 
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -32,11 +32,11 @@ public class RadioButton extends chkBox {
 	public RadioButton(String Name) {
 		super(Name);
 		radioBack = new Image(new CB_RectF(UI_Size_Base.that.getChkBoxSize()), name, false);
-		radioBack.setDrawable(SpriteCacheBase.radioBack);
+		radioBack.setDrawable(Sprites.radioBack);
 		this.addChild(radioBack);
 
 		radioSet = new Image(new CB_RectF(UI_Size_Base.that.getChkBoxSize()), name, false);
-		radioSet.setDrawable(SpriteCacheBase.radioOn);
+		radioSet.setDrawable(Sprites.radioOn);
 		this.addChild(radioSet);
 	}
 

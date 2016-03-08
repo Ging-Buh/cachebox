@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.H_ListView;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
@@ -42,7 +42,7 @@ public class CB_TabView extends CB_View_Base {
 		buttonListView = new H_ListView(new CB_RectF(0, 0, this.getWidth(), GL_UISizes.BottomButtonHeight), "ButtonList von " + this.getName());
 		buttonListView.setBaseAdapter(new CustomAdapter());
 		buttonListView.setUnDraggable();
-		buttonListView.setBackground(SpriteCacheBase.ButtonBack);
+		buttonListView.setBackground(Sprites.ButtonBack);
 		buttonListView.setDisposeFlag(false);
 		this.addChild(buttonListView);
 	}

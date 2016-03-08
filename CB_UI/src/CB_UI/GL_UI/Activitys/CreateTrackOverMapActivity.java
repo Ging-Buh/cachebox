@@ -17,6 +17,12 @@ package CB_UI.GL_UI.Activitys;
 
 import java.util.Date;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
+
 import CB_Core.CacheTypes;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
@@ -34,7 +40,7 @@ import CB_UI.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.ParentInfo;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
@@ -45,12 +51,6 @@ import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.MoveableList;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * A Activity for create a Track over the Map.<br>
@@ -161,7 +161,8 @@ public class CreateTrackOverMapActivity extends ActivityBase {
 			GL.that.RunOnGL(new IRunOnGL() {
 				@Override
 				public void run() {
-					Waypoint newWP = new Waypoint(String.valueOf(System.currentTimeMillis()), CacheTypes.MultiStage, "", coord.getLatitude(), coord.getLongitude(), -1, "", Translation.Get("wyptDefTitle"));
+					//Waypoint newWP = new Waypoint(String.valueOf(System.currentTimeMillis()), CacheTypes.MultiStage, "", coord.getLatitude(), coord.getLongitude(), -1, "", Translation.Get("wyptDefTitle"));
+					Waypoint newWP = new Waypoint(String.valueOf(System.currentTimeMillis()), CacheTypes.MultiStage, "", coord.getLatitude(), coord.getLongitude(), -1, "", String.valueOf(System.currentTimeMillis()));
 					addWP(newWP);
 				}
 			});
@@ -237,7 +238,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
 				WaypointRenderInfo wpi = new WaypointRenderInfo();
 				wpi.MapX = (float) MapX;
 				wpi.MapY = (float) MapY;
-				wpi.Icon = SpriteCacheBase.MapIcons.get(16);
+				wpi.Icon = Sprites.MapIcons.get(16);
 				wpi.Cache = null;
 				wpi.Waypoint = wp;
 				wpi.UnderlayIcon = null;
@@ -246,7 +247,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
 				if (selectedWP != null) {
 					if (selectedWP.getGcCode().equals(wp.getGcCode())) {
 						wpi.Selected = true;
-						wpi.UnderlayIcon = SpriteCacheBase.MapOverlay.get(1);
+						wpi.UnderlayIcon = Sprites.MapOverlay.get(1);
 					}
 				}
 				tmplist.add(wpi);
@@ -268,6 +269,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
 
 	}
 
+	@Override
 	public void dispose() {
 		super.dispose();
 		if (btnOk != null)

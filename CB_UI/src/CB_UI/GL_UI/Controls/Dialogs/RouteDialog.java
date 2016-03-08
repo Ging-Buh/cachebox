@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.ImageMultiToggleButton;
 import CB_UI_Base.GL_UI.Controls.Label;
@@ -58,9 +58,9 @@ public class RouteDialog extends ButtonDialog {
 		btCycleWay = new ImageMultiToggleButton(MTBRec, "btCycleWay");
 		btFootWay = new ImageMultiToggleButton(MTBRec, "btFootWay");
 
-		btMotoWay.setImage(new SpriteDrawable(SpriteCacheBase.getThemedSprite("pictureBox2")));
-		btCycleWay.setImage(new SpriteDrawable(SpriteCacheBase.getThemedSprite("pictureBox1")));
-		btFootWay.setImage(new SpriteDrawable(SpriteCacheBase.getThemedSprite("pictureBox3")));
+		btMotoWay.setImage(new SpriteDrawable(Sprites.getSprite("pictureBox2")));
+		btCycleWay.setImage(new SpriteDrawable(Sprites.getSprite("pictureBox1")));
+		btFootWay.setImage(new SpriteDrawable(Sprites.getSprite("pictureBox3")));
 
 		btMotoWay.setX(0);
 		btCycleWay.setX(btMotoWay.getMaxX());

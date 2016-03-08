@@ -12,7 +12,8 @@ import CB_Core.CacheTypes;
 import CB_Core.FilterProperties;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
@@ -242,27 +243,27 @@ public class FilterSetListView extends V_ListView {
 
 		// add General
 		FilterSetListViewItem general = addFilterSetCollapseItem(null, Translation.Get("General"), COLLAPSE_BUTTON_ITEM);
-		NotAvailable = general.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("disabled"), Translation.Get("disabled"), THREE_STATE_ITEM));
-		Archived = general.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("not-available"), Translation.Get("archived"), THREE_STATE_ITEM));
-		Finds = general.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("log0icon"), Translation.Get("myfinds"), THREE_STATE_ITEM));
-		Own = general.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("star"), Translation.Get("myowncaches"), THREE_STATE_ITEM));
-		ContainsTravelBugs = general.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("tb"), Translation.Get("withtrackables"), THREE_STATE_ITEM));
-		Favorites = general.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("favorit"), Translation.Get("Favorites"), THREE_STATE_ITEM));
-		HasUserData = general.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("userdata"), Translation.Get("hasuserdata"), THREE_STATE_ITEM));
-		ListingChanged = general.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("warning-icon"), Translation.Get("ListingChanged"), THREE_STATE_ITEM));
-		WithManualWaypoint = general.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("manualwaypoint"), Translation.Get("manualwaypoint"), THREE_STATE_ITEM));
-		hasCorrectedCoordinates = general.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("hasCorrectedCoordinates"), Translation.Get("hasCorrectedCoordinates"), THREE_STATE_ITEM));
+		NotAvailable = general.addChild(addFilterSetItem(Sprites.getSprite("disabled"), Translation.Get("disabled"), THREE_STATE_ITEM));
+		Archived = general.addChild(addFilterSetItem(Sprites.getSprite("not-available"), Translation.Get("archived"), THREE_STATE_ITEM));
+		Finds = general.addChild(addFilterSetItem(Sprites.getSprite("log0icon"), Translation.Get("myfinds"), THREE_STATE_ITEM));
+		Own = general.addChild(addFilterSetItem(Sprites.getSprite("star"), Translation.Get("myowncaches"), THREE_STATE_ITEM));
+		ContainsTravelBugs = general.addChild(addFilterSetItem(Sprites.getSprite("tb"), Translation.Get("withtrackables"), THREE_STATE_ITEM));
+		Favorites = general.addChild(addFilterSetItem(Sprites.getSprite("favorit"), Translation.Get("Favorites"), THREE_STATE_ITEM));
+		HasUserData = general.addChild(addFilterSetItem(Sprites.getSprite("userdata"), Translation.Get("hasuserdata"), THREE_STATE_ITEM));
+		ListingChanged = general.addChild(addFilterSetItem(Sprites.getSprite(IconName.warningIcon.name()), Translation.Get("ListingChanged"), THREE_STATE_ITEM));
+		WithManualWaypoint = general.addChild(addFilterSetItem(Sprites.getSprite(IconName.manualwaypoint.name()), Translation.Get("manualwaypoint"), THREE_STATE_ITEM));
+		hasCorrectedCoordinates = general.addChild(addFilterSetItem(Sprites.getSprite("hasCorrectedCoordinates"), Translation.Get("hasCorrectedCoordinates"), THREE_STATE_ITEM));
 
 		// add D/T
 		FilterSetListViewItem dt = addFilterSetCollapseItem(null, "D / T" + String.format("%n") + "GC-Vote", COLLAPSE_BUTTON_ITEM);
-		minDifficulty = dt.addChild(addFilterSetItem(SpriteCacheBase.Stars.toArray(), Translation.Get("minDifficulty"), NUMERIC_ITEM, 1, 5, 1, 0.5f));
-		maxDifficulty = dt.addChild(addFilterSetItem(SpriteCacheBase.Stars.toArray(), Translation.Get("maxDifficulty"), NUMERIC_ITEM, 1, 5, 5, 0.5f));
-		minTerrain = dt.addChild(addFilterSetItem(SpriteCacheBase.Stars.toArray(), Translation.Get("minTerrain"), NUMERIC_ITEM, 1, 5, 1, 0.5f));
-		maxTerrain = dt.addChild(addFilterSetItem(SpriteCacheBase.Stars.toArray(), Translation.Get("maxTerrain"), NUMERIC_ITEM, 1, 5, 5, 0.5f));
-		minContainerSize = dt.addChild(addFilterSetItem(SpriteCacheBase.SizesIcons.toArray(), Translation.Get("minContainerSize"), NUMERIC_ITEM, 0, 4, 0, 1));
-		maxContainerSize = dt.addChild(addFilterSetItem(SpriteCacheBase.SizesIcons.toArray(), Translation.Get("maxContainerSize"), NUMERIC_ITEM, 0, 4, 4, 1));
-		minRating = dt.addChild(addFilterSetItem(SpriteCacheBase.Stars.toArray(), Translation.Get("minRating"), NUMERIC_ITEM, 0, 5, 0, 0.5f));
-		maxRating = dt.addChild(addFilterSetItem(SpriteCacheBase.Stars.toArray(), Translation.Get("maxRating"), NUMERIC_ITEM, 0, 5, 5, 0.5f));
+		minDifficulty = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.Get("minDifficulty"), NUMERIC_ITEM, 1, 5, 1, 0.5f));
+		maxDifficulty = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.Get("maxDifficulty"), NUMERIC_ITEM, 1, 5, 5, 0.5f));
+		minTerrain = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.Get("minTerrain"), NUMERIC_ITEM, 1, 5, 1, 0.5f));
+		maxTerrain = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.Get("maxTerrain"), NUMERIC_ITEM, 1, 5, 5, 0.5f));
+		minContainerSize = dt.addChild(addFilterSetItem(Sprites.SizesIcons.toArray(), Translation.Get("minContainerSize"), NUMERIC_ITEM, 0, 4, 0, 1));
+		maxContainerSize = dt.addChild(addFilterSetItem(Sprites.SizesIcons.toArray(), Translation.Get("maxContainerSize"), NUMERIC_ITEM, 0, 4, 4, 1));
+		minRating = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.Get("minRating"), NUMERIC_ITEM, 0, 5, 0, 0.5f));
+		maxRating = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.Get("maxRating"), NUMERIC_ITEM, 0, 5, 5, 0.5f));
 
 		// add CacheTypes
 		types = addFilterSetCollapseItem(null, "Cache Types", COLLAPSE_BUTTON_ITEM);
@@ -270,25 +271,25 @@ public class FilterSetListView extends V_ListView {
 			types.addChild(addFilterSetItem(CacheTypes.caches()[i]));
 		}
 		/**
-		types.addChild(addFilterSetItem(CacheTypes.Traditional, SpriteCacheBase.BigIcons.get(0), "Traditional", CHECK_ITEM));
-		types.addChild(addFilterSetItem(CacheTypes.Multi, SpriteCacheBase.BigIcons.get(1), "Multi-Cache", CHECK_ITEM));
-		types.addChild(addFilterSetItem(CacheTypes.Mystery, SpriteCacheBase.BigIcons.get(2), "Mystery", CHECK_ITEM));
-		types.addChild(addFilterSetItem(CacheTypes.Camera, SpriteCacheBase.BigIcons.get(3), "Webcam Cache", CHECK_ITEM));
-		types.addChild(addFilterSetItem(CacheTypes.Earth, SpriteCacheBase.BigIcons.get(4), "Earthcache", CHECK_ITEM));
-		types.addChild(addFilterSetItem(CacheTypes.Event, SpriteCacheBase.BigIcons.get(5), "Event", CHECK_ITEM));
-		types.addChild(addFilterSetItem(CacheTypes.MegaEvent, SpriteCacheBase.BigIcons.get(6), "Mega Event", CHECK_ITEM));
-		types.addChild(addFilterSetItem(CacheTypes.CITO, SpriteCacheBase.BigIcons.get(7), "Cache In Trash Out", CHECK_ITEM));
-		types.addChild(addFilterSetItem(CacheTypes.Virtual, SpriteCacheBase.BigIcons.get(8), "Virtual Cache", CHECK_ITEM));
-		types.addChild(addFilterSetItem(CacheTypes.Letterbox, SpriteCacheBase.BigIcons.get(9), "Letterbox", CHECK_ITEM));
-		types.addChild(addFilterSetItem(CacheTypes.Wherigo, SpriteCacheBase.BigIcons.get(10), "Wherigo", CHECK_ITEM));
-		types.addChild(addFilterSetItem(CacheTypes.Munzee, SpriteCacheBase.BigIcons.get(25), "Munzee", CHECK_ITEM));
-		types.addChild(addFilterSetItem(CacheTypes.Giga, SpriteCacheBase.MapIcons.get(27), "Giga", CHECK_ITEM));
+		types.addChild(addFilterSetItem(CacheTypes.Traditional, Sprites.BigIcons.get(0), "Traditional", CHECK_ITEM));
+		types.addChild(addFilterSetItem(CacheTypes.Multi, Sprites.BigIcons.get(1), "Multi-Cache", CHECK_ITEM));
+		types.addChild(addFilterSetItem(CacheTypes.Mystery, Sprites.BigIcons.get(2), "Mystery", CHECK_ITEM));
+		types.addChild(addFilterSetItem(CacheTypes.Camera, Sprites.BigIcons.get(3), "Webcam Cache", CHECK_ITEM));
+		types.addChild(addFilterSetItem(CacheTypes.Earth, Sprites.BigIcons.get(4), "Earthcache", CHECK_ITEM));
+		types.addChild(addFilterSetItem(CacheTypes.Event, Sprites.BigIcons.get(5), "Event", CHECK_ITEM));
+		types.addChild(addFilterSetItem(CacheTypes.MegaEvent, Sprites.BigIcons.get(6), "Mega Event", CHECK_ITEM));
+		types.addChild(addFilterSetItem(CacheTypes.CITO, Sprites.BigIcons.get(7), "Cache In Trash Out", CHECK_ITEM));
+		types.addChild(addFilterSetItem(CacheTypes.Virtual, Sprites.BigIcons.get(8), "Virtual Cache", CHECK_ITEM));
+		types.addChild(addFilterSetItem(CacheTypes.Letterbox, Sprites.BigIcons.get(9), "Letterbox", CHECK_ITEM));
+		types.addChild(addFilterSetItem(CacheTypes.Wherigo, Sprites.BigIcons.get(10), "Wherigo", CHECK_ITEM));
+		types.addChild(addFilterSetItem(CacheTypes.Munzee, Sprites.BigIcons.get(25), "Munzee", CHECK_ITEM));
+		types.addChild(addFilterSetItem(CacheTypes.Giga, Sprites.MapIcons.get(27), "Giga", CHECK_ITEM));
 		**/
 
 		// add Attributes
 		attribs = addFilterSetCollapseItem(null, "Attributes", COLLAPSE_BUTTON_ITEM);
 		for (int i = 1; i < Attributes.values().length; i++) {
-			attribs.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("att-" + i + "-1Icon"), Translation.Get("att_" + i + "_1"), THREE_STATE_ITEM));
+			attribs.addChild(addFilterSetItem(Sprites.getSprite("att-" + i + "-1Icon"), Translation.Get("att_" + i + "_1"), THREE_STATE_ITEM));
 		}
 
 	}
@@ -328,7 +329,7 @@ public class FilterSetListView extends V_ListView {
 	}
 
 	private FilterSetListViewItem addFilterSetItem(CacheTypes cacheType) {
-		Sprite icon = SpriteCacheBase.getThemedSprite("big" + cacheType.name());
+		Sprite icon = Sprites.getSprite("big" + cacheType.name());
 		String name = cacheType.name();
 		int itemType = CHECK_ITEM;
 		if (lFilterSets == null) {

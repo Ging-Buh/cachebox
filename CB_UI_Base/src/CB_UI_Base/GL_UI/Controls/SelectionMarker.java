@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Math.Point;
@@ -47,15 +47,15 @@ public class SelectionMarker extends CB_View_Base {
 	}
 
 	private void init() {
-		this.marker = SpriteCacheBase.selection_set;
+		this.marker = Sprites.selection_set;
 		switch (type) {
 		case Center:
 			break;
 		case Left:
-			marker = SpriteCacheBase.selection_left;
+			marker = Sprites.selection_left;
 			break;
 		case Right:
-			marker = SpriteCacheBase.selection_right;
+			marker = Sprites.selection_right;
 			break;
 		}
 

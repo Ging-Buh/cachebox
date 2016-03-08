@@ -11,7 +11,7 @@ import CB_UI_Base.Energy;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.ImageLoader;
 import CB_UI_Base.GL_UI.Controls.RadioButton;
@@ -47,7 +47,7 @@ public class TestView extends CB_View_Base {
 
 		this.setClickable(true);
 
-		setBackground(SpriteCacheBase.ListBack);
+		setBackground(Sprites.ListBack);
 
 		//	CB_RectF TextFieldRec = new CB_RectF(0, this.getHeight() - (UI_Size_Base.that.getButtonHeight() * 3), UI_Size_Base.that.getButtonWidth() * 6, UI_Size_Base.that.getButtonHeight() * 3);
 		//

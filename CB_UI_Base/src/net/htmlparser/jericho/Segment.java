@@ -54,32 +54,32 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 *            the character position in the source where this segment {@linkplain #getEnd() ends}, exclusive.
 	 */
 	public Segment(final Source source, final int begin, final int end) {
-		if (begin == -1 || end == -1 || begin > end)
-			throw new IllegalArgumentException();
-		this.begin = begin;
-		this.end = end;
-		if (source == null)
-			throw new IllegalArgumentException("source argument must not be null");
-		this.source = source;
+	if (begin == -1 || end == -1 || begin > end)
+		throw new IllegalArgumentException();
+	this.begin = begin;
+	this.end = end;
+	if (source == null)
+		throw new IllegalArgumentException("source argument must not be null");
+	this.source = source;
 	}
 
 	// Only called from Source constructor
 	Segment(final int length) {
-		begin = 0;
-		this.end = length;
-		source = (Source) this;
+	begin = 0;
+	this.end = length;
+	source = (Source) this;
 	}
 
 	// Only used for creating dummy flag instances of this type (see Tag.NOT_CACHED and Element.NOT_CACHED)
 	Segment() {
-		this(0, 0);
+	this(0, 0);
 	}
 
 	// Only used for creating dummy flag instances of this type (see Segment() constructor and StreamedSource.START_SEGMENT)
 	Segment(final int begin, final int end) {
-		this.begin = begin;
-		this.end = end;
-		source = null;
+	this.begin = begin;
+	this.end = end;
+	source = null;
 	}
 
 	/**
@@ -90,9 +90,9 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @return the {@link Source} document containing this segment.
 	 */
 	public final Source getSource() {
-		if (source.isStreamed())
-			throw new UnsupportedOperationException("Source object is not available when using StreamedSource");
-		return source;
+	if (source.isStreamed())
+		throw new UnsupportedOperationException("Source object is not available when using StreamedSource");
+	return source;
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @return the character position in the {@link Source} document at which this segment begins, inclusive.
 	 */
 	public final int getBegin() {
-		return begin;
+	return begin;
 	}
 
 	/**
@@ -116,7 +116,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @see #getBegin()
 	 */
 	public final int getEnd() {
-		return end;
+	return end;
 	}
 
 	/**
@@ -131,12 +131,12 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 */
 	@Override
 	public final boolean equals(final Object object) {
-		if (this == object)
-			return true;
-		if (object == null || !(object instanceof Segment))
-			return false;
-		final Segment segment = (Segment) object;
-		return segment.begin == begin && segment.end == end && segment.source == source;
+	if (this == object)
+		return true;
+	if (object == null || !(object instanceof Segment))
+		return false;
+	final Segment segment = (Segment) object;
+	return segment.begin == begin && segment.end == end && segment.source == source;
 	}
 
 	/**
@@ -148,7 +148,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 */
 	@Override
 	public int hashCode() {
-		return begin + end;
+	return begin + end;
 	}
 
 	/**
@@ -158,7 +158,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 */
 	@Override
 	public int length() {
-		return end - begin;
+	return end - begin;
 	}
 
 	/**
@@ -174,7 +174,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @return <code>true</code> if this <code>Segment</code> encloses the specified <code>Segment</code>, otherwise <code>false</code>.
 	 */
 	public final boolean encloses(final Segment segment) {
-		return begin <= segment.begin && end >= segment.end;
+	return begin <= segment.begin && end >= segment.end;
 	}
 
 	/**
@@ -188,7 +188,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 *         <code>false</code>.
 	 */
 	public final boolean encloses(final int pos) {
-		return begin <= pos && pos < end;
+	return begin <= pos && pos < end;
 	}
 
 	/**
@@ -201,7 +201,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 */
 	@Override
 	public String toString() {
-		return source.subSequence(begin, end).toString();
+	return source.subSequence(begin, end).toString();
 	}
 
 	/**
@@ -214,7 +214,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @see #getTextExtractor()
 	 */
 	public Renderer getRenderer() {
-		return new Renderer(this);
+	return new Renderer(this);
 	}
 
 	/**
@@ -228,7 +228,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @see #getRenderer()
 	 */
 	public TextExtractor getTextExtractor() {
-		return new TextExtractor(this);
+	return new TextExtractor(this);
 	}
 
 	/**
@@ -279,7 +279,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 *         href="Source.html#PlainText">plain text</a> segment contained within this segment.
 	 */
 	public Iterator<Segment> getNodeIterator() {
-		return new NodeIterator(this);
+	return new NodeIterator(this);
 	}
 
 	/**
@@ -293,7 +293,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @return a list of all {@link Tag} objects that are {@linkplain #encloses(Segment) enclosed} by this segment.
 	 */
 	public List<Tag> getAllTags() {
-		return getAllTags(null);
+	return getAllTags(null);
 	}
 
 	/**
@@ -311,15 +311,15 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @see #getAllStartTags(StartTagType)
 	 */
 	public List<Tag> getAllTags(final TagType tagType) {
-		Tag tag = checkTagEnclosure(Tag.getNextTag(source, begin, tagType));
-		if (tag == null)
-			return Collections.emptyList();
-		final ArrayList<Tag> list = new ArrayList<Tag>();
-		do {
-			list.add(tag);
-			tag = checkTagEnclosure(tag.getNextTag(tagType));
-		} while (tag != null);
-		return list;
+	Tag tag = checkTagEnclosure(Tag.getNextTag(source, begin, tagType));
+	if (tag == null)
+		return Collections.emptyList();
+	final ArrayList<Tag> list = new ArrayList<Tag>();
+	do {
+		list.add(tag);
+		tag = checkTagEnclosure(tag.getNextTag(tagType));
+	} while (tag != null);
+	return list;
 	}
 
 	/**
@@ -333,15 +333,15 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @return a list of all {@link StartTag} objects that are {@linkplain #encloses(Segment) enclosed} by this segment.
 	 */
 	public List<StartTag> getAllStartTags() {
-		StartTag startTag = checkEnclosure(StartTag.getNext(source, begin));
-		if (startTag == null)
-			return Collections.emptyList();
-		final ArrayList<StartTag> list = new ArrayList<StartTag>();
-		do {
-			list.add(startTag);
-			startTag = checkEnclosure(startTag.getNextStartTag());
-		} while (startTag != null);
-		return list;
+	StartTag startTag = checkEnclosure(StartTag.getNext(source, begin));
+	if (startTag == null)
+		return Collections.emptyList();
+	final ArrayList<StartTag> list = new ArrayList<StartTag>();
+	do {
+		list.add(startTag);
+		startTag = checkEnclosure(startTag.getNextStartTag());
+	} while (startTag != null);
+	return list;
 	}
 
 	/**
@@ -358,17 +358,17 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 *         {@linkplain #encloses(Segment) enclosed} by this segment.
 	 */
 	public List<StartTag> getAllStartTags(final StartTagType startTagType) {
-		if (startTagType == null)
-			return getAllStartTags();
-		StartTag startTag = (StartTag) checkTagEnclosure(Tag.getNextTag(source, begin, startTagType));
-		if (startTag == null)
-			return Collections.emptyList();
-		final ArrayList<StartTag> list = new ArrayList<StartTag>();
-		do {
-			list.add(startTag);
-			startTag = (StartTag) checkTagEnclosure(startTag.getNextTag(startTagType));
-		} while (startTag != null);
-		return list;
+	if (startTagType == null)
+		return getAllStartTags();
+	StartTag startTag = (StartTag) checkTagEnclosure(Tag.getNextTag(source, begin, startTagType));
+	if (startTag == null)
+		return Collections.emptyList();
+	final ArrayList<StartTag> list = new ArrayList<StartTag>();
+	do {
+		list.add(startTag);
+		startTag = (StartTag) checkTagEnclosure(startTag.getNextTag(startTagType));
+	} while (startTag != null);
+	return list;
 	}
 
 	/**
@@ -389,19 +389,19 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 *         {@linkplain StartTag#getName() name} that are {@linkplain #encloses(Segment) enclosed} by this segment.
 	 */
 	public List<StartTag> getAllStartTags(String name) {
-		if (name == null)
-			return getAllStartTags();
-		final boolean isXMLTagName = Tag.isXMLName(name);
-		name = name.toLowerCase();
-		StartTag startTag = checkEnclosure(StartTag.getNext(source, begin, name, StartTagType.NORMAL, isXMLTagName));
-		if (startTag == null)
-			return Collections.emptyList();
-		final ArrayList<StartTag> list = new ArrayList<StartTag>();
-		do {
-			list.add(startTag);
-			startTag = checkEnclosure(StartTag.getNext(source, startTag.begin + 1, name, StartTagType.NORMAL, isXMLTagName));
-		} while (startTag != null);
-		return list;
+	if (name == null)
+		return getAllStartTags();
+	final boolean isXMLTagName = Tag.isXMLName(name);
+	name = name.toLowerCase();
+	StartTag startTag = checkEnclosure(StartTag.getNext(source, begin, name, StartTagType.NORMAL, isXMLTagName));
+	if (startTag == null)
+		return Collections.emptyList();
+	final ArrayList<StartTag> list = new ArrayList<StartTag>();
+	do {
+		list.add(startTag);
+		startTag = checkEnclosure(StartTag.getNext(source, startTag.begin + 1, name, StartTagType.NORMAL, isXMLTagName));
+	} while (startTag != null);
+	return list;
 	}
 
 	/**
@@ -421,15 +421,15 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @see #getAllStartTags(String attributeName, Pattern valueRegexPattern)
 	 */
 	public List<StartTag> getAllStartTags(final String attributeName, final String value, final boolean valueCaseSensitive) {
-		StartTag startTag = checkEnclosure(source.getNextStartTag(begin, attributeName, value, valueCaseSensitive));
-		if (startTag == null)
-			return Collections.emptyList();
-		final ArrayList<StartTag> list = new ArrayList<StartTag>();
-		do {
-			list.add(startTag);
-			startTag = checkEnclosure(source.getNextStartTag(startTag.begin + 1, attributeName, value, valueCaseSensitive));
-		} while (startTag != null);
-		return list;
+	StartTag startTag = checkEnclosure(source.getNextStartTag(begin, attributeName, value, valueCaseSensitive));
+	if (startTag == null)
+		return Collections.emptyList();
+	final ArrayList<StartTag> list = new ArrayList<StartTag>();
+	do {
+		list.add(startTag);
+		startTag = checkEnclosure(source.getNextStartTag(startTag.begin + 1, attributeName, value, valueCaseSensitive));
+	} while (startTag != null);
+	return list;
 	}
 
 	/**
@@ -451,15 +451,15 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @see #getAllStartTags(String attributeName, String value, boolean valueCaseSensitive)
 	 */
 	public List<StartTag> getAllStartTags(final String attributeName, final Pattern valueRegexPattern) {
-		StartTag startTag = checkEnclosure(source.getNextStartTag(begin, attributeName, valueRegexPattern));
-		if (startTag == null)
-			return Collections.emptyList();
-		final ArrayList<StartTag> list = new ArrayList<StartTag>();
-		do {
-			list.add(startTag);
-			startTag = checkEnclosure(source.getNextStartTag(startTag.begin + 1, attributeName, valueRegexPattern));
-		} while (startTag != null);
-		return list;
+	StartTag startTag = checkEnclosure(source.getNextStartTag(begin, attributeName, valueRegexPattern));
+	if (startTag == null)
+		return Collections.emptyList();
+	final ArrayList<StartTag> list = new ArrayList<StartTag>();
+	do {
+		list.add(startTag);
+		startTag = checkEnclosure(source.getNextStartTag(startTag.begin + 1, attributeName, valueRegexPattern));
+	} while (startTag != null);
+	return list;
 	}
 
 	/**
@@ -477,7 +477,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 *         segment.
 	 */
 	public List<StartTag> getAllStartTagsByClass(final String className) {
-		return getAllStartTags("class", getClassPattern(className));
+	return getAllStartTags("class", getClassPattern(className));
 	}
 
 	/**
@@ -501,24 +501,24 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @see Element#getParentElement()
 	 */
 	public List<Element> getChildElements() {
-		if (length() == 0)
-			return Collections.emptyList();
-		List<Element> childElements = new ArrayList<Element>();
-		int pos = begin;
-		while (true) {
-			final StartTag childStartTag = source.getNextStartTag(pos);
-			if (childStartTag == null || childStartTag.begin >= end)
-				break;
-			if (!Config.IncludeServerTagsInElementHierarchy && childStartTag.getTagType().isServerTag()) {
-				pos = childStartTag.end;
-				continue;
-			}
-			final Element childElement = childStartTag.getElement();
-			childElements.add(childElement);
-			childElement.getChildElements();
-			pos = childElement.end;
+	if (length() == 0)
+		return Collections.emptyList();
+	List<Element> childElements = new ArrayList<Element>();
+	int pos = begin;
+	while (true) {
+		final StartTag childStartTag = source.getNextStartTag(pos);
+		if (childStartTag == null || childStartTag.begin >= end)
+		break;
+		if (!Config.IncludeServerTagsInElementHierarchy && childStartTag.getTagType().isServerTag()) {
+		pos = childStartTag.end;
+		continue;
 		}
-		return childElements;
+		final Element childElement = childStartTag.getElement();
+		childElements.add(childElement);
+		childElement.getChildElements();
+		pos = childElement.end;
+	}
+	return childElements;
 	}
 
 	/**
@@ -534,7 +534,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @return a list of all {@link Element} objects that are {@linkplain #encloses(Segment) enclosed} by this segment.
 	 */
 	public List<Element> getAllElements() {
-		return getAllElements(getAllStartTags());
+	return getAllElements(getAllStartTags());
 	}
 
 	/**
@@ -558,7 +558,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 *         segment.
 	 */
 	public List<Element> getAllElements(String name) {
-		return getAllElements(getAllStartTags(name));
+	return getAllElements(getAllStartTags(name));
 	}
 
 	/**
@@ -576,9 +576,9 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 *         {@linkplain #encloses(Segment) enclosed} by this segment.
 	 */
 	public List<Element> getAllElements(final StartTagType startTagType) {
-		if (startTagType == null)
-			throw new IllegalArgumentException("startTagType argument must not be null");
-		return getAllElements(getAllStartTags(startTagType));
+	if (startTagType == null)
+		throw new IllegalArgumentException("startTagType argument must not be null");
+	return getAllElements(getAllStartTags(startTagType));
 	}
 
 	/**
@@ -602,7 +602,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @see #getAllElements(String attributeName, Pattern valueRegexPattern)
 	 */
 	public List<Element> getAllElements(final String attributeName, final String value, final boolean valueCaseSensitive) {
-		return getAllElements(getAllStartTags(attributeName, value, valueCaseSensitive));
+	return getAllElements(getAllStartTags(attributeName, value, valueCaseSensitive));
 	}
 
 	/**
@@ -629,7 +629,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @see #getAllElements(String attributeName, String value, boolean valueCaseSensitive)
 	 */
 	public List<Element> getAllElements(final String attributeName, final Pattern valueRegexPattern) {
-		return getAllElements(getAllStartTags(attributeName, valueRegexPattern));
+	return getAllElements(getAllStartTags(attributeName, valueRegexPattern));
 	}
 
 	/**
@@ -650,7 +650,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 *         segment.
 	 */
 	public List<Element> getAllElementsByClass(final String className) {
-		return getAllElements(getAllStartTagsByClass(className));
+	return getAllElements(getAllStartTagsByClass(className));
 	}
 
 	/**
@@ -659,15 +659,15 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @return a list of all {@link CharacterReference} objects that are {@linkplain #encloses(Segment) enclosed} by this segment.
 	 */
 	public List<CharacterReference> getAllCharacterReferences() {
-		CharacterReference characterReference = getNextCharacterReference(begin);
-		if (characterReference == null)
-			return Collections.emptyList();
-		final ArrayList<CharacterReference> list = new ArrayList<CharacterReference>();
-		do {
-			list.add(characterReference);
-			characterReference = getNextCharacterReference(characterReference.end);
-		} while (characterReference != null);
-		return list;
+	CharacterReference characterReference = getNextCharacterReference(begin);
+	if (characterReference == null)
+		return Collections.emptyList();
+	final ArrayList<CharacterReference> list = new ArrayList<CharacterReference>();
+	do {
+		list.add(characterReference);
+		characterReference = getNextCharacterReference(characterReference.end);
+	} while (characterReference != null);
+	return list;
 	}
 
 	/**
@@ -777,7 +777,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @see #getStyleURISegments()
 	 */
 	public List<Attribute> getURIAttributes() {
-		return URIAttributes.getList(this);
+	return URIAttributes.getList(this);
 	}
 
 	/**
@@ -798,7 +798,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @see #getURIAttributes()
 	 */
 	public List<Segment> getStyleURISegments() {
-		return URIAttributes.getStyleURISegments(this);
+	return URIAttributes.getStyleURISegments(this);
 	}
 
 	/**
@@ -810,7 +810,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @return the first {@link StartTag} {@linkplain #encloses(Segment) enclosed} by this segment, or <code>null</code> if none exists.
 	 */
 	public final StartTag getFirstStartTag() {
-		return checkEnclosure(source.getNextStartTag(begin));
+	return checkEnclosure(source.getNextStartTag(begin));
 	}
 
 	/**
@@ -827,7 +827,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 *         segment, or <code>null</code> if none exists.
 	 */
 	public final StartTag getFirstStartTag(StartTagType startTagType) {
-		return checkEnclosure(source.getNextStartTag(begin, startTagType));
+	return checkEnclosure(source.getNextStartTag(begin, startTagType));
 	}
 
 	/**
@@ -844,7 +844,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 *         or <code>null</code> if none exists.
 	 */
 	public final StartTag getFirstStartTag(String name) {
-		return checkEnclosure(source.getNextStartTag(begin, name));
+	return checkEnclosure(source.getNextStartTag(begin, name));
 	}
 
 	/**
@@ -866,7 +866,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @see #getFirstStartTag(String attributeName, Pattern valueRegexPattern)
 	 */
 	public final StartTag getFirstStartTag(String attributeName, String value, boolean valueCaseSensitive) {
-		return checkEnclosure(source.getNextStartTag(begin, attributeName, value, valueCaseSensitive));
+	return checkEnclosure(source.getNextStartTag(begin, attributeName, value, valueCaseSensitive));
 	}
 
 	/**
@@ -886,7 +886,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @see #getFirstStartTag(String attributeName, String value, boolean valueCaseSensitive)
 	 */
 	public final StartTag getFirstStartTag(final String attributeName, final Pattern valueRegexPattern) {
-		return checkEnclosure(source.getNextStartTag(begin, attributeName, valueRegexPattern));
+	return checkEnclosure(source.getNextStartTag(begin, attributeName, valueRegexPattern));
 	}
 
 	/**
@@ -902,7 +902,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 *         <code>null</code> if none exists.
 	 */
 	public final StartTag getFirstStartTagByClass(final String className) {
-		return checkEnclosure(source.getNextStartTagByClass(begin, className));
+	return checkEnclosure(source.getNextStartTagByClass(begin, className));
 	}
 
 	/**
@@ -916,14 +916,14 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @return the first {@link Element} {@linkplain #encloses(Segment) enclosed} by this segment, or <code>null</code> if none exists.
 	 */
 	public final Element getFirstElement() {
-		StartTag startTag = checkEnclosure(StartTag.getNext(source, begin));
-		while (startTag != null) {
-			final Element element = startTag.getElement();
-			if (element.end <= end)
-				return element;
-			startTag = checkEnclosure(startTag.getNextStartTag());
-		}
-		return null;
+	StartTag startTag = checkEnclosure(StartTag.getNext(source, begin));
+	while (startTag != null) {
+		final Element element = startTag.getElement();
+		if (element.end <= end)
+		return element;
+		startTag = checkEnclosure(startTag.getNextStartTag());
+	}
+	return null;
 	}
 
 	/**
@@ -943,18 +943,18 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 *         {@linkplain #encloses(Segment) enclosed} by this segment, or <code>null</code> if none exists.
 	 */
 	public final Element getFirstElement(String name) {
-		if (name == null)
-			return getFirstElement();
-		final boolean isXMLTagName = Tag.isXMLName(name);
-		name = name.toLowerCase();
-		StartTag startTag = checkEnclosure(StartTag.getNext(source, begin, name, StartTagType.NORMAL, isXMLTagName));
-		while (startTag != null) {
-			final Element element = startTag.getElement();
-			if (element.end <= end)
-				return element;
-			startTag = checkEnclosure(StartTag.getNext(source, startTag.begin + 1, name, StartTagType.NORMAL, isXMLTagName));
-		}
-		return null;
+	if (name == null)
+		return getFirstElement();
+	final boolean isXMLTagName = Tag.isXMLName(name);
+	name = name.toLowerCase();
+	StartTag startTag = checkEnclosure(StartTag.getNext(source, begin, name, StartTagType.NORMAL, isXMLTagName));
+	while (startTag != null) {
+		final Element element = startTag.getElement();
+		if (element.end <= end)
+		return element;
+		startTag = checkEnclosure(StartTag.getNext(source, startTag.begin + 1, name, StartTagType.NORMAL, isXMLTagName));
+	}
+	return null;
 	}
 
 	/**
@@ -978,14 +978,14 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @see #getFirstElement(String attributeName, Pattern valueRegexPattern)
 	 */
 	public final Element getFirstElement(String attributeName, String value, boolean valueCaseSensitive) {
-		StartTag startTag = checkEnclosure(source.getNextStartTag(begin, attributeName, value, valueCaseSensitive));
-		while (startTag != null) {
-			final Element element = startTag.getElement();
-			if (element.end <= end)
-				return element;
-			startTag = checkEnclosure(source.getNextStartTag(startTag.begin + 1, attributeName, value, valueCaseSensitive));
-		}
-		return null;
+	StartTag startTag = checkEnclosure(source.getNextStartTag(begin, attributeName, value, valueCaseSensitive));
+	while (startTag != null) {
+		final Element element = startTag.getElement();
+		if (element.end <= end)
+		return element;
+		startTag = checkEnclosure(source.getNextStartTag(startTag.begin + 1, attributeName, value, valueCaseSensitive));
+	}
+	return null;
 	}
 
 	/**
@@ -1007,14 +1007,14 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @see #getFirstElement(String attributeName, String value, boolean valueCaseSensitive)
 	 */
 	public final Element getFirstElement(final String attributeName, final Pattern valueRegexPattern) {
-		StartTag startTag = checkEnclosure(source.getNextStartTag(begin, attributeName, valueRegexPattern));
-		while (startTag != null) {
-			final Element element = startTag.getElement();
-			if (element.end <= end)
-				return element;
-			startTag = checkEnclosure(source.getNextStartTag(startTag.begin + 1, attributeName, valueRegexPattern));
-		}
-		return null;
+	StartTag startTag = checkEnclosure(source.getNextStartTag(begin, attributeName, valueRegexPattern));
+	while (startTag != null) {
+		final Element element = startTag.getElement();
+		if (element.end <= end)
+		return element;
+		startTag = checkEnclosure(source.getNextStartTag(startTag.begin + 1, attributeName, valueRegexPattern));
+	}
+	return null;
 	}
 
 	/**
@@ -1032,14 +1032,14 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 *         <code>null</code> if none exists.
 	 */
 	public final Element getFirstElementByClass(final String className) {
-		StartTag startTag = checkEnclosure(source.getNextStartTagByClass(begin, className));
-		while (startTag != null) {
-			final Element element = startTag.getElement();
-			if (element.end <= end)
-				return element;
-			startTag = checkEnclosure(source.getNextStartTagByClass(startTag.begin + 1, className));
-		}
-		return null;
+	StartTag startTag = checkEnclosure(source.getNextStartTagByClass(begin, className));
+	while (startTag != null) {
+		final Element element = startTag.getElement();
+		if (element.end <= end)
+		return element;
+		startTag = checkEnclosure(source.getNextStartTagByClass(startTag.begin + 1, className));
+	}
+	return null;
 	}
 
 	/**
@@ -1048,7 +1048,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @return a list of the {@link FormControl} objects that are {@linkplain #encloses(Segment) enclosed} by this segment.
 	 */
 	public List<FormControl> getFormControls() {
-		return FormControl.getAll(this);
+	return FormControl.getAll(this);
 	}
 
 	/**
@@ -1060,7 +1060,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @see #getFormControls()
 	 */
 	public FormFields getFormFields() {
-		return new FormFields(getFormControls());
+	return new FormFields(getFormControls());
 	}
 
 	/**
@@ -1073,7 +1073,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @return the {@link Attributes} within this segment, or <code>null</code> if too many errors occur while parsing.
 	 */
 	public Attributes parseAttributes() {
-		return source.parseAttributes(begin, end);
+	return source.parseAttributes(begin, end);
 	}
 
 	/**
@@ -1127,7 +1127,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @see Source#ignoreWhenParsing(Collection segments)
 	 */
 	public void ignoreWhenParsing() {
-		source.ignoreWhenParsing(begin, end);
+	source.ignoreWhenParsing(begin, end);
 	}
 
 	/**
@@ -1152,17 +1152,17 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 */
 	@Override
 	public int compareTo(final Segment segment) {
-		if (this == segment)
-			return 0;
-		if (begin < segment.begin)
-			return -1;
-		if (begin > segment.begin)
-			return 1;
-		if (end < segment.end)
-			return -1;
-		if (end > segment.end)
-			return 1;
+	if (this == segment)
 		return 0;
+	if (begin < segment.begin)
+		return -1;
+	if (begin > segment.begin)
+		return 1;
+	if (end < segment.end)
+		return -1;
+	if (end > segment.end)
+		return 1;
+	return 0;
 	}
 
 	/**
@@ -1172,10 +1172,10 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 *         <code>false</code>.
 	 */
 	public final boolean isWhiteSpace() {
-		for (int i = begin; i < end; i++)
-			if (!isWhiteSpace(source.charAt(i)))
-				return false;
-		return true;
+	for (int i = begin; i < end; i++)
+		if (!isWhiteSpace(source.charAt(i)))
+		return false;
+	return true;
 	}
 
 	/**
@@ -1197,25 +1197,25 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @return an indication of the maximum depth of nested elements within this segment.
 	 */
 	public int getMaxDepthIndicator() {
-		int maxDepth = 0;
-		int depth = 0;
-		for (Tag tag : getAllTags()) {
-			if (tag instanceof StartTag) {
-				StartTag startTag = (StartTag) tag;
-				if (startTag.getStartTagType().getCorrespondingEndTagType() == null)
-					continue;
-				if (HTMLElements.getEndTagForbiddenElementNames().contains(startTag.getName()))
-					continue;
-				if (startTag.isEmptyElementTag())
-					continue;
-				depth++;
-				if (depth > maxDepth)
-					maxDepth++;
-			} else {
-				depth--;
-			}
+	int maxDepth = 0;
+	int depth = 0;
+	for (Tag tag : getAllTags()) {
+		if (tag instanceof StartTag) {
+		StartTag startTag = (StartTag) tag;
+		if (startTag.getStartTagType().getCorrespondingEndTagType() == null)
+			continue;
+		if (HTMLElements.getEndTagForbiddenElementNames().contains(startTag.getName()))
+			continue;
+		if (startTag.isEmptyElementTag())
+			continue;
+		depth++;
+		if (depth > maxDepth)
+			maxDepth++;
+		} else {
+		depth--;
 		}
-		return maxDepth;
+	}
+	return maxDepth;
 	}
 
 	/**
@@ -1243,10 +1243,10 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 *         href="http://www.w3.org/TR/html401/struct/text.html#h-9.1">white space</a>, otherwise <code>false</code>.
 	 */
 	public static final boolean isWhiteSpace(final char ch) {
-		for (char whiteSpaceChar : WHITESPACE)
-			if (ch == whiteSpaceChar)
-				return true;
-		return false;
+	for (char whiteSpaceChar : WHITESPACE)
+		if (ch == whiteSpaceChar)
+		return true;
+	return false;
 	}
 
 	/**
@@ -1258,7 +1258,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @see Source#getRowColumnVector(int pos)
 	 */
 	public RowColumnVector getRowColumnVector() {
-		return source.getRowColumnVector(begin);
+	return source.getRowColumnVector(begin);
 	}
 
 	/**
@@ -1267,13 +1267,13 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * @return a string representation of this object useful for debugging purposes.
 	 */
 	public String getDebugInfo() {
-		final StringBuilder sb = new StringBuilder(50);
-		sb.append('(');
-		source.getRowColumnVector(begin).appendTo(sb);
-		sb.append('-');
-		source.getRowColumnVector(end).appendTo(sb);
-		sb.append(')');
-		return sb.toString();
+	final StringBuilder sb = new StringBuilder(50);
+	sb.append('(');
+	source.getRowColumnVector(begin).appendTo(sb);
+	sb.append('-');
+	source.getRowColumnVector(end).appendTo(sb);
+	sb.append(')');
+	return sb.toString();
 	}
 
 	/**
@@ -1290,7 +1290,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 */
 	@Override
 	public char charAt(final int index) {
-		return source.charAt(begin + index);
+	return source.charAt(begin + index);
 	}
 
 	/**
@@ -1311,7 +1311,7 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 */
 	@Override
 	public CharSequence subSequence(final int beginIndex, final int endIndex) {
-		return source.subSequence(begin + beginIndex, begin + endIndex);
+	return source.subSequence(begin + beginIndex, begin + endIndex);
 	}
 
 	/**
@@ -1319,69 +1319,69 @@ public class Segment implements Comparable<Segment>, CharSequence {
 	 * and any sections of internal white space are replaced by a single space.
 	 */
 	static final StringBuilder appendCollapseWhiteSpace(final StringBuilder sb, final CharSequence text) {
-		final int textLength = text.length();
-		int i = 0;
-		boolean lastWasWhiteSpace = false;
-		while (true) {
-			if (i >= textLength)
-				return sb;
-			if (!isWhiteSpace(text.charAt(i)))
-				break;
-			i++;
-		}
-		do {
-			final char ch = text.charAt(i++);
-			if (isWhiteSpace(ch)) {
-				lastWasWhiteSpace = true;
-			} else {
-				if (lastWasWhiteSpace) {
-					sb.append(' ');
-					lastWasWhiteSpace = false;
-				}
-				sb.append(ch);
-			}
-		} while (i < textLength);
+	final int textLength = text.length();
+	int i = 0;
+	boolean lastWasWhiteSpace = false;
+	while (true) {
+		if (i >= textLength)
 		return sb;
+		if (!isWhiteSpace(text.charAt(i)))
+		break;
+		i++;
+	}
+	do {
+		final char ch = text.charAt(i++);
+		if (isWhiteSpace(ch)) {
+		lastWasWhiteSpace = true;
+		} else {
+		if (lastWasWhiteSpace) {
+			sb.append(' ');
+			lastWasWhiteSpace = false;
+		}
+		sb.append(ch);
+		}
+	} while (i < textLength);
+	return sb;
 	}
 
 	static final Pattern getClassPattern(final String className) {
-		return Pattern.compile(".*(\\s|^)" + className + "(\\s|$).*", Pattern.DOTALL);
+	return Pattern.compile(".*(\\s|^)" + className + "(\\s|$).*", Pattern.DOTALL);
 	}
 
 	private List<Element> getAllElements(final List<StartTag> startTags) {
-		if (startTags.isEmpty())
-			return Collections.emptyList();
-		final ArrayList<Element> elements = new ArrayList<Element>(startTags.size());
-		for (StartTag startTag : startTags) {
-			final Element element = startTag.getElement();
-			if (element.end <= end)
-				elements.add(element);
-		}
-		return elements;
+	if (startTags.isEmpty())
+		return Collections.emptyList();
+	final ArrayList<Element> elements = new ArrayList<Element>(startTags.size());
+	for (StartTag startTag : startTags) {
+		final Element element = startTag.getElement();
+		if (element.end <= end)
+		elements.add(element);
+	}
+	return elements;
 	}
 
 	private StartTag checkEnclosure(final StartTag startTag) {
-		if (startTag == null || startTag.end > end)
-			return null;
-		return startTag;
+	if (startTag == null || startTag.end > end)
+		return null;
+	return startTag;
 	}
 
 	private Tag checkTagEnclosure(final Tag tag) {
-		if (tag == null || tag.end > end)
-			return null;
-		return tag;
+	if (tag == null || tag.end > end)
+		return null;
+	return tag;
 	}
 
 	private CharacterReference getNextCharacterReference(final int pos) {
-		final CharacterReference characterReference = source.getNextCharacterReference(pos);
-		if (characterReference == null || characterReference.end > end)
-			return null;
-		return characterReference;
+	final CharacterReference characterReference = source.getNextCharacterReference(pos);
+	if (characterReference == null || characterReference.end > end)
+		return null;
+	return characterReference;
 	}
 
 	public void dispose() {
-		if (source != null) {
-			source.dispose();
-		}
+	if (source != null && source != this) {
+		source.dispose();
+	}
 	}
 }

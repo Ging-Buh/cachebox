@@ -18,13 +18,13 @@ package CB_UI_Base.GL_UI.Controls.html;
 import java.util.ArrayList;
 import java.util.List;
 
+import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
+import CB_UI_Base.Math.Stack;
 import net.htmlparser.jericho.Attribute;
 import net.htmlparser.jericho.Attributes;
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.StartTag;
 import net.htmlparser.jericho.Tag;
-import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
-import CB_UI_Base.Math.Stack;
 
 /**
  * @author Longri
@@ -40,90 +40,96 @@ public abstract class Html_Segment {
 	protected HAlignment hAlignment = HAlignment.LEFT;
 
 	public Html_Segment(Html_Segment_Typ segmentTyp, Stack<Tag> atributeStack, String string) {
-		super();
-		this.segmentTyp = segmentTyp;
-		this.formatedText = string;
+	super();
+	this.segmentTyp = segmentTyp;
+	this.formatedText = string;
 
-		for (int i = atributeStack.size() - 1; i >= 0; i--) {
-			this.tags.add((StartTag) atributeStack.get(i));
-		}
+	for (int i = atributeStack.size() - 1; i >= 0; i--) {
+		this.tags.add((StartTag) atributeStack.get(i));
+	}
 	}
 
 	public abstract void resolveAtributes();
 
 	protected void addStartTags(List<StartTag> allStartTags) {
-		attDirty = true;
-		int idx = 0;
-		for (StartTag tag : allStartTags) {
-			if (tag.getName().equals("br"))
-				continue;
-			this.tags.add(idx++, tag);
-		}
+	attDirty = true;
+	int idx = 0;
+	for (StartTag tag : allStartTags) {
+		if (tag.getName().equals("br"))
+		continue;
+		this.tags.add(idx++, tag);
+	}
 	}
 
 	protected void resolveHAlignment() {
-		// resolve HAlignment
-		for (Tag tag : tags) {
+	// resolve HAlignment
+	for (Tag tag : tags) {
 
-			if (tag.getName().contains("center")) {
+		if (tag.getName().contains("center")) {
+		hAlignment = HAlignment.CENTER;
+		continue;
+		}
+
+		List<Element> elements = tag.getAllElements();
+		if (elements.isEmpty())
+		elements.add(tag.getElement());
+		for (Element ele : elements) {
+		Attributes attributes = ele.getAttributes();
+		if (attributes == null) {
+			hAlignment = HAlignment.LEFT;
+		} else {
+
+			for (Attribute attr : attributes) {
+			if (attr.getKey().equals("align")) {
+				String val = attr.getValue();
+				if (val.contains("center"))
 				hAlignment = HAlignment.CENTER;
-				continue;
+				else if (val.contains("left"))
+				hAlignment = HAlignment.LEFT;
+				else if (val.contains("right"))
+				hAlignment = HAlignment.RIGHT;
+				else
+				hAlignment = HAlignment.LEFT;
 			}
-
-			List<Element> elements = tag.getAllElements();
-			if (elements.isEmpty())
-				elements.add(tag.getElement());
-			for (Element ele : elements) {
-				Attributes attributes = ele.getAttributes();
-				if (attributes == null) {
-					hAlignment = HAlignment.LEFT;
-				} else {
-
-					for (Attribute attr : attributes) {
-						if (attr.getKey().equals("align")) {
-							String val = attr.getValue();
-							if (val.contains("center"))
-								hAlignment = HAlignment.CENTER;
-							else if (val.contains("left"))
-								hAlignment = HAlignment.LEFT;
-							else if (val.contains("right"))
-								hAlignment = HAlignment.RIGHT;
-							else
-								hAlignment = HAlignment.LEFT;
-						}
-					}
-				}
 			}
 		}
+		}
+	}
 	}
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
+	StringBuilder sb = new StringBuilder();
 
-		if (tags != null && !tags.isEmpty()) {
-			sb.append("[Attributes: ");
-			for (Tag tag : tags) {
-				sb.append(tag);
-			}
-			sb.append("]" + br);
+	if (tags != null && !tags.isEmpty()) {
+		sb.append("[Attributes: ");
+		for (Tag tag : tags) {
+		sb.append(tag);
 		}
-		sb.append(segmentTyp.toString() + ": " + formatedText);
-		return sb.toString();
+		sb.append("]" + br);
+	}
+	sb.append(segmentTyp.toString() + ": " + formatedText);
+	return sb.toString();
 	}
 
 	public void dispose() {
 
-		if (tags != null) {
-			for (StartTag tag : tags) {
-				tag.dispose();
-				tag = null;
-			}
-			tags.clear();
-			tags = null;
+	if (tags != null) {
+		for (StartTag tag : tags) {
+		tag.dispose();
+		tag = null;
 		}
+		tags.clear();
+		tags = null;
+	}
 
-		formatedText = null;
+	formatedText = null;
 
+	}
+
+	ArrayList<List<Html_Segment>> items = new ArrayList<List<Html_Segment>>();
+
+	public void addListItem(List<Html_Segment> elementSegmentList) {
+	items.add(elementSegmentList);
 	}
 }

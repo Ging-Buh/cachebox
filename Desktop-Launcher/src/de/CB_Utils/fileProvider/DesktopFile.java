@@ -1,230 +1,237 @@
 package de.CB_Utils.fileProvider;
 
-import CB_Utils.fileProvider.File;
-import CB_Utils.fileProvider.FilenameFilter;
-
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FilenameFilter;
 
 /**
  * Created by Longri on 17.02.2016.
  */
 public class DesktopFile extends File {
 
+	private final java.io.File mFile;
 
-    private final java.io.File mFile;
+	private DesktopFile(java.io.File file) {
+	mFile = file;
+	}
 
-    private DesktopFile(java.io.File file) {
-        mFile = file;
-    }
+	public DesktopFile(String path) {
+	mFile = new java.io.File(path);
+	}
 
-    public DesktopFile(String path) {
-        mFile = new java.io.File(path);
-    }
+	public DesktopFile(File parent) {
+	mFile = ((DesktopFile) parent).mFile;
+	}
 
-    public DesktopFile(File parent) {
-        mFile = ((DesktopFile) parent).mFile;
-    }
+	public DesktopFile(File parent, String child) {
+	mFile = new java.io.File(((DesktopFile) parent).mFile, child);
+	}
 
-    public DesktopFile(File parent, String child) {
-        mFile = new java.io.File(((DesktopFile) parent).mFile, child);
-    }
+	public DesktopFile(String parent, String child) {
+	mFile = new java.io.File(parent, child);
+	}
 
-    public DesktopFile(String parent, String child) {
-        mFile = new java.io.File(parent, child);
-    }
+	@Override
+	public boolean exists() {
+	return mFile.exists();
+	}
 
+	@Override
+	public boolean delete() throws IOException {
+	return mFile.delete();
+	}
 
-    @Override
-    public boolean exists() {
-        return mFile.exists();
-    }
+	@Override
+	public File getParentFile() {
+	return new DesktopFile(mFile.getParentFile());
+	}
 
-    @Override
-    public boolean delete() throws IOException {
-        return mFile.delete();
-    }
+	@Override
+	public boolean mkdirs() {
+	return mFile.mkdirs();
+	}
 
-    @Override
-    public File getParentFile() {
-        return new DesktopFile(mFile.getParentFile());
-    }
+	@Override
+	public boolean isDirectory() {
+	return mFile.isDirectory();
+	}
 
-    @Override
-    public boolean mkdirs() {
-        return mFile.mkdirs();
-    }
+	@Override
+	public boolean isFile() {
+	return mFile.isFile();
+	}
 
-    @Override
-    public boolean isDirectory() {
-        return mFile.isDirectory();
-    }
+	@Override
+	public long lastModified() {
+	return mFile.lastModified();
+	}
 
-    @Override
-    public boolean isFile() {
-        return mFile.isFile();
-    }
+	@Override
+	public String[] list() {
+	return mFile.list();
+	}
 
-    @Override
-    public long lastModified() {
-        return mFile.lastModified();
-    }
+	@Override
+	public String[] list(final FilenameFilter filenameFilter) {
 
-    @Override
-    public String[] list() {
-        return mFile.list();
-    }
+	String[] list = mFile.list(new java.io.FilenameFilter() {
+		@Override
+		public boolean accept(java.io.File dir, String name) {
+		return filenameFilter.accept(new DesktopFile(dir), name);
+		}
+	});
+	return list;
+	}
 
-    @Override
-    public String[] list(FilenameFilter filenameFilter) {
+	@Override
+	public long length() {
+	return mFile.length();
+	}
 
-        String[] list = mFile.list(new java.io.FilenameFilter() {
-            @Override
-            public boolean accept(java.io.File dir, String name) {
-                return filenameFilter.accept(new DesktopFile(dir), name);
-            }
-        });
-        return list;
-    }
+	@Override
+	public boolean createNewFile() throws IOException {
+	return mFile.createNewFile();
+	}
 
-    @Override
-    public long length() {
-        return mFile.length();
-    }
+	@Override
+	public String getName() {
+	return mFile.getName();
+	}
 
-    @Override
-    public boolean createNewFile() throws IOException {
-        return mFile.createNewFile();
-    }
+	@Override
+	public File[] listFiles(final FilenameFilter filenameFilter) {
+	String names[] = list();
+	if (names == null || filenameFilter == null) {
+		return null;
+	}
+	List<String> v = new ArrayList<String>();
+	for (int i = 0; i < names.length; i++) {
+		if (filenameFilter.accept(this, names[i])) {
+		v.add(names[i]);
+		}
+	}
 
-    @Override
-    public String getName() {
-        return mFile.getName();
-    }
+	if (v.isEmpty())
+		return null;
+	File[] ret = new File[v.size()];
 
-    @Override
-    public File[] listFiles(FilenameFilter filenameFilter) {
+	for (int i = 0; i < v.size(); i++)
+		ret[i] = new DesktopFile(this, v.get(i));
 
-        String[] list = mFile.list(new java.io.FilenameFilter() {
-            @Override
-            public boolean accept(java.io.File dir, String name) {
-                return filenameFilter.accept(new DesktopFile(dir), name);
-            }
-        });
+	return ret;
+	}
 
-        File[] ret = new File[list.length];
+	@Override
+	public String getAbsolutePath() {
+	return mFile.getAbsolutePath();
+	}
 
-        int index = 0;
-        for (String s : list) {
-            ret[index++] = new DesktopFile(s);
-        }
+	@Override
+	public boolean mkdir() {
+	return mFile.mkdir();
+	}
 
+	@Override
+	public String getParent() {
+	return mFile.getParent();
+	}
 
-        return ret;
-    }
+	@Override
+	public boolean canRead() {
+	return mFile.canRead();
+	}
 
-    @Override
-    public String getAbsolutePath() {
-        return mFile.getAbsolutePath();
-    }
+	@Override
+	public boolean canWrite() {
+	return mFile.canWrite();
+	}
 
-    @Override
-    public boolean mkdir() {
-        return mFile.mkdir();
-    }
+	@Override
+	public String getPath() {
+	return mFile.getPath();
+	}
 
-    @Override
-    public String getParent() {
-        return mFile.getParent();
-    }
+	@Override
+	public File[] listFiles() {
+	String[] list = mFile.list();
 
-    @Override
-    public boolean canRead() {
-        return mFile.canRead();
-    }
+	File[] ret = new File[list.length];
 
-    @Override
-    public boolean canWrite() {
-        return mFile.canWrite();
-    }
+	int index = 0;
+	for (String s : list) {
+		ret[index++] = new DesktopFile(this, s);
+	}
+	return ret;
+	}
 
-    @Override
-    public String getPath() {
-        return mFile.getPath();
-    }
+	@Override
+	public boolean isAbsolute() {
+	return mFile.isAbsolute();
+	}
 
-    @Override
-    public File[] listFiles() {
-        String[] list = mFile.list();
+	@Override
+	public File getCanonicalPath() throws IOException {
+	return new DesktopFile(mFile.getCanonicalPath());
+	}
 
-        File[] ret = new File[list.length];
+	@Override
+	public URL toURL() throws MalformedURLException {
+	return mFile.toURL();
+	}
 
-        int index = 0;
-        for (String s : list) {
-            ret[index++] = new DesktopFile(s);
-        }
-        return ret;
-    }
+	@Override
+	public boolean renameTo(File file) {
+	return mFile.renameTo(((DesktopFile) file).mFile);
+	}
 
-    @Override
-    public boolean isAbsolute() {
-        return mFile.isAbsolute();
-    }
+	@Override
+	public void setLastModified(long time) {
+	mFile.setLastModified(time);
+	}
 
-    @Override
-    public File getCanonicalPath() throws IOException {
-        return new DesktopFile(mFile.getCanonicalPath());
-    }
+	@Override
+	public File getAbsoluteFile() {
+	return new DesktopFile(mFile.getAbsoluteFile());
+	}
 
-    @Override
-    public URL toURL() throws MalformedURLException {
-        return mFile.toURL();
-    }
+	@Override
+	public int compareTo(File otherFile) {
+	return mFile.compareTo(((DesktopFile) otherFile).mFile);
+	}
 
-    @Override
-    public boolean renameTo(File file) {
-        return mFile.renameTo(((DesktopFile) file).mFile);
-    }
+	@Override
+	public FileOutputStream getFileOutputStream() throws FileNotFoundException {
+	return new FileOutputStream(mFile);
+	}
 
-    @Override
-    public void setLastModified(long time) {
-        mFile.setLastModified(time);
-    }
+	@Override
+	public FileInputStream getFileInputStream() throws FileNotFoundException {
+	return new FileInputStream(mFile);
+	}
 
-    @Override
-    public File getAbsoluteFile() {
-        return new DesktopFile(mFile.getAbsoluteFile());
-    }
+	@Override
+	public FileReader getFileReader() throws FileNotFoundException {
+	return new FileReader(mFile);
+	}
 
-    @Override
-    public int compareTo(File otherFile) {
-        return mFile.compareTo(((DesktopFile) otherFile).mFile);
-    }
+	@Override
+	public RandomAccessFile getRandomAccessFile(String mode) throws FileNotFoundException {
+	return new RandomAccessFile(mFile, mode);
+	}
 
-    @Override
-    public FileOutputStream getFileOutputStream() throws FileNotFoundException {
-        return new FileOutputStream(mFile);
-    }
-
-
-    @Override
-    public FileInputStream getFileInputStream() throws FileNotFoundException {
-        return new FileInputStream(mFile);
-    }
-
-    @Override
-    public FileReader getFileReader() throws FileNotFoundException {
-        return new FileReader(mFile);
-    }
-
-    @Override
-    public RandomAccessFile getRandomAccessFile(String mode) throws FileNotFoundException {
-        return new RandomAccessFile(mFile, mode);
-    }
-
-    @Override
-    public FileWriter getFileWriter() throws IOException {
-        return new FileWriter(mFile);
-    }
+	@Override
+	public FileWriter getFileWriter() throws IOException {
+	return new FileWriter(mFile);
+	}
 }

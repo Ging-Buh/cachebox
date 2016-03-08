@@ -6,8 +6,8 @@ import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.JokerView;
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 
@@ -40,7 +40,7 @@ public class CB_Action_ShowJokerView extends CB_Action_ShowView {
 
 	@Override
 	public Sprite getIcon() {
-		return SpriteCacheBase.Icons.get(IconName.jokerPhone_25.ordinal());
+		return Sprites.getSprite(IconName.jokerPhone.name());
 	}
 
 	@Override

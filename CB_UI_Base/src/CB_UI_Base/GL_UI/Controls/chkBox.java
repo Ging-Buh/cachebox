@@ -1,6 +1,6 @@
 package CB_UI_Base.GL_UI.Controls;
 
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -61,17 +61,17 @@ public class chkBox extends Button {
 		// drawableDisabledChk = checked Disabled
 
 		if (drawableNormal == null) {
-			drawableNormal = SpriteCacheBase.chkOff;
+			drawableNormal = Sprites.chkOff;
 		}
 		if (drawablePressed == null) {
-			drawablePressed = SpriteCacheBase.chkOn;
+			drawablePressed = Sprites.chkOn;
 		}
 		if (drawableDisabled == null) {
-			drawableDisabled = SpriteCacheBase.chkOffDisabled;
+			drawableDisabled = Sprites.chkOffDisabled;
 		}
 
 		if (drawableDisabledChk == null) {
-			drawableDisabledChk = SpriteCacheBase.chkOnDisabled;
+			drawableDisabledChk = Sprites.chkOnDisabled;
 		}
 	}
 

@@ -32,8 +32,8 @@ import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.SelectDB;
 import CB_UI.GL_UI.Activitys.SelectDB.IReturnListener;
 import CB_UI.GL_UI.Main.TabMainView;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
@@ -54,7 +54,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_Action {
 
 	@Override
 	public Sprite getIcon() {
-		return SpriteCacheBase.Icons.get(IconName.manageDB_41.ordinal());
+		return Sprites.getSprite(IconName.manageDb.name());
 	}
 
 	@Override

@@ -6,7 +6,7 @@ import CB_UI.Config;
 import CB_UI.GL_UI.Main.Actions.QuickButton.QuickActions;
 import CB_UI.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.H_ListView;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
@@ -26,7 +26,7 @@ public class QuickButtonList extends H_ListView {
 		super(rec, Name);
 		that = this;
 		btnHeight = UiSizes.that.getQuickButtonListHeight() * 0.93f;
-		setBackground(SpriteCacheBase.ButtonBack);
+		setBackground(Sprites.ButtonBack);
 
 		CB_RectF btnRec = new CB_RectF(0, 0, btnHeight, btnHeight);
 
@@ -188,7 +188,7 @@ public class QuickButtonList extends H_ListView {
 	protected void SkinIsChanged() {
 		quickButtonList = null;
 		readQuickButtonItemsList();
-		setBackground(SpriteCacheBase.ButtonBack);
+		setBackground(Sprites.ButtonBack);
 		reloadItems();
 		ListViewItemBackground.ResetBackground();
 	}

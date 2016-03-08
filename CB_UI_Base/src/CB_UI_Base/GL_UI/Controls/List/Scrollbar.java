@@ -20,7 +20,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Animation.Fader;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
@@ -121,8 +121,8 @@ public class Scrollbar extends CB_View_Base {
 	}
 
 	private void LoadSliderImagesNew() {
-		Slider = SpriteCacheBase.Slider;
-		SliderPushed = SpriteCacheBase.SliderPushed;
+		Slider = Sprites.Slider;
+		SliderPushed = Sprites.SliderPushed;
 
 		float minWidth = Slider.getMinWidth();
 

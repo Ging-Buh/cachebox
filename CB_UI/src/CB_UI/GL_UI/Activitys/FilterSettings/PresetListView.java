@@ -9,7 +9,8 @@ import CB_Core.FilterProperties;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
@@ -136,12 +137,12 @@ public class PresetListView extends V_ListView {
 		mPresetEntriesAdd("AllCachesToFind", "log0icon", FilterInstances.ACTIVE);
 		mPresetEntriesAdd("QuickCaches", "QuickCaches", FilterInstances.QUICK);
 		mPresetEntriesAdd("BEGINNER", "BEGINNER", FilterInstances.BEGINNER);
-		mPresetEntriesAdd("GrabTB", "tb-grab", FilterInstances.WITHTB);
-		mPresetEntriesAdd("DropTB", "tb-drop", FilterInstances.DROPTB);
+		mPresetEntriesAdd("GrabTB", IconName.TBGRAB.name(), FilterInstances.WITHTB);
+		mPresetEntriesAdd("DropTB", IconName.TBDROP.name(), FilterInstances.DROPTB);
 		mPresetEntriesAdd("Highlights", "star", FilterInstances.HIGHLIGHTS);
 		mPresetEntriesAdd("Favorites", "favorit", FilterInstances.FAVORITES);
-		mPresetEntriesAdd("PrepareToArchive", "delete", FilterInstances.TOARCHIVE);
-		mPresetEntriesAdd("ListingChanged", "warning-icon", FilterInstances.LISTINGCHANGED);
+		mPresetEntriesAdd("PrepareToArchive", IconName.DELETE.name(), FilterInstances.TOARCHIVE);
+		mPresetEntriesAdd("ListingChanged", IconName.warningIcon.name(), FilterInstances.LISTINGCHANGED);
 		mPresetEntriesAdd("AllCaches", "earth", FilterInstances.ALL);
 
 		// add User Presets from Config.UserFilter
@@ -152,7 +153,7 @@ public class PresetListView extends V_ListView {
 					int pos = entry.indexOf(";");
 					String name = entry.substring(0, pos);
 					String filter = entry.substring(pos + 1);
-					mPresetEntries.add(new PresetEntry(name, SpriteCacheBase.getThemedSprite("userdata"), new FilterProperties(filter)));
+					mPresetEntries.add(new PresetEntry(name, Sprites.getSprite("userdata"), new FilterProperties(filter)));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -263,7 +264,7 @@ public class PresetListView extends V_ListView {
 	}
 
 	private void mPresetEntriesAdd(String name, String icon, FilterProperties PresetFilter) {
-		mPresetEntries.add(new PresetEntry(Translation.Get(name), SpriteCacheBase.getThemedSprite(icon), PresetFilter));
+		mPresetEntries.add(new PresetEntry(Translation.Get(name), Sprites.getSprite(icon), PresetFilter));
 	}
 
 	@Override

@@ -19,8 +19,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Controls.Dialogs.HintDialog;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 
@@ -49,6 +49,6 @@ public class CB_Action_ShowHint extends CB_Action {
 
 	@Override
 	public Sprite getIcon() {
-		return SpriteCacheBase.Icons.get(IconName.hint_19.ordinal());
+		return Sprites.getSprite(IconName.hintIcon.name());
 	}
 }

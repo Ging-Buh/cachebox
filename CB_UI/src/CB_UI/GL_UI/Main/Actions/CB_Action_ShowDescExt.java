@@ -32,8 +32,8 @@ import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Views.DescriptionView;
 import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
@@ -107,6 +107,6 @@ public class CB_Action_ShowDescExt extends CB_Action {
 
 	@Override
 	public Sprite getIcon() {
-		return SpriteCacheBase.Icons.get(IconName.hint_19.ordinal());
+		return Sprites.getSprite(IconName.hintIcon.name());
 	}
 }

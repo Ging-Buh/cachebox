@@ -36,7 +36,7 @@ import CB_UI.GL_UI.Controls.Dialogs.SolverDialog2;
 import CB_UI.GL_UI.Controls.Dialogs.SolverDialog2.ISolverBackStringListener;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
@@ -70,7 +70,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 		log.debug("onShow()");
 		SelectedCacheEventList.Add(this);
 
-		setBackground(SpriteCacheBase.ListBack);
+		setBackground(Sprites.ListBack);
 		// Reload when
 		// - cache has changed
 		// - Solver 1 has changed

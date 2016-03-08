@@ -72,8 +72,8 @@ import CB_UI.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_UI_Base.GL_UI.Controls.ZoomButtons;
@@ -163,7 +163,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		Config.MapsforgeNightTheme.addChangedEventListener(themeChangedEventHandler);
 
 		registerSkinChangedEvent();
-		setBackground(SpriteCacheBase.ListBack);
+		setBackground(Sprites.ListBack);
 		int maxNumTiles = 0;
 		// calculate max Map Tile cache
 		try {
@@ -354,12 +354,10 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		infoBubble = new InfoBubble(GL_UISizes.Bubble, "infoBubble");
 		infoBubble.setInvisible();
 		infoBubble.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 				if (infoBubble.saveButtonClicked(x, y)) {
 					wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
-
 						@Override
 						public void isCanceld() {
 
@@ -409,7 +407,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 					if (infoBubble.getWaypoint() == null) {
 						// Wenn ein Cache einen Final waypoint hat dann soll gleich dieser aktiviert werden
 						Waypoint waypoint = infoBubble.getCache().GetFinalWaypoint();
-						// wenn ein Cache keine Final hat, aber einen StartWaypoint dann wird dieser gleich selektiert
+						// wenn ein Cache keine Final hat, aber einen StartWaypointm, dann wird dieser gleich selektiert
 						if (waypoint == null)
 							waypoint = infoBubble.getCache().GetStartWaypoint();
 						GlobalCore.setSelectedWaypoint(infoBubble.getCache(), waypoint);
@@ -567,7 +565,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				direction = 180 - direction;
 
 				// draw sprite
-				Sprite arrow = SpriteCacheBase.Arrows.get(4);
+				Sprite arrow = Sprites.Arrows.get(4);
 				arrow.setRotation(direction);
 
 				float boundsX = newTarget.x - GL_UISizes.TargetArrow.halfWidth;
@@ -639,7 +637,9 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		// Don't render if outside of screen !!
 		if ((screen.x < 0 - WpSize.width || screen.x > this.getWidth() + WpSize.height) || (screen.y < 0 - WpSize.height || screen.y > this.getHeight() + WpSize.height)) {
 			if (wpi.Cache != null && (wpi.Cache.Id == infoBubble.getCacheId()) && infoBubble.isVisible()) {
-				infoBubble.setInvisible();
+				// check if wp selected
+				if (wpi.Waypoint != null && wpi.Waypoint.equals(infoBubble.getWaypoint()) || wpi.Waypoint == null && infoBubble.getWaypoint() == null)
+					infoBubble.setInvisible();
 			}
 			return;
 		}
@@ -648,7 +648,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		if ((aktZoom >= zoomCross) && (wpi.Selected) && (wpi.Waypoint == GlobalCore.getSelectedWaypoint())) {
 			// Draw Cross and move screen vector
-			Sprite cross = SpriteCacheBase.MapOverlay.get(3);
+			Sprite cross = Sprites.MapOverlay.get(3);
 			cross.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight, WpUnderlay.width, WpUnderlay.height);
 			cross.draw(batch);
 
@@ -667,7 +667,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		// draw Favorite symbol
 		if (wpi.Cache != null && wpi.Cache.isFavorite()) {
-			batch.draw(SpriteCacheBase.Icons.get(IconName.favorit_42.ordinal()), screen.x + (WpSize.halfWidth / 2), screen.y + (WpSize.halfHeight / 2), WpSize.width, WpSize.height);
+			batch.draw(Sprites.getSprite(IconName.favorit.name()), screen.x + (WpSize.halfWidth / 2), screen.y + (WpSize.halfHeight / 2), WpSize.width, WpSize.height);
 		}
 
 		if (wpi.OverlayIcon != null) {
@@ -679,7 +679,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		// Rating des Caches darstellen
 		if (wpi.Cache != null && showRating && (!drawAsWaypoint) && (wpi.Cache.Rating > 0) && (aktZoom >= 15)) {
-			Sprite rating = SpriteCacheBase.MapStars.get((int) Math.min(wpi.Cache.Rating * 2, 5 * 2));
+			Sprite rating = Sprites.MapStars.get((int) Math.min(wpi.Cache.Rating * 2, 5 * 2));
 			rating.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight - WpUnderlay.Height4_8, WpUnderlay.width, WpUnderlay.Height4_8);
 			rating.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
 			rating.setRotation(0);
@@ -705,13 +705,13 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		// Show D/T-Rating
 		if (wpi.Cache != null && showDT && (!drawAsWaypoint) && (aktZoom >= 15)) {
-			Sprite difficulty = SpriteCacheBase.MapStars.get((int) Math.min(wpi.Cache.getDifficulty() * 2, 5 * 2));
+			Sprite difficulty = Sprites.MapStars.get((int) Math.min(wpi.Cache.getDifficulty() * 2, 5 * 2));
 			difficulty.setBounds(screen.x - WpUnderlay.width - GL_UISizes.infoShadowHeight, screen.y - (WpUnderlay.Height4_8 / 2), WpUnderlay.width, WpUnderlay.Height4_8);
 			difficulty.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
 			difficulty.setRotation(90);
 			difficulty.draw(batch);
 
-			Sprite terrain = SpriteCacheBase.MapStars.get((int) Math.min(wpi.Cache.getTerrain() * 2, 5 * 2));
+			Sprite terrain = Sprites.MapStars.get((int) Math.min(wpi.Cache.getTerrain() * 2, 5 * 2));
 			terrain.setBounds(screen.x + GL_UISizes.infoShadowHeight, screen.y - (WpUnderlay.Height4_8 / 2), WpUnderlay.width, WpUnderlay.Height4_8);
 			terrain.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
 			terrain.setRotation(90);
@@ -849,7 +849,8 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			coord = Locator.getCoordinate();
 		if ((coord == null) || (!coord.isValid()))
 			return;
-		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
+		//Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
+		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", newGcCode);
 
 		EditWaypoint EdWp = new EditWaypoint(newWP, new IReturnListener() {
 
@@ -1006,10 +1007,8 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	}
 
 	protected OnClickListener onClickListener = new OnClickListener() {
-
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-			double minDist = Double.MAX_VALUE;
 			WaypointRenderInfo minWpi = null;
 			Vector2 clickedAt = new Vector2(x, y);
 
@@ -1032,11 +1031,8 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			}
 
 			synchronized (mapCacheList.list) {
-				if (infoBubble.isVisible()) {
-					// Click outside Bubble -> hide Bubble
-					infoBubble.setInvisible();
-				}
 
+				double minDist = Double.MAX_VALUE;
 				for (int i = 0, n = mapCacheList.list.size(); i < n; i++) {
 					WaypointRenderInfo wpi = mapCacheList.list.get(i);
 					Vector2 screen = worldToScreen(new Vector2(Math.round(wpi.MapX), Math.round(wpi.MapY)));
@@ -1048,47 +1044,44 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 						}
 					}
 				}
-
-				if (minWpi == null || minWpi.Cache == null)
+				// empty mapCacheList
+				if (minWpi == null || minWpi.Cache == null) {
+					// log.info("empty click");
 					return true;
-				// Vector2 screen = worldToScreen(new Vector2(Math.round(minWpi.MapX), Math.round(minWpi.MapY)));
-				// log.debug("MapClick at:" + clickedAt + " minDistance: " + minDist + " screen:" + screen + " wpi:" + minWpi.Cache.Name
-				// + "/ ");
-
+				}
+				// always hide the bubble
+				if (infoBubble.isVisible()) {
+					infoBubble.setInvisible();
+				}
+				// check for showing the bubble
 				if (minDist < 40) {
-
 					if (minWpi.Waypoint != null) {
 						if (GlobalCore.getSelectedCache() != minWpi.Cache) {
-							// Show Bubble at the location of the Waypoint!!!
+							// log.info("Waypoint clicked: " + minWpi.Cache.getGcCode() + "/" + minWpi.Waypoint.getGcCode());
+							// show bubble at the location of the waypoint!!!
 							infoBubble.setCache(minWpi.Cache, minWpi.Waypoint);
 							infoBubble.setVisible();
 						} else {
-							// do not show Bubble because there will not be
-							// selected
-							// a
-							// different cache but only a different waypoint
-							// Wegpunktliste ausrichten
+							// if only waypoint changes, the bubble will not be shown. (why not ?)
+							// so we must do the selection here
 							GlobalCore.setSelectedWaypoint(minWpi.Cache, minWpi.Waypoint);
-							// FormMain.WaypointListPanel.AlignSelected();
-							// updateCacheList();
 							MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
 							data.hideMyFinds = MapView.this.hideMyFinds;
 							data.showAllWaypoints = MapView.this.showAllWaypoints;
 							mapCacheList.update(data);
 						}
-
 					} else {
-						// Show Bubble
-						// unabhängig davon, ob der angeklickte Cache == der selectedCache ist
+						// log.info("Cache clicked: " + minWpi.Cache.getGcCode());
+						// show bubble
 						infoBubble.setCache(minWpi.Cache, null);
 						infoBubble.setVisible();
 					}
 					inputState = InputState.Idle;
-					// debugString = "State: " + inputState;
-					// return false;
+				} else {
+					// Click outside Bubble -> hide Bubble
+					// log.info("outside click (hidden bubble)");
 				}
 			}
-
 			return false;
 		}
 	};

@@ -11,8 +11,8 @@ import CB_Core.DAO.CategoryDAO;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
@@ -313,10 +313,10 @@ public class CategorieListView extends V_ListView {
 
 		for (int i = 0, n = CoreSettingsForward.Categories.size(); i < n; i++) {
 			Category cat = CoreSettingsForward.Categories.get(i);
-			CategorieListViewItem CollapseItem = addCategorieCollapseItem(Index++, SpriteCacheBase.Icons.get(IconName.doc_20.ordinal()), cat, COLLAPSE_BUTTON_ITEM);
+			CategorieListViewItem CollapseItem = addCategorieCollapseItem(Index++, Sprites.getSprite(IconName.docIcon.name()), cat, COLLAPSE_BUTTON_ITEM);
 
 			for (GpxFilename File : cat) {
-				CollapseItem.addChild(addCategorieItem(Index++, SpriteCacheBase.Icons.get(IconName.doc_20.ordinal()), File, CHECK_ITEM));
+				CollapseItem.addChild(addCategorieItem(Index++, Sprites.getSprite(IconName.docIcon.name()), File, CHECK_ITEM));
 			}
 		}
 
@@ -332,27 +332,6 @@ public class CategorieListView extends V_ListView {
 		}
 
 	}
-
-	// private CategorieListViewItem addCategorieItem(int Index, Sprite[] Icons, GpxFilename file, int ItemType, double i, double j, double
-	// k,
-	// double f)
-	// {
-	//
-	// if (lCategories == null)
-	// {
-	// lCategories = new ArrayList<CategorieListView.CategorieEntry>();
-	// lCategorieListViewItems = new ArrayList<CategorieListViewItem>();
-	// }
-	// CategorieEntry tmp = new CategorieEntry(file, Icons, ItemType, i, j, k, f);
-	// lCategories.add(tmp);
-	//
-	// CategorieListViewItem v = new CategorieListViewItem(EditFilterSettings.ItemRec, Index, tmp);
-	// // inital mit INVISIBLE
-	// v.setInvisible();
-	// lCategorieListViewItems.add(v);
-	// return v;
-	//
-	// }
 
 	private CategorieListViewItem addCategorieItem(int Index, Sprite Icon, GpxFilename file, int ItemType) {
 		if (lCategories == null) {

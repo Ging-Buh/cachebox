@@ -32,8 +32,8 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.Image;
@@ -101,22 +101,22 @@ public class FieldNoteViewItem extends ListViewItemBackground {
 			Sprite spr = null;
 
 			if (type == LogTypes.discovered)
-				spr = SpriteCacheBase.Icons.get(IconName.tbDiscover_58.ordinal());
+				spr = Sprites.getSprite(IconName.TBDISCOVER.name());
 			if (type == LogTypes.dropped_off)
-				spr = SpriteCacheBase.Icons.get(IconName.tbDrop_59.ordinal());
+				spr = Sprites.getSprite(IconName.TBDROP.name());
 			if (type == LogTypes.grab_it)
-				spr = SpriteCacheBase.Icons.get(IconName.tbGrab_60.ordinal());
+				spr = Sprites.getSprite(IconName.TBGRAB.name());
 			if (type == LogTypes.retrieve)
-				spr = SpriteCacheBase.Icons.get(IconName.tbPicked_61.ordinal());
+				spr = Sprites.getSprite(IconName.TBPICKED.name());
 			if (type == LogTypes.visited)
-				spr = SpriteCacheBase.Icons.get(IconName.tbVisit_62.ordinal());
+				spr = Sprites.getSprite(IconName.TBVISIT.name());
 			if (type == LogTypes.note)
-				spr = SpriteCacheBase.Icons.get(IconName.tbNote_63.ordinal());
+				spr = Sprites.getSprite(IconName.TBNOTE.name());
 			if (spr == null)
 				return null;
 			return new SpriteDrawable(spr);
 		} else {
-			return new SpriteDrawable(SpriteCacheBase.LogIcons.get(fne.typeIcon));
+			return new SpriteDrawable(Sprites.LogIcons.get(fne.typeIcon));
 		}
 	}
 
@@ -155,7 +155,7 @@ public class FieldNoteViewItem extends ListViewItemBackground {
 		if (fieldnote.isTbFieldNote) {
 			ivCacheType.setImageURL(fieldnote.TbIconUrl);
 		} else {
-			ivCacheType.setDrawable(new SpriteDrawable(SpriteCacheBase.getThemedSprite("big" + CacheTypes.values()[fieldnote.cacheType].name())));
+			ivCacheType.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + CacheTypes.values()[fieldnote.cacheType].name())));
 		}
 	}
 
@@ -187,8 +187,7 @@ public class FieldNoteViewItem extends ListViewItemBackground {
 	private void iniCommentLabel() {
 		if (this.fieldnote == null)
 			return;
-		CB_RectF rectF = new CB_RectF(getLeftWidth() + UI_Size_Base.that.getMargin(), 0,
-				this.getWidth() - getLeftWidth() - getRightWidth() - (UI_Size_Base.that.getMargin() * 2),
+		CB_RectF rectF = new CB_RectF(getLeftWidth() + UI_Size_Base.that.getMargin(), 0, this.getWidth() - getLeftWidth() - getRightWidth() - (UI_Size_Base.that.getMargin() * 2),
 				this.getHeight() - (this.getHeight() - mGcCode.getY()) - UI_Size_Base.that.getMargin());
 		mComment = new EditTextField(rectF, this, this.name + " lblComment");
 		mComment.setWrapType(WrapType.WRAPPED);
@@ -203,7 +202,7 @@ public class FieldNoteViewItem extends ListViewItemBackground {
 
 	@Override
 	protected void Initial() {
-		backheader = new NinePatch(SpriteCacheBase.getThemedSprite("listrec-header"), 8, 8, 8, 8);
+		backheader = new NinePatch(Sprites.getSprite("listrec-header"), 8, 8, 8, 8);
 		super.Initial();
 	}
 

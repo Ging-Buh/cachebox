@@ -1,5 +1,7 @@
 package CB_UI.GL_UI.Controls;
 
+import org.slf4j.LoggerFactory;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -10,15 +12,18 @@ import CB_Core.Types.Waypoint;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
 
 public class InfoBubble extends CB_View_Base {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(InfoBubble.class);
 
 	public InfoBubble(SizeF Size, String Name) {
 		super(Size, Name);
+		saveIcon = new SpriteDrawable(Sprites.getSprite(IconName.save.name()));
 		registerSkinChangedEvent();
 	}
 
@@ -42,7 +47,7 @@ public class InfoBubble extends CB_View_Base {
 	private Cache mCache = null;
 	private Waypoint mWaypoint = null;
 	private CacheInfo cacheInfo;
-	private final Drawable saveIcon = new SpriteDrawable(SpriteCacheBase.Icons.get(SpriteCacheBase.IconName.save_66.ordinal()));
+	private final Drawable saveIcon;
 
 	public void setCache(Cache cache, Waypoint waypoint) {
 		setCache(cache, waypoint, false);
@@ -70,7 +75,7 @@ public class InfoBubble extends CB_View_Base {
 		// SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
 		SizeF size = new SizeF(0.96f * getWidth(), 0.72f * getHeight());
 
-		// if Cache a event we must load details for needed DateHidden
+		// if Cache is an event we must load details for DateHidden
 		if (mCache.isEvent() && !mCache.isDetailLoaded())
 			mCache.loadDetail();
 
@@ -95,10 +100,10 @@ public class InfoBubble extends CB_View_Base {
 	protected void render(Batch batch) {
 		boolean selectedCache = false;
 		if (GlobalCore.isSetSelectedCache()) {
-			selectedCache = mCache.Id == GlobalCore.getSelectedCache().Id;
+			selectedCache = mCache.equals(GlobalCore.getSelectedCache());
 		}
 
-		Sprite sprite = selectedCache ? SpriteCacheBase.Bubble.get(1) : SpriteCacheBase.Bubble.get(0);
+		Sprite sprite = selectedCache ? Sprites.Bubble.get(1) : Sprites.Bubble.get(0);
 		sprite.setPosition(0, 0);
 		sprite.setSize(getWidth(), getHeight());
 		sprite.draw(batch);

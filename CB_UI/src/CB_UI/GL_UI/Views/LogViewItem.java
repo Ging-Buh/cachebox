@@ -26,7 +26,7 @@ import com.badlogic.gdx.utils.Clipboard;
 import CB_Core.Types.LogEntry;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.Fonts;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
@@ -64,7 +64,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
 	private void iniImage() {
 		ivTyp = new Image(getLeftWidth(), this.getHeight() - (headHeight / 2) - (UI_Size_Base.that.getButtonHeight() / 1.5f / 2), UI_Size_Base.that.getButtonHeight() / 1.5f, UI_Size_Base.that.getButtonHeight() / 1.5f, "", false);
 		this.addChild(ivTyp);
-		ivTyp.setDrawable(new SpriteDrawable(SpriteCacheBase.LogIcons.get(logEntry.Type.getIconID())));
+		ivTyp.setDrawable(new SpriteDrawable(Sprites.LogIcons.get(logEntry.Type.getIconID())));
 		secondTab = ivTyp.getMaxX() + (UI_Size_Base.that.getMargin() * 2);
 	}
 
@@ -97,7 +97,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
 
 	@Override
 	protected void Initial() {
-		backheader = new NinePatch(SpriteCacheBase.getThemedSprite("listrec-header"), 8, 8, 8, 8);
+		backheader = new NinePatch(Sprites.getSprite("listrec-header"), 8, 8, 8, 8);
 		super.Initial();
 	}
 

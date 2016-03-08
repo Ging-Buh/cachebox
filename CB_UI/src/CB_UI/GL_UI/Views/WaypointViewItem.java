@@ -22,7 +22,7 @@ import CB_UI.GL_UI.Controls.CacheInfo;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.ParentInfo;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
@@ -38,7 +38,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
 	private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
 	private CB_RectF ArrowRec;
-	private Sprite arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
+	private Sprite arrow = new Sprite(Sprites.Arrows.get(0));
 	private BitmapFontCache distance;
 	private Sprite mIconSprite;
 	private float mIconSize = 0;
@@ -152,7 +152,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 				// alpha
 				{
 					float size = this.getHeight() / 2.3f;
-					arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
+					arrow = new Sprite(Sprites.Arrows.get(0));
 					arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
 					arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 				}
@@ -279,9 +279,9 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 			{ // Icon Sprite erstellen
 				// MultiStage Waypoint anders darstellen wenn dieser als Startpunkt definiert ist
 				if ((mWaypoint.Type == CacheTypes.MultiStage) && mWaypoint.IsStart)
-					mIconSprite = new Sprite(SpriteCacheBase.getThemedSprite("big" + CacheTypes.Multi + "StartP"));
+					mIconSprite = new Sprite(Sprites.getSprite("big" + CacheTypes.MultiStage.name() + "StartP"));
 				else
-					mIconSprite = new Sprite(SpriteCacheBase.getThemedSprite("big" + mWaypoint.Type.name()));
+					mIconSprite = new Sprite(Sprites.getSprite("big" + mWaypoint.Type.name()));
 
 				mIconSprite.setSize(mIconSize, mIconSize);
 				mIconSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);

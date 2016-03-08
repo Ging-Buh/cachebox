@@ -12,7 +12,7 @@ import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.ImageButton;
 import CB_UI_Base.GL_UI.Controls.Label;
@@ -46,9 +46,9 @@ public class DeleteDialog extends ButtonDialog {
 		btDelArchived = new ImageButton(MTBRec, "btSelectWP");
 		btDelFounds = new ImageButton(MTBRec, "btDeleteP");
 
-		btDelFilter.setImage(SpriteCacheBase.getSpriteDrawable("delete-filter"));
-		btDelArchived.setImage(SpriteCacheBase.getSpriteDrawable("delete-archived"));
-		btDelFounds.setImage(SpriteCacheBase.getSpriteDrawable("delete-founds"));
+		btDelFilter.setImage(Sprites.getSpriteDrawable("delete-filter"));
+		btDelArchived.setImage(Sprites.getSpriteDrawable("delete-archived"));
+		btDelFounds.setImage(Sprites.getSpriteDrawable("delete-founds"));
 
 		lblDelFilter = new Label(Translation.Get("DelActFilter"), Fonts.getSmall(), null, WrapType.WRAPPED).setHAlignment(HAlignment.CENTER);
 		lblDelArchived = new Label(Translation.Get("DelArchived"), Fonts.getSmall(), null, WrapType.WRAPPED).setHAlignment(HAlignment.CENTER);

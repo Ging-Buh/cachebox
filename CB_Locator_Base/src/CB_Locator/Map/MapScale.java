@@ -29,7 +29,7 @@ import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
 
 public class MapScale extends CB_View_Base implements invalidateTextureEvent {
@@ -143,7 +143,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent {
 		try {
 			GlyphLayout bounds = fontCache.setText(distanceString, 0, fontCache.getFont().isFlipped() ? 0 : fontCache.getFont().getCapHeight());
 			this.setWidth((float) (drawableWidth + (bounds.width * 1.3)));
-			CachedScaleDrawable = SpriteCacheBase.MapScale[scaleUnits - 3];
+			CachedScaleDrawable = Sprites.MapScale[scaleUnits - 3];
 			float margin = (this.getHeight() - bounds.height) / 1.6f;
 			fontCache.setPosition(this.getWidth() - bounds.width - margin, margin);
 		} catch (Exception e) {

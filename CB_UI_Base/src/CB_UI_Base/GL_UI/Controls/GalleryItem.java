@@ -15,7 +15,7 @@
  */
 package CB_UI_Base.GL_UI.Controls;
 
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -74,7 +74,7 @@ public class GalleryItem extends ListViewItemBackground {
 	@Override
 	protected void Initial() {
 		if (!mBackIsInitial) {
-			backSelect = new NinePatch(SpriteCacheBase.getThemedSprite("listrec-first"), 13, 13, 13, 13);
+			backSelect = new NinePatch(Sprites.getSprite("listrec-first"), 13, 13, 13, 13);
 			mBackIsInitial = true;
 		}
 	}

@@ -62,4 +62,8 @@ public class Stack<T> {
 		return sb.toString();
 	}
 
+    public void clear() {
+	m_list.clear();
+    }
+
 }

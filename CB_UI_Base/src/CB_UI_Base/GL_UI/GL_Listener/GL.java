@@ -59,7 +59,7 @@ import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.IRenderFBO;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.ParentInfo;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.ViewID;
 import CB_UI_Base.GL_UI.render3D;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
@@ -86,7 +86,6 @@ import CB_Utils.Util.IChanged;
 
 public class GL implements ApplicationListener, InputProcessor {
 
-	// final static org.slf4j.Logger log = LoggerFactory.getLogger(GL.class);
 	// Public Static Constants
 	public static final int MAX_KINETIC_SCROLL_DISTANCE = 100;
 	public static final int FRAME_RATE_IDLE = 200;
@@ -119,17 +118,17 @@ public class GL implements ApplicationListener, InputProcessor {
 
 	// Private Static Member
 	public static AtomicBoolean started = new AtomicBoolean(false);
-	public static boolean misTouchDown = false;
+	private static boolean isTouchDown = false;
 
 	// private Member
 	private boolean touchDraggedActive = false;
 	private Point touchDraggedCorrect = new Point(0, 0);
 	protected boolean ToastIsShown = false;
 	protected boolean stopRender = false;
-	private boolean darknesAnimationRuns = false;
+	private boolean darknessAnimationRuns = false;
 	protected boolean MarkerIsShown = false;
 	protected int FpsInfoPos = 0;
-	private float darknesAlpha = 0f;
+	private float darknessAlpha = 0f;
 	private long mLongClickTime = 0;
 	private final long mDoubleClickTime = 500;
 	private long lastClickTime = 0;
@@ -582,8 +581,8 @@ public class GL implements ApplicationListener, InputProcessor {
 			batch.setProjectionMatrix(prjMatrix.Matrix());
 		}
 
-		if (GL_View_Base.debug && misTouchDown) {
-			Sprite point = SpriteCacheBase.LogIcons.get(14);
+		if (GL_View_Base.debug && isTouchDown) {
+			Sprite point = Sprites.LogIcons.get(14);
 			TouchDownPointer first = touchDownPos.get(0);
 
 			if (first != null) {
@@ -614,10 +613,9 @@ public class GL implements ApplicationListener, InputProcessor {
 			if (FpsInfoSprite != null) {
 				batch.draw(FpsInfoSprite, FpsInfoPos, 2, FpsInfoSize, FpsInfoSize);
 			} else {
-				if (SpriteCacheBase.Stars != null)// SpriteCache is initial
+				if (Sprites.Stars != null)// SpriteCache is initial
 				{
-
-					FpsInfoSprite = new Sprite(SpriteCacheBase.getThemedSprite("pixel2x2"));
+					FpsInfoSprite = new Sprite(Sprites.getSprite("pixel2x2"));
 					FpsInfoSprite.setColor(1.0f, 1.0f, 0.0f, 1.0f);
 					FpsInfoSprite.setSize(FpsInfoSize, FpsInfoSize);
 				}
@@ -688,7 +686,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	public void dispose() {
 		disposeTexture();
 
-		SpriteCacheBase.destroyCache();
+		Sprites.destroyCache();
 		try {
 			Translation.writeMisingStringsFile();
 		} catch (IOException e) {
@@ -735,7 +733,7 @@ public class GL implements ApplicationListener, InputProcessor {
 	}
 
 	public static boolean getIsTouchDown() {
-		return misTouchDown;
+		return isTouchDown;
 	}
 
 	public int getFpsInfoPos() {
@@ -753,10 +751,9 @@ public class GL implements ApplicationListener, InputProcessor {
 	// TouchEreignisse die von der View gesendet werden
 	// hier wird entschieden, wann TouchDonw, TouchDragged, TouchUp und Clicked, LongClicked Ereignisse gesendet werden müssen
 	public boolean onTouchDownBase(int x, int y, int pointer, int button) {
-
 		resetAmbianeMode();
 
-		misTouchDown = true;
+		isTouchDown = true;
 		touchDraggedActive = false;
 		touchDraggedCorrect = new Point(0, 0);
 
@@ -867,15 +864,13 @@ public class GL implements ApplicationListener, InputProcessor {
 	}
 
 	public boolean onTouchUpBase(int x, int y, int pointer, int button) {
-		misTouchDown = false;
+		isTouchDown = false;
 		cancelLongClickTimer();
 
 		CB_View_Base testingView = DialogIsShown ? mDialog : ActivityIsShown ? mActivity : child;
 
 		if (!touchDownPos.containsKey(pointer)) {
-			// für diesen Pointer ist kein touchDownPos gespeichert ->
-			// dürfte nicht passieren!!!
-
+			// für diesen Pointer ist kein touchDownPos gespeichert -> dürfte nicht passieren!!!
 			return false;
 		}
 
@@ -903,13 +898,14 @@ public class GL implements ApplicationListener, InputProcessor {
 						lastClickTime = System.currentTimeMillis();
 						lastClickPoint = akt;
 					}
+				} else {
+					// onTouchUpBase: view is not clickable.
 				}
 			} else {
 				x -= touchDraggedCorrect.x;
 				y -= touchDraggedCorrect.y;
 			}
 		} catch (Exception e) {
-			// log.error("GL_Listener.onTouchUpBase()", "", e);
 		}
 
 		try {
@@ -922,7 +918,6 @@ public class GL implements ApplicationListener, InputProcessor {
 				touchDownPos.remove(pointer);
 			}
 		} catch (Exception e) {
-			// log.error("GL_Listener.onTouchUpBase()", "", e);
 		}
 
 		return true;
@@ -1023,12 +1018,12 @@ public class GL implements ApplicationListener, InputProcessor {
 		}
 
 		if (mDarknesSprite != null)
-			mDarknesSprite.draw(batch, darknesAlpha);
-		if (darknesAnimationRuns) {
-			darknesAlpha += 0.1f;
-			if (darknesAlpha > 1f) {
-				darknesAlpha = 1f;
-				darknesAnimationRuns = false;
+			mDarknesSprite.draw(batch, darknessAlpha);
+		if (darknessAnimationRuns) {
+			darknessAlpha += 0.1f;
+			if (darknessAlpha > 1f) {
+				darknessAlpha = 1f;
+				darknessAnimationRuns = false;
 			}
 			renderOnce();
 		}
@@ -1561,7 +1556,7 @@ public class GL implements ApplicationListener, InputProcessor {
 
 		child.setClickable(false);
 		DialogIsShown = true;
-		darknesAnimationRuns = true;
+		darknessAnimationRuns = true;
 		actDialog.onShow();
 		try {
 			actDialog.setEnabled(true);
@@ -1584,7 +1579,7 @@ public class GL implements ApplicationListener, InputProcessor {
 			closePopUp(aktPopUp);
 		}
 
-		darknesAnimationRuns = true;
+		darknessAnimationRuns = true;
 
 		// Center activity on Screen
 		float x = (width - activity.getWidth()) / 2;
@@ -1665,7 +1660,7 @@ public class GL implements ApplicationListener, InputProcessor {
 			child.setClickable(true);
 			// child.invalidate();
 			ActivityIsShown = false;
-			darknesAlpha = 0f;
+			darknessAlpha = 0f;
 			if (MsgToPlatformConector)
 				PlatformConnector.hideForDialog();
 			if (!Global.isTab)
@@ -1748,7 +1743,7 @@ public class GL implements ApplicationListener, InputProcessor {
 			child.setClickable(true);
 			// child.invalidate();
 			DialogIsShown = false;
-			darknesAlpha = 0f;
+			darknessAlpha = 0f;
 		}
 
 		if (dialog != null) {
@@ -2050,8 +2045,8 @@ public class GL implements ApplicationListener, InputProcessor {
 	 */
 	@Override
 	public boolean touchUp(int x, int y, int pointer, int button) {
-		return onTouchUpBase(x, y, pointer, button);
-
+		boolean ret = onTouchUpBase(x, y, pointer, button);
+		return ret;
 	}
 
 	@Override

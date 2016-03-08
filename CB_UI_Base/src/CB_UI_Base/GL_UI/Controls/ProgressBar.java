@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
@@ -31,15 +31,15 @@ public class ProgressBar extends CB_View_Base {
 	@Override
 	protected void Initial() {
 		if (drawableBackground == null) {
-			setBackground(SpriteCacheBase.ProgressBack);
+			setBackground(Sprites.ProgressBack);
 		}
 
 		if (progressFill == null) {
-			progressFill = SpriteCacheBase.ProgressFill;
+			progressFill = Sprites.ProgressFill;
 		}
 
 		if (progressFillDisabled == null) {
-			progressFillDisabled = SpriteCacheBase.ProgressDisabled;
+			progressFillDisabled = Sprites.ProgressDisabled;
 		}
 
 		GL.that.renderOnce();

@@ -22,7 +22,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.ColorPickerRec;
@@ -128,7 +128,7 @@ public class ColorPicker extends ActivityBase {
 
 		rec.setWidth(rec.getHeight());
 		arrow = new Image(rec, "arrowImage", false);
-		arrow.setDrawable(new SpriteDrawable(SpriteCacheBase.Arrows.get(11)));
+		arrow.setDrawable(new SpriteDrawable(Sprites.Arrows.get(11)));
 
 		float lineWidth = lastColorBox.getWidth() + margin + arrow.getWidth() + margin + actColorBox.getWidth();
 		float left = this.getHalfWidth() - (lineWidth / 2);
@@ -148,13 +148,13 @@ public class ColorPicker extends ActivityBase {
 		float vWidth = bOK.getHeight();
 
 		viewHue = new Image(this.getWidth() - rightBorder - margin - vWidth, actColorBox.getMaxY() + margin, vWidth, this.getHeight() - this.getTopHeight() - actColorBox.getMaxY() - margin * 2, "viewHue", false);
-		viewHue.setDrawable(new SpriteDrawable(SpriteCacheBase.ambilwarna_hue));
+		viewHue.setDrawable(new SpriteDrawable(Sprites.ambilwarna_hue));
 		this.addChild(viewHue);
 
 		float cursorSize = Fonts.Measure("T").height;
 
 		viewCursor = new Image(0, 0, cursorSize, cursorSize, "", false);
-		viewCursor.setDrawable(new SpriteDrawable(SpriteCacheBase.ambilwarna_cursor));
+		viewCursor.setDrawable(new SpriteDrawable(Sprites.ambilwarna_cursor));
 		this.addChild(viewCursor);
 
 	}
@@ -190,7 +190,7 @@ public class ColorPicker extends ActivityBase {
 		float cursorSize = Fonts.Measure("T").height;
 
 		viewTarget = new Image(0, 0, cursorSize, cursorSize, "", false);
-		viewTarget.setDrawable(new SpriteDrawable(SpriteCacheBase.ambilwarna_target));
+		viewTarget.setDrawable(new SpriteDrawable(Sprites.ambilwarna_target));
 		this.addChild(viewTarget);
 
 	}
