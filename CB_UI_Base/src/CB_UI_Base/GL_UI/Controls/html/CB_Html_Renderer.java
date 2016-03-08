@@ -102,6 +102,10 @@ public class CB_Html_Renderer extends Renderer {
     }
 
     public List<Html_Segment> getElementList() {
+
+	//clear last atributeStack
+	CB_HtmlProcessor.AtributeStack.clear();
+
         List<Html_Segment> segList = new CB_HtmlProcessor(this, rootSegment, getHRLineLength(), getNewLine(), getIncludeHyperlinkURLs(), getIncludeAlternateText(), getDecorateFontStyles(), getConvertNonBreakingSpaces(), getBlockIndentSize(),
                 getListIndentSize(), getListBullets(), getTableCellSeparator()).getElementList();
 

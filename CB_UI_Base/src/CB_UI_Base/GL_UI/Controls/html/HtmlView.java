@@ -466,6 +466,7 @@ public class HtmlView extends ScrollBox implements ListLayout {
 		    view = null;
 		}
 		contentBox.dispose();
+		contentBox = null;
 	    }
 	}
     }
