@@ -418,6 +418,8 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
      * All items within the last row processed in the layout!
      */
     public void FinaliseRow() {
+	if (this.row.size() == 0)
+	    return;
 	GL_View_Base lastItem = this.row.remove(this.row.size() - 1);
 	addLast(lastItem);
     }
@@ -426,6 +428,8 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
      * All items within the last row processed in the layout!
      */
     public void FinaliseRow(float Weight) {
+	if (this.row.size() == 0)
+	    return;
 	GL_View_Base lastItem = this.row.remove(this.row.size() - 1);
 	addLast(lastItem, Weight);
     }
