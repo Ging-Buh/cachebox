@@ -1,12 +1,9 @@
 package CB_UI.GL_UI.Activitys.settings;
 
-import CB_Utils.fileProvider.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import CB_Utils.fileProvider.FileFactory;
-import CB_Utils.fileProvider.FilenameFilter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
@@ -87,6 +84,9 @@ import CB_Utils.Settings.SettingTime;
 import CB_Utils.Settings.SettingUsage;
 import CB_Utils.Settings.SettingsAudio;
 import CB_Utils.Util.FileIO;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
+import CB_Utils.fileProvider.FilenameFilter;
 
 public class SettingsActivity extends ActivityBase implements SelectedLangChangedEvent {
 
@@ -1366,7 +1366,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		File dir = FileFactory.createFile(SkinFolder);
 
 		final ArrayList<String> skinFolders = new ArrayList<String>();
-		dir.listFiles(new FilenameFilter() {
+		File[] x = dir.listFiles(new FilenameFilter() {
 
 			@Override
 			public boolean accept(File f, String name) {
@@ -1381,6 +1381,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 			}
 		});
 
+		//skinFolders = x.size()
 		final String[] items = new String[skinFolders.size() + 2];// + internal (default and small)
 
 		items[0] = "default";

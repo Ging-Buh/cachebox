@@ -46,9 +46,9 @@ public interface CB_UI_Base_Settings extends CB_Utils_Settings {
 	public static final SettingInt FONT_SIZE_SMALL = new SettingInt("FONT_SIZE_SMALL", SettingCategory.Skin, EXPERT, 12, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingInt FONT_SIZE_SMALL_BUBBLE = new SettingInt("FONT_SIZE_SMALL_BUBBLE", SettingCategory.Skin, EXPERT, 10, SettingStoreType.Global, SettingUsage.ACB);
 
-	public static final SettingBool useMipMap = new SettingBool("useMipMap", SettingCategory.Skin, NORMAL, false, SettingStoreType.Global, SettingUsage.ACB);
-	public static final SettingBool dontUseAmbient = new SettingBool("dontUseAmbient", SettingCategory.Skin, NORMAL, true, SettingStoreType.Global, SettingUsage.ACB);
-	public static final SettingInt ambientTime = new SettingInt("ambientTime", SettingCategory.Skin, NORMAL, 10, SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingBool useMipMap = new SettingBool("useMipMap", SettingCategory.Skin, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingBool dontUseAmbient = new SettingBool("dontUseAmbient", SettingCategory.Skin, EXPERT, true, SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingInt ambientTime = new SettingInt("ambientTime", SettingCategory.Skin, EXPERT, 10, SettingStoreType.Global, SettingUsage.ACB);
 
 	public static final SettingDouble MapViewFontFaktor = new SettingDouble("MapViewFontFaktor", SettingCategory.Map, NEVER, 1.0, SettingStoreType.Global, SettingUsage.ACB);
 
@@ -64,7 +64,7 @@ public interface CB_UI_Base_Settings extends CB_Utils_Settings {
 
 	public static final SettingColor LiveMapBackgroundColor = new SettingColor("LiveMapBackgroundColor", SettingCategory.LiveMap, NORMAL, new HSV_Color(0.8f, 0.8f, 1f, 1f), SettingStoreType.Global, SettingUsage.ACB);
 
-	public static final SettingColor SolvedMysteryColor = new SettingColor("SolvedMysteryColor", SettingCategory.Skin, NORMAL, new HSV_Color(0.2f, 1f, 0.2f, 1f), SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingColor SolvedMysteryColor = new SettingColor("SolvedMysteryColor", SettingCategory.Skin, EXPERT, new HSV_Color(0.2f, 1f, 0.2f, 1f), SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool SettingsShowExpert = new SettingBool("SettingsShowExpert", SettingCategory.Internal, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool SettingsShowAll = new SettingBool("SettingsShowAll", SettingCategory.Internal, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingFile Sel_LanguagePath = (SettingFile) SettingsList.addSetting(new SettingFile("Sel_LanguagePath", SettingCategory.Folder, NEVER, "data/lang/en-GB/strings.ini", SettingStoreType.Platform, SettingUsage.ALL, "lan"));

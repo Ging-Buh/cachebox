@@ -1,9 +1,6 @@
 package CB_Utils.Settings;
 
 public class Audio {
-	protected Audio() {
-		// dont Use
-	}
 
 	public Audio(String path, boolean absolute, boolean mute, float volume) {
 		super();

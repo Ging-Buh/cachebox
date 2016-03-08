@@ -57,7 +57,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 	public static final int CurrentRevision = 20160308;
 
 	public static final String CurrentVersion = "0.8.";
-	public static final String VersionPrefix = "Test-svn2687";
+	public static final String VersionPrefix = "Test-svn2697";
 
 	public static final String aboutMsg1 = "Team Cachebox (2011-2016)" + br;
 	public static final String teamLink = "www.team-cachebox.de";
@@ -75,8 +75,8 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 	public final static GlobalCore INSTANCE = new GlobalCore();
 
 	private GlobalCore() {
-	super();
-	Solver.solverCacheInterface = this;
+		super();
+		Solver.solverCacheInterface = this;
 	}
 
 	// #######################################
@@ -93,39 +93,39 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 	private static boolean autoResort;
 
 	public static void setSelectedCache(Cache cache) {
-	setSelectedWaypoint(cache, null);
+		setSelectedWaypoint(cache, null);
 	}
 
 	public static Cache getSelectedCache() {
-	return selectedCache;
+		return selectedCache;
 	}
 
 	public static boolean selectedCachehasSpoiler() {
-	if (selectedCache != null) {
-		return selectedCache.SpoilerExists();
-	} else
-		return false;
+		if (selectedCache != null) {
+			return selectedCache.SpoilerExists();
+		} else
+			return false;
 	}
 
 	private static Cache nearestCache = null;
 
 	public static Cache NearestCache() {
-	return nearestCache;
+		return nearestCache;
 	}
 
 	private static Waypoint selectedWaypoint = null;
 
 	public static void setSelectedWaypoint(Cache cache, Waypoint waypoint) {
-	if (cache == null)
-		return;
+		if (cache == null)
+			return;
 
-	setSelectedWaypoint(cache, waypoint, true);
-	if (waypoint == null) {
-		CoreSettingsForward.cacheHistory = cache.getGcCode() + "," + CoreSettingsForward.cacheHistory;
-		if (CoreSettingsForward.cacheHistory.length() > 120) {
-		CoreSettingsForward.cacheHistory = CoreSettingsForward.cacheHistory.substring(0, CoreSettingsForward.cacheHistory.lastIndexOf(","));
+		setSelectedWaypoint(cache, waypoint, true);
+		if (waypoint == null) {
+			CoreSettingsForward.cacheHistory = cache.getGcCode() + "," + CoreSettingsForward.cacheHistory;
+			if (CoreSettingsForward.cacheHistory.length() > 120) {
+				CoreSettingsForward.cacheHistory = CoreSettingsForward.cacheHistory.substring(0, CoreSettingsForward.cacheHistory.lastIndexOf(","));
+			}
 		}
-	}
 	}
 
 	/**
@@ -137,66 +137,66 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 	 */
 	public static void setSelectedWaypoint(Cache cache, Waypoint waypoint, boolean changeAutoResort) {
 
-	if (cache == null) {
-		log.info("[GlobalCore]setSelectedWaypoint: cache=null");
-		selectedCache = null;
-		selectedWaypoint = null;
-		return;
-	}
+		if (cache == null) {
+			log.info("[GlobalCore]setSelectedWaypoint: cache=null");
+			selectedCache = null;
+			selectedWaypoint = null;
+			return;
+		}
 
-	// // rewrite Changed Values ( like Favroite state)
-	// if (selectedCache != null)
-	// {
-	// if (!Cache.getGcCode().equals("CBPark"))
-	// {
-	// Cache lastCache = Database.Data.Query.GetCacheById(selectedCache.Id);
-	//
-	// }
-	// }
+		// // rewrite Changed Values ( like Favroite state)
+		// if (selectedCache != null)
+		// {
+		// if (!Cache.getGcCode().equals("CBPark"))
+		// {
+		// Cache lastCache = Database.Data.Query.GetCacheById(selectedCache.Id);
+		//
+		// }
+		// }
 
-	// remove Detail Info from old selectedCache
-	if ((selectedCache != cache) && (selectedCache != null) && (selectedCache.detail != null)) {
-		selectedCache.deleteDetail(Config.ShowAllWaypoints.getValue());
-	}
-	selectedCache = cache;
-	log.info("[GlobalCore]setSelectedWaypoint: cache=" + cache.getGcCode());
-	selectedWaypoint = waypoint;
+		// remove Detail Info from old selectedCache
+		if ((selectedCache != cache) && (selectedCache != null) && (selectedCache.detail != null)) {
+			selectedCache.deleteDetail(Config.ShowAllWaypoints.getValue());
+		}
+		selectedCache = cache;
+		log.info("[GlobalCore]setSelectedWaypoint: cache=" + cache.getGcCode());
+		selectedWaypoint = waypoint;
 
-	// load Detail Info if not available
-	if (selectedCache.detail == null) {
-		selectedCache.loadDetail();
-	}
+		// load Detail Info if not available
+		if (selectedCache.detail == null) {
+			selectedCache.loadDetail();
+		}
 
-	SelectedCacheEventList.Call(selectedCache, selectedWaypoint);
+		SelectedCacheEventList.Call(selectedCache, selectedWaypoint);
 
-	if (changeAutoResort) {
-		// switch off auto select
-		GlobalCore.setAutoResort(false);
-	}
+		if (changeAutoResort) {
+			// switch off auto select
+			GlobalCore.setAutoResort(false);
+		}
 
-	GL.that.renderOnce();
+		GL.that.renderOnce();
 	}
 
 	public static void setNearestCache(Cache Cache) {
-	nearestCache = Cache;
+		nearestCache = Cache;
 	}
 
 	public static Waypoint getSelectedWaypoint() {
-	return selectedWaypoint;
+		return selectedWaypoint;
 	}
 
 	/**
 	 * APIisOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen und ein API Access Token vorhanden ist.
 	 */
 	public static boolean APIisOnline() {
-	if (Config.GetAccessToken().length() == 0) {
-		log.info("GlobalCore.APIisOnline() - no GC - API AccessToken");
+		if (Config.GetAccessToken().length() == 0) {
+			log.info("GlobalCore.APIisOnline() - no GC - API AccessToken");
+			return false;
+		}
+		if (PlatformConnector.isOnline()) {
+			return true;
+		}
 		return false;
-	}
-	if (PlatformConnector.isOnline()) {
-		return true;
-	}
-	return false;
 	}
 
 	static boolean JaokerPwChk = false;
@@ -207,61 +207,61 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 	 * ist.
 	 */
 	public static boolean JokerisOnline() {
-	if (!JaokerPwChk) {
-		JokerPwExist = Config.GcJoker.getValue().length() == 0;
-		JaokerPwChk = true;
-	}
+		if (!JaokerPwChk) {
+			JokerPwExist = Config.GcJoker.getValue().length() == 0;
+			JaokerPwChk = true;
+		}
 
-	if (JokerPwExist) {
-		// log.info("GlobalCore.JokerisOnline() - no Joker Password");
+		if (JokerPwExist) {
+			// log.info("GlobalCore.JokerisOnline() - no Joker Password");
+			return false;
+		}
+		if (PlatformConnector.isOnline()) {
+			return true;
+		}
 		return false;
-	}
-	if (PlatformConnector.isOnline()) {
-		return true;
-	}
-	return false;
 	}
 
 	public static String getVersionString() {
-	final String ret = "Version: " + CurrentVersion + String.valueOf(CurrentRevision) + "  " + (VersionPrefix.equals("") ? "" : "(" + VersionPrefix + ")");
-	return ret;
+		final String ret = "Version: " + CurrentVersion + String.valueOf(CurrentRevision) + "  " + (VersionPrefix.equals("") ? "" : "(" + VersionPrefix + ")");
+		return ret;
 	}
 
 	public static Coordinate getSelectedCoord() {
-	Coordinate ret = null;
+		Coordinate ret = null;
 
-	if (selectedWaypoint != null) {
-		ret = selectedWaypoint.Pos;
-	} else if (selectedCache != null) {
-		ret = selectedCache.Pos;
-	}
+		if (selectedWaypoint != null) {
+			ret = selectedWaypoint.Pos;
+		} else if (selectedCache != null) {
+			ret = selectedCache.Pos;
+		}
 
-	return ret;
+		return ret;
 	}
 
 	public static void checkSelectedCacheValid() {
 
-	CacheList List = Database.Data.Query;
+		CacheList List = Database.Data.Query;
 
-	// Prüfen, ob der SelectedCache noch in der cacheList drin ist.
-	if ((List.size() > 0) && (GlobalCore.isSetSelectedCache()) && (List.GetCacheById(GlobalCore.getSelectedCache().Id) == null)) {
-		// der SelectedCache ist nicht mehr in der cacheList drin -> einen beliebigen aus der CacheList auswählen
-		log.debug("Change SelectedCache from " + GlobalCore.getSelectedCache().getGcCode() + "to" + List.get(0).getGcCode());
-		GlobalCore.setSelectedCache(List.get(0));
-	}
-	// Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
-	if ((GlobalCore.getSelectedCache() == null) && (List.size() > 0)) {
-		GlobalCore.setSelectedCache(List.get(0));
-		log.debug("Set SelectedCache to " + List.get(0).getGcCode() + " first in List.");
-	}
+		// Prüfen, ob der SelectedCache noch in der cacheList drin ist.
+		if ((List.size() > 0) && (GlobalCore.isSetSelectedCache()) && (List.GetCacheById(GlobalCore.getSelectedCache().Id) == null)) {
+			// der SelectedCache ist nicht mehr in der cacheList drin -> einen beliebigen aus der CacheList auswählen
+			log.debug("Change SelectedCache from " + GlobalCore.getSelectedCache().getGcCode() + "to" + List.get(0).getGcCode());
+			GlobalCore.setSelectedCache(List.get(0));
+		}
+		// Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
+		if ((GlobalCore.getSelectedCache() == null) && (List.size() > 0)) {
+			GlobalCore.setSelectedCache(List.get(0));
+			log.debug("Set SelectedCache to " + List.get(0).getGcCode() + " first in List.");
+		}
 	}
 
 	public static boolean getAutoResort() {
-	return autoResort;
+		return autoResort;
 	}
 
 	public static void setAutoResort(boolean value) {
-	GlobalCore.autoResort = value;
+		GlobalCore.autoResort = value;
 	}
 
 	private static CancelWaitDialog wd;
@@ -269,130 +269,130 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 	public static boolean RunFromSplash = false;
 
 	public static CancelWaitDialog ImportSpoiler() {
-	wd = CancelWaitDialog.ShowWait(Translation.Get("chkApiState"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
+		wd = CancelWaitDialog.ShowWait(Translation.Get("chkApiState"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
-		@Override
-		public void isCanceld() {
-		// TODO Handle Cancel
+			@Override
+			public void isCanceld() {
+				// TODO Handle Cancel
 
-		}
-	}, new cancelRunnable() {
+			}
+		}, new cancelRunnable() {
 
-		@Override
-		public void run() {
-		Importer importer = new Importer();
-		ImporterProgress ip = new ImporterProgress();
-		int result = importer.importSpoilerForCacheNew(ip, GlobalCore.getSelectedCache());
-		wd.close();
-		if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
-			GL.that.Toast(ConnectionError.INSTANCE);
-			return;
-		}
+			@Override
+			public void run() {
+				Importer importer = new Importer();
+				ImporterProgress ip = new ImporterProgress();
+				int result = importer.importSpoilerForCacheNew(ip, GlobalCore.getSelectedCache());
+				wd.close();
+				if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
+					GL.that.Toast(ConnectionError.INSTANCE);
+					return;
+				}
 
-		if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
-			GL.that.Toast(ApiUnavailable.INSTANCE);
-			return;
-		}
-		}
+				if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
+					GL.that.Toast(ApiUnavailable.INSTANCE);
+					return;
+				}
+			}
 
-		@Override
-		public boolean cancel() {
-		// TODO Handle Cancel
-		return false;
-		}
-	});
-	return wd;
+			@Override
+			public boolean cancel() {
+				// TODO Handle Cancel
+				return false;
+			}
+		});
+		return wd;
 	}
 
 	public interface IChkRedyHandler {
-	public void checkReady(int MemberTypeId);
+		public void checkReady(int MemberTypeId);
 	}
 
 	static CancelWaitDialog dia;
 
 	public static void MsgDownloadLimit() {
-	GL.that.RunOnGLWithThreadCheck(new IRunOnGL() {
+		GL.that.RunOnGLWithThreadCheck(new IRunOnGL() {
 
-		@Override
-		public void run() {
-		GL_MsgBox.Show(Translation.Get("Limit_msg"), Translation.Get("Limit_title"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
-		}
-	});
+			@Override
+			public void run() {
+				GL_MsgBox.Show(Translation.Get("Limit_msg"), Translation.Get("Limit_title"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
+			}
+		});
 
 	}
 
 	public static void chkAPiLogInWithWaitDialog(final IChkRedyHandler handler) {
 
-	if (GroundspeakAPI.ApiLimit()) {
-		MsgDownloadLimit();
-		return;
-	}
-
-	if (!GroundspeakAPI.mAPI_isChecked()) {
-		dia = CancelWaitDialog.ShowWait("chk API Key", DownloadAnimation.GetINSTANCE(), new IcancelListener() {
-
-		@Override
-		public void isCanceld() {
-			dia.close();
+		if (GroundspeakAPI.ApiLimit()) {
+			MsgDownloadLimit();
+			return;
 		}
-		}, new cancelRunnable() {
 
-			@Override
-			public void run() {
-			final int ret = GroundspeakAPI.chkMembership(false);
-			dia.close();
+		if (!GroundspeakAPI.mAPI_isChecked()) {
+			dia = CancelWaitDialog.ShowWait("chk API Key", DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
-			Timer ti = new Timer();
-			TimerTask task = new TimerTask() {
+				@Override
+				public void isCanceld() {
+					dia.close();
+				}
+			}, new cancelRunnable() {
 
 				@Override
 				public void run() {
-				handler.checkReady(ret);
+					final int ret = GroundspeakAPI.chkMembership(false);
+					dia.close();
+
+					Timer ti = new Timer();
+					TimerTask task = new TimerTask() {
+
+						@Override
+						public void run() {
+							handler.checkReady(ret);
+						}
+					};
+					ti.schedule(task, 300);
+
 				}
-			};
-			ti.schedule(task, 300);
 
-			}
-
-			@Override
-			public boolean cancel() {
-			// TODO Handle Cancel
-			return false;
-			}
-		});
-	} else {
-		handler.checkReady(GroundspeakAPI.chkMembership(true));
-	}
+				@Override
+				public boolean cancel() {
+					// TODO Handle Cancel
+					return false;
+				}
+			});
+		} else {
+			handler.checkReady(GroundspeakAPI.chkMembership(true));
+		}
 
 	}
 
 	@Override
 	protected String getVersionPrefix() {
-	return VersionPrefix;
+		return VersionPrefix;
 	}
 
 	// Interface für den Solver zum Zugriff auf den SelectedCache.
 	// Direkter Zugriff geht nicht da der Solver im Core definiert ist
 	@Override
 	public Cache sciGetSelectedCache() {
-	return getSelectedCache();
+		return getSelectedCache();
 	}
 
 	@Override
 	public void sciSetSelectedCache(Cache cache) {
-	setSelectedCache(cache);
-	CacheListChangedEventList.Call();
+		setSelectedCache(cache);
+		CacheListChangedEventList.Call();
 	}
 
 	@Override
 	public void sciSetSelectedWaypoint(Cache cache, Waypoint waypoint) {
-	setSelectedWaypoint(cache, waypoint);
-	CacheListChangedEventList.Call();
+		setSelectedWaypoint(cache, waypoint);
+		CacheListChangedEventList.Call();
 	}
 
 	@Override
 	public Waypoint sciGetSelectedWaypoint() {
-	return getSelectedWaypoint();
+		return getSelectedWaypoint();
 	}
 
 	/**
@@ -401,13 +401,13 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 	 * @return
 	 */
 	public static boolean isSetSelectedCache() {
-	if (selectedCache == null)
-		return false;
+		if (selectedCache == null)
+			return false;
 
-	if (selectedCache.getGcCode().length() == 0)
-		return false;
+		if (selectedCache.getGcCode().length() == 0)
+			return false;
 
-	return true;
+		return true;
 	}
 
 }

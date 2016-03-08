@@ -32,7 +32,7 @@ public interface LocatorSettings {
 	public static final SettingFolder MapPackFolderLocal = new SettingFolder("MapPackFolderLocal", SettingCategory.Folder, NEVER, Config_Core.mWorkPath + "/repository/maps", SettingStoreType.Local, SettingUsage.ALL, false);
 
 	public static final SettingString CurrentMapLayer = (SettingString) SettingsList.addSetting(new SettingString("CurrentMapLayer", SettingCategory.Map, DEVELOPER, "Mapnik", SettingStoreType.Global, SettingUsage.ACB));
-	public static final SettingString CurrentMapOverlayLayer = (SettingString) SettingsList.addSetting(new SettingString("CurrentMapOverlayLayer", SettingCategory.Map, EXPERT, "", SettingStoreType.Global, SettingUsage.ACB));
+	public static final SettingString CurrentMapOverlayLayer = (SettingString) SettingsList.addSetting(new SettingString("CurrentMapOverlayLayer", SettingCategory.Map, NORMAL, "", SettingStoreType.Global, SettingUsage.ACB));
 
 	public static final SettingDouble MapInitLatitude = new SettingDouble("MapInitLatitude", SettingCategory.Positions, EXPERT, -1000, SettingStoreType.Global, SettingUsage.ALL);
 
@@ -55,9 +55,9 @@ public interface LocatorSettings {
 	public static final SettingIntArray CompassMapMinZoomLevel = new SettingIntArray("CompassMapMinZoomLevel", SettingCategory.Map, EXPERT, 13, SettingStoreType.Global, SettingUsage.ACB, LocatorSettings.Level);
 	public static final SettingIntArray CompassMapMaxZommLevel = new SettingIntArray("CompassMapMaxZommLevel", SettingCategory.Map, EXPERT, 20, SettingStoreType.Global, SettingUsage.ACB, LocatorSettings.Level);
 
-	public static final SettingFile MapsforgeDayTheme = (SettingFile) SettingsList.addSetting(new SettingFile("MapsforgeDayTheme", SettingCategory.Skin, NORMAL, "", SettingStoreType.Global, SettingUsage.ALL, "xml"));
+	public static final SettingFile MapsforgeDayTheme = (SettingFile) SettingsList.addSetting(new SettingFile("MapsforgeDayTheme", SettingCategory.Map, NORMAL, "", SettingStoreType.Global, SettingUsage.ALL, "xml"));
 
-	public static final SettingFile MapsforgeNightTheme = (SettingFile) SettingsList.addSetting(new SettingFile("MapsforgeNightTheme", SettingCategory.Skin, NORMAL, "", SettingStoreType.Global, SettingUsage.ACB, "xml"));
+	public static final SettingFile MapsforgeNightTheme = (SettingFile) SettingsList.addSetting(new SettingFile("MapsforgeNightTheme", SettingCategory.Map, NORMAL, "", SettingStoreType.Global, SettingUsage.ACB, "xml"));
 
 	public static final SettingEnum<GL_RenderType> MapsforgeRenderType = new SettingEnum<GL_RenderType>("MapsforgeRenderType", SettingCategory.Map, EXPERT, GL_RenderType.Mixing, SettingStoreType.Global, SettingUsage.ACB, GL_RenderType.Mixing);
 
