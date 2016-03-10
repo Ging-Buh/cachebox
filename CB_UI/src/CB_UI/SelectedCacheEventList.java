@@ -40,7 +40,7 @@ public class SelectedCacheEventList {
 		}
 
 		if (change)
-			GlobalLocationReceiver.resetApprouch();
+			GlobalLocationReceiver.resetApproach();
 
 		if (selectChangeThread != null) {
 			if (selectChangeThread.getState() != Thread.State.TERMINATED)

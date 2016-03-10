@@ -200,7 +200,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 		return "GlobalLocationReceiver";
 	}
 
-	public static void resetApprouch() {
+	public static void resetApproach() {
 
 		// set approach sound if the distance low
 

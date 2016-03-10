@@ -16,10 +16,14 @@
 
 package CB_UI.GL_UI.Main.Actions;
 
+import java.util.Collections;
+import java.util.Comparator;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import CB_Locator.Map.Layer;
 import CB_Locator.Map.ManagerBase;
+import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.TrackRecorder;
 import CB_UI.GL_UI.Activitys.MapDownload;
@@ -103,30 +107,20 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 
 	private void showMapLayerMenu() {
 		Menu icm = new Menu("MapViewShowLayerContextMenu");
+		icm.addItem(MenuID.MI_MAPVIEW_OVERLAY_VIEW, "overlays");
+		int Index = 0;
 
-		icm.addOnClickListener(new OnClickListener() {
-
+		// Sorting (perhaps use an arraylist of layers without the overlay layers) 
+		Collections.sort(ManagerBase.Manager.getLayers(), new Comparator<Layer>() {
 			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-
-				if (((MenuItem) v).getMenuItemId() == MenuID.MI_MAPVIEW_OVERLAY_VIEW) {
-					showMapOverlayMenu();
-					return true;
-				}
-
-				Layer layer = (Layer) ((MenuItem) v).getData();
-				TabMainView.mapView.SetCurrentLayer(layer);
-				return true;
+			public int compare(Layer layer1, Layer layer2) {
+				return layer1.Name.toLowerCase().compareTo(layer2.Name.toLowerCase());
 			}
 		});
-		MenuItem mi;
 
-		mi = icm.addItem(MenuID.MI_MAPVIEW_OVERLAY_VIEW, "overlays");
-
-		int Index = 0;
 		for (Layer layer : ManagerBase.Manager.getLayers()) {
 			if (!layer.isOverlay()) {
-				mi = icm.addItem(Index++, "", layer.Name);
+				MenuItem mi = icm.addItem(Index++, "", layer.Name); // == friendlyName == FileName 
 				mi.setData(layer);
 				mi.setCheckable(true);
 				if (layer == MapView.mapTileLoader.getCurrentLayer()) {
@@ -135,14 +129,38 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 			}
 		}
 
+		icm.addOnClickListener(new OnClickListener() {
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				if (((MenuItem) v).getMenuItemId() == MenuID.MI_MAPVIEW_OVERLAY_VIEW) {
+					showMapOverlayMenu();
+					return true;
+				}
+				Layer layer = (Layer) ((MenuItem) v).getData();
+				TabMainView.mapView.SetCurrentLayer(layer);
+				return true;
+			}
+		});
+
 		icm.Show();
 	}
 
 	private void showMapOverlayMenu() {
 		final OptionMenu icm = new OptionMenu("MapViewShowMapOverlayMenu");
 
-		icm.addOnClickListener(new OnClickListener() {
+		int Index = 0;
+		for (Layer layer : ManagerBase.Manager.getLayers()) {
+			if (layer.isOverlay()) {
+				MenuItem mi = icm.addItem(Index++, "", Translation.Get(layer.FriendlyName));
+				mi.setData(layer);
+				mi.setCheckable(true);
+				if (layer == MapView.mapTileLoader.getCurrentOverlayLayer()) {
+					mi.setChecked(true);
+				}
+			}
+		}
 
+		icm.addOnClickListener(new OnClickListener() {
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 				Layer layer = (Layer) ((MenuItem) v).getData();
@@ -158,19 +176,6 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 				return true;
 			}
 		});
-		MenuItem mi;
-
-		int Index = 0;
-		for (Layer layer : ManagerBase.Manager.getLayers()) {
-			if (layer.isOverlay()) {
-				mi = icm.addItem(Index++, "", layer.Name);
-				mi.setData(layer);
-				mi.setCheckable(true);
-				if (layer == MapView.mapTileLoader.getCurrentOverlayLayer()) {
-					mi.setChecked(true);
-				}
-			}
-		}
 
 		icm.Show();
 	}

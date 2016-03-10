@@ -16,9 +16,6 @@
 package CB_Locator.Map;
 
 import java.io.ByteArrayOutputStream;
-
-import CB_Utils.fileProvider.File;
-
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,7 +25,6 @@ import java.util.HashMap;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import CB_Utils.fileProvider.FileFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
@@ -66,6 +62,8 @@ import CB_UI_Base.graphics.GL_RenderType;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.HSV_Color;
 import CB_Utils.Util.IChanged;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 
 /**
  * @author ging-buh
@@ -94,7 +92,7 @@ public abstract class ManagerBase {
 
 	public ArrayList<TmsMap> tmsMaps = new ArrayList<TmsMap>();
 
-	private final ArrayList<Layer> Layers = new ArrayList<Layer>();
+	public ArrayList<Layer> Layers = new ArrayList<Layer>();
 
 	private final DefaultLayerList DEFAULT_LAYER = new DefaultLayerList();
 
@@ -126,7 +124,7 @@ public abstract class ManagerBase {
 	public abstract PackBase CreatePack(String file) throws IOException;
 
 	// / <summary>
-	// / L�d ein Map Pack und f�gt es dem Manager hinzu
+	// / Läd ein Map Pack und fügt es dem Manager hinzu
 	// / </summary>
 	// / <param name="file"></param>
 	// / <returns>true, falls das Pack erfolgreich geladen wurde, sonst
@@ -135,8 +133,7 @@ public abstract class ManagerBase {
 		try {
 			PackBase pack = CreatePack(file);
 			mapPacks.add(pack);
-
-			// Nach Aktualit�t sortieren
+			// Nach Aktualität sortieren
 			Collections.sort(mapPacks);
 			return true;
 		} catch (Exception exc) {
