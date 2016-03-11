@@ -378,20 +378,20 @@ public abstract class ManagerBase {
 		log.debug("dirOwnMaps = " + LocatorSettings.MapPackFolderLocal.getValue());
 		getFiles(files, mapnames, LocatorSettings.MapPackFolderLocal.getValue());
 
-		log.debug("dirDefaultMaps = " + LocatorSettings.MapPackFolder.getDefaultValue());
-		getFiles(files, mapnames, LocatorSettings.MapPackFolder.getDefaultValue());
+		// if the Folder is changed, the user wants to use only this one
+		// log.debug("dirDefaultMaps = " + LocatorSettings.MapPackFolder.getDefaultValue());
+		// getFiles(files, mapnames, LocatorSettings.MapPackFolder.getDefaultValue());
 
 		log.debug("dirGlobalMaps = " + LocatorSettings.MapPackFolder.getValue());
 		getFiles(files, mapnames, LocatorSettings.MapPackFolder.getValue());
 
-		if (!(files == null)) {
+		if (files != null) {
 			if (files.size() > 0) {
 				for (String file : files) {
 					if (FileIO.GetFileExtension(file).equalsIgnoreCase("pack")) {
 						ManagerBase.Manager.LoadMapPack(file);
 					}
 					if (FileIO.GetFileExtension(file).equalsIgnoreCase("map")) {
-
 						String Name = FileIO.GetFileNameWithoutExtension(file);
 						Layer layer = new Layer(Type.normal, Name, Name, file);
 						layer.isMapsForge = true;

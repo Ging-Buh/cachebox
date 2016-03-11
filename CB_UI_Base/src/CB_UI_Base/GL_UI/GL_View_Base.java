@@ -879,7 +879,7 @@ public abstract class GL_View_Base extends CB_RectF {
 					// Invisible Views can not be clicked!
 					if (view == null || !view.isVisible())
 						continue;
-					if (!view.getEnabled())
+					if (!view.isEnabled())
 						continue;
 					if (view.contains(x, y)) {
 						// touch innerhalb des Views
@@ -1278,7 +1278,7 @@ public abstract class GL_View_Base extends CB_RectF {
 		enabled = value;
 	}
 
-	public boolean getEnabled() {
+	public boolean isEnabled() {
 		return enabled;
 	}
 

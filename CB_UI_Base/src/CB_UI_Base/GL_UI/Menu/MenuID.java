@@ -65,7 +65,7 @@ public class MenuID {
 	public static final int MI_JOKER = 33;
 	public static final int MI_Layer = 34;
 	public static final int MI_ALIGN_TO_COMPSS = 35;
-	public static final int MI_SMOOTH_SCROLLING = 36;
+
 	public static final int MI_SEARCH = 37;
 	public static final int MI_TREC_REC = 38;
 	public static final int MI_HIDE_FINDS = 39;
@@ -259,4 +259,5 @@ public class MenuID {
 	public static final int MI_TOGGLE_DEC__TXT_HTML = 208;
 
 	public static final int AID_HELP = 209;
+	public static final int MI_RENDERTHEMES = 210;
 }

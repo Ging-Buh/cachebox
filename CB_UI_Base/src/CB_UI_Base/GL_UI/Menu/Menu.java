@@ -394,6 +394,13 @@ public class Menu extends ButtonDialog {
 		return item;
 	}
 
+	public MenuItem addCheckableItem(int ID, String StringId, boolean checked) {
+		MenuItem item = addItem(ID, StringId, "", false);
+		item.setCheckable(true);
+		item.setChecked(checked);
+		return item;
+	}
+
 	private void layout() {
 
 		if (mListView == null || mListView.isDisposed())

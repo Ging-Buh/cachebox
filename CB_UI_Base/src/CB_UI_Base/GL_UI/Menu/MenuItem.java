@@ -222,12 +222,17 @@ public class MenuItem extends MenuItemBase {
 		mIsEnabled = enabled;
 
 		if (!mIsEnabled) {
-			// lösche ClickListener
+			// lösche ClickListener			
 			setOnClickListener(null);
 			setOnLongClickListener(null);
 		}
 
 		this.resetInitial();
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return mIsEnabled;
 	}
 
 	public void setCheckable(boolean isCheckable) {
@@ -238,6 +243,10 @@ public class MenuItem extends MenuItemBase {
 	public void setChecked(boolean checked) {
 		mIsChecked = checked;
 		this.resetInitial();
+	}
+
+	public boolean isChecked() {
+		return mIsChecked;
 	}
 
 	public boolean isCheckable() {
