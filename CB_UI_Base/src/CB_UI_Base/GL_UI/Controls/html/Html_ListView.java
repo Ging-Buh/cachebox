@@ -50,7 +50,7 @@ public class Html_ListView extends Box implements ListLayout {
 	this.setWidth(calcWidth);
 
 	for (List<Html_Segment> listItems : seg.items) {
-		HtmlView.addViewsToBox(listItems, segmentViewList, calcWidth * 2, this);
+		HtmlView.addViewsToBox(listItems, segmentViewList, calcWidth, this);
 	}
 
 	layout(segmentViewList);
