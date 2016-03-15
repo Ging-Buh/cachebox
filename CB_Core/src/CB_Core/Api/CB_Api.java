@@ -84,7 +84,5 @@ public class CB_Api {
 		}
 
 		return "";
-
 	}
-
 }

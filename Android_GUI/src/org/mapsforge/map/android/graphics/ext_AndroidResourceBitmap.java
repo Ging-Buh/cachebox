@@ -19,13 +19,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.badlogic.gdx.graphics.Texture;
+
 import CB_Locator.LocatorSettings;
 import CB_UI_Base.graphics.GL_RenderType;
 import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 import android.graphics.Bitmap.CompressFormat;
-
-import com.badlogic.gdx.graphics.Texture;
 
 /**
  * @author Longri

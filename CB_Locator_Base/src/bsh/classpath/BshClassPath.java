@@ -34,9 +34,6 @@
 package bsh.classpath;
 
 import java.io.DataInputStream;
-
-import CB_Utils.fileProvider.File;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,8 +54,8 @@ import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
-import CB_Utils.fileProvider.FilenameFilter;
 import bsh.ClassPathException;
 import bsh.NameSource;
 import bsh.StringUtil;

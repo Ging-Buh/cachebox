@@ -15,13 +15,13 @@
  */
 package CB_Locator.Map;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.graphics.CircleDrawable;
 import CB_UI_Base.graphics.GL_Paint;
 import CB_UI_Base.graphics.GL_Style;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
  * Drawable for drawing accuracy cycle

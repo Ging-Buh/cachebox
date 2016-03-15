@@ -41,6 +41,8 @@ import org.apache.xmlrpc.util.ReflectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import CB_Utils.Log.Log;
+
 /** <p>A default servlet implementation The typical use would
  * be to derive a subclass, which is overwriting at least the
  * method {@link #newXmlRpcHandlerMapping()}.</p>
@@ -194,6 +196,6 @@ public class XmlRpcServlet extends HttpServlet {
 	}
 
 	public void log(String pMessage) {
-		log.info(pMessage);
+		Log.info(log, pMessage);
 	}
 }

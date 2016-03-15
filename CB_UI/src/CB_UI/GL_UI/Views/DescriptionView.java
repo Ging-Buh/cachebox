@@ -60,6 +60,7 @@ import CB_UI_Base.graphics.GL_Paint;
 import CB_UI_Base.graphics.PolygonDrawable;
 import CB_UI_Base.graphics.Geometry.Line;
 import CB_UI_Base.graphics.Geometry.Quadrangle;
+import CB_Utils.Log.Log;
 
 /**
  * @author Longri
@@ -93,7 +94,7 @@ public class DescriptionView extends CB_View_Base {
 		htmlView = new HtmlView(this);
 		htmlView.setZeroPos();
 		this.addChild(htmlView);
-		//log.info("DescriptionView create");
+		//Log.info(log, "DescriptionView create");
 		registerSkinChangedEvent();
 	}
 
@@ -102,7 +103,7 @@ public class DescriptionView extends CB_View_Base {
 	@Override
 	public void onShow() {
 		super.onShow();
-		//log.info("DescriptionView onShow");
+		//Log.info(log, "DescriptionView onShow");
 		margin = GL_UISizes.margin;
 
 		Cache sel = GlobalCore.getSelectedCache();
@@ -130,7 +131,7 @@ public class DescriptionView extends CB_View_Base {
 			return;
 
 		if (cache.equals(aktCache) && !force) {
-			//log.info("setCache " + cache.getGcCode() + " no change.");
+			//Log.info(log, "setCache " + cache.getGcCode() + " no change.");
 			return;
 		}
 
@@ -140,7 +141,7 @@ public class DescriptionView extends CB_View_Base {
 		logstr = logstr + " old:" + aktCache.getGcCode();
 		}
 		logstr = logstr + " must:" + force;
-		log.info(logstr);
+		Log.info(log, logstr);
 		*/
 
 		aktCache = cache;
@@ -188,7 +189,7 @@ public class DescriptionView extends CB_View_Base {
 			htmlView.showHtml(FinalHtml);
 		} catch (Exception e) {
 			e.printStackTrace();
-			htmllog.info(cache.toString() + " " + e.toString());
+			Log.info(htmllog, cache.toString() + " " + e.toString());
 		}
 
 		// Falls nicht geladene Bilder vorliegen und eine Internetverbindung
@@ -202,7 +203,7 @@ public class DescriptionView extends CB_View_Base {
 						try {
 							Thread.sleep(100);
 						} catch (InterruptedException e) {
-							log.error("DescriptionViewControl.setCache()", "Thread.sleep fehler", e);
+							Log.err(log, "DescriptionViewControl.setCache()", "Thread.sleep fehler", e);
 							e.printStackTrace();
 						}
 					}
@@ -215,7 +216,7 @@ public class DescriptionView extends CB_View_Base {
 						try {
 							DescriptionImageGrabber.Download(url, local);
 						} catch (Exception e) {
-							log.error("DescriptionViewControl.setCache()", "downloadThread run()", e);
+							Log.err(log, "DescriptionViewControl.setCache()", "downloadThread run()", e);
 						}
 					}
 					downloadReadyHandler.post(downloadComplete);
@@ -484,7 +485,7 @@ public class DescriptionView extends CB_View_Base {
 				sb.append("<br><hr><br><br><br>");
 			return sb.toString();
 		} catch (Exception ex) {
-			log.error("getAttributesHtml(" + cache.getGcCode() + "):", ex);
+			Log.err(log, "getAttributesHtml(" + cache.getGcCode() + "):", ex);
 			return "";
 		}
 	}

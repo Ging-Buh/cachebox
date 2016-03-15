@@ -34,13 +34,8 @@
 package bsh;
 
 import java.io.BufferedReader;
-
-import CB_Utils.fileProvider.File;
-import CB_Utils.fileProvider.FileFactory;
-
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,6 +47,9 @@ import java.io.Serializable;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 
 /**
  * The BeanShell script interpreter. An instance of Interpreter can be used to source scripts and evaluate statements or expressions.

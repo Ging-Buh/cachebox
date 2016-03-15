@@ -28,6 +28,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Config_Core;
+import CB_Utils.Log.Log;
 import cb_rpc.Settings.CB_Rpc_Settings;
 
 public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings, CB_Rpc_Settings, LocatorSettings {
@@ -146,7 +147,7 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
 
 			Filereader.close();
 		} catch (IOException e) {
-			log.error("ReadConfig", "Error when accessing cachebox.config!", e);
+			Log.err(log, "ReadConfig", "Error when accessing cachebox.config!", e);
 			e.printStackTrace();
 		}
 

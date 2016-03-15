@@ -18,8 +18,8 @@
  */
 package org.apache.xmlrpc.util;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /** A filtering {@link java.io.InputStream} for proper handling of
  * the <code>Content-Length</code> header: It guarantees to return

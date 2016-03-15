@@ -1,7 +1,5 @@
 package CB_Core.Types;
 
-import CB_Utils.fileProvider.File;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +10,7 @@ import CB_Core.CB_Core_Settings;
 import CB_Core.Database;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.FileIO;
+import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import CB_Utils.fileProvider.FilenameFilter;
 import de.cb.sqlite.CoreCursor;

@@ -67,13 +67,13 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 
 	@Override
 	public void OnShow() {
-		log.debug("OnShow");
+		CB_Utils.Log.Log.debug(log, "OnShow");
 		// GL_Listener.onStart();
 	}
 
 	@Override
 	public void OnHide() {
-		log.debug("OnHide");
+		CB_Utils.Log.Log.debug(log, "OnHide");
 		// GL_Listener.onStop();
 	}
 
@@ -134,7 +134,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	@Override
 	public void RequestRender() {
 
-		// log.debug("RequestRender von : " + requestName);
+		// Log.debug(log, "RequestRender von : " + requestName);
 
 		switch (mAktSurfaceType) {
 		case GLSURFACE_VIEW20:
@@ -149,7 +149,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 
 	@Override
 	public void RenderDirty() {
-		// log.debug("Set: RenderDirty");
+		// Log.debug(log, "Set: RenderDirty");
 		try {
 			switch (mAktSurfaceType) {
 			case GLSURFACE_VIEW20:
@@ -168,7 +168,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 
 	@Override
 	public void RenderContinous() {
-		// log.debug("Set: RenderContinous");
+		// Log.debug(log, "Set: RenderContinous");
 		switch (mAktSurfaceType) {
 		case GLSURFACE_VIEW20:
 			((GLSurfaceView20) ViewGl).setRenderMode(GLSurfaceView20.RENDERMODE_CONTINUOUSLY);

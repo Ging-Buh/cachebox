@@ -7,6 +7,8 @@ import org.apache.xmlrpc.webserver.WebServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import CB_Utils.Log.Log;
+
 public class Rpc_Server {
 	// WebServer f�r die RPC-Communication
 	private WebServer webServer = null;
@@ -39,11 +41,9 @@ public class Rpc_Server {
 			serverConfig.setEnabledForExceptions(true);
 			xmlRpcServer.setConfig(serverConfig);
 			webServer.start();
-			log.info("RpcWebServer started on port " + 9911);
+			Log.info(log, "RpcWebServer started on port " + 9911);
 		} catch (Exception ex) {
-			log.error("Error starting RpcWebServer: " + ex.getMessage());
+			Log.err(log, "Error starting RpcWebServer: " + ex.getMessage());
 		}
-
 	}
-
 }

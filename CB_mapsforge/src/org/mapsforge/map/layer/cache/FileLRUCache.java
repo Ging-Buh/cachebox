@@ -14,14 +14,14 @@
  */
 package org.mapsforge.map.layer.cache;
 
-import CB_Utils.fileProvider.File;
-
 import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.mapsforge.core.util.LRUCache;
+
+import CB_Utils.fileProvider.File;
 
 class FileLRUCache<T> extends LRUCache<T, File> {
 	private static final Logger LOGGER = Logger.getLogger(FileLRUCache.class.getName());

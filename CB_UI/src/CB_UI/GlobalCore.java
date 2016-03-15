@@ -46,6 +46,7 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Interfaces.cancelRunnable;
+import CB_Utils.Log.Log;
 
 /**
  * @author ging-buh
@@ -54,10 +55,10 @@ import CB_Utils.Interfaces.cancelRunnable;
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(GlobalCore.class);
-	public static final int CurrentRevision = 20160311;
+	public static final int CurrentRevision = 20160315;
 
 	public static final String CurrentVersion = "0.8.";
-	public static final String VersionPrefix = "Test-svn2700";
+	public static final String VersionPrefix = "Test-svn2703";
 
 	public static final String aboutMsg1 = "Team Cachebox (2011-2016)" + br;
 	public static final String teamLink = "www.team-cachebox.de";
@@ -138,7 +139,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 	public static void setSelectedWaypoint(Cache cache, Waypoint waypoint, boolean changeAutoResort) {
 
 		if (cache == null) {
-			log.info("[GlobalCore]setSelectedWaypoint: cache=null");
+			Log.info(log, "[GlobalCore]setSelectedWaypoint: cache=null");
 			selectedCache = null;
 			selectedWaypoint = null;
 			return;
@@ -159,7 +160,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 			selectedCache.deleteDetail(Config.ShowAllWaypoints.getValue());
 		}
 		selectedCache = cache;
-		log.info("[GlobalCore]setSelectedWaypoint: cache=" + cache.getGcCode());
+		Log.info(log, "[GlobalCore]setSelectedWaypoint: cache=" + cache.getGcCode());
 		selectedWaypoint = waypoint;
 
 		// load Detail Info if not available
@@ -190,7 +191,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 	 */
 	public static boolean APIisOnline() {
 		if (Config.GetAccessToken().length() == 0) {
-			log.info("GlobalCore.APIisOnline() - no GC - API AccessToken");
+			Log.info(log, "GlobalCore.APIisOnline() - no GC - API AccessToken");
 			return false;
 		}
 		if (PlatformConnector.isOnline()) {
@@ -213,7 +214,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 		}
 
 		if (JokerPwExist) {
-			// log.info("GlobalCore.JokerisOnline() - no Joker Password");
+			// Log.info(log, "GlobalCore.JokerisOnline() - no Joker Password");
 			return false;
 		}
 		if (PlatformConnector.isOnline()) {
@@ -246,13 +247,13 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 		// Prüfen, ob der SelectedCache noch in der cacheList drin ist.
 		if ((List.size() > 0) && (GlobalCore.isSetSelectedCache()) && (List.GetCacheById(GlobalCore.getSelectedCache().Id) == null)) {
 			// der SelectedCache ist nicht mehr in der cacheList drin -> einen beliebigen aus der CacheList auswählen
-			log.debug("Change SelectedCache from " + GlobalCore.getSelectedCache().getGcCode() + "to" + List.get(0).getGcCode());
+			Log.debug(log, "Change SelectedCache from " + GlobalCore.getSelectedCache().getGcCode() + "to" + List.get(0).getGcCode());
 			GlobalCore.setSelectedCache(List.get(0));
 		}
 		// Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
 		if ((GlobalCore.getSelectedCache() == null) && (List.size() > 0)) {
 			GlobalCore.setSelectedCache(List.get(0));
-			log.debug("Set SelectedCache to " + List.get(0).getGcCode() + " first in List.");
+			Log.debug(log, "Set SelectedCache to " + List.get(0).getGcCode() + " first in List.");
 		}
 	}
 

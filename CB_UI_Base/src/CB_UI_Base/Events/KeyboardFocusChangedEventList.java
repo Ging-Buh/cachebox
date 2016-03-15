@@ -15,7 +15,7 @@
  */
 package CB_UI_Base.Events;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
 import CB_Utils.Lists.CB_List;
@@ -28,7 +28,7 @@ public class KeyboardFocusChangedEventList {
 
 	public static void Add(KeyboardFocusChangedEvent event) {
 		synchronized (list) {
-			log.debug("FocusChangedEventList register" + event.toString());
+			Log.debug(log, "FocusChangedEventList register" + event.toString());
 			if (!list.contains(event))
 				list.add(event);
 		}
@@ -36,7 +36,7 @@ public class KeyboardFocusChangedEventList {
 
 	public static void Remove(KeyboardFocusChangedEvent event) {
 		synchronized (list) {
-			log.debug("FocusChangedEventList unregister" + event.toString());
+			Log.debug(log, "FocusChangedEventList unregister" + event.toString());
 			list.remove(event);
 		}
 	}
@@ -51,7 +51,7 @@ public class KeyboardFocusChangedEventList {
 
 			for (int i = 0, n = list.size(); i < n; i++) {
 				KeyboardFocusChangedEvent event = list.get(i);
-				// log.debug("FocusChangedEventList fire to " + event.toString());
+				// Log.debug(log, "FocusChangedEventList fire to " + event.toString());
 				event.KeyboardFocusChanged(focus);
 			}
 		}

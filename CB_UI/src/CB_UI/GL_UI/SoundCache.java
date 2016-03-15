@@ -23,6 +23,7 @@ import com.badlogic.gdx.files.FileHandle;
 
 import CB_UI.Config;
 import CB_UI.GlobalCore;
+import CB_Utils.Log.Log;
 import CB_Utils.Settings.SettingsAudio;
 import CB_Utils.Util.IChanged;
 
@@ -129,7 +130,7 @@ public class SoundCache {
 		}
 
 		if (handle == null || !handle.exists()) {
-			log.error("LoadSound", set.getValue().Path);
+			Log.err(log, "LoadSound: " + set.getValue().Path);
 			return null;
 		}
 
@@ -137,7 +138,7 @@ public class SoundCache {
 		try {
 			ret = Gdx.audio.newMusic(handle);
 		} catch (Exception e) {
-			log.error("LoadSound", set.getValue().Path);
+			Log.err(log, "LoadSound: " + set.getValue().Path);
 			return null;
 		}
 		return ret;

@@ -17,7 +17,7 @@ package CB_UI_Base.GL_UI.Controls.html;
 
 import java.util.List;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -312,7 +312,7 @@ public class Html_Segment_TextBlock extends Html_Segment {
 		try {
 		size = Integer.parseInt(value);
 		} catch (NumberFormatException e) {
-		log.error("wrong size value =>" + value);
+		Log.err(log, "wrong size value =>" + value);
 		}
 	}
 	return size;

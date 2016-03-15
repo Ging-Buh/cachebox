@@ -1,6 +1,5 @@
 package de.cachebox_test.Views;
 
-import CB_Utils.fileProvider.File;
 import java.util.ArrayList;
 
 import CB_Core.Types.Cache;

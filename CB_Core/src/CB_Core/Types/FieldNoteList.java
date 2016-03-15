@@ -15,19 +15,19 @@
  */
 package CB_Core.Types;
 
-import CB_Utils.fileProvider.File;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import CB_Utils.fileProvider.FileFactory;
 import org.slf4j.LoggerFactory;
 
 import CB_Core.CB_Core_Settings;
 import CB_Core.Database;
 import CB_Core.LogTypes;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.IChanged;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 import de.cb.sqlite.CoreCursor;
 
 public class FieldNoteList extends ArrayList<FieldNoteEntry> {
@@ -117,7 +117,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
 			try {
 				reader = Database.FieldNotes.rawQuery(sql, null);
 			} catch (Exception exc) {
-				log.error("FieldNoteList", "LoadFieldNotes", exc);
+				Log.err(log, "FieldNoteList", "LoadFieldNotes", exc);
 			}
 			reader.moveToFirst();
 			while (!reader.isAfterLast()) {

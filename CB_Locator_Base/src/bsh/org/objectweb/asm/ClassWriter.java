@@ -110,7 +110,7 @@ public class ClassWriter implements ClassVisitor {
 	 * The constant pool of this class.
 	 */
 
-	private ByteVector pool;
+	private final ByteVector pool;
 
 	/**
 	 * The constant pool's hash table data.
@@ -181,7 +181,7 @@ public class ClassWriter implements ClassVisitor {
 	 * be automatically computed.
 	 */
 
-	private boolean computeMaxs;
+	private final boolean computeMaxs;
 
 	/**
 	 * The methods of this class. These methods are stored in a linked list of
@@ -454,6 +454,7 @@ public class ClassWriter implements ClassVisitor {
 	// Implementation of the ClassVisitor interface
 	// --------------------------------------------------------------------------
 
+	@Override
 	public void visit(final int access, final String name, final String superName, final String[] interfaces, final String sourceFile) {
 		this.access = access;
 		this.name = newClass(name).index;
@@ -474,6 +475,7 @@ public class ClassWriter implements ClassVisitor {
 		}
 	}
 
+	@Override
 	public void visitInnerClass(final String name, final String outerName, final String innerName, final int access) {
 		if (innerClasses == null) {
 			newUTF8("InnerClasses");
@@ -486,6 +488,7 @@ public class ClassWriter implements ClassVisitor {
 		innerClasses.put2(access);
 	}
 
+	@Override
 	public void visitField(final int access, final String name, final String desc, final Object value) {
 		++fieldCount;
 		if (fields == null) {
@@ -515,12 +518,14 @@ public class ClassWriter implements ClassVisitor {
 		}
 	}
 
+	@Override
 	public CodeVisitor visitMethod(final int access, final String name, final String desc, final String[] exceptions) {
 		CodeWriter cw = new CodeWriter(this, computeMaxs);
 		cw.init(access, name, desc, exceptions);
 		return cw;
 	}
 
+	@Override
 	public void visitEnd() {
 	}
 

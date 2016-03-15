@@ -79,6 +79,7 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 
 /**
  * @author Longri
@@ -624,13 +625,13 @@ public class SearchDialog extends PopUp_Base {
 	CancelWaitDialog wd = null;
 
 	private void closeWaitDialog() {
-		log.debug("SEARCH Close WD");
+		Log.debug(log, "SEARCH Close WD");
 		if (wd != null)
 			wd.close();
 	}
 
 	private void searchOnlineNow() {
-		log.debug("SEARCH Show WD searchOverAPI");
+		Log.debug(log, "SEARCH Show WD searchOverAPI");
 		wd = CancelWaitDialog.ShowWait(Translation.Get("searchOverAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
 			@Override
@@ -641,7 +642,7 @@ public class SearchDialog extends PopUp_Base {
 
 			@Override
 			public void run() {
-				log.debug("SEARCH Run search overAPI");
+				Log.debug(log, "SEARCH Run search overAPI");
 				Coordinate searchCoord = null;
 
 				if (MapView.that != null && MapView.that.isVisible()) {
@@ -754,7 +755,7 @@ public class SearchDialog extends PopUp_Base {
 					}
 
 				}
-				log.debug("SEARCH Run search overAPI ready");
+				Log.debug(log, "SEARCH Run search overAPI ready");
 				closeWaitDialog();
 			}
 
@@ -799,7 +800,7 @@ public class SearchDialog extends PopUp_Base {
 	}
 
 	public void addSearch(final String searchPattern, final searchMode Mode) {
-		log.debug("addSearch " + searchPattern);
+		Log.debug(log, "addSearch " + searchPattern);
 		try {
 			GL.that.RunOnGL(new IRunOnGL() {
 				@Override
@@ -832,7 +833,7 @@ public class SearchDialog extends PopUp_Base {
 				}
 			});
 		} catch (Exception e) {
-			log.error("Add search from notification Mail", e);
+			Log.err(log, "Add search from notification Mail", e);
 		}
 	}
 
@@ -889,7 +890,7 @@ public class SearchDialog extends PopUp_Base {
 			@Override
 			public void checkReady(int MemberType) {
 				int ret = GroundspeakAPI.isValidAPI_Key(true);
-				log.debug("SEARCH isValidAPI_Key ret=" + ret);
+				Log.debug(log, "SEARCH isValidAPI_Key ret=" + ret);
 				if (ret == 0) {
 					GL.that.RunOnGL(new IRunOnGL() {
 

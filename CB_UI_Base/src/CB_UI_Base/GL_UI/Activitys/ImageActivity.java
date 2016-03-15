@@ -18,7 +18,7 @@ package CB_UI_Base.GL_UI.Activitys;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Sprites;
@@ -167,15 +167,15 @@ public class ImageActivity extends ActivityBase {
 
 		if (z < 5 && x > 5 && y < 4) {
 			imageHeading = -90;
-			//	    log.debug("LEFT");
+			//	    Log.debug(log, "LEFT");
 		} else if (z < 5 && x < -5 && y < 4) {
 			imageHeading = 90;
-			//	    log.debug("RIGHT");
+			//	    Log.debug(log, "RIGHT");
 		} else if (z < 5 && y > 5 && x < 4) {
-			//	    log.debug("BOTTOM");
+			//	    Log.debug(log, "BOTTOM");
 		} else {
 			imageHeading = 0;
-			//	    log.debug("TOP");
+			//	    Log.debug(log, "TOP");
 		}
 
 		// do not rotate until there is a button
@@ -321,7 +321,7 @@ public class ImageActivity extends ActivityBase {
 
 			if (lastDynamicZoom != dynZoom) {
 
-				log.debug("Mouse Zoom:" + div + "/" + zoomValue + "/" + dynZoom);
+				Log.debug(log, "Mouse Zoom:" + div + "/" + zoomValue + "/" + dynZoom);
 
 				lastDynamicZoom = dynZoom;
 				zoomBtn.setZoom((int) lastDynamicZoom);
@@ -430,7 +430,7 @@ public class ImageActivity extends ActivityBase {
 			}
 			return true;
 		} catch (Exception ex) {
-			log.error("-onTouchDragged Error", ex);
+			Log.err(log, "-onTouchDragged Error", ex);
 		}
 
 		return false;

@@ -18,9 +18,6 @@
  */
 package org.apache.xmlrpc.common;
 
-import org.apache.xmlrpc.common.XmlRpcHttpConfig;
-import org.apache.xmlrpc.common.XmlRpcStreamRequestConfig;
-
 /** Extension of {@link org.apache.xmlrpc.client.XmlRpcClientConfig}
  * for HTTP based transport. Provides details like server URL,
  * user credentials, and so on.

@@ -1,6 +1,5 @@
 package CB_Core.Types;
 
-import CB_Utils.fileProvider.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,7 +42,7 @@ public class Category extends ArrayList<GpxFilename> implements Comparable<Categ
 		try {
 			Database.Data.insert("GpxFilenames", args);
 		} catch (Exception exc) {
-			//log.error("CreateNewGpxFilename", filename, exc);
+			//Log.err(log, "CreateNewGpxFilename", filename, exc);
 		}
 
 		long GPXFilename_ID = 0;

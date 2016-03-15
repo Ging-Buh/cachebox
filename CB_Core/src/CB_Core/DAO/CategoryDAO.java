@@ -22,6 +22,7 @@ import CB_Core.Database;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
+import CB_Utils.Log.Log;
 import de.cb.sqlite.CoreCursor;
 import de.cb.sqlite.Database_Core.Parameters;
 
@@ -59,7 +60,7 @@ public class CategoryDAO {
 		try {
 			Database.Data.update("Category", args, "Id=" + String.valueOf(category.Id), null);
 		} catch (Exception exc) {
-			log.error("SetPinned", "CategoryDAO", exc);
+			Log.err(log, "SetPinned", "CategoryDAO", exc);
 		}
 	}
 

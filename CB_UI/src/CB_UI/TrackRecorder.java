@@ -15,8 +15,6 @@
  */
 package CB_UI;
 
-import CB_Utils.fileProvider.File;
-
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,7 +23,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-import CB_Utils.fileProvider.FileFactory;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.Color;
@@ -40,7 +37,10 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Views.TrackListView;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 
 public class TrackRecorder {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(TrackRecorder.class);
@@ -81,10 +81,10 @@ public class TrackRecorder {
 					writer.append("<trk><trkseg>\n");
 					writer.flush();
 				} catch (IOException e) {
-					log.error("IOException", e);
+					Log.err(log, "IOException", e);
 				}
 			} catch (IOException e1) {
-				log.error("IOException", e1);
+				Log.err(log, "IOException", e1);
 			}
 
 			try {
@@ -95,7 +95,7 @@ public class TrackRecorder {
 				writer.flush();
 				writer.close();
 			} catch (IOException e) {
-				log.error("IOException", e);
+				Log.err(log, "IOException", e);
 			}
 			writer = null;
 
@@ -172,9 +172,9 @@ public class TrackRecorder {
 			insertPos += b.length;
 
 		} catch (FileNotFoundException e) {
-			log.error("FileNotFoundException", e);
+			Log.err(log, "FileNotFoundException", e);
 		} catch (IOException e) {
-			log.error("IOException", e);
+			Log.err(log, "IOException", e);
 		}
 		writeAnnotateMedia = false;
 		if (mustRecPos) {
@@ -246,9 +246,9 @@ public class TrackRecorder {
 					rand.write(bEnde);
 					rand.close();
 				} catch (FileNotFoundException e) {
-					log.error("FileNotFoundException", e);
+					Log.err(log, "FileNotFoundException", e);
 				} catch (IOException e) {
-					log.error("Trackrecorder", "IOException", e);
+					Log.err(log, "Trackrecorder", "IOException", e);
 				}
 
 				NewPoint = new TrackPoint(Locator.getLongitude(GPS), Locator.getLatitude(GPS), Locator.getAlt(), Locator.getHeading(_GPS), new Date());

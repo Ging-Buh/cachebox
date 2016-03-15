@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import CB_UI_Base.GL_UI.Controls.html.elementhandler.H_ElementHandler;
 import CB_UI_Base.GL_UI.Controls.html.elementhandler.ImagelementHandler;

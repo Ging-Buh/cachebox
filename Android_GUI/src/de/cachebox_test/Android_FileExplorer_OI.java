@@ -1,7 +1,5 @@
 package de.cachebox_test;
 
-import CB_Utils.fileProvider.File;
-
 import org.openintents.intents.FileManagerIntents;
 
 import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;

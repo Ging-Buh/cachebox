@@ -1,5 +1,19 @@
 package de.cachebox_test.CB_Texturepacker;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.badlogic.gdx.utils.Array;
+
+import CB_UI_Base.CB_Texturepacker.IImageprozessor;
+import CB_UI_Base.CB_Texturepacker.Rect_Base;
+import CB_UI_Base.CB_Texturepacker.Settings;
+
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
  *
@@ -17,25 +31,12 @@ package de.cachebox_test.CB_Texturepacker;
  ******************************************************************************/
 
 import CB_Utils.fileProvider.File;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import CB_UI_Base.CB_Texturepacker.IImageprozessor;
-import CB_UI_Base.CB_Texturepacker.Rect_Base;
-import CB_UI_Base.CB_Texturepacker.Settings;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-
-import com.badlogic.gdx.utils.Array;
 
 public class ImageProcessor implements IImageprozessor {
 	static private final Bitmap emptyImage = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_4444);

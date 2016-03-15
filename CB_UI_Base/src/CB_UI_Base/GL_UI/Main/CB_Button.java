@@ -353,7 +353,7 @@ public class CB_Button extends Button implements OnClickListener {
 
 		if (!isDragged)
 			return (GestureIsOn) ? result : true;
-		// log.debug("CB_Button onTouchUP()");
+		// Log.debug(log, "CB_Button onTouchUP()");
 		int dx = x - downPos.x;
 		int dy = y - downPos.y;
 		GestureDirection direction = GestureDirection.Up;

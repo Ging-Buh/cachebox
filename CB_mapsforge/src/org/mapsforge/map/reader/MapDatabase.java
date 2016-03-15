@@ -14,8 +14,6 @@
  */
 package org.mapsforge.map.reader;
 
-import CB_Utils.fileProvider.File;
-
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -31,6 +29,8 @@ import org.mapsforge.map.reader.header.FileOpenResult;
 import org.mapsforge.map.reader.header.MapFileHeader;
 import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.reader.header.SubFileParameter;
+
+import CB_Utils.fileProvider.File;
 
 /**
  * A class for reading binary map files.

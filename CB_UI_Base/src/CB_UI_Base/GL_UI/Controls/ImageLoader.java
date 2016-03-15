@@ -19,7 +19,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -308,7 +308,7 @@ public class ImageLoader {
 
 					DLThread.run();
 				} catch (MalformedURLException e) {
-					log.error("ImageDownloader wrong URL: " + iconUrl, e);
+					Log.err(log, "ImageDownloader wrong URL: " + iconUrl, e);
 					e.printStackTrace();
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -387,11 +387,11 @@ public class ImageLoader {
 
 					} catch (com.badlogic.gdx.utils.GdxRuntimeException e) {
 						ImageLoadError = true;
-						log.error("Load GL Image", e);
+						Log.err(log, "Load GL Image", e);
 						State = 4;
 					} catch (Exception e) {
 						ImageLoadError = true;
-						log.error("Load GL Image", e);
+						Log.err(log, "Load GL Image", e);
 						e.printStackTrace();
 					}
 					inGenerate = false;

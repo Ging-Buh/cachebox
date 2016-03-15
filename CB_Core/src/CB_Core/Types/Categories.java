@@ -1,7 +1,5 @@
 package CB_Core.Types;
 
-import CB_Utils.fileProvider.File;
-
 import CB_Core.Database;
 import CB_Core.FilterProperties;
 import CB_Utils.Util.MoveableList;
@@ -53,7 +51,7 @@ public class Categories extends MoveableList<Category> {
 		try {
 			Database.Data.insert("Category", args);
 		} catch (Exception exc) {
-			//log.error("CreateNewCategory", filename, exc);
+			//Log.err(log, "CreateNewCategory", filename, exc);
 		}
 
 		long Category_ID = 0;

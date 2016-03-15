@@ -23,6 +23,8 @@ import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.model.DisplayModel;
 
+import com.badlogic.gdx.math.MathUtils;
+
 import CB_UI_Base.graphics.CircleDrawable;
 import CB_UI_Base.graphics.GL_GraphicFactory;
 import CB_UI_Base.graphics.GL_Paint;
@@ -34,8 +36,6 @@ import CB_UI_Base.graphics.TextDrawable;
 import CB_UI_Base.graphics.TextDrawableFlipped;
 import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_UI_Base.graphics.Images.VectorDrawable;
-
-import com.badlogic.gdx.math.MathUtils;
 
 /**
  * @author Longri

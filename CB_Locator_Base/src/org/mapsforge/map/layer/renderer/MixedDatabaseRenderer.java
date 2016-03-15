@@ -52,6 +52,8 @@ import org.mapsforge.map.rendertheme.rule.CB_RenderTheme;
 import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
 import org.xml.sax.SAXException;
 
+import com.badlogic.gdx.graphics.Pixmap.Format;
+
 import CB_Locator.LocatorSettings;
 import CB_Locator.Map.Descriptor;
 import CB_Locator.Map.TileGL;
@@ -68,8 +70,6 @@ import CB_UI_Base.graphics.Images.SortedRotateList;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Lists.F_List;
-
-import com.badlogic.gdx.graphics.Pixmap.Format;
 
 /**
  * Mixed Database render for render MapTile with Mapsforge Tile as Bitmap without Symbols and Names.<br>
@@ -608,7 +608,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer 
 	public TileGL execute(RendererJob rendererJob) {
 
 		if (inWork.get()) {
-			// CB_Utils.Log.log.debug("MixedDatabaseRenderer in Work [" + ThreadId + "]");
+			// CB_Utils.Log.Log.debug(log, "MixedDatabaseRenderer in Work [" + ThreadId + "]");
 			return null;
 		}
 		inWork.set(true);

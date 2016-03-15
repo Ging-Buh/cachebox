@@ -15,12 +15,12 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import CB_Utils.fileProvider.File;
-
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+
+import CB_Utils.fileProvider.File;
 
 public class RendererJob extends Job {
 	public final DisplayModel displayModel;

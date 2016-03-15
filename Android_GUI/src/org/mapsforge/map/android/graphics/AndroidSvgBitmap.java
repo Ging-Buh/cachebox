@@ -18,14 +18,14 @@ package org.mapsforge.map.android.graphics;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.applantation.android.svg.SVG;
+import com.applantation.android.svg.SVGParser;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Picture;
 import android.graphics.RectF;
 import android.util.Pair;
-
-import com.applantation.android.svg.SVG;
-import com.applantation.android.svg.SVGParser;
 
 class AndroidSvgBitmap extends AndroidResourceBitmap {
 	static final float DEFAULT_SIZE = 400f;

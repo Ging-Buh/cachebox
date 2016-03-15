@@ -62,7 +62,7 @@ public class PositionChangedEventList {
 					try {
 						event.PositionChanged();
 					} catch (Exception e) {
-						// TODO reactivate if possible log.error("Core.PositionEventList.Call(location)",
+						// TODO reactivate if possible Log.err(log, "Core.PositionEventList.Call(location)",
 						// event.getReceiverName(),
 						// e);
 						e.printStackTrace();
@@ -92,7 +92,7 @@ public class PositionChangedEventList {
 				try {
 					event.OrientationChanged();
 				} catch (Exception e) {
-					// TODO reactivate if possible log.error("Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
+					// TODO reactivate if possible Log.err(log, "Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
 					e.printStackTrace();
 				}
 			}
@@ -109,7 +109,7 @@ public class PositionChangedEventList {
 				try {
 					event.SpeedChanged();
 				} catch (Exception e) {
-					// TODO reactivate if possible log.error("Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
+					// TODO reactivate if possible Log.err(log, "Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
 					e.printStackTrace();
 				}
 			}

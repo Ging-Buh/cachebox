@@ -1,6 +1,5 @@
 package de.CB_GC_Joker_PlugIn;
 
-import de.CB_GC_Joker_PlugIn.R;
 import android.app.Activity;
 import android.os.Bundle;
 

@@ -27,6 +27,7 @@ import org.jsoup.Jsoup;
 import org.slf4j.LoggerFactory;
 
 import CB_Core.LogTypes;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.UnitFormatter;
 import de.cb.sqlite.CoreCursor;
 
@@ -199,7 +200,7 @@ public class Trackable implements Comparable<Trackable> {
 			String date = (String) dateCreated.subSequence(date1 + 6, date2);
 			DateCreated = new Date(Long.valueOf(date));
 		} catch (Exception exc) {
-			log.error("Constructor Trackable", "", exc);
+			Log.err(log, "Constructor Trackable", "", exc);
 		}
 		try {
 			Description = JObj.getString("Description");

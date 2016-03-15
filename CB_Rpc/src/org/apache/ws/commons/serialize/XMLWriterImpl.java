@@ -15,13 +15,14 @@
  */
 package org.apache.ws.commons.serialize;
 
+import java.io.IOException;
+import java.io.Writer;
+
+import javax.xml.XMLConstants;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
-
-import java.io.IOException;
-import java.io.Writer;
-import javax.xml.XMLConstants;
 
 /** Default implementation of {@link XMLWriter}. Works with Java 1.2 and
  * later.

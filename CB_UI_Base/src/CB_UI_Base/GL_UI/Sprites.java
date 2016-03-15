@@ -18,7 +18,7 @@ package CB_UI_Base.GL_UI;
 
 import java.util.ArrayList;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
@@ -281,12 +281,12 @@ public class Sprites {
 			try {
 				atlasCustom = new TextureAtlas(FileHandleCustomAtlas);
 			} catch (Exception e) {
-				log.error("Load Custum Atlas", e);
+				Log.err(log, "Load Custum Atlas", e);
 			}
 			try {
 				atlasCustomtNight = new TextureAtlas(FileHandleCustomNightAtlas);
 			} catch (Exception e) {
-				log.error("Load Custum Night Atlas", e);
+				Log.err(log, "Load Custum Night Atlas", e);
 			}
 		}
 	}
@@ -336,7 +336,7 @@ public class Sprites {
 			tmp.setScale(scale);
 
 		if (tmp == null) {
-			log.info("missing icon " + name);
+			Log.info(log, "missing icon " + name);
 			tmp = createSprite(atlasDefault, "big19icon"); // damit kein null Sprite zurückgegeben wird falls ich was übersehen habe
 		} else {
 			if (solved) {

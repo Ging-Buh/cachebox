@@ -15,13 +15,13 @@
  */
 package CB_Locator.Map;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Matrix4;
+
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.Images.MatrixDrawable;
 import CB_UI_Base.graphics.Images.SortedRotateList;
 import CB_Utils.Lists.CB_List;
-
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Matrix4;
 
 /**
  * Holds a list of Drawables with rectangle interpret the drawing rectangle of a TileGL_Vector.

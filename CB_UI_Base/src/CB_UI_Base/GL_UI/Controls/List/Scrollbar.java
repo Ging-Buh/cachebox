@@ -57,9 +57,9 @@ public class Scrollbar extends CB_View_Base {
 	private boolean mSliderAlwaysVisible = false;
 
 	public Scrollbar(IScrollbarParent Parent) {
-	super(Parent.getView(), Parent.getView(), "ScrollBar-on-" + Parent.getView().toString());
-	ListView = Parent;
-	mPushSliderFader.setTimeToFadeOut(4000);
+		super(Parent.getView(), Parent.getView(), "ScrollBar-on-" + Parent.getView().toString());
+		ListView = Parent;
+		mPushSliderFader.setTimeToFadeOut(4000);
 	}
 
 	@Override
@@ -69,8 +69,8 @@ public class Scrollbar extends CB_View_Base {
 
 	@Override
 	public void onShow() {
-	super.onShow();
-	mPushSliderFader.beginnFadeout();
+		super.onShow();
+		mPushSliderFader.beginnFadeout();
 	}
 
 	@Override
@@ -78,62 +78,62 @@ public class Scrollbar extends CB_View_Base {
 	}
 
 	public void setSliderAlwaysVisible(boolean value) {
-	mSliderAlwaysVisible = value;
+		mSliderAlwaysVisible = value;
 	}
 
 	@Override
 	public void render(Batch batch) {
-	// Wenn Liste l�nger als Clintbereich zeige Slider
-	if (ListView.isDragable()) {
-		if (mPushSliderFader.isVisible() || mSliderFader.isVisible() || mSliderAlwaysVisible) {
-		Color color = batch.getColor();// get current Color, you can't modify directly
-		float oldAlpha = color.a; // save its alpha
+		// Wenn Liste l�nger als Clintbereich zeige Slider
+		if (ListView.isDragable()) {
+			if (mPushSliderFader.isVisible() || mSliderFader.isVisible() || mSliderAlwaysVisible) {
+				Color color = batch.getColor();// get current Color, you can't modify directly
+				float oldAlpha = color.a; // save its alpha
 
-		if (Slider == null || SliderPushed == null) {
-			LoadSliderImagesNew();
+				if (Slider == null || SliderPushed == null) {
+					LoadSliderImagesNew();
+				}
+
+				// Draw Slider
+				CalcSliderPos();
+
+				mPushSliderAlpha = mPushSliderFader.isVisible() ? mPushSliderFader.getValue() : 0;
+
+				if (mSliderAlwaysVisible) {
+					mSliderAlpha = 1f;
+				} else {
+					mSliderAlpha = mSliderFader.isVisible() ? mSliderFader.getValue() : 0;
+				}
+
+				color.a = oldAlpha * mPushSliderAlpha;
+				batch.setColor(color); // set it
+				SliderPushed.draw(batch, SliderPuchRec.getX(), SliderPuchRec.getY(), SliderPuchRec.getWidth(), SliderPuchRec.getHeight());
+
+				color.a = oldAlpha * mSliderAlpha;
+				batch.setColor(color); // set it
+				Slider.draw(batch, SliderRec.getX(), SliderRec.getY(), SliderRec.getWidth(), SliderRec.getHeight());
+
+				// Set it back to orginial alpha when you're done with your alpha manipulation
+				color.a = oldAlpha;
+				batch.setColor(color);
+			}
 		}
-
-		// Draw Slider
-		CalcSliderPos();
-
-		mPushSliderAlpha = mPushSliderFader.isVisible() ? mPushSliderFader.getValue() : 0;
-
-		if (mSliderAlwaysVisible) {
-			mSliderAlpha = 1f;
-		} else {
-			mSliderAlpha = mSliderFader.isVisible() ? mSliderFader.getValue() : 0;
-		}
-
-		color.a = oldAlpha * mPushSliderAlpha;
-		batch.setColor(color); // set it
-		SliderPushed.draw(batch, SliderPuchRec.getX(), SliderPuchRec.getY(), SliderPuchRec.getWidth(), SliderPuchRec.getHeight());
-
-		color.a = oldAlpha * mSliderAlpha;
-		batch.setColor(color); // set it
-		Slider.draw(batch, SliderRec.getX(), SliderRec.getY(), SliderRec.getWidth(), SliderRec.getHeight());
-
-		// Set it back to orginial alpha when you're done with your alpha manipulation
-		color.a = oldAlpha;
-		batch.setColor(color);
-		}
-	}
 	}
 
 	private void LoadSliderImagesNew() {
-	Slider = Sprites.Slider;
-	SliderPushed = Sprites.SliderPushed;
+		Slider = Sprites.Slider;
+		SliderPushed = Sprites.SliderPushed;
 
-	float minWidth = Slider.getMinWidth();
+		float minWidth = Slider.getMinWidth();
 
-	SliderRec.setX(this.getWidth() - (minWidth / 1.35f));
-	SliderRec.setWidth(minWidth);
+		SliderRec.setX(this.getWidth() - (minWidth / 1.35f));
+		SliderRec.setWidth(minWidth);
 
-	mPushSliderIstHight = UI_Size_Base.that.getButtonHeight() * 0.8f;
+		mPushSliderIstHight = UI_Size_Base.that.getButtonHeight() * 0.8f;
 
-	SliderPuchRec.setX(SliderRec.getX() - mPushSliderIstHight + Slider.getLeftWidth());
-	SliderPuchRec.setY(mSliderPos);
-	SliderPuchRec.setWidth(mPushSliderIstHight);
-	SliderPuchRec.setHeight(mPushSliderIstHight);
+		SliderPuchRec.setX(SliderRec.getX() - mPushSliderIstHight + Slider.getLeftWidth());
+		SliderPuchRec.setY(mSliderPos);
+		SliderPuchRec.setWidth(mPushSliderIstHight);
+		SliderPuchRec.setHeight(mPushSliderIstHight);
 
 	}
 
@@ -146,128 +146,127 @@ public class Scrollbar extends CB_View_Base {
 	 * lp= position of List
 	 */
 	private void CalcSliderPos() {
-	CalcSliderHeight();
+		CalcSliderHeight();
 
-	float lp = ListView.getScrollPos();
-	float ll = ListView.getAllListSize();
+		float lp = ListView.getScrollPos();
+		float ll = ListView.getAllListSize();
 
-	float s = mSliderIstHight;
-	float l = this.getHeight();
+		float s = mSliderIstHight;
+		float l = this.getHeight();
 
-	mSliderPos = this.getHeight() + ((lp / (ll - l)) * (l - s)) - s;
-	SliderRec.setY(mSliderPos);
+		mSliderPos = this.getHeight() + ((lp / (ll - l)) * (l - s)) - s;
+		SliderRec.setY(mSliderPos);
 
-	s = mPushSliderIstHight;
+		s = mPushSliderIstHight;
 
-	mPuchSliderPos = this.getHeight() + ((lp / (ll - l)) * (l - s)) - s;
-	SliderPuchRec.setY(mPuchSliderPos);
+		mPuchSliderPos = this.getHeight() + ((lp / (ll - l)) * (l - s)) - s;
+		SliderPuchRec.setY(mPuchSliderPos);
 
 	}
 
 	private void CalcSliderHeight() {
 
-	mSliderSollHeight = (this.getHeight() / ListView.getAllListSize()) * this.getHeight();
+		mSliderSollHeight = (this.getHeight() / ListView.getAllListSize()) * this.getHeight();
 
-	if (mSliderSollHeight > this.getHalfHeight()) {
-		mSliderIstHight = this.getHalfHeight();
-	} else if (mSliderSollHeight < getMinSliderHeight()) {
-		mSliderIstHight = getMinSliderHeight();
-	} else {
-		mSliderIstHight = mSliderSollHeight;
-	}
+		if (mSliderSollHeight > this.getHalfHeight()) {
+			mSliderIstHight = this.getHalfHeight();
+		} else if (mSliderSollHeight < getMinSliderHeight()) {
+			mSliderIstHight = getMinSliderHeight();
+		} else {
+			mSliderIstHight = mSliderSollHeight;
+		}
 
-	SliderRec.setHeight(mSliderIstHight);
+		SliderRec.setHeight(mSliderIstHight);
 
 	}
 
 	private float mMinSliderHeight = -1;
 
 	private float getMinSliderHeight() {
-	if (mMinSliderHeight > 0)
-		return mMinSliderHeight;
-	return mMinSliderHeight = UI_Size_Base.that.getButtonHeight() * 0.5f;
+		if (mMinSliderHeight > 0)
+			return mMinSliderHeight;
+		return mMinSliderHeight = UI_Size_Base.that.getButtonHeight() * 0.5f;
 	}
 
 	@Override
 	public boolean onTouchUp(int x, int y, int pointer, int button) {
-	if (mSliderPushed) {
-		mPushSliderFader.resetFadeOut();
-		mSliderPushed = false;
-		ListView.chkSlideBack();
-		return true;
-	}
-	return false;
+		if (mSliderPushed) {
+			mPushSliderFader.resetFadeOut();
+			mSliderPushed = false;
+			ListView.chkSlideBack();
+			return true;
+		}
+		return false;
 	}
 
 	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button) {
 
-	if (SliderPuchRec.contains(x, y)) {
-		mSliderFader.resetFadeOut();
-		mPushSliderFader.resetFadeOut();
-		mLastTouch = y;
+		if (SliderPuchRec.contains(x, y)) {
+			mSliderFader.resetFadeOut();
+			mPushSliderFader.resetFadeOut();
+			mLastTouch = y;
 
-		mPushSliderTouch = SliderPuchRec.getY() - y;
-		mLastPos_onTouch = ListView.getScrollPos();
-		mSliderPushed = true;
-		return true;
-	}
+			mPushSliderTouch = SliderPuchRec.getY() - y;
+			mLastPos_onTouch = ListView.getScrollPos();
+			mSliderPushed = true;
+			return true;
+		}
 
-	return false;
+		return false;
 	}
 
 	@Override
 	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
 
-	if (mSliderPushed) {
-		mPushSliderFader.stopTimer();
-		float ll = ListView.getAllListSize();
-		float ls = this.getHeight();
+		if (mSliderPushed) {
+			mPushSliderFader.stopTimer();
+			float ll = ListView.getAllListSize();
+			float ls = this.getHeight();
 
-		if (ls > ll)
-		return true;
+			if (ls > ll)
+				return true;
 
-		float p = -ls + y - mPushSliderTouch;
-		float s = mPushSliderIstHight;
-		float l = this.getHeight();
+			float p = -ls + y - mPushSliderTouch;
+			float s = mPushSliderIstHight;
+			float l = this.getHeight();
 
-		float lp = (p / (l - s)) * (ll - ls);
+			float lp = (p / (l - s)) * (ll - ls);
 
-		this.ListView.setListPos(lp);
+			this.ListView.setListPos(lp);
 
-		// log.debug("SliderScrollValue:" + " Dragged:" + lp + " LastTouch:" + mLastTouch + " Y=" + y);
-		return true;
-	}
+			return true;
+		}
 
-	return false;
+		return false;
 	}
 
 	@Override
 	public void onParentResized(CB_RectF rec) {
-	this.setWidth(rec.getWidth());
-	this.setHeight(rec.getHeight());
+		this.setWidth(rec.getWidth());
+		this.setHeight(rec.getHeight());
 	}
 
 	public void ScrollPositionChanged() {
-	mSliderFader.resetFadeOut();
+		mSliderFader.resetFadeOut();
 	}
 
 	public float getSliderWidth() {
-	if (Slider == null) {
-		LoadSliderImagesNew();
-	}
-	return SliderRec.getWidth();
+		if (Slider == null) {
+			LoadSliderImagesNew();
+		}
+		return SliderRec.getWidth();
 	}
 
 	public float getPushSliderWidth() {
-	if (Slider == null) {
-		LoadSliderImagesNew();
-	}
-	return SliderPuchRec.getWidth();
+		if (Slider == null) {
+			LoadSliderImagesNew();
+		}
+		return SliderPuchRec.getWidth();
 	}
 
 	public float getSliderHeight() {
-	return mSliderIstHight;
+		return mSliderIstHight;
 	}
 
 }

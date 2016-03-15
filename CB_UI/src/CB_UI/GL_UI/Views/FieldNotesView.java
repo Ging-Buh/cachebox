@@ -68,6 +68,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_FixSizeList;
+import CB_Utils.Log.Log;
 
 public class FieldNotesView extends V_ListView {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(FieldNotesView.class);
@@ -976,6 +977,6 @@ public class FieldNotesView extends V_ListView {
 		lvAdapter = null;
 		that = null;
 		super.dispose();
-		log.debug("FieldNotesView disposed");
+		Log.debug(log, "FieldNotesView disposed");
 	}
 }

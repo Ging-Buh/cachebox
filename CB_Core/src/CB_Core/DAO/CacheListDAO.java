@@ -33,6 +33,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.Waypoint;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
 import de.cb.sqlite.CoreCursor;
 
@@ -78,7 +79,7 @@ public class CacheListDAO {
 		// Clear List before read
 		cacheList.clear();
 
-		log.info("ReadCacheList 1.Waypoints");
+		Log.info(log, "ReadCacheList 1.Waypoints");
 		SortedMap<Long, CB_List<Waypoint>> waypoints;
 		waypoints = new TreeMap<Long, CB_List<Waypoint>>();
 		// zuerst alle Waypoints einlesen
@@ -115,7 +116,7 @@ public class CacheListDAO {
 		}
 		reader.close();
 
-		log.debug("ReadCacheList 2.Caches");
+		Log.debug(log, "ReadCacheList 2.Caches");
 		try {
 			if (fullDetails) {
 				sql = CacheDAO.SQL_GET_CACHE + ", " + CacheDAO.SQL_DETAILS;
@@ -132,7 +133,7 @@ public class CacheListDAO {
 			reader = Database.Data.rawQuery(sql, null);
 
 		} catch (Exception e) {
-			log.error("CacheList.LoadCaches()", "reader = Database.Data.myDB.rawQuery(....", e);
+			Log.err(log, "CacheList.LoadCaches()", "reader = Database.Data.myDB.rawQuery(....", e);
 		}
 		reader.moveToFirst();
 
@@ -183,7 +184,7 @@ public class CacheListDAO {
 		waypoints = null;
 
 		// do it manual (or automated after fix), got hanging app on startup
-		// log.debug("ReadCacheList 3.Sorting");
+		// Log.debug(log, "ReadCacheList 3.Sorting");
 		try
 
 		{
@@ -193,9 +194,9 @@ public class CacheListDAO {
 		Exception e)
 
 		{
-			// log.error("CacheListDAO.ReadCacheList()", "Sort ERROR", e);
+			// Log.err(log, "CacheListDAO.ReadCacheList()", "Sort ERROR", e);
 		}
-		// log.debug("ReadCacheList 4. ready");
+		// Log.debug(log, "ReadCacheList 4. ready");
 		return cacheList;
 
 	}
@@ -218,7 +219,7 @@ public class CacheListDAO {
 			Database.Data.GPXFilenameUpdateCacheCount(); // CoreSettingsForward.Categories will be set
 			return ret;
 		} catch (Exception e) {
-			log.error("CacheListDAO.DelArchiv()", "Archiv ERROR", e);
+			Log.err(log, "CacheListDAO.DelArchiv()", "Archiv ERROR", e);
 			return -1;
 		}
 	}
@@ -241,7 +242,7 @@ public class CacheListDAO {
 			Database.Data.GPXFilenameUpdateCacheCount(); // CoreSettingsForward.Categories will be set
 			return ret;
 		} catch (Exception e) {
-			log.error("CacheListDAO.DelFound()", "Found ERROR", e);
+			Log.err(log, "CacheListDAO.DelFound()", "Found ERROR", e);
 			return -1;
 		}
 	}
@@ -265,7 +266,7 @@ public class CacheListDAO {
 			Database.Data.GPXFilenameUpdateCacheCount(); // CoreSettingsForward.Categories will be set
 			return ret;
 		} catch (Exception e) {
-			log.error("CacheListDAO.DelFilter()", "Filter ERROR", e);
+			Log.err(log, "CacheListDAO.DelFilter()", "Filter ERROR", e);
 			return -1;
 		}
 	}
@@ -335,7 +336,7 @@ public class CacheListDAO {
 				FileHandle file = new FileHandle(filename);
 				if (file.exists()) {
 					if (!file.delete())
-						log.debug("Error deleting : " + filename);
+						Log.debug(log, "Error deleting : " + filename);
 				}
 			}
 		}

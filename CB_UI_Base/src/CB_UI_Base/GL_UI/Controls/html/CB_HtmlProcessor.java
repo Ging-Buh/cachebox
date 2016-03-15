@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import CB_UI_Base.Global;
 import CB_UI_Base.GL_UI.Controls.html.elementhandler.ListElementHandler;
@@ -80,7 +80,7 @@ public class CB_HtmlProcessor extends Processor {
 	if (isOpenStartTag(tag)) {
 
 		createNewSegment();
-		// log.debug("Push Tag >" + tag.toString());
+		// Log.debug(log, "Push Tag >" + tag.toString());
 		AtributeStack.push(tag);
 
 		// if (tag.getName().equals("pre") || tag.getName().equals("span"))
@@ -105,9 +105,9 @@ public class CB_HtmlProcessor extends Processor {
 
 		// Tag pop = AtributeStack.pop();
 		// if (pop != null) {
-		// log.debug("Pop Tag >" + pop.toString());
+		// Log.debug(log, "Pop Tag >" + pop.toString());
 		// } else {
-		// log.error("Pop Tag > ERROR Stack are empty");
+		// Log.err(log, "Pop Tag > ERROR Stack are empty");
 		// }
 
 	}
@@ -163,7 +163,7 @@ public class CB_HtmlProcessor extends Processor {
 		Html_Segment segment;
 
 		// if (nextIsLI && actList != null) {
-		// // log.debug("Append new LI element:" + innerText);
+		// // Log.debug(log, "Append new LI element:" + innerText);
 		//
 		// while (innerText.startsWith(" "))
 		// innerText = innerText.replaceFirst(" ", "");
@@ -187,7 +187,7 @@ public class CB_HtmlProcessor extends Processor {
 		// actList = null;
 		// }
 
-		// log.debug("Append Text:" + innerText);
+		// Log.debug(log, "Append Text:" + innerText);
 
 		if (isImage) {
 		segment = new Html_Segment_Image(AtributeStack, innerText);
@@ -252,7 +252,7 @@ public class CB_HtmlProcessor extends Processor {
 		// search for Space
 		pos = text.lastIndexOf(" ", MAX_TEXT_LENGTH);
 		if (pos < 2) {
-		log.debug("Cant split HTML Text");
+		Log.debug(log, "Cant split HTML Text");
 		first = text; // can't split
 		} else {
 		first = text.substring(0, pos);
@@ -268,7 +268,7 @@ public class CB_HtmlProcessor extends Processor {
 	}
 
 	public void createNewHrSegment() {
-	// log.debug("Append HR segment:");
+	// Log.debug(log, "Append HR segment:");
 
 	Html_Segment segment = new Html_Segment_HR(AtributeStack);
 	segmentList.add(segment);

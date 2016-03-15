@@ -54,6 +54,7 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 
 public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
@@ -197,7 +198,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
 				if (result.length() > 0) {
 
-					log.debug("result:" + result);
+					Log.debug(log, "result:" + result);
 
 					try {
 						GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);

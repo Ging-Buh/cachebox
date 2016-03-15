@@ -18,7 +18,7 @@ package CB_UI_Base.GL_UI.Controls;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -354,7 +354,7 @@ public class Label extends CB_View_Base {
 	} catch (Exception e) {
 	    // java.lang.ArrayIndexOutOfBoundsException kommt mal vor
 	    e.printStackTrace();
-	    log.error(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + " \"" + mText + "\"", e);
+	    Log.err(log, this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + " \"" + mText + "\"", e);
 	}
 	if (underlineStrikeoutDrawable != null) {
 	    underlineStrikeoutDrawable.dispose();
@@ -385,7 +385,7 @@ public class Label extends CB_View_Base {
 		xPosition += scrollPos;
 	    } else {
 		// no horizontal scrolling and Text out of limits
-		// log.debug("Label Text is too long: " + mText);
+		// Log.debug(log, "Label Text is too long: " + mText);
 	    }
 	}
 	// bottom : text starts at yPosition, Text wird von hier aus unterhalb

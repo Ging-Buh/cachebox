@@ -19,11 +19,9 @@ package org.mapsforge.map.swing;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import CB_Utils.fileProvider.File;
 import java.util.Arrays;
 import java.util.prefs.Preferences;
 
-import CB_Utils.fileProvider.FileFactory;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.MapPosition;
@@ -51,6 +49,9 @@ import org.mapsforge.map.swing.util.JavaUtilPreferences;
 import org.mapsforge.map.swing.view.MainFrame;
 import org.mapsforge.map.swing.view.MapView;
 import org.mapsforge.map.swing.view.WindowCloseDialog;
+
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 
 public final class MapViewer {
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;

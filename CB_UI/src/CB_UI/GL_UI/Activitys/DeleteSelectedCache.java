@@ -28,13 +28,14 @@ import CB_Core.DAO.LogDAO;
 import CB_Core.Types.Waypoint;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
+import CB_Utils.Log.Log;
 
 public class DeleteSelectedCache {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(DeleteSelectedCache.class);
 
 	public static void Execute() {
 		// Images
-		log.debug("Delete Images");
+		Log.debug(log, "Delete Images");
 		ArrayList<String> GcCodeList = new ArrayList<String>();
 		GcCodeList.add(GlobalCore.getSelectedCache().getGcCode());
 		CacheListDAO dao = new CacheListDAO();
@@ -42,28 +43,28 @@ public class DeleteSelectedCache {
 		GcCodeList = null;
 		dao = null;
 		// Waypoints
-		log.debug("Delete Waypoints");
+		Log.debug(log, "Delete Waypoints");
 		for (int i = 0, n = GlobalCore.getSelectedCache().waypoints.size(); i < n; i++) {
 			Waypoint wp = GlobalCore.getSelectedCache().waypoints.get(i);
 			Database.DeleteFromDatabase(wp);
 		}
 		// Cache
-		log.debug("Delete Cache " + GlobalCore.getSelectedCache().getGcCode());
+		Log.debug(log, "Delete Cache " + GlobalCore.getSelectedCache().getGcCode());
 		Database.Data.delete("Caches", "GcCode='" + GlobalCore.getSelectedCache().getGcCode() + "'", null);
 		// Logs
-		log.debug("Delete Logs");
+		Log.debug(log, "Delete Logs");
 		LogDAO logdao = new LogDAO();
 		logdao.ClearOrphanedLogs();
 		logdao = null;
 		// compact DB hangs : commented out
-		// log.debug("Delete compact DB");
+		// Log.debug(log, "Delete compact DB");
 		// Database.Data.execSQL("vacuum");
 		// Filter Liste neu aufbauen oder gibt es eine schnellere Möglichkeit?
-		log.debug("Execute LastFilter");
+		Log.debug(log, "Execute LastFilter");
 		EditFilterSettings.ApplyFilter(FilterInstances.getLastFilter());
-		log.debug("unselect Cache");
+		Log.debug(log, "unselect Cache");
 		GlobalCore.setSelectedCache(null);
-		log.debug("Rebuild View");
+		Log.debug(log, "Rebuild View");
 		CacheListChangedEventList.Call();
 	}
 }

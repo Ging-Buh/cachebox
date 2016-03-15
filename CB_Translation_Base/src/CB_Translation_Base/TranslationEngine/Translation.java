@@ -28,6 +28,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 import CB_Utils.Log.Trace;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
@@ -286,7 +287,7 @@ public class Translation {
 			MissingTranslation notFound = new MissingTranslation(StringId, "??");
 			if (!mMissingStringList.contains(notFound)) {
 				mMissingStringList.add(notFound);
-				log.debug("MissingTranslation: " + notFound.toString() + " from =>" + Trace.getCallerName(2));
+				Log.debug(log, "MissingTranslation: " + notFound.toString() + " from =>" + Trace.getCallerName(2));
 			}
 			return retString;
 		}

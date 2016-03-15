@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import CB_Core.Database;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Types.LogEntry;
+import CB_Utils.Log.Log;
 import de.cb.sqlite.Database_Core.Parameters;
 
 public class LogDAO {
@@ -42,7 +43,7 @@ public class LogDAO {
 		try {
 			Database.Data.insertWithConflictReplace("Logs", args);
 		} catch (Exception exc) {
-			log.error("Write Log", "", exc);
+			Log.err(log, "Write Log", "", exc);
 		}
 
 	}

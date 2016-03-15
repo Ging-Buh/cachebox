@@ -55,6 +55,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Plattform;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileList;
 import CB_Utils.fileProvider.File;
@@ -236,7 +237,7 @@ public class splash extends MainViewBase {
 	 * Load Config DB3
 	 */
 	private void ini_Config() {
-		// log.debug("ini_Config");
+		// Log.debug(log, "ini_Config");
 		// Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
 		// Config.settings.ReadFromDB();
 		// // now must reinitial UiSizes with reading settings values
@@ -250,7 +251,7 @@ public class splash extends MainViewBase {
 	 */
 	private void ini_Translations() {
 		if (!Translation.isInitial()) {
-			log.debug("ini_Translations");
+			Log.debug(log, "ini_Translations");
 
 			// Load from Assets changes
 			// delete work path from settings value
@@ -287,7 +288,7 @@ public class splash extends MainViewBase {
 	 * Load Sprites
 	 */
 	private void ini_Sprites() {
-		log.debug("ini_Sprites");
+		Log.debug(log, "ini_Sprites");
 		Sprites.loadSprites(false);
 	}
 
@@ -296,7 +297,7 @@ public class splash extends MainViewBase {
 	 * chk directories
 	 */
 	private void ini_Dirs() {
-		log.debug("ini_Dirs");
+		Log.debug(log, "ini_Dirs");
 		ini_Dir(Config.PocketQueryFolder.getValue());
 		ini_Dir(Config.TileCacheFolder.getValue());
 		ini_Dir(Config.mWorkPath + "/User");
@@ -331,13 +332,13 @@ public class splash extends MainViewBase {
 	 * show select DB Dialog
 	 */
 	private void ini_SelectDB() {
-		log.debug("ini_SelectDB");
+		Log.debug(log, "ini_SelectDB");
 		// search number of DB3 files
 		FileList fileList = null;
 		try {
 			fileList = new FileList(Config.mWorkPath, "DB3");
 		} catch (Exception ex) {
-			log.error("slpash.Initial()", "search number of DB3 files", ex);
+			Log.err(log, "slpash.Initial()", "search number of DB3 files", ex);
 		}
 		if ((fileList.size() > 1) && Config.MultiDBAsk.getValue() && !GlobalCore.restartAfterKill) {
 			breakForWait = true;
@@ -364,7 +365,7 @@ public class splash extends MainViewBase {
 	 * Load Cache DB3
 	 */
 	private void ini_CacheDB() {
-		log.debug("ini_CacheDB");
+		Log.debug(log, "ini_CacheDB");
 		// chk if exist filter preset splitter "#" and Replace
 		String ConfigPreset = Config.UserFilter.getValue();
 		if (ConfigPreset.endsWith("#")) {
@@ -432,7 +433,7 @@ public class splash extends MainViewBase {
 	 * chk installed map packs/layers
 	 */
 	private void ini_MapPaks() {
-		log.debug("ini_MapPaks");
+		Log.debug(log, "ini_MapPaks");
 		ManagerBase.Manager.initialMapPacks();
 	}
 
@@ -441,7 +442,7 @@ public class splash extends MainViewBase {
 	 * Show TabMainView
 	 */
 	private void ini_TabMainView() {
-		log.debug("ini_TabMainView");
+		Log.debug(log, "ini_TabMainView");
 		GL.that.removeRenderView(this);
 		GL.that.switchToMainView();
 
@@ -461,10 +462,10 @@ public class splash extends MainViewBase {
 									w = wp;
 								}
 							}
-							log.debug("ini_TabMainView: Set selectedCache to" + c.getGcCode() + " from restartCache + WP.");
+							Log.debug(log, "ini_TabMainView: Set selectedCache to" + c.getGcCode() + " from restartCache + WP.");
 							GlobalCore.setSelectedWaypoint(c, w);
 						} else {
-							log.debug("ini_TabMainView: Set selectedCache to" + c.getGcCode() + " from restartCache.");
+							Log.debug(log, "ini_TabMainView: Set selectedCache to" + c.getGcCode() + " from restartCache.");
 							GlobalCore.setSelectedCache(c);
 						}
 					}

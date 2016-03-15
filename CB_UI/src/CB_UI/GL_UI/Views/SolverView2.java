@@ -51,6 +51,7 @@ import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.Log.Log;
 
 public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(SolverView2.class);
@@ -61,13 +62,13 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 	public SolverView2(CB_RectF rec, String Name) {
 		super(rec, Name);
 
-		log.debug("Create SolverView2 => " + rec.toString());
+		Log.debug(log, "Create SolverView2 => " + rec.toString());
 		cache = null;
 	}
 
 	@Override
 	public void onShow() {
-		log.debug("onShow()");
+		Log.debug(log, "onShow()");
 		SelectedCacheEventList.Add(this);
 
 		setBackground(Sprites.ListBack);
@@ -134,7 +135,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 
 	@Override
 	public void onHide() {
-		log.debug("onHide()");
+		Log.debug(log, "onHide()");
 		SelectedCacheEventList.Remove(this);
 		if (GlobalCore.isSetSelectedCache())
 			Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
@@ -143,7 +144,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 	@Override
 	public void Initial() {
 		super.Initial();
-		log.debug("SolverView2 => Initial()");
+		Log.debug(log, "SolverView2 => Initial()");
 		this.setListPos(0, false);
 		chkSlideBack();
 		GL.that.renderOnce();
@@ -465,6 +466,6 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 		solver = null;
 		cache = null;
 		super.dispose();
-		log.debug("SolverView2 disposed");
+		Log.debug(log, "SolverView2 disposed");
 	}
 }

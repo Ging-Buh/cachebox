@@ -17,15 +17,16 @@ package CB_Locator.Map;
 
 import org.slf4j.LoggerFactory;
 
-import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.settings.CB_UI_Base_Settings;
-import CB_Utils.Lists.CB_List;
-
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+
+import CB_UI_Base.GL_UI.IRunOnGL;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
+import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 
 /**
  * @author ging-buh
@@ -84,7 +85,7 @@ public class TileGL_Bmp extends TileGL {
 				pixmap.dispose();
 				pixmap = null;
 			} catch (Exception ex) {
-				log.debug("[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
+				Log.debug(log, "[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
 			}
 			bytes = null;
 			inCreation = false;
@@ -105,7 +106,7 @@ public class TileGL_Bmp extends TileGL {
 						pixmap.dispose();
 						pixmap = null;
 					} catch (Exception ex) {
-						log.debug("[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
+						Log.debug(log, "[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
 					}
 					bytes = null;
 					inCreation = false;

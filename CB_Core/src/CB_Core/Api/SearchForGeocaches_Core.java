@@ -361,11 +361,11 @@ public class SearchForGeocaches_Core {
 			if (status.getInt("StatusCode") == 0) {
 				result = "";
 				JSONArray caches = json.getJSONArray("Geocaches");
-				// log.debug("got " + caches.length() + " Caches from gc");
+				// Log.debug(log, "got " + caches.length() + " Caches from gc");
 				for (int i = 0; i < caches.length(); i++) {
 					JSONObject jCache = (JSONObject) caches.get(i);
 					String gcCode = jCache.getString("Code");
-					// log.debug("handling " + gcCode);
+					// Log.debug(log, "handling " + gcCode);
 					String name = jCache.getString("Name");
 					result += gcCode + " - " + name + "\n";
 

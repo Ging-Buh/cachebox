@@ -52,6 +52,7 @@ import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.Log.Log;
 import CB_Utils.Math.Point;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.FileList;
@@ -273,7 +274,7 @@ public class SelectDB extends ActivityBase {
 						if (!(firstAndLast.x < i && firstAndLast.y > i))
 							lvFiles.scrollToItem(i);
 					} catch (Exception e) {
-						log.error("select item", e);
+						Log.err(log, "select item", e);
 					}
 				}
 
@@ -307,7 +308,7 @@ public class SelectDB extends ActivityBase {
 					if (lvFiles.isDragable()) {
 						if (!(firstAndLast.x <= id && firstAndLast.y >= id)) {
 							lvFiles.scrollToItem(id);
-							log.debug("Scroll to:" + id);
+							Log.debug(log, "Scroll to:" + id);
 						}
 					}
 					break;
@@ -336,7 +337,7 @@ public class SelectDB extends ActivityBase {
 
 			GL.that.renderOnce();
 		} catch (Exception e) {
-			log.error("Set selected DB Visible", e);
+			Log.err(log, "Set selected DB Visible", e);
 		}
 	}
 
@@ -393,7 +394,7 @@ public class SelectDB extends ActivityBase {
 					Config.SpoilerFolderLocal.setValue(folder + "Spoilers");
 					Config.TileCacheFolderLocal.setValue(folder + "Cache");
 					Config.AcceptChanges();
-					log.debug(NewDB_Name + " has own Repository:\n" + //
+					Log.debug(log, NewDB_Name + " has own Repository:\n" + //
 							Config.DescriptionImageFolderLocal.getValue() + ", \n" + //
 							Config.MapPackFolderLocal.getValue() + ", \n" + //
 							Config.SpoilerFolderLocal.getValue() + ", \n" + //
@@ -406,7 +407,7 @@ public class SelectDB extends ActivityBase {
 					creationOK = creationOK && FileIO.createDirectory(Config.SpoilerFolderLocal.getValue());
 					creationOK = creationOK && FileIO.createDirectory(Config.TileCacheFolderLocal.getValue());
 					if (!creationOK)
-						log.debug("Problem with creation of one of the Directories:" + //
+						Log.debug(log, "Problem with creation of one of the Directories:" + //
 								Config.DescriptionImageFolderLocal.getValue() + ", " + //
 								Config.MapPackFolderLocal.getValue() + ", " + //
 								Config.SpoilerFolderLocal.getValue() + ", " + //

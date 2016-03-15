@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import CB_UI_Base.Energy;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 
 /**
  * @author ging-buh
@@ -42,7 +43,7 @@ class MultiThreadQueueProcessor extends Thread {
 	private boolean isAlive;
 
 	MultiThreadQueueProcessor(QueueData queueData, int threadID) {
-		//log.debug("Create MultiThreadQueueProcessor[" + threadID + "]");
+		//Log.debug(log, "Create MultiThreadQueueProcessor[" + threadID + "]");
 		ThreadId = threadID;
 		this.queueData = queueData;
 	}
@@ -135,9 +136,9 @@ class MultiThreadQueueProcessor extends Thread {
 								inLoadDescLock.unlock();
 							}
 
-							// log.debug("LoadTile on[" + ThreadId + "]");
+							// Log.debug(log, "LoadTile on[" + ThreadId + "]");
 							LoadTile(desc);
-							// log.debug("finish LoadTile on[" + ThreadId + "]");
+							// Log.debug(log, "finish LoadTile on[" + ThreadId + "]");
 							inLoadDescLock.lock();
 							inLoadDesc.remove(desc);
 							inLoadDescLock.unlock();
@@ -147,7 +148,7 @@ class MultiThreadQueueProcessor extends Thread {
 							Thread.sleep(100);
 						}
 					} catch (Exception ex1) {
-						log.error("MapViewGL.queueProcessor.doInBackground()", "1", ex1);
+						Log.err(log, "MapViewGL.queueProcessor.doInBackground()", "1", ex1);
 						Thread.sleep(200);
 					}
 
@@ -157,7 +158,7 @@ class MultiThreadQueueProcessor extends Thread {
 				this.isAlive = true;
 			} while (true);
 		} catch (Exception ex3) {
-			log.error("MapViewGL.queueProcessor.doInBackground()", "3", ex3);
+			Log.err(log, "MapViewGL.queueProcessor.doInBackground()", "3", ex3);
 
 			try {
 				Thread.sleep(200);

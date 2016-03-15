@@ -15,8 +15,6 @@
  */
 package CB_UI.GL_UI.Activitys.APIs;
 
-import CB_Utils.fileProvider.File;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,8 +22,6 @@ import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import CB_Utils.fileProvider.FileFactory;
-import CB_Utils.fileProvider.FilenameFilter;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -81,7 +77,10 @@ import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Events.ProgressChangedEvent;
 import CB_Utils.Events.ProgresssChangedEventList;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 
 public class ShowAPIImportList extends ActivityBase implements ProgressChangedEvent {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(ShowAPIImportList.class);
@@ -811,7 +810,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 										try {
 											PocketQuery.DownloadSinglePocketQuery(pq, Config.PocketQueryFolder.getValue());
 										} catch (OutOfMemoryError e) {
-											log.error("PQ-download", "OutOfMemoryError-" + pq.Name, e);
+											Log.err(log, "PQ-download", "OutOfMemoryError-" + pq.Name, e);
 											e.printStackTrace();
 										}
 									}
@@ -851,7 +850,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 							return;
 						}
 
-						log.debug("Import  GPX Import took " + (System.currentTimeMillis() - startTime) + "ms");
+						Log.debug(log, "Import  GPX Import took " + (System.currentTimeMillis() - startTime) + "ms");
 
 						System.gc();
 
@@ -956,7 +955,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 
 				String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "C " + String.valueOf(GPXFileImporter.LogCount) + "L in " + String.valueOf(ImportZeit);
 
-				log.debug(Msg);
+				Log.debug(log, Msg);
 
 				FilterProperties props = FilterInstances.getLastFilter();
 

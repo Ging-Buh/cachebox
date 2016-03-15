@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 import org.slf4j.LoggerFactory;
 
+import CB_Utils.Log.Log;
+
 public abstract class Database_Core {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(Database_Core.class);
 	protected String databasePath;
@@ -37,7 +39,7 @@ public abstract class Database_Core {
 
 	public boolean StartUp(String databasePath) {
 		try {
-			log.debug("DB Startup : " + databasePath);
+			Log.debug(log, "DB Startup : " + databasePath);
 		} catch (Exception e) {
 			// gibt beim splash - Start: NPE in Translation.readMissingStringsFile
 			// Nachfolgende Starts sollten aber protokolliert werden

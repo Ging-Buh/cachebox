@@ -19,6 +19,12 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
+
 import CB_UI_Base.Events.invalidateTextureEvent;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.CB_View_Base;
@@ -28,12 +34,6 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
-
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
 
 public class ZoomScale extends CB_View_Base implements invalidateTextureEvent {
 	private int minzoom = 6;
@@ -320,7 +320,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent {
 
 	@Override
 	public void onResized(CB_RectF rec) {
-		// log.debug("ZoomScale Rezised");
+		// Log.debug(log, "ZoomScale Rezised");
 		ScaleDrawRec = null;
 		storedRec = null;
 		CachedScaleSprite = null;

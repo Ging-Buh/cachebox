@@ -16,10 +16,8 @@
 package de.cachebox_test.Map;
 
 import java.io.ByteArrayOutputStream;
-import CB_Utils.fileProvider.File;
 import java.io.IOException;
 
-import CB_Utils.fileProvider.FileFactory;
 import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
 import org.slf4j.LoggerFactory;
@@ -36,8 +34,11 @@ import CB_Locator.Map.TileGL.TileState;
 import CB_Locator.Map.TileGL_Bmp;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_GraphicFactory;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.HSV_Color;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 import android.graphics.BitmapFactory;
 
 /**
@@ -117,7 +118,7 @@ public class AndroidManager extends ManagerBase {
 				return bmpTile;
 			}
 		} catch (Exception exc) {
-			log.error("Exception", exc);
+			Log.err(log, "Exception", exc);
 		}
 		return null;
 	}

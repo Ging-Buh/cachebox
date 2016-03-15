@@ -12,6 +12,7 @@ import CB_Locator.Map.BoundingBox;
 import CB_Locator.Map.Descriptor;
 import CB_Locator.Map.ManagerBase;
 import CB_Locator.Map.PackBase;
+import CB_Utils.Log.Log;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -41,13 +42,13 @@ public class AndroidPack extends PackBase {
 	// / <param name="desc">Descriptor</param>
 	// / <returns>Bitmap der Kachel</returns>
 	public Bitmap LoadFromBoundingBox(BoundingBox bbox, Descriptor desc) {
-		log.debug("LoadFromBoundingBox");
+		Log.debug(log, "LoadFromBoundingBox");
 		try {
 			byte[] buffer = LoadFromBoundingBoxByteArray(bbox, desc);
 			if (buffer == null)
 				return null;
 
-			Bitmap result = BitmapFactory.decodeByteArray(buffer, 0, (int) buffer.length);
+			Bitmap result = BitmapFactory.decodeByteArray(buffer, 0, buffer.length);
 
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			result.compress(Bitmap.CompressFormat.JPEG, 80, baos);
@@ -105,8 +106,8 @@ public class AndroidPack extends PackBase {
 				// BitDepth not supported by pixmap
 				switch (BitDepth) {
 				case 4:
-					// log.debug("[PackBase] unsupported png in Pack " + this.Filename + " tile: " + desc);
-					Bitmap result = BitmapFactory.decodeByteArray(buffer, 0, (int) buffer.length);
+					// Log.debug(log, "[PackBase] unsupported png in Pack " + this.Filename + " tile: " + desc);
+					Bitmap result = BitmapFactory.decodeByteArray(buffer, 0, buffer.length);
 					ByteArrayOutputStream bas = new ByteArrayOutputStream();
 					result.compress(Bitmap.CompressFormat.JPEG, 80, bas);
 					result.recycle();

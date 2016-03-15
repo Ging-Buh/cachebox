@@ -32,6 +32,7 @@ import CB_Locator.Map.Descriptor;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.MoveableList;
 
 /**
@@ -78,14 +79,14 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 	private void StartQueueProcessor() {
 
 		try {
-			// log.debug("MapCacheList.queueProcessor Create");
+			// Log.debug(log, "MapCacheList.queueProcessor Create");
 			queueProcessor = new queueProcessor();
 			queueProcessor.setPriority(Thread.MIN_PRIORITY);
 		} catch (Exception ex) {
-			log.error("MapCacheList.queueProcessor", "onCreate", ex);
+			Log.err(log, "MapCacheList.queueProcessor", "onCreate", ex);
 		}
 
-		// log.debug("MapCacheList.queueProcessor Start");
+		// Log.debug(log, "MapCacheList.queueProcessor Start");
 		queueProcessor.start();
 
 		state.set(0);
@@ -206,7 +207,7 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 					}
 				} while (true);
 			} catch (Exception ex3) {
-				log.error("MapCacheList.queueProcessor.doInBackground()", "3", ex3);
+				Log.err(log, "MapCacheList.queueProcessor.doInBackground()", "3", ex3);
 			} finally {
 				// wenn der Thread beendet wurde, muss er neu gestartet werden!
 				state.set(4);

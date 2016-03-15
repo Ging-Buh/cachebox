@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import CB_Utils.Util.HSV_Color;
 
@@ -97,7 +97,7 @@ public class HTMLColors {
 
 		if (ret == null) {
 			// unknown color, set to black
-			log.error("unknown color name: " + name);
+			Log.err(log, "unknown color name: " + name);
 			ret = new HSV_Color(HSV_Color.BLACK);
 		}
 

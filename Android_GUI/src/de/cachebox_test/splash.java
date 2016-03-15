@@ -16,17 +16,12 @@
 package de.cachebox_test;
 
 import java.io.BufferedReader;
-
-import CB_Utils.fileProvider.File;
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import CB_Utils.fileProvider.FileFactory;
-import de.CB_Utils.fileProvider.AndroidFileFactory;
 import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
 import org.slf4j.LoggerFactory;
@@ -53,6 +48,7 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.graphics.GL_RenderType;
 import CB_Utils.Log.CB_SLF4J;
+import CB_Utils.Log.Log;
 import CB_Utils.Log.LogLevel;
 import CB_Utils.Settings.PlatformSettings;
 import CB_Utils.Settings.PlatformSettings.IPlatformSettings;
@@ -63,6 +59,8 @@ import CB_Utils.Settings.SettingModus;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.IChanged;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -98,6 +96,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import de.CB_Utils.fileProvider.AndroidFileFactory;
 import de.cachebox_test.Components.copyAssetFolder;
 import de.cachebox_test.Views.Forms.MessageBox;
 import de.cb.sqlite.AndroidDB;
@@ -275,7 +274,7 @@ public class splash extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		log.debug("onStart");
+		Log.debug(log, "onStart");
 
 		// initial GDX
 		Gdx.files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
@@ -911,7 +910,7 @@ public class splash extends Activity {
 
 	@Override
 	public void onDestroy() {
-		log.debug("onDestroy");
+		Log.debug(log, "onDestroy");
 		if (isFinishing()) {
 			ReleaseImages();
 			// versionTextView = null;
@@ -992,7 +991,7 @@ public class splash extends Activity {
 	@TargetApi(Build.VERSION_CODES.KITKAT)
 	private void Initial(int width, int height) {
 		// Jetzt ist der workPath erstmal festgelegt.
-		log.debug("Initial()");
+		Log.debug(log, "Initial()");
 
 		// lolipop ask write permission
 		if (android.os.Build.VERSION.SDK_INT > 20) {
@@ -1016,7 +1015,7 @@ public class splash extends Activity {
 
 				Filereader.close();
 			} catch (IOException e) {
-				log.error("read redirection", e);
+				Log.err(log, "read redirection", e);
 			}
 
 		}
@@ -1100,20 +1099,20 @@ public class splash extends Activity {
 
 		if (GlobalCore.isTab) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-			log.debug("setRequestedOrientation SCREEN_ORIENTATION_LANDSCAPE");
+			Log.debug(log, "setRequestedOrientation SCREEN_ORIENTATION_LANDSCAPE");
 		} else {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-			log.debug("setRequestedOrientation SCREEN_ORIENTATION_PORTRAIT");
+			Log.debug(log, "setRequestedOrientation SCREEN_ORIENTATION_PORTRAIT");
 		}
 
-		log.debug("Android Version = " + android.os.Build.VERSION.SDK_INT);
+		Log.debug(log, "Android Version = " + android.os.Build.VERSION.SDK_INT);
 		// Check Android Version and disable MixedDatabaseRenderer with Version<14(4.0.0)
 		if (android.os.Build.VERSION.SDK_INT < 14) {
 			LocatorSettings.MapsforgeRenderType.setEnumValue(GL_RenderType.Mapsforge);
 			// Set setting to invisible
 			LocatorSettings.MapsforgeRenderType.changeSettingsModus(SettingModus.Never);
 			Config.settings.WriteToDB();
-			log.debug("disable MixedDatabaseRenderer for Android Version <14");
+			Log.debug(log, "disable MixedDatabaseRenderer for Android Version <14");
 		}
 
 		Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
@@ -1181,13 +1180,13 @@ public class splash extends Activity {
 
 		// UiSize Structur für die Berechnung der Größen zusammen stellen!
 
-		log.debug(GlobalCore.getVersionString());
-		log.debug("Screen width/height:" + width + "/" + height);
+		Log.debug(log, GlobalCore.getVersionString());
+		Log.debug(log, "Screen width/height:" + width + "/" + height);
 
 		if (ui == null) {
 			Resources res = splash.this.getResources();
 
-			log.debug("create new devices-sizes");
+			Log.debug(log, "create new devices-sizes");
 			ui = new DevicesSizes();
 
 			ui.Window = new Size(width, height);
@@ -1195,10 +1194,10 @@ public class splash extends Activity {
 			ui.isLandscape = false;
 
 			// Log Size values
-			log.debug("UI-Sizes");
-			log.debug("ui.Window: " + ui.Window.toString());
-			log.debug("ui.Density: " + ui.Density);
-			log.debug("ui.isLandscape: " + ui.isLandscape);
+			Log.debug(log, "UI-Sizes");
+			Log.debug(log, "ui.Window: " + ui.Window.toString());
+			Log.debug(log, "ui.Density: " + ui.Density);
+			Log.debug(log, "ui.isLandscape: " + ui.isLandscape);
 
 		}
 
@@ -1255,7 +1254,7 @@ public class splash extends Activity {
 		GlobalCore.RunFromSplash = true;
 
 		mainIntent.putExtras(b);
-		log.info("Splash start Main Intent");
+		Log.info(log, "Splash start Main Intent");
 		startActivity(mainIntent);
 		finish();
 	}

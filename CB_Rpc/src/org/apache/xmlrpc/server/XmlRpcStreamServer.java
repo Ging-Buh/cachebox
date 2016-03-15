@@ -45,6 +45,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
+import CB_Utils.Log.Log;
+
 /** Extension of {@link XmlRpcServer} with support for reading
  * requests from a stream and writing the response to another
  * stream.
@@ -189,7 +191,7 @@ public abstract class XmlRpcStreamServer extends XmlRpcServer implements XmlRpcS
 	 * @throws XmlRpcException Processing the request failed.
 	 */
 	public void execute(XmlRpcStreamRequestConfig pConfig, ServerStreamConnection pConnection) throws XmlRpcException {
-		log.debug("execute: ->");
+		Log.debug(log, "execute: ->");
 		try {
 			Object result;
 			Throwable error;
@@ -201,7 +203,7 @@ public abstract class XmlRpcStreamServer extends XmlRpcServer implements XmlRpcS
 				istream.close();
 				istream = null;
 				error = null;
-				log.debug("execute: Request performed successfully");
+				Log.debug(log, "execute: Request performed successfully");
 			} catch (Throwable t) {
 				logError(t);
 				result = null;
@@ -276,7 +278,7 @@ public abstract class XmlRpcStreamServer extends XmlRpcServer implements XmlRpcS
 				}
 			}
 		}
-		log.debug("execute: <-");
+		Log.debug(log, "execute: <-");
 	}
 
 	protected void logError(Throwable t) {

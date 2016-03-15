@@ -15,12 +15,12 @@
  */
 package CB_Locator.Map;
 
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.g2d.Batch;
+
 import CB_UI_Base.graphics.Images.MatrixDrawable;
 import CB_UI_Base.graphics.Images.SortedRotateList;
 import CB_Utils.Lists.CB_List;
-
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
  * Extends TileGL_Bmp with holding a List of Drawable for Symbols and Textes

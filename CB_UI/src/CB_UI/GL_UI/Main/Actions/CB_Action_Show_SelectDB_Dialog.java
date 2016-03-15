@@ -39,6 +39,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.Math.CB_RectF;
+import CB_Utils.Log.Log;
 
 public class CB_Action_Show_SelectDB_Dialog extends CB_Action {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_Action_Show_SelectDB_Dialog.class);
@@ -64,7 +65,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_Action {
 			// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
 			Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
 			Config.AcceptChanges();
-			log.debug("LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
+			Log.debug(log, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
 		}
 
 		SelectDB selectDBDialog = new SelectDB(new CB_RectF(0, 0, GL.that.getWidth(), GL.that.getHeight()), "SelectDbDialog", false);
@@ -83,7 +84,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_Action {
 	private void returnFromSelectDB() {
 		wd = WaitDialog.ShowWait("Load DB ...");
 
-		log.debug("\r\nSwitch DB");
+		Log.debug(log, "\r\nSwitch DB");
 		Thread thread = new Thread(new Runnable() {
 
 			@Override
@@ -115,11 +116,11 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_Action {
 
 						if (c.getGcCode().equalsIgnoreCase(sGc)) {
 							try {
-								log.debug("returnFromSelectDB:Set selectedCache to " + c.getGcCode() + " from lastSaved.");
+								Log.debug(log, "returnFromSelectDB:Set selectedCache to " + c.getGcCode() + " from lastSaved.");
 								c.loadDetail();
 								GlobalCore.setSelectedCache(c);
 							} catch (Exception e) {
-								log.error("set last selected Cache", e);
+								Log.err(log, "set last selected Cache", e);
 							}
 							break;
 						}
@@ -127,7 +128,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_Action {
 				}
 				// Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
 				if ((GlobalCore.getSelectedCache() == null) && (Database.Data.Query.size() > 0)) {
-					log.debug("Set selectedCache to " + Database.Data.Query.get(0).getGcCode() + " from firstInDB");
+					Log.debug(log, "Set selectedCache to " + Database.Data.Query.get(0).getGcCode() + " from firstInDB");
 					GlobalCore.setSelectedCache(Database.Data.Query.get(0));
 				}
 

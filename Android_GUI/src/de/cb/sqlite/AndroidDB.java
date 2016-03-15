@@ -1,13 +1,13 @@
 package de.cb.sqlite;
 
-import CB_Utils.fileProvider.File;
-
 import java.io.IOException;
 import java.util.Map.Entry;
 
 import CB_Core.Database;
+import CB_Utils.Log.Log;
 import CB_Utils.Log.LogLevel;
 import CB_Utils.Util.FileIO;
+import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import android.app.Activity;
 import android.content.ContentValues;
@@ -33,8 +33,7 @@ public class AndroidDB extends Database {
 				Reset();
 			} else {
 				try {
-					if (LogLevel.isLogLevel(LogLevel.DEBUG))
-						log.debug("open data base: " + databasePath);
+					Log.debug(log, "open data base: " + databasePath);
 					myDB = SQLiteDatabase.openDatabase(databasePath, null, SQLiteDatabase.OPEN_READWRITE);
 				} catch (Exception exc) {
 					return;
@@ -50,8 +49,7 @@ public class AndroidDB extends Database {
 		// if exists, delete old database file
 		File file = FileFactory.createFile(databasePath);
 		if (file.exists()) {
-			if (LogLevel.isLogLevel(LogLevel.DEBUG))
-				log.debug("RESET DB, delete file: " + databasePath);
+			Log.debug(log, "RESET DB, delete file: " + databasePath);
 			try {
 				file.delete();
 			} catch (IOException e) {
@@ -60,12 +58,11 @@ public class AndroidDB extends Database {
 		}
 
 		try {
-			if (LogLevel.isLogLevel(LogLevel.DEBUG))
-				log.debug("create data base: " + databasePath);
+			Log.debug(log, "create data base: " + databasePath);
 			myDB = activity.openOrCreateDatabase(getDatabasePath(databasePath).getAbsolutePath(), Context.MODE_WORLD_WRITEABLE, null);
 			newDB = true;
 		} catch (Exception exc) {
-			log.error("createDB", exc);
+			Log.err(log, "createDB", exc);
 		}
 	}
 
@@ -89,7 +86,7 @@ public class AndroidDB extends Database {
 					sb.append(arg + ", ");
 			} else
 				sb.append("NULL");
-			log.debug(sb.toString());
+			Log.debug(log, sb.toString());
 		}
 		if (myDB == null)
 			return null;
@@ -99,8 +96,7 @@ public class AndroidDB extends Database {
 
 	@Override
 	public void execSQL(String sql) {
-		if (LogLevel.isLogLevel(LogLevel.DEBUG))
-			log.debug("execSQL : " + sql);
+		Log.debug(log, "execSQL : " + sql);
 		try {
 			myDB.execSQL(sql);
 		} catch (Exception ex) {
@@ -143,8 +139,7 @@ public class AndroidDB extends Database {
 
 		long ret = -1;
 		try {
-			if (LogLevel.isLogLevel(LogLevel.DEBUG))
-				log.debug("INSERT into: " + tablename + "values: " + values.toString());
+			Log.debug(log, "INSERT into: " + tablename + "values: " + values.toString());
 			myDB.insert(tablename, null, values);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -167,7 +162,7 @@ public class AndroidDB extends Database {
 				}
 			}
 
-			log.debug(sb.toString());
+			Log.debug(log, sb.toString());
 		}
 
 		try {
@@ -191,7 +186,7 @@ public class AndroidDB extends Database {
 				}
 			}
 
-			log.debug(sb.toString());
+			Log.debug(log, sb.toString());
 		}
 
 		return myDB.delete(tablename, whereClause, whereArgs);
@@ -199,51 +194,42 @@ public class AndroidDB extends Database {
 
 	@Override
 	public void beginTransaction() {
-		if (LogLevel.isLogLevel(LogLevel.DEBUG))
-			log.debug("begin transaction");
+		Log.debug(log, "begin transaction");
 		if (myDB != null)
 			myDB.beginTransaction();
 	}
 
 	@Override
 	public void setTransactionSuccessful() {
-		if (LogLevel.isLogLevel(LogLevel.DEBUG))
-			log.debug("set Transaction Successful");
+		Log.debug(log, "set Transaction Successful");
 		if (myDB != null)
 			myDB.setTransactionSuccessful();
 	}
 
 	@Override
 	public void endTransaction() {
-		if (LogLevel.isLogLevel(LogLevel.DEBUG))
-			log.debug("endTransaction");
+		Log.debug(log, "endTransaction");
 		if (myDB != null)
 			myDB.endTransaction();
 	}
 
 	@Override
 	public long insertWithConflictReplace(String tablename, Parameters val) {
-		if (LogLevel.isLogLevel(LogLevel.DEBUG)) {
-			log.debug("insertWithConflictReplace @Table:" + tablename + "Parameters: " + val.toString());
-		}
+		Log.debug(log, "insertWithConflictReplace @Table:" + tablename + "Parameters: " + val.toString());
 		ContentValues values = getContentValues(val);
 		return myDB.insertWithOnConflict(tablename, null, values, SQLiteDatabase.CONFLICT_REPLACE);
 	}
 
 	@Override
 	public long insertWithConflictIgnore(String tablename, Parameters val) {
-		if (LogLevel.isLogLevel(LogLevel.DEBUG)) {
-			log.debug("insertWithConflictIgnore @Table:" + tablename + "Parameters: " + val.toString());
-		}
+		Log.debug(log, "insertWithConflictIgnore @Table:" + tablename + "Parameters: " + val.toString());
 		ContentValues values = getContentValues(val);
 		return myDB.insertWithOnConflict(tablename, null, values, SQLiteDatabase.CONFLICT_IGNORE);
 	}
 
 	@Override
 	public void Close() {
-		if (LogLevel.isLogLevel(LogLevel.DEBUG)) {
-			log.debug("close DB:" + databasePath);
-		}
+		Log.debug(log, "close DB:" + databasePath);
 		if (myDB != null)
 			myDB.close();
 		myDB = null;

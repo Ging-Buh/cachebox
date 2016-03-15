@@ -19,6 +19,7 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 import CB_Utils.Math.Point;
 
 public class H_ListView extends ListViewBase {
@@ -59,7 +60,7 @@ public class H_ListView extends ListViewBase {
 				int index = mAddedIndexList.indexOf(tmp.getIndex());
 				if (index >= 0 && index < mAddedIndexList.size()) {
 					mAddedIndexList.remove(index);
-					// log.debug("Remove Item " + tmp.getIndex());
+					// Log.debug(log, "Remove Item " + tmp.getIndex());
 					this.removeChild(tmp);
 					if (mCanDispose)
 						tmp.dispose();
@@ -115,7 +116,7 @@ public class H_ListView extends ListViewBase {
 						if (itemPos <= this.getWidth()) {
 							tmp.setY(this.getHalfHeight() - tmp.getHalfHeight());// center Pos
 							tmp.setX(itemPos);
-							// log.debug("Add: " + tmp.getName());
+							// Log.debug(log, "Add: " + tmp.getName());
 							if (i == mSelectedIndex) {
 								tmp.isSelected = true;
 								tmp.resetInitial();
@@ -126,7 +127,7 @@ public class H_ListView extends ListViewBase {
 							break;
 					}
 				} catch (Exception e) {
-					log.error("Thread set pos", e);
+					Log.err(log, "Thread set pos", e);
 				}
 			}
 
@@ -207,7 +208,7 @@ public class H_ListView extends ListViewBase {
 		}
 
 		if (toMuch != 0)
-			log.debug("tomuch" + toMuch);
+			Log.debug(log, "tomuch" + toMuch);
 		setListPos(sollPos + toMuch, KineticPan);
 		return true;
 	}
@@ -249,7 +250,7 @@ public class H_ListView extends ListViewBase {
 
 	@Override
 	public void chkSlideBack() {
-		log.debug("chkSlideBack()");
+		Log.debug(log, "chkSlideBack()");
 
 		if (!mIsDraggable) {
 			startAnimationToBottom();

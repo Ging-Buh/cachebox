@@ -15,7 +15,7 @@
  */
 package CB_UI_Base.GL_UI.Controls;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.List.H_ListView;
@@ -70,7 +70,7 @@ public class GalleryView extends H_ListView {
 
 	@Override
 	public void chkSlideBack() {
-		log.debug("chkSlideBack()");
+		Log.debug(log, "chkSlideBack()");
 
 		if (showSelectedItemCenter) {
 
@@ -139,13 +139,13 @@ public class GalleryView extends H_ListView {
 							//Snap to 1
 							mBottomAnimation = false;
 							GalleryView.this.scrollTo(pos1);
-							log.debug("SnapIn first " + pos1);
+							Log.debug(log, "SnapIn first " + pos1);
 							snapIn(idx);
 						} else {
 							//Snap to 2
 							mBottomAnimation = true;
 							GalleryView.this.scrollTo(pos2);
-							log.debug("SnapIn second " + pos2);
+							Log.debug(log, "SnapIn second " + pos2);
 							snapIn(idx + 1);
 						}
 					}
@@ -185,7 +185,7 @@ public class GalleryView extends H_ListView {
 		}
 
 		if (toMuch != 0)
-			log.debug("tomuch" + toMuch);
+			Log.debug(log, "tomuch" + toMuch);
 		setListPos(sollPos + toMuch, KineticPan);
 		return true;
 	}

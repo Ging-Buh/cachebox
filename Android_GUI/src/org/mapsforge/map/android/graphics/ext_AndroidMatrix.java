@@ -15,9 +15,9 @@
  */
 package org.mapsforge.map.android.graphics;
 
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
-
 import com.badlogic.gdx.math.Matrix4;
+
+import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
 
 /**
  * @author Longri

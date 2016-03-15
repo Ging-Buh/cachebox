@@ -1,6 +1,6 @@
 package CB_UI_Base.GL_UI.Main;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -138,7 +138,7 @@ public class CB_TabView extends CB_View_Base {
 					view.setSize(CB_TabView.this.getWidth(), CB_TabView.this.getHeight() - buttonListView.getHeight());
 					view.setPos(new Vector2(0, buttonListView.getHeight()));
 				} catch (Exception e) {
-					log.error("set view size", e);
+					Log.err(log, "set view size", e);
 					return;
 				}
 

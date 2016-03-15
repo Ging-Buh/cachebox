@@ -19,7 +19,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 /**
  * A resizable, ordered array. Avoids the boxing that occurs with ArrayList<Float>. If unordered, this class avoids a memory copy when
@@ -358,7 +358,7 @@ public class CB_List<T> implements Serializable, Iterable<T> {
 		try {
 			Arrays.sort(items, 0, size);
 		} catch (Exception e) {
-			log.error("Sort", e);
+			Log.err(log, "Sort", e);
 		}
 	}
 

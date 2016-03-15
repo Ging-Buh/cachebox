@@ -79,7 +79,7 @@ public class V_ListView extends ListViewBase {
 						int index = mAddedIndexList.indexOf(tmp.getIndex());
 						if (index >= 0 && index < mAddedIndexList.size()) {
 							mAddedIndexList.remove(index);
-							// log.debug("Remove Item " + tmp.getIndex());
+							// Log.debug(log, "Remove Item " + tmp.getIndex());
 							this.removeChild(tmp);
 							if (mCanDispose)
 								tmp.dispose();
@@ -154,7 +154,7 @@ public class V_ListView extends ListViewBase {
 								this.addChild(tmp);
 							}
 
-							// log.debug("Add Item " + i);
+							// Log.debug(log, "Add Item " + i);
 							mAddedIndexList.add(i);
 						} else if (itemPos + mBaseAdapter.getItemSize(i) < -(mMaxItemCount * minimumItemSize)) {
 							mLastIndex = i;

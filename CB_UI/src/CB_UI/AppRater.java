@@ -14,6 +14,7 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Plattform;
+import CB_Utils.Log.Log;
 
 public class AppRater {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(AppRater.class);
@@ -36,7 +37,7 @@ public class AppRater {
 			public void run() {
 				Config.AppRaterlaunchCount.setValue(launch_count);
 				Config.AcceptChanges();
-				log.info("10 min usage, increment launch count");
+				Log.info(log, "10 min usage, increment launch count");
 			}
 		};
 		t.schedule(ta, MINIMUM_RUN);

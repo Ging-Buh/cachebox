@@ -15,14 +15,13 @@
  */
 package org.mapsforge.map.android.util;
 
-import CB_Utils.fileProvider.File;
-
-import CB_Utils.fileProvider.FileFactory;
 import org.mapsforge.map.layer.cache.FileSystemTileCache;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.cache.TwoLevelTileCache;
 
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Looper;

@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Events.GPS_FallBackEventList;
 import CB_Locator.Events.PositionChangedEventList;
-import CB_Utils.Log.LogLevel;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.UnitFormatter;
 
 /**
@@ -160,9 +160,7 @@ public class Locator {
 	 * @param location
 	 */
 	public static void setNewLocation(Location location) {
-		boolean GPSTRACE = LogLevel.isLogLevel(LogLevel.TRACE);
-		if (GPSTRACE)
-			log.trace("new Location:" + location.toString());
+		Log.trace(log, "new Location:" + location.toString());
 
 		synchronized (that) {
 			switch (location.getProviderType()) {
@@ -199,7 +197,7 @@ public class Locator {
 
 				break;
 			default:
-				log.debug("invalid Location provider");
+				Log.debug(log, "invalid Location provider");
 				break;
 			}
 
@@ -377,7 +375,7 @@ public class Locator {
 	 * @uml.property name="altCorrection"
 	 */
 	public static void setAltCorrection(double value) {
-		log.debug("set alt corection to: " + value);
+		Log.debug(log, "set alt corection to: " + value);
 		altCorrection = value;
 	}
 
@@ -391,11 +389,11 @@ public class Locator {
 			// check if last GPS position older then 20 sec
 
 			if (that.mTimeStampSpeed + 20000 >= (new Date()).getTime()) {
-				log.trace("no fall back");
+				Log.trace(log, "no fall back");
 				return;
 			}
 
-			log.debug("Falback2Network");
+			Log.debug(log, "Falback2Network");
 			lastFixLose = System.currentTimeMillis();
 			fix = false;
 			that.mFineLocation = null;

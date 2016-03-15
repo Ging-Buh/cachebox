@@ -1,6 +1,6 @@
 package CB_UI_Base.GL_UI.Controls.Dialogs;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 
@@ -96,7 +96,7 @@ public class WaitDialog extends ButtonDialog {
 	boolean canceld = false;
 
 	public void dismis() {
-		log.debug("WaitDialog.Dismis");
+		Log.debug(log, "WaitDialog.Dismis");
 		GL.that.RunOnGL(new IRunOnGL() {
 			@Override
 			public void run() {
@@ -110,7 +110,7 @@ public class WaitDialog extends ButtonDialog {
 	public void dispose() {
 		super.dispose();
 		String caller = Trace.getCallerName(1);
-		log.debug("WaitDialog.disposed ID:[" + this.DialogID + "] called:" + caller);
+		Log.debug(log, "WaitDialog.disposed ID:[" + this.DialogID + "] called:" + caller);
 	}
 
 	@Override

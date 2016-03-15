@@ -19,6 +19,8 @@ import java.util.ArrayList;
 
 import org.slf4j.LoggerFactory;
 
+import CB_Utils.Log.Log;
+
 public class JokerList extends ArrayList<JokerEntry> {
 
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(JokerList.class);
@@ -36,7 +38,7 @@ public class JokerList extends ArrayList<JokerEntry> {
 			JokerEntry je = new JokerEntry(vorname, name, gclogin, telefon, l, bemerkung);
 			this.add(je);
 		} catch (NumberFormatException nfe) {
-			log.error("DroidCachebox", "AddJoker", nfe);
+			Log.err(log, "DroidCachebox", "AddJoker", nfe);
 		}
 	}
 

@@ -18,7 +18,7 @@ package CB_UI_Base.GL_UI.Controls.MessageBox;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -404,7 +404,7 @@ public class GL_MsgBox extends Dialog {
 
 	@Override
 	public void dispose() {
-		//log.debug("Dispose GL_MsgBox=> " + name);
+		//Log.debug(log, "Dispose GL_MsgBox=> " + name);
 
 		if (FooterItems != null) {
 			for (CB_View_Base t : FooterItems) {

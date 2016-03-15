@@ -15,7 +15,7 @@
  */
 package CB_UI_Base.GL_UI.Main.Actions;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -48,7 +48,7 @@ public class CB_Action {
 	}
 
 	public void CallExecute() {
-		log.debug("ACTION => " + name + " execute");
+		Log.debug(log, "ACTION => " + name + " execute");
 		Execute();
 	}
 

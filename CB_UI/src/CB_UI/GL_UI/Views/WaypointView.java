@@ -53,6 +53,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeChangedEvent;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 import CB_Utils.Math.Point;
 
 public class WaypointView extends V_ListView implements SelectedCacheEvent, WaypointListChangedEvent {
@@ -251,16 +252,16 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 		Point lastAndFirst = this.getFirstAndLastVisibleIndex();
 
-		log.debug("[Waypoint Select]");
+		Log.debug(log, "[Waypoint Select]");
 		try {
-			log.debug("First visible:[" + lastAndFirst.x + "]" + this.lvAdapter.getItem(lastAndFirst.x).toString());
+			Log.debug(log, "First visible:[" + lastAndFirst.x + "]" + this.lvAdapter.getItem(lastAndFirst.x).toString());
 		} catch (Exception e) {
-			log.debug("no firstItem with index :" + lastAndFirst.x);
+			Log.debug(log, "no firstItem with index :" + lastAndFirst.x);
 		}
 		try {
-			log.debug("Last visible:[" + lastAndFirst.y + "]" + this.lvAdapter.getItem(lastAndFirst.y).toString());
+			Log.debug(log, "Last visible:[" + lastAndFirst.y + "]" + this.lvAdapter.getItem(lastAndFirst.y).toString());
 		} catch (Exception e) {
-			log.debug("no lastItem with index :" + lastAndFirst.y);
+			Log.debug(log, "no lastItem with index :" + lastAndFirst.y);
 		}
 
 		if (aktCache == null)
@@ -293,7 +294,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 					if (this.isDragable()) {
 						if (!(lastAndFirst.x <= id && lastAndFirst.y >= id)) {
 							this.scrollToItem(id);
-							log.debug("Scroll to:" + id);
+							Log.debug(log, "Scroll to:" + id);
 						}
 					}
 
@@ -306,7 +307,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 			if (this.isDragable()) {
 				if (!(lastAndFirst.x <= 0 && lastAndFirst.y >= 0)) {
 					this.scrollToItem(0);
-					log.debug("Scroll to:" + 0);
+					Log.debug(log, "Scroll to:" + 0);
 				}
 			}
 		}
@@ -503,10 +504,10 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 		ProjName = (aktWaypoint != null) ? aktWaypoint.getTitle() : (aktCache != null) ? aktCache.getName() : null;
 
-		log.debug("WaypointView.addProjection()");
-		log.debug("   AktWaypoint:" + ((aktWaypoint == null) ? "null" : aktWaypoint.toString()));
-		log.debug("   AktCache:" + ((aktCache == null) ? "null" : aktCache.toString()));
-		log.debug("   using Coord:" + coord.toString());
+		Log.debug(log, "WaypointView.addProjection()");
+		Log.debug(log, "   AktWaypoint:" + ((aktWaypoint == null) ? "null" : aktWaypoint.toString()));
+		Log.debug(log, "   AktCache:" + ((aktCache == null) ? "null" : aktCache.toString()));
+		Log.debug(log, "   using Coord:" + coord.toString());
 
 		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), "Projection", coord, new CB_UI.GL_UI.Activitys.ProjectionCoordinate.ICoordReturnListener() {
 

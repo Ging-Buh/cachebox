@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import CB_Core.Database;
 import CB_Core.Types.ImageEntry;
+import CB_Utils.Log.Log;
 import de.cb.sqlite.CoreCursor;
 import de.cb.sqlite.Database_Core.Parameters;
 
@@ -42,7 +43,7 @@ public class ImageDAO {
 				Database.Data.insertWithConflictReplace("Images", args);
 			}
 		} catch (Exception exc) {
-			log.error("Write Image", "", exc);
+			Log.err(log, "Write Image", "", exc);
 		}
 	}
 

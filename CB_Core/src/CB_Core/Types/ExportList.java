@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import org.slf4j.LoggerFactory;
 
 import CB_Core.Database;
+import CB_Utils.Log.Log;
 import de.cb.sqlite.CoreCursor;
 
 public class ExportList extends ArrayList<ExportEntry> {
@@ -38,7 +39,7 @@ public class ExportList extends ArrayList<ExportEntry> {
 		try {
 			reader = Database.Data.rawQuery(sql, null);
 		} catch (Exception exc) {
-			log.error("ExportList", "LoadExportList", exc);
+			Log.err(log, "ExportList", "LoadExportList", exc);
 		}
 		reader.moveToFirst();
 		while (!reader.isAfterLast()) {

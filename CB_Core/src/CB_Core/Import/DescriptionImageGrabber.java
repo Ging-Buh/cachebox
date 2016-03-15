@@ -16,7 +16,6 @@
 package CB_Core.Import;
 
 import java.io.BufferedWriter;
-import CB_Utils.fileProvider.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -26,8 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import CB_Utils.fileProvider.FileFactory;
-import CB_Utils.fileProvider.FilenameFilter;
 import org.slf4j.LoggerFactory;
 
 import CB_Core.CB_Core_Settings;
@@ -35,9 +32,13 @@ import CB_Core.Database;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Types.Cache;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.Downloader;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.SDBM_Hash;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
+import CB_Utils.fileProvider.FilenameFilter;
 import de.cb.sqlite.Database_Core.Parameters;
 
 public class DescriptionImageGrabber {
@@ -238,7 +239,7 @@ public class DescriptionImageGrabber {
 		try {
 			new Downloader(new URL(uri), localFile).run();
 		} catch (MalformedURLException e) {
-			log.error("Download: " + uri + " to " + local, e);
+			Log.err(log, "Download: " + uri + " to " + local, e);
 		}
 
 		return localFile.exists();
@@ -546,7 +547,7 @@ public class DescriptionImageGrabber {
 							oldFile.renameTo(FileFactory.createFile(local));
 							afiles.add(filename);
 						} catch (Exception ex) {
-							log.error("Error trying to rename Spoiler with old Name format", ex.getMessage());
+							Log.err(log, "Error trying to rename Spoiler with old Name format", ex);
 						}
 					}
 
@@ -593,7 +594,7 @@ public class DescriptionImageGrabber {
 							try {
 								f.delete();
 							} catch (Exception ex) {
-								log.error("DescriptionImageGrabber - GrabImagesSelectedByCache - DeleteSpoiler", ex.getMessage());
+								Log.err(log, "DescriptionImageGrabber - GrabImagesSelectedByCache - DeleteSpoiler", ex);
 							}
 						}
 					}

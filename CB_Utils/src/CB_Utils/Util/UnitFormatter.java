@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 public class UnitFormatter {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(UnitFormatter.class);
@@ -150,7 +150,7 @@ public class UnitFormatter {
 			SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
 			dateString = postFormater.format(date);
 		} catch (Exception e) {
-			log.error("getReadableDate", e);
+			Log.err(log, "getReadableDate", e);
 		}
 		return dateString;
 	}

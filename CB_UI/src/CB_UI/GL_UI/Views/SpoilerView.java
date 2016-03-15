@@ -31,6 +31,7 @@ import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 
 public class SpoilerView extends CB_View_Base {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(SpoilerView.class);
@@ -78,7 +79,7 @@ public class SpoilerView extends CB_View_Base {
 		if (GlobalCore.isSetSelectedCache()) {
 
 			if (!forceReload && GlobalCore.getSelectedCache().equals(actCache)) {
-				log.info("onShow return cause same Cache");
+				Log.info(log, "onShow return cause same Cache");
 				return;
 			}
 
@@ -87,10 +88,10 @@ public class SpoilerView extends CB_View_Base {
 			actCache = GlobalCore.getSelectedCache();
 
 			if (actCache.getSpoilerRessources().size() == 0) {
-				log.info("onShow ReloadSpoilerRessources");
+				Log.info(log, "onShow ReloadSpoilerRessources");
 				actCache.ReloadSpoilerRessources();
 			} else {
-				log.info("onShow don't ReloadSpoilerRessources");
+				Log.info(log, "onShow don't ReloadSpoilerRessources");
 			}
 
 			GalleryItem firstItem = null;

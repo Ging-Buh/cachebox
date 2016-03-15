@@ -21,7 +21,7 @@ import java.util.Iterator;
 import org.slf4j.LoggerFactory;
 
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.LogLevel;
+import CB_Utils.Log.Log;
 
 /**
  * Klasse zum verwalten von GPS Status
@@ -86,8 +86,7 @@ public class GPS {
 	}
 
 	public static void setSatFixes(int fixed) {
-		if (LogLevel.isLogLevel(LogLevel.TRACE))
-			log.trace("set SatFixes to:" + fixed);
+		Log.trace(log, "set SatFixes to:" + fixed);
 		mSatFixed = fixed;
 	}
 
