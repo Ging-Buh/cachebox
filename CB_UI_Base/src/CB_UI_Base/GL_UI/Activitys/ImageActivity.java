@@ -18,10 +18,20 @@ package CB_UI_Base.GL_UI.Activitys;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactory;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.ImageLoader;
 import CB_UI_Base.GL_UI.Controls.ZoomButtons;
@@ -33,18 +43,10 @@ import CB_UI_Base.GL_UI.utils.KineticZoom;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.MathUtils;
+import CB_Utils.Log.Log;
 import CB_Utils.Math.Point;
 import CB_Utils.Math.PointL;
 import CB_Utils.Util.HSV_Color;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 /**
  * 
@@ -88,7 +90,7 @@ public class ImageActivity extends ActivityBase {
 
 		float wh = 30 * UI_Size_Base.that.getScale();
 		deleteImage = new Image(this.getWidth() - wh, this.getHeight() - wh, wh, wh, "", false);
-		deleteImage.setDrawable(new SpriteDrawable(Sprites.getSprite("close-icon")));
+		deleteImage.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.closeIcon.name())));
 		this.addChild(deleteImage);
 		deleteImage.setOnClickListener(deleteClick);
 		this.setClickable(true);

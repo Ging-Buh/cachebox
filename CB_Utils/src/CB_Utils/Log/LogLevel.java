@@ -15,7 +15,7 @@
  */
 package CB_Utils.Log;
 
-import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -75,6 +75,11 @@ public enum LogLevel {
 	 */
 	static void setLogLevel(LogLevel level) {
 		Level actlevel = Level.toLevel(level.toInt(), Level.OFF);
+		if (actlevel == Level.OFF) {
+			act = LogLevel.OFF;
+		} else {
+			act = level;
+		}
 
 		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 
