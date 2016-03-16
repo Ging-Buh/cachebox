@@ -98,7 +98,7 @@ public interface CB_UI_Settings {
 	public static final SettingBool CacheMapData = new SettingBool("CacheMapData", SettingCategory.Internal, DEVELOPER, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool CacheImageData = new SettingBool("CacheImageData", SettingCategory.Internal, DEVELOPER, true, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool CacheSpoilerData = new SettingBool("CacheSpoilerData", SettingCategory.Internal, DEVELOPER, true, SettingStoreType.Global, SettingUsage.ACB);
-	public static final SettingBool SuppressPowerSaving = new SettingBool("SuppressPowerSaving", SettingCategory.Misc, NORMAL, true, SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingBool SuppressPowerSaving = new SettingBool("SuppressPowerSaving", SettingCategory.Misc, EXPERT, true, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool GCAutoSyncCachesFound = new SettingBool("GCAutoSyncCachesFound", SettingCategory.Internal, NEVER, true, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool GCAdditionalImageDownload = new SettingBool("GCAdditionalImageDownload", SettingCategory.API, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool StartWithAutoSelect = new SettingBool("StartWithAutoSelect", SettingCategory.Misc, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
@@ -108,16 +108,16 @@ public interface CB_UI_Settings {
 	public static final SettingBool SearchWithoutOwns = new SettingBool("SearchWithoutOwns", SettingCategory.API, NEVER, true, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool SearchOnlyAvailable = new SettingBool("SearchOnlyAvailable", SettingCategory.API, NEVER, true, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool quickButtonShow = new SettingBool("quickButtonShow", SettingCategory.QuickList, NORMAL, true, SettingStoreType.Global, SettingUsage.ACB);
-	public static final SettingBool DescriptionNoAttributes = new SettingBool("DescriptionNoAttributes", SettingCategory.Misc, NORMAL, false, SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingBool DescriptionNoAttributes = new SettingBool("DescriptionNoAttributes", SettingCategory.Misc, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool quickButtonLastShow = new SettingBool("quickButtonLastShow", SettingCategory.QuickList, DEVELOPER, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool newInstall = new SettingBool("newInstall", SettingCategory.Internal, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool ImperialUnits = new SettingBool("ImperialUnits", SettingCategory.Misc, NORMAL, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool ShowDirektLine = new SettingBool("ShowDirektLine", SettingCategory.Map, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool ImportRatings = new SettingBool("ImportRatings", SettingCategory.API, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool ImportPQsFromGeocachingCom = new SettingBool("ImportPQsFromGeocachingCom", SettingCategory.API, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
-	public static final SettingBool switchViewApproach = new SettingBool("switchViewApproach", SettingCategory.Misc, NORMAL, false, SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingBool switchViewApproach = new SettingBool("switchViewApproach", SettingCategory.Misc, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool hasCallPermission = new SettingBool("hasCallPermission", SettingCategory.Internal, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
-	public static final SettingBool vibrateFeedback = new SettingBool("vibrateFeedback", SettingCategory.Misc, NORMAL, true, SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingBool vibrateFeedback = new SettingBool("vibrateFeedback", SettingCategory.Misc, EXPERT, true, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool hasPQ_PlugIn = new SettingBool("hasPQ_PlugIn", SettingCategory.Internal, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool hasFTF_PlugIn = new SettingBool("hasFTF_PlugIn", SettingCategory.Internal, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool dynamicZoom = new SettingBool("dynamicZoom", SettingCategory.CarMode, NORMAL, true, SettingStoreType.Global, SettingUsage.ACB);
@@ -135,7 +135,7 @@ public interface CB_UI_Settings {
 	public static final SettingInt installRev = (SettingInt) SettingsList.addSetting(new SettingInt("installRev", SettingCategory.Internal, NEVER, 0, SettingStoreType.Global, SettingUsage.ACB));
 	public static final SettingInt MapIniWidth = (SettingInt) SettingsList.addSetting(new SettingInt("MapIniWidth", SettingCategory.Map, NEVER, 480, SettingStoreType.Global, SettingUsage.ACB));
 	public static final SettingInt MapIniHeight = (SettingInt) SettingsList.addSetting(new SettingInt("MapIniHeight", SettingCategory.Map, NEVER, 535, SettingStoreType.Global, SettingUsage.ACB));
-	public static final SettingInt VibrateTime = (SettingInt) SettingsList.addSetting(new SettingInt("VibrateTime", SettingCategory.Misc, NORMAL, 20, SettingStoreType.Global, SettingUsage.ACB));
+	public static final SettingInt VibrateTime = (SettingInt) SettingsList.addSetting(new SettingInt("VibrateTime", SettingCategory.Misc, EXPERT, 20, SettingStoreType.Global, SettingUsage.ACB));
 	public static final SettingInt FoundOffset = (SettingInt) SettingsList.addSetting(new SettingInt("FoundOffset", SettingCategory.Misc, NEVER, 0, SettingStoreType.Global, SettingUsage.ACB));
 	public static final SettingInt MapMaxCachesLabel = (SettingInt) SettingsList.addSetting(new SettingInt("MapMaxCachesLabel", SettingCategory.Map, DEVELOPER, 12, SettingStoreType.Global, SettingUsage.ACB));
 	public static final SettingInt MapMaxCachesDisplay_config = (SettingInt) SettingsList.addSetting(new SettingInt("MapMaxCachesDisplay_config", SettingCategory.Map, DEVELOPER, 10000, SettingStoreType.Global, SettingUsage.ACB));
@@ -180,10 +180,10 @@ public interface CB_UI_Settings {
 
 	// AudioSettings
 
-	public static final SettingsAudio Approach = new SettingsAudio("Approach", SettingCategory.Sounds, NORMAL, new Audio("data/sound/Approach.ogg", false, false, 1.0f), SettingStoreType.Global, SettingUsage.ACB);
-	public static final SettingsAudio GPS_lose = new SettingsAudio("GPS_lose", SettingCategory.Sounds, NORMAL, new Audio("data/sound/GPS_lose.ogg", false, false, 1.0f), SettingStoreType.Global, SettingUsage.ACB);
-	public static final SettingsAudio GPS_fix = new SettingsAudio("GPS_fix", SettingCategory.Sounds, NORMAL, new Audio("data/sound/GPS_Fix.ogg", false, false, 1.0f), SettingStoreType.Global, SettingUsage.ACB);
-	public static final SettingsAudio AutoResortSound = new SettingsAudio("AutoResortSound", SettingCategory.Sounds, NORMAL, new Audio("data/sound/AutoResort.ogg", false, false, 1.0f), SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingsAudio Approach = new SettingsAudio("Approach", SettingCategory.Sounds, EXPERT, new Audio("data/sound/Approach.ogg", false, false, 1.0f), SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingsAudio GPS_lose = new SettingsAudio("GPS_lose", SettingCategory.Sounds, EXPERT, new Audio("data/sound/GPS_lose.ogg", false, false, 1.0f), SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingsAudio GPS_fix = new SettingsAudio("GPS_fix", SettingCategory.Sounds, EXPERT, new Audio("data/sound/GPS_Fix.ogg", false, false, 1.0f), SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingsAudio AutoResortSound = new SettingsAudio("AutoResortSound", SettingCategory.Sounds, EXPERT, new Audio("data/sound/AutoResort.ogg", false, false, 1.0f), SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool ShowFieldnotesCMwithFirstShow = new SettingBool("ShowFieldnotesCMwithFirstShow", SettingCategory.Fieldnotes, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool ShowFieldnotesAsDefaultView = new SettingBool("ShowFieldnotesAsDefaultView", SettingCategory.Fieldnotes, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool LiveMapEnabeld = new SettingBool("LiveMapEnabeld", SettingCategory.LiveMap, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);

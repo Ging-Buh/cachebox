@@ -35,9 +35,13 @@ public class WorkAnimation extends RotateAnimation {
 		play(ANIMATION_DURATION);
 	}
 
+	/**
+	 * ljhgjlk
+	 */
 	@Override
 	public void resize(float width, float height) {
 		super.resize(width, height);
+		setOrigin(this.getHalfWidth(), this.getHalfHeight());
 	}
 
 	@Override

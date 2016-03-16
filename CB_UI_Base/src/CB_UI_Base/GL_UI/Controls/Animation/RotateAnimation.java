@@ -15,11 +15,11 @@
  */
 package CB_UI_Base.GL_UI.Controls.Animation;
 
-import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.Math.CB_RectF;
-
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
+import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.Math.CB_RectF;
 
 /**
  * @author Longri
@@ -42,7 +42,7 @@ public abstract class RotateAnimation extends AnimationBase {
 	}
 
 	/**
-	 * Time for 360�
+	 * Time for 360°
 	 */
 	protected void play(int duration) {
 		this.mDuration = duration;
