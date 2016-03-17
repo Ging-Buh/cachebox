@@ -18,7 +18,7 @@ package CB_UI_Base.GL_UI.Controls;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -187,7 +187,7 @@ public class Image extends CB_View_Base {
 		} else if (imageLoader.inLoad & !imageLoader.ImageLoadError) {
 				if (Wait == null) {
 					CB_RectF animationRec = new CB_RectF(0, 0, this.getWidth(), this.getHeight());
-					Wait = WorkAnimation.GetINSTANCE(animationRec);
+					Wait =new WorkAnimation();
 					GL.that.addRenderView(Wait, GL.FRAME_RATE_ACTION);
 					this.addChild(Wait);
 				}

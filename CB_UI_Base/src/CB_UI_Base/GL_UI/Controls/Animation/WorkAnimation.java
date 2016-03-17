@@ -27,7 +27,7 @@ public class WorkAnimation extends RotateAnimation {
 		return mINSTANCE;
 	}
 
-	private WorkAnimation() {
+	public WorkAnimation() {
 		super(new CB_RectF(0, 0, 50, 50), "DownloadAnimation");
 
 		setSprite(Sprites.getSprite(IconName.settings.name()));
