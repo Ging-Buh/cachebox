@@ -55,7 +55,7 @@ public final class TableElementHandler extends AbstractBlockElementHandler {
 
 	float cellpaddingSize = 1;
 	String cellpaddingString = element.getAttributeValue("cellpadding");
-	if (borderString != null && !cellpaddingString.isEmpty()) {
+	if (cellpaddingString != null && !cellpaddingString.isEmpty()) {
 	    try {
 		cellpaddingSize = Float.parseFloat(cellpaddingString);
 	    } catch (NumberFormatException e) {
