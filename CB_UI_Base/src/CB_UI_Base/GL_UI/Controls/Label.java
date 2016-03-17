@@ -18,7 +18,7 @@ package CB_UI_Base.GL_UI.Controls;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -40,6 +40,7 @@ import CB_UI_Base.graphics.PolygonDrawable;
 import CB_UI_Base.graphics.Geometry.GeometryList;
 import CB_UI_Base.graphics.Geometry.Line;
 import CB_UI_Base.graphics.Geometry.Quadrangle;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.HSV_Color;
 
 /**
@@ -183,6 +184,8 @@ public class Label extends CB_View_Base {
 	if (lastRender <= 0)
 	    lastRender = GL.that.getStateTime();
 
+		
+	
 	try {
 	    if (mTextObject != null) {
 		if (mTextObject.usesIntegerPositions())
@@ -331,6 +334,18 @@ public class Label extends CB_View_Base {
     }
 
     private void setText() {
+    	
+    	final int n = mText.length();
+    	
+    	for (int start=0; start < n; start++){
+    	    if (mFont.getData().getGlyph(mText.charAt(start)) == null){
+    	    	char c=mText.charAt(start);
+    	    	if(c!='\r'&& c!='\n')
+    	    	log.error("Unknown Char {"+c+"} IntValue:");
+    	    }
+    	}
+    	
+    	
 	if (mTextObject == null) {
 	    mTextObject = new BitmapFontCache(mFont, true);
 	} else if (!mTextObject.getFont().equals(mFont)) {

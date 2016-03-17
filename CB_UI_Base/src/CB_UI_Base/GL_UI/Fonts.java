@@ -15,7 +15,7 @@
  */
 package CB_UI_Base.GL_UI;
 
-import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
@@ -33,6 +33,7 @@ import CB_UI_Base.Global;
 import CB_UI_Base.GL_UI.Skin.SkinBase;
 import CB_UI_Base.GL_UI.Skin.SkinSettings;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
 
 /**
@@ -50,7 +51,7 @@ public class Fonts {
 		for (int i = 0x0400; i < 0x04ff + 1; i++) {
 			cyril[i - 0x0400] = (char) i;
 		}
-		return FreeTypeFontGenerator.DEFAULT_CHARS + String.copyValueOf(cyril) + "—–" +"ŐőŰű";
+		return FreeTypeFontGenerator.DEFAULT_CHARS + String.copyValueOf(cyril) + "—–" +"ŐőŰű√";
 	}
 
 	private static BitmapFont compass;
