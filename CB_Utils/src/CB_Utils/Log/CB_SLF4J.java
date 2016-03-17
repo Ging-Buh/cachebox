@@ -215,7 +215,7 @@ public class CB_SLF4J {
 		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 		root.setLevel(Level.ALL);
 
-		Log.info(log, "logger initial");
+		Log.trace(log, "logger initial");
 	}
 
 	private void initialDefaultLogBack(String logfile) {

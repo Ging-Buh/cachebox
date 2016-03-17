@@ -32,7 +32,6 @@ import CB_Core.Api.SearchGC;
 import CB_Core.Api.SearchGCName;
 import CB_Core.Api.SearchGCOwner;
 import CB_Core.DAO.CacheDAO;
-import CB_Core.DAO.CategoryDAO;
 import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
@@ -656,7 +655,6 @@ public class SearchDialog extends PopUp_Base {
 				}
 
 				// alle per API importierten Caches landen in der Category und GpxFilename API-Import Category suchen, die dazu gehört
-				CategoryDAO categoryDAO = new CategoryDAO();
 				Category category = CoreSettingsForward.Categories.getCategory("API-Import");
 				if (category == null)
 					return; // should not happen!!!

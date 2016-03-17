@@ -140,8 +140,8 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
 	public void ReadFromDB() {
 		// Read from DB
 		try {
-			Log.info(log, "Reading global settings: " + getSettingsDB().getDatabasePath());
-			Log.info(log, "and local settings: " + getDataDB().getDatabasePath());
+			Log.debug(log, "Reading global settings: " + getSettingsDB().getDatabasePath());
+			Log.debug(log, "and local settings: " + getDataDB().getDatabasePath());
 		} catch (Exception e) {
 			// gibt beim splash - Start: NPE in Translation.readMissingStringsFile
 			// Nachfolgende Starts sollten aber protokolliert werden
@@ -207,7 +207,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
 				}
 			} else {
 				if (!setting.value.equals(setting.defaultValue)) {
-					Log.info(log, "Change " + setting.getStoreType() + " setting [" + setting.name + "] to: " + debugString);
+					Log.debug(log, "Change " + setting.getStoreType() + " setting [" + setting.name + "] to: " + debugString);
 				} else {
 					Log.debug(log, "Default " + setting.getStoreType() + " setting [" + setting.name + "] to: " + debugString);
 				}

@@ -875,7 +875,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					@Override
 					public void run() {
 						if (GlobalCore.isSetSelectedCache())
-							GlobalCore.getSelectedCache().ReloadSpoilerRessources();
+							GlobalCore.getSelectedCache().loadSpoilerRessources();
 						String MediaFolder = Config.UserImageFolder.getValue();
 						String TrackFolder = Config.TrackFolder.getValue();
 						String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");

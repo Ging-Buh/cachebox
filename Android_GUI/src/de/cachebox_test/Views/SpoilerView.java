@@ -120,7 +120,7 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 		public int getCount() {
 			if (aktCache == null)
 				return 0;
-			if (aktCache.SpoilerExists()) {
+			if (aktCache.hasSpoiler()) {
 				return lBitmaps.size();
 			} else
 				return 0;

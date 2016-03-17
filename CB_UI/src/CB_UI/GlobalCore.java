@@ -103,7 +103,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 
 	public static boolean selectedCachehasSpoiler() {
 		if (selectedCache != null) {
-			return selectedCache.SpoilerExists();
+			return selectedCache.hasSpoiler();
 		} else
 			return false;
 	}

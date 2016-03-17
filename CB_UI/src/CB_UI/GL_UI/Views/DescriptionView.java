@@ -227,7 +227,7 @@ public class DescriptionView extends CB_View_Base {
 		}
 
 		if (cache != null) {
-			cache.ReloadSpoilerRessources();
+			cache.loadSpoilerRessources();
 		}
 
 	}
