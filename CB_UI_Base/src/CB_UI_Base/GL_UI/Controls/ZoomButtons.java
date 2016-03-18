@@ -128,7 +128,7 @@ public class ZoomButtons extends CB_View_Base {
 				resetFadeOut();
 				if (zoom < maxzoom) {
 					zoom++;
-					// log.debug("ZoomButton OnClick UP (" + zoom + ")");
+					// Log.debug(log, "ZoomButton OnClick UP (" + zoom + ")");
 					mOnClickListenerUp.onClick(this, x, y, pointer, button);
 				}
 				behandelt = true;
@@ -140,7 +140,7 @@ public class ZoomButtons extends CB_View_Base {
 				resetFadeOut();
 				if (zoom > minzoom) {
 					zoom--;
-					// log.debug("ZoomButton OnClick Down (" + zoom + ")");
+					// Log.debug(log, "ZoomButton OnClick Down (" + zoom + ")");
 					mOnClickListenerDown.onClick(this, x, y, pointer, button);
 				}
 				behandelt = true;

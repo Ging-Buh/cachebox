@@ -104,7 +104,7 @@ public class DesktopPack extends PackBase {
 				// BitDepth not supported by pixmap
 				switch (BitDepth) {
 				case 4:
-					// log.debug("[PackBase] unsupported png in Pack " + this.Filename + " tile: " + desc);
+					// Log.debug(log, "[PackBase] unsupported png in Pack " + this.Filename + " tile: " + desc);
 					InputStream in = new ByteArrayInputStream(buffer);
 					BufferedImage img = ImageIO.read(in);
 					ByteArrayOutputStream bas = new ByteArrayOutputStream();

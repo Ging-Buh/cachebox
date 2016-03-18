@@ -4,6 +4,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
+
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_UI.GL_UI.Activitys.CreateTrackOverMapActivity;
@@ -25,9 +28,6 @@ import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
  * Enthält die TestContols

@@ -21,9 +21,10 @@ import java.util.concurrent.locks.Lock;
 
 import org.slf4j.LoggerFactory;
 
-import CB_Utils.Lists.CB_List;
-
 import com.badlogic.gdx.graphics.OrthographicCamera;
+
+import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 
 /**
  * @author ging-buh
@@ -82,7 +83,7 @@ public class MapTileLoader {
 					}
 
 					if (!queueProcessor[index].Alive()) {
-						log.debug("MapTileLoader Restart queueProcessor[" + index + "]");
+						Log.debug(log, "MapTileLoader Restart queueProcessor[" + index + "]");
 						queueProcessor[index] = new MultiThreadQueueProcessor(queueData, index);
 						queueProcessor[index].setPriority(Thread.MIN_PRIORITY);
 						queueProcessor[index].start();

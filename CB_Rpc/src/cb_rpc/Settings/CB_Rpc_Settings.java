@@ -15,22 +15,19 @@
  */
 package cb_rpc.Settings;
 
-import CB_Utils.Settings.SettingCategory;
 import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingModus;
-import CB_Utils.Settings.SettingStoreType;
 import CB_Utils.Settings.SettingString;
-import CB_Utils.Settings.SettingUsage;
 
 public interface CB_Rpc_Settings {
 	// Abkürzende Schreibweisen für die Übersichlichkeit bei den add Methoden
-	public static final SettingModus DEVELOPER = SettingModus.DEVELOPER;
-	public static final SettingModus NORMAL = SettingModus.Normal;
-	public static final SettingModus EXPERT = SettingModus.Expert;
-	public static final SettingModus NEVER = SettingModus.Never;
-	public static final SettingModus DEVELOP = SettingModus.develop;
+	public static final SettingModus DEVELOPER = CB_Utils.Settings.SettingModus.DEVELOPER;
+	public static final SettingModus NORMAL = CB_Utils.Settings.SettingModus.Normal;
+	public static final SettingModus EXPERT = CB_Utils.Settings.SettingModus.Expert;
+	public static final SettingModus NEVER = CB_Utils.Settings.SettingModus.Never;
+	public static final SettingModus DEVELOP = CB_Utils.Settings.SettingModus.develop;
 
-	public static final SettingString CBS_IP = new SettingString("CBS_IP", SettingCategory.CBS, DEVELOP, "", SettingStoreType.Global, SettingUsage.ACB);
-	public static final SettingInt CBS_BLOCK_SIZE = new SettingInt("CBS_BLOCKSIZE", SettingCategory.CBS, DEVELOP, 100, SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingString CBS_IP = new SettingString("CBS_IP", CB_Utils.Settings.SettingCategory.CBS, DEVELOP, "", CB_Utils.Settings.SettingStoreType.Global, CB_Utils.Settings.SettingUsage.ACB);
+	public static final SettingInt CBS_BLOCK_SIZE = new SettingInt("CBS_BLOCKSIZE", CB_Utils.Settings.SettingCategory.CBS, DEVELOP, 100, CB_Utils.Settings.SettingStoreType.Global, CB_Utils.Settings.SettingUsage.ACB);
 
 }

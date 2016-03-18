@@ -21,6 +21,16 @@ import java.util.Timer;
 
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
+
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
@@ -46,21 +56,12 @@ import CB_UI_Base.graphics.PolygonDrawable;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.MathUtils;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 import CB_Utils.Math.Point;
 import CB_Utils.Math.PointD;
 import CB_Utils.Math.PointL;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.IChanged;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * @author ging-buh
@@ -229,7 +230,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 		camera.position.set(0, 0, 0);
 
-		// log.debug("MapView Size Changed MaxY=" + this.getMaxY());
+		// Log.debug(log, "MapView Size Changed MaxY=" + this.getMaxY());
 
 		requestLayout();
 
@@ -1150,7 +1151,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 			if (lastDynamicZoom != dynZoom) {
 
-				// log.debug("Mouse Zoom:" + div + "/" + zoomValue + "/" + dynZoom);
+				// Log.debug(log, "Mouse Zoom:" + div + "/" + zoomValue + "/" + dynZoom);
 
 				lastDynamicZoom = dynZoom;
 				zoomBtn.setZoom((int) lastDynamicZoom);
@@ -1296,7 +1297,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			// debugString = "State: " + inputState;
 			return true;
 		} catch (Exception ex) {
-			log.error("MapView", "-onTouchDragged Error", ex);
+			Log.err(log, "MapView", "-onTouchDragged Error", ex);
 		}
 		return false;
 	}

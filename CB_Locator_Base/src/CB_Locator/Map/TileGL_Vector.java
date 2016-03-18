@@ -15,11 +15,11 @@
  */
 package CB_Locator.Map;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+
 import CB_UI_Base.graphics.Images.SortedRotateList;
 import CB_UI_Base.graphics.Images.VectorDrawable;
 import CB_Utils.Lists.CB_List;
-
-import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
  * @author Longri

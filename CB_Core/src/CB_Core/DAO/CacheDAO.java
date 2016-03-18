@@ -31,6 +31,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.CacheDetail;
 import CB_Core.Types.DLong;
 import CB_Locator.Coordinate;
+import CB_Utils.Log.Log;
 import de.cb.sqlite.CoreCursor;
 import de.cb.sqlite.Database_Core.Parameters;
 
@@ -92,7 +93,7 @@ public class CacheDAO {
 
 			return cache;
 		} catch (Exception exc) {
-			log.error("Read Cache", "", exc);
+			Log.err(log, "Read Cache", "", exc);
 			return null;
 		}
 	}
@@ -244,7 +245,7 @@ public class CacheDAO {
 			Database.Data.insert("Caches", args);
 
 		} catch (Exception exc) {
-			log.error("Write Cache", "", exc);
+			Log.err(log, "Write Cache", "", exc);
 
 		}
 	}
@@ -256,7 +257,7 @@ public class CacheDAO {
 			Database.Data.update("Caches", args, "Id = ?", new String[] { String.valueOf(cache.Id) });
 			Replication.FoundChanged(cache.Id, cache.isFound());
 		} catch (Exception exc) {
-			log.error("Write Cache Found", "", exc);
+			Log.err(log, "Write Cache Found", "", exc);
 		}
 	}
 
@@ -328,7 +329,7 @@ public class CacheDAO {
 			long ret = Database.Data.update("Caches", args, "Id = ?", new String[] { String.valueOf(cache.Id) });
 			return ret > 0;
 		} catch (Exception exc) {
-			log.error("Update Cache", "", exc);
+			Log.err(log, "Update Cache", "", exc);
 			return false;
 
 		}
@@ -438,7 +439,7 @@ public class CacheDAO {
 			try {
 				Database.Data.update("Caches", args, "Id = ?", new String[] { String.valueOf(writeTmp.Id) });
 			} catch (Exception exc) {
-				log.error("Update Cache", "", exc);
+				Log.err(log, "Update Cache", "", exc);
 
 			}
 		}

@@ -56,6 +56,7 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
+import CB_Utils.Log.Log;
 
 public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_Action_ShowTrackListView.class);
@@ -102,7 +103,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
 
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				log.info("[TrackListContextMenu] clicked " + ((MenuItem) v).getMenuItemId());
+				Log.info(log, "[TrackListContextMenu] clicked " + ((MenuItem) v).getMenuItemId());
 				switch (((MenuItem) v).getMenuItemId()) {
 				case MenuID.MI_GENERATE:
 					showMenuCreate();
@@ -146,7 +147,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
 								TrackColor = RouteOverlay.getNextColor();
 
 								RouteOverlay.MultiLoadRoute(Path, TrackColor);
-								log.debug("Load Track :" + Path);
+								Log.debug(log, "Load Track :" + Path);
 								if (TrackListView.that != null)
 									TrackListView.that.notifyDataSetChanged();
 							}
@@ -163,7 +164,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
 						public void getFileReturn(String Path) {
 							if (Path != null) {
 								RouteOverlay.SaveRoute(Path, selectedTrackItem.getRoute());
-								log.debug("Load Track :" + Path);
+								Log.debug(log, "Load Track :" + Path);
 								if (TrackListView.that != null)
 									TrackListView.that.notifyDataSetChanged();
 							}
@@ -177,7 +178,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
 						TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
 
 						if (selectedTrackItem == null) {
-							log.info("[TrackListContextMenu] clicked " + MenuID.MI_DELETE_TRACK + " " + "NoTrackSelected");
+							Log.info(log, "[TrackListContextMenu] clicked " + MenuID.MI_DELETE_TRACK + " " + "NoTrackSelected");
 							GL_MsgBox.Show(Translation.Get("NoTrackSelected"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, new OnMsgBoxClickListener() {
 
 								@Override
@@ -190,12 +191,12 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
 						}
 
 						if (selectedTrackItem.getRoute().IsActualTrack) {
-							log.info("[TrackListContextMenu] clicked " + MenuID.MI_DELETE_TRACK + " " + "IsActualTrack");
+							Log.info(log, "[TrackListContextMenu] clicked " + MenuID.MI_DELETE_TRACK + " " + "IsActualTrack");
 							GL_MsgBox.Show(Translation.Get("IsActualTrack"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, null);
 							return false;
 						}
 
-						log.info("[TrackListContextMenu] clicked " + MenuID.MI_DELETE_TRACK + " remove " + "selectedTrackItem");
+						Log.info(log, "[TrackListContextMenu] clicked " + MenuID.MI_DELETE_TRACK + " remove " + "selectedTrackItem");
 						RouteOverlay.remove(selectedTrackItem.getRoute());
 						selectedTrackItem = null;
 						TrackListView.that.notifyDataSetChanged();

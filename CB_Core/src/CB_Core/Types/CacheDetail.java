@@ -1,7 +1,5 @@
 package CB_Core.Types;
 
-import CB_Utils.fileProvider.File;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +10,7 @@ import CB_Core.CB_Core_Settings;
 import CB_Core.Database;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.FileIO;
+import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import CB_Utils.fileProvider.FilenameFilter;
 import de.cb.sqlite.CoreCursor;
@@ -92,9 +91,9 @@ public class CacheDetail implements Serializable {
 	private String hint = "";
 
 	/**
-	 * Liste der Spoiler Resorcen
+	 * Liste der Spoiler Ressourcen
 	 */
-	public CB_List<ImageEntry> spoilerRessources = null;
+	private CB_List<ImageEntry> spoilerRessources = null;
 
 	/**
 	 * Kurz Beschreibung des Caches
@@ -254,7 +253,7 @@ public class CacheDetail implements Serializable {
 	 */
 	public CB_List<ImageEntry> getSpoilerRessources(Cache cache) {
 		if (spoilerRessources == null) {
-			ReloadSpoilerRessources(cache);
+			loadSpoilerRessources(cache);
 		}
 
 		return spoilerRessources;
@@ -274,10 +273,10 @@ public class CacheDetail implements Serializable {
 	 *
 	 * @return Boolean
 	 */
-	public boolean SpoilerExists(Cache cache) {
+	public boolean hasSpoiler(Cache cache) {
 		try {
 			if (spoilerRessources == null)
-				ReloadSpoilerRessources(cache);
+				loadSpoilerRessources(cache);
 			return spoilerRessources.size() > 0;
 		} catch (Exception e) {
 			return false;
@@ -288,7 +287,7 @@ public class CacheDetail implements Serializable {
 		spoilerRessources = null;
 	}
 
-	public void ReloadSpoilerRessources(Cache cache) {
+	public void loadSpoilerRessources(Cache cache) {
 
 		String gcCode = cache.getGcCode();
 		if (gcCode.length() < 4)
@@ -305,27 +304,27 @@ public class CacheDetail implements Serializable {
 			try {
 				if (path != null && path.length() > 0) {
 					directory = path + "/" + gcCode.substring(0, 4);
-					reloadSpoilerResourcesFromPath(directory, spoilerRessources, cache);
+					loadSpoilerResourcesFromPath(directory, cache);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
-			// from Global Repository
+			// from Description Global Repository
 			try {
 				path = CB_Core_Settings.DescriptionImageFolder.getValue();
 				directory = path + "/" + gcCode.substring(0, 4);
-				reloadSpoilerResourcesFromPath(directory, spoilerRessources, cache);
+				loadSpoilerResourcesFromPath(directory, cache);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
-			// Spoilers are always loaden from global Repository too
+			// Spoilers are always load from global Repository too
 			// from globalUser changed Repository
 			try {
 				path = CB_Core_Settings.SpoilerFolder.getValue();
 				directory = path + "/" + gcCode.substring(0, 4);
-				reloadSpoilerResourcesFromPath(directory, spoilerRessources, cache);
+				loadSpoilerResourcesFromPath(directory, cache);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -334,7 +333,7 @@ public class CacheDetail implements Serializable {
 			directory = CB_Core_Settings.UserImageFolder.getValue();
 			if (directory != null) {
 				try {
-					reloadSpoilerResourcesFromPath(directory, spoilerRessources, cache);
+					loadSpoilerResourcesFromPath(directory, cache);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -342,7 +341,7 @@ public class CacheDetail implements Serializable {
 		}
 	}
 
-	private void reloadSpoilerResourcesFromPath(String directory, CB_List<ImageEntry> spoilerRessources2, final Cache cache) {
+	private void loadSpoilerResourcesFromPath(String directory, final Cache cache) {
 		if (!FileIO.DirectoryExists(directory))
 			return;
 		File dir = FileFactory.createFile(directory);

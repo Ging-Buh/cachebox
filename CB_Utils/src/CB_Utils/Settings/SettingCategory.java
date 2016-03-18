@@ -26,7 +26,7 @@ public enum SettingCategory {
 	private String langString;
 
 	SettingCategory(String langString) {
-		this.setLangString(langString);
+		this.langString = langString;
 	}
 
 	public String getLangString() {

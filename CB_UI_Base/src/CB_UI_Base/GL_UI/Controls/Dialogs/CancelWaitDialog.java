@@ -15,7 +15,7 @@
  */
 package CB_UI_Base.GL_UI.Controls.Dialogs;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Controls.Label;

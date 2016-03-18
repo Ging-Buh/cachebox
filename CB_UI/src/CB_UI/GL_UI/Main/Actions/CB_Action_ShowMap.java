@@ -16,14 +16,18 @@
 
 package CB_UI.GL_UI.Main.Actions;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import CB_Locator.LocatorSettings;
 import CB_Locator.Map.Layer;
 import CB_Locator.Map.ManagerBase;
 import CB_UI.Config;
 import CB_UI.TrackRecorder;
 import CB_UI.GL_UI.Activitys.MapDownload;
-import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GL_UI.Views.MapView.MapMode;
@@ -38,6 +42,9 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Menu.OptionMenu;
 import CB_Utils.Settings.SettingBool;
+import CB_Utils.Util.FileIO;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 
 /**
  * @author Longri
@@ -79,54 +86,41 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 
 	@Override
 	public Menu getContextMenu() {
-
 		Menu icm = new Menu("menu_mapviewgl");
+
+		icm.addItem(MenuID.MI_LAYER, "Layer");
+		MenuItem mi = icm.addItem(MenuID.MI_RENDERTHEMES, "Renderthemes");
+		if (LocatorSettings.RenderThemesFolder.getValue().length() == 0) {
+			mi.setEnabled(false);
+		}
+		icm.addItem(MenuID.MI_MAPVIEW_OVERLAY_VIEW, "overlays");
+		icm.addCheckableItem(MenuID.MI_ALIGN_TO_COMPSS, "AlignToCompass", MapView.that.GetAlignToCompass());
+		icm.addItem(MenuID.MI_CENTER_WP, "CenterWP");
+		// icm.addItem(MenuID.MI_SETTINGS, "settings", Sprites.getSprite(IconName.settings.name()));
+		// icm.addItem(MenuID.MI_SEARCH, "search", SpriteCache.Icons.get(27));
+		icm.addItem(MenuID.MI_MAPVIEW_VIEW, "view");
+		//icm.addItem(MenuID.MI_TREC_REC, "RecTrack");
+		icm.addItem(MenuID.MI_MAP_DOWNOAD, "MapDownload");
+
 		icm.addOnClickListener(onItemClickListener);
-		MenuItem mi;
-
-		mi = icm.addItem(MenuID.MI_LAYER, "Layer");
-
-		mi = icm.addItem(MenuID.MI_ALIGN_TO_COMPSS, "AlignToCompass");
-		mi.setCheckable(true);
-		mi.setChecked(MapView.that.GetAlignToCompass());
-
-		mi = icm.addItem(MenuID.MI_CENTER_WP, "CenterWP");
-
-		// mi = icm.addItem(MI_SMOOTH_SCROLLING, "SmoothScrolling");
-		mi = icm.addItem(MenuID.MI_SETTINGS, "settings", Sprites.getSprite(IconName.settings.name()));
-		// mi = icm.addItem(MenuID.MI_SEARCH, "search", SpriteCache.Icons.get(27));
-		mi = icm.addItem(MenuID.MI_MAPVIEW_VIEW, "view");
-		// mi = icm.addItem(MenuID.MI_TREC_REC, "TrackRec");
-		mi = icm.addItem(MenuID.MI_MAP_DOWNOAD, "MapDownload");
 		return icm;
 	}
 
 	private void showMapLayerMenu() {
 		Menu icm = new Menu("MapViewShowLayerContextMenu");
 
-		icm.addOnClickListener(new OnClickListener() {
-
+		// Sorting (perhaps use an arraylist of layers without the overlay layers) 
+		Collections.sort(ManagerBase.Manager.getLayers(), new Comparator<Layer>() {
 			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-
-				if (((MenuItem) v).getMenuItemId() == MenuID.MI_MAPVIEW_OVERLAY_VIEW) {
-					showMapOverlayMenu();
-					return true;
-				}
-
-				Layer layer = (Layer) ((MenuItem) v).getData();
-				TabMainView.mapView.SetCurrentLayer(layer);
-				return true;
+			public int compare(Layer layer1, Layer layer2) {
+				return layer1.Name.toLowerCase().compareTo(layer2.Name.toLowerCase());
 			}
 		});
-		MenuItem mi;
 
-		mi = icm.addItem(MenuID.MI_MAPVIEW_OVERLAY_VIEW, "overlays");
-
-		int Index = 0;
+		int menuID = 0;
 		for (Layer layer : ManagerBase.Manager.getLayers()) {
 			if (!layer.isOverlay()) {
-				mi = icm.addItem(Index++, "", layer.Name);
+				MenuItem mi = icm.addItem(menuID++, "", layer.Name); // == friendlyName == FileName !!! ohne Translation
 				mi.setData(layer);
 				mi.setCheckable(true);
 				if (layer == MapView.mapTileLoader.getCurrentLayer()) {
@@ -135,14 +129,30 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 			}
 		}
 
+		icm.addOnClickListener(new OnClickListener() {
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				Layer layer = (Layer) ((MenuItem) v).getData();
+				TabMainView.mapView.SetCurrentLayer(layer);
+				return true;
+			}
+		});
+
 		icm.Show();
 	}
 
 	private void showMapOverlayMenu() {
 		final OptionMenu icm = new OptionMenu("MapViewShowMapOverlayMenu");
 
-		icm.addOnClickListener(new OnClickListener() {
+		int menuID = 0;
+		for (Layer layer : ManagerBase.Manager.getLayers()) {
+			if (layer.isOverlay()) {
+				MenuItem mi = icm.addCheckableItem(menuID++, layer.FriendlyName, layer == MapView.mapTileLoader.getCurrentOverlayLayer());
+				mi.setData(layer);
+			}
+		}
 
+		icm.addOnClickListener(new OnClickListener() {
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 				Layer layer = (Layer) ((MenuItem) v).getData();
@@ -158,19 +168,6 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 				return true;
 			}
 		});
-		MenuItem mi;
-
-		int Index = 0;
-		for (Layer layer : ManagerBase.Manager.getLayers()) {
-			if (layer.isOverlay()) {
-				mi = icm.addItem(Index++, "", layer.Name);
-				mi.setData(layer);
-				mi.setCheckable(true);
-				if (layer == MapView.mapTileLoader.getCurrentOverlayLayer()) {
-					mi.setChecked(true);
-				}
-			}
-		}
 
 		icm.Show();
 	}
@@ -178,45 +175,17 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 	private void showMapViewLayerMenu() {
 		OptionMenu icm = new OptionMenu("MapViewShowLayerContextMenu");
 
+		icm.addCheckableItem(MenuID.MI_HIDE_FINDS, "HideFinds", Config.MapHideMyFinds.getValue());
+		icm.addCheckableItem(MenuID.MI_MAP_SHOW_COMPASS, "MapShowCompass", Config.MapShowCompass.getValue());
+		icm.addCheckableItem(MenuID.MI_SHOW_ALL_WAYPOINTS, "ShowAllWaypoints", Config.ShowAllWaypoints.getValue());
+		icm.addCheckableItem(MenuID.MI_SHOW_RATINGS, "ShowRatings", Config.MapShowRating.getValue());
+		icm.addCheckableItem(MenuID.MI_SHOW_DT, "ShowDT", Config.MapShowDT.getValue());
+		icm.addCheckableItem(MenuID.MI_SHOW_TITLE, "ShowTitle", Config.MapShowTitles.getValue());
+		icm.addCheckableItem(MenuID.MI_SHOW_DIRECT_LINE, "ShowDirectLine", Config.ShowDirektLine.getValue());
+		icm.addCheckableItem(MenuID.MI_SHOW_ACCURACY_CIRCLE, "MenuTextShowAccuracyCircle", Config.ShowAccuracyCircle.getValue());
+		icm.addCheckableItem(MenuID.MI_SHOW_CENTERCROSS, "ShowCenterCross", Config.ShowMapCenterCross.getValue());
+
 		icm.addOnClickListener(onItemClickListener);
-		MenuItem mi;
-
-		mi = icm.addItem(MenuID.MI_HIDE_FINDS, "HideFinds");
-		mi.setCheckable(true);
-		mi.setChecked(Config.MapHideMyFinds.getValue());
-
-		mi = icm.addItem(MenuID.MI_MAP_SHOW_COMPASS, "MapShowCompass");
-		mi.setCheckable(true);
-		mi.setChecked(Config.MapShowCompass.getValue());
-
-		mi = icm.addItem(MenuID.MI_SHOW_ALL_WAYPOINTS, "ShowAllWaypoints");
-		mi.setCheckable(true);
-		mi.setChecked(Config.ShowAllWaypoints.getValue());
-
-		mi = icm.addItem(MenuID.MI_SHOW_RATINGS, "ShowRatings");
-		mi.setCheckable(true);
-		mi.setChecked(Config.MapShowRating.getValue());
-
-		mi = icm.addItem(MenuID.MI_SHOW_DT, "ShowDT");
-		mi.setCheckable(true);
-		mi.setChecked(Config.MapShowDT.getValue());
-
-		mi = icm.addItem(MenuID.MI_SHOW_TITLE, "ShowTitle");
-		mi.setCheckable(true);
-		mi.setChecked(Config.MapShowTitles.getValue());
-
-		mi = icm.addItem(MenuID.MI_SHOW_DIRECT_LINE, "ShowDirectLine");
-		mi.setCheckable(true);
-		mi.setChecked(Config.ShowDirektLine.getValue());
-
-		mi = icm.addItem(MenuID.MI_SHOW_ACCURACY_CIRCLE, "MenuTextShowAccuracyCircle");
-		mi.setCheckable(true);
-		mi.setChecked(Config.ShowAccuracyCircle.getValue());
-
-		mi = icm.addItem(MenuID.MI_SHOW_CENTERCROSS, "ShowCenterCross");
-		mi.setCheckable(true);
-		mi.setChecked(Config.ShowMapCenterCross.getValue());
-
 		icm.Show();
 	}
 
@@ -224,88 +193,79 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-
 			switch (((MenuItem) v).getMenuItemId()) {
 			case MenuID.MI_LAYER:
 				showMapLayerMenu();
 				return true;
-
+			case MenuID.MI_RENDERTHEMES:
+				MenuItem mi = (MenuItem) v;
+				if (mi.isEnabled()) {
+					return showRenderThemesMenu();
+				} else
+					return false;
+			case MenuID.MI_MAPVIEW_OVERLAY_VIEW:
+				showMapOverlayMenu();
+				return true;
 			case MenuID.MI_MAPVIEW_VIEW:
 				showMapViewLayerMenu();
 				return true;
-
 			case MenuID.MI_ALIGN_TO_COMPSS:
 				MapView.that.SetAlignToCompass(!MapView.that.GetAlignToCompass());
 				return true;
-
 			case MenuID.MI_SHOW_ALL_WAYPOINTS:
 				toggleSetting(Config.ShowAllWaypoints);
 				return true;
-
 			case MenuID.MI_HIDE_FINDS:
 				toggleSettingWithReload(Config.MapHideMyFinds);
 				return true;
-
 			case MenuID.MI_SHOW_RATINGS:
 				toggleSetting(Config.MapShowRating);
 				return true;
-
 			case MenuID.MI_SHOW_DT:
 				toggleSetting(Config.MapShowDT);
 				return true;
-
 			case MenuID.MI_SHOW_TITLE:
 				toggleSetting(Config.MapShowTitles);
 				return true;
-
 			case MenuID.MI_SHOW_DIRECT_LINE:
 				toggleSetting(Config.ShowDirektLine);
 				return true;
-
 			case MenuID.MI_SHOW_ACCURACY_CIRCLE:
 				toggleSetting(Config.ShowAccuracyCircle);
 				return true;
-
 			case MenuID.MI_SHOW_CENTERCROSS:
 				toggleSetting(Config.ShowMapCenterCross);
 				return true;
-
 			case MenuID.MI_MAP_SHOW_COMPASS:
 				toggleSetting(Config.MapShowCompass);
 				return true;
-
 			case MenuID.MI_CENTER_WP:
 				if (MapView.that != null) {
 					MapView.that.createWaypointAtCenter();
 				}
 				return true;
-
+			/*
 			case MenuID.MI_SETTINGS:
 				TabMainView.actionShowSettings.Execute();
 				return true;
-
+			*/
+			/*
 			case MenuID.MI_SEARCH:
 				if (SearchDialog.that == null) {
 					new SearchDialog();
 				}
-
 				SearchDialog.that.showNotCloseAutomaticly();
 				return true;
-
+			*/
 			case MenuID.MI_TREC_REC:
 				showMenuTrackRecording();
 				return true;
-
 			case MenuID.MI_MAP_DOWNOAD:
 				MapDownload.INSTANCE.show();
 				return true;
-
 			default:
-
 				return false;
-
 			}
-
 		}
 	};
 
@@ -364,4 +324,109 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 			MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
 	}
 
+	private ArrayList<String> getRenderThemes() {
+		ArrayList<String> files = new ArrayList<String>();
+		String directory = LocatorSettings.RenderThemesFolder.getValue();
+		if (directory.length() > 0) {
+			File dir = FileFactory.createFile(directory);
+			String[] dirFiles = dir.list();
+			if (dirFiles != null && dirFiles.length > 0) {
+				for (String tmp : dirFiles) {
+					String ttt = tmp.toLowerCase();
+					if (ttt.endsWith("xml")) {
+						files.add(FileIO.GetFileNameWithoutExtension(tmp));
+					}
+				}
+			}
+		}
+		return files;
+	}
+
+	private boolean showRenderThemesMenu() {
+		final Menu lRenderThemesMenu = new OptionMenu("RenderThemesMenu");
+		lRenderThemesMenu.addItem(0, "RenderThemesDay");
+		lRenderThemesMenu.addItem(1, "RenderThemesNight");
+		//lRenderThemesMenu.addItem(2, "RenderThemesCarDay");
+		//lRenderThemesMenu.addItem(3, "RenderThemesCarNight");
+
+		lRenderThemesMenu.addOnClickListener(new OnClickListener() {
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				return showRenderThemesSubMenu(((MenuItem) v).getMenuItemId());
+			}
+		});
+
+		lRenderThemesMenu.Show();
+		return true;
+	}
+
+	private boolean showRenderThemesSubMenu(int which) {
+		final Menu lRenderThemesSubMenu = new Menu("RenderThemesSubMenu");
+
+		int menuID = 0;
+		for (String theme : getRenderThemes()) {
+			MenuItem mi = lRenderThemesSubMenu.addItem(menuID++, "", theme); // ohne Translation
+			mi.setData(which);
+			mi.setCheckable(true);
+			switch (which) {
+			case 0:
+				if (LocatorSettings.MapsforgeDayTheme.getValue().contains(theme)) {
+					mi.setChecked(true);
+				}
+				break;
+			case 1:
+				if (LocatorSettings.MapsforgeNightTheme.getValue().contains(theme)) {
+					mi.setChecked(true);
+				}
+				break;
+			case 2:
+				/*
+				if (LocatorSettings.MapsforgeDayCarTheme.getValue().contains(theme)) {
+					mi.setChecked(true);
+				}
+				*/
+				break;
+			case 3:
+				/*
+				if (LocatorSettings.MapsforgeNightCarTheme.getValue().contains(theme)) {
+					mi.setChecked(true);
+				}
+				*/
+				break;
+			}
+		}
+
+		lRenderThemesSubMenu.addOnClickListener(new OnClickListener() {
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				MenuItem mi = (MenuItem) v;
+				int which = (int) mi.getData();
+				String selectedValue;
+				if (mi.isChecked()) {
+					selectedValue = "";
+				} else {
+					selectedValue = LocatorSettings.RenderThemesFolder.getValue() + "/" + mi.getTitle() + ".xml";
+				}
+				switch (which) {
+				case 0:
+					LocatorSettings.MapsforgeDayTheme.setValue(selectedValue);
+					break;
+				case 1:
+					LocatorSettings.MapsforgeNightTheme.setValue(selectedValue);
+					break;
+				case 2:
+					//LocatorSettings.MapsforgeDayCarTheme.setValue(selectedValue);
+					break;
+				case 3:
+					//LocatorSettings.MapsforgeDayCarTheme.setValue(selectedValue);
+					break;
+				}
+				Config.AcceptChanges();
+				return true;
+			}
+		});
+
+		lRenderThemesSubMenu.Show();
+		return true;
+	}
 }

@@ -209,6 +209,6 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
 			itemList.clear();
 		itemList = null;
 		super.dispose();
-		//log.debug("LogView disposed");
+		//Log.debug(log, "LogView disposed");
 	}
 }

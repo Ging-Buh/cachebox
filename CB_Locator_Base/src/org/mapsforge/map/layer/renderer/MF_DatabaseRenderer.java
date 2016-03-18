@@ -45,14 +45,14 @@ import org.mapsforge.map.rendertheme.rule.CB_RenderTheme;
 import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
 import org.xml.sax.SAXException;
 
+import com.badlogic.gdx.graphics.Pixmap.Format;
+
 import CB_Locator.Map.Descriptor;
 import CB_Locator.Map.TileGL;
 import CB_Locator.Map.TileGL.TileState;
 import CB_Locator.Map.TileGL_Bmp;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 import CB_Utils.Lists.F_List;
-
-import com.badlogic.gdx.graphics.Pixmap.Format;
 
 /**
  * @author Longri

@@ -52,6 +52,7 @@ import CB_UI_Base.GL_UI.Controls.List.V_ListView;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.Log.Log;
 import CB_Utils.Math.Point;
 
 public class CacheListView extends CB_View_Base implements CacheListChangedEventListener, SelectedCacheEvent, PositionChangedEvent {
@@ -84,7 +85,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 	@Override
 	public void Initial() {
-		// log.debug("CacheListView => Initial()");
+		// Log.debug(log, "CacheListView => Initial()");
 		// this.setListPos(0, false);
 		listView.chkSlideBack();
 		GL.that.renderOnce();
@@ -131,7 +132,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		}
 
 		isShown = true;
-		log.debug("CacheList onShow");
+		Log.debug(log, "CacheList onShow");
 		setBackground(Sprites.ListBack);
 
 		PositionChangedEventList.Add(this);
@@ -193,7 +194,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 							if (listView.isDragable()) {
 								if (!(firstAndLast.x <= id && firstAndLast.y >= id)) {
 									listView.scrollToItem(id);
-									log.debug("Scroll to:" + id);
+									Log.debug(log, "Scroll to:" + id);
 								}
 							}
 							break;
@@ -229,7 +230,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	@Override
 	public void onHide() {
 		isShown = false;
-		log.debug("CacheList onHide");
+		Log.debug(log, "CacheList onHide");
 		PositionChangedEventList.Remove(this);
 
 		if (searchPlaceholder < 0) {
@@ -357,7 +358,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 	@Override
 	public void CacheListChangedEvent() {
-		log.debug("CacheListChangedEvent on Cache List");
+		Log.debug(log, "CacheListChangedEvent on Cache List");
 		listView.setBaseAdapter(null);
 		synchronized (Database.Data.Query) {
 			lvAdapter = new CustomAdapter(Database.Data.Query);

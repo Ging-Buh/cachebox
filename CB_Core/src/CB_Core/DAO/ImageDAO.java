@@ -21,12 +21,18 @@ import org.slf4j.LoggerFactory;
 
 import CB_Core.Database;
 import CB_Core.Types.ImageEntry;
+import CB_Utils.Log.Log;
 import de.cb.sqlite.CoreCursor;
 import de.cb.sqlite.Database_Core.Parameters;
 
 public class ImageDAO {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(ImageDAO.class);
 
+	/**
+	 * 
+	 * @param image
+	 * @param ignoreExisting
+	 */
 	public void WriteToDatabase(ImageEntry image, Boolean ignoreExisting) {
 		Parameters args = new Parameters();
 		args.put("CacheId", image.CacheId);
@@ -42,16 +48,13 @@ public class ImageDAO {
 				Database.Data.insertWithConflictReplace("Images", args);
 			}
 		} catch (Exception exc) {
-			log.error("Write Image", "", exc);
+			Log.err(log, "Write Image", "", exc);
 		}
 	}
 
 	/**
+	 * 
 	 * @param GcCode
-	 * @param DescriptionImageFolder
-	 *            Config.settings.DescriptionImageFolder.getValue()
-	 * @param DescriptionImageFolderLocal
-	 *            Config.settings.DescriptionImageFolderLocal.getValue()
 	 * @return
 	 */
 	public ArrayList<ImageEntry> getImagesForCache(String GcCode) {
@@ -71,6 +74,7 @@ public class ImageDAO {
 	}
 
 	/**
+	 * 
 	 * @param GcCode
 	 */
 	public void deleteImagesForCache(String GcCode) {
@@ -78,11 +82,8 @@ public class ImageDAO {
 	}
 
 	/**
+	 * 
 	 * @param GcCode
-	 * @param DescriptionImageFolder
-	 *            Config.settings.DescriptionImageFolder.getValue()
-	 * @param DescriptionImageFolderLocal
-	 *            Config.settings.DescriptionImageFolderLocal.getValue()
 	 * @return
 	 */
 	public ArrayList<ImageEntry> getDescriptionImagesForCache(String GcCode) {
@@ -138,21 +139,4 @@ public class ImageDAO {
 		return count;
 	}
 
-	public ArrayList<String> getGcCodes(String whereClause) {
-		ArrayList<String> gcCodes = new ArrayList<String>();
-
-		CoreCursor reader = Database.Data.rawQuery("select GcCode from Caches " + ((whereClause.length() > 0) ? "where " + whereClause : whereClause), null);
-
-		if (reader == null)
-			return gcCodes;
-		reader.moveToFirst();
-
-		while (!reader.isAfterLast()) {
-			gcCodes.add(reader.getString(0));
-			reader.moveToNext();
-		}
-		reader.close();
-
-		return gcCodes;
-	}
 }

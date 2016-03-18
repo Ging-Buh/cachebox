@@ -15,14 +15,12 @@
 package org.mapsforge.map.rendertheme;
 
 import java.io.BufferedReader;
-
-import CB_Utils.fileProvider.File;
-
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+
+import CB_Utils.fileProvider.File;
 
 /**
  * An ExternalRenderTheme allows for customizing the rendering style of the map via an XML file.

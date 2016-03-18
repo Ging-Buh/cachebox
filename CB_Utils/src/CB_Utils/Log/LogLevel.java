@@ -39,7 +39,7 @@ public enum LogLevel {
 	OFF, ERROR, WARN, INFO, DEBUG, TRACE, ALL;
 
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(LogLevel.class);
-	private static Level act = Level.OFF;
+	private static LogLevel act = OFF;
 
 	/**
 	 * Returns the int value of this {@link #LogLevel}
@@ -74,14 +74,23 @@ public enum LogLevel {
 	 *            {@link #LogLevel}
 	 */
 	static void setLogLevel(LogLevel level) {
-		act = Level.toLevel(level.toInt(), Level.OFF);
+		Level actlevel = Level.toLevel(level.toInt(), Level.OFF);
+		if (actlevel == Level.OFF) {
+			act = LogLevel.OFF;
+		} else {
+			act = level;
+		}
 
 		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 
 		root.setLevel(Level.ALL);
 
-		log.info("Set LogLevel to:" + act.toString());
-		root.setLevel(act);
+		Log.info(log, "Set LogLevel to:" + act.toString());
+		root.setLevel(actlevel);
+	}
+
+	static LogLevel getLogLevel() {
+		return act;
 	}
 
 	/**
@@ -93,6 +102,6 @@ public enum LogLevel {
 	 * @return
 	 */
 	public static boolean isLogLevel(LogLevel level) {
-		return act.levelInt <= level.toInt();
+		return act.toInt() <= level.toInt();
 	}
 }

@@ -37,6 +37,7 @@ import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
+import CB_Utils.Log.Log;
 
 /**
  * 
@@ -91,7 +92,7 @@ public class CB_Action_ShowDescExt extends CB_Action {
 
 			} catch (IOException e) {
 				e.printStackTrace();
-				log.error("Write Temp HTML:", e);
+				Log.err(log, "Write Temp HTML:", e);
 			}
 		}
 	}

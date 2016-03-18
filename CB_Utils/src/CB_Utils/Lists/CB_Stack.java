@@ -43,7 +43,7 @@ public class CB_Stack<T> {
 			if (items.contains(item))
 				return;
 			items.add(item);
-			// log.debug("STACK add SIZE=" + items.size + "  (item: " + item.toString() + ")");
+			// Log.debug(log, "STACK add SIZE=" + items.size + "  (item: " + item.toString() + ")");
 			checkMaxItemSize();
 		}
 	}
@@ -56,13 +56,13 @@ public class CB_Stack<T> {
 	public T get() {
 		synchronized (items) {
 			if (items.size == 0) {
-				// log.debug("STACK empty Get");
+				// Log.debug(log, "STACK empty Get");
 				return null;
 			}
 
 			T ret = items.remove(0);
 
-			// log.debug("STACK get SIZE=" + (items.size - 1) + "  (item: " + ret.toString() + ")");
+			// Log.debug(log, "STACK get SIZE=" + (items.size - 1) + "  (item: " + ret.toString() + ")");
 
 			return ret;
 		}

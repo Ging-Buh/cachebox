@@ -23,6 +23,7 @@ import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 
 import CB_Core.Api.PocketQuery.PQ;
+import CB_Utils.Log.Log;
 
 /**
  * Imports a single PocketQuery from Groundspeak API directly without ZIP Because Groundspeak API only delivers a lite dataset of the caches
@@ -37,7 +38,7 @@ import CB_Core.Api.PocketQuery.PQ;
 public class ApiGroundspeak_GetPocketQueryData extends ApiGroundspeak {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(ApiGroundspeak_GetPocketQueryData.class);
 	private PQ pocketQuery;
-	private ArrayList<String> caches;
+	private final ArrayList<String> caches;
 
 	public ApiGroundspeak_GetPocketQueryData() {
 		super();
@@ -71,7 +72,7 @@ public class ApiGroundspeak_GetPocketQueryData extends ApiGroundspeak {
 			request.put("MaxItems", 1000);
 			request.put("GCListOnly", true);
 		} catch (JSONException e) {
-			log.error("ApiGS_GetPocketQueryData", e.getMessage());
+			Log.err(log, "ApiGS_GetPocketQueryData", e);
 			return false;
 		}
 
@@ -84,12 +85,12 @@ public class ApiGroundspeak_GetPocketQueryData extends ApiGroundspeak {
 		ApiGroundspeakResult result = new ApiGroundspeakResult(-1, "");
 
 		JSONArray jCaches = json.getJSONArray("CacheCodes");
-		log.debug("got " + jCaches.length() + " Caches from gc");
+		Log.debug(log, "got " + jCaches.length() + " Caches from gc");
 
 		for (int i = 0; i < jCaches.length(); i++) {
 			String gcCode = (String) jCaches.get(i);
 
-			log.debug("handling " + gcCode);
+			Log.debug(log, "handling " + gcCode);
 			caches.add(gcCode);
 		}
 

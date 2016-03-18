@@ -15,10 +15,10 @@
  */
 package CB_Locator.Map;
 
-import CB_Utils.Lists.CB_List;
-
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Disposable;
+
+import CB_Utils.Lists.CB_List;
 
 /**
  * @author ging-buh

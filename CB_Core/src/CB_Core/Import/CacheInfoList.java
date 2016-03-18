@@ -28,6 +28,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
 import CB_Core.Types.LogEntry;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.SDBM_Hash;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
@@ -287,7 +288,7 @@ public class CacheInfoList {
 			try {
 				Database.Data.update("Caches", args, "Id = ?", new String[] { String.valueOf(info.id) });
 			} catch (Exception exc) {
-				log.error("CacheInfoList.writeListToDB()", "", exc);
+				Log.err(log, "CacheInfoList.writeListToDB()", "", exc);
 
 			}
 		}

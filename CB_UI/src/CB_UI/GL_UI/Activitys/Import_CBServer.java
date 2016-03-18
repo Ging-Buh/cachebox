@@ -15,13 +15,11 @@
  */
 package CB_UI.GL_UI.Activitys;
 
-import CB_Utils.fileProvider.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import CB_Utils.fileProvider.FileFactory;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -83,6 +81,9 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.StringH;
 import CB_Utils.Events.ProgressChangedEvent;
 import CB_Utils.Events.ProgresssChangedEventList;
+import CB_Utils.Log.Log;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 import cb_rpc.Functions.RpcAnswer;
 import de.cb.sqlite.CoreCursor;
 
@@ -924,7 +925,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 							return;
 						}
 
-						log.debug("Import CBServer took " + (System.currentTimeMillis() - startTime) + "ms");
+						Log.debug(log, "Import CBServer took " + (System.currentTimeMillis() - startTime) + "ms");
 
 						System.gc();
 					}
@@ -971,7 +972,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 				String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "C " + String.valueOf(GPXFileImporter.LogCount) + "L in " + String.valueOf(ImportZeit);
 
-				log.debug(Msg);
+				Log.debug(log, Msg);
 
 				FilterProperties props = FilterInstances.getLastFilter();
 				EditFilterSettings.ApplyFilter(props);

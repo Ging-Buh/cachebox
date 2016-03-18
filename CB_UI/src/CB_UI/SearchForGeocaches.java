@@ -32,7 +32,7 @@ public class SearchForGeocaches extends SearchForGeocaches_Core {
 							@Override
 							public void run() {
 								if (GlobalCore.getSelectedCache() != null)
-									GlobalCore.getSelectedCache().ReloadSpoilerRessources();
+									GlobalCore.getSelectedCache().loadSpoilerRessources();
 							}
 						});
 					}

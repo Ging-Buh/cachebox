@@ -68,7 +68,7 @@ public class InfoBubble extends CB_View_Base {
 				return;
 		}
 
-		// log.debug("New Cache @InfoBubble");
+		// Log.debug(log, "New Cache @InfoBubble");
 		mCache = cache;
 		mCacheId = cache.Id;
 		mWaypoint = waypoint;
@@ -90,7 +90,7 @@ public class InfoBubble extends CB_View_Base {
 	}
 
 	public void showBubbleSelected() {
-		// log.debug("Show BubbleSelected");
+		// Log.debug(log, "Show BubbleSelected");
 		mCacheId = GlobalCore.getSelectedCache().Id;
 		mCache = GlobalCore.getSelectedCache();
 		setVisible();
@@ -123,7 +123,7 @@ public class InfoBubble extends CB_View_Base {
 	}
 
 	private void requestLayout() {
-		// log.debug("InfoBubble RequestLayout");
+		// Log.debug(log, "InfoBubble RequestLayout");
 		// SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
 		SizeF size = new SizeF(0.96f * getWidth(), 0.72f * getHeight());
 		cacheInfo.setSize(size);

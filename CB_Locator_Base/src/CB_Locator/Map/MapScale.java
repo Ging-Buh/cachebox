@@ -31,6 +31,7 @@ import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
+import CB_Utils.Log.Log;
 
 public class MapScale extends CB_View_Base implements invalidateTextureEvent {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(MapScale.class);
@@ -113,7 +114,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent {
 				}
 			}
 		} catch (Exception exc) {
-			log.error("MapView.zoomChanged()", "", exc);
+			Log.err(log, "MapView.zoomChanged()", "", exc);
 		}
 
 		if (imperialunits) {

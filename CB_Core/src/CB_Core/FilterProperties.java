@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import CB_Core.Types.Cache;
 import CB_Core.Types.DLong;
+import CB_Utils.Log.Log;
 
 public class FilterProperties {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(FilterProperties.class);
@@ -195,12 +196,12 @@ public class FilterProperties {
 				if (filtercategories.length() > 0) {
 					String[] partsGPX = filtercategories.split("\\" + GPXSEPARATOR);
 					for (int i = 1; i < partsGPX.length; i++) {
-						// log.info("parts[" + i + "]=" + partsGPX[i]);
+						// Log.info(log, "parts[" + i + "]=" + partsGPX[i]);
 						Categories.add(Long.parseLong(partsGPX[i]));
 					}
 				}
 			} catch (JSONException e) {
-				log.error("Json Version FilterProperties(" + serialization + ")", "", e);
+				Log.err(log, "Json Version FilterProperties(" + serialization + ")", "", e);
 			}
 		} else {
 			// Filter ist noch in alten Einstellungen gegeben...
@@ -275,7 +276,7 @@ public class FilterProperties {
 					}
 				}
 			} catch (Exception exc) {
-				log.error("old Version FilterProperties(" + serialization + ")", "", exc);
+				Log.err(log, "old Version FilterProperties(" + serialization + ")", "", exc);
 			}
 		}
 	}
@@ -377,7 +378,7 @@ public class FilterProperties {
 
 			result = json.toString();
 		} catch (JSONException e) {
-			log.error("JSON toString", "", e);
+			Log.err(log, "JSON toString", "", e);
 		}
 		return result;
 	}

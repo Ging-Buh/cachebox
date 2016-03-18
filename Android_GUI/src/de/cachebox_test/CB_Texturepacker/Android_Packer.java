@@ -1,16 +1,18 @@
 package de.cachebox_test.CB_Texturepacker;
 
-import CB_Utils.fileProvider.File;
-
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
 
 import CB_UI_Base.CB_Texturepacker.MaxRectsPacker;
 import CB_UI_Base.CB_Texturepacker.Page;
 import CB_UI_Base.CB_Texturepacker.Rect_Base;
 import CB_UI_Base.CB_Texturepacker.Settings;
 import CB_UI_Base.CB_Texturepacker.TexturePacker_Base;
+import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -18,10 +20,6 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.Array;
 
 /**
  * @author Nathan Sweet ; Longri

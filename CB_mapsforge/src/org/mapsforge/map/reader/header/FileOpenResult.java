@@ -14,9 +14,9 @@
  */
 package org.mapsforge.map.reader.header;
 
-import CB_Utils.fileProvider.File;
-
 import org.mapsforge.map.reader.MapDatabase;
+
+import CB_Utils.fileProvider.File;
 
 /**
  * A FileOpenResult is a simple DTO which is returned by {@link MapDatabase#openFile(File)}.

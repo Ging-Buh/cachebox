@@ -7,13 +7,9 @@ public class Layer {
 	}
 
 	private Type mLayerType = Type.normal;
-
 	public String Name = "";
-
 	public String FriendlyName = "";
-
 	public String Url = "";
-
 	public boolean isMapsForge = false;
 
 	public Layer(Type LayerType, String name, String friendlyName, String url) {

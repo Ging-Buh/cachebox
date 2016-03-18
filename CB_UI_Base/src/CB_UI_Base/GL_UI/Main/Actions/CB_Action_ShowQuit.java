@@ -15,7 +15,7 @@
  */
 package CB_UI_Base.GL_UI.Main.Actions;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -66,7 +66,7 @@ public class CB_Action_ShowQuit extends CB_Action {
 				public boolean onClick(int which, Object data) {
 					if (which == GL_MsgBox.BUTTON_POSITIVE) {
 
-						//log.debug("\r\n Quit");
+						//Log.debug(log, "\r\n Quit");
 						PlatformConnector.callQuit();
 					}
 					return true;

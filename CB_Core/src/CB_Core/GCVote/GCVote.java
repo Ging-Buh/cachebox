@@ -40,6 +40,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import CB_Core.CB_Core_Settings;
+import CB_Utils.Log.Log;
 
 public class GCVote {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(GCVote.class);
@@ -72,12 +73,12 @@ public class GCVote {
 
 			httppost.setEntity(new ByteArrayEntity(data.getBytes("UTF8")));
 
-			// log.info("GCVOTE-Post" + data);
+			// Log.info(log, "GCVOTE-Post" + data);
 
 			// Execute HTTP Post Request
 			String responseString = Execute(httppost);
 
-			// log.info("GCVOTE-Response" + responseString);
+			// Log.info(log, "GCVOTE-Response" + responseString);
 
 			DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			InputSource is = new InputSource();
@@ -109,7 +110,7 @@ public class GCVote {
 				else
 					Ex = "Ex = [" + e.toString() + "]";
 			}
-			log.info("GcVote-Error" + Ex);
+			Log.info(log, "GcVote-Error" + Ex);
 			return null;
 		}
 		return result;

@@ -36,6 +36,7 @@ import org.json.JSONTokener;
 import org.slf4j.LoggerFactory;
 
 import CB_Utils.Exceptions.NullArgumentException;
+import CB_Utils.Log.Log;
 import CB_Utils.http.HttpUtils;
 
 /***
@@ -110,7 +111,7 @@ public class PocketQuery {
 								String date = (String) dateCreated.subSequence(date1 + 6, date2);
 								pq.DateLastGenerated = new Date(Long.valueOf(date));
 							} catch (Exception exc) {
-								log.error("API", "SearchForGeocaches_ParseDate", exc);
+								Log.err(log, "API", "SearchForGeocaches_ParseDate", exc);
 							}
 							pq.PQCount = jPQ.getInt("PQCount");
 							int Byte = jPQ.getInt("FileSizeInBytes");

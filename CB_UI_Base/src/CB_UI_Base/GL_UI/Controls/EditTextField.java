@@ -21,7 +21,7 @@ import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -873,7 +873,7 @@ public class EditTextField extends EditTextFieldBase {
 				if (selectionMarkerType == SelectionMarker.Type.Center) {
 					setCursorLine(clickedLine, false);
 				}
-				// log.info("drag " + dy + "/" + dx + " to char" + clickedColumn + " line " + clickedLine);
+				// Log.info(log, "drag " + dy + "/" + dx + " to char" + clickedColumn + " line " + clickedLine);
 				return result;
 			}
 		}
@@ -887,7 +887,7 @@ public class EditTextField extends EditTextFieldBase {
 		if (selectionMarkerType == SelectionMarker.Type.Center) {
 			setCursorLine(clickedLine, false);
 		}
-		//log.info("drag " + dy + "/" + dx + " to char" + clickedColumn + " line " + clickedLine);
+		//Log.info(log, "drag " + dy + "/" + dx + " to char" + clickedColumn + " line " + clickedLine);
 		return result;
 	}
 
@@ -1126,7 +1126,7 @@ public class EditTextField extends EditTextFieldBase {
 				}
 			}
 		} catch (Exception e) {
-			log.error(this.name + " setTextAtCursorVisible", e);
+			Log.err(log, this.name + " setTextAtCursorVisible", e);
 			if (cursor.x == -1)
 				setCursorPosition(0);
 		}

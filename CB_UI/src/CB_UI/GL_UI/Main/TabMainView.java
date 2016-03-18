@@ -115,6 +115,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.MathUtils.CalculationType;
+import CB_Utils.Log.Log;
 import CB_Utils.Settings.SettingBase;
 import CB_Utils.Settings.SettingModus;
 import CB_Utils.Util.FileIO;
@@ -230,25 +231,25 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 	 */
 	private void releaseNonvisibleViews() {
 		if (cacheListView != null && !cacheListView.isVisible()) {
-			//log.debug("Release CachelistView");
+			//Log.debug(log, "Release CachelistView");
 			cacheListView.dispose();
 			cacheListView = null;
 		}
 
 		if (aboutView != null && !aboutView.isVisible()) {
-			//log.debug("Release aboutView");
+			//Log.debug(log, "Release aboutView");
 			aboutView.dispose();
 			aboutView = null;
 		}
 
 		if (compassView != null && !compassView.isVisible()) {
-			//log.debug("Release compassView");
+			//Log.debug(log, "Release compassView");
 			compassView.dispose();
 			compassView = null;
 		}
 
 		if (fieldNotesView != null && !fieldNotesView.isVisible()) {
-			//log.debug("Release fieldNotesView");
+			//Log.debug(log, "Release fieldNotesView");
 			fieldNotesView.dispose();
 			fieldNotesView = null;
 		}
@@ -260,20 +261,20 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 					if (logView.getCache().equals(GlobalCore.getSelectedCache()))
 						doRelease = false;
 			if (doRelease) {
-				//log.debug("Release logView");
+				//Log.debug(log, "Release logView");
 				logView.dispose();
 				logView = null;
 			}
 		}
 
 		if (waypointView != null && !waypointView.isVisible()) {
-			//log.debug("Release waypointView");
+			//Log.debug(log, "Release waypointView");
 			waypointView.dispose();
 			waypointView = null;
 		}
 
 		if (solverView2 != null && !solverView2.isVisible()) {
-			//log.debug("Release solverView2");
+			//Log.debug(log, "Release solverView2");
 			solverView2.dispose();
 			solverView2 = null;
 		}
@@ -285,7 +286,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 					if (descriptionView.getCache().equals(GlobalCore.getSelectedCache()))
 						doRelease = false;
 			if (doRelease) {
-				//log.debug("Release descriptionView");
+				//Log.debug(log, "Release descriptionView");
 				descriptionView.dispose();
 				descriptionView = null;
 			}
@@ -364,7 +365,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 
 		API_ErrorEventHandlerList.addHandler(handler);
 
-		log.debug("Start TabMainView-Initial");
+		Log.debug(log, "Start TabMainView-Initial");
 
 		actionShowMap = new CB_Action_ShowMap();
 		actionShowHint = new CB_Action_ShowHint();
@@ -407,7 +408,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 		Slider slider = new Slider(this, "Slider");
 		this.addChild(slider);
 
-		log.debug("Ende TabMainView-Initial");
+		Log.debug(log, "Ende TabMainView-Initial");
 
 		autoLoadTrack();
 
@@ -422,7 +423,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 				for (int i = 0, n = Database.Data.Query.size(); i < n; i++) {
 					Cache c = Database.Data.Query.get(i);
 					if (c.getGcCode().equalsIgnoreCase(sGc)) {
-						log.debug("TabMainView: Set selectedCache to " + c.getGcCode() + " from lastSaved.");
+						Log.debug(log, "TabMainView: Set selectedCache to " + c.getGcCode() + " from lastSaved.");
 						GlobalCore.setSelectedCache(c); // !! sets GlobalCore.setAutoResort to false
 						break;
 					}
@@ -917,7 +918,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 		try {
 			TrackRecorder.recordPosition();
 		} catch (Exception e) {
-			log.error("Core.MainViewBase.PositionChanged()", "TrackRecorder.recordPosition()", e);
+			Log.err(log, "Core.MainViewBase.PositionChanged()", "TrackRecorder.recordPosition()", e);
 			e.printStackTrace();
 		}
 

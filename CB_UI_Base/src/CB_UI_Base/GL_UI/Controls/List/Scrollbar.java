@@ -22,7 +22,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Animation.Fader;
-import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
@@ -220,11 +219,6 @@ public class Scrollbar extends CB_View_Base {
 	@Override
 	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
 
-		if (KineticPan) {
-			GL.that.StopKinetic(x, y, pointer, true);
-			return onTouchUp(x, y, pointer, 0);
-		}
-
 		if (mSliderPushed) {
 			mPushSliderFader.stopTimer();
 			float ll = ListView.getAllListSize();
@@ -241,7 +235,6 @@ public class Scrollbar extends CB_View_Base {
 
 			this.ListView.setListPos(lp);
 
-			// log.debug("SliderScrollValue:" + " Dragged:" + lp + " LastTouch:" + mLastTouch + " Y=" + y);
 			return true;
 		}
 

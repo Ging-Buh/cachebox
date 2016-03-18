@@ -1,7 +1,7 @@
 package de.cachebox_test.Views;
 
-import CB_Core.Solver.DataTypes.DataType;
 import CB_Core.Database;
+import CB_Core.Solver.DataTypes.DataType;
 import CB_Core.Solver.Function;
 import CB_Core.Solver.Solver;
 import CB_Core.Solver.SolverZeile;

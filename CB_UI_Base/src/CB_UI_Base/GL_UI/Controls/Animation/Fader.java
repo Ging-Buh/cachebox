@@ -3,7 +3,7 @@ package CB_UI_Base.GL_UI.Controls.Animation;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 
@@ -91,7 +91,7 @@ public class Fader {
 		cancelTimerToFadeOut();
 		mFadeoutBeginntime = GL.that.getStateTime() * 1000;
 		mFadeOut = true;
-		//	log.debug("beginn fade out =>" + name);
+		//	Log.debug(log, "beginn fade out =>" + name);
 		GL.that.renderOnce(true);
 	}
 
@@ -133,7 +133,7 @@ public class Fader {
 	public void resetFadeOut() {
 		if (this.alwaysOn)
 			return;
-		//	log.debug("reset fade out =>" + name);
+		//	Log.debug(log, "reset fade out =>" + name);
 		if (mFadeIn && !mFadeOut) {
 			mFadeIn = false;
 			mFadeValue = 1.0f;
@@ -170,10 +170,10 @@ public class Fader {
 				mFadeValue = 1f;
 				mFadeIn = false;
 				mVirtualVisible = true;
-				// log.debug("[" + statetime + "]finish FadeIn" + " calcvalue:" + calcedFadeValue);
+				// Log.debug(log, "[" + statetime + "]finish FadeIn" + " calcvalue:" + calcedFadeValue);
 			} else {
 				mFadeValue = calcedFadeValue;
-				// log.debug("[" + statetime + "]fadeIn:" + mFadeValue);
+				// Log.debug(log, "[" + statetime + "]fadeIn:" + mFadeValue);
 			}
 		} else if (mFadeOut) {
 
@@ -185,10 +185,10 @@ public class Fader {
 				mFadeValue = 0f;
 				mFadeOut = false;
 				mVirtualVisible = false;
-				// log.debug("[" + statetime + "]finish FadeOut" + " calcvalue:" + calcedFadeValue);
+				// Log.debug(log, "[" + statetime + "]finish FadeOut" + " calcvalue:" + calcedFadeValue);
 			} else {
 				mFadeValue = calcedFadeValue;
-				// log.debug("[" + statetime + "]fadeOut:" + mFadeValue);
+				// Log.debug(log, "[" + statetime + "]fadeOut:" + mFadeValue);
 			}
 		}
 	}
@@ -198,7 +198,7 @@ public class Fader {
 
 		if (this.alwaysOn)
 			return;
-		//	log.debug("Start Timer to fade out =>" + Integer.toString(mTimeToFadeOut) + name);
+		//	Log.debug(log, "Start Timer to fade out =>" + Integer.toString(mTimeToFadeOut) + name);
 
 		mTimer = new Timer();
 		TimerTask task = new TimerTask() {

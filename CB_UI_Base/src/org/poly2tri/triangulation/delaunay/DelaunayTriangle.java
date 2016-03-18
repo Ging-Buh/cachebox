@@ -111,7 +111,7 @@ public class DelaunayTriangle {
 		} else if ((p1 == points[0] && p2 == points[1]) || (p1 == points[1] && p2 == points[0])) {
 			neighbors[2] = t;
 		} else {
-			// log.error("Neighbor error, please report!");
+			// Log.err(log, "Neighbor error, please report!");
 			// throw new Exception("Neighbor error, please report!");
 		}
 	}
@@ -128,7 +128,7 @@ public class DelaunayTriangle {
 			neighbors[2] = t;
 			t.markNeighbor(points[0], points[1], this);
 		} else {
-			// log.error("markNeighbor failed");
+			// Log.err(log, "markNeighbor failed");
 		}
 	}
 
@@ -212,7 +212,7 @@ public class DelaunayTriangle {
 		} else if (point == points[2]) {
 			return points[0];
 		}
-		// log.error("point location error");
+		// Log.err(log, "point location error");
 		throw new RuntimeException("[FIXME] point location error");
 	}
 
@@ -225,7 +225,7 @@ public class DelaunayTriangle {
 		} else if (point == points[2]) {
 			return points[1];
 		}
-		// log.error("point location error");
+		// Log.err(log, "point location error");
 		throw new RuntimeException("[FIXME] point location error");
 	}
 
@@ -244,7 +244,7 @@ public class DelaunayTriangle {
 			points[2] = points[1];
 			points[1] = nPoint;
 		} else {
-			// log.error("legalization error");
+			// Log.err(log, "legalization error");
 			throw new RuntimeException("legalization bug");
 		}
 	}

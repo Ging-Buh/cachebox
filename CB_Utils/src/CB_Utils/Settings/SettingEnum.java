@@ -15,13 +15,13 @@
  */
 package CB_Utils.Settings;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import CB_Utils.Lists.CB_List;
 
 public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(SettingEnum.class);
-	private CB_List<String> values;
+	private final CB_List<String> values;
 
 	private EnumTyp myEnum;
 
@@ -79,7 +79,7 @@ public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString {
 		try {
 			ret = (EnumTyp) Enum.valueOf(myEnum.getDeclaringClass(), stringValue);
 		} catch (Exception e) {
-			log.error("Wrong ENUM value:" + stringValue, e);
+			Log.err(log, "Wrong ENUM value:" + stringValue, e);
 			ret = getEnumFromString(defaultValue);
 		}
 

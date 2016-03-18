@@ -11,11 +11,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import CB_Utils.fileProvider.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import CB_Utils.fileProvider.FileFactory;
 import com.badlogic.gdx.graphics.Color;
 
 import CB_Locator.Coordinate;
@@ -29,6 +27,8 @@ import CB_Locator.Map.TrackPoint;
 import CB_UI.Config;
 import CB_UI.RouteOverlay;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 
 public class simulateForm extends Frame implements ActionListener, WindowListener {
 
@@ -37,9 +37,9 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 	 */
 	private static final long serialVersionUID = -3001260409970853805L;
 
-	private Label lblGPX;
-	private TextField txt, speedTxt;
-	private Button pushButton5, sendSpeed;
+	private final Label lblGPX;
+	private final TextField txt, speedTxt;
+	private final Button pushButton5, sendSpeed;
 	private static Checkbox chekRealSpeed;
 	private static float speed = 50;
 

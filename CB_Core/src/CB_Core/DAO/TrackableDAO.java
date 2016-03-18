@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import CB_Core.Database;
 import CB_Core.Types.Trackable;
+import CB_Utils.Log.Log;
 import de.cb.sqlite.CoreCursor;
 import de.cb.sqlite.Database_Core.Parameters;
 
@@ -34,7 +35,7 @@ public class TrackableDAO {
 
 			return trackable;
 		} catch (Exception exc) {
-			log.error("Read Trackable", "", exc);
+			Log.err(log, "Read Trackable", "", exc);
 			return null;
 		}
 	}
@@ -45,7 +46,7 @@ public class TrackableDAO {
 		try {
 			Database.FieldNotes.insert("Trackable", args);
 		} catch (Exception exc) {
-			log.error("Write Trackable", "", exc);
+			Log.err(log, "Write Trackable", "", exc);
 
 		}
 	}
@@ -56,7 +57,7 @@ public class TrackableDAO {
 		try {
 			Database.FieldNotes.update("Trackable", args, "GcCode='" + trackable.getGcCode() + "'", null);
 		} catch (Exception exc) {
-			log.error("Ubdate Trackable", "", exc);
+			Log.err(log, "Ubdate Trackable", "", exc);
 
 		}
 

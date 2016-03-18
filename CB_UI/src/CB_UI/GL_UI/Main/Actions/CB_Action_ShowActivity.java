@@ -1,11 +1,11 @@
 package CB_UI.GL_UI.Main.Actions;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.ViewID;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
-
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowActivity extends CB_Action_ShowView {
 	private ViewID viewConst;

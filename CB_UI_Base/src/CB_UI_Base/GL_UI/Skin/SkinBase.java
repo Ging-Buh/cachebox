@@ -15,7 +15,7 @@ package CB_UI_Base.GL_UI.Skin;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import CB_UI_Base.Global;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
@@ -104,7 +104,7 @@ public abstract class SkinBase {
 					day_skin = new Skin(Gdx.files.internal(day_skinPath));
 				}
 			} catch (Exception e) {
-				log.error("Load Custum Skin", e);
+				Log.err(log, "Load Custum Skin", e);
 			}
 		}
 
@@ -117,7 +117,7 @@ public abstract class SkinBase {
 					night_skin = new Skin(Gdx.files.internal(night_skinPath));
 				}
 			} catch (Exception e) {
-				log.error("Load Custum Night Skin", e);
+				Log.err(log, "Load Custum Night Skin", e);
 			}
 		}
 

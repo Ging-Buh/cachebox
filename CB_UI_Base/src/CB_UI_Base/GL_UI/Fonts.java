@@ -33,6 +33,7 @@ import CB_UI_Base.Global;
 import CB_UI_Base.GL_UI.Skin.SkinBase;
 import CB_UI_Base.GL_UI.Skin.SkinSettings;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
 
 /**
@@ -50,7 +51,7 @@ public class Fonts {
 		for (int i = 0x0400; i < 0x04ff + 1; i++) {
 			cyril[i - 0x0400] = (char) i;
 		}
-		return FreeTypeFontGenerator.DEFAULT_CHARS + String.copyValueOf(cyril) + "—–" +"ŐőŰű";
+		return FreeTypeFontGenerator.DEFAULT_CHARS + String.copyValueOf(cyril) + "—–" +"ŐőŰű√";
 	}
 
 	private static BitmapFont compass;
@@ -90,7 +91,7 @@ public class Fonts {
 			font = Global.getInternalFileHandle("skins/default/DroidSans-Bold.ttf");
 		}
 
-		log.debug("Generate scaled Fonts from " + font);
+		Log.debug(log, "Generate scaled Fonts from " + font);
 		generator = new FreeTypeFontGenerator(font);
 
 		double density = UiSizes.that.getScale();
@@ -213,7 +214,7 @@ public class Fonts {
 
 		// Wenn der font nicht vorberechnet ist, dann wird er generiert
 		if (FileIO.FileExists(fontPath)) {
-			log.debug("load font for scale " + scale + " from " + fontPath);
+			Log.debug(log, "load font for scale " + scale + " from " + fontPath);
 			// automatic load of png does not work on Android, so
 			// return new BitmapFont(Gdx.files.absolute(fontPath),false);
 			Texture tex = new Texture(Gdx.files.absolute(fontPath.replace(".fnt", ".png")));
@@ -222,7 +223,7 @@ public class Fonts {
 			BitmapFont ret = new BitmapFont(Gdx.files.absolute(fontPath), region, false);
 			return ret;
 		} else {
-			log.debug("generate font for scale " + scale);
+			Log.debug(log, "generate font for scale " + scale);
 			FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 			parameter.size = scale;
 			parameter.characters = DEFAULT_CHARACTER;

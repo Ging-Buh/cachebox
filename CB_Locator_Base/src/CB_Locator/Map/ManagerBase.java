@@ -16,9 +16,6 @@
 package CB_Locator.Map;
 
 import java.io.ByteArrayOutputStream;
-
-import CB_Utils.fileProvider.File;
-
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,7 +25,6 @@ import java.util.HashMap;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import CB_Utils.fileProvider.FileFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
@@ -63,9 +59,12 @@ import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.GL_GraphicFactory;
 import CB_UI_Base.graphics.GL_RenderType;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.HSV_Color;
 import CB_Utils.Util.IChanged;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 
 /**
  * @author ging-buh
@@ -94,7 +93,7 @@ public abstract class ManagerBase {
 
 	public ArrayList<TmsMap> tmsMaps = new ArrayList<TmsMap>();
 
-	private final ArrayList<Layer> Layers = new ArrayList<Layer>();
+	public ArrayList<Layer> Layers = new ArrayList<Layer>();
 
 	private final DefaultLayerList DEFAULT_LAYER = new DefaultLayerList();
 
@@ -126,7 +125,7 @@ public abstract class ManagerBase {
 	public abstract PackBase CreatePack(String file) throws IOException;
 
 	// / <summary>
-	// / L�d ein Map Pack und f�gt es dem Manager hinzu
+	// / Läd ein Map Pack und fügt es dem Manager hinzu
 	// / </summary>
 	// / <param name="file"></param>
 	// / <returns>true, falls das Pack erfolgreich geladen wurde, sonst
@@ -135,8 +134,7 @@ public abstract class ManagerBase {
 		try {
 			PackBase pack = CreatePack(file);
 			mapPacks.add(pack);
-
-			// Nach Aktualit�t sortieren
+			// Nach Aktualität sortieren
 			Collections.sort(mapPacks);
 			return true;
 		} catch (Exception exc) {
@@ -360,7 +358,7 @@ public abstract class ManagerBase {
 					if (!mapnames.contains(tmp)) {
 						files.add(FilePath);
 						mapnames.add(tmp);
-						log.debug("add: " + tmp);
+						Log.debug(log, "add: " + tmp);
 					}
 				}
 			}
@@ -378,23 +376,23 @@ public abstract class ManagerBase {
 		ArrayList<String> files = new ArrayList<String>();
 		ArrayList<String> mapnames = new ArrayList<String>();
 
-		log.debug("dirOwnMaps = " + LocatorSettings.MapPackFolderLocal.getValue());
+		Log.debug(log, "dirOwnMaps = " + LocatorSettings.MapPackFolderLocal.getValue());
 		getFiles(files, mapnames, LocatorSettings.MapPackFolderLocal.getValue());
 
-		log.debug("dirDefaultMaps = " + LocatorSettings.MapPackFolder.getDefaultValue());
-		getFiles(files, mapnames, LocatorSettings.MapPackFolder.getDefaultValue());
+		// if the Folder is changed, the user wants to use only this one
+		// Log.debug(log, "dirDefaultMaps = " + LocatorSettings.MapPackFolder.getDefaultValue());
+		// getFiles(files, mapnames, LocatorSettings.MapPackFolder.getDefaultValue());
 
-		log.debug("dirGlobalMaps = " + LocatorSettings.MapPackFolder.getValue());
+		Log.debug(log, "dirGlobalMaps = " + LocatorSettings.MapPackFolder.getValue());
 		getFiles(files, mapnames, LocatorSettings.MapPackFolder.getValue());
 
-		if (!(files == null)) {
+		if (files != null) {
 			if (files.size() > 0) {
 				for (String file : files) {
 					if (FileIO.GetFileExtension(file).equalsIgnoreCase("pack")) {
 						ManagerBase.Manager.LoadMapPack(file);
 					}
 					if (FileIO.GetFileExtension(file).equalsIgnoreCase("map")) {
-
 						String Name = FileIO.GetFileNameWithoutExtension(file);
 						Layer layer = new Layer(Type.normal, Name, Name, file);
 						layer.isMapsForge = true;
@@ -474,22 +472,22 @@ public abstract class ManagerBase {
 		try {
 			CB_RenderThemeHandler.getRenderTheme(getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), DISPLAY_MODEL, renderTheme);
 		} catch (SAXException e) {
-			String ErrorMsg = e.getMessage() + Global.br + "Line: " + ((SAXParseException) e).getLineNumber();
+			String ErrorMsg = "databaseRenderer: " + e.getMessage() + Global.br + "Line: " + ((SAXParseException) e).getLineNumber();
 			GL.that.Toast(ErrorMsg, 8000);
-			log.error("databaseRenderer: ", ErrorMsg);
+			Log.err(log, ErrorMsg);
 			renderTheme = CB_InternalRenderTheme.OSMARENDER;
 		} catch (ParserConfigurationException e) {
 			String ErrorMsg = e.getMessage();
 			GL.that.Toast(ErrorMsg, 8000);
-			log.error("databaseRenderer: ", ErrorMsg);
+			Log.err(log, "databaseRenderer: ", e);
 			renderTheme = CB_InternalRenderTheme.OSMARENDER;
 		} catch (IOException e) {
 			String ErrorMsg = e.getMessage();
 			GL.that.Toast(ErrorMsg, 8000);
-			log.error("databaseRenderer: ", ErrorMsg);
+			Log.err(log, "databaseRenderer: ", e);
 			renderTheme = CB_InternalRenderTheme.OSMARENDER;
 		} catch (Exception e) {
-			log.error("databaseRenderer: ", e);
+			Log.err(log, "databaseRenderer: ", e);
 			renderTheme = CB_InternalRenderTheme.OSMARENDER;
 		}
 
@@ -511,25 +509,25 @@ public abstract class ManagerBase {
 				renderTheme = CB_InternalRenderTheme.DAY_CAR_THEME;
 			} else {
 				try {
-					log.debug("Suche RenderTheme: " + RenderTheme);
+					Log.debug(log, "Suche RenderTheme: " + RenderTheme);
 					if (RenderTheme == null) {
-						log.debug("RenderTheme not found!");
+						Log.debug(log, "RenderTheme not found!");
 						renderTheme = CB_InternalRenderTheme.OSMARENDER;
 
 					} else {
 						File file = FileFactory.createFile(RenderTheme);
 						if (file.exists()) {
-							log.debug("RenderTheme found!");
+							Log.debug(log, "RenderTheme found!");
 							renderTheme = new ExternalRenderTheme(file);
 
 						} else {
-							log.debug("RenderTheme not found!");
+							Log.debug(log, "RenderTheme not found!");
 							renderTheme = CB_InternalRenderTheme.OSMARENDER;
 						}
 					}
 
 				} catch (FileNotFoundException e) {
-					log.error("Load RenderTheme", "Error loading RenderTheme!", e);
+					Log.err(log, "Load RenderTheme", "Error loading RenderTheme!", e);
 					renderTheme = CB_InternalRenderTheme.OSMARENDER;
 				}
 			}
@@ -540,17 +538,17 @@ public abstract class ManagerBase {
 			} catch (SAXException e) {
 				String ErrorMsg = e.getMessage() + Global.br + "Line: " + ((SAXParseException) e).getLineNumber();
 				GL.that.Toast(ErrorMsg, 8000);
-				log.error("databaseRenderer: ", ErrorMsg);
+				Log.err(log, "databaseRenderer: ", e);
 				renderTheme = CB_InternalRenderTheme.OSMARENDER;
 			} catch (ParserConfigurationException e) {
 				String ErrorMsg = e.getMessage();
 				GL.that.Toast(ErrorMsg, 8000);
-				log.error("databaseRenderer: ", ErrorMsg);
+				Log.err(log, "databaseRenderer: ", e);
 				renderTheme = CB_InternalRenderTheme.OSMARENDER;
 			} catch (IOException e) {
 				String ErrorMsg = e.getMessage();
 				GL.that.Toast(ErrorMsg, 8000);
-				log.error("databaseRenderer: ", ErrorMsg);
+				Log.err(log, "databaseRenderer: ", e);
 				renderTheme = CB_InternalRenderTheme.OSMARENDER;
 			}
 
@@ -624,7 +622,7 @@ public abstract class ManagerBase {
 			mapDatabase[i].openFile(mapFile);
 		}
 
-		log.debug("Open MapsForge Map: " + mapFile);
+		Log.debug(log, "Open MapsForge Map: " + mapFile);
 		MapFileInfo info = mapDatabase[0].getMapFileInfo();
 		if (info.comment == null) {
 			LoadadMapIsFreizeitkarte = false;

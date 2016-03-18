@@ -18,7 +18,7 @@ package CB_UI_Base.GL_UI.Controls;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
@@ -54,13 +54,13 @@ public class LinkLabel extends MultiColorLabel {
 
 		if (link != null && !link.isEmpty()) {
 		    boolean error = true;
-		    log.debug("LinkText: " + link);
+		    Log.debug(log, "LinkText: " + link);
 
 		    for (int i = 0; i < hyperLinkList.size(); i++) {
 			HyperLinkText hl = hyperLinkList.get(i);
 
 			if (hl.content.equals(link)) {
-			    log.debug("Link found call: " + hl.url + " (" + hl.content + ")");
+			    Log.debug(log, "Link found call: " + hl.url + " (" + hl.content + ")");
 
 			    String url = hl.url.replaceAll("<", "").replace(">", "");
 			    PlatformConnector.callUrl(url);
@@ -70,7 +70,7 @@ public class LinkLabel extends MultiColorLabel {
 			}
 		    }
 		    if (error)
-			log.error("Link not found: " + link);
+			Log.err(log, "Link not found: " + link);
 		}
 
 		return true;

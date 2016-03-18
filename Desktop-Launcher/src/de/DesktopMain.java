@@ -13,7 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
 
 import org.mapsforge.map.model.DisplayModel;
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
@@ -333,7 +333,7 @@ public class DesktopMain {
 					// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
 					Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
 					Config.AcceptChanges();
-					log.debug("LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
+					Log.debug(log, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
 				}
 				System.exit(0);
 
@@ -421,7 +421,7 @@ public class DesktopMain {
 		String base = new File("").getAbsolutePath();
 		String workPath = base + "/cachebox";
 		workPath = "C:/Daten/_WCB";
-		log.debug("workPath=" + workPath);
+		Log.debug(log, "workPath=" + workPath);
 
 		new Config(workPath);
 
@@ -519,5 +519,4 @@ public class DesktopMain {
 			}
 		});
 	}
-
 }

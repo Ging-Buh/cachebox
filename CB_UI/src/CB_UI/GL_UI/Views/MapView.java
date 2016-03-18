@@ -964,7 +964,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 	@Override
 	protected void setZoomScale(int zoom) {
-		// log.debug("set zoom");
+		// Log.debug(log, "set zoom");
 		if (Mode == MapMode.Normal)
 			zoomScale.setZoom(zoom);
 		if (Mode == MapMode.Normal)
@@ -981,7 +981,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 	@Override
 	public void requestLayout() {
-		// log.debug("MapView clacLayout()");
+		// Log.debug(log, "MapView clacLayout()");
 		float margin = GL_UISizes.margin;
 
 		float infoHeight = 0;
@@ -1046,7 +1046,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				}
 				// empty mapCacheList
 				if (minWpi == null || minWpi.Cache == null) {
-					// log.info("empty click");
+					// Log.info(log, "empty click");
 					return true;
 				}
 				// always hide the bubble
@@ -1057,7 +1057,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				if (minDist < 40) {
 					if (minWpi.Waypoint != null) {
 						if (GlobalCore.getSelectedCache() != minWpi.Cache) {
-							// log.info("Waypoint clicked: " + minWpi.Cache.getGcCode() + "/" + minWpi.Waypoint.getGcCode());
+							// Log.info(log, "Waypoint clicked: " + minWpi.Cache.getGcCode() + "/" + minWpi.Waypoint.getGcCode());
 							// show bubble at the location of the waypoint!!!
 							infoBubble.setCache(minWpi.Cache, minWpi.Waypoint);
 							infoBubble.setVisible();
@@ -1071,7 +1071,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 							mapCacheList.update(data);
 						}
 					} else {
-						// log.info("Cache clicked: " + minWpi.Cache.getGcCode());
+						// Log.info(log, "Cache clicked: " + minWpi.Cache.getGcCode());
 						// show bubble
 						infoBubble.setCache(minWpi.Cache, null);
 						infoBubble.setVisible();
@@ -1079,7 +1079,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 					inputState = InputState.Idle;
 				} else {
 					// Click outside Bubble -> hide Bubble
-					// log.info("outside click (hidden bubble)");
+					// Log.info(log, "outside click (hidden bubble)");
 				}
 			}
 			return false;

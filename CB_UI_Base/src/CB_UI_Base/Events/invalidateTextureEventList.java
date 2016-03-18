@@ -15,9 +15,10 @@
  */
 package CB_UI_Base.Events;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 
 public class invalidateTextureEventList {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(invalidateTextureEventList.class);
@@ -47,7 +48,7 @@ public class invalidateTextureEventList {
 				}
 			}
 		} catch (Exception e) {
-			log.error("Call()", e);
+			Log.err(log, "Call()", e);
 		}
 	}
 }

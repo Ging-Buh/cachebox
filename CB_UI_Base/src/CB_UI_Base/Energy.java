@@ -18,7 +18,7 @@ package CB_UI_Base;
 
 import java.util.ArrayList;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import CB_Utils.Util.IChanged;
 
@@ -53,7 +53,7 @@ public class Energy {
 	public static void setDisplayOff() {
 		displayOff = true;
 		fireChangedEvent();
-		log.info("ENERGY setDisplayOff");
+		Log.info(log, "ENERGY setDisplayOff");
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class Energy {
 	public static void setDisplayOn() {
 		displayOff = false;
 		fireChangedEvent();
-		log.info("ENERGY setDisplayOn");
+		Log.info(log, "ENERGY setDisplayOn");
 	}
 
 	// ##############################

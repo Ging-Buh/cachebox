@@ -17,11 +17,11 @@ package org.mapsforge.map.android.graphics;
 
 import org.mapsforge.core.graphics.TileBitmap;
 
+import com.badlogic.gdx.graphics.Texture;
+
 import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 import android.graphics.Bitmap.Config;
-
-import com.badlogic.gdx.graphics.Texture;
 
 /**
  * Extends the original Mapsforge AwtBitmap with the ext_Bitmap interface.

@@ -424,9 +424,9 @@ public class Cache implements Comparable<Cache>, Serializable {
 	 * 
 	 * @return Boolean
 	 */
-	public boolean SpoilerExists() {
+	public boolean hasSpoiler() {
 		if (detail != null) {
-			boolean hasSpoiler = detail.SpoilerExists(this);
+			boolean hasSpoiler = detail.hasSpoiler(this);
 			return hasSpoiler;
 		} else {
 			return false;
@@ -437,9 +437,9 @@ public class Cache implements Comparable<Cache>, Serializable {
 		detail.SpoilerForceReEvaluate(this);
 	}
 
-	public void ReloadSpoilerRessources() {
+	public void loadSpoilerRessources() {
 		if (detail != null) {
-			detail.ReloadSpoilerRessources(this);
+			detail.loadSpoilerRessources(this);
 		}
 	}
 

@@ -47,6 +47,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.HSV_Color;
 import CB_Utils.fileProvider.File;
@@ -377,7 +378,7 @@ public class RouteOverlay {
 
 			return calendar.getTime();
 		} catch (Exception e) {
-			log.error("RouteOverlay", "Exception caught trying to parse date : ", e);
+			Log.err(log, "RouteOverlay", "Exception caught trying to parse date : ", e);
 		}
 		return null;
 	}
@@ -439,7 +440,7 @@ public class RouteOverlay {
 
 		if (aktCalcedZoomLevel != Zoom || mRoutesChanged) {// Zoom or Routes changed => calculate new Sprite Points
 
-			// log.debug("Zoom Changed => Calc Track Points");
+			// Log.debug(log, "Zoom Changed => Calc Track Points");
 
 			mRoutesChanged = false;
 			aktCalcedZoomLevel = Zoom;
@@ -567,10 +568,10 @@ public class RouteOverlay {
 				writer.append("<trkseg>\n");
 				writer.flush();
 			} catch (IOException e) {
-				log.error("SaveTrack", e);
+				Log.err(log, "SaveTrack", e);
 			}
 		} catch (IOException e1) {
-			log.error("SaveTrack", e1);
+			Log.err(log, "SaveTrack", e1);
 		}
 
 		try {
@@ -591,7 +592,7 @@ public class RouteOverlay {
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {
-			log.error("SaveTrack", e);
+			Log.err(log, "SaveTrack", e);
 		}
 		writer = null;
 	}

@@ -1,7 +1,5 @@
 package de.cb.sqlite;
 
-import CB_Utils.fileProvider.File;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,9 +10,10 @@ import java.sql.Statement;
 import java.util.Map.Entry;
 
 import CB_Core.Database;
+import CB_Utils.Log.Log;
 import CB_Utils.Log.LogLevel;
+import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
-import de.cb.sqlite.CoreCursor;
 
 public class DesktopDB extends Database {
 
@@ -30,9 +29,7 @@ public class DesktopDB extends Database {
 	@Override
 	public void Close() {
 		try {
-			if (LogLevel.isLogLevel(LogLevel.DEBUG)) {
-				log.debug("close DB:" + databasePath);
-			}
+			Log.debug(log, "close DB:" + databasePath);
 			myDB.close();
 			myDB = null;
 		} catch (Exception e) {
@@ -48,8 +45,7 @@ public class DesktopDB extends Database {
 				Reset();
 
 			try {
-				if (LogLevel.isLogLevel(LogLevel.DEBUG))
-					log.debug("open data base: " + databasePath);
+				Log.debug(log, "open data base: " + databasePath);
 				myDB = DriverManager.getConnection("jdbc:sqlite:" + databasePath);
 			} catch (Exception exc) {
 				return;
@@ -62,8 +58,7 @@ public class DesktopDB extends Database {
 		// if exists, delete old database file
 		File file = FileFactory.createFile(databasePath);
 		if (file.exists()) {
-			if (LogLevel.isLogLevel(LogLevel.DEBUG))
-				log.debug("RESET DB, delete file: " + databasePath);
+			Log.debug(log, "RESET DB, delete file: " + databasePath);
 			try {
 				file.delete();
 			} catch (IOException e) {
@@ -72,14 +67,13 @@ public class DesktopDB extends Database {
 		}
 
 		try {
-			if (LogLevel.isLogLevel(LogLevel.DEBUG))
-				log.debug("create data base: " + databasePath);
+			Log.debug(log, "create data base: " + databasePath);
 			myDB = DriverManager.getConnection("jdbc:sqlite:" + databasePath);
 			myDB.commit();
 			myDB.close();
 
 		} catch (Exception exc) {
-			log.error("createDB", exc);
+			Log.err(log, "createDB", exc);
 		}
 	}
 
@@ -95,7 +89,7 @@ public class DesktopDB extends Database {
 					sb.append(arg + ", ");
 			} else
 				sb.append("NULL");
-			log.debug(sb.toString());
+			Log.debug(log, sb.toString());
 		}
 
 		ResultSet rs = null;
@@ -153,8 +147,7 @@ public class DesktopDB extends Database {
 		if (myDB == null)
 			return;
 
-		if (LogLevel.isLogLevel(LogLevel.DEBUG))
-			log.debug("execSQL : " + sql);
+		Log.debug(log, "execSQL : " + sql);
 
 		Statement statement = null;
 		try {
@@ -188,7 +181,7 @@ public class DesktopDB extends Database {
 				}
 			}
 
-			log.debug(sb.toString());
+			Log.debug(log, sb.toString());
 		}
 
 		if (myDB == null)
@@ -287,8 +280,7 @@ public class DesktopDB extends Database {
 				st.setObject(j, entry.getValue());
 			}
 
-			if (LogLevel.isLogLevel(LogLevel.DEBUG))
-				log.debug("INSERT: " + sql);
+			Log.debug(log, "INSERT: " + sql);
 			return st.execute() ? 0 : 1;
 
 		} catch (SQLException e) {
@@ -314,7 +306,7 @@ public class DesktopDB extends Database {
 				}
 			}
 
-			log.debug(sb.toString());
+			Log.debug(log, sb.toString());
 		}
 
 		if (myDB == null)
@@ -356,8 +348,7 @@ public class DesktopDB extends Database {
 	@Override
 	public void beginTransaction() {
 		try {
-			if (LogLevel.isLogLevel(LogLevel.DEBUG))
-				log.debug("begin transaction");
+			Log.debug(log, "begin transaction");
 			if (myDB != null)
 				myDB.setAutoCommit(false);
 		} catch (SQLException e) {
@@ -369,8 +360,7 @@ public class DesktopDB extends Database {
 	@Override
 	public void setTransactionSuccessful() {
 		try {
-			if (LogLevel.isLogLevel(LogLevel.DEBUG))
-				log.debug("set Transaction Successful");
+			Log.debug(log, "set Transaction Successful");
 			if (myDB != null)
 				myDB.commit();
 		} catch (SQLException e) {
@@ -381,8 +371,7 @@ public class DesktopDB extends Database {
 	@Override
 	public void endTransaction() {
 		try {
-			if (LogLevel.isLogLevel(LogLevel.DEBUG))
-				log.debug("endTransaction");
+			Log.debug(log, "endTransaction");
 			if (myDB != null)
 				myDB.setAutoCommit(true);
 		} catch (SQLException e) {
@@ -396,10 +385,7 @@ public class DesktopDB extends Database {
 		if (myDB == null)
 			return 0;
 
-		if (LogLevel.isLogLevel(LogLevel.DEBUG)) {
-			log.debug("insertWithConflictReplace @Table:" + tablename + "Parameters: " + val.toString());
-		}
-
+		Log.debug(log, "insertWithConflictReplace @Table:" + tablename + "Parameters: " + val.toString());
 		StringBuilder sql = new StringBuilder();
 
 		sql.append("insert OR REPLACE into ");
@@ -457,9 +443,7 @@ public class DesktopDB extends Database {
 		if (myDB == null)
 			return 0;
 
-		if (LogLevel.isLogLevel(LogLevel.DEBUG)) {
-			log.debug("insertWithConflictIgnore @Table:" + tablename + "Parameters: " + val.toString());
-		}
+		Log.debug(log, "insertWithConflictIgnore @Table:" + tablename + "Parameters: " + val.toString());
 
 		StringBuilder sql = new StringBuilder();
 

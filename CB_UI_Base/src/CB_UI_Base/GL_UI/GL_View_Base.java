@@ -18,7 +18,7 @@ package CB_UI_Base.GL_UI;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -35,6 +35,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.MoveableList;
 
 public abstract class GL_View_Base extends CB_RectF {
@@ -783,7 +784,7 @@ public abstract class GL_View_Base extends CB_RectF {
 
 			}
 		} catch (Exception e) {
-			log.error("click", e);
+			Log.err(log, "click", e);
 		}
 		return handled;
 	}
@@ -879,7 +880,7 @@ public abstract class GL_View_Base extends CB_RectF {
 					// Invisible Views can not be clicked!
 					if (view == null || !view.isVisible())
 						continue;
-					if (!view.getEnabled())
+					if (!view.isEnabled())
 						continue;
 					if (view.contains(x, y)) {
 						// touch innerhalb des Views
@@ -1278,7 +1279,7 @@ public abstract class GL_View_Base extends CB_RectF {
 		enabled = value;
 	}
 
-	public boolean getEnabled() {
+	public boolean isEnabled() {
 		return enabled;
 	}
 

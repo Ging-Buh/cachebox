@@ -16,8 +16,6 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import CB_Utils.fileProvider.File;
-
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.TileLayer;
@@ -27,6 +25,8 @@ import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.reader.header.FileOpenResult;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+
+import CB_Utils.fileProvider.File;
 
 public class TileRendererLayer extends TileLayer<RendererJob> {
 

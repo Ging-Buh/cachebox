@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 import org.slf4j.LoggerFactory;
 
+import CB_Utils.Log.Log;
 import de.cb.sqlite.Database_Core;
 
 public abstract class SettingsList extends ArrayList<SettingBase<?>> {
@@ -139,8 +140,8 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
 	public void ReadFromDB() {
 		// Read from DB
 		try {
-			log.info("Reading global settings: " + getSettingsDB().getDatabasePath());
-			log.info("and local settings: " + getDataDB().getDatabasePath());
+			Log.debug(log, "Reading global settings: " + getSettingsDB().getDatabasePath());
+			Log.debug(log, "and local settings: " + getDataDB().getDatabasePath());
 		} catch (Exception e) {
 			// gibt beim splash - Start: NPE in Translation.readMissingStringsFile
 			// Nachfolgende Starts sollten aber protokolliert werden
@@ -200,19 +201,19 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
 
 			if (isPlatform) {
 				if (isPlattformoverride) {
-					log.debug("Override Platform setting [" + setting.name + "] from DB to: " + debugString);
+					Log.debug(log, "Override Platform setting [" + setting.name + "] from DB to: " + debugString);
 				} else {
-					log.debug("Override PlatformDB setting [" + setting.name + "] from Platform to: " + debugString);
+					Log.debug(log, "Override PlatformDB setting [" + setting.name + "] from Platform to: " + debugString);
 				}
 			} else {
 				if (!setting.value.equals(setting.defaultValue)) {
-					log.info("Change " + setting.getStoreType() + " setting [" + setting.name + "] to: " + debugString);
+					Log.debug(log, "Change " + setting.getStoreType() + " setting [" + setting.name + "] to: " + debugString);
 				} else {
-					log.debug("Default " + setting.getStoreType() + " setting [" + setting.name + "] to: " + debugString);
+					Log.debug(log, "Default " + setting.getStoreType() + " setting [" + setting.name + "] to: " + debugString);
 				}
 			}
 		}
-		log.debug("Settings are loaded");
+		Log.debug(log, "Settings are loaded");
 		isLoaded = true;
 	}
 

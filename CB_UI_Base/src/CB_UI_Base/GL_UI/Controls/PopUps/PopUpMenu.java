@@ -15,7 +15,7 @@
  */
 package CB_UI_Base.GL_UI.Controls.PopUps;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.IRunOnGL;

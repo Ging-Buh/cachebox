@@ -27,7 +27,7 @@ public class WorkAnimation extends RotateAnimation {
 		return mINSTANCE;
 	}
 
-	private WorkAnimation() {
+	public WorkAnimation() {
 		super(new CB_RectF(0, 0, 50, 50), "DownloadAnimation");
 
 		setSprite(Sprites.getSprite(IconName.settings.name()));
@@ -35,9 +35,13 @@ public class WorkAnimation extends RotateAnimation {
 		play(ANIMATION_DURATION);
 	}
 
+	/**
+	 * ljhgjlk
+	 */
 	@Override
 	public void resize(float width, float height) {
 		super.resize(width, height);
+		setOrigin(this.getHalfWidth(), this.getHalfHeight());
 	}
 
 	@Override

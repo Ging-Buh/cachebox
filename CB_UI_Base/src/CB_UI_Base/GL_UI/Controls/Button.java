@@ -213,7 +213,7 @@ public class Button extends CB_View_Base {
 
 		else
 
-			// log.debug("Button " + this.name + " Clicked");
+			// Log.debug(log, "Button " + this.name + " Clicked");
 			return super.click(x, y, pointer, button);
 	}
 

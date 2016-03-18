@@ -1,12 +1,11 @@
 package CB_UI.GL_UI.Activitys;
 
-import CB_Utils.fileProvider.File;
-
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.Math.CB_RectF;
+import CB_Utils.fileProvider.File;
 
 public class SelectDBItem extends ListViewItemBackground {
 

@@ -32,7 +32,7 @@ import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import CB_Utils.fileProvider.FilenameFilter;
 import de.CB_Utils.fileProvider.DesktopFileFactory;
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import CB_UI.Config;
 import CB_UI.GlobalCore;

@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import CB_Core.Database;
 import CB_Core.Api.PocketQuery.PQ;
+import CB_Utils.Log.Log;
 import de.cb.sqlite.CoreCursor;
 import de.cb.sqlite.Database_Core.Parameters;
 
@@ -40,7 +41,7 @@ public class PocketqueryDAO {
 		try {
 			Database.Data.insertWithConflictReplace("PocketQueries", args);
 		} catch (Exception exc) {
-			log.error("Write Pocketquery to DB", pq.Name, exc);
+			Log.err(log, "Write Pocketquery to DB", pq.Name, exc);
 			return -1;
 		}
 

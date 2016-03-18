@@ -16,18 +16,17 @@
  */
 package org.mapsforge.map.rendertheme;
 
-import CB_Utils.fileProvider.File;
-
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import CB_Utils.fileProvider.FileFactory;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.map.model.DisplayModel;
 import org.xml.sax.SAXException;
+
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 
 public final class XmlUtils {
 	public static boolean supportOlderRenderThemes = true;

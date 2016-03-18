@@ -19,7 +19,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
@@ -259,7 +259,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
 		// Position setzen, damit die items neu geladen werden
 		setListPos(mPos, false);
-		// log.debug("SetListPos Relod Items");
+		// Log.debug(log, "SetListPos Relod Items");
 		GL.that.renderOnce();
 
 	}
@@ -405,7 +405,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	 */
 	@Override
 	public void chkSlideBack() {
-		//log.debug("chkSlideBack()");
+		//Log.debug(log, "chkSlideBack()");
 		if (!mIsDraggable) {
 			startAnimationtoTop();
 			return;
@@ -460,7 +460,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
 		float versatz = (i < lastAndFirst.y) ? -getListViewLength() + this.mBaseAdapter.getItemSize(i) : 0;
 
-		log.debug("SetListPos -> ScrollTO Item [" + i + "]");
+		Log.debug(log, "SetListPos -> ScrollTO Item [" + i + "]");
 
 		try {
 			if (i >= 0 && i < mPosDefault.size()) {
@@ -476,7 +476,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
 	public void scrollTo(float Pos) {
 
-		//log.debug("Scroll to()" + Trace.getCallerName() + " from " + mPos + " TO:" + Pos);
+		//Log.debug(log, "Scroll to()" + Trace.getCallerName() + " from " + mPos + " TO:" + Pos);
 
 		mAnimationTarget = Pos;
 		stopTimer();
@@ -497,13 +497,13 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 							return;
 						}
 						setListPos(mAnimationTarget, true);
-						//log.info("ListAnimation ready mPos=" + mPos);
+						//Log.info(log, "ListAnimation ready mPos=" + mPos);
 
 						stopTimer();
 						return;
 					}
 
-					// log.debug("Set Animatet ListPos");
+					// Log.debug(log, "Set Animatet ListPos");
 					setListPos(newPos, true);
 				}
 
@@ -629,7 +629,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
 		}
 
-		// log.debug("getLastVisiblePosition = " + ret);
+		// Log.debug(log, "getLastVisiblePosition = " + ret);
 
 		return ret;
 	}

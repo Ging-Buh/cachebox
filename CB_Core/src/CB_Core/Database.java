@@ -34,6 +34,7 @@ import CB_Core.Types.Category;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.SDBM_Hash;
 import de.cb.sqlite.CoreCursor;
 import de.cb.sqlite.Database_Core;
@@ -190,7 +191,7 @@ public abstract class Database extends Database_Core {
 							try {
 								Database.Data.update("GpxFilenames", args, "Id=" + entry.getKey(), null);
 							} catch (Exception exc) {
-								log.error("Database", "Update_CategoryId", exc);
+								Log.err(log, "Database", "Update_CategoryId", exc);
 							}
 						}
 					}
@@ -278,7 +279,7 @@ public abstract class Database extends Database_Core {
 
 				setTransactionSuccessful();
 			} catch (Exception exc) {
-				log.error("AlterDatabase", "", exc);
+				Log.err(log, "AlterDatabase", "", exc);
 			} finally {
 				endTransaction();
 			}
@@ -328,7 +329,7 @@ public abstract class Database extends Database_Core {
 				}
 				setTransactionSuccessful();
 			} catch (Exception exc) {
-				log.error("AlterDatabase", "", exc);
+				Log.err(log, "AlterDatabase", "", exc);
 			} finally {
 				endTransaction();
 			}
@@ -347,7 +348,7 @@ public abstract class Database extends Database_Core {
 				}
 				setTransactionSuccessful();
 			} catch (Exception exc) {
-				log.error("AlterDatabase", "", exc);
+				Log.err(log, "AlterDatabase", "", exc);
 			} finally {
 				endTransaction();
 			}
@@ -393,7 +394,7 @@ public abstract class Database extends Database_Core {
 		try {
 			Data.delete("Waypoint", "GcCode='" + WP.getGcCode() + "'", null);
 		} catch (Exception exc) {
-			Database.Data.log.error("Waypoint.DeleteFromDataBase()", "", exc);
+			Log.err(Database.Data.log, "Waypoint.DeleteFromDataBase()", "", exc);
 		}
 	}
 
@@ -732,7 +733,7 @@ public abstract class Database extends Database_Core {
 				}
 				setTransactionSuccessful();
 			} catch (Exception ex) {
-				log.error("Delete Old Logs", "", ex);
+				Log.err(log, "Delete Old Logs", "", ex);
 			} finally {
 				endTransaction();
 			}

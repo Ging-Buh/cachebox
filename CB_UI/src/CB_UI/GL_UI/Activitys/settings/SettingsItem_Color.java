@@ -1,11 +1,11 @@
 package CB_UI.GL_UI.Activitys.settings;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Settings.SettingColor;
-
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class SettingsItem_Color extends SettingsItemBase {
 	private Sprite colorRec;

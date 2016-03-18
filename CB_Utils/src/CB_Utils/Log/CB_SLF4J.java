@@ -16,7 +16,6 @@
 package CB_Utils.Log;
 
 import java.io.BufferedReader;
-import CB_Utils.fileProvider.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,10 +24,11 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import CB_Utils.fileProvider.FileFactory;
 import org.slf4j.LoggerFactory;
 
 import CB_Utils.Plattform;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -215,7 +215,7 @@ public class CB_SLF4J {
 		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 		root.setLevel(Level.ALL);
 
-		log.info("logger initial");
+		Log.trace(log, "logger initial");
 	}
 
 	private void initialDefaultLogBack(String logfile) {

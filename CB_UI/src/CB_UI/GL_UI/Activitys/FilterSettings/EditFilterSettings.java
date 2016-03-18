@@ -47,6 +47,7 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.Log.Log;
 
 public class EditFilterSettings extends ActivityBase {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(EditFilterSettings.class);
@@ -376,7 +377,7 @@ public class EditFilterSettings extends ActivityBase {
 				try {
 					synchronized (Database.Data.Query) {
 						String sqlWhere = props.getSqlWhere(Config.GcLogin.getValue());
-						log.info("Main.ApplyFilter: " + sqlWhere);
+						Log.info(log, "Main.ApplyFilter: " + sqlWhere);
 						Database.Data.Query.clear();
 						CacheListDAO cacheListDAO = new CacheListDAO();
 						cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());

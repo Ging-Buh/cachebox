@@ -38,7 +38,7 @@ import CB_UI_Base.Energy;
 import CB_UI_Base.Math.CB_Rect;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
-import CB_Utils.Log.LogLevel;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.UnitFormatter;
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
@@ -247,8 +247,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		final Drawable Slide = Global.BtnIcons[0];
 
 		mBtnRec.set(-10, yPos - UI_Size_Base.that.getMargin(), width + 10, (int) (yPos + UI_Size_Base.that.getMargin() + 10 * 3.3));
-		if (LogLevel.isLogLevel(LogLevel.TRACE))
-			log.trace("AndroidSlider bound: " + mBtnRec.toShortString());
+		Log.trace(log, "AndroidSlider bound: " + mBtnRec.toShortString());
 
 		Slide.setBounds(mBtnRec);
 		Slide.draw(canvas);

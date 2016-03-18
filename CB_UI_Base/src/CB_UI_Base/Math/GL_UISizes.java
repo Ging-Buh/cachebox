@@ -15,7 +15,7 @@
  */
 package CB_UI_Base.Math;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector2;
@@ -43,20 +43,20 @@ public class GL_UISizes implements SizeChangedEvent {
 	 */
 	public static void initial(float width, float height) {
 
-		log.debug("Initial UISizes => " + width + "/" + height);
-		log.debug("DPI = " + DPI);
+		Log.debug(log, "Initial UISizes => " + width + "/" + height);
+		Log.debug(log, "DPI = " + DPI);
 
 		if (DPI != CB_UI_Base_Settings.MapViewDPIFaktor.getValue() || FontFaktor != CB_UI_Base_Settings.MapViewFontFaktor.getValue()) {
 
 			DPI = CB_UI_Base_Settings.MapViewDPIFaktor.getValue();
 
-			log.debug("DPI != MapViewDPIFaktor " + DPI);
+			Log.debug(log, "DPI != MapViewDPIFaktor " + DPI);
 
 			FontFaktor = (float) (0.666666666667 * DPI * CB_UI_Base_Settings.MapViewFontFaktor.getValue());
 			isInitial = false; // Grössen müssen neu berechnet werden
 		}
 
-		log.debug("Initial UISizes => isInitial" + isInitial);
+		Log.debug(log, "Initial UISizes => isInitial" + isInitial);
 
 		if (SurfaceSize == null) {
 			SurfaceSize = new CB_RectF(0, 0, width, height);
@@ -234,7 +234,7 @@ public class GL_UISizes implements SizeChangedEvent {
 	 * Berechnet die Positionen der UI-Elemente
 	 */
 	private static void calcPos() {
-		log.debug("GL_UISizes.calcPos()");
+		Log.debug(log, "GL_UISizes.calcPos()");
 
 		float w = Global.isTab ? UI_Right.getWidth() : UI_Left.getWidth();
 		float h = Global.isTab ? UI_Right.getHeight() : UI_Left.getHeight();
@@ -279,7 +279,7 @@ public class GL_UISizes implements SizeChangedEvent {
 	 * Berechnet die Größen der UI-Elemente
 	 */
 	private static void calcSizes() {
-		log.debug("GL_UISizes.calcSizes()");
+		Log.debug(log, "GL_UISizes.calcSizes()");
 		// größe der Frames berechnen
 		int frameLeftwidth = UI_Size_Base.that.RefWidth;
 
@@ -326,15 +326,15 @@ public class GL_UISizes implements SizeChangedEvent {
 	static float frameHeight = -1;
 
 	public static void writeDebug(String name, CB_RectF rec) {
-		log.debug(name + "   ------ x/y/W/H =  " + rec.getX() + "/" + rec.getY() + "/" + rec.getWidth() + "/" + rec.getHeight());
+		Log.debug(log, name + "   ------ x/y/W/H =  " + rec.getX() + "/" + rec.getY() + "/" + rec.getWidth() + "/" + rec.getHeight());
 	}
 
 	public static void writeDebug(String name, float size) {
-		log.debug(name + "   ------ size =  " + size);
+		Log.debug(log, name + "   ------ size =  " + size);
 	}
 
 	public static void writeDebug(String name, SizeF sizeF) {
-		log.debug(name + "   ------ W/H =  " + sizeF.width + "/" + sizeF.height);
+		Log.debug(log, name + "   ------ W/H =  " + sizeF.width + "/" + sizeF.height);
 	}
 
 	public static void writeDebug(String name, SizeF[] SizeArray) {
@@ -354,7 +354,7 @@ public class GL_UISizes implements SizeChangedEvent {
 
 	@Override
 	public void sizeChanged() {
-		log.debug("GL_UISizes.sizeChanged()");
+		Log.debug(log, "GL_UISizes.sizeChanged()");
 		calcPos();
 
 	}

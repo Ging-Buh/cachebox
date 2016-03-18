@@ -34,6 +34,7 @@ import CB_UI_Base.GL_UI.Controls.Dialogs.Toast;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.MathUtils.CalculationType;
+import CB_Utils.Log.Log;
 
 /**
  * Empfängt alle Positions Änderungen und sortiert Liste oder spielt Sounds ab.
@@ -58,7 +59,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 		try {
 			SoundCache.loadSounds();
 		} catch (Exception e) {
-			log.error("GlobalLocationReceiver", "Load sound", e);
+			Log.err(log, "GlobalLocationReceiver", "Load sound", e);
 			e.printStackTrace();
 		}
 	}
@@ -99,7 +100,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 							}
 						}
 					} catch (Exception e) {
-						log.error("GlobalLocationReceiver", "Global.PlaySound(Approach.ogg)", e);
+						Log.err(log, "GlobalLocationReceiver", "Global.PlaySound(Approach.ogg)", e);
 						e.printStackTrace();
 					}
 
@@ -121,7 +122,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 							initialResortAfterFirstFixCompleted = true;
 						}
 					} catch (Exception e) {
-						log.error("GlobalLocationReceiver", "if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)", e);
+						Log.err(log, "GlobalLocationReceiver", "if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)", e);
 						e.printStackTrace();
 					}
 
@@ -182,7 +183,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 							}
 						}
 					} catch (Exception e) {
-						log.error("GlobalLocationReceiver", "Resort", e);
+						Log.err(log, "GlobalLocationReceiver", "Resort", e);
 						e.printStackTrace();
 					}
 
@@ -200,7 +201,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 		return "GlobalLocationReceiver";
 	}
 
-	public static void resetApprouch() {
+	public static void resetApproach() {
 
 		// set approach sound if the distance low
 
@@ -237,7 +238,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 
 			if (!initialFixSoundCompleted && Locator.isGPSprovided() && GPS.getFixedSats() > 3) {
 
-				log.debug("Play Fix");
+				Log.debug(log, "Play Fix");
 				if (PlaySounds)
 					SoundCache.play(Sounds.GPS_fix);
 				initialFixSoundCompleted = true;
@@ -245,7 +246,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 
 			}
 		} catch (Exception e) {
-			log.error("GlobalLocationReceiver", "Global.PlaySound(GPS_Fix.ogg)", e);
+			Log.err(log, "GlobalLocationReceiver", "Global.PlaySound(GPS_Fix.ogg)", e);
 			e.printStackTrace();
 		}
 

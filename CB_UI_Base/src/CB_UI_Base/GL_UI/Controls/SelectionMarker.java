@@ -1,6 +1,6 @@
 package CB_UI_Base.GL_UI.Controls;
 
-import org.slf4j.LoggerFactory;
+import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -88,7 +88,7 @@ public class SelectionMarker extends CB_View_Base {
 	public boolean onTouchDown(int x, int y, int pointer, int button) {
 		if (pointer == 0) {
 			touchDownPos = new Point(x, y);
-			log.info("touchdown at " + x + "/" + y);
+			Log.info(log, "touchdown at " + x + "/" + y);
 		}
 		return true;
 	}
