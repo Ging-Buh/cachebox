@@ -49,7 +49,9 @@ public interface CB_UI_Settings {
 	public static final SettingModus NEVER = SettingModus.Never;
 
 	public static final String FOUND = "<br>###finds##, ##time##, Found it with Cachebox!";
-	public static final String DNF = "<br>##time##. Logged it with Cachebox!";
+	public static final String ATTENDED = "<br>###finds##, ##time##, Have been there!";
+	public static final String WEBCAM = "<br>###finds##, ##time##, Photo taken!";
+	public static final String DNF = "<br>##time##. Could not find the cache!";
 	public static final String LOG = "Logged it with Cachebox!";
 	public static final String DISCOVERD = "<br> ##time##, Discovered it with Cachebox!";
 	public static final String VISITED = "<br> ##time##, Visited it with Cachebox!";
@@ -151,6 +153,8 @@ public interface CB_UI_Settings {
 	public static final SettingString NavigationProvider = (SettingString) SettingsList
 			.addSetting(new SettingString("NavigationProvider", SettingCategory.Internal, DEVELOPER, "http://openls.geog.uni-heidelberg.de/testing2015/route?", SettingStoreType.Global, SettingUsage.ACB));
 	public static final SettingString FoundTemplate = (SettingString) SettingsList.addSetting(new SettingLongString("FoundTemplate", SettingCategory.Templates, NORMAL, FOUND, SettingStoreType.Global, SettingUsage.ACB));
+	public static final SettingString AttendedTemplate = (SettingString) SettingsList.addSetting(new SettingLongString("AttendedTemplate", SettingCategory.Templates, NORMAL, ATTENDED, SettingStoreType.Global, SettingUsage.ACB));
+	public static final SettingString WebcamTemplate = (SettingString) SettingsList.addSetting(new SettingLongString("WebCamTemplate", SettingCategory.Templates, NORMAL, WEBCAM, SettingStoreType.Global, SettingUsage.ACB));
 	public static final SettingString DNFTemplate = (SettingString) SettingsList.addSetting(new SettingLongString("DNFTemplate", SettingCategory.Templates, NORMAL, DNF, SettingStoreType.Global, SettingUsage.ACB));
 	public static final SettingString NeedsMaintenanceTemplate = (SettingString) SettingsList.addSetting(new SettingLongString("NeedsMaintenanceTemplate", SettingCategory.Templates, NORMAL, LOG, SettingStoreType.Global, SettingUsage.ACB));
 	public static final SettingString AddNoteTemplate = (SettingString) SettingsList.addSetting(new SettingLongString("AddNoteTemplate", SettingCategory.Templates, NORMAL, LOG, SettingStoreType.Global, SettingUsage.ACB));
