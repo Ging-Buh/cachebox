@@ -274,5 +274,6 @@ public class CB_SLF4J {
 		if (that != null && (FileFactory.createFile(that.logBackXmlFile).exists() || LogLevel.isLogLevel(LogLevel.ERROR))) {
 			that.Initial();
 		}
+		Log.info(log, "Set LogLevel to:" + level.toString());
 	}
 }

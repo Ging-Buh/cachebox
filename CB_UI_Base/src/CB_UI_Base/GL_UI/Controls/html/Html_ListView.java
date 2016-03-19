@@ -37,78 +37,78 @@ public class Html_ListView extends Box implements ListLayout {
 
 	public Html_ListView(float innerWidth, HTML_Segment_List seg) {
 
-	this.bulletWidth = seg.getFondSize() * 1.5f;
+		this.bulletWidth = seg.getFondSize() * 1.5f;
 
-	this.seg = seg;
-	this.tabCount = seg.getTabLevel();
-	this.segmentList = seg.getSegmentList();
+		this.seg = seg;
+		this.tabCount = seg.getTabLevel();
+		this.segmentList = seg.getSegmentList();
 
-	this.tapMargin = HtmlView.margin * 0.11f;
+		this.tapMargin = HtmlView.margin * 0.11f;
 
-	float calcWidth = innerWidth - ((tapMargin * tabCount) + this.bulletWidth);
+		float calcWidth = innerWidth - ((tapMargin * tabCount) + this.bulletWidth);
 
-	this.setWidth(calcWidth);
+		this.setWidth(calcWidth);
 
-	for (List<Html_Segment> listItems : seg.items) {
-		HtmlView.addViewsToBox(listItems, segmentViewList, calcWidth, this);
-	}
+		for (List<Html_Segment> listItems : seg.items) {
+			HtmlView.addViewsToBox(listItems, segmentViewList, calcWidth, this);
+		}
 
-	layout(segmentViewList);
+		layout(segmentViewList);
 
 	}
 
 	@Override
 	public void layout(CB_List<CB_View_Base> segmentViewList) {
 
-	this.removeChilds();
+		this.removeChilds();
 
-	float contentHeight = 0;
-	for (int i = 0, n = segmentViewList.size(); i < n; i++) {
-		contentHeight += segmentViewList.get(i).getHeight() + (HtmlView.margin * 2);
-	}
-
-	this.setHeight(contentHeight);
-	this.setZeroPos();
-	this.setX(HtmlView.margin + this.tapMargin);
-
-	this.setMargins(0, HtmlView.margin * 2);
-	this.initRow();
-
-	int s = this.seg.items.size();
-	int idx = 0;
-	int actBlockIdx = 0;
-	int listIndex = 1;
-	for (int i = 0, n = segmentViewList.size(); i < n; i++) {
-
-		int actBlocksize = this.seg.items.get(idx).size() - 1;
-
-		int listidx = 0;
-		int bullNmb = seg.getBulletNumber();
-		if (actBlockIdx == 0) {
-		listidx = listIndex++;
-		} else {
-		bullNmb = 0; // no bull
-		listidx = 0;
+		float contentHeight = 0;
+		for (int i = 0, n = segmentViewList.size(); i < n; i++) {
+			contentHeight += segmentViewList.get(i).getHeight() + (HtmlView.margin * 2);
 		}
 
-		if (actBlockIdx++ >= actBlocksize) {
-		actBlockIdx = 0;
-		idx++;
-		}
+		this.setHeight(contentHeight);
+		this.setZeroPos();
+		this.setX(HtmlView.margin + this.tapMargin);
 
-		Html_ListView_Bullet bulletView = new Html_ListView_Bullet(listidx, this.bulletWidth, segmentViewList.get(i).getHeight(), bullNmb);
-		this.addNext(bulletView, -1);
-		this.addLast(segmentViewList.get(i));
-	}
+		this.setMargins(0, HtmlView.margin * 2);
+		this.initRow();
+
+		int s = this.seg.items.size();
+		int idx = 0;
+		int actBlockIdx = 0;
+		int listIndex = 1;
+		for (int i = 0, n = segmentViewList.size(); i < n; i++) {
+
+			int actBlocksize = this.seg.items.get(idx).size() - 1;
+
+			int listidx = 0;
+			int bullNmb = seg.getBulletNumber();
+			if (actBlockIdx == 0) {
+				listidx = listIndex++;
+			} else {
+				bullNmb = 0; // no bull
+				listidx = 0;
+			}
+
+			if (actBlockIdx++ >= actBlocksize) {
+				actBlockIdx = 0;
+				idx++;
+			}
+
+			Html_ListView_Bullet bulletView = new Html_ListView_Bullet(listidx, this.bulletWidth, segmentViewList.get(i).getHeight(), bullNmb);
+			this.addNext(bulletView, -1);
+			this.addLast(segmentViewList.get(i));
+		}
 	}
 
 	public float getContentWidth() {
-	return this.getWidth();
+		return this.getWidth();
 	}
 
 	@Override
 	public void resize(float width, float height) {
-	System.out.println();
+		System.out.println("resize " + width + "/" + height);
 	}
 
 }
