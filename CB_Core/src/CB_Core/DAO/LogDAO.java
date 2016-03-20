@@ -43,7 +43,7 @@ public class LogDAO {
 		try {
 			Database.Data.insertWithConflictReplace("Logs", args);
 		} catch (Exception exc) {
-			Log.err(log, "Write Log", "", exc);
+			Log.err(log, "Write Log", exc);
 		}
 
 	}
