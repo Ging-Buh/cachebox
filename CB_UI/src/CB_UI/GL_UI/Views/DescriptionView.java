@@ -155,7 +155,7 @@ public class DescriptionView extends CB_View_Base {
 		if (!Global.isTab)
 			this.addChild(cacheInfo);
 		resetUi();
-		if (cache.isLive() || cache.getApiStatus() == 1) {
+		if (cache.isLive() || cache.getApiStatus() == Cache.ISLITE) {
 			showDownloadButton();
 		}
 

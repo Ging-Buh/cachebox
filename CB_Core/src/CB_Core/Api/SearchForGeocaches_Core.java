@@ -54,12 +54,13 @@ import CB_Core.Types.Waypoint;
 import CB_Locator.CoordinateGPS;
 import CB_Utils.Interfaces.ICancel;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
 import CB_Utils.http.HttpUtils;
 import de.cb.sqlite.CoreCursor;
 
 public class SearchForGeocaches_Core {
-	final static org.slf4j.Logger logger = LoggerFactory.getLogger(PocketQuery.class);
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(PocketQuery.class);
 
 	private Boolean LoadBooleanValueFromDB(String sql) // Found-Status aus Datenbank auslesen
 	{
@@ -127,7 +128,7 @@ public class SearchForGeocaches_Core {
 				requestcc.put("CacheCodes", requesta);
 				request.put("CacheCode", requestcc);
 			} catch (JSONException e) {
-				logger.error("SearchForGeocaches:JSONException", e);
+				Log.err(log, "SearchForGeocaches:JSONException", e);
 			}
 			// ein einzelner Cache wird voll geladen
 			apiStatus = 2;
@@ -226,7 +227,7 @@ public class SearchForGeocaches_Core {
 		try {
 			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 		} catch (UnsupportedEncodingException e3) {
-			logger.error("SearchForGeocaches:UnsupportedEncodingException", e3);
+			Log.err(log, "SearchForGeocaches:UnsupportedEncodingException", e3);
 		}
 		httppost.setHeader("Accept", "application/json");
 		httppost.setHeader("Content-type", "application/json");
@@ -235,15 +236,15 @@ public class SearchForGeocaches_Core {
 		try {
 			result = HttpUtils.Execute(httppost, icancel);
 		} catch (ConnectTimeoutException e) {
-			logger.error("SearchForGeocaches:ConnectTimeoutException", e);
+			Log.err(log, "SearchForGeocaches:ConnectTimeoutException", e);
 			showToastConnectionError();
 			return "";
 		} catch (ClientProtocolException e) {
-			logger.error("SearchForGeocaches:ClientProtocolException", e);
+			Log.err(log, "SearchForGeocaches:ClientProtocolException", e);
 			showToastConnectionError();
 			return "";
 		} catch (IOException e) {
-			logger.error("SearchForGeocaches:IOException", e);
+			Log.err(log, "SearchForGeocaches:IOException", e);
 			showToastConnectionError();
 			return "";
 		}
@@ -310,7 +311,7 @@ public class SearchForGeocaches_Core {
 				try {
 					httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 				} catch (UnsupportedEncodingException e3) {
-					logger.error("SearchForGeocaches:UnsupportedEncodingException", e3);
+					Log.err(log, "SearchForGeocaches:UnsupportedEncodingException", e3);
 				}
 				httppost.setHeader("Accept", "application/json");
 				httppost.setHeader("Content-type", "application/json");
@@ -319,22 +320,22 @@ public class SearchForGeocaches_Core {
 				try {
 					result = HttpUtils.Execute(httppost, icancel);
 					if (result.contains("The service is unavailable")) {
-						logger.error("SearchForGeocaches:The service is unavailable: " + result);
+						Log.err(log, "SearchForGeocaches:The service is unavailable: " + result);
 						return "The service is unavailable";
 					}
 				} catch (ConnectTimeoutException e) {
-					logger.error("SearchForGeocaches:ConnectTimeoutException", e);
+					Log.err(log, "SearchForGeocaches:ConnectTimeoutException", e);
 					showToastConnectionError();
 
 					return "";
 
 				} catch (ClientProtocolException e) {
-					logger.error("SearchForGeocaches:ClientProtocolException", e);
+					Log.err(log, "SearchForGeocaches:ClientProtocolException", e);
 					showToastConnectionError();
 
 					return "";
 				} catch (IOException e) {
-					logger.error("SearchForGeocaches:IOException", e);
+					Log.err(log, "SearchForGeocaches:IOException", e);
 					showToastConnectionError();
 
 					return "";
@@ -396,7 +397,7 @@ public class SearchForGeocaches_Core {
 						String date = (String) dateCreated.subSequence(date1 + 6, date2);
 						cache.setDateHidden(new Date(Long.valueOf(date)));
 					} catch (Exception exc) {
-						logger.error("SearchForGeocaches_ParseDate", exc);
+						Log.err(log, "SearchForGeocaches_ParseDate", exc);
 					}
 					cache.setDifficulty((float) jCache.getDouble("Difficulty"));
 
@@ -439,7 +440,7 @@ public class SearchForGeocaches_Core {
 						try {
 							cache.setLongDescription(jCache.getString("LongDescription"));
 						} catch (Exception e1) {
-							logger.error("SearchForGeocaches_LongDescription:" + cache.getGcCode(), e1);
+							Log.err(log, "SearchForGeocaches_LongDescription:" + cache.getGcCode(), e1);
 							cache.setLongDescription("");
 						}
 						if (!jCache.getBoolean("LongDescriptionIsHtml")) {
@@ -464,7 +465,7 @@ public class SearchForGeocaches_Core {
 						try {
 							cache.setShortDescription(jCache.getString("ShortDescription"));
 						} catch (Exception e) {
-							logger.error("SearchForGeocaches_shortDescription:" + cache.getGcCode(), e);
+							Log.err(log, "SearchForGeocaches_shortDescription:" + cache.getGcCode(), e);
 							cache.setShortDescription("");
 						}
 						if (!jCache.getBoolean("ShortDescriptionIsHtml")) {
@@ -513,23 +514,23 @@ public class SearchForGeocaches_Core {
 							JSONObject jLogs = (JSONObject) logs.get(j);
 							JSONObject jFinder = (JSONObject) jLogs.get("Finder");
 							JSONObject jLogType = (JSONObject) jLogs.get("LogType");
-							LogEntry log = new LogEntry();
-							log.CacheId = cache.Id;
-							log.Comment = jLogs.getString("LogText");
-							log.Finder = jFinder.getString("UserName");
-							log.Id = jLogs.getInt("ID");
-							log.Timestamp = new Date();
+							LogEntry logEntry = new LogEntry();
+							logEntry.CacheId = cache.Id;
+							logEntry.Comment = jLogs.getString("LogText");
+							logEntry.Finder = jFinder.getString("UserName");
+							logEntry.Id = jLogs.getInt("ID");
+							logEntry.Timestamp = new Date();
 							try {
 								String dateCreated = jLogs.getString("VisitDate");
 								int date1 = dateCreated.indexOf("/Date(");
 								int date2 = dateCreated.indexOf("-");
 								String date = (String) dateCreated.subSequence(date1 + 6, date2);
-								log.Timestamp = new Date(Long.valueOf(date));
+								logEntry.Timestamp = new Date(Long.valueOf(date));
 							} catch (Exception exc) {
-								logger.error("API", "SearchForGeocaches_ParseLogDate", exc);
+								Log.err(log, "API", "SearchForGeocaches_ParseLogDate", exc);
 							}
-							log.Type = LogTypes.GC2CB_LogType(jLogType.getInt("WptLogTypeId"));
-							logList.add(log);
+							logEntry.Type = LogTypes.GC2CB_LogType(jLogType.getInt("WptLogTypeId"));
+							logList.add(logEntry);
 						}
 
 						// insert Images
@@ -587,7 +588,7 @@ public class SearchForGeocaches_Core {
 							}
 
 						}
-						logger.debug("Merged imageList has " + imageList.size() + " Entrys (" + imageListSizeOrg + "/" + imageListSizeGC + "/" + imageListSizeGrabbed + ")");
+						log.debug("Merged imageList has " + imageList.size() + " Entrys (" + imageListSizeOrg + "/" + imageListSizeGC + "/" + imageListSizeGrabbed + ")");
 
 						// insert Waypoints
 						JSONArray waypoints = jCache.getJSONArray("AdditionalWaypoints");
@@ -651,9 +652,9 @@ public class SearchForGeocaches_Core {
 			}
 
 		} catch (JSONException e) {
-			logger.error("SearchForGeocaches:ParserException: " + result, e);
+			Log.err(log, "SearchForGeocaches:ParserException: " + result, e);
 		} catch (ClassCastException e) {
-			logger.error("SearchForGeocaches:ParserException: " + result, e);
+			Log.err(log, "SearchForGeocaches:ParserException: " + result, e);
 		}
 		return result;
 	}
@@ -719,12 +720,12 @@ public class SearchForGeocaches_Core {
 					newCache.setLongDescription("");
 
 					LogDAO logDAO = new LogDAO();
-					for (LogEntry log : apiLogs) {
-						if (log.CacheId != newCache.Id)
+					for (LogEntry apiLog : apiLogs) {
+						if (apiLog.CacheId != newCache.Id)
 							continue;
 						// Write Log to database
 
-						logDAO.WriteToDatabase(log);
+						logDAO.WriteToDatabase(apiLog);
 					}
 
 					WaypointDAO waypointDAO = new WaypointDAO();
@@ -763,7 +764,7 @@ public class SearchForGeocaches_Core {
 				}
 			}
 		} catch (Exception ex) {
-			logger.error("Load CacheInfo by API", ex);
+			Log.err(log, "Load CacheInfo by API", ex);
 			return null;
 		}
 

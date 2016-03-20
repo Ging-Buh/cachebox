@@ -378,6 +378,10 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 							try {
 								CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, infoBubble.getCache().getGPXFilename_ID(), this);
+								Cache c = apiCaches.get(0);
+								if (c.getGcCode() == GcCode) {
+									c.setApiStatus(Cache.NOTLITE);
+								}
 								GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
 							} catch (InterruptedException e) {
 								e.printStackTrace();
