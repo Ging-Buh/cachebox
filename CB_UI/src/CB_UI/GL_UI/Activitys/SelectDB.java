@@ -207,15 +207,20 @@ public class SelectDB extends ActivityBase {
 	}
 
 	TimerTask timerTask = new TimerTask() {
-
 		@Override
 		public void run() {
 			if (autoStartCounter == 0) {
 				stopTimer();
 				selectDB();
 			} else {
-				autoStartCounter--;
-				bAutostart.setText(autoStartCounter + "    " + Translation.Get("confirm"));
+				try {
+					autoStartCounter--;
+					bAutostart.setText(autoStartCounter + "    " + Translation.Get("confirm"));
+				} catch (Exception e) {
+					autoStartCounter = 0;
+					stopTimer();
+					selectDB();
+				}
 			}
 		}
 	};
@@ -394,11 +399,12 @@ public class SelectDB extends ActivityBase {
 					Config.SpoilerFolderLocal.setValue(folder + "Spoilers");
 					Config.TileCacheFolderLocal.setValue(folder + "Cache");
 					Config.AcceptChanges();
-					Log.debug(log, NewDB_Name + " has own Repository:\n" + //
-							Config.DescriptionImageFolderLocal.getValue() + ", \n" + //
-							Config.MapPackFolderLocal.getValue() + ", \n" + //
-							Config.SpoilerFolderLocal.getValue() + ", \n" + //
-							Config.TileCacheFolderLocal.getValue()//
+					Log.debug(log,
+							NewDB_Name + " has own Repository:\n" + //
+									Config.DescriptionImageFolderLocal.getValue() + ", \n" + //
+									Config.MapPackFolderLocal.getValue() + ", \n" + //
+									Config.SpoilerFolderLocal.getValue() + ", \n" + //
+									Config.TileCacheFolderLocal.getValue()//
 					);
 
 					// Create Folder?
@@ -407,11 +413,12 @@ public class SelectDB extends ActivityBase {
 					creationOK = creationOK && FileIO.createDirectory(Config.SpoilerFolderLocal.getValue());
 					creationOK = creationOK && FileIO.createDirectory(Config.TileCacheFolderLocal.getValue());
 					if (!creationOK)
-						Log.debug(log, "Problem with creation of one of the Directories:" + //
-								Config.DescriptionImageFolderLocal.getValue() + ", " + //
-								Config.MapPackFolderLocal.getValue() + ", " + //
-								Config.SpoilerFolderLocal.getValue() + ", " + //
-								Config.TileCacheFolderLocal.getValue()//
+						Log.debug(log,
+								"Problem with creation of one of the Directories:" + //
+										Config.DescriptionImageFolderLocal.getValue() + ", " + //
+										Config.MapPackFolderLocal.getValue() + ", " + //
+										Config.SpoilerFolderLocal.getValue() + ", " + //
+										Config.TileCacheFolderLocal.getValue()//
 						);
 				}
 
