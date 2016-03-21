@@ -129,6 +129,11 @@ public class SpoilerView extends CB_View_Base {
 					galleryOverwiew.setSelection(0);
 					galleryOverwiew.scrollItemToCenter(0);
 				}
+			} else {
+				galleryItems.clear();
+				overviewItems.clear();
+				gallery.reloadItems();
+				galleryOverwiew.reloadItems();
 			}
 		}
 		Log.info(log, "End onShow");
