@@ -148,8 +148,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
-import android.media.MediaScannerConnection;
-import android.media.MediaScannerConnection.MediaScannerConnectionClient;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -1190,7 +1188,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public void onDestroy() {
 
 		try {
-			new SingleMediaScanner(null, FileFactory.createFile(Config.FieldNotesGarminPath.getValue()));
+			java.io.File f = new java.io.File(Config.FieldNotesGarminPath.getValue());
+			Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+			intent.setData(Uri.fromFile(f));
+			sendBroadcast(intent);
 			Log.info(log, "Main=> MediaScanner FieldNotes");
 		} catch (Exception e) {
 			Log.err(log, "Main=> MediaScanner FieldNotes: " + e.getMessage());
@@ -2996,28 +2997,5 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	}
 
 	private boolean losseChek = false;
-
-}
-
-class SingleMediaScanner implements MediaScannerConnectionClient {
-
-	private final MediaScannerConnection mMs;
-	private final File mFile;
-
-	public SingleMediaScanner(Context context, File f) {
-		mFile = f;
-		mMs = new MediaScannerConnection(context, this);
-		mMs.connect();
-	}
-
-	@Override
-	public void onMediaScannerConnected() {
-		mMs.scanFile(mFile.getAbsolutePath(), null);
-	}
-
-	@Override
-	public void onScanCompleted(String path, Uri uri) {
-		mMs.disconnect();
-	}
 
 }
