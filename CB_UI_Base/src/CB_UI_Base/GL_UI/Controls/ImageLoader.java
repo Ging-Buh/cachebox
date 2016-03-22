@@ -461,7 +461,10 @@ public class ImageLoader {
 	th.start();
 	}
 
+	private String originalPath = null;
+
 	private void createThumb() {
+	originalPath = mPath;
 	mPath = FileFactory.createThump(mPath, (int) resizeWidth, ThumbPräfix);
 	}
 
@@ -534,7 +537,6 @@ public class ImageLoader {
 			try {
 			assetManager.unload(ImgName);
 			} catch (Exception e) {
-			e.printStackTrace();
 			}
 			mImageTex.dispose();
 		}
@@ -579,4 +581,11 @@ public class ImageLoader {
 	public String getImagePath() {
 	return mPath;
 	}
+
+	public String getOriginalImagePath() {
+	if (originalPath == null)
+		return mPath;
+	return originalPath;
+	}
+
 }

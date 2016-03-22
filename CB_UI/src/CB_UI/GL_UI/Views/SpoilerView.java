@@ -261,7 +261,14 @@ public class SpoilerView extends CB_View_Base {
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 			Image selectionImage = ((GalleryItem) v).getImage();
-			ImageActivity ac = new ImageActivity(selectionImage);
+			
+			
+			String path=selectionImage.getImageLoader().getOriginalImagePath();
+			
+			Image img =new Image(SpoilerView.this, "Image for Activity", true);
+			img.setImage(path);
+			
+			ImageActivity ac = new ImageActivity(img);
 			ac.show();
 			return true;
 		}
