@@ -58,6 +58,7 @@ public class ImageLoader {
 
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(ImageLoader.class);
 
+	private final boolean thumbnail;
 	boolean ImageLoadError = false;
 	private int State = 0;
 	private Thread loadingThread;
@@ -81,6 +82,14 @@ public class ImageLoader {
 	private float spriteHeight;
 	boolean reziseHeight;
 
+	public ImageLoader() {
+	thumbnail = false;
+	}
+
+	public ImageLoader(boolean thumb) {
+	thumbnail = thumb;
+	}
+
 	public interface resize {
 	public void sizechanged(float width, float height);
 	}
@@ -91,6 +100,13 @@ public class ImageLoader {
 	public void setResizeListener(resize listener, float width) {
 	resizeListener = listener;
 	resizeWidth = width;
+	}
+
+	private String ThumbPräfix = "";
+
+	public void setThumbWidth(float width, String präfix) {
+	resizeWidth = width;
+	ThumbPräfix = präfix;
 	}
 
 	public resize getResizeListener() {
@@ -419,6 +435,10 @@ public class ImageLoader {
 
 		@Override
 		public void run() {
+
+		if (thumbnail)
+			createThumb();
+
 		final TextureLoader tl = new TextureLoader(new AbsoluteFileHandleResolver());
 		tl.loadAsync(assetManager, ImgName, Gdx.files.absolute(mPath), null);
 
@@ -439,6 +459,13 @@ public class ImageLoader {
 		}
 	});
 	th.start();
+	}
+
+	private String originalPath = null;
+
+	private void createThumb() {
+	originalPath = mPath;
+	mPath = FileFactory.createThump(mPath, (int) resizeWidth, ThumbPräfix);
 	}
 
 	/**
@@ -506,8 +533,14 @@ public class ImageLoader {
 
 		@Override
 		public void run() {
-		if (mImageTex != null)
+		if (mImageTex != null) {
+			try {
+			assetManager.unload(ImgName);
+			} catch (Exception e) {
+			}
 			mImageTex.dispose();
+		}
+
 		mImageTex = null;
 		mDrawable = null;
 		loadingThread = null;
@@ -548,4 +581,11 @@ public class ImageLoader {
 	public String getImagePath() {
 	return mPath;
 	}
+
+	public String getOriginalImagePath() {
+	if (originalPath == null)
+		return mPath;
+	return originalPath;
+	}
+
 }

@@ -32,10 +32,14 @@ import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
+import CB_Utils.fileProvider.FileFactory;
 
 public class SpoilerView extends CB_View_Base {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(SpoilerView.class);
-
+    private final static int MAX_THUMB_WIDTH=500;
+    private final static int MAX_OVERVIEW_THUMB_WIDTH=240;
+	
+	
 	Cache actCache;
 	CB_List<GalleryItem> galleryItems = new CB_List<GalleryItem>();
 	CB_List<GalleryItem> overviewItems = new CB_List<GalleryItem>();
@@ -104,13 +108,15 @@ public class SpoilerView extends CB_View_Base {
 						ImageEntry imageEntry = actCache.getSpoilerRessources().get(i);
 						Log.info(log, "Image Nr.: " + i + " from " + imageEntry.LocalPath);
 
-						ImageLoader loader = new ImageLoader();
+						ImageLoader loader = new ImageLoader(true); // image loader with thumb
+						loader.setThumbWidth(MAX_THUMB_WIDTH,"");
 						loader.setImage(imageEntry.LocalPath);
 						GalleryItem item = new GalleryItem(gallery.copy(), i, loader);
 						item.setOnDoubleClickListener(onItemClickListener);
 						galleryItems.add(item);
 
-						ImageLoader overviewloader = new ImageLoader();
+						ImageLoader overviewloader = new ImageLoader(true); // image loader with thumb
+						overviewloader.setThumbWidth(MAX_OVERVIEW_THUMB_WIDTH,FileFactory.THUMB_OVERVIEW);
 						overviewloader.setImage(imageEntry.LocalPath);
 						GalleryItem overviewItem = new GalleryItem(orItemRec, i, loader);
 						overviewItem.setOnClickListener(onItemselectClickListener);
@@ -255,7 +261,14 @@ public class SpoilerView extends CB_View_Base {
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 			Image selectionImage = ((GalleryItem) v).getImage();
-			ImageActivity ac = new ImageActivity(selectionImage);
+			
+			
+			String path=selectionImage.getImageLoader().getOriginalImagePath();
+			
+			Image img =new Image(SpoilerView.this, "Image for Activity", true);
+			img.setImage(path);
+			
+			ImageActivity ac = new ImageActivity(img);
 			ac.show();
 			return true;
 		}
