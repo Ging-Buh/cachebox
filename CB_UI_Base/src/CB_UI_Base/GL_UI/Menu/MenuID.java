@@ -205,7 +205,7 @@ public class MenuID {
 	public static final int MI_DELETE_CACHE = 163;
 	public static final int MI_RESET_FILTER = 164;
 
-	public static final int MI_REFRECH_TB_LIST = 165;
+	public static final int MI_REFRESH_TB_LIST = 165;
 	public static final int MI_TB_DISCOVERED = 166;
 	public static final int MI_TB_DROPPED = 167;
 	public static final int MI_TB_PICKED = 168;

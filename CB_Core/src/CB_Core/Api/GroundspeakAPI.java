@@ -936,6 +936,13 @@ public class GroundspeakAPI {
 		try {
 			HttpPost httppost = new HttpPost(URL + "GetUsersTrackables?format=json");
 			try {
+				/*
+					"AccessToken":"String content",
+					"StartIndex":2147483647,
+					"MaxPerPage":2147483647,
+					"TrackableLogsCount":2147483647,
+					"CollectionOnly":true
+				*/
 				JSONObject request = new JSONObject();
 				request.put("AccessToken", GetAccessToken());
 				request.put("MaxPerPage", 30);
@@ -965,7 +972,13 @@ public class GroundspeakAPI {
 
 					for (int ii = 0; ii < jTrackables.length(); ii++) {
 						JSONObject jTrackable = (JSONObject) jTrackables.get(ii);
-						list.add(new Trackable(jTrackable));
+						boolean InCollection = false;
+						try {
+							InCollection = jTrackable.getBoolean("InCollection");
+						} catch (JSONException e) {
+						}
+						if (!InCollection)
+							list.add(new Trackable(jTrackable));
 					}
 					return 0;
 				} else {
