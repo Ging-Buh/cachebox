@@ -58,11 +58,12 @@ import ch.qos.logback.core.joran.spi.JoranException;
  */
 public class CB_SLF4J {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_SLF4J.class);
-	public static final String br = System.getProperty("line.separator");
+	private static final String br = System.getProperty("line.separator");
 	private final String WORKPATH;
 	private final String logFolder;
 	private final String logBackXmlFile;
 	private static CB_SLF4J that;
+	public static String logfile;
 
 	/**
 	 * Constructor for initialization of slf4j {@link #Logger} inside of all CB projects. <br>
@@ -115,7 +116,7 @@ public class CB_SLF4J {
 
 	private void Initial() {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd._HH_mm_ss");
-		String logfile = logFolder + "/log_" + simpleDateFormat.format(new Date()) + ".txt";
+		logfile = logFolder + "/log_" + simpleDateFormat.format(new Date()) + ".txt";
 
 		boolean xmlLogbackInitial = false;
 
@@ -208,7 +209,7 @@ public class CB_SLF4J {
 		}
 
 		if (!xmlLogbackInitial) {// initial with default
-			initialDefaultLogBack(logfile);
+			initialDefaultLogBack();
 		}
 
 		// set LogLevel to all this can change with LogLevel.setLogLevel()
@@ -218,7 +219,7 @@ public class CB_SLF4J {
 		Log.trace(log, "logger initial");
 	}
 
-	private void initialDefaultLogBack(String logfile) {
+	private void initialDefaultLogBack() {
 		// reset the default context (which may already have been initialized)
 		// since we want to reconfigure it
 		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();

@@ -104,6 +104,7 @@ import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Plattform;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.CB_SLF4J;
 import CB_Utils.Log.Log;
 import CB_Utils.Settings.PlatformSettings;
 import CB_Utils.Settings.PlatformSettings.IPlatformSettings;
@@ -1186,15 +1187,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	@Override
 	public void onDestroy() {
-
 		try {
-			java.io.File f = new java.io.File(Config.FieldNotesGarminPath.getValue());
 			Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-			intent.setData(Uri.fromFile(f));
+			// File f = FileFactory.createFile(Config.FieldNotesGarminPath.getValue());
+			intent.setData(Uri.fromFile(new java.io.File(Config.FieldNotesGarminPath.getValue())));
 			sendBroadcast(intent);
-			Log.info(log, "Main=> MediaScanner FieldNotes");
+			intent.setData(Uri.fromFile(new java.io.File(CB_SLF4J.logfile)));
+			sendBroadcast(intent);
+			Log.info(log, "Sent files to MediaScanner");
 		} catch (Exception e) {
-			Log.err(log, "Main=> MediaScanner FieldNotes: " + e.getMessage());
+			Log.err(log, "Send files to MediaScanner: " + e.getMessage());
 		}
 
 		if (mReceiver != null)
