@@ -54,7 +54,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
 		super.render(batch);
 
 		// Draw Background
-		if (mBackIsInitial) {
+		if (!mBackIsInitial) {
 			Initial();
 		}
 		Boolean BackGroundChanger = ((this.getIndex() % 2) == 1);
