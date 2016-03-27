@@ -194,21 +194,21 @@ public class AndroidDB extends Database {
 
 	@Override
 	public void beginTransaction() {
-		Log.debug(log, "begin transaction");
+		Log.trace(log, "begin transaction");
 		if (myDB != null)
 			myDB.beginTransaction();
 	}
 
 	@Override
 	public void setTransactionSuccessful() {
-		Log.debug(log, "set Transaction Successful");
+		Log.trace(log, "set Transaction Successful");
 		if (myDB != null)
 			myDB.setTransactionSuccessful();
 	}
 
 	@Override
 	public void endTransaction() {
-		Log.debug(log, "endTransaction");
+		Log.trace(log, "endTransaction");
 		if (myDB != null)
 			myDB.endTransaction();
 	}

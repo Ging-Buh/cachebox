@@ -79,7 +79,7 @@ public interface CB_UI_Settings {
 	public static final SettingBool CompassShowTargetDirection = new SettingBool("CompassShowTargetDirection", SettingCategory.Compass, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool CompassShowSDT = new SettingBool("CompassShowSDT", SettingCategory.Compass, NEVER, true, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool CompassShowLastFound = new SettingBool("CompassShowLastFound", SettingCategory.Compass, NEVER, true, SettingStoreType.Global, SettingUsage.ACB);
-	public static final SettingString OverrideUrl = (SettingString) SettingsList.addSetting(new SettingString("OverrideUrl", SettingCategory.Debug, EXPERT, "", SettingStoreType.Global, SettingUsage.ACB));
+	public static final SettingString OverrideUrl = (SettingString) SettingsList.addSetting(new SettingString("OverrideUrl", SettingCategory.Login, DEVELOPER, "", SettingStoreType.Global, SettingUsage.ACB));
 	// Folder
 	public static final SettingFolder TrackFolder = new SettingFolder("TrackFolder", SettingCategory.Folder, EXPERT, Work + "/User/Tracks", SettingStoreType.Global, SettingUsage.ACB, true);
 	// Files
@@ -91,7 +91,6 @@ public interface CB_UI_Settings {
 	public static final SettingBool MapShowRating = new SettingBool("MapShowRating", SettingCategory.Map, NEVER, true, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool MapShowDT = new SettingBool("MapShowDT", SettingCategory.Map, NEVER, true, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool MapShowTitles = new SettingBool("MapShowTitles", SettingCategory.Map, NEVER, true, SettingStoreType.Global, SettingUsage.ACB);
-	public static final SettingBool ImportLayerOsm = new SettingBool("ImportLayerOsm", SettingCategory.Internal, NEVER, true, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool TrackRecorderStartup = new SettingBool("TrackRecorderStartup", SettingCategory.Misc, NORMAL, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool MapShowCompass = new SettingBool("MapShowCompass", SettingCategory.Map, NEVER, true, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool CompassNorthOriented = new SettingBool("CompassNorthOriented", SettingCategory.Map, NEVER, true, SettingStoreType.Global, SettingUsage.ACB);
@@ -101,7 +100,6 @@ public interface CB_UI_Settings {
 	public static final SettingBool CacheImageData = new SettingBool("CacheImageData", SettingCategory.Internal, DEVELOPER, true, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool CacheSpoilerData = new SettingBool("CacheSpoilerData", SettingCategory.Internal, DEVELOPER, true, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool SuppressPowerSaving = new SettingBool("SuppressPowerSaving", SettingCategory.Misc, EXPERT, true, SettingStoreType.Global, SettingUsage.ACB);
-	public static final SettingBool GCAutoSyncCachesFound = new SettingBool("GCAutoSyncCachesFound", SettingCategory.Internal, NEVER, true, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool GCAdditionalImageDownload = new SettingBool("GCAdditionalImageDownload", SettingCategory.API, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool StartWithAutoSelect = new SettingBool("StartWithAutoSelect", SettingCategory.Misc, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool FieldnotesUploadAll = new SettingBool("FieldnotesUploadAll", SettingCategory.API, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
@@ -139,9 +137,6 @@ public interface CB_UI_Settings {
 	public static final SettingInt MapIniHeight = (SettingInt) SettingsList.addSetting(new SettingInt("MapIniHeight", SettingCategory.Map, NEVER, 535, SettingStoreType.Global, SettingUsage.ACB));
 	public static final SettingInt VibrateTime = (SettingInt) SettingsList.addSetting(new SettingInt("VibrateTime", SettingCategory.Misc, EXPERT, 20, SettingStoreType.Global, SettingUsage.ACB));
 	public static final SettingInt FoundOffset = (SettingInt) SettingsList.addSetting(new SettingInt("FoundOffset", SettingCategory.Misc, NEVER, 0, SettingStoreType.Global, SettingUsage.ACB));
-	public static final SettingInt MapMaxCachesLabel = (SettingInt) SettingsList.addSetting(new SettingInt("MapMaxCachesLabel", SettingCategory.Map, DEVELOPER, 12, SettingStoreType.Global, SettingUsage.ACB));
-	public static final SettingInt MapMaxCachesDisplay_config = (SettingInt) SettingsList.addSetting(new SettingInt("MapMaxCachesDisplay_config", SettingCategory.Map, DEVELOPER, 10000, SettingStoreType.Global, SettingUsage.ACB));
-	public static final SettingInt mapMaxCachesDisplayLarge_config = (SettingInt) SettingsList.addSetting(new SettingInt("mapMaxCachesDisplayLarge_config", SettingCategory.Map, DEVELOPER, 75, SettingStoreType.Global, SettingUsage.ACB));
 	public static final SettingInt MultiDBAutoStartTime = (SettingInt) SettingsList.addSetting(new SettingInt("MultiDBAutoStartTime", SettingCategory.Internal, NEVER, 0, SettingStoreType.Global, SettingUsage.ACB));
 	public static final SettingInt lastSearchRadius = (SettingInt) SettingsList.addSetting(new SettingInt("lastSearchRadius", SettingCategory.API, NEVER, 5, SettingStoreType.Global, SettingUsage.ACB));
 	public static final SettingInt LastMapToggleBtnState = (SettingInt) SettingsList.addSetting(new SettingInt("LastMapToggleBtnState", SettingCategory.Map, DEVELOPER, 0, SettingStoreType.Global, SettingUsage.ACB));

@@ -956,13 +956,13 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			center = value;
 			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, center.getLongitude()), Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, center.getLatitude()), MapTileLoader.MAX_MAP_ZOOM,
 					MapTileLoader.MAX_MAP_ZOOM);
-
+			ManagerBase.Manager.screenCenter = center;
 			setScreenCenter(new Vector2((float) point.X, (float) point.Y));
 		}
 	}
 
 	/**
-	 * liefert die World-Koordinate in Pixel relativ zur Map in der h�chsten Aufl�sung
+	 * liefert die World-Koordinate in Pixel relativ zur Map in der höchsten Auflösung
 	 */
 	protected Vector2 screenToWorld(Vector2 point) {
 		// Vector2 result = new Vector2(0, 0);
@@ -1365,6 +1365,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		PointD point = Descriptor.FromWorld(screenCenterW.x, screenCenterW.y, MapTileLoader.MAX_MAP_ZOOM, MapTileLoader.MAX_MAP_ZOOM);
 
 		center = new CoordinateGPS(Descriptor.TileYToLatitude(MapTileLoader.MAX_MAP_ZOOM, -point.Y), Descriptor.TileXToLongitude(MapTileLoader.MAX_MAP_ZOOM, point.X));
+		ManagerBase.Manager.screenCenter = center;
 	}
 
 	public MapViewBase(SizeF size, String Name) {

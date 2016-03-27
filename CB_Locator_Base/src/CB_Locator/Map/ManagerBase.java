@@ -36,6 +36,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.GL_DatabaseRenderer;
 import org.mapsforge.map.layer.renderer.IDatabaseRenderer;
@@ -100,6 +101,7 @@ public abstract class ManagerBase {
 	private boolean mayAddLayer = false; // add only during startup (GetLayerByName)
 
 	protected String RenderTheme;
+	public LatLong screenCenter;
 
 	public boolean isRenderThemeSetted() {
 		if (RenderTheme != null && RenderTheme.length() > 0)
@@ -140,6 +142,10 @@ public abstract class ManagerBase {
 		} catch (Exception exc) {
 		}
 		return false;
+	}
+
+	private Layer getLayer(String layerName) {
+		return GetLayerByName(layerName, "", "");
 	}
 
 	public Layer GetLayerByName(String Name, String friendlyName, String url) {
@@ -396,6 +402,11 @@ public abstract class ManagerBase {
 						String Name = FileIO.GetFileNameWithoutExtension(file);
 						Layer layer = new Layer(Type.normal, Name, Name, file);
 						layer.isMapsForge = true;
+						MapDatabase md = new MapDatabase();
+						md.openFile(FileFactory.createFile(file));
+						MapFileInfo mf = md.getMapFileInfo();
+						md.closeFile();
+						layer.boundingBox = mf.boundingBox;
 						ManagerBase.Manager.Layers.add(layer);
 					}
 					if (FileIO.GetFileExtension(file).equalsIgnoreCase("xml")) {
@@ -497,9 +508,12 @@ public abstract class ManagerBase {
 
 	public TileGL getMapsforgePixMap(Layer layer, Descriptor desc, int ThreadIndex) {
 		// Mapsforge 0.4.0
-
-		if ((mapDatabase == null) || (!mapsForgeFile.equalsIgnoreCase(layer.Name))) {
+		if ((mapDatabase == null)) {
 			LoadMapsforgeMap(layer);
+		} else if (!mapsForgeFile.equalsIgnoreCase(layer.Name)) {
+			layer = getLayer(mapsForgeFile);
+			LoadMapsforgeMap(layer);
+			// will be overwritten by QueueProcessor / queueData.CurrentLayer
 		}
 
 		if (RenderThemeChanged) {
@@ -563,7 +577,7 @@ public abstract class ManagerBase {
 
 		Tile tile = new Tile(desc.getX(), desc.getY(), (byte) desc.getZoom());
 
-		// chk if MapDatabase Loded a Map File
+		// chk if MapDatabase Loaded a Map File
 		if (!this.mapDatabase[ThreadIndex].hasOpenFile()) {
 			return null;
 		}
@@ -598,8 +612,26 @@ public abstract class ManagerBase {
 			return null;
 
 		try {
-
-			return databaseRenderer[ThreadIndex].execute(job);
+			TileGL tileGL = databaseRenderer[ThreadIndex].execute(job);
+			/*
+			// LatLong c_enter = desc.getCenterCoordinate();			
+			if (screenCenter != null) {
+				if (!layer.boundingBox.contains(screenCenter)) {
+					// automatic change to another layer that contains latlon					
+					for (Layer l : Layers) {
+						if (l.isMapsForge) {
+							// todo sort relevant (by distance from center and size of bounding box)
+							if (l.boundingBox.contains(screenCenter)) {
+								mapsForgeFile = l.Name;
+								// mapView.SetCurrentLayer(l);
+								break;
+							}
+						}
+					}
+				}
+			}
+			*/
+			return tileGL;
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -622,12 +654,12 @@ public abstract class ManagerBase {
 			mapDatabase[i].openFile(mapFile);
 		}
 
-		Log.debug(log, "Open MapsForge Map: " + mapFile);
-		MapFileInfo info = mapDatabase[0].getMapFileInfo();
-		if (info.comment == null) {
+		Log.debug(log, "Open MapsForge Map: " + layer.Name);
+		MapFileInfo mapFileInfo = mapDatabase[0].getMapFileInfo();
+		if (mapFileInfo.comment == null) {
 			LoadadMapIsFreizeitkarte = false;
 		} else
-			LoadadMapIsFreizeitkarte = info.comment.contains("FZK project");
+			LoadadMapIsFreizeitkarte = mapFileInfo.comment.contains("FZK project");
 
 		mapsForgeFile = layer.Name;
 	}

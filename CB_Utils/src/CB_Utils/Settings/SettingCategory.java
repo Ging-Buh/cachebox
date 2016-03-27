@@ -15,9 +15,10 @@
  */
 package CB_Utils.Settings;
 
-/***
- * Login("Login"), Map("Map"), Gps("Gps"), Skin("Skin"), Internal("Internal"), Folder("Folder"), Button("Button"), Misc("Misc"),
- * Templates("Templates"), API("API"), Debug("Debug")
+/**
+ * 
+ * String is for translation
+ * 
  */
 public enum SettingCategory {
 	Login("Login"), QuickList("QuickList"), Map("Map"), LiveMap("LiveMap"), Gps("Gps"), Compass("Compass"), Misc("Misc"), Sounds("Sounds"), Skin("Skin"), API("API"), Folder("Folder"), Templates("Templates"), Fieldnotes("Fieldnotes"), Internal(

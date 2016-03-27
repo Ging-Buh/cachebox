@@ -348,7 +348,7 @@ public class DesktopDB extends Database {
 	@Override
 	public void beginTransaction() {
 		try {
-			Log.debug(log, "begin transaction");
+			Log.trace(log, "begin transaction");
 			if (myDB != null)
 				myDB.setAutoCommit(false);
 		} catch (SQLException e) {
@@ -360,7 +360,7 @@ public class DesktopDB extends Database {
 	@Override
 	public void setTransactionSuccessful() {
 		try {
-			Log.debug(log, "set Transaction Successful");
+			Log.trace(log, "set Transaction Successful");
 			if (myDB != null)
 				myDB.commit();
 		} catch (SQLException e) {
@@ -371,7 +371,7 @@ public class DesktopDB extends Database {
 	@Override
 	public void endTransaction() {
 		try {
-			Log.debug(log, "endTransaction");
+			Log.trace(log, "endTransaction");
 			if (myDB != null)
 				myDB.setAutoCommit(true);
 		} catch (SQLException e) {

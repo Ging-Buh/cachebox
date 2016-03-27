@@ -623,6 +623,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		initialViewGL();
 	}
 
+	@Override
+	protected void onStart() {
+		super.onStart();
+	}
+
 	private void setLockScreenProperty() {
 		// add flags for run over lock screen
 

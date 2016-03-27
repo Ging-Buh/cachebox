@@ -13,7 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
 
 import org.mapsforge.map.model.DisplayModel;
-import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
@@ -41,6 +41,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL_Listener_Interface;
 import CB_UI_Base.Math.DevicesSizes;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Plattform;
+import CB_Utils.Log.Log;
 import CB_Utils.Settings.PlatformSettings;
 import CB_Utils.Settings.PlatformSettings.IPlatformSettings;
 import CB_Utils.Settings.SettingBase;
@@ -421,7 +422,7 @@ public class DesktopMain {
 		String base = new File("").getAbsolutePath();
 		String workPath = base + "/cachebox";
 		workPath = "C:/Daten/_WCB";
-		Log.debug(log, "workPath=" + workPath);
+		// not yet initialised Log.debug(log, "workPath=" + workPath);
 
 		new Config(workPath);
 

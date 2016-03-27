@@ -1,5 +1,7 @@
 package CB_Locator.Map;
 
+import org.mapsforge.core.model.BoundingBox;
+
 public class Layer {
 
 	public enum Type {
@@ -11,6 +13,7 @@ public class Layer {
 	public String FriendlyName = "";
 	public String Url = "";
 	public boolean isMapsForge = false;
+	public BoundingBox boundingBox;
 
 	public Layer(Type LayerType, String name, String friendlyName, String url) {
 		Name = name;

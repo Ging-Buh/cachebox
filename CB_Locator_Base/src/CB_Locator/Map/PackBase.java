@@ -85,7 +85,7 @@ public abstract class PackBase implements Comparable<PackBase> {
 	}
 
 	// / <summary>
-	// / �berpr�ft, ob der Descriptor in diesem Map Pack enthalten ist und liefert
+	// / überprüft, ob der Descriptor in diesem Map Pack enthalten ist und liefert
 	// / die BoundingBox, falls dies der Fall ist, bzw. null
 	// / </summary>
 	// / <param name="desc">Deskriptor, dessen </param>

@@ -49,7 +49,6 @@ public interface LocatorSettings {
 
 	public static final SettingBool PositionMarkerTransparent = new SettingBool("PositionMarkerTransparent", SettingCategory.Map, EXPERT, true, SettingStoreType.Global, SettingUsage.ACB);
 
-	public static final SettingIntArray OsmMaxImportLevel = new SettingIntArray("OsmMaxImportLevel", SettingCategory.Map, DEVELOPER, 16, SettingStoreType.Global, SettingUsage.ACB, LocatorSettings.Level);
 	public static final SettingIntArray OsmMinLevel = new SettingIntArray("OsmMinLevel", SettingCategory.Map, EXPERT, 7, SettingStoreType.Global, SettingUsage.ACB, Level);
 	public static final SettingIntArray OsmMaxLevel = new SettingIntArray("OsmMaxLevel", SettingCategory.Map, EXPERT, 19, SettingStoreType.Global, SettingUsage.ACB, Level);
 	public static final SettingIntArray CompassMapMinZoomLevel = new SettingIntArray("CompassMapMinZoomLevel", SettingCategory.Map, EXPERT, 13, SettingStoreType.Global, SettingUsage.ACB, LocatorSettings.Level);
