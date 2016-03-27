@@ -76,7 +76,7 @@ public class SelectDB extends ActivityBase {
 	private Scrollbar scrollbar;
 	private CustomAdapter lvAdapter;
 	private File AktFile = null;
-	private String[] countList;
+	private String[] fileInfos;
 	private boolean MustSelect = false;
 	private IReturnListener returnListener;
 
@@ -94,28 +94,25 @@ public class SelectDB extends ActivityBase {
 		String DBFile = FileIO.GetFileName(Config.DatabasePath.getValue());
 
 		final FileList files = new FileList(Config.mWorkPath, "DB3", true);
-		countList = new String[files.size()];
-
+		fileInfos = new String[files.size()];
 		int index = 0;
 		for (File file : files) {
 			if (file.getName().equalsIgnoreCase(DBFile))
 				AktFile = file;
-			countList[index] = "";
+			fileInfos[index] = "";
 			index++;
 		}
 
 		lvFiles = new V_ListView(new CB_RectF(leftBorder, this.getBottomHeight() + UI_Size_Base.that.getButtonHeight() * 2, innerWidth, getHeight() - (UI_Size_Base.that.getButtonHeight() * 2) - this.getTopHeight() - this.getBottomHeight()),
 				"DB File ListView");
-
 		lvAdapter = new CustomAdapter(files);
 		lvFiles.setBaseAdapter(lvAdapter);
-
 		this.addChild(lvFiles);
 
 		this.scrollbar = new Scrollbar(lvFiles);
 		this.addChild(this.scrollbar);
-		this.lvFiles.addListPosChangedEventHandler(new IListPosChanged() {
 
+		this.lvFiles.addListPosChangedEventHandler(new IListPosChanged() {
 			@Override
 			public void ListPosChanged() {
 				scrollbar.ScrollPositionChanged();
@@ -232,13 +229,12 @@ public class SelectDB extends ActivityBase {
 				SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 				int index = 0;
 				for (File file : lvAdapter.files) {
-					String LastModifit = sdf.format(file.lastModified());
-					String FileSize = String.valueOf(file.length() / (1024 * 1024)) + "MB";
-					String CacheCount = String.valueOf(Database.Data.getCacheCountInDB(file.getAbsolutePath()));
-					countList[index] = CacheCount + " Caches  " + FileSize + "    last use " + LastModifit;
+					String lastModified = sdf.format(file.lastModified());
+					String fileSize = String.valueOf(file.length() / (1024 * 1024)) + "MB";
+					String cacheCount = String.valueOf(Database.Data.getCacheCountInDB(file.getAbsolutePath()));
+					fileInfos[index] = cacheCount + " Caches  " + fileSize + "    last use " + lastModified;
 					index++;
 				}
-
 				lvFiles.setBaseAdapter(lvAdapter);
 			}
 		};
@@ -313,7 +309,6 @@ public class SelectDB extends ActivityBase {
 					if (lvFiles.isDragable()) {
 						if (!(firstAndLast.x <= id && firstAndLast.y >= id)) {
 							lvFiles.scrollToItem(id);
-							Log.debug(log, "Scroll to:" + id);
 						}
 					}
 					break;
@@ -531,7 +526,7 @@ public class SelectDB extends ActivityBase {
 
 		@Override
 		public ListViewItemBase getView(int position) {
-			SelectDBItem v = new SelectDBItem(recItem, position, files.get(position), countList[position]);
+			SelectDBItem v = new SelectDBItem(recItem, position, files.get(position), fileInfos[position]);
 			v.setOnClickListener(onItemClickListener);
 			return v;
 		}
@@ -647,7 +642,7 @@ public class SelectDB extends ActivityBase {
 
 		lvAdapter = null;
 		AktFile = null;
-		countList = null;
+		fileInfos = null;
 
 		returnListener = null;
 		super.dispose();
