@@ -19,13 +19,13 @@ public enum CB_InternalRenderTheme implements XmlRenderTheme {
 	DAY_CAR_THEME("cartheme/", "cartheme.xml");
 
 	private final String absolutePath;
-	private final String file;
+	private final String fileName;
 	private final FileHandle fileHandle;
 
 	private CB_InternalRenderTheme(String absolutePath, String file) {
 		this.absolutePath = absolutePath;
-		this.file = file;
-		fileHandle = Gdx.files.classpath(this.absolutePath + this.file);
+		this.fileName = file;
+		fileHandle = Gdx.files.classpath(this.absolutePath + this.fileName);
 	}
 
 	@Override

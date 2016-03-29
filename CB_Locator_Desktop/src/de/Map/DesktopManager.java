@@ -67,6 +67,7 @@ public class DesktopManager extends ManagerBase {
 		if (layer.isMapsForge) {
 			return getMapsforgePixMap(layer, desc, ThreadIndex);
 		}
+		// else
 		Format format = layer.isOverlay() ? Format.RGBA4444 : Format.RGB565;
 		try {
 			// Schauen, ob Tile im Cache liegt
@@ -82,7 +83,7 @@ public class DesktopManager extends ManagerBase {
 			// Kachel im Pack suchen
 			for (int i = 0; i < mapPacks.size(); i++) {
 				PackBase mapPack = mapPacks.get(i);
-				if ((mapPack.Layer.Name.equalsIgnoreCase(layer.Name)) && (mapPack.MaxAge >= cachedTileAge)) {
+				if ((mapPack.layer.Name.equalsIgnoreCase(layer.Name)) && (mapPack.MaxAge >= cachedTileAge)) {
 					BoundingBox bbox = mapPacks.get(i).Contains(desc);
 
 					if (bbox != null) {
@@ -170,7 +171,7 @@ public class DesktopManager extends ManagerBase {
 
 	@Override
 	public PackBase CreatePack(String file) throws IOException {
-		return new DesktopPack(this, file);
+		return new DesktopPack(file);
 	}
 
 }

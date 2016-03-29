@@ -434,7 +434,7 @@ public class splash extends MainViewBase {
 	 */
 	private void ini_MapPaks() {
 		Log.debug(log, "ini_MapPaks");
-		ManagerBase.Manager.initialMapPacks();
+		ManagerBase.Manager.initMapPacks();
 	}
 
 	/**

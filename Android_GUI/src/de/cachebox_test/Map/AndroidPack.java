@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import CB_Locator.Map.BoundingBox;
 import CB_Locator.Map.Descriptor;
-import CB_Locator.Map.ManagerBase;
 import CB_Locator.Map.PackBase;
 import CB_Utils.Log.Log;
 import android.graphics.Bitmap;
@@ -23,8 +22,8 @@ public class AndroidPack extends PackBase {
 		super(layer);
 	}
 
-	public AndroidPack(ManagerBase manager, String file) throws IOException {
-		super(manager, file);
+	public AndroidPack(String file) throws IOException {
+		super(file);
 	}
 
 	// LoadFromBoundingBoxByteArray

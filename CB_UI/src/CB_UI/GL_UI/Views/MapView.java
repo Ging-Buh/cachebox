@@ -269,14 +269,14 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		String currentLayerName = Config.CurrentMapLayer.getValue();
 		if (ManagerBase.Manager != null) {
 			if (mapTileLoader.getCurrentLayer() == null) {
-				mapTileLoader.setLayer(ManagerBase.Manager.GetLayerByName(currentLayerName, currentLayerName, ""));
+				mapTileLoader.setCurrentLayer(ManagerBase.Manager.getOrAddLayer(currentLayerName, currentLayerName, ""));
 			}
 		}
 
 		String currentOverlayLayerName = Config.CurrentMapOverlayLayer.getValue();
 		if (ManagerBase.Manager != null) {
 			if (mapTileLoader.getCurrentOverlayLayer() == null && currentOverlayLayerName.length() > 0)
-				mapTileLoader.setOverlayLayer(ManagerBase.Manager.GetLayerByName(currentOverlayLayerName, currentOverlayLayerName, ""));
+				mapTileLoader.setCurrentOverlayLayer(ManagerBase.Manager.getOrAddLayer(currentOverlayLayerName, currentOverlayLayerName, ""));
 		}
 
 		iconFactor = Config.MapViewDPIFaktor.getValue();
@@ -1238,6 +1238,10 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	private static boolean MapTileLoderPreInitial = false;
 	private static boolean MapTileLoderPreInitialAtWork = false;
 
+	/**
+	 * setNewSettings
+	 * 
+	 */
 	@Override
 	public void setNewSettings(int InitialFlags) {
 		if ((InitialFlags & INITIAL_SETTINGS) != 0) {
@@ -1331,37 +1335,18 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			}
 
 			if (themePath == null) {
-
 				// Entweder wir sind nicht im CarMode oder es wurde kein Passender Theme für den CarMode gefunden!
 				if (Config.nightMode.getValue()) {
 					themePath = ifThemeExist(Config.MapsforgeNightTheme.getValue());
 				}
-
 				if (themePath == null) {
 					if (Config.nightMode.getValue())
 						useInvertNightTheme = true;
 					themePath = ifThemeExist(Config.MapsforgeDayTheme.getValue());
-
 				}
-
 			}
 
-			if (themePath != null) {
-				if (Mode == MapMode.Compass) {
-					if (!ManagerBase.Manager.isRenderThemeSetted()) {
-						ManagerBase.Manager.setUseInvertedNightTheme(useInvertNightTheme);
-						ManagerBase.Manager.setRenderTheme(themePath);
-					}
-				} else {
-					ManagerBase.Manager.setUseInvertedNightTheme(useInvertNightTheme);
-					ManagerBase.Manager.setRenderTheme(themePath);
-				}
-
-			} else {
-				// set Theme to null
-				ManagerBase.Manager.setUseInvertedNightTheme(useInvertNightTheme);
-				ManagerBase.Manager.clearRenderTheme();
-			}
+			ManagerBase.Manager.setRenderTheme(themePath, useInvertNightTheme);
 
 		}
 

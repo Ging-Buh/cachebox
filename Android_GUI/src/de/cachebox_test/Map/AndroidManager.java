@@ -54,11 +54,11 @@ public class AndroidManager extends ManagerBase {
 
 	@Override
 	public PackBase CreatePack(String file) throws IOException {
-		return new AndroidPack(this, file);
+		return new AndroidPack(file);
 	}
 
 	public android.graphics.Bitmap LoadLocalBitmap(String layer, Descriptor desc) {
-		return LoadLocalBitmap(GetLayerByName(layer, layer, ""), desc);
+		return LoadLocalBitmap(getOrAddLayer(layer, layer, ""), desc);
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class AndroidManager extends ManagerBase {
 			// Kachel im Pack suchen
 			for (int i = 0; i < mapPacks.size(); i++) {
 				PackBase mapPack = mapPacks.get(i);
-				if ((mapPack.Layer.Name.equalsIgnoreCase(layer.Name)) && (mapPack.MaxAge >= cachedTileAge)) {
+				if ((mapPack.layer.Name.equalsIgnoreCase(layer.Name)) && (mapPack.MaxAge >= cachedTileAge)) {
 					BoundingBox bbox = mapPacks.get(i).Contains(desc);
 
 					if (bbox != null) {
@@ -158,7 +158,7 @@ public class AndroidManager extends ManagerBase {
 			// Kachel im Pack suchen
 			for (int i = 0; i < mapPacks.size(); i++) {
 				AndroidPack mapPack = (AndroidPack) mapPacks.get(i);
-				if ((mapPack.Layer.Name.equalsIgnoreCase(layer.Name)) && (mapPack.MaxAge >= cachedTileAge)) {
+				if ((mapPack.layer.Name.equalsIgnoreCase(layer.Name)) && (mapPack.MaxAge >= cachedTileAge)) {
 					BoundingBox bbox = mapPacks.get(i).Contains(desc);
 
 					if (bbox != null)

@@ -317,11 +317,11 @@ public class MapTileLoader {
 		queueData.loadedOverlayTiles.clearDrawingList();
 	}
 
-	public void setLayer(Layer layer) {
+	public void setCurrentLayer(Layer layer) {
 		queueData.CurrentLayer = layer;
 	}
 
-	public void setOverlayLayer(Layer layer) {
+	public void setCurrentOverlayLayer(Layer layer) {
 		queueData.CurrentOverlayLayer = layer;
 	}
 

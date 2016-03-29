@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import org.apache.http.util.EncodingUtils;
 
+import CB_Locator.Map.Layer.Type;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
@@ -17,7 +18,7 @@ public abstract class PackBase implements Comparable<PackBase> {
 
 	public long MaxAge = 0;
 	public static boolean Cancel = false;
-	public Layer Layer = null;
+	public Layer layer = null;
 	public boolean IsOverlay = false;
 	public String Filename = "";
 	public ArrayList<BoundingBox> BoundingBoxes = new ArrayList<BoundingBox>();
@@ -34,10 +35,10 @@ public abstract class PackBase implements Comparable<PackBase> {
 	}
 
 	public PackBase(Layer layer) {
-		this.Layer = layer;
+		this.layer = layer;
 	}
 
-	public PackBase(ManagerBase manager, String file) throws IOException {
+	public PackBase(String file) throws IOException {
 		Filename = file;
 
 		File queryFile = FileFactory.createFile(file);
@@ -51,7 +52,7 @@ public abstract class PackBase implements Comparable<PackBase> {
 		String layerName = readString(reader, 32);
 		String friendlyName = readString(reader, 128);
 		String url = readString(reader, 256);
-		Layer = manager.GetLayerByName(layerName, friendlyName, url);
+		layer = new Layer(Type.normal, layerName, friendlyName, url);
 
 		long ticks = Long.reverseBytes(reader.readLong());
 		MaxAge = ticks;
@@ -172,9 +173,9 @@ public abstract class PackBase implements Comparable<PackBase> {
 		// int numTilesTotal = NumTilesTotal();
 
 		// Header
-		writeString(Layer.Name, writer, 32);
-		writeString(Layer.FriendlyName, writer, 128);
-		writeString(Layer.Url, writer, 256);
+		writeString(layer.Name, writer, 32);
+		writeString(layer.FriendlyName, writer, 128);
+		writeString(layer.Url, writer, 256);
 		writer.writeLong(Long.reverseBytes(MaxAge));
 		writer.writeInt(Integer.reverseBytes(BoundingBoxes.size()));
 
@@ -200,15 +201,15 @@ public abstract class PackBase implements Comparable<PackBase> {
 
 					Descriptor desc = new Descriptor(x, y, bbox.Zoom, false);
 
-					// Dateigr��e ermitteln
-					String local = Layer.GetLocalFilename(desc);
+					// Dateigröße ermitteln
+					String local = layer.GetLocalFilename(desc);
 
 					if (FileIO.FileExists(local)) {
 						File info = FileFactory.createFile(local);
 						if (info.lastModified() < MaxAge)
-							Layer.DownloadTile(desc);
+							layer.DownloadTile(desc);
 					} else
-						Layer.DownloadTile(desc);
+						layer.DownloadTile(desc);
 
 					// Nicht vorhandene Tiles haben die L�nge 0
 					if (!FileIO.FileExists(local))
@@ -228,7 +229,7 @@ public abstract class PackBase implements Comparable<PackBase> {
 			}
 		}
 
-		// Zur L�ngenberechnung
+		// Zur Längenberechnung
 		writer.writeLong(Long.reverseBytes(offset));
 
 		// So, und nun kopieren wir noch den Mist rein
@@ -239,10 +240,10 @@ public abstract class PackBase implements Comparable<PackBase> {
 				for (int x = bbox.MinX; x <= bbox.MaxX && !Cancel; x++) {
 					Descriptor desc = new Descriptor(x, y, bbox.Zoom, false);
 
-					String local = Layer.GetLocalFilename(desc);
+					String local = layer.GetLocalFilename(desc);
 					File f = FileFactory.createFile(local);
 					if (!f.exists() || f.lastModified() < MaxAge)
-						if (!Layer.DownloadTile(desc))
+						if (!layer.DownloadTile(desc))
 							continue;
 					FileInputStream imageStream = new FileInputStream(local);
 					int anzAvailable = (int) f.length();

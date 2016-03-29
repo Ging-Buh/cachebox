@@ -133,7 +133,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 				Layer layer = (Layer) ((MenuItem) v).getData();
-				TabMainView.mapView.SetCurrentLayer(layer);
+				TabMainView.mapView.setCurrentLayer(layer);
 				return true;
 			}
 		});

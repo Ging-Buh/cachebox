@@ -53,7 +53,6 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.graphics.PolygonDrawable;
-import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.MathUtils;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
@@ -244,14 +243,13 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		super.onStop();
 	}
 
-	public void SetCurrentLayer(Layer newLayer) {
+	public void setCurrentLayer(Layer newLayer) {
 		if (newLayer == null) {
 			LocatorSettings.CurrentMapLayer.setValue("");
 		} else {
 			LocatorSettings.CurrentMapLayer.setValue(newLayer.Name);
 		}
-
-		mapTileLoader.setLayer(newLayer);
+		mapTileLoader.setCurrentLayer(newLayer);
 		mapTileLoader.clearLoadedTiles();
 	}
 
@@ -261,8 +259,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		} else {
 			LocatorSettings.CurrentMapOverlayLayer.setValue(newLayer.Name);
 		}
-
-		mapTileLoader.setOverlayLayer(newLayer);
+		mapTileLoader.setCurrentOverlayLayer(newLayer);
 		mapTileLoader.clearLoadedTiles();
 	}
 
@@ -841,91 +838,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 	// private static String debugString = "";
 
-	public void setNewSettings(int InitialFlags) {
-		if ((InitialFlags & INITIAL_SETTINGS) != 0) {
-			showAccuracyCircle = LocatorSettings.ShowAccuracyCircle.getValue();
-			showMapCenterCross = LocatorSettings.ShowMapCenterCross.getValue();
-
-			if (InitialFlags == INITIAL_ALL) {
-				iconFactor = CB_UI_Base_Settings.MapViewDPIFaktor.getValue();
-
-				int setMaxZoom = LocatorSettings.OsmMaxLevel.getValue();
-				int setMinZoom = LocatorSettings.OsmMinLevel.getValue();
-
-				zoomBtn.setMaxZoom(setMaxZoom);
-				zoomBtn.setMinZoom(setMinZoom);
-				zoomBtn.setZoom(LocatorSettings.lastZoomLevel.getValue());
-				aktZoom = zoomBtn.getZoom();
-
-				if (zoomScale != null) {
-					zoomScale.setMaxZoom(setMaxZoom);
-					zoomScale.setMinZoom(setMinZoom);
-				}
-			}
-		}
-
-		if ((InitialFlags & INITIAL_THEME) != 0) {
-			String themePath = null;
-
-			boolean useInvertNightTheme = false;
-
-			// Zustand der Karte CarMode/NormalMode
-			if (CarMode) {
-				if (this.NightMode) {
-					// zuerst schauen, ob ein Render Theme im Custom Skin Ordner Liegt
-					themePath = ifCarThemeExist(PathCustomNight);
-
-					if (themePath == null) {// wenn kein Night Custum skin vorhanden, dann nach einem Day CostumTheme suchen, welches dann Invertiert wird!
-						themePath = ifCarThemeExist(PathCustom);
-						if (themePath != null)
-							useInvertNightTheme = true;
-					}
-
-					if (themePath == null) {// wenn kein Night Default skin vorhanden, dann nach einem Day DayTheme suchen, welches dann Invertiert wird!
-						themePath = ManagerBase.INTERNAL_CAR_THEME;
-						useInvertNightTheme = true;
-					}
-
-				} else {
-					// zuerst schauen, ob ein Render Theme im Custom Skin Ordner Liegt
-					themePath = ifCarThemeExist(PathCustom);
-
-					if (themePath == null)
-						themePath = ifCarThemeExist(PathDefault);
-				}
-
-				if (themePath == null) {
-					themePath = ManagerBase.INTERNAL_CAR_THEME;
-				}
-
-			}
-
-			if (themePath == null) {
-
-				// Entweder wir sind nicht im CarMode oder es wurde kein Passender Theme f�r den CarMode gefunden!
-				if (this.NightMode) {
-					themePath = ifThemeExist(LocatorSettings.MapsforgeNightTheme.getValue());
-				}
-
-				if (themePath == null) {
-					if (this.NightMode)
-						useInvertNightTheme = true;
-					themePath = ifThemeExist(LocatorSettings.MapsforgeDayTheme.getValue());
-
-				}
-
-			}
-
-			if (themePath != null) {
-				ManagerBase.Manager.setUseInvertedNightTheme(useInvertNightTheme);
-				ManagerBase.Manager.setRenderTheme(themePath);
-			} else {
-				// set Theme to null
-				ManagerBase.Manager.setUseInvertedNightTheme(useInvertNightTheme);
-				ManagerBase.Manager.clearRenderTheme();
-			}
-		}
-	}
+	public abstract void setNewSettings(int InitialFlags);
 
 	protected String ifThemeExist(String Path) {
 		if (FileIO.FileExists(Path) && FileIO.GetFileExtension(Path).contains("xml"))
@@ -956,7 +869,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			center = value;
 			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, center.getLongitude()), Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, center.getLatitude()), MapTileLoader.MAX_MAP_ZOOM,
 					MapTileLoader.MAX_MAP_ZOOM);
-			ManagerBase.Manager.screenCenter = center;
 			setScreenCenter(new Vector2((float) point.X, (float) point.Y));
 		}
 	}
@@ -1365,7 +1277,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		PointD point = Descriptor.FromWorld(screenCenterW.x, screenCenterW.y, MapTileLoader.MAX_MAP_ZOOM, MapTileLoader.MAX_MAP_ZOOM);
 
 		center = new CoordinateGPS(Descriptor.TileYToLatitude(MapTileLoader.MAX_MAP_ZOOM, -point.Y), Descriptor.TileXToLongitude(MapTileLoader.MAX_MAP_ZOOM, point.X));
-		ManagerBase.Manager.screenCenter = center;
 	}
 
 	public MapViewBase(SizeF size, String Name) {

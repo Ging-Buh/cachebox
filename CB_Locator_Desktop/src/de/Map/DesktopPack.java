@@ -13,7 +13,6 @@ import javax.imageio.ImageIO;
 
 import CB_Locator.Map.BoundingBox;
 import CB_Locator.Map.Descriptor;
-import CB_Locator.Map.ManagerBase;
 import CB_Locator.Map.PackBase;
 
 public class DesktopPack extends PackBase {
@@ -22,8 +21,8 @@ public class DesktopPack extends PackBase {
 		super(layer);
 	}
 
-	public DesktopPack(ManagerBase manager, String file) throws IOException {
-		super(manager, file);
+	public DesktopPack(String file) throws IOException {
+		super(file);
 	}
 
 	// // unpack all files to cache

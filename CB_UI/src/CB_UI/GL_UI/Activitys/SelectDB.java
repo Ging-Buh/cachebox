@@ -469,7 +469,7 @@ public class SelectDB extends ActivityBase {
 		Config.DatabasePath.setValue(path);
 		Config.AcceptChanges();
 
-		ManagerBase.Manager.initialMapPacks();
+		ManagerBase.Manager.initMapPacks();
 
 		finish();
 		if (returnListener != null)

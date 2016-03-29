@@ -151,7 +151,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				Menu icm = new Menu("menu_mapviewgl");
+				Menu icm = new Menu("Settings");
 				icm.addOnClickListener(new OnClickListener() {
 
 					@Override
@@ -159,11 +159,13 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 						switch (((MenuItem) v).getMenuItemId()) {
 						case MenuID.MI_SHOW_EXPERT:
 							Config.SettingsShowExpert.setValue(!Config.SettingsShowExpert.getValue());
+							Config.SettingsShowAll.setValue(false);
 							resortList();
 							return true;
 
 						case MenuID.MI_SHOW_ALL:
 							Config.SettingsShowAll.setValue(!Config.SettingsShowAll.getValue());
+							Config.SettingsShowExpert.setValue(false);
 							resortList();
 							return true;
 						}
@@ -171,16 +173,11 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 						return false;
 					}
 				});
-				MenuItem mi;
 
-				mi = icm.addItem(MenuID.MI_SHOW_EXPERT, "Settings_Expert");
-				mi.setCheckable(true);
-				mi.setChecked(Config.SettingsShowExpert.getValue());
-
-				mi = icm.addItem(MenuID.MI_SHOW_ALL, "Settings_All");
-
-				mi.setCheckable(true);
-				mi.setChecked(Config.SettingsShowAll.getValue());
+				if (Config.SettingsShowAll.getValue())
+					Config.SettingsShowExpert.setValue(false);
+				icm.addCheckableItem(MenuID.MI_SHOW_EXPERT, "Settings_Expert", Config.SettingsShowExpert.getValue());
+				icm.addCheckableItem(MenuID.MI_SHOW_ALL, "Settings_All", Config.SettingsShowAll.getValue());
 
 				icm.setPrompt(Translation.Get("changeSettingsVisibility"));
 
@@ -355,9 +352,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 				for (Iterator<SettingBase<?>> it = SortedSettingList.iterator(); it.hasNext();) {
 					SettingBase<?> settingItem = it.next();
 					if (settingItem.getCategory().name().equals(cat.name())) {
-						// item nur zur Liste Hinzufügen, wenn der
-						// SettingModus
-						// dies auch zu lässt.
+						// item nur zur Liste Hinzufügen, wenn der SettingModus dies auch zulässt.
 						if (settingItem.getModus() != SettingModus.develop || GlobalCore.isDevelop()) {
 
 							if (((settingItem.getModus() == SettingModus.Normal) || (settingItem.getModus() == SettingModus.Expert && Config.SettingsShowExpert.getValue()) || Config.SettingsShowAll.getValue())

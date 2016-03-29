@@ -11,7 +11,7 @@ public class Layer {
 	private Type mLayerType = Type.normal;
 	public String Name = "";
 	public String FriendlyName = "";
-	public String Url = "";
+	public String Url = ""; // is used as complete path and name for mapsforge files
 	public boolean isMapsForge = false;
 	public BoundingBox boundingBox;
 
