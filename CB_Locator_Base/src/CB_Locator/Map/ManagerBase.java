@@ -58,6 +58,7 @@ import CB_UI_Base.graphics.GL_RenderType;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.HSV_Color;
+import CB_Utils.Util.IChanged;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 
@@ -95,6 +96,15 @@ public abstract class ManagerBase {
 		Manager = this;
 		PROCESSOR_COUNT = 1; // = Runtime.getRuntime().availableProcessors();
 		DISPLAY_MODEL = displaymodel;
+
+		LocatorSettings.CurrentMapLayer.addChangedEventListener(new IChanged() {
+			@Override
+			public void isChanged() {
+				Layer layer = getOrAddLayer(LocatorSettings.CurrentMapLayer.getValue(), "", "");
+				if (layer.isMapsForge)
+					initMapDatabase(layer);
+			}
+		});
 	}
 
 	public abstract PackBase CreatePack(String file) throws IOException;
