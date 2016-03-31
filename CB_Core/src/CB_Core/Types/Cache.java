@@ -444,7 +444,7 @@ public class Cache implements Comparable<Cache>, Serializable {
 	}
 
 	/**
-	 * Gibt die Entfernung zur uebergebenen User Position als Float zurueck und Speichert die Aktueller User Position fuer alle Caches ab.
+	 * Gibt die Entfernung zur uebergebenen User Position als Float zurueck.
 	 * 
 	 * @return Entfernung zur uebergebenen User Position als Float
 	 */

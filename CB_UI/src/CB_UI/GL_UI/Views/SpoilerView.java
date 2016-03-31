@@ -23,6 +23,7 @@ import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Activitys.ImageActivity;
+import CB_UI_Base.GL_UI.Controls.GalleryBigItem;
 import CB_UI_Base.GL_UI.Controls.GalleryItem;
 import CB_UI_Base.GL_UI.Controls.GalleryView;
 import CB_UI_Base.GL_UI.Controls.Image;
@@ -32,16 +33,16 @@ import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
+import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.FileFactory;
 
 public class SpoilerView extends CB_View_Base {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(SpoilerView.class);
-    private final static int MAX_THUMB_WIDTH=500;
-    private final static int MAX_OVERVIEW_THUMB_WIDTH=240;
-	
-	
+	private final static int MAX_THUMB_WIDTH = 500;
+	private final static int MAX_OVERVIEW_THUMB_WIDTH = 240;
+
 	Cache actCache;
-	CB_List<GalleryItem> galleryItems = new CB_List<GalleryItem>();
+	CB_List<GalleryBigItem> bigItems = new CB_List<GalleryBigItem>();
 	CB_List<GalleryItem> overviewItems = new CB_List<GalleryItem>();
 	GalleryView gallery;
 	GalleryView galleryOverwiew;
@@ -96,8 +97,8 @@ public class SpoilerView extends CB_View_Base {
 				Log.info(log, "has Spoiler.");
 
 				GalleryItem firstItem = null;
-				synchronized (galleryItems) {
-					galleryItems.clear();
+				synchronized (bigItems) {
+					bigItems.clear();
 					overviewItems.clear();
 
 					CB_RectF orItemRec = galleryOverwiew.copy();
@@ -109,17 +110,26 @@ public class SpoilerView extends CB_View_Base {
 						Log.info(log, "Image Nr.: " + i + " from " + imageEntry.LocalPath);
 
 						ImageLoader loader = new ImageLoader(true); // image loader with thumb
-						loader.setThumbWidth(MAX_THUMB_WIDTH,"");
+						loader.setThumbWidth(MAX_THUMB_WIDTH, "");
 						loader.setImage(imageEntry.LocalPath);
-						GalleryItem item = new GalleryItem(gallery.copy(), i, loader);
+						String label;
+						if (imageEntry.Name.length() > 0) {
+							// label = imageEntry.Name;
+							label = FileIO.GetFileNameWithoutExtension(imageEntry.LocalPath);
+						} else {
+							label = FileIO.GetFileNameWithoutExtension(imageEntry.LocalPath);
+						}
+						if (imageEntry.Description.length() > 0)
+							label = label + "\n" + imageEntry.Description;
+						GalleryBigItem item = new GalleryBigItem(gallery.copy(), i, loader, label);
 						item.setOnDoubleClickListener(onItemClickListener);
-						galleryItems.add(item);
+						bigItems.add(item);
 
 						ImageLoader overviewloader = new ImageLoader(true); // image loader with thumb
-						overviewloader.setThumbWidth(MAX_OVERVIEW_THUMB_WIDTH,FileFactory.THUMB_OVERVIEW);
+						overviewloader.setThumbWidth(MAX_OVERVIEW_THUMB_WIDTH, FileFactory.THUMB_OVERVIEW);
 						overviewloader.setImage(imageEntry.LocalPath);
 						GalleryItem overviewItem = new GalleryItem(orItemRec, i, loader);
-						overviewItem.setOnClickListener(onItemselectClickListener);
+						overviewItem.setOnClickListener(onItemSelectClickListener);
 						if (firstItem == null)
 							firstItem = overviewItem;
 						overviewItems.add(overviewItem);
@@ -136,7 +146,7 @@ public class SpoilerView extends CB_View_Base {
 					galleryOverwiew.scrollItemToCenter(0);
 				}
 			} else {
-				galleryItems.clear();
+				bigItems.clear();
 				overviewItems.clear();
 				gallery.reloadItems();
 				galleryOverwiew.reloadItems();
@@ -157,7 +167,7 @@ public class SpoilerView extends CB_View_Base {
 		galleryOverwiew.setPos(0, this.getHeight() - galleryOverwiew.getHeight());
 
 		//resize gallery items
-		for (GalleryItem item : galleryItems) {
+		for (GalleryBigItem item : bigItems) {
 			item.setRec(gr);
 		}
 		gallery.reloadItemsNow();
@@ -184,32 +194,32 @@ public class SpoilerView extends CB_View_Base {
 
 		@Override
 		public int getCount() {
-			synchronized (galleryItems) {
-				if (galleryItems == null)
+			synchronized (bigItems) {
+				if (bigItems == null)
 					return 0;
-				return galleryItems.size();
+				return bigItems.size();
 			}
 		}
 
 		@Override
 		public ListViewItemBase getView(int position) {
-			synchronized (galleryItems) {
-				if (galleryItems == null)
+			synchronized (bigItems) {
+				if (bigItems == null)
 					return null;
-				if (galleryItems.size() == 0)
+				if (bigItems.size() == 0)
 					return null;
-				return galleryItems.get(position);
+				return bigItems.get(position);
 			}
 		}
 
 		@Override
 		public float getItemSize(int position) {
-			synchronized (galleryItems) {
-				if (galleryItems == null)
+			synchronized (bigItems) {
+				if (bigItems == null)
 					return 0;
-				if (galleryItems.size() == 0)
+				if (bigItems.size() == 0)
 					return 0;
-				GalleryItem item = galleryItems.get(position);
+				GalleryBigItem item = bigItems.get(position);
 				if (item != null)
 					return item.getWidth();
 				return 0;
@@ -260,21 +270,20 @@ public class SpoilerView extends CB_View_Base {
 
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-			Image selectionImage = ((GalleryItem) v).getImage();
-			
-			
-			String path=selectionImage.getImageLoader().getOriginalImagePath();
-			
-			Image img =new Image(SpoilerView.this, "Image for Activity", true);
+			Image selectionImage = ((GalleryBigItem) v).getImage();
+
+			String path = selectionImage.getImageLoader().getOriginalImagePath();
+
+			Image img = new Image(SpoilerView.this, "Image for Activity", true);
 			img.setImage(path);
-			
+
 			ImageActivity ac = new ImageActivity(img);
 			ac.show();
 			return true;
 		}
 	};
 
-	private final OnClickListener onItemselectClickListener = new OnClickListener() {
+	private final OnClickListener onItemSelectClickListener = new OnClickListener() {
 
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -292,7 +301,7 @@ public class SpoilerView extends CB_View_Base {
 	public String getSelectedFilePath() {
 		String file = null;
 		try {
-			file = ((GalleryItem) gallery.getSelectedItem()).getImage().getImageLoader().getImagePath();
+			file = ((GalleryBigItem) gallery.getSelectedItem()).getImage().getImageLoader().getImagePath();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
