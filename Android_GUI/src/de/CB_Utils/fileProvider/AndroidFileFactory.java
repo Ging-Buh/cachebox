@@ -1,5 +1,7 @@
 package de.CB_Utils.fileProvider;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -8,7 +10,6 @@ import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
 
 /**
  * Created by Longri on 17.02.2016.
@@ -47,17 +48,37 @@ public class AndroidFileFactory extends FileFactory {
 	if (ThumbFile.exists())
 		return ThumbPath;
 
-	Bitmap ori = BitmapFactory.decodeFile(Path);
+	BitmapFactory.Options options = new BitmapFactory.Options();
+	options.inJustDecodeBounds = true;
 
-	float scalefactor = (float) scaledWidth / (float) ori.getWidth();
+	BitmapFactory.decodeFile(Path, options);
+
+	int oriWidth = options.outWidth;
+	int oriHeight = options.outHeight;
+	float scalefactor = (float) scaledWidth / (float) oriWidth;
 
 	if (scalefactor >= 1)
 		return Path; // don't need a thumb, return original path
 
-	int newHeight = (int) (ori.getHeight() * scalefactor);
-	int newWidth = (int) (ori.getWidth() * scalefactor);
+	int newHeight = (int) (oriHeight * scalefactor);
+	int newWidth = (int) (oriWidth * scalefactor);
 
-	Bitmap resized = ThumbnailUtils.extractThumbnail(ori, newWidth, newHeight);
+	final int REQUIRED_WIDTH = newWidth;
+	final int REQUIRED_HIGHT = newHeight;
+	//Find the correct scale value. It should be the power of 2.
+	int scale = 1;
+	while (oriWidth / scale / 2 >= REQUIRED_WIDTH && oriHeight / scale / 2 >= REQUIRED_HIGHT)
+		scale *= 2;
+
+	BitmapFactory.Options o2 = new BitmapFactory.Options();
+	o2.inSampleSize = scale;
+	Bitmap resized = null;
+	try {
+		resized = BitmapFactory.decodeStream(new FileInputStream(Path), null, o2);
+	} catch (FileNotFoundException e1) {
+
+		e1.printStackTrace();
+	}
 
 	FileOutputStream out = null;
 	try {
@@ -71,7 +92,6 @@ public class AndroidFileFactory extends FileFactory {
 		resized.compress(format, 80, out);
 
 		resized.recycle();
-		ori.recycle();
 
 		return ThumbPath;
 	} catch (Exception e) {
