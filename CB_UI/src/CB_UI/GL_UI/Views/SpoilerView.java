@@ -15,8 +15,11 @@
  */
 package CB_UI.GL_UI.Views;
 
+import java.util.ArrayList;
+
 import org.slf4j.LoggerFactory;
 
+import CB_Core.DAO.ImageDAO;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 import CB_UI.GlobalCore;
@@ -47,6 +50,7 @@ public class SpoilerView extends CB_View_Base {
 	GalleryView gallery;
 	GalleryView galleryOverwiew;
 	boolean forceReload = false;
+	ImageDAO imageDAO = new ImageDAO();
 
 	public SpoilerView(CB_RectF rec, String Name) {
 		super(rec, Name);
@@ -104,23 +108,25 @@ public class SpoilerView extends CB_View_Base {
 					CB_RectF orItemRec = galleryOverwiew.copy();
 					orItemRec.setWidth(galleryOverwiew.getHeight());
 
+					ArrayList<ImageEntry> dbImages = imageDAO.getImagesForCache(actCache.getGcCode());
+
 					Log.info(log, "make images");
 					for (int i = 0, n = actCache.getSpoilerRessources().size(); i < n; i++) {
 						ImageEntry imageEntry = actCache.getSpoilerRessources().get(i);
 						Log.info(log, "Image Nr.: " + i + " from " + imageEntry.LocalPath);
-
+						String description = "";
+						for (ImageEntry dbImage : dbImages) {
+							if (dbImage.Name.toLowerCase().endsWith(imageEntry.Name.toLowerCase())) {
+								description = dbImage.Description;
+								break;
+							}
+						}
 						ImageLoader loader = new ImageLoader(true); // image loader with thumb
 						loader.setThumbWidth(MAX_THUMB_WIDTH, "");
 						loader.setImage(imageEntry.LocalPath);
-						String label;
-						if (imageEntry.Name.length() > 0) {
-							// label = imageEntry.Name;
-							label = FileIO.GetFileNameWithoutExtension(imageEntry.LocalPath);
-						} else {
-							label = FileIO.GetFileNameWithoutExtension(imageEntry.LocalPath);
-						}
-						if (imageEntry.Description.length() > 0)
-							label = label + "\n" + imageEntry.Description;
+						String label = FileIO.GetFileNameWithoutExtension(imageEntry.Name);
+						if (description.length() > 0)
+							label = label + "\n" + description;
 						GalleryBigItem item = new GalleryBigItem(gallery.copy(), i, loader, label);
 						item.setOnDoubleClickListener(onItemClickListener);
 						bigItems.add(item);
