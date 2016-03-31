@@ -69,6 +69,10 @@ public class AndroidFileFactory extends FileFactory {
 		format = Bitmap.CompressFormat.JPEG;
 
 		resized.compress(format, 80, out);
+
+		resized.recycle();
+		ori.recycle();
+
 		return ThumbPath;
 	} catch (Exception e) {
 		e.printStackTrace();
