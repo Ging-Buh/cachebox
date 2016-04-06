@@ -55,4 +55,8 @@ public abstract class FileFactory {
 
 	protected abstract String createPlatformThumb(String Path, int scaledWidth, String thumbPrefix);
 
+	public static boolean isInitial() {
+	return INSTANCE != null;
+	}
+
 }
