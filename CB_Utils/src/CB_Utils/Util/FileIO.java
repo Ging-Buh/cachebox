@@ -73,23 +73,28 @@ public class FileIO {
 	 * @return
 	 */
 	public static boolean checkWritePermission(String Path) {
+		boolean result = true;
 		try {
-			String testFolderName = Path + "/Test";
+			String testFolderName = Path + "/Test/";
 
 			File testFolder = FileFactory.createFile(testFolderName);
-			File test = FileFactory.createFile(testFolderName + "/Test.txt");
-			testFolder.mkdirs();
-			test.createNewFile();
-			if (!test.exists()) {
-				return false;
+			if (testFolder.mkdirs()) {
+				File test = FileFactory.createFile(testFolderName + "Test.txt");
+				test.createNewFile();
+				if (!test.exists()) {
+					result = false;
+				} else {
+					test.delete();
+					testFolder.delete();
+				}
+			} else {
+				result = false;
 			}
-			test.delete();
-			testFolder.delete();
 		} catch (IOException e) {
+			result = false;
 			e.printStackTrace();
-			return false;
 		}
-		return true;
+		return result;
 	}
 
 	/**

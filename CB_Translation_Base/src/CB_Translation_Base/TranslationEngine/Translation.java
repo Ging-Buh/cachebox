@@ -154,7 +154,7 @@ public class Translation {
 	 */
 	public static void writeMisingStringsFile() throws IOException {
 		if (that != null)
-			that.writeMisingStrings();
+			that.writeMissingStrings();
 	}
 
 	/**
@@ -384,7 +384,7 @@ public class Translation {
 		return Temp;
 	}
 
-	private void writeMisingStrings() throws IOException {
+	private void writeMissingStrings() throws IOException {
 		File file = FileFactory.createFile(mWorkPath + "/debug.txt");
 
 		if (file.exists()) {

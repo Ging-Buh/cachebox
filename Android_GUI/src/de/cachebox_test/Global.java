@@ -109,7 +109,7 @@ public class Global {
 	private static int mInvertBlack = -1;
 
 	/**
-	 * gibt die resultierende Farbe für Schwarz zurück, wenn der Invert Filter
+	 * gibt die resultierende Farbe für White zurück, wenn der Invert Filter
 	 * angewandt wurde.
 	 * 
 	 * @return int (Color)
@@ -135,7 +135,7 @@ public class Global {
 	}
 
 	/**
-	 * enthält die resultierende Farbe für Schwarz, wenn der Invert Filter
+	 * enthält die resultierende Farbe für White, wenn der Invert Filter
 	 * angewandt wurde.
 	 */
 	private static int mInvertWhite = -1;
