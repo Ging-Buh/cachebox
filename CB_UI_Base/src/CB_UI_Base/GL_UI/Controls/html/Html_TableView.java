@@ -36,113 +36,116 @@ public class Html_TableView extends Box implements ListLayout {
 
 	public Html_TableView(float innerWidth, HTML_Segment_Table seg2) {
 
-		super(innerWidth * 4f, 100f, "HTML_TableView");
+	super(innerWidth * 4f, 100f, "HTML_TableView");
 
-		this.seg = seg2;
+	this.seg = seg2;
 
-		if (seg.getBorderSize() > 0) {
-			this.setBorderSize(seg.getBorderSize());
-		}
-		layout(null);
+	if (seg.getBorderSize() > 0) {
+		this.setBorderSize(seg.getBorderSize());
+	}
+	layout(null);
 	}
 
 	@Override
 	public void layout(CB_List<CB_View_Base> segmentViewList) {
 
-		this.removeChilds();
+	if (this.isDisposed())
+		return;
 
-		int colCount = seg.tableSegments.get(0).size();
+	this.removeChilds();
 
-		float[] colWidth = new float[colCount];
+	int colCount = seg.tableSegments.get(0).size();
 
-		this.initRow();
+	float[] colWidth = new float[colCount];
 
-		float cellSpacing = seg.getCellspacing();
+	this.initRow();
 
-		float lastRowYPos = cellSpacing;
-		boolean firstRow = true;
-		for (ArrayList<ArrayList<Html_Segment>> row : seg.tableSegments) {
+	float cellSpacing = seg.getCellspacing();
 
-			// create Row box
-			Box rowBox = new Box(this, "Table Row Box");
-			rowBox.initRow();
-			boolean firstCol = true;
-			int colIdx = 0;
-			for (ArrayList<Html_Segment> col : row) {
-				// create Col box
+	float lastRowYPos = cellSpacing;
+	boolean firstRow = true;
+	for (ArrayList<ArrayList<Html_Segment>> row : seg.tableSegments) {
 
-				// add content
-				segmentViewList = new CB_List<CB_View_Base>();
+		// create Row box
+		Box rowBox = new Box(this, "Table Row Box");
+		rowBox.initRow();
+		boolean firstCol = true;
+		int colIdx = 0;
+		for (ArrayList<Html_Segment> col : row) {
+		// create Col box
 
-				HtmlView.addViewsToBox(col, segmentViewList, innerWidth, this);
+		// add content
+		segmentViewList = new CB_List<CB_View_Base>();
 
-				Box colBox = HtmlView.addViewsToContentBox(this, segmentViewList);
+		HtmlView.addViewsToBox(col, segmentViewList, innerWidth, this);
 
-				colWidth[colIdx] = Math.max(colWidth[colIdx++], colBox.getWidth());
+		Box colBox = HtmlView.addViewsToContentBox(this, segmentViewList);
 
-				rowBox.addNext(colBox, CB_View_Base.FIXED);
-				rowBox.setHeight(Math.max(rowBox.getHeight(), colBox.getHeight()));
-				if (firstCol) {
-					rowBox.setWidth(colBox.getWidth());
-					firstCol = false;
-				} else {
-					rowBox.setWidth(rowBox.getWidth() + colBox.getWidth());
-				}
+		colWidth[colIdx] = Math.max(colWidth[colIdx++], colBox.getWidth());
 
-				if (seg.getBorderSize() > 0) {
-					colBox.setBorderSize(seg.getBorderSize());
-				}
-
-			}
-			rowBox.FinaliseRow();
-			if (firstRow) {
-				firstRow = false;
-				lastRowYPos = seg.getBorderSize();
-			}
-			rowBox.setY(lastRowYPos);
-			lastRowYPos += rowBox.getHeight() + cellSpacing;
-			this.setWidth(rowBox.getWidth());
-			this.addChild(rowBox);
+		rowBox.addNext(colBox, CB_View_Base.FIXED);
+		rowBox.setHeight(Math.max(rowBox.getHeight(), colBox.getHeight()));
+		if (firstCol) {
+			rowBox.setWidth(colBox.getWidth());
+			firstCol = false;
+		} else {
+			rowBox.setWidth(rowBox.getWidth() + colBox.getWidth());
 		}
-		this.setHeight(lastRowYPos + cellSpacing + seg.getBorderSize() + 2);
 
-		// repos rows
-		Iterator<GL_View_Base> reverse = this.getchilds().reverseIterator();
-
-		float newYPos = cellSpacing + seg.getBorderSize() + 1;
-
-		while (reverse.hasNext()) {
-			GL_View_Base v = reverse.next();
-			v.setY(newYPos);
-
-			// set all col to max height
-			Iterator<GL_View_Base> childIterator = v.getchilds().iterator();
-			float newXPos = cellSpacing + seg.getBorderSize() + 1;
-			float rowWidth = cellSpacing + seg.getBorderSize() + 1;
-			int colIdx = 0;
-			while (childIterator.hasNext()) {
-				GL_View_Base col = childIterator.next();
-				col.setSize(colWidth[colIdx++], v.getHeight());
-				col.setY(0);
-				col.setX(newXPos);
-				newXPos = col.getMaxX() + cellSpacing;
-				rowWidth += col.getWidth() + cellSpacing;
-			}
-
-			v.setWidth(rowWidth + cellSpacing + seg.getBorderSize() + 1);
-			this.setWidth(v.getWidth());
-			newYPos = v.getMaxY() + cellSpacing;
+		if (seg.getBorderSize() > 0) {
+			colBox.setBorderSize(seg.getBorderSize());
 		}
+
+		}
+		rowBox.FinaliseRow();
+		if (firstRow) {
+		firstRow = false;
+		lastRowYPos = seg.getBorderSize();
+		}
+		rowBox.setY(lastRowYPos);
+		lastRowYPos += rowBox.getHeight() + cellSpacing;
+		this.setWidth(rowBox.getWidth());
+		this.addChild(rowBox);
+	}
+	this.setHeight(lastRowYPos + cellSpacing + seg.getBorderSize() + 2);
+
+	// repos rows
+	Iterator<GL_View_Base> reverse = this.getchilds().reverseIterator();
+
+	float newYPos = cellSpacing + seg.getBorderSize() + 1;
+
+	while (reverse.hasNext()) {
+		GL_View_Base v = reverse.next();
+		v.setY(newYPos);
+
+		// set all col to max height
+		Iterator<GL_View_Base> childIterator = v.getchilds().iterator();
+		float newXPos = cellSpacing + seg.getBorderSize() + 1;
+		float rowWidth = cellSpacing + seg.getBorderSize() + 1;
+		int colIdx = 0;
+		while (childIterator.hasNext()) {
+		GL_View_Base col = childIterator.next();
+		col.setSize(colWidth[colIdx++], v.getHeight());
+		col.setY(0);
+		col.setX(newXPos);
+		newXPos = col.getMaxX() + cellSpacing;
+		rowWidth += col.getWidth() + cellSpacing;
+		}
+
+		v.setWidth(rowWidth + cellSpacing + seg.getBorderSize() + 1);
+		this.setWidth(v.getWidth());
+		newYPos = v.getMaxY() + cellSpacing;
+	}
 
 	}
 
 	public float getContentWidth() {
-		return this.getWidth();
+	return this.getWidth();
 	}
 
 	@Override
 	public void resize(float width, float height) {
-		System.out.println("resize " + width + "/" + height);
+	System.out.println("resize " + width + "/" + height);
 	}
 
 }
