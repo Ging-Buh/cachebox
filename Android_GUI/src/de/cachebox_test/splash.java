@@ -992,7 +992,6 @@ public class splash extends Activity {
 	// Unique request code.
 	private static final int WRITE_REQUEST_CODE = 43;
 
-	@TargetApi(Build.VERSION_CODES.KITKAT)
 	private void Initial(int width, int height) {
 		// Jetzt ist der workPath erstmal festgelegt.
 		Log.debug(log, "Initial()");
