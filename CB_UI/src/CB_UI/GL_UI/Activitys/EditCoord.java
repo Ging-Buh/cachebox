@@ -19,17 +19,13 @@ import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
-import CB_UI_Base.GL_UI.Controls.PopUps.CopyPastePopUp;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.interfaces.ICopyPaste;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Converter.UTMConvert;
 
-public class EditCoord extends ActivityBase implements ICopyPaste {
+public class EditCoord extends ActivityBase {
 	private int aktPage = -1; // Deg-Min
 	private final UTMConvert convert = new UTMConvert();
-	private CopyPastePopUp popUp;
 	private Coordinate cancelCoord;
 	private Coordinate coord;
 	private ReturnListener mReturnListener;
@@ -69,6 +65,8 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 	private Button[] btnUTMLon;
 	private Button[] btnUTMZone;
 	Button Leertaste; // additional to numeric input (for "deleting" input)
+
+	String sCoord;
 
 	public interface ReturnListener {
 		public void returnCoord(Coordinate coord);
@@ -163,56 +161,19 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 			}
 		});
 
-		this.setOnLongClickListener(mLongClickListener);
-
-	}
-
-	OnClickListener mLongClickListener = new OnClickListener() {
-		@Override
-		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-			showPopUp(x, y);
-			return true;
-		}
-	};
-
-	protected void showPopUp(int x, int y) {
-
-		popUp = new CopyPastePopUp("CopyPastePopUp=>" + getName(), this);
-
-		float noseOffset = popUp.getHalfWidth() / 2;
-
-		// Logger.LogCat("Show CopyPaste PopUp");
-
-		CB_RectF world = getWorldRec();
-
-		// not enough place on Top?
-		float windowH = UI_Size_Base.that.getWindowHeight();
-		float windowW = UI_Size_Base.that.getWindowWidth();
-		float worldY = world.getY();
-
-		if (popUp.getHeight() + worldY > windowH * 0.8f) {
-			popUp.flipX();
-			worldY -= popUp.getHeight() + (popUp.getHeight() * 0.2f);
-		}
-
-		x += world.getX() - noseOffset;
-
-		if (x < 0)
-			x = 0;
-		if (x + popUp.getWidth() > windowW)
-			x = (int) (windowW - popUp.getWidth());
-
-		y += worldY + (popUp.getHeight() * 0.2f);
-		popUp.show(x, y);
 	}
 
 	@Override
 	protected void Initial() {
-		this.pnlNumPad.setOnLongClickListener(mLongClickListener);
+		bDec.setOnDoubleClickListener(mDoubleClickListener);
+		bMin.setOnDoubleClickListener(mDoubleClickListener);
+		bSec.setOnDoubleClickListener(mDoubleClickListener);
+		bUtm.setOnDoubleClickListener(mDoubleClickListener);
 
 		bDec.setOnClickListener(new OnClickListener() {
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				bDec.setState(1);
 				showPage(0);
 				return true;
 			}
@@ -221,6 +182,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 		bMin.setOnClickListener(new OnClickListener() {
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				bMin.setState(1);
 				showPage(1);
 				return true;
 			}
@@ -229,6 +191,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 		bSec.setOnClickListener(new OnClickListener() {
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				bSec.setState(1);
 				showPage(2);
 				return true;
 			}
@@ -237,6 +200,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 		bUtm.setOnClickListener(new OnClickListener() {
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				bUtm.setState(1);
 				showPage(3);
 				return true;
 			}
@@ -247,8 +211,20 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 
 	}
 
+	OnClickListener mDoubleClickListener = new OnClickListener() {
+		@Override
+		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+			MultiToggleButton mtb = (MultiToggleButton) v;
+			mtb.setState(1);
+			if (clipboard != null) {
+				parseView();
+				clipboard.setContents(sCoord);
+			}
+			return true;
+		}
+	};
+
 	private void createD(Box panel) {
-		panel.setOnLongClickListener(mLongClickListener);
 
 		this.btnDLat = new Button[9]; // N_48[.]46270[°]
 		this.btnDLon = new Button[9]; // E009[.]28468[°]
@@ -279,7 +255,6 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 	}
 
 	private void createDM(Box panel) {
-		panel.setOnLongClickListener(mLongClickListener);
 
 		this.btnDMLat = new Button[9]; // N_48[°]29[.]369
 		this.btnDMLon = new Button[9]; // E__9[°]15[.]807
@@ -315,7 +290,6 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 	}
 
 	private void createDMS(Box panel) {
-		panel.setOnLongClickListener(mLongClickListener);
 
 		this.btnDMSLat = new Button[10]; // N_48[°]28[']56[.]16["]
 		this.btnDMSLon = new Button[10]; // E__9[°]19[']40[.]14["]
@@ -360,7 +334,6 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 	}
 
 	private void createUTM(Box panel) {
-		panel.setOnLongClickListener(mLongClickListener);
 
 		this.btnUTMLat = new Button[8]; // N < 10,000,000
 		this.btnUTMLon = new Button[8]; // E > 160,000 and < 834,000 (2 unsichtbar)
@@ -910,117 +883,66 @@ public class EditCoord extends ActivityBase implements ICopyPaste {
 	}
 
 	private boolean parseView() {
-		String scoord = "";
+		sCoord = "";
 		switch (aktPage) {
 		case 0:
-			scoord += this.btnDLat[0].getText() + " "; // N/S
-			scoord += this.btnDLat[2].getText() + this.btnDLat[3].getText() + "."; // Deg 1
+			sCoord += this.btnDLat[0].getText() + " "; // N/S
+			sCoord += this.btnDLat[2].getText() + this.btnDLat[3].getText() + "."; // Deg 1
 			for (int i = 4; i < 9; i++)
-				scoord += this.btnDLat[i].getText(); // Deg 2
-			scoord += "\u00B0";
-			scoord += this.btnDLon[0].getText() + " "; // W/E
-			scoord += this.btnDLon[1].getText() + this.btnDLon[2].getText() + this.btnDLon[3].getText() + "."; // Deg 1
+				sCoord += this.btnDLat[i].getText(); // Deg 2
+			sCoord += "\u00B0";
+			sCoord += this.btnDLon[0].getText() + " "; // W/E
+			sCoord += this.btnDLon[1].getText() + this.btnDLon[2].getText() + this.btnDLon[3].getText() + "."; // Deg 1
 			for (int i = 4; i < 9; i++)
-				scoord += this.btnDLon[i].getText(); // Deg 2
-			scoord += "\u00B0";
+				sCoord += this.btnDLon[i].getText(); // Deg 2
+			sCoord += "\u00B0";
 			break;
 		case 1:
-			scoord += this.btnDMLat[0].getText() + " "; // N/S
-			scoord += this.btnDMLat[2].getText() + this.btnDMLat[3].getText() + "\u00B0 "; // Deg
-			scoord += this.btnDMLat[4].getText() + this.btnDMLat[5].getText() + "."; // Min 1
-			scoord += this.btnDMLat[6].getText() + this.btnDMLat[7].getText() + this.btnDMLat[8].getText() + "\u0027 "; // Min 2
-			scoord += this.btnDMLon[0].getText() + " "; // W/E
-			scoord += this.btnDMLon[1].getText() + this.btnDMLon[2].getText() + this.btnDMLon[3].getText() + "\u00B0 "; // Deg
-			scoord += this.btnDMLon[4].getText() + this.btnDMLon[5].getText() + "."; // Min 1
-			scoord += this.btnDMLon[6].getText() + this.btnDMLon[7].getText() + this.btnDMLon[8].getText() + "\u0027"; // Min 2
+			sCoord += this.btnDMLat[0].getText() + " "; // N/S
+			sCoord += this.btnDMLat[2].getText() + this.btnDMLat[3].getText() + "\u00B0 "; // Deg
+			sCoord += this.btnDMLat[4].getText() + this.btnDMLat[5].getText() + "."; // Min 1
+			sCoord += this.btnDMLat[6].getText() + this.btnDMLat[7].getText() + this.btnDMLat[8].getText() + "\u0027 "; // Min 2
+			sCoord += this.btnDMLon[0].getText() + " "; // W/E
+			sCoord += this.btnDMLon[1].getText() + this.btnDMLon[2].getText() + this.btnDMLon[3].getText() + "\u00B0 "; // Deg
+			sCoord += this.btnDMLon[4].getText() + this.btnDMLon[5].getText() + "."; // Min 1
+			sCoord += this.btnDMLon[6].getText() + this.btnDMLon[7].getText() + this.btnDMLon[8].getText() + "\u0027"; // Min 2
 			break;
 		case 2:
-			scoord += this.btnDMSLat[0].getText() + " "; // N/S
-			scoord += this.btnDMSLat[2].getText() + this.btnDMSLat[3].getText() + "\u00B0 "; // Deg
-			scoord += this.btnDMSLat[4].getText() + this.btnDMSLat[5].getText() + "\u0027 "; // Min
-			scoord += this.btnDMSLat[6].getText() + this.btnDMSLat[7].getText() + "."; // Sec 1
-			scoord += this.btnDMSLat[8].getText() + this.btnDMSLat[9].getText() + "\\u0022 "; // Sec 2
-			scoord += this.btnDMSLon[0].getText() + " "; // W/E
-			scoord += this.btnDMSLon[1].getText() + this.btnDMSLon[2].getText() + this.btnDMSLon[3].getText() + "\u00B0 "; // Deg
-			scoord += this.btnDMSLon[4].getText() + this.btnDMSLon[5].getText() + "\u0027 "; // Min
-			scoord += this.btnDMSLon[6].getText() + this.btnDMSLon[7].getText() + "."; // Sec 1
-			scoord += this.btnDMSLon[8].getText() + this.btnDMSLon[9].getText() + "\\u0022"; // Sec 2
+			sCoord += this.btnDMSLat[0].getText() + " "; // N/S
+			sCoord += this.btnDMSLat[2].getText() + this.btnDMSLat[3].getText() + "\u00B0 "; // Deg
+			sCoord += this.btnDMSLat[4].getText() + this.btnDMSLat[5].getText() + "\u0027 "; // Min
+			sCoord += this.btnDMSLat[6].getText() + this.btnDMSLat[7].getText() + "."; // Sec 1
+			sCoord += this.btnDMSLat[8].getText() + this.btnDMSLat[9].getText() + "\" "; // Sec 2
+			sCoord += this.btnDMSLon[0].getText() + " "; // W/E
+			sCoord += this.btnDMSLon[1].getText() + this.btnDMSLon[2].getText() + this.btnDMSLon[3].getText() + "\u00B0 "; // Deg
+			sCoord += this.btnDMSLon[4].getText() + this.btnDMSLon[5].getText() + "\u0027 "; // Min
+			sCoord += this.btnDMSLon[6].getText() + this.btnDMSLon[7].getText() + "."; // Sec 1
+			sCoord += this.btnDMSLon[8].getText() + this.btnDMSLon[9].getText() + "\""; // Sec 2
 			break;
 		case 3:
 			for (int i = 0; i < 3; i++) {
-				scoord += this.btnUTMZone[i].getText();
+				sCoord += this.btnUTMZone[i].getText();
 			}
-			scoord += " ";
+			sCoord += " ";
 			for (int i = 0; i < this.btnUTMLon.length; i++) {
 				if (this.btnUTMLon.length > 0)
-					scoord += this.btnUTMLon[i].getText();
+					sCoord += this.btnUTMLon[i].getText();
 			}
-			scoord += " ";
+			sCoord += " ";
 			for (int i = 0; i < this.btnUTMLat.length; i++) {
 				if (this.btnUTMLat.length > 0)
-					scoord += this.btnUTMLat[i].getText();
+					sCoord += this.btnUTMLat[i].getText();
 			}
-			scoord = scoord.replace("null", ""); // TODO ??? warum kommt hier der Text "null" von getText() ?
+			sCoord = sCoord.replace("null", ""); // TODO ??? warum kommt hier der Text "null" von getText() ?
 			break;
 		}
 
-		CoordinateGPS newCoord = new CoordinateGPS(scoord);
+		CoordinateGPS newCoord = new CoordinateGPS(sCoord);
 		if (newCoord.isValid()) {
 			coord = newCoord;
 			return true;
 		} else
 			return false;
-	}
-
-	@Override
-	public String pasteFromClipboard() {
-		if (clipboard == null)
-			return null;
-		String content = clipboard.getContents();
-		CoordinateGPS cor = null;
-		if (content != null) {
-			try {
-				cor = new CoordinateGPS(content);
-			} catch (Exception e) {
-			}
-
-			if (cor != null && cor.isValid()) {
-				coord = cor;
-				setButtonValues(aktPage);
-				return content;
-			} else
-				return Translation.Get("cantPaste") + GlobalCore.br + content;
-		}
-		return null;
-	}
-
-	@Override
-	public String copyToClipboard() {
-		if (clipboard == null)
-			return null;
-		parseView(); // setting coord
-		String content = coord.FormatCoordinate();
-		clipboard.setContents(content);
-		return content;
-	}
-
-	@Override
-	public String cutToClipboard() {
-		if (clipboard == null)
-			return null;
-		parseView(); // setting coord
-		String content = coord.FormatCoordinate();
-		clipboard.setContents(content);
-		CoordinateGPS cor = new CoordinateGPS("N 0° 0.00 / E 0° 0.00");
-		cor.setValid(false);
-		coord = cor;
-		setButtonValues(aktPage);
-		return content;
-	}
-
-	@Override
-	public boolean isEditable() {
-		return true;
 	}
 
 }

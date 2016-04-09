@@ -115,10 +115,19 @@ public class SpoilerView extends CB_View_Base {
 						ImageEntry imageEntry = actCache.getSpoilerRessources().get(i);
 						Log.info(log, "Image Nr.: " + i + " from " + imageEntry.LocalPath);
 						String description = "";
+						String localName = FileIO.GetFileNameWithoutExtension(imageEntry.LocalPath);
 						for (ImageEntry dbImage : dbImages) {
-							if (dbImage.Name.toLowerCase().endsWith(imageEntry.Name.toLowerCase())) {
-								description = dbImage.Description;
+							String localNameFromDB = FileIO.GetFileNameWithoutExtension(dbImage.LocalPath);
+							if (localNameFromDB.equals(localName)) {
+								// Description
+								description = dbImage.Name + "\n" + dbImage.Description;
 								break;
+							} else {
+								if (FileIO.GetFileNameWithoutExtension(dbImage.Name).equals(localName)) {
+									// Spoiler
+									description = dbImage.Description;
+									break;
+								}
 							}
 						}
 						ImageLoader loader = new ImageLoader(true); // image loader with thumb
@@ -126,7 +135,7 @@ public class SpoilerView extends CB_View_Base {
 						loader.setImage(imageEntry.LocalPath);
 						String label = FileIO.GetFileNameWithoutExtension(imageEntry.Name);
 						if (description.length() > 0)
-							label = label + "\n" + description;
+							label = description;
 						GalleryBigItem item = new GalleryBigItem(gallery.copy(), i, loader, label);
 						item.setOnDoubleClickListener(onItemClickListener);
 						bigItems.add(item);

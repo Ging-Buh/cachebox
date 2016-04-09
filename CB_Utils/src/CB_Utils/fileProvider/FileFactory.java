@@ -33,7 +33,7 @@ public abstract class FileFactory {
 	return INSTANCE.createPlatformFile(parent, child);
 	}
 
-	public static String createThump(String path, int scaledWidth, String thumbPrefix) {
+	public static String createThumb(String path, int scaledWidth, String thumbPrefix) {
 	if (INSTANCE == null)
 		throw new RuntimeException("no platform specific FileFactory instance!");
 	return INSTANCE.createPlatformThumb(path, scaledWidth, thumbPrefix);

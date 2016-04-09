@@ -48,7 +48,11 @@ public class Coordinate extends LatLong implements Serializable {
 	}
 
 	/**
-	 * Gibt einen Formatierten String dieser Koordinate wieder
+	 * Gibt einen formatierten String dieser Koordinate wieder
+	 *   54°47′15.96″N 5°21′12.32″O
+	 * N 48° 40.441 E 009° 23.470
+	 *   54.787767° 5.353422°
+	 * UTM: 32U E 528797 N 5391292
 	 * 
 	 * @return
 	 */
@@ -60,28 +64,28 @@ public class Coordinate extends LatLong implements Serializable {
 	}
 
 	/**
-	 * Gibt einen Formatierten String dieser Koordinate in zwei Zeilen wieder
+	 * Gibt einen formatierten String dieser Koordinate in zwei Zeilen wieder
 	 * 
 	 * @return
 	 */
-	public String FormatCoordinateLineBreake() {
+	public String formatCoordinateLineBreak() {
 		if (Valid)
 			return Formatter.FormatLatitudeDM(getLatitude()) + br + Formatter.FormatLongitudeDM(getLongitude());
 		else
 			return "not Valid";
 	}
 
-	private static final double ERTH_RADIUS = 6378137.0;
+	private static final double EARTH_RADIUS = 6378137.0;
 
 	public static Coordinate Project(double Latitude, double Longitude, double Direction, double Distance) {
-		double dist = Distance / ERTH_RADIUS; // convert dist to angular distance in radians
+		double dist = Distance / EARTH_RADIUS; // convert dist to angular distance in radians
 		double brng = Direction * MathUtils.DEG_RAD; //
 		double lat1 = Latitude * MathUtils.DEG_RAD;
 		double lon1 = Longitude * MathUtils.DEG_RAD;
 
 		double lat2 = Math.asin(Math.sin(lat1) * Math.cos(dist) + Math.cos(lat1) * Math.sin(dist) * Math.cos(brng));
 		double lon2 = lon1 + Math.atan2(Math.sin(brng) * Math.sin(dist) * Math.cos(lat1), Math.cos(dist) - Math.sin(lat1) * Math.sin(lat2));
-		lon2 = (lon2 + 3 * Math.PI) % (2 * Math.PI) - Math.PI; // normalise to -180..+180�
+		lon2 = (lon2 + 3 * Math.PI) % (2 * Math.PI) - Math.PI; // normalise to -180°..+180°
 
 		Coordinate result = new Coordinate(lat2 * MathUtils.RAD_DEG, lon2 * MathUtils.RAD_DEG);
 		result.Valid = true;
@@ -391,26 +395,6 @@ public class Coordinate extends LatLong implements Serializable {
 	@Override
 	public String toString() {
 		return FormatCoordinate();
-	}
-
-	@Override
-	public double getLatitude() {
-		return super.getLatitude();
-	}
-
-	@Override
-	public double getLongitude() {
-		return super.getLongitude();
-	}
-
-	@Override
-	public int getIntLatitude() {
-		return super.getIntLatitude();
-	}
-
-	@Override
-	public int getIntLongitude() {
-		return super.getIntLongitude();
 	}
 
 }

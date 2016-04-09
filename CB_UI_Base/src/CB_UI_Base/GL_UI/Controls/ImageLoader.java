@@ -465,7 +465,7 @@ public class ImageLoader {
 
 	private void createThumb() {
 	originalPath = mPath;
-	mPath = FileFactory.createThump(mPath, (int) resizeWidth, ThumbPräfix);
+	mPath = FileFactory.createThumb(mPath, (int) resizeWidth, ThumbPräfix);
 	}
 
 	/**

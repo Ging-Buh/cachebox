@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.Attributes;
 import CB_Core.CB_Core_Settings;
 import CB_Core.Database;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
@@ -17,6 +20,7 @@ import de.cb.sqlite.CoreCursor;
 
 public class CacheDetail implements Serializable {
 	private static final long serialVersionUID = 2088367633865443637L;
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(CacheDetail.class);
 
 	/*
 	 * Public Member
@@ -301,6 +305,7 @@ public class CacheDetail implements Serializable {
 
 			// from own Repository
 			String path = CB_Core_Settings.SpoilerFolderLocal.getValue();
+			Log.info(log, "from SpoilerFolderLocal: " + path);
 			try {
 				if (path != null && path.length() > 0) {
 					directory = path + "/" + gcCode.substring(0, 4);
@@ -313,6 +318,7 @@ public class CacheDetail implements Serializable {
 			// from Description own Repository
 			try {
 				path = CB_Core_Settings.DescriptionImageFolderLocal.getValue();
+				Log.info(log, "from DescriptionImageFolderLocal: " + path);
 				directory = path + "/" + gcCode.substring(0, 4);
 				loadSpoilerResourcesFromPath(directory, cache);
 			} catch (Exception e) {
@@ -322,6 +328,7 @@ public class CacheDetail implements Serializable {
 			// from Description Global Repository
 			try {
 				path = CB_Core_Settings.DescriptionImageFolder.getValue();
+				Log.info(log, "from DescriptionImageFolder: " + path);
 				directory = path + "/" + gcCode.substring(0, 4);
 				loadSpoilerResourcesFromPath(directory, cache);
 			} catch (Exception e) {
@@ -332,6 +339,7 @@ public class CacheDetail implements Serializable {
 			// from globalUser changed Repository
 			try {
 				path = CB_Core_Settings.SpoilerFolder.getValue();
+				Log.info(log, "from SpoilerFolder: " + path);
 				directory = path + "/" + gcCode.substring(0, 4);
 				loadSpoilerResourcesFromPath(directory, cache);
 			} catch (Exception e) {
@@ -340,6 +348,7 @@ public class CacheDetail implements Serializable {
 
 			// Add own taken photo
 			directory = CB_Core_Settings.UserImageFolder.getValue();
+			Log.info(log, "from UserImageFolder: " + directory);
 			if (directory != null) {
 				try {
 					loadSpoilerResourcesFromPath(directory, cache);
@@ -360,7 +369,6 @@ public class CacheDetail implements Serializable {
 				filename = filename.toLowerCase(Locale.getDefault());
 				if (filename.indexOf(cache.getGcCode().toLowerCase(Locale.getDefault())) >= 0) {
 					if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".bmp") || filename.endsWith(".png") || filename.endsWith(".gif")) {
-
 						// don't load Thumbs
 						if (filename.startsWith(FileFactory.THUMB) || filename.startsWith(FileFactory.THUMB_OVERVIEW + FileFactory.THUMB)) {
 							return false;
@@ -381,6 +389,7 @@ public class CacheDetail implements Serializable {
 						ImageEntry imageEntry = new ImageEntry();
 						imageEntry.LocalPath = directory + "/" + file;
 						imageEntry.Name = file;
+						Log.info(log, imageEntry.Name);
 						spoilerRessources.add(imageEntry);
 					}
 				}

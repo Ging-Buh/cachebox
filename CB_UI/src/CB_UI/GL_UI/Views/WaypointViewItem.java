@@ -320,7 +320,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 			String sCoord = "";
 
 			if (ViewMode == CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK) {
-				sCoord = mWaypoint.Pos.FormatCoordinateLineBreake();
+				sCoord = mWaypoint.Pos.formatCoordinateLineBreak();
 			} else {
 				sCoord = mWaypoint.Pos.FormatCoordinate();
 			}

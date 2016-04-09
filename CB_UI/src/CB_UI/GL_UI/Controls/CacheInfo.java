@@ -440,7 +440,7 @@ public class CacheInfo extends CB_View_Base {
 
 		if (ifModeFlag(SHOW_COORDS)) {
 			if (ifModeFlag(SHOW_CORRDS_WITH_LINEBRAKE)) {
-				text.append(mCache.Pos.FormatCoordinateLineBreake());
+				text.append(mCache.Pos.formatCoordinateLineBreak());
 				text.append(br);
 			} else {
 				text.append(mCache.Pos.FormatCoordinate());

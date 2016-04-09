@@ -21,7 +21,6 @@ import java.util.HashMap;
 
 import org.slf4j.LoggerFactory;
 
-import CB_Core.CB_Core_Settings;
 import CB_Core.CoreSettingsForward;
 import CB_Core.Database;
 import CB_Core.Types.Cache;
@@ -233,8 +232,9 @@ public class CacheInfoList {
 					ImagesUpdated = false;
 					DescriptionImagesUpdated = false;
 
-					if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0)
-						CB_Core_Settings.DescriptionImageFolder.setValue(CB_Core_Settings.DescriptionImageFolderLocal.getValue());
+					// 9.4.2016 arbor95: no , DescriptionImageFolder must always be the default ...\repository\images 
+					// if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0)
+					// CB_Core_Settings.DescriptionImageFolder.setValue(CB_Core_Settings.DescriptionImageFolderLocal.getValue());
 
 					// 2014-06-21 - Ging-Buh - .changed files are no longer used. Only information in DB (ImagesUpdated and
 					// DescriptionImagesUpdated) are used

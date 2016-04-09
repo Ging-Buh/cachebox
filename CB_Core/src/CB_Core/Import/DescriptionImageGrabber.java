@@ -116,7 +116,12 @@ public class DescriptionImageGrabber {
 	 * @param uri
 	 * @return
 	 */
-	public static String BuildImageFilename(String GcCode, URI uri) {
+	public static String BuildImageFilename(String GcCode, URI _uri) {
+		// in der DB stehts ohne large. der Dateiname wurde aber mit large gebildet. Ev auch nur ein Handy / PC Problem.
+		String path = _uri.getPath();
+		if (_uri.getAuthority().equals("img.geocaching.com")) {
+			path = path.replace("/large/", "/");
+		}
 		String imagePath = CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4);
 		if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0)
 			imagePath = CB_Core_Settings.DescriptionImageFolderLocal.getValue() + "/" + GcCode.substring(0, 4);
@@ -124,14 +129,14 @@ public class DescriptionImageGrabber {
 		// String uriName = url.Substring(url.LastIndexOf('/') + 1);
 		// int idx = uri.AbsolutePath.LastIndexOf('.');
 		// //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		int idx = uri.getPath().lastIndexOf('.');
+		int idx = path.lastIndexOf('.');
 		// String extension = (idx >= 0) ? uri.AbsolutePath.Substring(idx) :
 		// ".";!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		String extension = (idx >= 0) ? uri.getPath().substring(idx) : ".";
+		String extension = (idx >= 0) ? path.substring(idx) : ".";
 
 		// return imagePath + "\\" + GcCode +
 		// Global.sdbm(uri.AbsolutePath).ToString() + extension;!!!!!!!!!!!!!
-		return imagePath + "/" + GcCode + SDBM_Hash.sdbm(uri.getPath()) + extension;
+		return imagePath + "/" + GcCode + SDBM_Hash.sdbm(path) + extension;
 	}
 
 	/**
