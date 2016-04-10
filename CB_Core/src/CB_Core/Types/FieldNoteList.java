@@ -166,10 +166,8 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {
-
 			e.printStackTrace();
 		}
-		;
 	}
 
 	public void DeleteFieldNoteByCacheId(long cacheId, LogTypes type) {

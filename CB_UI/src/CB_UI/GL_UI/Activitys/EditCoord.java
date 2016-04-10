@@ -1,11 +1,14 @@
 package CB_UI.GL_UI.Activitys;
 
+import java.io.FileOutputStream;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Clipboard;
 
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
@@ -22,6 +25,8 @@ import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Converter.UTMConvert;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 
 public class EditCoord extends ActivityBase {
 	private int aktPage = -1; // Deg-Min
@@ -88,10 +93,10 @@ public class EditCoord extends ActivityBase {
 		this.addNext(bMin);
 		this.addNext(bSec);
 		this.addLast(bUtm);
-		MultiToggleButton.initialOn_Off_ToggleStates(bDec, "Dec", "Dec");
-		MultiToggleButton.initialOn_Off_ToggleStates(bMin, "Min", "Min");
-		MultiToggleButton.initialOn_Off_ToggleStates(bSec, "Sec", "Sec");
-		MultiToggleButton.initialOn_Off_ToggleStates(bUtm, "UTM", "UTM");
+		bDec.initialOn_Off_ToggleStates("Dec", "Dec");
+		bMin.initialOn_Off_ToggleStates("Min", "Min");
+		bSec.initialOn_Off_ToggleStates("Sec", "Sec");
+		bUtm.initialOn_Off_ToggleStates("UTM", "UTM");
 
 		Button btnOK = new Button("btnOK");
 		Button btnCancel = new Button("btnCancel");
@@ -165,60 +170,65 @@ public class EditCoord extends ActivityBase {
 
 	@Override
 	protected void Initial() {
-		bDec.setOnDoubleClickListener(mDoubleClickListener);
-		bMin.setOnDoubleClickListener(mDoubleClickListener);
-		bSec.setOnDoubleClickListener(mDoubleClickListener);
-		bUtm.setOnDoubleClickListener(mDoubleClickListener);
 
-		bDec.setOnClickListener(new OnClickListener() {
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				bDec.setState(1);
-				showPage(0);
-				return true;
-			}
-		});
+		bDec.setTag(0);
+		bDec.setOnClickListener(mtbClicked);
+		bDec.setOnDoubleClickListener(bDecDoubleClicked);
 
-		bMin.setOnClickListener(new OnClickListener() {
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				bMin.setState(1);
-				showPage(1);
-				return true;
-			}
-		});
+		bMin.setTag(1);
+		bMin.setOnClickListener(mtbClicked);
 
-		bSec.setOnClickListener(new OnClickListener() {
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				bSec.setState(1);
-				showPage(2);
-				return true;
-			}
-		});
+		bSec.setTag(2);
+		bSec.setOnClickListener(mtbClicked);
 
-		bUtm.setOnClickListener(new OnClickListener() {
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				bUtm.setState(1);
-				showPage(3);
-				return true;
-			}
-		});
+		bUtm.setTag(3);
+		bUtm.setOnClickListener(mtbClicked);
 
 		bMin.setState(1);
 		showPage(1);
 
 	}
 
-	OnClickListener mDoubleClickListener = new OnClickListener() {
+	OnClickListener mtbClicked = new OnClickListener() {
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 			MultiToggleButton mtb = (MultiToggleButton) v;
 			mtb.setState(1);
+			showPage((Integer) mtb.getTag());
 			if (clipboard != null) {
 				parseView();
 				clipboard.setContents(sCoord);
+			}
+			return true;
+		}
+	};
+
+	OnClickListener bDecDoubleClicked = new OnClickListener() {
+		@Override
+		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+			// cause doubleclick always follows a simple click (in current ACB implementation),
+			// the next 3 lines are not necessary.
+			// I leave them, to be correct, if implemtation is changed sometime
+			MultiToggleButton mtb = (MultiToggleButton) v;
+			mtb.setState(1);
+			showPage((Integer) mtb.getTag());
+			// write a file for Nissan Connect
+			// LON,LAT,Waypoint
+			String dirFileName = Config.mWorkPath + "/User/nissan.csv";
+			File txtFile = FileFactory.createFile(dirFileName);
+			FileOutputStream writer;
+			try {
+				String coordsToWrite = coord.getLongitude() + "," + coord.getLatitude() + ",";
+				writer = txtFile.getFileOutputStream();
+				writer.write(("LON,LAT,Waypoint\r\n").getBytes("UTF-8"));
+				if (GlobalCore.getSelectedWaypoint() == null) {
+					writer.write((coordsToWrite + GlobalCore.getSelectedCache().getGcCode() + "\r\n").getBytes("UTF-8"));
+				} else {
+					writer.write((coordsToWrite + GlobalCore.getSelectedWaypoint().getGcCode() + "\r\n").getBytes("UTF-8"));
+				}
+				writer.flush();
+				writer.close();
+			} catch (Exception e) {
 			}
 			return true;
 		}
@@ -886,16 +896,23 @@ public class EditCoord extends ActivityBase {
 		sCoord = "";
 		switch (aktPage) {
 		case 0:
-			sCoord += this.btnDLat[0].getText() + " "; // N/S
+			// sCoord += this.btnDLat[0].getText() + " "; // N/S
+			if (this.btnDLat[0].getText().equals("S")) {
+				sCoord = "-";
+			}
 			sCoord += this.btnDLat[2].getText() + this.btnDLat[3].getText() + "."; // Deg 1
 			for (int i = 4; i < 9; i++)
 				sCoord += this.btnDLat[i].getText(); // Deg 2
-			sCoord += "\u00B0";
-			sCoord += this.btnDLon[0].getText() + " "; // W/E
+			// sCoord += "\u00B0 ";
+			// sCoord += this.btnDLon[0].getText() + " "; // W/E
+			sCoord += " ";
+			if (this.btnDLon[0].getText().equals("S")) {
+				sCoord = "-";
+			}
 			sCoord += this.btnDLon[1].getText() + this.btnDLon[2].getText() + this.btnDLon[3].getText() + "."; // Deg 1
 			for (int i = 4; i < 9; i++)
 				sCoord += this.btnDLon[i].getText(); // Deg 2
-			sCoord += "\u00B0";
+			// sCoord += "\u00B0";
 			break;
 		case 1:
 			sCoord += this.btnDMLat[0].getText() + " "; // N/S

@@ -223,8 +223,8 @@ public class SearchOverPosition extends ActivityBase {
 		tglBtnGPS.setFont(Fonts.getSmall());
 		tglBtnMap.setFont(Fonts.getSmall());
 
-		MultiToggleButton.initialOn_Off_ToggleStates(tglBtnGPS, Translation.Get("FromGps"), Translation.Get("FromGps"));
-		MultiToggleButton.initialOn_Off_ToggleStates(tglBtnMap, Translation.Get("FromMap"), Translation.Get("FromMap"));
+		tglBtnGPS.initialOn_Off_ToggleStates(Translation.Get("FromGps"), Translation.Get("FromGps"));
+		tglBtnMap.initialOn_Off_ToggleStates(Translation.Get("FromMap"), Translation.Get("FromMap"));
 
 		box.addChild(tglBtnGPS);
 		box.addChild(tglBtnMap);

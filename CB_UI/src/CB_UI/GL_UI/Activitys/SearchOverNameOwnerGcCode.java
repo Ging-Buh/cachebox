@@ -230,9 +230,9 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
 		mTglBtnGc = new MultiToggleButton(rec, "mTglBtnGc");
 		mTglBtnOwner = new MultiToggleButton(rec, "mTglBtnOwner");
 
-		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnTitle, Translation.Get("Title"), Translation.Get("Title"));
-		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnGc, Translation.Get("GCCode"), Translation.Get("GCCode"));
-		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnOwner, Translation.Get("Owner"), Translation.Get("Owner"));
+		mTglBtnTitle.initialOn_Off_ToggleStates(Translation.Get("Title"), Translation.Get("Title"));
+		mTglBtnGc.initialOn_Off_ToggleStates(Translation.Get("GCCode"), Translation.Get("GCCode"));
+		mTglBtnOwner.initialOn_Off_ToggleStates(Translation.Get("Owner"), Translation.Get("Owner"));
 
 		line.initRow(true);
 		line.addNext(mTglBtnTitle);

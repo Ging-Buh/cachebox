@@ -11,7 +11,6 @@ import CB_UI_Base.GL_UI.Controls.ImageMultiToggleButton;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
 import CB_UI_Base.GL_UI.Controls.Linearlayout;
-import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
 import CB_UI_Base.GL_UI.Controls.chkBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.ButtonDialog;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
@@ -74,9 +73,9 @@ public class RouteDialog extends ButtonDialog {
 
 		layout.addChild(box);
 
-		MultiToggleButton.initialOn_Off_ToggleStates(btMotoWay, "", "");
-		MultiToggleButton.initialOn_Off_ToggleStates(btCycleWay, "", "");
-		MultiToggleButton.initialOn_Off_ToggleStates(btFootWay, "", "");
+		btMotoWay.initialOn_Off_ToggleStates("", "");
+		btCycleWay.initialOn_Off_ToggleStates("", "");
+		btFootWay.initialOn_Off_ToggleStates("", "");
 
 		Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight()), "");
 		chkTmc = new chkBox("TMC");

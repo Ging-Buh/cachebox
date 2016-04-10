@@ -338,10 +338,10 @@ public class SearchDialog extends PopUp_Base {
 	 * Setzt die übersetzten Texte auf die Buttons
 	 */
 	private void setLang() {
-		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnTitle, Translation.Get("Title"), Translation.Get("Title"));
-		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnGc, Translation.Get("GCCode"), Translation.Get("GCCode"));
-		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnOwner, Translation.Get("Owner"), Translation.Get("Owner"));
-		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnOnline, "Online", "Online");
+		mTglBtnTitle.initialOn_Off_ToggleStates(Translation.Get("Title"), Translation.Get("Title"));
+		mTglBtnGc.initialOn_Off_ToggleStates(Translation.Get("GCCode"), Translation.Get("GCCode"));
+		mTglBtnOwner.initialOn_Off_ToggleStates(Translation.Get("Owner"), Translation.Get("Owner"));
+		mTglBtnOnline.initialOn_Off_ToggleStates("Online", "Online");
 
 		// der State muss erstmal gesetzt werden, damit die Anzeige
 		// Aktuallisiert wird

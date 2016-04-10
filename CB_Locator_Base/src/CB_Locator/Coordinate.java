@@ -29,7 +29,7 @@ public class Coordinate extends LatLong implements Serializable {
 
 	static final String br = System.getProperty("line.separator");
 
-	protected boolean Valid;
+	protected boolean valid;
 
 	private static final float[] mResults = new float[2];
 
@@ -38,7 +38,7 @@ public class Coordinate extends LatLong implements Serializable {
 	}
 
 	public boolean isValid() {
-		return Valid;
+		return valid;
 	}
 
 	public boolean isZero() {
@@ -57,7 +57,7 @@ public class Coordinate extends LatLong implements Serializable {
 	 * @return
 	 */
 	public String FormatCoordinate() {
-		if (Valid)
+		if (valid)
 			return Formatter.FormatLatitudeDM(getLatitude()) + " / " + Formatter.FormatLongitudeDM(getLongitude());
 		else
 			return "not Valid";
@@ -69,7 +69,7 @@ public class Coordinate extends LatLong implements Serializable {
 	 * @return
 	 */
 	public String formatCoordinateLineBreak() {
-		if (Valid)
+		if (valid)
 			return Formatter.FormatLatitudeDM(getLatitude()) + br + Formatter.FormatLongitudeDM(getLongitude());
 		else
 			return "not Valid";
@@ -88,7 +88,7 @@ public class Coordinate extends LatLong implements Serializable {
 		lon2 = (lon2 + 3 * Math.PI) % (2 * Math.PI) - Math.PI; // normalise to -180°..+180°
 
 		Coordinate result = new Coordinate(lat2 * MathUtils.RAD_DEG, lon2 * MathUtils.RAD_DEG);
-		result.Valid = true;
+		result.valid = true;
 		return result;
 
 	}
@@ -220,21 +220,21 @@ public class Coordinate extends LatLong implements Serializable {
 
 	public Coordinate(Coordinate parent) {
 		super(parent.latitude, parent.longitude);
-		this.Valid = parent.Valid;
+		this.valid = parent.valid;
 	}
 
 	public Coordinate(double latitude, double longitude) {
 		super(latitude, longitude);
 		if (latitude == 0 && longitude == 0)
 			return;
-		Valid = true;
+		valid = true;
 	}
 
 	public Coordinate(int latitude, int longitude) {
 		super(latitude, longitude);
 		if (latitude == 0 && longitude == 0)
 			return;
-		Valid = true;
+		valid = true;
 	}
 
 	public Coordinate(String text) {
@@ -244,7 +244,7 @@ public class Coordinate extends LatLong implements Serializable {
 	public Coordinate(double[] coordinate) {
 		super(coordinate[0], coordinate[1]);
 		if (coordinate.length > 2) {
-			this.Valid = coordinate[2] == 1;
+			this.valid = coordinate[2] == 1;
 		}
 	}
 
@@ -299,11 +299,23 @@ public class Coordinate extends LatLong implements Serializable {
 		int ilat = text.indexOf('N');
 		if (ilat < 0)
 			ilat = text.indexOf('S');
+
 		int ilon = text.indexOf('E');
 		if (ilon < 0)
 			ilon = text.indexOf('W');
-		if (ilat < 0)
+
+		if (ilat < 0) {
+			String[] latlon = text.split(" ");
+			if (latlon.length == 2) {
+				try {
+					values[0] = Double.valueOf(latlon[0]);
+					values[1] = Double.valueOf(latlon[1]);
+					values[2] = 1;
+				} catch (Exception e) {
+				}
+			}
 			return values;
+		}
 		if (ilon < 0)
 			return values;
 		if (ilat > ilon)
@@ -389,7 +401,7 @@ public class Coordinate extends LatLong implements Serializable {
 	}
 
 	public void setValid(boolean b) {
-		Valid = b;
+		valid = b;
 	}
 
 	@Override
