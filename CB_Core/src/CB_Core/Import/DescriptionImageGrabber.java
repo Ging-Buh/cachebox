@@ -119,8 +119,11 @@ public class DescriptionImageGrabber {
 	public static String BuildImageFilename(String GcCode, URI _uri) {
 		// in der DB stehts ohne large. der Dateiname wurde aber mit large gebildet. Ev auch nur ein Handy / PC Problem.
 		String path = _uri.getPath();
-		if (_uri.getAuthority().equals("img.geocaching.com")) {
-			path = path.replace("/large/", "/");
+		String authority = _uri.getAuthority();
+		if (authority != null) {
+			if (authority.equals("img.geocaching.com")) {
+				path = path.replace("/large/", "/");
+			}
 		}
 		String imagePath = CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4);
 		if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0)
