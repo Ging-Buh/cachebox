@@ -51,6 +51,10 @@ public class DesktopFileFactory extends FileFactory {
 			java.io.File orgFile = new java.io.File(Path);
 			if (orgFile.exists()) {
 				BufferedImage ori = ImageIO.read(orgFile);
+				if (ori == null) {
+					orgFile.delete();
+					return null;
+				}
 				float scalefactor = (float) scaledWidth / (float) ori.getWidth();
 
 				if (scalefactor >= 1)

@@ -15,7 +15,7 @@ public class BreakawayImportThread extends Thread {
 		isCanceld.set(false);
 	}
 
-	public static boolean isCanceld() {
+	public static boolean isCanceled() {
 		return isCanceld.get();
 	}
 

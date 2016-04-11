@@ -10,39 +10,39 @@ public abstract class FileFactory {
 	static FileFactory INSTANCE;
 
 	public static File createFile(String path) {
-	if (INSTANCE == null)
-		throw new RuntimeException("no platform specific FileFactory instance!");
-	return INSTANCE.createPlatformFile(path);
+		if (INSTANCE == null)
+			throw new RuntimeException("no platform specific FileFactory instance!");
+		return INSTANCE.createPlatformFile(path);
 	}
 
 	public static File createFile(File parent) {
-	if (INSTANCE == null)
-		throw new RuntimeException("no platform specific FileFactory instance!");
-	return INSTANCE.createPlatformFile(parent);
+		if (INSTANCE == null)
+			throw new RuntimeException("no platform specific FileFactory instance!");
+		return INSTANCE.createPlatformFile(parent);
 	}
 
 	public static File createFile(File parent, String child) {
-	if (INSTANCE == null)
-		throw new RuntimeException("no platform specific FileFactory instance!");
-	return INSTANCE.createPlatformFile(parent, child);
+		if (INSTANCE == null)
+			throw new RuntimeException("no platform specific FileFactory instance!");
+		return INSTANCE.createPlatformFile(parent, child);
 	}
 
 	public static File createFile(String parent, String child) {
-	if (INSTANCE == null)
-		throw new RuntimeException("no platform specific FileFactory instance!");
-	return INSTANCE.createPlatformFile(parent, child);
+		if (INSTANCE == null)
+			throw new RuntimeException("no platform specific FileFactory instance!");
+		return INSTANCE.createPlatformFile(parent, child);
 	}
 
 	public static String createThumb(String path, int scaledWidth, String thumbPrefix) {
-	if (INSTANCE == null)
-		throw new RuntimeException("no platform specific FileFactory instance!");
-	return INSTANCE.createPlatformThumb(path, scaledWidth, thumbPrefix);
+		if (INSTANCE == null)
+			throw new RuntimeException("no platform specific FileFactory instance!");
+		return INSTANCE.createPlatformThumb(path, scaledWidth, thumbPrefix);
 	}
 
 	public FileFactory() {
-	if (INSTANCE != null)
-		throw new RuntimeException("You need only one FileFactory instance");
-	INSTANCE = this;
+		if (INSTANCE != null)
+			throw new RuntimeException("You need only one FileFactory instance");
+		INSTANCE = this;
 	}
 
 	protected abstract File createPlatformFile(String path);
@@ -56,7 +56,7 @@ public abstract class FileFactory {
 	protected abstract String createPlatformThumb(String Path, int scaledWidth, String thumbPrefix);
 
 	public static boolean isInitial() {
-	return INSTANCE != null;
+		return INSTANCE != null;
 	}
 
 }

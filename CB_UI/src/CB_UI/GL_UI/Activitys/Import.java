@@ -252,7 +252,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 		bCancel.setOnClickListener(new OnClickListener() {
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				if (BreakawayImportThread.isCanceld()) {
+				if (BreakawayImportThread.isCanceled()) {
 					BreakawayImportThread.reset();
 					finish();
 					return true;
@@ -1080,7 +1080,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
 							if (iterator != null && iterator.hasNext()) {
 								do {
-									if (BreakawayImportThread.isCanceld()) {
+									if (BreakawayImportThread.isCanceled()) {
 										cancelImport();
 										ip.ProgressChangeMsg("", "");
 										return;
@@ -1133,7 +1133,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 						}
 						Database.Data.endTransaction();
 
-						if (BreakawayImportThread.isCanceld()) {
+						if (BreakawayImportThread.isCanceled()) {
 							cancelImport();
 							ip.ProgressChangeMsg("", "");
 							return;
@@ -1184,7 +1184,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 						}
 						Database.Data.endTransaction();
 
-						if (BreakawayImportThread.isCanceld()) {
+						if (BreakawayImportThread.isCanceled()) {
 							cancelImport();
 							ip.ProgressChangeMsg("", "");
 							return;
@@ -1207,7 +1207,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 						}
 						dis.setAnimationType(AnimationType.Work);
 						Database.Data.endTransaction();
-						if (BreakawayImportThread.isCanceld()) {
+						if (BreakawayImportThread.isCanceled()) {
 							cancelImport();
 							ip.ProgressChangeMsg("", "");
 							return;
@@ -1230,7 +1230,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 							return;
 						}
 
-						if (BreakawayImportThread.isCanceld()) {
+						if (BreakawayImportThread.isCanceled()) {
 							cancelImport();
 							ip.ProgressChangeMsg("", "");
 							return;
@@ -1267,7 +1267,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 					return;
 				}
 
-				if (BreakawayImportThread.isCanceld()) {
+				if (BreakawayImportThread.isCanceled()) {
 					FilterProperties props = FilterInstances.getLastFilter();
 					EditFilterSettings.ApplyFilter(props);
 					ip.ProgressChangeMsg("", "");

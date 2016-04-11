@@ -433,7 +433,7 @@ public class DescriptionImageGrabber {
 					return 0;
 				}
 
-				if (BreakawayImportThread.isCanceld())
+				if (BreakawayImportThread.isCanceled())
 					return 0;
 
 				String local = BuildImageFilename(gcCode, uri);
@@ -519,7 +519,7 @@ public class DescriptionImageGrabber {
 						return 0;
 					}
 
-					if (BreakawayImportThread.isCanceld())
+					if (BreakawayImportThread.isCanceled())
 						return 0;
 
 					URI uri = allimgDict.get(key);
@@ -539,13 +539,11 @@ public class DescriptionImageGrabber {
 							e.printStackTrace();
 						}
 					}
-					// Local Filename mit Hash erzeugen, damit Änderungen der Datei ohne Änderungen des Dateinamens erkannt werden
-					// können
+					// Local Filename mit Hash erzeugen, damit Änderungen der Datei ohne Änderungen des Dateinamens erkannt werden können
 					// Hier erst die alten Version mit den Klammern als Eingrenzung des Hash
 					// Dies hier machen, damit die Namen der Spoiler ins neue System Konvertiert werden können.
 					String localOld = BuildAdditionalImageFilenameHash(gcCode, decodedImageName, uri);
-					// Neuen Local Filename mit Hash erzeugen, damit Änderungen der Datei ohne Änderungen des Dateinamens erkannt werden
-					// können
+					// Neuen Local Filename mit Hash erzeugen, damit Änderungen der Datei ohne Änderungen des Dateinamens erkannt werden können
 					// Hier jetzt mit @ als Eingrenzung des Hashs
 					local = BuildAdditionalImageFilenameHashNew(gcCode, decodedImageName, uri);
 					String filename = local.substring(local.lastIndexOf('/') + 1);

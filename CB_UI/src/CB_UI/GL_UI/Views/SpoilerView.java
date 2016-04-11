@@ -124,9 +124,15 @@ public class SpoilerView extends CB_View_Base {
 								break;
 							} else {
 								if (FileIO.GetFileNameWithoutExtension(dbImage.Name).equals(localName)) {
-									// Spoiler
+									// Spoiler CacheWolf
 									description = dbImage.Description;
 									break;
+								} else {
+									if (localName.contains(FileIO.GetFileNameWithoutExtension(dbImage.Name))) {
+										// Spoiler ACB
+										description = localName + "\n" + dbImage.Description;
+										break;
+									}
 								}
 							}
 						}
