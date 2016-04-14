@@ -293,20 +293,13 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 				icon = "small2";
 				break;
 			case Event:
-				icon = "small3";
-				break;
 			case MegaEvent:
-				icon = "small3";
-				break;
 			case Giga:
+			case CITO:
 				icon = "small3";
 				break;
 			case Virtual:
-				icon = "small4";
-				break;
 			case Camera:
-				icon = "small4";
-				break;
 			case Earth:
 				icon = "small4";
 				break;
@@ -316,7 +309,7 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 					solved = "Solved";
 				break;
 			case Wherigo:
-				icon = "small3";
+				icon = "small5";
 				break;
 			case MyParking:
 				return Sprites.getSprite("map" + cache.Type.name());

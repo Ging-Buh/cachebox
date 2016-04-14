@@ -59,7 +59,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 	public static final int CurrentRevision = 20160414;
 
 	public static final String CurrentVersion = "0.8.";
-	public static final String VersionPrefix = "Test-svn2765";
+	public static final String VersionPrefix = "Test-svn2766";
 
 	public static final String aboutMsg1 = "Team Cachebox (2011-2016)" + br;
 	public static final String teamLink = "www.team-cachebox.de";
