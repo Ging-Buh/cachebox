@@ -2729,14 +2729,21 @@ small
   orig: 23, 6
   offset: 0, 0
   index: -1
-small1no
+small1
   rotate: false
   xy: 514, 666
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
-small1yes
+small1no
+  rotate: false
+  xy: 1014, 732
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+small2
   rotate: false
   xy: 586, 658
   size: 8, 8
@@ -2745,96 +2752,89 @@ small1yes
   index: -1
 small2no
   rotate: false
-  xy: 1014, 772
+  xy: 1014, 722
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
-small2yes
+small3
   rotate: false
-  xy: 377, 319
+  xy: 1014, 772
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 small3no
   rotate: false
-  xy: 1014, 762
+  xy: 717, 685
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
-small3yes
+small4
   rotate: false
-  xy: 1014, 752
+  xy: 377, 319
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 small4no
   rotate: false
-  xy: 1014, 742
+  xy: 727, 685
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
-small4yes
+small5
   rotate: false
-  xy: 1014, 732
+  xy: 1014, 762
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
-small5no
-  rotate: false
-  xy: 1014, 722
-  size: 8, 8
-  orig: 8, 8
-  offset: 0, 0
-  index: -1
-small5solved
+small5Solved
   rotate: false
   xy: 478, 664
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
-small5solved-no
-  rotate: false
-  xy: 622, 605
-  size: 15, 15
-  orig: 15, 15
-  offset: 0, 0
-  index: -1
-small5yes
-  rotate: false
-  xy: 717, 685
-  size: 8, 8
-  orig: 8, 8
-  offset: 0, 0
-  index: -1
-small6no
-  rotate: false
-  xy: 727, 685
-  size: 8, 8
-  orig: 8, 8
-  offset: 0, 0
-  index: -1
-small6yes
+small5no
   rotate: false
   xy: 586, 594
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
-small7no
+small5noSolved
+  rotate: false
+  xy: 622, 605
+  size: 15, 15
+  orig: 15, 15
+  offset: 0, 0
+  index: -1
+small6
+  rotate: false
+  xy: 1014, 752
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+small6no
   rotate: false
   xy: 596, 594
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
-small7yes
+small7
+  rotate: false
+  xy: 1014, 742
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+small7no
   rotate: false
   xy: 606, 594
   size: 8, 8

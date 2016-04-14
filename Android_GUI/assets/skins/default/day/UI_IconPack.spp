@@ -2673,14 +2673,21 @@ small
   orig: 45, 12
   offset: 0, 0
   index: -1
-small1no
+small1
   rotate: false
   xy: 451, 793
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
-small1yes
+small1no
+  rotate: false
+  xy: 265, 90
+  size: 15, 15
+  orig: 15, 15
+  offset: 0, 0
+  index: -1
+small2
   rotate: false
   xy: 1915, 1513
   size: 15, 15
@@ -2689,96 +2696,89 @@ small1yes
   index: -1
 small2no
   rotate: false
-  xy: 265, 158
+  xy: 265, 73
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
-small2yes
+small3
   rotate: false
-  xy: 265, 141
+  xy: 265, 158
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small3no
   rotate: false
-  xy: 265, 124
+  xy: 156, 8
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
-small3yes
+small4
   rotate: false
-  xy: 265, 107
+  xy: 265, 141
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small4no
   rotate: false
-  xy: 265, 90
-  size: 15, 15
-  orig: 15, 15
-  offset: 0, 0
-  index: -1
-small4yes
-  rotate: false
-  xy: 265, 73
-  size: 15, 15
-  orig: 15, 15
-  offset: 0, 0
-  index: -1
-small5no
-  rotate: false
-  xy: 156, 8
-  size: 15, 15
-  orig: 15, 15
-  offset: 0, 0
-  index: -1
-small5solved
-  rotate: false
   xy: 173, 8
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
-small5solved-no
+small5
+  rotate: false
+  xy: 265, 124
+  size: 15, 15
+  orig: 15, 15
+  offset: 0, 0
+  index: -1
+small5Solved
   rotate: false
   xy: 190, 8
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
-small5yes
+small5no
   rotate: false
   xy: 207, 8
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
-small6no
-  rotate: false
-  xy: 1546, 1314
-  size: 48, 48
-  orig: 48, 48
-  offset: 0, 0
-  index: -1
-small6yes
-  rotate: false
-  xy: 1546, 1264
-  size: 48, 48
-  orig: 48, 48
-  offset: 0, 0
-  index: -1
-small7no
+small5noSolved
   rotate: false
   xy: 224, 8
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
-small7yes
+small6
+  rotate: false
+  xy: 1546, 1314
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+small6no
+  rotate: false
+  xy: 1546, 1264
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+small7
+  rotate: false
+  xy: 265, 107
+  size: 15, 15
+  orig: 15, 15
+  offset: 0, 0
+  index: -1
+small7no
   rotate: false
   xy: 241, 8
   size: 15, 15

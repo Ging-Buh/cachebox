@@ -280,70 +280,57 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 	}
 
 	private Sprite getSmallMapIcon(Cache cache) {
-		int iconId = 0;
-
-		switch (cache.Type) {
-		case Traditional:
-			iconId = 0;
-			break;
-		case Letterbox:
-			iconId = 0;
-			break;
-		case Multi:
-			if (cache.HasStartWaypoint())
-				iconId = 1;
-			else
-				iconId = 1;
-			break;
-		case Event:
-			iconId = 2;
-			break;
-		case MegaEvent:
-			iconId = 2;
-			break;
-		case Giga:
-			iconId = 2;
-			break;
-		case Virtual:
-			iconId = 3;
-			break;
-		case Camera:
-			iconId = 3;
-			break;
-		case Earth:
-			iconId = 3;
-			break;
-		case Mystery: {
-			if (cache.HasFinalWaypoint())
-				iconId = 5;
-			else if (cache.HasStartWaypoint())
-				iconId = 5;
-			else
-				iconId = 4;
-			break;
-		}
-		case Wherigo:
-			iconId = 4;
-			break;
-
-		default:
-			iconId = 0;
-		}
+		String icon = "small1"; // Tradi, Ape, Letterbox
+		String solved = "";
 
 		if (cache.isFound())
-			iconId = 6;
-		if (cache.ImTheOwner())
-			iconId = 7;
+			icon = "small6";
+		else if (cache.ImTheOwner())
+			icon = "small7";
+		else {
+			switch (cache.Type) {
+			case Multi:
+				icon = "small2";
+				break;
+			case Event:
+				icon = "small3";
+				break;
+			case MegaEvent:
+				icon = "small3";
+				break;
+			case Giga:
+				icon = "small3";
+				break;
+			case Virtual:
+				icon = "small4";
+				break;
+			case Camera:
+				icon = "small4";
+				break;
+			case Earth:
+				icon = "small4";
+				break;
+			case Mystery:
+				icon = "small5";
+				if (cache.HasFinalWaypoint() || cache.HasStartWaypoint())
+					solved = "Solved";
+				break;
+			case Wherigo:
+				icon = "small3";
+				break;
+			case MyParking:
+				return Sprites.getSprite("map" + cache.Type.name());
+			case Munzee:
+				return Sprites.getSprite("map" + cache.Type.name());
+			default:
+				break;
+			}
+		}
 
 		if (cache.isArchived() || !cache.isAvailable())
-			iconId += 8;
+			icon = icon + "no";
 
-		if (cache.Type == CacheTypes.MyParking)
-			iconId = 16;
-		if (cache.Type == CacheTypes.Munzee)
-			iconId = 17;
-
-		return Sprites.MapIconsSmall.get(iconId);
+		return Sprites.getSprite(icon + solved);
 
 	}
 

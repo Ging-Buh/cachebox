@@ -68,7 +68,6 @@ public class Sprites {
 		}
 	}
 
-	public static ArrayList<Sprite> MapIconsSmall = null;
 	public static ArrayList<Sprite> MapOverlay = null;
 	public static ArrayList<Sprite> Arrows = null;
 	public static ArrayList<Sprite> MapStars = null;
@@ -281,12 +280,12 @@ public class Sprites {
 			try {
 				atlasCustom = new TextureAtlas(FileHandleCustomAtlas);
 			} catch (Exception e) {
-				Log.err(log, "Load Custum Atlas", e);
+				Log.err(log, "Load Custom Atlas", e);
 			}
 			try {
 				atlasCustomtNight = new TextureAtlas(FileHandleCustomNightAtlas);
 			} catch (Exception e) {
-				Log.err(log, "Load Custum Night Atlas", e);
+				Log.err(log, "Load Custom Night Atlas", e);
 			}
 		}
 	}
@@ -449,31 +448,6 @@ public class Sprites {
 			LogIcons.add(getSprite(IconName.TBDISCOVER.name()));
 			LogIcons.add(getSprite(IconName.TBVISIT.name()));
 			LogIcons.add(getSprite(IconName.TBNOTE.name()));
-		}
-
-		if (MapIconsSmall == null)
-			MapIconsSmall = new ArrayList<Sprite>();
-		synchronized (MapIconsSmall) {
-			MapIconsSmall.clear();
-			MapIconsSmall.add(getSprite("small1yes"));
-			MapIconsSmall.add(getSprite("small2yes"));
-			MapIconsSmall.add(getSprite("small3yes"));
-			MapIconsSmall.add(getSprite("small4yes"));
-			MapIconsSmall.add(getSprite("small5yes"));
-			MapIconsSmall.add(getSprite("small5solved"));
-			MapIconsSmall.add(getSprite("small6yes"));
-			MapIconsSmall.add(getSprite("small7yes"));
-			MapIconsSmall.add(getSprite("small1no"));
-			MapIconsSmall.add(getSprite("small2no"));
-			MapIconsSmall.add(getSprite("small3no"));
-			MapIconsSmall.add(getSprite("small4no"));
-			MapIconsSmall.add(getSprite("small5no"));
-			MapIconsSmall.add(getSprite("small5solved-no"));
-			MapIconsSmall.add(getSprite("small6no"));
-			MapIconsSmall.add(getSprite("small7no"));
-			MapIconsSmall.add(getSprite("20"));
-			MapIconsSmall.add(getSprite("22"));
-
 		}
 
 		if (Compass == null)
@@ -698,18 +672,6 @@ public class Sprites {
 
 		createDrawables();
 
-		Color solvedColor = CB_UI_Base_Settings.SolvedMysteryColor.getValue();
-		MapIconsSmall.get(5).setColor(solvedColor);
-		MapIconsSmall.get(13).setColor(solvedColor);
-		CB_UI_Base_Settings.SolvedMysteryColor.addChangedEventListener(new IChanged() {
-			@Override
-			public void isChanged() {
-				Color solvedColor = CB_UI_Base_Settings.SolvedMysteryColor.getValue();
-				MapIconsSmall.get(5).setColor(solvedColor);
-				MapIconsSmall.get(13).setColor(solvedColor);
-			}
-		});
-
 		loaded = true;
 
 	}
@@ -791,7 +753,6 @@ public class Sprites {
 	 * Destroy cached sprites
 	 */
 	public static void destroyCache() {
-		MapIconsSmall = null;
 		MapOverlay = null;
 		Arrows = null;
 		MapStars = null;

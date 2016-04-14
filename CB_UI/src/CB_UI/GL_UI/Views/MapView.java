@@ -1307,7 +1307,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 					// zuerst schauen, ob ein Render Theme im Custom Skin Ordner Liegt
 					themePath = ifCarThemeExist(PathCustomNight);
 
-					if (themePath == null) {// wenn kein Night Custum skin vorhanden, dann nach einem Day CostumTheme suchen, welches dann Invertiert wird!
+					if (themePath == null) {// wenn kein Night Custom skin vorhanden, dann nach einem Day CostumTheme suchen, welches dann Invertiert wird!
 						themePath = ifCarThemeExist(PathCustom);
 						if (themePath != null)
 							useInvertNightTheme = true;
