@@ -250,9 +250,9 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 
 	private Sprite getWaypointIcon(Waypoint waypoint) {
 		if ((waypoint.Type == CacheTypes.MultiStage) && (waypoint.IsStart))
-			return Sprites.MapIcons.get(24);
+			return Sprites.getSprite("mapMultiStageStartP"); //
 		else
-			return Sprites.MapIcons.get(waypoint.Type.ordinal());
+			return Sprites.getSprite("map" + waypoint.Type.name());
 	}
 
 	private Sprite getCacheIcon(Cache cache, int iconSize) {
@@ -265,24 +265,18 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 	}
 
 	private Sprite getMapIcon(Cache cache) {
-		int IconId;
 		if (cache.ImTheOwner())
-			IconId = 26;
+			return Sprites.getSprite("star");
 		else if (cache.isFound())
-			IconId = 19;
+			return Sprites.getSprite("mapFound");
 		else if ((cache.Type == CacheTypes.Mystery) && cache.CorrectedCoordiantesOrMysterySolved())
-			IconId = 21;
+			return Sprites.getSprite("mapSolved");
 		else if ((cache.Type == CacheTypes.Multi) && cache.HasStartWaypoint())
-			IconId = 23; // Multi mit Startpunkt
+			return Sprites.getSprite("mapMultiStartP"); // Multi mit Startpunkt
 		else if ((cache.Type == CacheTypes.Mystery) && cache.HasStartWaypoint())
-			IconId = 25; // Mystery ohne Final aber mit Startpunkt
-		else if ((cache.Type == CacheTypes.Munzee))
-			IconId = 22;
-		else if ((cache.Type == CacheTypes.Giga))
-			IconId = 27;
+			return Sprites.getSprite("mapMysteryStartP"); // Mystery ohne Final aber mit Startpunkt
 		else
-			IconId = cache.Type.ordinal();
-		return Sprites.MapIcons.get(IconId);
+			return Sprites.getSprite("map" + cache.Type.name());
 	}
 
 	private Sprite getSmallMapIcon(Cache cache) {

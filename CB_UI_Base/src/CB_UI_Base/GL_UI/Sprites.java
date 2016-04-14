@@ -18,7 +18,7 @@ package CB_UI_Base.GL_UI;
 
 import java.util.ArrayList;
 
-import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
@@ -37,6 +37,7 @@ import CB_UI_Base.GL_UI.Skin.SkinSettings;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.IChanged;
 
 /**
@@ -69,7 +70,6 @@ public class Sprites {
 
 	public static ArrayList<Sprite> MapIconsSmall = null;
 	public static ArrayList<Sprite> MapOverlay = null;
-	public static ArrayList<Sprite> MapIcons = null;
 	public static ArrayList<Sprite> Arrows = null;
 	public static ArrayList<Sprite> MapStars = null;
 	public static SpriteList Stars = null;
@@ -301,11 +301,6 @@ public class Sprites {
 			loadSprites(false);
 		}
 		*/
-		boolean solved = false;
-		if (name.endsWith("Solved")) {
-			solved = true;
-			name = "big19icon";
-		}
 		Sprite tmp = null;
 		if (CB_UI_Base_Settings.nightMode.getValue()) {
 			tmp = createSprite(atlasCustomtNight, name);
@@ -337,9 +332,9 @@ public class Sprites {
 
 		if (tmp == null) {
 			Log.info(log, "missing icon " + name);
-			tmp = createSprite(atlasDefault, "big19icon"); // damit kein null Sprite zurückgegeben wird falls ich was übersehen habe
+			tmp = createSprite(atlasDefault, "bigUndefined"); // damit kein null Sprite zurückgegeben wird falls ich was übersehen habe
 		} else {
-			if (solved) {
+			if (name.endsWith("Solved")) {
 				tmp.setColor(CB_UI_Base_Settings.SolvedMysteryColor.getValue());
 			}
 		}
@@ -528,41 +523,6 @@ public class Sprites {
 
 		}
 
-		if (MapIcons == null)
-			MapIcons = new ArrayList<Sprite>();
-		synchronized (MapIcons) {
-			MapIcons.clear();
-			MapIcons.add(getSprite("0"));
-			MapIcons.add(getSprite("1"));
-			MapIcons.add(getSprite("2"));
-			MapIcons.add(getSprite("3"));
-			MapIcons.add(getSprite("4"));
-			MapIcons.add(getSprite("5"));
-			MapIcons.add(getSprite("6"));
-			MapIcons.add(getSprite("7"));
-			MapIcons.add(getSprite("8"));
-			MapIcons.add(getSprite("9"));
-			MapIcons.add(getSprite("10"));
-			MapIcons.add(getSprite("11"));
-			MapIcons.add(getSprite("12"));
-			MapIcons.add(getSprite("13"));
-			MapIcons.add(getSprite("14"));
-			MapIcons.add(getSprite("15"));
-			MapIcons.add(getSprite("16"));
-			MapIcons.add(getSprite("17"));
-			MapIcons.add(getSprite("18"));
-			MapIcons.add(getSprite("19"));
-			MapIcons.add(getSprite("20"));
-			MapIcons.add(getSprite("21"));
-			MapIcons.add(getSprite("22"));
-			MapIcons.add(getSprite("23"));
-			MapIcons.add(getSprite("24"));
-			MapIcons.add(getSprite("25"));
-			MapIcons.add(getSprite("star"));
-			MapIcons.add(getSprite("27"));
-
-		}
-
 		if (Arrows == null)
 			Arrows = new ArrayList<Sprite>();
 		synchronized (Arrows) {
@@ -738,18 +698,13 @@ public class Sprites {
 
 		createDrawables();
 
-		// Change solved Mystery icon color
 		Color solvedColor = CB_UI_Base_Settings.SolvedMysteryColor.getValue();
-		MapIcons.get(21).setColor(solvedColor);
-		// BigIcons.get(21).setColor(solvedColor);
 		MapIconsSmall.get(5).setColor(solvedColor);
 		MapIconsSmall.get(13).setColor(solvedColor);
 		CB_UI_Base_Settings.SolvedMysteryColor.addChangedEventListener(new IChanged() {
 			@Override
 			public void isChanged() {
 				Color solvedColor = CB_UI_Base_Settings.SolvedMysteryColor.getValue();
-				MapIcons.get(21).setColor(solvedColor);
-				// BigIcons.get(21).setColor(solvedColor);
 				MapIconsSmall.get(5).setColor(solvedColor);
 				MapIconsSmall.get(13).setColor(solvedColor);
 			}
@@ -838,7 +793,6 @@ public class Sprites {
 	public static void destroyCache() {
 		MapIconsSmall = null;
 		MapOverlay = null;
-		MapIcons = null;
 		Arrows = null;
 		MapStars = null;
 		Bubble = null;

@@ -23,7 +23,7 @@ public enum CacheTypes {
 	Trailhead(false), // = 16,
 	ParkingArea(false), // = 17,
 	Final(false), // = 18, !!! 18 used in CacheListDAO 
-	Cache(false), // = 19,
+	Cache(true), // = 19,
 	MyParking(true), // = 20
 	Munzee(true), // 21
 	Giga(true), // 22

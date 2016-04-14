@@ -238,7 +238,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
 				WaypointRenderInfo wpi = new WaypointRenderInfo();
 				wpi.MapX = (float) MapX;
 				wpi.MapY = (float) MapY;
-				wpi.Icon = Sprites.MapIcons.get(16);
+				wpi.Icon = Sprites.getSprite("mapTrailhead");
 				wpi.Cache = null;
 				wpi.Waypoint = wp;
 				wpi.UnderlayIcon = null;
