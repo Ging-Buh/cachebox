@@ -1294,60 +1294,36 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		}
 
 		if ((InitialFlags & INITIAL_THEME) != 0) {
-			String themePath = null;
-
+			mapsForgeThemePath = null;
 			boolean useInvertNightTheme = false;
-
-			// Zustand der Karte CarMode/NormalMode
 			if (CarMode) {
-
 				ManagerBase.Manager.textScale = ManagerBase.DEFAULT_TEXT_SCALE * 1.35f;
-
 				if (Config.nightMode.getValue()) {
-					// zuerst schauen, ob ein Render Theme im Custom Skin Ordner Liegt
-					themePath = ifCarThemeExist(PathCustomNight);
-
-					if (themePath == null) {// wenn kein Night Custom skin vorhanden, dann nach einem Day CostumTheme suchen, welches dann Invertiert wird!
-						themePath = ifCarThemeExist(PathCustom);
-						if (themePath != null)
-							useInvertNightTheme = true;
-					}
-
-					if (themePath == null) {// wenn kein Night Default skin vorhanden, dann nach einem Day DayTheme suchen, welches dann Invertiert wird!
-						themePath = ManagerBase.INTERNAL_CAR_THEME;
+					if (!setTheme(Config.MapsforgeCarNightTheme.getValue())) {
 						useInvertNightTheme = true;
+						if (!setTheme(Config.MapsforgeCarDayTheme.getValue())) {
+							mapsForgeThemePath = ManagerBase.INTERNAL_CAR_THEME;
+						}
 					}
-
 				} else {
-					// zuerst schauen, ob ein Render Theme im Custom Skin Ordner Liegt
-					themePath = ifCarThemeExist(PathCustom);
-
-					if (themePath == null)
-						themePath = ifCarThemeExist(PathDefault);
+					if (!setTheme(Config.MapsforgeCarDayTheme.getValue())) {
+						mapsForgeThemePath = ManagerBase.INTERNAL_CAR_THEME;
+					}
 				}
-
-				if (themePath == null) {
-					themePath = ManagerBase.INTERNAL_CAR_THEME;
-				}
-
 			} else {
 				ManagerBase.Manager.textScale = ManagerBase.DEFAULT_TEXT_SCALE;
-			}
-
-			if (themePath == null) {
-				// Entweder wir sind nicht im CarMode oder es wurde kein Passender Theme für den CarMode gefunden!
 				if (Config.nightMode.getValue()) {
-					themePath = ifThemeExist(Config.MapsforgeNightTheme.getValue());
-				}
-				if (themePath == null) {
-					if (Config.nightMode.getValue())
+					if (!setTheme(Config.MapsforgeNightTheme.getValue())) {
 						useInvertNightTheme = true;
-					themePath = ifThemeExist(Config.MapsforgeDayTheme.getValue());
+						setTheme(Config.MapsforgeDayTheme.getValue());
+						// else themePath = null : defaults to internal RenderTheme OSMARENDER
+					}
+				} else {
+					setTheme(Config.MapsforgeDayTheme.getValue());
+					// else themePath = null : defaults to internal RenderTheme OSMARENDER
 				}
 			}
-
-			ManagerBase.Manager.setRenderTheme(themePath, useInvertNightTheme);
-
+			ManagerBase.Manager.setRenderTheme(mapsForgeThemePath, useInvertNightTheme);
 		}
 
 		if ((InitialFlags & INITIAL_WP_LIST) != 0) {

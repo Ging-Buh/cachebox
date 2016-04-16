@@ -76,12 +76,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	public static int INITIAL_SETTINGS_WITH_OUT_ZOOM = 9;
 	public static final boolean debug = false;
 
-	// ######### theme Path ###############
-	public static String PathDefault;
-	public static String PathCustom;
-	public static String PathDefaultNight;
-	public static String PathCustomNight;
-
 	// ######################################
 
 	public enum MapState {
@@ -146,6 +140,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	protected PolygonDrawable CrossLines = null;
 	protected AccuracyDrawable accuracyDrawable = null;
 	String str = "";
+
+	protected String mapsForgeThemePath;
 
 	public boolean GetNightMode() {
 		return this.NightMode;
@@ -840,15 +836,13 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 	public abstract void setNewSettings(int InitialFlags);
 
-	protected String ifThemeExist(String Path) {
-		if (FileIO.FileExists(Path) && FileIO.GetFileExtension(Path).contains("xml"))
-			return Path;
-		return null;
-	}
-
-	protected String ifCarThemeExist(String Path) {
-		Path = Path + "CarTheme.xml";
-		return ifThemeExist(Path);
+	protected boolean setTheme(String Path) {
+		if (Path.length() > 0)
+			if (FileIO.FileExists(Path) && FileIO.GetFileExtension(Path).contains("xml")) {
+				mapsForgeThemePath = Path;
+				return true;
+			}
+		return false;
 	}
 
 	private void setScreenCenter(Vector2 newCenter) {

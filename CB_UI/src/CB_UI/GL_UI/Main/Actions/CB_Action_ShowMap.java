@@ -346,8 +346,8 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 		final Menu lRenderThemesMenu = new OptionMenu("RenderThemesMenu");
 		lRenderThemesMenu.addItem(0, "RenderThemesDay");
 		lRenderThemesMenu.addItem(1, "RenderThemesNight");
-		//lRenderThemesMenu.addItem(2, "RenderThemesCarDay");
-		//lRenderThemesMenu.addItem(3, "RenderThemesCarNight");
+		lRenderThemesMenu.addItem(2, "RenderThemesCarDay");
+		lRenderThemesMenu.addItem(3, "RenderThemesCarNight");
 
 		lRenderThemesMenu.addOnClickListener(new OnClickListener() {
 			@Override
@@ -380,18 +380,14 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 				}
 				break;
 			case 2:
-				/*
-				if (LocatorSettings.MapsforgeDayCarTheme.getValue().contains(theme)) {
+				if (LocatorSettings.MapsforgeCarDayTheme.getValue().contains(theme)) {
 					mi.setChecked(true);
 				}
-				*/
 				break;
 			case 3:
-				/*
-				if (LocatorSettings.MapsforgeNightCarTheme.getValue().contains(theme)) {
+				if (LocatorSettings.MapsforgeCarNightTheme.getValue().contains(theme)) {
 					mi.setChecked(true);
 				}
-				*/
 				break;
 			}
 		}
