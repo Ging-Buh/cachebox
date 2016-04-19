@@ -462,13 +462,16 @@ public class ImageLoader {
 	private String originalPath = null;
 
 	private void createThumb() {
-		Log.info(log, "createThumb " + mPath + ":" + ThumbPräfix);
+		if (ThumbPräfix.length() > 0)
+			Log.info(log, "createThumb " + FileIO.GetFileName(mPath));
+		else
+			Log.info(log, "create" + ThumbPräfix + "Thumb " + FileIO.GetFileName(mPath));
 		String tmp = FileFactory.createThumb(mPath, (int) resizeWidth, ThumbPräfix);
 		if (tmp != null) {
 			originalPath = mPath;
 			mPath = tmp;
 		} else {
-			Log.info(log, "createThumb not generated. " + mPath + " ! " + ThumbPräfix);
+			Log.err(log, "Thumb not generated for " + mPath + " ! " + ThumbPräfix);
 		}
 	}
 

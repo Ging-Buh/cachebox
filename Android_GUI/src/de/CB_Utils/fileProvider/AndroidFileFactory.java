@@ -52,8 +52,10 @@ public class AndroidFileFactory extends FileFactory {
 		options.inJustDecodeBounds = true;
 
 		if (BitmapFactory.decodeFile(Path, options) == null) {
+			// seems as if decodeFile always returns null (independant from success)
 			// todo delete a bad original file (Path)
-			return null;
+			// return null;
+			// will now perhaps produce bad thumbs
 		}
 
 		int oriWidth = options.outWidth;
