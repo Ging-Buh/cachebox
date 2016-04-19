@@ -17,8 +17,6 @@ package CB_UI.GL_UI.Views;
 
 import java.util.ArrayList;
 
-import org.slf4j.LoggerFactory;
-
 import CB_Core.DAO.ImageDAO;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
@@ -35,12 +33,11 @@ import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.FileFactory;
 
 public class SpoilerView extends CB_View_Base {
-	final static org.slf4j.Logger log = LoggerFactory.getLogger(SpoilerView.class);
+	// final static org.slf4j.Logger log = LoggerFactory.getLogger(SpoilerView.class);
 	private final static int MAX_THUMB_WIDTH = 500;
 	private final static int MAX_OVERVIEW_THUMB_WIDTH = 240;
 
@@ -86,7 +83,7 @@ public class SpoilerView extends CB_View_Base {
 
 	@Override
 	public void onShow() {
-		Log.info(log, "Start onShow");
+		// Log.info(log, "Start onShow");
 		if (GlobalCore.isSetSelectedCache()) {
 
 			if (!forceReload && GlobalCore.getSelectedCache().equals(actCache)) {
@@ -98,7 +95,7 @@ public class SpoilerView extends CB_View_Base {
 			actCache = GlobalCore.getSelectedCache();
 
 			if (actCache.hasSpoiler()) {
-				Log.info(log, "has Spoiler.");
+				// Log.info(log, "has Spoiler.");
 
 				GalleryItem firstItem = null;
 				synchronized (bigItems) {
@@ -110,10 +107,10 @@ public class SpoilerView extends CB_View_Base {
 
 					ArrayList<ImageEntry> dbImages = imageDAO.getImagesForCache(actCache.getGcCode());
 
-					Log.info(log, "make images");
+					// Log.info(log, "make images");
 					for (int i = 0, n = actCache.getSpoilerRessources().size(); i < n; i++) {
 						ImageEntry imageEntry = actCache.getSpoilerRessources().get(i);
-						Log.info(log, "Image Nr.: " + i + " from " + imageEntry.LocalPath);
+						// Log.info(log, "Image Nr.: " + i + " from " + imageEntry.LocalPath);
 						String description = "";
 						String localName = FileIO.GetFileNameWithoutExtension(imageEntry.LocalPath);
 						for (ImageEntry dbImage : dbImages) {
@@ -156,7 +153,7 @@ public class SpoilerView extends CB_View_Base {
 						overviewItems.add(overviewItem);
 					}
 				}
-				Log.info(log, "Images loaded");
+				// Log.info(log, "Images loaded");
 				gallery.setBaseAdapter(new GalaryImageAdapter());
 				galleryOverwiew.setBaseAdapter(new OverviewImageAdapter());
 
@@ -173,7 +170,7 @@ public class SpoilerView extends CB_View_Base {
 				galleryOverwiew.reloadItems();
 			}
 		}
-		Log.info(log, "End onShow");
+		// Log.info(log, "End onShow");
 	}
 
 	@Override

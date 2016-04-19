@@ -54,7 +54,8 @@ public class DeleteSelectedCache {
 		// Logs
 		Log.debug(log, "Delete Logs");
 		LogDAO logdao = new LogDAO();
-		logdao.ClearOrphanedLogs();
+		//logdao.ClearOrphanedLogs(); // doit when you have more time
+		logdao.deleteLogs(GlobalCore.getSelectedCache().Id);
 		logdao = null;
 		// compact DB hangs : commented out
 		// Log.debug(log, "Delete compact DB");

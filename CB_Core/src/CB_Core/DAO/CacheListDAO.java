@@ -329,14 +329,15 @@ public class CacheListDAO {
 
 			for (int i = 0; i < files.length; i++) {
 
-				if (!files[i].name().toLowerCase().startsWith(GcCode))
+				// simplyfied for startswith gccode, thumbs_gccode + ooverwiewthumbs_gccode
+				if (!files[i].name().toLowerCase().contains(GcCode))
 					continue;
 
 				String filename = directory + "/" + files[i].name();
 				FileHandle file = new FileHandle(filename);
 				if (file.exists()) {
 					if (!file.delete())
-						Log.debug(log, "Error deleting : " + filename);
+						Log.err(log, "Error deleting : " + filename);
 				}
 			}
 		}

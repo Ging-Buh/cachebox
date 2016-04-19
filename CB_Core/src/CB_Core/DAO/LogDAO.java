@@ -85,4 +85,12 @@ public class LogDAO {
 		Database.Data.execSQL(SQL);
 	}
 
+	/**
+	 * Delete all Logs for Cache 
+	 */
+	public void deleteLogs(long cacheId) {
+		String SQL = "DELETE  FROM  Logs WHERE Logs.CacheId = " + cacheId;
+		Database.Data.execSQL(SQL);
+	}
+
 }

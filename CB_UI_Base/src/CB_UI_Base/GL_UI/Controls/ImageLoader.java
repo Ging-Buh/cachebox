@@ -434,7 +434,7 @@ public class ImageLoader {
 			@Override
 			public void run() {
 
-				Log.info(log, "LoadAsync " + mPath + ":" + ImgName);
+				// Log.info(log, "LoadAsync " + mPath + ":" + ImgName);
 
 				if (thumbnail)
 					createThumb();
@@ -445,13 +445,13 @@ public class ImageLoader {
 
 					@Override
 					public void run() {
-						Log.info(log, "LoadSync " + mPath + ":" + ImgName);
+						// Log.info(log, "LoadSync " + mPath + ":" + ImgName);
 						mImageTex = tl.loadSync(assetManager, ImgName, Gdx.files.absolute(mPath), null);
 						Sprite sprite = new com.badlogic.gdx.graphics.g2d.Sprite(mImageTex);
 						spriteWidth = sprite.getWidth();
 						spriteHeight = sprite.getHeight();
 						setSprite(sprite, reziseHeight);
-						Log.info(log, "LoadSync " + mPath + ":" + ImgName + " ready");
+						// Log.info(log, "LoadSync " + mPath + ":" + ImgName + " ready");
 					}
 				});
 			}
@@ -462,10 +462,6 @@ public class ImageLoader {
 	private String originalPath = null;
 
 	private void createThumb() {
-		if (ThumbPräfix.length() > 0)
-			Log.info(log, "createThumb " + FileIO.GetFileName(mPath));
-		else
-			Log.info(log, "create" + ThumbPräfix + "Thumb " + FileIO.GetFileName(mPath));
 		String tmp = FileFactory.createThumb(mPath, (int) resizeWidth, ThumbPräfix);
 		if (tmp != null) {
 			originalPath = mPath;
