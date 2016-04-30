@@ -439,21 +439,25 @@ public class ImageLoader {
 				if (thumbnail)
 					createThumb();
 				final TextureLoader tl = new TextureLoader(new AbsoluteFileHandleResolver());
-				tl.loadAsync(assetManager, ImgName, Gdx.files.absolute(mPath), null);
+				try {
+					tl.loadAsync(assetManager, ImgName, Gdx.files.absolute(mPath), null);
+					GL.that.RunOnGL(new IRunOnGL() {
 
-				GL.that.RunOnGL(new IRunOnGL() {
+						@Override
+						public void run() {
+							// Log.info(log, "LoadSync " + mPath + ":" + ImgName);
+							mImageTex = tl.loadSync(assetManager, ImgName, Gdx.files.absolute(mPath), null);
+							Sprite sprite = new com.badlogic.gdx.graphics.g2d.Sprite(mImageTex);
+							spriteWidth = sprite.getWidth();
+							spriteHeight = sprite.getHeight();
+							setSprite(sprite, reziseHeight);
+							// Log.info(log, "LoadSync " + mPath + ":" + ImgName + " ready");
+						}
+					});
+				} catch (Exception e) {
+					//e.printStackTrace();
+				}
 
-					@Override
-					public void run() {
-						// Log.info(log, "LoadSync " + mPath + ":" + ImgName);
-						mImageTex = tl.loadSync(assetManager, ImgName, Gdx.files.absolute(mPath), null);
-						Sprite sprite = new com.badlogic.gdx.graphics.g2d.Sprite(mImageTex);
-						spriteWidth = sprite.getWidth();
-						spriteHeight = sprite.getHeight();
-						setSprite(sprite, reziseHeight);
-						// Log.info(log, "LoadSync " + mPath + ":" + ImgName + " ready");
-					}
-				});
 			}
 		});
 		th.start();

@@ -108,7 +108,7 @@ public class Html_ListView extends Box implements ListLayout {
 
 	@Override
 	public void resize(float width, float height) {
-		System.out.println("resize " + width + "/" + height);
+		//System.out.println("resize " + width + "/" + height);
 	}
 
 }
