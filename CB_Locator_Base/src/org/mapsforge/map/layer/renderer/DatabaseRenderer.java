@@ -27,24 +27,24 @@ import java.util.logging.Logger;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Display;
-import org.mapsforge.core.mapelements.MapElementContainer;
-import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.mapelements.SymbolContainer;
+import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.core.mapelements.MapElementContainer;
+import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
-import org.mapsforge.map.layer.cache.TileCache;
-import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.datastore.MapReadResult;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.datastore.Way;
+import org.mapsforge.map.layer.cache.TileCache;
+import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
 import org.mapsforge.map.rendertheme.rule.RenderTheme;
@@ -84,8 +84,7 @@ public class DatabaseRenderer implements RenderCallback {
 	 * @param mapDatabase
 	 *            the MapDatabase from which the map data will be read.
 	 */
-	public DatabaseRenderer(MapDataStore mapDatabase,
-			GraphicFactory graphicFactory, TileBasedLabelStore labelStore) {
+	public DatabaseRenderer(MapDataStore mapDatabase, GraphicFactory graphicFactory, TileBasedLabelStore labelStore) {
 		this.mapDatabase = mapDatabase;
 		this.graphicFactory = graphicFactory;
 		this.labelStore = labelStore;
@@ -100,8 +99,7 @@ public class DatabaseRenderer implements RenderCallback {
 	 * @param mapFile
 	 *            the MapDatabase from which the map data will be read.
 	 */
-	public DatabaseRenderer(MapDataStore mapFile,
-			GraphicFactory graphicFactory, TileCache tileCache) {
+	public DatabaseRenderer(MapDataStore mapFile, GraphicFactory graphicFactory, TileCache tileCache) {
 		this.mapDatabase = mapFile;
 		this.graphicFactory = graphicFactory;
 
@@ -235,11 +233,11 @@ public class DatabaseRenderer implements RenderCallback {
 	}
 
 	@Override
-	public void renderPointOfInterestCaption(final RenderContext renderContext, Display display, int priority, String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke, Position position, int maxTextWidth, PointOfInterest poi) {
+	public void renderPointOfInterestCaption(final RenderContext renderContext, Display display, int priority, String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke, Position position, int maxTextWidth,
+			PointOfInterest poi) {
 		Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, renderContext.rendererJob.tile.mapSize);
 
-		renderContext.labels.add(this.graphicFactory.createPointTextContainer(poiPosition.offset(horizontalOffset, verticalOffset), display, priority, caption, fill,
-				stroke, null, position, maxTextWidth));
+		renderContext.labels.add(this.graphicFactory.createPointTextContainer(poiPosition.offset(horizontalOffset, verticalOffset), display, priority, caption, fill, stroke, null, position, maxTextWidth));
 	}
 
 	@Override
@@ -262,8 +260,7 @@ public class DatabaseRenderer implements RenderCallback {
 
 	@Override
 	public void renderWaySymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, float dy, boolean alignCenter, boolean repeat, float repeatGap, float repeatStart, boolean rotate, PolylineContainer way) {
-		WayDecorator.renderSymbol(symbol, display, priority, dy, alignCenter, repeat, repeatGap,
-				repeatStart, rotate, way.getCoordinatesAbsolute(), renderContext.labels);
+		WayDecorator.renderSymbol(symbol, display, priority, dy, alignCenter, repeat, repeatGap, repeatStart, rotate, way.getCoordinatesAbsolute(), renderContext.labels);
 	}
 
 	@Override
@@ -407,6 +404,5 @@ public class DatabaseRenderer implements RenderCallback {
 			renderContext.renderTheme.matchLinearWay(this, renderContext, way);
 		}
 	}
-
 
 }

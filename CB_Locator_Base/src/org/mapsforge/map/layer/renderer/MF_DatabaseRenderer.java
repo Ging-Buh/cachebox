@@ -25,6 +25,8 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.datastore.MapDataStore;
+import org.mapsforge.map.layer.cache.InMemoryTileCache;
+import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -43,8 +45,11 @@ public class MF_DatabaseRenderer extends DatabaseRenderer implements IDatabaseRe
 	private double tileLatLon_0_x, tileLatLon_0_y, tileLatLon_1_x, tileLatLon_1_y;
 	private double divLon, divLat;
 
+	static TileCache firstLevelTileCache = new InMemoryTileCache(128);
+
 	public MF_DatabaseRenderer(MapDataStore mapDatabase, GraphicFactory graphicFactory, TileBasedLabelStore labelStore) {
-		super(mapDatabase, graphicFactory, labelStore);
+		super(mapDatabase, graphicFactory, firstLevelTileCache);
+
 	}
 
 	@Override
