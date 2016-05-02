@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -44,17 +45,25 @@ public final class FrameBufferController implements Observer {
 		return frameBufferController;
 	}
 
-	private static Dimension calculateFrameBufferDimension(Dimension mapViewDimension, double overdrawFactor) {
+	public static Dimension calculateFrameBufferDimension(Dimension mapViewDimension, double overdrawFactor) {
 		int width = (int) (mapViewDimension.width * overdrawFactor);
 		int height = (int) (mapViewDimension.height * overdrawFactor);
 		if (useSquareFrameBuffer) {
 			float aspectRatio = ((float) mapViewDimension.width) / mapViewDimension.height;
-			if (aspectRatio < maxAspectRatio && aspectRatio > maxAspectRatio / 1) {
+			if (aspectRatio < maxAspectRatio && aspectRatio > 1 / maxAspectRatio) {
 				width = Math.max(width, height);
 				height = width;
 			}
 		}
 		return new Dimension(width, height);
+	}
+
+	public static boolean isUseSquareFrameBuffer() {
+		return useSquareFrameBuffer;
+	}
+
+	public static void setUseSquareFrameBuffer(boolean useSquareFrameBuffer) {
+		FrameBufferController.useSquareFrameBuffer = useSquareFrameBuffer;
 	}
 
 	private final FrameBuffer frameBuffer;
@@ -84,7 +93,9 @@ public final class FrameBufferController implements Observer {
 		double overdrawFactor = this.model.frameBufferModel.getOverdrawFactor();
 		if (dimensionChangeNeeded(mapViewDimension, overdrawFactor)) {
 			Dimension newDimension = calculateFrameBufferDimension(mapViewDimension, overdrawFactor);
-			if (!useSquareFrameBuffer || frameBuffer.getDimension() == null || newDimension.width > frameBuffer.getDimension().width || newDimension.height > frameBuffer.getDimension().height) {
+			if (!useSquareFrameBuffer || frameBuffer.getDimension() == null
+					|| newDimension.width > frameBuffer.getDimension().width
+					|| newDimension.height > frameBuffer.getDimension().height) {
 				// new dimensions if we either always reallocate on config change or if new dimension
 				// is larger than the old
 				this.frameBuffer.setDimension(newDimension);
@@ -106,12 +117,15 @@ public final class FrameBufferController implements Observer {
 		}
 	}
 
-	private void adjustFrameBufferMatrix(MapPosition mapPositionFrameBuffer, Dimension mapViewDimension, double scaleFactor, LatLong pivot) {
+	private void adjustFrameBufferMatrix(MapPosition mapPositionFrameBuffer, Dimension mapViewDimension,
+			double scaleFactor, LatLong pivot) {
 
 		MapPosition mapViewPosition = this.model.mapViewPosition.getMapPosition();
 
-		Point pointFrameBuffer = MercatorProjection.getPixel(mapPositionFrameBuffer.latLong, mapPositionFrameBuffer.zoomLevel, model.displayModel.getTileSize());
-		Point pointMapPosition = MercatorProjection.getPixel(mapViewPosition.latLong, mapPositionFrameBuffer.zoomLevel, model.displayModel.getTileSize());
+		long mapSize = MercatorProjection.getMapSize(mapPositionFrameBuffer.zoomLevel, model.displayModel.getTileSize());
+
+		Point pointFrameBuffer = MercatorProjection.getPixel(mapPositionFrameBuffer.latLong, mapSize);
+		Point pointMapPosition = MercatorProjection.getPixel(mapViewPosition.latLong, mapSize);
 
 		double diffX = pointFrameBuffer.x - pointMapPosition.x;
 		double diffY = pointFrameBuffer.y - pointMapPosition.y;
@@ -122,14 +136,15 @@ public final class FrameBufferController implements Observer {
 		double pivotDistanceX = 0d;
 		double pivotDistanceY = 0d;
 		if (pivot != null) {
-			Point pivotXY = MercatorProjection.getPixel(pivot, mapPositionFrameBuffer.zoomLevel, this.model.displayModel.getTileSize());
+			Point pivotXY = MercatorProjection.getPixel(pivot, mapSize);
 			pivotDistanceX = pivotXY.x - pointFrameBuffer.x;
 			pivotDistanceY = pivotXY.y - pointFrameBuffer.y;
 		}
 
 		float currentScaleFactor = (float) (scaleFactor / Math.pow(2, mapPositionFrameBuffer.zoomLevel));
 
-		this.frameBuffer.adjustMatrix((float) diffX, (float) diffY, currentScaleFactor, mapViewDimension, (float) pivotDistanceX, (float) pivotDistanceY);
+		this.frameBuffer.adjustMatrix((float) diffX, (float) diffY, currentScaleFactor, mapViewDimension, (float) pivotDistanceX,
+				(float) pivotDistanceY);
 	}
 
 	private boolean dimensionChangeNeeded(Dimension mapViewDimension, double overdrawFactor) {

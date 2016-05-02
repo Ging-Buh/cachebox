@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,6 +15,8 @@
  */
 package org.mapsforge.core.graphics;
 
+import org.mapsforge.core.model.Point;
+
 public interface Paint {
 	int getTextHeight(String text);
 
@@ -22,6 +25,7 @@ public interface Paint {
 	boolean isTransparent();
 
 	void setBitmapShader(Bitmap bitmap);
+	void setBitmapShaderShift(Point origin);
 
 	void setColor(Color color);
 
@@ -37,6 +41,8 @@ public interface Paint {
 	 */
 	void setStrokeCap(Cap cap);
 
+	void setStrokeJoin(Join join);
+
 	void setStrokeWidth(float strokeWidth);
 
 	/**
@@ -49,20 +55,4 @@ public interface Paint {
 	void setTextSize(float textSize);
 
 	void setTypeface(FontFamily fontFamily, FontStyle fontStyle);
-
-	Cap getCap();
-
-	int getColor();
-
-	Style getStyle();
-
-	float getTextSize();
-
-	float getStrokeWidth();
-
-	float[] getDashArray();
-
-	FontFamily getFontFamily();
-
-	FontStyle getFontStyle();
 }

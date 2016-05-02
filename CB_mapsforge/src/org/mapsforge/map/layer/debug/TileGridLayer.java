@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright © 2014 devemux86
+ * Copyright 2014, 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -28,30 +28,48 @@ import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.model.DisplayModel;
 
 public class TileGridLayer extends Layer {
-	private static Paint createPaint(GraphicFactory graphicFactory, DisplayModel displayModel) {
+	private static Paint createPaintFront(GraphicFactory graphicFactory, DisplayModel displayModel) {
 		Paint paint = graphicFactory.createPaint();
-		paint.setColor(Color.BLACK);
+		paint.setColor(Color.RED);
 		paint.setStrokeWidth(2 * displayModel.getScaleFactor());
 		paint.setStyle(Style.STROKE);
 		return paint;
 	}
 
+	private static Paint createPaintBack(GraphicFactory graphicFactory, DisplayModel displayModel) {
+		Paint paint = graphicFactory.createPaint();
+		paint.setColor(Color.WHITE);
+		paint.setStrokeWidth(4 * displayModel.getScaleFactor());
+		paint.setStyle(Style.STROKE);
+		return paint;
+	}
+
 	private final DisplayModel displayModel;
-	private final Paint paint;
+	private final Paint paintBack, paintFront;
 
 	public TileGridLayer(GraphicFactory graphicFactory, DisplayModel displayModel) {
 		super();
 
 		this.displayModel = displayModel;
-		this.paint = createPaint(graphicFactory, displayModel);
+
+		this.paintBack = createPaintBack(graphicFactory, displayModel);
+		this.paintFront = createPaintFront(graphicFactory, displayModel);
+	}
+
+	public TileGridLayer(DisplayModel displayModel, Paint paintBack, Paint paintFront) {
+		super();
+
+		this.displayModel = displayModel;
+		this.paintBack = paintBack;
+		this.paintFront = paintFront;
 	}
 
 	@Override
 	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
-		long tileLeft = MercatorProjection.longitudeToTileX(boundingBox.getMinLongitude(), zoomLevel);
-		long tileTop = MercatorProjection.latitudeToTileY(boundingBox.getMaxLatitude(), zoomLevel);
-		long tileRight = MercatorProjection.longitudeToTileX(boundingBox.getMaxLongitude(), zoomLevel);
-		long tileBottom = MercatorProjection.latitudeToTileY(boundingBox.getMinLatitude(), zoomLevel);
+		long tileLeft = MercatorProjection.longitudeToTileX(boundingBox.minLongitude, zoomLevel);
+		long tileTop = MercatorProjection.latitudeToTileY(boundingBox.maxLatitude, zoomLevel);
+		long tileRight = MercatorProjection.longitudeToTileX(boundingBox.maxLongitude, zoomLevel);
+		long tileBottom = MercatorProjection.latitudeToTileY(boundingBox.minLatitude, zoomLevel);
 
 		int tileSize = this.displayModel.getTileSize();
 		int pixelX1 = (int) (MercatorProjection.tileToPixel(tileLeft, tileSize) - topLeftPoint.x);
@@ -60,11 +78,19 @@ public class TileGridLayer extends Layer {
 		int pixelY2 = (int) (MercatorProjection.tileToPixel(tileBottom, tileSize) - topLeftPoint.y + tileSize);
 
 		for (int lineX = pixelX1; lineX <= pixelX2 + 1; lineX += tileSize) {
-			canvas.drawLine(lineX, pixelY1, lineX, pixelY2, this.paint);
+			canvas.drawLine(lineX, pixelY1, lineX, pixelY2, this.paintBack);
 		}
 
 		for (int lineY = pixelY1; lineY <= pixelY2 + 1; lineY += tileSize) {
-			canvas.drawLine(pixelX1, lineY, pixelX2, lineY, this.paint);
+			canvas.drawLine(pixelX1, lineY, pixelX2, lineY, this.paintBack);
+		}
+
+		for (int lineX = pixelX1; lineX <= pixelX2 + 1; lineX += tileSize) {
+			canvas.drawLine(lineX, pixelY1, lineX, pixelY2, this.paintFront);
+		}
+
+		for (int lineY = pixelY1; lineY <= pixelY2 + 1; lineY += tileSize) {
+			canvas.drawLine(pixelX1, lineY, pixelX2, lineY, this.paintFront);
 		}
 	}
 }

@@ -3,6 +3,7 @@ package CB_Locator.Map;
 import java.io.InputStream;
 
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -39,8 +40,13 @@ public enum CB_InternalRenderTheme implements XmlRenderTheme {
 		return fileHandle.read();
 	}
 
-	@Override
 	public boolean isFreizeitkarte() {
 		return false;
+	}
+
+	@Override
+	public XmlRenderThemeMenuCallback getMenuCallback() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

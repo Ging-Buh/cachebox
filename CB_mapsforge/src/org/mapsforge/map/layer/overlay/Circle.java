@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -32,6 +33,7 @@ import org.mapsforge.map.layer.Layer;
  */
 public class Circle extends Layer {
 
+	private final boolean keepAligned;
 	private LatLong latLong;
 	private Paint paintFill;
 	private Paint paintStroke;
@@ -50,8 +52,29 @@ public class Circle extends Layer {
 	 *             if the given {@code radius} is negative or {@link Float#NaN}.
 	 */
 	public Circle(LatLong latLong, float radius, Paint paintFill, Paint paintStroke) {
+		this(latLong, radius, paintFill, paintStroke, false);
+	}
+
+	/**
+	 * @param latLong
+	 *            the initial center point of this circle (may be null).
+	 * @param radius
+	 *            the initial non-negative radius of this circle in meters.
+	 * @param paintFill
+	 *            the initial {@code Paint} used to fill this circle (may be null).
+	 * @param paintStroke
+	 *            the initial {@code Paint} used to stroke this circle (may be null).
+	 * @param keepAligned
+	 *            if set to true it will keep the bitmap aligned with the map,
+	 *            to avoid a moving effect of a bitmap shader.
+	 * @throws IllegalArgumentException
+	 *             if the given {@code radius} is negative or {@link Float#NaN}.
+	 *
+	 */
+	public Circle(LatLong latLong, float radius, Paint paintFill, Paint paintStroke, boolean keepAligned) {
 		super();
 
+		this.keepAligned = keepAligned;
 		this.latLong = latLong;
 		setRadiusInternal(radius);
 		this.paintFill = paintFill;
@@ -64,11 +87,11 @@ public class Circle extends Layer {
 			return;
 		}
 
-		double latitude = this.latLong.getLatitude();
-		double longitude = this.latLong.getLongitude();
-		int tileSize = displayModel.getTileSize();
-		int pixelX = (int) (MercatorProjection.longitudeToPixelX(longitude, zoomLevel, tileSize) - topLeftPoint.x);
-		int pixelY = (int) (MercatorProjection.latitudeToPixelY(latitude, zoomLevel, tileSize) - topLeftPoint.y);
+		double latitude = this.latLong.latitude;
+		double longitude = this.latLong.longitude;
+		long mapSize = MercatorProjection.getMapSize(zoomLevel, displayModel.getTileSize());
+		int pixelX = (int) (MercatorProjection.longitudeToPixelX(longitude, mapSize) - topLeftPoint.x);
+		int pixelY = (int) (MercatorProjection.latitudeToPixelY(latitude, mapSize) - topLeftPoint.y);
 		int radiusInPixel = getRadiusInPixels(latitude, zoomLevel);
 
 		Rectangle canvasRectangle = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -77,9 +100,15 @@ public class Circle extends Layer {
 		}
 
 		if (this.paintStroke != null) {
+			if (this.keepAligned) {
+				this.paintStroke.setBitmapShaderShift(topLeftPoint);
+			}
 			canvas.drawCircle(pixelX, pixelY, radiusInPixel, this.paintStroke);
 		}
 		if (this.paintFill != null) {
+			if (this.keepAligned) {
+				this.paintFill.setBitmapShaderShift(topLeftPoint);
+			}
 			canvas.drawCircle(pixelX, pixelY, radiusInPixel, this.paintFill);
 		}
 	}
@@ -114,6 +143,21 @@ public class Circle extends Layer {
 	}
 
 	/**
+	 * @return the non-negative radius of this circle in pixels.
+	 */
+	protected int getRadiusInPixels(double latitude, byte zoomLevel) {
+		return (int) MercatorProjection.metersToPixels(this.radius, latitude, MercatorProjection.getMapSize(zoomLevel, displayModel.getTileSize()));
+	}
+
+	/**
+	 * @return true if it keeps the bitmap aligned with the map, to avoid a
+	 *         moving effect of a bitmap shader, false otherwise.
+	 */
+	public boolean isKeepAligned() {
+		return keepAligned;
+	}
+
+	/**
 	 * @param latLong
 	 *            the new center point of this circle (may be null).
 	 */
@@ -145,10 +189,6 @@ public class Circle extends Layer {
 	 */
 	public synchronized void setRadius(float radius) {
 		setRadiusInternal(radius);
-	}
-
-	protected int getRadiusInPixels(double latitude, byte zoomLevel) {
-		return (int) MercatorProjection.metersToPixels(this.radius, latitude, zoomLevel, displayModel.getTileSize());
 	}
 
 	private void setRadiusInternal(float radius) {

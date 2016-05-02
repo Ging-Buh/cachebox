@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,17 +15,25 @@
  */
 package org.mapsforge.map.layer.renderer;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.GraphicUtils;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.model.Tile;
+import org.mapsforge.map.rendertheme.RenderContext;
 
-class CanvasRasterer {
+public class CanvasRasterer {
 	private final Canvas canvas;
 	private final Path path;
 	private final Matrix symbolMatrix;
@@ -36,55 +44,15 @@ class CanvasRasterer {
 		this.path = graphicFactory.createPath();
 	}
 
-	void destroy() {
+	public void destroy() {
 		this.canvas.destroy();
 	}
 
-	void drawNodes(List<PointTextContainer> pointTextContainers) {
-		for (int index = pointTextContainers.size() - 1; index >= 0; --index) {
-			PointTextContainer pointTextContainer = pointTextContainers.get(index);
+	void drawWays(RenderContext renderContext) {
+		int levelsPerLayer = renderContext.ways.get(0).size();
 
-			if (pointTextContainer.paintBack != null) {
-				this.canvas.drawText(pointTextContainer.text, (int) pointTextContainer.x, (int) pointTextContainer.y, pointTextContainer.paintBack);
-			}
-
-			this.canvas.drawText(pointTextContainer.text, (int) pointTextContainer.x, (int) pointTextContainer.y, pointTextContainer.paintFront);
-		}
-	}
-
-	void drawSymbols(List<SymbolContainer> symbolContainers) {
-		for (int index = symbolContainers.size() - 1; index >= 0; --index) {
-			SymbolContainer symbolContainer = symbolContainers.get(index);
-
-			Point point = symbolContainer.point;
-			this.symbolMatrix.reset();
-
-			if (symbolContainer.alignCenter) {
-				int pivotX = symbolContainer.symbol.getWidth() / 2;
-				int pivotY = symbolContainer.symbol.getHeight() / 2;
-				this.symbolMatrix.translate((float) (point.x - pivotX), (float) (point.y - pivotY));
-				this.symbolMatrix.rotate(symbolContainer.theta, pivotX, pivotY);
-			} else {
-				this.symbolMatrix.translate((float) point.x, (float) point.y);
-				this.symbolMatrix.rotate(symbolContainer.theta);
-			}
-
-			this.canvas.drawBitmap(symbolContainer.symbol, this.symbolMatrix);
-		}
-	}
-
-	void drawWayNames(List<WayTextContainer> wayTextContainers) {
-		for (int index = wayTextContainers.size() - 1; index >= 0; --index) {
-			WayTextContainer wayTextContainer = wayTextContainers.get(index);
-			this.canvas.drawTextRotated(wayTextContainer.text, wayTextContainer.x1, wayTextContainer.y1, wayTextContainer.x2, wayTextContainer.y2, wayTextContainer.paint);
-		}
-	}
-
-	void drawWays(List<List<List<ShapePaintContainer>>> drawWays) {
-		int levelsPerLayer = drawWays.get(0).size();
-
-		for (int layer = 0, layers = drawWays.size(); layer < layers; ++layer) {
-			List<List<ShapePaintContainer>> shapePaintContainers = drawWays.get(layer);
+		for (int layer = 0, layers = renderContext.ways.size(); layer < layers; ++layer) {
+			List<List<ShapePaintContainer>> shapePaintContainers = renderContext.ways.get(layer);
 
 			for (int level = 0; level < levelsPerLayer; ++level) {
 				List<ShapePaintContainer> wayList = shapePaintContainers.get(level);
@@ -96,10 +64,49 @@ class CanvasRasterer {
 		}
 	}
 
+	void drawMapElements(Set<MapElementContainer> elements, Tile tile) {
+		// we have a set of all map elements (needed so we do not draw elements twice),
+		// but we need to draw in priority order as we now allow overlaps. So we
+		// convert into list, then sort, then draw.
+		List<MapElementContainer> elementsAsList = new ArrayList<MapElementContainer>(elements);
+		// draw elements in order of priority: lower priority first, so more important
+		// elements will be drawn on top (in case of display=true) items.
+		Collections.sort(elementsAsList);
+
+		for (MapElementContainer element : elementsAsList) {
+			element.draw(canvas, tile.getOrigin(), this.symbolMatrix);
+		}
+	}
+
 	void fill(int color) {
 		if (GraphicUtils.getAlpha(color) > 0) {
 			this.canvas.fillColor(color);
 		}
+	}
+
+	/**
+	 * Fills the area outside the specificed rectangle with color. Use this method when
+	 * overpainting with a transparent color as it sets the PorterDuff mode.
+	 * This method is used to blank out areas that fall outside the map area.
+	 * @param color the fill color for the outside area
+	 * @param insideArea the inside area on which not to draw
+	 */
+	void fillOutsideAreas(Color color, Rectangle insideArea) {
+		this.canvas.setClipDifference((int) insideArea.left, (int) insideArea.top, (int) insideArea.getWidth(), (int) insideArea.getHeight());
+		this.canvas.fillColor(color);
+		this.canvas.resetClip();
+	}
+
+	/**
+	 * Fills the area outside the specificed rectangle with color.
+	 * This method is used to blank out areas that fall outside the map area.
+	 * @param color the fill color for the outside area
+	 * @param insideArea the inside area on which not to draw
+	 */
+	void fillOutsideAreas(int color, Rectangle insideArea) {
+		this.canvas.setClipDifference((int) insideArea.left, (int) insideArea.top, (int) insideArea.getWidth(), (int) insideArea.getHeight());
+		this.canvas.fillColor(color);
+		this.canvas.resetClip();
 	}
 
 	void setCanvasBitmap(Bitmap bitmap) {
@@ -112,11 +119,16 @@ class CanvasRasterer {
 		this.canvas.drawCircle((int) point.x, (int) point.y, (int) circleContainer.radius, shapePaintContainer.paint);
 	}
 
-	private void drawPath(ShapePaintContainer shapePaintContainer, Point[][] coordinates) {
+	private void drawPath(ShapePaintContainer shapePaintContainer, Point[][] coordinates, float dy) {
 		this.path.clear();
 
-		for (int j = 0; j < coordinates.length; ++j) {
-			Point[] points = coordinates[j];
+		for (Point[] innerList : coordinates) {
+			Point[] points;
+			if (dy != 0f) {
+				points = RendererUtils.parallelPath(innerList, dy);
+			} else {
+				points = innerList;
+			}
 			if (points.length >= 2) {
 				Point point = points[0];
 				this.path.moveTo((float) point.x, (float) point.y);
@@ -133,14 +145,14 @@ class CanvasRasterer {
 	private void drawShapePaintContainer(ShapePaintContainer shapePaintContainer) {
 		ShapeType shapeType = shapePaintContainer.shapeContainer.getShapeType();
 		switch (shapeType) {
-		case CIRCLE:
-			drawCircleContainer(shapePaintContainer);
-			return;
+			case CIRCLE:
+				drawCircleContainer(shapePaintContainer);
+				return;
 
-		case POLYLINE:
-			PolylineContainer polylineContainer = (PolylineContainer) shapePaintContainer.shapeContainer;
-			drawPath(shapePaintContainer, polylineContainer.coordinates);
-			return;
+			case POLYLINE:
+				PolylineContainer polylineContainer = (PolylineContainer) shapePaintContainer.shapeContainer;
+				drawPath(shapePaintContainer, polylineContainer.getCoordinatesRelativeToTile(), shapePaintContainer.dy);
+				return;
 		}
 	}
 }

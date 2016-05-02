@@ -3,7 +3,8 @@ package org.mapsforge.map.swing.view;
 import java.awt.Graphics;
 
 import org.mapsforge.core.graphics.GraphicContext;
-import org.mapsforge.map.awt.AwtGraphicFactory;
+import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
+import org.mapsforge.map.awt.view.MapView;
 import org.mapsforge.map.controller.FrameBufferController;
 import org.mapsforge.map.controller.LayerManagerController;
 import org.mapsforge.map.controller.MapViewController;
@@ -22,8 +23,10 @@ public class AwtMapView extends MapView {
 
 		this.model = new Model();
 
-		this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY);
-		this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, new DisplayModel(), GRAPHIC_FACTORY);
+		DisplayModel dispModel = new DisplayModel();
+
+		this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY, dispModel);
+		this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, dispModel, GRAPHIC_FACTORY);
 		FrameBufferController.create(this.frameBuffer, this.model);
 
 		this.layerManager = new LayerManager(this, this.model.mapViewPosition, GRAPHIC_FACTORY);

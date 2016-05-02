@@ -17,6 +17,7 @@ package org.mapsforge.map.awt;
 
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.map.awt.graphics.AwtCanvas;
 
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Canvas;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;

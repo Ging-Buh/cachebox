@@ -35,14 +35,15 @@ import org.apache.http.params.HttpParams;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
+import org.mapsforge.map.datastore.MultiMapDataStore;
+import org.mapsforge.map.datastore.MultiMapDataStore.DataPolicy;
 import org.mapsforge.map.layer.renderer.GL_DatabaseRenderer;
 import org.mapsforge.map.layer.renderer.IDatabaseRenderer;
 import org.mapsforge.map.layer.renderer.MF_DatabaseRenderer;
 import org.mapsforge.map.layer.renderer.MixedDatabaseRenderer;
 import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.reader.MapDatabase;
-import org.mapsforge.map.reader.header.FileOpenResult;
+import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
@@ -369,12 +370,12 @@ public abstract class ManagerBase {
 						String Name = FileIO.GetFileNameWithoutExtension(file);
 						Layer layer = new Layer(Type.normal, Name, Name, file);
 						layer.isMapsForge = true;
-						MapDatabase md = new MapDatabase();
+						MultiMapDataStore md = new MultiMapDataStore(DataPolicy.RETURN_FIRST);
 						FileOpenResult fr = md.openFile(FileFactory.createFile(file));
 						if (fr.isSuccess()) {
 							try {
 								MapFileInfo mf = md.getMapFileInfo();
-								md.closeFile();
+								md.close();
 								layer.boundingBox = mf.boundingBox;
 								ManagerBase.Manager.layers.add(layer);
 							} catch (Exception e) {
@@ -400,10 +401,10 @@ public abstract class ManagerBase {
 	}
 
 	// ##########################################################################
-	// Mapsforge 0.4.0
+	// Mapsforge 0.6.0
 	// ##########################################################################
 
-	MapDatabase mapDatabase[] = null;
+	MultiMapDataStore mapDatabase[] = null;
 	IDatabaseRenderer databaseRenderer[] = null;
 	Bitmap tileBitmap = null;
 	File mapFile = null;
@@ -427,7 +428,8 @@ public abstract class ManagerBase {
 				try {
 					File file = FileFactory.createFile(themePathAndName);
 					if (file.exists()) {
-						renderTheme = new ExternalRenderTheme(file);
+						java.io.File themeFile = new java.io.File(file.getAbsolutePath());
+						renderTheme = new ExternalRenderTheme(themeFile);
 					} else {
 						Log.err(log, themePathAndName + " not found!");
 						renderTheme = CB_InternalRenderTheme.OSMARENDER;
@@ -463,13 +465,13 @@ public abstract class ManagerBase {
 			initMapDatabase(layer);
 		}
 
-		Tile tile = new Tile(desc.getX(), desc.getY(), (byte) desc.getZoom());
+		Tile tile = new Tile(desc.getX(), desc.getY(), (byte) desc.getZoom(), 256);
 
 		if (!mapDatabase[ThreadIndex].hasOpenFile()) {
 			return null;
 		}
 
-		RendererJob rendererJob = new RendererJob(tile, mapFile, renderTheme, DISPLAY_MODEL, textScale, false);
+		RendererJob rendererJob = new RendererJob(tile, mapDatabase[ThreadIndex], renderTheme, DISPLAY_MODEL, textScale, false, false, false);
 
 		if (databaseRenderer[ThreadIndex] == null) {
 			GL_RenderType RENDERING_TYPE = LocatorSettings.MapsforgeRenderType.getEnumValue();
@@ -503,14 +505,18 @@ public abstract class ManagerBase {
 	private void initMapDatabase(Layer layer) {
 		mapFile = FileFactory.createFile(layer.Url);
 
+		java.io.File file = new java.io.File(mapFile.getAbsolutePath());
+
+		MapFile mapdforgeMapFile = new MapFile(file);
+
 		if (mapDatabase == null)
-			mapDatabase = new MapDatabase[PROCESSOR_COUNT];
+			mapDatabase = new MultiMapDataStore[PROCESSOR_COUNT];
 
 		for (int i = 0; i < PROCESSOR_COUNT; i++) {
 			if (mapDatabase[i] == null)
-				mapDatabase[i] = new MapDatabase();
-			mapDatabase[i].closeFile();
-			mapDatabase[i].openFile(mapFile);
+				mapDatabase[i] = new MultiMapDataStore(DataPolicy.RETURN_FIRST);
+			mapDatabase[i].close();
+			mapDatabase[i].addMapDataStore(mapdforgeMapFile, false, false);
 		}
 
 		// MapFileInfo mapFileInfo = mapDatabase[0].getMapFileInfo();

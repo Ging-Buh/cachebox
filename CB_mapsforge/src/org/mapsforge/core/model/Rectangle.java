@@ -47,6 +47,10 @@ public class Rectangle implements Serializable {
 		return this.left <= point.x && this.right >= point.x && this.top <= point.y && this.bottom >= point.y;
 	}
 
+	public Rectangle envelope(double padding) {
+		return new Rectangle(this.left - padding, this.top - padding, this.right + padding, this.bottom + padding);
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -120,7 +124,8 @@ public class Rectangle implements Serializable {
 			return true;
 		}
 
-		return this.left <= rectangle.right && rectangle.left <= this.right && this.top <= rectangle.bottom && rectangle.top <= this.bottom;
+		return this.left <= rectangle.right && rectangle.left <= this.right && this.top <= rectangle.bottom
+				&& rectangle.top <= this.bottom;
 	}
 
 	public boolean intersectsCircle(double pointX, double pointY, double radius) {
@@ -147,6 +152,13 @@ public class Rectangle implements Serializable {
 		double cornerDistanceX = centerDistanceX - halfWidth;
 		double cornerDistanceY = centerDistanceY - halfHeight;
 		return cornerDistanceX * cornerDistanceX + cornerDistanceY * cornerDistanceY <= radius * radius;
+	}
+
+	public Rectangle shift(Point origin) {
+		if (origin.x == 0 && origin.y == 0) {
+			return this;
+		}
+		return new Rectangle(this.left + origin.x, this.top + origin.y, this.right + origin.x, this.bottom + origin.y);
 	}
 
 	@Override

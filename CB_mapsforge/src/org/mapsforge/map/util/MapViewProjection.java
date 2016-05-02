@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -44,16 +45,27 @@ public class MapViewProjection {
 		// what the user sees on the screen if an animation is in progress
 		MapPosition mapPosition = this.mapView.getModel().frameBufferModel.getMapPosition();
 
+		// this means somehow the mapview is not yet properly set up, see issue #308.
+		if (mapPosition == null) {
+			return null;
+		}
+
 		// calculate the pixel coordinates of the top left corner
 		LatLong latLong = mapPosition.latLong;
-		int tileSize = this.mapView.getModel().displayModel.getTileSize();
-		double pixelX = MercatorProjection.longitudeToPixelX(latLong.getLongitude(), mapPosition.zoomLevel, tileSize);
-		double pixelY = MercatorProjection.latitudeToPixelY(latLong.getLatitude(), mapPosition.zoomLevel, tileSize);
+		long mapSize = MercatorProjection.getMapSize(mapPosition.zoomLevel, this.mapView.getModel().displayModel.getTileSize());
+		double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, mapSize);
+		double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, mapSize);
 		pixelX -= this.mapView.getWidth() >> 1;
 		pixelY -= this.mapView.getHeight() >> 1;
 
-		// convert the pixel coordinates to a LatLong and return it
-		return new LatLong(MercatorProjection.pixelYToLatitude(pixelY + y, mapPosition.zoomLevel, tileSize), MercatorProjection.pixelXToLongitude(pixelX + x, mapPosition.zoomLevel, tileSize));
+		// catch outer map limits
+		try {
+			// convert the pixel coordinates to a LatLong and return it
+			return new LatLong(MercatorProjection.pixelYToLatitude(pixelY + y, mapSize),
+					MercatorProjection.pixelXToLongitude(pixelX + x, mapSize));
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	/**
@@ -65,7 +77,7 @@ public class MapViewProjection {
 		if (this.mapView.getWidth() > 0 && this.mapView.getHeight() > 0) {
 			LatLong top = fromPixels(0, 0);
 			LatLong bottom = fromPixels(0, this.mapView.getHeight());
-			return Math.abs(top.getLatitude() - bottom.getLatitude());
+			return Math.abs(top.latitude - bottom.latitude);
 		}
 		throw new IllegalStateException(INVALID_MAP_VIEW_DIMENSIONS);
 	}
@@ -79,7 +91,7 @@ public class MapViewProjection {
 		if (this.mapView.getWidth() > 0 && this.mapView.getHeight() > 0) {
 			LatLong left = fromPixels(0, 0);
 			LatLong right = fromPixels(this.mapView.getWidth(), 0);
-			return Math.abs(left.getLongitude() - right.getLongitude());
+			return Math.abs(left.longitude - right.longitude);
 		}
 		throw new IllegalStateException(INVALID_MAP_VIEW_DIMENSIONS);
 	}
@@ -98,16 +110,23 @@ public class MapViewProjection {
 
 		MapPosition mapPosition = this.mapView.getModel().mapViewPosition.getMapPosition();
 
+		// this means somehow the mapview is not yet properly set up, see issue #308.
+		if (mapPosition == null) {
+			return null;
+		}
+
 		// calculate the pixel coordinates of the top left corner
 		LatLong latLong = mapPosition.latLong;
-		int tileSize = this.mapView.getModel().displayModel.getTileSize();
-		double pixelX = MercatorProjection.longitudeToPixelX(latLong.getLongitude(), mapPosition.zoomLevel, tileSize);
-		double pixelY = MercatorProjection.latitudeToPixelY(latLong.getLatitude(), mapPosition.zoomLevel, tileSize);
+		long mapSize = MercatorProjection.getMapSize(mapPosition.zoomLevel, this.mapView.getModel().displayModel.getTileSize());
+		double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, mapSize);
+		double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, mapSize);
 		pixelX -= this.mapView.getWidth() >> 1;
 		pixelY -= this.mapView.getHeight() >> 1;
 
 		// create a new point and return it
-		return new Point((int) (MercatorProjection.longitudeToPixelX(in.getLongitude(), mapPosition.zoomLevel, tileSize) - pixelX), (int) (MercatorProjection.latitudeToPixelY(in.getLatitude(), mapPosition.zoomLevel, tileSize) - pixelY));
+		return new Point(
+				(int) (MercatorProjection.longitudeToPixelX(in.longitude, mapSize) - pixelX),
+				(int) (MercatorProjection.latitudeToPixelY(in.latitude, mapSize) - pixelY));
 	}
 
 }

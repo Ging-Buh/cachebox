@@ -21,6 +21,9 @@ import java.io.InputStream;
  * Interface for a render theme which is defined in XML.
  */
 public interface XmlRenderTheme {
+
+	XmlRenderThemeMenuCallback getMenuCallback();
+
 	/**
 	 * @return the prefix for all relative resource paths.
 	 */
@@ -32,10 +35,4 @@ public interface XmlRenderTheme {
 	 *             if the render theme file cannot be found.
 	 */
 	InputStream getRenderThemeAsStream() throws FileNotFoundException;
-
-	/**
-	 * 
-	 * @return True if the Theme from Freizeitkarte
-	 */
-	boolean isFreizeitkarte();
 }

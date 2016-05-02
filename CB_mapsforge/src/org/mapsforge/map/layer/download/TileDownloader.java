@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -64,7 +64,10 @@ class TileDownloader {
 		InputStream inputStream = getInputStream(urlConnection);
 
 		try {
-			return this.graphicFactory.createTileBitmap(inputStream, this.downloadJob.tileSize, this.downloadJob.hasAlpha);
+			TileBitmap result = this.graphicFactory.createTileBitmap(inputStream, this.downloadJob.tile.tileSize,
+					this.downloadJob.hasAlpha);
+			result.setExpiration(urlConnection.getExpiration());
+			return result;
 		} catch (CorruptedInputStreamException e) {
 			// the creation of the tile bit map can fail at, at least on Android,
 			// when the connection is slow or busy, returning null here ensures that

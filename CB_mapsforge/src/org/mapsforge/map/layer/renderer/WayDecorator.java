@@ -17,40 +17,50 @@ package org.mapsforge.map.layer.renderer;
 import java.util.List;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Display;
+import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.mapelements.SymbolContainer;
+import org.mapsforge.core.mapelements.WayTextContainer;
+import org.mapsforge.core.model.LineSegment;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.model.Tile;
 
 final class WayDecorator {
-	/**
-	 * Minimum distance in pixels before the symbol is repeated.
-	 */
-	private static final int DISTANCE_BETWEEN_SYMBOLS = 200;
 
 	/**
-	 * Minimum distance in pixels before the way name is repeated.
+	 * A safety margin that keeps way names out of intersections.
 	 */
-	private static final int DISTANCE_BETWEEN_WAY_NAMES = 500;
+	private static final int WAYNAME_SAFETY_MARGIN = 10;
 
-	/**
-	 * Distance in pixels to skip from both ends of a segment.
-	 */
-	private static final int SEGMENT_SAFETY_DISTANCE = 30;
+	static void renderSymbol(Bitmap symbolBitmap, Display display, int priority, float dy, boolean alignCenter,
+	                         boolean repeatSymbol, float repeatGap, float repeatStart,
+	                         boolean rotate, Point[][] coordinates,
+			List<MapElementContainer> currentItems) {
+		int skipPixels = (int)repeatStart;
 
-	static void renderSymbol(Bitmap symbolBitmap, boolean alignCenter, boolean repeatSymbol, Point[][] coordinates, List<SymbolContainer> waySymbols) {
-		int skipPixels = SEGMENT_SAFETY_DISTANCE;
+		Point[] c;
+		if (dy == 0f) {
+			c = coordinates[0];
+		} else {
+			c = RendererUtils.parallelPath(coordinates[0], dy);
+		}
 
 		// get the first way point coordinates
-		double previousX = coordinates[0][0].x;
-		double previousY = coordinates[0][0].y;
+		double previousX = c[0].x;
+		double previousY = c[0].y;
 
-		// draw the symbol on each way segment
+		// draw the symbolContainer on each way segment
 		float segmentLengthRemaining;
 		float segmentSkipPercentage;
-		float theta;
-		for (int i = 1; i < coordinates[0].length; ++i) {
+		float theta = 0;
+
+
+		for (int i = 1; i < c.length; ++i) {
 			// get the current way point coordinates
-			double currentX = coordinates[0][i].x;
-			double currentY = coordinates[0][i].y;
+			double currentX = c[i].x;
+			double currentY = c[i].y;
 
 			// calculate the length of the current segment (Euclidian distance)
 			double diffX = currentX - previousX;
@@ -58,19 +68,23 @@ final class WayDecorator {
 			double segmentLengthInPixel = Math.sqrt(diffX * diffX + diffY * diffY);
 			segmentLengthRemaining = (float) segmentLengthInPixel;
 
-			while (segmentLengthRemaining - skipPixels > SEGMENT_SAFETY_DISTANCE) {
+			while (segmentLengthRemaining - skipPixels > repeatStart) {
 				// calculate the percentage of the current segment to skip
 				segmentSkipPercentage = skipPixels / segmentLengthRemaining;
 
 				// move the previous point forward towards the current point
 				previousX += diffX * segmentSkipPercentage;
 				previousY += diffY * segmentSkipPercentage;
-				theta = (float) Math.atan2(currentY - previousY, currentX - previousX);
+				if (rotate) {
+					// if we do not rotate theta will be 0, which is correct
+					theta = (float) Math.atan2(currentY - previousY, currentX - previousX);
+				}
 
 				Point point = new Point(previousX, previousY);
-				waySymbols.add(new SymbolContainer(symbolBitmap, point, alignCenter, theta));
 
-				// check if the symbol should only be rendered once
+				currentItems.add(new SymbolContainer(point, display, priority, symbolBitmap, theta, alignCenter));
+
+				// check if the symbolContainer should only be rendered once
 				if (!repeatSymbol) {
 					return;
 				}
@@ -82,13 +96,13 @@ final class WayDecorator {
 				// recalculate the remaining length of the current segment
 				segmentLengthRemaining -= skipPixels;
 
-				// set the amount of pixels to skip before repeating the symbol
-				skipPixels = DISTANCE_BETWEEN_SYMBOLS;
+				// set the amount of pixels to skip before repeating the symbolContainer
+				skipPixels = (int)repeatGap;
 			}
 
 			skipPixels -= segmentLengthRemaining;
-			if (skipPixels < SEGMENT_SAFETY_DISTANCE) {
-				skipPixels = SEGMENT_SAFETY_DISTANCE;
+			if (skipPixels < repeatStart) {
+				skipPixels = (int)repeatStart;
 			}
 
 			// set the previous way point coordinates for the next loop
@@ -97,59 +111,87 @@ final class WayDecorator {
 		}
 	}
 
-	static void renderText(String textKey, Paint fill, Paint stroke, Point[][] coordinates, List<WayTextContainer> wayNames) {
-		// calculate the way name length plus some margin of safety
-		int wayNameWidth = fill.getTextWidth(textKey) + 10;
+	/**
+	 * Finds the segments of a line along which a name can be drawn and then adds WayTextContainers
+	 * to the list of drawable items.
+	 *
+	 * @param tile the tile on which the text will be drawn.
+	 * @param text the text to draw
+	 * @param priority priority of the text
+	 * @param dy if 0, then a line  parallel to the coordinates will be calculated first
+	 * @param fill fill paint for text
+	 * @param stroke stroke paint for text
+	 * @param coordinates the list of way coordinates
+	 * @param currentLabels the list of labels to which a new WayTextContainer will be added
+	 */
+	static void renderText(Tile tile, String text, Display display, int priority, float dy, Paint fill, Paint stroke, Point[][] coordinates,
+			List<MapElementContainer> currentLabels) {
+
+		// Calculate the way name length plus some margin of safety
+		int wayNameWidth = (stroke == null) ? fill.getTextWidth(text) + WAYNAME_SAFETY_MARGIN*2 : stroke.getTextWidth(text) + WAYNAME_SAFETY_MARGIN*2;
+
+		// Compute the tile boundary on which we render the name.
+		// We make the tile smaller because otherwise we sometimes write the text beyond the tile boundary
+		// (e.g. a road that runs parallel just below a tile boundary)
+		double textHeight = (stroke == null) ? fill.getTextHeight(text) : stroke.getTextHeight(text);
+		final Rectangle tileBoundary = tile.getBoundaryAbsolute().envelope(-textHeight);
 
 		int skipPixels = 0;
 
-		// get the first way point coordinates
-		double previousX = coordinates[0][0].x;
-		double previousY = coordinates[0][0].y;
+		Point[] c;
+		if (dy == 0f) {
+			c = coordinates[0];
+		} else {
+			c = RendererUtils.parallelPath(coordinates[0], dy);
+		}
 
-		// find way segments long enough to draw the way name on them
-		for (int i = 1; i < coordinates[0].length; ++i) {
-			// get the current way point coordinates
-			double currentX = coordinates[0][i].x;
-			double currentY = coordinates[0][i].y;
+		// iterate through the segments to find those long enough to draw the way name on them
+		for (int i = 1; i < c.length; ++i) {
 
-			// calculate the length of the current segment (Euclidian distance)
-			double diffX = currentX - previousX;
-			double diffY = currentY - previousY;
-			double segmentLengthInPixel = Math.sqrt(diffX * diffX + diffY * diffY);
+			LineSegment currentSegment = new LineSegment(c[i-1], c[i]);
+			double currentLength = currentSegment.length();
+
+			skipPixels -= currentLength;
 
 			if (skipPixels > 0) {
-				skipPixels -= segmentLengthInPixel;
-			} else if (segmentLengthInPixel > wayNameWidth) {
-				int x1;
-				int x2;
-				int y1;
-				int y2;
-
-				// check to prevent inverted way names
-				if (previousX <= currentX) {
-					x1 = (int) previousX;
-					y1 = (int) previousY;
-					x2 = (int) currentX;
-					y2 = (int) currentY;
-				} else {
-					x1 = (int) currentX;
-					y1 = (int) currentY;
-					x2 = (int) previousX;
-					y2 = (int) previousY;
-				}
-
-				wayNames.add(new WayTextContainer(x1, y1, x2, y2, textKey, fill));
-				if (stroke != null) {
-					wayNames.add(new WayTextContainer(x1, y1, x2, y2, textKey, stroke));
-				}
-
-				skipPixels = DISTANCE_BETWEEN_WAY_NAMES;
+				// we should still be skipping pixels, so skip this segment. Note that
+				// this does not guarantee that we skip any certain minimum of pixels,
+				// it is more a rule of thumb.
+				continue;
 			}
 
-			// store the previous way point coordinates
-			previousX = currentX;
-			previousY = currentY;
+			if (currentLength < wayNameWidth) {
+				// no point trying to clip, the segment is too short anyway
+				continue;
+			}
+
+			// clip the current segment to the tile, so that we never overlap tile boundaries
+			// with the way name
+			LineSegment drawableSegment = currentSegment.clipToRectangle(tileBoundary);
+
+			if (drawableSegment == null) {
+				// this happens if the segment does not intersect the tile
+				continue;
+			}
+
+			double segmentLengthInPixel = drawableSegment.length();
+			if (segmentLengthInPixel < wayNameWidth) {
+				// not enough space to draw name on this segment
+				continue;
+			}
+
+			// now calculate the actually used part of the segment to ensure the bbox of the waytext container
+			// is as small as possible. The offset at the beginning/end is to ensure that we are a bit off the center
+			// of an intersection (otherwise we have more collisions at the intersection)
+			LineSegment actuallyUsedSegment = drawableSegment.subSegment(WAYNAME_SAFETY_MARGIN, wayNameWidth - WAYNAME_SAFETY_MARGIN);
+			// check to prevent inverted way names
+			if (actuallyUsedSegment.start.x <= actuallyUsedSegment.end.x) {
+				currentLabels.add(new WayTextContainer(actuallyUsedSegment.start, actuallyUsedSegment.end, display, priority, text, fill, stroke, textHeight));
+			} else {
+				currentLabels.add(new WayTextContainer(actuallyUsedSegment.end, actuallyUsedSegment.start, display, priority, text, fill, stroke, textHeight));
+			}
+
+			skipPixels = wayNameWidth;
 		}
 	}
 

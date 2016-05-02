@@ -1,5 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014-2015 Ludwig M Brinckmann
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,26 +16,58 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Cap;
+import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.model.Tag;
+import org.mapsforge.core.graphics.Style;
+import org.mapsforge.map.datastore.PointOfInterest;
+import org.mapsforge.map.layer.renderer.PolylineContainer;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.RenderCallback;
+import org.mapsforge.map.rendertheme.RenderContext;
+import org.mapsforge.map.rendertheme.XmlUtils;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Represents a closed polygon on the map.
  */
-public class Area implements RenderInstruction {
+public class Area extends RenderInstruction {
+	private boolean bitmapInvalid;
 	private final Paint fill;
 	private final int level;
+	private final String relativePathPrefix;
+	private Bitmap shaderBitmap;
+	private String src;
 	private final Paint stroke;
-	private final float strokeWidth;
+	private final Map<Byte, Paint> strokes;
+	private float strokeWidth;
 
-	Area(AreaBuilder areaBuilder) {
-		this.fill = areaBuilder.fill;
-		this.level = areaBuilder.level;
-		this.stroke = areaBuilder.stroke;
-		this.strokeWidth = areaBuilder.strokeWidth;
+	public Area(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, XmlPullParser pullParser, int level, String relativePathPrefix) throws IOException, XmlPullParserException {
+		super(graphicFactory, displayModel);
+
+		this.level = level;
+		this.relativePathPrefix = relativePathPrefix;
+
+		this.fill = graphicFactory.createPaint();
+		this.fill.setColor(Color.TRANSPARENT);
+		this.fill.setStyle(Style.FILL);
+		this.fill.setStrokeCap(Cap.ROUND);
+
+		this.stroke = graphicFactory.createPaint();
+		this.stroke.setColor(Color.TRANSPARENT);
+		this.stroke.setStyle(Style.STROKE);
+		this.stroke.setStrokeCap(Cap.ROUND);
+
+		this.strokes = new HashMap<Byte, Paint>();
+
+		extractValues(elementName, pullParser);
 	}
 
 	@Override
@@ -41,26 +75,88 @@ public class Area implements RenderInstruction {
 		// no-op
 	}
 
-	@Override
-	public void renderNode(RenderCallback renderCallback, List<Tag> tags) {
-		// do nothing
-	}
+	private void extractValues(String elementName, XmlPullParser pullParser) throws IOException, XmlPullParserException {
+		for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
+			String name = pullParser.getAttributeName(i);
+			String value = pullParser.getAttributeValue(i);
 
-	@Override
-	public void renderWay(RenderCallback renderCallback, List<Tag> tags) {
-		renderCallback.renderArea(this.fill, this.stroke, this.level);
-	}
-
-	@Override
-	public void scaleStrokeWidth(float scaleFactor) {
-		if (this.stroke != null) {
-			this.stroke.setStrokeWidth(this.strokeWidth * scaleFactor);
+			if (SRC.equals(name)) {
+				this.src = value;
+			} else if (CAT.equals(name)) {
+				this.category = value;
+			} else if (FILL.equals(name)) {
+				this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
+			} else if (STROKE.equals(name)) {
+				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
+			} else if (SYMBOL_HEIGHT.equals(name)) {
+				this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
+			} else if (SYMBOL_PERCENT.equals(name)) {
+				this.percent = XmlUtils.parseNonNegativeInteger(name, value);
+			} else if (SYMBOL_SCALING.equals(name)) {
+				this.scaling = fromValue(value);
+			} else if (SYMBOL_WIDTH.equals(name)) {
+				this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
+			} else if (STROKE_WIDTH.equals(name)) {
+				this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
+			} else {
+				throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
+			}
 		}
 	}
 
 	@Override
-	public void scaleTextSize(float scaleFactor) {
+	public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
 		// do nothing
+	}
+
+	@Override
+	public void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
+		synchronized (this) {
+			// this needs to be synchronized as we potentially set a shift in the shader and
+			// the shift is particular to the tile when rendered in multi-thread mode
+			Paint fillPaint = getFillPaint(renderContext.rendererJob.tile.zoomLevel);
+			if (shaderBitmap == null && !bitmapInvalid) {
+				try {
+					shaderBitmap = createBitmap(relativePathPrefix, src);
+					if (shaderBitmap != null) {
+						fillPaint.setBitmapShader(shaderBitmap);
+						shaderBitmap.decrementRefCount();
+					}
+				} catch (IOException ioException) {
+					bitmapInvalid = true;
+				}
+			}
+
+			fillPaint.setBitmapShaderShift(way.getTile().getOrigin());
+
+			renderCallback.renderArea(renderContext, fillPaint, getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.level, way);
+		}
+	}
+
+	@Override
+	public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
+		if (this.stroke != null) {
+			Paint zlPaint = graphicFactory.createPaint(this.stroke);
+			zlPaint.setStrokeWidth(this.strokeWidth * scaleFactor);
+			this.strokes.put(zoomLevel, zlPaint);
+		}
+	}
+
+	@Override
+	public void scaleTextSize(float scaleFactor, byte zoomLevel) {
+		// do nothing
+	}
+
+	private Paint getFillPaint(byte zoomLevel) {
+		return this.fill;
+	}
+
+	private Paint getStrokePaint(byte zoomLevel) {
+		Paint paint = strokes.get(zoomLevel);
+		if (paint == null) {
+			paint = this.stroke;
+		}
+		return paint;
 	}
 
 }

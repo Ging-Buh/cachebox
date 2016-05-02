@@ -21,6 +21,7 @@ import java.io.InputStream;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Canvas;

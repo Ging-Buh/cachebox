@@ -15,6 +15,10 @@
  */
 package org.mapsforge.core.graphics;
 
+import org.mapsforge.core.mapelements.PointTextContainer;
+import org.mapsforge.core.mapelements.SymbolContainer;
+import org.mapsforge.core.model.Point;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -33,7 +37,12 @@ public interface GraphicFactory {
 
 	Paint createPaint();
 
+	Paint createPaint(Paint paint);
+
 	Path createPath();
+
+	PointTextContainer createPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
+	                                            SymbolContainer symbolContainer, Position position, int maxTextWidth);
 
 	ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException;
 
@@ -43,5 +52,6 @@ public interface GraphicFactory {
 
 	InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException;
 
-	ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int hash) throws IOException;
+	ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int width, int height, int percent, int hash) throws IOException;
+
 }

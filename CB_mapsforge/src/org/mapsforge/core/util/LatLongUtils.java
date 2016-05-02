@@ -1,7 +1,9 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
- * Copyright © 2014 Christian Pesch
+ * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014 Christian Pesch
+ * Copyright 2014 devemux86
+ * Copyright 2015 Andreas Schildbach
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -57,7 +59,7 @@ public final class LatLongUtils {
 	/**
 	 * Conversion factor from degrees to microdegrees.
 	 */
-	public static final double CONVERSION_FACTOR = 1000000.0;
+	private static final double CONVERSION_FACTOR = 1000000.0;
 
 	private static final String DELIMITER = ",";
 
@@ -84,7 +86,7 @@ public final class LatLongUtils {
 	 */
 	public static LatLong fromString(String latLongString) {
 		double[] coordinates = parseCoordinateString(latLongString, 2);
-		return new LatLong(coordinates[0], coordinates[1]);
+		return new LatLong(coordinates[0], coordinates[1], true);
 	}
 
 	/**
@@ -199,13 +201,21 @@ public final class LatLongUtils {
 	 *         tile size.
 	 */
 	public static byte zoomForBounds(Dimension dimension, BoundingBox boundingBox, int tileSize) {
-		double dxMax = MercatorProjection.longitudeToPixelX(boundingBox.getMaxLongitude(), (byte) 0, tileSize) / tileSize;
-		double dxMin = MercatorProjection.longitudeToPixelX(boundingBox.getMinLongitude(), (byte) 0, tileSize) / tileSize;
-		double zoomX = Math.floor(-Math.log(3.8) * Math.log(Math.abs(dxMax - dxMin)) + (float) dimension.width / tileSize);
-		double dyMax = MercatorProjection.latitudeToPixelY(boundingBox.getMaxLatitude(), (byte) 0, tileSize) / tileSize;
-		double dyMin = MercatorProjection.latitudeToPixelY(boundingBox.getMinLatitude(), (byte) 0, tileSize) / tileSize;
-		double zoomY = Math.floor(-Math.log(3.8) * Math.log(Math.abs(dyMax - dyMin)) + (float) dimension.height / tileSize);
-		return (byte) Math.min(zoomX, zoomY);
+		long mapSize = MercatorProjection.getMapSize((byte) 0, tileSize);
+		double pixelXMax = MercatorProjection.longitudeToPixelX(boundingBox.maxLongitude, mapSize);
+		double pixelXMin = MercatorProjection.longitudeToPixelX(boundingBox.minLongitude, mapSize);
+		double zoomX = -Math.log(Math.abs(pixelXMax - pixelXMin) / dimension.width) / Math.log(2);
+		double pixelYMax = MercatorProjection.latitudeToPixelY(boundingBox.maxLatitude, mapSize);
+		double pixelYMin = MercatorProjection.latitudeToPixelY(boundingBox.minLatitude, mapSize);
+		double zoomY = -Math.log(Math.abs(pixelYMax - pixelYMin) / dimension.height) / Math.log(2);
+		double zoom = Math.floor(Math.min(zoomX, zoomY));
+		if (zoom < 0) {
+			return 0;
+		}
+		if (zoom > Byte.MAX_VALUE) {
+			return Byte.MAX_VALUE;
+		}
+		return (byte) zoom;
 	}
 
 	private LatLongUtils() {

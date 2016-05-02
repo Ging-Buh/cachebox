@@ -16,64 +16,46 @@ package org.mapsforge.core.model;
 
 import java.io.Serializable;
 
+import org.mapsforge.core.util.LatLongUtils;
+
 /**
  * A LatLong represents an immutable pair of latitude and longitude coordinates.
  */
 public class LatLong implements Comparable<LatLong>, Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private static final double CONVERSIONFACTOR = 1e6;
-
 	/**
 	 * The latitude coordinate of this LatLong in degrees.
 	 */
-	protected final int latitude;
+	public final double latitude;
 
 	/**
 	 * The longitude coordinate of this LatLong in degrees.
 	 */
-	protected final int longitude;
-
-	public double getLatitude() {
-		return latitude / CONVERSIONFACTOR;
-	}
-
-	public double getLongitude() {
-		return longitude / CONVERSIONFACTOR;
-	}
-
-	public int getIntLatitude() {
-		return latitude;
-	}
-
-	public int getIntLongitude() {
-		return longitude;
-	}
+	public final double longitude;
 
 	/**
 	 * @param latitude
 	 *            the latitude coordinate in degrees.
 	 * @param longitude
 	 *            the longitude coordinate in degrees.
+	 * @param validate
 	 * @throws IllegalArgumentException
 	 *             if a coordinate is invalid.
 	 */
-	public LatLong(double latitude, double longitude) {
-		//		LatLongUtils.validateLatitude(latitude);
-		//		LatLongUtils.validateLongitude(longitude);
+	public LatLong(double latitude, double longitude, boolean validate) {
+		if (validate) {
+			LatLongUtils.validateLatitude(latitude);
+			LatLongUtils.validateLongitude(longitude);
+		}
 
-		this.latitude = (int) (latitude * CONVERSIONFACTOR);
-		this.longitude = (int) (longitude * CONVERSIONFACTOR);
-	}
-
-	public LatLong(int latitude, int longitude) {
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}
 
-	public LatLong(LatLong tileLatLong, int deltaLatitude, int deltaLongitude) {
-		this.latitude = tileLatLong.latitude + deltaLatitude;
-		this.longitude = tileLatLong.longitude + deltaLongitude;
+	public LatLong(double latitude, double longitude) {
+		this.latitude = latitude;
+		this.longitude = longitude;
 	}
 
 	@Override
@@ -88,6 +70,14 @@ public class LatLong implements Comparable<LatLong>, Serializable {
 			return -1;
 		}
 		return 0;
+	}
+
+	/**
+	 * Returns the approximate distance in degrees between this location and the
+	 * given location, calculated in Euclidean space.
+	 */
+	public double distance(LatLong other) {
+		return Math.hypot(this.longitude - other.longitude, this.latitude - other.latitude);
 	}
 
 	@Override
@@ -126,5 +116,13 @@ public class LatLong implements Comparable<LatLong>, Serializable {
 		stringBuilder.append(", longitude=");
 		stringBuilder.append(this.longitude);
 		return stringBuilder.toString();
+	}
+
+	public double getLatitude() {
+		return this.latitude;
+	}
+
+	public double getLongitude() {
+		return this.longitude;
 	}
 }

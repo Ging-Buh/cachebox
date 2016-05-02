@@ -19,6 +19,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.mapsforge.map.awt.graphics.AwtResourceBitmap;
+
 import com.badlogic.gdx.graphics.Texture;
 
 import CB_Locator.LocatorSettings;
