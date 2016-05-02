@@ -260,4 +260,42 @@ public class AwtPaint implements Paint {
 	public void setStroke(Stroke stroke) {
 		this.stroke = stroke;
 	}
+
+	//###################################################
+
+	@Override
+	public Cap getCap() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getColor() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Style getStyle() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public float getStrokeWidth() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getTextSize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float[] getDashArray() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

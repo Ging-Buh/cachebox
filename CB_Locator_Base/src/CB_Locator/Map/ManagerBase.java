@@ -37,7 +37,7 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.datastore.MultiMapDataStore;
 import org.mapsforge.map.datastore.MultiMapDataStore.DataPolicy;
-import org.mapsforge.map.layer.renderer.GL_DatabaseRenderer;
+import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.layer.renderer.IDatabaseRenderer;
 import org.mapsforge.map.layer.renderer.MF_DatabaseRenderer;
 import org.mapsforge.map.layer.renderer.MixedDatabaseRenderer;
@@ -48,13 +48,13 @@ import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
+import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 import org.slf4j.LoggerFactory;
 
 import CB_Locator.LocatorSettings;
 import CB_Locator.Map.Layer.Type;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.graphics.GL_GraphicFactory;
 import CB_UI_Base.graphics.GL_RenderType;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
@@ -371,10 +371,13 @@ public abstract class ManagerBase {
 						Layer layer = new Layer(Type.normal, Name, Name, file);
 						layer.isMapsForge = true;
 						MultiMapDataStore md = new MultiMapDataStore(DataPolicy.RETURN_FIRST);
-						FileOpenResult fr = md.openFile(FileFactory.createFile(file));
-						if (fr.isSuccess()) {
+						java.io.File f = new java.io.File(FileFactory.createFile(file).getAbsolutePath());
+						MapFile mapFile = new MapFile(f);
+
+						md.addMapDataStore(mapFile, false, false);
+						MapFileInfo mf = mapFile.getMapFileInfo();
+						if (mf != null) {
 							try {
-								MapFileInfo mf = md.getMapFileInfo();
 								md.close();
 								layer.boundingBox = mf.boundingBox;
 								ManagerBase.Manager.layers.add(layer);
@@ -414,6 +417,8 @@ public abstract class ManagerBase {
 
 	public static final String INTERNAL_CAR_THEME = "internal-car-theme";
 	private boolean invertToNightTheme; // not yet implemented?
+
+	private RenderThemeFuture renderThemeFuture;
 
 	public void setRenderTheme(String themePathAndName, boolean invert) {
 		invertToNightTheme = invert;
@@ -456,6 +461,9 @@ public abstract class ManagerBase {
 			}
 		}
 
+		this.renderThemeFuture = new RenderThemeFuture(this.getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), this.renderTheme, this.DISPLAY_MODEL);
+		new Thread(this.renderThemeFuture).start();
+
 	}
 
 	public TileGL getMapsforgePixMap(Layer layer, Descriptor desc, int ThreadIndex) {
@@ -467,27 +475,26 @@ public abstract class ManagerBase {
 
 		Tile tile = new Tile(desc.getX(), desc.getY(), (byte) desc.getZoom(), 256);
 
-		if (!mapDatabase[ThreadIndex].hasOpenFile()) {
+		if (!mapDatabase[ThreadIndex].supportsTile(tile)) {
 			return null;
 		}
 
-		RendererJob rendererJob = new RendererJob(tile, mapDatabase[ThreadIndex], renderTheme, DISPLAY_MODEL, textScale, false, false, false);
+		RendererJob rendererJob = new RendererJob(tile, mapDatabase[ThreadIndex], this.renderThemeFuture, DISPLAY_MODEL, textScale, false, false);
+
+		TileBasedLabelStore labelStore = null;
 
 		if (databaseRenderer[ThreadIndex] == null) {
 			GL_RenderType RENDERING_TYPE = LocatorSettings.MapsforgeRenderType.getEnumValue();
 
 			switch (RENDERING_TYPE) {
 			case Mapsforge:
-				databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(mapDatabase[ThreadIndex], getGraphicFactory(DISPLAY_MODEL.getScaleFactor()));
+				databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(mapDatabase[ThreadIndex], getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), labelStore);
 				break;
 			case Mixing:
-				databaseRenderer[ThreadIndex] = new MixedDatabaseRenderer(mapDatabase[ThreadIndex], getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), ThreadIndex);
-				break;
-			case OpenGl:
-				databaseRenderer[ThreadIndex] = new GL_DatabaseRenderer(mapDatabase[ThreadIndex], new GL_GraphicFactory(DISPLAY_MODEL.getScaleFactor()), DISPLAY_MODEL);
+				databaseRenderer[ThreadIndex] = new MixedDatabaseRenderer(mapDatabase[ThreadIndex], getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), labelStore);
 				break;
 			default:
-				databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(mapDatabase[ThreadIndex], getGraphicFactory(DISPLAY_MODEL.getScaleFactor()));
+				databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(mapDatabase[ThreadIndex], getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), labelStore);
 				break;
 			}
 		}

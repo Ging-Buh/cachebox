@@ -25,9 +25,10 @@ public interface Paint {
 	boolean isTransparent();
 
 	void setBitmapShader(Bitmap bitmap);
+
 	void setBitmapShaderShift(Point origin);
 
-	void setColor(Color color);
+	public void setColor(Color color);
 
 	/**
 	 * The default value is {@link Color#BLACK}.
@@ -55,4 +56,16 @@ public interface Paint {
 	void setTextSize(float textSize);
 
 	void setTypeface(FontFamily fontFamily, FontStyle fontStyle);
+
+	Cap getCap();
+
+	int getColor();
+
+	Style getStyle();
+
+	float getStrokeWidth();
+
+	float getTextSize();
+
+	float[] getDashArray();
 }

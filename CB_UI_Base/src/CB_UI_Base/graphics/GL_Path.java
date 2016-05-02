@@ -20,16 +20,16 @@ import java.util.Arrays;
 
 import org.mapsforge.core.graphics.FillRule;
 
+import com.badlogic.gdx.math.Bezier;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Disposable;
+
 import CB_UI_Base.graphics.Geometry.CircularSegment;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Path;
 import CB_UI_Base.graphics.fromAndroid.RectF;
 import CB_Utils.Lists.CB_List;
-
-import com.badlogic.gdx.math.Bezier;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Disposable;
 
 /**
  * @author Longri
@@ -568,6 +568,11 @@ public class GL_Path implements ext_Path, Disposable {
 		items = tmp;
 		PathSectionLength = null;
 		averageDirection = Float.MAX_VALUE;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return items.length == 0;
 	}
 
 }
