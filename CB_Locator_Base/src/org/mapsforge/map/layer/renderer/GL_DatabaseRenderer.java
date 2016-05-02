@@ -28,17 +28,17 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.mapelements.PointTextContainer;
+import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.map.datastore.MapReadResult;
+import org.mapsforge.map.datastore.PointOfInterest;
+import org.mapsforge.map.datastore.Way;
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.reader.MapDatabase;
-import org.mapsforge.map.reader.MapReadResult;
-import org.mapsforge.map.reader.PointOfInterest;
-import org.mapsforge.map.reader.Way;
 import org.mapsforge.map.reader.header.MapFileInfo;
-import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.rule.CB_RenderTheme;
 import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
@@ -56,7 +56,7 @@ import CB_Utils.Util.HSV_Color;
 /**
  * @author Longri
  */
-public class GL_DatabaseRenderer implements RenderCallback, IDatabaseRenderer {
+public class GL_DatabaseRenderer implements IDatabaseRenderer {
 	private static final Byte DEFAULT_START_ZOOM_LEVEL = Byte.valueOf((byte) 12);
 	private static final byte LAYERS = 11;
 	private static final Logger LOGGER = Logger.getLogger(GL_DatabaseRenderer.class.getName());
@@ -199,7 +199,7 @@ public class GL_DatabaseRenderer implements RenderCallback, IDatabaseRenderer {
 
 		clearLists();
 
-		Descriptor desc = new Descriptor((int) rendererJob.tile.tileX, (int) rendererJob.tile.tileY, rendererJob.tile.zoomLevel, false);
+		Descriptor desc = new Descriptor(rendererJob.tile.tileX, rendererJob.tile.tileY, rendererJob.tile.zoomLevel, false);
 		TileGL_Vector vectorTile = new TileGL_Vector(desc, drw, TileState.Present);
 
 		return vectorTile;

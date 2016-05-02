@@ -25,7 +25,7 @@ import org.mapsforge.core.model.Rectangle;
 
 public class SymbolContainer extends MapElementContainer {
 
-	final boolean alignCenter;
+	public final boolean alignCenter;
 	public Bitmap symbol;
 	public final float theta;
 
@@ -43,7 +43,7 @@ public class SymbolContainer extends MapElementContainer {
 			double halfHeight = this.symbol.getHeight() / 2d;
 			this.boundary = new Rectangle(-halfWidth, -halfHeight, halfWidth, halfHeight);
 		} else {
-			this.boundary = new Rectangle(0,0, this.symbol.getWidth(), this.symbol.getHeight());
+			this.boundary = new Rectangle(0, 0, this.symbol.getWidth(), this.symbol.getHeight());
 		}
 
 		this.symbol.incrementRefCount();

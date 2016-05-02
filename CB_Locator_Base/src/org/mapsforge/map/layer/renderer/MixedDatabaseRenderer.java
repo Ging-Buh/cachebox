@@ -35,16 +35,17 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.core.mapelements.PointTextContainer;
+import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.map.datastore.MapReadResult;
+import org.mapsforge.map.datastore.PointOfInterest;
+import org.mapsforge.map.datastore.Way;
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.reader.MapDatabase;
-import org.mapsforge.map.reader.MapReadResult;
-import org.mapsforge.map.reader.PointOfInterest;
-import org.mapsforge.map.reader.Way;
 import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
@@ -622,7 +623,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer 
 					this.bitmap.compress(baos);
 					byte[] b = baos.toByteArray();
 
-					Descriptor desc = new Descriptor((int) rendererJob.tile.tileX, (int) rendererJob.tile.tileY, rendererJob.tile.zoomLevel, false);
+					Descriptor desc = new Descriptor(rendererJob.tile.tileX, rendererJob.tile.tileY, rendererJob.tile.zoomLevel, false);
 
 					TileGL_Mixed mixedTile = new TileGL_Mixed(desc, b, TileState.Present, Format.RGB565);
 					mixedTile.add(rotateList);

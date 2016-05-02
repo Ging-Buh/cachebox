@@ -36,11 +36,11 @@ import org.mapsforge.core.model.Rectangle;
  */
 public abstract class MapElementContainer implements Comparable<MapElementContainer> {
 
-	protected Rectangle boundary;
+	public Rectangle boundary;
 	protected Rectangle boundaryAbsolute;
 	protected Display display;
 	protected final int priority;
-	protected final Point xy;
+	public final Point xy;
 
 	protected MapElementContainer(Point xy, Display display, int priority) {
 		this.xy = xy;
@@ -118,7 +118,7 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
 		if (Display.ALWAYS == this.display || Display.ALWAYS == other.display) {
 			return false;
 		}
- 		return this.getBoundaryAbsolute().intersects(other.getBoundaryAbsolute());
+		return this.getBoundaryAbsolute().intersects(other.getBoundaryAbsolute());
 	}
 
 	@Override

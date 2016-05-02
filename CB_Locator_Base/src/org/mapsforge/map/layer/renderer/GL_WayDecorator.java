@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.Point;
 
 import CB_UI_Base.graphics.GL_Path;
@@ -75,7 +76,7 @@ public final class GL_WayDecorator {
 		// res = path.getPointOnPathAfter(distance + symbolWidth + SEGMENT_SAFETY_DISTANCE);
 		// if (res == null) return; // not enough space for the symbol
 
-		waySymbols.add(new SymbolContainer(symbolBitmap, point, alignCenter, angle));
+		waySymbols.add(new SymbolContainer(point, symbolBitmap, alignCenter, angle));
 
 		while (finish) {
 			distance += symbolBitmap.getWidth() + DISTANCE_BETWEEN_SYMBOLS;
@@ -88,7 +89,7 @@ public final class GL_WayDecorator {
 				if (res == null)
 					return; // not enough space for the symbol
 				// angle = 0;
-				waySymbols.add(new SymbolContainer(symbolBitmap, point, alignCenter, angle));
+				waySymbols.add(new SymbolContainer(point, symbolBitmap, alignCenter, angle));
 			} else {
 				finish = false;
 			}
