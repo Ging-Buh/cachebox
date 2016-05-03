@@ -154,7 +154,7 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
 
 		// store Labels in Rotate List
 		Set<MapElementContainer> labelsToDraw = processLabels(renderContext);
-		drawMapElements(rendererJob, labelsToDraw, rotateList);
+		drawMapElements(renderContext, rendererJob, labelsToDraw, rotateList);
 
 		if (!rendererJob.labelsOnly && renderContext.renderTheme.hasMapBackgroundOutside()) {
 		    // blank out all areas outside of map
@@ -176,7 +176,7 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
 	}
     }
 
-    void drawMapElements(RendererJob rendererJob, Set<MapElementContainer> elements, SortedRotateList rotateList) {
+    void drawMapElements(RenderContext renderContext, RendererJob rendererJob, Set<MapElementContainer> elements, SortedRotateList rotateList) {
 	// we have a set of all map elements (needed so we do not draw elements twice),
 	// but we need to draw in priority order as we now allow overlaps. So we
 	// convert into list, then sort, then draw.
@@ -187,7 +187,7 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
 
 	for (MapElementContainer element : elementsAsList) {
 	    if (element instanceof SymbolContainer) {
-		processSymbolContainer(rendererJob, (SymbolContainer) element, rotateList);
+		processSymbolContainer(renderContext, rendererJob, (SymbolContainer) element, rotateList);
 	    } else if (element instanceof PointTextContainer) {
 		processPointTextContainer(rendererJob, (PointTextContainer) element, rotateList);
 	    }
@@ -226,7 +226,13 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
 	rotateList.add(maDr);
     }
 
-    private void processSymbolContainer(RendererJob rendererJob, SymbolContainer symbolContainer, SortedRotateList rotateList) {
+    private void processSymbolContainer(RenderContext renderContext, RendererJob rendererJob, SymbolContainer symbolContainer, SortedRotateList rotateList) {
+
+	if (symbolContainer.theta > 0) {
+	    // symbol has an Rotation, draw direct to Tile
+	    symbolContainer.draw(renderContext.canvasRasterer.canvas, rendererJob.tile.getOrigin(), renderContext.canvasRasterer.symbolMatrix);
+	    return;
+	}
 
 	float tileSize = rendererJob.tile.tileSize;
 	Point tileOrigin = rendererJob.tile.getOrigin();
@@ -236,9 +242,11 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
 
 	ext_Bitmap bmp = (ext_Bitmap) symbolContainer.symbol;
 
+	GL_Matrix matrix = new GL_Matrix();
+
 	SymbolDrawable drw = new SymbolDrawable(bmp.getGlBmpHandle(), PointX, PointY, tileSize, tileSize, symbolContainer.alignCenter);
-	MatrixDrawable maDr = new MatrixDrawable(drw, new GL_Matrix(), true);
-	rotateList.add(maDr);
+	MatrixDrawable maDr = new MatrixDrawable(drw, matrix, true);
+	//rotateList.add(maDr);
     }
 
 }

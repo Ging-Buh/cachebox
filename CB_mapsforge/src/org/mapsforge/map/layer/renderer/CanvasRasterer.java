@@ -34,54 +34,54 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.rendertheme.RenderContext;
 
 public class CanvasRasterer {
-	private final Canvas canvas;
+	final Canvas canvas;
 	private final Path path;
-	private final Matrix symbolMatrix;
+	final Matrix symbolMatrix;
 
 	CanvasRasterer(GraphicFactory graphicFactory) {
-		this.canvas = graphicFactory.createCanvas();
-		this.symbolMatrix = graphicFactory.createMatrix();
-		this.path = graphicFactory.createPath();
+	this.canvas = graphicFactory.createCanvas();
+	this.symbolMatrix = graphicFactory.createMatrix();
+	this.path = graphicFactory.createPath();
 	}
 
 	public void destroy() {
-		this.canvas.destroy();
+	this.canvas.destroy();
 	}
 
 	void drawWays(RenderContext renderContext) {
-		int levelsPerLayer = renderContext.ways.get(0).size();
+	int levelsPerLayer = renderContext.ways.get(0).size();
 
-		for (int layer = 0, layers = renderContext.ways.size(); layer < layers; ++layer) {
-			List<List<ShapePaintContainer>> shapePaintContainers = renderContext.ways.get(layer);
+	for (int layer = 0, layers = renderContext.ways.size(); layer < layers; ++layer) {
+		List<List<ShapePaintContainer>> shapePaintContainers = renderContext.ways.get(layer);
 
-			for (int level = 0; level < levelsPerLayer; ++level) {
-				List<ShapePaintContainer> wayList = shapePaintContainers.get(level);
+		for (int level = 0; level < levelsPerLayer; ++level) {
+		List<ShapePaintContainer> wayList = shapePaintContainers.get(level);
 
-				for (int index = wayList.size() - 1; index >= 0; --index) {
-					drawShapePaintContainer(wayList.get(index));
-				}
-			}
+		for (int index = wayList.size() - 1; index >= 0; --index) {
+			drawShapePaintContainer(wayList.get(index));
 		}
+		}
+	}
 	}
 
 	void drawMapElements(Set<MapElementContainer> elements, Tile tile) {
-		// we have a set of all map elements (needed so we do not draw elements twice),
-		// but we need to draw in priority order as we now allow overlaps. So we
-		// convert into list, then sort, then draw.
-		List<MapElementContainer> elementsAsList = new ArrayList<MapElementContainer>(elements);
-		// draw elements in order of priority: lower priority first, so more important
-		// elements will be drawn on top (in case of display=true) items.
-		Collections.sort(elementsAsList);
+	// we have a set of all map elements (needed so we do not draw elements twice),
+	// but we need to draw in priority order as we now allow overlaps. So we
+	// convert into list, then sort, then draw.
+	List<MapElementContainer> elementsAsList = new ArrayList<MapElementContainer>(elements);
+	// draw elements in order of priority: lower priority first, so more important
+	// elements will be drawn on top (in case of display=true) items.
+	Collections.sort(elementsAsList);
 
-		for (MapElementContainer element : elementsAsList) {
-			element.draw(canvas, tile.getOrigin(), this.symbolMatrix);
-		}
+	for (MapElementContainer element : elementsAsList) {
+		element.draw(canvas, tile.getOrigin(), this.symbolMatrix);
+	}
 	}
 
 	void fill(int color) {
-		if (GraphicUtils.getAlpha(color) > 0) {
-			this.canvas.fillColor(color);
-		}
+	if (GraphicUtils.getAlpha(color) > 0) {
+		this.canvas.fillColor(color);
+	}
 	}
 
 	/**
@@ -92,9 +92,9 @@ public class CanvasRasterer {
 	 * @param insideArea the inside area on which not to draw
 	 */
 	void fillOutsideAreas(Color color, Rectangle insideArea) {
-		this.canvas.setClipDifference((int) insideArea.left, (int) insideArea.top, (int) insideArea.getWidth(), (int) insideArea.getHeight());
-		this.canvas.fillColor(color);
-		this.canvas.resetClip();
+	this.canvas.setClipDifference((int) insideArea.left, (int) insideArea.top, (int) insideArea.getWidth(), (int) insideArea.getHeight());
+	this.canvas.fillColor(color);
+	this.canvas.resetClip();
 	}
 
 	/**
@@ -104,55 +104,55 @@ public class CanvasRasterer {
 	 * @param insideArea the inside area on which not to draw
 	 */
 	void fillOutsideAreas(int color, Rectangle insideArea) {
-		this.canvas.setClipDifference((int) insideArea.left, (int) insideArea.top, (int) insideArea.getWidth(), (int) insideArea.getHeight());
-		this.canvas.fillColor(color);
-		this.canvas.resetClip();
+	this.canvas.setClipDifference((int) insideArea.left, (int) insideArea.top, (int) insideArea.getWidth(), (int) insideArea.getHeight());
+	this.canvas.fillColor(color);
+	this.canvas.resetClip();
 	}
 
 	void setCanvasBitmap(Bitmap bitmap) {
-		this.canvas.setBitmap(bitmap);
+	this.canvas.setBitmap(bitmap);
 	}
 
 	private void drawCircleContainer(ShapePaintContainer shapePaintContainer) {
-		CircleContainer circleContainer = (CircleContainer) shapePaintContainer.shapeContainer;
-		Point point = circleContainer.point;
-		this.canvas.drawCircle((int) point.x, (int) point.y, (int) circleContainer.radius, shapePaintContainer.paint);
+	CircleContainer circleContainer = (CircleContainer) shapePaintContainer.shapeContainer;
+	Point point = circleContainer.point;
+	this.canvas.drawCircle((int) point.x, (int) point.y, (int) circleContainer.radius, shapePaintContainer.paint);
 	}
 
 	private void drawPath(ShapePaintContainer shapePaintContainer, Point[][] coordinates, float dy) {
-		this.path.clear();
+	this.path.clear();
 
-		for (Point[] innerList : coordinates) {
-			Point[] points;
-			if (dy != 0f) {
-				points = RendererUtils.parallelPath(innerList, dy);
-			} else {
-				points = innerList;
-			}
-			if (points.length >= 2) {
-				Point point = points[0];
-				this.path.moveTo((float) point.x, (float) point.y);
-				for (int i = 1; i < points.length; ++i) {
-					point = points[i];
-					this.path.lineTo((int) point.x, (int) point.y);
-				}
-			}
+	for (Point[] innerList : coordinates) {
+		Point[] points;
+		if (dy != 0f) {
+		points = RendererUtils.parallelPath(innerList, dy);
+		} else {
+		points = innerList;
 		}
+		if (points.length >= 2) {
+		Point point = points[0];
+		this.path.moveTo((float) point.x, (float) point.y);
+		for (int i = 1; i < points.length; ++i) {
+			point = points[i];
+			this.path.lineTo((int) point.x, (int) point.y);
+		}
+		}
+	}
 
-		this.canvas.drawPath(this.path, shapePaintContainer.paint);
+	this.canvas.drawPath(this.path, shapePaintContainer.paint);
 	}
 
 	private void drawShapePaintContainer(ShapePaintContainer shapePaintContainer) {
-		ShapeType shapeType = shapePaintContainer.shapeContainer.getShapeType();
-		switch (shapeType) {
-			case CIRCLE:
-				drawCircleContainer(shapePaintContainer);
-				return;
+	ShapeType shapeType = shapePaintContainer.shapeContainer.getShapeType();
+	switch (shapeType) {
+	case CIRCLE:
+		drawCircleContainer(shapePaintContainer);
+		return;
 
-			case POLYLINE:
-				PolylineContainer polylineContainer = (PolylineContainer) shapePaintContainer.shapeContainer;
-				drawPath(shapePaintContainer, polylineContainer.getCoordinatesRelativeToTile(), shapePaintContainer.dy);
-				return;
-		}
+	case POLYLINE:
+		PolylineContainer polylineContainer = (PolylineContainer) shapePaintContainer.shapeContainer;
+		drawPath(shapePaintContainer, polylineContainer.getCoordinatesRelativeToTile(), shapePaintContainer.dy);
+		return;
+	}
 	}
 }
