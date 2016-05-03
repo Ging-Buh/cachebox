@@ -228,7 +228,7 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
 
     private void processSymbolContainer(RenderContext renderContext, RendererJob rendererJob, SymbolContainer symbolContainer, SortedRotateList rotateList) {
 
-	if (symbolContainer.theta > 0) {
+	if (symbolContainer.rotate) {
 	    // symbol has an Rotation, draw direct to Tile
 	    symbolContainer.draw(renderContext.canvasRasterer.canvas, rendererJob.tile.getOrigin(), renderContext.canvasRasterer.symbolMatrix);
 	    return;
@@ -246,7 +246,7 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
 
 	SymbolDrawable drw = new SymbolDrawable(bmp.getGlBmpHandle(), PointX, PointY, tileSize, tileSize, symbolContainer.alignCenter);
 	MatrixDrawable maDr = new MatrixDrawable(drw, matrix, true);
-	//rotateList.add(maDr);
+	rotateList.add(maDr);
     }
 
 }
