@@ -16,13 +16,28 @@
 package org.mapsforge.map.layer.renderer;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.core.mapelements.MapElementContainer;
+import org.mapsforge.core.mapelements.SymbolContainer;
+import org.mapsforge.core.mapelements.WayTextContainer;
+import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.map.datastore.MapDataStore;
+import org.mapsforge.map.datastore.MapReadResult;
 import org.mapsforge.map.layer.labels.TileBasedLabelStore;
+import org.mapsforge.map.rendertheme.RenderContext;
+import org.mapsforge.map.rendertheme.rule.RenderTheme;
 
 import com.badlogic.gdx.graphics.Pixmap.Format;
 
@@ -30,7 +45,11 @@ import CB_Locator.Map.Descriptor;
 import CB_Locator.Map.TileGL;
 import CB_Locator.Map.TileGL.TileState;
 import CB_Locator.Map.TileGL_Mixed;
+import CB_UI_Base.graphics.GL_Matrix;
+import CB_UI_Base.graphics.SymbolDrawable;
+import CB_UI_Base.graphics.Images.MatrixDrawable;
 import CB_UI_Base.graphics.Images.SortedRotateList;
+import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 import CB_Utils.Lists.CB_List;
 
 /**
@@ -39,12 +58,14 @@ import CB_Utils.Lists.CB_List;
  * 
  * @author Longri
  */
-public class MixedDatabaseRenderer extends DatabaseRenderer implements IDatabaseRenderer {
+public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatabaseRenderer {
 
-	private HashMap<String, CB_List<GL_WayTextContainer>> NameList;
+	private static final Logger LOGGER = Logger.getLogger(MixedDatabaseRenderer.class.getName());
+
+	private HashMap<String, CB_List<WayTextContainer>> NameList;
 
 	public MixedDatabaseRenderer(MapDataStore mapDatabase, GraphicFactory graphicFactory, TileBasedLabelStore labelStore) {
-		super(mapDatabase, graphicFactory, labelStore);
+	super(mapDatabase, graphicFactory, labelStore);
 	}
 
 	AtomicBoolean inWork = new AtomicBoolean(false);
@@ -55,37 +76,132 @@ public class MixedDatabaseRenderer extends DatabaseRenderer implements IDatabase
 	@Override
 	public TileGL execute(RendererJob rendererJob) {
 
-		if (inWork.get()) {
-			// CB_Utils.Log.Log.debug(log, "MixedDatabaseRenderer in Work [" + ThreadId + "]");
-			return null;
-		}
-		inWork.set(true);
+	if (inWork.get()) {
+		// CB_Utils.Log.Log.debug(log, "MixedDatabaseRenderer in Work [" + ThreadId + "]");
+		return null;
+	}
+	inWork.set(true);
+	try {
+		SortedRotateList rotateList = new SortedRotateList();
+
+		this.bitmap = executeJob(rendererJob, rotateList);
+
 		try {
-			SortedRotateList rotateList = new SortedRotateList();
 
-			this.bitmap = executeJob(rendererJob);
+		this.bitmap.compress(baos);
+		byte[] b = baos.toByteArray();
 
-			try {
+		Descriptor desc = new Descriptor(rendererJob.tile.tileX, rendererJob.tile.tileY, rendererJob.tile.zoomLevel, false);
 
-				this.bitmap.compress(baos);
-				byte[] b = baos.toByteArray();
+		TileGL_Mixed mixedTile = new TileGL_Mixed(desc, b, TileState.Present, Format.RGB565);
+		mixedTile.add(rotateList);
+		baos.clear();
+		b = null;
+		inWork.set(false);
+		return mixedTile;
+		} catch (IOException e) {
+		e.printStackTrace();
+		}
 
-				Descriptor desc = new Descriptor(rendererJob.tile.tileX, rendererJob.tile.tileY, rendererJob.tile.zoomLevel, false);
+		inWork.set(false);
+		return null;
+	} finally {
+		inWork.set(false);
+	}
+	}
 
-				TileGL_Mixed mixedTile = new TileGL_Mixed(desc, b, TileState.Present, Format.RGB565);
-				mixedTile.add(rotateList);
-				baos.clear();
-				b = null;
-				inWork.set(false);
-				return mixedTile;
-			} catch (IOException e) {
-				e.printStackTrace();
+	/**
+	 * Called when a job needs to be executed.
+	 * 
+	 * @param rendererJob
+	 *            the job that should be executed.
+	 */
+	private TileBitmap executeJob(RendererJob rendererJob, SortedRotateList rotateList) {
+
+	RenderTheme renderTheme;
+	try {
+		renderTheme = rendererJob.renderThemeFuture.get();
+	} catch (Exception e) {
+		LOGGER.log(Level.SEVERE, "Error to retrieve render theme from future", e);
+		return null;
+	}
+
+	RenderContext renderContext = null;
+	try {
+		renderContext = new RenderContext(renderTheme, rendererJob, new CanvasRasterer(graphicFactory));
+
+		if (renderBitmap(renderContext)) {
+		TileBitmap bitmap = null;
+
+		if (this.mapDatabase != null) {
+			MapReadResult mapReadResult = this.mapDatabase.readMapData(rendererJob.tile);
+			processReadMapData(renderContext, mapReadResult);
+		}
+
+		if (!rendererJob.labelsOnly) {
+			bitmap = this.graphicFactory.createTileBitmap(renderContext.rendererJob.tile.tileSize, renderContext.rendererJob.hasAlpha);
+			bitmap.setTimestamp(rendererJob.mapDataStore.getDataTimestamp(renderContext.rendererJob.tile));
+			renderContext.canvasRasterer.setCanvasBitmap(bitmap);
+			if (!rendererJob.hasAlpha && rendererJob.displayModel.getBackgroundColor() != renderContext.renderTheme.getMapBackground()) {
+			renderContext.canvasRasterer.fill(renderContext.renderTheme.getMapBackground());
 			}
+			renderContext.canvasRasterer.drawWays(renderContext);
+		}
 
-			inWork.set(false);
-			return null;
-		} finally {
-			inWork.set(false);
+		// store Labels in Rotate List
+		Set<MapElementContainer> labelsToDraw = processLabels(renderContext);
+		drawMapElements(rendererJob, labelsToDraw, rotateList);
+
+		if (!rendererJob.labelsOnly && renderContext.renderTheme.hasMapBackgroundOutside()) {
+			// blank out all areas outside of map
+			Rectangle insideArea = this.mapDatabase.boundingBox().getPositionRelativeToTile(renderContext.rendererJob.tile);
+			if (!rendererJob.hasAlpha) {
+			renderContext.canvasRasterer.fillOutsideAreas(renderContext.renderTheme.getMapBackgroundOutside(), insideArea);
+			} else {
+			renderContext.canvasRasterer.fillOutsideAreas(Color.TRANSPARENT, insideArea);
+			}
+		}
+		return bitmap;
+		}
+		// outside of map area with background defined:
+		return createBackgroundBitmap(renderContext);
+	} finally {
+		if (renderContext != null) {
+		renderContext.destroy();
 		}
 	}
+	}
+
+	void drawMapElements(RendererJob rendererJob, Set<MapElementContainer> elements, SortedRotateList rotateList) {
+	// we have a set of all map elements (needed so we do not draw elements twice),
+	// but we need to draw in priority order as we now allow overlaps. So we
+	// convert into list, then sort, then draw.
+	List<MapElementContainer> elementsAsList = new ArrayList<MapElementContainer>(elements);
+	// draw elements in order of priority: lower priority first, so more important
+	// elements will be drawn on top (in case of display=true) items.
+	Collections.sort(elementsAsList);
+
+	for (MapElementContainer element : elementsAsList) {
+		if (element instanceof SymbolContainer) {
+		processSymbolContainer(rendererJob, (SymbolContainer) element, rotateList);
+		}
+	}
+	}
+
+	private void processSymbolContainer(RendererJob rendererJob, SymbolContainer symbolContainer, SortedRotateList rotateList) {
+
+	float tileSize = rendererJob.tile.tileSize;
+
+	Point tileOrigin = rendererJob.tile.getOrigin();
+
+	float PointX = (float) (symbolContainer.xy.x - tileOrigin.x);
+	float PointY = (float) (tileSize - (symbolContainer.xy.y - tileOrigin.y));
+
+	ext_Bitmap bmp = (ext_Bitmap) symbolContainer.symbol;
+
+	SymbolDrawable drw = new SymbolDrawable(bmp.getGlBmpHandle(), PointX, PointY, tileSize, tileSize, symbolContainer.alignCenter);
+	MatrixDrawable maDr = new MatrixDrawable(drw, new GL_Matrix(), true);
+	rotateList.add(maDr);
+	}
+
 }

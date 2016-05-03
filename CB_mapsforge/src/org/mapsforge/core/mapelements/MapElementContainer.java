@@ -43,9 +43,9 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
 	public final Point xy;
 
 	protected MapElementContainer(Point xy, Display display, int priority) {
-		this.xy = xy;
-		this.display = display;
-		this.priority = priority;
+	this.xy = xy;
+	this.display = display;
+	this.priority = priority;
 	}
 
 	/**
@@ -57,29 +57,29 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
 
 	@Override
 	public int compareTo(MapElementContainer other) {
-		if (this.priority < other.priority) {
-			return -1;
-		}
-		if (this.priority > other.priority) {
-			return 1;
-		}
-		return 0;
+	if (this.priority < other.priority) {
+		return -1;
+	}
+	if (this.priority > other.priority) {
+		return 1;
+	}
+	return 0;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		} else if (!(obj instanceof MapElementContainer)) {
-			return false;
-		}
-		MapElementContainer other = (MapElementContainer) obj;
-		if (this.priority != other.priority) {
-			return false;
-		} else if (!this.xy.equals(other.xy)) {
-			return false;
-		}
+	if (this == obj) {
 		return true;
+	} else if (!(obj instanceof MapElementContainer)) {
+		return false;
+	}
+	MapElementContainer other = (MapElementContainer) obj;
+	if (this.priority != other.priority) {
+		return false;
+	} else if (!this.xy.equals(other.xy)) {
+		return false;
+	}
+	return true;
 	}
 
 	/**
@@ -98,14 +98,14 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
 	 * @return Rectangle with absolute pixel coordinates.
 	 */
 	protected Rectangle getBoundaryAbsolute() {
-		if (boundaryAbsolute == null) {
-			boundaryAbsolute = this.boundary.shift(xy);
-		}
-		return boundaryAbsolute;
+	if (boundaryAbsolute == null) {
+		boundaryAbsolute = this.boundary.shift(xy);
+	}
+	return boundaryAbsolute;
 	}
 
 	public boolean intersects(Rectangle rectangle) {
-		return this.getBoundaryAbsolute().intersects(rectangle);
+	return this.getBoundaryAbsolute().intersects(rectangle);
 	}
 
 	/**
@@ -114,19 +114,19 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
 	 * @return true if they overlap
 	 */
 	public boolean clashesWith(MapElementContainer other) {
-		// if either of the elements is always drawn, the elements do not clash
-		if (Display.ALWAYS == this.display || Display.ALWAYS == other.display) {
-			return false;
-		}
-		return this.getBoundaryAbsolute().intersects(other.getBoundaryAbsolute());
+	// if either of the elements is always drawn, the elements do not clash
+	if (Display.ALWAYS == this.display || Display.ALWAYS == other.display) {
+		return false;
+	}
+	return this.getBoundaryAbsolute().intersects(other.getBoundaryAbsolute());
 	}
 
 	@Override
 	public int hashCode() {
-		int result = 7;
-		result = 31 * result + xy.hashCode();
-		result = 31 * result + priority;
-		return result;
+	int result = 7;
+	result = 31 * result + xy.hashCode();
+	result = 31 * result + priority;
+	return result;
 	}
 
 	/**
@@ -134,21 +134,20 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
 	 * @return Point with absolute center pixel coordinates.
 	 */
 	public Point getPoint() {
-		return this.xy;
+	return this.xy;
 	}
 
 	public int getPriority() {
-		return priority;
+	return priority;
 	}
 
 	@Override
 	public String toString() {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("xy=");
-		stringBuilder.append(this.xy);
-		stringBuilder.append(", priority=");
-		stringBuilder.append(this.priority);
-		return stringBuilder.toString();
+	StringBuilder stringBuilder = new StringBuilder();
+	stringBuilder.append("xy=");
+	stringBuilder.append(this.xy);
+	stringBuilder.append(", priority=");
+	stringBuilder.append(this.priority);
+	return stringBuilder.toString();
 	}
-
 }

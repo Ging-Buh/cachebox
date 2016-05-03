@@ -25,8 +25,6 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.datastore.MapDataStore;
-import org.mapsforge.map.layer.cache.InMemoryTileCache;
-import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -45,57 +43,55 @@ public class MF_DatabaseRenderer extends DatabaseRenderer implements IDatabaseRe
 	private double tileLatLon_0_x, tileLatLon_0_y, tileLatLon_1_x, tileLatLon_1_y;
 	private double divLon, divLat;
 
-	static TileCache firstLevelTileCache = new InMemoryTileCache(128);
-
 	public MF_DatabaseRenderer(MapDataStore mapDatabase, GraphicFactory graphicFactory, TileBasedLabelStore labelStore) {
-		super(mapDatabase, graphicFactory, firstLevelTileCache);
+	super(mapDatabase, graphicFactory, firstLevelTileCache);
 
 	}
 
 	@Override
 	public TileGL execute(RendererJob rendererJob) {
 
-		// Fixme direct Buffer swap
-		/*
-		 * If the goal is to convert an Android Bitmap to a libgdx Texture, you don't need to use Pixmap at all. You can do it directly with
-		 * the help of simple OpenGL and Android GLUtils. Try the followings; it is 100x faster than your solution. I assume that you are
-		 * not in the rendering thread (you should not most likely). If you are, you don't need to call postRunnable().
-		 * 
-		 * Gdx.app.postRunnable(new Runnable() {
-		 * 
-		 * @Override public void run() { Texture tex = new Texture(bitmap.getWidth(), bitmap.getHeight(), Format.RGBA8888);
-		 * GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, tex.getTextureObjectHandle()); GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
-		 * GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0); bitmap.recycle(); // now you have the texture to do whatever you want } });
-		 */
+	// Fixme direct Buffer swap
+	/*
+	 * If the goal is to convert an Android Bitmap to a libgdx Texture, you don't need to use Pixmap at all. You can do it directly with
+	 * the help of simple OpenGL and Android GLUtils. Try the followings; it is 100x faster than your solution. I assume that you are
+	 * not in the rendering thread (you should not most likely). If you are, you don't need to call postRunnable().
+	 * 
+	 * Gdx.app.postRunnable(new Runnable() {
+	 * 
+	 * @Override public void run() { Texture tex = new Texture(bitmap.getWidth(), bitmap.getHeight(), Format.RGBA8888);
+	 * GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, tex.getTextureObjectHandle()); GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+	 * GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0); bitmap.recycle(); // now you have the texture to do whatever you want } });
+	 */
 
-		int tileSize = rendererJob.displayModel.getTileSize();
-		Tile tile = rendererJob.tile;
-		tileLatLon_0_x = MercatorProjection.tileXToLongitude(tile.tileX, tile.zoomLevel);
-		tileLatLon_0_y = MercatorProjection.tileYToLatitude(tile.tileY, tile.zoomLevel);
-		tileLatLon_1_x = MercatorProjection.tileXToLongitude(tile.tileX + 1, tile.zoomLevel);
-		tileLatLon_1_y = MercatorProjection.tileYToLatitude(tile.tileY + 1, tile.zoomLevel);
+	int tileSize = rendererJob.displayModel.getTileSize();
+	Tile tile = rendererJob.tile;
+	tileLatLon_0_x = MercatorProjection.tileXToLongitude(tile.tileX, tile.zoomLevel);
+	tileLatLon_0_y = MercatorProjection.tileYToLatitude(tile.tileY, tile.zoomLevel);
+	tileLatLon_1_x = MercatorProjection.tileXToLongitude(tile.tileX + 1, tile.zoomLevel);
+	tileLatLon_1_y = MercatorProjection.tileYToLatitude(tile.tileY + 1, tile.zoomLevel);
 
-		divLon = (tileLatLon_0_x - tileLatLon_1_x) / tileSize;
-		divLat = (tileLatLon_0_y - tileLatLon_1_y) / tileSize;
+	divLon = (tileLatLon_0_x - tileLatLon_1_x) / tileSize;
+	divLat = (tileLatLon_0_y - tileLatLon_1_y) / tileSize;
 
-		TileBitmap bmp = executeJob(rendererJob);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try {
-			bmp.compress(baos);
-			byte[] b = baos.toByteArray();
+	TileBitmap bmp = executeJob(rendererJob);
+	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	try {
+		bmp.compress(baos);
+		byte[] b = baos.toByteArray();
 
-			Descriptor desc = new Descriptor(rendererJob.tile.tileX, rendererJob.tile.tileY, rendererJob.tile.zoomLevel, false);
+		Descriptor desc = new Descriptor(rendererJob.tile.tileX, rendererJob.tile.tileY, rendererJob.tile.zoomLevel, false);
 
-			TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present, Format.RGB565);
+		TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present, Format.RGB565);
 
-			((ext_Bitmap) bmp).recycle();
+		((ext_Bitmap) bmp).recycle();
 
-			return bmpTile;
-		} catch (IOException e) {
+		return bmpTile;
+	} catch (IOException e) {
 
-			e.printStackTrace();
-		}
-		return null;
+		e.printStackTrace();
+	}
+	return null;
 	}
 
 	/**
@@ -106,10 +102,10 @@ public class MF_DatabaseRenderer extends DatabaseRenderer implements IDatabaseRe
 	 * @return the XY coordinates on the current object.
 	 */
 	private Point scaleLatLong(LatLong latLong, int tileSize) {
-		double pixelX = (tileLatLon_0_x - latLong.getLongitude()) / divLon;
-		double pixelY = (tileLatLon_0_y - latLong.getLatitude()) / divLat;
+	double pixelX = (tileLatLon_0_x - latLong.getLongitude()) / divLon;
+	double pixelY = (tileLatLon_0_y - latLong.getLatitude()) / divLat;
 
-		return new Point((float) pixelX, (float) pixelY);
+	return new Point((float) pixelX, (float) pixelY);
 	}
 
 }
