@@ -29,6 +29,7 @@ import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.mapelements.MapElementContainer;
+import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.mapelements.WayTextContainer;
 import org.mapsforge.core.model.Point;
@@ -46,7 +47,10 @@ import CB_Locator.Map.TileGL;
 import CB_Locator.Map.TileGL.TileState;
 import CB_Locator.Map.TileGL_Mixed;
 import CB_UI_Base.graphics.GL_Matrix;
+import CB_UI_Base.graphics.GL_Paint;
+import CB_UI_Base.graphics.GL_Path;
 import CB_UI_Base.graphics.SymbolDrawable;
+import CB_UI_Base.graphics.TextDrawable;
 import CB_UI_Base.graphics.Images.MatrixDrawable;
 import CB_UI_Base.graphics.Images.SortedRotateList;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
@@ -60,33 +64,33 @@ import CB_Utils.Lists.CB_List;
  */
 public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatabaseRenderer {
 
-	private static final Logger LOGGER = Logger.getLogger(MixedDatabaseRenderer.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MixedDatabaseRenderer.class.getName());
 
-	private HashMap<String, CB_List<WayTextContainer>> NameList;
+    private HashMap<String, CB_List<WayTextContainer>> NameList;
 
-	public MixedDatabaseRenderer(MapDataStore mapDatabase, GraphicFactory graphicFactory, TileBasedLabelStore labelStore) {
+    public MixedDatabaseRenderer(MapDataStore mapDatabase, GraphicFactory graphicFactory, TileBasedLabelStore labelStore) {
 	super(mapDatabase, graphicFactory, labelStore);
-	}
+    }
 
-	AtomicBoolean inWork = new AtomicBoolean(false);
-	// UnsaveByteArrayOutputStream baos = new UnsaveByteArrayOutputStream(256 * 256 * 2);
-	UnsaveByteArrayOutputStream baos = new UnsaveByteArrayOutputStream();
-	private TileBitmap bitmap;
+    AtomicBoolean inWork = new AtomicBoolean(false);
+    // UnsaveByteArrayOutputStream baos = new UnsaveByteArrayOutputStream(256 * 256 * 2);
+    UnsaveByteArrayOutputStream baos = new UnsaveByteArrayOutputStream();
+    private TileBitmap bitmap;
 
-	@Override
-	public TileGL execute(RendererJob rendererJob) {
+    @Override
+    public TileGL execute(RendererJob rendererJob) {
 
 	if (inWork.get()) {
-		// CB_Utils.Log.Log.debug(log, "MixedDatabaseRenderer in Work [" + ThreadId + "]");
-		return null;
+	    // CB_Utils.Log.Log.debug(log, "MixedDatabaseRenderer in Work [" + ThreadId + "]");
+	    return null;
 	}
 	inWork.set(true);
 	try {
-		SortedRotateList rotateList = new SortedRotateList();
+	    SortedRotateList rotateList = new SortedRotateList();
 
-		this.bitmap = executeJob(rendererJob, rotateList);
+	    this.bitmap = executeJob(rendererJob, rotateList);
 
-		try {
+	    try {
 
 		this.bitmap.compress(baos);
 		byte[] b = baos.toByteArray();
@@ -99,53 +103,53 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
 		b = null;
 		inWork.set(false);
 		return mixedTile;
-		} catch (IOException e) {
+	    } catch (IOException e) {
 		e.printStackTrace();
-		}
+	    }
 
-		inWork.set(false);
-		return null;
+	    inWork.set(false);
+	    return null;
 	} finally {
-		inWork.set(false);
+	    inWork.set(false);
 	}
-	}
+    }
 
-	/**
-	 * Called when a job needs to be executed.
-	 * 
-	 * @param rendererJob
-	 *            the job that should be executed.
-	 */
-	private TileBitmap executeJob(RendererJob rendererJob, SortedRotateList rotateList) {
+    /**
+     * Called when a job needs to be executed.
+     * 
+     * @param rendererJob
+     *            the job that should be executed.
+     */
+    private TileBitmap executeJob(RendererJob rendererJob, SortedRotateList rotateList) {
 
 	RenderTheme renderTheme;
 	try {
-		renderTheme = rendererJob.renderThemeFuture.get();
+	    renderTheme = rendererJob.renderThemeFuture.get();
 	} catch (Exception e) {
-		LOGGER.log(Level.SEVERE, "Error to retrieve render theme from future", e);
-		return null;
+	    LOGGER.log(Level.SEVERE, "Error to retrieve render theme from future", e);
+	    return null;
 	}
 
 	RenderContext renderContext = null;
 	try {
-		renderContext = new RenderContext(renderTheme, rendererJob, new CanvasRasterer(graphicFactory));
+	    renderContext = new RenderContext(renderTheme, rendererJob, new CanvasRasterer(graphicFactory));
 
-		if (renderBitmap(renderContext)) {
+	    if (renderBitmap(renderContext)) {
 		TileBitmap bitmap = null;
 
 		if (this.mapDatabase != null) {
-			MapReadResult mapReadResult = this.mapDatabase.readMapData(rendererJob.tile);
-			processReadMapData(renderContext, mapReadResult);
+		    MapReadResult mapReadResult = this.mapDatabase.readMapData(rendererJob.tile);
+		    processReadMapData(renderContext, mapReadResult);
 		}
 
 		if (!rendererJob.labelsOnly) {
-			bitmap = this.graphicFactory.createTileBitmap(renderContext.rendererJob.tile.tileSize, renderContext.rendererJob.hasAlpha);
-			bitmap.setTimestamp(rendererJob.mapDataStore.getDataTimestamp(renderContext.rendererJob.tile));
-			renderContext.canvasRasterer.setCanvasBitmap(bitmap);
-			if (!rendererJob.hasAlpha && rendererJob.displayModel.getBackgroundColor() != renderContext.renderTheme.getMapBackground()) {
+		    bitmap = this.graphicFactory.createTileBitmap(renderContext.rendererJob.tile.tileSize, renderContext.rendererJob.hasAlpha);
+		    bitmap.setTimestamp(rendererJob.mapDataStore.getDataTimestamp(renderContext.rendererJob.tile));
+		    renderContext.canvasRasterer.setCanvasBitmap(bitmap);
+		    if (!rendererJob.hasAlpha && rendererJob.displayModel.getBackgroundColor() != renderContext.renderTheme.getMapBackground()) {
 			renderContext.canvasRasterer.fill(renderContext.renderTheme.getMapBackground());
-			}
-			renderContext.canvasRasterer.drawWays(renderContext);
+		    }
+		    renderContext.canvasRasterer.drawWays(renderContext);
 		}
 
 		// store Labels in Rotate List
@@ -153,26 +157,26 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
 		drawMapElements(rendererJob, labelsToDraw, rotateList);
 
 		if (!rendererJob.labelsOnly && renderContext.renderTheme.hasMapBackgroundOutside()) {
-			// blank out all areas outside of map
-			Rectangle insideArea = this.mapDatabase.boundingBox().getPositionRelativeToTile(renderContext.rendererJob.tile);
-			if (!rendererJob.hasAlpha) {
+		    // blank out all areas outside of map
+		    Rectangle insideArea = this.mapDatabase.boundingBox().getPositionRelativeToTile(renderContext.rendererJob.tile);
+		    if (!rendererJob.hasAlpha) {
 			renderContext.canvasRasterer.fillOutsideAreas(renderContext.renderTheme.getMapBackgroundOutside(), insideArea);
-			} else {
+		    } else {
 			renderContext.canvasRasterer.fillOutsideAreas(Color.TRANSPARENT, insideArea);
-			}
+		    }
 		}
 		return bitmap;
-		}
-		// outside of map area with background defined:
-		return createBackgroundBitmap(renderContext);
+	    }
+	    // outside of map area with background defined:
+	    return createBackgroundBitmap(renderContext);
 	} finally {
-		if (renderContext != null) {
+	    if (renderContext != null) {
 		renderContext.destroy();
-		}
+	    }
 	}
-	}
+    }
 
-	void drawMapElements(RendererJob rendererJob, Set<MapElementContainer> elements, SortedRotateList rotateList) {
+    void drawMapElements(RendererJob rendererJob, Set<MapElementContainer> elements, SortedRotateList rotateList) {
 	// we have a set of all map elements (needed so we do not draw elements twice),
 	// but we need to draw in priority order as we now allow overlaps. So we
 	// convert into list, then sort, then draw.
@@ -182,16 +186,49 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
 	Collections.sort(elementsAsList);
 
 	for (MapElementContainer element : elementsAsList) {
-		if (element instanceof SymbolContainer) {
+	    if (element instanceof SymbolContainer) {
 		processSymbolContainer(rendererJob, (SymbolContainer) element, rotateList);
-		}
+	    } else if (element instanceof PointTextContainer) {
+		processPointTextContainer(rendererJob, (PointTextContainer) element, rotateList);
+	    }
 	}
-	}
+    }
 
-	private void processSymbolContainer(RendererJob rendererJob, SymbolContainer symbolContainer, SortedRotateList rotateList) {
+    private void processPointTextContainer(RendererJob rendererJob, PointTextContainer pointTextContainer, SortedRotateList rotateList) {
+	float TextWidth = (float) (pointTextContainer.boundary.getWidth());
+	float tileSize = rendererJob.tile.tileSize;
+	Point tileOrigin = rendererJob.tile.getOrigin();
+
+	float PointX = (float) (pointTextContainer.xy.x - tileOrigin.x);
+	float PointY = (float) (tileSize - (pointTextContainer.xy.y - tileOrigin.y));
+
+	if (PointX < 0)
+	    return;
+	if (PointX > tileSize)
+	    return;
+	if (PointY < 0)
+	    return;
+	if (PointY > tileSize)
+	    return;
+
+	float halfWidth = TextWidth / 2;
+
+	GL_Path path = new GL_Path();
+	path.moveTo(PointX - halfWidth, PointY);
+	path.lineTo(PointX + halfWidth, PointY);
+
+	GL_Paint front = new GL_Paint(pointTextContainer.paintFront);
+	GL_Paint back = new GL_Paint(pointTextContainer.paintBack);
+
+	TextDrawable textDrw = new TextDrawable(pointTextContainer.text, path, tileSize, tileSize, front, back, true);
+	MatrixDrawable maDr = new MatrixDrawable(textDrw, new GL_Matrix(), true);
+
+	rotateList.add(maDr);
+    }
+
+    private void processSymbolContainer(RendererJob rendererJob, SymbolContainer symbolContainer, SortedRotateList rotateList) {
 
 	float tileSize = rendererJob.tile.tileSize;
-
 	Point tileOrigin = rendererJob.tile.getOrigin();
 
 	float PointX = (float) (symbolContainer.xy.x - tileOrigin.x);
@@ -202,6 +239,6 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
 	SymbolDrawable drw = new SymbolDrawable(bmp.getGlBmpHandle(), PointX, PointY, tileSize, tileSize, symbolContainer.alignCenter);
 	MatrixDrawable maDr = new MatrixDrawable(drw, new GL_Matrix(), true);
 	rotateList.add(maDr);
-	}
+    }
 
 }
