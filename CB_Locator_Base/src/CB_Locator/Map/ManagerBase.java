@@ -94,18 +94,18 @@ public abstract class ManagerBase {
 	private boolean mayAddLayer = false; // add only during startup (why?)
 
 	public ManagerBase(DisplayModel displaymodel) {
-		Manager = this;
-		PROCESSOR_COUNT = 1; // = Runtime.getRuntime().availableProcessors();
-		DISPLAY_MODEL = displaymodel;
+	Manager = this;
+	PROCESSOR_COUNT = 1; // = Runtime.getRuntime().availableProcessors();
+	DISPLAY_MODEL = displaymodel;
 
-		LocatorSettings.CurrentMapLayer.addChangedEventListener(new IChanged() {
-			@Override
-			public void isChanged() {
-				Layer layer = getOrAddLayer(LocatorSettings.CurrentMapLayer.getValue(), "", "");
-				if (layer.isMapsForge)
-					initMapDatabase(layer);
-			}
-		});
+	LocatorSettings.CurrentMapLayer.addChangedEventListener(new IChanged() {
+		@Override
+		public void isChanged() {
+		Layer layer = getOrAddLayer(LocatorSettings.CurrentMapLayer.getValue(), "", "");
+		if (layer.isMapsForge)
+			initMapDatabase(layer);
+		}
+	});
 	}
 
 	public abstract PackBase CreatePack(String file) throws IOException;
@@ -118,44 +118,44 @@ public abstract class ManagerBase {
 	 * true, falls das Pack erfolgreich geladen wurde, sonst false
 	 */
 	public boolean LoadMapPack(String file) {
-		try {
-			PackBase pack = CreatePack(file);
-			layers.add(pack.layer);
-			mapPacks.add(pack);
-			// Nach Aktualität sortieren
-			Collections.sort(mapPacks);
-			return true;
-		} catch (Exception exc) {
-		}
-		return false;
+	try {
+		PackBase pack = CreatePack(file);
+		layers.add(pack.layer);
+		mapPacks.add(pack);
+		// Nach Aktualität sortieren
+		Collections.sort(mapPacks);
+		return true;
+	} catch (Exception exc) {
+	}
+	return false;
 	}
 
 	public Layer getOrAddLayer(String Name, String friendlyName, String url) {
-		if (Name == "OSM" || Name == "")
-			Name = "Mapnik";
+	if (Name == "OSM" || Name == "")
+		Name = "Mapnik";
 
-		for (Layer layer : layers) {
-			if (layer.Name.equalsIgnoreCase(Name))
-				return layer;
-		}
+	for (Layer layer : layers) {
+		if (layer.Name.equalsIgnoreCase(Name))
+		return layer;
+	}
 
-		if (mayAddLayer) {
-			Layer newLayer = new Layer(Type.normal, Name, Name, url);
-			layers.add(newLayer);
-			return newLayer;
-		} else {
-			if (layers != null && layers.size() > 0) {
-				LocatorSettings.CurrentMapLayer.setValue(layers.get(0).Name);
-				return layers.get(0); // ist wahrscheinlich Mapnik und sollte immer tun
-			}
-			return null;
+	if (mayAddLayer) {
+		Layer newLayer = new Layer(Type.normal, Name, Name, url);
+		layers.add(newLayer);
+		return newLayer;
+	} else {
+		if (layers != null && layers.size() > 0) {
+		LocatorSettings.CurrentMapLayer.setValue(layers.get(0).Name);
+		return layers.get(0); // ist wahrscheinlich Mapnik und sollte immer tun
 		}
+		return null;
+	}
 	}
 
 	public class ImageData {
-		public int[] PixelColorArray;
-		public int width;
-		public int height;
+	public int[] PixelColorArray;
+	public int width;
+	public int height;
 	}
 
 	public abstract TileGL LoadLocalPixmap(Layer layer, Descriptor desc, int ThreadIndex);
@@ -173,104 +173,104 @@ public abstract class ManagerBase {
 	 */
 	public boolean cacheTile(Layer layer, Descriptor tile) {
 
-		if (layer == null)
+	if (layer == null)
+		return false;
+
+	// Gibts die Kachel schon in einem Mappack? Dann kann sie übersprungen werden!
+	for (PackBase pack : mapPacks)
+		if (pack.layer == layer)
+		if (pack.Contains(tile) != null)
+			return true;
+
+	String filename = layer.GetLocalFilename(tile);
+	// String path = layer.GetLocalPath(tile);
+	String url = layer.GetUrl(tile);
+
+	// Falls Kachel schon geladen wurde, kann sie übersprungen werden
+	synchronized (this) {
+		if (FileIO.FileExists(filename))
+		return true;
+	}
+
+	// Kachel laden
+	// set the connection timeout value to 15 seconds (15000 milliseconds)
+	final HttpParams httpParams = new BasicHttpParams();
+	HttpConnectionParams.setConnectionTimeout(httpParams, CONECTION_TIME_OUT);
+
+	HttpClient httpclient = new DefaultHttpClient(httpParams);
+	HttpResponse response = null;
+
+	HttpGet GET = new HttpGet(url);
+
+	try {
+
+		response = httpclient.execute(GET);
+		StatusLine statusLine = response.getStatusLine();
+		if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		response.getEntity().writeTo(out);
+		out.close();
+
+		synchronized (this) {
+			// Verzeichnis anlegen
+			if (!FileIO.createDirectory(filename))
 			return false;
 
-		// Gibts die Kachel schon in einem Mappack? Dann kann sie übersprungen werden!
-		for (PackBase pack : mapPacks)
-			if (pack.layer == layer)
-				if (pack.Contains(tile) != null)
-					return true;
-
-		String filename = layer.GetLocalFilename(tile);
-		// String path = layer.GetLocalPath(tile);
-		String url = layer.GetUrl(tile);
-
-		// Falls Kachel schon geladen wurde, kann sie übersprungen werden
-		synchronized (this) {
-			if (FileIO.FileExists(filename))
-				return true;
+			// Datei schreiben
+			FileOutputStream stream = new FileOutputStream(filename, false);
+			out.writeTo(stream);
+			stream.close();
 		}
 
-		// Kachel laden
-		// set the connection timeout value to 15 seconds (15000 milliseconds)
-		final HttpParams httpParams = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(httpParams, CONECTION_TIME_OUT);
+		NumTilesLoaded++;
+		// Global.TransferredBytes += result.Length;
 
-		HttpClient httpclient = new DefaultHttpClient(httpParams);
-		HttpResponse response = null;
-
-		HttpGet GET = new HttpGet(url);
-
-		try {
-
-			response = httpclient.execute(GET);
-			StatusLine statusLine = response.getStatusLine();
-			if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
-				response.getEntity().writeTo(out);
-				out.close();
-
-				synchronized (this) {
-					// Verzeichnis anlegen
-					if (!FileIO.createDirectory(filename))
-						return false;
-
-					// Datei schreiben
-					FileOutputStream stream = new FileOutputStream(filename, false);
-					out.writeTo(stream);
-					stream.close();
-				}
-
-				NumTilesLoaded++;
-				// Global.TransferredBytes += result.Length;
-
-				// ..more logic
-			} else {
-				// Closes the connection.
-				response.getEntity().getContent().close();
-				// throw new IOException(statusLine.getReasonPhrase());
-				return false;
-			}
-			/*
-			 * webRequest = (HttpWebRequest)WebRequest.Create(url); webRequest.Timeout = 15000; webRequest.Proxy = Global.Proxy; webResponse
-			 * = webRequest.GetResponse(); if (!webRequest.HaveResponse) return false; responseStream = webResponse.GetResponseStream();
-			 * byte[] result = Global.ReadFully(responseStream, 64000); // Verzeichnis anlegen lock (this) if (!Directory.Exists(path))
-			 * Directory.CreateDirectory(path); // Datei schreiben lock (this) { stream = new FileStream(filename, FileMode.CreateNew);
-			 * stream.Write(result, 0, result.Length); } NumTilesLoaded++; Global.TransferredBytes += result.Length;
-			 */
-		} catch (Exception ex) {
-			// Check last Error for this URL and post massage if the last > 1 min.
-
-			String URL = GET.getURI().getAuthority();
-
-			boolean PostErrorMassage = false;
-
-			if (LastRequestTimeOut.containsKey(URL)) {
-				long last = LastRequestTimeOut.get(URL);
-				if ((last + CONECTION_TIME_OUT_MESSAGE_INTERVALL) < System.currentTimeMillis()) {
-					PostErrorMassage = true;
-					LastRequestTimeOut.remove(URL);
-				}
-			} else {
-				PostErrorMassage = true;
-			}
-
-			if (PostErrorMassage) {
-				LastRequestTimeOut.put(URL, System.currentTimeMillis());
-				ConnectionError INSTANCE = new ConnectionError(layer.Name + " - Provider");
-				GL.that.Toast(INSTANCE);
-			}
-
-			return false;
+		// ..more logic
+		} else {
+		// Closes the connection.
+		response.getEntity().getContent().close();
+		// throw new IOException(statusLine.getReasonPhrase());
+		return false;
 		}
 		/*
-		 * finally { if (stream != null) { stream.Close(); stream = null; } if (responseStream != null) { responseStream.Close();
-		 * responseStream = null; } if (webResponse != null) { webResponse.Close(); webResponse = null; } if (webRequest != null) {
-		 * webRequest.Abort(); webRequest = null; } GC.Collect(); }
+		 * webRequest = (HttpWebRequest)WebRequest.Create(url); webRequest.Timeout = 15000; webRequest.Proxy = Global.Proxy; webResponse
+		 * = webRequest.GetResponse(); if (!webRequest.HaveResponse) return false; responseStream = webResponse.GetResponseStream();
+		 * byte[] result = Global.ReadFully(responseStream, 64000); // Verzeichnis anlegen lock (this) if (!Directory.Exists(path))
+		 * Directory.CreateDirectory(path); // Datei schreiben lock (this) { stream = new FileStream(filename, FileMode.CreateNew);
+		 * stream.Write(result, 0, result.Length); } NumTilesLoaded++; Global.TransferredBytes += result.Length;
 		 */
+	} catch (Exception ex) {
+		// Check last Error for this URL and post massage if the last > 1 min.
 
-		return true;
+		String URL = GET.getURI().getAuthority();
+
+		boolean PostErrorMassage = false;
+
+		if (LastRequestTimeOut.containsKey(URL)) {
+		long last = LastRequestTimeOut.get(URL);
+		if ((last + CONECTION_TIME_OUT_MESSAGE_INTERVALL) < System.currentTimeMillis()) {
+			PostErrorMassage = true;
+			LastRequestTimeOut.remove(URL);
+		}
+		} else {
+		PostErrorMassage = true;
+		}
+
+		if (PostErrorMassage) {
+		LastRequestTimeOut.put(URL, System.currentTimeMillis());
+		ConnectionError INSTANCE = new ConnectionError(layer.Name + " - Provider");
+		GL.that.Toast(INSTANCE);
+		}
+
+		return false;
+	}
+	/*
+	 * finally { if (stream != null) { stream.Close(); stream = null; } if (responseStream != null) { responseStream.Close();
+	 * responseStream = null; } if (webResponse != null) { webResponse.Close(); webResponse = null; } if (webRequest != null) {
+	 * webRequest.Abort(); webRequest = null; } GC.Collect(); }
+	 */
+
+	return true;
 	}
 
 	HashMap<String, Long> LastRequestTimeOut = new HashMap<String, Long>();
@@ -291,116 +291,116 @@ public abstract class ManagerBase {
 	 */
 	public static ImageData getImageDataWithColormatrixManipulation(float[] matrix, ImageData imgData) {
 
-		int[] data = imgData.PixelColorArray;
-		for (int i = 0; i < data.length; i++) {
-			data[i] = HSV_Color.colorMatrixManipulation(data[i], matrix);
-		}
-		return imgData;
+	int[] data = imgData.PixelColorArray;
+	for (int i = 0; i < data.length; i++) {
+		data[i] = HSV_Color.colorMatrixManipulation(data[i], matrix);
+	}
+	return imgData;
 	}
 
 	public void LoadTMS(String string) {
-		try {
-			TmsMap tmsMap = new TmsMap(string);
-			if ((tmsMap.name == null) || (tmsMap.url == null)) {
-				return;
-			}
-			tmsMaps.add(tmsMap);
-			layers.add(new TmsLayer(Type.normal, tmsMap));
-		} catch (Exception ex) {
-
+	try {
+		TmsMap tmsMap = new TmsMap(string);
+		if ((tmsMap.name == null) || (tmsMap.url == null)) {
+		return;
 		}
+		tmsMaps.add(tmsMap);
+		layers.add(new TmsLayer(Type.normal, tmsMap));
+	} catch (Exception ex) {
+
+	}
 
 	}
 
 	public void LoadBSH(String string) {
-		try {
-			BshLayer layer = new BshLayer(Type.normal, string);
-			layers.add(layer);
-		} catch (Exception ex) {
+	try {
+		BshLayer layer = new BshLayer(Type.normal, string);
+		layers.add(layer);
+	} catch (Exception ex) {
 
-		}
+	}
 
 	}
 
 	private void getFiles(ArrayList<String> files, ArrayList<String> mapnames, String directory) {
-		File dir = FileFactory.createFile(directory);
-		String[] dirFiles = dir.list();
-		if (dirFiles != null && dirFiles.length > 0) {
-			for (String tmp : dirFiles) {
-				String FilePath = directory + "/" + tmp;
-				String ttt = tmp.toLowerCase();
-				if (ttt.endsWith("pack") || ttt.endsWith("map") || ttt.endsWith("xml") || ttt.endsWith("bsh")) {
-					if (!mapnames.contains(tmp)) {
-						files.add(FilePath);
-						mapnames.add(tmp);
-						Log.debug(log, "add: " + tmp);
-					}
-				}
+	File dir = FileFactory.createFile(directory);
+	String[] dirFiles = dir.list();
+	if (dirFiles != null && dirFiles.length > 0) {
+		for (String tmp : dirFiles) {
+		String FilePath = directory + "/" + tmp;
+		String ttt = tmp.toLowerCase();
+		if (ttt.endsWith("pack") || ttt.endsWith("map") || ttt.endsWith("xml") || ttt.endsWith("bsh")) {
+			if (!mapnames.contains(tmp)) {
+			files.add(FilePath);
+			mapnames.add(tmp);
+			Log.debug(log, "add: " + tmp);
 			}
 		}
+		}
+	}
 	}
 
 	public void initMapPacks() {
-		layers.clear();
+	layers.clear();
 
-		mayAddLayer = true;
+	mayAddLayer = true;
 
-		layers.addAll(DEFAULT_LAYER);
+	layers.addAll(DEFAULT_LAYER);
 
-		ArrayList<String> files = new ArrayList<String>();
-		ArrayList<String> mapnames = new ArrayList<String>();
+	ArrayList<String> files = new ArrayList<String>();
+	ArrayList<String> mapnames = new ArrayList<String>();
 
-		Log.debug(log, "dirOwnMaps = " + LocatorSettings.MapPackFolderLocal.getValue());
-		getFiles(files, mapnames, LocatorSettings.MapPackFolderLocal.getValue());
+	Log.debug(log, "dirOwnMaps = " + LocatorSettings.MapPackFolderLocal.getValue());
+	getFiles(files, mapnames, LocatorSettings.MapPackFolderLocal.getValue());
 
-		// if the Folder is changed, the user wants to use only this one
-		// Log.debug(log, "dirDefaultMaps = " + LocatorSettings.MapPackFolder.getDefaultValue());
-		// getFiles(files, mapnames, LocatorSettings.MapPackFolder.getDefaultValue());
+	// if the Folder is changed, the user wants to use only this one
+	// Log.debug(log, "dirDefaultMaps = " + LocatorSettings.MapPackFolder.getDefaultValue());
+	// getFiles(files, mapnames, LocatorSettings.MapPackFolder.getDefaultValue());
 
-		Log.debug(log, "dirGlobalMaps = " + LocatorSettings.MapPackFolder.getValue());
-		getFiles(files, mapnames, LocatorSettings.MapPackFolder.getValue());
+	Log.debug(log, "dirGlobalMaps = " + LocatorSettings.MapPackFolder.getValue());
+	getFiles(files, mapnames, LocatorSettings.MapPackFolder.getValue());
 
-		if (files != null) {
-			if (files.size() > 0) {
-				for (String file : files) {
-					if (FileIO.GetFileExtension(file).equalsIgnoreCase("pack")) {
-						LoadMapPack(file);
-					}
-					if (FileIO.GetFileExtension(file).equalsIgnoreCase("map")) {
-						String Name = FileIO.GetFileNameWithoutExtension(file);
-						Layer layer = new Layer(Type.normal, Name, Name, file);
-						layer.isMapsForge = true;
-						MultiMapDataStore md = new MultiMapDataStore(DataPolicy.RETURN_FIRST);
-						java.io.File f = new java.io.File(FileFactory.createFile(file).getAbsolutePath());
-						MapFile mapFile = new MapFile(f);
+	if (files != null) {
+		if (files.size() > 0) {
+		for (String file : files) {
+			if (FileIO.GetFileExtension(file).equalsIgnoreCase("pack")) {
+			LoadMapPack(file);
+			}
+			if (FileIO.GetFileExtension(file).equalsIgnoreCase("map")) {
+			String Name = FileIO.GetFileNameWithoutExtension(file);
+			Layer layer = new Layer(Type.normal, Name, Name, file);
+			layer.isMapsForge = true;
+			MultiMapDataStore md = new MultiMapDataStore(DataPolicy.RETURN_FIRST);
+			java.io.File f = new java.io.File(FileFactory.createFile(file).getAbsolutePath());
+			MapFile mapFile = new MapFile(f);
 
-						md.addMapDataStore(mapFile, false, false);
-						MapFileInfo mf = mapFile.getMapFileInfo();
-						if (mf != null) {
-							try {
-								md.close();
-								layer.boundingBox = mf.boundingBox;
-								ManagerBase.Manager.layers.add(layer);
-							} catch (Exception e) {
-								Log.err(log, "Get boundingbox " + Name, e);
-							}
-						} else
-							Log.err(log, "Problem open " + Name);
-					}
-					if (FileIO.GetFileExtension(file).equalsIgnoreCase("xml")) {
-						ManagerBase.Manager.LoadTMS(file);
-					}
-					if (FileIO.GetFileExtension(file).equalsIgnoreCase("bsh")) {
-						ManagerBase.Manager.LoadBSH(file);
-					}
+			md.addMapDataStore(mapFile, false, false);
+			MapFileInfo mf = mapFile.getMapFileInfo();
+			if (mf != null) {
+				try {
+				md.close();
+				layer.boundingBox = mf.boundingBox;
+				ManagerBase.Manager.layers.add(layer);
+				} catch (Exception e) {
+				Log.err(log, "Get boundingbox " + Name, e);
 				}
+			} else
+				Log.err(log, "Problem open " + Name);
+			}
+			if (FileIO.GetFileExtension(file).equalsIgnoreCase("xml")) {
+			ManagerBase.Manager.LoadTMS(file);
+			}
+			if (FileIO.GetFileExtension(file).equalsIgnoreCase("bsh")) {
+			ManagerBase.Manager.LoadBSH(file);
 			}
 		}
-		mayAddLayer = false;
+		}
+	}
+	mayAddLayer = false;
 	}
 
 	public ArrayList<Layer> getLayers() {
-		return layers;
+	return layers;
 	}
 
 	// ##########################################################################
@@ -421,115 +421,111 @@ public abstract class ManagerBase {
 	private RenderThemeFuture renderThemeFuture;
 
 	public void setRenderTheme(String themePathAndName, boolean invert) {
-		invertToNightTheme = invert;
-		if (themePathAndName == null) {
-			Log.debug(log, "Use RenderTheme CB_InternalRenderTheme.OSMARENDER");
-			renderTheme = CB_InternalRenderTheme.OSMARENDER;
+	invertToNightTheme = invert;
+	if (themePathAndName == null) {
+		Log.debug(log, "Use RenderTheme CB_InternalRenderTheme.OSMARENDER");
+		renderTheme = CB_InternalRenderTheme.OSMARENDER;
+	} else {
+		Log.debug(log, "Use RenderTheme " + themePathAndName);
+		if (themePathAndName.equals(INTERNAL_CAR_THEME)) {
+		renderTheme = CB_InternalRenderTheme.DAY_CAR_THEME;
 		} else {
-			Log.debug(log, "Use RenderTheme " + themePathAndName);
-			if (themePathAndName.equals(INTERNAL_CAR_THEME)) {
-				renderTheme = CB_InternalRenderTheme.DAY_CAR_THEME;
-			} else {
-				try {
-					File file = FileFactory.createFile(themePathAndName);
-					if (file.exists()) {
-						java.io.File themeFile = new java.io.File(file.getAbsolutePath());
-						renderTheme = new ExternalRenderTheme(themeFile);
-					} else {
-						Log.err(log, themePathAndName + " not found!");
-						renderTheme = CB_InternalRenderTheme.OSMARENDER;
-					}
-				} catch (FileNotFoundException e) {
-					Log.err(log, "Load RenderTheme", "Error loading RenderTheme!", e);
-					renderTheme = CB_InternalRenderTheme.OSMARENDER;
-				}
-			}
-		}
-
 		try {
-			CB_RenderThemeHandler.getRenderTheme(getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), DISPLAY_MODEL, renderTheme);
-		} catch (Exception e) {
-			Log.err(log, "RenderTheme: ", e);
+			File file = FileFactory.createFile(themePathAndName);
+			if (file.exists()) {
+			java.io.File themeFile = new java.io.File(file.getAbsolutePath());
+			renderTheme = new ExternalRenderTheme(themeFile);
+			} else {
+			Log.err(log, themePathAndName + " not found!");
+			renderTheme = CB_InternalRenderTheme.OSMARENDER;
+			}
+		} catch (FileNotFoundException e) {
+			Log.err(log, "Load RenderTheme", "Error loading RenderTheme!", e);
 			renderTheme = CB_InternalRenderTheme.OSMARENDER;
 		}
-
-		if (databaseRenderer == null) {
-			databaseRenderer = new IDatabaseRenderer[PROCESSOR_COUNT];
-		} else {
-			for (int i = 0; i < PROCESSOR_COUNT; i++) {
-				databaseRenderer[i] = null;
-			}
 		}
+	}
 
-		this.renderThemeFuture = new RenderThemeFuture(this.getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), this.renderTheme, this.DISPLAY_MODEL);
-		new Thread(this.renderThemeFuture).start();
+	try {
+		CB_RenderThemeHandler.getRenderTheme(getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), DISPLAY_MODEL, renderTheme);
+	} catch (Exception e) {
+		Log.err(log, "RenderTheme: ", e);
+		renderTheme = CB_InternalRenderTheme.OSMARENDER;
+	}
+
+	if (databaseRenderer == null) {
+		databaseRenderer = new IDatabaseRenderer[PROCESSOR_COUNT];
+	} else {
+		for (int i = 0; i < PROCESSOR_COUNT; i++) {
+		databaseRenderer[i] = null;
+		}
+	}
+
+	this.renderThemeFuture = new RenderThemeFuture(this.getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), this.renderTheme, this.DISPLAY_MODEL);
+	new Thread(this.renderThemeFuture).start();
 
 	}
 
 	public TileGL getMapsforgePixMap(Layer layer, Descriptor desc, int ThreadIndex) {
-		// Log.debug(log, "getTile " + layer.Name + " " + desc);
-		// Mapsforge 0.4.0
-		if ((mapDatabase == null)) {
-			initMapDatabase(layer);
+	// Log.debug(log, "getTile " + layer.Name + " " + desc);
+	// Mapsforge 0.4.0
+	if ((mapDatabase == null)) {
+		initMapDatabase(layer);
+	}
+
+	Tile tile = new Tile(desc.getX(), desc.getY(), (byte) desc.getZoom(), 256);
+
+	RendererJob rendererJob = new RendererJob(tile, mapDatabase[ThreadIndex], this.renderThemeFuture, DISPLAY_MODEL, textScale, false, false);
+
+	TileBasedLabelStore labelStore = null;
+
+	if (databaseRenderer[ThreadIndex] == null) {
+		GL_RenderType RENDERING_TYPE = LocatorSettings.MapsforgeRenderType.getEnumValue();
+
+		switch (RENDERING_TYPE) {
+		case Mapsforge:
+		databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(mapDatabase[ThreadIndex], getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), labelStore);
+		break;
+		case Mixing:
+		databaseRenderer[ThreadIndex] = new MixedDatabaseRenderer(mapDatabase[ThreadIndex], getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), labelStore);
+		break;
+		default:
+		databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(mapDatabase[ThreadIndex], getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), labelStore);
+		break;
 		}
-
-		Tile tile = new Tile(desc.getX(), desc.getY(), (byte) desc.getZoom(), 256);
-
-		if (!mapDatabase[ThreadIndex].supportsTile(tile)) {
-			return null;
-		}
-
-		RendererJob rendererJob = new RendererJob(tile, mapDatabase[ThreadIndex], this.renderThemeFuture, DISPLAY_MODEL, textScale, false, false);
-
-		TileBasedLabelStore labelStore = null;
-
-		if (databaseRenderer[ThreadIndex] == null) {
-			GL_RenderType RENDERING_TYPE = LocatorSettings.MapsforgeRenderType.getEnumValue();
-
-			switch (RENDERING_TYPE) {
-			case Mapsforge:
-				databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(mapDatabase[ThreadIndex], getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), labelStore);
-				break;
-			case Mixing:
-				databaseRenderer[ThreadIndex] = new MixedDatabaseRenderer(mapDatabase[ThreadIndex], getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), labelStore);
-				break;
-			default:
-				databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(mapDatabase[ThreadIndex], getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), labelStore);
-				break;
-			}
-		}
-		if (databaseRenderer[ThreadIndex] == null)
-			return null;
-		try {
-			TileGL tileGL = databaseRenderer[ThreadIndex].execute(rendererJob);
-			return tileGL;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	}
+	if (databaseRenderer[ThreadIndex] == null)
 		return null;
+	try {
+		TileGL tileGL = databaseRenderer[ThreadIndex].execute(rendererJob);
+		return tileGL;
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return null;
 	}
 
 	private void initMapDatabase(Layer layer) {
-		mapFile = FileFactory.createFile(layer.Url);
+	mapFile = FileFactory.createFile(layer.Url);
 
-		java.io.File file = new java.io.File(mapFile.getAbsolutePath());
+	java.io.File file = new java.io.File(mapFile.getAbsolutePath());
 
-		MapFile mapdforgeMapFile = new MapFile(file);
+	MapFile mapdforgeMapFile = new MapFile(file);
 
-		if (mapDatabase == null)
-			mapDatabase = new MultiMapDataStore[PROCESSOR_COUNT];
+	if (mapDatabase == null)
+		mapDatabase = new MultiMapDataStore[PROCESSOR_COUNT];
 
-		for (int i = 0; i < PROCESSOR_COUNT; i++) {
-			if (mapDatabase[i] == null)
-				mapDatabase[i] = new MultiMapDataStore(DataPolicy.RETURN_FIRST);
-			mapDatabase[i].close();
-			mapDatabase[i].addMapDataStore(mapdforgeMapFile, false, false);
-		}
+	for (int i = 0; i < PROCESSOR_COUNT; i++) {
+		if (mapDatabase[i] == null)
+		mapDatabase[i] = new MultiMapDataStore(DataPolicy.RETURN_FIRST);
+		mapDatabase[i].close();
+		mapDatabase[i].addMapDataStore(mapdforgeMapFile, false, false);
+	}
 
-		// MapFileInfo mapFileInfo = mapDatabase[0].getMapFileInfo();
-		// LoadedMapIsFreizeitkarte = mapFileInfo.comment.contains("FZK project");
+	// MapFileInfo mapFileInfo = mapDatabase[0].getMapFileInfo();
+	// LoadedMapIsFreizeitkarte = mapFileInfo.comment.contains("FZK project");
 
-		Log.debug(log, "Open MapsForge Map: " + layer.Name);
+	Log.debug(log, "Open MapsForge Map: " + layer.Name);
 	}
 
 	public abstract GraphicFactory getGraphicFactory(float ScaleFactor);
