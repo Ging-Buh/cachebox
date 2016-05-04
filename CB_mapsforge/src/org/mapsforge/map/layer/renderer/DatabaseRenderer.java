@@ -43,6 +43,7 @@ import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.datastore.MapReadResult;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.datastore.Way;
+import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.rendertheme.RenderCallback;
@@ -54,6 +55,8 @@ import org.mapsforge.map.util.LayerUtil;
  * The DatabaseRenderer renders map tiles by reading from a {@link org.mapsforge.map.datastore.MapDataStore}.
  */
 public class DatabaseRenderer implements RenderCallback {
+
+	static TileCache firstLevelTileCache = new InMemoryTileCache(128);
 
 	private static final Byte DEFAULT_START_ZOOM_LEVEL = (byte) 12;
 	private static final Logger LOGGER = Logger.getLogger(DatabaseRenderer.class.getName());
@@ -70,9 +73,9 @@ public class DatabaseRenderer implements RenderCallback {
 	return result;
 	}
 
-	private final GraphicFactory graphicFactory;
+	protected final GraphicFactory graphicFactory;
 	private final TileBasedLabelStore labelStore;
-	private final MapDataStore mapDatabase;
+	protected final MapDataStore mapDatabase;
 	private final boolean renderLabels;
 	private final TileCache tileCache;
 	private final TileDependencies tileDependencies;
@@ -278,7 +281,7 @@ public class DatabaseRenderer implements RenderCallback {
 	 * @param renderContext the RenderContext
 	 * @return bitmap drawn in single colour.
 	 */
-	private TileBitmap createBackgroundBitmap(RenderContext renderContext) {
+	protected TileBitmap createBackgroundBitmap(RenderContext renderContext) {
 	TileBitmap bitmap = this.graphicFactory.createTileBitmap(renderContext.rendererJob.tile.tileSize, renderContext.rendererJob.hasAlpha);
 	renderContext.canvasRasterer.setCanvasBitmap(bitmap);
 	if (!renderContext.rendererJob.hasAlpha) {
@@ -288,7 +291,7 @@ public class DatabaseRenderer implements RenderCallback {
 
 	}
 
-	private Set<MapElementContainer> processLabels(RenderContext renderContext) {
+	protected Set<MapElementContainer> processLabels(RenderContext renderContext) {
 	// if we are drawing the labels per tile, we need to establish which tile-overlapping
 	// elements need to be drawn.
 
@@ -366,7 +369,7 @@ public class DatabaseRenderer implements RenderCallback {
 	return labelsToDraw;
 	}
 
-	private void processReadMapData(final RenderContext renderContext, MapReadResult mapReadResult) {
+	protected void processReadMapData(final RenderContext renderContext, MapReadResult mapReadResult) {
 	if (mapReadResult == null) {
 		return;
 	}

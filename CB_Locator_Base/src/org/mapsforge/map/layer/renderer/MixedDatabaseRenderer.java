@@ -51,6 +51,7 @@ import CB_UI_Base.graphics.GL_Paint;
 import CB_UI_Base.graphics.GL_Path;
 import CB_UI_Base.graphics.SymbolDrawable;
 import CB_UI_Base.graphics.TextDrawable;
+import CB_UI_Base.graphics.TextDrawableFlipped;
 import CB_UI_Base.graphics.Images.MatrixDrawable;
 import CB_UI_Base.graphics.Images.SortedRotateList;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
@@ -65,8 +66,6 @@ import CB_Utils.Lists.CB_List;
 public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatabaseRenderer {
 
     private static final Logger LOGGER = Logger.getLogger(MixedDatabaseRenderer.class.getName());
-
-    private HashMap<String, CB_List<WayTextContainer>> NameList;
 
     public MixedDatabaseRenderer(MapDataStore mapDatabase, GraphicFactory graphicFactory, TileBasedLabelStore labelStore) {
 	super(mapDatabase, graphicFactory, labelStore);
@@ -133,7 +132,7 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
 	RenderContext renderContext = null;
 	try {
 	    renderContext = new RenderContext(renderTheme, rendererJob, new CanvasRasterer(graphicFactory));
-
+	    List<GL_WayTextContainer> wayNames = new ArrayList<GL_WayTextContainer>();
 	    if (renderBitmap(renderContext)) {
 		TileBitmap bitmap = null;
 
@@ -154,7 +153,7 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
 
 		// store Labels in Rotate List
 		Set<MapElementContainer> labelsToDraw = processLabels(renderContext);
-		drawMapElements(renderContext, rendererJob, labelsToDraw, rotateList);
+		drawMapElements(renderContext, rendererJob, labelsToDraw, rotateList, wayNames);
 
 		if (!rendererJob.labelsOnly && renderContext.renderTheme.hasMapBackgroundOutside()) {
 		    // blank out all areas outside of map
@@ -176,7 +175,7 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
 	}
     }
 
-    void drawMapElements(RenderContext renderContext, RendererJob rendererJob, Set<MapElementContainer> elements, SortedRotateList rotateList) {
+    void drawMapElements(RenderContext renderContext, RendererJob rendererJob, Set<MapElementContainer> elements, SortedRotateList rotateList, List<GL_WayTextContainer> wayNames) {
 	// we have a set of all map elements (needed so we do not draw elements twice),
 	// but we need to draw in priority order as we now allow overlaps. So we
 	// convert into list, then sort, then draw.
@@ -190,7 +189,66 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
 		processSymbolContainer(renderContext, rendererJob, (SymbolContainer) element, rotateList);
 	    } else if (element instanceof PointTextContainer) {
 		processPointTextContainer(rendererJob, (PointTextContainer) element, rotateList);
+	    } else if (element instanceof WayTextContainer) {
+		processWayTextContainer(renderContext, rendererJob, (WayTextContainer) element, rotateList, wayNames);
+	    } else {
+		throw new RuntimeException("Unknown ElementType. " + element.getClass().getName());
 	    }
+	}
+
+	//Finally store flipped way names to rotate list
+	drawWayNames(rotateList, wayNames, rendererJob);
+    }
+
+    private void processWayTextContainer(RenderContext renderContext, RendererJob rendererJob, WayTextContainer element, SortedRotateList rotateList, List<GL_WayTextContainer> wayNames) {
+	GL_WayDecorator.renderText(element.text, element.paintFront, element.paintBack, rendererJob.tile.getOrigin(), element.coordinates, wayNames, rendererJob.tile.tileSize);
+    }
+
+    public void drawWayNames(SortedRotateList rotateList, List<GL_WayTextContainer> wayNames2, RendererJob rendererJob) {
+
+	HashMap<String, CB_List<GL_WayTextContainer>> NameList = new HashMap<String, CB_List<GL_WayTextContainer>>();
+
+	// for (int index = wayNames2.size() - 1; index >= 0; --index)
+	for (int index = 0; index < wayNames2.size(); ++index) {
+	    GL_WayTextContainer wayTextContainer = wayNames2.get(index);
+
+	    if (NameList.containsKey(wayTextContainer.text)) {
+		NameList.get(wayTextContainer.text).add(wayTextContainer);
+	    } else {
+		CB_List<GL_WayTextContainer> list = new CB_List<GL_WayTextContainer>();
+		list.add(wayTextContainer);
+		NameList.put(wayTextContainer.text, list);
+	    }
+	}
+
+	ArrayList<CB_List<GL_WayTextContainer>> values = new ArrayList<CB_List<GL_WayTextContainer>>(NameList.values());
+
+	for (int index = values.size() - 1; index >= 0; --index) {
+	    CB_List<GL_WayTextContainer> sameName = values.get(index);
+
+	    // search the biggest
+	    GL_WayTextContainer biggestWayTextContainer = null;
+	    for (int i = 0, n = sameName.size(); i < n; i++) {
+		GL_WayTextContainer wayTextContainer = sameName.get(i);
+		if (biggestWayTextContainer == null) {
+		    biggestWayTextContainer = wayTextContainer;
+		} else {
+		    if (biggestWayTextContainer.path.getLength() < wayTextContainer.path.getLength()) {
+			biggestWayTextContainer = wayTextContainer;
+		    }
+		}
+
+		biggestWayTextContainer = wayTextContainer;
+
+		float tileSize = rendererJob.tile.tileSize;
+		biggestWayTextContainer.path.flipY(tileSize);
+		GL_Paint fill = new GL_Paint(biggestWayTextContainer.fill);
+		GL_Paint stroke = new GL_Paint(biggestWayTextContainer.stroke);
+		TextDrawableFlipped textDrw = new TextDrawableFlipped(biggestWayTextContainer.text, biggestWayTextContainer.path, tileSize, tileSize, fill, stroke, true);
+		MatrixDrawable maDr = new MatrixDrawable(textDrw, new GL_Matrix(), true);
+		rotateList.add(maDr);
+	    }
+
 	}
     }
 
@@ -229,7 +287,7 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
     private void processSymbolContainer(RenderContext renderContext, RendererJob rendererJob, SymbolContainer symbolContainer, SortedRotateList rotateList) {
 
 	if (symbolContainer.rotate) {
-	    // symbol has an Rotation, draw direct to Tile
+	    // symbol has an own rotation, draw direct to Tile
 	    symbolContainer.draw(renderContext.canvasRasterer.canvas, rendererJob.tile.getOrigin(), renderContext.canvasRasterer.symbolMatrix);
 	    return;
 	}
