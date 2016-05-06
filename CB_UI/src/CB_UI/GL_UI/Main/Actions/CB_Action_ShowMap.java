@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import CB_Locator.LocatorSettings;
 import CB_Locator.Map.Layer;
@@ -123,6 +124,27 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 				MenuItem mi = icm.addItem(menuID++, "", layer.Name); // == friendlyName == FileName !!! ohne Translation
 				mi.setData(layer);
 				mi.setCheckable(true);
+
+				//set icon (Online, Mapsforge or Freizeitkarte) 
+				Sprite sprite = null;
+				switch (layer.getMapType()) {
+				case BITMAP:
+					break;
+				case FREIZEITKARTE:
+					sprite = Sprites.getSprite(IconName.freizeit.name());
+					break;
+				case MAPSFORGE:
+					sprite = Sprites.getSprite(IconName.mapsforge_logo.name());
+					break;
+				case ONLINE:
+					sprite = Sprites.getSprite(IconName.download.name());
+					break;
+				default:
+					break;
+				}
+
+				if (sprite != null)
+					mi.setIcon(new SpriteDrawable(sprite));
 				if (layer == MapView.mapTileLoader.getCurrentLayer()) {
 					mi.setChecked(true);
 				}

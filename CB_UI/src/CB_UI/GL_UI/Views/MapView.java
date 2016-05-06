@@ -1339,7 +1339,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		}
 
 		//preload only if Mapsforge layer selected
-		if (mapTileLoader != null && mapTileLoader.getCurrentLayer() != null && mapTileLoader.getCurrentLayer().isMapsForge) {
+		if (mapTileLoader != null && mapTileLoader.getCurrentLayer() != null && mapTileLoader.getCurrentLayer().isMapsForge()) {
 			if (!MapTileLoderPreInitial) {
 				MapTileLoderPreInitial = true;
 
