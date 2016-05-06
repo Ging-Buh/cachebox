@@ -520,7 +520,7 @@ public abstract class ManagerBase {
 
 	java.io.File file = new java.io.File(mapFile.getAbsolutePath());
 
-	MapFile mapdforgeMapFile = new MapFile(file);
+	MapFile mapforgeMapFile = new MapFile(file);
 
 	if (mapDatabase == null)
 	    mapDatabase = new MultiMapDataStore[PROCESSOR_COUNT];
@@ -528,12 +528,21 @@ public abstract class ManagerBase {
 	for (int i = 0; i < PROCESSOR_COUNT; i++) {
 	    if (mapDatabase[i] == null)
 		mapDatabase[i] = new MultiMapDataStore(DataPolicy.RETURN_FIRST);
-	    mapDatabase[i].close();
-	    mapDatabase[i].addMapDataStore(mapdforgeMapFile, false, false);
-	}
 
-	// MapFileInfo mapFileInfo = mapDatabase[0].getMapFileInfo();
-	// LoadedMapIsFreizeitkarte = mapFileInfo.comment.contains("FZK project");
+	    mapDatabase[i].addMapDataStore(mapforgeMapFile, false, false);
+
+	    //if the layer has more then one map, so add all files
+	    if (layer.hasAdidionalMaps()) {
+		for (Layer addLayer : layer.getAdditionalMaps()) {
+		    File addMapFile = FileFactory.createFile(addLayer.Url);
+		    java.io.File addFile = new java.io.File(addMapFile.getAbsolutePath());
+		    MapFile addMapforgeMapFile = new MapFile(addFile);
+		    mapDatabase[i].addMapDataStore(addMapforgeMapFile, false, false);
+
+		}
+	    }
+
+	}
 
 	Log.debug(log, "Open MapsForge Map: " + layer.Name);
     }

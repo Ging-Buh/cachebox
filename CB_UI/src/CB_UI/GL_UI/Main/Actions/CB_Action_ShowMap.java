@@ -37,6 +37,10 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
@@ -154,7 +158,37 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 		icm.addOnClickListener(new OnClickListener() {
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				Layer layer = (Layer) ((MenuItem) v).getData();
+				final Layer layer = (Layer) ((MenuItem) v).getData();
+
+				// if curent layer a Mapsforge map, it is posible to add the selected Mapsforge map
+				// to the current layer. We ask the User!
+				if (MapView.mapTileLoader.getCurrentLayer().isMapsForge() && layer.isMapsForge()) {
+					GL_MsgBox msgBox = GL_MsgBox.Show("add or change", "Map selection", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, new OnMsgBoxClickListener() {
+
+						@Override
+						public boolean onClick(int which, Object data) {
+
+							switch (which) {
+							case 1:
+								// add the selected map to the curent layer
+								TabMainView.mapView.addToCurrentLayer(layer);
+								break;
+							case 2:
+								// switch curent layer to selected
+								TabMainView.mapView.setCurrentLayer(layer);
+								break;
+							default:
+								// do nothing
+							}
+
+							return true;
+						}
+					});
+					msgBox.button1.setText("add");
+					msgBox.button2.setText("select");
+					return true;
+				}
+
 				TabMainView.mapView.setCurrentLayer(layer);
 				return true;
 			}

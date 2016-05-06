@@ -1,5 +1,7 @@
 package CB_Locator.Map;
 
+import java.util.ArrayList;
+
 import org.mapsforge.core.model.BoundingBox;
 
 public class Layer {
@@ -18,6 +20,7 @@ public class Layer {
     public String Url = ""; // is used as complete path and name for mapsforge files
     private final MapType mapType;
     public BoundingBox boundingBox;
+    private final ArrayList<Layer> additionalMapsforgeLayer = new ArrayList<Layer>();
 
     public Layer(MapType mapType, Type LayerType, String name, String friendlyName, String url) {
 	this.mapType = mapType;
@@ -83,5 +86,23 @@ public class Layer {
 
     public MapType getMapType() {
 	return this.mapType;
+    }
+
+    /*
+     * If this a Mapdforge Layer, it is posible a other Mapsforge layer!
+     */
+    public void addMapsforgeLayer(Layer layer) {
+	if (!this.isMapsForge() || !layer.isMapsForge())
+	    throw new RuntimeException("Can't add this Layer");
+
+	additionalMapsforgeLayer.add(layer);
+    }
+
+    public boolean hasAdidionalMaps() {
+	return additionalMapsforgeLayer != null && additionalMapsforgeLayer.size() > 0;
+    }
+
+    public ArrayList<Layer> getAdditionalMaps() {
+	return additionalMapsforgeLayer;
     }
 }
