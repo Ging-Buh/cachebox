@@ -105,4 +105,16 @@ public class Layer {
     public ArrayList<Layer> getAdditionalMaps() {
 	return additionalMapsforgeLayer;
     }
+
+    public String[] getNames() {
+	String[] ret = new String[additionalMapsforgeLayer.size() + 1];
+
+	ret[0] = this.Name;
+	int idx = 1;
+	for (Layer addLayer : additionalMapsforgeLayer) {
+	    ret[idx++] = addLayer.Name;
+	}
+
+	return ret;
+    }
 }

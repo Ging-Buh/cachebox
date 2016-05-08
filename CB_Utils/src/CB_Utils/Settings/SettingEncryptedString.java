@@ -17,14 +17,18 @@ package CB_Utils.Settings;
 
 import CB_Utils.Config_Core;
 
+/**
+ *  im value intern ist die Einstellung verschl�sselt abgespeichert
+ *  so wie sie dann in die DB geschrieben wird.
+ */
 public class SettingEncryptedString extends SettingLongString {
-	// im value intern ist die Einstellung verschl�sselt abgespeichert
-	// so wie sie dann in die DB geschrieben wird.
+
 	public SettingEncryptedString(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage) {
 		super(name, category, modus, defaultValue, StoreType, usage);
 	}
 
 	// liefert die Einstellung im Klartext
+	@Override
 	public String getValue() {
 		if (value == null)
 			return value;
@@ -38,6 +42,7 @@ public class SettingEncryptedString extends SettingLongString {
 	}
 
 	// liefert den Standardwert im Klartext
+	@Override
 	public String getDefaultValue() {
 		return Config_Core.decrypt(this.defaultValue);
 	}
@@ -49,6 +54,7 @@ public class SettingEncryptedString extends SettingLongString {
 
 	// hiermit kann die Einstellung im Klartext �bergeben werden und wird sofort
 	// verschl�sselt
+	@Override
 	public void setValue(String value) {
 		String encrypted = "";
 		if (value.length() > 0)

@@ -241,9 +241,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
     public void setCurrentLayer(Layer newLayer) {
 	if (newLayer == null) {
-	    LocatorSettings.CurrentMapLayer.setValue("");
+	    LocatorSettings.CurrentMapLayer.setValue(new String[0]);
 	} else {
-	    LocatorSettings.CurrentMapLayer.setValue(newLayer.Name);
+	    LocatorSettings.CurrentMapLayer.setValue(newLayer.getNames());
 	}
 	mapTileLoader.setCurrentLayer(newLayer);
 	mapTileLoader.clearLoadedTiles();

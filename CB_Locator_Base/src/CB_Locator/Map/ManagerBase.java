@@ -131,22 +131,35 @@ public abstract class ManagerBase {
 	return false;
     }
 
-    public Layer getOrAddLayer(String Name, String friendlyName, String url) {
-	if (Name == "OSM" || Name == "")
-	    Name = "Mapnik";
+    public Layer getOrAddLayer(String[] Name, String friendlyName, String url) {
+	if (Name[0] == "OSM" || Name[0] == "")
+	    Name[0] = "Mapnik";
 
 	for (Layer layer : layers) {
-	    if (layer.Name.equalsIgnoreCase(Name))
-		return layer;
+	    if (layer.Name.equalsIgnoreCase(Name[0]))
+
+		//add aditional
+		if (Name.length > 1) {
+		    for (int i = 1; i < Name.length; i++) {
+			for (Layer la : layers) {
+			    if (la.Name.equalsIgnoreCase(Name[i])) {
+				layer.addMapsforgeLayer(la);
+			    }
+			}
+
+		    }
+		}
+
+	    return layer;
 	}
 
 	if (mayAddLayer) {
-	    Layer newLayer = new Layer(MapType.ONLINE, Type.normal, Name, Name, url);
+	    Layer newLayer = new Layer(MapType.ONLINE, Type.normal, Name[0], Name[0], url);
 	    layers.add(newLayer);
 	    return newLayer;
 	} else {
 	    if (layers != null && layers.size() > 0) {
-		LocatorSettings.CurrentMapLayer.setValue(layers.get(0).Name);
+		LocatorSettings.CurrentMapLayer.setValue(layers.get(0).getNames());
 		return layers.get(0); // ist wahrscheinlich Mapnik und sollte immer tun
 	    }
 	    return null;
