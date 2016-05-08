@@ -526,8 +526,11 @@ public abstract class ManagerBase {
 	    mapDatabase = new MultiMapDataStore[PROCESSOR_COUNT];
 
 	for (int i = 0; i < PROCESSOR_COUNT; i++) {
-	    if (mapDatabase[i] == null)
-		mapDatabase[i] = new MultiMapDataStore(DataPolicy.RETURN_FIRST);
+	    if (mapDatabase[i] == null) {
+		mapDatabase[i] = new MultiMapDataStore(DataPolicy.DEDUPLICATE);
+	    } else {
+		mapDatabase[i].clearMapDataStore();
+	    }
 
 	    mapDatabase[i].addMapDataStore(mapforgeMapFile, false, false);
 

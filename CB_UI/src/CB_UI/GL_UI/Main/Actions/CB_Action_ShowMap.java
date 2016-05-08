@@ -169,11 +169,11 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 						public boolean onClick(int which, Object data) {
 
 							switch (which) {
-							case 1:
+							case GL_MsgBox.BUTTON_POSITIVE:
 								// add the selected map to the curent layer
 								TabMainView.mapView.addToCurrentLayer(layer);
 								break;
-							case 2:
+							case GL_MsgBox.BUTTON_NEUTRAL:
 								// switch curent layer to selected
 								TabMainView.mapView.setCurrentLayer(layer);
 								break;

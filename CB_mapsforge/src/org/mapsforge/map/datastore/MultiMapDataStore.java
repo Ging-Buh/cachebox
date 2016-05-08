@@ -37,185 +37,189 @@ import org.mapsforge.core.model.Tile;
  */
 public class MultiMapDataStore extends MapDataStore {
 
-	public enum DataPolicy {
-		RETURN_FIRST, // return the first set of data
-		RETURN_ALL, // return all data from databases
-		DEDUPLICATE // return all data but eliminate duplicates
+    public enum DataPolicy {
+	RETURN_FIRST, // return the first set of data
+	RETURN_ALL, // return all data from databases
+	DEDUPLICATE // return all data but eliminate duplicates
+    }
+
+    private BoundingBox boundingBox;
+    private final DataPolicy dataPolicy;
+    private final List<MapDataStore> mapDatabases;
+    private LatLong startPosition;
+    private byte startZoomLevel;
+
+    public MultiMapDataStore(DataPolicy dataPolicy) {
+	this.dataPolicy = dataPolicy;
+	this.mapDatabases = new ArrayList<MapDataStore>();
+    }
+
+    /**
+     * adds another mapDataStore
+     * @param mapDataStore the mapDataStore to add
+     * @param useStartZoomLevel if true, use the start zoom level of this mapDataStore as the start zoom level
+     * @param useStartPosition if true, use the start position of this mapDataStore as the start position
+     */
+
+    public void addMapDataStore(MapDataStore mapDataStore, boolean useStartZoomLevel, boolean useStartPosition) {
+	if (this.mapDatabases.contains(mapDataStore)) {
+	    throw new IllegalArgumentException("Duplicate map database");
 	}
-
-	private BoundingBox boundingBox;
-	private final DataPolicy dataPolicy;
-	private final List<MapDataStore> mapDatabases;
-	private LatLong startPosition;
-	private byte startZoomLevel;
-
-	public MultiMapDataStore(DataPolicy dataPolicy) {
-		this.dataPolicy = dataPolicy;
-		this.mapDatabases = new ArrayList<MapDataStore>();
+	this.mapDatabases.add(mapDataStore);
+	if (useStartZoomLevel) {
+	    this.startZoomLevel = mapDataStore.startZoomLevel();
 	}
+	if (useStartPosition) {
+	    this.startPosition = mapDataStore.startPosition();
+	}
+	if (null == this.boundingBox) {
+	    this.boundingBox = mapDataStore.boundingBox();
+	} else {
+	    this.boundingBox = this.boundingBox.extendBoundingBox(mapDataStore.boundingBox());
+	}
+    }
 
-	/**
-	 * adds another mapDataStore
-	 * @param mapDataStore the mapDataStore to add
-	 * @param useStartZoomLevel if true, use the start zoom level of this mapDataStore as the start zoom level
-	 * @param useStartPosition if true, use the start position of this mapDataStore as the start position
-	 */
+    @Override
+    public BoundingBox boundingBox() {
+	return this.boundingBox;
+    }
 
-	public void addMapDataStore(MapDataStore mapDataStore, boolean useStartZoomLevel, boolean useStartPosition) {
-		if (this.mapDatabases.contains(mapDataStore)) {
-			throw new IllegalArgumentException("Duplicate map database");
+    @Override
+    public void close() {
+	for (MapDataStore mdb : mapDatabases) {
+	    mdb.close();
+	}
+    }
+
+    /**
+     * Returns the timestamp of the data used to render a specific tile.
+     * <p>
+     * If the tile uses data from multiple data stores, the most recent timestamp is returned.
+     *
+     * @param tile
+     *            A tile.
+     * @return the timestamp of the data used to render the tile
+     */
+    @Override
+    public long getDataTimestamp(Tile tile) {
+	switch (this.dataPolicy) {
+	case RETURN_FIRST:
+	    for (MapDataStore mdb : mapDatabases) {
+		if (mdb.supportsTile(tile)) {
+		    return mdb.getDataTimestamp(tile);
 		}
-		this.mapDatabases.add(mapDataStore);
-		if (useStartZoomLevel) {
-			this.startZoomLevel = mapDataStore.startZoomLevel();
+	    }
+	    return 0;
+	case RETURN_ALL:
+	case DEDUPLICATE:
+	    long result = 0;
+	    for (MapDataStore mdb : mapDatabases) {
+		if (mdb.supportsTile(tile)) {
+		    result = Math.max(result, mdb.getDataTimestamp(tile));
 		}
-		if (useStartPosition) {
-			this.startPosition = mapDataStore.startPosition();
+	    }
+	    return result;
+	}
+	throw new IllegalStateException("Invalid data policy for multi map database");
+    }
+
+    @Override
+    public MapReadResult readMapData(Tile tile) {
+	switch (this.dataPolicy) {
+	case RETURN_FIRST:
+	    for (MapDataStore mdb : mapDatabases) {
+		if (mdb.supportsTile(tile)) {
+		    return mdb.readMapData(tile);
 		}
-		if (null == this.boundingBox) {
-			this.boundingBox = mapDataStore.boundingBox();
+	    }
+	    return null;
+	case RETURN_ALL:
+	    return readMapData(tile, false);
+	case DEDUPLICATE:
+	    return readMapData(tile, true);
+	}
+	throw new IllegalStateException("Invalid data policy for multi map database");
+    }
+
+    private MapReadResult readMapData(Tile tile, boolean deduplicate) {
+	MapReadResult mapReadResult = new MapReadResult();
+	boolean first = true;
+	for (MapDataStore mdb : mapDatabases) {
+	    if (mdb.supportsTile(tile)) {
+		MapReadResult result = mdb.readMapData(tile);
+		if (result == null) {
+		    continue;
+		}
+		boolean isWater = mapReadResult.isWater & result.isWater;
+		mapReadResult.isWater = isWater;
+
+		if (first) {
+		    mapReadResult.ways.addAll(result.ways);
 		} else {
-			this.boundingBox = this.boundingBox.extendBoundingBox(mapDataStore.boundingBox());
-		}
-	}
-
-	@Override
-	public BoundingBox boundingBox() {
-		return this.boundingBox;
-	}
-
-	@Override
-	public void close() {
-		for (MapDataStore mdb : mapDatabases) {
-			mdb.close();
-		}
-	}
-
-	/**
-	 * Returns the timestamp of the data used to render a specific tile.
-	 * <p>
-	 * If the tile uses data from multiple data stores, the most recent timestamp is returned.
-	 *
-	 * @param tile
-	 *            A tile.
-	 * @return the timestamp of the data used to render the tile
-	 */
-	@Override
-	public long getDataTimestamp(Tile tile) {
-		switch (this.dataPolicy) {
-		case RETURN_FIRST:
-			for (MapDataStore mdb : mapDatabases) {
-				if (mdb.supportsTile(tile)) {
-					return mdb.getDataTimestamp(tile);
-				}
+		    if (deduplicate) {
+			for (Way way : result.ways) {
+			    if (!mapReadResult.ways.contains(way)) {
+				mapReadResult.ways.add(way);
+			    }
 			}
-			return 0;
-		case RETURN_ALL:
-		case DEDUPLICATE:
-			long result = 0;
-			for (MapDataStore mdb : mapDatabases) {
-				if (mdb.supportsTile(tile)) {
-					result = Math.max(result, mdb.getDataTimestamp(tile));
-				}
+		    } else {
+			mapReadResult.ways.addAll(result.ways);
+		    }
+		}
+		if (first) {
+		    mapReadResult.pointOfInterests.addAll(result.pointOfInterests);
+		} else {
+		    if (deduplicate) {
+			for (PointOfInterest poi : result.pointOfInterests) {
+			    if (!mapReadResult.pointOfInterests.contains(poi)) {
+				mapReadResult.pointOfInterests.add(poi);
+			    }
 			}
-			return result;
+		    } else {
+			mapReadResult.pointOfInterests.addAll(result.pointOfInterests);
+		    }
 		}
-		throw new IllegalStateException("Invalid data policy for multi map database");
+		first = false;
+	    }
 	}
+	return mapReadResult;
+    }
 
-	@Override
-	public MapReadResult readMapData(Tile tile) {
-		switch (this.dataPolicy) {
-		case RETURN_FIRST:
-			for (MapDataStore mdb : mapDatabases) {
-				if (mdb.supportsTile(tile)) {
-					return mdb.readMapData(tile);
-				}
-			}
-			return null;
-		case RETURN_ALL:
-			return readMapData(tile, false);
-		case DEDUPLICATE:
-			return readMapData(tile, true);
-		}
-		throw new IllegalStateException("Invalid data policy for multi map database");
+    public void setStartPosition(LatLong startPosition) {
+	this.startPosition = startPosition;
+    }
+
+    public void setStartZoomLevel(byte startZoomLevel) {
+	this.startZoomLevel = startZoomLevel;
+    }
+
+    @Override
+    public LatLong startPosition() {
+	if (null != this.startPosition) {
+	    return this.startPosition;
 	}
-
-	private MapReadResult readMapData(Tile tile, boolean deduplicate) {
-		MapReadResult mapReadResult = new MapReadResult();
-		boolean first = true;
-		for (MapDataStore mdb : mapDatabases) {
-			if (mdb.supportsTile(tile)) {
-				MapReadResult result = mdb.readMapData(tile);
-				if (result == null) {
-					continue;
-				}
-				boolean isWater = mapReadResult.isWater & result.isWater;
-				mapReadResult.isWater = isWater;
-
-				if (first) {
-					mapReadResult.ways.addAll(result.ways);
-				} else {
-					if (deduplicate) {
-						for (Way way : result.ways) {
-							if (!mapReadResult.ways.contains(way)) {
-								mapReadResult.ways.add(way);
-							}
-						}
-					} else {
-						mapReadResult.ways.addAll(result.ways);
-					}
-				}
-				if (first) {
-					mapReadResult.pointOfInterests.addAll(result.pointOfInterests);
-				} else {
-					if (deduplicate) {
-						for (PointOfInterest poi : result.pointOfInterests) {
-							if (!mapReadResult.pointOfInterests.contains(poi)) {
-								mapReadResult.pointOfInterests.add(poi);
-							}
-						}
-					} else {
-						mapReadResult.pointOfInterests.addAll(result.pointOfInterests);
-					}
-				}
-				first = false;
-			}
-		}
-		return mapReadResult;
+	if (null != this.boundingBox) {
+	    return this.boundingBox.getCenterPoint();
 	}
+	return null;
+    }
 
-	public void setStartPosition(LatLong startPosition) {
-		this.startPosition = startPosition;
-	}
+    @Override
+    public Byte startZoomLevel() {
+	return startZoomLevel;
+    }
 
-	public void setStartZoomLevel(byte startZoomLevel) {
-		this.startZoomLevel = startZoomLevel;
+    @Override
+    public boolean supportsTile(Tile tile) {
+	for (MapDataStore mdb : mapDatabases) {
+	    if (mdb.supportsTile(tile)) {
+		return true;
+	    }
 	}
+	return false;
+    }
 
-	@Override
-	public LatLong startPosition() {
-		if (null != this.startPosition) {
-			return this.startPosition;
-		}
-		if (null != this.boundingBox) {
-			return this.boundingBox.getCenterPoint();
-		}
-		return null;
-	}
-
-	@Override
-	public Byte startZoomLevel() {
-		return startZoomLevel;
-	}
-
-	@Override
-	public boolean supportsTile(Tile tile) {
-		for (MapDataStore mdb : mapDatabases) {
-			if (mdb.supportsTile(tile)) {
-				return true;
-			}
-		}
-		return false;
-	}
+    public void clearMapDataStore() {
+	mapDatabases.clear();
+    }
 }
