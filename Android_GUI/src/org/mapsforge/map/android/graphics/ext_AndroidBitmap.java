@@ -33,46 +33,22 @@ public class ext_AndroidBitmap extends AndroidBitmap implements ext_Bitmap, Tile
 
 	protected final BitmapDrawable GL_image;
 
-	// @Override
-	// public void compress(OutputStream outputStream) throws IOException
-	// {
-	//
-	// ActivityManager am = (ActivityManager) main.mainActivity.getSystemService(Context.ACTIVITY_SERVICE);
-	// int memoryClass = am.getMemoryClass();
-	//
-	// if (memoryClass > 60)
-	// {
-	// if (!this.bitmap.compress(CompressFormat.PNG, 0, outputStream))
-	// {
-	// throw new IOException("Failed to write bitmap to output stream");
-	// }
-	// }
-	// else
-	// {
-	// if (!this.bitmap.compress(CompressFormat.JPEG, 60, outputStream))
-	// {
-	// throw new IOException("Failed to write bitmap to output stream");
-	// }
-	// }
-	//
-	// }
-
 	ext_AndroidBitmap(int width, int height) {
-		super(width, height, Config.RGB_565);
-		GL_image = null;
-		instCount++;
+	super(width, height, Config.RGB_565);
+	GL_image = null;
+	instCount++;
 	}
 
 	protected ext_AndroidBitmap() {
-		super(1, 1, Config.ALPHA_8);
-		this.GL_image = null;
-		this.bitmap = null;
+	super(1, 1, Config.ALPHA_8);
+	this.GL_image = null;
+	this.bitmap = null;
 	}
 
 	@Override
 	public void recycle() {
-		instCount++;
-		this.destroyBitmap();
+	instCount++;
+	this.destroyBitmap();
 	}
 
 	@Override
@@ -87,14 +63,38 @@ public class ext_AndroidBitmap extends AndroidBitmap implements ext_Bitmap, Tile
 
 	@Override
 	public BitmapDrawable getGlBmpHandle() {
-		return GL_image;
+	return GL_image;
 	}
 
 	@Override
 	public Texture getTexture() {
-		if (GL_image == null)
-			return null;
-		return GL_image.getTexture();
+	if (GL_image == null)
+		return null;
+	return GL_image.getTexture();
+	}
+
+	@Override
+	public long getTimestamp() {
+	// TODO Auto-generated method stub
+	return 0;
+	}
+
+	@Override
+	public boolean isExpired() {
+	// TODO Auto-generated method stub
+	return false;
+	}
+
+	@Override
+	public void setExpiration(long expiration) {
+	// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setTimestamp(long timestamp) {
+	// TODO Auto-generated method stub
+
 	}
 
 }

@@ -48,7 +48,7 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
-public final class AndroidGraphicFactory implements GraphicFactory {
+public class AndroidGraphicFactory implements GraphicFactory {
 
 	// turn on for bitmap accounting
 	public static final boolean DEBUG_BITMAPS = false;
@@ -71,235 +71,232 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	private static final String PREFIX_ASSETS = "assets:";
 
 	public static android.graphics.Bitmap convertToAndroidBitmap(Drawable drawable) {
-		android.graphics.Bitmap bitmap;
-		if (drawable instanceof BitmapDrawable) {
-			bitmap = ((BitmapDrawable) drawable).getBitmap();
-		} else {
-			int width = drawable.getIntrinsicWidth();
-			int height = drawable.getIntrinsicHeight();
-			bitmap = android.graphics.Bitmap.createBitmap(width, height, AndroidGraphicFactory.TRANSPARENT_BITMAP);
-			android.graphics.Canvas canvas = new android.graphics.Canvas(bitmap);
+	android.graphics.Bitmap bitmap;
+	if (drawable instanceof BitmapDrawable) {
+		bitmap = ((BitmapDrawable) drawable).getBitmap();
+	} else {
+		int width = drawable.getIntrinsicWidth();
+		int height = drawable.getIntrinsicHeight();
+		bitmap = android.graphics.Bitmap.createBitmap(width, height, AndroidGraphicFactory.TRANSPARENT_BITMAP);
+		android.graphics.Canvas canvas = new android.graphics.Canvas(bitmap);
 
-			Rect rect = drawable.getBounds();
-			drawable.setBounds(0, 0, width, height);
-			drawable.draw(canvas);
-			drawable.setBounds(rect);
-		}
+		Rect rect = drawable.getBounds();
+		drawable.setBounds(0, 0, width, height);
+		drawable.draw(canvas);
+		drawable.setBounds(rect);
+	}
 
-		return bitmap;
+	return bitmap;
 	}
 
 	public static Bitmap convertToBitmap(Drawable drawable) {
-		return new AndroidBitmap(AndroidGraphicFactory.convertToAndroidBitmap(drawable));
+	return new AndroidBitmap(AndroidGraphicFactory.convertToAndroidBitmap(drawable));
 	}
 
 	public static Bitmap convertToBitmap(Drawable drawable, android.graphics.Paint paint) {
-		android.graphics.Bitmap immutable = AndroidGraphicFactory.convertToAndroidBitmap(drawable);
-		android.graphics.Bitmap mutable = immutable.copy(AndroidGraphicFactory.TRANSPARENT_BITMAP, true);
-		android.graphics.Canvas canvas = new android.graphics.Canvas(mutable);
+	android.graphics.Bitmap immutable = AndroidGraphicFactory.convertToAndroidBitmap(drawable);
+	android.graphics.Bitmap mutable = immutable.copy(AndroidGraphicFactory.TRANSPARENT_BITMAP, true);
+	android.graphics.Canvas canvas = new android.graphics.Canvas(mutable);
 
-		canvas.drawBitmap(mutable, 0, 0, paint);
+	canvas.drawBitmap(mutable, 0, 0, paint);
 
-		return new AndroidBitmap(mutable);
+	return new AndroidBitmap(mutable);
 	}
 
 	public static Canvas createGraphicContext(android.graphics.Canvas canvas) {
-		return new AndroidCanvas(canvas);
+	return new AndroidCanvas(canvas);
 	}
 
 	public static void createInstance(Application app) {
-		INSTANCE = new AndroidGraphicFactory(app);
+	INSTANCE = new AndroidGraphicFactory(app);
 	}
 
 	/**
 	 * return the byte usage per pixel of a bitmap based on its configuration.
 	 */
 	public static int getBytesPerPixel(Config config) {
-		if (config == Config.ARGB_8888) {
-			return 4;
-		} else if (config == Config.RGB_565) {
-			return 2;
-		} else if (config == Config.ARGB_4444) {
-			return 2;
-		} else if (config == Config.ALPHA_8) {
-			return 1;
-		}
+	if (config == Config.ARGB_8888) {
+		return 4;
+	} else if (config == Config.RGB_565) {
+		return 2;
+	} else if (config == Config.ARGB_4444) {
+		return 2;
+	} else if (config == Config.ALPHA_8) {
 		return 1;
+	}
+	return 1;
 	}
 
 	public static android.graphics.Canvas getCanvas(Canvas canvas) {
-		return ((AndroidCanvas) canvas).canvas;
+	return ((AndroidCanvas) canvas).canvas;
 	}
 
 	public static android.graphics.Paint getPaint(Paint paint) {
-		return ((AndroidPaint) paint).paint;
+	return ((AndroidPaint) paint).paint;
 	}
 
 	public static android.graphics.Bitmap getBitmap(Bitmap bitmap) {
-		return ((AndroidBitmap) bitmap).bitmap;
+	return ((AndroidBitmap) bitmap).bitmap;
 	}
 
 	static int getColor(Color color) {
-		switch (color) {
-			case BLACK:
-				return android.graphics.Color.BLACK;
-			case BLUE:
-				return android.graphics.Color.BLUE;
-			case GREEN:
-				return android.graphics.Color.GREEN;
-			case RED:
-				return android.graphics.Color.RED;
-			case TRANSPARENT:
-				return android.graphics.Color.TRANSPARENT;
-			case WHITE:
-				return android.graphics.Color.WHITE;
-		}
+	switch (color) {
+	case BLACK:
+		return android.graphics.Color.BLACK;
+	case BLUE:
+		return android.graphics.Color.BLUE;
+	case GREEN:
+		return android.graphics.Color.GREEN;
+	case RED:
+		return android.graphics.Color.RED;
+	case TRANSPARENT:
+		return android.graphics.Color.TRANSPARENT;
+	case WHITE:
+		return android.graphics.Color.WHITE;
+	}
 
-		throw new IllegalArgumentException("unknown color: " + color);
+	throw new IllegalArgumentException("unknown color: " + color);
 	}
 
 	static android.graphics.Matrix getMatrix(Matrix matrix) {
-		return ((AndroidMatrix) matrix).matrix;
+	return ((AndroidMatrix) matrix).matrix;
 	}
 
 	static android.graphics.Path getPath(Path path) {
-		return ((AndroidPath) path).path;
+	return ((AndroidPath) path).path;
 	}
 
 	private final Application application;
 
-	private AndroidGraphicFactory(Application app) {
-		this.application = app;
-		DisplayMetrics metrics = new DisplayMetrics();
-		((WindowManager) app.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
-		// the scaledDensity is an approximate scale factor for the device
-		DisplayModel.setDeviceScaleFactor(metrics.scaledDensity);
+	protected AndroidGraphicFactory(Application app) {
+	this.application = app;
+	DisplayMetrics metrics = new DisplayMetrics();
+	((WindowManager) app.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
+	// the scaledDensity is an approximate scale factor for the device
+	DisplayModel.setDeviceScaleFactor(metrics.scaledDensity);
 	}
 
 	public static void clearResourceFileCache() {
-		AndroidSvgBitmapStore.clear();
+	AndroidSvgBitmapStore.clear();
 	}
 
 	public static void clearResourceMemoryCache() {
-		AndroidResourceBitmap.clearResourceBitmaps();
+	AndroidResourceBitmap.clearResourceBitmaps();
 	}
 
 	@Override
 	public Bitmap createBitmap(int width, int height) {
-		return new AndroidBitmap(width, height, TRANSPARENT_BITMAP);
+	return new AndroidBitmap(width, height, TRANSPARENT_BITMAP);
 	}
 
 	@Override
 	public Bitmap createBitmap(int width, int height, boolean isTransparent) {
-		if (isTransparent) {
-			return new AndroidBitmap(width, height, TRANSPARENT_BITMAP);
-		}
-		return new AndroidBitmap(width, height, NON_TRANSPARENT_BITMAP);
+	if (isTransparent) {
+		return new AndroidBitmap(width, height, TRANSPARENT_BITMAP);
+	}
+	return new AndroidBitmap(width, height, NON_TRANSPARENT_BITMAP);
 	}
 
 	@Override
 	public Canvas createCanvas() {
-		return new AndroidCanvas();
+	return new AndroidCanvas();
 	}
 
 	@Override
 	public int createColor(Color color) {
-		return getColor(color);
+	return getColor(color);
 	}
 
 	@Override
 	public int createColor(int alpha, int red, int green, int blue) {
-		return android.graphics.Color.argb(alpha, red, green, blue);
+	return android.graphics.Color.argb(alpha, red, green, blue);
 	}
 
 	@Override
 	public Matrix createMatrix() {
-		return new AndroidMatrix();
+	return new AndroidMatrix();
 	}
 
 	@Override
 	public Paint createPaint() {
-		return new AndroidPaint();
+	return new AndroidPaint();
 	}
 
 	@Override
 	public Paint createPaint(Paint paint) {
-		return new AndroidPaint(paint);
+	return new AndroidPaint(paint);
 	}
-
 
 	@Override
 	public Path createPath() {
-		return new AndroidPath();
+	return new AndroidPath();
 	}
 
 	@Override
-	public PointTextContainer createPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
-	                                                   SymbolContainer symbolContainer, Position position, int maxTextWidth) {
-		return new AndroidPointTextContainer(xy, display, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
+	public PointTextContainer createPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack, SymbolContainer symbolContainer, Position position, int maxTextWidth) {
+	return new AndroidPointTextContainer(xy, display, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
 	}
 
 	@Override
 	public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException {
-		return new AndroidResourceBitmap(inputStream, hash);
+	return new AndroidResourceBitmap(inputStream, hash);
 	}
 
 	@Override
 	public TileBitmap createTileBitmap(InputStream inputStream, int tileSize, boolean isTransparent) {
-		return new AndroidTileBitmap(inputStream, tileSize, isTransparent);
+	return new AndroidTileBitmap(inputStream, tileSize, isTransparent);
 	}
 
 	@Override
 	public TileBitmap createTileBitmap(int tileSize, boolean isTransparent) {
-		return new AndroidTileBitmap(tileSize, isTransparent);
+	return new AndroidTileBitmap(tileSize, isTransparent);
 	}
-
 
 	/*
 	 * Android method accessible only via Context.
 	 */
 	public boolean deleteFile(String name) {
-		return this.application.deleteFile(name);
+	return this.application.deleteFile(name);
 	}
 
 	/*
 	 * Android method accessible only via Context.
 	 */
 	public String[] fileList() {
-		return this.application.fileList();
+	return this.application.fileList();
 	}
 
 	/*
 	 * Android method accessible only via Context.
 	 */
-	public FileInputStream openFileInput (String name) throws FileNotFoundException {
-		return this.application.openFileInput(name);
+	public FileInputStream openFileInput(String name) throws FileNotFoundException {
+	return this.application.openFileInput(name);
 	}
 
 	/*
 	 * Android method accessible only via Context.
 	 */
-	public FileOutputStream openFileOutput (String name, int mode) throws FileNotFoundException {
-		return this.application.openFileOutput(name, mode);
+	public FileOutputStream openFileOutput(String name, int mode) throws FileNotFoundException {
+	return this.application.openFileOutput(name, mode);
 	}
 
 	@Override
 	public InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException {
-		// this allows loading of resource bitmaps from the Andorid assets folder
-		if (src.startsWith(PREFIX_ASSETS)) {
-			String pathName = (TextUtils.isEmpty(relativePathPrefix) ? "" : relativePathPrefix) + src.substring(PREFIX_ASSETS.length());
-			InputStream inputStream = this.application.getAssets().open(pathName);
-			if (inputStream == null) {
-				throw new FileNotFoundException("resource not found: " + pathName);
-			}
-			return inputStream;
+	// this allows loading of resource bitmaps from the Andorid assets folder
+	if (src.startsWith(PREFIX_ASSETS)) {
+		String pathName = (TextUtils.isEmpty(relativePathPrefix) ? "" : relativePathPrefix) + src.substring(PREFIX_ASSETS.length());
+		InputStream inputStream = this.application.getAssets().open(pathName);
+		if (inputStream == null) {
+		throw new FileNotFoundException("resource not found: " + pathName);
 		}
-		return null;
+		return inputStream;
+	}
+	return null;
 	}
 
 	@Override
 	public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int width, int height, int percent, int hash) throws IOException {
-		return new AndroidSvgBitmap(inputStream, hash, scaleFactor, width, height, percent);
+	return new AndroidSvgBitmap(inputStream, hash, scaleFactor, width, height, percent);
 	}
 
 }
