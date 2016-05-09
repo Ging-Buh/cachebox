@@ -211,9 +211,12 @@ class AndroidPaint implements Paint {
 	this.paint.setColor(color);
 	}
 
+	float[] strokeDasharray;
+
 	@Override
 	public void setDashPathEffect(float[] strokeDasharray) {
-	PathEffect pathEffect = new DashPathEffect(strokeDasharray, 0);
+	this.strokeDasharray = strokeDasharray;
+	PathEffect pathEffect = new DashPathEffect(this.strokeDasharray, 0);
 	this.paint.setPathEffect(pathEffect);
 	}
 
@@ -256,31 +259,51 @@ class AndroidPaint implements Paint {
 
 	@Override
 	public Cap getCap() {
-	return getMampsforgeCap(this.cap);
+	switch (this.paint.getStrokeCap()) {
+	case BUTT:
+		return Cap.BUTT;
+	case ROUND:
+		return Cap.ROUND;
+	case SQUARE:
+		return Cap.SQUARE;
+	default:
+		return Cap.BUTT;
+	}
+
 	}
 
 	@Override
 	public int getColor() {
-	return this.color.getRGB();
+	return this.paint.getColor();
 	}
 
 	@Override
 	public Style getStyle() {
-	return this.style;
+	switch (this.paint.getStyle()) {
+	case FILL:
+		return Style.FILL;
+	case FILL_AND_STROKE:
+		return Style.FILL;
+	case STROKE:
+		return Style.STROKE;
+	default:
+		return Style.STROKE;
 	}
-
-	@Override
-	public float getStrokeWidth() {
-	return this.strokeWidth;
 	}
 
 	@Override
 	public float getTextSize() {
-	return this.textSize;
+	return this.paint.getTextSize();
+	}
+
+	@Override
+	public float getStrokeWidth() {
+	return this.paint.getTextSize();
 	}
 
 	@Override
 	public float[] getDashArray() {
 	return this.strokeDasharray;
 	}
+
 }
