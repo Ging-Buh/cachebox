@@ -96,7 +96,8 @@ public abstract class ManagerBase {
 
     public ManagerBase(DisplayModel displaymodel) {
 	Manager = this;
-	PROCESSOR_COUNT = 1; // = Runtime.getRuntime().availableProcessors();
+	//PROCESSOR_COUNT = 1; // = Runtime.getRuntime().availableProcessors();
+	PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
 	DISPLAY_MODEL = displaymodel;
 
 	LocatorSettings.CurrentMapLayer.addChangedEventListener(new IChanged() {
