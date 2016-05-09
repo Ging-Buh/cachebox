@@ -252,8 +252,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     public void addToCurrentLayer(Layer layer) {
 	Layer curentLayer = mapTileLoader.getCurrentLayer();
 	curentLayer.addMapsforgeLayer(layer);
-	mapTileLoader.setCurrentLayer(curentLayer);
-	mapTileLoader.clearLoadedTiles();
+	setCurrentLayer(curentLayer);
     }
 
     public void SetCurrentOverlayLayer(Layer newLayer) {

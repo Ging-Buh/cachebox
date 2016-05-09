@@ -114,7 +114,24 @@ public class Layer {
 	for (Layer addLayer : additionalMapsforgeLayer) {
 	    ret[idx++] = addLayer.Name;
 	}
-
 	return ret;
     }
+
+    @Override
+    public String toString() {
+	StringBuilder sb = new StringBuilder();
+	sb.append("Layer [");
+	sb.append(this.Name);
+	sb.append("] additional Layer:");
+
+	if (additionalMapsforgeLayer == null || additionalMapsforgeLayer.isEmpty()) {
+	    sb.append("--");
+	} else {
+	    for (Layer addLayer : additionalMapsforgeLayer) {
+		sb.append(addLayer.Name + ", ");
+	    }
+	}
+	return sb.toString();
+    }
+
 }

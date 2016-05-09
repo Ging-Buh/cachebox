@@ -136,7 +136,7 @@ public abstract class ManagerBase {
 	    Name[0] = "Mapnik";
 
 	for (Layer layer : layers) {
-	    if (layer.Name.equalsIgnoreCase(Name[0]))
+	    if (layer.Name.equalsIgnoreCase(Name[0])) {
 
 		//add aditional
 		if (Name.length > 1) {
@@ -146,11 +146,10 @@ public abstract class ManagerBase {
 				layer.addMapsforgeLayer(la);
 			    }
 			}
-
 		    }
 		}
-
-	    return layer;
+		return layer;
+	    }
 	}
 
 	if (mayAddLayer) {
