@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,31 +18,31 @@ package org.mapsforge.map.layer.renderer;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.rendertheme.XmlRenderTheme;
-
-import CB_Utils.fileProvider.File;
+import org.mapsforge.map.datastore.MapDataStore;
+import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 
 public class RendererJob extends Job {
 	public final DisplayModel displayModel;
-	public final File mapFile;
+	public boolean labelsOnly;
+	public final MapDataStore mapDataStore;
+	public final RenderThemeFuture renderThemeFuture;
 	public final float textScale;
-	public final XmlRenderTheme xmlRenderTheme;
 	private final int hashCodeValue;
 
-	public RendererJob(Tile tile, File mapFile, XmlRenderTheme xmlRenderTheme, DisplayModel displayModel, float textScale, boolean isTransparent) {
-		super(tile, displayModel.getTileSize(), isTransparent);
+	public RendererJob(Tile tile, MapDataStore mapFile, RenderThemeFuture renderThemeFuture, DisplayModel displayModel,
+			float textScale, boolean isTransparent, boolean labelsOnly) {
+		super(tile, isTransparent);
 
 		if (mapFile == null) {
 			throw new IllegalArgumentException("mapFile must not be null");
-		} else if (xmlRenderTheme == null) {
-			throw new IllegalArgumentException("xmlRenderTheme must not be null");
 		} else if (textScale <= 0 || Float.isNaN(textScale)) {
 			throw new IllegalArgumentException("invalid textScale: " + textScale);
 		}
 
+		this.labelsOnly = labelsOnly;
 		this.displayModel = displayModel;
-		this.mapFile = mapFile;
-		this.xmlRenderTheme = xmlRenderTheme;
+		this.mapDataStore = mapFile;
+		this.renderThemeFuture = renderThemeFuture;
 		this.textScale = textScale;
 
 		this.hashCodeValue = calculateHashCode();
@@ -58,11 +58,15 @@ public class RendererJob extends Job {
 			return false;
 		}
 		RendererJob other = (RendererJob) obj;
-		if (!this.mapFile.equals(other.mapFile)) {
+		if (!this.mapDataStore.equals(other.mapDataStore)) {
 			return false;
 		} else if (Float.floatToIntBits(this.textScale) != Float.floatToIntBits(other.textScale)) {
 			return false;
-		} else if (!this.xmlRenderTheme.equals(other.xmlRenderTheme)) {
+		} else if (this.renderThemeFuture == null && other.renderThemeFuture != null) {
+			return false;
+		} else if (this.renderThemeFuture != null && !this.renderThemeFuture.equals(other.renderThemeFuture)) {
+			return false;
+		} else if (this.labelsOnly != other.labelsOnly) {
 			return false;
 		} else if (!this.displayModel.equals(other.displayModel)) {
 			return false;
@@ -75,12 +79,30 @@ public class RendererJob extends Job {
 		return this.hashCodeValue;
 	}
 
+	/**
+	 * Just a way of generating a hash key for a tile if only the RendererJob is known.
+	 * @param tile the tile that changes
+	 * @return a RendererJob based on the current one, only tile changes
+	 */
+	public RendererJob otherTile(Tile tile) {
+		return new RendererJob(tile, this.mapDataStore, this.renderThemeFuture, this.displayModel, this.textScale, this.hasAlpha, this.labelsOnly);
+	}
+
+	/**
+	 * Indicates that for this job only the labels should be generated.
+	 */
+	public void setRetrieveLabelsOnly() {
+		this.labelsOnly = true;
+	}
+
 	private int calculateHashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + this.mapFile.hashCode();
+		result = prime * result + this.mapDataStore.hashCode();
 		result = prime * result + Float.floatToIntBits(this.textScale);
-		result = prime * result + this.xmlRenderTheme.hashCode();
+		if (renderThemeFuture != null) {
+			result = prime * result + this.renderThemeFuture.hashCode();
+		}
 		return result;
 	}
 }

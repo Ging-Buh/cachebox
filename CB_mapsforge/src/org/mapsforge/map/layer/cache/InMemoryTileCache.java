@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,11 +16,14 @@
 package org.mapsforge.map.layer.cache;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.TileBitmap;
-import org.mapsforge.core.util.LRUCache;
+import org.mapsforge.core.util.WorkingSetCache;
 import org.mapsforge.map.layer.queue.Job;
+import org.mapsforge.map.model.common.Observable;
+import org.mapsforge.map.model.common.Observer;
 
 /**
  * A thread-safe cache for tile images with a variable size and LRU policy.
@@ -28,6 +32,7 @@ public class InMemoryTileCache implements TileCache {
 	private static final Logger LOGGER = Logger.getLogger(InMemoryTileCache.class.getName());
 
 	private BitmapLRUCache lruCache;
+	private Observable observable;
 
 	/**
 	 * @param capacity
@@ -37,6 +42,7 @@ public class InMemoryTileCache implements TileCache {
 	 */
 	public InMemoryTileCache(int capacity) {
 		this.lruCache = new BitmapLRUCache(capacity);
+		this.observable = new Observable();
 	}
 
 	@Override
@@ -46,10 +52,7 @@ public class InMemoryTileCache implements TileCache {
 
 	@Override
 	public synchronized void destroy() {
-		for (TileBitmap bitmap : this.lruCache.values()) {
-			bitmap.decrementRefCount();
-		}
-		this.lruCache.clear();
+		purge();
 	}
 
 	@Override
@@ -64,6 +67,24 @@ public class InMemoryTileCache implements TileCache {
 	@Override
 	public synchronized int getCapacity() {
 		return this.lruCache.capacity;
+	}
+
+	@Override
+	public int getCapacityFirstLevel() {
+		return getCapacity();
+	}
+
+	@Override
+	public TileBitmap getImmediately(Job key) {
+		return get(key);
+	}
+
+	@Override
+	public void purge() {
+		for (TileBitmap bitmap : this.lruCache.values()) {
+			bitmap.decrementRefCount();
+		}
+		this.lruCache.clear();
 	}
 
 	@Override
@@ -83,6 +104,7 @@ public class InMemoryTileCache implements TileCache {
 			LOGGER.warning("overwriting cached entry: " + key);
 		}
 		bitmap.incrementRefCount();
+		this.observable.notifyObservers();
 	}
 
 	/**
@@ -99,9 +121,25 @@ public class InMemoryTileCache implements TileCache {
 		lruCacheNew.putAll(this.lruCache);
 		this.lruCache = lruCacheNew;
 	}
+
+	@Override
+	public synchronized void setWorkingSet(Set<Job> jobs) {
+		this.lruCache.setWorkingSet(jobs);
+	}
+
+	@Override
+	public void addObserver(final Observer observer) {
+		this.observable.addObserver(observer);
+	}
+
+	@Override
+	public void removeObserver(final Observer observer) {
+		this.observable.removeObserver(observer);
+	}
+
 }
 
-class BitmapLRUCache extends LRUCache<Job, TileBitmap> {
+class BitmapLRUCache extends WorkingSetCache<Job, TileBitmap> {
 	private static final long serialVersionUID = 1L;
 
 	public BitmapLRUCache(int capacity) {
@@ -111,9 +149,13 @@ class BitmapLRUCache extends LRUCache<Job, TileBitmap> {
 	@Override
 	protected boolean removeEldestEntry(Map.Entry<Job, TileBitmap> eldest) {
 		if (size() > this.capacity) {
-			eldest.getValue().decrementRefCount();
+			TileBitmap bitmap = eldest.getValue();
+			if (bitmap != null) {
+				bitmap.decrementRefCount();
+			}
 			return true;
 		}
 		return false;
 	}
+
 }

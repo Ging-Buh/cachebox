@@ -18,7 +18,23 @@ package org.mapsforge.map.layer.download.tilesource;
 
 import java.util.Random;
 
+/**
+ * The abstract base class for tiles downloaded from a web server.
+ * <p>
+ * This class defines a default TTL for cached tiles, accessible through the {@link #getDefaultTimeToLive()}  method. The value
+ * here will be used as the initial TTL by the {@link org.mapsforge.map.layer.download.TileDownloadLayer} using this
+ * tile source, but applications can change the TTL at any time (refer to
+ * {@link org.mapsforge.map.layer.download.TileDownloadLayer} for details). The default value is set to one day, or
+ * 86,400,000 milliseconds. Subclasses should set {@code #defaultTTL} in their constructor to a value that is
+ * appropriate for their tile source.
+ */
 public abstract class AbstractTileSource implements TileSource {
+
+	/**
+	 * The default time-to-live (TTL) for cached tiles (one day, or 86,400,000 milliseconds).
+	 */
+	protected long defaultTimeToLive = 86400000;
+
 	protected final String[] hostNames;
 	protected final int port;
 	protected final Random random = new Random();
@@ -40,10 +56,6 @@ public abstract class AbstractTileSource implements TileSource {
 		this.port = port;
 	}
 
-	protected String getHostName() {
-		return this.hostNames[random.nextInt(this.hostNames.length)];
-	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -58,6 +70,18 @@ public abstract class AbstractTileSource implements TileSource {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Returns the default time-to-live (TTL) for cached tiles.
+	 */
+	@Override
+	public long getDefaultTimeToLive() {
+		return defaultTimeToLive;
+	}
+
+	protected String getHostName() {
+		return this.hostNames[random.nextInt(this.hostNames.length)];
 	}
 
 	@Override

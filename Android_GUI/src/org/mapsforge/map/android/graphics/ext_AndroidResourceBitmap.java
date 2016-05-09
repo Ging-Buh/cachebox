@@ -25,6 +25,7 @@ import CB_Locator.LocatorSettings;
 import CB_UI_Base.graphics.GL_RenderType;
 import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
+import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 
 /**
@@ -32,57 +33,66 @@ import android.graphics.Bitmap.CompressFormat;
  */
 public class ext_AndroidResourceBitmap extends AndroidResourceBitmap implements ext_Bitmap {
 
-	protected final BitmapDrawable GL_image;
+    protected BitmapDrawable GL_image;
 
-	ext_AndroidResourceBitmap(InputStream inputStream, int HashCode, float scaleFactor) throws IOException {
-		super(inputStream, HashCode);
+    public ext_AndroidResourceBitmap(Bitmap resourceBitmap) {
+	super(resourceBitmap);
+	createGL_Image(resourceBitmap.hashCode(), 1.0f);
+    }
 
-		GL_RenderType RENDERING_TYPE = LocatorSettings.MapsforgeRenderType.getEnumValue();
+    ext_AndroidResourceBitmap(InputStream inputStream, int HashCode, float scaleFactor) throws IOException {
+	super(inputStream, HashCode);
 
-		// Don't create GL_Image with renderType Mapsforge! GL_Images are not needed!
-		if (RENDERING_TYPE == GL_RenderType.Mapsforge) {
-			GL_image = null;
-			return;
-		}
+	createGL_Image(HashCode, scaleFactor);
 
-		byte[] bytes = null;
-		if (!BitmapDrawable.AtlasContains(HashCode)) {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			this.bitmap.compress(CompressFormat.PNG, 1, baos);
+    }
 
-			bytes = new byte[baos.toByteArray().length];
-			System.arraycopy(baos.toByteArray(), 0, bytes, 0, baos.toByteArray().length);
-		}
+    private void createGL_Image(int HashCode, float scaleFactor) {
+	GL_RenderType RENDERING_TYPE = LocatorSettings.MapsforgeRenderType.getEnumValue();
 
-		GL_image = new BitmapDrawable(bytes, HashCode, scaleFactor);
-
+	// Don't create GL_Image with renderType Mapsforge! GL_Images are not needed!
+	if (RENDERING_TYPE == GL_RenderType.Mapsforge) {
+	    GL_image = null;
+	    return;
 	}
 
-	@Override
-	public void recycle() {
+	byte[] bytes = null;
+	if (!BitmapDrawable.AtlasContains(HashCode)) {
+	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	    this.bitmap.compress(CompressFormat.PNG, 1, baos);
 
+	    bytes = new byte[baos.toByteArray().length];
+	    System.arraycopy(baos.toByteArray(), 0, bytes, 0, baos.toByteArray().length);
 	}
 
-	@Override
-	public void getPixels(int[] maskBuf, int i, int w, int j, int y, int w2, int k) {
+	GL_image = new BitmapDrawable(bytes, HashCode, scaleFactor);
+    }
 
-	}
+    @Override
+    public void recycle() {
 
-	@Override
-	public void setPixels(int[] maskedContentBuf, int i, int w, int j, int y, int w2, int k) {
+    }
 
-	}
+    @Override
+    public void getPixels(int[] maskBuf, int i, int w, int j, int y, int w2, int k) {
 
-	@Override
-	public BitmapDrawable getGlBmpHandle() {
-		return GL_image;
-	}
+    }
 
-	@Override
-	public Texture getTexture() {
-		if (GL_image == null)
-			return null;
-		return GL_image.getTexture();
-	}
+    @Override
+    public void setPixels(int[] maskedContentBuf, int i, int w, int j, int y, int w2, int k) {
+
+    }
+
+    @Override
+    public BitmapDrawable getGlBmpHandle() {
+	return GL_image;
+    }
+
+    @Override
+    public Texture getTexture() {
+	if (GL_image == null)
+	    return null;
+	return GL_image.getTexture();
+    }
 
 }

@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -30,14 +31,16 @@ import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
 
 /**
- * A {@code Polygon} draws a connected series of line segments specified by a list of {@link LatLong LatLongs}. If the
- * first and the last {@code LatLong} are not equal, the {@code Polygon} will be closed automatically.
+ * A {@code Polygon} draws a closed connected series of line segments specified by a list of {@link LatLong LatLongs}.
+ * If the first and the last {@code LatLong} are not equal, the {@code Polygon} will be closed automatically.
  * <p>
  * A {@code Polygon} holds two {@link Paint} objects to allow for different outline and filling. These paints define
  * drawing parameters such as color, stroke width, pattern and transparency.
  */
 public class Polygon extends Layer {
+
 	private final GraphicFactory graphicFactory;
+	private final boolean keepAligned;
 	private final List<LatLong> latLongs = new CopyOnWriteArrayList<LatLong>();
 	private Paint paintFill;
 	private Paint paintStroke;
@@ -47,10 +50,27 @@ public class Polygon extends Layer {
 	 *            the initial {@code Paint} used to fill this polygon (may be null).
 	 * @param paintStroke
 	 *            the initial {@code Paint} used to stroke this polygon (may be null).
+	 * @param graphicFactory
+	 *            the GraphicFactory
 	 */
 	public Polygon(Paint paintFill, Paint paintStroke, GraphicFactory graphicFactory) {
-		super();
+		this(paintFill, paintStroke, graphicFactory, false);
+	}
 
+	/**
+	 * @param paintFill
+	 *            the initial {@code Paint} used to fill this polygon (may be null).
+	 * @param paintStroke
+	 *            the initial {@code Paint} used to stroke this polygon (may be null).
+	 * @param graphicFactory
+	 *            the GraphicFactory
+	 * @param keepAligned
+	 *            if set to true it will keep the bitmap aligned with the map,
+	 *            to avoid a moving effect of a bitmap shader.
+	 */
+	public Polygon(Paint paintFill, Paint paintStroke, GraphicFactory graphicFactory, boolean keepAligned) {
+		super();
+		this.keepAligned = keepAligned;
 		this.paintFill = paintFill;
 		this.paintStroke = paintStroke;
 		this.graphicFactory = graphicFactory;
@@ -66,22 +86,30 @@ public class Polygon extends Layer {
 
 		Path path = this.graphicFactory.createPath();
 		LatLong latLong = iterator.next();
-		int tileSize = displayModel.getTileSize();
-		float x = (float) (MercatorProjection.longitudeToPixelX(latLong.getLongitude(), zoomLevel, tileSize) - topLeftPoint.x);
-		float y = (float) (MercatorProjection.latitudeToPixelY(latLong.getLatitude(), zoomLevel, tileSize) - topLeftPoint.y);
+		long mapSize = MercatorProjection.getMapSize(zoomLevel, displayModel.getTileSize());
+		float x = (float) (MercatorProjection.longitudeToPixelX(latLong.longitude, mapSize) - topLeftPoint.x);
+		float y = (float) (MercatorProjection.latitudeToPixelY(latLong.latitude, mapSize) - topLeftPoint.y);
 		path.moveTo(x, y);
 
 		while (iterator.hasNext()) {
 			latLong = iterator.next();
-			x = (float) (MercatorProjection.longitudeToPixelX(latLong.getLongitude(), zoomLevel, tileSize) - topLeftPoint.x);
-			y = (float) (MercatorProjection.latitudeToPixelY(latLong.getLatitude(), zoomLevel, tileSize) - topLeftPoint.y);
+			x = (float) (MercatorProjection.longitudeToPixelX(latLong.longitude, mapSize) - topLeftPoint.x);
+			y = (float) (MercatorProjection.latitudeToPixelY(latLong.latitude, mapSize) - topLeftPoint.y);
 			path.lineTo(x, y);
 		}
 
+
 		if (this.paintStroke != null) {
+			if (this.keepAligned) {
+				this.paintStroke.setBitmapShaderShift(topLeftPoint);
+			}
 			canvas.drawPath(path, this.paintStroke);
 		}
 		if (this.paintFill != null) {
+			if (this.keepAligned) {
+				this.paintFill.setBitmapShaderShift(topLeftPoint);
+			}
+
 			canvas.drawPath(path, this.paintFill);
 		}
 	}
@@ -108,6 +136,14 @@ public class Polygon extends Layer {
 	}
 
 	/**
+	 * @return true if it keeps the bitmap aligned with the map, to avoid a
+	 *         moving effect of a bitmap shader, false otherwise.
+	 */
+	public boolean isKeepAligned() {
+		return keepAligned;
+	}
+
+	/**
 	 * @param paintFill
 	 *            the new {@code Paint} used to fill this polygon (may be null).
 	 */
@@ -122,4 +158,5 @@ public class Polygon extends Layer {
 	public synchronized void setPaintStroke(Paint paintStroke) {
 		this.paintStroke = paintStroke;
 	}
+
 }

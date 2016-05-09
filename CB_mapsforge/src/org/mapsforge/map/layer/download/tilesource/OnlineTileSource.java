@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 devemux86
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -30,8 +30,16 @@ public class OnlineTileSource extends AbstractTileSource {
 	private byte zoomLevelMax = 18;
 	private byte zoomLevelMin = 0;
 
-	public OnlineTileSource(String[] hostName, int port) {
-		super(hostName, port);
+	public OnlineTileSource(String[] hostNames, int port) {
+		super(hostNames, port);
+	}
+
+	public String getBaseUrl() {
+		return baseUrl;
+	}
+
+	public String getExtension() {
+		return extension;
 	}
 
 	public String getName() {
@@ -41,6 +49,10 @@ public class OnlineTileSource extends AbstractTileSource {
 	@Override
 	public int getParallelRequestsLimit() {
 		return parallelRequestsLimit;
+	}
+
+	public String getProtocol() {
+		return protocol;
 	}
 
 	public int getTileSize() {

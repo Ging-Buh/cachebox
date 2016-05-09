@@ -14,27 +14,36 @@
  */
 package org.mapsforge.map.rendertheme;
 
-import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
-
-import CB_Utils.fileProvider.File;
 
 /**
  * An ExternalRenderTheme allows for customizing the rendering style of the map via an XML file.
  */
 public class ExternalRenderTheme implements XmlRenderTheme {
 	private final long lastModifiedTime;
+	private final XmlRenderThemeMenuCallback menuCallback;
 	private final File renderThemeFile;
-	private boolean isFreizeit;
 
 	/**
-	 * @param renderThemeFile the XML render theme file.
-	 * @throws FileNotFoundException if the file does not exist or cannot be read.
+	 * @param renderThemeFile
+	 *            the XML render theme file.
+	 * @throws FileNotFoundException
+	 *             if the file does not exist or cannot be read.
 	 */
 	public ExternalRenderTheme(File renderThemeFile) throws FileNotFoundException {
+		this(renderThemeFile, null);
+	}
+
+	/**
+	 * @param renderThemeFile
+	 *            the XML render theme file.
+	 * @throws FileNotFoundException
+	 *             if the file does not exist or cannot be read.
+	 */
+	public ExternalRenderTheme(File renderThemeFile, XmlRenderThemeMenuCallback menuCallback) throws FileNotFoundException {
 		if (!renderThemeFile.exists()) {
 			throw new FileNotFoundException("file does not exist: " + renderThemeFile.getAbsolutePath());
 		} else if (!renderThemeFile.isFile()) {
@@ -43,28 +52,13 @@ public class ExternalRenderTheme implements XmlRenderTheme {
 			throw new FileNotFoundException("cannot read file: " + renderThemeFile.getAbsolutePath());
 		}
 
+
 		this.lastModifiedTime = renderThemeFile.lastModified();
 		if (this.lastModifiedTime == 0L) {
 			throw new FileNotFoundException("cannot read last modified time: " + renderThemeFile.getAbsolutePath());
 		}
 		this.renderThemeFile = renderThemeFile;
-
-		// read is Freizeitkarte Theme
-
-		final FileReader fileReader = renderThemeFile.getFileReader();
-		final BufferedReader bufferedReader = new BufferedReader(fileReader);
-		String line;
-		try {
-			while ((line = bufferedReader.readLine()) != null) {
-				if (line.contains("freizeitkarte@googlemail.com")) {
-					isFreizeit = true;
-					break;
-				}
-			}
-			bufferedReader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		this.menuCallback = menuCallback;
 	}
 
 	@Override
@@ -89,13 +83,18 @@ public class ExternalRenderTheme implements XmlRenderTheme {
 	}
 
 	@Override
+	public XmlRenderThemeMenuCallback getMenuCallback() {
+		return this.menuCallback;
+	}
+
+	@Override
 	public String getRelativePathPrefix() {
 		return this.renderThemeFile.getParent();
 	}
 
 	@Override
 	public InputStream getRenderThemeAsStream() throws FileNotFoundException {
-		return this.renderThemeFile.getFileInputStream();
+		return new FileInputStream(this.renderThemeFile);
 	}
 
 	@Override
@@ -105,10 +104,5 @@ public class ExternalRenderTheme implements XmlRenderTheme {
 		result = prime * result + (int) (this.lastModifiedTime ^ (this.lastModifiedTime >>> 32));
 		result = prime * result + ((this.renderThemeFile == null) ? 0 : this.renderThemeFile.hashCode());
 		return result;
-	}
-
-	@Override
-	public boolean isFreizeitkarte() {
-		return isFreizeit;
 	}
 }

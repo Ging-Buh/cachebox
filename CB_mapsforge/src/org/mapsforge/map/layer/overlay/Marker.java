@@ -53,8 +53,9 @@ public class Marker extends Layer {
 	}
 
 	public synchronized boolean contains(Point center, Point point) {
-		Rectangle r = new Rectangle(center.x - (float) bitmap.getWidth() / 2 + this.horizontalOffset, center.y - (float) bitmap.getHeight() / 2 + this.verticalOffset, center.x + (float) bitmap.getWidth() / 2 + this.horizontalOffset,
-				center.y + (float) bitmap.getHeight() / 2 + this.verticalOffset);
+		Rectangle r = new Rectangle(center.x - (float) bitmap.getWidth() / 2 + this.horizontalOffset, center.y
+				- (float) bitmap.getHeight() / 2 + this.verticalOffset, center.x + (float) bitmap.getWidth() / 2
+				+ this.horizontalOffset, center.y + (float) bitmap.getHeight() / 2 + this.verticalOffset);
 		return r.contains(point);
 	}
 
@@ -64,9 +65,9 @@ public class Marker extends Layer {
 			return;
 		}
 
-		int tileSize = this.displayModel.getTileSize();
-		double pixelX = MercatorProjection.longitudeToPixelX(this.latLong.getLongitude(), zoomLevel, tileSize);
-		double pixelY = MercatorProjection.latitudeToPixelY(this.latLong.getLatitude(), zoomLevel, tileSize);
+		long mapSize = MercatorProjection.getMapSize(zoomLevel, this.displayModel.getTileSize());
+		double pixelX = MercatorProjection.longitudeToPixelX(this.latLong.longitude, mapSize);
+		double pixelY = MercatorProjection.latitudeToPixelY(this.latLong.latitude, mapSize);
 
 		int halfBitmapWidth = this.bitmap.getWidth() / 2;
 		int halfBitmapHeight = this.bitmap.getHeight() / 2;
@@ -109,6 +110,7 @@ public class Marker extends Layer {
 	/**
 	 * @return Gets the LatLong Position of the Object
 	 */
+	@Override
 	public synchronized LatLong getPosition() {
 		return this.latLong;
 	}

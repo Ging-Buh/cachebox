@@ -18,21 +18,33 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 /**
  * An AssetRenderTheme is an XmlRenderTheme that is picked up from the Android apk assets folder.
  */
 public class AssetsRenderTheme implements XmlRenderTheme {
+
 	private final String assetName;
 	private final InputStream inputStream;
+	private final XmlRenderThemeMenuCallback menuCallback;
 	private final String relativePathPrefix;
 
+	/*
+	 * Creates AssetsRenderTheme without menuCallback for compatibility with version 0.4.x
+	 */
 	public AssetsRenderTheme(Context context, String relativePathPrefix, String fileName) throws IOException {
+		this(context, relativePathPrefix, fileName, null);
+	}
+
+	public AssetsRenderTheme(Context context, String relativePathPrefix, String fileName, XmlRenderThemeMenuCallback menuCallback) throws IOException {
 		this.assetName = fileName;
 		this.relativePathPrefix = relativePathPrefix;
-		this.inputStream = context.getAssets().open(this.assetName);
+		this.inputStream = context.getAssets().open((TextUtils.isEmpty(this.relativePathPrefix) ? "" : this.relativePathPrefix) + this.assetName);
+		this.menuCallback = menuCallback;
 	}
 
 	@Override
@@ -52,6 +64,12 @@ public class AssetsRenderTheme implements XmlRenderTheme {
 		return true;
 	}
 
+
+	@Override
+	public XmlRenderThemeMenuCallback getMenuCallback() {
+		return this.menuCallback;
+	}
+
 	@Override
 	public String getRelativePathPrefix() {
 		return this.relativePathPrefix;
@@ -69,10 +87,5 @@ public class AssetsRenderTheme implements XmlRenderTheme {
 		result = prime * result + ((this.assetName == null) ? 0 : this.assetName.hashCode());
 		result = prime * result + ((this.relativePathPrefix == null) ? 0 : this.relativePathPrefix.hashCode());
 		return result;
-	}
-
-	@Override
-	public boolean isFreizeitkarte() {
-		return false;
 	}
 }

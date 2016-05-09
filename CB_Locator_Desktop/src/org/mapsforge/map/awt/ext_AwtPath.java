@@ -15,6 +15,8 @@
  */
 package org.mapsforge.map.awt;
 
+import org.mapsforge.map.awt.graphics.AwtPath;
+
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Path;
 import CB_UI_Base.graphics.fromAndroid.RectF;

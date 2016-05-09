@@ -18,6 +18,8 @@ package org.mapsforge.map.awt;
 import java.awt.FontMetrics;
 import java.awt.image.BufferedImage;
 
+import org.mapsforge.map.awt.graphics.AwtPaint;
+
 import CB_UI_Base.graphics.GL_FontFamily;
 import CB_UI_Base.graphics.GL_FontStyle;
 import CB_UI_Base.graphics.GL_Style;

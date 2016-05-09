@@ -17,18 +17,19 @@ package org.mapsforge.map.rendertheme.rule;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Stack;
 import java.util.regex.Pattern;
 
 import org.mapsforge.map.rendertheme.XmlUtils;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * A builder for {@link Rule} instances.
  */
 public class RuleBuilder {
+
+	private static final String CAT = "cat";
 	private static final String CLOSED = "closed";
 	private static final String E = "e";
 	private static final String K = "k";
@@ -41,12 +42,12 @@ public class RuleBuilder {
 
 	private static ClosedMatcher getClosedMatcher(Closed closed) {
 		switch (closed) {
-		case YES:
-			return ClosedWayMatcher.INSTANCE;
-		case NO:
-			return LinearWayMatcher.INSTANCE;
-		case ANY:
-			return AnyMatcher.INSTANCE;
+			case YES:
+				return ClosedWayMatcher.INSTANCE;
+			case NO:
+				return LinearWayMatcher.INSTANCE;
+			case ANY:
+				return AnyMatcher.INSTANCE;
 		}
 
 		throw new IllegalArgumentException("unknown closed value: " + closed);
@@ -54,12 +55,12 @@ public class RuleBuilder {
 
 	private static ElementMatcher getElementMatcher(Element element) {
 		switch (element) {
-		case NODE:
-			return ElementNodeMatcher.INSTANCE;
-		case WAY:
-			return ElementWayMatcher.INSTANCE;
-		case ANY:
-			return AnyMatcher.INSTANCE;
+			case NODE:
+				return ElementNodeMatcher.INSTANCE;
+			case WAY:
+				return ElementWayMatcher.INSTANCE;
+			case ANY:
+				return AnyMatcher.INSTANCE;
 		}
 
 		throw new IllegalArgumentException("unknown element value: " + element);
@@ -91,6 +92,7 @@ public class RuleBuilder {
 		return attributeMatcher;
 	}
 
+	String cat;
 	ClosedMatcher closedMatcher;
 	ElementMatcher elementMatcher;
 	byte zoomMax;
@@ -103,14 +105,14 @@ public class RuleBuilder {
 	private List<String> valueList;
 	private String values;
 
-	public RuleBuilder(String elementName, Attributes attributes, Stack<Rule> ruleStack) throws SAXException {
+	public RuleBuilder(String elementName, XmlPullParser pullParser, Stack<Rule> ruleStack) throws XmlPullParserException{
 		this.ruleStack = ruleStack;
 
 		this.closed = Closed.ANY;
 		this.zoomMin = 0;
 		this.zoomMax = Byte.MAX_VALUE;
 
-		extractValues(elementName, attributes);
+		extractValues(elementName, pullParser);
 	}
 
 	/**
@@ -131,25 +133,27 @@ public class RuleBuilder {
 		return new PositiveRule(this, keyMatcher, valueMatcher);
 	}
 
-	private void extractValues(String elementName, Attributes attributes) throws SAXException {
-		for (int i = 0; i < attributes.getLength(); ++i) {
-			String name = attributes.getQName(i);
-			String value = attributes.getValue(i);
+	private void extractValues(String elementName, XmlPullParser pullParser) throws XmlPullParserException {
+		for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
+			String name = pullParser.getAttributeName(i);
+			String value = pullParser.getAttributeValue(i);
 
 			if (E.equals(name)) {
-				this.element = Element.valueOf(value.toUpperCase(Locale.ENGLISH));
+				this.element = Element.fromString(value);
 			} else if (K.equals(name)) {
 				this.keys = value;
 			} else if (V.equals(name)) {
 				this.values = value;
+			} else if (CAT.equals(name)) {
+				this.cat = value;
 			} else if (CLOSED.equals(name)) {
-				this.closed = Closed.valueOf(value.toUpperCase(Locale.ENGLISH));
+				this.closed = Closed.fromString(value);
 			} else if (ZOOM_MIN.equals(name)) {
 				this.zoomMin = XmlUtils.parseNonNegativeByte(name, value);
 			} else if (ZOOM_MAX.equals(name)) {
 				this.zoomMax = XmlUtils.parseNonNegativeByte(name, value);
 			} else {
-				throw XmlUtils.createSAXException(elementName, name, value, i);
+				throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
 			}
 		}
 
@@ -165,13 +169,13 @@ public class RuleBuilder {
 		this.closedMatcher = RuleOptimizer.optimize(this.closedMatcher, this.ruleStack);
 	}
 
-	private void validate(String elementName) throws SAXException {
+	private void validate(String elementName) throws XmlPullParserException {
 		XmlUtils.checkMandatoryAttribute(elementName, E, this.element);
 		XmlUtils.checkMandatoryAttribute(elementName, K, this.keys);
 		XmlUtils.checkMandatoryAttribute(elementName, V, this.values);
 
 		if (this.zoomMin > this.zoomMax) {
-			throw new SAXException('\'' + ZOOM_MIN + "' > '" + ZOOM_MAX + "': " + this.zoomMin + ' ' + this.zoomMax);
+			throw new XmlPullParserException('\'' + ZOOM_MIN + "' > '" + ZOOM_MAX + "': " + this.zoomMin + ' ' + this.zoomMax);
 		}
 	}
 }

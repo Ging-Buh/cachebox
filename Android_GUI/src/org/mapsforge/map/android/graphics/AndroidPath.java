@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 Andreas Schildbach
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,10 +23,10 @@ import android.graphics.Path.FillType;
 class AndroidPath implements Path {
 	private static FillType getWindingRule(FillRule fillRule) {
 		switch (fillRule) {
-		case EVEN_ODD:
-			return FillType.EVEN_ODD;
-		case NON_ZERO:
-			return FillType.WINDING;
+			case EVEN_ODD:
+				return FillType.EVEN_ODD;
+			case NON_ZERO:
+				return FillType.WINDING;
 		}
 
 		throw new IllegalArgumentException("unknown fill rule:" + fillRule);
@@ -36,6 +37,16 @@ class AndroidPath implements Path {
 	@Override
 	public void clear() {
 		this.path.rewind();
+	}
+
+	@Override
+	public void close() {
+		this.path.close();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return this.path.isEmpty();
 	}
 
 	@Override

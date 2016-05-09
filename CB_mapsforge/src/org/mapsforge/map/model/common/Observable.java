@@ -17,14 +17,11 @@ package org.mapsforge.map.model.common;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class Observable {
+public class Observable implements ObservableInterface {
 	private static final String OBSERVER_MUST_NOT_BE_NULL = "observer must not be null";
 	private final List<Observer> observers = new CopyOnWriteArrayList<Observer>();
 
-	protected Observable() {
-		// do nothing
-	}
-
+	@Override
 	public final void addObserver(Observer observer) {
 		if (observer == null) {
 			throw new IllegalArgumentException(OBSERVER_MUST_NOT_BE_NULL);
@@ -34,6 +31,7 @@ public class Observable {
 		this.observers.add(observer);
 	}
 
+	@Override
 	public final void removeObserver(Observer observer) {
 		if (observer == null) {
 			throw new IllegalArgumentException(OBSERVER_MUST_NOT_BE_NULL);
@@ -43,7 +41,7 @@ public class Observable {
 		this.observers.remove(observer);
 	}
 
-	protected final void notifyObservers() {
+	public final void notifyObservers() {
 		for (Observer observer : this.observers) {
 			observer.onChange();
 		}

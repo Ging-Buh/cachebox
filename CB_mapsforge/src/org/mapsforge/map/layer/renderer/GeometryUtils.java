@@ -30,8 +30,7 @@ final class GeometryUtils {
 		double pointYMin = coordinates[0].y;
 		double pointYMax = coordinates[0].y;
 
-		for (int i = 1; i < coordinates.length; ++i) {
-			Point immutablePoint = coordinates[i];
+		for (Point immutablePoint : coordinates) {
 			if (immutablePoint.x < pointXMin) {
 				pointXMin = immutablePoint.x;
 			} else if (immutablePoint.x > pointXMax) {
@@ -46,15 +45,6 @@ final class GeometryUtils {
 		}
 
 		return new Point((pointXMin + pointXMax) / 2, (pointYMax + pointYMin) / 2);
-	}
-
-	/**
-	 * @param way
-	 *            the coordinates of the way.
-	 * @return true if the given way is closed, false otherwise.
-	 */
-	static boolean isClosedWay(Point[] way) {
-		return way[0].equals(way[way.length - 1]);
 	}
 
 	private GeometryUtils() {

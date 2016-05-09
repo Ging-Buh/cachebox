@@ -8,42 +8,42 @@ import bsh.EvalError;
 import bsh.Interpreter;
 
 public class BshLayer extends Layer {
-	private Interpreter interpreter;
+    private Interpreter interpreter;
 
-	public BshLayer(Type LayerType, String filename) {
-		super(LayerType, "B- " + FileIO.GetFileNameWithoutExtension(filename), FileIO.GetFileNameWithoutExtension(filename), "");
-		this.interpreter = new Interpreter();
-		try {
-			this.interpreter.source(filename);
-		} catch (FileNotFoundException e) {
+    public BshLayer(Type LayerType, String filename) {
+	super(MapType.ONLINE, LayerType, "B- " + FileIO.GetFileNameWithoutExtension(filename), FileIO.GetFileNameWithoutExtension(filename), "");
+	this.interpreter = new Interpreter();
+	try {
+	    this.interpreter.source(filename);
+	} catch (FileNotFoundException e) {
 
-			e.printStackTrace();
-			this.interpreter = null;
-		} catch (IOException e) {
+	    e.printStackTrace();
+	    this.interpreter = null;
+	} catch (IOException e) {
 
-			e.printStackTrace();
-			this.interpreter = null;
-		} catch (EvalError e) {
+	    e.printStackTrace();
+	    this.interpreter = null;
+	} catch (EvalError e) {
 
-			e.printStackTrace();
-			this.interpreter = null;
-		}
+	    e.printStackTrace();
+	    this.interpreter = null;
 	}
+    }
 
-	@Override
-	public String GetUrl(Descriptor desc) {
-		if (desc == null)
-			return null;
-		if (interpreter == null)
-			return null;
-		try {
-			Object result = interpreter.eval("getTileUrl(" + desc.getZoom() + "," + desc.getX() + "," + desc.getY() + ")");
-			System.out.println(result);
-			return (String) result;
-		} catch (EvalError e) {
+    @Override
+    public String GetUrl(Descriptor desc) {
+	if (desc == null)
+	    return null;
+	if (interpreter == null)
+	    return null;
+	try {
+	    Object result = interpreter.eval("getTileUrl(" + desc.getZoom() + "," + desc.getX() + "," + desc.getY() + ")");
+	    System.out.println(result);
+	    return (String) result;
+	} catch (EvalError e) {
 
-			e.printStackTrace();
-		}
-		return null;
+	    e.printStackTrace();
 	}
+	return null;
+    }
 }

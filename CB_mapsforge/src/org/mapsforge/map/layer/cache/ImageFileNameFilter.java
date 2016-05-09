@@ -14,8 +14,8 @@
  */
 package org.mapsforge.map.layer.cache;
 
-import CB_Utils.fileProvider.File;
-import CB_Utils.fileProvider.FilenameFilter;
+import java.io.File;
+import java.io.FilenameFilter;
 
 final class ImageFileNameFilter implements FilenameFilter {
 	static final FilenameFilter INSTANCE = new ImageFileNameFilter();

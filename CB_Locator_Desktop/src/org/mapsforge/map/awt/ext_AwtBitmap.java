@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.map.awt.graphics.AwtBitmap;
 
 import com.badlogic.gdx.graphics.Texture;
 
@@ -35,6 +36,8 @@ import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 public class ext_AwtBitmap extends AwtBitmap implements ext_Bitmap, TileBitmap {
 	int instCount = 0;
 	protected final BitmapDrawable GL_image;
+	private long expiration = 0;
+	private long timestamp = System.currentTimeMillis();
 
 	protected ext_AwtBitmap() {
 		super(1, 1);
@@ -99,6 +102,28 @@ public class ext_AwtBitmap extends AwtBitmap implements ext_Bitmap, TileBitmap {
 		if (GL_image == null)
 			return null;
 		return GL_image.getTexture();
+	}
+
+	@Override
+	public long getTimestamp() {
+		return timestamp;
+	}
+
+	@Override
+	public boolean isExpired() {
+		if (expiration == 0)
+			return false;
+		return (expiration >= System.currentTimeMillis());
+	}
+
+	@Override
+	public void setExpiration(long expiration) {
+		this.expiration = expiration;
+	}
+
+	@Override
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
 	}
 
 }

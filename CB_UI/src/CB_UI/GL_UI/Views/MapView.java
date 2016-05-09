@@ -266,17 +266,17 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		// from create
 
-		String currentLayerName = Config.CurrentMapLayer.getValue();
+		String[] currentLayerNames = Config.CurrentMapLayer.getValue();
 		if (ManagerBase.Manager != null) {
 			if (mapTileLoader.getCurrentLayer() == null) {
-				mapTileLoader.setCurrentLayer(ManagerBase.Manager.getOrAddLayer(currentLayerName, currentLayerName, ""));
+				mapTileLoader.setCurrentLayer(ManagerBase.Manager.getOrAddLayer(currentLayerNames, currentLayerNames[0], ""));
 			}
 		}
 
-		String currentOverlayLayerName = Config.CurrentMapOverlayLayer.getValue();
+		String[] currentOverlayLayerName = new String[] { Config.CurrentMapOverlayLayer.getValue() };
 		if (ManagerBase.Manager != null) {
-			if (mapTileLoader.getCurrentOverlayLayer() == null && currentOverlayLayerName.length() > 0)
-				mapTileLoader.setCurrentOverlayLayer(ManagerBase.Manager.getOrAddLayer(currentOverlayLayerName, currentOverlayLayerName, ""));
+			if (mapTileLoader.getCurrentOverlayLayer() == null && currentOverlayLayerName[0].length() > 0)
+				mapTileLoader.setCurrentOverlayLayer(ManagerBase.Manager.getOrAddLayer(currentOverlayLayerName, currentOverlayLayerName[0], ""));
 		}
 
 		iconFactor = Config.MapViewDPIFaktor.getValue();
@@ -1339,7 +1339,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		}
 
 		//preload only if Mapsforge layer selected
-		if (mapTileLoader != null && mapTileLoader.getCurrentLayer() != null && mapTileLoader.getCurrentLayer().isMapsForge) {
+		if (mapTileLoader != null && mapTileLoader.getCurrentLayer() != null && mapTileLoader.getCurrentLayer().isMapsForge()) {
 			if (!MapTileLoderPreInitial) {
 				MapTileLoderPreInitial = true;
 

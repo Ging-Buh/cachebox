@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,12 +16,8 @@
  */
 package org.mapsforge.map.layer;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
@@ -33,7 +30,6 @@ import org.mapsforge.map.view.FrameBuffer;
 import org.mapsforge.map.view.MapView;
 
 public class LayerManager extends PausableThread implements Redrawer {
-	private static final Logger LOGGER = Logger.getLogger(LayerManager.class.getName());
 	private static final int MILLISECONDS_PER_FRAME = 30;
 
 	private final Canvas drawingCanvas;
@@ -41,6 +37,7 @@ public class LayerManager extends PausableThread implements Redrawer {
 	private final MapView mapView;
 	private final MapViewPosition mapViewPosition;
 	private boolean redrawNeeded;
+
 
 	public LayerManager(MapView mapView, MapViewPosition mapViewPosition, GraphicFactory graphicFactory) {
 		super();
@@ -81,7 +78,6 @@ public class LayerManager extends PausableThread implements Redrawer {
 		Bitmap bitmap = frameBuffer.getDrawingBitmap();
 		if (bitmap != null) {
 			this.drawingCanvas.setBitmap(bitmap);
-			this.drawingCanvas.fillColor(Color.TRANSPARENT);
 
 			MapPosition mapPosition = this.mapViewPosition.getMapPosition();
 			Dimension canvasDimension = this.drawingCanvas.getDimension();
@@ -110,9 +106,6 @@ public class LayerManager extends PausableThread implements Redrawer {
 		long timeSleep = MILLISECONDS_PER_FRAME - elapsedMilliseconds;
 
 		if (timeSleep > 1 && !isInterrupted()) {
-			if (LOGGER.isLoggable(Level.FINE)) {
-				LOGGER.log(Level.FINE, "sleeping (ms): " + timeSleep);
-			}
 			sleep(timeSleep);
 		}
 	}
