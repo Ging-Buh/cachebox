@@ -33,7 +33,6 @@ import CB_Core.DAO.CacheListDAO;
 import CB_Core.Types.Cache;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
-import CB_Locator.Map.ManagerBase;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.AppRater;
 import CB_UI.Config;
@@ -743,10 +742,9 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 			GL.that.StopRender();
 			if (switchDayNight)
 				Config.changeDayNight();
-			ManagerBase.RenderThemeChanged = true;
 			GL.that.onStop();
-
 			Sprites.loadSprites(true);
+			mapView.invalidateTexture();
 			GL.that.onStart();
 			CallSkinChanged();
 

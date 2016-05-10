@@ -52,125 +52,126 @@ import CB_Utils.fileProvider.FileFactory;
  */
 public class DesktopManager extends ManagerBase {
 
-	public DesktopManager(DisplayModel displaymodel) {
-		super(displaymodel);
+    public DesktopManager(DisplayModel displaymodel) {
+	super(displaymodel);
+    }
+
+    @Override
+    public ext_GraphicFactory getGraphicFactory(float Scalefactor) {
+	return ext_AwtGraphicFactory.getInstance(Scalefactor);
+    }
+
+    @Override
+    public TileGL LoadLocalPixmap(Layer layer, Descriptor desc, int ThreadIndex) {
+
+	if (layer.isMapsForge()) {
+	    return getMapsforgePixMap(layer, desc, ThreadIndex);
 	}
+	// else
+	Format format = layer.isOverlay() ? Format.RGBA4444 : Format.RGB565;
+	try {
+	    // Schauen, ob Tile im Cache liegt
+	    String cachedTileFilename = layer.GetLocalFilename(desc);
 
-	@Override
-	public ext_GraphicFactory getGraphicFactory(float Scalefactor) {
-		return ext_AwtGraphicFactory.getInstance(Scalefactor);
-	}
+	    long cachedTileAge = 0;
 
-	@Override
-	public TileGL LoadLocalPixmap(Layer layer, Descriptor desc, int ThreadIndex) {
+	    if (FileIO.FileExists(cachedTileFilename)) {
+		File info = FileFactory.createFile(cachedTileFilename);
+		cachedTileAge = info.lastModified();
+	    }
 
-		if (layer.isMapsForge) {
-			return getMapsforgePixMap(layer, desc, ThreadIndex);
-		}
-		Format format = layer.isOverlay() ? Format.RGBA4444 : Format.RGB565;
-		try {
-			// Schauen, ob Tile im Cache liegt
-			String cachedTileFilename = layer.GetLocalFilename(desc);
+	    // Kachel im Pack suchen
+	    for (int i = 0; i < mapPacks.size(); i++) {
+		PackBase mapPack = mapPacks.get(i);
+		if ((mapPack.layer.Name.equalsIgnoreCase(layer.Name)) && (mapPack.MaxAge >= cachedTileAge)) {
+		    BoundingBox bbox = mapPacks.get(i).Contains(desc);
 
-			long cachedTileAge = 0;
+		    if (bbox != null) {
+			byte[] b = mapPacks.get(i).LoadFromBoundingBoxByteArray(bbox, desc);
 
-			if (FileIO.FileExists(cachedTileFilename)) {
-				File info = FileFactory.createFile(cachedTileFilename);
-				cachedTileAge = info.lastModified();
+			if (CB_UI_Base_Settings.nightMode.getValue()) {
+			    ImageData imgData = getImagePixel(b);
+			    imgData = getImageDataWithColormatrixManipulation(HSV_Color.NIGHT_COLOR_MATRIX, imgData);
+			    b = getImageFromData(imgData);
 			}
 
-			// Kachel im Pack suchen
-			for (int i = 0; i < mapPacks.size(); i++) {
-				PackBase mapPack = mapPacks.get(i);
-				if ((mapPack.Layer.Name.equalsIgnoreCase(layer.Name)) && (mapPack.MaxAge >= cachedTileAge)) {
-					BoundingBox bbox = mapPacks.get(i).Contains(desc);
-
-					if (bbox != null) {
-						byte[] b = mapPacks.get(i).LoadFromBoundingBoxByteArray(bbox, desc);
-
-						if (CB_UI_Base_Settings.nightMode.getValue()) {
-							ImageData imgData = getImagePixel(b);
-							imgData = getImageDataWithColormatrixManipulation(HSV_Color.NIGHT_COLOR_MATRIX, imgData);
-							b = getImageFromData(imgData);
-						}
-
-						TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present, format);
-						return bmpTile;
-					}
-				}
-			}
-			// Kein Map Pack am Start!
-			// Falls Kachel im Cache liegt, diese von dort laden!
-			if (cachedTileAge != 0) {
-				File myImageFile = FileFactory.createFile(cachedTileFilename);
-				BufferedImage img = ImageIO.read(myImageFile.getFileInputStream());
-				ByteArrayOutputStream bas = new ByteArrayOutputStream();
-				ImageIO.write(img, "png", bas);
-				byte[] data = bas.toByteArray();
-
-				if (CB_UI_Base_Settings.nightMode.getValue()) {
-					ImageData imgData = getImagePixel(data);
-					imgData = getImageDataWithColormatrixManipulation(HSV_Color.NIGHT_COLOR_MATRIX, imgData);
-					data = getImageFromData(imgData);
-				}
-
-				TileGL_Bmp bmpTile = new TileGL_Bmp(desc, data, TileState.Present, format);
-
-				return bmpTile;
-			}
-		} catch (Exception exc) {
-			/*
-			 * #if DEBUG Global.AddLog("Manager.LoadLocalBitmap: " + exc.ToString()); #endif
-			 */
+			TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present, format);
+			return bmpTile;
+		    }
 		}
-		return null;
-	}
-
-	@Override
-	protected ImageData getImagePixel(byte[] img) {
-		InputStream in = new ByteArrayInputStream(img);
-		BufferedImage bImage;
-		try {
-			bImage = ImageIO.read(in);
-		} catch (IOException e) {
-			return null;
-		}
-
-		ImageData imgData = new ImageData();
-		imgData.width = bImage.getWidth();
-		imgData.height = bImage.getHeight();
-
-		BufferedImage intimg = new BufferedImage(bImage.getWidth(), bImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
-
-		ColorConvertOp op = new ColorConvertOp(null);
-		op.filter(bImage, intimg);
-
-		Raster ras = intimg.getData();
-		DataBufferInt db = (DataBufferInt) ras.getDataBuffer();
-		imgData.PixelColorArray = db.getData();
-
-		return imgData;
-
-	}
-
-	@Override
-	protected byte[] getImageFromData(ImageData imgData) {
-
-		BufferedImage dstImage = new BufferedImage(imgData.width, imgData.height, BufferedImage.TYPE_INT_RGB);
-
-		dstImage.getRaster().setDataElements(0, 0, imgData.width, imgData.height, imgData.PixelColorArray);
+	    }
+	    // Kein Map Pack am Start!
+	    // Falls Kachel im Cache liegt, diese von dort laden!
+	    if (cachedTileAge != 0) {
+		File myImageFile = FileFactory.createFile(cachedTileFilename);
+		BufferedImage img = ImageIO.read(myImageFile.getFileInputStream());
 		ByteArrayOutputStream bas = new ByteArrayOutputStream();
-		try {
-			ImageIO.write(dstImage, "png", bas);
-		} catch (IOException e) {
-			return null;
+		ImageIO.write(img, "png", bas);
+		byte[] data = bas.toByteArray();
+
+		if (CB_UI_Base_Settings.nightMode.getValue()) {
+		    ImageData imgData = getImagePixel(data);
+		    imgData = getImageDataWithColormatrixManipulation(HSV_Color.NIGHT_COLOR_MATRIX, imgData);
+		    data = getImageFromData(imgData);
 		}
-		return bas.toByteArray();
+
+		TileGL_Bmp bmpTile = new TileGL_Bmp(desc, data, TileState.Present, format);
+
+		return bmpTile;
+	    }
+	} catch (Exception exc) {
+	    /*
+	     * #if DEBUG Global.AddLog("Manager.LoadLocalBitmap: " + exc.ToString()); #endif
+	     */
+	}
+	return null;
+    }
+
+    @Override
+    protected ImageData getImagePixel(byte[] img) {
+	InputStream in = new ByteArrayInputStream(img);
+	BufferedImage bImage;
+	try {
+	    bImage = ImageIO.read(in);
+	} catch (IOException e) {
+	    return null;
 	}
 
-	@Override
-	public PackBase CreatePack(String file) throws IOException {
-		return new DesktopPack(this, file);
+	ImageData imgData = new ImageData();
+	imgData.width = bImage.getWidth();
+	imgData.height = bImage.getHeight();
+
+	BufferedImage intimg = new BufferedImage(bImage.getWidth(), bImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+	ColorConvertOp op = new ColorConvertOp(null);
+	op.filter(bImage, intimg);
+
+	Raster ras = intimg.getData();
+	DataBufferInt db = (DataBufferInt) ras.getDataBuffer();
+	imgData.PixelColorArray = db.getData();
+
+	return imgData;
+
+    }
+
+    @Override
+    protected byte[] getImageFromData(ImageData imgData) {
+
+	BufferedImage dstImage = new BufferedImage(imgData.width, imgData.height, BufferedImage.TYPE_INT_RGB);
+
+	dstImage.getRaster().setDataElements(0, 0, imgData.width, imgData.height, imgData.PixelColorArray);
+	ByteArrayOutputStream bas = new ByteArrayOutputStream();
+	try {
+	    ImageIO.write(dstImage, "png", bas);
+	} catch (IOException e) {
+	    return null;
 	}
+	return bas.toByteArray();
+    }
+
+    @Override
+    public PackBase CreatePack(String file) throws IOException {
+	return new DesktopPack(file);
+    }
 
 }

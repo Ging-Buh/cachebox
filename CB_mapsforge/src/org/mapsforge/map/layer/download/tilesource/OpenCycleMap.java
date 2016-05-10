@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -22,14 +22,15 @@ import java.net.URL;
 import org.mapsforge.core.model.Tile;
 
 public class OpenCycleMap extends AbstractTileSource {
-	public static final OpenCycleMap INSTANCE = new OpenCycleMap(new String[] { "a.tile.opencyclemap.org", "b.tile.opencyclemap.org", "c.tile.opencyclemap.org" }, 80);
+	public static final OpenCycleMap INSTANCE = new OpenCycleMap(new String[] {
+			"a.tile.opencyclemap.org", "b.tile.opencyclemap.org", "c.tile.opencyclemap.org" }, 80);
 	private static final int PARALLEL_REQUESTS_LIMIT = 8;
 	private static final String PROTOCOL = "http";
 	private static final int ZOOM_LEVEL_MAX = 18;
 	private static final int ZOOM_LEVEL_MIN = 0;
 
-	public OpenCycleMap(String[] hostName, int port) {
-		super(hostName, port);
+	public OpenCycleMap(String[] hostNames, int port) {
+		super(hostNames, port);
 	}
 
 	@Override
@@ -39,17 +40,8 @@ public class OpenCycleMap extends AbstractTileSource {
 
 	@Override
 	public URL getTileUrl(Tile tile) throws MalformedURLException {
-		StringBuilder stringBuilder = new StringBuilder(32);
 
-		stringBuilder.append("/cycle/");
-		stringBuilder.append(tile.zoomLevel);
-		stringBuilder.append('/');
-		stringBuilder.append(tile.tileX);
-		stringBuilder.append('/');
-		stringBuilder.append(tile.tileY);
-		stringBuilder.append(".png");
-
-		return new URL(PROTOCOL, getHostName(), this.port, stringBuilder.toString());
+		return new URL(PROTOCOL, getHostName(), this.port, "/cycle/" + tile.zoomLevel + '/' + tile.tileX + '/' + tile.tileY + ".png");
 	}
 
 	@Override

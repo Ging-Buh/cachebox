@@ -110,7 +110,7 @@ public class GCVote {
 				else
 					Ex = "Ex = [" + e.toString() + "]";
 			}
-			Log.info(log, "GcVote-Error" + Ex);
+			Log.err(log, "GcVote-Error" + Ex);
 			return null;
 		}
 		return result;

@@ -136,7 +136,9 @@ public class splash extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		new AndroidFileFactory();
+		if (!FileFactory.isInitial()) {
+			new AndroidFileFactory();
+		}
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -311,6 +313,8 @@ public class splash extends Activity {
 				LangPath = "data/lang/pl/strings.ini";
 			} else if (locale.contains("pt")) {
 				LangPath = "data/lang/pt/strings.ini";
+			} else if (locale.contains("hu")) {
+				LangPath = "data/lang/hu/strings.ini";
 			} else {
 				LangPath = "data/lang/en-GB/strings.ini";
 			}
@@ -988,7 +992,6 @@ public class splash extends Activity {
 	// Unique request code.
 	private static final int WRITE_REQUEST_CODE = 43;
 
-	@TargetApi(Build.VERSION_CODES.KITKAT)
 	private void Initial(int width, int height) {
 		// Jetzt ist der workPath erstmal festgelegt.
 		Log.debug(log, "Initial()");
@@ -1118,60 +1121,64 @@ public class splash extends Activity {
 		Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
 
 		// copy AssetFolder only if Rev-Number changed, like at new installation
-		if (Config.installRev.getValue() < GlobalCore.CurrentRevision) {
-			String[] exclude = new String[] { "webkit", "sound", "sounds", "images", "skins", "lang", "kioskmode", "string-files", "" };
-			copyAssetFolder myCopie = new copyAssetFolder();
+		try {
+			if (Config.installRev.getValue() < GlobalCore.CurrentRevision) {
+				String[] exclude = new String[] { "webkit", "sound", "sounds", "images", "skins", "lang", "kioskmode", "string-files", "" };
+				copyAssetFolder myCopie = new copyAssetFolder();
 
-			myCopie.copyAll(getAssets(), Config.mWorkPath, exclude);
-			Config.installRev.setValue(GlobalCore.CurrentRevision);
-			Config.newInstall.setValue(true);
-			Config.AcceptChanges();
+				myCopie.copyAll(getAssets(), Config.mWorkPath, exclude);
+				Config.installRev.setValue(GlobalCore.CurrentRevision);
+				Config.newInstall.setValue(true);
+				Config.AcceptChanges();
 
-			File CreateFile;
+				File CreateFile;
 
-			// create .nomedia Files
-			try {
-				CreateFile = FileFactory.createFile(workPath + "/data/.nomedia");
-				CreateFile.getParentFile().mkdirs();
-				CreateFile.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
+				// create .nomedia Files
+				try {
+					CreateFile = FileFactory.createFile(workPath + "/data/.nomedia");
+					CreateFile.getParentFile().mkdirs();
+					CreateFile.createNewFile();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				try {
+					CreateFile = FileFactory.createFile(workPath + "/skins/.nomedia");
+					CreateFile.getParentFile().mkdirs();
+					CreateFile.createNewFile();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				try {
+					CreateFile = FileFactory.createFile(workPath + "/repository/.nomedia");
+					CreateFile.getParentFile().mkdirs();
+					CreateFile.createNewFile();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				try {
+					CreateFile = FileFactory.createFile(workPath + "/Repositories/.nomedia");
+					CreateFile.getParentFile().mkdirs();
+					CreateFile.createNewFile();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				try {
+					CreateFile = FileFactory.createFile(workPath + "/cache/.nomedia");
+					CreateFile.getParentFile().mkdirs();
+					CreateFile.createNewFile();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+			} else {
+				Config.newInstall.setValue(false);
 			}
-
-			try {
-				CreateFile = FileFactory.createFile(workPath + "/skins/.nomedia");
-				CreateFile.getParentFile().mkdirs();
-				CreateFile.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			try {
-				CreateFile = FileFactory.createFile(workPath + "/repository/.nomedia");
-				CreateFile.getParentFile().mkdirs();
-				CreateFile.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			try {
-				CreateFile = FileFactory.createFile(workPath + "/Repositories/.nomedia");
-				CreateFile.getParentFile().mkdirs();
-				CreateFile.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			try {
-				CreateFile = FileFactory.createFile(workPath + "/cache/.nomedia");
-				CreateFile.getParentFile().mkdirs();
-				CreateFile.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-		} else {
-			Config.newInstall.setValue(false);
+		} catch (Exception e) {
+			Log.err(log, "Copy Asset", e);
 		}
 
 		// save askAgain for show SandboxMsg

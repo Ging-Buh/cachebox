@@ -22,6 +22,11 @@ import org.mapsforge.core.graphics.FontFamily;
 import org.mapsforge.core.graphics.FontStyle;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.model.Point;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -29,10 +34,6 @@ import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Paint;
 import CB_Utils.Util.HSV_Color;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
 /**
  * @author Longri
@@ -385,11 +386,6 @@ public class GL_Paint implements ext_Paint {
 		}
 	}
 
-	@Override
-	public int getColor() {
-		return this.color.toIntBits();
-	}
-
 	public HSV_Color getGlColor() {
 		return this.color;
 	}
@@ -406,7 +402,6 @@ public class GL_Paint implements ext_Paint {
 		}
 	}
 
-	@Override
 	public FontFamily getFontFamily() {
 		switch (this.fontFamily) {
 		case DEFAULT:
@@ -423,7 +418,6 @@ public class GL_Paint implements ext_Paint {
 		}
 	}
 
-	@Override
 	public FontStyle getFontStyle() {
 		switch (this.fontStyle) {
 		case BOLD:
@@ -442,6 +436,25 @@ public class GL_Paint implements ext_Paint {
 
 	public void setGLColor(Color color) {
 		this.color = new HSV_Color(color);
+	}
+
+	//################################################
+	@Override
+	public void setBitmapShaderShift(Point origin) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setStrokeJoin(org.mapsforge.core.graphics.Join join) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public int getColor() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

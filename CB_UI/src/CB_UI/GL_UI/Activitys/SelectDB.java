@@ -76,7 +76,7 @@ public class SelectDB extends ActivityBase {
 	private Scrollbar scrollbar;
 	private CustomAdapter lvAdapter;
 	private File AktFile = null;
-	private String[] countList;
+	private String[] fileInfos;
 	private boolean MustSelect = false;
 	private IReturnListener returnListener;
 
@@ -94,28 +94,25 @@ public class SelectDB extends ActivityBase {
 		String DBFile = FileIO.GetFileName(Config.DatabasePath.getValue());
 
 		final FileList files = new FileList(Config.mWorkPath, "DB3", true);
-		countList = new String[files.size()];
-
+		fileInfos = new String[files.size()];
 		int index = 0;
 		for (File file : files) {
 			if (file.getName().equalsIgnoreCase(DBFile))
 				AktFile = file;
-			countList[index] = "";
+			fileInfos[index] = "";
 			index++;
 		}
 
 		lvFiles = new V_ListView(new CB_RectF(leftBorder, this.getBottomHeight() + UI_Size_Base.that.getButtonHeight() * 2, innerWidth, getHeight() - (UI_Size_Base.that.getButtonHeight() * 2) - this.getTopHeight() - this.getBottomHeight()),
 				"DB File ListView");
-
 		lvAdapter = new CustomAdapter(files);
 		lvFiles.setBaseAdapter(lvAdapter);
-
 		this.addChild(lvFiles);
 
 		this.scrollbar = new Scrollbar(lvFiles);
 		this.addChild(this.scrollbar);
-		this.lvFiles.addListPosChangedEventHandler(new IListPosChanged() {
 
+		this.lvFiles.addListPosChangedEventHandler(new IListPosChanged() {
 			@Override
 			public void ListPosChanged() {
 				scrollbar.ScrollPositionChanged();
@@ -207,15 +204,20 @@ public class SelectDB extends ActivityBase {
 	}
 
 	TimerTask timerTask = new TimerTask() {
-
 		@Override
 		public void run() {
 			if (autoStartCounter == 0) {
 				stopTimer();
 				selectDB();
 			} else {
-				autoStartCounter--;
-				bAutostart.setText(autoStartCounter + "    " + Translation.Get("confirm"));
+				try {
+					autoStartCounter--;
+					bAutostart.setText(autoStartCounter + "    " + Translation.Get("confirm"));
+				} catch (Exception e) {
+					autoStartCounter = 0;
+					stopTimer();
+					selectDB();
+				}
 			}
 		}
 	};
@@ -227,13 +229,12 @@ public class SelectDB extends ActivityBase {
 				SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 				int index = 0;
 				for (File file : lvAdapter.files) {
-					String LastModifit = sdf.format(file.lastModified());
-					String FileSize = String.valueOf(file.length() / (1024 * 1024)) + "MB";
-					String CacheCount = String.valueOf(Database.Data.getCacheCountInDB(file.getAbsolutePath()));
-					countList[index] = CacheCount + " Caches  " + FileSize + "    last use " + LastModifit;
+					String lastModified = sdf.format(file.lastModified());
+					String fileSize = String.valueOf(file.length() / (1024 * 1024)) + "MB";
+					String cacheCount = String.valueOf(Database.Data.getCacheCountInDB(file.getAbsolutePath()));
+					fileInfos[index] = cacheCount + " Caches  " + fileSize + "    last use " + lastModified;
 					index++;
 				}
-
 				lvFiles.setBaseAdapter(lvAdapter);
 			}
 		};
@@ -308,7 +309,6 @@ public class SelectDB extends ActivityBase {
 					if (lvFiles.isDragable()) {
 						if (!(firstAndLast.x <= id && firstAndLast.y >= id)) {
 							lvFiles.scrollToItem(id);
-							Log.debug(log, "Scroll to:" + id);
 						}
 					}
 					break;
@@ -394,11 +394,12 @@ public class SelectDB extends ActivityBase {
 					Config.SpoilerFolderLocal.setValue(folder + "Spoilers");
 					Config.TileCacheFolderLocal.setValue(folder + "Cache");
 					Config.AcceptChanges();
-					Log.debug(log, NewDB_Name + " has own Repository:\n" + //
-							Config.DescriptionImageFolderLocal.getValue() + ", \n" + //
-							Config.MapPackFolderLocal.getValue() + ", \n" + //
-							Config.SpoilerFolderLocal.getValue() + ", \n" + //
-							Config.TileCacheFolderLocal.getValue()//
+					Log.debug(log,
+							NewDB_Name + " has own Repository:\n" + //
+									Config.DescriptionImageFolderLocal.getValue() + ", \n" + //
+									Config.MapPackFolderLocal.getValue() + ", \n" + //
+									Config.SpoilerFolderLocal.getValue() + ", \n" + //
+									Config.TileCacheFolderLocal.getValue()//
 					);
 
 					// Create Folder?
@@ -407,11 +408,12 @@ public class SelectDB extends ActivityBase {
 					creationOK = creationOK && FileIO.createDirectory(Config.SpoilerFolderLocal.getValue());
 					creationOK = creationOK && FileIO.createDirectory(Config.TileCacheFolderLocal.getValue());
 					if (!creationOK)
-						Log.debug(log, "Problem with creation of one of the Directories:" + //
-								Config.DescriptionImageFolderLocal.getValue() + ", " + //
-								Config.MapPackFolderLocal.getValue() + ", " + //
-								Config.SpoilerFolderLocal.getValue() + ", " + //
-								Config.TileCacheFolderLocal.getValue()//
+						Log.debug(log,
+								"Problem with creation of one of the Directories:" + //
+										Config.DescriptionImageFolderLocal.getValue() + ", " + //
+										Config.MapPackFolderLocal.getValue() + ", " + //
+										Config.SpoilerFolderLocal.getValue() + ", " + //
+										Config.TileCacheFolderLocal.getValue()//
 						);
 				}
 
@@ -467,7 +469,7 @@ public class SelectDB extends ActivityBase {
 		Config.DatabasePath.setValue(path);
 		Config.AcceptChanges();
 
-		ManagerBase.Manager.initialMapPacks();
+		ManagerBase.Manager.initMapPacks();
 
 		finish();
 		if (returnListener != null)
@@ -524,7 +526,7 @@ public class SelectDB extends ActivityBase {
 
 		@Override
 		public ListViewItemBase getView(int position) {
-			SelectDBItem v = new SelectDBItem(recItem, position, files.get(position), countList[position]);
+			SelectDBItem v = new SelectDBItem(recItem, position, files.get(position), fileInfos[position]);
 			v.setOnClickListener(onItemClickListener);
 			return v;
 		}
@@ -640,7 +642,7 @@ public class SelectDB extends ActivityBase {
 
 		lvAdapter = null;
 		AktFile = null;
-		countList = null;
+		fileInfos = null;
 
 		returnListener = null;
 		super.dispose();

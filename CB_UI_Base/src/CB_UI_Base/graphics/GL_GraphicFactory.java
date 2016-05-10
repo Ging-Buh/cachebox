@@ -21,10 +21,17 @@ import java.util.Hashtable;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.core.mapelements.PointTextContainer;
+import org.mapsforge.core.mapelements.SymbolContainer;
+import org.mapsforge.core.model.Point;
+
+import com.badlogic.gdx.math.EarClippingTriangulator;
 
 import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_UI_Base.graphics.Images.VectorDrawable;
@@ -37,8 +44,6 @@ import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Paint;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Path;
 import CB_Utils.Util.HSV_Color;
-
-import com.badlogic.gdx.math.EarClippingTriangulator;
 
 /**
  * @author Longri
@@ -91,6 +96,7 @@ public class GL_GraphicFactory implements ext_GraphicFactory {
 		return new GL_Matrix(matrix);
 	}
 
+	@Override
 	public Paint createPaint(Paint paint) {
 		return new GL_Paint(paint);
 	}
@@ -178,15 +184,21 @@ public class GL_GraphicFactory implements ext_GraphicFactory {
 	}
 
 	@Override
-	public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int HashCode) throws IOException {
+	public PointTextContainer createPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack, SymbolContainer symbolContainer, Position position, int maxTextWidth) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int width, int height, int percent, int hash) throws IOException {
 		// First show at Buffer
-		if (BmpBuffer.containsKey(HashCode)) {
-			return BmpBuffer.get(HashCode);
+		if (BmpBuffer.containsKey(hash)) {
+			return BmpBuffer.get(hash);
 		}
 
 		try {
 			ResourceBitmap bmp = SVG.createBmpFromSVG(this, inputStream, scaleFactor);
-			BmpBuffer.put(HashCode, bmp);
+			BmpBuffer.put(hash, bmp);
 			return bmp;
 		} catch (SVGParseException e) {
 

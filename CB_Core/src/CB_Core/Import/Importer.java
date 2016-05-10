@@ -461,7 +461,7 @@ public class Importer {
 					return 0;
 				}
 
-				if (BreakawayImportThread.isCanceld())
+				if (BreakawayImportThread.isCanceled())
 					return 0;
 
 				cnt++;
@@ -546,16 +546,17 @@ public class Importer {
 	 * return;<br>
 	 * <br>
 	 */
-	private int importImagesForCacheNew(ImporterProgress ip, boolean descriptionImagesUpdated, boolean additionalImagesUpdated, long id, String gcCode, String name, String description, String uri, boolean importAlways) {
+	private int importImagesForCacheNew(ImporterProgress progressReporter, boolean descriptionImagesUpdated, boolean additionalImagesUpdated, long id, String gcCode, String name, String description, String uri, boolean importAlways) {
 		boolean dbUpdate = false;
 
 		// if (!importAlways)
 		// {
 		// 2014-06-19 - Ging-Buh:
 		// removed this function because spoiler and images was not imported when at least one image of this cache exists.
-		// This is not good because in the DB of each cache is stored whether the images are actual. If they are not actual the image
-		// should be laoded.
-		// the .changed file is no longer used too. The information about changed caches is stored in DB
+		// This is not good because in the DB of each cache is stored whether the images are actual. 
+		// If they are not actual the image should be loaded.
+		// the changed file is no longer used too. 
+		// The information about changed caches is stored in DB
 		// if (!descriptionImagesUpdated)
 		// {
 		// if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0)
@@ -598,7 +599,7 @@ public class Importer {
 		// { String.valueOf(id) });
 		// }
 
-		return DescriptionImageGrabber.GrabImagesSelectedByCache(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, name, description, uri);
+		return DescriptionImageGrabber.GrabImagesSelectedByCache(progressReporter, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, name, description, uri);
 	}
 
 	/**

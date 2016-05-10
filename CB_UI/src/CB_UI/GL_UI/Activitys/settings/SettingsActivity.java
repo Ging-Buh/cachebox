@@ -62,6 +62,7 @@ import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.Config_Core;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Settings.Audio;
 import CB_Utils.Settings.SettingBase;
@@ -151,7 +152,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				Menu icm = new Menu("menu_mapviewgl");
+				Menu icm = new Menu("Settings");
 				icm.addOnClickListener(new OnClickListener() {
 
 					@Override
@@ -159,11 +160,13 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 						switch (((MenuItem) v).getMenuItemId()) {
 						case MenuID.MI_SHOW_EXPERT:
 							Config.SettingsShowExpert.setValue(!Config.SettingsShowExpert.getValue());
+							Config.SettingsShowAll.setValue(false);
 							resortList();
 							return true;
 
 						case MenuID.MI_SHOW_ALL:
 							Config.SettingsShowAll.setValue(!Config.SettingsShowAll.getValue());
+							Config.SettingsShowExpert.setValue(false);
 							resortList();
 							return true;
 						}
@@ -171,16 +174,11 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 						return false;
 					}
 				});
-				MenuItem mi;
 
-				mi = icm.addItem(MenuID.MI_SHOW_EXPERT, "Settings_Expert");
-				mi.setCheckable(true);
-				mi.setChecked(Config.SettingsShowExpert.getValue());
-
-				mi = icm.addItem(MenuID.MI_SHOW_ALL, "Settings_All");
-
-				mi.setCheckable(true);
-				mi.setChecked(Config.SettingsShowAll.getValue());
+				if (Config.SettingsShowAll.getValue())
+					Config.SettingsShowExpert.setValue(false);
+				icm.addCheckableItem(MenuID.MI_SHOW_EXPERT, "Settings_Expert", Config.SettingsShowExpert.getValue());
+				icm.addCheckableItem(MenuID.MI_SHOW_ALL, "Settings_All", Config.SettingsShowAll.getValue());
 
 				icm.setPrompt(Translation.Get("changeSettingsVisibility"));
 
@@ -355,9 +353,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 				for (Iterator<SettingBase<?>> it = SortedSettingList.iterator(); it.hasNext();) {
 					SettingBase<?> settingItem = it.next();
 					if (settingItem.getCategory().name().equals(cat.name())) {
-						// item nur zur Liste Hinzufügen, wenn der
-						// SettingModus
-						// dies auch zu lässt.
+						// item nur zur Liste Hinzufügen, wenn der SettingModus dies auch zulässt.
 						if (settingItem.getModus() != SettingModus.develop || GlobalCore.isDevelop()) {
 
 							if (((settingItem.getModus() == SettingModus.Normal) || (settingItem.getModus() == SettingModus.Expert && Config.SettingsShowExpert.getValue()) || Config.SettingsShowAll.getValue())
@@ -1361,55 +1357,38 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	}
 
 	private CB_View_Base getSkinSpinnerView(final SettingsListButtonSkinSpinner<?> SB) {
-
 		String SkinFolder = Config.mWorkPath + "/skins";
 		File dir = FileFactory.createFile(SkinFolder);
-
 		final ArrayList<String> skinFolders = new ArrayList<String>();
-		File[] x = dir.listFiles(new FilenameFilter() {
-
+		dir.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File f, String name) {
 				if (f.isDirectory()) {
 					String Path = f.getAbsolutePath();
 					if (!Path.contains(".svn")) {
-						skinFolders.add(Path);
+						skinFolders.add(name);
 					}
-
 				}
 				return false;
 			}
 		});
 
-		//skinFolders = x.size()
 		final String[] items = new String[skinFolders.size() + 2];// + internal (default and small)
-
 		items[0] = "default";
 		items[1] = "small";
-
 		int index = 2;
 		int selection = -1;
-
-		if (Config.SkinFolder.getValue().contains("default"))
+		if (Config.SkinFolder.getValue().equals("default"))
 			selection = 0;
-		if (Config.SkinFolder.getValue().contains("small"))
+		if (Config.SkinFolder.getValue().equals("small"))
 			selection = 1;
-
 		for (String tmp : skinFolders) {
-			if (Config.SkinFolder.getValue().equals(tmp))
+			if (Config.SkinFolder.getValue().endsWith(tmp))
 				selection = index;
-
-			// cut folder name
-			int Pos = tmp.lastIndexOf("/");
-			if (Pos == -1)
-				Pos = tmp.lastIndexOf("\\");
-			tmp = tmp.substring(Pos + 1);
-
 			items[index++] = tmp;
 		}
 
 		SpinnerAdapter adapter = new SpinnerAdapter() {
-
 			@Override
 			public String getText(int position) {
 				return items[position];
@@ -1427,28 +1406,15 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		};
 
 		final Spinner spinner = new Spinner(itemRec, "SkinSpinner", adapter, new ISelectionChangedListener() {
-
 			@Override
 			public void selectionChanged(int index) {
 				String selected = items[index];
-
 				if (selected.equals("default")) {
 					Config.SkinFolder.setValue("default");
 				} else if (selected.equals("small")) {
 					Config.SkinFolder.setValue("small");
 				} else {
-					for (String tmp : skinFolders) {
-						// cut folder name
-						int Pos = tmp.lastIndexOf("/");
-						if (Pos == -1)
-							Pos = tmp.lastIndexOf("\\");
-						String tmp2 = tmp.substring(Pos + 1);
-						if (selected.equals(tmp2)) {
-							Config.SkinFolder.setValue(tmp);
-
-							break;
-						}
-					}
+					Config.SkinFolder.setValue(Config_Core.mWorkPath + "/skins/" + selected);
 				}
 			}
 		});

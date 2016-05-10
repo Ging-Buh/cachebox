@@ -266,17 +266,17 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		// from create
 
-		String currentLayerName = Config.CurrentMapLayer.getValue();
+		String[] currentLayerNames = Config.CurrentMapLayer.getValue();
 		if (ManagerBase.Manager != null) {
 			if (mapTileLoader.getCurrentLayer() == null) {
-				mapTileLoader.setLayer(ManagerBase.Manager.GetLayerByName(currentLayerName, currentLayerName, ""));
+				mapTileLoader.setCurrentLayer(ManagerBase.Manager.getOrAddLayer(currentLayerNames, currentLayerNames[0], ""));
 			}
 		}
 
-		String currentOverlayLayerName = Config.CurrentMapOverlayLayer.getValue();
+		String[] currentOverlayLayerName = new String[] { Config.CurrentMapOverlayLayer.getValue() };
 		if (ManagerBase.Manager != null) {
-			if (mapTileLoader.getCurrentOverlayLayer() == null && currentOverlayLayerName.length() > 0)
-				mapTileLoader.setOverlayLayer(ManagerBase.Manager.GetLayerByName(currentOverlayLayerName, currentOverlayLayerName, ""));
+			if (mapTileLoader.getCurrentOverlayLayer() == null && currentOverlayLayerName[0].length() > 0)
+				mapTileLoader.setCurrentOverlayLayer(ManagerBase.Manager.getOrAddLayer(currentOverlayLayerName, currentOverlayLayerName[0], ""));
 		}
 
 		iconFactor = Config.MapViewDPIFaktor.getValue();
@@ -378,6 +378,10 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 							try {
 								CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, infoBubble.getCache().getGPXFilename_ID(), this);
+								Cache c = apiCaches.get(0);
+								if (c.getGcCode() == GcCode) {
+									c.setApiStatus(Cache.NOTLITE);
+								}
 								GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
 							} catch (InterruptedException e) {
 								e.printStackTrace();
@@ -1234,6 +1238,10 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	private static boolean MapTileLoderPreInitial = false;
 	private static boolean MapTileLoderPreInitialAtWork = false;
 
+	/**
+	 * setNewSettings
+	 * 
+	 */
 	@Override
 	public void setNewSettings(int InitialFlags) {
 		if ((InitialFlags & INITIAL_SETTINGS) != 0) {
@@ -1286,79 +1294,36 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		}
 
 		if ((InitialFlags & INITIAL_THEME) != 0) {
-			String themePath = null;
-
+			mapsForgeThemePath = null;
 			boolean useInvertNightTheme = false;
-
-			// Zustand der Karte CarMode/NormalMode
 			if (CarMode) {
-
 				ManagerBase.Manager.textScale = ManagerBase.DEFAULT_TEXT_SCALE * 1.35f;
-
 				if (Config.nightMode.getValue()) {
-					// zuerst schauen, ob ein Render Theme im Custom Skin Ordner Liegt
-					themePath = ifCarThemeExist(PathCustomNight);
-
-					if (themePath == null) {// wenn kein Night Custum skin vorhanden, dann nach einem Day CostumTheme suchen, welches dann Invertiert wird!
-						themePath = ifCarThemeExist(PathCustom);
-						if (themePath != null)
-							useInvertNightTheme = true;
-					}
-
-					if (themePath == null) {// wenn kein Night Default skin vorhanden, dann nach einem Day DayTheme suchen, welches dann Invertiert wird!
-						themePath = ManagerBase.INTERNAL_CAR_THEME;
+					if (!setTheme(Config.MapsforgeCarNightTheme.getValue())) {
 						useInvertNightTheme = true;
+						if (!setTheme(Config.MapsforgeCarDayTheme.getValue())) {
+							mapsForgeThemePath = ManagerBase.INTERNAL_CAR_THEME;
+						}
 					}
-
 				} else {
-					// zuerst schauen, ob ein Render Theme im Custom Skin Ordner Liegt
-					themePath = ifCarThemeExist(PathCustom);
-
-					if (themePath == null)
-						themePath = ifCarThemeExist(PathDefault);
+					if (!setTheme(Config.MapsforgeCarDayTheme.getValue())) {
+						mapsForgeThemePath = ManagerBase.INTERNAL_CAR_THEME;
+					}
 				}
-
-				if (themePath == null) {
-					themePath = ManagerBase.INTERNAL_CAR_THEME;
-				}
-
 			} else {
 				ManagerBase.Manager.textScale = ManagerBase.DEFAULT_TEXT_SCALE;
-			}
-
-			if (themePath == null) {
-
-				// Entweder wir sind nicht im CarMode oder es wurde kein Passender Theme für den CarMode gefunden!
 				if (Config.nightMode.getValue()) {
-					themePath = ifThemeExist(Config.MapsforgeNightTheme.getValue());
-				}
-
-				if (themePath == null) {
-					if (Config.nightMode.getValue())
+					if (!setTheme(Config.MapsforgeNightTheme.getValue())) {
 						useInvertNightTheme = true;
-					themePath = ifThemeExist(Config.MapsforgeDayTheme.getValue());
-
-				}
-
-			}
-
-			if (themePath != null) {
-				if (Mode == MapMode.Compass) {
-					if (!ManagerBase.Manager.isRenderThemeSetted()) {
-						ManagerBase.Manager.setUseInvertedNightTheme(useInvertNightTheme);
-						ManagerBase.Manager.setRenderTheme(themePath);
+						setTheme(Config.MapsforgeDayTheme.getValue());
+						// else themePath = null : defaults to internal RenderTheme OSMARENDER
 					}
 				} else {
-					ManagerBase.Manager.setUseInvertedNightTheme(useInvertNightTheme);
-					ManagerBase.Manager.setRenderTheme(themePath);
+					setTheme(Config.MapsforgeDayTheme.getValue());
+					// else themePath = null : defaults to internal RenderTheme OSMARENDER
 				}
-
-			} else {
-				// set Theme to null
-				ManagerBase.Manager.setUseInvertedNightTheme(useInvertNightTheme);
-				ManagerBase.Manager.clearRenderTheme();
 			}
-
+			ManagerBase.Manager.setRenderTheme(mapsForgeThemePath, useInvertNightTheme);
 		}
 
 		if ((InitialFlags & INITIAL_WP_LIST) != 0) {
@@ -1374,7 +1339,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		}
 
 		//preload only if Mapsforge layer selected
-		if (mapTileLoader != null && mapTileLoader.getCurrentLayer() != null && mapTileLoader.getCurrentLayer().isMapsForge) {
+		if (mapTileLoader != null && mapTileLoader.getCurrentLayer() != null && mapTileLoader.getCurrentLayer().isMapsForge()) {
 			if (!MapTileLoderPreInitial) {
 				MapTileLoderPreInitial = true;
 

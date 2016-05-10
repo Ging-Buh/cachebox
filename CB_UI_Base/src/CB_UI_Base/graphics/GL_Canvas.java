@@ -319,4 +319,10 @@ public class GL_Canvas implements ext_Canvas {
 
 	}
 
+	@Override
+	public void setClipDifference(int left, int top, int width, int height) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

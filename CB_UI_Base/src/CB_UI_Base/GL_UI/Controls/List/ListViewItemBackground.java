@@ -1,11 +1,11 @@
 package CB_UI_Base.GL_UI.Controls.List;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
+
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
-
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 
 public abstract class ListViewItemBackground extends ListViewItemBase {
 
@@ -50,19 +50,20 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
 
 		if (this.isDisposed() || !this.isVisible())
 			return;
+
 		super.render(batch);
+
 		// Draw Background
-		if (mBackIsInitial) {
-			Boolean BackGroundChanger = ((this.getIndex() % 2) == 1);
-			if (isSelected) {
-				backSelect.draw(batch, 0, 0, this.getWidth(), this.getHeight());
-			} else if (BackGroundChanger) {
-				back1.draw(batch, 0, 0, this.getWidth(), this.getHeight());
-			} else {
-				back2.draw(batch, 0, 0, this.getWidth(), this.getHeight());
-			}
-		} else {
+		if (!mBackIsInitial) {
 			Initial();
+		}
+		Boolean BackGroundChanger = ((this.getIndex() % 2) == 1);
+		if (isSelected) {
+			backSelect.draw(batch, 0, 0, this.getWidth(), this.getHeight());
+		} else if (BackGroundChanger) {
+			back1.draw(batch, 0, 0, this.getWidth(), this.getHeight());
+		} else {
+			back2.draw(batch, 0, 0, this.getWidth(), this.getHeight());
 		}
 
 	}
@@ -71,19 +72,15 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
 	public boolean onTouchDown(int x, int y, int pointer, int button) {
 		isPressed = true;
 		GL.that.renderOnce();
-
 		return false;
 	}
 
 	@Override
 	public boolean onTouchUp(int x, int y, int pointer, int button) {
-
 		if (isPressed) {
 			isPressed = false;
 		}
-
 		GL.that.renderOnce();
-
 		return false;
 	}
 
@@ -103,10 +100,8 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
 
 	@Override
 	public float getLeftWidth() {
-
 		if (!mBackIsInitial)
 			Initial();
-
 		if (isSelected) {
 			return backSelect.getLeftWidth();
 		} else if ((this.getIndex() % 2) == 1) {
@@ -120,7 +115,6 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
 	public float getBottomHeight() {
 		if (!mBackIsInitial)
 			Initial();
-
 		if (isSelected) {
 			return backSelect.getBottomHeight();
 		} else if ((this.getIndex() % 2) == 1) {
@@ -132,10 +126,8 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
 
 	@Override
 	public float getRightWidth() {
-
 		if (!mBackIsInitial)
 			Initial();
-
 		if (isSelected) {
 			return backSelect.getRightWidth();
 		} else if ((this.getIndex() % 2) == 1) {
@@ -147,10 +139,8 @@ public abstract class ListViewItemBackground extends ListViewItemBase {
 
 	@Override
 	public float getTopHeight() {
-
 		if (!mBackIsInitial)
 			Initial();
-
 		if (isSelected) {
 			return backSelect.getTopHeight();
 		} else if ((this.getIndex() % 2) == 1) {

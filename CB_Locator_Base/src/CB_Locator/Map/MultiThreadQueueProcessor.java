@@ -193,7 +193,7 @@ class MultiThreadQueueProcessor extends Thread {
 			// Redraw Map after a new Tile was loaded or generated
 			GL.that.renderOnce();
 		} else {
-			if (ManagerBase.Manager.CacheTile(queueData.CurrentLayer, desc)) {
+			if (ManagerBase.Manager.cacheTile(queueData.CurrentLayer, desc)) {
 				tile = ManagerBase.Manager.LoadLocalPixmap(queueData.CurrentLayer, desc, ThreadId);
 				addLoadedTile(desc, tile);
 				// Redraw Map after a new Tile was loaded or generated
@@ -221,8 +221,8 @@ class MultiThreadQueueProcessor extends Thread {
 			// Redraw Map after a new Tile was loaded or generated
 			GL.that.renderOnce();
 		} else {
-			ManagerBase.Manager.CacheTile(queueData.CurrentOverlayLayer, desc);
-			// to avoid endless trys
+			ManagerBase.Manager.cacheTile(queueData.CurrentOverlayLayer, desc);
+			// to avoid endless tries
 			RemoveFromQueuedTiles(desc);
 		}
 	}

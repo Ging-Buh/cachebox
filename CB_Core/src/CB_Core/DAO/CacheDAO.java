@@ -132,7 +132,7 @@ public class CacheDAO {
 		detail.PlacedBy = reader.getString(readerOffset + 0).trim();
 
 		if (reader.isNull(readerOffset + 5))
-			detail.ApiStatus = (byte) 0;
+			detail.ApiStatus = Cache.NOTLIVE;
 		else
 			detail.ApiStatus = (byte) reader.getInt(readerOffset + 5);
 

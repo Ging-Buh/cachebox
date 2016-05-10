@@ -19,7 +19,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
@@ -460,8 +460,6 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
 		float versatz = (i < lastAndFirst.y) ? -getListViewLength() + this.mBaseAdapter.getItemSize(i) : 0;
 
-		Log.debug(log, "SetListPos -> ScrollTO Item [" + i + "]");
-
 		try {
 			if (i >= 0 && i < mPosDefault.size()) {
 				setListPos(mPosDefault.get(i) + versatz, true);
@@ -475,8 +473,6 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	}
 
 	public void scrollTo(float Pos) {
-
-		//Log.debug(log, "Scroll to()" + Trace.getCallerName() + " from " + mPos + " TO:" + Pos);
 
 		mAnimationTarget = Pos;
 		stopTimer();

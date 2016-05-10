@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014, 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,6 +23,8 @@ import org.mapsforge.core.graphics.FontStyle;
 import org.mapsforge.core.graphics.GraphicContext;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
+import org.mapsforge.map.model.DisplayModel;
 
 /**
  * An FPS counter measures the drawing frame rate.
@@ -29,22 +32,42 @@ import org.mapsforge.core.graphics.Paint;
 public class FpsCounter {
 	private static final long ONE_SECOND = TimeUnit.SECONDS.toNanos(1);
 
-	private static Paint createPaint(GraphicFactory graphicFactory) {
+	private static Paint createPaintFront(GraphicFactory graphicFactory, DisplayModel displayModel) {
 		Paint paint = graphicFactory.createPaint();
-		paint.setColor(Color.BLACK);
+		paint.setColor(Color.RED);
 		paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
-		paint.setTextSize(25);
+		paint.setTextSize(25 * displayModel.getScaleFactor());
 		return paint;
 	}
 
+	private static Paint createPaintBack(GraphicFactory graphicFactory, DisplayModel displayModel) {
+		Paint paint = graphicFactory.createPaint();
+		paint.setColor(Color.WHITE);
+		paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
+		paint.setTextSize(25 * displayModel.getScaleFactor());
+		paint.setStrokeWidth(2 * displayModel.getScaleFactor());
+		paint.setStyle(Style.STROKE);
+		return paint;
+	}
+
+	private final DisplayModel displayModel;
 	private String fps;
 	private int frameCounter;
 	private long lastTime;
-	private final Paint paint;
+	private final Paint paintBack, paintFront;
 	private boolean visible;
 
-	public FpsCounter(GraphicFactory graphicFactory) {
-		this.paint = createPaint(graphicFactory);
+	public FpsCounter(GraphicFactory graphicFactory, DisplayModel displayModel) {
+		this.displayModel = displayModel;
+
+		this.paintBack = createPaintBack(graphicFactory, displayModel);
+		this.paintFront = createPaintFront(graphicFactory, displayModel);
+	}
+
+	public FpsCounter(DisplayModel displayModel, Paint paintBack, Paint paintFront) {
+		this.displayModel = displayModel;
+		this.paintBack = paintBack;
+		this.paintFront = paintFront;
 	}
 
 	public void draw(GraphicContext graphicContext) {
@@ -60,7 +83,10 @@ public class FpsCounter {
 			this.frameCounter = 0;
 		}
 
-		graphicContext.drawText(this.fps, 20, 40, this.paint);
+		int x = (int) (20 * displayModel.getScaleFactor());
+		int y = (int) (40 * displayModel.getScaleFactor());
+		graphicContext.drawText(this.fps, x, y, this.paintBack);
+		graphicContext.drawText(this.fps, x, y, this.paintFront);
 		++this.frameCounter;
 	}
 

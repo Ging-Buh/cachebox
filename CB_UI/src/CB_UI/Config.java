@@ -185,7 +185,6 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
 		validateSetting("CacheMapData", "false");
 		validateSetting("CacheImageData", "false");
 		validateSetting("OsmMinLevel", "8");
-		validateSetting("OsmMaxImportLevel", "16");
 		validateSetting("OsmMaxLevel", "17");
 		validateSetting("OsmCoverage", "1000");
 		validateSetting("SuppressPowerSaving", "true");
@@ -197,7 +196,6 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
 		validateSetting("MapShowTitles", "true");
 		validateSetting("ShowKeypad", "true");
 		validateSetting("FoundOffset", "0");
-		validateSetting("ImportLayerOsm", "true");
 		validateSetting("CurrentMapLayer", "Mapnik");
 		validateSetting("AutoUpdate", "http://www.getcachebox.net/latest-stable");
 		validateSetting("NavigationProvider", "http://openrouteservice.org/php/OpenLSRS_DetermineRoute.php");
@@ -209,14 +207,10 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
 		validateSetting("AddNoteTemplate", "Logged it with DroidCachebox!");
 		validateSetting("ResortRepaint", "false");
 		validateSetting("TrackDistance", "3");
-		validateSetting("MapMaxCachesLabel", "12");
-		validateSetting("MapMaxCachesDisplay_config", "10000");
 		validateSetting("SoundApproachDistance", "50");
-		validateSetting("mapMaxCachesDisplayLarge_config", "75");
 		// validateSetting("Filter", PresetListView.presets[0].toString());
 		validateSetting("ZoomCross", "16");
 		// validateSetting("TomTomExportFolder", Global.AppPath + "/user");
-		validateSetting("GCAutoSyncCachesFound", "true");
 		validateSetting("GCAdditionalImageDownload", "false");
 		validateSetting("GCRequestDelay", "10");
 
@@ -233,7 +227,6 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
 
 		validateSetting("DebugShowPanel", "false");
 		validateSetting("DebugMemory", "false");
-		validateSetting("DebugShowMsg", "false");
 
 		validateSetting("LockM", "1");
 		validateSetting("LockSec", "0");

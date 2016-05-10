@@ -4,16 +4,16 @@ import java.awt.event.MouseEvent;
 import java.util.prefs.BackingStoreException;
 
 import org.mapsforge.core.model.LatLong;
-import org.mapsforge.map.model.Model;
-import org.mapsforge.map.swing.controller.MouseEventListener;
+import org.mapsforge.map.awt.input.MouseEventListener;
+import org.mapsforge.map.model.MapViewPosition;
 
 import ch.fhnw.imvs.gpssimulator.SimulatorMain;
 import ch.fhnw.imvs.gpssimulator.data.GPSData;
 
 public class GpsSimmulatorMouseEventListener extends MouseEventListener {
 
-	public GpsSimmulatorMouseEventListener(Model model) {
-		super(model);
+	public GpsSimmulatorMouseEventListener(MapViewPosition position) {
+		super(position);
 	}
 
 	@Override

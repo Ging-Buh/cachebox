@@ -20,12 +20,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactory;
 
 import CB_UI_Base.Global;
 import CB_UI_Base.GL_UI.Controls.html.elementhandler.ListElementHandler;
 import CB_UI_Base.Math.Stack;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.EndTag;
 import net.htmlparser.jericho.Processor;
@@ -370,6 +371,8 @@ public class CB_HtmlProcessor extends Processor {
 	}
 
 	private List<Html_Segment> getSegmentListFromElement(Element e) {
+	if (e == null)
+		return new ArrayList<Html_Segment>();
 	List<Html_Segment> elementSegmentList = new CB_HtmlProcessor(this.renderer, e.getContent(), this.renderer.getHRLineLength(), this.renderer.getNewLine(), this.renderer.getIncludeHyperlinkURLs(), this.renderer.getIncludeAlternateText(),
 		this.renderer.getDecorateFontStyles(), this.renderer.getConvertNonBreakingSpaces(), this.renderer.getBlockIndentSize(), this.renderer.getListIndentSize(), this.renderer.getListBullets(), this.renderer.getTableCellSeparator())
 			.getElementList();

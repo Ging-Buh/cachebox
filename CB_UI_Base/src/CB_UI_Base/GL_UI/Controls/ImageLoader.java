@@ -19,9 +19,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
-import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.TextureLoader;
+import com.badlogic.gdx.assets.loaders.resolvers.AbsoluteFileHandleResolver;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -43,6 +46,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.utils.GifDecoder;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.Downloader;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.FileFactory;
@@ -54,6 +58,7 @@ public class ImageLoader {
 
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(ImageLoader.class);
 
+	private final boolean thumbnail;
 	boolean ImageLoadError = false;
 	private int State = 0;
 	private Thread loadingThread;
@@ -77,6 +82,14 @@ public class ImageLoader {
 	private float spriteHeight;
 	boolean reziseHeight;
 
+	public ImageLoader() {
+		thumbnail = false;
+	}
+
+	public ImageLoader(boolean thumb) {
+		thumbnail = thumb;
+	}
+
 	public interface resize {
 		public void sizechanged(float width, float height);
 	}
@@ -87,6 +100,13 @@ public class ImageLoader {
 	public void setResizeListener(resize listener, float width) {
 		resizeListener = listener;
 		resizeWidth = width;
+	}
+
+	private String ThumbPräfix = "";
+
+	public void setThumbWidth(float width, String präfix) {
+		resizeWidth = width;
+		ThumbPräfix = präfix;
 	}
 
 	public resize getResizeListener() {
@@ -329,7 +349,7 @@ public class ImageLoader {
 		mPath = Path.replace("file://", "");
 		if (getDrawable(0) != null) {
 			dispose();
-		// das laden des Images in das Sprite darf erst in der Render Methode passieren, damit es aus dem GL_Thread herraus l�uft.
+			// das laden des Images in das Sprite darf erst in der Render Methode passieren, damit es aus dem GL_Thread herraus l�uft.
 		}
 		generate();
 	}
@@ -359,6 +379,7 @@ public class ImageLoader {
 	}
 
 	private void generate() {
+		inLoad = true;
 		if (ImageLoadError) {
 			setSprite(Sprites.getSprite(IconName.DELETE.name()), this.reziseHeight);
 			ImageLoadError = false;
@@ -378,11 +399,7 @@ public class ImageLoader {
 						if (mPath.endsWith(".gif")) {
 							anim = GifDecoder.loadGIFAnimation(PlayMode.LOOP, Gdx.files.absolute(mPath).read());
 						} else {
-							mImageTex = new Texture(Gdx.files.absolute(mPath));
-							Sprite sprite = new com.badlogic.gdx.graphics.g2d.Sprite(mImageTex);
-							spriteWidth = sprite.getWidth();
-							spriteHeight = sprite.getHeight();
-							setSprite(sprite, reziseHeight);
+							loadAsync();
 						}
 
 					} catch (com.badlogic.gdx.utils.GdxRuntimeException e) {
@@ -406,6 +423,56 @@ public class ImageLoader {
 
 		if (State == 6)
 			setAtlas(this.AtlasPath, this.ImgName, reziseHeight);
+	}
+
+	private static AssetManager assetManager = new AssetManager();
+
+	private void loadAsync() {
+
+		Thread th = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+
+				// Log.info(log, "LoadAsync " + mPath + ":" + ImgName);
+
+				if (thumbnail)
+					createThumb();
+				final TextureLoader tl = new TextureLoader(new AbsoluteFileHandleResolver());
+				try {
+					tl.loadAsync(assetManager, ImgName, Gdx.files.absolute(mPath), null);
+					GL.that.RunOnGL(new IRunOnGL() {
+
+						@Override
+						public void run() {
+							// Log.info(log, "LoadSync " + mPath + ":" + ImgName);
+							mImageTex = tl.loadSync(assetManager, ImgName, Gdx.files.absolute(mPath), null);
+							Sprite sprite = new com.badlogic.gdx.graphics.g2d.Sprite(mImageTex);
+							spriteWidth = sprite.getWidth();
+							spriteHeight = sprite.getHeight();
+							setSprite(sprite, reziseHeight);
+							// Log.info(log, "LoadSync " + mPath + ":" + ImgName + " ready");
+						}
+					});
+				} catch (Exception e) {
+					//e.printStackTrace();
+				}
+
+			}
+		});
+		th.start();
+	}
+
+	private String originalPath = null;
+
+	private void createThumb() {
+		String tmp = FileFactory.createThumb(mPath, (int) resizeWidth, ThumbPräfix);
+		if (tmp != null) {
+			originalPath = mPath;
+			mPath = tmp;
+		} else {
+			Log.err(log, "Thumb not generated for " + mPath + " ! " + ThumbPräfix);
+		}
 	}
 
 	/**
@@ -473,8 +540,14 @@ public class ImageLoader {
 
 			@Override
 			public void run() {
-				if (mImageTex != null)
+				if (mImageTex != null) {
+					try {
+						assetManager.unload(ImgName);
+					} catch (Exception e) {
+					}
 					mImageTex.dispose();
+				}
+
 				mImageTex = null;
 				mDrawable = null;
 				loadingThread = null;
@@ -515,4 +588,11 @@ public class ImageLoader {
 	public String getImagePath() {
 		return mPath;
 	}
+
+	public String getOriginalImagePath() {
+		if (originalPath == null)
+			return mPath;
+		return originalPath;
+	}
+
 }

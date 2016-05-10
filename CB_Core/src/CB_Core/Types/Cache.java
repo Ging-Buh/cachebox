@@ -444,7 +444,7 @@ public class Cache implements Comparable<Cache>, Serializable {
 	}
 
 	/**
-	 * Gibt die Entfernung zur uebergebenen User Position als Float zurueck und Speichert die Aktueller User Position fuer alle Caches ab.
+	 * Gibt die Entfernung zur uebergebenen User Position als Float zurueck.
 	 * 
 	 * @return Entfernung zur uebergebenen User Position als Float
 	 */
@@ -877,11 +877,15 @@ public class Cache implements Comparable<Cache>, Serializable {
 		}
 	}
 
+	public final static byte NOTLIVE = 0;
+	public final static byte ISLITE = 1;
+	public final static byte NOTLITE = 2;
+
 	public byte getApiStatus() {
 		if (detail != null) {
 			return detail.ApiStatus;
 		} else {
-			return 0;
+			return NOTLIVE;
 		}
 	}
 

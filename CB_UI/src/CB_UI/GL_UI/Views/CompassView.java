@@ -24,7 +24,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import CB_Core.CacheListChangedEventList;
 import CB_Core.CacheListChangedEventListener;
-import CB_Core.CacheTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
@@ -236,7 +235,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 				if (showIcon && Icon != null) {
 					if (aktWaypoint == null) {
 						if (aktCache.CorrectedCoordiantesOrMysterySolved()) {
-							Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + CacheTypes.Mystery.name() + "Solved")));
+							Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + "Solved")));
 						} else {
 							Icon.setDrawable(new SpriteDrawable(Sprites.getSprite("big" + aktCache.Type.name())));
 						}

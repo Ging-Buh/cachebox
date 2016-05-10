@@ -29,7 +29,7 @@ public class Coordinate extends LatLong implements Serializable {
 
 	static final String br = System.getProperty("line.separator");
 
-	protected boolean Valid;
+	protected boolean valid;
 
 	private static final float[] mResults = new float[2];
 
@@ -38,7 +38,7 @@ public class Coordinate extends LatLong implements Serializable {
 	}
 
 	public boolean isValid() {
-		return Valid;
+		return valid;
 	}
 
 	public boolean isZero() {
@@ -48,43 +48,47 @@ public class Coordinate extends LatLong implements Serializable {
 	}
 
 	/**
-	 * Gibt einen Formatierten String dieser Koordinate wieder
+	 * Gibt einen formatierten String dieser Koordinate wieder
+	 *   54°47′15.96″N 5°21′12.32″O
+	 * N 48° 40.441 E 009° 23.470
+	 *   54.787767° 5.353422°
+	 * UTM: 32U E 528797 N 5391292
 	 * 
 	 * @return
 	 */
 	public String FormatCoordinate() {
-		if (Valid)
+		if (valid)
 			return Formatter.FormatLatitudeDM(getLatitude()) + " / " + Formatter.FormatLongitudeDM(getLongitude());
 		else
 			return "not Valid";
 	}
 
 	/**
-	 * Gibt einen Formatierten String dieser Koordinate in zwei Zeilen wieder
+	 * Gibt einen formatierten String dieser Koordinate in zwei Zeilen wieder
 	 * 
 	 * @return
 	 */
-	public String FormatCoordinateLineBreake() {
-		if (Valid)
+	public String formatCoordinateLineBreak() {
+		if (valid)
 			return Formatter.FormatLatitudeDM(getLatitude()) + br + Formatter.FormatLongitudeDM(getLongitude());
 		else
 			return "not Valid";
 	}
 
-	private static final double ERTH_RADIUS = 6378137.0;
+	private static final double EARTH_RADIUS = 6378137.0;
 
 	public static Coordinate Project(double Latitude, double Longitude, double Direction, double Distance) {
-		double dist = Distance / ERTH_RADIUS; // convert dist to angular distance in radians
+		double dist = Distance / EARTH_RADIUS; // convert dist to angular distance in radians
 		double brng = Direction * MathUtils.DEG_RAD; //
 		double lat1 = Latitude * MathUtils.DEG_RAD;
 		double lon1 = Longitude * MathUtils.DEG_RAD;
 
 		double lat2 = Math.asin(Math.sin(lat1) * Math.cos(dist) + Math.cos(lat1) * Math.sin(dist) * Math.cos(brng));
 		double lon2 = lon1 + Math.atan2(Math.sin(brng) * Math.sin(dist) * Math.cos(lat1), Math.cos(dist) - Math.sin(lat1) * Math.sin(lat2));
-		lon2 = (lon2 + 3 * Math.PI) % (2 * Math.PI) - Math.PI; // normalise to -180..+180�
+		lon2 = (lon2 + 3 * Math.PI) % (2 * Math.PI) - Math.PI; // normalise to -180°..+180°
 
 		Coordinate result = new Coordinate(lat2 * MathUtils.RAD_DEG, lon2 * MathUtils.RAD_DEG);
-		result.Valid = true;
+		result.valid = true;
 		return result;
 
 	}
@@ -216,21 +220,21 @@ public class Coordinate extends LatLong implements Serializable {
 
 	public Coordinate(Coordinate parent) {
 		super(parent.latitude, parent.longitude);
-		this.Valid = parent.Valid;
+		this.valid = parent.valid;
 	}
 
 	public Coordinate(double latitude, double longitude) {
 		super(latitude, longitude);
 		if (latitude == 0 && longitude == 0)
 			return;
-		Valid = true;
+		valid = true;
 	}
 
 	public Coordinate(int latitude, int longitude) {
 		super(latitude, longitude);
 		if (latitude == 0 && longitude == 0)
 			return;
-		Valid = true;
+		valid = true;
 	}
 
 	public Coordinate(String text) {
@@ -240,7 +244,7 @@ public class Coordinate extends LatLong implements Serializable {
 	public Coordinate(double[] coordinate) {
 		super(coordinate[0], coordinate[1]);
 		if (coordinate.length > 2) {
-			this.Valid = coordinate[2] == 1;
+			this.valid = coordinate[2] == 1;
 		}
 	}
 
@@ -295,11 +299,23 @@ public class Coordinate extends LatLong implements Serializable {
 		int ilat = text.indexOf('N');
 		if (ilat < 0)
 			ilat = text.indexOf('S');
+
 		int ilon = text.indexOf('E');
 		if (ilon < 0)
 			ilon = text.indexOf('W');
-		if (ilat < 0)
+
+		if (ilat < 0) {
+			String[] latlon = text.split(" ");
+			if (latlon.length == 2) {
+				try {
+					values[0] = Double.valueOf(latlon[0]);
+					values[1] = Double.valueOf(latlon[1]);
+					values[2] = 1;
+				} catch (Exception e) {
+				}
+			}
 			return values;
+		}
 		if (ilon < 0)
 			return values;
 		if (ilat > ilon)
@@ -385,32 +401,12 @@ public class Coordinate extends LatLong implements Serializable {
 	}
 
 	public void setValid(boolean b) {
-		Valid = b;
+		valid = b;
 	}
 
 	@Override
 	public String toString() {
 		return FormatCoordinate();
-	}
-
-	@Override
-	public double getLatitude() {
-		return super.getLatitude();
-	}
-
-	@Override
-	public double getLongitude() {
-		return super.getLongitude();
-	}
-
-	@Override
-	public int getIntLatitude() {
-		return super.getIntLatitude();
-	}
-
-	@Override
-	public int getIntLongitude() {
-		return super.getIntLongitude();
 	}
 
 }

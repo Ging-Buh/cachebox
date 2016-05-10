@@ -108,7 +108,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 		bCancel.setOnClickListener(new OnClickListener() {
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				if (BreakawayImportThread.isCanceld()) {
+				if (BreakawayImportThread.isCanceled()) {
 					BreakawayImportThread.reset();
 					finish();
 					return true;
@@ -277,7 +277,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 		lblProgressMsg.setText(Translation.Get("DownloadCanceld"));
 		bOK.enable();
 		if (ManagerBase.Manager != null)
-			ManagerBase.Manager.initialMapPacks();
+			ManagerBase.Manager.initMapPacks();
 	}
 
 	private void chkRepository() {
@@ -334,7 +334,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 				lblProgressMsg.setText("");
 
 				if (ManagerBase.Manager != null)
-					ManagerBase.Manager.initialMapPacks();
+					ManagerBase.Manager.initMapPacks();
 			}
 
 		});

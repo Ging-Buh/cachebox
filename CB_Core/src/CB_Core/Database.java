@@ -673,6 +673,7 @@ public abstract class Database extends Database_Core {
 	 */
 	public void DeleteOldLogs(int minToKeep, int LogMaxMonthAge) {
 
+		Log.debug(log, "DeleteOldLogs but keep " + minToKeep + " and not older than " + LogMaxMonthAge);
 		if (LogMaxMonthAge == 0) {
 			// Setting are 'immediately'
 			// Delete all Logs and return
@@ -682,36 +683,42 @@ public abstract class Database extends Database_Core {
 		ArrayList<Long> oldLogCaches = new ArrayList<Long>();
 		Calendar now = Calendar.getInstance();
 		now.add(Calendar.MONTH, -LogMaxMonthAge);
-		String TimeStamp = (now.get(Calendar.YEAR)) + "-" + now.get(Calendar.MONTH) + "-" + now.get(Calendar.DATE);
+		// hint:
+		// months are numbered from 0 onwards in Calendar
+		// and month and day have leading zeroes in logs Timestamp
+		String TimeStamp = (now.get(Calendar.YEAR)) + "-" + String.format("%02d", (now.get(Calendar.MONTH) + 1)) + "-" + String.format("%02d", now.get(Calendar.DATE));
 
-		// ###################################################
-		// Get CacheId's from Caches with to match older Logs
-		// ###################################################
+		// #############################################################################
+		// Get CacheId's from Caches with older logs and having more logs than minToKeep
+		// #############################################################################
 		{
-			String command = "select cacheid from logs WHERE Timestamp < '" + TimeStamp + "' GROUP BY CacheId HAVING COUNT(Id) > " + String.valueOf(minToKeep);
-
-			CoreCursor reader = Database.Data.rawQuery(command, null);
-			reader.moveToFirst();
-			while (!reader.isAfterLast()) {
-				long tmp = reader.getLong(0);
-				if (!oldLogCaches.contains(tmp))
-					oldLogCaches.add(reader.getLong(0));
-				reader.moveToNext();
+			try {
+				String command = "SELECT cacheid FROM logs WHERE Timestamp < '" + TimeStamp + "' GROUP BY CacheId HAVING COUNT(Id) > " + String.valueOf(minToKeep);
+				Log.debug(log, command);
+				CoreCursor reader = Database.Data.rawQuery(command, null);
+				reader.moveToFirst();
+				while (!reader.isAfterLast()) {
+					long tmp = reader.getLong(0);
+					if (!oldLogCaches.contains(tmp))
+						oldLogCaches.add(reader.getLong(0));
+					reader.moveToNext();
+				}
+				reader.close();
+			} catch (Exception ex) {
+				Log.err(log, "DeleteOldLogs", ex);
 			}
-			reader.close();
 		}
 
 		// ###################################################
 		// Get Logs
 		// ###################################################
 		{
-			beginTransaction();
 			try {
+				beginTransaction();
 				for (long oldLogCache : oldLogCaches) {
 					ArrayList<Long> minLogIds = new ArrayList<Long>();
-
 					String command = "select id from logs where cacheid = " + String.valueOf(oldLogCache) + " order by Timestamp desc";
-
+					Log.debug(log, command);
 					int count = 0;
 					CoreCursor reader = Database.Data.rawQuery(command, null);
 					reader.moveToFirst();
@@ -722,18 +729,21 @@ public abstract class Database extends Database_Core {
 						reader.moveToNext();
 						count++;
 					}
-
 					StringBuilder sb = new StringBuilder();
 					for (long id : minLogIds)
 						sb.append(id).append(",");
-
-					// now delete all Logs out of Date without minLogIds
-					String delCommand = "delete from Logs where Timestamp<'" + TimeStamp + "' and cacheid = " + String.valueOf(oldLogCache) + " and id not in (" + sb.toString().substring(0, sb.length() - 1) + ")";
+					// now delete all Logs out of Date but keep the ones in minLogIds
+					String delCommand;
+					if (sb.length() > 0)
+						delCommand = "DELETE FROM Logs WHERE Timestamp<'" + TimeStamp + "' AND cacheid = " + String.valueOf(oldLogCache) + " AND id NOT IN (" + sb.toString().substring(0, sb.length() - 1) + ")";
+					else
+						delCommand = "DELETE FROM Logs WHERE Timestamp<'" + TimeStamp + "' AND cacheid = " + String.valueOf(oldLogCache);
+					Log.debug(log, delCommand);
 					Database.Data.execSQL(delCommand);
 				}
 				setTransactionSuccessful();
 			} catch (Exception ex) {
-				Log.err(log, "Delete Old Logs", "", ex);
+				Log.err(log, "DeleteOldLogs", ex);
 			} finally {
 				endTransaction();
 			}

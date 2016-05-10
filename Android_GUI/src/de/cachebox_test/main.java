@@ -104,6 +104,7 @@ import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Plattform;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.CB_SLF4J;
 import CB_Utils.Log.Log;
 import CB_Utils.Settings.PlatformSettings;
 import CB_Utils.Settings.PlatformSettings.IPlatformSettings;
@@ -148,8 +149,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
-import android.media.MediaScannerConnection;
-import android.media.MediaScannerConnection.MediaScannerConnectionClient;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -623,6 +622,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		initialViewGL();
 	}
+
+	/*
+	@Override
+	protected void onStart() {
+		super.onStart();
+	}
+	*/
 
 	private void setLockScreenProperty() {
 		// add flags for run over lock screen
@@ -1188,12 +1194,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	@Override
 	public void onDestroy() {
-
 		try {
-			new SingleMediaScanner(null, FileFactory.createFile(Config.FieldNotesGarminPath.getValue()));
-			Log.info(log, "Main=> MediaScanner FieldNotes");
+			Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+			// File f = FileFactory.createFile(Config.FieldNotesGarminPath.getValue());
+			intent.setData(Uri.fromFile(new java.io.File(Config.FieldNotesGarminPath.getValue())));
+			sendBroadcast(intent);
+			intent.setData(Uri.fromFile(new java.io.File(CB_SLF4J.logfile)));
+			sendBroadcast(intent);
+			Log.info(log, "Sent files to MediaScanner");
 		} catch (Exception e) {
-			Log.err(log, "Main=> MediaScanner FieldNotes: " + e.getMessage());
+			Log.err(log, "Send files to MediaScanner: " + e.getMessage());
 		}
 
 		if (mReceiver != null)
@@ -2996,28 +3006,5 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	}
 
 	private boolean losseChek = false;
-
-}
-
-class SingleMediaScanner implements MediaScannerConnectionClient {
-
-	private final MediaScannerConnection mMs;
-	private final File mFile;
-
-	public SingleMediaScanner(Context context, File f) {
-		mFile = f;
-		mMs = new MediaScannerConnection(context, this);
-		mMs.connect();
-	}
-
-	@Override
-	public void onMediaScannerConnected() {
-		mMs.scanFile(mFile.getAbsolutePath(), null);
-	}
-
-	@Override
-	public void onScanCompleted(String path, Uri uri) {
-		mMs.disconnect();
-	}
 
 }

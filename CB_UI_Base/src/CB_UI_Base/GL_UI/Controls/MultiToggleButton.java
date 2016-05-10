@@ -170,19 +170,11 @@ public class MultiToggleButton extends Button {
 		return StateId;
 	}
 
-	public static void initialOn_Off_ToggleStates(MultiToggleButton bt) {
-		String ButtonTxt = "";
-		bt.clearStates();
-		bt.addState(ButtonTxt, new HSV_Color(Color.GRAY));
-		bt.addState(ButtonTxt, COLOR.getHighLightFontColor());
-		bt.setState(0, true);
-	}
-
-	public static void initialOn_Off_ToggleStates(MultiToggleButton bt, String txtOn, String txtOff) {
-		bt.clearStates();
-		bt.addState(txtOff, new HSV_Color(Color.GRAY));
-		bt.addState(txtOn, COLOR.getHighLightFontColor());
-		bt.setState(0, true);
+	public void initialOn_Off_ToggleStates(String txtOn, String txtOff) {
+		clearStates();
+		addState(txtOff, new HSV_Color(Color.GRAY));
+		addState(txtOn, COLOR.getHighLightFontColor());
+		setState(0, true);
 	}
 
 	public void setLastStateWithLongClick(boolean value) {

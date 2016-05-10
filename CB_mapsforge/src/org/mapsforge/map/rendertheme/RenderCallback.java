@@ -15,7 +15,11 @@
 package org.mapsforge.map.rendertheme;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Display;
+import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.map.layer.renderer.PolylineContainer;
+import org.mapsforge.map.datastore.PointOfInterest;
 
 /**
  * Callback methods for rendering areas, ways and points of interest (POIs).
@@ -23,105 +27,122 @@ import org.mapsforge.core.graphics.Paint;
 public interface RenderCallback {
 	/**
 	 * Renders an area with the given parameters.
-	 * 
+	 *
+	 * @param renderContext
 	 * @param fill
 	 *            the paint to be used for rendering the area.
 	 * @param stroke
-	 *            an optional paint for the area casing (may be null).
+ *            an optional paint for the area casing (may be null).
 	 * @param level
-	 *            the drawing level on which the area should be rendered.
 	 */
-	void renderArea(Paint fill, Paint stroke, int level);
+	void renderArea(final RenderContext renderContext, Paint fill, Paint stroke, int level, PolylineContainer way);
 
 	/**
 	 * Renders an area caption with the given text.
-	 * 
-	 * @param caption
-	 *            the text to be rendered.
-	 * @param verticalOffset
-	 *            the vertical offset of the caption.
-	 * @param fill
-	 *            the paint to be used for rendering the text.
-	 * @param stroke
-	 *            an optional paint for the text casing (may be null).
+	 * @param renderContext
+	 * @param display display mode
+	 * @param priority priority level
+	 * @param caption the text.
+	 * @param horizontalOffset the horizontal offset of the text.
+	 * @param verticalOffset the vertical offset of the text.
+	 * @param fill the paint for the text.
+	 * @param stroke the casing of the text (may be null).
+	 * @param position optional position (may be null)
+	 * @param maxTextWidth maximum text width .
+	 * @param way the way for the caption.
 	 */
-	void renderAreaCaption(String caption, float verticalOffset, Paint fill, Paint stroke);
+	 void renderAreaCaption(final RenderContext renderContext, Display display, int priority, String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke, Position position, int maxTextWidth, PolylineContainer way);
 
 	/**
 	 * Renders an area symbol with the given bitmap.
-	 * 
+	 *
+	 * @param renderContext
 	 * @param symbol
-	 *            the symbol to be rendered.
 	 */
-	void renderAreaSymbol(Bitmap symbol);
+	void renderAreaSymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, PolylineContainer way);
 
 	/**
 	 * Renders a point of interest caption with the given text.
-	 * 
+	 *
+	 * @param renderContext
 	 * @param caption
 	 *            the text to be rendered.
+	 * @param horizontalOffset
+ *            the horizontal offset of the caption.
 	 * @param verticalOffset
-	 *            the vertical offset of the caption.
+*            the vertical offset of the caption.
 	 * @param fill
-	 *            the paint to be used for rendering the text.
+*            the paint to be used for rendering the text.
 	 * @param stroke
-	 *            an optional paint for the text casing (may be null).
+*            an optional paint for the text casing (may be null).
+	 * @param position
+	 *
 	 */
-	void renderPointOfInterestCaption(String caption, float verticalOffset, Paint fill, Paint stroke);
+	void renderPointOfInterestCaption(final RenderContext renderContext, Display display, int priority, String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke, Position position, int maxTextWidth, PointOfInterest poi);
 
 	/**
 	 * Renders a point of interest circle with the given parameters.
-	 * 
+	 *
+	 * @param renderContext
 	 * @param radius
 	 *            the radius of the circle.
 	 * @param fill
-	 *            the paint to be used for rendering the circle.
+ *            the paint to be used for rendering the circle.
 	 * @param stroke
-	 *            an optional paint for the circle casing (may be null).
+*            an optional paint for the circle casing (may be null).
 	 * @param level
-	 *            the drawing level on which the circle should be rendered.
 	 */
-	void renderPointOfInterestCircle(float radius, Paint fill, Paint stroke, int level);
+	void renderPointOfInterestCircle(final RenderContext renderContext, float radius, Paint fill, Paint stroke, int level, PointOfInterest poi);
 
 	/**
 	 * Renders a point of interest symbol with the given bitmap.
-	 * 
+	 *
+	 * @param renderContext
 	 * @param symbol
-	 *            the symbol to be rendered.
 	 */
-	void renderPointOfInterestSymbol(Bitmap symbol);
+	void renderPointOfInterestSymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, PointOfInterest poi);
 
 	/**
 	 * Renders a way with the given parameters.
-	 * 
+	 *
+	 * @param renderContext
 	 * @param stroke
 	 *            the paint to be used for rendering the way.
+	 * @param dy
+ *            the offset of the way.
 	 * @param level
-	 *            the drawing level on which the way should be rendered.
 	 */
-	void renderWay(Paint stroke, int level);
+	void renderWay(final RenderContext renderContext, Paint stroke, float dy, int level, PolylineContainer way);
 
 	/**
 	 * Renders a way with the given symbol along the way path.
-	 * 
+	 *
+	 * @param renderContext
 	 * @param symbol
 	 *            the symbol to be rendered.
+	 * @param dy
+ *            the offset of the way.
 	 * @param alignCenter
-	 *            true if the symbol should be centered, false otherwise.
+*            true if the symbol should be centered, false otherwise.
 	 * @param repeat
-	 *            true if the symbol should be repeated, false otherwise.
+*            true if the symbol should be repeated, false otherwise.
+	 * @param repeatGap
+*            distance between repetitions.
+	 * @param repeatStart
 	 */
-	void renderWaySymbol(Bitmap symbol, boolean alignCenter, boolean repeat);
+	void renderWaySymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, float dy, boolean alignCenter, boolean repeat, float repeatGap, float repeatStart, boolean rotate, PolylineContainer way);
 
 	/**
 	 * Renders a way with the given text along the way path.
-	 * 
+	 *
+	 * @param renderContext
 	 * @param text
 	 *            the text to be rendered.
+	 * @param dy
+ *            the offset of the way text.
 	 * @param fill
-	 *            the paint to be used for rendering the text.
+*            the paint to be used for rendering the text.
 	 * @param stroke
-	 *            an optional paint for the text casing (may be null).
 	 */
-	void renderWayText(String text, Paint fill, Paint stroke);
+	void renderWayText(final RenderContext renderContext, Display display, int priority, String text, float dy, Paint fill, Paint stroke, PolylineContainer way);
 }

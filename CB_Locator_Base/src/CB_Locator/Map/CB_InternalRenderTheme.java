@@ -3,6 +3,7 @@ package CB_Locator.Map;
 import java.io.InputStream;
 
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -19,13 +20,13 @@ public enum CB_InternalRenderTheme implements XmlRenderTheme {
 	DAY_CAR_THEME("cartheme/", "cartheme.xml");
 
 	private final String absolutePath;
-	private final String file;
+	private final String fileName;
 	private final FileHandle fileHandle;
 
 	private CB_InternalRenderTheme(String absolutePath, String file) {
 		this.absolutePath = absolutePath;
-		this.file = file;
-		fileHandle = Gdx.files.classpath(this.absolutePath + this.file);
+		this.fileName = file;
+		fileHandle = Gdx.files.classpath(this.absolutePath + this.fileName);
 	}
 
 	@Override
@@ -39,8 +40,13 @@ public enum CB_InternalRenderTheme implements XmlRenderTheme {
 		return fileHandle.read();
 	}
 
-	@Override
 	public boolean isFreizeitkarte() {
 		return false;
+	}
+
+	@Override
+	public XmlRenderThemeMenuCallback getMenuCallback() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

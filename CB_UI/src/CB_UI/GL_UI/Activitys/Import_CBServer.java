@@ -197,7 +197,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 		bCancel.setOnClickListener(new OnClickListener() {
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				if (BreakawayImportThread.isCanceld()) {
+				if (BreakawayImportThread.isCanceled()) {
 					BreakawayImportThread.reset();
 					finish();
 					return true;
@@ -887,7 +887,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 							return;
 						}
 
-						if (BreakawayImportThread.isCanceld()) {
+						if (BreakawayImportThread.isCanceled()) {
 							cancelImport();
 							ip.ProgressChangeMsg("", "");
 							return;
@@ -919,7 +919,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 							exc.printStackTrace();
 						}
 
-						if (BreakawayImportThread.isCanceld()) {
+						if (BreakawayImportThread.isCanceled()) {
 							cancelImport();
 							ip.ProgressChangeMsg("", "");
 							return;
@@ -954,7 +954,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 					return;
 				}
 
-				if (BreakawayImportThread.isCanceld()) {
+				if (BreakawayImportThread.isCanceled()) {
 					FilterProperties props = FilterInstances.getLastFilter();
 					EditFilterSettings.ApplyFilter(props);
 					ip.ProgressChangeMsg("", "");

@@ -1,5 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014, 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -25,7 +27,9 @@ import org.mapsforge.core.model.Dimension;
 import android.graphics.PorterDuff;
 import android.graphics.Region;
 
+
 class AndroidCanvas implements Canvas {
+
 	android.graphics.Canvas canvas;
 	private final android.graphics.Paint bitmapPaint = new android.graphics.Paint();
 
@@ -47,12 +51,12 @@ class AndroidCanvas implements Canvas {
 
 	@Override
 	public void drawBitmap(Bitmap bitmap, int left, int top) {
-		this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), left, top, null);
+		this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), left, top, bitmapPaint);
 	}
 
 	@Override
 	public void drawBitmap(Bitmap bitmap, Matrix matrix) {
-		this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), null);
+		this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), bitmapPaint);
 	}
 
 	@Override
@@ -77,21 +81,25 @@ class AndroidCanvas implements Canvas {
 		if (paint.isTransparent()) {
 			return;
 		}
-
 		this.canvas.drawPath(AndroidGraphicFactory.getPath(path), AndroidGraphicFactory.getPaint(paint));
 	}
 
 	@Override
 	public void drawText(String text, int x, int y, Paint paint) {
+		if (text == null || text.trim().isEmpty()) {
+			return;
+		}
 		if (paint.isTransparent()) {
 			return;
 		}
-
 		this.canvas.drawText(text, x, y, AndroidGraphicFactory.getPaint(paint));
 	}
 
 	@Override
 	public void drawTextRotated(String text, int x1, int y1, int x2, int y2, Paint paint) {
+		if (text == null || text.trim().isEmpty()) {
+			return;
+		}
 		if (paint.isTransparent()) {
 			return;
 		}
@@ -139,6 +147,15 @@ class AndroidCanvas implements Canvas {
 
 	@Override
 	public void setClip(int left, int top, int width, int height) {
-		this.canvas.clipRect(left, top, left + width, top + height, Region.Op.REPLACE);
+		this.setClipInternal(left, top, width, height, Region.Op.REPLACE);
+	}
+
+	@Override
+	public void setClipDifference(int left, int top, int width, int height) {
+		this.setClipInternal(left, top, width, height, Region.Op.DIFFERENCE);
+	}
+
+	public void setClipInternal(int left, int top, int width, int height, Region.Op op) {
+		this.canvas.clipRect(left, top, left + width, top + height, op);
 	}
 }

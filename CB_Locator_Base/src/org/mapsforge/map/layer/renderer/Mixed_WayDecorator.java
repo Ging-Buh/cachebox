@@ -18,6 +18,7 @@ package org.mapsforge.map.layer.renderer;
 import java.util.List;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.Point;
 
 /**
@@ -83,7 +84,7 @@ public class Mixed_WayDecorator {
 				theta = (float) Math.atan2(currentY - previousY, currentX - previousX);
 
 				Point point = new Point(previousX, previousY);
-				waySymbols.add(new SymbolContainer(symbolBitmap, point, alignCenter, theta));
+				//waySymbols.add(new SymbolContainer(symbolBitmap, point, alignCenter, theta));
 
 				// check if the symbol should only be rendered once
 				if (!repeatSymbol) {

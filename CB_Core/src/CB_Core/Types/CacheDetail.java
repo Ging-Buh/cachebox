@@ -17,6 +17,7 @@ import de.cb.sqlite.CoreCursor;
 
 public class CacheDetail implements Serializable {
 	private static final long serialVersionUID = 2088367633865443637L;
+	// final static org.slf4j.Logger log = LoggerFactory.getLogger(CacheDetail.class);
 
 	/*
 	 * Public Member
@@ -31,10 +32,10 @@ public class CacheDetail implements Serializable {
 	 * Datum, an dem der Cache versteckt wurde
 	 */
 	public Date DateHidden;
-
 	/**
-	 * ApiStatus 0: Cache wurde nicht per Api hinzugefuegt 1: Cache wurde per GC Api hinzugefuegt und ist noch nicht komplett geladen
-	 * (IsLite = true) 2: Cache wurde per GC Api hinzugefuegt und ist komplett geladen (IsLite = false)
+	 * ApiStatus 0: Cache wurde nicht per Api hinzugefuegt 
+	 *           1: Cache wurde per GC Api hinzugefuegt und ist noch nicht komplett geladen (IsLite = true) 
+	 *           2: Cache wurde per GC Api hinzugefuegt und ist komplett geladen (IsLite = false)
 	 */
 	public byte ApiStatus;
 
@@ -301,6 +302,7 @@ public class CacheDetail implements Serializable {
 
 			// from own Repository
 			String path = CB_Core_Settings.SpoilerFolderLocal.getValue();
+			// Log.debug(log, "from SpoilerFolderLocal: " + path);
 			try {
 				if (path != null && path.length() > 0) {
 					directory = path + "/" + gcCode.substring(0, 4);
@@ -310,19 +312,30 @@ public class CacheDetail implements Serializable {
 				e.printStackTrace();
 			}
 
-			// from Description Global Repository
+			// from Description own Repository
 			try {
-				path = CB_Core_Settings.DescriptionImageFolder.getValue();
+				path = CB_Core_Settings.DescriptionImageFolderLocal.getValue();
+				// Log.debug(log, "from DescriptionImageFolderLocal: " + path);
 				directory = path + "/" + gcCode.substring(0, 4);
 				loadSpoilerResourcesFromPath(directory, cache);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
-			// Spoilers are always load from global Repository too
-			// from globalUser changed Repository
+			// from Description Global Repository
+			try {
+				path = CB_Core_Settings.DescriptionImageFolder.getValue();
+				// Log.debug(log, "from DescriptionImageFolder: " + path);
+				directory = path + "/" + gcCode.substring(0, 4);
+				loadSpoilerResourcesFromPath(directory, cache);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			// from Spoiler Global Repository
 			try {
 				path = CB_Core_Settings.SpoilerFolder.getValue();
+				// Log.debug(log, "from SpoilerFolder: " + path);
 				directory = path + "/" + gcCode.substring(0, 4);
 				loadSpoilerResourcesFromPath(directory, cache);
 			} catch (Exception e) {
@@ -331,6 +344,7 @@ public class CacheDetail implements Serializable {
 
 			// Add own taken photo
 			directory = CB_Core_Settings.UserImageFolder.getValue();
+			// Log.debug(log, "from UserImageFolder: " + directory);
 			if (directory != null) {
 				try {
 					loadSpoilerResourcesFromPath(directory, cache);
@@ -350,8 +364,14 @@ public class CacheDetail implements Serializable {
 			public boolean accept(File dir, String filename) {
 				filename = filename.toLowerCase(Locale.getDefault());
 				if (filename.indexOf(cache.getGcCode().toLowerCase(Locale.getDefault())) >= 0) {
-					if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".bmp") || filename.endsWith(".png") || filename.endsWith(".gif"))
-						return true;
+					if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".bmp") || filename.endsWith(".png") || filename.endsWith(".gif")) {
+						// don't load Thumbs
+						if (filename.startsWith(FileFactory.THUMB) || filename.startsWith(FileFactory.THUMB_OVERVIEW + FileFactory.THUMB)) {
+							return false;
+						} else {
+							return true;
+						}
+					}
 				}
 				return false;
 			}
@@ -365,6 +385,7 @@ public class CacheDetail implements Serializable {
 						ImageEntry imageEntry = new ImageEntry();
 						imageEntry.LocalPath = directory + "/" + file;
 						imageEntry.Name = file;
+						// Log.debug(log, imageEntry.Name);
 						spoilerRessources.add(imageEntry);
 					}
 				}

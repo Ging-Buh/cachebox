@@ -59,7 +59,7 @@ public class CB_Action_ShowTrackableListView extends CB_Action_ShowView {
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 				switch (((MenuItem) v).getMenuItemId()) {
 
-				case MenuID.MI_REFRECH_TB_LIST:
+				case MenuID.MI_REFRESH_TB_LIST:
 
 					TrackableListView.that.RefreshTbList();
 					return true;
@@ -68,7 +68,7 @@ public class CB_Action_ShowTrackableListView extends CB_Action_ShowView {
 			}
 		});
 
-		cm.addItem(MenuID.MI_REFRECH_TB_LIST, "RefreshInventory");
+		cm.addItem(MenuID.MI_REFRESH_TB_LIST, "RefreshInventory");
 
 		return cm;
 	}

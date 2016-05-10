@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,7 +15,11 @@
  */
 package org.mapsforge.core.model;
 
+import org.mapsforge.core.util.MercatorProjection;
+
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A tile represents a rectangular part of the world map. All tiles can be identified by their X and Y number together
@@ -26,7 +31,7 @@ public class Tile implements Serializable {
 	/**
 	 * @return the maximum valid tile number for the given zoom level, 2<sup>zoomLevel</sup> -1.
 	 */
-	public static long getMaxTileNumber(byte zoomLevel) {
+	public static int getMaxTileNumber(byte zoomLevel) {
 		if (zoomLevel < 0) {
 			throw new IllegalArgumentException("zoomLevel must not be negative: " + zoomLevel);
 		} else if (zoomLevel == 0) {
@@ -36,19 +41,29 @@ public class Tile implements Serializable {
 	}
 
 	/**
+	 * the map size implied by zoom level and tileSize, to avoid multiple computations.
+	 */
+	public final long mapSize;
+
+	public final int tileSize;
+
+	/**
 	 * The X number of this tile.
 	 */
-	public final long tileX;
+	public final int tileX;
 
 	/**
 	 * The Y number of this tile.
 	 */
-	public final long tileY;
+	public final int tileY;
 
 	/**
 	 * The zoom level of this tile.
 	 */
 	public final byte zoomLevel;
+
+	private BoundingBox boundingBox;
+	private Point origin;
 
 	/**
 	 * @param tileX
@@ -60,7 +75,7 @@ public class Tile implements Serializable {
 	 * @throws IllegalArgumentException
 	 *             if any of the parameters is invalid.
 	 */
-	public Tile(long tileX, long tileY, byte zoomLevel) {
+	public Tile(int tileX, int tileY, byte zoomLevel, int tileSize) {
 		if (tileX < 0) {
 			throw new IllegalArgumentException("tileX must not be negative: " + tileX);
 		} else if (tileY < 0) {
@@ -76,10 +91,15 @@ public class Tile implements Serializable {
 			throw new IllegalArgumentException("invalid tileY number on zoom level " + zoomLevel + ": " + tileY);
 		}
 
+		this.tileSize = tileSize;
 		this.tileX = tileX;
 		this.tileY = tileY;
 		this.zoomLevel = zoomLevel;
+		this.mapSize = MercatorProjection.getMapSize(zoomLevel, tileSize);
+
+
 	}
+
 
 	@Override
 	public boolean equals(Object obj) {
@@ -95,8 +115,189 @@ public class Tile implements Serializable {
 			return false;
 		} else if (this.zoomLevel != other.zoomLevel) {
 			return false;
+		} else if (this.tileSize != other.tileSize) {
+			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Gets the geographic extend of this Tile as a BoundingBox.
+	 * @return boundaries of this tile.
+	 */
+	public BoundingBox getBoundingBox() {
+		if (this.boundingBox == null) {
+			double minLatitude = Math.max(MercatorProjection.LATITUDE_MIN, MercatorProjection.tileYToLatitude(tileY + 1, zoomLevel));
+			double minLongitude = Math.max(-180, MercatorProjection.tileXToLongitude(this.tileX, zoomLevel));
+			double maxLatitude = Math.min(MercatorProjection.LATITUDE_MAX, MercatorProjection.tileYToLatitude(this.tileY, zoomLevel));
+			double maxLongitude = Math.min(180, MercatorProjection.tileXToLongitude(tileX + 1, zoomLevel));
+			if (maxLongitude == -180) {
+				// fix for dateline crossing, where the right tile starts at -180 and causes an invalid bbox
+				maxLongitude = 180;
+			}
+			this.boundingBox = new BoundingBox(minLatitude, minLongitude, maxLatitude, maxLongitude);
+		}
+		return this.boundingBox;
+	}
+
+	/**
+	 * Returns a set of the eight neighbours of this tile.
+	 * @return neighbour tiles as a set
+	 */
+	public Set<Tile> getNeighbours() {
+		Set<Tile> neighbours = new HashSet<Tile>(8);
+		neighbours.add(getLeft());
+		neighbours.add(getAboveLeft());
+		neighbours.add(getAbove());
+		neighbours.add(getAboveRight());
+		neighbours.add(getRight());
+		neighbours.add(getBelowRight());
+		neighbours.add(getBelow());
+		neighbours.add(getBelowLeft());
+		return neighbours;
+	}
+
+	/**
+	 * Extend of this tile in absolute coordinates.
+	 * @return rectangle with the absolute coordinates.
+	 */
+	public Rectangle getBoundaryAbsolute() {
+		return new Rectangle(getOrigin().x, getOrigin().y, getOrigin().x + tileSize, getOrigin().y + tileSize);
+	}
+
+	/**
+	 * Extend of this tile in relative (tile) coordinates.
+	 * @return rectangle with the relative coordinates.
+	 */
+	public Rectangle getBoundaryRelative() {
+		return new Rectangle(0, 0, tileSize, tileSize);
+	}
+
+
+	/**
+	 * Returns the top-left point of this tile in absolute coordinates.
+	 * @return the top-left point
+	 */
+	public Point getOrigin() {
+		if (this.origin == null) {
+			double x = MercatorProjection.tileToPixel(this.tileX, this.tileSize);
+			double y = MercatorProjection.tileToPixel(this.tileY, this.tileSize);
+			this.origin = new Point(x, y);
+		}
+		return this.origin;
+	}
+
+	/**
+	 * Returns the tile to the left of this tile.
+	 * @return tile to the left.
+	 */
+	public Tile getLeft() {
+		int x = tileX - 1;
+		if (x < 0) {
+			x = getMaxTileNumber(this.zoomLevel);
+		}
+		return new Tile(x, this.tileY, this.zoomLevel, this.tileSize);
+	}
+
+	/**
+	 * Returns the tile to the right of this tile.
+	 * @return tile to the right
+	 */
+	public Tile getRight() {
+		int x = tileX + 1;
+		if (x > getMaxTileNumber(this.zoomLevel)) {
+			x = 0;
+		}
+		return new Tile(x, this.tileY, this.zoomLevel, this.tileSize);
+	}
+
+	/**
+	 * Returns the tile above this tile.
+	 * @return tile above
+	 */
+	public Tile getAbove() {
+		int y = tileY - 1;
+		if (y < 0) {
+			y = getMaxTileNumber(this.zoomLevel);
+		}
+		return new Tile(this.tileX, y, this.zoomLevel, this.tileSize);
+	}
+
+	/**
+	 * Returns the tile below this tile.
+	 * @return tile below
+	 */
+
+	public Tile getBelow() {
+		int y = tileY + 1;
+		if (y > getMaxTileNumber(this.zoomLevel)) {
+			y = 0;
+		}
+		return new Tile(this.tileX, y, this.zoomLevel, this.tileSize);
+	}
+
+	/**
+	 * Returns the tile above left
+	 * @return tile above left
+	 */
+	public Tile getAboveLeft() {
+		int y = tileY - 1;
+		int x = tileX - 1;
+		if (y < 0) {
+			y = getMaxTileNumber(this.zoomLevel);
+		}
+		if (x < 0) {
+			x = getMaxTileNumber(this.zoomLevel);
+		}
+		return new Tile(x, y, this.zoomLevel, this.tileSize);
+	}
+
+	/**
+	 * Returns the tile above right
+	 * @return tile above right
+	 */
+	public Tile getAboveRight() {
+		int y = tileY - 1;
+		int x = tileX + 1;
+		if (y < 0) {
+			y = getMaxTileNumber(this.zoomLevel);
+		}
+		if (x > getMaxTileNumber(this.zoomLevel)) {
+			x = 0;
+		}
+		return new Tile(x, y, this.zoomLevel, this.tileSize);
+	}
+
+	/**
+	 * Returns the tile below left
+	 * @return tile below left
+	 */
+	public Tile getBelowLeft() {
+		int y = tileY + 1;
+		int x = tileX - 1;
+		if (y > getMaxTileNumber(this.zoomLevel)) {
+			y = 0;
+		}
+		if (x < 0) {
+			x = getMaxTileNumber(this.zoomLevel);
+		}
+		return new Tile(x, y, this.zoomLevel, this.tileSize);
+	}
+
+	/**
+	 * Returns the tile below right
+	 * @return tile below right
+	 */
+	public Tile getBelowRight() {
+		int y = tileY + 1;
+		int x = tileX + 1;
+		if (y > getMaxTileNumber(this.zoomLevel)) {
+			y = 0;
+		}
+		if (x > getMaxTileNumber(this.zoomLevel)) {
+			x = 0;
+		}
+		return new Tile(x, y, this.zoomLevel, this.tileSize);
 	}
 
 	/**
@@ -107,10 +308,10 @@ public class Tile implements Serializable {
 			return null;
 		}
 
-		return new Tile(this.tileX / 2, this.tileY / 2, (byte) (this.zoomLevel - 1));
+		return new Tile(this.tileX / 2, this.tileY / 2, (byte) (this.zoomLevel - 1), this.tileSize);
 	}
 
-	public long getShiftX(Tile otherTile) {
+	public int getShiftX(Tile otherTile) {
 		if (this.equals(otherTile)) {
 			return 0;
 		}
@@ -118,7 +319,7 @@ public class Tile implements Serializable {
 		return this.tileX % 2 + 2 * getParent().getShiftX(otherTile);
 	}
 
-	public long getShiftY(Tile otherTile) {
+	public int getShiftY(Tile otherTile) {
 		if (this.equals(otherTile)) {
 			return 0;
 		}
@@ -129,20 +330,21 @@ public class Tile implements Serializable {
 	@Override
 	public int hashCode() {
 		int result = 7;
-		result = 31 * result + (int) (this.tileX ^ (this.tileX >>> 32));
-		result = 31 * result + (int) (this.tileY ^ (this.tileY >>> 32));
+		result = 31 * result + (int) (this.tileX ^ (this.tileX >>> 16));
+		result = 31 * result + (int) (this.tileY ^ (this.tileY >>> 16));
 		result = 31 * result + this.zoomLevel;
+		result = 31 * result + this.tileSize;
 		return result;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("tileX=");
+		stringBuilder.append("x=");
 		stringBuilder.append(this.tileX);
-		stringBuilder.append(", tileY=");
+		stringBuilder.append(", y=");
 		stringBuilder.append(this.tileY);
-		stringBuilder.append(", zoomLevel=");
+		stringBuilder.append(", z=");
 		stringBuilder.append(this.zoomLevel);
 		return stringBuilder.toString();
 	}

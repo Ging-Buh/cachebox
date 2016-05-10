@@ -329,7 +329,7 @@ public class CacheInfo extends CB_View_Base {
 			if (ifModeFlag(SHOW_ICON)) { // Icon Sprite erstellen
 
 				if (mCache.CorrectedCoordiantesOrMysterySolved()) {
-					mIconSprite = new Sprite(Sprites.getSprite("big" + CacheTypes.Mystery.name() + "Solved"));
+					mIconSprite = new Sprite(Sprites.getSprite("big" + "Solved"));
 				} else if ((mCache.Type == CacheTypes.Multi) && mCache.HasStartWaypoint()) {
 					// Multi anders darstellen wenn dieser einen definierten Startpunkt hat
 					mIconSprite = new Sprite(Sprites.getSprite("big" + CacheTypes.Multi.name() + "StartP"));
@@ -440,7 +440,7 @@ public class CacheInfo extends CB_View_Base {
 
 		if (ifModeFlag(SHOW_COORDS)) {
 			if (ifModeFlag(SHOW_CORRDS_WITH_LINEBRAKE)) {
-				text.append(mCache.Pos.FormatCoordinateLineBreake());
+				text.append(mCache.Pos.formatCoordinateLineBreak());
 				text.append(br);
 			} else {
 				text.append(mCache.Pos.FormatCoordinate());

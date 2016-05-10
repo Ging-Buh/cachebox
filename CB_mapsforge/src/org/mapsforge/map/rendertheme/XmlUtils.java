@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright © 2014 devemux86
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,6 +16,8 @@
  */
 package org.mapsforge.map.rendertheme;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,10 +25,7 @@ import java.io.InputStream;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.map.model.DisplayModel;
-import org.xml.sax.SAXException;
-
-import CB_Utils.fileProvider.File;
-import CB_Utils.fileProvider.FileFactory;
+import org.xmlpull.v1.XmlPullParserException;
 
 public final class XmlUtils {
 	public static boolean supportOlderRenderThemes = true;
@@ -37,13 +36,15 @@ public final class XmlUtils {
 
 	private static final String UNSUPPORTED_COLOR_FORMAT = "unsupported color format: ";
 
-	public static void checkMandatoryAttribute(String elementName, String attributeName, Object attributeValue) throws SAXException {
+	public static void checkMandatoryAttribute(String elementName, String attributeName, Object attributeValue)
+			throws XmlPullParserException {
 		if (attributeValue == null) {
-			throw new SAXException("missing attribute '" + attributeName + "' for element: " + elementName);
+			throw new XmlPullParserException("missing attribute '" + attributeName + "' for element: " + elementName);
 		}
 	}
 
-	public static ResourceBitmap createBitmap(GraphicFactory graphicFactory, DisplayModel displayModel, String relativePathPrefix, String src) throws IOException {
+	public static ResourceBitmap createBitmap(GraphicFactory graphicFactory, DisplayModel displayModel,
+			String relativePathPrefix, String src, int width, int height, int percent) throws IOException {
 		if (src == null || src.length() == 0) {
 			// no image source defined
 			return null;
@@ -55,9 +56,12 @@ public final class XmlUtils {
 		}
 		try {
 			String absoluteName = getAbsoluteName(relativePathPrefix, src);
+			// we need to hash with the width/height included as the same symbol could be required
+			// in a different size and must be cached with a size-specific hash
+			int hash = new StringBuilder().append(absoluteName).append(width).append(height).append(percent).toString().hashCode();
 			if (src.endsWith(".svg")) {
 				try {
-					return graphicFactory.renderSvg(inputStream, displayModel.getScaleFactor(), absoluteName.hashCode());
+					return graphicFactory.renderSvg(inputStream, displayModel.getScaleFactor(), width, height, percent, hash);
 				} catch (IOException e) {
 					throw new IOException("SVG render failed " + src, e);
 				}
@@ -72,7 +76,7 @@ public final class XmlUtils {
 		}
 	}
 
-	public static SAXException createSAXException(String element, String name, String value, int attributeIndex) {
+	public static XmlPullParserException createXmlPullParserException(String element, String name, String value, int attributeIndex) {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("unknown attribute (");
 		stringBuilder.append(attributeIndex);
@@ -83,7 +87,7 @@ public final class XmlUtils {
 		stringBuilder.append('=');
 		stringBuilder.append(value);
 
-		return new SAXException(stringBuilder.toString());
+		return new XmlPullParserException(stringBuilder.toString());
 	}
 
 	/**
@@ -101,27 +105,27 @@ public final class XmlUtils {
 		}
 	}
 
-	public static byte parseNonNegativeByte(String name, String value) throws SAXException {
+	public static byte parseNonNegativeByte(String name, String value) throws XmlPullParserException {
 		byte parsedByte = Byte.parseByte(value);
 		checkForNegativeValue(name, parsedByte);
 		return parsedByte;
 	}
 
-	public static float parseNonNegativeFloat(String name, String value) throws SAXException {
+	public static float parseNonNegativeFloat(String name, String value) throws XmlPullParserException {
 		float parsedFloat = Float.parseFloat(value);
 		checkForNegativeValue(name, parsedFloat);
 		return parsedFloat;
 	}
 
-	public static int parseNonNegativeInteger(String name, String value) throws SAXException {
+	public static int parseNonNegativeInteger(String name, String value) throws XmlPullParserException {
 		int parsedInt = Integer.parseInt(value);
 		checkForNegativeValue(name, parsedInt);
 		return parsedInt;
 	}
 
-	private static void checkForNegativeValue(String name, float value) throws SAXException {
+	private static void checkForNegativeValue(String name, float value) throws XmlPullParserException {
 		if (value < 0) {
-			throw new SAXException("Attribute '" + name + "' must not be negative: " + value);
+			throw new XmlPullParserException("Attribute '" + name + "' must not be negative: " + value);
 		}
 	}
 
@@ -144,7 +148,7 @@ public final class XmlUtils {
 			File file = getFile(relativePathPrefix, src.substring(PREFIX_FILE.length()));
 			if (!file.exists()) {
 				final String pathName = src.substring(PREFIX_FILE.length());
-				if (pathName.length() > 0 && pathName.charAt(0) == java.io.File.separatorChar) {
+				if (pathName.length() > 0 && pathName.charAt(0) == File.separatorChar) {
 					file = getFile(relativePathPrefix, pathName.substring(1));
 				}
 				if (!file.exists()) {
@@ -155,7 +159,7 @@ public final class XmlUtils {
 			} else if (!file.canRead()) {
 				throw new FileNotFoundException("cannot read file: " + file.getAbsolutePath());
 			}
-			return file.getFileInputStream();
+			return new FileInputStream(file);
 		}
 
 		throw new FileNotFoundException("invalid bitmap source: " + src);
@@ -177,10 +181,10 @@ public final class XmlUtils {
 	}
 
 	private static File getFile(String parentPath, String pathName) {
-		if (pathName.charAt(0) == java.io.File.separatorChar) {
-			return FileFactory.createFile(pathName);
+		if (pathName.charAt(0) == File.separatorChar) {
+			return new File(pathName);
 		}
-		return FileFactory.createFile(parentPath, pathName);
+		return new File(parentPath, pathName);
 	}
 
 	private XmlUtils() {

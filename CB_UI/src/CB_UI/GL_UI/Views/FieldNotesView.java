@@ -496,7 +496,7 @@ public class FieldNotesView extends V_ListView {
 				newFieldNote.foundNumber++; //
 			newFieldNote.fillType();
 			if (newFieldNote.comment.equals(""))
-				newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.FoundTemplate.getValue(), newFieldNote);
+				newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.AttendedTemplate.getValue(), newFieldNote);
 			// wenn eine FieldNote Found erzeugt werden soll und der Cache noch
 			// nicht gefunden war -> foundNumber um 1 erhöhen
 			break;
@@ -505,7 +505,7 @@ public class FieldNotesView extends V_ListView {
 				newFieldNote.foundNumber++; //
 			newFieldNote.fillType();
 			if (newFieldNote.comment.equals(""))
-				newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.FoundTemplate.getValue(), newFieldNote);
+				newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.WebcamTemplate.getValue(), newFieldNote);
 			// wenn eine FieldNote Found erzeugt werden soll und der Cache noch
 			// nicht gefunden war -> foundNumber um 1 erhöhen
 			break;

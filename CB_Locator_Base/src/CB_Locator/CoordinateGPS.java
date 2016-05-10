@@ -41,7 +41,7 @@ public class CoordinateGPS extends Coordinate implements Serializable {
 		this.setElevation(0);
 		if (latitude == 0 && longitude == 0)
 			return;
-		Valid = true;
+		valid = true;
 	}
 
 	public CoordinateGPS(double latitude, double longitude, int accuracy) {
@@ -50,7 +50,7 @@ public class CoordinateGPS extends Coordinate implements Serializable {
 		this.Accuracy = accuracy;
 		if (latitude == 0 && longitude == 0)
 			return;
-		Valid = true;
+		valid = true;
 	}
 
 	public CoordinateGPS(int latitude, int longitude, int accuracy) {
@@ -59,14 +59,14 @@ public class CoordinateGPS extends Coordinate implements Serializable {
 		this.Accuracy = accuracy;
 		if (latitude == 0 && longitude == 0)
 			return;
-		Valid = true;
+		valid = true;
 	}
 
 	public CoordinateGPS(CoordinateGPS parent) {
 		super(parent.latitude, parent.longitude);
 		this.setElevation(parent.getElevation());
 		this.Accuracy = parent.getAccuracy();
-		this.Valid = parent.Valid;
+		this.valid = parent.valid;
 	}
 
 	public boolean hasAccuracy() {

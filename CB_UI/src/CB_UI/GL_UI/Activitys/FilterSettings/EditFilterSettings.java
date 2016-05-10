@@ -174,10 +174,10 @@ public class EditFilterSettings extends ActivityBase {
 		String sCat = Translation.Get("category");
 		String sTxt = Translation.Get("text");
 
-		MultiToggleButton.initialOn_Off_ToggleStates(btPre, sPre, sPre);
-		MultiToggleButton.initialOn_Off_ToggleStates(btSet, sSet, sSet);
-		MultiToggleButton.initialOn_Off_ToggleStates(btCat, sCat, sCat);
-		MultiToggleButton.initialOn_Off_ToggleStates(btTxt, sTxt, sTxt);
+		btPre.initialOn_Off_ToggleStates(sPre, sPre);
+		btSet.initialOn_Off_ToggleStates(sSet, sSet);
+		btCat.initialOn_Off_ToggleStates(sCat, sCat);
+		btTxt.initialOn_Off_ToggleStates(sTxt, sTxt);
 
 		btPre.setOnClickListener(new OnClickListener() {
 			@Override

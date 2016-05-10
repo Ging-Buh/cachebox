@@ -1,5 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Christian Pesch
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,16 +17,16 @@
 package org.mapsforge.core.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.mapsforge.core.util.LatLongUtils;
+import org.mapsforge.core.util.MercatorProjection;
 
 /**
  * A BoundingBox represents an immutable set of two latitude and two longitude coordinates.
  */
 public class BoundingBox implements Serializable {
 	private static final long serialVersionUID = 1L;
-
-	private static final double C = 1e6;
 
 	/**
 	 * Creates a new BoundingBox from a comma-separated string of coordinates in the order minLat, minLon, maxLat,
@@ -44,22 +46,22 @@ public class BoundingBox implements Serializable {
 	/**
 	 * The maximum latitude coordinate of this BoundingBox in degrees.
 	 */
-	private final int maxLatitude;
+	public final double maxLatitude;
 
 	/**
 	 * The maximum longitude coordinate of this BoundingBox in degrees.
 	 */
-	private final int maxLongitude;
+	public final double maxLongitude;
 
 	/**
 	 * The minimum latitude coordinate of this BoundingBox in degrees.
 	 */
-	private final int minLatitude;
+	public final double minLatitude;
 
 	/**
 	 * The minimum longitude coordinate of this BoundingBox in degrees.
 	 */
-	private final int minLongitude;
+	public final double minLongitude;
 
 	/**
 	 * @param minLatitude
@@ -85,30 +87,29 @@ public class BoundingBox implements Serializable {
 			throw new IllegalArgumentException("invalid longitude range: " + minLongitude + ' ' + maxLongitude);
 		}
 
-		this.minLatitude = (int) (minLatitude * C);
-		this.minLongitude = (int) (minLongitude * C);
-		this.maxLatitude = (int) (maxLatitude * C);
-		this.maxLongitude = (int) (maxLongitude * C);
+		this.minLatitude = minLatitude;
+		this.minLongitude = minLongitude;
+		this.maxLatitude = maxLatitude;
+		this.maxLongitude = maxLongitude;
 	}
 
 	/**
-	 * @param minLatitude
-	 *            the minimum latitude coordinate in degrees.
-	 * @param minLongitude
-	 *            the minimum longitude coordinate in degrees.
-	 * @param maxLatitude
-	 *            the maximum latitude coordinate in degrees.
-	 * @param maxLongitude
-	 *            the maximum longitude coordinate in degrees.
-	 * @throws IllegalArgumentException
-	 *             if a coordinate is invalid.
+	 * @param latLongs
+	 *            the coordinates list.
 	 */
-	public BoundingBox(int minLatitude, int minLongitude, int maxLatitude, int maxLongitude) {
+	public BoundingBox(List<LatLong> latLongs) {
+		double minLatitude = Double.POSITIVE_INFINITY;
+		double minLongitude = Double.POSITIVE_INFINITY;
+		double maxLatitude = Double.NEGATIVE_INFINITY;
+		double maxLongitude = Double.NEGATIVE_INFINITY;
+		for (LatLong latLong : latLongs) {
+			double latitude = latLong.latitude;
+			double longitude = latLong.longitude;
 
-		if (minLatitude > maxLatitude) {
-			throw new IllegalArgumentException("invalid latitude range: " + minLatitude + ' ' + maxLatitude);
-		} else if (minLongitude > maxLongitude) {
-			throw new IllegalArgumentException("invalid longitude range: " + minLongitude + ' ' + maxLongitude);
+			minLatitude = Math.min(minLatitude, latitude);
+			minLongitude = Math.min(minLongitude, longitude);
+			maxLatitude = Math.max(maxLatitude, latitude);
+			maxLongitude = Math.max(maxLongitude, longitude);
 		}
 
 		this.minLatitude = minLatitude;
@@ -118,12 +119,24 @@ public class BoundingBox implements Serializable {
 	}
 
 	/**
+	 * @param latitude
+	 *            the latitude coordinate in degrees.
+	 * @param longitude
+	 *            the longitude coordinate in degrees.
+	 * @return true if this BoundingBox contains the given coordinates, false otherwise.
+	 */
+	public boolean contains(double latitude, double longitude) {
+		return this.minLatitude <= latitude && this.maxLatitude >= latitude
+				&& this.minLongitude <= longitude && this.maxLongitude >= longitude;
+	}
+
+	/**
 	 * @param latLong
 	 *            the LatLong whose coordinates should be checked.
 	 * @return true if this BoundingBox contains the given LatLong, false otherwise.
 	 */
 	public boolean contains(LatLong latLong) {
-		return this.minLatitude <= latLong.getIntLatitude() && this.maxLatitude >= latLong.getIntLatitude() && this.minLongitude <= latLong.getIntLongitude() && this.maxLongitude >= latLong.getIntLongitude();
+		return contains(latLong.latitude, latLong.longitude);
 	}
 
 	@Override
@@ -134,39 +147,134 @@ public class BoundingBox implements Serializable {
 			return false;
 		}
 		BoundingBox other = (BoundingBox) obj;
-		if (Double.doubleToLongBits(this.getMaxLatitude()) != Double.doubleToLongBits(other.getMaxLatitude())) {
+		if (Double.doubleToLongBits(this.maxLatitude) != Double.doubleToLongBits(other.maxLatitude)) {
 			return false;
-		} else if (Double.doubleToLongBits(this.getMaxLongitude()) != Double.doubleToLongBits(other.getMaxLongitude())) {
+		} else if (Double.doubleToLongBits(this.maxLongitude) != Double.doubleToLongBits(other.maxLongitude)) {
 			return false;
-		} else if (Double.doubleToLongBits(this.getMinLatitude()) != Double.doubleToLongBits(other.getMinLatitude())) {
+		} else if (Double.doubleToLongBits(this.minLatitude) != Double.doubleToLongBits(other.minLatitude)) {
 			return false;
-		} else if (Double.doubleToLongBits(this.getMinLongitude()) != Double.doubleToLongBits(other.getMinLongitude())) {
+		} else if (Double.doubleToLongBits(this.minLongitude) != Double.doubleToLongBits(other.minLongitude)) {
 			return false;
 		}
 		return true;
 	}
 
 	/**
+	 * @param boundingBox
+	 *            the BoundingBox which this BoundingBox should be extended if it is larger
+	 * @return a BoundingBox that covers this BoundingBox and the given BoundingBox.
+	 */
+	public BoundingBox extendBoundingBox(BoundingBox boundingBox) {
+		return new BoundingBox(Math.min(this.minLatitude, boundingBox.minLatitude),
+				Math.min(this.minLongitude, boundingBox.minLongitude),
+				Math.max(this.maxLatitude, boundingBox.maxLatitude),
+				Math.max(this.maxLongitude, boundingBox.maxLongitude));
+	}
+
+	/**
+	 * Creates a BoundingBox extended up to coordinates (but does not cross date line/poles).
+	 * @param latitude up to the extension
+	 * @param longitude up to the extension
+	 * @return an extended BoundingBox or this (if contains coordinates)
+	 */
+	public BoundingBox extendCoordinates(double latitude, double longitude) {
+		if (contains(latitude, longitude)) {
+			return this;
+		}
+
+		double minLat = Math.max(MercatorProjection.LATITUDE_MIN, Math.min(this.minLatitude, latitude));
+		double minLon = Math.max(-180, Math.min(this.minLongitude, longitude));
+		double maxLat = Math.min(MercatorProjection.LATITUDE_MAX, Math.max(this.maxLatitude, latitude));
+		double maxLon = Math.min(180, Math.max(this.maxLongitude, longitude));
+
+		return new BoundingBox(minLat, minLon, maxLat, maxLon);
+	}
+
+	/**
+	 * Creates a BoundingBox extended up to <code>LatLong</code> (but does not cross date line/poles).
+	 * @param latLong coordinates up to the extension
+	 * @return an extended BoundingBox or this (if contains coordinates)
+	 */
+	public BoundingBox extendCoordinates(LatLong latLong) {
+		return extendCoordinates(latLong.latitude, latLong.longitude);
+	}
+
+	/**
+	 * Creates a BoundingBox that is a fixed degree amount larger on all sides (but does not cross date line/poles).
+	 * @param verticalExpansion degree extension (must be >= 0)
+	 * @param horizontalExpansion degree extension (must be >= 0)
+	 * @return an extended BoundingBox or this (if degrees == 0)
+	 */
+	public BoundingBox extendDegrees(double verticalExpansion, double horizontalExpansion) {
+		if (verticalExpansion == 0 && horizontalExpansion == 0) {
+			return this;
+		} else if (verticalExpansion < 0 || horizontalExpansion < 0) {
+			throw new IllegalArgumentException("BoundingBox extend operation does not accept negative values");
+		}
+
+		double minLat = Math.max(MercatorProjection.LATITUDE_MIN, this.minLatitude - verticalExpansion);
+		double minLon = Math.max(-180, this.minLongitude - horizontalExpansion);
+		double maxLat = Math.min(MercatorProjection.LATITUDE_MAX, this.maxLatitude + verticalExpansion);
+		double maxLon = Math.min(180, this.maxLongitude + horizontalExpansion);
+
+		return new BoundingBox(minLat, minLon, maxLat, maxLon);
+	}
+
+	/**
+	 * Creates a BoundingBox that is a fixed meter amount larger on all sides (but does not cross date line/poles).
+	 * @param meters extension (must be >= 0)
+	 * @return an extended BoundingBox or this (if meters == 0)
+	 */
+	public BoundingBox extendMeters(int meters) {
+		if (meters == 0) {
+			return this;
+		} else if (meters < 0) {
+			throw new IllegalArgumentException("BoundingBox extend operation does not accept negative values");
+		}
+
+		double verticalExpansion = LatLongUtils.latitudeDistance(meters);
+		double horizontalExpansion = LatLongUtils.longitudeDistance(meters, Math.max(Math.abs(minLatitude), Math.abs(maxLatitude)));
+
+		double minLat = Math.max(MercatorProjection.LATITUDE_MIN, this.minLatitude - verticalExpansion);
+		double minLon = Math.max(-180, this.minLongitude - horizontalExpansion);
+		double maxLat = Math.min(MercatorProjection.LATITUDE_MAX, this.maxLatitude + verticalExpansion);
+		double maxLon = Math.min(180, this.maxLongitude + horizontalExpansion);
+
+		return new BoundingBox(minLat, minLon, maxLat, maxLon);
+	}
+
+	/**
 	 * @return a new LatLong at the horizontal and vertical center of this BoundingBox.
 	 */
 	public LatLong getCenterPoint() {
-		double latitudeOffset = (this.getMaxLatitude() - this.getMinLatitude()) / 2;
-		double longitudeOffset = (this.getMaxLongitude() - this.getMinLongitude()) / 2;
-		return new LatLong(this.getMinLatitude() + latitudeOffset, this.getMinLongitude() + longitudeOffset);
+		double latitudeOffset = (this.maxLatitude - this.minLatitude) / 2;
+		double longitudeOffset = (this.maxLongitude - this.minLongitude) / 2;
+		return new LatLong(this.minLatitude + latitudeOffset, this.minLongitude + longitudeOffset, true);
 	}
 
 	/**
 	 * @return the latitude span of this BoundingBox in degrees.
 	 */
 	public double getLatitudeSpan() {
-		return this.getMaxLatitude() - this.getMinLatitude();
+		return this.maxLatitude - this.minLatitude;
 	}
 
 	/**
 	 * @return the longitude span of this BoundingBox in degrees.
 	 */
 	public double getLongitudeSpan() {
-		return this.getMaxLongitude() - this.getMinLongitude();
+		return this.maxLongitude - this.minLongitude;
+	}
+
+	/**
+	 * Computes the coordinates of this bounding box relative to a tile.
+	 * @param tile the tile to compute the relative position for.
+	 * @return rectangle giving the relative position.
+	 */
+	public Rectangle getPositionRelativeToTile(Tile tile) {
+		Point upperLeft = MercatorProjection.getPixelRelativeToTile(new LatLong(this.maxLatitude, minLongitude), tile);
+		Point lowerRight = MercatorProjection.getPixelRelativeToTile(new LatLong(this.minLatitude, maxLongitude), tile);
+		return new Rectangle(upperLeft.x, upperLeft.y, lowerRight.x, lowerRight.y);
 	}
 
 	@Override
@@ -174,13 +282,13 @@ public class BoundingBox implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		long temp;
-		temp = Double.doubleToLongBits(this.getMaxLatitude());
+		temp = Double.doubleToLongBits(this.maxLatitude);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(this.getMaxLongitude());
+		temp = Double.doubleToLongBits(this.maxLongitude);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(this.getMinLatitude());
+		temp = Double.doubleToLongBits(this.minLatitude);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(this.getMinLongitude());
+		temp = Double.doubleToLongBits(this.minLongitude);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		return result;
 	}
@@ -195,36 +303,61 @@ public class BoundingBox implements Serializable {
 			return true;
 		}
 
-		return this.getMaxLatitude() >= boundingBox.getMinLatitude() && this.getMaxLongitude() >= boundingBox.getMinLongitude() && this.getMinLatitude() <= boundingBox.getMaxLatitude() && this.getMinLongitude() <= boundingBox.getMaxLongitude();
+		return this.maxLatitude >= boundingBox.minLatitude && this.maxLongitude >= boundingBox.minLongitude
+				&& this.minLatitude <= boundingBox.maxLatitude && this.minLongitude <= boundingBox.maxLongitude;
+	}
+
+	/**
+	 * Returns if an area built from the latLongs intersects with a bias towards
+	 * returning true.
+	 * The method returns fast if any of the points lie within the bbox. If none of the points
+	 * lie inside the box, it constructs the outer bbox for all the points and tests for intersection
+	 * (so it is possible that the area defined by the points does not actually intersect)
+	 *
+	 * @param latLongs the points that define an area
+	 * @return false if there is no intersection, true if there could be an intersection
+	 */
+	public boolean intersectsArea(LatLong[][] latLongs) {
+		if (latLongs.length == 0 || latLongs[0].length == 0) {
+			return false;
+		}
+		for (LatLong[] outer : latLongs) {
+			for (LatLong latLong : outer) {
+				if (this.contains(latLong)) {
+					// if any of the points is inside the bbox return early
+					return true;
+				}
+			}
+		}
+
+		// no fast solution, so accumulate boundary points
+		double tmpMinLat = latLongs[0][0].latitude;
+		double tmpMinLon = latLongs[0][0].longitude;
+		double tmpMaxLat = latLongs[0][0].latitude;
+		double tmpMaxLon = latLongs[0][0].longitude;
+
+		for (LatLong[] outer : latLongs) {
+			for (LatLong latLong : outer) {
+				tmpMinLat = Math.min(tmpMinLat, latLong.latitude);
+				tmpMaxLat = Math.max(tmpMaxLat, latLong.latitude);
+				tmpMinLon = Math.min(tmpMinLon, latLong.longitude);
+				tmpMaxLon = Math.max(tmpMaxLon, latLong.longitude);
+			}
+		}
+		return this.intersects(new BoundingBox(tmpMinLat, tmpMinLon, tmpMaxLat, tmpMaxLon));
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("minLatitude=");
-		stringBuilder.append(this.getMinLatitude());
+		stringBuilder.append(this.minLatitude);
 		stringBuilder.append(", minLongitude=");
-		stringBuilder.append(this.getMinLongitude());
+		stringBuilder.append(this.minLongitude);
 		stringBuilder.append(", maxLatitude=");
-		stringBuilder.append(this.getMaxLatitude());
+		stringBuilder.append(this.maxLatitude);
 		stringBuilder.append(", maxLongitude=");
-		stringBuilder.append(this.getMaxLongitude());
+		stringBuilder.append(this.maxLongitude);
 		return stringBuilder.toString();
-	}
-
-	public double getMaxLatitude() {
-		return maxLatitude / C;
-	}
-
-	public double getMaxLongitude() {
-		return maxLongitude / C;
-	}
-
-	public double getMinLatitude() {
-		return minLatitude / C;
-	}
-
-	public double getMinLongitude() {
-		return minLongitude / C;
 	}
 }

@@ -53,6 +53,8 @@ public class Button extends CB_View_Base {
 	protected Label lblTxt;
 	protected boolean dragableButton = false;
 
+	private Object tag = null; // sometimes also referred as data, for to attach an arbitrary object
+
 	public Button(float X, float Y, float Width, float Height, String Name) {
 		super(X, Y, Width, Height, Name);
 		this.setClickable(true);
@@ -337,6 +339,14 @@ public class Button extends CB_View_Base {
 
 	public boolean isFocused() {
 		return isFocused;
+	}
+
+	public Object getTag() {
+		return tag;
+	}
+
+	public void setTag(Object tag) {
+		this.tag = tag;
 	}
 
 }

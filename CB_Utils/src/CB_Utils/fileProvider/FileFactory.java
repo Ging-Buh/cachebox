@@ -5,6 +5,8 @@ package CB_Utils.fileProvider;
  */
 public abstract class FileFactory {
 
+	public static final String THUMB = "thumb_";
+	public static final String THUMB_OVERVIEW = "overview";
 	static FileFactory INSTANCE;
 
 	public static File createFile(String path) {
@@ -31,6 +33,12 @@ public abstract class FileFactory {
 		return INSTANCE.createPlatformFile(parent, child);
 	}
 
+	public static String createThumb(String path, int scaledWidth, String thumbPrefix) {
+		if (INSTANCE == null)
+			throw new RuntimeException("no platform specific FileFactory instance!");
+		return INSTANCE.createPlatformThumb(path, scaledWidth, thumbPrefix);
+	}
+
 	public FileFactory() {
 		if (INSTANCE != null)
 			throw new RuntimeException("You need only one FileFactory instance");
@@ -44,5 +52,11 @@ public abstract class FileFactory {
 	protected abstract File createPlatformFile(File parent, String child);
 
 	protected abstract File createPlatformFile(String parent, String child);
+
+	protected abstract String createPlatformThumb(String Path, int scaledWidth, String thumbPrefix);
+
+	public static boolean isInitial() {
+		return INSTANCE != null;
+	}
 
 }

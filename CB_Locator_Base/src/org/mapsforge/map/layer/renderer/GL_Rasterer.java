@@ -20,6 +20,8 @@ import java.util.List;
 
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.mapelements.PointTextContainer;
+import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.model.DisplayModel;
 
@@ -81,7 +83,7 @@ public class GL_Rasterer {
 
 		case POLYLINE:
 			PolylineContainer polylineContainer = (PolylineContainer) shapePaintContainer.shapeContainer;
-			drawPath(drw, shapePaintContainer, polylineContainer.coordinates);
+			drawPath(drw, shapePaintContainer, polylineContainer.getCoordinatesRelativeToTile());
 			return;
 		}
 	}
@@ -189,8 +191,8 @@ public class GL_Rasterer {
 		for (int index = symbolContainers.size() - 1; index >= 0; --index) {
 			SymbolContainer symbolContainer = symbolContainers.get(index);
 
-			float PointX = (float) (symbolContainer.point.x);
-			float PointY = (float) (TILE_SIZE - symbolContainer.point.y);
+			float PointX = (float) (symbolContainer.xy.x);
+			float PointY = (float) (TILE_SIZE - symbolContainer.xy.y);
 
 			BitmapDrawable bmp = (BitmapDrawable) symbolContainer.symbol;
 
@@ -217,8 +219,8 @@ public class GL_Rasterer {
 
 			float TextWidth = (float) (pointTextContainer.boundary.getWidth());
 
-			float PointX = (float) pointTextContainer.x;
-			float PointY = (float) (DISPLAY_MODEL.getTileSize() - pointTextContainer.y);
+			float PointX = (float) pointTextContainer.xy.x;
+			float PointY = (float) (DISPLAY_MODEL.getTileSize() - pointTextContainer.xy.y);
 
 			GL_Path path = new GL_Path();
 			path.moveTo(PointX, PointY);

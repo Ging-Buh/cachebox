@@ -85,7 +85,6 @@ public enum LogLevel {
 
 		root.setLevel(Level.ALL);
 
-		Log.info(log, "Set LogLevel to:" + act.toString());
 		root.setLevel(actlevel);
 	}
 

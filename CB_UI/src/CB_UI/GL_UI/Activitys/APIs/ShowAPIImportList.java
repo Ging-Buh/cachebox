@@ -399,7 +399,6 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 		};
 
 		spinner = new Spinner(margin, LogCollapseBox.getHeight() - margin - checkBoxCleanLogs.getHeight(), LogCollapseBox.getWidth() - margin - margin, checkBoxCleanLogs.getHeight(), "LogLifeSpinner", adapter, new ISelectionChangedListener() {
-
 			@Override
 			public void selectionChanged(int index) {
 				Config.LogMaxMonthAge.setValue(index);
@@ -425,7 +424,6 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 			public void show(boolean visible) {
 				if (visible) {
 					NumericInputBox.Show(Translation.Get("ButKeepLeast"), Translation.Get("DeleteLogs"), Config.LogMinCount.getValue(), new IReturnValueListener() {
-
 						@Override
 						public void returnValue(int value) {
 							Config.LogMinCount.setValue(value);

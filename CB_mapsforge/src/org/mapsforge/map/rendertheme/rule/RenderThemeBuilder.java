@@ -18,8 +18,8 @@ package org.mapsforge.map.rendertheme.rule;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.rendertheme.XmlUtils;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * A builder for {@link RenderTheme} instances.
@@ -29,7 +29,8 @@ public class RenderThemeBuilder {
 	private static final String BASE_STROKE_WIDTH = "base-stroke-width";
 	private static final String BASE_TEXT_SIZE = "base-text-size";
 	private static final String MAP_BACKGROUND = "map-background";
-	private static final int RENDER_THEME_VERSION = 3;
+	private static final String MAP_BACKGROUND_OUTSIDE = "map-background-outside";
+	private static final int RENDER_THEME_VERSION = 4;
 	private static final String VERSION = "version";
 	private static final String XMLNS = "xmlns";
 	private static final String XMLNS_XSI = "xmlns:xsi";
@@ -37,15 +38,18 @@ public class RenderThemeBuilder {
 
 	float baseStrokeWidth;
 	float baseTextSize;
+	boolean hasBackgroundOutside;
 	int mapBackground;
+	int mapBackgroundOutside;
 	private Integer version;
 
-	public RenderThemeBuilder(GraphicFactory graphicFactory, String elementName, Attributes attributes) throws SAXException {
+	public RenderThemeBuilder(GraphicFactory graphicFactory, String elementName, XmlPullParser pullParser)
+			throws XmlPullParserException {
 		this.baseStrokeWidth = 1f;
 		this.baseTextSize = 1f;
 		this.mapBackground = graphicFactory.createColor(Color.WHITE);
 
-		extractValues(graphicFactory, elementName, attributes);
+		extractValues(graphicFactory, elementName, pullParser);
 	}
 
 	/**
@@ -55,10 +59,11 @@ public class RenderThemeBuilder {
 		return new RenderTheme(this);
 	}
 
-	private void extractValues(GraphicFactory graphicFactory, String elementName, Attributes attributes) throws SAXException {
-		for (int i = 0; i < attributes.getLength(); ++i) {
-			String name = attributes.getQName(i);
-			String value = attributes.getValue(i);
+	private void extractValues(GraphicFactory graphicFactory, String elementName, XmlPullParser pullParser)
+			throws XmlPullParserException {
+		for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
+			String name = pullParser.getAttributeName(i);
+			String value = pullParser.getAttributeValue(i);
 
 			if (XMLNS.equals(name)) {
 				continue;
@@ -70,25 +75,28 @@ public class RenderThemeBuilder {
 				this.version = Integer.valueOf(XmlUtils.parseNonNegativeInteger(name, value));
 			} else if (MAP_BACKGROUND.equals(name)) {
 				this.mapBackground = XmlUtils.getColor(graphicFactory, value);
+			} else if (MAP_BACKGROUND_OUTSIDE.equals(name)) {
+				this.mapBackgroundOutside = XmlUtils.getColor(graphicFactory, value);
+				this.hasBackgroundOutside = true;
 			} else if (BASE_STROKE_WIDTH.equals(name)) {
 				this.baseStrokeWidth = XmlUtils.parseNonNegativeFloat(name, value);
 			} else if (BASE_TEXT_SIZE.equals(name)) {
 				this.baseTextSize = XmlUtils.parseNonNegativeFloat(name, value);
 			} else {
-				throw XmlUtils.createSAXException(elementName, name, value, i);
+				throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
 			}
 		}
 
 		validate(elementName);
 	}
 
-	private void validate(String elementName) throws SAXException {
+	private void validate(String elementName) throws XmlPullParserException {
 		XmlUtils.checkMandatoryAttribute(elementName, VERSION, this.version);
 
 		if (!XmlUtils.supportOlderRenderThemes && this.version != RENDER_THEME_VERSION) {
-			throw new SAXException("unsupported render theme version: " + this.version);
+			throw new XmlPullParserException("unsupported render theme version: " + this.version);
 		} else if (this.version > RENDER_THEME_VERSION) {
-			throw new SAXException("unsupported newer render theme version: " + this.version);
+			throw new XmlPullParserException("unsupported newer render theme version: " + this.version);
 		}
 	}
 }

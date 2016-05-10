@@ -15,6 +15,7 @@
  */
 package CB_UI.GL_UI.Views;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Timer;
@@ -155,7 +156,7 @@ public class DescriptionView extends CB_View_Base {
 		if (!Global.isTab)
 			this.addChild(cacheInfo);
 		resetUi();
-		if (cache.isLive() || cache.getApiStatus() == 1) {
+		if (cache.isLive() || cache.getApiStatus() == Cache.ISLITE) {
 			showDownloadButton();
 		}
 
@@ -468,8 +469,11 @@ public class DescriptionView extends CB_View_Base {
 	public static String getAttributesHtml(Cache cache) {
 		StringBuilder sb = new StringBuilder();
 		try {
-			Iterator<Attributes> attrs = cache.getAttributes().iterator();
+			ArrayList<Attributes> attribs = cache.getAttributes();
+			if (attribs == null)
+				return "";
 
+			Iterator<Attributes> attrs = attribs.iterator();
 			if (attrs == null || !attrs.hasNext())
 				return "";
 

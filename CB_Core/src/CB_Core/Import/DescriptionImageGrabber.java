@@ -116,7 +116,15 @@ public class DescriptionImageGrabber {
 	 * @param uri
 	 * @return
 	 */
-	public static String BuildImageFilename(String GcCode, URI uri) {
+	public static String BuildImageFilename(String GcCode, URI _uri) {
+		// in der DB stehts ohne large. der Dateiname wurde aber mit large gebildet. Ev auch nur ein Handy / PC Problem.
+		String path = _uri.getPath();
+		String authority = _uri.getAuthority();
+		if (authority != null) {
+			if (authority.equals("img.geocaching.com")) {
+				path = path.replace("/large/", "/");
+			}
+		}
 		String imagePath = CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4);
 		if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0)
 			imagePath = CB_Core_Settings.DescriptionImageFolderLocal.getValue() + "/" + GcCode.substring(0, 4);
@@ -124,14 +132,14 @@ public class DescriptionImageGrabber {
 		// String uriName = url.Substring(url.LastIndexOf('/') + 1);
 		// int idx = uri.AbsolutePath.LastIndexOf('.');
 		// //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		int idx = uri.getPath().lastIndexOf('.');
+		int idx = path.lastIndexOf('.');
 		// String extension = (idx >= 0) ? uri.AbsolutePath.Substring(idx) :
 		// ".";!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		String extension = (idx >= 0) ? uri.getPath().substring(idx) : ".";
+		String extension = (idx >= 0) ? path.substring(idx) : ".";
 
 		// return imagePath + "\\" + GcCode +
 		// Global.sdbm(uri.AbsolutePath).ToString() + extension;!!!!!!!!!!!!!
-		return imagePath + "/" + GcCode + SDBM_Hash.sdbm(uri.getPath()) + extension;
+		return imagePath + "/" + GcCode + SDBM_Hash.sdbm(path) + extension;
 	}
 
 	/**
@@ -425,7 +433,7 @@ public class DescriptionImageGrabber {
 					return 0;
 				}
 
-				if (BreakawayImportThread.isCanceld())
+				if (BreakawayImportThread.isCanceled())
 					return 0;
 
 				String local = BuildImageFilename(gcCode, uri);
@@ -511,7 +519,7 @@ public class DescriptionImageGrabber {
 						return 0;
 					}
 
-					if (BreakawayImportThread.isCanceld())
+					if (BreakawayImportThread.isCanceled())
 						return 0;
 
 					URI uri = allimgDict.get(key);
@@ -531,13 +539,11 @@ public class DescriptionImageGrabber {
 							e.printStackTrace();
 						}
 					}
-					// Local Filename mit Hash erzeugen, damit Änderungen der Datei ohne Änderungen des Dateinamens erkannt werden
-					// können
+					// Local Filename mit Hash erzeugen, damit Änderungen der Datei ohne Änderungen des Dateinamens erkannt werden können
 					// Hier erst die alten Version mit den Klammern als Eingrenzung des Hash
 					// Dies hier machen, damit die Namen der Spoiler ins neue System Konvertiert werden können.
 					String localOld = BuildAdditionalImageFilenameHash(gcCode, decodedImageName, uri);
-					// Neuen Local Filename mit Hash erzeugen, damit Änderungen der Datei ohne Änderungen des Dateinamens erkannt werden
-					// können
+					// Neuen Local Filename mit Hash erzeugen, damit Änderungen der Datei ohne Änderungen des Dateinamens erkannt werden können
 					// Hier jetzt mit @ als Eingrenzung des Hashs
 					local = BuildAdditionalImageFilenameHashNew(gcCode, decodedImageName, uri);
 					String filename = local.substring(local.lastIndexOf('/') + 1);

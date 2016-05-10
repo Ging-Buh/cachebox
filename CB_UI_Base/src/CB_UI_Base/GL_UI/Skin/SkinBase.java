@@ -1,5 +1,14 @@
 package CB_UI_Base.GL_UI.Skin;
 
+import org.slf4j.LoggerFactory;
+
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
+import CB_UI_Base.Global;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
 /* 
  * Copyright (C) 2011-2015 team-cachebox.de
  *
@@ -15,16 +24,8 @@ package CB_UI_Base.GL_UI.Skin;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
-
-import CB_UI_Base.Global;
-import CB_UI_Base.settings.CB_UI_Base_Settings;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.HSV_Color;
-
-import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 /**
  * Implements all infos for a Skin like Font-Path Ui_iconPack Path ....
@@ -104,7 +105,7 @@ public abstract class SkinBase {
 					day_skin = new Skin(Gdx.files.internal(day_skinPath));
 				}
 			} catch (Exception e) {
-				Log.err(log, "Load Custum Skin", e);
+				Log.err(log, "Load Custom Skin", e);
 			}
 		}
 
@@ -117,7 +118,7 @@ public abstract class SkinBase {
 					night_skin = new Skin(Gdx.files.internal(night_skinPath));
 				}
 			} catch (Exception e) {
-				Log.err(log, "Load Custum Night Skin", e);
+				Log.err(log, "Load Custom Night Skin", e);
 			}
 		}
 
