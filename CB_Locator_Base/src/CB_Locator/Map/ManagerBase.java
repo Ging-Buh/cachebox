@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Set;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -47,6 +48,9 @@ import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
+import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
+import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
 import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
 import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 import org.slf4j.LoggerFactory;
@@ -442,6 +446,7 @@ public abstract class ManagerBase {
     private boolean invertToNightTheme; // not yet implemented?
 
     private RenderThemeFuture renderThemeFuture;
+    private XmlRenderThemeStyleMenu renderThemeStyleMenu;
 
     public void setRenderTheme(String themePathAndName, boolean invert) {
 	invertToNightTheme = invert;
@@ -457,7 +462,31 @@ public abstract class ManagerBase {
 		    File file = FileFactory.createFile(themePathAndName);
 		    if (file.exists()) {
 			java.io.File themeFile = new java.io.File(file.getAbsolutePath());
-			renderTheme = new ExternalRenderTheme(themeFile);
+			renderTheme = new ExternalRenderTheme(themeFile, new XmlRenderThemeMenuCallback() {
+
+			    @Override
+			    public Set<String> getCategories(XmlRenderThemeStyleMenu style) {
+				ManagerBase.this.renderThemeStyleMenu = style;
+				String id = (ManagerBase.this.renderThemeStyleMenu).getDefaultValue();
+
+				XmlRenderThemeStyleLayer baseLayer = ManagerBase.this.renderThemeStyleMenu.getLayer(id);
+				if (baseLayer == null) {
+
+				    return null;
+				}
+				Set<String> result = baseLayer.getCategories();
+
+				// add the categories from overlays that are enabled
+				todo
+				for (XmlRenderThemeStyleLayer overlay : baseLayer.getOverlays()) {
+				    if (!overlay.getId().equals("layer_public_transportation")) {
+					result.addAll(overlay.getCategories());
+				    }
+				}
+
+				return result;
+			    }
+			});
 		    } else {
 			Log.err(log, themePathAndName + " not found!");
 			renderTheme = CB_InternalRenderTheme.OSMARENDER;
@@ -487,6 +516,7 @@ public abstract class ManagerBase {
 	this.renderThemeFuture = new RenderThemeFuture(this.getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), this.renderTheme, this.DISPLAY_MODEL);
 	new Thread(this.renderThemeFuture).start();
 
+	System.out.println("");
     }
 
     public TileGL getMapsforgePixMap(Layer layer, Descriptor desc, int ThreadIndex) {
