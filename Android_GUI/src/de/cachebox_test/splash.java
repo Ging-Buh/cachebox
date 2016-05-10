@@ -83,6 +83,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.StatFs;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.os.EnvironmentCompat;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.View;
@@ -702,12 +704,20 @@ public class splash extends Activity {
 	    externalSd += Folder;
 	}
 
-	// get all folder in /storage
+	final java.io.File[] externalCacheDirs = ContextCompat.getExternalCacheDirs(context);
+	final List<String> result = new ArrayList<String>();
 
-	java.io.File loli = new java.io.File("/storage");
-	java.io.File[] list = loli.listFiles();
-
-	externalSd = list[0].getAbsolutePath() + Folder;
+	for (int i = 1; i < externalCacheDirs.length; ++i) {
+	    final java.io.File file = externalCacheDirs[i];
+	    if (file == null)
+		continue;
+	    final String storageState = EnvironmentCompat.getStorageState(file);
+	    if (Environment.MEDIA_MOUNTED.equals(storageState))
+		result.add(getRootOfInnerSdCardFolder(externalCacheDirs[i]));
+	}
+	if (!result.isEmpty()) {
+	    externalSd = result.get(0) + Folder;
+	}
 
 	if (android.os.Build.VERSION.SDK_INT >= 19) {
 	    // check for Root permission
@@ -761,6 +771,19 @@ public class splash extends Activity {
 	}
 
 	return externalSd;
+    }
+
+    /** Given any file/folder inside an sd card, this will return the path of the sd card */
+    private static String getRootOfInnerSdCardFolder(java.io.File file) {
+	if (file == null)
+	    return null;
+	final long totalSpace = file.getTotalSpace();
+	while (true) {
+	    final java.io.File parentFile = file.getParentFile();
+	    if (parentFile == null || parentFile.getTotalSpace() != totalSpace)
+		return file.getAbsolutePath();
+	    file = parentFile;
+	}
     }
 
     private ArrayList<String> getAdditionalWorkPathArray() {
