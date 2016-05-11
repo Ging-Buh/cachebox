@@ -383,7 +383,13 @@ public abstract class ManagerBase {
 		    if (FileIO.GetFileExtension(file).equalsIgnoreCase("map")) {
 
 			java.io.File f = new java.io.File(FileFactory.createFile(file).getAbsolutePath());
-			MapFile mapFile = new MapFile(f);
+			MapFile mapFile;
+			try {
+			    mapFile = new MapFile(f);
+			} catch (Exception e) {
+			    log.error("INIT MAPPACKS", e);
+			    continue;
+			}
 
 			//check type of mapsforge
 			MapFileInfo info = mapFile.getMapFileInfo();
