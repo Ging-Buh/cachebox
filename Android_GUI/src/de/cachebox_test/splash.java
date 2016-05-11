@@ -707,6 +707,9 @@ public class splash extends Activity {
 	final java.io.File[] externalCacheDirs = ContextCompat.getExternalCacheDirs(context);
 	final List<String> result = new ArrayList<String>();
 
+	//set internal Work Path
+	workPath = externalCacheDirs[0].getParent() + "/files";
+
 	for (int i = 1; i < externalCacheDirs.length; ++i) {
 	    final java.io.File file = externalCacheDirs[i];
 	    if (file == null)
