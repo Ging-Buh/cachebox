@@ -644,9 +644,6 @@ public class splash extends Activity {
 
     private String getExternalSdPath(String Folder) {
 
-	Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-	startActivityForResult(intent, 42);
-
 	// check if Layout forced from User
 	workPath = Environment.getExternalStorageDirectory() + Folder;
 
