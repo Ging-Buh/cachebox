@@ -19,8 +19,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
@@ -74,6 +76,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.UriPermission;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -279,6 +282,10 @@ public class splash extends Activity {
     protected void onStart() {
 	super.onStart();
 	Log.debug(log, "onStart");
+
+	if (android.os.Build.VERSION.SDK_INT >= 23) {
+	    PermissionCheck.checkNeededPermissions(this);
+	}
 
 	// initial GDX
 	Gdx.files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
@@ -1329,5 +1336,59 @@ public class splash extends Activity {
 	}
 
 	return super.onKeyDown(keyCode, event);
+    }
+
+    //##############################################################################
+    // Implementation of Permission check with Android Version >23
+    //##############################################################################
+
+    @TargetApi(23)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+	switch (requestCode) {
+	case PermissionCheck.MY_PERMISSIONS_REQUEST: {
+	    Map<String, Integer> perms = new HashMap<String, Integer>();
+	    // Initial
+
+	    for (String permission : PermissionCheck.NEEDED_PERMISSIONS) {
+		perms.put(permission, PackageManager.PERMISSION_GRANTED);
+	    }
+
+	    // Fill with results
+	    for (int i = 0; i < permissions.length; i++)
+		perms.put(permissions[i], grantResults[i]);
+
+	    // check all
+	    ArrayList<String> deniedList = new ArrayList<String>();
+	    for (String permission : PermissionCheck.NEEDED_PERMISSIONS) {
+		if (perms.get(permission) != PackageManager.PERMISSION_GRANTED)
+		    deniedList.add(permission);
+	    }
+
+	    if (!deniedList.isEmpty()) {
+		// Permission Denied
+		String br = System.getProperty("line.separator");
+		StringBuilder sb = new StringBuilder();
+		sb.append("Some Permission is Denied");
+		sb.append(br);
+
+		for (String denied : deniedList) {
+		    sb.append(denied);
+		    sb.append(br);
+		}
+		sb.append(br);
+
+		sb.append("Cachbox will close");
+
+		Toast.makeText(this, sb.toString(), Toast.LENGTH_LONG).show();
+
+		// close
+		this.finish();
+	    }
+	}
+	    break;
+	default:
+	    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+	}
     }
 }
