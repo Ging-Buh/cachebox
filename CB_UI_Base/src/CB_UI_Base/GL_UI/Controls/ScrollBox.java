@@ -154,6 +154,12 @@ public class ScrollBox extends CB_View_Base {
 	}
 
 	@Override
+	public void removeChildsDirekt(final GL_View_Base view) {
+		item.removeChildsDirekt(view);
+		lv.notifyDataSetChanged();
+	}
+	
+	@Override
 	public void removeChildsDirekt() {
 		item.removeChildsDirekt();
 		lv.notifyDataSetChanged();

@@ -104,6 +104,11 @@ public class HtmlView extends ScrollBox implements ListLayout {
 		} else {
 			this.setDragable();
 
+			if (textOnlyField != null) {
+				this.removeChildsDirekt(textOnlyField);
+				textOnlyField = null;
+			}
+			
 			if (segmentList != null) {
 				segmentList.clear();
 			}
