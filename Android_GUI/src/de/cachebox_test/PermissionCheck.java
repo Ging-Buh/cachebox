@@ -28,6 +28,9 @@ import android.support.v4.content.ContextCompat;
 public class PermissionCheck {
 
     public static final int MY_PERMISSIONS_REQUEST = 11052016;
+
+    static final String ACCESS_FINE_LOCATION = "android.permission.ACCESS_FINE_LOCATION";
+    static final String ACCESS_COARSE_LOCATION = "android.permission.ACCESS_COARSE_LOCATION";
     static final String WAKE_LOCK = "android.permission.WAKE_LOCK";
     static final String INTERNET = "android.permission.INTERNET";
     static final String ACCESS_NETWORK_STATE = "android.permission.ACCESS_NETWORK_STATE";
@@ -37,7 +40,7 @@ public class PermissionCheck {
     static final String WRITE_EXTERNAL_STORAGE = "android.permission.WRITE_EXTERNAL_STORAGE";
     static final String READ_EXTERNAL_STORAGE = "android.permission.READ_EXTERNAL_STORAGE";
 
-    static final String[] NEEDED_PERMISSIONS = new String[] { WAKE_LOCK, INTERNET, ACCESS_NETWORK_STATE, RECORD_AUDIO, CAMERA, VIBRATE, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE };
+    static final String[] NEEDED_PERMISSIONS = new String[] { ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION, WAKE_LOCK, INTERNET, ACCESS_NETWORK_STATE, RECORD_AUDIO, CAMERA, VIBRATE, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE };
 
     public static void checkNeededPermissions(Activity context) {
 	ArrayList<String> DENIED_List = new ArrayList<String>();

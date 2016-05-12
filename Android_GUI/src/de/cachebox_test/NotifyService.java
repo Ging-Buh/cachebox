@@ -2,22 +2,85 @@ package de.cachebox_test;
 
 import CB_Locator.Events.GPS_FallBackEvent;
 import CB_Locator.Events.GPS_FallBackEventList;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.view.View;
 
 public class NotifyService extends Service implements GPS_FallBackEvent {
+
+    public enum NotificationType {
+	NO_GPS, GPS, KILLED
+    }
 
     int mStartMode; // indicates how to behave if the service is killed
     boolean mAllowRebind; // indicates whether onRebind should be used
 
+    /**
+     * notificationID allows you to update the notification later on.
+     */
     final static int myID = 1234;
+    final NotificationCompat.Builder mBuilder;
+    NotificationManager mNotificationManager;
 
     // Binder wird von der ServiceConnection verwendet
     private final IBinder mBinder = new LocalBinder();
+
+    public NotifyService() {
+	super();
+	this.mBuilder = new NotificationCompat.Builder(this);
+
+    }
+
+    private void showNotification(NotificationType type) {
+
+	if (this.mNotificationManager == null)
+	    this.mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+	int iconId = R.drawable.cb_icon_0;
+
+	switch (type) {
+	case GPS:
+	    iconId = R.drawable.cb_icon_1;
+	    break;
+	case KILLED:
+	    iconId = R.drawable.cb_killed;
+	    break;
+	case NO_GPS:
+	    iconId = R.drawable.cb_icon_0;
+	    break;
+	default:
+	    iconId = R.drawable.cb_icon_0;
+	    break;
+
+	}
+	Bitmap bm = BitmapFactory.decodeResource(getResources(), iconId);
+
+	mBuilder.setSmallIcon(iconId);
+	mBuilder.setLargeIcon(bm);
+	mBuilder.setContentTitle("Cachebox");
+
+	mBuilder.setAutoCancel(false);
+
+	Notification notify = mBuilder.build();
+	notify.flags |= Notification.FLAG_NO_CLEAR;
+
+	int smallIconId = getResources().getIdentifier("right_icon", "id", android.R.class.getPackage().getName());
+	if (smallIconId != 0) {
+	    notify.contentView.setViewVisibility(smallIconId, View.INVISIBLE);
+	}
+
+	mNotificationManager.notify(myID, notify);
+    }
 
     /**
      * Usere verschachtelte Klasse
@@ -53,18 +116,7 @@ public class NotifyService extends Service implements GPS_FallBackEvent {
 	mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	PendingIntent pendIntent = PendingIntent.getActivity(this, 0, mainIntent, 0);
 
-	//		// This constructor is deprecated. Use Notification.Builder instead
-	//		Notification notice = new Notification(R.drawable.cb_icon_0, "Cachebox", System.currentTimeMillis());
-	//
-	//		// This method is deprecated. Use Notification.Builder instead.
-	//		notice.setLatestEventInfo(this, "Cachebox", "is running", pendIntent);
-	//
-	//		// notice.flags |= Notification.FLAG_NO_CLEAR;
-	//
-	//		// TODO no Clear wieder einschalten => runNotification.flags |= Notification.FLAG_NO_CLEAR;
-	//
-	//		startForeground(myID, notice);
-
+	showNotification(NotificationType.NO_GPS);
 	return mBinder;
     }
 
@@ -76,6 +128,8 @@ public class NotifyService extends Service implements GPS_FallBackEvent {
 
 	if (finish) {
 	    // CB is closing from User
+	    NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+	    mNotificationManager.cancel(myID);
 	    stopForeground(true);
 	} else {
 	    // CB is killing
@@ -83,6 +137,8 @@ public class NotifyService extends Service implements GPS_FallBackEvent {
 	    Intent mainIntent = new Intent(this, main.class);
 	    mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	    PendingIntent pendIntent = PendingIntent.getActivity(this, 0, mainIntent, 0);
+
+	    showNotification(NotificationType.KILLED);
 
 	    //			// This constructor is deprecated. Use Notification.Builder instead
 	    //			Notification notice = new Notification(R.drawable.cb_killed, "Cachebox", System.currentTimeMillis());
@@ -117,6 +173,8 @@ public class NotifyService extends Service implements GPS_FallBackEvent {
 	    mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	    PendingIntent pendIntent = PendingIntent.getActivity(this, 0, mainIntent, 0);
 
+	    showNotification(NotificationType.KILLED);
+
 	    //			// This constructor is deprecated. Use Notification.Builder instead
 	    //			Notification notice = new Notification(R.drawable.cb_killed, "Cachebox", System.currentTimeMillis());
 	    //
@@ -131,6 +189,8 @@ public class NotifyService extends Service implements GPS_FallBackEvent {
 	Intent mainIntent = new Intent(this, main.class);
 	mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	PendingIntent pendIntent = PendingIntent.getActivity(this, 0, mainIntent, 0);
+
+	showNotification(NotificationType.NO_GPS);
 
 	//		// This constructor is deprecated. Use Notification.Builder instead
 	//		Notification notice = new Notification(R.drawable.cb_icon_0, "Cachebox", System.currentTimeMillis());
@@ -150,6 +210,8 @@ public class NotifyService extends Service implements GPS_FallBackEvent {
 	Intent mainIntent = new Intent(this, main.class);
 	mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	PendingIntent pendIntent = PendingIntent.getActivity(this, 0, mainIntent, 0);
+
+	showNotification(NotificationType.GPS);
 
 	//		// This constructor is deprecated. Use Notification.Builder instead
 	//		Notification notice = new Notification(R.drawable.cb_icon_1, "Cachebox", System.currentTimeMillis());
