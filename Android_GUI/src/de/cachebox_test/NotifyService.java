@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.view.View;
 
@@ -41,10 +42,29 @@ public class NotifyService extends Service implements GPS_FallBackEvent {
 
     }
 
+    boolean intentSeted = false;
+
     private void showNotification(NotificationType type) {
 
 	if (this.mNotificationManager == null)
 	    this.mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+	if (!intentSeted && main.mainActivity != null) {
+	    try {
+		Intent mainIntent = new Intent(this, main.class);
+
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		stackBuilder.addParentStack(main.class);
+
+		// Adds the Intent that starts the Activity to the top of the stack
+		stackBuilder.addNextIntent(mainIntent);
+		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		mBuilder.setContentIntent(resultPendingIntent);
+		intentSeted = true;
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }
+	}
 
 	int iconId = R.drawable.cb_icon_0;
 
@@ -111,11 +131,6 @@ public class NotifyService extends Service implements GPS_FallBackEvent {
     @Override
     public IBinder onBind(Intent intent) {
 	// A client is binding to the service with bindService()
-
-	Intent mainIntent = new Intent(this, main.class);
-	mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	PendingIntent pendIntent = PendingIntent.getActivity(this, 0, mainIntent, 0);
-
 	showNotification(NotificationType.NO_GPS);
 	return mBinder;
     }
@@ -125,35 +140,15 @@ public class NotifyService extends Service implements GPS_FallBackEvent {
     @Override
     public boolean onUnbind(Intent intent) {
 	// All clients have unbound with unbindService()
-
 	if (finish) {
 	    // CB is closing from User
-	    NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 	    mNotificationManager.cancel(myID);
 	    stopForeground(true);
 	} else {
 	    // CB is killing
 	    Log.d("CACHEBOX", "Service => ACB is killed");
-	    Intent mainIntent = new Intent(this, main.class);
-	    mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	    PendingIntent pendIntent = PendingIntent.getActivity(this, 0, mainIntent, 0);
-
 	    showNotification(NotificationType.KILLED);
-
-	    //			// This constructor is deprecated. Use Notification.Builder instead
-	    //			Notification notice = new Notification(R.drawable.cb_killed, "Cachebox", System.currentTimeMillis());
-	    //
-	    //			// This method is deprecated. Use Notification.Builder instead.
-	    //			notice.setLatestEventInfo(this, "Cachebox", "was killing", pendIntent);
-	    //
-	    //			// notice.flags |= Notification.FLAG_NO_CLEAR;
-	    //
-	    //			// TODO no Clear wieder einschalten => runNotification.flags |= Notification.FLAG_NO_CLEAR;
-	    //
-	    //			startForeground(myID, notice);
-
 	}
-
 	return mAllowRebind;
     }
 
@@ -166,64 +161,20 @@ public class NotifyService extends Service implements GPS_FallBackEvent {
     @Override
     public void onDestroy() {
 	// The service is no longer used and is being destroyed
-
 	if (!finish) {
 	    Log.d("CACHEBOX", "Service => ACB is killed");
-	    Intent mainIntent = new Intent(this, main.class);
-	    mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	    PendingIntent pendIntent = PendingIntent.getActivity(this, 0, mainIntent, 0);
-
 	    showNotification(NotificationType.KILLED);
-
-	    //			// This constructor is deprecated. Use Notification.Builder instead
-	    //			Notification notice = new Notification(R.drawable.cb_killed, "Cachebox", System.currentTimeMillis());
-	    //
-	    //			// This method is deprecated. Use Notification.Builder instead.
-	    //			notice.setLatestEventInfo(this, "Cachebox", "was killing", pendIntent);
-
 	}
     }
 
     @Override
     public void FallBackToNetworkProvider() {
-	Intent mainIntent = new Intent(this, main.class);
-	mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	PendingIntent pendIntent = PendingIntent.getActivity(this, 0, mainIntent, 0);
-
 	showNotification(NotificationType.NO_GPS);
-
-	//		// This constructor is deprecated. Use Notification.Builder instead
-	//		Notification notice = new Notification(R.drawable.cb_icon_0, "Cachebox", System.currentTimeMillis());
-	//
-	//		// This method is deprecated. Use Notification.Builder instead.
-	//		notice.setLatestEventInfo(this, "Cachebox", "is running", pendIntent);
-	//
-	//		// notice.flags |= Notification.FLAG_NO_CLEAR;
-	//
-	//		// TODO no Clear wieder einschalten => runNotification.flags |= Notification.FLAG_NO_CLEAR;
-	//
-	//		startForeground(myID, notice);
     }
 
     @Override
     public void Fix() {
-	Intent mainIntent = new Intent(this, main.class);
-	mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	PendingIntent pendIntent = PendingIntent.getActivity(this, 0, mainIntent, 0);
-
 	showNotification(NotificationType.GPS);
-
-	//		// This constructor is deprecated. Use Notification.Builder instead
-	//		Notification notice = new Notification(R.drawable.cb_icon_1, "Cachebox", System.currentTimeMillis());
-	//
-	//		// This method is deprecated. Use Notification.Builder instead.
-	//		notice.setLatestEventInfo(this, "Cachebox", "is running", pendIntent);
-	//
-	//		// notice.flags |= Notification.FLAG_NO_CLEAR;
-	//
-	//		// TODO no Clear wieder einschalten => runNotification.flags |= Notification.FLAG_NO_CLEAR;
-	//
-	//		startForeground(myID, notice);
     }
 
 }
