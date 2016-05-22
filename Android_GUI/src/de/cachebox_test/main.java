@@ -70,7 +70,6 @@ import CB_UI.GL_UI.Activitys.settings.SettingsActivity;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog.searchMode;
 import CB_UI.GL_UI.Main.TabMainView;
-import CB_UI.GL_UI.Views.DescriptionView;
 import CB_UI.GL_UI.Views.splash;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Events.PlatformConnector;
@@ -187,6 +186,7 @@ import de.cachebox_test.Custom_Controls.QuickButtonList.HorizontalListView;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AndroidClipboard;
+import de.cachebox_test.Views.DescriptionView;
 import de.cachebox_test.Views.JokerView;
 import de.cachebox_test.Views.SolverView;
 import de.cachebox_test.Views.ViewGL;
@@ -1400,6 +1400,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			// inflater);
 
 			// return spoilerView;
+		} else if (ID == ViewConst.DESCRIPTION_VIEW) {
+			if (descriptionView != null) {
+				return descriptionView;
+			} else {
+				return descriptionView = new DescriptionView(this, inflater);
+			}
+
 		}
 
 		return null;
@@ -1445,14 +1452,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				aktView = null;
 				solverView.OnFree();
 				solverView = null;
+			} else if (aktView.equals(descriptionView)) {
+				// Instanz löschen
+				aktView = null;
+				descriptionView.OnHide();
+
 			}
-			// else if (aktView.equals(spoilerView))
-			// {
-			// Instanz löschen
-			// aktView = null;
-			// spoilerView.OnFree();
-			// spoilerView = null;
-			// }
 
 		}
 
@@ -2699,6 +2704,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 				Global.InitIcons(mainActivity);
 				Global.initTheme(mainActivity);
+				if (aktViewId == ViewConst.DESCRIPTION_VIEW || aktTabViewId == ViewConst.DESCRIPTION_VIEW) {
+					if (descriptionView.getVisibility() == View.VISIBLE) {
+						if (aktView == descriptionView) {
+							hide(ViewConst.DESCRIPTION_VIEW);
+							descriptionView = null;
+
+						}
+					}
+
+				}
 
 			}
 
