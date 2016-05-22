@@ -277,19 +277,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 			solverView2.dispose();
 			solverView2 = null;
 		}
-
-		if (descriptionView != null && !descriptionView.isVisible()) {
-			boolean doRelease = true;
-			if (descriptionView.getCache() != null)
-				if (GlobalCore.isSetSelectedCache())
-					if (descriptionView.getCache().equals(GlobalCore.getSelectedCache()))
-						doRelease = false;
-			if (doRelease) {
-				//Log.debug(log, "Release descriptionView");
-				descriptionView.dispose();
-				descriptionView = null;
-			}
-		}
 	}
 
 	@Override

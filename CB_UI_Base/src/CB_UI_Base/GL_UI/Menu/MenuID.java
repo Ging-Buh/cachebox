@@ -256,7 +256,6 @@ public class MenuID {
 
 	public static final int AID_SWITCH_DESCRIPTION = 206;
 	public static final int AID_SHOW_DescExt = 207;
-	public static final int MI_TOGGLE_DEC__TXT_HTML = 208;
 
 	public static final int AID_HELP = 209;
 	public static final int MI_RENDERTHEMES = 210;
