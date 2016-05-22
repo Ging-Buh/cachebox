@@ -70,11 +70,7 @@ public class CB_Action_ShowDescExt extends CB_Action {
 			String cachehtml = Database.GetDescription(cache);
 			String html = DescriptionImageGrabber.ResolveImages(cache, cachehtml, false, NonLocalImages, NonLocalImagesUrl);
 			String header = "<!DOCTYPE html><html><head><meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\" /></head><body>";
-
-			if (!Config.DescriptionNoAttributes.getValue())
-				html = header + DescriptionView.getAttributesHtml(cache) + html;
-			else
-				html = header + html;
+			html = header + html;
 
 			// add 2 empty lines so that the last line of description can be selected with the markers
 			// add trailer
