@@ -177,7 +177,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import de.CB_PlugIn.IPlugIn;
-import de.cachebox_test.NotifyService.LocalBinder;
 import de.cachebox_test.CB_Texturepacker.Android_Packer;
 import de.cachebox_test.Components.CacheNameView;
 import de.cachebox_test.Custom_Controls.Mic_On_Flash;
@@ -439,33 +438,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		ActivityUtils.onActivityCreateSetTheme(this);
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-		// Initial CB running notification Icon
-		if (mConnection == null && serviceIntent == null || GlobalCore.restartAfterKill) {
-			if (serviceIntent == null)
-				serviceIntent = new Intent(this, NotifyService.class);
-
-			if (mConnection == null)
-				mConnection = new ServiceConnection() {
-
-					@Override
-					public void onServiceConnected(ComponentName name, IBinder service) {
-						myNotifyService = ((LocalBinder) service).getService();
-					}
-
-					@Override
-					public void onServiceDisconnected(ComponentName name) {
-						myNotifyService.unbindService(this);
-					}
-				};
-
-			NotifyService.finish = false;
-			try {
-				bindService(serviceIntent, mConnection, Context.BIND_AUTO_CREATE);
-			} catch (Exception e) {
-				Log.err(log, "main on create", "Service register error", e);
-			}
-		}
 
 		if (GlobalCore.isTab) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -1003,7 +975,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (isFinishing()) {
 			if (mConnection != null) {
-				NotifyService.finish = true;
 				unbindService(mConnection);
 				mConnection = null;
 			}
@@ -1163,6 +1134,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			getIntent().removeExtra("GpxPath");
 		}
 		GL.that.RestartRender();
+	}
+
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
 	}
 
 	@Override
