@@ -48,7 +48,7 @@ public class WaypointDAO {
 		try {
 			long count = Database.Data.insert("Waypoint", args);
 			if (count <= 0) {
-				Database.Data.update("Waypoint", args, "cacheid=" + WP.CacheId, null);
+				Database.Data.update("Waypoint", args, "gccode=\"" + WP.getGcCode() + "\"", null);
 			}
 			if (WP.IsUserWaypoint) {
 				// HasUserData nicht updaten wenn der Waypoint kein UserWaypoint ist!!!
