@@ -49,7 +49,7 @@ class Ex_1 {
 
 	public static void main(String[] args) {
 
-		DisplayModel.setDeviceScaleFactor(1.2f);
+		DisplayModel.setDeviceScaleFactor(1f);
 
 		new DesktopFileFactory();
 
