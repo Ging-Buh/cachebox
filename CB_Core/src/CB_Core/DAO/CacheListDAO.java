@@ -94,6 +94,9 @@ public class CacheListDAO {
 		}
 		sql += " order by CacheId";
 		CoreCursor reader = Database.Data.rawQuery(sql, null);
+		if (reader == null)
+		    return cacheList;
+		
 		reader.moveToFirst();
 		while (!reader.isAfterLast()) {
 			WaypointDAO waypointDAO = new WaypointDAO();
