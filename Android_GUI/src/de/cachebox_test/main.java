@@ -1186,8 +1186,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			if (mReceiver != null)
 				this.unregisterReceiver(mReceiver);
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
 		}
 		mReceiver = null;
 
@@ -1503,11 +1501,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 
 		aktTabView = view;
-		tabFrame.removeAllViews();
-		ViewParent parent = ((View) aktTabView).getParent();
-		if (parent != null) {
-			// aktView ist noch gebunden, also lösen
-			((FrameLayout) parent).removeAllViews();
+		try {
+			tabFrame.removeAllViews();
+			ViewParent parent = ((View) aktTabView).getParent();
+			if (parent != null) {
+				// aktView ist noch gebunden, also lösen
+				((FrameLayout) parent).removeAllViews();
+			}
+		} catch (Exception e) {
+
 		}
 		tabFrame.addView((View) aktTabView);
 		aktTabView.OnShow();
