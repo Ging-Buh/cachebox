@@ -201,7 +201,7 @@ import de.cb.sqlite.AndroidDB;
  */
 @SuppressLint("Wakelock")
 @SuppressWarnings("deprecation")
-public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.CacheListChangedEventListener, GpsStatus.NmeaListener, GpsStatus.Listener {
+public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.CacheListChangedEventListener, GpsStatus.NmeaListener, GpsStatus.Listener, CB_UI_Settings {
 
 	private static AndroidApplicationConfiguration gdxConfig = new AndroidApplicationConfiguration();
 
