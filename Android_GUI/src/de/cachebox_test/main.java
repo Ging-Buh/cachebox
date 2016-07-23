@@ -1182,8 +1182,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			Log.err(log, "Send files to MediaScanner: " + e.getMessage());
 		}
 
-		if (mReceiver != null)
-			this.unregisterReceiver(mReceiver);
+		try {
+			if (mReceiver != null)
+				this.unregisterReceiver(mReceiver);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		mReceiver = null;
 
 		Log.info(log, "CACHEBOX: " + "Main=> onDestroy");
