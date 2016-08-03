@@ -56,7 +56,7 @@ import CB_Utils.Log.Log;
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(GlobalCore.class);
 
-	public static final int CurrentRevision = 20160723;
+	public static final int CurrentRevision = 20160803;
 
 	public static final String CurrentVersion = "0.9.";
 	public static final String VersionPrefix = "Test";
