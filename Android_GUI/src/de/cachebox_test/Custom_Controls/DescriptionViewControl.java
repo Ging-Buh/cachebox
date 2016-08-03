@@ -331,19 +331,22 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
 						}
 					}
 
+					boolean anyImagesLoaded = false;
 					while (NonLocalImagesUrl != null && NonLocalImagesUrl.size() > 0) {
 						String local, url;
 						local = NonLocalImages.poll();
 						url = NonLocalImagesUrl.poll();
 
 						try {
-							DescriptionImageGrabber.Download(url, local);
+							if (DescriptionImageGrabber.Download(url, local)) {
+								anyImagesLoaded = true;
+							}
 						} catch (Exception e) {
 							log.error("DescriptionViewControl.setCache()", "downloadThread run()", e);
 						}
 					}
-					downloadReadyHandler.post(downloadComplete);
-
+					if (anyImagesLoaded)
+						downloadReadyHandler.post(downloadComplete);
 				}
 			};
 			downloadThread.start();
