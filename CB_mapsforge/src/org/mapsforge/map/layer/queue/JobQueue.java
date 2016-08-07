@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2016 ksaihtam
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -27,6 +28,7 @@ public class JobQueue<T extends Job> {
 
 	private final List<T> assignedJobs = new LinkedList<T>();
 	private final DisplayModel displayModel;
+	private boolean isInterrupted;
 	private final MapViewPosition mapViewPosition;
 	private final List<QueueItem<T>> queueItems = new LinkedList<QueueItem<T>>();
 	private boolean scheduleNeeded;
@@ -57,6 +59,7 @@ public class JobQueue<T extends Job> {
 	/**
 	 * Returns the most important entry from this queue. The method blocks while this queue is empty
 	 * or while there are already a certain number of jobs assigned.
+	 *
 	 * @param maxAssigned the maximum number of jobs that should be assigned at any one point. If there
 	 *                    are already so many jobs assigned, the queue will block. This is to ensure
 	 *                    that the scheduling will continue to work.
@@ -64,6 +67,10 @@ public class JobQueue<T extends Job> {
 	public synchronized T get(int maxAssigned) throws InterruptedException {
 		while (this.queueItems.isEmpty() || this.assignedJobs.size() >= maxAssigned) {
 			this.wait(200);
+			if (this.isInterrupted) {
+				this.isInterrupted = false;
+				return null;
+			}
 		}
 
 		if (this.scheduleNeeded) {
@@ -76,6 +83,11 @@ public class JobQueue<T extends Job> {
 		return job;
 	}
 
+	public synchronized void interrupt() {
+		this.isInterrupted = true;
+		notifyWorkers();
+	}
+
 	public synchronized void notifyWorkers() {
 		this.notifyAll();
 	}
@@ -85,17 +97,17 @@ public class JobQueue<T extends Job> {
 		this.notifyWorkers();
 	}
 
+	private void schedule(int tileSize) {
+		QueueItemScheduler.schedule(this.queueItems, this.mapViewPosition.getMapPosition(), tileSize);
+		Collections.sort(this.queueItems, QueueItemComparator.INSTANCE);
+		trimToSize();
+	}
+
 	/**
 	 * @return the current number of entries in this queue.
 	 */
 	public synchronized int size() {
 		return this.queueItems.size();
-	}
-
-	private void schedule(int tileSize) {
-		QueueItemScheduler.schedule(this.queueItems, this.mapViewPosition.getMapPosition(), tileSize);
-		Collections.sort(this.queueItems, QueueItemComparator.INSTANCE);
-		trimToSize();
 	}
 
 	private void trimToSize() {

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  * Copyright 2015 Andreas Schildbach
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -38,16 +38,24 @@ import android.widget.ZoomControls;
 public class MapZoomControls extends LinearLayout implements Observer {
 
 	public static enum Orientation {
-		/** Horizontal arrangement, 'zoom in' left of 'zoom out'. */
+		/**
+		 * Horizontal arrangement, 'zoom in' left of 'zoom out'.
+		 */
 		HORIZONTAL_IN_OUT(LinearLayout.HORIZONTAL, true),
 
-		/** Horizontal arrangement, 'zoom in' right of 'zoom out'. */
+		/**
+		 * Horizontal arrangement, 'zoom in' right of 'zoom out'.
+		 */
 		HORIZONTAL_OUT_IN(LinearLayout.HORIZONTAL, false),
 
-		/** Vertical arrangement, 'zoom in' above 'zoom out'. */
+		/**
+		 * Vertical arrangement, 'zoom in' above 'zoom out'.
+		 */
 		VERTICAL_IN_OUT(LinearLayout.VERTICAL, true),
 
-		/** Vertical arrangement, 'zoom in' below 'zoom out'. */
+		/**
+		 * Vertical arrangement, 'zoom in' below 'zoom out'.
+		 */
 		VERTICAL_OUT_IN(LinearLayout.VERTICAL, false);
 
 		public final int layoutOrientation;
@@ -57,7 +65,9 @@ public class MapZoomControls extends LinearLayout implements Observer {
 			this.layoutOrientation = layoutOrientation;
 			this.zoomInFirst = zoomInFirst;
 		}
-	};
+	}
+
+	;
 
 	/**
 	 * Default {@link Gravity} of the zoom controls.
@@ -156,6 +166,10 @@ public class MapZoomControls extends LinearLayout implements Observer {
 		this.buttonZoomOut.setEnabled(newZoomLevel > this.zoomLevelMin);
 	}
 
+	public void destroy() {
+		this.mapView.getModel().mapViewPosition.removeObserver(this);
+	}
+
 	private void fade(int visibility, float startAlpha, float endAlpha) {
 		AlphaAnimation anim = new AlphaAnimation(startAlpha, endAlpha);
 		anim.setDuration(500);
@@ -215,15 +229,15 @@ public class MapZoomControls extends LinearLayout implements Observer {
 		}
 		if (this.showMapZoomControls && this.autoHide) {
 			switch (event.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					showZoomControls();
-					break;
-				case MotionEvent.ACTION_CANCEL:
-					showZoomControlsWithTimeout();
-					break;
-				case MotionEvent.ACTION_UP:
-					showZoomControlsWithTimeout();
-					break;
+			case MotionEvent.ACTION_DOWN:
+				showZoomControls();
+				break;
+			case MotionEvent.ACTION_CANCEL:
+				showZoomControlsWithTimeout();
+				break;
+			case MotionEvent.ACTION_UP:
+				showZoomControlsWithTimeout();
+				break;
 			}
 		}
 	}
@@ -244,8 +258,7 @@ public class MapZoomControls extends LinearLayout implements Observer {
 	}
 
 	/**
-	 * @param autoHide
-	 *            true if the zoom controls hide automatically, false otherwise.
+	 * @param autoHide true if the zoom controls hide automatically, false otherwise.
 	 */
 	public void setAutoHide(boolean autoHide) {
 		this.autoHide = autoHide;
@@ -265,19 +278,16 @@ public class MapZoomControls extends LinearLayout implements Observer {
 	}
 
 	/**
-	 * @param showMapZoomControls
-	 *            true if the zoom controls should be visible, false otherwise.
+	 * @param showMapZoomControls true if the zoom controls should be visible, false otherwise.
 	 */
 	public void setShowMapZoomControls(boolean showMapZoomControls) {
 		this.showMapZoomControls = showMapZoomControls;
-		setVisibility(showMapZoomControls ? View.VISIBLE : View.GONE);
 	}
 
 	/**
 	 * Sets the gravity for the placing of the zoom controls.
-	 * 
-	 * @param zoomControlsGravity
-	 *            a combination of {@link Gravity} constants describing the desired placement.
+	 *
+	 * @param zoomControlsGravity a combination of {@link Gravity} constants describing the desired placement.
 	 */
 	public void setZoomControlsGravity(int zoomControlsGravity) {
 		this.zoomControlsGravity = zoomControlsGravity;
@@ -286,9 +296,8 @@ public class MapZoomControls extends LinearLayout implements Observer {
 
 	/**
 	 * Set orientation of zoom controls.
-	 * 
-	 * @param orientation
-	 *            one of the four orientations.
+	 *
+	 * @param orientation one of the four orientations.
 	 */
 	public void setZoomControlsOrientation(Orientation orientation) {
 		setOrientation(orientation.layoutOrientation);
@@ -299,9 +308,8 @@ public class MapZoomControls extends LinearLayout implements Observer {
 	 * For horizontal orientation, "zoom in first" means the zoom in button will appear on top of the zoom out button.<br/>
 	 * For vertical orientation, "zoom in first" means the zoom in button will appear to the left of the zoom out
 	 * button.
-	 * 
-	 * @param zoomInFirst
-	 *            zoom in button will be first in layout.
+	 *
+	 * @param zoomInFirst zoom in button will be first in layout.
 	 */
 	public void setZoomInFirst(boolean zoomInFirst) {
 		this.removeAllViews();
@@ -317,9 +325,8 @@ public class MapZoomControls extends LinearLayout implements Observer {
 
 	/**
 	 * Set background drawable of the zoom in button.
-	 * 
-	 * @param resId
-	 *            resource id of drawable.
+	 *
+	 * @param resId resource id of drawable.
 	 */
 	public void setZoomInResource(int resId) {
 		buttonZoomIn.setBackgroundResource(resId);
@@ -327,14 +334,12 @@ public class MapZoomControls extends LinearLayout implements Observer {
 
 	/**
 	 * Sets the maximum zoom level of the map.
-	 * <p>
+	 * <p/>
 	 * The maximum possible zoom level of the MapView depends also on other elements. For example, downloading map tiles
 	 * may only be possible up to a certain zoom level. Setting a higher maximum zoom level has no effect in this case.
-	 * 
-	 * @param zoomLevelMax
-	 *            the maximum zoom level.
-	 * @throws IllegalArgumentException
-	 *             if the maximum zoom level is smaller than the current minimum zoom level.
+	 *
+	 * @param zoomLevelMax the maximum zoom level.
+	 * @throws IllegalArgumentException if the maximum zoom level is smaller than the current minimum zoom level.
 	 */
 	public void setZoomLevelMax(byte zoomLevelMax) {
 		if (zoomLevelMax < this.zoomLevelMin) {
@@ -345,11 +350,9 @@ public class MapZoomControls extends LinearLayout implements Observer {
 
 	/**
 	 * Sets the minimum zoom level of the map.
-	 * 
-	 * @param zoomLevelMin
-	 *            the minimum zoom level.
-	 * @throws IllegalArgumentException
-	 *             if the minimum zoom level is larger than the current maximum zoom level.
+	 *
+	 * @param zoomLevelMin the minimum zoom level.
+	 * @throws IllegalArgumentException if the minimum zoom level is larger than the current maximum zoom level.
 	 */
 	public void setZoomLevelMin(byte zoomLevelMin) {
 		if (zoomLevelMin > this.zoomLevelMax) {
@@ -360,9 +363,8 @@ public class MapZoomControls extends LinearLayout implements Observer {
 
 	/**
 	 * Set background drawable of the zoom out button.
-	 * 
-	 * @param resId
-	 *            resource id of drawable.
+	 *
+	 * @param resId resource id of drawable.
 	 */
 	public void setZoomOutResource(int resId) {
 		buttonZoomOut.setBackgroundResource(resId);
@@ -370,9 +372,8 @@ public class MapZoomControls extends LinearLayout implements Observer {
 
 	/**
 	 * Set auto-repeat delay of the zoom buttons.
-	 * 
-	 * @param ms
-	 *            delay in ms.
+	 *
+	 * @param ms delay in ms.
 	 */
 	public void setZoomSpeed(long ms) {
 		buttonZoomIn.setZoomSpeed(ms);

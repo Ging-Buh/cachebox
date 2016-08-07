@@ -15,16 +15,6 @@
  */
 package org.mapsforge.map.awt.graphics;
 
-import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Display;
-import org.mapsforge.core.graphics.Matrix;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.mapelements.PointTextContainer;
-import org.mapsforge.core.graphics.Position;
-import org.mapsforge.core.mapelements.SymbolContainer;
-import org.mapsforge.core.model.Point;
-import org.mapsforge.core.model.Rectangle;
-
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextAttribute;
@@ -33,18 +23,28 @@ import java.awt.geom.AffineTransform;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Display;
+import org.mapsforge.core.graphics.Filter;
+import org.mapsforge.core.graphics.GraphicUtils;
+import org.mapsforge.core.graphics.Matrix;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Position;
+import org.mapsforge.core.mapelements.PointTextContainer;
+import org.mapsforge.core.mapelements.SymbolContainer;
+import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rectangle;
+
 public class AwtPointTextContainer extends PointTextContainer {
 
-	AwtPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
-	                      SymbolContainer symbolContainer, Position position, int maxTextWidth) {
+	AwtPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack, SymbolContainer symbolContainer, Position position, int maxTextWidth) {
 		super(xy, display, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
 
 		this.boundary = computeBoundary();
 	}
 
 	@Override
-	public void draw(Canvas canvas, Point origin, Matrix matrix) {
-
+	public void draw(Canvas canvas, Point origin, Matrix matrix, Filter filter) {
 		if (this.paintFront.isTransparent() && (this.paintBack == null || this.paintBack.isTransparent())) {
 			return;
 		}
@@ -55,6 +55,10 @@ public class AwtPointTextContainer extends PointTextContainer {
 
 		int textWidth = this.paintFront.getTextWidth(this.text);
 		if (textWidth > maxTextWidth) {
+			int colorF = this.paintFront.getColor();
+			if (filter != Filter.NONE) {
+				this.paintFront.setColor(GraphicUtils.filterColor(colorF, filter));
+			}
 			AttributedString attrString = new AttributedString(this.text);
 			org.mapsforge.map.awt.graphics.AwtPaint awtPaintFront = org.mapsforge.map.awt.graphics.AwtGraphicFactory.getPaint(this.paintFront);
 			attrString.addAttribute(TextAttribute.FOREGROUND, awtPaintFront.color);
@@ -106,24 +110,45 @@ public class AwtPointTextContainer extends PointTextContainer {
 					throw new IllegalArgumentException("No position for drawing PointTextContainer");
 				}
 				if (this.paintBack != null) {
+					int colorB = this.paintBack.getColor();
+					if (filter != Filter.NONE) {
+						this.paintBack.setColor(GraphicUtils.filterColor(colorB, filter));
+					}
 					awtCanvas.setColorAndStroke(org.mapsforge.map.awt.graphics.AwtGraphicFactory.getPaint(this.paintBack));
 					AffineTransform affineTransform = new AffineTransform();
 					affineTransform.translate(posX, posY);
 					awtCanvas.getGraphicObject().draw(layout.getOutline(affineTransform));
+					if (filter != Filter.NONE) {
+						this.paintBack.setColor(colorB);
+					}
 				}
 				layout.draw(awtCanvas.getGraphicObject(), posX, posY);
 				drawPosY += layout.getAscent() + layout.getDescent() + layout.getLeading();
+				if (filter != Filter.NONE) {
+					this.paintFront.setColor(colorF);
+				}
 			}
 		} else {
 			if (this.paintBack != null) {
+				int color = this.paintBack.getColor();
+				if (filter != Filter.NONE) {
+					this.paintBack.setColor(GraphicUtils.filterColor(color, filter));
+				}
 				canvas.drawText(this.text, (int) (pointAdjusted.x + boundary.left), (int) (pointAdjusted.y + boundary.top + this.textHeight), this.paintBack);
+				if (filter != Filter.NONE) {
+					this.paintBack.setColor(color);
+				}
+			}
+			int color = this.paintFront.getColor();
+			if (filter != Filter.NONE) {
+				this.paintFront.setColor(GraphicUtils.filterColor(color, filter));
 			}
 			canvas.drawText(this.text, (int) (pointAdjusted.x + boundary.left), (int) (pointAdjusted.y + boundary.top + this.textHeight), this.paintFront);
+			if (filter != Filter.NONE) {
+				this.paintFront.setColor(color);
+			}
 		}
-
-
 	}
-
 
 	private Rectangle computeBoundary() {
 
@@ -138,27 +163,28 @@ public class AwtPointTextContainer extends PointTextContainer {
 		}
 
 		switch (this.position) {
-			case CENTER:
-				return new Rectangle(-boxWidth / 2f, -boxHeight / 2f, boxWidth / 2f, boxHeight / 2f);
-			case BELOW:
-				return new Rectangle(-boxWidth / 2f, 0, boxWidth / 2f, boxHeight);
-			case BELOW_LEFT:
-				return new Rectangle(-boxWidth, 0, 0, boxHeight);
-			case BELOW_RIGHT:
-				return new Rectangle(0, 0, boxWidth, boxHeight);
-			case ABOVE:
-				return new Rectangle(-boxWidth / 2f, -boxHeight, boxWidth / 2f, 0);
-			case ABOVE_LEFT:
-				return new Rectangle(-boxWidth, -boxHeight, 0, 0);
-			case ABOVE_RIGHT:
-				return new Rectangle(0, -boxHeight, boxWidth, 0);
-			case LEFT:
-				return new Rectangle(-boxWidth, -boxHeight / 2f, 0, boxHeight / 2f);
-			case RIGHT:
-				return new Rectangle(0, -boxHeight / 2f, boxWidth, boxHeight / 2f);
-			default:
-				break;
+		case CENTER:
+			return new Rectangle(-boxWidth / 2f, -boxHeight / 2f, boxWidth / 2f, boxHeight / 2f);
+		case BELOW:
+			return new Rectangle(-boxWidth / 2f, 0, boxWidth / 2f, boxHeight);
+		case BELOW_LEFT:
+			return new Rectangle(-boxWidth, 0, 0, boxHeight);
+		case BELOW_RIGHT:
+			return new Rectangle(0, 0, boxWidth, boxHeight);
+		case ABOVE:
+			return new Rectangle(-boxWidth / 2f, -boxHeight, boxWidth / 2f, 0);
+		case ABOVE_LEFT:
+			return new Rectangle(-boxWidth, -boxHeight, 0, 0);
+		case ABOVE_RIGHT:
+			return new Rectangle(0, -boxHeight, boxWidth, 0);
+		case LEFT:
+			return new Rectangle(-boxWidth, -boxHeight / 2f, 0, boxHeight / 2f);
+		case RIGHT:
+			return new Rectangle(0, -boxHeight / 2f, boxWidth, boxHeight / 2f);
+		default:
+			break;
 		}
 		return null;
 	}
+
 }

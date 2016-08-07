@@ -97,4 +97,9 @@ public class AwtBitmap implements Bitmap {
 		graphics.dispose();
 	}
 
+	@Override
+	public boolean isDestroyed() {
+		return this.bufferedImage == null;
+	}
+
 }

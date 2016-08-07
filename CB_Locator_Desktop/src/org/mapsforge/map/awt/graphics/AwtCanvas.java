@@ -19,15 +19,22 @@ import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.color.ColorSpace;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ColorConvertOp;
+import java.awt.image.IndexColorModel;
+import java.awt.image.LookupOp;
+import java.awt.image.ShortLookupTable;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Filter;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
@@ -39,14 +46,29 @@ public class AwtCanvas implements Canvas {
 
 	private BufferedImage bufferedImage;
 	private Graphics2D graphics2D;
+	private BufferedImageOp grayscaleOp, invertOp, invertOp4;
 
 	public AwtCanvas() {
-		// do nothing
+		createFilters();
 	}
 
 	AwtCanvas(Graphics2D graphics2D) {
 		this.graphics2D = graphics2D;
 		enableAntiAliasing();
+		createFilters();
+	}
+
+	private void createFilters() {
+		this.grayscaleOp = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
+
+		short[] invert = new short[256];
+		short[] straight = new short[256];
+		for (int i = 0; i < 256; i++) {
+			invert[i] = (short) (255 - i);
+			straight[i] = (short) i;
+		}
+		this.invertOp = new LookupOp(new ShortLookupTable(0, invert), null);
+		this.invertOp4 = new LookupOp(new ShortLookupTable(0, new short[][] { invert, invert, invert, straight }), null);
 	}
 
 	@Override
@@ -251,4 +273,59 @@ public class AwtCanvas implements Canvas {
 			this.graphics2D.setStroke(awtPaint.stroke);
 		}
 	}
+
+	@Override
+	public void drawBitmap(Bitmap bitmap, int left, int top, Filter filter) {
+		this.graphics2D.drawImage(applyFilter(AwtGraphicFactory.getBufferedImage(bitmap), filter), left, top, null);
+	}
+
+	@Override
+	public void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter) {
+		this.graphics2D.drawRenderedImage(applyFilter(AwtGraphicFactory.getBufferedImage(bitmap), filter), AwtGraphicFactory.getAffineTransform(matrix));
+	}
+
+	private BufferedImage applyFilter(BufferedImage src, Filter filter) {
+		if (filter == Filter.NONE) {
+			return src;
+		}
+		BufferedImage dest = null;
+		switch (filter) {
+		case GRAYSCALE:
+			dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
+			this.grayscaleOp.filter(src, dest);
+			break;
+		case GRAYSCALE_INVERT:
+			dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
+			this.grayscaleOp.filter(src, dest);
+			dest = applyInvertFilter(dest);
+			break;
+		case INVERT:
+			dest = applyInvertFilter(src);
+			break;
+		}
+		return dest;
+	}
+
+	private BufferedImage applyInvertFilter(BufferedImage src) {
+		final BufferedImage newSrc;
+		if (src.getColorModel() instanceof IndexColorModel) {
+			newSrc = new BufferedImage(src.getWidth(), src.getHeight(), src.getColorModel().getNumComponents() == 3 ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g2 = newSrc.createGraphics();
+			g2.drawImage(src, 0, 0, null);
+			g2.dispose();
+		} else {
+			newSrc = src;
+		}
+		BufferedImage dest = new BufferedImage(newSrc.getWidth(), newSrc.getHeight(), newSrc.getType());
+		switch (newSrc.getColorModel().getNumComponents()) {
+		case 3:
+			this.invertOp.filter(newSrc, dest);
+			break;
+		case 4:
+			this.invertOp4.filter(newSrc, dest);
+			break;
+		}
+		return dest;
+	}
+
 }

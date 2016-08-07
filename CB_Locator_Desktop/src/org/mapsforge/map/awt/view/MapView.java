@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -39,12 +39,13 @@ import org.mapsforge.map.model.Model;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.MapScaleBar;
 import org.mapsforge.map.util.MapPositionUtil;
+import org.mapsforge.map.util.MapViewProjection;
 import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
 
 public class MapView extends Container implements org.mapsforge.map.view.MapView {
 
-	public static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
+	protected static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 	private static final long serialVersionUID = 1L;
 
 	protected FpsCounter fpsCounter;
@@ -52,7 +53,8 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 	private final FrameBufferController frameBufferController;
 	protected LayerManager layerManager;
 	private MapScaleBar mapScaleBar;
-	protected Model model;
+	private final MapViewProjection mapViewProjection;
+	public Model model;
 
 	public MapView() {
 		super();
@@ -71,9 +73,11 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 
 		this.mapScaleBar = new DefaultMapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension, GRAPHIC_FACTORY, this.model.displayModel);
 
+		this.mapViewProjection = new MapViewProjection(this);
+
 		addComponentListener(new MapViewComponentListener(this));
 
-		MouseEventListener mouseEventListener = new MouseEventListener(this.model.mapViewPosition);
+		MouseEventListener mouseEventListener = new MouseEventListener(this);
 		addMouseListener(mouseEventListener);
 		addMouseMotionListener(mouseEventListener);
 		addMouseWheelListener(mouseEventListener);
@@ -118,7 +122,6 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 			}
 		}
 		destroy();
-		AwtGraphicFactory.clearResourceMemoryCache();
 	}
 
 	@Override
@@ -152,6 +155,11 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 	}
 
 	@Override
+	public MapViewProjection getMapViewProjection() {
+		return this.mapViewProjection;
+	}
+
+	@Override
 	public Model getModel() {
 		return this.model;
 	}
@@ -162,7 +170,9 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 
 		GraphicContext graphicContext = AwtGraphicFactory.createGraphicContext(graphics);
 		this.frameBuffer.draw(graphicContext);
-		this.mapScaleBar.draw(graphicContext);
+		if (this.mapScaleBar != null) {
+			this.mapScaleBar.draw(graphicContext);
+		}
 		this.fpsCounter.draw(graphicContext);
 	}
 
@@ -173,12 +183,24 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 
 	@Override
 	public void setMapScaleBar(MapScaleBar mapScaleBar) {
-		this.mapScaleBar.destroy();
+		if (this.mapScaleBar != null) {
+			this.mapScaleBar.destroy();
+		}
 		this.mapScaleBar = mapScaleBar;
 	}
 
 	@Override
 	public void setZoomLevel(byte zoomLevel) {
 		this.model.mapViewPosition.setZoomLevel(zoomLevel);
+	}
+
+	@Override
+	public void setZoomLevelMax(byte zoomLevelMax) {
+		this.model.mapViewPosition.setZoomLevelMax(zoomLevelMax);
+	}
+
+	@Override
+	public void setZoomLevelMin(byte zoomLevelMin) {
+		this.model.mapViewPosition.setZoomLevelMin(zoomLevelMin);
 	}
 }

@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -103,14 +103,13 @@ public abstract class TileLayer<T extends Job> extends Layer {
 					this.jobQueue.add(job);
 				}
 				retrieveLabelsOnly(job);
-				canvas.drawBitmap(bitmap, (int) Math.round(point.x), (int) Math.round(point.y));
+				canvas.drawBitmap(bitmap, (int) Math.round(point.x), (int) Math.round(point.y), this.displayModel.getFilter());
 				bitmap.decrementRefCount();
 			}
 		}
 		if (this.hasJobQueue) {
 			this.jobQueue.notifyWorkers();
 		}
-
 	}
 
 	@Override
@@ -127,23 +126,21 @@ public abstract class TileLayer<T extends Job> extends Layer {
 
 	/**
 	 * Whether the tile is stale and should be refreshed.
-	 * <p>
+	 * <p/>
 	 * This method is called from {@link #draw(BoundingBox, byte, Canvas, Point)} to determine whether the tile needs to
 	 * be refreshed. Subclasses must override this method and implement appropriate checks to determine when a tile is
 	 * stale.
-	 * <p>
+	 * <p/>
 	 * Return {@code false} to use the cached copy without attempting to refresh it.
-	 * <p>
+	 * <p/>
 	 * Return {@code true} to cause the layer to attempt to obtain a fresh copy of the tile. The layer will first
 	 * display the tile referenced by {@code bitmap} and attempt to obtain a fresh copy in the background. When a fresh
 	 * copy becomes available, the layer will replace is and update the cache. If a fresh copy cannot be obtained (e.g.
 	 * because the tile is obtained from an online source which cannot be reached), the stale tile will continue to be
 	 * used until another {@code #draw(BoundingBox, byte, Canvas, Point)} operation requests it again.
 	 *
-	 * @param tile
-	 *            A tile.
-	 * @param bitmap
-	 *            The bitmap for {@code tile} currently held in the layer's cache.
+	 * @param tile   A tile.
+	 * @param bitmap The bitmap for {@code tile} currently held in the layer's cache.
 	 */
 	protected abstract boolean isTileStale(Tile tile, TileBitmap bitmap);
 
@@ -169,7 +166,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 				this.matrix.scale(scaleFactor, scaleFactor);
 
 				canvas.setClip(x, y, this.displayModel.getTileSize(), this.displayModel.getTileSize());
-				canvas.drawBitmap(bitmap, this.matrix);
+				canvas.drawBitmap(bitmap, this.matrix, this.displayModel.getFilter());
 				canvas.resetClip();
 				bitmap.decrementRefCount();
 			}
