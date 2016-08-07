@@ -15,17 +15,18 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Filter;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.mapelements.MapElementContainer;
@@ -70,12 +71,14 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
 
 	public MixedDatabaseRenderer(MapDataStore mapDataStore, GraphicFactory graphicFactory, TileCache tileCache, TileBasedLabelStore labelStore, boolean renderLabels, boolean cacheLabels) {
 		super(mapDataStore, graphicFactory, firstLevelTileCache, labelStore, renderLabels, cacheLabels);
+		this.mapDatabase = mapDataStore;
 	}
 
 	AtomicBoolean inWork = new AtomicBoolean(false);
 	// UnsaveByteArrayOutputStream baos = new UnsaveByteArrayOutputStream(256 * 256 * 2);
 	UnsaveByteArrayOutputStream baos = new UnsaveByteArrayOutputStream();
 	private TileBitmap bitmap;
+	private final MapDataStore mapDatabase;
 
 	@Override
 	public TileGL execute(RendererJob rendererJob) {
@@ -87,10 +90,8 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
 		inWork.set(true);
 		try {
 			SortedRotateList rotateList = new SortedRotateList();
-
-			this.bitmap = executeJob(rendererJob, rotateList);
-
 			try {
+				this.bitmap = executeJob(rendererJob, rotateList);
 
 				this.bitmap.compress(baos);
 				byte[] b = baos.toByteArray();
@@ -103,7 +104,7 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
 				b = null;
 				inWork.set(false);
 				return mixedTile;
-			} catch (IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
@@ -119,8 +120,10 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
 	 * 
 	 * @param rendererJob
 	 *            the job that should be executed.
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
-	private TileBitmap executeJob(RendererJob rendererJob, SortedRotateList rotateList) {
+	private TileBitmap executeJob(RendererJob rendererJob, SortedRotateList rotateList) throws InterruptedException, ExecutionException {
 
 		RenderTheme renderTheme;
 		try {
@@ -132,7 +135,7 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
 
 		RenderContext renderContext = null;
 		try {
-			renderContext = new RenderContext(renderTheme, rendererJob, new CanvasRasterer(graphicFactory));
+			renderContext = new RenderContext(rendererJob, new CanvasRasterer(graphicFactory));
 			List<GL_WayTextContainer> wayNames = new ArrayList<GL_WayTextContainer>();
 			if (renderBitmap(renderContext)) {
 				TileBitmap bitmap = null;
@@ -191,7 +194,8 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
 			} else if (element instanceof PointTextContainer) {
 				processPointTextContainer(rendererJob, (PointTextContainer) element, rotateList);
 			} else if (element instanceof WayTextContainer) {
-				processWayTextContainer(renderContext, rendererJob, (WayTextContainer) element, rotateList, wayNames);
+				element.draw(renderContext.canvasRasterer.canvas, rendererJob.tile.getOrigin(), renderContext.canvasRasterer.symbolMatrix, Filter.NONE);
+				//				processWayTextContainer(renderContext, rendererJob, (WayTextContainer) element, rotateList, wayNames);
 			} else {
 				throw new RuntimeException("Unknown ElementType. " + element.getClass().getName());
 			}
@@ -201,9 +205,9 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
 		drawWayNames(rotateList, wayNames, rendererJob);
 	}
 
-	private void processWayTextContainer(RenderContext renderContext, RendererJob rendererJob, WayTextContainer element, SortedRotateList rotateList, List<GL_WayTextContainer> wayNames) {
-		GL_WayDecorator.renderText(element.text, element.paintFront, element.paintBack, rendererJob.tile.getOrigin(), element.coordinates, wayNames, rendererJob.tile.tileSize);
-	}
+	//	private void processWayTextContainer(RenderContext renderContext, RendererJob rendererJob, WayTextContainer element, SortedRotateList rotateList, List<GL_WayTextContainer> wayNames) {
+	//		GL_WayDecorator.renderText(element.text, element.paintFront, element.paintBack, rendererJob.tile.getOrigin(), element.coordinates, wayNames, rendererJob.tile.tileSize);
+	//	}
 
 	public void drawWayNames(SortedRotateList rotateList, List<GL_WayTextContainer> wayNames2, RendererJob rendererJob) {
 
@@ -287,9 +291,9 @@ public class MixedDatabaseRenderer extends MF_DatabaseRenderer implements IDatab
 
 	private void processSymbolContainer(RenderContext renderContext, RendererJob rendererJob, SymbolContainer symbolContainer, SortedRotateList rotateList) {
 
-		if (symbolContainer.rotate) {
+		if (symbolContainer.theta != 0) {
 			// symbol has an own rotation, draw direct to Tile
-			symbolContainer.draw(renderContext.canvasRasterer.canvas, rendererJob.tile.getOrigin(), renderContext.canvasRasterer.symbolMatrix);
+			symbolContainer.draw(renderContext.canvasRasterer.canvas, rendererJob.tile.getOrigin(), renderContext.canvasRasterer.symbolMatrix, null);
 			return;
 		}
 
