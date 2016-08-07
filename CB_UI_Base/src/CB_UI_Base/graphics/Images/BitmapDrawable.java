@@ -284,4 +284,10 @@ public class BitmapDrawable implements ext_Bitmap, Disposable {
 		return HashStringList.contains(String.valueOf(hashCode));
 	}
 
+	@Override
+	public boolean isDestroyed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

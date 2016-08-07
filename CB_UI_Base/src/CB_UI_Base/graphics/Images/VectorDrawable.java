@@ -489,4 +489,10 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable {
 		return null;
 	}
 
+	@Override
+	public boolean isDestroyed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

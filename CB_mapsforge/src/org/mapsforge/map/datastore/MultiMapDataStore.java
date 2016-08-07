@@ -225,4 +225,8 @@ public class MultiMapDataStore extends MapDataStore {
 		}
 		return false;
 	}
+
+	public void clearMapDataStore() {
+		mapDatabases.clear();
+	}
 }
