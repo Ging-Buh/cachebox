@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -63,7 +63,7 @@ public class AndroidBitmap implements Bitmap {
 	}
 
 	protected android.graphics.Bitmap bitmap;
-	private AtomicInteger refCount = new AtomicInteger();
+	private final AtomicInteger refCount = new AtomicInteger();
 
 	protected AndroidBitmap() {
 		if (AndroidGraphicFactory.DEBUG_BITMAPS) {
@@ -74,7 +74,7 @@ public class AndroidBitmap implements Bitmap {
 		}
 	}
 
-	AndroidBitmap(android.graphics.Bitmap bitmap) {
+	public AndroidBitmap(android.graphics.Bitmap bitmap) {
 		this();
 		if (bitmap.isRecycled()) {
 			throw new IllegalArgumentException("bitmap is already recycled");
@@ -120,6 +120,11 @@ public class AndroidBitmap implements Bitmap {
 	}
 
 	@Override
+	public boolean isDestroyed() {
+		return this.bitmap == null;
+	}
+
+	@Override
 	public void scaleTo(int width, int height) {
 		if (getWidth() != width || getHeight() != height) {
 			// The effect of the filter argument to createScaledBitmap is not well documented in the
@@ -127,8 +132,7 @@ public class AndroidBitmap implements Bitmap {
 			// http://stackoverflow.com/questions/2895065/what-does-the-filter-parameter-to-createscaledbitmap-do
 			// passing true results in smoother edges, less pixellation.
 			// If smoother corners improve the readability of map labels is perhaps debatable.
-			android.graphics.Bitmap scaledBitmap = android.graphics.Bitmap.createScaledBitmap(this.bitmap, width,
-					height, true);
+			android.graphics.Bitmap scaledBitmap = android.graphics.Bitmap.createScaledBitmap(this.bitmap, width, height, true);
 			destroy();
 			this.bitmap = scaledBitmap;
 		}

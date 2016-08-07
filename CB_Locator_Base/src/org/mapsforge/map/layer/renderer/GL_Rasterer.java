@@ -83,7 +83,7 @@ public class GL_Rasterer {
 
 		case POLYLINE:
 			PolylineContainer polylineContainer = (PolylineContainer) shapePaintContainer.shapeContainer;
-			drawPath(drw, shapePaintContainer, polylineContainer.getCoordinatesRelativeToTile());
+			//	drawPath(drw, shapePaintContainer, polylineContainer.getCoordinatesRelativeToTile());
 			return;
 		}
 	}

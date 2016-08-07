@@ -21,6 +21,7 @@ import java.util.Stack;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Filter;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
@@ -323,6 +324,18 @@ public class GL_Canvas implements ext_Canvas {
 	public void setClipDifference(int left, int top, int width, int height) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void drawBitmap(Bitmap bitmap, int left, int top, Filter filter) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

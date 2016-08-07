@@ -98,7 +98,7 @@ public class MapPanel extends JPanel implements ActionListener {
 
 	private static Layer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, LayerManager layerManager, String MapPath) {
 		java.io.File mapFile = new java.io.File(FileFactory.createFile(MapPath).getAbsolutePath());
-		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, new MapFile(mapFile), mapViewPosition, false, false, GRAPHIC_FACTORY);
+		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, new MapFile(mapFile), mapViewPosition, false, false, true, GRAPHIC_FACTORY);
 		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
 		return tileRendererLayer;
 	}
@@ -109,7 +109,7 @@ public class MapPanel extends JPanel implements ActionListener {
 		// mapView.addComponentListener(new MapViewComponentListener(mapView,new Dimension(600, 600)));
 		mapView.addComponentListener(new MapViewComponentListener(mapView));
 
-		GpsSimmulatorMouseEventListener mouseEventListener = new GpsSimmulatorMouseEventListener(mapView.getModel().mapViewPosition);
+		GpsSimmulatorMouseEventListener mouseEventListener = new GpsSimmulatorMouseEventListener(mapView);
 		mapView.addMouseListener(mouseEventListener);
 		mapView.addMouseMotionListener(mouseEventListener);
 		mapView.addMouseWheelListener(mouseEventListener);

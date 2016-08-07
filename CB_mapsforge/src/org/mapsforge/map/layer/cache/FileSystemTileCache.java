@@ -39,14 +39,14 @@ import org.mapsforge.map.model.common.Observer;
 
 /**
  * A thread-safe cache for image files with a fixed size and LRU policy.
- * <p>
+ * <p/>
  * A {@code FileSystemTileCache} caches tiles in a dedicated path in the file system, specified in the constructor.
- * <p>
+ * <p/>
  * When used for a {@link org.mapsforge.map.layer.renderer.TileRendererLayer}, persistent caching may result in clipped
  * labels when tiles from different instances are used. To work around this, either display labels in a separate
  * {@link org.mapsforge.map.layer.labels.LabelLayer} (experimental) or disable persistence as described in
  * {@link #FileSystemTileCache(int, File, GraphicFactory, boolean)}.
- *
+ * <p/>
  * Note: previously the FileSystemTileCache utilized threading to speed up response times. This is not the
  * case anymore and the constructors have been removed.
  */
@@ -56,7 +56,7 @@ public class FileSystemTileCache implements TileCache {
 
 	/**
 	 * Runnable that reads the cache directory and re-populates the cache with data saved by previous instances.
-	 * <p>
+	 * <p/>
 	 * This method assumes tile files to have a file extension of {@link #FILE_EXTENSION} and reside in a second-level
 	 * of subdir of the cache dir (as in the standard TMS directory layout of zoomlevel/x/y). The relative path to the
 	 * cached tile, after stripping the extension, is used as the lookup key.
@@ -96,12 +96,11 @@ public class FileSystemTileCache implements TileCache {
 
 	/**
 	 * Determines whether a File instance refers to a valid cache directory.
-	 * <p>
+	 * <p/>
 	 * This method checks that {@code file} refers to a directory to which the current process has read and write
 	 * access. If the directory does not exist, it will be created.
-	 * 
-	 * @param file
-	 *            The File instance to examine. This can be null, which will cause the method to return {@code false}.
+	 *
+	 * @param file The File instance to examine. This can be null, which will cause the method to return {@code false}.
 	 */
 	private static boolean isValidCacheDirectory(File file) {
 		return !((file == null) || (!file.exists() && !file.mkdirs()) || !file.isDirectory() || !file.canRead() || !file.canWrite());
@@ -109,13 +108,12 @@ public class FileSystemTileCache implements TileCache {
 
 	/**
 	 * Determines whether a File instance refers to a valid file which can be read.
-	 * <p>
+	 * <p/>
 	 * This method checks that {@code file} refers to an existing file to which the current process has read access. It
 	 * does not create directories and not verify that the directory is writable. If you need this behavior, use
 	 * {@link #isValidCacheDirectory(File)} instead.
-	 * 
-	 * @param file
-	 *            The File instance to examine. This can be null, which will cause the method to return {@code false}.
+	 *
+	 * @param file The File instance to examine. This can be null, which will cause the method to return {@code false}.
 	 */
 	private static boolean isValidFile(File file) {
 		return file != null && file.isFile() && file.canRead();
@@ -124,9 +122,8 @@ public class FileSystemTileCache implements TileCache {
 	/**
 	 * Recursively deletes directory and all files. See
 	 * http://stackoverflow.com/questions/3775694/deleting-folder-from-java/3775723#3775723
-	 * 
-	 * @param dir
-	 *            the directory to delete with all its content
+	 *
+	 * @param dir the directory to delete with all its content
 	 * @return true if directory and all content has been deleted, false if not
 	 */
 
@@ -159,15 +156,11 @@ public class FileSystemTileCache implements TileCache {
 
 	/**
 	 * Compatibility constructor that creates a non-threaded, non-persistent FSTC.
-	 * 
-	 * @param capacity
-	 *            the maximum number of entries in this cache.
-	 * @param cacheDirectory
-	 *            the directory where cached tiles will be stored.
-	 * @param graphicFactory
-	 *            the graphicFactory implementation to use.
-	 * @throws IllegalArgumentException
-	 *             if the capacity is negative.
+	 *
+	 * @param capacity       the maximum number of entries in this cache.
+	 * @param cacheDirectory the directory where cached tiles will be stored.
+	 * @param graphicFactory the graphicFactory implementation to use.
+	 * @throws IllegalArgumentException if the capacity is negative.
 	 */
 	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory) {
 		this(capacity, cacheDirectory, graphicFactory, false);
@@ -175,25 +168,19 @@ public class FileSystemTileCache implements TileCache {
 
 	/**
 	 * Creates a new FileSystemTileCache.
-	 * <p>
+	 * <p/>
 	 * Use the {@code persistent} argument to specify whether cache contents should be kept across instances. A
 	 * persistent cache will serve any tiles it finds in {@code cacheDirectory}. Calling {@link #destroy()} on a
 	 * persistent cache will not delete the cache directory. Conversely, a non-persistent cache will serve only tiles
 	 * added to it via the {@link #put(Job, TileBitmap)} method, and calling {@link #destroy()} on a non-persistent
 	 * cache will delete {@code cacheDirectory}.
 	 *
-	 * @param capacity
-	 *            the maximum number of entries in this cache.
-	 * @param cacheDirectory
-	 *            the directory where cached tiles will be stored.
-	 * @param graphicFactory
-	 *            the graphicFactory implementation to use.
-	 * @param persistent
-	 *            if cache data will be kept between instances
-	 * @throws IllegalArgumentException
-	 *             if the capacity is negative.
-	 * @throws IllegalArgumentException
-	 *             if the capacity is negative.
+	 * @param capacity       the maximum number of entries in this cache.
+	 * @param cacheDirectory the directory where cached tiles will be stored.
+	 * @param graphicFactory the graphicFactory implementation to use.
+	 * @param persistent     if cache data will be kept between instances
+	 * @throws IllegalArgumentException if the capacity is negative.
+	 * @throws IllegalArgumentException if the capacity is negative.
 	 */
 	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory, boolean persistent) {
 		this.observable = new Observable();
@@ -229,12 +216,12 @@ public class FileSystemTileCache implements TileCache {
 
 	/**
 	 * Destroys this cache.
-	 * <p>
+	 * <p/>
 	 * Applications are expected to call this method when they no longer require the cache.
-	 * <p>
+	 * <p/>
 	 * If the cache is not persistent, calling this method is equivalent to calling {@link #purge()}. If the cache is
 	 * persistent, it does nothing.
-	 * <p>
+	 * <p/>
 	 * Beginning with 0.5.1, accessing the cache after calling {@code destroy()} is discouraged. In order to empty the
 	 * cache and force all tiles to be re-rendered or re-requested from the source, use {@link #purge()} instead.
 	 * Earlier versions lacked the {@link #purge()} method and used {@code destroy()} instead, but this practice is now
@@ -311,14 +298,14 @@ public class FileSystemTileCache implements TileCache {
 
 	/**
 	 * Purges this cache.
-	 * <p>
+	 * <p/>
 	 * Calls to {@link #get(Job)} issued after purging will not return any tiles added before the purge operation.
 	 * Purging will also delete the cache directory on disk, freeing up disk space.
-	 * <p>
+	 * <p/>
 	 * Applications should purge the tile cache when map model parameters change, such as the render style for locally
 	 * rendered tiles, or the source for downloaded tiles. Applications which frequently alternate between a limited
 	 * number of map model configurations may want to consider using a different cache for each.
-	 * 
+	 *
 	 * @since 0.5.1
 	 */
 	@Override
@@ -352,8 +339,10 @@ public class FileSystemTileCache implements TileCache {
 	@Override
 	public void setWorkingSet(Set<Job> workingSet) {
 		Set<String> workingSetInteger = new HashSet<String>();
-		for (Job job : workingSet) {
-			workingSetInteger.add(job.getKey());
+		synchronized (workingSet) {
+			for (Job job : workingSet) {
+				workingSetInteger.add(job.getKey());
+			}
 		}
 		this.lruCache.setWorkingSet(workingSetInteger);
 	}
@@ -389,11 +378,9 @@ public class FileSystemTileCache implements TileCache {
 
 	/**
 	 * stores the bitmap data on disk with filename key
-	 * 
-	 * @param key
-	 *            filename
-	 * @param bitmap
-	 *            tile image
+	 *
+	 * @param key    filename
+	 * @param bitmap tile image
 	 */
 	private void storeData(Job key, TileBitmap bitmap) {
 		OutputStream outputStream = null;

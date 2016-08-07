@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,6 +19,8 @@ package org.mapsforge.core.graphics;
 import org.mapsforge.core.model.Point;
 
 public interface Paint {
+	int getColor();
+
 	int getTextHeight(String text);
 
 	int getTextWidth(String text);
@@ -28,7 +31,7 @@ public interface Paint {
 
 	void setBitmapShaderShift(Point origin);
 
-	public void setColor(Color color);
+	void setColor(Color color);
 
 	/**
 	 * The default value is {@link Color#BLACK}.
@@ -57,9 +60,9 @@ public interface Paint {
 
 	void setTypeface(FontFamily fontFamily, FontStyle fontStyle);
 
-	Cap getCap();
+	//###################################################
 
-	int getColor();
+	Cap getCap();
 
 	Style getStyle();
 
