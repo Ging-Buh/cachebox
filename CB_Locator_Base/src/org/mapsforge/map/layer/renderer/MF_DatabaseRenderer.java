@@ -42,16 +42,12 @@ import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
  */
 public class MF_DatabaseRenderer extends DatabaseRenderer implements IDatabaseRenderer {
 
-	static TileCache firstLevelTileCache = new InMemoryTileCache(128);
+	public final static TileCache firstLevelTileCache = new InMemoryTileCache(128);
 	private double tileLatLon_0_x, tileLatLon_0_y, tileLatLon_1_x, tileLatLon_1_y;
 	private double divLon, divLat;
 
-	public MF_DatabaseRenderer(MapDataStore mapDatabase, GraphicFactory graphicFactory, TileBasedLabelStore labelStore) {
-
-		//		  public DatabaseRenderer(MapDataStore mapDataStore, GraphicFactory graphicFactory, TileCache tileCache,
-		//                  TileBasedLabelStore labelStore, boolean renderLabels, boolean cacheLabels) {
-
-		super(mapDatabase, graphicFactory, firstLevelTileCache, labelStore, true, true);
+	public MF_DatabaseRenderer(MapDataStore mapDataStore, GraphicFactory graphicFactory, TileCache tileCache, TileBasedLabelStore labelStore, boolean renderLabels, boolean cacheLabels) {
+		super(mapDataStore, graphicFactory, firstLevelTileCache, labelStore, renderLabels, cacheLabels);
 
 	}
 
