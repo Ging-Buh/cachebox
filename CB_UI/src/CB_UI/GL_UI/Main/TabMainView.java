@@ -31,6 +31,7 @@ import CB_Core.Api.API_ErrorEventHandlerList;
 import CB_Core.Api.API_ErrorEventHandlerList.API_ERROR;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.Types.Cache;
+import CB_Locator.LocatorSettings;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -113,6 +114,7 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UiSizes;
+import CB_UI_Base.graphics.GL_RenderType;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Log.Log;
 import CB_Utils.Settings.SettingBase;
@@ -222,6 +224,16 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 			}
 		};
 		releaseTimer.scheduleAtFixedRate(releaseTask, 5000, 5000);
+		
+		
+		
+	
+			LocatorSettings.MapsforgeRenderType.setEnumValue(GL_RenderType.Mapsforge);
+			// Set setting to invisible
+			LocatorSettings.MapsforgeRenderType.changeSettingsModus(SettingModus.Never);
+			Config.settings.WriteToDB();
+			Log.debug(log, "disable MixedDatabaseRenderer for Android Version ");
+
 
 	}
 
