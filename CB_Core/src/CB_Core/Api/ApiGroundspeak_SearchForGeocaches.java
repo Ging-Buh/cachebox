@@ -372,6 +372,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak {
 		return result;
 	}
 
+	
 	protected void writeExclusions(JSONObject request, SearchCoordinate searchC) throws JSONException {
 		if (searchC.available) {
 			JSONObject excl = new JSONObject();

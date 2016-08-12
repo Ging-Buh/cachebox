@@ -472,10 +472,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 		    LocatorSettings.MapsforgeNightTheme.setValue(selectedValue);
 		    break;
 		case 2:
-		    //LocatorSettings.MapsforgeDayCarTheme.setValue(selectedValue);
+		    LocatorSettings.MapsforgeCarDayTheme.setValue(selectedValue);
 		    break;
 		case 3:
-		    //LocatorSettings.MapsforgeDayCarTheme.setValue(selectedValue);
+		    LocatorSettings.MapsforgeCarNightTheme.setValue(selectedValue);
 		    break;
 		}
 		Config.AcceptChanges();

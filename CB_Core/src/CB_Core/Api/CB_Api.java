@@ -82,7 +82,6 @@ public class CB_Api {
 			ex.printStackTrace();
 			return "";
 		}
-
 		return "";
 	}
 }
