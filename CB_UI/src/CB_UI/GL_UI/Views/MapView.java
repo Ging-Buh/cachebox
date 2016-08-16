@@ -429,7 +429,11 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		resize(rec.getWidth(), rec.getHeight());
 
-		center = new CoordinateGPS(Config.MapInitLatitude.getValue(), Config.MapInitLongitude.getValue());
+		try {
+			center = new CoordinateGPS(Config.MapInitLatitude.getValue(), Config.MapInitLongitude.getValue());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		// Info aktualisieren
 		if (Mode == MapMode.Normal)
