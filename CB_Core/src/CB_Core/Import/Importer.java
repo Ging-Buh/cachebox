@@ -63,8 +63,9 @@ public class Importer {
 	 * @param directoryPath
 	 * @param ip
 	 * @return Cache_Log_Return mit dem Inhalt aller Importierten GPX Files
+	 * @throws Exception 
 	 */
-	public void importGpx(String directoryPath, ImporterProgress ip) {
+	public void importGpx(String directoryPath, ImporterProgress ip) throws Exception {
 		// resest import Counter
 
 		GPXFileImporter.CacheCount = 0;
@@ -177,6 +178,7 @@ public class Importer {
 			} catch (Exception e) {
 				logger.error("importer.doImport => " + File.getAbsolutePath(), e);
 				e.printStackTrace();
+				throw e;
 			}
 
 		}

@@ -688,7 +688,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 									ImporterProgress ip = new ImporterProgress();
 									Database.Data.beginTransaction();
 
-									importer.importGpx(ExtSearch_GpxPath, ip);
+									try {
+										importer.importGpx(ExtSearch_GpxPath, ip);
+									} catch (Exception e) {
+									}
 
 									Database.Data.setTransactionSuccessful();
 									Database.Data.endTransaction();

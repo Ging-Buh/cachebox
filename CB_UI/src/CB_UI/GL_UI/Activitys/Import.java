@@ -1130,6 +1130,10 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 							Database.Data.setTransactionSuccessful();
 						} catch (Exception exc) {
 							exc.printStackTrace();
+							Database.Data.endTransaction();
+							cancelImport();
+							ip.ProgressChangeMsg("", "");
+							return;
 						}
 						Database.Data.endTransaction();
 

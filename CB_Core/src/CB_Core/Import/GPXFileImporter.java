@@ -205,7 +205,12 @@ public class GPXFileImporter {
 				if (isStartTag) {
 					values.clear();
 				} else {
-					if (values.get("wpt_type").startsWith("Geocache")) {
+					String wpt_type = values.get("wpt_type");
+					if (wpt_type == null) {
+						// perhaps a lab-cache
+						wpt_type = values.get("cache_type");
+					}					
+					if (wpt_type.startsWith("Geocache")) {
 						try {
 							createCache(values);
 							CacheCount++;
@@ -213,7 +218,7 @@ public class GPXFileImporter {
 							errors++;
 							logger.error("CreateCache", e);
 						}
-					} else if (values.get("wpt_type").startsWith("Waypoint|")) {
+					} else if (wpt_type.startsWith("Waypoint|")) {
 						try {
 							createWaypoint(values);
 						} catch (Exception e) {

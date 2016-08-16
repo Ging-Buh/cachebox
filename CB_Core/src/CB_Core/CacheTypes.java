@@ -27,6 +27,7 @@ public enum CacheTypes {
 	MyParking(true), // = 20
 	Munzee(true), // 21
 	Giga(true), // 22
+	Lab(true),
 	;
 
 	private boolean isCache;
@@ -94,6 +95,9 @@ public enum CacheTypes {
 				return MultiQuestion; // Import Virtual Stage as Question of a Multi
 			if (string.toLowerCase().contains("physical"))
 				return MultiStage; // Import Physical Stage as a Multi Stage
+			if (string.toLowerCase().contains("lab")) // Lab Cache
+				return Lab;
+			//
 			if (string.length() == 0)
 				return Undefined;
 		}
