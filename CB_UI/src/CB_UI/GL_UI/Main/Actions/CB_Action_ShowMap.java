@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
+import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -463,8 +466,9 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 					selectedValue = "";
 				} else {
 					selectedValue = LocatorSettings.RenderThemesFolder.getValue() + "/" + mi.getTitle() + ".xml";
+					// noch Styleauswahl aufrufen
+					showStyleSelection(which, selectedValue);
 				}
-				// noch Styleauswahl aufrufen
 				switch (which) {
 				case 0:
 					LocatorSettings.MapsforgeDayTheme.setValue(selectedValue);
@@ -488,38 +492,58 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 		return true;
 	}
 
-	private boolean showThemeStyleSelection(String selectedTheme) {
-		final Menu lThemeStyle = new Menu("ThemeStyle");
+	private void showStyleSelection(int which, String selectedTheme) {
+		final Menu lStyle = new Menu("Style");
 
 		int menuID = 0;
-		for (String theme : getThemeStyles(selectedTheme)) {
-			MenuItem mi = lThemeStyle.addItem(menuID++, "", theme); // ohne Translation
-			mi.setCheckable(true);
+		for (String style : getThemeStyles(selectedTheme)) {
+			MenuItem mi = lStyle.addItem(menuID++, "", style); // ohne Translation
+			mi.setData(style + "|" + which);
+			//mi.setCheckable(true);
 		}
 
-		lThemeStyle.addOnClickListener(new OnClickListener() {
+		lStyle.addOnClickListener(new OnClickListener() {
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 				MenuItem mi = (MenuItem) v;
-				int which = (int) mi.getData();
-				String selectedValue;
-				if (mi.isChecked()) {
-					selectedValue = "";
-				} else {
-					selectedValue = LocatorSettings.RenderThemesFolder.getValue() + "/" + mi.getTitle() + ".xml";
+				String[] result = ((String) mi.getData()).split("\\|");
+				switch (result[1]) {
+				case "0":
+					LocatorSettings.MapsforgeDayStyle.setValue(result[0]);
+					break;
+				case "1":
+					LocatorSettings.MapsforgeNightStyle.setValue(result[0]);
+					break;
+				case "2":
+					LocatorSettings.MapsforgeCarDayStyle.setValue(result[0]);
+					break;
+				case "3":
+					LocatorSettings.MapsforgeCarNightStyle.setValue(result[0]);
+					break;
 				}
-				// noch Styleauswahl aufrufen
+				Config.AcceptChanges();
 				return true;
 			}
 		});
 
-		lThemeStyle.Show();
-		return true;
+		lStyle.Show();
 	}
 
 	private ArrayList<String> getThemeStyles(String selectedTheme) {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO get the real styles
+		XmlRenderThemeStyleMenu renderthemeOptions = null;
+		//public static final String RENDERTHEME_MENU = "renderthememenu";
+		String RENDERTHEME_MENU = "renderthememenu";
+		//renderthemeOptions = (XmlRenderThemeStyleMenu) getIntent().getSerializableExtra(RENDERTHEME_MENU);
+		if (renderthemeOptions != null) {
+			java.util.Map<String, XmlRenderThemeStyleLayer> baseLayers = renderthemeOptions.getLayers();
+		}
+		ArrayList<String> styles;
+		styles = new ArrayList<String>();
+		styles.add("Style1");
+		styles.add("Style2");
+		styles.add("Style3");
+		return styles;
 	}
 
 }
