@@ -28,9 +28,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import CB_Core.Database;
 import CB_Core.Import.DescriptionImageGrabber;
 import CB_Core.Types.Cache;
-import CB_UI.Config;
 import CB_UI.GlobalCore;
-import CB_UI.GL_UI.Views.DescriptionView;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
@@ -67,7 +65,7 @@ public class CB_Action_ShowDescExt extends CB_Action {
 			Cache cache = GlobalCore.getSelectedCache();
 			NonLocalImages.clear();
 			NonLocalImagesUrl.clear();
-			String cachehtml = Database.GetDescription(cache);
+			String cachehtml = Database.GetShortDescription(cache) + Database.GetDescription(cache);
 			String html = DescriptionImageGrabber.ResolveImages(cache, cachehtml, false, NonLocalImages, NonLocalImagesUrl);
 			String header = "<!DOCTYPE html><html><head><meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\" /></head><body>";
 			html = header + html;

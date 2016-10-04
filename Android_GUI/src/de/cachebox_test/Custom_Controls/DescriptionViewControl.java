@@ -269,7 +269,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
 		if (cache != null) {
 			NonLocalImages.clear();
 			NonLocalImagesUrl.clear();
-			String cachehtml = Database.GetDescription(cache);
+			String cachehtml = Database.GetShortDescription(cache) + Database.GetDescription(cache);
 			String html = "";
 			if (cache.getApiStatus() == 1)// GC.com API lite
 			{ // Load Standard HTML
