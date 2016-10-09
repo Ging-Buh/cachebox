@@ -2,9 +2,6 @@ package CB_UI.GL_UI.Activitys;
 
 import java.io.FileOutputStream;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.utils.Clipboard;
-
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -27,6 +24,9 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Converter.UTMConvert;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.Clipboard;
 
 public class EditCoord extends ActivityBase {
 	private int aktPage = -1; // Deg-Min
@@ -640,172 +640,181 @@ public class EditCoord extends ActivityBase {
 		aktPage = newPage;
 	}
 
-	private void setButtonValues(int newPage) {
-		String s;
-		switch (newPage) {
-		case 0:
-			bDec.setState(1);
-			bMin.setState(0);
-			bSec.setState(0);
-			bUtm.setState(0);
+	private void setButtonValues(final int newPage) {
 
-			// Lat
-			if (coord.getLatitude() >= 0)
-				s = "N";
-			else
-				s = "S";
-			s = s + String.format("%09.5f", Math.abs(coord.getLatitude())).replace(",", ".").replace(".", "");
-			for (int i = 0; i < 9; i++) {
-				this.btnDLat[i].setText(s.substring(i, (i + 1)));
+		GL.that.RunOnGL(new IRunOnGL() {
+			@Override
+			public void run() {
+
+				String s;
+				switch (newPage) {
+				case 0:
+					bDec.setState(1);
+					bMin.setState(0);
+					bSec.setState(0);
+					bUtm.setState(0);
+
+					// Lat
+					if (coord.getLatitude() >= 0)
+						s = "N";
+					else
+						s = "S";
+					s = s + String.format("%09.5f", Math.abs(coord.getLatitude())).replace(",", ".").replace(".", "");
+					for (int i = 0; i < 9; i++) {
+						btnDLat[i].setText(s.substring(i, (i + 1)));
+					}
+					btnDLat[1].setInvisible(); // nur 2 Stellen Grad
+					// Lon
+					if (coord.getLongitude() >= 0)
+						s = "E";
+					else
+						s = "W";
+					s = s + String.format("%09.5f", Math.abs(coord.getLongitude())).replace(",", ".").replace(".", "");
+					for (int i = 0; i < 9; i++) {
+						btnDLon[i].setText(s.substring(i, (i + 1)));
+					}
+
+					focus = setFocus(btnDLat, btnDLon, 4); // erste Nachkommastelle N / S
+					focusStartLon = 13;
+
+					pnlD.setVisible();
+
+					break;
+				case 1:
+					bDec.setState(0);
+					bMin.setState(1);
+					bSec.setState(0);
+					bUtm.setState(0);
+
+					// Lat
+					if (coord.getLatitude() >= 0)
+						s = "N";
+					else
+						s = "S";
+					double deg = (int) Math.abs(coord.getLatitude());
+					double frac = Math.abs(coord.getLatitude()) - deg;
+					double min = frac * 60;
+
+					s = s + String.format("%03d", (int) deg);
+					s = s + String.format("%02d", (int) min);
+					s = s + String.format("%03d", (int) (0.5 + (min - (int) min) * 1000)); // gerundet
+					for (int i = 0; i < 9; i++) {
+						btnDMLat[i].setText(s.substring(i, (i + 1)));
+					}
+					btnDMLat[1].setInvisible(); // nur 2 Stellen Grad
+					// Lon
+					if (coord.getLongitude() >= 0)
+						s = "E";
+					else
+						s = "W";
+					deg = (int) Math.abs(coord.getLongitude());
+					frac = Math.abs(coord.getLongitude()) - deg;
+					min = frac * 60;
+					s = s + String.format("%03d", (int) deg);
+					s = s + String.format("%02d", (int) min);
+					s = s + String.format("%03d", (int) (0.5 + (min - (int) min) * 1000)); // gerundet
+					for (int i = 0; i < 9; i++) {
+						btnDMLon[i].setText(s.substring(i, (i + 1)));
+					}
+
+					focus = setFocus(btnDMLat, btnDMLon, 6); // erste Nachkommastelle N / S
+					focusStartLon = 15;
+
+					pnlDM.setVisible();
+
+					break;
+				case 2:
+					bDec.setState(0);
+					bMin.setState(0);
+					bSec.setState(1);
+					bUtm.setState(0);
+
+					// Lat
+					if (coord.getLatitude() >= 0)
+						s = "N";
+					else
+						s = "S";
+
+					deg = (int) Math.abs(coord.getLatitude());
+					frac = Math.abs(coord.getLatitude()) - deg;
+					min = frac * 60;
+					int imin = (int) min;
+					frac = min - imin;
+					double sec = frac * 60;
+
+					s = s + String.format("%03d", (int) deg);
+					s = s + String.format("%02d", imin);
+					s = s + String.format("%02d", (int) sec);
+					s = s + String.format("%02d", (int) (0.5 + (sec - (int) sec) * 100)); // gerundet
+					for (int i = 0; i < 10; i++) {
+						btnDMSLat[i].setText(s.substring(i, (i + 1)));
+					}
+					btnDMSLat[1].setInvisible(); // nur 2 Stellen Grad
+
+					// Lon
+					if (coord.getLongitude() >= 0)
+						s = "E";
+					else
+						s = "W";
+					deg = (int) Math.abs(coord.getLongitude());
+					frac = Math.abs(coord.getLongitude()) - deg;
+					min = frac * 60;
+					imin = (int) min;
+					frac = min - imin;
+					sec = frac * 60;
+					s = s + String.format("%03d", (int) deg);
+					s = s + String.format("%02d", imin);
+					s = s + String.format("%02d", (int) sec);
+					s = s + String.format("%02d", (int) (0.5 + (sec - (int) sec) * 100)); // gerundet
+					for (int i = 0; i < 10; i++) {
+						btnDMSLon[i].setText(s.substring(i, (i + 1)));
+					}
+
+					focus = setFocus(btnDMSLat, btnDMSLon, 6); // erste Nachkommastelle N / S
+					focusStartLon = 16;
+					pnlDMS.setVisible();
+
+					break;
+				case 3:
+					bDec.setState(0);
+					bMin.setState(0);
+					bSec.setState(0);
+					bUtm.setState(1);
+					Leertaste.setVisible();
+
+					convert.iLatLon2UTM(coord.getLatitude(), coord.getLongitude());
+					String nording = String.format("%d", (int) (convert.UTMNorthing + 0.5f));
+					String easting = String.format("%d", (int) (convert.UTMEasting + 0.5f));
+					String zone = String.format("%02d", convert.iUTM_Zone_Num);
+					String UTMZoneLetter = convert.sUtmLetterActual(coord.getLatitude());
+					for (int i = 0; i < nording.length(); i++) {
+						btnUTMLat[i].setText(nording.substring(i, (i + 1)));
+					}
+					for (int i = nording.length(); i < 8; i++) {
+						btnUTMLat[i].setText("");
+					}
+					for (int i = 0; i < easting.length(); i++) {
+						btnUTMLon[i].setText(easting.substring(i, (i + 1)));
+					}
+					for (int i = easting.length(); i < 8; i++) {
+						btnUTMLon[i].setText("");
+					}
+					for (int i = 0; i < 2; i++) {
+						btnUTMZone[i].setText(zone.substring(i, (i + 1)));
+					}
+					btnUTMZone[2].setText(UTMZoneLetter);
+
+					setUTMFocus(0);
+
+					pnlUTM.setVisible();
+					//
+
+					break;
+				}
+
 			}
-			this.btnDLat[1].setInvisible(); // nur 2 Stellen Grad
-			// Lon
-			if (coord.getLongitude() >= 0)
-				s = "E";
-			else
-				s = "W";
-			s = s + String.format("%09.5f", Math.abs(coord.getLongitude())).replace(",", ".").replace(".", "");
-			for (int i = 0; i < 9; i++) {
-				this.btnDLon[i].setText(s.substring(i, (i + 1)));
-			}
+		});
 
-			this.focus = this.setFocus(this.btnDLat, this.btnDLon, 4); // erste Nachkommastelle N / S
-			this.focusStartLon = 13;
-
-			this.pnlD.setVisible();
-
-			break;
-		case 1:
-			bDec.setState(0);
-			bMin.setState(1);
-			bSec.setState(0);
-			bUtm.setState(0);
-
-			// Lat
-			if (coord.getLatitude() >= 0)
-				s = "N";
-			else
-				s = "S";
-			double deg = (int) Math.abs(coord.getLatitude());
-			double frac = Math.abs(coord.getLatitude()) - deg;
-			double min = frac * 60;
-
-			s = s + String.format("%03d", (int) deg);
-			s = s + String.format("%02d", (int) min);
-			s = s + String.format("%03d", (int) (0.5 + (min - (int) min) * 1000)); // gerundet
-			for (int i = 0; i < 9; i++) {
-				this.btnDMLat[i].setText(s.substring(i, (i + 1)));
-			}
-			this.btnDMLat[1].setInvisible(); // nur 2 Stellen Grad
-			// Lon
-			if (coord.getLongitude() >= 0)
-				s = "E";
-			else
-				s = "W";
-			deg = (int) Math.abs(coord.getLongitude());
-			frac = Math.abs(coord.getLongitude()) - deg;
-			min = frac * 60;
-			s = s + String.format("%03d", (int) deg);
-			s = s + String.format("%02d", (int) min);
-			s = s + String.format("%03d", (int) (0.5 + (min - (int) min) * 1000)); // gerundet
-			for (int i = 0; i < 9; i++) {
-				this.btnDMLon[i].setText(s.substring(i, (i + 1)));
-			}
-
-			this.focus = this.setFocus(this.btnDMLat, this.btnDMLon, 6); // erste Nachkommastelle N / S
-			this.focusStartLon = 15;
-
-			this.pnlDM.setVisible();
-
-			break;
-		case 2:
-			bDec.setState(0);
-			bMin.setState(0);
-			bSec.setState(1);
-			bUtm.setState(0);
-
-			// Lat
-			if (coord.getLatitude() >= 0)
-				s = "N";
-			else
-				s = "S";
-
-			deg = (int) Math.abs(coord.getLatitude());
-			frac = Math.abs(coord.getLatitude()) - deg;
-			min = frac * 60;
-			int imin = (int) min;
-			frac = min - imin;
-			double sec = frac * 60;
-
-			s = s + String.format("%03d", (int) deg);
-			s = s + String.format("%02d", imin);
-			s = s + String.format("%02d", (int) sec);
-			s = s + String.format("%02d", (int) (0.5 + (sec - (int) sec) * 100)); // gerundet
-			for (int i = 0; i < 10; i++) {
-				this.btnDMSLat[i].setText(s.substring(i, (i + 1)));
-			}
-			this.btnDMSLat[1].setInvisible(); // nur 2 Stellen Grad
-
-			// Lon
-			if (coord.getLongitude() >= 0)
-				s = "E";
-			else
-				s = "W";
-			deg = (int) Math.abs(coord.getLongitude());
-			frac = Math.abs(coord.getLongitude()) - deg;
-			min = frac * 60;
-			imin = (int) min;
-			frac = min - imin;
-			sec = frac * 60;
-			s = s + String.format("%03d", (int) deg);
-			s = s + String.format("%02d", imin);
-			s = s + String.format("%02d", (int) sec);
-			s = s + String.format("%02d", (int) (0.5 + (sec - (int) sec) * 100)); // gerundet
-			for (int i = 0; i < 10; i++) {
-				this.btnDMSLon[i].setText(s.substring(i, (i + 1)));
-			}
-
-			this.focus = this.setFocus(this.btnDMSLat, this.btnDMSLon, 6); // erste Nachkommastelle N / S
-			this.focusStartLon = 16;
-			this.pnlDMS.setVisible();
-
-			break;
-		case 3:
-			bDec.setState(0);
-			bMin.setState(0);
-			bSec.setState(0);
-			bUtm.setState(1);
-			this.Leertaste.setVisible();
-
-			convert.iLatLon2UTM(coord.getLatitude(), coord.getLongitude());
-			String nording = String.format("%d", (int) (convert.UTMNorthing + 0.5f));
-			String easting = String.format("%d", (int) (convert.UTMEasting + 0.5f));
-			String zone = String.format("%02d", convert.iUTM_Zone_Num);
-			String UTMZoneLetter = convert.sUtmLetterActual(coord.getLatitude());
-			for (int i = 0; i < nording.length(); i++) {
-				this.btnUTMLat[i].setText(nording.substring(i, (i + 1)));
-			}
-			for (int i = nording.length(); i < 8; i++) {
-				this.btnUTMLat[i].setText("");
-			}
-			for (int i = 0; i < easting.length(); i++) {
-				this.btnUTMLon[i].setText(easting.substring(i, (i + 1)));
-			}
-			for (int i = easting.length(); i < 8; i++) {
-				this.btnUTMLon[i].setText("");
-			}
-			for (int i = 0; i < 2; i++) {
-				this.btnUTMZone[i].setText(zone.substring(i, (i + 1)));
-			}
-			this.btnUTMZone[2].setText(UTMZoneLetter);
-
-			this.setUTMFocus(0);
-
-			this.pnlUTM.setVisible();
-			//
-
-			break;
-		}
 	}
 
 	private int setFocus(Button[] bLat, Button[] bLon, int newFocus) {
