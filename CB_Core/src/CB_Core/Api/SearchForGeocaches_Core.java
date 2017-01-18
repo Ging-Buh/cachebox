@@ -614,9 +614,22 @@ public class SearchForGeocaches_Core {
 						JSONArray userWaypoints = jCache.getJSONArray("UserWaypoints");
 						for (int j = 0; j < userWaypoints.length(); j++) {
 							JSONObject jUserWaypoint = (JSONObject) userWaypoints.get(j);
-							if (!jUserWaypoint.getString("Description").equals("Coordinate Override")) {
-								continue; // only corrected Coordinate
-							}
+                            boolean descriptionOverideInfo = false;
+                            boolean correctedCoordinateFlag = false;
+
+                            try {
+                                descriptionOverideInfo = jUserWaypoint.getString("Description").equals("Coordinate Override");
+                            } catch (JSONException e) {
+                            }
+
+                            try {
+								correctedCoordinateFlag = jUserWaypoint.getBoolean("IsCorrectedCoordinate");
+                            } catch (JSONException e) {
+                            }
+
+                            if (!(descriptionOverideInfo || correctedCoordinateFlag)) {
+                                continue; // only corrected Coordinate
+                            }
 							Waypoint waypoint = new Waypoint(true);
 							waypoint.CacheId = cache.Id;
 							try {
@@ -625,8 +638,13 @@ public class SearchForGeocaches_Core {
 								// no Coordinates -> Lat/Lon = 0/0
 								waypoint.Pos = new CoordinateGPS(0, 0);
 							}
-							waypoint.setTitle(jUserWaypoint.getString("Description"));
-							waypoint.setDescription(jUserWaypoint.getString("Description"));
+							try {
+								waypoint.setTitle(jUserWaypoint.getString("Description"));
+								waypoint.setDescription(jUserWaypoint.getString("Description"));
+							} catch (JSONException e) {
+								waypoint.setTitle("IsCorrectedCoordinate");
+								waypoint.setDescription("IsCorrectedCoordinate");
+							}
 							waypoint.Type = CacheTypes.Final;
 							waypoint.setGcCode("CO" + cache.getGcCode().substring(2, cache.getGcCode().length()));
 							cache.waypoints.add(waypoint);
