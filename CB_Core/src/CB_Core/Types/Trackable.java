@@ -78,7 +78,7 @@ public class Trackable implements Comparable<Trackable> {
 	 * DAO Constructor <br>
 	 * Der Constructor, der ein Trackable über eine DB Abfrage erstellt! <img src="doc-files/1.png"/>
 	 * 
-	 * @param dao
+	 * @param reader
 	 */
 	public Trackable(CoreCursor reader) {
 		try {
@@ -416,7 +416,7 @@ public class Trackable implements Comparable<Trackable> {
 	 * 75 - Visit<br>
 	 * 
 	 * @param type
-	 * @param UserName
+	 * @param userName
 	 *            Config.settings.GcLogin.getValue()
 	 * @return
 	 */

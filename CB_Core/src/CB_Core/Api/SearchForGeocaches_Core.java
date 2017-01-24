@@ -638,13 +638,9 @@ public class SearchForGeocaches_Core {
 								// no Coordinates -> Lat/Lon = 0/0
 								waypoint.Pos = new CoordinateGPS(0, 0);
 							}
-							try {
-								waypoint.setTitle(jUserWaypoint.getString("Description"));
-								waypoint.setDescription(jUserWaypoint.getString("Description"));
-							} catch (JSONException e) {
-								waypoint.setTitle("IsCorrectedCoordinate");
-								waypoint.setDescription("IsCorrectedCoordinate");
-							}
+
+							waypoint.setTitle("Corrected Coordinates (API)");
+							waypoint.setDescription("");
 							waypoint.Type = CacheTypes.Final;
 							waypoint.setGcCode("CO" + cache.getGcCode().substring(2, cache.getGcCode().length()));
 							cache.waypoints.add(waypoint);
