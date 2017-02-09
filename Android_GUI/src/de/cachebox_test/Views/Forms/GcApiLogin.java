@@ -6,17 +6,12 @@ import CB_UI.Config;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+import android.os.*;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
-import android.webkit.JavascriptInterface;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.webkit.*;
 import android.widget.LinearLayout;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
@@ -189,6 +184,28 @@ public class GcApiLogin extends Activity {
 		// settings.setJavaScriptCanOpenWindowsAutomatically(true);
 
 		// webView.setWebChromeClient(new WebChromeClient());
+
+
+		{//delete cookies and cache
+			WebControl.clearCache(true);
+			WebControl.clearHistory();
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+				Log.d("GcApiLogin", "Using clearCookies code for API >=" + String.valueOf(Build.VERSION_CODES.LOLLIPOP_MR1));
+				CookieManager.getInstance().removeAllCookies(null);
+				CookieManager.getInstance().flush();
+			} else
+			{
+				Log.d("GcApiLogin", "Using clearCookies code for API <" + String.valueOf(Build.VERSION_CODES.LOLLIPOP_MR1));
+				CookieSyncManager cookieSyncMngr=CookieSyncManager.createInstance(this);
+				cookieSyncMngr.startSync();
+				CookieManager cookieManager=CookieManager.getInstance();
+				cookieManager.removeAllCookie();
+				cookieManager.removeSessionCookie();
+				cookieSyncMngr.stopSync();
+				cookieSyncMngr.sync();
+			}
+		}
+
 		WebControl.getSettings().setJavaScriptEnabled(true);
 		WebControl.addJavascriptInterface(new MyJavaScriptInterface(), "HTMLOUT");
 
