@@ -19,7 +19,7 @@ import org.mapsforge.map.awt.graphics.AwtMatrix;
 
 import com.badlogic.gdx.math.Matrix4;
 
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Matrix;
 
 /**
  * @author Longri

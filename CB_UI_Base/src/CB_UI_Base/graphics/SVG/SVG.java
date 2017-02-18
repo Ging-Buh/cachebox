@@ -30,10 +30,10 @@ import org.xml.sax.SAXException;
 
 import CB_UI_Base.graphics.Images.SVG_Drawable;
 import CB_UI_Base.graphics.SVG.CSSParser.Ruleset;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Canvas;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_GraphicFactory;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Bitmap;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Canvas;
+import CB_UI_Base.graphics.extendedInterfaces.ext_GraphicFactory;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Matrix;
 import CB_UI_Base.graphics.fromAndroid.RectF;
 
 /**

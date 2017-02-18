@@ -23,12 +23,12 @@ import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Canvas;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_GraphicFactory;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Paint;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Path;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Bitmap;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Canvas;
+import CB_UI_Base.graphics.extendedInterfaces.ext_GraphicFactory;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Matrix;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Paint;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Path;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Util.HSV_Color;
 

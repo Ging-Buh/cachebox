@@ -33,10 +33,10 @@ import org.poly2tri.triangulation.delaunay.DelaunayTriangle;
 
 import CB_UI_Base.graphics.Geometry.Quadrangle;
 import CB_UI_Base.graphics.Images.VectorDrawable;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Canvas;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Paint;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Path;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Canvas;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Matrix;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Paint;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Path;
 import CB_UI_Base.graphics.fromAndroid.RectF;
 
 /**

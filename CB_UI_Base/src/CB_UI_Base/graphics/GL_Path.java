@@ -26,8 +26,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 
 import CB_UI_Base.graphics.Geometry.CircularSegment;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Path;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Matrix;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Path;
 import CB_UI_Base.graphics.fromAndroid.RectF;
 import CB_Utils.Lists.CB_List;
 

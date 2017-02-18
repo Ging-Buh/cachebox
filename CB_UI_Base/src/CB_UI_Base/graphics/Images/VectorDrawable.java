@@ -24,8 +24,8 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.graphics.GL_GraphicFactory;
 import CB_UI_Base.graphics.GL_Matrix;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Bitmap;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Matrix;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.HSV_Color;
 

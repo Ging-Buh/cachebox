@@ -35,7 +35,7 @@ import CB_Locator.Map.Descriptor;
 import CB_Locator.Map.TileGL;
 import CB_Locator.Map.TileGL.TileState;
 import CB_Locator.Map.TileGL_Bmp;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Bitmap;
 
 /**
  * @author Longri

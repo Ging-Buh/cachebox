@@ -16,7 +16,7 @@
 package CB_UI_Base.graphics.Images;
 
 import CB_UI_Base.graphics.GL_Matrix;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Matrix;
 
 /**
  * @author Longri

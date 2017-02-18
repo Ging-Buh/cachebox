@@ -62,12 +62,12 @@ import CB_UI_Base.graphics.SVG.SVG.SvgRadialGradient;
 import CB_UI_Base.graphics.SVG.SVG.TextContainer;
 import CB_UI_Base.graphics.SVG.SVG.TextSequence;
 import CB_UI_Base.graphics.SVG.SVG.Unit;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Canvas;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_GraphicFactory;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Paint;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Path;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Bitmap;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Canvas;
+import CB_UI_Base.graphics.extendedInterfaces.ext_GraphicFactory;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Matrix;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Paint;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Path;
 import CB_UI_Base.graphics.fromAndroid.RectF;
 
 /**

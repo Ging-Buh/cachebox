@@ -18,10 +18,10 @@ package org.mapsforge.map.android.graphics;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Canvas;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Paint;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Path;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Canvas;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Matrix;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Paint;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Path;
 import CB_UI_Base.graphics.fromAndroid.RectF;
 
 /**

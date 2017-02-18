@@ -11,7 +11,6 @@ import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import android.app.Activity;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -42,7 +41,6 @@ public class AndroidDB extends Database {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void Reset() {
 
@@ -59,7 +57,7 @@ public class AndroidDB extends Database {
 
 		try {
 			Log.debug(log, "create data base: " + databasePath);
-			myDB = activity.openOrCreateDatabase(getDatabasePath(databasePath).getAbsolutePath(), Context.MODE_WORLD_WRITEABLE, null);
+			myDB = activity.openOrCreateDatabase(getDatabasePath(databasePath).getAbsolutePath(), 0, null);
 			newDB = true;
 		} catch (Exception exc) {
 			Log.err(log, "createDB", exc);

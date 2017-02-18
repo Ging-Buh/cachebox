@@ -27,7 +27,7 @@ import com.badlogic.gdx.graphics.Texture;
 import CB_Locator.LocatorSettings;
 import CB_UI_Base.graphics.GL_RenderType;
 import CB_UI_Base.graphics.Images.BitmapDrawable;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Bitmap;
 
 /**
  * @author Longri

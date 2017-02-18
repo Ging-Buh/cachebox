@@ -15,7 +15,7 @@
  */
 package CB_UI_Base.graphics;
 
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Paint;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Paint;
 import CB_Utils.MathUtils;
 
 import com.badlogic.gdx.graphics.g2d.Batch;

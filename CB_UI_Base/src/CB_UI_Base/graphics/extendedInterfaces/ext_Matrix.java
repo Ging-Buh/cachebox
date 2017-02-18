@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package CB_UI_Base.graphics.extendedIntrefaces;
+package CB_UI_Base.graphics.extendedInterfaces;
 
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Disposable;

@@ -21,7 +21,7 @@ import CB_UI_Base.graphics.GL_FontStyle;
 import CB_UI_Base.graphics.GL_Matrix;
 import CB_UI_Base.graphics.GL_Path;
 import CB_UI_Base.graphics.Geometry.Circle;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Paint;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Paint;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;

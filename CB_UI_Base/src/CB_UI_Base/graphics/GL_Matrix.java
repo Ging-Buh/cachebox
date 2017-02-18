@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.mapsforge.core.graphics.Matrix;
 
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Matrix;
 
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;

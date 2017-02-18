@@ -18,7 +18,7 @@ package CB_UI_Base.graphics;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.Images.IRotateDrawable;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Paint;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Paint;
 import CB_Utils.MathUtils;
 
 import com.badlogic.gdx.graphics.g2d.Batch;

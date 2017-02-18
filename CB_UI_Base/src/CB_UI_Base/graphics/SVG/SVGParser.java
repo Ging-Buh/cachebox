@@ -57,8 +57,8 @@ import CB_UI_Base.graphics.SVG.SVG.TextChild;
 import CB_UI_Base.graphics.SVG.SVG.TextPositionedContainer;
 import CB_UI_Base.graphics.SVG.SVG.TextRoot;
 import CB_UI_Base.graphics.SVG.SVG.Unit;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_GraphicFactory;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
+import CB_UI_Base.graphics.extendedInterfaces.ext_GraphicFactory;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Matrix;
 
 /**
  * SVG parser code. Used by SVG class. Should not be called directly.

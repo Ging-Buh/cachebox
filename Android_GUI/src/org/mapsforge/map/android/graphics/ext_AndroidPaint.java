@@ -23,8 +23,8 @@ import CB_UI_Base.graphics.GL_FontStyle;
 import CB_UI_Base.graphics.GL_Style;
 import CB_UI_Base.graphics.Join;
 import CB_UI_Base.graphics.TileMode;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Paint;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Matrix;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Paint;
 import CB_Utils.Util.HSV_Color;
 
 /**

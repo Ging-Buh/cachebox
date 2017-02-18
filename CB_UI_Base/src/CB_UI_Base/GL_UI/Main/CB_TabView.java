@@ -138,7 +138,7 @@ public class CB_TabView extends CB_View_Base {
 					view.setSize(CB_TabView.this.getWidth(), CB_TabView.this.getHeight() - buttonListView.getHeight());
 					view.setPos(new Vector2(0, buttonListView.getHeight()));
 				} catch (Exception e) {
-					Log.err(log, "set view size", e);
+					log.error("set view size", e);
 					return;
 				}
 

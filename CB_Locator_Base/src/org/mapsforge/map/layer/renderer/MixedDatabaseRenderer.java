@@ -56,7 +56,7 @@ import CB_UI_Base.graphics.TextDrawable;
 import CB_UI_Base.graphics.TextDrawableFlipped;
 import CB_UI_Base.graphics.Images.MatrixDrawable;
 import CB_UI_Base.graphics.Images.SortedRotateList;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
+import CB_UI_Base.graphics.extendedInterfaces.ext_Bitmap;
 import CB_Utils.Lists.CB_List;
 
 /**
