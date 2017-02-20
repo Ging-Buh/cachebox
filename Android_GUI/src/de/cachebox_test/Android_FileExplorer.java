@@ -72,11 +72,15 @@ public class Android_FileExplorer {
 			AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
 			loadFileList(currentPath);
-
+			String shownPath = currentPath.getAbsolutePath();
+			int l = shownPath.length();
+			if (l > 30) {
+				shownPath = "..." + shownPath.substring(l - 30);
+			}
 			if (TitleText == null || TitleText.length() == 0) {
-				builder.setTitle(currentPath.getPath());
+				builder.setTitle(shownPath);
 			} else {
-				builder.setTitle(TitleText + "\n" + currentPath.getPath());
+				builder.setTitle(TitleText + "\n" + shownPath);
 			}
 
 			if (selectDirectoryOption) {
@@ -99,9 +103,6 @@ public class Android_FileExplorer {
 						dialog.dismiss();
 						showDialog();
 					} else {
-						log.info("selected toString: " + chosenFile.toString());
-						log.info("selected getPath: " + chosenFile.getPath());
-						log.info("selected getAbsolutePath: " + chosenFile.getAbsolutePath());
 						CB_FileReturnListener.getFileReturn(chosenFile.getAbsolutePath());
 					}
 				}
