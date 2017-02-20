@@ -187,7 +187,6 @@ import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AndroidClipboard;
 import de.cachebox_test.Views.DescriptionView;
 import de.cachebox_test.Views.JokerView;
-import de.cachebox_test.Views.SolverView;
 import de.cachebox_test.Views.ViewGL;
 import de.cachebox_test.Views.Forms.GcApiLogin;
 import de.cachebox_test.Views.Forms.MessageBox;
@@ -227,7 +226,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public static DescriptionView descriptionView = null; // ID 4
 	// private static SpoilerView spoilerView = null; // ID 5
-	private static SolverView solverView = null; // ID 7
+	// private static SolverView solverView = null; // ID 7
 	private static JokerView jokerView = null; // ID 12
 
 	/**
@@ -378,9 +377,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		GL.resetIsInitial();
 
 		if (GlobalCore.RunFromSplash) {
-			Log.info(log, "CACHEBOX: " + "main-OnCreate Run from Splash");
+			Log.info(log, "OnCreate Run from Splash");
 		} else {
-			Log.info(log, "CACHEBOX: " + "main-OnCreate illegal-Run");
+			Log.info(log, "OnCreate illegal-Run");
 			// run splash
 			Intent mainIntent = new Intent().setClass(main.this, de.cachebox_test.splash.class);
 			startActivity(mainIntent);
@@ -886,11 +885,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			return;
 		}
 
-		if (requestCode == Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR) {
-			CB_Android_FileExplorer.onActivityResult(requestCode, resultCode, data);
-			return;
-		}
-
 		// Intent Result Record Video
 		if (requestCode == Global.CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE) {
 			if (resultCode == RESULT_OK) {
@@ -945,6 +939,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (aktView != null)
 			aktView.ActivityResult(requestCode, resultCode, data);
+
 	}
 
 	@Override
@@ -1192,7 +1187,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 		mReceiver = null;
 
-		Log.info(log, "CACHEBOX: " + "Main=> onDestroy");
+		Log.info(log, "Main=> onDestroy");
 		// frame.removeAllViews();
 		if (isRestart) {
 			Log.debug(log, "Main=> onDestroy isRestart");
@@ -1373,11 +1368,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			return ViewList.get(ID.getID());
 		}
 
-		if (ID == ViewConst.JOKER_VIEW)
+		if (ID == ViewConst.JOKER_VIEW) {
 			return jokerView = new JokerView(this, this);
-		else if (ID == ViewConst.SOLVER_VIEW)
-			return solverView = new SolverView(this, inflater);
-		else if (ID == ViewConst.SPOILER_VIEW) {
+		} else if (ID == ViewConst.SOLVER_VIEW) {
+			// return solverView = new SolverView(this, inflater);
+		} else if (ID == ViewConst.SPOILER_VIEW) {
 			// if (spoilerView == null) spoilerView = new SpoilerView(this,
 			// inflater);
 
@@ -1429,11 +1424,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				aktView = null;
 				jokerView.OnFree();
 				jokerView = null;
-			} else if (aktView.equals(solverView)) {
-				// Instanz löschen
-				aktView = null;
-				solverView.OnFree();
-				solverView = null;
 			} else if (aktView.equals(descriptionView)) {
 				// Instanz löschen
 				aktView = null;
@@ -1879,9 +1869,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 											// entspricht
 											// Warnung, Ursache
 											// ist in S[1]
-											{ // es können aber noch gültige
-												// Einträge
-												// folgen
+											{ // es können aber noch gültige Einträge folgen
 												GL_MsgBox.Show(s[1]);
 											}
 											if (s[0].equals("0")) // Normaler
@@ -2744,7 +2732,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (cm != null)
 			GlobalCore.setDefaultClipboard(acb);
 
-		CB_Android_FileExplorer fileExplorer = new CB_Android_FileExplorer(this);
+		CB_Android_FileExplorer fileExplorer = new CB_Android_FileExplorer(mainActivity);
 		PlatformConnector.setGetFileListener(fileExplorer);
 		PlatformConnector.setGetFolderListener(fileExplorer);
 

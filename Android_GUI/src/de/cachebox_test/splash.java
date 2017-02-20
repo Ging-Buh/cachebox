@@ -34,7 +34,6 @@ import com.badlogic.gdx.backends.android.AndroidFiles;
 
 import CB_Core.Database;
 import CB_Core.Database.DatabaseType;
-import CB_Locator.LocatorSettings;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
@@ -48,7 +47,6 @@ import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
-import CB_UI_Base.graphics.GL_RenderType;
 import CB_Utils.Log.CB_SLF4J;
 import CB_Utils.Log.Log;
 import CB_Utils.Log.LogLevel;
@@ -57,7 +55,6 @@ import CB_Utils.Settings.PlatformSettings.IPlatformSettings;
 import CB_Utils.Settings.SettingBase;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingInt;
-import CB_Utils.Settings.SettingModus;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.IChanged;
@@ -257,8 +254,10 @@ public class splash extends Activity {
 
 			Intent mainIntent = main.mainActivity.getIntent();
 
+			Log.info(log, "Intent putExtras" + " GcCode " + GcCode + " name " + name + " guid " + guid + " GpxPath " + GpxPath); // + " UI " + ui
 			mainIntent.putExtras(b);
 
+			Log.info(log, "(Re)Start Main Intent");
 			startActivity(mainIntent);
 			finish();
 		}
@@ -277,11 +276,10 @@ public class splash extends Activity {
 
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void onStart() {
 		super.onStart();
-		Log.debug(log, "onStart");
+		// Log.* ist erst nach StartInitial möglich
 
 		if (android.os.Build.VERSION.SDK_INT >= 23) {
 			PermissionCheck.checkNeededPermissions(this);
@@ -411,6 +409,7 @@ public class splash extends Activity {
 								saveWorkPath(askAgain/* , useTabletLayout */);
 								dialog.dismiss();
 								startInitial();
+								Log.info(log, "Initial for use internal SD");
 							}
 						};
 						thread.start();
@@ -460,6 +459,7 @@ public class splash extends Activity {
 											// boolean useTabletLayout = rbTabletLayout.isChecked();
 											saveWorkPath(askAgain/* , useTabletLayout */);
 											startInitial();
+											Log.info(log, "Initial for " + workPath);
 										}
 									};
 									thread.start();
@@ -494,6 +494,7 @@ public class splash extends Activity {
 									// boolean useTabletLayout = rbTabletLayout.isChecked();
 									saveWorkPath(askAgain/* , useTabletLayout */);
 									startInitial();
+									Log.info(log, "Initial for " + workPath);
 								}
 							};
 							thread.start();
@@ -578,6 +579,7 @@ public class splash extends Activity {
 									// boolean useTabletLayout = rbTabletLayout.isChecked();
 									saveWorkPath(askAgain/* , useTabletLayout */);
 									startInitial();
+									Log.info(log, "Initial for " + workPath);
 								}
 							};
 							thread.start();
@@ -645,8 +647,8 @@ public class splash extends Activity {
 			}
 
 			startInitial();
+			Log.info(log, "Initial for " + workPath);
 		}
-
 	}
 
 	private String getExternalSdPath(String Folder) {
@@ -866,22 +868,6 @@ public class splash extends Activity {
 
 		}
 
-		if (resultCode == RESULT_OK && requestCode == Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR) {
-			if (resultCode == android.app.Activity.RESULT_OK && data != null) {
-				// obtain the filename
-				Uri fileUri = data.getData();
-				if (fileUri != null) {
-					String filePath = fileUri.getPath();
-					if (filePath != null) {
-						if (getFolderReturnListener != null)
-							getFolderReturnListener.getFolderReturn(filePath);
-					}
-				}
-			}
-			return;
-
-		}
-
 	}
 
 	private void showPleaseWaitDialog() {
@@ -1003,7 +989,7 @@ public class splash extends Activity {
 					height = frame.getMeasuredHeight();
 				}
 
-				// lolipop ask write permission
+				// lollipop ask write permission
 				if (android.os.Build.VERSION.SDK_INT > 20) {
 					Initial(width, height);
 
@@ -1032,7 +1018,6 @@ public class splash extends Activity {
 
 	private void Initial(int width, int height) {
 		// Jetzt ist der workPath erstmal festgelegt.
-		Log.debug(log, "Initial()");
 
 		// lolipop ask write permission
 		if (android.os.Build.VERSION.SDK_INT > 20) {
@@ -1257,14 +1242,18 @@ public class splash extends Activity {
 
 	private void Initial2() {
 
+		Log.info(log, "initialize Database for CacheBox");
 		// initialize Database
 		Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
+		Log.info(log, "initialize Database FieldNotes");
 		Database.FieldNotes = new AndroidDB(DatabaseType.FieldNotes, this);
 
 		Config.AcceptChanges();
 
 		// Initial Ready Show main
+		Log.info(log, "finish activity");
 		finish();
+		Log.info(log, "new Intent main.class com.badlogic.gdx.backends.android.AndroidApplication");
 		Intent mainIntent = new Intent().setClass(splash.this, main.class);
 		Bundle b = new Bundle();
 		if (GcCode != null) {
@@ -1288,8 +1277,9 @@ public class splash extends Activity {
 
 		GlobalCore.RunFromSplash = true;
 
+		Log.info(log, "Intent putExtras" + " GcCode " + GcCode + " name " + name + " guid " + guid + " GpxPath " + GpxPath + " UI " + ui);
 		mainIntent.putExtras(b);
-		Log.info(log, "Splash start Main Intent");
+		Log.info(log, "Start Main Intent");
 		startActivity(mainIntent);
 		finish();
 	}

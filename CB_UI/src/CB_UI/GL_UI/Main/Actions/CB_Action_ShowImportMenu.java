@@ -120,7 +120,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
 								GL.that.RunOnGL(new IRunOnGL() {
 									@Override
 									public void run() {
-										ExportGetFolderStep(FileName);
+										ExportgetFolderStep(FileName);
 									}
 								});
 
@@ -145,7 +145,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
 		return icm;
 	}
 
-	private void ExportGetFolderStep(final String FileName) {
+	private void ExportgetFolderStep(final String FileName) {
 		PlatformConnector.getFolder(FileIO.GetDirectoryName(Config.gpxExportFileName.getValue()), Translation.Get("selectExportFolder".hashCode()), Translation.Get("select".hashCode()), new IgetFolderReturnListener() {
 			@Override
 			public void getFolderReturn(final String Path) {

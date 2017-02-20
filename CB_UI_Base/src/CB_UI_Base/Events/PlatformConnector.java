@@ -246,7 +246,7 @@ public class PlatformConnector {
 	}
 
 	public interface IgetFolderListener {
-		public void getfolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener);
+		public void getFolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener);
 	}
 
 	private static IgetFolderListener getFolderListener;
@@ -257,7 +257,7 @@ public class PlatformConnector {
 
 	public static void getFolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener) {
 		if (getFolderListener != null)
-			getFolderListener.getfolder(initialPath, TitleText, ButtonText, returnListener);
+			getFolderListener.getFolder(initialPath, TitleText, ButtonText, returnListener);
 	}
 
 	// ----------------------------------------

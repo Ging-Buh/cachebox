@@ -169,7 +169,7 @@ public class SimulatorMain {
 		PlatformConnector.setGetFolderListener(new IgetFolderListener() {
 
 			@Override
-			public void getfolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener) {
+			public void getFolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener) {
 
 				JFileChooser chooser = new JFileChooser();
 
