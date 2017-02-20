@@ -95,15 +95,21 @@ public class Android_FileExplorer {
 			builder.setItems(fileList, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					String fileChosen = fileList[which];
-					File chosenFile = getChosenFile(fileChosen);
-					if (chosenFile.isDirectory()) {
-						loadFileList(chosenFile);
-						dialog.cancel();
-						dialog.dismiss();
-						showDialog();
-					} else {
-						CB_FileReturnListener.getFileReturn(chosenFile.getAbsolutePath());
+					File chosenFile;
+					try {
+						chosenFile = getChosenFile(fileList[which]);
+
+						if (chosenFile.isDirectory()) {
+							loadFileList(chosenFile);
+							dialog.cancel();
+							dialog.dismiss();
+							showDialog();
+						} else {
+							CB_FileReturnListener.getFileReturn(chosenFile.getAbsolutePath());
+						}
+
+					} catch (Exception e) {
+						log.error(e.getLocalizedMessage());
 					}
 				}
 			});
@@ -141,7 +147,7 @@ public class Android_FileExplorer {
 		this.currentPath = path;
 		List<String> r = new ArrayList<String>();
 		if (path.exists()) {
-			if (path.getParentFile() != null)
+			if (path.getParentFile() != null && !path.getAbsolutePath().equals("/"))
 				r.add(PARENT_DIR);
 			FilenameFilter filter = new FilenameFilter() {
 				@Override
