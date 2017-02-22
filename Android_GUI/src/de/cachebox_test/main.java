@@ -158,6 +158,7 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.Vibrator;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.text.ClipboardManager;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -252,12 +253,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	// Media
 
 	private static Uri cameraVideoURI;
-	private static File mediafile = null;
-	private static String mediafilename = null;
-	private static String mediaTimeString = null;
-	private static String basename = null;
-	private static String mediaCacheName = null;
-	private static CB_Locator.Location mediaCoordinate = null;
+	private String recordingStartTime;
+	private static CB_Locator.Location recordingStartCoordinate;
+	private String mediaFileNameWithoutExtension;
+	private String tempMediaPath;
 
 	private static Boolean mVoiceRecIsStart = false;
 	/*
@@ -854,32 +853,43 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 					@Override
 					public void run() {
-						if (GlobalCore.isSetSelectedCache())
-							GlobalCore.getSelectedCache().loadSpoilerRessources();
-						String MediaFolder = Config.UserImageFolder.getValue();
-						String TrackFolder = Config.TrackFolder.getValue();
-						String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
-						// Da ein Foto eine Momentaufnahme ist, kann hier die
-						// Zeit und
-						// die Koordinaten nach der Aufnahme verwendet werden.
-						mediaTimeString = Global.GetTrackDateTimeString();
+						log.info("Photo taken");
 
-						CB_Locator.Location last = CB_Locator.Locator.getLastSavedFineLocation();
-
-						if (last == null) {
-							last = CB_Locator.Locator.getLocation(ProviderType.any);
+						// move the photo from temp to MediaFolder
+						String mediaFolder = Config.UserImageFolder.getValue() + "/";
+						String sourceName = tempMediaPath + mediaFileNameWithoutExtension + ".jpg";
+						String destinationName = mediaFolder + mediaFileNameWithoutExtension + ".jpg";
+						if (!sourceName.equals(destinationName)) {
+							File source = FileFactory.createFile(sourceName);
+							File destination = FileFactory.createFile(destinationName);
+							if (!source.renameTo(destination)) {
+								log.error("move from " + sourceName + " to " + destinationName + " failed");
+							}
 						}
 
-						if (last == null)
-							return;
-
-						TrackRecorder.AnnotateMedia(basename + ".jpg", relativPath + "/" + basename + ".jpg", last, mediaTimeString);
+						// for the photo to show within spoilers
+						if (GlobalCore.isSetSelectedCache())
+							GlobalCore.getSelectedCache().loadSpoilerRessources();
 
 						TabMainView.that.reloadSprites(false);
 
+						String TrackFolder = Config.TrackFolder.getValue();
+						String relativPath = FileIO.getRelativePath(mediaFolder, TrackFolder, "/");
+						CB_Locator.Location lastLocation = CB_Locator.Locator.getLastSavedFineLocation();
+						if (lastLocation == null) {
+							lastLocation = CB_Locator.Locator.getLocation(ProviderType.any);
+							if (lastLocation == null) {
+								log.info("No (GPS)-Location for Trackrecording.");
+								return;
+							}
+						}
+						// Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und die Koordinaten nach der Aufnahme verwendet werden.
+						TrackRecorder.AnnotateMedia(mediaFileNameWithoutExtension + ".jpg", relativPath + "/" + mediaFileNameWithoutExtension + ".jpg", lastLocation, Global.GetTrackDateTimeString());
 					}
 				});
 
+			} else {
+				Log.info(log, "Intent Take Photo resultCode: " + resultCode);
 			}
 
 			return;
@@ -903,7 +913,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 						// Video in Media-Ordner verschieben
 						File source = FileFactory.createFile(recordedVideoFilePath);
-						File destination = FileFactory.createFile(MediaFolder + "/" + basename + "." + ext);
+						File destination = FileFactory.createFile(MediaFolder + "/" + mediaFileNameWithoutExtension + "." + ext);
 						// Datei wird umbenannt/verschoben
 						if (!source.renameTo(destination)) {
 							// Log.d("DroidCachebox", "Fehler beim Umbenennen
@@ -912,15 +922,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 						String TrackFolder = Config.TrackFolder.getValue();
 						String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
-						TrackRecorder.AnnotateMedia(basename + "." + ext, relativPath + "/" + basename + "." + ext, mediaCoordinate, mediaTimeString);
+						TrackRecorder.AnnotateMedia(mediaFileNameWithoutExtension + "." + ext, relativPath + "/" + mediaFileNameWithoutExtension + "." + ext, recordingStartCoordinate, recordingStartTime);
 					}
 				});
-
-				return;
 			} else {
-				// Log.d("DroidCachebox", "Video NOT taken!!!");
-				return;
+				Log.info(log, "Intent Record Video resultCode: " + resultCode);
 			}
+
+			return;
 		}
 
 		// Intent Result get API key
@@ -1696,35 +1705,33 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private void takePhoto() {
 		Log.info(log, "takePhoto start " + GlobalCore.getSelectedCache());
 		try {
-
 			// define the file-name to save photo taken by Camera activity
 			String directory = Config.UserImageFolder.getValue();
 			if (!FileIO.createDirectory(directory)) {
 				return;
 			}
-			basename = Global.GetDateTimeString();
+
+			String cacheName;
 			if (GlobalCore.isSetSelectedCache()) {
 				String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
-				mediaCacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
-				// Title = Global.SelectedCache().Name;
+				cacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
 			} else {
-				mediaCacheName = "Image";
+				cacheName = "Image";
 			}
-			basename = basename + " " + mediaCacheName;
-			mediafile = FileFactory.createFile(directory + "/" + basename + ".jpg");
+			mediaFileNameWithoutExtension = Global.GetDateTimeString() + " " + cacheName;
+			tempMediaPath = getExternalFilesDir("User/Media/").getAbsolutePath() + "/"; // 
+			String tempMediaPathAndName = tempMediaPath + mediaFileNameWithoutExtension + ".jpg";
 
 			final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-			intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new java.io.File(mediafile.getAbsolutePath())));
-			intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-			startActivityForResult(intent, Global.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-
-			// for the photo to show within spoilers
-			Log.info(log, "SpoilerForceReEvaluate");
-			if (GlobalCore.isSetSelectedCache()) {
-				GlobalCore.getSelectedCache().SpoilerForceReEvaluate();
-			}
-			if (TabMainView.spoilerView != null) {
-				TabMainView.spoilerView.ForceReload();
+			if (intent.resolveActivity(getPackageManager()) != null) {
+				intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+				Uri uri = FileProvider.getUriForFile(this, "de.cachebox_test.android.fileprovider", new java.io.File(tempMediaPathAndName));
+				// log.info(uri.toString());
+				intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+				intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+				startActivityForResult(intent, Global.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+			} else {
+				log.error("MediaStore.ACTION_IMAGE_CAPTURE not installed");
 			}
 		} catch (Exception e) {
 			log.error(e.getLocalizedMessage());
@@ -1739,33 +1746,32 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				return;
 			}
 
-			basename = Global.GetDateTimeString();
+			mediaFileNameWithoutExtension = Global.GetDateTimeString();
 
+			String cacheName;
 			if (GlobalCore.isSetSelectedCache()) {
 				String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
-				mediaCacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
+				cacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
 				// Title = Global.SelectedCache().Name;
 			} else {
-				mediaCacheName = "Video";
+				cacheName = "Video";
 			}
 
-			basename += " " + mediaCacheName;
-			mediafile = FileFactory.createFile(directory + "/" + basename + ".3gp");
+			mediaFileNameWithoutExtension = mediaFileNameWithoutExtension + " " + cacheName;
+			String mediafile = directory + "/" + mediaFileNameWithoutExtension + ".3gp";
 
-			// Da ein Video keine Momentaufnahme ist, muss die Zeit und die
-			// Koordinaten beim Start der Aufnahme verwendet werden.
-			mediaTimeString = Global.GetTrackDateTimeString();
-			mediaCoordinate = Locator.getLocation(ProviderType.GPS);
+			// Da ein Video keine Momentaufnahme ist, muss die Zeit und die Koordinaten beim Start der Aufnahme verwendet werden.
+			recordingStartTime = Global.GetTrackDateTimeString();
+			recordingStartCoordinate = Locator.getLocation(ProviderType.GPS);
 
 			ContentValues values = new ContentValues();
 			values.put(MediaStore.Video.Media.TITLE, "captureTemp.mp4");
 			cameraVideoURI = getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
 
 			final Intent videointent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-			videointent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new java.io.File(mediafile.getAbsolutePath())));
+			videointent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new java.io.File(mediafile)));
 			videointent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
-			// videointent.putExtra(MediaStore.EXTRA_SIZE_LIMIT,
-			// MAXIMUM_VIDEO_SIZE);
+			// videointent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, MAXIMUM_VIDEO_SIZE);
 
 			startActivityForResult(videointent, Global.CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
 		} catch (Exception e) {
@@ -1777,8 +1783,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		try {
 			if (!getVoiceRecIsStart()) // Voice Recorder starten
 			{
-				// Log.d("DroidCachebox", "Starting voice recorder on the
-				// phone...");
+				// Log.d("DroidCachebox", "Starting voice recorder on the phone...");
 
 				// define the file-name to save voice taken by activity
 				String directory = Config.UserImageFolder.getValue();
@@ -1787,41 +1792,32 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					return;
 				}
 
-				basename = Global.GetDateTimeString();
+				mediaFileNameWithoutExtension = Global.GetDateTimeString();
 
+				String cacheName;
 				if (GlobalCore.isSetSelectedCache()) {
 					String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
-					mediaCacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
-					// Title = Global.SelectedCache().Name;
+					cacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
 				} else {
-					mediaCacheName = "Voice";
+					cacheName = "Voice";
 				}
 
-				basename += " " + mediaCacheName;
-				mediafilename = (directory + "/" + basename + ".wav");
-
-				// Start recording
-				// extAudioRecorder = ExtAudioRecorder.getInstanse(true); //
-				// Compressed recording (AMR)
-				extAudioRecorder = ExtAudioRecorder.getInstanse(false); // Uncompressed
-				// recording
-				// (WAV)
-
-				extAudioRecorder.setOutputFile(mediafilename);
+				mediaFileNameWithoutExtension = mediaFileNameWithoutExtension + " " + cacheName;
+				extAudioRecorder = ExtAudioRecorder.getInstanse(false);
+				// Uncompressed recording (WAV)
+				extAudioRecorder.setOutputFile(directory + "/" + mediaFileNameWithoutExtension + ".wav");
 				extAudioRecorder.prepare();
 				extAudioRecorder.start();
 
 				String MediaFolder = Config.UserImageFolder.getValue();
 				String TrackFolder = Config.TrackFolder.getValue();
 				String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
-				// Da eine Voice keine Momentaufnahme ist, muss die Zeit und die
-				// Koordinaten beim Start der Aufnahme verwendet werden.
-				TrackRecorder.AnnotateMedia(basename + ".wav", relativPath + "/" + basename + ".wav", Locator.getLocation(ProviderType.GPS), Global.GetTrackDateTimeString());
+				// Da eine Voice keine Momentaufnahme ist, muss die Zeit und die Koordinaten beim Start der Aufnahme verwendet werden.
+				TrackRecorder.AnnotateMedia(mediaFileNameWithoutExtension + ".wav", relativPath + "/" + mediaFileNameWithoutExtension + ".wav", Locator.getLocation(ProviderType.GPS), Global.GetTrackDateTimeString());
 				Toast.makeText(mainActivity, "Start Voice Recorder", Toast.LENGTH_SHORT).show();
 
 				setVoiceRecIsStart(true);
-				counter.cancel(); // Während der Aufnahme Screen-Lock-Counter
-				// stoppen
+				counter.cancel(); // Während der Aufnahme Screen-Lock-Counter stoppen
 				counterStopped = true;
 
 				return;
@@ -2213,7 +2209,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public void showView(ViewID ID) {
 		if (ID == null) {
-			Log.info(log, "main.showView(is NULL)");
 			return;// keine Action
 		}
 
@@ -2223,8 +2218,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			Pos = ID.getPos().toString();
 			Type = ID.getType().toString();
 		}
-
-		Log.info(log, "main.showView(" + ID.getID() + "/" + Pos + "/" + Type + ")");
 
 		if (ID.getType() == ViewID.UI_Type.Activity) {
 			showActivity(ID);
@@ -2527,7 +2520,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
-						Log.info(log, "Show View from GL =>" + viewID.getID());
+						Log.info(log, "Show View with ID = " + viewID.getID());
 
 						// set Content size
 
@@ -2582,6 +2575,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
+						Log.info(log, "Hide View with ID = " + viewID.getID());
 						if (GlobalCore.isTab) {
 							if (viewID.getPos() == UI_Pos.Left) {
 								if (!(aktView == null) && viewID == aktViewId) {
@@ -2608,8 +2602,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							aktViewId = null;
 							aktView = null;
 						}
-
-						Log.debug(log, "Hide Android view");
 					}
 				});
 

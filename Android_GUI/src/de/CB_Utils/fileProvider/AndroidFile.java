@@ -9,8 +9,11 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.LoggerFactory;
 
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FilenameFilter;
@@ -19,8 +22,9 @@ import CB_Utils.fileProvider.FilenameFilter;
  * Created by Longri on 17.02.2016.
  */
 public class AndroidFile extends File {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(AndroidFile.class);
 
-    private final java.io.File mFile;
+	private final java.io.File mFile;
 
 	private AndroidFile(java.io.File file) {
 		mFile = file;
@@ -193,7 +197,49 @@ public class AndroidFile extends File {
 
 	@Override
 	public boolean renameTo(File file) {
-		return mFile.renameTo(((AndroidFile) file).mFile);
+		boolean ret = mFile.renameTo(((AndroidFile) file).mFile);
+		if (!ret) {
+			try {
+				// log.info("rename has no success. doing copyFile and delete");
+				ret = copyToFile(file);
+				if (ret) {
+					mFile.delete();
+				}
+			} catch (Exception e) {
+				log.error(e.getLocalizedMessage());
+				ret = false;
+			}
+
+		}
+		return ret;
+	}
+
+	private boolean copyToFile(File dst) throws IOException {
+
+		File prntFile = dst.getParentFile();
+		if (!prntFile.exists()) {
+			prntFile.mkdirs();
+		}
+
+		if (!prntFile.canWrite()) {
+			log.error("can't write to destination" + prntFile.getAbsolutePath());
+			return false;
+		}
+		FileInputStream inStream = new FileInputStream(mFile);
+		FileOutputStream outStream = new FileOutputStream(dst.getAbsolutePath());
+		FileChannel inChannel = inStream.getChannel();
+		FileChannel outChannel = outStream.getChannel();
+		try {
+			inChannel.transferTo(0, inChannel.size(), outChannel);
+		} finally {
+			if (inChannel != null)
+				inChannel.close();
+			if (outChannel != null)
+				outChannel.close();
+		}
+		inStream.close();
+		outStream.close();
+		return true;
 	}
 
 	@Override

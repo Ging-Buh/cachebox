@@ -34,16 +34,8 @@ public class Global {
 	/**
 	 * Activity Result IDs
 	 */
-	public static final int RESULT_SELECT_PQ_LIST = 771971;
-	public static final int RESULT_ADVANCED_SETTINGS = 12112011;
-	public static final int REQUEST_CODE_PICK_FILE_OR_DIRECTORY = 98765;
-	public static final int REQUEST_CODE_PICK_FILE = 14112011;
-	public static final int REQUEST_CODE_PICK_DIRECTORY = 14112010;
-	public static final int REQUEST_CODE_EDIT_QUICK_LIST = 23112011;
-	public static final int REQUEST_CODE_API_TARGET_DIALOG = 24112011;
 	public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 61216516;
 	public static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 61216517;
-	//public static final int REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR = 2082012;
 	public static final int REQUEST_CODE_GET_API_KEY = 987654321;
 	public static final int REQUEST_CODE_SCREENLOCK = 12345;
 	public static final int REQUEST_CODE_KEYBOARDACTIVITY = 11012;

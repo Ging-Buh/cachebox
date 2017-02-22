@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="de.cachebox_test" android:installLocation="auto"
-	android:versionCode="20170220" android:versionName="20170220(Test)">
+	android:versionCode="20170222" android:versionName="20170222(Test)">
 	<uses-sdk android:minSdkVersion="12" android:targetSdkVersion="25" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
@@ -12,10 +12,7 @@
 	<uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
 	<uses-permission android:name="android.permission.CAMERA"></uses-permission>
 	<uses-permission android:name="android.permission.VIBRATE"></uses-permission>
-	<uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"></uses-permission>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
-	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
-	<uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"></uses-permission>
 	
 	
 	<uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true"></uses-feature>
@@ -98,13 +95,25 @@
                 <data android:scheme="file" />
                 <data android:scheme="content" />
                 <data android:pathPattern=".*\\.zip" />
-            </intent-filter>
-			
-			
-			
-		</activity><activity android:name="de.cachebox_test.Views.Forms.GcApiLogin" android:screenOrientation="behind" android:theme="@style/Theme_day_transparent"></activity>
+            </intent-filter>			
+		</activity>
+		
+		<activity android:name="de.cachebox_test.Views.Forms.GcApiLogin" android:screenOrientation="behind" android:theme="@style/Theme_day_transparent">		    
+		</activity>
+		
 		<service android:name="de.cachebox_test.NotifyService"></service>
 		
+		<provider
+        android:name="android.support.v4.content.FileProvider"
+        android:authorities="de.cachebox_test.android.fileprovider"
+        android:exported="false"
+        android:grantUriPermissions="true">
+        <meta-data
+            android:name="android.support.FILE_PROVIDER_PATHS"
+            android:resource="@xml/file_paths">           
+        </meta-data>
+        </provider>
+ 
  
 	</application>
 </manifest>
