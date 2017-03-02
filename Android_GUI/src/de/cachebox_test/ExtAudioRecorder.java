@@ -14,7 +14,7 @@ public class ExtAudioRecorder {
 	private final static int[] sampleRates = { 44100, 22050, 11025, 8000 };
 
 	@SuppressWarnings("deprecation")
-	public static ExtAudioRecorder getInstanse(Boolean recordingCompressed) {
+	public static ExtAudioRecorder getInstance(Boolean recordingCompressed) {
 		ExtAudioRecorder result = null;
 
 		if (recordingCompressed) {
@@ -96,7 +96,8 @@ public class ExtAudioRecorder {
 	 * 
 	 * Method used for recording.
 	 */
-	private AudioRecord.OnRecordPositionUpdateListener updateListener = new AudioRecord.OnRecordPositionUpdateListener() {
+	private final AudioRecord.OnRecordPositionUpdateListener updateListener = new AudioRecord.OnRecordPositionUpdateListener() {
+		@Override
 		public void onPeriodicNotification(AudioRecord recorder) {
 			audioRecorder.read(buffer, 0, buffer.length); // Fill buffer
 			try {
@@ -122,6 +123,7 @@ public class ExtAudioRecorder {
 			}
 		}
 
+		@Override
 		public void onMarkerReached(AudioRecord recorder) {
 			// NOT USED
 		}

@@ -129,6 +129,8 @@ public class TrackRecorder {
 	static String mTimestamp = "";
 
 	public static void AnnotateMedia(final String friendlyName, final String mediaPath, final Location location, final String timestamp) {
+		if (location == null)
+			return;
 		writeAnnotateMedia = true;
 
 		if (writePos) {

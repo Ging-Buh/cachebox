@@ -252,7 +252,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	// Media
 
-	private static Uri cameraVideoURI;
+	private static Uri uri;
 	private String recordingStartTime;
 	private static CB_Locator.Location recordingStartCoordinate;
 	private String mediaFileNameWithoutExtension;
@@ -838,8 +838,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		// Back from Activitiy
+		String action = "";
+		if (intent != null) {
+			action = intent.getAction();
+			if (action == null)
+				action = "";
+		}
+		Log.info(log, "Return from activity " + action + " with requestCode " + requestCode);
 		if (requestCode != Global.REQUEST_CODE_KEYBOARDACTIVITY && requestCode != Global.REQUEST_CODE_SCREENLOCK) {
 			glListener.onStart();
 		} else {
@@ -853,38 +860,41 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 					@Override
 					public void run() {
-						log.info("Photo taken");
-
-						// move the photo from temp to MediaFolder
-						String mediaFolder = Config.UserImageFolder.getValue() + "/";
-						String sourceName = tempMediaPath + mediaFileNameWithoutExtension + ".jpg";
-						String destinationName = mediaFolder + mediaFileNameWithoutExtension + ".jpg";
-						if (!sourceName.equals(destinationName)) {
-							File source = FileFactory.createFile(sourceName);
-							File destination = FileFactory.createFile(destinationName);
-							if (!source.renameTo(destination)) {
-								log.error("move from " + sourceName + " to " + destinationName + " failed");
+						Log.info(log, "Photo taken");
+						try {
+							// move the photo from temp to UserImageFolder
+							String sourceName = tempMediaPath + mediaFileNameWithoutExtension + ".jpg";
+							String destinationName = Config.UserImageFolder.getValue() + "/" + mediaFileNameWithoutExtension + ".jpg";
+							if (!sourceName.equals(destinationName)) {
+								File source = FileFactory.createFile(sourceName);
+								File destination = FileFactory.createFile(destinationName);
+								if (!source.renameTo(destination)) {
+									Log.err(log, "move from " + sourceName + " to " + destinationName + " failed");
+								}
 							}
-						}
 
-						// for the photo to show within spoilers
-						if (GlobalCore.isSetSelectedCache())
-							GlobalCore.getSelectedCache().loadSpoilerRessources();
+							// for the photo to show within spoilers
+							if (GlobalCore.isSetSelectedCache())
+								GlobalCore.getSelectedCache().loadSpoilerRessources();
 
-						TabMainView.that.reloadSprites(false);
+							TabMainView.that.reloadSprites(false);
 
-						String TrackFolder = Config.TrackFolder.getValue();
-						String relativPath = FileIO.getRelativePath(mediaFolder, TrackFolder, "/");
-						CB_Locator.Location lastLocation = CB_Locator.Locator.getLastSavedFineLocation();
-						if (lastLocation == null) {
-							lastLocation = CB_Locator.Locator.getLocation(ProviderType.any);
+							// track annotation
+							String TrackFolder = Config.TrackFolder.getValue();
+							String relativPath = FileIO.getRelativePath(Config.UserImageFolder.getValue(), TrackFolder, "/");
+							CB_Locator.Location lastLocation = CB_Locator.Locator.getLastSavedFineLocation();
 							if (lastLocation == null) {
-								log.info("No (GPS)-Location for Trackrecording.");
-								return;
+								lastLocation = CB_Locator.Locator.getLocation(ProviderType.any);
+								if (lastLocation == null) {
+									Log.info(log, "No (GPS)-Location for Trackrecording.");
+									return;
+								}
 							}
+							// Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und die Koordinaten nach der Aufnahme verwendet werden.
+							TrackRecorder.AnnotateMedia(mediaFileNameWithoutExtension + ".jpg", relativPath + "/" + mediaFileNameWithoutExtension + ".jpg", lastLocation, Global.GetTrackDateTimeString());
+						} catch (Exception e) {
+							Log.err(log, e.getLocalizedMessage());
 						}
-						// Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und die Koordinaten nach der Aufnahme verwendet werden.
-						TrackRecorder.AnnotateMedia(mediaFileNameWithoutExtension + ".jpg", relativPath + "/" + mediaFileNameWithoutExtension + ".jpg", lastLocation, Global.GetTrackDateTimeString());
 					}
 				});
 
@@ -902,27 +912,42 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 					@Override
 					public void run() {
-						String[] projection = { MediaStore.Video.Media.DATA, MediaStore.Video.Media.SIZE };
-						Cursor cursor = managedQuery(cameraVideoURI, projection, null, null, null);
-						int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
-						cursor.moveToFirst();
-						String recordedVideoFilePath = cursor.getString(column_index_data);
+						Log.info(log, "Video recorded.");
+						String ext = "";
+						try {
+							// move Video from temp (recordedVideoFilePath) in UserImageFolder and rename
+							String recordedVideoFilePath = "";
+							// first get the tempfile pathAndName (recordedVideoFilePath)
+							String[] proj = { MediaStore.Images.Media.DATA }; // want to get Path to the file on disk. 
+							Cursor cursor = getContentResolver().query(uri, proj, null, null, null); // result set
+							if (cursor != null && cursor.getCount() != 0) {
+								int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA); // my meaning: if only one element index is 0
+								cursor.moveToFirst(); // first row ( here we should have only one row ) 
+								recordedVideoFilePath = cursor.getString(columnIndex);
+							}
+							if (cursor != null) {
+								cursor.close();
+							}
 
-						String ext = FileIO.GetFileExtension(recordedVideoFilePath);
-						String MediaFolder = Config.UserImageFolder.getValue();
+							if (recordedVideoFilePath.length() > 0) {
+								ext = FileIO.GetFileExtension(recordedVideoFilePath);
 
-						// Video in Media-Ordner verschieben
-						File source = FileFactory.createFile(recordedVideoFilePath);
-						File destination = FileFactory.createFile(MediaFolder + "/" + mediaFileNameWithoutExtension + "." + ext);
-						// Datei wird umbenannt/verschoben
-						if (!source.renameTo(destination)) {
-							// Log.d("DroidCachebox", "Fehler beim Umbenennen
-							// der Datei: " + source.getName());
+								File source = FileFactory.createFile(recordedVideoFilePath);
+								String destinationName = Config.UserImageFolder.getValue() + "/" + mediaFileNameWithoutExtension + "." + ext;
+								File destination = FileFactory.createFile(destinationName);
+								if (!source.renameTo(destination)) {
+									Log.err(log, "move from " + recordedVideoFilePath + " to " + destinationName + " failed");
+								} else {
+									Log.info(log, "Video saved at " + destinationName);
+									// track annotation
+									String TrackFolder = Config.TrackFolder.getValue();
+									String relativPath = FileIO.getRelativePath(Config.UserImageFolder.getValue(), TrackFolder, "/");
+									TrackRecorder.AnnotateMedia(mediaFileNameWithoutExtension + "." + ext, relativPath + "/" + mediaFileNameWithoutExtension + "." + ext, recordingStartCoordinate, recordingStartTime);
+								}
+							}
+						} catch (Exception e) {
+							Log.err(log, e.getLocalizedMessage());
 						}
-
-						String TrackFolder = Config.TrackFolder.getValue();
-						String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
-						TrackRecorder.AnnotateMedia(mediaFileNameWithoutExtension + "." + ext, relativPath + "/" + mediaFileNameWithoutExtension + "." + ext, recordingStartCoordinate, recordingStartTime);
 					}
 				});
 			} else {
@@ -947,7 +972,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 
 		if (aktView != null)
-			aktView.ActivityResult(requestCode, resultCode, data);
+			aktView.ActivityResult(requestCode, resultCode, intent);
 
 	}
 
@@ -1708,9 +1733,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			// define the file-name to save photo taken by Camera activity
 			String directory = Config.UserImageFolder.getValue();
 			if (!FileIO.createDirectory(directory)) {
+				Log.err(log, "can't create " + directory);
 				return;
 			}
-
 			String cacheName;
 			if (GlobalCore.isSetSelectedCache()) {
 				String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
@@ -1725,57 +1750,57 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 			if (intent.resolveActivity(getPackageManager()) != null) {
 				intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-				Uri uri = FileProvider.getUriForFile(this, "de.cachebox_test.android.fileprovider", new java.io.File(tempMediaPathAndName));
-				// log.info(uri.toString());
+				uri = FileProvider.getUriForFile(this, "de.cachebox_test.android.fileprovider", new java.io.File(tempMediaPathAndName));
+				// Log.info(log,uri.toString());
 				intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
 				intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
 				startActivityForResult(intent, Global.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 			} else {
-				log.error("MediaStore.ACTION_IMAGE_CAPTURE not installed");
+				Log.err(log, MediaStore.ACTION_IMAGE_CAPTURE + " not installed.");
 			}
 		} catch (Exception e) {
-			log.error(e.getLocalizedMessage());
+			Log.err(log, e.getLocalizedMessage());
 		}
 	}
 
 	private void recVideo() {
 		try {
+			Log.info(log, "recVideo start " + GlobalCore.getSelectedCache());
 			// define the file-name to save video taken by Camera activity
 			String directory = Config.UserImageFolder.getValue();
 			if (!FileIO.createDirectory(directory)) {
+				Log.err(log, "can't create " + directory);
 				return;
 			}
-
 			mediaFileNameWithoutExtension = Global.GetDateTimeString();
-
 			String cacheName;
 			if (GlobalCore.isSetSelectedCache()) {
 				String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
 				cacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
-				// Title = Global.SelectedCache().Name;
 			} else {
 				cacheName = "Video";
 			}
-
 			mediaFileNameWithoutExtension = mediaFileNameWithoutExtension + " " + cacheName;
-			String mediafile = directory + "/" + mediaFileNameWithoutExtension + ".3gp";
 
 			// Da ein Video keine Momentaufnahme ist, muss die Zeit und die Koordinaten beim Start der Aufnahme verwendet werden.
 			recordingStartTime = Global.GetTrackDateTimeString();
 			recordingStartCoordinate = Locator.getLocation(ProviderType.GPS);
 
 			ContentValues values = new ContentValues();
-			values.put(MediaStore.Video.Media.TITLE, "captureTemp.mp4");
-			cameraVideoURI = getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
-
-			final Intent videointent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-			videointent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new java.io.File(mediafile)));
-			videointent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
-			// videointent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, MAXIMUM_VIDEO_SIZE);
-
-			startActivityForResult(videointent, Global.CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+			values.put(MediaStore.Video.Media.TITLE, "");
+			uri = getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
+			// Log.info(uri.toString());
+			final Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+			if (intent.resolveActivity(getPackageManager()) != null) {
+				intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+				intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+				// intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, MAXIMUM_VIDEO_SIZE);
+				startActivityForResult(intent, Global.CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+			} else {
+				Log.err(log, MediaStore.ACTION_VIDEO_CAPTURE + " not installed.");
+			}
 		} catch (Exception e) {
-			log.error(e.getLocalizedMessage());
+			Log.err(log, e.getLocalizedMessage());
 		}
 	}
 
@@ -1783,12 +1808,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		try {
 			if (!getVoiceRecIsStart()) // Voice Recorder starten
 			{
-				// Log.d("DroidCachebox", "Starting voice recorder on the phone...");
-
 				// define the file-name to save voice taken by activity
 				String directory = Config.UserImageFolder.getValue();
 				if (!FileIO.createDirectory(directory)) {
-					// Log.d("DroidCachebox", "Media-Folder does not exist...");
+					Log.err(log, "can't create " + directory);
 					return;
 				}
 
@@ -1803,8 +1826,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				}
 
 				mediaFileNameWithoutExtension = mediaFileNameWithoutExtension + " " + cacheName;
-				extAudioRecorder = ExtAudioRecorder.getInstanse(false);
-				// Uncompressed recording (WAV)
+				extAudioRecorder = ExtAudioRecorder.getInstance(false);
 				extAudioRecorder.setOutputFile(directory + "/" + mediaFileNameWithoutExtension + ".wav");
 				extAudioRecorder.prepare();
 				extAudioRecorder.start();
@@ -1829,7 +1851,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				return;
 			}
 		} catch (Exception e) {
-			log.error(e.getLocalizedMessage());
+			Log.err(log, e.getLocalizedMessage());
 		}
 	}
 
@@ -2778,13 +2800,30 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			@Override
 			public void call(String url) {
 				try {
+					url = url.trim();
 					if (url.startsWith("www.")) {
 						url = "http://" + url;
 					}
-					Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url.trim()));
-					main.mainActivity.startActivity(browserIntent);
+					Uri uri = Uri.parse(url);
+					Log.info(log, "View with Browser: " + uri.toString());
+					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+					if (url.startsWith("http")) {
+						intent.addCategory(Intent.CATEGORY_BROWSABLE);
+					} else {
+						//java.io.File file = new java.io.File(url);
+						//String extension = android.webkit.MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(file).toString());
+						//String mimetype = android.webkit.MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+						//String mimetype = "application/x-webarchive-xml"; // "text/html";
+						//intent.setType(mimetype);
+					}
+					if (intent.resolveActivity(getPackageManager()) != null) {
+						mainActivity.startActivity(intent);
+					} else {
+						Log.err(log, "Browser for " + url + " not installed.");
+						Toast.makeText(mainActivity, Translation.Get("Cann_not_open_cache_browser") + " (" + url + ")", Toast.LENGTH_LONG).show();
+					}
 				} catch (Exception exc) {
-					Toast.makeText(main.mainActivity, Translation.Get("Cann_not_open_cache_browser") + " (" + url.trim() + ")", Toast.LENGTH_LONG).show();
+					Log.err(log, Translation.Get("Cann_not_open_cache_browser") + " (" + url + ")", exc);
 				}
 			}
 		});
@@ -2957,7 +2996,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 				if (sat.usedInFix()) {
 					fixed++;
-					// Log.d("Cachbox satellite signal strength", "Sat #" +
+					// Log.d("Cachebox satellite signal strength", "Sat #" +
 					// satellites + ": " + sat.getSnr() + " FIX");
 					// SatList.add(new GpsStrength(true, sat.getSnr()));
 					coreSatList.add(new GpsStrength(true, sat.getSnr()));

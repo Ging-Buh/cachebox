@@ -697,7 +697,6 @@ public class GL implements ApplicationListener, InputProcessor {
 
 	public void onStart() {
 		// App wird wiederhergestellt oder Gerät eingeschaltet
-		// Log.debug(log, "GL_Listener => onStart");
 		started.set(true);
 		if (listenerInterface != null)
 			listenerInterface.RenderDirty();
