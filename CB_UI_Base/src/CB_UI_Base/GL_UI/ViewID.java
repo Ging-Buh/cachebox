@@ -26,42 +26,13 @@ import CB_UI_Base.Global;
 public class ViewID {
 
 	public final static int MAP_VIEW = 0;
-	public final static int CACHE_LIST_VIEW = 1;
-	public final static int LOG_VIEW = 3;
 	public final static int DESCRIPTION_VIEW = 4;
-	public final static int SPOILER_VIEW = 5;
-	public final static int NOTES_VIEW = 6;
-	public final static int SOLVER_VIEW = 7;
-	public final static int COMPASS_VIEW = 8;
-	public final static int FIELD_NOTES_VIEW = 9;
-	public final static int ABOUT_VIEW = 11;
 	public final static int JOKER_VIEW = 12;
-	public final static int TRACK_LIST_VIEW = 13;
-	public final static int TB_LIST_VIEW = 14;
-	public final static int WAYPOINT_VIEW = 15;
 
-	public final static int TEST_VIEW = 16;
-	public final static int CREDITS_VIEW = 17;
-	public final static int GL_MAP_VIEW = 18;
-	public final static int MAP_CONTROL_TEST_VIEW = 19;
-	public final static int TEST_LIST_VIEW = 20;
-
-	public final static int SETTINGS = 102;
-	public final static int FILTER_SETTINGS = 101;
-
-	public final static int SEARCH = 104;
-	public final static int MANAGE_DB = 105;
-	public final static int CHK_STATE_API = 106;
-	public final static int RELOAD_CACHE = 107;
 	public final static int NAVIGATE_TO = 108;
-	public final static int TRACK_REC = 109;
 	public final static int VOICE_REC = 110;
 	public final static int TAKE_PHOTO = 111;
 	public final static int VIDEO_REC = 112;
-	public final static int DELETE_CACHES = 113;
-	public final static int PARKING = 114;
-	public final static int DAY_NIGHT = 115;
-	public final static int LOCK = 116;
 
 	public enum UI_Pos {
 		Left, Right

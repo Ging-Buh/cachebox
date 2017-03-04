@@ -435,7 +435,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 				PlatformConnector.getFile("", "", "", "", new IgetFileReturnListener() {
 
 					@Override
-					public void getFileReturn(String Path) {
+					public void returnFile(String Path) {
 						copyGPX2PQ_Folder(Path);
 					}
 				});

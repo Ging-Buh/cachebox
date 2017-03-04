@@ -87,7 +87,7 @@ public class Android_FileExplorer {
 				builder.setPositiveButton(ButtonText, new OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						CB_FolderReturnListener.getFolderReturn(currentPath.getAbsolutePath());
+						CB_FolderReturnListener.returnFolder(currentPath.getAbsolutePath());
 					}
 				});
 			}
@@ -105,7 +105,7 @@ public class Android_FileExplorer {
 							dialog.dismiss();
 							showDialog();
 						} else {
-							CB_FileReturnListener.getFileReturn(chosenFile.getAbsolutePath());
+							CB_FileReturnListener.returnFile(chosenFile.getAbsolutePath());
 						}
 
 					} catch (Exception e) {

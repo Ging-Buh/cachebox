@@ -142,7 +142,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
 				case MenuID.MI_LOAD:
 					PlatformConnector.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.Get("LoadTrack"), Translation.Get("load"), new IgetFileReturnListener() {
 						@Override
-						public void getFileReturn(String Path) {
+						public void returnFile(String Path) {
 							if (Path != null) {
 								TrackColor = RouteOverlay.getNextColor();
 
@@ -161,7 +161,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView {
 						TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
 
 						@Override
-						public void getFileReturn(String Path) {
+						public void returnFile(String Path) {
 							if (Path != null) {
 								RouteOverlay.SaveRoute(Path, selectedTrackItem.getRoute());
 								Log.debug(log, "Load Track :" + Path);

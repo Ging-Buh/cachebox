@@ -130,7 +130,7 @@ public class MapPanel extends JPanel implements ActionListener {
 			// load Map
 			PlatformConnector.getFile("", "", "Load Map", "Load", new IgetFileReturnListener() {
 				@Override
-				public void getFileReturn(String Path) {
+				public void returnFile(String Path) {
 					SimulatorMain.prefs.put("loadedMap", Path);
 					try {
 						SimulatorMain.prefs.flush();

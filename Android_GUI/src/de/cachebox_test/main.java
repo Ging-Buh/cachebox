@@ -80,7 +80,6 @@ import CB_UI_Base.Events.PlatformConnector.IQuit;
 import CB_UI_Base.Events.PlatformConnector.IShowViewListener;
 import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
 import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
-import CB_UI_Base.Events.PlatformConnector.IsetScreenLockTime;
 import CB_UI_Base.Events.PlatformConnector.iStartPictureApp;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.IRunOnGL;
@@ -117,7 +116,6 @@ import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -153,7 +151,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.Vibrator;
@@ -213,8 +210,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(main.class);
 	private static ServiceConnection mConnection;
-	private static Intent serviceIntent;
-	private static Service myNotifyService;
 	private static BroadcastReceiver mReceiver;
 	public HorizontalListView QuickButtonList;
 
@@ -226,16 +221,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public static ViewID aktTabViewId = null;
 
 	public static DescriptionView descriptionView = null; // ID 4
-	// private static SpoilerView spoilerView = null; // ID 5
-	// private static SolverView solverView = null; // ID 7
 	private static JokerView jokerView = null; // ID 12
 
 	/**
-	 * viewGl kann mehrere ID beinhalten, viewGL ist nur die Basis für alle
-	 * Views auf Basis von GL_View_Base </br>
-	 * TestView = 16 </br>
-	 * CreditsView = 17 </br>
-	 * MapView = 18 </br>
+	 * viewGl kann mehrere ID beinhalten,
+	 * viewGL ist nur die Basis für alle Views auf Basis von GL_View_Base </br>
 	 */
 	public static ViewGL viewGL = null;
 
@@ -248,10 +238,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public static LinearLayout strengthLayout;
 
-	// public LinearLayout searchLayout;
-
 	// Media
-
 	private static Uri uri;
 	private String recordingStartTime;
 	private static CB_Locator.Location recordingStartCoordinate;
@@ -315,36 +302,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		return mVoiceRecIsStart;
 	}
 
-	// Screenlock Counter
-	private ScreenLockTimer counter = null;
-	private boolean counterStopped = false;
-
 	/**
 	 * For Use the Vibrator, Call vibrate(); So the User can switch of this in
 	 * Settings
 	 */
 	private static Vibrator vibrator;
-
-	/*
-	 * Classes
-	 */
-	private class ScreenLockTimer extends CountDownTimer {
-		public ScreenLockTimer(long millisInFuture, long countDownInterval) {
-			super(millisInFuture, countDownInterval);
-			Log.debug(log, "create ScreenLockTimer innstanz: " + millisInFuture + "/" + countDownInterval);
-		}
-
-		@Override
-		public void onFinish() {
-			Log.debug(log, "ScreenLockTimer => onFinish");
-
-			startScreenLock();
-		}
-
-		@Override
-		public void onTick(long millisUntilFinished) {
-		}
-	}
 
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -446,7 +408,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// initialize receiver for screen switched on/off
 		IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
-
 		if (mReceiver == null) {
 			mReceiver = new ScreenReceiver();
 			registerReceiver(mReceiver, filter);
@@ -470,10 +431,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		TabMainView ma = new TabMainView(0, 0, UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), "mainView");
 
 		glListener = new GL(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), sp, ma);
-
-		int Time = Config.ScreenLock.getValue();
-		counter = new ScreenLockTimer(Time, Time);
-		counter.start();
 
 		// add Event Handler
 		SelectedCacheEventList.Add(this);
@@ -767,10 +724,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	@Override
 	public void onUserInteraction() {
-		if (counterStopped)
-			return;
-		if (counter != null)
-			counter.start();
 
 	}
 
@@ -1086,14 +1039,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		super.onResume();
 
-		if (counter != null) {
-			if (runsWithAkku) {
-				counter.start();
-			} else {
-				counter.cancel();
-			}
-		}
-
 		if (mSensorManager != null)
 			mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_UI);
 		this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -1185,7 +1130,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		} catch (Exception e) {
 			Log.err(log, "Main=> onStop", "unregisterReceiver", e);
 		}
-		counter.cancel();
 		super.onStop();
 
 		// Ausschalten wieder zulassen!
@@ -1239,7 +1183,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					counter.cancel();
 					TrackRecorder.StopRecording();
 					// GPS Verbindung beenden
 					locationManager.removeUpdates(this);
@@ -1310,11 +1253,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	 * Handling Screen OFF and Screen ON Intents
 	 *
 	 * @author -jwei
-	 *         http://thinkandroid.wordpress.com/2010/01/24/handling-screen-off-
-	 *         and-screen-on-intents/
+	 *         http://thinkandroid.wordpress.com/2010/01/24/handling-screen-off-and-screen-on-intents/
 	 */
 	public static class ScreenReceiver extends BroadcastReceiver {
-
 		// thanks Jason
 		public static boolean wasScreenOn = true;
 
@@ -1331,36 +1272,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 		}
 
-	}
-
-	/**
-	 * Startet die Bildschirm Sperre
-	 */
-	public void startScreenLock() {
-		startScreenLock(false);
-	}
-
-	/**
-	 * Startet die Bildschirm Sperre. Mit der der Übergabe von force = true,
-	 * werden abfragen ob im Akkubetrieb oder die Zeit Einstellungen ignoriert.
-	 *
-	 * @param force
-	 */
-	public void startScreenLock(boolean force) {
-		Log.debug(log, "Start Screenlock (force:" + force + ")");
-
-		if (!force) {
-			if (!runsWithAkku)
-				return;
-			counter.cancel();
-			counterStopped = true;
-			// ScreenLock nur Starten, wenn der Config Wert größer 10 sec ist.
-			// Das verhindert das selber aussperren!
-			if ((Config.ScreenLock.getValue() / 1000 < 10))
-				return;
-		}
-
-		// TODO move/create ScreenLock on GDX
 	}
 
 	/*
@@ -1397,27 +1308,19 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	 * @return View
 	 */
 	private ViewOptionsMenu getView(ViewID ID) {
-		// first chek if view on List
+		// first check if view on List
 		if (ID.getID() < ViewList.size()) {
 			return ViewList.get(ID.getID());
 		}
 
 		if (ID == ViewConst.JOKER_VIEW) {
 			return jokerView = new JokerView(this, this);
-		} else if (ID == ViewConst.SOLVER_VIEW) {
-			// return solverView = new SolverView(this, inflater);
-		} else if (ID == ViewConst.SPOILER_VIEW) {
-			// if (spoilerView == null) spoilerView = new SpoilerView(this,
-			// inflater);
-
-			// return spoilerView;
 		} else if (ID == ViewConst.DESCRIPTION_VIEW) {
 			if (descriptionView != null) {
 				return descriptionView;
 			} else {
 				return descriptionView = new DescriptionView(this, inflater);
 			}
-
 		}
 
 		return null;
@@ -1432,10 +1335,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			takePhoto();
 		} else if (ID == ViewConst.VIDEO_REC) {
 			recVideo();
-		} else if (ID == ViewConst.LOCK) {
-			startScreenLock(true);
 		}
-
 	}
 
 	private void showView(ViewOptionsMenu view, ViewID ID) {
@@ -1684,6 +1584,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		gdxView.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, final MotionEvent event) {
+				v.performClick();
 				return sendMotionEvent(event);
 			}
 		});
@@ -1748,12 +1649,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			String tempMediaPathAndName = tempMediaPath + mediaFileNameWithoutExtension + ".jpg";
 
 			final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+			intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+			uri = FileProvider.getUriForFile(this, "de.cachebox_test.android.fileprovider", new java.io.File(tempMediaPathAndName));
+			// Log.info(log,uri.toString());
+			intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+			intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
 			if (intent.resolveActivity(getPackageManager()) != null) {
-				intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-				uri = FileProvider.getUriForFile(this, "de.cachebox_test.android.fileprovider", new java.io.File(tempMediaPathAndName));
-				// Log.info(log,uri.toString());
-				intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-				intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
 				startActivityForResult(intent, Global.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 			} else {
 				Log.err(log, MediaStore.ACTION_IMAGE_CAPTURE + " not installed.");
@@ -1791,10 +1692,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			uri = getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
 			// Log.info(uri.toString());
 			final Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+			intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+			intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+			// intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, MAXIMUM_VIDEO_SIZE);
 			if (intent.resolveActivity(getPackageManager()) != null) {
-				intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-				intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-				// intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, MAXIMUM_VIDEO_SIZE);
 				startActivityForResult(intent, Global.CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
 			} else {
 				Log.err(log, MediaStore.ACTION_VIDEO_CAPTURE + " not installed.");
@@ -1839,8 +1740,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				Toast.makeText(mainActivity, "Start Voice Recorder", Toast.LENGTH_SHORT).show();
 
 				setVoiceRecIsStart(true);
-				counter.cancel(); // Während der Aufnahme Screen-Lock-Counter stoppen
-				counterStopped = true;
 
 				return;
 			} else { // Voice Recorder stoppen
@@ -1885,29 +1784,23 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 									while ((line = reader.readLine()) != null) {
 										String[] s = line.split(";", 7);
 										try {
-											if (s[0].equals("2")) // 2
-											// entspricht
-											// Fehler,
-											// Fehlerursache ist
-											// in S[1]
+											if (s[0].equals("2")) // 2 entspricht Fehler, Fehlerursache ist in S[1]
 											{
 												GL_MsgBox.Show(s[1]);
 												break;
 											}
-											if (s[0].equals("1")) // 1
-											// entspricht
-											// Warnung, Ursache
-											// ist in S[1]
-											{ // es können aber noch gültige Einträge folgen
+											if (s[0].equals("1")) // 1 entspricht Warnung, Ursache ist in S[1]
+											{
+												// es können aber noch gültige Einträge folgen
 												GL_MsgBox.Show(s[1]);
 											}
-											if (s[0].equals("0")) // Normaler
-											// Eintrag
+											if (s[0].equals("0")) // Normaler Eintrag
 											{
 												Global.Jokers.AddJoker(s[1], s[2], s[3], s[4], s[5], s[6]);
 											}
 										} catch (Exception exc) {
 											Log.err(log, "main.initialBtnInfoContextMenu()", "HTTP response Jokers", exc);
+											reader.close();
 											return;
 										}
 									}
@@ -1919,14 +1812,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						}
 					} catch (MalformedURLException urlEx) {
 						Log.err(log, "main.initialBtnInfoContextMenu()", "MalformedURLException HTTP response Jokers", urlEx);
-						// Log.d("DroidCachebox", urlEx.getMessage());
 					} catch (IOException ioEx) {
 						Log.err(log, "main.initialBtnInfoContextMenu()", "IOException HTTP response Jokers", ioEx);
-						// Log.d("DroidCachebox", ioEx.getMessage());
 						GL_MsgBox.Show(Translation.Get("internetError"));
 					} catch (Exception ex) {
 						Log.err(log, "main.initialBtnInfoContextMenu()", "HTTP response Jokers", ex);
-						// Log.d("DroidCachebox", ex.getMessage());
 					}
 				}
 
@@ -1950,37 +1840,34 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void NavigateTo() {
 		if (GlobalCore.isSetSelectedCache()) {
-			double lat = GlobalCore.getSelectedCache().Latitude();
-			double lon = GlobalCore.getSelectedCache().Pos.getLongitude();
-			String targetName = GlobalCore.getSelectedCache().getGcCode();
+			double lat;
+			double lon;
+			String targetName;
 
-			if (GlobalCore.getSelectedWaypoint() != null) {
+			if (GlobalCore.getSelectedWaypoint() == null) {
+				lat = GlobalCore.getSelectedCache().Latitude();
+				lon = GlobalCore.getSelectedCache().Pos.getLongitude();
+				targetName = GlobalCore.getSelectedCache().getGcCode();
+			} else {
 				lat = GlobalCore.getSelectedWaypoint().Pos.getLatitude();
 				lon = GlobalCore.getSelectedWaypoint().Pos.getLongitude();
 				targetName = GlobalCore.getSelectedWaypoint().getGcCode();
 			}
 
 			String selectedNavi = Config.Navis.getValue();
-			if (selectedNavi.equals("Ask")) {
-				// todo : Spinner for Selection
-				for (String navi : CB_UI_Settings.navis) {
-					if (!navi.equalsIgnoreCase("Ask")) {
-						selectedNavi = navi;
-					}
-				}
-				// todo : remove if Spinner done
-				selectedNavi = Config.Navis.getValue(); // =Ask=do nothing
-			}
 
 			Intent intent = null;
 			if (selectedNavi.equals("Navigon")) {
-				intent = getIntent("com.navigon.navigator", "android.intent.action.navigon.START_PUBLIC");
+				intent = getIntent("android.intent.action.navigon.START_PUBLIC", "");
+				if (intent == null) {
+					intent = getIntent("", "com.navigon.navigator"); // get the launch-intent from package
+				}
 				if (intent != null) {
 					intent.putExtra("latitude", (float) lat);
 					intent.putExtra("longitude", (float) lon);
 				}
 			} else if (selectedNavi.equals("Orux")) {
-				intent = getIntent("", "com.oruxmaps.VIEW_MAP_ONLINE");
+				intent = getIntent("com.oruxmaps.VIEW_MAP_ONLINE", "");
 				// from http://www.oruxmaps.com/oruxmapsmanual_en.pdf
 				if (intent != null) {
 					double[] targetLat = { lat };
@@ -1995,36 +1882,46 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				intent = getIntent(Intent.ACTION_VIEW, "geo:" + lat + "," + lon);
 			} else if (selectedNavi.equals("OsmAnd2")) {
 				intent = getIntent(Intent.ACTION_VIEW, "http://download.osmand.net/go?lat=" + lat + "&lon=" + lon + "&z=14");
-			} else if (selectedNavi.equals("Copilot") || selectedNavi.equals("Google")) {
-				intent = getIntent(Intent.ACTION_VIEW, "http://maps.google.com/maps?daddr=" + lat + "," + lon);
 			} else if (selectedNavi.equals("Waze")) {
 				intent = getIntent(Intent.ACTION_VIEW, "waze://?ll=" + lat + "," + lon);
+			}
+			if (intent == null) {
+				// "default" or "no longer existing selection" or "fallback" to google
+				intent = getIntent(Intent.ACTION_VIEW, "http://maps.google.com/maps?daddr=" + lat + "," + lon);
 			}
 			try {
 				if (intent != null)
 					startActivity(intent);
 			} catch (Exception e) {
-				Log.err(log, "main.NavigateTo()", "Error Start " + selectedNavi, e);
+				Log.err(log, "Error Start " + selectedNavi, e);
 			}
 		}
 	}
 
-	private Intent getIntent(String mode, String from) {
+	private Intent getIntent(String action, String data) {
 		Intent intent = null;
 		try {
-			if (mode != null) {
-				if (mode.equals(Intent.ACTION_VIEW)) {
-					intent = new Intent(Intent.ACTION_VIEW, Uri.parse(from));
-					return intent;
+			if (action.length() > 0) {
+				if (data.length() > 0) {
+					intent = new Intent(action, Uri.parse(data));
 				} else {
-					intent = getPackageManager().getLaunchIntentForPackage(mode);
+					intent = new Intent(action);
+				}
+			} else {
+				intent = getPackageManager().getLaunchIntentForPackage(data);
+			}
+			if (intent != null) {
+				// check if there is an activity that can handle the desired intent
+				if (intent.resolveActivity(getPackageManager()) == null) {
+					intent = null;
 				}
 			}
 			if (intent == null) {
-				intent = new Intent(from);
+				Log.err(log, "No intent for " + action + " , " + data);
 			}
 		} catch (Exception e) {
 			intent = null;
+			Log.err(log, "Exception: No intent for " + action + " , " + data, e);
 		}
 		return intent;
 	}
@@ -2040,10 +1937,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				extAudioRecorder.release();
 				extAudioRecorder = null;
 				Toast.makeText(mainActivity, "Stop Voice Recorder", Toast.LENGTH_SHORT).show();
-			}
-			if (runsWithAkku) {
-				counterStopped = false; // ScreenLock-Counter wieder starten
-				counter.start();
 			}
 		}
 
@@ -2077,14 +1970,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 	}
 
-	public void setScreenLockTimerNew(int value) {
-		Log.debug(log, "setScreenLockTimerNew");
-		counter.cancel();
-		counter = new ScreenLockTimer(value, value);
-		if (runsWithAkku)
-			counter.start();
-	}
-
 	static class LockClass {
 	}
 
@@ -2103,13 +1988,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					// if loading status has changed
 					runsWithAkku = plugged == 0;
 					if (!runsWithAkku) {
-						// activate counter when device runs with accu
-						counter.cancel();
-						counterStopped = true;
 					} else {
-						// deactivate counter when device is plugged in
-						counter.start();
-						counterStopped = false;
 					}
 				}
 			} catch (Exception e) {
@@ -2234,11 +2113,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			return;// keine Action
 		}
 
-		String Pos = "null";
-		String Type = "null";
 		if (ID.getPos() != null) {
-			Pos = ID.getPos().toString();
-			Type = ID.getType().toString();
+			//Pos = ID.getPos().toString();
+			//Type = ID.getType().toString();
 		}
 
 		if (ID.getType() == ViewID.UI_Type.Activity) {
@@ -2288,11 +2165,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			ShowViewGL(ID);
 		}
 
-		if (ID == ViewConst.MAP_VIEW) {
-			ScreenLockOff = true;
-			startScreenLock(true);
-		}
-
 	}
 
 	// ########### PlugIn Method ##########################
@@ -2310,7 +2182,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		Intent baseIntent = new Intent(ACTION_PICK_PLUGIN);
 		baseIntent.setFlags(Intent.FLAG_DEBUG_LOG_RESOLUTION);
 		List<ResolveInfo> list = packageManager.queryIntentServices(baseIntent, PackageManager.GET_RESOLVED_FILTER);
-		// Log.d(LOG_TAG, "fillPluginList: " + list);
 
 		Config.hasFTF_PlugIn.setValue(false);
 		Config.hasPQ_PlugIn.setValue(false);
@@ -2319,8 +2190,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			for (i = 0; i < list.size(); ++i) {
 				ResolveInfo info = list.get(i);
 				ServiceInfo sinfo = info.serviceInfo;
-				// Log.d(LOG_TAG, "fillPluginList: i: " + i + "; sinfo: " +
-				// sinfo);
 				if (sinfo != null) {
 
 					if (sinfo.packageName.contains("de.CB_FTF_PlugIn")) // Don't
@@ -2378,7 +2247,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			final Intent intent = new Intent();
 			final HashMap<String, String> data = services.get(i);
 			intent.setClassName(data.get(KEY_PKG), data.get(KEY_SERVICENAME));
-			// Log.d(LOG_TAG, "bindPluginServices: " + intent);
 			Thread t = new Thread() {
 				@Override
 				public void run() {
@@ -2784,14 +2652,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 		});
 
-		PlatformConnector.setsetScreenLockTimeListener(new IsetScreenLockTime() {
-
-			@Override
-			public void setScreenLockTime(int value) {
-				setScreenLockTimerNew(value);
-			}
-		});
-
 		PlatformConnector.setCallUrlListener(new ICallUrl() {
 
 			/**
@@ -2805,21 +2665,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						url = "http://" + url;
 					}
 					Uri uri = Uri.parse(url);
-					Log.info(log, "View with Browser: " + uri.toString());
-					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-					if (url.startsWith("http")) {
-						intent.addCategory(Intent.CATEGORY_BROWSABLE);
-					} else {
-						//java.io.File file = new java.io.File(url);
-						//String extension = android.webkit.MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(file).toString());
-						//String mimetype = android.webkit.MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-						//String mimetype = "application/x-webarchive-xml"; // "text/html";
-						//intent.setType(mimetype);
-					}
+					Intent intent = new Intent(Intent.ACTION_VIEW);
+					intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+					intent.addCategory(Intent.CATEGORY_BROWSABLE);
+					intent.setDataAndType(uri, "text/html");
 					if (intent.resolveActivity(getPackageManager()) != null) {
+						Log.info(log, "Start activity for " + uri.toString());
 						mainActivity.startActivity(intent);
 					} else {
-						Log.err(log, "Browser for " + url + " not installed.");
+						Log.err(log, "Activity for " + url + " not installed.");
 						Toast.makeText(mainActivity, Translation.Get("Cann_not_open_cache_browser") + " (" + url + ")", Toast.LENGTH_LONG).show();
 					}
 				} catch (Exception exc) {
@@ -2891,8 +2745,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	// #########################################################
 	public void GetApiAuth() {
-		Intent gcApiLogin = new Intent().setClass(mainActivity, GcApiLogin.class);
-		mainActivity.startActivityForResult(gcApiLogin, Global.REQUEST_CODE_GET_API_KEY);
+		Intent intent = new Intent().setClass(mainActivity, GcApiLogin.class);
+		if (intent.resolveActivity(getPackageManager()) != null) {
+			mainActivity.startActivityForResult(intent, Global.REQUEST_CODE_GET_API_KEY);
+		} else {
+			Log.err(log, intent.getAction() + " not installed.");
+		}
 	}
 
 	// ###########################################################

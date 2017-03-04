@@ -221,7 +221,7 @@ public class PlatformConnector {
 	// ------ get File from File Dialog ------
 
 	public interface IgetFileReturnListener {
-		public void getFileReturn(String Path);
+		public void returnFile(String Path);
 	}
 
 	public interface IgetFileListener {
@@ -242,7 +242,7 @@ public class PlatformConnector {
 	// ------ get folder from Folder Dialog ------
 
 	public interface IgetFolderReturnListener {
-		public void getFolderReturn(String Path);
+		public void returnFolder(String Path);
 	}
 
 	public interface IgetFolderListener {

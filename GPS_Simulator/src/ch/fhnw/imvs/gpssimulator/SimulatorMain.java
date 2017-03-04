@@ -159,7 +159,7 @@ public class SimulatorMain {
 				int returnVal = chooser.showOpenDialog(null);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					if (returnListener != null)
-						returnListener.getFileReturn(chooser.getSelectedFile().getAbsolutePath());
+						returnListener.returnFile(chooser.getSelectedFile().getAbsolutePath());
 					System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
 				}
 
@@ -180,7 +180,7 @@ public class SimulatorMain {
 				int returnVal = chooser.showOpenDialog(null);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					if (returnListener != null)
-						returnListener.getFolderReturn(chooser.getSelectedFile().getAbsolutePath());
+						returnListener.returnFolder(chooser.getSelectedFile().getAbsolutePath());
 					System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
 				}
 

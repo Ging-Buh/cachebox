@@ -601,7 +601,7 @@ public class splash extends Activity {
 						getFolderReturnListener = new IgetFolderReturnListener() {
 
 							@Override
-							public void getFolderReturn(String Path) {
+							public void returnFolder(String Path) {
 								if (FileIO.checkWritePermission(Path)) {
 
 									AdditionalWorkPathArray.add(Path);

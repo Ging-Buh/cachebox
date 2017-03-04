@@ -213,9 +213,6 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 				if (MapView.that != null)
 					MapView.that.setNewSettings(MapView.INITIAL_NEW_SETTINGS);
 
-				int Time = Config.ScreenLock.getValue();
-				PlatformConnector.setScreenLockTime(Time);
-
 				finish();
 				return true;
 			}
@@ -954,7 +951,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 							PlatformConnector.getFolder(ApsolutePath, Translation.Get("select_folder"), Translation.Get("select"), new IgetFolderReturnListener() {
 
 								@Override
-								public void getFolderReturn(String Path) {
+								public void returnFolder(String Path) {
 									// check WriteProtection
 									if (needWritePermission && !FileIO.checkWritePermission(Path)) {
 										String WriteProtectionMsg = Translation.Get("NoWriteAcces");
@@ -1027,7 +1024,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 						case MenuID.MI_SELECT_PATH:
 							PlatformConnector.getFile(Path, SB.getExt(), Translation.Get("select_file"), Translation.Get("select"), new IgetFileReturnListener() {
 								@Override
-								public void getFileReturn(String Path) {
+								public void returnFile(String Path) {
 									SB.setValue(Path);
 									resortList();
 								}

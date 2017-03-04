@@ -29,7 +29,6 @@ import CB_Utils.Settings.SettingModus;
 import CB_Utils.Settings.SettingStoreType;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Settings.SettingStringArray;
-import CB_Utils.Settings.SettingTime;
 import CB_Utils.Settings.SettingUsage;
 import CB_Utils.Settings.SettingsAudio;
 import CB_Utils.Settings.SettingsList;
@@ -61,7 +60,7 @@ public interface CB_UI_Settings {
 
 	public static final Integer[] approach = new Integer[] { 0, 2, 10, 25, 50, 100, 200, 500, 1000 };
 	public static final Integer[] TrackDistanceArray = new Integer[] { 1, 3, 5, 10, 20 };
-	public static final String[] navis = new String[] { "Navigon", "Google", "Copilot", "OsmAnd", "OsmAnd2", "Waze", "Orux", "Ask" };
+	public static final String[] navis = new String[] { "Navigon", "Google", "OsmAnd", "OsmAnd2", "Waze", "Orux" };
 
 	// Settings Compass
 	public static final SettingInt HardwareCompassLevel = (SettingInt) SettingsList.addSetting(new SettingInt("HardwareCompassLevel", SettingCategory.Gps, NORMAL, 5, SettingStoreType.Global, SettingUsage.ACB));
@@ -175,7 +174,6 @@ public interface CB_UI_Settings {
 	public static final SettingLongString FilterNew = new SettingLongString("FilterNew", SettingCategory.Misc, NEVER, "", SettingStoreType.Local, SettingUsage.ALL);
 	public static final SettingLongString UserFilter = new SettingLongString("UserFilter", SettingCategory.Misc, NEVER, "", SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingLongString UserFilterNew = new SettingLongString("UserFilterNew", SettingCategory.Misc, NEVER, "", SettingStoreType.Global, SettingUsage.ACB);
-	public static final SettingTime ScreenLock = (SettingTime) SettingsList.addSetting(new SettingTime("ScreenLock", SettingCategory.Misc, NEVER, 60000, SettingStoreType.Global, SettingUsage.ACB));
 
 	// AudioSettings
 
