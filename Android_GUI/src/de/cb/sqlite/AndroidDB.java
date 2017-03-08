@@ -16,12 +16,11 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class AndroidDB extends Database {
 	private final Activity activity;
-	public SQLiteDatabase myDB = null;
+	private SQLiteDatabase myDB = null;
 
 	public AndroidDB(DatabaseType databaseType, Activity activity) {
 		super(databaseType);
 		this.activity = activity;
-
 	}
 
 	@Override
@@ -57,14 +56,14 @@ public class AndroidDB extends Database {
 
 		try {
 			Log.debug(log, "create data base: " + databasePath);
-			myDB = activity.openOrCreateDatabase(getDatabasePath(databasePath).getAbsolutePath(), 0, null);
+			myDB = activity.openOrCreateDatabase(createDatabaseFile(databasePath).getAbsolutePath(), 0, null);
 			newDB = true;
 		} catch (Exception exc) {
 			Log.err(log, "createDB", exc);
 		}
 	}
 
-	public File getDatabasePath(String dbfile) {
+	private File createDatabaseFile(String dbfile) {
 
 		File result = FileFactory.createFile(dbfile);
 

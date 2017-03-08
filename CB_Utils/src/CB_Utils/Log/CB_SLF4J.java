@@ -277,4 +277,9 @@ public class CB_SLF4J {
 		}
 		Log.info(log, "Set LogLevel to:" + level.toString());
 	}
+
+	public static void changeLogLevel(LogLevel level) {
+		Log.info(log, "Set LogLevel to:" + level.toString());
+		LogLevel.setLogLevel(level);
+	}
 }

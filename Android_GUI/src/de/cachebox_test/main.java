@@ -852,7 +852,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				});
 
 			} else {
-				Log.info(log, "Intent Take Photo resultCode: " + resultCode);
+				Log.err(log, "Intent Take Photo resultCode: " + resultCode);
 			}
 
 			return;
@@ -904,7 +904,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					}
 				});
 			} else {
-				Log.info(log, "Intent Record Video resultCode: " + resultCode);
+				Log.err(log, "Intent Record Video resultCode: " + resultCode);
 			}
 
 			return;
@@ -1645,8 +1645,18 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				cacheName = "Image";
 			}
 			mediaFileNameWithoutExtension = Global.GetDateTimeString() + " " + cacheName;
-			tempMediaPath = getExternalFilesDir("User/Media/").getAbsolutePath() + "/"; // 
+			tempMediaPath = getExternalFilesDir("User/Media").getAbsolutePath() + "/"; // oder Environment.DIRECTORY_PICTURES
+			if (!FileIO.createDirectory(tempMediaPath)) {
+				Log.err(log, "can't create " + tempMediaPath);
+				return;
+			}
 			String tempMediaPathAndName = tempMediaPath + mediaFileNameWithoutExtension + ".jpg";
+			try {
+				FileFactory.createFile(tempMediaPathAndName).createNewFile();
+			} catch (Exception e) {
+				Log.err(log, "can't create " + tempMediaPathAndName + "\r" + e.getLocalizedMessage());
+				return;
+			}
 
 			final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 			intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
@@ -1955,10 +1965,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					double altCorrection = Double.valueOf(s[11]);
 					if (altCorrection == 0)
 						return;
-					Log.info(log, "AltCorrection: " + String.valueOf(altCorrection));
+					Log.debug(log, "AltCorrection: " + String.valueOf(altCorrection));
 					Locator.setAltCorrection(altCorrection);
-					// Höhenkorrektur ändert sich normalerweise nicht, einmal
-					// auslesen reicht...
+					// Höhenkorrektur ändert sich normalerweise nicht, einmal auslesen reicht...
 					locationManager.removeNmeaListener(this);
 				} catch (Exception exc) {
 					// keine Höhenkorrektur vorhanden
@@ -1969,13 +1978,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			e.printStackTrace();
 		}
 	}
-
-	static class LockClass {
-	}
-
-	;
-
-	static LockClass lockObject = new LockClass();
 
 	private final BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver() {
 

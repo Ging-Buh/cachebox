@@ -59,10 +59,13 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
 		mustLoadDescription = false;
 
 		this.setDrawingCacheEnabled(false);
-		this.setAlwaysDrawnWithCacheEnabled(false);
+		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
+			this.setAlwaysDrawnWithCacheEnabled(false);
+		}
 
-		// this.getSettings().setJavaScriptEnabled(true);
-		this.getSettings().setLightTouchEnabled(false);
+		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+			this.getSettings().setLightTouchEnabled(false);
+		}
 		this.getSettings().setLoadWithOverviewMode(true);
 		this.getSettings().setSupportZoom(true);
 		this.getSettings().setBuiltInZoomControls(true);
@@ -416,8 +419,8 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
 
 				if (downloadTryCounter > 9)
 					mustLoadDescription = true; // Versuchs
-												// nochmal mit
-												// dem Download
+				// nochmal mit
+				// dem Download
 				downloadTryCounter = 0;
 				if (mustLoadDescription) {
 					setCache(aktCache);

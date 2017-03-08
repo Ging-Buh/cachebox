@@ -60,6 +60,7 @@ import CB_Utils.Util.FileIO;
 import CB_Utils.Util.IChanged;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -78,7 +79,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -181,17 +181,14 @@ public class splash extends Activity {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}
 
-		// chek if use small skin
+		// Check if use small skin
 		GlobalCore.useSmallSkin = GlobalCore.displayType == DisplayType.Small ? true : false;
 
-		// chk if tabletLayout posible
+		// Check if tabletLayout possible
 		GlobalCore.posibleTabletLayout = (GlobalCore.displayType == DisplayType.xLarge || GlobalCore.displayType == DisplayType.Large);
 
-		// get parameters
-		final Bundle extras = getIntent().getExtras();
-		final Uri uri = getIntent().getData();
-
 		// try to get data from extras
+		final Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			GcCode = extras.getString("geocode");
 			name = extras.getString("name");
@@ -199,21 +196,21 @@ public class splash extends Activity {
 		}
 
 		// try to get data from URI
+		final Uri uri = getIntent().getData();
 		if (GcCode == null && guid == null && uri != null) {
-			String uriHost = uri.getHost().toLowerCase();
-			String uriPath = uri.getPath().toLowerCase();
-			// String uriQuery = uri.getQuery();
+			String uriHost = uri.getHost().toLowerCase(Locale.US);
+			String uriPath = uri.getPath().toLowerCase(Locale.US);
 
 			if (uriHost.contains("geocaching.com")) {
 				GcCode = uri.getQueryParameter("wp");
 				guid = uri.getQueryParameter("guid");
 
 				if (GcCode != null && GcCode.length() > 0) {
-					GcCode = GcCode.toUpperCase();
+					GcCode = GcCode.toUpperCase(Locale.US);
 					guid = null;
 				} else if (guid != null && guid.length() > 0) {
 					GcCode = null;
-					guid = guid.toLowerCase();
+					guid = guid.toLowerCase(Locale.US);
 				} else {
 					// warning.showToast(res.getString(R.string.err_detail_open));
 					finish();
@@ -221,7 +218,7 @@ public class splash extends Activity {
 				}
 			} else if (uriHost.contains("coord.info")) {
 				if (uriPath != null && uriPath.startsWith("/gc")) {
-					GcCode = uriPath.substring(1).toUpperCase();
+					GcCode = uriPath.substring(1).toUpperCase(Locale.US);
 				} else {
 					// warning.showToast(res.getString(R.string.err_detail_open));
 					finish();
@@ -267,7 +264,7 @@ public class splash extends Activity {
 		LoadImages();
 
 		if (savedInstanceState != null) {
-			mSelectDbIsStartet = savedInstanceState.getBoolean("SelectDbIsStartet");
+			mSelectDbIsStarted = savedInstanceState.getBoolean("SelectDbIsStartet");
 			mOriantationRestart = savedInstanceState.getBoolean("OriantationRestart");
 		}
 
@@ -280,8 +277,7 @@ public class splash extends Activity {
 	protected void onStart() {
 		super.onStart();
 		// Log.* ist erst nach StartInitial möglich
-
-		if (android.os.Build.VERSION.SDK_INT >= 23) {
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
 			PermissionCheck.checkNeededPermissions(this);
 		}
 
@@ -655,10 +651,24 @@ public class splash extends Activity {
 
 		// check if Layout forced from User
 		workPath = Environment.getExternalStorageDirectory() + Folder;
+		if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+			/*
+			MEDIA_UNKNOWN, 
+			MEDIA_REMOVED, 
+			MEDIA_UNMOUNTED, 
+			MEDIA_CHECKING, 
+			MEDIA_NOFS, 
+			MEDIA_MOUNTED, 
+			MEDIA_MOUNTED_READ_ONLY, 
+			MEDIA_SHARED, 
+			MEDIA_BAD_REMOVAL, 
+			MEDIA_UNMOUNTABLE.
+			*/
+		}
 
 		// extract first part of path ("/mnt/" or "/storage/" ...)
-		int pos = workPath.indexOf("/", 2); // search for the second /
 		String prev = "/mnt";
+		int pos = workPath.indexOf("/", 2); // search for the second /
 		if (pos > 0) {
 			prev = workPath.substring(0, pos);
 		}
@@ -728,7 +738,7 @@ public class splash extends Activity {
 			externalSd = result.get(0) + Folder;
 		}
 
-		if (android.os.Build.VERSION.SDK_INT >= 19) {
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
 			// check for Root permission
 
 			File sandboxPath = null;
@@ -760,10 +770,10 @@ public class splash extends Activity {
 					// create Sandbox folder with getExternalFilesDir(null);
 					getExternalFilesDir(null); // FileFactory.createFile(sandboxParentPath).mkdirs(); dosen't work
 
-					String testFolderName = sandboxPath.getAbsolutePath() + File.separator + "Test";
+					String testFolderName = sandboxPath.getAbsolutePath() + "/Test";
 
 					File testFolder = FileFactory.createFile(testFolderName);
-					File test = FileFactory.createFile(testFolderName + File.separator + "Test.txt");
+					File test = FileFactory.createFile(testFolderName + "/Test.txt");
 					testFolder.mkdirs();
 					test.createNewFile();
 					if (!test.exists()) {
@@ -832,9 +842,7 @@ public class splash extends Activity {
 		writeAdditionalWorkPathArray(AdditionalWorkPathArray);
 	}
 
-	private static final String PATH_DOCUMENT = "document";
-
-	@TargetApi(Build.VERSION_CODES.KITKAT)
+	@SuppressLint("NewApi")
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -846,19 +854,16 @@ public class splash extends Activity {
 
 			// Check for the freshest data.
 
-			// Uri workPathUri = Uri.parse(workPath);
-
-			ContentResolver cr = getContentResolver();
-
-			grantUriPermission(getPackageName(), treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-			cr.takePersistableUriPermission(treeUri, takeFlags);
-
-			List<UriPermission> permissionlist = cr.getPersistedUriPermissions();
+			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+				ContentResolver cr = getContentResolver();
+				grantUriPermission(getPackageName(), treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+				cr.takePersistableUriPermission(treeUri, takeFlags);
+				List<UriPermission> permissionlist = cr.getPersistedUriPermissions();
+			}
 
 			LolipopworkPath = "content://com.android.externalstorage.documents/tree/B8C5-760B%3A";// treeUri.getPath();
 
 			Thread th = new Thread(new Runnable() {
-
 				@Override
 				public void run() {
 					Initial(width, height);
@@ -990,7 +995,7 @@ public class splash extends Activity {
 				}
 
 				// lollipop ask write permission
-				if (android.os.Build.VERSION.SDK_INT > 20) {
+				if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
 					Initial(width, height);
 
 					// Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
@@ -1020,7 +1025,7 @@ public class splash extends Activity {
 		// Jetzt ist der workPath erstmal festgelegt.
 
 		// lolipop ask write permission
-		if (android.os.Build.VERSION.SDK_INT > 20) {
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
 			// if (LolipopworkPath != null) workPath = LolipopworkPath + "/cachebox";
 		}
 
@@ -1046,20 +1051,21 @@ public class splash extends Activity {
 
 		}
 
+		// init logging
+		new CB_SLF4J(workPath);
+		CB_SLF4J.setLogLevel(LogLevel.INFO);
+		mediaInfo();
+		CB_SLF4J.changeLogLevel(LogLevel.ERROR);
+
 		new Config(workPath);
-
-		// Read Config
+		// Read Config ?obsolete
 		Config.Initialize(workPath, workPath + "/cachebox.config");
-
 		// hier muss die Config Db initialisiert werden
 		Database.Settings = new AndroidDB(DatabaseType.Settings, this);
-
 		boolean userFolderExists = FileIO.createDirectory(Config.mWorkPath + "/User");
-
 		if (!userFolderExists)
 			return;
 		Database.Settings.StartUp(Config.mWorkPath + "/User/Config.db3");
-
 		// initialisieren der PlattformSettings
 		PlatformSettings.setPlatformSettings(new IPlatformSettings() {
 
@@ -1111,17 +1117,16 @@ public class splash extends Activity {
 			Config.settings.ReadFromDB();
 		}
 
-		// Add Android Only Settings
-		AndroidSettings.addToSettiongsList();
-
-		new CB_SLF4J(workPath);
-		CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
+		CB_SLF4J.changeLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
 		Config.AktLogLevel.addChangedEventListener(new IChanged() {
 			@Override
 			public void isChanged() {
 				CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
 			}
 		});
+
+		// Add Android Only Settings
+		AndroidSettings.addToSettiongsList();
 
 		if (GlobalCore.isTab) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -1136,56 +1141,21 @@ public class splash extends Activity {
 		// copy AssetFolder only if Rev-Number changed, like at new installation
 		try {
 			if (Config.installRev.getValue() < GlobalCore.CurrentRevision) {
+
 				String[] exclude = new String[] { "webkit", "sound", "sounds", "images", "skins", "lang", "kioskmode", "string-files", "" };
 				copyAssetFolder myCopie = new copyAssetFolder();
-
 				myCopie.copyAll(getAssets(), Config.mWorkPath, exclude);
+
 				Config.installRev.setValue(GlobalCore.CurrentRevision);
 				Config.newInstall.setValue(true);
 				Config.AcceptChanges();
 
-				File CreateFile;
-
 				// create .nomedia Files
-				try {
-					CreateFile = FileFactory.createFile(workPath + "/data/.nomedia");
-					CreateFile.getParentFile().mkdirs();
-					CreateFile.createNewFile();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-				try {
-					CreateFile = FileFactory.createFile(workPath + "/skins/.nomedia");
-					CreateFile.getParentFile().mkdirs();
-					CreateFile.createNewFile();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-				try {
-					CreateFile = FileFactory.createFile(workPath + "/repository/.nomedia");
-					CreateFile.getParentFile().mkdirs();
-					CreateFile.createNewFile();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-				try {
-					CreateFile = FileFactory.createFile(workPath + "/Repositories/.nomedia");
-					CreateFile.getParentFile().mkdirs();
-					CreateFile.createNewFile();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-				try {
-					CreateFile = FileFactory.createFile(workPath + "/cache/.nomedia");
-					CreateFile.getParentFile().mkdirs();
-					CreateFile.createNewFile();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				createFile(workPath + "/data/.nomedia");
+				createFile(workPath + "/skins/.nomedia");
+				createFile(workPath + "/repository/.nomedia");
+				createFile(workPath + "/Repositories/.nomedia");
+				createFile(workPath + "/cache/.nomedia");
 
 			} else {
 				Config.newInstall.setValue(false);
@@ -1238,7 +1208,49 @@ public class splash extends Activity {
 		Initial2();
 	}
 
-	private boolean mSelectDbIsStartet = false;
+	@SuppressLint("NewApi")
+	private void mediaInfo() {
+		//<uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE"></uses-permission> is only for system apps
+		try {
+			Log.info(log, "android.os.Build.VERSION.SDK_INT= " + android.os.Build.VERSION.SDK_INT);
+			Log.info(log, "workPath set to " + workPath);
+			Log.info(log, "getFilesDir()= " + getFilesDir());// user invisible
+			Log.info(log, "Environment.getExternalStoragePublicDirectory()= " + Environment.getExternalStoragePublicDirectory("").getAbsolutePath());
+			Log.info(log, "Environment.getExternalStorageDirectory()= " + Environment.getExternalStorageDirectory());
+			Log.info(log, "getExternalFilesDir(null)= " + getExternalFilesDir(null));
+
+			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+				// normally [0] is the internal SD, [1] is the external SD 
+				java.io.File dirs[] = getExternalFilesDirs(null);
+				for (int i = 0; i < dirs.length; i++) {
+					Log.info(log, "get_ExternalFilesDirs[" + i + "]= " + dirs[i].getAbsolutePath());
+				}
+				// will be automatically created
+				/*
+				if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+					dirs = getExternalMediaDirs();
+					for (int i = 0; i < dirs.length; i++) {
+						Log.info(log, "getExternalMediaDirs[" + i + "]= " + dirs[i].getAbsolutePath());
+					}
+				}
+				*/
+			}
+		} catch (Exception e) {
+			Log.err(log, e.getLocalizedMessage());
+		}
+	}
+
+	private void createFile(String path) {
+		try {
+			File CreateFile = FileFactory.createFile(path);
+			CreateFile.getParentFile().mkdirs();
+			CreateFile.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private boolean mSelectDbIsStarted = false;
 
 	private void Initial2() {
 
@@ -1257,11 +1269,9 @@ public class splash extends Activity {
 		Intent mainIntent = new Intent().setClass(splash.this, main.class);
 		Bundle b = new Bundle();
 		if (GcCode != null) {
-
 			b.putSerializable("GcCode", GcCode);
 			b.putSerializable("name", name);
 			b.putSerializable("guid", guid);
-
 		}
 
 		if (GpxPath != null) {
@@ -1287,16 +1297,14 @@ public class splash extends Activity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putBoolean("SelectDbIsStartet", mSelectDbIsStartet);
+		outState.putBoolean("SelectDbIsStartet", mSelectDbIsStarted);
 		outState.putBoolean("OriantationRestart", true);
 	}
 
 	private void LoadImages() {
-
 		((TextView) findViewById(R.id.splash_textViewDesc)).setVisibility(View.INVISIBLE);
 		((TextView) findViewById(R.id.splash_textViewVersion)).setVisibility(View.INVISIBLE);
 		((TextView) findViewById(R.id.splash_TextView)).setVisibility(View.INVISIBLE);
-
 	}
 
 	private void ReleaseImages() {
@@ -1314,7 +1322,6 @@ public class splash extends Activity {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			this.finish();
 		}
-
 		return super.onKeyDown(keyCode, event);
 	}
 
