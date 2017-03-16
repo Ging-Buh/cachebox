@@ -7,12 +7,12 @@ import CB_Utils.Converter.Base64;
 public abstract class Config_Core {
 	static Config_Core that;
 
+	public static String mWorkPath = "";
+
 	public Config_Core(String workPath) {
 		that = this;
 		mWorkPath = workPath;
 	}
-
-	public static String mWorkPath = "";
 
 	static final int[] Key = { 128, 56, 20, 78, 33, 225 };
 
@@ -88,8 +88,8 @@ public abstract class Config_Core {
 		int i, j;
 
 		for (i = 0; i < 256; i++) {
-			s[i] = (int) i;
-			k[i] = (int) key[i % key.length];
+			s[i] = i;
+			k[i] = key[i % key.length];
 		}
 
 		j = 0;
@@ -108,7 +108,7 @@ public abstract class Config_Core {
 			s[i] = s[j];
 			s[j] = temp;
 			int t = (s[i] + s[j]) % 256;
-			bytes[x] = (int) (bytes[x] ^ s[t]);
+			bytes[x] = bytes[x] ^ s[t];
 		}
 	}
 

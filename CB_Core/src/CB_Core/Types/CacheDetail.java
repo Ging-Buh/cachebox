@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.Attributes;
 import CB_Core.CB_Core_Settings;
 import CB_Core.Database;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
@@ -17,7 +20,7 @@ import de.cb.sqlite.CoreCursor;
 
 public class CacheDetail implements Serializable {
 	private static final long serialVersionUID = 2088367633865443637L;
-	// final static org.slf4j.Logger log = LoggerFactory.getLogger(CacheDetail.class);
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(CacheDetail.class);
 
 	/*
 	 * Public Member
@@ -339,17 +342,17 @@ public class CacheDetail implements Serializable {
 				directory = path + "/" + gcCode.substring(0, 4);
 				loadSpoilerResourcesFromPath(directory, cache);
 			} catch (Exception e) {
-				e.printStackTrace();
+				Log.err(log, e.getLocalizedMessage());
 			}
 
 			// Add own taken photo
 			directory = CB_Core_Settings.UserImageFolder.getValue();
-			// Log.debug(log, "from UserImageFolder: " + directory);
+			Log.info(log, "from UserImageFolder: " + directory);
 			if (directory != null) {
 				try {
 					loadSpoilerResourcesFromPath(directory, cache);
 				} catch (Exception e) {
-					e.printStackTrace();
+					Log.err(log, e.getLocalizedMessage());
 				}
 			}
 		}

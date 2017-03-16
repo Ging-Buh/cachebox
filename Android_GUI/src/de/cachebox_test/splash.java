@@ -504,18 +504,24 @@ public class splash extends Activity {
 
 				AdditionalWorkPathArray = getAdditionalWorkPathArray();
 
-				for (final String AddWorkPath : AdditionalWorkPathArray) {
+				for (final String _AdditionalWorkPath : AdditionalWorkPathArray) {
 
-					final String Name = FileIO.GetFileNameWithoutExtension(AddWorkPath);
+					final String Name = FileIO.GetFileNameWithoutExtension(_AdditionalWorkPath);
 
-					if (!FileIO.checkWritePermission(AddWorkPath)) {
+					if (!FileFactory.createFile(_AdditionalWorkPath).exists()) {
 						// delete this Work Path
-						deleteWorkPath(AddWorkPath);
+						deleteWorkPath(_AdditionalWorkPath);
+						continue;
+					}
+
+					if (!FileIO.checkWritePermission(_AdditionalWorkPath)) {
+						// delete this Work Path
+						deleteWorkPath(_AdditionalWorkPath);
 						continue;
 					}
 
 					Button buttonW = new Button(context);
-					buttonW.setText(Name + "\n\n" + AddWorkPath);
+					buttonW.setText(Name + "\n\n" + _AdditionalWorkPath);
 
 					buttonW.setOnLongClickListener(new OnLongClickListener() {
 
@@ -543,7 +549,7 @@ public class splash extends Activity {
 								public void onClick(DialogInterface dialog, int which) {
 									if (which == MessageBox.BUTTON_POSITIVE) {
 										// Delete this Workpath only from Settings don't delete any File
-										deleteWorkPath(AddWorkPath);
+										deleteWorkPath(_AdditionalWorkPath);
 									}
 									// Start again to exclude the old Folder
 									msg.dismiss();
@@ -570,7 +576,7 @@ public class splash extends Activity {
 							Thread thread = new Thread() {
 								@Override
 								public void run() {
-									workPath = AddWorkPath;
+									workPath = _AdditionalWorkPath;
 									boolean askAgain = cbAskAgain.isChecked();
 									// boolean useTabletLayout = rbTabletLayout.isChecked();
 									saveWorkPath(askAgain/* , useTabletLayout */);
@@ -1011,23 +1017,7 @@ public class splash extends Activity {
 
 	}
 
-	// Here are some examples of how you might call this method.
-	// The first parameter is the MIME type, and the second parameter is the name
-	// of the file you are creating:
-	//
-	// createFile("text/plain", "foobar.txt");
-	// createFile("image/png", "mypicture.png");
-
-	// Unique request code.
-	private static final int WRITE_REQUEST_CODE = 43;
-
 	private void Initial(int width, int height) {
-		// Jetzt ist der workPath erstmal festgelegt.
-
-		// lolipop ask write permission
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-			// if (LolipopworkPath != null) workPath = LolipopworkPath + "/cachebox";
-		}
 
 		// Zur Kompatibilität mit Älteren Installationen wird hier noch die redirection.txt abgefragt
 		if (FileIO.FileExists(workPath + "/redirection.txt")) {
@@ -1072,7 +1062,7 @@ public class splash extends Activity {
 			@Override
 			public void Write(SettingBase<?> setting) {
 				if (androidSetting == null)
-					androidSetting = splash.this.getSharedPreferences(Global.PREFS_NAME, 0);
+					androidSetting = splash.this.getSharedPreferences(Global.PREFS_NAME, MODE_PRIVATE);
 				if (androidSettingEditor == null)
 					androidSettingEditor = androidSetting.edit();
 
@@ -1108,8 +1098,7 @@ public class splash extends Activity {
 			}
 		});
 
-		// wenn die Settings DB neu Erstellt wurde, müssen die Default werte
-		// geschrieben werden.
+		// Wenn die Settings DB neu erstellt wurde, müssen die Default Werte geschrieben werden.
 		if (Database.Settings.isDbNew()) {
 			Config.settings.LoadAllDefaultValues();
 			Config.settings.WriteToDB();

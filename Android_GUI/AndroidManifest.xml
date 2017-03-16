@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="de.cachebox_test" android:installLocation="auto"
-	android:versionCode="20170308" android:versionName="20170308(Test)">
+	android:versionCode="20170316" android:versionName="20170316(Test)">
 	<uses-sdk android:minSdkVersion="12" android:targetSdkVersion="25" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
@@ -96,8 +96,7 @@
             </intent-filter>			
 		</activity>
 		
-		<activity android:name="de.cachebox_test.Views.Forms.GcApiLogin" android:screenOrientation="behind" android:theme="@style/Theme_day_transparent">		    
-		</activity>
+		<activity android:name="de.cachebox_test.Views.Forms.GcApiLogin" android:screenOrientation="behind" android:theme="@style/Theme_day_transparent" />		    
 		
 		<service android:name="de.cachebox_test.NotifyService"></service>
 		
