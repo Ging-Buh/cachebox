@@ -46,7 +46,6 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
 		mWorkPath = workPath;
 		ConfigName = configName;
 		settings = new SettingsClass();
-
 	}
 
 	public static String GetString(String key) {

@@ -139,6 +139,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
 
 	public void ReadFromDB() {
 		// Read from DB
+		// Log.debug will not work, cause setting of loglevel is from settings (that and not yet read and set)
 		try {
 			Log.debug(log, "Reading global settings: " + getSettingsDB().getDatabasePath());
 			Log.debug(log, "and local settings: " + getDataDB().getDatabasePath());

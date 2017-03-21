@@ -79,8 +79,8 @@ class Ex_1 {
 			}
 		});
 
-		if (files.length > 0 && Config.installRev.getValue() < GlobalCore.CurrentRevision) {
-			Config.installRev.setValue(GlobalCore.CurrentRevision);
+		if (files.length > 0 && Config.installedRev.getValue() < GlobalCore.CurrentRevision) {
+			Config.installedRev.setValue(GlobalCore.CurrentRevision);
 			Config.newInstall.setValue(true);
 			Config.AcceptChanges();
 		} else {

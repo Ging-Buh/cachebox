@@ -338,17 +338,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		GL.resetIsInitial();
 
 		if (GlobalCore.RunFromSplash) {
-			Log.info(log, "OnCreate Run from Splash");
+			Log.info(log, "main Activity OnCreate Run from Splash");
 		} else {
-			Log.info(log, "OnCreate illegal-Run");
-			// run splash
-			Intent mainIntent = new Intent().setClass(main.this, de.cachebox_test.splash.class);
-			startActivity(mainIntent);
+			Log.err(log, "main Activity OnCreate illegal-Run , so start splash as Activity");
+			Intent splashIntent = new Intent().setClass(main.this, de.cachebox_test.splash.class);
+			startActivity(splashIntent);
 			finish();
 			return;
 		}
 
-		mainActivity = this;
+		mainActivity = this; // com.badlogic.gdx.backends.android.AndroidApplication
 
 		if (savedInstanceState != null) {
 			// restore ACB after Kill
@@ -827,8 +826,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							}
 
 							// for the photo to show within spoilers
-							if (GlobalCore.isSetSelectedCache())
+							if (GlobalCore.isSetSelectedCache()) {
 								GlobalCore.getSelectedCache().loadSpoilerRessources();
+								if (TabMainView.spoilerView != null)
+									TabMainView.spoilerView.ForceReload();
+							}
 
 							TabMainView.that.reloadSprites(false);
 

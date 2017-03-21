@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="de.cachebox_test" android:installLocation="auto"
-	android:versionCode="20170316" android:versionName="20170316(Test)">
+	android:versionCode="20170321" android:versionName="20170321(Test)">
 	<uses-sdk android:minSdkVersion="12" android:targetSdkVersion="25" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>

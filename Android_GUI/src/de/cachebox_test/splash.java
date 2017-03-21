@@ -110,7 +110,7 @@ public class splash extends Activity {
 	final Context context = this;
 	Handler handler;
 	Bitmap bitmap;
-	Dialog pWaitD;
+	Dialog pleaseWaitDialog;
 	String GcCode = null;
 	String guid = null;
 	String name = null;
@@ -233,28 +233,21 @@ public class splash extends Activity {
 			}
 		}
 
-		// if ACB running, call this instance
+		// if ACB is running, call this instance
 		if (main.mainActivity != null) {
-
 			Bundle b = new Bundle();
 			if (GcCode != null) {
-
 				b.putSerializable("GcCode", GcCode);
 				b.putSerializable("name", name);
 				b.putSerializable("guid", guid);
-
 			}
-
 			if (GpxPath != null) {
 				b.putSerializable("GpxPath", GpxPath);
 			}
-
 			Intent mainIntent = main.mainActivity.getIntent();
-
-			Log.info(log, "Intent putExtras" + " GcCode " + GcCode + " name " + name + " guid " + guid + " GpxPath " + GpxPath); // + " UI " + ui
+			// Log.info(log, "Intent putExtras" + " GcCode " + GcCode + " name " + name + " guid " + guid + " GpxPath " + GpxPath); // + " UI " + ui
 			mainIntent.putExtras(b);
-
-			Log.info(log, "(Re)Start Main Intent");
+			Log.info(log, "startActivity mainIntent from splash for created main.mainActivity (com.badlogic.gdx.backends.android.AndroidApplication)");
 			startActivity(mainIntent);
 			finish();
 		}
@@ -882,9 +875,9 @@ public class splash extends Activity {
 	}
 
 	private void showPleaseWaitDialog() {
-		pWaitD = ProgressDialog.show(splash.this, "In progress", "Copy resources");
-		pWaitD.show();
-		TextView tv1 = (TextView) pWaitD.findViewById(android.R.id.message);
+		pleaseWaitDialog = ProgressDialog.show(splash.this, "In progress", "Copy resources");
+		pleaseWaitDialog.show();
+		TextView tv1 = (TextView) pleaseWaitDialog.findViewById(android.R.id.message);
 		tv1.setTextColor(Color.WHITE);
 	}
 
@@ -959,9 +952,9 @@ public class splash extends Activity {
 
 		}
 		super.onDestroy();
-		if (pWaitD != null && pWaitD.isShowing()) {
-			pWaitD.dismiss();
-			pWaitD = null;
+		if (pleaseWaitDialog != null && pleaseWaitDialog.isShowing()) {
+			pleaseWaitDialog.dismiss();
+			pleaseWaitDialog = null;
 		}
 
 		ui = null;
@@ -971,7 +964,7 @@ public class splash extends Activity {
 	private void startInitial() {
 
 		// show wait dialog if not running
-		if (pWaitD == null)
+		if (pleaseWaitDialog == null)
 			showPleaseWaitDialog();
 
 		// saved workPath found -> use this
@@ -1044,19 +1037,38 @@ public class splash extends Activity {
 		// init logging
 		new CB_SLF4J(workPath);
 		CB_SLF4J.setLogLevel(LogLevel.INFO);
+
 		mediaInfo();
-		CB_SLF4J.changeLogLevel(LogLevel.ERROR);
 
 		new Config(workPath);
-		// Read Config ?obsolete
 		Config.Initialize(workPath, workPath + "/cachebox.config");
-		// hier muss die Config Db initialisiert werden
-		Database.Settings = new AndroidDB(DatabaseType.Settings, this);
-		boolean userFolderExists = FileIO.createDirectory(Config.mWorkPath + "/User");
+		Log.info(log, "Settings in List: " + Config.settings.size());
+
+		Log.info(log, "start Settings Database " + workPath + "/User/Config.db3");
+		boolean userFolderExists = FileIO.createDirectory(workPath + "/User");
 		if (!userFolderExists)
 			return;
-		Database.Settings.StartUp(Config.mWorkPath + "/User/Config.db3");
-		// initialisieren der PlattformSettings
+		Database.Settings = new AndroidDB(DatabaseType.Settings, this);
+		Database.Settings.StartUp(workPath + "/User/Config.db3");
+		// Wenn die Settings DB neu erstellt wurde, müssen die Default Werte geschrieben werden.
+		if (Database.Settings.isDbNew()) {
+			Config.settings.LoadAllDefaultValues();
+			Config.settings.WriteToDB();
+			Log.info(log, "Default Settings written to configDB.");
+		} else {
+			Config.settings.ReadFromDB();
+			Log.info(log, "Settings read from configDB.");
+		}
+
+		CB_SLF4J.changeLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
+		Config.AktLogLevel.addChangedEventListener(new IChanged() {
+			@Override
+			public void isChanged() {
+				CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
+			}
+		});
+
+		Log.info(log, "initialisieren der PlattformSettings");
 		PlatformSettings.setPlatformSettings(new IPlatformSettings() {
 
 			@Override
@@ -1098,25 +1110,6 @@ public class splash extends Activity {
 			}
 		});
 
-		// Wenn die Settings DB neu erstellt wurde, müssen die Default Werte geschrieben werden.
-		if (Database.Settings.isDbNew()) {
-			Config.settings.LoadAllDefaultValues();
-			Config.settings.WriteToDB();
-		} else {
-			Config.settings.ReadFromDB();
-		}
-
-		CB_SLF4J.changeLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
-		Config.AktLogLevel.addChangedEventListener(new IChanged() {
-			@Override
-			public void isChanged() {
-				CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
-			}
-		});
-
-		// Add Android Only Settings
-		AndroidSettings.addToSettiongsList();
-
 		if (GlobalCore.isTab) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 			Log.debug(log, "setRequestedOrientation SCREEN_ORIENTATION_LANDSCAPE");
@@ -1129,13 +1122,13 @@ public class splash extends Activity {
 
 		// copy AssetFolder only if Rev-Number changed, like at new installation
 		try {
-			if (Config.installRev.getValue() < GlobalCore.CurrentRevision) {
+			if (Config.installedRev.getValue() < GlobalCore.CurrentRevision) {
 
 				String[] exclude = new String[] { "webkit", "sound", "sounds", "images", "skins", "lang", "kioskmode", "string-files", "" };
 				copyAssetFolder myCopie = new copyAssetFolder();
 				myCopie.copyAll(getAssets(), Config.mWorkPath, exclude);
 
-				Config.installRev.setValue(GlobalCore.CurrentRevision);
+				Config.installedRev.setValue(GlobalCore.CurrentRevision);
 				Config.newInstall.setValue(true);
 				Config.AcceptChanges();
 
@@ -1194,7 +1187,40 @@ public class splash extends Activity {
 			new de.cachebox_test.Map.AndroidManager(new DisplayModel());
 		}
 
-		Initial2();
+		Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
+		Database.FieldNotes = new AndroidDB(DatabaseType.FieldNotes, this);
+
+		Config.AcceptChanges();
+
+		// Initial Ready Show main
+		//Log.info(log, "finish activity");
+		//finish();
+
+		GlobalCore.RunFromSplash = true;
+
+		if (pleaseWaitDialog != null) {
+			pleaseWaitDialog.dismiss();
+			pleaseWaitDialog = null;
+		}
+
+		Bundle b = new Bundle();
+		if (GcCode != null) {
+			b.putSerializable("GcCode", GcCode);
+			b.putSerializable("name", name);
+			b.putSerializable("guid", guid);
+		}
+		if (GpxPath != null) {
+			b.putSerializable("GpxPath", GpxPath);
+		}
+		b.putSerializable("UI", ui);
+		// Log.info(log, "Intent putExtras" + " GcCode " + GcCode + " name " + name + " guid " + guid + " GpxPath " + GpxPath); // + " UI " + ui
+
+		Intent mainIntent = new Intent().setClass(splash.this, main.class);
+		mainIntent.putExtras(b);
+		Log.info(log, "startActivity for main.class (com.badlogic.gdx.backends.android.AndroidApplication) from splash");
+		startActivity(mainIntent);
+		finish();
+
 	}
 
 	@SuppressLint("NewApi")
@@ -1240,48 +1266,6 @@ public class splash extends Activity {
 	}
 
 	private boolean mSelectDbIsStarted = false;
-
-	private void Initial2() {
-
-		Log.info(log, "initialize Database for CacheBox");
-		// initialize Database
-		Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
-		Log.info(log, "initialize Database FieldNotes");
-		Database.FieldNotes = new AndroidDB(DatabaseType.FieldNotes, this);
-
-		Config.AcceptChanges();
-
-		// Initial Ready Show main
-		Log.info(log, "finish activity");
-		finish();
-		Log.info(log, "new Intent main.class com.badlogic.gdx.backends.android.AndroidApplication");
-		Intent mainIntent = new Intent().setClass(splash.this, main.class);
-		Bundle b = new Bundle();
-		if (GcCode != null) {
-			b.putSerializable("GcCode", GcCode);
-			b.putSerializable("name", name);
-			b.putSerializable("guid", guid);
-		}
-
-		if (GpxPath != null) {
-			b.putSerializable("GpxPath", GpxPath);
-		}
-
-		if (pWaitD != null) {
-			pWaitD.dismiss();
-			pWaitD = null;
-		}
-
-		b.putSerializable("UI", ui);
-
-		GlobalCore.RunFromSplash = true;
-
-		Log.info(log, "Intent putExtras" + " GcCode " + GcCode + " name " + name + " guid " + guid + " GpxPath " + GpxPath + " UI " + ui);
-		mainIntent.putExtras(b);
-		Log.info(log, "Start Main Intent");
-		startActivity(mainIntent);
-		finish();
-	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
