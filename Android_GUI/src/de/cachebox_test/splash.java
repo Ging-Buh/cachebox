@@ -521,7 +521,7 @@ public class splash extends Activity {
 						@Override
 						public boolean onLongClick(View v) {
 
-							// setting the MassageBox then the UI_sizes are not initial in this moment
+							// setting the MessageBox then the UI_sizes are not initial in this moment
 							Resources res = splash.this.getResources();
 							float scale = res.getDisplayMetrics().density;
 							float calcBase = 533.333f * scale;

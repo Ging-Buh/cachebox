@@ -7,9 +7,11 @@ import org.slf4j.LoggerFactory;
 
 import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
 import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
+import CB_Utils.Log.Log;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import CB_Utils.fileProvider.FilenameFilter;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -31,6 +33,8 @@ public class Android_FileExplorer {
 	private String fileEndsWith;
 	private final String TitleText;
 	private final String ButtonText;
+	private final String firstSDCard;
+	private final String secondSDCard;
 
 	/**
 	 * @param activity 
@@ -40,8 +44,38 @@ public class Android_FileExplorer {
 		this(activity, initialPath, TitleText, ButtonText, null);
 	}
 
-	public Android_FileExplorer(Activity activity, File initialPath, String TitleText, String ButtonText, String fileEndsWith) {
+	@SuppressLint("NewApi")
+	private Android_FileExplorer(Activity activity, File initialPath, String TitleText, String ButtonText, String fileEndsWith) {
+
 		this.activity = activity;
+
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+			java.io.File dirs[] = activity.getExternalFilesDirs(null);
+			String tmp = dirs[0].getAbsolutePath();
+			int l = tmp.indexOf("Android") - 1;
+			if (l > 0)
+				firstSDCard = tmp.substring(0, l);
+			else
+				firstSDCard = "";
+			tmp = dirs[1].getAbsolutePath();
+			l = tmp.indexOf("Android") - 1;
+			if (l > 0)
+				secondSDCard = tmp.substring(0, l);
+			else
+				secondSDCard = "";
+		} else {
+			String tmp = activity.getExternalFilesDir(null).getAbsolutePath();
+			int l = tmp.indexOf("Android") - 1;
+			if (l > 0)
+				firstSDCard = tmp.substring(0, l);
+			else
+				firstSDCard = "";
+			// or get from firstSDCard = Environment.getExternalStorageDirectory().getAbsolutePath();
+			secondSDCard = "";
+		}
+		// Log.info(log, "firstSDCard '" + firstSDCard + "'");
+		// Log.info(log, "secondSDCard '" + secondSDCard + "'");
+
 		setFileEndsWith(fileEndsWith);
 		if (!initialPath.exists())
 			initialPath = FileFactory.createFile(Environment.getExternalStorageDirectory().getAbsolutePath());
@@ -109,7 +143,7 @@ public class Android_FileExplorer {
 						}
 
 					} catch (Exception e) {
-						log.error(e.getLocalizedMessage());
+						Log.err(log, e.getLocalizedMessage());
 					}
 				}
 			});
@@ -117,7 +151,7 @@ public class Android_FileExplorer {
 			dialog = builder.show();
 
 		} catch (Exception e) {
-			log.error(e.getLocalizedMessage());
+			Log.err(log, e.getLocalizedMessage());
 		}
 
 		return dialog;
@@ -139,7 +173,7 @@ public class Android_FileExplorer {
 				}
 			});
 		} catch (Exception e) {
-			log.error(e.getLocalizedMessage());
+			Log.err(log, e.getLocalizedMessage());
 		}
 	}
 
@@ -147,8 +181,18 @@ public class Android_FileExplorer {
 		this.currentPath = path;
 		List<String> r = new ArrayList<String>();
 		if (path.exists()) {
-			if (path.getParentFile() != null && !path.getAbsolutePath().equals("/"))
+			if (!path.getAbsolutePath().equals("/")) {
+				r.add("/");
+			}
+			if (firstSDCard.length() > 0)
+				if (!path.getAbsolutePath().equals(firstSDCard))
+					r.add(firstSDCard);
+			if (secondSDCard.length() > 0)
+				if (!path.getAbsolutePath().equals(secondSDCard))
+					r.add(secondSDCard);
+			if (!path.getAbsolutePath().equals("/")) {
 				r.add(PARENT_DIR);
+			}
 			FilenameFilter filter = new FilenameFilter() {
 				@Override
 				public boolean accept(File dir, String filename) {
@@ -172,10 +216,17 @@ public class Android_FileExplorer {
 	}
 
 	private File getChosenFile(String fileChosen) {
-		if (fileChosen.equals(PARENT_DIR))
-			return currentPath.getParentFile();
-		else
-			return FileFactory.createFile(currentPath, fileChosen);
+		try {
+			if (fileChosen.equals(PARENT_DIR))
+				return currentPath.getParentFile();
+			else if (fileChosen.startsWith("/"))
+				return FileFactory.createFile(fileChosen);
+			else
+				return FileFactory.createFile(currentPath, fileChosen);
+		} catch (Exception e) {
+			Log.err(log, e.getLocalizedMessage());
+		}
+		return currentPath;
 	}
 
 	private void setFileEndsWith(String fileEndsWith) {
