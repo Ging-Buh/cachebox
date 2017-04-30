@@ -2,6 +2,7 @@ package de.cachebox_test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.slf4j.LoggerFactory;
 
@@ -178,36 +179,48 @@ public class Android_FileExplorer {
 	}
 
 	private void loadFileList(File path) {
-		this.currentPath = path;
 		List<String> r = new ArrayList<String>();
-		if (path.exists()) {
-			if (!path.getAbsolutePath().equals("/")) {
+		currentPath = path;
+
+		String absolutePath;
+		try {
+			absolutePath = currentPath.getAbsolutePath();
+			if (!absolutePath.equals("/")) {
 				r.add("/");
 			}
 			if (firstSDCard.length() > 0)
-				if (!path.getAbsolutePath().equals(firstSDCard))
+				if (!absolutePath.equals(firstSDCard))
 					r.add(firstSDCard);
 			if (secondSDCard.length() > 0)
-				if (!path.getAbsolutePath().equals(secondSDCard))
+				if (!absolutePath.equals(secondSDCard))
 					r.add(secondSDCard);
-			if (!path.getAbsolutePath().equals("/")) {
+			if (!absolutePath.equals("/")) {
 				r.add(PARENT_DIR);
 			}
-			FilenameFilter filter = new FilenameFilter() {
-				@Override
-				public boolean accept(File dir, String filename) {
-					File sel = FileFactory.createFile(dir, filename);
-					if (!sel.canRead())
-						return false;
-					if (selectDirectoryOption)
-						return sel.isDirectory();
-					else {
-						boolean endsWith = fileEndsWith != null ? filename.toLowerCase().endsWith(fileEndsWith) : true;
-						return endsWith || sel.isDirectory();
-					}
+		} catch (Exception e) {
+			if (firstSDCard.length() > 0)
+				r.add(firstSDCard);
+			if (secondSDCard.length() > 0)
+				r.add(secondSDCard);
+		}
+
+		FilenameFilter filter = new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String filename) {
+				File sel = FileFactory.createFile(dir, filename);
+				if (!sel.canRead())
+					return false;
+				if (selectDirectoryOption)
+					return sel.isDirectory();
+				else {
+					boolean endsWith = fileEndsWith != null ? filename.toLowerCase(Locale.US).endsWith(fileEndsWith) : true;
+					return endsWith || sel.isDirectory();
 				}
-			};
-			String[] fileList1 = path.list(filter);
+			}
+		};
+
+		if (currentPath.exists()) {
+			String[] fileList1 = currentPath.list(filter);
 			for (String file : fileList1) {
 				r.add(file);
 			}
