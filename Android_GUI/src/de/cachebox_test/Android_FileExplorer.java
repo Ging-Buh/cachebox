@@ -220,9 +220,11 @@ public class Android_FileExplorer {
 		};
 
 		if (currentPath.exists()) {
-			String[] fileList1 = currentPath.list(filter);
-			for (String file : fileList1) {
-				r.add(file);
+			String[] tmpFileList = currentPath.list(filter);
+			if (tmpFileList != null) {
+				for (String file : tmpFileList) {
+					r.add(file);
+				}
 			}
 		}
 		fileList = r.toArray(new String[] {});
