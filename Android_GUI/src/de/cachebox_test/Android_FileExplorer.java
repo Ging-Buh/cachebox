@@ -52,23 +52,33 @@ public class Android_FileExplorer {
 
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
 			java.io.File dirs[] = activity.getExternalFilesDirs(null);
-			String tmp = dirs[0].getAbsolutePath();
-			int l = tmp.indexOf("Android") - 1;
-			if (l > 0)
-				firstSDCard = tmp.substring(0, l);
-			else
+
+			if (dirs.length > 0) {
+				String tmp = dirs[0].getAbsolutePath();
+				int pos = tmp.indexOf("Android") - 1;
+				if (pos > 0)
+					firstSDCard = tmp.substring(0, pos);
+				else
+					firstSDCard = "";
+			} else {
 				firstSDCard = "";
-			tmp = dirs[1].getAbsolutePath();
-			l = tmp.indexOf("Android") - 1;
-			if (l > 0)
-				secondSDCard = tmp.substring(0, l);
-			else
+			}
+
+			if (dirs.length > 1) {
+				String tmp = dirs[1].getAbsolutePath();
+				int pos = tmp.indexOf("Android") - 1;
+				if (pos > 0)
+					secondSDCard = tmp.substring(0, pos);
+				else
+					secondSDCard = "";
+			} else {
 				secondSDCard = "";
+			}
 		} else {
 			String tmp = activity.getExternalFilesDir(null).getAbsolutePath();
-			int l = tmp.indexOf("Android") - 1;
-			if (l > 0)
-				firstSDCard = tmp.substring(0, l);
+			int pos = tmp.indexOf("Android") - 1;
+			if (pos > 0)
+				firstSDCard = tmp.substring(0, pos);
 			else
 				firstSDCard = "";
 			// or get from firstSDCard = Environment.getExternalStorageDirectory().getAbsolutePath();
@@ -78,8 +88,14 @@ public class Android_FileExplorer {
 		// Log.info(log, "secondSDCard '" + secondSDCard + "'");
 
 		setFileEndsWith(fileEndsWith);
-		if (!initialPath.exists())
-			initialPath = FileFactory.createFile(Environment.getExternalStorageDirectory().getAbsolutePath());
+		try {
+			if (!initialPath.exists()) {
+				initialPath = FileFactory.createFile(Environment.getExternalStorageDirectory().getAbsolutePath());
+			}
+		} catch (Exception e) {
+			Log.err(log, e.getLocalizedMessage());
+			initialPath = FileFactory.createFile(firstSDCard);
+		}
 		currentPath = initialPath;
 		this.TitleText = TitleText;
 		if (ButtonText == null || ButtonText.length() == 0) {
