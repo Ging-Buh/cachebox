@@ -244,6 +244,7 @@ public abstract class ManagerBase {
 				// Closes the connection.
 				response.getEntity().getContent().close();
 				// throw new IOException(statusLine.getReasonPhrase());
+				Log.err(log, url + ": " + response.getStatusLine());
 				return false;
 			}
 			/*
@@ -361,6 +362,11 @@ public abstract class ManagerBase {
 
 		layers.addAll(DEFAULT_LAYER);
 
+		if (LocatorSettings.UserMap1.getValue().length() > 0)
+			layers.add(new Layer(MapType.ONLINE, Type.normal, "UserMap1", "", LocatorSettings.UserMap1.getValue()));
+		if (LocatorSettings.UserMap2.getValue().length() > 0)
+			layers.add(new Layer(MapType.ONLINE, Type.normal, "UserMap2", "", LocatorSettings.UserMap2.getValue()));
+
 		ArrayList<String> files = new ArrayList<String>();
 		ArrayList<String> mapnames = new ArrayList<String>();
 
@@ -387,7 +393,7 @@ public abstract class ManagerBase {
 						try {
 							mapFile = new MapFile(f);
 						} catch (Exception e) {
-							log.error("INIT MAPPACKS", e);
+							Log.err(log, "INIT MAPPACKS" + e.getMessage());
 							continue;
 						}
 
