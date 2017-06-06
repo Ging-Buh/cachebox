@@ -208,17 +208,13 @@ public abstract class ManagerBase {
 
 		// Kachel laden
 		// set the connection timeout value to 15 seconds (15000 milliseconds)
-		final HttpParams httpParams = new BasicHttpParams();
+		HttpParams httpParams = new BasicHttpParams();
 		HttpConnectionParams.setConnectionTimeout(httpParams, CONECTION_TIME_OUT);
-
 		HttpClient httpclient = new DefaultHttpClient(httpParams);
-		HttpResponse response = null;
-
 		HttpGet GET = new HttpGet(url);
-
+		GET.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
 		try {
-
-			response = httpclient.execute(GET);
+			HttpResponse response = httpclient.execute(GET);
 			StatusLine statusLine = response.getStatusLine();
 			if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -237,9 +233,6 @@ public abstract class ManagerBase {
 				}
 
 				NumTilesLoaded++;
-				// Global.TransferredBytes += result.Length;
-
-				// ..more logic
 			} else {
 				// Closes the connection.
 				response.getEntity().getContent().close();
