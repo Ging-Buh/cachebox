@@ -1,6 +1,7 @@
 package CB_Locator.Map;
 
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.mapsforge.core.model.BoundingBox;
 
@@ -54,9 +55,22 @@ public class Layer {
 	public String GetUrl(Descriptor desc) {
 		if (desc == null)
 			return null;
-		if (Url.contains("{z}"))
-			return Url.replace("{x}", "" + desc.getX()).replace("{y}", "" + desc.getY()).replace("{z}", "" + desc.getZoom());
-		else
+		String lUrl = Url;
+		if (lUrl.contains("{z}")) {
+			int max = 0;
+			if (lUrl.contains("{1}")) {
+				max = 1;
+			}
+			if (lUrl.contains("{2}")) {
+				max = 2;
+			}
+			if (lUrl.contains("{3}")) {
+				max = 3;
+			}
+			int randomNum = ThreadLocalRandom.current().nextInt(0, max + 1);
+			lUrl = lUrl.replace("{" + max + "}", "" + randomNum);
+			return lUrl.replace("{x}", "" + desc.getX()).replace("{y}", "" + desc.getY()).replace("{z}", "" + desc.getZoom());
+		} else
 			return Url + desc.getZoom() + "/" + desc.getX() + "/" + desc.getY() + ".png"; // now obsolete
 	}
 
