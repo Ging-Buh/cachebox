@@ -6,7 +6,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Locator_Base"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_UI_Base"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Utils"/>
-	<classpathentry kind="lib" path="lib/gdx-1.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/svg-salamander-1.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gdx-1.9.6"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

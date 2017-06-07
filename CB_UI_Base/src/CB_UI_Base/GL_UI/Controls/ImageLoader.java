@@ -486,7 +486,7 @@ public class ImageLoader {
 	public Drawable getDrawable(float keyFrame) {
 		if (anim != null) {
 			frameCounter += keyFrame;
-			TextureRegion tex = anim.getKeyFrame(frameCounter);
+			TextureRegion tex = (TextureRegion) anim.getKeyFrame(frameCounter);
 
 			if (animSprite == null) {
 				animSprite = new com.badlogic.gdx.graphics.g2d.Sprite(tex);

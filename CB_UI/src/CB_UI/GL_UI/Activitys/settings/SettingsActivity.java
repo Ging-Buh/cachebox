@@ -2,8 +2,7 @@ package CB_UI.GL_UI.Activitys.settings;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.*;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -265,7 +264,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 					SortedSettingList.add(setting);
 			}
 
-			Collections.sort(SortedSettingList);
+			//Collections.sort(SortedSettingList);
 
 			do {
 				int position = 0;
