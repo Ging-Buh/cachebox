@@ -15,6 +15,16 @@ public class Layer {
 		normal, overlay
 	}
 
+	public enum StorageType {
+		PNG(".png"), JPG(".jpg");
+
+		private final String extention;
+
+		StorageType(String extention) {
+			this.extention = extention;
+		}
+	}
+
 	private Type mLayerType = Type.normal;
 	public String Name = "";
 	public String FriendlyName = "";
@@ -22,13 +32,15 @@ public class Layer {
 	private final MapType mapType;
 	public BoundingBox boundingBox;
 	private final ArrayList<Layer> additionalMapsforgeLayer = new ArrayList<Layer>();
+	private final StorageType storageType;
 
-	public Layer(MapType mapType, Type LayerType, String name, String friendlyName, String url) {
+	public Layer(MapType mapType, Type LayerType, StorageType storageType, String name, String friendlyName, String url) {
 		this.mapType = mapType;
 		this.Name = name;
 		this.FriendlyName = friendlyName;
 		this.Url = url;
 		this.mLayerType = LayerType;
+		this.storageType = storageType;
 	}
 
 	public boolean DownloadTile(Descriptor desc) {
@@ -71,13 +83,13 @@ public class Layer {
 			lUrl = lUrl.replace("{" + max + "}", "" + randomNum);
 			return lUrl.replace("{x}", "" + desc.getX()).replace("{y}", "" + desc.getY()).replace("{z}", "" + desc.getZoom());
 		} else
-			return Url + desc.getZoom() + "/" + desc.getX() + "/" + desc.getY() + ".png"; // now obsolete
+			return Url + desc.getZoom() + "/" + desc.getX() + "/" + desc.getY() + this.storageType.extention; // now obsolete
 	}
 
 	public String GetLocalFilename(Descriptor desc) {
 		if (desc == null)
 			return null;
-		return desc.getLocalCachePath(Name) + ".png";
+		return desc.getLocalCachePath(Name) + this.storageType.extention;
 	}
 
 	// public String GetLocalPath(Descriptor desc)

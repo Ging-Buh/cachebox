@@ -53,7 +53,7 @@ public abstract class PackBase implements Comparable<PackBase> {
 	String layerName = readString(reader, 32);
 	String friendlyName = readString(reader, 128);
 	String url = readString(reader, 256);
-	layer = new Layer(MapType.BITMAP, Type.normal, layerName, friendlyName, url);
+	layer = new Layer(MapType.BITMAP, Type.normal, Layer.StorageType.PNG, layerName, friendlyName, url);
 
 	long ticks = Long.reverseBytes(reader.readLong());
 	MaxAge = ticks;
