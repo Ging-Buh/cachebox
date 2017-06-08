@@ -8,5 +8,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Utils"/>
 	<classpathentry kind="lib" path="lib/svg-salamander-1.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gdx-1.9.6"/>
+	<classpathentry exported="true" kind="lib" path="/Android_GUI/libs/gdx-1.9.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -29,8 +29,6 @@ import javax.imageio.ImageIO;
 import org.mapsforge.map.awt.ext_AwtGraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
 
-import com.badlogic.gdx.graphics.Pixmap;
-
 import CB_Locator.Map.BoundingBox;
 import CB_Locator.Map.Descriptor;
 import CB_Locator.Map.Layer;
@@ -68,7 +66,7 @@ public class DesktopManager extends ManagerBase {
 			return getMapsforgePixMap(layer, desc, ThreadIndex);
 		}
 		// else
-		Pixmap.Format format = layer.isOverlay() ? Pixmap.Format.RGBA4444 : Pixmap.Format.RGB565;
+		com.badlogic.gdx.graphics.Pixmap.Format format = layer.isOverlay() ? com.badlogic.gdx.graphics.Pixmap.Format.RGBA4444 : com.badlogic.gdx.graphics.Pixmap.Format.RGB565;
 		try {
 			// Schauen, ob Tile im Cache liegt
 			String cachedTileFilename = layer.GetLocalFilename(desc);
