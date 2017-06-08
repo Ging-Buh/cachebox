@@ -18,10 +18,10 @@ public class Layer {
 	public enum StorageType {
 		PNG(".png"), JPG(".jpg");
 
-		private final String extention;
+		private final String extension;
 
-		StorageType(String extention) {
-			this.extention = extention;
+		StorageType(String extension) {
+			this.extension = extension;
 		}
 	}
 
@@ -83,13 +83,13 @@ public class Layer {
 			lUrl = lUrl.replace("{" + max + "}", "" + randomNum);
 			return lUrl.replace("{x}", "" + desc.getX()).replace("{y}", "" + desc.getY()).replace("{z}", "" + desc.getZoom());
 		} else
-			return Url + desc.getZoom() + "/" + desc.getX() + "/" + desc.getY() + this.storageType.extention; // now obsolete
+			return Url + desc.getZoom() + "/" + desc.getX() + "/" + desc.getY() + this.storageType.extension; // now obsolete
 	}
 
 	public String GetLocalFilename(Descriptor desc) {
 		if (desc == null)
 			return null;
-		return desc.getLocalCachePath(Name) + this.storageType.extention;
+		return desc.getLocalCachePath(Name) + this.storageType.extension;
 	}
 
 	// public String GetLocalPath(Descriptor desc)

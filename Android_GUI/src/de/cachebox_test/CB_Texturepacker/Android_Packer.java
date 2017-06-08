@@ -3,7 +3,7 @@ package de.cachebox_test.CB_Texturepacker;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
@@ -51,6 +51,7 @@ public class Android_Packer extends TexturePacker_Base {
 		new Rect();
 	}
 
+	@Override
 	public void writeImages(File outputDir, Array<Page> pages, String packFileName) {
 		String imageName = packFileName;
 		int dotIndex = imageName.lastIndexOf('.');
@@ -208,7 +209,7 @@ public class Android_Packer extends TexturePacker_Base {
 		}
 	}
 
-	private Config getBitmapConfig(Format format) {
+	private Config getBitmapConfig(Pixmap.Format format) {
 		switch (settings.format) {
 		case RGBA8888:
 		case RGBA4444:

@@ -49,7 +49,7 @@ import CB_Utils.Util.LoopThread;
 public class LiveMapQue {
 	public static final SearchForGeocaches_Core SEARCH_API = new SearchForGeocaches_Core();
 	public static final String LIVE_CACHE_NAME = "Live_Request";
-	public static final String LIVE_CACHE_EXTENTION = ".txt";
+	public static final String LIVE_CACHE_EXTENSION = ".txt";
 
 	public static final byte DEFAULT_ZOOM_14 = 14;
 	public static final int MAX_REQUEST_CACHE_RADIUS_14 = 1060;
@@ -214,7 +214,7 @@ public class LiveMapQue {
 	}
 
 	public static CB_List<Cache> loadDescLiveFromCache(SearchLiveMap requestSearch) {
-		String path = requestSearch.descriptor.getLocalCachePath(LIVE_CACHE_NAME) + LIVE_CACHE_EXTENTION;
+		String path = requestSearch.descriptor.getLocalCachePath(LIVE_CACHE_NAME) + LIVE_CACHE_EXTENSION;
 		String result = null;
 
 		FileHandle fh = new FileHandle(path);
@@ -252,7 +252,7 @@ public class LiveMapQue {
 	}
 
 	protected static boolean descExistLiveCache(Descriptor desc) {
-		String path = desc.getLocalCachePath(LIVE_CACHE_NAME) + LIVE_CACHE_EXTENTION;
+		String path = desc.getLocalCachePath(LIVE_CACHE_NAME) + LIVE_CACHE_EXTENSION;
 		return FileIO.FileExists(path, CB_Core_Settings.LiveCacheTime.getEnumValue().getMinuten());
 	}
 

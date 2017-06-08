@@ -105,7 +105,7 @@ public class FileIO {
 	 */
 	public static boolean createDirectory(String folder) {
 
-		// remove extention
+		// remove extension
 		int extPos = folder.lastIndexOf("/");
 		String ext = "";
 		if (extPos > -1)

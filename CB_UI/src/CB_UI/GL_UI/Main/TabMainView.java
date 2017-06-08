@@ -819,7 +819,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 
 			Name = "  (" + strFilterCount + String.valueOf(DBCount) + ")";
 		}
-		actionShowCacheList.setNameExtention(Name);
+		actionShowCacheList.setNameExtension(Name);
 	}
 
 	public void showCacheList() {

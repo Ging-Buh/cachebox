@@ -15,8 +15,8 @@ public abstract class CB_Action_ShowView extends CB_Action {
 		tabMainView = null;
 	}
 
-	public CB_Action_ShowView(String translationId, String translationExtention, int id) {
-		super(translationId, translationExtention, id);
+	public CB_Action_ShowView(String translationId, String translationExtension, int id) {
+		super(translationId, translationExtension, id);
 		tab = null;
 		tabMainView = null;
 	}
