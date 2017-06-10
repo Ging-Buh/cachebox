@@ -1002,7 +1002,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
         // Ausschalten verhindern
         /*
-		 * This code together with the one in onDestroy() will make the screen
+         * This code together with the one in onDestroy() will make the screen
 		 * be always on until this Activity gets destroyed.
 		 */
         if (Config.SuppressPowerSaving.getValue()) {
@@ -1085,7 +1085,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         super.onStop();
 
         // Ausschalten wieder zulassen!
-		/*
+        /*
 		 * This code together with the one in onDestroy() will make the screen
 		 * be always on until this Activity gets destroyed.
 		 */
@@ -1231,24 +1231,40 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	 */
 
     private final SensorEventListener mListener = new SensorEventListener() {
-        float[] gravity;
-        float[] geomagnetic;
-        final float orientation[] = new float[3];
-        final float R[] = new float[9];
-        final float I[] = new float[9];
+        private float[] gravity;
+        private float[] geomagnetic;
+        private final float orientationValues[] = new float[3];
+        private final float R[] = new float[9];
+        private final float I[] = new float[9];
+        private final float minChange = 1f;
+        private final RingBufferFloat ringBuffer = new RingBufferFloat(20);
+        private float orientation;
+        private float lastOrientation;
+        private boolean everySecondEvent = false;
 
         @Override
         public void onSensorChanged(SensorEvent event) {
             if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
                 gravity = event.values;
-            if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
+            if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD && everySecondEvent) {
                 geomagnetic = event.values;
-            if (gravity != null && geomagnetic != null) {
-                if (SensorManager.getRotationMatrix(R, I, gravity, geomagnetic)) {
-                    SensorManager.getOrientation(R, orientation);
-                    CB_Locator.Locator.setHeading((float) Math.toDegrees(orientation[0]), CompassType.Magnetic);
+                if (gravity != null && geomagnetic != null) {
+                    if (SensorManager.getRotationMatrix(R, I, gravity, geomagnetic)) {
+                        SensorManager.getOrientation(R, orientationValues);
+                        orientation = ringBuffer.add((float) Math.toDegrees(orientationValues[0]));
+                        while (orientation < 0) {
+                            orientation += 360;
+                        }
+
+                        if (Math.abs(lastOrientation - orientation) > minChange) {
+                            CB_Locator.Locator.setHeading(orientation, CompassType.Magnetic);
+                            log.debug("orientation: {}", orientation);
+                            lastOrientation = orientation;
+                        }
+                    }
                 }
             }
+            everySecondEvent = !everySecondEvent;
         }
 
         @Override
