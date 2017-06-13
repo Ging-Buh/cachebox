@@ -19,7 +19,12 @@ package CB_UI.GL_UI.Main.Actions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Map;
+import java.util.Set;
 
+import org.mapsforge.map.rendertheme.ExternalRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
 
@@ -49,6 +54,7 @@ import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Menu.OptionMenu;
+import CB_UI_Base.graphics.extendedInterfaces.ext_GraphicFactory;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
@@ -58,6 +64,7 @@ import CB_Utils.fileProvider.FileFactory;
  * @author Longri
  */
 public class CB_Action_ShowMap extends CB_Action_ShowView {
+	public ext_GraphicFactory graphicFactory;
 
 	public CB_Action_ShowMap() {
 		super("Map", MenuID.AID_SHOW_MAP);
@@ -496,7 +503,8 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 		final Menu lStyle = new Menu("Style");
 
 		int menuID = 0;
-		for (String style : getThemeStyles(selectedTheme)) {
+		ArrayList<String> ThemeStyles = getThemeStyles(selectedTheme);
+		for (String style : ThemeStyles) {
 			MenuItem mi = lStyle.addItem(menuID++, "", style); // ohne Translation
 			mi.setData(style + "|" + which);
 			//mi.setCheckable(true);
@@ -526,24 +534,47 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 			}
 		});
 
-		lStyle.Show();
+		if (ThemeStyles.size() > 0)
+			lStyle.Show();
 	}
 
 	private ArrayList<String> getThemeStyles(String selectedTheme) {
-		// TODO get the real styles
-		XmlRenderThemeStyleMenu renderthemeOptions = null;
-		//public static final String RENDERTHEME_MENU = "renderthememenu";
-		String RENDERTHEME_MENU = "renderthememenu";
-		//renderthemeOptions = (XmlRenderThemeStyleMenu) getIntent().getSerializableExtra(RENDERTHEME_MENU);
-		if (renderthemeOptions != null) {
-			java.util.Map<String, XmlRenderThemeStyleLayer> baseLayers = renderthemeOptions.getLayers();
+
+		ArrayList<String> styles = new ArrayList<String>();
+
+		try {
+			XmlRenderThemeMenuCallback x = new Xml_RenderThemeMenuCallback();
+			XmlRenderTheme renderTheme = new ExternalRenderTheme(selectedTheme, x);
+			try {
+				// parse RenderTheme to get XmlRenderThemeMenuCallback getCategories called
+				// getRenderTheme(graphicFactory, new DisplayModel(), renderTheme);
+			} catch (Exception e) {
+			}
+			styles = ((Xml_RenderThemeMenuCallback) x).getStyles();
+		} catch (Exception e) {
 		}
-		ArrayList<String> styles;
-		styles = new ArrayList<String>();
-		styles.add("Style1");
-		styles.add("Style2");
-		styles.add("Style3");
 		return styles;
 	}
 
+	private class Xml_RenderThemeMenuCallback implements XmlRenderThemeMenuCallback {
+		private ArrayList<String> styles = new ArrayList<String>();
+
+		@Override
+		public Set<String> getCategories(XmlRenderThemeStyleMenu style) {
+			styles = new ArrayList<String>();
+			Map<String, XmlRenderThemeStyleLayer> styleLayers = style.getLayers();
+
+			for (XmlRenderThemeStyleLayer styleLayer : styleLayers.values()) {
+				if (styleLayer.isVisible()) {
+					styles.add(styleLayer.getTitle("de")); // todo Translation.Get("Language2Chars")
+				}
+			}
+
+			return null;
+		}
+
+		public ArrayList<String> getStyles() {
+			return styles;
+		}
+	}
 }

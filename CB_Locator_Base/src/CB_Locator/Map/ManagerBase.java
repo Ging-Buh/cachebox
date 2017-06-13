@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -47,13 +49,16 @@ import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
+import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
+import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
 import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
 import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 import org.slf4j.LoggerFactory;
 
 import CB_Locator.LocatorSettings;
+import CB_Locator.Map.Layer.LayerType;
 import CB_Locator.Map.Layer.MapType;
-import CB_Locator.Map.Layer.Type;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.GL_RenderType;
@@ -93,6 +98,8 @@ public abstract class ManagerBase {
 	private final DefaultLayerList DEFAULT_LAYER = new DefaultLayerList();
 
 	private boolean mayAddLayer = false; // add only during startup (why?)
+
+	protected String mapsforgeThemesStyle = "";
 
 	public ManagerBase(DisplayModel displaymodel) {
 		Manager = this;
@@ -153,7 +160,7 @@ public abstract class ManagerBase {
 		}
 
 		if (mayAddLayer) {
-			Layer newLayer = new Layer(MapType.ONLINE, Type.normal, Layer.StorageType.PNG, Name[0], Name[0], url);
+			Layer newLayer = new Layer(MapType.ONLINE, LayerType.normal, Layer.StorageType.PNG, Name[0], Name[0], url);
 			layers.add(newLayer);
 			return newLayer;
 		} else {
@@ -312,7 +319,7 @@ public abstract class ManagerBase {
 				return;
 			}
 			tmsMaps.add(tmsMap);
-			layers.add(new TmsLayer(Type.normal, tmsMap));
+			layers.add(new TmsLayer(LayerType.normal, tmsMap));
 		} catch (Exception ex) {
 
 		}
@@ -321,7 +328,7 @@ public abstract class ManagerBase {
 
 	public void LoadBSH(String string) {
 		try {
-			BshLayer layer = new BshLayer(Type.normal, string);
+			BshLayer layer = new BshLayer(LayerType.normal, string);
 			layers.add(layer);
 		} catch (Exception ex) {
 
@@ -430,7 +437,7 @@ public abstract class ManagerBase {
 						}
 
 						String Name = FileIO.GetFileNameWithoutExtension(file);
-						Layer layer = new Layer(mapType, Type.normal, Layer.StorageType.PNG, Name, Name, file);
+						Layer layer = new Layer(mapType, LayerType.normal, Layer.StorageType.PNG, Name, Name, file);
 
 						MultiMapDataStore md = new MultiMapDataStore(DataPolicy.RETURN_FIRST);
 
@@ -477,10 +484,10 @@ public abstract class ManagerBase {
 			} else if (url.toLowerCase().contains("{png}")) {
 				url = url.replace("{PNG}", "").replace("{png}", "").trim();
 			}
-			return new Layer(MapType.ONLINE, Type.normal, storageType, name, "", url);
+			return new Layer(MapType.ONLINE, LayerType.normal, storageType, name, "", url);
 		} catch (Exception e) {
 			Log.err(log, "Err while getUserMap: url=" + url + " Name=" + name + " Err=" + e.getLocalizedMessage());
-			return new Layer(MapType.ONLINE, Type.normal, Layer.StorageType.PNG, name, "", url);
+			return new Layer(MapType.ONLINE, LayerType.normal, Layer.StorageType.PNG, name, "", url);
 		}
 	}
 
@@ -519,7 +526,8 @@ public abstract class ManagerBase {
 					File file = FileFactory.createFile(themePathAndName);
 					if (file.exists()) {
 						java.io.File themeFile = new java.io.File(file.getAbsolutePath());
-						renderTheme = new ExternalRenderTheme(themeFile);
+						XmlRenderThemeMenuCallback x = new Xml_RenderThemeMenuCallback();
+						renderTheme = new ExternalRenderTheme(themeFile, x);
 					} else {
 						Log.err(log, themePathAndName + " not found!");
 						renderTheme = CB_InternalRenderTheme.OSMARENDER;
@@ -534,7 +542,7 @@ public abstract class ManagerBase {
 		try {
 			CB_RenderThemeHandler.getRenderTheme(getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), DISPLAY_MODEL, renderTheme);
 		} catch (Exception e) {
-			Log.err(log, "RenderTheme: ", e);
+			Log.err(log, "Error in checking RenderTheme " + themePathAndName, e);
 			renderTheme = CB_InternalRenderTheme.OSMARENDER;
 		}
 
@@ -627,4 +635,51 @@ public abstract class ManagerBase {
 
 	public abstract GraphicFactory getGraphicFactory(float ScaleFactor);
 
+	private class Xml_RenderThemeMenuCallback implements XmlRenderThemeMenuCallback {
+		@Override
+		public Set<String> getCategories(XmlRenderThemeStyleMenu style) {
+			// String styleId = style.getId();
+			// String styleName = style.getDefaultValue();
+			Map<String, XmlRenderThemeStyleLayer> styleLayers = style.getLayers();
+
+			String selection = "";
+			// count visibleStyles for array initialization
+			int visibleStyles = 0;
+			for (XmlRenderThemeStyleLayer styleLayer : styleLayers.values()) {
+				if (styleLayer.isVisible()) {
+					++visibleStyles;
+				}
+			}
+			CharSequence[] entries = new CharSequence[visibleStyles];
+			CharSequence[] values = new CharSequence[visibleStyles];
+			int i = 0;
+			for (XmlRenderThemeStyleLayer styleLayer : styleLayers.values()) {
+				if (styleLayer.isVisible()) {
+					entries[i] = styleLayer.getTitle("de"); // todo Translation.Get("Language2Chars")
+					if (entries[i].equals(mapsforgeThemesStyle)) { // Radfahren, Wandern,....
+						selection = styleLayer.getId();
+					} else {
+
+					}
+					values[i] = styleLayer.getId();
+					++i;
+				}
+			}
+
+			XmlRenderThemeStyleLayer selectedLayer = style.getLayer(selection);
+
+			// now change the categories for this style
+			if (selectedLayer == null) {
+				return null;
+			}
+			Set<String> result = selectedLayer.getCategories();
+			// add the categories from overlays that are enabled
+			for (XmlRenderThemeStyleLayer overlay : selectedLayer.getOverlays()) {
+				if (overlay.isEnabled()) {
+					result.addAll(overlay.getCategories());
+				}
+			}
+			return result;
+		}
+	}
 }

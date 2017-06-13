@@ -32,6 +32,7 @@ import CB_Locator.Map.PackBase;
 import CB_Locator.Map.TileGL;
 import CB_Locator.Map.TileGL.TileState;
 import CB_Locator.Map.TileGL_Bmp;
+import CB_UI.Config;
 import CB_UI_Base.graphics.extendedInterfaces.ext_GraphicFactory;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Log.Log;
@@ -50,6 +51,7 @@ public class AndroidManager extends ManagerBase {
 
 	public AndroidManager(DisplayModel displaymodel) {
 		super(displaymodel);
+		mapsforgeThemesStyle = Config.mapsforgeThemesStyle.getValue();
 	}
 
 	@Override

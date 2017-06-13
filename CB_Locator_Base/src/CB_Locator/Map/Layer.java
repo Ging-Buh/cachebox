@@ -7,14 +7,24 @@ import org.mapsforge.core.model.BoundingBox;
 
 public class Layer {
 
+	/**
+	 * 
+	 * ONLINE, MAPSFORGE, FREIZEITKARTE, BITMAP
+	 */
 	public enum MapType {
 		ONLINE, MAPSFORGE, FREIZEITKARTE, BITMAP
 	}
 
-	public enum Type {
+	/**
+	 * normal, overlay
+	 */
+	public enum LayerType {
 		normal, overlay
 	}
 
+	/**
+	 * PNG, JPG
+	 */
 	public enum StorageType {
 		PNG(".png"), JPG(".jpg");
 
@@ -25,7 +35,7 @@ public class Layer {
 		}
 	}
 
-	private Type mLayerType = Type.normal;
+	private LayerType mLayerType = LayerType.normal;
 	public String Name = "";
 	public String FriendlyName = "";
 	public String Url = ""; // is used as complete path and name for mapsforge files
@@ -34,7 +44,7 @@ public class Layer {
 	private final ArrayList<Layer> additionalMapsforgeLayer = new ArrayList<Layer>();
 	private final StorageType storageType;
 
-	public Layer(MapType mapType, Type LayerType, StorageType storageType, String name, String friendlyName, String url) {
+	public Layer(MapType mapType, LayerType LayerType, StorageType storageType, String name, String friendlyName, String url) {
 		this.mapType = mapType;
 		this.Name = name;
 		this.FriendlyName = friendlyName;
@@ -103,7 +113,7 @@ public class Layer {
 	// }
 
 	public boolean isOverlay() {
-		return mLayerType == Type.overlay;
+		return mLayerType == LayerType.overlay;
 	}
 
 	public boolean isMapsForge() {

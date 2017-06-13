@@ -10,7 +10,7 @@ import bsh.Interpreter;
 public class BshLayer extends Layer {
     private Interpreter interpreter;
 
-    public BshLayer(Type LayerType, String filename) {
+    public BshLayer(LayerType LayerType, String filename) {
 	super(MapType.ONLINE, LayerType, Layer.StorageType.PNG, "B- " + FileIO.GetFileNameWithoutExtension(filename), FileIO.GetFileNameWithoutExtension(filename), "");
 	this.interpreter = new Interpreter();
 	try {

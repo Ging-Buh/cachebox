@@ -128,6 +128,7 @@ public interface CB_UI_Settings {
 	public static final SettingBool Ask_Switch_GPS_ON = new SettingBool("Ask_Switch_GPS_ON", SettingCategory.RememberAsk, NORMAL, true, SettingStoreType.Platform, SettingUsage.ALL);
 	public static final SettingBool TB_DirectLog = new SettingBool("TB_DirectLog", SettingCategory.Internal, NEVER, true, SettingStoreType.Platform, SettingUsage.ALL);
 	public static final SettingBool MapHideMyFinds = new SettingBool("MapHideMyFinds", SettingCategory.Map, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingString mapsforgeThemesStyle = new SettingString("mapsforgeThemesStyle", SettingCategory.Map, NORMAL, "", SettingStoreType.Global, SettingUsage.ACB);
 	// int
 	public static final SettingInt LogMaxMonthAge = (SettingInt) SettingsList.addSetting(new SettingInt("LogMaxMonthAge", SettingCategory.Internal, DEVELOPER, 6, SettingStoreType.Global, SettingUsage.ACB));
 	public static final SettingInt LogMinCount = (SettingInt) SettingsList.addSetting(new SettingInt("LogMinCount", SettingCategory.Internal, DEVELOPER, 99999, SettingStoreType.Global, SettingUsage.ACB));

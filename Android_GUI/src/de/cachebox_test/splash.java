@@ -860,7 +860,7 @@ public class splash extends Activity {
 				List<UriPermission> permissionlist = cr.getPersistedUriPermissions();
 			}
 
-			LolipopworkPath = "content://com.android.externalstorage.documents/tree/B8C5-760B%3A";// treeUri.getPath();
+			LolipopworkPath = treeUri.getPath();
 
 			Thread th = new Thread(new Runnable() {
 				@Override
