@@ -80,7 +80,7 @@ public abstract class ManagerBase {
 	public static ManagerBase Manager = null;
 
 	public static int PROCESSOR_COUNT; // == nr of threads for getting tiles (mapsforge)
-	private final DisplayModel DISPLAY_MODEL;
+	public final DisplayModel DISPLAY_MODEL;
 
 	private final int CONECTION_TIME_OUT = 15000;// 15 sec
 	private final int CONECTION_TIME_OUT_MESSAGE_INTERVALL = 60000;// 1min

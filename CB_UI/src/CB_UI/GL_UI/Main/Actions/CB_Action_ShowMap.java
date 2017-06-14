@@ -68,7 +68,6 @@ import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
  * @author Longri
  */
 public class CB_Action_ShowMap extends CB_Action_ShowView {
-	public ext_GraphicFactory graphicFactory;
 
 	public CB_Action_ShowMap() {
 		super("Map", MenuID.AID_SHOW_MAP);
@@ -551,7 +550,8 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 			XmlRenderTheme renderTheme = new ExternalRenderTheme(selectedTheme, x);
 			try {
 				// parse RenderTheme to get XmlRenderThemeMenuCallback getCategories called
-				new CB_RenderThemeHandler(graphicFactory, new DisplayModel(), renderTheme.getRelativePathPrefix()
+				new CB_RenderThemeHandler(ManagerBase.Manager.getGraphicFactory(ManagerBase.Manager.DISPLAY_MODEL.getScaleFactor())
+						, new DisplayModel(), renderTheme.getRelativePathPrefix()
 						, renderTheme, new KXmlParser()).processRenderTheme();
 			} catch (Exception e) {
 			}
