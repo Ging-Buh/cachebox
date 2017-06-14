@@ -25,7 +25,7 @@ import org.xmlpull.v1.XmlPullParser;
  */
 public final class CB_RenderThemeHandler extends RenderThemeHandler {
 
-	private CB_RenderThemeHandler(GraphicFactory graphicFactory, DisplayModel displayModel, String relativePathPrefix, XmlRenderTheme xmlRenderTheme, XmlPullParser pullParser) {
+	public CB_RenderThemeHandler(GraphicFactory graphicFactory, DisplayModel displayModel, String relativePathPrefix, XmlRenderTheme xmlRenderTheme, XmlPullParser pullParser) {
 		super(graphicFactory, displayModel, relativePathPrefix, xmlRenderTheme, pullParser);
 
 	}

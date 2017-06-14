@@ -22,6 +22,8 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
 
+import org.kxml2.io.KXmlParser;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
@@ -59,6 +61,8 @@ import CB_Utils.Settings.SettingBool;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
+import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
+import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
 
 /**
  * @author Longri
@@ -547,7 +551,8 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 			XmlRenderTheme renderTheme = new ExternalRenderTheme(selectedTheme, x);
 			try {
 				// parse RenderTheme to get XmlRenderThemeMenuCallback getCategories called
-				// getRenderTheme(graphicFactory, new DisplayModel(), renderTheme);
+				new CB_RenderThemeHandler(graphicFactory, new DisplayModel(), renderTheme.getRelativePathPrefix()
+						, renderTheme, new KXmlParser()).processRenderTheme();
 			} catch (Exception e) {
 			}
 			styles = ((Xml_RenderThemeMenuCallback) x).getStyles();
