@@ -37,6 +37,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import CB_Locator.LocatorSettings;
 import CB_Locator.Map.Layer;
 import CB_Locator.Map.ManagerBase;
+import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.TrackRecorder;
 import CB_UI.GL_UI.Activitys.MapDownload;
@@ -572,7 +573,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 
 			for (XmlRenderThemeStyleLayer styleLayer : styleLayers.values()) {
 				if (styleLayer.isVisible()) {
-					styles.put(styleLayer.getTitle("de"), styleLayer.getId()); // todo Translation.Get("Language2Chars")
+					styles.put(styleLayer.getTitle(Translation.Get("Language2Chars").toLowerCase()), styleLayer.getId());
 				}
 			}
 

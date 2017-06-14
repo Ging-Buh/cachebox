@@ -2,7 +2,7 @@ package CB_UI.GL_UI.Activitys.settings;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.*;
+import java.util.Iterator;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;

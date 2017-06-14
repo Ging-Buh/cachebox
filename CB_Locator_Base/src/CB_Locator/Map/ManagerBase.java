@@ -366,6 +366,10 @@ public abstract class ManagerBase {
 			String url = LocatorSettings.UserMap1.getValue();
 			userMaps[0] = getUserMap(url, "UserMap1");
 			layers.add(userMaps[0]);
+		} else {
+			String url = LocatorSettings.UserMap1.getDefaultValue();
+			userMaps[0] = getUserMap(url, "UserMap1");
+			layers.add(userMaps[0]);
 		}
 
 		LocatorSettings.UserMap1.addChangedEventListener(new IChanged() {

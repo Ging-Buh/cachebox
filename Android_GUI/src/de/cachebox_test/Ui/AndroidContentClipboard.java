@@ -28,7 +28,7 @@ public class AndroidContentClipboard implements Clipboard {
 	@Override
 	public void setContents(String contents) {
 		this.contents = contents;
-		ClipData cd = new ClipData(contents, null, null);
+		ClipData cd = ClipData.newPlainText("", contents);
 		cm.setPrimaryClip(cd);
 	}
 

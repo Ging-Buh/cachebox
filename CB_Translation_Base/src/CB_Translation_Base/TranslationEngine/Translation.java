@@ -242,18 +242,11 @@ public class Translation {
 		String text = file.readString("UTF-8");
 
 		String[] lines = text.split("\n");
-
 		for (String line : lines) {
 			int pos;
 
 			// skip empty lines
 			if (line == "") {
-				continue;
-			}
-
-			// skip comment line
-			pos = line.indexOf("//");
-			if (pos > -1) {
 				continue;
 			}
 
@@ -263,10 +256,14 @@ public class Translation {
 				continue;
 			}
 
+			// skip comment line
+			if (line.startsWith("//")) {
+				continue;
+			}
+
 			String readID = line.substring(0, pos).trim();
 			String readTransl = line.substring(pos + 1);
 			String ReplacedRead = readTransl.trim().replace("\\n", String.format("%n"));
-
 			if (!Default) {
 				// dont add if added on Def
 				String contains = Get(readID);
@@ -276,7 +273,6 @@ public class Translation {
 				List.add(new Translations(readID, ReplacedRead));
 			}
 		}
-
 	}
 
 	private String get(String StringId, String... params) {
