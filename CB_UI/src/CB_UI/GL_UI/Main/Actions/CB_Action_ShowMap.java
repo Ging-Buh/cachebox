@@ -19,16 +19,17 @@ package CB_UI.GL_UI.Main.Actions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.kxml2.io.KXmlParser;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
+import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -56,13 +57,11 @@ import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Menu.OptionMenu;
-import CB_UI_Base.graphics.extendedInterfaces.ext_GraphicFactory;
+import CB_Utils.Log.Log;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
-import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
-import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
 
 /**
  * @author Longri
@@ -472,28 +471,9 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 				MenuItem mi = (MenuItem) v;
 				int which = (int) mi.getData();
 				String selectedValue;
-				if (mi.isChecked()) {
-					selectedValue = "";
-				} else {
-					selectedValue = LocatorSettings.RenderThemesFolder.getValue() + "/" + mi.getTitle() + ".xml";
-					// noch Styleauswahl aufrufen
-					showStyleSelection(which, selectedValue);
-				}
-				switch (which) {
-				case 0:
-					LocatorSettings.MapsforgeDayTheme.setValue(selectedValue);
-					break;
-				case 1:
-					LocatorSettings.MapsforgeNightTheme.setValue(selectedValue);
-					break;
-				case 2:
-					LocatorSettings.MapsforgeCarDayTheme.setValue(selectedValue);
-					break;
-				case 3:
-					LocatorSettings.MapsforgeCarNightTheme.setValue(selectedValue);
-					break;
-				}
-				Config.AcceptChanges();
+				// possible change of style, for the same theme
+				selectedValue = LocatorSettings.RenderThemesFolder.getValue() + "/" + mi.getTitle() + ".xml";
+				showStyleSelection(which, selectedValue);
 				return true;
 			}
 		});
@@ -506,10 +486,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 		final Menu lStyle = new Menu("Style");
 
 		int menuID = 0;
-		ArrayList<String> ThemeStyles = getThemeStyles(selectedTheme);
-		for (String style : ThemeStyles) {
+		HashMap<String, String> ThemeStyles = getThemeStyles(selectedTheme);
+		for (String style : ThemeStyles.keySet()) {
 			MenuItem mi = lStyle.addItem(menuID++, "", style); // ohne Translation
-			mi.setData(style + "|" + which);
+			mi.setData(ThemeStyles.get(style) + "|" + which + "|" + selectedTheme);
 			//mi.setCheckable(true);
 		}
 
@@ -518,18 +498,23 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 				MenuItem mi = (MenuItem) v;
 				String[] result = ((String) mi.getData()).split("\\|");
+				ManagerBase.Manager.mapsforgeThemesStyle = result[0];
 				switch (result[1]) {
 				case "0":
 					LocatorSettings.MapsforgeDayStyle.setValue(result[0]);
+					LocatorSettings.MapsforgeDayTheme.setValue(result[2]);
 					break;
 				case "1":
 					LocatorSettings.MapsforgeNightStyle.setValue(result[0]);
+					LocatorSettings.MapsforgeNightTheme.setValue(result[2]);
 					break;
 				case "2":
 					LocatorSettings.MapsforgeCarDayStyle.setValue(result[0]);
+					LocatorSettings.MapsforgeCarDayTheme.setValue(result[2]);
 					break;
 				case "3":
 					LocatorSettings.MapsforgeCarNightStyle.setValue(result[0]);
+					LocatorSettings.MapsforgeCarNightTheme.setValue(result[2]);
 					break;
 				}
 				Config.AcceptChanges();
@@ -537,48 +522,67 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 			}
 		});
 
-		if (ThemeStyles.size() > 0)
+		if (ThemeStyles.size() > 0) {
 			lStyle.Show();
+		} else {
+			// there is no style
+			// style of Config will be ignored while setting of Theme
+			switch (which) {
+			case 0:
+				LocatorSettings.MapsforgeDayTheme.setValue(selectedTheme);
+				break;
+			case 1:
+				LocatorSettings.MapsforgeNightTheme.setValue(selectedTheme);
+				break;
+			case 2:
+				LocatorSettings.MapsforgeCarDayTheme.setValue(selectedTheme);
+				break;
+			case 3:
+				LocatorSettings.MapsforgeCarNightTheme.setValue(selectedTheme);
+				break;
+			}
+			Config.AcceptChanges();
+		}
 	}
 
-	private ArrayList<String> getThemeStyles(String selectedTheme) {
-
-		ArrayList<String> styles = new ArrayList<String>();
-
+	private HashMap<String, String> getThemeStyles(String selectedTheme) {
 		try {
 			XmlRenderThemeMenuCallback x = new Xml_RenderThemeMenuCallback();
 			XmlRenderTheme renderTheme = new ExternalRenderTheme(selectedTheme, x);
 			try {
 				// parse RenderTheme to get XmlRenderThemeMenuCallback getCategories called
-				new CB_RenderThemeHandler(ManagerBase.Manager.getGraphicFactory(ManagerBase.Manager.DISPLAY_MODEL.getScaleFactor())
-						, new DisplayModel(), renderTheme.getRelativePathPrefix()
-						, renderTheme, new KXmlParser()).processRenderTheme();
+				CB_RenderThemeHandler.getRenderTheme(ManagerBase.Manager.getGraphicFactory(ManagerBase.Manager.DISPLAY_MODEL.getScaleFactor()), new DisplayModel(), renderTheme);
+				//new CB_RenderThemeHandler(ManagerBase.Manager.getGraphicFactory(ManagerBase.Manager.DISPLAY_MODEL.getScaleFactor()), new DisplayModel(), renderTheme.getRelativePathPrefix(), renderTheme, new KXmlParser()).processRenderTheme();
 			} catch (Exception e) {
+				Log.err(log, e.getLocalizedMessage());
 			}
-			styles = ((Xml_RenderThemeMenuCallback) x).getStyles();
+			return ((Xml_RenderThemeMenuCallback) x).getStyles();
 		} catch (Exception e) {
 		}
-		return styles;
+		return new HashMap<String, String>();
 	}
 
 	private class Xml_RenderThemeMenuCallback implements XmlRenderThemeMenuCallback {
-		private ArrayList<String> styles = new ArrayList<String>();
+		private HashMap<String, String> styles;
 
 		@Override
 		public Set<String> getCategories(XmlRenderThemeStyleMenu style) {
-			styles = new ArrayList<String>();
+			styles = new HashMap<String, String>();
 			Map<String, XmlRenderThemeStyleLayer> styleLayers = style.getLayers();
 
 			for (XmlRenderThemeStyleLayer styleLayer : styleLayers.values()) {
 				if (styleLayer.isVisible()) {
-					styles.add(styleLayer.getTitle("de")); // todo Translation.Get("Language2Chars")
+					styles.put(styleLayer.getTitle("de"), styleLayer.getId()); // todo Translation.Get("Language2Chars")
 				}
 			}
 
 			return null;
 		}
 
-		public ArrayList<String> getStyles() {
+		public HashMap<String, String> getStyles() {
+			if (styles == null) {
+				styles = new HashMap<String, String>();
+			}
 			return styles;
 		}
 	}

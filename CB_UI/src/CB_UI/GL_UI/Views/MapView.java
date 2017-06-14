@@ -46,6 +46,7 @@ import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
+import CB_Locator.LocatorSettings;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Map.Descriptor;
 import CB_Locator.Map.ManagerBase;
@@ -161,6 +162,13 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		Config.MapsforgeDayTheme.addChangedEventListener(themeChangedEventHandler);
 		Config.MapsforgeNightTheme.addChangedEventListener(themeChangedEventHandler);
+		Config.MapsforgeCarDayTheme.addChangedEventListener(themeChangedEventHandler);
+		Config.MapsforgeCarNightTheme.addChangedEventListener(themeChangedEventHandler);
+
+		Config.MapsforgeDayStyle.addChangedEventListener(themeChangedEventHandler);
+		Config.MapsforgeNightStyle.addChangedEventListener(themeChangedEventHandler);
+		Config.MapsforgeCarDayStyle.addChangedEventListener(themeChangedEventHandler);
+		Config.MapsforgeCarNightStyle.addChangedEventListener(themeChangedEventHandler);
 
 		registerSkinChangedEvent();
 		setBackground(Sprites.ListBack);
@@ -1298,11 +1306,13 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		}
 
 		if ((InitialFlags & INITIAL_THEME) != 0) {
+			String mapsforgeThemesStyle = "";
 			mapsForgeThemePath = null;
 			boolean useInvertNightTheme = false;
 			if (CarMode) {
 				ManagerBase.Manager.textScale = ManagerBase.DEFAULT_TEXT_SCALE * 1.35f;
 				if (Config.nightMode.getValue()) {
+					mapsforgeThemesStyle = LocatorSettings.MapsforgeCarNightStyle.getValue();
 					if (!setTheme(Config.MapsforgeCarNightTheme.getValue())) {
 						useInvertNightTheme = true;
 						if (!setTheme(Config.MapsforgeCarDayTheme.getValue())) {
@@ -1310,6 +1320,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 						}
 					}
 				} else {
+					mapsforgeThemesStyle = LocatorSettings.MapsforgeCarDayStyle.getValue();
 					if (!setTheme(Config.MapsforgeCarDayTheme.getValue())) {
 						mapsForgeThemePath = ManagerBase.INTERNAL_CAR_THEME;
 					}
@@ -1317,17 +1328,19 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			} else {
 				ManagerBase.Manager.textScale = ManagerBase.DEFAULT_TEXT_SCALE;
 				if (Config.nightMode.getValue()) {
+					mapsforgeThemesStyle = LocatorSettings.MapsforgeNightStyle.getValue();
 					if (!setTheme(Config.MapsforgeNightTheme.getValue())) {
 						useInvertNightTheme = true;
 						setTheme(Config.MapsforgeDayTheme.getValue());
 						// else themePath = null : defaults to internal RenderTheme OSMARENDER
 					}
 				} else {
+					mapsforgeThemesStyle = LocatorSettings.MapsforgeDayStyle.getValue();
 					setTheme(Config.MapsforgeDayTheme.getValue());
 					// else themePath = null : defaults to internal RenderTheme OSMARENDER
 				}
 			}
-			ManagerBase.Manager.setRenderTheme(mapsForgeThemePath, useInvertNightTheme);
+			ManagerBase.Manager.setRenderTheme(mapsForgeThemePath, useInvertNightTheme, mapsforgeThemesStyle);
 		}
 
 		if ((InitialFlags & INITIAL_WP_LIST) != 0) {

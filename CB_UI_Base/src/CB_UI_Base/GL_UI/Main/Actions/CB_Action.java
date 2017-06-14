@@ -20,7 +20,7 @@ import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action {
-	final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_Action.class);
+	protected final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_Action.class);
 
 	protected String name;
 	protected int id;

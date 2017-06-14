@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.http.HttpResponse;
@@ -99,7 +98,7 @@ public abstract class ManagerBase {
 
 	private boolean mayAddLayer = false; // add only during startup (why?)
 
-	protected String mapsforgeThemesStyle = "";
+	public String mapsforgeThemesStyle = "";
 
 	public ManagerBase(DisplayModel displaymodel) {
 		Manager = this;
@@ -512,8 +511,9 @@ public abstract class ManagerBase {
 
 	private RenderThemeFuture renderThemeFuture;
 
-	public void setRenderTheme(String themePathAndName, boolean invert) {
+	public void setRenderTheme(String themePathAndName, boolean invert, String themestyle) {
 		invertToNightTheme = invert;
+		mapsforgeThemesStyle = themestyle;
 		if (themePathAndName == null) {
 			Log.debug(log, "Use RenderTheme CB_InternalRenderTheme.OSMARENDER");
 			renderTheme = CB_InternalRenderTheme.OSMARENDER;
@@ -638,10 +638,12 @@ public abstract class ManagerBase {
 	private class Xml_RenderThemeMenuCallback implements XmlRenderThemeMenuCallback {
 		@Override
 		public Set<String> getCategories(XmlRenderThemeStyleMenu style) {
+			/*
+			 * 
 			// String styleId = style.getId();
 			// String styleName = style.getDefaultValue();
 			Map<String, XmlRenderThemeStyleLayer> styleLayers = style.getLayers();
-
+			
 			String selection = "";
 			// count visibleStyles for array initialization
 			int visibleStyles = 0;
@@ -659,14 +661,15 @@ public abstract class ManagerBase {
 					if (entries[i].equals(mapsforgeThemesStyle)) { // Radfahren, Wandern,....
 						selection = styleLayer.getId();
 					} else {
-
+			
 					}
 					values[i] = styleLayer.getId();
 					++i;
 				}
 			}
+			 */
 
-			XmlRenderThemeStyleLayer selectedLayer = style.getLayer(selection);
+			XmlRenderThemeStyleLayer selectedLayer = style.getLayer(mapsforgeThemesStyle);
 
 			// now change the categories for this style
 			if (selectedLayer == null) {

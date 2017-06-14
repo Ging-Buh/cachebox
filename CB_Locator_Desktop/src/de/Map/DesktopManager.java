@@ -52,7 +52,6 @@ public class DesktopManager extends ManagerBase {
 
 	public DesktopManager(DisplayModel displaymodel) {
 		super(displaymodel);
-		mapsforgeThemesStyle = "Radfahren"; // todo Config.mapsforgeThemesStyle.getValue();
 	}
 
 	@Override
