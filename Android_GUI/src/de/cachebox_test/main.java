@@ -92,7 +92,6 @@ import android.os.PowerManager;
 import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
-import android.text.ClipboardManager;
 import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
@@ -116,7 +115,8 @@ import de.cachebox_test.Custom_Controls.QuickButtonList.HorizontalListView;
 import de.cachebox_test.Custom_Controls.downSlider;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Ui.ActivityUtils;
-import de.cachebox_test.Ui.AndroidClipboard;
+import de.cachebox_test.Ui.AndroidContentClipboard;
+import de.cachebox_test.Ui.AndroidTextClipboard;
 import de.cachebox_test.Views.DescriptionView;
 import de.cachebox_test.Views.Forms.GcApiLogin;
 import de.cachebox_test.Views.Forms.MessageBox;
@@ -2597,13 +2597,17 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
         });
 
-        // set AndroidClipboard
-        ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-
-        AndroidClipboard acb = new AndroidClipboard(cm);
-
-        if (cm != null)
-            GlobalCore.setDefaultClipboard(acb);
+        // set AndroidContentClipboard
+        Object cm = getSystemService(CLIPBOARD_SERVICE);
+        if (cm != null) {
+            if (cm instanceof android.content.ClipboardManager) {
+                AndroidContentClipboard acb = new AndroidContentClipboard((android.content.ClipboardManager) cm);
+                GlobalCore.setDefaultClipboard(acb);
+            } else if (cm instanceof android.text.ClipboardManager) {
+                AndroidTextClipboard acb = new AndroidTextClipboard((android.text.ClipboardManager) cm);
+                GlobalCore.setDefaultClipboard(acb);
+            }
+        }
 
         CB_Android_FileExplorer fileExplorer = new CB_Android_FileExplorer(mainActivity);
         PlatformConnector.setGetFileListener(fileExplorer);

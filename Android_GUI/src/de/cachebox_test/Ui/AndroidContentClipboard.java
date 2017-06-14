@@ -2,14 +2,13 @@ package de.cachebox_test.Ui;
 
 import com.badlogic.gdx.utils.Clipboard;
 
-import android.text.ClipboardManager;
+import android.content.ClipboardManager;
 
-@SuppressWarnings("deprecation")
-public class AndroidClipboard implements Clipboard {
+public class AndroidContentClipboard implements Clipboard {
 	private String contents;
 	private ClipboardManager cm;
 
-	public AndroidClipboard(ClipboardManager Cm) {
+	public AndroidContentClipboard(ClipboardManager Cm) {
 		this.cm = Cm;
 	}
 

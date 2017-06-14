@@ -1240,7 +1240,7 @@ public class EditTextField extends EditTextFieldBase {
 
 					if (style.font.getData().hasGlyph(c)) {
 						builder.append(c);
-						keyTyped(c);
+						keyTyped(c,true);
 					}
 				}
 				setTextAtCursorVisible(true);
