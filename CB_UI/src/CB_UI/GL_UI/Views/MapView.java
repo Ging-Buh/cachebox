@@ -46,7 +46,6 @@ import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
-import CB_Locator.LocatorSettings;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Map.Descriptor;
 import CB_Locator.Map.ManagerBase;
@@ -1307,40 +1306,28 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		if ((InitialFlags & INITIAL_THEME) != 0) {
 			String mapsforgeThemesStyle = "";
-			mapsForgeThemePath = null;
-			boolean useInvertNightTheme = false;
+			mapsForgeThemePath = "";
 			if (CarMode) {
 				ManagerBase.Manager.textScale = ManagerBase.DEFAULT_TEXT_SCALE * 1.35f;
+				mapsForgeThemePath = ManagerBase.INTERNAL_THEME_CAR;
 				if (Config.nightMode.getValue()) {
-					mapsforgeThemesStyle = LocatorSettings.MapsforgeCarNightStyle.getValue();
-					if (!setTheme(Config.MapsforgeCarNightTheme.getValue())) {
-						useInvertNightTheme = true;
-						if (!setTheme(Config.MapsforgeCarDayTheme.getValue())) {
-							mapsForgeThemePath = ManagerBase.INTERNAL_CAR_THEME;
-						}
-					}
+					mapsforgeThemesStyle = Config.MapsforgeCarNightStyle.getValue();
+					setTheme(Config.MapsforgeCarNightTheme.getValue());
 				} else {
-					mapsforgeThemesStyle = LocatorSettings.MapsforgeCarDayStyle.getValue();
-					if (!setTheme(Config.MapsforgeCarDayTheme.getValue())) {
-						mapsForgeThemePath = ManagerBase.INTERNAL_CAR_THEME;
-					}
+					mapsforgeThemesStyle = Config.MapsforgeCarDayStyle.getValue();
+					setTheme(Config.MapsforgeCarDayTheme.getValue());
 				}
 			} else {
 				ManagerBase.Manager.textScale = ManagerBase.DEFAULT_TEXT_SCALE;
 				if (Config.nightMode.getValue()) {
-					mapsforgeThemesStyle = LocatorSettings.MapsforgeNightStyle.getValue();
-					if (!setTheme(Config.MapsforgeNightTheme.getValue())) {
-						useInvertNightTheme = true;
-						setTheme(Config.MapsforgeDayTheme.getValue());
-						// else themePath = null : defaults to internal RenderTheme OSMARENDER
-					}
+					mapsforgeThemesStyle = Config.MapsforgeNightStyle.getValue();
+					setTheme(Config.MapsforgeNightTheme.getValue());
 				} else {
-					mapsforgeThemesStyle = LocatorSettings.MapsforgeDayStyle.getValue();
+					mapsforgeThemesStyle = Config.MapsforgeDayStyle.getValue();
 					setTheme(Config.MapsforgeDayTheme.getValue());
-					// else themePath = null : defaults to internal RenderTheme OSMARENDER
 				}
 			}
-			ManagerBase.Manager.setRenderTheme(mapsForgeThemePath, useInvertNightTheme, mapsforgeThemesStyle);
+			ManagerBase.Manager.setRenderTheme(mapsForgeThemePath, mapsforgeThemesStyle);
 		}
 
 		if ((InitialFlags & INITIAL_WP_LIST) != 0) {

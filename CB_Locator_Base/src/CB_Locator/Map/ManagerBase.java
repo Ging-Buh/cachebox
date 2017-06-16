@@ -98,7 +98,9 @@ public abstract class ManagerBase {
 
 	private boolean mayAddLayer = false; // add only during startup (why?)
 
-	public String mapsforgeThemesStyle = "";
+	private String mapsforgeThemesStyle = "";
+	private String mapsforgeTheme = "";
+	private boolean alreadySet = false;
 
 	public ManagerBase(DisplayModel displaymodel) {
 		Manager = this;
@@ -510,44 +512,53 @@ public abstract class ManagerBase {
 	public float textScale = 1;
 	public static float DEFAULT_TEXT_SCALE = 1;
 
-	public static final String INTERNAL_CAR_THEME = "internal-car-theme";
-	private boolean invertToNightTheme; // not yet implemented?
+	public static final String INTERNAL_THEME_DEFAULT = "Default";
+	public static final String INTERNAL_THEME_OSMARENDER = "OsmaRender";
+	public static final String INTERNAL_THEME_CAR = "Car";
 
 	private RenderThemeFuture renderThemeFuture;
 
-	public void setRenderTheme(String themePathAndName, boolean invert, String themestyle) {
-		invertToNightTheme = invert;
+	public void setRenderTheme(String theme, String themestyle) {
+		if (alreadySet)
+			if (theme.equals(mapsforgeTheme))
+				if (themestyle.equals(mapsforgeThemesStyle))
+					return;
 		mapsforgeThemesStyle = themestyle;
-		if (themePathAndName == null) {
-			Log.debug(log, "Use RenderTheme CB_InternalRenderTheme.OSMARENDER");
+		mapsforgeTheme = theme;
+		if (mapsforgeTheme.length() == 0) {
+			Log.info(log, "Use RenderTheme CB_InternalRenderTheme.DEFAULT");
+			renderTheme = CB_InternalRenderTheme.DEFAULT;
+		} else if (mapsforgeTheme.equals(INTERNAL_THEME_OSMARENDER)) {
+			Log.info(log, "Use CB_InternalRenderTheme OSMARENDER");
 			renderTheme = CB_InternalRenderTheme.OSMARENDER;
+		} else if (mapsforgeTheme.equals(INTERNAL_THEME_CAR)) {
+			Log.info(log, "Use CB_InternalRenderTheme CAR");
+			renderTheme = CB_InternalRenderTheme.CAR;
+		} else if (mapsforgeTheme.equals(INTERNAL_THEME_DEFAULT)) {
+			Log.info(log, "Use CB_InternalRenderTheme DEFAULT");
+			renderTheme = CB_InternalRenderTheme.DEFAULT;
 		} else {
-			Log.debug(log, "Use RenderTheme " + themePathAndName);
-			if (themePathAndName.equals(INTERNAL_CAR_THEME)) {
-				renderTheme = CB_InternalRenderTheme.DAY_CAR_THEME;
-			} else {
-				try {
-					File file = FileFactory.createFile(themePathAndName);
-					if (file.exists()) {
-						java.io.File themeFile = new java.io.File(file.getAbsolutePath());
-						XmlRenderThemeMenuCallback x = new Xml_RenderThemeMenuCallback();
-						renderTheme = new ExternalRenderTheme(themeFile, x);
-					} else {
-						Log.err(log, themePathAndName + " not found!");
-						renderTheme = CB_InternalRenderTheme.OSMARENDER;
-					}
-				} catch (FileNotFoundException e) {
-					Log.err(log, "Load RenderTheme", "Error loading RenderTheme!", e);
-					renderTheme = CB_InternalRenderTheme.OSMARENDER;
+			Log.info(log, "Use RenderTheme " + mapsforgeTheme + " with " + mapsforgeThemesStyle);
+			try {
+				File file = FileFactory.createFile(mapsforgeTheme);
+				if (file.exists()) {
+					java.io.File themeFile = new java.io.File(file.getAbsolutePath());
+					renderTheme = new ExternalRenderTheme(themeFile, new Xml_RenderThemeMenuCallback());
+				} else {
+					Log.err(log, mapsforgeTheme + " not found!");
+					renderTheme = CB_InternalRenderTheme.DEFAULT;
 				}
+			} catch (FileNotFoundException e) {
+				Log.err(log, "Load RenderTheme", "Error loading RenderTheme!", e);
+				renderTheme = CB_InternalRenderTheme.DEFAULT;
 			}
 		}
 
 		try {
 			CB_RenderThemeHandler.getRenderTheme(getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), DISPLAY_MODEL, renderTheme);
 		} catch (Exception e) {
-			Log.err(log, "Error in checking RenderTheme " + themePathAndName, e);
-			renderTheme = CB_InternalRenderTheme.OSMARENDER;
+			Log.err(log, "Error in checking RenderTheme " + mapsforgeTheme, e);
+			renderTheme = CB_InternalRenderTheme.DEFAULT;
 		}
 
 		if (databaseRenderer == null) {
@@ -561,6 +572,7 @@ public abstract class ManagerBase {
 		this.renderThemeFuture = new RenderThemeFuture(this.getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), this.renderTheme, this.DISPLAY_MODEL);
 		new Thread(this.renderThemeFuture).start();
 
+		alreadySet = true;
 	}
 
 	public TileGL getMapsforgePixMap(Layer layer, Descriptor desc, int ThreadIndex) {
@@ -661,7 +673,7 @@ public abstract class ManagerBase {
 			int i = 0;
 			for (XmlRenderThemeStyleLayer styleLayer : styleLayers.values()) {
 				if (styleLayer.isVisible()) {
-					entries[i] = styleLayer.getTitle("de"); // todo Translation.Get("Language2Chars")
+					entries[i] = styleLayer.getTitle(Translation.Get("Language2Chars");
 					if (entries[i].equals(mapsforgeThemesStyle)) { // Radfahren, Wandern,....
 						selection = styleLayer.getId();
 					} else {

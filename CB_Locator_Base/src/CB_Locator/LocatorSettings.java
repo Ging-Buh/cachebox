@@ -58,8 +58,8 @@ public interface LocatorSettings {
 	public static final SettingFolder RenderThemesFolder = new SettingFolder("RenderThemesFolder", SettingCategory.Map, NORMAL, "", SettingStoreType.Global, SettingUsage.ALL, false);
 	public static final SettingFile MapsforgeDayTheme = (SettingFile) SettingsList.addSetting(new SettingFile("MapsforgeDayTheme", SettingCategory.Map, NEVER, "", SettingStoreType.Global, SettingUsage.ACB, "xml"));
 	public static final SettingFile MapsforgeNightTheme = (SettingFile) SettingsList.addSetting(new SettingFile("MapsforgeNightTheme", SettingCategory.Map, NEVER, "", SettingStoreType.Global, SettingUsage.ACB, "xml"));
-	public static final SettingFile MapsforgeCarDayTheme = (SettingFile) SettingsList.addSetting(new SettingFile("MapsforgeCarDayTheme", SettingCategory.Map, NEVER, "", SettingStoreType.Global, SettingUsage.ACB, "xml"));
-	public static final SettingFile MapsforgeCarNightTheme = (SettingFile) SettingsList.addSetting(new SettingFile("MapsforgeCarNightTheme", SettingCategory.Map, NEVER, "", SettingStoreType.Global, SettingUsage.ACB, "xml"));
+	public static final SettingFile MapsforgeCarDayTheme = (SettingFile) SettingsList.addSetting(new SettingFile("MapsforgeCarDayTheme", SettingCategory.Map, NEVER, "CAR", SettingStoreType.Global, SettingUsage.ACB, "xml"));
+	public static final SettingFile MapsforgeCarNightTheme = (SettingFile) SettingsList.addSetting(new SettingFile("MapsforgeCarNightTheme", SettingCategory.Map, NEVER, "CAR", SettingStoreType.Global, SettingUsage.ACB, "xml"));
 	public static final SettingString MapsforgeDayStyle = (SettingString) SettingsList.addSetting(new SettingString("MapsforgeDayStyle", SettingCategory.Map, NEVER, "", SettingStoreType.Global, SettingUsage.ACB));
 	public static final SettingString MapsforgeNightStyle = (SettingString) SettingsList.addSetting(new SettingString("MapsforgeNightStyle", SettingCategory.Map, NEVER, "", SettingStoreType.Global, SettingUsage.ACB));
 	public static final SettingString MapsforgeCarDayStyle = (SettingString) SettingsList.addSetting(new SettingString("MapsforgeCarDayStyle", SettingCategory.Map, NEVER, "", SettingStoreType.Global, SettingUsage.ACB));

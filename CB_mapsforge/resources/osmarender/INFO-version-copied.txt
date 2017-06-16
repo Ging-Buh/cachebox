@@ -1,0 +1,4 @@
+copied from 
+mapsforge\mapsforge-themes\src\main\resources\assets
+Version svn 3031 from 26.Feb.2017 (renderTheme-v6.xsd)
+removed hillshading

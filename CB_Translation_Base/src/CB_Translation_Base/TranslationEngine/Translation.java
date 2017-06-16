@@ -264,6 +264,12 @@ public class Translation {
 			String readID = line.substring(0, pos).trim();
 			String readTransl = line.substring(pos + 1);
 			String ReplacedRead = readTransl.trim().replace("\\n", String.format("%n"));
+			if (ReplacedRead.endsWith("\"")) {
+				ReplacedRead = ReplacedRead.substring(0, ReplacedRead.length() - 1);
+			}
+			if (ReplacedRead.startsWith("\"")) {
+				ReplacedRead = ReplacedRead.substring(1);
+			}
 			if (!Default) {
 				// dont add if added on Def
 				String contains = Get(readID);

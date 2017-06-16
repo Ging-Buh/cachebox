@@ -400,6 +400,9 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 
 	private ArrayList<String> getRenderThemes() {
 		ArrayList<String> files = new ArrayList<String>();
+		files.add(ManagerBase.INTERNAL_THEME_DEFAULT);
+		files.add(ManagerBase.INTERNAL_THEME_OSMARENDER);
+		files.add(ManagerBase.INTERNAL_THEME_CAR);
 		String directory = LocatorSettings.RenderThemesFolder.getValue();
 		if (directory.length() > 0) {
 			File dir = FileFactory.createFile(directory);
@@ -442,27 +445,25 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 			MenuItem mi = lRenderThemesSubMenu.addItem(menuID++, "", theme); // ohne Translation
 			mi.setData(which);
 			mi.setCheckable(true);
+			String compare = "";
 			switch (which) {
 			case 0:
-				if (LocatorSettings.MapsforgeDayTheme.getValue().contains(theme)) {
-					mi.setChecked(true);
-				}
+				compare = Config.MapsforgeDayTheme.getValue();
 				break;
 			case 1:
-				if (LocatorSettings.MapsforgeNightTheme.getValue().contains(theme)) {
-					mi.setChecked(true);
-				}
+				compare = Config.MapsforgeNightTheme.getValue();
 				break;
 			case 2:
-				if (LocatorSettings.MapsforgeCarDayTheme.getValue().contains(theme)) {
-					mi.setChecked(true);
-				}
+				compare = Config.MapsforgeCarDayTheme.getValue();
 				break;
 			case 3:
-				if (LocatorSettings.MapsforgeCarNightTheme.getValue().contains(theme)) {
-					mi.setChecked(true);
-				}
+				compare = Config.MapsforgeCarNightTheme.getValue();
 				break;
+			}
+			if (compare.length() == 0)
+				compare = ManagerBase.INTERNAL_THEME_DEFAULT;
+			if (compare.contains(theme)) {
+				mi.setChecked(true);
 			}
 		}
 
@@ -471,9 +472,17 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 				MenuItem mi = (MenuItem) v;
 				int which = (int) mi.getData();
-				String selectedValue;
+				String selectedValue = "";
 				// possible change of style, for the same theme
-				selectedValue = LocatorSettings.RenderThemesFolder.getValue() + "/" + mi.getTitle() + ".xml";
+				if (mi.getTitle().equals(ManagerBase.INTERNAL_THEME_OSMARENDER))
+					selectedValue = ManagerBase.INTERNAL_THEME_OSMARENDER;
+				else if (mi.getTitle().equals(ManagerBase.INTERNAL_THEME_CAR))
+					selectedValue = ManagerBase.INTERNAL_THEME_CAR;
+				else if (mi.getTitle().equals(ManagerBase.INTERNAL_THEME_DEFAULT))
+					selectedValue = ManagerBase.INTERNAL_THEME_DEFAULT;
+				else
+					selectedValue = Config.RenderThemesFolder.getValue() + "/" + mi.getTitle() + ".xml";
+
 				showStyleSelection(which, selectedValue);
 				return true;
 			}
@@ -498,27 +507,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 				MenuItem mi = (MenuItem) v;
-				String[] result = ((String) mi.getData()).split("\\|");
-				ManagerBase.Manager.mapsforgeThemesStyle = result[0];
-				switch (result[1]) {
-				case "0":
-					LocatorSettings.MapsforgeDayStyle.setValue(result[0]);
-					LocatorSettings.MapsforgeDayTheme.setValue(result[2]);
-					break;
-				case "1":
-					LocatorSettings.MapsforgeNightStyle.setValue(result[0]);
-					LocatorSettings.MapsforgeNightTheme.setValue(result[2]);
-					break;
-				case "2":
-					LocatorSettings.MapsforgeCarDayStyle.setValue(result[0]);
-					LocatorSettings.MapsforgeCarDayTheme.setValue(result[2]);
-					break;
-				case "3":
-					LocatorSettings.MapsforgeCarNightStyle.setValue(result[0]);
-					LocatorSettings.MapsforgeCarNightTheme.setValue(result[2]);
-					break;
-				}
-				Config.AcceptChanges();
+				showOverlaySelection(((String) mi.getData()).split("\\|"));
 				return true;
 			}
 		});
@@ -530,16 +519,20 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 			// style of Config will be ignored while setting of Theme
 			switch (which) {
 			case 0:
-				LocatorSettings.MapsforgeDayTheme.setValue(selectedTheme);
+				Config.MapsforgeDayStyle.setValue("");
+				Config.MapsforgeDayTheme.setValue(selectedTheme);
 				break;
 			case 1:
-				LocatorSettings.MapsforgeNightTheme.setValue(selectedTheme);
+				Config.MapsforgeNightStyle.setValue("");
+				Config.MapsforgeNightTheme.setValue(selectedTheme);
 				break;
 			case 2:
-				LocatorSettings.MapsforgeCarDayTheme.setValue(selectedTheme);
+				Config.MapsforgeCarDayStyle.setValue("");
+				Config.MapsforgeCarDayTheme.setValue(selectedTheme);
 				break;
 			case 3:
-				LocatorSettings.MapsforgeCarNightTheme.setValue(selectedTheme);
+				Config.MapsforgeCarNightStyle.setValue("");
+				Config.MapsforgeCarNightTheme.setValue(selectedTheme);
 				break;
 			}
 			Config.AcceptChanges();
@@ -547,23 +540,24 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 	}
 
 	private HashMap<String, String> getThemeStyles(String selectedTheme) {
-		try {
-			XmlRenderThemeMenuCallback x = new Xml_RenderThemeMenuCallback();
-			XmlRenderTheme renderTheme = new ExternalRenderTheme(selectedTheme, x);
+		if (selectedTheme.length() > 0) {
 			try {
-				// parse RenderTheme to get XmlRenderThemeMenuCallback getCategories called
-				CB_RenderThemeHandler.getRenderTheme(ManagerBase.Manager.getGraphicFactory(ManagerBase.Manager.DISPLAY_MODEL.getScaleFactor()), new DisplayModel(), renderTheme);
-				//new CB_RenderThemeHandler(ManagerBase.Manager.getGraphicFactory(ManagerBase.Manager.DISPLAY_MODEL.getScaleFactor()), new DisplayModel(), renderTheme.getRelativePathPrefix(), renderTheme, new KXmlParser()).processRenderTheme();
+				XmlRenderThemeMenuCallback getStylesCallBack = new GetStylesCallback();
+				XmlRenderTheme renderTheme = new ExternalRenderTheme(selectedTheme, getStylesCallBack);
+				try {
+					// parse RenderTheme to get XmlRenderThemeMenuCallback getCategories called
+					CB_RenderThemeHandler.getRenderTheme(ManagerBase.Manager.getGraphicFactory(ManagerBase.Manager.DISPLAY_MODEL.getScaleFactor()), new DisplayModel(), renderTheme);
+				} catch (Exception e) {
+					Log.err(log, e.getLocalizedMessage());
+				}
+				return ((GetStylesCallback) getStylesCallBack).getStyles();
 			} catch (Exception e) {
-				Log.err(log, e.getLocalizedMessage());
 			}
-			return ((Xml_RenderThemeMenuCallback) x).getStyles();
-		} catch (Exception e) {
 		}
 		return new HashMap<String, String>();
 	}
 
-	private class Xml_RenderThemeMenuCallback implements XmlRenderThemeMenuCallback {
+	private class GetStylesCallback implements XmlRenderThemeMenuCallback {
 		private HashMap<String, String> styles;
 
 		@Override
@@ -587,4 +581,127 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 			return styles;
 		}
 	}
+
+	private void showOverlaySelection(String values[]) {
+		final Menu lOverlay = new OptionMenu("StyleOverlay");
+
+		int menuID = 0;
+		// default
+		HashMap<String, String> StyleOverlays = getStyleOverlays(values[2], values[0]);
+		// if gespeicherte Werte
+		// gehören sie zu dieser Auswahl?
+		// ersetze StyleOverlays
+		// ?? todo
+		for (String overlay : StyleOverlays.keySet()) {
+			MenuItem mi = lOverlay.addItem(menuID++, "", overlay); // ohne Translation
+			mi.setData(values[0] + "|" + values[1] + "|" + values[2] + "|" + StyleOverlays.get(overlay));
+			mi.setCheckable(true);
+			// das sind die defaults
+			if (StyleOverlays.get(overlay).startsWith("+")) {
+				mi.setChecked(true);
+			}
+		}
+
+		lOverlay.addOnClickListener(new OnClickListener() {
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				MenuItem mi = (MenuItem) v;
+				String result[] = ((String) mi.getData()).split("\\|");
+				mi.setChecked(mi.isChecked());
+				lOverlay.Show();
+				return true;
+			}
+		});
+
+		lOverlay.mMsgBoxClickListener = new OnMsgBoxClickListener() {
+			@Override
+			public boolean onClick(int which, Object data) {
+				Config.AcceptChanges();
+				return true;
+			}
+		};
+
+		if (StyleOverlays.size() > 0) {
+			lOverlay.Show();
+		} else {
+			// save the values, there is perhaps no overlay 
+			switch (values[1]) {
+			case "0":
+				Config.MapsforgeDayStyle.setValue(values[0]);
+				Config.MapsforgeDayTheme.setValue(values[2]);
+				break;
+			case "1":
+				Config.MapsforgeNightStyle.setValue(values[0]);
+				Config.MapsforgeNightTheme.setValue(values[2]);
+				break;
+			case "2":
+				Config.MapsforgeCarDayStyle.setValue(values[0]);
+				Config.MapsforgeCarDayTheme.setValue(values[2]);
+				break;
+			case "3":
+				Config.MapsforgeCarNightStyle.setValue(values[0]);
+				Config.MapsforgeCarNightTheme.setValue(values[2]);
+				break;
+			}
+			Config.AcceptChanges();
+		}
+	}
+
+	private HashMap<String, String> getStyleOverlays(String selectedTheme, String selectedLayer) {
+		if (selectedTheme.length() > 0) {
+			try {
+				OverlaysCallback getOverlaysCallback = new GetOverlaysCallback();
+				XmlRenderTheme renderTheme = new ExternalRenderTheme(selectedTheme, getOverlaysCallback);
+				getOverlaysCallback.setLayer(selectedLayer);
+				try {
+					// parse RenderTheme to get XmlRenderThemeMenuCallback getCategories called
+					CB_RenderThemeHandler.getRenderTheme(ManagerBase.Manager.getGraphicFactory(ManagerBase.Manager.DISPLAY_MODEL.getScaleFactor()), new DisplayModel(), renderTheme);
+				} catch (Exception e) {
+					Log.err(log, e.getLocalizedMessage());
+				}
+				return getOverlaysCallback.getOverlays();
+			} catch (Exception e) {
+			}
+		}
+		return new HashMap<String, String>();
+	}
+
+	private class GetOverlaysCallback implements OverlaysCallback {
+		public String selectedLayer;
+		private HashMap<String, String> overlays;
+		private Map<String, XmlRenderThemeStyleLayer> styleLayers;
+
+		@Override
+		public Set<String> getCategories(XmlRenderThemeStyleMenu style) {
+			overlays = new HashMap<String, String>();
+			styleLayers = style.getLayers();
+			XmlRenderThemeStyleLayer selected_Layer = style.getLayer(selectedLayer);
+			for (XmlRenderThemeStyleLayer overlay : selected_Layer.getOverlays()) {
+				if (overlay.isEnabled()) {
+					overlays.put(overlay.getTitle(Translation.Get("Language2Chars")), "+" + overlay.getId());
+				} else {
+					overlays.put(overlay.getTitle(Translation.Get("Language2Chars")), "-" + overlay.getId());
+				}
+			}
+
+			return null;
+		}
+
+		@Override
+		public HashMap<String, String> getOverlays() {
+			return overlays;
+		}
+
+		@Override
+		public void setLayer(String layer) {
+			selectedLayer = layer;
+		}
+	}
+
+	interface OverlaysCallback extends XmlRenderThemeMenuCallback {
+		public HashMap<String, String> getOverlays();
+
+		public void setLayer(String layer);
+	}
+
 }
