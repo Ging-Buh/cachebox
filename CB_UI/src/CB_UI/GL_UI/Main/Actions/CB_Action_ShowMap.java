@@ -587,6 +587,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 					overlayEnabled = !overlayEnabled;
 				}
 			}
+			if (overlayEnabled)
+				overlayID = "+" + overlayID.substring(1);
+			else
+				overlayID = "-" + overlayID.substring(1);
 			mi.setData(values + "|" + overlayID);
 			mi.setCheckable(true);
 			mi.setChecked(overlayEnabled);
