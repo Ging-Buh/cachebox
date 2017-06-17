@@ -684,8 +684,15 @@ public abstract class ManagerBase {
 				}
 			}
 			 */
-
-			XmlRenderThemeStyleLayer selectedLayer = style.getLayer(mapsforgeThemesStyle);
+			String ConfigStyle = mapsforgeThemesStyle;
+			int StyleEnds = mapsforgeThemesStyle.indexOf("\t");
+			String Style;
+			if (StyleEnds > -1) {
+				Style = mapsforgeThemesStyle.substring(0, StyleEnds);
+			} else {
+				Style = mapsforgeThemesStyle;
+			}
+			XmlRenderThemeStyleLayer selectedLayer = style.getLayer(Style);
 
 			// now change the categories for this style
 			if (selectedLayer == null) {
@@ -694,7 +701,12 @@ public abstract class ManagerBase {
 			Set<String> result = selectedLayer.getCategories();
 			// add the categories from overlays that are enabled
 			for (XmlRenderThemeStyleLayer overlay : selectedLayer.getOverlays()) {
-				if (overlay.isEnabled()) {
+				boolean overlayEnabled = overlay.isEnabled();
+				int posInConfig = ConfigStyle.indexOf(overlay.getId());
+				if (posInConfig > -1) {
+					overlayEnabled = ConfigStyle.substring(posInConfig - 1, posInConfig).equals("+");
+				}
+				if (overlayEnabled) {
 					result.addAll(overlay.getCategories());
 				}
 			}

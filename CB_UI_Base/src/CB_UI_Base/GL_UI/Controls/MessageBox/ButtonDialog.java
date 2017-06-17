@@ -54,7 +54,6 @@ public class ButtonDialog extends Dialog {
 	public OnMsgBoxClickListener mMsgBoxClickListener;
 
 	protected OnClickListener positiveButtonClickListener;
-
 	protected OnClickListener neutralButtonClickListener;
 	protected OnClickListener negativeButtonClickListener;
 

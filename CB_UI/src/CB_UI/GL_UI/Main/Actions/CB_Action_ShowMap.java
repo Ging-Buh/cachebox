@@ -57,6 +57,7 @@ import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
+import CB_UI_Base.GL_UI.Menu.MenuItemBase;
 import CB_UI_Base.GL_UI.Menu.OptionMenu;
 import CB_Utils.Log.Log;
 import CB_Utils.Settings.SettingBool;
@@ -507,7 +508,14 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 				MenuItem mi = (MenuItem) v;
-				showOverlaySelection(((String) mi.getData()).split("\\|"));
+				String values[] = ((String) mi.getData()).split("\\|");
+				HashMap<String, String> StyleOverlays = getStyleOverlays(values[2], values[0]);
+				String ConfigStyle = getStyleFromConfig(values[1]);
+				if (!ConfigStyle.startsWith(values[0])) {
+					// Config one is not for this layer
+					ConfigStyle = "";
+				}
+				showOverlaySelection((String) mi.getData(), StyleOverlays, ConfigStyle);
 				return true;
 			}
 		});
@@ -517,24 +525,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 		} else {
 			// there is no style
 			// style of Config will be ignored while setting of Theme
-			switch (which) {
-			case 0:
-				Config.MapsforgeDayStyle.setValue("");
-				Config.MapsforgeDayTheme.setValue(selectedTheme);
-				break;
-			case 1:
-				Config.MapsforgeNightStyle.setValue("");
-				Config.MapsforgeNightTheme.setValue(selectedTheme);
-				break;
-			case 2:
-				Config.MapsforgeCarDayStyle.setValue("");
-				Config.MapsforgeCarDayTheme.setValue(selectedTheme);
-				break;
-			case 3:
-				Config.MapsforgeCarNightStyle.setValue("");
-				Config.MapsforgeCarNightTheme.setValue(selectedTheme);
-				break;
-			}
+			setConfig("|" + which + "|" + selectedTheme);
 			Config.AcceptChanges();
 		}
 	}
@@ -582,32 +573,37 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 		}
 	}
 
-	private void showOverlaySelection(String values[]) {
+	private void showOverlaySelection(String values, HashMap<String, String> StyleOverlays, String ConfigStyle) {
+		// todo prevent setConfig on every changeclick, preferable only on clicking ok in the Optionmenu
 		final Menu lOverlay = new OptionMenu("StyleOverlay");
 
 		int menuID = 0;
-		// default
-		HashMap<String, String> StyleOverlays = getStyleOverlays(values[2], values[0]);
-		// if gespeicherte Werte
-		// gehören sie zu dieser Auswahl?
-		// ersetze StyleOverlays
-		// ?? todo
 		for (String overlay : StyleOverlays.keySet()) {
 			MenuItem mi = lOverlay.addItem(menuID++, "", overlay); // ohne Translation
-			mi.setData(values[0] + "|" + values[1] + "|" + values[2] + "|" + StyleOverlays.get(overlay));
-			mi.setCheckable(true);
-			// das sind die defaults
-			if (StyleOverlays.get(overlay).startsWith("+")) {
-				mi.setChecked(true);
+			String overlayID = StyleOverlays.get(overlay);
+			boolean overlayEnabled = overlayID.startsWith("+");
+			if (!(ConfigStyle.indexOf(overlayID) > -1)) {
+				if (ConfigStyle.indexOf(overlayID.substring(1)) > -1) {
+					overlayEnabled = !overlayEnabled;
+				}
 			}
+			mi.setData(values + "|" + overlayID);
+			mi.setCheckable(true);
+			mi.setChecked(overlayEnabled);
 		}
 
 		lOverlay.addOnClickListener(new OnClickListener() {
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 				MenuItem mi = (MenuItem) v;
-				String result[] = ((String) mi.getData()).split("\\|");
-				mi.setChecked(mi.isChecked());
+				String values[] = ((String) mi.getData()).split("\\|");
+				if (mi.isChecked()) {
+					values[3] = "+" + values[3].substring(1);
+				} else {
+					values[3] = "-" + values[3].substring(1);
+				}
+				mi.setData(values[0] + "|" + values[1] + "|" + values[2] + "|" + values[3]);
+				setConfig(concatValues(values, lOverlay));
 				lOverlay.Show();
 				return true;
 			}
@@ -622,28 +618,57 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 		};
 
 		if (StyleOverlays.size() > 0) {
+			setConfig(concatValues(values.split("\\|"), lOverlay));
 			lOverlay.Show();
 		} else {
 			// save the values, there is perhaps no overlay 
-			switch (values[1]) {
-			case "0":
-				Config.MapsforgeDayStyle.setValue(values[0]);
-				Config.MapsforgeDayTheme.setValue(values[2]);
-				break;
-			case "1":
-				Config.MapsforgeNightStyle.setValue(values[0]);
-				Config.MapsforgeNightTheme.setValue(values[2]);
-				break;
-			case "2":
-				Config.MapsforgeCarDayStyle.setValue(values[0]);
-				Config.MapsforgeCarDayTheme.setValue(values[2]);
-				break;
-			case "3":
-				Config.MapsforgeCarNightStyle.setValue(values[0]);
-				Config.MapsforgeCarNightTheme.setValue(values[2]);
-				break;
-			}
+			setConfig(values);
 			Config.AcceptChanges();
+		}
+	}
+
+	private String concatValues(String values[], Menu lOverlay) {
+		String result = values[0];
+		for (MenuItemBase mitm : lOverlay.mItems) {
+			String data[] = ((String) mitm.getData()).split("\\|");
+			result = result + "\t" + data[3];
+		}
+		return result + "|" + values[1] + "|" + values[2];
+	}
+
+	private String getStyleFromConfig(String which) {
+		switch (which) {
+		case "0":
+			return Config.MapsforgeDayStyle.getValue();
+		case "1":
+			return Config.MapsforgeNightStyle.getValue();
+		case "2":
+			return Config.MapsforgeCarDayStyle.getValue();
+		case "3":
+			return Config.MapsforgeCarNightStyle.getValue();
+		}
+		return "";
+	}
+
+	private void setConfig(String _StyleAndTheme) {
+		String values[] = ((String) _StyleAndTheme).split("\\|");
+		switch (values[1]) {
+		case "0":
+			Config.MapsforgeDayStyle.setValue(values[0]);
+			Config.MapsforgeDayTheme.setValue(values[2]);
+			break;
+		case "1":
+			Config.MapsforgeNightStyle.setValue(values[0]);
+			Config.MapsforgeNightTheme.setValue(values[2]);
+			break;
+		case "2":
+			Config.MapsforgeCarDayStyle.setValue(values[0]);
+			Config.MapsforgeCarDayTheme.setValue(values[2]);
+			break;
+		case "3":
+			Config.MapsforgeCarNightStyle.setValue(values[0]);
+			Config.MapsforgeCarNightTheme.setValue(values[2]);
+			break;
 		}
 	}
 
