@@ -179,10 +179,9 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 				final Layer layer = (Layer) ((MenuItem) v).getData();
 
-				// if curent layer a Mapsforge map, it is posible to add the selected Mapsforge map
-				// to the current layer. We ask the User!
+				// if curent layer a Mapsforge map, it is posible to add the selected Mapsforge map to the current layer. We ask the User!
 				if (MapView.mapTileLoader.getCurrentLayer().isMapsForge() && layer.isMapsForge()) {
-					GL_MsgBox msgBox = GL_MsgBox.Show("add or change", "Map selection", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, new OnMsgBoxClickListener() {
+					GL_MsgBox msgBox = GL_MsgBox.Show(Translation.Get("AddOrChange"), Translation.Get("Layer"), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, new OnMsgBoxClickListener() {
 
 						@Override
 						public boolean onClick(int which, Object data) {
@@ -203,8 +202,8 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 							return true;
 						}
 					});
-					msgBox.button1.setText("add");
-					msgBox.button2.setText("select");
+					msgBox.button1.setText(Translation.Get("add"));
+					msgBox.button2.setText(Translation.Get("Change"));
 					return true;
 				}
 
@@ -498,9 +497,11 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 
 		int menuID = 0;
 		HashMap<String, String> ThemeStyles = getThemeStyles(selectedTheme);
+		String ThemeStyle = "";
 		for (String style : ThemeStyles.keySet()) {
 			MenuItem mi = lStyle.addItem(menuID++, "", style); // ohne Translation
-			mi.setData(ThemeStyles.get(style) + "|" + which + "|" + selectedTheme);
+			ThemeStyle = ThemeStyles.get(style);
+			mi.setData(ThemeStyle + "|" + which + "|" + selectedTheme);
 			//mi.setCheckable(true);
 		}
 
@@ -520,8 +521,16 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 			}
 		});
 
-		if (ThemeStyles.size() > 0) {
+		if (ThemeStyles.size() > 1) {
 			lStyle.Show();
+		} else if (ThemeStyles.size() == 1) {
+			HashMap<String, String> StyleOverlays = getStyleOverlays(selectedTheme, ThemeStyle);
+			String ConfigStyle = getStyleFromConfig("" + which);
+			if (!ConfigStyle.startsWith(ThemeStyle)) {
+				// Config one is not for this layer
+				ConfigStyle = "";
+			}
+			showOverlaySelection(ThemeStyle + "|" + which + "|" + selectedTheme, StyleOverlays, ConfigStyle);
 		} else {
 			// there is no style
 			// style of Config will be ignored while setting of Theme
@@ -574,7 +583,6 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 	}
 
 	private void showOverlaySelection(String values, HashMap<String, String> StyleOverlays, String ConfigStyle) {
-		// todo prevent setConfig on every changeclick, preferable only on clicking ok in the Optionmenu
 		final Menu lOverlay = new OptionMenu("StyleOverlay");
 
 		int menuID = 0;
@@ -607,7 +615,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 					values[3] = "-" + values[3].substring(1);
 				}
 				mi.setData(values[0] + "|" + values[1] + "|" + values[2] + "|" + values[3]);
-				setConfig(concatValues(values, lOverlay));
+				lOverlay.setData(concatValues(values, lOverlay));
 				lOverlay.Show();
 				return true;
 			}
@@ -616,13 +624,14 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 		lOverlay.mMsgBoxClickListener = new OnMsgBoxClickListener() {
 			@Override
 			public boolean onClick(int which, Object data) {
+				setConfig((String) data);
 				Config.AcceptChanges();
 				return true;
 			}
 		};
 
 		if (StyleOverlays.size() > 0) {
-			setConfig(concatValues(values.split("\\|"), lOverlay));
+			lOverlay.setData(concatValues(values.split("\\|"), lOverlay));
 			lOverlay.Show();
 		} else {
 			// save the values, there is perhaps no overlay 
@@ -698,12 +707,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 	private class GetOverlaysCallback implements OverlaysCallback {
 		public String selectedLayer;
 		private HashMap<String, String> overlays;
-		private Map<String, XmlRenderThemeStyleLayer> styleLayers;
 
 		@Override
 		public Set<String> getCategories(XmlRenderThemeStyleMenu style) {
 			overlays = new HashMap<String, String>();
-			styleLayers = style.getLayers();
 			XmlRenderThemeStyleLayer selected_Layer = style.getLayer(selectedLayer);
 			for (XmlRenderThemeStyleLayer overlay : selected_Layer.getOverlays()) {
 				if (overlay.isEnabled()) {
