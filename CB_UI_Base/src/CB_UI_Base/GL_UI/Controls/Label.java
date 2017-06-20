@@ -541,6 +541,10 @@ public class Label extends CB_View_Base {
 	int lc = 1 + (int) ((bounds.height - mFont.getCapHeight()) / mFont.getLineHeight());
 	return lc;
 	}
+	
+	public float getLineHeight(){
+		return mFont.getLineHeight();	
+	}
 
 	public BitmapFont getFont() {
 	return mFont;

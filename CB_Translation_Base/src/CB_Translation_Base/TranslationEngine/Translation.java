@@ -270,6 +270,7 @@ public class Translation {
 			if (ReplacedRead.startsWith("\"")) {
 				ReplacedRead = ReplacedRead.substring(1);
 			}
+			ReplacedRead = ReplacedRead.replace("\\\"", "\"");
 			if (!Default) {
 				// dont add if added on Def
 				String contains = Get(readID);

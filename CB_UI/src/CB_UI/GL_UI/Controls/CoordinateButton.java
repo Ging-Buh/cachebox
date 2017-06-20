@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Clipboard;
 
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
+import CB_Locator.Formatter;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.EditCoord;
@@ -186,7 +187,9 @@ public class CoordinateButton extends Button implements ICopyPaste {
 	public String copyToClipboard() {
 		if (clipboard == null)
 			return null;
-		String content = this.getText();
+		// perhaps implement selection of Format
+		// String content = this.getText();
+		String content = Formatter.FormatCoordinate(this.getCoordinate(), "");
 		clipboard.setContents(content);
 		return content;
 	}
@@ -195,7 +198,9 @@ public class CoordinateButton extends Button implements ICopyPaste {
 	public String cutToClipboard() {
 		if (clipboard == null)
 			return null;
-		String content = this.getText();
+		// perhaps implement selection of Format
+		// String content = this.getText();
+		String content = Formatter.FormatCoordinate(this.getCoordinate(), "");
 		clipboard.setContents(content);
 		CoordinateGPS cor = new CoordinateGPS("N 0° 0.00 / E 0° 0.00");
 		cor.setValid(false);
