@@ -335,7 +335,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 				showMenuTrackRecording();
 				return true;
 			case MenuID.MI_MAP_DOWNOAD:
-				MapDownload.INSTANCE.show();
+				MapDownload.getInstance().show();
 				return true;
 			default:
 				return false;

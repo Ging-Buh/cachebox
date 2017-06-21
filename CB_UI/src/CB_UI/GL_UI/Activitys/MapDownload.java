@@ -45,7 +45,7 @@ import CB_Utils.Lists.CB_List;
 import CB_Utils.http.HttpUtils;
 
 public class MapDownload extends ActivityBase implements ProgressChangedEvent {
-	public final static MapDownload INSTANCE = new MapDownload();
+	private static MapDownload INSTANCE;
 	private final String URL_FREIZEITKARTE = "http://repository.freizeitkarte-osm.de/repository_freizeitkarte_android.xml";
 	private Button bOK, bCancel;
 	private Label lblTitle, lblProgressMsg;
@@ -120,7 +120,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 						@Override
 						public boolean onClick(int which, Object data) {
 							if (which == GL_MsgBox.BUTTON_POSITIVE) {
-								cancelImport();
+								finishImport();
 							}
 							return true;
 						}
@@ -189,6 +189,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 
 		// disable btn
 		bOK.disable();
+		bCancel.setText(Translation.Get("cancel"));
 
 		// disable UI
 		dis = new ImportAnimation(scrollBox);
@@ -246,14 +247,16 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 					boolean chk = true;
 					for (int i = 0, n = mapInfoItemList.size(); i < n; i++) {
 						MapDownloadItem item = mapInfoItemList.get(i);
-						if (!item.isFinish())
+						if (!item.isFinish()) {
 							chk = false;
+							break;
+						}
 					}
 
 					if (chk) {
 						// all downloads ready
 						DownloadIsCompleted = true;
-						cancelImport();
+						finishImport();
 					}
 
 				}
@@ -264,7 +267,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 		dlProgressChecker.start();
 	}
 
-	private void cancelImport() {
+	private void finishImport() {
 		canceld = true;
 		importStarted = false;
 		fillDownloadList();
@@ -274,7 +277,18 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 			dis = null;
 		}
 		pgBar.setProgress(0);
-		lblProgressMsg.setText(Translation.Get("DownloadCanceld"));
+
+		if (DownloadIsCompleted) {
+			lblProgressMsg.setText("");
+			bCancel.setText(Translation.Get("ok"));
+			// to prevent download again. On next start you must check again
+			for (int i = 0, n = mapInfoItemList.size(); i < n; i++) {
+				MapDownloadItem item = mapInfoItemList.get(i);
+				item.enable();
+			}
+		} else
+			lblProgressMsg.setText(Translation.Get("DownloadCanceld"));
+
 		bOK.enable();
 		if (ManagerBase.Manager != null)
 			ManagerBase.Manager.initMapPacks();
@@ -439,6 +453,14 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 			}
 		});
 		return ruleList;
+	}
+
+	public static MapDownload getInstance() {
+		// cause Activity gets disposed and a second run will produce an error
+		if (INSTANCE == null || INSTANCE.isDisposed()) {
+			INSTANCE = new MapDownload();
+		}
+		return INSTANCE;
 	}
 
 }

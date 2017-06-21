@@ -459,6 +459,7 @@ public abstract class ManagerBase {
 						} else
 							Log.err(log, "Problem open " + Name);
 					}
+
 					if (FileIO.GetFileExtension(file).equalsIgnoreCase("xml")) {
 						ManagerBase.Manager.LoadTMS(file);
 					}

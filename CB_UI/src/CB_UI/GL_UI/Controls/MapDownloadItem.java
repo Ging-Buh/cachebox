@@ -51,7 +51,7 @@ public class MapDownloadItem extends CB_View_Base {
 		lblName.setFont(Fonts.getNormal());
 
 		// Cut "Freizeitkarte"
-		String Name = mapInfo.Name.replace("Freizeitkarte", "");
+		String Name = mapInfo.Description.replace("Freizeitkarte ", "");
 		lblName.setText(Name);
 
 		lblSize = new Label(this.name + " lblSize", checkBoxMap.getMaxX() + margin, checkBoxMap.getY(), innerWidth - margin * 3 - checkBoxMap.getWidth(), checkBoxMap.getHeight());
@@ -190,36 +190,39 @@ public class MapDownloadItem extends CB_View_Base {
 
 				dl.run();
 
-				try {
-					UnZip.extractFolder(target.getAbsolutePath());
-				} catch (ZipException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-
-					e.printStackTrace();
-				}
-
-				// Copy and Clear
-				File folder = FileFactory.createFile(workPath + "/" + FileIO.GetFileNameWithoutExtension(zipFile));
-				File newfolder = FileFactory.createFile(workPath + "/" + FileIO.GetFileNameWithoutExtension(folder.getName()));
-
-				if (folder.isDirectory()) {
-					folder.renameTo(newfolder);
-
+				if (!dl.isCanceled()) {
 					try {
-						Copy.copyFolder(newfolder, FileFactory.createFile(workPath));
+						UnZip.extractFolder(target.getAbsolutePath());
+					} catch (ZipException e) {
+						e.printStackTrace();
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
 
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+					// Copy and Clear
+					File folder = FileFactory.createFile(workPath + "/" + FileIO.GetFileNameWithoutExtension(zipFile));
+					File newfolder = FileFactory.createFile(workPath + "/" + FileIO.GetFileNameWithoutExtension(folder.getName()));
+
+					if (folder.isDirectory()) {
+						folder.renameTo(newfolder);
+
+						try {
+							Copy.copyFolder(newfolder, FileFactory.createFile(workPath));
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+
+						deleteDirectory(newfolder);
 					}
 
-					deleteDirectory(newfolder);
 				}
+
 				try {
 					target.delete();
 				} catch (IOException e) {
@@ -276,5 +279,12 @@ public class MapDownloadItem extends CB_View_Base {
 				return true;
 		}
 		return dl.isCompleted();
+	}
+
+	public void enable() {
+		if (checkBoxMap.isChecked())
+			checkBoxMap.disable();
+		else
+			checkBoxMap.enable();
 	}
 }

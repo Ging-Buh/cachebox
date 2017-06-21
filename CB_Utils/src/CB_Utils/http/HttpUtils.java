@@ -110,10 +110,20 @@ public class HttpUtils {
 		HttpResponse response = httpClient.execute(httprequest);
 		ready.set(true);// cancel abort chk thread
 
+		boolean convertToUTF8 = false;
+		if (Plattform.used == Plattform.Server)
+			convertToUTF8 = true;
+		if (!convertToUTF8) {
+			String ContentType = response.getEntity().getContentType().getValue();
+			if (ContentType.endsWith("xml") || ContentType.contains("utf-8")) {
+				convertToUTF8 = true;
+			}
+		}
+
 		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 		String line = "";
 		while ((line = rd.readLine()) != null) {
-			if (Plattform.used == Plattform.Server)
+			if (convertToUTF8)
 				line = new String(line.getBytes("ISO-8859-1"), "UTF-8");
 			result += line + "\n";
 		}
