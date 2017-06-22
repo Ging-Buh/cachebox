@@ -68,6 +68,7 @@ public interface LocatorSettings {
 	public static final SettingString UserMap1 = (SettingString) SettingsList.addSetting(
 			new SettingString("UserMap1", SettingCategory.Map, EXPERT, "{JPG}{name:ESRI World_Imagery}http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", SettingStoreType.Global, SettingUsage.ALL));
 	public static final SettingString UserMap2 = (SettingString) SettingsList.addSetting(new SettingString("UserMap2", SettingCategory.Map, EXPERT, "", SettingStoreType.Global, SettingUsage.ALL));
+	public static final SettingString PreferredMapLanguage = (SettingString) SettingsList.addSetting(new SettingString("MapLanguage", SettingCategory.Map, DEVELOPER, "", SettingStoreType.Global, SettingUsage.ALL));
 
 	public static final SettingEnum<GL_RenderType> MapsforgeRenderType = new SettingEnum<GL_RenderType>("MapsforgeRenderType", SettingCategory.Map, EXPERT, GL_RenderType.Mapsforge, SettingStoreType.Global, SettingUsage.ACB, GL_RenderType.Mapsforge);
 

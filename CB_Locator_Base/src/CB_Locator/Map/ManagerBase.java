@@ -146,16 +146,19 @@ public abstract class ManagerBase {
 		for (Layer layer : layers) {
 			if (layer.Name.equalsIgnoreCase(Name[0])) {
 
-				//add aditional
+				// add aditional
+				// todo : this adding is only necessary when setting from Config. Otherwise the adds are done directly to the layers additionalMapsforgeLayer.
+				// therefore checked on additionalMapsforgeLayer.add for duplicates. A bit 
 				if (Name.length > 1) {
 					for (int i = 1; i < Name.length; i++) {
 						for (Layer la : layers) {
 							if (la.Name.equalsIgnoreCase(Name[i])) {
-								layer.addMapsforgeLayer(la);
+								layer.addAdditionalMap(la);
 							}
 						}
 					}
 				}
+
 				return layer;
 			}
 		}
@@ -166,8 +169,9 @@ public abstract class ManagerBase {
 			return newLayer;
 		} else {
 			if (layers != null && layers.size() > 0) {
-				LocatorSettings.CurrentMapLayer.setValue(layers.get(0).getNames());
-				return layers.get(0); // ist wahrscheinlich Mapnik und sollte immer tun
+				Layer firstLayer = layers.get(0);
+				LocatorSettings.CurrentMapLayer.setValue(firstLayer.getNames());
+				return firstLayer; // ist wahrscheinlich Mapnik und sollte immer tun
 			}
 			return null;
 		}
@@ -430,34 +434,20 @@ public abstract class ManagerBase {
 						try {
 							mapFile = new MapFile(f);
 						} catch (Exception e) {
-							Log.err(log, "INIT MAPPACKS" + e.getMessage());
+							Log.err(log, "INIT MAPPACKS for " + f.getAbsolutePath() + ":\n" + e.getMessage());
 							continue;
 						}
 
-						//check type of mapsforge
-						MapFileInfo info = mapFile.getMapFileInfo();
+						MapFileInfo mapInfo = mapFile.getMapFileInfo();
 						MapType mapType = MapType.MAPSFORGE;
-						if (info.comment != null && info.comment.contains("FZK")) {
+						if (mapInfo.comment != null && mapInfo.comment.contains("FZK")) {
 							mapType = MapType.FREIZEITKARTE;
 						}
-
 						String Name = FileIO.GetFileNameWithoutExtension(file);
 						Layer layer = new Layer(mapType, LayerType.normal, Layer.StorageType.PNG, Name, Name, file);
+						layer.languages = mapFile.getMapLanguages();
+						ManagerBase.Manager.layers.add(layer);
 
-						MultiMapDataStore md = new MultiMapDataStore(DataPolicy.RETURN_FIRST);
-
-						md.addMapDataStore(mapFile, false, false);
-						MapFileInfo mf = mapFile.getMapFileInfo();
-						if (mf != null) {
-							try {
-								md.close();
-								layer.boundingBox = mf.boundingBox;
-								ManagerBase.Manager.layers.add(layer);
-							} catch (Exception e) {
-								Log.err(log, "Get boundingbox " + Name, e);
-							}
-						} else
-							Log.err(log, "Problem open " + Name);
 					}
 
 					if (FileIO.GetFileExtension(file).equalsIgnoreCase("xml")) {
@@ -508,7 +498,6 @@ public abstract class ManagerBase {
 	MultiMapDataStore mapDatabase[] = null;
 	IDatabaseRenderer databaseRenderer[] = null;
 	Bitmap tileBitmap = null;
-	File mapFile = null;
 	XmlRenderTheme renderTheme;
 	public float textScale = 1;
 	public static float DEFAULT_TEXT_SCALE = 1;
@@ -616,38 +605,62 @@ public abstract class ManagerBase {
 	}
 
 	private void initMapDatabase(Layer layer) {
-		mapFile = FileFactory.createFile(layer.Url);
 
-		java.io.File file = new java.io.File(mapFile.getAbsolutePath());
-
-		MapFile mapforgeMapFile = new MapFile(file);
+		MapFile mapforgeMapFile = getMapFile(layer);
+		ArrayList<MapFile> additionalMapFiles = null;
+		if (layer.hasAdditionalMaps()) {
+			additionalMapFiles = new ArrayList<MapFile>();
+			for (Layer addLayer : layer.getAdditionalMaps()) {
+				additionalMapFiles.add(getMapFile(addLayer));
+			}
+		}
 
 		if (mapDatabase == null)
 			mapDatabase = new MultiMapDataStore[PROCESSOR_COUNT];
 
 		for (int i = 0; i < PROCESSOR_COUNT; i++) {
 			if (mapDatabase[i] == null) {
-				mapDatabase[i] = new MultiMapDataStore(DataPolicy.DEDUPLICATE);
+				mapDatabase[i] = new MultiMapDataStore(DataPolicy.DEDUPLICATE); // or DataPolicy.RETURN_FIRST
 			} else {
 				mapDatabase[i].clearMapDataStore();
 			}
 
 			mapDatabase[i].addMapDataStore(mapforgeMapFile, false, false);
-
-			//if the layer has more then one map, so add all files
-			if (layer.hasAdidionalMaps()) {
-				for (Layer addLayer : layer.getAdditionalMaps()) {
-					File addMapFile = FileFactory.createFile(addLayer.Url);
-					java.io.File addFile = new java.io.File(addMapFile.getAbsolutePath());
-					MapFile addMapforgeMapFile = new MapFile(addFile);
-					mapDatabase[i].addMapDataStore(addMapforgeMapFile, false, false);
-
+			if (layer.hasAdditionalMaps()) {
+				for (MapFile mf : additionalMapFiles) {
+					mapDatabase[i].addMapDataStore(mf, false, false);
 				}
 			}
-
 		}
 
 		Log.debug(log, "Open MapsForge Map: " + layer.Name);
+	}
+
+	private MapFile getMapFile(Layer layer) {
+		MapFile mapforgeMapFile = null;
+		File mapFile = FileFactory.createFile(layer.Url);
+		java.io.File file = new java.io.File(mapFile.getAbsolutePath());
+		// todo discuss alternate preferred language per layer (saved in layer at selection) ,....
+		if (layer.languages == null) {
+			mapforgeMapFile = new MapFile(file);
+		} else {
+			String preferredLanguage = LocatorSettings.PreferredMapLanguage.getValue();
+			if (preferredLanguage.length() > 0) {
+				for (String la : layer.languages) {
+					if (la.equals(preferredLanguage)) {
+						mapforgeMapFile = new MapFile(file, preferredLanguage);
+						break;
+					}
+				}
+			}
+			if (mapforgeMapFile == null) {
+				if (layer.languages.length > 0)
+					mapforgeMapFile = new MapFile(file, layer.languages[0]);
+				else
+					mapforgeMapFile = new MapFile(file);
+			}
+		}
+		return mapforgeMapFile;
 	}
 
 	public abstract GraphicFactory getGraphicFactory(float ScaleFactor);

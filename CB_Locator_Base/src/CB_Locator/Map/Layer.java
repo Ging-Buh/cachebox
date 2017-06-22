@@ -3,8 +3,6 @@ package CB_Locator.Map;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.mapsforge.core.model.BoundingBox;
-
 public class Layer {
 
 	/**
@@ -40,9 +38,9 @@ public class Layer {
 	public String FriendlyName = "";
 	public String Url = ""; // is used as complete path and name for mapsforge files
 	private final MapType mapType;
-	public BoundingBox boundingBox;
 	private final ArrayList<Layer> additionalMapsforgeLayer = new ArrayList<Layer>();
 	private final StorageType storageType;
+	public String[] languages;
 
 	public Layer(MapType mapType, LayerType LayerType, StorageType storageType, String name, String friendlyName, String url) {
 		this.mapType = mapType;
@@ -125,16 +123,24 @@ public class Layer {
 	}
 
 	/*
-	 * If this a Mapdforge Layer, it is posible a other Mapsforge layer!
+	 * Mapsforge may have several layers!
 	 */
-	public void addMapsforgeLayer(Layer layer) {
+	public void addAdditionalMap(Layer layer) {
 		if (!this.isMapsForge() || !layer.isMapsForge())
 			throw new RuntimeException("Can't add this Layer");
-
-		additionalMapsforgeLayer.add(layer);
+		if (!additionalMapsforgeLayer.contains(layer))
+			additionalMapsforgeLayer.add(layer);
 	}
 
-	public boolean hasAdidionalMaps() {
+	public void removeAdditionalMap(Layer layer) {
+		additionalMapsforgeLayer.remove(layer);
+	}
+
+	public void clearAdditionalMaps() {
+		additionalMapsforgeLayer.clear();
+	}
+
+	public boolean hasAdditionalMaps() {
 		return additionalMapsforgeLayer != null && additionalMapsforgeLayer.size() > 0;
 	}
 

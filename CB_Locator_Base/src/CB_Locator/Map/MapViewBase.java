@@ -239,7 +239,13 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		super.onStop();
 	}
 
+	public Layer getCurrentLayer() {
+		return mapTileLoader.getCurrentLayer();
+	}
+
 	public void setCurrentLayer(Layer newLayer) {
+		Layer currentLayer = mapTileLoader.getCurrentLayer();
+		currentLayer.clearAdditionalMaps();
 		if (newLayer == null) {
 			LocatorSettings.CurrentMapLayer.setValue(new String[0]);
 		} else {
@@ -249,10 +255,28 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		mapTileLoader.clearLoadedTiles();
 	}
 
-	public void addToCurrentLayer(Layer layer) {
-		Layer curentLayer = mapTileLoader.getCurrentLayer();
-		curentLayer.addMapsforgeLayer(layer);
-		setCurrentLayer(curentLayer);
+	public void addAdditionalLayer(Layer layer) {
+		Layer currentLayer = mapTileLoader.getCurrentLayer();
+		currentLayer.addAdditionalMap(layer);
+		LocatorSettings.CurrentMapLayer.setValue(currentLayer.getNames());
+		mapTileLoader.setCurrentLayer(currentLayer);
+		mapTileLoader.clearLoadedTiles();
+	}
+
+	public void clearAdditionalLayers() {
+		Layer currentLayer = mapTileLoader.getCurrentLayer();
+		currentLayer.clearAdditionalMaps();
+		LocatorSettings.CurrentMapLayer.setValue(currentLayer.getNames());
+		mapTileLoader.setCurrentLayer(currentLayer);
+		mapTileLoader.clearLoadedTiles();
+	}
+
+	public void removeAdditionalLayer(Layer layer) {
+		Layer currentLayer = mapTileLoader.getCurrentLayer();
+		currentLayer.clearAdditionalMaps();
+		LocatorSettings.CurrentMapLayer.setValue(currentLayer.getNames());
+		mapTileLoader.setCurrentLayer(currentLayer);
+		mapTileLoader.clearLoadedTiles();
 	}
 
 	public void SetCurrentOverlayLayer(Layer newLayer) {

@@ -101,7 +101,7 @@ public class Downloader implements Runnable {
 	private boolean running = false;
 
 	/** is the download cancelled? */
-	private boolean cancelled = false;
+	private boolean canceled = false;
 
 	/** is the download completed? */
 	private boolean completed = false;
@@ -219,7 +219,7 @@ public class Downloader implements Runnable {
 	 */
 	public void cancel() {
 		synchronized (stateLock) {
-			cancelled = true;
+			canceled = true;
 		}
 	}
 
@@ -250,9 +250,9 @@ public class Downloader implements Runnable {
 	 * 
 	 * @return true if downloader is cancelled; false otherwise
 	 */
-	public boolean isCancelled() {
+	public boolean isCanceled() {
 		synchronized (stateLock) {
-			return cancelled;
+			return canceled;
 		}
 	}
 
@@ -515,7 +515,7 @@ public class Downloader implements Runnable {
 	private void checkState() throws Exception {
 		while (true) {
 			synchronized (stateLock) {
-				if (cancelled) {
+				if (canceled) {
 					progressString = "Download cancelled";
 					progressUpdated = true;
 					throw new Exception("Download cancelled");

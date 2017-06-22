@@ -215,7 +215,7 @@ public class GL_MsgBox extends Dialog {
 
 		boolean retValue = false;
 		if (mMsgBoxClickListener != null) {
-			retValue = mMsgBoxClickListener.onClick(button, that.data);
+			retValue = mMsgBoxClickListener.onClick(button, data);
 		}
 		GL.that.closeDialog(that);
 		return retValue;

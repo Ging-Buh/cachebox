@@ -1282,7 +1282,7 @@ public abstract class GL_View_Base extends CB_RectF {
 		return enabled;
 	}
 
-	private Object data = null;
+	protected Object data = null;
 
 	public void setData(Object data) {
 		this.data = data;

@@ -177,37 +177,9 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 		icm.addOnClickListener(new OnClickListener() {
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				final Layer layer = (Layer) ((MenuItem) v).getData();
-
-				// if curent layer a Mapsforge map, it is posible to add the selected Mapsforge map to the current layer. We ask the User!
-				if (MapView.mapTileLoader.getCurrentLayer().isMapsForge() && layer.isMapsForge()) {
-					GL_MsgBox msgBox = GL_MsgBox.Show(Translation.Get("AddOrChange"), Translation.Get("Layer"), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, new OnMsgBoxClickListener() {
-
-						@Override
-						public boolean onClick(int which, Object data) {
-
-							switch (which) {
-							case GL_MsgBox.BUTTON_POSITIVE:
-								// add the selected map to the curent layer
-								TabMainView.mapView.addToCurrentLayer(layer);
-								break;
-							case GL_MsgBox.BUTTON_NEUTRAL:
-								// switch curent layer to selected
-								TabMainView.mapView.setCurrentLayer(layer);
-								break;
-							default:
-								// do nothing
-							}
-
-							return true;
-						}
-					});
-					msgBox.button1.setText(Translation.Get("add"));
-					msgBox.button2.setText(Translation.Get("Change"));
-					return true;
-				}
-
-				TabMainView.mapView.setCurrentLayer(layer);
+				Layer layer = (Layer) ((MenuItem) v).getData();
+				selectLayer(layer);
+				showLanguageSelectionMenu(layer);
 				return true;
 			}
 		});
@@ -215,8 +187,72 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 		icm.Show();
 	}
 
+	private void selectLayer(Layer layer) {
+		if (layer.Name.equals(TabMainView.mapView.getCurrentLayer().Name)) {
+			TabMainView.mapView.clearAdditionalLayers();
+		} else {
+			// if current layer is a Mapsforge map, it is possible to add the selected Mapsforge map to the current layer. We ask the User!
+			if (MapView.mapTileLoader.getCurrentLayer().isMapsForge() && layer.isMapsForge()) {
+				GL_MsgBox msgBox = GL_MsgBox.Show(Translation.Get("AddOrChange"), Translation.Get("Layer"), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, new OnMsgBoxClickListener() {
+					@Override
+					public boolean onClick(int which, Object data) {
+						Layer layer = (Layer) data;
+						switch (which) {
+						case GL_MsgBox.BUTTON_POSITIVE:
+							// add the selected map to the curent layer
+							TabMainView.mapView.addAdditionalLayer(layer);
+							break;
+						case GL_MsgBox.BUTTON_NEUTRAL:
+							// switch curent layer to selected
+							TabMainView.mapView.setCurrentLayer(layer);
+							break;
+						default:
+							TabMainView.mapView.removeAdditionalLayer(layer);
+						}
+						return true;
+					}
+				});
+				msgBox.button1.setText("+");
+				msgBox.button2.setText("=");
+				msgBox.button3.setText("-");
+				msgBox.setData(layer);
+			} else {
+				TabMainView.mapView.setCurrentLayer(layer);
+			}
+		}
+	}
+
+	private boolean showLanguageSelectionMenu(Layer layer) {
+		boolean hasLanguage = false;
+		if (layer.isMapsForge()) {
+			if (layer.languages != null)
+				if (layer.languages.length > 1) {
+					final Menu lsm = new Menu("lsm");
+					lsm.setTitle("Sprachauswahl");
+					int menuID = 0;
+					for (String lang : layer.languages) {
+						//MenuItem mi = 
+						lsm.addItem(menuID++, "", lang); // ohne Translation
+						//mi.setData(which);
+					}
+					lsm.addOnClickListener(new OnClickListener() {
+						@Override
+						public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+							String selectedLanguage = ((MenuItem) v).getTitle();
+							Config.PreferredMapLanguage.setValue(selectedLanguage);
+							Config.AcceptChanges();
+							return true;
+						}
+					});
+					lsm.Show();
+					hasLanguage = true;
+				}
+		}
+		return hasLanguage;
+	}
+
 	private void showMapOverlayMenu() {
-		final OptionMenu icm = new OptionMenu("MapViewShowMapOverlayMenu");
+		final OptionMenu icm = new OptionMenu("icm");
 
 		int menuID = 0;
 		for (Layer layer : ManagerBase.Manager.getLayers()) {

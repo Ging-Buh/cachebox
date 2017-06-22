@@ -66,7 +66,7 @@ public abstract class Dialog extends CB_View_Base {
 	private ArrayList<GL_View_Base> overlay = new ArrayList<GL_View_Base>();
 
 	protected boolean dontRenderDialogBackground = false;
-	protected Object data;
+	// protected Object data;
 
 	protected float mTitleHeight = 0;
 	protected float mTitleWidth = 100;
@@ -414,7 +414,6 @@ public abstract class Dialog extends CB_View_Base {
 	public void dispose() {
 		mTitle = null;
 		CallerName = null;
-		data = null;
 
 		if (titleLabel != null)
 			titleLabel.dispose();
