@@ -25,6 +25,8 @@ import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.KeyboardFocusChangedEvent;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -36,51 +38,68 @@ import CB_UI_Base.Math.CB_RectF;
  *
  */
 public class NotesView extends CB_View_Base implements SelectedCacheEvent {
-	NotesView that;
-	EditTextField edNotes;
-	Cache aktCache;
+	private EditTextField notes;
+	private float notesDefaultYPos;
+	private float notesHeight;
+	private Button uploadButton;
+	private Cache aktCache;
 	boolean mustLoadNotes;
-
-	//TODO implement ScrollBar. see SolverView => "private class ScrollBarParent implements IScrollbarParent {"
 
 	public NotesView(CB_RectF rec, String Name) {
 		super(rec, Name);
-		that = this;
+
+		aktCache = GlobalCore.getSelectedCache();
 		mustLoadNotes = true;
-		edNotes = new EditTextField(this, this, WrapType.WRAPPED, "Note");
-		edNotes.setZeroPos();
-		this.addChild(edNotes);
-		SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+
+		initRow(BOTTOMUP);
+		uploadButton = new Button("Upload");
+		addLast(uploadButton);
+		notesHeight = getAvailableHeight();
+		notes = new EditTextField(this, new CB_RectF(0, 0, getWidth(), notesHeight), WrapType.WRAPPED, "Note");
+		this.addLast(notes);
+		notesDefaultYPos = notes.getY();
+
 		SelectedCacheEventList.Add(this);
 
 		KeyboardFocusChangedEventList.Add(new KeyboardFocusChangedEvent() {
-
 			@Override
 			public void KeyboardFocusChanged(EditTextFieldBase focus) {
 				chkFocus(focus);
 			}
 		});
+
+		uploadButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+				if (notes.getText().length() > 0) {
+					CB_Core.Api.GroundspeakAPI.uploadNotes(aktCache.getGcCode(), notes.getText());
+				}
+				return false;
+			}
+
+		});
+
 	}
 
 	private void chkFocus(EditTextFieldBase focus) {
-		if (focus == edNotes) {
-			edNotes.setHeight(NotesView.this.getHalfHeight());
-			edNotes.setY(NotesView.this.getHalfHeight());
+		if (focus == notes) {
+			notes.setHeight(this.getHalfHeight());
+			notes.setY(this.getHalfHeight());
 		} else {
-			edNotes.setHeight(NotesView.this.getHeight());
-			edNotes.setY(0);
+			notes.setHeight(notesHeight);
+			notes.setY(notesDefaultYPos);
 		}
 	}
 
 	@Override
 	public void onShow() {
 		chkFocus(GL.that.getFocusedEditTextField());
-
 		if (mustLoadNotes) {
 			String text = aktCache != null ? Database.GetNote(aktCache) : "";
 			if (text == null)
 				text = "";
-			edNotes.setText(text);
+			notes.setText(text);
+			notes.showFromLineNo(0);
 			mustLoadNotes = false;
 		}
 	}
@@ -88,7 +107,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent {
 	@Override
 	public void onHide() {
 		// Save changed Note text
-		String text = edNotes.getText().toString();
+		String text = notes.getText().toString();
 		if (text != null) {
 			try {
 				Database.SetNote(aktCache, text);
@@ -102,13 +121,6 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent {
 	@Override
 	protected void Initial() {
 
-	}
-
-	private void SetSelectedCache(Cache cache, Waypoint waypoint) {
-		if (aktCache != cache) {
-			mustLoadNotes = true;
-			aktCache = cache;
-		}
 	}
 
 	@Override

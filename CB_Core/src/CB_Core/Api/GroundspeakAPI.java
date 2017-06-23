@@ -54,6 +54,7 @@ import CB_Core.Types.Waypoint;
 import CB_Utils.Interfaces.ICancel;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.ByRef;
 import CB_Utils.http.HttpUtils;
 
@@ -352,7 +353,7 @@ public class GroundspeakAPI {
      * @return
      */
     public static int GetMembershipType(final ICancel icancel) {
-	if (API_isCheked)
+	if (API_isChecked)
 	    return membershipType;
 	String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
@@ -393,45 +394,45 @@ public class GroundspeakAPI {
 		    int memberTypeId = memberType.getInt("MemberTypeId");
 		    MemberName = user.getString("UserName");
 		    membershipType = memberTypeId;
-		    API_isCheked = true;
+		    API_isChecked = true;
 		    // Zurücksetzen, falls ein anderer User gewählt wurde
 		    return memberTypeId;
 		} else if (status == 2 || status == 3 || status == 141) {
-		    API_isCheked = false;
+		    API_isChecked = false;
 		    return API_ERROR;
 
 		} else {
 		    logger.warn("GetMembershipType API-Error: " + result);
-		    API_isCheked = false;
+		    API_isChecked = false;
 		    return API_ERROR;
 		}
 
 	    } catch (Exception e) {
 		logger.error("GetMembershipType JSONException", e);
-		API_isCheked = false;
+		API_isChecked = false;
 		return API_ERROR;
 	    }
 
 	} catch (ConnectTimeoutException e) {
 	    logger.error("GetMembershipType ConnectTimeoutException", e);
-	    API_isCheked = false;
+	    API_isChecked = false;
 	    return CONNECTION_TIMEOUT;
 	} catch (UnsupportedEncodingException e) {
 	    logger.error("GetMembershipType UnsupportedEncodingException", e);
-	    API_isCheked = false;
+	    API_isChecked = false;
 	    return ERROR;
 	} catch (ClientProtocolException e) {
 	    logger.error("GetMembershipType ClientProtocolException", e);
-	    API_isCheked = false;
+	    API_isChecked = false;
 	    return ERROR;
 	} catch (IOException e) {
 	    if (e.toString().contains("UnknownHostException")) {
 		logger.error("GetMembershipType ConnectTimeoutException", e);
-		API_isCheked = false;
+		API_isChecked = false;
 		return CONNECTION_TIMEOUT;
 	    }
 	    logger.error("GetMembershipType IOException", e);
-	    API_isCheked = false;
+	    API_isChecked = false;
 	    return ERROR;
 	}
 
@@ -1513,7 +1514,7 @@ public class GroundspeakAPI {
 	return string;
     }
 
-    private static boolean API_isCheked = false;
+    private static boolean API_isChecked = false;
 
     /**
      * Returns True if the APY-Key INVALID
@@ -1529,7 +1530,7 @@ public class GroundspeakAPI {
      */
     public static int chkMembership(boolean withoutMsg) {
 	boolean isValid = false;
-	if (API_isCheked) {
+	if (API_isChecked) {
 	    isValid = membershipType > 0;
 	    return isValid ? 0 : 1;
 	}
@@ -1551,7 +1552,7 @@ public class GroundspeakAPI {
 	}
 
 	if (ret != CONNECTION_TIMEOUT)
-	    API_isCheked = true;
+	    API_isChecked = true;
 	else
 	    return CONNECTION_TIMEOUT;
 
@@ -1559,7 +1560,7 @@ public class GroundspeakAPI {
     }
 
     public static int isValidAPI_Key(boolean withoutMsg) {
-	if (API_isCheked)
+	if (API_isChecked)
 	    return membershipType;
 
 	return chkMembership(withoutMsg);
@@ -1675,7 +1676,7 @@ public class GroundspeakAPI {
     }
 
     public static boolean mAPI_isChecked() {
-	return API_isCheked;
+	return API_isChecked;
     }
 
     public static boolean ApiLimit() {
@@ -1684,6 +1685,71 @@ public class GroundspeakAPI {
 
     public static void setDownloadLimit() {
 	DownloadLimit = true;
+    }
+
+    public static int uploadNotes(String cacheCode, String notes) {
+	/*
+	int chk = chkMembership(false);
+	if (chk < 0)
+	    return chk;
+	*/
+	String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+
+	if (cacheCode == null || cacheCode.length() == 0)
+	    return ERROR;
+
+	try {
+	    HttpPost httppost = new HttpPost(URL + "UpdateCacheNote?format=json");
+	    String requestString = "";
+	    requestString = "{";
+	    requestString += "\"AccessToken\":\"" + GetAccessToken() + "\",";
+	    requestString += "\"CacheCode\":\"" + cacheCode + "\",";
+	    requestString += "\"Note\":\"" + notes + "\"";
+	    requestString += "}";
+
+	    httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
+
+	    // set time outs
+	    HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+	    HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
+	    // Execute HTTP Post Request
+	    String result = HttpUtils.Execute(httppost, null);
+
+	    if (result.contains("The service is unavailable")) {
+		return API_IS_UNAVAILABLE;
+	    }
+	    // Parse JSON Result
+	    try {
+		JSONObject jResult = (JSONObject) new JSONTokener(result).nextValue();
+		int status = jResult.getInt("StatusCode");
+		result = "StatusCode = " + status + "\n";
+		result += jResult.getString("StatusMessage") + "\n";
+		result += jResult.getString("ExceptionDetails");
+		LastAPIError = result;
+		if (status > 0)
+		    return ERROR;
+	    } catch (JSONException e) {
+		Log.err(logger, "uploadNotes " + e.getLocalizedMessage());
+		LastAPIError = e.getLocalizedMessage();
+		return -1;
+	    }
+	} catch (ConnectTimeoutException e) {
+	    Log.err(logger, "uploadNotes " + e.getLocalizedMessage());
+	    return CONNECTION_TIMEOUT;
+	} catch (UnsupportedEncodingException e) {
+	    Log.err(logger, "uploadNotes " + e.getLocalizedMessage());
+	    return ERROR;
+	} catch (ClientProtocolException e) {
+	    Log.err(logger, "uploadNotes " + e.getLocalizedMessage());
+	    return ERROR;
+	} catch (IOException e) {
+	    Log.err(logger, "uploadNotes " + e.getLocalizedMessage());
+	    return ERROR;
+	}
+
+	LastAPIError = "";
+	return 0;
     }
 
 }
