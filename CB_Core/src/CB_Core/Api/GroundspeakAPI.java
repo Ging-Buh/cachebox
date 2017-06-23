@@ -1687,12 +1687,14 @@ public class GroundspeakAPI {
 	DownloadLimit = true;
     }
 
-    public static int uploadNotes(String cacheCode, String notes) {
-	/*
+    public static int uploadNotes(String cacheCode, String notes, ICancel cancel) {
+	LastAPIError = "";
+
+	// TODO check for Basic Membership
 	int chk = chkMembership(false);
 	if (chk < 0)
 	    return chk;
-	*/
+
 	String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
 	if (cacheCode == null || cacheCode.length() == 0)
@@ -1704,7 +1706,7 @@ public class GroundspeakAPI {
 	    requestString = "{";
 	    requestString += "\"AccessToken\":\"" + GetAccessToken() + "\",";
 	    requestString += "\"CacheCode\":\"" + cacheCode + "\",";
-	    requestString += "\"Note\":\"" + notes + "\"";
+	    requestString += "\"Note\":\"" + ConvertNotes(notes) + "\"";
 	    requestString += "}";
 
 	    httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
@@ -1714,7 +1716,7 @@ public class GroundspeakAPI {
 	    HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
 
 	    // Execute HTTP Post Request
-	    String result = HttpUtils.Execute(httppost, null);
+	    String result = HttpUtils.Execute(httppost, cancel);
 
 	    if (result.contains("The service is unavailable")) {
 		return API_IS_UNAVAILABLE;
