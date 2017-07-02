@@ -70,6 +70,7 @@ public class CreditsView extends CB_View_Base {
 		list.add(new Person("GeoPfaff", Job.tester));
 		list.add(new Person("Homer-S", Job.tester));
 		list.add(new Person("Mozartkugel", Job.tester));
+		list.add(new Person("Pirat5", Job.tester));
 		list.add(new Person("millimeterfuchser", Job.tester));
 		list.add(new Person("Larsie", Job.developmentAdvice));
 		list.add(new Person("KoiMuggele", Job.designer));
