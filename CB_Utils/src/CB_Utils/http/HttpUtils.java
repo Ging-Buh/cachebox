@@ -53,6 +53,9 @@ public class HttpUtils {
 	 * @throws IOException
 	 * @throws ClientProtocolException
 	 */
+	public static String Execute(final HttpRequestBase httprequest, final ICancel icancel) throws IOException, ClientProtocolException, ConnectTimeoutException {
+		return Execute(httprequest, icancel, false);
+	}
 
 	/**
 	 * Executes a HTTP request and returns the response as a string. As a HttpRequestBase is given, a HttpGet or HttpPost be passed for
@@ -70,7 +73,7 @@ public class HttpUtils {
 	 * @throws ClientProtocolException
 	 * @throws ConnectTimeoutException
 	 */
-	public static String Execute(final HttpRequestBase httprequest, final ICancel icancel) throws IOException, ClientProtocolException, ConnectTimeoutException {
+	public static String Execute(final HttpRequestBase httprequest, final ICancel icancel, boolean allowUTF8Conversion) throws IOException, ClientProtocolException, ConnectTimeoutException {
 
 		httprequest.setHeader("Accept", "application/json");
 		httprequest.setHeader("Content-type", "application/json");
@@ -113,7 +116,7 @@ public class HttpUtils {
 		boolean convertToUTF8 = false;
 		if (Plattform.used == Plattform.Server)
 			convertToUTF8 = true;
-		if (!convertToUTF8) {
+		if (!convertToUTF8 && allowUTF8Conversion) {
 			String ContentType = response.getEntity().getContentType().getValue();
 			if (ContentType.endsWith("xml") || ContentType.contains("utf-8")) {
 				convertToUTF8 = true;

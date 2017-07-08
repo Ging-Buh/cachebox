@@ -1716,7 +1716,7 @@ public class GroundspeakAPI {
 	    HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
 
 	    // Execute HTTP Post Request
-	    String result = HttpUtils.Execute(httppost, cancel);
+	    String result = HttpUtils.Execute(httppost, cancel, true);
 
 	    if (result.contains("The service is unavailable")) {
 		return API_IS_UNAVAILABLE;
