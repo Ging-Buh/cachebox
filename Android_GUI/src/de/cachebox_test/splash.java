@@ -1261,7 +1261,7 @@ public class splash extends Activity {
 			CreateFile.getParentFile().mkdirs();
 			CreateFile.createNewFile();
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.err(log, path + ": " + e.getLocalizedMessage());
 		}
 	}
 

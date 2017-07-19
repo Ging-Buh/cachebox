@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.TimeZone;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
@@ -153,9 +152,9 @@ public class GroundspeakAPI {
 	long utc = date.getTime();
 	// date.getTime already returns utc timestamp. Conversion to utc is not necessary!!!
 	// TimeZone tz = TimeZone.getDefault();
-	TimeZone tzp = TimeZone.getTimeZone("GMT-8");
+	// TimeZone tzp = TimeZone.getTimeZone("GMT-8");
 	// int offset = tz.getOffset(utc);
-	utc += /* offset */-tzp.getOffset(utc);
+	// utc += /* offset */-tzp.getOffset(utc);
 	return "\\/Date(" + utc + ")\\/";
     }
 
