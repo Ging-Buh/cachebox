@@ -659,7 +659,7 @@ public class FieldNotesView extends V_ListView {
 				GroundspeakAPI.LastAPIError = "";
 
 				boolean dl = fieldNote.isDirectLog;
-				int result = CB_Core.Api.GroundspeakAPI.CreateFieldNoteAndPublish(fieldNote.gcCode, fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment, dl, this);
+				int result = GroundspeakAPI.CreateFieldNoteAndPublish(fieldNote.gcCode, fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment, dl, this);
 
 				if (result == GroundspeakAPI.IO) {
 					fieldNote.uploaded = true;

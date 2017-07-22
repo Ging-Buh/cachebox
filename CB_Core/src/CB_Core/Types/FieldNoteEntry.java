@@ -129,13 +129,13 @@ public class FieldNoteEntry implements Serializable {
 
     String GetDateTimeString() {
 	SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
-	// datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-	datFormat.setTimeZone(TimeZone.getDefault());
-	String sDate = datFormat.format(timestamp);
+	datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+	String sDate = datFormat.format(timestamp) + "T";
+
 	datFormat = new SimpleDateFormat("HH:mm:ss");
-	// datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-	datFormat.setTimeZone(TimeZone.getDefault());
-	sDate += "T" + datFormat.format(timestamp) + "Z";
+	datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+	sDate += datFormat.format(timestamp) + "Z";
+
 	return sDate;
     }
 

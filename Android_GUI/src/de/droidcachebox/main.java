@@ -174,6 +174,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import de.CB_PlugIn.IPlugIn;
+import de.cb.sqlite.AndroidDB;
 import de.droidcachebox.CB_Texturepacker.Android_Packer;
 import de.droidcachebox.Components.CacheNameView;
 import de.droidcachebox.Custom_Controls.Mic_On_Flash;
@@ -189,13 +190,7 @@ import de.droidcachebox.Views.ViewGL;
 import de.droidcachebox.Views.Forms.GcApiLogin;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.PleaseWaitMessageBox;
-import de.cb.sqlite.AndroidDB;
 
-/**
- * @author Longri
- * @author ging-buh
- * @author arbor95
- */
 @SuppressLint("Wakelock")
 @SuppressWarnings("deprecation")
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.CacheListChangedEventListener, GpsStatus.NmeaListener, GpsStatus.Listener, CB_UI_Settings {
@@ -260,7 +255,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private ExtAudioRecorder extAudioRecorder = null;
 
-	private boolean runsWithAkku = true;
+	private final boolean runsWithAkku = true;
 
 	private FrameLayout frame;
 	private FrameLayout tabFrame;
@@ -467,17 +462,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		InfoDownSlider.invalidate();
 
 		CacheListChangedEvent();
-
-		try {
-			this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-		} catch (Exception e) {
-			// sometimes:
-			// ERROR/ActivityThread(15416): Activity de.droidcachebox.main has
-			// leaked IntentReceiver
-			// de.droidcachebox.main$7@4745a0f0 that was originally registered
-			// here.
-			// Are you missing a call to unregisterReceiver()?
-		}
 
 		downSlider.isInitial = false;
 
@@ -1047,8 +1031,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			mSensorManager.registerListener(mListener, magnetometer, SensorManager.SENSOR_DELAY_UI);
 		}
 
-		this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-
 		int sollHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.that.getQuickButtonListHeight() : 0;
 		((main) main.mainActivity).setQuickButtonHeight(sollHeight);
 		downSlider.isInitial = false;
@@ -1131,11 +1113,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (mSensorManager != null)
 			mSensorManager.unregisterListener(mListener);
 
-		try {
-			this.unregisterReceiver(this.mBatInfoReceiver);
-		} catch (Exception e) {
-			Log.err(log, "Main=> onStop", "unregisterReceiver", e);
-		}
 		super.onStop();
 
 		// Ausschalten wieder zulassen!
@@ -1689,7 +1666,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 			intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 			if (android.os.Build.VERSION.SDK_INT >= 24) {
-				uri = FileProvider.getUriForFile(this, "de.droidcachebox.android.fileprovider", new java.io.File(tempMediaPathAndName));
+				uri = FileProvider.getUriForFile(this, "de.cachebox_test.android.fileprovider", new java.io.File(tempMediaPathAndName));
 			} else {
 				uri = Uri.fromFile(new java.io.File(tempMediaPathAndName));
 			}
@@ -2010,28 +1987,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			e.printStackTrace();
 		}
 	}
-
-	private final BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(Context arg0, Intent intent) {
-			try {
-				int plugged = intent.getIntExtra("plugged", -1);
-
-				if (runsWithAkku != (plugged == 0)) {
-					// if loading status has changed
-					runsWithAkku = plugged == 0;
-					if (!runsWithAkku) {
-					} else {
-					}
-				}
-			} catch (Exception e) {
-				Log.err(log, "main.mBatInfoReceiver.onReceive()", "", e);
-				e.printStackTrace();
-			}
-		}
-
-	};
 
 	int horizontalListViewHeigt;
 

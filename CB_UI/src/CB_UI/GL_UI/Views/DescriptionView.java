@@ -207,7 +207,7 @@ public class DescriptionView extends CB_View_Base {
 		final Thread getLimitThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				int result = CB_Core.Api.GroundspeakAPI.GetCacheLimits(null);
+				int result = GroundspeakAPI.GetCacheLimits(null);
 				if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
 					GL.that.Toast(ConnectionError.INSTANCE);
 					return;
@@ -221,7 +221,7 @@ public class DescriptionView extends CB_View_Base {
 			}
 		});
 
-		if (CB_Core.Api.GroundspeakAPI.CachesLeft == -1)
+		if (GroundspeakAPI.CachesLeft == -1)
 			getLimitThread.start();
 
 		float contentWidth = this.getWidth() * 0.95f;
@@ -254,7 +254,7 @@ public class DescriptionView extends CB_View_Base {
 
 		downloadButton.setOnClickListener(downloadClicked);
 
-		if (CB_Core.Api.GroundspeakAPI.CachesLeft <= 0)
+		if (GroundspeakAPI.CachesLeft <= 0)
 			downloadButton.disable();
 		layout();
 	}
@@ -301,22 +301,22 @@ public class DescriptionView extends CB_View_Base {
 
 	private String getMessage() {
 		StringBuilder sb = new StringBuilder();
-		boolean basic = CB_Core.Api.GroundspeakAPI.GetMembershipType(null) == 1;
+		boolean basic = GroundspeakAPI.GetMembershipType(null) == 1;
 		String MemberType = basic ? BASIC : PREMIUM;
 		String limit = basic ? BASIC_LIMIT : PREMIUM_LIMIT;
-		String actLimit = Integer.toString(CB_Core.Api.GroundspeakAPI.CachesLeft - 1);
+		String actLimit = Integer.toString(GroundspeakAPI.CachesLeft - 1);
 
-		if (CB_Core.Api.GroundspeakAPI.CachesLeft == -1) {
+		if (GroundspeakAPI.CachesLeft == -1) {
 			actLimit = "?";
 		}
 
 		sb.append(Translation.Get("LiveDescMessage", MemberType, limit));
 		sb.append(Global.br);
 		sb.append(Global.br);
-		if (CB_Core.Api.GroundspeakAPI.CachesLeft > 0)
+		if (GroundspeakAPI.CachesLeft > 0)
 			sb.append(Translation.Get("LiveDescAfter", actLimit));
 
-		if (CB_Core.Api.GroundspeakAPI.CachesLeft == 0) {
+		if (GroundspeakAPI.CachesLeft == 0) {
 			sb.append(Translation.Get("LiveDescLimit"));
 			sb.append(Global.br);
 			sb.append(Global.br);
