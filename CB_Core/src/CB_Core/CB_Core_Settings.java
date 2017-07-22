@@ -15,6 +15,7 @@
  */
 package CB_Core;
 
+import CB_Core.Api.LiveMapQue;
 import CB_Utils.Config_Core;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingCategory;
@@ -57,8 +58,8 @@ public interface CB_Core_Settings {
     public static final SettingBool FieldNotesLoadAll = new SettingBool("FieldNotesLoadAll", SettingCategory.Fieldnotes, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
     public static final SettingInt FieldNotesLoadLength = new SettingInt("FieldNotesLoadLength", SettingCategory.Fieldnotes, EXPERT, 10, SettingStoreType.Global, SettingUsage.ACB);
     public static final SettingBool ShowAllWaypoints = new SettingBool("ShowAllWaypoints", SettingCategory.Map, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
-    public static final SettingEnum<CB_Core.Api.LiveMapQue.Live_Radius> LiveRadius = new SettingEnum<CB_Core.Api.LiveMapQue.Live_Radius>("LiveRadius", SettingCategory.LiveMap, NORMAL, CB_Core.Api.LiveMapQue.Live_Radius.Zoom_14,
-	    SettingStoreType.Global, SettingUsage.ACB, CB_Core.Api.LiveMapQue.Live_Radius.Zoom_14);
+    public static final SettingEnum<LiveMapQue.Live_Radius> LiveRadius = new SettingEnum<LiveMapQue.Live_Radius>("LiveRadius", SettingCategory.LiveMap, NORMAL, LiveMapQue.Live_Radius.Zoom_14, SettingStoreType.Global, SettingUsage.ACB,
+	    LiveMapQue.Live_Radius.Zoom_14);
     public static final SettingBool DisableLiveMap = new SettingBool("DisableLiveMap", SettingCategory.LiveMap, NORMAL, false, SettingStoreType.Global, SettingUsage.ACB);
     public static final SettingInt LiveMaxCount = new SettingInt("LiveMaxCount", SettingCategory.LiveMap, EXPERT, 350, SettingStoreType.Global, SettingUsage.ACB);
     public static final SettingBool LiveExcludeFounds = new SettingBool("LiveExcludeFounds", SettingCategory.LiveMap, NORMAL, true, SettingStoreType.Global, SettingUsage.ACB);

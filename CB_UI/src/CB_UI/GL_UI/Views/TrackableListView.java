@@ -194,7 +194,7 @@ public class TrackableListView extends CB_View_Base {
 			public void run() {
 				int result = -1;
 				TbList searchList = new TbList();
-				result = CB_Core.Api.GroundspeakAPI.getMyTbList(searchList, this);
+				result = GroundspeakAPI.getMyTbList(searchList, this);
 
 				if (result == GroundspeakAPI.IO) {
 					TrackableListDAO.clearDB();

@@ -130,8 +130,8 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
 					@Override
 					public void run() {
 
-						if (!CB_Core.Api.GroundspeakAPI.CacheStatusValid) {
-							int result = CB_Core.Api.GroundspeakAPI.GetCacheLimits(null);
+						if (!GroundspeakAPI.CacheStatusValid) {
+							int result = GroundspeakAPI.GetCacheLimits(null);
 							if (result != 0) {
 								onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
 								return;
@@ -146,10 +146,10 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
 								return;
 							}
 						}
-						if (CB_Core.Api.GroundspeakAPI.CachesLeft <= 0) {
+						if (GroundspeakAPI.CachesLeft <= 0) {
 							String s = "Download limit is reached!\n";
-							s += "You have downloaded the full cache details of " + CB_Core.Api.GroundspeakAPI.MaxCacheCount + " caches in the last 24 hours.\n";
-							if (CB_Core.Api.GroundspeakAPI.MaxCacheCount < 10)
+							s += "You have downloaded the full cache details of " + GroundspeakAPI.MaxCacheCount + " caches in the last 24 hours.\n";
+							if (GroundspeakAPI.MaxCacheCount < 10)
 								s += "If you want to download the full cache details of 6000 caches per day you can upgrade to Premium Member at \nwww.geocaching.com!";
 
 							message = s;
@@ -159,11 +159,11 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
 							return;
 						}
 
-						if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember()) {
+						if (!GroundspeakAPI.IsPremiumMember()) {
 							String s = "Download Details of this cache?\n";
-							s += "Full Downloads left: " + CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";
-							s += "Actual Downloads: " + CB_Core.Api.GroundspeakAPI.CurrentCacheCount + "\n";
-							s += "Max. Downloads in 24h: " + CB_Core.Api.GroundspeakAPI.MaxCacheCount;
+							s += "Full Downloads left: " + GroundspeakAPI.CachesLeft + "\n";
+							s += "Actual Downloads: " + GroundspeakAPI.CurrentCacheCount + "\n";
+							s += "Max. Downloads in 24h: " + GroundspeakAPI.MaxCacheCount;
 							message = s;
 							onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(3));
 							return;
@@ -249,9 +249,9 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
 					aktCache = newCache;
 					setCache(newCache);
 
-					if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember()) {
+					if (!GroundspeakAPI.IsPremiumMember()) {
 						String s = "Download successful!\n";
-						s += "Downloads left for today: " + CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";
+						s += "Downloads left for today: " + GroundspeakAPI.CachesLeft + "\n";
 						s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
 
 						MessageBox.Show(s, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);

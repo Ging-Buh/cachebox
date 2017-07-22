@@ -16,6 +16,7 @@
 package CB_UI.GL_UI.Views;
 
 import CB_Core.Database;
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_UI.GlobalCore;
@@ -84,12 +85,12 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent {
 					GL.that.RunOnGL(new IRunOnGL() {
 						@Override
 						public void run() {
-							int result = CB_Core.Api.GroundspeakAPI.uploadNotes(aktCache.getGcCode(), notes.getText(), null);
+							int result = GroundspeakAPI.uploadNotes(aktCache.getGcCode(), notes.getText(), null);
 							b.disable();
 							if (result == 0) {
 								b.setText("erfolgreich");
 							} else {
-								b.setText("Fehler: " + CB_Core.Api.GroundspeakAPI.LastAPIError);
+								b.setText("Fehler: " + GroundspeakAPI.LastAPIError);
 							}
 						}
 					});

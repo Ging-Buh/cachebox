@@ -260,7 +260,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private ExtAudioRecorder extAudioRecorder = null;
 
-	private boolean runsWithAkku = true;
+	private final boolean runsWithAkku = true;
 
 	private FrameLayout frame;
 	private FrameLayout tabFrame;
@@ -467,17 +467,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		InfoDownSlider.invalidate();
 
 		CacheListChangedEvent();
-
-		try {
-			this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-		} catch (Exception e) {
-			// sometimes:
-			// ERROR/ActivityThread(15416): Activity de.cachebox_test.main has
-			// leaked IntentReceiver
-			// de.cachebox_test.main$7@4745a0f0 that was originally registered
-			// here.
-			// Are you missing a call to unregisterReceiver()?
-		}
 
 		downSlider.isInitial = false;
 
@@ -1047,8 +1036,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			mSensorManager.registerListener(mListener, magnetometer, SensorManager.SENSOR_DELAY_UI);
 		}
 
-		this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-
 		int sollHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.that.getQuickButtonListHeight() : 0;
 		((main) main.mainActivity).setQuickButtonHeight(sollHeight);
 		downSlider.isInitial = false;
@@ -1131,11 +1118,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (mSensorManager != null)
 			mSensorManager.unregisterListener(mListener);
 
-		try {
-			this.unregisterReceiver(this.mBatInfoReceiver);
-		} catch (Exception e) {
-			Log.err(log, "Main=> onStop", "unregisterReceiver", e);
-		}
 		super.onStop();
 
 		// Ausschalten wieder zulassen!
@@ -2010,28 +1992,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			e.printStackTrace();
 		}
 	}
-
-	private final BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(Context arg0, Intent intent) {
-			try {
-				int plugged = intent.getIntExtra("plugged", -1);
-
-				if (runsWithAkku != (plugged == 0)) {
-					// if loading status has changed
-					runsWithAkku = plugged == 0;
-					if (!runsWithAkku) {
-					} else {
-					}
-				}
-			} catch (Exception e) {
-				Log.err(log, "main.mBatInfoReceiver.onReceive()", "", e);
-				e.printStackTrace();
-			}
-		}
-
-	};
 
 	int horizontalListViewHeigt;
 
