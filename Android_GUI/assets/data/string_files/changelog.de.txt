@@ -1,5 +1,35 @@
-
 Versions Änderungen:
+
+Version : 0.9
+	• Neu:
+		Hochladen von Notizen
+		Benutzerdefinierte tileserver für Karten
+		Eigene Datei- / Verzeichnisauswahl ((OI-)Dateimanager entfällt als Vorraussetzung)
+		Unterstützung mapforge 0.6.1 mit Renderthemes Version 4
+			mehrsprachige Karten, Styles-Menü, Mapforge Default Rendertheme (from 0.8.0) , mehrere automatisierte Layer
+		Labcache Handling
+		Sandbox-Lösung für den Arbeitsbereich auf externer SD-Card (Android > 4.4 KitKat)
+		Export .../user/nissan.csv auf Doppelklick in Bearbeiten Koordinaten (für Nissan Connect)
+		Fieldnotesvorlagen für Visited und Webcam Foto taken
+		Filtervorgabe History
+		ACB ist vor LockScreen sichtbar - Einstellung
+	• Änderungen
+		Für Android 7 (Foto, Content-Zwischenablage, Orientierungssensor, ...)
+		Format der Koordinaten in der Zwischenablage
+		Kein gemischter Modus für Mapforge-Karten mehr (Skalierung)
+		Icon/Vorschau für Spoiler
+		Ansichten in openGL (Spoiler, Solver, Slider, ...)
+		Gestartet und gestoppt openGL Html Renderer
+		Sichtbarkeit einiger Einstellungen
+		Verschieben einiger Einstellungen ins Kontextmenü
+	• Fehlerbehebung
+		Freizeitkarte Karte herunterladen
+		Anerkennung der GSAK importierten Finale
+		Schnelle Fieldnote für Events und Webcam
+		Gpx import / export Cito
+		Automatisierte Auswahl des nächsten Cache (Event, ...)
+		API Key Cookie zurücksetzen
+		...
 
 Version : 0.8.2311
 	• Neu LiveMap
