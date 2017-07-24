@@ -1,4 +1,31 @@
 Changes:
+Version : 0.9
+	• New:
+		Upload Notes
+		user defined map tileservers
+		own file/directory selection (removed filemanager as prerequisite)
+		Support mapsforge 0.6.1 with Renderthemes Version 4
+			multilingual maps, styles menu, mapsforge default rendertheme, several automated layers
+		Labcache handling
+		sandbox solution for workpath on external sd-card (Android > 4.4 KitKat)
+		export .../user/nissan.csv on doubleclick in edit coordinates (for Nissan Connect)
+		fieldnote templates for attended and webcam
+		filter preset History
+		run on LockScreen setting
+	• Changes
+		for Android 7 (Take photo, Content Clipboard, orientation sensor, ...)
+		Format of coordinates to clipboard
+		removed the extension mixed mode for mapsforge maps
+		thumb creation for spoilers
+		changing views to openGL (Spoiler, Solver, Slider, ...)
+		started and stopped/reverted openGL Html Renderer 
+	• Bugfixes
+		Freizeitkarte map download
+		recognition of GSAK imported final
+		Quick fieldnote for events and webcam
+		gpx import/export cito
+		automated selection of nearest cache (event,...)
+		...
 
 Version : 0.8.2311
 	• new LiveMap

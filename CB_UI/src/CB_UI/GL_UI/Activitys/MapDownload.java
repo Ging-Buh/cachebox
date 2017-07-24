@@ -327,7 +327,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 				httpget.setHeader("Content-type", "application/json");
 
 				try {
-					repository_freizeitkarte_android = HttpUtils.Execute(httpget, null);
+					repository_freizeitkarte_android = HttpUtils.Execute(httpget, null, true);
 				} catch (ConnectTimeoutException e) {
 					GL.that.Toast(ConnectionError.INSTANCE);
 				} catch (ClientProtocolException e) {
