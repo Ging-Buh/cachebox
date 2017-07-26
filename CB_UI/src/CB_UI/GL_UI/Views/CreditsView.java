@@ -25,7 +25,6 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Sprites;
-import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
@@ -50,7 +49,7 @@ public class CreditsView extends CB_View_Base {
 
 		list.add(new Person("hannes!", Job.idea, "2009-2011"));
 		list.add(new Person("Stonefinger", Job.designer));
-		list.add(new Person("Groundspeak API", Job.service, Sprites.getSprite(IconName.dayGcLiveIcon.name())));
+		list.add(new Person("Groundspeak API", Job.service, Sprites.getSprite("api-Logo-vCOMP2")));
 		list.add(new Person(null, Job.library, Sprites.getSprite("libgdx")));// Name at Logo image
 		list.add(new Person("Mapsforge", Job.library, Sprites.getSprite("mapsforge_logo")));
 		list.add(new Person("OpenRouteService.org", Job.service, Sprites.getSprite("openrouteservice_logo")));
