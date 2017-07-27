@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2014-2016 team-cachebox.de
+ * Copyright (C) 2014-2017 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
  * you may not use this file except in compliance with the License.
@@ -56,9 +56,9 @@ import CB_Utils.Log.Log;
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(GlobalCore.class);
 
-	public static final int CurrentRevision = 20170726;
+	public static final int CurrentRevision = 20170728;
 	public static final String CurrentVersion = "2.0.";
-	public static final String VersionPrefix = "RC3 3066";
+	public static final String VersionPrefix = "RC4 3068";
 
 	public static final String aboutMsg1 = "Team Cachebox (2011-2017)" + br;
 	public static final String teamLink = "www.team-cachebox.de";
