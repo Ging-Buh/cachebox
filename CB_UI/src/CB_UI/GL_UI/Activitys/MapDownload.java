@@ -12,6 +12,7 @@ import java.util.Map;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.ConnectTimeoutException;
+import org.slf4j.LoggerFactory;
 
 import com.thebuzzmedia.sjxp.XMLParser;
 import com.thebuzzmedia.sjxp.rule.DefaultRule;
@@ -21,6 +22,7 @@ import com.thebuzzmedia.sjxp.rule.IRule.Type;
 import CB_Core.Import.BreakawayImportThread;
 import CB_Locator.Map.ManagerBase;
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Controls.MapDownloadItem;
 import CB_UI_Base.GL_UI.Fonts;
@@ -42,9 +44,12 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Events.ProgressChangedEvent;
 import CB_Utils.Events.ProgresssChangedEventList;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
+import CB_Utils.Util.FileIO;
 import CB_Utils.http.HttpUtils;
 
 public class MapDownload extends ActivityBase implements ProgressChangedEvent {
+	final static org.slf4j.Logger logger = LoggerFactory.getLogger(MapDownload.class);
 	private static MapDownload INSTANCE;
 	private final String URL_FREIZEITKARTE = "http://repository.freizeitkarte-osm.de/repository_freizeitkarte_android.xml";
 	private Button bOK, bCancel;
@@ -247,7 +252,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 					boolean chk = true;
 					for (int i = 0, n = mapInfoItemList.size(); i < n; i++) {
 						MapDownloadItem item = mapInfoItemList.get(i);
-						if (!item.isFinish()) {
+						if (!item.isFinished()) {
 							chk = false;
 							break;
 						}
@@ -379,12 +384,30 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
 
 		float yPos = 0;
 
-		// Create possible download List
+		// get and check the target directory (global value)
+		String workPath = Config.MapPackFolder.getValue();
+		Boolean isWritable;
+		if (workPath.length() > 0)
+			isWritable = FileIO.canWrite(workPath);
+		else
+			isWritable = false;
+		if (isWritable)
+			Log.info(logger, "Download to " + workPath);
+		else {
+			Log.err(logger, "Download to " + workPath + " is not possible!");
+			// don't use Config.MapPackFolder.getDefaultValue()
+			// because it doesn't reflect own repository
+			// own or global repository is writable by default, but do check again
+			workPath = Config.MapPackFolderLocal.getValue();
+			isWritable = FileIO.canWrite(workPath);
+			Log.info(logger, "Download to " + workPath + " is possible? " + isWritable);
+		}
 
+		// Create possible download List
 		for (int i = 0, n = mapInfoList.size(); i < n; i++) {
 			MapRepositoryInfo map = mapInfoList.get(i);
 
-			MapDownloadItem item = new MapDownloadItem(map, MapDownload.this.innerWidth);
+			MapDownloadItem item = new MapDownloadItem(map, workPath, MapDownload.this.innerWidth);
 			item.setY(yPos);
 			scrollBox.addChild(item);
 			mapInfoItemList.add(item);

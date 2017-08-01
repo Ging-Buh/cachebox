@@ -1666,7 +1666,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 			intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 			if (android.os.Build.VERSION.SDK_INT >= 24) {
-				uri = FileProvider.getUriForFile(this, "de.cachebox_test.android.fileprovider", new java.io.File(tempMediaPathAndName));
+				uri = FileProvider.getUriForFile(this, "de.droidcachebox.android.fileprovider", new java.io.File(tempMediaPathAndName));
 			} else {
 				uri = Uri.fromFile(new java.io.File(tempMediaPathAndName));
 			}

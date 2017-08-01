@@ -1,30 +1,54 @@
-Changes:
+
+Version history:
 Version : 0.9
 	• New:
-		Upload Notes
-		user defined map tileservers
-		own file/directory selection (removed filemanager as prerequisite)
-		Support mapsforge 0.6.1 with Renderthemes Version 4
-			multilingual maps, styles menu, mapsforge default rendertheme, several automated layers
-		Labcache handling
-		sandbox solution for workpath on external sd-card (Android > 4.4 KitKat)
-		export .../user/nissan.csv on doubleclick in edit coordinates (for Nissan Connect)
-		fieldnote templates for attended and webcam
-		filter preset History
-		run on LockScreen setting
+		+ Upload Notes
+		+ user defined map tileservers
+		+ own file/directory selection
+			removed (OI)filemanager as prerequisite
+		+ Mapforge 0.6.1 Renderthemes Version 4:
+			multilingual maps,
+			styles menu,
+			mapsforge default rendertheme (0.8.0),
+			several automated layers
+		+ Labcache handling
+		+ sandbox solution
+			for workpath on external sd-card
+			Android > 4.4 KitKat
+		+ export .../user/nissan.csv
+			on doubleclick in edit coordinates
+			for Nissan Connect
+		+ fieldnote templates 
+			for attended and webcam
+		+ filter preset History
+		+ ACB visible in front of LockScreen
+			in settings
 	• Changes
-		for Android 7 (Take photo, Content Clipboard, orientation sensor, ...)
-		Format of coordinates to clipboard
-		removed the extension mixed mode for mapsforge maps
-		thumb creation for spoilers
-		changing views to openGL (Spoiler, Solver, Slider, ...)
-		started and stopped/reverted openGL Html Renderer 
+		~ for Android 7
+			Take photo,
+			Content Clipboard,
+			orientation sensor
+		~ Format of coordinates same as GC
+			on copy to clipboard
+		~ thumb creation for spoilers
+		~ changing views to openGL
+			(Spoiler, Solver, Slider, ...)
+		~ Running in front of LockScreen
+			settings
 	• Bugfixes
-		Freizeitkarte map download
-		recognition of GSAK imported final
-		Quick fieldnote for events and webcam
-		gpx import/export cito
-		automated selection of nearest cache (event,...)
+		* recognition of GSAK imported final
+		* Quick fieldnote for events and webcam
+		* gpx import/export cito
+		* automated selection of nearest cache (event,...)
+		* reseting of API Key Cookie
+			always asking for user/password
+		* Freizeitkarte map download
+	• Removed
+		- removed the extension mixed mode
+			for mapsforge maps (scaling, turning)
+		- no further development of openGL Html Renderer
+			still using webview
+	
 		...
 
 Version : 0.8.2311

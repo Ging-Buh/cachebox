@@ -953,7 +953,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 								@Override
 								public void returnFolder(String Path) {
 									// check WriteProtection
-									if (needWritePermission && !FileIO.checkWritePermission(Path)) {
+									if (needWritePermission && !FileIO.canWrite(Path)) {
 										String WriteProtectionMsg = Translation.Get("NoWriteAcces");
 										GL.that.Toast(WriteProtectionMsg, 8000);
 									} else {
