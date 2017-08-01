@@ -9,6 +9,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import org.slf4j.LoggerFactory;
+
+import CB_Utils.Log.Log;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 
@@ -16,6 +19,7 @@ import CB_Utils.fileProvider.FileFactory;
  * @author Longri from => http://stackoverflow.com/questions/981578/how-to-unzip-files-recursively-in-java
  */
 public class UnZip {
+    final static org.slf4j.Logger logger = LoggerFactory.getLogger(UnZip.class);
 
     /**
      * Extract the given ZIP-File
@@ -26,10 +30,9 @@ public class UnZip {
      * @throws IOException
      */
     static public String extractFolder(String zipFile) throws ZipException, IOException {
-	System.out.println("extract => " + zipFile);
+	Log.info(logger, "unzip from " + zipFile);
 	int BUFFER = 2048;
 	File file = FileFactory.createFile(zipFile);
-
 	ZipFile zip = new ZipFile(file.getAbsolutePath());
 	String newPath = file.getParentFile().getAbsolutePath(); //  zipFile.substring(0, zipFile.length() - 4);
 
@@ -44,43 +47,42 @@ public class UnZip {
 	    File destFile = FileFactory.createFile(newPath, currentEntry);
 	    if (destFile.exists()) {
 		destFile.delete();
-		// destFile = FileFactory.createFile(newPath, currentEntry);
 	    }
+	    Log.info(logger, "  zipEntry: " + destFile.getAbsolutePath());
 
-	    // destFile = FileFactory.createFile(newPath, destFile.getName());
 	    File destinationParent = destFile.getParentFile();
-
-	    // create the parent directory structure if needed
 	    destinationParent.mkdirs();
-
 	    destinationParent.setLastModified(entry.getTime()); // set original Datetime to be able to import ordered oldest first
 
 	    if (!entry.isDirectory()) {
-		BufferedInputStream is = new BufferedInputStream(zip.getInputStream(entry));
+
 		int currentByte;
-		// establish buffer for writing file
 		byte data[] = new byte[BUFFER];
 
-		// write the current file to disk
 		FileOutputStream fos = destFile.getFileOutputStream();
 		BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER);
 
-		// read and write until last byte is encountered
+		BufferedInputStream is = new BufferedInputStream(zip.getInputStream(entry));
 		while ((currentByte = is.read(data, 0, BUFFER)) != -1) {
 		    dest.write(data, 0, currentByte);
 		}
+		is.close();
+
 		dest.flush();
 		dest.close();
-		is.close();
-	    }
+		fos.flush();
+		fos.close();
 
+	    }
 	    destFile.setLastModified(entry.getTime()); // set original Datetime to be able to import ordered oldest first
+	    Log.info(logger, "  done with size " + destFile.length());
 
 	    if (currentEntry.endsWith(".zip")) {
-		// found a zip file, try to open
+		// found a zip file, try to open recursiv
 		extractFolder(destFile.getAbsolutePath());
 	    }
 	}
+
 	zip.close();
 
 	return newPath;

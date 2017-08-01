@@ -414,10 +414,6 @@ public abstract class ManagerBase {
 		Log.debug(log, "dirOwnMaps = " + LocatorSettings.MapPackFolderLocal.getValue());
 		getFiles(files, mapnames, LocatorSettings.MapPackFolderLocal.getValue());
 
-		// if the Folder is changed, the user wants to use only this one
-		// Log.debug(log, "dirDefaultMaps = " + LocatorSettings.MapPackFolder.getDefaultValue());
-		// getFiles(files, mapnames, LocatorSettings.MapPackFolder.getDefaultValue());
-
 		Log.debug(log, "dirGlobalMaps = " + LocatorSettings.MapPackFolder.getValue());
 		getFiles(files, mapnames, LocatorSettings.MapPackFolder.getValue());
 

@@ -325,7 +325,7 @@ public class splash extends Activity {
 
 		// check Write permission
 		if (!askAgain) {
-			if (!FileIO.checkWritePermission(workPath)) {
+			if (!FileIO.canWrite(workPath)) {
 				askAgain = true;
 				if (!ToastEx) {
 					ToastEx = true;
@@ -507,7 +507,7 @@ public class splash extends Activity {
 						continue;
 					}
 
-					if (!FileIO.checkWritePermission(_AdditionalWorkPath)) {
+					if (!FileIO.canWrite(_AdditionalWorkPath)) {
 						// delete this Work Path
 						deleteWorkPath(_AdditionalWorkPath);
 						continue;
@@ -597,7 +597,7 @@ public class splash extends Activity {
 
 							@Override
 							public void returnFolder(String Path) {
-								if (FileIO.checkWritePermission(Path)) {
+								if (FileIO.canWrite(Path)) {
 
 									AdditionalWorkPathArray.add(Path);
 									writeAdditionalWorkPathArray(AdditionalWorkPathArray);

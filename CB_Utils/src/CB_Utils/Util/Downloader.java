@@ -40,8 +40,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.Closeable;
-import CB_Utils.fileProvider.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -60,6 +58,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
+import CB_Utils.fileProvider.File;
 import CB_Utils.http.HttpUtils;
 
 /**
@@ -92,7 +91,7 @@ public class Downloader implements Runnable {
 	volatile private boolean progressUpdated = false;
 
 	/** Exception object representing the error, if any */
-	volatile private Exception error = null;
+	public volatile Exception error = null;
 
 	/** has the download started? */
 	private boolean started = false;
