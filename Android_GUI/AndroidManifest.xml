@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="de.droidcachebox" android:installLocation="auto"
-	android:versionCode="20170801" android:versionName="2.0.20170801 RC5 (3070)">
+	android:versionCode="20170807" android:versionName="20170807 RC6">
 	<uses-sdk android:minSdkVersion="12" android:targetSdkVersion="25" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
@@ -19,7 +19,7 @@
 	<uses-feature android:name="android.hardware.camera.autofocus" android:required="false"></uses-feature>
 
 
-	<application android:label="@string/app_name" android:theme="@style/Theme_day" android:icon="@drawable/cb" android:vmSafeMode="false" android:allowBackup="true" android:permission="android.permission.ACCESS_NETWORK_STATE">
+	<application android:label="@string/app_name" android:theme="@style/Theme_day" android:icon="@drawable/cb" android:vmSafeMode="false" android:allowBackup="true">
 		<activity android:name=".main" android:label="@string/app_name" android:screenOrientation="behind"
 			    android:alwaysRetainTaskState="true"
 				android:configChanges="orientation|keyboard|keyboardHidden"
@@ -97,9 +97,7 @@
 		</activity>
 		
 		<activity android:name="de.droidcachebox.Views.Forms.GcApiLogin" android:screenOrientation="behind" android:theme="@style/Theme_day_transparent" />		    
-		
-		<service android:name="de.droidcachebox.NotifyService"></service>
-		
+
 		<provider
         android:name="android.support.v4.content.FileProvider"
         android:authorities="de.droidcachebox.android.fileprovider"
