@@ -27,7 +27,7 @@ public interface CB_Rpc_Settings {
 	public static final SettingModus NEVER = CB_Utils.Settings.SettingModus.Never;
 	public static final SettingModus DEVELOP = CB_Utils.Settings.SettingModus.develop;
 
-	public static final SettingString CBS_IP = new SettingString("CBS_IP", CB_Utils.Settings.SettingCategory.CBS, DEVELOP, "", CB_Utils.Settings.SettingStoreType.Global, CB_Utils.Settings.SettingUsage.ACB);
-	public static final SettingInt CBS_BLOCK_SIZE = new SettingInt("CBS_BLOCKSIZE", CB_Utils.Settings.SettingCategory.CBS, DEVELOP, 100, CB_Utils.Settings.SettingStoreType.Global, CB_Utils.Settings.SettingUsage.ACB);
+	public static final SettingString CBS_IP = new SettingString("CBS_IP", CB_Utils.Settings.SettingCategory.CBS, EXPERT, "", CB_Utils.Settings.SettingStoreType.Global, CB_Utils.Settings.SettingUsage.ACB);
+	public static final SettingInt CBS_BLOCK_SIZE = new SettingInt("CBS_BLOCKSIZE", CB_Utils.Settings.SettingCategory.CBS, EXPERT, 100, CB_Utils.Settings.SettingStoreType.Global, CB_Utils.Settings.SettingUsage.ACB);
 
 }
