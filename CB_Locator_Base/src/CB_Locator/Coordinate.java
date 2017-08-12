@@ -248,6 +248,10 @@ public class Coordinate extends LatLong implements Serializable {
 		}
 	}
 
+	public Coordinate() {
+		super(0, 0);
+	}
+
 	public static double[] parseCoordinate(String text) {
 		double[] values = new double[3];
 		text = text.toUpperCase();
