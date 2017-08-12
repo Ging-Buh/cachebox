@@ -54,7 +54,6 @@ public class ButtonDialog extends Dialog {
 	public OnMsgBoxClickListener mMsgBoxClickListener;
 
 	protected OnClickListener positiveButtonClickListener;
-
 	protected OnClickListener neutralButtonClickListener;
 	protected OnClickListener negativeButtonClickListener;
 
@@ -216,9 +215,24 @@ public class ButtonDialog extends Dialog {
 	}
 
 	private boolean ButtonClick(int button) {
+		/*
+		Object _data=null;
+		switch (button) {
+		case 1:
+			button1.getData();
+			break;
+		case 2:
+			button2.getData();
+			break;
+		case 3:
+			button3.getData();
+			break;
+		}
+		*/
+		Object _data=this.getData();
 		GL.that.closeDialog(this);
 		if (mMsgBoxClickListener != null)
-			return mMsgBoxClickListener.onClick(button, data);
+			return mMsgBoxClickListener.onClick(button, _data);
 		return false;
 	}
 

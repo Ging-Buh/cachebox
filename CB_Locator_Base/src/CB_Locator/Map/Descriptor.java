@@ -404,7 +404,7 @@ public class Descriptor implements Comparable<Descriptor> {
 	 * @return
 	 */
 	public String getLocalCachePath(String Name) {
-		return TileCacheFolder + "/" + Name + "/" + this.getZoom() + "/" + this.getX() + "/" + this.getY();
+		return TileCacheFolder + "/" + Name + "/" + Zoom + "/" + X + "/" + Y;
 	}
 
 	/**

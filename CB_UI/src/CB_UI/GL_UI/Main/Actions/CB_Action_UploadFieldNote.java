@@ -107,7 +107,7 @@ public class CB_Action_UploadFieldNote extends CB_Action {
 							result = GroundspeakAPI.createTrackableLog(fieldNote.TravelBugCode, fieldNote.TrackingNumber, fieldNote.gcCode, LogTypes.CB_LogType2GC(fieldNote.type), fieldNote.timestamp, fieldNote.comment, this);
 						} else {
 							boolean dl = fieldNote.isDirectLog;
-							result = CB_Core.Api.GroundspeakAPI.CreateFieldNoteAndPublish(fieldNote.gcCode, fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment, dl, this);
+							result = GroundspeakAPI.CreateFieldNoteAndPublish(fieldNote.gcCode, fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment, dl, this);
 						}
 
 						if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
@@ -122,7 +122,7 @@ public class CB_Action_UploadFieldNote extends CB_Action {
 						}
 
 						if (result == -1) {
-							UploadMeldung += fieldNote.gcCode + "\n" + CB_Core.Api.GroundspeakAPI.LastAPIError + "\n";
+							UploadMeldung += fieldNote.gcCode + "\n" + GroundspeakAPI.LastAPIError + "\n";
 						} else {
 							if (result != -10) {
 								// set fieldnote as uploaded only when upload was working

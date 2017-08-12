@@ -161,6 +161,13 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		Config.MapsforgeDayTheme.addChangedEventListener(themeChangedEventHandler);
 		Config.MapsforgeNightTheme.addChangedEventListener(themeChangedEventHandler);
+		Config.MapsforgeCarDayTheme.addChangedEventListener(themeChangedEventHandler);
+		Config.MapsforgeCarNightTheme.addChangedEventListener(themeChangedEventHandler);
+
+		Config.MapsforgeDayStyle.addChangedEventListener(themeChangedEventHandler);
+		Config.MapsforgeNightStyle.addChangedEventListener(themeChangedEventHandler);
+		Config.MapsforgeCarDayStyle.addChangedEventListener(themeChangedEventHandler);
+		Config.MapsforgeCarNightStyle.addChangedEventListener(themeChangedEventHandler);
 
 		registerSkinChangedEvent();
 		setBackground(Sprites.ListBack);
@@ -1298,36 +1305,29 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		}
 
 		if ((InitialFlags & INITIAL_THEME) != 0) {
-			mapsForgeThemePath = null;
-			boolean useInvertNightTheme = false;
+			String mapsforgeThemesStyle = "";
+			mapsForgeThemePath = "";
 			if (CarMode) {
 				ManagerBase.Manager.textScale = ManagerBase.DEFAULT_TEXT_SCALE * 1.35f;
+				mapsForgeThemePath = ManagerBase.INTERNAL_THEME_CAR;
 				if (Config.nightMode.getValue()) {
-					if (!setTheme(Config.MapsforgeCarNightTheme.getValue())) {
-						useInvertNightTheme = true;
-						if (!setTheme(Config.MapsforgeCarDayTheme.getValue())) {
-							mapsForgeThemePath = ManagerBase.INTERNAL_CAR_THEME;
-						}
-					}
+					mapsforgeThemesStyle = Config.MapsforgeCarNightStyle.getValue();
+					setTheme(Config.MapsforgeCarNightTheme.getValue());
 				} else {
-					if (!setTheme(Config.MapsforgeCarDayTheme.getValue())) {
-						mapsForgeThemePath = ManagerBase.INTERNAL_CAR_THEME;
-					}
+					mapsforgeThemesStyle = Config.MapsforgeCarDayStyle.getValue();
+					setTheme(Config.MapsforgeCarDayTheme.getValue());
 				}
 			} else {
 				ManagerBase.Manager.textScale = ManagerBase.DEFAULT_TEXT_SCALE;
 				if (Config.nightMode.getValue()) {
-					if (!setTheme(Config.MapsforgeNightTheme.getValue())) {
-						useInvertNightTheme = true;
-						setTheme(Config.MapsforgeDayTheme.getValue());
-						// else themePath = null : defaults to internal RenderTheme OSMARENDER
-					}
+					mapsforgeThemesStyle = Config.MapsforgeNightStyle.getValue();
+					setTheme(Config.MapsforgeNightTheme.getValue());
 				} else {
+					mapsforgeThemesStyle = Config.MapsforgeDayStyle.getValue();
 					setTheme(Config.MapsforgeDayTheme.getValue());
-					// else themePath = null : defaults to internal RenderTheme OSMARENDER
 				}
 			}
-			ManagerBase.Manager.setRenderTheme(mapsForgeThemePath, useInvertNightTheme);
+			ManagerBase.Manager.setRenderTheme(mapsForgeThemePath, mapsforgeThemesStyle);
 		}
 
 		if ((InitialFlags & INITIAL_WP_LIST) != 0) {

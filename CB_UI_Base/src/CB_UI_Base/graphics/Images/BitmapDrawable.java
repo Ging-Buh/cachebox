@@ -151,7 +151,7 @@ public class BitmapDrawable implements ext_Bitmap, Disposable {
 			int w = (int) (pix.getWidth() * this.scaleFactor);
 			int h = (int) (pix.getHeight() * this.scaleFactor);
 			Pixmap tmpPixmap = new Pixmap(w, h, pix.getFormat());
-			Pixmap.setFilter(Pixmap.Filter.NearestNeighbour);
+			tmpPixmap.setFilter(Pixmap.Filter.NearestNeighbour);
 			tmpPixmap.drawPixmap(pix, 0, 0, pix.getWidth(), pix.getHeight(), 0, 0, w, h);
 			pix.dispose();
 			pix = tmpPixmap;

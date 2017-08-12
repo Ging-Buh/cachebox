@@ -33,6 +33,7 @@ import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Dialog;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.chkBox;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
@@ -111,10 +112,18 @@ public class GL_MsgBox extends Dialog {
 		msgBox.mMsgBoxClickListener = Listener;
 		msgBox.setButtonCaptions(buttons);
 		msgBox.setTitle(title);
-		msgBox.label = new Label("msgBox" + " label", msgBox.getContentSize().getBounds());
-		msgBox.label.setZeroPos();
+
+		msgBox.label=new Label();
 		msgBox.label.setWrappedText(msg);
-		msgBox.addChild(msgBox.label);
+		float labelHeight =  msgBox.label.getTextHeight();
+		msgBox.label.setHeight(labelHeight);
+
+		ScrollBox scrollBox = new ScrollBox(msgBox.getContentSize().getBounds());
+		scrollBox.initRow(BOTTOMUP);
+		scrollBox.setVirtualHeight(labelHeight);
+		scrollBox.addLast(msgBox.label);
+
+		msgBox.addChild(scrollBox);
 
 		GL.that.showDialog(msgBox);
 		return msgBox;
@@ -206,7 +215,7 @@ public class GL_MsgBox extends Dialog {
 
 		boolean retValue = false;
 		if (mMsgBoxClickListener != null) {
-			retValue = mMsgBoxClickListener.onClick(button, that.data);
+			retValue = mMsgBoxClickListener.onClick(button, data);
 		}
 		GL.that.closeDialog(that);
 		return retValue;

@@ -35,7 +35,6 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
-import CB_Utils.Log.Log;
 import CB_Utils.Util.MoveableList;
 
 public abstract class GL_View_Base extends CB_RectF {
@@ -1283,7 +1282,7 @@ public abstract class GL_View_Base extends CB_RectF {
 		return enabled;
 	}
 
-	private Object data = null;
+	protected Object data = null;
 
 	public void setData(Object data) {
 		this.data = data;

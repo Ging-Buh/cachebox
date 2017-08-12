@@ -35,7 +35,7 @@ public class Menu extends ButtonDialog {
 	private static final int ANIMATION_DURATION = 1200;
 	private static float mMoreMenuToggleButtonWidth = -1;
 
-	private ArrayList<MenuItemBase> mItems = new ArrayList<MenuItemBase>();
+	public ArrayList<MenuItemBase> mItems = new ArrayList<MenuItemBase>();
 	private V_ListView mListView;
 
 	private static CB_RectF sMenuRec = null;

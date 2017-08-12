@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="EclipseModuleManager">
+    <libelement value="jar://$MODULE_DIR$/libs/httpclient-4.1.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/httpclient-cache-4.1.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/httpcore-4.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/httpmime-4.1.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/slf4j-api-1.7.6.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/logback-classic-1.0.13.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/logback-core-1.0.13 14.25.54.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/logback-android-1.1.1-3.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/gdx-1.9.6.jar!/" />
+    <src_description expected_position="0">
+      <src_folder value="file://$MODULE_DIR$/src" expected_position="0" />
+    </src_description>
+  </component>
+  <component name="NewModuleRootManager">
+    <output url="file://$MODULE_DIR$/bin" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+    </content>
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="module-library">
+      <library name="httpclient-4.1.1.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/httpclient-4.1.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="httpclient-cache-4.1.1.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/httpclient-cache-4.1.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="httpcore-4.1.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/httpcore-4.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="httpmime-4.1.1.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/httpmime-4.1.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="slf4j-api-1.7.6.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/slf4j-api-1.7.6.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="logback-classic-1.0.13.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/logback-classic-1.0.13.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="logback-core-1.0.13 14.25.54.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/logback-core-1.0.13 14.25.54.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="logback-android-1.1.1-3.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/logback-android-1.1.1-3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="gdx-1.9.6.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/gdx-1.9.6.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+  </component>
+</module>

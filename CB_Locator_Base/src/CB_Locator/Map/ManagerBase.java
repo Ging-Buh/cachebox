@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Set;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -47,13 +48,16 @@ import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
+import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
+import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
 import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
 import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 import org.slf4j.LoggerFactory;
 
 import CB_Locator.LocatorSettings;
+import CB_Locator.Map.Layer.LayerType;
 import CB_Locator.Map.Layer.MapType;
-import CB_Locator.Map.Layer.Type;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.GL_RenderType;
@@ -75,7 +79,7 @@ public abstract class ManagerBase {
 	public static ManagerBase Manager = null;
 
 	public static int PROCESSOR_COUNT; // == nr of threads for getting tiles (mapsforge)
-	private final DisplayModel DISPLAY_MODEL;
+	public final DisplayModel DISPLAY_MODEL;
 
 	private final int CONECTION_TIME_OUT = 15000;// 15 sec
 	private final int CONECTION_TIME_OUT_MESSAGE_INTERVALL = 60000;// 1min
@@ -93,6 +97,10 @@ public abstract class ManagerBase {
 	private final DefaultLayerList DEFAULT_LAYER = new DefaultLayerList();
 
 	private boolean mayAddLayer = false; // add only during startup (why?)
+
+	private String mapsforgeThemesStyle = "";
+	private String mapsforgeTheme = "";
+	private boolean alreadySet = false;
 
 	public ManagerBase(DisplayModel displaymodel) {
 		Manager = this;
@@ -114,10 +122,9 @@ public abstract class ManagerBase {
 
 	/**
 	 * Läd ein Map Pack und fügt es dem Manager hinzu
-	 * 
+	 *
 	 * @param file
-	 * @return
-	 * true, falls das Pack erfolgreich geladen wurde, sonst false
+	 * @return true, falls das Pack erfolgreich geladen wurde, sonst false
 	 */
 	public boolean LoadMapPack(String file) {
 		try {
@@ -139,28 +146,32 @@ public abstract class ManagerBase {
 		for (Layer layer : layers) {
 			if (layer.Name.equalsIgnoreCase(Name[0])) {
 
-				//add aditional
+				// add aditional
+				// todo : this adding is only necessary when setting from Config. Otherwise the adds are done directly to the layers additionalMapsforgeLayer.
+				// therefore checked on additionalMapsforgeLayer.add for duplicates. A bit 
 				if (Name.length > 1) {
 					for (int i = 1; i < Name.length; i++) {
 						for (Layer la : layers) {
 							if (la.Name.equalsIgnoreCase(Name[i])) {
-								layer.addMapsforgeLayer(la);
+								layer.addAdditionalMap(la);
 							}
 						}
 					}
 				}
+
 				return layer;
 			}
 		}
 
 		if (mayAddLayer) {
-			Layer newLayer = new Layer(MapType.ONLINE, Type.normal, Name[0], Name[0], url);
+			Layer newLayer = new Layer(MapType.ONLINE, LayerType.normal, Layer.StorageType.PNG, Name[0], Name[0], url);
 			layers.add(newLayer);
 			return newLayer;
 		} else {
 			if (layers != null && layers.size() > 0) {
-				LocatorSettings.CurrentMapLayer.setValue(layers.get(0).getNames());
-				return layers.get(0); // ist wahrscheinlich Mapnik und sollte immer tun
+				Layer firstLayer = layers.get(0);
+				LocatorSettings.CurrentMapLayer.setValue(firstLayer.getNames());
+				return firstLayer; // ist wahrscheinlich Mapnik und sollte immer tun
 			}
 			return null;
 		}
@@ -208,17 +219,13 @@ public abstract class ManagerBase {
 
 		// Kachel laden
 		// set the connection timeout value to 15 seconds (15000 milliseconds)
-		final HttpParams httpParams = new BasicHttpParams();
+		HttpParams httpParams = new BasicHttpParams();
 		HttpConnectionParams.setConnectionTimeout(httpParams, CONECTION_TIME_OUT);
-
 		HttpClient httpclient = new DefaultHttpClient(httpParams);
-		HttpResponse response = null;
-
 		HttpGet GET = new HttpGet(url);
-
+		GET.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
 		try {
-
-			response = httpclient.execute(GET);
+			HttpResponse response = httpclient.execute(GET);
 			StatusLine statusLine = response.getStatusLine();
 			if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -237,13 +244,11 @@ public abstract class ManagerBase {
 				}
 
 				NumTilesLoaded++;
-				// Global.TransferredBytes += result.Length;
-
-				// ..more logic
 			} else {
 				// Closes the connection.
 				response.getEntity().getContent().close();
 				// throw new IOException(statusLine.getReasonPhrase());
+				Log.err(log, url + ": " + response.getStatusLine());
 				return false;
 			}
 			/*
@@ -291,7 +296,7 @@ public abstract class ManagerBase {
 
 	/**
 	 * for night modus
-	 * 
+	 * <p>
 	 * The matrix is stored in a single array, and its treated as follows: [ a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t ] <br>
 	 * <br>
 	 * When applied to a color [r, g, b, a], the resulting color is computed as (after clamping) <br>
@@ -319,7 +324,7 @@ public abstract class ManagerBase {
 				return;
 			}
 			tmsMaps.add(tmsMap);
-			layers.add(new TmsLayer(Type.normal, tmsMap));
+			layers.add(new TmsLayer(LayerType.normal, tmsMap));
 		} catch (Exception ex) {
 
 		}
@@ -328,7 +333,7 @@ public abstract class ManagerBase {
 
 	public void LoadBSH(String string) {
 		try {
-			BshLayer layer = new BshLayer(Type.normal, string);
+			BshLayer layer = new BshLayer(LayerType.normal, string);
 			layers.add(layer);
 		} catch (Exception ex) {
 
@@ -354,6 +359,8 @@ public abstract class ManagerBase {
 		}
 	}
 
+	private final Layer[] userMaps = new Layer[2];
+
 	public void initMapPacks() {
 		layers.clear();
 
@@ -361,15 +368,51 @@ public abstract class ManagerBase {
 
 		layers.addAll(DEFAULT_LAYER);
 
+		if (LocatorSettings.UserMap1.getValue().length() > 0) {
+			String url = LocatorSettings.UserMap1.getValue();
+			userMaps[0] = getUserMap(url, "UserMap1");
+			layers.add(userMaps[0]);
+		} else {
+			String url = LocatorSettings.UserMap1.getDefaultValue();
+			userMaps[0] = getUserMap(url, "UserMap1");
+			layers.add(userMaps[0]);
+		}
+
+		LocatorSettings.UserMap1.addChangedEventListener(new IChanged() {
+			@Override
+			public void isChanged() {
+				if (userMaps[0] != null) {
+					layers.remove(userMaps[0]);
+				}
+				String url = LocatorSettings.UserMap1.getValue();
+				userMaps[0] = getUserMap(url, "UserMap1");
+				layers.add(userMaps[0]);
+			}
+		});
+
+		if (LocatorSettings.UserMap2.getValue().length() > 0) {
+			String url = LocatorSettings.UserMap2.getValue();
+			userMaps[1] = getUserMap(url, "UserMap2");
+			layers.add(userMaps[1]);
+		}
+
+		LocatorSettings.UserMap2.addChangedEventListener(new IChanged() {
+			@Override
+			public void isChanged() {
+				if (userMaps[1] != null) {
+					layers.remove(userMaps[1]);
+				}
+				String url = LocatorSettings.UserMap2.getValue();
+				userMaps[1] = getUserMap(url, "UserMap2");
+				layers.add(userMaps[1]);
+			}
+		});
+
 		ArrayList<String> files = new ArrayList<String>();
 		ArrayList<String> mapnames = new ArrayList<String>();
 
 		Log.debug(log, "dirOwnMaps = " + LocatorSettings.MapPackFolderLocal.getValue());
 		getFiles(files, mapnames, LocatorSettings.MapPackFolderLocal.getValue());
-
-		// if the Folder is changed, the user wants to use only this one
-		// Log.debug(log, "dirDefaultMaps = " + LocatorSettings.MapPackFolder.getDefaultValue());
-		// getFiles(files, mapnames, LocatorSettings.MapPackFolder.getDefaultValue());
 
 		Log.debug(log, "dirGlobalMaps = " + LocatorSettings.MapPackFolder.getValue());
 		getFiles(files, mapnames, LocatorSettings.MapPackFolder.getValue());
@@ -387,35 +430,22 @@ public abstract class ManagerBase {
 						try {
 							mapFile = new MapFile(f);
 						} catch (Exception e) {
-							log.error("INIT MAPPACKS", e);
+							Log.err(log, "INIT MAPPACKS for " + f.getAbsolutePath() + ":\n" + e.getMessage());
 							continue;
 						}
 
-						//check type of mapsforge
-						MapFileInfo info = mapFile.getMapFileInfo();
+						MapFileInfo mapInfo = mapFile.getMapFileInfo();
 						MapType mapType = MapType.MAPSFORGE;
-						if (info.comment != null && info.comment.contains("FZK")) {
+						if (mapInfo.comment != null && mapInfo.comment.contains("FZK")) {
 							mapType = MapType.FREIZEITKARTE;
 						}
-
 						String Name = FileIO.GetFileNameWithoutExtension(file);
-						Layer layer = new Layer(mapType, Type.normal, Name, Name, file);
+						Layer layer = new Layer(mapType, LayerType.normal, Layer.StorageType.PNG, Name, Name, file);
+						layer.languages = mapFile.getMapLanguages();
+						ManagerBase.Manager.layers.add(layer);
 
-						MultiMapDataStore md = new MultiMapDataStore(DataPolicy.RETURN_FIRST);
-
-						md.addMapDataStore(mapFile, false, false);
-						MapFileInfo mf = mapFile.getMapFileInfo();
-						if (mf != null) {
-							try {
-								md.close();
-								layer.boundingBox = mf.boundingBox;
-								ManagerBase.Manager.layers.add(layer);
-							} catch (Exception e) {
-								Log.err(log, "Get boundingbox " + Name, e);
-							}
-						} else
-							Log.err(log, "Problem open " + Name);
 					}
+
 					if (FileIO.GetFileExtension(file).equalsIgnoreCase("xml")) {
 						ManagerBase.Manager.LoadTMS(file);
 					}
@@ -426,6 +456,31 @@ public abstract class ManagerBase {
 			}
 		}
 		mayAddLayer = false;
+	}
+
+	private Layer getUserMap(String url, String name) {
+		try {
+			Log.info(log, "orgUserMap: url=" + url + " Name=" + name);
+			Layer.StorageType storageType = Layer.StorageType.PNG;
+			if (url.contains("{name:")) {
+				//replace name
+				int pos = url.indexOf("{name:");
+				int endPos = url.indexOf("}", pos);
+				String nameTag = url.substring(pos, endPos + 1);
+				url = url.replace(nameTag, "");
+				name = nameTag.replace("{name:", "").replace("}", "");
+			}
+			if (url.toLowerCase().contains("{jpg}")) {
+				storageType = Layer.StorageType.JPG;
+				url = url.replace("{JPG}", "").replace("{jpg}", "").trim();
+			} else if (url.toLowerCase().contains("{png}")) {
+				url = url.replace("{PNG}", "").replace("{png}", "").trim();
+			}
+			return new Layer(MapType.ONLINE, LayerType.normal, storageType, name, "", url);
+		} catch (Exception e) {
+			Log.err(log, "Err while getUserMap: url=" + url + " Name=" + name + " Err=" + e.getLocalizedMessage());
+			return new Layer(MapType.ONLINE, LayerType.normal, Layer.StorageType.PNG, name, "", url);
+		}
 	}
 
 	public ArrayList<Layer> getLayers() {
@@ -439,47 +494,57 @@ public abstract class ManagerBase {
 	MultiMapDataStore mapDatabase[] = null;
 	IDatabaseRenderer databaseRenderer[] = null;
 	Bitmap tileBitmap = null;
-	File mapFile = null;
 	XmlRenderTheme renderTheme;
 	public float textScale = 1;
 	public static float DEFAULT_TEXT_SCALE = 1;
 
-	public static final String INTERNAL_CAR_THEME = "internal-car-theme";
-	private boolean invertToNightTheme; // not yet implemented?
+	public static final String INTERNAL_THEME_DEFAULT = "Default";
+	public static final String INTERNAL_THEME_OSMARENDER = "OsmaRender";
+	public static final String INTERNAL_THEME_CAR = "Car";
 
 	private RenderThemeFuture renderThemeFuture;
 
-	public void setRenderTheme(String themePathAndName, boolean invert) {
-		invertToNightTheme = invert;
-		if (themePathAndName == null) {
-			Log.debug(log, "Use RenderTheme CB_InternalRenderTheme.OSMARENDER");
+	public void setRenderTheme(String theme, String themestyle) {
+		if (alreadySet)
+			if (theme.equals(mapsforgeTheme))
+				if (themestyle.equals(mapsforgeThemesStyle))
+					return;
+		mapsforgeThemesStyle = themestyle;
+		mapsforgeTheme = theme;
+		if (mapsforgeTheme.length() == 0) {
+			Log.info(log, "Use RenderTheme CB_InternalRenderTheme.DEFAULT");
+			renderTheme = CB_InternalRenderTheme.DEFAULT;
+		} else if (mapsforgeTheme.equals(INTERNAL_THEME_OSMARENDER)) {
+			Log.info(log, "Use CB_InternalRenderTheme OSMARENDER");
 			renderTheme = CB_InternalRenderTheme.OSMARENDER;
+		} else if (mapsforgeTheme.equals(INTERNAL_THEME_CAR)) {
+			Log.info(log, "Use CB_InternalRenderTheme CAR");
+			renderTheme = CB_InternalRenderTheme.CAR;
+		} else if (mapsforgeTheme.equals(INTERNAL_THEME_DEFAULT)) {
+			Log.info(log, "Use CB_InternalRenderTheme DEFAULT");
+			renderTheme = CB_InternalRenderTheme.DEFAULT;
 		} else {
-			Log.debug(log, "Use RenderTheme " + themePathAndName);
-			if (themePathAndName.equals(INTERNAL_CAR_THEME)) {
-				renderTheme = CB_InternalRenderTheme.DAY_CAR_THEME;
-			} else {
-				try {
-					File file = FileFactory.createFile(themePathAndName);
-					if (file.exists()) {
-						java.io.File themeFile = new java.io.File(file.getAbsolutePath());
-						renderTheme = new ExternalRenderTheme(themeFile);
-					} else {
-						Log.err(log, themePathAndName + " not found!");
-						renderTheme = CB_InternalRenderTheme.OSMARENDER;
-					}
-				} catch (FileNotFoundException e) {
-					Log.err(log, "Load RenderTheme", "Error loading RenderTheme!", e);
-					renderTheme = CB_InternalRenderTheme.OSMARENDER;
+			Log.info(log, "Use RenderTheme " + mapsforgeTheme + " with " + mapsforgeThemesStyle);
+			try {
+				File file = FileFactory.createFile(mapsforgeTheme);
+				if (file.exists()) {
+					java.io.File themeFile = new java.io.File(file.getAbsolutePath());
+					renderTheme = new ExternalRenderTheme(themeFile, new Xml_RenderThemeMenuCallback());
+				} else {
+					Log.err(log, mapsforgeTheme + " not found!");
+					renderTheme = CB_InternalRenderTheme.DEFAULT;
 				}
+			} catch (FileNotFoundException e) {
+				Log.err(log, "Load RenderTheme", "Error loading RenderTheme!", e);
+				renderTheme = CB_InternalRenderTheme.DEFAULT;
 			}
 		}
 
 		try {
 			CB_RenderThemeHandler.getRenderTheme(getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), DISPLAY_MODEL, renderTheme);
 		} catch (Exception e) {
-			Log.err(log, "RenderTheme: ", e);
-			renderTheme = CB_InternalRenderTheme.OSMARENDER;
+			Log.err(log, "Error in checking RenderTheme " + mapsforgeTheme, e);
+			renderTheme = CB_InternalRenderTheme.DEFAULT;
 		}
 
 		if (databaseRenderer == null) {
@@ -493,6 +558,7 @@ public abstract class ManagerBase {
 		this.renderThemeFuture = new RenderThemeFuture(this.getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), this.renderTheme, this.DISPLAY_MODEL);
 		new Thread(this.renderThemeFuture).start();
 
+		alreadySet = true;
 	}
 
 	public TileGL getMapsforgePixMap(Layer layer, Descriptor desc, int ThreadIndex) {
@@ -535,40 +601,126 @@ public abstract class ManagerBase {
 	}
 
 	private void initMapDatabase(Layer layer) {
-		mapFile = FileFactory.createFile(layer.Url);
 
-		java.io.File file = new java.io.File(mapFile.getAbsolutePath());
-
-		MapFile mapforgeMapFile = new MapFile(file);
+		MapFile mapforgeMapFile = getMapFile(layer);
+		ArrayList<MapFile> additionalMapFiles = null;
+		if (layer.hasAdditionalMaps()) {
+			additionalMapFiles = new ArrayList<MapFile>();
+			for (Layer addLayer : layer.getAdditionalMaps()) {
+				additionalMapFiles.add(getMapFile(addLayer));
+			}
+		}
 
 		if (mapDatabase == null)
 			mapDatabase = new MultiMapDataStore[PROCESSOR_COUNT];
 
 		for (int i = 0; i < PROCESSOR_COUNT; i++) {
 			if (mapDatabase[i] == null) {
-				mapDatabase[i] = new MultiMapDataStore(DataPolicy.DEDUPLICATE);
+				mapDatabase[i] = new MultiMapDataStore(DataPolicy.DEDUPLICATE); // or DataPolicy.RETURN_FIRST
 			} else {
 				mapDatabase[i].clearMapDataStore();
 			}
 
 			mapDatabase[i].addMapDataStore(mapforgeMapFile, false, false);
-
-			//if the layer has more then one map, so add all files
-			if (layer.hasAdidionalMaps()) {
-				for (Layer addLayer : layer.getAdditionalMaps()) {
-					File addMapFile = FileFactory.createFile(addLayer.Url);
-					java.io.File addFile = new java.io.File(addMapFile.getAbsolutePath());
-					MapFile addMapforgeMapFile = new MapFile(addFile);
-					mapDatabase[i].addMapDataStore(addMapforgeMapFile, false, false);
-
+			if (layer.hasAdditionalMaps()) {
+				for (MapFile mf : additionalMapFiles) {
+					mapDatabase[i].addMapDataStore(mf, false, false);
 				}
 			}
-
 		}
 
 		Log.debug(log, "Open MapsForge Map: " + layer.Name);
 	}
 
+	private MapFile getMapFile(Layer layer) {
+		MapFile mapforgeMapFile = null;
+		File mapFile = FileFactory.createFile(layer.Url);
+		java.io.File file = new java.io.File(mapFile.getAbsolutePath());
+		// todo discuss alternate preferred language per layer (saved in layer at selection) ,....
+		if (layer.languages == null) {
+			mapforgeMapFile = new MapFile(file);
+		} else {
+			String preferredLanguage = LocatorSettings.PreferredMapLanguage.getValue();
+			if (preferredLanguage.length() > 0) {
+				for (String la : layer.languages) {
+					if (la.equals(preferredLanguage)) {
+						mapforgeMapFile = new MapFile(file, preferredLanguage);
+						break;
+					}
+				}
+			}
+			if (mapforgeMapFile == null) {
+				if (layer.languages.length > 0)
+					mapforgeMapFile = new MapFile(file, layer.languages[0]);
+				else
+					mapforgeMapFile = new MapFile(file);
+			}
+		}
+		return mapforgeMapFile;
+	}
+
 	public abstract GraphicFactory getGraphicFactory(float ScaleFactor);
 
+	private class Xml_RenderThemeMenuCallback implements XmlRenderThemeMenuCallback {
+		@Override
+		public Set<String> getCategories(XmlRenderThemeStyleMenu style) {
+			/*
+			 * 
+			// String styleId = style.getId();
+			// String styleName = style.getDefaultValue();
+			Map<String, XmlRenderThemeStyleLayer> styleLayers = style.getLayers();
+			
+			String selection = "";
+			// count visibleStyles for array initialization
+			int visibleStyles = 0;
+			for (XmlRenderThemeStyleLayer styleLayer : styleLayers.values()) {
+				if (styleLayer.isVisible()) {
+					++visibleStyles;
+				}
+			}
+			CharSequence[] entries = new CharSequence[visibleStyles];
+			CharSequence[] values = new CharSequence[visibleStyles];
+			int i = 0;
+			for (XmlRenderThemeStyleLayer styleLayer : styleLayers.values()) {
+				if (styleLayer.isVisible()) {
+					entries[i] = styleLayer.getTitle(Translation.Get("Language2Chars");
+					if (entries[i].equals(mapsforgeThemesStyle)) { // Radfahren, Wandern,....
+						selection = styleLayer.getId();
+					} else {
+			
+					}
+					values[i] = styleLayer.getId();
+					++i;
+				}
+			}
+			 */
+			String ConfigStyle = mapsforgeThemesStyle;
+			int StyleEnds = mapsforgeThemesStyle.indexOf("\t");
+			String Style;
+			if (StyleEnds > -1) {
+				Style = mapsforgeThemesStyle.substring(0, StyleEnds);
+			} else {
+				Style = mapsforgeThemesStyle;
+			}
+			XmlRenderThemeStyleLayer selectedLayer = style.getLayer(Style);
+
+			// now change the categories for this style
+			if (selectedLayer == null) {
+				return null;
+			}
+			Set<String> result = selectedLayer.getCategories();
+			// add the categories from overlays that are enabled
+			for (XmlRenderThemeStyleLayer overlay : selectedLayer.getOverlays()) {
+				boolean overlayEnabled = overlay.isEnabled();
+				int posInConfig = ConfigStyle.indexOf(overlay.getId());
+				if (posInConfig > -1) {
+					overlayEnabled = ConfigStyle.substring(posInConfig - 1, posInConfig).equals("+");
+				}
+				if (overlayEnabled) {
+					result.addAll(overlay.getCategories());
+				}
+			}
+			return result;
+		}
+	}
 }

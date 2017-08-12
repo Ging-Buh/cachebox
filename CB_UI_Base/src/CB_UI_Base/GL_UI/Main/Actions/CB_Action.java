@@ -20,11 +20,11 @@ import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action {
-	final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_Action.class);
+	protected final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_Action.class);
 
 	protected String name;
 	protected int id;
-	protected String nameExtention = "";
+	protected String nameExtension = "";
 
 	/**
 	 * Constructor
@@ -40,11 +40,11 @@ public class CB_Action {
 		this.id = id;
 	}
 
-	public CB_Action(String name, String nameExtention, int id) {
+	public CB_Action(String name, String nameExtension, int id) {
 		//super();
 		this.name = name;
 		this.id = id;
-		this.nameExtention = nameExtention;
+		this.nameExtension = nameExtension;
 	}
 
 	public void CallExecute() {
@@ -60,8 +60,8 @@ public class CB_Action {
 		return name;
 	}
 
-	public String getNameExtention() {
-		return nameExtention;
+	public String getNameExtension() {
+		return nameExtension;
 	}
 
 	public int getId() {

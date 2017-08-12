@@ -3,8 +3,8 @@ package CB_Locator.Map;
 public class TmsLayer extends Layer {
     private final TmsMap tmsMap;
 
-    public TmsLayer(Type LayerType, TmsMap tmsMap) {
-	super(MapType.ONLINE, LayerType, tmsMap.name, tmsMap.name, tmsMap.url);
+    public TmsLayer(LayerType LayerType, TmsMap tmsMap) {
+	super(MapType.ONLINE, LayerType, Layer.StorageType.PNG, tmsMap.name, tmsMap.name, tmsMap.url);
 	this.tmsMap = tmsMap;
     }
 

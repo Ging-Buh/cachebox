@@ -172,7 +172,7 @@ public class CB_Button extends Button implements OnClickListener {
 			CB_Action action = ba.getAction();
 			if (action == null)
 				continue;
-			MenuItem mi = cm.addItem(action.getId(), action.getName(), action.getNameExtention());
+			MenuItem mi = cm.addItem(action.getId(), action.getName(), action.getNameExtension());
 			mi.setEnabled(action.getEnabled());
 			mi.setCheckable(action.getIsCheckable());
 			mi.setChecked(action.getIsChecked());

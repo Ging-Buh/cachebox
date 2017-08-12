@@ -193,7 +193,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
 		this.name = newName;
 	}
 
-	public void setNameExtention(String newExtention) {
-		this.nameExtention = newExtention;
+	public void setNameExtension(String newExtension) {
+		this.nameExtension = newExtension;
 	}
 }

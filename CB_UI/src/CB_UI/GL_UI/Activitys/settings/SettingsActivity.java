@@ -2,7 +2,6 @@ package CB_UI.GL_UI.Activitys.settings;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 
 import com.badlogic.gdx.graphics.Color;
@@ -265,7 +264,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 					SortedSettingList.add(setting);
 			}
 
-			Collections.sort(SortedSettingList);
+			//Collections.sort(SortedSettingList);
 
 			do {
 				int position = 0;
@@ -954,7 +953,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 								@Override
 								public void returnFolder(String Path) {
 									// check WriteProtection
-									if (needWritePermission && !FileIO.checkWritePermission(Path)) {
+									if (needWritePermission && !FileIO.canWrite(Path)) {
 										String WriteProtectionMsg = Translation.Get("NoWriteAcces");
 										GL.that.Toast(WriteProtectionMsg, 8000);
 									} else {

@@ -6,8 +6,9 @@ import java.net.URL;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.ZipException;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.Import.UnZip;
-import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.MapDownload.MapRepositoryInfo;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
@@ -17,8 +18,10 @@ import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
 import CB_UI_Base.GL_UI.Controls.chkBox;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.Downloader;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.CopyHelper.Copy;
@@ -26,6 +29,7 @@ import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 
 public class MapDownloadItem extends CB_View_Base {
+	final static org.slf4j.Logger logger = LoggerFactory.getLogger(MapDownloadItem.class);
 	private final MapRepositoryInfo mapInfo;
 	private int lastProgress = 0;
 	private Downloader dl;
@@ -34,10 +38,12 @@ public class MapDownloadItem extends CB_View_Base {
 	private final float margin;
 	private final Label lblName, lblSize;
 	private boolean canceld = false;
+	private final String workPath;
 
-	public MapDownloadItem(MapRepositoryInfo mapInfo, float ItemWidth) {
+	public MapDownloadItem(MapRepositoryInfo mapInfo, String workPath, float ItemWidth) {
 		super(mapInfo.Name);
 		this.mapInfo = mapInfo;
+		this.workPath = workPath;
 		margin = UI_Size_Base.that.getMargin();
 
 		checkBoxMap = new chkBox("Image");
@@ -51,7 +57,7 @@ public class MapDownloadItem extends CB_View_Base {
 		lblName.setFont(Fonts.getNormal());
 
 		// Cut "Freizeitkarte"
-		String Name = mapInfo.Name.replace("Freizeitkarte", "");
+		String Name = mapInfo.Description.replace("Freizeitkarte ", "");
 		lblName.setText(Name);
 
 		lblSize = new Label(this.name + " lblSize", checkBoxMap.getMaxX() + margin, checkBoxMap.getY(), innerWidth - margin * 3 - checkBoxMap.getWidth(), checkBoxMap.getHeight());
@@ -75,14 +81,7 @@ public class MapDownloadItem extends CB_View_Base {
 
 		String FileString = FileIO.GetFileNameWithoutExtension(zipFile);
 
-		String workPath = Config.MapPackFolder.getValue();
-
-		if (workPath.length() == 0 || !(FileFactory.createFile(workPath).isDirectory())) {
-			workPath = Config.MapPackFolder.getDefaultValue();
-		}
-
 		File file = FileFactory.createFile(workPath + "/" + FileString);
-
 		if (file.exists()) {
 			checkBoxMap.setChecked(true);
 			checkBoxMap.disable();
@@ -141,12 +140,6 @@ public class MapDownloadItem extends CB_View_Base {
 				int slashPos = mapInfo.Url.lastIndexOf("/");
 				String zipFile = mapInfo.Url.substring(slashPos + 1, mapInfo.Url.length());
 
-				String workPath = Config.MapPackFolder.getValue();
-
-				if (workPath.length() == 0 || !(FileFactory.createFile(workPath).isDirectory())) {
-					workPath = Config.MapPackFolder.getDefaultValue();
-				}
-
 				File target = FileFactory.createFile(workPath + "/" + zipFile);
 
 				try {
@@ -177,10 +170,8 @@ public class MapDownloadItem extends CB_View_Base {
 							try {
 								Thread.sleep(100);
 							} catch (InterruptedException e) {
-
-								e.printStackTrace();
+								Log.err(logger, e.getLocalizedMessage());
 							}
-
 						}
 
 					}
@@ -189,46 +180,61 @@ public class MapDownloadItem extends CB_View_Base {
 				dlProgressChecker.start();
 
 				dl.run();
-
-				try {
-					UnZip.extractFolder(target.getAbsolutePath());
-				} catch (ZipException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-
-					e.printStackTrace();
-				}
-
-				// Copy and Clear
-				File folder = FileFactory.createFile(workPath + "/" + FileIO.GetFileNameWithoutExtension(zipFile));
-				File newfolder = FileFactory.createFile(workPath + "/" + FileIO.GetFileNameWithoutExtension(folder.getName()));
-
-				if (folder.isDirectory()) {
-					folder.renameTo(newfolder);
-
+				if (!dl.isCanceled()) {
 					try {
-						Copy.copyFolder(newfolder, FileFactory.createFile(workPath));
+						if (dl.getDownloadedLength() > 0) {
+							UnZip.extractFolder(target.getAbsolutePath());
+						} else {
+							String msg;
+							if (dl.error != null) {
+								msg = "" + dl.error.getCause(); // dl.error.getLocalizedMessage()
+							} else {
+								msg = "Downloaded File is empty.";
+							}
+							Log.err(logger, msg);
+							GL.that.Toast(msg);
+						}
+					} catch (ZipException e) {
+						Log.err(logger, e.getLocalizedMessage());
 					} catch (IOException e) {
-						e.printStackTrace();
+						Log.err(logger, e.getLocalizedMessage());
 					}
 
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+					// Copy and Clear ? todo check is this necessary and ok?					
+					File folder = FileFactory.createFile(workPath + "/" + FileIO.GetFileNameWithoutExtension(zipFile));
+					File newfolder = FileFactory.createFile(workPath + "/" + FileIO.GetFileNameWithoutExtension(folder.getName()));
+
+					if (folder.isDirectory()) {
+						folder.renameTo(newfolder);
+
+						try {
+							Copy.copyFolder(newfolder, FileFactory.createFile(workPath));
+						} catch (IOException e) {
+							Log.err(logger, e.getLocalizedMessage());
+						}
+
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							Log.err(logger, e.getLocalizedMessage());
+						}
+
+						deleteDirectory(newfolder);
 					}
 
-					deleteDirectory(newfolder);
 				}
+
 				try {
 					target.delete();
+					Log.info(logger, "Deleted " + target.getAbsolutePath());
 				} catch (IOException e) {
-					e.printStackTrace();
+					Log.err(logger, e.getLocalizedMessage());
 				}
 
 				lastProgress = canceld ? 0 : 100;
 				pgBar.setProgress(lastProgress, lastProgress + " %");
 				DownloadRuns.set(false);
+				Log.info(logger, "Download everything ready");
 			}
 		});
 
@@ -247,7 +253,7 @@ public class MapDownloadItem extends CB_View_Base {
 						try {
 							files[i].delete();
 						} catch (IOException e) {
-							e.printStackTrace();
+							Log.err(logger, e.getLocalizedMessage());
 						}
 					}
 				}
@@ -268,13 +274,22 @@ public class MapDownloadItem extends CB_View_Base {
 		return lastProgress;
 	}
 
-	public boolean isFinish() {
+	public boolean isFinished() {
 		if (dl == null) {
 			if (DownloadRuns.get())
 				return false;
 			else
 				return true;
 		}
-		return dl.isCompleted();
+		// return dl.isCompleted();
+		// the UnZip must have been run to an end;
+		return !DownloadRuns.get();
+	}
+
+	public void enable() {
+		if (checkBoxMap.isChecked())
+			checkBoxMap.disable();
+		else
+			checkBoxMap.enable();
 	}
 }

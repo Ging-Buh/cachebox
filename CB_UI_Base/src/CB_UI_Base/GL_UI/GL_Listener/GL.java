@@ -602,12 +602,10 @@ public class GL implements ApplicationListener, InputProcessor {
 
 		}
 
+		Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
+		batch.setProjectionMatrix(prjMatrix.Matrix());
+			
 		if (Global.isTestVersion()) {
-
-			Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
-
-			batch.setProjectionMatrix(prjMatrix.Matrix());
-
 			// TODO float FpsInfoSize = MapTileLoader.queueProcessorLifeCycle ? 4 : 8;
 			float FpsInfoSize = 4 * UI_Size_Base.that.getScale();
 			if (FpsInfoSprite != null) {

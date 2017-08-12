@@ -17,25 +17,43 @@ package CB_Locator;
 
 public class Formatter {
 	public static String FormatLatitudeDM(double latitude) {
-		return FormatDM(latitude, "N", "S");
+		String result = FormatDM(latitude);
+		if (latitude < 0)
+			result += "S";
+		else
+			result += "N";
+		return result;
 	}
 
 	public static String FormatLongitudeDM(double longitude) {
-		return FormatDM(longitude, "E", "W");
+		String result = FormatDM(longitude);
+		if (longitude < 0)
+			result += "W";
+		else
+			result += "E";
+		return result;
 	}
 
-	static String FormatDM(double coord, String positiveDirection, String negativeDirection) {
-		int deg = (int) coord;
-		double frac = coord - deg;
+	private static String FormatDM(double latOrlon) {
+		int deg = (int) latOrlon;
+		double frac = latOrlon - deg;
 		double min = frac * 60;
 
 		String result = Math.abs(deg) + "\u00B0 " + String.format("%.3f", Math.abs(min));
+		return result;
+	}
 
-		if (coord < 0)
-			result += negativeDirection;
-		else
-			result += positiveDirection;
-
+	public static String FormatCoordinate(Coordinate coordinate, String how) {
+		String sLat = FormatDM(coordinate.getLatitude()).replace(',', '.');
+		String sLon = FormatDM(coordinate.getLongitude()).replace(',', '.');
+		String dirLat = coordinate.getLatitude() < 0 ? "S" : "N";
+		String dirLon = coordinate.getLongitude() < 0 ? "W" : "E";
+		String result = dirLat + " " + sLat + " " + dirLon + " " + sLon;
+		/*
+		switch (how) {
+		default:
+		}
+		*/
 		return result;
 	}
 

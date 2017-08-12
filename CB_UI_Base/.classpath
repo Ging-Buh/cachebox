@@ -6,7 +6,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Utils"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_mapsforge"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.6.jar"/>
-	<classpathentry kind="lib" path="lib/gdx-1.6.2.jar"/>
-	<classpathentry kind="lib" path="lib/gdx-freetype-1.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/gdx-1.9.6.jar"/>
+	<classpathentry kind="lib" path="lib/gdx-freetype-1.9.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

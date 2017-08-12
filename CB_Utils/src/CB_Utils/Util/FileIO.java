@@ -72,7 +72,7 @@ public class FileIO {
 	 * @param Path
 	 * @return
 	 */
-	public static boolean checkWritePermission(String Path) {
+	public static boolean canWrite(String Path) {
 		boolean result = true;
 		try {
 			String testFolderName = Path + "/Test/";
@@ -105,7 +105,7 @@ public class FileIO {
 	 */
 	public static boolean createDirectory(String folder) {
 
-		// remove extention
+		// remove extension
 		int extPos = folder.lastIndexOf("/");
 		String ext = "";
 		if (extPos > -1)
@@ -115,7 +115,7 @@ public class FileIO {
 			folder = folder.replace(ext, "");
 		}
 
-		if (!checkWritePermission(folder)) {
+		if (!canWrite(folder)) {
 			return false;
 		}
 
