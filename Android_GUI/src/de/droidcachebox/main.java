@@ -1296,7 +1296,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
                             if (Math.abs(lastOrientation - orientation) > minChange) {
                                 CB_Locator.Locator.setHeading(orientation, CompassType.Magnetic);
-                                log.debug("orientation: {}", orientation);
+                                // log.debug("orientation: {}", orientation);
                                 lastOrientation = orientation;
                             }
                         }

@@ -122,10 +122,6 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 	private final ScrollBox scrollBox;
 	private ImportAnimation dis;
 
-	public Import_CBServer() {
-		this(0);
-	}
-
 	public Import_CBServer(int importType) {
 		super(ActivityRec(), "importActivity");
 		CBS_LINE_ACTIVE = !StringH.isEmpty(Config.CBS_IP.getValue());
@@ -164,6 +160,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 		refreshExportList();
 		CBServerCollapseBox.expand();
 		ExportCollapseBox.collapse();
+		Log.info(log,"Import_CBServer created.");
 	}
 
 	@Override
@@ -699,12 +696,13 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 				// PqList = new ArrayList<PQ>();
 				// PocketQuery.GetPocketQueryList(PqList);
 				RpcClientCB rpc = new RpcClientCB();
+				Log.info(log, "rpc.getExportList()");
 				RpcAnswer answer = rpc.getExportList();
 
 				if (answer != null) {
 					if (answer instanceof RpcAnswer_GetExportList) {
+						Log.info(log, "rpc.getExportList().getList()");
 						cbServerExportList = ((RpcAnswer_GetExportList) answer).getList();
-						GL_MsgBox.Show("RpcAntwort: " + answer.toString());
 					} else {
 						cbServerExportList = null;
 					}
@@ -842,29 +840,29 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 			public void run() {
 				importStarted = true;
 
-				ImporterProgress ip = new ImporterProgress();
+				ImporterProgress progress = new ImporterProgress();
 
 				try {
 					// Set Progress values
 					if (checkBoxExportToCBServer.isChecked()) {
-						ip.addStep(ip.new Step("exportCBServer", 4));
+						progress.addStep(progress.new Step("exportCBServer", 4));
 					}
 
 					if (checkImportFromCBServer.isChecked()) {
-						ip.addStep(ip.new Step("importCBServer", 4));
+						progress.addStep(progress.new Step("importCBServer", 4));
 					}
 
 					if (checkBoxPreloadImages.isChecked()) {
-						// ip.addStep(ip.new Step("importImageUrls", 4));
-						ip.addStep(ip.new Step("importImages", 4));
+						// progress.addStep(progress.new Step("importImageUrls", 4));
+						progress.addStep(progress.new Step("importImages", 4));
 					}
 
 					if (checkBoxCleanLogs.isChecked()) {
-						ip.addStep(ip.new Step("DeleteLogs", 1));
+						progress.addStep(progress.new Step("DeleteLogs", 1));
 					}
 
 					if (checkBoxCompactDB.isChecked()) {
-						ip.addStep(ip.new Step("CompactDB", 1));
+						progress.addStep(progress.new Step("CompactDB", 1));
 					}
 
 					// begin import
@@ -877,29 +875,29 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 						if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
 							GL.that.Toast(ConnectionError.INSTANCE);
-							ip.ProgressChangeMsg("", "");
+							progress.ProgressChangeMsg("", "");
 							return;
 						}
 
 						if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
 							GL.that.Toast(ApiUnavailable.INSTANCE);
-							ip.ProgressChangeMsg("", "");
+							progress.ProgressChangeMsg("", "");
 							return;
 						}
 
 						if (BreakawayImportThread.isCanceled()) {
 							cancelImport();
-							ip.ProgressChangeMsg("", "");
+							progress.ProgressChangeMsg("", "");
 							return;
 						}
 						dis.setAnimationType(AnimationType.Work);
 					}
 
 					if (checkBoxExportToCBServer.isChecked()) {
-						ip.setJobMax("exportCBServer", 1);
-						ip.ProgressChangeMsg("Export CBServer", "");
+						progress.setJobMax("exportCBServer", 1);
+						progress.ProgressChangeMsg("Export CBServer", "");
 						runExport();
-						ip.ProgressInkrement("exportCBServer", "", true);
+						progress.ProgressInkrement("exportCBServer", "", true);
 					}
 
 					Thread.sleep(1000);
@@ -913,36 +911,36 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 						try {
 
-							importCBServer.importCBServer(cbServerExportList, ip, checkBoxPreloadImages.isChecked());
+							importCBServer.importCBServer(cbServerExportList, progress, checkBoxPreloadImages.isChecked());
 
 						} catch (Exception exc) {
-							exc.printStackTrace();
+							Log.err(log,exc.getLocalizedMessage());
 						}
 
 						if (BreakawayImportThread.isCanceled()) {
 							cancelImport();
-							ip.ProgressChangeMsg("", "");
+							progress.ProgressChangeMsg("", "");
 							return;
 						}
 
-						Log.debug(log, "Import CBServer took " + (System.currentTimeMillis() - startTime) + "ms");
+						Log.info(log, "Import CBServer took " + (System.currentTimeMillis() - startTime) + "ms");
 
 						System.gc();
 					}
 
 					Thread.sleep(1000);
 					if (checkBoxCleanLogs.isChecked()) {
-						ip.setJobMax("DeleteLogs", 1);
-						ip.ProgressChangeMsg("DeleteLogs", "");
+						progress.setJobMax("DeleteLogs", 1);
+						progress.ProgressChangeMsg("DeleteLogs", "");
 						Database.Data.DeleteOldLogs(Config.LogMinCount.getValue(), Config.LogMaxMonthAge.getValue());
-						ip.ProgressInkrement("DeleteLogs", "", true);
+						progress.ProgressInkrement("DeleteLogs", "", true);
 					}
 
 					if (checkBoxCompactDB.isChecked()) {
-						ip.setJobMax("CompactDB", 1);
-						ip.ProgressChangeMsg("CompactDB", "");
+						progress.setJobMax("CompactDB", 1);
+						progress.ProgressChangeMsg("CompactDB", "");
 						Database.Data.execSQL("vacuum");
-						ip.ProgressInkrement("CompactDB", "", true);
+						progress.ProgressInkrement("CompactDB", "", true);
 					}
 
 				} catch (InterruptedException e) {
@@ -950,14 +948,14 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 					cancelImport();
 					FilterProperties props = FilterInstances.getLastFilter();
 					EditFilterSettings.ApplyFilter(props);
-					ip.ProgressChangeMsg("", "");
+					progress.ProgressChangeMsg("", "");
 					return;
 				}
 
 				if (BreakawayImportThread.isCanceled()) {
 					FilterProperties props = FilterInstances.getLastFilter();
 					EditFilterSettings.ApplyFilter(props);
-					ip.ProgressChangeMsg("", "");
+					progress.ProgressChangeMsg("", "");
 					return;
 				}
 
