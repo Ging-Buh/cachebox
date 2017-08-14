@@ -28,7 +28,10 @@ public class Rpc_Client {
 
 		try {
 			System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
-			URL url = new URL("http://" + CB_Rpc_Settings.CBS_IP.getValue() + "/xmlrpc");
+			String CBS_IP = CB_Rpc_Settings.CBS_IP.getValue();
+			if (CBS_IP.indexOf(":") <= 0)
+				CBS_IP += ":9911";
+			URL url = new URL("http://" + CBS_IP + "/xmlrpc");
 			config.setServerURL(url);
 			//	config.setEncoding("UTF-8");
 			config.setGzipCompressing(false);

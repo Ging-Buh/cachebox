@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import cb_rpc.Settings.CB_Rpc_Settings;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -140,7 +141,14 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 	public Import(int importType) {
 		super(ActivityRec(), "importActivity");
 		this.importType = importType;
-		CBS_LINE_ACTIVE = !StringH.isEmpty(Config.CBS_IP.getValue());
+		String CBS_IP = Config.CBS_IP.getValue();
+		if (StringH.isEmpty(CBS_IP))
+			CBS_LINE_ACTIVE = false;
+		else {
+			CBS_LINE_ACTIVE = true;
+			if (CBS_IP.indexOf(":") <= 0)
+				CBS_IP += ":9911";
+		}
 		switch (importType) {
 		case MenuID.MI_IMPORT_GS_PQ:
 			PQ_LINE_ACTIVE = true;

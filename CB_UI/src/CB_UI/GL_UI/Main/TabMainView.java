@@ -315,11 +315,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 		// add changed handler
 		Energy.addChangedEventListener(settingChangedHandler);
 
-		// change CBS settings Type from Develop to normal with TestVersion
-		if (GlobalCore.isTestVersion()) {
-			Config.CBS_IP.changeSettingsModus(SettingModus.Normal);
-		}
-
 	}
 
 	private boolean isInitial = false;

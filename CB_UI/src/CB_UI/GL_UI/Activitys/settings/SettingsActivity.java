@@ -351,32 +351,31 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 					SettingBase<?> settingItem = it.next();
 					if (settingItem.getCategory().name().equals(cat.name())) {
 						// item nur zur Liste Hinzufügen, wenn der SettingModus dies auch zulässt.
-						if (settingItem.getModus() != SettingModus.develop || GlobalCore.isDevelop()) {
+						if (((settingItem.getModus() == SettingModus.Normal) || (settingItem.getModus() == SettingModus.Expert && Config.SettingsShowExpert.getValue()) || Config.SettingsShowAll.getValue())
+								&& (settingItem.getModus() != SettingModus.Never)) {
 
-							if (((settingItem.getModus() == SettingModus.Normal) || (settingItem.getModus() == SettingModus.Expert && Config.SettingsShowExpert.getValue()) || Config.SettingsShowAll.getValue())
-									&& (settingItem.getModus() != SettingModus.Never)) {
+							final CB_View_Base view = getView(settingItem, position++);
 
-								final CB_View_Base view = getView(settingItem, position++);
+							if (Config.FieldNotesLoadAll.getValue() && settingItem.getName().equalsIgnoreCase("FieldNotesLoadLength")) {
+								((SettingsItemBase) view).disable();
 
-								if (Config.FieldNotesLoadAll.getValue() && settingItem.getName().equalsIgnoreCase("FieldNotesLoadLength")) {
-									((SettingsItemBase) view).disable();
+							}
 
-								}
+							if (view instanceof Button) {
+								view.setSize(itemRec);
+							}
 
-								if (view instanceof Button) {
-									view.setSize(itemRec);
-								}
-
-								lay.addChild(view);
-								entryCount++;
-								Config.settings.indexOf(settingItem);
-								if (Config.settings.indexOf(settingItem) == EditKey) {
-									expandLayout = true;
-								}
+							lay.addChild(view);
+							entryCount++;
+							Config.settings.indexOf(settingItem);
+							if (Config.settings.indexOf(settingItem) == EditKey) {
+								expandLayout = true;
 							}
 						}
 					}
 				}
+
+
 
 				if (entryCount > 0) {
 

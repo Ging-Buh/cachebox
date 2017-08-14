@@ -124,7 +124,14 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 	public Import_CBServer(int importType) {
 		super(ActivityRec(), "importActivity");
-		CBS_LINE_ACTIVE = !StringH.isEmpty(Config.CBS_IP.getValue());
+		String CBS_IP = Config.CBS_IP.getValue();
+		if (StringH.isEmpty(CBS_IP))
+			CBS_LINE_ACTIVE = false;
+		else {
+			CBS_LINE_ACTIVE = true;
+			if (CBS_IP.indexOf(":") <= 0)
+				CBS_IP += ":9911";
+		}
 		EXPORT_LINE_ACTIVE = true;
 		CBS_LINE_ACTIVE = true;
 		LOG_LINE_ACTIVE = true;

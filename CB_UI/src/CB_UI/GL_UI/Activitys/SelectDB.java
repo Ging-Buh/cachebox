@@ -67,7 +67,6 @@ public class SelectDB extends ActivityBase {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(SelectDB.class);
 	private int autoStartTime = 10;
 	private int autoStartCounter = 0;
-	private String DBPath;
 	private Button bNew;
 	private Button bSelect;
 	private Button bCancel;
@@ -83,16 +82,11 @@ public class SelectDB extends ActivityBase {
 	public SelectDB(CB_RectF rec, String Name, boolean mustSelect) {
 		super(rec, Name);
 		MustSelect = mustSelect;
-		DBPath = FileIO.GetDirectoryName(Config.DatabasePath.getValue());
-
-		if (DBPath.endsWith(".db3")) {
-			Config.DatabasePath.setValue(DBPath);
-			Config.AcceptChanges();
-			DBPath = FileIO.GetDirectoryName(DBPath);
-		}
-
-		String DBFile = FileIO.GetFileName(Config.DatabasePath.getValue());
-
+		String DBFile = Config.DatabaseName.getValue();
+		/*
+		if (DBFile.length() == 0)
+			FileIO.GetDirectoryName(Config.DatabasePath.getValue());
+		*/
 		final FileList files = new FileList(Config.mWorkPath, "DB3", true);
 		fileInfos = new String[files.size()];
 		int index = 0;
@@ -380,8 +374,8 @@ public class SelectDB extends ActivityBase {
 
 				// initialize Database
 
-				String database = Config.mWorkPath + GlobalCore.fs + NewDB_Name + ".db3";
-				Config.DatabasePath.setValue(database);
+				String database = Config.mWorkPath + "/" + NewDB_Name + ".db3";
+				Config.DatabaseName.setValue(NewDB_Name + ".db3");
 				Database.Data.Close();
 				Database.Data.StartUp(database);
 
@@ -458,15 +452,7 @@ public class SelectDB extends ActivityBase {
 		Config.MultiDBAutoStartTime.setValue(autoStartTime);
 		Config.MultiDBAsk.setValue(autoStartTime >= 0);
 
-		String name = AktFile.getName();
-		// Toast.makeText(getApplicationContext(), name,
-		// Toast.LENGTH_SHORT).show();
-
-		String path = DBPath + "/" + name;
-		// Toast.makeText(getApplicationContext(), path,
-		// Toast.LENGTH_SHORT).show();
-
-		Config.DatabasePath.setValue(path);
+		Config.DatabaseName.setValue(AktFile.getName());
 		Config.AcceptChanges();
 
 		ManagerBase.Manager.initMapPacks();
@@ -620,7 +606,6 @@ public class SelectDB extends ActivityBase {
 	@Override
 	public void dispose() {
 
-		DBPath = null;
 		if (bNew != null)
 			bNew.dispose();
 		bNew = null;

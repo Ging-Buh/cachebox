@@ -160,11 +160,9 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
 
 		});
 
-		String DBName = Config.DatabasePath.getValue();
+		String DBName = Config.DatabaseName.getValue();
 		try {
-			int Pos = DBName.lastIndexOf("/");
-			DBName = DBName.substring(Pos + 1);
-			Pos = DBName.lastIndexOf(".");
+			int Pos = DBName.lastIndexOf(".");
 			DBName = DBName.substring(0, Pos);
 		} catch (Exception e) {
 			DBName = "???";

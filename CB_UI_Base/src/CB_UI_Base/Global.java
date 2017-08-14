@@ -25,10 +25,11 @@ public abstract class Global {
 	public static double displayDensity = 1;
 	private static Clipboard defaultClipBoard;
 
-	private static boolean isTestVersionCheked = false;
-	private static boolean isTestVersion = false;
+    public static boolean isTestVersion() {
+        return false;
+    }
 
-	protected abstract String getVersionPrefix();
+    protected abstract String getVersionPrefix();
 
 	protected Global() {
 		Instance = this;
@@ -57,27 +58,4 @@ public abstract class Global {
 		defaultClipBoard = clipBoard;
 	}
 
-	public static boolean isTestVersion() {
-		if (isTestVersionCheked)
-			return isTestVersion;
-		if (Instance == null)
-			return false;
-
-		isTestVersion = Instance.getVersionPrefix().contains("Test") || Instance.getVersionPrefix().contains("test");
-		isTestVersionCheked = true;
-		return isTestVersion;
-	}
-
-	private static boolean mIsDevelop = false;
-	private static boolean mIsDevelopChecked = false;
-
-	public static boolean isDevelop() {
-		if (mIsDevelopChecked)
-			return mIsDevelop;
-
-		// Chk is Develop
-		mIsDevelop = Gdx.files.absolute(Config_Core.mWorkPath + "/deve.lop").exists();
-		mIsDevelopChecked = true;
-		return mIsDevelop;
-	}
 }

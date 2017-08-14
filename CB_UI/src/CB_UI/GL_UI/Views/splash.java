@@ -386,7 +386,7 @@ public class splash extends MainViewBase {
 			Config.AcceptChanges();
 		}
 
-		Database.Data.StartUp(Config.DatabasePath.getValue());
+		Database.Data.StartUp(Config.mWorkPath + "/" + Config.DatabaseName.getValue());
 
 		Config.settings.ReadFromDB();
 
