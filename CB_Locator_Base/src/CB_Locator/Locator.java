@@ -201,9 +201,9 @@ public class Locator {
 				break;
 			}
 
-			PositionChangedEventList.SpeedChanged();
+			if (location.getHasSpeed())PositionChangedEventList.SpeedChanged();
 			PositionChangedEventList.PositionChanged();
-			PositionChangedEventList.OrientationChanged();
+			if (location.getHasBearing())PositionChangedEventList.OrientationChanged();
 		}
 	}
 

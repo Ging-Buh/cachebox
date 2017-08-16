@@ -91,7 +91,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_Action {
 			public void run() {
 				Database.Data.Query.clear();
 				Database.Data.Close();
-				Database.Data.StartUp(Config.DatabasePath.getValue());
+				Database.Data.StartUp(Config.mWorkPath + "/" + Config.DatabaseName.getValue());
 
 				Config.settings.ReadFromDB();
 

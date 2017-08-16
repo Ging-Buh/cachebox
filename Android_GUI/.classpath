@@ -20,10 +20,10 @@
 	<classpathentry exported="true" kind="lib" path="libs/gdx-1.9.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/gdx-backend-android-1.9.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/gdx-freetype-1.9.6.jar"/>
-	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

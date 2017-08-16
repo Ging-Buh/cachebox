@@ -37,6 +37,6 @@
 	<classpathentry kind="lib" path="Lib/gdx-freetype-1.9.6.jar"/>
 	<classpathentry kind="lib" path="Lib/gdx-freetype-natives-1.9.6.jar"/>
 	<classpathentry kind="lib" path="Lib/gdx-natives-1.9.6.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/GPS_Simulator"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/GPS Simulator"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

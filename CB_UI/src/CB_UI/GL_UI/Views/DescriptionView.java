@@ -90,6 +90,7 @@ public class DescriptionView extends CB_View_Base {
 		if (sel.isLive() || sel.getApiStatus() == 1) {
 			showDownloadButton();
 		} else {
+			//			showDownloadButton();
 			showWebView();
 		}
 
@@ -235,7 +236,7 @@ public class DescriptionView extends CB_View_Base {
 
 		PowerdBy.setHeight(Fonts.Measure(STRING_POWERD_BY).height + (margin * 2));
 		PowerdBy.setFont(Fonts.getNormal()).setHAlignment(HAlignment.CENTER);
-
+		PowerdBy.setWidth(contentWidth);
 		PowerdBy.setWrappedText(STRING_POWERD_BY);
 		this.addChild(PowerdBy);
 

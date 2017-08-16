@@ -82,7 +82,8 @@ public interface CB_UI_Settings {
 	// Folder
 	public static final SettingFolder TrackFolder = new SettingFolder("TrackFolder", SettingCategory.Folder, EXPERT, Work + "/User/Tracks", SettingStoreType.Global, SettingUsage.ACB, true);
 	// Files
-	public static final SettingFile DatabasePath = (SettingFile) SettingsList.addSetting(new SettingFile("DatabasePath", SettingCategory.Folder, NEVER, Work + "/cachebox.db3", SettingStoreType.Global, SettingUsage.ACB, "db3"));
+	// public static final SettingFile DatabasePath = (SettingFile) SettingsList.addSetting(new SettingFile("DatabasePath", SettingCategory.Folder, NEVER, Work + "/cachebox.db3", SettingStoreType.Global, SettingUsage.ACB, "db3"));
+	public static final SettingString DatabaseName = new SettingString("DatabaseName", SettingCategory.Internal, NEVER, "cachebox.db3", SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingFile FieldNotesGarminPath = (SettingFile) SettingsList
 			.addSetting(new SettingFile("FieldNotesGarminPath", SettingCategory.Folder, DEVELOPER, Work + "/User/geocache_visits.txt", SettingStoreType.Global, SettingUsage.ACB));
 	public static final SettingFile gpxExportFileName = new SettingFile("gpxExportFileName", SettingCategory.Folder, NEVER, Work + "/User/export.gpx", SettingStoreType.Global, SettingUsage.ACB, "gpx");
