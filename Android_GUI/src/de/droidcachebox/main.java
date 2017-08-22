@@ -2532,10 +2532,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                                 // chk for timer conflict (releay set invisible)
                                 // only if not showing Dialog or Activity
                                 if (!GL.that.isShownDialogActivity()) {
-                                    if (aktView != null)
-                                        ((View) aktView).setVisibility(View.VISIBLE);
-                                    if (aktTabView != null)
-                                        ((View) aktTabView).setVisibility(View.VISIBLE);
+                                    if (aktView != null){
+						((View) aktView).setVisibility(View.VISIBLE);
+						aktView.OnShow();
+						setContentSize(lastLeft, lastTop, lastRight, lastBottom);
+				    }
+				    if (aktTabView != null){
+						((View) aktTabView).setVisibility(View.VISIBLE);
+						aktTabView.OnShow();
+						setContentSize(lastLeft, lastTop, lastRight, lastBottom);
+				    }
                                     if (InfoDownSlider != null)
                                         ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
                                     if (cacheNameView != null)
@@ -2580,8 +2586,17 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
             }
 
+	    
+	    int lastLeft, lastTop, lastRight, lastBottom;
+	    
             @Override
             public void setContentSize(final int left, final int top, final int right, final int bottom) {
+		    
+		lastLeft = left;
+		lastRight = right;
+		lastTop = top;
+		lastBottom = bottom;
+		    
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
