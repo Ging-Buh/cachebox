@@ -2,7 +2,11 @@ Thanks for installing Cachebox.
 
 Do not use Cachebox during the drive in the car!
 
-This version is still in beta stage and can contain errors.
+This is a program written by people.
+
+You can use it, but we can not guarantee that it will match your expectations.
+
+People make mistakes.
 
 You can report an error at http://www.team-cachebox.de.
 
