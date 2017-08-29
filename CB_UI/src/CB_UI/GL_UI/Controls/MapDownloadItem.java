@@ -17,7 +17,7 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
-import CB_UI_Base.GL_UI.Controls.chkBox;
+import CB_UI_Base.GL_UI.Controls.ChkBox;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -33,7 +33,7 @@ public class MapDownloadItem extends CB_View_Base {
 	private final MapRepositoryInfo mapInfo;
 	private int lastProgress = 0;
 	private Downloader dl;
-	private final chkBox checkBoxMap;
+	private final ChkBox checkBoxMap;
 	private ProgressBar pgBar;
 	private final float margin;
 	private final Label lblName, lblSize;
@@ -46,7 +46,7 @@ public class MapDownloadItem extends CB_View_Base {
 		this.workPath = workPath;
 		margin = UI_Size_Base.that.getMargin();
 
-		checkBoxMap = new chkBox("Image");
+		checkBoxMap = new ChkBox("Image");
 		this.setHeight(checkBoxMap.getHeight() + (margin * 2));
 		this.setWidth(ItemWidth);
 		checkBoxMap.setX(margin);

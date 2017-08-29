@@ -3,14 +3,14 @@ package CB_UI.GL_UI.Activitys.APIs;
 import CB_Core.Types.ExportEntry;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.chkBox;
-import CB_UI_Base.GL_UI.Controls.chkBox.OnCheckChangedListener;
+import CB_UI_Base.GL_UI.Controls.ChkBox;
+import CB_UI_Base.GL_UI.Controls.ChkBox.OnCheckChangedListener;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
 public class ExportCBServerListItem extends ListViewItemBackground {
-	private chkBox chk;
+	private ChkBox chk;
 	private Label lblName, lblInfo;
 
 	public ExportCBServerListItem(CB_RectF rec, int Index, final ExportEntry item) {
@@ -33,14 +33,14 @@ public class ExportCBServerListItem extends ListViewItemBackground {
 
 		// lblInfo.setText("---");
 
-		chk = new chkBox("");
+		chk = new ChkBox("");
 		chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UI_Size_Base.that.getMargin());
 		chk.setY(this.getHalfHeight() - chk.getHalfHeight());
 		chk.setChecked(item.toExport);
 		chk.setOnCheckChangedListener(new OnCheckChangedListener() {
 
 			@Override
-			public void onCheckedChanged(chkBox view, boolean isChecked) {
+			public void onCheckedChanged(ChkBox view, boolean isChecked) {
 				item.setExport(isChecked);
 			}
 		});

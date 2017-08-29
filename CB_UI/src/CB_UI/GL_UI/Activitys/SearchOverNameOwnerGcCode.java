@@ -51,7 +51,7 @@ import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
-import CB_UI_Base.GL_UI.Controls.chkBox;
+import CB_UI_Base.GL_UI.Controls.ChkBox;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Lists.CB_List;
@@ -60,7 +60,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
 	private Button bImport, bCancel;
 	private Label lblTitle, lblExcludeFounds, lblOnlyAvailable, lblExcludeHides;
 	private Image gsLogo;
-	private chkBox checkBoxExcludeFounds, checkBoxOnlyAvailable, checkBoxExcludeHides;
+	private ChkBox checkBoxExcludeFounds, checkBoxOnlyAvailable, checkBoxExcludeHides;
 
 	/**
 	 * Such Eingabe Feld
@@ -190,15 +190,15 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
 	}
 
 	private void createChkBoxLines() {
-		checkBoxOnlyAvailable = new chkBox("");
+		checkBoxOnlyAvailable = new ChkBox("");
 		checkBoxOnlyAvailable.setPos(margin, box.getHeight() - margin - checkBoxOnlyAvailable.getHeight());
 		box.addChild(checkBoxOnlyAvailable);
 
-		checkBoxExcludeHides = new chkBox("");
+		checkBoxExcludeHides = new ChkBox("");
 		checkBoxExcludeHides.setPos(margin, checkBoxOnlyAvailable.getY() - margin - checkBoxExcludeHides.getHeight());
 		box.addChild(checkBoxExcludeHides);
 
-		checkBoxExcludeFounds = new chkBox("");
+		checkBoxExcludeFounds = new ChkBox("");
 		checkBoxExcludeFounds.setPos(margin, checkBoxExcludeHides.getY() - margin - checkBoxExcludeFounds.getHeight());
 		box.addChild(checkBoxExcludeFounds);
 

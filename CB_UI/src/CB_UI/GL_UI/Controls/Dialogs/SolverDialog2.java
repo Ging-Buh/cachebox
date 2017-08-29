@@ -28,8 +28,8 @@ import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
-import CB_UI_Base.GL_UI.Controls.chkBox;
-import CB_UI_Base.GL_UI.Controls.chkBox.OnCheckChangedListener;
+import CB_UI_Base.GL_UI.Controls.ChkBox;
+import CB_UI_Base.GL_UI.Controls.ChkBox.OnCheckChangedListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Util.HSV_Color;
@@ -110,7 +110,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	private Label lblGleich;
 	// Page Text
 	private EditTextField mFormulaField;
-	private chkBox cbFormulaAsText;
+	private ChkBox cbFormulaAsText;
 	private Label lFormulaAsText;
 	// Page Zahl
 	private final String[] lZahl = new String[] { "0", ",", "<-", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
@@ -123,13 +123,13 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	private Label[] lFunctionParam = null;
 	private Button[] bFunctionParam = null;
 	// Page Variables
-	private chkBox[] cbVariables = null;
+	private ChkBox[] cbVariables = null;
 	private Label[] lVariables = null;
 	// Page Operator
 	private EditTextField[] tbOperator = null;
 	private Button[] bOperator = null;
 	// Page Waypoint
-	private chkBox[] cbWaypoints = null;
+	private ChkBox[] cbWaypoints = null;
 	private Label[] lWaypoints = null;
 	// Page Coordinate
 	private CoordinateButton bCoord = null;
@@ -400,7 +400,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			break;
 		case Variable:
 			for (int i = cbVariables.length - 1; i >= 0; i--) {
-				chkBox cb = cbVariables[i];
+				ChkBox cb = cbVariables[i];
 				Label l = lVariables[i];
 				cb.setY(y);
 				cb.setWidth(cb.getHeight());
@@ -415,7 +415,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 				if ((dataType == DataType.Waypoint) && (i == 0)) {
 					continue;
 				}
-				chkBox cb = cbWaypoints[i];
+				ChkBox cb = cbWaypoints[i];
 				Label l = lWaypoints[i];
 				cb.setY(y);
 				cb.setWidth(cb.getHeight());
@@ -761,7 +761,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			public void keyTyped(EditTextFieldBase textField, char key) {
 			}
 		});
-		cbFormulaAsText = new chkBox("AsText");
+		cbFormulaAsText = new ChkBox("AsText");
 		// cbFormulaAsText.setText("Als Text in \"\" eintragen");
 		cbFormulaAsText.setChecked(asText);
 		lFormulaAsText = new Label("Als Text in \"\" eintragen");
@@ -1034,12 +1034,12 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	boolean doNotChangeCBVariable = false;
 
 	private void showPageVariable() {
-		cbVariables = new chkBox[solver.Variablen.size()];
+		cbVariables = new ChkBox[solver.Variablen.size()];
 		lVariables = new Label[solver.Variablen.size()];
 		int i = 0;
 		for (String variable : solver.Variablen.keySet()) {
 			String value = solver.Variablen.get(variable);
-			cbVariables[i] = new chkBox(variable);
+			cbVariables[i] = new ChkBox(variable);
 			cbVariables[i].setData(variable);
 			scrollBox.addChild(cbVariables[i]);
 			lVariables[i] = new Label(variable + " (" + value + ")");
@@ -1047,11 +1047,11 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			cbVariables[i].setChecked(sForm.equalsIgnoreCase(variable));
 			cbVariables[i].setOnCheckChangedListener(new OnCheckChangedListener() {
 				@Override
-				public void onCheckedChanged(chkBox view, boolean isChecked) {
+				public void onCheckedChanged(ChkBox view, boolean isChecked) {
 					if (doNotChangeCBVariable)
 						return;
 					doNotChangeCBVariable = true;
-					for (chkBox cb : cbVariables) {
+					for (ChkBox cb : cbVariables) {
 						cb.setChecked(cb == view);
 					}
 					doNotChangeCBVariable = false;
@@ -1065,7 +1065,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		for (Label l : lVariables) {
 			scrollBox.removeChild(l);
 		}
-		for (chkBox cb : cbVariables) {
+		for (ChkBox cb : cbVariables) {
 			scrollBox.removeChild(cb);
 		}
 		cbVariables = null;
@@ -1075,7 +1075,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	private void savePageVariable() {
 		if (cbVariables == null)
 			return;
-		for (chkBox cb : cbVariables) {
+		for (ChkBox cb : cbVariables) {
 			if (cb.isChecked()) {
 				String variable = (String) cb.getData();
 				if (variable != null) {
@@ -1131,7 +1131,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	}
 
 	private void showPageWaypoint() {
-		cbWaypoints = new chkBox[aktCache.waypoints.size() + 1];
+		cbWaypoints = new ChkBox[aktCache.waypoints.size() + 1];
 		lWaypoints = new Label[aktCache.waypoints.size() + 1];
 
 		for (int i = 0; i <= aktCache.waypoints.size(); i++) {
@@ -1150,7 +1150,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 				description = "$" + aktCache.getGcCode() + " - " + aktCache.getName();
 			}
 
-			cbWaypoints[i] = new chkBox(data);
+			cbWaypoints[i] = new ChkBox(data);
 			cbWaypoints[i].setData(data);
 			scrollBox.addChild(cbWaypoints[i]);
 			lWaypoints[i] = new Label(description);
@@ -1159,11 +1159,11 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
 			cbWaypoints[i].setOnCheckChangedListener(new OnCheckChangedListener() {
 				@Override
-				public void onCheckedChanged(chkBox view, boolean isChecked) {
+				public void onCheckedChanged(ChkBox view, boolean isChecked) {
 					if (doNotChangeCBVariable)
 						return;
 					doNotChangeCBVariable = true;
-					for (chkBox cb : cbWaypoints) {
+					for (ChkBox cb : cbWaypoints) {
 						cb.setChecked(cb == view);
 					}
 					doNotChangeCBVariable = false;
@@ -1175,7 +1175,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	private void hidePageWaypoint() {
 		if (cbWaypoints == null)
 			return;
-		for (chkBox cb : cbWaypoints) {
+		for (ChkBox cb : cbWaypoints) {
 			scrollBox.removeChild(cb);
 		}
 		for (Label l : lWaypoints) {
@@ -1188,7 +1188,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	private void savePageWaypoint() {
 		if (cbWaypoints == null)
 			return;
-		for (chkBox cb : cbWaypoints) {
+		for (ChkBox cb : cbWaypoints) {
 			if (cb == null)
 				continue;
 			// scrollBox.removeChild(cb);

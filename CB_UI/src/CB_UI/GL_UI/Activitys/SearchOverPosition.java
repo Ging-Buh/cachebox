@@ -48,7 +48,7 @@ import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
-import CB_UI_Base.GL_UI.Controls.chkBox;
+import CB_UI_Base.GL_UI.Controls.ChkBox;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Interfaces.ICancel;
@@ -59,7 +59,7 @@ public class SearchOverPosition extends ActivityBase {
 	private Label lblTitle, lblRadius, lblRadiusEinheit, lblMarkerPos, lblExcludeFounds, lblOnlyAvailable, lblExcludeHides;
 	private Image gsLogo;
 	private CoordinateButton coordBtn;
-	private chkBox checkBoxExcludeFounds, checkBoxOnlyAvailable, checkBoxExcludeHides;
+	private ChkBox checkBoxExcludeFounds, checkBoxOnlyAvailable, checkBoxExcludeHides;
 	private EditTextField Radius;
 	private final float lineHeight;
 	private MultiToggleButton tglBtnGPS, tglBtnMap;
@@ -185,15 +185,15 @@ public class SearchOverPosition extends ActivityBase {
 	}
 
 	private void createChkBoxLines() {
-		checkBoxOnlyAvailable = new chkBox("");
+		checkBoxOnlyAvailable = new ChkBox("");
 		checkBoxOnlyAvailable.setPos(margin, Radius.getY() - margin - checkBoxOnlyAvailable.getHeight());
 		box.addChild(checkBoxOnlyAvailable);
 
-		checkBoxExcludeHides = new chkBox("");
+		checkBoxExcludeHides = new ChkBox("");
 		checkBoxExcludeHides.setPos(margin, checkBoxOnlyAvailable.getY() - margin - checkBoxExcludeHides.getHeight());
 		box.addChild(checkBoxExcludeHides);
 
-		checkBoxExcludeFounds = new chkBox("");
+		checkBoxExcludeFounds = new ChkBox("");
 		checkBoxExcludeFounds.setPos(margin, checkBoxExcludeHides.getY() - margin - checkBoxExcludeFounds.getHeight());
 		box.addChild(checkBoxExcludeFounds);
 

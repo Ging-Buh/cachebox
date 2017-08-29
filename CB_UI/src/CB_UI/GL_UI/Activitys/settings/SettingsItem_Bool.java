@@ -1,16 +1,16 @@
 package CB_UI.GL_UI.Activitys.settings;
 
-import CB_UI_Base.GL_UI.Controls.chkBox;
+import CB_UI_Base.GL_UI.Controls.ChkBox;
 import CB_UI_Base.Math.CB_RectF;
 
 public class SettingsItem_Bool extends SettingsItemBase {
 
-	chkBox Check;
+	ChkBox Check;
 
 	public SettingsItem_Bool(CB_RectF rec, int Index, String Name) {
 		super(rec, Index, Name);
 
-		Check = new chkBox("");
+		Check = new ChkBox("");
 		Check.setX(this.getWidth() - rightBorder - Check.getWidth());
 		Check.setY(this.getHalfHeight() - Check.getHalfHeight());
 
@@ -22,7 +22,7 @@ public class SettingsItem_Bool extends SettingsItemBase {
 
 	}
 
-	public chkBox getCheckBox() {
+	public ChkBox getCheckBox() {
 		return Check;
 	}
 

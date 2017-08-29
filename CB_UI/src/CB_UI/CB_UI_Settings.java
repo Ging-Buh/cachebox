@@ -132,7 +132,7 @@ public interface CB_UI_Settings {
 	// int
 	public static final SettingInt LogMaxMonthAge = (SettingInt) SettingsList.addSetting(new SettingInt("LogMaxMonthAge", SettingCategory.Internal, DEVELOPER, 6, SettingStoreType.Global, SettingUsage.ACB));
 	public static final SettingInt LogMinCount = (SettingInt) SettingsList.addSetting(new SettingInt("LogMinCount", SettingCategory.Internal, DEVELOPER, 99999, SettingStoreType.Global, SettingUsage.ACB));
-	public static final SettingInt installedRev = (SettingInt) SettingsList.addSetting(new SettingInt("installRev", SettingCategory.Misc, DEVELOPER, 0, SettingStoreType.Global, SettingUsage.ACB));
+	public static final SettingInt installedRev = (SettingInt) SettingsList.addSetting(new SettingInt("installRev", SettingCategory.Misc, NEVER, 0, SettingStoreType.Global, SettingUsage.ACB));
 	public static final SettingInt MapIniWidth = (SettingInt) SettingsList.addSetting(new SettingInt("MapIniWidth", SettingCategory.Map, NEVER, 480, SettingStoreType.Global, SettingUsage.ACB));
 	public static final SettingInt MapIniHeight = (SettingInt) SettingsList.addSetting(new SettingInt("MapIniHeight", SettingCategory.Map, NEVER, 535, SettingStoreType.Global, SettingUsage.ACB));
 	public static final SettingInt VibrateTime = (SettingInt) SettingsList.addSetting(new SettingInt("VibrateTime", SettingCategory.Misc, EXPERT, 20, SettingStoreType.Global, SettingUsage.ACB));

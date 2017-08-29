@@ -535,7 +535,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     }
 
 	/*
-	@Override
+    @Override
 	protected void onStart() {
 		super.onStart();
 	}
@@ -1236,7 +1236,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
      * Handling Screen OFF and Screen ON Intents
      *
      * @author -jwei
-     *         http://thinkandroid.wordpress.com/2010/01/24/handling-screen-off-and-screen-on-intents/
+     * http://thinkandroid.wordpress.com/2010/01/24/handling-screen-off-and-screen-on-intents/
      */
     public static class ScreenReceiver extends BroadcastReceiver {
         // thanks Jason
@@ -2532,16 +2532,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                                 // chk for timer conflict (releay set invisible)
                                 // only if not showing Dialog or Activity
                                 if (!GL.that.isShownDialogActivity()) {
-                                    if (aktView != null){
-						((View) aktView).setVisibility(View.VISIBLE);
-						aktView.OnShow();
-						setContentSize(lastLeft, lastTop, lastRight, lastBottom);
-				    }
-				    if (aktTabView != null){
-						((View) aktTabView).setVisibility(View.VISIBLE);
-						aktTabView.OnShow();
-						setContentSize(lastLeft, lastTop, lastRight, lastBottom);
-				    }
+                                    if (aktView != null) {
+                                        ((View) aktView).setVisibility(View.VISIBLE);
+                                        aktView.OnShow();
+                                        setContentSize(lastLeft, lastTop, lastRight, lastBottom);
+                                    }
+                                    if (aktTabView != null) {
+                                        ((View) aktTabView).setVisibility(View.VISIBLE);
+                                        aktTabView.OnShow();
+                                        setContentSize(lastLeft, lastTop, lastRight, lastBottom);
+                                    }
                                     if (InfoDownSlider != null)
                                         ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
                                     if (cacheNameView != null)
@@ -2559,7 +2559,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             @Override
             public void firstShow() {
                 if (mustRunSearch) {
-                    Log.info(log, "mustRunSearch");
+                    Log.info(log, "PlatformConnector.setShowViewListener.firstShow: mustRunSearch");
                     if (ExtSearch_GcCode != null)
                         startSearchTimer();
                     if (ExtSearch_GpxPath != null)
@@ -2586,17 +2586,17 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
             }
 
-	    
-	    int lastLeft, lastTop, lastRight, lastBottom;
-	    
+
+            int lastLeft, lastTop, lastRight, lastBottom;
+
             @Override
             public void setContentSize(final int left, final int top, final int right, final int bottom) {
-		    
-		lastLeft = left;
-		lastRight = right;
-		lastTop = top;
-		lastBottom = bottom;
-		    
+
+                lastLeft = left;
+                lastRight = right;
+                lastTop = top;
+                lastBottom = bottom;
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

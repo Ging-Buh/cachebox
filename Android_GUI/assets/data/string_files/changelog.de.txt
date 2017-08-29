@@ -48,5 +48,9 @@ Version : 2.0
 		- gemischter Modus für Mapforge-Karten
 			Anzeige Schrift (Skalierung, Drehen)
 		- Entwicklung openGL Html Renderer
-			Anzeige der Beschreibung 
+			Anzeige der Beschreibung
+		- "interne" Routenbestimmung
+	• Bekannte Fehler
+		- Animierte gif in Beschreibung
+			werden nicht dargestellt
 	...

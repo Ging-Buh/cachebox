@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import cb_rpc.Settings.CB_Rpc_Settings;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -66,8 +65,8 @@ import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.Spinner;
 import CB_UI_Base.GL_UI.Controls.Spinner.ISelectionChangedListener;
 import CB_UI_Base.GL_UI.Controls.SpinnerAdapter;
-import CB_UI_Base.GL_UI.Controls.chkBox;
-import CB_UI_Base.GL_UI.Controls.chkBox.OnCheckChangedListener;
+import CB_UI_Base.GL_UI.Controls.ChkBox;
+import CB_UI_Base.GL_UI.Controls.ChkBox.OnCheckChangedListener;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox.IReturnValueListener;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
@@ -112,7 +111,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 	private float CollapseBoxLogsMaxHeight;
 	private Label lblTitle, lblPQ, lblCBServer, lblGPX, lblGcVote, lblImage, lblSpoiler, lblMaps, lblProgressMsg, lblLogs, lblCompact;
 	private ProgressBar pgBar;
-	private chkBox checkImportPQfromGC, checkImportFromCBServer, checkBoxImportGPX, checkBoxGcVote, checkBoxPreloadImages, checkBoxPreloadSpoiler, checkBoxImportMaps, checkBoxCleanLogs, checkBoxCompactDB;
+	private ChkBox checkImportPQfromGC, checkImportFromCBServer, checkBoxImportGPX, checkBoxGcVote, checkBoxPreloadImages, checkBoxPreloadSpoiler, checkBoxImportMaps, checkBoxCleanLogs, checkBoxCompactDB;
 	private CollapseBox PQ_ListCollapseBox, CBServerCollapseBox, LogCollapseBox;
 	private Spinner spinner;
 
@@ -316,7 +315,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
 		innerLeft = margin;
 
-		checkImportPQfromGC = new chkBox("PQ");
+		checkImportPQfromGC = new ChkBox("PQ");
 		checkImportPQfromGC.setX(innerLeft);
 		checkImportPQfromGC.setY(innerHeight - checkImportPQfromGC.getHeight());
 		if (!PQ_LINE_ACTIVE) {
@@ -339,7 +338,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
 		innerLeft = margin;
 
-		checkImportFromCBServer = new chkBox("CBServer");
+		checkImportFromCBServer = new ChkBox("CBServer");
 		checkImportFromCBServer.setX(innerLeft);
 		checkImportFromCBServer.setY(innerHeight - checkImportFromCBServer.getHeight());
 		if (!CBS_LINE_ACTIVE)
@@ -418,7 +417,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 	}
 
 	private void createGpxLine() {
-		checkBoxImportGPX = new chkBox("GPX");
+		checkBoxImportGPX = new ChkBox("GPX");
 		checkBoxImportGPX.setX(innerLeft);
 		checkBoxImportGPX.setY(PQ_ListCollapseBox.getY() - margin - checkBoxImportGPX.getHeight());
 
@@ -457,7 +456,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 	}
 
 	private void createGcVoteLine() {
-		checkBoxGcVote = new chkBox("GcVote");
+		checkBoxGcVote = new ChkBox("GcVote");
 		checkBoxGcVote.setX(innerLeft);
 		checkBoxGcVote.setY(checkBoxImportGPX.getY() - margin - checkBoxImportGPX.getHeight());
 		if (!GCV_LINE_ACTIVE) {
@@ -478,7 +477,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
 	private void createImageLine() {
 		// Preload Description Images
-		checkBoxPreloadImages = new chkBox("Image");
+		checkBoxPreloadImages = new ChkBox("Image");
 		checkBoxPreloadImages.setX(innerLeft);
 		checkBoxPreloadImages.setY(checkBoxGcVote.getY() - margin - checkBoxPreloadImages.getHeight());
 
@@ -490,7 +489,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 		scrollBox.addChild(lblImage);
 
 		// Preload Spoiler Images
-		checkBoxPreloadSpoiler = new chkBox("Image");
+		checkBoxPreloadSpoiler = new ChkBox("Image");
 		checkBoxPreloadSpoiler.setX(innerLeft);
 		checkBoxPreloadSpoiler.setY(checkBoxPreloadImages.getY() - margin - checkBoxPreloadSpoiler.getHeight());
 
@@ -503,7 +502,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 	}
 
 	private void createMapLine() {
-		checkBoxImportMaps = new chkBox("Image");
+		checkBoxImportMaps = new ChkBox("Image");
 		checkBoxImportMaps.setX(innerLeft);
 		checkBoxImportMaps.setY(checkBoxPreloadSpoiler.getY() - margin - checkBoxImportMaps.getHeight());
 
@@ -517,7 +516,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 	}
 
 	private void createLogLine() {
-		checkBoxCleanLogs = new chkBox("Image");
+		checkBoxCleanLogs = new ChkBox("Image");
 		checkBoxCleanLogs.setX(innerLeft);
 
 		float yPos = MAP_LINE_ACTIVE ? checkBoxImportMaps.getY() : checkBoxPreloadSpoiler.getY();
@@ -628,7 +627,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 	}
 
 	private void createCompactDBLine() {
-		checkBoxCompactDB = new chkBox("Compact");
+		checkBoxCompactDB = new ChkBox("Compact");
 		checkBoxCompactDB.setX(innerLeft);
 		checkBoxCompactDB.setY(LogCollapseBox.getY() - margin - checkBoxCompactDB.getHeight());
 
@@ -765,7 +764,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 	private final OnCheckChangedListener checkLog_CheckStateChanged = new OnCheckChangedListener() {
 
 		@Override
-		public void onCheckedChanged(chkBox view, boolean isChecked) {
+		public void onCheckedChanged(ChkBox view, boolean isChecked) {
 			if (checkBoxCleanLogs.isChecked()) {
 				LogCollapseBox.expand();
 				spinner.setSelection(Config.LogMaxMonthAge.getValue());
@@ -780,7 +779,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
 	private final OnCheckChangedListener checkImportPQfromGC_CheckStateChanged = new OnCheckChangedListener() {
 		@Override
-		public void onCheckedChanged(chkBox view, boolean isChecked) {
+		public void onCheckedChanged(ChkBox view, boolean isChecked) {
 			if ((importType == MenuID.MI_IMPORT_GS_PQ) || (checkImportPQfromGC.isChecked())) {
 				checkBoxImportGPX.setChecked(true);
 				checkBoxImportGPX.setEnabled(false);
@@ -794,7 +793,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
 	private final OnCheckChangedListener checkImportFromCBServer_CheckStateChanged = new OnCheckChangedListener() {
 		@Override
-		public void onCheckedChanged(chkBox view, boolean isChecked) {
+		public void onCheckedChanged(ChkBox view, boolean isChecked) {
 			if (checkImportFromCBServer.isChecked()) {
 				CBServerCollapseBox.expand();
 			} else {
@@ -1309,7 +1308,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 			Date Importfin = new Date();
 			long ImportZeit = Importfin.getTime() - ImportStart.getTime();
 
-			Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "C " + String.valueOf(GPXFileImporter.LogCount) + "L in " + String.valueOf(ImportZeit);
+			Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "Cache " + String.valueOf(GPXFileImporter.LogCount) + "Logs in " + String.valueOf(ImportZeit);
 		} else {
 			Msg = "Import canceld";
 		}
@@ -1319,7 +1318,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 		FilterProperties props = FilterInstances.getLastFilter();
 		EditFilterSettings.ApplyFilter(props);
 
-		GL.that.Toast(Msg, 3000);
+		// todo an der richtigen Stelle ausgeben, kommt auch bei CBServer import: GL.that.Toast(Msg, 3000);
 
 	}
 

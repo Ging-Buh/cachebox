@@ -460,7 +460,7 @@ public abstract class ManagerBase {
 
 	private Layer getUserMap(String url, String name) {
 		try {
-			Log.info(log, "orgUserMap: url=" + url + " Name=" + name);
+			Log.info(log, "getUserMap by url=" + url + " Name=" + name);
 			Layer.StorageType storageType = Layer.StorageType.PNG;
 			if (url.contains("{name:")) {
 				//replace name

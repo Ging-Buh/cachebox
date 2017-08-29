@@ -56,9 +56,9 @@ import CB_Utils.Log.Log;
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface {
 	final static org.slf4j.Logger log = LoggerFactory.getLogger(GlobalCore.class);
 
-	public static final int CurrentRevision = 20170824;
+	public static final int CurrentRevision = 20170830;
 	public static final String CurrentVersion = "2.0.";
-	public static final String VersionPrefix = "3094";
+	public static final String VersionPrefix = "3096";
 
 	public static final String aboutMsg1 = "Team Cachebox (2011-2017)" + br;
 	public static final String teamLink = "www.team-cachebox.de";

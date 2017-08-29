@@ -23,7 +23,7 @@ import CB_UI_Base.Math.UI_Size_Base;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
-public class RadioButton extends chkBox {
+public class RadioButton extends ChkBox {
 
 	private RadioGroup group;
 	private final Image radioBack;

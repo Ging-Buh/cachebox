@@ -1,17 +1,14 @@
 Thanks for installing Cachebox.
 
-Do not use Cachebox during the drive in the car!
-
 This is a program written by people.
-
-You can use it, but we can not guarantee that it will match your expectations.
-
 People make mistakes.
 
-You can report an error at http://www.team-cachebox.de.
-
-Here you can also leave a feature request.
+If this app does not meet your expectations or
+if you find a bug or
+if you have a feature request,
+you can tell us at www.team-cachebox.de.
 
 Or you visit us at our forum http://www.geoclub.de/viewforum.php?f=114.
 Some developers and forums user also speak English, so that you can get help in English.
 
+Do not use Cachebox during the drive in the car!

@@ -62,8 +62,8 @@ import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.Spinner;
 import CB_UI_Base.GL_UI.Controls.Spinner.ISelectionChangedListener;
 import CB_UI_Base.GL_UI.Controls.SpinnerAdapter;
-import CB_UI_Base.GL_UI.Controls.chkBox;
-import CB_UI_Base.GL_UI.Controls.chkBox.OnCheckChangedListener;
+import CB_UI_Base.GL_UI.Controls.ChkBox;
+import CB_UI_Base.GL_UI.Controls.ChkBox.OnCheckChangedListener;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox.IReturnValueListener;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
@@ -101,7 +101,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 	private float CollapseBoxLogsMaxHeight;
 	private Label lblTitle, lblCBServer, lblExportCBServer, lblImage, lblProgressMsg, lblLogs, lblCompact;
 	private ProgressBar pgBar;
-	private chkBox checkImportFromCBServer, checkBoxExportToCBServer, checkBoxPreloadImages, checkBoxCleanLogs, checkBoxCompactDB;
+	private ChkBox checkImportFromCBServer, checkBoxExportToCBServer, checkBoxPreloadImages, checkBoxCleanLogs, checkBoxCompactDB;
 	private CollapseBox CBServerCollapseBox, ExportCollapseBox, LogCollapseBox;
 	private Spinner spinner;
 
@@ -256,7 +256,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 	private void createCBServerLines() {
 		innerLeft = margin;
 
-		checkImportFromCBServer = new chkBox("CBServer");
+		checkImportFromCBServer = new ChkBox("CBServer");
 		checkImportFromCBServer.setX(innerLeft);
 		checkImportFromCBServer.setY(innerHeight - checkImportFromCBServer.getHeight());
 		if (!CBS_LINE_ACTIVE)
@@ -277,7 +277,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 	private void createExportLines() {
 		innerLeft = margin;
 
-		checkBoxExportToCBServer = new chkBox("CBServer");
+		checkBoxExportToCBServer = new ChkBox("CBServer");
 		checkBoxExportToCBServer.setX(innerLeft);
 		checkBoxExportToCBServer.setY(innerHeight - checkBoxExportToCBServer.getHeight());
 		if (!EXPORT_LINE_ACTIVE)
@@ -358,7 +358,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 	private void createImageLine() {
 		// Preload Description Images
-		checkBoxPreloadImages = new chkBox("Image");
+		checkBoxPreloadImages = new ChkBox("Image");
 		checkBoxPreloadImages.setX(innerLeft);
 		checkBoxPreloadImages.setY(ExportCollapseBox.getY() - margin - checkBoxPreloadImages.getHeight());
 
@@ -372,7 +372,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 	}
 
 	private void createLogLine() {
-		checkBoxCleanLogs = new chkBox("Image");
+		checkBoxCleanLogs = new ChkBox("Image");
 		checkBoxCleanLogs.setX(innerLeft);
 
 		float yPos = lblImage.getY();
@@ -483,7 +483,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 	}
 
 	private void createCompactDBLine() {
-		checkBoxCompactDB = new chkBox("Compact");
+		checkBoxCompactDB = new ChkBox("");
 		checkBoxCompactDB.setX(innerLeft);
 		checkBoxCompactDB.setY(LogCollapseBox.getY() - margin - checkBoxCompactDB.getHeight());
 
@@ -491,7 +491,8 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 			checkBoxCompactDB.setVisible(false);
 			checkBoxCompactDB.setHeight(0);
 		}
-		lblCompact = new Label(this.name + " lblCompact", lblImage.getMaxX() + margin, checkBoxCompactDB.getY(), innerWidth - margin * 3 - checkBoxCompactDB.getWidth(), checkBoxCompactDB.getHeight());
+
+		lblCompact = new Label("", checkBoxCompactDB.getMaxX() + margin, checkBoxCompactDB.getY(), innerWidth - margin * 3 - checkBoxCompactDB.getWidth(), checkBoxCompactDB.getHeight());
 		lblCompact.setFont(Fonts.getNormal());
 		lblCompact.setText(Translation.Get("CompactDB"));
 
@@ -584,7 +585,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 	private final OnCheckChangedListener checkLog_CheckStateChanged = new OnCheckChangedListener() {
 
 		@Override
-		public void onCheckedChanged(chkBox view, boolean isChecked) {
+		public void onCheckedChanged(ChkBox view, boolean isChecked) {
 			if (checkBoxCleanLogs.isChecked()) {
 				LogCollapseBox.expand();
 				spinner.setSelection(Config.LogMaxMonthAge.getValue());
@@ -599,7 +600,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 	private final OnCheckChangedListener checkImportFromCBServer_CheckStateChanged = new OnCheckChangedListener() {
 		@Override
-		public void onCheckedChanged(chkBox view, boolean isChecked) {
+		public void onCheckedChanged(ChkBox view, boolean isChecked) {
 			if (checkImportFromCBServer.isChecked()) {
 				CBServerCollapseBox.expand();
 			} else {
@@ -610,7 +611,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 	private final OnCheckChangedListener checkBoxExportToCBServer_CheckStateChanged = new OnCheckChangedListener() {
 		@Override
-		public void onCheckedChanged(chkBox view, boolean isChecked) {
+		public void onCheckedChanged(ChkBox view, boolean isChecked) {
 			if (checkBoxExportToCBServer.isChecked()) {
 				ExportCollapseBox.expand();
 			} else {
@@ -703,17 +704,18 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 				// PqList = new ArrayList<PQ>();
 				// PocketQuery.GetPocketQueryList(PqList);
 				RpcClientCB rpc = new RpcClientCB();
-				Log.info(log, "rpc.getExportList()");
 				RpcAnswer answer = rpc.getExportList();
 
 				if (answer != null) {
 					if (answer instanceof RpcAnswer_GetExportList) {
-						Log.info(log, "rpc.getExportList().getList()");
+						Log.info(log, "rpc.getExportList: getList()");
 						cbServerExportList = ((RpcAnswer_GetExportList) answer).getList();
 					} else {
+						Log.info(log, "rpc.getExportList. Serialisation Problem?");
 						cbServerExportList = null;
 					}
 				} else {
+					Log.info(log, "rpc.getExportList: no answer!");
 					cbServerExportList = null;
 				}
 
@@ -972,6 +974,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 				CacheListChangedEventList.Call();
 
+				/*
 				Date Importfin = new Date();
 				long ImportZeit = Importfin.getTime() - ImportStart.getTime();
 
@@ -979,10 +982,11 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 				Log.debug(log, Msg);
 
+				GL.that.Toast(Msg, 3000);
+				*/
+
 				FilterProperties props = FilterInstances.getLastFilter();
 				EditFilterSettings.ApplyFilter(props);
-
-				GL.that.Toast(Msg, 3000);
 
 			}
 		};

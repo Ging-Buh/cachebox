@@ -18,7 +18,7 @@ package CB_UI_Base.GL_UI.Controls.MessageBox;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -34,7 +34,7 @@ import CB_UI_Base.GL_UI.Controls.Dialog;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
-import CB_UI_Base.GL_UI.Controls.chkBox;
+import CB_UI_Base.GL_UI.Controls.ChkBox;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.Size;
@@ -64,7 +64,7 @@ public class GL_MsgBox extends Dialog {
 	public Label label;
 
 	protected SettingBool rememberSetting = null;
-	protected chkBox chkRemember;
+	protected ChkBox chkRemember;
 
 	// **************************************************
 
@@ -347,7 +347,7 @@ public class GL_MsgBox extends Dialog {
 		}
 
 		if (rememberSetting != null) {
-			chkRemember = new chkBox("remember");
+			chkRemember = new ChkBox("remember");
 			msgBox.setBorders(chkRemember.getHeight() / 2f, 0);
 			msgBox.setMargins(chkRemember.getHeight() / 2f, 0);
 			msgBox.addNext(chkRemember, chkRemember.getHeight() * 2f / msgBox.getWidth());

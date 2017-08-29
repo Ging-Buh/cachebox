@@ -185,7 +185,7 @@ public class splash extends Activity {
 		GlobalCore.useSmallSkin = GlobalCore.displayType == DisplayType.Small ? true : false;
 
 		// Check if tabletLayout possible
-		GlobalCore.posibleTabletLayout = (GlobalCore.displayType == DisplayType.xLarge || GlobalCore.displayType == DisplayType.Large);
+		GlobalCore.possibleTabletLayout = (GlobalCore.displayType == DisplayType.xLarge || GlobalCore.displayType == DisplayType.Large);
 
 		// try to get data from extras
 		final Bundle extras = getIntent().getExtras();
@@ -371,7 +371,7 @@ public class splash extends Activity {
 				 * rgLayout = (RadioGroup) dialog.findViewById(R.id.select_sd_radiogroup); final RadioButton rbHandyLayout = (RadioButton)
 				 * dialog.findViewById(R.id.select_sd_handylayout); final RadioButton rbTabletLayout = (RadioButton)
 				 * dialog.findViewById(R.id.select_sd_tabletlayout); rbHandyLayout.setText("Handy-Layout");
-				 * rbTabletLayout.setText("Tablet-Layout"); if (!GlobalCore.posibleTabletLayout) {
+				 * rbTabletLayout.setText("Tablet-Layout"); if (!GlobalCore.possibleTabletLayout) {
 				 * rgLayout.setVisibility(RadioGroup.INVISIBLE); rbHandyLayout.setChecked(true); } else { if (GlobalCore.isTab) {
 				 * rbTabletLayout.setChecked(true); } else { rbHandyLayout.setChecked(true); } }
 				 */
@@ -1038,6 +1038,10 @@ public class splash extends Activity {
 		new CB_SLF4J(workPath);
 		CB_SLF4J.setLogLevel(LogLevel.INFO);
 
+		if (GlobalCore.possibleTabletLayout)
+			Log.info(log,"Tablet Modus is possible.");
+		else
+			Log.info(log,"Use Handy Modus.");
 		mediaInfo();
 
 		new Config(workPath);

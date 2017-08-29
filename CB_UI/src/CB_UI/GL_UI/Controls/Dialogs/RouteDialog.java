@@ -11,7 +11,7 @@ import CB_UI_Base.GL_UI.Controls.ImageMultiToggleButton;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
 import CB_UI_Base.GL_UI.Controls.Linearlayout;
-import CB_UI_Base.GL_UI.Controls.chkBox;
+import CB_UI_Base.GL_UI.Controls.ChkBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.ButtonDialog;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
@@ -29,7 +29,7 @@ public class RouteDialog extends ButtonDialog {
 	private float TextFieldHeight;
 	private SizeF msgBoxContentSize;
 	private ImageMultiToggleButton btMotoWay, btCycleWay, btFootWay;
-	private chkBox chkTmc;
+	private ChkBox chkTmc;
 
 	public interface IReturnListener {
 		public void returnFromRoute_Dialog(boolean canceld, boolean Motoway, boolean CycleWay, boolean FootWay, boolean UseTmc);
@@ -78,7 +78,7 @@ public class RouteDialog extends ButtonDialog {
 		btFootWay.initialOn_Off_ToggleStates("", "");
 
 		Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight()), "");
-		chkTmc = new chkBox("TMC");
+		chkTmc = new ChkBox("TMC");
 		box2.addChild(chkTmc);
 
 		Label lblPW = new Label(this.name + " lblPW", chkTmc.getMaxX() + margin, 0, innerWidth - chkTmc.getWidth() - margin, chkTmc.getHeight());

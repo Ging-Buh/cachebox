@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import CB_Translation_Base.TranslationEngine.Translation;
 import org.slf4j.LoggerFactory;
 
 import CB_Core.CB_Core_Settings;
@@ -112,8 +113,9 @@ public class DescriptionImageGrabber {
 	}
 
 	/**
+	 *
 	 * @param GcCode
-	 * @param uri
+	 * @param _uri
 	 * @return
 	 */
 	public static String BuildImageFilename(String GcCode, URI _uri) {
@@ -422,7 +424,7 @@ public class DescriptionImageGrabber {
 		boolean imageLoadError = false;
 
 		if (!descriptionImagesUpdated) {
-			ip.ProgressChangeMsg("importImages", "Importing Description Images for " + gcCode);
+			ip.ProgressChangeMsg("importImages", Translation.Get("DescriptionImageImportForGC") + gcCode);
 
 			LinkedList<URI> imgUris = GetImageUris(description, url);
 
@@ -438,7 +440,7 @@ public class DescriptionImageGrabber {
 
 				String local = BuildImageFilename(gcCode, uri);
 
-				ip.ProgressChangeMsg("importImages", "Importing Description Images for " + gcCode + " - Download: " + uri);
+				ip.ProgressChangeMsg("importImages", Translation.Get("DescriptionImageImportForGC") + gcCode + Translation.Get("ImageDownloadFrom") + uri);
 
 				// build URL
 				for (int j = 0; j < 1 /* && !parent.Cancel */; j++) {
@@ -476,7 +478,7 @@ public class DescriptionImageGrabber {
 				afiles.add(file);
 
 			{
-				ip.ProgressChangeMsg("importImages", "Importing Spoiler Images for " + gcCode);
+				ip.ProgressChangeMsg("importImages", Translation.Get("SpoilerImageImportForGC") + gcCode);
 				HashMap<String, URI> allimgDict = new HashMap<String, URI>();
 
 				int result = 0;
@@ -526,7 +528,7 @@ public class DescriptionImageGrabber {
 					if (uri.toString().contains("/cache/log/"))
 						continue; // LOG-Image
 
-					ip.ProgressChangeMsg("importImages", "Importing Spoiler Images for " + gcCode + " - Download: " + uri);
+					ip.ProgressChangeMsg("importImages", Translation.Get("SpoilerImageImportForGC") + gcCode + Translation.Get("ImageDownloadFrom") + uri);
 
 					String decodedImageName = key;
 

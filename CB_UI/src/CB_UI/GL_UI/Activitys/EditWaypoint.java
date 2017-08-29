@@ -34,7 +34,7 @@ import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.Spinner;
 import CB_UI_Base.GL_UI.Controls.Spinner.ISelectionChangedListener;
 import CB_UI_Base.GL_UI.Controls.SpinnerAdapter;
-import CB_UI_Base.GL_UI.Controls.chkBox;
+import CB_UI_Base.GL_UI.Controls.ChkBox;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
@@ -44,7 +44,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 	private Waypoint waypoint;
 	private CoordinateButton bCoord = null;
 	private Spinner sType = null;
-	private chkBox cbStartPoint = null;
+	private ChkBox cbStartPoint = null;
 	private float cbStartPointWidth = 0;
 	private Button bOK = null;
 	private Button bHelp = null;
@@ -204,7 +204,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 		// CheckBox for the selection whether this WP is the startpoint of the cache
 		rec = new CB_RectF(tvStartPoint.getX() + tvStartPoint.getHalfWidth() - (UI_Size_Base.that.getButtonHeight() / 2), tvTyp.getY() - UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
-		cbStartPoint = new chkBox(rec, "CheckBoxStartPoint");
+		cbStartPoint = new ChkBox(rec, "CheckBoxStartPoint");
 		cbStartPoint.setVisible(false);
 
 		// Spinner initialisieren

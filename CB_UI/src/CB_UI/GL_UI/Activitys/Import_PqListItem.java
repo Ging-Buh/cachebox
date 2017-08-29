@@ -6,14 +6,14 @@ import java.text.SimpleDateFormat;
 import CB_Core.Api.PocketQuery.PQ;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.chkBox;
-import CB_UI_Base.GL_UI.Controls.chkBox.OnCheckChangedListener;
+import CB_UI_Base.GL_UI.Controls.ChkBox;
+import CB_UI_Base.GL_UI.Controls.ChkBox.OnCheckChangedListener;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
 public class Import_PqListItem extends ListViewItemBackground {
-	private final chkBox chk;
+	private final ChkBox chk;
 	private final Label lblName, lblInfo;
 
 	public Import_PqListItem(CB_RectF rec, int Index, final PQ pq) {
@@ -34,7 +34,7 @@ public class Import_PqListItem extends ListViewItemBackground {
 		String Count = "   Count=" + String.valueOf(pq.PQCount);
 		lblInfo.setText(dateString + "  " + FileSize + Count);
 
-		chk = new chkBox("");
+		chk = new ChkBox("");
 		chk.setRec(chk.ScaleCenter(0.6f));
 		chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UI_Size_Base.that.getMargin());
 		chk.setY((this.getHalfHeight() - chk.getHalfHeight()) + chk.getHalfHeight());
@@ -42,7 +42,7 @@ public class Import_PqListItem extends ListViewItemBackground {
 		chk.setOnCheckChangedListener(new OnCheckChangedListener() {
 
 			@Override
-			public void onCheckedChanged(chkBox view, boolean isChecked) {
+			public void onCheckedChanged(ChkBox view, boolean isChecked) {
 				pq.downloadAvailable = isChecked;
 			}
 		});

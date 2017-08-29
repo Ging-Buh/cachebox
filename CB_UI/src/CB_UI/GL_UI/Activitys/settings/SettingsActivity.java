@@ -46,8 +46,8 @@ import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.Spinner;
 import CB_UI_Base.GL_UI.Controls.Spinner.ISelectionChangedListener;
 import CB_UI_Base.GL_UI.Controls.SpinnerAdapter;
-import CB_UI_Base.GL_UI.Controls.chkBox;
-import CB_UI_Base.GL_UI.Controls.chkBox.OnCheckChangedListener;
+import CB_UI_Base.GL_UI.Controls.ChkBox;
+import CB_UI_Base.GL_UI.Controls.ChkBox.OnCheckChangedListener;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox.IReturnValueListener;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox.IReturnValueListenerDouble;
@@ -1155,7 +1155,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		item.setName(Translation.Get(SB.getName()));
 		item.setDefault("default: " + String.valueOf(SB.getDefaultValue()));
 		item.setVolume((int) (SB.getValue().Volume * 100));
-		chkBox chk = item.getCheckBox();
+		ChkBox chk = item.getCheckBox();
 
 		if (!AudioName.contains("Global")) {
 			if (audioSettingsList == null)
@@ -1166,7 +1166,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		chk.setChecked(SB.getValue().Mute);
 		chk.setOnCheckChangedListener(new OnCheckChangedListener() {
 			@Override
-			public void onCheckedChanged(chkBox view, boolean isChecked) {
+			public void onCheckedChanged(ChkBox view, boolean isChecked) {
 				Audio aud = new Audio(SB.getValue());
 				aud.Mute = isChecked;
 				SB.setValue(aud);
@@ -1431,12 +1431,12 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		item.setName(Translation.Get(SB.getName()));
 		item.setDefault("default: " + String.valueOf(SB.getDefaultValue()));
 
-		chkBox chk = item.getCheckBox();
+		ChkBox chk = item.getCheckBox();
 
 		chk.setChecked(SB.getValue());
 		chk.setOnCheckChangedListener(new OnCheckChangedListener() {
 			@Override
-			public void onCheckedChanged(chkBox view, boolean isChecked) {
+			public void onCheckedChanged(ChkBox view, boolean isChecked) {
 				SB.setValue(isChecked);
 				if (SB.getName().equalsIgnoreCase("FieldNotesLoadAll")) {
 					resortList();

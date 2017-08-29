@@ -4,7 +4,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.chkBox;
+import CB_UI_Base.GL_UI.Controls.ChkBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -25,7 +25,7 @@ public class NewDB_InputBox extends GL_MsgBox {
 		NewDB_InputBox msgBox = new NewDB_InputBox(msgBoxSize, "MsgBox");
 		msgBox.setTitle(title);
 
-		final chkBox chk = new chkBox("");
+		final ChkBox chk = new ChkBox("");
 		msgBox.mMsgBoxClickListener = new OnMsgBoxClickListener() {
 
 			@Override

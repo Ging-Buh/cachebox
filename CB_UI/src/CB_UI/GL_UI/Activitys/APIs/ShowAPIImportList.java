@@ -59,8 +59,8 @@ import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.Spinner;
 import CB_UI_Base.GL_UI.Controls.Spinner.ISelectionChangedListener;
 import CB_UI_Base.GL_UI.Controls.SpinnerAdapter;
-import CB_UI_Base.GL_UI.Controls.chkBox;
-import CB_UI_Base.GL_UI.Controls.chkBox.OnCheckChangedListener;
+import CB_UI_Base.GL_UI.Controls.ChkBox;
+import CB_UI_Base.GL_UI.Controls.ChkBox.OnCheckChangedListener;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox.IReturnValueListener;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
@@ -91,7 +91,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 	private float CollapseBoxLogsMaxHeight;
 	private Label lblTitle, lblPQ, lblGPX, lblGcVote, lblImage, lblSpoiler, lblMaps, lblProgressMsg, lblLogs, lblCompact;
 	private ProgressBar pgBar;
-	private chkBox checkImportPQfromGC, checkBoxImportGPX, checkBoxGcVote, checkBoxPreloadImages, checkBoxPreloadSpoiler, checkBoxImportMaps, checkBoxCleanLogs, checkBoxCompactDB;
+	private ChkBox checkImportPQfromGC, checkBoxImportGPX, checkBoxGcVote, checkBoxPreloadImages, checkBoxPreloadSpoiler, checkBoxImportMaps, checkBoxCleanLogs, checkBoxCompactDB;
 	private CollapseBox PQ_ListCollapseBox, LogCollapseBox;
 	private Spinner spinner;
 
@@ -230,7 +230,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 
 		innerLeft = margin;
 
-		checkImportPQfromGC = new chkBox("PQ");
+		checkImportPQfromGC = new ChkBox("PQ");
 		checkImportPQfromGC.setX(innerLeft);
 		checkImportPQfromGC.setY(innerHeight - checkImportPQfromGC.getHeight());
 
@@ -273,7 +273,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 	}
 
 	private void createGpxLine() {
-		checkBoxImportGPX = new chkBox("GPX");
+		checkBoxImportGPX = new ChkBox("GPX");
 		checkBoxImportGPX.setX(innerLeft);
 		checkBoxImportGPX.setY(PQ_ListCollapseBox.getY() - margin - checkBoxImportGPX.getHeight());
 
@@ -286,7 +286,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 	}
 
 	private void createGcVoteLine() {
-		checkBoxGcVote = new chkBox("GcVote");
+		checkBoxGcVote = new ChkBox("GcVote");
 		checkBoxGcVote.setX(innerLeft);
 		checkBoxGcVote.setY(checkBoxImportGPX.getY() - margin - checkBoxImportGPX.getHeight());
 
@@ -300,7 +300,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 
 	private void createImageLine() {
 		// Preload Description Images
-		checkBoxPreloadImages = new chkBox("Image");
+		checkBoxPreloadImages = new ChkBox("Image");
 		checkBoxPreloadImages.setX(innerLeft);
 		checkBoxPreloadImages.setY(checkBoxGcVote.getY() - margin - checkBoxPreloadImages.getHeight());
 
@@ -312,7 +312,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 		scrollBox.addChild(lblImage);
 
 		// Preload Spoiler Images
-		checkBoxPreloadSpoiler = new chkBox("Image");
+		checkBoxPreloadSpoiler = new ChkBox("Image");
 		checkBoxPreloadSpoiler.setX(innerLeft);
 		checkBoxPreloadSpoiler.setY(checkBoxPreloadImages.getY() - margin - checkBoxPreloadSpoiler.getHeight());
 
@@ -327,7 +327,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 	final boolean MAP_LINE_ACTIVE = false;
 
 	private void createMapLine() {
-		checkBoxImportMaps = new chkBox("Image");
+		checkBoxImportMaps = new ChkBox("Image");
 		checkBoxImportMaps.setX(innerLeft);
 		checkBoxImportMaps.setY(checkBoxPreloadSpoiler.getY() - margin - checkBoxImportMaps.getHeight());
 
@@ -341,7 +341,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 	}
 
 	private void createLogLine() {
-		checkBoxCleanLogs = new chkBox("Image");
+		checkBoxCleanLogs = new ChkBox("Image");
 		checkBoxCleanLogs.setX(innerLeft);
 
 		float yPos = MAP_LINE_ACTIVE ? checkBoxImportMaps.getY() : checkBoxPreloadSpoiler.getY();
@@ -443,7 +443,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 	}
 
 	private void createCompactDBLine() {
-		checkBoxCompactDB = new chkBox("Compact");
+		checkBoxCompactDB = new ChkBox("Compact");
 		checkBoxCompactDB.setX(innerLeft);
 		checkBoxCompactDB.setY(LogCollapseBox.getY() - margin - checkBoxCompactDB.getHeight());
 
@@ -587,7 +587,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 	private final OnCheckChangedListener checkLog_CheckStateChanged = new OnCheckChangedListener() {
 
 		@Override
-		public void onCheckedChanged(chkBox view, boolean isChecked) {
+		public void onCheckedChanged(ChkBox view, boolean isChecked) {
 			if (checkBoxCleanLogs.isChecked()) {
 				LogCollapseBox.expand();
 				spinner.setSelection(Config.LogMaxMonthAge.getValue());
@@ -602,7 +602,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 
 	private final OnCheckChangedListener checkImportPQfromGC_CheckStateChanged = new OnCheckChangedListener() {
 		@Override
-		public void onCheckedChanged(chkBox view, boolean isChecked) {
+		public void onCheckedChanged(ChkBox view, boolean isChecked) {
 			if (checkImportPQfromGC.isChecked()) {
 				checkBoxImportGPX.setChecked(true);
 				checkBoxImportGPX.setEnabled(false);

@@ -48,5 +48,8 @@ Version : 2.0
 			for mapsforge maps (scaling, turning)
 		- no further development of openGL Html Renderer
 			still using webview
-	
+		- "internal" routing
+	• Known errors
+		- Animated gif in description
+			are not shown	
 		...

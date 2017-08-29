@@ -18,7 +18,7 @@ import CB_UI_Base.GL_UI.Controls.ImageButton;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Spinner;
 import CB_UI_Base.GL_UI.Controls.SpinnerAdapter;
-import CB_UI_Base.GL_UI.Controls.chkBox;
+import CB_UI_Base.GL_UI.Controls.ChkBox;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
@@ -33,7 +33,7 @@ import CB_Utils.Util.MoveableList;
 
 public class SettingsItem_QuickButton extends CB_View_Base {
 
-	chkBox chkOnOff;
+	ChkBox chkOnOff;
 	Label lblChkOnOff;
 	Spinner invisibleSelectSpinner;
 	SpinnerAdapter selectAdapter;

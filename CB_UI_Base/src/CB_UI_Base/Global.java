@@ -19,7 +19,7 @@ public abstract class Global {
 	public static boolean forcePhone = false;
 	public static boolean useSmallSkin = false;
 	public static DisplayType displayType = DisplayType.Normal;
-	public static boolean posibleTabletLayout;
+	public static boolean possibleTabletLayout;
 	public static final String br = System.getProperty("line.separator");
 	public static final String fs = System.getProperty("file.separator");
 	public static double displayDensity = 1;

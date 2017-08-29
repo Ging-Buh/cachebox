@@ -178,7 +178,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 	public static CB_Action_Show_SelectDB_Dialog actionShowSelectDbDialog = new CB_Action_Show_SelectDB_Dialog();
 	public static CB_Action_ShowDescExt actionShowDescExt = new CB_Action_ShowDescExt();
 
-	public static CB_Action_GenerateRoute actionGenerateRoute = new CB_Action_GenerateRoute();
+	// public static CB_Action_GenerateRoute actionGenerateRoute = new CB_Action_GenerateRoute();
 	public static CB_Action_QuickFieldNote actionQuickFieldNote = new CB_Action_QuickFieldNote();
 	public static CB_Action_Show_Parking_Dialog actionParking = new CB_Action_Show_Parking_Dialog();
 	public static CB_Action_Show_Delete_Dialog actionDelCaches = new CB_Action_Show_Delete_Dialog();
@@ -515,7 +515,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 		mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionShowMap, true, GestureDirection.Up));
 		mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionShowCompassView, false, GestureDirection.Right));
 		mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionNavigateTo1, false, GestureDirection.Down));
-		mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionGenerateRoute, false, GestureDirection.Left));
+		// mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionGenerateRoute, false, GestureDirection.Left));
 		if (GlobalCore.isTestVersion())
 			mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionTestView, false));
 
@@ -604,7 +604,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 
 		mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionShowCompassView, true, GestureDirection.Right));
 		mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionNavigateTo1, false, GestureDirection.Down));
-		mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionGenerateRoute, false, GestureDirection.Left));
+		// mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionGenerateRoute, false, GestureDirection.Left));
 
 		mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionQuickFieldNote, false));
 		mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionShowFieldNotesView, Config.ShowFieldnotesAsDefaultView.getValue()));

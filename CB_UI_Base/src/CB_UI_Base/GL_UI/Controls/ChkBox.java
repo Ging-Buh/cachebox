@@ -8,18 +8,18 @@ import CB_UI_Base.Math.UI_Size_Base;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-public class chkBox extends Button {
+public class ChkBox extends Button {
 
 	protected Drawable drawableDisabledChk;
 	protected boolean isChk = false;
 	protected OnCheckChangedListener changeListener;
 
-	public chkBox(String name) {
+	public ChkBox(String name) {
 		super(new CB_RectF(UI_Size_Base.that.getChkBoxSize()), name);
 		this.setClickable(true);
 	}
 
-	public chkBox(CB_RectF rec, String name) {
+	public ChkBox(CB_RectF rec, String name) {
 		super(rec, name);
 		this.setClickable(true);
 	}
@@ -137,7 +137,7 @@ public class chkBox extends Button {
 		 * @param isChecked
 		 *            The new checked state of buttonView.
 		 */
-		void onCheckedChanged(chkBox view, boolean isChecked);
+		void onCheckedChanged(ChkBox view, boolean isChecked);
 	}
 
 	public void setOnCheckChangedListener(OnCheckChangedListener listener) {
