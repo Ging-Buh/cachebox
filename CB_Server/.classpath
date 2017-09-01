@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="assets"/>
+	<classpathentry kind="lib" path="lib/com.sun.el-1.0.0.v201105211818.jar"/>
+	<classpathentry kind="lib" path="lib/org.apache.jasper.glassfish-2.1.0.v201110031002.jar"/>
+	<classpathentry kind="lib" path="lib/org.apache.taglibs.standard.glassfish-1.2.0.v201112081803.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.jdt.core-3.7.1.jar"/>
+	<classpathentry kind="lib" path="lib/kxml2-2.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/postgresql-9.3-1101.jdbc4.jar"/>
+	<classpathentry kind="lib" path="lib/gdx-1.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/gdx-backend-lwjgl-1.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/gdx-freetype-1.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/gdx-freetype-platform-1.0.0-natives-desktop.jar"/>
+	<classpathentry kind="lib" path="lib/gdx-platform-1.0.0-natives-desktop.jar"/>
+	<classpathentry kind="lib" path="lib/sqlite-jdbc-3.7.15-SNAPSHOT-2.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.6.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_Core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_Locator_Base"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_Rpc"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_Utils"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_UI_Base"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_Locator_Desktop"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_mapsforge"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_Translation_Base"/>
+	<classpathentry kind="lib" path="lib/jts-1.13.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-dev-2.7.0.vaadin5.jar"/>
+	<classpathentry kind="lib" path="lib/v-leaflet-1.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/vaadin-server-7.7.10.jar"/>
+	<classpathentry kind="lib" path="lib/vaadin-shared-7.7.10.jar"/>
+	<classpathentry kind="lib" path="lib/messagebox-3.0.19.jar" sourcepath="lib/messagebox-3.0.19-sources.jar"/>
+	<classpathentry kind="lib" path="lib/qrcode-2.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/ContextMenu-4.5.0.jar"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>

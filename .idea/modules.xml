@@ -8,6 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/CB_Locator_Base/CB_Locator_Base.iml" filepath="$PROJECT_DIR$/CB_Locator_Base/CB_Locator_Base.iml" />
       <module fileurl="file://$PROJECT_DIR$/CB_Locator_Desktop/CB_Locator_Desktop.iml" filepath="$PROJECT_DIR$/CB_Locator_Desktop/CB_Locator_Desktop.iml" />
       <module fileurl="file://$PROJECT_DIR$/CB_Rpc/CB_Rpc.iml" filepath="$PROJECT_DIR$/CB_Rpc/CB_Rpc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CB_Server/CB_Server.iml" filepath="$PROJECT_DIR$/CB_Server/CB_Server.iml" />
       <module fileurl="file://$PROJECT_DIR$/CB_Translation_Base/CB_Translation_Base.iml" filepath="$PROJECT_DIR$/CB_Translation_Base/CB_Translation_Base.iml" />
       <module fileurl="file://$PROJECT_DIR$/CB_UI/CB_UI.iml" filepath="$PROJECT_DIR$/CB_UI/CB_UI.iml" />
       <module fileurl="file://$PROJECT_DIR$/CB_UI_Base/CB_UI_Base.iml" filepath="$PROJECT_DIR$/CB_UI_Base/CB_UI_Base.iml" />
