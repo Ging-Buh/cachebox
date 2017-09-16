@@ -8,13 +8,13 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_UI.SelectedCacheEvent;
 import CB_UI.SelectedCacheEventList;
+import CB_Utils.Log.Log;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -22,175 +22,93 @@ import de.droidcachebox.R;
 import de.droidcachebox.main;
 import de.droidcachebox.Custom_Controls.DescriptionViewControl;
 import de.droidcachebox.Events.ViewOptionsMenu;
+import org.slf4j.LoggerFactory;
 
-public class DescriptionView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent, CacheListChangedEventListener {
-	Context context;
-	public Cache aktCache;
+public class DescriptionView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent {
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(DescriptionView.class);
+    private long aktCacheID;
+    private static DescriptionViewControl mDescriptionViewControl;
+    private LinearLayout mLinearLayout;
 
-	Button TestButton;
+    public DescriptionView(Context context, LayoutInflater inflater) {
+        super(context);
+        SelectedCacheEventList.Add(this);
+        RelativeLayout descriptionLayout = (RelativeLayout) inflater.inflate(R.layout.description_view, null, false);
+        this.addView(descriptionLayout);
+        mLinearLayout = (LinearLayout) findViewById(R.id.WebViewLayout);
+        mDescriptionViewControl = (DescriptionViewControl) findViewById(R.id.DescriptionViewControl);
+        SelectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+    }
 
-	public static DescriptionViewControl WebControl;
-	public static LinearLayout webViewLayout;
+    @Override
+    public boolean ItemSelected(MenuItem item) {
+        return false;
+    }
 
-	private Point lastScrollPos = new Point(0, 0);
+    @Override
+    public void BeforeShowMenu(Menu menu) {
+    }
 
-	public DescriptionView(Context context, LayoutInflater inflater) {
-		super(context);
-		SelectedCacheEventList.Add(this);
-		RelativeLayout descriptionLayout = (RelativeLayout) inflater.inflate(R.layout.description_view, null, false);
-		this.addView(descriptionLayout);
-		webViewLayout = (LinearLayout) findViewById(R.id.WebViewLayout);
+    @Override
+    public void OnShow() {
+        this.forceLayout();
 
-		WebControl = (DescriptionViewControl) findViewById(R.id.DescriptionViewControl);
-		SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+        mDescriptionViewControl.OnShow();
 
-	}
+        mLinearLayout.setWillNotDraw(false);
+        mLinearLayout.invalidate();
 
-	// @Override
-	// protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-	// {
-	// // we overriding onMeasure because this is where the application gets
-	// // its right size.
-	// super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-	//
-	// cacheInfo.setHeight(UiSizes.that.getCacheInfoHeight());
-	//
-	// }
+        mDescriptionViewControl.setWillNotDraw(false);
+        mDescriptionViewControl.invalidate();
 
-	public void SetSelectedCache(Cache cache, Waypoint waypoint) {
-		if (cache == null || WebControl == null)
-			return;
-		if (aktCache != cache) {
-			aktCache = cache;
-		}
+        mDescriptionViewControl.getSettings().setBuiltInZoomControls(true);
+    }
 
-		WebControl.setCache(aktCache);
-	}
+    @Override
+    public void OnHide() {
+    }
 
-	@Override
-	public boolean ItemSelected(MenuItem item) {
-		return false;
-	}
+    @Override
+    public void OnFree() {
+        if (mDescriptionViewControl != null)
+            mDescriptionViewControl.OnFree();
+    }
 
-	@Override
-	public void BeforeShowMenu(Menu menu) {
-		// AllContextMenuCallHandler.showCacheDescViewContextMenu();
-	}
+    @Override
+    public int GetMenuId() {
+        return 0;
+    }
 
-	public void reloadCacheInfo() {
-		String html = "</br>"
+    @Override
+    public void ActivityResult(int requestCode, int resultCode, Intent data) {
+    }
 
-				+ "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" " + Translation.Get("GC_DownloadDescription") + " \"></form>";
+    @Override
+    public int GetContextMenuId() {
+        return 0;
+    }
 
-		WebControl.loadDataWithBaseURL("fake://fake.de/download", html, "text/html", "utf-8", null);
-	}
+    @Override
+    public void BeforeShowContextMenu(Menu menu) {
+    }
 
-	@Override
-	public void OnShow() {
-		this.forceLayout();
-		System.gc();
+    @Override
+    public boolean ContextMenuItemSelected(MenuItem item) {
+        return false;
+    }
 
-		// Del View from XML Layout
-		webViewLayout.removeAllViews();
-		if (WebControl != null) {
-			WebControl.destroy();
-			WebControl = null;
-		}
-
-		// Instanz new WebView
-		WebControl = new DescriptionViewControl(main.mainActivity);
-		WebControl.setScrollPos(lastScrollPos);
-		webViewLayout.addView(WebControl);
-
-		WebControl.OnShow();
-		webViewLayout.setWillNotDraw(false);
-		webViewLayout.invalidate();
-		WebControl.setWillNotDraw(false);
-		WebControl.invalidate();
-
-		SelectedCacheEventList.Add(this);
-
-		WebControl.getSettings().setBuiltInZoomControls(true);
-		CacheListChangedEventList.Add(this);
-	}
-
-	public int getHeightForWebViewSpacious() {
-		android.view.ViewGroup.LayoutParams paramsWebControl = WebControl.getLayoutParams();
-
-		if (!(paramsWebControl == null)) {
-			return this.getHeight();
-		}
-		return 0;
-	}
-
-	public int getWidthForWebViewSpacious() {
-		return this.getWidth();
-	}
-
-	@Override
-	public void OnHide() {
-		CacheListChangedEventList.Remove(this);
-
-		// save last ScrollPos
-
-		if (WebControl != null) {
-			Point scpo = WebControl.getScrollPos();
-
-			lastScrollPos.x = scpo.x;
-			lastScrollPos.y = scpo.y;
-		}
-
-		if (webViewLayout != null)
-			webViewLayout.removeAllViews();
-		if (WebControl != null) {
-			WebControl.destroy();
-			WebControl = null;
-		}
-
-	}
-
-	@Override
-	public void OnFree() {
-		if (WebControl != null)
-			WebControl.OnFree();
-	}
-
-	@Override
-	public int GetMenuId() {
-		return 0;
-	}
-
-	@Override
-	public void ActivityResult(int requestCode, int resultCode, Intent data) {
-	}
-
-	@Override
-	public int GetContextMenuId() {
-		return 0;
-	}
-
-	@Override
-	public void BeforeShowContextMenu(Menu menu) {
-	}
-
-	@Override
-	public boolean ContextMenuItemSelected(MenuItem item) {
-		return false;
-	}
-
-	@Override
-	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
-		// reset ScrollPos only if cache changed
-		if ((aktCache != null) && (aktCache.Id != cache.Id)) {
-			lastScrollPos = new Point(0, 0);
-		}
-
-		SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
-
-	}
-
-	@Override
-	public void CacheListChangedEvent() {
-		SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
-	}
+    /**
+     *
+     * @param selectedCache
+     * @param waypoint
+     */
+    @Override
+    public void SelectedCacheChanged(Cache selectedCache, Waypoint waypoint) {
+        if (selectedCache == null || mDescriptionViewControl == null)
+            return;
+        if (aktCacheID != selectedCache.Id) {
+            aktCacheID = selectedCache.Id;
+            mDescriptionViewControl.setCache(selectedCache);
+        }
+    }
 }

@@ -70,7 +70,7 @@ public final class invertViewControl extends View
 
 		canvas.drawColor(Global.getColor(R.attr.EmptyBackground));
 
-		WebViewLayout = DescriptionView.webViewLayout;
+		WebViewLayout = (LinearLayout) findViewById(R.id.WebViewLayout);
 		b = Bitmap.createBitmap(this.getWidth(), this.getHeight(), Bitmap.Config.ARGB_8888);
 
 		Canvas c = new Canvas(b);

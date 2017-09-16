@@ -72,5 +72,5 @@ public class SelectedCacheEventList {
 
 	}
 
-	static Thread selectChangeThread;
+	private static Thread selectChangeThread;
 }
