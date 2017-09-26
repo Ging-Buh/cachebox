@@ -2810,41 +2810,57 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         // ##########################################################
 
         // Use Imperial units?
-        CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
-        Config.ImperialUnits.addChangedEventListener(new IChanged() {
-            @Override
-            public void isChanged() {
-                CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
-            }
-        });
+        try {
+            Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
+            Config.ImperialUnits.addChangedEventListener(new IChanged() {
+                @Override
+                public void isChanged() {
+                    Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
+                }
+            });
+        } catch (Exception e) {
+            Log.err(log,"Error Initial Locator.UseImperialUnits");
+        }
 
         // GPS update time?
-        CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
-        Config.gpsUpdateTime.addChangedEventListener(new IChanged() {
+        try {
+            Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
+            Config.gpsUpdateTime.addChangedEventListener(new IChanged() {
 
-            @Override
-            public void isChanged() {
-                CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
-            }
-        });
+                @Override
+                public void isChanged() {
+                    Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
+                }
+            });
+        } catch (Exception e) {
+            Log.err(log,"Error Initial Locator.MinUpdateTime");
+        }
 
         // Use magnetic Compass?
-        CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
-        Config.HardwareCompass.addChangedEventListener(new IChanged() {
-            @Override
-            public void isChanged() {
-                CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
-            }
-        });
+        try {
+            Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
+            Config.HardwareCompass.addChangedEventListener(new IChanged() {
+                @Override
+                public void isChanged() {
+                    Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
+                }
+            });
+        } catch (Exception e) {
+            Log.err(log,"Error Initial Locator.UseHardwareCompass");
+        }
 
         // Magnetic compass level
-        CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
-        Config.HardwareCompassLevel.addChangedEventListener(new IChanged() {
-            @Override
-            public void isChanged() {
-                CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
-            }
-        });
+        try {
+            Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
+            Config.HardwareCompassLevel.addChangedEventListener(new IChanged() {
+                @Override
+                public void isChanged() {
+                    Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
+                }
+            });
+        } catch (Exception e) {
+            Log.err(log,"Error Initial Locator.HardwareCompassLevel");
+        }
     }
 
     private final CB_List<CB_Locator.GpsStrength> coreSatList = new CB_List<CB_Locator.GpsStrength>(14);
