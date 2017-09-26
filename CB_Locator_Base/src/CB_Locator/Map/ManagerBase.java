@@ -108,7 +108,7 @@ public abstract class ManagerBase {
 		PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
 		DISPLAY_MODEL = displaymodel;
 
-		LocatorSettings.CurrentMapLayer.addChangedEventListener(new IChanged() {
+		if(LocatorSettings.CurrentMapLayer!=null)LocatorSettings.CurrentMapLayer.addChangedEventListener(new IChanged() {
 			@Override
 			public void isChanged() {
 				Layer layer = getOrAddLayer(LocatorSettings.CurrentMapLayer.getValue(), "", "");

@@ -105,6 +105,7 @@ public class DescriptionView extends CB_View_Base {
 	}
 
 	private void getNewCacheInfo() {
+		if(sel==null) return;
 		cacheInfo = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), 0, sel);
 		cacheInfo.setY(this.getHeight() - cacheInfo.getHeight());
 

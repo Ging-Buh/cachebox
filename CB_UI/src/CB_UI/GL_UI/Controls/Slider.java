@@ -1,6 +1,7 @@
 package CB_UI.GL_UI.Controls;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.LoggerFactory;
 
@@ -281,11 +282,15 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 		}
 	}
 
+
+	private AtomicInteger animationCounter=new AtomicInteger(0);
+	private static final int MAX_ANIMATION_COUNT=1000;
 	private void startAnimationTo(int newYPos) {
 		if (yPos == newYPos)
 			return; // wir brauchen nichts Animieren
 
 		AnimationIsRunning = true;
+		animationCounter.set(0);
 		AnimationTarget = newYPos;
 		if (yPos > newYPos)
 			AnimationDirection = -1;
@@ -303,7 +308,15 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 
 			if (!AnimationIsRunning)
 				return; // Animation wurde abgebrochen
-			// TODO set DEBUG for dauer schleife
+
+			if(animationCounter.incrementAndGet()>MAX_ANIMATION_COUNT){
+				//break a never ending animation
+				setPos_onUI(AnimationTarget);
+				AnimationIsRunning = false;
+				return;
+			}
+
+
 			int newValue = 0;
 			if (AnimationDirection == -1) {
 				float tmp = yPos - AnimationTarget;
