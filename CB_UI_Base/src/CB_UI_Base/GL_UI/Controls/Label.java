@@ -16,6 +16,8 @@
 
 package CB_UI_Base.GL_UI.Controls;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.LoggerFactory;
@@ -331,6 +333,8 @@ public class Label extends CB_View_Base {
 
 	private void setText() {
 
+		if(mText==null)return;
+
 	final int n = mText.length();
 
 	for (int start = 0; start < n; start++) {
@@ -377,7 +381,20 @@ public class Label extends CB_View_Base {
 
 	if (bounds == null) {
 		//try to reset text
-		Log.debug(log, "bounds are NULL on setTextPosition");
+		TimerTask later=new TimerTask() {
+			@Override
+			public void run() {
+				GL.that.RunOnGL(new IRunOnGL() {
+					@Override
+					public void run() {
+						setText();
+					}
+				});
+			}
+		};
+		new Timer().schedule(later,100);
+		Log.debug(log, "bounds are NULL on setTextPosition! Try setText()");
+		return;
 	}
 
 	// left : text starts at xPosition
