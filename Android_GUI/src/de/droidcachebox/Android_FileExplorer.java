@@ -35,7 +35,7 @@ public class Android_FileExplorer {
 	private final String TitleText;
 	private final String ButtonText;
 	private final String firstSDCard;
-	private final String secondSDCard;
+	private String secondSDCard;
 
 	/**
 	 * @param activity 
@@ -65,12 +65,18 @@ public class Android_FileExplorer {
 			}
 
 			if (dirs.length > 1) {
-				String tmp = dirs[1].getAbsolutePath();
-				int pos = tmp.indexOf("Android") - 1;
-				if (pos > 0)
-					secondSDCard = tmp.substring(0, pos);
-				else
+				String tmp = null;
+				try {
+					tmp = dirs[1].getAbsolutePath();
+					int pos = tmp.indexOf("Android") - 1;
+					if (pos > 0)
+						secondSDCard = tmp.substring(0, pos);
+					else
+						secondSDCard = "";
+				} catch (Exception e) {
 					secondSDCard = "";
+				}
+
 			} else {
 				secondSDCard = "";
 			}
