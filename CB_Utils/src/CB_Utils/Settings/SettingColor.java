@@ -60,7 +60,11 @@ public class SettingColor extends SettingBase<Color> {
 		if (!(obj instanceof SettingColor))
 			return false;
 		SettingColor inst = (SettingColor) obj;
+		if(inst.name==null||this.name==null)
+			return false;
 		if (!(inst.name.equals(this.name)))
+			return false;
+		if(inst.value==null||this.value==null)
 			return false;
 		if (!inst.value.equals(this.value))
 			return false;
