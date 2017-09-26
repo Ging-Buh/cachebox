@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.LoggerFactory;
 
@@ -147,72 +149,85 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
 			// gibt beim splash - Start: NPE in Translation.readMissingStringsFile
 			// Nachfolgende Starts sollten aber protokolliert werden
 		}
-		SettingsDAO dao = new SettingsDAO();
-		for (Iterator<SettingBase<?>> it = this.iterator(); it.hasNext();) {
-			SettingBase<?> setting = it.next();
-			String debugString;
 
-			boolean isPlatform = false;
-			boolean isPlattformoverride = false;
+		AtomicInteger tryCount=new AtomicInteger(0);
 
-			if (SettingStoreType.Local == setting.getStoreType()) {
-				if (getDataDB() == null || getDataDB().getDatabasePath() == null)
-					setting.loadDefault();
-				else
-					setting = dao.ReadFromDatabase(getDataDB(), setting);
-			} else if (SettingStoreType.Global == setting.getStoreType() || (!PlatformSettings.canUsePlatformSettings() && SettingStoreType.Platform == setting.getStoreType())) {
-				setting = dao.ReadFromDatabase(getSettingsDB(), setting);
-			} else if (SettingStoreType.Platform == setting.getStoreType()) {
-				isPlatform = true;
-				SettingBase<?> cpy = setting.copy();
-				cpy = dao.ReadFromDatabase(getSettingsDB(), cpy);
-				setting = dao.ReadFromPlatformSetting(setting);
+		while (tryCount.incrementAndGet() < 10) {
 
-				// chk for Value on User.db3 and cleared Platform Value
 
-				if (setting instanceof SettingString) {
-					SettingString st = (SettingString) setting;
+			SettingsDAO dao = new SettingsDAO();
+			try {
+				for (Iterator<SettingBase<?>> it = this.iterator(); it.hasNext(); ) {
+					SettingBase<?> setting = it.next();
+					String debugString;
 
-					if (st.value.length() == 0) {
-						// Platform Settings are empty use db3 value or default
+					boolean isPlatform = false;
+					boolean isPlattformoverride = false;
+
+					if (SettingStoreType.Local == setting.getStoreType()) {
+						if (getDataDB() == null || getDataDB().getDatabasePath() == null)
+							setting.loadDefault();
+						else
+							setting = dao.ReadFromDatabase(getDataDB(), setting);
+					} else if (SettingStoreType.Global == setting.getStoreType() || (!PlatformSettings.canUsePlatformSettings() && SettingStoreType.Platform == setting.getStoreType())) {
 						setting = dao.ReadFromDatabase(getSettingsDB(), setting);
-						dao.WriteToPlatformSettings(setting);
+					} else if (SettingStoreType.Platform == setting.getStoreType()) {
+						isPlatform = true;
+						SettingBase<?> cpy = setting.copy();
+						cpy = dao.ReadFromDatabase(getSettingsDB(), cpy);
+						setting = dao.ReadFromPlatformSetting(setting);
+
+						// chk for Value on User.db3 and cleared Platform Value
+
+						if (setting instanceof SettingString) {
+							SettingString st = (SettingString) setting;
+
+							if (st.value.length() == 0) {
+								// Platform Settings are empty use db3 value or default
+								setting = dao.ReadFromDatabase(getSettingsDB(), setting);
+								dao.WriteToPlatformSettings(setting);
+							}
+						} else if (!cpy.value.equals(setting.value)) {
+							if (setting.value.equals(setting.defaultValue)) {
+								// override Platformsettings with UserDBSettings
+								setting.setValueFrom(cpy);
+								dao.WriteToPlatformSettings(setting);
+								setting.clearDirty();
+								isPlattformoverride = true;
+							} else {
+								// override UserDBSettings with Platformsettings
+								cpy.setValueFrom(setting);
+								dao.WriteToDatabase(getSettingsDB(), cpy);
+								cpy.clearDirty();
+							}
+						}
 					}
-				} else if (!cpy.value.equals(setting.value)) {
-					if (setting.value.equals(setting.defaultValue)) {
-						// override Platformsettings with UserDBSettings
-						setting.setValueFrom(cpy);
-						dao.WriteToPlatformSettings(setting);
-						setting.clearDirty();
-						isPlattformoverride = true;
+
+					if (setting instanceof SettingEncryptedString) {// Don't write encrypted settings in to a log file
+						debugString = "*******";
 					} else {
-						// override UserDBSettings with Platformsettings
-						cpy.setValueFrom(setting);
-						dao.WriteToDatabase(getSettingsDB(), cpy);
-						cpy.clearDirty();
+						debugString = setting.value.toString();
+					}
+
+					if (isPlatform) {
+						if (isPlattformoverride) {
+							Log.debug(log, "Override Platform setting [" + setting.name + "] from DB to: " + debugString);
+						} else {
+							Log.debug(log, "Override PlatformDB setting [" + setting.name + "] from Platform to: " + debugString);
+						}
+					} else {
+						if (!setting.value.equals(setting.defaultValue)) {
+							Log.debug(log, "Change " + setting.getStoreType() + " setting [" + setting.name + "] to: " + debugString);
+						} else {
+							Log.debug(log, "Default " + setting.getStoreType() + " setting [" + setting.name + "] to: " + debugString);
+						}
 					}
 				}
+				tryCount.set(100);
+			} catch (Exception e) {
+				Log.err(log, "Error read settings, try again");
 			}
 
-			if (setting instanceof SettingEncryptedString) {// Don't write encrypted settings in to a log file
-				debugString = "*******";
-			} else {
-				debugString = setting.value.toString();
-			}
-
-			if (isPlatform) {
-				if (isPlattformoverride) {
-					Log.debug(log, "Override Platform setting [" + setting.name + "] from DB to: " + debugString);
-				} else {
-					Log.debug(log, "Override PlatformDB setting [" + setting.name + "] from Platform to: " + debugString);
-				}
-			} else {
-				if (!setting.value.equals(setting.defaultValue)) {
-					Log.debug(log, "Change " + setting.getStoreType() + " setting [" + setting.name + "] to: " + debugString);
-				} else {
-					Log.debug(log, "Default " + setting.getStoreType() + " setting [" + setting.name + "] to: " + debugString);
-				}
-			}
 		}
 		Log.debug(log, "Settings are loaded");
 		isLoaded = true;
