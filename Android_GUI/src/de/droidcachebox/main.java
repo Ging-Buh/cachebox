@@ -721,7 +721,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
         float distance = cache.Distance(CalculationType.FAST, false);
         if (waypoint != null) {
-            distance = GlobalCore.getSelectedWaypoint().Distance();
+            distance = waypoint.Distance();
         }
         if (distance > Config.SoundApproachDistance.getValue()) {
             ((main) main.mainActivity).runOnUiThread(new Runnable() {
