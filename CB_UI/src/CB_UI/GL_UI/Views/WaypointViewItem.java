@@ -1,5 +1,9 @@
 package CB_UI.GL_UI.Views;
 
+import CB_UI.GlobalCore;
+import CB_UI_Base.GL_UI.*;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_Utils.Log.Log;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -19,17 +23,19 @@ import CB_Locator.Locator;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_UI.GL_UI.Controls.CacheInfo;
-import CB_UI_Base.GL_UI.COLOR;
-import CB_UI_Base.GL_UI.Fonts;
-import CB_UI_Base.GL_UI.ParentInfo;
-import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.UnitFormatter;
+import org.slf4j.LoggerFactory;
+
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class WaypointViewItem extends ListViewItemBackground implements PositionChangedEvent {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(WaypointViewItem.class);
 	private Cache mCache;
 	private Waypoint mWaypoint;
 
@@ -123,10 +129,33 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 		return mWaypoint;
 	}
 
+	private AtomicBoolean textWillSet=new AtomicBoolean(false);
 	private void setDistanceString(String txt) {
-		GlyphLayout bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
-		float x = ArrowRec.getHalfWidth() - (bounds.width / 2f);
-		distance.setPosition(x, 0);
+
+		if(textWillSet.get()){
+			//try later
+			TimerTask later = new TimerTask() {
+				@Override
+				public void run() {
+					setDistanceString(txt);
+				}
+			};
+			new Timer().schedule(later,100);
+			Log.debug(log,"SetDistanceString later");
+			return;
+		}
+
+		textWillSet.set(true);
+		GL.that.RunOnGL(new IRunOnGL() {
+			@Override
+			public void run() {
+				GlyphLayout bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
+				float x = ArrowRec.getHalfWidth() - (bounds.width / 2f);
+				distance.setPosition(x, 0);
+				textWillSet.set(false);
+			}
+		});
+
 
 	}
 
