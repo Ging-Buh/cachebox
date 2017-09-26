@@ -192,6 +192,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             TimerTask task = new TimerTask() {
                 @Override
                 public void run() {
+                    if(main.mainActivity==null)return;
                     main.mainActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -335,10 +336,12 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                     boolean anyImagesLoaded = false;
                     while (NonLocalImagesUrl != null && NonLocalImagesUrl.size() > 0) {
                         String local, url;
+
+                        try {
                         local = NonLocalImages.poll();
                         url = NonLocalImagesUrl.poll();
 
-                        try {
+
                             if (DescriptionImageGrabber.Download(url, local)) {
                                 anyImagesLoaded = true;
                             }
@@ -346,7 +349,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                             log.error("DescriptionViewControl.setCache()", "downloadThread run()", e);
                         }
                     }
-                    if (anyImagesLoaded)
+                    if (anyImagesLoaded&&downloadReadyHandler!=null)
                         downloadReadyHandler.post(downloadComplete);
                 }
             };
