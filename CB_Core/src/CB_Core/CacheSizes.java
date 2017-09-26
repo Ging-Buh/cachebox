@@ -82,6 +82,8 @@ public enum CacheSizes {
 	}
 
 	public static String toShortString(Cache cache) {
+		if(cache.Size==null)return "?";
+
 		switch (cache.Size) {
 		case large:
 			return "L";

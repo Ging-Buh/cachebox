@@ -186,6 +186,8 @@ public enum CacheTypes {
 	}
 
 	public static String toShortString(CB_Core.Types.Cache cache) {
+		if(cache.Type==null) return " ";
+
 		switch (cache.Type) {
 		case CITO:
 			return "X";
