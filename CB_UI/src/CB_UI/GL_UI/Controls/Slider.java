@@ -150,13 +150,17 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 		actCache = cache;
 		actWaypoint = waypoint;
 
-		if (cache != null) {
-			if (mLblCacheName != null) {
-				mLblCacheName.setText(CacheTypes.toShortString(cache) + terrDiffToShortString(cache.getDifficulty()) + "/" + terrDiffToShortString(cache.getTerrain()) + CacheSizes.toShortString(cache) + " " + cache.getName());
+		GL.that.RunOnGL(new IRunOnGL() {
+			@Override
+			public void run() {
+				if (cache != null) {
+					if (mLblCacheName != null) {
+						mLblCacheName.setText(CacheTypes.toShortString(cache) + terrDiffToShortString(cache.getDifficulty()) + "/" + terrDiffToShortString(cache.getTerrain()) + CacheSizes.toShortString(cache) + " " + cache.getName());
+					}
+					fillCacheWpInfo();
+				}
 			}
-			fillCacheWpInfo();
-		}
-
+		});
 	}
 
 	private String terrDiffToShortString(float value) {
@@ -411,8 +415,9 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
 		}
 
 		if (actWaypoint != null) {
-			waypointDesc = new WaypointViewItem(rec, 0, actCache, actWaypoint);
+			waypointDesc = new WaypointViewItem(rec, 1, actCache, actWaypoint);
 			waypointDesc.isSelected = true;
+			cacheDesc.isSelected = false;
 			waypointDesc.Add(onItemSizeChanged);
 			mSlideBoxContent.addChild(waypointDesc);
 		} else {
