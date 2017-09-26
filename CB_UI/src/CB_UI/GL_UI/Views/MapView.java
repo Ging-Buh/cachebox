@@ -22,6 +22,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
 
+import CB_Utils.Log.Log;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.Color;
@@ -385,11 +386,17 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 							try {
 								CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, infoBubble.getCache().getGPXFilename_ID(), this);
-								Cache c = apiCaches.get(0);
-								if (c.getGcCode() == GcCode) {
-									c.setApiStatus(Cache.NOTLITE);
+								if(apiCaches.size()>0){
+									Cache c = apiCaches.get(0);
+									if (c.getGcCode() == GcCode) {
+										c.setApiStatus(Cache.NOTLITE);
+									}
+									GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
+								}else{
+									//TODO maybe basic Member Limit
+									Log.debug(log,"No Caches loaded, maybe Limit reached");
+									GL.that.Toast("No Caches loaded, maybe Limit reached");
 								}
-								GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
