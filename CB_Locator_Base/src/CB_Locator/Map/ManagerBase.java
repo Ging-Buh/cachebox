@@ -602,34 +602,38 @@ public abstract class ManagerBase {
 
 	private void initMapDatabase(Layer layer) {
 
-		MapFile mapforgeMapFile = getMapFile(layer);
-		ArrayList<MapFile> additionalMapFiles = null;
-		if (layer.hasAdditionalMaps()) {
-			additionalMapFiles = new ArrayList<MapFile>();
-			for (Layer addLayer : layer.getAdditionalMaps()) {
-				additionalMapFiles.add(getMapFile(addLayer));
-			}
-		}
-
-		if (mapDatabase == null)
-			mapDatabase = new MultiMapDataStore[PROCESSOR_COUNT];
-
-		for (int i = 0; i < PROCESSOR_COUNT; i++) {
-			if (mapDatabase[i] == null) {
-				mapDatabase[i] = new MultiMapDataStore(DataPolicy.DEDUPLICATE); // or DataPolicy.RETURN_FIRST
-			} else {
-				mapDatabase[i].clearMapDataStore();
-			}
-
-			mapDatabase[i].addMapDataStore(mapforgeMapFile, false, false);
+		try {
+			MapFile mapforgeMapFile = getMapFile(layer);
+			ArrayList<MapFile> additionalMapFiles = null;
 			if (layer.hasAdditionalMaps()) {
-				for (MapFile mf : additionalMapFiles) {
-					mapDatabase[i].addMapDataStore(mf, false, false);
-				}
-			}
-		}
+                additionalMapFiles = new ArrayList<MapFile>();
+                for (Layer addLayer : layer.getAdditionalMaps()) {
+                    additionalMapFiles.add(getMapFile(addLayer));
+                }
+            }
 
-		Log.debug(log, "Open MapsForge Map: " + layer.Name);
+			if (mapDatabase == null)
+                mapDatabase = new MultiMapDataStore[PROCESSOR_COUNT];
+
+			for (int i = 0; i < PROCESSOR_COUNT; i++) {
+                if (mapDatabase[i] == null) {
+                    mapDatabase[i] = new MultiMapDataStore(DataPolicy.DEDUPLICATE); // or DataPolicy.RETURN_FIRST
+                } else {
+                    mapDatabase[i].clearMapDataStore();
+                }
+
+                mapDatabase[i].addMapDataStore(mapforgeMapFile, false, false);
+                if (layer.hasAdditionalMaps()) {
+                    for (MapFile mf : additionalMapFiles) {
+                        mapDatabase[i].addMapDataStore(mf, false, false);
+                    }
+                }
+            }
+
+			Log.debug(log, "Open MapsForge Map: " + layer.Name);
+		} catch (Exception e) {
+			Log.err(log, "ERROR with Open MapsForge Map: " + layer.Name,e);
+		}
 	}
 
 	private MapFile getMapFile(Layer layer) {
