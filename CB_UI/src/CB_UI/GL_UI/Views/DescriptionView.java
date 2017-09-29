@@ -77,6 +77,8 @@ public class DescriptionView extends CB_View_Base {
 		margin = GL_UISizes.margin;
 		sel = GlobalCore.getSelectedCache();
 
+		if(sel==null) return; // nothing to show
+
 		if (cacheInfo != null) {
 			if (!cacheInfo.getCache().equals(sel)) {
 				this.removeChild(cacheInfo);
