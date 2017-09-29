@@ -71,13 +71,13 @@ public final class invertViewControl extends View
 		canvas.drawColor(Global.getColor(R.attr.EmptyBackground));
 
 		WebViewLayout = (LinearLayout) findViewById(R.id.WebViewLayout);
-		b = Bitmap.createBitmap(this.getWidth(), this.getHeight(), Bitmap.Config.ARGB_8888);
+		if(WebViewLayout!=null){
+			b = Bitmap.createBitmap(this.getWidth(), this.getHeight(), Bitmap.Config.ARGB_8888);
+			Canvas c = new Canvas(b);
+			WebViewLayout.draw(c);
+			canvas.drawBitmap(b, 0, 0, Config.nightMode.getValue() ? Global.invertPaint : new Paint());
+		}
 
-		Canvas c = new Canvas(b);
-
-		WebViewLayout.draw(c);
-
-		canvas.drawBitmap(b, 0, 0, Config.nightMode.getValue() ? Global.invertPaint : new Paint());
 
 		super.onDraw(canvas);
 
@@ -121,7 +121,7 @@ public final class invertViewControl extends View
 
 		}
 
-		b.recycle();
+		if(b!=null)b.recycle();
 		b = null;
 
 	}
