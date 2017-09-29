@@ -28,6 +28,7 @@ import java.util.LinkedList;
 import java.util.Locale;
 import java.util.zip.ZipException;
 
+import CB_Utils.Log.Log;
 import org.slf4j.LoggerFactory;
 
 import CB_Core.CB_Core_Settings;
@@ -467,36 +468,40 @@ public class Importer {
 					return 0;
 
 				cnt++;
-				long id = reader.getLong(0);
-				String name = reader.getString(2);
-				String gcCode = reader.getString(3);
+				try {
+					long id = reader.getLong(0);
+					String name = reader.getString(2);
+					String gcCode = reader.getString(3);
 
-				if (gcCode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
-				{
-					ip.ProgressInkrement("importImages", "Importing Images for " + gcCode + " (" + String.valueOf(cnt) + " / " + String.valueOf(numCaches) + ")", false);
+					if (gcCode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
+                    {
+                        ip.ProgressInkrement("importImages", "Importing Images for " + gcCode + " (" + String.valueOf(cnt) + " / " + String.valueOf(numCaches) + ")", false);
 
-					boolean additionalImagesUpdated = false;
-					boolean descriptionImagesUpdated = false;
+                        boolean additionalImagesUpdated = false;
+                        boolean descriptionImagesUpdated = false;
 
-					if (!reader.isNull(5)) {
-						additionalImagesUpdated = reader.getInt(5) != 0;
-					}
-					if (!reader.isNull(6)) {
-						descriptionImagesUpdated = reader.getInt(6) != 0;
-					}
+                        if (!reader.isNull(5)) {
+                            additionalImagesUpdated = reader.getInt(5) != 0;
+                        }
+                        if (!reader.isNull(6)) {
+                            descriptionImagesUpdated = reader.getInt(6) != 0;
+                        }
 
-					String description = reader.getString(1);
-					String uri = reader.getString(4);
+                        String description = reader.getString(1);
+                        String uri = reader.getString(4);
 
-					if (!importImages) {
-						// do not import Description Images
-						descriptionImagesUpdated = true;
-					}
-					if (!importSpoiler) {
-						// do not import Spoiler Images
-						additionalImagesUpdated = true;
-					}
-					ret = importImagesForCacheNew(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, name, description, uri, false);
+                        if (!importImages) {
+                            // do not import Description Images
+                            descriptionImagesUpdated = true;
+                        }
+                        if (!importSpoiler) {
+                            // do not import Spoiler Images
+                            additionalImagesUpdated = true;
+                        }
+                        ret = importImagesForCacheNew(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, name, description, uri, false);
+                    }
+				} catch (Exception e) {
+					Log.err(logger,"importImagesNew",e);
 				}
 				reader.moveToNext();
 			}
