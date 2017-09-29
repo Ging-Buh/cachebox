@@ -149,9 +149,13 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 		GL.that.RunOnGL(new IRunOnGL() {
 			@Override
 			public void run() {
-				GlyphLayout bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
-				float x = ArrowRec.getHalfWidth() - (bounds.width / 2f);
-				distance.setPosition(x, 0);
+				try {
+					GlyphLayout bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
+					float x = ArrowRec.getHalfWidth() - (bounds.width / 2f);
+					distance.setPosition(x, 0);
+				} catch (Exception e) {
+					// sometimes with disposed item
+				}
 				textWillSet.set(false);
 			}
 		});
