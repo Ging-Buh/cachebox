@@ -18,6 +18,7 @@ package CB_UI.GL_UI.Views;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_Utils.Log.Log;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.Color;
@@ -53,288 +54,289 @@ import CB_UI_Base.graphics.Geometry.Line;
 import CB_UI_Base.graphics.Geometry.Quadrangle;
 
 public class DescriptionView extends CB_View_Base {
-	final static org.slf4j.Logger log = LoggerFactory.getLogger(DescriptionView.class);
-	final static String STRING_POWERD_BY = "Powerd by Geocaching Live";
-	final static String BASIC = "Basic";
-	final static String PREMIUM = "Premium";
-	final static String BASIC_LIMIT = "3";
-	final static String PREMIUM_LIMIT = "6000";
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(DescriptionView.class);
+    final static String STRING_POWERD_BY = "Powerd by Geocaching Live";
+    final static String BASIC = "Basic";
+    final static String PREMIUM = "Premium";
+    final static String BASIC_LIMIT = "3";
+    final static String PREMIUM_LIMIT = "6000";
 
-	private CacheListViewItem cacheInfo;
-	private Button downloadButton;
-	private Label MessageLabel, PowerdBy;
-	private Image LiveIcon;
-	private PolygonDrawable Line;
-	private float margin;
-	private Cache sel;
+    private CacheListViewItem cacheInfo;
+    private Button downloadButton;
+    private Label MessageLabel, PowerdBy;
+    private Image LiveIcon;
+    private PolygonDrawable Line;
+    private float margin;
+    private Cache sel;
 
-	public DescriptionView(CB_RectF rec, String Name) {
-		super(rec, Name);
-	}
+    public DescriptionView(CB_RectF rec, String Name) {
+        super(rec, Name);
+    }
 
-	@Override
-	public void onShow() {
-		margin = GL_UISizes.margin;
-		sel = GlobalCore.getSelectedCache();
+    @Override
+    public void onShow() {
+        margin = GL_UISizes.margin;
+        sel = GlobalCore.getSelectedCache();
 
-		if(sel==null) return; // nothing to show
+        if (sel == null) return; // nothing to show
 
-		if (cacheInfo != null) {
-			if (!cacheInfo.getCache().equals(sel)) {
-				this.removeChild(cacheInfo);
-				getNewCacheInfo();
-			}
-		} else {
-			getNewCacheInfo();
-		}
+        if (cacheInfo != null) {
+            if (!cacheInfo.getCache().equals(sel)) {
+                this.removeChild(cacheInfo);
+                getNewCacheInfo();
+            }
+        } else {
+            getNewCacheInfo();
+        }
 
-		resetUi();
-		if (sel.isLive() || sel.getApiStatus() == 1) {
-			showDownloadButton();
-		} else {
-			//			showDownloadButton();
-			showWebView();
-		}
+        resetUi();
 
-		Timer t = new Timer();
-		TimerTask tt = new TimerTask() {
-			@Override
-			public void run() {
-				DescriptionView.this.onResized(DescriptionView.this);
-			}
-		};
-		t.schedule(tt, 70);
-	}
+        if (sel.isLive() || sel.getApiStatus() == Cache.ISLITE) {
+            showDownloadButton();
+        } else {
+            showWebView();
+        }
 
-	private void getNewCacheInfo() {
-		if(sel==null) return;
-		cacheInfo = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), 0, sel);
-		cacheInfo.setY(this.getHeight() - cacheInfo.getHeight());
+        Timer t = new Timer();
+        TimerTask tt = new TimerTask() {
+            @Override
+            public void run() {
+                DescriptionView.this.onResized(DescriptionView.this);
+            }
+        };
+        t.schedule(tt, 70);
+    }
 
-		if (!Global.isTab)
-			this.addChild(cacheInfo);
-		log.info("getNewCacheInfo");
-	}
+    private void getNewCacheInfo() {
+        if (sel == null) return;
+        cacheInfo = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), 0, sel);
+        cacheInfo.setY(this.getHeight() - cacheInfo.getHeight());
 
-	@Override
-	public void onResized(CB_RectF rec) {
-		super.onResized(rec);
-		// onShow();
-		if (cacheInfo != null)
-			cacheInfo.setY(this.getHeight() - cacheInfo.getHeight());
-		layout();
+        if (!Global.isTab)
+            this.addChild(cacheInfo);
+    }
 
-		float infoHeight = -(UiSizes.that.getInfoSliderHeight());
-		if (cacheInfo != null && !Global.isTab)
-			infoHeight += cacheInfo.getHeight();
-		infoHeight += margin * 2;
-		CB_RectF world = this.getWorldRec();
+    @Override
+    public void onResized(CB_RectF rec) {
+        super.onResized(rec);
+        // onShow();
+        if (cacheInfo != null)
+            cacheInfo.setY(this.getHeight() - cacheInfo.getHeight());
+        layout();
 
-		PlatformConnector.setContentSize((int) world.getX(), (int) ((GL_UISizes.SurfaceSize.getHeight() - (world.getMaxY() - infoHeight))), (int) (GL_UISizes.SurfaceSize.getWidth() - world.getMaxX()), (int) world.getY());
+        float infoHeight = -(UiSizes.that.getInfoSliderHeight());
+        if (cacheInfo != null && !Global.isTab)
+            infoHeight += cacheInfo.getHeight();
+        infoHeight += margin * 2;
+        CB_RectF world = this.getWorldRec();
 
-	}
+        PlatformConnector.setContentSize((int) world.getX(), (int) ((GL_UISizes.SurfaceSize.getHeight() - (world.getMaxY() - infoHeight))), (int) (GL_UISizes.SurfaceSize.getWidth() - world.getMaxX()), (int) world.getY());
 
-	@Override
-	public void onHide() {
-		PlatformConnector.hideView(ViewConst.DESCRIPTION_VIEW);
-	}
+    }
 
-	@Override
-	protected void Initial() {
+    @Override
+    public void onHide() {
+        PlatformConnector.hideView(ViewConst.DESCRIPTION_VIEW);
+    }
 
-	}
+    @Override
+    protected void Initial() {
 
-	@Override
-	protected void SkinIsChanged() {
+    }
 
-	}
+    @Override
+    protected void SkinIsChanged() {
 
-	private void showWebView() {
-		// Rufe ANDROID VIEW auf
-		Timer timer = new Timer();
-		TimerTask task = new TimerTask() {
-			@Override
-			public void run() {
-				float infoHeight = 0;
-				if (cacheInfo != null)
-					infoHeight = cacheInfo.getHeight();
-				PlatformConnector.showView(ViewConst.DESCRIPTION_VIEW, DescriptionView.this.getX(), DescriptionView.this.getY(), DescriptionView.this.getWidth(), DescriptionView.this.getHeight(), 0, (infoHeight + GL_UISizes.margin), 0, 0);
-			}
-		};
-		timer.schedule(task, 50);
-	}
+    }
 
-	private void resetUi() {
-		if (MessageLabel != null) {
-			this.removeChildsDirekt(MessageLabel);
-			MessageLabel.dispose();
-			MessageLabel = null;
-		}
-		if (downloadButton != null) {
-			this.removeChildsDirekt(downloadButton);
-			downloadButton.dispose();
-			downloadButton = null;
-		}
-		if (LiveIcon != null) {
-			this.removeChildsDirekt(LiveIcon);
-			LiveIcon.dispose();
-			LiveIcon = null;
-		}
-		if (PowerdBy != null) {
-			this.removeChildsDirekt(PowerdBy);
-			PowerdBy.dispose();
-			PowerdBy = null;
-		}
-	}
+    private void showWebView() {
+        // Rufe ANDROID VIEW auf
+        Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                float infoHeight = 0;
+                if (cacheInfo != null)
+                    infoHeight = cacheInfo.getHeight();
+                PlatformConnector.showView(ViewConst.DESCRIPTION_VIEW, DescriptionView.this.getX(), DescriptionView.this.getY(), DescriptionView.this.getWidth(), DescriptionView.this.getHeight(), 0, (infoHeight + GL_UISizes.margin), 0, 0);
+            }
+        };
+        timer.schedule(task, 50);
+    }
 
-	private void layout() {
-		if (LiveIcon != null) {
-			float IconX = this.getHalfWidth() - LiveIcon.getHalfWidth();
-			float IconY = this.cacheInfo.getY() - (LiveIcon.getHeight() + margin);
-			LiveIcon.setPos(IconX, IconY);
+    private void resetUi() {
+        if (MessageLabel != null) {
+            this.removeChildsDirekt(MessageLabel);
+            MessageLabel.dispose();
+            MessageLabel = null;
+        }
+        if (downloadButton != null) {
+            this.removeChildsDirekt(downloadButton);
+            downloadButton.dispose();
+            downloadButton = null;
+        }
+        if (LiveIcon != null) {
+            this.removeChildsDirekt(LiveIcon);
+            LiveIcon.dispose();
+            LiveIcon = null;
+        }
+        if (PowerdBy != null) {
+            this.removeChildsDirekt(PowerdBy);
+            PowerdBy.dispose();
+            PowerdBy = null;
+        }
+    }
 
-			if (PowerdBy != null) {
-				PowerdBy.setY(LiveIcon.getY() - (PowerdBy.getHeight() + margin));
+    private void layout() {
+        if (LiveIcon != null) {
+            float IconX = this.getHalfWidth() - LiveIcon.getHalfWidth();
+            float IconY = this.cacheInfo.getY() - (LiveIcon.getHeight() + margin);
+            LiveIcon.setPos(IconX, IconY);
 
-				if (MessageLabel != null) {
-					MessageLabel.setY(this.PowerdBy.getY() - (MessageLabel.getHeight() + (margin * 3)));
-					MessageLabel.setX(this.getHalfWidth() - MessageLabel.getHalfWidth());
-				}
-				downloadButton.setX(this.getHalfWidth() - downloadButton.getHalfWidth());
-				downloadButton.setY(margin);
-			}
-		}
-		Line = null;
-	}
+            if (PowerdBy != null) {
+                PowerdBy.setY(LiveIcon.getY() - (PowerdBy.getHeight() + margin));
 
-	private void showDownloadButton() {
-		final Thread getLimitThread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				int result = GroundspeakAPI.GetCacheLimits(null);
-				if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
-					GL.that.Toast(ConnectionError.INSTANCE);
-					return;
-				}
-				if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
-					GL.that.Toast(ApiUnavailable.INSTANCE);
-					return;
-				}
-				resetUi();
-				showDownloadButton();
-			}
-		});
+                if (MessageLabel != null) {
+                    MessageLabel.setY(this.PowerdBy.getY() - (MessageLabel.getHeight() + (margin * 3)));
+                    MessageLabel.setX(this.getHalfWidth() - MessageLabel.getHalfWidth());
+                }
+                downloadButton.setX(this.getHalfWidth() - downloadButton.getHalfWidth());
+                downloadButton.setY(margin);
+            }
+        }
+        Line = null;
+    }
 
-		if (GroundspeakAPI.CachesLeft == -1)
-			getLimitThread.start();
+    private void showDownloadButton() {
+        final Thread getLimitThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int result = GroundspeakAPI.GetCacheLimits(null);
+                if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
+                    GL.that.Toast(ConnectionError.INSTANCE);
+                    return;
+                }
+                if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
+                    GL.that.Toast(ApiUnavailable.INSTANCE);
+                    return;
+                }
+                resetUi();
+                showDownloadButton();
+            }
+        });
 
-		float contentWidth = this.getWidth() * 0.95f;
+        if (GroundspeakAPI.CachesLeft == -1)
+            getLimitThread.start();
 
-		LiveIcon = new Image(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight, "LIVE-ICON", false);
-		LiveIcon.setSprite(Sprites.LiveBtn.get(0), false);
+        float contentWidth = this.getWidth() * 0.95f;
 
-		this.addChild(LiveIcon);
+        LiveIcon = new Image(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight, "LIVE-ICON", false);
+        LiveIcon.setSprite(Sprites.LiveBtn.get(0), false);
 
-		PowerdBy = new Label("");
+        this.addChild(LiveIcon);
 
-		PowerdBy.setHeight(Fonts.Measure(STRING_POWERD_BY).height + (margin * 2));
-		PowerdBy.setFont(Fonts.getNormal()).setHAlignment(HAlignment.CENTER);
-		PowerdBy.setWidth(contentWidth);
-		PowerdBy.setWrappedText(STRING_POWERD_BY);
-		this.addChild(PowerdBy);
+        PowerdBy = new Label("");
 
-		MessageLabel = new Label("");
-		MessageLabel.setWidth(contentWidth);
-		MessageLabel.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
-		MessageLabel.setHeight(this.getHalfHeight());
+        PowerdBy.setHeight(Fonts.Measure(STRING_POWERD_BY).height + (margin * 2));
+        PowerdBy.setFont(Fonts.getNormal()).setHAlignment(HAlignment.CENTER);
+        PowerdBy.setWidth(contentWidth);
+        PowerdBy.setWrappedText(STRING_POWERD_BY);
+        this.addChild(PowerdBy);
 
-		MessageLabel.setWrappedText(getMessage());
-		this.addChild(MessageLabel);
+        MessageLabel = new Label("");
+        MessageLabel.setWidth(contentWidth);
+        MessageLabel.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
+        MessageLabel.setHeight(this.getHalfHeight());
 
-		downloadButton = new Button(Translation.Get("DownloadDetails"));
-		downloadButton.setWidth(this.getWidth() * 0.8f);
+        MessageLabel.setWrappedText(getMessage());
+        this.addChild(MessageLabel);
 
-		this.addChild(downloadButton);
+        downloadButton = new Button(Translation.Get("DownloadDetails"));
+        downloadButton.setWidth(this.getWidth() * 0.8f);
 
-		downloadButton.setOnClickListener(downloadClicked);
+        this.addChild(downloadButton);
 
-		if (GroundspeakAPI.CachesLeft <= 0)
-			downloadButton.disable();
-		layout();
-	}
+        downloadButton.setOnClickListener(downloadClicked);
 
-	final static OnClickListener downloadClicked = new OnClickListener() {
+        if (GroundspeakAPI.CachesLeft <= 0)
+            downloadButton.disable();
+        layout();
+    }
 
-		@Override
-		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-			GL.that.RunOnGL(new IRunOnGL() {
-				@Override
-				public void run() {
-					TabMainView.actionShowDescriptionView.ReloadSelectedCache();
-				}
-			});
-			return true;
-		}
-	};
+    final static OnClickListener downloadClicked = new OnClickListener() {
 
-	@Override
-	public void render(Batch batch) {
-		super.render(batch);
+        @Override
+        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            GL.that.RunOnGL(new IRunOnGL() {
+                @Override
+                public void run() {
+                    TabMainView.actionShowDescriptionView.ReloadSelectedCache();
+                }
+            });
+            return true;
+        }
+    };
 
-		if (PowerdBy != null) {
-			if (Line == null) {
-				float strokeWidth = 3 * UI_Size_Base.that.getScale();
+    @Override
+    public void render(Batch batch) {
+        super.render(batch);
 
-				Line l1 = new Line(margin, PowerdBy.getY() - margin, this.getWidth() - margin, PowerdBy.getY() - margin);
+        if (PowerdBy != null) {
+            if (Line == null) {
+                float strokeWidth = 3 * UI_Size_Base.that.getScale();
 
-				Quadrangle q1 = new Quadrangle(l1, strokeWidth);
+                Line l1 = new Line(margin, PowerdBy.getY() - margin, this.getWidth() - margin, PowerdBy.getY() - margin);
 
-				GL_Paint paint = new GL_Paint();
-				paint.setGLColor(Color.DARK_GRAY);
-				Line = new PolygonDrawable(q1.getVertices(), q1.getTriangles(), paint, this.getWidth(), this.getHeight());
+                Quadrangle q1 = new Quadrangle(l1, strokeWidth);
 
-				l1.dispose();
+                GL_Paint paint = new GL_Paint();
+                paint.setGLColor(Color.DARK_GRAY);
+                Line = new PolygonDrawable(q1.getVertices(), q1.getTriangles(), paint, this.getWidth(), this.getHeight());
 
-				q1.dispose();
+                l1.dispose();
 
-			}
+                q1.dispose();
 
-			Line.draw(batch, 0, 0, this.getWidth(), this.getHeight(), 0);
-		}
-	}
+            }
 
-	private String getMessage() {
-		StringBuilder sb = new StringBuilder();
-		boolean basic = GroundspeakAPI.GetMembershipType(null) == 1;
-		String MemberType = basic ? BASIC : PREMIUM;
-		String limit = basic ? BASIC_LIMIT : PREMIUM_LIMIT;
-		String actLimit = Integer.toString(GroundspeakAPI.CachesLeft - 1);
+            Line.draw(batch, 0, 0, this.getWidth(), this.getHeight(), 0);
+        }
+    }
 
-		if (GroundspeakAPI.CachesLeft == -1) {
-			actLimit = "?";
-		}
+    private String getMessage() {
+        StringBuilder sb = new StringBuilder();
+        boolean basic = GroundspeakAPI.GetMembershipType(null) == 1;
+        String MemberType = basic ? BASIC : PREMIUM;
+        String limit = basic ? BASIC_LIMIT : PREMIUM_LIMIT;
+        String actLimit = Integer.toString(GroundspeakAPI.CachesLeft - 1);
 
-		sb.append(Translation.Get("LiveDescMessage", MemberType, limit));
-		sb.append(Global.br);
-		sb.append(Global.br);
-		if (GroundspeakAPI.CachesLeft > 0)
-			sb.append(Translation.Get("LiveDescAfter", actLimit));
+        if (GroundspeakAPI.CachesLeft == -1) {
+            actLimit = "?";
+        }
 
-		if (GroundspeakAPI.CachesLeft == 0) {
-			sb.append(Translation.Get("LiveDescLimit"));
-			sb.append(Global.br);
-			sb.append(Global.br);
-			if (basic)
-				sb.append(Translation.Get("LiveDescLimitBasic"));
+        sb.append(Translation.Get("LiveDescMessage", MemberType, limit));
+        sb.append(Global.br);
+        sb.append(Global.br);
+        if (GroundspeakAPI.CachesLeft > 0)
+            sb.append(Translation.Get("LiveDescAfter", actLimit));
 
-		}
+        if (GroundspeakAPI.CachesLeft == 0) {
+            sb.append(Translation.Get("LiveDescLimit"));
+            sb.append(Global.br);
+            sb.append(Global.br);
+            if (basic)
+                sb.append(Translation.Get("LiveDescLimitBasic"));
 
-		return sb.toString();
+        }
 
-	}
+        return sb.toString();
 
-	public void forceReload() {
-		// TODO Auto-generated method stub
+    }
 
-	}
+    public void forceReload() {
+        if (cacheInfo != null) {
+            this.removeChild(cacheInfo);
+        }
+        cacheInfo = null;
+    }
 }

@@ -22,8 +22,7 @@ import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.MoveableList;
 
 /**
- * Eine Struktur für RectF mit besonderen Methoden Speziel für die Handhabung in der Verwendung der Berechneten Grössen und Positionen
- * einzelner UI Elemente in Cachebox
+ * Eine Struktur für RectF mit besonderen Methoden speziell für die Handhabung in der Verwendung der berechneten Grössen und Positionen einzelner UI Elemente in Cachebox
  * 
  * @author Longri
  */

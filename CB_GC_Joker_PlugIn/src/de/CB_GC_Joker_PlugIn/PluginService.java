@@ -31,7 +31,7 @@ public class PluginService extends Service {
 
 		@Override
 		public boolean call(String TelephoneNumber) {
-			// Telefonnummer w‰hlen
+			// Telefonnummer w√§hlen
 			try {
 				// TelephoneNumber = "0..."; // Telefonnummer zum testen
 				Intent callIntent = new Intent(Intent.ACTION_CALL);

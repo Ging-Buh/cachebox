@@ -130,7 +130,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 	}
 
 	private AtomicBoolean textWillSet=new AtomicBoolean(false);
-	private void setDistanceString(String txt) {
+	private void setDistanceString(final String txt) {
 
 		if(textWillSet.get()){
 			//try later
