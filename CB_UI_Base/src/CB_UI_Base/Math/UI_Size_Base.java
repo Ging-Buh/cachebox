@@ -61,16 +61,7 @@ public abstract class UI_Size_Base {
 		int b = (int) (NormalTextSize * scale);
 		Button = new Size(b, b);
 
-		if (Global.isTab) {
-			// RefWidth LeftWidth on Tab
-			// must have place for 5 Buttons
-
-			b *= 1.5f; // Bud the bottom button are a little bit higher!
-
-			RefWidth = ((b + margin) * 5) + margin;
-		} else {
-			RefWidth = windowWidth;
-		}
+		RefWidth = windowWidth;
 
 		GL_UISizes.writeDebug("Button", Button.asFloat());
 

@@ -77,10 +77,10 @@
 
     
 
-    <CheckBox
-        android:id="@+id/select_sd_askagain"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/askAlways" />
+    <!--<CheckBox-->
+        <!--android:id="@+id/select_sd_askagain"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/askAlways" />-->
 
 </LinearLayout>

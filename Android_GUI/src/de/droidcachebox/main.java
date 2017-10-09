@@ -307,7 +307,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     public void onSaveInstanceState(Bundle savedInstanceState) {
         Log.debug(log, " => onSaveInstanceState");
 
-        savedInstanceState.putBoolean("isTab", GlobalCore.isTab);
         savedInstanceState.putBoolean("useSmallSkin", GlobalCore.useSmallSkin);
         savedInstanceState.putString("WorkPath", Config.mWorkPath);
 
@@ -349,7 +348,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             Log.debug(log, "restore ACB after Kill");
 
             GlobalCore.restartAfterKill = true;
-            GlobalCore.isTab = savedInstanceState.getBoolean("isTab");
             GlobalCore.useSmallSkin = savedInstanceState.getBoolean("useSmallSkin");
             String workPath = savedInstanceState.getString("WorkPath");
 
@@ -393,11 +391,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        if (GlobalCore.isTab) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
 
         // initialize receiver for screen switched on/off
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
@@ -409,7 +404,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
         // N = Config.nightMode.getValue();
 
-        setContentView(GlobalCore.isTab ? R.layout.tab_main : R.layout.main);
+        setContentView( R.layout.main);
 
         findViewsById();
         initialPlatformConector();
@@ -938,8 +933,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
         stopped = true;
 
-        unbindPluginServices();
-
         if (input == null) {
             graphics = new AndroidGraphics(this, gdxConfig, gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy() : gdxConfig.resolutionStrategy);
             input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), gdxConfig);
@@ -1074,9 +1067,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             Log.err(log, "onResume", "initialOnTouchListener", e);
         }
 
-        // Initial PlugIn
-        fillPluginList();
-        bindPluginServices();
 
         final Bundle extras = getIntent().getExtras();
         if (!GlobalCore.restartAfterKill || extras != null) {
@@ -1351,12 +1341,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     }
 
     private void showView(ViewOptionsMenu view, ViewID ID) {
-        if (GlobalCore.isTab) {
-            if (ID.getPos() == ViewID.UI_Pos.Right) {
-                showTabletView(view, ID);
-                return;
-            }
-        }
 
         if (aktView != null) {
             aktView.OnHide();
@@ -2119,24 +2103,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             return;
         }
 
-        if (GlobalCore.isTab) {
-            if (ID.getPos() == UI_Pos.Left) {
-                if (!(aktView == null) && ID == aktViewId) {
-                    aktView.OnShow();
-                    return;
-                }
-            } else {
-                if (!(aktTabView == null) && ID == aktViewId) {
-                    aktTabView.OnShow();
-                    return;
-                }
-            }
-        } else {
-            if (!(aktView == null) && ID == aktViewId) {
-                aktView.OnShow();
-                return;
-            }
+
+        if (!(aktView == null) && ID == aktViewId) {
+            aktView.OnShow();
+            return;
         }
+
 
         if (ID.getPos() == UI_Pos.Left) {
             aktViewId = ID;
@@ -2162,154 +2134,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         }
 
     }
-
-    // ########### PlugIn Method ##########################
-
-    // PlugIn Methodes
-    private static final String ACTION_PICK_PLUGIN = "de.cachebox.action.PICK_PLUGIN";
-    private static final String KEY_PKG = "pkg";
-    private static final String KEY_SERVICENAME = "servicename";
-    private ArrayList<HashMap<String, String>> services;
-    private final PluginServiceConnection pluginServiceConnection[] = new PluginServiceConnection[4];
-
-    private void fillPluginList() {
-        services = new ArrayList<HashMap<String, String>>();
-        PackageManager packageManager = getPackageManager();
-        Intent baseIntent = new Intent(ACTION_PICK_PLUGIN);
-        baseIntent.setFlags(Intent.FLAG_DEBUG_LOG_RESOLUTION);
-        List<ResolveInfo> list = packageManager.queryIntentServices(baseIntent, PackageManager.GET_RESOLVED_FILTER);
-
-        Config.hasFTF_PlugIn.setValue(false);
-        Config.hasPQ_PlugIn.setValue(false);
-        int i;
-        try {
-            for (i = 0; i < list.size(); ++i) {
-                ResolveInfo info = list.get(i);
-                ServiceInfo sinfo = info.serviceInfo;
-                if (sinfo != null) {
-
-                    if (sinfo.packageName.contains("de.CB_FTF_PlugIn")) // Don't
-                    // bind,
-                    // is an
-                    // Widget
-                    {
-                        Config.hasFTF_PlugIn.setValue(true);
-                    } else if (sinfo.packageName.contains("de.CB_PQ_PlugIn"))// Don't
-                    // bind,
-                    // is
-                    // an
-                    // Widget
-                    {
-                        Config.hasPQ_PlugIn.setValue(true);
-                    } else
-                    // PlugIn for Bind
-                    {
-                        HashMap<String, String> item = new HashMap<String, String>();
-                        item.put(KEY_PKG, sinfo.packageName);
-                        item.put(KEY_SERVICENAME, sinfo.name);
-                        services.add(item);
-                        if (i <= 4) {
-                            inflateToView(i, packageManager, sinfo.packageName);
-
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Config.AcceptChanges();
-    }
-
-    @SuppressWarnings("unused")
-    private void inflateToView(int rowCtr, PackageManager packageManager, String packageName) {
-        try {
-            ApplicationInfo info = packageManager.getApplicationInfo(packageName, 0);
-            Resources res = packageManager.getResourcesForApplication(info);
-
-            XmlResourceParser xres = res.getLayout(0x7f030000);
-
-        } catch (NameNotFoundException ex) {
-            Log.err(log, "NameNotFoundException", ex);
-        }
-    }
-
-    private void bindPluginServices() {
-
-        for (int i = 0; i < services.size(); ++i) {
-            final PluginServiceConnection con = new PluginServiceConnection();
-
-            pluginServiceConnection[i] = con;
-            final Intent intent = new Intent();
-            final HashMap<String, String> data = services.get(i);
-            intent.setClassName(data.get(KEY_PKG), data.get(KEY_SERVICENAME));
-            Thread t = new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        bindService(intent, con, Context.BIND_AUTO_CREATE);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            };
-            t.run();
-
-        }
-
-    }
-
-    private void unbindPluginServices() {
-        if (services != null) {
-            for (int i = 0; i < services.size(); ++i) {
-
-                for (PluginServiceConnection con : pluginServiceConnection) {
-                    if (con != null) {
-                        unbindService(con);
-                    }
-                }
-            }
-        }
-    }
-
-    class PluginServiceConnection implements ServiceConnection {
-        @Override
-        public void onServiceConnected(ComponentName className, IBinder boundService) {
-            int idx = getServiceConnectionIndex();
-            Log.info(log, "onServiceConnected: ComponentName: " + className + "; idx: " + idx);
-            if (idx >= 0) {
-                Global.iPlugin[idx] = IPlugIn.Stub.asInterface(boundService);
-
-                // set Joker PlugIn
-
-                if (Global.iPlugin != null && Global.iPlugin[0] != null) {
-                    Config.hasCallPermission.setValue(true);
-                } else {
-                    Config.hasCallPermission.setValue(false);
-                }
-
-                Config.AcceptChanges();
-            }
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName className) {
-            int idx = getServiceConnectionIndex();
-            Log.info(log, "onServiceDisconnected: ComponentName: " + className + "; idx: " + idx);
-            if (idx >= 0)
-                Global.iPlugin[idx] = null;
-        }
-
-        private int getServiceConnectionIndex() {
-            for (int i = 0; i < pluginServiceConnection.length; ++i)
-                if (this == pluginServiceConnection[i])
-                    return i;
-            return -1;
-        }
-    }
-
-    ;
 
     // #########################################################
 
@@ -2462,21 +2286,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                     @Override
                     public void run() {
                         Log.info(log, "Hide View with ID = " + viewID.getID());
-                        if (GlobalCore.isTab) {
-                            if (viewID.getPos() == UI_Pos.Left) {
-                                if (!(aktView == null) && viewID == aktViewId) {
-                                    aktView.OnHide();
-                                }
-                            } else {
-                                if (!(aktTabView == null) && viewID == aktTabViewId) {
-                                    aktTabView.OnHide();
-                                }
-                            }
-                        } else {
-                            if (!(aktView == null) && viewID == aktViewId) {
-                                aktView.OnHide();
-                            }
+
+                        if (!(aktView == null) && viewID == aktViewId) {
+                            aktView.OnHide();
                         }
+
                         if (aktTabViewId != null && aktTabViewId == viewID && aktTabViewId.getPos() == UI_Pos.Right) {
                             tabFrame.setVisibility(View.INVISIBLE);
                             aktTabViewId = null;

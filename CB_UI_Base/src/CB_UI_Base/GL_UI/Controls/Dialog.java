@@ -371,9 +371,6 @@ public abstract class Dialog extends CB_View_Base {
 		float Width = (((UI_Size_Base.that.getButtonWidthWide() + margin) * 3) + margin);
 		if (Width * 1.2 < UI_Size_Base.that.getWindowWidth())
 			Width *= 1.2f;
-		if (!Global.isTab) {
-			Width = UI_Size_Base.that.getWindowWidth() * 0.95f;
-		}
 
 		float MsgWidth = (Width * 0.95f) - 5 - UI_Size_Base.that.getButtonHeight();
 

@@ -1003,6 +1003,9 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 	@Override
 	public void requestLayout() {
+
+		if(this.isDisposed())return;
+
 		// Log.debug(log, "MapView clacLayout()");
 		float margin = GL_UISizes.margin;
 
@@ -1258,7 +1261,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 	/**
 	 * setNewSettings
-	 * 
+	 *
 	 */
 	@Override
 	public void setNewSettings(int InitialFlags) {

@@ -146,9 +146,6 @@ public class DesktopMain {
 
 		sw /= ui.Density;
 
-		// chek if tablet
-		GlobalCore.isTab = sw > 400 ? true : false;
-
 		// TODO Activate Full Screen
 		if (false) {
 			LwjglApplicationConfiguration lwjglAppCfg = new LwjglApplicationConfiguration();

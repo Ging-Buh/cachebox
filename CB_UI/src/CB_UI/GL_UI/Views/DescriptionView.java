@@ -112,8 +112,7 @@ public class DescriptionView extends CB_View_Base {
         cacheInfo = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), 0, sel);
         cacheInfo.setY(this.getHeight() - cacheInfo.getHeight());
 
-        if (!Global.isTab)
-            this.addChild(cacheInfo);
+        this.addChild(cacheInfo);
     }
 
     @Override
@@ -125,7 +124,7 @@ public class DescriptionView extends CB_View_Base {
         layout();
 
         float infoHeight = -(UiSizes.that.getInfoSliderHeight());
-        if (cacheInfo != null && !Global.isTab)
+        if (cacheInfo != null )
             infoHeight += cacheInfo.getHeight();
         infoHeight += margin * 2;
         CB_RectF world = this.getWorldRec();

@@ -538,18 +538,8 @@ public class GL implements ApplicationListener, InputProcessor {
 			closeActivity();
 		}
 
-		// if Tablet, so the Activity is smaller the screen size
-		// render childs and darkness Sprite
-		if (Global.isTab) {
-			child.renderChilds(batch, prjMatrix);
-			if (ActivityIsShown && mActivity.getCildCount() > 0) {
-				// Zeichne Transparentes Rec um den Hintergrund abzudunkeln.
-				drawDarknessSprite();
-				mActivity.renderChilds(batch, prjMatrix);
-			}
-		}
 
-		if (ActivityIsShown && !Global.isTab) {
+		if (ActivityIsShown ) {
 			drawDarknessSprite();
 			mActivity.renderChilds(batch, prjMatrix);
 		}
@@ -1602,7 +1592,6 @@ public class GL implements ApplicationListener, InputProcessor {
 
 		child.setClickable(false);
 		ActivityIsShown = true;
-		if (!Global.isTab)
 			child.onHide();
 		actActivity.onShow();
 
@@ -1660,8 +1649,7 @@ public class GL implements ApplicationListener, InputProcessor {
 			darknessAlpha = 0f;
 			if (MsgToPlatformConector)
 				PlatformConnector.hideForDialog();
-			if (!Global.isTab)
-				child.onShow();
+			child.onShow();
 		}
 
 		clearRenderViews();

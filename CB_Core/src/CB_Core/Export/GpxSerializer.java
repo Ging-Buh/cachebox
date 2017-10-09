@@ -207,7 +207,12 @@ public final class GpxSerializer {
 
 			// TODO Shortdescription is not into DB is combind with LongDescription and Save into ROW Description
 			// Expand DB with ROW shortDescription
-			String shortDesc = cache.getShortDescription();
+			String shortDesc = null;
+			try {
+				shortDesc = cache.getShortDescription();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			if (shortDesc != null && shortDesc.length() > 0) {
 				gpx.startTag(PREFIX_GROUNDSPEAK, "short_description");
 				gpx.attribute("", "html", containsHtml(cache.getShortDescription()) ? "True" : "False");

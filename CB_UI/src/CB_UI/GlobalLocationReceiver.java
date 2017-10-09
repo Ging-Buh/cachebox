@@ -190,7 +190,11 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 				}
 			});
 
-		newLocationThread.start();
+		try {
+			newLocationThread.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 

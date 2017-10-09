@@ -11,15 +11,10 @@ import com.badlogic.gdx.utils.Clipboard;
 public abstract class Global {
 	protected static Global Instance;
 
-	/**
-	 * Wird im Splash gesetzt und ist True, wenn es sich um ein Tablet handelt!
-	 */
-	public static boolean isTab = false;
-	public static boolean forceTab = false;
-	public static boolean forcePhone = false;
+
+	public static boolean forcePhone = true;
 	public static boolean useSmallSkin = false;
 	public static DisplayType displayType = DisplayType.Normal;
-	public static boolean possibleTabletLayout;
 	public static final String br = System.getProperty("line.separator");
 	public static final String fs = System.getProperty("file.separator");
 	public static double displayDensity = 1;

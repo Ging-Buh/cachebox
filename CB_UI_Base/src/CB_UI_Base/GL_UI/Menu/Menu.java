@@ -66,8 +66,6 @@ public class Menu extends ButtonDialog {
 		if (!MENU_REC_IsInitial) {
 			float sollWidth = GL_UISizes.UI_Left.getWidth();
 
-			if (!Global.isTab)
-				sollWidth /= 1.2f;
 			sollWidth *= 0.83;
 			sMenuRec = new CB_RectF(new SizeF(sollWidth, 50));
 			MENU_REC_IsInitial = true;
@@ -196,8 +194,6 @@ public class Menu extends ButtonDialog {
 					higherValue = UI_Size_Base.that.getWindowHeight() * 0.95f;
 				}
 				float MenuWidth = GL_UISizes.UI_Left.getWidth();
-				if (!Global.isTab)
-					MenuWidth /= 1.2f;
 				this.setSize(MenuWidth, higherValue);
 
 				// initial more menus

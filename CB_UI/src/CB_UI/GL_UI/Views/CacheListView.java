@@ -359,7 +359,11 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	@Override
 	public void CacheListChangedEvent() {
 		Log.debug(log, "CacheListChangedEvent on Cache List");
-		listView.setBaseAdapter(null);
+		try {
+			listView.setBaseAdapter(null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		synchronized (Database.Data.Query) {
 			lvAdapter = new CustomAdapter(Database.Data.Query);
 

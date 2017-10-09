@@ -291,11 +291,6 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 	public void ChangeLine() {
 		// Show Dialog
 		CB_RectF rec = GL_UISizes.UI_Left.copy();
-		if (GlobalCore.isTab) {
-			// da der Linke Tab bei einem Tablett nicht so Breit ist wie auf einem Phone,
-			// verdoppeln wir hier die Breite (sieht besser aus)
-			rec.setWidth(rec.getWidth() * 2);
-		}
 
 		String SolverString = solver.get(mSelectedIndex).getOrgText();
 
@@ -345,11 +340,6 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 
 	public void InsertLine() {
 		CB_RectF rec = GL_UISizes.UI_Left.copy();
-		if (GlobalCore.isTab) {
-			// da der Linke Tab bei einem Tablett nicht so Breit ist wie auf einem Phone,
-			// verdoppeln wir hier die Breite (sieht besser aus)
-			rec.setWidth(rec.getWidth() * 2);
-		}
 
 		String SolverString = "";
 

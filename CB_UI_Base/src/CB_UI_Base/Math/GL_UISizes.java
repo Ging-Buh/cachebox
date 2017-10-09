@@ -236,8 +236,8 @@ public class GL_UISizes implements SizeChangedEvent {
 	private static void calcPos() {
 		Log.debug(log, "GL_UISizes.calcPos()");
 
-		float w = Global.isTab ? UI_Right.getWidth() : UI_Left.getWidth();
-		float h = Global.isTab ? UI_Right.getHeight() : UI_Left.getHeight();
+		float w =  UI_Left.getWidth();
+		float h =  UI_Left.getHeight();
 
 		Info.setPos(new Vector2(margin, (h - margin - Info.getHeight())));
 
@@ -296,10 +296,7 @@ public class GL_UISizes implements SizeChangedEvent {
 
 		UI_Left = new CB_RectF(0, convertDip2Pix(65), frameLeftwidth, frameHeight);
 		UI_Right = UI_Left.copy();
-		if (Global.isTab) {
-			UI_Right.setX(frameLeftwidth + 1);
-			UI_Right.setWidth(frameRightWidth);
-		}
+
 
 		infoShadowHeight = (float) (3.333333 * defaultDPI);
 		Info.setSize((UI_Size_Base.that.RefWidth - (UI_Size_Base.that.getButtonWidth() * 1.1f) - (margin * 3)), UI_Size_Base.that.getButtonHeight() * 1.1f);

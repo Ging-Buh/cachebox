@@ -164,8 +164,6 @@ public class SearchDialog extends PopUp_Base {
 		this.setBackground(Sprites.ListBack);
 
 		float margin = UI_Size_Base.that.getMargin();
-		if (GlobalCore.isTab)
-			margin *= 2;
 		float btnWidth = (this.getWidth() - (margin * 7)) / 4;
 
 		CB_RectF rec = new CB_RectF(0, 0, btnWidth, UI_Size_Base.that.getButtonHeight());

@@ -100,7 +100,6 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
 		distance = new BitmapFontCache(Fonts.getSmall());
 		distance.setColor(COLOR.getFontColor());
-		distance.setText("", 0, 0);
 
 		if (waypoint == null) // this Item is the Cache
 		{

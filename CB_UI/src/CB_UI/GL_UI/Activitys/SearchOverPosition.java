@@ -444,7 +444,7 @@ public class SearchOverPosition extends ActivityBase {
 							}
 						}
 					}
-				} catch (InterruptedException e) {
+				} catch (Exception e) {
 					// Thread abgebrochen!
 					threadCanceld = true;
 				}

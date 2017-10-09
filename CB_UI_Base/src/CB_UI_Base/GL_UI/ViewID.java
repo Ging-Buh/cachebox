@@ -73,6 +73,6 @@ public class ViewID {
 	}
 
 	public UI_Pos getPos() {
-		return Global.isTab ? posTab : pos;
+		return pos;
 	}
 }

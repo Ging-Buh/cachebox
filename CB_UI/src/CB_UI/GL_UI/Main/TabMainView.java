@@ -392,9 +392,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 		actionHelp = new CB_Action_Help();
 		// actionScreenLock = new CB_Action_ShowActivity("screenlock", MenuID.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));
 
-		if (GlobalCore.isTab)
-			addTabletTabs();
-		else
 			addPhoneTab();
 
 		// add Slider as last
@@ -427,7 +424,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 		GlobalCore.setAutoResort(Config.StartWithAutoSelect.getValue());
 
 		// create MapView Instanz
-		CB_TabView mapTap = GlobalCore.isTab ? rightTab : leftTab;
+		CB_TabView mapTap = leftTab;
 		TabMainView.mapView = new MapView(mapTap.getContentRec(), MapMode.Normal, "MapView");
 		MapView.that.SetZoom(Config.lastZoomLevel.getValue());
 
@@ -745,10 +742,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 			this.removeChilds();
 
 			CB_Button.reloadMenuSprite();
-			if (GlobalCore.isTab)
-				addTabletTabs();
-			else
-				addPhoneTab();
+			addPhoneTab();
 
 			// add Slider as last
 			Slider slider = new Slider(this, "Slider");

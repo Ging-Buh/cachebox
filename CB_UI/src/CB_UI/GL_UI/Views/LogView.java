@@ -59,9 +59,6 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
 	@Override
 	public void onShow() {
 		// if Tab register for Cache Changed Event
-		if (GlobalCore.isTab) {
-			SelectedCacheEventList.Add(this);
-		}
 		setCache(GlobalCore.getSelectedCache());
 	}
 
