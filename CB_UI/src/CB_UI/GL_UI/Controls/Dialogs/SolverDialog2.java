@@ -480,8 +480,16 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 				}
 				result += sForm;
 				finish();
-				if (mBackStringListener != null)
-					mBackStringListener.BackString(result);
+				if (mBackStringListener != null){
+					final String finalResult = result;
+					Thread thread=new Thread(new Runnable() {
+						@Override
+						public void run() {
+							mBackStringListener.BackString(finalResult);
+						}
+					});
+					thread.start();
+				}
 				return true;
 			}
 		});
