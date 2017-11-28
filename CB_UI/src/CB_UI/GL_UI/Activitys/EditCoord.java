@@ -22,19 +22,20 @@ import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Converter.UTMConvert;
+import CB_Utils.Log.Log;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.utils.Clipboard;
+import org.slf4j.LoggerFactory;
 
 public class EditCoord extends ActivityBase {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(EditCoord.class);
 	private int aktPage = -1; // Deg-Min
 	private final UTMConvert convert = new UTMConvert();
 	private Coordinate cancelCoord;
 	private Coordinate coord;
 	private ReturnListener mReturnListener;
-	private Clipboard clipboard;
 
 	// Allgemein
 
@@ -71,8 +72,6 @@ public class EditCoord extends ActivityBase {
 	private Button[] btnUTMZone;
 	Button Leertaste; // additional to numeric input (for "deleting" input)
 
-	String sCoord;
-
 	public interface ReturnListener {
 		public void returnCoord(Coordinate coord);
 	}
@@ -82,8 +81,6 @@ public class EditCoord extends ActivityBase {
 		coord = mActCoord;
 		cancelCoord = coord.copy();
 		mReturnListener = returnListener;
-
-		clipboard = GlobalCore.getDefaultClipboard();
 
 		bDec = new MultiToggleButton("bDec");
 		bMin = new MultiToggleButton("bMin");
@@ -195,10 +192,6 @@ public class EditCoord extends ActivityBase {
 			MultiToggleButton mtb = (MultiToggleButton) v;
 			mtb.setState(1);
 			showPage((Integer) mtb.getTag());
-			if (clipboard != null) {
-				parseView();
-				clipboard.setContents(sCoord);
-			}
 			return true;
 		}
 	};
@@ -902,50 +895,40 @@ public class EditCoord extends ActivityBase {
 	}
 
 	private boolean parseView() {
-		sCoord = "";
+		String sCoord = "";
 		switch (aktPage) {
 		case 0:
-			// sCoord += this.btnDLat[0].getText() + " "; // N/S
-			if (this.btnDLat[0].getText().equals("S")) {
-				sCoord = "-";
-			}
-			sCoord += this.btnDLat[2].getText() + this.btnDLat[3].getText() + "."; // Deg 1
+			sCoord = this.btnDLat[0].getText() + this.btnDLat[2].getText() + this.btnDLat[3].getText() + ".";
 			for (int i = 4; i < 9; i++)
-				sCoord += this.btnDLat[i].getText(); // Deg 2
-			// sCoord += "\u00B0 ";
-			// sCoord += this.btnDLon[0].getText() + " "; // W/E
-			sCoord += " ";
-			if (this.btnDLon[0].getText().equals("S")) {
-				sCoord = "-";
-			}
-			sCoord += this.btnDLon[1].getText() + this.btnDLon[2].getText() + this.btnDLon[3].getText() + "."; // Deg 1
+				sCoord += this.btnDLat[i].getText();
+			sCoord += " " + this.btnDLon[0].getText() + this.btnDLon[1].getText() + this.btnDLon[2].getText() + this.btnDLon[3].getText() + ".";
 			for (int i = 4; i < 9; i++)
-				sCoord += this.btnDLon[i].getText(); // Deg 2
-			// sCoord += "\u00B0";
+				sCoord += this.btnDLon[i].getText();
 			break;
 		case 1:
-			sCoord += this.btnDMLat[0].getText() + " "; // N/S
+			sCoord = this.btnDMLat[0].getText(); // N/S
 			sCoord += this.btnDMLat[2].getText() + this.btnDMLat[3].getText() + "\u00B0 "; // Deg
 			sCoord += this.btnDMLat[4].getText() + this.btnDMLat[5].getText() + "."; // Min 1
 			sCoord += this.btnDMLat[6].getText() + this.btnDMLat[7].getText() + this.btnDMLat[8].getText() + "\u0027 "; // Min 2
-			sCoord += this.btnDMLon[0].getText() + " "; // W/E
+			sCoord += this.btnDMLon[0].getText(); // W/E
 			sCoord += this.btnDMLon[1].getText() + this.btnDMLon[2].getText() + this.btnDMLon[3].getText() + "\u00B0 "; // Deg
 			sCoord += this.btnDMLon[4].getText() + this.btnDMLon[5].getText() + "."; // Min 1
 			sCoord += this.btnDMLon[6].getText() + this.btnDMLon[7].getText() + this.btnDMLon[8].getText() + "\u0027"; // Min 2
 			break;
 		case 2:
-			sCoord += this.btnDMSLat[0].getText() + " "; // N/S
+			sCoord = this.btnDMSLat[0].getText(); // N/S
 			sCoord += this.btnDMSLat[2].getText() + this.btnDMSLat[3].getText() + "\u00B0 "; // Deg
 			sCoord += this.btnDMSLat[4].getText() + this.btnDMSLat[5].getText() + "\u0027 "; // Min
 			sCoord += this.btnDMSLat[6].getText() + this.btnDMSLat[7].getText() + "."; // Sec 1
 			sCoord += this.btnDMSLat[8].getText() + this.btnDMSLat[9].getText() + "\" "; // Sec 2
-			sCoord += this.btnDMSLon[0].getText() + " "; // W/E
+			sCoord += this.btnDMSLon[0].getText(); // W/E
 			sCoord += this.btnDMSLon[1].getText() + this.btnDMSLon[2].getText() + this.btnDMSLon[3].getText() + "\u00B0 "; // Deg
 			sCoord += this.btnDMSLon[4].getText() + this.btnDMSLon[5].getText() + "\u0027 "; // Min
 			sCoord += this.btnDMSLon[6].getText() + this.btnDMSLon[7].getText() + "."; // Sec 1
 			sCoord += this.btnDMSLon[8].getText() + this.btnDMSLon[9].getText() + "\""; // Sec 2
 			break;
 		case 3:
+			sCoord = "";
 			for (int i = 0; i < 3; i++) {
 				sCoord += this.btnUTMZone[i].getText();
 			}
@@ -964,6 +947,7 @@ public class EditCoord extends ActivityBase {
 		}
 
 		CoordinateGPS newCoord = new CoordinateGPS(sCoord);
+		Log.info(log, "Buttons of aktPage " + aktPage + " = '" + sCoord + "'" + " --> " +  newCoord.FormatCoordinate());
 		if (newCoord.isValid()) {
 			coord = newCoord;
 			return true;
@@ -971,4 +955,21 @@ public class EditCoord extends ActivityBase {
 			return false;
 	}
 
+	private String GetLatSign(String signChar) {
+		if (signChar.equals("S")) {
+			return "-";
+		}
+		else {
+			return "+";
+		}
+	}
+
+	private String GetLonSign(String signChar) {
+		if (signChar.equals("W")) {
+			return "-";
+		}
+		else {
+			return "+";
+		}
+	}
 }
