@@ -954,22 +954,4 @@ public class EditCoord extends ActivityBase {
 		} else
 			return false;
 	}
-
-	private String GetLatSign(String signChar) {
-		if (signChar.equals("S")) {
-			return "-";
-		}
-		else {
-			return "+";
-		}
-	}
-
-	private String GetLonSign(String signChar) {
-		if (signChar.equals("W")) {
-			return "-";
-		}
-		else {
-			return "+";
-		}
-	}
 }
