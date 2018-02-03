@@ -128,38 +128,16 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 		return mWaypoint;
 	}
 
-	private AtomicBoolean textWillSet=new AtomicBoolean(false);
 	private void setDistanceString(final String txt) {
-
-		if(textWillSet.get()){
-			//try later
-			TimerTask later = new TimerTask() {
-				@Override
-				public void run() {
-					setDistanceString(txt);
-				}
-			};
-			new Timer().schedule(later,100);
-			Log.debug(log,"SetDistanceString later");
-			return;
-		}
-
-		textWillSet.set(true);
-		GL.that.RunOnGL(new IRunOnGL() {
-			@Override
-			public void run() {
-				try {
-					GlyphLayout bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
-					float x = ArrowRec.getHalfWidth() - (bounds.width / 2f);
-					distance.setPosition(x, 0);
-				} catch (Exception e) {
-					// sometimes with disposed item
-				}
-				textWillSet.set(false);
+		if (txt != null) {
+			try {
+				GlyphLayout bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
+				float x = ArrowRec.getHalfWidth() - (bounds.width / 2f);
+				distance.setPosition(x, 0);
+			}catch (Exception e) {
+				Log.err(log,"setDistanceString: '" + txt + "'" + e.getLocalizedMessage());
 			}
-		});
-
-
+		}
 	}
 
 	private void setActLocator() {

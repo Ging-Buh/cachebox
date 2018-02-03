@@ -16,12 +16,7 @@
 
 package CB_UI.GL_UI.Main.Actions;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.ExternalRenderTheme;
@@ -434,20 +429,33 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 			MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
 	}
 
-	private ArrayList<String> getRenderThemes() {
-		ArrayList<String> files = new ArrayList<String>();
-		files.add(ManagerBase.INTERNAL_THEME_DEFAULT);
-		files.add(ManagerBase.INTERNAL_THEME_OSMARENDER);
-		files.add(ManagerBase.INTERNAL_THEME_CAR);
+	private Hashtable<String, String> getRenderThemes() {
+		Hashtable<String, String> files = new Hashtable<String, String>();
+		files.put(ManagerBase.INTERNAL_THEME_DEFAULT, ManagerBase.INTERNAL_THEME_DEFAULT);
+		files.put(ManagerBase.INTERNAL_THEME_OSMARENDER,ManagerBase.INTERNAL_THEME_OSMARENDER);
+		files.put(ManagerBase.INTERNAL_THEME_CAR,ManagerBase.INTERNAL_THEME_CAR);
 		String directory = LocatorSettings.RenderThemesFolder.getValue();
 		if (directory.length() > 0) {
-			File dir = FileFactory.createFile(directory);
-			String[] dirFiles = dir.list();
-			if (dirFiles != null && dirFiles.length > 0) {
-				for (String tmp : dirFiles) {
+			files.putAll(getDirsRenderThemes(directory));
+		}
+		return files;
+	}
+
+	private  Hashtable<String, String> getDirsRenderThemes(String directory) {
+		Hashtable<String, String>  files = new Hashtable<String, String>();
+		File dir = FileFactory.createFile(directory);
+		String[] dirFiles = dir.list();
+		if (dirFiles != null && dirFiles.length > 0) {
+			for (String tmp : dirFiles) {
+				File f = FileFactory.createFile(directory + "/" + tmp);
+				if (f.isDirectory()) {
+					// if you like to implement searching RenderThemes xml in subdirectories
+					files.putAll(getDirsRenderThemes(f.getAbsolutePath()));
+				}
+				else {
 					String ttt = tmp.toLowerCase();
 					if (ttt.endsWith("xml")) {
-						files.add(FileIO.GetFileNameWithoutExtension(tmp));
+						files.put(FileIO.GetFileNameWithoutExtension(tmp),f.getAbsolutePath());
 					}
 				}
 			}
@@ -473,15 +481,17 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 		return true;
 	}
 
+	private Hashtable<String, String> RenderThemes;
 	private boolean showRenderThemesSubMenu(int which) {
 		final Menu lRenderThemesSubMenu = new Menu("RenderThemesSubMenu");
 
 		int menuID = 0;
-		for (String theme : getRenderThemes()) {
+		RenderThemes = getRenderThemes();
+		for (String theme : RenderThemes.keySet()) {
 			MenuItem mi = lRenderThemesSubMenu.addItem(menuID++, "", theme); // ohne Translation
 			mi.setData(which);
 			mi.setCheckable(true);
-			String compare = "";
+			String compare = ""; // Theme is saved with path
 			switch (which) {
 			case 0:
 				compare = Config.MapsforgeDayTheme.getValue();
@@ -498,7 +508,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 			}
 			if (compare.length() == 0)
 				compare = ManagerBase.INTERNAL_THEME_DEFAULT;
-			if (compare.contains(theme)) {
+			if (compare.equals(RenderThemes.get(theme))) {
 				mi.setChecked(true);
 			}
 		}
@@ -517,8 +527,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 				else if (mi.getTitle().equals(ManagerBase.INTERNAL_THEME_DEFAULT))
 					selectedValue = ManagerBase.INTERNAL_THEME_DEFAULT;
 				else
-					selectedValue = Config.RenderThemesFolder.getValue() + "/" + mi.getTitle() + ".xml";
-
+					selectedValue = RenderThemes.get(mi.getTitle());
 				showStyleSelection(which, selectedValue);
 				return true;
 			}

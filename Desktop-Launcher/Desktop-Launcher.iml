@@ -39,7 +39,7 @@
       <sourceFolder url="file://$MODULE_DIR$/assets" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="kxml2-2.3.0.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/Lib/kxml2-2.3.0.jar!/" />
@@ -72,9 +72,9 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="module" module-name="CB_Utils" exported="" />
     <orderEntry type="module" module-name="CB_Core" exported="" />
-    <orderEntry type="module" module-name="CB_Rpc" />
-    <orderEntry type="module" module-name="CB_UI_Base" />
-    <orderEntry type="module-library">
+    <orderEntry type="module" module-name="CB_Rpc" exported="" />
+    <orderEntry type="module" module-name="CB_UI_Base" exported="" />
+    <orderEntry type="module-library" exported="">
       <library name="commons-logging-1.1.3.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/Lib/commons-logging-1.1.3.jar!/" />
@@ -83,7 +83,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="jinput-2.0.5.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/Lib/jinput-2.0.5.jar!/" />
@@ -92,7 +92,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="jinput-platform-2.0.5-natives-linux.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/Lib/jinput-platform-2.0.5-natives-linux.jar!/" />
@@ -101,7 +101,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="jinput-platform-2.0.5-natives-osx.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/Lib/jinput-platform-2.0.5-natives-osx.jar!/" />
@@ -110,7 +110,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="jinput-platform-2.0.5-natives-windows.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/Lib/jinput-platform-2.0.5-natives-windows.jar!/" />
@@ -119,7 +119,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="jlayer-1.0.1-gdx.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/Lib/jlayer-1.0.1-gdx.jar!/" />
@@ -128,7 +128,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="jorbis-0.0.17.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/Lib/jorbis-0.0.17.jar!/" />
@@ -137,7 +137,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="jutils-1.0.0.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/Lib/jutils-1.0.0.jar!/" />
@@ -146,7 +146,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="lwjgl_util-2.9.1.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/Lib/lwjgl_util-2.9.1.jar!/" />
@@ -155,7 +155,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="lwjgl-2.9.1.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/Lib/lwjgl-2.9.1.jar!/" />
@@ -164,7 +164,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="lwjgl-platform-2.9.1-natives-linux.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/Lib/lwjgl-platform-2.9.1-natives-linux.jar!/" />
@@ -173,7 +173,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="lwjgl-platform-2.9.1-natives-osx.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/Lib/lwjgl-platform-2.9.1-natives-osx.jar!/" />
@@ -182,7 +182,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="lwjgl-platform-2.9.1-natives-windows.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/Lib/lwjgl-platform-2.9.1-natives-windows.jar!/" />
@@ -191,9 +191,9 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="CB_Locator_Desktop" />
-    <orderEntry type="module" module-name="CB_mapsforge" />
-    <orderEntry type="module-library">
+    <orderEntry type="module" module-name="CB_Locator_Desktop" exported="" />
+    <orderEntry type="module" module-name="CB_mapsforge" exported="" />
+    <orderEntry type="module-library" exported="">
       <library name="sqlite-jdbc-3.7.15-SNAPSHOT-2.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/Lib/sqlite-jdbc-3.7.15-SNAPSHOT-2.jar!/" />
@@ -202,7 +202,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="slf4j-api-1.7.6.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/Lib/slf4j-api-1.7.6.jar!/" />
@@ -220,7 +220,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="gdx-1.9.6.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/Lib/gdx-1.9.6.jar!/" />
@@ -229,7 +229,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="gdx-backend-lwjgl-1.9.6.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/Lib/gdx-backend-lwjgl-1.9.6.jar!/" />
@@ -238,7 +238,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="gdx-backend-lwjgl-natives-1.9.6.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/Lib/gdx-backend-lwjgl-natives-1.9.6.jar!/" />
@@ -247,7 +247,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="gdx-freetype-1.9.6.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/Lib/gdx-freetype-1.9.6.jar!/" />
@@ -256,7 +256,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="gdx-freetype-natives-1.9.6.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/Lib/gdx-freetype-natives-1.9.6.jar!/" />
@@ -265,7 +265,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="gdx-natives-1.9.6.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/Lib/gdx-natives-1.9.6.jar!/" />
@@ -274,6 +274,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="GPS_Simulator" />
+    <orderEntry type="module" module-name="GPS_Simulator" exported="" />
   </component>
 </module>
