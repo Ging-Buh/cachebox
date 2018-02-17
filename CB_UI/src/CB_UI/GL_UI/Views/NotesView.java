@@ -57,7 +57,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent {
 
 		initRow(BOTTOMUP);
 		getSolverButton = new Button("getSolver");
-		getSolverButton.disable();
+		// getSolverButton.disable();
 		addNext(getSolverButton);
 		uploadButton = new Button("Upload");
 		addLast(uploadButton);
@@ -103,8 +103,30 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent {
 		getSolverButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				// TODO implement /get ( add or replace solver, with tag <Solver> ... </Solver> )
-				// TODO ? enable upload
+				String solver;
+				if (aktCache != null) {
+					solver = Database.GetSolver(aktCache);
+				}
+				else solver = null;
+				solver = solver != null ? "<Solver>\r\n" + solver + "\r\n</Solver>" : "";
+				String text = notes.getText();
+				int i1 = text.indexOf("<Solver>");
+				if (i1 > -1) {
+					int i2 = text.indexOf("</Solver>");
+					String t1 = text.substring(0, i1);
+					String t2;
+					if (i2 > -1) {
+						t2 = text.substring(i2+9);
+					}
+					else {
+						t2 = text.substring(i1);
+					}
+					text = t1 + t2 + solver;
+				}
+				else {
+					text = text + solver;
+				}
+				notes.setText(text);
 				return true;
 			}
 		});
