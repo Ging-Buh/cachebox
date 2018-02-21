@@ -247,7 +247,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
 				if (selectedWP != null) {
 					if (selectedWP.getGcCode().equals(wp.getGcCode())) {
 						wpi.Selected = true;
-						wpi.UnderlayIcon = Sprites.MapOverlay.get(1);
+						wpi.UnderlayIcon = Sprites.getMapOverlay(1);
 					}
 				}
 				tmplist.add(wpi);

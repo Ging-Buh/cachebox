@@ -670,7 +670,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		if ((aktZoom >= zoomCross) && (wpi.Selected) && (wpi.Waypoint == GlobalCore.getSelectedWaypoint())) {
 			// Draw Cross and move screen vector
-			Sprite cross = Sprites.MapOverlay.get(3);
+			Sprite cross = Sprites.getMapOverlay(3);
 			cross.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight, WpUnderlay.width, WpUnderlay.height);
 			cross.draw(batch);
 

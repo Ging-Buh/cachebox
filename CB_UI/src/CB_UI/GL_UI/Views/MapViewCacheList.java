@@ -62,9 +62,6 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 	private boolean hideMyFinds = false;
 	private boolean showAllWaypoints = false;
 
-	// public ArrayList<ArrayList<Sprite>> NewMapIcons = null;
-	// public ArrayList<ArrayList<Sprite>> NewMapOverlay = null;
-
 	public MapViewCacheList(int maxZoomLevel) {
 		super();
 		this.maxZoomLevel = maxZoomLevel;
@@ -163,7 +160,7 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 									wpi.MapX = (float) MapX;
 									wpi.MapY = (float) MapY;
 									if (cache.isArchived() || !cache.isAvailable())
-										wpi.OverlayIcon = Sprites.MapOverlay.get(2);
+										wpi.OverlayIcon = Sprites.getMapOverlay(2);
 									wpi.UnderlayIcon = getUnderlayIcon(cache, null, iconSize);
 									wpi.Icon = getCacheIcon(cache, iconSize);
 									wpi.Cache = cache;
@@ -340,22 +337,22 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 				if ((cache == null) || selectedCache) {
 					if (cache.isLive()) {// set color for underlayIcon to blue if this a LiveCache
 
-						return Sprites.MapOverlay.get(5);
+						return Sprites.getMapOverlay(5);
 					}
-					return Sprites.MapOverlay.get(1);
+					return Sprites.getMapOverlay(1);
 				} else {
 					if (cache.isLive()) {// set color for underlayIcon to blue if this a LiveCache
 
-						return Sprites.MapOverlay.get(4);
+						return Sprites.getMapOverlay(4);
 					}
 
-					return Sprites.MapOverlay.get(0);
+					return Sprites.getMapOverlay(0);
 				}
 			} else {
 				if (waypoint == GlobalCore.getSelectedWaypoint()) {
-					return Sprites.MapOverlay.get(1);
+					return Sprites.getMapOverlay(1);
 				} else {
-					return Sprites.MapOverlay.get(0);
+					return Sprites.getMapOverlay(0);
 				}
 			}
 		}
