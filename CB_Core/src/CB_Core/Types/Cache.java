@@ -877,15 +877,15 @@ public class Cache implements Comparable<Cache>, Serializable {
 		}
 	}
 
-	public final static byte NOTLIVE = 0;
-	public final static byte ISLITE = 1;
-	public final static byte NOTLITE = 2;
+	public final static byte NOT_LIVE = 0;
+	public final static byte IS_LITE = 1;
+	public final static byte NOT_LITE = 2;
 
 	public byte getApiStatus() {
 		if (detail != null) {
 			return detail.ApiStatus;
 		} else {
-			return NOTLIVE;
+			return NOT_LIVE;
 		}
 	}
 

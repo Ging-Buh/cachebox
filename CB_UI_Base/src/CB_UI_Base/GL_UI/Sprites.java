@@ -68,11 +68,21 @@ public class Sprites {
         }
     }
 
-    private static ArrayList<Sprite> MapOverlay = null;
-
-    public static Sprite getMapOverlay(int i) {
-        if (!loaded) loadSprites(false);
-        return MapOverlay.get(i);
+    public static Sprite getMapOverlay(IconName i) {
+        switch(i){
+            case shaddowrectselected:
+                return getSprite("shaddowrect-selected");
+            case live:
+                Sprite live = getSprite(IconName.shaddowrect);
+                live.setColor(CB_UI_Base_Settings.LiveMapBackgroundColor.getValue());
+                return live;
+            case liveSelected:
+                Sprite liveSelected = getSprite("shaddowrect-selected");
+                liveSelected.setColor(CB_UI_Base_Settings.LiveMapBackgroundColor.getValue());
+                return liveSelected;
+            default:
+                return getSprite(i);
+        }
     }
 
     public static ArrayList<Sprite> Arrows = null;
@@ -150,6 +160,12 @@ public class Sprites {
         mapsforge_logo, //
         download, //
         freizeit,//
+        shaddowrect, // 0
+        shaddowrectselected, // 1
+        deact, // 2
+        cross, // 3
+        live, // 4
+        liveSelected, // 5
     }
 
     public static enum DialogElement {
@@ -299,6 +315,10 @@ public class Sprites {
         }
     }
 
+    public static Sprite getSprite(IconName iconName) {
+        return getSprite(iconName.name(), 1.0f);
+    }
+
     public static Sprite getSprite(String name) {
         return getSprite(name, 1.0f);
     }
@@ -420,7 +440,7 @@ public class Sprites {
         return tmp;
     }
 
-    static boolean loaded = false;
+    public static boolean loaded = false;
 
     /**
      * Load the Sprites from recourse
@@ -470,39 +490,6 @@ public class Sprites {
             Compass.add(new SpriteDrawable(getSprite("compass_arrow")));
             Compass.add(new SpriteDrawable(getSprite("sonne")));
             Compass.add(new SpriteDrawable(getSprite("mond")));
-
-        }
-
-        if (MapOverlay == null)
-            MapOverlay = new ArrayList<Sprite>();
-        synchronized (MapOverlay) {
-            MapOverlay.clear();
-            MapOverlay.add(getSprite("shaddowrect"));
-            MapOverlay.add(getSprite("shaddowrect-selected"));
-            MapOverlay.add(getSprite("deact"));
-            MapOverlay.add(getSprite("cross"));
-
-            // Live sprites with light blue color changed
-
-            Color backColor = CB_UI_Base_Settings.LiveMapBackgroundColor.getValue();
-
-            Sprite live = getSprite("shaddowrect");
-            Sprite liveSelected = getSprite("shaddowrect-selected");
-
-            live.setColor(backColor);
-            liveSelected.setColor(backColor);
-            MapOverlay.add(live);
-            MapOverlay.add(liveSelected);
-
-            CB_UI_Base_Settings.LiveMapBackgroundColor.addChangedEventListener(new IChanged() {
-
-                @Override
-                public void isChanged() {
-                    Color backColor = CB_UI_Base_Settings.LiveMapBackgroundColor.getValue();
-                    MapOverlay.get(4).setColor(backColor);
-                    MapOverlay.get(5).setColor(backColor);
-                }
-            });
 
         }
 
@@ -762,7 +749,6 @@ public class Sprites {
      * Destroy cached sprites
      */
     public static void destroyCache() {
-        MapOverlay = null;
         Arrows = null;
         MapStars = null;
         Bubble = null;

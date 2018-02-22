@@ -52,6 +52,9 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.MoveableList;
 
+import static CB_UI_Base.GL_UI.Sprites.*;
+import static CB_UI_Base.GL_UI.Sprites.getMapOverlay;
+
 /**
  * A Activity for create a Track over the Map.<br>
  * Set TrackPoints over MapCenter!
@@ -238,7 +241,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
 				WaypointRenderInfo wpi = new WaypointRenderInfo();
 				wpi.MapX = (float) MapX;
 				wpi.MapY = (float) MapY;
-				wpi.Icon = Sprites.getSprite("mapTrailhead");
+				wpi.Icon = getSprite("mapTrailhead");
 				wpi.Cache = null;
 				wpi.Waypoint = wp;
 				wpi.UnderlayIcon = null;
@@ -247,7 +250,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
 				if (selectedWP != null) {
 					if (selectedWP.getGcCode().equals(wp.getGcCode())) {
 						wpi.Selected = true;
-						wpi.UnderlayIcon = Sprites.getMapOverlay(1);
+						wpi.UnderlayIcon = getMapOverlay(IconName.shaddowrectselected);
 					}
 				}
 				tmplist.add(wpi);

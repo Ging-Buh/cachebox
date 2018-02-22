@@ -73,7 +73,6 @@ import CB_UI.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
@@ -98,6 +97,9 @@ import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.HSV_Color;
 import CB_Utils.Util.IChanged;
+
+import static CB_Core.Types.Cache.NOT_LITE;
+import static CB_UI_Base.GL_UI.Sprites.*;
 
 /**
  * @author ging-buh
@@ -171,7 +173,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		Config.MapsforgeCarNightStyle.addChangedEventListener(themeChangedEventHandler);
 
 		registerSkinChangedEvent();
-		setBackground(Sprites.ListBack);
+		setBackground(ListBack);
 		int maxNumTiles = 0;
 		// calculate max Map Tile cache
 		try {
@@ -389,7 +391,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 								if(apiCaches.size()>0){
 									Cache c = apiCaches.get(0);
 									if (c.getGcCode() == GcCode) {
-										c.setApiStatus(Cache.NOTLITE);
+										c.setApiStatus(NOT_LITE);
 									}
 									GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
 								}else{
@@ -587,7 +589,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				direction = 180 - direction;
 
 				// draw sprite
-				Sprite arrow = Sprites.Arrows.get(4);
+				Sprite arrow = Arrows.get(4);
 				arrow.setRotation(direction);
 
 				float boundsX = newTarget.x - GL_UISizes.TargetArrow.halfWidth;
@@ -670,7 +672,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		if ((aktZoom >= zoomCross) && (wpi.Selected) && (wpi.Waypoint == GlobalCore.getSelectedWaypoint())) {
 			// Draw Cross and move screen vector
-			Sprite cross = Sprites.getMapOverlay(3);
+			Sprite cross = getMapOverlay(IconName.cross);
 			cross.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight, WpUnderlay.width, WpUnderlay.height);
 			cross.draw(batch);
 
@@ -689,7 +691,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		// draw Favorite symbol
 		if (wpi.Cache != null && wpi.Cache.isFavorite()) {
-			batch.draw(Sprites.getSprite(IconName.favorit.name()), screen.x + (WpSize.halfWidth / 2), screen.y + (WpSize.halfHeight / 2), WpSize.width, WpSize.height);
+			batch.draw(getSprite(IconName.favorit.name()), screen.x + (WpSize.halfWidth / 2), screen.y + (WpSize.halfHeight / 2), WpSize.width, WpSize.height);
 		}
 
 		if (wpi.OverlayIcon != null) {
@@ -701,7 +703,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		// Rating des Caches darstellen
 		if (wpi.Cache != null && showRating && (!drawAsWaypoint) && (wpi.Cache.Rating > 0) && (aktZoom >= 15)) {
-			Sprite rating = Sprites.MapStars.get((int) Math.min(wpi.Cache.Rating * 2, 5 * 2));
+			Sprite rating = MapStars.get((int) Math.min(wpi.Cache.Rating * 2, 5 * 2));
 			rating.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight - WpUnderlay.Height4_8, WpUnderlay.width, WpUnderlay.Height4_8);
 			rating.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
 			rating.setRotation(0);
@@ -727,13 +729,13 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		// Show D/T-Rating
 		if (wpi.Cache != null && showDT && (!drawAsWaypoint) && (aktZoom >= 15)) {
-			Sprite difficulty = Sprites.MapStars.get((int) Math.min(wpi.Cache.getDifficulty() * 2, 5 * 2));
+			Sprite difficulty = MapStars.get((int) Math.min(wpi.Cache.getDifficulty() * 2, 5 * 2));
 			difficulty.setBounds(screen.x - WpUnderlay.width - GL_UISizes.infoShadowHeight, screen.y - (WpUnderlay.Height4_8 / 2), WpUnderlay.width, WpUnderlay.Height4_8);
 			difficulty.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
 			difficulty.setRotation(90);
 			difficulty.draw(batch);
 
-			Sprite terrain = Sprites.MapStars.get((int) Math.min(wpi.Cache.getTerrain() * 2, 5 * 2));
+			Sprite terrain = MapStars.get((int) Math.min(wpi.Cache.getTerrain() * 2, 5 * 2));
 			terrain.setBounds(screen.x + GL_UISizes.infoShadowHeight, screen.y - (WpUnderlay.Height4_8 / 2), WpUnderlay.width, WpUnderlay.Height4_8);
 			terrain.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
 			terrain.setRotation(90);

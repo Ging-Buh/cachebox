@@ -288,8 +288,10 @@ public class splash extends MainViewBase {
 	 * Load Sprites
 	 */
 	private void ini_Sprites() {
-		Log.debug(log, "ini_Sprites");
+		Log.info(log, "ini_Sprites");
 		Sprites.loadSprites(false);
+		if (!Sprites.loaded)
+			Log.err(log,"Error ini_Sprites");
 	}
 
 	/**

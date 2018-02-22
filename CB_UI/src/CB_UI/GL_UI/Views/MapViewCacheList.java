@@ -30,10 +30,11 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Map.Descriptor;
 import CB_UI.GlobalCore;
-import CB_UI_Base.GL_UI.Sprites;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.MoveableList;
+
+import static CB_UI_Base.GL_UI.Sprites.*;
 
 /**
  * @author ging-buh
@@ -160,7 +161,7 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 									wpi.MapX = (float) MapX;
 									wpi.MapY = (float) MapY;
 									if (cache.isArchived() || !cache.isAvailable())
-										wpi.OverlayIcon = Sprites.getMapOverlay(2);
+										wpi.OverlayIcon = getMapOverlay(IconName.deact);
 									wpi.UnderlayIcon = getUnderlayIcon(cache, null, iconSize);
 									wpi.Icon = getCacheIcon(cache, iconSize);
 									wpi.Cache = cache;
@@ -247,9 +248,9 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 
 	private Sprite getWaypointIcon(Waypoint waypoint) {
 		if ((waypoint.Type == CacheTypes.MultiStage) && (waypoint.IsStart))
-			return Sprites.getSprite("mapMultiStageStartP"); //
+			return getSprite("mapMultiStageStartP"); //
 		else
-			return Sprites.getSprite("map" + waypoint.Type.name());
+			return getSprite("map" + waypoint.Type.name());
 	}
 
 	private Sprite getCacheIcon(Cache cache, int iconSize) {
@@ -263,17 +264,17 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 
 	private Sprite getMapIcon(Cache cache) {
 		if (cache.ImTheOwner())
-			return Sprites.getSprite("star");
+			return getSprite("star");
 		else if (cache.isFound())
-			return Sprites.getSprite("mapFound");
+			return getSprite("mapFound");
 		else if ((cache.Type == CacheTypes.Mystery) && cache.CorrectedCoordiantesOrMysterySolved())
-			return Sprites.getSprite("mapSolved");
+			return getSprite("mapSolved");
 		else if ((cache.Type == CacheTypes.Multi) && cache.HasStartWaypoint())
-			return Sprites.getSprite("mapMultiStartP"); // Multi mit Startpunkt
+			return getSprite("mapMultiStartP"); // Multi mit Startpunkt
 		else if ((cache.Type == CacheTypes.Mystery) && cache.HasStartWaypoint())
-			return Sprites.getSprite("mapMysteryStartP"); // Mystery ohne Final aber mit Startpunkt
+			return getSprite("mapMysteryStartP"); // Mystery ohne Final aber mit Startpunkt
 		else
-			return Sprites.getSprite("map" + cache.Type.name());
+			return getSprite("map" + cache.Type.name());
 	}
 
 	private Sprite getSmallMapIcon(Cache cache) {
@@ -309,9 +310,9 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 				icon = "small5";
 				break;
 			case MyParking:
-				return Sprites.getSprite("map" + cache.Type.name());
+				return getSprite("map" + cache.Type.name());
 			case Munzee:
-				return Sprites.getSprite("map" + cache.Type.name());
+				return getSprite("map" + cache.Type.name());
 			default:
 				break;
 			}
@@ -320,7 +321,7 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 		if (cache.isArchived() || !cache.isAvailable())
 			icon = icon + "no";
 
-		return Sprites.getSprite(icon + solved);
+		return getSprite(icon + solved);
 
 	}
 
@@ -337,22 +338,22 @@ public class MapViewCacheList implements CacheListChangedEventListener {
 				if ((cache == null) || selectedCache) {
 					if (cache.isLive()) {// set color for underlayIcon to blue if this a LiveCache
 
-						return Sprites.getMapOverlay(5);
+						return getMapOverlay(IconName.liveSelected);
 					}
-					return Sprites.getMapOverlay(1);
+					return getMapOverlay(IconName.shaddowrectselected);
 				} else {
 					if (cache.isLive()) {// set color for underlayIcon to blue if this a LiveCache
 
-						return Sprites.getMapOverlay(4);
+						return getMapOverlay(IconName.live);
 					}
 
-					return Sprites.getMapOverlay(0);
+					return getMapOverlay(IconName.shaddowrect);
 				}
 			} else {
 				if (waypoint == GlobalCore.getSelectedWaypoint()) {
-					return Sprites.getMapOverlay(1);
+					return getMapOverlay(IconName.shaddowrectselected);
 				} else {
-					return Sprites.getMapOverlay(0);
+					return getMapOverlay(IconName.shaddowrect);
 				}
 			}
 		}

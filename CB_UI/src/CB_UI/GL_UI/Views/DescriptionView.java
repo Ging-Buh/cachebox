@@ -18,7 +18,6 @@ package CB_UI.GL_UI.Views;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import CB_Utils.Log.Log;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.graphics.Color;
@@ -91,7 +90,7 @@ public class DescriptionView extends CB_View_Base {
 
         resetUi();
 
-        if (sel.isLive() || sel.getApiStatus() == Cache.ISLITE) {
+        if (sel.isLive() || sel.getApiStatus() == Cache.IS_LITE) {
             showDownloadButton();
         } else {
             showWebView();
