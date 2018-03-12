@@ -1,40 +1,43 @@
 package CB_Locator.Map;
 
-import java.io.InputStream;
-
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
+import java.io.InputStream;
 
 public enum CB_InternalRenderTheme implements XmlRenderTheme {
 
-	DEFAULT("osmarender/", "default.xml"), OSMARENDER("osmarender/", "osmarender.xml"), CAR("cartheme/", "cartheme.xml");
+    DEFAULT("osmarender/", "default.xml"), OSMARENDER("osmarender/", "osmarender.xml"), CAR("cartheme/", "cartheme.xml");
 
-	private final String absolutePath;
-	private final String fileName;
-	private final FileHandle fileHandle;
+    private final String absolutePath;
+    private final String fileName;
+    private final FileHandle fileHandle;
 
-	private CB_InternalRenderTheme(String absolutePath, String file) {
-		this.absolutePath = absolutePath;
-		this.fileName = file;
-		fileHandle = Gdx.files.classpath(this.absolutePath + this.fileName);
-	}
+    private CB_InternalRenderTheme(String absolutePath, String file) {
+        this.absolutePath = absolutePath;
+        this.fileName = file;
+        fileHandle = Gdx.files.classpath(this.absolutePath + this.fileName);
+    }
 
-	@Override
-	public String getRelativePathPrefix() {
-		return "/" + this.absolutePath;
-		// return this.absolutePath;
-	}
+    public String getAbsoluteFileName() {
+        return fileHandle.file().getAbsolutePath();
+    }
 
-	@Override
-	public InputStream getRenderThemeAsStream() {
-		return fileHandle.read();
-	}
+    @Override
+    public String getRelativePathPrefix() {
+        return "/" + this.absolutePath;
+        // return this.absolutePath;
+    }
 
-	@Override
-	public XmlRenderThemeMenuCallback getMenuCallback() {
-		return null;
-	}
+    @Override
+    public InputStream getRenderThemeAsStream() {
+        return fileHandle.read();
+    }
+
+    @Override
+    public XmlRenderThemeMenuCallback getMenuCallback() {
+        return null;
+    }
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -16,49 +16,41 @@
 
 package CB_UI.GL_UI.Main.Actions;
 
-import java.util.*;
-
-import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.rendertheme.ExternalRenderTheme;
-import org.mapsforge.map.rendertheme.XmlRenderTheme;
-import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
-import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
-import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
-import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
-
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-
 import CB_Locator.LocatorSettings;
+import CB_Locator.Map.CB_InternalRenderTheme;
 import CB_Locator.Map.Layer;
 import CB_Locator.Map.ManagerBase;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.TrackRecorder;
 import CB_UI.GL_UI.Activitys.MapDownload;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GL_UI.Views.MapView.MapMode;
+import CB_UI.TrackRecorder;
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
-import CB_UI_Base.GL_UI.Sprites;
-import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
-import CB_UI_Base.GL_UI.Menu.Menu;
-import CB_UI_Base.GL_UI.Menu.MenuID;
-import CB_UI_Base.GL_UI.Menu.MenuItem;
-import CB_UI_Base.GL_UI.Menu.MenuItemBase;
-import CB_UI_Base.GL_UI.Menu.OptionMenu;
+import CB_UI_Base.GL_UI.Menu.*;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_Utils.Log.Log;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import org.mapsforge.map.model.DisplayModel;
+import org.mapsforge.map.rendertheme.*;
+import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
+
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * @author Longri
@@ -478,6 +470,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
 
     private Menu mRenderThemesSelectionMenu;
     int menuID;
+
     private void addRenderTheme(String theme, String PaN, int which) {
         MenuItem mi = mRenderThemesSelectionMenu.addItem(menuID++, "", theme); // ohne Translation
         mi.setData(which);
@@ -497,8 +490,6 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
                 compare = Config.MapsforgeCarNightTheme.getValue();
                 break;
         }
-        if (compare.length() == 0)
-            compare = ManagerBase.INTERNAL_THEME_DEFAULT;
         if (compare.equals(PaN)) {
             mi.setChecked(true);
         }
@@ -509,7 +500,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         mRenderThemesSelectionMenu = new Menu("RenderThemesSubMenu");
         final HashMap<String, String> RenderThemes = getRenderThemes();
         int menuID = 0;
-        addRenderTheme(ManagerBase.INTERNAL_THEME_DEFAULT, ManagerBase.INTERNAL_THEME_DEFAULT, which);
+        addRenderTheme(ManagerBase.INTERNAL_THEME_DEFAULT, CB_InternalRenderTheme.DEFAULT.getAbsoluteFileName(), which);
         ArrayList<String> themes = new ArrayList<String>();
         for (String theme : RenderThemes.keySet()) themes.add(theme);
         Collections.sort(themes, new Comparator<String>() {
@@ -521,13 +512,18 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         for (String theme : themes) {
             addRenderTheme(theme, RenderThemes.get(theme), which);
         }
-        addRenderTheme(ManagerBase.INTERNAL_THEME_CAR, ManagerBase.INTERNAL_THEME_CAR, which);
-        addRenderTheme(ManagerBase.INTERNAL_THEME_OSMARENDER, ManagerBase.INTERNAL_THEME_OSMARENDER, which);
+        addRenderTheme(ManagerBase.INTERNAL_THEME_CAR, CB_InternalRenderTheme.CAR.getAbsoluteFileName(), which);
+        addRenderTheme(ManagerBase.INTERNAL_THEME_OSMARENDER, CB_InternalRenderTheme.OSMARENDER.getAbsoluteFileName(), which);
+
+        // for showStyleSelection to work
+        RenderThemes.put(ManagerBase.INTERNAL_THEME_DEFAULT, CB_InternalRenderTheme.DEFAULT.getAbsoluteFileName());
+        RenderThemes.put(ManagerBase.INTERNAL_THEME_CAR, CB_InternalRenderTheme.CAR.getAbsoluteFileName());
+        RenderThemes.put(ManagerBase.INTERNAL_THEME_OSMARENDER, CB_InternalRenderTheme.OSMARENDER.getAbsoluteFileName());
 
         mRenderThemesSelectionMenu.addOnClickListener(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                showStyleSelection((int) ((MenuItem) v).getData(), RenderThemes.get(((MenuItem) v).getTitle()));
+                showStyleSelection((int) ((MenuItem) v).getData(),  RenderThemes.get(((MenuItem) v).getTitle()));
                 return true;
             }
         });
