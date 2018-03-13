@@ -3,8 +3,8 @@
 ### Installation der Karten:
 Kopiere die Dateien mit der Erweiterung map auf dein Smartphone
 
-a) in das <Arbeitsordner>/repository/maps Verzeichnis oder  
-b) in das <Arbeitsordner>/Repositories/<eigenes Repository>/Maps Verzeichnis oder  
+a) in das &lt;Arbeitsordner&gt;/repository/maps Verzeichnis oder  
+b) in das &lt;Arbeitsordner&gt;/Repositories/&lt;eigenes Repository&gt;/Maps Verzeichnis oder  
 c) in das globale Kartenverzeichnis, das du in den Einstellungen für Fortgeschrittene einstellen kannst. (Karte/Ordner für Kartenpakete)  
 
 ### Installation der Renderthemes:
