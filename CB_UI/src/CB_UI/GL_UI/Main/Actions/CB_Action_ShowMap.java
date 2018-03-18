@@ -500,7 +500,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         mRenderThemesSelectionMenu = new Menu("RenderThemesSubMenu");
         final HashMap<String, String> RenderThemes = getRenderThemes();
         int menuID = 0;
-        addRenderTheme(ManagerBase.INTERNAL_THEME_DEFAULT, CB_InternalRenderTheme.DEFAULT.getAbsoluteFileName(), which);
+        addRenderTheme(ManagerBase.INTERNAL_THEME_DEFAULT, ManagerBase.INTERNAL_THEME_DEFAULT, which);
         ArrayList<String> themes = new ArrayList<String>();
         for (String theme : RenderThemes.keySet()) themes.add(theme);
         Collections.sort(themes, new Comparator<String>() {
@@ -512,13 +512,13 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         for (String theme : themes) {
             addRenderTheme(theme, RenderThemes.get(theme), which);
         }
-        addRenderTheme(ManagerBase.INTERNAL_THEME_CAR, CB_InternalRenderTheme.CAR.getAbsoluteFileName(), which);
-        addRenderTheme(ManagerBase.INTERNAL_THEME_OSMARENDER, CB_InternalRenderTheme.OSMARENDER.getAbsoluteFileName(), which);
+        addRenderTheme(ManagerBase.INTERNAL_THEME_CAR, ManagerBase.INTERNAL_THEME_CAR, which);
+        addRenderTheme(ManagerBase.INTERNAL_THEME_OSMARENDER, ManagerBase.INTERNAL_THEME_OSMARENDER, which);
 
         // for showStyleSelection to work
-        RenderThemes.put(ManagerBase.INTERNAL_THEME_DEFAULT, CB_InternalRenderTheme.DEFAULT.getAbsoluteFileName());
-        RenderThemes.put(ManagerBase.INTERNAL_THEME_CAR, CB_InternalRenderTheme.CAR.getAbsoluteFileName());
-        RenderThemes.put(ManagerBase.INTERNAL_THEME_OSMARENDER, CB_InternalRenderTheme.OSMARENDER.getAbsoluteFileName());
+        RenderThemes.put(ManagerBase.INTERNAL_THEME_DEFAULT, ManagerBase.INTERNAL_THEME_DEFAULT);
+        RenderThemes.put(ManagerBase.INTERNAL_THEME_CAR, ManagerBase.INTERNAL_THEME_CAR);
+        RenderThemes.put(ManagerBase.INTERNAL_THEME_OSMARENDER, ManagerBase.INTERNAL_THEME_OSMARENDER);
 
         mRenderThemesSelectionMenu.addOnClickListener(new OnClickListener() {
             @Override
@@ -536,6 +536,8 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         final Menu lStyle = new Menu("Style");
 
         int menuID = 0;
+        // getThemeStyles works only for External Themes
+        // Internal Themes have no XmlRenderThemeMenuCallback
         HashMap<String, String> ThemeStyles = getThemeStyles(selectedTheme);
         String ThemeStyle = "";
         for (String style : ThemeStyles.keySet()) {
@@ -572,7 +574,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
             }
             showOverlaySelection(ThemeStyle + "|" + which + "|" + selectedTheme, StyleOverlays, ConfigStyle);
         } else {
-            // there is no style
+            // there is no style (p.ex. internal Theme)
             // style of Config will be ignored while setting of Theme
             setConfig("|" + which + "|" + selectedTheme);
             Config.AcceptChanges();

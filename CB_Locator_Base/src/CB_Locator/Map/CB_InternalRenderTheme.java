@@ -21,10 +21,6 @@ public enum CB_InternalRenderTheme implements XmlRenderTheme {
         fileHandle = Gdx.files.classpath(this.absolutePath + this.fileName);
     }
 
-    public String getAbsoluteFileName() {
-        return fileHandle.file().getAbsolutePath();
-    }
-
     @Override
     public String getRelativePathPrefix() {
         return "/" + this.absolutePath;

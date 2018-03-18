@@ -43,7 +43,7 @@ Sebastian Wimmer, s.wimmer@web.de
 				<area fill="#e8f0e1" />
 			</rule>
 			<rule e="way" k="natural" v="marsh|wetland">
-				<area src="jar:cartheme/patterns/marsh.png" />
+				<area src="jar:patterns/marsh.png" />
 			</rule>
 
 			<rule e="way" k="*" v="*" zoom-min="15">
@@ -398,11 +398,11 @@ Sebastian Wimmer, s.wimmer@web.de
 
 					<rule e="way" k="highway" v="*" zoom-min="16">
 						<rule e="way" k="access" v="destination">
-							<line src="jar:cartheme/patterns/access-destination.png"
+							<line src="jar:patterns/access-destination.png"
 								stroke-width="1.5" />
 						</rule>
 						<rule e="way" k="access" v="private">
-							<line src="jar:cartheme/patterns/access-private.png" stroke-width="1.5" />
+							<line src="jar:patterns/access-private.png" stroke-width="1.5" />
 						</rule>
 					</rule>
 				</rule>
@@ -449,7 +449,7 @@ Sebastian Wimmer, s.wimmer@web.de
 			<rule e="way" k="area" v="~|false|no">
 				<rule e="way" k="highway" v="*">
 					<rule e="way" k="oneway" v="yes|true" zoom-min="16">
-						<lineSymbol src="jar:cartheme/symbols/oneway.png"
+						<lineSymbol src="jar:symbols/oneway.png"
 							align-center="true" repeat="true" />
 					</rule>
 				</rule>
@@ -548,88 +548,88 @@ Sebastian Wimmer, s.wimmer@web.de
 		<!-- amenity -->
 		<rule e="way" k="amenity" v="*">
 			<rule e="way" k="amenity" v="atm" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/atm.png" />
+				<symbol src="jar:symbols/atm.png" />
 			</rule>
 			<rule e="way" k="amenity" v="bank" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/bank.png" />
+				<symbol src="jar:symbols/bank.png" />
 			</rule>
 			<rule e="way" k="amenity" v="bench" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/bench.png" />
+				<symbol src="jar:symbols/bench.png" />
 			</rule>
 			<rule e="way" k="amenity" v="bicycle_rental" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/bicycle_rental.png" />
+				<symbol src="jar:symbols/bicycle_rental.png" />
 			</rule>
 			<rule e="way" k="amenity" v="bus_station" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/bus_sta.png" />
+				<symbol src="jar:symbols/bus_sta.png" />
 			</rule>
 			<rule e="way" k="amenity" v="cafe" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/cafe.png" />
+				<symbol src="jar:symbols/cafe.png" />
 			</rule>
 			<rule e="way" k="amenity" v="cinema" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/cinema.png" />
+				<symbol src="jar:symbols/cinema.png" />
 			</rule>
 			<rule e="way" k="amenity" v="drinking_water" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/drinking_water.png" />
+				<symbol src="jar:symbols/drinking_water.png" />
 			</rule>
 			<rule e="way" k="amenity" v="fast_food" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/fastfood.png" />
+				<symbol src="jar:symbols/fastfood.png" />
 			</rule>
 			<rule e="way" k="amenity" v="fire_station" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/firebrigade.png" />
+				<symbol src="jar:symbols/firebrigade.png" />
 			</rule>
 			<rule e="way" k="amenity" v="fountain" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/fountain.png" />
+				<symbol src="jar:symbols/fountain.png" />
 			</rule>
 			<rule e="way" k="amenity" v="fuel" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/petrolStation.png" />
+				<symbol src="jar:symbols/petrolStation.png" />
 			</rule>
 			<rule e="way" k="amenity" v="hospital" zoom-min="15">
-				<symbol src="jar:cartheme/symbols/hospital.png" />
+				<symbol src="jar:symbols/hospital.png" />
 			</rule>
 			<rule e="way" k="amenity" v="kindergarten" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/kindergarten.png" />
+				<symbol src="jar:symbols/kindergarten.png" />
 			</rule>
 			<rule e="way" k="amenity" v="library" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/library.png" />
+				<symbol src="jar:symbols/library.png" />
 			</rule>
 			<rule e="way" k="amenity" v="parking" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/parking.png" />
+				<symbol src="jar:symbols/parking.png" />
 			</rule>
 			<rule e="way" k="amenity" v="pharmacy" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/pharmacy.png" />
+				<symbol src="jar:symbols/pharmacy.png" />
 			</rule>
 			<rule e="way" k="amenity" v="post_box" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/postbox.png" />
+				<symbol src="jar:symbols/postbox.png" />
 			</rule>
 			<rule e="way" k="amenity" v="post_office" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/postoffice.png" />
+				<symbol src="jar:symbols/postoffice.png" />
 			</rule>
 			<rule e="way" k="amenity" v="pub|bar" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/pub.png" />
+				<symbol src="jar:symbols/pub.png" />
 			</rule>
 			<rule e="way" k="amenity" v="recycling" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/recycling.png" />
+				<symbol src="jar:symbols/recycling.png" />
 			</rule>
 			<rule e="way" k="amenity" v="restaurant" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/restaurant.png" />
+				<symbol src="jar:symbols/restaurant.png" />
 			</rule>
 			<rule e="way" k="amenity" v="school" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/school.png" />
+				<symbol src="jar:symbols/school.png" />
 			</rule>
 			<rule e="way" k="amenity" v="shelter" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/shelter.png" />
+				<symbol src="jar:symbols/shelter.png" />
 			</rule>
 			<rule e="way" k="amenity" v="telephone" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/telephone.png" />
+				<symbol src="jar:symbols/telephone.png" />
 			</rule>
 			<rule e="way" k="amenity" v="theatre" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/theatre.png" />
+				<symbol src="jar:symbols/theatre.png" />
 			</rule>
 			<rule e="way" k="amenity" v="toilets" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/toilets.png" />
+				<symbol src="jar:symbols/toilets.png" />
 			</rule>
 			<rule e="way" k="amenity" v="university|college" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/university.png" />
+				<symbol src="jar:symbols/university.png" />
 			</rule>
 
 			<rule e="way" k="*" v="*" zoom-min="13">
@@ -647,10 +647,10 @@ Sebastian Wimmer, s.wimmer@web.de
 		<!-- aeroway -->
 		<rule e="node" k="aeroway" v="*">
 			<rule e="node" k="aeroway" v="helipad" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/helipad.png" />
+				<symbol src="jar:symbols/helipad.png" />
 			</rule>
 			<rule e="node" k="aeroway" v="aerodrome|airport" zoom-max="13">
-				<symbol src="jar:cartheme/symbols/airport.png" />
+				<symbol src="jar:symbols/airport.png" />
 			</rule>
 		</rule>
 
@@ -658,91 +658,91 @@ Sebastian Wimmer, s.wimmer@web.de
 		<!-- amenity -->
 		<rule e="node" k="amenity" v="*">
 		    <rule e="node" k="amenity" v="fuel" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/petrolStation.png" />
+				<symbol src="jar:symbols/petrolStation.png" />
 			</rule>
 		    <rule e="node" k="amenity" v="parking" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/parking.png" />
+				<symbol src="jar:symbols/parking.png" />
 			</rule>
 			
 			<rule e="node" k="amenity" v="atm" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/atm.png" />
+				<symbol src="jar:symbols/atm.png" />
 			</rule>
 			<rule e="node" k="amenity" v="bank" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/bank.png" />
+				<symbol src="jar:symbols/bank.png" />
 			</rule>
 			<rule e="node" k="amenity" v="bench" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/bench.png" />
+				<symbol src="jar:symbols/bench.png" />
 			</rule>
 			<rule e="node" k="amenity" v="bicycle_rental" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/bicycle_rental.png" />
+				<symbol src="jar:symbols/bicycle_rental.png" />
 			</rule>
 			<rule e="node" k="amenity" v="bus_station" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/bus_sta.png" />
+				<symbol src="jar:symbols/bus_sta.png" />
 			</rule>
 			<rule e="node" k="amenity" v="cafe" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/cafe.png" />
+				<symbol src="jar:symbols/cafe.png" />
 			</rule>
 			<rule e="node" k="amenity" v="cinema" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/cinema.png" />
+				<symbol src="jar:symbols/cinema.png" />
 			</rule>
 			<rule e="node" k="amenity" v="drinking_water" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/drinking_water.png" />
+				<symbol src="jar:symbols/drinking_water.png" />
 			</rule>
 			<rule e="node" k="amenity" v="fast_food" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/fastfood.png" />
+				<symbol src="jar:symbols/fastfood.png" />
 			</rule>
 			<rule e="node" k="amenity" v="fire_station" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/firebrigade.png" />
+				<symbol src="jar:symbols/firebrigade.png" />
 			</rule>
 			<rule e="node" k="amenity" v="fountain" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/fountain.png" />
+				<symbol src="jar:symbols/fountain.png" />
 			</rule>
 			
 			<rule e="node" k="amenity" v="hospital" zoom-min="15">
-				<symbol src="jar:cartheme/symbols/hospital.png" />
+				<symbol src="jar:symbols/hospital.png" />
 			</rule>
 			<rule e="node" k="amenity" v="kindergarten" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/kindergarten.png" />
+				<symbol src="jar:symbols/kindergarten.png" />
 			</rule>
 			<rule e="node" k="amenity" v="library" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/library.png" />
+				<symbol src="jar:symbols/library.png" />
 			</rule>
 			
 			<rule e="node" k="amenity" v="pharmacy" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/pharmacy.png" />
+				<symbol src="jar:symbols/pharmacy.png" />
 			</rule>
 			<rule e="node" k="amenity" v="post_box" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/postbox.png" />
+				<symbol src="jar:symbols/postbox.png" />
 			</rule>
 			<rule e="node" k="amenity" v="post_office" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/postoffice.png" />
+				<symbol src="jar:symbols/postoffice.png" />
 			</rule>
 			<rule e="node" k="amenity" v="pub|bar" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/pub.png" />
+				<symbol src="jar:symbols/pub.png" />
 			</rule>
 			<rule e="node" k="amenity" v="recycling" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/recycling.png" />
+				<symbol src="jar:symbols/recycling.png" />
 			</rule>
 			<rule e="node" k="amenity" v="restaurant" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/restaurant.png" />
+				<symbol src="jar:symbols/restaurant.png" />
 			</rule>
 			<rule e="node" k="amenity" v="school" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/school.png" />
+				<symbol src="jar:symbols/school.png" />
 			</rule>
 			<rule e="node" k="amenity" v="shelter" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/shelter.png" />
+				<symbol src="jar:symbols/shelter.png" />
 			</rule>
 			<rule e="node" k="amenity" v="telephone" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/telephone.png" />
+				<symbol src="jar:symbols/telephone.png" />
 			</rule>
 			<rule e="node" k="amenity" v="theatre" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/theatre.png" />
+				<symbol src="jar:symbols/theatre.png" />
 			</rule>
 			<rule e="node" k="amenity" v="toilets" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/toilets.png" />
+				<symbol src="jar:symbols/toilets.png" />
 			</rule>
 			<rule e="node" k="amenity" v="university|college" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/university.png" />
+				<symbol src="jar:symbols/university.png" />
 			</rule>
 
 			<rule e="node" k="*" v="*" zoom-min="13">
@@ -760,10 +760,10 @@ Sebastian Wimmer, s.wimmer@web.de
 		<!-- highway -->
 		<rule e="node" k="highway" v="*">
 			<rule e="node" k="highway" v="bus_stop" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/bus.png" />
+				<symbol src="jar:symbols/bus.png" />
 			</rule>
 			<rule e="node" k="highway" v="traffic_signals" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/traffic_signal.png" />
+				<symbol src="jar:symbols/traffic_signal.png" />
 			</rule>
 			<rule e="node" k="highway" v="turning_circle">
 				<circle radius="1.4" scale-radius="true" fill="#ffffff" />
@@ -774,13 +774,13 @@ Sebastian Wimmer, s.wimmer@web.de
 		
 		<!-- leisure -->
 		<rule e="node" k="leisure" v="playground" zoom-min="13">
-			<symbol src="jar:cartheme/symbols/playground.png" />
+			<symbol src="jar:symbols/playground.png" />
 		</rule>
 
 
 		<!-- man_made -->
 		<rule e="node" k="man_made" v="windmill" zoom-min="13">
-			<symbol src="jar:cartheme/symbols/windmill.png" />
+			<symbol src="jar:symbols/windmill.png" />
 		</rule>
 
 		
@@ -788,10 +788,10 @@ Sebastian Wimmer, s.wimmer@web.de
 		<!-- railway -->
 		<rule e="node" k="railway" v="*">
 			<rule e="node" k="railway" v="crossing" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/railway-crossing-small.png" />
+				<symbol src="jar:symbols/railway-crossing-small.png" />
 			</rule>
 			<rule e="node" k="railway" v="level_crossing" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/railway-crossing.png" />
+				<symbol src="jar:symbols/railway-crossing.png" />
 			</rule>
 			<rule e="node" k="railway" v="station" zoom-min="14">
 				<circle radius="6" fill="#ec2d2d" stroke="#606060" stroke-width="1.5" />
@@ -807,22 +807,22 @@ Sebastian Wimmer, s.wimmer@web.de
 		<!-- tourism -->
 		<rule e="node" k="tourism" v="*">
 			<rule e="node" k="tourism" v="alpine_hut" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/alpine_hut.png" />
+				<symbol src="jar:symbols/alpine_hut.png" />
 			</rule>
 			<rule e="node" k="tourism" v="camp_site" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/campSite.png" />
+				<symbol src="jar:symbols/campSite.png" />
 			</rule>
 			<rule e="node" k="tourism" v="hostel" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/hostel.png" />
+				<symbol src="jar:symbols/hostel.png" />
 			</rule>
 			<rule e="node" k="tourism" v="hotel" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/hotel.png" />
+				<symbol src="jar:symbols/hotel.png" />
 			</rule>
 			<rule e="node" k="tourism" v="information" zoom-min="13">
-				<symbol src="jar:cartheme/symbols/information.png" />
+				<symbol src="jar:symbols/information.png" />
 			</rule>
 			<rule e="node" k="tourism" v="viewpoint" zoom-min="15">
-				<symbol src="jar:cartheme/symbols/viewpoint.png" />
+				<symbol src="jar:symbols/viewpoint.png" />
 			</rule>
 
 			<rule e="node" k="*" v="*" zoom-min="13">
