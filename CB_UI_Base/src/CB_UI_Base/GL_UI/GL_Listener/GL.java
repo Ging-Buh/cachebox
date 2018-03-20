@@ -1494,10 +1494,12 @@ public class GL implements ApplicationListener, InputProcessor {
 
 		// Center Menu on Screen
 		float x = (width - dialog.getWidth()) / 2;
-		float y = (height - dialog.getHeight()) / 2;
+		float y;
 
 		if (atTop)
-			y = height - dialog.getHeight() - (UI_Size_Base.that.getMargin() * 4);
+			y = height - dialog.getHeight();// - (UI_Size_Base.that.getMargin() * 4);
+		else
+			y = (height - dialog.getHeight()) / 2;
 
 		dialog.setPos(x, y);
 

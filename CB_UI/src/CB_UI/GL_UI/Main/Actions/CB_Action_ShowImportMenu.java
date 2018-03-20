@@ -111,7 +111,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
 					imp.show();
 				} else if (((MenuItem) v).getMenuItemId() == MenuID.MI_EXPORT_RUN) {
 					// ExportFileName
-					StringInputBox.Show(WrapType.SINGLELINE, "Message", Translation.Get("enterFileName"), FileIO.GetFileName(Config.gpxExportFileName.getValue()), new OnMsgBoxClickListener() {
+					StringInputBox.Show(WrapType.SINGLELINE, Translation.Get("enterFileName"), ((MenuItem) v).getTitle(), FileIO.GetFileName(Config.gpxExportFileName.getValue()), new OnMsgBoxClickListener() {
 						@Override
 						public boolean onClick(int which, Object data) {
 							if (which == 1) {

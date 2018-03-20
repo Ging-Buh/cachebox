@@ -133,7 +133,7 @@ public class GL_MsgBox extends Dialog {
 
 		if (remember != null && remember.getValue()) {
 			// wir brauchen die MsgBox nicht anzeigen, da der User die Remember Funktion gesetzt hat!
-			// Wir liefern nur ein On Click auf den OK Button zur�ck!
+			// Wir liefern nur ein On Click auf den OK Button zurück!
 			if (Listener != null) {
 				Listener.onClick(BUTTON_NEGATIVE, null);
 			}
@@ -141,7 +141,7 @@ public class GL_MsgBox extends Dialog {
 		}
 
 		// nur damit bei mir die Box maximiert kommt und damit der Text nicht skaliert.
-		// !!! gilt f�r alle Dialoge, da statisch definiert. K�nnte es auch dort �ndern.
+		// !!! gilt für alle Dialoge, da statisch definiert. Könnte es auch dort ändern.
 		Dialog.margin = 5;
 		final GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), true, (remember != null)), "MsgBox" + title);
 

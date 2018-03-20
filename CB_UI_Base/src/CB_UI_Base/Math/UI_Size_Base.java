@@ -102,7 +102,8 @@ public abstract class UI_Size_Base {
 	}
 
 	public int getButtonWidthWide() {
-		return (int) (Button.width * 1.6);
+		return (int) ( windowWidth - 4 * margin ) / 3 ;
+		// return (int) (Button.width * 1.6);
 	}
 
 	public SizeF getChkBoxSize() {
