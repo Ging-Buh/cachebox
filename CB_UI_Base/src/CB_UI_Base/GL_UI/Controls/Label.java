@@ -75,7 +75,7 @@ public class Label extends CB_View_Base {
      **/
     public Label() {
         super(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight(), "Label");
-        initLabel();
+        setText();
     }
 
     /**
@@ -84,7 +84,7 @@ public class Label extends CB_View_Base {
     public Label(String Text) {
         super(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight(), "Label");
         mText = Text == null ? "" : Text;
-        initLabel();
+        setText();
     }
 
     /**
@@ -100,31 +100,31 @@ public class Label extends CB_View_Base {
             mColor = fontColor;
         if (WrapType != null)
             mWrapType = WrapType;
-        initLabel();
+        setText();
     }
 
     public Label(String Name, float X, float Y, float Width, float Height, String Text) {
         super(X, Y, Width, Height, Name);
         mText = Text == null ? "" : Text;
-        initLabel();
+        setText();
     }
 
     public Label(String Name, float X, float Y, float Width, float Height) {
         super(X, Y, Width, Height, Name);
         mText = "";
-        initLabel();
+        setText();
     }
 
     public Label(String Name, CB_RectF rec, String Text) {
         super(rec, Name);
         mText = Text == null ? "" : Text;
-        initLabel();
+        setText();
     }
 
     public Label(String Name, CB_RectF rec) {
         super(rec, Name);
         mText = "";
-        initLabel();
+        setText();
     }
 
     public static int GDX_HAlignment(HAlignment ali) {
@@ -153,10 +153,6 @@ public class Label extends CB_View_Base {
             if (text.charAt(start) == ch)
                 return start;
         return n;
-    }
-
-    private void initLabel() {
-        setText();
     }
 
     @Override
@@ -397,8 +393,7 @@ public class Label extends CB_View_Base {
                 // Log.debug(log, "Label Text is too long: " + mText);
             }
         }
-        // bottom : text starts at yPosition, Text wird von hier aus unterhalb
-        // geschrieben (Descent ist negativ, daher -)
+        // bottom : text starts at yPosition, Text wird von hier aus unterhalb geschrieben (Descent ist negativ, daher -)
         float yPosition = bottomBorder + mFont.getCapHeight() - mFont.getDescent(); // VAlignment.BOTTOM
         if (mVAlignment == null)
             mVAlignment = VAlignment.CENTER;
@@ -464,11 +459,9 @@ public class Label extends CB_View_Base {
     }
 
     public Label setWrapType(WrapType WrapType) {
-        if (WrapType != null) {
-            if (WrapType != mWrapType) {
-                mWrapType = WrapType;
-                setText();
-            }
+        if (WrapType != mWrapType) {
+            mWrapType = WrapType;
+            setText();
         }
         return this;
     }
@@ -567,7 +560,7 @@ public class Label extends CB_View_Base {
         // todo den korrekten Font (original Fontgrösse nicht bekannt) setzen
         mFont = Fonts.getNormal();
         mColor = COLOR.getFontColor();
-        initLabel();
+        setText();
     }
 
     @Override

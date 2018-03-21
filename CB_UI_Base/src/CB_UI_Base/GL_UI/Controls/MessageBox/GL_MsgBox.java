@@ -225,6 +225,10 @@ public class GL_MsgBox extends Dialog {
 		return calcMsgBoxSize(Text, hasTitle, hasButtons, hasIcon, false);
 	}
 
+	/**
+	 * inits adding from bottomup
+	 * @param buttons
+	 */
 	public void setButtonCaptions(MessageBoxButtons buttons) {
 		if (buttons == MessageBoxButtons.YesNoRetry) {
 			createButtons(this, 3);
