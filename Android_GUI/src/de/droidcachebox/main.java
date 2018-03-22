@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014-2016 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,34 +15,6 @@
  */
 package de.droidcachebox;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.slf4j.LoggerFactory;
-
-import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.backends.android.AndroidApplication;
-import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.badlogic.gdx.backends.android.AndroidGraphics;
-import com.badlogic.gdx.backends.android.AndroidInput;
-import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
-
 import CB_Core.CacheListChangedEventList;
 import CB_Core.Database;
 import CB_Core.Database.DatabaseType;
@@ -53,18 +25,13 @@ import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Events.GpsStateChangeEventList;
 import CB_Locator.GpsStrength;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
 import CB_Locator.Locator.CompassType;
-import CB_Locator.Events.GpsStateChangeEventList;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.CB_UI_Settings;
-import CB_UI.Config;
-import CB_UI.GlobalCore;
-import CB_UI.SelectedCacheEvent;
-import CB_UI.SelectedCacheEventList;
-import CB_UI.TrackRecorder;
+import CB_UI.*;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Activitys.settings.SettingsActivity;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
@@ -73,129 +40,125 @@ import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.splash;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.Events.PlatformConnector.ICallUrl;
-import CB_UI_Base.Events.PlatformConnector.IGetApiKey;
-import CB_UI_Base.Events.PlatformConnector.IHardwarStateListener;
-import CB_UI_Base.Events.PlatformConnector.IQuit;
-import CB_UI_Base.Events.PlatformConnector.IShowViewListener;
-import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
-import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
-import CB_UI_Base.Events.PlatformConnector.iStartPictureApp;
+import CB_UI_Base.Events.PlatformConnector.*;
 import CB_UI_Base.Events.invalidateTextureEventList;
-import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.Sprites;
-import CB_UI_Base.GL_UI.ViewConst;
-import CB_UI_Base.GL_UI.ViewID;
-import CB_UI_Base.GL_UI.ViewID.UI_Pos;
-import CB_UI_Base.GL_UI.ViewID.UI_Type;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.IRunOnGL;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.ViewConst;
+import CB_UI_Base.GL_UI.ViewID;
+import CB_UI_Base.GL_UI.ViewID.UI_Pos;
+import CB_UI_Base.GL_UI.ViewID.UI_Type;
 import CB_UI_Base.Math.DevicesSizes;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
-import CB_Utils.MathUtils.CalculationType;
-import CB_Utils.Plattform;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.CB_SLF4J;
 import CB_Utils.Log.Log;
-import CB_Utils.Settings.PlatformSettings;
+import CB_Utils.MathUtils.CalculationType;
+import CB_Utils.Plattform;
+import CB_Utils.Settings.*;
 import CB_Utils.Settings.PlatformSettings.IPlatformSettings;
-import CB_Utils.Settings.SettingBase;
-import CB_Utils.Settings.SettingBool;
-import CB_Utils.Settings.SettingInt;
-import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.IChanged;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.content.pm.ActivityInfo;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.ResolveInfo;
-import android.content.pm.ServiceInfo;
 import android.content.res.Resources;
-import android.content.res.XmlResourceParser;
 import android.database.Cursor;
-import android.hardware.Camera;
+import android.hardware.*;
 import android.hardware.Camera.Parameters;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.location.GpsSatellite;
-import android.location.GpsStatus;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.location.*;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
-import android.view.ContextMenu;
+import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.view.ViewParent;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-import de.CB_PlugIn.IPlugIn;
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.backends.android.AndroidGraphics;
+import com.badlogic.gdx.backends.android.AndroidInput;
+import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import de.cb.sqlite.AndroidDB;
 import de.droidcachebox.CB_Texturepacker.Android_Packer;
 import de.droidcachebox.Components.CacheNameView;
 import de.droidcachebox.Custom_Controls.Mic_On_Flash;
-import de.droidcachebox.Custom_Controls.downSlider;
 import de.droidcachebox.Custom_Controls.QuickButtonList.HorizontalListView;
+import de.droidcachebox.Custom_Controls.downSlider;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.AndroidContentClipboard;
 import de.droidcachebox.Ui.AndroidTextClipboard;
 import de.droidcachebox.Views.DescriptionView;
-import de.droidcachebox.Views.JokerView;
-import de.droidcachebox.Views.ViewGL;
 import de.droidcachebox.Views.Forms.GcApiLogin;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.PleaseWaitMessageBox;
+import de.droidcachebox.Views.JokerView;
+import de.droidcachebox.Views.ViewGL;
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressLint("Wakelock")
 @SuppressWarnings("deprecation")
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.CacheListChangedEventListener, GpsStatus.NmeaListener, GpsStatus.Listener, CB_UI_Settings {
-
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(main.class);
+    public static AndroidApplication mainActivity;
+    public static ViewID aktViewId = null;
+    public static ViewID aktTabViewId = null;
+    public static DescriptionView descriptionView = null;
+    public static ViewGL viewGL = null;
+    public static LinearLayout strengthLayout;
+    public static Boolean isRestart = false;
+    public static Boolean isFirstStart = true;
+    public static LocationManager locationManager;
+    public static boolean ScreenLockOff = false;
     private static AndroidApplicationConfiguration gdxConfig = new AndroidApplicationConfiguration();
+    private static ServiceConnection mConnection;
+    private static BroadcastReceiver mReceiver;
+    private static JokerView jokerView = null; // ID 12
+    private static Uri uri;
+    private static CB_Locator.Location recordingStartCoordinate;
+    private static Boolean mVoiceRecIsStart = false;
+    /**
+     * For Use the Vibrator, Call vibrate(); So the User can switch of this in Settings
+     */
+    private static Vibrator vibrator;
 
     static {
         gdxConfig.numSamples = 2;
@@ -203,105 +166,141 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         gdxConfig.useCompass = true;
     }
 
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(main.class);
-    private static ServiceConnection mConnection;
-    private static BroadcastReceiver mReceiver;
+    private final boolean runsWithAkku = true;
+    private final ArrayList<ViewOptionsMenu> ViewList = new ArrayList<ViewOptionsMenu>();
+    private final AtomicBoolean waitForGL = new AtomicBoolean(false);
+    private final SensorEventListener mListener = new SensorEventListener() {
+        private final float orientationValues[] = new float[3];
+        private final float R[] = new float[9];
+        private final float I[] = new float[9];
+        private final float minChange = 0.5f;
+        private final long updateTime = 15;
+        private final RingBufferFloat ringBuffer = new RingBufferFloat(15);
+        private float[] gravity;
+        private float[] geomagnetic;
+        private long lastUpdateTime = 0;
+        private float orientation;
+        private float lastOrientation;
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
+                gravity = event.values;
+            long now = System.currentTimeMillis();
+            if (lastUpdateTime == 0 || lastUpdateTime + updateTime < now) {
+                if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+                    geomagnetic = event.values;
+                    if (gravity != null && geomagnetic != null) {
+                        if (SensorManager.getRotationMatrix(R, I, gravity, geomagnetic)) {
+                            SensorManager.getOrientation(R, orientationValues);
+                            orientation = ringBuffer.add((float) Math.toDegrees(orientationValues[0]));
+                            while (orientation < 0) {
+                                orientation += 360;
+                            }
+
+                            while (orientation > 360) {
+                                orientation -= 360;
+                            }
+
+                            if (Math.abs(lastOrientation - orientation) > minChange) {
+                                CB_Locator.Locator.setHeading(orientation, CompassType.Magnetic);
+                                // log.debug("orientation: {}", orientation);
+                                lastOrientation = orientation;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
+    };
+    private final CB_List<CB_Locator.GpsStrength> coreSatList = new CB_List<CB_Locator.GpsStrength>(14);
     public HorizontalListView QuickButtonList;
-
-	/*
-     * private static member
-	 */
-
-    public static ViewID aktViewId = null;
-    public static ViewID aktTabViewId = null;
-
-    public static DescriptionView descriptionView = null; // ID 4
-    private static JokerView jokerView = null; // ID 12
-
-    /**
-     * viewGl kann mehrere ID beinhalten,
-     * viewGL ist nur die Basis für alle Views auf Basis von GL_View_Base </br>
-     */
-    public static ViewGL viewGL = null;
-
+    public downSlider InfoDownSlider;
+    // Powermanager
+    protected PowerManager.WakeLock mWakeLock;
+    // private Threads
+    Thread threadReceiveShortLog;
+    Thread threadReloadSelectedCacheInfo;
+    boolean flag = false;
+    CancelWaitDialog wd;
+    Dialog pWaitD;
+    int horizontalListViewHeigt;
+    IgetFileReturnListener getFileReturnListener = null;
+    IgetFolderReturnListener getFolderReturnListener = null;
     /**
      * gdxView ist die Android.View für gdx
      */
     private View gdxView = null;
-
     private GL glListener = null;
-
-    public static LinearLayout strengthLayout;
-
-    // Media
-    private static Uri uri;
     private String recordingStartTime;
-    private static CB_Locator.Location recordingStartCoordinate;
     private String mediaFileNameWithoutExtension;
     private String tempMediaPath;
-
-    private static Boolean mVoiceRecIsStart = false;
-    /*
-     * public static member
-     */
-    public static AndroidApplication mainActivity;
-    public static Boolean isRestart = false;
-    public static Boolean isFirstStart = true;
-
     /*
      * private member
      */
     private LayoutInflater inflater;
-
     private ExtAudioRecorder extAudioRecorder = null;
-
-    private final boolean runsWithAkku = true;
-
     private FrameLayout frame;
     private FrameLayout tabFrame;
     private FrameLayout GlFrame;
-
     private LinearLayout TopLayout;
-
-    public downSlider InfoDownSlider;
-
     private String ExtSearch_GcCode = null;
     private String ExtSearch_GpxPath = null;
-
     private boolean mustRunSearch = false;
 
+    /*
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+    */
     private Mic_On_Flash Mic_Icon;
-
     // Views
     private ViewOptionsMenu aktView = null;
     private ViewOptionsMenu aktTabView = null;
     private CacheNameView cacheNameView;
-
-    private final ArrayList<ViewOptionsMenu> ViewList = new ArrayList<ViewOptionsMenu>();
-
-    // private Threads
-    Thread threadReceiveShortLog;
-
-    Thread threadReloadSelectedCacheInfo;
-
-    // Powermanager
-    protected PowerManager.WakeLock mWakeLock;
-    // GPS
-    public static LocationManager locationManager;
     // Compass
     private SensorManager mSensorManager;
     private Sensor accelerometer;
     private Sensor magnetometer;
+    private CB_Locator.Location CB_location = new CB_Locator.Location(0, 0, 0);
+    private boolean stopped = false;
+    private SharedPreferences androidSetting;
+    private SharedPreferences.Editor androidSettingEditor;
+    private boolean losseChek = false;
+
+    public static void vibrate() {
+        if (Config.vibrateFeedback.getValue())
+            vibrator.vibrate(Config.VibrateTime.getValue());
+    }
+
+    public static void Toast(String Msg) {
+        Toast.makeText(mainActivity, Msg, Toast.LENGTH_SHORT).show();
+    }
 
     public Boolean getVoiceRecIsStart() {
         return mVoiceRecIsStart;
     }
 
-    /**
-     * For Use the Vibrator, Call vibrate(); So the User can switch of this in
-     * Settings
-     */
-    private static Vibrator vibrator;
+    public void setVoiceRecIsStart(Boolean value) {
+        mVoiceRecIsStart = value;
+        if (mVoiceRecIsStart) {
+            Mic_Icon.SetOn();
+        } else { // Aufnahme stoppen
+            Mic_Icon.SetOff();
+            if (extAudioRecorder != null) {
+                extAudioRecorder.stop();
+                extAudioRecorder.release();
+                extAudioRecorder = null;
+                Toast.makeText(mainActivity, "Stop Voice Recorder", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+    }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -404,7 +403,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
         // N = Config.nightMode.getValue();
 
-        setContentView( R.layout.main);
+        setContentView(R.layout.main);
 
         findViewsById();
         initialPlatformConector();
@@ -529,13 +528,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         initialViewGL();
     }
 
-	/*
-    @Override
-	protected void onStart() {
-		super.onStart();
-	}
-	*/
-
     private void setLockScreenProperty() {
         // add flags for run over lock screen
 
@@ -555,8 +547,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             }
         });
     }
-
-    boolean flag = false;
 
     private void startSearchTimer() {
         Timer timer = new Timer();
@@ -591,8 +581,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             });
         }
     }
-
-    CancelWaitDialog wd;
 
     private void startGPXImport() {
         Log.info(log, "startGPXImport");
@@ -729,8 +717,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
     }
 
-    private CB_Locator.Location CB_location = new CB_Locator.Location(0, 0, 0);
-
     @Override
     public void onLocationChanged(Location location) {
         ProviderType provider = ProviderType.NULL;
@@ -755,6 +741,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     @Override
     public void onProviderDisabled(String provider) {
     }
+
+    /*
+     * Handler
+     */
 
     @Override
     public void onProviderEnabled(String provider) {
@@ -958,11 +948,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         }
     }
 
-    Dialog pWaitD;
-    private boolean stopped = false;
-
-    private final AtomicBoolean waitForGL = new AtomicBoolean(false);
-
     private void showWaitToRenderStartet() {
         if (!GL.isInitial())
             return;
@@ -1030,10 +1015,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         InfoDownSlider.invalidate();
 
         // Ausschalten verhindern
-		/*
-		 * This code together with the one in onDestroy() will make the screen
-		 * be always on until this Activity gets destroyed.
-		 */
+        /*
+         * This code together with the one in onDestroy() will make the screen
+         * be always on until this Activity gets destroyed.
+         */
         if (Config.SuppressPowerSaving.getValue()) {
             Log.debug(log, "Main=> onResume SuppressPowerSaving");
             final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -1091,6 +1076,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         GL.that.RestartRender();
     }
 
+    /*
+     * Initial Methods
+     */
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -1106,10 +1095,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         super.onStop();
 
         // Ausschalten wieder zulassen!
-		/*
-		 * This code together with the one in onDestroy() will make the screen
-		 * be always on until this Activity gets destroyed.
-		 */
+        /*
+         * This code together with the one in onDestroy() will make the screen
+         * be always on until this Activity gets destroyed.
+         */
         if (Config.SuppressPowerSaving.getValue()) {
             final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
             this.mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Cachebox non Powersave");
@@ -1120,13 +1109,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     @Override
     public void onDestroy() {
         try {
+            PlatformConnector.addToMediaScannerList(Config.FieldNotesGarminPath.getValue());
+            PlatformConnector.addToMediaScannerList(CB_SLF4J.logfile);
             Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            // File f = FileFactory.createFile(Config.FieldNotesGarminPath.getValue());
-            intent.setData(Uri.fromFile(new java.io.File(Config.FieldNotesGarminPath.getValue())));
-            sendBroadcast(intent);
-            intent.setData(Uri.fromFile(new java.io.File(CB_SLF4J.logfile)));
-            sendBroadcast(intent);
-            Log.info(log, "Sent files to MediaScanner");
+            for (String fn : PlatformConnector.getMediaScannerList()) {
+                intent.setData(Uri.fromFile(new java.io.File(fn)));
+                sendBroadcast(intent);
+                Log.info(log, "Send " + fn + " to MediaScanner.");
+            }
         } catch (Exception e) {
             Log.err(log, "Send files to MediaScanner: " + e.getMessage());
         }
@@ -1221,86 +1211,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             }
         }
     }
-
-    /**
-     * Handling Screen OFF and Screen ON Intents
-     *
-     * @author -jwei
-     * http://thinkandroid.wordpress.com/2010/01/24/handling-screen-off-and-screen-on-intents/
-     */
-    public static class ScreenReceiver extends BroadcastReceiver {
-        // thanks Jason
-        public static boolean wasScreenOn = true;
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                Energy.setDisplayOff();
-                CB_Locator.Locator.setDisplayOff();
-                wasScreenOn = false;
-            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-                Energy.setDisplayOn();
-                CB_Locator.Locator.setDisplayOn();
-                wasScreenOn = true;
-            }
-        }
-
-    }
-
-	/*
-	 * Handler
-	 */
-
-    private final SensorEventListener mListener = new SensorEventListener() {
-        private float[] gravity;
-        private float[] geomagnetic;
-        private final float orientationValues[] = new float[3];
-        private final float R[] = new float[9];
-        private final float I[] = new float[9];
-        private final float minChange = 0.5f;
-        private final long updateTime = 15;
-        private long lastUpdateTime = 0;
-        private final RingBufferFloat ringBuffer = new RingBufferFloat(15);
-        private float orientation;
-        private float lastOrientation;
-
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
-                gravity = event.values;
-            long now = System.currentTimeMillis();
-            if (lastUpdateTime == 0 || lastUpdateTime + updateTime < now) {
-                if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-                    geomagnetic = event.values;
-                    if (gravity != null && geomagnetic != null) {
-                        if (SensorManager.getRotationMatrix(R, I, gravity, geomagnetic)) {
-                            SensorManager.getOrientation(R, orientationValues);
-                            orientation = ringBuffer.add((float) Math.toDegrees(orientationValues[0]));
-                            while (orientation < 0) {
-                                orientation += 360;
-                            }
-
-                            while (orientation > 360) {
-                                orientation -= 360;
-                            }
-
-                            if (Math.abs(lastOrientation - orientation) > minChange) {
-                                CB_Locator.Locator.setHeading(orientation, CompassType.Magnetic);
-                                // log.debug("orientation: {}", orientation);
-                                lastOrientation = orientation;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        }
-    };
-
-    public static boolean ScreenLockOff = false;
 
     /**
      * Gibt die zur ViewID gehörige View zurück und erstellst eine Instanz, wenn
@@ -1442,15 +1352,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
     }
 
-    public static void vibrate() {
-        if (Config.vibrateFeedback.getValue())
-            vibrator.vibrate(Config.VibrateTime.getValue());
-    }
-
-	/*
-	 * Initial Methods
-	 */
-
     private void findViewsById() {
         QuickButtonList = (HorizontalListView) this.findViewById(R.id.main_quick_button_list);
         TopLayout = (LinearLayout) this.findViewById(R.id.layoutTop);
@@ -1489,16 +1390,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             // criteria.setCostAllowed(true);
             // criteria.setPowerRequirement(Criteria.POWER_LOW);
 
-			/*
-			 * Longri: Ich habe die Zeiten und Distanzen der Location Updates
-			 * angepasst. Der Network Provider hat eine schlechte genauigkeit,
-			 * darher reicht es wenn er alle 10sec einen wert liefert, wen der
-			 * alte um 500m abweicht. Beim GPS Provider habe ich die
-			 * aktualiesierungs Zeit verkürzt, damit bei deaktiviertem Hardware
-			 * Kompass aber die Werte trotzdem noch in einem gesunden Verhältnis
-			 * zwichen Performance und Stromverbrauch, geliefert werden. Andere
-			 * apps haben hier 0.
-			 */
+            /*
+             * Longri: Ich habe die Zeiten und Distanzen der Location Updates
+             * angepasst. Der Network Provider hat eine schlechte genauigkeit,
+             * darher reicht es wenn er alle 10sec einen wert liefert, wen der
+             * alte um 500m abweicht. Beim GPS Provider habe ich die
+             * aktualiesierungs Zeit verkürzt, damit bei deaktiviertem Hardware
+             * Kompass aber die Werte trotzdem noch in einem gesunden Verhältnis
+             * zwichen Performance und Stromverbrauch, geliefert werden. Andere
+             * apps haben hier 0.
+             */
 
             int updateTime = Config.gpsUpdateTime.getValue();
 
@@ -1936,22 +1837,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         return intent;
     }
 
-    public void setVoiceRecIsStart(Boolean value) {
-        mVoiceRecIsStart = value;
-        if (mVoiceRecIsStart) {
-            Mic_Icon.SetOn();
-        } else { // Aufnahme stoppen
-            Mic_Icon.SetOff();
-            if (extAudioRecorder != null) {
-                extAudioRecorder.stop();
-                extAudioRecorder.release();
-                extAudioRecorder = null;
-                Toast.makeText(mainActivity, "Stop Voice Recorder", Toast.LENGTH_SHORT).show();
-            }
-        }
-
-    }
-
     @Override
     public void onNmeaReceived(long timestamp, String nmea) {
         try {
@@ -1978,8 +1863,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             e.printStackTrace();
         }
     }
-
-    int horizontalListViewHeigt;
 
     public void setQuickButtonHeight(int value) {
         horizontalListViewHeigt = value;
@@ -2059,6 +1942,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         return GpsOn;
     }
 
+    // ########### Reload CacheInfo ##########################
+
     private void askToGetApiKey() {
         MessageBox.Show(Translation.Get("wantApi"), Translation.Get("welcome"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, new DialogInterface.OnClickListener() {
             @Override
@@ -2082,10 +1967,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             }
 
         });
-    }
-
-    public static void Toast(String Msg) {
-        Toast.makeText(mainActivity, Msg, Toast.LENGTH_SHORT).show();
     }
 
     public void showView(ViewID ID) {
@@ -2135,10 +2016,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
     }
 
-    // #########################################################
-
-    // ########### Platform Conector ##########################
-
     private void initialPlatformConector() {
 
         Plattform.used = Plattform.Android;
@@ -2146,10 +2023,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         initialLocatorBase();
 
         PlatformConnector.setisOnlineListener(new IHardwarStateListener() {
-			/*
-			 * isOnline Liefert TRUE wenn die Möglichkeit besteht auf das
-			 * Internet zuzugreifen
-			 */
+            /*
+             * isOnline Liefert TRUE wenn die Möglichkeit besteht auf das
+             * Internet zuzugreifen
+             */
+
+            private AtomicBoolean torchAvailable = null;
+            private Camera deviceCamera;
 
             @Override
             public boolean isOnline() {
@@ -2170,9 +2050,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             public void vibrate() {
                 main.vibrate();
             }
-
-            private AtomicBoolean torchAvailable = null;
-            private Camera deviceCamera;
 
             @Override
             public boolean isTorchAvailable() {
@@ -2223,6 +2100,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         });
 
         PlatformConnector.setShowViewListener(new IShowViewListener() {
+
+            int lastLeft, lastTop, lastRight, lastBottom;
 
             @Override
             public void show(final ViewID viewID, final int left, final int top, final int right, final int bottom) {
@@ -2400,9 +2279,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
             }
 
-
-            int lastLeft, lastTop, lastRight, lastBottom;
-
             @Override
             public void setContentSize(final int left, final int top, final int right, final int bottom) {
 
@@ -2566,13 +2442,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
     }
 
-    IgetFileReturnListener getFileReturnListener = null;
-    IgetFolderReturnListener getFolderReturnListener = null;
-
-    // ########### Reload CacheInfo ##########################
-
-    private SharedPreferences androidSetting;
-    private SharedPreferences.Editor androidSettingEditor;
+    // ###########################################################
 
     // #########################################################
     public void GetApiAuth() {
@@ -2583,8 +2453,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             Log.err(log, intent.getAction() + " not installed.");
         }
     }
-
-    // ###########################################################
 
     /**
      * Initial all Locator functions
@@ -2633,7 +2501,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 }
             });
         } catch (Exception e) {
-            Log.err(log,"Error Initial Locator.UseImperialUnits");
+            Log.err(log, "Error Initial Locator.UseImperialUnits");
         }
 
         // GPS update time?
@@ -2647,7 +2515,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 }
             });
         } catch (Exception e) {
-            Log.err(log,"Error Initial Locator.MinUpdateTime");
+            Log.err(log, "Error Initial Locator.MinUpdateTime");
         }
 
         // Use magnetic Compass?
@@ -2660,7 +2528,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 }
             });
         } catch (Exception e) {
-            Log.err(log,"Error Initial Locator.UseHardwareCompass");
+            Log.err(log, "Error Initial Locator.UseHardwareCompass");
         }
 
         // Magnetic compass level
@@ -2673,11 +2541,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 }
             });
         } catch (Exception e) {
-            Log.err(log,"Error Initial Locator.HardwareCompassLevel");
+            Log.err(log, "Error Initial Locator.HardwareCompassLevel");
         }
     }
-
-    private final CB_List<CB_Locator.GpsStrength> coreSatList = new CB_List<CB_Locator.GpsStrength>(14);
 
     @Override
     public void onGpsStatusChanged(int event) {
@@ -2741,6 +2607,29 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
     }
 
-    private boolean losseChek = false;
+    /**
+     * Handling Screen OFF and Screen ON Intents
+     *
+     * @author -jwei
+     * http://thinkandroid.wordpress.com/2010/01/24/handling-screen-off-and-screen-on-intents/
+     */
+    public static class ScreenReceiver extends BroadcastReceiver {
+        // thanks Jason
+        public static boolean wasScreenOn = true;
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                Energy.setDisplayOff();
+                CB_Locator.Locator.setDisplayOff();
+                wasScreenOn = false;
+            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+                Energy.setDisplayOn();
+                CB_Locator.Locator.setDisplayOn();
+                wasScreenOn = true;
+            }
+        }
+
+    }
 
 }

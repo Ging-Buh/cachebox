@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014-2017 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -53,10 +53,10 @@ import java.util.TimerTask;
  * @author longri
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface {
-    public static final int CurrentRevision = 20180321;
+    public static final int CurrentRevision = 20180322;
     public static final String CurrentVersion = "2.0.";
-    public static final String VersionPrefix = "3135";
-    public static final String aboutMsg1 = "Team Cachebox (2011-2017)" + br;
+    public static final String VersionPrefix = "3136";
+    public static final String aboutMsg1 = "Team Cachebox (2011-2018)" + br;
     public static final String teamLink = "www.team-cachebox.de";
     public static final String aboutMsg2 = br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";
     public static final String aboutMsg = aboutMsg1 + teamLink + aboutMsg2;
