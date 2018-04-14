@@ -344,25 +344,29 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	public void refreshText() {
 		if (WaypointLabel == null || CachesFoundLabel == null || CoordLabel == null)
 			return;
-		CachesFoundLabel.setText(Translation.Get("caches_found") + " " + String.valueOf(Config.FoundOffset.getValue()));
+		try {
+			CachesFoundLabel.setText(Translation.Get("caches_found") + " " + String.valueOf(Config.FoundOffset.getValue()));
 
-		Cache selectedCache = GlobalCore.getSelectedCache();
-		Waypoint selectedWaypoint = GlobalCore.getSelectedWaypoint();
+			Cache selectedCache = GlobalCore.getSelectedCache();
+			Waypoint selectedWaypoint = GlobalCore.getSelectedWaypoint();
 
-		if (selectedCache != null) {
-			try {
-				if (selectedWaypoint != null) {
-					WaypointLabel.setText(selectedWaypoint.getGcCode());
-					CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedWaypoint.Pos.getLatitude()) + " " + UnitFormatter.FormatLongitudeDM(selectedWaypoint.Pos.getLongitude()));
-				} else {
-					WaypointLabel.setText(selectedCache.getGcCode());
-					CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedCache.Pos.getLatitude()) + " " + UnitFormatter.FormatLongitudeDM(selectedCache.Pos.getLongitude()));
+			if (selectedCache != null) {
+				try {
+					if (selectedWaypoint != null) {
+						WaypointLabel.setText(selectedWaypoint.getGcCode());
+						CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedWaypoint.Pos.getLatitude()) + " " + UnitFormatter.FormatLongitudeDM(selectedWaypoint.Pos.getLongitude()));
+					} else {
+						WaypointLabel.setText(selectedCache.getGcCode());
+						CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedCache.Pos.getLatitude()) + " " + UnitFormatter.FormatLongitudeDM(selectedCache.Pos.getLongitude()));
+					}
+				} catch (Exception e) {
+					CoordLabel.setText(" - - - ");
 				}
-			} catch (Exception e) {
-				CoordLabel.setText(" - - - ");
 			}
+			GL.that.renderOnce();
 		}
-		GL.that.renderOnce();
+		catch (Exception e){
+		}
 	}
 
 	protected final IReturnValueListener mDialogListener = new IReturnValueListener() {

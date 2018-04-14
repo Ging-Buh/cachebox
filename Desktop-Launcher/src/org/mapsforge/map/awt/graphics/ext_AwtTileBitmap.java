@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mapsforge.map.awt;
+package org.mapsforge.map.awt.graphics;
 
 import java.awt.image.BufferedImage;
 

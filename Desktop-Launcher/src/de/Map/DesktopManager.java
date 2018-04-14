@@ -26,7 +26,7 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
-import org.mapsforge.map.awt.ext_AwtGraphicFactory;
+import org.mapsforge.map.awt.graphics.ext_AwtGraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
 
 import CB_Locator.Map.BoundingBox;

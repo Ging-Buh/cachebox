@@ -779,7 +779,8 @@ public class EditTextField extends EditTextFieldBase {
 	protected void showSelectionMarker(final SelectionMarker.Type type, final Point tmpCursor) {
 		GL.that.showMarker(type);
 		Timer v = new Timer();
-		TimerTask ta = new TimerTask() {
+		TimerTask ta;
+		ta = new TimerTask() {
 			@Override
 			public void run() {
 				switch (type) {
@@ -795,7 +796,11 @@ public class EditTextField extends EditTextFieldBase {
 				}
 			}
 		};
-		v.schedule(ta, 700);
+		try {
+			v.schedule(ta, 700);
+		}
+		catch (Exception e) {
+		}
 	}
 
 	private void moveSelectionMarkers(float dx, float dy) {
