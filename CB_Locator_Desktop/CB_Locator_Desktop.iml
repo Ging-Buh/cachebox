@@ -15,14 +15,12 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
-    <orderEntry type="module" module-name="CB_mapsforge" />
-    <orderEntry type="module" module-name="CB_Locator_Base" />
     <orderEntry type="module" module-name="CB_UI_Base" />
-    <orderEntry type="module" module-name="CB_Utils" />
+    <orderEntry type="module" module-name="CB_Locator_Base" />
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/svg-salamander-1.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../libs/svg-salamander-1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

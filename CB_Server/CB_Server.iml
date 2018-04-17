@@ -35,6 +35,7 @@
       <sourceFolder url="file://$MODULE_DIR$/assets" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="module-library">
       <library name="com.sun.el-1.0.0.v201105211818.jar">
         <CLASSES>
@@ -152,15 +153,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="CB_Core" />
-    <orderEntry type="module" module-name="CB_Locator_Base" />
-    <orderEntry type="module" module-name="CB_Rpc" />
-    <orderEntry type="module" module-name="CB_Utils" />
-    <orderEntry type="inheritedJdk" />
-    <orderEntry type="module" module-name="CB_UI_Base" />
-    <orderEntry type="module" module-name="CB_Locator_Desktop" />
-    <orderEntry type="module" module-name="CB_mapsforge" />
-    <orderEntry type="module" module-name="CB_Translation_Base" />
     <orderEntry type="module-library">
       <library name="jts-1.13.jar">
         <CLASSES>

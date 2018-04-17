@@ -15,16 +15,16 @@
       <sourceFolder url="file://$MODULE_DIR$/resources" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library name="kxml2-2.3.0.jar">
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="module" module-name="CB_Utils" />
+    <orderEntry type="module-library" exported="">
+      <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/kxml2-2.3.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../libs/kxml2-2.3.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="CB_Utils" />
-    <orderEntry type="inheritedJdk" />
   </component>
 </module>

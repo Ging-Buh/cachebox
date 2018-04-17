@@ -17,38 +17,29 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
-    <orderEntry type="module-library" exported="">
-      <library name="mina-core-2.0.4.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/mina-core-2.0.4.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="servlet-api-6.0.16.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/servlet-api-6.0.16.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="org.apache.commons.httpclient.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/org.apache.commons.httpclient.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="module" module-name="CB_Utils" />
     <orderEntry type="module-library">
-      <library name="slf4j-api-1.7.6.jar">
+      <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/slf4j-api-1.7.6.jar!/" />
+          <root url="jar://$MODULE_DIR$/../libs/org.apache.commons.httpclient.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../libs/servlet-api-6.0.16.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../libs/mina-core-2.0.4.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

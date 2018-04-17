@@ -2,7 +2,6 @@
 <module type="JAVA_MODULE" version="4">
   <component name="EclipseModuleManager">
     <libelement value="jar://$MODULE_DIR$/lib/log4j-1.2.14.jar!/" />
-    <libelement value="file://C:\Dateien_Entwicklung\CacheBox\ACB2\GPS_Simulator\log4j" />
     <libelement value="jar://$MODULE_DIR$/lib/bluecove-2.1.1-SNAPSHOT.jar!/" />
     <src_description expected_position="0">
       <src_folder value="file://$MODULE_DIR$/src" expected_position="0" />
@@ -16,28 +15,28 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
-    <orderEntry type="module-library">
-      <library name="log4j-1.2.14.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/log4j-1.2.14.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
+    <orderEntry type="module" module-name="CB_Utils" />
+    <orderEntry type="module" module-name="CB_mapsforge" />
     <orderEntry type="module" module-name="CB_UI_Base" />
     <orderEntry type="module" module-name="CB_Locator_Base" />
     <orderEntry type="module" module-name="CB_Locator_Desktop" />
-    <orderEntry type="module" module-name="CB_mapsforge" />
     <orderEntry type="module-library">
-      <library name="bluecove-2.1.1-SNAPSHOT.jar">
+      <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/bluecove-2.1.1-SNAPSHOT.jar!/" />
+          <root url="jar://$MODULE_DIR$/../libs/bluecove-2.1.1-SNAPSHOT.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="CB_Utils" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../libs/log4j-1.2.14.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
