@@ -16,12 +16,31 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
-    <orderEntry type="module" module-name="CB_mapsforge" exported="" />
-    <orderEntry type="module" module-name="CB_Translation_Base" exported="" />
+    <orderEntry type="module" module-name="CB_Utils" />
+    <orderEntry type="module" module-name="CB_mapsforge" />
+    <orderEntry type="module" module-name="CB_Translation_Base" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../libs/gdx-1.9.6.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../libs/gdx-freetype-1.9.6.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../libs/slf4j-api-1.7.6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

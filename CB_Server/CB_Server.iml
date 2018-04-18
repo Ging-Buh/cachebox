@@ -91,63 +91,9 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="gdx-1.0.0.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/gdx-1.0.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="gdx-backend-lwjgl-1.0.0.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/gdx-backend-lwjgl-1.0.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="gdx-freetype-1.0.0.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/gdx-freetype-1.0.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="gdx-freetype-platform-1.0.0-natives-desktop.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/gdx-freetype-platform-1.0.0-natives-desktop.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="gdx-platform-1.0.0-natives-desktop.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/gdx-platform-1.0.0-natives-desktop.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
       <library name="sqlite-jdbc-3.7.15-SNAPSHOT-2.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/sqlite-jdbc-3.7.15-SNAPSHOT-2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="slf4j-api-1.7.6.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/slf4j-api-1.7.6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

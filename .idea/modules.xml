@@ -16,10 +16,7 @@
       <module fileurl="file://$PROJECT_DIR$/CB_mapsforge/CB_mapsforge.iml" filepath="$PROJECT_DIR$/CB_mapsforge/CB_mapsforge.iml" />
       <module fileurl="file://$PROJECT_DIR$/Desktop-Launcher/Desktop-Launcher.iml" filepath="$PROJECT_DIR$/Desktop-Launcher/Desktop-Launcher.iml" />
       <module fileurl="file://$PROJECT_DIR$/GPS_Simulator/GPS_Simulator.iml" filepath="$PROJECT_DIR$/GPS_Simulator/GPS_Simulator.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Release_Rename_proj/Release_Rename.iml" filepath="$PROJECT_DIR$/Release_Rename_proj/Release_Rename.iml" />
       <module fileurl="file://$PROJECT_DIR$/SkinPacker/SkinPacker.iml" filepath="$PROJECT_DIR$/SkinPacker/SkinPacker.iml" />
-      <module fileurl="file://$PROJECT_DIR$/refresh_libraries/refresh_libraries/refresh_libraries.iml" filepath="$PROJECT_DIR$/refresh_libraries/refresh_libraries/refresh_libraries.iml" />
-      <module fileurl="file://$PROJECT_DIR$/refresh_libraries/refresh_libraries-desktop/refresh_libraries-desktop.iml" filepath="$PROJECT_DIR$/refresh_libraries/refresh_libraries-desktop/refresh_libraries-desktop.iml" />
     </modules>
   </component>
 </project>

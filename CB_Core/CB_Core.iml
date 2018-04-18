@@ -20,10 +20,13 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
-    <orderEntry type="module" module-name="CB_Locator_Base" exported="" />
-    <orderEntry type="module" module-name="CB_Rpc" exported="" />
-    <orderEntry type="module" module-name="CB_UI_Base" exported="" />
-    <orderEntry type="module-library" exported="">
+    <orderEntry type="module" module-name="CB_Locator_Base" />
+    <orderEntry type="module" module-name="CB_UI_Base" />
+    <orderEntry type="module" module-name="CB_Rpc" />
+    <orderEntry type="module" module-name="CB_mapsforge" />
+    <orderEntry type="module" module-name="CB_Translation_Base" />
+    <orderEntry type="module" module-name="CB_Utils" />
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../libs/sjxp-2.2.jar!/" />
@@ -36,6 +39,51 @@
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../libs/jsoup-1.7.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../libs/httpclient-4.1.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../libs/httpcore-4.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../libs/kxml2-2.3.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../libs/slf4j-api-1.7.6.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../libs/gdx-1.9.6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
