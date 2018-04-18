@@ -1,17 +1,15 @@
  {
-                        
-                com.badlogic.gdx.graphics.Color: {
-                        font-color: { r: 0, g: 0, b: 0, a: 1 },
-			font-color-disable: { r: 0.2, g: 0.1, b: 0.1, a: 0.5 },
-			font-color-highlight: { r: 0, g: 1, b: 0, a: 1 },
-			font-color-link: { r: 0, g: 0, b: 1, a: 1 },
-			background: { r: 0.7921, g: 0.8313, b: 0.6980, a: 1 },
-			cross: { r: 0.5, g: 0.5, b: 0.5, a: 0.3 },
-			darknes: { r: 0, g: 0.1, b: 0, a: 0.96 },
-			menu-back-color:{ r: 1, g: 1, b: 1, a: 1 },
-			popup-menu-info-back:{ r: 0.5, g: 0.5, b: 0.5, a: 0.8 },
-			popup-menu-border:{ r: 0, g: 0, b: 0, a: 1 },
-			popup-menu-icon-back:{ r: 0.7921, g: 0.8313, b: 0.6980, a: 1 }
-                }
-       
+ com.badlogic.gdx.graphics.Color: {
+	font-color: { r: 0, g: 0, b: 0, a: 1 },
+	font-color-disable: { r: 0.2, g: 0.1, b: 0.1, a: 0.5 },	
+	font-color-highlight: { r: 0, g: 1, b: 0, a: 1 },
+	font-color-link: { r: 0, g: 0, b: 1, a: 1 },
+	background: { r: 0.7921, g: 0.8313, b: 0.6980, a: 1 },
+	cross: { r: 0.5, g: 0.5, b: 0.5, a: 0.3 },
+	darknes: { r: 0, g: 0.1, b: 0, a: 0.96 },
+	menu-back-color:{ r: 1, g: 1, b: 1, a: 1 },
+	popup-menu-info-back:{ r: 0.5, g: 0.5, b: 0.5, a: 0.8 },
+	popup-menu-border:{ r: 0, g: 0, b: 0, a: 1 },
+	popup-menu-icon-back:{ r: 0.7921, g: 0.8313, b: 0.6980, a: 1 }
+	}
 }
