@@ -1795,6 +1795,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 intent = getIntent(Intent.ACTION_VIEW, "http://download.osmand.net/go?lat=" + lat + "&lon=" + lon + "&z=14");
             } else if (selectedNavi.equals("Waze")) {
                 intent = getIntent(Intent.ACTION_VIEW, "waze://?ll=" + lat + "," + lon);
+            } else if (selectedNavi.equals("Sygic")) {
+                intent = getIntent(Intent.ACTION_VIEW, "com.sygic.aura://coordinate|" + lon + "|" + lat + "|drive");
             }
             if (intent == null) {
                 // "default" or "no longer existing selection" or "fallback" to google
