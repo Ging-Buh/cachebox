@@ -58,6 +58,7 @@ public enum LogTypes {
 
 	/**
 	 * Returns True if the log type possible to direct online Log
+	 * or made possible by Setting
 	 * 
 	 * @return
 	 */

@@ -199,7 +199,16 @@ public class FieldNotesView extends V_ListView {
 					}
 				});
 			} else {
-				v.setOnLongClickListener(itemLogClickListener);
+				v.setOnClickListener(new OnClickListener() {
+					@Override
+					public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+						int index = ((ListViewItemBase) v).getIndex();
+						aktFieldNote = lFieldNotes.get(index);
+						editFieldNote();
+						return true;
+					}
+				});
+				v.setOnLongClickListener(itemLongClickListener);
 			}
 
 			// put item to buffer
@@ -923,7 +932,7 @@ public class FieldNotesView extends V_ListView {
 		}
 	}
 
-	private final OnClickListener itemLogClickListener = new OnClickListener() {
+	private final OnClickListener itemLongClickListener = new OnClickListener() {
 
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {

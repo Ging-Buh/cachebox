@@ -134,6 +134,8 @@ import java.net.URLConnection;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static android.content.Intent.ACTION_VIEW;
+
 @SuppressLint("Wakelock")
 @SuppressWarnings("deprecation")
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.CacheListChangedEventListener, GpsStatus.NmeaListener, GpsStatus.Listener, CB_UI_Settings {
@@ -1790,17 +1792,17 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                     intent.putExtra("navigatetoindex", 1);
                 }
             } else if (selectedNavi.equals("OsmAnd")) {
-                intent = getIntent(Intent.ACTION_VIEW, "geo:" + lat + "," + lon);
+                intent = getIntent(ACTION_VIEW, "geo:" + lat + "," + lon);
             } else if (selectedNavi.equals("OsmAnd2")) {
-                intent = getIntent(Intent.ACTION_VIEW, "http://download.osmand.net/go?lat=" + lat + "&lon=" + lon + "&z=14");
+                intent = getIntent(ACTION_VIEW, "http://download.osmand.net/go?lat=" + lat + "&lon=" + lon + "&z=14");
             } else if (selectedNavi.equals("Waze")) {
-                intent = getIntent(Intent.ACTION_VIEW, "waze://?ll=" + lat + "," + lon);
+                intent = getIntent(ACTION_VIEW, "waze://?ll=" + lat + "," + lon);
             } else if (selectedNavi.equals("Sygic")) {
-                intent = getIntent(Intent.ACTION_VIEW, "com.sygic.aura://coordinate|" + lon + "|" + lat + "|drive");
+                intent = getIntent(ACTION_VIEW, "com.sygic.aura://coordinate|" + lon + "|" + lat + "|drive");
             }
             if (intent == null) {
                 // "default" or "no longer existing selection" or "fallback" to google
-                intent = getIntent(Intent.ACTION_VIEW, "http://maps.google.com/maps?daddr=" + lat + "," + lon);
+                intent = getIntent(ACTION_VIEW, "http://maps.google.com/maps?daddr=" + lat + "," + lon);
             }
             try {
                 if (intent != null)
@@ -2374,7 +2376,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                         url = "http://" + url;
                     }
                     Uri uri = Uri.parse(url);
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    Intent intent = new Intent(ACTION_VIEW);
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     intent.addCategory(Intent.CATEGORY_BROWSABLE);
                     intent.setDataAndType(uri, "text/html");
@@ -2395,7 +2397,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             @Override
             public void Start(String file) {
                 Uri uriToImage = Uri.fromFile(new java.io.File(file));
-                Intent shareIntent = new Intent(Intent.ACTION_VIEW);
+                Intent shareIntent = new Intent(ACTION_VIEW);
                 shareIntent.setDataAndType(uriToImage, "image/*");
                 main.mainActivity.startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.app_name)));
             }

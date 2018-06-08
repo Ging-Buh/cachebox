@@ -73,7 +73,7 @@ public class PocketQuery {
 	 * @param list
 	 *            as ArrayList<String>
 	 * @param conectionTimeout
-	 *            Config.settings.conection_timeout.getValue()
+	 *            Config.settings.connection_timeout.getValue()
 	 * @param socketTimeout
 	 *            Config.settings.socket_timeout.getValue()
 	 * @return

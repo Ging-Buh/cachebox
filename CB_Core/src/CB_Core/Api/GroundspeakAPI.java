@@ -138,7 +138,7 @@ public class GroundspeakAPI {
      *            Config.settings.StagingAPI.getValue()
      * @param accessToken
      * @param conectionTimeout
-     *            Config.settings.conection_timeout.getValue()
+     *            Config.settings.connection_timeout.getValue()
      * @param socketTimeout
      *            Config.settings.socket_timeout.getValue()
      * @return
@@ -204,7 +204,7 @@ public class GroundspeakAPI {
 	    httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
 	    // set time outs
-	    HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+	    HttpUtils.conectionTimeout = CB_Core_Settings.connection_timeout.getValue();
 	    HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
 
 	    // Execute HTTP Post Request
@@ -262,7 +262,7 @@ public class GroundspeakAPI {
      *            Config.settings.StagingAPI.getValue()
      * @param accessToken
      * @param conectionTimeout
-     *            Config.settings.conection_timeout.getValue()
+     *            Config.settings.connection_timeout.getValue()
      * @param socketTimeout
      *            Config.settings.socket_timeout.getValue()
      * @return
@@ -288,7 +288,7 @@ public class GroundspeakAPI {
 	    httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
 	    // set time outs
-	    HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+	    HttpUtils.conectionTimeout = CB_Core_Settings.connection_timeout.getValue();
 	    HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
 
 	    // Execute HTTP Post Request
@@ -346,7 +346,7 @@ public class GroundspeakAPI {
      *            Config.settings.StagingAPI.getValue()
      * @param accessToken
      * @param conectionTimeout
-     *            Config.settings.conection_timeout.getValue()
+     *            Config.settings.connection_timeout.getValue()
      * @param socketTimeout
      *            Config.settings.socket_timeout.getValue()
      * @return
@@ -369,7 +369,7 @@ public class GroundspeakAPI {
 	    httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
 	    // set time outs
-	    HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+	    HttpUtils.conectionTimeout = CB_Core_Settings.connection_timeout.getValue();
 	    HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
 
 	    // Execute HTTP Post Request
@@ -492,7 +492,7 @@ public class GroundspeakAPI {
      *            Config.settings.StagingAPI.getValue()
      * accessToken
      * conectionTimeout
-     *            Config.settings.conection_timeout.getValue()
+     *            Config.settings.connection_timeout.getValue()
      * socketTimeout
      *            Config.settings.socket_timeout.getValue()
      * @param caches is also for return
@@ -532,7 +532,7 @@ public class GroundspeakAPI {
 	    httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
 	    // set time outs
-	    HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+	    HttpUtils.conectionTimeout = CB_Core_Settings.connection_timeout.getValue();
 	    HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
 
 	    // Execute HTTP Post Request
@@ -607,7 +607,7 @@ public class GroundspeakAPI {
      *            Config.settings.StagingAPI.getValue()
      * @param accessToken
      * @param conectionTimeout
-     *            Config.settings.conection_timeout.getValue()
+     *            Config.settings.connection_timeout.getValue()
      * @param socketTimeout
      *            Config.settings.socket_timeout.getValue()
      * @param cache
@@ -649,7 +649,7 @@ public class GroundspeakAPI {
 		HttpGet httppost = new HttpGet(URL + "GetGeocacheLogsByCacheCode?format=json" + requestString);
 
 		// set time outs
-		HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+		HttpUtils.conectionTimeout = CB_Core_Settings.connection_timeout.getValue();
 		HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
 
 		// Execute HTTP Post Request
@@ -736,7 +736,7 @@ public class GroundspeakAPI {
      *            Config.settings.StagingAPI.getValue()
      * @param accessToken
      * @param conectionTimeout
-     *            Config.settings.conection_timeout.getValue()
+     *            Config.settings.connection_timeout.getValue()
      * @param socketTimeout
      *            Config.settings.socket_timeout.getValue()
      * @return
@@ -776,7 +776,7 @@ public class GroundspeakAPI {
 		httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
 		// set time outs
-		HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+		HttpUtils.conectionTimeout = CB_Core_Settings.connection_timeout.getValue();
 		HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
 
 		// Execute HTTP Post Request
@@ -924,7 +924,7 @@ public class GroundspeakAPI {
      * @param String
      *            accessToken
      * @param conectionTimeout
-     *            Config.settings.conection_timeout.getValue()
+     *            Config.settings.connection_timeout.getValue()
      * @param socketTimeout
      *            Config.settings.socket_timeout.getValue()
      * @param TbList
@@ -957,7 +957,7 @@ public class GroundspeakAPI {
 		httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
 		// set time outs
-		HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+		HttpUtils.conectionTimeout = CB_Core_Settings.connection_timeout.getValue();
 		HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
 
 		// Execute HTTP Post Request
@@ -1023,7 +1023,7 @@ public class GroundspeakAPI {
      * @param TrackingCode
      * @param TB
      * @param conectionTimeout
-     *            Config.settings.conection_timeout.getValue()
+     *            Config.settings.connection_timeout.getValue()
      * @param socketTimeout
      *            Config.settings.socket_timeout.getValue()
      * @return
@@ -1039,7 +1039,7 @@ public class GroundspeakAPI {
 	    HttpGet httppost = new HttpGet(URL + "GetTrackablesByTrackingNumber?AccessToken=" + GetAccessToken(true) + "&trackingNumber=" + TrackingCode + "&format=json");
 
 	    // set time outs
-	    HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+	    HttpUtils.conectionTimeout = CB_Core_Settings.connection_timeout.getValue();
 	    HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
 
 	    // Execute HTTP Post Request
@@ -1106,7 +1106,7 @@ public class GroundspeakAPI {
      * @param TrackingNumber
      * @param TB
      * @param conectionTimeout
-     *            Config.settings.conection_timeout.getValue()
+     *            Config.settings.connection_timeout.getValue()
      * @param socketTimeout
      *            Config.settings.socket_timeout.getValue()
      * @return
@@ -1121,7 +1121,7 @@ public class GroundspeakAPI {
 	    HttpGet httppost = new HttpGet(URL + "GetTrackablesByTBCode?AccessToken=" + GetAccessToken(true) + "&tbCode=" + TrackingNumber + "&format=json");
 
 	    // set time outs
-	    HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+	    HttpUtils.conectionTimeout = CB_Core_Settings.connection_timeout.getValue();
 	    HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
 
 	    // Execute HTTP Post Request
@@ -1203,7 +1203,7 @@ public class GroundspeakAPI {
 	    HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + GetAccessToken() + "&CacheCode=" + cacheCode + "&format=json");
 
 	    // set time outs
-	    HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+	    HttpUtils.conectionTimeout = CB_Core_Settings.connection_timeout.getValue();
 	    HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
 
 	    // Execute HTTP Post Request
@@ -1264,7 +1264,7 @@ public class GroundspeakAPI {
      * @param cacheCode
      * @param list
      * @param conectionTimeout
-     *            Config.settings.conection_timeout.getValue()
+     *            Config.settings.connection_timeout.getValue()
      * @param socketTimeout
      *            Config.settings.socket_timeout.getValue()
      * @return
@@ -1281,7 +1281,7 @@ public class GroundspeakAPI {
 	    HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + GetAccessToken(true) + "&CacheCode=" + cacheCode + "&format=json");
 
 	    // set time outs
-	    HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+	    HttpUtils.conectionTimeout = CB_Core_Settings.connection_timeout.getValue();
 	    HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
 
 	    // Execute HTTP Post Request
@@ -1522,7 +1522,7 @@ public class GroundspeakAPI {
      *            Config.settings.StagingAPI.getValue()
      * @param accessToken
      * @param conectionTimeout
-     *            Config.settings.conection_timeout.getValue()
+     *            Config.settings.connection_timeout.getValue()
      * @param socketTimeout
      *            Config.settings.socket_timeout.getValue()
      * @return 0=false 1=true
@@ -1575,7 +1575,7 @@ public class GroundspeakAPI {
      * @param dateLogged
      * @param note
      * @param conectionTimeout
-     *            Config.settings.conection_timeout.getValue()
+     *            Config.settings.connection_timeout.getValue()
      * @param socketTimeout
      *            Config.settings.socket_timeout.getValue()
      * @return
@@ -1595,7 +1595,7 @@ public class GroundspeakAPI {
      * @param dateLogged
      * @param note
      * @param conectionTimeout
-     *            Config.settings.conection_timeout.getValue()
+     *            Config.settings.connection_timeout.getValue()
      * @param socketTimeout
      *            Config.settings.socket_timeout.getValue()
      * @return
@@ -1624,7 +1624,7 @@ public class GroundspeakAPI {
 	    httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
 	    // set time outs
-	    HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+	    HttpUtils.conectionTimeout = CB_Core_Settings.connection_timeout.getValue();
 	    HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
 
 	    // Execute HTTP Post Request
@@ -1711,7 +1711,7 @@ public class GroundspeakAPI {
 	    httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
 	    // set time outs
-	    HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+	    HttpUtils.conectionTimeout = CB_Core_Settings.connection_timeout.getValue();
 	    HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
 
 	    // Execute HTTP Post Request

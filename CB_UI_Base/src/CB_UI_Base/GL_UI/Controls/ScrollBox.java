@@ -10,6 +10,12 @@ import CB_UI_Base.GL_UI.Controls.List.V_ListView;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Util.MoveableList;
 
+/**
+ * the Width must be set in advance to place and size the elemets
+ * the final Height must take all placed elements
+ * scrolling works, if virtualHeight > Height
+ *
+ */
 public class ScrollBox extends CB_View_Base {
 	protected V_ListView lv;
 	protected float virtualHeight;
@@ -21,13 +27,17 @@ public class ScrollBox extends CB_View_Base {
 		initScrollBox();
 	}
 
+	/**
+	 *
+	 * @param Width
+	 * @param Height
+	 */
 	public ScrollBox(float Width, float Height) {
 		super(0, 0, Width, Height, "ScrollBox");
 		initScrollBox();
 	}
 
 	protected void initScrollBox() {
-		// todo: check to have no scroll(? - margin) oder rec.getHalfHeight()
 		virtualHeight = this.getHeight();
 
 		lv = new V_ListView(this, this, "ListView-" + name);
