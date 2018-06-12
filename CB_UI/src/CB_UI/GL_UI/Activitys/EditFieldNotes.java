@@ -50,13 +50,13 @@ import java.util.*;
 public class EditFieldNotes extends ActivityBase implements KeyboardFocusChangedEvent {
     private final ArrayList<EditTextField> allTextFields = new ArrayList<EditTextField>();
     FilterSetListViewItem GcVote;
+    Label title;
     private FieldNoteEntry altfieldNote;
     private FieldNoteEntry fieldNote;
     private Button btnOK = null;
     private Button btnCancel = null;
     private EditTextField etComment = null;
     private Image ivTyp = null;
-    Label title;
     private Label tvFounds = null;
     private EditTextField tvDate = null;
     private EditTextField tvTime = null;
@@ -68,7 +68,6 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
     private RadioButton rbDirectLog;
     private RadioButton rbOnlyFieldNote;
     private IReturnListener mReturnListener;
-    float placeForScrollBox;
 
     public EditFieldNotes(FieldNoteEntry note, IReturnListener listener, boolean isNewFieldNote) {
         super(ActivityBase.ActivityRec(), "");
@@ -81,14 +80,15 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
     }
 
     private void initLayoutWithValues() {
-        this.initRow(BOTTOMUP);
+        initRow(BOTTOMUP);
         btnOK = new Button(Translation.Get("ok"));
         btnCancel = new Button(Translation.Get("cancel"));
-        this.addNext(btnOK);
-        this.addLast(btnCancel);
-        placeForScrollBox = this.getAvailableHeight();
+        addNext(btnOK);
+        addLast(btnCancel);
+        scrollBox = new ScrollBox(innerWidth, getAvailableHeight());
 
-        scrollBoxContent = new Box(this.getWidth() - 2 * margin, 0);
+        float initialContentHeight = 0;
+        scrollBoxContent = new Box(scrollBox.getWidth(), initialContentHeight);
         scrollBoxContent.initRow(BOTTOMUP);
         if (fieldNote.type.isDirectLogType())
             iniOptions();
@@ -98,17 +98,12 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         iniDate();
         iniFoundLine();
         iniTitle();
-        scrollBoxContent.setHeight(scrollBoxContent.getHeight() - scrollBoxContent.getAvailableHeight());
+        scrollBoxContent.setHeight(initialContentHeight - scrollBoxContent.getAvailableHeight());
 
-        float virtualHeight = scrollBoxContent.getHeight() + placeForScrollBox;
-        scrollBox = new ScrollBox(this.getWidth() - 2 * margin, virtualHeight);
-        scrollBox.setVirtualHeight(virtualHeight);
-        scrollBox.initRow(BOTTOMUP);
-        scrollBox.addLast(scrollBoxContent);
-        scrollBox.setHeight(scrollBoxContent.getHeight());
-        scrollBoxContent.setY(placeForScrollBox);
-        this.addLast(scrollBox);
-        setOkAndCancelOnClickHandlers();
+        scrollBox.setVirtualHeight(scrollBoxContent.getHeight());
+        scrollBox.addChild(scrollBoxContent);
+        addLast(scrollBox);
+        setOkAndCancelClickHandlers();
     }
 
     private void setValuesToLayout() {
@@ -134,8 +129,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
                 }
             }
             rbDirectLog.setChecked(true);
-        }
-        else {
+        } else {
             rbOnlyFieldNote.setChecked(true);
         }
         // todo iniGC_VoteItem();
@@ -148,7 +142,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         title.setText(fieldNote.isTbFieldNote ? fieldNote.TbName : fieldNote.CacheName);
     }
 
-    private void setOkAndCancelOnClickHandlers() {
+    private void setOkAndCancelClickHandlers() {
         btnOK.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -191,7 +185,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
                                     @Override
                                     public void run() {
-                                        EditFieldNotes.this.show();
+                                        show();
                                     }
                                 };
 
@@ -352,7 +346,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         textField.setOnscreenKeyboard(new OnscreenKeyboard() {
             @Override
             public void show(boolean arg0) {
-                scrollBoxContent.setY( 2 * placeForScrollBox - textField.getMaxY());
+                scrollBoxContent.setY(scrollBoxContent.getHeight() - textField.getMaxY());
             }
         });
 
@@ -365,7 +359,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
         if (etComment.contains(x, y)) {
             // TODO close SoftKeyboard
-            scrollBoxContent.setY(placeForScrollBox);
+            scrollBoxContent.setY(0);
         }
 
         // for GCVote
@@ -415,7 +409,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
     public void KeyboardFocusChanged(EditTextFieldBase focus) {
         if (focus == null) {
             if (scrollBoxContent != null)
-                scrollBoxContent.setY(placeForScrollBox);
+                scrollBoxContent.setY(0);
         }
     }
 

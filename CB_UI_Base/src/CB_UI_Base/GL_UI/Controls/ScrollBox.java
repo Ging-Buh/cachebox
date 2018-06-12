@@ -11,9 +11,9 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Util.MoveableList;
 
 /**
- * the Width must be set in advance to place and size the elemets
- * the final Height must take all placed elements
- * scrolling works, if virtualHeight > Height
+ * Height is the visible part
+ * virtualHeight is the Height of the item
+ * the item holds all Controls of the Scrollbox
  *
  */
 public class ScrollBox extends CB_View_Base {
@@ -27,11 +27,6 @@ public class ScrollBox extends CB_View_Base {
 		initScrollBox();
 	}
 
-	/**
-	 *
-	 * @param Width
-	 * @param Height
-	 */
 	public ScrollBox(float Width, float Height) {
 		super(0, 0, Width, Height, "ScrollBox");
 		initScrollBox();

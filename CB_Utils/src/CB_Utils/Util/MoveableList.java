@@ -26,7 +26,7 @@ import CB_Utils.Lists.CB_List;
 /// 
 /// 
 ///  <example>
-///  <para><b>Der Aufruf folgender Methoden l�sen ein Changed Event aus:</b></para>
+///  <para><b>Der Aufruf folgender Methoden lösen ein Changed Event aus:</b></para>
 /// 
 /// <para>
 ///  Add / 
@@ -41,7 +41,7 @@ import CB_Utils.Lists.CB_List;
 ///  </para>
 /// 
 /// 
-/// <para><b>Neu implementierte Methoden, welche ein Changed Event aus l�sen:</b></para>
+/// <para><b>Neu implementierte Methoden, welche ein Changed Event aus lösen:</b></para>
 /// <para >
 ///  MoveItem /
 ///  MoveItemFirst /
