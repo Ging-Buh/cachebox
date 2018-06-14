@@ -96,10 +96,6 @@ public class QuickButtonItem extends ListViewItemBase {
 	}
 
 	@Override
-	protected void Initial() {
-	}
-
-	@Override
 	public boolean onTouchUp(int x, int y, int pointer, int button) {
 		return mButton.onTouchUp(x, y, pointer, button);
 	}
@@ -167,10 +163,6 @@ public class QuickButtonItem extends ListViewItemBase {
 				hintState = 0;
 			}
 		}
-	}
-
-	@Override
-	protected void SkinIsChanged() {
 	}
 
 	public QuickActions getAction() {

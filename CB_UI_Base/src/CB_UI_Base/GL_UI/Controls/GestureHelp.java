@@ -53,11 +53,6 @@ public class GestureHelp extends CB_View_Base {
 		super.render(batch);
 	}
 
-	@Override
-	protected void Initial() {
-
-	}
-
 	Image Button;
 	Image UpIcon;
 	Image Up;
@@ -145,11 +140,6 @@ public class GestureHelp extends CB_View_Base {
 		if (icon != null)
 			RightIcon.setDrawable(new SpriteDrawable(icon));
 		this.addChild(RightIcon);
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-
 	}
 
 }

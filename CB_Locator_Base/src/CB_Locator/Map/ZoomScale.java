@@ -308,11 +308,6 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent {
 	}
 
 	@Override
-	protected void Initial() {
-
-	}
-
-	@Override
 	public void onStop() {
 		super.onStop();
 		CachedScaleSprite = null;
@@ -349,13 +344,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent {
 	}
 
 	@Override
-	public void onShow() {
-		super.onShow();
-	}
-
-	@Override
 	public void onHide() {
-		super.onHide();
 		GL.that.removeRenderView(this);
 	}
 

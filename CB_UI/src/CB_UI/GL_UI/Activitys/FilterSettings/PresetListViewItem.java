@@ -84,11 +84,6 @@ public class PresetListViewItem extends ListViewItemBackground {
 		return (presetFilter.equals(filter));
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 	public PresetEntry getEntry() {
 		return mPresetEntry;
 	}

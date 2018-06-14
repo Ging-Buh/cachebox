@@ -82,7 +82,6 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 	@Override
 	public void onShow() {
-		super.onShow();
 
 		// add Event Handler
 		SelectedCacheEventList.Add(this);
@@ -103,8 +102,6 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 	@Override
 	public void onHide() {
-		super.onHide();
-
 		// remove Event Handler
 		SelectedCacheEventList.Remove(this);
 		GpsStateChangeEventList.Remove(this);
@@ -438,11 +435,6 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 	@Override
 	public void SpeedChanged() {
-	}
-
-	@Override
-	protected void Initial() {
-
 	}
 
 	@Override

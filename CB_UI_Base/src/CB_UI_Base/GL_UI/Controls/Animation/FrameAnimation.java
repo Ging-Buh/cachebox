@@ -29,14 +29,6 @@ public abstract class FrameAnimation extends AnimationBase {
 		return (1 + ((int) (GL.that.getStateTime() * 1000) % Duration) / (Duration / Frames));
 	}
 
-	@Override
-	protected void Initial() {
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-	}
-
 	public void addFrame(Sprite frame) {
 		if (frames == null)
 			frames = new ArrayList<Drawable>();

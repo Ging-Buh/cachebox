@@ -462,16 +462,6 @@ public class ZoomButtons extends CB_View_Base {
 	}
 
 	@Override
-	protected void Initial() {
-
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
-	@Override
 	public void setVisible(boolean On) {
 		super.setVisible(On);
 
@@ -479,13 +469,7 @@ public class ZoomButtons extends CB_View_Base {
 	}
 
 	@Override
-	public void onShow() {
-		super.onShow();
-	}
-
-	@Override
 	public void onHide() {
-		super.onHide();
 		GL.that.removeRenderView(this);
 	}
 }

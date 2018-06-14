@@ -389,14 +389,4 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 		onShow();
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-		// The type SolverView must implement the inherited abstract method GL_View_Base.SkinIsChanged()	
-	}
-
-	@Override
-	protected void Initial() {
-		// The type SolverView must implement the inherited abstract method CB_View_Base.Initial()	
-	}
-
 }

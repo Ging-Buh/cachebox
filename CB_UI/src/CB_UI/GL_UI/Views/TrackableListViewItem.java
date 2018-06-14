@@ -43,13 +43,8 @@ public class TrackableListViewItem extends ListViewItemBackground {
 	}
 
 	@Override
-	protected void SkinIsChanged() {
-	}
-
-	@Override
 	protected void render(Batch batch) {
 		super.render(batch);
-
 	}
 
 }

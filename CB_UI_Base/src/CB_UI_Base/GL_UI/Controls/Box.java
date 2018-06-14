@@ -54,16 +54,6 @@ public class Box extends CB_View_Base {
 	super(0f, 0f, width, height, "");
     }
 
-    @Override
-    protected void Initial() {
-
-    }
-
-    @Override
-    protected void SkinIsChanged() {
-
-    }
-
     /**
      * render
      */

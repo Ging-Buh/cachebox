@@ -52,9 +52,4 @@ public class ApiUnavailable extends Toast {
 		super.addChildToOverlay(mIcon);
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 }

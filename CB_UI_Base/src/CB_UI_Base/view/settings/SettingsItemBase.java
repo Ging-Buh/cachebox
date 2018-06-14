@@ -61,10 +61,6 @@ public class SettingsItemBase extends ListViewItemBackground {
 			return super.click(x, y, pointer, button);
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-	}
-
 	public void setName(String name) {
 		lblName.setWrappedText(name);
 		lblName.setHeight(lblName.getTextHeight());

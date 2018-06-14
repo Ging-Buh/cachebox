@@ -121,11 +121,6 @@ public class FieldNotesView extends V_ListView {
 		firstShow = true;
 	}
 
-	@Override
-	public void Initial() {
-
-	}
-
 	private void reloadFieldNotes() {
 		if (lFieldNotes == null)
 			lFieldNotes = new FieldNoteList();
@@ -134,11 +129,6 @@ public class FieldNotesView extends V_ListView {
 		that.setBaseAdapter(null);
 		lvAdapter = new CustomAdapter(lFieldNotes);
 		that.setBaseAdapter(lvAdapter);
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-
 	}
 
 	public class CustomAdapter implements Adapter {

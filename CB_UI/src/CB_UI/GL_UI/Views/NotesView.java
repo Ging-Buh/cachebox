@@ -173,15 +173,6 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent {
 	}
 
 	@Override
-	protected void Initial() {
-
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-	}
-
-	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
 		aktCache = cache;
 		mustLoadNotes = true;

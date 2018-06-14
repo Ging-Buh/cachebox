@@ -104,13 +104,6 @@ public class CopyPastePopUp extends PopUp_Base {
 		btnPaste.setX(btnCopy.getMaxX() + sollDivider);
 	}
 
-	/**
-	 * does nothing
-	 */
-	@Override
-	public void Initial() {
-	}
-
 	public void flipX() {
 		int p = Sprites.patch;
 
@@ -122,11 +115,6 @@ public class CopyPastePopUp extends PopUp_Base {
 		btnPaste.setY(yValue);
 		btnCopy.setY(yValue);
 		btnCut.setY(yValue);
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-
 	}
 
 	public void setOnlyPaste() {

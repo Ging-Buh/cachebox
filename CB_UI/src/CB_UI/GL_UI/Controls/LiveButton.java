@@ -27,11 +27,6 @@ public class LiveButton extends ImageButton implements QueStateChanged {
 		this.setImageScale(0.9f);
 	}
 
-	@Override
-	public void Initial() {
-		super.Initial();
-	}
-
 	public void setState(boolean newState) {
 		state = newState;
 		Config.LiveMapEnabeld.setValue(newState);

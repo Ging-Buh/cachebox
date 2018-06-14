@@ -167,11 +167,6 @@ public class TrackableListView extends CB_View_Base {
 	}
 
 	@Override
-	protected void SkinIsChanged() {
-
-	}
-
-	@Override
 	public void onResized(CB_RectF rec) {
 		super.onResized(rec);
 		Layout();

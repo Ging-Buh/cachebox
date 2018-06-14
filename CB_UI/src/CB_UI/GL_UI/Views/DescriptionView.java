@@ -137,16 +137,6 @@ public class DescriptionView extends CB_View_Base {
         PlatformConnector.hideView(ViewConst.DESCRIPTION_VIEW);
     }
 
-    @Override
-    protected void Initial() {
-
-    }
-
-    @Override
-    protected void SkinIsChanged() {
-
-    }
-
     private void showWebView() {
         // Rufe ANDROID VIEW auf
         Timer timer = new Timer();

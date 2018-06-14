@@ -92,9 +92,4 @@ public class PasswortDialog extends ButtonDialog {
 
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 }

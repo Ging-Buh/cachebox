@@ -250,11 +250,6 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 	}
 
 	@Override
-	protected void SkinIsChanged() {
-
-	}
-
-	@Override
 	public Priority getPriority() {
 		return Priority.Normal;
 	}

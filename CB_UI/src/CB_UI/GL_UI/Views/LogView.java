@@ -81,11 +81,6 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
 		this.scrollTo(0);
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 	Cache aktCache;
 	ListViewBaseAdapter lvAdapter;
 

@@ -39,16 +39,10 @@ public class ScrollBox extends CB_View_Base {
 		lv.setClickable(true);
 
 		item = new ListViewItemBase(this, 0, "ListViewItem-" + name) {
-
-			@Override
-			protected void SkinIsChanged() {
-			}
-
 			@Override
 			protected void Initial() {
 				isInitial = true;
 			}
-
 		};
 
 		item.setHeight(virtualHeight);
@@ -213,13 +207,7 @@ public class ScrollBox extends CB_View_Base {
 
 	@Override
 	protected void Initial() {
-		super.isInitial = true;
-
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-
+		isInitial = true;
 	}
 
 	public void setDragable() {

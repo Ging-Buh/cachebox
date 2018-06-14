@@ -37,14 +37,4 @@ public class CB_ButtonListItem extends ListViewItemBase {
 		return mCB_Button.click(x, y, pointer, button);
 	}
 
-	@Override
-	protected void Initial() {
-
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 }

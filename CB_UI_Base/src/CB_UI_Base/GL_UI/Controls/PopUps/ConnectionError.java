@@ -60,9 +60,4 @@ public class ConnectionError extends Toast {
 		super.addChildToOverlay(mIcon);
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 }

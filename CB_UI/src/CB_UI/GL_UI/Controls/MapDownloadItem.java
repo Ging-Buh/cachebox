@@ -102,14 +102,6 @@ public class MapDownloadItem extends CB_View_Base {
 		}
 	}
 
-	@Override
-	protected void Initial() {
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-	}
-
 	private final AtomicBoolean DownloadRuns = new AtomicBoolean(false);
 
 	public void beginDownload() {

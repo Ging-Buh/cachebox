@@ -107,10 +107,6 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
 	public static BitmapFontCache cacheNamePaint;
 
 	@Override
-	protected void SkinIsChanged() {
-	}
-
-	@Override
 	public void render(Batch batch) {
 		super.render(batch);
 		if (backheader != null) {

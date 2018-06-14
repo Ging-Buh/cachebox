@@ -9,14 +9,4 @@ public class HrView extends CB_View_Base {
 
 	}
 
-	@Override
-	protected void Initial() {
-
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 }

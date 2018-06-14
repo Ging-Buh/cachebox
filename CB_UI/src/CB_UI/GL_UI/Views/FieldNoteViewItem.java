@@ -215,11 +215,6 @@ public class FieldNoteViewItem extends ListViewItemBackground {
 	public static BitmapFontCache cacheNamePaint;
 
 	@Override
-	protected void SkinIsChanged() {
-
-	}
-
-	@Override
 	public void render(Batch batch) {
 		if (fieldnote == null) {
 			// super.render(batch);

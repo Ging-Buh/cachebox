@@ -200,11 +200,6 @@ public class CreditsView extends CB_View_Base {
 	}
 
 	@Override
-	protected void SkinIsChanged() {
-
-	}
-
-	@Override
 	public void resize(float width, float height) {
 		logo.setY(this.getHeight() - ((ref * 5) / 4.11f) - ref);
 		scrollBox.setHeight(logo.getY() - (ref / 2));

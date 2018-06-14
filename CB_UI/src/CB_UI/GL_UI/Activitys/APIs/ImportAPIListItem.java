@@ -50,9 +50,4 @@ public class ImportAPIListItem extends ListViewItemBackground {
 		this.addChild(chk);
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 }

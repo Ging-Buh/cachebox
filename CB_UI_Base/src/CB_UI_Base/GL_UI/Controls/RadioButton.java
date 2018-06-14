@@ -60,6 +60,11 @@ public class RadioButton extends ChkBox {
 	}
 
 	@Override
+	protected void Initial() {
+		// do neither explicit nor implicit a super.Initial();
+	}
+
+	@Override
 	public boolean click(int x, int y, int pointer, int button) {
 		if (!isDisabled) {
 			if (!isChk || group == null) {
@@ -72,15 +77,6 @@ public class RadioButton extends ChkBox {
 			}
 		}
 		return true;
-	}
-
-	@Override
-	protected void Initial() {
-
-	}
-
-	@Override
-	protected void SkinIsChanged() {
 	}
 
 	@Override

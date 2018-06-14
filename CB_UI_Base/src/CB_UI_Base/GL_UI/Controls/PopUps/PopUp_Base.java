@@ -23,11 +23,6 @@ public abstract class PopUp_Base extends CB_View_Base {
 
 	}
 
-	@Override
-	protected void Initial() {
-
-	}
-
 	public void show(int msec) {
 		float x = (UI_Size_Base.that.getWindowWidth() / 2) - this.getHalfWidth();
 		float y = (UI_Size_Base.that.getWindowHeight() / 2) - this.getHalfHeight();

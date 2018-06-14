@@ -412,10 +412,6 @@ public class GL_MsgBox extends Dialog {
 	}
 
 	@Override
-	protected void SkinIsChanged() {
-	}
-
-	@Override
 	public void dispose() {
 		//Log.debug(log, "Dispose GL_MsgBox=> " + name);
 

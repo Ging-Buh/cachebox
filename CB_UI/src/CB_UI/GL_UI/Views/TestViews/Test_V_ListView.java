@@ -37,11 +37,6 @@ public class Test_V_ListView extends V_ListView {
 
 	}
 
-	@Override
-	public void Initial() {
-		super.Initial();
-	}
-
 	ArrayList<String> TestArray = new ArrayList<String>();
 
 	public class CustomAdapter implements Adapter {

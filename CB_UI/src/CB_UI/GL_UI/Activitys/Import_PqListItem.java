@@ -52,9 +52,4 @@ public class Import_PqListItem extends ListViewItemBackground {
 		this.addChild(chk);
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 }

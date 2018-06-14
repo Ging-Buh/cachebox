@@ -54,10 +54,6 @@ public class GalleryItem extends ListViewItemBackground {
 		img.setRec(imgRec.ScaleCenter(0.95f));
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-	}
-
 	public Image getImage() {
 		return img;
 	}

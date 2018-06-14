@@ -269,7 +269,6 @@ public class Button extends CB_View_Base {
         if (drawableFocused == null) {
             drawableFocused = Sprites.btnPressed;
         }
-
     }
 
     public void setDraggable() {

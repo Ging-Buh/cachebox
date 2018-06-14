@@ -14,14 +14,4 @@ public class ScrollView extends CB_View_Base {
 		super(cb_RectF, Parent, Name);
 	}
 
-	@Override
-	protected void Initial() {
-
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 }

@@ -45,11 +45,6 @@ public class ProgressBar extends CB_View_Base {
 		GL.that.renderOnce();
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 	/**
 	 * @param value
 	 * @return the pos of Progress end

@@ -86,10 +86,6 @@ public class ProjectionCoordinate extends ActivityBase {
 			iniNumPad();
 	}
 
-	@Override
-	protected void Initial() {
-	}
-
 	private void iniCacheNameLabel() {
 		CB_RectF rec = new CB_RectF(leftBorder + margin, getHeight() - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight);
 		Title = new Label(this.name + " Title", rec);

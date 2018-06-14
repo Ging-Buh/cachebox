@@ -43,10 +43,6 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent {
 	}
 
 	@Override
-	protected void SkinIsChanged() {
-	}
-
-	@Override
 	protected void render(Batch batch) {
 		if (redraw)
 			setSatStrength();
@@ -171,20 +167,13 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent {
 	}
 
 	@Override
-	protected void Initial() {
-
-	}
-
-	@Override
 	public void onShow() {
-		super.onShow();
 		GpsStateChangeEventList.Add(this);
 		redraw = true;
 	}
 
 	@Override
 	public void onHide() {
-		super.onHide();
 		GpsStateChangeEventList.Remove(this);
 	}
 

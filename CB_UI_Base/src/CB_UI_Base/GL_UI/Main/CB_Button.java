@@ -100,11 +100,6 @@ public class CB_Button extends Button implements OnClickListener {
 		}
 	}
 
-	@Override
-	protected void Initial() {
-
-	}
-
 	private final OnClickListener longClickListener = new OnClickListener() {
 
 		@Override

@@ -171,37 +171,6 @@ public class EditTextField extends EditTextFieldBase {
 		return this;
 	}
 
-	/**
-	 * does super
-	 */
-	@Override
-	public void onShow() {
-		super.onShow();
-
-	}
-
-	/**
-	 * does super
-	 */
-	@Override
-	public void onHide() {
-		super.onHide();
-	}
-
-	/**
-	 * does nothing
-	 */
-	@Override
-	protected void Initial() {
-	}
-
-	/**
-	 * does nothing
-	 */
-	@Override
-	protected void SkinIsChanged() {
-	}
-
 	public void setStyle(TextFieldStyle style) {
 		if (style == null)
 			throw new IllegalArgumentException("style cannot be null.");

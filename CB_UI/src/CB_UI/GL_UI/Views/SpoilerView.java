@@ -191,21 +191,6 @@ public class SpoilerView extends CB_View_Base {
 		gallery.reloadItemsNow();
 	}
 
-	@Override
-	public void onHide() {
-		super.onHide();
-	}
-
-	@Override
-	protected void Initial() {
-
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 	public class GalaryImageAdapter implements Adapter {
 		public GalaryImageAdapter() {
 		}

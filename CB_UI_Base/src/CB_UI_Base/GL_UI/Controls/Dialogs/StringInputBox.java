@@ -50,7 +50,6 @@ public class StringInputBox extends GL_MsgBox {
 
     @Override
     public void onShow() {
-        super.onShow();
         editText.setFocus(true);
     }
 

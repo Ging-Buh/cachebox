@@ -146,10 +146,6 @@ public class ParkingDialog extends ButtonDialog {
 	}
 
 	@Override
-	protected void SkinIsChanged() {
-	}
-
-	@Override
 	public void dispose() {
 		msgBoxContentSize = null;
 		if (btSetGPS != null)

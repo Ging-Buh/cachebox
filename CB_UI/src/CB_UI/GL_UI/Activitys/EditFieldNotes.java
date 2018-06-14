@@ -87,8 +87,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         addLast(btnCancel);
         scrollBox = new ScrollBox(innerWidth, getAvailableHeight());
 
-        float initialContentHeight = 0;
-        scrollBoxContent = new Box(scrollBox.getWidth(), initialContentHeight);
+        scrollBoxContent = new Box(scrollBox.getWidth(), 0);
         scrollBoxContent.initRow(BOTTOMUP);
         if (fieldNote.type.isDirectLogType())
             iniOptions();
@@ -98,7 +97,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         iniDate();
         iniFoundLine();
         iniTitle();
-        scrollBoxContent.setHeight(initialContentHeight - scrollBoxContent.getAvailableHeight());
+        scrollBoxContent.adjustHeight();
 
         scrollBox.setVirtualHeight(scrollBoxContent.getHeight());
         scrollBox.addChild(scrollBoxContent);

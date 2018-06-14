@@ -83,8 +83,6 @@ public class NewDB_InputBox extends GL_MsgBox {
 
 	@Override
 	public void onShow() {
-		super.onShow();
-
 		// register Textfield render
 		editText.setFocus(true);
 	}

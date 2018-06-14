@@ -30,9 +30,4 @@ public class TestListView_Item extends ListViewItemBase {
 		this.addChild(lbl);
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 }

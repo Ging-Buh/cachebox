@@ -37,11 +37,6 @@ public class Test_H_ListView extends H_ListView {
 
 	}
 
-	@Override
-	protected void Initial() {
-
-	}
-
 	ArrayList<String> TestArray = new ArrayList<String>();
 
 	public class CustomAdapter implements Adapter {

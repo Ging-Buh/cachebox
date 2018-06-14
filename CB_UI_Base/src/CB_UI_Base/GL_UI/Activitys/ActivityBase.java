@@ -84,16 +84,6 @@ public class ActivityBase extends Dialog {
 
 	}
 
-	@Override
-	public void onShow() {
-		super.onShow();
-	}
-
-	@Override
-	public void onHide() {
-		super.onHide();
-	}
-
 	public void show() {
 		GL.that.showActivity(this);
 	}

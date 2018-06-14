@@ -356,9 +356,4 @@ public class CategorieListViewItem extends ListViewItemBackground {
 		return true;
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 }

@@ -110,10 +110,6 @@ public class PopUpMenu extends PopUp_Base {
 		infoCircle = new CircleDrawable(rec.getCenterPosX(), rec.getCenterPosY(), innerRadius, paint, rec.getWidth(), rec.getHeight());
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-	}
-
 	public void addMneuItem(MenuItem item) {
 		items.add(item);
 	}

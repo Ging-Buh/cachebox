@@ -236,11 +236,6 @@ public class ButtonDialog extends Dialog {
 		return false;
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 	public static ButtonDialog Show(String msg) {
 		ButtonDialog msgBox = new ButtonDialog("MsgBox", msg, "Title", MessageBoxButtons.NOTHING, MessageBoxIcon.None, null);
 		GL.that.showDialog(msgBox);

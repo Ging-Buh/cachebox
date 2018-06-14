@@ -528,10 +528,6 @@ public class HtmlView extends ScrollBox implements ListLayout {
 		item = new ListViewItemBase(this, 0, "ListViewItem-" + name) {
 
 			@Override
-			protected void SkinIsChanged() {
-			}
-
-			@Override
 			protected void Initial() {
 				isInitial = true;
 			}

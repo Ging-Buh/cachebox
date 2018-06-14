@@ -248,11 +248,6 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 		return "Core.WayPointViewItem";
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 	boolean inChange = false;
 
 	public void requestLayout() {

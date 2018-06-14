@@ -405,10 +405,4 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 
 		return true;
 	}
-
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 }

@@ -63,18 +63,8 @@ public class Scrollbar extends CB_View_Base {
 	}
 
 	@Override
-	protected void Initial() {
-
-	}
-
-	@Override
 	public void onShow() {
-		super.onShow();
 		mPushSliderFader.beginnFadeout();
-	}
-
-	@Override
-	protected void SkinIsChanged() {
 	}
 
 	public void setSliderAlwaysVisible(boolean value) {

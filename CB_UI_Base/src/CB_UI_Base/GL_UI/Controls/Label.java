@@ -551,11 +551,6 @@ public class Label extends CB_View_Base {
     }
 
     @Override
-    protected void Initial() {
-        // must implement Initial
-    }
-
-    @Override
     protected void SkinIsChanged() {
         // todo den korrekten Font (original Fontgrösse nicht bekannt) setzen
         mFont = Fonts.getNormal();

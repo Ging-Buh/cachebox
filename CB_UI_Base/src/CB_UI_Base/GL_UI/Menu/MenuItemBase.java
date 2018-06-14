@@ -11,9 +11,4 @@ public class MenuItemBase extends ListViewItemBackground {
 		super(rec, Index, Name);
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 }

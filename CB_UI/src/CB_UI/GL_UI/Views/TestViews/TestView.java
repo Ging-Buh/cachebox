@@ -251,22 +251,12 @@ public class TestView extends CB_View_Base {
 		GL.that.renderOnce();
 	}
 
-	@Override
-	protected void Initial() {
-
-	}
-
 	public boolean onTouchDown(int x, int y, int pointer, int button) {
 		return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgelöst wird.
 	}
 
 	public boolean onTouchUp(int x, int y, int pointer, int button) {
 		return true;
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-
 	}
 
 	final int mapIntWidth = 3000;

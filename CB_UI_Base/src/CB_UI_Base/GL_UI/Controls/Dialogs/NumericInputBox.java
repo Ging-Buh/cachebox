@@ -355,16 +355,7 @@ public class NumericInputBox extends CB_View_Base {
 
 	@Override
 	public void onShow() {
-		super.onShow();
 		editText.setFocus(true);
-	}
-
-	@Override
-	protected void Initial() {
-	}
-
-	@Override
-	protected void SkinIsChanged() {
 	}
 
 	private static void close(final GL_MsgBox msgBox) {

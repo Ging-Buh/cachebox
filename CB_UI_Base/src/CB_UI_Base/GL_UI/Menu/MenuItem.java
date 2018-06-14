@@ -268,8 +268,4 @@ public class MenuItem extends MenuItemBase {
 		return this.data;
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-	}
-
 }

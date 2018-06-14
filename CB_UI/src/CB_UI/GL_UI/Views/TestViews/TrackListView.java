@@ -70,16 +70,6 @@ public class TrackListView extends V_ListView {
 		// platformConector.hideView(ViewConst.TRACK_LIST_VIEW);
 	}
 
-	@Override
-	public void Initial() {
-		super.Initial();
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 	TrackListViewItem aktRouteItem;
 
 	public class CustomAdapter implements Adapter {

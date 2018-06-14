@@ -149,16 +149,6 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		}
 	};
 
-	@Override
-	public void Initial() {
-		super.Initial();
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 	public class CustomAdapter implements Adapter {
 		private Cache cache;
 		private CB_List<ListViewItemBase> items;

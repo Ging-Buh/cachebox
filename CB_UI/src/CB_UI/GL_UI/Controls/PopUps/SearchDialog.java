@@ -834,11 +834,6 @@ public class SearchDialog extends PopUp_Base {
 	}
 
 	@Override
-	protected void SkinIsChanged() {
-
-	}
-
-	@Override
 	public void onShow() {
 		try {
 

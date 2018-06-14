@@ -55,12 +55,6 @@ public class API_Button extends Button {
 		this.setText(Translation.Get("getApiKey"));
 	}
 
-	@Override
-	protected void Initial() {
-		super.Initial();
-
-	}
-
 	public void setImage() {
 		if (apiChk != null) {
 			Drawable drw;

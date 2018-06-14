@@ -21,11 +21,6 @@ public class MainViewBase extends CB_View_Base {
 	}
 
 	@Override
-	protected void Initial() {
-
-	}
-
-	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button) {
 		return true;
 	}
@@ -38,11 +33,6 @@ public class MainViewBase extends CB_View_Base {
 	@Override
 	public boolean onTouchUp(int x, int y, int pointer, int button) {
 		return true;
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-
 	}
 
 	@Override

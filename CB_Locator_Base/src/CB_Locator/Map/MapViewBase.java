@@ -1332,11 +1332,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 	public abstract void requestLayout();
 
-	@Override
-	protected void Initial() {
-
-	}
-
 	public int getAktZoom() {
 		return aktZoom;
 	}

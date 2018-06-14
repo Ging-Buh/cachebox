@@ -66,11 +66,6 @@ public class SettingsItem_QuickButton extends CB_View_Base {
 		reloadListViewItems();
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 	private void showSelect() {
 		// erstelle Menu mit allen Actions, die noch nicht in der QuickButton List enthalten sind.
 
@@ -329,9 +324,4 @@ public class SettingsItem_QuickButton extends CB_View_Base {
 			return tmpQuickList.size();
 		}
 	}
-
-	@Override
-	protected void Initial() {
-
-	};
 }

@@ -46,11 +46,6 @@ public class Toast extends Dialog {
 
 	}
 
-	@Override
-	protected void Initial() {
-		// tue nichts
-	}
-
 	public void setWrappedText(String txt) {
 		mTextField.setWrappedText(txt);
 	}
@@ -67,10 +62,6 @@ public class Toast extends Dialog {
 		super.setHeight(height);
 		mTextField.setHeight(height - this.topBorder - this.bottomBorder);
 		mTextField.setZeroPos();
-	}
-
-	@Override
-	protected void SkinIsChanged() {
 	}
 
 }

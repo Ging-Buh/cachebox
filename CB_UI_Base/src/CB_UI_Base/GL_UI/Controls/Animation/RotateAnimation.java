@@ -62,14 +62,6 @@ public abstract class RotateAnimation extends AnimationBase {
 	}
 
 	@Override
-	protected void Initial() {
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-	}
-
-	@Override
 	public void setOrigin(float x, float y) {
 		mOriginX = x;
 		mOriginY = y;

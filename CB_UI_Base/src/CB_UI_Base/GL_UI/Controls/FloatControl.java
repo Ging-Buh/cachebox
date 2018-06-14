@@ -43,14 +43,6 @@ public class FloatControl extends CB_View_Base {
 	}
 
 	@Override
-	protected void Initial() {
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-	}
-
-	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button) {
 		if (slideButton.isDisabled())
 			return false;

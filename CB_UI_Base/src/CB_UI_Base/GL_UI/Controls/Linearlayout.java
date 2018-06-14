@@ -66,16 +66,6 @@ public class Linearlayout extends CB_View_Base {
 
 	}
 
-	@Override
-	protected void Initial() {
-
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 	private Hashtable<GL_View_Base, Float> sonderMargins;
 
 	/**

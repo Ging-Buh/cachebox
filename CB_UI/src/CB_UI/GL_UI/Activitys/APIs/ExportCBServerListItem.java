@@ -50,9 +50,4 @@ public class ExportCBServerListItem extends ListViewItemBackground {
 		this.addChild(chk);
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 }

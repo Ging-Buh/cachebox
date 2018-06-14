@@ -10,11 +10,11 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 import CB_Utils.Util.MoveableList;
 
-public abstract class CB_View_Base extends GL_View_Base {
-    // Designing this ( a page, a box, a panel, ...) by adding rows of
-    // objects<GL_View_Base>
-    // the position and width (stretched equally, weighted or percentual on
-    // this) of the objects is calculated automatically
+public class CB_View_Base extends GL_View_Base {
+
+    // row handling by arbor95: makes live much easier
+    // Designing this ( a page, a box, a panel, ...) by adding rows of objects<GL_View_Base>
+    // the position and width (stretched equally, weighted or percentual) of the objects is calculated automatically
     private MoveableList<GL_View_Base> row;
     private boolean topdown = true; // false = bottomup
     private float rowYPos = 0;
@@ -57,15 +57,9 @@ public abstract class CB_View_Base extends GL_View_Base {
         super(size, Name);
     }
 
-    public void onShow() {
-    }
-
-    public void onHide() {
-    }
-
     @Override
     public boolean isDisposed() {
-        return this.isDisposed;
+        return isDisposed;
     }
 
     protected boolean isInitial = false;
@@ -77,7 +71,6 @@ public abstract class CB_View_Base extends GL_View_Base {
     /**
      * render
      */
-    @Override
     protected void render(Batch batch) {
         if (!isInitial) {
             isInitial = true;
@@ -85,15 +78,11 @@ public abstract class CB_View_Base extends GL_View_Base {
         }
     }
 
-    /**
-     * Diese Initialisierung wird, abhängig von isInitial, im render(batch)
-     * ausgeführt.<br>
-     * Die Implematation sollte alles enthalten, was vor dem ersten Rendern
-     * eingestellt werden muss.<br>
-     * Achtung! Im überschreibenden render(batch) muß Initial() implizit über
-     * super oder explizit aufgerufen werden.<br>
-     */
-    protected abstract void Initial();
+    protected void Initial() {
+    }
+
+    protected void SkinIsChanged() {
+    }
 
     @Override
     public void onResized(CB_RectF rec) {
@@ -273,7 +262,7 @@ public abstract class CB_View_Base extends GL_View_Base {
 
     @Override
     public String toString() {
-        return getName() + " X,Y/Width,Height = " + this.getX() + "," + this.getY() + "/" + this.getWidth() + "," + this.getHeight();
+        return getName() + " X,Y/Width,Height = " + getX() + "," + getY() + "/" + getWidth() + "," + getHeight();
     }
 
     /**
@@ -301,8 +290,8 @@ public abstract class CB_View_Base extends GL_View_Base {
      * * setting the margins between the added objects
      **/
     public void setMargins(float xMargin, float yMargin) {
-        this.xMargin = xMargin;
-        this.yMargin = yMargin;
+        xMargin = xMargin;
+        yMargin = yMargin;
     }
 
     /**
@@ -317,10 +306,10 @@ public abstract class CB_View_Base extends GL_View_Base {
      **/
     public void initRow(boolean direction) {
         if (direction) {
-            initRow(direction, this.getHeight() - this.topBorder);
+            initRow(direction, getHeight() - topBorder);
         } else {
             // starting at 0
-            initRow(direction, this.bottomBorder);
+            initRow(direction, bottomBorder);
         }
     }
 
@@ -328,48 +317,48 @@ public abstract class CB_View_Base extends GL_View_Base {
      * * start objects at this y Position, direction true = topdown
      **/
     public void initRow(boolean direction, float y) {
-        if (this.row == null) {
-            this.row = new MoveableList<GL_View_Base>();
+        if (row == null) {
+            row = new MoveableList<GL_View_Base>();
         } else {
-            this.row.clear();
+            row.clear();
         }
-        this.rowYPos = y;
+        rowYPos = y;
         if (bottomYAdd < 0) {
             // nur beim ersten Mal, sonst müssen die Werte erhalten bleiben
             if (direction) {
-                this.bottomYAdd = this.bottomBorder;
-                this.topYAdd = y;
+                bottomYAdd = bottomBorder;
+                topYAdd = y;
             } else {
-                this.bottomYAdd = y;
-                this.topYAdd = this.getHeight() - this.topBorder;
+                bottomYAdd = y;
+                topYAdd = getHeight() - topBorder;
             }
         }
-        this.topdown = direction;
+        topdown = direction;
     }
 
     /**
      * * get innerHeight - Height of all placed objects
      **/
     public float getAvailableHeight() {
-        if (this.row == null)
-            this.initRow();
-        return this.topYAdd - this.bottomYAdd;
+        if (row == null)
+            initRow();
+        return topYAdd - bottomYAdd;
     }
 
     public void adjustHeight() {
         // nicht sinnvoll wenn von unten und von oben was hinzugefügt wurde
         // und danach auch bitte nichts mehr hinzufügen.
-        if (this.topdown) {
-            this.setHeight(this.getHeight() - this.topYAdd);
+        if (topdown) {
+            setHeight(getHeight() - topYAdd);
             // Die Position aller Clients muss bei TopDown neu gesetzt werden.
             for (int i = 0, n = childs.size(); i < n; i++) {
                 GL_View_Base view = childs.get(i);
-                view.setPos(view.getX(), view.getY() - this.topYAdd);
+                view.setPos(view.getX(), view.getY() - topYAdd);
             }
-            // this.topYAdd = this.bottomYAdd; // fertig gebaut
+            // topYAdd = bottomYAdd; // fertig gebaut
         } else {
-            this.setHeight(this.bottomYAdd);
-            // this.topYAdd = this.bottomYAdd; // fertig gebaut
+            setHeight(bottomYAdd);
+            // topYAdd = bottomYAdd; // fertig gebaut
         }
     }
 
@@ -418,63 +407,41 @@ public abstract class CB_View_Base extends GL_View_Base {
      * All items within the last row processed in the layout!
      */
     public void FinaliseRow() {
-        if (this.row.size() == 0)
-            return;
-        GL_View_Base lastItem = this.row.remove(this.row.size() - 1);
-        addLast(lastItem);
-    }
-
-    /**
-     * All items within the last row processed in the layout!
-     */
-    public void FinaliseRow(float Weight) {
-        if (this.row.size() == 0)
-            return;
-        GL_View_Base lastItem = this.row.remove(this.row.size() - 1);
-        addLast(lastItem, Weight);
-    }
-
-    /**
-     * Returns True, if all added Line Child's are layouted
-     *
-     * @return
-     */
-    public boolean RowIsFinalise() {
-        return this.row.size() == 0;
+        addMe(null,true );
     }
 
     // ===================================================================
     private void addMe(GL_View_Base c, boolean lastInRow)
     // ===================================================================
     {
-        if (this.row == null)
-            this.initRow();
+        if (row == null)
+            initRow();
         if (c != null)
-            this.row.add(c);
+            row.add(c);
         if (lastInRow) {
-            // Determine this.rowMaxHeight
-            this.rowMaxHeight = 0;
-            for (int i = 0, n = this.row.size(); i < n; i++) {
-                GL_View_Base view = this.row.get(i);
-                if (view.getHeight() > this.rowMaxHeight)
-                    this.rowMaxHeight = view.getHeight();
+            // Determine rowMaxHeight
+            rowMaxHeight = 0;
+            for (int i = 0, n = row.size(); i < n; i++) {
+                GL_View_Base view = row.get(i);
+                if (view.getHeight() > rowMaxHeight)
+                    rowMaxHeight = view.getHeight();
             }
-            if (this.topdown) {
-                this.rowYPos = this.rowYPos - this.rowMaxHeight;
+            if (topdown) {
+                rowYPos = rowYPos - rowMaxHeight;
             }
             // Determine width of objects from number of objects in row
-            float rowXPos = this.leftBorder;
+            float rowXPos = leftBorder;
             float weightedAnz = 0;
             float fixedWidthSum = 0;
             float percentWidthSum = 0;
-            float widthToFill = this.getWidth() - this.leftBorder - this.rightBorder;
-            for (int i = 0, n = this.row.size(); i < n; i++) {
-                GL_View_Base view = this.row.get(i);
+            float widthToFill = getWidth() - leftBorder - rightBorder;
+            for (int i = 0, n = row.size(); i < n; i++) {
+                GL_View_Base view = row.get(i);
                 if (view.Weight > 0) {
                     weightedAnz += view.Weight;
                 } else {
                     if (view.Weight == FIXED) {
-                        fixedWidthSum += view.getWidth() + this.xMargin; // xMargin is added to each object
+                        fixedWidthSum += view.getWidth() + xMargin; // xMargin is added to each object
                     } else {
                         // Prozentuale Breite des Objekts bzgl widthToFill
                         percentWidthSum += Math.abs(view.Weight) * widthToFill;
@@ -484,32 +451,32 @@ public abstract class CB_View_Base extends GL_View_Base {
             }
             float objectWidth = 0;
             if (weightedAnz != 0) {
-                objectWidth = (widthToFill - percentWidthSum - fixedWidthSum + this.xMargin) / weightedAnz - this.xMargin;
+                objectWidth = (widthToFill - percentWidthSum - fixedWidthSum + xMargin) / weightedAnz - xMargin;
             }
-            for (int i = 0, n = this.row.size(); i < n; i++) {
-                GL_View_Base view = this.row.get(i);
+            for (int i = 0, n = row.size(); i < n; i++) {
+                GL_View_Base view = row.get(i);
                 if (view.Weight > 0) {
                     view.setWidth(objectWidth * view.Weight);
                 } else {
                     if (view.Weight > FIXED) {
-                        view.setWidth(Math.abs(view.Weight) * widthToFill - this.xMargin);
+                        view.setWidth(Math.abs(view.Weight) * widthToFill - xMargin);
                     }
                 }
-                view.setPos(rowXPos, this.rowYPos);
-                this.addChildDirekt(view);
+                view.setPos(rowXPos, rowYPos);
+                addChildDirekt(view);
                 // next object at x
-                rowXPos = rowXPos + view.getWidth() + this.xMargin;
+                rowXPos = rowXPos + view.getWidth() + xMargin;
             }
             // next row objects at y
-            if (this.topdown) {
-                this.rowYPos = this.rowYPos - this.yMargin;
-                this.topYAdd = this.rowYPos;
+            if (topdown) {
+                rowYPos = rowYPos - yMargin;
+                topYAdd = rowYPos;
             } else {
-                this.rowYPos = this.rowYPos + this.rowMaxHeight + this.yMargin;
-                this.bottomYAdd = this.rowYPos;
+                rowYPos = rowYPos + rowMaxHeight + yMargin;
+                bottomYAdd = rowYPos;
                 // todo vielleicht automatische Höhenanpassung von this
             }
-            this.row.clear();
+            row.clear();
         }
     }
 

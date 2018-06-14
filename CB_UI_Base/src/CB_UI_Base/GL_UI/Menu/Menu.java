@@ -490,11 +490,6 @@ public class Menu extends ButtonDialog {
 		return this.mOnItemClickListeners;
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 	public void setPrompt(String Prompt) {
 		// set Title with full width, add many blanks: that is bad
 		// this.setTitle(Prompt + "                                                       ");

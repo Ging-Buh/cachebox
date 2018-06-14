@@ -98,7 +98,6 @@ public class Image extends CB_View_Base {
 
 	@Override
 	public void onShow() {
-		super.onShow();
 		if (imageLoader != null) {
 			if (imageLoader.getAnimDelay() > 0) {
 				GL.that.addRenderView(this, imageLoader.getAnimDelay());
@@ -111,7 +110,6 @@ public class Image extends CB_View_Base {
 
 	@Override
 	public void onHide() {
-		super.onHide();
 		if (imageLoader != null) {
 			if (imageLoader.getAnimDelay() > 0) {
 				GL.that.removeRenderView(this);
@@ -238,15 +236,6 @@ public class Image extends CB_View_Base {
 		if (imageLoader != null)
 			imageLoader.dispose();
 		imageLoader = null;
-	}
-
-	@Override
-	protected void Initial() {
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-
 	}
 
 	public void setColor(Color color) {

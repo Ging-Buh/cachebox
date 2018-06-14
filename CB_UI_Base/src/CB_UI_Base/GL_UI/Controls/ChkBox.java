@@ -54,7 +54,7 @@ public class ChkBox extends Button {
 	@Override
 	protected void Initial() {
 
-		// die einzelnen Hintergr�nde werden hier anders benutzt
+		// die einzelnen Hintergründe werden hier anders benutzt
 		// drawableNormal= unchecked
 		// drawablePressed= checked
 		// drawableDisabled= unchecked Disabled

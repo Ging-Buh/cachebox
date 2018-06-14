@@ -238,11 +238,6 @@ public class SelectDB extends ActivityBase {
 	}
 
 	@Override
-	protected void Initial() {
-
-	}
-
-	@Override
 	public void onShow() {
 
 		int itemSpace = lvFiles.getMaxItemCount();
@@ -357,10 +352,6 @@ public class SelectDB extends ActivityBase {
 
 		}
 	};
-
-	@Override
-	protected void SkinIsChanged() {
-	}
 
 	OnMsgBoxClickListener mDialogListenerNewDB = new OnMsgBoxClickListener() {
 

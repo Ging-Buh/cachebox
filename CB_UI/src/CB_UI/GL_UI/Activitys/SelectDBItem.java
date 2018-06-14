@@ -41,9 +41,4 @@ public class SelectDBItem extends ListViewItemBackground {
 		this.setClickable(true);
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 }

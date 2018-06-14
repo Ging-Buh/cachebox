@@ -10,9 +10,4 @@ public class SettingsItem_QuickButton_ListItem extends ListViewItemBackground {
 
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 }

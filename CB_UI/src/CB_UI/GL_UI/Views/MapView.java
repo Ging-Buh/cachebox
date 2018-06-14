@@ -920,7 +920,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	@Override
 	public void onHide() {
 		CB_UI.SelectedCacheEventList.Remove(this);
-		super.onHide();
+		super.onHide(); // of MapViewBase
 	}
 
 	@Override
@@ -1251,7 +1251,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 	@Override
 	public void onShow() {
-		super.onShow();
+		super.onShow(); // of MapViewBase
 
 		CB_UI.SelectedCacheEventList.Add(this);
 		this.NorthOriented = Mode == MapMode.Normal ? Config.MapNorthOriented.getValue() : false;

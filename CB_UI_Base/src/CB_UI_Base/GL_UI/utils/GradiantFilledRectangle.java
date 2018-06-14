@@ -24,16 +24,6 @@ public class GradiantFilledRectangle extends CB_View_Base {
 		gradiant = fill;
 	}
 
-	@Override
-	protected void Initial() {
-
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 	public void setGradiant(GradiantFill fill) {
 		gradiant = fill;
 		tex = null;

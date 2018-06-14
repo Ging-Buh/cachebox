@@ -18,16 +18,6 @@ public class ColorPickerRec extends CB_View_Base {
 		colorChanged();
 	}
 
-	@Override
-	protected void Initial() {
-
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 	public void setHue(float hue) {
 		mColor.setHue(hue);
 		colorChanged();

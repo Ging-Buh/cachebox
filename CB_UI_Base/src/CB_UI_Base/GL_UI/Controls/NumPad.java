@@ -261,11 +261,6 @@ public class NumPad extends CB_View_Base {
 
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 	OnClickListener clickListener = new OnClickListener() {
 
 		@Override

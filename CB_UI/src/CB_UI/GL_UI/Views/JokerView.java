@@ -34,14 +34,4 @@ public class JokerView extends CB_View_Base {
 	public void onHide() {
 		PlatformConnector.hideView(ViewConst.JOKER_VIEW);
 	}
-
-	@Override
-	protected void Initial() {
-
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-
-	}
 }

@@ -154,16 +154,6 @@ public class TextFilterView extends CB_View_Base {
 	 */
 	private EditTextField mEingabe;
 
-	@Override
-	protected void Initial() {
-
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 	/**
 	 * represented the actual filter mode <br/>
 	 * 0 = Title <br/>

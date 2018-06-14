@@ -224,11 +224,6 @@ public class H_ListView extends ListViewBase {
 	}
 
 	@Override
-	protected void Initial() {
-
-	}
-
-	@Override
 	protected void SkinIsChanged() {
 		reloadItems();
 	}

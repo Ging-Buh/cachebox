@@ -64,15 +64,6 @@ public class QuickFieldNoteFeedbackPopUp extends PopUp_Base {
     }
 
     @Override
-    public void Initial() {
-    }
-
-    @Override
-    protected void SkinIsChanged() {
-
-    }
-
-    @Override
     public void dispose() {
         setBackground(null);
         if (AnimateTimer != null)

@@ -164,9 +164,4 @@ public class RouteDialog extends ButtonDialog {
 
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 }

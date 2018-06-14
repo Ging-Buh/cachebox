@@ -70,9 +70,4 @@ public class SolverViewItem extends ListViewItemBackground {
 		return false;
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 }

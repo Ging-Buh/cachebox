@@ -233,7 +233,6 @@ public class FilterSetListView extends V_ListView {
 
 	@Override
 	public void onShow() {
-		super.onShow();
 		if (EditFilterSettings.tmpFilterProps != null && !EditFilterSettings.tmpFilterProps.toString().equals("")) {
 			LoadFilterProperties(EditFilterSettings.tmpFilterProps);
 		}

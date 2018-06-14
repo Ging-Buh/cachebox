@@ -358,7 +358,6 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 	@Override
 	public void onShow() {
-		super.onShow();
 		PositionChangedEventList.Add(this);
 		if (chart != null) {
 			chart.onShow();
@@ -370,7 +369,6 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 	@Override
 	public void onHide() {
-		super.onHide();
 		PositionChangedEventList.Remove(this);
 		if (chart != null)
 			chart.onHide();

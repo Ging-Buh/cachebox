@@ -159,9 +159,4 @@ public class TestLabelView extends CB_View_Base {
 
 	Label lbl;
 
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 }

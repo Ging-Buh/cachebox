@@ -140,11 +140,6 @@ public class splash extends MainViewBase {
 			resetInitial();
 	}
 
-	@Override
-	protected void SkinIsChanged() {
-
-	}
-
 	/**
 	 * Step 1 <br>
 	 * add Progressbar

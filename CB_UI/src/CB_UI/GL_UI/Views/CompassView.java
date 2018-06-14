@@ -92,7 +92,6 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
     @Override
     public void onShow() {
-        super.onShow();
         if (chart != null) {
             chart.onShow();
             chart.setDrawWithAlpha(false);
@@ -107,7 +106,6 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
     @Override
     public void onHide() {
-        super.onHide();
         if (chart != null)
             chart.onHide();
         SelectedCacheEventList.Remove(this);
@@ -166,11 +164,6 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
         showLastFound = Config.CompassShowLastFound.getValue();
 
         showAnyContent = showMap || showName || showIcon || showAtt || showGcCode || showCoords || showWpDesc || showSatInfos || showSunMoon || showTargetDirection || showSDT || showLastFound;
-    }
-
-    @Override
-    protected void SkinIsChanged() {
-
     }
 
     private void setWP(Cache cache, Waypoint waypoint) {
