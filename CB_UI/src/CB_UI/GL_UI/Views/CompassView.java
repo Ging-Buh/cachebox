@@ -49,6 +49,7 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
+import CB_Utils.Log.Log;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.IChanged;
@@ -56,12 +57,14 @@ import CB_Utils.Util.UnitFormatter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.TimeZone;
 
 public class CompassView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent, invalidateTextureEvent, CacheListChangedEventListener {
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompassView.class);
     private CB_RectF imageRec;
     private Image frame, scale, arrow, att[], Icon, Sun, Moon;
 
@@ -75,23 +78,21 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
     private Waypoint aktWaypoint;
 
     private float margin, attHeight, descHeight, lblHeight;
-    private double heading;
-    private boolean isInitial, showMap, showName, showIcon, showAtt, showGcCode, showCoords, showWpDesc, showSatInfos, showSunMoon, showAnyContent, showTargetDirection, showSDT, showLastFound;
+    private boolean initDone, showMap, showName, showIcon, showAtt, showGcCode, showCoords, showWpDesc, showSatInfos, showSunMoon, showAnyContent, showTargetDirection, showSDT, showLastFound;
 
     public CompassView(CB_RectF rec, String Name) {
         super(rec, Name);
         margin = GL_UISizes.margin;
 
-        CacheListChangedEventList.Add(this);
-        invalidateTextureEventList.Add(this);
         aktCache = GlobalCore.getSelectedCache();
         aktWaypoint = GlobalCore.getSelectedWaypoint();
-        createControls();
-        Layout();
+        Log.info(log, "created");
     }
 
     @Override
     public void onShow() {
+        Log.info(log, "onShow");
+        Initial();
         if (chart != null) {
             chart.onShow();
             chart.setDrawWithAlpha(false);
@@ -100,6 +101,8 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
         PositionChangedEventList.Add(this);
         if (map != null)
             map.onShow();
+        CacheListChangedEventList.Add(this);
+        invalidateTextureEventList.Add(this);
 
         PositionChanged();
     }
@@ -112,20 +115,21 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
         PositionChangedEventList.Remove(this);
         if (map != null)
             map.onHide();
+        CacheListChangedEventList.Remove(this);
+        invalidateTextureEventList.Remove(this);
     }
 
     @Override
     protected void Initial() {
-        if (isInitial)
+        if (initDone)
             return;
         readSettings();
-        registerSetingsChangedListeners();
         createControls();
-        Layout();
-        isInitial = true;
+        registerSettingsChangedListeners();
+        initDone = true;
     }
 
-    private void registerSetingsChangedListeners() {
+    private void registerSettingsChangedListeners() {
         Config.CompassShowMap.addChangedEventListener(settingChangedListener);
         Config.CompassShowWP_Name.addChangedEventListener(settingChangedListener);
         Config.CompassShowWP_Icon.addChangedEventListener(settingChangedListener);
@@ -145,7 +149,6 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
         public void isChanged() {
             readSettings();
             createControls();
-            Layout();
         }
     };
 
@@ -166,35 +169,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
         showAnyContent = showMap || showName || showIcon || showAtt || showGcCode || showCoords || showWpDesc || showSatInfos || showSunMoon || showTargetDirection || showSDT || showLastFound;
     }
 
-    private void setWP(Cache cache, Waypoint waypoint) {
-        boolean resetControls = false; // Set if WP desk changed
-
-        Waypoint wp = null;
-
-        wp = waypoint;
-
-        if (wp != null) {
-            if (wp.getDescription() != null && !wp.getDescription().equals("")) {
-                float newDescHeight = Fonts.MeasureWrapped(wp.getDescription(), topContentBox.getWidth()).height + margin;
-                if (newDescHeight != descHeight)
-                    resetControls = true;
-            }
-        }
-
-        aktWaypoint = wp;
-
-        if (resetControls) {
-            createControls();
-        } else {
-            setCache(cache);
-        }
-
-    }
-
-    private void setCache(Cache cache) {
+    private void setCache() {
 
         try {
-            aktCache = cache;
             if (aktCache == null)
                 return;
             synchronized (aktCache) {
@@ -271,7 +248,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
                 }
 
             }
+
             Layout();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -336,6 +315,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
     }
 
     private void createControls() {
+        Log.info(log, "createControls");
         this.removeChilds();
 
         if (distanceBack != null) {
@@ -347,6 +327,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
             topContentBox.removeChilds();
             topContentBox.dispose();
         }
+
+        lblHeight = Fonts.Measure("Tg").height * 1.3f;
+        attHeight = (this.getWidth() / 9) - margin;
 
         // Calc content height
         float contentHeight = margin + margin;
@@ -380,17 +363,13 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
         }
 
         topBox = new ScrollBox(new CB_RectF(0, topH, this.getWidth(), this.getHeight() - topH));
-        topBox.setVirtualHeight(topH);
 
         topBox.setBackground(Sprites.activityBackground);
 
         topContentBox = new Box(topBox, "topContent");
         topContentBox.setWidth(topBox.getInnerWidth());
 
-        attHeight = (this.getWidth() / 9) - margin;
         CB_RectF attRec = new CB_RectF(0, 0, attHeight, attHeight);
-
-        lblHeight = Fonts.Measure("Tg").height * 1.3f;
 
         topContentBox.setHeight(contentHeight);
         topContentBox.setZeroPos();
@@ -411,7 +390,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
             map.setZeroPos();
             rightBox.addChild(map);
 
-            lblDistance = new Label(this.name + " lblDistance", margin, margin, rightBox.getWidth(), (Fonts.MeasureBig("T").height * 2.5f));
+            lblDistance = new Label("Distance", margin, margin, rightBox.getWidth(), (Fonts.MeasureBig("T").height * 2.5f));
             BitmapFont font = Fonts.getCompass();
             lblDistance.setFont(font);
             lblDistance.setHAlignment(HAlignment.CENTER);
@@ -422,7 +401,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
             rightBox.addChild(lblDistance);
         } else {
             float h = Fonts.MeasureBig("T").height * 2.5f;
-            lblDistance = new Label(this.name + " lblDistance", margin, leftBox.getHeight() - margin - h, leftBox.getWidth() - margin - margin, h);
+            lblDistance = new Label("Distance", margin, leftBox.getHeight() - margin - h, leftBox.getWidth() - margin - margin, h);
             BitmapFont font = Fonts.getCompass();
             lblDistance.setFont(font);
             lblDistance.setHAlignment(HAlignment.LEFT);
@@ -433,7 +412,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
             lblDistance.setX(margin);
             lblDistance.setVAlignment(VAlignment.BOTTOM);
 
-            lblAccuracy = new Label(this.name + " lblAccuracy", lblDistance);
+            lblAccuracy = new Label("Accuracy", lblDistance);
             lblAccuracy.setHAlignment(HAlignment.RIGHT);
             lblAccuracy.setZeroPos();
             lblAccuracy.setVAlignment(VAlignment.CENTER);
@@ -491,7 +470,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
                 }
             }
             if (showName) {
-                lbl_Name = new Label("NameLabel");
+                lbl_Name = new Label("");
                 lbl_Name.setHeight(lblHeight);
                 topContentBox.addLast(lbl_Name);
             }
@@ -499,7 +478,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
         // add WP description line
         if (showWpDesc) {
-            lblDesc = new Label("DescLabel");
+            lblDesc = new Label("");
             lblDesc.setHeight(descHeight);
             topContentBox.addLast(lblDesc);
         }
@@ -508,20 +487,17 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
         float mesuredCoorWidth = Fonts.Measure("52° 27.130N / 13° 33.117E").width + margin;
         if (showGcCode || showCoords) {
             if (showCoords) {
+                lblCoords = new Label("");
+                lblCoords.setHeight(lblHeight);
+                lblCoords.setWidth(mesuredCoorWidth);
                 if (showGcCode) {
-                    lblCoords = new Label("CoordsLabel");
-                    lblCoords.setHeight(lblHeight);
-                    lblCoords.setWidth(mesuredCoorWidth);
                     topContentBox.addNext(lblCoords, CB_View_Base.FIXED);
                 } else {
-                    lblCoords = new Label("CoordsLabel");
-                    lblCoords.setHeight(lblHeight);
-                    lblCoords.setWidth(mesuredCoorWidth);
                     topContentBox.addLast(lblCoords, CB_View_Base.FIXED);
                 }
             }
             if (showGcCode) {
-                lblGcCode = new Label("GcCodeLabel");
+                lblGcCode = new Label("");
                 lblGcCode.setHeight(lblHeight);
                 topContentBox.addLast(lblGcCode);
             }
@@ -531,16 +507,16 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
         if (showSatInfos) {
             if (showMap)//
             {
-                lblAlt = new Label("AltLabel");
+                lblAlt = new Label("");
                 lblAlt.setHeight(lblHeight);
                 topContentBox.addNext(lblAlt, 0.9f);
 
-                lblAccuracy = new Label("AccuracyLabel");
+                lblAccuracy = new Label("");
                 lblAccuracy.setHeight(lblHeight);
                 topContentBox.addNext(lblAccuracy, 0.7f);
 
             } else {
-                lblAlt = new Label("AltLabel");
+                lblAlt = new Label("");
                 lblAlt.setHeight(lblHeight);
                 topContentBox.addNext(lblAlt);
             }
@@ -552,7 +528,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
             chart.setWidth(chartWidth);
             topContentBox.addLast(chart, CB_View_Base.FIXED);
 
-            lblOwnCoords = new Label("OwnCoords");
+            lblOwnCoords = new Label("");
             lblOwnCoords.setHeight(lblHeight);
             lblOwnCoords.setWidth(chart.getX() - margin);
             lblOwnCoords.setPos(0, lblAlt.getMaxY() + margin);
@@ -562,7 +538,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
         // add Target direction
         if (showTargetDirection) {
-            lblBearing = new Label("AltLabel");
+            lblBearing = new Label("");
             lblBearing.setHeight(lblHeight);
 
             topContentBox.addLast(lblBearing);
@@ -582,7 +558,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
                 infoHeight *= 2.5f;
             }
 
-            SDT = new CacheInfo(new SizeF(100, infoHeight), "SDT info", aktCache);
+            SDT = new CacheInfo(new SizeF(topContentBox.getWidth(), infoHeight), "SDT info", aktCache);
             SDT.setViewMode(ViewMode);
             topContentBox.addLast(SDT);
         }
@@ -594,20 +570,22 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
             int attLineBreak = (int) (topContentBox.getInnerWidth() / (attHeight + margin)) - 2;
             for (int i = 0; i < 20; i++) {
                 att[i] = new Image(attRec, "", false);
-                if ((i < attLineBreak - 1) || (i > attLineBreak && i < 19)) {
+                if ((i < attLineBreak - 1) || (i >= attLineBreak && i < 19)) {
                     topContentBox.addNext(att[i], FIXED);
                 }
-                if (i == attLineBreak || i == 19) {
+                if (i == attLineBreak - 1 || i == 19) {
                     topContentBox.addLast(att[i], FIXED);
                 }
             }
         }
 
         topBox.addChild(topContentBox);
-        topBox.setVirtualHeight(contentHeight);
+        topBox.setVirtualHeight(topContentBox.getHeight());
         topBox.scrollTo(0);
-        setCache(GlobalCore.getSelectedCache());
-        // setWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+
+        aktCache=GlobalCore.getSelectedCache();
+        aktWaypoint=GlobalCore.getSelectedWaypoint();
+        setCache();
     }
 
     private boolean lastUsedCompass = Locator.UseMagneticCompass();
@@ -637,27 +615,37 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
     @Override
     public void onResized(CB_RectF rec) {
         createControls();
-        Layout();
     }
 
     @Override
     public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
-        setWP(cache, waypoint);
+        if (aktCache != cache || aktWaypoint != waypoint) {
+            aktCache = cache;
+            aktWaypoint=waypoint;
+            setCache();
+        }
     }
 
     @Override
     public void PositionChanged() {
-        if (this.isDisposed())
+        if (this.isDisposed()) {
+            Log.info(log, "PositionChanged, but this is disposed.");
             return;
-        if (aktCache == null)
+        }
+        if (aktCache == null) {
+            Log.info(log, "PositionChanged, but akt Cache is null");
             return;
+        }
+        Log.info(log, "PositionChanged");
 
         CoordinateGPS position = Locator.getCoordinate();
 
-        if (position == null)
+        if (position == null) {
+            Log.info(log, "but position is null");
             return;
+        }
 
-        heading = Locator.getHeading();
+        double heading = Locator.getHeading();
 
         if (lblOwnCoords != null)
             lblOwnCoords.setText(position.FormatCoordinate());
@@ -669,6 +657,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
         try {
             MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(), dest.getLatitude(), dest.getLongitude(), result);
         } catch (Exception e1) {
+            Log.info(log, "PositionChanged but error calculating distance and bearing");
             return;
         }
 
@@ -702,7 +691,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
                     distanceBack.setX(rightBox.getHalfWidth() - distanceBack.getHalfWidth());
                 }
             }
-
+        }
+        else {
+            Log.info(log, "PositionChanged but lblDistance is null or disposed");
         }
 
         if (lblAccuracy != null && !lblAccuracy.isDisposed()) {
@@ -735,7 +726,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
         if (Locator.Valid()) {
             Coordinate position = Locator.getCoordinate();
-            heading = Locator.getHeading();
+            double heading = Locator.getHeading();
 
             Coordinate dest = aktWaypoint != null ? aktWaypoint.Pos : aktCache.Pos;
 
@@ -773,6 +764,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
         if (Locator.Valid()) {
             CoordinateGPS latLon = Locator.getCoordinate();
+            double heading = Locator.getHeading();
             float centerX = frame.getCenterPosX();
             float centerY = frame.getCenterPosY();
             float radius = frame.getHalfWidth() + Sun.getHalfHeight() + (Sun.getHalfHeight() / 4);
@@ -819,12 +811,15 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
     @Override
     public void invalidateTexture() {
         createControls();
-        Layout();
     }
 
     @Override
     public void CacheListChangedEvent() {
-        setWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+        if (aktCache != GlobalCore.getSelectedCache() || aktWaypoint != GlobalCore.getSelectedWaypoint()) {
+            aktCache=GlobalCore.getSelectedCache();
+            aktWaypoint=GlobalCore.getSelectedWaypoint();
+            setCache();
+        }
     }
 
     @Override

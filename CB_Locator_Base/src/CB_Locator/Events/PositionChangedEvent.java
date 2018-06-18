@@ -23,7 +23,7 @@ public interface PositionChangedEvent {
 	/**
 	 * Return the Name of this Receiver, for Debug
 	 * 
-	 * @return
+	 * @return  the name of the listener, who receives the event
 	 */
 	public abstract String getReceiverName();
 

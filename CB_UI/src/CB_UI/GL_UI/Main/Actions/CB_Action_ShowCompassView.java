@@ -65,7 +65,7 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView {
 		return icm;
 	}
 
-	private void showOtionMenu() {
+	private void showOptionMenu() {
 		OptionMenu icm = new OptionMenu("menu_compassView");
 		icm.addOnClickListener(onItemClickListener);
 		MenuItem mi;
@@ -129,7 +129,7 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView {
 
 			switch (((MenuItem) v).getMenuItemId()) {
 			case MenuID.MI_COMPASS_SHOW:
-				showOtionMenu();
+				showOptionMenu();
 				return true;
 			case MenuID.MI_COMPASS_SHOW_MAP:
 				toggleSetting(CB_UI_Settings.CompassShowMap);

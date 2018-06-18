@@ -102,8 +102,8 @@ public class CacheInfo extends CB_View_Base {
 	private int mViewMode = VIEW_MODE_CACHE_LIST;
 
 	private Cache mCache;
-	private float mIconSize = 0;
-	private SizeF mStarSize = new SizeF();
+	private float mIconSize;
+	private SizeF mStarSize;
 	private float mMargin = 0;
 	private Sprite mRatingSprite;
 	private Sprite mIconSprite;
@@ -147,7 +147,6 @@ public class CacheInfo extends CB_View_Base {
 		mScaleFactor = getWidth() / UiSizes.that.getCacheListItemRec().getWidth();
 		mIconSize = Fonts.MeasureSmall("T").height * 3.5f * mScaleFactor;
 		mMargin = 3 * mScaleFactor;
-
 	}
 
 	public void setFont(BitmapFont font) {
@@ -239,7 +238,8 @@ public class CacheInfo extends CB_View_Base {
 			mS_FontCache = new BitmapFontCache(mBitmapFontSmall);
 			mS_FontCache.setText("MSRLO", 0, 0);
 			mS_FontCache.setColor(COLOR.getFontColor());
-			float starHeight = mS_FontCache.getLayouts().first().height * 1.1f;
+			// float starHeight = mS_FontCache.getLayouts().first().height * 1.1f;
+			float starHeight = mIconSize / 3.5f;
 			mStarSize = new SizeF(starHeight * 5, starHeight);
 
 			if (ifModeFlag(SHOW_S_D_T)) {
@@ -250,7 +250,7 @@ public class CacheInfo extends CB_View_Base {
 				mS_FontCache.setPosition(mLeft, mBottom);
 				mLeft += mS_FontCache.getLayouts().first().width + mMargin;
 
-				mStarSize.scale(mScaleFactor);
+				// mStarSize.scale(mScaleFactor);
 				mSSprite = new Sprite(Sprites.SizesIcons.get((mCache.Size.ordinal())));
 				mSSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
 				// Difficulty
@@ -374,9 +374,9 @@ public class CacheInfo extends CB_View_Base {
 			}
 
 			if (ifModeFlag(SHOW_ATTRIBUTES)) { // create Attribute Icons
-				float attSize = mIconSize;
+				final int countPerLine = 6;
+				float attSize = getWidth() / countPerLine - mMargin ;
 				int attCount = mCache.getAttributes().size();
-				final int countPerLine = (int) (this.getWidth() / (attSize + mMargin));
 				int lineCount = getLineCount(attCount, countPerLine);
 
 				float attX = mMargin;
@@ -468,11 +468,11 @@ public class CacheInfo extends CB_View_Base {
 	}
 
 	public float getAttributeHeight() {
-		float attSize = mIconSize;//2
+		final int countPerLine = 6;
+		float attSize = getWidth() / countPerLine - mMargin ;
 		int attCount = 0;
 		if (mCache != null && mCache.getAttributes() != null)
 			attCount = mCache.getAttributes().size();
-		final int countPerLine = (int) (this.getWidth() / (attSize + mMargin));
 		int lineCount = getLineCount(attCount, countPerLine);
 		return lineCount * (attSize + mMargin) + mMargin;
 	}
@@ -552,4 +552,11 @@ public class CacheInfo extends CB_View_Base {
 		return layout.height;
 	}
 
+	public float getStarsHeight() {
+		if (ifModeFlag(SHOW_S_D_T)) {
+			return mIconSize / 3.5f;
+		}
+		else
+			return 0;
+	}
 }

@@ -35,8 +35,8 @@ public class SizeF {
 	/**
 	 * Constructor
 	 * 
-	 * @param float Width
-	 * @param float Height
+	 * @param Width as float
+	 * @param Height as float
 	 */
 	public SizeF(float Width, float Height) {
 		this.width = Width;

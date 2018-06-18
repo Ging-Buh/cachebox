@@ -68,9 +68,6 @@ public class CB_View_Base extends GL_View_Base {
         isInitial = false;
     }
 
-    /**
-     * render
-     */
     protected void render(Batch batch) {
         if (!isInitial) {
             isInitial = true;
@@ -79,9 +76,6 @@ public class CB_View_Base extends GL_View_Base {
     }
 
     protected void Initial() {
-    }
-
-    protected void SkinIsChanged() {
     }
 
     @Override

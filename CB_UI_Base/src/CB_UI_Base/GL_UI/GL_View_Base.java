@@ -1130,8 +1130,6 @@ public abstract class GL_View_Base extends CB_RectF {
 
     @Override
     public void setPos(Vector2 Pos) {
-        if (this.getX() == Pos.x && this.getY() == Pos.y)
-            return;
         super.setPos(Pos);
         this.invalidate(); // Scissor muss neu berechnet werden
         GL.that.renderOnce();
@@ -1171,7 +1169,8 @@ public abstract class GL_View_Base extends CB_RectF {
         // }
     }
 
-    protected abstract void SkinIsChanged();
+    protected void SkinIsChanged() {
+    }
 
     // ############# End Skin changed ############
 

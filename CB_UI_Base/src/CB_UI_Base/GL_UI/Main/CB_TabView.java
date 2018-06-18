@@ -127,7 +127,7 @@ public class CB_TabView extends CB_View_Base {
 
 				// delete all Views up to the ButtonList
 				if (aktView != null && aktView != view) {
-					CB_TabView.this.removeChild(aktView);
+					removeChild(aktView);
 					// aktView.onStop();
 					aktView.onHide();
 					aktView.setInvisible();
@@ -146,7 +146,7 @@ public class CB_TabView extends CB_View_Base {
 					return;
 
 				aktView = view;
-				CB_TabView.this.addChild(aktView);
+				addChild(aktView);
 
 				aktView.setVisible();
 				sendOnShow2aktView();

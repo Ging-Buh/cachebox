@@ -373,4 +373,11 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 		return info.getTextHeight();
 
 	}
+
+	public float getStarsHeight() {
+		if (info == null)
+			return 0;
+		return info.getStarsHeight();
+
+	}
 }
