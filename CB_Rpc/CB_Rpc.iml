@@ -21,15 +21,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../libs/org.apache.commons.httpclient.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/../libs/servlet-api-6.0.16.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -49,6 +40,15 @@
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../libs/slf4j-api-1.7.6.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../libs/org.apache.commons.httpclient.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

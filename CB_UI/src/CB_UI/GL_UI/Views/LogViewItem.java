@@ -17,6 +17,8 @@ package CB_UI.GL_UI.Views;
 
 import java.text.SimpleDateFormat;
 
+import CB_UI_Base.Enums.WrapType;
+import CB_UI_Base.GL_UI.Controls.EditTextField;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -40,7 +42,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
 	private Image ivTyp;
 	private Label lblFinder;
 	private Label lblDate;
-	private Label lblComment;
+	private EditTextField mComment;
 
 	private float secondTab = 0;
 	private static float MeasuredLabelHeight = 0;
@@ -84,15 +86,15 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
 	}
 
 	private void iniCommentLabel() {
-
-		// if (logEntry.Comment.startsWith("Das war"))
-		// {
-		// logEntry.Comment = "TEst";
-		// }
-
-		lblComment = new Label(this.name + " lblComment", getLeftWidth(), 0, this.getWidth() - getLeftWidthStatic() - getRightWidthStatic() - (UI_Size_Base.that.getMargin() * 2), this.getHeight() - headHeight - UI_Size_Base.that.getMargin());
-		lblComment.setWrappedText(logEntry.Comment);
-		this.addChild(lblComment);
+		CB_RectF rectF = new CB_RectF(getLeftWidth(), 0, this.getWidth() - getLeftWidthStatic() - getRightWidthStatic() - (UI_Size_Base.that.getMargin() * 2), this.getHeight() - headHeight - UI_Size_Base.that.getMargin());
+		mComment = new EditTextField(rectF, this, "Comment");
+		mComment.setWrapType(WrapType.WRAPPED);
+		mComment.setText(logEntry.Comment);
+		mComment.setEditable(false);
+		mComment.setBackground(null, null);
+		mComment.showFromLineNo(0);
+		mComment.setCursorPosition(0);
+		this.addChild(mComment);
 	}
 
 	@Override

@@ -189,7 +189,7 @@ public class FieldNoteViewItem extends ListViewItemBackground {
 			return;
 		CB_RectF rectF = new CB_RectF(getLeftWidth() + UI_Size_Base.that.getMargin(), 0, this.getWidth() - getLeftWidth() - getRightWidth() - (UI_Size_Base.that.getMargin() * 2),
 				this.getHeight() - (this.getHeight() - mGcCode.getY()) - UI_Size_Base.that.getMargin());
-		mComment = new EditTextField(rectF, this, this.name + " lblComment");
+		mComment = new EditTextField(rectF, this, "Comment");
 		mComment.setWrapType(WrapType.WRAPPED);
 		mComment.setText(fieldnote.comment);
 		mComment.setEditable(false);

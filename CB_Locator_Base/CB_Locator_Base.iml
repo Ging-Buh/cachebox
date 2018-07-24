@@ -70,7 +70,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../libs/gdx.jar!/" />
+          <root url="jar://$MODULE_DIR$/../libs/gdx-1.9.6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

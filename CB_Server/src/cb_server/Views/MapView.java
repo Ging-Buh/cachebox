@@ -153,7 +153,7 @@ public class MapView extends CB_ViewBase {
 	HashMap<Long, LMarker> underlays = null;
 	boolean first = true;
 
-	private void updateIcons(int zoom, Bounds bounds) {
+	private void updateIcons(double zoom, Bounds bounds) {
 		this.getUI().getPage();
 		this.getUI().getPage();
 		host = com.vaadin.server.Page.getCurrent().getLocation().getScheme() + "://" + com.vaadin.server.Page.getCurrent().getLocation().getAuthority() + "/";

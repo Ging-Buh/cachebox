@@ -15,6 +15,11 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
+    <orderEntry type="module" module-name="CB_Utils" />
+    <orderEntry type="module" module-name="CB_mapsforge" />
+    <orderEntry type="module" module-name="CB_UI_Base" />
+    <orderEntry type="module" module-name="CB_Locator_Base" />
+    <orderEntry type="module" module-name="CB_Locator_Desktop" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -33,10 +38,5 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="CB_Utils" />
-    <orderEntry type="module" module-name="CB_mapsforge" />
-    <orderEntry type="module" module-name="CB_UI_Base" />
-    <orderEntry type="module" module-name="CB_Locator_Base" />
-    <orderEntry type="module" module-name="CB_Locator_Desktop" />
   </component>
 </module>

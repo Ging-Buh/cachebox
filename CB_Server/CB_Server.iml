@@ -36,6 +36,13 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
+    <orderEntry type="module" module-name="CB_Utils" />
+    <orderEntry type="module" module-name="CB_mapsforge" />
+    <orderEntry type="module" module-name="CB_Rpc" />
+    <orderEntry type="module" module-name="CB_UI_Base" />
+    <orderEntry type="module" module-name="CB_Locator_Base" />
+    <orderEntry type="module" module-name="CB_Core" />
+    <orderEntry type="module" module-name="CB_Locator_Desktop" />
     <orderEntry type="module-library">
       <library name="com.sun.el-1.0.0.v201105211818.jar">
         <CLASSES>
@@ -67,15 +74,6 @@
       <library name="org.eclipse.jdt.core-3.7.1.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/org.eclipse.jdt.core-3.7.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="kxml2-2.3.0.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/kxml2-2.3.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -168,6 +166,42 @@
       <library name="ContextMenu-4.5.0.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/ContextMenu-4.5.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../libs/gdx.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../libs/slf4j-api-1.7.6.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../libs/kxml2-2.3.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../libs/gdx-backend-lwjgl.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

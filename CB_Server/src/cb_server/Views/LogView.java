@@ -27,7 +27,7 @@ public class LogView extends CB_ViewBase implements SelectedCacheChangedEventLis
 		panel.setHeight("100%");
 		this.setCompositionRoot(panel);
 
-		Label label = new Label("<table border=\"1\" frame=\"void\" cellspacing=\"5\" cellpadding=\"5\"><tr><th>hallo <br> <i>Hubert</i> aslkfjalskd fklas jfölkasjlkfj asölkdf jasljf laösjg lkadjglk asdjglkajdlkdgj slkgjla kjglaj glaj lgkajlk gjasdölkgj alsdkg jlöksdgj löakdsjg lkajglkjdglkksjdlgkjsdlkfgj sdölkfg jsdölkgjöslkdjg sdgjs dlkgsdlkjg sdjgs jfglsjd glsdj glsjdlög jsdölfgj sldökgjsldjgsld</th></td></table>", ContentMode.HTML);
+		Label label = new Label("<table border=\"1\" frame=\"void\" cellspacing=\"5\" cellpadding=\"5\"><tr><th>hallo <br> <i>Hubert</i> aslkfjalskd fklas jfÃ¼lkasjlkfj asÃ¼lkdf jasljf laÃ¼sjg lkadjglk asdjglkajdlkdgj slkgjla kjglaj glaj lgkajlk gjasdÃ¼lkgj alsdkg jlÃ¼ksdgj lÃ¼akdsjg lkajglkjdglkksjdlgkjsdlkfgj sdÃ¼lkfg jsdÃ¼lkgjÃ¼slkdjg sdgjs dlkgsdlkjg sdjgs jfglsjd glsdj glsjdlï¿½g jsdï¿½lfgj sldï¿½kgjsldjgsld</th></td></table>", ContentMode.HTML);
 		list.addComponent(label);
 
 		label = new Label("<table border=\"1\" frame=\"void\" cellspacing=\"5\" cellpadding=\"5\"><tr><th>hallo <br> <i>Martina</i></th></td></table>", ContentMode.HTML);

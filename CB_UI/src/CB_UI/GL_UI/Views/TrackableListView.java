@@ -201,6 +201,10 @@ public class TrackableListView extends CB_View_Base {
 					GL.that.Toast(ConnectionError.INSTANCE);
 				}
 
+				if (result == GroundspeakAPI.ERROR) {
+					GL.that.Toast(ConnectionError.INSTANCE);
+				}
+
 				if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
 					GL.that.Toast(ApiUnavailable.INSTANCE);
 				}

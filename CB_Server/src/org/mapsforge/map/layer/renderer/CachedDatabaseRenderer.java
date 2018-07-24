@@ -27,9 +27,9 @@ import javax.imageio.ImageIO;
 
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
-import org.mapsforge.map.awt.AwtGraphicFactory;
-import org.mapsforge.map.awt.AwtTileBitmap;
-import org.mapsforge.map.reader.MapDatabase;
+import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
+import org.mapsforge.map.awt.graphics.AwtTileBitmap;
+import org.mapsforge.map.datastore.MultiMapDataStore;
 
 import CB_Locator.LocatorSettings;
 import CB_Locator.Map.Descriptor;
@@ -44,7 +44,7 @@ import CB_UI_Base.graphics.GL_RenderType;
  */
 public class CachedDatabaseRenderer extends DatabaseRenderer {
 
-	public CachedDatabaseRenderer(MapDatabase mapDatabase, GraphicFactory graphicFactory) {
+	public CachedDatabaseRenderer(MultiMapDataStore mapDatabase, GraphicFactory graphicFactory) {
 		super(mapDatabase, graphicFactory);
 		LocatorSettings.MapsforgeRenderType.setEnumValue(GL_RenderType.Mapsforge);
 		//		this.CachePath = CachePath;

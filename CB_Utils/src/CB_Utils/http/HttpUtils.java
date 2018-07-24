@@ -40,18 +40,20 @@ public class HttpUtils {
 	public static int socketTimeout = 60000;
 
 	/**
-	 * F�rt ein Http Request aus und gibt die Antwort als String zur�ck. Da ein HttpRequestBase �bergeben wird kann ein HttpGet oder
-	 * HttpPost zum Ausf�hren �bergeben werden.
-	 * 
+	 * Führt ein Http Request aus und gibt die Antwort als String zurück.
+	 * Da ein HttpRequestBase übergeben wird kann ein HttpGet oder HttpPost zum Ausführen übergeben werden.
+	 * conectionTimeout
+	 *            Config.settings.conection_timeout.getValue()
+	 * socketTimeout
+	 *            Config.settings.socket_timeout.getValue()
+	 *
 	 * @param httprequest
 	 *            HttpGet oder HttpPost
-	 * @param conectionTimeout
-	 *            Config.settings.conection_timeout.getValue()
-	 * @param socketTimeout
-	 *            Config.settings.socket_timeout.getValue()
+	 * @param icancel
 	 * @return Die Antwort als String.
 	 * @throws IOException
 	 * @throws ClientProtocolException
+	 * @throws ConnectTimeoutException
 	 */
 	public static String Execute(final HttpRequestBase httprequest, final ICancel icancel) throws IOException, ClientProtocolException, ConnectTimeoutException {
 		return Execute(httprequest, icancel, false);

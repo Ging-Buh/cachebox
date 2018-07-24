@@ -54,7 +54,7 @@ public class Label extends CB_View_Base {
     private static float scrollstep = 0;
     private final AtomicBoolean checkRuns = new AtomicBoolean(false);
     protected BitmapFontCache mTextObject;
-    protected String mText = "";
+    protected String mText;
     protected BitmapFont mFont = Fonts.getNormal();
     protected Color mColor = COLOR.getFontColor();
     protected HAlignment mHAlignment = HAlignment.LEFT;
@@ -83,7 +83,7 @@ public class Label extends CB_View_Base {
      **/
     public Label(String Text) {
         super(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight(), "Label");
-        mText = Text == null ? "" : Text;
+        mText = Text == null ? "" : Text.replace("\r\n", "\n");
         setText();
     }
 
@@ -93,7 +93,7 @@ public class Label extends CB_View_Base {
      **/
     public Label(String Text, BitmapFont Font, Color fontColor, WrapType WrapType) {
         super(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight(), "Label");
-        mText = (Text == null ? "" : Text);
+        mText = (Text == null ? "" : Text.replace("\r\n", "\n"));
         if (Font != null)
             mFont = Font;
         if (fontColor != null)
@@ -105,7 +105,7 @@ public class Label extends CB_View_Base {
 
     public Label(String Name, float X, float Y, float Width, float Height, String Text) {
         super(X, Y, Width, Height, Name);
-        mText = Text == null ? "" : Text;
+        mText = Text == null ? "" : Text.replace("\r\n", "\n");
         setText();
     }
 
@@ -117,7 +117,7 @@ public class Label extends CB_View_Base {
 
     public Label(String Name, CB_RectF rec, String Text) {
         super(rec, Name);
-        mText = Text == null ? "" : Text;
+        mText = Text == null ? "" : Text.replace("\r\n", "\n");
         setText();
     }
 
@@ -164,7 +164,12 @@ public class Label extends CB_View_Base {
         try {
             if (mTextObject != null) {
                 if (mTextObject.usesIntegerPositions())
-                    mTextObject.draw(batch);
+                    try {
+                        mTextObject.draw(batch);
+                    }
+                    catch (Exception ex) {
+                        log.error("Rendering " + mText + "\r\n" + ex.getLocalizedMessage());
+                    }
             }
 
             // Draw Underline
@@ -222,11 +227,7 @@ public class Label extends CB_View_Base {
                 }
 
             }
-        } catch (ArrayIndexOutOfBoundsException e) {
-            // kommt manchmal wenn der Text geändert wird
-            setText();
-        } catch (NullPointerException e) {
-            // kommt manchmal wenn der Text geändert wird
+        } catch (Exception e) {
             setText();
         }
     }
@@ -430,7 +431,7 @@ public class Label extends CB_View_Base {
     public Label setMultiLineText(String text) {
         if (text == null)
             text = "";
-        mText = text;
+        mText = text.replace("\r\n", "\n");
         mVAlignment = VAlignment.TOP;
         this.mWrapType = WrapType.MULTILINE;
         setText();
@@ -443,7 +444,7 @@ public class Label extends CB_View_Base {
     public Label setWrappedText(String text) {
         if (text == null)
             text = "";
-        mText = text;
+        mText = text.replace("\r\n", "\n");
         mVAlignment = VAlignment.TOP;
         this.mWrapType = WrapType.WRAPPED;
         setText();
@@ -506,7 +507,7 @@ public class Label extends CB_View_Base {
     public Label setText(String text) {
         if (text == null)
             text = "";
-        mText = text;
+        mText = text.replace("\r\n", "\n");
         this.mWrapType = WrapType.SINGLELINE;
         setText();
         return this;
@@ -589,7 +590,7 @@ public class Label extends CB_View_Base {
 
         if (text == null)
             text = "";
-        mText = text;
+        mText = text.replace("\r\n", "\n");
         setText();
     }
 

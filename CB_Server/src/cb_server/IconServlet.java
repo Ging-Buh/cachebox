@@ -23,7 +23,7 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.graphics.TileBitmap;
-import org.mapsforge.map.awt.AwtGraphicFactory;
+import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 
 public class IconServlet extends HttpServlet {
 	private static final long serialVersionUID = 1205779103262021876L;
@@ -36,7 +36,7 @@ public class IconServlet extends HttpServlet {
 
 		String fileName = "/icons/32-0.png";
 		Image img = getImage(fileName);
-		// your image servlet code here
+		// your image servlet code here Ã¼
 		resp.setContentType("image/png");
 		resp.setStatus(HttpServletResponse.SC_OK);
 
@@ -113,12 +113,12 @@ public class IconServlet extends HttpServlet {
 					}
 				}
 				if (background <= size) {
-					// background wird == size übergeben. Wenn background nicht
+					// background wird == size ï¿½bergeben. Wenn background nicht
 					// > size ist -> keinen Hintergrund
 					background = 0;
 				}
 
-				String prefix = "32-"; // Prefix für die Icon-Dateien
+				String prefix = "32-"; // Prefix fï¿½r die Icon-Dateien
 				if (size <= 15)
 					prefix = "15-";
 				String postfix = "";
@@ -250,7 +250,7 @@ public class IconServlet extends HttpServlet {
 		int difficulty = query.length > 9 ? Integer.parseInt(query[9]) : 0;
 		int terrain = query.length > 10 ? Integer.parseInt(query[10]) : 0;
 
-		// Größen umrechnen
+		// Grï¿½ï¿½en umrechnen
 		switch (size) {
 		case 0:
 			size = 15;
