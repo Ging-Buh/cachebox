@@ -24,16 +24,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../libs/gdx-tools.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../libs/gdx.jar!/" />
+          <root url="jar://$MODULE_DIR$/../libs/gdx/gdx-tools.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

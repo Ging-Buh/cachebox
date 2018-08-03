@@ -1,0 +1,2 @@
+https://libgdx.badlogicgames.com/ci/nightlies/dist/
+vom 30.7.2018

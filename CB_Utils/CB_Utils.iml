@@ -31,7 +31,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../libs/slf4j-api-1.7.6.jar!/" />
@@ -40,28 +40,28 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../libs/gdx-1.9.6.jar!/" />
+          <root url="jar://$MODULE_DIR$/../libs/gdx/gdx.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../libs/httpclient-4.1.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../libs/http/httpclient-4.2.6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../libs/httpcore-4.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../libs/http/httpcore-4.2.5.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
