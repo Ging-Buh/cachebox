@@ -22,9 +22,11 @@ import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DAO.PocketqueryDAO;
 import CB_Core.Import.Importer;
+
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
+
 import cb_server.CacheboxServer;
 import cb_server.Config;
 
@@ -76,7 +78,7 @@ public class ImportScheduler implements Runnable {
 		log.info("Start Import");
 		if (importRunning) {
 			log.debug("Import already started");
-			// wenn der Import noch läuft, kein 2. mal starten!
+			// wenn der Import noch lï¿½uft, kein 2. mal starten!
 			return;
 		}
 		importRunning = true;

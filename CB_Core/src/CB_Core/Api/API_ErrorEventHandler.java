@@ -16,9 +16,7 @@
 package CB_Core.Api;
 
 public interface API_ErrorEventHandler {
-	public void InvalidAPI_Key();
-
-	public void ExpiredAPI_Key();
-
-	public void NoAPI_Key();
+	void InvalidAPI_Key();
+	void ExpiredAPI_Key();
+	void NoAPI_Key();
 }

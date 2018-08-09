@@ -5,31 +5,43 @@ import java.util.Iterator;
 import CB_Core.Database;
 import CB_Core.Types.TbList;
 import CB_Core.Types.Trackable;
+import CB_Utils.Log.Log;
 import de.cb.sqlite.CoreCursor;
+import org.slf4j.LoggerFactory;
 
 public class TrackableListDAO {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(TrackableListDAO.class);
 
 	public static void WriteToDatabase(TbList trackableList) {
 
 		TrackableDAO tDAO = new TrackableDAO();
 
 		Iterator<Trackable> iterator = trackableList.iterator();
+		Log.info(log,"TrackableListDAO WriteToDatabase Size:" + trackableList.size());
 
 		if (iterator != null && iterator.hasNext()) {
 			do {
-				Trackable tb = iterator.next();
+				try {
+					Trackable tb = iterator.next();
 
-				Trackable tbDB = tDAO.getFromDbByGcCode(tb.getGcCode());
+					Trackable tbDB = tDAO.getFromDbByGcCode(tb.getGcCode());
 
-				if (tbDB == null) {
-					tDAO.WriteToDatabase(tb);
-				} else {
-					tDAO.UpdateDatabase(tb);
+					if (tbDB == null) {
+                        Log.info(log,"TrackableListDAO WriteToDatabase :" + tb.getName());
+						tDAO.WriteToDatabase(tb);
+					} else {
+                        Log.info(log,"TrackableListDAO UpdateDatabase :" + tb.getName());
+						tDAO.UpdateDatabase(tb);
+					}
+				}
+				catch ( Exception exc ) {
+					Log.err(log, "TrackableListDAO WriteToDatabase", exc);
 				}
 
 			} while (iterator.hasNext());
 		}
 
+        Log.info(log,"TrackableListDAO WriteToDatabase done.");
 	}
 
 	public static TbList ReadTbList(String where) {

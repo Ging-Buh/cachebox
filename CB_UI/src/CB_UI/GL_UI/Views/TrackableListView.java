@@ -26,9 +26,14 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Interfaces.cancelRunnable;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.ByRef;
+import org.slf4j.LoggerFactory;
+
+import static CB_Core.Api.GroundspeakAPI.GetUsersTrackables;
 
 public class TrackableListView extends CB_View_Base {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(TrackableListView.class);
 	public static TrackableListView that;
 	private V_ListView listView;
 	private CustomAdapter lvAdapter;
@@ -98,7 +103,7 @@ public class TrackableListView extends CB_View_Base {
 
 							Trackable tb = null;
 							ByRef<Trackable> ref = new ByRef<Trackable>(tb);
-							int result = GroundspeakAPI.getTBbyTreckNumber(TBCode, ref, this);
+							int result = GroundspeakAPI.GetTrackablesByTrackingNumber(TBCode, ref, this);
 
 							if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
 								GL.that.Toast(ConnectionError.INSTANCE);
@@ -187,14 +192,18 @@ public class TrackableListView extends CB_View_Base {
 
 			@Override
 			public void run() {
-				int result = -1;
 				TbList searchList = new TbList();
-				result = GroundspeakAPI.getMyTbList(searchList, this);
+				int result = GetUsersTrackables(searchList, this);
 
+				Log.info(log, "RefreshTbList gotTBs");
 				if (result == GroundspeakAPI.IO) {
+					Log.info(log, "RefreshTbList clearDB");
 					TrackableListDAO.clearDB();
+					Log.info(log, "RefreshTbList writeToDB");
 					searchList.writeToDB();
-					TrackableListView.that.reloadTB_List();
+					Log.info(log, "RefreshTbList reloadTB_List");
+					reloadTB_List();
+					Log.info(log, "RefreshTbList reloadTB_List done");
 				}
 
 				if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
@@ -209,6 +218,7 @@ public class TrackableListView extends CB_View_Base {
 					GL.that.Toast(ApiUnavailable.INSTANCE);
 				}
 
+				Log.info(log, "CancelWaitDialog.close");
 				wd.close();
 			}
 
