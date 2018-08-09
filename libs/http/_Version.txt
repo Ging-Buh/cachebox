@@ -1,3 +1,0 @@
-http://archive.apache.org/dist/httpcomponents/httpclient/binary/
-this is from http://archive.apache.org/dist/httpcomponents/httpclient/binary/httpcomponents-client-4.2.6-bin.zip
-newer Versions than 4.2 require changes in ACB2 project
