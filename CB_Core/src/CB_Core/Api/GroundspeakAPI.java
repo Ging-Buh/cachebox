@@ -902,7 +902,7 @@ public class GroundspeakAPI {
                     return API_IS_UNAVAILABLE;
                 }
 
-                Log.info(log,"GetUsersTrackables parse Result\n" + result + "\n");
+                Log.debug(log,"GetUsersTrackables parse Result\n" + result + "\n");
                 // Parse JSON Result
                 JSONTokener tokener = new JSONTokener(result);
                 JSONObject json = (JSONObject) tokener.nextValue();

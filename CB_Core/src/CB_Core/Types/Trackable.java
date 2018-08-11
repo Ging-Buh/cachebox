@@ -23,7 +23,6 @@ import java.util.Date;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.jsoup.Jsoup;
 import org.slf4j.LoggerFactory;
 
 import CB_Core.LogTypes;
@@ -167,7 +166,7 @@ public class Trackable implements Comparable<Trackable> {
         Archived = JObj.optBoolean("Archived");
         GcCode = JObj.optString("Code");
         CurrentGeocacheCode = JObj.optString("CurrentGeocacheCode");
-        CurrentGoal = JObj.optString("CurrentGoal");
+        CurrentGoal = CB_Utils.StringH.JsoupParse(JObj.optString("CurrentGoal"));
         JSONObject jOwner;
         try {
             jOwner = JObj.getJSONObject("CurrentOwner");
@@ -184,7 +183,7 @@ public class Trackable implements Comparable<Trackable> {
         } catch (Exception exc) {
             Log.err(log, "DateCreated", exc);
         }
-        Description = JObj.optString("Description");
+        Description = CB_Utils.StringH.JsoupParse(JObj.optString("Description"));
         IconUrl = JObj.optString("IconUrl");
         JSONArray jArray;
         try {
@@ -265,8 +264,7 @@ public class Trackable implements Comparable<Trackable> {
     }
 
     public String getCurrentGoal() {
-        // return CurrentGoal;
-        return Jsoup.parse(CurrentGoal).text();
+        return CurrentGoal;
     }
 
     public String getCurrentOwner() {
@@ -278,8 +276,7 @@ public class Trackable implements Comparable<Trackable> {
     }
 
     public String getDescription() {
-        // return Description;
-        return Jsoup.parse(Description).text();
+        return Description;
     }
 
     public String getName() {
