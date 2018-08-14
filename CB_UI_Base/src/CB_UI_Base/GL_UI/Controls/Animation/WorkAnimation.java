@@ -5,53 +5,53 @@ import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
 
 public class WorkAnimation extends RotateAnimation {
-	protected static WorkAnimation mINSTANCE = new WorkAnimation();
+    protected static WorkAnimation mINSTANCE = new WorkAnimation();
 
-	public static AnimationBase GetINSTANCE() {
-		return mINSTANCE;
-	}
+    public WorkAnimation() {
+        super(new CB_RectF(0, 0, 50, 50), "DownloadAnimation");
 
-	public static AnimationBase GetINSTANCE(CB_RectF rec) {
-		mINSTANCE.setRec(rec);
-		return mINSTANCE;
-	}
+        setSprite(Sprites.getSprite(IconName.settings.name()));
+        setOrigin(this.getHalfWidth(), this.getHalfHeight());
+        play(ANIMATION_DURATION);
+    }
 
-	@Override
-	public AnimationBase INSTANCE() {
-		return mINSTANCE;
-	}
+    public static AnimationBase GetINSTANCE() {
+        return mINSTANCE;
+    }
 
-	@Override
-	public AnimationBase INSTANCE(CB_RectF rec) {
-		mINSTANCE.setRec(rec);
-		return mINSTANCE;
-	}
+    public static AnimationBase GetINSTANCE(CB_RectF rec) {
+        mINSTANCE.setRec(rec);
+        return mINSTANCE;
+    }
 
-	public WorkAnimation() {
-		super(new CB_RectF(0, 0, 50, 50), "DownloadAnimation");
+    @Override
+    public AnimationBase INSTANCE() {
+        return mINSTANCE;
+    }
 
-		setSprite(Sprites.getSprite(IconName.settings.name()));
-		setOrigin(this.getHalfWidth(), this.getHalfHeight());
-		play(ANIMATION_DURATION);
-	}
+    @Override
+    public AnimationBase INSTANCE(CB_RectF rec) {
+        mINSTANCE.setRec(rec);
+        return mINSTANCE;
+    }
 
-	/**
-	 * ljhgjlk
-	 */
-	@Override
-	public void resize(float width, float height) {
-		super.resize(width, height);
-		setOrigin(this.getHalfWidth(), this.getHalfHeight());
-	}
+    /**
+     * ljhgjlk
+     */
+    @Override
+    public void resize(float width, float height) {
+        super.resize(width, height);
+        setOrigin(this.getHalfWidth(), this.getHalfHeight());
+    }
 
-	@Override
-	public void play() {
-		play(ANIMATION_DURATION);
-	}
+    @Override
+    public void play() {
+        play(ANIMATION_DURATION);
+    }
 
-	@Override
-	public void dispose() {
-		// do nothing, is FINAL GLOBAL animation
-	}
+    @Override
+    public void dispose() {
+        // do nothing, is FINAL GLOBAL animation
+    }
 
 }

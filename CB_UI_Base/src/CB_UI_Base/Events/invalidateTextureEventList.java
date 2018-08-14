@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,39 +15,38 @@
  */
 package CB_UI_Base.Events;
 
-import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
-
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 
 public class invalidateTextureEventList {
-	final static org.slf4j.Logger log = LoggerFactory.getLogger(invalidateTextureEventList.class);
-	public static CB_List<invalidateTextureEvent> list = new CB_List<invalidateTextureEvent>();
+    private static final String log = "invalidateTextureEventList";
+    public static CB_List<invalidateTextureEvent> list = new CB_List<invalidateTextureEvent>();
 
-	public static void Add(invalidateTextureEvent event) {
-		synchronized (list) {
-			if (!list.contains(event))
-				list.add(event);
-		}
-	}
+    public static void Add(invalidateTextureEvent event) {
+        synchronized (list) {
+            if (!list.contains(event))
+                list.add(event);
+        }
+    }
 
-	public static void Remove(invalidateTextureEvent event) {
-		synchronized (list) {
-			list.remove(event);
-		}
-	}
+    public static void Remove(invalidateTextureEvent event) {
+        synchronized (list) {
+            list.remove(event);
+        }
+    }
 
-	public static void Call() {
+    public static void Call() {
 
-		try {
-			synchronized (list) {
-				for (int i = 0, n = list.size(); i < n; i++) {
-					invalidateTextureEvent event = list.get(i);
-					if (event != null)
-						event.invalidateTexture();
-				}
-			}
-		} catch (Exception e) {
-			Log.err(log, "Call()", e);
-		}
-	}
+        try {
+            synchronized (list) {
+                for (int i = 0, n = list.size(); i < n; i++) {
+                    invalidateTextureEvent event = list.get(i);
+                    if (event != null)
+                        event.invalidateTexture();
+                }
+            }
+        } catch (Exception e) {
+            Log.err(log, "Call()", e);
+        }
+    }
 }

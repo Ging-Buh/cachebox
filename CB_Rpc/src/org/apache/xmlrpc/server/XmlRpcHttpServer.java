@@ -14,26 +14,27 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.server;
-
-import java.io.IOException;
-import java.io.OutputStream;
 
 import org.apache.xmlrpc.common.ServerStreamConnection;
 import org.apache.xmlrpc.common.XmlRpcStreamRequestConfig;
 
-/** Abstract extension of {@link XmlRpcStreamServer} for deriving
+import java.io.IOException;
+import java.io.OutputStream;
+
+/**
+ * Abstract extension of {@link XmlRpcStreamServer} for deriving
  * HTTP servers.
  */
 public abstract class XmlRpcHttpServer extends XmlRpcStreamServer {
-	protected abstract void setResponseHeader(ServerStreamConnection pConnection, String pHeader, String pValue);
+    protected abstract void setResponseHeader(ServerStreamConnection pConnection, String pHeader, String pValue);
 
-	protected OutputStream getOutputStream(ServerStreamConnection pConnection, XmlRpcStreamRequestConfig pConfig, OutputStream pStream) throws IOException {
-		if (pConfig.isEnabledForExtensions() && pConfig.isGzipRequesting()) {
-			setResponseHeader(pConnection, "Content-Encoding", "gzip");
-		}
-		return super.getOutputStream(pConnection, pConfig, pStream);
-	}
+    protected OutputStream getOutputStream(ServerStreamConnection pConnection, XmlRpcStreamRequestConfig pConfig, OutputStream pStream) throws IOException {
+        if (pConfig.isEnabledForExtensions() && pConfig.isGzipRequesting()) {
+            setResponseHeader(pConnection, "Content-Encoding", "gzip");
+        }
+        return super.getOutputStream(pConnection, pConfig, pStream);
+    }
 }

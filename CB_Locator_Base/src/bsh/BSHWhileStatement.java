@@ -38,62 +38,62 @@ package bsh;
  */
 class BSHWhileStatement extends SimpleNode implements ParserConstants {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	/**
-	 * Set by Parser, default {@code false}
-	 */
-	boolean isDoStatement;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    /**
+     * Set by Parser, default {@code false}
+     */
+    boolean isDoStatement;
 
-	BSHWhileStatement(int id) {
-		super(id);
-	}
+    BSHWhileStatement(int id) {
+        super(id);
+    }
 
-	@Override
-	public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError {
-		int numChild = jjtGetNumChildren();
+    @Override
+    public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError {
+        int numChild = jjtGetNumChildren();
 
-		// Order of body and condition is swapped for do / while
-		final SimpleNode condExp;
-		final SimpleNode body;
+        // Order of body and condition is swapped for do / while
+        final SimpleNode condExp;
+        final SimpleNode body;
 
-		if (isDoStatement) {
-			condExp = (SimpleNode) jjtGetChild(1);
-			body = (SimpleNode) jjtGetChild(0);
-		} else {
-			condExp = (SimpleNode) jjtGetChild(0);
-			if (numChild > 1) {
-				body = (SimpleNode) jjtGetChild(1);
-			} else {
-				body = null;
-			}
-		}
+        if (isDoStatement) {
+            condExp = (SimpleNode) jjtGetChild(1);
+            body = (SimpleNode) jjtGetChild(0);
+        } else {
+            condExp = (SimpleNode) jjtGetChild(0);
+            if (numChild > 1) {
+                body = (SimpleNode) jjtGetChild(1);
+            } else {
+                body = null;
+            }
+        }
 
-		boolean doOnceFlag = isDoStatement;
+        boolean doOnceFlag = isDoStatement;
 
-		while (doOnceFlag || BSHIfStatement.evaluateCondition(condExp, callstack, interpreter)) {
-			doOnceFlag = false;
-			// no body?
-			if (body == null) {
-				continue;
-			}
-			Object ret = body.eval(callstack, interpreter);
-			if (ret instanceof ReturnControl) {
-				switch (((ReturnControl) ret).kind) {
-				case RETURN:
-					return ret;
+        while (doOnceFlag || BSHIfStatement.evaluateCondition(condExp, callstack, interpreter)) {
+            doOnceFlag = false;
+            // no body?
+            if (body == null) {
+                continue;
+            }
+            Object ret = body.eval(callstack, interpreter);
+            if (ret instanceof ReturnControl) {
+                switch (((ReturnControl) ret).kind) {
+                    case RETURN:
+                        return ret;
 
-				case CONTINUE:
-					break;
+                    case CONTINUE:
+                        break;
 
-				case BREAK:
-					return Primitive.VOID;
-				}
-			}
-		}
-		return Primitive.VOID;
-	}
+                    case BREAK:
+                        return Primitive.VOID;
+                }
+            }
+        }
+        return Primitive.VOID;
+    }
 
 }

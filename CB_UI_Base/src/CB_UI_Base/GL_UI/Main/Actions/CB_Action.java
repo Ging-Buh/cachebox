@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,78 +15,75 @@
  */
 package CB_UI_Base.GL_UI.Main.Actions;
 
-import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
-
+import CB_Utils.Log.Log;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action {
-	protected final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_Action.class);
+    private static final String log = "CB_Action";
 
-	protected String name;
-	protected int id;
-	protected String nameExtension = "";
+    protected String name;
+    protected int id;
+    protected String nameExtension = "";
 
-	/**
-	 * Constructor
-	 * 
-	 * @param name
-	 *            = Translation ID
-	 * @param id
-	 *            = Action ID ( AID_xxxx )
-	 */
-	public CB_Action(String name, int id) {
-		//super();
-		this.name = name;
-		this.id = id;
-	}
+    /**
+     * Constructor
+     *
+     * @param name = Translation ID
+     * @param id   = Action ID ( AID_xxxx )
+     */
+    public CB_Action(String name, int id) {
+        //super();
+        this.name = name;
+        this.id = id;
+    }
 
-	public CB_Action(String name, String nameExtension, int id) {
-		//super();
-		this.name = name;
-		this.id = id;
-		this.nameExtension = nameExtension;
-	}
+    public CB_Action(String name, String nameExtension, int id) {
+        //super();
+        this.name = name;
+        this.id = id;
+        this.nameExtension = nameExtension;
+    }
 
-	public void CallExecute() {
-		Log.debug(log, "ACTION => " + name + " execute");
-		Execute();
-	}
+    public void CallExecute() {
+        Log.debug(log, "ACTION => " + name + " execute");
+        Execute();
+    }
 
-	protected void Execute() {
-		return;
-	}
+    protected void Execute() {
+        return;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getNameExtension() {
-		return nameExtension;
-	}
+    public String getNameExtension() {
+        return nameExtension;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	/**
-	 * hiermit kann der Menüpunkt enabled oder disabled werden
-	 * 
-	 * @return
-	 */
-	public boolean getEnabled() {
-		return true;
-	}
+    /**
+     * hiermit kann der Menüpunkt enabled oder disabled werden
+     *
+     * @return
+     */
+    public boolean getEnabled() {
+        return true;
+    }
 
-	public Sprite getIcon() {
-		return null;
-	}
+    public Sprite getIcon() {
+        return null;
+    }
 
-	public boolean getIsCheckable() {
-		return false;
-	}
+    public boolean getIsCheckable() {
+        return false;
+    }
 
-	public boolean getIsChecked() {
-		return false;
-	}
+    public boolean getIsChecked() {
+        return false;
+    }
 
 }

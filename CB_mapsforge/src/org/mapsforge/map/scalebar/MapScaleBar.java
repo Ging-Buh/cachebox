@@ -32,44 +32,26 @@ import org.mapsforge.map.view.MapView;
  * A MapScaleBar displays the ratio of a distance on the map to the corresponding distance on the ground.
  */
 public abstract class MapScaleBar {
-    public static enum ScaleBarPosition {BOTTOM_CENTER, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_CENTER, TOP_LEFT, TOP_RIGHT}
-
     /**
      * Default position of the scale bar.
      */
     private static final ScaleBarPosition DEFAULT_SCALE_BAR_POSITION = ScaleBarPosition.BOTTOM_LEFT;
-
     private static final int DEFAULT_HORIZONTAL_MARGIN = 5;
     private static final int DEFAULT_VERTICAL_MARGIN = 0;
     private static final double LATITUDE_REDRAW_THRESHOLD = 0.2;
-
     protected final DisplayModel displayModel;
-    protected DistanceUnitAdapter distanceUnitAdapter;
     protected final GraphicFactory graphicFactory;
     protected final Bitmap mapScaleBitmap;
     protected final Canvas mapScaleCanvas;
     private final MapViewDimension mapViewDimension;
     private final MapViewPosition mapViewPosition;
+    protected DistanceUnitAdapter distanceUnitAdapter;
+    protected boolean redrawNeeded;
+    protected ScaleBarPosition scaleBarPosition;
     private int marginHorizontal;
     private int marginVertical;
     private MapPosition prevMapPosition;
-    protected boolean redrawNeeded;
-    protected ScaleBarPosition scaleBarPosition;
     private boolean visible;
-
-    /**
-     * Internal class used by calculateScaleBarLengthAndValue
-     */
-    protected static class ScaleBarLengthAndValue {
-        public int scaleBarLength;
-        public int scaleBarValue;
-
-        public ScaleBarLengthAndValue(int scaleBarLength, int scaleBarValue) {
-            this.scaleBarLength = scaleBarLength;
-            this.scaleBarValue = scaleBarValue;
-        }
-    }
-
     public MapScaleBar(MapViewPosition mapViewPosition, MapViewDimension mapViewDimension, DisplayModel displayModel,
                        GraphicFactory graphicFactory, int width, int height) {
         this.mapViewPosition = mapViewPosition;
@@ -296,4 +278,19 @@ public abstract class MapScaleBar {
      * @param canvas The canvas to draw on
      */
     protected abstract void redraw(Canvas canvas);
+
+    public static enum ScaleBarPosition {BOTTOM_CENTER, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_CENTER, TOP_LEFT, TOP_RIGHT}
+
+    /**
+     * Internal class used by calculateScaleBarLengthAndValue
+     */
+    protected static class ScaleBarLengthAndValue {
+        public int scaleBarLength;
+        public int scaleBarValue;
+
+        public ScaleBarLengthAndValue(int scaleBarLength, int scaleBarValue) {
+            this.scaleBarLength = scaleBarLength;
+            this.scaleBarValue = scaleBarValue;
+        }
+    }
 }

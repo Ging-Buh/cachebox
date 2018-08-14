@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2013 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -18,24 +18,22 @@ package CB_Translation_Base.TranslationEngine;
 
 /**
  * A structure inherits the Name and Path of a Translation
- * 
+ *
  * @author Longri
  */
 public class Lang {
 
-	/**
-	 * Constructor
-	 * 
-	 * @param Name
-	 *            as String
-	 * @param Pfad
-	 *            as String
-	 */
-	public Lang(String Name, String Pfad) {
-		this.Name = Name;
-		this.Path = Pfad;
-	}
+    public String Name;
+    public String Path;
 
-	public String Name;
-	public String Path;
+    /**
+     * Constructor
+     *
+     * @param Name as String
+     * @param Pfad as String
+     */
+    public Lang(String Name, String Pfad) {
+        this.Name = Name;
+        this.Path = Pfad;
+    }
 }

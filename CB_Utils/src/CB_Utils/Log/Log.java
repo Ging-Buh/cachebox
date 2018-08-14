@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2016 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,51 +15,53 @@
  */
 package CB_Utils.Log;
 
-/** 
+import org.slf4j.LoggerFactory;
+
+/**
  * TODO document
- * @author Franz  2016
  *
+ * @author Franz  2016
  */
 public class Log {
-	public static void err(org.slf4j.Logger log, String logText) {
-		LogLevel old = LogLevel.getLogLevel();
-		LogLevel.setLogLevel(LogLevel.ERROR);
-		log.error(logText);
-		LogLevel.setLogLevel(old);
-	}
+    public static void err(String sKlasse, String logText) {
+        LogLevel old = LogLevel.getLogLevel();
+        LogLevel.setLogLevel(LogLevel.ERROR);
+        LoggerFactory.getLogger(sKlasse).error(logText);
+        LogLevel.setLogLevel(old);
+    }
 
-	public static void err(org.slf4j.Logger log, String logText, Throwable t) {
-		LogLevel old = LogLevel.getLogLevel();
-		LogLevel.setLogLevel(LogLevel.ERROR);
-		log.error(logText, t);
-		LogLevel.setLogLevel(old);
-	}
+    public static void err(String sKlasse, String logText, Throwable t) {
+        LogLevel old = LogLevel.getLogLevel();
+        LogLevel.setLogLevel(LogLevel.ERROR);
+        LoggerFactory.getLogger(sKlasse).error(logText, t);
+        LogLevel.setLogLevel(old);
+    }
 
-	public static void err(org.slf4j.Logger log, String logText, String logText1, Throwable t) {
-		LogLevel old = LogLevel.getLogLevel();
-		LogLevel.setLogLevel(LogLevel.ERROR);
-		log.error(logText, logText1, t);
-		LogLevel.setLogLevel(old);
-	}
+    public static void err(String sKlasse, String logText, String logText1, Throwable t) {
+        LogLevel old = LogLevel.getLogLevel();
+        LogLevel.setLogLevel(LogLevel.ERROR);
+        LoggerFactory.getLogger(sKlasse).error(logText, logText1, t);
+        LogLevel.setLogLevel(old);
+    }
 
-	public static void debug(org.slf4j.Logger log, String logText) {
-		if (LogLevel.isLogLevel(LogLevel.DEBUG))
-			log.debug(logText);
-	}
+    public static void debug(String sKlasse, String logText) {
+        if (LogLevel.isLogLevel(LogLevel.DEBUG))
+            LoggerFactory.getLogger(sKlasse).debug(logText);
+    }
 
-	public static void info(org.slf4j.Logger log, String logText) {
-		if (LogLevel.isLogLevel(LogLevel.INFO))
-			log.info(logText);
-	}
+    public static void info(String sKlasse, String logText) {
+        if (LogLevel.isLogLevel(LogLevel.INFO))
+            LoggerFactory.getLogger(sKlasse).info(logText);
+    }
 
-	public static void trace(org.slf4j.Logger log, String logText) {
-		if (LogLevel.isLogLevel(LogLevel.TRACE))
-			log.trace(logText);
-	}
+    public static void trace(String sKlasse, String logText) {
+        if (LogLevel.isLogLevel(LogLevel.TRACE))
+            LoggerFactory.getLogger(sKlasse).trace(logText);
+    }
 
-	public static void warn(org.slf4j.Logger log, String logText) {
-		if (LogLevel.isLogLevel(LogLevel.WARN))
-			log.warn(logText);
-	}
+    public static void warn(String sKlasse, String logText) {
+        if (LogLevel.isLogLevel(LogLevel.WARN))
+            LoggerFactory.getLogger(sKlasse).warn(logText);
+    }
 
 }

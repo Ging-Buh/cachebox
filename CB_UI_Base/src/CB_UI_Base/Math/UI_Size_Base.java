@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,140 +15,138 @@
  */
 package CB_UI_Base.Math;
 
-import CB_UI_Base.Global;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 
 public abstract class UI_Size_Base {
-	public static UI_Size_Base that;
+    public static UI_Size_Base that;
+    protected Size Button;
+    protected int scaledFontSize_normal;
+    protected int iconSize;
+    protected int windowWidth;
+    protected int windowHeight;
+    protected int scaledFontSize_big;
+    protected int scaledFontSize_btn;
+    protected int ScaledFontSize_small;
+    protected int ScaledFontSize_supersmall;
+    protected int IconContextMenuHeight;
+    protected float scale;
+    protected int margin;
+    protected double calcBase;
+    protected int RefWidth;
+    protected int mClickToleranz;
+    protected DevicesSizes devicesSizes;
 
-	public UI_Size_Base() {
-		that = this;
-	}
+    public UI_Size_Base() {
+        that = this;
+    }
 
-	protected Size Button;
-	protected int scaledFontSize_normal;
-	protected int iconSize;
-	protected int windowWidth;
-	protected int windowHeight;
-	protected int scaledFontSize_big;
-	protected int scaledFontSize_btn;
-	protected int ScaledFontSize_small;
-	protected int ScaledFontSize_supersmall;
-	protected int IconContextMenuHeight;
-	protected float scale;
-	protected int margin;
-	protected double calcBase;
-	protected int RefWidth;
-	protected int mClickToleranz;
-	protected DevicesSizes devicesSizes;
+    public abstract void instanzeInitial();
 
-	public abstract void instanzeInitial();
+    public Size initial(DevicesSizes devicesSizes) {
+        this.devicesSizes = devicesSizes;
+        this.windowWidth = devicesSizes.Window.width;
+        this.windowHeight = devicesSizes.Window.height;
+        this.scale = devicesSizes.Density; // res.getDisplayMetrics().density;
 
-	public Size initial(DevicesSizes devicesSizes) {
-		this.devicesSizes = devicesSizes;
-		this.windowWidth = devicesSizes.Window.width;
-		this.windowHeight = devicesSizes.Window.height;
-		this.scale = devicesSizes.Density; // res.getDisplayMetrics().density;
+        mClickToleranz = (int) (17 * scale);
 
-		mClickToleranz = (int) (17 * scale);
+        calcBase = 533.333 * scale;
 
-		calcBase = 533.333 * scale;
+        margin = (int) (10 * scale);
 
-		margin = (int) (10 * scale);
+        float NormalTextSize = CB_UI_Base_Settings.FONT_SIZE_NORMAL.getValue() * 3.2f;
 
-		float NormalTextSize = CB_UI_Base_Settings.FONT_SIZE_NORMAL.getValue() * 3.2f;
+        int b = (int) (NormalTextSize * scale);
+        Button = new Size(b, b);
 
-		int b = (int) (NormalTextSize * scale);
-		Button = new Size(b, b);
+        RefWidth = windowWidth;
 
-		RefWidth = windowWidth;
+        GL_UISizes.writeDebug("Button", Button.asFloat());
 
-		GL_UISizes.writeDebug("Button", Button.asFloat());
+        scaledFontSize_normal = (int) (10 * scale);
+        scaledFontSize_big = (int) (scaledFontSize_normal * 1.1);
+        ScaledFontSize_small = (int) (scaledFontSize_normal * 0.9);
+        ScaledFontSize_supersmall = (int) (ScaledFontSize_small * 0.8);
+        scaledFontSize_btn = (int) (11 * scale);
 
-		scaledFontSize_normal = (int) (10 * scale);
-		scaledFontSize_big = (int) (scaledFontSize_normal * 1.1);
-		ScaledFontSize_small = (int) (scaledFontSize_normal * 0.9);
-		ScaledFontSize_supersmall = (int) (ScaledFontSize_small * 0.8);
-		scaledFontSize_btn = (int) (11 * scale);
+        iconSize = (int) (10 * scale);
 
-		iconSize = (int) (10 * scale);
+        IconContextMenuHeight = (int) (calcBase / 11.1);
 
-		IconContextMenuHeight = (int) (calcBase / 11.1);
+        instanzeInitial();
 
-		instanzeInitial();
+        return new Size(windowWidth, windowHeight);
 
-		return new Size(windowWidth, windowHeight);
+    }
 
-	}
+    public int getMargin() {
+        return margin;
+    }
 
-	public int getMargin() {
-		return margin;
-	}
+    public int getWindowHeight() {
+        return windowHeight;
+    }
 
-	public int getWindowHeight() {
-		return windowHeight;
-	}
+    public int getWindowWidth() {
+        return windowWidth;
+    }
 
-	public int getWindowWidth() {
-		return windowWidth;
-	}
+    public int getButtonHeight() {
+        return Button.height;
+    }
 
-	public int getButtonHeight() {
-		return Button.height;
-	}
+    public int getButtonWidth() {
+        return Button.width;
+    }
 
-	public int getButtonWidth() {
-		return Button.width;
-	}
+    public int getButtonWidthWide() {
+        return (int) (windowWidth - 4 * margin) / 3;
+        // return (int) (Button.width * 1.6);
+    }
 
-	public int getButtonWidthWide() {
-		return (int) ( windowWidth - 4 * margin ) / 3 ;
-		// return (int) (Button.width * 1.6);
-	}
+    public SizeF getChkBoxSize() {
+        float h = Button.height * 0.88f;
+        return new SizeF(h, h);
+    }
 
-	public SizeF getChkBoxSize() {
-		float h = Button.height * 0.88f;
-		return new SizeF(h, h);
-	}
+    public int getScaledFontSize() {
+        return scaledFontSize_normal;
+    }
 
-	public int getScaledFontSize() {
-		return scaledFontSize_normal;
-	}
+    public int getScaledFontSize_btn() {
+        return scaledFontSize_btn;
+    }
 
-	public int getScaledFontSize_btn() {
-		return scaledFontSize_btn;
-	}
+    public int getScaledFontSize_big() {
+        return scaledFontSize_big;
+    }
 
-	public int getScaledFontSize_big() {
-		return scaledFontSize_big;
-	}
+    public int getScaledFontSize_small() {
+        return ScaledFontSize_small;
+    }
 
-	public int getScaledFontSize_small() {
-		return ScaledFontSize_small;
-	}
+    public int getScaledFontSize_supersmall() {
+        return ScaledFontSize_supersmall;
+    }
 
-	public int getScaledFontSize_supersmall() {
-		return ScaledFontSize_supersmall;
-	}
+    public int getIconSize() {
+        return iconSize;
+    }
 
-	public int getIconSize() {
-		return iconSize;
-	}
+    public float getScale() {
+        return scale;
+    }
 
-	public float getScale() {
-		return scale;
-	}
+    public void setScale(float scale) {
+        this.scale = scale;
+    }
 
-	public float getSmallestWidth() {
-		return Math.min(windowHeight, windowWidth);
-	}
+    public float getSmallestWidth() {
+        return Math.min(windowHeight, windowWidth);
+    }
 
-	public int getClickToleranz() {
-		return mClickToleranz;
-	}
-
-	public void setScale(float scale) {
-		this.scale = scale;
-	}
+    public int getClickToleranz() {
+        return mClickToleranz;
+    }
 
 }

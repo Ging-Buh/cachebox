@@ -14,32 +14,35 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.serializer;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-/** Base class for external XML representations, like DOM,
+/**
+ * Base class for external XML representations, like DOM,
  * or JAXB.
  */
 public abstract class ExtSerializer implements TypeSerializer {
-	/** Returns the unqualied tag name.
-	 */
-	protected abstract String getTagName();
+    /**
+     * Returns the unqualied tag name.
+     */
+    protected abstract String getTagName();
 
-	/** Performs the actual serialization.
-	 */
-	protected abstract void serialize(ContentHandler pHandler, Object pObject) throws SAXException;
+    /**
+     * Performs the actual serialization.
+     */
+    protected abstract void serialize(ContentHandler pHandler, Object pObject) throws SAXException;
 
-	public void write(ContentHandler pHandler, Object pObject) throws SAXException {
-		final String tag = getTagName();
-		final String exTag = "ex:" + getTagName();
-		pHandler.startElement("", TypeSerializerImpl.VALUE_TAG, TypeSerializerImpl.VALUE_TAG, TypeSerializerImpl.ZERO_ATTRIBUTES);
-		pHandler.startElement(XmlRpcWriter.EXTENSIONS_URI, tag, exTag, TypeSerializerImpl.ZERO_ATTRIBUTES);
-		serialize(pHandler, pObject);
-		pHandler.endElement(XmlRpcWriter.EXTENSIONS_URI, tag, exTag);
-		pHandler.endElement("", TypeSerializerImpl.VALUE_TAG, TypeSerializerImpl.VALUE_TAG);
-	}
+    public void write(ContentHandler pHandler, Object pObject) throws SAXException {
+        final String tag = getTagName();
+        final String exTag = "ex:" + getTagName();
+        pHandler.startElement("", TypeSerializerImpl.VALUE_TAG, TypeSerializerImpl.VALUE_TAG, TypeSerializerImpl.ZERO_ATTRIBUTES);
+        pHandler.startElement(XmlRpcWriter.EXTENSIONS_URI, tag, exTag, TypeSerializerImpl.ZERO_ATTRIBUTES);
+        serialize(pHandler, pObject);
+        pHandler.endElement(XmlRpcWriter.EXTENSIONS_URI, tag, exTag);
+        pHandler.endElement("", TypeSerializerImpl.VALUE_TAG, TypeSerializerImpl.VALUE_TAG);
+    }
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,11 +15,8 @@
  */
 package CB_Utils.http;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.concurrent.atomic.AtomicBoolean;
-
+import CB_Utils.Interfaces.ICancel;
+import CB_Utils.Plattform;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -28,110 +25,110 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.json.JSONObject;
 
-import CB_Utils.Plattform;
-import CB_Utils.Interfaces.ICancel;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author Longri
  */
 public class HttpUtils {
-	public static int conectionTimeout = 10000;
-	public static int socketTimeout = 60000;
+    public static int conectionTimeout = 10000;
+    public static int socketTimeout = 60000;
 
-	/**
-	 * Führt ein Http Request aus und gibt die Antwort als String zurück.
-	 * Da ein HttpRequestBase übergeben wird kann ein HttpGet oder HttpPost zum Ausführen übergeben werden.
-	 * conectionTimeout
-	 *            Config.settings.conection_timeout.getValue()
-	 * socketTimeout
-	 *            Config.settings.socket_timeout.getValue()
-	 *
-	 * @param httprequest
-	 *            HttpGet oder HttpPost
-	 * @param icancel
-	 * @return Die Antwort als String.
-	 * @throws IOException
-	 * @throws ClientProtocolException
-	 * @throws ConnectTimeoutException
-	 */
-	public static String Execute(final HttpRequestBase httprequest, final ICancel icancel) throws IOException, ClientProtocolException, ConnectTimeoutException {
-		return Execute(httprequest, icancel, false);
-	}
+    /**
+     * Führt ein Http Request aus und gibt die Antwort als String zurück.
+     * Da ein HttpRequestBase übergeben wird kann ein HttpGet oder HttpPost zum Ausführen übergeben werden.
+     * conectionTimeout
+     * Config.settings.conection_timeout.getValue()
+     * socketTimeout
+     * Config.settings.socket_timeout.getValue()
+     *
+     * @param httprequest HttpGet oder HttpPost
+     * @param icancel
+     * @return Die Antwort als String.
+     * @throws IOException
+     * @throws ClientProtocolException
+     * @throws ConnectTimeoutException
+     */
+    public static String Execute(final HttpRequestBase httprequest, final ICancel icancel) throws IOException, ClientProtocolException, ConnectTimeoutException {
+        return Execute(httprequest, icancel, false);
+    }
 
-	/**
-	 * Executes a HTTP request and returns the response as a string. As a HttpRequestBase is given, a HttpGet or HttpPost be passed for
-	 * execution.<br>
-	 * <br>
-	 * Over the ICancel interface cycle is queried in 200 mSec, if the download should be canceled!<br>
-	 * Can be NULL
-	 * 
-	 * @param httprequest
-	 *            HttpRequestBase
-	 * @param icancel
-	 *            ICancel interface (maybe NULL)
-	 * @return
-	 * @throws IOException
-	 * @throws ClientProtocolException
-	 * @throws ConnectTimeoutException
-	 */
-	public static String Execute(final HttpRequestBase httprequest, final ICancel icancel, boolean allowUTF8Conversion) throws IOException, ClientProtocolException, ConnectTimeoutException {
+    /**
+     * Executes a HTTP request and returns the response as a string. As a HttpRequestBase is given, a HttpGet or HttpPost be passed for
+     * execution.<br>
+     * <br>
+     * Over the ICancel interface cycle is queried in 200 mSec, if the download should be canceled!<br>
+     * Can be NULL
+     *
+     * @param httprequest HttpRequestBase
+     * @param icancel     ICancel interface (maybe NULL)
+     * @return
+     * @throws IOException
+     * @throws ClientProtocolException
+     * @throws ConnectTimeoutException
+     */
+    public static String Execute(final HttpRequestBase httprequest, final ICancel icancel, boolean allowUTF8Conversion) throws IOException, ClientProtocolException, ConnectTimeoutException {
 
-		httprequest.setHeader("Accept", "application/json");
-		httprequest.setHeader("Content-type", "application/json");
+        httprequest.setHeader("Accept", "application/json");
+        httprequest.setHeader("Content-type", "application/json");
 
-		// Execute HTTP Post Request
-		String result = "";
+        // Execute HTTP Post Request
+        String result = "";
 
-		HttpParams httpParameters = new BasicHttpParams();
-		// Set the timeout in milliseconds until a connection is established.
-		// The default value is zero, that means the timeout is not used.
+        HttpParams httpParameters = new BasicHttpParams();
+        // Set the timeout in milliseconds until a connection is established.
+        // The default value is zero, that means the timeout is not used.
 
-		HttpConnectionParams.setConnectionTimeout(httpParameters, conectionTimeout);
-		// Set the default socket timeout (SO_TIMEOUT)
-		// in milliseconds which is the timeout for waiting for data.
+        HttpConnectionParams.setConnectionTimeout(httpParameters, conectionTimeout);
+        // Set the default socket timeout (SO_TIMEOUT)
+        // in milliseconds which is the timeout for waiting for data.
 
-		HttpConnectionParams.setSoTimeout(httpParameters, socketTimeout);
+        HttpConnectionParams.setSoTimeout(httpParameters, socketTimeout);
 
-		DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
+        DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
 
-		final AtomicBoolean ready = new AtomicBoolean(false);
-		if (icancel != null) {
-			Thread cancelChekThread = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					do {
-						try {
-							Thread.sleep(200);
-						} catch (InterruptedException e) {
-						}
-						if (icancel.cancel())
-							httprequest.abort();
-					} while (!ready.get());
-				}
-			});
-			cancelChekThread.start();// start abort chk thread
-		}
-		HttpResponse response = httpClient.execute(httprequest);
-		ready.set(true);// cancel abort chk thread
+        final AtomicBoolean ready = new AtomicBoolean(false);
+        if (icancel != null) {
+            Thread cancelChekThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    do {
+                        try {
+                            Thread.sleep(200);
+                        } catch (InterruptedException e) {
+                        }
+                        if (icancel.cancel())
+                            httprequest.abort();
+                    } while (!ready.get());
+                }
+            });
+            cancelChekThread.start();// start abort chk thread
+        }
+        HttpResponse response = httpClient.execute(httprequest);
+        ready.set(true);// cancel abort chk thread
 
-		boolean convertToUTF8 = false;
-		if (Plattform.used == Plattform.Server)
-			convertToUTF8 = true;
-		if (!convertToUTF8 && allowUTF8Conversion) {
-			String ContentType = response.getEntity().getContentType().getValue();
-			if (ContentType.endsWith("xml") || ContentType.contains("utf-8")) {
-				convertToUTF8 = true;
-			}
-		}
+        boolean convertToUTF8 = false;
+        if (Plattform.used == Plattform.Server)
+            convertToUTF8 = true;
+        if (!convertToUTF8 && allowUTF8Conversion) {
+            String ContentType = response.getEntity().getContentType().getValue();
+            if (ContentType.endsWith("xml") || ContentType.contains("utf-8")) {
+                convertToUTF8 = true;
+            }
+        }
 
-		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-		String line = "";
-		while ((line = rd.readLine()) != null) {
-			if (convertToUTF8)
-				line = new String(line.getBytes("ISO-8859-1"), "UTF-8");
-			result += line + "\n";
-		}
-		return result;
-	}
+        BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+        String line = "";
+        while ((line = rd.readLine()) != null) {
+            if (convertToUTF8)
+                line = new String(line.getBytes("ISO-8859-1"), "UTF-8");
+            result += line + "\n";
+        }
+        return result;
+    }
 }

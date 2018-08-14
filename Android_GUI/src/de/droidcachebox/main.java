@@ -44,7 +44,6 @@ import CB_UI_Base.Events.PlatformConnector.*;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -119,18 +118,9 @@ import de.droidcachebox.Views.DescriptionView;
 import de.droidcachebox.Views.Forms.GcApiLogin;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.PleaseWaitMessageBox;
-import de.droidcachebox.Views.JokerView;
 import de.droidcachebox.Views.ViewGL;
-import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -139,7 +129,7 @@ import static android.content.Intent.ACTION_VIEW;
 @SuppressLint("Wakelock")
 @SuppressWarnings("deprecation")
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.CacheListChangedEventListener, GpsStatus.NmeaListener, GpsStatus.Listener, CB_UI_Settings {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(main.class);
+    private static final String log = "main";
     public static AndroidApplication mainActivity;
     public static ViewID aktViewId = null;
     public static ViewID aktTabViewId = null;
@@ -153,7 +143,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     private static AndroidApplicationConfiguration gdxConfig = new AndroidApplicationConfiguration();
     private static ServiceConnection mConnection;
     private static BroadcastReceiver mReceiver;
-    private static JokerView jokerView = null; // ID 12
     private static Uri uri;
     private static CB_Locator.Location recordingStartCoordinate;
     private static Boolean mVoiceRecIsStart = false;
@@ -1177,7 +1166,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                     }
                     ViewList.clear();
                     viewGL = null;
-                    jokerView = null;
                     descriptionView = null;
                     mainActivity = null;
 
@@ -1227,9 +1215,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             return ViewList.get(ID.getID());
         }
 
-        if (ID == ViewConst.JOKER_VIEW) {
-            return jokerView = new JokerView(this, this);
-        } else if (ID == ViewConst.DESCRIPTION_VIEW) {
+        if (ID == ViewConst.DESCRIPTION_VIEW) {
             if (descriptionView != null) {
                 return descriptionView;
             } else {
@@ -1261,16 +1247,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 this.onPause();
             }
 
-            if (aktView.equals(jokerView)) {
-                // Instanz löschen
-                aktView = null;
-                jokerView.OnFree();
-                jokerView = null;
-            } else if (aktView.equals(descriptionView)) {
-                // Instanz löschen
+            if (aktView.equals(descriptionView)) {
                 aktView = null;
                 descriptionView.OnHide();
-
             }
 
         }
@@ -1665,90 +1644,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         } catch (Exception e) {
             Log.err(log, e.getLocalizedMessage());
         }
-    }
-
-    private void showJoker() {
-
-        Thread thread = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                // Debug add Joker
-                // Global.Jokers.AddJoker("Andre", "Höpfner", "Katipa", "12",
-                // "030 ++++++", "24/7");
-                // Global.Jokers.AddJoker("Andre", "Höpfner", "Katipa", "12",
-                // "030 ++++++", "24/7");
-
-                if (Global.Jokers.isEmpty()) { // Wenn Telefonjoker-Liste leer
-                    // neu laden
-
-                    try {
-                        URL url = new URL("http://www.gcjoker.de/cachebox.php?md5=" + Config.GcJoker.getValue() + "&wpt=" + GlobalCore.getSelectedCache().getGcCode());
-                        URLConnection urlConnection = url.openConnection();
-                        HttpURLConnection httpConnection = (HttpURLConnection) urlConnection;
-
-                        // Get the HTTP response code
-                        if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                            InputStream inputStream = httpConnection.getInputStream();
-                            if (inputStream != null) {
-                                String line;
-                                try {
-                                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-                                    while ((line = reader.readLine()) != null) {
-                                        String[] s = line.split(";", 7);
-                                        try {
-                                            if (s[0].equals("2")) // 2 entspricht Fehler, Fehlerursache ist in S[1]
-                                            {
-                                                GL_MsgBox.Show(s[1]);
-                                                break;
-                                            }
-                                            if (s[0].equals("1")) // 1 entspricht Warnung, Ursache ist in S[1]
-                                            {
-                                                // es können aber noch gültige Einträge folgen
-                                                GL_MsgBox.Show(s[1]);
-                                            }
-                                            if (s[0].equals("0")) // Normaler Eintrag
-                                            {
-                                                Global.Jokers.AddJoker(s[1], s[2], s[3], s[4], s[5], s[6]);
-                                            }
-                                        } catch (Exception exc) {
-                                            Log.err(log, "main.initialBtnInfoContextMenu()", "HTTP response Jokers", exc);
-                                            reader.close();
-                                            return;
-                                        }
-                                    }
-
-                                } finally {
-                                    inputStream.close();
-                                }
-                            }
-                        }
-                    } catch (MalformedURLException urlEx) {
-                        Log.err(log, "main.initialBtnInfoContextMenu()", "MalformedURLException HTTP response Jokers", urlEx);
-                    } catch (IOException ioEx) {
-                        Log.err(log, "main.initialBtnInfoContextMenu()", "IOException HTTP response Jokers", ioEx);
-                        GL_MsgBox.Show(Translation.Get("internetError"));
-                    } catch (Exception ex) {
-                        Log.err(log, "main.initialBtnInfoContextMenu()", "HTTP response Jokers", ex);
-                    }
-                }
-
-                if (Global.Jokers.isEmpty()) {
-                    GL_MsgBox.Show(Translation.Get("noJokers"));
-                } else {
-                    Log.info(log, "Open JokerView...");
-
-                    main.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            showView(ViewConst.JOKER_VIEW);
-                        }
-                    });
-                }
-            }
-        });
-        thread.start();
-
     }
 
     private void NavigateTo() {
@@ -2151,11 +2046,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                         if (cacheNameView != null)
                             ((View) cacheNameView).setVisibility(View.INVISIBLE);
 
-                        if (viewID == ViewConst.JOKER_VIEW) {
-                            showJoker();
-                        } else {
-                            showView(viewID);
-                        }
+                        showView(viewID);
 
                     }
                 });

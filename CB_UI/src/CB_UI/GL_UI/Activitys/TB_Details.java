@@ -35,7 +35,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
 /**
- *   TODO Visit,Home und Distance müssen noch angezeigt werden!
+ * TODO Visit,Home und Distance müssen noch angezeigt werden!
  */
 public class TB_Details extends ActivityBase {
     public static TB_Details that;

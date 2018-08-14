@@ -36,15 +36,14 @@ public class RenderTheme {
     private final float baseStrokeWidth;
     private final float baseTextSize;
     private final boolean hasBackgroundOutside;
-    private int levels;
     private final int mapBackground;
     private final int mapBackgroundOutside;
     private final LRUCache<MatchingCacheKey, List<RenderInstruction>> wayMatchingCache;
     private final LRUCache<MatchingCacheKey, List<RenderInstruction>> poiMatchingCache;
     private final ArrayList<Rule> rulesList; // NOPMD we need specific interface
-
     private final Map<Byte, Float> strokeScales = new HashMap<>();
     private final Map<Byte, Float> textScales = new HashMap<>();
+    private int levels;
 
     RenderTheme(RenderThemeBuilder renderThemeBuilder) {
         this.baseStrokeWidth = renderThemeBuilder.baseStrokeWidth;
@@ -73,6 +72,10 @@ public class RenderTheme {
      */
     public int getLevels() {
         return this.levels;
+    }
+
+    void setLevels(int levels) {
+        this.levels = levels;
     }
 
     /**
@@ -191,10 +194,6 @@ public class RenderTheme {
         for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
             this.rulesList.get(i).onComplete();
         }
-    }
-
-    void setLevels(int levels) {
-        this.levels = levels;
     }
 
     private synchronized void matchWay(RenderCallback renderCallback, final RenderContext renderContext, Closed closed, PolylineContainer way) {

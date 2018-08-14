@@ -23,11 +23,11 @@ import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 
 public class RendererJob extends Job {
     public final DisplayModel displayModel;
-    public boolean labelsOnly;
     public final MapDataStore mapDataStore;
     public final RenderThemeFuture renderThemeFuture;
     public final float textScale;
     private final int hashCodeValue;
+    public boolean labelsOnly;
 
     public RendererJob(Tile tile, MapDataStore mapFile, RenderThemeFuture renderThemeFuture, DisplayModel displayModel,
                        float textScale, boolean isTransparent, boolean labelsOnly) {

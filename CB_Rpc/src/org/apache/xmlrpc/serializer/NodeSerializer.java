@@ -14,7 +14,7 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.serializer;
 
@@ -23,24 +23,25 @@ import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-/** The node serializer is serializing a DOM node.
+/**
+ * The node serializer is serializing a DOM node.
  */
 public class NodeSerializer extends ExtSerializer {
-	private static final DOMSerializer ser = new DOMSerializer();
+    /**
+     * The local name of a dom tag.
+     */
+    public static final String DOM_TAG = "dom";
+    private static final DOMSerializer ser = new DOMSerializer();
 
-	static {
-		ser.setStartingDocument(false);
-	}
+    static {
+        ser.setStartingDocument(false);
+    }
 
-	/** The local name of a dom tag.
-	 */
-	public static final String DOM_TAG = "dom";
+    protected String getTagName() {
+        return DOM_TAG;
+    }
 
-	protected String getTagName() {
-		return DOM_TAG;
-	}
-
-	protected void serialize(ContentHandler pHandler, Object pObject) throws SAXException {
-		ser.serialize((Node) pObject, pHandler);
-	}
+    protected void serialize(ContentHandler pHandler, Object pObject) throws SAXException {
+        ser.serialize((Node) pObject, pHandler);
+    }
 }

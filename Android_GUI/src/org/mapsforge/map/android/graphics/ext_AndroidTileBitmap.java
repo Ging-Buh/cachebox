@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -22,48 +22,47 @@ import android.graphics.Bitmap.Config;
  * @author Longri
  */
 public class ext_AndroidTileBitmap extends ext_AndroidBitmap {
-	static CB_List<android.graphics.Bitmap> ReusebleList = new CB_List<android.graphics.Bitmap>();
+    static CB_List<android.graphics.Bitmap> ReusebleList = new CB_List<android.graphics.Bitmap>();
+    static int DEBUG_MAX_REUSABLE_COUNT = 0;
 
-	private static android.graphics.Bitmap getReusable(int tileSize) {
-		synchronized (ReusebleList) {
-			for (int i = 0, n = ReusebleList.size(); i < n; i++) {
-				android.graphics.Bitmap reuse = ReusebleList.get(i);
-				if (reuse != null && reuse.getWidth() == tileSize && reuse.getHeight() == tileSize) {
-					ReusebleList.remove(reuse);
-					return reuse;
-				}
-			}
-		}
-		return null;
-	}
+    public ext_AndroidTileBitmap(int tileSize) {
+        android.graphics.Bitmap reuse = getReusable(tileSize);
+        if (reuse != null) {
+            this.bitmap = reuse;
+        } else {
+            this.bitmap = super.createAndroidBitmap(tileSize, tileSize, Config.RGB_565);
+            ;
+        }
+    }
 
-	public ext_AndroidTileBitmap(int tileSize) {
-		android.graphics.Bitmap reuse = getReusable(tileSize);
-		if (reuse != null) {
-			this.bitmap = reuse;
-		} else {
-			this.bitmap = super.createAndroidBitmap(tileSize, tileSize, Config.RGB_565);
-			;
-		}
-	}
+    private static android.graphics.Bitmap getReusable(int tileSize) {
+        synchronized (ReusebleList) {
+            for (int i = 0, n = ReusebleList.size(); i < n; i++) {
+                android.graphics.Bitmap reuse = ReusebleList.get(i);
+                if (reuse != null && reuse.getWidth() == tileSize && reuse.getHeight() == tileSize) {
+                    ReusebleList.remove(reuse);
+                    return reuse;
+                }
+            }
+        }
+        return null;
+    }
 
-	static int DEBUG_MAX_REUSABLE_COUNT = 0;
+    @Override
+    public void recycle() {
 
-	@Override
-	public void recycle() {
+        // chk if reuseList full or cann put BufferdImage to ReuseList?
+        synchronized (ReusebleList) {
 
-		// chk if reuseList full or cann put BufferdImage to ReuseList?
-		synchronized (ReusebleList) {
+            if (ReusebleList.size() < 15) {
+                ReusebleList.add(this.bitmap);
+            } else {
+                this.bitmap.recycle();
+            }
 
-			if (ReusebleList.size() < 15) {
-				ReusebleList.add(this.bitmap);
-			} else {
-				this.bitmap.recycle();
-			}
-
-			DEBUG_MAX_REUSABLE_COUNT = Math.max(DEBUG_MAX_REUSABLE_COUNT, ReusebleList.size());
-		}
-		instCount++;
-		this.bitmap = null;
-	}
+            DEBUG_MAX_REUSABLE_COUNT = Math.max(DEBUG_MAX_REUSABLE_COUNT, ReusebleList.size());
+        }
+        instCount++;
+        this.bitmap = null;
+    }
 }

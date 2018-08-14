@@ -18,7 +18,6 @@ package CB_Core.GCVote;
 
 import CB_Core.CB_Core_Settings;
 import CB_Utils.Log.Log;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
@@ -28,7 +27,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -43,7 +41,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 
 public class GCVote {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(GCVote.class);
+    private static final String log = "GCVote";
 
     public static RatingData GetRating(String User, String password, String Waypoint) {
         ArrayList<String> waypoint = new ArrayList<String>();

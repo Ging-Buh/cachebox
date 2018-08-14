@@ -16,13 +16,7 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.Cap;
-import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.Join;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
@@ -42,18 +36,17 @@ import java.util.regex.Pattern;
  */
 public class Line extends RenderInstruction {
     private static final Pattern SPLIT_PATTERN = Pattern.compile(",");
-
-    private boolean bitmapCreated;
-    private float dy;
     private final Map<Byte, Float> dyScaled;
     private final int level;
     private final String relativePathPrefix;
+    private final Paint stroke;
+    private final Map<Byte, Paint> strokes;
+    private boolean bitmapCreated;
+    private float dy;
     private Scale scale = Scale.STROKE;
     private Bitmap shaderBitmap;
     private String src;
-    private final Paint stroke;
     private float[] strokeDasharray;
-    private final Map<Byte, Paint> strokes;
     private float strokeWidth;
 
     public Line(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
@@ -71,6 +64,15 @@ public class Line extends RenderInstruction {
         this.dyScaled = new HashMap<>();
 
         extractValues(graphicFactory, displayModel, elementName, pullParser);
+    }
+
+    private static float[] parseFloatArray(String name, String dashString) throws XmlPullParserException {
+        String[] dashEntries = SPLIT_PATTERN.split(dashString);
+        float[] dashIntervals = new float[dashEntries.length];
+        for (int i = 0; i < dashEntries.length; ++i) {
+            dashIntervals[i] = XmlUtils.parseNonNegativeFloat(name, dashEntries[i]);
+        }
+        return dashIntervals;
     }
 
     @Override
@@ -126,15 +128,6 @@ public class Line extends RenderInstruction {
             paint = this.stroke;
         }
         return paint;
-    }
-
-    private static float[] parseFloatArray(String name, String dashString) throws XmlPullParserException {
-        String[] dashEntries = SPLIT_PATTERN.split(dashString);
-        float[] dashIntervals = new float[dashEntries.length];
-        for (int i = 0; i < dashEntries.length; ++i) {
-            dashIntervals[i] = XmlUtils.parseNonNegativeFloat(name, dashEntries[i]);
-        }
-        return dashIntervals;
     }
 
     @Override

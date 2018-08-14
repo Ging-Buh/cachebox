@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -20,126 +20,126 @@ import CB_Utils.Util.MoveableList;
 
 /**
  * The Stack class represents a last-in-first-out (LIFO) stack of objects. With option for max item Size.
- * 
- * @author Longri
+ *
  * @param <T>
+ * @author Longri
  */
 public class CB_Stack<T> {
 
-	private MoveableList<T> items;
-	private int maxItemSize = -1;
+    private MoveableList<T> items;
+    private int maxItemSize = -1;
 
-	public CB_Stack() {
-		items = new MoveableList<T>();
-	}
+    public CB_Stack() {
+        items = new MoveableList<T>();
+    }
 
-	/**
-	 * Add an item onto the last of this stack.
-	 * 
-	 * @param item
-	 */
-	public void add(T item) {
-		synchronized (items) {
-			if (items.contains(item))
-				return;
-			items.add(item);
-			// Log.debug(log, "STACK add SIZE=" + items.size + "  (item: " + item.toString() + ")");
-			checkMaxItemSize();
-		}
-	}
+    /**
+     * Add an item onto the last of this stack.
+     *
+     * @param item
+     */
+    public void add(T item) {
+        synchronized (items) {
+            if (items.contains(item))
+                return;
+            items.add(item);
+            // Log.debug(log, "STACK add SIZE=" + items.size + "  (item: " + item.toString() + ")");
+            checkMaxItemSize();
+        }
+    }
 
-	/**
-	 * Removes the object at the top of this stack and returns that object as the value of this function.
-	 * 
-	 * @return
-	 */
-	public T get() {
-		synchronized (items) {
-			if (items.size == 0) {
-				// Log.debug(log, "STACK empty Get");
-				return null;
-			}
+    /**
+     * Removes the object at the top of this stack and returns that object as the value of this function.
+     *
+     * @return
+     */
+    public T get() {
+        synchronized (items) {
+            if (items.size == 0) {
+                // Log.debug(log, "STACK empty Get");
+                return null;
+            }
 
-			T ret = items.remove(0);
+            T ret = items.remove(0);
 
-			// Log.debug(log, "STACK get SIZE=" + (items.size - 1) + "  (item: " + ret.toString() + ")");
+            // Log.debug(log, "STACK get SIZE=" + (items.size - 1) + "  (item: " + ret.toString() + ")");
 
-			return ret;
-		}
-	}
+            return ret;
+        }
+    }
 
-	public boolean contains(T value) {
-		synchronized (items) {
-			return items.contains(value);
-		}
-	}
+    public boolean contains(T value) {
+        synchronized (items) {
+            return items.contains(value);
+        }
+    }
 
-	public int getMaxItemSize() {
-		return maxItemSize;
-	}
+    public int getMaxItemSize() {
+        return maxItemSize;
+    }
 
-	public void setMaxItemSize(int size) {
-		maxItemSize = size;
-		checkMaxItemSize();
-	}
+    public void setMaxItemSize(int size) {
+        maxItemSize = size;
+        checkMaxItemSize();
+    }
 
-	/**
-	 * Tests if this stack is empty.
-	 * 
-	 * @return
-	 */
-	public boolean empty() {
-		synchronized (items) {
-			return items.size <= 0;
-		}
-	}
+    /**
+     * Tests if this stack is empty.
+     *
+     * @return
+     */
+    public boolean empty() {
+        synchronized (items) {
+            return items.size <= 0;
+        }
+    }
 
-	private void checkMaxItemSize() {
-		synchronized (items) {
-			if (maxItemSize < 1)
-				return;
-			if (items.size > maxItemSize) {
-				int removeCount = items.size - maxItemSize;
-				for (int i = 0; i < removeCount; i++) {
-					items.remove(0);
-				}
-			}
-		}
-	}
+    private void checkMaxItemSize() {
+        synchronized (items) {
+            if (maxItemSize < 1)
+                return;
+            if (items.size > maxItemSize) {
+                int removeCount = items.size - maxItemSize;
+                for (int i = 0; i < removeCount; i++) {
+                    items.remove(0);
+                }
+            }
+        }
+    }
 
-	public int getSize() {
-		synchronized (items) {
-			return items.size;
-		}
-	}
+    public int getSize() {
+        synchronized (items) {
+            return items.size;
+        }
+    }
 
-	public void addAll_removeOther(CB_List<T> descList) {
-		synchronized (items) {
-			items.clear();
-			items.addAll(descList);
-		}
-	}
+    public void addAll_removeOther(CB_List<T> descList) {
+        synchronized (items) {
+            items.clear();
+            items.addAll(descList);
+        }
+    }
 
-	public interface iCompare<T> {
-		public int compare(T item1, T item2);
-	}
+    public void sort(iCompare<T> comparable) {
 
-	public void sort(iCompare<T> comparable) {
+        boolean change = false;
 
-		boolean change = false;
+        do {
+            change = false;
+            for (int i = 0; i < items.size - 1; i++) {
+                int compare = comparable.compare(items.get(i), items.get(i + 1));
+                if (compare <= 0)
+                    continue; // no changes
 
-		do {
-			change = false;
-			for (int i = 0; i < items.size - 1; i++) {
-				int compare = comparable.compare(items.get(i), items.get(i + 1));
-				if (compare <= 0)
-					continue; // no changes
+                this.items.MoveItem(i + 1, -1);
+                change = true;
+                break;
+            }
+        } while (change);
 
-				this.items.MoveItem(i + 1, -1);
-				change = true;
-				break;
-			}
-		} while (change);
+    }
 
-	}
+    public interface iCompare<T> {
+        public int compare(T item1, T item2);
+    }
 }

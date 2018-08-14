@@ -5,31 +5,31 @@ import CB_UI_Base.Math.CB_RectF;
 
 public class SettingsItem_Bool extends SettingsItemBase {
 
-	ChkBox Check;
+    ChkBox Check;
 
-	public SettingsItem_Bool(CB_RectF rec, int Index, String Name) {
-		super(rec, Index, Name);
+    public SettingsItem_Bool(CB_RectF rec, int Index, String Name) {
+        super(rec, Index, Name);
 
-		Check = new ChkBox("");
-		Check.setX(this.getWidth() - rightBorder - Check.getWidth());
-		Check.setY(this.getHalfHeight() - Check.getHalfHeight());
+        Check = new ChkBox("");
+        Check.setX(this.getWidth() - rightBorder - Check.getWidth());
+        Check.setY(this.getHalfHeight() - Check.getHalfHeight());
 
-		lblName.setWidth(lblName.getWidth() - Check.getWidth() - rightBorder);
+        lblName.setWidth(lblName.getWidth() - Check.getWidth() - rightBorder);
 
-		lblDefault.setWidth(lblName.getWidth());
+        lblDefault.setWidth(lblName.getWidth());
 
-		this.addChild(Check);
+        this.addChild(Check);
 
-	}
+    }
 
-	public ChkBox getCheckBox() {
-		return Check;
-	}
+    public ChkBox getCheckBox() {
+        return Check;
+    }
 
-	@Override
-	protected void layout() {
-		super.layout();
-		Check.setY(this.getHalfHeight() - Check.getHalfHeight());
-	}
+    @Override
+    protected void layout() {
+        super.layout();
+        Check.setY(this.getHalfHeight() - Check.getHalfHeight());
+    }
 
 }

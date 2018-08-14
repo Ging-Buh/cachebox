@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -16,15 +16,6 @@
 
 package CB_Core.DAO;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
-import org.slf4j.LoggerFactory;
-
-import com.badlogic.gdx.files.FileHandle;
-
 import CB_Core.CacheTypes;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
@@ -35,314 +26,305 @@ import CB_Core.Types.Waypoint;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
+import com.badlogic.gdx.files.FileHandle;
 import de.cb.sqlite.CoreCursor;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * @author ging-buh
  * @author Longri
  */
 public class CacheListDAO {
-	final static org.slf4j.Logger log = LoggerFactory.getLogger(CacheListDAO.class);
+    private static final String log = "CacheListDAO";
 
-	/**
-	 * !!! only exportBatch 
-	 * @param cacheList
-	 * @param GC_Codes
-	 * @param withDescription
-	 * @param fullDetails
-	 * @param loadAllWaypoints
-	 * @return
-	 */
-	public CacheList ReadCacheList(CacheList cacheList, ArrayList<String> GC_Codes, boolean withDescription, boolean fullDetails, boolean loadAllWaypoints) {
-		ArrayList<String> orParts = new ArrayList<String>();
+    /**
+     * !!! only exportBatch
+     *
+     * @param cacheList
+     * @param GC_Codes
+     * @param withDescription
+     * @param fullDetails
+     * @param loadAllWaypoints
+     * @return
+     */
+    public CacheList ReadCacheList(CacheList cacheList, ArrayList<String> GC_Codes, boolean withDescription, boolean fullDetails, boolean loadAllWaypoints) {
+        ArrayList<String> orParts = new ArrayList<String>();
 
-		for (String gcCode : GC_Codes) {
-			orParts.add("GcCode like '%" + gcCode + "%'");
-		}
-		String where = FilterProperties.join(" or ", orParts);
-		return ReadCacheList(cacheList, "", where, withDescription, fullDetails, loadAllWaypoints);
-	}
+        for (String gcCode : GC_Codes) {
+            orParts.add("GcCode like '%" + gcCode + "%'");
+        }
+        String where = FilterProperties.join(" or ", orParts);
+        return ReadCacheList(cacheList, "", where, withDescription, fullDetails, loadAllWaypoints);
+    }
 
-	public CacheList ReadCacheList(CacheList cacheList, String where, boolean fullDetails, boolean loadAllWaypoints) {
-		return ReadCacheList(cacheList, "", where, false, fullDetails, loadAllWaypoints);
-	}
+    public CacheList ReadCacheList(CacheList cacheList, String where, boolean fullDetails, boolean loadAllWaypoints) {
+        return ReadCacheList(cacheList, "", where, false, fullDetails, loadAllWaypoints);
+    }
 
-	// public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean fullDetails, boolean loadAllWaypoints)
-	// {
-	// return ReadCacheList(cacheList, join, where, false, fullDetails, loadAllWaypoints);
-	// }
+    // public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean fullDetails, boolean loadAllWaypoints)
+    // {
+    // return ReadCacheList(cacheList, join, where, false, fullDetails, loadAllWaypoints);
+    // }
 
-	public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean withDescription, boolean fullDetails, boolean loadAllWaypoints) {
-		if (cacheList == null)
-			return null;
+    public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean withDescription, boolean fullDetails, boolean loadAllWaypoints) {
+        if (cacheList == null)
+            return null;
 
-		// Clear List before read
-		cacheList.clear();
+        // Clear List before read
+        cacheList.clear();
 
-		Log.trace(log, "ReadCacheList 1.Waypoints");
-		SortedMap<Long, CB_List<Waypoint>> waypoints;
-		waypoints = new TreeMap<Long, CB_List<Waypoint>>();
-		// zuerst alle Waypoints einlesen
-		CB_List<Waypoint> wpList = new CB_List<Waypoint>();
-		long aktCacheID = -1;
+        Log.trace(log, "ReadCacheList 1.Waypoints");
+        SortedMap<Long, CB_List<Waypoint>> waypoints;
+        waypoints = new TreeMap<Long, CB_List<Waypoint>>();
+        // zuerst alle Waypoints einlesen
+        CB_List<Waypoint> wpList = new CB_List<Waypoint>();
+        long aktCacheID = -1;
 
-		String sql = fullDetails ? WaypointDAO.SQL_WP_FULL : WaypointDAO.SQL_WP;
-		if (!((fullDetails || loadAllWaypoints))) {
-			// when CacheList should be loaded without full details and without all Waypoints
-			// do not load all waypoints from db!
-			sql += " where IsStart=\"true\" or Type=" + CacheTypes.Final.ordinal(); // StartWaypoint or CacheTypes.Final
-		}
-		sql += " order by CacheId";
-		CoreCursor reader = Database.Data.rawQuery(sql, null);
-		if (reader == null)
-		    return cacheList;
-		
-		reader.moveToFirst();
-		while (!reader.isAfterLast()) {
-			WaypointDAO waypointDAO = new WaypointDAO();
-			Waypoint wp = waypointDAO.getWaypoint(reader, fullDetails);
-			if (!(fullDetails || loadAllWaypoints)) {
-				// wenn keine FullDetails geladen werden sollen dann sollen nur die Finals und Start-Waypoints geladen werden
-				if (!(wp.IsStart || wp.Type == CacheTypes.Final)) {
-					reader.moveToNext();
-					continue;
-				}
-			}
-			if (wp.CacheId != aktCacheID) {
-				aktCacheID = wp.CacheId;
-				wpList = new CB_List<Waypoint>();
-				waypoints.put(aktCacheID, wpList);
-			}
-			wpList.add(wp);
-			reader.moveToNext();
+        String sql = fullDetails ? WaypointDAO.SQL_WP_FULL : WaypointDAO.SQL_WP;
+        if (!((fullDetails || loadAllWaypoints))) {
+            // when CacheList should be loaded without full details and without all Waypoints
+            // do not load all waypoints from db!
+            sql += " where IsStart=\"true\" or Type=" + CacheTypes.Final.ordinal(); // StartWaypoint or CacheTypes.Final
+        }
+        sql += " order by CacheId";
+        CoreCursor reader = Database.Data.rawQuery(sql, null);
+        if (reader == null)
+            return cacheList;
 
-		}
-		reader.close();
+        reader.moveToFirst();
+        while (!reader.isAfterLast()) {
+            WaypointDAO waypointDAO = new WaypointDAO();
+            Waypoint wp = waypointDAO.getWaypoint(reader, fullDetails);
+            if (!(fullDetails || loadAllWaypoints)) {
+                // wenn keine FullDetails geladen werden sollen dann sollen nur die Finals und Start-Waypoints geladen werden
+                if (!(wp.IsStart || wp.Type == CacheTypes.Final)) {
+                    reader.moveToNext();
+                    continue;
+                }
+            }
+            if (wp.CacheId != aktCacheID) {
+                aktCacheID = wp.CacheId;
+                wpList = new CB_List<Waypoint>();
+                waypoints.put(aktCacheID, wpList);
+            }
+            wpList.add(wp);
+            reader.moveToNext();
 
-		Log.debug(log, "ReadCacheList 2.Caches");
-		try {
-			if (fullDetails) {
-				sql = CacheDAO.SQL_GET_CACHE + ", " + CacheDAO.SQL_DETAILS;
-				if (withDescription) {
-					// load Cache with Description, Solver, Notes for Transfering Data from Server to ACB
-					sql += "," + CacheDAO.SQL_GET_DETAIL_WITH_DESCRIPTION;
-				}
-			} else {
-				sql = CacheDAO.SQL_GET_CACHE;
+        }
+        reader.close();
 
-			}
+        Log.debug(log, "ReadCacheList 2.Caches");
+        try {
+            if (fullDetails) {
+                sql = CacheDAO.SQL_GET_CACHE + ", " + CacheDAO.SQL_DETAILS;
+                if (withDescription) {
+                    // load Cache with Description, Solver, Notes for Transfering Data from Server to ACB
+                    sql += "," + CacheDAO.SQL_GET_DETAIL_WITH_DESCRIPTION;
+                }
+            } else {
+                sql = CacheDAO.SQL_GET_CACHE;
 
-			sql += " from Caches c " + join + " " + ((where.length() > 0) ? "where " + where : where);
-			reader = Database.Data.rawQuery(sql, null);
+            }
 
-		} catch (Exception e) {
-			Log.err(log, "CacheList.LoadCaches()", "reader = Database.Data.myDB.rawQuery(....", e);
-		}
-		reader.moveToFirst();
+            sql += " from Caches c " + join + " " + ((where.length() > 0) ? "where " + where : where);
+            reader = Database.Data.rawQuery(sql, null);
 
-		CacheDAO cacheDAO = new CacheDAO();
+        } catch (Exception e) {
+            Log.err(log, "CacheList.LoadCaches()", "reader = Database.Data.myDB.rawQuery(....", e);
+        }
+        reader.moveToFirst();
 
-		while (!reader.isAfterLast()) {
-			Cache cache = cacheDAO.ReadFromCursor(reader, fullDetails, withDescription);
-			boolean doAdd = true;
-			if (FilterInstances.hasCorrectedCoordinates != 0) {
-				if (waypoints.containsKey(cache.Id)) {
-					CB_List<Waypoint> tmpwaypoints = waypoints.get(cache.Id);
-					for (int i = 0, n = tmpwaypoints.size(); i < n; i++) {
-						cache.waypoints.add(tmpwaypoints.get(i));
-					}
-				}
-				boolean hasCorrectedCoordinates = cache.CorrectedCoordiantesOrMysterySolved();
-				if (FilterInstances.hasCorrectedCoordinates < 0) {
-					// show only those without corrected ones
-					if (hasCorrectedCoordinates)
-						doAdd = false;
-				} else if (FilterInstances.hasCorrectedCoordinates > 0) {
-					// only those with corrected ones
-					if (!hasCorrectedCoordinates)
-						doAdd = false;
-				}
-			}
-			if (doAdd) {
-				cacheList.add(cache);
-				cache.waypoints.clear();
-				if (waypoints.containsKey(cache.Id)) {
-					CB_List<Waypoint> tmpwaypoints = waypoints.get(cache.Id);
+        CacheDAO cacheDAO = new CacheDAO();
 
-					for (int i = 0, n = tmpwaypoints.size(); i < n; i++) {
-						cache.waypoints.add(tmpwaypoints.get(i));
-					}
+        while (!reader.isAfterLast()) {
+            Cache cache = cacheDAO.ReadFromCursor(reader, fullDetails, withDescription);
+            boolean doAdd = true;
+            if (FilterInstances.hasCorrectedCoordinates != 0) {
+                if (waypoints.containsKey(cache.Id)) {
+                    CB_List<Waypoint> tmpwaypoints = waypoints.get(cache.Id);
+                    for (int i = 0, n = tmpwaypoints.size(); i < n; i++) {
+                        cache.waypoints.add(tmpwaypoints.get(i));
+                    }
+                }
+                boolean hasCorrectedCoordinates = cache.CorrectedCoordiantesOrMysterySolved();
+                if (FilterInstances.hasCorrectedCoordinates < 0) {
+                    // show only those without corrected ones
+                    if (hasCorrectedCoordinates)
+                        doAdd = false;
+                } else if (FilterInstances.hasCorrectedCoordinates > 0) {
+                    // only those with corrected ones
+                    if (!hasCorrectedCoordinates)
+                        doAdd = false;
+                }
+            }
+            if (doAdd) {
+                cacheList.add(cache);
+                cache.waypoints.clear();
+                if (waypoints.containsKey(cache.Id)) {
+                    CB_List<Waypoint> tmpwaypoints = waypoints.get(cache.Id);
 
-					waypoints.remove(cache.Id);
-				}
-			}
-			// ++Global.CacheCount;
-			reader.moveToNext();
+                    for (int i = 0, n = tmpwaypoints.size(); i < n; i++) {
+                        cache.waypoints.add(tmpwaypoints.get(i));
+                    }
 
-		}
-		reader.close();
+                    waypoints.remove(cache.Id);
+                }
+            }
+            // ++Global.CacheCount;
+            reader.moveToNext();
 
-		// clear other never used WP`s from Mem
-		waypoints.clear();
-		waypoints = null;
+        }
+        reader.close();
 
-		// do it manual (or automated after fix), got hanging app on startup
-		// Log.debug(log, "ReadCacheList 3.Sorting");
-		try
+        // clear other never used WP`s from Mem
+        waypoints.clear();
+        waypoints = null;
 
-		{
-			// Collections.sort(cacheList);
-		} catch (
+        // do it manual (or automated after fix), got hanging app on startup
+        // Log.debug(log, "ReadCacheList 3.Sorting");
+        try
 
-		Exception e)
+        {
+            // Collections.sort(cacheList);
+        } catch (
 
-		{
-			// Log.err(log, "CacheListDAO.ReadCacheList()", "Sort ERROR", e);
-		}
-		// Log.debug(log, "ReadCacheList 4. ready");
-		return cacheList;
+                Exception e)
 
-	}
+        {
+            // Log.err(log, "CacheListDAO.ReadCacheList()", "Sort ERROR", e);
+        }
+        // Log.debug(log, "ReadCacheList 4. ready");
+        return cacheList;
 
-	/**
-	 * @param SpoilerFolder
-	 *            Config.settings.SpoilerFolder.getValue()
-	 * @param SpoilerFolderLocal
-	 *            Config.settings.SpoilerFolderLocal.getValue()
-	 * @param DescriptionImageFolder
-	 *            Config.settings.DescriptionImageFolder.getValue()
-	 * @param DescriptionImageFolderLocal
-	 *            Config.settings.DescriptionImageFolderLocal.getValue()
-	 * @return
-	 */
-	public long deleteArchived(String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
-		try {
-			delCacheImages(getGcCodeList("Archived=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
-			long ret = Database.Data.delete("Caches", "Archived=1", null);
-			Database.Data.GPXFilenameUpdateCacheCount(); // CoreSettingsForward.Categories will be set
-			return ret;
-		} catch (Exception e) {
-			Log.err(log, "CacheListDAO.DelArchiv()", "Archiv ERROR", e);
-			return -1;
-		}
-	}
+    }
 
-	/**
-	 * @param SpoilerFolder
-	 *            Config.settings.SpoilerFolder.getValue()
-	 * @param SpoilerFolderLocal
-	 *            Config.settings.SpoilerFolderLocal.getValue()
-	 * @param DescriptionImageFolder
-	 *            Config.settings.DescriptionImageFolder.getValue()
-	 * @param DescriptionImageFolderLocal
-	 *            Config.settings.DescriptionImageFolderLocal.getValue()
-	 * @return
-	 */
-	public long deleteFinds(String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
-		try {
-			delCacheImages(getGcCodeList("Found=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
-			long ret = Database.Data.delete("Caches", "Found=1", null);
-			Database.Data.GPXFilenameUpdateCacheCount(); // CoreSettingsForward.Categories will be set
-			return ret;
-		} catch (Exception e) {
-			Log.err(log, "CacheListDAO.DelFound()", "Found ERROR", e);
-			return -1;
-		}
-	}
+    /**
+     * @param SpoilerFolder               Config.settings.SpoilerFolder.getValue()
+     * @param SpoilerFolderLocal          Config.settings.SpoilerFolderLocal.getValue()
+     * @param DescriptionImageFolder      Config.settings.DescriptionImageFolder.getValue()
+     * @param DescriptionImageFolderLocal Config.settings.DescriptionImageFolderLocal.getValue()
+     * @return
+     */
+    public long deleteArchived(String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
+        try {
+            delCacheImages(getGcCodeList("Archived=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
+            long ret = Database.Data.delete("Caches", "Archived=1", null);
+            Database.Data.GPXFilenameUpdateCacheCount(); // CoreSettingsForward.Categories will be set
+            return ret;
+        } catch (Exception e) {
+            Log.err(log, "CacheListDAO.DelArchiv()", "Archiv ERROR", e);
+            return -1;
+        }
+    }
 
-	/**
-	 * @param Where
-	 * @param SpoilerFolder
-	 *            Config.settings.SpoilerFolder.getValue()
-	 * @param SpoilerFolderLocal
-	 *            Config.settings.SpoilerFolderLocal.getValue()
-	 * @param DescriptionImageFolder
-	 *            Config.settings.DescriptionImageFolder.getValue()
-	 * @param DescriptionImageFolderLocal
-	 *            Config.settings.DescriptionImageFolderLocal.getValue()
-	 * @return
-	 */
-	public long deleteFiltered(String Where, String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
-		try {
-			delCacheImages(getGcCodeList(Where), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
-			long ret = Database.Data.delete("Caches", Where, null);
-			Database.Data.GPXFilenameUpdateCacheCount(); // CoreSettingsForward.Categories will be set
-			return ret;
-		} catch (Exception e) {
-			Log.err(log, "CacheListDAO.DelFilter()", "Filter ERROR", e);
-			return -1;
-		}
-	}
+    /**
+     * @param SpoilerFolder               Config.settings.SpoilerFolder.getValue()
+     * @param SpoilerFolderLocal          Config.settings.SpoilerFolderLocal.getValue()
+     * @param DescriptionImageFolder      Config.settings.DescriptionImageFolder.getValue()
+     * @param DescriptionImageFolderLocal Config.settings.DescriptionImageFolderLocal.getValue()
+     * @return
+     */
+    public long deleteFinds(String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
+        try {
+            delCacheImages(getGcCodeList("Found=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
+            long ret = Database.Data.delete("Caches", "Found=1", null);
+            Database.Data.GPXFilenameUpdateCacheCount(); // CoreSettingsForward.Categories will be set
+            return ret;
+        } catch (Exception e) {
+            Log.err(log, "CacheListDAO.DelFound()", "Found ERROR", e);
+            return -1;
+        }
+    }
 
-	private ArrayList<String> getGcCodeList(String where) {
-		CacheList list = new CacheList();
-		ReadCacheList(list, where, false, false);
-		ArrayList<String> StrList = new ArrayList<String>();
+    /**
+     * @param Where
+     * @param SpoilerFolder               Config.settings.SpoilerFolder.getValue()
+     * @param SpoilerFolderLocal          Config.settings.SpoilerFolderLocal.getValue()
+     * @param DescriptionImageFolder      Config.settings.DescriptionImageFolder.getValue()
+     * @param DescriptionImageFolderLocal Config.settings.DescriptionImageFolderLocal.getValue()
+     * @return
+     */
+    public long deleteFiltered(String Where, String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
+        try {
+            delCacheImages(getGcCodeList(Where), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
+            long ret = Database.Data.delete("Caches", Where, null);
+            Database.Data.GPXFilenameUpdateCacheCount(); // CoreSettingsForward.Categories will be set
+            return ret;
+        } catch (Exception e) {
+            Log.err(log, "CacheListDAO.DelFilter()", "Filter ERROR", e);
+            return -1;
+        }
+    }
 
-		for (int i = 0, n = list.size(); i < n; i++) {
-			StrList.add(list.get(i).getGcCode());
-		}
-		list.dispose();
-		list = null;
-		return StrList;
-	}
+    private ArrayList<String> getGcCodeList(String where) {
+        CacheList list = new CacheList();
+        ReadCacheList(list, where, false, false);
+        ArrayList<String> StrList = new ArrayList<String>();
 
-	/**
-	 * Löscht alle Spoiler und Description Images der übergebenen Liste mit GC-Codes
-	 * 
-	 * @param list
-	 * @param SpoilerFolder
-	 *            Config.settings.SpoilerFolder.getValue()
-	 * @param SpoilerFolderLocal
-	 *            Config.settings.SpoilerFolderLocal.getValue()
-	 * @param DescriptionImageFolder
-	 *            Config.settings.DescriptionImageFolder.getValue()
-	 * @param DescriptionImageFolderLocal
-	 *            Config.settings.DescriptionImageFolderLocal.getValue()
-	 */
-	public void delCacheImages(ArrayList<String> list, String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
-		String spoilerpath = SpoilerFolder;
-		if (SpoilerFolderLocal.length() > 0)
-			spoilerpath = SpoilerFolderLocal;
+        for (int i = 0, n = list.size(); i < n; i++) {
+            StrList.add(list.get(i).getGcCode());
+        }
+        list.dispose();
+        list = null;
+        return StrList;
+    }
 
-		String imagespath = DescriptionImageFolder;
-		if (DescriptionImageFolderLocal.length() > 0)
-			imagespath = DescriptionImageFolderLocal;
+    /**
+     * Löscht alle Spoiler und Description Images der übergebenen Liste mit GC-Codes
+     *
+     * @param list
+     * @param SpoilerFolder               Config.settings.SpoilerFolder.getValue()
+     * @param SpoilerFolderLocal          Config.settings.SpoilerFolderLocal.getValue()
+     * @param DescriptionImageFolder      Config.settings.DescriptionImageFolder.getValue()
+     * @param DescriptionImageFolderLocal Config.settings.DescriptionImageFolderLocal.getValue()
+     */
+    public void delCacheImages(ArrayList<String> list, String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
+        String spoilerpath = SpoilerFolder;
+        if (SpoilerFolderLocal.length() > 0)
+            spoilerpath = SpoilerFolderLocal;
 
-		delCacheImagesByPath(spoilerpath, list);
-		delCacheImagesByPath(imagespath, list);
+        String imagespath = DescriptionImageFolder;
+        if (DescriptionImageFolderLocal.length() > 0)
+            imagespath = DescriptionImageFolderLocal;
 
-		ImageDAO imageDAO = new ImageDAO();
-		for (Iterator<String> iterator = list.iterator(); iterator.hasNext();) {
-			final String GcCode = iterator.next();
-			imageDAO.deleteImagesForCache(GcCode);
-		}
-		imageDAO = null;
-	}
+        delCacheImagesByPath(spoilerpath, list);
+        delCacheImagesByPath(imagespath, list);
 
-	public void delCacheImagesByPath(String path, ArrayList<String> list) {
-		for (Iterator<String> iterator = list.iterator(); iterator.hasNext();) {
-			final String GcCode = iterator.next().toLowerCase();
-			String directory = path + "/" + GcCode.substring(0, 4);
-			if (!FileIO.DirectoryExists(directory))
-				continue;
+        ImageDAO imageDAO = new ImageDAO();
+        for (Iterator<String> iterator = list.iterator(); iterator.hasNext(); ) {
+            final String GcCode = iterator.next();
+            imageDAO.deleteImagesForCache(GcCode);
+        }
+        imageDAO = null;
+    }
 
-			FileHandle dir = new FileHandle(directory);
-			FileHandle[] files = dir.list();
+    public void delCacheImagesByPath(String path, ArrayList<String> list) {
+        for (Iterator<String> iterator = list.iterator(); iterator.hasNext(); ) {
+            final String GcCode = iterator.next().toLowerCase();
+            String directory = path + "/" + GcCode.substring(0, 4);
+            if (!FileIO.DirectoryExists(directory))
+                continue;
 
-			for (int i = 0; i < files.length; i++) {
+            FileHandle dir = new FileHandle(directory);
+            FileHandle[] files = dir.list();
 
-				// simplyfied for startswith gccode, thumbs_gccode + ooverwiewthumbs_gccode
-				if (!files[i].name().toLowerCase().contains(GcCode))
-					continue;
+            for (int i = 0; i < files.length; i++) {
 
-				String filename = directory + "/" + files[i].name();
-				FileHandle file = new FileHandle(filename);
-				if (file.exists()) {
-					if (!file.delete())
-						Log.err(log, "Error deleting : " + filename);
-				}
-			}
-		}
-	}
+                // simplyfied for startswith gccode, thumbs_gccode + ooverwiewthumbs_gccode
+                if (!files[i].name().toLowerCase().contains(GcCode))
+                    continue;
+
+                String filename = directory + "/" + files[i].name();
+                FileHandle file = new FileHandle(filename);
+                if (file.exists()) {
+                    if (!file.delete())
+                        Log.err(log, "Error deleting : " + filename);
+                }
+            }
+        }
+    }
 }

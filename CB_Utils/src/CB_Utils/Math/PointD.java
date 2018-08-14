@@ -1,26 +1,26 @@
 package CB_Utils.Math;
 
 public class PointD {
-	/**
-	 * X
-	 */
-	public double X;
+    /**
+     * X
+     */
+    public double X;
 
-	/**
-	 * Y
-	 */
-	public double Y;
+    /**
+     * Y
+     */
+    public double Y;
 
-	/**
-	 * Standardkonstruktor
-	 */
-	public PointD(double x, double y) {
-		this.X = x;
-		this.Y = y;
-	}
+    /**
+     * Standardkonstruktor
+     */
+    public PointD(double x, double y) {
+        this.X = x;
+        this.Y = y;
+    }
 
-	@Override
-	public String toString() {
-		return this.X + " / " + this.Y;
-	}
+    @Override
+    public String toString() {
+        return this.X + " / " + this.Y;
+    }
 }

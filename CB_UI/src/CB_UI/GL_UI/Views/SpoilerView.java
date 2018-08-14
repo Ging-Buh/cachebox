@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,300 +15,293 @@
  */
 package CB_UI.GL_UI.Views;
 
-import java.util.ArrayList;
-
 import CB_Core.DAO.ImageDAO;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 import CB_UI.GlobalCore;
-import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Activitys.ImageActivity;
-import CB_UI_Base.GL_UI.Controls.GalleryBigItem;
-import CB_UI_Base.GL_UI.Controls.GalleryItem;
-import CB_UI_Base.GL_UI.Controls.GalleryView;
-import CB_UI_Base.GL_UI.Controls.Image;
-import CB_UI_Base.GL_UI.Controls.ImageLoader;
+import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
+import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.FileFactory;
 
+import java.util.ArrayList;
+
 public class SpoilerView extends CB_View_Base {
-	// final static org.slf4j.Logger log = LoggerFactory.getLogger(SpoilerView.class);
-	private final static int MAX_THUMB_WIDTH = 500;
-	private final static int MAX_OVERVIEW_THUMB_WIDTH = 240;
+    // final static org.slf4j.Logger log = LoggerFactory.getLogger(SpoilerView.class);
+    private final static int MAX_THUMB_WIDTH = 500;
+    private final static int MAX_OVERVIEW_THUMB_WIDTH = 240;
+    private final OnClickListener onItemClickListener = new OnClickListener() {
 
-	Cache actCache;
-	CB_List<GalleryBigItem> bigItems = new CB_List<GalleryBigItem>();
-	CB_List<GalleryItem> overviewItems = new CB_List<GalleryItem>();
-	GalleryView gallery;
-	GalleryView galleryOverwiew;
-	boolean forceReload = false;
-	ImageDAO imageDAO = new ImageDAO();
+        @Override
+        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            Image selectionImage = ((GalleryBigItem) v).getImage();
 
-	public SpoilerView(CB_RectF rec, String Name) {
-		super(rec, Name);
+            String path = selectionImage.getImageLoader().getOriginalImagePath();
 
-		CB_RectF gr = rec.copy();
-		gr.setHeight(rec.getHeight() * 0.85f);
+            Image img = new Image(SpoilerView.this, "Image for Activity", true);
+            img.setImage(path);
 
-		gallery = new GalleryView(gr, "gallery") {
-			@Override
-			public void snapIn(int idx) {
-				galleryOverwiew.setSelection(idx);
-				galleryOverwiew.scrollItemToCenter(idx);
-			}
-		};
-		gallery.setZeroPos();
-		this.addChild(gallery);
+            ImageActivity ac = new ImageActivity(img);
+            ac.show();
+            return true;
+        }
+    };
+    Cache actCache;
+    CB_List<GalleryBigItem> bigItems = new CB_List<GalleryBigItem>();
+    CB_List<GalleryItem> overviewItems = new CB_List<GalleryItem>();
+    GalleryView gallery;
+    GalleryView galleryOverwiew;
+    private final OnClickListener onItemSelectClickListener = new OnClickListener() {
 
-		CB_RectF or = gr.copy();
-		or.setHeight(rec.getHeight() - gr.getHeight());
-		galleryOverwiew = new GalleryView(or, "overview");
-		galleryOverwiew.setPos(0, this.getHeight() - or.getHeight());
-		galleryOverwiew.showSelectedItemCenter(true);
+        @Override
+        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            final int idx = ((GalleryItem) v).getIndex();
 
-		this.addChild(galleryOverwiew);
-	}
+            gallery.notifyDataSetChanged();
 
-	public void ForceReload() {
-		forceReload = true;
-		actCache = null;
-		gallery.setBaseAdapter(new GalaryImageAdapter());
-		galleryOverwiew.setBaseAdapter(new OverviewImageAdapter());
-	}
+            gallery.scrollToItem(idx);
+            galleryOverwiew.setSelection(idx);
+            galleryOverwiew.scrollItemToCenter(idx);
+            return true;
+        }
+    };
+    boolean forceReload = false;
+    ImageDAO imageDAO = new ImageDAO();
 
-	@Override
-	public void onShow() {
-		// Log.info(log, "Start onShow");
-		if (GlobalCore.isSetSelectedCache()) {
+    public SpoilerView(CB_RectF rec, String Name) {
+        super(rec, Name);
 
-			if (!forceReload && GlobalCore.getSelectedCache().equals(actCache)) {
-				return;
-			}
+        CB_RectF gr = rec.copy();
+        gr.setHeight(rec.getHeight() * 0.85f);
 
-			forceReload = false;
+        gallery = new GalleryView(gr, "gallery") {
+            @Override
+            public void snapIn(int idx) {
+                galleryOverwiew.setSelection(idx);
+                galleryOverwiew.scrollItemToCenter(idx);
+            }
+        };
+        gallery.setZeroPos();
+        this.addChild(gallery);
 
-			actCache = GlobalCore.getSelectedCache();
+        CB_RectF or = gr.copy();
+        or.setHeight(rec.getHeight() - gr.getHeight());
+        galleryOverwiew = new GalleryView(or, "overview");
+        galleryOverwiew.setPos(0, this.getHeight() - or.getHeight());
+        galleryOverwiew.showSelectedItemCenter(true);
 
-			if (actCache.hasSpoiler()) {
-				// Log.info(log, "has Spoiler.");
+        this.addChild(galleryOverwiew);
+    }
 
-				GalleryItem firstItem = null;
-				synchronized (bigItems) {
-					bigItems.clear();
-					overviewItems.clear();
+    public void ForceReload() {
+        forceReload = true;
+        actCache = null;
+        gallery.setBaseAdapter(new GalaryImageAdapter());
+        galleryOverwiew.setBaseAdapter(new OverviewImageAdapter());
+    }
 
-					CB_RectF orItemRec = galleryOverwiew.copy();
-					orItemRec.setWidth(galleryOverwiew.getHeight());
+    @Override
+    public void onShow() {
+        // Log.info(log, "Start onShow");
+        if (GlobalCore.isSetSelectedCache()) {
 
-					ArrayList<ImageEntry> dbImages = imageDAO.getImagesForCache(actCache.getGcCode());
+            if (!forceReload && GlobalCore.getSelectedCache().equals(actCache)) {
+                return;
+            }
 
-					// Log.info(log, "make images");
-					for (int i = 0, n = actCache.getSpoilerRessources().size(); i < n; i++) {
-						ImageEntry imageEntry = actCache.getSpoilerRessources().get(i);
-						// Log.info(log, "Image Nr.: " + i + " from " + imageEntry.LocalPath);
-						String description = "";
-						String localName = FileIO.GetFileNameWithoutExtension(imageEntry.LocalPath);
-						for (ImageEntry dbImage : dbImages) {
-							String localNameFromDB = FileIO.GetFileNameWithoutExtension(dbImage.LocalPath);
-							if (localNameFromDB.equals(localName)) {
-								// Description
-								description = dbImage.Name + "\n" + dbImage.Description;
-								break;
-							} else {
-								if (FileIO.GetFileNameWithoutExtension(dbImage.Name).equals(localName)) {
-									// Spoiler CacheWolf
-									description = dbImage.Description;
-									break;
-								} else {
-									if (localName.contains(FileIO.GetFileNameWithoutExtension(dbImage.Name))) {
-										// Spoiler ACB
-										description = localName + "\n" + dbImage.Description;
-										break;
-									}
-								}
-							}
-						}
-						ImageLoader loader = new ImageLoader(true); // image loader with thumb
-						loader.setThumbWidth(MAX_THUMB_WIDTH, "");
-						loader.setImage(imageEntry.LocalPath);
-						String label = FileIO.GetFileNameWithoutExtension(imageEntry.Name);
-						if (description.length() > 0)
-							label = description;
-						GalleryBigItem item = new GalleryBigItem(gallery.copy(), i, loader, label);
-						item.setOnDoubleClickListener(onItemClickListener);
-						bigItems.add(item);
+            forceReload = false;
 
-						ImageLoader overviewloader = new ImageLoader(true); // image loader with thumb
-						overviewloader.setThumbWidth(MAX_OVERVIEW_THUMB_WIDTH, FileFactory.THUMB_OVERVIEW);
-						overviewloader.setImage(imageEntry.LocalPath);
-						GalleryItem overviewItem = new GalleryItem(orItemRec, i, loader);
-						overviewItem.setOnClickListener(onItemSelectClickListener);
-						if (firstItem == null)
-							firstItem = overviewItem;
-						overviewItems.add(overviewItem);
-					}
-				}
-				// Log.info(log, "Images loaded");
-				gallery.setBaseAdapter(new GalaryImageAdapter());
-				galleryOverwiew.setBaseAdapter(new OverviewImageAdapter());
+            actCache = GlobalCore.getSelectedCache();
 
-				//select first item
-				if (firstItem != null) {
-					//	    gallery.scrollToItem(0);
-					galleryOverwiew.setSelection(0);
-					galleryOverwiew.scrollItemToCenter(0);
-				}
-			} else {
-				bigItems.clear();
-				overviewItems.clear();
-				gallery.reloadItems();
-				galleryOverwiew.reloadItems();
-			}
-		}
-		// Log.info(log, "End onShow");
-	}
+            if (actCache.hasSpoiler()) {
+                // Log.info(log, "has Spoiler.");
 
-	@Override
-	public void onResized(CB_RectF rec) {
-		super.onResized(rec);
+                GalleryItem firstItem = null;
+                synchronized (bigItems) {
+                    bigItems.clear();
+                    overviewItems.clear();
 
-		CB_RectF gr = rec.copy();
-		gr.setHeight(rec.getHeight() - galleryOverwiew.getHeight());
-		gallery.setRec(gr);
-		gallery.setZeroPos();
+                    CB_RectF orItemRec = galleryOverwiew.copy();
+                    orItemRec.setWidth(galleryOverwiew.getHeight());
 
-		galleryOverwiew.setPos(0, this.getHeight() - galleryOverwiew.getHeight());
+                    ArrayList<ImageEntry> dbImages = imageDAO.getImagesForCache(actCache.getGcCode());
 
-		//resize gallery items
-		for (GalleryBigItem item : bigItems) {
-			item.setRec(gr);
-		}
-		gallery.reloadItemsNow();
-	}
+                    // Log.info(log, "make images");
+                    for (int i = 0, n = actCache.getSpoilerRessources().size(); i < n; i++) {
+                        ImageEntry imageEntry = actCache.getSpoilerRessources().get(i);
+                        // Log.info(log, "Image Nr.: " + i + " from " + imageEntry.LocalPath);
+                        String description = "";
+                        String localName = FileIO.GetFileNameWithoutExtension(imageEntry.LocalPath);
+                        for (ImageEntry dbImage : dbImages) {
+                            String localNameFromDB = FileIO.GetFileNameWithoutExtension(dbImage.LocalPath);
+                            if (localNameFromDB.equals(localName)) {
+                                // Description
+                                description = dbImage.Name + "\n" + dbImage.Description;
+                                break;
+                            } else {
+                                if (FileIO.GetFileNameWithoutExtension(dbImage.Name).equals(localName)) {
+                                    // Spoiler CacheWolf
+                                    description = dbImage.Description;
+                                    break;
+                                } else {
+                                    if (localName.contains(FileIO.GetFileNameWithoutExtension(dbImage.Name))) {
+                                        // Spoiler ACB
+                                        description = localName + "\n" + dbImage.Description;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        ImageLoader loader = new ImageLoader(true); // image loader with thumb
+                        loader.setThumbWidth(MAX_THUMB_WIDTH, "");
+                        loader.setImage(imageEntry.LocalPath);
+                        String label = FileIO.GetFileNameWithoutExtension(imageEntry.Name);
+                        if (description.length() > 0)
+                            label = description;
+                        GalleryBigItem item = new GalleryBigItem(gallery.copy(), i, loader, label);
+                        item.setOnDoubleClickListener(onItemClickListener);
+                        bigItems.add(item);
 
-	public class GalaryImageAdapter implements Adapter {
-		public GalaryImageAdapter() {
-		}
+                        ImageLoader overviewloader = new ImageLoader(true); // image loader with thumb
+                        overviewloader.setThumbWidth(MAX_OVERVIEW_THUMB_WIDTH, FileFactory.THUMB_OVERVIEW);
+                        overviewloader.setImage(imageEntry.LocalPath);
+                        GalleryItem overviewItem = new GalleryItem(orItemRec, i, loader);
+                        overviewItem.setOnClickListener(onItemSelectClickListener);
+                        if (firstItem == null)
+                            firstItem = overviewItem;
+                        overviewItems.add(overviewItem);
+                    }
+                }
+                // Log.info(log, "Images loaded");
+                gallery.setBaseAdapter(new GalaryImageAdapter());
+                galleryOverwiew.setBaseAdapter(new OverviewImageAdapter());
 
-		@Override
-		public int getCount() {
-			synchronized (bigItems) {
-				if (bigItems == null)
-					return 0;
-				return bigItems.size();
-			}
-		}
+                //select first item
+                if (firstItem != null) {
+                    //	    gallery.scrollToItem(0);
+                    galleryOverwiew.setSelection(0);
+                    galleryOverwiew.scrollItemToCenter(0);
+                }
+            } else {
+                bigItems.clear();
+                overviewItems.clear();
+                gallery.reloadItems();
+                galleryOverwiew.reloadItems();
+            }
+        }
+        // Log.info(log, "End onShow");
+    }
 
-		@Override
-		public ListViewItemBase getView(int position) {
-			synchronized (bigItems) {
-				if (bigItems == null)
-					return null;
-				if (bigItems.size() == 0)
-					return null;
-				return bigItems.get(position);
-			}
-		}
+    @Override
+    public void onResized(CB_RectF rec) {
+        super.onResized(rec);
 
-		@Override
-		public float getItemSize(int position) {
-			synchronized (bigItems) {
-				if (bigItems == null)
-					return 0;
-				if (bigItems.size() == 0)
-					return 0;
-				GalleryBigItem item = bigItems.get(position);
-				if (item != null)
-					return item.getWidth();
-				return 0;
-			}
-		}
-	}
+        CB_RectF gr = rec.copy();
+        gr.setHeight(rec.getHeight() - galleryOverwiew.getHeight());
+        gallery.setRec(gr);
+        gallery.setZeroPos();
 
-	public class OverviewImageAdapter implements Adapter {
-		public OverviewImageAdapter() {
-		}
+        galleryOverwiew.setPos(0, this.getHeight() - galleryOverwiew.getHeight());
 
-		@Override
-		public int getCount() {
-			synchronized (overviewItems) {
-				if (overviewItems == null)
-					return 0;
-				return overviewItems.size();
-			}
-		}
+        //resize gallery items
+        for (GalleryBigItem item : bigItems) {
+            item.setRec(gr);
+        }
+        gallery.reloadItemsNow();
+    }
 
-		@Override
-		public ListViewItemBase getView(int position) {
-			synchronized (overviewItems) {
-				if (overviewItems == null)
-					return null;
-				if (overviewItems.size() == 0)
-					return null;
-				return overviewItems.get(position);
-			}
-		}
+    public String getSelectedFilePath() {
+        String file = null;
+        try {
+            file = ((GalleryBigItem) gallery.getSelectedItem()).getImage().getImageLoader().getImagePath();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
 
-		@Override
-		public float getItemSize(int position) {
-			synchronized (overviewItems) {
-				if (overviewItems == null)
-					return 0;
-				if (overviewItems.size() == 0)
-					return 0;
-				GalleryItem item = overviewItems.get(position);
-				if (item != null)
-					return item.getWidth();
-				return 0;
-			}
-		}
-	}
+    public class GalaryImageAdapter implements Adapter {
+        public GalaryImageAdapter() {
+        }
 
-	private final OnClickListener onItemClickListener = new OnClickListener() {
+        @Override
+        public int getCount() {
+            synchronized (bigItems) {
+                if (bigItems == null)
+                    return 0;
+                return bigItems.size();
+            }
+        }
 
-		@Override
-		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-			Image selectionImage = ((GalleryBigItem) v).getImage();
+        @Override
+        public ListViewItemBase getView(int position) {
+            synchronized (bigItems) {
+                if (bigItems == null)
+                    return null;
+                if (bigItems.size() == 0)
+                    return null;
+                return bigItems.get(position);
+            }
+        }
 
-			String path = selectionImage.getImageLoader().getOriginalImagePath();
+        @Override
+        public float getItemSize(int position) {
+            synchronized (bigItems) {
+                if (bigItems == null)
+                    return 0;
+                if (bigItems.size() == 0)
+                    return 0;
+                GalleryBigItem item = bigItems.get(position);
+                if (item != null)
+                    return item.getWidth();
+                return 0;
+            }
+        }
+    }
 
-			Image img = new Image(SpoilerView.this, "Image for Activity", true);
-			img.setImage(path);
+    public class OverviewImageAdapter implements Adapter {
+        public OverviewImageAdapter() {
+        }
 
-			ImageActivity ac = new ImageActivity(img);
-			ac.show();
-			return true;
-		}
-	};
+        @Override
+        public int getCount() {
+            synchronized (overviewItems) {
+                if (overviewItems == null)
+                    return 0;
+                return overviewItems.size();
+            }
+        }
 
-	private final OnClickListener onItemSelectClickListener = new OnClickListener() {
+        @Override
+        public ListViewItemBase getView(int position) {
+            synchronized (overviewItems) {
+                if (overviewItems == null)
+                    return null;
+                if (overviewItems.size() == 0)
+                    return null;
+                return overviewItems.get(position);
+            }
+        }
 
-		@Override
-		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-			final int idx = ((GalleryItem) v).getIndex();
-
-			gallery.notifyDataSetChanged();
-
-			gallery.scrollToItem(idx);
-			galleryOverwiew.setSelection(idx);
-			galleryOverwiew.scrollItemToCenter(idx);
-			return true;
-		}
-	};
-
-	public String getSelectedFilePath() {
-		String file = null;
-		try {
-			file = ((GalleryBigItem) gallery.getSelectedItem()).getImage().getImageLoader().getImagePath();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return file;
-	}
+        @Override
+        public float getItemSize(int position) {
+            synchronized (overviewItems) {
+                if (overviewItems == null)
+                    return 0;
+                if (overviewItems.size() == 0)
+                    return 0;
+                GalleryItem item = overviewItems.get(position);
+                if (item != null)
+                    return item.getWidth();
+                return 0;
+            }
+        }
+    }
 
 }

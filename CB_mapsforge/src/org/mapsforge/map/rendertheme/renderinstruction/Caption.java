@@ -16,16 +16,7 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
-import org.mapsforge.core.graphics.Align;
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.Display;
-import org.mapsforge.core.graphics.FontFamily;
-import org.mapsforge.core.graphics.FontStyle;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Position;
-import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
@@ -46,20 +37,19 @@ import java.util.Map;
  */
 public class Caption extends RenderInstruction {
     public static final float DEFAULT_GAP = 5f;
-
-    private Bitmap bitmap;
-    private Display display;
-    private float dy;
     private final Map<Byte, Float> dyScaled;
     private final Paint fill;
     private final Map<Byte, Paint> fills;
-    private float fontSize;
     private final float gap;
     private final int maxTextWidth;
-    private Position position;
-    private int priority;
     private final Paint stroke;
     private final Map<Byte, Paint> strokes;
+    private Bitmap bitmap;
+    private Display display;
+    private float dy;
+    private float fontSize;
+    private Position position;
+    private int priority;
     private String symbolId;
     private TextKey textKey;
 

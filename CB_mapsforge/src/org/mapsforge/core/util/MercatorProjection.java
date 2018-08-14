@@ -52,6 +52,10 @@ public final class MercatorProjection {
     // variable be removed.
     private static final int DUMMY_TILE_SIZE = 256;
 
+    private MercatorProjection() {
+        throw new IllegalStateException();
+    }
+
     /**
      * Calculates the distance on the ground that is represented by a single pixel on the map.
      *
@@ -74,7 +78,6 @@ public final class MercatorProjection {
     public static double calculateGroundResolution(double latitude, long mapSize) {
         return Math.cos(latitude * (Math.PI / 180)) * EARTH_CIRCUMFERENCE / mapSize;
     }
-
 
     /**
      * Get LatLong from Pixels.
@@ -153,7 +156,6 @@ public final class MercatorProjection {
         return new Point(pixelX, pixelY);
     }
 
-
     /**
      * Calculates the absolute pixel position for a zoom level and tile size relative to origin
      *
@@ -219,7 +221,6 @@ public final class MercatorProjection {
         double pixelY = (0.5 - Math.log((1 + sinLatitude) / (1 - sinLatitude)) / (4 * Math.PI)) * mapSize;
         return Math.min(Math.max(0, pixelY), mapSize);
     }
-
 
     /**
      * Converts a latitude coordinate (in degrees) to a tile Y number at a certain zoom level.
@@ -506,9 +507,5 @@ public final class MercatorProjection {
      */
     public static double zoomLevelToScaleFactor(byte zoomLevel) {
         return Math.pow(2, zoomLevel);
-    }
-
-    private MercatorProjection() {
-        throw new IllegalStateException();
     }
 }

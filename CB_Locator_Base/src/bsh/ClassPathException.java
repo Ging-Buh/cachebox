@@ -34,12 +34,12 @@
 package bsh;
 
 public class ClassPathException extends UtilEvalError {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	public ClassPathException(String msg) {
-		super(msg);
-	}
+    public ClassPathException(String msg) {
+        super(msg);
+    }
 }

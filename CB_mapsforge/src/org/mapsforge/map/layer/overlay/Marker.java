@@ -91,6 +91,19 @@ public class Marker extends Layer {
     }
 
     /**
+     * @param bitmap the new {@code Bitmap} of this marker (may be null).
+     */
+    public synchronized void setBitmap(Bitmap bitmap) {
+        if (this.bitmap != null && this.bitmap.equals(bitmap)) {
+            return;
+        }
+        if (this.bitmap != null) {
+            this.bitmap.decrementRefCount();
+        }
+        this.bitmap = bitmap;
+    }
+
+    /**
      * @return the horizontal offset of this marker.
      */
     public synchronized int getHorizontalOffset() {
@@ -98,10 +111,24 @@ public class Marker extends Layer {
     }
 
     /**
+     * @param horizontalOffset the new horizontal offset of this marker.
+     */
+    public synchronized void setHorizontalOffset(int horizontalOffset) {
+        this.horizontalOffset = horizontalOffset;
+    }
+
+    /**
      * @return the geographical coordinates of this marker (may be null).
      */
     public synchronized LatLong getLatLong() {
         return this.latLong;
+    }
+
+    /**
+     * @param latLong the new geographical coordinates of this marker (may be null).
+     */
+    public synchronized void setLatLong(LatLong latLong) {
+        this.latLong = latLong;
     }
 
     /**
@@ -119,45 +146,18 @@ public class Marker extends Layer {
         return this.verticalOffset;
     }
 
-    @Override
-    public synchronized void onDestroy() {
-        if (this.bitmap != null) {
-            this.bitmap.decrementRefCount();
-        }
-    }
-
-    /**
-     * @param bitmap the new {@code Bitmap} of this marker (may be null).
-     */
-    public synchronized void setBitmap(Bitmap bitmap) {
-        if (this.bitmap != null && this.bitmap.equals(bitmap)) {
-            return;
-        }
-        if (this.bitmap != null) {
-            this.bitmap.decrementRefCount();
-        }
-        this.bitmap = bitmap;
-    }
-
-    /**
-     * @param horizontalOffset the new horizontal offset of this marker.
-     */
-    public synchronized void setHorizontalOffset(int horizontalOffset) {
-        this.horizontalOffset = horizontalOffset;
-    }
-
-    /**
-     * @param latLong the new geographical coordinates of this marker (may be null).
-     */
-    public synchronized void setLatLong(LatLong latLong) {
-        this.latLong = latLong;
-    }
-
     /**
      * @param verticalOffset the new vertical offset of this marker.
      */
     public synchronized void setVerticalOffset(int verticalOffset) {
         this.verticalOffset = verticalOffset;
+    }
+
+    @Override
+    public synchronized void onDestroy() {
+        if (this.bitmap != null) {
+            this.bitmap.decrementRefCount();
+        }
     }
 
 }

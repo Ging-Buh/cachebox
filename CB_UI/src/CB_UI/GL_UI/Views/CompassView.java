@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -57,14 +57,13 @@ import CB_Utils.Util.UnitFormatter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.TimeZone;
 
 public class CompassView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent, invalidateTextureEvent, CacheListChangedEventListener {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompassView.class);
+    private static final String log = "CompassView";
     private CB_RectF imageRec;
     private Image frame, scale, arrow, att[], Icon, Sun, Moon;
 
@@ -79,6 +78,14 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
     private float margin, attHeight, descHeight, lblHeight;
     private boolean initDone, showMap, showName, showIcon, showAtt, showGcCode, showCoords, showWpDesc, showSatInfos, showSunMoon, showAnyContent, showTargetDirection, showSDT, showLastFound;
+    private boolean lastUsedCompass = Locator.UseMagneticCompass();
+    IChanged settingChangedListener = new IChanged() {
+        @Override
+        public void isChanged() {
+            readSettings();
+            createControls();
+        }
+    };
 
     public CompassView(CB_RectF rec, String Name) {
         super(rec, Name);
@@ -143,14 +150,6 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
         Config.CompassShowSDT.addChangedEventListener(settingChangedListener);
         Config.CompassShowLastFound.addChangedEventListener(settingChangedListener);
     }
-
-    IChanged settingChangedListener = new IChanged() {
-        @Override
-        public void isChanged() {
-            readSettings();
-            createControls();
-        }
-    };
 
     private void readSettings() {
         showMap = Config.CompassShowMap.getValue();
@@ -583,12 +582,10 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
         topBox.setVirtualHeight(topContentBox.getHeight());
         topBox.scrollTo(0);
 
-        aktCache=GlobalCore.getSelectedCache();
-        aktWaypoint=GlobalCore.getSelectedWaypoint();
+        aktCache = GlobalCore.getSelectedCache();
+        aktWaypoint = GlobalCore.getSelectedWaypoint();
         setCache();
     }
-
-    private boolean lastUsedCompass = Locator.UseMagneticCompass();
 
     private void setArrowDrawable() {
         setArrowDrawable(false);
@@ -621,7 +618,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
     public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
         if (aktCache != cache || aktWaypoint != waypoint) {
             aktCache = cache;
-            aktWaypoint=waypoint;
+            aktWaypoint = waypoint;
             setCache();
         }
     }
@@ -691,8 +688,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
                     distanceBack.setX(rightBox.getHalfWidth() - distanceBack.getHalfWidth());
                 }
             }
-        }
-        else {
+        } else {
             Log.info(log, "PositionChanged but lblDistance is null or disposed");
         }
 
@@ -816,8 +812,8 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
     @Override
     public void CacheListChangedEvent() {
         if (aktCache != GlobalCore.getSelectedCache() || aktWaypoint != GlobalCore.getSelectedWaypoint()) {
-            aktCache=GlobalCore.getSelectedCache();
-            aktWaypoint=GlobalCore.getSelectedWaypoint();
+            aktCache = GlobalCore.getSelectedCache();
+            aktWaypoint = GlobalCore.getSelectedWaypoint();
             setCache();
         }
     }

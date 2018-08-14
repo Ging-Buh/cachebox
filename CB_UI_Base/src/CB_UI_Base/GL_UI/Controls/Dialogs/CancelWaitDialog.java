@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,13 +15,11 @@
  */
 package CB_UI_Base.GL_UI.Controls.Dialogs;
 
-import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
-
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
 import CB_UI_Base.GL_UI.Controls.Animation.AnimationBase;
 import CB_UI_Base.GL_UI.Controls.Animation.WorkAnimation;
+import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
@@ -31,149 +29,147 @@ import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Log.Trace;
+import org.slf4j.LoggerFactory;
 
 /**
  * Ein Wait Dialog mit �bergabe eines Runable zur Abarbeitung, welcher abgebrochen werden kann
- * 
+ *
  * @author Longri
  */
 public class CancelWaitDialog extends WaitDialog {
-	final static org.slf4j.Logger log = LoggerFactory.getLogger(CancelWaitDialog.class);
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(CancelWaitDialog.class);
 
-	// CancelWaitDialog that;
+    // CancelWaitDialog that;
+    private final cancelRunnable runnable;
+    protected IcancelListener cancelListener;
+    RunnableReadyHandler mRunnThread;
+    private IReadyListener readyListener;
+    private boolean isRunning = false;
 
-	public interface IcancelListener {
-		public void isCanceld();
-	}
+    public CancelWaitDialog(Size size, String name, IcancelListener listener, cancelRunnable runnable) {
+        super(size, name);
+        this.cancelListener = listener;
+        this.runnable = runnable;
+    }
 
-	public interface IReadyListener {
-		public void isReady();
-	}
+    public static CancelWaitDialog ShowWait(String Msg, IcancelListener listener, cancelRunnable runnable) {
+        final CancelWaitDialog wd = ShowWait(Msg, WorkAnimation.GetINSTANCE(), listener, runnable);
+        wd.setCallerName(Trace.getCallerName(2));
+        return wd;
+    }
 
-	protected IcancelListener cancelListener;
-	private IReadyListener readyListener;
-	private final cancelRunnable runnable;
+    public static CancelWaitDialog ShowWait(String Msg, AnimationBase Animation, IcancelListener listener, cancelRunnable runnable) {
+        final CancelWaitDialog wd = createDialog(Msg, listener, runnable);
+        wd.setCallerName(Trace.getCallerName(1));
+        CB_RectF animationRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
+        Animation.setRec(animationRec);
+        wd.animation = Animation;
+        wd.setButtonCaptions(MessageBoxButtons.Cancel);
+        wd.mMsgBoxClickListener = new GL_MsgBox.OnMsgBoxClickListener() {
 
-	public CancelWaitDialog(Size size, String name, IcancelListener listener, cancelRunnable runnable) {
-		super(size, name);
-		this.cancelListener = listener;
-		this.runnable = runnable;
-	}
+            @Override
+            public boolean onClick(int which, Object data) {
+                if (wd.mRunnThread != null)
+                    wd.mRunnThread.Cancel();
+                wd.button3.disable();
+                wd.button3.setText(Translation.Get("waitForCancel"));
+                return false;
+            }
+        };
 
-	public static CancelWaitDialog ShowWait(String Msg, IcancelListener listener, cancelRunnable runnable) {
-		final CancelWaitDialog wd = ShowWait(Msg, WorkAnimation.GetINSTANCE(), listener, runnable);
-		wd.setCallerName(Trace.getCallerName(2));
-		return wd;
-	}
+        SizeF contentSize = wd.getContentSize();
+        float imageYPos = (contentSize.height < (wd.animation.getHeight() * 1.7)) ? contentSize.halfHeight - wd.animation.getHalfHeight() : contentSize.height - wd.animation.getHeight() - margin;
+        wd.animation.setY(imageYPos);
+        wd.addChild(wd.animation);
+        wd.animation.play();
+        wd.Show();
+        return wd;
+    }
 
-	public static CancelWaitDialog ShowWait(String Msg, AnimationBase Animation, IcancelListener listener, cancelRunnable runnable) {
-		final CancelWaitDialog wd = createDialog(Msg, listener, runnable);
-		wd.setCallerName(Trace.getCallerName(1));
-		CB_RectF animationRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
-		Animation.setRec(animationRec);
-		wd.animation = Animation;
-		wd.setButtonCaptions(MessageBoxButtons.Cancel);
-		wd.mMsgBoxClickListener = new GL_MsgBox.OnMsgBoxClickListener() {
+    protected static CancelWaitDialog createDialog(String msg, IcancelListener listener, cancelRunnable runnable) {
 
-			@Override
-			public boolean onClick(int which, Object data) {
-				if (wd.mRunnThread != null)
-					wd.mRunnThread.Cancel();
-				wd.button3.disable();
-				wd.button3.setText(Translation.Get("waitForCancel"));
-				return false;
-			}
-		};
+        if (msg == null)
+            msg = "";
 
-		SizeF contentSize = wd.getContentSize();
-		float imageYPos = (contentSize.height < (wd.animation.getHeight() * 1.7)) ? contentSize.halfHeight - wd.animation.getHalfHeight() : contentSize.height - wd.animation.getHeight() - margin;
-		wd.animation.setY(imageYPos);
-		wd.addChild(wd.animation);
-		wd.animation.play();
-		wd.Show();
-		return wd;
-	}
+        Size size = calcMsgBoxSize(msg, false, false, true, false);
 
-	protected static CancelWaitDialog createDialog(String msg, IcancelListener listener, cancelRunnable runnable) {
+        CancelWaitDialog waitDialog = new CancelWaitDialog(size, "WaitDialog", listener, runnable);
+        waitDialog.setTitle("");
+        waitDialog.setButtonCaptions(MessageBoxButtons.Cancel);
 
-		if (msg == null)
-			msg = "";
+        SizeF contentSize = waitDialog.getContentSize();
 
-		Size size = calcMsgBoxSize(msg, false, false, true, false);
+        CB_RectF imageRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
 
-		CancelWaitDialog waitDialog = new CancelWaitDialog(size, "WaitDialog", listener, runnable);
-		waitDialog.setTitle("");
-		waitDialog.setButtonCaptions(MessageBoxButtons.Cancel);
+        waitDialog.label = new Label("waitDialog" + " label", contentSize.getBounds());
+        waitDialog.label.setWidth(contentSize.getBounds().getWidth() - margin - margin - margin - UI_Size_Base.that.getButtonHeight());
+        waitDialog.label.setX(imageRec.getMaxX() + margin);
+        waitDialog.label.setWrappedText(msg);
 
-		SizeF contentSize = waitDialog.getContentSize();
+        int lineCount = waitDialog.label.getLineCount();
+        waitDialog.label.setY(0);
 
-		CB_RectF imageRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
+        if (lineCount == 1) {
+            waitDialog.label.setText(msg);
+            waitDialog.label.setVAlignment(VAlignment.CENTER);
+        } else {
+            waitDialog.label.setVAlignment(VAlignment.TOP);
+        }
 
-		waitDialog.label = new Label("waitDialog" + " label", contentSize.getBounds());
-		waitDialog.label.setWidth(contentSize.getBounds().getWidth() - margin - margin - margin - UI_Size_Base.that.getButtonHeight());
-		waitDialog.label.setX(imageRec.getMaxX() + margin);
-		waitDialog.label.setWrappedText(msg);
+        waitDialog.addChild(waitDialog.label);
 
-		int lineCount = waitDialog.label.getLineCount();
-		waitDialog.label.setY(0);
+        return waitDialog;
 
-		if (lineCount == 1) {
-			waitDialog.label.setText(msg);
-			waitDialog.label.setVAlignment(VAlignment.CENTER);
-		} else {
-			waitDialog.label.setVAlignment(VAlignment.TOP);
-		}
+    }
 
-		waitDialog.addChild(waitDialog.label);
+    @Override
+    public void onShow() {
+        if (!isRunning && this.runnable != null) {
 
-		return waitDialog;
+            isRunning = true;
 
-	}
+            // start runnable on new Thread
+            mRunnThread = new RunnableReadyHandler() {
 
-	RunnableReadyHandler mRunnThread;
+                @Override
+                public void RunnableReady(boolean isCanceld) {
+                    // CancelWaitDialog.this.close();
+                    if (isCanceld && cancelListener != null) {
+                        cancelListener.isCanceld();
+                    }
 
-	private boolean isRunning = false;
+                    if (readyListener != null) {
+                        readyListener.isReady();
+                    }
 
-	@Override
-	public void onShow() {
-		if (!isRunning && this.runnable != null) {
+                }
 
-			isRunning = true;
+                @Override
+                public void run() {
+                    runnable.run();
+                    if (readyListener != null)
+                        readyListener.isReady();
+                    CancelWaitDialog.this.close();
+                }
 
-			// start runnable on new Thread
-			mRunnThread = new RunnableReadyHandler() {
+                @Override
+                public boolean cancel() {
+                    return runnable.cancel();
+                }
+            };
+            mRunnThread.start();
+        }
+    }
 
-				@Override
-				public void RunnableReady(boolean isCanceld) {
-					// CancelWaitDialog.this.close();
-					if (isCanceld && cancelListener != null) {
-						cancelListener.isCanceld();
-					}
+    public void setReadyListener(IReadyListener readyListener) {
+        this.readyListener = readyListener;
+    }
 
-					if (readyListener != null) {
-						readyListener.isReady();
-					}
+    public interface IcancelListener {
+        public void isCanceld();
+    }
 
-				}
-
-				@Override
-				public void run() {
-					runnable.run();
-					if (readyListener != null)
-						readyListener.isReady();
-					CancelWaitDialog.this.close();
-				}
-
-				@Override
-				public boolean cancel() {
-					return runnable.cancel();
-				}
-			};
-			mRunnThread.start();
-		}
-	}
-
-	public void setReadyListener(IReadyListener readyListener) {
-		this.readyListener = readyListener;
-	}
+    public interface IReadyListener {
+        public void isReady();
+    }
 }

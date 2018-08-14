@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2013 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -18,9 +18,9 @@ package CB_Translation_Base.TranslationEngine;
 
 /**
  * this is an interface for all Objects which should receive the selectedCacheChanged Event
- * 
+ *
  * @author Longri
  */
 public interface SelectedLangChangedEvent {
-	public void SelectedLangChangedEventCalled();
+    public void SelectedLangChangedEventCalled();
 }

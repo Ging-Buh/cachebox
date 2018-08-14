@@ -33,164 +33,152 @@
 
 package bsh;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.Socket;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.io.*;
+import java.net.*;
 
 /**
  * Remote executor class. Posts a script from the command line to a BshServlet or embedded interpreter using (respectively) HTTP or the bsh
  * telnet service. Output is printed to stdout and a numeric return value is scraped from the result.
  */
 public class Remote {
-	public static void main(String args[]) throws Exception {
-		if (args.length < 2) {
-			System.out.println("usage: Remote URL(http|bsh) file [ file ] ... ");
-			System.exit(1);
-		}
-		String url = args[0];
-		String text = getFile(args[1]);
-		int ret = eval(url, text);
-		System.exit(ret);
-	}
+    public static void main(String args[]) throws Exception {
+        if (args.length < 2) {
+            System.out.println("usage: Remote URL(http|bsh) file [ file ] ... ");
+            System.exit(1);
+        }
+        String url = args[0];
+        String text = getFile(args[1]);
+        int ret = eval(url, text);
+        System.exit(ret);
+    }
 
-	/**
-	 * Evaluate text in the interpreter at url, returning a possible integer return value.
-	 */
-	public static int eval(String url, String text) throws IOException {
-		String returnValue = null;
-		if (url.startsWith("http:")) {
-			returnValue = doHttp(url, text);
-		} else if (url.startsWith("bsh:")) {
-			returnValue = doBsh(url, text);
-		} else
-			throw new IOException("Unrecognized URL type." + "Scheme must be http:// or bsh://");
+    /**
+     * Evaluate text in the interpreter at url, returning a possible integer return value.
+     */
+    public static int eval(String url, String text) throws IOException {
+        String returnValue = null;
+        if (url.startsWith("http:")) {
+            returnValue = doHttp(url, text);
+        } else if (url.startsWith("bsh:")) {
+            returnValue = doBsh(url, text);
+        } else
+            throw new IOException("Unrecognized URL type." + "Scheme must be http:// or bsh://");
 
-		try {
-			return Integer.parseInt(returnValue);
-		} catch (Exception e) {
-			// this convention may change...
-			return 0;
-		}
-	}
+        try {
+            return Integer.parseInt(returnValue);
+        } catch (Exception e) {
+            // this convention may change...
+            return 0;
+        }
+    }
 
-	@SuppressWarnings("resource")
-	static String doBsh(String url, String text) {
-		OutputStream out;
-		InputStream in;
-		String host = "";
-		String port = "";
-		String returnValue = "-1";
-		String orgURL = url;
+    @SuppressWarnings("resource")
+    static String doBsh(String url, String text) {
+        OutputStream out;
+        InputStream in;
+        String host = "";
+        String port = "";
+        String returnValue = "-1";
+        String orgURL = url;
 
-		// Need some format checking here
-		try {
-			url = url.substring(6); // remove the bsh://
-			// get the index of the : between the host and the port is located
-			int index = url.indexOf(":");
-			host = url.substring(0, index);
-			port = url.substring(index + 1, url.length());
-		} catch (Exception ex) {
-			System.err.println("Bad URL: " + orgURL + ": " + ex);
-			return returnValue;
-		}
+        // Need some format checking here
+        try {
+            url = url.substring(6); // remove the bsh://
+            // get the index of the : between the host and the port is located
+            int index = url.indexOf(":");
+            host = url.substring(0, index);
+            port = url.substring(index + 1, url.length());
+        } catch (Exception ex) {
+            System.err.println("Bad URL: " + orgURL + ": " + ex);
+            return returnValue;
+        }
 
-		try {
-			System.out.println("Connecting to host : " + host + " at port : " + port);
-			Socket s = new Socket(host, Integer.parseInt(port) + 1);
+        try {
+            System.out.println("Connecting to host : " + host + " at port : " + port);
+            Socket s = new Socket(host, Integer.parseInt(port) + 1);
 
-			out = s.getOutputStream();
-			in = s.getInputStream();
+            out = s.getOutputStream();
+            in = s.getInputStream();
 
-			sendLine(text, out);
+            sendLine(text, out);
 
-			BufferedReader bin = new BufferedReader(new InputStreamReader(in));
-			String line;
-			while ((line = bin.readLine()) != null)
-				System.out.println(line);
+            BufferedReader bin = new BufferedReader(new InputStreamReader(in));
+            String line;
+            while ((line = bin.readLine()) != null)
+                System.out.println(line);
 
-			// Need to scrape a value from the last line?
-			returnValue = "1";
-			return returnValue;
-		} catch (Exception ex) {
-			System.err.println("Error communicating with server: " + ex);
-			return returnValue;
-		}
-	}
+            // Need to scrape a value from the last line?
+            returnValue = "1";
+            return returnValue;
+        } catch (Exception ex) {
+            System.err.println("Error communicating with server: " + ex);
+            return returnValue;
+        }
+    }
 
-	private static void sendLine(String line, OutputStream outPipe) throws IOException {
-		outPipe.write(line.getBytes());
-		outPipe.flush();
-	}
+    private static void sendLine(String line, OutputStream outPipe) throws IOException {
+        outPipe.write(line.getBytes());
+        outPipe.flush();
+    }
 
-	@SuppressWarnings("deprecation")
-	static String doHttp(String postURL, String text) {
-		String returnValue = null;
-		StringBuilder sb = new StringBuilder();
-		sb.append("bsh.client=Remote");
-		sb.append("&bsh.script=");
-		sb.append(URLEncoder.encode(text));
-		/*
-		 * // This requires Java 1.3 try { sb.append( URLEncoder.encode( text, "8859_1" ) ); } catch ( UnsupportedEncodingException e ) {
-		 * e.printStackTrace(); }
-		 */
-		String formData = sb.toString();
+    @SuppressWarnings("deprecation")
+    static String doHttp(String postURL, String text) {
+        String returnValue = null;
+        StringBuilder sb = new StringBuilder();
+        sb.append("bsh.client=Remote");
+        sb.append("&bsh.script=");
+        sb.append(URLEncoder.encode(text));
+        /*
+         * // This requires Java 1.3 try { sb.append( URLEncoder.encode( text, "8859_1" ) ); } catch ( UnsupportedEncodingException e ) {
+         * e.printStackTrace(); }
+         */
+        String formData = sb.toString();
 
-		try {
-			URL url = new URL(postURL);
-			HttpURLConnection urlcon = (HttpURLConnection) url.openConnection();
-			urlcon.setRequestMethod("POST");
-			urlcon.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
-			urlcon.setDoOutput(true);
-			urlcon.setDoInput(true);
-			PrintWriter pout = new PrintWriter(new OutputStreamWriter(urlcon.getOutputStream(), "8859_1"), true);
-			pout.print(formData);
-			pout.flush();
+        try {
+            URL url = new URL(postURL);
+            HttpURLConnection urlcon = (HttpURLConnection) url.openConnection();
+            urlcon.setRequestMethod("POST");
+            urlcon.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
+            urlcon.setDoOutput(true);
+            urlcon.setDoInput(true);
+            PrintWriter pout = new PrintWriter(new OutputStreamWriter(urlcon.getOutputStream(), "8859_1"), true);
+            pout.print(formData);
+            pout.flush();
 
-			// read results...
-			int rc = urlcon.getResponseCode();
-			if (rc != HttpURLConnection.HTTP_OK)
-				System.out.println("Error, HTTP response: " + rc);
+            // read results...
+            int rc = urlcon.getResponseCode();
+            if (rc != HttpURLConnection.HTTP_OK)
+                System.out.println("Error, HTTP response: " + rc);
 
-			returnValue = urlcon.getHeaderField("Bsh-Return");
+            returnValue = urlcon.getHeaderField("Bsh-Return");
 
-			BufferedReader bin = new BufferedReader(new InputStreamReader(urlcon.getInputStream()));
-			String line;
-			while ((line = bin.readLine()) != null)
-				System.out.println(line);
+            BufferedReader bin = new BufferedReader(new InputStreamReader(urlcon.getInputStream()));
+            String line;
+            while ((line = bin.readLine()) != null)
+                System.out.println(line);
 
-			System.out.println("Return Value: " + returnValue);
+            System.out.println("Return Value: " + returnValue);
 
-		} catch (MalformedURLException e) {
-			System.out.println(e); // bad postURL
-		} catch (IOException e2) {
-			System.out.println(e2); // I/O error
-		}
+        } catch (MalformedURLException e) {
+            System.out.println(e); // bad postURL
+        } catch (IOException e2) {
+            System.out.println(e2); // I/O error
+        }
 
-		return returnValue;
-	}
+        return returnValue;
+    }
 
-	/*
-	 * Note: assumes default character encoding
-	 */
-	@SuppressWarnings("resource")
-	static String getFile(String name) throws FileNotFoundException, IOException {
-		StringBuilder sb = new StringBuilder();
-		BufferedReader bin = new BufferedReader(new FileReader(name));
-		String line;
-		while ((line = bin.readLine()) != null)
-			sb.append(line).append("\n");
-		return sb.toString();
-	}
+    /*
+     * Note: assumes default character encoding
+     */
+    @SuppressWarnings("resource")
+    static String getFile(String name) throws FileNotFoundException, IOException {
+        StringBuilder sb = new StringBuilder();
+        BufferedReader bin = new BufferedReader(new FileReader(name));
+        String line;
+        while ((line = bin.readLine()) != null)
+            sb.append(line).append("\n");
+        return sb.toString();
+    }
 
 }

@@ -14,22 +14,25 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.common;
 
 import org.apache.xmlrpc.XmlRpcException;
 
-/** This exception is thrown, if the clients or servers maximum
+/**
+ * This exception is thrown, if the clients or servers maximum
  * number of concurrent threads is exceeded.
  */
 public class XmlRpcLoadException extends XmlRpcException {
-	private static final long serialVersionUID = 4050760511635272755L;
+    private static final long serialVersionUID = 4050760511635272755L;
 
-	/** Creates a new instance.
-	 * @param pMessage Error description.
-	 */
-	public XmlRpcLoadException(String pMessage) {
-		super(0, pMessage, null);
-	}
+    /**
+     * Creates a new instance.
+     *
+     * @param pMessage Error description.
+     */
+    public XmlRpcLoadException(String pMessage) {
+        super(0, pMessage, null);
+    }
 }

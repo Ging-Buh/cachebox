@@ -1,12 +1,5 @@
 package CB_Core.Types;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
-
-import org.slf4j.LoggerFactory;
-
 import CB_Core.Attributes;
 import CB_Core.CB_Core_Settings;
 import CB_Core.Database;
@@ -18,9 +11,14 @@ import CB_Utils.fileProvider.FileFactory;
 import CB_Utils.fileProvider.FilenameFilter;
 import de.cb.sqlite.CoreCursor;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+
 public class CacheDetail implements Serializable {
     private static final long serialVersionUID = 2088367633865443637L;
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(CacheDetail.class);
+    private static final String log = "CacheDetail";
 
     /*
      * Public Member
@@ -78,37 +76,32 @@ public class CacheDetail implements Serializable {
      * State des Caches
      */
     public String State = "";
-
-    /**
-     * Positive Attribute des Caches
-     */
-    private DLong attributesPositive = new DLong(0, 0);
-
-    /**
-     * Negative Attribute des Caches
-     */
-    private DLong attributesNegative = new DLong(0, 0);
-
-    /**
-     * Hinweis fuer diesen Cache
-     */
-    private String hint = "";
-
-    /**
-     * Liste der Spoiler Ressourcen
-     */
-    private CB_List<ImageEntry> spoilerRessources = null;
-
     /**
      * Kurz Beschreibung des Caches
      */
     public String shortDescription;
-
     /**
      * Ausfuehrliche Beschreibung des Caches Nur fuer Import Zwecke. Ist normalerweise leer, da die Description bei aus Speicherplatz
      * Gruenden bei Bedarf aus der DB geladen wird
      */
     public String longDescription;
+    /**
+     * Positive Attribute des Caches
+     */
+    private DLong attributesPositive = new DLong(0, 0);
+    /**
+     * Negative Attribute des Caches
+     */
+    private DLong attributesNegative = new DLong(0, 0);
+    /**
+     * Hinweis fuer diesen Cache
+     */
+    private String hint = "";
+    /**
+     * Liste der Spoiler Ressourcen
+     */
+    private CB_List<ImageEntry> spoilerRessources = null;
+    private ArrayList<Attributes> AttributeList = null;
 
     /**
      * Constructor
@@ -226,8 +219,6 @@ public class CacheDetail implements Serializable {
         }
         return this.attributesPositive;
     }
-
-    private ArrayList<Attributes> AttributeList = null;
 
     public ArrayList<Attributes> getAttributes(long Id) {
         if (AttributeList == null) {
@@ -392,20 +383,20 @@ public class CacheDetail implements Serializable {
         }
     }
 
-    public void setLongDescription(String value) {
-        longDescription = value;
-    }
-
     public String getLongDescription() {
         return longDescription;
     }
 
-    public void setShortDescription(String value) {
-        shortDescription = value;
+    public void setLongDescription(String value) {
+        longDescription = value;
     }
 
     public String getShortDescription() {
         return shortDescription;
+    }
+
+    public void setShortDescription(String value) {
+        shortDescription = value;
     }
 
 }

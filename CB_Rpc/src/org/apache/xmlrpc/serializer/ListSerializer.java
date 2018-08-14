@@ -14,32 +14,35 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.serializer;
-
-import java.util.List;
 
 import org.apache.xmlrpc.common.TypeFactory;
 import org.apache.xmlrpc.common.XmlRpcStreamConfig;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-/** A {@link TypeSerializer} for lists.
+import java.util.List;
+
+/**
+ * A {@link TypeSerializer} for lists.
  */
 public class ListSerializer extends ObjectArraySerializer {
-	/** Creates a new instance.
-	 * @param pTypeFactory The factory being used for creating serializers.
-	 * @param pConfig The configuration being used for creating serializers.
-	 */
-	public ListSerializer(TypeFactory pTypeFactory, XmlRpcStreamConfig pConfig) {
-		super(pTypeFactory, pConfig);
-	}
+    /**
+     * Creates a new instance.
+     *
+     * @param pTypeFactory The factory being used for creating serializers.
+     * @param pConfig      The configuration being used for creating serializers.
+     */
+    public ListSerializer(TypeFactory pTypeFactory, XmlRpcStreamConfig pConfig) {
+        super(pTypeFactory, pConfig);
+    }
 
-	protected void writeData(ContentHandler pHandler, Object pObject) throws SAXException {
-		List data = (List) pObject;
-		for (int i = 0; i < data.size(); i++) {
-			writeObject(pHandler, data.get(i));
-		}
-	}
+    protected void writeData(ContentHandler pHandler, Object pObject) throws SAXException {
+        List data = (List) pObject;
+        for (int i = 0; i < data.size(); i++) {
+            writeObject(pHandler, data.get(i));
+        }
+    }
 }

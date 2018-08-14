@@ -14,7 +14,7 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.client;
 
@@ -25,34 +25,36 @@ import javax.net.ssl.SSLSocketFactory;
  * on the {@link java.net.HttpURLConnection} class.
  */
 public class XmlRpcSun14HttpTransportFactory extends XmlRpcTransportFactoryImpl {
-	private SSLSocketFactory sslSocketFactory;
+    private SSLSocketFactory sslSocketFactory;
 
-	/**
-	 * Creates a new factory, which creates transports for the given client.
-	 * @param pClient The client, which is operating the factory.
-	 */
-	public XmlRpcSun14HttpTransportFactory(XmlRpcClient pClient) {
-		super(pClient);
-	}
+    /**
+     * Creates a new factory, which creates transports for the given client.
+     *
+     * @param pClient The client, which is operating the factory.
+     */
+    public XmlRpcSun14HttpTransportFactory(XmlRpcClient pClient) {
+        super(pClient);
+    }
 
-	/**
-	 * Sets the SSLSocketFactory to be used by transports.
-	 * @param pSocketFactory The SSLSocketFactory to use.
-	 */
-	public void setSSLSocketFactory(SSLSocketFactory pSocketFactory) {
-		sslSocketFactory = pSocketFactory;
-	}
+    /**
+     * Returns the SSLSocketFactory to be used by transports.
+     */
+    public SSLSocketFactory getSSLSocketFactory() {
+        return sslSocketFactory;
+    }
 
-	/**
-	 * Returns the SSLSocketFactory to be used by transports.
-	 */
-	public SSLSocketFactory getSSLSocketFactory() {
-		return sslSocketFactory;
-	}
+    /**
+     * Sets the SSLSocketFactory to be used by transports.
+     *
+     * @param pSocketFactory The SSLSocketFactory to use.
+     */
+    public void setSSLSocketFactory(SSLSocketFactory pSocketFactory) {
+        sslSocketFactory = pSocketFactory;
+    }
 
-	public XmlRpcTransport getTransport() {
-		XmlRpcSun14HttpTransport transport = new XmlRpcSun14HttpTransport(getClient());
-		transport.setSSLSocketFactory(sslSocketFactory);
-		return transport;
-	}
+    public XmlRpcTransport getTransport() {
+        XmlRpcSun14HttpTransport transport = new XmlRpcSun14HttpTransport(getClient());
+        transport.setSSLSocketFactory(sslSocketFactory);
+        return transport;
+    }
 }

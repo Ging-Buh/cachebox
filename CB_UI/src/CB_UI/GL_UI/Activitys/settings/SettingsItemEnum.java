@@ -6,29 +6,29 @@ import CB_UI_Base.Math.UI_Size_Base;
 
 public class SettingsItemEnum extends SettingsItemBase {
 
-	Spinner spinner;
+    Spinner spinner;
 
-	public SettingsItemEnum(CB_RectF rec, int Index, String Name) {
-		super(rec, Index, Name);
+    public SettingsItemEnum(CB_RectF rec, int Index, String Name) {
+        super(rec, Index, Name);
 
-		spinner = new Spinner(lblDefault, "", null, null);
+        spinner = new Spinner(lblDefault, "", null, null);
 
-		spinner.setHeight(UI_Size_Base.that.getButtonHeight());
+        spinner.setHeight(UI_Size_Base.that.getButtonHeight());
 
-		this.addChild(spinner);
+        this.addChild(spinner);
 
-	}
+    }
 
-	public Spinner getSpinner() {
-		return spinner;
-	}
+    public Spinner getSpinner() {
+        return spinner;
+    }
 
-	@Override
-	protected void layout() {
-		lblDefault.setHeight(spinner.getHeight());
-		super.layout();
-		spinner.setY(lblDefault.getY() + UI_Size_Base.that.getMargin());
+    @Override
+    protected void layout() {
+        lblDefault.setHeight(spinner.getHeight());
+        super.layout();
+        spinner.setY(lblDefault.getY() + UI_Size_Base.that.getMargin());
 
-	}
+    }
 
 }

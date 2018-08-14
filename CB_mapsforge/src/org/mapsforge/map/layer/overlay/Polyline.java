@@ -113,18 +113,18 @@ public class Polyline extends Layer {
     }
 
     /**
+     * @param paintStroke the new {@code Paint} used to stroke this polyline (may be null).
+     */
+    public synchronized void setPaintStroke(Paint paintStroke) {
+        this.paintStroke = paintStroke;
+    }
+
+    /**
      * @return true if it keeps the bitmap aligned with the map, to avoid a
      * moving effect of a bitmap shader, false otherwise.
      */
     public boolean isKeepAligned() {
         return keepAligned;
-    }
-
-    /**
-     * @param paintStroke the new {@code Paint} used to stroke this polyline (may be null).
-     */
-    public synchronized void setPaintStroke(Paint paintStroke) {
-        this.paintStroke = paintStroke;
     }
 
 }

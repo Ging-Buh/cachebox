@@ -14,21 +14,22 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.parser;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-/** SAX parser for a nil element (null value).
+/**
+ * SAX parser for a nil element (null value).
  */
 public class NullParser extends AtomicParser {
-	protected void setResult(String pResult) throws SAXException {
-		if (pResult == null || "".equals(pResult.trim())) {
-			super.setResult((Object) null);
-		} else {
-			throw new SAXParseException("Unexpected characters in nil element.", getDocumentLocator());
-		}
-	}
+    protected void setResult(String pResult) throws SAXException {
+        if (pResult == null || "".equals(pResult.trim())) {
+            super.setResult((Object) null);
+        } else {
+            throw new SAXParseException("Unexpected characters in nil element.", getDocumentLocator());
+        }
+    }
 }

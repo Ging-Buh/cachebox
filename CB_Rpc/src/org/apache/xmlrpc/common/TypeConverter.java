@@ -14,14 +14,15 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.common;
 
 import java.util.List;
 import java.util.Vector;
 
-/** A {@link TypeConverter} is used when actually calling the
+/**
+ * A {@link TypeConverter} is used when actually calling the
  * handler method or actually returning the result object. It's
  * purpose is to convert a single parameter or the return value
  * from a generic representation (for example an array of objects)
@@ -30,19 +31,22 @@ import java.util.Vector;
  * {@link Vector}.
  */
 public interface TypeConverter {
-	/** Returns, whether the {@link TypeConverter} is
-	 * ready to handle the given object. If so,
-	 * {@link #convert(Object)} may be called.
-	 */
-	boolean isConvertable(Object pObject);
+    /**
+     * Returns, whether the {@link TypeConverter} is
+     * ready to handle the given object. If so,
+     * {@link #convert(Object)} may be called.
+     */
+    boolean isConvertable(Object pObject);
 
-	/** Converts the given object into the required
-	 * representation.
-	 */
-	Object convert(Object pObject);
+    /**
+     * Converts the given object into the required
+     * representation.
+     */
+    Object convert(Object pObject);
 
-	/** Converts the given object into its generic
-	 * representation.
-	 */
-	Object backConvert(Object result);
+    /**
+     * Converts the given object into its generic
+     * representation.
+     */
+    Object backConvert(Object result);
 }

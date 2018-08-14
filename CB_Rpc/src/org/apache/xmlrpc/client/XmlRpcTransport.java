@@ -14,24 +14,28 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.client;
 
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.XmlRpcRequest;
 
-/** <p>Interface from XML-RPC to an underlying transport, most likely based on HTTP.</p>
+/**
+ * <p>Interface from XML-RPC to an underlying transport, most likely based on HTTP.</p>
  * Replaces the interface <code>org.apache.xmlrpc.client</code> from Apache XML-RPC
  * 2.0, which has actually been a stream based transport.
+ *
  * @since 3.0
  */
 public interface XmlRpcTransport {
-	/**  Send an XML-RPC message. This method is called to send a message to the
-	 * other party.
-	 * @param pRequest The request being performed.
-	 * @return Result object, if invoking the remote method was successfull.
-	 * @throws XmlRpcException Performing the request failed.
-	 */
-	public Object sendRequest(XmlRpcRequest pRequest) throws XmlRpcException;
+    /**
+     * Send an XML-RPC message. This method is called to send a message to the
+     * other party.
+     *
+     * @param pRequest The request being performed.
+     * @return Result object, if invoking the remote method was successfull.
+     * @throws XmlRpcException Performing the request failed.
+     */
+    public Object sendRequest(XmlRpcRequest pRequest) throws XmlRpcException;
 }

@@ -1,4 +1,3 @@
-
 package de.CB_GC_Joker_PlugIn;
 
 import android.app.Service;
@@ -10,44 +9,43 @@ import android.util.Log;
 import de.CB_PlugIn.IPlugIn;
 
 public class PluginService extends Service {
-	static final String LOG_TAG = "ResPluginService1";
+    static final String LOG_TAG = "ResPluginService1";
+    private final IPlugIn.Stub binder = new IPlugIn.Stub() {
 
-	public void onStart(Intent intent, int startId) {
-		super.onStart(intent, startId);
-	}
+        @Override
+        public boolean call(String TelephoneNumber) {
+            // Telefonnummer wählen
+            try {
+                // TelephoneNumber = "0..."; // Telefonnummer zum testen
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                callIntent.setData(Uri.parse("tel:" + TelephoneNumber));
+                startActivity(callIntent);
+                //				TelephonyManager tManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                //				listener = new ListenToPhoneState();
+                //				tManager.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
 
-	public void onDestroy() {
-		super.onDestroy();
-	}
+                return true;
+            } catch (ActivityNotFoundException e) {
+                Log.e("DroidCachebox", "Call failed", e);
+                return false;
+            }
+        }
 
-	public IBinder onBind(Intent intent) {
+    };
 
-		Log.d(LOG_TAG, "Bind");
+    public void onStart(Intent intent, int startId) {
+        super.onStart(intent, startId);
+    }
 
-		return binder;
-	}
+    public void onDestroy() {
+        super.onDestroy();
+    }
 
-	private final IPlugIn.Stub binder = new IPlugIn.Stub() {
+    public IBinder onBind(Intent intent) {
 
-		@Override
-		public boolean call(String TelephoneNumber) {
-			// Telefonnummer wählen
-			try {
-				// TelephoneNumber = "0..."; // Telefonnummer zum testen
-				Intent callIntent = new Intent(Intent.ACTION_CALL);
-				callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				callIntent.setData(Uri.parse("tel:" + TelephoneNumber));
-				startActivity(callIntent);
-				//				TelephonyManager tManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-				//				listener = new ListenToPhoneState();
-				//				tManager.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
+        Log.d(LOG_TAG, "Bind");
 
-				return true;
-			} catch (ActivityNotFoundException e) {
-				Log.e("DroidCachebox", "Call failed", e);
-				return false;
-			}
-		}
-
-	};
+        return binder;
+    }
 }

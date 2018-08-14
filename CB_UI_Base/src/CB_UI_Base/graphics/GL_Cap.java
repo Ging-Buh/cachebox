@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -17,9 +17,9 @@ package CB_UI_Base.graphics;
 
 /**
  * Specifies the shape to be used for the endpoints of a line.
- * 
+ *
  * @author Longri
  */
 public enum GL_Cap {
-	BUTT, ROUND, SQUARE, DEFAULT;
+    BUTT, ROUND, SQUARE, DEFAULT;
 }

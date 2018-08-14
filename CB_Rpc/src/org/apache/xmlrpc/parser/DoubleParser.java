@@ -14,21 +14,22 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.parser;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-/** Parser for double values.
+/**
+ * Parser for double values.
  */
 public class DoubleParser extends AtomicParser {
-	protected void setResult(String pResult) throws SAXException {
-		try {
-			super.setResult(new Double(pResult));
-		} catch (NumberFormatException e) {
-			throw new SAXParseException("Failed to parse double value: " + pResult, getDocumentLocator());
-		}
-	}
+    protected void setResult(String pResult) throws SAXException {
+        try {
+            super.setResult(new Double(pResult));
+        } catch (NumberFormatException e) {
+            throw new SAXParseException("Failed to parse double value: " + pResult, getDocumentLocator());
+        }
+    }
 }

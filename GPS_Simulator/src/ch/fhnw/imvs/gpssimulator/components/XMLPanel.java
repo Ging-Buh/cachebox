@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2007 by the University of Applied Sciences Northwestern Switzerland (FHNW)
- * 
+ *
  * This program can be redistributed or modified under the terms of the
  * GNU General Public License as published by the Free Software Foundation.
  * This program is distributed without any warranty or implied warranty
@@ -11,7 +11,13 @@
 
 package ch.fhnw.imvs.gpssimulator.components;
 
-import java.awt.FlowLayout;
+import ch.fhnw.imvs.gpssimulator.data.GPSData;
+import ch.fhnw.imvs.gpssimulator.tools.XMLData;
+import ch.fhnw.imvs.gpssimulator.tools.XMLParser;
+import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -19,235 +25,224 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-
-import org.apache.log4j.Logger;
-
-import ch.fhnw.imvs.gpssimulator.data.GPSData;
-import ch.fhnw.imvs.gpssimulator.tools.XMLData;
-import ch.fhnw.imvs.gpssimulator.tools.XMLParser;
-
 @SuppressWarnings("serial")
 public class XMLPanel extends JPanel {
 
-	static Logger log4j = Logger.getLogger("root");
+    static Logger log4j = Logger.getLogger("root");
 
-	private JButton openButton;
-	private JButton startButton;
-	private JButton stopButton;
-	private JSlider timeline;
+    private JButton openButton;
+    private JButton startButton;
+    private JButton stopButton;
+    private JSlider timeline;
 
-	private File directory;
+    private File directory;
 
-	private XMLThread xmlThread;
+    private XMLThread xmlThread;
 
-	public XMLPanel() {
+    public XMLPanel() {
 
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.setBorder(BorderFactory.createTitledBorder("XML"));
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setBorder(BorderFactory.createTitledBorder("XML"));
 
-		final JPanel aroundXML = new JPanel(new FlowLayout());
+        final JPanel aroundXML = new JPanel(new FlowLayout());
 
-		openButton = new JButton("Open XML File");
+        openButton = new JButton("Open XML File");
 
-		startButton = new JButton("Start");
-		startButton.setEnabled(false);
+        startButton = new JButton("Start");
+        startButton.setEnabled(false);
 
-		stopButton = new JButton("Stop");
-		stopButton.setEnabled(false);
+        stopButton = new JButton("Stop");
+        stopButton.setEnabled(false);
 
-		openButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				readWaypointsFile();
-			}
-		});
-		aroundXML.add(openButton);
+        openButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                readWaypointsFile();
+            }
+        });
+        aroundXML.add(openButton);
 
-		startButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				startButton.setEnabled(false);
-				openButton.setEnabled(false);
-				stopButton.setEnabled(true);
-				if (timeline.getValue() == timeline.getMaximum())
-					timeline.setValue(xmlThread.getStartTime());
-				xmlThread.start();
-			}
-		});
-		aroundXML.add(startButton);
+        startButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                startButton.setEnabled(false);
+                openButton.setEnabled(false);
+                stopButton.setEnabled(true);
+                if (timeline.getValue() == timeline.getMaximum())
+                    timeline.setValue(xmlThread.getStartTime());
+                xmlThread.start();
+            }
+        });
+        aroundXML.add(startButton);
 
-		stopButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				stopButton.setEnabled(false);
-				startButton.setText("Start");
-				xmlThread.interrupt();
-			}
-		});
-		aroundXML.add(stopButton);
+        stopButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                stopButton.setEnabled(false);
+                startButton.setText("Start");
+                xmlThread.interrupt();
+            }
+        });
+        aroundXML.add(stopButton);
 
-		this.add(aroundXML);
+        this.add(aroundXML);
 
-		timeline = new JSlider();
-		timeline.setBorder(BorderFactory.createTitledBorder("Time Position (secs)"));
-		timeline.setEnabled(false);
-		timeline.setPaintTicks(true);
-		//    	timeline.setPaintLabels(true);
-		timeline.setMinimum(0);
-		timeline.setMaximum(0);
-		timeline.setValue(0);
-		timeline.setMajorTickSpacing(10000);
-		timeline.setMinorTickSpacing(1000);
-		this.add(timeline);
-	}
+        timeline = new JSlider();
+        timeline.setBorder(BorderFactory.createTitledBorder("Time Position (secs)"));
+        timeline.setEnabled(false);
+        timeline.setPaintTicks(true);
+        //    	timeline.setPaintLabels(true);
+        timeline.setMinimum(0);
+        timeline.setMaximum(0);
+        timeline.setValue(0);
+        timeline.setMajorTickSpacing(10000);
+        timeline.setMinorTickSpacing(1000);
+        this.add(timeline);
+    }
 
-	static class XMLThread extends Thread {
+    private void readWaypointsFile() {
+        JFileChooser chooser = new JFileChooser(directory);
+        chooser.showOpenDialog(chooser);
+        File file = chooser.getSelectedFile();
 
-		private volatile boolean running;
-		private List<XMLData> waypointList;
-		private XMLPanel panel;
+        if (file != null) {
+            directory = file.getParentFile();
+            log4j.debug("Selected file: " + file.getAbsoluteFile());
 
-		public XMLThread(XMLPanel panel, List<XMLData> waypointList) {
-			this.panel = panel;
-			this.waypointList = waypointList;
-		}
+            try {
+                List<XMLData> waypointList = XMLParser.parse(file);
 
-		@Override
-		public void interrupt() {
-			running = false;
-		}
+                XMLPanel.this.xmlThread = new XMLThread(XMLPanel.this, waypointList);
 
-		@Override
-		public synchronized void start() {
-			panel.timeline.setEnabled(false);
-			running = true;
+                int startTime = waypointList.get(0).getTime();
+                int endTime = waypointList.get(waypointList.size() - 1).getTime();
 
-			if (this.isAlive()) {
-				this.notify();
-			} else {
-				super.start();
-			}
-		}
+                timeline.setMinimum(startTime);
+                timeline.setMaximum(endTime);
+                timeline.setValue(startTime);
+                timeline.setLabelTable(timeline.createStandardLabels(timeline.getMaximum() / 4));
+                timeline.setEnabled(true);
 
-		private int getStartTime() {
-			return waypointList.get(0).getTime();
-		}
+                startButton.setEnabled(true);
+            } catch (FileNotFoundException ex) { // TODO do more than ignore
+            } catch (IOException ex) { // TODO do more than ignore
+            }
+        }
+    }
 
-		private int getEndTime() {
-			return waypointList.get(waypointList.size() - 1).getTime();
-		}
+    static class XMLThread extends Thread {
 
-		private XMLData getData(int time) {
-			int starttime = getStartTime();
-			if (time < starttime)
-				time = starttime;
+        private volatile boolean running;
+        private List<XMLData> waypointList;
+        private XMLPanel panel;
 
-			int endtime = getEndTime();
-			if (time > endtime)
-				time = endtime;
+        public XMLThread(XMLPanel panel, List<XMLData> waypointList) {
+            this.panel = panel;
+            this.waypointList = waypointList;
+        }
 
-			int s = 0;
-			int e = waypointList.size() - 1;
-			while (s < e - 1) {
-				int m = (s + e) / 2;
-				if (waypointList.get(m).getTime() <= time)
-					s = m;
-				else
-					e = m;
-			}
+        @Override
+        public void interrupt() {
+            running = false;
+        }
 
-			XMLData start = waypointList.get(s);
-			starttime = start.getTime();
-			XMLData end = waypointList.get(e);
-			endtime = end.getTime();
+        @Override
+        public synchronized void start() {
+            panel.timeline.setEnabled(false);
+            running = true;
 
-			XMLData res = new XMLData(time, (end.getLatitude() - start.getLatitude()) / (endtime - starttime) * (time - starttime) + start.getLatitude(),
-					(end.getLongitude() - start.getLongitude()) / (endtime - starttime) * (time - starttime) + start.getLongitude(), (end.getAltitude() - start.getAltitude()) / (endtime - starttime) * (time - starttime) + start.getAltitude());
-			return res;
-		}
+            if (this.isAlive()) {
+                this.notify();
+            } else {
+                super.start();
+            }
+        }
 
-		@Override
-		public void run() {
-			while (true) {
-				try {
-					int timelinePosition = panel.timeline.getValue(); // read the current time from the slider
+        private int getStartTime() {
+            return waypointList.get(0).getTime();
+        }
 
-					while (true) {
+        private int getEndTime() {
+            return waypointList.get(waypointList.size() - 1).getTime();
+        }
 
-						XMLData pos = this.getData(timelinePosition);
-						GPSData.setLatitude(pos.getLatitude());
-						GPSData.setLongitude(pos.getLongitude());
-						GPSData.setAltitude(pos.getAltitude());
+        private XMLData getData(int time) {
+            int starttime = getStartTime();
+            if (time < starttime)
+                time = starttime;
 
-						if (!running) {
-							break;
-						} else if (timelinePosition >= getEndTime()) {
-							panel.stopButton.setEnabled(false);
-							panel.timeline.setValue(getEndTime());
-							log4j.debug("Finish.");
-							running = false;
-							break;
-						}
+            int endtime = getEndTime();
+            if (time > endtime)
+                time = endtime;
 
-						try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e) {
-						}
+            int s = 0;
+            int e = waypointList.size() - 1;
+            while (s < e - 1) {
+                int m = (s + e) / 2;
+                if (waypointList.get(m).getTime() <= time)
+                    s = m;
+                else
+                    e = m;
+            }
 
-						// advance timeline by one second
-						timelinePosition = timelinePosition + 1000;
-						if (timelinePosition > getEndTime())
-							timelinePosition = getEndTime();
+            XMLData start = waypointList.get(s);
+            starttime = start.getTime();
+            XMLData end = waypointList.get(e);
+            endtime = end.getTime();
 
-						panel.timeline.setValue(timelinePosition);
-						panel.startButton.setText("" + panel.timeline.getValue() / 1000);
+            XMLData res = new XMLData(time, (end.getLatitude() - start.getLatitude()) / (endtime - starttime) * (time - starttime) + start.getLatitude(),
+                    (end.getLongitude() - start.getLongitude()) / (endtime - starttime) * (time - starttime) + start.getLongitude(), (end.getAltitude() - start.getAltitude()) / (endtime - starttime) * (time - starttime) + start.getAltitude());
+            return res;
+        }
 
-					}
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    int timelinePosition = panel.timeline.getValue(); // read the current time from the slider
 
-					synchronized (this) {
-						panel.startButton.setText("Start");
-						panel.startButton.setEnabled(true);
-						panel.openButton.setEnabled(true);
-						panel.timeline.setEnabled(true);
-						this.wait();
-					}
-				} catch (InterruptedException e) {
-				}
-			}
-		}
-	}
+                    while (true) {
 
-	private void readWaypointsFile() {
-		JFileChooser chooser = new JFileChooser(directory);
-		chooser.showOpenDialog(chooser);
-		File file = chooser.getSelectedFile();
+                        XMLData pos = this.getData(timelinePosition);
+                        GPSData.setLatitude(pos.getLatitude());
+                        GPSData.setLongitude(pos.getLongitude());
+                        GPSData.setAltitude(pos.getAltitude());
 
-		if (file != null) {
-			directory = file.getParentFile();
-			log4j.debug("Selected file: " + file.getAbsoluteFile());
+                        if (!running) {
+                            break;
+                        } else if (timelinePosition >= getEndTime()) {
+                            panel.stopButton.setEnabled(false);
+                            panel.timeline.setValue(getEndTime());
+                            log4j.debug("Finish.");
+                            running = false;
+                            break;
+                        }
 
-			try {
-				List<XMLData> waypointList = XMLParser.parse(file);
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                        }
 
-				XMLPanel.this.xmlThread = new XMLThread(XMLPanel.this, waypointList);
+                        // advance timeline by one second
+                        timelinePosition = timelinePosition + 1000;
+                        if (timelinePosition > getEndTime())
+                            timelinePosition = getEndTime();
 
-				int startTime = waypointList.get(0).getTime();
-				int endTime = waypointList.get(waypointList.size() - 1).getTime();
+                        panel.timeline.setValue(timelinePosition);
+                        panel.startButton.setText("" + panel.timeline.getValue() / 1000);
 
-				timeline.setMinimum(startTime);
-				timeline.setMaximum(endTime);
-				timeline.setValue(startTime);
-				timeline.setLabelTable(timeline.createStandardLabels(timeline.getMaximum() / 4));
-				timeline.setEnabled(true);
+                    }
 
-				startButton.setEnabled(true);
-			} catch (FileNotFoundException ex) { // TODO do more than ignore
-			} catch (IOException ex) { // TODO do more than ignore
-			}
-		}
-	};
+                    synchronized (this) {
+                        panel.startButton.setText("Start");
+                        panel.startButton.setEnabled(true);
+                        panel.openButton.setEnabled(true);
+                        panel.timeline.setEnabled(true);
+                        this.wait();
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        }
+    }
+
+    ;
 
 }

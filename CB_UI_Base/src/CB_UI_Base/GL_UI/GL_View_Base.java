@@ -31,7 +31,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -45,7 +44,7 @@ public abstract class GL_View_Base extends CB_RectF {
      * Pointer ID for Mouse wheel scrolling down
      */
     public static final int MOUSE_WHEEL_POINTER_DOWN = -280273;
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(GL_View_Base.class);
+    private static final String log = "GL_View_Base";
     public static boolean debug = false;
     public static boolean disableScissor = false;
     protected static int nDepthCounter = 0;

@@ -12,65 +12,65 @@ import android.widget.ScrollView;
 import de.droidcachebox.R;
 
 public class Animations {
-	/*
-	 * Schaltet die Visibility eines View um und animiert dabei ein Slidedown/Slideup
-	 */
-	public static void ToggleViewSlideUp_Down(final View v, Context context, final ScrollView scrollView, final View button) {
-		ToggleViewSlideUp_Down(v, context, scrollView, button, null);
-	}
+    /*
+     * Schaltet die Visibility eines View um und animiert dabei ein Slidedown/Slideup
+     */
+    public static void ToggleViewSlideUp_Down(final View v, Context context, final ScrollView scrollView, final View button) {
+        ToggleViewSlideUp_Down(v, context, scrollView, button, null);
+    }
 
-	public static void ToggleViewSlideUp_Down(final View v, Context context, final ScrollView scrollView, final View button, final Callback AnimationReadyCallBack) {
-		if (v.getVisibility() == View.VISIBLE) {
-			Animation mShowAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_up);
-			v.startAnimation(mShowAnimation);
-			mShowAnimation.setAnimationListener(new AnimationListener() {
-				@Override
-				public void onAnimationStart(Animation animation) {
+    public static void ToggleViewSlideUp_Down(final View v, Context context, final ScrollView scrollView, final View button, final Callback AnimationReadyCallBack) {
+        if (v.getVisibility() == View.VISIBLE) {
+            Animation mShowAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_up);
+            v.startAnimation(mShowAnimation);
+            mShowAnimation.setAnimationListener(new AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
 
-				}
+                }
 
-				@Override
-				public void onAnimationRepeat(Animation animation) {
-				}
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
 
-				@Override
-				public void onAnimationEnd(Animation animation) {
-					v.setVisibility(View.GONE);
-				}
-			});
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    v.setVisibility(View.GONE);
+                }
+            });
 
-		} else {
-			Animation mShowAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_out_down);
-			v.startAnimation(mShowAnimation);
-			v.setVisibility(View.VISIBLE);
-			mShowAnimation.setAnimationListener(new AnimationListener() {
-				@Override
-				public void onAnimationStart(Animation animation) {
+        } else {
+            Animation mShowAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_out_down);
+            v.startAnimation(mShowAnimation);
+            v.setVisibility(View.VISIBLE);
+            mShowAnimation.setAnimationListener(new AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
 
-				}
+                }
 
-				@Override
-				public void onAnimationRepeat(Animation animation) {
-				}
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
 
-				@Override
-				public void onAnimationEnd(Animation animation) {
-					Rect r = new Rect();
-					Point offset = new Point();
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    Rect r = new Rect();
+                    Point offset = new Point();
 
-					if (scrollView != null) {
-						scrollView.requestLayout();
-						scrollView.getChildVisibleRect(button, r, offset);
-						scrollView.scrollTo(0, offset.y + scrollView.getScrollY());
-					}
+                    if (scrollView != null) {
+                        scrollView.requestLayout();
+                        scrollView.getChildVisibleRect(button, r, offset);
+                        scrollView.scrollTo(0, offset.y + scrollView.getScrollY());
+                    }
 
-					if (AnimationReadyCallBack != null) {
-						AnimationReadyCallBack.handleMessage(null);
-					}
-				}
-			});
+                    if (AnimationReadyCallBack != null) {
+                        AnimationReadyCallBack.handleMessage(null);
+                    }
+                }
+            });
 
-		}
+        }
 
-	}
+    }
 }

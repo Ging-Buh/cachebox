@@ -25,6 +25,10 @@ import java.util.Collection;
 final class QueueItemScheduler {
     static final double PENALTY_PER_ZOOM_LEVEL = 10;
 
+    private QueueItemScheduler() {
+        throw new IllegalStateException();
+    }
+
     static <T extends Job> void schedule(Collection<QueueItem<T>> queueItems, MapPosition mapPosition, int tileSize) {
         for (QueueItem<T> queueItem : queueItems) {
             queueItem.setPriority(calculatePriority(queueItem.object.tile, mapPosition, tileSize));
@@ -50,9 +54,5 @@ final class QueueItemScheduler {
         int diffZoom = Math.abs(tile.zoomLevel - mapPosition.zoomLevel);
 
         return diffPixel + PENALTY_PER_ZOOM_LEVEL * tileSize * diffZoom;
-    }
-
-    private QueueItemScheduler() {
-        throw new IllegalStateException();
     }
 }

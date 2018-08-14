@@ -15,23 +15,22 @@
  */
 package CB_Core.Types;
 
+import CB_Core.LogTypes;
+import CB_Utils.Log.Log;
+import CB_Utils.Util.UnitFormatter;
+import de.cb.sqlite.CoreCursor;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.slf4j.LoggerFactory;
-
-import CB_Core.LogTypes;
-import CB_Utils.Log.Log;
-import CB_Utils.Util.UnitFormatter;
-import de.cb.sqlite.CoreCursor;
-
 public class Trackable implements Comparable<Trackable> {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(Trackable.class);
+    private static final String log = "Trackable";
+    final SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy");
     private int Id = -1;
     private boolean Archived;
     private String GcCode = "";
@@ -48,7 +47,6 @@ public class Trackable implements Comparable<Trackable> {
     private String Url = "";
     private String TypeName = "";
     private String TrackingCode;
-
     // TODO must load info (the GS_API gives no info about this)
     private Date lastVisit;
     private String Home = "";
@@ -205,7 +203,28 @@ public class Trackable implements Comparable<Trackable> {
         TypeName = JObj.optString("TBTypeName");
     }
 
-    final SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy");
+    /**
+     * Generiert eine Eindeutige ID aus den ASCII values des GcCodes. <br>
+     * Damit lässt sich dieser TB schneller in der DB finden.
+     *
+     * @return long
+     */
+    public static long GenerateTBId(String GcCode) {
+        long result = 0;
+        char[] dummy = GcCode.toCharArray();
+        byte[] byteDummy = new byte[8];
+        for (int i = 0; i < 8; i++) {
+            if (i < GcCode.length())
+                byteDummy[i] = (byte) dummy[i];
+            else
+                byteDummy[i] = 0;
+        }
+        for (int i = 7; i >= 0; i--) {
+            result *= 256;
+            result += byteDummy[i];
+        }
+        return result;
+    }
 
     public String getTravelDistance() {
         return UnitFormatter.DistanceString(TravelDistance);
@@ -287,43 +306,20 @@ public class Trackable implements Comparable<Trackable> {
         return Url;
     }
 
-    public String getTrackingNumber() {
-        return this.TrackingCode;
-    }
-
     /*
      * Setter
      */
 
-    public void setTrackingCode(String trackingCode) {
-        this.TrackingCode = trackingCode;
+    public String getTrackingNumber() {
+        return this.TrackingCode;
     }
 
     /*
      * Methods
      */
 
-    /**
-     * Generiert eine Eindeutige ID aus den ASCII values des GcCodes. <br>
-     * Damit lässt sich dieser TB schneller in der DB finden.
-     *
-     * @return long
-     */
-    public static long GenerateTBId(String GcCode) {
-        long result = 0;
-        char[] dummy = GcCode.toCharArray();
-        byte[] byteDummy = new byte[8];
-        for (int i = 0; i < 8; i++) {
-            if (i < GcCode.length())
-                byteDummy[i] = (byte) dummy[i];
-            else
-                byteDummy[i] = 0;
-        }
-        for (int i = 7; i >= 0; i--) {
-            result *= 256;
-            result += byteDummy[i];
-        }
-        return result;
+    public void setTrackingCode(String trackingCode) {
+        this.TrackingCode = trackingCode;
     }
 
     /*

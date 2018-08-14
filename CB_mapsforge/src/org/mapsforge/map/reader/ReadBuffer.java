@@ -34,6 +34,12 @@ public class ReadBuffer {
     private static final Logger LOGGER = Logger.getLogger(ReadBuffer.class.getName());
 
     private static int maximumBufferSize = DEFAULT_MAXIMUM_BUFFER_SIZE;
+    private final RandomAccessFile inputFile;
+    private byte[] bufferData;
+    private int bufferPosition;
+    ReadBuffer(RandomAccessFile inputFile) {
+        this.inputFile = inputFile;
+    }
 
     /**
      * Returns the maximum buffer size.
@@ -51,14 +57,6 @@ public class ReadBuffer {
      */
     public static synchronized void setMaximumBufferSize(int maximumBufferSize) {
         ReadBuffer.maximumBufferSize = maximumBufferSize;
-    }
-
-    private byte[] bufferData;
-    private int bufferPosition;
-    private final RandomAccessFile inputFile;
-
-    ReadBuffer(RandomAccessFile inputFile) {
-        this.inputFile = inputFile;
     }
 
     /**
@@ -244,19 +242,19 @@ public class ReadBuffer {
     }
 
     /**
-     * @return the current size of the read buffer.
-     */
-    int getBufferSize() {
-        return this.bufferData.length;
-    }
-
-    /**
      * Sets the buffer position to the given offset.
      *
      * @param bufferPosition the buffer position.
      */
     void setBufferPosition(int bufferPosition) {
         this.bufferPosition = bufferPosition;
+    }
+
+    /**
+     * @return the current size of the read buffer.
+     */
+    int getBufferSize() {
+        return this.bufferData.length;
     }
 
     /**

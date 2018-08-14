@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,8 +15,6 @@
  */
 package org.mapsforge.map.awt.graphics;
 
-import org.mapsforge.map.awt.graphics.AwtPath;
-
 import CB_UI_Base.graphics.extendedInterfaces.ext_Matrix;
 import CB_UI_Base.graphics.extendedInterfaces.ext_Path;
 import CB_UI_Base.graphics.fromAndroid.RectF;
@@ -26,69 +24,69 @@ import CB_UI_Base.graphics.fromAndroid.RectF;
  */
 public class ext_AwtPath extends AwtPath implements ext_Path {
 
-	@Override
-	public void rMoveTo(float x, float y) {
+    @Override
+    public void rMoveTo(float x, float y) {
 
-	}
+    }
 
-	@Override
-	public void close() {
+    @Override
+    public void close() {
 
-	}
+    }
 
-	@Override
-	public void rLineTo(float x, float y) {
+    @Override
+    public void rLineTo(float x, float y) {
 
-	}
+    }
 
-	@Override
-	public void cubicTo(float x1, float y1, float x2, float y2, float x, float y) {
+    @Override
+    public void cubicTo(float x1, float y1, float x2, float y2, float x, float y) {
 
-	}
+    }
 
-	@Override
-	public void addArc(RectF oval, float angleStart, float angleExtent) {
+    @Override
+    public void addArc(RectF oval, float angleStart, float angleExtent) {
 
-	}
+    }
 
-	@Override
-	public void transform(ext_Matrix currentMatrix, ext_Path transformedPath) {
+    @Override
+    public void transform(ext_Matrix currentMatrix, ext_Path transformedPath) {
 
-	}
+    }
 
-	@Override
-	public void computeBounds(RectF pathBounds, boolean b) {
+    @Override
+    public void computeBounds(RectF pathBounds, boolean b) {
 
-	}
+    }
 
-	@Override
-	public void quadTo(float x1, float y1, float x2, float y2) {
+    @Override
+    public void quadTo(float x1, float y1, float x2, float y2) {
 
-	}
+    }
 
-	@Override
-	public void addPath(ext_Path path, ext_Matrix combinedPathMatrix) {
+    @Override
+    public void addPath(ext_Path path, ext_Matrix combinedPathMatrix) {
 
-	}
+    }
 
-	@Override
-	public void setFillType(FillType clipRuleFromState) {
+    @Override
+    public FillType getFillType() {
 
-	}
+        return null;
+    }
 
-	@Override
-	public FillType getFillType() {
+    @Override
+    public void setFillType(FillType clipRuleFromState) {
 
-		return null;
-	}
+    }
 
-	@Override
-	public void addPath(ext_Path spanPath) {
+    @Override
+    public void addPath(ext_Path spanPath) {
 
-	}
+    }
 
-	@Override
-	public void transform(ext_Matrix transform) {
+    @Override
+    public void transform(ext_Matrix transform) {
 
-	}
+    }
 }

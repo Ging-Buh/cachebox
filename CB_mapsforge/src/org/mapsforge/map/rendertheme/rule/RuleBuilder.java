@@ -39,6 +39,27 @@ public class RuleBuilder {
     private static final String V = "v";
     private static final String ZOOM_MAX = "zoom-max";
     private static final String ZOOM_MIN = "zoom-min";
+    private final Stack<Rule> ruleStack;
+    String cat;
+    ClosedMatcher closedMatcher;
+    ElementMatcher elementMatcher;
+    byte zoomMax;
+    byte zoomMin;
+    private Closed closed;
+    private Element element;
+    private List<String> keyList;
+    private String keys;
+    private List<String> valueList;
+    private String values;
+    public RuleBuilder(String elementName, XmlPullParser pullParser, Stack<Rule> ruleStack) throws XmlPullParserException {
+        this.ruleStack = ruleStack;
+
+        this.closed = Closed.ANY;
+        this.zoomMin = 0;
+        this.zoomMax = Byte.MAX_VALUE;
+
+        extractValues(elementName, pullParser);
+    }
 
     private static ClosedMatcher getClosedMatcher(Closed closed) {
         switch (closed) {
@@ -90,29 +111,6 @@ public class RuleBuilder {
             Rule.MATCHERS_CACHE_VALUE.put(valueList, attributeMatcher);
         }
         return attributeMatcher;
-    }
-
-    String cat;
-    ClosedMatcher closedMatcher;
-    ElementMatcher elementMatcher;
-    byte zoomMax;
-    byte zoomMin;
-    private Closed closed;
-    private Element element;
-    private List<String> keyList;
-    private String keys;
-    private final Stack<Rule> ruleStack;
-    private List<String> valueList;
-    private String values;
-
-    public RuleBuilder(String elementName, XmlPullParser pullParser, Stack<Rule> ruleStack) throws XmlPullParserException {
-        this.ruleStack = ruleStack;
-
-        this.closed = Closed.ANY;
-        this.zoomMin = 0;
-        this.zoomMax = Byte.MAX_VALUE;
-
-        extractValues(elementName, pullParser);
     }
 
     /**

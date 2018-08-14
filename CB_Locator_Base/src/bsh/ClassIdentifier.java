@@ -34,22 +34,22 @@
 package bsh;
 
 public class ClassIdentifier {
-	@SuppressWarnings("rawtypes")
-	Class clas;
+    @SuppressWarnings("rawtypes")
+    Class clas;
 
-	@SuppressWarnings("rawtypes")
-	public ClassIdentifier(Class clas) {
-		this.clas = clas;
-	}
+    @SuppressWarnings("rawtypes")
+    public ClassIdentifier(Class clas) {
+        this.clas = clas;
+    }
 
-	// Can't call it getClass()
-	@SuppressWarnings("rawtypes")
-	public Class getTargetClass() {
-		return clas;
-	}
+    // Can't call it getClass()
+    @SuppressWarnings("rawtypes")
+    public Class getTargetClass() {
+        return clas;
+    }
 
-	@Override
-	public String toString() {
-		return "Class Identifier: " + clas.getName();
-	}
+    @Override
+    public String toString() {
+        return "Class Identifier: " + clas.getName();
+    }
 }

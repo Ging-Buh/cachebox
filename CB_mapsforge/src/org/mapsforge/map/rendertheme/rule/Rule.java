@@ -32,14 +32,13 @@ abstract class Rule {
 
     static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_KEY = new HashMap<List<String>, AttributeMatcher>();
     static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_VALUE = new HashMap<List<String>, AttributeMatcher>();
-
-    String cat;
     final ClosedMatcher closedMatcher;
     final ElementMatcher elementMatcher;
     final byte zoomMax;
     final byte zoomMin;
     private final ArrayList<RenderInstruction> renderInstructions; // NOSONAR NOPMD we need specific interface
     private final ArrayList<Rule> subRules; // NOSONAR NOPMD we need specific interface
+    String cat;
 
     Rule(RuleBuilder ruleBuilder) {
         this.cat = ruleBuilder.cat;

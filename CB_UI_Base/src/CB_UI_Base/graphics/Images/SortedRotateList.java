@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,92 +15,92 @@
  */
 package CB_UI_Base.graphics.Images;
 
-import java.util.ConcurrentModificationException;
-import java.util.Iterator;
-
 import CB_UI_Base.graphics.SymbolDrawable;
 import CB_Utils.Lists.CB_List;
+
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 
 /**
  * A sorted list of symbols and texts! <br>
  * Sorts first the symbols according to the textures then the texts for fonts!
- * 
+ *
  * @author Longri
  */
 public class SortedRotateList implements Iterable<MatrixDrawable> {
-	CB_List<MatrixDrawable> symbols = new CB_List<MatrixDrawable>();
-	CB_List<MatrixDrawable> Text = new CB_List<MatrixDrawable>();
+    CB_List<MatrixDrawable> symbols = new CB_List<MatrixDrawable>();
+    CB_List<MatrixDrawable> Text = new CB_List<MatrixDrawable>();
 
-	public SortedRotateList() {
+    public SortedRotateList() {
 
-	}
+    }
 
-	public void add(MatrixDrawable drws) {
-		if (drws.drawable instanceof SymbolDrawable) {
-			symbols.add(drws);
-		} else {
-			Text.add(drws);
-		}
-	}
+    public void add(MatrixDrawable drws) {
+        if (drws.drawable instanceof SymbolDrawable) {
+            symbols.add(drws);
+        } else {
+            Text.add(drws);
+        }
+    }
 
-	@Override
-	public Iterator<MatrixDrawable> iterator() {
-		return new Itr();
-	}
+    @Override
+    public Iterator<MatrixDrawable> iterator() {
+        return new Itr();
+    }
 
-	/**
-	 * An optimized version of AbstractList.Itr
-	 */
-	private class Itr implements Iterator<MatrixDrawable> {
+    public boolean isEmpty() {
+        if (symbols.isEmpty() && Text.isEmpty())
+            return true;
+        else
+            return false;
+    }
 
-		int cursor = 0; // index of next element to return
+    public void clear() {
+        symbols.clear();
+        Text.clear();
+    }
 
-		@Override
-		public boolean hasNext() {
-			return cursor != symbols.size() + Text.size();
-		}
+    public void remove(CB_List<MatrixDrawable> clearList) {
+        for (int i = 0, n = clearList.size(); i < n; i++) {
+            MatrixDrawable drw = clearList.get(i);
+            if (drw.drawable instanceof SymbolDrawable) {
+                symbols.remove(drw);
+            } else {
+                Text.remove(drw);
+            }
+        }
 
-		@Override
-		public MatrixDrawable next() {
-			if (cursor >= symbols.size() + Text.size())
-				throw new ConcurrentModificationException();
+    }
 
-			if (cursor >= symbols.size()) {
-				return Text.get(cursor++ - symbols.size());
-			} else {
-				return symbols.get(cursor++);
-			}
-		}
+    /**
+     * An optimized version of AbstractList.Itr
+     */
+    private class Itr implements Iterator<MatrixDrawable> {
 
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException("remove is not supported by this Iterator");
+        int cursor = 0; // index of next element to return
 
-		}
+        @Override
+        public boolean hasNext() {
+            return cursor != symbols.size() + Text.size();
+        }
 
-	}
+        @Override
+        public MatrixDrawable next() {
+            if (cursor >= symbols.size() + Text.size())
+                throw new ConcurrentModificationException();
 
-	public boolean isEmpty() {
-		if (symbols.isEmpty() && Text.isEmpty())
-			return true;
-		else
-			return false;
-	}
+            if (cursor >= symbols.size()) {
+                return Text.get(cursor++ - symbols.size());
+            } else {
+                return symbols.get(cursor++);
+            }
+        }
 
-	public void clear() {
-		symbols.clear();
-		Text.clear();
-	}
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("remove is not supported by this Iterator");
 
-	public void remove(CB_List<MatrixDrawable> clearList) {
-		for (int i = 0, n = clearList.size(); i < n; i++) {
-			MatrixDrawable drw = clearList.get(i);
-			if (drw.drawable instanceof SymbolDrawable) {
-				symbols.remove(drw);
-			} else {
-				Text.remove(drw);
-			}
-		}
+        }
 
-	}
+    }
 }

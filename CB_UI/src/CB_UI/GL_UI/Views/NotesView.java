@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014-2015 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,8 +15,8 @@
  */
 package CB_UI.GL_UI.Views;
 
-import CB_Core.Database;
 import CB_Core.Api.GroundspeakAPI;
+import CB_Core.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_UI.GlobalCore;
@@ -26,160 +26,155 @@ import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.KeyboardFocusChangedEvent;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.Math.CB_RectF;
 
 /**
- * 
  * @author Longri
- *
  */
 public class NotesView extends CB_View_Base implements SelectedCacheEvent {
-	private EditTextField notes;
-	private float notesDefaultYPos;
-	private float notesHeight;
-	private Button uploadButton;
-	private Button getSolverButton;
-	private Cache aktCache;
-	boolean mustLoadNotes;
+    boolean mustLoadNotes;
+    private EditTextField notes;
+    private float notesDefaultYPos;
+    private float notesHeight;
+    private Button uploadButton;
+    private Button getSolverButton;
+    private Cache aktCache;
 
-	// TODO insert translations
-	public NotesView(CB_RectF rec, String Name) {
-		super(rec, Name);
+    // TODO insert translations
+    public NotesView(CB_RectF rec, String Name) {
+        super(rec, Name);
 
-		aktCache = GlobalCore.getSelectedCache();
-		mustLoadNotes = true;
+        aktCache = GlobalCore.getSelectedCache();
+        mustLoadNotes = true;
 
-		initRow(BOTTOMUP);
-		getSolverButton = new Button("getSolver");
-		// getSolverButton.disable();
-		addNext(getSolverButton);
-		uploadButton = new Button("Upload");
-		addLast(uploadButton);
-		notesHeight = getAvailableHeight();
-		notes = new EditTextField(this, new CB_RectF(0, 0, getWidth(), notesHeight), WrapType.WRAPPED, "Note");
-		this.addLast(notes);
-		notesDefaultYPos = notes.getY();
+        initRow(BOTTOMUP);
+        getSolverButton = new Button("getSolver");
+        // getSolverButton.disable();
+        addNext(getSolverButton);
+        uploadButton = new Button("Upload");
+        addLast(uploadButton);
+        notesHeight = getAvailableHeight();
+        notes = new EditTextField(this, new CB_RectF(0, 0, getWidth(), notesHeight), WrapType.WRAPPED, "Note");
+        this.addLast(notes);
+        notesDefaultYPos = notes.getY();
 
-		SelectedCacheEventList.Add(this);
+        SelectedCacheEventList.Add(this);
 
-		KeyboardFocusChangedEventList.Add(new KeyboardFocusChangedEvent() {
-			@Override
-			public void KeyboardFocusChanged(EditTextFieldBase focus) {
-				chkFocus(focus);
-			}
-		});
+        KeyboardFocusChangedEventList.Add(new KeyboardFocusChangedEvent() {
+            @Override
+            public void KeyboardFocusChanged(EditTextFieldBase focus) {
+                chkFocus(focus);
+            }
+        });
 
-		uploadButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				final Button b = (Button) v;
-				if (notes.getText().length() > 0) {
-					b.setText("Cancel");
-					// TODO implement cancel Upload
-					GL.that.RunOnGL(new IRunOnGL() {
-						@Override
-						public void run() {
-							int result = GroundspeakAPI.uploadNotes(aktCache.getGcCode(), notes.getText(), null);
-							b.disable();
-							if (result == 0) {
-								b.setText("erfolgreich");
-							} else {
-								b.setText("Fehler: " + GroundspeakAPI.LastAPIError);
-							}
-						}
-					});
-				}
-				return true;
-			}
+        uploadButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                final Button b = (Button) v;
+                if (notes.getText().length() > 0) {
+                    b.setText("Cancel");
+                    // TODO implement cancel Upload
+                    GL.that.RunOnGL(new IRunOnGL() {
+                        @Override
+                        public void run() {
+                            int result = GroundspeakAPI.updateCacheNote(aktCache.getGcCode(), notes.getText());
+                            b.disable();
+                            if (result == 0) {
+                                b.setText("erfolgreich");
+                            } else {
+                                b.setText("Fehler: " + GroundspeakAPI.LastAPIError);
+                            }
+                        }
+                    });
+                }
+                return true;
+            }
 
-		});
+        });
 
-		getSolverButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				String solver;
-				if (aktCache != null) {
-					solver = Database.GetSolver(aktCache);
-				}
-				else solver = null;
-				solver = solver != null ? "<Solver>\r\n" + solver + "\r\n</Solver>" : "";
-				String text = notes.getText();
-				int i1 = text.indexOf("<Solver>");
-				if (i1 > -1) {
-					int i2 = text.indexOf("</Solver>");
-					String t1 = text.substring(0, i1);
-					String t2;
-					if (i2 > -1) {
-						t2 = text.substring(i2+9);
-					}
-					else {
-						t2 = text.substring(i1);
-					}
-					text = t1 + t2 + solver;
-				}
-				else {
-					text = text + solver;
-				}
-				notes.setText(text);
-				return true;
-			}
-		});
+        getSolverButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                String solver;
+                if (aktCache != null) {
+                    solver = Database.GetSolver(aktCache);
+                } else solver = null;
+                solver = solver != null ? "<Solver>\r\n" + solver + "\r\n</Solver>" : "";
+                String text = notes.getText();
+                int i1 = text.indexOf("<Solver>");
+                if (i1 > -1) {
+                    int i2 = text.indexOf("</Solver>");
+                    String t1 = text.substring(0, i1);
+                    String t2;
+                    if (i2 > -1) {
+                        t2 = text.substring(i2 + 9);
+                    } else {
+                        t2 = text.substring(i1);
+                    }
+                    text = t1 + t2 + solver;
+                } else {
+                    text = text + solver;
+                }
+                notes.setText(text);
+                return true;
+            }
+        });
 
-	}
+    }
 
-	private void chkFocus(EditTextFieldBase focus) {
-		uploadButton.setText("Upload");
-		uploadButton.enable();
-		if (focus == notes) {
-			notes.setHeight(this.getHalfHeight());
-			notes.setY(this.getHalfHeight());
-		} else {
-			notes.setHeight(notesHeight);
-			notes.setY(notesDefaultYPos);
-		}
-	}
+    private void chkFocus(EditTextFieldBase focus) {
+        uploadButton.setText("Upload");
+        uploadButton.enable();
+        if (focus == notes) {
+            notes.setHeight(this.getHalfHeight());
+            notes.setY(this.getHalfHeight());
+        } else {
+            notes.setHeight(notesHeight);
+            notes.setY(notesDefaultYPos);
+        }
+    }
 
-	@Override
-	public void onShow() {
-		chkFocus(GL.that.getFocusedEditTextField());
-		if (mustLoadNotes) {
-			String text = aktCache != null ? Database.GetNote(aktCache) : "";
-			if (text == null)
-				text = "";
-			notes.setText(text);
-			notes.showFromLineNo(0);
-			mustLoadNotes = false;
-		}
-	}
+    @Override
+    public void onShow() {
+        chkFocus(GL.that.getFocusedEditTextField());
+        if (mustLoadNotes) {
+            String text = aktCache != null ? Database.GetNote(aktCache) : "";
+            if (text == null)
+                text = "";
+            notes.setText(text);
+            notes.showFromLineNo(0);
+            mustLoadNotes = false;
+        }
+    }
 
-	@Override
-	public void onHide() {
-		// Save changed Note text
-		String text = notes.getText().toString();
-		if (text != null) {
-			try {
-				Database.SetNote(aktCache, text);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+    @Override
+    public void onHide() {
+        // Save changed Note text
+        String text = notes.getText().toString();
+        if (text != null) {
+            try {
+                Database.SetNote(aktCache, text);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
-	}
+    }
 
-	@Override
-	public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
-		aktCache = cache;
-		mustLoadNotes = true;
-	}
+    @Override
+    public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
+        aktCache = cache;
+        mustLoadNotes = true;
+    }
 
-	@Override
-	public void onResized(CB_RectF rec) {
-		chkFocus(GL.that.getFocusedEditTextField());
-	}
+    @Override
+    public void onResized(CB_RectF rec) {
+        chkFocus(GL.that.getFocusedEditTextField());
+    }
 }

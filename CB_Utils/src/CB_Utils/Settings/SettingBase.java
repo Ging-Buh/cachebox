@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -25,172 +25,169 @@ import CB_Utils.Util.IChanged;
  */
 public abstract class SettingBase<T> implements Comparable<SettingBase<T>> {
 
-	protected CB_List<IChanged> ChangedEventList = new CB_List<IChanged>();
-	protected SettingCategory category;
-	protected String name;
-	protected SettingModus modus;
-	protected SettingStoreType storeType;
-	protected SettingUsage usage;
+    private static int indexCount = 0;
+    protected CB_List<IChanged> ChangedEventList = new CB_List<IChanged>();
+    protected SettingCategory category;
+    protected String name;
+    protected SettingModus modus;
+    protected SettingStoreType storeType;
+    protected SettingUsage usage;
+    protected T value;
+    protected T defaultValue;
+    protected T lastValue;
+    protected boolean needRestart = false;
+    /**
+     * saves whether this setting is changed and needs to be saved
+     */
+    protected boolean dirty;
+    private int index = -1;
 
-	protected T value;
-	protected T defaultValue;
-	protected T lastValue;
-	protected boolean needRestart = false;
+    public SettingBase(String name, SettingCategory category, SettingModus modus, SettingStoreType StoreType, SettingUsage usage) {
+        this.name = name;
+        this.category = category;
+        this.modus = modus;
+        this.storeType = StoreType;
+        this.usage = usage;
+        this.dirty = false;
 
-	/**
-	 * saves whether this setting is changed and needs to be saved
-	 */
-	protected boolean dirty;
+        this.index = indexCount++;
+    }
 
-	private static int indexCount = 0;
-	private int index = -1;
+    public void addChangedEventListener(IChanged listener) {
+        synchronized (ChangedEventList) {
+            if (!ChangedEventList.contains(listener))
+                ChangedEventList.add(listener);
+        }
+    }
 
-	public SettingBase(String name, SettingCategory category, SettingModus modus, SettingStoreType StoreType, SettingUsage usage) {
-		this.name = name;
-		this.category = category;
-		this.modus = modus;
-		this.storeType = StoreType;
-		this.usage = usage;
-		this.dirty = false;
+    public void removeChangedEventListener(IChanged listener) {
+        synchronized (ChangedEventList) {
+            ChangedEventList.remove(listener);
+        }
+    }
 
-		this.index = indexCount++;
-	}
+    public boolean isDirty() {
+        return dirty;
+    }
 
-	public void addChangedEventListener(IChanged listener) {
-		synchronized (ChangedEventList) {
-			if (!ChangedEventList.contains(listener))
-				ChangedEventList.add(listener);
-		}
-	}
+    public void setDirty() {
+        dirty = true;
+        fireChangedEvent();
+    }
 
-	public void removeChangedEventListener(IChanged listener) {
-		synchronized (ChangedEventList) {
-			ChangedEventList.remove(listener);
-		}
-	}
+    public void clearDirty() {
+        dirty = false;
+    }
 
-	public boolean isDirty() {
-		return dirty;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setDirty() {
-		dirty = true;
-		fireChangedEvent();
-	}
+    public SettingCategory getCategory() {
+        return category;
+    }
 
-	public void clearDirty() {
-		dirty = false;
-	}
+    public SettingStoreType getStoreType() {
+        return storeType;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public SettingModus getModus() {
+        return modus;
+    }
 
-	public SettingCategory getCategory() {
-		return category;
-	}
+    public void changeSettingsModus(SettingModus Modus) {
+        this.modus = Modus;
+    }
 
-	public SettingStoreType getStoreType() {
-		return storeType;
-	}
+    public abstract String toDBString();
 
-	public SettingModus getModus() {
-		return modus;
-	}
+    public abstract boolean fromDBString(String dbString);
 
-	public void changeSettingsModus(SettingModus Modus) {
-		this.modus = Modus;
-	}
+    @Override
+    public int compareTo(SettingBase<T> o) {
+        return Double.compare(this.index, o.index);
+    }
 
-	public abstract String toDBString();
+    private void fireChangedEvent() {
+        synchronized (ChangedEventList) {
+            // do this at new Thread, dont't block Ui-Thread
 
-	public abstract boolean fromDBString(String dbString);
+            Thread th = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    for (int i = 0, n = ChangedEventList.size(); i < n; i++) {
+                        IChanged event = ChangedEventList.get(i);
+                        event.isChanged();
+                    }
+                }
+            });
+            th.start();
+        }
+    }
 
-	@Override
-	public int compareTo(SettingBase<T> o) {
-		return Double.compare(this.index, o.index);
-	}
+    public T getValue() {
+        return value;
+    }
 
-	private void fireChangedEvent() {
-		synchronized (ChangedEventList) {
-			// do this at new Thread, dont't block Ui-Thread
+    public void setValue(T newValue) {
+        if (ifValueEquals(newValue))
+            return;
+        this.value = newValue;
+        setDirty();
+    }
 
-			Thread th = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					for (int i = 0, n = ChangedEventList.size(); i < n; i++) {
-						IChanged event = ChangedEventList.get(i);
-						event.isChanged();
-					}
-				}
-			});
-			th.start();
-		}
-	}
+    public T getDefaultValue() {
+        return defaultValue;
+    }
 
-	public T getValue() {
-		return value;
-	}
+    protected boolean ifValueEquals(T newValue) {
+        return this.value.equals(newValue);
+    }
 
-	public T getDefaultValue() {
-		return defaultValue;
-	}
+    public void ForceDefaultChange(T defaultValue) {
+        if (this.defaultValue.equals(defaultValue))
+            return;
+        this.defaultValue = defaultValue;
+    }
 
-	protected boolean ifValueEquals(T newValue) {
-		return this.value.equals(newValue);
-	}
+    public void loadDefault() {
+        value = defaultValue;
+    }
 
-	public void setValue(T newValue) {
-		if (ifValueEquals(newValue))
-			return;
-		this.value = newValue;
-		setDirty();
-	}
+    public void saveToLastValue() {
+        lastValue = value;
+    }
 
-	public void ForceDefaultChange(T defaultValue) {
-		if (this.defaultValue.equals(defaultValue))
-			return;
-		this.defaultValue = defaultValue;
-	}
+    public void loadFromLastValue() {
+        if (lastValue == null)
+            throw new IllegalArgumentException("You have never saved the last value! Call SaveToLastValue()");
+        value = lastValue;
+    }
 
-	public void loadDefault() {
-		value = defaultValue;
-	}
+    public abstract SettingBase<T> copy();
 
-	public void saveToLastValue() {
-		lastValue = value;
-	}
+    @SuppressWarnings("unchecked")
+    public void setValueFrom(SettingBase<?> cpy) {
+        try {
+            this.value = (T) cpy.value;
+        } catch (Exception e) {
 
-	public void loadFromLastValue() {
-		if (lastValue == null)
-			throw new IllegalArgumentException("You have never saved the last value! Call SaveToLastValue()");
-		value = lastValue;
-	}
+        }
+    }
 
-	public abstract SettingBase<T> copy();
+    @Override
+    public abstract boolean equals(Object obj);
 
-	@SuppressWarnings("unchecked")
-	public void setValueFrom(SettingBase<?> cpy) {
-		try {
-			this.value = (T) cpy.value;
-		} catch (Exception e) {
+    public SettingUsage getUsage() {
+        return this.usage;
+    }
 
-		}
-	}
+    public boolean isDefault() {
+        return value.equals(defaultValue);
+    }
 
-	@Override
-	public abstract boolean equals(Object obj);
-
-	public SettingUsage getUsage() {
-		return this.usage;
-	}
-
-	public boolean isDefault() {
-		return value.equals(defaultValue);
-	}
-
-	public SettingBase<T> setNeedRestart() {
-		needRestart = true;
-		return this;
-	}
+    public SettingBase<T> setNeedRestart() {
+        needRestart = true;
+        return this;
+    }
 }

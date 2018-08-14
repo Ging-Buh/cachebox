@@ -32,44 +32,37 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public abstract class Dialog extends CB_View_Base {
+    static public boolean lastNightMode = false;
     static protected NinePatch mTitle9patch;
     static protected NinePatch mHeader9patch;
     static protected NinePatch mCenter9patch;
     static protected NinePatch mFooter9patch;
     static protected float mTitleVersatz = 6;
-    static private int pW = 0;
     static protected float margin = -1;
-    static public boolean lastNightMode = false;
+    static private int pW = 0;
     static private int DialogCount = 0;
-
+    public final int DialogID;
+    protected String CallerName = "";
+    protected boolean dontRenderDialogBackground = false;
+    protected float mTitleHeight = 0;
+    protected float mTitleWidth = 100;
+    protected boolean mHasTitle = false;
+    // TODO das Handling der Marker in den Dialogen überarbeiten!
+    protected float mHeaderHeight = 10f;
+    protected float mFooterHeight = 10f;
+    // protected Object data;
     private String mTitle;
     private Label titleLabel;
     private Box mContent;
     private CB_List<GL_View_Base> contentChilds = new CB_List<GL_View_Base>();
-    protected String CallerName = "";
-
     /**
      * enthällt die Controls, welche über allen anderen gezeichnet werden zB. Selection Marker des TextFields
      */
     private ArrayList<GL_View_Base> overlayForTextMarker = new ArrayList<GL_View_Base>();
-    // TODO das Handling der Marker in den Dialogen überarbeiten!
-
     /**
      * Overlay über alles wird als letztes Gerendert
      */
     private ArrayList<GL_View_Base> overlay = new ArrayList<GL_View_Base>();
-
-    protected boolean dontRenderDialogBackground = false;
-    // protected Object data;
-
-    protected float mTitleHeight = 0;
-    protected float mTitleWidth = 100;
-    protected boolean mHasTitle = false;
-
-    protected float mHeaderHeight = 10f;
-    protected float mFooterHeight = 10f;
-
-    public final int DialogID;
 
     public Dialog(CB_RectF rec, String Name) {
         super(rec, Name);
@@ -107,6 +100,54 @@ public abstract class Dialog extends CB_View_Base {
         innerHeight = getHeight() - topBorder - bottomBorder;
 
         reziseContentBox();
+    }
+
+    public static float calcHeaderHeight() {
+        return (Fonts.Measure("T").height) / 2;
+    }
+
+    public static float calcFooterHeight(boolean hasButtons) {
+        if (margin <= 0)
+            margin = UI_Size_Base.that.getMargin();
+
+        return hasButtons ? UI_Size_Base.that.getButtonHeight() + margin : calcHeaderHeight();
+    }
+
+    public static Size calcMsgBoxSize(String Text, boolean hasTitle, boolean hasButtons, boolean hasIcon, boolean hasRemember) {
+        if (margin <= 0)
+            margin = UI_Size_Base.that.getMargin();
+
+        float Width = (((UI_Size_Base.that.getButtonWidthWide() + margin) * 3) + margin);
+        if (Width * 1.2 < UI_Size_Base.that.getWindowWidth())
+            Width *= 1.2f;
+
+        float MsgWidth = (Width * 0.95f) - 5 - UI_Size_Base.that.getButtonHeight();
+
+        float MeasuredTextHeight = Fonts.MeasureWrapped(Text, MsgWidth).height + (margin * 4);
+
+        int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, UI_Size_Base.that.getButtonHeight() + (margin * 5)) : (int) MeasuredTextHeight);
+        if (hasTitle) {
+            Height += getTitleHeight();
+        }
+        Height += calcFooterHeight(hasButtons);
+        if (hasRemember)
+            Height += UI_Size_Base.that.getChkBoxSize().height;
+        Height += calcHeaderHeight();
+
+        // min Height festlegen
+        Height = (int) Math.max(Height, UI_Size_Base.that.getButtonHeight() * 2.5f);
+
+        // max Height festlegen
+        Height = (int) Math.min(Height, UI_Size_Base.that.getWindowHeight() * 0.95f);
+
+        Size ret = new Size((int) Width, Height);
+        return ret;
+    }
+
+    public static float getTitleHeight() {
+        GlyphLayout titleBounds = Fonts.Measure("T");
+        float h = (titleBounds.height * 3);
+        return h + margin * 2;
     }
 
     @Override
@@ -325,17 +366,6 @@ public abstract class Dialog extends CB_View_Base {
         reziseContentBox();
     }
 
-    public static float calcHeaderHeight() {
-        return (Fonts.Measure("T").height) / 2;
-    }
-
-    public static float calcFooterHeight(boolean hasButtons) {
-        if (margin <= 0)
-            margin = UI_Size_Base.that.getMargin();
-
-        return hasButtons ? UI_Size_Base.that.getButtonHeight() + margin : calcHeaderHeight();
-    }
-
     public void addChildToOverlay(GL_View_Base view) {
         overlay.add(view);
     }
@@ -354,43 +384,6 @@ public abstract class Dialog extends CB_View_Base {
     public void setFooterHeight(float FooterHeight) {
         this.mFooterHeight = FooterHeight;
         reziseContentBox();
-    }
-
-    public static Size calcMsgBoxSize(String Text, boolean hasTitle, boolean hasButtons, boolean hasIcon, boolean hasRemember) {
-        if (margin <= 0)
-            margin = UI_Size_Base.that.getMargin();
-
-        float Width = (((UI_Size_Base.that.getButtonWidthWide() + margin) * 3) + margin);
-        if (Width * 1.2 < UI_Size_Base.that.getWindowWidth())
-            Width *= 1.2f;
-
-        float MsgWidth = (Width * 0.95f) - 5 - UI_Size_Base.that.getButtonHeight();
-
-        float MeasuredTextHeight = Fonts.MeasureWrapped(Text, MsgWidth).height + (margin * 4);
-
-        int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, UI_Size_Base.that.getButtonHeight() + (margin * 5)) : (int) MeasuredTextHeight);
-        if (hasTitle) {
-            Height += getTitleHeight();
-        }
-        Height += calcFooterHeight(hasButtons);
-        if (hasRemember)
-            Height += UI_Size_Base.that.getChkBoxSize().height;
-        Height += calcHeaderHeight();
-
-        // min Height festlegen
-        Height = (int) Math.max(Height, UI_Size_Base.that.getButtonHeight() * 2.5f);
-
-        // max Height festlegen
-        Height = (int) Math.min(Height, UI_Size_Base.that.getWindowHeight() * 0.95f);
-
-        Size ret = new Size((int) Width, Height);
-        return ret;
-    }
-
-    public static float getTitleHeight() {
-        GlyphLayout titleBounds = Fonts.Measure("T");
-        float h = (titleBounds.height * 3);
-        return h + margin * 2;
     }
 
     @Override

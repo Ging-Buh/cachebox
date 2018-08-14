@@ -53,6 +53,10 @@ final class RequiredFields {
      */
     private static final int SUPPORTED_FILE_VERSION_MAX = 4;
 
+    private RequiredFields() {
+        throw new IllegalStateException();
+    }
+
     static void readBoundingBox(ReadBuffer readBuffer, MapFileInfoBuilder mapFileInfoBuilder) {
         double minLatitude = LatLongUtils.microdegreesToDegrees(readBuffer.readInt());
         double minLongitude = LatLongUtils.microdegreesToDegrees(readBuffer.readInt());
@@ -176,9 +180,5 @@ final class RequiredFields {
             wayTags[currentTagId] = new Tag(tag);
         }
         mapFileInfoBuilder.wayTags = wayTags;
-    }
-
-    private RequiredFields() {
-        throw new IllegalStateException();
     }
 }

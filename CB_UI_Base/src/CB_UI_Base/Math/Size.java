@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2011-2012 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -21,61 +21,61 @@ import java.io.Serializable;
 
 /**
  * Die Size Structur enthält die Member width und height
- * 
+ *
  * @author Longri
  */
 public class Size implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -294972224345431899L;
-	public int width;
-	public int height;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -294972224345431899L;
+    public int width;
+    public int height;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param width
-	 * @param height
-	 */
-	public Size(int width, int height) {
-		this.width = width;
-		this.height = height;
-	}
+    /**
+     * Constructor
+     *
+     * @param width
+     * @param height
+     */
+    public Size(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
 
-	public CB_Rect getBounds() {
-		return getBounds(0, 0);
-	}
+    public CB_Rect getBounds() {
+        return getBounds(0, 0);
+    }
 
-	public CB_Rect getBounds(int x, int y) {
-		return new CB_Rect(x, y, width + x, height + y);
-	}
+    public CB_Rect getBounds(int x, int y) {
+        return new CB_Rect(x, y, width + x, height + y);
+    }
 
-	public CB_Rect getBounds(int x, int y, int k, int l) {
-		return new CB_Rect(x, y, width + k - x, height + l - y);
-	}
+    public CB_Rect getBounds(int x, int y, int k, int l) {
+        return new CB_Rect(x, y, width + k - x, height + l - y);
+    }
 
-	public Size Copy() {
-		return new Size(this.width, this.height);
-	}
+    public Size Copy() {
+        return new Size(this.width, this.height);
+    }
 
-	public SizeF asFloat() {
-		return new SizeF(width, height);
-	}
+    public SizeF asFloat() {
+        return new SizeF(width, height);
+    }
 
-	/**
-	 * toString
-	 */
-	@Override
-	public String toString() {
-		String s = " " + width + "/" + height;
-		return s;
-	}
+    /**
+     * toString
+     */
+    @Override
+    public String toString() {
+        String s = " " + width + "/" + height;
+        return s;
+    }
 
-	public Size scale(float f) {
-		width *= f;
-		height *= f;
+    public Size scale(float f) {
+        width *= f;
+        height *= f;
 
-		return this;
-	}
+        return this;
+    }
 }

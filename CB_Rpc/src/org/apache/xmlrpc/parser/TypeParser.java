@@ -14,22 +14,25 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.parser;
 
 import org.apache.xmlrpc.XmlRpcException;
 import org.xml.sax.ContentHandler;
 
-/** Interface of a SAX handler parsing a single parameter or
+/**
+ * Interface of a SAX handler parsing a single parameter or
  * result object.
  */
 public interface TypeParser extends ContentHandler {
-	/** Returns the parsed object.
-	 * @return The parameter or result object.
-	 * @throws XmlRpcException Creating the result object failed.
-	 * @throws IllegalStateException The method was invoked before
-	 * {@link org.xml.sax.ContentHandler#endDocument}.
-	 */
-	public Object getResult() throws XmlRpcException;
+    /**
+     * Returns the parsed object.
+     *
+     * @return The parameter or result object.
+     * @throws XmlRpcException       Creating the result object failed.
+     * @throws IllegalStateException The method was invoked before
+     *                               {@link org.xml.sax.ContentHandler#endDocument}.
+     */
+    public Object getResult() throws XmlRpcException;
 }

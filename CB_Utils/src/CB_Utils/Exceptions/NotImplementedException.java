@@ -2,41 +2,41 @@ package CB_Utils.Exceptions;
 
 public class NotImplementedException extends RuntimeException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String argumentName;
+    private String argumentName;
 
-	public String getArgumentName() {
+    public NotImplementedException(String argumentName) {
 
-		return argumentName;
+        super(getMessage(argumentName));
 
-	}
+        this.argumentName = argumentName;
 
-	public NotImplementedException(String argumentName) {
+    }
 
-		super(getMessage(argumentName));
+    private static String getMessage(String argumentName) {
 
-		this.argumentName = argumentName;
+        if (argumentName == null) {
 
-	}
+            throw new IllegalArgumentException("The NullArgumentException constructor \"argumentName\" cannot be null!");
 
-	private static String getMessage(String argumentName) {
+        }
 
-		if (argumentName == null) {
+        if (argumentName.trim().length() == 0) {
 
-			throw new IllegalArgumentException("The NullArgumentException constructor \"argumentName\" cannot be null!");
+            throw new IllegalArgumentException(
 
-		}
+                    "The NullArgumentException constructor \"argumentName\" cannot be an Empty (zero-length) String!");
 
-		if (argumentName.trim().length() == 0) {
+        }
 
-			throw new IllegalArgumentException(
+        return "the methode \"" + argumentName + "\" is not implemented!";
 
-					"The NullArgumentException constructor \"argumentName\" cannot be an Empty (zero-length) String!");
+    }
 
-		}
+    public String getArgumentName() {
 
-		return "the methode \"" + argumentName + "\" is not implemented!";
+        return argumentName;
 
-	}
+    }
 }

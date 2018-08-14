@@ -14,13 +14,14 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.client;
 
 import org.apache.xmlrpc.XmlRpcRequestConfig;
 
-/** This interface is being implemented by an Apache XML-RPC clients
+/**
+ * This interface is being implemented by an Apache XML-RPC clients
  * configuration object. Depending on the transport factory, a
  * configuration object must implement additional methods. For
  * example, an HTTP transport requires an instance of

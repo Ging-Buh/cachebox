@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -19,5 +19,5 @@ package CB_UI_Base.graphics;
  * @author Longri
  */
 public enum GL_Align {
-	CENTER, LEFT, RIGHT;
+    CENTER, LEFT, RIGHT;
 }

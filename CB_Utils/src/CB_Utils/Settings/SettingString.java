@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2011-2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -16,50 +16,50 @@
 package CB_Utils.Settings;
 
 public class SettingString extends SettingBase<String> {
-	public static final String STRING_SPLITTER = "�";
+    public static final String STRING_SPLITTER = "�";
 
-	public SettingString(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage) {
-		super(name, category, modus, StoreType, usage);
-		this.defaultValue = defaultValue;
-		this.value = defaultValue;
-	}
+    public SettingString(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage) {
+        super(name, category, modus, StoreType, usage);
+        this.defaultValue = defaultValue;
+        this.value = defaultValue;
+    }
 
-	@Override
-	public String toDBString() {
-		return String.valueOf(value);
-	}
+    @Override
+    public String toDBString() {
+        return String.valueOf(value);
+    }
 
-	@Override
-	public boolean fromDBString(String dbString) {
-		try {
-			value = dbString;
-			return true;
-		} catch (Exception ex) {
-			value = defaultValue;
-			return false;
-		}
-	}
+    @Override
+    public boolean fromDBString(String dbString) {
+        try {
+            value = dbString;
+            return true;
+        } catch (Exception ex) {
+            value = defaultValue;
+            return false;
+        }
+    }
 
-	@Override
-	public SettingBase<String> copy() {
-		SettingBase<String> ret = new SettingString(this.name, this.category, this.modus, this.defaultValue, this.storeType, usage);
-		ret.value = this.value;
-		ret.lastValue = this.lastValue;
-		return ret;
-	}
+    @Override
+    public SettingBase<String> copy() {
+        SettingBase<String> ret = new SettingString(this.name, this.category, this.modus, this.defaultValue, this.storeType, usage);
+        ret.value = this.value;
+        ret.lastValue = this.lastValue;
+        return ret;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof SettingString))
-			return false;
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof SettingString))
+            return false;
 
-		SettingString inst = (SettingString) obj;
-		if (!(inst.name.equals(this.name)))
-			return false;
-		if (!inst.value.equals(this.value))
-			return false;
+        SettingString inst = (SettingString) obj;
+        if (!(inst.name.equals(this.name)))
+            return false;
+        if (!inst.value.equals(this.value))
+            return false;
 
-		return true;
-	}
+        return true;
+    }
 
 }

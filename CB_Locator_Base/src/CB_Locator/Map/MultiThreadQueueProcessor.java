@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,275 +15,271 @@
  */
 package CB_Locator.Map;
 
-import java.util.SortedMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
-import org.slf4j.LoggerFactory;
-
 import CB_UI_Base.Energy;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
+
+import java.util.SortedMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author ging-buh
  * @author Longri
  */
 class MultiThreadQueueProcessor extends Thread {
-	final static org.slf4j.Logger log = LoggerFactory.getLogger(MultiThreadQueueProcessor.class);
-	static int instanceCount = 0;
-	static CB_List<Descriptor> inLoadDesc = new CB_List<Descriptor>();
-	static final Lock inLoadDescLock = new ReentrantLock();
+    static final Lock inLoadDescLock = new ReentrantLock();
+    private static final String log = "MultiThreadQueueProcessor";
+    static int instanceCount = 0;
+    static CB_List<Descriptor> inLoadDesc = new CB_List<Descriptor>();
+    final int ThreadId;
+    private final QueueData queueData;
+    public boolean queueProcessorLifeCycle = false;
+    private boolean isAlive;
 
-	final int ThreadId;
-	public boolean queueProcessorLifeCycle = false;
+    MultiThreadQueueProcessor(QueueData queueData, int threadID) {
+        //Log.debug(log, "Create MultiThreadQueueProcessor[" + threadID + "]");
+        ThreadId = threadID;
+        this.queueData = queueData;
+    }
 
-	private final QueueData queueData;
-	private boolean isAlive;
+    @Override
+    public void run() {
+        try {
+            do {
+                this.isAlive = true;
+                queueProcessorLifeCycle = !queueProcessorLifeCycle;
+                Descriptor desc = null;
+                if (!Energy.DisplayOff() /* && MapView.this.isVisible() */
+                        && ((queueData.queuedTiles.size() > 0) || (queueData.queuedOverlayTiles.size() > 0))) {
 
-	MultiThreadQueueProcessor(QueueData queueData, int threadID) {
-		//Log.debug(log, "Create MultiThreadQueueProcessor[" + threadID + "]");
-		ThreadId = threadID;
-		this.queueData = queueData;
-	}
+                    try {
+                        boolean calcOverlay = false;
+                        queueData.queuedTilesLock.lock();
 
-	@Override
-	public void run() {
-		try {
-			do {
-				this.isAlive = true;
-				queueProcessorLifeCycle = !queueProcessorLifeCycle;
-				Descriptor desc = null;
-				if (!Energy.DisplayOff() /* && MapView.this.isVisible() */
-						&& ((queueData.queuedTiles.size() > 0) || (queueData.queuedOverlayTiles.size() > 0))) {
+                        if (queueData.CurrentOverlayLayer != null)
+                            queueData.queuedOverlayTilesLock.lock();
+                        try {
+                            Descriptor nearestDesc = null;
+                            double nearestDist = Double.MAX_VALUE;
+                            int nearestZoom = 0;
+                            SortedMap<Long, Descriptor> tmpQueuedTiles = queueData.queuedTiles;
+                            calcOverlay = false;
+                            if (queueData.CurrentOverlayLayer != null && queueData.queuedTiles.size() == 0) {
+                                tmpQueuedTiles = queueData.queuedOverlayTiles;
+                                calcOverlay = true; // es wird gerade ein Overlay Tile geladen
+                            }
 
-					try {
-						boolean calcOverlay = false;
-						queueData.queuedTilesLock.lock();
+                            for (Descriptor tmpDesc : tmpQueuedTiles.values()) {
+                                // zugeh�rige MapView aus dem Data vom Descriptor holen
+                                MapViewBase mapView = null;
+                                if ((tmpDesc.Data != null) && (tmpDesc.Data instanceof MapViewBase))
+                                    mapView = (MapViewBase) tmpDesc.Data;
+                                if (mapView == null)
+                                    continue;
 
-						if (queueData.CurrentOverlayLayer != null)
-							queueData.queuedOverlayTilesLock.lock();
-						try {
-							Descriptor nearestDesc = null;
-							double nearestDist = Double.MAX_VALUE;
-							int nearestZoom = 0;
-							SortedMap<Long, Descriptor> tmpQueuedTiles = queueData.queuedTiles;
-							calcOverlay = false;
-							if (queueData.CurrentOverlayLayer != null && queueData.queuedTiles.size() == 0) {
-								tmpQueuedTiles = queueData.queuedOverlayTiles;
-								calcOverlay = true; // es wird gerade ein Overlay Tile geladen
-							}
+                                long posFactor = MapTileLoader.getMapTilePosFactor(tmpDesc.Zoom);
 
-							for (Descriptor tmpDesc : tmpQueuedTiles.values()) {
-								// zugeh�rige MapView aus dem Data vom Descriptor holen
-								MapViewBase mapView = null;
-								if ((tmpDesc.Data != null) && (tmpDesc.Data instanceof MapViewBase))
-									mapView = (MapViewBase) tmpDesc.Data;
-								if (mapView == null)
-									continue;
+                                double dist = Math.sqrt(Math.pow((double) tmpDesc.X * posFactor * 256 + 128 * posFactor - mapView.screenCenterW.x, 2) + Math.pow((double) tmpDesc.Y * posFactor * 256 + 128 * posFactor + mapView.screenCenterW.y, 2));
 
-								long posFactor = MapTileLoader.getMapTilePosFactor(tmpDesc.Zoom);
+                                if (Math.abs(mapView.aktZoom - nearestZoom) > Math.abs(mapView.aktZoom - tmpDesc.Zoom)) {
+                                    // der Zoomfaktor des bisher besten
+                                    // Tiles ist weiter entfernt vom
+                                    // aktuellen Zoom als der vom tmpDesc ->
+                                    // tmpDesc verwenden
+                                    nearestDist = dist;
+                                    nearestDesc = tmpDesc;
+                                    nearestZoom = tmpDesc.Zoom;
+                                }
 
-								double dist = Math.sqrt(Math.pow((double) tmpDesc.X * posFactor * 256 + 128 * posFactor - mapView.screenCenterW.x, 2) + Math.pow((double) tmpDesc.Y * posFactor * 256 + 128 * posFactor + mapView.screenCenterW.y, 2));
+                                if (dist < nearestDist) {
+                                    if (Math.abs(mapView.aktZoom - nearestZoom) < Math.abs(mapView.aktZoom - tmpDesc.Zoom)) {
+                                        // zuerst die Tiles, die dem
+                                        // aktuellen Zoom Faktor am n�chsten
+                                        // sind.
+                                        continue;
+                                    }
+                                    nearestDist = dist;
+                                    nearestDesc = tmpDesc;
+                                    nearestZoom = tmpDesc.Zoom;
+                                }
+                            }
+                            desc = nearestDesc;
 
-								if (Math.abs(mapView.aktZoom - nearestZoom) > Math.abs(mapView.aktZoom - tmpDesc.Zoom)) {
-									// der Zoomfaktor des bisher besten
-									// Tiles ist weiter entfernt vom
-									// aktuellen Zoom als der vom tmpDesc ->
-									// tmpDesc verwenden
-									nearestDist = dist;
-									nearestDesc = tmpDesc;
-									nearestZoom = tmpDesc.Zoom;
-								}
+                        } finally {
+                            queueData.queuedTilesLock.unlock();
+                            if (queueData.CurrentOverlayLayer != null)
+                                queueData.queuedOverlayTilesLock.unlock();
+                        }
 
-								if (dist < nearestDist) {
-									if (Math.abs(mapView.aktZoom - nearestZoom) < Math.abs(mapView.aktZoom - tmpDesc.Zoom)) {
-										// zuerst die Tiles, die dem
-										// aktuellen Zoom Faktor am n�chsten
-										// sind.
-										continue;
-									}
-									nearestDist = dist;
-									nearestDesc = tmpDesc;
-									nearestZoom = tmpDesc.Zoom;
-								}
-							}
-							desc = nearestDesc;
+                        if (desc != null) {
+                            inLoadDescLock.lock();
+                            if (inLoadDesc.contains(desc)) {
+                                continue;// Other thread is loading this Desc. Skip!
+                            }
+                            inLoadDescLock.unlock();
 
-						} finally {
-							queueData.queuedTilesLock.unlock();
-							if (queueData.CurrentOverlayLayer != null)
-								queueData.queuedOverlayTilesLock.unlock();
-						}
+                            if (calcOverlay && queueData.CurrentOverlayLayer != null)
+                                LoadOverlayTile(desc);
+                            else if (queueData.CurrentLayer != null) {
+                                inLoadDescLock.lock();
+                                if (inLoadDesc.contains(desc)) {
+                                    inLoadDescLock.unlock();
+                                    continue;// Other thread is loading this Desc. Skip!
+                                }
+                                inLoadDesc.add(desc);
+                                inLoadDescLock.unlock();
+                            }
 
-						if (desc != null) {
-							inLoadDescLock.lock();
-							if (inLoadDesc.contains(desc)) {
-								continue;// Other thread is loading this Desc. Skip!
-							}
-							inLoadDescLock.unlock();
+                            // Log.debug(log, "LoadTile on[" + ThreadId + "]");
+                            LoadTile(desc);
+                            // Log.debug(log, "finish LoadTile on[" + ThreadId + "]");
+                            inLoadDescLock.lock();
+                            inLoadDesc.remove(desc);
+                            inLoadDescLock.unlock();
 
-							if (calcOverlay && queueData.CurrentOverlayLayer != null)
-								LoadOverlayTile(desc);
-							else if (queueData.CurrentLayer != null) {
-								inLoadDescLock.lock();
-								if (inLoadDesc.contains(desc)) {
-									inLoadDescLock.unlock();
-									continue;// Other thread is loading this Desc. Skip!
-								}
-								inLoadDesc.add(desc);
-								inLoadDescLock.unlock();
-							}
+                        } else {
+                            // nothing to do, so we can sleep
+                            Thread.sleep(100);
+                        }
+                    } catch (Exception ex1) {
+                        Log.err(log, "MapViewGL.queueProcessor.doInBackground()", "1", ex1);
+                        Thread.sleep(200);
+                    }
 
-							// Log.debug(log, "LoadTile on[" + ThreadId + "]");
-							LoadTile(desc);
-							// Log.debug(log, "finish LoadTile on[" + ThreadId + "]");
-							inLoadDescLock.lock();
-							inLoadDesc.remove(desc);
-							inLoadDescLock.unlock();
+                } else {
+                    Thread.sleep(50);
+                }
+                this.isAlive = true;
+            } while (true);
+        } catch (Exception ex3) {
+            Log.err(log, "MapViewGL.queueProcessor.doInBackground()", "3", ex3);
 
-						} else {
-							// nothing to do, so we can sleep
-							Thread.sleep(100);
-						}
-					} catch (Exception ex1) {
-						Log.err(log, "MapViewGL.queueProcessor.doInBackground()", "1", ex1);
-						Thread.sleep(200);
-					}
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
-				} else {
-					Thread.sleep(50);
-				}
-				this.isAlive = true;
-			} while (true);
-		} catch (Exception ex3) {
-			Log.err(log, "MapViewGL.queueProcessor.doInBackground()", "3", ex3);
+            this.isAlive = false;
+        } finally {
+            // damit im Falle einer Exception der Thread neu gestartet wird
+            // queueProcessor = null;
+        }
+        return;
+    }
 
-			try {
-				Thread.sleep(200);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+    public boolean Alive() {
+        return this.isAlive;
+    }
 
-			this.isAlive = false;
-		} finally {
-			// damit im Falle einer Exception der Thread neu gestartet wird
-			// queueProcessor = null;
-		}
-		return;
-	}
+    // #######################################################################
+    // private
 
-	public boolean Alive() {
-		return this.isAlive;
-	}
+    private void LoadTile(Descriptor desc) {
 
-	// #######################################################################
-	// private
+        TileGL tile = null;
+        if (ManagerBase.Manager != null) {
+            tile = ManagerBase.Manager.LoadLocalPixmap(queueData.CurrentLayer, desc, ThreadId);
+        }
 
-	private void LoadTile(Descriptor desc) {
+        if (tile != null) {
+            addLoadedTile(desc, tile);
+            // Redraw Map after a new Tile was loaded or generated
+            GL.that.renderOnce();
+        } else {
+            if (ManagerBase.Manager.cacheTile(queueData.CurrentLayer, desc)) {
+                tile = ManagerBase.Manager.LoadLocalPixmap(queueData.CurrentLayer, desc, ThreadId);
+                addLoadedTile(desc, tile);
+                // Redraw Map after a new Tile was loaded or generated
+                GL.that.renderOnce();
+            }
+            // to avoid endless trys
+            if (tile != null)
+                RemoveFromQueuedTiles(desc);
+        }
 
-		TileGL tile = null;
-		if (ManagerBase.Manager != null) {
-			tile = ManagerBase.Manager.LoadLocalPixmap(queueData.CurrentLayer, desc, ThreadId);
-		}
+    }
 
-		if (tile != null) {
-			addLoadedTile(desc, tile);
-			// Redraw Map after a new Tile was loaded or generated
-			GL.that.renderOnce();
-		} else {
-			if (ManagerBase.Manager.cacheTile(queueData.CurrentLayer, desc)) {
-				tile = ManagerBase.Manager.LoadLocalPixmap(queueData.CurrentLayer, desc, ThreadId);
-				addLoadedTile(desc, tile);
-				// Redraw Map after a new Tile was loaded or generated
-				GL.that.renderOnce();
-			}
-			// to avoid endless trys
-			if (tile != null)
-				RemoveFromQueuedTiles(desc);
-		}
+    private void LoadOverlayTile(Descriptor desc) {
+        if (queueData.CurrentOverlayLayer == null)
+            return;
 
-	}
+        TileGL tile = null;
+        if (ManagerBase.Manager != null) {
+            // Load Overlay never inverted !!!
+            tile = ManagerBase.Manager.LoadLocalPixmap(queueData.CurrentOverlayLayer, desc, ThreadId);
+        }
 
-	private void LoadOverlayTile(Descriptor desc) {
-		if (queueData.CurrentOverlayLayer == null)
-			return;
+        if (tile != null) {
+            addLoadedOverlayTile(desc, tile);
+            // Redraw Map after a new Tile was loaded or generated
+            GL.that.renderOnce();
+        } else {
+            ManagerBase.Manager.cacheTile(queueData.CurrentOverlayLayer, desc);
+            // to avoid endless tries
+            RemoveFromQueuedTiles(desc);
+        }
+    }
 
-		TileGL tile = null;
-		if (ManagerBase.Manager != null) {
-			// Load Overlay never inverted !!!
-			tile = ManagerBase.Manager.LoadLocalPixmap(queueData.CurrentOverlayLayer, desc, ThreadId);
-		}
+    private void RemoveFromQueuedTiles(Descriptor desc) {
+        queueData.queuedTilesLock.lock();
+        try {
+            if (queueData.queuedTiles.containsKey(desc.GetHashCode())) {
+                queueData.queuedTiles.remove(desc.GetHashCode());
+            }
+        } finally {
+            queueData.queuedTilesLock.unlock();
+        }
+    }
 
-		if (tile != null) {
-			addLoadedOverlayTile(desc, tile);
-			// Redraw Map after a new Tile was loaded or generated
-			GL.that.renderOnce();
-		} else {
-			ManagerBase.Manager.cacheTile(queueData.CurrentOverlayLayer, desc);
-			// to avoid endless tries
-			RemoveFromQueuedTiles(desc);
-		}
-	}
+    private void addLoadedTile(Descriptor desc, TileGL tile) {
+        queueData.loadedTilesLock.lock();
+        try {
+            if (queueData.loadedTiles.containsKey(desc.GetHashCode())) {
+                tile.dispose(); // das war dann umsonnst
+            } else {
+                queueData.loadedTiles.add(desc.GetHashCode(), tile);
+            }
 
-	private void RemoveFromQueuedTiles(Descriptor desc) {
-		queueData.queuedTilesLock.lock();
-		try {
-			if (queueData.queuedTiles.containsKey(desc.GetHashCode())) {
-				queueData.queuedTiles.remove(desc.GetHashCode());
-			}
-		} finally {
-			queueData.queuedTilesLock.unlock();
-		}
-	}
+        } finally {
+            queueData.loadedTilesLock.unlock();
+        }
 
-	private void addLoadedTile(Descriptor desc, TileGL tile) {
-		queueData.loadedTilesLock.lock();
-		try {
-			if (queueData.loadedTiles.containsKey(desc.GetHashCode())) {
-				tile.dispose(); // das war dann umsonnst
-			} else {
-				queueData.loadedTiles.add(desc.GetHashCode(), tile);
-			}
+        queueData.queuedTilesLock.lock();
+        try {
+            if (queueData.queuedTiles.containsKey(desc.GetHashCode())) {
+                queueData.queuedTiles.remove(desc.GetHashCode());
+            }
+        } finally {
+            queueData.queuedTilesLock.unlock();
+        }
 
-		} finally {
-			queueData.loadedTilesLock.unlock();
-		}
+    }
 
-		queueData.queuedTilesLock.lock();
-		try {
-			if (queueData.queuedTiles.containsKey(desc.GetHashCode())) {
-				queueData.queuedTiles.remove(desc.GetHashCode());
-			}
-		} finally {
-			queueData.queuedTilesLock.unlock();
-		}
+    private void addLoadedOverlayTile(Descriptor desc, TileGL tile) {
+        queueData.loadedOverlayTilesLock.lock();
+        try {
+            if (queueData.loadedOverlayTiles.containsKey(desc.GetHashCode())) {
 
-	}
+            } else {
+                queueData.loadedOverlayTiles.add(desc.GetHashCode(), tile);
+            }
 
-	private void addLoadedOverlayTile(Descriptor desc, TileGL tile) {
-		queueData.loadedOverlayTilesLock.lock();
-		try {
-			if (queueData.loadedOverlayTiles.containsKey(desc.GetHashCode())) {
+        } finally {
+            queueData.loadedOverlayTilesLock.unlock();
+        }
 
-			} else {
-				queueData.loadedOverlayTiles.add(desc.GetHashCode(), tile);
-			}
+        queueData.queuedOverlayTilesLock.lock();
+        try {
+            if (queueData.queuedOverlayTiles.containsKey(desc.GetHashCode())) {
+                queueData.queuedOverlayTiles.remove(desc.GetHashCode());
+            }
+        } finally {
+            queueData.queuedOverlayTilesLock.unlock();
+        }
 
-		} finally {
-			queueData.loadedOverlayTilesLock.unlock();
-		}
-
-		queueData.queuedOverlayTilesLock.lock();
-		try {
-			if (queueData.queuedOverlayTiles.containsKey(desc.GetHashCode())) {
-				queueData.queuedOverlayTiles.remove(desc.GetHashCode());
-			}
-		} finally {
-			queueData.queuedOverlayTilesLock.unlock();
-		}
-
-	}
+    }
 
 }

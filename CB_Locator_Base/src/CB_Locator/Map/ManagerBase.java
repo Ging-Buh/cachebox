@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,15 +15,18 @@
  */
 package CB_Locator.Map;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Set;
-
+import CB_Locator.LocatorSettings;
+import CB_Locator.Map.Layer.LayerType;
+import CB_Locator.Map.Layer.MapType;
+import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.graphics.GL_RenderType;
+import CB_Utils.Log.Log;
+import CB_Utils.Util.FileIO;
+import CB_Utils.Util.HSV_Color;
+import CB_Utils.Util.IChanged;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
@@ -46,27 +49,18 @@ import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.reader.header.MapFileInfo;
-import org.mapsforge.map.rendertheme.ExternalRenderTheme;
-import org.mapsforge.map.rendertheme.XmlRenderTheme;
-import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
-import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
-import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
+import org.mapsforge.map.rendertheme.*;
 import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
 import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
-import org.slf4j.LoggerFactory;
 
-import CB_Locator.LocatorSettings;
-import CB_Locator.Map.Layer.LayerType;
-import CB_Locator.Map.Layer.MapType;
-import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
-import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.graphics.GL_RenderType;
-import CB_Utils.Log.Log;
-import CB_Utils.Util.FileIO;
-import CB_Utils.Util.HSV_Color;
-import CB_Utils.Util.IChanged;
-import CB_Utils.fileProvider.File;
-import CB_Utils.fileProvider.FileFactory;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Set;
 
 /**
  * @author ging-buh
@@ -74,33 +68,35 @@ import CB_Utils.fileProvider.FileFactory;
  */
 public abstract class ManagerBase {
 
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(ManagerBase.class);
-
+    public static final String INTERNAL_THEME_DEFAULT = "Default";
+    public static final String INTERNAL_THEME_OSMARENDER = "OsmaRender";
+    public static final String INTERNAL_THEME_CAR = "Car";
+    private static final String log = "ManagerBase";
     public static ManagerBase Manager = null;
-
     public static int PROCESSOR_COUNT; // == nr of threads for getting tiles (mapsforge)
-    public final DisplayModel DISPLAY_MODEL;
-
-    private final int CONECTION_TIME_OUT = 15000;// 15 sec
-    private final int CONECTION_TIME_OUT_MESSAGE_INTERVALL = 60000;// 1min
-
     public static long NumBytesLoaded = 0;
     public static int NumTilesLoaded = 0;
     public static int NumTilesCached = 0;
-
-    public ArrayList<PackBase> mapPacks = new ArrayList<PackBase>();
-
-    public ArrayList<TmsMap> tmsMaps = new ArrayList<TmsMap>();
-
-    public ArrayList<Layer> layers = new ArrayList<Layer>();
-
+    public static float DEFAULT_TEXT_SCALE = 1;
+    public final DisplayModel DISPLAY_MODEL;
+    private final int CONECTION_TIME_OUT = 15000;// 15 sec
+    private final int CONECTION_TIME_OUT_MESSAGE_INTERVALL = 60000;// 1min
     private final DefaultLayerList DEFAULT_LAYER = new DefaultLayerList();
-
+    private final Layer[] userMaps = new Layer[2];
+    public ArrayList<PackBase> mapPacks = new ArrayList<PackBase>();
+    public ArrayList<TmsMap> tmsMaps = new ArrayList<TmsMap>();
+    public ArrayList<Layer> layers = new ArrayList<Layer>();
+    public float textScale = 1;
+    HashMap<String, Long> LastRequestTimeOut = new HashMap<String, Long>();
+    MultiMapDataStore mapDatabase[] = null;
+    IDatabaseRenderer databaseRenderer[] = null;
+    Bitmap tileBitmap = null;
+    XmlRenderTheme renderTheme;
     private boolean mayAddLayer = false; // add only during startup (why?)
-
     private String mapsforgeThemesStyle = "";
     private String mapsforgeTheme = "";
     private boolean alreadySet = false;
+    private RenderThemeFuture renderThemeFuture;
 
     public ManagerBase(DisplayModel displaymodel) {
         Manager = this;
@@ -117,6 +113,29 @@ public abstract class ManagerBase {
                         initMapDatabase(layer);
                 }
             });
+    }
+
+    /**
+     * for night modus
+     * <p>
+     * The matrix is stored in a single array, and its treated as follows: [ a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t ] <br>
+     * <br>
+     * When applied to a color [r, g, b, a], the resulting color is computed as (after clamping) <br>
+     * R' = a*R + b*G + c*B + d*A + e;<br>
+     * G' = f*R + g*G + h*B + i*A + j;<br>
+     * B' = k*R + l*G + m*B + n*A + o;<br>
+     * A' = p*R + q*G + r*B + s*A + t;<br>
+     *
+     * @param matrix
+     * @return
+     */
+    public static ImageData getImageDataWithColormatrixManipulation(float[] matrix, ImageData imgData) {
+
+        int[] data = imgData.PixelColorArray;
+        for (int i = 0; i < data.length; i++) {
+            data[i] = HSV_Color.colorMatrixManipulation(data[i], matrix);
+        }
+        return imgData;
     }
 
     public abstract PackBase CreatePack(String file) throws IOException;
@@ -178,13 +197,11 @@ public abstract class ManagerBase {
         }
     }
 
-    public class ImageData {
-        public int[] PixelColorArray;
-        public int width;
-        public int height;
-    }
-
     public abstract TileGL LoadLocalPixmap(Layer layer, Descriptor desc, int ThreadIndex);
+
+    // ##########################################################################
+    // Mapsforge 0.6.0
+    // ##########################################################################
 
     protected abstract ImageData getImagePixel(byte[] img);
 
@@ -253,12 +270,12 @@ public abstract class ManagerBase {
                 return false;
             }
             /*
-			 * webRequest = (HttpWebRequest)WebRequest.Create(url); webRequest.Timeout = 15000; webRequest.Proxy = Global.Proxy; webResponse
-			 * = webRequest.GetResponse(); if (!webRequest.HaveResponse) return false; responseStream = webResponse.GetResponseStream();
-			 * byte[] result = Global.ReadFully(responseStream, 64000); // Verzeichnis anlegen lock (this) if (!Directory.Exists(path))
-			 * Directory.CreateDirectory(path); // Datei schreiben lock (this) { stream = new FileStream(filename, FileMode.CreateNew);
-			 * stream.Write(result, 0, result.Length); } NumTilesLoaded++; Global.TransferredBytes += result.Length;
-			 */
+             * webRequest = (HttpWebRequest)WebRequest.Create(url); webRequest.Timeout = 15000; webRequest.Proxy = Global.Proxy; webResponse
+             * = webRequest.GetResponse(); if (!webRequest.HaveResponse) return false; responseStream = webResponse.GetResponseStream();
+             * byte[] result = Global.ReadFully(responseStream, 64000); // Verzeichnis anlegen lock (this) if (!Directory.Exists(path))
+             * Directory.CreateDirectory(path); // Datei schreiben lock (this) { stream = new FileStream(filename, FileMode.CreateNew);
+             * stream.Write(result, 0, result.Length); } NumTilesLoaded++; Global.TransferredBytes += result.Length;
+             */
         } catch (Exception ex) {
             // Check last Error for this URL and post massage if the last > 1 min.
 
@@ -284,38 +301,13 @@ public abstract class ManagerBase {
 
             return false;
         }
-		/*
-		 * finally { if (stream != null) { stream.Close(); stream = null; } if (responseStream != null) { responseStream.Close();
-		 * responseStream = null; } if (webResponse != null) { webResponse.Close(); webResponse = null; } if (webRequest != null) {
-		 * webRequest.Abort(); webRequest = null; } GC.Collect(); }
-		 */
+        /*
+         * finally { if (stream != null) { stream.Close(); stream = null; } if (responseStream != null) { responseStream.Close();
+         * responseStream = null; } if (webResponse != null) { webResponse.Close(); webResponse = null; } if (webRequest != null) {
+         * webRequest.Abort(); webRequest = null; } GC.Collect(); }
+         */
 
         return true;
-    }
-
-    HashMap<String, Long> LastRequestTimeOut = new HashMap<String, Long>();
-
-    /**
-     * for night modus
-     * <p>
-     * The matrix is stored in a single array, and its treated as follows: [ a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t ] <br>
-     * <br>
-     * When applied to a color [r, g, b, a], the resulting color is computed as (after clamping) <br>
-     * R' = a*R + b*G + c*B + d*A + e;<br>
-     * G' = f*R + g*G + h*B + i*A + j;<br>
-     * B' = k*R + l*G + m*B + n*A + o;<br>
-     * A' = p*R + q*G + r*B + s*A + t;<br>
-     *
-     * @param matrix
-     * @return
-     */
-    public static ImageData getImageDataWithColormatrixManipulation(float[] matrix, ImageData imgData) {
-
-        int[] data = imgData.PixelColorArray;
-        for (int i = 0; i < data.length; i++) {
-            data[i] = HSV_Color.colorMatrixManipulation(data[i], matrix);
-        }
-        return imgData;
     }
 
     public void LoadTMS(String string) {
@@ -359,8 +351,6 @@ public abstract class ManagerBase {
             }
         }
     }
-
-    private final Layer[] userMaps = new Layer[2];
 
     public void initMapPacks() {
         layers.clear();
@@ -511,23 +501,6 @@ public abstract class ManagerBase {
     public ArrayList<Layer> getLayers() {
         return layers;
     }
-
-    // ##########################################################################
-    // Mapsforge 0.6.0
-    // ##########################################################################
-
-    MultiMapDataStore mapDatabase[] = null;
-    IDatabaseRenderer databaseRenderer[] = null;
-    Bitmap tileBitmap = null;
-    XmlRenderTheme renderTheme;
-    public float textScale = 1;
-    public static float DEFAULT_TEXT_SCALE = 1;
-
-    public static final String INTERNAL_THEME_DEFAULT = "Default";
-    public static final String INTERNAL_THEME_OSMARENDER = "OsmaRender";
-    public static final String INTERNAL_THEME_CAR = "Car";
-
-    private RenderThemeFuture renderThemeFuture;
 
     public void setRenderTheme(String theme, String themestyle) {
         if (alreadySet)
@@ -689,6 +662,12 @@ public abstract class ManagerBase {
     }
 
     public abstract GraphicFactory getGraphicFactory(float ScaleFactor);
+
+    public class ImageData {
+        public int[] PixelColorArray;
+        public int width;
+        public int height;
+    }
 
     private class Xml_RenderThemeMenuCallback implements XmlRenderThemeMenuCallback {
         @Override

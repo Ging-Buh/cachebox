@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -22,13 +22,13 @@ import com.badlogic.gdx.graphics.g2d.Batch;
  */
 public class SVG_Drawable extends VectorDrawable {
 
-	public SVG_Drawable(int width, int height) {
-		super(width, height);
-	}
+    public SVG_Drawable(int width, int height) {
+        super(width, height);
+    }
 
-	@Override
-	public void draw(Batch batch, float x, float y, float width, float height, float rotated) {
-		super.draw(batch, x, y, width, height, rotated);
-	}
+    @Override
+    public void draw(Batch batch, float x, float y, float width, float height, float rotated) {
+        super.draw(batch, x, y, width, height, rotated);
+    }
 
 }

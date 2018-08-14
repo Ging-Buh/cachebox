@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -24,20 +24,20 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Longri
  */
 class QueueData {
-	MapTileCache loadedTiles = new MapTileCache((short) 10);
-	MapTileCache loadedOverlayTiles = new MapTileCache((short) 10);
-	final Lock loadedTilesLock = new ReentrantLock();
-	final Lock loadedOverlayTilesLock = new ReentrantLock();
-	final SortedMap<Long, Descriptor> queuedTiles = new TreeMap<Long, Descriptor>();
-	final SortedMap<Long, Descriptor> queuedOverlayTiles = new TreeMap<Long, Descriptor>();
-	final Lock queuedTilesLock = new ReentrantLock();
-	final Lock queuedOverlayTilesLock = new ReentrantLock();
-	Layer CurrentLayer = null;
-	Layer CurrentOverlayLayer = null;
+    final Lock loadedTilesLock = new ReentrantLock();
+    final Lock loadedOverlayTilesLock = new ReentrantLock();
+    final SortedMap<Long, Descriptor> queuedTiles = new TreeMap<Long, Descriptor>();
+    final SortedMap<Long, Descriptor> queuedOverlayTiles = new TreeMap<Long, Descriptor>();
+    final Lock queuedTilesLock = new ReentrantLock();
+    final Lock queuedOverlayTilesLock = new ReentrantLock();
+    MapTileCache loadedTiles = new MapTileCache((short) 10);
+    MapTileCache loadedOverlayTiles = new MapTileCache((short) 10);
+    Layer CurrentLayer = null;
+    Layer CurrentOverlayLayer = null;
 
-	public void setLoadedTilesCacheCapacity(int capacity) {
-		loadedTiles = new MapTileCache((short) capacity);
-		loadedOverlayTiles = new MapTileCache((short) capacity);
+    public void setLoadedTilesCacheCapacity(int capacity) {
+        loadedTiles = new MapTileCache((short) capacity);
+        loadedOverlayTiles = new MapTileCache((short) capacity);
 
-	}
+    }
 }

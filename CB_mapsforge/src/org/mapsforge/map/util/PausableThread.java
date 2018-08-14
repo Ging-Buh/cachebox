@@ -18,45 +18,6 @@ package org.mapsforge.map.util;
  * An abstract base class for threads which support pausing and resuming.
  */
 public abstract class PausableThread extends Thread {
-    /**
-     * Specifies the scheduling priority of a {@link Thread}.
-     */
-    protected enum ThreadPriority {
-        /**
-         * The priority between {@link #NORMAL} and {@link #HIGHEST}.
-         */
-        ABOVE_NORMAL((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2),
-
-        /**
-         * The priority between {@link #LOWEST} and {@link #NORMAL}.
-         */
-        BELOW_NORMAL((Thread.NORM_PRIORITY + Thread.MIN_PRIORITY) / 2),
-
-        /**
-         * The maximum priority a thread can have.
-         */
-        HIGHEST(MAX_PRIORITY),
-
-        /**
-         * The minimum priority a thread can have.
-         */
-        LOWEST(MIN_PRIORITY),
-
-        /**
-         * The default priority of a thread.
-         */
-        NORMAL(NORM_PRIORITY);
-
-        final int priority;
-
-        private ThreadPriority(int priority) {
-            if (priority < Thread.MIN_PRIORITY || priority > Thread.MAX_PRIORITY) {
-                throw new IllegalArgumentException("invalid priority: " + priority);
-            }
-            this.priority = priority;
-        }
-    }
-
     private boolean pausing;
     private boolean shouldPause;
 
@@ -170,4 +131,43 @@ public abstract class PausableThread extends Thread {
      * @return true if this thread has some work to do, false otherwise.
      */
     protected abstract boolean hasWork();
+
+    /**
+     * Specifies the scheduling priority of a {@link Thread}.
+     */
+    protected enum ThreadPriority {
+        /**
+         * The priority between {@link #NORMAL} and {@link #HIGHEST}.
+         */
+        ABOVE_NORMAL((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2),
+
+        /**
+         * The priority between {@link #LOWEST} and {@link #NORMAL}.
+         */
+        BELOW_NORMAL((Thread.NORM_PRIORITY + Thread.MIN_PRIORITY) / 2),
+
+        /**
+         * The maximum priority a thread can have.
+         */
+        HIGHEST(MAX_PRIORITY),
+
+        /**
+         * The minimum priority a thread can have.
+         */
+        LOWEST(MIN_PRIORITY),
+
+        /**
+         * The default priority of a thread.
+         */
+        NORMAL(NORM_PRIORITY);
+
+        final int priority;
+
+        private ThreadPriority(int priority) {
+            if (priority < Thread.MIN_PRIORITY || priority > Thread.MAX_PRIORITY) {
+                throw new IllegalArgumentException("invalid priority: " + priority);
+            }
+            this.priority = priority;
+        }
+    }
 }

@@ -29,16 +29,8 @@ import java.net.URLConnection;
 import java.util.zip.GZIPInputStream;
 
 class TileDownloader {
-    private static InputStream getInputStream(URLConnection urlConnection) throws IOException {
-        if ("gzip".equals(urlConnection.getContentEncoding())) {
-            return new GZIPInputStream(urlConnection.getInputStream());
-        }
-        return urlConnection.getInputStream();
-    }
-
     private final DownloadJob downloadJob;
     private final GraphicFactory graphicFactory;
-
     TileDownloader(DownloadJob downloadJob, GraphicFactory graphicFactory) {
         if (downloadJob == null) {
             throw new IllegalArgumentException("downloadJob must not be null");
@@ -48,6 +40,13 @@ class TileDownloader {
 
         this.downloadJob = downloadJob;
         this.graphicFactory = graphicFactory;
+    }
+
+    private static InputStream getInputStream(URLConnection urlConnection) throws IOException {
+        if ("gzip".equals(urlConnection.getContentEncoding())) {
+            return new GZIPInputStream(urlConnection.getInputStream());
+        }
+        return urlConnection.getInputStream();
     }
 
     TileBitmap downloadImage() throws IOException {

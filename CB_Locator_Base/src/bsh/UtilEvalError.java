@@ -45,46 +45,45 @@ package bsh;
  * <p>
  * Philosophically, EvalError and UtilEvalError corrospond to RuntimeException. However they are constrained in this way in order to add the
  * context for error reporting.
- * 
+ *
  * @see UtilTargetError
  */
 public class UtilEvalError extends Exception {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	protected UtilEvalError() {
-	}
+    protected UtilEvalError() {
+    }
 
-	public UtilEvalError(String s) {
-		super(s);
-	}
+    public UtilEvalError(String s) {
+        super(s);
+    }
 
-	public UtilEvalError(String s, Throwable cause) {
-		super(s, cause);
-	}
+    public UtilEvalError(String s, Throwable cause) {
+        super(s, cause);
+    }
 
-	/**
-	 * Re-throw as an eval error, prefixing msg to the message and specifying the node. If a node already exists the addNode is ignored.
-	 * 
-	 * @see #setNode(bsh.SimpleNode ) <p>
-	 * @param msg
-	 *            may be null for no additional message.
-	 */
-	public EvalError toEvalError(String msg, SimpleNode node, CallStack callstack) {
-		if (Interpreter.DEBUG)
-			printStackTrace();
+    /**
+     * Re-throw as an eval error, prefixing msg to the message and specifying the node. If a node already exists the addNode is ignored.
+     *
+     * @param msg may be null for no additional message.
+     * @see #setNode(bsh.SimpleNode) <p>
+     */
+    public EvalError toEvalError(String msg, SimpleNode node, CallStack callstack) {
+        if (Interpreter.DEBUG)
+            printStackTrace();
 
-		if (msg == null)
-			msg = "";
-		else
-			msg = msg + ": ";
-		return new EvalError(msg + getMessage(), node, callstack, this);
-	}
+        if (msg == null)
+            msg = "";
+        else
+            msg = msg + ": ";
+        return new EvalError(msg + getMessage(), node, callstack, this);
+    }
 
-	public EvalError toEvalError(SimpleNode node, CallStack callstack) {
-		return toEvalError(null, node, callstack);
-	}
+    public EvalError toEvalError(SimpleNode node, CallStack callstack) {
+        return toEvalError(null, node, callstack);
+    }
 
 }

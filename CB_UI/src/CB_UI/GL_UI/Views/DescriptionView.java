@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,42 +15,35 @@
  */
 package CB_UI.GL_UI.Views;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
-import org.slf4j.LoggerFactory;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
-
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Types.Cache;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GL_UI.Main.TabMainView;
-import CB_UI_Base.Global;
+import CB_UI.GlobalCore;
 import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.Fonts;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.Sprites;
-import CB_UI_Base.GL_UI.ViewConst;
+import CB_UI_Base.GL_UI.*;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.Global;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.graphics.GL_Paint;
-import CB_UI_Base.graphics.PolygonDrawable;
 import CB_UI_Base.graphics.Geometry.Line;
 import CB_UI_Base.graphics.Geometry.Quadrangle;
+import CB_UI_Base.graphics.PolygonDrawable;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import org.slf4j.LoggerFactory;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class DescriptionView extends CB_View_Base {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(DescriptionView.class);
@@ -59,7 +52,19 @@ public class DescriptionView extends CB_View_Base {
     final static String PREMIUM = "Premium";
     final static String BASIC_LIMIT = "3";
     final static String PREMIUM_LIMIT = "6000";
+    final static OnClickListener downloadClicked = new OnClickListener() {
 
+        @Override
+        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            GL.that.RunOnGL(new IRunOnGL() {
+                @Override
+                public void run() {
+                    TabMainView.actionShowDescriptionView.ReloadSelectedCache();
+                }
+            });
+            return true;
+        }
+    };
     private CacheListViewItem cacheInfo;
     private Button downloadButton;
     private Label MessageLabel, PowerdBy;
@@ -123,7 +128,7 @@ public class DescriptionView extends CB_View_Base {
         layout();
 
         float infoHeight = -(UiSizes.that.getInfoSliderHeight());
-        if (cacheInfo != null )
+        if (cacheInfo != null)
             infoHeight += cacheInfo.getHeight();
         infoHeight += margin * 2;
         CB_RectF world = this.getWorldRec();
@@ -250,20 +255,6 @@ public class DescriptionView extends CB_View_Base {
             downloadButton.disable();
         layout();
     }
-
-    final static OnClickListener downloadClicked = new OnClickListener() {
-
-        @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-            GL.that.RunOnGL(new IRunOnGL() {
-                @Override
-                public void run() {
-                    TabMainView.actionShowDescriptionView.ReloadSelectedCache();
-                }
-            });
-            return true;
-        }
-    };
 
     @Override
     public void render(Batch batch) {

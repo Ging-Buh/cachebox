@@ -1,8 +1,8 @@
 package CB_Locator.Events;
 
 public interface GPS_FallBackEvent {
-	public void FallBackToNetworkProvider();
+    public void FallBackToNetworkProvider();
 
-	public void Fix();
+    public void Fix();
 
 }

@@ -36,6 +36,29 @@ public class RenderThemeFuture extends FutureTask<RenderTheme> {
 
     private final AtomicInteger refCount = new AtomicInteger(1);
 
+    public RenderThemeFuture(GraphicFactory graphicFactory, XmlRenderTheme xmlRenderTheme, DisplayModel displayModel) {
+        super(new RenderThemeCallable(graphicFactory, xmlRenderTheme, displayModel));
+    }
+
+    public void decrementRefCount() {
+        int c = this.refCount.decrementAndGet();
+        if (c <= 0) {
+            try {
+                if (this.isDone()) {
+                    get().destroy();
+                } else {
+                    cancel(true);
+                }
+            } catch (Exception e) {
+                // just cleaning up
+            }
+        }
+    }
+
+    public void incrementRefCount() {
+        this.refCount.incrementAndGet();
+    }
+
     /**
      * Callable that performs the actual parsing of the render theme (via the RenderThemeHandler
      * as before).
@@ -64,28 +87,5 @@ public class RenderThemeFuture extends FutureTask<RenderTheme> {
                 throw new IllegalArgumentException("File error for XML rendertheme", e);
             }
         }
-    }
-
-    public RenderThemeFuture(GraphicFactory graphicFactory, XmlRenderTheme xmlRenderTheme, DisplayModel displayModel) {
-        super(new RenderThemeCallable(graphicFactory, xmlRenderTheme, displayModel));
-    }
-
-    public void decrementRefCount() {
-        int c = this.refCount.decrementAndGet();
-        if (c <= 0) {
-            try {
-                if (this.isDone()) {
-                    get().destroy();
-                } else {
-                    cancel(true);
-                }
-            } catch (Exception e) {
-                // just cleaning up
-            }
-        }
-    }
-
-    public void incrementRefCount() {
-        this.refCount.incrementAndGet();
     }
 }

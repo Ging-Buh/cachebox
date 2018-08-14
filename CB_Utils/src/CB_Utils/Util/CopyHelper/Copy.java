@@ -3,84 +3,83 @@ package CB_Utils.Util.CopyHelper;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
 public class Copy {
-	ArrayList<CopyRule> mRules;
+    ArrayList<CopyRule> mRules;
 
-	public Copy(ArrayList<CopyRule> rules) {
-		mRules = rules;
-	}
+    public Copy(ArrayList<CopyRule> rules) {
+        mRules = rules;
+    }
 
-	public Copy(CopyRule rule) {
-		mRules = new ArrayList<CopyRule>();
-		mRules.add(rule);
-	}
+    public Copy(CopyRule rule) {
+        mRules = new ArrayList<CopyRule>();
+        mRules.add(rule);
+    }
 
-	public interface CopyMsg {
-		public void Msg(String msg);
-	}
+    public static void copyFolder(File src, File dest) throws IOException {
 
-	public void Run() throws IOException {
-		Run(null);
-	}
+        if (src.isDirectory()) {
 
-	public void Run(CopyMsg MsgCallBack) throws IOException {
-		for (CopyRule rule : mRules) {
-			if (MsgCallBack != null)
-				MsgCallBack.Msg("Copy: " + rule.Name);
-			copyFolder(rule.sourcePath, rule.targetPath);
-		}
-	}
+            // if directory not exists, create it
+            if (!dest.exists()) {
+                dest.mkdir();
+            }
 
-	public static void copyFolder(File src, File dest) throws IOException {
+            // list all the directory contents
+            String files[] = src.list();
 
-		if (src.isDirectory()) {
+            for (String file : files) {
+                if (file.contains(".svn"))
+                    continue;
+                // construct the src and dest file structure
+                File srcFile = FileFactory.createFile(src, file);
+                File destFile = FileFactory.createFile(dest, file);
+                // recursive copy
+                copyFolder(srcFile, destFile);
+            }
 
-			// if directory not exists, create it
-			if (!dest.exists()) {
-				dest.mkdir();
-			}
+        } else {
 
-			// list all the directory contents
-			String files[] = src.list();
+            File parent = FileFactory.createFile(dest.getParent());
 
-			for (String file : files) {
-				if (file.contains(".svn"))
-					continue;
-				// construct the src and dest file structure
-				File srcFile = FileFactory.createFile(src, file);
-				File destFile = FileFactory.createFile(dest, file);
-				// recursive copy
-				copyFolder(srcFile, destFile);
-			}
+            if (!parent.exists())
+                parent.mkdir();
 
-		} else {
+            // if file, then copy it
+            // Use bytes stream to support all file types
+            InputStream in = src.getFileInputStream();
+            FileOutputStream out = dest.getFileOutputStream();
 
-			File parent = FileFactory.createFile(dest.getParent());
+            byte[] buffer = new byte[1024];
 
-			if (!parent.exists())
-				parent.mkdir();
+            int length;
+            // copy the file content in bytes
+            while ((length = in.read(buffer)) > 0) {
+                out.write(buffer, 0, length);
+            }
 
-			// if file, then copy it
-			// Use bytes stream to support all file types
-			InputStream in = src.getFileInputStream();
-			FileOutputStream out = dest.getFileOutputStream();
+            in.close();
+            out.close();
+        }
+    }
 
-			byte[] buffer = new byte[1024];
+    public void Run() throws IOException {
+        Run(null);
+    }
 
-			int length;
-			// copy the file content in bytes
-			while ((length = in.read(buffer)) > 0) {
-				out.write(buffer, 0, length);
-			}
+    public void Run(CopyMsg MsgCallBack) throws IOException {
+        for (CopyRule rule : mRules) {
+            if (MsgCallBack != null)
+                MsgCallBack.Msg("Copy: " + rule.Name);
+            copyFolder(rule.sourcePath, rule.targetPath);
+        }
+    }
 
-			in.close();
-			out.close();
-		}
-	}
+    public interface CopyMsg {
+        public void Msg(String msg);
+    }
 }

@@ -17,7 +17,6 @@
 package CB_UI.GL_UI.Main.Actions;
 
 import CB_Locator.LocatorSettings;
-import CB_Locator.Map.CB_InternalRenderTheme;
 import CB_Locator.Map.Layer;
 import CB_Locator.Map.ManagerBase;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -49,13 +48,97 @@ import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.*;
 import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
 
-import java.io.InputStream;
 import java.util.*;
 
 /**
  * @author Longri
  */
 public class CB_Action_ShowMap extends CB_Action_ShowView {
+    private static final String log = "CB_Action_ShowMap";
+    private static final int START = 1;
+    private static final int PAUSE = 2;
+    private static final int STOP = 3;
+    int menuID;
+    private Menu mRenderThemesSelectionMenu;
+    private final OnClickListener onItemClickListener = new OnClickListener() {
+
+        @Override
+        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            switch (((MenuItem) v).getMenuItemId()) {
+                case MenuID.MI_LAYER:
+                    showMapLayerMenu();
+                    return true;
+                case MenuID.MI_RENDERTHEMES:
+                    MenuItem mi = (MenuItem) v;
+                    if (mi.isEnabled()) {
+                        return showModusSelectionMenu();
+                    } else
+                        return false;
+                case MenuID.MI_MAPVIEW_OVERLAY_VIEW:
+                    showMapOverlayMenu();
+                    return true;
+                case MenuID.MI_MAPVIEW_VIEW:
+                    showMapViewLayerMenu();
+                    return true;
+                case MenuID.MI_ALIGN_TO_COMPSS:
+                    MapView.that.SetAlignToCompass(!MapView.that.GetAlignToCompass());
+                    return true;
+                case MenuID.MI_SHOW_ALL_WAYPOINTS:
+                    toggleSetting(Config.ShowAllWaypoints);
+                    return true;
+                case MenuID.MI_HIDE_FINDS:
+                    toggleSettingWithReload(Config.MapHideMyFinds);
+                    return true;
+                case MenuID.MI_SHOW_RATINGS:
+                    toggleSetting(Config.MapShowRating);
+                    return true;
+                case MenuID.MI_SHOW_DT:
+                    toggleSetting(Config.MapShowDT);
+                    return true;
+                case MenuID.MI_SHOW_TITLE:
+                    toggleSetting(Config.MapShowTitles);
+                    return true;
+                case MenuID.MI_SHOW_DIRECT_LINE:
+                    toggleSetting(Config.ShowDirektLine);
+                    return true;
+                case MenuID.MI_SHOW_ACCURACY_CIRCLE:
+                    toggleSetting(Config.ShowAccuracyCircle);
+                    return true;
+                case MenuID.MI_SHOW_CENTERCROSS:
+                    toggleSetting(Config.ShowMapCenterCross);
+                    return true;
+                case MenuID.MI_MAP_SHOW_COMPASS:
+                    toggleSetting(Config.MapShowCompass);
+                    return true;
+                case MenuID.MI_CENTER_WP:
+                    if (MapView.that != null) {
+                        MapView.that.createWaypointAtCenter();
+                    }
+                    return true;
+            /*
+            case MenuID.MI_SETTINGS:
+				TabMainView.actionShowSettings.Execute();
+				return true;
+			*/
+			/*
+			case MenuID.MI_SEARCH:
+				if (SearchDialog.that == null) {
+					new SearchDialog();
+				}
+				SearchDialog.that.showNotCloseAutomaticly();
+				return true;
+			*/
+                case MenuID.MI_TREC_REC:
+                    showMenuTrackRecording();
+                    return true;
+                case MenuID.MI_MAP_DOWNOAD:
+                    MapDownload.getInstance().show();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+    };
 
     public CB_Action_ShowMap() {
         super("Map", MenuID.AID_SHOW_MAP);
@@ -286,90 +369,6 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         icm.Show();
     }
 
-    private final OnClickListener onItemClickListener = new OnClickListener() {
-
-        @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-            switch (((MenuItem) v).getMenuItemId()) {
-                case MenuID.MI_LAYER:
-                    showMapLayerMenu();
-                    return true;
-                case MenuID.MI_RENDERTHEMES:
-                    MenuItem mi = (MenuItem) v;
-                    if (mi.isEnabled()) {
-                        return showModusSelectionMenu();
-                    } else
-                        return false;
-                case MenuID.MI_MAPVIEW_OVERLAY_VIEW:
-                    showMapOverlayMenu();
-                    return true;
-                case MenuID.MI_MAPVIEW_VIEW:
-                    showMapViewLayerMenu();
-                    return true;
-                case MenuID.MI_ALIGN_TO_COMPSS:
-                    MapView.that.SetAlignToCompass(!MapView.that.GetAlignToCompass());
-                    return true;
-                case MenuID.MI_SHOW_ALL_WAYPOINTS:
-                    toggleSetting(Config.ShowAllWaypoints);
-                    return true;
-                case MenuID.MI_HIDE_FINDS:
-                    toggleSettingWithReload(Config.MapHideMyFinds);
-                    return true;
-                case MenuID.MI_SHOW_RATINGS:
-                    toggleSetting(Config.MapShowRating);
-                    return true;
-                case MenuID.MI_SHOW_DT:
-                    toggleSetting(Config.MapShowDT);
-                    return true;
-                case MenuID.MI_SHOW_TITLE:
-                    toggleSetting(Config.MapShowTitles);
-                    return true;
-                case MenuID.MI_SHOW_DIRECT_LINE:
-                    toggleSetting(Config.ShowDirektLine);
-                    return true;
-                case MenuID.MI_SHOW_ACCURACY_CIRCLE:
-                    toggleSetting(Config.ShowAccuracyCircle);
-                    return true;
-                case MenuID.MI_SHOW_CENTERCROSS:
-                    toggleSetting(Config.ShowMapCenterCross);
-                    return true;
-                case MenuID.MI_MAP_SHOW_COMPASS:
-                    toggleSetting(Config.MapShowCompass);
-                    return true;
-                case MenuID.MI_CENTER_WP:
-                    if (MapView.that != null) {
-                        MapView.that.createWaypointAtCenter();
-                    }
-                    return true;
-            /*
-            case MenuID.MI_SETTINGS:
-				TabMainView.actionShowSettings.Execute();
-				return true;
-			*/
-			/*
-			case MenuID.MI_SEARCH:
-				if (SearchDialog.that == null) {
-					new SearchDialog();
-				}
-				SearchDialog.that.showNotCloseAutomaticly();
-				return true;
-			*/
-                case MenuID.MI_TREC_REC:
-                    showMenuTrackRecording();
-                    return true;
-                case MenuID.MI_MAP_DOWNOAD:
-                    MapDownload.getInstance().show();
-                    return true;
-                default:
-                    return false;
-            }
-        }
-    };
-
-    private static final int START = 1;
-    private static final int PAUSE = 2;
-    private static final int STOP = 3;
-
     private void showMenuTrackRecording() {
         MenuItem mi;
         Menu cm2 = new Menu("TrackRecordContextMenu");
@@ -468,9 +467,6 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         return true;
     }
 
-    private Menu mRenderThemesSelectionMenu;
-    int menuID;
-
     private void addRenderTheme(String theme, String PaN, int which) {
         MenuItem mi = mRenderThemesSelectionMenu.addItem(menuID++, "", theme); // ohne Translation
         mi.setData(which);
@@ -523,7 +519,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         mRenderThemesSelectionMenu.addOnClickListener(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                showStyleSelection((int) ((MenuItem) v).getData(),  RenderThemes.get(((MenuItem) v).getTitle()));
+                showStyleSelection((int) ((MenuItem) v).getData(), RenderThemes.get(((MenuItem) v).getTitle()));
                 return true;
             }
         });
@@ -597,31 +593,6 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
             }
         }
         return new HashMap<String, String>();
-    }
-
-    private class GetStylesCallback implements XmlRenderThemeMenuCallback {
-        private HashMap<String, String> styles;
-
-        @Override
-        public Set<String> getCategories(XmlRenderThemeStyleMenu style) {
-            styles = new HashMap<String, String>();
-            Map<String, XmlRenderThemeStyleLayer> styleLayers = style.getLayers();
-
-            for (XmlRenderThemeStyleLayer styleLayer : styleLayers.values()) {
-                if (styleLayer.isVisible()) {
-                    styles.put(styleLayer.getTitle(Translation.Get("Language2Chars").toLowerCase()), styleLayer.getId());
-                }
-            }
-
-            return null;
-        }
-
-        public HashMap<String, String> getStyles() {
-            if (styles == null) {
-                styles = new HashMap<String, String>();
-            }
-            return styles;
-        }
     }
 
     private void showOverlaySelection(String values, HashMap<String, String> StyleOverlays, String ConfigStyle) {
@@ -746,6 +717,37 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         return new HashMap<String, String>();
     }
 
+    interface OverlaysCallback extends XmlRenderThemeMenuCallback {
+        public HashMap<String, String> getOverlays();
+
+        public void setLayer(String layer);
+    }
+
+    private class GetStylesCallback implements XmlRenderThemeMenuCallback {
+        private HashMap<String, String> styles;
+
+        @Override
+        public Set<String> getCategories(XmlRenderThemeStyleMenu style) {
+            styles = new HashMap<String, String>();
+            Map<String, XmlRenderThemeStyleLayer> styleLayers = style.getLayers();
+
+            for (XmlRenderThemeStyleLayer styleLayer : styleLayers.values()) {
+                if (styleLayer.isVisible()) {
+                    styles.put(styleLayer.getTitle(Translation.Get("Language2Chars").toLowerCase()), styleLayer.getId());
+                }
+            }
+
+            return null;
+        }
+
+        public HashMap<String, String> getStyles() {
+            if (styles == null) {
+                styles = new HashMap<String, String>();
+            }
+            return styles;
+        }
+    }
+
     private class GetOverlaysCallback implements OverlaysCallback {
         public String selectedLayer;
         private HashMap<String, String> overlays;
@@ -774,12 +776,6 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         public void setLayer(String layer) {
             selectedLayer = layer;
         }
-    }
-
-    interface OverlaysCallback extends XmlRenderThemeMenuCallback {
-        public HashMap<String, String> getOverlays();
-
-        public void setLayer(String layer);
     }
 
 }

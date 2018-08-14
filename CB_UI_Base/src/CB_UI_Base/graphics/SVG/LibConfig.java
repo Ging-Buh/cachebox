@@ -18,9 +18,9 @@ package CB_UI_Base.graphics.SVG;
 
 /**
  * Configure debugging on or off.
- * 
+ *
  * @hide
  */
 public class LibConfig {
-	public static final boolean DEBUG = false;
+    public static final boolean DEBUG = false;
 }

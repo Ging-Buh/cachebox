@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2011-2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -17,7 +17,7 @@ package CB_Utils.Settings;
 
 public class SettingLongString extends SettingString {
 
-	public SettingLongString(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage) {
-		super(name, category, modus, defaultValue, StoreType, usage);
-	}
+    public SettingLongString(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage) {
+        super(name, category, modus, defaultValue, StoreType, usage);
+    }
 }

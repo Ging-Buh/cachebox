@@ -1,61 +1,45 @@
 package CB_UI.GL_UI.Activitys.settings;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-
 import CB_Locator.Events.PositionChangedEventList;
 import CB_Translation_Base.TranslationEngine.Lang;
 import CB_Translation_Base.TranslationEngine.SelectedLangChangedEvent;
 import CB_Translation_Base.TranslationEngine.SelectedLangChangedEventList;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GlobalCore;
-import CB_UI.GL_UI.SoundCache;
-import CB_UI.GL_UI.SoundCache.Sounds;
 import CB_UI.GL_UI.Controls.API_Button;
 import CB_UI.GL_UI.Controls.QuickButtonList;
 import CB_UI.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
-import CB_UI.GL_UI.Views.MapView;
+import CB_UI.GL_UI.SoundCache;
+import CB_UI.GL_UI.SoundCache.Sounds;
 import CB_UI.GL_UI.Views.AdvancedSettingsView.SettingsListButtonLangSpinner;
 import CB_UI.GL_UI.Views.AdvancedSettingsView.SettingsListButtonSkinSpinner;
 import CB_UI.GL_UI.Views.AdvancedSettingsView.SettingsListCategoryButton;
 import CB_UI.GL_UI.Views.AdvancedSettingsView.SettingsListGetApiButton;
+import CB_UI.GL_UI.Views.MapView;
+import CB_UI.GlobalCore;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
 import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
-import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Activitys.ColorPicker;
 import CB_UI_Base.GL_UI.Activitys.ColorPicker.IReturnListener;
-import CB_UI_Base.GL_UI.Controls.Box;
-import CB_UI_Base.GL_UI.Controls.Button;
-import CB_UI_Base.GL_UI.Controls.CollapseBox.IAnimatedHeightChangedListener;
-import CB_UI_Base.GL_UI.Controls.FloatControl;
-import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
-import CB_UI_Base.GL_UI.Controls.LinearCollapseBox;
-import CB_UI_Base.GL_UI.Controls.Linearlayout;
-import CB_UI_Base.GL_UI.Controls.ScrollBox;
-import CB_UI_Base.GL_UI.Controls.Spinner;
-import CB_UI_Base.GL_UI.Controls.Spinner.ISelectionChangedListener;
-import CB_UI_Base.GL_UI.Controls.SpinnerAdapter;
-import CB_UI_Base.GL_UI.Controls.ChkBox;
+import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Controls.ChkBox.OnCheckChangedListener;
+import CB_UI_Base.GL_UI.Controls.CollapseBox.IAnimatedHeightChangedListener;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox.IReturnValueListener;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox.IReturnValueListenerDouble;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox.IReturnValueListenerTime;
 import CB_UI_Base.GL_UI.Controls.Dialogs.StringInputBox;
+import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_UI_Base.GL_UI.Controls.Spinner.ISelectionChangedListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
@@ -64,1465 +48,1446 @@ import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Config_Core;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Settings.Audio;
-import CB_Utils.Settings.SettingBase;
-import CB_Utils.Settings.SettingBool;
-import CB_Utils.Settings.SettingCategory;
-import CB_Utils.Settings.SettingColor;
-import CB_Utils.Settings.SettingDouble;
-import CB_Utils.Settings.SettingEnum;
-import CB_Utils.Settings.SettingFile;
-import CB_Utils.Settings.SettingFloat;
-import CB_Utils.Settings.SettingFolder;
-import CB_Utils.Settings.SettingInt;
-import CB_Utils.Settings.SettingIntArray;
-import CB_Utils.Settings.SettingLongString;
-import CB_Utils.Settings.SettingModus;
-import CB_Utils.Settings.SettingStoreType;
-import CB_Utils.Settings.SettingString;
-import CB_Utils.Settings.SettingStringArray;
-import CB_Utils.Settings.SettingTime;
-import CB_Utils.Settings.SettingUsage;
-import CB_Utils.Settings.SettingsAudio;
+import CB_Utils.Settings.*;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import CB_Utils.fileProvider.FilenameFilter;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class SettingsActivity extends ActivityBase implements SelectedLangChangedEvent {
 
-	private CB_List<SettingCategory> Categorys = new CB_List<SettingCategory>();
-	private Button btnOk, btnCancel, btnMenu;
-	private ScrollBox scrollBox;
-	private CB_RectF ButtonRec, itemRec;
-	private API_Button apiBtn;
-	private static SettingsActivity that;
-
-	/***
-	 * Enthält den Key des zu Editierenden Wertes der SettingsList
-	 */
-	public static int EditKey = -1;
-
-	private Linearlayout LinearLayout;
-
-	public SettingsActivity() {
-		super(ActivityBase.ActivityRec(), "Settings");
-		initial();
-		SelectedLangChangedEventList.Add(this);
-		that = this;
-	}
-
-	private void initial() {
-		this.setLongClickable(true);
-		Config.settings.SaveToLastValue();
-		ButtonRec = new CB_RectF(leftBorder, 0, innerWidth, UI_Size_Base.that.getButtonHeight());
-
-		itemRec = new CB_RectF(leftBorder, 0, ButtonRec.getWidth() - leftBorder - rightBorder, UI_Size_Base.that.getButtonHeight());
-
-		createButtons();
-		fillContent();
-		resortList();
-	}
-
-	@Override
-	protected void SkinIsChanged() {
-		super.SkinIsChanged();
-		this.removeChild(btnOk);
-		this.removeChild(btnCancel);
-		this.removeChild(btnMenu);
-		createButtons();
-		fillContent();
-		resortList();
-	}
-
-	private void createButtons() {
-		float btnW = (innerWidth - UI_Size_Base.that.getButtonWidth()) / 2;
-
-		btnOk = new Button(leftBorder, this.getBottomHeight(), btnW, UI_Size_Base.that.getButtonHeight(), "OK Button");
-		btnMenu = new Button(btnOk.getMaxX(), this.getBottomHeight(), UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight(), "Menu Button");
-		btnCancel = new Button(btnMenu.getMaxX(), this.getBottomHeight(), btnW, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
-
-		// Translations
-		btnOk.setText(Translation.Get("save"));
-		btnCancel.setText(Translation.Get("cancel"));
-
-		this.addChild(btnMenu);
-		btnMenu.setText("...");
-		btnMenu.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				Menu icm = new Menu("Settings");
-				icm.addOnClickListener(new OnClickListener() {
-
-					@Override
-					public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-						switch (((MenuItem) v).getMenuItemId()) {
-						case MenuID.MI_SHOW_EXPERT:
-							Config.SettingsShowExpert.setValue(!Config.SettingsShowExpert.getValue());
-							Config.SettingsShowAll.setValue(false);
-							resortList();
-							return true;
-
-						case MenuID.MI_SHOW_ALL:
-							Config.SettingsShowAll.setValue(!Config.SettingsShowAll.getValue());
-							Config.SettingsShowExpert.setValue(false);
-							resortList();
-							return true;
-						}
-
-						return false;
-					}
-				});
-
-				if (Config.SettingsShowAll.getValue())
-					Config.SettingsShowExpert.setValue(false);
-				icm.addCheckableItem(MenuID.MI_SHOW_EXPERT, "Settings_Expert", Config.SettingsShowExpert.getValue());
-				icm.addCheckableItem(MenuID.MI_SHOW_ALL, "Settings_All", Config.SettingsShowAll.getValue());
-
-				icm.setPrompt(Translation.Get("changeSettingsVisibility"));
-
-				icm.Show();
-				return true;
-			}
-		});
-
-		this.addChild(btnOk);
-		btnOk.setOnClickListener(new OnClickListener() {
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-
-				String ActionsString = "";
-				int counter = 0;
-				for (int i = 0, n = SettingsItem_QuickButton.tmpQuickList.size(); i < n; i++) {
-					QuickButtonItem tmp = SettingsItem_QuickButton.tmpQuickList.get(i);
-					ActionsString += String.valueOf(tmp.getAction().ordinal());
-					if (counter < SettingsItem_QuickButton.tmpQuickList.size() - 1) {
-						ActionsString += ",";
-					}
-					counter++;
-				}
-				Config.quickButtonList.setValue(ActionsString);
+    /***
+     * Enthält den Key des zu Editierenden Wertes der SettingsList
+     */
+    public static int EditKey = -1;
+    private static SettingsActivity that;
+    /**
+     * List of audio settings which can mute with GlobalVolume settings
+     */
+    ArrayList<SettingsItem_Audio> audioSettingsList;
+    ArrayList<Lang> Sprachen;
+    OnMsgBoxClickListener msgBoxReturnListener = new OnMsgBoxClickListener() {
+
+        @Override
+        public boolean onClick(int which, Object data) {
+            show();
+            return true;
+        }
+    };
+    private CB_List<SettingCategory> Categorys = new CB_List<SettingCategory>();
+    private Button btnOk, btnCancel, btnMenu;
+    private ScrollBox scrollBox;
+    private CB_RectF ButtonRec, itemRec;
+    private API_Button apiBtn;
+    private Linearlayout LinearLayout;
+
+    public SettingsActivity() {
+        super(ActivityBase.ActivityRec(), "Settings");
+        initial();
+        SelectedLangChangedEventList.Add(this);
+        that = this;
+    }
+
+    public static void resortList() {
+        // show();
+        if (that != null) {
+            float scrollPos = that.scrollBox.getScrollY();
+            that.scrollBox = null;
+            that.LinearLayout = null;
+
+            that.fillContent();
+            that.scrollBox.scrollTo(scrollPos);
+        }
+
+    }
+
+    private void initial() {
+        this.setLongClickable(true);
+        Config.settings.SaveToLastValue();
+        ButtonRec = new CB_RectF(leftBorder, 0, innerWidth, UI_Size_Base.that.getButtonHeight());
+
+        itemRec = new CB_RectF(leftBorder, 0, ButtonRec.getWidth() - leftBorder - rightBorder, UI_Size_Base.that.getButtonHeight());
+
+        createButtons();
+        fillContent();
+        resortList();
+    }
+
+    @Override
+    protected void SkinIsChanged() {
+        super.SkinIsChanged();
+        this.removeChild(btnOk);
+        this.removeChild(btnCancel);
+        this.removeChild(btnMenu);
+        createButtons();
+        fillContent();
+        resortList();
+    }
+
+    private void createButtons() {
+        float btnW = (innerWidth - UI_Size_Base.that.getButtonWidth()) / 2;
+
+        btnOk = new Button(leftBorder, this.getBottomHeight(), btnW, UI_Size_Base.that.getButtonHeight(), "OK Button");
+        btnMenu = new Button(btnOk.getMaxX(), this.getBottomHeight(), UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight(), "Menu Button");
+        btnCancel = new Button(btnMenu.getMaxX(), this.getBottomHeight(), btnW, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
+
+        // Translations
+        btnOk.setText(Translation.Get("save"));
+        btnCancel.setText(Translation.Get("cancel"));
+
+        this.addChild(btnMenu);
+        btnMenu.setText("...");
+        btnMenu.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                Menu icm = new Menu("Settings");
+                icm.addOnClickListener(new OnClickListener() {
+
+                    @Override
+                    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                        switch (((MenuItem) v).getMenuItemId()) {
+                            case MenuID.MI_SHOW_EXPERT:
+                                Config.SettingsShowExpert.setValue(!Config.SettingsShowExpert.getValue());
+                                Config.SettingsShowAll.setValue(false);
+                                resortList();
+                                return true;
+
+                            case MenuID.MI_SHOW_ALL:
+                                Config.SettingsShowAll.setValue(!Config.SettingsShowAll.getValue());
+                                Config.SettingsShowExpert.setValue(false);
+                                resortList();
+                                return true;
+                        }
 
-				Config.settings.SaveToLastValue();
-				Config.AcceptChanges();
+                        return false;
+                    }
+                });
 
-				// Notify QuickButtonList
-				QuickButtonList.that.notifyDataSetChanged();
+                if (Config.SettingsShowAll.getValue())
+                    Config.SettingsShowExpert.setValue(false);
+                icm.addCheckableItem(MenuID.MI_SHOW_EXPERT, "Settings_Expert", Config.SettingsShowExpert.getValue());
+                icm.addCheckableItem(MenuID.MI_SHOW_ALL, "Settings_All", Config.SettingsShowAll.getValue());
 
-				if (MapView.that != null)
-					MapView.that.setNewSettings(MapView.INITIAL_NEW_SETTINGS);
+                icm.setPrompt(Translation.Get("changeSettingsVisibility"));
 
-				finish();
-				return true;
-			}
-		});
+                icm.Show();
+                return true;
+            }
+        });
 
-		this.addChild(btnCancel);
-		btnCancel.setOnClickListener(new OnClickListener() {
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				Config.settings.LoadFromLastValue();
+        this.addChild(btnOk);
+        btnOk.setOnClickListener(new OnClickListener() {
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 
-				finish();
-				return true;
-			}
-		});
+                String ActionsString = "";
+                int counter = 0;
+                for (int i = 0, n = SettingsItem_QuickButton.tmpQuickList.size(); i < n; i++) {
+                    QuickButtonItem tmp = SettingsItem_QuickButton.tmpQuickList.get(i);
+                    ActionsString += String.valueOf(tmp.getAction().ordinal());
+                    if (counter < SettingsItem_QuickButton.tmpQuickList.size() - 1) {
+                        ActionsString += ",";
+                    }
+                    counter++;
+                }
+                Config.quickButtonList.setValue(ActionsString);
 
-	}
+                Config.settings.SaveToLastValue();
+                Config.AcceptChanges();
 
-	private void fillContent() {
+                // Notify QuickButtonList
+                QuickButtonList.that.notifyDataSetChanged();
 
-		// Categorie List zusammen stellen
+                if (MapView.that != null)
+                    MapView.that.setNewSettings(MapView.INITIAL_NEW_SETTINGS);
 
-		if (Categorys == null) {
-			Categorys = new CB_List<SettingCategory>();
-		}
+                finish();
+                return true;
+            }
+        });
 
-		Categorys.clear();
-		SettingCategory[] tmp = SettingCategory.values();
-		for (SettingCategory item : tmp) {
-			if (item != SettingCategory.Button) {
-				Categorys.add(item);
-			}
+        this.addChild(btnCancel);
+        btnCancel.setOnClickListener(new OnClickListener() {
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                Config.settings.LoadFromLastValue();
 
-		}
+                finish();
+                return true;
+            }
+        });
+
+    }
 
-		SettingsListButtonLangSpinner<?> lang = new SettingsListButtonLangSpinner<Object>("Lang", SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
-		CB_View_Base langView = getLangSpinnerView(lang);
+    private void fillContent() {
 
-		addControlToLinearLayout(langView, margin);
+        // Categorie List zusammen stellen
 
-		Iterator<SettingCategory> iteratorCat = Categorys.iterator();
-		if (iteratorCat != null && iteratorCat.hasNext()) {
+        if (Categorys == null) {
+            Categorys = new CB_List<SettingCategory>();
+        }
 
-			ArrayList<SettingBase<?>> SortedSettingList = new ArrayList<SettingBase<?>>();// Config.settings.values().toArray();
+        Categorys.clear();
+        SettingCategory[] tmp = SettingCategory.values();
+        for (SettingCategory item : tmp) {
+            if (item != SettingCategory.Button) {
+                Categorys.add(item);
+            }
 
-			for (Iterator<SettingBase<?>> it = Config.settings.iterator(); it.hasNext();) {
-				SettingBase<?> setting = it.next();
-				if (setting.getUsage() == SettingUsage.ACB || setting.getUsage() == SettingUsage.ALL)
-					SortedSettingList.add(setting);
-			}
+        }
 
-			//Collections.sort(SortedSettingList);
+        SettingsListButtonLangSpinner<?> lang = new SettingsListButtonLangSpinner<Object>("Lang", SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
+        CB_View_Base langView = getLangSpinnerView(lang);
 
-			do {
-				int position = 0;
+        addControlToLinearLayout(langView, margin);
 
-				SettingCategory cat = iteratorCat.next();
-				SettingsListCategoryButton<?> catBtn = new SettingsListCategoryButton<Object>(cat.name(), SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
+        Iterator<SettingCategory> iteratorCat = Categorys.iterator();
+        if (iteratorCat != null && iteratorCat.hasNext()) {
 
-				final CB_View_Base btn = getView(catBtn, 1);
+            ArrayList<SettingBase<?>> SortedSettingList = new ArrayList<SettingBase<?>>();// Config.settings.values().toArray();
 
-				// add Cat einträge
-				final LinearCollapseBox lay = new LinearCollapseBox(btn, "");
-				lay.setClickable(true);
-				lay.setAnimationListener(new IAnimatedHeightChangedListener() {
+            for (Iterator<SettingBase<?>> it = Config.settings.iterator(); it.hasNext(); ) {
+                SettingBase<?> setting = it.next();
+                if (setting.getUsage() == SettingUsage.ACB || setting.getUsage() == SettingUsage.ALL)
+                    SortedSettingList.add(setting);
+            }
 
-					@Override
-					public void animatedHeightChanged(float Height) {
-						LinearLayout.layout();
+            //Collections.sort(SortedSettingList);
 
-						LinearLayout.setZeroPos();
-						scrollBox.setVirtualHeight(LinearLayout.getHeight());
+            do {
+                int position = 0;
 
-					}
-				});
+                SettingCategory cat = iteratorCat.next();
+                SettingsListCategoryButton<?> catBtn = new SettingsListCategoryButton<Object>(cat.name(), SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
 
-				int entryCount = 0;
-				if (cat == SettingCategory.Login) {
-					SettingsListGetApiButton<?> lgIn = new SettingsListGetApiButton<Object>(cat.name(), SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
-					final CB_View_Base btnLgIn = getView(lgIn, 1);
-					lay.addChild(btnLgIn);
-					entryCount++;
-				}
+                final CB_View_Base btn = getView(catBtn, 1);
 
-				if (cat == SettingCategory.QuickList) {
+                // add Cat einträge
+                final LinearCollapseBox lay = new LinearCollapseBox(btn, "");
+                lay.setClickable(true);
+                lay.setAnimationListener(new IAnimatedHeightChangedListener() {
 
-					final SettingsItem_QuickButton btnLgIn = new SettingsItem_QuickButton(itemRec, "QuickButtonEditor");
-					lay.addChild(btnLgIn);
-					entryCount++;
-				}
+                    @Override
+                    public void animatedHeightChanged(float Height) {
+                        LinearLayout.layout();
 
-				if (cat == SettingCategory.Debug) {
-					SettingsListCategoryButton<?> disp = new SettingsListCategoryButton<Object>("DebugDisplayInfo", SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
-					final CB_View_Base btnDisp = getView(disp, 1);
+                        LinearLayout.setZeroPos();
+                        scrollBox.setVirtualHeight(LinearLayout.getHeight());
 
-					btnDisp.setSize(itemRec);
+                    }
+                });
 
-					lay.addChild(btnDisp);
-					entryCount++;
-				}
+                int entryCount = 0;
+                if (cat == SettingCategory.Login) {
+                    SettingsListGetApiButton<?> lgIn = new SettingsListGetApiButton<Object>(cat.name(), SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
+                    final CB_View_Base btnLgIn = getView(lgIn, 1);
+                    lay.addChild(btnLgIn);
+                    entryCount++;
+                }
 
-				if (cat == SettingCategory.Skin) {
-					SettingsListButtonSkinSpinner<?> skin = new SettingsListButtonSkinSpinner<Object>("Skin", SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
-					CB_View_Base skinView = getSkinSpinnerView(skin);
-					lay.addChild(skinView);
-					entryCount++;
-				}
+                if (cat == SettingCategory.QuickList) {
 
-				if (cat == SettingCategory.Sounds) {
-					CB_RectF rec = itemRec.copy();
-					Box lblBox = new Box(rec, "LabelBox");
+                    final SettingsItem_QuickButton btnLgIn = new SettingsItem_QuickButton(itemRec, "QuickButtonEditor");
+                    lay.addChild(btnLgIn);
+                    entryCount++;
+                }
 
-					CB_RectF rec2 = rec.copy();
-					rec2.setWidth(rec.getWidth() - (rec.getX() * 2));
-					rec2.setHeight(rec.getHalfHeight());
+                if (cat == SettingCategory.Debug) {
+                    SettingsListCategoryButton<?> disp = new SettingsListCategoryButton<Object>("DebugDisplayInfo", SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
+                    final CB_View_Base btnDisp = getView(disp, 1);
 
-					Label lblVolume = new Label(this.name + " lblVolume", itemRec, Translation.Get("Volume"));
-					Label lblMute = new Label(this.name + " lblMute", itemRec, Translation.Get("Mute"));
+                    btnDisp.setSize(itemRec);
 
-					lblVolume.setZeroPos();
-					lblMute.setZeroPos();
+                    lay.addChild(btnDisp);
+                    entryCount++;
+                }
 
-					lblMute.setHAlignment(HAlignment.RIGHT);
+                if (cat == SettingCategory.Skin) {
+                    SettingsListButtonSkinSpinner<?> skin = new SettingsListButtonSkinSpinner<Object>("Skin", SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
+                    CB_View_Base skinView = getSkinSpinnerView(skin);
+                    lay.addChild(skinView);
+                    entryCount++;
+                }
 
-					lblBox.addChild(lblMute);
-					lblBox.addChild(lblVolume);
+                if (cat == SettingCategory.Sounds) {
+                    CB_RectF rec = itemRec.copy();
+                    Box lblBox = new Box(rec, "LabelBox");
 
-					lay.addChild(lblBox);
-					entryCount++;
-				}
+                    CB_RectF rec2 = rec.copy();
+                    rec2.setWidth(rec.getWidth() - (rec.getX() * 2));
+                    rec2.setHeight(rec.getHalfHeight());
 
-				Boolean expandLayout = false;
+                    Label lblVolume = new Label(this.name + " lblVolume", itemRec, Translation.Get("Volume"));
+                    Label lblMute = new Label(this.name + " lblMute", itemRec, Translation.Get("Mute"));
 
-				// int layoutHeight = 0;
-				for (Iterator<SettingBase<?>> it = SortedSettingList.iterator(); it.hasNext();) {
-					SettingBase<?> settingItem = it.next();
-					if (settingItem.getCategory().name().equals(cat.name())) {
-						// item nur zur Liste Hinzufügen, wenn der SettingModus dies auch zulässt.
-						if (((settingItem.getModus() == SettingModus.Normal) || (settingItem.getModus() == SettingModus.Expert && Config.SettingsShowExpert.getValue()) || Config.SettingsShowAll.getValue())
-								&& (settingItem.getModus() != SettingModus.Never)) {
-
-							final CB_View_Base view = getView(settingItem, position++);
-
-							if (Config.FieldNotesLoadAll.getValue() && settingItem.getName().equalsIgnoreCase("FieldNotesLoadLength")) {
-								((SettingsItemBase) view).disable();
-
-							}
-
-							if (view instanceof Button) {
-								view.setSize(itemRec);
-							}
-
-							lay.addChild(view);
-							entryCount++;
-							Config.settings.indexOf(settingItem);
-							if (Config.settings.indexOf(settingItem) == EditKey) {
-								expandLayout = true;
-							}
-						}
-					}
-				}
-
-
-
-				if (entryCount > 0) {
-
-					lay.setBackground(this.getBackground());// Activity Background
-					if (!expandLayout)
-						lay.setAnimationHeight(0f);
-
-					addControlToLinearLayout(btn, margin);
-					addControlToLinearLayout(lay, -(this.drawableBackground.getBottomHeight()) / 2);
-
-					btn.setOnClickListener(new OnClickListener() {
-						@Override
-						public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-							lay.Toggle();
-							return true;
-						}
-					});
-				}
-
-			} while (iteratorCat.hasNext());
-
-		}
-
-		setVolumeState(Config.GlobalVolume.getValue().Mute);
-		apiBtn.setImage();
-
-	}
-
-	private void addControlToLinearLayout(CB_View_Base view, float itemMargin) {
-		if (LinearLayout == null || scrollBox == null) {
-
-			CB_RectF rec = new CB_RectF(0, btnOk.getMaxY() + margin, this.getWidth(), this.getHeight() - btnOk.getMaxY() - margin);
-
-			scrollBox = new ScrollBox(rec);
-			scrollBox.setClickable(true);
-			scrollBox.setLongClickable(true);
-			LinearLayout = new Linearlayout(ButtonRec.getWidth(), "SettingsActivity-LinearLayout");
-			LinearLayout.setClickable(true);
-			LinearLayout.setLongClickable(true);
-			LinearLayout.setZeroPos();
-			scrollBox.addChild(LinearLayout);
-			// LinearLayout.setBackground(new ColorDrawable(Color.RED));
-			scrollBox.setBackground(this.getBackground());
-			this.addChild(scrollBox);
-		}
-
-		view.setZeroPos();
-		view.setClickable(true);
-		view.setLongClickable(true);
-
-		LinearLayout.addChild(view, itemMargin);
-		LinearLayout.setZeroPos();
-		scrollBox.setVirtualHeight(LinearLayout.getHeight());
-
-	}
-
-	private CB_View_Base getView(SettingBase<?> SB, int BackgroundChanger) {
-		if (SB instanceof SettingBool) {
-			return getBoolView((SettingBool) SB, BackgroundChanger);
-		} else if (SB instanceof SettingIntArray) {
-			return getIntArrayView((SettingIntArray) SB, BackgroundChanger);
-		} else if (SB instanceof SettingStringArray) {
-			return getStringArrayView((SettingStringArray) SB, BackgroundChanger);
-		} else if (SB instanceof SettingTime) {
-			return getTimeView((SettingTime) SB, BackgroundChanger);
-		} else if (SB instanceof SettingInt) {
-			return getIntView((SettingInt) SB, BackgroundChanger);
-		} else if (SB instanceof SettingDouble) {
-			return getDblView((SettingDouble) SB, BackgroundChanger);
-		} else if (SB instanceof SettingFloat) {
-			return getFloatView((SettingFloat) SB, BackgroundChanger);
-		} else if (SB instanceof SettingFolder) {
-			return getFolderView((SettingFolder) SB, BackgroundChanger);
-		} else if (SB instanceof SettingFile) {
-			return getFileView((SettingFile) SB, BackgroundChanger);
-		} else if (SB instanceof SettingEnum) {
-			return getEnumView((SettingEnum<?>) SB, BackgroundChanger);
-		} else if (SB instanceof SettingString) {
-			return getStringView((SettingString) SB, BackgroundChanger);
-		} else if (SB instanceof SettingsListCategoryButton) {
-			return getButtonView((SettingsListCategoryButton<?>) SB, BackgroundChanger);
-		} else if (SB instanceof SettingsListGetApiButton) {
-			return getApiKeyButtonView((SettingsListGetApiButton<?>) SB, BackgroundChanger);
-		} else if (SB instanceof SettingsListButtonLangSpinner) {
-			return getLangSpinnerView((SettingsListButtonLangSpinner<?>) SB);
-		} else if (SB instanceof SettingsListButtonSkinSpinner) {
-			return getSkinSpinnerView((SettingsListButtonSkinSpinner<?>) SB);
-		} else if (SB instanceof SettingsAudio) {
-			return getAudioView((SettingsAudio) SB, BackgroundChanger);
-		} else if (SB instanceof SettingColor) {
-			return getColorView((SettingColor) SB, BackgroundChanger);
-		}
-
-		return null;
-	}
-
-	private CB_View_Base getColorView(final SettingColor SB, int backgroundChanger) {
-		SettingsItemBase item = new SettingsItem_Color(itemRec, backgroundChanger, SB);
-		final String trans = Translation.Get(SB.getName());
-
-		item.setName(trans);
-		item.setDefault(String.valueOf(SB.getValue()));
-
-		item.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				EditKey = Config.settings.indexOf(SB);
-
-				GL.that.RunOnGLWithThreadCheck(new IRunOnGL() {
-
-					@Override
-					public void run() {
-						ColorPicker clrPick = new ColorPicker(ActivityBase.ActivityRec(), SB.getValue(), new IReturnListener() {
-
-							@Override
-							public void returnColor(Color color) {
-								if (color == null)
-									return; // nothing changed
+                    lblVolume.setZeroPos();
+                    lblMute.setZeroPos();
 
-								SettingColor SetValue = (SettingColor) Config.settings.get(EditKey);
-								if (SetValue != null)
-									SetValue.setValue(color);
-								resortList();
-								// Activity wieder anzeigen
-								show();
-							}
-						});
-						clrPick.show();
-					}
-				});
+                    lblMute.setHAlignment(HAlignment.RIGHT);
 
-				return true;
-			}
+                    lblBox.addChild(lblMute);
+                    lblBox.addChild(lblVolume);
 
-		});
+                    lay.addChild(lblBox);
+                    entryCount++;
+                }
+
+                Boolean expandLayout = false;
+
+                // int layoutHeight = 0;
+                for (Iterator<SettingBase<?>> it = SortedSettingList.iterator(); it.hasNext(); ) {
+                    SettingBase<?> settingItem = it.next();
+                    if (settingItem.getCategory().name().equals(cat.name())) {
+                        // item nur zur Liste Hinzufügen, wenn der SettingModus dies auch zulässt.
+                        if (((settingItem.getModus() == SettingModus.Normal) || (settingItem.getModus() == SettingModus.Expert && Config.SettingsShowExpert.getValue()) || Config.SettingsShowAll.getValue())
+                                && (settingItem.getModus() != SettingModus.Never)) {
+
+                            final CB_View_Base view = getView(settingItem, position++);
+
+                            if (Config.FieldNotesLoadAll.getValue() && settingItem.getName().equalsIgnoreCase("FieldNotesLoadLength")) {
+                                ((SettingsItemBase) view).disable();
+
+                            }
+
+                            if (view instanceof Button) {
+                                view.setSize(itemRec);
+                            }
+
+                            lay.addChild(view);
+                            entryCount++;
+                            Config.settings.indexOf(settingItem);
+                            if (Config.settings.indexOf(settingItem) == EditKey) {
+                                expandLayout = true;
+                            }
+                        }
+                    }
+                }
+
+
+                if (entryCount > 0) {
+
+                    lay.setBackground(this.getBackground());// Activity Background
+                    if (!expandLayout)
+                        lay.setAnimationHeight(0f);
+
+                    addControlToLinearLayout(btn, margin);
+                    addControlToLinearLayout(lay, -(this.drawableBackground.getBottomHeight()) / 2);
+
+                    btn.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                            lay.Toggle();
+                            return true;
+                        }
+                    });
+                }
+
+            } while (iteratorCat.hasNext());
+
+        }
+
+        setVolumeState(Config.GlobalVolume.getValue().Mute);
+        apiBtn.setImage();
+
+    }
+
+    private void addControlToLinearLayout(CB_View_Base view, float itemMargin) {
+        if (LinearLayout == null || scrollBox == null) {
+
+            CB_RectF rec = new CB_RectF(0, btnOk.getMaxY() + margin, this.getWidth(), this.getHeight() - btnOk.getMaxY() - margin);
+
+            scrollBox = new ScrollBox(rec);
+            scrollBox.setClickable(true);
+            scrollBox.setLongClickable(true);
+            LinearLayout = new Linearlayout(ButtonRec.getWidth(), "SettingsActivity-LinearLayout");
+            LinearLayout.setClickable(true);
+            LinearLayout.setLongClickable(true);
+            LinearLayout.setZeroPos();
+            scrollBox.addChild(LinearLayout);
+            // LinearLayout.setBackground(new ColorDrawable(Color.RED));
+            scrollBox.setBackground(this.getBackground());
+            this.addChild(scrollBox);
+        }
+
+        view.setZeroPos();
+        view.setClickable(true);
+        view.setLongClickable(true);
+
+        LinearLayout.addChild(view, itemMargin);
+        LinearLayout.setZeroPos();
+        scrollBox.setVirtualHeight(LinearLayout.getHeight());
+
+    }
+
+    private CB_View_Base getView(SettingBase<?> SB, int BackgroundChanger) {
+        if (SB instanceof SettingBool) {
+            return getBoolView((SettingBool) SB, BackgroundChanger);
+        } else if (SB instanceof SettingIntArray) {
+            return getIntArrayView((SettingIntArray) SB, BackgroundChanger);
+        } else if (SB instanceof SettingStringArray) {
+            return getStringArrayView((SettingStringArray) SB, BackgroundChanger);
+        } else if (SB instanceof SettingTime) {
+            return getTimeView((SettingTime) SB, BackgroundChanger);
+        } else if (SB instanceof SettingInt) {
+            return getIntView((SettingInt) SB, BackgroundChanger);
+        } else if (SB instanceof SettingDouble) {
+            return getDblView((SettingDouble) SB, BackgroundChanger);
+        } else if (SB instanceof SettingFloat) {
+            return getFloatView((SettingFloat) SB, BackgroundChanger);
+        } else if (SB instanceof SettingFolder) {
+            return getFolderView((SettingFolder) SB, BackgroundChanger);
+        } else if (SB instanceof SettingFile) {
+            return getFileView((SettingFile) SB, BackgroundChanger);
+        } else if (SB instanceof SettingEnum) {
+            return getEnumView((SettingEnum<?>) SB, BackgroundChanger);
+        } else if (SB instanceof SettingString) {
+            return getStringView((SettingString) SB, BackgroundChanger);
+        } else if (SB instanceof SettingsListCategoryButton) {
+            return getButtonView((SettingsListCategoryButton<?>) SB, BackgroundChanger);
+        } else if (SB instanceof SettingsListGetApiButton) {
+            return getApiKeyButtonView((SettingsListGetApiButton<?>) SB, BackgroundChanger);
+        } else if (SB instanceof SettingsListButtonLangSpinner) {
+            return getLangSpinnerView((SettingsListButtonLangSpinner<?>) SB);
+        } else if (SB instanceof SettingsListButtonSkinSpinner) {
+            return getSkinSpinnerView((SettingsListButtonSkinSpinner<?>) SB);
+        } else if (SB instanceof SettingsAudio) {
+            return getAudioView((SettingsAudio) SB, BackgroundChanger);
+        } else if (SB instanceof SettingColor) {
+            return getColorView((SettingColor) SB, BackgroundChanger);
+        }
+
+        return null;
+    }
+
+    private CB_View_Base getColorView(final SettingColor SB, int backgroundChanger) {
+        SettingsItemBase item = new SettingsItem_Color(itemRec, backgroundChanger, SB);
+        final String trans = Translation.Get(SB.getName());
+
+        item.setName(trans);
+        item.setDefault(String.valueOf(SB.getValue()));
+
+        item.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                EditKey = Config.settings.indexOf(SB);
+
+                GL.that.RunOnGLWithThreadCheck(new IRunOnGL() {
+
+                    @Override
+                    public void run() {
+                        ColorPicker clrPick = new ColorPicker(ActivityBase.ActivityRec(), SB.getValue(), new IReturnListener() {
+
+                            @Override
+                            public void returnColor(Color color) {
+                                if (color == null)
+                                    return; // nothing changed
+
+                                SettingColor SetValue = (SettingColor) Config.settings.get(EditKey);
+                                if (SetValue != null)
+                                    SetValue.setValue(color);
+                                resortList();
+                                // Activity wieder anzeigen
+                                show();
+                            }
+                        });
+                        clrPick.show();
+                    }
+                });
 
-		item.setOnLongClickListener(new OnClickListener() {
+                return true;
+            }
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				// zeige Beschreibung der Einstellung
+        });
 
-				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
+        item.setOnLongClickListener(new OnClickListener() {
 
-				return false;
-			}
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                // zeige Beschreibung der Einstellung
 
-		});
+                GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
-		return item;
-	}
+                return false;
+            }
 
-	private CB_View_Base getStringView(final SettingString SB, int backgroundChanger) {
-		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
-		final String trans = Translation.Get(SB.getName());
-		item.setName(trans);
+        });
 
-		if (SB.isDefault()) {
-			item.setDefault(Translation.Get("default"));
-		} else {
-			item.setDefault(SB.getValue());
-		}
+        return item;
+    }
 
-		item.setOnClickListener(new OnClickListener() {
+    private CB_View_Base getStringView(final SettingString SB, int backgroundChanger) {
+        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
+        final String trans = Translation.Get(SB.getName());
+        item.setName(trans);
+
+        if (SB.isDefault()) {
+            item.setDefault(Translation.Get("default"));
+        } else {
+            item.setDefault(SB.getValue());
+        }
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				EditKey = Config.settings.indexOf(SB);
+        item.setOnClickListener(new OnClickListener() {
 
-				WrapType type;
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                EditKey = Config.settings.indexOf(SB);
 
-				type = (SB instanceof SettingLongString) ? WrapType.WRAPPED : WrapType.SINGLELINE;
+                WrapType type;
 
-				StringInputBox.Show(type, "default:" + GlobalCore.br + SB.getDefaultValue(), trans, SB.getValue(), new OnMsgBoxClickListener() {
+                type = (SB instanceof SettingLongString) ? WrapType.WRAPPED : WrapType.SINGLELINE;
 
-					@Override
-					public boolean onClick(int which, Object data) {
-						String text = StringInputBox.editText.getText().toString();
-						if (which == GL_MsgBox.BUTTON_POSITIVE) {
-							SettingString value = (SettingString) Config.settings.get(EditKey);
+                StringInputBox.Show(type, "default:" + GlobalCore.br + SB.getDefaultValue(), trans, SB.getValue(), new OnMsgBoxClickListener() {
 
-							// api ohne lineBreak
-							if (value.getName().equalsIgnoreCase("GcAPI")) {
-								text = text.replace("\r", "");
-								text = text.replace("\n", "");
-							}
+                    @Override
+                    public boolean onClick(int which, Object data) {
+                        String text = StringInputBox.editText.getText().toString();
+                        if (which == GL_MsgBox.BUTTON_POSITIVE) {
+                            SettingString value = (SettingString) Config.settings.get(EditKey);
 
-							if (value != null)
-								value.setValue(text);
+                            // api ohne lineBreak
+                            if (value.getName().equalsIgnoreCase("GcAPI")) {
+                                text = text.replace("\r", "");
+                                text = text.replace("\n", "");
+                            }
 
-							resortList();
-						}
-						// Activity wieder anzeigen
-						SettingsActivity.this.show();
-						return true;
-					}
-				});
+                            if (value != null)
+                                value.setValue(text);
 
-				return true;
-			}
+                            resortList();
+                        }
+                        // Activity wieder anzeigen
+                        SettingsActivity.this.show();
+                        return true;
+                    }
+                });
 
-		});
+                return true;
+            }
 
-		item.setOnLongClickListener(new OnClickListener() {
+        });
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				// zeige Beschreibung der Einstellung
+        item.setOnLongClickListener(new OnClickListener() {
 
-				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                // zeige Beschreibung der Einstellung
 
-				return true;
-			}
+                GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
-		});
+                return true;
+            }
 
-		return item;
+        });
 
-	}
+        return item;
 
-	private CB_View_Base getEnumView(final SettingEnum<?> SB, int backgroundChanger) {
+    }
 
-		SettingsItemEnum item = new SettingsItemEnum(itemRec, backgroundChanger, SB.getName());
+    private CB_View_Base getEnumView(final SettingEnum<?> SB, int backgroundChanger) {
 
-		item.setName(Translation.Get(SB.getName()));
+        SettingsItemEnum item = new SettingsItemEnum(itemRec, backgroundChanger, SB.getName());
 
-		final Spinner spinner = item.getSpinner();
+        item.setName(Translation.Get(SB.getName()));
 
-		spinner.setDraggable();
+        final Spinner spinner = item.getSpinner();
 
-		final SpinnerAdapter adapter = new SpinnerAdapter() {
+        spinner.setDraggable();
 
-			@Override
-			public String getText(int position) {
-				return String.valueOf(SB.getValues().get(position));
-			}
+        final SpinnerAdapter adapter = new SpinnerAdapter() {
 
-			@Override
-			public Drawable getIcon(int Position) {
-				return null;
-			}
+            @Override
+            public String getText(int position) {
+                return String.valueOf(SB.getValues().get(position));
+            }
 
-			@Override
-			public int getCount() {
-				return SB.getValues().size();
-			}
-		};
+            @Override
+            public Drawable getIcon(int Position) {
+                return null;
+            }
 
-		spinner.setAdapter(adapter);
-		spinner.setSelection(SB.getValues().indexOf(SB.getValue()));
+            @Override
+            public int getCount() {
+                return SB.getValues().size();
+            }
+        };
 
-		spinner.setSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(int index) {
-				SB.setValue(SB.getValues().get(index));
-			}
-		});
+        spinner.setAdapter(adapter);
+        spinner.setSelection(SB.getValues().indexOf(SB.getValue()));
 
-		item.setOnLongClickListener(new OnClickListener() {
+        spinner.setSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
+            public void selectionChanged(int index) {
+                SB.setValue(SB.getValues().get(index));
+            }
+        });
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				// zeige Beschreibung der Einstellung
+        item.setOnLongClickListener(new OnClickListener() {
 
-				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                // zeige Beschreibung der Einstellung
 
-				return false;
-			}
+                GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
-		});
+                return false;
+            }
 
-		return item;
-	}
+        });
 
-	private CB_View_Base getIntArrayView(final SettingIntArray SB, int backgroundChanger) {
+        return item;
+    }
 
-		SettingsItemEnum item = new SettingsItemEnum(itemRec, backgroundChanger, SB.getName());
+    private CB_View_Base getIntArrayView(final SettingIntArray SB, int backgroundChanger) {
 
-		item.setName(Translation.Get(SB.getName()));
+        SettingsItemEnum item = new SettingsItemEnum(itemRec, backgroundChanger, SB.getName());
 
-		final Spinner spinner = item.getSpinner();
+        item.setName(Translation.Get(SB.getName()));
 
-		spinner.setDraggable();
+        final Spinner spinner = item.getSpinner();
 
-		final SpinnerAdapter adapter = new SpinnerAdapter() {
+        spinner.setDraggable();
 
-			@Override
-			public String getText(int position) {
-				return String.valueOf(SB.getValues()[position]);
-			}
+        final SpinnerAdapter adapter = new SpinnerAdapter() {
 
-			@Override
-			public Drawable getIcon(int Position) {
-				return null;
-			}
+            @Override
+            public String getText(int position) {
+                return String.valueOf(SB.getValues()[position]);
+            }
 
-			@Override
-			public int getCount() {
-				return SB.getValues().length;
-			}
-		};
+            @Override
+            public Drawable getIcon(int Position) {
+                return null;
+            }
 
-		spinner.setAdapter(adapter);
-		spinner.setSelection(SB.getIndex());
+            @Override
+            public int getCount() {
+                return SB.getValues().length;
+            }
+        };
 
-		spinner.setSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(int index) {
-				SB.setValue(SB.getValueFromIndex(index));
-			}
-		});
+        spinner.setAdapter(adapter);
+        spinner.setSelection(SB.getIndex());
 
-		item.setOnLongClickListener(new OnClickListener() {
+        spinner.setSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
+            public void selectionChanged(int index) {
+                SB.setValue(SB.getValueFromIndex(index));
+            }
+        });
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				// zeige Beschreibung der Einstellung
+        item.setOnLongClickListener(new OnClickListener() {
 
-				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                // zeige Beschreibung der Einstellung
 
-				return false;
-			}
+                GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
-		});
+                return false;
+            }
 
-		return item;
+        });
 
-	}
+        return item;
 
-	private CB_View_Base getStringArrayView(final SettingStringArray SB, int backgroundChanger) {
+    }
 
-		SettingsItemEnum item = new SettingsItemEnum(itemRec, backgroundChanger, SB.getName());
+    private CB_View_Base getStringArrayView(final SettingStringArray SB, int backgroundChanger) {
 
-		item.setName(Translation.Get(SB.getName()));
+        SettingsItemEnum item = new SettingsItemEnum(itemRec, backgroundChanger, SB.getName());
 
-		final Spinner spinner = item.getSpinner();
+        item.setName(Translation.Get(SB.getName()));
 
-		spinner.setDraggable();
+        final Spinner spinner = item.getSpinner();
 
-		final SpinnerAdapter adapter = new SpinnerAdapter() {
+        spinner.setDraggable();
 
-			@Override
-			public String getText(int position) {
-				return SB.possibleValues()[position];
-			}
+        final SpinnerAdapter adapter = new SpinnerAdapter() {
 
-			@Override
-			public Drawable getIcon(int Position) {
-				return null;
-			}
+            @Override
+            public String getText(int position) {
+                return SB.possibleValues()[position];
+            }
 
-			@Override
-			public int getCount() {
-				return SB.possibleValues().length;
-			}
-		};
+            @Override
+            public Drawable getIcon(int Position) {
+                return null;
+            }
 
-		spinner.setAdapter(adapter);
-		spinner.setSelection(SB.getIndexOfValue());
+            @Override
+            public int getCount() {
+                return SB.possibleValues().length;
+            }
+        };
 
-		spinner.setSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(int index) {
-				SB.setValue(SB.getValueFromIndex(index));
-			}
-		});
+        spinner.setAdapter(adapter);
+        spinner.setSelection(SB.getIndexOfValue());
 
-		item.setOnLongClickListener(new OnClickListener() {
+        spinner.setSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
+            public void selectionChanged(int index) {
+                SB.setValue(SB.getValueFromIndex(index));
+            }
+        });
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				// zeige Beschreibung der Einstellung
+        item.setOnLongClickListener(new OnClickListener() {
 
-				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                // zeige Beschreibung der Einstellung
 
-				return false;
-			}
+                GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
-		});
+                return false;
+            }
 
-		return item;
+        });
 
-	}
+        return item;
 
-	private CB_View_Base getIntView(final SettingInt SB, int backgroundChanger) {
+    }
 
-		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
-		final String trans = Translation.Get(SB.getName());
+    private CB_View_Base getIntView(final SettingInt SB, int backgroundChanger) {
 
-		item.setName(trans);
-		item.setDefault(String.valueOf(SB.getValue()));
+        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
+        final String trans = Translation.Get(SB.getName());
 
-		item.setOnClickListener(new OnClickListener() {
+        item.setName(trans);
+        item.setDefault(String.valueOf(SB.getValue()));
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				EditKey = Config.settings.indexOf(SB);
+        item.setOnClickListener(new OnClickListener() {
 
-				// Show NumPad Int Edit
-				NumericInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(), new IReturnValueListener() {
-					@Override
-					public void returnValue(int value) {
-						SettingInt SetValue = (SettingInt) Config.settings.get(EditKey);
-						if (SetValue != null)
-							SetValue.setValue(value);
-						resortList();
-						// Activity wieder anzeigen
-						show();
-					}
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                EditKey = Config.settings.indexOf(SB);
 
-					@Override
-					public void cancelClicked() {
-						// Activity wieder anzeigen
-						show();
-					}
+                // Show NumPad Int Edit
+                NumericInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(), new IReturnValueListener() {
+                    @Override
+                    public void returnValue(int value) {
+                        SettingInt SetValue = (SettingInt) Config.settings.get(EditKey);
+                        if (SetValue != null)
+                            SetValue.setValue(value);
+                        resortList();
+                        // Activity wieder anzeigen
+                        show();
+                    }
 
-				});
-				return true;
-			}
+                    @Override
+                    public void cancelClicked() {
+                        // Activity wieder anzeigen
+                        show();
+                    }
 
-		});
+                });
+                return true;
+            }
 
-		item.setOnLongClickListener(new OnClickListener() {
+        });
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				// zeige Beschreibung der Einstellung
+        item.setOnLongClickListener(new OnClickListener() {
 
-				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                // zeige Beschreibung der Einstellung
 
-				return false;
-			}
+                GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
-		});
+                return false;
+            }
 
-		return item;
-	}
+        });
 
-	private CB_View_Base getDblView(final SettingDouble SB, int backgroundChanger) {
-		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
-		final String trans = Translation.Get(SB.getName());
-		item.setName(trans);
-		item.setDefault(String.valueOf(SB.getValue()));
+        return item;
+    }
 
-		item.setOnClickListener(new OnClickListener() {
+    private CB_View_Base getDblView(final SettingDouble SB, int backgroundChanger) {
+        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
+        final String trans = Translation.Get(SB.getName());
+        item.setName(trans);
+        item.setDefault(String.valueOf(SB.getValue()));
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				EditKey = Config.settings.indexOf(SB);
+        item.setOnClickListener(new OnClickListener() {
 
-				// Show NumPad Int Edit
-				NumericInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(), new IReturnValueListenerDouble() {
-					@Override
-					public void returnValue(double value) {
-						SettingDouble SetValue = (SettingDouble) Config.settings.get(EditKey);
-						if (SetValue != null)
-							SetValue.setValue(value);
-						resortList();
-						// Activity wieder anzeigen
-						SettingsActivity.this.show();
-					}
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                EditKey = Config.settings.indexOf(SB);
 
-					@Override
-					public void cancelClicked() {
-						// Activity wieder anzeigen
-						SettingsActivity.this.show();
-					}
-				});
-				return true;
-			}
+                // Show NumPad Int Edit
+                NumericInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(), new IReturnValueListenerDouble() {
+                    @Override
+                    public void returnValue(double value) {
+                        SettingDouble SetValue = (SettingDouble) Config.settings.get(EditKey);
+                        if (SetValue != null)
+                            SetValue.setValue(value);
+                        resortList();
+                        // Activity wieder anzeigen
+                        SettingsActivity.this.show();
+                    }
 
-		});
+                    @Override
+                    public void cancelClicked() {
+                        // Activity wieder anzeigen
+                        SettingsActivity.this.show();
+                    }
+                });
+                return true;
+            }
 
-		item.setOnLongClickListener(new OnClickListener() {
+        });
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				// zeige Beschreibung der Einstellung
+        item.setOnLongClickListener(new OnClickListener() {
 
-				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                // zeige Beschreibung der Einstellung
 
-				return false;
-			}
+                GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
-		});
+                return false;
+            }
 
-		return item;
+        });
 
-	}
+        return item;
 
-	private CB_View_Base getFloatView(final SettingFloat SB, int backgroundChanger) {
-		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
-		final String trans = Translation.Get(SB.getName());
-		item.setName(trans);
-		item.setDefault(String.valueOf(SB.getValue()));
+    }
 
-		item.setOnClickListener(new OnClickListener() {
+    private CB_View_Base getFloatView(final SettingFloat SB, int backgroundChanger) {
+        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
+        final String trans = Translation.Get(SB.getName());
+        item.setName(trans);
+        item.setDefault(String.valueOf(SB.getValue()));
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				EditKey = Config.settings.indexOf(SB);
+        item.setOnClickListener(new OnClickListener() {
 
-				// Show NumPad Int Edit
-				NumericInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(), new IReturnValueListenerDouble() {
-					@Override
-					public void returnValue(double value) {
-						SettingFloat SetValue = (SettingFloat) Config.settings.get(EditKey);
-						if (SetValue != null)
-							SetValue.setValue((float) value);
-						resortList();
-						// Activity wieder anzeigen
-						SettingsActivity.this.show();
-					}
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                EditKey = Config.settings.indexOf(SB);
 
-					@Override
-					public void cancelClicked() {
-						// Activity wieder anzeigen
-						SettingsActivity.this.show();
-					}
-				});
-				return true;
-			}
+                // Show NumPad Int Edit
+                NumericInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(), new IReturnValueListenerDouble() {
+                    @Override
+                    public void returnValue(double value) {
+                        SettingFloat SetValue = (SettingFloat) Config.settings.get(EditKey);
+                        if (SetValue != null)
+                            SetValue.setValue((float) value);
+                        resortList();
+                        // Activity wieder anzeigen
+                        SettingsActivity.this.show();
+                    }
 
-		});
+                    @Override
+                    public void cancelClicked() {
+                        // Activity wieder anzeigen
+                        SettingsActivity.this.show();
+                    }
+                });
+                return true;
+            }
 
-		item.setOnLongClickListener(new OnClickListener() {
+        });
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				// zeige Beschreibung der Einstellung
+        item.setOnLongClickListener(new OnClickListener() {
 
-				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                // zeige Beschreibung der Einstellung
 
-				return false;
-			}
+                GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
-		});
+                return false;
+            }
 
-		return item;
+        });
 
-	}
+        return item;
 
-	private CB_View_Base getFolderView(final SettingFolder SB, int backgroundChanger) {
+    }
 
-		final boolean needWritePermission = SB.needWritePermission();
-		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
+    private CB_View_Base getFolderView(final SettingFolder SB, int backgroundChanger) {
 
-		item.setName(Translation.Get(SB.getName()));
-		if (SB.isDefault()) {
-			item.setDefault(Translation.Get("default"));
-		} else {
-			item.setDefault(SB.getValue());
-		}
+        final boolean needWritePermission = SB.needWritePermission();
+        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
 
-		item.setOnClickListener(new OnClickListener() {
+        item.setName(Translation.Get(SB.getName()));
+        if (SB.isDefault()) {
+            item.setDefault(Translation.Get("default"));
+        } else {
+            item.setDefault(SB.getValue());
+        }
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				EditKey = Config.settings.indexOf(SB);
-				File file = FileFactory.createFile(SB.getValue());
+        item.setOnClickListener(new OnClickListener() {
 
-				final String ApsolutePath = (file != null) ? file.getAbsolutePath() : "";
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                EditKey = Config.settings.indexOf(SB);
+                File file = FileFactory.createFile(SB.getValue());
 
-				Menu icm = new Menu("FileactionMenu");
-				icm.addOnClickListener(new OnClickListener() {
+                final String ApsolutePath = (file != null) ? file.getAbsolutePath() : "";
 
-					@Override
-					public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-						switch (((MenuItem) v).getMenuItemId()) {
-						case MenuID.MI_SELECT_PATH:
-							PlatformConnector.getFolder(ApsolutePath, Translation.Get("select_folder"), Translation.Get("select"), new IgetFolderReturnListener() {
+                Menu icm = new Menu("FileactionMenu");
+                icm.addOnClickListener(new OnClickListener() {
 
-								@Override
-								public void returnFolder(String Path) {
-									// check WriteProtection
-									if (needWritePermission && !FileIO.canWrite(Path)) {
-										String WriteProtectionMsg = Translation.Get("NoWriteAcces");
-										GL.that.Toast(WriteProtectionMsg, 8000);
-									} else {
-										SB.setValue(Path);
-										resortList();
-									}
+                    @Override
+                    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                        switch (((MenuItem) v).getMenuItemId()) {
+                            case MenuID.MI_SELECT_PATH:
+                                PlatformConnector.getFolder(ApsolutePath, Translation.Get("select_folder"), Translation.Get("select"), new IgetFolderReturnListener() {
 
-								}
-							});
-							return true;
+                                    @Override
+                                    public void returnFolder(String Path) {
+                                        // check WriteProtection
+                                        if (needWritePermission && !FileIO.canWrite(Path)) {
+                                            String WriteProtectionMsg = Translation.Get("NoWriteAcces");
+                                            GL.that.Toast(WriteProtectionMsg, 8000);
+                                        } else {
+                                            SB.setValue(Path);
+                                            resortList();
+                                        }
 
-						case MenuID.MI_CLEAR_PATH:
-							SB.setValue(SB.getDefaultValue());
-							resortList();
-							return true;
-						}
-						return true;
-					}
-				});
+                                    }
+                                });
+                                return true;
 
-				icm.addItem(MenuID.MI_SELECT_PATH, "select_folder");
-				icm.addItem(MenuID.MI_CLEAR_PATH, "ClearPath");
-				icm.Show();
+                            case MenuID.MI_CLEAR_PATH:
+                                SB.setValue(SB.getDefaultValue());
+                                resortList();
+                                return true;
+                        }
+                        return true;
+                    }
+                });
 
-				return true;
-			}
+                icm.addItem(MenuID.MI_SELECT_PATH, "select_folder");
+                icm.addItem(MenuID.MI_CLEAR_PATH, "ClearPath");
+                icm.Show();
 
-		});
+                return true;
+            }
 
-		item.setOnLongClickListener(new OnClickListener() {
+        });
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				// zeige Beschreibung der Einstellung
+        item.setOnLongClickListener(new OnClickListener() {
 
-				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                // zeige Beschreibung der Einstellung
 
-				return false;
-			}
+                GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
-		});
+                return false;
+            }
 
-		return item;
+        });
 
-	}
+        return item;
 
-	private CB_View_Base getFileView(final SettingFile SB, int backgroundChanger) {
-		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
+    }
 
-		item.setName(Translation.Get(SB.getName()));
-		item.setDefault(SB.getValue());
+    private CB_View_Base getFileView(final SettingFile SB, int backgroundChanger) {
+        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
 
-		item.setOnClickListener(new OnClickListener() {
+        item.setName(Translation.Get(SB.getName()));
+        item.setDefault(SB.getValue());
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				EditKey = Config.settings.indexOf(SB);
-				File file = FileFactory.createFile(SB.getValue());
+        item.setOnClickListener(new OnClickListener() {
 
-				final String Path = (file.getParent() != null) ? file.getParent() : "";
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                EditKey = Config.settings.indexOf(SB);
+                File file = FileFactory.createFile(SB.getValue());
 
-				Menu icm = new Menu("FileactionMenu");
-				icm.addOnClickListener(new OnClickListener() {
+                final String Path = (file.getParent() != null) ? file.getParent() : "";
 
-					@Override
-					public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-						switch (((MenuItem) v).getMenuItemId()) {
-						case MenuID.MI_SELECT_PATH:
-							PlatformConnector.getFile(Path, SB.getExt(), Translation.Get("select_file"), Translation.Get("select"), new IgetFileReturnListener() {
-								@Override
-								public void returnFile(String Path) {
-									SB.setValue(Path);
-									resortList();
-								}
-							});
-							return true;
+                Menu icm = new Menu("FileactionMenu");
+                icm.addOnClickListener(new OnClickListener() {
 
-						case MenuID.MI_CLEAR_PATH:
-							SB.setValue("");
-							resortList();
-							return true;
-						}
-						return true;
-					}
-				});
+                    @Override
+                    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                        switch (((MenuItem) v).getMenuItemId()) {
+                            case MenuID.MI_SELECT_PATH:
+                                PlatformConnector.getFile(Path, SB.getExt(), Translation.Get("select_file"), Translation.Get("select"), new IgetFileReturnListener() {
+                                    @Override
+                                    public void returnFile(String Path) {
+                                        SB.setValue(Path);
+                                        resortList();
+                                    }
+                                });
+                                return true;
 
-				icm.addItem(MenuID.MI_SELECT_PATH, "select_file");
-				icm.addItem(MenuID.MI_CLEAR_PATH, "ClearPath");
-				icm.Show();
-				return true;
-			}
+                            case MenuID.MI_CLEAR_PATH:
+                                SB.setValue("");
+                                resortList();
+                                return true;
+                        }
+                        return true;
+                    }
+                });
 
-		});
+                icm.addItem(MenuID.MI_SELECT_PATH, "select_file");
+                icm.addItem(MenuID.MI_CLEAR_PATH, "ClearPath");
+                icm.Show();
+                return true;
+            }
 
-		item.setOnLongClickListener(new OnClickListener() {
+        });
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				// zeige Beschreibung der Einstellung
+        item.setOnLongClickListener(new OnClickListener() {
 
-				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                // zeige Beschreibung der Einstellung
 
-				return false;
-			}
+                GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
-		});
+                return false;
+            }
 
-		return item;
+        });
 
-	}
+        return item;
 
-	private CB_View_Base getButtonView(final SettingsListCategoryButton<?> SB, int backgroundChanger) {
-		Button btn = new Button(ButtonRec, "Button");
+    }
 
-		btn.setDraggable();
+    private CB_View_Base getButtonView(final SettingsListCategoryButton<?> SB, int backgroundChanger) {
+        Button btn = new Button(ButtonRec, "Button");
 
-		btn.setText(Translation.Get(SB.getName()));
+        btn.setDraggable();
 
-		if (SB.getName().equals("DebugDisplayInfo")) {
-			btn.setOnClickListener(new OnClickListener() {
-				@Override
-				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+        btn.setText(Translation.Get(SB.getName()));
 
-					if (SB.getName().equals("DebugDisplayInfo")) {
-						String info = "";
+        if (SB.getName().equals("DebugDisplayInfo")) {
+            btn.setOnClickListener(new OnClickListener() {
+                @Override
+                public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 
-						info += "Density= " + String.valueOf(GL_UISizes.DPI) + GlobalCore.br;
-						info += "Height= " + String.valueOf(UI_Size_Base.that.getWindowHeight()) + GlobalCore.br;
-						info += "Width= " + String.valueOf(UI_Size_Base.that.getWindowWidth()) + GlobalCore.br;
-						info += "Scale= " + String.valueOf(UI_Size_Base.that.getScale()) + GlobalCore.br;
-						info += "FontSize= " + String.valueOf(UI_Size_Base.that.getScaledFontSize()) + GlobalCore.br;
-						info += "GPS min pos Time= " + String.valueOf(PositionChangedEventList.minPosEventTime) + GlobalCore.br;
-						info += "GPS min Orientation Time= " + String.valueOf(PositionChangedEventList.minOrientationEventTime) + GlobalCore.br;
+                    if (SB.getName().equals("DebugDisplayInfo")) {
+                        String info = "";
 
-						GL_MsgBox.Show(info, msgBoxReturnListener);
+                        info += "Density= " + String.valueOf(GL_UISizes.DPI) + GlobalCore.br;
+                        info += "Height= " + String.valueOf(UI_Size_Base.that.getWindowHeight()) + GlobalCore.br;
+                        info += "Width= " + String.valueOf(UI_Size_Base.that.getWindowWidth()) + GlobalCore.br;
+                        info += "Scale= " + String.valueOf(UI_Size_Base.that.getScale()) + GlobalCore.br;
+                        info += "FontSize= " + String.valueOf(UI_Size_Base.that.getScaledFontSize()) + GlobalCore.br;
+                        info += "GPS min pos Time= " + String.valueOf(PositionChangedEventList.minPosEventTime) + GlobalCore.br;
+                        info += "GPS min Orientation Time= " + String.valueOf(PositionChangedEventList.minOrientationEventTime) + GlobalCore.br;
 
-						return true;
-					}
+                        GL_MsgBox.Show(info, msgBoxReturnListener);
 
-					return false;
-				}
+                        return true;
+                    }
 
-			});
-		}
+                    return false;
+                }
 
-		btn.setOnLongClickListener(new OnClickListener() {
+            });
+        }
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				// zeige Beschreibung der Einstellung
+        btn.setOnLongClickListener(new OnClickListener() {
 
-				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                // zeige Beschreibung der Einstellung
 
-				return false;
-			}
+                GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
-		});
+                return false;
+            }
 
-		return btn;
-	}
+        });
 
-	private CB_View_Base getApiKeyButtonView(final SettingsListGetApiButton<?> SB, int backgroundChanger) {
-		apiBtn = new API_Button(itemRec);
-		apiBtn.setImage();
-		return apiBtn;
-	}
+        return btn;
+    }
 
-	/**
-	 * List of audio settings which can mute with GlobalVolume settings
-	 */
-	ArrayList<SettingsItem_Audio> audioSettingsList;
+    private CB_View_Base getApiKeyButtonView(final SettingsListGetApiButton<?> SB, int backgroundChanger) {
+        apiBtn = new API_Button(itemRec);
+        apiBtn.setImage();
+        return apiBtn;
+    }
 
-	private CB_View_Base getAudioView(final SettingsAudio SB, int backgroundChanger) {
+    private CB_View_Base getAudioView(final SettingsAudio SB, int backgroundChanger) {
 
-		boolean full = Config.SettingsShowExpert.getValue() || Config.SettingsShowAll.getValue();
-		final String AudioName = SB.getName();
-		final SettingsItem_Audio item = new SettingsItem_Audio(itemRec, backgroundChanger, SB.getName(), full, new FloatControl.iValueChanged() {
+        boolean full = Config.SettingsShowExpert.getValue() || Config.SettingsShowAll.getValue();
+        final String AudioName = SB.getName();
+        final SettingsItem_Audio item = new SettingsItem_Audio(itemRec, backgroundChanger, SB.getName(), full, new FloatControl.iValueChanged() {
 
-			@Override
-			public void ValueChanged(int value) {
-				Audio aud = new Audio(SB.getValue());
-				aud.Volume = value / 100f;
-				SB.setValue(aud);
+            @Override
+            public void ValueChanged(int value) {
+                Audio aud = new Audio(SB.getValue());
+                aud.Volume = value / 100f;
+                SB.setValue(aud);
 
-				// play Audio now
+                // play Audio now
 
-				if (AudioName.equalsIgnoreCase("GlobalVolume"))
-					SoundCache.play(Sounds.Global, true);
-				if (AudioName.equalsIgnoreCase("Approach"))
-					SoundCache.play(Sounds.Approach);
-				if (AudioName.equalsIgnoreCase("GPS_lose"))
-					SoundCache.play(Sounds.GPS_lose);
-				if (AudioName.equalsIgnoreCase("GPS_fix"))
-					SoundCache.play(Sounds.GPS_fix);
-				if (AudioName.equalsIgnoreCase("AutoResortSound"))
-					SoundCache.play(Sounds.AutoResortSound);
-			}
-		});
+                if (AudioName.equalsIgnoreCase("GlobalVolume"))
+                    SoundCache.play(Sounds.Global, true);
+                if (AudioName.equalsIgnoreCase("Approach"))
+                    SoundCache.play(Sounds.Approach);
+                if (AudioName.equalsIgnoreCase("GPS_lose"))
+                    SoundCache.play(Sounds.GPS_lose);
+                if (AudioName.equalsIgnoreCase("GPS_fix"))
+                    SoundCache.play(Sounds.GPS_fix);
+                if (AudioName.equalsIgnoreCase("AutoResortSound"))
+                    SoundCache.play(Sounds.AutoResortSound);
+            }
+        });
 
-		item.setName(Translation.Get(SB.getName()));
-		item.setDefault("default: " + String.valueOf(SB.getDefaultValue()));
-		item.setVolume((int) (SB.getValue().Volume * 100));
-		ChkBox chk = item.getCheckBox();
+        item.setName(Translation.Get(SB.getName()));
+        item.setDefault("default: " + String.valueOf(SB.getDefaultValue()));
+        item.setVolume((int) (SB.getValue().Volume * 100));
+        ChkBox chk = item.getCheckBox();
 
-		if (!AudioName.contains("Global")) {
-			if (audioSettingsList == null)
-				audioSettingsList = new ArrayList<SettingsItem_Audio>();
-			audioSettingsList.add(item);
-		}
+        if (!AudioName.contains("Global")) {
+            if (audioSettingsList == null)
+                audioSettingsList = new ArrayList<SettingsItem_Audio>();
+            audioSettingsList.add(item);
+        }
 
-		chk.setChecked(SB.getValue().Mute);
-		chk.setOnCheckChangedListener(new OnCheckChangedListener() {
-			@Override
-			public void onCheckedChanged(ChkBox view, boolean isChecked) {
-				Audio aud = new Audio(SB.getValue());
-				aud.Mute = isChecked;
-				SB.setValue(aud);
-				item.setMuteDisabeld(isChecked);
-				if (AudioName.contains("Global")) {
-					// Enable or disable all other
-					setVolumeState(isChecked);
-				}
-			}
+        chk.setChecked(SB.getValue().Mute);
+        chk.setOnCheckChangedListener(new OnCheckChangedListener() {
+            @Override
+            public void onCheckedChanged(ChkBox view, boolean isChecked) {
+                Audio aud = new Audio(SB.getValue());
+                aud.Mute = isChecked;
+                SB.setValue(aud);
+                item.setMuteDisabeld(isChecked);
+                if (AudioName.contains("Global")) {
+                    // Enable or disable all other
+                    setVolumeState(isChecked);
+                }
+            }
 
-		});
+        });
 
-		item.setMuteDisabeld(chk.isChecked());
+        item.setMuteDisabeld(chk.isChecked());
 
-		item.setOnLongClickListener(new OnClickListener() {
+        item.setOnLongClickListener(new OnClickListener() {
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				// zeige Beschreibung der Einstellung
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                // zeige Beschreibung der Einstellung
 
-				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
+                GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
-				return true;
-			}
+                return true;
+            }
 
-		});
+        });
 
-		return item;
+        return item;
 
-	}
+    }
 
-	private void setVolumeState(boolean globalEnabled) {
-		if (audioSettingsList != null) {
-			for (SettingsItem_Audio it : audioSettingsList) {
-				if (globalEnabled) {
-					it.disable();
-				} else {
-					it.enable();
-				}
-			}
-		}
-	}
+    private void setVolumeState(boolean globalEnabled) {
+        if (audioSettingsList != null) {
+            for (SettingsItem_Audio it : audioSettingsList) {
+                if (globalEnabled) {
+                    it.disable();
+                } else {
+                    it.enable();
+                }
+            }
+        }
+    }
 
-	private CB_View_Base getTimeView(final SettingTime SB, int backgroundChanger) {
+    private CB_View_Base getTimeView(final SettingTime SB, int backgroundChanger) {
 
-		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
-		final String trans = Translation.Get(SB.getName());
-		item.setName(trans);
-		item.setDefault(intToTime(SB.getValue()));
+        SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
+        final String trans = Translation.Get(SB.getName());
+        item.setName(trans);
+        item.setDefault(intToTime(SB.getValue()));
 
-		item.setOnClickListener(new OnClickListener() {
+        item.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				EditKey = Config.settings.indexOf(SB);
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                EditKey = Config.settings.indexOf(SB);
 
-				String Value = intToTime(SB.getValue());
-				String[] s = Value.split(":");
+                String Value = intToTime(SB.getValue());
+                String[] s = Value.split(":");
 
-				int intValueMin = Integer.parseInt(s[0]);
-				int intValueSec = Integer.parseInt(s[1]);
+                int intValueMin = Integer.parseInt(s[0]);
+                int intValueSec = Integer.parseInt(s[1]);
 
-				// Show NumPad Int Edit
-				NumericInputBox.Show("default: " + GlobalCore.br + intToTime(SB.getDefaultValue()), trans, intValueMin, intValueSec, new IReturnValueListenerTime() {
-					@Override
-					public void returnValue(int min, int sec) {
-						SettingTime SetValue = (SettingTime) Config.settings.get(EditKey);
-						int value = (min * 60 * 1000) + (sec * 1000);
-						if (SetValue != null)
-							SetValue.setValue(value);
-						resortList();
-						// Activity wieder anzeigen
-						SettingsActivity.this.show();
-					}
+                // Show NumPad Int Edit
+                NumericInputBox.Show("default: " + GlobalCore.br + intToTime(SB.getDefaultValue()), trans, intValueMin, intValueSec, new IReturnValueListenerTime() {
+                    @Override
+                    public void returnValue(int min, int sec) {
+                        SettingTime SetValue = (SettingTime) Config.settings.get(EditKey);
+                        int value = (min * 60 * 1000) + (sec * 1000);
+                        if (SetValue != null)
+                            SetValue.setValue(value);
+                        resortList();
+                        // Activity wieder anzeigen
+                        SettingsActivity.this.show();
+                    }
 
-					@Override
-					public void cancelClicked() {
-						// Activity wieder anzeigen
-						SettingsActivity.this.show();
-					}
-				});
-				return true;
-			}
+                    @Override
+                    public void cancelClicked() {
+                        // Activity wieder anzeigen
+                        SettingsActivity.this.show();
+                    }
+                });
+                return true;
+            }
 
-		});
+        });
 
-		item.setOnLongClickListener(new OnClickListener() {
+        item.setOnLongClickListener(new OnClickListener() {
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				// zeige Beschreibung der Einstellung
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                // zeige Beschreibung der Einstellung
 
-				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
+                GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
-				return false;
-			}
+                return false;
+            }
 
-		});
+        });
 
-		return item;
+        return item;
 
-	}
+    }
 
-	private String intToTime(int milliseconds) {
-		int seconds = milliseconds / 1000 % 60;
-		int minutes = (milliseconds / (1000 * 60)) % 60;
-		// int hours = (int) ((milliseconds / (1000*60*60)) % 24);
+    private String intToTime(int milliseconds) {
+        int seconds = milliseconds / 1000 % 60;
+        int minutes = (milliseconds / (1000 * 60)) % 60;
+        // int hours = (int) ((milliseconds / (1000*60*60)) % 24);
 
-		return String.valueOf(minutes) + ":" + String.valueOf(seconds);
-	}
+        return String.valueOf(minutes) + ":" + String.valueOf(seconds);
+    }
 
-	ArrayList<Lang> Sprachen;
+    private CB_View_Base getLangSpinnerView(final SettingsListButtonLangSpinner<?> SB) {
+        Sprachen = Translation.GetLangs(Config.LanguagePath.getValue());
 
-	private CB_View_Base getLangSpinnerView(final SettingsListButtonLangSpinner<?> SB) {
-		Sprachen = Translation.GetLangs(Config.LanguagePath.getValue());
+        if (Sprachen == null || Sprachen.size() == 0)
+            return null;
 
-		if (Sprachen == null || Sprachen.size() == 0)
-			return null;
+        final String[] items = new String[Sprachen.size()];
+        int index = 0;
+        int selection = -1;
 
-		final String[] items = new String[Sprachen.size()];
-		int index = 0;
-		int selection = -1;
+        File file1 = FileFactory.createFile(Config.Sel_LanguagePath.getValue());
 
-		File file1 = FileFactory.createFile(Config.Sel_LanguagePath.getValue());
+        for (Lang tmp : Sprachen) {
+            File file2 = FileFactory.createFile(tmp.Path);
+            if (file1.getAbsoluteFile().compareTo(file2.getAbsoluteFile()) == 0) {
+                selection = index;
+            }
 
-		for (Lang tmp : Sprachen) {
-			File file2 = FileFactory.createFile(tmp.Path);
-			if (file1.getAbsoluteFile().compareTo(file2.getAbsoluteFile()) == 0) {
-				selection = index;
-			}
+            items[index++] = tmp.Name;
+        }
 
-			items[index++] = tmp.Name;
-		}
+        SpinnerAdapter adapter = new SpinnerAdapter() {
 
-		SpinnerAdapter adapter = new SpinnerAdapter() {
+            @Override
+            public String getText(int position) {
+                return items[position];
+            }
 
-			@Override
-			public String getText(int position) {
-				return items[position];
-			}
+            @Override
+            public Drawable getIcon(int Position) {
+                return null;
+            }
 
-			@Override
-			public Drawable getIcon(int Position) {
-				return null;
-			}
+            @Override
+            public int getCount() {
+                return items.length;
+            }
+        };
 
-			@Override
-			public int getCount() {
-				return items.length;
-			}
-		};
+        Spinner spinner = new Spinner(ButtonRec, "LangSpinner", adapter, new ISelectionChangedListener() {
 
-		Spinner spinner = new Spinner(ButtonRec, "LangSpinner", adapter, new ISelectionChangedListener() {
+            @Override
+            public void selectionChanged(int index) {
+                String selected = items[index];
+                for (Lang tmp : Sprachen) {
+                    if (selected.equals(tmp.Name)) {
+                        Config.Sel_LanguagePath.setValue(tmp.Path);
+                        try {
+                            Translation.LoadTranslation(tmp.Path);
+                        } catch (Exception e) {
+                            try {
+                                Translation.LoadTranslation(Config.Sel_LanguagePath.getDefaultValue());
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                        break;
+                    }
 
-			@Override
-			public void selectionChanged(int index) {
-				String selected = items[index];
-				for (Lang tmp : Sprachen) {
-					if (selected.equals(tmp.Name)) {
-						Config.Sel_LanguagePath.setValue(tmp.Path);
-						try {
-							Translation.LoadTranslation(tmp.Path);
-						} catch (Exception e) {
-							try {
-								Translation.LoadTranslation(Config.Sel_LanguagePath.getDefaultValue());
-							} catch (IOException e1) {
-								e1.printStackTrace();
-							}
-						}
-						break;
-					}
+                }
+            }
+        });
 
-				}
-			}
-		});
+        spinner.setSelection(selection);
 
-		spinner.setSelection(selection);
+        spinner.setPrompt(Translation.Get("SelectLanguage"));
 
-		spinner.setPrompt(Translation.Get("SelectLanguage"));
+        spinner.setDraggable();
 
-		spinner.setDraggable();
+        return spinner;
+    }
 
-		return spinner;
-	}
+    private CB_View_Base getSkinSpinnerView(final SettingsListButtonSkinSpinner<?> SB) {
+        String SkinFolder = Config.mWorkPath + "/skins";
+        File dir = FileFactory.createFile(SkinFolder);
+        final ArrayList<String> skinFolders = new ArrayList<String>();
+        dir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File f, String name) {
+                if (f.isDirectory()) {
+                    String Path = f.getAbsolutePath();
+                    if (!Path.contains(".svn")) {
+                        skinFolders.add(name);
+                    }
+                }
+                return false;
+            }
+        });
 
-	private CB_View_Base getSkinSpinnerView(final SettingsListButtonSkinSpinner<?> SB) {
-		String SkinFolder = Config.mWorkPath + "/skins";
-		File dir = FileFactory.createFile(SkinFolder);
-		final ArrayList<String> skinFolders = new ArrayList<String>();
-		dir.listFiles(new FilenameFilter() {
-			@Override
-			public boolean accept(File f, String name) {
-				if (f.isDirectory()) {
-					String Path = f.getAbsolutePath();
-					if (!Path.contains(".svn")) {
-						skinFolders.add(name);
-					}
-				}
-				return false;
-			}
-		});
+        final String[] items = new String[skinFolders.size() + 2];// + internal (default and small)
+        items[0] = "default";
+        items[1] = "small";
+        int index = 2;
+        int selection = -1;
+        if (Config.SkinFolder.getValue().equals("default"))
+            selection = 0;
+        if (Config.SkinFolder.getValue().equals("small"))
+            selection = 1;
+        for (String tmp : skinFolders) {
+            if (Config.SkinFolder.getValue().endsWith(tmp))
+                selection = index;
+            items[index++] = tmp;
+        }
 
-		final String[] items = new String[skinFolders.size() + 2];// + internal (default and small)
-		items[0] = "default";
-		items[1] = "small";
-		int index = 2;
-		int selection = -1;
-		if (Config.SkinFolder.getValue().equals("default"))
-			selection = 0;
-		if (Config.SkinFolder.getValue().equals("small"))
-			selection = 1;
-		for (String tmp : skinFolders) {
-			if (Config.SkinFolder.getValue().endsWith(tmp))
-				selection = index;
-			items[index++] = tmp;
-		}
+        SpinnerAdapter adapter = new SpinnerAdapter() {
+            @Override
+            public String getText(int position) {
+                return items[position];
+            }
 
-		SpinnerAdapter adapter = new SpinnerAdapter() {
-			@Override
-			public String getText(int position) {
-				return items[position];
-			}
+            @Override
+            public Drawable getIcon(int Position) {
+                return null;
+            }
 
-			@Override
-			public Drawable getIcon(int Position) {
-				return null;
-			}
+            @Override
+            public int getCount() {
+                return items.length;
+            }
+        };
 
-			@Override
-			public int getCount() {
-				return items.length;
-			}
-		};
+        final Spinner spinner = new Spinner(itemRec, "SkinSpinner", adapter, new ISelectionChangedListener() {
+            @Override
+            public void selectionChanged(int index) {
+                String selected = items[index];
+                if (selected.equals("default")) {
+                    Config.SkinFolder.setValue("default");
+                } else if (selected.equals("small")) {
+                    Config.SkinFolder.setValue("small");
+                } else {
+                    Config.SkinFolder.setValue(Config_Core.mWorkPath + "/skins/" + selected);
+                }
+            }
+        });
 
-		final Spinner spinner = new Spinner(itemRec, "SkinSpinner", adapter, new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(int index) {
-				String selected = items[index];
-				if (selected.equals("default")) {
-					Config.SkinFolder.setValue("default");
-				} else if (selected.equals("small")) {
-					Config.SkinFolder.setValue("small");
-				} else {
-					Config.SkinFolder.setValue(Config_Core.mWorkPath + "/skins/" + selected);
-				}
-			}
-		});
+        spinner.setSelection(selection);
 
-		spinner.setSelection(selection);
+        spinner.setPrompt(Translation.Get("SelectSkin"));
 
-		spinner.setPrompt(Translation.Get("SelectSkin"));
+        spinner.setDraggable();
 
-		spinner.setDraggable();
+        return spinner;
+    }
 
-		return spinner;
-	}
+    private CB_View_Base getBoolView(final SettingBool SB, int backgroundChanger) {
 
-	private CB_View_Base getBoolView(final SettingBool SB, int backgroundChanger) {
+        SettingsItem_Bool item = new SettingsItem_Bool(itemRec, backgroundChanger, SB.getName());
 
-		SettingsItem_Bool item = new SettingsItem_Bool(itemRec, backgroundChanger, SB.getName());
+        item.setName(Translation.Get(SB.getName()));
+        item.setDefault("default: " + String.valueOf(SB.getDefaultValue()));
 
-		item.setName(Translation.Get(SB.getName()));
-		item.setDefault("default: " + String.valueOf(SB.getDefaultValue()));
+        ChkBox chk = item.getCheckBox();
 
-		ChkBox chk = item.getCheckBox();
+        chk.setChecked(SB.getValue());
+        chk.setOnCheckChangedListener(new OnCheckChangedListener() {
+            @Override
+            public void onCheckedChanged(ChkBox view, boolean isChecked) {
+                SB.setValue(isChecked);
+                if (SB.getName().equalsIgnoreCase("FieldNotesLoadAll")) {
+                    resortList();
+                }
+            }
+        });
 
-		chk.setChecked(SB.getValue());
-		chk.setOnCheckChangedListener(new OnCheckChangedListener() {
-			@Override
-			public void onCheckedChanged(ChkBox view, boolean isChecked) {
-				SB.setValue(isChecked);
-				if (SB.getName().equalsIgnoreCase("FieldNotesLoadAll")) {
-					resortList();
-				}
-			}
-		});
+        item.setOnLongClickListener(new OnClickListener() {
 
-		item.setOnLongClickListener(new OnClickListener() {
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                // zeige Beschreibung der Einstellung
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				// zeige Beschreibung der Einstellung
+                GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
 
-				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), msgBoxReturnListener);
+                return true;
+            }
 
-				return true;
-			}
+        });
 
-		});
+        return item;
 
-		return item;
+    }
 
-	}
+    @Override
+    public void SelectedLangChangedEventCalled() {
+        initial();
+    }
 
-	OnMsgBoxClickListener msgBoxReturnListener = new OnMsgBoxClickListener() {
+    @Override
+    public void dispose() {
+        that = null;
 
-		@Override
-		public boolean onClick(int which, Object data) {
-			show();
-			return true;
-		}
-	};
+        if (Categorys != null)
+            Categorys.clear();
+        Categorys = null;
 
-	public static void resortList() {
-		// show();
-		if (that != null) {
-			float scrollPos = that.scrollBox.getScrollY();
-			that.scrollBox = null;
-			that.LinearLayout = null;
+        if (btnOk != null)
+            btnOk.dispose();
+        btnOk = null;
+        if (btnCancel != null)
+            btnCancel.dispose();
+        btnCancel = null;
+        if (btnMenu != null)
+            btnMenu.dispose();
+        btnMenu = null;
+        if (scrollBox != null)
+            scrollBox.dispose();
+        scrollBox = null;
+        if (ButtonRec != null)
+            ButtonRec.dispose();
+        ButtonRec = null;
+        if (itemRec != null)
+            itemRec.dispose();
+        itemRec = null;
+        if (apiBtn != null)
+            apiBtn.dispose();
+        apiBtn = null;
+        if (LinearLayout != null)
+            LinearLayout.dispose();
+        LinearLayout = null;
 
-			that.fillContent();
-			that.scrollBox.scrollTo(scrollPos);
-		}
+        SelectedLangChangedEventList.Remove(this);
 
-	}
-
-	@Override
-	public void SelectedLangChangedEventCalled() {
-		initial();
-	}
-
-	@Override
-	public void dispose() {
-		that = null;
-
-		if (Categorys != null)
-			Categorys.clear();
-		Categorys = null;
-
-		if (btnOk != null)
-			btnOk.dispose();
-		btnOk = null;
-		if (btnCancel != null)
-			btnCancel.dispose();
-		btnCancel = null;
-		if (btnMenu != null)
-			btnMenu.dispose();
-		btnMenu = null;
-		if (scrollBox != null)
-			scrollBox.dispose();
-		scrollBox = null;
-		if (ButtonRec != null)
-			ButtonRec.dispose();
-		ButtonRec = null;
-		if (itemRec != null)
-			itemRec.dispose();
-		itemRec = null;
-		if (apiBtn != null)
-			apiBtn.dispose();
-		apiBtn = null;
-		if (LinearLayout != null)
-			LinearLayout.dispose();
-		LinearLayout = null;
-
-		SelectedLangChangedEventList.Remove(this);
-
-		super.dispose();
-	}
+        super.dispose();
+    }
 }

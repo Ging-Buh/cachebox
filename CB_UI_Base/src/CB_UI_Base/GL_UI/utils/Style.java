@@ -2,7 +2,6 @@ package CB_UI_Base.GL_UI.utils;
 
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Sprites;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
@@ -10,38 +9,38 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class Style {
-	public static TextFieldStyle getTextFieldStyle() {
-		TextFieldStyle ret = new TextFieldStyle();
+    public static TextFieldStyle getTextFieldStyle() {
+        TextFieldStyle ret = new TextFieldStyle();
 
-		ret.background = new NinePatchDrawable(new NinePatch(Sprites.getSprite("text-field-back"), 16, 16, 16, 16));
-		ret.font = Fonts.getNormal();
-		ret.fontColor = Color.WHITE;
+        ret.background = new NinePatchDrawable(new NinePatch(Sprites.getSprite("text-field-back"), 16, 16, 16, 16));
+        ret.font = Fonts.getNormal();
+        ret.fontColor = Color.WHITE;
 
-		ret.messageFont = Fonts.getSmall();
-		ret.messageFontColor = Color.WHITE;
+        ret.messageFont = Fonts.getSmall();
+        ret.messageFontColor = Color.WHITE;
 
-		ret.cursor = new NinePatchDrawable(new NinePatch(Sprites.getSprite("selection-input-icon"), 1, 1, 2, 2));
+        ret.cursor = new NinePatchDrawable(new NinePatch(Sprites.getSprite("selection-input-icon"), 1, 1, 2, 2));
 
-		ret.selection = new SpriteDrawable(Sprites.getSprite("InfoPanelBack"));
+        ret.selection = new SpriteDrawable(Sprites.getSprite("InfoPanelBack"));
 
-		return ret;
-	}
+        return ret;
+    }
 
-	public static TextFieldStyle getTextFieldStyleFocus() {
-		TextFieldStyle ret = new TextFieldStyle();
+    public static TextFieldStyle getTextFieldStyleFocus() {
+        TextFieldStyle ret = new TextFieldStyle();
 
-		ret.background = new NinePatchDrawable(new NinePatch(Sprites.getSprite("text-field-back-focus"), 16, 16, 16, 16));
-		ret.font = Fonts.getNormal();
-		ret.fontColor = Color.WHITE;
+        ret.background = new NinePatchDrawable(new NinePatch(Sprites.getSprite("text-field-back-focus"), 16, 16, 16, 16));
+        ret.font = Fonts.getNormal();
+        ret.fontColor = Color.WHITE;
 
-		ret.messageFont = Fonts.getSmall();
-		ret.messageFontColor = Color.WHITE;
+        ret.messageFont = Fonts.getSmall();
+        ret.messageFontColor = Color.WHITE;
 
-		ret.cursor = new NinePatchDrawable(new NinePatch(Sprites.getSprite("selection-input-icon"), 1, 1, 2, 2));
+        ret.cursor = new NinePatchDrawable(new NinePatch(Sprites.getSprite("selection-input-icon"), 1, 1, 2, 2));
 
-		ret.selection = new SpriteDrawable(Sprites.getSprite("InfoPanelBack"));
+        ret.selection = new SpriteDrawable(Sprites.getSprite("InfoPanelBack"));
 
-		return ret;
-	}
+        return ret;
+    }
 
 }

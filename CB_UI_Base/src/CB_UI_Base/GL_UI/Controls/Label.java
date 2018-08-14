@@ -37,7 +37,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import org.slf4j.LoggerFactory;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -47,7 +46,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author Longri
  */
 public class Label extends CB_View_Base {
-    private final static org.slf4j.Logger log = LoggerFactory.getLogger(Label.class);
+    private static final String log = "Label";
 
     private static final float DEFAULTSCROLLSTEP = 0.7f;
     private static final int SCROLL_PAUSE = 60;
@@ -166,9 +165,8 @@ public class Label extends CB_View_Base {
                 if (mTextObject.usesIntegerPositions())
                     try {
                         mTextObject.draw(batch);
-                    }
-                    catch (Exception ex) {
-                        log.error("Rendering " + mText + "\r\n" + ex.getLocalizedMessage());
+                    } catch (Exception ex) {
+                        Log.err(log, "Rendering " + mText + "\r\n" + ex.getLocalizedMessage());
                     }
             }
 
@@ -315,7 +313,7 @@ public class Label extends CB_View_Base {
             if (mFont.getData().getGlyph(mText.charAt(start)) == null) {
                 char c = mText.charAt(start);
                 if (c != '\r' && c != '\n')
-                    log.error("Unknown Char {" + c + "} @:" + mText + "[" + start + "]");
+                    Log.err(log, "Unknown Char {" + c + "} @:" + mText + "[" + start + "]");
             }
         }
 

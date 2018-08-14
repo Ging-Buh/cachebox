@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2011-2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -17,26 +17,26 @@ package CB_Utils.Settings;
 
 public class SettingIntArray extends SettingInt {
 
-	private Integer values[];
+    private Integer values[];
 
-	public SettingIntArray(String name, SettingCategory category, SettingModus modus, int defaultValue, SettingStoreType StoreType, SettingUsage usage, Integer arr[]) {
-		super(name, category, modus, defaultValue, StoreType, usage);
-		values = arr;
-	}
+    public SettingIntArray(String name, SettingCategory category, SettingModus modus, int defaultValue, SettingStoreType StoreType, SettingUsage usage, Integer arr[]) {
+        super(name, category, modus, defaultValue, StoreType, usage);
+        values = arr;
+    }
 
-	public Integer[] getValues() {
-		return values;
-	}
+    public Integer[] getValues() {
+        return values;
+    }
 
-	public int getIndex() {
-		for (int i = 0; i < values.length; i++) {
-			if (values[i] == value)
-				return i;
-		}
-		return -1;
-	}
+    public int getIndex() {
+        for (int i = 0; i < values.length; i++) {
+            if (values[i] == value)
+                return i;
+        }
+        return -1;
+    }
 
-	public int getValueFromIndex(int index) {
-		return values[index];
-	}
+    public int getValueFromIndex(int index) {
+        return values[index];
+    }
 }

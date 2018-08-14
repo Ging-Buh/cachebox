@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -22,39 +22,38 @@ import CB_UI_Base.graphics.extendedInterfaces.ext_Matrix;
  * @author Longri
  */
 public class MatrixDrawable {
-	public MatrixDrawable(IRotateDrawable drw, ext_Matrix mat, boolean realDraw) {
-		this.drawable = drw;
+    /**
+     * Can draw on real GL drawing
+     */
+    public final boolean reaelDraw;
+    /**
+     * @uml.property name="drawable"
+     * @uml.associationEnd
+     */
+    public final IRotateDrawable drawable;
+    /**
+     * @uml.property name="matrix"
+     * @uml.associationEnd
+     */
+    public ext_Matrix matrix;
 
-		if (!mat.isDefault()) {
-			this.matrix = new GL_Matrix();
-			this.matrix.set(mat);
-		} else {
-			this.matrix = null;
-		}
+    public MatrixDrawable(IRotateDrawable drw, ext_Matrix mat, boolean realDraw) {
+        this.drawable = drw;
 
-		this.reaelDraw = realDraw;
+        if (!mat.isDefault()) {
+            this.matrix = new GL_Matrix();
+            this.matrix.set(mat);
+        } else {
+            this.matrix = null;
+        }
 
-	}
+        this.reaelDraw = realDraw;
 
-	/**
-	 * Can draw on real GL drawing
-	 */
-	public final boolean reaelDraw;
+    }
 
-	/**
-	 * @uml.property name="drawable"
-	 * @uml.associationEnd
-	 */
-	public final IRotateDrawable drawable;
-	/**
-	 * @uml.property name="matrix"
-	 * @uml.associationEnd
-	 */
-	public ext_Matrix matrix;
-
-	public void dispose() {
-		if (this.matrix != null)
-			this.matrix.dispose();
-		// TODO chek if we cann dispose and not hold on Cache like BmpBuffer at GL_GraphicFactory // this.drawable.dispose();
-	}
+    public void dispose() {
+        if (this.matrix != null)
+            this.matrix.dispose();
+        // TODO chek if we cann dispose and not hold on Cache like BmpBuffer at GL_GraphicFactory // this.drawable.dispose();
+    }
 }

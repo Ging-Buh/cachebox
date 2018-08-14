@@ -24,11 +24,7 @@ import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
-import org.mapsforge.map.datastore.MapDataStore;
-import org.mapsforge.map.datastore.MapReadResult;
-import org.mapsforge.map.datastore.PoiWayBundle;
-import org.mapsforge.map.datastore.PointOfInterest;
-import org.mapsforge.map.datastore.Way;
+import org.mapsforge.map.datastore.*;
 import org.mapsforge.map.reader.header.MapFileException;
 import org.mapsforge.map.reader.header.MapFileHeader;
 import org.mapsforge.map.reader.header.MapFileInfo;
@@ -52,9 +48,9 @@ import java.util.logging.Logger;
  * @see <a href="https://github.com/mapsforge/mapsforge/blob/master/docs/Specification-Binary-Map-File.md">Specification</a>
  */
 public class MapFile extends MapDataStore {
-    private static final Logger LOGGER = Logger.getLogger(MapFile.class.getName());
     /* Only for testing, an empty file. */
     public static final MapFile TEST_MAP_FILE = new MapFile();
+    private static final Logger LOGGER = Logger.getLogger(MapFile.class.getName());
     /**
      * Bitmask to extract the block offset from an index entry.
      */

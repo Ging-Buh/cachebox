@@ -21,20 +21,20 @@ package CB_UI_Base.graphics.SVG;
  */
 
 public class SVGParseException extends Exception {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1381234039776504035L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1381234039776504035L;
 
-	public SVGParseException(String msg) {
-		super(msg);
-	}
+    public SVGParseException(String msg) {
+        super(msg);
+    }
 
-	public SVGParseException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
+    public SVGParseException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 
-	public SVGParseException(Throwable cause) {
-		super(cause);
-	}
+    public SVGParseException(Throwable cause) {
+        super(cause);
+    }
 }

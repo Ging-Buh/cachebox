@@ -32,16 +32,14 @@ import java.util.Random;
 public abstract class AbstractTileSource implements TileSource {
     private static final int TIMEOUT_CONNECT = 5000;
     private static final int TIMEOUT_READ = 10000;
-
+    protected final String[] hostNames;
+    protected final int port;
+    protected final Random random = new Random();
     /**
      * The default time-to-live (TTL) for cached tiles (one day, or 86,400,000 milliseconds).
      */
     protected long defaultTimeToLive = 86400000;
-
     protected boolean followRedirects = true;
-    protected final String[] hostNames;
-    protected final int port;
-    protected final Random random = new Random();
     protected String referer;
     protected int timeoutConnect = TIMEOUT_CONNECT;
     protected int timeoutRead = TIMEOUT_READ;
@@ -97,9 +95,17 @@ public abstract class AbstractTileSource implements TileSource {
         return referer;
     }
 
+    public void setReferer(String referer) {
+        this.referer = referer;
+    }
+
     @Override
     public int getTimeoutConnect() {
         return timeoutConnect;
+    }
+
+    public void setTimeoutConnect(int timeoutConnect) {
+        this.timeoutConnect = timeoutConnect;
     }
 
     @Override
@@ -107,9 +113,17 @@ public abstract class AbstractTileSource implements TileSource {
         return timeoutRead;
     }
 
+    public void setTimeoutRead(int timeoutRead) {
+        this.timeoutRead = timeoutRead;
+    }
+
     @Override
     public String getUserAgent() {
         return userAgent;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
     }
 
     @Override
@@ -128,21 +142,5 @@ public abstract class AbstractTileSource implements TileSource {
 
     public void setFollowRedirects(boolean followRedirects) {
         this.followRedirects = followRedirects;
-    }
-
-    public void setReferer(String referer) {
-        this.referer = referer;
-    }
-
-    public void setTimeoutConnect(int timeoutConnect) {
-        this.timeoutConnect = timeoutConnect;
-    }
-
-    public void setTimeoutRead(int timeoutRead) {
-        this.timeoutRead = timeoutRead;
-    }
-
-    public void setUserAgent(String userAgent) {
-        this.userAgent = userAgent;
     }
 }

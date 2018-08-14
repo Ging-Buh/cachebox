@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2011-2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -20,13 +20,13 @@ import CB_Utils.Settings.SettingModus;
 import CB_Utils.Settings.SettingString;
 
 public interface CB_Rpc_Settings {
-	// Abkürzende Schreibweisen für die Übersichlichkeit bei den add Methoden
-	public static final SettingModus DEVELOPER = CB_Utils.Settings.SettingModus.DEVELOPER;
-	public static final SettingModus NORMAL = CB_Utils.Settings.SettingModus.Normal;
-	public static final SettingModus EXPERT = CB_Utils.Settings.SettingModus.Expert;
-	public static final SettingModus NEVER = CB_Utils.Settings.SettingModus.Never;
+    // Abkürzende Schreibweisen für die Übersichlichkeit bei den add Methoden
+    public static final SettingModus DEVELOPER = CB_Utils.Settings.SettingModus.DEVELOPER;
+    public static final SettingModus NORMAL = CB_Utils.Settings.SettingModus.Normal;
+    public static final SettingModus EXPERT = CB_Utils.Settings.SettingModus.Expert;
+    public static final SettingModus NEVER = CB_Utils.Settings.SettingModus.Never;
 
-	public static final SettingString CBS_IP = new SettingString("CBS_IP", CB_Utils.Settings.SettingCategory.CBS, NORMAL, "", CB_Utils.Settings.SettingStoreType.Global, CB_Utils.Settings.SettingUsage.ACB);
-	public static final SettingInt CBS_BLOCK_SIZE = new SettingInt("CBS_BLOCKSIZE", CB_Utils.Settings.SettingCategory.CBS, DEVELOPER, 100, CB_Utils.Settings.SettingStoreType.Global, CB_Utils.Settings.SettingUsage.ACB);
+    public static final SettingString CBS_IP = new SettingString("CBS_IP", CB_Utils.Settings.SettingCategory.CBS, NORMAL, "", CB_Utils.Settings.SettingStoreType.Global, CB_Utils.Settings.SettingUsage.ACB);
+    public static final SettingInt CBS_BLOCK_SIZE = new SettingInt("CBS_BLOCKSIZE", CB_Utils.Settings.SettingCategory.CBS, DEVELOPER, 100, CB_Utils.Settings.SettingStoreType.Global, CB_Utils.Settings.SettingUsage.ACB);
 
 }

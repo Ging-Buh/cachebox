@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,46 +15,45 @@
  */
 package CB_UI_Base.graphics.extendedInterfaces;
 
+import CB_UI_Base.graphics.fromAndroid.RectF;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
-
-import CB_UI_Base.graphics.fromAndroid.RectF;
 
 /**
  * @author Longri
  */
 public interface ext_Canvas extends org.mapsforge.core.graphics.Canvas {
 
-	void drawText(String text, float x, float y, Paint paint);
+    void drawText(String text, float x, float y, Paint paint);
 
-	void drawRect(RectF rect, ext_Paint strokePaint);
+    void drawRect(RectF rect, ext_Paint strokePaint);
 
-	void drawRoundRect(RectF rect, float rx, float ry, ext_Paint strokePaint);
+    void drawRoundRect(RectF rect, float rx, float ry, ext_Paint strokePaint);
 
-	void drawOval(RectF rect, ext_Paint fillPaint);
+    void drawOval(RectF rect, ext_Paint fillPaint);
 
-	void scale(float sx, float sy);
+    void scale(float sx, float sy);
 
-	void setMatrix(ext_Matrix matrix);
+    void setMatrix(ext_Matrix matrix);
 
-	ext_Matrix getMatrix();
+    ext_Matrix getMatrix();
 
-	void save();
+    void setMatrix(Matrix matrix);
 
-	void restore();
+    void save();
 
-	void concat(ext_Matrix matrix);
+    void restore();
 
-	void drawTextOnPath(String text, ext_Path path, float x, float y, ext_Paint fillPaint);
+    void concat(ext_Matrix matrix);
 
-	void clipRect(float left, float top, float right, float bottom);
+    void drawTextOnPath(String text, ext_Path path, float x, float y, ext_Paint fillPaint);
 
-	void clipPath(ext_Path path);
+    void clipRect(float left, float top, float right, float bottom);
 
-	void translate(float stepX, float stepY);
+    void clipPath(ext_Path path);
 
-	void saveMatrix();// canvas.save(Canvas.MATRIX_SAVE_FLAG);
+    void translate(float stepX, float stepY);
 
-	void setMatrix(Matrix matrix);
+    void saveMatrix();// canvas.save(Canvas.MATRIX_SAVE_FLAG);
 
 }

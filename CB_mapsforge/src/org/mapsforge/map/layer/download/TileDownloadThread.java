@@ -32,9 +32,9 @@ class TileDownloadThread extends PausableThread {
 
     private final DisplayModel displayModel;
     private final GraphicFactory graphicFactory;
-    private JobQueue<DownloadJob> jobQueue;
     private final Layer layer;
     private final TileCache tileCache;
+    private JobQueue<DownloadJob> jobQueue;
 
     TileDownloadThread(TileCache tileCache, JobQueue<DownloadJob> jobQueue, Layer layer, GraphicFactory graphicFactory,
                        DisplayModel displayModel) {

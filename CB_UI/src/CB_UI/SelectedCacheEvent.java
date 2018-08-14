@@ -6,5 +6,5 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 
 public interface SelectedCacheEvent {
-	public void SelectedCacheChanged(Cache selectedCache, Waypoint waypoint);
+    public void SelectedCacheChanged(Cache selectedCache, Waypoint waypoint);
 }

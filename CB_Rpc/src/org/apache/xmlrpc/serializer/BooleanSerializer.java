@@ -14,23 +14,25 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.serializer;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-/** A {@link TypeSerializer} for booleans.
+/**
+ * A {@link TypeSerializer} for booleans.
  */
 public class BooleanSerializer extends TypeSerializerImpl {
-	/** Tag name of a boolean value.
-	 */
-	public static final String BOOLEAN_TAG = "boolean";
-	private static final char[] TRUE = new char[] { '1' };
-	private static final char[] FALSE = new char[] { '0' };
+    /**
+     * Tag name of a boolean value.
+     */
+    public static final String BOOLEAN_TAG = "boolean";
+    private static final char[] TRUE = new char[]{'1'};
+    private static final char[] FALSE = new char[]{'0'};
 
-	public void write(ContentHandler pHandler, Object pObject) throws SAXException {
-		write(pHandler, BOOLEAN_TAG, ((Boolean) pObject).booleanValue() ? TRUE : FALSE);
-	}
+    public void write(ContentHandler pHandler, Object pObject) throws SAXException {
+        write(pHandler, BOOLEAN_TAG, ((Boolean) pObject).booleanValue() ? TRUE : FALSE);
+    }
 }

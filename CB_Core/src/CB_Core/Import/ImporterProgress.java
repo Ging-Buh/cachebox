@@ -1,107 +1,107 @@
 package CB_Core.Import;
 
-import java.util.ArrayList;
-
 import CB_Utils.Events.ProgresssChangedEventList;
+
+import java.util.ArrayList;
 
 /**
  * Verwaltet den Progress Status beim Importieren
- * 
+ *
  * @author Longri
  */
 public class ImporterProgress {
 
-	/**
-	 * Enthält einen übergeordneten Schritt
-	 * 
-	 * @author Longri
-	 */
-	public class Step {
-		public Step(String Name, float weight) {
-			this.weight = weight;
-			this.Name = Name;
-			this.progress = 0.0f;
-		}
+    private ArrayList<Step> steps;
+    private float weightSumme = 0.0f;
 
-		public float weight = 0.0f;
-		public float progress = 0.0f;
-		public String Name;
-		public float stepweight;
+    // Initial Progress at Constructor
+    public ImporterProgress() {
+        steps = new ArrayList<Step>();
 
-		public void setMaxStep(int max) {
-			if (max == 0) {
-				this.stepweight = 1f;
-			} else {
-				this.stepweight = 1f / (float) max;
-			}
+    }
 
-		}
-	}
+    public void addStep(Step step) {
+        steps.add(step);
+        weightSumme = getWeightSum();
+    }
 
-	private ArrayList<Step> steps;
-	private float weightSumme = 0.0f;
+    private float getWeightSum() {
+        float sum = 0.0f;
+        for (Step job : steps) {
+            sum += job.weight;
+        }
+        return sum;
+    }
 
-	// Initial Progress at Constructor
-	public ImporterProgress() {
-		steps = new ArrayList<Step>();
+    public void ProgressInkrement(String Name, String Msg, Boolean Done) {
+        // get Job
+        int Progress = 0;
+        for (Step job : steps) {
+            if (job.Name.equals(Name)) {
+                if (Done) {
+                    job.progress = 1f;
+                } else {
+                    job.progress += job.stepweight;
+                }
+                Progress = getProgress();
 
-	}
+                break;
+            }
+        }
 
-	public void addStep(Step step) {
-		steps.add(step);
-		weightSumme = getWeightSum();
-	}
+        // send Progress Change Msg
+        ProgresssChangedEventList.Call(Name, Msg, Progress);
+    }
 
-	private float getWeightSum() {
-		float sum = 0.0f;
-		for (Step job : steps) {
-			sum += job.weight;
-		}
-		return sum;
-	}
+    // only change Msg or progress with out changing progress
+    public void ProgressChangeMsg(String Name, String Msg) {
+        // send Progress Change Msg
+        ProgresssChangedEventList.Call(Name, Msg, getProgress());
+    }
 
-	public void ProgressInkrement(String Name, String Msg, Boolean Done) {
-		// get Job
-		int Progress = 0;
-		for (Step job : steps) {
-			if (job.Name.equals(Name)) {
-				if (Done) {
-					job.progress = 1f;
-				} else {
-					job.progress += job.stepweight;
-				}
-				Progress = getProgress();
+    public void setJobMax(String Name, int max) {
+        for (Step job : steps) {
+            if (job.Name.equals(Name)) {
+                job.setMaxStep(max);
+            }
+        }
+    }
 
-				break;
-			}
-		}
+    protected int getProgress() {
+        float progress = 0.0f;
 
-		// send Progress Change Msg
-		ProgresssChangedEventList.Call(Name, Msg, Progress);
-	}
+        for (Step job : steps) {
+            progress += (job.weight / weightSumme) * job.progress;
+        }
 
-	// only change Msg or progress with out changing progress
-	public void ProgressChangeMsg(String Name, String Msg) {
-		// send Progress Change Msg
-		ProgresssChangedEventList.Call(Name, Msg, getProgress());
-	}
+        return (int) (100 * progress);
+    }
 
-	public void setJobMax(String Name, int max) {
-		for (Step job : steps) {
-			if (job.Name.equals(Name)) {
-				job.setMaxStep(max);
-			}
-		}
-	}
+    /**
+     * Enthält einen übergeordneten Schritt
+     *
+     * @author Longri
+     */
+    public class Step {
+        public float weight = 0.0f;
+        public float progress = 0.0f;
+        public String Name;
+        public float stepweight;
 
-	protected int getProgress() {
-		float progress = 0.0f;
+        public Step(String Name, float weight) {
+            this.weight = weight;
+            this.Name = Name;
+            this.progress = 0.0f;
+        }
 
-		for (Step job : steps) {
-			progress += (job.weight / weightSumme) * job.progress;
-		}
+        public void setMaxStep(int max) {
+            if (max == 0) {
+                this.stepweight = 1f;
+            } else {
+                this.stepweight = 1f / (float) max;
+            }
 
-		return (int) (100 * progress);
-	}
+        }
+    }
 
 }

@@ -14,32 +14,37 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.common;
 
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.XmlRpcRequest;
 
-/** An object, which executes requests on the controllers
+/**
+ * An object, which executes requests on the controllers
  * behalf. These objects are mainly used for controlling the
  * clients or servers load, which is defined in terms of the
  * number of currently active workers.
  */
 public interface XmlRpcWorker {
-	/** Returns the workers controller.
-	 * @return The controller, an instance of
-	 * {@link org.apache.xmlrpc.client.XmlRpcClient}, or
-	 * {@link org.apache.xmlrpc.server.XmlRpcServer}.
-	 */
-	XmlRpcController getController();
+    /**
+     * Returns the workers controller.
+     *
+     * @return The controller, an instance of
+     * {@link org.apache.xmlrpc.client.XmlRpcClient}, or
+     * {@link org.apache.xmlrpc.server.XmlRpcServer}.
+     */
+    XmlRpcController getController();
 
-	/** Performs a synchronous request. The client worker extends
-	 * this interface with the ability to perform asynchronous
-	 * requests.
-	 * @param pRequest The request being performed.
-	 * @return The requests result.
-	 * @throws XmlRpcException Performing the request failed.
-	 */
-	Object execute(XmlRpcRequest pRequest) throws XmlRpcException;
+    /**
+     * Performs a synchronous request. The client worker extends
+     * this interface with the ability to perform asynchronous
+     * requests.
+     *
+     * @param pRequest The request being performed.
+     * @return The requests result.
+     * @throws XmlRpcException Performing the request failed.
+     */
+    Object execute(XmlRpcRequest pRequest) throws XmlRpcException;
 }

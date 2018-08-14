@@ -19,7 +19,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -43,69 +42,69 @@ import java.util.logging.Logger;
  */
 public class AndroidSvgBitmapStore {
 
-	private static final Logger LOGGER = Logger.getLogger(AndroidSvgBitmapStore.class.getName());
-	private static final String SVG_PREFIX = "svg-";
-	private static final String SVG_SUFFIX = ".png";
+    private static final Logger LOGGER = Logger.getLogger(AndroidSvgBitmapStore.class.getName());
+    private static final String SVG_PREFIX = "svg-";
+    private static final String SVG_SUFFIX = ".png";
 
-	private static class SvgStorer implements Runnable {
-		private Bitmap bitmap;
-		private int hash;
+    private AndroidSvgBitmapStore() {
+        // noop
+    }
 
-		public SvgStorer(int hash, Bitmap bitmap) {
-			this.hash = hash;
-			this.bitmap = bitmap;
-		}
+    public static void clear() {
+        String[] files = AndroidGraphicFactory.INSTANCE.fileList();
+        for (String file : files) {
+            if (file.startsWith(SVG_PREFIX) && file.endsWith(SVG_SUFFIX)) {
+                AndroidGraphicFactory.INSTANCE.deleteFile(file);
+            }
+        }
+    }
 
-		@Override
-		public void run() {
-			String fileName = createFileName(this.hash);
-			try {
-				FileOutputStream outputStream = AndroidGraphicFactory.INSTANCE.openFileOutput(fileName, Context.MODE_PRIVATE);
-				if (!this.bitmap.compress(Bitmap.CompressFormat.PNG, 0, outputStream)) {
-					LOGGER.warning("SVG Failed to write svg bitmap " + fileName);
-				}
-			} catch (IllegalStateException e) {
-				LOGGER.warning("SVG Failed to stream bitmap to file " + fileName);
-			} catch (FileNotFoundException e) {
-				LOGGER.warning("SVG Failed to create file for svg bitmap " + fileName);
-			}
-			return;
-		}
-	}
+    public static Bitmap get(int hash) {
+        String fileName = createFileName(hash);
+        try {
+            FileInputStream inputStream = AndroidGraphicFactory.INSTANCE.openFileInput(fileName);
+            return BitmapFactory.decodeStream(inputStream);
+        } catch (FileNotFoundException e) {
+            // ignore: file is not yet in cache
+        }
+        return null;
+    }
 
-	public static void clear() {
-		String[] files = AndroidGraphicFactory.INSTANCE.fileList();
-		for (String file : files) {
-			if (file.startsWith(SVG_PREFIX) && file.endsWith(SVG_SUFFIX)) {
-				AndroidGraphicFactory.INSTANCE.deleteFile(file);
-			}
-		}
-	}
+    public static void put(int hash, Bitmap bitmap) {
+        // perform in background
+        new Thread(new SvgStorer(hash, bitmap)).start();
+        return;
+    }
 
-	public static Bitmap get(int hash) {
-		String fileName = createFileName(hash);
-		try {
-			FileInputStream inputStream = AndroidGraphicFactory.INSTANCE.openFileInput(fileName);
-			return BitmapFactory.decodeStream(inputStream);
-		} catch (FileNotFoundException e) {
-			// ignore: file is not yet in cache
-		}
-		return null;
-	}
+    private static String createFileName(int hash) {
+        StringBuilder sb = new StringBuilder().append(SVG_PREFIX).append(hash).append(SVG_SUFFIX);
+        return sb.toString();
+    }
 
-	public static void put(int hash, Bitmap bitmap) {
-		// perform in background
-		new Thread(new SvgStorer(hash, bitmap)).start();
-		return;
-	}
+    private static class SvgStorer implements Runnable {
+        private Bitmap bitmap;
+        private int hash;
 
-	private static String createFileName(int hash) {
-		StringBuilder sb = new StringBuilder().append(SVG_PREFIX).append(hash).append(SVG_SUFFIX);
-		return sb.toString();
-	}
+        public SvgStorer(int hash, Bitmap bitmap) {
+            this.hash = hash;
+            this.bitmap = bitmap;
+        }
 
-	private AndroidSvgBitmapStore() {
-		// noop
-	}
+        @Override
+        public void run() {
+            String fileName = createFileName(this.hash);
+            try {
+                FileOutputStream outputStream = AndroidGraphicFactory.INSTANCE.openFileOutput(fileName, Context.MODE_PRIVATE);
+                if (!this.bitmap.compress(Bitmap.CompressFormat.PNG, 0, outputStream)) {
+                    LOGGER.warning("SVG Failed to write svg bitmap " + fileName);
+                }
+            } catch (IllegalStateException e) {
+                LOGGER.warning("SVG Failed to stream bitmap to file " + fileName);
+            } catch (FileNotFoundException e) {
+                LOGGER.warning("SVG Failed to create file for svg bitmap " + fileName);
+            }
+            return;
+        }
+    }
 
 }

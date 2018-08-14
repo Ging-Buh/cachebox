@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -22,12 +22,11 @@ import CB_Locator.Map.TileGL;
  */
 public interface IDatabaseRenderer {
 
-	/**
-	 * Called when a job needs to be executed.
-	 * 
-	 * @param rendererJob
-	 *            the job that should be executed.
-	 */
-	public abstract TileGL execute(RendererJob rendererJob);
+    /**
+     * Called when a job needs to be executed.
+     *
+     * @param rendererJob the job that should be executed.
+     */
+    public abstract TileGL execute(RendererJob rendererJob);
 
 }

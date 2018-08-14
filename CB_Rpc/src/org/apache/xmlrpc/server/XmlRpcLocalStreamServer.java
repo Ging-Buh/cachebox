@@ -14,7 +14,7 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.server;
 
@@ -23,11 +23,12 @@ import org.apache.xmlrpc.XmlRpcRequest;
 import org.apache.xmlrpc.common.XmlRpcRequestProcessor;
 import org.apache.xmlrpc.common.XmlRpcRequestProcessorFactory;
 
-/** Server part of a local stream transport.
+/**
+ * Server part of a local stream transport.
  */
 public class XmlRpcLocalStreamServer extends XmlRpcStreamServer {
-	public Object execute(XmlRpcRequest pRequest) throws XmlRpcException {
-		XmlRpcRequestProcessor server = ((XmlRpcRequestProcessorFactory) pRequest.getConfig()).getXmlRpcServer();
-		return server.execute(pRequest);
-	}
+    public Object execute(XmlRpcRequest pRequest) throws XmlRpcException {
+        XmlRpcRequestProcessor server = ((XmlRpcRequestProcessorFactory) pRequest.getConfig()).getXmlRpcServer();
+        return server.execute(pRequest);
+    }
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -17,10 +17,10 @@ package CB_Utils.Interfaces;
 
 /**
  * Extends ICancel with void run()
- * 
+ *
  * @author Longri
  */
 public interface cancelRunnable extends ICancel {
-	public void run();
+    public void run();
 
 }

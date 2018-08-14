@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -25,9 +25,9 @@ package CB_UI_Base.graphics;
  * <br>
  * -Mixing: Tile is created with the MapsForge render engine but without icons and texts. These become separate created in OpenGL.<br>
  * <br>
- * 
+ *
  * @author Longri
  */
 public enum GL_RenderType {
-	Mapsforge, Mixing
+    Mapsforge, Mixing
 }

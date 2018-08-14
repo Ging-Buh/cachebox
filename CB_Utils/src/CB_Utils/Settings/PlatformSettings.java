@@ -1,36 +1,36 @@
 package CB_Utils.Settings;
 
 public class PlatformSettings {
-	// ------ setPlatformSetting ------
-	public interface IPlatformSettings {
-		public SettingBase<?> Read(SettingBase<?> setting);
+    public static IPlatformSettings platformSettingsListener;
 
-		public void Write(SettingBase<?> setting);
+    public static void setPlatformSettings(IPlatformSettings listener) {
+        platformSettingsListener = listener;
+    }
 
-	}
+    public static SettingBase<?> ReadSetting(SettingBase<?> setting) {
+        if (platformSettingsListener != null)
+            setting = platformSettingsListener.Read(setting);
+        return setting;
+    }
 
-	public static IPlatformSettings platformSettingsListener;
+    public static <T> void WriteSetting(SettingBase<T> setting) {
+        if (platformSettingsListener != null)
+            platformSettingsListener.Write(setting);
+    }
 
-	public static void setPlatformSettings(IPlatformSettings listener) {
-		platformSettingsListener = listener;
-	}
+    /**
+     * @return True, if platform settings are set
+     */
+    public static boolean canUsePlatformSettings() {
+        return (platformSettingsListener != null);
+    }
 
-	public static SettingBase<?> ReadSetting(SettingBase<?> setting) {
-		if (platformSettingsListener != null)
-			setting = platformSettingsListener.Read(setting);
-		return setting;
-	}
+    // ------ setPlatformSetting ------
+    public interface IPlatformSettings {
+        public SettingBase<?> Read(SettingBase<?> setting);
 
-	public static <T> void WriteSetting(SettingBase<T> setting) {
-		if (platformSettingsListener != null)
-			platformSettingsListener.Write(setting);
-	}
+        public void Write(SettingBase<?> setting);
 
-	/**
-	 * @return True, if platform settings are set
-	 */
-	public static boolean canUsePlatformSettings() {
-		return (platformSettingsListener != null);
-	}
+    }
 
 }

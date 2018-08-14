@@ -19,6 +19,10 @@ import org.mapsforge.core.model.Point;
 
 class RendererUtils {
 
+    private RendererUtils() {
+        throw new IllegalStateException();
+    }
+
     /**
      * Computes a polyline with distance dy parallel to given coordinates.
      * http://objectmix.com/graphics/132987-draw-parallel-polyline-algorithm-needed.html
@@ -53,10 +57,6 @@ class RendererUtils {
         h[n] = new Point(p[n].x - dy * u[n - 1].y, p[n].y + dy * u[n - 1].x);
 
         return h;
-    }
-
-    private RendererUtils() {
-        throw new IllegalStateException();
     }
 
 }

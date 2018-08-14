@@ -14,25 +14,28 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.serializer;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-/** A {@link TypeSerializer} for longs.
+/**
+ * A {@link TypeSerializer} for longs.
  */
 public class I8Serializer extends TypeSerializerImpl {
-	/** Tag name of an i8 value.
-	 */
-	public static final String I8_TAG = "i8";
+    /**
+     * Tag name of an i8 value.
+     */
+    public static final String I8_TAG = "i8";
 
-	/** Fully qualified name of an i8 value.
-	 */
-	public static final String EX_I8_TAG = "ex:i8";
+    /**
+     * Fully qualified name of an i8 value.
+     */
+    public static final String EX_I8_TAG = "ex:i8";
 
-	public void write(ContentHandler pHandler, Object pObject) throws SAXException {
-		write(pHandler, I8_TAG, EX_I8_TAG, pObject.toString());
-	}
+    public void write(ContentHandler pHandler, Object pObject) throws SAXException {
+        write(pHandler, I8_TAG, EX_I8_TAG, pObject.toString());
+    }
 }

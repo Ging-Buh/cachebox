@@ -14,22 +14,25 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.common;
 
 import org.apache.xmlrpc.XmlRpcException;
 
-/** This exception is thrown, if an attempt to use extensions
+/**
+ * This exception is thrown, if an attempt to use extensions
  * is made, but extensions aren't explicitly enabled.
  */
 public class XmlRpcExtensionException extends XmlRpcException {
-	private static final long serialVersionUID = 3617014169594311221L;
+    private static final long serialVersionUID = 3617014169594311221L;
 
-	/** Creates a new instance with the given error message.
-	 * @param pMessage The error message.
-	 */
-	public XmlRpcExtensionException(String pMessage) {
-		super(0, pMessage);
-	}
+    /**
+     * Creates a new instance with the given error message.
+     *
+     * @param pMessage The error message.
+     */
+    public XmlRpcExtensionException(String pMessage) {
+        super(0, pMessage);
+    }
 }

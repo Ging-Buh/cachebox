@@ -14,23 +14,25 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.client;
 
-/** Factory for the lite HTTP transport,
+/**
+ * Factory for the lite HTTP transport,
  * {@link org.apache.xmlrpc.client.XmlRpcLiteHttpTransport}.
  */
 public class XmlRpcLiteHttpTransportFactory extends XmlRpcTransportFactoryImpl {
-	/**
-	 * Creates a new instance.
-	 * @param pClient The client, which will invoke the factory.
-	 */
-	public XmlRpcLiteHttpTransportFactory(XmlRpcClient pClient) {
-		super(pClient);
-	}
+    /**
+     * Creates a new instance.
+     *
+     * @param pClient The client, which will invoke the factory.
+     */
+    public XmlRpcLiteHttpTransportFactory(XmlRpcClient pClient) {
+        super(pClient);
+    }
 
-	public XmlRpcTransport getTransport() {
-		return new XmlRpcLiteHttpTransport(getClient());
-	}
+    public XmlRpcTransport getTransport() {
+        return new XmlRpcLiteHttpTransport(getClient());
+    }
 }

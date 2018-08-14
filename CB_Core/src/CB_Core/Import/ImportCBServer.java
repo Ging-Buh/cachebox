@@ -1,22 +1,13 @@
 package CB_Core.Import;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-
 import CB_Core.CB_Core_Settings;
 import CB_Core.CoreSettingsForward;
-import CB_Core.Database;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CategoryDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
-import CB_Core.Types.Cache;
-import CB_Core.Types.Category;
-import CB_Core.Types.GpxFilename;
-import CB_Core.Types.ImageEntry;
-import CB_Core.Types.LogEntry;
-import CB_Core.Types.Waypoint;
+import CB_Core.Database;
+import CB_Core.Types.*;
 import CB_RpcCore.ClientCB.RpcClientCB;
 import CB_RpcCore.Functions.RpcAnswer_GetCacheList;
 import CB_RpcCore.Functions.RpcAnswer_GetExportList.ListItem;
@@ -28,10 +19,13 @@ import CB_Utils.fileProvider.FileFactory;
 import cb_rpc.Functions.RpcAnswer;
 import cb_rpc.Settings.CB_Rpc_Settings;
 import de.cb.sqlite.Database_Core.Parameters;
-import org.slf4j.LoggerFactory;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 
 public class ImportCBServer {
-    final static org.slf4j.Logger logger = LoggerFactory.getLogger(ImportCBServer.class);
+    private static final String log = "ImportCBServer";
 
     public void importCBServer(ArrayList<ListItem> cbServerExportList, ImporterProgress ip, boolean importImages) {
         long startTS = System.currentTimeMillis();
@@ -118,7 +112,7 @@ public class ImportCBServer {
                                 wayDao.WriteToDatabase(waypoint, false); // do not store replication information
                             }
                             if (importImages && (cache.getSpoilerRessources() != null)) {
-                                Log.info(logger, "Import Images Anz: " + cache.getSpoilerRessources().size());
+                                Log.info(log, "Import Images Anz: " + cache.getSpoilerRessources().size());
                                 // TODO - Delete old no longer valid Spoiler Images
                                 // this can be done with Hash code of Path of URL which is added to Image Name of Spoilers
                                 for (int j = 0, m = cache.getSpoilerRessources().size(); j < m; j++) {
@@ -153,11 +147,10 @@ public class ImportCBServer {
                                     }
                                     file = FileFactory.createFile(imagePath);
                                     if (!file.exists()) {
-                                        Log.info(logger, "Download " + imagePath + " from " + url);
+                                        Log.info(log, "Download " + imagePath + " from " + url);
                                         DescriptionImageGrabber.Download(url, imagePath);
-                                    }
-                                    else {
-                                        Log.info(logger, "already downloaded " + imagePath + " from " + url);
+                                    } else {
+                                        Log.info(log, "already downloaded " + imagePath + " from " + url);
                                     }
                                 }
                             }
@@ -170,7 +163,7 @@ public class ImportCBServer {
                         dataAvailable = gclAnswer.isDataAvailable(); // weitere Daten vorhanden?
                         // System.gc();
                     } else {
-                        Log.err(logger, "Laden nicht erfolgreich. Fehlerhafte Serialisierung?");
+                        Log.err(log, "Laden nicht erfolgreich. Fehlerhafte Serialisierung?");
                         dataAvailable = false; // keine weiteren Daten laden!!!
                     }
                 }

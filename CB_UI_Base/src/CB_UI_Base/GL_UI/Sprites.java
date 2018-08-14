@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2011-2015 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -16,10 +16,13 @@
 
 package CB_UI_Base.GL_UI;
 
-import java.util.ArrayList;
-
-import org.slf4j.LoggerFactory;
-
+import CB_UI_Base.GL_UI.Skin.CB_Skin;
+import CB_UI_Base.GL_UI.Skin.SkinBase;
+import CB_UI_Base.GL_UI.Skin.SkinSettings;
+import CB_UI_Base.GL_UI.utils.ColorDrawable;
+import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
+import CB_Utils.Log.Log;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -31,14 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-import CB_UI_Base.GL_UI.Skin.CB_Skin;
-import CB_UI_Base.GL_UI.Skin.SkinBase;
-import CB_UI_Base.GL_UI.Skin.SkinSettings;
-import CB_UI_Base.GL_UI.utils.ColorDrawable;
-import CB_UI_Base.Math.UI_Size_Base;
-import CB_UI_Base.settings.CB_UI_Base_Settings;
-import CB_Utils.Log.Log;
-import CB_Utils.Util.IChanged;
+import java.util.ArrayList;
 
 /**
  * Enthält die geladenen Sprites und das Handling für Laden und Entladen.
@@ -47,29 +43,82 @@ import CB_Utils.Util.IChanged;
  */
 public class Sprites {
 
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(Sprites.class);
-
-    public static class SpriteList extends ArrayList<Sprite> {
-        private static final long serialVersionUID = 1L;
-
-        public SpriteList() {
-            new ArrayList<Sprite>();
-        }
-
-        @Override
-        public Sprite[] toArray() {
-            Sprite[] tmp = new Sprite[this.size()];
-
-            int index = 0;
-            for (Sprite s : this) {
-                tmp[index++] = s;
-            }
-            return tmp;
-        }
-    }
+    private static final String log = "Sprites";
+    public static ArrayList<Sprite> Arrows = null;
+    public static ArrayList<Sprite> MapStars = null;
+    public static SpriteList Stars = null;
+    public static ArrayList<Sprite> Bubble = null;
+    public static ArrayList<Drawable> Compass = null;
+    public static ArrayList<Sprite> ToggleBtn = null;
+    public static ArrayList<Sprite> LiveBtn = null;
+    public static ArrayList<Sprite> ZoomBtn = null;
+    public static Sprite ZoomValueBack = null;
+    public static ArrayList<Sprite> ChkIcons = null;
+    public static ArrayList<Sprite> Dialog = null;
+    public static SpriteList SizesIcons = null;
+    public static Drawable ListBack = null;
+    public static Drawable ButtonBack = null;
+    public static Drawable AboutBack = null;
+    public static Drawable Slider = null;
+    public static Drawable SliderPushed = null;
+    public static Sprite Progress = null;
+    public static Sprite ambilwarna_hue = null;
+    public static Sprite ambilwarna_cursor = null;
+    public static Sprite ambilwarna_target = null;
+    public static ButtonSprites CacheList;
+    public static ButtonSprites CacheListFilter;
+    public static ButtonSprites Cache;
+    public static ButtonSprites Nav;
+    public static ButtonSprites Tool;
+    public static ButtonSprites Misc;
+    public static ButtonSprites QuickButton;
+    public static ArrayList<Sprite> LogIcons;
+    public static Drawable activityBackground;
+    public static Drawable activityBorderMask;
+    public static Drawable InfoBack;
+    public static Drawable ProgressBack;
+    public static Drawable ProgressFill;
+    public static Drawable ProgressDisabled;
+    public static Drawable btn;
+    public static Drawable btnPressed;
+    public static Drawable btnDisabled;
+    public static Drawable shaddowRec;
+    public static Drawable chkOn;
+    public static Drawable chkOff;
+    public static Drawable chkOnDisabled;
+    public static Drawable chkOffDisabled;
+    public static Drawable radioOn;
+    public static Drawable radioBack;
+    public static Drawable selection;
+    public static Drawable selection_set;
+    public static Drawable selection_left;
+    public static Drawable selection_right;
+    public static Drawable textFieldCursor;
+    public static Drawable textFieldBackground;
+    public static Drawable textFieldBackgroundFocus;
+    public static Drawable logo;
+    public static Drawable copy;
+    public static Drawable paste;
+    public static Drawable cut;
+    public static Drawable bar;
+    public static Drawable barSmall;
+    public static Drawable bar_0;
+    public static Drawable barSmall_0;
+    public static Drawable[] MapScale;
+    public static Sprite[] Accuracy;
+    public static int patch;
+    public static FileHandle FileHandleDefaultAtlas;
+    public static FileHandle FileHandleCustomAtlas;
+    public static FileHandle FileHandleDefaultNightAtlas;
+    public static FileHandle FileHandleCustomNightAtlas;
+    public static boolean loaded = false;
+    private static TextureAtlas atlasDefault;
+    private static TextureAtlas atlasDefaultNight;
+    private static TextureAtlas atlasCustom;
+    private static TextureAtlas atlasCustomtNight;
 
     public static Sprite getMapOverlay(IconName i) {
-        switch(i){
+        switch (i) {
             case shaddowrectselected:
                 return getSprite("shaddowrect-selected");
             case live:
@@ -84,174 +133,6 @@ public class Sprites {
                 return getSprite(i);
         }
     }
-
-    public static ArrayList<Sprite> Arrows = null;
-    public static ArrayList<Sprite> MapStars = null;
-    public static SpriteList Stars = null;
-    public static ArrayList<Sprite> Bubble = null;
-    public static ArrayList<Drawable> Compass = null;
-    public static ArrayList<Sprite> ToggleBtn = null;
-    public static ArrayList<Sprite> LiveBtn = null;
-    public static ArrayList<Sprite> ZoomBtn = null;
-    public static Sprite ZoomValueBack = null;
-
-    public static enum IconName {
-        btnNormal, //
-        button, //
-        docIcon, //
-        manualwaypoint, //
-        listIcon, // CB_Action_ShowLogView
-        map, // CB_Action_ShowMap
-        compass, // CB_Action_ShowCompassView
-        cacheListIcon, // CB_Action_ShowCacheList
-        trackListIcon, // CB_Action_GenerateRoute, CB_Action_RecTrack, CB_Action_ShowTrackListView
-        log10icon, //
-        videoIcon, // QuickActions/CB_Action_ShowActivity/RecVideo, TabMainView/CB_Action_ShowActivity/RecVideo
-        voiceRecIcon, // QuickActions/CB_Action_ShowActivity/VoiceRec, TabMainView/CB_Action_ShowActivity/VoiceRec
-        lupe, // CB_Action_ShowCacheList/getContextMenu/MenuID.MI_SEARCH_LIST
-        filter, // CB_Action_ShowCacheList/getContextMenu/MenuID.MI_FilterSet MI_RESET_FILTER, CB_Action_ShowFilterSettings
-        lockIcon, // not used
-        autoSortOnIcon, // QuickButtonItem
-        autoSortOffIcon, // QuickButtonItem, CB_Action_switch_Autoresort
-        solverIcon, // CB_Action_ShowSolverView, CB_Action_ShowSolverView2
-        imagesIcon, // CB_Action_ShowSpoilerView, QuickButtonItem
-        hintIcon, // CB_Action_ShowHint, QuickButtonItem, showBtnCacheContextMenu
-        noteIcon, // 23 not used
-        jokerPhone, // 25 CB_Action_ShowJokerView, CB_Action_ShowTestView, showBtnCacheContextMenu
-        settings, // 26 Image
-        DELETE, //
-        satellite, //
-        closeIcon, // 31
-        infoIcon, // 32
-        warningIcon, // 33
-        helpIcon, // 34
-        dayGcLiveIcon, // 35
-        tb, // 36
-        cmIcon, // 37
-        tbListIcon, // 38
-        sortIcon, // 39
-        importIcon, // 40
-        manageDb, // 41
-        favorit, // 42
-        star, // 43
-        disabled, // 44
-        log11icon, // 45
-        navigate, // 46
-        DayNight, // 48
-        cb, // 49
-        ADD, // 52
-        targetDay, // 53
-        FieldNote, // 54
-        fieldnoteListIcon, // 55
-        waypointListIcon, // 56
-        addCacheIcon, // 57
-        TBDISCOVER, // 58
-        TBDROP, // 59
-        TBGRAB, // 60
-        TBPICKED, // 61
-        TBVISIT, // 62
-        TBNOTE, // 63
-        UPLOADFIELDNOTE, // 64
-        MENUFILTERED, // 65
-        save, // 66
-        TORCHON, // 67
-        TORCHOFF, // 68
-        userdata, //
-        mapsforge_logo, //
-        download, //
-        freizeit,//
-        shaddowrect, // 0
-        shaddowrectselected, // 1
-        deact, // 2
-        cross, // 3
-        live, // 4
-        liveSelected, // 5
-    }
-
-    public static enum DialogElement {
-        header, // 0
-        center, // 1
-        footer, // 2
-        title, // 3
-        divider // 4
-    }
-
-    public static ArrayList<Sprite> ChkIcons = null;
-    public static ArrayList<Sprite> Dialog = null;
-    public static SpriteList SizesIcons = null;
-
-    public static Drawable ListBack = null;
-    public static Drawable ButtonBack = null;
-    public static Drawable AboutBack = null;
-
-    public static Drawable Slider = null;
-    public static Drawable SliderPushed = null;
-
-    public static Sprite Progress = null;
-    public static Sprite ambilwarna_hue = null;
-    public static Sprite ambilwarna_cursor = null;
-    public static Sprite ambilwarna_target = null;
-
-    public static ButtonSprites CacheList;
-    public static ButtonSprites CacheListFilter;
-    public static ButtonSprites Cache;
-    public static ButtonSprites Nav;
-    public static ButtonSprites Tool;
-    public static ButtonSprites Misc;
-    public static ButtonSprites QuickButton;
-
-    private static TextureAtlas atlasDefault;
-    private static TextureAtlas atlasDefaultNight;
-    private static TextureAtlas atlasCustom;
-    private static TextureAtlas atlasCustomtNight;
-
-    public static ArrayList<Sprite> LogIcons;
-
-    public static Drawable activityBackground;
-    public static Drawable activityBorderMask;
-    public static Drawable InfoBack;
-    public static Drawable ProgressBack;
-    public static Drawable ProgressFill;
-    public static Drawable ProgressDisabled;
-    public static Drawable btn;
-    public static Drawable btnPressed;
-    public static Drawable btnDisabled;
-    public static Drawable shaddowRec;
-
-    public static Drawable chkOn;
-    public static Drawable chkOff;
-    public static Drawable chkOnDisabled;
-    public static Drawable chkOffDisabled;
-
-    public static Drawable radioOn;
-    public static Drawable radioBack;
-
-    public static Drawable selection;
-    public static Drawable selection_set;
-    public static Drawable selection_left;
-    public static Drawable selection_right;
-    public static Drawable textFieldCursor;
-    public static Drawable textFieldBackground;
-    public static Drawable textFieldBackgroundFocus;
-    public static Drawable logo;
-
-    public static Drawable copy;
-    public static Drawable paste;
-    public static Drawable cut;
-    public static Drawable bar;
-    public static Drawable barSmall;
-    public static Drawable bar_0;
-    public static Drawable barSmall_0;
-
-    public static Drawable[] MapScale;
-    public static Sprite[] Accuracy;
-
-    public static int patch;
-
-    public static FileHandle FileHandleDefaultAtlas;
-    public static FileHandle FileHandleCustomAtlas;
-    public static FileHandle FileHandleDefaultNightAtlas;
-    public static FileHandle FileHandleCustomNightAtlas;
 
     protected static void setPath(CB_Skin skin) {
 
@@ -439,8 +320,6 @@ public class Sprites {
         }
         return tmp;
     }
-
-    public static boolean loaded = false;
 
     /**
      * Load the Sprites from recourse
@@ -793,6 +672,106 @@ public class Sprites {
         if (atlasCustomtNight != null) {
             atlasCustomtNight.dispose();
             atlasCustomtNight = null;
+        }
+    }
+
+    public static enum IconName {
+        btnNormal, //
+        button, //
+        docIcon, //
+        manualwaypoint, //
+        listIcon, // CB_Action_ShowLogView
+        map, // CB_Action_ShowMap
+        compass, // CB_Action_ShowCompassView
+        cacheListIcon, // CB_Action_ShowCacheList
+        trackListIcon, // CB_Action_GenerateRoute, CB_Action_RecTrack, CB_Action_ShowTrackListView
+        log10icon, //
+        videoIcon, // QuickActions/CB_Action_ShowActivity/RecVideo, TabMainView/CB_Action_ShowActivity/RecVideo
+        voiceRecIcon, // QuickActions/CB_Action_ShowActivity/VoiceRec, TabMainView/CB_Action_ShowActivity/VoiceRec
+        lupe, // CB_Action_ShowCacheList/getContextMenu/MenuID.MI_SEARCH_LIST
+        filter, // CB_Action_ShowCacheList/getContextMenu/MenuID.MI_FilterSet MI_RESET_FILTER, CB_Action_ShowFilterSettings
+        lockIcon, // not used
+        autoSortOnIcon, // QuickButtonItem
+        autoSortOffIcon, // QuickButtonItem, CB_Action_switch_Autoresort
+        solverIcon, // CB_Action_ShowSolverView, CB_Action_ShowSolverView2
+        imagesIcon, // CB_Action_ShowSpoilerView, QuickButtonItem
+        hintIcon, // CB_Action_ShowHint, QuickButtonItem, showBtnCacheContextMenu
+        noteIcon, // 23 not used
+        jokerPhone, // 25 CB_Action_ShowJokerView, CB_Action_ShowTestView, showBtnCacheContextMenu
+        settings, // 26 Image
+        DELETE, //
+        satellite, //
+        closeIcon, // 31
+        infoIcon, // 32
+        warningIcon, // 33
+        helpIcon, // 34
+        dayGcLiveIcon, // 35
+        tb, // 36
+        cmIcon, // 37
+        tbListIcon, // 38
+        sortIcon, // 39
+        importIcon, // 40
+        manageDb, // 41
+        favorit, // 42
+        star, // 43
+        disabled, // 44
+        log11icon, // 45
+        navigate, // 46
+        DayNight, // 48
+        cb, // 49
+        ADD, // 52
+        targetDay, // 53
+        FieldNote, // 54
+        fieldnoteListIcon, // 55
+        waypointListIcon, // 56
+        addCacheIcon, // 57
+        TBDISCOVER, // 58
+        TBDROP, // 59
+        TBGRAB, // 60
+        TBPICKED, // 61
+        TBVISIT, // 62
+        TBNOTE, // 63
+        UPLOADFIELDNOTE, // 64
+        MENUFILTERED, // 65
+        save, // 66
+        TORCHON, // 67
+        TORCHOFF, // 68
+        userdata, //
+        mapsforge_logo, //
+        download, //
+        freizeit,//
+        shaddowrect, // 0
+        shaddowrectselected, // 1
+        deact, // 2
+        cross, // 3
+        live, // 4
+        liveSelected, // 5
+    }
+
+    public static enum DialogElement {
+        header, // 0
+        center, // 1
+        footer, // 2
+        title, // 3
+        divider // 4
+    }
+
+    public static class SpriteList extends ArrayList<Sprite> {
+        private static final long serialVersionUID = 1L;
+
+        public SpriteList() {
+            new ArrayList<Sprite>();
+        }
+
+        @Override
+        public Sprite[] toArray() {
+            Sprite[] tmp = new Sprite[this.size()];
+
+            int index = 0;
+            for (Sprite s : this) {
+                tmp[index++] = s;
+            }
+            return tmp;
         }
     }
 

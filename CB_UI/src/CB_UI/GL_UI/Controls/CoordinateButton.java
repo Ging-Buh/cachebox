@@ -1,215 +1,211 @@
 package CB_UI.GL_UI.Controls;
 
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Clipboard;
-
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Formatter;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.EditCoord;
 import CB_UI.GL_UI.Activitys.EditCoord.ReturnListener;
-import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.PopUps.CopyPastePopUp;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.interfaces.ICopyPaste;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Clipboard;
 
 public class CoordinateButton extends Button implements ICopyPaste {
-	protected Coordinate mActCoord;
-	protected String mwpName;
-	protected CopyPastePopUp popUp;
-	protected Clipboard clipboard;
-	private EditCoord edCo;
+    protected Coordinate mActCoord;
+    protected String mwpName;
+    protected CopyPastePopUp popUp;
+    protected Clipboard clipboard;
+    OnClickListener longCLick = new OnClickListener() {
 
-	public interface ICoordinateChangedListener {
-		public void coordinateChanged(Coordinate coord);
-	}
+        @Override
+        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            showPopUp(x, y);
+            return true;
+        }
+    };
+    private EditCoord edCo;
+    private ICoordinateChangedListener mCoordinateChangedListener;
+    OnClickListener click = new OnClickListener() {
 
-	private ICoordinateChangedListener mCoordinateChangedListener;
+        @Override
+        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            if (edCo == null)
+                initialEdCo();
+            GL.that.showActivity(edCo);
+            return true;
+        }
+    };
 
-	public CoordinateButton(CB_RectF rec, String name, Coordinate coordinate, String wpName) {
-		super(rec, name);
-		if (coordinate == null)
-			coordinate = new Coordinate(0, 0);
-		mActCoord = coordinate;
-		mwpName = wpName;
-		setText();
-		this.setOnClickListener(click);
-		this.setOnLongClickListener(longCLick);
-		clipboard = GlobalCore.getDefaultClipboard();
-	}
+    public CoordinateButton(CB_RectF rec, String name, Coordinate coordinate, String wpName) {
+        super(rec, name);
+        if (coordinate == null)
+            coordinate = new Coordinate(0, 0);
+        mActCoord = coordinate;
+        mwpName = wpName;
+        setText();
+        this.setOnClickListener(click);
+        this.setOnLongClickListener(longCLick);
+        clipboard = GlobalCore.getDefaultClipboard();
+    }
 
-	public CoordinateButton(String name) {
-		super(name);
-		mActCoord = new CoordinateGPS(0, 0);
-		this.setOnClickListener(click);
-		this.setOnLongClickListener(longCLick);
-		clipboard = GlobalCore.getDefaultClipboard();
-	}
+    public CoordinateButton(String name) {
+        super(name);
+        mActCoord = new CoordinateGPS(0, 0);
+        this.setOnClickListener(click);
+        this.setOnLongClickListener(longCLick);
+        clipboard = GlobalCore.getDefaultClipboard();
+    }
 
-	public void setCoordinateChangedListener(ICoordinateChangedListener listener) {
-		mCoordinateChangedListener = listener;
-	}
+    public void setCoordinateChangedListener(ICoordinateChangedListener listener) {
+        mCoordinateChangedListener = listener;
+    }
 
-	private void setText() {
-		if (mwpName == null)
-			this.setText(mActCoord.FormatCoordinate());
-		else
-			this.setText(mwpName);
-	}
+    private void setText() {
+        if (mwpName == null)
+            this.setText(mActCoord.FormatCoordinate());
+        else
+            this.setText(mwpName);
+    }
 
-	@Override
-	protected void Initial() {
-		super.Initial();
-		// switch ninePatchImages
-		Drawable tmp = drawableNormal;
-		drawableNormal = drawablePressed;
-		drawablePressed = tmp;
-	}
+    @Override
+    protected void Initial() {
+        super.Initial();
+        // switch ninePatchImages
+        Drawable tmp = drawableNormal;
+        drawableNormal = drawablePressed;
+        drawablePressed = tmp;
+    }
 
-	private void initialEdCo() {
+    private void initialEdCo() {
 
-		edCo = new EditCoord(ActivityBase.ActivityRec(), "EditCoord", mActCoord, new ReturnListener() {
+        edCo = new EditCoord(ActivityBase.ActivityRec(), "EditCoord", mActCoord, new ReturnListener() {
 
-			@Override
-			public void returnCoord(Coordinate coord) {
-				if (coord != null && coord.isValid()) {
-					mActCoord = coord;
-					if (mCoordinateChangedListener != null)
-						mCoordinateChangedListener.coordinateChanged(coord);
-					setText();
-				}
-				if (edCo != null)
-					edCo.dispose();
-				edCo = null;
-			}
-		});
-	}
+            @Override
+            public void returnCoord(Coordinate coord) {
+                if (coord != null && coord.isValid()) {
+                    mActCoord = coord;
+                    if (mCoordinateChangedListener != null)
+                        mCoordinateChangedListener.coordinateChanged(coord);
+                    setText();
+                }
+                if (edCo != null)
+                    edCo.dispose();
+                edCo = null;
+            }
+        });
+    }
 
-	OnClickListener click = new OnClickListener() {
+    public Coordinate getCoordinate() {
+        return mActCoord;
+    }
 
-		@Override
-		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-			if (edCo == null)
-				initialEdCo();
-			GL.that.showActivity(edCo);
-			return true;
-		}
-	};
+    public void setCoordinate(Coordinate pos) {
+        mActCoord = pos;
+        if (mActCoord == null)
+            mActCoord = new CoordinateGPS(0, 0);
+        setText();
+    }
 
-	OnClickListener longCLick = new OnClickListener() {
+    @Override
+    public void performClick() {
+        super.performClick();
+    }
 
-		@Override
-		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-			showPopUp(x, y);
-			return true;
-		}
-	};
+    protected void showPopUp(int x, int y) {
 
-	public void setCoordinate(Coordinate pos) {
-		mActCoord = pos;
-		if (mActCoord == null)
-			mActCoord = new CoordinateGPS(0, 0);
-		setText();
-	}
+        popUp = new CopyPastePopUp("CopyPastePopUp=>" + getName(), this);
 
-	public Coordinate getCoordinate() {
-		return mActCoord;
-	}
+        float noseOffset = popUp.getHalfWidth() / 2;
 
-	@Override
-	public void performClick() {
-		super.performClick();
-	}
+        CB_RectF world = getWorldRec();
 
-	protected void showPopUp(int x, int y) {
+        // not enough place on Top?
+        float windowH = UI_Size_Base.that.getWindowHeight();
+        float windowW = UI_Size_Base.that.getWindowWidth();
+        float worldY = world.getY();
 
-		popUp = new CopyPastePopUp("CopyPastePopUp=>" + getName(), this);
+        if (popUp.getHeight() + worldY > windowH * 0.8f) {
+            popUp.flipX();
+            worldY -= popUp.getHeight() + (popUp.getHeight() * 0.2f);
+        }
 
-		float noseOffset = popUp.getHalfWidth() / 2;
+        x += world.getX() - noseOffset;
 
-		CB_RectF world = getWorldRec();
+        if (x < 0)
+            x = 0;
+        if (x + popUp.getWidth() > windowW)
+            x = (int) (windowW - popUp.getWidth());
 
-		// not enough place on Top?
-		float windowH = UI_Size_Base.that.getWindowHeight();
-		float windowW = UI_Size_Base.that.getWindowWidth();
-		float worldY = world.getY();
+        y += worldY + (popUp.getHeight() * 0.2f);
+        popUp.show(x, y);
+    }
 
-		if (popUp.getHeight() + worldY > windowH * 0.8f) {
-			popUp.flipX();
-			worldY -= popUp.getHeight() + (popUp.getHeight() * 0.2f);
-		}
+    @Override
+    public String pasteFromClipboard() {
+        if (clipboard == null)
+            return null;
+        String content = clipboard.getContents();
+        CoordinateGPS coord = null;
+        if (content != null) {
+            try {
+                coord = new CoordinateGPS(content);
+            } catch (Exception e) {
+            }
 
-		x += world.getX() - noseOffset;
+            if (coord != null) {
+                if (coord != null && coord.isValid()) {
+                    mActCoord = coord;
+                    if (mCoordinateChangedListener != null)
+                        mCoordinateChangedListener.coordinateChanged(coord);
+                    setText();
+                }
+                return content;
+            } else {
+                return Translation.Get("cantPaste") + GlobalCore.br + content;
+            }
+        } else
+            return null;
+    }
 
-		if (x < 0)
-			x = 0;
-		if (x + popUp.getWidth() > windowW)
-			x = (int) (windowW - popUp.getWidth());
+    @Override
+    public String copyToClipboard() {
+        if (clipboard == null)
+            return null;
+        // perhaps implement selection of Format
+        // String content = this.getText();
+        String content = Formatter.FormatCoordinate(this.getCoordinate(), "");
+        clipboard.setContents(content);
+        return content;
+    }
 
-		y += worldY + (popUp.getHeight() * 0.2f);
-		popUp.show(x, y);
-	}
+    @Override
+    public String cutToClipboard() {
+        if (clipboard == null)
+            return null;
+        // perhaps implement selection of Format
+        // String content = this.getText();
+        String content = Formatter.FormatCoordinate(this.getCoordinate(), "");
+        clipboard.setContents(content);
+        CoordinateGPS cor = new CoordinateGPS("N 0° 0.00 / E 0° 0.00");
+        cor.setValid(false);
+        this.setCoordinate(cor);
+        return content;
+    }
 
-	@Override
-	public String pasteFromClipboard() {
-		if (clipboard == null)
-			return null;
-		String content = clipboard.getContents();
-		CoordinateGPS coord = null;
-		if (content != null) {
-			try {
-				coord = new CoordinateGPS(content);
-			} catch (Exception e) {
-			}
+    @Override
+    public boolean isEditable() {
+        return true;
+    }
 
-			if (coord != null) {
-				if (coord != null && coord.isValid()) {
-					mActCoord = coord;
-					if (mCoordinateChangedListener != null)
-						mCoordinateChangedListener.coordinateChanged(coord);
-					setText();
-				}
-				return content;
-			} else {
-				return Translation.Get("cantPaste") + GlobalCore.br + content;
-			}
-		} else
-			return null;
-	}
-
-	@Override
-	public String copyToClipboard() {
-		if (clipboard == null)
-			return null;
-		// perhaps implement selection of Format
-		// String content = this.getText();
-		String content = Formatter.FormatCoordinate(this.getCoordinate(), "");
-		clipboard.setContents(content);
-		return content;
-	}
-
-	@Override
-	public String cutToClipboard() {
-		if (clipboard == null)
-			return null;
-		// perhaps implement selection of Format
-		// String content = this.getText();
-		String content = Formatter.FormatCoordinate(this.getCoordinate(), "");
-		clipboard.setContents(content);
-		CoordinateGPS cor = new CoordinateGPS("N 0° 0.00 / E 0° 0.00");
-		cor.setValid(false);
-		this.setCoordinate(cor);
-		return content;
-	}
-
-	@Override
-	public boolean isEditable() {
-		return true;
-	}
+    public interface ICoordinateChangedListener {
+        public void coordinateChanged(Coordinate coord);
+    }
 }

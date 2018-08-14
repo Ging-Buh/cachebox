@@ -56,6 +56,8 @@ public interface MapView {
 
     MapScaleBar getMapScaleBar();
 
+    void setMapScaleBar(MapScaleBar mapScaleBar);
+
     MapViewProjection getMapViewProjection();
 
     Model getModel();
@@ -68,8 +70,6 @@ public interface MapView {
     void repaint();
 
     void setCenter(LatLong center);
-
-    void setMapScaleBar(MapScaleBar mapScaleBar);
 
     void setZoomLevel(byte zoomLevel);
 

@@ -1,26 +1,15 @@
 package de.droidcachebox.Custom_Controls;
 
-import java.io.File;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import CB_Utils.Log.Log;
-import android.os.Build;
-import org.slf4j.LoggerFactory;
-
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Attributes;
 import CB_Core.Database;
-import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Import.DescriptionImageGrabber;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Waypoint;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
+import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GlobalCore;
 import CB_UI.SearchForGeocaches;
-import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
@@ -31,7 +20,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
-import android.graphics.Point;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -40,65 +28,29 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import de.droidcachebox.main;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Views.Forms.MessageBox;
+import de.droidcachebox.main;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @SuppressWarnings("deprecation")
 public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(DescriptionViewControl.class);
-    private Cache aktCache;
-    private final LinkedList<String> NonLocalImages = new LinkedList<String>();
-    private final LinkedList<String> NonLocalImagesUrl = new LinkedList<String>();
+    public static boolean isDrawn = false;
     private static ProgressDialog pd;
     private static DescriptionViewControl that;
-
-    public DescriptionViewControl(Context context) {
-        super(context);
-
-        this.setDrawingCacheEnabled(false);
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
-            this.setAlwaysDrawnWithCacheEnabled(false);
-        }
-
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            this.getSettings().setLightTouchEnabled(false);
-        }
-        this.getSettings().setLoadWithOverviewMode(true);
-        this.getSettings().setSupportZoom(true);
-        this.getSettings().setBuiltInZoomControls(true);
-        this.getSettings().setJavaScriptEnabled(true);
-        this.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-
-        this.setWebViewClient(clint);
-        that = this;
-        this.setFocusable(false);
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        this.getParent();
-        return super.dispatchTouchEvent(event);
-    }
-
-    public DescriptionViewControl(Context context, AttributeSet attrs) {
-        super(context, attrs);
-
-        this.setDrawingCacheEnabled(false);
-        this.setAlwaysDrawnWithCacheEnabled(false);
-
-        // this.getSettings().setJavaScriptEnabled(true);
-        this.getSettings().setLightTouchEnabled(false);
-        this.getSettings().setLoadWithOverviewMode(true);
-        this.getSettings().setSupportZoom(true);
-        this.getSettings().setBuiltInZoomControls(true);
-        this.getSettings().setJavaScriptEnabled(true);
-        this.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-
-        this.setWebViewClient(clint);
-        that = this;
-    }
-
+    final Handler downloadReadyHandler = new Handler();
+    private final LinkedList<String> NonLocalImages = new LinkedList<String>();
+    private final LinkedList<String> NonLocalImagesUrl = new LinkedList<String>();
+    Thread downloadThread;
+    private Cache aktCache;
+    private String message = "";
     WebViewClient clint = new WebViewClient() {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -192,7 +144,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             TimerTask task = new TimerTask() {
                 @Override
                 public void run() {
-                    if(main.mainActivity==null)return;
+                    if (main.mainActivity == null) return;
                     main.mainActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -206,8 +158,31 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
         }
 
     };
+    private int downloadTryCounter = 0;
+    private final DialogInterface.OnClickListener DownloadCacheDialogResult = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int button) {
+            switch (button) {
+                case -1:
+                    Cache newCache = SearchForGeocaches.getInstance().LoadApiDetails(aktCache, null);
+                    if (newCache != null) {
+                        aktCache = newCache;
+                        setCache(newCache);
 
-    private String message = "";
+                        if (!GroundspeakAPI.IsPremiumMember()) {
+                            String s = "Download successful!\n";
+                            s += "Downloads left for today: " + GroundspeakAPI.CachesLeft + "\n";
+                            s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
+
+                            MessageBox.Show(s, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
+                        }
+                    }
+                    break;
+            }
+            if (dialog != null)
+                dialog.dismiss();
+        }
+    };
     private final Handler onlineSearchReadyHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -234,33 +209,59 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             }
         }
     };
-
-    private final DialogInterface.OnClickListener DownloadCacheDialogResult = new DialogInterface.OnClickListener() {
+    final Runnable downloadComplete = new Runnable() {
         @Override
-        public void onClick(DialogInterface dialog, int button) {
-            switch (button) {
-                case -1:
-                    Cache newCache = SearchForGeocaches.getInstance().LoadApiDetails(aktCache, null);
-                    if (newCache != null) {
-                        aktCache = newCache;
-                        setCache(newCache);
-
-                        if (!GroundspeakAPI.IsPremiumMember()) {
-                            String s = "Download successful!\n";
-                            s += "Downloads left for today: " + GroundspeakAPI.CachesLeft + "\n";
-                            s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
-
-                            MessageBox.Show(s, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
-                        }
-                    }
-                    break;
-            }
-            if (dialog != null)
-                dialog.dismiss();
+        public void run() {
+            if (downloadTryCounter < 10) // nur 10 Download versuche zu lassen
+                setCache(aktCache);
         }
     };
 
-    private int downloadTryCounter = 0;
+    public DescriptionViewControl(Context context) {
+        super(context);
+
+        this.setDrawingCacheEnabled(false);
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
+            this.setAlwaysDrawnWithCacheEnabled(false);
+        }
+
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            this.getSettings().setLightTouchEnabled(false);
+        }
+        this.getSettings().setLoadWithOverviewMode(true);
+        this.getSettings().setSupportZoom(true);
+        this.getSettings().setBuiltInZoomControls(true);
+        this.getSettings().setJavaScriptEnabled(true);
+        this.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+
+        this.setWebViewClient(clint);
+        that = this;
+        this.setFocusable(false);
+    }
+
+    public DescriptionViewControl(Context context, AttributeSet attrs) {
+        super(context, attrs);
+
+        this.setDrawingCacheEnabled(false);
+        this.setAlwaysDrawnWithCacheEnabled(false);
+
+        // this.getSettings().setJavaScriptEnabled(true);
+        this.getSettings().setLightTouchEnabled(false);
+        this.getSettings().setLoadWithOverviewMode(true);
+        this.getSettings().setSupportZoom(true);
+        this.getSettings().setBuiltInZoomControls(true);
+        this.getSettings().setJavaScriptEnabled(true);
+        this.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+
+        this.setWebViewClient(clint);
+        that = this;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        this.getParent();
+        return super.dispatchTouchEvent(event);
+    }
 
     public void setCache(final Cache cache) {
         final String mimeType = "text/html";
@@ -338,8 +339,8 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                         String local, url;
 
                         try {
-                        local = NonLocalImages.poll();
-                        url = NonLocalImagesUrl.poll();
+                            local = NonLocalImages.poll();
+                            url = NonLocalImagesUrl.poll();
 
 
                             if (DescriptionImageGrabber.Download(url, local)) {
@@ -349,7 +350,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                             log.error("DescriptionViewControl.setCache()", "downloadThread run()", e);
                         }
                     }
-                    if (anyImagesLoaded&&downloadReadyHandler!=null)
+                    if (anyImagesLoaded && downloadReadyHandler != null)
                         downloadReadyHandler.post(downloadComplete);
                 }
             };
@@ -360,17 +361,6 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             cache.loadSpoilerRessources();
         }
     }
-
-    final Handler downloadReadyHandler = new Handler();
-    Thread downloadThread;
-
-    final Runnable downloadComplete = new Runnable() {
-        @Override
-        public void run() {
-            if (downloadTryCounter < 10) // nur 10 Download versuche zu lassen
-                setCache(aktCache);
-        }
-    };
 
     private String getAttributesHtml(Cache cache) {
         StringBuilder sb = new StringBuilder();
@@ -469,8 +459,6 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
         return false;
     }
 
-    public static boolean isDrawn = false;
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -480,7 +468,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
 
     @Override
     public void scrollTo(int x, int y) {
-            super.scrollTo(x, y);
+        super.scrollTo(x, y);
     }
 
 }

@@ -30,13 +30,12 @@ import org.mapsforge.map.model.common.Observer;
 
 public class TileDownloadLayer extends TileLayer<DownloadJob> implements Observer {
     private static final int DOWNLOAD_THREADS_MAX = 8;
-
-    private long cacheTimeToLive = 0;
     private final GraphicFactory graphicFactory;
-    private boolean started;
     private final TileCache tileCache;
-    private TileDownloadThread[] tileDownloadThreads;
     private final TileSource tileSource;
+    private long cacheTimeToLive = 0;
+    private boolean started;
+    private TileDownloadThread[] tileDownloadThreads;
 
     public TileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition, TileSource tileSource,
                              GraphicFactory graphicFactory) {
@@ -66,6 +65,19 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> implements Observe
         return cacheTimeToLive;
     }
 
+    /**
+     * Sets the time-to-live (TTL) for tiles in the cache.
+     * <p/>
+     * The initial TTL is obtained by calling the {@link org.mapsforge.map.layer.download.tilesource.TileSource}'s
+     * {@link TileSource#getDefaultTimeToLive()} ()} method. Refer to
+     * {@link #isTileStale(Tile, TileBitmap)} for information on how the TTL is enforced.
+     *
+     * @param ttl The TTL. If set to 0, no TTL will be enforced.
+     */
+    public void setCacheTimeToLive(long ttl) {
+        cacheTimeToLive = ttl;
+    }
+
     @Override
     public void onDestroy() {
         for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
@@ -88,19 +100,6 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> implements Observe
         for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
             tileDownloadThread.proceed();
         }
-    }
-
-    /**
-     * Sets the time-to-live (TTL) for tiles in the cache.
-     * <p/>
-     * The initial TTL is obtained by calling the {@link org.mapsforge.map.layer.download.tilesource.TileSource}'s
-     * {@link TileSource#getDefaultTimeToLive()} ()} method. Refer to
-     * {@link #isTileStale(Tile, TileBitmap)} for information on how the TTL is enforced.
-     *
-     * @param ttl The TTL. If set to 0, no TTL will be enforced.
-     */
-    public void setCacheTimeToLive(long ttl) {
-        cacheTimeToLive = ttl;
     }
 
     @Override

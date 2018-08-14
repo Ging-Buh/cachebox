@@ -27,6 +27,56 @@ import java.util.Set;
  */
 public class Tile implements Serializable {
     private static final long serialVersionUID = 1L;
+    /**
+     * the map size implied by zoom level and tileSize, to avoid multiple computations.
+     */
+    public final long mapSize;
+    public final int tileSize;
+    /**
+     * The X number of this tile.
+     */
+    public final int tileX;
+    /**
+     * The Y number of this tile.
+     */
+    public final int tileY;
+    /**
+     * The zoom level of this tile.
+     */
+    public final byte zoomLevel;
+    private BoundingBox boundingBox;
+    private Point origin;
+
+    /**
+     * @param tileX     the X number of the tile.
+     * @param tileY     the Y number of the tile.
+     * @param zoomLevel the zoom level of the tile.
+     * @throws IllegalArgumentException if any of the parameters is invalid.
+     */
+    public Tile(int tileX, int tileY, byte zoomLevel, int tileSize) {
+        if (tileX < 0) {
+            throw new IllegalArgumentException("tileX must not be negative: " + tileX);
+        } else if (tileY < 0) {
+            throw new IllegalArgumentException("tileY must not be negative: " + tileY);
+        } else if (zoomLevel < 0) {
+            throw new IllegalArgumentException("zoomLevel must not be negative: " + zoomLevel);
+        }
+
+        long maxTileNumber = getMaxTileNumber(zoomLevel);
+        if (tileX > maxTileNumber) {
+            throw new IllegalArgumentException("invalid tileX number on zoom level " + zoomLevel + ": " + tileX);
+        } else if (tileY > maxTileNumber) {
+            throw new IllegalArgumentException("invalid tileY number on zoom level " + zoomLevel + ": " + tileY);
+        }
+
+        this.tileSize = tileSize;
+        this.tileX = tileX;
+        this.tileY = tileY;
+        this.zoomLevel = zoomLevel;
+        this.mapSize = MercatorProjection.getMapSize(zoomLevel, tileSize);
+
+
+    }
 
     /**
      * Return the BoundingBox of a rectangle of tiles defined by upper left and lower right tile.
@@ -84,63 +134,6 @@ public class Tile implements Serializable {
         }
         return (2 << zoomLevel - 1) - 1;
     }
-
-    /**
-     * the map size implied by zoom level and tileSize, to avoid multiple computations.
-     */
-    public final long mapSize;
-
-    public final int tileSize;
-
-    /**
-     * The X number of this tile.
-     */
-    public final int tileX;
-
-    /**
-     * The Y number of this tile.
-     */
-    public final int tileY;
-
-    /**
-     * The zoom level of this tile.
-     */
-    public final byte zoomLevel;
-
-    private BoundingBox boundingBox;
-    private Point origin;
-
-    /**
-     * @param tileX     the X number of the tile.
-     * @param tileY     the Y number of the tile.
-     * @param zoomLevel the zoom level of the tile.
-     * @throws IllegalArgumentException if any of the parameters is invalid.
-     */
-    public Tile(int tileX, int tileY, byte zoomLevel, int tileSize) {
-        if (tileX < 0) {
-            throw new IllegalArgumentException("tileX must not be negative: " + tileX);
-        } else if (tileY < 0) {
-            throw new IllegalArgumentException("tileY must not be negative: " + tileY);
-        } else if (zoomLevel < 0) {
-            throw new IllegalArgumentException("zoomLevel must not be negative: " + zoomLevel);
-        }
-
-        long maxTileNumber = getMaxTileNumber(zoomLevel);
-        if (tileX > maxTileNumber) {
-            throw new IllegalArgumentException("invalid tileX number on zoom level " + zoomLevel + ": " + tileX);
-        } else if (tileY > maxTileNumber) {
-            throw new IllegalArgumentException("invalid tileY number on zoom level " + zoomLevel + ": " + tileY);
-        }
-
-        this.tileSize = tileSize;
-        this.tileX = tileX;
-        this.tileY = tileY;
-        this.zoomLevel = zoomLevel;
-        this.mapSize = MercatorProjection.getMapSize(zoomLevel, tileSize);
-
-
-    }
-
 
     @Override
     public boolean equals(Object obj) {

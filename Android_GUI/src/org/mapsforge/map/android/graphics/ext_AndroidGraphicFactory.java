@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,138 +15,128 @@
  */
 package org.mapsforge.map.android.graphics;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.Matrix;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.ResourceBitmap;
-import org.mapsforge.core.graphics.TileBitmap;
-import org.mapsforge.map.model.DisplayModel;
-
-import CB_UI_Base.graphics.extendedInterfaces.ext_Bitmap;
-import CB_UI_Base.graphics.extendedInterfaces.ext_Canvas;
-import CB_UI_Base.graphics.extendedInterfaces.ext_GraphicFactory;
-import CB_UI_Base.graphics.extendedInterfaces.ext_Matrix;
-import CB_UI_Base.graphics.extendedInterfaces.ext_Paint;
-import CB_UI_Base.graphics.extendedInterfaces.ext_Path;
+import CB_UI_Base.graphics.extendedInterfaces.*;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Util.HSV_Color;
 import android.app.Application;
+import org.mapsforge.core.graphics.*;
+import org.mapsforge.map.model.DisplayModel;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Longri
  */
 public class ext_AndroidGraphicFactory extends AndroidGraphicFactory implements ext_GraphicFactory {
-	public static Application aplication;
-	private final float ScaleFactor;
+    public static Application aplication;
+    private final float ScaleFactor;
 
-	public static void createInstance(Application app) {
-		aplication = app;
-		INSTANCE = new AndroidGraphicFactory(app);
-	}
+    protected ext_AndroidGraphicFactory(Application app) {
+        super(app);
+        aplication = app;
+        DisplayModel.setDeviceScaleFactor(1f);
+        this.ScaleFactor = 1f;
+    }
 
-	protected ext_AndroidGraphicFactory(Application app) {
-		super(app);
-		aplication = app;
-		DisplayModel.setDeviceScaleFactor(1f);
-		this.ScaleFactor = 1f;
-	}
+    protected ext_AndroidGraphicFactory(float scaleFactor) {
+        super(aplication);
+        DisplayModel.setDeviceScaleFactor(scaleFactor);
+        this.ScaleFactor = scaleFactor;
+    }
 
-	protected ext_AndroidGraphicFactory(float scaleFactor) {
-		super(aplication);
-		DisplayModel.setDeviceScaleFactor(scaleFactor);
-		this.ScaleFactor = scaleFactor;
-	}
+    public static void createInstance(Application app) {
+        aplication = app;
+        INSTANCE = new AndroidGraphicFactory(app);
+    }
 
-	// ############################################################################################
-	// Overrides for CB.ext_GraphicFactory
-	// ############################################################################################
+    // ############################################################################################
+    // Overrides for CB.ext_GraphicFactory
+    // ############################################################################################
 
-	@Override
-	public ext_Matrix createMatrix(ext_Matrix matrix) {
+    public static ext_GraphicFactory getInstance(float ScaleFactor) {
+        if (FactoryList.containsKey(ScaleFactor))
+            return FactoryList.get(ScaleFactor);
 
-		return null;
-	}
+        ext_AndroidGraphicFactory factory = new ext_AndroidGraphicFactory(ScaleFactor);
+        FactoryList.put(ScaleFactor, factory);
+        return factory;
+    }
 
-	@Override
-	public ext_Paint createPaint(ext_Paint paint) {
-		return new ext_AndroidPaint(paint);
-	}
+    @Override
+    public ext_Matrix createMatrix(ext_Matrix matrix) {
 
-	@Override
-	public int setColorAlpha(int color, float paintOpacity) {
+        return null;
+    }
 
-		return 0;
-	}
+    @Override
+    public ext_Paint createPaint(ext_Paint paint) {
+        return new ext_AndroidPaint(paint);
+    }
 
-	public static ext_GraphicFactory getInstance(float ScaleFactor) {
-		if (FactoryList.containsKey(ScaleFactor))
-			return FactoryList.get(ScaleFactor);
+    @Override
+    public int setColorAlpha(int color, float paintOpacity) {
 
-		ext_AndroidGraphicFactory factory = new ext_AndroidGraphicFactory(ScaleFactor);
-		FactoryList.put(ScaleFactor, factory);
-		return factory;
-	}
+        return 0;
+    }
 
-	// ############################################################################################
-	// Overrides for mapsforge.AndroidGraphicFactory
-	// ############################################################################################
+    // ############################################################################################
+    // Overrides for mapsforge.AndroidGraphicFactory
+    // ############################################################################################
 
-	@Override
-	public Paint createPaint() {
-		return new ext_AndroidPaint();
-	}
+    @Override
+    public Paint createPaint() {
+        return new ext_AndroidPaint();
+    }
 
-	@Override
-	public Matrix createMatrix() {
-		return new ext_AndroidMatrix();
-	}
+    @Override
+    public Matrix createMatrix() {
+        return new ext_AndroidMatrix();
+    }
 
-	@Override
-	public ext_Bitmap createBitmap(int width, int height) {
-		return new ext_AndroidBitmap(width, height);
-	}
+    @Override
+    public ext_Bitmap createBitmap(int width, int height) {
+        return new ext_AndroidBitmap(width, height);
+    }
 
-	@Override
-	public TileBitmap createTileBitmap(int tileSize, boolean hasAlpha) {
-		return new ext_AndroidTileBitmap(tileSize);
-	}
+    @Override
+    public TileBitmap createTileBitmap(int tileSize, boolean hasAlpha) {
+        return new ext_AndroidTileBitmap(tileSize);
+    }
 
-	@Override
-	public ext_Canvas createCanvas() {
-		return new ext_AndroidCanvas();
-	}
+    @Override
+    public ext_Canvas createCanvas() {
+        return new ext_AndroidCanvas();
+    }
 
-	@Override
-	public ext_Path createPath() {
-		return new ext_AndroidPath();
-	}
+    @Override
+    public ext_Path createPath() {
+        return new ext_AndroidPath();
+    }
 
-	@Override
-	public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException {
-		return new ext_AndroidResourceBitmap(inputStream, hash, this.ScaleFactor);
-	}
+    @Override
+    public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException {
+        return new ext_AndroidResourceBitmap(inputStream, hash, this.ScaleFactor);
+    }
 
-	@Override
-	public int createColor(Color color) {
-		int c = getColor(color);
-		if (CB_UI_Base_Settings.nightMode.getValue())
-			c = HSV_Color.colorMatrixManipulation(c, HSV_Color.NIGHT_COLOR_MATRIX);
-		return c;
-	}
+    @Override
+    public int createColor(Color color) {
+        int c = getColor(color);
+        if (CB_UI_Base_Settings.nightMode.getValue())
+            c = HSV_Color.colorMatrixManipulation(c, HSV_Color.NIGHT_COLOR_MATRIX);
+        return c;
+    }
 
-	@Override
-	public int createColor(int alpha, int red, int green, int blue) {
-		int c = android.graphics.Color.argb(alpha, red, green, blue);
-		if (CB_UI_Base_Settings.nightMode.getValue())
-			c = HSV_Color.colorMatrixManipulation(c, HSV_Color.NIGHT_COLOR_MATRIX);
-		return c;
-	}
+    @Override
+    public int createColor(int alpha, int red, int green, int blue) {
+        int c = android.graphics.Color.argb(alpha, red, green, blue);
+        if (CB_UI_Base_Settings.nightMode.getValue())
+            c = HSV_Color.colorMatrixManipulation(c, HSV_Color.NIGHT_COLOR_MATRIX);
+        return c;
+    }
 
-	@Override
-	public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int width, int height, int percent, int hash) throws IOException {
-		return new ext_AndroidSvgBitmap(inputStream, hash, scaleFactor, width, height, percent);
-	}
+    @Override
+    public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int width, int height, int percent, int hash) throws IOException {
+        return new ext_AndroidSvgBitmap(inputStream, hash, scaleFactor, width, height, percent);
+    }
 }

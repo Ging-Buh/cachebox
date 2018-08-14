@@ -36,14 +36,14 @@ import java.util.List;
 
 public class PolylineContainer implements ShapeContainer {
 
-    private Point center;
-    private Point[][] coordinatesAbsolute;
-    private Point[][] coordinatesRelativeToTile;
     private final List<Tag> tags;
     private final byte layer;
     private final Tile upperLeft;
     private final Tile lowerRight;
     private final boolean isClosedWay;
+    private Point center;
+    private Point[][] coordinatesAbsolute;
+    private Point[][] coordinatesRelativeToTile;
     private Way way;
 
     public PolylineContainer(Way way, Tile upperLeft, Tile lowerRight) {

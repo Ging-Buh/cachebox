@@ -1,17 +1,20 @@
 package CB_UI_Base.GL_UI;
 
-import java.util.ConcurrentModificationException;
-import java.util.NoSuchElementException;
-
-import com.badlogic.gdx.graphics.g2d.Batch;
-
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 import CB_Utils.Util.MoveableList;
+import com.badlogic.gdx.graphics.g2d.Batch;
+
+import java.util.ConcurrentModificationException;
+import java.util.NoSuchElementException;
 
 public class CB_View_Base extends GL_View_Base {
 
+    public static final int FIXED = -1;
+    public static final boolean TOPDOWN = true;
+    public static final boolean BOTTOMUP = false;
+    protected boolean isInitial = false;
     // row handling by arbor95: makes live much easier
     // Designing this ( a page, a box, a panel, ...) by adding rows of objects<GL_View_Base>
     // the position and width (stretched equally, weighted or percentual) of the objects is calculated automatically
@@ -23,9 +26,6 @@ public class CB_View_Base extends GL_View_Base {
     private float yMargin = 0;
     private float topYAdd;
     private float bottomYAdd = -1;
-    public static final int FIXED = -1;
-    public static final boolean TOPDOWN = true;
-    public static final boolean BOTTOMUP = false;
     private boolean isDisposed = false;
 
     // # Constructors
@@ -57,12 +57,21 @@ public class CB_View_Base extends GL_View_Base {
         super(size, Name);
     }
 
+    public static void setToNull(CB_View_Base view) {
+        if (view.childs.size() == 0) {
+            view = null;
+        } else {
+            synchronized (view.childs) {
+                view.childs.clear();
+                view = null;
+            }
+        }
+    }
+
     @Override
     public boolean isDisposed() {
         return isDisposed;
     }
-
-    protected boolean isInitial = false;
 
     public void resetInitial() {
         isInitial = false;
@@ -168,17 +177,6 @@ public class CB_View_Base extends GL_View_Base {
 
         isDisposed = true;
         super.dispose();
-    }
-
-    public static void setToNull(CB_View_Base view) {
-        if (view.childs.size() == 0) {
-            view = null;
-        } else {
-            synchronized (view.childs) {
-                view.childs.clear();
-                view = null;
-            }
-        }
     }
 
     public int getCildCount() {
@@ -401,7 +399,7 @@ public class CB_View_Base extends GL_View_Base {
      * All items within the last row processed in the layout!
      */
     public void FinaliseRow() {
-        addMe(null,true );
+        addMe(null, true);
     }
 
     // ===================================================================

@@ -122,10 +122,24 @@ public class Polygon extends Layer {
     }
 
     /**
+     * @param paintFill the new {@code Paint} used to fill this polygon (may be null).
+     */
+    public synchronized void setPaintFill(Paint paintFill) {
+        this.paintFill = paintFill;
+    }
+
+    /**
      * @return the {@code Paint} used to stroke this polygon (may be null).
      */
     public synchronized Paint getPaintStroke() {
         return this.paintStroke;
+    }
+
+    /**
+     * @param paintStroke the new {@code Paint} used to stroke this polygon (may be null).
+     */
+    public synchronized void setPaintStroke(Paint paintStroke) {
+        this.paintStroke = paintStroke;
     }
 
     /**
@@ -134,20 +148,6 @@ public class Polygon extends Layer {
      */
     public boolean isKeepAligned() {
         return keepAligned;
-    }
-
-    /**
-     * @param paintFill the new {@code Paint} used to fill this polygon (may be null).
-     */
-    public synchronized void setPaintFill(Paint paintFill) {
-        this.paintFill = paintFill;
-    }
-
-    /**
-     * @param paintStroke the new {@code Paint} used to stroke this polygon (may be null).
-     */
-    public synchronized void setPaintStroke(Paint paintStroke) {
-        this.paintStroke = paintStroke;
     }
 
 }

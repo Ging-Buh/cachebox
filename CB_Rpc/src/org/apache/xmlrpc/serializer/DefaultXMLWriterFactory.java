@@ -14,12 +14,9 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.serializer;
-
-import java.io.OutputStream;
-import java.io.StringWriter;
 
 import org.apache.ws.commons.serialize.CharSetXMLWriter;
 import org.apache.xmlrpc.XmlRpcException;
@@ -27,7 +24,11 @@ import org.apache.xmlrpc.common.XmlRpcStreamConfig;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
 
-/** The default implementation of {@link org.apache.xmlrpc.serializer.XmlWriterFactory}
+import java.io.OutputStream;
+import java.io.StringWriter;
+
+/**
+ * The default implementation of {@link org.apache.xmlrpc.serializer.XmlWriterFactory}
  * tests, whether the {@link org.apache.xmlrpc.serializer.CharSetXmlWriterFactory}
  * is usable. This is the case, when running in Java 1.4 or later. If so,
  * this factory is used. Otherwise, the
@@ -35,28 +36,29 @@ import org.xml.sax.helpers.AttributesImpl;
  * fallback.
  */
 public class DefaultXMLWriterFactory implements XmlWriterFactory {
-	private final XmlWriterFactory factory;
+    private final XmlWriterFactory factory;
 
-	/** Creates a new instance.
-	 */
-	public DefaultXMLWriterFactory() {
-		XmlWriterFactory xwf;
-		try {
-			CharSetXMLWriter csw = new CharSetXMLWriter();
-			StringWriter sw = new StringWriter();
-			csw.setWriter(sw);
-			csw.startDocument();
-			csw.startElement("", "test", "test", new AttributesImpl());
-			csw.endElement("", "test", "test");
-			csw.endDocument();
-			xwf = new CharSetXmlWriterFactory();
-		} catch (Throwable t) {
-			xwf = new BaseXmlWriterFactory();
-		}
-		factory = xwf;
-	}
+    /**
+     * Creates a new instance.
+     */
+    public DefaultXMLWriterFactory() {
+        XmlWriterFactory xwf;
+        try {
+            CharSetXMLWriter csw = new CharSetXMLWriter();
+            StringWriter sw = new StringWriter();
+            csw.setWriter(sw);
+            csw.startDocument();
+            csw.startElement("", "test", "test", new AttributesImpl());
+            csw.endElement("", "test", "test");
+            csw.endDocument();
+            xwf = new CharSetXmlWriterFactory();
+        } catch (Throwable t) {
+            xwf = new BaseXmlWriterFactory();
+        }
+        factory = xwf;
+    }
 
-	public ContentHandler getXmlWriter(XmlRpcStreamConfig pConfig, OutputStream pStream) throws XmlRpcException {
-		return factory.getXmlWriter(pConfig, pStream);
-	}
+    public ContentHandler getXmlWriter(XmlRpcStreamConfig pConfig, OutputStream pStream) throws XmlRpcException {
+        return factory.getXmlWriter(pConfig, pStream);
+    }
 }

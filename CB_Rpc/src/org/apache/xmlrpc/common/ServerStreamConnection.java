@@ -14,7 +14,7 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.common;
 
@@ -22,21 +22,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-/** Interface of an object, which is able to provide
+/**
+ * Interface of an object, which is able to provide
  * an XML stream, containing an XML-RPC request.
  * Additionally, the object may also be used to
  * write the response as an XML stream.
  */
 public interface ServerStreamConnection {
-	/** Returns the connections input stream.
-	 */
-	InputStream newInputStream() throws IOException;
+    /**
+     * Returns the connections input stream.
+     */
+    InputStream newInputStream() throws IOException;
 
-	/** Returns the connections output stream.
-	 */
-	OutputStream newOutputStream() throws IOException;
+    /**
+     * Returns the connections output stream.
+     */
+    OutputStream newOutputStream() throws IOException;
 
-	/** Closes the connection, and frees resources.
-	 */
-	void close() throws IOException;
+    /**
+     * Closes the connection, and frees resources.
+     */
+    void close() throws IOException;
 }

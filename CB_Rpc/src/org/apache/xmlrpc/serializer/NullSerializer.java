@@ -14,27 +14,30 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.serializer;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-/** A {@link TypeSerializer} for null values.
+/**
+ * A {@link TypeSerializer} for null values.
  */
 public class NullSerializer extends TypeSerializerImpl {
-	/** Tag name of a nil value.
-	 */
-	public static final String NIL_TAG = "nil";
-	/** Qualified tag name of a nil value.
-	 */
-	public static final String EX_NIL_TAG = "ex:nil";
+    /**
+     * Tag name of a nil value.
+     */
+    public static final String NIL_TAG = "nil";
+    /**
+     * Qualified tag name of a nil value.
+     */
+    public static final String EX_NIL_TAG = "ex:nil";
 
-	public void write(ContentHandler pHandler, Object pObject) throws SAXException {
-		pHandler.startElement("", VALUE_TAG, VALUE_TAG, ZERO_ATTRIBUTES);
-		pHandler.startElement(XmlRpcWriter.EXTENSIONS_URI, NIL_TAG, EX_NIL_TAG, ZERO_ATTRIBUTES);
-		pHandler.endElement(XmlRpcWriter.EXTENSIONS_URI, NIL_TAG, EX_NIL_TAG);
-		pHandler.endElement("", VALUE_TAG, VALUE_TAG);
-	}
+    public void write(ContentHandler pHandler, Object pObject) throws SAXException {
+        pHandler.startElement("", VALUE_TAG, VALUE_TAG, ZERO_ATTRIBUTES);
+        pHandler.startElement(XmlRpcWriter.EXTENSIONS_URI, NIL_TAG, EX_NIL_TAG, ZERO_ATTRIBUTES);
+        pHandler.endElement(XmlRpcWriter.EXTENSIONS_URI, NIL_TAG, EX_NIL_TAG);
+        pHandler.endElement("", VALUE_TAG, VALUE_TAG);
+    }
 }

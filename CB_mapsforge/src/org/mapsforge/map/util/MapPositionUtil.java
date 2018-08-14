@@ -15,14 +15,14 @@
  */
 package org.mapsforge.map.util;
 
-import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.Dimension;
-import org.mapsforge.core.model.LatLong;
-import org.mapsforge.core.model.MapPosition;
-import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.*;
 import org.mapsforge.core.util.MercatorProjection;
 
 public final class MapPositionUtil {
+    private MapPositionUtil() {
+        throw new IllegalStateException();
+    }
+
     public static BoundingBox getBoundingBox(MapPosition mapPosition, Dimension canvasDimension, int tileSize) {
 
         long mapSize = MercatorProjection.getMapSize(mapPosition.zoomLevel, tileSize);
@@ -55,9 +55,5 @@ public final class MapPositionUtil {
         double pixelX = Math.round(MercatorProjection.longitudeToPixelX(centerPoint.longitude, mapSize));
         double pixelY = Math.round(MercatorProjection.latitudeToPixelY(centerPoint.latitude, mapSize));
         return new Point((int) pixelX - halfCanvasWidth, (int) pixelY - halfCanvasHeight);
-    }
-
-    private MapPositionUtil() {
-        throw new IllegalStateException();
     }
 }

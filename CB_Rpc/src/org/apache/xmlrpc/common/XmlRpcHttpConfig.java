@@ -14,26 +14,31 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.common;
 
-/** Interface of a configuration for HTTP requests.
+/**
+ * Interface of a configuration for HTTP requests.
  */
 public interface XmlRpcHttpConfig extends XmlRpcStreamConfig {
-	/** Returns the encoding being used to convert the String "username:password"
-	 * into bytes.
-	 * @return Encoding being used for basic HTTP authentication credentials,
-	 * or null, if the default encoding
-	 * ({@link org.apache.xmlrpc.common.XmlRpcStreamRequestConfig#UTF8_ENCODING})
-	 * is being used.
-	 */
-	String getBasicEncoding();
+    /**
+     * Returns the encoding being used to convert the String "username:password"
+     * into bytes.
+     *
+     * @return Encoding being used for basic HTTP authentication credentials,
+     * or null, if the default encoding
+     * ({@link org.apache.xmlrpc.common.XmlRpcStreamRequestConfig#UTF8_ENCODING})
+     * is being used.
+     */
+    String getBasicEncoding();
 
-	/** Returns, whether a "Content-Length" header may be
-	 * omitted. The XML-RPC specification demands, that such
-	 * a header be present.
-	 * @return True, if the content length may be omitted.
-	 */
-	boolean isContentLengthOptional();
+    /**
+     * Returns, whether a "Content-Length" header may be
+     * omitted. The XML-RPC specification demands, that such
+     * a header be present.
+     *
+     * @return True, if the content length may be omitted.
+     */
+    boolean isContentLengthOptional();
 }

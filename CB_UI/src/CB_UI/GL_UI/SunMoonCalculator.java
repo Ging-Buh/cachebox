@@ -4,6 +4,7 @@ import java.util.Calendar;
 
 /**
  * A very simple Sun/Moon calculator without using JPARSEC library.
+ *
  * @author T. Alonso Albi - OAN (Spain)
  * http://conga.oan.es/~alonso/doku.php?id=blog:sun_moon_position
  * Created by Longri on 30.01.2017.
@@ -83,60 +84,24 @@ public class SunMoonCalculator {
      * The Julian Day which represents noon on 2000-01-01.
      */
     public static final double J2000 = 2451545.0;
-
-    /**
-     * The set of twilights to calculate (types of rise/set events).
-     */
-    public static enum TWILIGHT {
-        /**
-         * Event ID for calculation of rising and setting times for astronomical
-         * twilight. In this case, the calculated time will be the time when the
-         * center of the object is at -18 degrees of geometrical elevation below the
-         * astronomical horizon. At this time astronomical observations are possible
-         * because the sky is dark enough.
-         */
-        TWILIGHT_ASTRONOMICAL,
-        /**
-         * Event ID for calculation of rising and setting times for nautical
-         * twilight. In this case, the calculated time will be the time when the
-         * center of the object is at -12 degrees of geometric elevation below the
-         * astronomical horizon.
-         */
-        TWILIGHT_NAUTICAL,
-        /**
-         * Event ID for calculation of rising and setting times for civil twilight.
-         * In this case, the calculated time will be the time when the center of the
-         * object is at -6 degrees of geometric elevation below the astronomical
-         * horizon.
-         */
-        TWILIGHT_CIVIL,
-        /**
-         * The standard value of 34' for the refraction at the local horizon.
-         */
-        HORIZON_34arcmin
-    }
-
-    ;
-
-
-    /**
-     * Input values.
-     */
-    private double jd_UT = 0, t = 0, obsLon = 0, obsLat = 0, TTminusUT = 0;
-    private TWILIGHT twilight = TWILIGHT.HORIZON_34arcmin;
-    private double slongitude = 0, sanomaly = 0;
-
     /**
      * Values for azimuth, elevation, rise, set, and transit for the Sun. Angles in radians, rise ... as Julian days in UT.
      * Distance in AU.
      */
     public double sunAz, sunEl, sunRise, sunSet, sunTransit, sunTransitElev, sunDist;
 
+    ;
     /**
      * Values for azimuth, elevation, rise, set, and transit for the Moon. Angles in radians, rise ... as Julian days in UT.
      * Moon age is the number of days since last new Moon, in days, from 0 to 29.5. Distance in AU.
      */
     public double moonAz, moonEl, moonRise, moonSet, moonTransit, moonAge, moonTransitElev, moonDist;
+    /**
+     * Input values.
+     */
+    private double jd_UT = 0, t = 0, obsLon = 0, obsLat = 0, TTminusUT = 0;
+    private TWILIGHT twilight = TWILIGHT.HORIZON_34arcmin;
+    private double slongitude = 0, sanomaly = 0;
 
     public SunMoonCalculator(Calendar calender, double lon, double lat) throws Exception {
         this(calender.get(Calendar.YEAR), calender.get(Calendar.MONTH) + 1, calender.get(Calendar.DAY_OF_MONTH),
@@ -194,6 +159,78 @@ public class SunMoonCalculator {
         this.obsLon = obsLon;
         this.obsLat = obsLat;
         setUTDate(jd);
+    }
+
+    /**
+     * Transforms a Julian day (rise/set/transit fields) to a common date.
+     *
+     * @param jd The Julian day.
+     * @return A set of integers: year, month, day, hour, minute, second.
+     * @throws Exception If the input date does not exists.
+     */
+    public static int[] getDate(double jd) throws Exception {
+        if (jd < 2299160.0 && jd >= 2299150.0) {
+            throw new Exception("invalid julian day " + jd + ". This date does not exist.");
+        }
+
+        // The conversion formulas are from Meeus,
+        // Chapter 7.
+        double Z = Math.floor(jd + 0.5);
+        double F = jd + 0.5 - Z;
+        double A = Z;
+        if (Z >= 2299161D) {
+            int a = (int) ((Z - 1867216.25) / 36524.25);
+            A += 1 + a - a / 4;
+        }
+        double B = A + 1524;
+        int C = (int) ((B - 122.1) / 365.25);
+        int D = (int) (C * 365.25);
+        int E = (int) ((B - D) / 30.6001);
+
+        double exactDay = F + B - D - (int) (30.6001 * E);
+        int day = (int) exactDay;
+        int month = (E < 14) ? E - 1 : E - 13;
+        int year = C - 4715;
+        if (month > 2) year--;
+        double h = ((exactDay - day) * SECONDS_PER_DAY) / 3600.0;
+
+        int hour = (int) h;
+        double m = (h - hour) * 60.0;
+        int minute = (int) m;
+        int second = (int) ((m - minute) * 60.0);
+
+        return new int[]{year, month, day, hour, minute, second};
+    }
+
+    /**
+     * Returns a date as a string.
+     *
+     * @param jd The Juliand day.
+     * @return The String.
+     * @throws Exception If the date does not exists.
+     */
+    public static String getDateAsString(double jd) throws Exception {
+        if (jd == -1) return "NO RISE/SET/TRANSIT FOR THIS OBSERVER/DATE";
+
+        int date[] = SunMoonCalculator.getDate(jd);
+        return date[0] + "/" + date[1] + "/" + date[2] + " " + date[3] + ":" + date[4] + ":" + date[5] + " UT";
+    }
+
+    /**
+     * Reduce an angle in radians to the range (0 - 2 Pi).
+     *
+     * @param r Value in radians.
+     * @return The reduced radian value.
+     */
+    public static double normalizeRadians(double r) {
+        if (r < 0 && r >= -TWO_PI) return r + TWO_PI;
+        if (r >= TWO_PI && r < FOUR_PI) return r - TWO_PI;
+        if (r >= 0 && r < TWO_PI) return r;
+
+        r -= TWO_PI * Math.floor(r * TWO_PI_INVERSE);
+        if (r < 0.) r += TWO_PI;
+
+        return r;
     }
 
     /**
@@ -488,78 +525,6 @@ public class SunMoonCalculator {
         return new double[]{azi, alt, rise, set, transit, transit_alt, ra, dec, dist};
     }
 
-    /**
-     * Transforms a Julian day (rise/set/transit fields) to a common date.
-     *
-     * @param jd The Julian day.
-     * @return A set of integers: year, month, day, hour, minute, second.
-     * @throws Exception If the input date does not exists.
-     */
-    public static int[] getDate(double jd) throws Exception {
-        if (jd < 2299160.0 && jd >= 2299150.0) {
-            throw new Exception("invalid julian day " + jd + ". This date does not exist.");
-        }
-
-        // The conversion formulas are from Meeus,
-        // Chapter 7.
-        double Z = Math.floor(jd + 0.5);
-        double F = jd + 0.5 - Z;
-        double A = Z;
-        if (Z >= 2299161D) {
-            int a = (int) ((Z - 1867216.25) / 36524.25);
-            A += 1 + a - a / 4;
-        }
-        double B = A + 1524;
-        int C = (int) ((B - 122.1) / 365.25);
-        int D = (int) (C * 365.25);
-        int E = (int) ((B - D) / 30.6001);
-
-        double exactDay = F + B - D - (int) (30.6001 * E);
-        int day = (int) exactDay;
-        int month = (E < 14) ? E - 1 : E - 13;
-        int year = C - 4715;
-        if (month > 2) year--;
-        double h = ((exactDay - day) * SECONDS_PER_DAY) / 3600.0;
-
-        int hour = (int) h;
-        double m = (h - hour) * 60.0;
-        int minute = (int) m;
-        int second = (int) ((m - minute) * 60.0);
-
-        return new int[]{year, month, day, hour, minute, second};
-    }
-
-    /**
-     * Returns a date as a string.
-     *
-     * @param jd The Juliand day.
-     * @return The String.
-     * @throws Exception If the date does not exists.
-     */
-    public static String getDateAsString(double jd) throws Exception {
-        if (jd == -1) return "NO RISE/SET/TRANSIT FOR THIS OBSERVER/DATE";
-
-        int date[] = SunMoonCalculator.getDate(jd);
-        return date[0] + "/" + date[1] + "/" + date[2] + " " + date[3] + ":" + date[4] + ":" + date[5] + " UT";
-    }
-
-    /**
-     * Reduce an angle in radians to the range (0 - 2 Pi).
-     *
-     * @param r Value in radians.
-     * @return The reduced radian value.
-     */
-    public static double normalizeRadians(double r) {
-        if (r < 0 && r >= -TWO_PI) return r + TWO_PI;
-        if (r >= TWO_PI && r < FOUR_PI) return r - TWO_PI;
-        if (r >= 0 && r < TWO_PI) return r;
-
-        r -= TWO_PI * Math.floor(r * TWO_PI_INVERSE);
-        if (r < 0.) r += TWO_PI;
-
-        return r;
-    }
-
     private double obtainAccurateRiseSetTransit(double riseSetJD, int index, int niter, boolean sun) {
         double step = -1;
         for (int i = 0; i < niter; i++) {
@@ -578,5 +543,37 @@ public class SunMoonCalculator {
         }
         if (step > 1.0 / SECONDS_PER_DAY) return -1; // did not converge => without rise/set/transit in this date
         return riseSetJD;
+    }
+
+    /**
+     * The set of twilights to calculate (types of rise/set events).
+     */
+    public static enum TWILIGHT {
+        /**
+         * Event ID for calculation of rising and setting times for astronomical
+         * twilight. In this case, the calculated time will be the time when the
+         * center of the object is at -18 degrees of geometrical elevation below the
+         * astronomical horizon. At this time astronomical observations are possible
+         * because the sky is dark enough.
+         */
+        TWILIGHT_ASTRONOMICAL,
+        /**
+         * Event ID for calculation of rising and setting times for nautical
+         * twilight. In this case, the calculated time will be the time when the
+         * center of the object is at -12 degrees of geometric elevation below the
+         * astronomical horizon.
+         */
+        TWILIGHT_NAUTICAL,
+        /**
+         * Event ID for calculation of rising and setting times for civil twilight.
+         * In this case, the calculated time will be the time when the center of the
+         * object is at -6 degrees of geometric elevation below the astronomical
+         * horizon.
+         */
+        TWILIGHT_CIVIL,
+        /**
+         * The standard value of 34' for the refraction at the local horizon.
+         */
+        HORIZON_34arcmin
     }
 }

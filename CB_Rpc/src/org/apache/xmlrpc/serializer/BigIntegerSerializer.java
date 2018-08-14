@@ -14,24 +14,26 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.serializer;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-/** A {@link TypeSerializer} for BigInteger.
+/**
+ * A {@link TypeSerializer} for BigInteger.
  */
 public class BigIntegerSerializer extends TypeSerializerImpl {
-	/** Tag name of a BigDecimal value.
-	 */
-	public static final String BIGINTEGER_TAG = "biginteger";
+    /**
+     * Tag name of a BigDecimal value.
+     */
+    public static final String BIGINTEGER_TAG = "biginteger";
 
-	private static final String EX_BIGINTEGER_TAG = "ex:" + BIGINTEGER_TAG;
+    private static final String EX_BIGINTEGER_TAG = "ex:" + BIGINTEGER_TAG;
 
-	public void write(ContentHandler pHandler, Object pObject) throws SAXException {
-		write(pHandler, BIGINTEGER_TAG, EX_BIGINTEGER_TAG, pObject.toString());
-	}
+    public void write(ContentHandler pHandler, Object pObject) throws SAXException {
+        write(pHandler, BIGINTEGER_TAG, EX_BIGINTEGER_TAG, pObject.toString());
+    }
 
 }

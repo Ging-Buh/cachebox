@@ -1,6 +1,6 @@
 package CB_Locator.Events;
 
 public interface GpsStateChangeEvent {
-	public void GpsStateChanged();
+    public void GpsStateChanged();
 
 }

@@ -35,22 +35,22 @@ package bsh;
 
 public class BSHPackageDeclaration extends SimpleNode {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	public BSHPackageDeclaration(int id) {
-		super(id);
-	}
+    public BSHPackageDeclaration(int id) {
+        super(id);
+    }
 
-	@Override
-	public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError {
-		BSHAmbiguousName name = (BSHAmbiguousName) jjtGetChild(0);
-		NameSpace namespace = callstack.top();
-		namespace.setPackage(name.text);
-		// import the package we're in by default...
-		namespace.importPackage(name.text);
-		return Primitive.VOID;
-	}
+    @Override
+    public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError {
+        BSHAmbiguousName name = (BSHAmbiguousName) jjtGetChild(0);
+        NameSpace namespace = callstack.top();
+        namespace.setPackage(name.text);
+        // import the package we're in by default...
+        namespace.importPackage(name.text);
+        return Primitive.VOID;
+    }
 }

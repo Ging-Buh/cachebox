@@ -22,14 +22,13 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.TilePosition;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public final class LayerUtil {
+
+    private LayerUtil() {
+        throw new IllegalStateException();
+    }
 
     public static List<TilePosition> getTilePositions(BoundingBox boundingBox, byte zoomLevel, Point topLeftPoint,
                                                       int tileSize) {
@@ -135,9 +134,5 @@ public final class LayerUtil {
             }
         }
         return output;
-    }
-
-    private LayerUtil() {
-        throw new IllegalStateException();
     }
 }

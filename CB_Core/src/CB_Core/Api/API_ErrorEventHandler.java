@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -16,7 +16,9 @@
 package CB_Core.Api;
 
 public interface API_ErrorEventHandler {
-	void InvalidAPI_Key();
-	void ExpiredAPI_Key();
-	void NoAPI_Key();
+    void InvalidAPI_Key();
+
+    void ExpiredAPI_Key();
+
+    void NoAPI_Key();
 }

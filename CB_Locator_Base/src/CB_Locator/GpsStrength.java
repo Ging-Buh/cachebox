@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2011 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -18,60 +18,60 @@ package CB_Locator;
 
 /**
  * Structur f�r die Signal St�rken der Satteliten
- * 
+ *
  * @author Longri
  */
 public class GpsStrength implements Comparable<GpsStrength> {
-	/**
-	 * Constructor
-	 * 
-	 * @param fixed
-	 * @param value
-	 */
-	public GpsStrength(boolean fixed, float value) {
-		mFixed = fixed;
-		mSnr = value;
-	}
+    private boolean mFixed = false;
+    private float mSnr = 0.0f;
 
-	private boolean mFixed = false;
-	private float mSnr = 0.0f;
+    /**
+     * Constructor
+     *
+     * @param fixed
+     * @param value
+     */
+    public GpsStrength(boolean fixed, float value) {
+        mFixed = fixed;
+        mSnr = value;
+    }
 
-	/**
-	 * Gibt zur�ck ob der Sattelit ein Fix hat
-	 * 
-	 * @return boolean
-	 */
-	public boolean getFixed() {
-		return mFixed;
-	}
+    /**
+     * Gibt zur�ck ob der Sattelit ein Fix hat
+     *
+     * @return boolean
+     */
+    public boolean getFixed() {
+        return mFixed;
+    }
 
-	/**
-	 * Gibt die Signal St�rke des Sateliten zur�ck
-	 * 
-	 * @return float
-	 */
-	public float getStrength() {
-		return mSnr;
-	}
+    /**
+     * Gibt die Signal St�rke des Sateliten zur�ck
+     *
+     * @return float
+     */
+    public float getStrength() {
+        return mSnr;
+    }
 
-	@Override
-	public int compareTo(GpsStrength c2) {
-		int ret = 0;
+    @Override
+    public int compareTo(GpsStrength c2) {
+        int ret = 0;
 
-		if (this.mFixed == c2.mFixed) {
-			if (this.mSnr > c2.mSnr) {
-				ret = -1;
-			} else if (this.mSnr < c2.mSnr) {
-				ret = 1;
-			}
-		} else {
-			if (this.mFixed) {
-				ret = -1;
-			}
-		}
+        if (this.mFixed == c2.mFixed) {
+            if (this.mSnr > c2.mSnr) {
+                ret = -1;
+            } else if (this.mSnr < c2.mSnr) {
+                ret = 1;
+            }
+        } else {
+            if (this.mFixed) {
+                ret = -1;
+            }
+        }
 
-		return ret;
+        return ret;
 
-	}
+    }
 
 }

@@ -15,12 +15,7 @@
 package org.mapsforge.map.rendertheme;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /*
  * An individual layer in the rendertheme V4+ menu system.

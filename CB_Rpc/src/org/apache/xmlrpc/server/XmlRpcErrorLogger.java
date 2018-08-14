@@ -14,12 +14,9 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.server;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import CB_Utils.Log.Log;
 
@@ -28,19 +25,19 @@ import CB_Utils.Log.Log;
  * error logging.
  */
 public class XmlRpcErrorLogger {
-	private static final Logger log = LoggerFactory.getLogger(XmlRpcErrorLogger.class);
+    private static final String log = "XmlRpcErrorLogger";
 
-	/**
-	 * Called to log the given error.
-	 */
-	public void log(String pMessage, Throwable pThrowable) {
-		Log.err(log, pMessage, pThrowable);
-	}
+    /**
+     * Called to log the given error.
+     */
+    public void log(String pMessage, Throwable pThrowable) {
+        Log.err(log, pMessage, pThrowable);
+    }
 
-	/**
-	 * Called to log the given error message.
-	 */
-	public void log(String pMessage) {
-		Log.err(log, pMessage);
-	}
+    /**
+     * Called to log the given error message.
+     */
+    public void log(String pMessage) {
+        Log.err(log, pMessage);
+    }
 }

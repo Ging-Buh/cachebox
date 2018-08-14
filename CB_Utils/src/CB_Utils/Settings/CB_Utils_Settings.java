@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2011-2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -18,11 +18,11 @@ package CB_Utils.Settings;
 import CB_Utils.Log.LogLevel;
 
 public interface CB_Utils_Settings {
-	public static final SettingModus DEVELOPER = SettingModus.DEVELOPER;
-	public static final SettingModus NORMAL = SettingModus.Normal;
-	public static final SettingModus EXPERT = SettingModus.Expert;
-	public static final SettingModus NEVER = SettingModus.Never;
+    public static final SettingModus DEVELOPER = SettingModus.DEVELOPER;
+    public static final SettingModus NORMAL = SettingModus.Normal;
+    public static final SettingModus EXPERT = SettingModus.Expert;
+    public static final SettingModus NEVER = SettingModus.Never;
 
-	public static final SettingEnum<Enum<LogLevel>> AktLogLevel = new SettingEnum<Enum<LogLevel>>("AktLogLevel", SettingCategory.Debug, NORMAL, LogLevel.OFF, SettingStoreType.Platform, SettingUsage.ALL, LogLevel.OFF);
+    public static final SettingEnum<Enum<LogLevel>> AktLogLevel = new SettingEnum<Enum<LogLevel>>("AktLogLevel", SettingCategory.Debug, NORMAL, LogLevel.OFF, SettingStoreType.Platform, SettingUsage.ALL, LogLevel.OFF);
 
 }

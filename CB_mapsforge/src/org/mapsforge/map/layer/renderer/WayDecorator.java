@@ -29,6 +29,10 @@ import java.util.List;
 
 final class WayDecorator {
 
+    private WayDecorator() {
+        throw new IllegalStateException();
+    }
+
     static void renderSymbol(Bitmap symbolBitmap, Display display, int priority, float dy, boolean alignCenter,
                              boolean repeatSymbol, float repeatGap, float repeatStart,
                              boolean rotate, Point[][] coordinates,
@@ -193,9 +197,5 @@ final class WayDecorator {
             // arbitrary distance, but should not depend on length of name
             skipPixels = (int) repeatGap;
         }
-    }
-
-    private WayDecorator() {
-        throw new IllegalStateException();
     }
 }

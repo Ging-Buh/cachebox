@@ -24,7 +24,6 @@ import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Config_Core;
 import CB_Utils.Log.Log;
 import cb_rpc.Settings.CB_Rpc_Settings;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -32,7 +31,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings, CB_Rpc_Settings, LocatorSettings {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(Config.class);
+    private static final String log = "Config";
     public static SettingsClass settings;
     public static String ConfigName = "";
     static HashMap<String, String> keyLookup = null;

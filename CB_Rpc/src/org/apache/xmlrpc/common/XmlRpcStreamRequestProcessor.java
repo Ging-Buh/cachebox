@@ -14,20 +14,23 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.common;
 
 import org.apache.xmlrpc.XmlRpcException;
 
-/** An instance of {@link XmlRpcRequestProcessor},
+/**
+ * An instance of {@link XmlRpcRequestProcessor},
  * which is processing an XML stream.
  */
 public interface XmlRpcStreamRequestProcessor extends XmlRpcRequestProcessor {
-	/** Reads an XML-RPC request from the connection
-	 * object and processes the request, writing the
-	 * result to the same connection object.
-	 * @throws XmlRpcException Processing the request failed.
-	 */
-	void execute(XmlRpcStreamRequestConfig pConfig, ServerStreamConnection pConnection) throws XmlRpcException;
+    /**
+     * Reads an XML-RPC request from the connection
+     * object and processes the request, writing the
+     * result to the same connection object.
+     *
+     * @throws XmlRpcException Processing the request failed.
+     */
+    void execute(XmlRpcStreamRequestConfig pConfig, ServerStreamConnection pConnection) throws XmlRpcException;
 }

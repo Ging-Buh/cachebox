@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -22,5 +22,5 @@ import com.badlogic.gdx.utils.Disposable;
  * @author Longri
  */
 public interface IRotateDrawable extends Disposable {
-	public boolean draw(Batch batch, float x, float y, final float width, final float height, float rotated);
+    public boolean draw(Batch batch, float x, float y, final float width, final float height, float rotated);
 }

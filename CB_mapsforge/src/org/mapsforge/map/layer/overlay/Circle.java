@@ -109,10 +109,24 @@ public class Circle extends Layer {
     }
 
     /**
+     * @param paintFill the new {@code Paint} used to fill this circle (may be null).
+     */
+    public synchronized void setPaintFill(Paint paintFill) {
+        this.paintFill = paintFill;
+    }
+
+    /**
      * @return the {@code Paint} used to stroke this circle (may be null).
      */
     public synchronized Paint getPaintStroke() {
         return this.paintStroke;
+    }
+
+    /**
+     * @param paintStroke the new {@code Paint} used to stroke this circle (may be null).
+     */
+    public synchronized void setPaintStroke(Paint paintStroke) {
+        this.paintStroke = paintStroke;
     }
 
     /**
@@ -128,6 +142,14 @@ public class Circle extends Layer {
      */
     public synchronized float getRadius() {
         return this.radius;
+    }
+
+    /**
+     * @param radius the new non-negative radius of this circle in meters.
+     * @throws IllegalArgumentException if the given {@code radius} is negative or {@link Float#NaN}.
+     */
+    public synchronized void setRadius(float radius) {
+        setRadiusInternal(radius);
     }
 
     /**
@@ -150,28 +172,6 @@ public class Circle extends Layer {
      */
     public synchronized void setLatLong(LatLong latLong) {
         this.latLong = latLong;
-    }
-
-    /**
-     * @param paintFill the new {@code Paint} used to fill this circle (may be null).
-     */
-    public synchronized void setPaintFill(Paint paintFill) {
-        this.paintFill = paintFill;
-    }
-
-    /**
-     * @param paintStroke the new {@code Paint} used to stroke this circle (may be null).
-     */
-    public synchronized void setPaintStroke(Paint paintStroke) {
-        this.paintStroke = paintStroke;
-    }
-
-    /**
-     * @param radius the new non-negative radius of this circle in meters.
-     * @throws IllegalArgumentException if the given {@code radius} is negative or {@link Float#NaN}.
-     */
-    public synchronized void setRadius(float radius) {
-        setRadiusInternal(radius);
     }
 
     private void setRadiusInternal(float radius) {

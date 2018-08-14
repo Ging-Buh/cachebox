@@ -22,37 +22,37 @@ package CB_Utils.Lists;
  */
 public class CB_FixSizeList<T> extends CB_List<T> {
 
-	final private int capacity;
+    final private int capacity;
 
-	/**
-	 * Creates an ordered array with the specified capacity.
-	 */
-	public CB_FixSizeList(int capacity) {
-		this.capacity = capacity;
-		items = this.createNewItems(capacity);
-	}
+    /**
+     * Creates an ordered array with the specified capacity.
+     */
+    public CB_FixSizeList(int capacity) {
+        this.capacity = capacity;
+        items = this.createNewItems(capacity);
+    }
 
-	public T addAndGetLastOut(T value) {
+    public T addAndGetLastOut(T value) {
 
-		T loosed = null;
-		if (this.size == this.capacity) {
-			loosed = this.items[0];
-		}
+        T loosed = null;
+        if (this.size == this.capacity) {
+            loosed = this.items[0];
+        }
 
-		add(value);
+        add(value);
 
-		return loosed;
-	}
+        return loosed;
+    }
 
-	public int add(T value) {
-		if (size == getItemLength()) {
-			// don't grow up this list, delete the last Item and put the new on the top!
-			System.arraycopy(items, 1, items, 0, size - 1);
-			size--;
-		}
-		int ID = size;
-		this.items[size++] = value;
-		return ID;
-	}
+    public int add(T value) {
+        if (size == getItemLength()) {
+            // don't grow up this list, delete the last Item and put the new on the top!
+            System.arraycopy(items, 1, items, 0, size - 1);
+            size--;
+        }
+        int ID = size;
+        this.items[size++] = value;
+        return ID;
+    }
 
 }

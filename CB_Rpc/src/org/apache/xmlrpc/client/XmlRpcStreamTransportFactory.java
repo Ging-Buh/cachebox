@@ -14,14 +14,15 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.client;
 
-/** Abstract base implementation of a factory for stream transports.
+/**
+ * Abstract base implementation of a factory for stream transports.
  */
 public abstract class XmlRpcStreamTransportFactory extends XmlRpcTransportFactoryImpl {
-	protected XmlRpcStreamTransportFactory(XmlRpcClient pClient) {
-		super(pClient);
-	}
+    protected XmlRpcStreamTransportFactory(XmlRpcClient pClient) {
+        super(pClient);
+    }
 }

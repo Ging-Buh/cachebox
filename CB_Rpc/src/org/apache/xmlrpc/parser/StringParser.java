@@ -14,17 +14,18 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.parser;
 
 import org.xml.sax.SAXException;
 
-/** Parser implementation for parsing a string.
+/**
+ * Parser implementation for parsing a string.
  */
 public class StringParser extends AtomicParser {
-	protected void setResult(String pResult) throws SAXException {
-		super.setResult((Object) pResult);
-	}
+    protected void setResult(String pResult) throws SAXException {
+        super.setResult((Object) pResult);
+    }
 
 }

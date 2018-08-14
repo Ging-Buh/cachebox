@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,257 +15,250 @@
  */
 package CB_UI_Base.GL_UI.Menu;
 
+import CB_UI_Base.GL_UI.COLOR;
+import CB_UI_Base.GL_UI.Controls.Image;
+import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.SizeF;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-import CB_UI_Base.GL_UI.COLOR;
-import CB_UI_Base.GL_UI.Sprites;
-import CB_UI_Base.GL_UI.Controls.Image;
-import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.SizeF;
-
 public class MenuItem extends MenuItemBase {
 
-	private Label mLabel;
-	private Image checkImage;
-	private Drawable mIcon;
+    private final int mID;
+    protected boolean mIsCheckable = false;
+    protected boolean mIsChecked = false;
+    protected boolean mLeft = false;
+    protected boolean isPressed = false;
+    private Label mLabel;
+    private Image checkImage;
+    private Drawable mIcon;
+    private String mTitle;
+    private boolean mIsEnabled = true;
+    private Image iconImage;
 
-	private String mTitle;
-	private boolean mIsEnabled = true;
+    public MenuItem(SizeF size, int Index, int ID, String Name) {
+        super(new CB_RectF(size), Index, Name);
+        mID = ID;
+    }
 
-	protected boolean mIsCheckable = false;
-	protected boolean mIsChecked = false;
-	protected boolean mLeft = false;
+    public MenuItem(int Index, int ID, String Name) {
+        super(new CB_RectF(), Index, Name);
+        mID = ID;
+    }
 
-	private final int mID;
+    public int getMenuItemId() {
+        return mID;
+    }
 
-	protected boolean isPressed = false;
-	private Image iconImage;
+    public void toggleCheck() {
+        if (isCheckable()) {
+            mIsChecked = !mIsChecked;
 
-	public MenuItem(SizeF size, int Index, int ID, String Name) {
-		super(new CB_RectF(size), Index, Name);
-		mID = ID;
-	}
+            Drawable drawable = null;
+            if (mIsChecked) {
+                drawable = new SpriteDrawable(Sprites.ChkIcons.get(1));
+            } else {
+                drawable = new SpriteDrawable(Sprites.ChkIcons.get(0));
+            }
 
-	public MenuItem(int Index, int ID, String Name) {
-		super(new CB_RectF(), Index, Name);
-		mID = ID;
-	}
+            checkImage.setDrawable(drawable);
+        }
+    }
 
-	public int getMenuItemId() {
-		return mID;
-	}
+    @Override
+    protected void Initial() {
+        super.Initial();
+        this.removeChilds();
 
-	public void toggleCheck() {
-		if (isCheckable()) {
-			mIsChecked = !mIsChecked;
+        mLabel = new Label(this.name + " mLabel", this);
 
-			Drawable drawable = null;
-			if (mIsChecked) {
-				drawable = new SpriteDrawable(Sprites.ChkIcons.get(1));
-			} else {
-				drawable = new SpriteDrawable(Sprites.ChkIcons.get(0));
-			}
+        boolean hasIcon = (mIcon != null);
+        if (hasIcon) {
+            CB_RectF rec = new CB_RectF(this.getWidth() - this.getHeight(), 0, this.getHeight(), this.getHeight()).ScaleCenter(0.75f);
+            iconImage = new Image(rec, "MenuItemImage", false);
+            iconImage.setDrawable(mIcon);
+            if (!mIsEnabled) {
+                iconImage.setColor(COLOR.getDisableFontColor());
+            }
+            this.addChild(iconImage);
+        }
 
-			checkImage.setDrawable(drawable);
-		}
-	}
+        if (mIsCheckable) {
+            CB_RectF rec;
+            if (hasIcon) {
+                rec = new CB_RectF(this.getWidth() - 2 * this.getHeight(), 0, this.getHeight(), this.getHeight()).ScaleCenter(0.75f);
+            } else {
+                rec = new CB_RectF(this.getWidth() - this.getHeight(), 0, this.getHeight(), this.getHeight()); // .ScaleCenter(0.75f);
+            }
 
-	@Override
-	protected void Initial() {
-		super.Initial();
-		this.removeChilds();
+            rec.setHeight(rec.getWidth());
 
-		mLabel = new Label(this.name + " mLabel", this);
+            checkImage = new Image(rec, "MenuItemCheckImage", false);
 
-		boolean hasIcon = (mIcon != null);
-		if (hasIcon) {
-			CB_RectF rec = new CB_RectF(this.getWidth() - this.getHeight(), 0, this.getHeight(), this.getHeight()).ScaleCenter(0.75f);
-			iconImage = new Image(rec, "MenuItemImage", false);
-			iconImage.setDrawable(mIcon);
-			if (!mIsEnabled) {
-				iconImage.setColor(COLOR.getDisableFontColor());
-			}
-			this.addChild(iconImage);
-		}
+            Drawable drawable = null;
+            if (mIsChecked) {
+                drawable = new SpriteDrawable(Sprites.ChkIcons.get(1));
+            } else {
+                drawable = new SpriteDrawable(Sprites.ChkIcons.get(0));
+            }
 
-		if (mIsCheckable) {
-			CB_RectF rec;
-			if (hasIcon) {
-				rec = new CB_RectF(this.getWidth() - 2 * this.getHeight(), 0, this.getHeight(), this.getHeight()).ScaleCenter(0.75f);
-			} else {
-				rec = new CB_RectF(this.getWidth() - this.getHeight(), 0, this.getHeight(), this.getHeight()); // .ScaleCenter(0.75f);
-			}
+            checkImage.setDrawable(drawable);
+            this.addChild(checkImage);
+        }
 
-			rec.setHeight(rec.getWidth());
+        if (mTitle != null)
+            mLabel.setText(mTitle);
+        if (!mIsEnabled) {
+            mLabel.setTextColor(COLOR.getDisableFontColor());
+        }
+        this.addChild(mLabel);
+        setContentSize();
+    }
 
-			checkImage = new Image(rec, "MenuItemCheckImage", false);
+    @Override
+    public void onResized(CB_RectF rec) {
+        super.onResized(rec);
+        setContentSize();
+    }
 
-			Drawable drawable = null;
-			if (mIsChecked) {
-				drawable = new SpriteDrawable(Sprites.ChkIcons.get(1));
-			} else {
-				drawable = new SpriteDrawable(Sprites.ChkIcons.get(0));
-			}
+    private void setContentSize() {
+        boolean hasIcon = (mIcon != null);
 
-			checkImage.setDrawable(drawable);
-			this.addChild(checkImage);
-		}
+        float left = this.getHeight() * 0.2f;
+        float right = hasIcon ? this.getHeight() : 0;
+        float labelWidth = this.getWidth() - right - left;
+        mLabel.setWidth(labelWidth);
 
-		if (mTitle != null)
-			mLabel.setText(mTitle);
-		if (!mIsEnabled) {
-			mLabel.setTextColor(COLOR.getDisableFontColor());
-		}
-		this.addChild(mLabel);
-		setContentSize();
-	}
+        if (hasIcon && iconImage != null) {
+            iconImage.setPos(this.getWidth() - this.getHeight(), (this.getHeight() - iconImage.getHeight()) / 2);
+        }
 
-	@Override
-	public void onResized(CB_RectF rec) {
-		super.onResized(rec);
-		setContentSize();
-	}
+        if (mIsCheckable && checkImage != null) {
+            CB_RectF rec;
+            if (hasIcon) {
+                rec = new CB_RectF(this.getWidth() - 2 * this.getHeight(), 0, this.getHeight(), this.getHeight()).ScaleCenter(0.75f);
+            } else {
+                rec = new CB_RectF(this.getWidth() - this.getHeight(), 0, this.getHeight(), this.getHeight()); // .ScaleCenter(0.75f);
+            }
+            rec.setHeight(rec.getWidth());
+            checkImage.setSize(rec);
+        }
 
-	private void setContentSize() {
-		boolean hasIcon = (mIcon != null);
+        float x = left;
+        float y = (this.getHeight() - mLabel.getHeight()) / 2;
+        mLabel.setPos(x, y);
+    }
 
-		float left = this.getHeight() * 0.2f;
-		float right = hasIcon ? this.getHeight() : 0;
-		float labelWidth = this.getWidth() - right - left;
-		mLabel.setWidth(labelWidth);
+    /**
+     * Retrieve the current title of the item.
+     *
+     * @return The title.
+     */
+    public String getTitle() {
+        return mTitle;
+    }
 
-		if (hasIcon && iconImage != null) {
-			iconImage.setPos(this.getWidth() - this.getHeight(), (this.getHeight() - iconImage.getHeight()) / 2);
-		}
+    /**
+     * Change the title associated with this item.
+     *
+     * @param title The new text to be displayed.
+     * @return This Item so additional setters can be called.
+     */
+    public MenuItem setTitle(String title) {
+        mTitle = title;
+        if (mLabel == null)
+            mLabel = new Label(this.name + " mLabel", this, title);
+        else
+            mLabel.setText(title);
+        return this;
+    }
 
-		if (mIsCheckable && checkImage != null) {
-			CB_RectF rec;
-			if (hasIcon) {
-				rec = new CB_RectF(this.getWidth() - 2 * this.getHeight(), 0, this.getHeight(), this.getHeight()).ScaleCenter(0.75f);
-			} else {
-				rec = new CB_RectF(this.getWidth() - this.getHeight(), 0, this.getHeight(), this.getHeight()); // .ScaleCenter(0.75f);
-			}
-			rec.setHeight(rec.getWidth());
-			checkImage.setSize(rec);
-		}
+    /**
+     * Change the icon associated with this item. This icon will not always be shown, so the title should be sufficient in describing this
+     * item. See {@link Menu} for the menu types that support icons.
+     *
+     * @param icon The new icon (as a Sprite) to be displayed.
+     * @return This Item so additional setters can be called.
+     */
+    public MenuItem setIcon(Drawable icon) {
+        mIcon = icon;
+        this.resetInitial();
+        return this;
+    }
 
-		float x = left;
-		float y = (this.getHeight() - mLabel.getHeight()) / 2;
-		mLabel.setPos(x, y);
-	}
+    @Override
+    public boolean onTouchDown(int x, int y, int pointer, int button) {
 
-	/**
-	 * Change the title associated with this item.
-	 * 
-	 * @param title
-	 *            The new text to be displayed.
-	 * @return This Item so additional setters can be called.
-	 */
-	public MenuItem setTitle(String title) {
-		mTitle = title;
-		if (mLabel == null)
-			mLabel = new Label(this.name + " mLabel", this, title);
-		else
-			mLabel.setText(title);
-		return this;
-	}
+        isPressed = true;
 
-	/**
-	 * Retrieve the current title of the item.
-	 * 
-	 * @return The title.
-	 */
-	public String getTitle() {
-		return mTitle;
-	}
+        return false;
+    }
 
-	/**
-	 * Change the icon associated with this item. This icon will not always be shown, so the title should be sufficient in describing this
-	 * item. See {@link Menu} for the menu types that support icons.
-	 * 
-	 * @param icon
-	 *            The new icon (as a Sprite) to be displayed.
-	 * @return This Item so additional setters can be called.
-	 */
-	public MenuItem setIcon(Drawable icon) {
-		mIcon = icon;
-		this.resetInitial();
-		return this;
-	}
+    @Override
+    public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
+        isPressed = false;
 
-	@Override
-	public boolean onTouchDown(int x, int y, int pointer, int button) {
+        return false;
+    }
 
-		isPressed = true;
+    @Override
+    public boolean onTouchUp(int x, int y, int pointer, int button) {
+        isPressed = false;
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
-		isPressed = false;
+    @Override
+    public boolean isEnabled() {
+        return mIsEnabled;
+    }
 
-		return false;
-	}
+    @Override
+    public void setEnabled(boolean enabled) {
+        mIsEnabled = enabled;
 
-	@Override
-	public boolean onTouchUp(int x, int y, int pointer, int button) {
-		isPressed = false;
+        if (!mIsEnabled) {
+            // lösche ClickListener
+            setOnClickListener(null);
+            setOnLongClickListener(null);
+        }
 
-		return false;
-	}
+        this.resetInitial();
+    }
 
-	@Override
-	public void setEnabled(boolean enabled) {
-		mIsEnabled = enabled;
+    public boolean isChecked() {
+        return mIsChecked;
+    }
 
-		if (!mIsEnabled) {
-			// lösche ClickListener			
-			setOnClickListener(null);
-			setOnLongClickListener(null);
-		}
+    public void setChecked(boolean checked) {
+        mIsChecked = checked;
+        this.resetInitial();
+    }
 
-		this.resetInitial();
-	}
+    public boolean isCheckable() {
+        return mIsCheckable;
+    }
 
-	@Override
-	public boolean isEnabled() {
-		return mIsEnabled;
-	}
+    public void setCheckable(boolean isCheckable) {
+        mIsCheckable = isCheckable;
+        this.resetInitial();
+    }
 
-	public void setCheckable(boolean isCheckable) {
-		mIsCheckable = isCheckable;
-		this.resetInitial();
-	}
+    public void setLeft(boolean value) {
+        mLeft = value;
+        this.resetInitial();
+    }
 
-	public void setChecked(boolean checked) {
-		mIsChecked = checked;
-		this.resetInitial();
-	}
+    @Override
+    public Object getData() {
+        return this.data;
+    }
 
-	public boolean isChecked() {
-		return mIsChecked;
-	}
-
-	public boolean isCheckable() {
-		return mIsCheckable;
-	}
-
-	public void setLeft(boolean value) {
-		mLeft = value;
-		this.resetInitial();
-	}
-
-	@Override
-	public void setData(Object data) {
-		this.data = data;
-	}
-
-	@Override
-	public Object getData() {
-		return this.data;
-	}
+    @Override
+    public void setData(Object data) {
+        this.data = data;
+    }
 
 }

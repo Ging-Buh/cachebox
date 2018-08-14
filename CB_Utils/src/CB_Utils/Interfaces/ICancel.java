@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -17,9 +17,9 @@ package CB_Utils.Interfaces;
 
 /**
  * Interface for void cancel()
- * 
+ *
  * @author Longri
  */
 public interface ICancel {
-	public boolean cancel();
+    public boolean cancel();
 }

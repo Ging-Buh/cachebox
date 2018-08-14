@@ -14,22 +14,25 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.client;
 
-/** Default implementation of a HTTP transport factory, based on the
+/**
+ * Default implementation of a HTTP transport factory, based on the
  * {@link java.net.HttpURLConnection} class.
  */
 public class XmlRpcSunHttpTransportFactory extends XmlRpcTransportFactoryImpl {
-	/** Creates a new factory, which creates transports for the given client.
-	 * @param pClient The client, which is operating the factory.
-	 */
-	public XmlRpcSunHttpTransportFactory(XmlRpcClient pClient) {
-		super(pClient);
-	}
+    /**
+     * Creates a new factory, which creates transports for the given client.
+     *
+     * @param pClient The client, which is operating the factory.
+     */
+    public XmlRpcSunHttpTransportFactory(XmlRpcClient pClient) {
+        super(pClient);
+    }
 
-	public XmlRpcTransport getTransport() {
-		return new XmlRpcSunHttpTransport(getClient());
-	}
+    public XmlRpcTransport getTransport() {
+        return new XmlRpcSunHttpTransport(getClient());
+    }
 }

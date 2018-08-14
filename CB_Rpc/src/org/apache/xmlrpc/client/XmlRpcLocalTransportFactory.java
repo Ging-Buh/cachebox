@@ -14,11 +14,12 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.client;
 
-/** <p>A transport factory being used for local XML-RPC calls. Local XML-RPC
+/**
+ * <p>A transport factory being used for local XML-RPC calls. Local XML-RPC
  * calls are mainly useful for development and unit testing: Both client
  * and server are runing within the same JVM and communication is implemented
  * in simple method invokcations.</p>
@@ -27,16 +28,18 @@ package org.apache.xmlrpc.client;
  * same object, an instance of {@link XmlRpcLocalTransport}</p>
  */
 public class XmlRpcLocalTransportFactory extends XmlRpcTransportFactoryImpl {
-	/** Creates a new instance, operated by the given client.
-	 * @param pClient The client, which will invoke the factory.
-	 */
-	public XmlRpcLocalTransportFactory(XmlRpcClient pClient) {
-		super(pClient);
-	}
+    private final XmlRpcTransport LOCAL_TRANSPORT = new XmlRpcLocalTransport(getClient());
 
-	private final XmlRpcTransport LOCAL_TRANSPORT = new XmlRpcLocalTransport(getClient());
+    /**
+     * Creates a new instance, operated by the given client.
+     *
+     * @param pClient The client, which will invoke the factory.
+     */
+    public XmlRpcLocalTransportFactory(XmlRpcClient pClient) {
+        super(pClient);
+    }
 
-	public XmlRpcTransport getTransport() {
-		return LOCAL_TRANSPORT;
-	}
+    public XmlRpcTransport getTransport() {
+        return LOCAL_TRANSPORT;
+    }
 }

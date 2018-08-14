@@ -16,11 +16,7 @@
  */
 package org.mapsforge.map.layer.debug;
 
-import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
@@ -28,6 +24,25 @@ import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.model.DisplayModel;
 
 public class TileGridLayer extends Layer {
+    private final DisplayModel displayModel;
+    private final Paint paintBack, paintFront;
+
+    public TileGridLayer(GraphicFactory graphicFactory, DisplayModel displayModel) {
+        super();
+
+        this.displayModel = displayModel;
+
+        this.paintBack = createPaintBack(graphicFactory, displayModel);
+        this.paintFront = createPaintFront(graphicFactory, displayModel);
+    }
+    public TileGridLayer(DisplayModel displayModel, Paint paintBack, Paint paintFront) {
+        super();
+
+        this.displayModel = displayModel;
+        this.paintBack = paintBack;
+        this.paintFront = paintFront;
+    }
+
     private static Paint createPaintFront(GraphicFactory graphicFactory, DisplayModel displayModel) {
         Paint paint = graphicFactory.createPaint();
         paint.setColor(Color.RED);
@@ -42,26 +57,6 @@ public class TileGridLayer extends Layer {
         paint.setStrokeWidth(4 * displayModel.getScaleFactor());
         paint.setStyle(Style.STROKE);
         return paint;
-    }
-
-    private final DisplayModel displayModel;
-    private final Paint paintBack, paintFront;
-
-    public TileGridLayer(GraphicFactory graphicFactory, DisplayModel displayModel) {
-        super();
-
-        this.displayModel = displayModel;
-
-        this.paintBack = createPaintBack(graphicFactory, displayModel);
-        this.paintFront = createPaintFront(graphicFactory, displayModel);
-    }
-
-    public TileGridLayer(DisplayModel displayModel, Paint paintBack, Paint paintFront) {
-        super();
-
-        this.displayModel = displayModel;
-        this.paintBack = paintBack;
-        this.paintFront = paintFront;
     }
 
     @Override

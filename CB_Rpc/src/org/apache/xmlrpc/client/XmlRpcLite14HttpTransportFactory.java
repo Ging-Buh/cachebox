@@ -14,7 +14,7 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.client;
 
@@ -25,33 +25,34 @@ import javax.net.ssl.SSLSocketFactory;
  * {@link org.apache.xmlrpc.client.XmlRpcLiteHttpTransport}.
  */
 public class XmlRpcLite14HttpTransportFactory extends XmlRpcLiteHttpTransportFactory {
-	private SSLSocketFactory sslSocketFactory;
+    private SSLSocketFactory sslSocketFactory;
 
-	/**
-	 * Creates a new instance.
-	 * @param pClient The client, which will invoke the factory.
-	 */
-	public XmlRpcLite14HttpTransportFactory(XmlRpcClient pClient) {
-		super(pClient);
-	}
+    /**
+     * Creates a new instance.
+     *
+     * @param pClient The client, which will invoke the factory.
+     */
+    public XmlRpcLite14HttpTransportFactory(XmlRpcClient pClient) {
+        super(pClient);
+    }
 
-	/**
-	 * Sets the SSL Socket Factory to use for https connections.
-	 */
-	public SSLSocketFactory getSSLSocketFactory() {
-		return sslSocketFactory;
-	}
+    /**
+     * Sets the SSL Socket Factory to use for https connections.
+     */
+    public SSLSocketFactory getSSLSocketFactory() {
+        return sslSocketFactory;
+    }
 
-	/**
-	 * Returns the SSL Socket Factory to use for https connections.
-	 */
-	public void setSSLSocketFactory(SSLSocketFactory pSSLSocketFactory) {
-		sslSocketFactory = pSSLSocketFactory;
-	}
+    /**
+     * Returns the SSL Socket Factory to use for https connections.
+     */
+    public void setSSLSocketFactory(SSLSocketFactory pSSLSocketFactory) {
+        sslSocketFactory = pSSLSocketFactory;
+    }
 
-	public XmlRpcTransport getTransport() {
-		XmlRpcLite14HttpTransport transport = new XmlRpcLite14HttpTransport(getClient());
-		transport.setSSLSocketFactory(sslSocketFactory);
-		return transport;
-	}
+    public XmlRpcTransport getTransport() {
+        XmlRpcLite14HttpTransport transport = new XmlRpcLite14HttpTransport(getClient());
+        transport.setSSLSocketFactory(sslSocketFactory);
+        return transport;
+    }
 }

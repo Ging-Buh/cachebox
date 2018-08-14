@@ -29,61 +29,7 @@ import org.mapsforge.map.util.PausableThread;
 
 public class MapViewPosition extends Observable implements Persistable {
 
-    private class ZoomAnimator extends PausableThread {
-
-        // debugging tip: for investigating what happens during the zoom animation
-        // just make the times longer for duration and frame length
-        private static final int DEFAULT_DURATION = 250;
-        private static final int FRAME_LENGTH_IN_MS = 15;
-
-        double scaleDifference;
-        double startScaleFactor;
-        private boolean executeAnimation;
-        private long timeEnd;
-        private long timeStart;
-
-        @Override
-        protected void doWork() throws InterruptedException {
-            if (System.currentTimeMillis() >= this.timeEnd) {
-                this.executeAnimation = false;
-                MapViewPosition.this.setScaleFactor(calculateScaleFactor(1));
-                MapViewPosition.this.setPivot(null);
-            } else {
-                float timeElapsedRatio = (System.currentTimeMillis() - this.timeStart) / (1f * DEFAULT_DURATION);
-                MapViewPosition.this.setScaleFactor(calculateScaleFactor(timeElapsedRatio));
-            }
-            sleep(FRAME_LENGTH_IN_MS);
-        }
-
-        @Override
-        protected ThreadPriority getThreadPriority() {
-            return ThreadPriority.ABOVE_NORMAL;
-        }
-
-        @Override
-        protected boolean hasWork() {
-            return this.executeAnimation;
-        }
-
-        void startAnimation(double startScaleFactor, double targetScaleFactor) {
-            // TODO this is not properly synchronized
-            this.startScaleFactor = startScaleFactor;
-            this.scaleDifference = targetScaleFactor - this.startScaleFactor;
-            this.executeAnimation = true;
-            this.timeStart = System.currentTimeMillis();
-            this.timeEnd = this.timeStart + DEFAULT_DURATION;
-            synchronized (this) {
-                notify();
-            }
-        }
-
-        private double calculateScaleFactor(float percent) {
-            return this.startScaleFactor + this.scaleDifference * percent;
-        }
-    }
-
     private static final int ANIMATION_STEPS = 25;
-
     private static final String LATITUDE = "latitude";
     private static final String LATITUDE_MAX = "latitudeMax";
     private static final String LATITUDE_MIN = "latitudeMin";
@@ -93,6 +39,23 @@ public class MapViewPosition extends Observable implements Persistable {
     private static final String ZOOM_LEVEL = "zoomLevel";
     private static final String ZOOM_LEVEL_MAX = "zoomLevelMax";
     private static final String ZOOM_LEVEL_MIN = "zoomLevelMin";
+    private final DisplayModel displayModel;
+    private final ZoomAnimator zoomAnimator;
+    private double latitude;
+    private double longitude;
+    private BoundingBox mapLimit;
+    private LatLong pivot;
+    private double scaleFactor;
+    private byte zoomLevel;
+    private byte zoomLevelMax;
+    private byte zoomLevelMin;
+    public MapViewPosition(DisplayModel displayModel) {
+        super();
+        this.displayModel = displayModel;
+        this.zoomLevelMax = Byte.MAX_VALUE;
+        this.zoomAnimator = new ZoomAnimator();
+        this.zoomAnimator.start();
+    }
 
     private static boolean isNan(double... values) {
         for (double value : values) {
@@ -102,25 +65,6 @@ public class MapViewPosition extends Observable implements Persistable {
         }
 
         return false;
-    }
-
-    private final DisplayModel displayModel;
-    private double latitude;
-    private double longitude;
-    private BoundingBox mapLimit;
-    private LatLong pivot;
-    private double scaleFactor;
-    private final ZoomAnimator zoomAnimator;
-    private byte zoomLevel;
-    private byte zoomLevelMax;
-    private byte zoomLevelMin;
-
-    public MapViewPosition(DisplayModel displayModel) {
-        super();
-        this.displayModel = displayModel;
-        this.zoomLevelMax = Byte.MAX_VALUE;
-        this.zoomAnimator = new ZoomAnimator();
-        this.zoomAnimator.start();
     }
 
     /**
@@ -169,10 +113,30 @@ public class MapViewPosition extends Observable implements Persistable {
     }
 
     /**
+     * Sets the new center position of the map.
+     */
+    public void setCenter(LatLong latLong) {
+        synchronized (this) {
+            setCenterInternal(latLong.latitude, latLong.longitude);
+        }
+        notifyObservers();
+    }
+
+    /**
      * @return the current limit of the map (might be null).
      */
     public synchronized BoundingBox getMapLimit() {
         return this.mapLimit;
+    }
+
+    /**
+     * Sets the new limit of the map (might be null).
+     */
+    public void setMapLimit(BoundingBox mapLimit) {
+        synchronized (this) {
+            this.mapLimit = mapLimit;
+        }
+        notifyObservers();
     }
 
     /**
@@ -183,6 +147,15 @@ public class MapViewPosition extends Observable implements Persistable {
     }
 
     /**
+     * Sets the new center position and zoom level of the map.
+     * <p/>
+     * Note: The default zoom level changes are animated.
+     */
+    public void setMapPosition(MapPosition mapPosition) {
+        setMapPosition(mapPosition, true);
+    }
+
+    /**
      * The pivot point is the point the map zooms around.
      *
      * @return the lat/long coordinates of the map pivot point if set or null otherwise.
@@ -190,6 +163,20 @@ public class MapViewPosition extends Observable implements Persistable {
 
     public synchronized LatLong getPivot() {
         return this.pivot;
+    }
+
+    /**
+     * The pivot point is the point the map is scaled around when zooming. In normal mode the pivot point is whatever
+     * the view center is (this is indicated by setting the pivot to null), but when hand-zooming the pivot point can be
+     * any point on the map. It is stored as lat/long and retrieved as an x/y coordinate depending on the current zoom
+     * level.
+     *
+     * @param pivot lat/long of pivot point, null for map center
+     */
+    public void setPivot(LatLong pivot) {
+        synchronized (this) {
+            this.pivot = pivot;
+        }
     }
 
     /**
@@ -213,18 +200,65 @@ public class MapViewPosition extends Observable implements Persistable {
     }
 
     /**
+     * Sets the new scale factor to be applied.
+     */
+    public void setScaleFactor(double scaleFactor) {
+        synchronized (this) {
+            this.scaleFactor = scaleFactor;
+        }
+        notifyObservers();
+    }
+
+    /**
      * @return the current zoom level of the map.
      */
     public synchronized byte getZoomLevel() {
         return this.zoomLevel;
     }
 
+    /**
+     * Sets the new zoom level of the map.
+     * <p/>
+     * Note: The default zoom level changes are animated.
+     *
+     * @throws IllegalArgumentException if the zoom level is negative.
+     */
+    public void setZoomLevel(byte zoomLevel) {
+        setZoomLevel(zoomLevel, true);
+    }
+
     public synchronized byte getZoomLevelMax() {
         return this.zoomLevelMax;
     }
 
+    public void setZoomLevelMax(byte zoomLevelMax) {
+        if (zoomLevelMax < 0) {
+            throw new IllegalArgumentException("zoomLevelMax must not be negative: " + zoomLevelMax);
+        }
+        synchronized (this) {
+            if (zoomLevelMax < this.zoomLevelMin) {
+                throw new IllegalArgumentException("zoomLevelMax must be >= zoomLevelMin: " + zoomLevelMax);
+            }
+            this.zoomLevelMax = zoomLevelMax;
+        }
+        notifyObservers();
+    }
+
     public synchronized byte getZoomLevelMin() {
         return this.zoomLevelMin;
+    }
+
+    public void setZoomLevelMin(byte zoomLevelMin) {
+        if (zoomLevelMin < 0) {
+            throw new IllegalArgumentException("zoomLevelMin must not be negative: " + zoomLevelMin);
+        }
+        synchronized (this) {
+            if (zoomLevelMin > this.zoomLevelMax) {
+                throw new IllegalArgumentException("zoomLevelMin must be <= zoomLevelMax: " + zoomLevelMin);
+            }
+            this.zoomLevelMin = zoomLevelMin;
+        }
+        notifyObservers();
     }
 
     @Override
@@ -330,35 +364,6 @@ public class MapViewPosition extends Observable implements Persistable {
     }
 
     /**
-     * Sets the new center position of the map.
-     */
-    public void setCenter(LatLong latLong) {
-        synchronized (this) {
-            setCenterInternal(latLong.latitude, latLong.longitude);
-        }
-        notifyObservers();
-    }
-
-    /**
-     * Sets the new limit of the map (might be null).
-     */
-    public void setMapLimit(BoundingBox mapLimit) {
-        synchronized (this) {
-            this.mapLimit = mapLimit;
-        }
-        notifyObservers();
-    }
-
-    /**
-     * Sets the new center position and zoom level of the map.
-     * <p/>
-     * Note: The default zoom level changes are animated.
-     */
-    public void setMapPosition(MapPosition mapPosition) {
-        setMapPosition(mapPosition, true);
-    }
-
-    /**
      * Sets the new center position and zoom level of the map.
      */
     public void setMapPosition(MapPosition mapPosition, boolean animated) {
@@ -369,46 +374,11 @@ public class MapViewPosition extends Observable implements Persistable {
         notifyObservers();
     }
 
-    /**
-     * The pivot point is the point the map is scaled around when zooming. In normal mode the pivot point is whatever
-     * the view center is (this is indicated by setting the pivot to null), but when hand-zooming the pivot point can be
-     * any point on the map. It is stored as lat/long and retrieved as an x/y coordinate depending on the current zoom
-     * level.
-     *
-     * @param pivot lat/long of pivot point, null for map center
-     */
-    public void setPivot(LatLong pivot) {
-        synchronized (this) {
-            this.pivot = pivot;
-        }
-    }
-
-    /**
-     * Sets the new scale factor to be applied.
-     */
-    public void setScaleFactor(double scaleFactor) {
-        synchronized (this) {
-            this.scaleFactor = scaleFactor;
-        }
-        notifyObservers();
-    }
-
     public void setScaleFactorAdjustment(double adjustment) {
         synchronized (this) {
             this.setScaleFactor(Math.pow(2, zoomLevel) * adjustment);
         }
         notifyObservers();
-    }
-
-    /**
-     * Sets the new zoom level of the map.
-     * <p/>
-     * Note: The default zoom level changes are animated.
-     *
-     * @throws IllegalArgumentException if the zoom level is negative.
-     */
-    public void setZoomLevel(byte zoomLevel) {
-        setZoomLevel(zoomLevel, true);
     }
 
     /**
@@ -424,32 +394,6 @@ public class MapViewPosition extends Observable implements Persistable {
         }
         synchronized (this) {
             setZoomLevelInternal(zoomLevel, animated);
-        }
-        notifyObservers();
-    }
-
-    public void setZoomLevelMax(byte zoomLevelMax) {
-        if (zoomLevelMax < 0) {
-            throw new IllegalArgumentException("zoomLevelMax must not be negative: " + zoomLevelMax);
-        }
-        synchronized (this) {
-            if (zoomLevelMax < this.zoomLevelMin) {
-                throw new IllegalArgumentException("zoomLevelMax must be >= zoomLevelMin: " + zoomLevelMax);
-            }
-            this.zoomLevelMax = zoomLevelMax;
-        }
-        notifyObservers();
-    }
-
-    public void setZoomLevelMin(byte zoomLevelMin) {
-        if (zoomLevelMin < 0) {
-            throw new IllegalArgumentException("zoomLevelMin must not be negative: " + zoomLevelMin);
-        }
-        synchronized (this) {
-            if (zoomLevelMin > this.zoomLevelMax) {
-                throw new IllegalArgumentException("zoomLevelMin must be <= zoomLevelMax: " + zoomLevelMin);
-            }
-            this.zoomLevelMin = zoomLevelMin;
         }
         notifyObservers();
     }
@@ -522,6 +466,59 @@ public class MapViewPosition extends Observable implements Persistable {
         } else {
             this.setScaleFactor(Math.pow(2, this.zoomLevel));
             this.setPivot(null);
+        }
+    }
+
+    private class ZoomAnimator extends PausableThread {
+
+        // debugging tip: for investigating what happens during the zoom animation
+        // just make the times longer for duration and frame length
+        private static final int DEFAULT_DURATION = 250;
+        private static final int FRAME_LENGTH_IN_MS = 15;
+
+        double scaleDifference;
+        double startScaleFactor;
+        private boolean executeAnimation;
+        private long timeEnd;
+        private long timeStart;
+
+        @Override
+        protected void doWork() throws InterruptedException {
+            if (System.currentTimeMillis() >= this.timeEnd) {
+                this.executeAnimation = false;
+                MapViewPosition.this.setScaleFactor(calculateScaleFactor(1));
+                MapViewPosition.this.setPivot(null);
+            } else {
+                float timeElapsedRatio = (System.currentTimeMillis() - this.timeStart) / (1f * DEFAULT_DURATION);
+                MapViewPosition.this.setScaleFactor(calculateScaleFactor(timeElapsedRatio));
+            }
+            sleep(FRAME_LENGTH_IN_MS);
+        }
+
+        @Override
+        protected ThreadPriority getThreadPriority() {
+            return ThreadPriority.ABOVE_NORMAL;
+        }
+
+        @Override
+        protected boolean hasWork() {
+            return this.executeAnimation;
+        }
+
+        void startAnimation(double startScaleFactor, double targetScaleFactor) {
+            // TODO this is not properly synchronized
+            this.startScaleFactor = startScaleFactor;
+            this.scaleDifference = targetScaleFactor - this.startScaleFactor;
+            this.executeAnimation = true;
+            this.timeStart = System.currentTimeMillis();
+            this.timeEnd = this.timeStart + DEFAULT_DURATION;
+            synchronized (this) {
+                notify();
+            }
+        }
+
+        private double calculateScaleFactor(float percent) {
+            return this.startScaleFactor + this.scaleDifference * percent;
         }
     }
 }

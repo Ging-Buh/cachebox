@@ -36,11 +36,10 @@ import java.util.logging.Logger;
  */
 public class TileStore implements TileCache {
 
+    private static final Logger LOGGER = Logger.getLogger(TileStore.class.getName());
     private final File rootDirectory;
     private final GraphicFactory graphicFactory;
     private final String suffix;
-
-    private static final Logger LOGGER = Logger.getLogger(TileStore.class.getName());
 
     /**
      * @param rootDirectory  the directory where cached tiles will be stored.

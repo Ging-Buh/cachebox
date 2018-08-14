@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -21,49 +21,47 @@ import CB_UI_Base.graphics.fromAndroid.RectF;
  * @author Longri
  */
 public interface ext_Path extends org.mapsforge.core.graphics.Path {
-	public enum FillType {
-		WINDING, EVEN_ODD
+    @Override
+    void lineTo(float x, float y);
 
-	}
+    @Override
+    void moveTo(float x, float y);
 
-	@Override
-	void lineTo(float x, float y);
+    /**
+     * Set the beginning of the next contour relative to the last point on the previous contour. If there is no previous contour, this is
+     * treated the same as moveTo().Parameters
+     *
+     * @param x The amount to add to the x-coordinate of the end of the previous contour, to specify the start of a new contour
+     * @param y The amount to add to the y-coordinate of the end of the previous contour, to specify the start of a new contour
+     */
+    void rMoveTo(float x, float y);
 
-	@Override
-	void moveTo(float x, float y);
+    void close();
 
-	/**
-	 * Set the beginning of the next contour relative to the last point on the previous contour. If there is no previous contour, this is
-	 * treated the same as moveTo().Parameters
-	 * 
-	 * @param x
-	 *            The amount to add to the x-coordinate of the end of the previous contour, to specify the start of a new contour
-	 * @param y
-	 *            The amount to add to the y-coordinate of the end of the previous contour, to specify the start of a new contour
-	 */
-	void rMoveTo(float x, float y);
+    void rLineTo(float x, float y);
 
-	void close();
+    void cubicTo(float x1, float y1, float x2, float y2, float x, float y);
 
-	void rLineTo(float x, float y);
+    void addArc(RectF oval, float angleStart, float angleExtent);
 
-	void cubicTo(float x1, float y1, float x2, float y2, float x, float y);
+    void transform(ext_Matrix currentMatrix, ext_Path transformedPath);
 
-	void addArc(RectF oval, float angleStart, float angleExtent);
+    void computeBounds(RectF pathBounds, boolean b);
 
-	void transform(ext_Matrix currentMatrix, ext_Path transformedPath);
+    void quadTo(float x1, float y1, float x2, float y2);
 
-	void computeBounds(RectF pathBounds, boolean b);
+    void addPath(ext_Path path, ext_Matrix combinedPathMatrix);
 
-	void quadTo(float x1, float y1, float x2, float y2);
+    FillType getFillType();
 
-	void addPath(ext_Path path, ext_Matrix combinedPathMatrix);
+    void setFillType(FillType clipRuleFromState);
 
-	void setFillType(FillType clipRuleFromState);
+    void addPath(ext_Path spanPath);
 
-	FillType getFillType();
+    void transform(ext_Matrix transform);
 
-	void addPath(ext_Path spanPath);
+    public enum FillType {
+        WINDING, EVEN_ODD
 
-	void transform(ext_Matrix transform);
+    }
 }

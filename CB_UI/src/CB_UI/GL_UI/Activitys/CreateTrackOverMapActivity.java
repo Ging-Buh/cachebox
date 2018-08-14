@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,14 +15,6 @@
  */
 package CB_UI.GL_UI.Activitys;
 
-import java.util.Date;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Vector2;
-
 import CB_Core.CacheTypes;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
@@ -31,269 +23,271 @@ import CB_Locator.Map.MapTileLoader;
 import CB_Locator.Map.Track;
 import CB_Locator.Map.TrackPoint;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.GlobalCore;
-import CB_UI.RouteOverlay;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GL_UI.Views.MapView.MapMode;
 import CB_UI.GL_UI.Views.MapViewCacheList;
 import CB_UI.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.ParentInfo;
-import CB_UI_Base.GL_UI.Sprites;
+import CB_UI.GlobalCore;
+import CB_UI.RouteOverlay;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
+import CB_UI_Base.GL_UI.ParentInfo;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.MoveableList;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
+
+import java.util.Date;
 
 import static CB_UI_Base.GL_UI.Sprites.*;
-import static CB_UI_Base.GL_UI.Sprites.getMapOverlay;
 
 /**
  * A Activity for create a Track over the Map.<br>
  * Set TrackPoints over MapCenter!
- * 
+ *
  * @author Longri
  */
 public class CreateTrackOverMapActivity extends ActivityBase {
-	private Label lblName;
-	private EditTextField editName;
-	private MapView mapView;
-	private Button btnOk, btnAdd, btnCancel;
-	private CB_List<Waypoint> waypoints;
-	private Waypoint selectedWP;
-	private Track track;
-	private final MoveableList<WaypointRenderInfo> tmplist = new MoveableList<MapViewCacheList.WaypointRenderInfo>();
+    private final MoveableList<WaypointRenderInfo> tmplist = new MoveableList<MapViewCacheList.WaypointRenderInfo>();
+    private Label lblName;
+    private EditTextField editName;
+    private MapView mapView;
+    private Button btnOk, btnAdd, btnCancel;
+    private CB_List<Waypoint> waypoints;
+    private Waypoint selectedWP;
+    private Track track;
+    private OnClickListener onOkClik = new OnClickListener() {
+        @Override
+        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 
-	public CreateTrackOverMapActivity(String Name) {
-		super(Name);
-		createControls();
-		createNewTrack();
-	}
+            return false;
+        }
+    };
+    private OnClickListener onAddClik = new OnClickListener() {
+        @Override
+        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            final Coordinate coord = mapView.center;
+            if ((coord == null) || (!coord.isValid()))
+                return false;
+            GL.that.RunOnGL(new IRunOnGL() {
+                @Override
+                public void run() {
+                    //Waypoint newWP = new Waypoint(String.valueOf(System.currentTimeMillis()), CacheTypes.MultiStage, "", coord.getLatitude(), coord.getLongitude(), -1, "", Translation.Get("wyptDefTitle"));
+                    Waypoint newWP = new Waypoint(String.valueOf(System.currentTimeMillis()), CacheTypes.MultiStage, "", coord.getLatitude(), coord.getLongitude(), -1, "", String.valueOf(System.currentTimeMillis()));
+                    addWP(newWP);
+                }
+            });
+            return true;
+        }
+    };
+    private OnClickListener onCancelClik = new OnClickListener() {
+        @Override
+        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            GL.that.RunOnGL(new IRunOnGL() {
+                @Override
+                public void run() {
+                    finish();
+                }
+            });
+            return true;
+        }
+    };
 
-	private void createControls() {
-		float btWidth = innerWidth / 3;
+    public CreateTrackOverMapActivity(String Name) {
+        super(Name);
+        createControls();
+        createNewTrack();
+    }
 
-		btnOk = new Button(new CB_RectF(leftBorder, this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), onOkClik);
-		btnAdd = new Button(new CB_RectF(btnOk.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), onAddClik);
-		btnCancel = new Button(new CB_RectF(btnAdd.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), onCancelClik);
+    private void createControls() {
+        float btWidth = innerWidth / 3;
 
-		// translations
-		btnOk.setText(Translation.Get("ok".hashCode()));
-		btnAdd.setText(Translation.Get("addWP"));
-		btnCancel.setText(Translation.Get("cancel".hashCode()));
+        btnOk = new Button(new CB_RectF(leftBorder, this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), onOkClik);
+        btnAdd = new Button(new CB_RectF(btnOk.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), onAddClik);
+        btnCancel = new Button(new CB_RectF(btnAdd.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), onCancelClik);
 
-		this.addChild(btnOk);
-		this.addChild(btnAdd);
-		this.addChild(btnCancel);
+        // translations
+        btnOk.setText(Translation.Get("ok".hashCode()));
+        btnAdd.setText(Translation.Get("addWP"));
+        btnCancel.setText(Translation.Get("cancel".hashCode()));
 
-		lblName = new Label(Translation.Get("Name"));
-		editName = new EditTextField(this.name + " editName");
-		lblName.setRec(new CB_RectF(leftBorder, this.getHeight() - (lblName.getHeight() + margin), lblName.getWidth(), lblName.getHeight()));
-		editName.setRec(new CB_RectF(lblName.getMaxX() + margin, lblName.getY(), innerWidth - (margin + lblName.getWidth()), lblName.getHeight()));
-		this.addChild(lblName);
-		this.addChild(editName);
+        this.addChild(btnOk);
+        this.addChild(btnAdd);
+        this.addChild(btnCancel);
 
-		CB_RectF mapRec = new CB_RectF(leftBorder, btnOk.getMaxY() + margin, innerWidth, innerHeight - (btnOk.getHalfHeight() + editName.getHeight() + (4 * margin) + topBorder));
+        lblName = new Label(Translation.Get("Name"));
+        editName = new EditTextField(this.name + " editName");
+        lblName.setRec(new CB_RectF(leftBorder, this.getHeight() - (lblName.getHeight() + margin), lblName.getWidth(), lblName.getHeight()));
+        editName.setRec(new CB_RectF(lblName.getMaxX() + margin, lblName.getY(), innerWidth - (margin + lblName.getWidth()), lblName.getHeight()));
+        this.addChild(lblName);
+        this.addChild(editName);
 
-		mapView = new MapView(mapRec, MapMode.Track, "MapView");
-		this.addChild(mapView);
+        CB_RectF mapRec = new CB_RectF(leftBorder, btnOk.getMaxY() + margin, innerWidth, innerHeight - (btnOk.getHalfHeight() + editName.getHeight() + (4 * margin) + topBorder));
 
-		mapView.setOnLongClickListener(new OnClickListener() {
+        mapView = new MapView(mapRec, MapMode.Track, "MapView");
+        this.addChild(mapView);
 
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				// chk if any TrackPoint clicked
+        mapView.setOnLongClickListener(new OnClickListener() {
 
-				double minDist = Double.MAX_VALUE;
-				WaypointRenderInfo minWpi = null;
-				Vector2 clickedAt = new Vector2(x, y);
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                // chk if any TrackPoint clicked
 
-				for (int i = 0, n = tmplist.size(); i < n; i++) {
-					WaypointRenderInfo wpi = tmplist.get(i);
-					Vector2 screen = mapView.worldToScreen(new Vector2(Math.round(wpi.MapX), Math.round(wpi.MapY)));
-					if (clickedAt != null) {
-						double aktDist = Math.sqrt(Math.pow(screen.x - clickedAt.x, 2) + Math.pow(screen.y - clickedAt.y, 2));
-						if (aktDist < minDist) {
-							minDist = aktDist;
-							minWpi = wpi;
-						}
-					}
-				}
+                double minDist = Double.MAX_VALUE;
+                WaypointRenderInfo minWpi = null;
+                Vector2 clickedAt = new Vector2(x, y);
 
-				if (minDist < 40) {
-					selectedWP = minWpi.Waypoint;
+                for (int i = 0, n = tmplist.size(); i < n; i++) {
+                    WaypointRenderInfo wpi = tmplist.get(i);
+                    Vector2 screen = mapView.worldToScreen(new Vector2(Math.round(wpi.MapX), Math.round(wpi.MapY)));
+                    if (clickedAt != null) {
+                        double aktDist = Math.sqrt(Math.pow(screen.x - clickedAt.x, 2) + Math.pow(screen.y - clickedAt.y, 2));
+                        if (aktDist < minDist) {
+                            minDist = aktDist;
+                            minWpi = wpi;
+                        }
+                    }
+                }
 
-					// Show PopUpMenu
-					//					CB_RectF rec = new CB_RectF(x - 1, y - 1, 2, 2);
-					//					CB_RectF mapWorld = mapView.getWorldRec();
-					//					rec = rec.ScaleCenter(150);
-					//					PopUpMenu menu = new PopUpMenu(rec, "popUpMenu");
-					//					menu.setPos(mapWorld.getX() + x - menu.getHalfWidth(), mapView.getY() + y - menu.getHalfHeight());
-					//					menu.showNotCloseAutomaticly();
-				} else {
-					selectedWP = null;
-				}
+                if (minDist < 40) {
+                    selectedWP = minWpi.Waypoint;
 
-				return true;
-			}
-		});
+                    // Show PopUpMenu
+                    //					CB_RectF rec = new CB_RectF(x - 1, y - 1, 2, 2);
+                    //					CB_RectF mapWorld = mapView.getWorldRec();
+                    //					rec = rec.ScaleCenter(150);
+                    //					PopUpMenu menu = new PopUpMenu(rec, "popUpMenu");
+                    //					menu.setPos(mapWorld.getX() + x - menu.getHalfWidth(), mapView.getY() + y - menu.getHalfHeight());
+                    //					menu.showNotCloseAutomaticly();
+                } else {
+                    selectedWP = null;
+                }
 
-	}
+                return true;
+            }
+        });
 
-	private OnClickListener onOkClik = new OnClickListener() {
-		@Override
-		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+    }
 
-			return false;
-		}
-	};
+    private void addWP(Waypoint wp) {
+        if (waypoints == null)
+            waypoints = new CB_List<Waypoint>();
+        waypoints.add(wp);
+        if (waypoints.size() == 2) {
+            // Two Points, begins with Track drawing
+            track = new Track("generate", Color.RED);
+            GlobalCore.AktuelleRoute.Points.add(convertToTrackPoint(waypoints.get(0)));
+            GlobalCore.AktuelleRoute.Points.add(convertToTrackPoint(waypoints.get(1)));
+        }
 
-	private OnClickListener onAddClik = new OnClickListener() {
-		@Override
-		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-			final Coordinate coord = mapView.center;
-			if ((coord == null) || (!coord.isValid()))
-				return false;
-			GL.that.RunOnGL(new IRunOnGL() {
-				@Override
-				public void run() {
-					//Waypoint newWP = new Waypoint(String.valueOf(System.currentTimeMillis()), CacheTypes.MultiStage, "", coord.getLatitude(), coord.getLongitude(), -1, "", Translation.Get("wyptDefTitle"));
-					Waypoint newWP = new Waypoint(String.valueOf(System.currentTimeMillis()), CacheTypes.MultiStage, "", coord.getLatitude(), coord.getLongitude(), -1, "", String.valueOf(System.currentTimeMillis()));
-					addWP(newWP);
-				}
-			});
-			return true;
-		}
-	};
+        if (waypoints.size() > 2) {
+            GlobalCore.AktuelleRoute.Points.add(convertToTrackPoint(wp));
+        }
 
-	private OnClickListener onCancelClik = new OnClickListener() {
-		@Override
-		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-			GL.that.RunOnGL(new IRunOnGL() {
-				@Override
-				public void run() {
-					finish();
-				}
-			});
-			return true;
-		}
-	};
+        if (waypoints.size() > 1) {
+            RouteOverlay.RoutesChanged();
+        }
+    }
 
-	private void addWP(Waypoint wp) {
-		if (waypoints == null)
-			waypoints = new CB_List<Waypoint>();
-		waypoints.add(wp);
-		if (waypoints.size() == 2) {
-			// Two Points, begins with Track drawing
-			track = new Track("generate", Color.RED);
-			GlobalCore.AktuelleRoute.Points.add(convertToTrackPoint(waypoints.get(0)));
-			GlobalCore.AktuelleRoute.Points.add(convertToTrackPoint(waypoints.get(1)));
-		}
+    private void createNewTrack() {
+        GlobalCore.AktuelleRoute = new Track(Translation.Get("actualTrack"), Color.BLUE);
+        GlobalCore.AktuelleRoute.ShowRoute = true;
+        GlobalCore.AktuelleRoute.IsActualTrack = true;
+        GlobalCore.aktuelleRouteCount = 0;
+        GlobalCore.AktuelleRoute.TrackLength = 0;
+        GlobalCore.AktuelleRoute.AltitudeDifference = 0;
+    }
 
-		if (waypoints.size() > 2) {
-			GlobalCore.AktuelleRoute.Points.add(convertToTrackPoint(wp));
-		}
+    private TrackPoint convertToTrackPoint(Waypoint wp) {
 
-		if (waypoints.size() > 1) {
-			RouteOverlay.RoutesChanged();
-		}
-	}
+        TrackPoint trp = new TrackPoint(wp.Pos.getLongitude(), wp.Pos.getLatitude(), 0, 0, new Date());
+        return trp;
 
-	private void createNewTrack() {
-		GlobalCore.AktuelleRoute = new Track(Translation.Get("actualTrack"), Color.BLUE);
-		GlobalCore.AktuelleRoute.ShowRoute = true;
-		GlobalCore.AktuelleRoute.IsActualTrack = true;
-		GlobalCore.aktuelleRouteCount = 0;
-		GlobalCore.AktuelleRoute.TrackLength = 0;
-		GlobalCore.AktuelleRoute.AltitudeDifference = 0;
-	}
+    }
 
-	private TrackPoint convertToTrackPoint(Waypoint wp) {
+    @Override
+    public void renderChilds(final Batch batch, ParentInfo parentInfo) {
+        super.renderChilds(batch, parentInfo);
 
-		TrackPoint trp = new TrackPoint(wp.Pos.getLongitude(), wp.Pos.getLatitude(), 0, 0, new Date());
-		return trp;
+        // render WPs
+        if (waypoints == null)
+            return;
+        tmplist.clear();
 
-	}
+        for (int i = 0; i < waypoints.size(); i++) {
+            Waypoint wp = waypoints.get(i);
 
-	@Override
-	public void renderChilds(final Batch batch, ParentInfo parentInfo) {
-		super.renderChilds(batch, parentInfo);
+            double MapX = 256.0 * Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, wp.Pos.getLongitude());
+            double MapY = -256.0 * Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, wp.Pos.getLatitude());
+            if (true)// isVisible(MapX, MapY)
+            {
+                WaypointRenderInfo wpi = new WaypointRenderInfo();
+                wpi.MapX = (float) MapX;
+                wpi.MapY = (float) MapY;
+                wpi.Icon = getSprite("mapTrailhead");
+                wpi.Cache = null;
+                wpi.Waypoint = wp;
+                wpi.UnderlayIcon = null;
 
-		// render WPs
-		if (waypoints == null)
-			return;
-		tmplist.clear();
+                wpi.Selected = false;
+                if (selectedWP != null) {
+                    if (selectedWP.getGcCode().equals(wp.getGcCode())) {
+                        wpi.Selected = true;
+                        wpi.UnderlayIcon = getMapOverlay(IconName.shaddowrectselected);
+                    }
+                }
+                tmplist.add(wpi);
+            }
+        }
 
-		for (int i = 0; i < waypoints.size(); i++) {
-			Waypoint wp = waypoints.get(i);
+        batch.setProjectionMatrix(mapView.myParentInfo.Matrix());
 
-			double MapX = 256.0 * Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, wp.Pos.getLongitude());
-			double MapY = -256.0 * Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, wp.Pos.getLatitude());
-			if (true)// isVisible(MapX, MapY)
-			{
-				WaypointRenderInfo wpi = new WaypointRenderInfo();
-				wpi.MapX = (float) MapX;
-				wpi.MapY = (float) MapY;
-				wpi.Icon = getSprite("mapTrailhead");
-				wpi.Cache = null;
-				wpi.Waypoint = wp;
-				wpi.UnderlayIcon = null;
+        Gdx.gl.glScissor((int) mapView.thisWorldRec.getX(), (int) mapView.thisWorldRec.getY(), (int) mapView.thisWorldRec.getWidth() + 1, (int) mapView.thisWorldRec.getHeight() + 1);
+        Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
 
-				wpi.Selected = false;
-				if (selectedWP != null) {
-					if (selectedWP.getGcCode().equals(wp.getGcCode())) {
-						wpi.Selected = true;
-						wpi.UnderlayIcon = getMapOverlay(IconName.shaddowrectselected);
-					}
-				}
-				tmplist.add(wpi);
-			}
-		}
+        SizeF drawingSize = new SizeF(40, 40);
 
-		batch.setProjectionMatrix(mapView.myParentInfo.Matrix());
+        for (int i = 0; i < tmplist.size(); i++) {
 
-		Gdx.gl.glScissor((int) mapView.thisWorldRec.getX(), (int) mapView.thisWorldRec.getY(), (int) mapView.thisWorldRec.getWidth() + 1, (int) mapView.thisWorldRec.getHeight() + 1);
-		Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
+            mapView.renderWPI(batch, drawingSize, drawingSize, tmplist.get(i));
 
-		SizeF drawingSize = new SizeF(40, 40);
+        }
 
-		for (int i = 0; i < tmplist.size(); i++) {
+    }
 
-			mapView.renderWPI(batch, drawingSize, drawingSize, tmplist.get(i));
+    @Override
+    public void dispose() {
+        super.dispose();
+        if (btnOk != null)
+            btnOk.dispose();
+        btnOk = null;
 
-		}
+        if (btnAdd != null)
+            btnAdd.dispose();
+        btnAdd = null;
 
-	}
+        if (btnCancel != null)
+            btnCancel.dispose();
+        btnCancel = null;
 
-	@Override
-	public void dispose() {
-		super.dispose();
-		if (btnOk != null)
-			btnOk.dispose();
-		btnOk = null;
+        if (lblName != null)
+            lblName.dispose();
+        lblName = null;
 
-		if (btnAdd != null)
-			btnAdd.dispose();
-		btnAdd = null;
-
-		if (btnCancel != null)
-			btnCancel.dispose();
-		btnCancel = null;
-
-		if (lblName != null)
-			lblName.dispose();
-		lblName = null;
-
-		onOkClik = null;
-		onAddClik = null;
-		onCancelClik = null;
-	}
+        onOkClik = null;
+        onAddClik = null;
+        onCancelClik = null;
+    }
 
 }

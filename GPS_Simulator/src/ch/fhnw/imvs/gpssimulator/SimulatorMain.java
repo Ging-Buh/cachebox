@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2007 by the University of Applied Sciences Northwestern Switzerland (FHNW)
- * 
+ *
  * This program can be redistributed or modified under the terms of the
  * GNU General Public License as published by the Free Software Foundation.
  * This program is distributed without any warranty or implied warranty
@@ -11,17 +11,13 @@
 
 package ch.fhnw.imvs.gpssimulator;
 
-import java.awt.BorderLayout;
-import java.awt.Font;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.DataOutputStream;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.prefs.Preferences;
+import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.Events.PlatformConnector.*;
+import ch.fhnw.imvs.gpssimulator.components.*;
+import ch.fhnw.imvs.gpssimulator.data.GPSData;
+import ch.fhnw.imvs.gpssimulator.nmea.*;
+import org.apache.log4j.Logger;
+import org.mapsforge.map.swing.view.MapPanel;
 
 import javax.bluetooth.BluetoothStateException;
 import javax.bluetooth.LocalDevice;
@@ -29,303 +25,283 @@ import javax.bluetooth.UUID;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
-import javax.swing.BoxLayout;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
-
-import org.apache.log4j.Logger;
-import org.mapsforge.map.swing.view.MapPanel;
-
-import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.Events.PlatformConnector.ICallUrl;
-import CB_UI_Base.Events.PlatformConnector.IgetFileListener;
-import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
-import CB_UI_Base.Events.PlatformConnector.IgetFolderListener;
-import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
-import ch.fhnw.imvs.gpssimulator.components.BluetoothPanel;
-import ch.fhnw.imvs.gpssimulator.components.CoursePanel;
-import ch.fhnw.imvs.gpssimulator.components.GeneralPanel;
-import ch.fhnw.imvs.gpssimulator.components.LocationPanel;
-import ch.fhnw.imvs.gpssimulator.components.QualityPanel;
-import ch.fhnw.imvs.gpssimulator.components.XMLPanel;
-import ch.fhnw.imvs.gpssimulator.data.GPSData;
-import ch.fhnw.imvs.gpssimulator.nmea.GGA;
-import ch.fhnw.imvs.gpssimulator.nmea.GLL;
-import ch.fhnw.imvs.gpssimulator.nmea.GSA;
-import ch.fhnw.imvs.gpssimulator.nmea.NMEASentence;
-import ch.fhnw.imvs.gpssimulator.nmea.RMC;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.prefs.Preferences;
 
 public class SimulatorMain {
 
-	public static Preferences prefs = Preferences.userNodeForPackage(ch.fhnw.imvs.gpssimulator.SimulatorMain.class);
+    private static final UUID SERVICE_UUID = new UUID("0000110100001000800000805f9b34fb", false);
+    private static final String SERVICE_NAME = "GPSSimulator";
+    private static final String SERVICE_URL = "btspp://localhost:" + SERVICE_UUID + ";name=" + SERVICE_NAME + ";authorize=false;authenticate=false;encrypt=false";
+    public static Preferences prefs = Preferences.userNodeForPackage(ch.fhnw.imvs.gpssimulator.SimulatorMain.class);
+    private static StreamConnectionNotifier connectionNotifier;
+    private static boolean closing = false;
 
-	private static final UUID SERVICE_UUID = new UUID("0000110100001000800000805f9b34fb", false);
-	private static final String SERVICE_NAME = "GPSSimulator";
-	private static final String SERVICE_URL = "btspp://localhost:" + SERVICE_UUID + ";name=" + SERVICE_NAME + ";authorize=false;authenticate=false;encrypt=false";
+    private static BluetoothPanel bluetooth;
 
-	private static StreamConnectionNotifier connectionNotifier;
-	private static boolean closing = false;
+    private static List<NMEASentence> nmeaTypes = new ArrayList<NMEASentence>();
 
-	private static BluetoothPanel bluetooth;
+    public static JFrame createFrame() throws IOException {
+        JFrame f = new JFrame("GPS Simulator");
+        f.setLayout(new BorderLayout());
 
-	private static List<NMEASentence> nmeaTypes = new ArrayList<NMEASentence>();
+        f.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    closing = true;
+                    connectionNotifier.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                } catch (NullPointerException e1) {
+                    e1.printStackTrace();
+                }
+                System.exit(0);
+            }
+        });
 
-	public static JFrame createFrame() throws IOException {
-		JFrame f = new JFrame("GPS Simulator");
-		f.setLayout(new BorderLayout());
+        JPanel box = new JPanel();
+        box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
 
-		f.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				try {
-					closing = true;
-					connectionNotifier.close();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				} catch (NullPointerException e1) {
-					e1.printStackTrace();
-				}
-				System.exit(0);
-			}
-		});
+        nmeaTypes.add(new GGA());
+        nmeaTypes.add(new GSA());
+        nmeaTypes.add(new RMC());
+        nmeaTypes.add(new GLL());
 
-		JPanel box = new JPanel();
-		box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+        box.add(new GeneralPanel(nmeaTypes)); // add general component
+        box.add(new LocationPanel()); // add location component
+        box.add(new CoursePanel()); // add course component
+        box.add(new QualityPanel()); // add quality component
+        box.add(new XMLPanel()); // add XML waypoints component
 
-		nmeaTypes.add(new GGA());
-		nmeaTypes.add(new GSA());
-		nmeaTypes.add(new RMC());
-		nmeaTypes.add(new GLL());
+        bluetooth = new BluetoothPanel();
+        box.add(bluetooth);
 
-		box.add(new GeneralPanel(nmeaTypes)); // add general component
-		box.add(new LocationPanel()); // add location component
-		box.add(new CoursePanel()); // add course component
-		box.add(new QualityPanel()); // add quality component
-		box.add(new XMLPanel()); // add XML waypoints component
+        JPanel rightbox = new JPanel();
+        rightbox.setLayout(new BoxLayout(rightbox, BoxLayout.Y_AXIS));
+        MapPanel mapPanel = new MapPanel();
 
-		bluetooth = new BluetoothPanel();
-		box.add(bluetooth);
+        mapPanel.setVisible(true);
+        rightbox.add(mapPanel);
 
-		JPanel rightbox = new JPanel();
-		rightbox.setLayout(new BoxLayout(rightbox, BoxLayout.Y_AXIS));
-		MapPanel mapPanel = new MapPanel();
+        rightbox.setVisible(true);
 
-		mapPanel.setVisible(true);
-		rightbox.add(mapPanel);
+        f.add(box, BorderLayout.WEST);
+        f.add(rightbox, BorderLayout.EAST);
 
-		rightbox.setVisible(true);
+        JLabel title = new JLabel("GPS Simulator", JLabel.CENTER);
+        title.setFont(new Font(null, Font.BOLD, 18));
+        f.add(title, BorderLayout.NORTH);
 
-		f.add(box, BorderLayout.WEST);
-		f.add(rightbox, BorderLayout.EAST);
+        GPSData.start();
 
-		JLabel title = new JLabel("GPS Simulator", JLabel.CENTER);
-		title.setFont(new Font(null, Font.BOLD, 18));
-		f.add(title, BorderLayout.NORTH);
+        PlatformConnector.setGetFileListener(new IgetFileListener() {
+            @Override
+            public void getFile(String initialPath, final String extension, String TitleText, String ButtonText, IgetFileReturnListener returnListener) {
 
-		GPSData.start();
+                final String ext = extension.replace("*", "");
 
-		PlatformConnector.setGetFileListener(new IgetFileListener() {
-			@Override
-			public void getFile(String initialPath, final String extension, String TitleText, String ButtonText, IgetFileReturnListener returnListener) {
+                JFileChooser chooser = new JFileChooser();
 
-				final String ext = extension.replace("*", "");
+                chooser.setCurrentDirectory(new java.io.File(initialPath));
+                chooser.setDialogTitle(TitleText);
 
-				JFileChooser chooser = new JFileChooser();
+                FileFilter filter = new FileFilter() {
 
-				chooser.setCurrentDirectory(new java.io.File(initialPath));
-				chooser.setDialogTitle(TitleText);
+                    @Override
+                    public String getDescription() {
 
-				FileFilter filter = new FileFilter() {
+                        return extension;
+                    }
 
-					@Override
-					public String getDescription() {
+                    @Override
+                    public boolean accept(File f) {
+                        if (f.getAbsolutePath().endsWith(ext))
+                            return true;
+                        return false;
+                    }
+                };
 
-						return extension;
-					}
+                chooser.setFileFilter(filter);
 
-					@Override
-					public boolean accept(File f) {
-						if (f.getAbsolutePath().endsWith(ext))
-							return true;
-						return false;
-					}
-				};
+                int returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    if (returnListener != null)
+                        returnListener.returnFile(chooser.getSelectedFile().getAbsolutePath());
+                    System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
+                }
 
-				chooser.setFileFilter(filter);
+            }
+        });
 
-				int returnVal = chooser.showOpenDialog(null);
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					if (returnListener != null)
-						returnListener.returnFile(chooser.getSelectedFile().getAbsolutePath());
-					System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
-				}
+        PlatformConnector.setGetFolderListener(new IgetFolderListener() {
 
-			}
-		});
+            @Override
+            public void getFolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener) {
 
-		PlatformConnector.setGetFolderListener(new IgetFolderListener() {
+                JFileChooser chooser = new JFileChooser();
 
-			@Override
-			public void getFolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener) {
+                chooser.setCurrentDirectory(new java.io.File(initialPath));
+                chooser.setDialogTitle(TitleText);
 
-				JFileChooser chooser = new JFileChooser();
+                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                int returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    if (returnListener != null)
+                        returnListener.returnFolder(chooser.getSelectedFile().getAbsolutePath());
+                    System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
+                }
 
-				chooser.setCurrentDirectory(new java.io.File(initialPath));
-				chooser.setDialogTitle(TitleText);
+            }
+        });
 
-				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				int returnVal = chooser.showOpenDialog(null);
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					if (returnListener != null)
-						returnListener.returnFolder(chooser.getSelectedFile().getAbsolutePath());
-					System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
-				}
+        PlatformConnector.setCallUrlListener(new ICallUrl() {
 
-			}
-		});
+            /**
+             * call
+             */
+            @Override
+            public void call(String url) {
+                java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
 
-		PlatformConnector.setCallUrlListener(new ICallUrl() {
+                if (!desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
 
-			/**
-			 * call
-			 */
-			@Override
-			public void call(String url) {
-				java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
+                    System.err.println("Desktop doesn't support the browse action (fatal)");
+                    System.exit(1);
+                }
 
-				if (!desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
+                try {
 
-					System.err.println("Desktop doesn't support the browse action (fatal)");
-					System.exit(1);
-				}
+                    java.net.URI uri = new java.net.URI(url);
+                    desktop.browse(uri);
+                } catch (Exception e) {
 
-				try {
+                    System.err.println(e.getMessage());
+                }
 
-					java.net.URI uri = new java.net.URI(url);
-					desktop.browse(uri);
-				} catch (Exception e) {
+            }
+        });
 
-					System.err.println(e.getMessage());
-				}
+        return f;
+    }
 
-			}
-		});
+    public static void startListener() throws IOException {
+        try {
+            LocalDevice local = LocalDevice.getLocalDevice();
 
-		return f;
-	}
+            System.out.println("Bluetooth address: " + local.getBluetoothAddress());
 
-	public static void startListener() throws IOException {
-		try {
-			LocalDevice local = LocalDevice.getLocalDevice();
+            connectionNotifier = (javax.microedition.io.StreamConnectionNotifier) Connector.open(SERVICE_URL);
+            System.out.println("Service " + SERVICE_URL + " started.");
 
-			System.out.println("Bluetooth address: " + local.getBluetoothAddress());
+            while (true) {
+                System.out.println("waiting for connections...");
+                StreamConnection streamConnection = connectionNotifier.acceptAndOpen();
 
-			connectionNotifier = (javax.microedition.io.StreamConnectionNotifier) Connector.open(SERVICE_URL);
-			System.out.println("Service " + SERVICE_URL + " started.");
+                System.out.println("Connection accepted.");
+                ConnectionHandler connection = new ConnectionHandler(streamConnection);
+                bluetooth.addConnection(connection);
 
-			while (true) {
-				System.out.println("waiting for connections...");
-				StreamConnection streamConnection = connectionNotifier.acceptAndOpen();
+                Thread t = new Thread(connection);
+                t.start();
+            }
+        } catch (BluetoothStateException e) {
+            System.out.println("Error: No Bluetooth device available.");
+            // System.exit(1);
+        } catch (Exception e) {
+            if (!closing) {
+                e.printStackTrace();
+                // System.exit(1);
+            }
+        }
+    }
 
-				System.out.println("Connection accepted.");
-				ConnectionHandler connection = new ConnectionHandler(streamConnection);
-				bluetooth.addConnection(connection);
+    public static void main(String[] args) throws Exception {
+        JFrame f = createFrame();
+        f.pack();
+        f.setResizable(false);
+        f.setVisible(true);
 
-				Thread t = new Thread(connection);
-				t.start();
-			}
-		} catch (BluetoothStateException e) {
-			System.out.println("Error: No Bluetooth device available.");
-			// System.exit(1);
-		} catch (Exception e) {
-			if (!closing) {
-				e.printStackTrace();
-				// System.exit(1);
-			}
-		}
-	}
+        // startListener();
+    }
 
-	public static class ConnectionHandler implements Runnable {
+    public static class ConnectionHandler implements Runnable {
 
-		static Logger log4j = Logger.getLogger("root");
+        static Logger log4j = Logger.getLogger("root");
+        private volatile static int globalConnectionNumber = 0;
+        private final StreamConnection streamConnection;
+        private DataOutputStream dos = null;
+        private volatile boolean running = true;
+        private volatile int connectionNumber;
 
-		private final StreamConnection streamConnection;
-		private DataOutputStream dos = null;
-		private volatile boolean running = true;
-		private volatile int connectionNumber;
-		private volatile static int globalConnectionNumber = 0;
+        public ConnectionHandler(StreamConnection streamConnection) {
+            super();
+            this.connectionNumber = ConnectionHandler.getGlobalConnectionNumber();
+            this.streamConnection = streamConnection;
+        }
 
-		private synchronized static int getGlobalConnectionNumber() {
-			return globalConnectionNumber++;
-		}
+        private synchronized static int getGlobalConnectionNumber() {
+            return globalConnectionNumber++;
+        }
 
-		public ConnectionHandler(StreamConnection streamConnection) {
-			super();
-			this.connectionNumber = ConnectionHandler.getGlobalConnectionNumber();
-			this.streamConnection = streamConnection;
-		}
+        public int getConnectionNumber() {
+            return connectionNumber;
+        }
 
-		public int getConnectionNumber() {
-			return connectionNumber;
-		}
+        @Override
+        public String toString() {
+            return "" + connectionNumber;
+        }
 
-		@Override
-		public String toString() {
-			return "" + connectionNumber;
-		}
+        public void stopRunning() {
+            running = false;
+        }
 
-		public void stopRunning() {
-			running = false;
-		}
+        @Override
+        public void run() {
+            try {
+                dos = new DataOutputStream(streamConnection.openDataOutputStream());
 
-		@Override
-		public void run() {
-			try {
-				dos = new DataOutputStream(streamConnection.openDataOutputStream());
+                while (running) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                    }
 
-				while (running) {
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-					}
+                    for (NMEASentence s : nmeaTypes) {
+                        if (s.isLinePrinted()) {
+                            writeString(s.getSentence());
+                        }
+                    }
+                }
+            } catch (IOException e1) {
+                try {
+                    streamConnection.close();
+                } catch (IOException e2) {
+                }
+                bluetooth.removeConnection(this);
 
-					for (NMEASentence s : nmeaTypes) {
-						if (s.isLinePrinted()) {
-							writeString(s.getSentence());
-						}
-					}
-				}
-			} catch (IOException e1) {
-				try {
-					streamConnection.close();
-				} catch (IOException e2) {
-				}
-				bluetooth.removeConnection(this);
+                System.err.println("Connector: " + e1);
+                System.err.println("Removing this client from delivery!");
+            }
+        }
 
-				System.err.println("Connector: " + e1);
-				System.err.println("Removing this client from delivery!");
-			}
-		}
-
-		private void writeString(String string) throws IOException {
-			dos.write('$');
-			dos.write(string.getBytes());
-			dos.write('\r');
-			dos.write('\n');
-			dos.flush();
-			log4j.info("$" + string);
-		}
-	}
-
-	public static void main(String[] args) throws Exception {
-		JFrame f = createFrame();
-		f.pack();
-		f.setResizable(false);
-		f.setVisible(true);
-
-		// startListener();
-	}
+        private void writeString(String string) throws IOException {
+            dos.write('$');
+            dos.write(string.getBytes());
+            dos.write('\r');
+            dos.write('\n');
+            dos.flush();
+            log4j.info("$" + string);
+        }
+    }
 }

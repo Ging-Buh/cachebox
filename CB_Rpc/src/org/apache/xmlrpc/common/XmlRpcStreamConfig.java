@@ -14,23 +14,27 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.common;
 
 import org.apache.xmlrpc.XmlRpcConfig;
 
-/** Interface of a configuration for a stream based transport.
+/**
+ * Interface of a configuration for a stream based transport.
  */
 public interface XmlRpcStreamConfig extends XmlRpcConfig {
-	/** Default encoding (UTF-8).
-	 */
-	public static final String UTF8_ENCODING = "UTF-8";
+    /**
+     * Default encoding (UTF-8).
+     */
+    public static final String UTF8_ENCODING = "UTF-8";
 
-	/** Returns the encoding being used for data encoding, when writing
-	 * to a stream.
-	 * @return Suggested encoding, or null, if the {@link #UTF8_ENCODING}
-	 * is being used.
-	 */
-	String getEncoding();
+    /**
+     * Returns the encoding being used for data encoding, when writing
+     * to a stream.
+     *
+     * @return Suggested encoding, or null, if the {@link #UTF8_ENCODING}
+     * is being used.
+     */
+    String getEncoding();
 }

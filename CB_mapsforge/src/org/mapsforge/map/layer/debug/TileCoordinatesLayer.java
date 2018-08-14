@@ -16,13 +16,7 @@
  */
 package org.mapsforge.map.layer.debug;
 
-import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.FontFamily;
-import org.mapsforge.core.graphics.FontStyle;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
@@ -34,6 +28,26 @@ import org.mapsforge.map.util.LayerUtil;
 import java.util.List;
 
 public class TileCoordinatesLayer extends Layer {
+    private final DisplayModel displayModel;
+    private final Paint paintBack, paintFront;
+    private final StringBuilder stringBuilder = new StringBuilder();
+    private boolean drawSimple;
+    public TileCoordinatesLayer(GraphicFactory graphicFactory, DisplayModel displayModel) {
+        super();
+
+        this.displayModel = displayModel;
+
+        this.paintBack = createPaintBack(graphicFactory, displayModel);
+        this.paintFront = createPaintFront(graphicFactory, displayModel);
+    }
+    public TileCoordinatesLayer(DisplayModel displayModel, Paint paintBack, Paint paintFront) {
+        super();
+
+        this.displayModel = displayModel;
+        this.paintBack = paintBack;
+        this.paintFront = paintFront;
+    }
+
     private static Paint createPaintFront(GraphicFactory graphicFactory, DisplayModel displayModel) {
         Paint paint = graphicFactory.createPaint();
         paint.setColor(Color.RED);
@@ -50,28 +64,6 @@ public class TileCoordinatesLayer extends Layer {
         paint.setStrokeWidth(2 * displayModel.getScaleFactor());
         paint.setStyle(Style.STROKE);
         return paint;
-    }
-
-    private final DisplayModel displayModel;
-    private final Paint paintBack, paintFront;
-    private boolean drawSimple;
-    private final StringBuilder stringBuilder = new StringBuilder();
-
-    public TileCoordinatesLayer(GraphicFactory graphicFactory, DisplayModel displayModel) {
-        super();
-
-        this.displayModel = displayModel;
-
-        this.paintBack = createPaintBack(graphicFactory, displayModel);
-        this.paintFront = createPaintFront(graphicFactory, displayModel);
-    }
-
-    public TileCoordinatesLayer(DisplayModel displayModel, Paint paintBack, Paint paintFront) {
-        super();
-
-        this.displayModel = displayModel;
-        this.paintBack = paintBack;
-        this.paintFront = paintFront;
     }
 
     @Override

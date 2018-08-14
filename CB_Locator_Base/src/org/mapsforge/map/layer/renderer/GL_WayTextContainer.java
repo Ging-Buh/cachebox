@@ -14,24 +14,23 @@
  */
 package org.mapsforge.map.layer.renderer;
 
+import CB_UI_Base.graphics.GL_Path;
 import org.mapsforge.core.graphics.Paint;
 
-import CB_UI_Base.graphics.GL_Path;
-
 public class GL_WayTextContainer {
-	final Paint fill;
-	final Paint stroke;
-	final String text;
-	final GL_Path path;
-	final double averageX;
-	final double averageY;
+    final Paint fill;
+    final Paint stroke;
+    final String text;
+    final GL_Path path;
+    final double averageX;
+    final double averageY;
 
-	public GL_WayTextContainer(GL_Path path, String text, Paint fill, Paint stroke, double averageX, double averageY) {
-		this.path = path;
-		this.text = text;
-		this.fill = fill;
-		this.stroke = stroke;
-		this.averageX = averageX;
-		this.averageY = averageY;
-	}
+    public GL_WayTextContainer(GL_Path path, String text, Paint fill, Paint stroke, double averageX, double averageY) {
+        this.path = path;
+        this.text = text;
+        this.fill = fill;
+        this.stroke = stroke;
+        this.averageX = averageX;
+        this.averageY = averageY;
+    }
 }

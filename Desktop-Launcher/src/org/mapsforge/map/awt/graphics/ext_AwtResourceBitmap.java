@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,19 +15,16 @@
  */
 package org.mapsforge.map.awt.graphics;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.mapsforge.map.awt.graphics.AwtResourceBitmap;
-
-import com.badlogic.gdx.graphics.Texture;
-
 import CB_Locator.LocatorSettings;
 import CB_UI_Base.graphics.GL_RenderType;
 import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_UI_Base.graphics.extendedInterfaces.ext_Bitmap;
+import com.badlogic.gdx.graphics.Texture;
+
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Longri
@@ -36,44 +33,44 @@ public class ext_AwtResourceBitmap extends AwtResourceBitmap implements ext_Bitm
     protected BitmapDrawable GL_image;
 
     public ext_AwtResourceBitmap(InputStream stream, int HashCode, float scaleFactor) throws IOException {
-	super(stream);
+        super(stream);
 
-	if (scaleFactor != 1) {
-	    int w = (int) (this.getWidth() * scaleFactor);
-	    int h = (int) (this.getHeight() * scaleFactor);
-	    this.scaleTo(w, h);
-	}
+        if (scaleFactor != 1) {
+            int w = (int) (this.getWidth() * scaleFactor);
+            int h = (int) (this.getHeight() * scaleFactor);
+            this.scaleTo(w, h);
+        }
 
-	createGL_Image(HashCode, scaleFactor);
+        createGL_Image(HashCode, scaleFactor);
     }
 
     public ext_AwtResourceBitmap(BufferedImage resourceBitmap) throws IOException {
-	super(resourceBitmap);
-	createGL_Image(resourceBitmap.hashCode(), 1.0f);
+        super(resourceBitmap);
+        createGL_Image(resourceBitmap.hashCode(), 1.0f);
     }
 
     private void createGL_Image(int HashCode, float scaleFactor) throws IOException {
-	byte[] bytes = null;
+        byte[] bytes = null;
 
-	if (!BitmapDrawable.AtlasContains(HashCode)) {
-	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        if (!BitmapDrawable.AtlasContains(HashCode)) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-	    this.compress(baos);
+            this.compress(baos);
 
-	    bytes = new byte[baos.toByteArray().length];
-	    System.arraycopy(baos.toByteArray(), 0, bytes, 0, baos.toByteArray().length);
+            bytes = new byte[baos.toByteArray().length];
+            System.arraycopy(baos.toByteArray(), 0, bytes, 0, baos.toByteArray().length);
 
-	}
+        }
 
-	GL_RenderType RENDERING_TYPE = LocatorSettings.MapsforgeRenderType.getEnumValue();
+        GL_RenderType RENDERING_TYPE = LocatorSettings.MapsforgeRenderType.getEnumValue();
 
-	// Don't create GL_Image with renderType Mapsforge! GL_Images are not needed!
-	if (RENDERING_TYPE == GL_RenderType.Mapsforge) {
-	    GL_image = null;
-	    return;
-	}
+        // Don't create GL_Image with renderType Mapsforge! GL_Images are not needed!
+        if (RENDERING_TYPE == GL_RenderType.Mapsforge) {
+            GL_image = null;
+            return;
+        }
 
-	GL_image = new BitmapDrawable(bytes, HashCode, scaleFactor);
+        GL_image = new BitmapDrawable(bytes, HashCode, scaleFactor);
     }
 
     @Override
@@ -93,14 +90,14 @@ public class ext_AwtResourceBitmap extends AwtResourceBitmap implements ext_Bitm
 
     @Override
     public BitmapDrawable getGlBmpHandle() {
-	return GL_image;
+        return GL_image;
     }
 
     @Override
     public Texture getTexture() {
-	if (GL_image == null)
-	    return null;
-	return GL_image.getTexture();
+        if (GL_image == null)
+            return null;
+        return GL_image.getTexture();
     }
 
 }

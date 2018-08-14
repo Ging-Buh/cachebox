@@ -1,67 +1,65 @@
 package CB_Core.DAO;
 
-import java.util.Iterator;
-
 import CB_Core.Database;
 import CB_Core.Types.TbList;
 import CB_Core.Types.Trackable;
 import CB_Utils.Log.Log;
 import de.cb.sqlite.CoreCursor;
-import org.slf4j.LoggerFactory;
+
+import java.util.Iterator;
 
 public class TrackableListDAO {
-	final static org.slf4j.Logger log = LoggerFactory.getLogger(TrackableListDAO.class);
+    private static final String log = "TrackableListDAO";
 
-	public static void WriteToDatabase(TbList trackableList) {
+    public static void WriteToDatabase(TbList trackableList) {
 
-		TrackableDAO tDAO = new TrackableDAO();
+        TrackableDAO tDAO = new TrackableDAO();
 
-		Iterator<Trackable> iterator = trackableList.iterator();
-		Log.info(log,"TrackableListDAO WriteToDatabase Size:" + trackableList.size());
+        Iterator<Trackable> iterator = trackableList.iterator();
+        Log.info(log, "TrackableListDAO WriteToDatabase Size:" + trackableList.size());
 
-		if (iterator != null && iterator.hasNext()) {
-			do {
-				try {
-					Trackable tb = iterator.next();
+        if (iterator != null && iterator.hasNext()) {
+            do {
+                try {
+                    Trackable tb = iterator.next();
 
-					Trackable tbDB = tDAO.getFromDbByGcCode(tb.getGcCode());
+                    Trackable tbDB = tDAO.getFromDbByGcCode(tb.getGcCode());
 
-					if (tbDB == null) {
-                        Log.info(log,"TrackableListDAO WriteToDatabase :" + tb.getName());
-						tDAO.WriteToDatabase(tb);
-					} else {
-                        Log.info(log,"TrackableListDAO UpdateDatabase :" + tb.getName());
-						tDAO.UpdateDatabase(tb);
-					}
-				}
-				catch ( Exception exc ) {
-					Log.err(log, "TrackableListDAO WriteToDatabase", exc);
-				}
+                    if (tbDB == null) {
+                        Log.info(log, "TrackableListDAO WriteToDatabase :" + tb.getName());
+                        tDAO.WriteToDatabase(tb);
+                    } else {
+                        Log.info(log, "TrackableListDAO UpdateDatabase :" + tb.getName());
+                        tDAO.UpdateDatabase(tb);
+                    }
+                } catch (Exception exc) {
+                    Log.err(log, "TrackableListDAO WriteToDatabase", exc);
+                }
 
-			} while (iterator.hasNext());
-		}
+            } while (iterator.hasNext());
+        }
 
-        Log.info(log,"TrackableListDAO WriteToDatabase done.");
-	}
+        Log.info(log, "TrackableListDAO WriteToDatabase done.");
+    }
 
-	public static TbList ReadTbList(String where) {
-		TbList trackableList = new TbList();
-		CoreCursor reader = Database.FieldNotes.rawQuery("select Id ,Archived ,GcCode ,CacheId ,CurrentGoal ,CurrentOwnerName ,DateCreated ,Description ,IconUrl ,ImageUrl ,Name ,OwnerName ,Url,TypeName, Home,TravelDistance   from Trackable", null);
-		reader.moveToFirst();
+    public static TbList ReadTbList(String where) {
+        TbList trackableList = new TbList();
+        CoreCursor reader = Database.FieldNotes.rawQuery("select Id ,Archived ,GcCode ,CacheId ,CurrentGoal ,CurrentOwnerName ,DateCreated ,Description ,IconUrl ,ImageUrl ,Name ,OwnerName ,Url,TypeName, Home,TravelDistance   from Trackable", null);
+        reader.moveToFirst();
 
-		while (!reader.isAfterLast()) {
-			trackableList.add(new Trackable(reader));
-			reader.moveToNext();
-		}
-		reader.close();
-		return trackableList;
-	}
+        while (!reader.isAfterLast()) {
+            trackableList.add(new Trackable(reader));
+            reader.moveToNext();
+        }
+        reader.close();
+        return trackableList;
+    }
 
-	/**
-	 * Deleate all TBs
-	 */
-	public static void clearDB() {
-		Database.FieldNotes.delete("Trackable", "", null);
-	}
+    /**
+     * Deleate all TBs
+     */
+    public static void clearDB() {
+        Database.FieldNotes.delete("Trackable", "", null);
+    }
 
 }

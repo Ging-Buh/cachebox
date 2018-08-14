@@ -19,6 +19,10 @@ package org.mapsforge.core.graphics;
  * Utility class for graphics operations.
  */
 public final class GraphicUtils {
+    private GraphicUtils() {
+        // noop, just to make tools happy.
+    }
+
     /**
      * Color filtering.
      *
@@ -56,9 +60,5 @@ public final class GraphicUtils {
      */
     public static int getAlpha(int color) {
         return (color >> 24) & 0xff;
-    }
-
-    private GraphicUtils() {
-        // noop, just to make tools happy.
     }
 }

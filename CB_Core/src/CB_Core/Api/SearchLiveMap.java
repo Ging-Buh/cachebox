@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -21,19 +21,19 @@ import CB_Locator.Map.Descriptor;
  * Search Caches around a coordinate with lite state for showing on LiveMap. <br>
  * Extends SearchCoordinate with state lite.<br>
  * Without Logs and Trackable-Logs <br>
- * 
+ *
  * @author Longri
  */
 public class SearchLiveMap extends SearchCoordinate {
 
-	public final Descriptor descriptor;
+    public final Descriptor descriptor;
 
-	public SearchLiveMap(int number, Descriptor desc, float distanceInMeters) {
-		super(number, desc.getCenterCoordinate(), distanceInMeters);
-		geocacheLogCount = 0;
-		trackableLogCount = 0;
-		isLite = true;
-		this.descriptor = desc;
-	}
+    public SearchLiveMap(int number, Descriptor desc, float distanceInMeters) {
+        super(number, desc.getCenterCoordinate(), distanceInMeters);
+        geocacheLogCount = 0;
+        trackableLogCount = 0;
+        isLite = true;
+        this.descriptor = desc;
+    }
 
 }

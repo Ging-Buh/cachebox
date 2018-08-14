@@ -14,7 +14,7 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.server;
 
@@ -24,26 +24,29 @@ import org.apache.xmlrpc.XmlRpcRequest;
 import org.apache.xmlrpc.common.XmlRpcController;
 import org.apache.xmlrpc.common.XmlRpcWorker;
 
-/** Server specific implementation of {@link XmlRpcWorker}.
+/**
+ * Server specific implementation of {@link XmlRpcWorker}.
  */
 public class XmlRpcServerWorker implements XmlRpcWorker {
-	private final XmlRpcServerWorkerFactory factory;
+    private final XmlRpcServerWorkerFactory factory;
 
-	/** Creates a new instance.
-	 * @param pFactory The factory creating the worker.
-	 */
-	public XmlRpcServerWorker(XmlRpcServerWorkerFactory pFactory) {
-		factory = pFactory;
-	}
+    /**
+     * Creates a new instance.
+     *
+     * @param pFactory The factory creating the worker.
+     */
+    public XmlRpcServerWorker(XmlRpcServerWorkerFactory pFactory) {
+        factory = pFactory;
+    }
 
-	public XmlRpcController getController() {
-		return factory.getController();
-	}
+    public XmlRpcController getController() {
+        return factory.getController();
+    }
 
-	public Object execute(XmlRpcRequest pRequest) throws XmlRpcException {
-		XmlRpcServer server = (XmlRpcServer) getController();
-		XmlRpcHandlerMapping mapping = server.getHandlerMapping();
-		XmlRpcHandler handler = mapping.getHandler(pRequest.getMethodName());
-		return handler.execute(pRequest);
-	}
+    public Object execute(XmlRpcRequest pRequest) throws XmlRpcException {
+        XmlRpcServer server = (XmlRpcServer) getController();
+        XmlRpcHandlerMapping mapping = server.getHandlerMapping();
+        XmlRpcHandler handler = mapping.getHandler(pRequest.getMethodName());
+        return handler.execute(pRequest);
+    }
 }

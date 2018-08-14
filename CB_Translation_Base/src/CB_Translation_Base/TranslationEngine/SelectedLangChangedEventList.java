@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2013 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -19,21 +19,21 @@ package CB_Translation_Base.TranslationEngine;
 import java.util.ArrayList;
 
 public class SelectedLangChangedEventList {
-	private static ArrayList<SelectedLangChangedEvent> list = new ArrayList<SelectedLangChangedEvent>();
+    private static ArrayList<SelectedLangChangedEvent> list = new ArrayList<SelectedLangChangedEvent>();
 
-	public static void Add(SelectedLangChangedEvent event) {
-		list.add(event);
-	}
+    public static void Add(SelectedLangChangedEvent event) {
+        list.add(event);
+    }
 
-	public static void Call() {
-		for (SelectedLangChangedEvent event : list) {
-			event.SelectedLangChangedEventCalled();
-		}
+    public static void Call() {
+        for (SelectedLangChangedEvent event : list) {
+            event.SelectedLangChangedEventCalled();
+        }
 
-	}
+    }
 
-	public static void Remove(SelectedLangChangedEvent event) {
-		list.remove(event);
-	}
+    public static void Remove(SelectedLangChangedEvent event) {
+        list.remove(event);
+    }
 
 }

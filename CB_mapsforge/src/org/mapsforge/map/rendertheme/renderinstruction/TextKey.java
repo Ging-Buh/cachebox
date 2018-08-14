@@ -27,6 +27,11 @@ final class TextKey {
     private static final TextKey TEXT_KEY_HOUSENUMBER = new TextKey(KEY_HOUSENUMBER);
     private static final TextKey TEXT_KEY_NAME = new TextKey(KEY_NAME);
     private static final TextKey TEXT_KEY_REF = new TextKey(KEY_REF);
+    private final String key;
+
+    private TextKey(String key) {
+        this.key = key;
+    }
 
     static TextKey getInstance(String key) {
         if (KEY_ELEVATION.equals(key)) {
@@ -40,12 +45,6 @@ final class TextKey {
         } else {
             throw new IllegalArgumentException("invalid key: " + key);
         }
-    }
-
-    private final String key;
-
-    private TextKey(String key) {
-        this.key = key;
     }
 
     String getValue(List<Tag> tags) {

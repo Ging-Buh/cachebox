@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014-2015 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,9 +15,13 @@
  */
 package CB_UI_Base.GL_UI.Controls;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
+import CB_UI_Base.GL_UI.*;
+import CB_UI_Base.GL_UI.Controls.PopUps.CopyPastePopUp;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.interfaces.ICopyPaste;
+import CB_UI_Base.Global;
+import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.UI_Size_Base;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -25,85 +29,69 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Clipboard;
 
-import CB_UI_Base.Global;
-import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.COLOR;
-import CB_UI_Base.GL_UI.Fonts;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.Sprites;
-import CB_UI_Base.GL_UI.Controls.PopUps.CopyPastePopUp;
-import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.interfaces.ICopyPaste;
-import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPaste {
-	static public final char BACKSPACE = 8;
-	static public final char ENTER_DESKTOP = '\r';
-	static public final char ENTER_ANDROID = '\n';
-	static public final char TAB = '\t';
-	static public final char DELETE = 127;
-	static public final char BULLET = 149;
+    static public final char BACKSPACE = 8;
+    static public final char ENTER_DESKTOP = '\r';
+    static public final char ENTER_ANDROID = '\n';
+    static public final char TAB = '\t';
+    static public final char DELETE = 127;
+    static public final char BULLET = 149;
 
-	protected boolean dontShowKeyBoard = false;
-	protected boolean isEditable = true;
-	// protected boolean disabled = false; // same as isEditable ?
+    protected boolean dontShowKeyBoard = false;
+    protected boolean isEditable = true;
+    // protected boolean disabled = false; // same as isEditable ?
+    protected TextFieldListener listener;
+    protected TextFieldFilter filter;
+    protected OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
+    protected Clipboard clipboard;
+    protected CopyPastePopUp popUp;
+    protected boolean cursorOn = true;
+    protected long blinkTime = 420;
+    protected Timer blinkTimer;
+    protected IBecomesFocus becomesFocusListener;
 
-	public EditTextFieldBase(CB_RectF rec, CB_View_Base parent, String Name) {
-		super(rec, Name);
-		this.parent = parent;
-		registerPopUpLongClick();
+    public EditTextFieldBase(CB_RectF rec, CB_View_Base parent, String Name) {
+        super(rec, Name);
+        this.parent = parent;
+        registerPopUpLongClick();
 
-		clipboard = Global.getDefaultClipboard();
-		this.setDoubleClickable(true);
-	}
+        clipboard = Global.getDefaultClipboard();
+        this.setDoubleClickable(true);
+    }
 
-	public EditTextFieldBase(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name) {
-		super(X, Y, Width, Height, Parent, Name);
-		registerPopUpLongClick();
+    public EditTextFieldBase(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name) {
+        super(X, Y, Width, Height, Parent, Name);
+        registerPopUpLongClick();
 
-		clipboard = Global.getDefaultClipboard();
-		this.setDoubleClickable(true);
-	}
+        clipboard = Global.getDefaultClipboard();
+        this.setDoubleClickable(true);
+    }
 
-	public abstract boolean keyTyped(char character);
+    public static TextFieldStyle getDefaultStyle() {
+        TextFieldStyle ret = new TextFieldStyle();
 
-	public abstract boolean keyUp(int KeyCode);
+        ret.setBackground(Sprites.textFieldBackground, Sprites.textFieldBackgroundFocus);
+        ret.font = Fonts.getNormal();
+        ret.fontColor = COLOR.getFontColor();
 
-	public abstract boolean keyDown(int KeyCode);
+        ret.messageFont = Fonts.getSmall();
+        ret.messageFontColor = COLOR.getDisableFontColor();
 
-	protected TextFieldListener listener;
-	protected TextFieldFilter filter;
-	protected OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
-	protected Clipboard clipboard;
-	protected CopyPastePopUp popUp;
+        ret.cursor = Sprites.textFieldCursor;
 
-	protected boolean cursorOn = true;
-	protected long blinkTime = 420;
-	protected Timer blinkTimer;
+        ret.selection = Sprites.selection;
 
-	protected void blinkStart() {
-		blinkTimer = new Timer();
-		TimerTask blinkTimerTask = new TimerTask() {
-			@Override
-			public void run() {
-				cursorOn = !cursorOn;
-				GL.that.renderOnce();
-			}
-		};
-		blinkTimer.scheduleAtFixedRate(blinkTimerTask, 0, blinkTime);
-	}
+        return ret;
+    }
 
-	protected void blinkStop() {
-		try {
-			blinkTimer.cancel();
-			cursorOn = false;
-		} catch (Exception ex) {
+    public abstract boolean keyTyped(char character);
 
-		}
+    public abstract boolean keyUp(int KeyCode);
 
-		blinkTimer = null;
-	}
+    public abstract boolean keyDown(int KeyCode);
 
 	/*
 	public void disable() {
@@ -115,352 +103,361 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 	}
 	*/
 
-	/**
-	 * Interface for listening to typed characters.
-	 * 
-	 * @author mzechner
-	 */
-	static public interface TextFieldListener {
-		public void keyTyped(EditTextFieldBase textField, char key);
+    protected void blinkStart() {
+        blinkTimer = new Timer();
+        TimerTask blinkTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                cursorOn = !cursorOn;
+                GL.that.renderOnce();
+            }
+        };
+        blinkTimer.scheduleAtFixedRate(blinkTimerTask, 0, blinkTime);
+    }
 
-		public void lineCountChanged(EditTextFieldBase textField, int lineCount, float textHeight);
-	}
+    protected void blinkStop() {
+        try {
+            blinkTimer.cancel();
+            cursorOn = false;
+        } catch (Exception ex) {
 
-	/**
-	 * @param listener
-	 *            May be null.
-	 */
-	public void setTextFieldListener(TextFieldListener newlistener) {
-		this.listener = newlistener;
-	}
+        }
 
-	/**
-	 * Interface for filtering characters entered into the text field.
-	 * 
-	 * @author mzechner
-	 */
-	static public interface TextFieldFilter {
-		/**
-		 * @param textField
-		 * @param key
-		 * @return whether to accept the character
-		 */
-		public boolean acceptChar(EditTextFieldBase textField, char key);
+        blinkTimer = null;
+    }
 
-		static public class DigitsOnlyFilter implements TextFieldFilter {
-			@Override
-			public boolean acceptChar(EditTextFieldBase textField, char key) {
-				return Character.isDigit(key);
-			}
+    /**
+     * @param listener May be null.
+     */
+    public void setTextFieldListener(TextFieldListener newlistener) {
+        this.listener = newlistener;
+    }
 
-		}
-	}
+    /**
+     * Default is an instance of {@link DefaultOnscreenKeyboard}.
+     */
+    public OnscreenKeyboard getOnscreenKeyboard() {
+        return keyboard;
+    }
 
-	/**
-	 * An interface for onscreen keyboards. Can invoke the default keyboard or render your own keyboard!
-	 * 
-	 * @author mzechner
-	 */
-	static public interface OnscreenKeyboard {
-		public void show(boolean visible);
-	}
+    public void setOnscreenKeyboard(OnscreenKeyboard keyboard) {
+        this.keyboard = keyboard;
+    }
 
-	/**
-	 * The default {@link OnscreenKeyboard} used by all {@link TextField} instances. Just uses
-	 * {@link Input#setOnscreenKeyboardVisible(boolean)} as appropriate. Might overlap your actual rendering, so use with care!
-	 * 
-	 * @author mzechner
-	 */
-	static public class DefaultOnscreenKeyboard implements OnscreenKeyboard {
-		@Override
-		public void show(boolean visible) {
-			Gdx.input.setOnscreenKeyboardVisible(visible);
-		}
-	}
+    public void setClipboard(Clipboard clipboard) {
+        this.clipboard = clipboard;
+    }
 
-	/**
-	 * The style for a text field, see {@link TextField}.
-	 * 
-	 * @author mzechner
-	 */
-	static public class TextFieldStyle {
-		/** Optional. */
-		public Drawable cursor, selection;
-		public BitmapFont font;
-		public Color fontColor;
+    protected abstract void registerPopUpLongClick();
 
-		private Drawable background, backgroundFocused;
+    protected void showPastePopUp(int x, int y) {
+        if (popUp != null)
+            popUp.close();
+        popUp = new CopyPastePopUp(this.name + " popUp", this);
+        popUp.setOnlyPaste();
+        layoutAndShowPopUp(x, y);
+    }
 
-		/** Optional. */
-		public BitmapFont messageFont;
-		/** Optional. */
-		public Color messageFontColor;
+    protected void showCopyPastePopUp(int x, int y) {
+        if (popUp != null)
+            popUp.close();
+        popUp = new CopyPastePopUp(this.name + " popUp", this);
+        layoutAndShowPopUp(x, y);
+    }
 
-		public TextFieldStyle() {
-		}
+    protected void showCopyPopUp(int x, int y) {
+        if (popUp != null)
+            popUp.close();
+        popUp = new CopyPastePopUp(this.name + " popUp", this);
+        popUp.setOnlyCopy();
+        layoutAndShowPopUp(x, y);
+    }
 
-		public TextFieldStyle(BitmapFont font, Color fontColor, BitmapFont messageFont, Color messageFontColor, Drawable cursor, Drawable selection, Drawable background, Drawable backgroundFocused) {
-			this.messageFont = messageFont;
-			this.messageFontColor = messageFontColor;
-			this.background = background;
-			this.backgroundFocused = backgroundFocused;
-			this.cursor = cursor;
-			this.font = font;
-			this.fontColor = fontColor;
-			this.selection = selection;
-		}
+    private void layoutAndShowPopUp(int x, int y) {
 
-		public TextFieldStyle(TextFieldStyle style) {
-			this.messageFont = style.messageFont;
-			if (style.messageFontColor != null)
-				this.messageFontColor = new Color(style.messageFontColor);
-			this.background = style.background;
-			this.cursor = style.cursor;
-			this.font = style.font;
-			if (style.fontColor != null)
-				this.fontColor = new Color(style.fontColor);
-			this.selection = style.selection;
-		}
+        float noseOffset = popUp.getHalfWidth() / 2;
 
-		public Drawable getBackground(boolean focused) {
-			if (focused)
-				return this.backgroundFocused;
-			else
-				return this.background;
-		}
+        CB_RectF world = getWorldRec();
 
-		public void setBackground(Drawable background, Drawable backgroundFocused) {
-			this.background = background;
-			this.backgroundFocused = backgroundFocused;
-		}
+        // not enough place on Top?
+        float windowH = UI_Size_Base.that.getWindowHeight();
+        float windowW = UI_Size_Base.that.getWindowWidth();
+        float worldY = world.getY();
 
-		public float getLeftWidth(boolean focused) {
-			Drawable whichBackground;
-			if (focused)
-				whichBackground = this.backgroundFocused;
-			else
-				whichBackground = this.background;
-			if (whichBackground == null)
-				return 0f;
-			else
-				return whichBackground.getLeftWidth();
-		}
+        if (popUp.getHeight() + worldY > windowH * 0.8f) {
+            popUp.flipX();
+            worldY -= popUp.getHeight() + (popUp.getHeight() * 0.2f);
+        }
 
-		public float getRightWidth(boolean focused) {
-			Drawable whichBackground;
-			if (focused)
-				whichBackground = this.backgroundFocused;
-			else
-				whichBackground = this.background;
-			if (whichBackground == null)
-				return 0f;
-			else
-				return whichBackground.getRightWidth();
-		}
+        x += world.getX() - noseOffset;
 
-		public float getTopHeight(boolean focused) {
-			Drawable whichBackground;
-			if (focused)
-				whichBackground = this.backgroundFocused;
-			else
-				whichBackground = this.background;
-			if (whichBackground == null)
-				return 0f;
-			else
-				return whichBackground.getTopHeight();
-		}
+        if (x < 0)
+            x = 0;
+        if (x + popUp.getWidth() > windowW)
+            x = (int) (windowW - popUp.getWidth());
 
-		public float getBottomHeight(boolean focused) {
-			Drawable whichBackground;
-			if (focused)
-				whichBackground = this.backgroundFocused;
-			else
-				whichBackground = this.background;
-			if (whichBackground == null)
-				return 0f;
-			else
-				return whichBackground.getBottomHeight();
-		}
-	}
+        y += worldY + (popUp.getHeight() * 0.2f);
+        popUp.showNotCloseAutomaticly(x, y);
 
-	public static TextFieldStyle getDefaultStyle() {
-		TextFieldStyle ret = new TextFieldStyle();
+    }
 
-		ret.setBackground(Sprites.textFieldBackground, Sprites.textFieldBackgroundFocus);
-		ret.font = Fonts.getNormal();
-		ret.fontColor = COLOR.getFontColor();
+    protected void hidePopUp() {
+        if (popUp != null)
+            popUp.close();
+    }
 
-		ret.messageFont = Fonts.getSmall();
-		ret.messageFontColor = COLOR.getDisableFontColor();
+    /**
+     * pasteFromClipboard
+     */
+    @Override
+    public abstract String pasteFromClipboard();
 
-		ret.cursor = Sprites.textFieldCursor;
+    /**
+     * copyToClipboard
+     */
+    @Override
+    public abstract String copyToClipboard();
 
-		ret.selection = Sprites.selection;
+    /**
+     * cutToClipboard
+     */
+    @Override
+    public abstract String cutToClipboard();
 
-		return ret;
-	}
+    /**
+     * isEditable
+     */
+    @Override
+    public boolean isEditable() {
+        return isEditable;
+    }
 
-	/** Default is an instance of {@link DefaultOnscreenKeyboard}. */
-	public OnscreenKeyboard getOnscreenKeyboard() {
-		return keyboard;
-	}
+    public void setEditable(boolean value) {
+        isEditable = value;
+        if (!isEditable) {
+            dontShowKeyBoard = true;
+        }
+    }
 
-	public void setOnscreenKeyboard(OnscreenKeyboard keyboard) {
-		this.keyboard = keyboard;
-	}
+    protected void sendKeyTyped(final char character) {
+        if (listener != null) {
+            final EditTextFieldBase that = this;
+            Thread th = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    listener.keyTyped(that, character);
+                }
+            });
+            th.start();
+        }
+    }
 
-	public void setClipboard(Clipboard clipboard) {
-		this.clipboard = clipboard;
-	}
+    protected void sendLineCountChanged(final int lineCount, final float textHeight) {
+        if (listener != null) {
+            final EditTextFieldBase that = this;
+            Thread th = new Thread(new Runnable() {
+                /**
+                 * run
+                 */
+                @Override
+                public void run() {
+                    listener.lineCountChanged(that, lineCount, textHeight);
+                }
+            });
+            th.start();
+        }
 
-	protected abstract void registerPopUpLongClick();
+    }
 
-	protected void showPastePopUp(int x, int y) {
-		if (popUp != null)
-			popUp.close();
-		popUp = new CopyPastePopUp(this.name + " popUp", this);
-		popUp.setOnlyPaste();
-		layoutAndShowPopUp(x, y);
-	}
+    public void dontShowSoftKeyBoardOnFocus() {
+        dontShowSoftKeyBoardOnFocus(true);
+    }
 
-	protected void showCopyPastePopUp(int x, int y) {
-		if (popUp != null)
-			popUp.close();
-		popUp = new CopyPastePopUp(this.name + " popUp", this);
-		layoutAndShowPopUp(x, y);
-	}
+    public void dontShowSoftKeyBoardOnFocus(boolean value) {
+        dontShowKeyBoard = value;
+    }
 
-	protected void showCopyPopUp(int x, int y) {
-		if (popUp != null)
-			popUp.close();
-		popUp = new CopyPastePopUp(this.name + " popUp", this);
-		popUp.setOnlyCopy();
-		layoutAndShowPopUp(x, y);
-	}
+    public boolean dontShowKeyBoard() {
+        return dontShowKeyBoard;
+    }
 
-	private void layoutAndShowPopUp(int x, int y) {
+    public void setBecomesFocusListener(IBecomesFocus becomesFocusListener) {
+        this.becomesFocusListener = becomesFocusListener;
+    }
 
-		float noseOffset = popUp.getHalfWidth() / 2;
+    /**
+     *
+     */
+    public void becomesFocus() {
+        if (becomesFocusListener != null)
+            becomesFocusListener.becomesFocus();
+    }
 
-		CB_RectF world = getWorldRec();
+    /**
+     * Interface for listening to typed characters.
+     *
+     * @author mzechner
+     */
+    static public interface TextFieldListener {
+        public void keyTyped(EditTextFieldBase textField, char key);
 
-		// not enough place on Top?
-		float windowH = UI_Size_Base.that.getWindowHeight();
-		float windowW = UI_Size_Base.that.getWindowWidth();
-		float worldY = world.getY();
+        public void lineCountChanged(EditTextFieldBase textField, int lineCount, float textHeight);
+    }
 
-		if (popUp.getHeight() + worldY > windowH * 0.8f) {
-			popUp.flipX();
-			worldY -= popUp.getHeight() + (popUp.getHeight() * 0.2f);
-		}
+    /**
+     * Interface for filtering characters entered into the text field.
+     *
+     * @author mzechner
+     */
+    static public interface TextFieldFilter {
+        /**
+         * @param textField
+         * @param key
+         * @return whether to accept the character
+         */
+        public boolean acceptChar(EditTextFieldBase textField, char key);
 
-		x += world.getX() - noseOffset;
+        static public class DigitsOnlyFilter implements TextFieldFilter {
+            @Override
+            public boolean acceptChar(EditTextFieldBase textField, char key) {
+                return Character.isDigit(key);
+            }
 
-		if (x < 0)
-			x = 0;
-		if (x + popUp.getWidth() > windowW)
-			x = (int) (windowW - popUp.getWidth());
+        }
+    }
 
-		y += worldY + (popUp.getHeight() * 0.2f);
-		popUp.showNotCloseAutomaticly(x, y);
+    /**
+     * An interface for onscreen keyboards. Can invoke the default keyboard or render your own keyboard!
+     *
+     * @author mzechner
+     */
+    static public interface OnscreenKeyboard {
+        public void show(boolean visible);
+    }
 
-	}
+    public interface IBecomesFocus {
+        public void becomesFocus();
+    }
 
-	protected void hidePopUp() {
-		if (popUp != null)
-			popUp.close();
-	}
+    /**
+     * The default {@link OnscreenKeyboard} used by all {@link TextField} instances. Just uses
+     * {@link Input#setOnscreenKeyboardVisible(boolean)} as appropriate. Might overlap your actual rendering, so use with care!
+     *
+     * @author mzechner
+     */
+    static public class DefaultOnscreenKeyboard implements OnscreenKeyboard {
+        @Override
+        public void show(boolean visible) {
+            Gdx.input.setOnscreenKeyboardVisible(visible);
+        }
+    }
 
-	/**
-	 * pasteFromClipboard
-	 */
-	@Override
-	public abstract String pasteFromClipboard();
+    /**
+     * The style for a text field, see {@link TextField}.
+     *
+     * @author mzechner
+     */
+    static public class TextFieldStyle {
+        /**
+         * Optional.
+         */
+        public Drawable cursor, selection;
+        public BitmapFont font;
+        public Color fontColor;
+        /**
+         * Optional.
+         */
+        public BitmapFont messageFont;
+        /**
+         * Optional.
+         */
+        public Color messageFontColor;
+        private Drawable background, backgroundFocused;
 
-	/**
-	 * copyToClipboard
-	 */
-	@Override
-	public abstract String copyToClipboard();
+        public TextFieldStyle() {
+        }
 
-	/**
-	 * cutToClipboard
-	 */
-	@Override
-	public abstract String cutToClipboard();
+        public TextFieldStyle(BitmapFont font, Color fontColor, BitmapFont messageFont, Color messageFontColor, Drawable cursor, Drawable selection, Drawable background, Drawable backgroundFocused) {
+            this.messageFont = messageFont;
+            this.messageFontColor = messageFontColor;
+            this.background = background;
+            this.backgroundFocused = backgroundFocused;
+            this.cursor = cursor;
+            this.font = font;
+            this.fontColor = fontColor;
+            this.selection = selection;
+        }
 
-	/**
-	 * isEditable
-	 */
-	@Override
-	public boolean isEditable() {
-		return isEditable;
-	}
+        public TextFieldStyle(TextFieldStyle style) {
+            this.messageFont = style.messageFont;
+            if (style.messageFontColor != null)
+                this.messageFontColor = new Color(style.messageFontColor);
+            this.background = style.background;
+            this.cursor = style.cursor;
+            this.font = style.font;
+            if (style.fontColor != null)
+                this.fontColor = new Color(style.fontColor);
+            this.selection = style.selection;
+        }
 
-	public void setEditable(boolean value) {
-		isEditable = value;
-		if (!isEditable) {
-			dontShowKeyBoard = true;
-		}
-	}
+        public Drawable getBackground(boolean focused) {
+            if (focused)
+                return this.backgroundFocused;
+            else
+                return this.background;
+        }
 
-	protected void sendKeyTyped(final char character) {
-		if (listener != null) {
-			final EditTextFieldBase that = this;
-			Thread th = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					listener.keyTyped(that, character);
-				}
-			});
-			th.start();
-		}
-	}
+        public void setBackground(Drawable background, Drawable backgroundFocused) {
+            this.background = background;
+            this.backgroundFocused = backgroundFocused;
+        }
 
-	protected void sendLineCountChanged(final int lineCount, final float textHeight) {
-		if (listener != null) {
-			final EditTextFieldBase that = this;
-			Thread th = new Thread(new Runnable() {
-				/**
-				 * run
-				 */
-				@Override
-				public void run() {
-					listener.lineCountChanged(that, lineCount, textHeight);
-				}
-			});
-			th.start();
-		}
+        public float getLeftWidth(boolean focused) {
+            Drawable whichBackground;
+            if (focused)
+                whichBackground = this.backgroundFocused;
+            else
+                whichBackground = this.background;
+            if (whichBackground == null)
+                return 0f;
+            else
+                return whichBackground.getLeftWidth();
+        }
 
-	}
+        public float getRightWidth(boolean focused) {
+            Drawable whichBackground;
+            if (focused)
+                whichBackground = this.backgroundFocused;
+            else
+                whichBackground = this.background;
+            if (whichBackground == null)
+                return 0f;
+            else
+                return whichBackground.getRightWidth();
+        }
 
-	public void dontShowSoftKeyBoardOnFocus() {
-		dontShowSoftKeyBoardOnFocus(true);
-	}
+        public float getTopHeight(boolean focused) {
+            Drawable whichBackground;
+            if (focused)
+                whichBackground = this.backgroundFocused;
+            else
+                whichBackground = this.background;
+            if (whichBackground == null)
+                return 0f;
+            else
+                return whichBackground.getTopHeight();
+        }
 
-	public void dontShowSoftKeyBoardOnFocus(boolean value) {
-		dontShowKeyBoard = value;
-	}
-
-	public boolean dontShowKeyBoard() {
-		return dontShowKeyBoard;
-	}
-
-	public interface IBecomesFocus {
-		public void becomesFocus();
-	}
-
-	protected IBecomesFocus becomesFocusListener;
-
-	public void setBecomesFocusListener(IBecomesFocus becomesFocusListener) {
-		this.becomesFocusListener = becomesFocusListener;
-	}
-
-	/**
-	 * 
-	 */
-	public void becomesFocus() {
-		if (becomesFocusListener != null)
-			becomesFocusListener.becomesFocus();
-	}
+        public float getBottomHeight(boolean focused) {
+            Drawable whichBackground;
+            if (focused)
+                whichBackground = this.backgroundFocused;
+            else
+                whichBackground = this.background;
+            if (whichBackground == null)
+                return 0f;
+            else
+                return whichBackground.getBottomHeight();
+        }
+    }
 }

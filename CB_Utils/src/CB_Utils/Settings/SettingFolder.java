@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2011-2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -19,34 +19,34 @@ import CB_Utils.Config_Core;
 
 public class SettingFolder extends SettingLongString {
 
-	private final boolean needWritePermission;
+    private final boolean needWritePermission;
 
-	public SettingFolder(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage, boolean needwritePermission) {
-		super(name, category, modus, defaultValue, StoreType, usage);
-		this.needWritePermission = needwritePermission;
-	}
+    public SettingFolder(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage, boolean needwritePermission) {
+        super(name, category, modus, defaultValue, StoreType, usage);
+        this.needWritePermission = needwritePermission;
+    }
 
-	@Override
-	public String getValue() {
-		return replacePathSaperator(value);
-	}
+    @Override
+    public String getValue() {
+        return replacePathSaperator(value);
+    }
 
-	@Override
-	public String getDefaultValue() {
-		return replacePathSaperator(defaultValue);
-	}
+    @Override
+    public String getDefaultValue() {
+        return replacePathSaperator(defaultValue);
+    }
 
-	private String replacePathSaperator(String rep) {
-		if (rep.startsWith("?")) {
-			rep = Config_Core.mWorkPath + System.getProperty("file.separator") + "Repositories" + rep.substring(1);
-		}
-		rep = rep.replace("\\", System.getProperty("file.separator"));
-		rep = rep.replace("/", System.getProperty("file.separator"));
-		return rep;
-	}
+    private String replacePathSaperator(String rep) {
+        if (rep.startsWith("?")) {
+            rep = Config_Core.mWorkPath + System.getProperty("file.separator") + "Repositories" + rep.substring(1);
+        }
+        rep = rep.replace("\\", System.getProperty("file.separator"));
+        rep = rep.replace("/", System.getProperty("file.separator"));
+        return rep;
+    }
 
-	public boolean needWritePermission() {
-		return this.needWritePermission;
-	}
+    public boolean needWritePermission() {
+        return this.needWritePermission;
+    }
 
 }

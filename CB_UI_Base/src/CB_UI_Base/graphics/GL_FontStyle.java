@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014-2015 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -17,9 +17,9 @@ package CB_UI_Base.graphics;
 
 /**
  * BOLD, BOLD_ITALIC, ITALIC, NORMAL
- * 
+ *
  * @author Longri
  */
 public enum GL_FontStyle {
-	BOLD, BOLD_ITALIC, ITALIC, NORMAL;
+    BOLD, BOLD_ITALIC, ITALIC, NORMAL;
 }

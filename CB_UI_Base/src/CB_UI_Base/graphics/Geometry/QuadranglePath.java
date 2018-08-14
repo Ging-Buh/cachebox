@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,40 +15,39 @@
  */
 package CB_UI_Base.graphics.Geometry;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import CB_UI_Base.graphics.GL_Paint;
 import CB_Utils.Lists.CB_List;
-
 import com.badlogic.gdx.utils.Disposable;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author Longri
  */
 public class QuadranglePath extends CB_List<Quadrangle> implements Disposable {
-	private static final long serialVersionUID = 2368800461989756291L;
-	protected AtomicBoolean isDisposed = new AtomicBoolean(false);
+    private static final long serialVersionUID = 2368800461989756291L;
+    protected AtomicBoolean isDisposed = new AtomicBoolean(false);
 
-	public QuadranglePath(PathLine pathLine, GL_Paint paint) {
-		for (int i = 0, n = pathLine.size(); i < n; i++) {
-			this.add(new Quadrangle(pathLine.get(i), paint.getStrokeWidth()));
-		}
-	}
+    public QuadranglePath(PathLine pathLine, GL_Paint paint) {
+        for (int i = 0, n = pathLine.size(); i < n; i++) {
+            this.add(new Quadrangle(pathLine.get(i), paint.getStrokeWidth()));
+        }
+    }
 
-	public boolean isDisposed() {
-		return isDisposed.get();
-	}
+    public boolean isDisposed() {
+        return isDisposed.get();
+    }
 
-	@Override
-	public void dispose() {
-		synchronized (isDisposed) {
-			if (isDisposed.get())
-				return;
-			for (int i = 0, n = this.size(); i < n; i++) {
-				this.get(i).dispose();
-			}
-			this.clear();
-			isDisposed.set(true);
-		}
-	}
+    @Override
+    public void dispose() {
+        synchronized (isDisposed) {
+            if (isDisposed.get())
+                return;
+            for (int i = 0, n = this.size(); i < n; i++) {
+                this.get(i).dispose();
+            }
+            this.clear();
+            isDisposed.set(true);
+        }
+    }
 }

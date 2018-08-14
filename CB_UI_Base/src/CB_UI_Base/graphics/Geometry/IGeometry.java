@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -21,23 +21,23 @@ import com.badlogic.gdx.utils.Disposable;
  * @author Longri
  */
 public interface IGeometry extends Disposable {
-	final static float MIN_CIRCLE_SEGMENTH_LENGTH = 10;
-	final static int MIN_CIRCLE_SEGMENTH_COUNT = 18;
+    final static float MIN_CIRCLE_SEGMENTH_LENGTH = 10;
+    final static int MIN_CIRCLE_SEGMENTH_COUNT = 18;
 
-	/**
-	 * get the points as float[] <br>
-	 * one point stored as two float, first is x and last is y
-	 * 
-	 * @return
-	 */
-	public float[] getVertices();
+    /**
+     * get the points as float[] <br>
+     * one point stored as two float, first is x and last is y
+     *
+     * @return
+     */
+    public float[] getVertices();
 
-	/**
-	 * get the triangle indices of this geometry <br>
-	 * or NULL if this geometry has no triangles (like single line)
-	 * 
-	 * @return
-	 */
-	public short[] getTriangles();
+    /**
+     * get the triangle indices of this geometry <br>
+     * or NULL if this geometry has no triangles (like single line)
+     *
+     * @return
+     */
+    public short[] getTriangles();
 
 }

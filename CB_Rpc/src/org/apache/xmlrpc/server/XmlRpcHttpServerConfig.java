@@ -14,22 +14,26 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.server;
 
 import org.apache.xmlrpc.common.XmlRpcHttpConfig;
 
-/** HTTP servers configuration.
+/**
+ * HTTP servers configuration.
  */
 public interface XmlRpcHttpServerConfig extends XmlRpcServerConfig, XmlRpcHttpConfig {
-	/** Returns, whether HTTP keepalive is being enabled.
-	 * @return True, if keepalive is enabled, false otherwise.
-	 */
-	boolean isKeepAliveEnabled();
+    /**
+     * Returns, whether HTTP keepalive is being enabled.
+     *
+     * @return True, if keepalive is enabled, false otherwise.
+     */
+    boolean isKeepAliveEnabled();
 
-	/** Returns, whether the server may create a "faultCause" element in an error
-	 * response. Note, that this may be a security issue!
-	 */
-	boolean isEnabledForExceptions();
+    /**
+     * Returns, whether the server may create a "faultCause" element in an error
+     * response. Note, that this may be a security issue!
+     */
+    boolean isEnabledForExceptions();
 }

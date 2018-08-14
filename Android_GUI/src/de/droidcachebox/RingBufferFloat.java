@@ -31,6 +31,7 @@ public class RingBufferFloat {
 
     /**
      * Returns the average value of all added values
+     *
      * @param value
      * @return
      */

@@ -5,10 +5,10 @@ import CB_UI_Base.Math.CB_RectF;
 
 public class MenuItemBase extends ListViewItemBackground {
 
-	protected Object data = null;
+    protected Object data = null;
 
-	public MenuItemBase(CB_RectF rec, int Index, String Name) {
-		super(rec, Index, Name);
-	}
+    public MenuItemBase(CB_RectF rec, int Index, String Name) {
+        super(rec, Index, Name);
+    }
 
 }

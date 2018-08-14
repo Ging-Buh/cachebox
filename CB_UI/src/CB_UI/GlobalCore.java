@@ -42,7 +42,6 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Log.Log;
-import org.slf4j.LoggerFactory;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -63,7 +62,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     public static final String splashMsg = aboutMsg + br + br + "POWERED BY:";
     // ###########create instance#############
     public final static GlobalCore INSTANCE = new GlobalCore();
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(GlobalCore.class);
+    private static final String log = "GlobalCore";
     public static boolean restartAfterKill = false;
     public static String restartCache;
     public static String restartWaypoint;
@@ -304,12 +303,12 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 
     public static void chkAPiLogInWithWaitDialog(final IChkRedyHandler handler) {
 
-        if (GroundspeakAPI.ApiLimit()) {
+        if (GroundspeakAPI.isDownloadLimitExceeded()) {
             MsgDownloadLimit();
             return;
         }
 
-        if (!GroundspeakAPI.mAPI_isChecked()) {
+        if (!GroundspeakAPI.isAPIKeyChecked()) {
             dia = CancelWaitDialog.ShowWait("chk API Key", DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
                 @Override

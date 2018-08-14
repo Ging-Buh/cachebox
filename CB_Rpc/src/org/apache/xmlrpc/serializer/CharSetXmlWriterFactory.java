@@ -14,19 +14,20 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.serializer;
 
 import org.apache.ws.commons.serialize.CharSetXMLWriter;
 import org.apache.ws.commons.serialize.XMLWriter;
 
-/** An implementation of {@link org.apache.xmlrpc.serializer.XmlWriterFactory},
+/**
+ * An implementation of {@link org.apache.xmlrpc.serializer.XmlWriterFactory},
  * which creates instances of
  * {@link org.apache.ws.commons.serialize.CharSetXMLWriter}.
  */
 public class CharSetXmlWriterFactory extends BaseXmlWriterFactory {
-	protected XMLWriter newXmlWriter() {
-		return new CharSetXMLWriter();
-	}
+    protected XMLWriter newXmlWriter() {
+        return new CharSetXMLWriter();
+    }
 }

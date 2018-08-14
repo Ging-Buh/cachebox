@@ -37,126 +37,123 @@ package bsh;
  * EvalError indicates that we cannot continue evaluating the script or the script has thrown an exception. EvalError may be thrown for a
  * script syntax error, an evaluation error such as referring to an undefined variable, an internal error.
  * <p>
- * 
+ *
  * @see TargetError
  */
 public class EvalError extends Exception {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    private final CallStack callstack;
+    private SimpleNode node;
+    // Note: no way to mutate the Throwable message, must maintain our own
+    private String message;
 
-	private SimpleNode node;
+    public EvalError(String s, SimpleNode node, CallStack callstack, Throwable cause) {
+        this(s, node, callstack);
+        initCause(cause);
+    }
 
-	// Note: no way to mutate the Throwable message, must maintain our own
-	private String message;
+    public EvalError(String s, SimpleNode node, CallStack callstack) {
+        this.message = s;
+        this.node = node;
+        // freeze the callstack for the stack trace.
+        this.callstack = callstack == null ? null : callstack.copy();
+    }
 
-	private final CallStack callstack;
+    /**
+     * Print the error with line number and stack trace.
+     */
+    @Override
+    public String getMessage() {
+        String trace;
+        if (node != null)
+            trace = " : at Line: " + node.getLineNumber() + " : in file: " + node.getSourceFile() + " : " + node.getText();
+        else
+            // Users should not normally see this.
+            trace = ": <at unknown location>";
 
-	public EvalError(String s, SimpleNode node, CallStack callstack, Throwable cause) {
-		this(s, node, callstack);
-		initCause(cause);
-	}
+        if (callstack != null)
+            trace = trace + "\n" + getScriptStackTrace();
 
-	public EvalError(String s, SimpleNode node, CallStack callstack) {
-		this.message = s;
-		this.node = node;
-		// freeze the callstack for the stack trace.
-		this.callstack = callstack == null ? null : callstack.copy();
-	}
+        return getRawMessage() + trace;
+    }
 
-	/**
-	 * Print the error with line number and stack trace.
-	 */
-	@Override
-	public String getMessage() {
-		String trace;
-		if (node != null)
-			trace = " : at Line: " + node.getLineNumber() + " : in file: " + node.getSourceFile() + " : " + node.getText();
-		else
-			// Users should not normally see this.
-			trace = ": <at unknown location>";
+    /**
+     * Re-throw the error, prepending the specified message.
+     */
+    public void reThrow(String msg) throws EvalError {
+        prependMessage(msg);
+        throw this;
+    }
 
-		if (callstack != null)
-			trace = trace + "\n" + getScriptStackTrace();
+    /**
+     * The error has trace info associated with it. i.e. It has an AST node that can print its location and source text.
+     */
+    SimpleNode getNode() {
+        return node;
+    }
 
-		return getRawMessage() + trace;
-	}
+    void setNode(SimpleNode node) {
+        this.node = node;
+    }
 
-	/**
-	 * Re-throw the error, prepending the specified message.
-	 */
-	public void reThrow(String msg) throws EvalError {
-		prependMessage(msg);
-		throw this;
-	}
+    public String getErrorText() {
+        if (node != null)
+            return node.getText();
+        else
+            return "<unknown error>";
+    }
 
-	/**
-	 * The error has trace info associated with it. i.e. It has an AST node that can print its location and source text.
-	 */
-	SimpleNode getNode() {
-		return node;
-	}
+    public int getErrorLineNumber() {
+        if (node != null)
+            return node.getLineNumber();
+        else
+            return -1;
+    }
 
-	void setNode(SimpleNode node) {
-		this.node = node;
-	}
+    public String getErrorSourceFile() {
+        if (node != null)
+            return node.getSourceFile();
+        else
+            return "<unknown file>";
+    }
 
-	public String getErrorText() {
-		if (node != null)
-			return node.getText();
-		else
-			return "<unknown error>";
-	}
+    public String getScriptStackTrace() {
+        if (callstack == null)
+            return "<Unknown>";
 
-	public int getErrorLineNumber() {
-		if (node != null)
-			return node.getLineNumber();
-		else
-			return -1;
-	}
+        String trace = "";
+        CallStack stack = callstack.copy();
+        while (stack.depth() > 0) {
+            NameSpace ns = stack.pop();
+            SimpleNode node = ns.getNode();
+            if (ns.isMethod) {
+                trace = trace + "\nCalled from method: " + ns.getName();
+                if (node != null)
+                    trace += " : at Line: " + node.getLineNumber() + " : in file: " + node.getSourceFile() + " : " + node.getText();
+            }
+        }
 
-	public String getErrorSourceFile() {
-		if (node != null)
-			return node.getSourceFile();
-		else
-			return "<unknown file>";
-	}
+        return trace;
+    }
 
-	public String getScriptStackTrace() {
-		if (callstack == null)
-			return "<Unknown>";
+    public String getRawMessage() {
+        return message;
+    }
 
-		String trace = "";
-		CallStack stack = callstack.copy();
-		while (stack.depth() > 0) {
-			NameSpace ns = stack.pop();
-			SimpleNode node = ns.getNode();
-			if (ns.isMethod) {
-				trace = trace + "\nCalled from method: " + ns.getName();
-				if (node != null)
-					trace += " : at Line: " + node.getLineNumber() + " : in file: " + node.getSourceFile() + " : " + node.getText();
-			}
-		}
+    /**
+     * Prepend the message if it is non-null.
+     */
+    private void prependMessage(String s) {
+        if (s == null)
+            return;
 
-		return trace;
-	}
-
-	public String getRawMessage() {
-		return message;
-	}
-
-	/**
-	 * Prepend the message if it is non-null.
-	 */
-	private void prependMessage(String s) {
-		if (s == null)
-			return;
-
-		if (message == null)
-			message = s;
-		else
-			message = s + " : " + message;
-	}
+        if (message == null)
+            message = s;
+        else
+            message = s + " : " + message;
+    }
 
 }

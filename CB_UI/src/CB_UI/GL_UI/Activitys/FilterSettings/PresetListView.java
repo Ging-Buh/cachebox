@@ -1,16 +1,9 @@
 package CB_UI.GL_UI.Activitys.FilterSettings;
 
-import java.util.ArrayList;
-
-import com.badlogic.gdx.graphics.g2d.Sprite;
-
 import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.Sprites;
-import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
@@ -19,269 +12,273 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Settings.SettingString;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
+import java.util.ArrayList;
 
 public class PresetListView extends V_ListView {
 
-	public static PresetEntry aktPreset;
+    public static final FilterProperties[] presets = new FilterProperties[]{ //
+            FilterInstances.HISTORY, //
+            FilterInstances.ACTIVE, //
+            FilterInstances.QUICK, //
+            FilterInstances.BEGINNER, //
+            FilterInstances.WITHTB, //
+            FilterInstances.DROPTB, //
+            FilterInstances.HIGHLIGHTS, //
+            FilterInstances.FAVORITES, //
+            FilterInstances.TOARCHIVE, //
+            FilterInstances.LISTINGCHANGED, //
+            FilterInstances.ALL, //
+    };
+    public static PresetEntry aktPreset;
+    public ArrayList<PresetListViewItem> mPresetListViewItems;
+    private ArrayList<PresetEntry> mPresetEntries;
+    private CustomAdapter lvAdapter;
 
-	private ArrayList<PresetEntry> mPresetEntries;
-	public ArrayList<PresetListViewItem> mPresetListViewItems;
-	private CustomAdapter lvAdapter;
+    public PresetListView(CB_RectF rec) {
+        super(rec, "");
+        this.setHasInvisibleItems(true);
+        fillPresetList();
+        this.setDisposeFlag(false);
+        this.setBaseAdapter(null);
+        lvAdapter = new CustomAdapter(mPresetEntries);
+        this.setBaseAdapter(lvAdapter);
 
-	public static final FilterProperties[] presets = new FilterProperties[] { //
-			FilterInstances.HISTORY, //			
-			FilterInstances.ACTIVE, //
-			FilterInstances.QUICK, //
-			FilterInstances.BEGINNER, //
-			FilterInstances.WITHTB, //
-			FilterInstances.DROPTB, //
-			FilterInstances.HIGHLIGHTS, //
-			FilterInstances.FAVORITES, //
-			FilterInstances.TOARCHIVE, //
-			FilterInstances.LISTINGCHANGED, //
-			FilterInstances.ALL, //
-	};
+    }
 
-	public class PresetEntry {
-		private final String mName;
-		private final Sprite mIcon;
-		private FilterProperties filterProperties;
+    public void fillPresetList() {
+        if (mPresetEntries != null)
+            mPresetEntries.clear();
+        else
+            mPresetEntries = new ArrayList<PresetEntry>();
+        if (mPresetListViewItems != null)
+            mPresetListViewItems.clear();
+        else
+            mPresetListViewItems = new ArrayList<PresetListViewItem>();
 
-		public PresetEntry(String Name, Sprite Icon, FilterProperties PresetFilter) {
-			mName = Name;
-			mIcon = Icon;
-			// mPresetString = PresetString;
-			filterProperties = PresetFilter;
-		}
+        FilterInstances.HISTORY.isHistory = true;
 
-		public String getName() {
-			return mName;
-		}
+        mPresetEntriesAdd("HISTORY", "HISTORY", FilterInstances.HISTORY);
+        mPresetEntriesAdd("AllCachesToFind", "log0icon", FilterInstances.ACTIVE);
+        mPresetEntriesAdd("QuickCaches", "QuickCaches", FilterInstances.QUICK);
+        mPresetEntriesAdd("BEGINNER", "BEGINNER", FilterInstances.BEGINNER);
+        mPresetEntriesAdd("GrabTB", IconName.TBGRAB.name(), FilterInstances.WITHTB);
+        mPresetEntriesAdd("DropTB", IconName.TBDROP.name(), FilterInstances.DROPTB);
+        mPresetEntriesAdd("Highlights", "star", FilterInstances.HIGHLIGHTS);
+        mPresetEntriesAdd("Favorites", "favorit", FilterInstances.FAVORITES);
+        mPresetEntriesAdd("PrepareToArchive", IconName.DELETE.name(), FilterInstances.TOARCHIVE);
+        mPresetEntriesAdd("ListingChanged", IconName.warningIcon.name(), FilterInstances.LISTINGCHANGED);
+        mPresetEntriesAdd("AllCaches", "earth", FilterInstances.ALL);
 
-		public Sprite getIcon() {
-			return mIcon;
-		}
+        // add User Presets from Config.UserFilter
+        if (!Config.UserFilter.getValue().equalsIgnoreCase("")) {
+            String userEntrys[] = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
+            try {
+                for (String entry : userEntrys) {
+                    int pos = entry.indexOf(";");
+                    String name = entry.substring(0, pos);
+                    String filter = entry.substring(pos + 1);
+                    mPresetEntries.add(new PresetEntry(name, Sprites.getSprite("userdata"), new FilterProperties(filter)));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
-		public FilterProperties getFilterProperties() {
-			return filterProperties;
-		}
+        fillItemList();
+    }
 
-		public void setFilterProperties(FilterProperties filterProperties) {
-			this.filterProperties = filterProperties;
-		}
+    private void fillItemList() {
 
-	}
+        int index = 0;
+        for (PresetEntry entry : mPresetEntries) {
+            PresetListViewItem v = new PresetListViewItem(EditFilterSettings.ItemRec, index, entry);
 
-	public PresetListView(CB_RectF rec) {
-		super(rec, "");
-		this.setHasInvisibleItems(true);
-		fillPresetList();
-		this.setDisposeFlag(false);
-		this.setBaseAdapter(null);
-		lvAdapter = new CustomAdapter(mPresetEntries);
-		this.setBaseAdapter(lvAdapter);
+            v.setOnClickListener(new OnClickListener() {
 
-	}
+                @Override
+                public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 
-	public class CustomAdapter implements Adapter {
+                    int itemIndex = ((PresetListViewItem) v).getIndex();
 
-		private final ArrayList<PresetEntry> presetList;
+                    for (PresetListViewItem presetListViewItem : mPresetListViewItems) {
+                        ((ListViewItemBase) presetListViewItem).isSelected = false;
+                    }
 
-		public CustomAdapter(ArrayList<PresetEntry> lPresets) {
+                    if (itemIndex < presets.length) {
+                        EditFilterSettings.tmpFilterProps = new FilterProperties(presets[itemIndex].toString());
+                    } else {
+                        // User Preset
+                        try {
+                            String userEntrys[] = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
+                            int i = itemIndex - presets.length;
 
-			this.presetList = lPresets;
-		}
+                            int pos = userEntrys[i].indexOf(";");
+                            String filter = userEntrys[i].substring(pos + 1);
+                            EditFilterSettings.tmpFilterProps = new FilterProperties(filter);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
-		@Override
-		public int getCount() {
-			return presetList.size();
-		}
+                    }
 
-		public Object getItem(int position) {
-			return presetList.get(position);
-		}
+                    // reset TxtFilter
+                    TextFilterView.that.setFilterString("", 0);
+                    return true;
 
-		public long getItemId(int position) {
-			return position;
-		}
+                }
+            });
 
-		@Override
-		public ListViewItemBase getView(final int position) {
+            v.setOnLongClickListener(new OnClickListener() {
 
-			ListViewItemBase v = mPresetListViewItems.get(position);
+                @Override
+                public boolean onClick(final GL_View_Base v, int x, int y, int pointer, int button) {
+                    final int delItemIndex = ((PresetListViewItem) v).getIndex();
 
-			return v;
-		}
+                    GL.that.closeActivity();
+                    GL_MsgBox.Show(Translation.Get("?DelUserPreset"), Translation.Get("DelUserPreset"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, new OnMsgBoxClickListener() {
 
-		@Override
-		public float getItemSize(int position) {
-			return EditFilterSettings.ItemRec.getHeight();
-		}
-	}
+                        @Override
+                        public boolean onClick(int which, Object data) {
+                            switch (which) {
+                                case 1: // ok Clicked
 
-	public void fillPresetList() {
-		if (mPresetEntries != null)
-			mPresetEntries.clear();
-		else
-			mPresetEntries = new ArrayList<PresetEntry>();
-		if (mPresetListViewItems != null)
-			mPresetListViewItems.clear();
-		else
-			mPresetListViewItems = new ArrayList<PresetListViewItem>();
+                                    if (delItemIndex < presets.length) {
+                                        return false; // Don't delete System Presets
+                                    } else {
+                                        try {
+                                            String userEntrys[] = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
 
-		FilterInstances.HISTORY.isHistory = true;
+                                            int i = presets.length;
+                                            String newUserEntris = "";
+                                            for (String entry : userEntrys) {
+                                                if (i++ != delItemIndex)
+                                                    newUserEntris += entry + SettingString.STRING_SPLITTER;
+                                            }
+                                            Config.UserFilter.setValue(newUserEntris);
+                                            Config.AcceptChanges();
+                                            EditFilterSettings.that.mPresetListView.fillPresetList();
+                                            EditFilterSettings.that.mPresetListView.notifyDataSetChanged();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
 
-		mPresetEntriesAdd("HISTORY", "HISTORY", FilterInstances.HISTORY);
-		mPresetEntriesAdd("AllCachesToFind", "log0icon", FilterInstances.ACTIVE);
-		mPresetEntriesAdd("QuickCaches", "QuickCaches", FilterInstances.QUICK);
-		mPresetEntriesAdd("BEGINNER", "BEGINNER", FilterInstances.BEGINNER);
-		mPresetEntriesAdd("GrabTB", IconName.TBGRAB.name(), FilterInstances.WITHTB);
-		mPresetEntriesAdd("DropTB", IconName.TBDROP.name(), FilterInstances.DROPTB);
-		mPresetEntriesAdd("Highlights", "star", FilterInstances.HIGHLIGHTS);
-		mPresetEntriesAdd("Favorites", "favorit", FilterInstances.FAVORITES);
-		mPresetEntriesAdd("PrepareToArchive", IconName.DELETE.name(), FilterInstances.TOARCHIVE);
-		mPresetEntriesAdd("ListingChanged", IconName.warningIcon.name(), FilterInstances.LISTINGCHANGED);
-		mPresetEntriesAdd("AllCaches", "earth", FilterInstances.ALL);
+                                    }
+                                    EditFilterSettings.that.show();
+                                    break;
+                                case 2: // cancel clicked
+                                    EditFilterSettings.that.show();
+                                    break;
+                                case 3:
+                                    EditFilterSettings.that.show();
+                                    break;
+                            }
 
-		// add User Presets from Config.UserFilter
-		if (!Config.UserFilter.getValue().equalsIgnoreCase("")) {
-			String userEntrys[] = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
-			try {
-				for (String entry : userEntrys) {
-					int pos = entry.indexOf(";");
-					String name = entry.substring(0, pos);
-					String filter = entry.substring(pos + 1);
-					mPresetEntries.add(new PresetEntry(name, Sprites.getSprite("userdata"), new FilterProperties(filter)));
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+                            return true;
+                        }
 
-		fillItemList();
-	}
+                    });
 
-	private void fillItemList() {
+                    return true;
+                }
+            });
 
-		int index = 0;
-		for (PresetEntry entry : mPresetEntries) {
-			PresetListViewItem v = new PresetListViewItem(EditFilterSettings.ItemRec, index, entry);
+            mPresetListViewItems.add(v);
+            index++;
+        }
+    }
 
-			v.setOnClickListener(new OnClickListener() {
+    private void mPresetEntriesAdd(String name, String icon, FilterProperties PresetFilter) {
+        mPresetEntries.add(new PresetEntry(Translation.Get(name), Sprites.getSprite(icon), PresetFilter));
+    }
 
-				@Override
-				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+    @Override
+    public void setVisible(boolean On) {
+        super.setVisible(On);
+        if (On)
+            chkIsPreset();
+    }
 
-					int itemIndex = ((PresetListViewItem) v).getIndex();
+    private void chkIsPreset() {
+        for (PresetListViewItem item : mPresetListViewItems) {
+            ((ListViewItemBase) item).isSelected = false;
+        }
 
-					for (PresetListViewItem presetListViewItem : mPresetListViewItems) {
-						((ListViewItemBase) presetListViewItem).isSelected = false;
-					}
+        this.setBaseAdapter(null);
+        lvAdapter = new CustomAdapter(mPresetEntries);
+        this.setBaseAdapter(lvAdapter);
 
-					if (itemIndex < presets.length) {
-						EditFilterSettings.tmpFilterProps = new FilterProperties(presets[itemIndex].toString());
-					} else {
-						// User Preset
-						try {
-							String userEntrys[] = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
-							int i = itemIndex - presets.length;
+    }
 
-							int pos = userEntrys[i].indexOf(";");
-							String filter = userEntrys[i].substring(pos + 1);
-							EditFilterSettings.tmpFilterProps = new FilterProperties(filter);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+    public class PresetEntry {
+        private final String mName;
+        private final Sprite mIcon;
+        private FilterProperties filterProperties;
 
-					}
+        public PresetEntry(String Name, Sprite Icon, FilterProperties PresetFilter) {
+            mName = Name;
+            mIcon = Icon;
+            // mPresetString = PresetString;
+            filterProperties = PresetFilter;
+        }
 
-					// reset TxtFilter
-					TextFilterView.that.setFilterString("", 0);
-					return true;
+        public String getName() {
+            return mName;
+        }
 
-				}
-			});
+        public Sprite getIcon() {
+            return mIcon;
+        }
 
-			v.setOnLongClickListener(new OnClickListener() {
+        public FilterProperties getFilterProperties() {
+            return filterProperties;
+        }
 
-				@Override
-				public boolean onClick(final GL_View_Base v, int x, int y, int pointer, int button) {
-					final int delItemIndex = ((PresetListViewItem) v).getIndex();
+        public void setFilterProperties(FilterProperties filterProperties) {
+            this.filterProperties = filterProperties;
+        }
 
-					GL.that.closeActivity();
-					GL_MsgBox.Show(Translation.Get("?DelUserPreset"), Translation.Get("DelUserPreset"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, new OnMsgBoxClickListener() {
+    }
 
-						@Override
-						public boolean onClick(int which, Object data) {
-							switch (which) {
-							case 1: // ok Clicked
+    public class CustomAdapter implements Adapter {
 
-								if (delItemIndex < presets.length) {
-									return false; // Don't delete System Presets
-								} else {
-									try {
-										String userEntrys[] = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
+        private final ArrayList<PresetEntry> presetList;
 
-										int i = presets.length;
-										String newUserEntris = "";
-										for (String entry : userEntrys) {
-											if (i++ != delItemIndex)
-												newUserEntris += entry + SettingString.STRING_SPLITTER;
-										}
-										Config.UserFilter.setValue(newUserEntris);
-										Config.AcceptChanges();
-										EditFilterSettings.that.mPresetListView.fillPresetList();
-										EditFilterSettings.that.mPresetListView.notifyDataSetChanged();
-									} catch (Exception e) {
-										e.printStackTrace();
-									}
+        public CustomAdapter(ArrayList<PresetEntry> lPresets) {
 
-								}
-								EditFilterSettings.that.show();
-								break;
-							case 2: // cancel clicked
-								EditFilterSettings.that.show();
-								break;
-							case 3:
-								EditFilterSettings.that.show();
-								break;
-							}
+            this.presetList = lPresets;
+        }
 
-							return true;
-						}
+        @Override
+        public int getCount() {
+            return presetList.size();
+        }
 
-					});
+        public Object getItem(int position) {
+            return presetList.get(position);
+        }
 
-					return true;
-				}
-			});
+        public long getItemId(int position) {
+            return position;
+        }
 
-			mPresetListViewItems.add(v);
-			index++;
-		}
-	}
+        @Override
+        public ListViewItemBase getView(final int position) {
 
-	private void mPresetEntriesAdd(String name, String icon, FilterProperties PresetFilter) {
-		mPresetEntries.add(new PresetEntry(Translation.Get(name), Sprites.getSprite(icon), PresetFilter));
-	}
+            ListViewItemBase v = mPresetListViewItems.get(position);
 
-	@Override
-	public void setVisible(boolean On) {
-		super.setVisible(On);
-		if (On)
-			chkIsPreset();
-	}
+            return v;
+        }
 
-	private void chkIsPreset() {
-		for (PresetListViewItem item : mPresetListViewItems) {
-			((ListViewItemBase) item).isSelected = false;
-		}
-
-		this.setBaseAdapter(null);
-		lvAdapter = new CustomAdapter(mPresetEntries);
-		this.setBaseAdapter(lvAdapter);
-
-	}
+        @Override
+        public float getItemSize(int position) {
+            return EditFilterSettings.ItemRec.getHeight();
+        }
+    }
 }

@@ -41,11 +41,10 @@ public class RenderContext {
 
     // Configuration that drives the rendering
     public final CanvasRasterer canvasRasterer;
-
-    // Data generated for the rendering process
-    private List<List<ShapePaintContainer>> drawingLayers;
     public final List<MapElementContainer> labels;
     public final List<List<List<ShapePaintContainer>>> ways;
+    // Data generated for the rendering process
+    private List<List<ShapePaintContainer>> drawingLayers;
 
 
     public RenderContext(RendererJob rendererJob, CanvasRasterer canvasRasterer) throws InterruptedException, ExecutionException {

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2011-2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,54 +15,50 @@
  */
 package CB_UI.GL_UI.Views.AdvancedSettingsView;
 
-import CB_Utils.Settings.SettingBase;
-import CB_Utils.Settings.SettingCategory;
-import CB_Utils.Settings.SettingModus;
-import CB_Utils.Settings.SettingStoreType;
-import CB_Utils.Settings.SettingUsage;
+import CB_Utils.Settings.*;
 
 /**
  * Der Button der sich hinter einer Category verbirgt und in der Settings List als Toggle Button dieser Category angezeigt wird.
- * 
+ *
  * @author Longri
  */
 public class SettingsListButtonLangSpinner<T> extends SettingBase<T> {
 
-	public SettingsListButtonLangSpinner(String name, SettingCategory category, SettingModus modus, SettingStoreType StoreType, SettingUsage usage) {
-		super(name, category, modus, StoreType, usage);
+    public SettingsListButtonLangSpinner(String name, SettingCategory category, SettingModus modus, SettingStoreType StoreType, SettingUsage usage) {
+        super(name, category, modus, StoreType, usage);
 
-	}
+    }
 
-	@Override
-	public String toDBString() {
+    @Override
+    public String toDBString() {
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public boolean fromDBString(String dbString) {
+    @Override
+    public boolean fromDBString(String dbString) {
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public SettingBase<T> copy() {
-		// can't copy this obj
-		return null;
-	}
+    @Override
+    public SettingBase<T> copy() {
+        // can't copy this obj
+        return null;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof SettingsListButtonLangSpinner<?>))
-			return false;
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof SettingsListButtonLangSpinner<?>))
+            return false;
 
-		SettingsListButtonLangSpinner<?> inst = (SettingsListButtonLangSpinner<?>) obj;
-		if (!(inst.name.equals(this.name)))
-			return false;
-		if (inst.value != this.value)
-			return false;
+        SettingsListButtonLangSpinner<?> inst = (SettingsListButtonLangSpinner<?>) obj;
+        if (!(inst.name.equals(this.name)))
+            return false;
+        if (inst.value != this.value)
+            return false;
 
-		return true;
-	}
+        return true;
+    }
 
 }

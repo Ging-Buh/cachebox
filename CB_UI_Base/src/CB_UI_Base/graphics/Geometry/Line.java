@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,169 +15,168 @@
  */
 package CB_UI_Base.graphics.Geometry;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Disposable;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Line defined as the set of start and end point points.
- * 
+ *
  * @author Longri
  */
 public class Line implements IGeometry {
-	/**
-	 * Holds the result of splitting a Line
-	 * 
-	 * @author Longri
-	 */
-	public class SplittResult implements Disposable {
-		public Line splittLine1, splittLine2;
-		public float rest;
-		protected AtomicBoolean isDisposed = new AtomicBoolean(false);
+    /**
+     * points[0] =Start- X <br>
+     * points[1] =Start- Y <br>
+     * <br>
+     * points[2] =End- X <br>
+     * points[3] =End- Y <br>
+     */
+    public float[] points = new float[4];
+    protected AtomicBoolean isDisposed = new AtomicBoolean(false);
 
-		public boolean isDisposed() {
-			return isDisposed.get();
-		}
+    /**
+     * Constructor
+     *
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2
+     */
+    public Line(float x1, float y1, float x2, float y2) {
+        points[0] = x1;
+        points[1] = y1;
+        points[2] = x2;
+        points[3] = y2;
+    }
 
-		@Override
-		public void dispose() {
-			synchronized (isDisposed) {
-				if (isDisposed.get())
-					return;
-				if (splittLine1 != null)
-					splittLine1.dispose();
-				splittLine1 = null;
-				if (splittLine2 != null)
-					splittLine2.dispose();
-				splittLine2 = null;
-				isDisposed.set(true);
-			}
-		}
-	}
+    public Line(float[] coords, int offset) {
+        for (int i = 0; i < 4; i++)
+            points[i] = coords[i + offset];
+    }
 
-	protected AtomicBoolean isDisposed = new AtomicBoolean(false);
+    /**
+     * Returns two Lines are splitted on value
+     *
+     * @param value
+     * @return
+     */
+    public SplittResult splitt(float value) {
+        SplittResult ret = new SplittResult();
 
-	/**
-	 * points[0] =Start- X <br>
-	 * points[1] =Start- Y <br>
-	 * <br>
-	 * points[2] =End- X <br>
-	 * points[3] =End- Y <br>
-	 */
-	public float[] points = new float[4];
+        if (this.length() <= value) {
+            ret.splittLine1 = this;
+            ret.splittLine2 = null;
+            ret.rest = value - this.length();
 
-	/**
-	 * Constructor
-	 * 
-	 * @param x1
-	 * @param y1
-	 * @param x2
-	 * @param y2
-	 */
-	public Line(float x1, float y1, float x2, float y2) {
-		points[0] = x1;
-		points[1] = y1;
-		points[2] = x2;
-		points[3] = y2;
-	}
+            return ret;
+        }
 
-	public Line(float[] coords, int offset) {
-		for (int i = 0; i < 4; i++)
-			points[i] = coords[i + offset];
-	}
+        // calculate a point on the line x1-y1 to x2-y2 that is distance from x2-y2
+        float vx = points[2] - points[0]; // x vector
+        float vy = points[3] - points[1]; // y vector
 
-	/**
-	 * Returns two Lines are splitted on value
-	 * 
-	 * @param value
-	 * @return
-	 */
-	public SplittResult splitt(float value) {
-		SplittResult ret = new SplittResult();
+        float mag = (float) Math.sqrt(vx * vx + vy * vy); // length
 
-		if (this.length() <= value) {
-			ret.splittLine1 = this;
-			ret.splittLine2 = null;
-			ret.rest = value - this.length();
+        vx /= mag;
+        vy /= mag;
 
-			return ret;
-		}
+        // calculate the new vector, which is x2y2 + vxvy * (mag + distance).
 
-		// calculate a point on the line x1-y1 to x2-y2 that is distance from x2-y2
-		float vx = points[2] - points[0]; // x vector
-		float vy = points[3] - points[1]; // y vector
+        float px = (points[2] - vx * (mag - value));
+        float py = (points[3] - vy * (mag - value));
 
-		float mag = (float) Math.sqrt(vx * vx + vy * vy); // length
+        ret.splittLine1 = new Line(points[0], points[1], px, py);
+        ret.splittLine2 = new Line(px, py, points[2], points[3]);
+        ret.rest = -1;
+        return ret;
+    }
 
-		vx /= mag;
-		vy /= mag;
+    /**
+     * Returns True, if the beginn of this Line on given X,Y
+     *
+     * @param X
+     * @param Y
+     * @return
+     */
+    public boolean lineBeginn(float X, float Y) {
+        if (points[0] == X && points[1] == Y)
+            return true;
+        return false;
+    }
 
-		// calculate the new vector, which is x2y2 + vxvy * (mag + distance).
+    /**
+     * returns the length of this Line
+     *
+     * @return
+     */
+    public float length() {
+        return (float) Math.sqrt((points[2] - points[0]) * (points[2] - points[0]) + (points[3] - points[1]) * (points[3] - points[1]));
+    }
 
-		float px = (points[2] - vx * (mag - value));
-		float py = (points[3] - vy * (mag - value));
+    @Override
+    public float[] getVertices() {
+        return points;
+    }
 
-		ret.splittLine1 = new Line(points[0], points[1], px, py);
-		ret.splittLine2 = new Line(px, py, points[2], points[3]);
-		ret.rest = -1;
-		return ret;
-	}
+    @Override
+    public short[] getTriangles() {
+        return null; // a line has no triangles
+    }
 
-	/**
-	 * Returns True, if the beginn of this Line on given X,Y
-	 * 
-	 * @param X
-	 * @param Y
-	 * @return
-	 */
-	public boolean lineBeginn(float X, float Y) {
-		if (points[0] == X && points[1] == Y)
-			return true;
-		return false;
-	}
+    @Override
+    public String toString() {
+        return "[l " + points[0] + "," + points[1] + "-" + points[2] + "," + points[3] + "]";
+    }
 
-	/**
-	 * returns the length of this Line
-	 * 
-	 * @return
-	 */
-	public float length() {
-		return (float) Math.sqrt((points[2] - points[0]) * (points[2] - points[0]) + (points[3] - points[1]) * (points[3] - points[1]));
-	}
+    public boolean isDisposed() {
+        return isDisposed.get();
+    }
 
-	@Override
-	public float[] getVertices() {
-		return points;
-	}
+    @Override
+    public void dispose() {
+        synchronized (isDisposed) {
+            if (isDisposed.get())
+                return;
+            points = null;
+            isDisposed.set(true);
+        }
+    }
 
-	@Override
-	public short[] getTriangles() {
-		return null; // a line has no triangles
-	}
+    public float getAngle() {
+        float ret = MathUtils.atan2((points[2] - points[0]), (points[3] - points[1])) * MathUtils.radiansToDegrees;
+        ret = 90 - ret;
+        return ret;
+    }
 
-	@Override
-	public String toString() {
-		return "[l " + points[0] + "," + points[1] + "-" + points[2] + "," + points[3] + "]";
-	}
+    /**
+     * Holds the result of splitting a Line
+     *
+     * @author Longri
+     */
+    public class SplittResult implements Disposable {
+        public Line splittLine1, splittLine2;
+        public float rest;
+        protected AtomicBoolean isDisposed = new AtomicBoolean(false);
 
-	public boolean isDisposed() {
-		return isDisposed.get();
-	}
+        public boolean isDisposed() {
+            return isDisposed.get();
+        }
 
-	@Override
-	public void dispose() {
-		synchronized (isDisposed) {
-			if (isDisposed.get())
-				return;
-			points = null;
-			isDisposed.set(true);
-		}
-	}
-
-	public float getAngle() {
-		float ret = MathUtils.atan2((points[2] - points[0]), (points[3] - points[1])) * MathUtils.radiansToDegrees;
-		ret = 90 - ret;
-		return ret;
-	}
+        @Override
+        public void dispose() {
+            synchronized (isDisposed) {
+                if (isDisposed.get())
+                    return;
+                if (splittLine1 != null)
+                    splittLine1.dispose();
+                splittLine1 = null;
+                if (splittLine2 != null)
+                    splittLine2.dispose();
+                splittLine2 = null;
+                isDisposed.set(true);
+            }
+        }
+    }
 }

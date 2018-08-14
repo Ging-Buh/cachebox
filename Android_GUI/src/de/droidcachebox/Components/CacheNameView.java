@@ -10,63 +10,62 @@ import de.droidcachebox.Global;
 
 public class CacheNameView extends View {
 
-	public CacheNameView(Context context) {
-		super(context);
+    private static int height;
+    private int width;
 
-	}
+    public CacheNameView(Context context) {
+        super(context);
 
-	public CacheNameView(Context context, AttributeSet attrs) {
-		super(context, attrs);
+    }
 
-	}
+    public CacheNameView(Context context, AttributeSet attrs) {
+        super(context, attrs);
 
-	private static int height;
-	private int width;
+    }
 
-	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		this.width = measure(widthMeasureSpec);
-		height = measure(heightMeasureSpec);
+    public static int getMyHeight() {
+        return height;
+    }
 
-		setMeasuredDimension(this.width, height);
-	}
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        this.width = measure(widthMeasureSpec);
+        height = measure(heightMeasureSpec);
 
-	/**
-	 * Determines the width of this view
-	 * 
-	 * @param measureSpec
-	 *            A measureSpec packed into an int
-	 * @return The width of the view, honoring constraints from measureSpec
-	 */
-	private int measure(int measureSpec) {
-		int result = 0;
+        setMeasuredDimension(this.width, height);
+    }
 
-		int specSize = MeasureSpec.getSize(measureSpec);
+    /**
+     * Determines the width of this view
+     *
+     * @param measureSpec A measureSpec packed into an int
+     * @return The width of the view, honoring constraints from measureSpec
+     */
+    private int measure(int measureSpec) {
+        int result = 0;
 
-		result = specSize;
+        int specSize = MeasureSpec.getSize(measureSpec);
 
-		return result;
-	}
+        result = specSize;
 
-	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
+        return result;
+    }
 
-		final Drawable Slide = Global.BtnIcons[0];
-		Rect mRect = new Rect();
-		mRect.set(-10, -2, width + 10, height + 2);
-		Slide.setBounds(mRect);
-		Slide.draw(canvas);
+    // public void setHeight(int newheight)
+    // {
+    // height = newheight;
+    // setMeasuredDimension(this.width, height);
+    // }
 
-	}
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
 
-	// public void setHeight(int newheight)
-	// {
-	// height = newheight;
-	// setMeasuredDimension(this.width, height);
-	// }
+        final Drawable Slide = Global.BtnIcons[0];
+        Rect mRect = new Rect();
+        mRect.set(-10, -2, width + 10, height + 2);
+        Slide.setBounds(mRect);
+        Slide.draw(canvas);
 
-	public static int getMyHeight() {
-		return height;
-	}
+    }
 
 }

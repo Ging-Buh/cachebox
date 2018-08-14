@@ -33,6 +33,15 @@ public final class FrameBufferController implements Observer {
     // orientation changes. To avoid overly large framebuffers, the aspect ratio for this policy
     // determines when this will be used.
     private static boolean useSquareFrameBuffer = true;
+    private final FrameBuffer frameBuffer;
+    private final Model model;
+    private Dimension lastMapViewDimension;
+    private double lastOverdrawFactor;
+
+    private FrameBufferController(FrameBuffer frameBuffer, Model model) {
+        this.frameBuffer = frameBuffer;
+        this.model = model;
+    }
 
     public static FrameBufferController create(FrameBuffer frameBuffer, Model model) {
         FrameBufferController frameBufferController = new FrameBufferController(frameBuffer, model);
@@ -64,16 +73,6 @@ public final class FrameBufferController implements Observer {
 
     public static void setUseSquareFrameBuffer(boolean useSquareFrameBuffer) {
         FrameBufferController.useSquareFrameBuffer = useSquareFrameBuffer;
-    }
-
-    private final FrameBuffer frameBuffer;
-    private Dimension lastMapViewDimension;
-    private double lastOverdrawFactor;
-    private final Model model;
-
-    private FrameBufferController(FrameBuffer frameBuffer, Model model) {
-        this.frameBuffer = frameBuffer;
-        this.model = model;
     }
 
     public void destroy() {

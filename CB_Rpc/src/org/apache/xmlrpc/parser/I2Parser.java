@@ -14,21 +14,22 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.parser;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-/** Parser for short values.
+/**
+ * Parser for short values.
  */
 public class I2Parser extends AtomicParser {
-	protected void setResult(String pResult) throws SAXException {
-		try {
-			super.setResult(new Short(pResult.trim()));
-		} catch (NumberFormatException e) {
-			throw new SAXParseException("Failed to parse short value: " + pResult, getDocumentLocator());
-		}
-	}
+    protected void setResult(String pResult) throws SAXException {
+        try {
+            super.setResult(new Short(pResult.trim()));
+        } catch (NumberFormatException e) {
+            throw new SAXParseException("Failed to parse short value: " + pResult, getDocumentLocator());
+        }
+    }
 }

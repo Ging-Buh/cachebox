@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2011-2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -18,59 +18,59 @@ package CB_Utils.Settings;
 import CB_Utils.Config_Core;
 
 /**
- *  im value intern ist die Einstellung verschlüsselt abgespeichert
- *  so wie sie dann in die DB geschrieben wird.
+ * im value intern ist die Einstellung verschlüsselt abgespeichert
+ * so wie sie dann in die DB geschrieben wird.
  */
 public class SettingEncryptedString extends SettingLongString {
 
-	public SettingEncryptedString(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage) {
-		super(name, category, modus, defaultValue, StoreType, usage);
-	}
+    public SettingEncryptedString(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage) {
+        super(name, category, modus, defaultValue, StoreType, usage);
+    }
 
-	// liefert die Einstellung im Klartext
-	@Override
-	public String getValue() {
-		if (value == null)
-			return value;
-		else
-			return Config_Core.decrypt(this.value);
-	}
+    // liefert die Einstellung im Klartext
+    @Override
+    public String getValue() {
+        if (value == null)
+            return value;
+        else
+            return Config_Core.decrypt(this.value);
+    }
 
-	// Liefert die verschlüsselte Einstellung zurück
-	public String getEncryptedValue() {
-		return this.value;
-	}
+    // hiermit kann die Einstellung im Klartext übergeben werden und wird sofort
+    // verschlüsselt
+    @Override
+    public void setValue(String value) {
+        String encrypted = "";
+        if (value.length() > 0)
+            encrypted = Config_Core.encrypt(value);
+        if ((this.value != null) && (this.value.equals(encrypted)))
+            return;
+        this.value = encrypted;
+        setDirty();
+    }
 
-	// liefert den Standardwert im Klartext
-	@Override
-	public String getDefaultValue() {
-		return Config_Core.decrypt(this.defaultValue);
-	}
+    // Liefert die verschlüsselte Einstellung zurück
+    public String getEncryptedValue() {
+        return this.value;
+    }
 
-	// liefert den verschlüsselten Standadwert
-	public String getEncryptedDefaultValue() {
-		return this.defaultValue;
-	}
+    // hier kann die schon verschlüsselte Einstellung übergeben werden.
+    public void setEncryptedValue(String value) {
+        if ((this.value != null) && (this.value.equals(value)))
+            return;
+        this.value = value;
+        setDirty();
+    }
 
-	// hiermit kann die Einstellung im Klartext übergeben werden und wird sofort
-	// verschlüsselt
-	@Override
-	public void setValue(String value) {
-		String encrypted = "";
-		if (value.length() > 0)
-			encrypted = Config_Core.encrypt(value);
-		if ((this.value != null) && (this.value.equals(encrypted)))
-			return;
-		this.value = encrypted;
-		setDirty();
-	}
+    // liefert den Standardwert im Klartext
+    @Override
+    public String getDefaultValue() {
+        return Config_Core.decrypt(this.defaultValue);
+    }
 
-	// hier kann die schon verschlüsselte Einstellung übergeben werden.
-	public void setEncryptedValue(String value) {
-		if ((this.value != null) && (this.value.equals(value)))
-			return;
-		this.value = value;
-		setDirty();
-	}
+    // liefert den verschlüsselten Standadwert
+    public String getEncryptedDefaultValue() {
+        return this.defaultValue;
+    }
 
 }

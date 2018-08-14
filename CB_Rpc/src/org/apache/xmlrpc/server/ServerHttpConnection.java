@@ -14,21 +14,24 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.server;
 
 import org.apache.xmlrpc.common.ServerStreamConnection;
 
-/** Interface of a {@link ServerStreamConnection} for HTTP
+/**
+ * Interface of a {@link ServerStreamConnection} for HTTP
  * response transport.
  */
 public interface ServerHttpConnection extends ServerStreamConnection {
-	/** Sets a response header.
-	 */
-	void setResponseHeader(String pKey, String pValue);
+    /**
+     * Sets a response header.
+     */
+    void setResponseHeader(String pKey, String pValue);
 
-	/** Sets the content length.
-	 */
-	void setContentLength(int pContentLength);
+    /**
+     * Sets the content length.
+     */
+    void setContentLength(int pContentLength);
 }

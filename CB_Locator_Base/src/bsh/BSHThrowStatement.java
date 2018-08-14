@@ -34,25 +34,25 @@
 package bsh;
 
 class BSHThrowStatement extends SimpleNode {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	BSHThrowStatement(int id) {
-		super(id);
-	}
+    BSHThrowStatement(int id) {
+        super(id);
+    }
 
-	@Override
-	public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError {
-		Object obj = ((SimpleNode) jjtGetChild(0)).eval(callstack, interpreter);
+    @Override
+    public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError {
+        Object obj = ((SimpleNode) jjtGetChild(0)).eval(callstack, interpreter);
 
-		// need to loosen this to any throwable... do we need to handle
-		// that in interpreter somewhere? check first...
-		if (!(obj instanceof Exception))
-			throw new EvalError("Expression in 'throw' must be Exception type", this, callstack);
+        // need to loosen this to any throwable... do we need to handle
+        // that in interpreter somewhere? check first...
+        if (!(obj instanceof Exception))
+            throw new EvalError("Expression in 'throw' must be Exception type", this, callstack);
 
-		// wrap the exception in a TargetException to propogate it up
-		throw new TargetError((Exception) obj, this, callstack);
-	}
+        // wrap the exception in a TargetException to propogate it up
+        throw new TargetError((Exception) obj, this, callstack);
+    }
 }

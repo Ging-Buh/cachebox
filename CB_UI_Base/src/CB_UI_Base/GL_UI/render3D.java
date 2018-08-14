@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2011, 2012, 2013 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -26,30 +26,30 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
  * and register the Control at onShow() to GL. Gl.that.register3D(this)<br>
  * <br>
  * Unregister on onHide() with gl.that.unregister3D()
- * 
+ *
  * @author Longri
  */
 public interface render3D {
-	public void render3d(ModelBatch modelBatch);
+    public void render3d(ModelBatch modelBatch);
 
-	/**
-	 * return the modified 3Dcam if you wont or return null
-	 * 
-	 * @param cam3D
-	 * @return
-	 */
-	public PerspectiveCamera get3DCamera(PerspectiveCamera cam3D);
+    /**
+     * return the modified 3Dcam if you wont or return null
+     *
+     * @param cam3D
+     * @return
+     */
+    public PerspectiveCamera get3DCamera(PerspectiveCamera cam3D);
 
-	/**
-	 * do you return false if not initial
-	 * 
-	 * @return
-	 */
-	public boolean is3D_Initial();
+    /**
+     * do you return false if not initial
+     *
+     * @return
+     */
+    public boolean is3D_Initial();
 
-	/**
-	 * Initial Model and set is Initial
-	 */
-	public void Initial3D();
+    /**
+     * Initial Model and set is Initial
+     */
+    public void Initial3D();
 
 }

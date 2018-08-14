@@ -39,47 +39,47 @@ import java.util.StringTokenizer;
 
 public class StringUtil {
 
-	public static String[] split(String s, String delim) {
-		List<String> v = new ArrayList<String>();
-		StringTokenizer st = new StringTokenizer(s, delim);
-		while (st.hasMoreTokens())
-			v.add(st.nextToken());
-		return v.toArray(new String[0]);
-	}
+    public static String[] split(String s, String delim) {
+        List<String> v = new ArrayList<String>();
+        StringTokenizer st = new StringTokenizer(s, delim);
+        while (st.hasMoreTokens())
+            v.add(st.nextToken());
+        return v.toArray(new String[0]);
+    }
 
-	public static String maxCommonPrefix(String one, String two) {
-		int i = 0;
-		while (one.regionMatches(0, two, 0, i))
-			i++;
-		return one.substring(0, i - 1);
-	}
+    public static String maxCommonPrefix(String one, String two) {
+        int i = 0;
+        while (one.regionMatches(0, two, 0, i))
+            i++;
+        return one.substring(0, i - 1);
+    }
 
-	@SuppressWarnings("rawtypes")
-	public static String methodString(String name, Class[] types) {
-		StringBuilder sb = new StringBuilder(name + "(");
-		if (types.length > 0)
-			sb.append(" ");
-		for (int i = 0; i < types.length; i++) {
-			Class c = types[i];
-			sb.append(((c == null) ? "null" : c.getName()) + (i < (types.length - 1) ? ", " : " "));
-		}
-		sb.append(")");
-		return sb.toString();
-	}
+    @SuppressWarnings("rawtypes")
+    public static String methodString(String name, Class[] types) {
+        StringBuilder sb = new StringBuilder(name + "(");
+        if (types.length > 0)
+            sb.append(" ");
+        for (int i = 0; i < types.length; i++) {
+            Class c = types[i];
+            sb.append(((c == null) ? "null" : c.getName()) + (i < (types.length - 1) ? ", " : " "));
+        }
+        sb.append(")");
+        return sb.toString();
+    }
 
-	/**
-	 * Split a filename into dirName, baseName
-	 * 
-	 * @return String [] { dirName, baseName } public String [] splitFileName( String fileName ) { String dirName, baseName; int i =
-	 *         fileName.lastIndexOf( File.separator ); if ( i != -1 ) { dirName = fileName.substring(0, i); baseName =
-	 *         fileName.substring(i+1); } else baseName = fileName; return new String[] { dirName, baseName }; }
-	 */
+    /**
+     * Split a filename into dirName, baseName
+     *
+     * @return String [] { dirName, baseName } public String [] splitFileName( String fileName ) { String dirName, baseName; int i =
+     *         fileName.lastIndexOf( File.separator ); if ( i != -1 ) { dirName = fileName.substring(0, i); baseName =
+     *         fileName.substring(i+1); } else baseName = fileName; return new String[] { dirName, baseName }; }
+     */
 
-	/**
-	 * Hack - The real method is in Reflect.java which is not public.
-	 */
-	@SuppressWarnings("rawtypes")
-	public static String normalizeClassName(Class type) {
-		return Reflect.normalizeClassName(type);
-	}
+    /**
+     * Hack - The real method is in Reflect.java which is not public.
+     */
+    @SuppressWarnings("rawtypes")
+    public static String normalizeClassName(Class type) {
+        return Reflect.normalizeClassName(type);
+    }
 }

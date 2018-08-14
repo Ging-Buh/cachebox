@@ -39,12 +39,12 @@ public class Circle extends RenderInstruction {
     private final Paint fill;
     private final Map<Byte, Paint> fills;
     private final int level;
-    private float radius;
-    private float renderRadius;
     private final Map<Byte, Float> renderRadiusScaled;
-    private boolean scaleRadius;
     private final Paint stroke;
     private final Map<Byte, Paint> strokes;
+    private float radius;
+    private float renderRadius;
+    private boolean scaleRadius;
     private float strokeWidth;
 
     public Circle(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,

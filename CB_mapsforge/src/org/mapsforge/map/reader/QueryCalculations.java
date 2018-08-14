@@ -19,6 +19,10 @@ import org.mapsforge.core.model.Tile;
 
 final class QueryCalculations {
 
+    private QueryCalculations() {
+        throw new IllegalStateException();
+    }
+
     static int calculateTileBitmask(Tile tile, int zoomLevelDifference) {
         if (zoomLevelDifference == 1) {
             return getFirstLevelTileBitmask(tile);
@@ -133,9 +137,5 @@ final class QueryCalculations {
             // lower right sub-tile
             return 0x100;
         }
-    }
-
-    private QueryCalculations() {
-        throw new IllegalStateException();
     }
 }

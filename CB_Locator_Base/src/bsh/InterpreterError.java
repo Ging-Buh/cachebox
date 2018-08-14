@@ -39,17 +39,17 @@ package bsh;
  */
 public class InterpreterError extends RuntimeException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	public InterpreterError(final String s) {
-		super(s);
-	}
+    public InterpreterError(final String s) {
+        super(s);
+    }
 
-	public InterpreterError(final String s, final Throwable cause) {
-		super(s, cause);
-	}
+    public InterpreterError(final String s, final Throwable cause) {
+        super(s, cause);
+    }
 
 }

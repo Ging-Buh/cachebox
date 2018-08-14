@@ -14,31 +14,34 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.client;
 
 import org.apache.xmlrpc.common.XmlRpcStreamRequestProcessor;
 
-/** Another local transport factory for debugging and testing. This one is
+/**
+ * Another local transport factory for debugging and testing. This one is
  * similar to the {@link org.apache.xmlrpc.client.XmlRpcLocalTransportFactory},
  * except that it adds request serialization. In other words, it is
  * particularly well suited for development and testing of XML serialization
  * and parsing.
  */
 public class XmlRpcLocalStreamTransportFactory extends XmlRpcStreamTransportFactory {
-	private final XmlRpcStreamRequestProcessor server;
+    private final XmlRpcStreamRequestProcessor server;
 
-	/** Creates a new instance.
-	 * @param pClient The client controlling the factory.
-	 * @param pServer An instance of {@link XmlRpcStreamRequestProcessor}.
-	 */
-	public XmlRpcLocalStreamTransportFactory(XmlRpcClient pClient, XmlRpcStreamRequestProcessor pServer) {
-		super(pClient);
-		server = pServer;
-	}
+    /**
+     * Creates a new instance.
+     *
+     * @param pClient The client controlling the factory.
+     * @param pServer An instance of {@link XmlRpcStreamRequestProcessor}.
+     */
+    public XmlRpcLocalStreamTransportFactory(XmlRpcClient pClient, XmlRpcStreamRequestProcessor pServer) {
+        super(pClient);
+        server = pServer;
+    }
 
-	public XmlRpcTransport getTransport() {
-		return new XmlRpcLocalStreamTransport(getClient(), server);
-	}
+    public XmlRpcTransport getTransport() {
+        return new XmlRpcLocalStreamTransport(getClient(), server);
+    }
 }

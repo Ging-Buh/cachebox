@@ -14,13 +14,14 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.client;
 
 import org.apache.xmlrpc.common.XmlRpcRequestProcessorFactory;
 
-/** Interface of a client configuration for local rpc calls. Local
+/**
+ * Interface of a client configuration for local rpc calls. Local
  * rpc calls are mainly useful for testing, because you don't need
  * a running server.
  */

@@ -55,26 +55,17 @@ final class OptionalFields {
      * Maximum valid start zoom level.
      */
     private static final int START_ZOOM_LEVEL_MAX = 22;
-
-    static void readOptionalFields(ReadBuffer readBuffer, MapFileInfoBuilder mapFileInfoBuilder) {
-        OptionalFields optionalFields = new OptionalFields(readBuffer.readByte());
-        mapFileInfoBuilder.optionalFields = optionalFields;
-
-        optionalFields.readOptionalFields(readBuffer);
-    }
-
-    String comment;
-    String createdBy;
     final boolean hasComment;
     final boolean hasCreatedBy;
     final boolean hasLanguagesPreference;
     final boolean hasStartPosition;
     final boolean hasStartZoomLevel;
     final boolean isDebugFile;
+    String comment;
+    String createdBy;
     String languagesPreference;
     LatLong startPosition;
     Byte startZoomLevel;
-
     private OptionalFields(byte flags) {
         this.isDebugFile = (flags & HEADER_BITMASK_DEBUG) != 0;
         this.hasStartPosition = (flags & HEADER_BITMASK_START_POSITION) != 0;
@@ -82,6 +73,13 @@ final class OptionalFields {
         this.hasLanguagesPreference = (flags & HEADER_BITMASK_LANGUAGES_PREFERENCE) != 0;
         this.hasComment = (flags & HEADER_BITMASK_COMMENT) != 0;
         this.hasCreatedBy = (flags & HEADER_BITMASK_CREATED_BY) != 0;
+    }
+
+    static void readOptionalFields(ReadBuffer readBuffer, MapFileInfoBuilder mapFileInfoBuilder) {
+        OptionalFields optionalFields = new OptionalFields(readBuffer.readByte());
+        mapFileInfoBuilder.optionalFields = optionalFields;
+
+        optionalFields.readOptionalFields(readBuffer);
     }
 
     private void readLanguagesPreference(ReadBuffer readBuffer) {

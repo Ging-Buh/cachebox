@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,67 +15,66 @@
  */
 package CB_Core.Api;
 
+import CB_Core.CB_Core_Settings;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import CB_Core.CB_Core_Settings;
-
 /**
  * Search Definitions
- * 
+ *
  * @author Hubert
  */
 public class Search {
-	public int number;
-	public boolean excludeHides = false;
-	public boolean excludeFounds = false;
-	public boolean available = true;
-	int geocacheLogCount = 10;
-	int trackableLogCount = 10;
-	protected boolean isLite;
+    public int number;
+    public boolean excludeHides = false;
+    public boolean excludeFounds = false;
+    public boolean available = true;
+    protected boolean isLite;
+    int geocacheLogCount = 10;
+    int trackableLogCount = 10;
 
-	Search(int number) {
-		this.number = number;
-	}
+    Search(int number) {
+        this.number = number;
+    }
 
-	protected void getRequest(JSONObject request, boolean isLite) throws JSONException {
-		this.isLite = isLite;
-		request.put("IsLite", isLite);
-		request.put("StartIndex", 0);
-		request.put("MaxPerPage", number);
-		request.put("GeocacheLogCount", geocacheLogCount);
-		request.put("TrackableLogCount", trackableLogCount);
-		if (available) {
-			JSONObject excl = new JSONObject();
-			excl.put("Archived", false);
-			excl.put("Available", true);
-			request.put("GeocacheExclusions", excl);
+    protected void getRequest(JSONObject request, boolean isLite) throws JSONException {
+        this.isLite = isLite;
+        request.put("IsLite", isLite);
+        request.put("StartIndex", 0);
+        request.put("MaxPerPage", number);
+        request.put("GeocacheLogCount", geocacheLogCount);
+        request.put("TrackableLogCount", trackableLogCount);
+        if (available) {
+            JSONObject excl = new JSONObject();
+            excl.put("Archived", false);
+            excl.put("Available", true);
+            request.put("GeocacheExclusions", excl);
 
-		}
-		if (excludeHides) {
-			JSONObject excl = new JSONObject();
-			JSONArray jarr = new JSONArray();
-			jarr.put(CB_Core_Settings.GcLogin.getValue());
-			excl.put("UserNames", jarr);
-			request.put("NotHiddenByUsers", excl);
-		}
+        }
+        if (excludeHides) {
+            JSONObject excl = new JSONObject();
+            JSONArray jarr = new JSONArray();
+            jarr.put(CB_Core_Settings.GcLogin.getValue());
+            excl.put("UserNames", jarr);
+            request.put("NotHiddenByUsers", excl);
+        }
 
-		if (excludeFounds) {
-			JSONObject excl = new JSONObject();
-			JSONArray jarr = new JSONArray();
-			jarr.put(CB_Core_Settings.GcLogin.getValue());
-			excl.put("UserNames", jarr);
-			request.put("NotFoundByUsers", excl);
-		}
-	}
+        if (excludeFounds) {
+            JSONObject excl = new JSONObject();
+            JSONArray jarr = new JSONArray();
+            jarr.put(CB_Core_Settings.GcLogin.getValue());
+            excl.put("UserNames", jarr);
+            request.put("NotFoundByUsers", excl);
+        }
+    }
 
-	// isLite kann hier nochmal abgefragt werden da dieser Wert von einzelnen Search-Objecten geändert werden könnte
-	protected boolean getIsLite() {
-		return isLite;
-	}
+    // isLite kann hier nochmal abgefragt werden da dieser Wert von einzelnen Search-Objecten geändert werden könnte
+    protected boolean getIsLite() {
+        return isLite;
+    }
 
-	public void setIsLite(boolean isLite) {
-		this.isLite = isLite;
-	}
+    public void setIsLite(boolean isLite) {
+        this.isLite = isLite;
+    }
 }

@@ -14,21 +14,22 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.parser;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-/** Parser for float values.
+/**
+ * Parser for float values.
  */
 public class FloatParser extends AtomicParser {
-	protected void setResult(String pResult) throws SAXException {
-		try {
-			super.setResult(new Float(pResult));
-		} catch (NumberFormatException e) {
-			throw new SAXParseException("Failed to parse float value: " + pResult, getDocumentLocator());
-		}
-	}
+    protected void setResult(String pResult) throws SAXException {
+        try {
+            super.setResult(new Float(pResult));
+        } catch (NumberFormatException e) {
+            throw new SAXParseException("Failed to parse float value: " + pResult, getDocumentLocator());
+        }
+    }
 }

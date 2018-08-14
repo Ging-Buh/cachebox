@@ -16,12 +16,7 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.Cap;
-import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
@@ -39,15 +34,15 @@ import java.util.Map;
  * Represents a closed polygon on the map.
  */
 public class Area extends RenderInstruction {
-    private boolean bitmapInvalid;
     private final Paint fill;
     private final int level;
     private final String relativePathPrefix;
+    private final Paint stroke;
+    private final Map<Byte, Paint> strokes;
+    private boolean bitmapInvalid;
     private Scale scale = Scale.STROKE;
     private Bitmap shaderBitmap;
     private String src;
-    private final Paint stroke;
-    private final Map<Byte, Paint> strokes;
     private float strokeWidth;
 
     public Area(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,

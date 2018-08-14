@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,55 +15,55 @@
  */
 package CB_UI_Base.Math;
 
-import java.util.ArrayList;
-
 import CB_UI_Base.Global;
 
+import java.util.ArrayList;
+
 /**
- * @author Longri
  * @param <T>
+ * @author Longri
  */
 public class Stack<T> {
-	ArrayList<T> m_list; // TODO replace with CB_List
+    ArrayList<T> m_list; // TODO replace with CB_List
 
-	public Stack() {
-		m_list = new ArrayList<T>();
-	}
+    public Stack() {
+        m_list = new ArrayList<T>();
+    }
 
-	public void push(T value) {
-		m_list.add(0, value);
-	}
+    public void push(T value) {
+        m_list.add(0, value);
+    }
 
-	public T pop() {
-		T temp = null;
-		if (m_list.size() > 0) {
-			temp = m_list.get(0);
-			m_list.remove(0);
-		}
-		return temp;
-	}
+    public T pop() {
+        T temp = null;
+        if (m_list.size() > 0) {
+            temp = m_list.get(0);
+            m_list.remove(0);
+        }
+        return temp;
+    }
 
-	public int size() {
-		return m_list.size();
-	}
+    public int size() {
+        return m_list.size();
+    }
 
-	public T get(int i) {
-		return m_list.get(i);
-	}
+    public T get(int i) {
+        return m_list.get(i);
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
 
-		sb.append("Stack of " + m_list.get(0).getClass().getName());
-		for (T t : m_list) {
-			sb.append("  > " + t.toString() + Global.br);
-		}
-		return sb.toString();
-	}
+        sb.append("Stack of " + m_list.get(0).getClass().getName());
+        for (T t : m_list) {
+            sb.append("  > " + t.toString() + Global.br);
+        }
+        return sb.toString();
+    }
 
     public void clear() {
-	m_list.clear();
+        m_list.clear();
     }
 
 }

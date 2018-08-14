@@ -14,28 +14,32 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.client;
 
-import java.net.URL;
-
 import org.apache.xmlrpc.common.XmlRpcHttpRequestConfig;
 
-/** Extension of {@link org.apache.xmlrpc.client.XmlRpcClientConfig}
+import java.net.URL;
+
+/**
+ * Extension of {@link org.apache.xmlrpc.client.XmlRpcClientConfig}
  * for HTTP based transport. Provides details like server URL,
  * user credentials, and so on.
  */
 public interface XmlRpcHttpClientConfig extends XmlRpcHttpRequestConfig {
-	/** Returns the HTTP servers URL.
-	 * @return XML-RPC servers URL; for example, this may be the URL of a
-	 * servlet
-	 */
-	URL getServerURL();
+    /**
+     * Returns the HTTP servers URL.
+     *
+     * @return XML-RPC servers URL; for example, this may be the URL of a
+     * servlet
+     */
+    URL getServerURL();
 
-	/**
-	 * Returns the user agent header to use 
-	 * @return the http user agent header to set when doing xmlrpc requests
-	 */
-	String getUserAgent();
+    /**
+     * Returns the user agent header to use
+     *
+     * @return the http user agent header to set when doing xmlrpc requests
+     */
+    String getUserAgent();
 }

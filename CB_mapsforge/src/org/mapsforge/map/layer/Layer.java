@@ -55,6 +55,15 @@ public abstract class Layer {
         return this.visible;
     }
 
+    /**
+     * Sets the visibility flag of this {@code Layer} to the given value.
+     * <p/>
+     * Note: By default a redraw will take place afterwards.
+     */
+    public final void setVisible(boolean visible) {
+        setVisible(visible, true);
+    }
+
     public void onDestroy() {
         // do nothing
     }
@@ -116,15 +125,6 @@ public abstract class Layer {
      */
     public synchronized void setDisplayModel(DisplayModel displayModel) {
         this.displayModel = displayModel;
-    }
-
-    /**
-     * Sets the visibility flag of this {@code Layer} to the given value.
-     * <p/>
-     * Note: By default a redraw will take place afterwards.
-     */
-    public final void setVisible(boolean visible) {
-        setVisible(visible, true);
     }
 
     /**

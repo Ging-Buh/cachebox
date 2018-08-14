@@ -15,71 +15,70 @@
  */
 package org.mapsforge.map.awt.input;
 
-import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-
-import javax.swing.SwingUtilities;
-
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.view.MapView;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+
 public class MouseEventListener extends MouseAdapter {
-	protected final MapView mapView;
+    protected final MapView mapView;
 
-	private Point lastDragPoint;
+    private Point lastDragPoint;
 
-	public MouseEventListener(MapView mapView) {
-		this.mapView = mapView;
-	}
+    public MouseEventListener(MapView mapView) {
+        this.mapView = mapView;
+    }
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		if (SwingUtilities.isLeftMouseButton(e)) {
-			LatLong tapLatLong = this.mapView.getMapViewProjection().fromPixels(e.getX(), e.getY());
-			if (tapLatLong != null) {
-				org.mapsforge.core.model.Point tapXY = new org.mapsforge.core.model.Point(e.getX(), e.getY());
-				for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
-					Layer layer = this.mapView.getLayerManager().getLayers().get(i);
-					org.mapsforge.core.model.Point layerXY = this.mapView.getMapViewProjection().toPixels(layer.getPosition());
-					if (layer.onTap(tapLatLong, layerXY, tapXY)) {
-						break;
-					}
-				}
-			}
-		}
-	}
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (SwingUtilities.isLeftMouseButton(e)) {
+            LatLong tapLatLong = this.mapView.getMapViewProjection().fromPixels(e.getX(), e.getY());
+            if (tapLatLong != null) {
+                org.mapsforge.core.model.Point tapXY = new org.mapsforge.core.model.Point(e.getX(), e.getY());
+                for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
+                    Layer layer = this.mapView.getLayerManager().getLayers().get(i);
+                    org.mapsforge.core.model.Point layerXY = this.mapView.getMapViewProjection().toPixels(layer.getPosition());
+                    if (layer.onTap(tapLatLong, layerXY, tapXY)) {
+                        break;
+                    }
+                }
+            }
+        }
+    }
 
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		if (SwingUtilities.isLeftMouseButton(e)) {
-			Point point = e.getPoint();
-			if (this.lastDragPoint != null) {
-				int moveHorizontal = point.x - this.lastDragPoint.x;
-				int moveVertical = point.y - this.lastDragPoint.y;
-				this.mapView.getModel().mapViewPosition.moveCenter(moveHorizontal, moveVertical);
-			}
-			this.lastDragPoint = point;
-		}
-	}
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        if (SwingUtilities.isLeftMouseButton(e)) {
+            Point point = e.getPoint();
+            if (this.lastDragPoint != null) {
+                int moveHorizontal = point.x - this.lastDragPoint.x;
+                int moveVertical = point.y - this.lastDragPoint.y;
+                this.mapView.getModel().mapViewPosition.moveCenter(moveHorizontal, moveVertical);
+            }
+            this.lastDragPoint = point;
+        }
+    }
 
-	@Override
-	public void mousePressed(MouseEvent e) {
-		if (SwingUtilities.isLeftMouseButton(e)) {
-			this.lastDragPoint = e.getPoint();
-		}
-	}
+    @Override
+    public void mousePressed(MouseEvent e) {
+        if (SwingUtilities.isLeftMouseButton(e)) {
+            this.lastDragPoint = e.getPoint();
+        }
+    }
 
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		this.lastDragPoint = null;
-	}
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        this.lastDragPoint = null;
+    }
 
-	@Override
-	public void mouseWheelMoved(MouseWheelEvent e) {
-		byte zoomLevelDiff = (byte) -e.getWheelRotation();
-		this.mapView.getModel().mapViewPosition.zoom(zoomLevelDiff);
-	}
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        byte zoomLevelDiff = (byte) -e.getWheelRotation();
+        this.mapView.getModel().mapViewPosition.zoom(zoomLevelDiff);
+    }
 }

@@ -14,7 +14,7 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.metadata;
 
@@ -23,62 +23,70 @@ import org.apache.xmlrpc.XmlRpcRequest;
 import org.apache.xmlrpc.server.PropertyHandlerMapping;
 import org.apache.xmlrpc.server.RequestProcessorFactoryFactory;
 
-/** This class implements the various "system" calls,
+/**
+ * This class implements the various "system" calls,
  * as specifies by {@link XmlRpcListableHandlerMapping}.
  * Suggested use is to create an instance and add it to
  * the handler mapping with the "system" prefix.
  */
 public class XmlRpcSystemImpl {
-	private XmlRpcListableHandlerMapping mapping;
+    private XmlRpcListableHandlerMapping mapping;
 
-	/** Creates a new instance, which provides meta data
-	 * for the given handler mappings methods.
-	 */
-	public XmlRpcSystemImpl(XmlRpcListableHandlerMapping pMapping) {
-		mapping = pMapping;
-	}
+    /**
+     * Creates a new instance, which provides meta data
+     * for the given handler mappings methods.
+     */
+    public XmlRpcSystemImpl(XmlRpcListableHandlerMapping pMapping) {
+        mapping = pMapping;
+    }
 
-	/** Implements the "system.methodSignature" call.
-	 * @see XmlRpcListableHandlerMapping#getMethodSignature(String)
-	 */
-	public String[][] methodSignature(String methodName) throws XmlRpcException {
-		return mapping.getMethodSignature(methodName);
-	}
+    /**
+     * Adds an instance of this class to the given handler
+     * mapping.
+     */
+    public static void addSystemHandler(final PropertyHandlerMapping pMapping) throws XmlRpcException {
+        final RequestProcessorFactoryFactory factory = pMapping.getRequestProcessorFactoryFactory();
+        final XmlRpcSystemImpl systemHandler = new XmlRpcSystemImpl(pMapping);
+        pMapping.setRequestProcessorFactoryFactory(new RequestProcessorFactoryFactory() {
+            public RequestProcessorFactory getRequestProcessorFactory(Class pClass) throws XmlRpcException {
+                if (XmlRpcSystemImpl.class.equals(pClass)) {
+                    return new RequestProcessorFactory() {
+                        public Object getRequestProcessor(XmlRpcRequest request) throws XmlRpcException {
+                            return systemHandler;
+                        }
+                    };
+                } else {
+                    return factory.getRequestProcessorFactory(pClass);
+                }
+            }
+        });
+        pMapping.addHandler("system", XmlRpcSystemImpl.class);
+    }
 
-	/** Implements the "system.methodHelp" call.
-	 * @see XmlRpcListableHandlerMapping#getMethodHelp(String)
-	 */
-	public String methodHelp(String methodName) throws XmlRpcException {
-		return mapping.getMethodHelp(methodName);
-	}
+    /**
+     * Implements the "system.methodSignature" call.
+     *
+     * @see XmlRpcListableHandlerMapping#getMethodSignature(String)
+     */
+    public String[][] methodSignature(String methodName) throws XmlRpcException {
+        return mapping.getMethodSignature(methodName);
+    }
 
-	/** Implements the "system.listMethods" call.
-	 * @see XmlRpcListableHandlerMapping#getListMethods()
-	 */
-	public String[] listMethods() throws XmlRpcException {
-		return mapping.getListMethods();
-	}
+    /**
+     * Implements the "system.methodHelp" call.
+     *
+     * @see XmlRpcListableHandlerMapping#getMethodHelp(String)
+     */
+    public String methodHelp(String methodName) throws XmlRpcException {
+        return mapping.getMethodHelp(methodName);
+    }
 
-	/**
-	 * Adds an instance of this class to the given handler
-	 * mapping.
-	 */
-	public static void addSystemHandler(final PropertyHandlerMapping pMapping) throws XmlRpcException {
-		final RequestProcessorFactoryFactory factory = pMapping.getRequestProcessorFactoryFactory();
-		final XmlRpcSystemImpl systemHandler = new XmlRpcSystemImpl(pMapping);
-		pMapping.setRequestProcessorFactoryFactory(new RequestProcessorFactoryFactory() {
-			public RequestProcessorFactory getRequestProcessorFactory(Class pClass) throws XmlRpcException {
-				if (XmlRpcSystemImpl.class.equals(pClass)) {
-					return new RequestProcessorFactory() {
-						public Object getRequestProcessor(XmlRpcRequest request) throws XmlRpcException {
-							return systemHandler;
-						}
-					};
-				} else {
-					return factory.getRequestProcessorFactory(pClass);
-				}
-			}
-		});
-		pMapping.addHandler("system", XmlRpcSystemImpl.class);
-	}
+    /**
+     * Implements the "system.listMethods" call.
+     *
+     * @see XmlRpcListableHandlerMapping#getListMethods()
+     */
+    public String[] listMethods() throws XmlRpcException {
+        return mapping.getListMethods();
+    }
 }

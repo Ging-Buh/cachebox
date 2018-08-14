@@ -15,19 +15,17 @@
  */
 package CB_Core.DAO;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
-import org.slf4j.LoggerFactory;
-
 import CB_Core.Database;
 import CB_Core.Types.Trackable;
 import CB_Utils.Log.Log;
 import de.cb.sqlite.CoreCursor;
 import de.cb.sqlite.Database_Core.Parameters;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 public class TrackableDAO {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(TrackableDAO.class);
+    private static final String log = "TrackableDAO";
 
     private Trackable ReadFromCursor(CoreCursor reader) {
         try {
@@ -84,25 +82,25 @@ public class TrackableDAO {
             Log.err(log, "stimestampLastVisit", e);
         }
 
-        Log.info(log,"new Parameters()");
+        Log.debug(log, "new Parameters()");
         Parameters args = new Parameters();
         try {
-            args.put("Archived",trackable.getArchived() ? 1 : 0);
-            putArgs(args,"GcCode", trackable.getGcCode());
-            putArgs(args,"CurrentGoal", trackable.getCurrentGoal());
-            putArgs(args,"CurrentOwnerName", trackable.getCurrentOwner());
-            putArgs(args,"DateCreated", stimestampCreated);
-            putArgs(args,"Description", trackable.getDescription());
-            putArgs(args,"IconUrl", trackable.getIconUrl());
-            putArgs(args,"ImageUrl", trackable.getImageUrl());
-            putArgs(args,"name", trackable.getName());
-            putArgs(args,"OwnerName", trackable.getOwner());
-            putArgs(args,"Url", trackable.getUrl());
-            putArgs(args,"TypeName", trackable.getTypeName());
-            putArgs(args,"LastVisit", stimestampLastVisit);
-            putArgs(args,"Home", trackable.getHome());
-            putArgs(args,"TravelDistance", trackable.getTravelDistance());
-            putArgs(args,"CacheID", trackable.getCurrentGeocacheCode());
+            args.put("Archived", trackable.getArchived() ? 1 : 0);
+            putArgs(args, "GcCode", trackable.getGcCode());
+            putArgs(args, "CurrentGoal", trackable.getCurrentGoal());
+            putArgs(args, "CurrentOwnerName", trackable.getCurrentOwner());
+            putArgs(args, "DateCreated", stimestampCreated);
+            putArgs(args, "Description", trackable.getDescription());
+            putArgs(args, "IconUrl", trackable.getIconUrl());
+            putArgs(args, "ImageUrl", trackable.getImageUrl());
+            putArgs(args, "name", trackable.getName());
+            putArgs(args, "OwnerName", trackable.getOwner());
+            putArgs(args, "Url", trackable.getUrl());
+            putArgs(args, "TypeName", trackable.getTypeName());
+            putArgs(args, "LastVisit", stimestampLastVisit);
+            putArgs(args, "Home", trackable.getHome());
+            putArgs(args, "TravelDistance", trackable.getTravelDistance());
+            putArgs(args, "CacheID", trackable.getCurrentGeocacheCode());
         } catch (Exception e) {
             Log.err(log, "args", e);
         }
@@ -110,8 +108,8 @@ public class TrackableDAO {
     }
 
     private void putArgs(Parameters args, String Name, Object value) {
-        Log.info(log,Name + "=" + value);
-        args.put(Name,value);
+        Log.debug(log, Name + "=" + value);
+        args.put(Name, value);
     }
 
     public Trackable getFromDbByGcCode(String GcCode) {

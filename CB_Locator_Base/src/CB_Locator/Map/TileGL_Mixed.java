@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,59 +15,58 @@
  */
 package CB_Locator.Map;
 
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.g2d.Batch;
-
 import CB_UI_Base.graphics.Images.MatrixDrawable;
 import CB_UI_Base.graphics.Images.SortedRotateList;
 import CB_Utils.Lists.CB_List;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
  * Extends TileGL_Bmp with holding a List of Drawable for Symbols and Textes
- * 
+ *
  * @author Longri
  */
 public class TileGL_Mixed extends TileGL_Bmp {
-	SortedRotateList rotateList;
-	TileGL_RotateDrawables rotateDrawable;
+    SortedRotateList rotateList;
+    TileGL_RotateDrawables rotateDrawable;
 
-	public TileGL_Mixed(CB_Locator.Map.Descriptor desc, byte[] bytes, TileState state, Format format) {
-		super(desc, bytes, state, format);
+    public TileGL_Mixed(CB_Locator.Map.Descriptor desc, byte[] bytes, TileState state, Format format) {
+        super(desc, bytes, state, format);
 
-	}
+    }
 
-	@Override
-	public void draw(Batch batch, float x, float y, float width, float height, CB_List<TileGL_RotateDrawables> returnDrawableList) {
-		super.draw(batch, x, y, width, height, returnDrawableList);
+    @Override
+    public void draw(Batch batch, float x, float y, float width, float height, CB_List<TileGL_RotateDrawables> returnDrawableList) {
+        super.draw(batch, x, y, width, height, returnDrawableList);
 
-		if (returnDrawableList != null) {
-			if (rotateList != null) {
-				if (rotateDrawable == null) {
-					rotateDrawable = new TileGL_RotateDrawables(x, y, width, height, this, rotateList);
-				}
+        if (returnDrawableList != null) {
+            if (rotateList != null) {
+                if (rotateDrawable == null) {
+                    rotateDrawable = new TileGL_RotateDrawables(x, y, width, height, this, rotateList);
+                }
 
-				rotateDrawable.set(x, y, width, height);
-				returnDrawableList.add(rotateDrawable);
-			}
-		}
+                rotateDrawable.set(x, y, width, height);
+                returnDrawableList.add(rotateDrawable);
+            }
+        }
 
-	}
+    }
 
-	public void add(SortedRotateList rotateList) {
-		this.rotateList = rotateList;
-	}
+    public void add(SortedRotateList rotateList) {
+        this.rotateList = rotateList;
+    }
 
-	@Override
-	public void dispose() {
-		super.dispose();
+    @Override
+    public void dispose() {
+        super.dispose();
 
-		if (rotateList != null) {
-			for (MatrixDrawable drw : rotateList) {
-				drw.dispose();
-			}
-		}
-		rotateList = null;
-		rotateDrawable = null;
-	}
+        if (rotateList != null) {
+            for (MatrixDrawable drw : rotateList) {
+                drw.dispose();
+            }
+        }
+        rotateList = null;
+        rotateDrawable = null;
+    }
 
 }

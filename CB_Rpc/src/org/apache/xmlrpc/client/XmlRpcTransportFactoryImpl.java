@@ -14,26 +14,31 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.client;
 
-/** Abstract base implementation of an {@link XmlRpcTransportFactory}.
+/**
+ * Abstract base implementation of an {@link XmlRpcTransportFactory}.
  */
 public abstract class XmlRpcTransportFactoryImpl implements XmlRpcTransportFactory {
-	private final XmlRpcClient client;
+    private final XmlRpcClient client;
 
-	/** Creates a new instance.
-	 * @param pClient The client, which will invoke the factory.
-	 */
-	protected XmlRpcTransportFactoryImpl(XmlRpcClient pClient) {
-		client = pClient;
-	}
+    /**
+     * Creates a new instance.
+     *
+     * @param pClient The client, which will invoke the factory.
+     */
+    protected XmlRpcTransportFactoryImpl(XmlRpcClient pClient) {
+        client = pClient;
+    }
 
-	/** Returns the client operating this factory.
-	 * @return The client.
-	 */
-	public XmlRpcClient getClient() {
-		return client;
-	}
+    /**
+     * Returns the client operating this factory.
+     *
+     * @return The client.
+     */
+    public XmlRpcClient getClient() {
+        return client;
+    }
 }

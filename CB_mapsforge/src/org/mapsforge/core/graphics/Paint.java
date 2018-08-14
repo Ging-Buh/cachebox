@@ -19,56 +19,56 @@ package org.mapsforge.core.graphics;
 import org.mapsforge.core.model.Point;
 
 public interface Paint {
-	int getColor();
+    int getColor();
 
-	int getTextHeight(String text);
+    /**
+     * The default value is {@link Color#BLACK}.
+     */
+    void setColor(int color);
 
-	int getTextWidth(String text);
+    int getTextHeight(String text);
 
-	boolean isTransparent();
+    int getTextWidth(String text);
 
-	void setBitmapShader(Bitmap bitmap);
+    boolean isTransparent();
 
-	void setBitmapShaderShift(Point origin);
+    void setBitmapShader(Bitmap bitmap);
 
-	void setColor(Color color);
+    void setBitmapShaderShift(Point origin);
 
-	/**
-	 * The default value is {@link Color#BLACK}.
-	 */
-	void setColor(int color);
+    void setColor(Color color);
 
-	void setDashPathEffect(float[] strokeDasharray);
+    void setDashPathEffect(float[] strokeDasharray);
 
-	/**
-	 * The default value is {@link Cap#ROUND}.
-	 */
-	void setStrokeCap(Cap cap);
+    /**
+     * The default value is {@link Cap#ROUND}.
+     */
+    void setStrokeCap(Cap cap);
 
-	void setStrokeJoin(Join join);
+    void setStrokeJoin(Join join);
 
-	void setStrokeWidth(float strokeWidth);
+    void setTextAlign(Align align);
 
-	/**
-	 * The default value is {@link Style#FILL}.
-	 */
-	void setStyle(Style style);
+    void setTypeface(FontFamily fontFamily, FontStyle fontStyle);
 
-	void setTextAlign(Align align);
+    Cap getCap();
 
-	void setTextSize(float textSize);
+    Style getStyle();
 
-	void setTypeface(FontFamily fontFamily, FontStyle fontStyle);
+    /**
+     * The default value is {@link Style#FILL}.
+     */
+    void setStyle(Style style);
 
-	//###################################################
+    //###################################################
 
-	Cap getCap();
+    float getStrokeWidth();
 
-	Style getStyle();
+    void setStrokeWidth(float strokeWidth);
 
-	float getStrokeWidth();
+    float getTextSize();
 
-	float getTextSize();
+    void setTextSize(float textSize);
 
-	float[] getDashArray();
+    float[] getDashArray();
 }

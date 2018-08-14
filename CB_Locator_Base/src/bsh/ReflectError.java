@@ -34,20 +34,20 @@
 package bsh;
 
 class ReflectError extends Exception {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	public ReflectError() {
-		super();
-	}
+    public ReflectError() {
+        super();
+    }
 
-	public ReflectError(String s) {
-		super(s);
-	}
+    public ReflectError(String s) {
+        super(s);
+    }
 
-	public ReflectError(String s, Throwable t) {
-		super(s, t);
-	}
+    public ReflectError(String s, Throwable t) {
+        super(s, t);
+    }
 }

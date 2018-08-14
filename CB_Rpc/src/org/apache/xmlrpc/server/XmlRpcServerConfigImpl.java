@@ -14,37 +14,41 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.server;
 
 import org.apache.xmlrpc.XmlRpcConfigImpl;
 
-/** Default implementation of {@link org.apache.xmlrpc.server.XmlRpcServerConfig}.
+/**
+ * Default implementation of {@link org.apache.xmlrpc.server.XmlRpcServerConfig}.
  */
 public class XmlRpcServerConfigImpl extends XmlRpcConfigImpl implements XmlRpcServerConfig, XmlRpcHttpServerConfig {
-	private boolean isKeepAliveEnabled;
-	private boolean isEnabledForExceptions;
+    private boolean isKeepAliveEnabled;
+    private boolean isEnabledForExceptions;
 
-	/** Sets, whether HTTP keepalive is enabled for this server.
-	 * @param pKeepAliveEnabled True, if keepalive is enabled. False otherwise.
-	 */
-	public void setKeepAliveEnabled(boolean pKeepAliveEnabled) {
-		isKeepAliveEnabled = pKeepAliveEnabled;
-	}
+    public boolean isKeepAliveEnabled() {
+        return isKeepAliveEnabled;
+    }
 
-	public boolean isKeepAliveEnabled() {
-		return isKeepAliveEnabled;
-	}
+    /**
+     * Sets, whether HTTP keepalive is enabled for this server.
+     *
+     * @param pKeepAliveEnabled True, if keepalive is enabled. False otherwise.
+     */
+    public void setKeepAliveEnabled(boolean pKeepAliveEnabled) {
+        isKeepAliveEnabled = pKeepAliveEnabled;
+    }
 
-	/** Sets, whether the server may create a "faultCause" element in an error
-	 * response. Note, that this may be a security issue!
-	 */
-	public void setEnabledForExceptions(boolean pEnabledForExceptions) {
-		isEnabledForExceptions = pEnabledForExceptions;
-	}
+    public boolean isEnabledForExceptions() {
+        return isEnabledForExceptions;
+    }
 
-	public boolean isEnabledForExceptions() {
-		return isEnabledForExceptions;
-	}
+    /**
+     * Sets, whether the server may create a "faultCause" element in an error
+     * response. Note, that this may be a security issue!
+     */
+    public void setEnabledForExceptions(boolean pEnabledForExceptions) {
+        isEnabledForExceptions = pEnabledForExceptions;
+    }
 }

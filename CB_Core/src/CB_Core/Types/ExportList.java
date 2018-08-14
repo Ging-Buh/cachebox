@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,42 +15,40 @@
  */
 package CB_Core.Types;
 
-import java.util.ArrayList;
-
-import org.slf4j.LoggerFactory;
-
 import CB_Core.Database;
 import CB_Utils.Log.Log;
 import de.cb.sqlite.CoreCursor;
 
+import java.util.ArrayList;
+
 public class ExportList extends ArrayList<ExportEntry> {
-	final static org.slf4j.Logger log = LoggerFactory.getLogger(ExportList.class);
-	private static final long serialVersionUID = -7774973724185994203L;
+    private static final String log = "ExportList";
+    private static final long serialVersionUID = -7774973724185994203L;
 
-	public ExportList() {
+    public ExportList() {
 
-	}
+    }
 
-	public void loadExportList() {
-		clear();
-		String sql = "select Replication.Id, Replication.ChangeType, Replication.CacheId, Replication.WpGcCode, Replication.SolverCheckSum, Replication.NotesCheckSum, Replication.WpCoordCheckSum, Caches.Name from Replication INNER JOIN Caches ON Replication.CacheId = Caches.Id";
+    public void loadExportList() {
+        clear();
+        String sql = "select Replication.Id, Replication.ChangeType, Replication.CacheId, Replication.WpGcCode, Replication.SolverCheckSum, Replication.NotesCheckSum, Replication.WpCoordCheckSum, Caches.Name from Replication INNER JOIN Caches ON Replication.CacheId = Caches.Id";
 
-		CoreCursor reader = null;
-		try {
-			reader = Database.Data.rawQuery(sql, null);
-		} catch (Exception exc) {
-			Log.err(log, "ExportList", "LoadExportList", exc);
-		}
-		reader.moveToFirst();
-		while (!reader.isAfterLast()) {
-			ExportEntry ee = new ExportEntry(reader);
-			if (!this.contains(ee)) {
-				this.add(ee);
-			}
+        CoreCursor reader = null;
+        try {
+            reader = Database.Data.rawQuery(sql, null);
+        } catch (Exception exc) {
+            Log.err(log, "ExportList", "LoadExportList", exc);
+        }
+        reader.moveToFirst();
+        while (!reader.isAfterLast()) {
+            ExportEntry ee = new ExportEntry(reader);
+            if (!this.contains(ee)) {
+                this.add(ee);
+            }
 
-			reader.moveToNext();
-		}
-		reader.close();
+            reader.moveToNext();
+        }
+        reader.close();
 
-	}
+    }
 }

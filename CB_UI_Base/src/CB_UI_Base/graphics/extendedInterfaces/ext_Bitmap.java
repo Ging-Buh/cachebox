@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,23 +15,21 @@
  */
 package CB_UI_Base.graphics.extendedInterfaces;
 
-import org.mapsforge.core.graphics.ResourceBitmap;
-
 import CB_UI_Base.graphics.Images.BitmapDrawable;
-
 import com.badlogic.gdx.graphics.Texture;
+import org.mapsforge.core.graphics.ResourceBitmap;
 
 /**
  * @author Longri
  */
 public interface ext_Bitmap extends ResourceBitmap {
-	void recycle();
+    void recycle();
 
-	void getPixels(int[] maskBuf, int i, int w, int j, int y, int w2, int k);
+    void getPixels(int[] maskBuf, int i, int w, int j, int y, int w2, int k);
 
-	void setPixels(int[] maskedContentBuf, int i, int w, int j, int y, int w2, int k);
+    void setPixels(int[] maskedContentBuf, int i, int w, int j, int y, int w2, int k);
 
-	BitmapDrawable getGlBmpHandle();
+    BitmapDrawable getGlBmpHandle();
 
-	Texture getTexture();
+    Texture getTexture();
 }

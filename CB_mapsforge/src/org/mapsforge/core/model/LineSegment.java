@@ -52,6 +52,30 @@ public final class LineSegment {
     }
 
     /**
+     * Computes the location code according to Cohen-Sutherland,
+     * see https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm.
+     */
+    private static int code(Rectangle r, Point p) {
+        int code = INSIDE;
+        if (p.x < r.left) {
+            // to the left of clip window
+            code |= LEFT;
+        } else if (p.x > r.right) {
+            // to the right of clip window
+            code |= RIGHT;
+        }
+
+        if (p.y > r.bottom) {
+            // below the clip window
+            code |= BOTTOM;
+        } else if (p.y < r.top) {
+            // above the clip window
+            code |= TOP;
+        }
+        return code;
+    }
+
+    /**
      * Intersection of this LineSegment with the Rectangle as another LineSegment.
      * <p/>
      * Algorithm is Cohen-Sutherland, see https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm .
@@ -167,7 +191,6 @@ public final class LineSegment {
         return start.distance(end);
     }
 
-
     /**
      * Computes a Point along the line segment with a given distance to the start Point.
      *
@@ -219,30 +242,6 @@ public final class LineSegment {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(start).append(" ").append(end);
         return stringBuilder.toString();
-    }
-
-    /**
-     * Computes the location code according to Cohen-Sutherland,
-     * see https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm.
-     */
-    private static int code(Rectangle r, Point p) {
-        int code = INSIDE;
-        if (p.x < r.left) {
-            // to the left of clip window
-            code |= LEFT;
-        } else if (p.x > r.right) {
-            // to the right of clip window
-            code |= RIGHT;
-        }
-
-        if (p.y > r.bottom) {
-            // below the clip window
-            code |= BOTTOM;
-        } else if (p.y < r.top) {
-            // above the clip window
-            code |= TOP;
-        }
-        return code;
     }
 
 }

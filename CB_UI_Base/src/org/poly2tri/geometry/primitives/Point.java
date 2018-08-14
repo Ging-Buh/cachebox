@@ -1,33 +1,33 @@
 package org.poly2tri.geometry.primitives;
 
 public abstract class Point {
-	public abstract double getX();
+    protected static int calculateHashCode(double x, double y, double z) {
+        int result = 17;
 
-	public abstract double getY();
+        final long a = Double.doubleToLongBits(x);
+        result += 31 * result + (int) (a ^ (a >>> 32));
 
-	public abstract double getZ();
+        final long b = Double.doubleToLongBits(y);
+        result += 31 * result + (int) (b ^ (b >>> 32));
 
-	public abstract float getXf();
+        final long c = Double.doubleToLongBits(z);
+        result += 31 * result + (int) (c ^ (c >>> 32));
 
-	public abstract float getYf();
+        return result;
 
-	public abstract float getZf();
+    }
 
-	public abstract void set(double x, double y, double z);
+    public abstract double getX();
 
-	protected static int calculateHashCode(double x, double y, double z) {
-		int result = 17;
+    public abstract double getY();
 
-		final long a = Double.doubleToLongBits(x);
-		result += 31 * result + (int) (a ^ (a >>> 32));
+    public abstract double getZ();
 
-		final long b = Double.doubleToLongBits(y);
-		result += 31 * result + (int) (b ^ (b >>> 32));
+    public abstract float getXf();
 
-		final long c = Double.doubleToLongBits(z);
-		result += 31 * result + (int) (c ^ (c >>> 32));
+    public abstract float getYf();
 
-		return result;
+    public abstract float getZf();
 
-	}
+    public abstract void set(double x, double y, double z);
 }

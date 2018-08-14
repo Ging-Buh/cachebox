@@ -21,20 +21,18 @@ import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.map.model.DisplayModel;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 public final class XmlUtils {
-    public static boolean supportOlderRenderThemes = true;
     private static final String PREFIX_FILE = "file:";
     private static final String PREFIX_JAR = "jar:";
-
     private static final String PREFIX_JAR_V1 = "jar:/org/mapsforge/android/maps/rendertheme";
-
     private static final String UNSUPPORTED_COLOR_FORMAT = "unsupported color format: ";
+    public static boolean supportOlderRenderThemes = true;
+
+    private XmlUtils() {
+        throw new IllegalStateException();
+    }
 
     public static void checkMandatoryAttribute(String elementName, String attributeName, Object attributeValue)
             throws XmlPullParserException {
@@ -185,9 +183,5 @@ public final class XmlUtils {
             return new File(pathName);
         }
         return new File(parentPath, pathName);
-    }
-
-    private XmlUtils() {
-        throw new IllegalStateException();
     }
 }

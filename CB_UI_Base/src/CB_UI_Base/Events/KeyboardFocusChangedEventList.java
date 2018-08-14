@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,46 +15,44 @@
  */
 package CB_UI_Base.Events;
 
-import CB_Utils.Log.Log; import org.slf4j.LoggerFactory;
-
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
 import CB_Utils.Lists.CB_List;
-
+import CB_Utils.Log.Log;
 import com.badlogic.gdx.Gdx;
 
 public class KeyboardFocusChangedEventList {
-	final static org.slf4j.Logger log = LoggerFactory.getLogger(KeyboardFocusChangedEventList.class);
-	public static CB_List<KeyboardFocusChangedEvent> list = new CB_List<KeyboardFocusChangedEvent>();
+    private static final String log = "KeyboardFocusChangedEventList";
+    public static CB_List<KeyboardFocusChangedEvent> list = new CB_List<KeyboardFocusChangedEvent>();
 
-	public static void Add(KeyboardFocusChangedEvent event) {
-		synchronized (list) {
-			Log.debug(log, "FocusChangedEventList register" + event.toString());
-			if (!list.contains(event))
-				list.add(event);
-		}
-	}
+    public static void Add(KeyboardFocusChangedEvent event) {
+        synchronized (list) {
+            Log.debug(log, "FocusChangedEventList register" + event.toString());
+            if (!list.contains(event))
+                list.add(event);
+        }
+    }
 
-	public static void Remove(KeyboardFocusChangedEvent event) {
-		synchronized (list) {
-			Log.debug(log, "FocusChangedEventList unregister" + event.toString());
-			list.remove(event);
-		}
-	}
+    public static void Remove(KeyboardFocusChangedEvent event) {
+        synchronized (list) {
+            Log.debug(log, "FocusChangedEventList unregister" + event.toString());
+            list.remove(event);
+        }
+    }
 
-	public static void Call(final EditTextFieldBase focus) {
-		if (focus != null && !focus.dontShowKeyBoard()) {
-			Gdx.input.setOnscreenKeyboardVisible(true);
-		} else {
-			Gdx.input.setOnscreenKeyboardVisible(false);
-		}
-		synchronized (list) {
+    public static void Call(final EditTextFieldBase focus) {
+        if (focus != null && !focus.dontShowKeyBoard()) {
+            Gdx.input.setOnscreenKeyboardVisible(true);
+        } else {
+            Gdx.input.setOnscreenKeyboardVisible(false);
+        }
+        synchronized (list) {
 
-			for (int i = 0, n = list.size(); i < n; i++) {
-				KeyboardFocusChangedEvent event = list.get(i);
-				// Log.debug(log, "FocusChangedEventList fire to " + event.toString());
-				event.KeyboardFocusChanged(focus);
-			}
-		}
-	}
+            for (int i = 0, n = list.size(); i < n; i++) {
+                KeyboardFocusChangedEvent event = list.get(i);
+                // Log.debug(log, "FocusChangedEventList fire to " + event.toString());
+                event.KeyboardFocusChanged(focus);
+            }
+        }
+    }
 
 }

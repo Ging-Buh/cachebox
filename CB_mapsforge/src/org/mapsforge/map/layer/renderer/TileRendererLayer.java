@@ -36,10 +36,10 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
     private final DatabaseRenderer databaseRenderer;
     private final GraphicFactory graphicFactory;
     private final MapDataStore mapDataStore;
+    private final TileBasedLabelStore tileBasedLabelStore;
     private MapWorkerPool mapWorkerPool;
     private RenderThemeFuture renderThemeFuture;
     private float textScale;
-    private final TileBasedLabelStore tileBasedLabelStore;
     private XmlRenderTheme xmlRenderTheme;
 
     /**
@@ -102,6 +102,10 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
         return this.textScale;
     }
 
+    public void setTextScale(float textScale) {
+        this.textScale = textScale;
+    }
+
     @Override
     public void onDestroy() {
         if (this.renderThemeFuture != null) {
@@ -126,10 +130,6 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
                 this.mapWorkerPool.stop();
             }
         }
-    }
-
-    public void setTextScale(float textScale) {
-        this.textScale = textScale;
     }
 
     public void setXmlRenderTheme(XmlRenderTheme xmlRenderTheme) {

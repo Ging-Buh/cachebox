@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,40 +15,40 @@
  */
 package CB_Core.Api;
 
-import java.util.ArrayList;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * @author Hubert
  */
 public class SearchGC extends Search {
-	ArrayList<String> gcCodes;
+    ArrayList<String> gcCodes;
 
-	public SearchGC(String gcCode) {
-		super(1);
-		// einzelner Cache wird immer voll geladen
-		this.gcCodes = new ArrayList<String>();
-		this.gcCodes.add(gcCode);
-	}
+    public SearchGC(String gcCode) {
+        super(1);
+        // einzelner Cache wird immer voll geladen
+        this.gcCodes = new ArrayList<String>();
+        this.gcCodes.add(gcCode);
+    }
 
-	public SearchGC(ArrayList<String> gcCodes) {
-		super(gcCodes.size());
-		this.gcCodes = gcCodes;
-	}
+    public SearchGC(ArrayList<String> gcCodes) {
+        super(gcCodes.size());
+        this.gcCodes = gcCodes;
+    }
 
-	@Override
-	protected void getRequest(JSONObject request, boolean isLite) throws JSONException {
-		super.getRequest(request, isLite);
-		JSONObject requestcc = new JSONObject();
-		JSONArray requesta = new JSONArray();
-		for (String gcCode : gcCodes) {
-			requesta.put(gcCode);
-		}
-		requestcc.put("CacheCodes", requesta);
-		request.put("CacheCode", requestcc);
-	}
+    @Override
+    protected void getRequest(JSONObject request, boolean isLite) throws JSONException {
+        super.getRequest(request, isLite);
+        JSONObject requestcc = new JSONObject();
+        JSONArray requesta = new JSONArray();
+        for (String gcCode : gcCodes) {
+            requesta.put(gcCode);
+        }
+        requestcc.put("CacheCodes", requesta);
+        request.put("CacheCode", requestcc);
+    }
 
 }

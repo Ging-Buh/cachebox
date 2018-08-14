@@ -14,22 +14,25 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.serializer;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-/** A <code>TypeSerializer</code> is able to write a parameter
+/**
+ * A <code>TypeSerializer</code> is able to write a parameter
  * or result object to the XML RPC request or response.
  */
 public interface TypeSerializer {
-	/** Writes the object <code>pObject</code> to the SAX handler
-	 * <code>pHandler</code>.
-	 * @param pHandler The destination handler.
-	 * @param pObject The object being written.
-	 * @throws SAXException Writing the object failed.
-	 */
-	void write(ContentHandler pHandler, Object pObject) throws SAXException;
+    /**
+     * Writes the object <code>pObject</code> to the SAX handler
+     * <code>pHandler</code>.
+     *
+     * @param pHandler The destination handler.
+     * @param pObject  The object being written.
+     * @throws SAXException Writing the object failed.
+     */
+    void write(ContentHandler pHandler, Object pObject) throws SAXException;
 }

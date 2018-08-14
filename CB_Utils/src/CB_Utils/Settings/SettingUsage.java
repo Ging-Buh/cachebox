@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2011-2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -19,9 +19,9 @@ package CB_Utils.Settings;
  * Where is a Setting showing to change<br>
  * <br>
  * { ACB, CBS, ALL}<br>
- * 
+ *
  * @author Longri
  */
 public enum SettingUsage {
-	ACB, CBS, ALL, FZK
+    ACB, CBS, ALL, FZK
 }

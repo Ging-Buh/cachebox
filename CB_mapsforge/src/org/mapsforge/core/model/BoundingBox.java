@@ -27,35 +27,18 @@ import java.util.List;
  */
 public class BoundingBox implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    /**
-     * Creates a new BoundingBox from a comma-separated string of coordinates in the order minLat, minLon, maxLat,
-     * maxLon. All coordinate values must be in degrees.
-     *
-     * @param boundingBoxString the string that describes the BoundingBox.
-     * @return a new BoundingBox with the given coordinates.
-     * @throws IllegalArgumentException if the string cannot be parsed or describes an invalid BoundingBox.
-     */
-    public static BoundingBox fromString(String boundingBoxString) {
-        double[] coordinates = LatLongUtils.parseCoordinateString(boundingBoxString, 4);
-        return new BoundingBox(coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
-    }
-
     /**
      * The maximum latitude coordinate of this BoundingBox in degrees.
      */
     public final double maxLatitude;
-
     /**
      * The maximum longitude coordinate of this BoundingBox in degrees.
      */
     public final double maxLongitude;
-
     /**
      * The minimum latitude coordinate of this BoundingBox in degrees.
      */
     public final double minLatitude;
-
     /**
      * The minimum longitude coordinate of this BoundingBox in degrees.
      */
@@ -108,6 +91,19 @@ public class BoundingBox implements Serializable {
         this.minLongitude = minLongitude;
         this.maxLatitude = maxLatitude;
         this.maxLongitude = maxLongitude;
+    }
+
+    /**
+     * Creates a new BoundingBox from a comma-separated string of coordinates in the order minLat, minLon, maxLat,
+     * maxLon. All coordinate values must be in degrees.
+     *
+     * @param boundingBoxString the string that describes the BoundingBox.
+     * @return a new BoundingBox with the given coordinates.
+     * @throws IllegalArgumentException if the string cannot be parsed or describes an invalid BoundingBox.
+     */
+    public static BoundingBox fromString(String boundingBoxString) {
+        double[] coordinates = LatLongUtils.parseCoordinateString(boundingBoxString, 4);
+        return new BoundingBox(coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
     }
 
     /**

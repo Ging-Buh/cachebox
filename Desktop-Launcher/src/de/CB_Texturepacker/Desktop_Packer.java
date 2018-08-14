@@ -16,41 +16,27 @@ package de.CB_Texturepacker;
  * limitations under the License.
  ******************************************************************************/
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-
+import CB_UI_Base.CB_Texturepacker.*;
 import CB_Utils.fileProvider.File;
-
-import java.io.IOException;
-import java.util.Iterator;
+import CB_Utils.fileProvider.FileFactory;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
-
-import CB_UI_Base.CB_Texturepacker.MaxRectsPacker;
-import CB_UI_Base.CB_Texturepacker.Page;
-import CB_UI_Base.CB_Texturepacker.Rect_Base;
-import CB_UI_Base.CB_Texturepacker.Settings;
-import CB_UI_Base.CB_Texturepacker.TexturePacker_Base;
-
-import CB_Utils.fileProvider.FileFactory;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.Array;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * @author Nathan Sweet
  */
 public class Desktop_Packer extends TexturePacker_Base {
-
-    @Override
-    public TexturePacker_Base getInstanz(File rootDir, Settings settings) {
-        return new Desktop_Packer(rootDir, settings);
-    }
 
     public Desktop_Packer(File rootDir, Settings settings) {
         this.settings = settings;
@@ -71,6 +57,11 @@ public class Desktop_Packer extends TexturePacker_Base {
         that = this;
         // initial Rect
         new Rect();
+    }
+
+    @Override
+    public TexturePacker_Base getInstanz(File rootDir, Settings settings) {
+        return new Desktop_Packer(rootDir, settings);
     }
 
     public void writeImages(File outputDir, Array<Page> pages, String packFileName) {

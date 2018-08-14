@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,74 +15,73 @@
  */
 package CB_Locator.Map;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-
 import CB_UI_Base.graphics.Images.SortedRotateList;
 import CB_UI_Base.graphics.Images.VectorDrawable;
 import CB_Utils.Lists.CB_List;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
  * @author Longri
  */
 public class TileGL_Vector extends TileGL {
-	private VectorDrawable drawable;
+    private VectorDrawable drawable;
 
-	public TileGL_Vector(Descriptor desc, VectorDrawable drawable, TileState state) {
-		this.drawable = drawable;
-		this.Descriptor = desc;
-		this.State = state;
-	}
+    public TileGL_Vector(Descriptor desc, VectorDrawable drawable, TileState state) {
+        this.drawable = drawable;
+        this.Descriptor = desc;
+        this.State = state;
+    }
 
-	@Override
-	public boolean canDraw() {
-		return true;
-	}
+    @Override
+    public boolean canDraw() {
+        return true;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see CB_Locator.Map.TileGL#ToString()
-	 */
-	@Override
-	public String toString() {
-		return State.toString() + ", " + Descriptor.ToString();
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see CB_Locator.Map.TileGL#ToString()
+     */
+    @Override
+    public String toString() {
+        return State.toString() + ", " + Descriptor.ToString();
+    }
 
-	@Override
-	public void draw(Batch batch, float x, float y, float width, float height, CB_List<TileGL_RotateDrawables> returnDrawableList) {
-		if (drawable != null) {
-			drawable.draw(batch, x, y, width, height);
+    @Override
+    public void draw(Batch batch, float x, float y, float width, float height, CB_List<TileGL_RotateDrawables> returnDrawableList) {
+        if (drawable != null) {
+            drawable.draw(batch, x, y, width, height);
 
-			if (returnDrawableList != null) {
-				SortedRotateList list = drawable.getRotateDrawables();
-				if (list != null)
-					returnDrawableList.add(new TileGL_RotateDrawables(x, y, width, height, this, list));
-			}
-		}
-	}
+            if (returnDrawableList != null) {
+                SortedRotateList list = drawable.getRotateDrawables();
+                if (list != null)
+                    returnDrawableList.add(new TileGL_RotateDrawables(x, y, width, height, this, list));
+            }
+        }
+    }
 
-	@Override
-	public long getWidth() {
-		long w = drawable != null ? drawable.getWidth() : 0;
-		return w;
-	}
+    @Override
+    public long getWidth() {
+        long w = drawable != null ? drawable.getWidth() : 0;
+        return w;
+    }
 
-	@Override
-	public long getHeight() {
-		long h = drawable != null ? drawable.getHeight() : 0;
-		return h;
-	}
+    @Override
+    public long getHeight() {
+        long h = drawable != null ? drawable.getHeight() : 0;
+        return h;
+    }
 
-	@Override
-	public void dispose() {
-		if (drawable != null)
-			drawable.dispose();
-		drawable = null;
-	}
+    @Override
+    public void dispose() {
+        if (drawable != null)
+            drawable.dispose();
+        drawable = null;
+    }
 
-	@Override
-	public boolean isDisposed() {
-		return drawable == null;
-	}
+    @Override
+    public boolean isDisposed() {
+        return drawable == null;
+    }
 
 }

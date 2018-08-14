@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,93 +15,93 @@
  */
 package CB_UI_Base.GL_UI.Activitys;
 
+import CB_UI_Base.GL_UI.Controls.Dialog;
 import CB_UI_Base.GL_UI.Fonts;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Sprites;
-import CB_UI_Base.GL_UI.Controls.Dialog;
-import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
 public class ActivityBase extends Dialog {
-	// protected ActivityBase that;
-	protected float MeasuredLabelHeight;
-	protected float MeasuredLabelHeightBig;
-	protected float ButtonHeight;
+    // protected ActivityBase that;
+    protected float MeasuredLabelHeight;
+    protected float MeasuredLabelHeightBig;
+    protected float ButtonHeight;
 
-	public ActivityBase(String Name) {
-		this(ActivityBase.ActivityRec(), Name);
-	}
+    public ActivityBase(String Name) {
+        this(ActivityBase.ActivityRec(), Name);
+    }
 
-	public ActivityBase(CB_RectF rec, String Name) {
-		super(rec, Name);
-		// that = this;
-		dontRenderDialogBackground = true;
-		this.setBackground(Sprites.activityBackground);
+    public ActivityBase(CB_RectF rec, String Name) {
+        super(rec, Name);
+        // that = this;
+        dontRenderDialogBackground = true;
+        this.setBackground(Sprites.activityBackground);
 
-		MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;
-		MeasuredLabelHeightBig = Fonts.MeasureBig("T").height * 1.5f;
-		ButtonHeight = UI_Size_Base.that.getButtonHeight();
-		this.registerSkinChangedEvent();
-	}
+        MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;
+        MeasuredLabelHeightBig = Fonts.MeasureBig("T").height * 1.5f;
+        ButtonHeight = UI_Size_Base.that.getButtonHeight();
+        this.registerSkinChangedEvent();
+    }
 
-	@Override
-	protected void SkinIsChanged() {
-		this.setBackground(Sprites.activityBackground);
-	}
+    public static CB_RectF ActivityRec() {
+        float w = Math.min(UI_Size_Base.that.getSmallestWidth(), UI_Size_Base.that.getWindowHeight() * 0.66f);
 
-	@Override
-	public GL_View_Base addChild(GL_View_Base view) {
-		this.addChildDirekt(view);
+        return new CB_RectF(0, 0, w, UI_Size_Base.that.getWindowHeight());
+    }
 
-		return view;
-	}
+    @Override
+    protected void SkinIsChanged() {
+        this.setBackground(Sprites.activityBackground);
+    }
 
-	public GL_View_Base addChildAtLast(GL_View_Base view) {
-		this.addChildDirektLast(view);
+    @Override
+    public GL_View_Base addChild(GL_View_Base view) {
+        this.addChildDirekt(view);
 
-		return view;
-	}
+        return view;
+    }
 
-	@Override
-	public void removeChilds() {
-		this.removeChildsDirekt();
-	}
+    public GL_View_Base addChildAtLast(GL_View_Base view) {
+        this.addChildDirektLast(view);
 
-	@Override
-	protected void Initial() {
-		// do not call super, it wants clear childs
-	}
+        return view;
+    }
 
-	protected void finish() {
-		GL.that.RunOnGL(new IRunOnGL() {
-			@Override
-			public void run() {
-				GL.that.closeActivity();
-			}
-		});
+    @Override
+    public void removeChilds() {
+        this.removeChildsDirekt();
+    }
 
-	}
+    @Override
+    protected void Initial() {
+        // do not call super, it wants clear childs
+    }
 
-	public void show() {
-		GL.that.showActivity(this);
-	}
+    protected void finish() {
+        GL.that.RunOnGL(new IRunOnGL() {
+            @Override
+            public void run() {
+                GL.that.closeActivity();
+            }
+        });
 
-	public boolean canCloseWithBackKey() {
-		return true;
-	}
+    }
 
-	public static CB_RectF ActivityRec() {
-		float w = Math.min(UI_Size_Base.that.getSmallestWidth(), UI_Size_Base.that.getWindowHeight() * 0.66f);
+    public void show() {
+        GL.that.showActivity(this);
+    }
 
-		return new CB_RectF(0, 0, w, UI_Size_Base.that.getWindowHeight());
-	}
+    public boolean canCloseWithBackKey() {
+        return true;
+    }
 
-	@Override
-	public void dispose() {
-		super.dispose();
-		// that = null;
-	}
+    @Override
+    public void dispose() {
+        super.dispose();
+        // that = null;
+    }
 
 }

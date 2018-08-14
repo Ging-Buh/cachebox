@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2011-2012 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -16,9 +16,6 @@
 
 package de.droidcachebox.Custom_Controls;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import CB_UI.Config;
 import CB_UI_Base.GL_UI.ViewConst;
 import android.content.Context;
@@ -31,105 +28,92 @@ import android.widget.LinearLayout;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
-import de.droidcachebox.Views.DescriptionView;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * @author Longri
  */
-public final class invertViewControl extends View
-{
+public final class invertViewControl extends View {
 
-	public static invertViewControl Me;
+    public static invertViewControl Me;
+    LinearLayout WebViewLayout = null;
+    Bitmap b = null;
+    boolean firstDraw = true;
 
-	public invertViewControl(Context context)
-	{
-		super(context);
-		Me = this;
-	}
+    public invertViewControl(Context context) {
+        super(context);
+        Me = this;
+    }
 
-	public invertViewControl(Context context, AttributeSet attrs)
-	{
-		super(context, attrs);
+    public invertViewControl(Context context, AttributeSet attrs) {
+        super(context, attrs);
 
-		Me = this;
-	}
+        Me = this;
+    }
 
-	public invertViewControl(Context context, AttributeSet attrs, int defStyle)
-	{
-		super(context, attrs, defStyle);
-		Me = this;
-	}
+    public invertViewControl(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        Me = this;
+    }
 
-	LinearLayout WebViewLayout = null;
-	Bitmap b = null;
-	boolean firstDraw = true;
+    @Override
+    protected void onDraw(Canvas canvas) {
 
-	@Override
-	protected void onDraw(Canvas canvas)
-	{
+        canvas.drawColor(Global.getColor(R.attr.EmptyBackground));
 
-		canvas.drawColor(Global.getColor(R.attr.EmptyBackground));
-
-		WebViewLayout = (LinearLayout) findViewById(R.id.WebViewLayout);
-		if(WebViewLayout!=null){
-			b = Bitmap.createBitmap(this.getWidth(), this.getHeight(), Bitmap.Config.ARGB_8888);
-			Canvas c = new Canvas(b);
-			WebViewLayout.draw(c);
-			canvas.drawBitmap(b, 0, 0, Config.nightMode.getValue() ? Global.invertPaint : new Paint());
-		}
+        WebViewLayout = (LinearLayout) findViewById(R.id.WebViewLayout);
+        if (WebViewLayout != null) {
+            b = Bitmap.createBitmap(this.getWidth(), this.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(b);
+            WebViewLayout.draw(c);
+            canvas.drawBitmap(b, 0, 0, Config.nightMode.getValue() ? Global.invertPaint : new Paint());
+        }
 
 
-		super.onDraw(canvas);
+        super.onDraw(canvas);
 
-		// beim ersten zeichnen muss gewartet werden, bis das WebView auch
-		// gezeichnet ist.
-		// dies Zeichnet aber nur wenn das DescView nochmal aufgerufen wird.
-		// Also machen wir das nach 100 msec
-		if (firstDraw)
-		{
-			final TimerTask task = new TimerTask()
-			{
-				@Override
-				public void run()
-				{
-					Thread t = new Thread()
-					{
-						public void run()
-						{
-							main.mainActivity.runOnUiThread(new Runnable()
-							{
-								@Override
-								public void run()
-								{
-									if (firstDraw)
-									{
-										firstDraw = false;
-										((main) main.mainActivity).showView(ViewConst.DESCRIPTION_VIEW);
-									}
-								}
-							});
-						}
-					};
+        // beim ersten zeichnen muss gewartet werden, bis das WebView auch
+        // gezeichnet ist.
+        // dies Zeichnet aber nur wenn das DescView nochmal aufgerufen wird.
+        // Also machen wir das nach 100 msec
+        if (firstDraw) {
+            final TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    Thread t = new Thread() {
+                        public void run() {
+                            main.mainActivity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (firstDraw) {
+                                        firstDraw = false;
+                                        ((main) main.mainActivity).showView(ViewConst.DESCRIPTION_VIEW);
+                                    }
+                                }
+                            });
+                        }
+                    };
 
-					t.start();
+                    t.start();
 
-				}
-			};
+                }
+            };
 
-			Timer timer = new Timer();
-			timer.schedule(task, 100);
+            Timer timer = new Timer();
+            timer.schedule(task, 100);
 
-		}
+        }
 
-		if(b!=null)b.recycle();
-		b = null;
+        if (b != null) b.recycle();
+        b = null;
 
-	}
+    }
 
-	@Override
-	protected void onSizeChanged(int w, int h, int oldw, int oldh)
-	{
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 
-	}
+    }
 
 }

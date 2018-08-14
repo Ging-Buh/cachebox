@@ -3,11 +3,11 @@ package de.droidcachebox.Views.Forms;
 import CB_Core.Api.CB_Api;
 import CB_Core.Api.GroundspeakAPI;
 import CB_UI.Config;
+import CB_Utils.Log.Log;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.*;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
@@ -15,271 +15,269 @@ import android.webkit.*;
 import android.widget.LinearLayout;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.main;
 import de.droidcachebox.Ui.ActivityUtils;
+import de.droidcachebox.main;
 
 public class GcApiLogin extends Activity {
-	private static GcApiLogin gcApiLogin;
-	private static ProgressDialog pd;
-	private static boolean pdIsShow = false;
-	private LinearLayout webViewLayout;
-	private WebView WebControl;
+    private static GcApiLogin gcApiLogin;
+    private static ProgressDialog pd;
+    private static boolean pdIsShow = false;
+    final String javaScript = "javascript:window.HTMLOUT.showHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');";
+    private LinearLayout webViewLayout;
+    private WebView WebControl;
+    private Handler onlineSearchReadyHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1: {
+                    pd.dismiss();
+                    gcApiLogin.finish();
+                }
+            }
+        }
+    };
 
-	public void onCreate(Bundle savedInstanceState) {
-		ActivityUtils.onActivityCreateSetTheme(this);
-		super.onCreate(savedInstanceState);
+    public void onCreate(Bundle savedInstanceState) {
+        ActivityUtils.onActivityCreateSetTheme(this);
+        super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.gcapilogin);
+        setContentView(R.layout.gcapilogin);
 
-		webViewLayout = (LinearLayout) findViewById(R.id.gal_Layout);
+        webViewLayout = (LinearLayout) findViewById(R.id.gal_Layout);
 
-		gcApiLogin = this;
+        gcApiLogin = this;
 
-		new RetreiveFeedTask().execute();
+        new RetreiveFeedTask().execute();
 
-	}
+    }
 
-	class RetreiveFeedTask extends AsyncTask<Void, Void, String> {
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (pd != null && pd.isShowing()) {
+            pd.dismiss();
+        }
+        pd = null;
+    }
 
-		@Override
-		protected String doInBackground(Void... params) {
-			try {
-				String GC_AuthUrl;
+    private void ShowWebsite(String GC_AuthUrl) {
+        // Initial new VebView Instanz
 
-				if (Config.OverrideUrl.getValue().equals("")) {
-					GC_AuthUrl = CB_Api.getGcAuthUrl();
-				} else {
-					GC_AuthUrl = Config.OverrideUrl.getValue();
-				}
+        WebControl = (WebView) gcApiLogin.findViewById(R.id.gal_WebView);
 
-				if (GC_AuthUrl.equals("")) {
-					finish();
-				}
+        webViewLayout.removeAllViews();
+        if (WebControl != null) {
+            WebControl.destroy();
+            WebControl = null;
+        }
 
-				return GC_AuthUrl;
-			} catch (Exception e) {
-				return "";
-			}
-		}
+        // Instanz new WebView
+        WebControl = new WebView(main.mainActivity, null, android.R.attr.webViewStyle);
+        WebControl.requestFocus(View.FOCUS_DOWN);
+        WebControl.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                    case MotionEvent.ACTION_UP:
+                        if (!v.hasFocus()) {
+                            v.requestFocus();
+                        }
+                        break;
+                }
+                return false;
+            }
+        });
+        webViewLayout.addView(WebControl);
 
-		@Override
-		protected void onPostExecute(String GC_AuthUrl) {
-			try {
-				ShowWebsite(GC_AuthUrl);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+        if (!pdIsShow) {
+            gcApiLogin.runOnUiThread(new Runnable() {
 
-	}
+                @Override
+                public void run() {
+                    pd = ProgressDialog.show(gcApiLogin, "", "Loading....", true);
+                    pdIsShow = true;
+                }
+            });
 
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		if (pd != null && pd.isShowing()) {
-			pd.dismiss();
-		}
-		pd = null;
-	}
+        }
 
-	private void ShowWebsite(String GC_AuthUrl) {
-		// Initial new VebView Instanz
+        View titleView = getWindow().findViewById(android.R.id.title);
+        if (titleView != null) {
+            ViewParent parent = titleView.getParent();
+            if (parent != null && (parent instanceof View)) {
+                View parentView = (View) parent;
+                parentView.setBackgroundColor(Global.getColor(R.attr.TitleBarBackColor));
+            }
+        }
 
-		WebControl = (WebView) gcApiLogin.findViewById(R.id.gal_WebView);
+        WebControl.setWebViewClient(new WebViewClient() {
 
-		webViewLayout.removeAllViews();
-		if (WebControl != null) {
-			WebControl.destroy();
-			WebControl = null;
-		}
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                gcApiLogin.setTitle("Loading...");
 
-		// Instanz new WebView
-		WebControl = new WebView(main.mainActivity, null, android.R.attr.webViewStyle);
-		WebControl.requestFocus(View.FOCUS_DOWN);
-		WebControl.setOnTouchListener(new View.OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				switch (event.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-				case MotionEvent.ACTION_UP:
-					if (!v.hasFocus()) {
-						v.requestFocus();
-					}
-					break;
-				}
-				return false;
-			}
-		});
-		webViewLayout.addView(WebControl);
+                if (!pdIsShow) {
+                    gcApiLogin.runOnUiThread(new Runnable() {
 
-		if (!pdIsShow) {
-			gcApiLogin.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            pd = ProgressDialog.show(GcApiLogin.this, "", "Loading....", true);
+                            pdIsShow = true;
+                        }
+                    });
 
-				@Override
-				public void run() {
-					pd = ProgressDialog.show(gcApiLogin, "", "Loading....", true);
-					pdIsShow = true;
-				}
-			});
+                }
 
-		}
+                super.onPageStarted(view, url, favicon);
+            }
 
-		View titleView = getWindow().findViewById(android.R.id.title);
-		if (titleView != null) {
-			ViewParent parent = titleView.getParent();
-			if (parent != null && (parent instanceof View)) {
-				View parentView = (View) parent;
-				parentView.setBackgroundColor(Global.getColor(R.attr.TitleBarBackColor));
-			}
-		}
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
 
-		WebControl.setWebViewClient(new WebViewClient() {
+                view.loadUrl(url);
+                return true;
+            }
 
-			@Override
-			public void onPageStarted(WebView view, String url, Bitmap favicon) {
-				gcApiLogin.setTitle("Loading...");
+            @Override
+            public void onPageFinished(WebView view, String url) {
 
-				if (!pdIsShow) {
-					gcApiLogin.runOnUiThread(new Runnable() {
+                gcApiLogin.setTitle(R.string.app_name);
+                if (pd != null)
+                    pd.dismiss();
+                pdIsShow = false;
 
-						@Override
-						public void run() {
-							pd = ProgressDialog.show(GcApiLogin.this, "", "Loading....", true);
-							pdIsShow = true;
-						}
-					});
+                if (url.toLowerCase().contains("oauth_verifier=") && (url.toLowerCase().contains("oauth_token="))) {
+                    WebControl.loadUrl(javaScript);
+                } else
+                    super.onPageFinished(view, url);
+            }
 
-				}
+        });
 
-				super.onPageStarted(view, url, favicon);
-			}
+        WebSettings settings = WebControl.getSettings();
 
-			@Override
-			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+        // settings.setPluginsEnabled(true);
+        settings.setJavaScriptEnabled(true);
+        // settings.setJavaScriptCanOpenWindowsAutomatically(true);
 
-				view.loadUrl(url);
-				return true;
-			}
-
-			@Override
-			public void onPageFinished(WebView view, String url) {
-
-				gcApiLogin.setTitle(R.string.app_name);
-				if (pd != null)
-					pd.dismiss();
-				pdIsShow = false;
-
-				if (url.toLowerCase().contains("oauth_verifier=") && (url.toLowerCase().contains("oauth_token="))) {
-					WebControl.loadUrl(javaScript);
-				} else
-					super.onPageFinished(view, url);
-			}
-
-		});
-
-		WebSettings settings = WebControl.getSettings();
-
-		// settings.setPluginsEnabled(true);
-		settings.setJavaScriptEnabled(true);
-		// settings.setJavaScriptCanOpenWindowsAutomatically(true);
-
-		// webView.setWebChromeClient(new WebChromeClient());
+        // webView.setWebChromeClient(new WebChromeClient());
 
 
-		{//delete cookies and cache
-			WebControl.clearCache(true);
-			WebControl.clearHistory();
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-				Log.d("GcApiLogin", "Using clearCookies code for API >=" + String.valueOf(Build.VERSION_CODES.LOLLIPOP_MR1));
-				CookieManager.getInstance().removeAllCookies(null);
-				CookieManager.getInstance().flush();
-			} else
-			{
-				Log.d("GcApiLogin", "Using clearCookies code for API <" + String.valueOf(Build.VERSION_CODES.LOLLIPOP_MR1));
-				CookieSyncManager cookieSyncMngr=CookieSyncManager.createInstance(this);
-				cookieSyncMngr.startSync();
-				CookieManager cookieManager=CookieManager.getInstance();
-				cookieManager.removeAllCookie();
-				cookieManager.removeSessionCookie();
-				cookieSyncMngr.stopSync();
-				cookieSyncMngr.sync();
-			}
-		}
+        {//delete cookies and cache
+            WebControl.clearCache(true);
+            WebControl.clearHistory();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                Log.debug("GcApiLogin", "Using clearCookies code for API >=" + String.valueOf(Build.VERSION_CODES.LOLLIPOP_MR1));
+                CookieManager.getInstance().removeAllCookies(null);
+                CookieManager.getInstance().flush();
+            } else {
+                Log.debug("GcApiLogin", "Using clearCookies code for API <" + String.valueOf(Build.VERSION_CODES.LOLLIPOP_MR1));
+                CookieSyncManager cookieSyncMngr = CookieSyncManager.createInstance(this);
+                cookieSyncMngr.startSync();
+                CookieManager cookieManager = CookieManager.getInstance();
+                cookieManager.removeAllCookie();
+                cookieManager.removeSessionCookie();
+                cookieSyncMngr.stopSync();
+                cookieSyncMngr.sync();
+            }
+        }
 
-		WebControl.getSettings().setJavaScriptEnabled(true);
-		WebControl.addJavascriptInterface(new MyJavaScriptInterface(), "HTMLOUT");
+        WebControl.getSettings().setJavaScriptEnabled(true);
+        WebControl.addJavascriptInterface(new MyJavaScriptInterface(), "HTMLOUT");
 
-		WebControl.loadUrl(GC_AuthUrl);
-	}
+        WebControl.loadUrl(GC_AuthUrl);
+    }
 
-	final String javaScript = "javascript:window.HTMLOUT.showHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');";
+    class RetreiveFeedTask extends AsyncTask<Void, Void, String> {
 
-	class MyJavaScriptInterface {
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                String GC_AuthUrl;
 
-		@JavascriptInterface
-		public void showHTML(String html) {
+                if (Config.OverrideUrl.getValue().equals("")) {
+                    GC_AuthUrl = CB_Api.getGcAuthUrl();
+                } else {
+                    GC_AuthUrl = Config.OverrideUrl.getValue();
+                }
 
-			String search = "Access token: ";
-			int pos = html.indexOf(search);
-			if (pos < 0)
-				return;
-			int pos2 = html.indexOf("</span>", pos);
-			if (pos2 < pos)
-				return;
-			// zwischen pos und pos2 sollte ein gültiges AccessToken sein!!!
-			final String accessToken = html.substring(pos + search.length(), pos2);
+                if (GC_AuthUrl.equals("")) {
+                    finish();
+                }
 
-			Thread thread = new Thread() {
-				public void run() {
-					GroundspeakAPI.CacheStatusValid = false;
-					GroundspeakAPI.CacheStatusLiteValid = false;
+                return GC_AuthUrl;
+            } catch (Exception e) {
+                return "";
+            }
+        }
 
-					// store the encrypted AccessToken in the Config file
-					// wir bekommen den Key schon verschlüsselt, deshalb muss er
-					// nicht noch einmal verschlüsselt werden!
-					if (Config.StagingAPI.getValue()) {
-						Config.GcAPIStaging.setEncryptedValue(accessToken);
-					} else {
-						Config.GcAPI.setEncryptedValue(accessToken);
-					}
+        @Override
+        protected void onPostExecute(String GC_AuthUrl) {
+            try {
+                Log.info("Forms GCApiLogin", "Show WebSite " + GC_AuthUrl);
+                ShowWebsite(GC_AuthUrl);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
-					Config.AcceptChanges();
+    }
 
-					String act = Config.GetAccessToken();
-					if (act.length() > 0) {
-						int status = GroundspeakAPI.GetMembershipType(null);
-						if (status >= 0) {
+    class MyJavaScriptInterface {
 
-							Config.GcLogin.setValue(GroundspeakAPI.MemberName);
-							Config.AcceptChanges();
+        @JavascriptInterface
+        public void showHTML(String html) {
 
-						}
+            String search = "Access token: ";
+            int pos = html.indexOf(search);
+            if (pos < 0)
+                return;
+            int pos2 = html.indexOf("</span>", pos);
+            if (pos2 < pos)
+                return;
+            // zwischen pos und pos2 sollte ein gültiges AccessToken sein!!!
+            final String accessToken = html.substring(pos + search.length(), pos2);
 
-					}
+            Thread thread = new Thread() {
+                public void run() {
+                    GroundspeakAPI.CacheStatusValid = false;
+                    GroundspeakAPI.CacheStatusLiteValid = false;
 
-					onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
-				}
-			};
-			gcApiLogin.runOnUiThread(new Runnable() {
+                    // store the encrypted AccessToken in the Config file
+                    // wir bekommen den Key schon verschlüsselt, deshalb muss er
+                    // nicht noch einmal verschlüsselt werden!
+                    if (Config.StagingAPI.getValue()) {
+                        Config.GcAPIStaging.setEncryptedValue(accessToken);
+                    } else {
+                        Config.GcAPI.setEncryptedValue(accessToken);
+                    }
 
-				@Override
-				public void run() {
-					pd = ProgressDialog.show(gcApiLogin, "", "Download Username", true);
-				}
-			});
+                    Config.AcceptChanges();
 
-			thread.start();
-		}
-	}
+                    String act = Config.GetAccessToken();
+                    if (act.length() > 0) {
+                        int status = GroundspeakAPI.GetMembershipType(null);
+                        if (status >= 0) {
 
-	private Handler onlineSearchReadyHandler = new Handler() {
-		public void handleMessage(Message msg) {
-			switch (msg.what) {
-			case 1: {
-				pd.dismiss();
-				gcApiLogin.finish();
-			}
-			}
-		}
-	};
+                            Config.GcLogin.setValue(GroundspeakAPI.MemberName);
+                            Config.AcceptChanges();
+
+                        }
+
+                    }
+
+                    onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
+                }
+            };
+            gcApiLogin.runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    pd = ProgressDialog.show(gcApiLogin, "", "Download Username", true);
+                }
+            });
+
+            thread.start();
+        }
+    }
 }

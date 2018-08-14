@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2013 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -21,58 +21,55 @@ import java.util.Arrays;
 
 /**
  * A Structure for ID as String and this Translation as String
- * 
+ *
  * @author Longri
  */
 public class Translations {
 
-	public final static int lang = "lang".hashCode();
-	public final static int Misc = "Misc".hashCode();
+    public final static int lang = "lang".hashCode();
+    public final static int Misc = "Misc".hashCode();
 
-	protected static final Charset UTF_8 = Charset.forName("UTF-8");
-	private static byte[] TranslationBytes = new byte[2000];
-	private static int lastIndex = 0;
-	private final int TranslationByteIndex;
-	private final short TranslationByteLength;
+    protected static final Charset UTF_8 = Charset.forName("UTF-8");
+    private static byte[] TranslationBytes = new byte[2000];
+    private static int lastIndex = 0;
+    private final int TranslationByteIndex;
+    private final short TranslationByteLength;
+    private final int Id;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param ID
-	 *            as String
-	 * @param Trans
-	 *            as String
-	 * @param defaultLang
-	 */
-	public Translations(String ID, String Trans) {
-		this.Id = ID.hashCode();
+    /**
+     * Constructor
+     *
+     * @param ID          as String
+     * @param Trans       as String
+     * @param defaultLang
+     */
+    public Translations(String ID, String Trans) {
+        this.Id = ID.hashCode();
 
-		byte[] b = Trans.getBytes(UTF_8);
-		TranslationByteLength = (short) b.length;
+        byte[] b = Trans.getBytes(UTF_8);
+        TranslationByteLength = (short) b.length;
 
-		TranslationByteIndex = lastIndex;
-		lastIndex += TranslationByteLength;
+        TranslationByteIndex = lastIndex;
+        lastIndex += TranslationByteLength;
 
-		if (TranslationBytes.length < lastIndex)
-			ensureCapacity(TranslationByteIndex + TranslationByteLength);
-		System.arraycopy(b, 0, TranslationBytes, TranslationByteIndex, TranslationByteLength);
-	}
+        if (TranslationBytes.length < lastIndex)
+            ensureCapacity(TranslationByteIndex + TranslationByteLength);
+        System.arraycopy(b, 0, TranslationBytes, TranslationByteIndex, TranslationByteLength);
+    }
 
-	private void ensureCapacity(int newSize) {
-		TranslationBytes = Arrays.copyOf(TranslationBytes, newSize);
-	}
+    private void ensureCapacity(int newSize) {
+        TranslationBytes = Arrays.copyOf(TranslationBytes, newSize);
+    }
 
-	public String getTranslation() {
-		byte[] b = new byte[TranslationByteLength];
-		System.arraycopy(TranslationBytes, TranslationByteIndex, b, 0, TranslationByteLength);
-		return new String(b, UTF_8);
-		// return Translation;
-	}
+    public String getTranslation() {
+        byte[] b = new byte[TranslationByteLength];
+        System.arraycopy(TranslationBytes, TranslationByteIndex, b, 0, TranslationByteLength);
+        return new String(b, UTF_8);
+        // return Translation;
+    }
 
-	public int getIdString() {
-		return Id;
-	}
-
-	private final int Id;
+    public int getIdString() {
+        return Id;
+    }
 
 }

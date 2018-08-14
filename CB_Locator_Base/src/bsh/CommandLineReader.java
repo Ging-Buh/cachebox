@@ -45,60 +45,59 @@ import java.io.Reader;
  */
 class CommandLineReader extends FilterReader {
 
-	public CommandLineReader(Reader in) {
-		super(in);
-	}
+    static final int normal = 0, lastCharNL = 1, sentSemi = 2;
+    int state = lastCharNL;
 
-	static final int normal = 0, lastCharNL = 1, sentSemi = 2;
+    public CommandLineReader(Reader in) {
+        super(in);
+    }
 
-	int state = lastCharNL;
+    // Test it
+    @SuppressWarnings("resource")
+    public static void main(String[] args) throws Exception {
+        Reader in = new CommandLineReader(new InputStreamReader(System.in));
+        while (true)
+            System.out.println(in.read());
 
-	@Override
-	public int read() throws IOException {
-		int b;
+    }
 
-		if (state == sentSemi) {
-			state = lastCharNL;
-			return '\n';
-		}
+    @Override
+    public int read() throws IOException {
+        int b;
 
-		// skip CR
-		while ((b = in.read()) == '\r')
-			;
+        if (state == sentSemi) {
+            state = lastCharNL;
+            return '\n';
+        }
 
-		if (b == '\n')
-			if (state == lastCharNL) {
-				b = ';';
-				state = sentSemi;
-			} else
-				state = lastCharNL;
-		else
-			state = normal;
+        // skip CR
+        while ((b = in.read()) == '\r')
+            ;
 
-		return b;
-	}
+        if (b == '\n')
+            if (state == lastCharNL) {
+                b = ';';
+                state = sentSemi;
+            } else
+                state = lastCharNL;
+        else
+            state = normal;
 
-	/**
-	 * This is a degenerate implementation. I don't know how to keep this from blocking if we try to read more than one char... There is no
-	 * available() for Readers ??
-	 */
-	@Override
-	public int read(char buff[], int off, int len) throws IOException {
-		int b = read();
-		if (b == -1)
-			return -1; // EOF, not zero read apparently
-		else {
-			buff[off] = (char) b;
-			return 1;
-		}
-	}
+        return b;
+    }
 
-	// Test it
-	@SuppressWarnings("resource")
-	public static void main(String[] args) throws Exception {
-		Reader in = new CommandLineReader(new InputStreamReader(System.in));
-		while (true)
-			System.out.println(in.read());
-
-	}
+    /**
+     * This is a degenerate implementation. I don't know how to keep this from blocking if we try to read more than one char... There is no
+     * available() for Readers ??
+     */
+    @Override
+    public int read(char buff[], int off, int len) throws IOException {
+        int b = read();
+        if (b == -1)
+            return -1; // EOF, not zero read apparently
+        else {
+            buff[off] = (char) b;
+            return 1;
+        }
+    }
 }

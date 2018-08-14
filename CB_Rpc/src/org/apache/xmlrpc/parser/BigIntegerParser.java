@@ -14,23 +14,24 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.parser;
-
-import java.math.BigInteger;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-/** Parser for BigInteger values.
+import java.math.BigInteger;
+
+/**
+ * Parser for BigInteger values.
  */
 public class BigIntegerParser extends AtomicParser {
-	protected void setResult(String pResult) throws SAXException {
-		try {
-			super.setResult(new BigInteger(pResult));
-		} catch (NumberFormatException e) {
-			throw new SAXParseException("Failed to parse BigInteger value: " + pResult, getDocumentLocator());
-		}
-	}
+    protected void setResult(String pResult) throws SAXException {
+        try {
+            super.setResult(new BigInteger(pResult));
+        } catch (NumberFormatException e) {
+            throw new SAXParseException("Failed to parse BigInteger value: " + pResult, getDocumentLocator());
+        }
+    }
 }

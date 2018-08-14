@@ -14,24 +14,27 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.server;
 
 import org.apache.xmlrpc.common.XmlRpcWorker;
 import org.apache.xmlrpc.common.XmlRpcWorkerFactory;
 
-/** Server specific worker factory.
+/**
+ * Server specific worker factory.
  */
 public class XmlRpcServerWorkerFactory extends XmlRpcWorkerFactory {
-	/** Creates a new factory with the given controller.
-	 * @param pServer The factory controller.
-	 */
-	public XmlRpcServerWorkerFactory(XmlRpcServer pServer) {
-		super(pServer);
-	}
+    /**
+     * Creates a new factory with the given controller.
+     *
+     * @param pServer The factory controller.
+     */
+    public XmlRpcServerWorkerFactory(XmlRpcServer pServer) {
+        super(pServer);
+    }
 
-	protected XmlRpcWorker newWorker() {
-		return new XmlRpcServerWorker(this);
-	}
+    protected XmlRpcWorker newWorker() {
+        return new XmlRpcServerWorker(this);
+    }
 }

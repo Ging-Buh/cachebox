@@ -11,26 +11,26 @@ import de.cb.sqlite.Database_Core;
 
 public class SettingsClass extends SettingsList implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings, CB_Rpc_Settings, LocatorSettings {
 
-	private static final long serialVersionUID = 7330937438116889415L;
+    private static final long serialVersionUID = 7330937438116889415L;
 
-	public SettingsClass() {
-		super();
-	}
+    public SettingsClass() {
+        super();
+    }
 
-	@Override
-	protected Database_Core getSettingsDB() {
-		return Database.Settings;
-	}
+    @Override
+    protected Database_Core getSettingsDB() {
+        return Database.Settings;
+    }
 
-	@Override
-	protected Database_Core getDataDB() {
-		return Database.Data;
-	}
+    @Override
+    protected Database_Core getDataDB() {
+        return Database.Data;
+    }
 
-	@Override
-	protected SettingsDAO createSettingsDAO() {
-		// this is necessary to use the platform settings
-		return new SettingsDAO_UI();
-	}
+    @Override
+    protected SettingsDAO createSettingsDAO() {
+        // this is necessary to use the platform settings
+        return new SettingsDAO_UI();
+    }
 
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,30 +15,29 @@
  */
 package CB_Core.Api;
 
+import CB_Locator.Coordinate;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import CB_Locator.Coordinate;
 
 /**
  * @author Hubert
  */
 public class SearchGCOwner extends SearchCoordinate {
-	public String OwnerName;
+    public String OwnerName;
 
-	public SearchGCOwner(int number, Coordinate pos, float distanceInMeters, String ownerName) {
-		super(number, pos, distanceInMeters);
-		this.OwnerName = ownerName;
-	}
+    public SearchGCOwner(int number, Coordinate pos, float distanceInMeters, String ownerName) {
+        super(number, pos, distanceInMeters);
+        this.OwnerName = ownerName;
+    }
 
-	@Override
-	protected void getRequest(JSONObject request, boolean isLite) throws JSONException {
-		super.getRequest(request, isLite);
-		JSONObject jhidden = new JSONObject();
-		JSONArray jusers = new JSONArray();
-		jusers.put(OwnerName);
-		jhidden.put("UserNames", jusers);
-		request.put("HiddenByUsers", jhidden);
-	}
+    @Override
+    protected void getRequest(JSONObject request, boolean isLite) throws JSONException {
+        super.getRequest(request, isLite);
+        JSONObject jhidden = new JSONObject();
+        JSONArray jusers = new JSONArray();
+        jusers.put(OwnerName);
+        jhidden.put("UserNames", jusers);
+        request.put("HiddenByUsers", jhidden);
+    }
 }

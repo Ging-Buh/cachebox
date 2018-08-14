@@ -32,13 +32,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MapWorkerPool implements Runnable {
-    private static final Logger LOGGER = Logger.getLogger(MapWorkerPool.class.getName());
-
     // The default number of threads is one greater than the number of processors as one thread is
     // likely to be blocked on I/O reading map data. Technically this value can change, so a better
     // implementation, maybe one that also takes the available memory into account, would be good.
     // For stability reasons (see #591), we set default number of threads to 1.
     public static final int DEFAULT_NUMBER_OF_THREADS = 1;//Runtime.getRuntime().availableProcessors() + 1;
+    private static final Logger LOGGER = Logger.getLogger(MapWorkerPool.class.getName());
     public static int NUMBER_OF_THREADS = DEFAULT_NUMBER_OF_THREADS;
 
     public static boolean DEBUG_TIMING = false;
@@ -48,11 +47,11 @@ public class MapWorkerPool implements Runnable {
     private final AtomicLong totalTime = new AtomicLong();
 
     private final DatabaseRenderer databaseRenderer;
-    private boolean inShutdown, isRunning;
     private final JobQueue<RendererJob> jobQueue;
     private final Layer layer;
-    private ExecutorService self, workers;
     private final TileCache tileCache;
+    private boolean inShutdown, isRunning;
+    private ExecutorService self, workers;
 
     public MapWorkerPool(TileCache tileCache, JobQueue<RendererJob> jobQueue, DatabaseRenderer databaseRenderer, Layer layer) {
         super();

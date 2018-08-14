@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,377 +15,373 @@
  */
 package CB_UI.GL_UI.Activitys;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
+import CB_Core.Types.MeasuredCoord;
+import CB_Core.Types.MeasuredCoordList;
+import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
+import CB_Locator.Events.PositionChangedEvent;
+import CB_Locator.Events.PositionChangedEventList;
+import CB_Locator.Location.ProviderType;
+import CB_Locator.Locator;
+import CB_Locator.Map.Descriptor;
+import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.GL_UI.Controls.SatBarChart;
+import CB_UI_Base.Events.PlatformConnector;
+import CB_UI_Base.GL_UI.Activitys.ActivityBase;
+import CB_UI_Base.GL_UI.Controls.Button;
+import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Fonts;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
+import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.Math.PointD;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-import CB_Core.Types.MeasuredCoord;
-import CB_Core.Types.MeasuredCoordList;
-import CB_Locator.Coordinate;
-import CB_Locator.CoordinateGPS;
-import CB_Locator.Location.ProviderType;
-import CB_Locator.Locator;
-import CB_Locator.Events.PositionChangedEvent;
-import CB_Locator.Events.PositionChangedEventList;
-import CB_Locator.Map.Descriptor;
-import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.GL_UI.Controls.SatBarChart;
-import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.GL_UI.Fonts;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.Activitys.ActivityBase;
-import CB_UI_Base.GL_UI.Controls.Button;
-import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
-import CB_Utils.Math.PointD;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MeasureCoordinate extends ActivityBase implements PositionChangedEvent {
-	private Button bOK = null;
-	private Button bCancel = null;
-	private MeasuredCoordList mMeasureList = new MeasuredCoordList();
-	private Label lblMeasureCount;
-	private Label lblMeasureCoord;
-	private Label lblDescMeasureCount;
-	private Label lblDescMeasureCoord;
-	private int MeasureCount = 0;
-	private Sprite drawing = null;;
-	private Pixmap drawingPixmap = null;
-	private Texture drawingTexture = null;
-	private SatBarChart chart;
-
-	private final int projectionZoom = 18;// 18;
-	// Erdradius / anzahl Kacheln = Meter pro Kachel
-	private final double metersPerTile = 6378137.0 / Math.pow(2, projectionZoom);
-
-	private ICoordReturnListener mCoordReturnListener;
-
-	public interface ICoordReturnListener {
-		public void returnCoord(Coordinate coord);
-	}
-
-	public MeasureCoordinate(CB_RectF rec, String Name, ICoordReturnListener listener) {
-		super(rec, Name);
-		mCoordReturnListener = listener;
-
-		MeasuredCoord.Referenz = Locator.getCoordinate(ProviderType.GPS);
-
-		if (MeasuredCoord.Referenz == null) {
-			MeasuredCoord.Referenz = new CoordinateGPS(0, 0);
-		}
-
-		iniOkCancel();
-		iniLabels();
-
-		iniChart();
-
-	}
-
-	private void iniOkCancel() {
-		CB_RectF btnRec = new CB_RectF(leftBorder, this.getBottomHeight(), innerWidth / 2, UI_Size_Base.that.getButtonHeight());
-		bOK = new Button(btnRec, "OkButton");
-
-		btnRec.setX(bOK.getMaxX());
-		bCancel = new Button(btnRec, "CancelButton");
-
-		bOK.setText(Translation.Get("ok"));
-		bCancel.setText(Translation.Get("cancel"));
-
-		this.addChild(bOK);
-		this.addChild(bCancel);
-
-		bOK.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				if (mCoordReturnListener != null) {
-					synchronized (mMeasureList) {
-						GL.that.RunOnGL(new IRunOnGL() {
-							@Override
-							public void run() {
-								mCoordReturnListener.returnCoord(mMeasureList.getAccuWeightedAverageCoord());
-							}
-						});
-
-					}
-				}
-				finish();
-				return true;
-			}
-		});
-
-		bCancel.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-				if (mCoordReturnListener != null)
-					mCoordReturnListener.returnCoord(null);
-				finish();
-				return true;
-			}
-		});
-
-	}
-
-	private void iniLabels() {
-		float y = bOK.getMaxY() + innerWidth + (margin * 3);
-		float w = Math.max(Fonts.Measure(Translation.Get("MeasureCoord")).width, Fonts.Measure(Translation.Get("MeasureCount")).width);
-		CB_RectF rec = new CB_RectF(leftBorder + margin, y, w, MeasuredLabelHeight);
-		CB_RectF rec2 = new CB_RectF(rec.getMaxX() + margin, y, innerWidth - w - margin, MeasuredLabelHeight);
-
-		lblDescMeasureCount = new Label(this.name + " lblDescMeasureCount", rec, Translation.Get("MeasureCount"));
-
-		lblMeasureCount = new Label(this.name + " lblMeasureCount", rec2);
-
-		rec2.setY(lblMeasureCount.getMaxY() + margin);
-		rec.setY(lblMeasureCount.getMaxY() + margin);
-
-		lblDescMeasureCoord = new Label(this.name + " lblDescMeasureCoord", rec, Translation.Get("MeasureCoord"));
-
-		lblMeasureCoord = new Label(this.name + " lblMeasureCoord", rec2);
+    private final int projectionZoom = 18;// 18;
+    // Erdradius / anzahl Kacheln = Meter pro Kachel
+    private final double metersPerTile = 6378137.0 / Math.pow(2, projectionZoom);
+    private Button bOK = null;
+    private Button bCancel = null;
+    private MeasuredCoordList mMeasureList = new MeasuredCoordList();
+    private Label lblMeasureCount;
+    private Label lblMeasureCoord;
+    private Label lblDescMeasureCount;
+    private Label lblDescMeasureCoord;
+    ;
+    private int MeasureCount = 0;
+    private Sprite drawing = null;
+    private Pixmap drawingPixmap = null;
+    private Texture drawingTexture = null;
+    private SatBarChart chart;
+    private ICoordReturnListener mCoordReturnListener;
+    private AtomicBoolean inRepaint = new AtomicBoolean(false);
+    private boolean redraw = true;
+
+    public MeasureCoordinate(CB_RectF rec, String Name, ICoordReturnListener listener) {
+        super(rec, Name);
+        mCoordReturnListener = listener;
+
+        MeasuredCoord.Referenz = Locator.getCoordinate(ProviderType.GPS);
+
+        if (MeasuredCoord.Referenz == null) {
+            MeasuredCoord.Referenz = new CoordinateGPS(0, 0);
+        }
+
+        iniOkCancel();
+        iniLabels();
+
+        iniChart();
+
+    }
+
+    private void iniOkCancel() {
+        CB_RectF btnRec = new CB_RectF(leftBorder, this.getBottomHeight(), innerWidth / 2, UI_Size_Base.that.getButtonHeight());
+        bOK = new Button(btnRec, "OkButton");
+
+        btnRec.setX(bOK.getMaxX());
+        bCancel = new Button(btnRec, "CancelButton");
+
+        bOK.setText(Translation.Get("ok"));
+        bCancel.setText(Translation.Get("cancel"));
+
+        this.addChild(bOK);
+        this.addChild(bCancel);
+
+        bOK.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                if (mCoordReturnListener != null) {
+                    synchronized (mMeasureList) {
+                        GL.that.RunOnGL(new IRunOnGL() {
+                            @Override
+                            public void run() {
+                                mCoordReturnListener.returnCoord(mMeasureList.getAccuWeightedAverageCoord());
+                            }
+                        });
+
+                    }
+                }
+                finish();
+                return true;
+            }
+        });
+
+        bCancel.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                if (mCoordReturnListener != null)
+                    mCoordReturnListener.returnCoord(null);
+                finish();
+                return true;
+            }
+        });
+
+    }
+
+    private void iniLabels() {
+        float y = bOK.getMaxY() + innerWidth + (margin * 3);
+        float w = Math.max(Fonts.Measure(Translation.Get("MeasureCoord")).width, Fonts.Measure(Translation.Get("MeasureCount")).width);
+        CB_RectF rec = new CB_RectF(leftBorder + margin, y, w, MeasuredLabelHeight);
+        CB_RectF rec2 = new CB_RectF(rec.getMaxX() + margin, y, innerWidth - w - margin, MeasuredLabelHeight);
+
+        lblDescMeasureCount = new Label(this.name + " lblDescMeasureCount", rec, Translation.Get("MeasureCount"));
+
+        lblMeasureCount = new Label(this.name + " lblMeasureCount", rec2);
+
+        rec2.setY(lblMeasureCount.getMaxY() + margin);
+        rec.setY(lblMeasureCount.getMaxY() + margin);
+
+        lblDescMeasureCoord = new Label(this.name + " lblDescMeasureCoord", rec, Translation.Get("MeasureCoord"));
+
+        lblMeasureCoord = new Label(this.name + " lblMeasureCoord", rec2);
+
+        this.addChild(lblDescMeasureCount);
+        this.addChild(lblMeasureCount);
+        this.addChild(lblDescMeasureCoord);
+        this.addChild(lblMeasureCoord);
+    }
+
+    private void iniChart() {
+        float w = innerWidth - margin - margin;
+        float h = this.getHeight() - lblDescMeasureCoord.getMaxY() - this.getTopHeight() - margin;
+
+        CB_RectF rec = new CB_RectF(leftBorder + margin, lblDescMeasureCoord.getMaxY() + margin, w, h);
+        chart = new SatBarChart(rec, "");
+        this.addChild(chart);
+    }
+
+    @Override
+    protected void finish() {
+        if (chart != null)
+            chart.dispose();
+        chart = null;
+        disposeTexture();
+        GL.that.removeRenderView(this);
+        super.finish();
+    }
 
-		this.addChild(lblDescMeasureCount);
-		this.addChild(lblMeasureCount);
-		this.addChild(lblDescMeasureCoord);
-		this.addChild(lblMeasureCoord);
-	}
+    private void disposeTexture() {
+        try {
+            if (drawingPixmap != null)
+                drawingPixmap.dispose();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            if (drawingTexture != null)
+                drawingTexture.dispose();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        drawing = null;
+        drawingPixmap = null;
+        drawingTexture = null;
+    }
 
-	private void iniChart() {
-		float w = innerWidth - margin - margin;
-		float h = this.getHeight() - lblDescMeasureCoord.getMaxY() - this.getTopHeight() - margin;
+    @Override
+    protected void Initial() {
+        repaintPreview();
+    }
 
-		CB_RectF rec = new CB_RectF(leftBorder + margin, lblDescMeasureCoord.getMaxY() + margin, w, h);
-		chart = new SatBarChart(rec, "");
-		this.addChild(chart);
-	}
+    @Override
+    protected void render(Batch batch) {
 
-	@Override
-	protected void finish() {
-		if (chart != null)
-			chart.dispose();
-		chart = null;
-		disposeTexture();
-		GL.that.removeRenderView(this);
-		super.finish();
-	}
+        if (drawing != null)
+            drawing.draw(batch);
 
-	private void disposeTexture() {
-		try {
-			if (drawingPixmap != null)
-				drawingPixmap.dispose();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		try {
-			if (drawingTexture != null)
-				drawingTexture.dispose();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		drawing = null;
-		drawingPixmap = null;
-		drawingTexture = null;
-	}
+        if (redraw)
+            repaintPreview();
 
-	private AtomicBoolean inRepaint = new AtomicBoolean(false);
+    }
 
-	@Override
-	protected void Initial() {
-		repaintPreview();
-	}
+    private void repaintPreview() {
+        if (inRepaint.get())
+            return;
+        inRepaint.set(true);
 
-	@Override
-	protected void render(Batch batch) {
+        disposeTexture();
 
-		if (drawing != null)
-			drawing.draw(batch);
+        CB_RectF panelRec = new CB_RectF(leftBorder, bOK.getMaxY(), innerWidth, innerWidth);
 
-		if (redraw)
-			repaintPreview();
+        int w = (int) panelRec.getWidth();
+        int h = (int) panelRec.getHeight();
 
-	}
+        drawingPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
 
-	private boolean redraw = true;
+        drawingPixmap.setColor(Color.LIGHT_GRAY);
+        drawingPixmap.fillRectangle(0, 0, (int) panelRec.getWidth(), (int) panelRec.getHeight());
 
-	private void repaintPreview() {
-		if (inRepaint.get())
-			return;
-		inRepaint.set(true);
+        int centerX = (int) panelRec.getHalfWidth();
+        int centerY = (int) panelRec.getHalfHeight();
 
-		disposeTexture();
+        float minPix = Math.min(panelRec.getWidth(), panelRec.getHeight());
 
-		CB_RectF panelRec = new CB_RectF(leftBorder, bOK.getMaxY(), innerWidth, innerWidth);
+        try {
+            synchronized (mMeasureList) {
 
-		int w = (int) panelRec.getWidth();
-		int h = (int) panelRec.getHeight();
+                if (mMeasureList.size() > 0) {
+                    // Gemittelter Punkt der GPS-Messungen
+                    double medianLat = MeasuredCoord.Referenz.getLatitude();
+                    double medianLon = MeasuredCoord.Referenz.getLongitude();
 
-		drawingPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+                    MeasuredCoordList sortetdList = (MeasuredCoordList) mMeasureList.clone();
+                    sortetdList.sort();
 
-		drawingPixmap.setColor(Color.LIGHT_GRAY);
-		drawingPixmap.fillRectangle(0, 0, (int) panelRec.getWidth(), (int) panelRec.getHeight());
+                    double peakLat = Math.max(Math.abs(sortetdList.get(0).getLatitude() - medianLat), Math.abs(sortetdList.get(sortetdList.size() - 1).getLatitude() - medianLat));
+                    double peakLon = Math.max(Math.abs(sortetdList.get(0).getLongitude() - medianLon), Math.abs(sortetdList.get(sortetdList.size() - 1).getLongitude() - medianLon));
 
-		int centerX = (int) panelRec.getHalfWidth();
-		int centerY = (int) panelRec.getHalfHeight();
+                    // Umrechnung in XY
+                    double medianX = Descriptor.LongitudeToTileX(projectionZoom, medianLon);
+                    double medianY = Descriptor.LatitudeToTileY(projectionZoom, medianLat);
 
-		float minPix = Math.min(panelRec.getWidth(), panelRec.getHeight());
+                    double extremeX = Descriptor.LongitudeToTileX(projectionZoom, peakLon + medianLon);
+                    double extremeY = Descriptor.LatitudeToTileY(projectionZoom, peakLat + medianLat);
 
-		try {
-			synchronized (mMeasureList) {
+                    double peakX = Math.abs(extremeX - medianX);
+                    double peakY = Math.abs(extremeY - medianY);
 
-				if (mMeasureList.size() > 0) {
-					// Gemittelter Punkt der GPS-Messungen
-					double medianLat = MeasuredCoord.Referenz.getLatitude();
-					double medianLon = MeasuredCoord.Referenz.getLongitude();
+                    double maxPeak = Math.max(peakX, peakY);
 
-					MeasuredCoordList sortetdList = (MeasuredCoordList) mMeasureList.clone();
-					sortetdList.sort();
+                    double factor = 1;
+                    if (maxPeak > 0)
+                        factor = minPix / maxPeak;
 
-					double peakLat = Math.max(Math.abs(sortetdList.get(0).getLatitude() - medianLat), Math.abs(sortetdList.get(sortetdList.size() - 1).getLatitude() - medianLat));
-					double peakLon = Math.max(Math.abs(sortetdList.get(0).getLongitude() - medianLon), Math.abs(sortetdList.get(sortetdList.size() - 1).getLongitude() - medianLon));
+                    factor /= 2;
 
-					// Umrechnung in XY
-					double medianX = Descriptor.LongitudeToTileX(projectionZoom, medianLon);
-					double medianY = Descriptor.LatitudeToTileY(projectionZoom, medianLat);
+                    int x = (int) centerX;
+                    int y = (int) centerY;
 
-					double extremeX = Descriptor.LongitudeToTileX(projectionZoom, peakLon + medianLon);
-					double extremeY = Descriptor.LatitudeToTileY(projectionZoom, peakLat + medianLat);
+                    // Track zeichnen
 
-					double peakX = Math.abs(extremeX - medianX);
-					double peakY = Math.abs(extremeY - medianY);
+                    for (int i = 1; i < mMeasureList.size(); i++) {
 
-					double maxPeak = Math.max(peakX, peakY);
+                        PointD lastDrawEntry = Descriptor.projectCoordinate(mMeasureList.get(i - 1).getLatitude(), mMeasureList.get(i - 1).getLongitude(), projectionZoom);
 
-					double factor = 1;
-					if (maxPeak > 0)
-						factor = minPix / maxPeak;
+                        int lastX = (int) (centerX + (lastDrawEntry.X - medianX) * factor);
+                        int lastY = (int) (centerY - (lastDrawEntry.Y - medianY) * factor);
 
-					factor /= 2;
+                        PointD thisDrawEntry = Descriptor.projectCoordinate(mMeasureList.get(i).getLatitude(), mMeasureList.get(i).getLongitude(), projectionZoom);
 
-					int x = (int) centerX;
-					int y = (int) centerY;
+                        x = (int) (centerX + (thisDrawEntry.X - medianX) * factor);
+                        y = (int) (centerY - (thisDrawEntry.Y - medianY) * factor);
 
-					// Track zeichnen
+                        drawingPixmap.setColor(Color.RED);
+                        drawingPixmap.drawLine(lastX, lastY, x, y);
 
-					for (int i = 1; i < mMeasureList.size(); i++) {
+                    }
 
-						PointD lastDrawEntry = Descriptor.projectCoordinate(mMeasureList.get(i - 1).getLatitude(), mMeasureList.get(i - 1).getLongitude(), projectionZoom);
+                    drawingPixmap.setColor(Color.BLUE);
+                    drawingPixmap.drawCircle(x, y, 4);
+                }
+            }
+            //
+            int m2 = (int) ((4 * minPix) / metersPerTile);
+            int m4 = m2 * 2;
 
-						int lastX = (int) (centerX + (lastDrawEntry.X - medianX) * factor);
-						int lastY = (int) (centerY - (lastDrawEntry.Y - medianY) * factor);
+            drawingPixmap.setColor(Color.BLACK);
+            drawingPixmap.drawCircle(centerX, centerY, m2);
+            drawingPixmap.drawCircle(centerX, centerY, m4);
 
-						PointD thisDrawEntry = Descriptor.projectCoordinate(mMeasureList.get(i).getLatitude(), mMeasureList.get(i).getLongitude(), projectionZoom);
+            drawingPixmap.drawLine(centerX, 0, centerX, (int) panelRec.getHeight());
+            drawingPixmap.drawLine(0, centerY, (int) panelRec.getWidth(), centerY);
 
-						x = (int) (centerX + (thisDrawEntry.X - medianX) * factor);
-						y = (int) (centerY - (thisDrawEntry.Y - medianY) * factor);
+            drawingTexture = new Texture(drawingPixmap);
 
-						drawingPixmap.setColor(Color.RED);
-						drawingPixmap.drawLine(lastX, lastY, x, y);
+            drawing = new Sprite(drawingTexture, (int) panelRec.getWidth(), (int) panelRec.getHeight());
+            drawing.setX(leftBorder);
+            drawing.setY(bOK.getMaxY() + this.getBottomHeight());
 
-					}
+            inRepaint.set(false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-					drawingPixmap.setColor(Color.BLUE);
-					drawingPixmap.drawCircle(x, y, 4);
-				}
-			}
-			//
-			int m2 = (int) ((4 * minPix) / metersPerTile);
-			int m4 = m2 * 2;
+        redraw = false;
 
-			drawingPixmap.setColor(Color.BLACK);
-			drawingPixmap.drawCircle(centerX, centerY, m2);
-			drawingPixmap.drawCircle(centerX, centerY, m4);
+        GL.that.renderOnce();
+    }
 
-			drawingPixmap.drawLine(centerX, 0, centerX, (int) panelRec.getHeight());
-			drawingPixmap.drawLine(0, centerY, (int) panelRec.getWidth(), centerY);
+    @Override
+    public void PositionChanged() {
+        synchronized (mMeasureList) {
 
-			drawingTexture = new Texture(drawingPixmap);
+            if (mMeasureList == null) {
+                GL.that.Toast("MeasureList = null");
+                return;
+            }
 
-			drawing = new Sprite(drawingTexture, (int) panelRec.getWidth(), (int) panelRec.getHeight());
-			drawing.setX(leftBorder);
-			drawing.setY(bOK.getMaxY() + this.getBottomHeight());
+            // Coordinate coord = new Coordinate(locator.getLocation());
 
-			inRepaint.set(false);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+            if (MeasureCount == 0)
+                lblMeasureCoord.setText("");
 
-		redraw = false;
+            MeasureCount++;
+            mMeasureList.add(new MeasuredCoord(Locator.getLocation(ProviderType.GPS).toCordinate()));
 
-		GL.that.renderOnce();
-	}
+            lblMeasureCount.setText(String.valueOf(MeasureCount) + "/" + String.valueOf(mMeasureList.size()));
 
-	@Override
-	public void PositionChanged() {
-		synchronized (mMeasureList) {
+            // nach jeder 10. Messung die Liste Aufräumen
+            if (mMeasureList.size() % 10 == 0) {
+                mMeasureList.setAverage();
+                mMeasureList.clearDiscordantValue();
+                lblMeasureCoord.setText(mMeasureList.toString());
+            }
 
-			if (mMeasureList == null) {
-				GL.that.Toast("MeasureList = null");
-				return;
-			}
+            redraw = true;
+            GL.that.renderOnce();
+        }
+    }
 
-			// Coordinate coord = new Coordinate(locator.getLocation());
+    @Override
+    public String getReceiverName() {
+        return "MeasureCoordinate";
+    }
 
-			if (MeasureCount == 0)
-				lblMeasureCoord.setText("");
+    @Override
+    public void onShow() {
+        PositionChangedEventList.Add(this);
+        if (chart != null) {
+            chart.onShow();
+            chart.setDrawWithAlpha(false);
+            PlatformConnector.switchToGpsMeasure();
+        }
 
-			MeasureCount++;
-			mMeasureList.add(new MeasuredCoord(Locator.getLocation(ProviderType.GPS).toCordinate()));
+    }
 
-			lblMeasureCount.setText(String.valueOf(MeasureCount) + "/" + String.valueOf(mMeasureList.size()));
+    @Override
+    public void onHide() {
+        PositionChangedEventList.Remove(this);
+        if (chart != null)
+            chart.onHide();
+        PlatformConnector.switchToGpsDefault();
+    }
 
-			// nach jeder 10. Messung die Liste Aufräumen
-			if (mMeasureList.size() % 10 == 0) {
-				mMeasureList.setAverage();
-				mMeasureList.clearDiscordantValue();
-				lblMeasureCoord.setText(mMeasureList.toString());
-			}
+    @Override
+    public void OrientationChanged() {
+    }
 
-			redraw = true;
-			GL.that.renderOnce();
-		}
-	}
+    @Override
+    public Priority getPriority() {
+        return Priority.Normal;
+    }
 
-	@Override
-	public String getReceiverName() {
-		return "MeasureCoordinate";
-	}
+    @Override
+    public void SpeedChanged() {
+    }
 
-	@Override
-	public void onShow() {
-		PositionChangedEventList.Add(this);
-		if (chart != null) {
-			chart.onShow();
-			chart.setDrawWithAlpha(false);
-			PlatformConnector.switchToGpsMeasure();
-		}
-
-	}
-
-	@Override
-	public void onHide() {
-		PositionChangedEventList.Remove(this);
-		if (chart != null)
-			chart.onHide();
-		PlatformConnector.switchToGpsDefault();
-	}
-
-	@Override
-	public void OrientationChanged() {
-	}
-
-	@Override
-	public Priority getPriority() {
-		return Priority.Normal;
-	}
-
-	@Override
-	public void SpeedChanged() {
-	}
+    public interface ICoordReturnListener {
+        public void returnCoord(Coordinate coord);
+    }
 
 }

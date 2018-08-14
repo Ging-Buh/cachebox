@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014-2015 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -17,9 +17,9 @@ package CB_UI_Base.graphics;
 
 /**
  * DEFAULT, MONOSPACE, SANS_SERIF, SERIF;
- * 
+ *
  * @author Longri
  */
 public enum GL_FontFamily {
-	DEFAULT, MONOSPACE, SANS_SERIF, SERIF;
+    DEFAULT, MONOSPACE, SANS_SERIF, SERIF;
 }

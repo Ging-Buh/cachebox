@@ -1,23 +1,16 @@
 package CB_UI.GL_UI.Main.Actions;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import com.badlogic.gdx.graphics.g2d.Sprite;
-
-import CB_Core.CacheListChangedEventList;
-import CB_Core.Database;
-import CB_Core.FilterInstances;
 import CB_Core.Api.GroundspeakAPI;
+import CB_Core.CacheListChangedEventList;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
+import CB_Core.Database;
+import CB_Core.FilterInstances;
 import CB_Core.Types.Cache;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
-import CB_UI_Base.GL_UI.Sprites;
-import CB_UI_Base.GL_UI.Sprites.IconName;
+import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
@@ -26,165 +19,170 @@ import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Utils.Events.ProgresssChangedEventList;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class CB_Action_chkState extends CB_Action {
 
-	public CB_Action_chkState() {
-		super("chkState", MenuID.AID_CHK_STATE);
+    int ChangedCount = 0;
+    int result = 0;
+    private ProgressDialog pd;
+    private boolean cancel = false;
+    private final RunnableReadyHandler ChkStatRunnable = new RunnableReadyHandler() {
+        final int BlockSize = 100; // die API lässt nur maximal 100 zu!
 
-	}
+        @Override
+        public void run() {
+            cancel = false;
+            ArrayList<Cache> chkList = new ArrayList<Cache>();
 
-	@Override
-	public boolean getEnabled() {
-		return true;
-	}
+            synchronized (Database.Data.Query) {
+                if (Database.Data.Query == null || Database.Data.Query.size() == 0)
+                    return;
+                ChangedCount = 0;
+                for (int i = 0, n = Database.Data.Query.size(); i < n; i++) {
+                    chkList.add(Database.Data.Query.get(i));
+                }
 
-	@Override
-	public Sprite getIcon() {
-		return Sprites.getSprite(IconName.dayGcLiveIcon.name());
-	}
+            }
+            float ProgressInkrement = 100.0f / (chkList.size() / BlockSize);
 
-	private ProgressDialog pd;
+            // in Blöcke Teilen
 
-	@Override
-	public void Execute() {
-		pd = ProgressDialog.Show(Translation.Get("chkState"), DownloadAnimation.GetINSTANCE(), ChkStatRunnable);
-	}
+            int start = 0;
+            int stop = BlockSize;
+            ArrayList<Cache> addedReturnList = new ArrayList<Cache>();
 
-	int ChangedCount = 0;
-	int result = 0;
-	private boolean cancel = false;
-	private final RunnableReadyHandler ChkStatRunnable = new RunnableReadyHandler() {
-		final int BlockSize = 100; // die API lässt nur maximal 100 zu!
+            result = 0;
+            ArrayList<Cache> chkList100;
 
-		@Override
-		public void run() {
-			cancel = false;
-			ArrayList<Cache> chkList = new ArrayList<Cache>();
+            boolean cancelThread = false;
 
-			synchronized (Database.Data.Query) {
-				if (Database.Data.Query == null || Database.Data.Query.size() == 0)
-					return;
-				ChangedCount = 0;
-				for (int i = 0, n = Database.Data.Query.size(); i < n; i++) {
-					chkList.add(Database.Data.Query.get(i));
-				}
+            float progress = 0;
 
-			}
-			float ProgressInkrement = 100.0f / (chkList.size() / BlockSize);
+            do {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    // thread abgebrochen
+                    cancelThread = true;
+                }
+                chkList100 = new ArrayList<Cache>();
+                if (!cancelThread) {
 
-			// in Blöcke Teilen
+                    if (chkList == null || chkList.size() == 0) {
+                        break;
+                    }
 
-			int start = 0;
-			int stop = BlockSize;
-			ArrayList<Cache> addedReturnList = new ArrayList<Cache>();
+                    Iterator<Cache> Iterator2 = chkList.iterator();
 
-			result = 0;
-			ArrayList<Cache> chkList100;
+                    int index = 0;
+                    do {
+                        if (index >= start && index <= stop) {
+                            chkList100.add(Iterator2.next());
+                        } else {
+                            Iterator2.next();
+                        }
+                        index++;
+                    } while (Iterator2.hasNext());
 
-			boolean cancelThread = false;
+                    result = GroundspeakAPI.GetGeocacheStatus(chkList100, this);
+                    if (result == -1)
+                        break;// API Error
+                    if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
+                        GL.that.Toast(ConnectionError.INSTANCE);
+                        break;
+                    }
+                    if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
+                        GL.that.Toast(ApiUnavailable.INSTANCE);
+                        break;
+                    }
+                    addedReturnList.addAll(chkList100);
+                    start += BlockSize + 1;
+                    stop += BlockSize + 1;
+                }
 
-			float progress = 0;
+                progress += ProgressInkrement;
 
-			do {
-				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e) {
-					// thread abgebrochen
-					cancelThread = true;
-				}
-				chkList100 = new ArrayList<Cache>();
-				if (!cancelThread) {
+                ProgresssChangedEventList.Call("", (int) progress);
 
-					if (chkList == null || chkList.size() == 0) {
-						break;
-					}
+            } while (chkList100.size() == BlockSize + 1 && !cancelThread);
 
-					Iterator<Cache> Iterator2 = chkList.iterator();
+            if (result == 0 && !cancelThread) {
+                Database.Data.beginTransaction();
 
-					int index = 0;
-					do {
-						if (index >= start && index <= stop) {
-							chkList100.add(Iterator2.next());
-						} else {
-							Iterator2.next();
-						}
-						index++;
-					} while (Iterator2.hasNext());
+                Iterator<Cache> iterator = addedReturnList.iterator();
+                CacheDAO dao = new CacheDAO();
+                do {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        cancelThread = true;
+                    }
+                    Cache writeTmp = iterator.next();
+                    if (dao.UpdateDatabaseCacheState(writeTmp))
+                        ChangedCount++;
+                } while (iterator.hasNext() && !cancelThread);
 
-					result = GroundspeakAPI.GetGeocacheStatus(chkList100, this);
-					if (result == -1)
-						break;// API Error
-					if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
-						GL.that.Toast(ConnectionError.INSTANCE);
-						break;
-					}
-					if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
-						GL.that.Toast(ApiUnavailable.INSTANCE);
-						break;
-					}
-					addedReturnList.addAll(chkList100);
-					start += BlockSize + 1;
-					stop += BlockSize + 1;
-				}
+                Database.Data.setTransactionSuccessful();
+                Database.Data.endTransaction();
 
-				progress += ProgressInkrement;
+            }
+            pd.close();
 
-				ProgresssChangedEventList.Call("", (int) progress);
+        }
 
-			} while (chkList100.size() == BlockSize + 1 && !cancelThread);
+        @Override
+        public boolean cancel() {
+            return cancel;
+        }
 
-			if (result == 0 && !cancelThread) {
-				Database.Data.beginTransaction();
+        @Override
+        public void RunnableReady(boolean canceld) {
+            String sCanceld = canceld ? Translation.Get("isCanceld") + GlobalCore.br : "";
 
-				Iterator<Cache> iterator = addedReturnList.iterator();
-				CacheDAO dao = new CacheDAO();
-				do {
-					try {
-						Thread.sleep(10);
-					} catch (InterruptedException e) {
-						cancelThread = true;
-					}
-					Cache writeTmp = iterator.next();
-					if (dao.UpdateDatabaseCacheState(writeTmp))
-						ChangedCount++;
-				} while (iterator.hasNext() && !cancelThread);
+            if (result != -1) {
 
-				Database.Data.setTransactionSuccessful();
-				Database.Data.endTransaction();
+                // Reload result from DB
+                synchronized (Database.Data.Query) {
+                    String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
+                    CacheListDAO cacheListDAO = new CacheListDAO();
+                    cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+                    cacheListDAO = null;
+                }
 
-			}
-			pd.close();
+                CacheListChangedEventList.Call();
+                synchronized (Database.Data.Query) {
+                    GL_MsgBox.Show(sCanceld + Translation.Get("CachesUpdatet") + " " + ChangedCount + "/" + Database.Data.Query.size(), Translation.Get("chkState"), MessageBoxIcon.None);
+                }
 
-		}
+            }
+        }
+    };
 
-		@Override
-		public boolean cancel() {
-			return cancel;
-		}
+    public CB_Action_chkState() {
+        super("chkState", MenuID.AID_CHK_STATE);
 
-		@Override
-		public void RunnableReady(boolean canceld) {
-			String sCanceld = canceld ? Translation.Get("isCanceld") + GlobalCore.br : "";
+    }
 
-			if (result != -1) {
+    @Override
+    public boolean getEnabled() {
+        return true;
+    }
 
-				// Reload result from DB
-				synchronized (Database.Data.Query) {
-					String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
-					CacheListDAO cacheListDAO = new CacheListDAO();
-					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
-					cacheListDAO = null;
-				}
+    @Override
+    public Sprite getIcon() {
+        return Sprites.getSprite(IconName.dayGcLiveIcon.name());
+    }
 
-				CacheListChangedEventList.Call();
-				synchronized (Database.Data.Query) {
-					GL_MsgBox.Show(sCanceld + Translation.Get("CachesUpdatet") + " " + ChangedCount + "/" + Database.Data.Query.size(), Translation.Get("chkState"), MessageBoxIcon.None);
-				}
-
-			}
-		}
-	};
+    @Override
+    public void Execute() {
+        pd = ProgressDialog.Show(Translation.Get("chkState"), DownloadAnimation.GetINSTANCE(), ChkStatRunnable);
+    }
 }

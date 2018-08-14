@@ -1,12 +1,5 @@
 package CB_UI.GL_UI.Controls;
 
-import org.slf4j.LoggerFactory;
-
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_UI.GlobalCore;
@@ -17,141 +10,144 @@ import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import org.slf4j.LoggerFactory;
 
 public class InfoBubble extends CB_View_Base {
-	final static org.slf4j.Logger log = LoggerFactory.getLogger(InfoBubble.class);
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(InfoBubble.class);
+    private static CB_RectF saveButtonRec;
+    private final Drawable saveIcon;
+    /**
+     * CacheID of the Cache showing Bubble
+     */
+    private long mCacheId = -1;
+    /**
+     * Cache showing Bubble
+     */
+    private Cache mCache = null;
+    private Waypoint mWaypoint = null;
+    private CacheInfo cacheInfo;
 
-	public InfoBubble(SizeF Size, String Name) {
-		super(Size, Name);
-		saveIcon = new SpriteDrawable(Sprites.getSprite(IconName.save.name()));
-		registerSkinChangedEvent();
-	}
+    public InfoBubble(SizeF Size, String Name) {
+        super(Size, Name);
+        saveIcon = new SpriteDrawable(Sprites.getSprite(IconName.save.name()));
+        registerSkinChangedEvent();
+    }
 
-	/**
-	 * CacheID of the Cache showing Bubble
-	 */
-	private long mCacheId = -1;
-	private static CB_RectF saveButtonRec;
+    public long getCacheId() {
+        return mCacheId;
+    }
 
-	public long getCacheId() {
-		return mCacheId;
-	}
+    public Waypoint getWaypoint() {
+        return mWaypoint;
+    }
 
-	public Waypoint getWaypoint() {
-		return mWaypoint;
-	}
+    public void setCache(Cache cache, Waypoint waypoint) {
+        setCache(cache, waypoint, false);
+    }
 
-	/**
-	 * Cache showing Bubble
-	 */
-	private Cache mCache = null;
-	private Waypoint mWaypoint = null;
-	private CacheInfo cacheInfo;
-	private final Drawable saveIcon;
+    public void setCache(Cache cache, Waypoint waypoint, boolean force) {
 
-	public void setCache(Cache cache, Waypoint waypoint) {
-		setCache(cache, waypoint, false);
-	}
+        if (cache == null) {
+            mCache = null;
+            mCacheId = -1;
+            this.removeChilds();
+            cacheInfo = null;
+            return;
+        }
 
-	public void setCache(Cache cache, Waypoint waypoint, boolean force) {
+        if (!force) {
+            if ((mCache != null) && (mCache.Id == cache.Id) && (mWaypoint == waypoint))
+                return;
+        }
 
-		if (cache == null) {
-			mCache = null;
-			mCacheId = -1;
-			this.removeChilds();
-			cacheInfo = null;
-			return;
-		}
+        // Log.debug(log, "New Cache @InfoBubble");
+        mCache = cache;
+        mCacheId = cache.Id;
+        mWaypoint = waypoint;
+        // SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
+        SizeF size = new SizeF(0.96f * getWidth(), 0.72f * getHeight());
 
-		if (!force) {
-			if ((mCache != null) && (mCache.Id == cache.Id) && (mWaypoint == waypoint))
-				return;
-		}
+        // if Cache is an event we must load details for DateHidden
+        if (mCache.isEvent() && !mCache.isDetailLoaded())
+            mCache.loadDetail();
 
-		// Log.debug(log, "New Cache @InfoBubble");
-		mCache = cache;
-		mCacheId = cache.Id;
-		mWaypoint = waypoint;
-		// SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
-		SizeF size = new SizeF(0.96f * getWidth(), 0.72f * getHeight());
+        cacheInfo = new CacheInfo(size, "CacheInfo", cache);
+        cacheInfo.setViewMode(mCache.isEvent() ? CacheInfo.VIEW_MODE_BUBBLE_EVENT : CacheInfo.VIEW_MODE_BUBBLE);
+        cacheInfo.setY(getHeight() - size.height);
+        cacheInfo.setFont(Fonts.getBubbleNormal());
+        cacheInfo.setSmallFont(Fonts.getBubbleSmall());
+        this.removeChilds();
+        this.addChild(cacheInfo);
+        requestLayout();
+    }
 
-		// if Cache is an event we must load details for DateHidden
-		if (mCache.isEvent() && !mCache.isDetailLoaded())
-			mCache.loadDetail();
+    public void showBubbleSelected() {
+        // Log.debug(log, "Show BubbleSelected");
+        mCacheId = GlobalCore.getSelectedCache().Id;
+        mCache = GlobalCore.getSelectedCache();
+        setVisible();
+    }
 
-		cacheInfo = new CacheInfo(size, "CacheInfo", cache);
-		cacheInfo.setViewMode(mCache.isEvent() ? CacheInfo.VIEW_MODE_BUBBLE_EVENT : CacheInfo.VIEW_MODE_BUBBLE);
-		cacheInfo.setY(getHeight() - size.height);
-		cacheInfo.setFont(Fonts.getBubbleNormal());
-		cacheInfo.setSmallFont(Fonts.getBubbleSmall());
-		this.removeChilds();
-		this.addChild(cacheInfo);
-		requestLayout();
-	}
+    @Override
+    protected void render(Batch batch) {
+        boolean selectedCache = false;
+        if (GlobalCore.isSetSelectedCache()) {
+            selectedCache = mCache.equals(GlobalCore.getSelectedCache());
+        }
 
-	public void showBubbleSelected() {
-		// Log.debug(log, "Show BubbleSelected");
-		mCacheId = GlobalCore.getSelectedCache().Id;
-		mCache = GlobalCore.getSelectedCache();
-		setVisible();
-	}
+        Sprite sprite = selectedCache ? Sprites.Bubble.get(1) : Sprites.Bubble.get(0);
+        sprite.setPosition(0, 0);
+        sprite.setSize(getWidth(), getHeight());
+        sprite.draw(batch);
 
-	@Override
-	protected void render(Batch batch) {
-		boolean selectedCache = false;
-		if (GlobalCore.isSetSelectedCache()) {
-			selectedCache = mCache.equals(GlobalCore.getSelectedCache());
-		}
+        if (mCache != null && mCache.isLive()) {
+            if (saveButtonRec == null) {
+                float s = GL_UISizes.halfBubble / 5;
+                saveButtonRec = new CB_RectF(GL_UISizes.margin, this.getHalfHeight() - (s / 3), s, s);
+            }
+            saveIcon.draw(batch, saveButtonRec.getX(), saveButtonRec.getY(), saveButtonRec.getWidth(), saveButtonRec.getHeight());
+        }
+    }
 
-		Sprite sprite = selectedCache ? Sprites.Bubble.get(1) : Sprites.Bubble.get(0);
-		sprite.setPosition(0, 0);
-		sprite.setSize(getWidth(), getHeight());
-		sprite.draw(batch);
+    @Override
+    public void onResized(CB_RectF rec) {
+        requestLayout();
+    }
 
-		if (mCache != null && mCache.isLive()) {
-			if (saveButtonRec == null) {
-				float s = GL_UISizes.halfBubble / 5;
-				saveButtonRec = new CB_RectF(GL_UISizes.margin, this.getHalfHeight() - (s / 3), s, s);
-			}
-			saveIcon.draw(batch, saveButtonRec.getX(), saveButtonRec.getY(), saveButtonRec.getWidth(), saveButtonRec.getHeight());
-		}
-	}
+    private void requestLayout() {
+        // Log.debug(log, "InfoBubble RequestLayout");
+        // SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
+        SizeF size = new SizeF(0.96f * getWidth(), 0.72f * getHeight());
+        cacheInfo.setSize(size);
+        cacheInfo.setY(getHeight() - size.height);
+    }
 
-	@Override
-	public void onResized(CB_RectF rec) {
-		requestLayout();
-	}
+    public Cache getCache() {
+        return mCache;
+    }
 
-	private void requestLayout() {
-		// Log.debug(log, "InfoBubble RequestLayout");
-		// SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
-		SizeF size = new SizeF(0.96f * getWidth(), 0.72f * getHeight());
-		cacheInfo.setSize(size);
-		cacheInfo.setY(getHeight() - size.height);
-	}
+    @Override
+    protected void SkinIsChanged() {
+        if (cacheInfo != null) {
+            cacheInfo.dispose();
+            cacheInfo = null;
+        }
 
-	public Cache getCache() {
-		return mCache;
-	}
+        setCache(mCache, mWaypoint, true);
+    }
 
-	@Override
-	protected void SkinIsChanged() {
-		if (cacheInfo != null) {
-			cacheInfo.dispose();
-			cacheInfo = null;
-		}
+    public boolean saveButtonClicked(int x, int y) {
+        if (mCache == null || !mCache.isLive())
+            return false;
 
-		setCache(mCache, mWaypoint, true);
-	}
+        if (saveButtonRec.contains(x, y))
+            return true;
 
-	public boolean saveButtonClicked(int x, int y) {
-		if (mCache == null || !mCache.isLive())
-			return false;
-
-		if (saveButtonRec.contains(x, y))
-			return true;
-
-		return false;
-	}
+        return false;
+    }
 
 }

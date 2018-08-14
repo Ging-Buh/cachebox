@@ -64,21 +64,12 @@ public abstract class RenderInstruction {
     static final String SYMBOL_PERCENT = "symbol-percent";
     static final String SYMBOL_SCALING = "symbol-scaling";
     static final String SYMBOL_WIDTH = "symbol-width";
-
-    enum Scale {
-        ALL,
-        NONE,
-        STROKE
-    }
-
-    protected String category;
     public final DisplayModel displayModel;
     public final GraphicFactory graphicFactory;
-
+    protected String category;
     protected float height;
     protected int percent = 100;
     protected float width;
-
     protected RenderInstruction(GraphicFactory graphicFactory, DisplayModel displayModel) {
         this.displayModel = displayModel;
         this.graphicFactory = graphicFactory;
@@ -135,4 +126,10 @@ public abstract class RenderInstruction {
      * @param scaleFactor the factor by which the text size should be scaled.
      */
     public abstract void scaleTextSize(float scaleFactor, byte zoomLevel);
+
+    enum Scale {
+        ALL,
+        NONE,
+        STROKE
+    }
 }

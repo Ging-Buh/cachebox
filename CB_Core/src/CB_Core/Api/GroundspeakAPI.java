@@ -27,34 +27,31 @@ import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.ByRef;
 import CB_Utils.http.HttpUtils;
-
+import CB_Utils.http.Webb;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.ByteArrayEntity;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.*;
 
 public class GroundspeakAPI {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(GroundspeakAPI.class);
     public static final String GS_LIVE_URL = "https://api.groundspeak.com/LiveV6/geocaching.svc/";
     public static final String STAGING_GS_LIVE_URL = "https://staging.api.groundspeak.com/Live/V6Beta/geocaching.svc/";
     public static final int IO = 0;
-    public static final int CONNECTION_TIMEOUT = -2;
-    public static final int API_IS_UNAVAILABLE = -4;
     public static final int ERROR = -1;
+    public static final int CONNECTION_TIMEOUT = -2;
     public static final int API_ERROR = -3;
+    public static final int API_IS_UNAVAILABLE = -4;
+    private static final String log = "GroundspeakAPI";
     public static String LastAPIError = "";
     public static boolean CacheStatusValid = false;
     public static int CachesLeft = -1;
@@ -65,12 +62,9 @@ public class GroundspeakAPI {
     public static int CurrentCacheCountLite = -1;
     public static int MaxCacheCountLite = -1;
     public static String MemberName = "";
-    private static boolean DownloadLimit = false;
-    /**
-     * 0: Guest??? 1: Basic 2: Charter??? 3: Premium
-     */
-    private static int membershipType = -1;
-    private static boolean API_isChecked = false;
+    private static int membershipType = -1; // 0: Guest??? 1: Basic 2: Charter??? 3: Premium
+    private static boolean mAPIKeyChecked = false;
+    private static boolean mDownloadLimitExceeded = false;
 
     // GetMembershipType
 
@@ -84,7 +78,7 @@ public class GroundspeakAPI {
     }
 
     /**
-     * Read the encrypted AccessToken from the config and check wheter it is correct for Andorid CB </br>
+     * Read the encrypted AccessToken from the config and check whether it is correct for Andorid CB </br>
      * If Url_Codiert==true so the API-Key is URL-Codiert </br>
      * Like replase '/' with '%2F'</br>
      * </br>
@@ -94,7 +88,7 @@ public class GroundspeakAPI {
      * @return the Accesstoken as String
      */
     static String GetAccessToken(boolean Url_Codiert) {
-        String act = "";
+        String act;
         if (CB_Core_Settings.StagingAPI.getValue()) {
             act = CB_Core_Settings.GcAPIStaging.getValue();
         } else {
@@ -106,7 +100,6 @@ public class GroundspeakAPI {
             return "";
         String result = act.substring(1, act.length());
 
-        // URL encoder
         if (Url_Codiert) {
             result = result.replace("/", "%2F");
             result = result.replace("\\", "%5C");
@@ -118,7 +111,6 @@ public class GroundspeakAPI {
     }
 
     /**
-     *
      * @return true, if user is Premium Member
      */
     public static boolean IsPremiumMember() {
@@ -141,6 +133,20 @@ public class GroundspeakAPI {
         result = result.replace("\"", "\\\"");
         return result.replace("\n", "\\n");
     }
+
+
+    private static String prepareUTCDate(Date date) {
+        long utc = date.getTime();
+        TimeZone tzp = TimeZone.getTimeZone("GMT");
+        utc = utc - tzp.getOffset(utc);
+        String ret = "/Date(" + utc + ")/";
+        return ret;
+    }
+
+    private static String prepareNote(String note) {
+        return note.replace("\r", "");
+    }
+
     /**
      * Upload FieldNotes
      *
@@ -208,22 +214,22 @@ public class GroundspeakAPI {
 
             } catch (JSONException e) {
                 e.printStackTrace();
-                log.error("UploadFieldNotesAPI", e);
+                Log.err(log, "UploadFieldNotesAPI", e);
                 LastAPIError = e.getMessage();
                 return ERROR;
             }
 
         } catch (ConnectTimeoutException e) {
-            log.error("UploadFieldNotesAPI ConnectTimeoutException", e);
+            Log.err(log, "UploadFieldNotesAPI ConnectTimeoutException", e);
             return CONNECTION_TIMEOUT;
         } catch (UnsupportedEncodingException e) {
-            log.error("UploadFieldNotesAPI UnsupportedEncodingException", e);
+            Log.err(log, "UploadFieldNotesAPI UnsupportedEncodingException", e);
             return ERROR;
         } catch (ClientProtocolException e) {
-            log.error("UploadFieldNotesAPI ClientProtocolException", e);
+            Log.err(log, "UploadFieldNotesAPI ClientProtocolException", e);
             return ERROR;
         } catch (IOException e) {
-            log.error("UploadFieldNotesAPI IOException", e);
+            Log.err(log, "UploadFieldNotesAPI IOException", e);
             return ERROR;
         }
 
@@ -232,7 +238,6 @@ public class GroundspeakAPI {
     }
 
     /**
-     *
      * @param icancel
      * @return int CachesFound
      */
@@ -292,16 +297,16 @@ public class GroundspeakAPI {
             }
 
         } catch (ConnectTimeoutException e) {
-            log.error("GetCachesFound ConnectTimeoutException", e);
+            Log.err(log, "GetCachesFound ConnectTimeoutException", e);
             return CONNECTION_TIMEOUT;
         } catch (UnsupportedEncodingException e) {
-            log.error("GetCachesFound UnsupportedEncodingException", e);
+            Log.err(log, "GetCachesFound UnsupportedEncodingException", e);
             return ERROR;
         } catch (ClientProtocolException e) {
-            log.error("GetCachesFound ClientProtocolException", e);
+            Log.err(log, "GetCachesFound ClientProtocolException", e);
             return ERROR;
         } catch (IOException e) {
-            log.error("GetCachesFound", e);
+            Log.err(log, "GetCachesFound", e);
             return ERROR;
         }
 
@@ -315,7 +320,7 @@ public class GroundspeakAPI {
      * @return int  -1=Error;0=Guest???;1=Basic;2=Charter???;3=Premium
      */
     public static int GetMembershipType(final ICancel icancel) {
-        if (API_isChecked)
+        if (mAPIKeyChecked)
             return membershipType;
         String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
@@ -356,48 +361,67 @@ public class GroundspeakAPI {
                     int memberTypeId = memberType.getInt("MemberTypeId");
                     MemberName = user.getString("UserName");
                     membershipType = memberTypeId;
-                    API_isChecked = true;
+                    mAPIKeyChecked = true;
                     // Zurücksetzen, falls ein anderer User gewählt wurde
                     return memberTypeId;
                 } else if (status == 2 || status == 3 || status == 141) {
-                    API_isChecked = false;
+                    mAPIKeyChecked = false;
                     return API_ERROR;
 
                 } else {
-                    log.warn("GetMembershipType API-Error: " + result);
-                    API_isChecked = false;
+                    Log.warn(log, "GetMembershipType API-Error: " + result);
+                    mAPIKeyChecked = false;
                     return API_ERROR;
                 }
 
             } catch (Exception e) {
-                log.error("GetMembershipType JSONException", e);
-                API_isChecked = false;
+                Log.err(log, "GetMembershipType JSONException", e);
+                mAPIKeyChecked = false;
                 return API_ERROR;
             }
 
         } catch (ConnectTimeoutException e) {
-            log.error("GetMembershipType ConnectTimeoutException", e);
-            API_isChecked = false;
+            Log.err(log, "GetMembershipType ConnectTimeoutException", e);
+            mAPIKeyChecked = false;
             return CONNECTION_TIMEOUT;
         } catch (UnsupportedEncodingException e) {
-            log.error("GetMembershipType UnsupportedEncodingException", e);
-            API_isChecked = false;
+            Log.err(log, "GetMembershipType UnsupportedEncodingException", e);
+            mAPIKeyChecked = false;
             return ERROR;
         } catch (ClientProtocolException e) {
-            log.error("GetMembershipType ClientProtocolException", e);
-            API_isChecked = false;
+            Log.err(log, "GetMembershipType ClientProtocolException", e);
+            mAPIKeyChecked = false;
             return ERROR;
         } catch (IOException e) {
             if (e.toString().contains("UnknownHostException")) {
-                log.error("GetMembershipType ConnectTimeoutException", e);
-                API_isChecked = false;
+                Log.err(log, "GetMembershipType ConnectTimeoutException", e);
+                mAPIKeyChecked = false;
                 return CONNECTION_TIMEOUT;
             }
-            log.error("GetMembershipType IOException", e);
-            API_isChecked = false;
+            Log.err(log, "GetMembershipType IOException", e);
+            mAPIKeyChecked = false;
             return ERROR;
         }
 
+    }
+
+    private static String getDeviceInfoRequestString() {
+        String string = "\"DeviceInfo\":{";
+
+        string += "\"ApplicationCurrentMemoryUsage\":\"" + String.valueOf(2147483647) + "\",";
+        string += "\"ApplicationPeakMemoryUsage\":\"" + String.valueOf(2147483647) + "\",";
+        string += "\"ApplicationSoftwareVersion\":\"" + CoreSettingsForward.VersionString + "\",";
+        string += "\"DeviceManufacturer\":\"" + "?\"" + ",";
+        string += "\"DeviceName\":\"" + "?\"" + ",";
+        string += "\"DeviceOperatingSystem\":\"ANDROID\"" + ",";
+        string += "\"DeviceTotalMemoryInMB\":\"" + String.valueOf(1.26743233E+15) + "\",";
+        string += "\"DeviceUniqueId\":\"" + "?\"" + ",";
+        string += "\"MobileHardwareVersion\":\"" + "?\"" + ",";
+        string += "\"WebBrowserVersion\":\"" + "?\"";
+
+        string += "}";
+
+        return string;
     }
 
     public static int getApiStatus(String result) {
@@ -418,27 +442,27 @@ public class GroundspeakAPI {
             if (status == 2) {
                 // Not authorized
                 API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.INVALID);
-                log.warn("API-Error: " + logString);
+                Log.warn(log, "API-Error: " + logString);
                 return status;
             }
 
             if (status == 3) {
                 // API Key expired
                 API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.EXPIRED);
-                log.warn("API-Error: " + logString);
+                Log.warn(log, "API-Error: " + logString);
                 return status;
             }
 
             if (status == 141) {
                 // / {"Status":{"StatusCode":141,"StatusMessage":"The AccessToken provided is not valid"
                 API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.INVALID);
-                log.warn("API-Error: " + logString);
+                Log.warn(log, "API-Error: " + logString);
                 return status;
             }
 
             // unknown
             API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.INVALID);
-            log.warn("API-Error: " + logString);
+            Log.warn(log, "API-Error: " + logString);
             return status;
 
         } catch (JSONException e) {
@@ -548,16 +572,16 @@ public class GroundspeakAPI {
             }
 
         } catch (ConnectTimeoutException e) {
-            log.error("GetGeocacheStatus ConnectTimeoutException", e);
+            Log.err(log, "GetGeocacheStatus ConnectTimeoutException", e);
             return CONNECTION_TIMEOUT;
         } catch (UnsupportedEncodingException e) {
-            log.error("GetGeocacheStatus UnsupportedEncodingException", e);
+            Log.err(log, "GetGeocacheStatus UnsupportedEncodingException", e);
             return ERROR;
         } catch (ClientProtocolException e) {
-            log.error("GetGeocacheStatus ClientProtocolException", e);
+            Log.err(log, "GetGeocacheStatus ClientProtocolException", e);
             return ERROR;
         } catch (IOException e) {
-            log.error("GetGeocacheStatus IOException", e);
+            Log.err(log, "GetGeocacheStatus IOException", e);
             return ERROR;
         }
 
@@ -627,27 +651,27 @@ public class GroundspeakAPI {
                             JSONObject jLogs = (JSONObject) geocacheLogs.get(ii);
                             JSONObject jFinder = (JSONObject) jLogs.get("Finder");
                             JSONObject jLogType = (JSONObject) jLogs.get("LogType");
-                            LogEntry log = new LogEntry();
-                            log.CacheId = cache.Id;
-                            log.Comment = jLogs.getString("LogText");
-                            log.Finder = jFinder.getString("UserName");
-                            if (!finderList.contains(log.Finder)) {
+                            LogEntry logEntry = new LogEntry();
+                            logEntry.CacheId = cache.Id;
+                            logEntry.Comment = jLogs.getString("LogText");
+                            logEntry.Finder = jFinder.getString("UserName");
+                            if (!finderList.contains(logEntry.Finder)) {
                                 continue;
                             }
-                            finderList.remove(log.Finder);
-                            log.Id = jLogs.getInt("ID");
-                            log.Timestamp = new Date();
+                            finderList.remove(logEntry.Finder);
+                            logEntry.Id = jLogs.getInt("ID");
+                            logEntry.Timestamp = new Date();
                             try {
                                 String dateCreated = jLogs.getString("VisitDate");
                                 int date1 = dateCreated.indexOf("/Date(");
                                 int date2 = dateCreated.indexOf("-");
                                 String date = (String) dateCreated.subSequence(date1 + 6, date2);
-                                log.Timestamp = new Date(Long.valueOf(date));
+                                logEntry.Timestamp = new Date(Long.valueOf(date));
                             } catch (Exception exc) {
-                                GroundspeakAPI.log.error("SearchForGeocaches_ParseLogDate", exc);
+                                Log.err(log, "SearchForGeocaches_ParseLogDate", exc);
                             }
-                            log.Type = LogTypes.GC2CB_LogType(jLogType.getInt("WptLogTypeId"));
-                            logList.add(log);
+                            logEntry.Type = LogTypes.GC2CB_LogType(jLogType.getInt("WptLogTypeId"));
+                            logList.add(logEntry);
 
                         }
 
@@ -667,16 +691,16 @@ public class GroundspeakAPI {
                 }
 
             } catch (ConnectTimeoutException e) {
-                log.error("GetGeocacheLogsByCache ConnectTimeoutException", e);
+                Log.err(log, "GetGeocacheLogsByCache ConnectTimeoutException", e);
                 return CONNECTION_TIMEOUT;
             } catch (UnsupportedEncodingException e) {
-                log.error("GetGeocacheLogsByCache UnsupportedEncodingException", e);
+                Log.err(log, "GetGeocacheLogsByCache UnsupportedEncodingException", e);
                 return ERROR;
             } catch (ClientProtocolException e) {
-                log.error("GetGeocacheLogsByCache ClientProtocolException", e);
+                Log.err(log, "GetGeocacheLogsByCache ClientProtocolException", e);
                 return ERROR;
             } catch (IOException e) {
-                log.error("GetGeocacheLogsByCache IOException", e);
+                Log.err(log, "GetGeocacheLogsByCache IOException", e);
                 return ERROR;
             }
             // die nächsten Logs laden
@@ -687,7 +711,6 @@ public class GroundspeakAPI {
 
     /**
      * returns Status Code (0 -> OK)
-     *
      */
     public static int GetCacheLimits(ICancel icancel) {
         if (CachesLeft > -1)
@@ -749,16 +772,16 @@ public class GroundspeakAPI {
             }
 
         } catch (ConnectTimeoutException e) {
-            log.error("GetGeocacheStatus ConnectTimeoutException", e);
+            Log.err(log, "GetGeocacheStatus ConnectTimeoutException", e);
             return CONNECTION_TIMEOUT;
         } catch (UnsupportedEncodingException e) {
-            log.error("GetGeocacheStatus UnsupportedEncodingException", e);
+            Log.err(log, "GetGeocacheStatus UnsupportedEncodingException", e);
             return ERROR;
         } catch (ClientProtocolException e) {
-            log.error("GetGeocacheStatus ClientProtocolException", e);
+            Log.err(log, "GetGeocacheStatus ClientProtocolException", e);
             return ERROR;
         } catch (IOException e) {
-            log.error("GetGeocacheStatus IOException", e);
+            Log.err(log, "GetGeocacheStatus IOException", e);
             return ERROR;
         }
     }
@@ -877,7 +900,7 @@ public class GroundspeakAPI {
             return chk;
 
         try {
-            Log.info(log,"GetUsersTrackables: Create request");
+            Log.info(log, "GetUsersTrackables: Create request");
             HttpPost httppost;
             try {
                 httppost = new HttpPost((CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL) + "GetUsersTrackables?format=json");
@@ -889,26 +912,26 @@ public class GroundspeakAPI {
                 HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
             } catch (JSONException e) {
                 // should never occur
-                Log.err(log,"GetUsersTrackables create request error: should never occur!" , e);
+                Log.err(log, "GetUsersTrackables create request error: should never occur!", e);
                 return ERROR;
             }
 
             try {
-                Log.info(log,"GetUsersTrackables: Execute request");
+                Log.info(log, "GetUsersTrackables: Execute request");
                 String result = HttpUtils.Execute(httppost, icancel);
 
                 if (result.contains("The service is unavailable")) {
-                    Log.err(log,"GetUsersTrackables request: API_IS_UNAVAILABLE ");
+                    Log.err(log, "GetUsersTrackables request: API_IS_UNAVAILABLE ");
                     return API_IS_UNAVAILABLE;
                 }
 
-                Log.debug(log,"GetUsersTrackables parse Result\n" + result + "\n");
+                Log.debug(log, "GetUsersTrackables parse Result\n" + result + "\n");
                 // Parse JSON Result
                 JSONTokener tokener = new JSONTokener(result);
                 JSONObject json = (JSONObject) tokener.nextValue();
                 JSONObject status = json.getJSONObject("Status");
                 int statusCode = status.getInt("StatusCode");
-                Log.info(log,"GetUsersTrackables: " + "StatusCode = " + statusCode);
+                Log.info(log, "GetUsersTrackables: " + "StatusCode = " + statusCode);
                 LastAPIError = "";
                 if (statusCode == 0) {
                     JSONArray jTrackables = json.getJSONArray("Trackables");
@@ -919,50 +942,50 @@ public class GroundspeakAPI {
                         try {
                             InCollection = jTrackable.getBoolean("InCollection");
                         } catch (JSONException e) {
-                            Log.err(log,"GetUsersTrackables JSONException for checking TB", e);
+                            Log.err(log, "GetUsersTrackables JSONException for checking TB", e);
                         }
                         if (!InCollection) {
                             Trackable tb = new Trackable(jTrackable);
-                            Log.info(log,"GetUsersTrackables: add " + tb.getName());
+                            Log.info(log, "GetUsersTrackables: add " + tb.getName());
                             list.add(tb);
-                        }
-                        else {
+                        } else {
                             try {
-                                Log.info(log,"GetUsersTrackables: not inCollection " + jTrackable.getString("Name"));
+                                Log.info(log, "GetUsersTrackables: not inCollection " + jTrackable.getString("Name"));
                             } catch (JSONException e) {
-                                Log.err(log,"GetUsersTrackables JSONException for checking inCollection get Name", e);
+                                Log.err(log, "GetUsersTrackables JSONException for checking inCollection get Name", e);
                             }
                         }
                     }
-                    Log.info(log,"GetUsersTrackables: return with all OK.");
+                    Log.info(log, "GetUsersTrackables: return with all OK.");
                     return IO;
                 } else {
                     LastAPIError = "StatusCode = " + statusCode + "\n";
                     LastAPIError += status.getString("StatusMessage") + "\n";
                     LastAPIError += status.getString("ExceptionDetails");
-                    Log.err(log,"GetUsersTrackables: " + LastAPIError);
+                    Log.err(log, "GetUsersTrackables: " + LastAPIError);
                     return (ERROR);
                 }
 
             } catch (JSONException e) {
-                Log.err(log,"GetUsersTrackables JSONException " + LastAPIError, e);
-                return  ERROR;
+                Log.err(log, "GetUsersTrackables JSONException " + LastAPIError, e);
+                return ERROR;
             }
 
         } catch (ConnectTimeoutException e) {
-            Log.err(log,"GetUsersTrackables ConnectTimeoutException", e);
+            Log.err(log, "GetUsersTrackables ConnectTimeoutException", e);
             return CONNECTION_TIMEOUT;
         } catch (UnsupportedEncodingException e) {
-            Log.err(log,"GetUsersTrackables UnsupportedEncodingException", e);
+            Log.err(log, "GetUsersTrackables UnsupportedEncodingException", e);
             return ERROR;
         } catch (ClientProtocolException e) {
-            Log.err(log,"GetUsersTrackables ClientProtocolException", e);
+            Log.err(log, "GetUsersTrackables ClientProtocolException", e);
             return ERROR;
         } catch (IOException e) {
-            Log.err(log,"GetUsersTrackables IOException", e);
+            Log.err(log, "GetUsersTrackables IOException", e);
             return ERROR;
         }
     }
+
     public static int GetTrackablesByTrackingNumber(String TrackingCode, ByRef<Trackable> TB, ICancel icancel) {
         int chk = chkMembership(false);
         if (chk < 0)
@@ -1013,19 +1036,19 @@ public class GroundspeakAPI {
             }
 
         } catch (ConnectTimeoutException e) {
-            log.error("getTBbyTreckNumber ConnectTimeoutException", e);
+            Log.err(log, "getTBbyTreckNumber ConnectTimeoutException", e);
             TB = null;
             return CONNECTION_TIMEOUT;
         } catch (UnsupportedEncodingException e) {
-            log.error("getTBbyTreckNumber UnsupportedEncodingException", e);
+            Log.err(log, "getTBbyTreckNumber UnsupportedEncodingException", e);
             TB = null;
             return ERROR;
         } catch (ClientProtocolException e) {
-            log.error("getTBbyTreckNumber ClientProtocolException", e);
+            Log.err(log, "getTBbyTreckNumber ClientProtocolException", e);
             TB = null;
             return ERROR;
         } catch (IOException e) {
-            log.error("getTBbyTreckNumber IOException", e);
+            Log.err(log, "getTBbyTreckNumber IOException", e);
             TB = null;
             return ERROR;
         }
@@ -1082,19 +1105,19 @@ public class GroundspeakAPI {
             }
 
         } catch (ConnectTimeoutException e) {
-            log.error("getTBbyTbCode ConnectTimeoutException", e);
+            Log.err(log, "getTBbyTbCode ConnectTimeoutException", e);
             TB = null;
             return CONNECTION_TIMEOUT;
         } catch (UnsupportedEncodingException e) {
-            log.error("getTBbyTbCode UnsupportedEncodingException", e);
+            Log.err(log, "getTBbyTbCode UnsupportedEncodingException", e);
             TB = null;
             return ERROR;
         } catch (ClientProtocolException e) {
-            log.error("getTBbyTbCode ClientProtocolException", e);
+            Log.err(log, "getTBbyTbCode ClientProtocolException", e);
             TB = null;
             return ERROR;
         } catch (IOException e) {
-            log.error("getTBbyTbCode IOException", e);
+            Log.err(log, "getTBbyTbCode IOException", e);
             TB = null;
             return ERROR;
         }
@@ -1106,7 +1129,6 @@ public class GroundspeakAPI {
 
     /**
      * Ruft die Liste der Bilder ab, die in einem Cache sind
-     *
      */
     public static int getImagesForGeocache(String cacheCode, ArrayList<String> images, ICancel icancel) {
         int chk = chkMembership(false);
@@ -1157,113 +1179,86 @@ public class GroundspeakAPI {
             }
 
         } catch (ConnectTimeoutException e) {
-            log.error("getImagesForGeocache ConnectTimeoutException", e);
+            Log.err(log, "getImagesForGeocache ConnectTimeoutException", e);
             return CONNECTION_TIMEOUT;
         } catch (UnsupportedEncodingException e) {
-            log.error("getImagesForGeocache UnsupportedEncodingException", e);
+            Log.err(log, "getImagesForGeocache UnsupportedEncodingException", e);
             return ERROR;
         } catch (ClientProtocolException e) {
-            log.error("getImagesForGeocache ClientProtocolException", e);
+            Log.err(log, "getImagesForGeocache ClientProtocolException", e);
             return ERROR;
         } catch (IOException e) {
-            log.error("getImagesForGeocache IOException", e);
+            Log.err(log, "getImagesForGeocache IOException", e);
             return ERROR;
         }
 
         return (-1);
     }
 
-    public static int GetAllImageLinks(String cacheCode, HashMap<String, URI> list, ICancel icancel) {
+    public static int getImagesForGeocache(String cacheCode, HashMap<String, URI> list) {
+        Log.info(log, "getImagesForGeocache");
+        LastAPIError = "";
+        if (cacheCode == null) cacheCode = "";
         int chk = chkMembership(false);
-        if (chk < 0)
-            return chk;
-
-        String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+        if (chk < 0) return ERROR;
         if (list == null)
             list = new HashMap<String, URI>();
         try {
-            HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + GetAccessToken(true) + "&CacheCode=" + cacheCode + "&format=json");
-
-            // set time outs
-            HttpUtils.conectionTimeout = CB_Core_Settings.connection_timeout.getValue();
-            HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
-
-            // Execute HTTP Post Request
-            String result = HttpUtils.Execute(httppost, icancel);
-
-            if (result.contains("The service is unavailable")) {
-                return API_IS_UNAVAILABLE;
-            }
-            try
-            // Parse JSON Result
-            {
-                JSONTokener tokener = new JSONTokener(result);
-                JSONObject json = (JSONObject) tokener.nextValue();
-                JSONObject status = json.getJSONObject("Status");
-                if (status.getInt("StatusCode") == 0) {
-                    LastAPIError = "";
-                    JSONArray jImages = json.getJSONArray("Images");
-
+            Webb httpClient = Webb.create();
+            JSONObject response = httpClient
+                    .get(getUrl("GetImagesForGeocache?AccessToken=" + GetAccessToken(true) + "&CacheCode=" + cacheCode + "&format=json"))
+                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
+                    .ensureSuccess()
+                    .asJsonObject()
+                    .getBody();
+            // todo rework error handling ... possibly "The service is unavailable"
+            int ret = getAPICallStatus(response.getJSONObject("Status"));
+            if (ret != 0) {
+                return ret;
+            } else {
+                try {
+                    JSONArray jImages = response.getJSONArray("Images");
+                    Log.info(log, "getImagesForGeocache Anz.: " + jImages.length());
                     for (int ii = 0; ii < jImages.length(); ii++) {
-                        JSONObject jImage = (JSONObject) jImages.get(ii);
-                        String name = jImage.getString("Name");
-                        String uri = jImage.getString("Url");
-                        // ignore log images
-                        if (uri.contains("/cache/log"))
-                            continue; // LOG-Image
-                        // Check for duplicate name
-                        if (list.containsKey(name)) {
-                            for (int nr = 1; nr < 10; nr++) {
-                                if (list.containsKey(name + "_" + nr)) {
-                                    continue; // Name already exists
-                                }
-                                name += "_" + nr;
-                                break;
+                        try {
+                            JSONObject jImage = (JSONObject) jImages.get(ii);
+                            String name = jImage.getString("Name");
+                            String uri = jImage.getString("Url");
+                            Log.debug(log, "getImagesForGeocache getImageObject Nr.:" + ii + " '" + name + "' " + uri);
+                            // ignore log images
+                            if (uri.contains("/cache/log")) {
+                                Log.debug(log, "getImagesForGeocache getImageObject Nr.:" + ii + " ignored.");
+                                continue; // LOG-Image
                             }
+                            // Check for duplicate name
+                            if (list.containsKey(name)) {
+                                for (int nr = 1; nr < 10; nr++) {
+                                    if (list.containsKey(name + "_" + nr)) {
+                                        Log.debug(log, "getImagesForGeocache getImageObject Nr.:" + ii + " ignored: ");
+                                        continue; // Name already exists --> next nr
+                                    }
+                                    name += "_" + nr;
+                                    break;
+                                }
+                            }
+                            list.put(name, new URI(uri));
+                        } catch (Exception ex) {
+                            Log.err(log, "getImagesForGeocache getImageObject Nr.:" + ii, ex);
                         }
-                        list.put(name, new URI(uri));
                     }
-                    return IO;
-                } else if (status.getInt("StatusCode") == 140) {
-                    return 140; // API-Limit überschritten -> nach etwas Verzögerung wiederholen!
-                } else {
-                    LastAPIError = "";
-                    LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
-                    LastAPIError += status.getString("StatusMessage") + "\n";
-                    LastAPIError += status.getString("ExceptionDetails");
-
-                    list = null;
+                } catch (Exception ex) {
+                    LastAPIError = ex.getLocalizedMessage();
+                    Log.err(log, "getImagesForGeocache getJSONArray(\"Images\") ", ex);
                     return ERROR;
                 }
-
-            } catch (JSONException e) {
-                log.error("getTBbyTbCode JSONException", e);
-            } catch (URISyntaxException e) {
-                log.error("getTBbyTbCode URISyntaxException", e);
-            } catch (java.lang.ClassCastException e) {
-                log.error("getTBbyTbCode URISyntaxException", e);
             }
-
-        } catch (ConnectTimeoutException e) {
-            log.error("getTBbyTbCode ConnectTimeoutException", e);
-            list = null;
-            return CONNECTION_TIMEOUT;
-        } catch (UnsupportedEncodingException e) {
-            log.error("getTBbyTbCode UnsupportedEncodingException", e);
-            list = null;
-            return ERROR;
-        } catch (ClientProtocolException e) {
-            log.error("getTBbyTbCode ClientProtocolException", e);
-            list = null;
-            return ERROR;
-        } catch (IOException e) {
-            log.error("getTBbyTbCode IOException", e);
-            list = null;
+        } catch (Exception ex) {
+            LastAPIError = ex.getLocalizedMessage();
+            Log.err(log, "getImagesForGeocache", ex);
             return ERROR;
         }
-
-        list = null;
-        return ERROR;
+        Log.info(log, "getImagesForGeocache done");
+        return IO;
     }
 
     public static void WriteCachesLogsImages_toDB(CB_List<Cache> apiCaches, ArrayList<LogEntry> apiLogs, ArrayList<ImageEntry> apiImages) throws InterruptedException {
@@ -1398,43 +1393,92 @@ public class GroundspeakAPI {
 
     }
 
-    private static String getDeviceInfoRequestString() {
-        String string = "\"DeviceInfo\":{";
-
-        string += "\"ApplicationCurrentMemoryUsage\":\"" + String.valueOf(2147483647) + "\",";
-        string += "\"ApplicationPeakMemoryUsage\":\"" + String.valueOf(2147483647) + "\",";
-        string += "\"ApplicationSoftwareVersion\":\"" + CoreSettingsForward.VersionString + "\",";
-        string += "\"DeviceManufacturer\":\"" + "?\"" + ",";
-        string += "\"DeviceName\":\"" + "?\"" + ",";
-        string += "\"DeviceOperatingSystem\":\"ANDROID\"" + ",";
-        string += "\"DeviceTotalMemoryInMB\":\"" + String.valueOf(1.26743233E+15) + "\",";
-        string += "\"DeviceUniqueId\":\"" + "?\"" + ",";
-        string += "\"MobileHardwareVersion\":\"" + "?\"" + ",";
-        string += "\"WebBrowserVersion\":\"" + "?\"";
-
-        string += "}";
-
-        return string;
+    public static int createTrackableLog(Trackable TB, String cacheCode, int LogTypeId, Date dateLogged, String note) {
+        return createTrackableLog(TB.getGcCode(), TB.getTrackingNumber(), cacheCode, LogTypeId, dateLogged, note);
     }
 
-    /**
-     * Returns True if the APY-Key INVALID
-     *
-     * @param Staging          Config.settings.StagingAPI.getValue()
-     * @param accessToken
-     * @param conectionTimeout Config.settings.connection_timeout.getValue()
-     * @param socketTimeout    Config.settings.socket_timeout.getValue()
-     * @return 0=false 1=true
-     */
+    public static int createTrackableLog(String TbCode, String TrackingNummer, String cacheCode, int LogTypeId, Date dateLogged, String note) {
+        Log.info(log, "createTrackableLog");
+        LastAPIError = "";
+        if (cacheCode == null) cacheCode = "";
+        int chk = chkMembership(false);
+        if (chk < 0) return ERROR;
+        try {
+            Webb httpClient = Webb.create();
+            JSONObject response = httpClient
+                    .post(getUrl("CreateTrackableLog?format=json"))
+                    .body(new JSONObject()
+                            .put("AccessToken", GetAccessToken())
+                            .put("CacheCode", cacheCode)
+                            .put("LogType", String.valueOf(LogTypeId))
+                            .put("UTCDateLogged", prepareUTCDate(dateLogged))
+                            .put("Note", prepareNote(note))
+                            .put("TravelBugCode", String.valueOf(TbCode))
+                            .put("TrackingNumber", String.valueOf(TrackingNummer)))
+                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
+                    .ensureSuccess()
+                    .asJsonObject()
+                    .getBody();
+            // todo rework error handling ... possibly "The service is unavailable"
+            int ret = getAPICallStatus(response.getJSONObject("Status"));
+            if (ret != 0) {
+                return ret;
+            }
+        } catch (Exception ex) {
+            LastAPIError = ex.getLocalizedMessage();
+            Log.err(log, "CreateTrackableLog", ex);
+            return ERROR;
+        }
+        Log.info(log, "createTrackableLog done");
+        return IO;
+    }
 
-    /**
-     *
-     * @param withoutMsg
-     * @return int < 0 is error
-     */
+    public static int updateCacheNote(String cacheCode, String notes) {
+        Log.info(log, "updateCacheNote");
+        LastAPIError = "";
+        if (cacheCode == null || cacheCode.length() == 0) return ERROR;
+        if (!IsPremiumMember()) return ERROR;
+        try {
+            Webb httpClient = Webb.create();
+            JSONObject response = httpClient
+                    .post(getUrl("UpdateCacheNote?format=json"))
+                    .body(
+                            new JSONObject()
+                                    .put("AccessToken", GetAccessToken())
+                                    .put("CacheCode", cacheCode)
+                                    .put("Note", prepareNote(notes))
+                    )
+                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
+                    .ensureSuccess()
+                    .asJsonObject()
+                    .getBody();
+            // todo rework error handling ... possibly "The service is unavailable"
+            int ret = getAPICallStatus(response);
+            if (ret != 0) {
+                return ret;
+            }
+        } catch (Exception ex) {
+            LastAPIError = ex.getLocalizedMessage();
+            Log.err(log, "UpdateCacheNote", ex);
+            return ERROR;
+        }
+        Log.info(log, "updateCacheNote done");
+        return IO;
+    }
+
+    private static String getUrl(String command) {
+        String url;
+        if (CB_Core_Settings.StagingAPI.getValue()) {
+            url = STAGING_GS_LIVE_URL;
+        } else {
+            url = GS_LIVE_URL;
+        }
+        return url + command;
+    }
+
     public static int chkMembership(boolean withoutMsg) {
         boolean isValid = false;
-        if (API_isChecked) {
+        if (mAPIKeyChecked) {
             isValid = membershipType > 0;
             return isValid ? 0 : 1;
         }
@@ -1456,7 +1500,7 @@ public class GroundspeakAPI {
         }
 
         if (ret != CONNECTION_TIMEOUT)
-            API_isChecked = true;
+            mAPIKeyChecked = true;
         else
             return CONNECTION_TIMEOUT;
 
@@ -1464,167 +1508,34 @@ public class GroundspeakAPI {
     }
 
     public static int isValidAPI_Key(boolean withoutMsg) {
-        if (API_isChecked)
+        if (mAPIKeyChecked)
             return membershipType;
-
         return chkMembership(withoutMsg);
     }
 
-    public static int createTrackableLog(Trackable TB, String cacheCode, int LogTypeId, Date dateLogged, String note, ICancel icancel) {
-        return createTrackableLog(TB.getGcCode(), TB.getTrackingNumber(), cacheCode, LogTypeId, dateLogged, note, icancel);
+    public static boolean isAPIKeyChecked() {
+        return mAPIKeyChecked;
     }
 
-    public static int createTrackableLog(String TbCode, String TrackingNummer, String cacheCode, int LogTypeId, Date dateLogged, String note, ICancel icancel) {
-        int chk = chkMembership(false);
-        if (chk < 0)
-            return chk;
-        String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
-        if (cacheCode == null)
-            cacheCode = "";
+    public static boolean isDownloadLimitExceeded() {
+        return mDownloadLimitExceeded;
+    }
 
-        try {
-            HttpPost httppost = new HttpPost(URL + "CreateTrackableLog?format=json");
-            String requestString = "";
-            requestString = "{";
-            requestString += "\"AccessToken\":\"" + GetAccessToken() + "\",";
-            requestString += "\"CacheCode\":\"" + cacheCode + "\",";
-            requestString += "\"LogType\":" + String.valueOf(LogTypeId) + ",";
-            requestString += "\"UTCDateLogged\":\"" + GetUTCDate(dateLogged) + "\",";
-            requestString += "\"Note\":\"" + ConvertNotes(note) + "\",";
-            requestString += "\"TravelBugCode\":\"" + String.valueOf(TbCode) + "\",";
-            requestString += "\"TrackingNumber\":\"" + String.valueOf(TrackingNummer) + "\"";
-            requestString += "}";
+    public static void setDownloadLimitExceeded() {
+        mDownloadLimitExceeded = true;
+    }
 
-            httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
-
-            // set time outs
-            HttpUtils.conectionTimeout = CB_Core_Settings.connection_timeout.getValue();
-            HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
-
-            // Execute HTTP Post Request
-            String result = HttpUtils.Execute(httppost, icancel);
-
-            if (result.contains("The service is unavailable")) {
-                return API_IS_UNAVAILABLE;
+    private static int getAPICallStatus(JSONObject status) {
+        int ret = status.getInt("StatusCode");
+        if (ret > 0) {
+            if (ret == 140) {
+                // API-Limit überschritten -> nach etwas Verzögerung wiederholen!
+            } else {
+                LastAPIError = status.toString();
+                Log.err(log, "APICallStatus\n" + LastAPIError);
+                ret = ERROR;
             }
-            // Parse JSON Result
-            try {
-                JSONTokener tokener = new JSONTokener(result);
-                JSONObject json = (JSONObject) tokener.nextValue();
-                JSONObject status = json.getJSONObject("Status");
-                if (status.getInt("StatusCode") == 0) {
-                    result = "";
-                    LastAPIError = "";
-                } else {
-                    result = "StatusCode = " + status.getInt("StatusCode") + "\n";
-                    result += status.getString("StatusMessage") + "\n";
-                    result += status.getString("ExceptionDetails");
-                    LastAPIError = result;
-                    return -1;
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-                log.error("UploadFieldNotesAPI JSON-Error", e);
-                LastAPIError = e.getMessage();
-                return -1;
-            }
-
-        } catch (ConnectTimeoutException e) {
-            log.error("createTrackableLog ConnectTimeoutException", e);
-            return CONNECTION_TIMEOUT;
-        } catch (UnsupportedEncodingException e) {
-            log.error("createTrackableLog UnsupportedEncodingException", e);
-            return ERROR;
-        } catch (ClientProtocolException e) {
-            log.error("createTrackableLog ClientProtocolException", e);
-            return ERROR;
-        } catch (IOException e) {
-            log.error("createTrackableLog IOException", e);
-            return ERROR;
         }
-
-        LastAPIError = "";
-        return 0;
+        return ret;
     }
-
-    public static boolean mAPI_isChecked() {
-        return API_isChecked;
-    }
-
-    public static boolean ApiLimit() {
-        return DownloadLimit;
-    }
-
-    public static void setDownloadLimit() {
-        DownloadLimit = true;
-    }
-
-    public static int uploadNotes(String cacheCode, String notes, ICancel cancel) {
-        LastAPIError = "";
-
-        // TODO check for Basic Membership
-        int chk = chkMembership(false);
-        if (chk < 0)
-            return chk;
-
-        String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
-
-        if (cacheCode == null || cacheCode.length() == 0)
-            return ERROR;
-
-        try {
-            HttpPost httppost = new HttpPost(URL + "UpdateCacheNote?format=json");
-            String requestString = "";
-            requestString = "{";
-            requestString += "\"AccessToken\":\"" + GetAccessToken() + "\",";
-            requestString += "\"CacheCode\":\"" + cacheCode + "\",";
-            requestString += "\"Note\":\"" + ConvertNotes(notes) + "\"";
-            requestString += "}";
-
-            httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
-
-            // set time outs
-            HttpUtils.conectionTimeout = CB_Core_Settings.connection_timeout.getValue();
-            HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
-
-            // Execute HTTP Post Request
-            String result = HttpUtils.Execute(httppost, cancel, true);
-
-            if (result.contains("The service is unavailable")) {
-                return API_IS_UNAVAILABLE;
-            }
-            // Parse JSON Result
-            try {
-                JSONObject jResult = (JSONObject) new JSONTokener(result).nextValue();
-                int status = jResult.getInt("StatusCode");
-                result = "StatusCode = " + status + "\n";
-                result += jResult.getString("StatusMessage") + "\n";
-                result += jResult.getString("ExceptionDetails");
-                LastAPIError = result;
-                if (status > 0)
-                    return ERROR;
-            } catch (JSONException e) {
-                Log.err(log, "uploadNotes " + e.getLocalizedMessage());
-                LastAPIError = e.getLocalizedMessage();
-                return -1;
-            }
-        } catch (ConnectTimeoutException e) {
-            Log.err(log, "uploadNotes " + e.getLocalizedMessage());
-            return CONNECTION_TIMEOUT;
-        } catch (UnsupportedEncodingException e) {
-            Log.err(log, "uploadNotes " + e.getLocalizedMessage());
-            return ERROR;
-        } catch (ClientProtocolException e) {
-            Log.err(log, "uploadNotes " + e.getLocalizedMessage());
-            return ERROR;
-        } catch (IOException e) {
-            Log.err(log, "uploadNotes " + e.getLocalizedMessage());
-            return ERROR;
-        }
-
-        LastAPIError = "";
-        return 0;
-    }
-
 }

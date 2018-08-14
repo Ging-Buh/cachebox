@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,120 +15,117 @@
  */
 package org.mapsforge.map.awt.graphics;
 
-import org.mapsforge.map.awt.graphics.AwtMatrix;
-
-import com.badlogic.gdx.math.Matrix4;
-
 import CB_UI_Base.graphics.extendedInterfaces.ext_Matrix;
+import com.badlogic.gdx.math.Matrix4;
 
 /**
  * @author Longri
  */
 public class ext_AwtMatrix extends AwtMatrix implements ext_Matrix {
-	public ext_AwtMatrix(ext_Matrix matrix) {
+    public ext_AwtMatrix(ext_Matrix matrix) {
 
-	}
+    }
 
-	@Override
-	public void dispose() {
+    @Override
+    public void dispose() {
 
-	}
+    }
 
-	@Override
-	public void set(ext_Matrix matrix) {
+    @Override
+    public void set(ext_Matrix matrix) {
 
-	}
+    }
 
-	@Override
-	public void postConcat(ext_Matrix matrix) {
+    @Override
+    public void postConcat(ext_Matrix matrix) {
 
-	}
+    }
 
-	@Override
-	public void preTranslate(float x, float y) {
+    @Override
+    public void preTranslate(float x, float y) {
 
-	}
+    }
 
-	@Override
-	public void preScale(float x, float y) {
+    @Override
+    public void preScale(float x, float y) {
 
-	}
+    }
 
-	@Override
-	public void preScale(float sx, float sy, float px, float py) {
+    @Override
+    public void preScale(float sx, float sy, float px, float py) {
 
-	}
+    }
 
-	@Override
-	public void postRotate(float angle) {
+    @Override
+    public void postRotate(float angle) {
 
-	}
+    }
 
-	@Override
-	public void postScale(float rx, float ry) {
+    @Override
+    public void postScale(float rx, float ry) {
 
-	}
+    }
 
-	@Override
-	public void postTranslate(float cx, float cy) {
+    @Override
+    public void postTranslate(float cx, float cy) {
 
-	}
+    }
 
-	@Override
-	public void mapPoints(float[] src) {
+    @Override
+    public void mapPoints(float[] src) {
 
-	}
+    }
 
-	@Override
-	public void mapPoints(float[] dst, int dstIndex, float[] src, int srcIndex, int pointCount) {
+    @Override
+    public void mapPoints(float[] dst, int dstIndex, float[] src, int srcIndex, int pointCount) {
 
-	}
+    }
 
-	@Override
-	public Matrix4 getMatrix4() {
+    @Override
+    public Matrix4 getMatrix4() {
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public void preRotate(float angle) {
+    @Override
+    public void preRotate(float angle) {
 
-	}
+    }
 
-	@Override
-	public void setValues(float[] fs) {
+    @Override
+    public void setValues(float[] fs) {
 
-	}
+    }
 
-	@Override
-	public void preSkew(float f, float tan) {
+    @Override
+    public void preSkew(float f, float tan) {
 
-	}
+    }
 
-	@Override
-	public void preRotate(Float angle, Float cx, Float cy) {
+    @Override
+    public void preRotate(Float angle, Float cx, Float cy) {
 
-	}
+    }
 
-	@Override
-	public void getValues(float[] mValues) {
+    @Override
+    public void getValues(float[] mValues) {
 
-	}
+    }
 
-	@Override
-	public void preConcat(ext_Matrix matrix) {
+    @Override
+    public void preConcat(ext_Matrix matrix) {
 
-	}
+    }
 
-	@Override
-	public boolean invert() {
+    @Override
+    public boolean invert() {
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public boolean isDefault() {
+    @Override
+    public boolean isDefault() {
 
-		return false;
-	}
+        return false;
+    }
 }

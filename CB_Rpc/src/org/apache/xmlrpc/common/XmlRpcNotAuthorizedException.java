@@ -14,21 +14,24 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.common;
 
 import org.apache.xmlrpc.XmlRpcException;
 
-/** This exception must be thrown, if the user isn't authenticated.
+/**
+ * This exception must be thrown, if the user isn't authenticated.
  */
 public class XmlRpcNotAuthorizedException extends XmlRpcException {
-	private static final long serialVersionUID = 3258410629709574201L;
+    private static final long serialVersionUID = 3258410629709574201L;
 
-	/** Creates a new instance with the given error message.
-	 * @param pMessage The error message.
-	 */
-	public XmlRpcNotAuthorizedException(String pMessage) {
-		super(0, pMessage);
-	}
+    /**
+     * Creates a new instance with the given error message.
+     *
+     * @param pMessage The error message.
+     */
+    public XmlRpcNotAuthorizedException(String pMessage) {
+        super(0, pMessage);
+    }
 }

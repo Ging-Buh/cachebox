@@ -15,13 +15,7 @@
  */
 package org.mapsforge.map.view;
 
-import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.FontFamily;
-import org.mapsforge.core.graphics.FontStyle;
-import org.mapsforge.core.graphics.GraphicContext;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.map.model.DisplayModel;
 
 import java.util.concurrent.TimeUnit;
@@ -31,6 +25,23 @@ import java.util.concurrent.TimeUnit;
  */
 public class FpsCounter {
     private static final long ONE_SECOND = TimeUnit.SECONDS.toNanos(1);
+    private final DisplayModel displayModel;
+    private final Paint paintBack, paintFront;
+    private String fps;
+    private int frameCounter;
+    private long lastTime;
+    private boolean visible;
+    public FpsCounter(GraphicFactory graphicFactory, DisplayModel displayModel) {
+        this.displayModel = displayModel;
+
+        this.paintBack = createPaintBack(graphicFactory, displayModel);
+        this.paintFront = createPaintFront(graphicFactory, displayModel);
+    }
+    public FpsCounter(DisplayModel displayModel, Paint paintBack, Paint paintFront) {
+        this.displayModel = displayModel;
+        this.paintBack = paintBack;
+        this.paintFront = paintFront;
+    }
 
     private static Paint createPaintFront(GraphicFactory graphicFactory, DisplayModel displayModel) {
         Paint paint = graphicFactory.createPaint();
@@ -48,26 +59,6 @@ public class FpsCounter {
         paint.setStrokeWidth(2 * displayModel.getScaleFactor());
         paint.setStyle(Style.STROKE);
         return paint;
-    }
-
-    private final DisplayModel displayModel;
-    private String fps;
-    private int frameCounter;
-    private long lastTime;
-    private final Paint paintBack, paintFront;
-    private boolean visible;
-
-    public FpsCounter(GraphicFactory graphicFactory, DisplayModel displayModel) {
-        this.displayModel = displayModel;
-
-        this.paintBack = createPaintBack(graphicFactory, displayModel);
-        this.paintFront = createPaintFront(graphicFactory, displayModel);
-    }
-
-    public FpsCounter(DisplayModel displayModel, Paint paintBack, Paint paintFront) {
-        this.displayModel = displayModel;
-        this.paintBack = paintBack;
-        this.paintFront = paintFront;
     }
 
     public void draw(GraphicContext graphicContext) {

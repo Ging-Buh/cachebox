@@ -14,53 +14,55 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.webserver;
 
+import org.apache.xmlrpc.util.ThreadPool.InterruptableTask;
+
+import javax.servlet.http.HttpServlet;
 import java.io.IOException;
 import java.net.Socket;
 
-import javax.servlet.http.HttpServlet;
-
-import org.apache.xmlrpc.util.ThreadPool.InterruptableTask;
-
-/** {@link org.apache.xmlrpc.webserver.ServletWebServer ServletWebServer's}
+/**
+ * {@link org.apache.xmlrpc.webserver.ServletWebServer ServletWebServer's}
  * {@link org.apache.xmlrpc.util.ThreadPool.Task} for handling a single
  * servlet connection.
  */
 public class ServletConnection implements InterruptableTask {
-	private final HttpServlet servlet;
-	private final Socket socket;
-	private final HttpServletRequestImpl request;
-	private final HttpServletResponseImpl response;
-	private boolean shuttingDown;
+    private final HttpServlet servlet;
+    private final Socket socket;
+    private final HttpServletRequestImpl request;
+    private final HttpServletResponseImpl response;
+    private boolean shuttingDown;
 
-	/** Creates a new instance.
-	 * @param pServlet The servlet, which ought to handle the request.
-	 * @param pSocket The socket, to which the client is connected.
-	 * @throws IOException
-	 */
-	public ServletConnection(HttpServlet pServlet, Socket pSocket) throws IOException {
-		servlet = pServlet;
-		socket = pSocket;
-		request = new HttpServletRequestImpl(socket);
-		response = new HttpServletResponseImpl(socket);
-	}
+    /**
+     * Creates a new instance.
+     *
+     * @param pServlet The servlet, which ought to handle the request.
+     * @param pSocket  The socket, to which the client is connected.
+     * @throws IOException
+     */
+    public ServletConnection(HttpServlet pServlet, Socket pSocket) throws IOException {
+        servlet = pServlet;
+        socket = pSocket;
+        request = new HttpServletRequestImpl(socket);
+        response = new HttpServletResponseImpl(socket);
+    }
 
-	public void run() throws Throwable {
-		try {
-			request.readHttpHeaders();
-			servlet.service(request, response);
-		} catch (Throwable t) {
-			if (!shuttingDown) {
-				throw t;
-			}
-		}
-	}
+    public void run() throws Throwable {
+        try {
+            request.readHttpHeaders();
+            servlet.service(request, response);
+        } catch (Throwable t) {
+            if (!shuttingDown) {
+                throw t;
+            }
+        }
+    }
 
-	public void shutdown() throws Throwable {
-		shuttingDown = true;
-		socket.close();
-	}
+    public void shutdown() throws Throwable {
+        shuttingDown = true;
+        socket.close();
+    }
 }

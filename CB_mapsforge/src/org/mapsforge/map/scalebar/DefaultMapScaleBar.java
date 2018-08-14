@@ -18,14 +18,7 @@
  */
 package org.mapsforge.map.scalebar;
 
-import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Cap;
-import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.FontFamily;
-import org.mapsforge.core.graphics.FontStyle;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewDimension;
 import org.mapsforge.map.model.MapViewPosition;
@@ -40,17 +33,12 @@ public class DefaultMapScaleBar extends MapScaleBar {
     private static final float STROKE_EXTERNAL = 4;
     private static final float STROKE_INTERNAL = 2;
     private static final int TEXT_MARGIN = 1;
-
-    public static enum ScaleBarMode {BOTH, SINGLE}
-
-    private ScaleBarMode scaleBarMode;
-    private DistanceUnitAdapter secondaryDistanceUnitAdapter;
-
     private final Paint paintScaleBar;
     private final Paint paintScaleBarStroke;
     private final Paint paintScaleText;
     private final Paint paintScaleTextStroke;
-
+    private ScaleBarMode scaleBarMode;
+    private DistanceUnitAdapter secondaryDistanceUnitAdapter;
     public DefaultMapScaleBar(MapViewPosition mapViewPosition, MapViewDimension mapViewDimension,
                               GraphicFactory graphicFactory, DisplayModel displayModel) {
         super(mapViewPosition, mapViewDimension, displayModel, graphicFactory, BITMAP_WIDTH, BITMAP_HEIGHT);
@@ -328,4 +316,6 @@ public class DefaultMapScaleBar extends MapScaleBar {
                 break;
         }
     }
+
+    public static enum ScaleBarMode {BOTH, SINGLE}
 }

@@ -1,5 +1,8 @@
 /**
- * 
+ * Copy of source from Mapsforge! Version TAG 6.1 Relase
+ * project <core>
+ * project <reader>
+ * project <map>
  */
 /**
  * Copy of source from Mapsforge! Version TAG 6.1 Relase

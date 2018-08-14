@@ -29,13 +29,13 @@ import org.mapsforge.map.model.FrameBufferModel;
 public class FrameBuffer {
 
     private static final boolean IS_TRANSPARENT = false;
-    private Bitmap bitmap1;
-    private Bitmap bitmap2;
-    private Dimension dimension;
     private final DisplayModel displayModel;
     private final FrameBufferModel frameBufferModel;
     private final GraphicFactory graphicFactory;
     private final Matrix matrix;
+    private Bitmap bitmap1;
+    private Bitmap bitmap2;
+    private Dimension dimension;
 
     public FrameBuffer(FrameBufferModel frameBufferModel, DisplayModel displayModel, GraphicFactory graphicFactory) {
         this.frameBufferModel = frameBufferModel;
@@ -87,16 +87,6 @@ public class FrameBuffer {
         return this.dimension;
     }
 
-    /**
-     * @return the bitmap of the second frame to draw on (may be null).
-     */
-    public synchronized Bitmap getDrawingBitmap() {
-        if (this.bitmap2 != null) {
-            this.bitmap2.setBackgroundColor(this.displayModel.getBackgroundColor());
-        }
-        return this.bitmap2;
-    }
-
     public synchronized void setDimension(Dimension dimension) {
         if (this.dimension != null && this.dimension.equals(dimension)) {
             return;
@@ -109,6 +99,16 @@ public class FrameBuffer {
             this.bitmap1 = this.graphicFactory.createBitmap(dimension.width, dimension.height, IS_TRANSPARENT);
             this.bitmap2 = this.graphicFactory.createBitmap(dimension.width, dimension.height, IS_TRANSPARENT);
         }
+    }
+
+    /**
+     * @return the bitmap of the second frame to draw on (may be null).
+     */
+    public synchronized Bitmap getDrawingBitmap() {
+        if (this.bitmap2 != null) {
+            this.bitmap2.setBackgroundColor(this.displayModel.getBackgroundColor());
+        }
+        return this.bitmap2;
     }
 
     private void centerFrameBufferToMapView(Dimension mapViewDimension) {

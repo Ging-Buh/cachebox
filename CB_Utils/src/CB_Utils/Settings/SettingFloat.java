@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2011-2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -17,47 +17,47 @@ package CB_Utils.Settings;
 
 public class SettingFloat extends SettingBase<Float> {
 
-	public SettingFloat(String name, SettingCategory category, SettingModus modus, float defaultValue, SettingStoreType StoreType, SettingUsage usage) {
-		super(name, category, modus, StoreType, usage);
-		this.defaultValue = defaultValue;
-		this.value = defaultValue;
-	}
+    public SettingFloat(String name, SettingCategory category, SettingModus modus, float defaultValue, SettingStoreType StoreType, SettingUsage usage) {
+        super(name, category, modus, StoreType, usage);
+        this.defaultValue = defaultValue;
+        this.value = defaultValue;
+    }
 
-	@Override
-	public String toDBString() {
-		return String.valueOf(value);
-	}
+    @Override
+    public String toDBString() {
+        return String.valueOf(value);
+    }
 
-	@Override
-	public boolean fromDBString(String dbString) {
-		try {
-			value = Float.valueOf(dbString);
-			return true;
-		} catch (Exception ex) {
-			value = defaultValue;
-			return false;
-		}
-	}
+    @Override
+    public boolean fromDBString(String dbString) {
+        try {
+            value = Float.valueOf(dbString);
+            return true;
+        } catch (Exception ex) {
+            value = defaultValue;
+            return false;
+        }
+    }
 
-	@Override
-	public SettingBase<Float> copy() {
-		SettingBase<Float> ret = new SettingFloat(this.name, this.category, this.modus, this.defaultValue, this.storeType, this.usage);
-		ret.value = this.value;
-		ret.lastValue = this.lastValue;
-		return ret;
-	}
+    @Override
+    public SettingBase<Float> copy() {
+        SettingBase<Float> ret = new SettingFloat(this.name, this.category, this.modus, this.defaultValue, this.storeType, this.usage);
+        ret.value = this.value;
+        ret.lastValue = this.lastValue;
+        return ret;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof SettingFloat))
-			return false;
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof SettingFloat))
+            return false;
 
-		SettingFloat inst = (SettingFloat) obj;
-		if (!(inst.name.equals(this.name)))
-			return false;
-		if (inst.value != this.value)
-			return false;
+        SettingFloat inst = (SettingFloat) obj;
+        if (!(inst.name.equals(this.name)))
+            return false;
+        if (inst.value != this.value)
+            return false;
 
-		return true;
-	}
+        return true;
+    }
 }

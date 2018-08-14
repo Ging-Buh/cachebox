@@ -14,18 +14,21 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc;
 
-/** The XML-RPC server uses this interface to call a method of an RPC handler.
+/**
+ * The XML-RPC server uses this interface to call a method of an RPC handler.
  */
 public interface XmlRpcHandler {
-	/** Performs the request and returns the result object.
-	 * @param pRequest The request being performed (method name and
-	 * parameters.)
-	 * @return The result object.
-	 * @throws XmlRpcException Performing the request failed.
-	 */
-	public Object execute(XmlRpcRequest pRequest) throws XmlRpcException;
+    /**
+     * Performs the request and returns the result object.
+     *
+     * @param pRequest The request being performed (method name and
+     *                 parameters.)
+     * @return The result object.
+     * @throws XmlRpcException Performing the request failed.
+     */
+    public Object execute(XmlRpcRequest pRequest) throws XmlRpcException;
 }

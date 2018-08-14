@@ -14,28 +14,33 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.client;
 
 import org.apache.xmlrpc.common.XmlRpcWorker;
 import org.apache.xmlrpc.common.XmlRpcWorkerFactory;
 
-/** A worker factory for the client, creating instances of
+/**
+ * A worker factory for the client, creating instances of
  * {@link org.apache.xmlrpc.client.XmlRpcClientWorker}.
  */
 public class XmlRpcClientWorkerFactory extends XmlRpcWorkerFactory {
-	/** Creates a new instance.
-	 * @param pClient The factory controller.
-	 */
-	public XmlRpcClientWorkerFactory(XmlRpcClient pClient) {
-		super(pClient);
-	}
+    /**
+     * Creates a new instance.
+     *
+     * @param pClient The factory controller.
+     */
+    public XmlRpcClientWorkerFactory(XmlRpcClient pClient) {
+        super(pClient);
+    }
 
-	/** Creates a new worker instance.
-	 * @return New instance of {@link XmlRpcClientWorker}.
-	 */
-	protected XmlRpcWorker newWorker() {
-		return new XmlRpcClientWorker(this);
-	}
+    /**
+     * Creates a new worker instance.
+     *
+     * @return New instance of {@link XmlRpcClientWorker}.
+     */
+    protected XmlRpcWorker newWorker() {
+        return new XmlRpcClientWorker(this);
+    }
 }

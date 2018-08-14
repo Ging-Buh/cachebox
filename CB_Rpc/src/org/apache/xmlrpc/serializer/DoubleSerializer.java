@@ -14,21 +14,23 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.xmlrpc.serializer;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-/** A {@link TypeSerializer} for doubles.
+/**
+ * A {@link TypeSerializer} for doubles.
  */
 public class DoubleSerializer extends TypeSerializerImpl {
-	/** Tag name of a double value.
-	 */
-	public static final String DOUBLE_TAG = "double";
+    /**
+     * Tag name of a double value.
+     */
+    public static final String DOUBLE_TAG = "double";
 
-	public void write(ContentHandler pHandler, Object pObject) throws SAXException {
-		write(pHandler, DOUBLE_TAG, pObject.toString());
-	}
+    public void write(ContentHandler pHandler, Object pObject) throws SAXException {
+        write(pHandler, DOUBLE_TAG, pObject.toString());
+    }
 }

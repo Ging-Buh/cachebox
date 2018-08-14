@@ -1,13 +1,9 @@
 package CB_UI.GL_UI.Main.Actions;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import com.badlogic.gdx.graphics.g2d.Sprite;
-
-import CB_Core.CB_Core_Settings;
-import CB_Core.LogTypes;
 import CB_Core.Api.GroundspeakAPI;
+import CB_Core.CB_Core_Settings;
 import CB_Core.GCVote.GCVote;
+import CB_Core.LogTypes;
 import CB_Core.Types.FieldNoteEntry;
 import CB_Core.Types.FieldNoteList;
 import CB_Core.Types.FieldNoteList.LoadingType;
@@ -15,9 +11,6 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GL_UI.Views.FieldNotesView;
-import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.Sprites;
-import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog.ICancelListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
@@ -25,172 +18,176 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
+import CB_UI_Base.GL_UI.Sprites;
+import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Utils.Events.ProgresssChangedEventList;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CB_Action_UploadFieldNote extends CB_Action {
-	private Boolean ThreadCancel = false;
-	private String UploadMeldung = "";
-	private boolean API_Key_error = false;
+    public static CB_Action_UploadFieldNote INSTANCE = new CB_Action_UploadFieldNote();
+    private Boolean ThreadCancel = false;
+    private String UploadMeldung = "";
+    private boolean API_Key_error = false;
+    private ProgressDialog PD;
 
-	public static CB_Action_UploadFieldNote INSTANCE = new CB_Action_UploadFieldNote();
+    private CB_Action_UploadFieldNote() {
+        super("uploadFieldNotes", MenuID.AID_UPLOAD_FIELD_NOTE);
+    }
 
-	private CB_Action_UploadFieldNote() {
-		super("uploadFieldNotes", MenuID.AID_UPLOAD_FIELD_NOTE);
-	}
+    @Override
+    public void Execute() {
+        // GL_MsgBox.Show(Translation.Get("uploadFieldNotes?"), Translation.Get("uploadFieldNotes"), MessageBoxButtons.YesNo,
+        // MessageBoxIcon.GC_Live, UploadFieldnotesDialogListener, Config.RememberAsk_API_Coast);
+        UploadFieldNotes();
+    }
 
-	@Override
-	public void Execute() {
-		// GL_MsgBox.Show(Translation.Get("uploadFieldNotes?"), Translation.Get("uploadFieldNotes"), MessageBoxButtons.YesNo,
-		// MessageBoxIcon.GC_Live, UploadFieldnotesDialogListener, Config.RememberAsk_API_Coast);
-		UploadFieldNotes();
-	}
+    @Override
+    public boolean getEnabled() {
+        return true;
+    }
 
-	@Override
-	public boolean getEnabled() {
-		return true;
-	}
+    @Override
+    public Sprite getIcon() {
+        return Sprites.getSprite(IconName.UPLOADFIELDNOTE.name());
+    }
 
-	@Override
-	public Sprite getIcon() {
-		return Sprites.getSprite(IconName.UPLOADFIELDNOTE.name());
-	}
+    private void UploadFieldNotes() {
+        final AtomicBoolean cancel = new AtomicBoolean(false);
 
-	private ProgressDialog PD;
+        final RunnableReadyHandler UploadFieldNotesdThread = new RunnableReadyHandler() {
 
-	private void UploadFieldNotes() {
-		final AtomicBoolean cancel = new AtomicBoolean(false);
+            @Override
+            public void run() {
+                ProgresssChangedEventList.Call("Upload", "", 0);
 
-		final RunnableReadyHandler UploadFieldNotesdThread = new RunnableReadyHandler() {
+                FieldNoteList lFieldNotes = new FieldNoteList();
 
-			@Override
-			public void run() {
-				ProgresssChangedEventList.Call("Upload", "", 0);
+                lFieldNotes.LoadFieldNotes("(Uploaded=0 or Uploaded is null)", LoadingType.Loadall);
 
-				FieldNoteList lFieldNotes = new FieldNoteList();
+                int count = 0;
+                int anzahl = 0;
+                for (FieldNoteEntry fieldNote : lFieldNotes) {
+                    if (!fieldNote.uploaded)
+                        anzahl++;
+                }
 
-				lFieldNotes.LoadFieldNotes("(Uploaded=0 or Uploaded is null)", LoadingType.Loadall);
+                boolean sendGCVote = !Config.GcVotePassword.getEncryptedValue().equalsIgnoreCase("");
 
-				int count = 0;
-				int anzahl = 0;
-				for (FieldNoteEntry fieldNote : lFieldNotes) {
-					if (!fieldNote.uploaded)
-						anzahl++;
-				}
+                if (anzahl > 0) {
+                    UploadMeldung = "";
+                    API_Key_error = false;
+                    for (FieldNoteEntry fieldNote : lFieldNotes) {
+                        if (cancel.get())
+                            break;
 
-				boolean sendGCVote = !Config.GcVotePassword.getEncryptedValue().equalsIgnoreCase("");
+                        if (fieldNote.uploaded)
+                            continue;
+                        if (ThreadCancel) // wenn im ProgressDialog Cancel gedrückt
+                            // wurde.
+                            break;
+                        // Progress status Melden
+                        ProgresssChangedEventList.Call(fieldNote.CacheName, (100 * count) / anzahl);
 
-				if (anzahl > 0) {
-					UploadMeldung = "";
-					API_Key_error = false;
-					for (FieldNoteEntry fieldNote : lFieldNotes) {
-						if (cancel.get())
-							break;
+                        if (sendGCVote && !fieldNote.isTbFieldNote) {
+                            sendCacheVote(fieldNote);
+                        }
 
-						if (fieldNote.uploaded)
-							continue;
-						if (ThreadCancel) // wenn im ProgressDialog Cancel gedrückt
-							// wurde.
-							break;
-						// Progress status Melden
-						ProgresssChangedEventList.Call(fieldNote.CacheName, (100 * count) / anzahl);
+                        int result = 0;
 
-						if (sendGCVote && !fieldNote.isTbFieldNote) {
-							sendCacheVote(fieldNote);
-						}
+                        if (fieldNote.isTbFieldNote) {
+                            result = GroundspeakAPI.createTrackableLog(fieldNote.TravelBugCode, fieldNote.TrackingNumber, fieldNote.gcCode, LogTypes.CB_LogType2GC(fieldNote.type), fieldNote.timestamp, fieldNote.comment);
+                        } else {
+                            boolean dl = fieldNote.isDirectLog;
+                            result = GroundspeakAPI.CreateFieldNoteAndPublish(fieldNote.gcCode, fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment, dl, this);
+                        }
 
-						int result = 0;
+                        if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
+                            GL.that.Toast(ConnectionError.INSTANCE);
+                            PD.close();
+                            return;
+                        }
+                        if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
+                            GL.that.Toast(ApiUnavailable.INSTANCE);
+                            PD.close();
+                            return;
+                        }
 
-						if (fieldNote.isTbFieldNote) {
-							result = GroundspeakAPI.createTrackableLog(fieldNote.TravelBugCode, fieldNote.TrackingNumber, fieldNote.gcCode, LogTypes.CB_LogType2GC(fieldNote.type), fieldNote.timestamp, fieldNote.comment, this);
-						} else {
-							boolean dl = fieldNote.isDirectLog;
-							result = GroundspeakAPI.CreateFieldNoteAndPublish(fieldNote.gcCode, fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment, dl, this);
-						}
+                        if (result == -1) {
+                            UploadMeldung += fieldNote.gcCode + "\n" + GroundspeakAPI.LastAPIError + "\n";
+                        } else {
+                            if (result != -10) {
+                                // set fieldnote as uploaded only when upload was working
+                                fieldNote.uploaded = true;
+                                fieldNote.UpdateDatabase();
+                            } else {
+                                API_Key_error = true;
+                                UploadMeldung = "error";
+                                ThreadCancel = true;
+                            }
+                        }
+                        count++;
+                    }
+                }
 
-						if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
-							GL.that.Toast(ConnectionError.INSTANCE);
-							PD.close();
-							return;
-						}
-						if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
-							GL.that.Toast(ApiUnavailable.INSTANCE);
-							PD.close();
-							return;
-						}
+                PD.close();
+            }
 
-						if (result == -1) {
-							UploadMeldung += fieldNote.gcCode + "\n" + GroundspeakAPI.LastAPIError + "\n";
-						} else {
-							if (result != -10) {
-								// set fieldnote as uploaded only when upload was working
-								fieldNote.uploaded = true;
-								fieldNote.UpdateDatabase();
-							} else {
-								API_Key_error = true;
-								UploadMeldung = "error";
-								ThreadCancel = true;
-							}
-						}
-						count++;
-					}
-				}
+            @Override
+            public boolean cancel() {
+                return cancel.get();
+            }
 
-				PD.close();
-			}
+            @Override
+            public void RunnableReady(boolean canceld) {
+                if (!canceld) {
 
-			@Override
-			public boolean cancel() {
-				return cancel.get();
-			}
+                    if (!UploadMeldung.equals("")) {
+                        if (!API_Key_error)
+                            GL_MsgBox.Show(UploadMeldung, Translation.Get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+                    } else {
+                        GL_MsgBox.Show(Translation.Get("uploadFinished"), Translation.Get("uploadFieldNotes"), MessageBoxIcon.GC_Live);
+                    }
+                }
+                if (FieldNotesView.that != null)
+                    FieldNotesView.that.notifyDataSetChanged();
+            }
+        };
 
-			@Override
-			public void RunnableReady(boolean canceld) {
-				if (!canceld) {
+        // ProgressDialog Anzeigen und den Abarbeitungs Thread übergeben.
 
-					if (!UploadMeldung.equals("")) {
-						if (!API_Key_error)
-							GL_MsgBox.Show(UploadMeldung, Translation.Get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
-					} else {
-						GL_MsgBox.Show(Translation.Get("uploadFinished"), Translation.Get("uploadFieldNotes"), MessageBoxIcon.GC_Live);
-					}
-				}
-				if (FieldNotesView.that != null)
-					FieldNotesView.that.notifyDataSetChanged();
-			}
-		};
+        GL.that.RunOnGL(new IRunOnGL() {
 
-		// ProgressDialog Anzeigen und den Abarbeitungs Thread übergeben.
+            @Override
+            public void run() {
+                PD = ProgressDialog.Show("Upload FieldNotes", UploadFieldNotesdThread);
+                PD.setCancelListener(new ICancelListener() {
 
-		GL.that.RunOnGL(new IRunOnGL() {
+                    @Override
+                    public void isCanceled() {
+                        cancel.set(true);
+                    }
+                });
+            }
+        });
 
-			@Override
-			public void run() {
-				PD = ProgressDialog.Show("Upload FieldNotes", UploadFieldNotesdThread);
-				PD.setCancelListener(new ICancelListener() {
+    }
 
-					@Override
-					public void isCanceled() {
-						cancel.set(true);
-					}
-				});
-			}
-		});
+    void sendCacheVote(FieldNoteEntry fieldNote) {
 
-	}
-
-	void sendCacheVote(FieldNoteEntry fieldNote) {
-
-		// Stimme abgeben
-		try {
-			if (!GCVote.SendVotes(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), fieldNote.gc_Vote, fieldNote.CacheUrl, fieldNote.gcCode)) {
-				UploadMeldung += fieldNote.gcCode + "\n" + "GC-Vote Error" + "\n";
-			}
-		} catch (Exception e) {
-			UploadMeldung += fieldNote.gcCode + "\n" + "GC-Vote Error" + "\n";
-		}
-	}
+        // Stimme abgeben
+        try {
+            if (!GCVote.SendVotes(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), fieldNote.gc_Vote, fieldNote.CacheUrl, fieldNote.gcCode)) {
+                UploadMeldung += fieldNote.gcCode + "\n" + "GC-Vote Error" + "\n";
+            }
+        } catch (Exception e) {
+            UploadMeldung += fieldNote.gcCode + "\n" + "GC-Vote Error" + "\n";
+        }
+    }
 
 }

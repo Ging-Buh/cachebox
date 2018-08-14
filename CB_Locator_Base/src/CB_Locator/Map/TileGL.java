@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,50 +15,45 @@
  */
 package CB_Locator.Map;
 
+import CB_Utils.Lists.CB_List;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Disposable;
-
-import CB_Utils.Lists.CB_List;
 
 /**
  * @author ging-buh
  * @author Longri
  */
 public abstract class TileGL implements Disposable {
-	public enum TileState {
-		Scheduled, Present, LowResolution, Disposed
-	}
+    private final int DEFAULT_TILE_SIZE = 256;
+    public Descriptor Descriptor = null;
+    public TileState State;
+    // zum speichern beliebiger Zusatzinfos
+    public Object data;
+    // / <summary>
+    // / Frames seit dem letzten Zugriff auf die Textur
+    // / </summary>
+    public long Age = 0;
+    protected boolean isDisposed = false;
 
-	private final int DEFAULT_TILE_SIZE = 256;
+    public abstract boolean isDisposed();
 
-	public Descriptor Descriptor = null;
+    public abstract boolean canDraw();
 
-	public TileState State;
-	// zum speichern beliebiger Zusatzinfos
-	public Object data;
+    @Override
+    public abstract String toString();
 
-	// / <summary>
-	// / Frames seit dem letzten Zugriff auf die Textur
-	// / </summary>
-	public long Age = 0;
+    public abstract long getWidth();
 
-	protected boolean isDisposed = false;
+    public abstract long getHeight();
 
-	public abstract boolean isDisposed();
+    public float getScaleFactor() {
+        return getWidth() / DEFAULT_TILE_SIZE;
+    }
 
-	public abstract boolean canDraw();
+    public abstract void draw(Batch batch, float f, float y, float tILESIZE, float tILESIZE2, CB_List<TileGL_RotateDrawables> rotateList);
 
-	@Override
-	public abstract String toString();
-
-	public abstract long getWidth();
-
-	public abstract long getHeight();
-
-	public float getScaleFactor() {
-		return getWidth() / DEFAULT_TILE_SIZE;
-	}
-
-	public abstract void draw(Batch batch, float f, float y, float tILESIZE, float tILESIZE2, CB_List<TileGL_RotateDrawables> rotateList);
+    public enum TileState {
+        Scheduled, Present, LowResolution, Disposed
+    }
 
 }

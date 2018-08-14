@@ -3,20 +3,20 @@ package de.droidcachebox.Custom_Controls.QuickButtonList;
 /*
  * HorizontalListView.java v1.5
  *
- * 
+ *
  * The MIT License
  * Copyright (c) 2011 Paul Soucy (paul@dev-smart.com)
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -37,105 +37,104 @@ import de.droidcachebox.Custom_Controls.downSlider;
 
 /**
  * nur noch ein Dummy um die Größe und damit das Layout zu erhalten
- * 
+ *
  * @author Longri
  */
 public class HorizontalListView extends AdapterView<ListAdapter> {
 
-	@Override
-	public void onSizeChanged(int w, int h, int oldw, int oldh) {
-		super.onSizeChanged(w, h, oldw, oldh);
-		// GL größen müssen neu berechnet werden
+    public HorizontalListView(Context context) {
+        super(context);
+        initView();
+    }
 
-	}
+    public HorizontalListView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        initView();
+    }
 
-	public HorizontalListView(Context context) {
-		super(context);
-		initView();
-	}
+    public HorizontalListView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        initView();
+    }
 
-	public HorizontalListView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		initView();
-	}
+    @Override
+    public void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        // GL größen müssen neu berechnet werden
 
-	public HorizontalListView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-		initView();
-	}
+    }
 
-	private synchronized void initView() {
+    private synchronized void initView() {
 
-	}
+    }
 
-	@Override
-	public void setOnItemSelectedListener(AdapterView.OnItemSelectedListener listener) {
+    @Override
+    public void setOnItemSelectedListener(AdapterView.OnItemSelectedListener listener) {
 
-	}
+    }
 
-	@Override
-	public void setOnItemClickListener(AdapterView.OnItemClickListener listener) {
+    @Override
+    public void setOnItemClickListener(AdapterView.OnItemClickListener listener) {
 
-	}
+    }
 
-	@Override
-	public ListAdapter getAdapter() {
-		return null;
-	}
+    @Override
+    public ListAdapter getAdapter() {
+        return null;
+    }
 
-	@Override
-	public View getSelectedView() {
+    @Override
+    public void setAdapter(ListAdapter adapter) {
 
-		return null;
-	}
+    }
 
-	@Override
-	public void setAdapter(ListAdapter adapter) {
+    @Override
+    public View getSelectedView() {
 
-	}
+        return null;
+    }
 
-	@Override
-	public void setSelection(int position) {
+    @Override
+    public void setSelection(int position) {
 
-	}
+    }
 
-	@Override
-	protected synchronized void onLayout(boolean changed, int left, int top, int right, int bottom) {
-		super.onLayout(changed, left, top, right, bottom);
+    @Override
+    protected synchronized void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
 
-	}
+    }
 
-	@Override
-	public boolean dispatchTouchEvent(MotionEvent ev) {
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		setMeasuredDimension(measure(widthMeasureSpec), downSlider.getAktQuickButtonHeight());
-	}
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        setMeasuredDimension(measure(widthMeasureSpec), downSlider.getAktQuickButtonHeight());
+    }
 
-	/**
-	 * Determines the width of this view
-	 * 
-	 * @param measureSpec
-	 *            A measureSpec packed into an int
-	 * @return The width of the view, honoring constraints from measureSpec
-	 */
-	private int measure(int measureSpec) {
-		int result = 0;
+    /**
+     * Determines the width of this view
+     *
+     * @param measureSpec A measureSpec packed into an int
+     * @return The width of the view, honoring constraints from measureSpec
+     */
+    private int measure(int measureSpec) {
+        int result = 0;
 
-		int specSize = MeasureSpec.getSize(measureSpec);
+        int specSize = MeasureSpec.getSize(measureSpec);
 
-		result = specSize;
+        result = specSize;
 
-		return result;
-	}
+        return result;
+    }
 
-	public void setHeight(int newheight) {
+    public void setHeight(int newheight) {
 
-		setMeasuredDimension(this.getWidth(), newheight);
-	}
+        setMeasuredDimension(this.getWidth(), newheight);
+    }
 
 }

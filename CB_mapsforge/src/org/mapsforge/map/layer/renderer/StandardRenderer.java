@@ -16,11 +16,7 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.Display;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Position;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
@@ -59,6 +55,16 @@ public class StandardRenderer implements RenderCallback {
         this.mapDataStore = mapDataStore;
         this.graphicFactory = graphicFactory;
         this.renderLabels = renderLabels;
+    }
+
+    private static Point[] getTilePixelCoordinates(int tileSize) {
+        Point[] result = new Point[5];
+        result[0] = new Point(0, 0);
+        result[1] = new Point(tileSize, 0);
+        result[2] = new Point(tileSize, tileSize);
+        result[3] = new Point(0, tileSize);
+        result[4] = result[0];
+        return result;
     }
 
     /**
@@ -199,16 +205,6 @@ public class StandardRenderer implements RenderCallback {
         if (mapReadResult.isWater) {
             renderWaterBackground(renderContext);
         }
-    }
-
-    private static Point[] getTilePixelCoordinates(int tileSize) {
-        Point[] result = new Point[5];
-        result[0] = new Point(0, 0);
-        result[1] = new Point(tileSize, 0);
-        result[2] = new Point(tileSize, tileSize);
-        result[3] = new Point(0, tileSize);
-        result[4] = result[0];
-        return result;
     }
 
 }

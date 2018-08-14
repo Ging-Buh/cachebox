@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2011-2012 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -18,6 +18,6 @@ package CB_UI_Base.Math;
 
 public interface SizeChangedEvent {
 
-	public void sizeChanged();
+    public void sizeChanged();
 
 }

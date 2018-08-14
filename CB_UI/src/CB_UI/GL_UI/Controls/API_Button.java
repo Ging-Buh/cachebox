@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,83 +15,81 @@
  */
 package CB_UI.GL_UI.Controls;
 
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GcApiLogin;
 import CB_UI_Base.Events.PlatformConnector;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Image;
+import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Plattform;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class API_Button extends Button {
 
-	Image apiChk;
+    Image apiChk;
+    OnClickListener click = new OnClickListener() {
 
-	public API_Button(CB_RectF rec) {
-		super(rec, "API-Button");
+        @Override
+        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+            if (Plattform.used == Plattform.Desktop) {
+                (new GcApiLogin()).RunRequest();
+            } else {
+                PlatformConnector.callGetApiKeyt();
+            }
 
-		setText();
-		this.setOnClickListener(click);
+            return true;
+        }
+    };
 
-		CB_RectF rec1 = new CB_RectF(this);
-		rec1.setWidth(this.getHeight());
-		rec1.setX(this.getWidth() - this.getHeight());
-		rec1 = rec1.ScaleCenter(0.7f);
+    public API_Button(CB_RectF rec) {
+        super(rec, "API-Button");
 
-		apiChk = new Image(rec1, "", false);
+        setText();
+        this.setOnClickListener(click);
 
-		this.addChild(apiChk);
-		setImage();
+        CB_RectF rec1 = new CB_RectF(this);
+        rec1.setWidth(this.getHeight());
+        rec1.setX(this.getWidth() - this.getHeight());
+        rec1 = rec1.ScaleCenter(0.7f);
 
-	}
+        apiChk = new Image(rec1, "", false);
 
-	private void setText() {
-		this.setText(Translation.Get("getApiKey"));
-	}
+        this.addChild(apiChk);
+        setImage();
 
-	public void setImage() {
-		if (apiChk != null) {
-			Drawable drw;
+    }
 
-			boolean Entry = false;
+    private void setText() {
+        this.setText(Translation.Get("getApiKey"));
+    }
 
-			if (Config.StagingAPI.getValue()) {
-				if (!Config.GcAPIStaging.getValue().equals(""))
-					Entry = true;
-			} else {
-				if (!Config.GcAPI.getValue().equals(""))
-					Entry = true;
-			}
+    public void setImage() {
+        if (apiChk != null) {
+            Drawable drw;
 
-			if (Entry) {
-				drw = new SpriteDrawable(Sprites.getSprite("chk-icon"));
-			} else {
-				drw = new SpriteDrawable(Sprites.getSprite("chk-icon-disable"));
-			}
+            boolean Entry = false;
 
-			apiChk.setDrawable(drw);
-		}
+            if (Config.StagingAPI.getValue()) {
+                if (!Config.GcAPIStaging.getValue().equals(""))
+                    Entry = true;
+            } else {
+                if (!Config.GcAPI.getValue().equals(""))
+                    Entry = true;
+            }
 
-	}
+            if (Entry) {
+                drw = new SpriteDrawable(Sprites.getSprite("chk-icon"));
+            } else {
+                drw = new SpriteDrawable(Sprites.getSprite("chk-icon-disable"));
+            }
 
-	OnClickListener click = new OnClickListener() {
+            apiChk.setDrawable(drw);
+        }
 
-		@Override
-		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-			if (Plattform.used == Plattform.Desktop) {
-				(new GcApiLogin()).RunRequest();
-			} else {
-				PlatformConnector.callGetApiKeyt();
-			}
-
-			return true;
-		}
-	};
+    }
 
 }

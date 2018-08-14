@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -15,86 +15,83 @@
  */
 package org.mapsforge.map.android.graphics;
 
-import org.mapsforge.core.graphics.TileBitmap;
-
-import com.badlogic.gdx.graphics.Texture;
-
 import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_UI_Base.graphics.extendedInterfaces.ext_Bitmap;
 import android.graphics.Bitmap.Config;
+import com.badlogic.gdx.graphics.Texture;
+import org.mapsforge.core.graphics.TileBitmap;
 
 /**
  * Extends the original Mapsforge AwtBitmap with the ext_Bitmap interface.
- * 
+ *
  * @author Longri
  */
 public class ext_AndroidBitmap extends AndroidBitmap implements ext_Bitmap, TileBitmap {
-	int instCount = 0;
+    protected final BitmapDrawable GL_image;
+    int instCount = 0;
 
-	protected final BitmapDrawable GL_image;
+    ext_AndroidBitmap(int width, int height) {
+        super(width, height, Config.RGB_565);
+        GL_image = null;
+        instCount++;
+    }
 
-	ext_AndroidBitmap(int width, int height) {
-	super(width, height, Config.RGB_565);
-	GL_image = null;
-	instCount++;
-	}
+    protected ext_AndroidBitmap() {
+        super(1, 1, Config.ALPHA_8);
+        this.GL_image = null;
+        this.bitmap = null;
+    }
 
-	protected ext_AndroidBitmap() {
-	super(1, 1, Config.ALPHA_8);
-	this.GL_image = null;
-	this.bitmap = null;
-	}
+    @Override
+    public void recycle() {
+        instCount++;
+        this.destroyBitmap();
+    }
 
-	@Override
-	public void recycle() {
-	instCount++;
-	this.destroyBitmap();
-	}
+    @Override
+    public void getPixels(int[] maskBuf, int i, int w, int j, int y, int w2, int k) {
 
-	@Override
-	public void getPixels(int[] maskBuf, int i, int w, int j, int y, int w2, int k) {
+    }
 
-	}
+    @Override
+    public void setPixels(int[] maskedContentBuf, int i, int w, int j, int y, int w2, int k) {
 
-	@Override
-	public void setPixels(int[] maskedContentBuf, int i, int w, int j, int y, int w2, int k) {
+    }
 
-	}
+    @Override
+    public BitmapDrawable getGlBmpHandle() {
+        return GL_image;
+    }
 
-	@Override
-	public BitmapDrawable getGlBmpHandle() {
-	return GL_image;
-	}
+    @Override
+    public Texture getTexture() {
+        if (GL_image == null)
+            return null;
+        return GL_image.getTexture();
+    }
 
-	@Override
-	public Texture getTexture() {
-	if (GL_image == null)
-		return null;
-	return GL_image.getTexture();
-	}
+    @Override
+    public long getTimestamp() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	@Override
-	public long getTimestamp() {
-	// TODO Auto-generated method stub
-	return 0;
-	}
+    @Override
+    public void setTimestamp(long timestamp) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public boolean isExpired() {
-	// TODO Auto-generated method stub
-	return false;
-	}
+    }
 
-	@Override
-	public void setExpiration(long expiration) {
-	// TODO Auto-generated method stub
+    @Override
+    public boolean isExpired() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	}
+    @Override
+    public void setExpiration(long expiration) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void setTimestamp(long timestamp) {
-	// TODO Auto-generated method stub
-
-	}
+    }
 
 }
