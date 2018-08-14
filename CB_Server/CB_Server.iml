@@ -37,6 +37,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="module" module-name="CB_Utils" />
+    <orderEntry type="module" module-name="CB_Translation_Base" />
     <orderEntry type="module" module-name="CB_mapsforge" />
     <orderEntry type="module" module-name="CB_Rpc" />
     <orderEntry type="module" module-name="CB_UI_Base" />
@@ -166,6 +167,15 @@
       <library name="ContextMenu-4.5.0.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/ContextMenu-4.5.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../libs/gdx/gdx-backend-lwjgl.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

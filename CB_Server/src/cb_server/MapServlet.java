@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.Tile;
-import org.mapsforge.map.awt.AwtGraphicFactory;
+import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 import org.mapsforge.map.layer.renderer.CachedDatabaseRenderer;
 import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.model.DisplayModel;

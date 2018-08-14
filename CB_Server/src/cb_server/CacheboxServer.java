@@ -26,6 +26,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import CB_Translation_Base.TranslationEngine.Translation;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -47,7 +48,6 @@ import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.Types.Categories;
-import CB_Translation_Base.TranslationEngine.Translation;
 import CB_Utils.Plattform;
 import CB_Utils.Settings.SettingModus;
 import CB_Utils.Util.FileIO;
