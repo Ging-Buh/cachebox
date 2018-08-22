@@ -32,7 +32,7 @@ public class AndroidDB extends Database {
                 Reset();
             } else {
                 try {
-                    Log.debug(log, "open data base: " + databasePath);
+                    Log.trace(log, "open data base: " + databasePath);
                     myDB = SQLiteDatabase.openDatabase(databasePath, null, SQLiteDatabase.OPEN_READWRITE);
                 } catch (Exception exc) {
                     return;
@@ -47,7 +47,7 @@ public class AndroidDB extends Database {
         // if exists, delete old database file
         File file = FileFactory.createFile(databasePath);
         if (file.exists()) {
-            Log.debug(log, "RESET DB, delete file: " + databasePath);
+            Log.trace(log, "RESET DB, delete file: " + databasePath);
             try {
                 file.delete();
             } catch (IOException e) {
@@ -56,7 +56,7 @@ public class AndroidDB extends Database {
         }
 
         try {
-            Log.debug(log, "create data base: " + databasePath);
+            Log.trace(log, "create data base: " + databasePath);
             myDB = activity.openOrCreateDatabase(createDatabaseFile(databasePath).getAbsolutePath(), 0, null);
             newDB = true;
         } catch (Exception exc) {
@@ -84,7 +84,7 @@ public class AndroidDB extends Database {
                     sb.append(arg + ", ");
             } else
                 sb.append("NULL");
-            Log.debug(log, sb.toString());
+            Log.trace(log, sb.toString());
         }
         if (myDB == null)
             return null;
@@ -94,7 +94,7 @@ public class AndroidDB extends Database {
 
     @Override
     public void execSQL(String sql) {
-        Log.debug(log, "execSQL : " + sql);
+        Log.trace(log, "execSQL : " + sql);
         try {
             myDB.execSQL(sql);
         } catch (Exception ex) {
@@ -137,7 +137,7 @@ public class AndroidDB extends Database {
 
         long ret = -1;
         try {
-            Log.debug(log, "INSERT into: " + tablename + "values: " + values.toString());
+            Log.trace(log, "INSERT into: " + tablename + "values: " + values.toString());
             myDB.insert(tablename, null, values);
         } catch (Exception e) {
             e.printStackTrace();
@@ -160,7 +160,7 @@ public class AndroidDB extends Database {
                 }
             }
 
-            Log.debug(log, sb.toString());
+            Log.trace(log, sb.toString());
         }
 
         try {
@@ -184,7 +184,7 @@ public class AndroidDB extends Database {
                 }
             }
 
-            Log.debug(log, sb.toString());
+            Log.trace(log, sb.toString());
         }
 
         return myDB.delete(tablename, whereClause, whereArgs);
@@ -213,21 +213,21 @@ public class AndroidDB extends Database {
 
     @Override
     public long insertWithConflictReplace(String tablename, Parameters val) {
-        Log.debug(log, "insertWithConflictReplace @Table:" + tablename + "Parameters: " + val.toString());
+        Log.trace(log, "insertWithConflictReplace @Table:" + tablename + "Parameters: " + val.toString());
         ContentValues values = getContentValues(val);
         return myDB.insertWithOnConflict(tablename, null, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     @Override
     public long insertWithConflictIgnore(String tablename, Parameters val) {
-        Log.debug(log, "insertWithConflictIgnore @Table:" + tablename + "Parameters: " + val.toString());
+        Log.trace(log, "insertWithConflictIgnore @Table:" + tablename + "Parameters: " + val.toString());
         ContentValues values = getContentValues(val);
         return myDB.insertWithOnConflict(tablename, null, values, SQLiteDatabase.CONFLICT_IGNORE);
     }
 
     @Override
     public void Close() {
-        Log.debug(log, "close DB:" + databasePath);
+        Log.trace(log, "close DB:" + databasePath);
         if (myDB != null)
             myDB.close();
         myDB = null;

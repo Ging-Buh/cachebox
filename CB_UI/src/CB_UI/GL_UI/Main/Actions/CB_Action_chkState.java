@@ -92,17 +92,13 @@ public class CB_Action_chkState extends CB_Action {
                         index++;
                     } while (Iterator2.hasNext());
 
-                    result = GroundspeakAPI.GetGeocacheStatus(chkList100, this);
-                    if (result == -1)
-                        break;// API Error
-                    if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
+                    result = GroundspeakAPI.fetchGeocacheStatus(chkList100, this);
+                    if (result == -1) {
                         GL.that.Toast(ConnectionError.INSTANCE);
-                        break;
-                    }
-                    if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
                         GL.that.Toast(ApiUnavailable.INSTANCE);
                         break;
                     }
+
                     addedReturnList.addAll(chkList100);
                     start += BlockSize + 1;
                     stop += BlockSize + 1;

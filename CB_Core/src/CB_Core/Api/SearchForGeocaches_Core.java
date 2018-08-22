@@ -84,9 +84,7 @@ public class SearchForGeocaches_Core {
             isLite = search.isLite;
         }
 
-        String URL = CB_Core_Settings.StagingAPI.getValue() ? GroundspeakAPI.STAGING_GS_LIVE_URL : GroundspeakAPI.GS_LIVE_URL;
-
-        HttpPost httppost = new HttpPost(URL + "SearchForGeocaches?format=json");
+        HttpPost httppost = new HttpPost(GroundspeakAPI.getUrl("SearchForGeocaches?format=json"));
 
         String requestString = "";
 
@@ -96,7 +94,7 @@ public class SearchForGeocaches_Core {
 
             JSONObject request = new JSONObject();
             try {
-                request.put("AccessToken", GroundspeakAPI.GetAccessToken());
+                request.put("AccessToken", GroundspeakAPI.GetSettingsAccessToken());
                 request.put("IsLight", false);
                 request.put("StartIndex", startIndex);
                 request.put("MaxPerPage", 1);
@@ -121,7 +119,7 @@ public class SearchForGeocaches_Core {
         } else if (search instanceof SearchGCName) {
             SearchGCName searchC = (SearchGCName) search;
             requestString = "{";
-            requestString += "\"AccessToken\":\"" + GroundspeakAPI.GetAccessToken() + "\",";
+            requestString += "\"AccessToken\":\"" + GroundspeakAPI.GetSettingsAccessToken() + "\",";
             if (isLite)
                 requestString += "\"IsLite\":true,"; // only lite
             else
@@ -146,7 +144,7 @@ public class SearchForGeocaches_Core {
         } else if (search instanceof SearchGCOwner) {
             SearchGCOwner searchC = (SearchGCOwner) search;
             requestString = "{";
-            requestString += "\"AccessToken\":\"" + GroundspeakAPI.GetAccessToken() + "\",";
+            requestString += "\"AccessToken\":\"" + GroundspeakAPI.GetSettingsAccessToken() + "\",";
 
             requestString += "\"HiddenByUsers\":{";
             requestString += "\"UserNames\":[\"" + searchC.OwnerName + "\"]},";
@@ -175,7 +173,7 @@ public class SearchForGeocaches_Core {
             SearchCoordinate searchC = (SearchCoordinate) search;
 
             requestString = "{";
-            requestString += "\"AccessToken\":\"" + GroundspeakAPI.GetAccessToken() + "\",";
+            requestString += "\"AccessToken\":\"" + GroundspeakAPI.GetSettingsAccessToken() + "\",";
             if (isLite)
                 requestString += "\"IsLite\":true,"; // only lite
             else
@@ -234,7 +232,7 @@ public class SearchForGeocaches_Core {
         }
 
         // chk api result
-        if (GroundspeakAPI.getApiStatus(result) != 0)
+        if (getApiStatus(result) != 0)
             return "";
         if (result.contains("The service is unavailable"))
             return "The service is unavailable";
@@ -278,7 +276,7 @@ public class SearchForGeocaches_Core {
                 startIndex += searchNumber;
 
                 requestString = "{";
-                requestString += "\"AccessToken\":\"" + GroundspeakAPI.GetAccessToken() + "\",";
+                requestString += "\"AccessToken\":\"" + GroundspeakAPI.GetSettingsAccessToken() + "\",";
 
                 if (isLite)
                     requestString += "\"IsLite\":true,"; // only lite
@@ -290,7 +288,7 @@ public class SearchForGeocaches_Core {
                 requestString += "\"TrackableLogCount\":2";
                 requestString += "}";
 
-                httppost = new HttpPost(URL + "GetMoreGeocaches?format=json");
+                httppost = new HttpPost(GroundspeakAPI.getUrl("GetMoreGeocaches?format=json"));
 
                 try {
                     httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
@@ -336,6 +334,54 @@ public class SearchForGeocaches_Core {
             while ((startIndex + searchNumber <= search.number) && (cacheList.size() - lastCacheListSize >= searchNumber) && (lastCacheListSize != cacheList.size() || startIndex + searchNumber > cacheList.size()));
         }
         return result;
+    }
+
+    private static int getApiStatus(String result) {
+
+        try {
+            JSONTokener tokener = new JSONTokener(result);
+            JSONObject json = (JSONObject) tokener.nextValue();
+            JSONObject jsonStatus = json.getJSONObject("Status");
+            int status = jsonStatus.getInt("StatusCode");
+            String statusMessage = jsonStatus.getString("StatusMessage");
+            String exceptionDetails = jsonStatus.getString("ExceptionDetails");
+
+            String logString = "StatusCode = " + status + "\n" + statusMessage + "\n" + exceptionDetails;
+
+            if (status == 0)
+                return status;
+
+            if (status == 2) {
+                // Not authorized
+                API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.INVALID);
+                Log.warn(log, "API-Error: " + logString);
+                return status;
+            }
+
+            if (status == 3) {
+                // API Key expired
+                API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.EXPIRED);
+                Log.warn(log, "API-Error: " + logString);
+                return status;
+            }
+
+            if (status == 141) {
+                // / {"Status":{"StatusCode":141,"StatusMessage":"The AccessToken provided is not valid"
+                API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.INVALID);
+                Log.warn(log, "API-Error: " + logString);
+                return status;
+            }
+
+            // unknown
+            API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.INVALID);
+            Log.warn(log, "API-Error: " + logString);
+            return status;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return -1;
     }
 
     String ParseJsonResult(Search search, CB_List<Cache> cacheList, ArrayList<LogEntry> logList, ArrayList<ImageEntry> imageList, long gpxFilenameId, String result, byte apiStatus, boolean isLite) {
@@ -460,13 +506,13 @@ public class SearchForGeocaches_Core {
 
                     JSONObject jContainer = jCache.getJSONObject("ContainerType");
                     int jSize = jContainer.getInt("ContainerTypeId");
-                    cache.Size = CacheSizes.parseInt(GroundspeakAPI.getCacheSize(jSize));
+                    cache.Size = CacheSizes.CacheSizesFromInt(getCacheSize(jSize));
                     cache.setSolverChecksum(0);
                     cache.setTerrain((float) jCache.getDouble("Terrain"));
                     cache.Type = CacheTypes.Traditional;
                     try {
                         JSONObject jCacheType = jCache.getJSONObject("CacheType");
-                        cache.Type = GroundspeakAPI.getCacheType(jCacheType.getInt("GeocacheTypeId"));
+                        cache.Type = getCacheType(jCacheType.getInt("GeocacheTypeId"));
                     } catch (Exception e) {
 
                         if (gcCode.equals("GC4K089")) {
@@ -591,7 +637,7 @@ public class SearchForGeocaches_Core {
 
                             waypoint.setTitle(jWaypoints.getString("Description"));
                             waypoint.setDescription(jWaypoints.getString("Comment"));
-                            waypoint.Type = GroundspeakAPI.getCacheType(jWaypoints.getInt("WptTypeID"));
+                            waypoint.Type = getCacheType(jWaypoints.getInt("WptTypeID"));
                             waypoint.setGcCode(jWaypoints.getString("Code"));
                             cache.waypoints.add(waypoint);
                         }
@@ -658,6 +704,80 @@ public class SearchForGeocaches_Core {
         return result;
     }
 
+    private int getCacheSize(int containerTypeId) {
+        switch (containerTypeId) {
+            case 1:
+                return 0; // Unknown
+            case 2:
+                return 1; // Micro
+            case 3:
+                return 3; // Regular
+            case 4:
+                return 4; // Large
+            case 5:
+                return 5; // Virtual
+            case 6:
+                return 0; // Other
+            case 8:
+                return 2;
+            default:
+                return 0;
+
+        }
+    }
+
+    private CacheTypes getCacheType(int apiTyp) {
+        switch (apiTyp) {
+            case 2:
+                return CacheTypes.Traditional;
+            case 3:
+                return CacheTypes.Multi;
+            case 4:
+                return CacheTypes.Virtual;
+            case 5:
+                return CacheTypes.Letterbox;
+            case 6:
+                return CacheTypes.Event;
+            case 8:
+                return CacheTypes.Mystery;
+            case 9:
+                return CacheTypes.Cache; // Project APE Cache???
+            case 11:
+                return CacheTypes.Camera;
+            case 12:
+                return CacheTypes.Cache; // Locationless (Reverse) Cache
+            case 13:
+                return CacheTypes.CITO; // Cache In Trash Out Event
+            case 137:
+                return CacheTypes.Earth;
+            case 453:
+                return CacheTypes.MegaEvent;
+            case 452:
+                return CacheTypes.ReferencePoint;
+            case 1304:
+                return CacheTypes.Cache; // GPS Adventures Exhibit
+            case 1858:
+                return CacheTypes.Wherigo;
+
+            case 217:
+                return CacheTypes.ParkingArea;
+            case 220:
+                return CacheTypes.Final;
+            case 219:
+                return CacheTypes.MultiStage;
+            case 221:
+                return CacheTypes.Trailhead;
+            case 218:
+                return CacheTypes.MultiQuestion;
+            case 7005:
+                return CacheTypes.Giga;
+
+            default:
+                return CacheTypes.Undefined;
+
+        }
+    }
+
     protected void showToastConnectionError() {
         // hier im Core nichts machen da hier keine UI vorhanden ist
     }
@@ -688,11 +808,6 @@ public class SearchForGeocaches_Core {
         return requestString;
     }
 
-    /**
-     * @param aktCache
-     * @param accessToken Config.GetAccessToken();
-     * @return
-     */
     public Cache LoadApiDetails(Cache aktCache, ICancel icancel) {
 
         Cache newCache = null;

@@ -7,7 +7,6 @@ import CB_Core.Import.DescriptionImageGrabber;
 import CB_Core.Types.Cache;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GlobalCore;
 import CB_UI.SearchForGeocaches;
 import CB_UI_Base.Events.PlatformConnector;
@@ -79,18 +78,15 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                     public void run() {
 
                         if (!GroundspeakAPI.CacheStatusValid) {
-                            int result = GroundspeakAPI.GetCacheLimits(null);
+                            int result = GroundspeakAPI.fetchCacheLimits();
                             if (result != 0) {
                                 onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
                                 return;
                             }
 
-                            if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
+                            if (result == GroundspeakAPI.ERROR) {
                                 GL.that.Toast(ConnectionError.INSTANCE);
-                                return;
-                            }
-                            if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
-                                GL.that.Toast(ApiUnavailable.INSTANCE);
+                                //GL.that.Toast(ApiUnavailable.INSTANCE);
                                 return;
                             }
                         }

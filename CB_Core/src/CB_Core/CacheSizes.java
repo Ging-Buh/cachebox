@@ -12,7 +12,7 @@ public enum CacheSizes {
     // other // 6 - Achtung, hier habe ich einen neuen Wert eingefügt
     ;
 
-    public static CacheSizes parseInt(int value) {
+    public static CacheSizes CacheSizesFromInt(int value) {
         switch (value) {
             case 1:
                 return CacheSizes.micro;

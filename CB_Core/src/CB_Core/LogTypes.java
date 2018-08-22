@@ -29,7 +29,43 @@ public enum LogTypes {
     visited, // 25
     ;
 
+    /*
+    GEOCACHE LOG TYPES
+        Id	Name	Description
+        2	Found It	found the geocache
+        3	DNF it	Did Not Find (DNF) the geocache
+        4	Write note	Adding a comment to the geocache
+        5	Archive	changing the status of the geocache to archived
+        7	Needs archiving	flagging the geocache as needing to be archived
+        9	Will attend	RSVPing for an event
+        10	Attended	Attended an event (counts as a find)
+        11	Webcam photo taken	Successfully captured a webcam geocache (counts as a find)
+        12	Unarchive	changing the status of the geocache from archived to active
+        22	Temporarily Disable Listing	changing the status of the geocache to disabled
+        23	Enable Listing	changing the status of the geocache from disabled to active
+        24	Publish Listing	changing the status of the geocache from unpublished to active
+        45	Needs Maintenance	flagging a geocache owner that the geocache needs some attention
+        46	Owner Maintenance	announcing that owner maintenance was done
+        47	Update Coordinates	updating the coordinates of the geocache
+        68	Post Reviewer Note	a note left by the reviewer
+        74	Event Announcement	event host announcement to attendees
+    */
+    /*
+        TRACKABLE LOG TYPES
+        Id	Name
+        4	Write Note
+        13	Retrieve It from a Cache
+        14	Dropped Off
+        15	Transfer
+        16	Mark Missing
+        19	Grab It (Not from a Cache)
+        48	Discovered It
+        69	Move to Collection
+        70	Move to Inventory
+        75	Visited
+     */
     public static LogTypes parseString(String text) {
+        // API 1.0 ['Found It', 'DNF it', 'Write note', 'Archive', 'Needs archiving', 'Will attend', 'Attended', 'Webcam photo taken', 'Unarchive', 'Temporarily Disable Listing', 'Enable Listing', 'Publish Listing', 'Needs Maintenance', 'Owner Maintenance', 'Update Coordinates', 'Post Reviewer Note', 'Event Announcement']
         if (text.equalsIgnoreCase("found it")) {
             return found;
         }

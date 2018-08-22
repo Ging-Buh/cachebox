@@ -474,15 +474,13 @@ public class DescriptionImageGrabber {
                 int result = 0;
                 long startTs = System.currentTimeMillis();
                 do {
-                    result = GroundspeakAPI.getImagesForGeocache(gcCode, allimgDict);
+                    result = GroundspeakAPI.fetchImagesForGeocache(gcCode, allimgDict);
 
-                    if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
-                        return GroundspeakAPI.CONNECTION_TIMEOUT;
+                    if (result == GroundspeakAPI.ERROR) {
+                        return GroundspeakAPI.ERROR;
                     }
 
-                    if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
-                        return GroundspeakAPI.CONNECTION_TIMEOUT;
-                    }
+                    // todo ist in API 1 vermutlich: 429	Too Many Requests
                     if (result == 140) {
                         // API-Limit überschritten -> nach 15 Sekunden wiederholen
                         System.out.println("******* API-Limit überschritten -> 15 Sekunden warten! *******");
@@ -515,8 +513,6 @@ public class DescriptionImageGrabber {
                         return 0;
 
                     URI uri = allimgDict.get(key);
-                    if (uri.toString().contains("/cache/log/"))
-                        continue; // LOG-Image
 
                     ip.ProgressChangeMsg("importImages", Translation.Get("SpoilerImageImportForGC") + gcCode + Translation.Get("ImageDownloadFrom") + uri);
 

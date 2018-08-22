@@ -13,6 +13,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GlobalCore;
+import CB_UI.WriteIntoDB;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
@@ -63,7 +64,7 @@ public class CB_Action_LoadLogs extends CB_Action {
         wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
             @Override
-            public void isCanceld() {
+            public void isCanceled() {
 
             }
         }, new cancelRunnable() {
@@ -83,7 +84,7 @@ public class CB_Action_LoadLogs extends CB_Action {
                 CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, GlobalCore.getSelectedCache().getGPXFilename_ID(), this);
 
                 try {
-                    GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
+                    WriteIntoDB.CachesAndLogsAndImagesIntoDB(apiCaches, apiLogs, apiImages);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

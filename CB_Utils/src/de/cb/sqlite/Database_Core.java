@@ -1,7 +1,6 @@
 package de.cb.sqlite;
 
 import CB_Utils.Log.Log;
-
 import java.util.HashMap;
 
 public abstract class Database_Core {

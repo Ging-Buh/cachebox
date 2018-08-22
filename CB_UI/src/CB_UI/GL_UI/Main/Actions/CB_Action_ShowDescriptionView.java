@@ -30,6 +30,7 @@ import CB_UI.Config;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.DescriptionView;
 import CB_UI.GlobalCore;
+import CB_UI.WriteIntoDB;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
@@ -162,7 +163,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
         wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
             @Override
-            public void isCanceld() {
+            public void isCanceled() {
                 // TODO handle cancel
             }
         }, new cancelRunnable() {
@@ -186,7 +187,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
                     Log.debug(log, "result:" + result);
 
                     try {
-                        GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
+                        WriteIntoDB.CachesAndLogsAndImagesIntoDB(apiCaches, apiLogs, apiImages);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

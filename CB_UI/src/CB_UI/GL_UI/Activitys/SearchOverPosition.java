@@ -29,6 +29,7 @@ import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Controls.CoordinateButton;
 import CB_UI.GL_UI.Controls.CoordinateButton.ICoordinateChangedListener;
 import CB_UI.GL_UI.Views.MapView;
+import CB_UI.WriteIntoDB;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Fonts;
@@ -435,7 +436,7 @@ public class SearchOverPosition extends ActivityBase {
                                 CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id, icancel);
                                 dis.setAnimationType(AnimationType.Work);
                                 if (apiCaches.size() > 0) {
-                                    GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
+                                    WriteIntoDB.CachesAndLogsAndImagesIntoDB(apiCaches, apiLogs, apiImages);
                                 }
 
                             }

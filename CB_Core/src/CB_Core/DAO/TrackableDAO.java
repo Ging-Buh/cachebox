@@ -40,12 +40,11 @@ public class TrackableDAO {
 
     public void WriteToDatabase(Trackable trackable) {
         try {
-            Log.info(log, "Write Trackable createArgs");
-            Parameters args = createArgs(trackable);
             Log.info(log, "Write Trackable insert");
-            Database.FieldNotes.insert("Trackable", args);
+            Database.FieldNotes.insert("Trackable", createArgs(trackable));
+            Log.info(log, "Write Trackable insert done");
         } catch (Exception exc) {
-            Log.err(log, "Write Trackable", exc);
+            Log.err(log, "Write Trackable error", exc);
         }
     }
 
@@ -54,9 +53,9 @@ public class TrackableDAO {
             Log.info(log, "Write Trackable createArgs");
             Parameters args = createArgs(trackable);
             Log.info(log, "Write Trackable update");
-            Database.FieldNotes.update("Trackable", args, "GcCode='" + trackable.getGcCode() + "'", null);
+            Database.FieldNotes.update("Trackable", args, "GcCode='" + trackable.getTBCode() + "'", null);
         } catch (Exception exc) {
-            Log.err(log, "Ubdate Trackable", exc);
+            Log.err(log, "Update Trackable error", exc);
         }
 
     }
@@ -82,11 +81,33 @@ public class TrackableDAO {
             Log.err(log, "stimestampLastVisit", e);
         }
 
+    /*
+            cid      name                 type               notnull      dflt_value      pk
+            -------  -------------------  -----------------  -----------  --------------  ---
+            0        Id                   integer            1                            1
+            1        Archived             bit                0                            0
+            2        GcCode               nvarchar (15)      0                            0
+            3        CacheId              bigint             0                            0
+            4        CurrentGoal          ntext              0                            0
+            5        CurrentOwnerName     nvarchar (255)     0                            0
+            6        DateCreated          datetime           0                            0
+            7        Description          ntext              0                            0
+            8        IconUrl              nvarchar (255)     0                            0
+            9        ImageUrl             nvarchar (255)     0                            0
+            10       name                 nvarchar (255)     0                            0
+            11       OwnerName            nvarchar (255)     0                            0
+            12       Url                  nvarchar (255)     0                            0
+            13       TypeName             ntext              0                            0
+            14       LastVisit            datetime           0                            0
+            15       Home                 ntext              0                            0
+            16       TravelDistance       integer            0            0               0
+    */
+
         Log.debug(log, "new Parameters()");
         Parameters args = new Parameters();
         try {
             args.put("Archived", trackable.getArchived() ? 1 : 0);
-            putArgs(args, "GcCode", trackable.getGcCode());
+            putArgs(args, "GcCode", trackable.getTBCode());
             putArgs(args, "CurrentGoal", trackable.getCurrentGoal());
             putArgs(args, "CurrentOwnerName", trackable.getCurrentOwner());
             putArgs(args, "DateCreated", stimestampCreated);
@@ -100,7 +121,7 @@ public class TrackableDAO {
             putArgs(args, "LastVisit", stimestampLastVisit);
             putArgs(args, "Home", trackable.getHome());
             putArgs(args, "TravelDistance", trackable.getTravelDistance());
-            putArgs(args, "CacheID", trackable.getCurrentGeocacheCode());
+            putArgs(args, "CacheId", trackable.getCurrentGeocacheCode());
         } catch (Exception e) {
             Log.err(log, "args", e);
         }

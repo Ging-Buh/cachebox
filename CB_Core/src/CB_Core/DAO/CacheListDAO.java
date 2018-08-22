@@ -117,7 +117,7 @@ public class CacheListDAO {
         }
         reader.close();
 
-        Log.debug(log, "ReadCacheList 2.Caches");
+        Log.trace(log, "ReadCacheList 2.Caches");
         try {
             if (fullDetails) {
                 sql = CacheDAO.SQL_GET_CACHE + ", " + CacheDAO.SQL_DETAILS;

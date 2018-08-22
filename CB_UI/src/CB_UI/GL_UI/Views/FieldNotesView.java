@@ -396,7 +396,7 @@ public class FieldNotesView extends V_ListView {
         wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
             @Override
-            public void isCanceld() {
+            public void isCanceled() {
 
             }
         }, new cancelRunnable() {
@@ -408,7 +408,7 @@ public class FieldNotesView extends V_ListView {
                 boolean dl = fieldNote.isDirectLog;
                 int result = GroundspeakAPI.CreateFieldNoteAndPublish(fieldNote.gcCode, fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment, dl, this);
 
-                if (result == GroundspeakAPI.IO) {
+                if (result == GroundspeakAPI.OK) {
                     fieldNote.uploaded = true;
 
                     // after direct Log create a fieldNote with uploded state

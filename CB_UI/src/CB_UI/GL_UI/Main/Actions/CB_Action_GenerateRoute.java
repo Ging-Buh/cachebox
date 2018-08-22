@@ -118,7 +118,7 @@ public class CB_Action_GenerateRoute extends CB_Action {
                             wd = CancelWaitDialog.ShowWait(Translation.Get("generateRoute"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
                                 @Override
-                                public void isCanceld() {
+                                public void isCanceled() {
                                     // TODO Handle Cancel Clicket
 
                                 }

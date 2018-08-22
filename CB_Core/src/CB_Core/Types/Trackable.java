@@ -15,6 +15,7 @@
  */
 package CB_Core.Types;
 
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.LogTypes;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.UnitFormatter;
@@ -23,7 +24,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,7 +33,7 @@ public class Trackable implements Comparable<Trackable> {
     final SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy");
     private int Id = -1;
     private boolean Archived;
-    private String GcCode = "";
+    private String TBCode = "";
     private long CacheId;
     private String CurrentGoal = "";
     private String CurrentGeocacheCode = "";
@@ -51,6 +51,28 @@ public class Trackable implements Comparable<Trackable> {
     private Date lastVisit;
     private String Home = "";
     private int TravelDistance;
+
+    /*
+            cid      name                 type               notnull      dflt_value      pk
+            -------  -------------------  -----------------  -----------  --------------  ---
+            0        Id                   integer            1                            1
+            1        Archived             bit                0                            0
+            2        GcCode               nvarchar (15)      0                            0
+            3        CacheId              bigint             0                            0
+            4        CurrentGoal          ntext              0                            0
+            5        CurrentOwnerName     nvarchar (255)     0                            0
+            6        DateCreated          datetime           0                            0
+            7        Description          ntext              0                            0
+            8        IconUrl              nvarchar (255)     0                            0
+            9        ImageUrl             nvarchar (255)     0                            0
+            10       name                 nvarchar (255)     0                            0
+            11       OwnerName            nvarchar (255)     0                            0
+            12       Url                  nvarchar (255)     0                            0
+            13       TypeName             ntext              0                            0
+            14       LastVisit            datetime           0                            0
+            15       Home                 ntext              0                            0
+            16       TravelDistance       integer            0            0               0
+    */
 
     /**
      * <img src="doc-files/1.png"/>
@@ -81,7 +103,7 @@ public class Trackable implements Comparable<Trackable> {
         try {
             Id = reader.getInt(0);
             Archived = reader.getInt(1) != 0;
-            GcCode = reader.getString(2).trim();
+            TBCode = reader.getString(2).trim();
             try {
                 CacheId = reader.getLong(3);
             } catch (Exception e1) {
@@ -100,9 +122,8 @@ public class Trackable implements Comparable<Trackable> {
                 e.printStackTrace();
             }
             String sDate = reader.getString(6);
-            DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             try {
-                DateCreated = iso8601Format.parse(sDate);
+                DateCreated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(sDate);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -156,59 +177,19 @@ public class Trackable implements Comparable<Trackable> {
 
     }
 
-    /**
-     * <img src="doc-files/1.png"/>
-     */
     public Trackable(JSONObject JObj) {
-
-        Archived = JObj.optBoolean("Archived");
-        GcCode = JObj.optString("Code");
-        CurrentGeocacheCode = JObj.optString("CurrentGeocacheCode");
-        CurrentGoal = CB_Utils.StringH.JsoupParse(JObj.optString("CurrentGoal"));
-        JSONObject jOwner;
-        try {
-            jOwner = JObj.getJSONObject("CurrentOwner");
-            CurrentOwnerName = jOwner.optString("UserName");
-        } catch (JSONException e) {
-            Log.err(log, "CurrentOwner", e);
-        }
-        try {
-            String dateCreated = JObj.optString("DateCreated");
-            int date1 = dateCreated.indexOf("/Date(");
-            int date2 = dateCreated.indexOf("-");
-            String date = (String) dateCreated.subSequence(date1 + 6, date2);
-            DateCreated = new Date(Long.valueOf(date));
-        } catch (Exception exc) {
-            Log.err(log, "DateCreated", exc);
-        }
-        Description = CB_Utils.StringH.JsoupParse(JObj.optString("Description"));
-        IconUrl = JObj.optString("IconUrl");
-        JSONArray jArray;
-        try {
-            jArray = JObj.getJSONArray("Images");
-            if (jArray.length() > 0) {
-                ImageUrl = jArray.getJSONObject(0).optString("Url");
-            }
-        } catch (JSONException e) {
-            Log.err(log, "Images", e);
-        }
-
-        Name = JObj.optString("Name");
-        try {
-            jOwner = JObj.getJSONObject("OriginalOwner");
-            OwnerName = jOwner.optString("UserName");
-        } catch (JSONException e) {
-            Log.err(log, "OriginalOwner", e);
-        }
-        TypeName = JObj.optString("TBTypeName");
+        create(0, JObj);
     }
 
-    /**
+    public Trackable(int Version, JSONObject JObj) {
+        create(Version, JObj);
+    }
+
+    /*
      * Generiert eine Eindeutige ID aus den ASCII values des GcCodes. <br>
      * Damit lässt sich dieser TB schneller in der DB finden.
      *
      * @return long
-     */
     public static long GenerateTBId(String GcCode) {
         long result = 0;
         char[] dummy = GcCode.toCharArray();
@@ -224,6 +205,89 @@ public class Trackable implements Comparable<Trackable> {
             result += byteDummy[i];
         }
         return result;
+    }
+     */
+
+    public void create(int Version, JSONObject JObj) {
+        if (Version == 1) {
+            // Archived = JObj.optBoolean("Archived");
+            Archived = false;
+            // referenceCode	string	uniquely identifies the trackable
+            TBCode = JObj.optString("referenceCode", "");
+            // trackingNumber	string	unique number used to prove discovery of trackable. only returned if user matches the holderCode
+            // will not be stored (Why)
+            TrackingCode = JObj.optString("trackingNumber", "");
+            // currentGeocacheCode	string	identifier of the geocache if the trackable is currently in one
+            CurrentGeocacheCode = JObj.optString("currentGeocacheCode", "");
+            if (CurrentGeocacheCode.equals("null")) CurrentGeocacheCode = "";
+            // goal	string	the owner's goal for the trackable
+            CurrentGoal = CB_Utils.StringH.JsoupParse(JObj.optString("goal"));
+            CurrentOwnerName = GroundspeakAPI.fetchUserName(JObj.optString("holderCode", ""));
+            // releasedDate	datetime	when the trackable was activated
+            String releasedDate = JObj.optString("releasedDate", "");
+            try {
+                DateCreated = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(releasedDate);
+            } catch (Exception e) {
+                DateCreated = new Date();
+            }
+            // description	string	text about the trackable
+            Description = CB_Utils.StringH.JsoupParse(JObj.optString("description", ""));
+            // iconUrl	string	link to image for trackable icon
+            IconUrl = JObj.optString("iconUrl", "");
+            // imageCount	int	how many owner images on the trackable
+            // name	string	display name of the trackable
+            Name = JObj.optString("name", "");
+            OwnerName = GroundspeakAPI.fetchUserName(JObj.optString("ownerCode", ""));
+            // type	string	category type display name
+            TypeName = JObj.optString("type", "");
+        /*
+        originCountry	string	where the trackable originated from
+        inHolderCollection	bool	if the trackable is in the holder's collection
+        isMissing	bool	flag is trackable is marked as missing
+        allowedToBeCollected (boolean, optional),
+        */
+        } else {
+            Archived = JObj.optBoolean("Archived");
+            TBCode = JObj.optString("Code");
+            CurrentGeocacheCode = JObj.optString("CurrentGeocacheCode");
+            CurrentGoal = CB_Utils.StringH.JsoupParse(JObj.optString("CurrentGoal"));
+            JSONObject jOwner;
+            try {
+                jOwner = JObj.getJSONObject("CurrentOwner");
+                CurrentOwnerName = jOwner.optString("UserName");
+            } catch (JSONException e) {
+                Log.err(log, "CurrentOwner", e);
+            }
+            try {
+                String dateCreated = JObj.optString("DateCreated");
+                int date1 = dateCreated.indexOf("/Date(");
+                int date2 = dateCreated.indexOf("-");
+                String date = (String) dateCreated.subSequence(date1 + 6, date2);
+                DateCreated = new Date(Long.valueOf(date));
+            } catch (Exception exc) {
+                Log.err(log, "DateCreated", exc);
+            }
+            Description = CB_Utils.StringH.JsoupParse(JObj.optString("Description"));
+            IconUrl = JObj.optString("IconUrl");
+            JSONArray jArray;
+            try {
+                jArray = JObj.getJSONArray("Images");
+                if (jArray.length() > 0) {
+                    ImageUrl = jArray.getJSONObject(0).optString("Url");
+                }
+            } catch (JSONException e) {
+                Log.err(log, "Images", e);
+            }
+
+            Name = JObj.optString("Name");
+            try {
+                jOwner = JObj.getJSONObject("OriginalOwner");
+                OwnerName = jOwner.optString("UserName");
+            } catch (JSONException e) {
+                Log.err(log, "OriginalOwner", e);
+            }
+            TypeName = JObj.optString("TBTypeName");
+        }
     }
 
     public String getTravelDistance() {
@@ -274,8 +338,8 @@ public class Trackable implements Comparable<Trackable> {
         return Archived;
     }
 
-    public String getGcCode() {
-        return GcCode;
+    public String getTBCode() {
+        return TBCode;
     }
 
     public long CacheId() {
@@ -306,25 +370,13 @@ public class Trackable implements Comparable<Trackable> {
         return Url;
     }
 
-    /*
-     * Setter
-     */
-
-    public String getTrackingNumber() {
+    public String getTrackingCode() {
         return this.TrackingCode;
     }
-
-    /*
-     * Methods
-     */
 
     public void setTrackingCode(String trackingCode) {
         this.TrackingCode = trackingCode;
     }
-
-    /*
-     * Overrides
-     */
 
     @Override
     public int compareTo(Trackable T2) {
@@ -361,7 +413,7 @@ public class Trackable implements Comparable<Trackable> {
      * @param userName Config.settings.GcLogin.getValue()
      * @return
      */
-    public boolean isLogTypePosible(LogTypes type, String userName) {
+    public boolean isLogTypePossible(LogTypes type, String userName) {
         int ID = type.getGcLogTypeId();
 
         if (ID == 4)
@@ -372,12 +424,11 @@ public class Trackable implements Comparable<Trackable> {
             if (ID == 16)
                 return true;
 
-            // the next LogTypes only possible if User has entered the Trackingnumber
+            // the next LogTypes only possible if User has entered the TrackingCode
             if (!(TrackingCode != null && TrackingCode.length() > 0))
                 return false;
             if (ID == 13 || /* ID == 14 || */ID == 48)
-                return true; // TODO ist es Sinnvoll einen TB aus einem Cache in einen Cache zu
-            // Packen?? ID 14 ist Laut GS erlaubt!
+                return true; // TODO ist es Sinnvoll einen TB aus einem Cache in einen Cache zu packen?? ID 14 ist Laut GS erlaubt!
             return false;
         }
 

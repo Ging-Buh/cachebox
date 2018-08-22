@@ -521,7 +521,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
         // @Override
         // public void chekReady()
         // {
-        // if (GroundspeakAPI.isValidAPI_Key(true))
+        // if (GroundspeakAPI.getMembershipType(true))
         // {
         // checkImportPQfromGC.setChecked(Config.ImportPQsFromGeocachingCom.getValue());
         // checkImportPQfromGC.setEnabled(true);

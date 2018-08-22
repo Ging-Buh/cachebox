@@ -135,7 +135,7 @@ public class CancelWaitDialog extends WaitDialog {
                 public void RunnableReady(boolean isCanceld) {
                     // CancelWaitDialog.this.close();
                     if (isCanceld && cancelListener != null) {
-                        cancelListener.isCanceld();
+                        cancelListener.isCanceled();
                     }
 
                     if (readyListener != null) {
@@ -166,7 +166,7 @@ public class CancelWaitDialog extends WaitDialog {
     }
 
     public interface IcancelListener {
-        public void isCanceld();
+        public void isCanceled();
     }
 
     public interface IReadyListener {

@@ -6,7 +6,6 @@ import CB_Core.Types.TbList;
 import CB_Core.Types.Trackable;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Activitys.TB_Details;
-import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Box;
@@ -29,7 +28,7 @@ import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.ByRef;
 
-import static CB_Core.Api.GroundspeakAPI.GetUsersTrackables;
+import static CB_Core.Api.GroundspeakAPI.fetchUsersTrackables;
 
 public class TrackableListView extends CB_View_Base {
     private static final String log = "TrackableListView";
@@ -92,7 +91,7 @@ public class TrackableListView extends CB_View_Base {
                     wd = CancelWaitDialog.ShowWait(Translation.Get("search"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
                         @Override
-                        public void isCanceld() {
+                        public void isCanceled() {
 
                         }
                     }, new cancelRunnable() {
@@ -102,28 +101,20 @@ public class TrackableListView extends CB_View_Base {
 
                             Trackable tb = null;
                             ByRef<Trackable> ref = new ByRef<Trackable>(tb);
+
+                            /* removed in API 1 */
                             int result = GroundspeakAPI.GetTrackablesByTrackingNumber(TBCode, ref, this);
-
-                            if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
+                            if (result == GroundspeakAPI.ERROR) {
                                 GL.that.Toast(ConnectionError.INSTANCE);
-                                wd.close();
-                                return;
-                            }
-                            if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
-                                GL.that.Toast(ApiUnavailable.INSTANCE);
+                                // GL.that.Toast(ApiUnavailable.INSTANCE);
                                 wd.close();
                                 return;
                             }
 
-                            result = GroundspeakAPI.getTBbyTbCode(TBCode, ref, this);
-                            if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
+                            result = GroundspeakAPI.fetchTrackableByTBCode(TBCode, ref);
+                            if (result == GroundspeakAPI.ERROR) {
                                 GL.that.Toast(ConnectionError.INSTANCE);
-                                wd.close();
-                                return;
-                            }
-
-                            if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
-                                GL.that.Toast(ApiUnavailable.INSTANCE);
+                                // GL.that.Toast(ApiUnavailable.INSTANCE);
                                 wd.close();
                                 return;
                             }
@@ -184,7 +175,7 @@ public class TrackableListView extends CB_View_Base {
         wd = CancelWaitDialog.ShowWait(Translation.Get("RefreshInventory"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
             @Override
-            public void isCanceld() {
+            public void isCanceled() {
 
             }
         }, new cancelRunnable() {
@@ -192,10 +183,10 @@ public class TrackableListView extends CB_View_Base {
             @Override
             public void run() {
                 TbList searchList = new TbList();
-                int result = GetUsersTrackables(searchList, this);
+                int result = fetchUsersTrackables(searchList);
 
                 Log.info(log, "RefreshTbList gotTBs");
-                if (result == GroundspeakAPI.IO) {
+                if (result == GroundspeakAPI.OK) {
                     Log.info(log, "RefreshTbList clearDB");
                     TrackableListDAO.clearDB();
                     Log.info(log, "RefreshTbList writeToDB");
@@ -204,17 +195,9 @@ public class TrackableListView extends CB_View_Base {
                     reloadTB_List();
                     Log.info(log, "RefreshTbList reloadTB_List done");
                 }
-
-                if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
+                else {
                     GL.that.Toast(ConnectionError.INSTANCE);
-                }
-
-                if (result == GroundspeakAPI.ERROR) {
-                    GL.that.Toast(ConnectionError.INSTANCE);
-                }
-
-                if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
-                    GL.that.Toast(ApiUnavailable.INSTANCE);
+                    // GL.that.Toast(ApiUnavailable.INSTANCE);
                 }
 
                 Log.info(log, "CancelWaitDialog.close");

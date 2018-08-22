@@ -204,7 +204,7 @@ public class DescriptionView extends CB_View_Base {
         final Thread getLimitThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                int result = GroundspeakAPI.GetCacheLimits(null);
+                int result = GroundspeakAPI.fetchCacheLimits();
                 if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
                     GL.that.Toast(ConnectionError.INSTANCE);
                     return;
@@ -284,7 +284,7 @@ public class DescriptionView extends CB_View_Base {
 
     private String getMessage() {
         StringBuilder sb = new StringBuilder();
-        boolean basic = GroundspeakAPI.GetMembershipType(null) == 1;
+        boolean basic = !GroundspeakAPI.IsPremiumMember();
         String MemberType = basic ? BASIC : PREMIUM;
         String limit = basic ? BASIC_LIMIT : PREMIUM_LIMIT;
         String actLimit = Integer.toString(GroundspeakAPI.CachesLeft - 1);

@@ -142,7 +142,6 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
             Filereader.close();
         } catch (IOException e) {
             Log.err(log, "ReadConfig", "Error when accessing cachebox.config!", e);
-            e.printStackTrace();
         }
 
         validateDefaultConfigFile();
@@ -322,10 +321,10 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
      */
     public static String GetAccessToken(boolean Url_Codiert) {
         String act = "";
-        if (CB_Core_Settings.StagingAPI.getValue()) {
-            act = CB_Core_Settings.GcAPIStaging.getValue();
+        if (CB_Core_Settings.UseTestUrl.getValue()) {
+            act = CB_Core_Settings.AccessTokenForTest.getValue();
         } else {
-            act = CB_Core_Settings.GcAPI.getValue();
+            act = CB_Core_Settings.AccessToken.getValue();
         }
 
         // Prüfen, ob das AccessToken für ACB ist!!!

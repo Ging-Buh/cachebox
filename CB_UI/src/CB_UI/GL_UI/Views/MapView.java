@@ -430,7 +430,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                 if (infoBubble.saveButtonClicked(x, y)) {
                     wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
                         @Override
-                        public void isCanceld() {
+                        public void isCanceled() {
 
                         }
                     }, new cancelRunnable() {
@@ -454,7 +454,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                                     if (c.getGcCode() == GcCode) {
                                         c.setApiStatus(NOT_LITE);
                                     }
-                                    GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
+                                    WriteIntoDB.CachesAndLogsAndImagesIntoDB(apiCaches, apiLogs, apiImages);
                                 } else {
                                     //TODO maybe basic Member Limit
                                     Log.debug(log, "No Caches loaded, maybe Limit reached");

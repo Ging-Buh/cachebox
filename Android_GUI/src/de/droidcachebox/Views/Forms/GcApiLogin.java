@@ -246,31 +246,18 @@ public class GcApiLogin extends Activity {
                     // store the encrypted AccessToken in the Config file
                     // wir bekommen den Key schon verschlüsselt, deshalb muss er
                     // nicht noch einmal verschlüsselt werden!
-                    if (Config.StagingAPI.getValue()) {
-                        Config.GcAPIStaging.setEncryptedValue(accessToken);
+                    if (Config.UseTestUrl.getValue()) {
+                        Config.AccessTokenForTest.setEncryptedValue(accessToken);
                     } else {
-                        Config.GcAPI.setEncryptedValue(accessToken);
+                        Config.AccessToken.setEncryptedValue(accessToken);
                     }
-
                     Config.AcceptChanges();
-
-                    String act = Config.GetAccessToken();
-                    if (act.length() > 0) {
-                        int status = GroundspeakAPI.GetMembershipType(null);
-                        if (status >= 0) {
-
-                            Config.GcLogin.setValue(GroundspeakAPI.MemberName);
-                            Config.AcceptChanges();
-
-                        }
-
-                    }
-
+                    Config.GcLogin.setValue(GroundspeakAPI.fetchMemberName());
+                    Config.AcceptChanges();
                     onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
                 }
             };
             gcApiLogin.runOnUiThread(new Runnable() {
-
                 @Override
                 public void run() {
                     pd = ProgressDialog.show(gcApiLogin, "", "Download Username", true);

@@ -33,24 +33,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static CB_Core.Api.GroundspeakAPI.GetSettingsAccessToken;
+import static CB_Core.Api.GroundspeakAPI.UrlEncode;
+
 /***
  * @author Longri
  */
 public class PocketQuery {
     private static final String log = "PocketQuery";
 
-    /**
-     * Ruft die Liste der PQs ab.
-     *
-     * @param Staging          Config.settings.StagingAPI.getValue()
-     * @param accessToken      as String
-     * @param list             as ArrayList<String>
-     * @param conectionTimeout Config.settings.connection_timeout.getValue()
-     * @param socketTimeout    Config.settings.socket_timeout.getValue()
-     * @return
-     */
     public static int GetPocketQueryList(ArrayList<PQ> list) {
-        HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryList?AccessToken=" + GroundspeakAPI.GetAccessToken(true) + "&format=json");
+        HttpGet httpGet = new HttpGet(GroundspeakAPI.getUrl("GetPocketQueryList?AccessToken=" + UrlEncode(GetSettingsAccessToken()) + "&format=json"));
         if (list == null)
             new NullArgumentException("PQ List");
         try {
@@ -115,14 +108,8 @@ public class PocketQuery {
         return 0;
     }
 
-    /**
-     * @param AccessToken       Config.GetAccessToken(true)
-     * @param pocketQueryConfig Config.settings.PocketQueryFolder.getValue()
-     * @param PqFolder
-     * @return
-     */
     public static int DownloadSinglePocketQuery(PQ pocketQuery, String PqFolder) {
-        HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryZippedFile?format=json&AccessToken=" + GroundspeakAPI.GetAccessToken(true) + "&PocketQueryGuid=" + pocketQuery.GUID);
+        HttpGet httpGet = new HttpGet(GroundspeakAPI.getUrl("GetPocketQueryZippedFile?format=json&AccessToken=" + UrlEncode(GetSettingsAccessToken()) + "&PocketQueryGuid=" + pocketQuery.GUID));
 
         try {
             // String result = GroundspeakAPI.Execute(httpGet);

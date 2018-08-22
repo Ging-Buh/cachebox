@@ -2,6 +2,8 @@ package CB_Utils;
 
 // import org.jsoup.*;
 
+import org.jsoup.Jsoup;
+
 /**
  * String Helper class
  *
@@ -26,8 +28,8 @@ public class StringH {
         String ret = "";
         if (s != null)
             if (!("null".equals(s)))
-                ret = s;
-        // ret = Jsoup.parse(s).text(); // todo Loader problem
+                // ret = s; // Ohne Konvertierung
+                ret = Jsoup.parse(s).text(); // todo Loader problem
         return ret;
     }
 }

@@ -553,7 +553,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                             SettingString value = (SettingString) Config.settings.get(EditKey);
 
                             // api ohne lineBreak
-                            if (value.getName().equalsIgnoreCase("GcAPI")) {
+                            if (value.getName().equalsIgnoreCase("AccessToken")) {
                                 text = text.replace("\r", "");
                                 text = text.replace("\n", "");
                             }

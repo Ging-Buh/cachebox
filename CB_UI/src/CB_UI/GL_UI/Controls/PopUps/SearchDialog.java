@@ -537,9 +537,8 @@ public class SearchDialog extends PopUp_Base {
 
             @Override
             public void checkReady(int MemberTypeId) {
-                int ret = GroundspeakAPI.isValidAPI_Key(true);
 
-                if (ret == 0) {
+                if (GroundspeakAPI.getMembershipType() == GroundspeakAPI.MemberShipTypes.Unknown) {
                     GL.that.RunOnGL(new IRunOnGL() {
 
                         @Override
@@ -548,21 +547,21 @@ public class SearchDialog extends PopUp_Base {
                         }
                     });
 
-                } else if (ret == GroundspeakAPI.CONNECTION_TIMEOUT) {
-                    GL.that.Toast(ConnectionError.INSTANCE);
+                // } else if (ret == GroundspeakAPI.CONNECTION_TIMEOUT) {
+                //    GL.that.Toast(ConnectionError.INSTANCE);
                 } else {
 
                     wd = CancelWaitDialog.ShowWait(Translation.Get("search"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
                         @Override
-                        public void isCanceld() {
+                        public void isCanceled() {
                             closeWaitDialog();
                         }
                     }, new cancelRunnable() {
 
                         @Override
                         public void run() {
-                            int ret = GroundspeakAPI.GetMembershipType(null);
+                            int ret = GroundspeakAPI.fetchMembership();
                             if (ret == 3) {
                                 closeWaitDialog();
                                 searchOnlineNow();
@@ -608,7 +607,7 @@ public class SearchDialog extends PopUp_Base {
         wd = CancelWaitDialog.ShowWait(Translation.Get("searchOverAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
             @Override
-            public void isCanceld() {
+            public void isCanceled() {
                 closeWaitDialog();
             }
         }, new cancelRunnable() {
@@ -839,9 +838,9 @@ public class SearchDialog extends PopUp_Base {
 
             @Override
             public void checkReady(int MemberType) {
-                int ret = GroundspeakAPI.isValidAPI_Key(true);
-                Log.debug(log, "SEARCH isValidAPI_Key ret=" + ret);
-                if (ret == 0) {
+                GroundspeakAPI.MemberShipTypes ret = GroundspeakAPI.getMembershipType();
+                Log.debug(log, "SEARCH getMembershipType ret=" + ret);
+                if (ret == GroundspeakAPI.MemberShipTypes.Unknown) {
                     GL.that.RunOnGL(new IRunOnGL() {
 
                         @Override
@@ -851,18 +850,18 @@ public class SearchDialog extends PopUp_Base {
                         }
                     });
 
-                } else if (ret == GroundspeakAPI.CONNECTION_TIMEOUT) {
-                    GL.that.RunOnGL(new IRunOnGL() {
-                        @Override
-                        public void run() {
-                            GL_MsgBox.Show(Translation.Get("noInetMsg"), Translation.Get("noInetTitle"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
-                        }
-                    });
+                //} else if (ret == GroundspeakAPI.CONNECTION_TIMEOUT) {
+                //    GL.that.RunOnGL(new IRunOnGL() {
+                //        @Override
+                //        public void run() {
+                //            GL_MsgBox.Show(Translation.Get("noInetMsg"), Translation.Get("noInetTitle"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+                //        }
+                //    });
                 } else {
-                    if (ret == 3) {
-                        // searchOnlineNow();
-                        showTargetApiDialog();
-                    } else {
+                    // if (ret == 3) {
+                    //    // searchOnlineNow();
+                    //    showTargetApiDialog();
+                    // } else {
                         closeWD();
 
                         GL.that.RunOnGL(new IRunOnGL() {
@@ -886,9 +885,7 @@ public class SearchDialog extends PopUp_Base {
 
                     }
                 }
-            }
         });
-
     }
 
     private void closeMsgBox() {

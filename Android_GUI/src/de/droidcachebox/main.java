@@ -588,7 +588,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                             wd = CancelWaitDialog.ShowWait(Translation.Get("ImportGPX"), new IcancelListener() {
 
                                 @Override
-                                public void isCanceld() {
+                                public void isCanceled() {
                                     wd.close();
                                 }
                             }, new cancelRunnable() {

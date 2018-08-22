@@ -37,7 +37,7 @@ public class CB_Api {
     public static String getGcAuthUrl() {
         try {
             String url, resultKey;
-            if (CB_Core_Settings.StagingAPI.getValue()) {
+            if (CB_Core_Settings.UseTestUrl.getValue()) {
                 url = "http://team-cachebox.de/CB_API/index.php?get=url_ACB_Staging";
                 resultKey = "GcAuth_ACB_Staging";
             } else {

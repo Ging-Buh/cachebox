@@ -73,11 +73,11 @@ public class API_Button extends Button {
 
             boolean Entry = false;
 
-            if (Config.StagingAPI.getValue()) {
-                if (!Config.GcAPIStaging.getValue().equals(""))
+            if (Config.UseTestUrl.getValue()) {
+                if (!Config.AccessTokenForTest.getValue().equals(""))
                     Entry = true;
             } else {
-                if (!Config.GcAPI.getValue().equals(""))
+                if (!Config.AccessToken.getValue().equals(""))
                     Entry = true;
             }
 

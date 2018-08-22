@@ -23,7 +23,7 @@ public class TrackableListDAO {
                 try {
                     Trackable tb = iterator.next();
 
-                    Trackable tbDB = tDAO.getFromDbByGcCode(tb.getGcCode());
+                    Trackable tbDB = tDAO.getFromDbByGcCode(tb.getTBCode());
 
                     if (tbDB == null) {
                         Log.info(log, "TrackableListDAO WriteToDatabase :" + tb.getName());

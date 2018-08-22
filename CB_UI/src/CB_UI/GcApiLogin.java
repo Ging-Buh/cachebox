@@ -67,7 +67,7 @@ public class GcApiLogin {
         WD = CancelWaitDialog.ShowWait("Please Wait", new IcancelListener() {
 
             @Override
-            public void isCanceld() {
+            public void isCanceled() {
                 closeWaitDialog();
             }
         }, new cancelRunnable() {
@@ -360,7 +360,7 @@ public class GcApiLogin {
         WD = CancelWaitDialog.ShowWait("Please Wait", new IcancelListener() {
 
             @Override
-            public void isCanceld() {
+            public void isCanceled() {
                 closeWaitDialog();
             }
         }, new cancelRunnable() {
@@ -634,20 +634,10 @@ public class GcApiLogin {
         // store the encrypted AccessToken in the Config file
         // wir bekommen den Key schon verschlüsselt, deshalb muss er
         // nicht noch einmal verschlüsselt werden!
-        Config.GcAPI.setEncryptedValue(accessToken);
+        Config.AccessToken.setEncryptedValue(accessToken);
         Config.AcceptChanges();
-
-        String act = Config.GetAccessToken();
-        if (act.length() > 0) {
-            int status = GroundspeakAPI.GetMembershipType(null);
-            if (status >= 0) {
-
-                Config.GcLogin.setValue(GroundspeakAPI.MemberName);
-                Config.AcceptChanges();
-
-            }
-
-        }
+        Config.GcLogin.setValue(GroundspeakAPI.fetchMemberName());
+        Config.AcceptChanges();
 
         closeWaitDialog();
 

@@ -51,14 +51,9 @@ public class CB_Action_LoadFriendLogs extends CB_Action {
             }
             if (!cancelThread) {
                 logList.clear();
-                result = GroundspeakAPI.GetGeocacheLogsByCache(GlobalCore.getSelectedCache(), logList, false, this);
-                if (result == -1) // API Error
-                    if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
-                        GL.that.Toast(ConnectionError.INSTANCE);
-                    }
-                if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
-                    GL.that.Toast(ApiUnavailable.INSTANCE);
-                }
+                result = GroundspeakAPI.fetchGeocacheLogsByCache(GlobalCore.getSelectedCache(), logList, false, this);
+                if (result == GroundspeakAPI.ERROR) // Error
+                    GL.that.Toast(ConnectionError.INSTANCE);
             }
 
             if ((result == 0) && (!cancelThread) && (logList.size() > 0)) {
@@ -126,7 +121,7 @@ public class CB_Action_LoadFriendLogs extends CB_Action {
         pd = CancelWaitDialog.ShowWait(Translation.Get("LoadLogs"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
             @Override
-            public void isCanceld() {
+            public void isCanceled() {
                 cancelThread = true;
             }
         }, ChkStatRunnable);

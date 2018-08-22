@@ -172,14 +172,14 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
                                 pd = CancelWaitDialog.ShowWait(Translation.Get("LoadFounds"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
                                     @Override
-                                    public void isCanceld() {
+                                    public void isCanceled() {
 
                                     }
                                 }, new cancelRunnable() {
 
                                     @Override
                                     public void run() {
-                                        result = GroundspeakAPI.GetCachesFound(this);
+                                        result = GroundspeakAPI.fetchFindCount();
                                         pd.close();
 
                                         if (result > -1) {
@@ -190,12 +190,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
                                             Config.AcceptChanges();
                                             AboutView.this.refreshText();
                                         }
-                                        if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
-                                            GL.that.Toast(ConnectionError.INSTANCE);
-                                        }
-                                        if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
-                                            GL.that.Toast(ApiUnavailable.INSTANCE);
-                                        }
+
                                     }
 
                                     @Override

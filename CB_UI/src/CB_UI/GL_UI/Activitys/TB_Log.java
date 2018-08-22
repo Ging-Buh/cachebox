@@ -245,7 +245,7 @@ public class TB_Log extends ActivityBase {
         wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
             @Override
-            public void isCanceld() {
+            public void isCanceled() {
 
             }
         }, new cancelRunnable() {
@@ -356,8 +356,8 @@ public class TB_Log extends ActivityBase {
         newFieldNote.isTbFieldNote = true;
         newFieldNote.TbName = TB.getName();
         newFieldNote.TbIconUrl = TB.getIconUrl();
-        newFieldNote.TravelBugCode = TB.getGcCode();
-        newFieldNote.TrackingNumber = TB.getTrackingNumber();
+        newFieldNote.TravelBugCode = TB.getTBCode();
+        newFieldNote.TrackingNumber = TB.getTrackingCode();
         newFieldNote.fillType();
         newFieldNote.WriteToDatabase();
 

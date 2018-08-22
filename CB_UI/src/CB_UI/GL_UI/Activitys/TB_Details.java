@@ -225,7 +225,7 @@ public class TB_Details extends ActivityBase {
         lblTbCode.setHeight(minBoxHeight);
         maxWidth = Math.max(maxWidth, lblTbCode.getTextWidth());
         TbCode.setHeight(minBoxHeight);
-        TbCode.setText(TB.getGcCode());
+        TbCode.setText(TB.getTBCode());
 
         lblOwner.setHeight(minBoxHeight);
         maxWidth = Math.max(maxWidth, lblOwner.getTextWidth());
@@ -307,19 +307,19 @@ public class TB_Details extends ActivityBase {
 
         cm.addItem(MenuID.MI_TB_NOTE, "note", Sprites.getSprite(IconName.TBNOTE.name()));
 
-        if (TB.isLogTypePosible(LogTypes.discovered, CB_Core_Settings.GcLogin.getValue()))
+        if (TB.isLogTypePossible(LogTypes.discovered, CB_Core_Settings.GcLogin.getValue()))
             cm.addItem(MenuID.MI_TB_DISCOVERED, "discovered", Sprites.getSprite(IconName.TBDISCOVER.name()));
 
-        if (TB.isLogTypePosible(LogTypes.visited, CB_Core_Settings.GcLogin.getValue()))
+        if (TB.isLogTypePossible(LogTypes.visited, CB_Core_Settings.GcLogin.getValue()))
             cm.addItem(MenuID.MI_TB_VISIT, "visit", Sprites.getSprite(IconName.TBVISIT.name()));
 
-        if (TB.isLogTypePosible(LogTypes.dropped_off, CB_Core_Settings.GcLogin.getValue()))
+        if (TB.isLogTypePossible(LogTypes.dropped_off, CB_Core_Settings.GcLogin.getValue()))
             cm.addItem(MenuID.MI_TB_DROPPED, "dropped", Sprites.getSprite(IconName.TBDROP.name()));
 
-        if (TB.isLogTypePosible(LogTypes.grab_it, CB_Core_Settings.GcLogin.getValue()))
+        if (TB.isLogTypePossible(LogTypes.grab_it, CB_Core_Settings.GcLogin.getValue()))
             cm.addItem(MenuID.MI_TB_GRABBED, "grabbed", Sprites.getSprite(IconName.TBGRAB.name()));
 
-        if (TB.isLogTypePosible(LogTypes.retrieve, CB_Core_Settings.GcLogin.getValue()))
+        if (TB.isLogTypePossible(LogTypes.retrieve, CB_Core_Settings.GcLogin.getValue()))
             cm.addItem(MenuID.MI_TB_PICKED, "picked", Sprites.getSprite(IconName.TBPICKED.name()));
 
         cm.Show();

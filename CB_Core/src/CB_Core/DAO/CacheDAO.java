@@ -52,7 +52,7 @@ public class CacheDAO {
             cache.setGcCode(reader.getString(1).trim());
             cache.Pos = new Coordinate(reader.getDouble(2), reader.getDouble(3));
             cache.setName(reader.getString(4).trim());
-            cache.Size = CacheSizes.parseInt(reader.getInt(5));
+            cache.Size = CacheSizes.CacheSizesFromInt(reader.getInt(5));
             cache.setDifficulty(((float) reader.getShort(6)) / 2);
             cache.setTerrain(((float) reader.getShort(7)) / 2);
             cache.setArchived(reader.getInt(8) != 0);
@@ -398,7 +398,7 @@ public class CacheDAO {
     }
 
     /**
-     * hier wird nur die Status Abfrage zurück geschrieben und gegebenen Falls die Replication Informationen geschrieben.
+     * hier wird nur die Status Abfrage zurück geschrieben und gegebenenfalls die Replication Informationen geschrieben.
      *
      * @param writeTmp
      */

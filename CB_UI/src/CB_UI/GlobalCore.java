@@ -52,9 +52,9 @@ import java.util.TimerTask;
  * @author longri
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface {
-    public static final int CurrentRevision = 20180803;
+    public static final int CurrentRevision = 20180822;
     public static final String CurrentVersion = "2.0.";
-    public static final String VersionPrefix = "3147";
+    public static final String VersionPrefix = "3154";
     public static final String aboutMsg1 = "Team Cachebox (2011-2018)" + br;
     public static final String teamLink = "www.team-cachebox.de";
     public static final String aboutMsg2 = br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";
@@ -258,7 +258,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
         wd = CancelWaitDialog.ShowWait(Translation.Get("downloadSpoiler"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
             @Override
-            public void isCanceld() {
+            public void isCanceled() {
                 // TODO Handle Cancel
 
             }
@@ -308,11 +308,11 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
             return;
         }
 
-        if (!GroundspeakAPI.isAPIKeyChecked()) {
+        if (!GroundspeakAPI.isAccessTokenValid()) {
             dia = CancelWaitDialog.ShowWait("chk API Key", DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
                 @Override
-                public void isCanceld() {
+                public void isCanceled() {
                     dia.close();
                 }
             }, new cancelRunnable() {

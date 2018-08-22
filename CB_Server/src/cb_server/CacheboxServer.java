@@ -285,7 +285,7 @@ public class CacheboxServer {
 		if (Config.settings != null && Config.settings.isLoaded())
 			return;
 		// make Setting for GC Api Key visible to input API Key by copy/paste
-		CB_Core_Settings.GcAPI.changeSettingsModus(SettingModus.Normal);
+		CB_Core_Settings.AccessToken.changeSettingsModus(SettingModus.Normal);
 		// Read Config
 		String workPath = "cachebox";
 		// nachschauen ob im aktuellen Ordner eine cachebox.db3 vorhanden ist und in diesem Fall den aktuellen Ordner als WorkPath verwenden

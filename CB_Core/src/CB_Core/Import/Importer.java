@@ -325,15 +325,9 @@ public class Importer {
 
             if (gccode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
             {
-                // API Zugriff nur mit gültigem API Key
-                int retChk = GroundspeakAPI.isValidAPI_Key(true);
-
-                if (retChk > 0) {
-                    ret = importApiImages(gccode, CacheInfoList.getIDfromGcCode(gccode));
-                    if (ret < 0)
-                        return ret;
-                }
-
+                ret = importApiImages(gccode, CacheInfoList.getIDfromGcCode(gccode));
+                if (ret < 0)
+                    return ret;
                 ip.ProgressInkrement("importImageUrls", "get Image Urls for " + gccode + " (" + String.valueOf(counter++) + " / " + String.valueOf(gcCodes.size()) + ")", false);
             }
         }
@@ -542,58 +536,6 @@ public class Importer {
      * <br>
      */
     private int importImagesForCacheNew(ImporterProgress progressReporter, boolean descriptionImagesUpdated, boolean additionalImagesUpdated, long id, String gcCode, String name, String description, String uri, boolean importAlways) {
-        boolean dbUpdate = false;
-
-        // if (!importAlways)
-        // {
-        // 2014-06-19 - Ging-Buh:
-        // removed this function because spoiler and images was not imported when at least one image of this cache exists.
-        // This is not good because in the DB of each cache is stored whether the images are actual.
-        // If they are not actual the image should be loaded.
-        // the changed file is no longer used too.
-        // The information about changed caches is stored in DB
-        // if (!descriptionImagesUpdated)
-        // {
-        // if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0)
-        // {
-        // descriptionImagesUpdated = CheckLocalImages(CB_Core_Settings.DescriptionImageFolderLocal.getValue(), gcCode);
-        // }
-        // else
-        // {
-        // descriptionImagesUpdated = CheckLocalImages(CB_Core_Settings.DescriptionImageFolder.getValue(), gcCode);
-        // }
-        //
-        // if (descriptionImagesUpdated)
-        // {
-        // dbUpdate = true;
-        // }
-        // }
-        // if (!additionalImagesUpdated)
-        // {
-        // if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() > 0)
-        // {
-        // additionalImagesUpdated = CheckLocalImages(CB_Core_Settings.SpoilerFolderLocal.getValue(), gcCode);
-        // }
-        // else
-        // {
-        // additionalImagesUpdated = CheckLocalImages(CB_Core_Settings.SpoilerFolder.getValue(), gcCode);
-        // }
-        //
-        // if (additionalImagesUpdated)
-        // {
-        // dbUpdate = true;
-        // }
-        // }
-        // }
-        // if (dbUpdate)
-        // {
-        // Parameters args = new Parameters();
-        // args.put("ImagesUpdated", additionalImagesUpdated);
-        // args.put("DescriptionImagesUpdated", descriptionImagesUpdated);
-        // Database.Data.update("Caches", args, "Id = ?", new String[]
-        // { String.valueOf(id) });
-        // }
-
         return DescriptionImageGrabber.GrabImagesSelectedByCache(progressReporter, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, name, description, uri);
     }
 
@@ -681,20 +623,18 @@ public class Importer {
      */
     private int importApiImages(String GcCode, long ID) {
 
-        int ret = 0;
+        int ret = GroundspeakAPI.OK;
 
         ImportHandler importHandler = new ImportHandler();
         LinkedList<String> allImages = new LinkedList<String>();
-        ArrayList<String> apiImages = new ArrayList<String>();
+        HashMap<String, URI> apiImages = new HashMap<String, URI>();
 
         if (GcCode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
         {
-            int result = GroundspeakAPI.getImagesForGeocache(GcCode, apiImages, null);
-
-            if (result == GroundspeakAPI.IO) {
-                for (String image : apiImages) {
-                    if (image.contains("/log/"))
-                        continue; // do not import log-images
+            ret = GroundspeakAPI.fetchImagesForGeocache(GcCode, apiImages);
+            if (ret == GroundspeakAPI.OK) {
+                for (URI uImage : apiImages.values()) {
+                    String image = uImage.toString();
                     if (!allImages.contains(image))
                         allImages.add(image);
                 }
@@ -715,16 +655,8 @@ public class Importer {
 
                 }
             }
-
-            if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
-                ret = GroundspeakAPI.CONNECTION_TIMEOUT;
-            }
-            if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
-                ret = GroundspeakAPI.API_IS_UNAVAILABLE;
-            }
         }
         return ret;
-
     }
 
     public void importMaps() {

@@ -75,7 +75,7 @@ public class DeleteDialog extends ButtonDialog {
                 wd = CancelWaitDialog.ShowWait(Translation.Get("DelActFilter"), new IcancelListener() {
 
                     @Override
-                    public void isCanceld() {
+                    public void isCanceled() {
 
                     }
                 }, new cancelRunnable() {
@@ -116,7 +116,7 @@ public class DeleteDialog extends ButtonDialog {
                 wd = CancelWaitDialog.ShowWait(Translation.Get("DelArchived"), new IcancelListener() {
 
                     @Override
-                    public void isCanceld() {
+                    public void isCanceled() {
 
                     }
                 }, new cancelRunnable() {
@@ -155,7 +155,7 @@ public class DeleteDialog extends ButtonDialog {
                 wd = CancelWaitDialog.ShowWait(Translation.Get("DelFound"), new IcancelListener() {
 
                     @Override
-                    public void isCanceld() {
+                    public void isCanceled() {
 
                     }
                 }, new cancelRunnable() {
