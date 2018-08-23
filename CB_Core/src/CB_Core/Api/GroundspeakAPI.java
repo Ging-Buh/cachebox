@@ -569,7 +569,7 @@ public class GroundspeakAPI {
 
     // "trackables/" + TBCode + "?fields=referenceCode,trackingNumber,iconUrl,name,goal,description,releasedDate,ownerCode,holderCode,currentGeocacheCode,type"
     public static int fetchTrackableByTBCode(String TBCode, ByRef<Trackable> TB) {
-        Log.info(log, "fetchTrackablesByTBCode for " + TBCode);
+        Log.info(log, "fetchTrackableByTBCode for " + TBCode);
         LastAPIError = "";
         if (chkMembership() < 0) return ERROR;
         try {
@@ -601,7 +601,7 @@ public class GroundspeakAPI {
                     .getBody();
             Log.debug(log, result.toString());
             TB.set(new Trackable(1, result));
-            Log.info(log, "fetchTrackablesByTBCode done");
+            Log.info(log, "fetchTrackableByTBCode done");
             return OK;
         } catch (Exception ex) {
             LastAPIError += ex.getLocalizedMessage();
@@ -667,6 +667,7 @@ public class GroundspeakAPI {
         }
     }
 
+    // getUTCDate with uppercase G is old Live API
     private static String getUTCDate(Date date) {
         // check "2001-09-28T00:00:00"
         Log.debug(log, "getUTCDate In:" + new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(date));
@@ -679,22 +680,28 @@ public class GroundspeakAPI {
         return ret;
     }
 
-    // todo wait for correct Implementation at GC or create a special Json
+    // todo GC has to correct Implementation
+    // see http://forum587.rssing.com/browser.php?indx=16809329&item=44991
     // "geocaches/" + cacheCode + "/notes"
     public static int updateCacheNote(String cacheCode, String notes) {
         Log.info(log, "updateCacheNote");
         LastAPIError = "";
         if (cacheCode == null || cacheCode.length() == 0) return ERROR;
         if (!IsPremiumMember()) return ERROR;
+        String wrongJsonBody = "\"" + prepareNote(notes) + "\"";
         try {
-            JSONObject response = Webb.create()
+            String response = Webb.create()
                     .put(getUrl(1, "geocaches/" + cacheCode + "/notes"))
                     .header(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken())
-                    .body(new JSONObject().put("note", prepareNote(notes))) // todo wrong Implementation at GC
+                    // todo remove next two lines if GC implementation is corrected
+                    .header(Webb.HDR_CONTENT_TYPE, Webb.APP_JSON)
+                    .body(wrongJsonBody)
+                    // todo use this if Implementation at GC is ok, result should then be JsonObject too :
+                    // .body(new JSONObject().put("note", prepareNote(notes)))
                     .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
                     .readTimeout(CB_Core_Settings.socket_timeout.getValue())
                     .ensureSuccess()
-                    .asJsonObject()
+                    .asString()
                     .getBody();
             Log.info(log, "updateCacheNote done \n" + response.toString());
             return OK;
@@ -872,7 +879,7 @@ public class GroundspeakAPI {
         }
         else
             return "";
-        */
+         */
     }
 
     static String UrlEncode(String value) {

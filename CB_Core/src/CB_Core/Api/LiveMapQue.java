@@ -27,10 +27,13 @@ import CB_Locator.Map.Descriptor;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Lists.CB_Stack;
 import CB_Utils.Lists.CB_Stack.iCompare;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.IChanged;
 import CB_Utils.Util.LoopThread;
 import com.badlogic.gdx.files.FileHandle;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -193,7 +196,7 @@ public class LiveMapQue {
 
     public static CB_List<Cache> loadDescLiveFromCache(SearchLiveMap requestSearch) {
         String path = requestSearch.descriptor.getLocalCachePath(LIVE_CACHE_NAME) + LIVE_CACHE_EXTENSION;
-        String result = null;
+        String result;
 
         FileHandle fh = new FileHandle(path);
 
@@ -210,20 +213,20 @@ public class LiveMapQue {
             }
             result = sb.toString();
             br.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            JSONObject json = (JSONObject) new JSONTokener(result).nextValue();
 
-        // parseResult
-        CB_List<Cache> cacheList = new CB_List<Cache>();
-        if (result != null && result.length() > 0) {
-            if (gpxFilename == null) {
-                Category category = CoreSettingsForward.Categories.getCategory("API-Import");
-                gpxFilename = category.addGpxFilename("API-Import");
+            CB_List<Cache> cacheList = new CB_List<Cache>();
+            if (result != null && result.length() > 0) {
+                if (gpxFilename == null) {
+                    Category category = CoreSettingsForward.Categories.getCategory("API-Import");
+                    gpxFilename = category.addGpxFilename("API-Import");
+                }
+
+                SEARCH_API.ParseJsonResult(requestSearch, cacheList, apiLogs, apiImages, gpxFilename.Id, json, (byte) 1, true);
+                return cacheList;
             }
-
-            SEARCH_API.ParseJsonResult(requestSearch, cacheList, apiLogs, apiImages, gpxFilename.Id, result, (byte) 1, true);
-            return cacheList;
+        } catch (IOException e) {
+            Log.err("LiveMapQue", "loadDescLiveFromCache", e);
         }
 
         return null;

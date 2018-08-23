@@ -27,50 +27,28 @@ import CB_Utils.Interfaces.ICancel;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
-import CB_Utils.http.HttpUtils;
+import CB_Utils.http.Webb;
 import de.cb.sqlite.CoreCursor;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ConnectTimeoutException;
-import org.apache.http.entity.ByteArrayEntity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 
+import static CB_Core.Api.GroundspeakAPI.*;
+
 public class SearchForGeocaches_Core {
     private static final String log = "SearchForGeocaches_Core";
 
-    private Boolean LoadBooleanValueFromDB(String sql) // Found-Status aus Datenbank auslesen
-    {
-        CoreCursor reader = Database.Data.rawQuery(sql, null);
-        try {
-            reader.moveToFirst();
-            while (!reader.isAfterLast()) {
-                if (reader.getInt(0) != 0) { // gefunden. Suche abbrechen
-                    return true;
-                }
-                reader.moveToNext();
-            }
-        } finally {
-            reader.close();
-        }
-
-        return false;
-    }
-
     public String SearchForGeocachesJSON(Search search, CB_List<Cache> cacheList, ArrayList<LogEntry> logList, ArrayList<ImageEntry> imageList, long gpxFilenameId, ICancel icancel) {
-        String result = "";
         int startIndex = 0;
         int searchNumber = search.number <= 50 ? search.number : 50;
 
-        byte apiStatus = 0;
-        boolean isLite = true;
+        byte apiStatus;
+        boolean isLite;
         if (GroundspeakAPI.IsPremiumMember()) {
             isLite = false;
             apiStatus = 2;
@@ -84,19 +62,16 @@ public class SearchForGeocaches_Core {
             isLite = search.isLite;
         }
 
-        HttpPost httppost = new HttpPost(GroundspeakAPI.getUrl("SearchForGeocaches?format=json"));
-
-        String requestString = "";
+        JSONObject request = new JSONObject();
+        request.put("AccessToken", GetSettingsAccessToken());
+        request.put("StartIndex", startIndex);
 
         if (search instanceof SearchGC) {
             isLite = false;
             SearchGC searchGC = (SearchGC) search;
 
-            JSONObject request = new JSONObject();
             try {
-                request.put("AccessToken", GroundspeakAPI.GetSettingsAccessToken());
                 request.put("IsLight", false);
-                request.put("StartIndex", startIndex);
                 request.put("MaxPerPage", 1);
                 request.put("GeocacheLogCount", 10);
                 request.put("TrackableLogCount", 10);
@@ -115,232 +90,174 @@ public class SearchForGeocaches_Core {
             // ein einzelner Cache wird voll geladen
             apiStatus = 2;
 
-            requestString = request.toString();
         } else if (search instanceof SearchGCName) {
             SearchGCName searchC = (SearchGCName) search;
-            requestString = "{";
-            requestString += "\"AccessToken\":\"" + GroundspeakAPI.GetSettingsAccessToken() + "\",";
             if (isLite)
-                requestString += "\"IsLite\":true,"; // only lite
+                request.put("IsLight", true);
             else
-                requestString += "\"IsLite\":false,"; // full for Premium
-            requestString += "\"StartIndex\":" + startIndex + ",";
-            requestString += "\"MaxPerPage\":" + String.valueOf(searchNumber) + ",";
+                request.put("IsLight", false);
+            request.put("MaxPerPage", searchNumber);
 
-            requestString += "\"GeocacheName\":{";
-            requestString += "\"GeocacheName\":\"" + searchC.gcName + "\"},";
+            JSONObject GeocacheName = new JSONObject()
+                    .put("GeocacheName", searchC.gcName);
+            request.put("GeocacheName", GeocacheName);
 
-            requestString += "\"PointRadius\":{";
-            requestString += "\"DistanceInMeters\":" + "5000000" + ",";
-            requestString += "\"Point\":{";
-            requestString += "\"Latitude\":" + String.valueOf(searchC.pos.getLatitude()) + ",";
-            requestString += "\"Longitude\":" + String.valueOf(searchC.pos.getLongitude());
-            requestString += "},";
+            JSONObject Point = new JSONObject()
+                    .put("Latitude", searchC.pos.getLatitude())
+                    .put("Longitude", searchC.pos.getLongitude());
+            JSONObject PointRadius = new JSONObject()
+                    .put("DistanceInMeters", 5000000)
+                    .put("Point", Point);
+            request.put("PointRadius", PointRadius);
 
-            requestString = writeExclusions(requestString, searchC);
-
-            requestString += "}";
+            request = writeExclusions(request, searchC);
 
         } else if (search instanceof SearchGCOwner) {
             SearchGCOwner searchC = (SearchGCOwner) search;
-            requestString = "{";
-            requestString += "\"AccessToken\":\"" + GroundspeakAPI.GetSettingsAccessToken() + "\",";
-
-            requestString += "\"HiddenByUsers\":{";
-            requestString += "\"UserNames\":[\"" + searchC.OwnerName + "\"]},";
-
             if (isLite)
-                requestString += "\"IsLite\":true,"; // only lite
+                request.put("IsLight", true);
             else
-                requestString += "\"IsLite\":false,"; // full for Premium
-            requestString += "\"StartIndex\":" + startIndex + ",";
-            requestString += "\"MaxPerPage\":" + String.valueOf(searchNumber) + ",";
-            requestString += "\"GeocacheLogCount\":3,";
-            requestString += "\"TrackableLogCount\":2,";
+                request.put("IsLight", false);
+            request.put("MaxPerPage", searchNumber);
 
-            requestString += "\"PointRadius\":{";
-            requestString += "\"DistanceInMeters\":" + "5000000" + ",";
-            requestString += "\"Point\":{";
-            requestString += "\"Latitude\":" + String.valueOf(searchC.pos.getLatitude()) + ",";
-            requestString += "\"Longitude\":" + String.valueOf(searchC.pos.getLongitude());
-            requestString += "},";
+            JSONArray UserNames = new JSONArray().put(searchC.OwnerName);
+            JSONObject HiddenByUsers = new JSONObject().put("UserNames", UserNames);
+            request.put("HiddenByUsers", HiddenByUsers);
 
-            requestString = writeExclusions(requestString, searchC);
+            request.put("GeocacheLogCount", 3);
+            request.put("TrackableLogCount", 2);
 
-            requestString += "}";
+            JSONObject Point = new JSONObject()
+                    .put("Latitude", searchC.pos.getLatitude())
+                    .put("Longitude", searchC.pos.getLongitude());
+            JSONObject PointRadius = new JSONObject()
+                    .put("DistanceInMeters", 5000000)
+                    .put("Point", Point);
+            request.put("PointRadius", PointRadius);
+
+            request = writeExclusions(request, searchC);
 
         } else if (search instanceof SearchCoordinate) {
             SearchCoordinate searchC = (SearchCoordinate) search;
 
-            requestString = "{";
-            requestString += "\"AccessToken\":\"" + GroundspeakAPI.GetSettingsAccessToken() + "\",";
             if (isLite)
-                requestString += "\"IsLite\":true,"; // only lite
+                request.put("IsLight", true);
             else
-                requestString += "\"IsLite\":false,"; // full for Premium
-            requestString += "\"StartIndex\":" + startIndex + ",";
-            requestString += "\"MaxPerPage\":" + String.valueOf(searchNumber) + ",";
-            requestString += "\"PointRadius\":{";
-            requestString += "\"DistanceInMeters\":" + String.valueOf((int) searchC.distanceInMeters) + ",";
-            requestString += "\"Point\":{";
-            requestString += "\"Latitude\":" + String.valueOf(searchC.pos.getLatitude()) + ",";
-            requestString += "\"Longitude\":" + String.valueOf(searchC.pos.getLongitude());
-            requestString += "}";
-            requestString += "},";
+                request.put("IsLight", false);
+
+            request.put("MaxPerPage", searchNumber);
+
+            JSONObject Point = new JSONObject()
+                    .put("Latitude", searchC.pos.getLatitude())
+                    .put("Longitude", searchC.pos.getLongitude());
+            JSONObject PointRadius = new JSONObject()
+                    .put("DistanceInMeters", (int) searchC.distanceInMeters)
+                    .put("Point", Point);
+            request.put("PointRadius", PointRadius);
 
             if (searchC.excludeHides) {
-                requestString += "\"NotHiddenByUsers\":{";
-                requestString += "\"UserNames\":[\"" + CB_Core_Settings.GcLogin.getValue() + "\"]";
-                requestString += "},";
+                JSONArray UserNames = new JSONArray().put(CB_Core_Settings.GcLogin.getValue());
+                JSONObject NotHiddenByUsers = new JSONObject().put("UserNames", UserNames);
+                request.put("NotHiddenByUsers", NotHiddenByUsers);
             }
 
             if (searchC.excludeFounds) {
-                requestString += "\"NotFoundByUsers\":{";
-                requestString += "\"UserNames\":[\"" + CB_Core_Settings.GcLogin.getValue() + "\"]";
-                requestString += "},";
+                JSONArray UserNames = new JSONArray().put(CB_Core_Settings.GcLogin.getValue());
+                JSONObject NotFoundByUsers = new JSONObject().put("UserNames", UserNames);
+                request.put("NotFoundByUsers", NotFoundByUsers);
             }
 
-            requestString = writeExclusions(requestString, searchC);
-
-            requestString += "}";
-
+            request = writeExclusions(request, searchC);
         }
 
         try {
-            httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
-        } catch (UnsupportedEncodingException e3) {
-            Log.err(log, "SearchForGeocaches:UnsupportedEncodingException", e3);
-        }
-        httppost.setHeader("Accept", "application/json");
-        httppost.setHeader("Content-type", "application/json");
-
-        // Execute HTTP Post Request
-        try {
-            result = HttpUtils.Execute(httppost, icancel);
-        } catch (ConnectTimeoutException e) {
-            Log.err(log, "SearchForGeocaches:ConnectTimeoutException", e);
-            showToastConnectionError();
-            return "";
-        } catch (ClientProtocolException e) {
-            Log.err(log, "SearchForGeocaches:ClientProtocolException", e);
-            showToastConnectionError();
-            return "";
-        } catch (IOException e) {
-            Log.err(log, "SearchForGeocaches:IOException", e);
-            showToastConnectionError();
-            return "";
-        }
-
-        // chk api result
-        if (getApiStatus(result) != 0)
-            return "";
-        if (result.contains("The service is unavailable"))
-            return "The service is unavailable";
-        if (result.contains("server error"))
-            return "The service is unavailable";
-        if (result.contains("Cache download limit has been exceeded"))
-            return "download limit";
-        if (result.length() == 0) {
-            showToastConnectionError();
-            return "The service is unavailable";
-        }
-
-        // save result, if this a Live-Request
-        if (search instanceof SearchLiveMap) {
-            SearchLiveMap mSearchLiveMap = (SearchLiveMap) search;
-
-            Writer writer = null;
-            try {
-                String Path = mSearchLiveMap.descriptor.getLocalCachePath(LiveMapQue.LIVE_CACHE_NAME) + LiveMapQue.LIVE_CACHE_EXTENSION;
-
-                if (FileIO.createDirectory(Path)) {
-                    writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Path), "utf-8"));
-                    writer.write(result);
-                }
-            } catch (IOException ex) {
-                // report
-            } finally {
-                try {
-                    writer.close();
-                } catch (Exception ex) {
-                }
-            }
-        }
-
-        result = ParseJsonResult(search, cacheList, logList, imageList, gpxFilenameId, result, apiStatus, isLite);
-        if (searchNumber > 1 && cacheList.size() == searchNumber) {
-            startIndex++;
-            int lastCacheListSize;
-            do {
-                lastCacheListSize = cacheList.size();
-                startIndex += searchNumber;
-
-                requestString = "{";
-                requestString += "\"AccessToken\":\"" + GroundspeakAPI.GetSettingsAccessToken() + "\",";
-
-                if (isLite)
-                    requestString += "\"IsLite\":true,"; // only lite
-                else
-                    requestString += "\"IsLite\":false,"; // full for Premium
-                requestString += "\"StartIndex\":" + startIndex + ",";
-                requestString += "\"MaxPerPage\":" + String.valueOf(50) + ",";
-                requestString += "\"GeocacheLogCount\":3,";
-                requestString += "\"TrackableLogCount\":2";
-                requestString += "}";
-
-                httppost = new HttpPost(GroundspeakAPI.getUrl("GetMoreGeocaches?format=json"));
-
-                try {
-                    httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
-                } catch (UnsupportedEncodingException e3) {
-                    Log.err(log, "SearchForGeocaches:UnsupportedEncodingException", e3);
-                }
-                httppost.setHeader("Accept", "application/json");
-                httppost.setHeader("Content-type", "application/json");
-
-                // Execute HTTP Post Request
-                try {
-                    result = HttpUtils.Execute(httppost, icancel);
-                    if (result.contains("The service is unavailable")) {
-                        Log.err(log, "SearchForGeocaches:The service is unavailable: " + result);
-                        return "The service is unavailable";
+            JSONObject json = Webb.create()
+                    .post(getUrl("SearchForGeocaches?format=json"))
+                    .body(request)
+                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
+                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
+                    .ensureSuccess()
+                    .asJsonObject()
+                    .getBody();
+            if (getApiStatus(json) == OK) {
+                // save result, if this is a Live-Request
+                if (search instanceof SearchLiveMap) {
+                    SearchLiveMap mSearchLiveMap = (SearchLiveMap) search;
+                    Writer writer = null;
+                    try {
+                        String Path = mSearchLiveMap.descriptor.getLocalCachePath(LiveMapQue.LIVE_CACHE_NAME) + LiveMapQue.LIVE_CACHE_EXTENSION;
+                        if (FileIO.createDirectory(Path)) {
+                            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Path), "utf-8"));
+                            // todo check if format ok
+                            writer.write(json.toString());
+                        }
+                    } catch (IOException ex) {
+                        // report
+                    } finally {
+                        try {
+                            writer.close();
+                        } catch (Exception ex) {
+                        }
                     }
-                } catch (ConnectTimeoutException e) {
-                    Log.err(log, "SearchForGeocaches:ConnectTimeoutException", e);
-                    showToastConnectionError();
-
-                    return "";
-
-                } catch (ClientProtocolException e) {
-                    Log.err(log, "SearchForGeocaches:ClientProtocolException", e);
-                    showToastConnectionError();
-
-                    return "";
-                } catch (IOException e) {
-                    Log.err(log, "SearchForGeocaches:IOException", e);
-                    showToastConnectionError();
-
-                    return "";
                 }
 
-                if (result.length() == 0) {
-                    showToastConnectionError();
-                    return "The service is unavailable";
+                String lastError = ParseJsonResult(search, cacheList, logList, imageList, gpxFilenameId, json, apiStatus, isLite);
+                if (searchNumber > 1 && cacheList.size() == searchNumber) {
+                    // fetch more (than 50) caches
+                    // startIndex++;
+                    int lastCacheListSize;
+
+                    do {
+                        lastCacheListSize = cacheList.size();
+
+                        startIndex += searchNumber;
+
+                        request = new JSONObject().put("AccessToken", GetSettingsAccessToken());
+
+                        if (isLite)
+                            request.put("IsLight", true);
+                        else
+                            request.put("IsLight", false);
+
+
+                        request.put("StartIndex", startIndex);
+                        request.put("MaxPerPage", 50); // == searchNumber
+
+                        request.put("GeocacheLogCount", 3);
+                        request.put("TrackableLogCount", 2);
+
+                        try {
+                            json = Webb.create()
+                                    .post(getUrl("GetMoreGeocaches?format=json"))
+                                    .body(request)
+                                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
+                                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
+                                    .ensureSuccess()
+                                    .asJsonObject()
+                                    .getBody();
+                            lastError = ParseJsonResult(search, cacheList, logList, imageList, gpxFilenameId, json, apiStatus, isLite);
+                        } catch (Exception e) {
+                            return e.getLocalizedMessage();
+                        }
+
+                    }
+                    while ((startIndex + searchNumber <= search.number) && (cacheList.size() - lastCacheListSize >= searchNumber) && (lastCacheListSize != cacheList.size() || startIndex + searchNumber > cacheList.size()));
                 }
-
-                result = ParseJsonResult(search, cacheList, logList, imageList, gpxFilenameId, result, apiStatus, isLite);
-
+                return lastError;
+            } else {
+                // Error
+                return "";
             }
-            while ((startIndex + searchNumber <= search.number) && (cacheList.size() - lastCacheListSize >= searchNumber) && (lastCacheListSize != cacheList.size() || startIndex + searchNumber > cacheList.size()));
+        } catch (Exception e) {
+            Log.err(log, "SearchForGeocaches", e);
+            showToastConnectionError();
+            return "";
         }
-        return result;
     }
 
-    private static int getApiStatus(String result) {
+    private static int getApiStatus(JSONObject json) {
 
         try {
-            JSONTokener tokener = new JSONTokener(result);
-            JSONObject json = (JSONObject) tokener.nextValue();
             JSONObject jsonStatus = json.getJSONObject("Status");
             int status = jsonStatus.getInt("StatusCode");
             String statusMessage = jsonStatus.getString("StatusMessage");
@@ -384,14 +301,29 @@ public class SearchForGeocaches_Core {
         return -1;
     }
 
-    String ParseJsonResult(Search search, CB_List<Cache> cacheList, ArrayList<LogEntry> logList, ArrayList<ImageEntry> imageList, long gpxFilenameId, String result, byte apiStatus, boolean isLite) {
-        // Parse JSON Result
+    private Boolean LoadBooleanValueFromDB(String sql) // Found-Status aus Datenbank auslesen
+    {
+        CoreCursor reader = Database.Data.rawQuery(sql, null);
         try {
-            JSONTokener tokener = new JSONTokener(result);
-            JSONObject json = (JSONObject) tokener.nextValue();
+            reader.moveToFirst();
+            while (!reader.isAfterLast()) {
+                if (reader.getInt(0) != 0) { // gefunden. Suche abbrechen
+                    return true;
+                }
+                reader.moveToNext();
+            }
+        } finally {
+            reader.close();
+        }
+
+        return false;
+    }
+
+    String ParseJsonResult(Search search, CB_List<Cache> cacheList, ArrayList<LogEntry> logList, ArrayList<ImageEntry> imageList, long gpxFilenameId, JSONObject json, byte apiStatus, boolean isLite) {
+        String lastError = "";
+        try {
             JSONObject status = json.getJSONObject("Status");
             if (status.getInt("StatusCode") == 0) {
-                result = "";
                 JSONArray caches = json.getJSONArray("Geocaches");
                 // Log.debug(log, "got " + caches.length() + " Caches from gc");
                 for (int i = 0; i < caches.length(); i++) {
@@ -399,7 +331,7 @@ public class SearchForGeocaches_Core {
                     String gcCode = jCache.getString("Code");
                     // Log.debug(log, "handling " + gcCode);
                     String name = jCache.getString("Name");
-                    result += gcCode + " - " + name + "\n";
+                    lastError += gcCode + " - " + name + "\n";
 
                     Boolean CacheERROR = false;
 
@@ -691,17 +623,17 @@ public class SearchForGeocaches_Core {
                 }
                 GroundspeakAPI.checkCacheStatus(json, isLite);
             } else {
-                result = "StatusCode = " + status.getInt("StatusCode") + "\n";
-                result += status.getString("StatusMessage") + "\n";
-                result += status.getString("ExceptionDetails");
+                lastError = "StatusCode = " + status.getInt("StatusCode") + "\n";
+                lastError += status.getString("StatusMessage") + "\n";
+                lastError += status.getString("ExceptionDetails");
             }
 
         } catch (JSONException e) {
-            Log.err(log, "SearchForGeocaches:ParserException: " + result, e);
+            Log.err(log, "SearchForGeocaches:ParserException: " + lastError, e);
         } catch (ClassCastException e) {
-            Log.err(log, "SearchForGeocaches:ParserException: " + result, e);
+            Log.err(log, "SearchForGeocaches:ParserException: " + lastError, e);
         }
-        return result;
+        return lastError;
     }
 
     private int getCacheSize(int containerTypeId) {
@@ -786,26 +718,16 @@ public class SearchForGeocaches_Core {
         // hier im Core nichts machen da hier keine UI vorhanden ist
     }
 
-    private String writeExclusions(String requestString, SearchCoordinate searchC) {
+    private JSONObject writeExclusions(JSONObject request, SearchCoordinate searchC) {
         if (searchC.available) {
-
-            requestString += "\"GeocacheExclusions\":{";
-            requestString += "\"Archived\":false,";
-            requestString += "\"Available\":true";
-
-            requestString += "},";
+            JSONObject GeocacheExclusions = new JSONObject()
+                    .put("Archived", false)
+                    .put("Available", true);
+            request.put("GeocacheExclusions", GeocacheExclusions);
         }
-		/*
-		"BookmarksExclude":{
-			"BookmarkListIDs":[2147483647],
-			"ExcludeIgnoreList":true
-		},
-		*/
-        requestString += "\"BookmarksExclude\":{";
-        requestString += "\"ExcludeIgnoreList\":true";
-        requestString += "},";
-
-        return requestString;
+        JSONObject BookmarksExclude = new JSONObject().put("ExcludeIgnoreList", true);
+        request.put("GeocacheExclusions", BookmarksExclude);
+        return request;
     }
 
     public Cache LoadApiDetails(Cache aktCache, ICancel icancel) {

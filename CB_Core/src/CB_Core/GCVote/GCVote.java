@@ -18,15 +18,7 @@ package CB_Core.GCVote;
 
 import CB_Core.CB_Core_Settings;
 import CB_Utils.Log.Log;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
+import CB_Utils.http.Webb;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -34,27 +26,15 @@ import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 
+import static CB_Utils.http.Webb.APP_FORM;
+import static CB_Utils.http.Webb.HDR_CONTENT_TYPE;
+
 public class GCVote {
     private static final String log = "GCVote";
-
-    public static RatingData GetRating(String User, String password, String Waypoint) {
-        ArrayList<String> waypoint = new ArrayList<String>();
-        waypoint.add(Waypoint);
-        ArrayList<RatingData> result = GetRating(User, password, waypoint);
-
-        if (result == null || result.size() == 0) {
-            return new RatingData();
-        } else {
-            return result.get(0);
-        }
-
-    }
 
     public static ArrayList<RatingData> GetRating(String User, String password, ArrayList<String> Waypoints) {
         ArrayList<RatingData> result = new ArrayList<RatingData>();
@@ -67,23 +47,17 @@ public class GCVote {
         }
 
         try {
-            HttpPost httppost = new HttpPost("http://gcvote.de/getVotes.php");
-
-            httppost.setEntity(new ByteArrayEntity(data.getBytes("UTF8")));
-
-            // Log.info(log, "GCVOTE-Post" + data);
-
-            // Execute HTTP Post Request
-            String responseString = Execute(httppost);
-
-            // Log.info(log, "GCVOTE-Response" + responseString);
+            InputStream is = Webb.create()
+                    .get("http://gcvote.com/getVotes.php?" + data)
+                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
+                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
+                    .ensureSuccess()
+                    .asStream()
+                    .getBody();
 
             DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            InputSource is = new InputSource();
-            is.setCharacterStream(new StringReader(responseString));
-
             Document doc = db.parse(is);
-
+            is.close();
             NodeList nodelist = doc.getElementsByTagName("vote");
 
             for (Integer i = 0; i < nodelist.getLength(); i++) {
@@ -99,63 +73,27 @@ public class GCVote {
             }
 
         } catch (Exception e) {
-            String Ex = "";
-            if (e != null) {
-                if (e != null && e.getMessage() != null)
-                    Ex = "Ex = [" + e.getMessage() + "]";
-                else if (e != null && e.getLocalizedMessage() != null)
-                    Ex = "Ex = [" + e.getLocalizedMessage() + "]";
-                else
-                    Ex = "Ex = [" + e.toString() + "]";
-            }
-            Log.err(log, "GcVote-Error" + Ex);
+            Log.err(log, "GetRating", e);
             return null;
         }
         return result;
 
     }
 
-    private static String Execute(HttpRequestBase httprequest) throws IOException, ClientProtocolException {
-        httprequest.setHeader("Content-type", "application/x-www-form-urlencoded");
-        // httprequest.setHeader("UserAgent", "cachebox");
-
-        HttpParams httpParameters = new BasicHttpParams();
-        // Set the timeout in milliseconds until a connection is established.
-        // The default value is zero, that means the timeout is not used.
-
-        HttpConnectionParams.setConnectionTimeout(httpParameters, CB_Core_Settings.connection_timeout.getValue());
-        // Set the default socket timeout (SO_TIMEOUT)
-        // in milliseconds which is the timeout for waiting for data.
-
-        HttpConnectionParams.setSoTimeout(httpParameters, CB_Core_Settings.socket_timeout.getValue());
-
-        DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
-
-        HttpResponse response = httpClient.execute(httprequest);
-
-        BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-        String line = "";
-        String result = "";
-        while ((line = rd.readLine()) != null) {
-            result += line + "\n";
-        }
-        return result;
-
-    }
-
+    // todo not tested cause no ui for changing vote
     public static Boolean SendVotes(String User, String password, int vote, String url, String waypoint) {
         String guid = url.substring(url.indexOf("guid=") + 5).trim();
 
         String data = "userName=" + User + "&password=" + password + "&voteUser=" + String.valueOf(vote / 100.0) + "&cacheId=" + guid + "&waypoint=" + waypoint;
 
         try {
-            HttpPost httppost = new HttpPost("http://dosensuche.de/GCVote/setVote.php");
-
-            httppost.setEntity(new ByteArrayEntity(data.getBytes("UTF8")));
-
-            // Execute HTTP Post Request
-            String responseString = Execute(httppost);
-
+            String responseString = Webb.create()
+                    .get("http://gcvote.com/setVote.php?" + data)
+                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
+                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
+                    .ensureSuccess()
+                    .asString()
+                    .getBody();
             return responseString.equals("OK\n");
 
         } catch (Exception ex) {

@@ -68,6 +68,10 @@ public class GCVoteDAO {
         Database.Data.update("Caches", parm, "Id=?", new String[]{String.valueOf(Id)});
     }
 
+    /**
+     *  get users votes from db
+     * @return GCVoteCacheInfo the ArrayList with the changed votes to upload to gcvote
+     */
     public ArrayList<GCVoteCacheInfo> getPendingGCVotes() {
         ArrayList<GCVoteCacheInfo> caches = new ArrayList<GCVoteCacheInfo>();
 

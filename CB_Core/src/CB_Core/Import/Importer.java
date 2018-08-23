@@ -256,7 +256,7 @@ public class Importer {
 
             ArrayList<RatingData> ratingData = GCVote.GetRating(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), requests);
 
-            if (ratingData == null) {
+            if (ratingData == null || ratingData.isEmpty()) {
                 failCount += packageSize;
                 ip.ProgressInkrement("importGcVote", "Query failed...", false);
             } else {

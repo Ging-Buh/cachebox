@@ -18,8 +18,6 @@ package CB_Locator.Map;
 import CB_Locator.LocatorSettings;
 import CB_Locator.Map.Layer.LayerType;
 import CB_Locator.Map.Layer.MapType;
-import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
-import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.GL_RenderType;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
@@ -27,15 +25,8 @@ import CB_Utils.Util.HSV_Color;
 import CB_Utils.Util.IChanged;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
+import CB_Utils.http.Webb;
+import CB_Utils.http.WebbUtils;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
@@ -53,10 +44,10 @@ import org.mapsforge.map.rendertheme.*;
 import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
 import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -236,78 +227,30 @@ public abstract class ManagerBase {
         }
 
         // Kachel laden
-        // set the connection timeout value to 15 seconds (15000 milliseconds)
-        HttpParams httpParams = new BasicHttpParams();
-        HttpConnectionParams.setConnectionTimeout(httpParams, CONECTION_TIME_OUT);
-        HttpClient httpclient = new DefaultHttpClient(httpParams);
-        HttpGet GET = new HttpGet(url);
-        GET.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
-        try {
-            HttpResponse response = httpclient.execute(GET);
-            StatusLine statusLine = response.getStatusLine();
-            if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                response.getEntity().writeTo(out);
-                out.close();
-
-                synchronized (this) {
-                    // Verzeichnis anlegen
-                    if (!FileIO.createDirectory(filename))
-                        return false;
-
-                    // Datei schreiben
-                    FileOutputStream stream = new FileOutputStream(filename, false);
-                    out.writeTo(stream);
-                    stream.close();
-                }
-
-                NumTilesLoaded++;
-            } else {
-                // Closes the connection.
-                response.getEntity().getContent().close();
-                // throw new IOException(statusLine.getReasonPhrase());
-                Log.err(log, url + ": " + response.getStatusLine());
+        synchronized (this) {
+            // Verzeichnis anlegen
+            if (!FileIO.createDirectory(filename))
                 return false;
-            }
-            /*
-             * webRequest = (HttpWebRequest)WebRequest.Create(url); webRequest.Timeout = 15000; webRequest.Proxy = Global.Proxy; webResponse
-             * = webRequest.GetResponse(); if (!webRequest.HaveResponse) return false; responseStream = webResponse.GetResponseStream();
-             * byte[] result = Global.ReadFully(responseStream, 64000); // Verzeichnis anlegen lock (this) if (!Directory.Exists(path))
-             * Directory.CreateDirectory(path); // Datei schreiben lock (this) { stream = new FileStream(filename, FileMode.CreateNew);
-             * stream.Write(result, 0, result.Length); } NumTilesLoaded++; Global.TransferredBytes += result.Length;
-             */
+        }
+
+        try {
+            FileOutputStream stream = new FileOutputStream(filename, false);
+            InputStream fromUrl = Webb.create()
+                    .get(url)
+                    .connectTimeout(CONECTION_TIME_OUT)
+                    .ensureSuccess()
+                    .asStream()
+                    .getBody();
+            WebbUtils.copyStream(fromUrl, stream);
+            fromUrl.close();
+            stream.close();
+            NumTilesLoaded++;
+            return true;
         } catch (Exception ex) {
-            // Check last Error for this URL and post massage if the last > 1 min.
-
-            String URL = GET.getURI().getAuthority();
-
-            boolean PostErrorMassage = false;
-
-            if (LastRequestTimeOut.containsKey(URL)) {
-                long last = LastRequestTimeOut.get(URL);
-                if ((last + CONECTION_TIME_OUT_MESSAGE_INTERVALL) < System.currentTimeMillis()) {
-                    PostErrorMassage = true;
-                    LastRequestTimeOut.remove(URL);
-                }
-            } else {
-                PostErrorMassage = true;
-            }
-
-            if (PostErrorMassage) {
-                LastRequestTimeOut.put(URL, System.currentTimeMillis());
-                ConnectionError INSTANCE = new ConnectionError(layer.Name + " - Provider");
-                GL.that.Toast(INSTANCE);
-            }
-
+            Log.err(log, url + ": " + ex.getLocalizedMessage());
             return false;
         }
-        /*
-         * finally { if (stream != null) { stream.Close(); stream = null; } if (responseStream != null) { responseStream.Close();
-         * responseStream = null; } if (webResponse != null) { webResponse.Close(); webResponse = null; } if (webRequest != null) {
-         * webRequest.Abort(); webRequest = null; } GC.Collect(); }
-         */
 
-        return true;
     }
 
     public void LoadTMS(String string) {
