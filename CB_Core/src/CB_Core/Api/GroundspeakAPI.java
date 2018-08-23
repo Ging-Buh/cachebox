@@ -863,8 +863,8 @@ public class GroundspeakAPI {
     }
 
     static String GetSettingsAccessToken() {
-        return "GMgpNfEDRInXcSWnXxvyXfxH7l0=";
-        /*
+        // return "GMgpNfEDRInXcSWnXxvyXfxH7l0=";
+        /* */
         String act;
         if (CB_Core_Settings.UseTestUrl.getValue()) {
             act = CB_Core_Settings.AccessTokenForTest.getValue();
@@ -879,7 +879,7 @@ public class GroundspeakAPI {
         }
         else
             return "";
-         */
+        /* */
     }
 
     static String UrlEncode(String value) {
