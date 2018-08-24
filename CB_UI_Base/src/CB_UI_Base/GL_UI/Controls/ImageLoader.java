@@ -25,7 +25,6 @@ import CB_UI_Base.GL_UI.utils.GifDecoder;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Log.Log;
-import CB_Utils.Util.Downloader;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.FileFactory;
 import com.badlogic.gdx.Gdx;

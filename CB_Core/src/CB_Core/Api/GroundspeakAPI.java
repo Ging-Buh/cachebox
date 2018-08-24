@@ -62,62 +62,6 @@ public class GroundspeakAPI {
     private static int findCount;
     private static String tmpResult = "";
 
-    public static int CreateFieldNoteAndPublish(String cacheCode, int wptLogTypeId, Date dateLogged, String note, boolean directLog, final ICancel icancel) {
-
-        if (chkMembership(false) < 0) return ERROR;
-
-        try {
-            JSONObject body = new JSONObject()
-                    .put("AccessToken", GetSettingsAccessToken())
-                    .put("CacheCode", cacheCode)
-                    .put("WptLogTypeId", wptLogTypeId)
-                    .put("UTCDateLogged", GetUTCDate(dateLogged))
-                    .put("Note", ConvertNotes(note));
-            JSONObject json = Webb.create()
-                    .post(getUrl("CreateFieldNoteAndPublish?format=json"))
-                    .body(body)
-                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
-                    .ensureSuccess()
-                    .asJsonObject()
-                    .getBody();
-
-            JSONObject status = json.getJSONObject("Status");
-            if (status.getInt("StatusCode") == 0) {
-                LastAPIError = "";
-            } else {
-                LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
-                LastAPIError += status.getString("StatusMessage") + "\n";
-                LastAPIError += status.getString("ExceptionDetails");
-                return ERROR;
-            }
-
-        } catch (Exception e) {
-            LastAPIError = e.getLocalizedMessage();
-            Log.err(log, "UploadFieldNotesAPI ConnectTimeoutException", e);
-            return ERROR;
-        }
-
-        LastAPIError = "";
-        return OK;
-    }
-
-    private static String ConvertNotes(String note) {
-        String result = note.replace("\r", "");
-        result = result.replace("\"", "\\\"");
-        // result.replace("\n", "\\n");
-        return result;
-    }
-
-    private static String GetUTCDate(Date date) {
-        long utc = date.getTime();
-        TimeZone tzp = TimeZone.getTimeZone("GMT");
-        utc = utc - tzp.getOffset(utc);
-        String ret = "/Date(" + utc + ")/";
-        Log.info(log, "Logdate uploaded: " + ret);
-        return ret;
-    }
-
     /**
      * // Archived, Available and TrackableCount are updated
      * // restriction for nr of caches must be handled by caller
@@ -492,6 +436,49 @@ public class GroundspeakAPI {
     }
 
     // End Old API
+
+    //logdrafts
+    /*
+    LOGDRAFT            Fields
+    Name        	    Type	            Description 	                                                            Required for Creation   Can Be Updated (By Draft Owner)
+    guid missing in description of GC                                                                                       Yes                 No
+    referenceCode	    string	            uniquely identifies the log draft	                                            No	                No
+    geocacheCode	    string	            identifer of the geocache	                                                    Yes	                No
+    logType	            string or integer	name or id of the geocache log type (see Geocache Log Types for more info)	    Yes	                No
+    note	            string	            display text of the log draft	                                                Optional	        Yes
+    dateLoggedUtc	    datetime	        when the user logged the geocache in UTC	                                    Optional, defaults to current datetime	No
+    imageCount	        integer	            number of images associated with draft	                                        No	                No
+    useFavoritePoint	boolean	whether to award favorite point when	                                                Optional, defaults to false	Yes
+    */
+    // UploadFieldNotes | UploadDrafts
+    public static int CreateFieldNoteAndPublish(String cacheCode, int wptLogTypeId, Date dateLogged, String note) {
+
+        if (chkMembership(false) < 0) return ERROR;
+
+        try {
+            Webb.create()
+                    .post(getUrl(1, "logdrafts"))
+                    .body(new JSONObject()
+                            .put("guid", UUID.randomUUID().toString())
+                            .put("geocacheCode", cacheCode)
+                            .put("logType", wptLogTypeId)
+                            .put("dateLoggedUtc", getUTCDate(dateLogged))
+                            .put("note", prepareNote(note))
+                    )
+                    .header(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken())
+                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
+                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
+                    .ensureSuccess()
+                    .asJsonObject()
+                    .getBody();
+            LastAPIError = "";
+            return OK;
+        } catch (Exception e) {
+            LastAPIError = e.getLocalizedMessage();
+            Log.err(log, "UploadFieldNotes", e);
+            return ERROR;
+        }
+    }
 
     // geocaches/{referenceCode}/geocachelogs
     // there is no LogId in the new API
@@ -1031,8 +1018,8 @@ public class GroundspeakAPI {
     }
 
     static String GetSettingsAccessToken() {
-        // return "GMgpNfEDRInXcSWnXxvyXfxH7l0=";
-        /* */
+        return "GMgpNfEDRInXcSWnXxvyXfxH7l0=";
+        /*
         String act;
         if (CB_Core_Settings.UseTestUrl.getValue()) {
             act = CB_Core_Settings.AccessTokenForTest.getValue();
@@ -1044,10 +1031,9 @@ public class GroundspeakAPI {
         if ((act.startsWith("A"))) {
             Log.debug(log, "Access Token = " + act.substring(1, act.length()));
             return act.substring(1, act.length());
-        }
-        else
+        } else
             return "";
-        /* */
+        */
     }
 
     static String UrlEncode(String value) {

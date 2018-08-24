@@ -104,7 +104,7 @@ public class CB_Action_UploadFieldNote extends CB_Action {
                             result = GroundspeakAPI.createTrackableLog(fieldNote.TravelBugCode, fieldNote.TrackingNumber, fieldNote.gcCode, LogTypes.CB_LogType2GC(fieldNote.type), fieldNote.timestamp, fieldNote.comment);
                         } else {
                             boolean dl = fieldNote.isDirectLog;
-                            result = GroundspeakAPI.CreateFieldNoteAndPublish(fieldNote.gcCode, fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment, dl, this);
+                            result = GroundspeakAPI.CreateFieldNoteAndPublish(fieldNote.gcCode, fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment);
                         }
 
                         if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {

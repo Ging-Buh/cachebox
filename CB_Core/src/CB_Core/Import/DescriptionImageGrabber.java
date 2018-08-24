@@ -22,7 +22,6 @@ import CB_Core.Types.Cache;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
-import CB_Utils.Util.Downloader;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.SDBM_Hash;
 import CB_Utils.fileProvider.File;

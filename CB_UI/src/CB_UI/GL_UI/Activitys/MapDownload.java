@@ -1,5 +1,6 @@
 package CB_UI.GL_UI.Activitys;
 
+import CB_Core.CB_Core_Settings;
 import CB_Core.Import.BreakawayImportThread;
 import CB_Locator.Map.ManagerBase;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -13,7 +14,6 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Fonts;
@@ -27,17 +27,14 @@ import CB_Utils.Events.ProgresssChangedEventList;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
-import CB_Utils.http.HttpUtils;
+import CB_Utils.http.Webb;
 import com.thebuzzmedia.sjxp.XMLParser;
 import com.thebuzzmedia.sjxp.rule.DefaultRule;
 import com.thebuzzmedia.sjxp.rule.IRule;
 import com.thebuzzmedia.sjxp.rule.IRule.Type;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.ConnectTimeoutException;
+import org.json.JSONArray;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -320,21 +317,13 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent {
             @Override
             public void run() {
                 // Read XML
-
-                HttpGet httpget = new HttpGet(URL_FREIZEITKARTE);
-
-                httpget.setHeader("Accept", "application/json");
-                httpget.setHeader("Content-type", "application/json");
-
-                try {
-                    repository_freizeitkarte_android = HttpUtils.Execute(httpget, null, true);
-                } catch (ConnectTimeoutException e) {
-                    GL.that.Toast(ConnectionError.INSTANCE);
-                } catch (ClientProtocolException e) {
-                    GL.that.Toast(ConnectionError.INSTANCE);
-                } catch (IOException e) {
-                    GL.that.Toast(ConnectionError.INSTANCE);
-                }
+                repository_freizeitkarte_android = Webb.create()
+                        .get(URL_FREIZEITKARTE)
+                        .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
+                        .readTimeout(CB_Core_Settings.socket_timeout.getValue())
+                        .ensureSuccess()
+                        .asString()
+                        .getBody();
 
                 fillDownloadList();
 

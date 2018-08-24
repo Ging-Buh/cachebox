@@ -15,7 +15,6 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.CopyHelper.Copy;
-import CB_Utils.Util.Downloader;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
