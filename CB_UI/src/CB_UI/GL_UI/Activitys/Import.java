@@ -16,8 +16,7 @@
 package CB_UI.GL_UI.Activitys;
 
 import CB_Core.Api.GroundspeakAPI;
-import CB_Core.Api.PocketQuery;
-import CB_Core.Api.PocketQuery.PQ;
+import CB_Core.Api.GroundspeakAPI.PQ;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
@@ -782,8 +781,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         Thread thread = new Thread() {
             @Override
             public void run() {
-                PqList = new ArrayList<PQ>();
-                PocketQuery.GetPocketQueryList(PqList);
+                PqList = new ArrayList<>();
+                GroundspeakAPI.GetPocketQueryList(PqList);
                 lvPQs.setBaseAdapter(new CustomAdapter());
                 lvPQs.notifyDataSetChanged();
 
@@ -969,7 +968,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
                             // PQ-List von nicht Downloadbaren PQs befreien
 
-                            ArrayList<PQ> downloadPqList = new ArrayList<PocketQuery.PQ>();
+                            ArrayList<PQ> downloadPqList = new ArrayList<>();
 
                             for (PQ pq : PqList) {
                                 if (pq.downloadAvailable)
@@ -995,7 +994,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                                     if (pq.downloadAvailable) {
                                         ip.ProgressInkrement("importGC", "Download: " + pq.Name, false);
                                         try {
-                                            PocketQuery.DownloadSinglePocketQuery(pq, Config.PocketQueryFolder.getValue());
+                                            GroundspeakAPI.DownloadSinglePocketQuery(pq, Config.PocketQueryFolder.getValue());
                                         } catch (OutOfMemoryError e) {
                                             Log.err(log, "PQ-download", "OutOfMemoryError-" + pq.Name, e);
                                             e.printStackTrace();

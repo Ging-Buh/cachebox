@@ -1,6 +1,6 @@
 package CB_UI.GL_UI.Activitys;
 
-import CB_Core.Api.PocketQuery.PQ;
+import CB_Core.Api.GroundspeakAPI.PQ;
 import CB_UI_Base.GL_UI.Controls.ChkBox;
 import CB_UI_Base.GL_UI.Controls.ChkBox.OnCheckChangedListener;
 import CB_UI_Base.GL_UI.Controls.Label;

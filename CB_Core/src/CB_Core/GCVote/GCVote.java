@@ -94,7 +94,7 @@ public class GCVote {
                     .ensureSuccess()
                     .asString()
                     .getBody();
-            return responseString.equals("OK\n");
+            return responseString.equals("OK");
 
         } catch (Exception ex) {
             return false;

@@ -16,7 +16,7 @@
 package CB_Core.Import;
 
 import CB_Core.Api.GroundspeakAPI;
-import CB_Core.Api.PocketQuery.PQ;
+import CB_Core.Api.GroundspeakAPI.PQ;
 import CB_Core.CB_Core_Settings;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.GCVoteDAO;

@@ -15,9 +15,7 @@
  */
 package CB_UI.GL_UI.Activitys.APIs;
 
-import CB_Core.Api.GroundspeakAPI;
-import CB_Core.Api.PocketQuery;
-import CB_Core.Api.PocketQuery.PQ;
+import CB_Core.Api.GroundspeakAPI.PQ;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
@@ -66,6 +64,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import java.io.IOException;
 import java.util.*;
+
+import static CB_Core.Api.GroundspeakAPI.*;
 
 public class ShowAPIImportList extends ActivityBase implements ProgressChangedEvent {
     private static final String log = "ShowAPIImportList";
@@ -513,42 +513,6 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
         checkBoxImportGPX.setChecked(Config.ImportGpx.getValue());
         checkImportPQfromGC.setOnCheckChangedListener(checkImportPQfromGC_CheckStateChanged);
         checkBoxGcVote.setChecked(Config.ImportRatings.getValue());
-
-        // First check API-Key with visual Feedback
-        // GroundspeakAPI.chkAPiLogInWithWaitDialog(new IChkRedyHandler()
-        // {
-        //
-        // @Override
-        // public void chekReady()
-        // {
-        // if (GroundspeakAPI.getMembershipType(true))
-        // {
-        // checkImportPQfromGC.setChecked(Config.ImportPQsFromGeocachingCom.getValue());
-        // checkImportPQfromGC.setEnabled(true);
-        // checkBoxPreloadSpoiler.setEnable(true);
-        // lblSpoiler.setTextColor(Fonts.getFontColor());
-        // if (checkImportPQfromGC.isChecked())
-        // {
-        // PQ_ListCollapseBox.setAnimationHeight(CollapseBoxMaxHeight);
-        // }
-        // else
-        // {
-        // PQ_ListCollapseBox.setAnimationHeight(0);
-        // }
-        // }
-        // else
-        // {
-        // checkImportPQfromGC.setChecked(false);
-        // checkImportPQfromGC.setEnabled(false);
-        // checkBoxPreloadSpoiler.setEnable(false);
-        // lblSpoiler.setTextColor(Fonts.getDisableFontColor());
-        // checkImportPQfromGC.setHeight(0);
-        // CollapseBoxHeight = 0;
-        // lblPQ.setHeight(0);
-        // }
-        // }
-        // });
-
         checkImportPQfromGC.setChecked(Config.ImportPQsFromGeocachingCom.getValue());
         checkImportPQfromGC.setEnabled(true);
         checkBoxPreloadSpoiler.setEnable(true);
@@ -599,7 +563,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
             @Override
             public void run() {
                 PqList = new ArrayList<PQ>();
-                PocketQuery.GetPocketQueryList(PqList);
+                GetPocketQueryList(PqList);
                 lvPQs.setBaseAdapter(new CustomAdapter());
                 lvPQs.notifyDataSetChanged();
 
@@ -718,7 +682,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 
                             // PQ-List von nicht Downloadbaren PQs befreien
 
-                            ArrayList<PQ> downloadPqList = new ArrayList<PocketQuery.PQ>();
+                            ArrayList<PQ> downloadPqList = new ArrayList<PQ>();
 
                             for (PQ pq : PqList) {
                                 if (pq.downloadAvailable)
@@ -743,7 +707,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
                                     if (pq.downloadAvailable) {
                                         ip.ProgressInkrement("importGC", "Download: " + pq.Name, false);
                                         try {
-                                            PocketQuery.DownloadSinglePocketQuery(pq, Config.PocketQueryFolder.getValue());
+                                            DownloadSinglePocketQuery(pq, Config.PocketQueryFolder.getValue());
                                         } catch (OutOfMemoryError e) {
                                             Log.err(log, "PQ-download", "OutOfMemoryError-" + pq.Name, e);
                                             e.printStackTrace();
@@ -834,12 +798,12 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
                         dis.setAnimationType(AnimationType.Download);
                         int result = importer.importImagesNew(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(), FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue()));
 
-                        if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
+                        if (result == CONNECTION_TIMEOUT) {
                             GL.that.Toast(ConnectionError.INSTANCE);
                             return;
                         }
 
-                        if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
+                        if (result == API_IS_UNAVAILABLE) {
                             GL.that.Toast(ApiUnavailable.INSTANCE);
                             return;
                         }

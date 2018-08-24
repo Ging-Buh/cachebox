@@ -30,6 +30,9 @@ import CB_Utils.http.WebbException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.Serializable;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -60,20 +63,19 @@ public class GroundspeakAPI {
     private static String tmpResult = "";
 
     public static int CreateFieldNoteAndPublish(String cacheCode, int wptLogTypeId, Date dateLogged, String note, boolean directLog, final ICancel icancel) {
-        int chk = chkMembership();
-        if (chk < 0)
-            return ERROR;
+
+        if (chkMembership(false) < 0) return ERROR;
 
         try {
+            JSONObject body = new JSONObject()
+                    .put("AccessToken", GetSettingsAccessToken())
+                    .put("CacheCode", cacheCode)
+                    .put("WptLogTypeId", wptLogTypeId)
+                    .put("UTCDateLogged", GetUTCDate(dateLogged))
+                    .put("Note", ConvertNotes(note));
             JSONObject json = Webb.create()
                     .post(getUrl("CreateFieldNoteAndPublish?format=json"))
-                    .body(new JSONObject()
-                            .put("AccessToken", GetSettingsAccessToken())
-                            .put("CacheCode", cacheCode)
-                            .put("WptLogTypeId", String.valueOf(wptLogTypeId))
-                            .put("UTCDateLogged", GetUTCDate(dateLogged))
-                            .put("Note", ConvertNotes(note))
-                    )
+                    .body(body)
                     .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
                     .readTimeout(CB_Core_Settings.socket_timeout.getValue())
                     .ensureSuccess()
@@ -99,16 +101,19 @@ public class GroundspeakAPI {
         LastAPIError = "";
         return OK;
     }
+
     private static String ConvertNotes(String note) {
         String result = note.replace("\r", "");
         result = result.replace("\"", "\\\"");
-        return result.replace("\n", "\\n");
+        // result.replace("\n", "\\n");
+        return result;
     }
+
     private static String GetUTCDate(Date date) {
         long utc = date.getTime();
         TimeZone tzp = TimeZone.getTimeZone("GMT");
         utc = utc - tzp.getOffset(utc);
-        String ret = "\\/Date(" + utc + ")\\/";
+        String ret = "/Date(" + utc + ")/";
         Log.info(log, "Logdate uploaded: " + ret);
         return ret;
     }
@@ -333,9 +338,8 @@ public class GroundspeakAPI {
 
     /* removed in API 1 */
     public static int GetTrackablesByTrackingNumber(String TrackingCode, ByRef<Trackable> TB, ICancel icancel) {
-        int chk = chkMembership();
-        if (chk < 0)
-            return chk;
+
+        if (chkMembership(false) < 0) return ERROR;
 
         try {
             JSONObject json = Webb.create()
@@ -382,6 +386,109 @@ public class GroundspeakAPI {
 
         TB = null;
         return ERROR;
+    }
+
+    public static int GetPocketQueryList(ArrayList<PQ> list) {
+        // if (list == null) new NullArgumentException("PQ List"); // wer macht son scheiß
+        Log.info(log, "GetPocketQueryList");
+        LastAPIError = "";
+        if (!IsPremiumMember()) return OK; // leere Liste für Basic members
+        try {
+            JSONObject json = Webb.create()
+                    .get(getUrl("GetPocketQueryList?AccessToken=" + UrlEncode(GetSettingsAccessToken()) + "&format=json"))
+                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
+                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
+                    .ensureSuccess()
+                    .asJsonObject()
+                    .getBody();
+            JSONObject status = json.getJSONObject("Status");
+            if (status.getInt("StatusCode") == 0) {
+                LastAPIError = "";
+                JSONArray jPQs = json.getJSONArray("PocketQueryList");
+
+                for (int ii = 0; ii < jPQs.length(); ii++) {
+
+                    JSONObject jPQ = (JSONObject) jPQs.get(ii);
+
+                    if (jPQ.getBoolean("IsDownloadAvailable")) {
+                        PQ pq = new PQ();
+                        pq.Name = jPQ.getString("Name");
+                        pq.GUID = jPQ.getString("GUID");
+                        pq.DateLastGenerated = new Date();
+                        try {
+                            String dateCreated = jPQ.getString("DateLastGenerated");
+                            int date1 = dateCreated.indexOf("/Date(");
+                            int date2 = dateCreated.indexOf("-");
+                            String date = (String) dateCreated.subSequence(date1 + 6, date2);
+                            pq.DateLastGenerated = new Date(Long.valueOf(date));
+                        } catch (Exception exc) {
+                            Log.err(log, "API", "SearchForGeocaches_ParseDate", exc);
+                        }
+                        pq.PQCount = jPQ.getInt("PQCount");
+                        int Byte = jPQ.getInt("FileSizeInBytes");
+                        pq.SizeMB = Byte / 1048576.0;
+                        list.add(pq);
+                    }
+                }
+                return OK;
+            } else {
+                LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
+                LastAPIError += status.getString("StatusMessage") + "\n";
+                LastAPIError += status.getString("ExceptionDetails");
+                Log.err(log, "GetPocketQueryList " + LastAPIError);
+                return (ERROR);
+            }
+        } catch (Exception e) {
+            LastAPIError = e.getLocalizedMessage();
+            Log.err(log, "GetPocketQueryList" + LastAPIError);
+            return ERROR;
+        }
+    }
+
+    public static int DownloadSinglePocketQuery(PQ pocketQuery, String PqFolder) {
+        // Replacement new API: "lists/" + pocketQuery.GUID + "/geocaches"
+
+        try {
+            JSONObject json = Webb.create()
+                    .get(getUrl("GetPocketQueryZippedFile?format=json&AccessToken=" + UrlEncode(GetSettingsAccessToken()) + "&PocketQueryGuid=" + pocketQuery.GUID))
+                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
+                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
+                    .ensureSuccess()
+                    .asJsonObject()
+                    .getBody();
+            JSONObject status = json.getJSONObject("Status");
+            if (status.optInt("StatusCode", 0) == 0) {
+                LastAPIError = "";
+                String dateString = new SimpleDateFormat("yyyyMMddHHmmss").format(pocketQuery.DateLastGenerated);
+                String zipData = json.optString("ZippedFile", "");
+
+                String local = PqFolder + "/" + pocketQuery.Name + "_" + dateString + ".zip";
+                FileOutputStream fs;
+                fs = new FileOutputStream(local);
+                BufferedOutputStream bfs = new BufferedOutputStream(fs);
+                try {
+                    CB_Utils.Converter.Base64.decodeToStream(zipData, 0, zipData.length(), bfs);
+                } catch (Exception ex) {
+                    LastAPIError = ex.getLocalizedMessage();
+                    Log.err(log, "DownloadSinglePocketQuery CB_Utils.Converter.Base64.decodeToStream " + LastAPIError);
+                }
+                bfs.flush();
+                bfs.close();
+                fs.close();
+                if (LastAPIError.length() > 0) return ERROR;
+                else return OK;
+            } else {
+                LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
+                LastAPIError += status.getString("StatusMessage") + "\n";
+                LastAPIError += status.getString("ExceptionDetails");
+                Log.err(log, "DownloadSinglePocketQuery " + LastAPIError);
+                return ERROR;
+            }
+
+        } catch (Exception e) {
+            Log.err(log, "DownloadSinglePocketQuery", e);
+            return ERROR;
+        }
     }
 
     // End Old API
@@ -796,6 +903,67 @@ public class GroundspeakAPI {
         }
     }
 
+    public static int GetPocketQueryListAPI1(ArrayList<PQ> list) {
+        // if (list == null) new NullArgumentException("PQ List"); // wer macht son scheiß
+        Log.info(log, "GetPocketQueryList");
+        LastAPIError = "";
+        if (!IsPremiumMember()) return OK; // leere Liste für Basic members
+        int skip = 0;
+        int take = 50;
+        /*
+        referenceCode	string	uniquely identifies the list	No	No
+        createdDateUtc	datetime	when the list was created in UTC	No	No
+        lastUpdatedDateUtc	datetime	when the list was last updated in UTC. for pocket queries, this represents the last time the query was generated	No	No
+        name	string	display name of the list	Yes	Yes
+        count	integer	how many geocaches are in the list	No	No
+        findCount	integer	how many of the geocaches in list are found	No	No
+        ownerCode	string	identifier of the user who owns the list	No	No
+        description	string	text about the list	No	Yes
+        typeId	integer	type of the list (see List Types for more info)	Yes	No
+        isShared	bool	if the list is accessible through a direct link	Yes	Yes
+        isPublic	bool	if the list is accessible to everyone without a direct link	Yes	Yes
+        */
+        String fields = "name,referenceCode,lastUpdatedDateUtc";
+        try {
+            JSONArray json;
+            do {
+                json = Webb.create()
+                        .get(getUrl(1, "users/me/lists?types=pq&skip=" + skip + "&take=" + take + "&fields=" + fields))
+                        .header(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken())
+                        .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
+                        .readTimeout(CB_Core_Settings.socket_timeout.getValue())
+                        .ensureSuccess()
+                        .asJsonArray()
+                        .getBody();
+                for (int ii = 0; ii < json.length(); ii++) {
+                    JSONObject jPQ = (JSONObject) json.get(ii);
+                    PQ pq = new PQ();
+                    pq.Name = jPQ.optString("Name", "");
+                    pq.GUID = jPQ.optString("referenceCode", "");
+                    try {
+                        String dateCreated = jPQ.optString("lastUpdatedDateUtc", "");
+                        pq.DateLastGenerated = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(dateCreated);
+                    } catch (Exception exc) {
+                        Log.err(log, "GetPocketQueryList", "DateLastGenerated", exc);
+                        pq.DateLastGenerated = new Date();
+                    }
+                    pq.PQCount = jPQ.getInt("count");
+                    pq.SizeMB = -1;
+                    pq.downloadAvailable = true;
+                    list.add(pq);
+                }
+            }
+            while (json.length() == take);
+
+            Log.info(log, "GetPocketQueryList done \n" + json.toString());
+            return OK;
+        } catch (Exception ex) {
+            LastAPIError = ex.getLocalizedMessage();
+            Log.err(log, "GetPocketQueryList", ex);
+            return ERROR;
+        }
+    }
+
     // "friends?fields=referenceCode" only for test API 1.0
     public static int getFriends() {
         Log.info(log, "getFriends");
@@ -901,7 +1069,7 @@ public class GroundspeakAPI {
         return getUrl(0, command);
     }
 
-    private static String getUrl(int version, String command) {
+    static String getUrl(int version, String command) {
         String ApiUrl = "https://api.groundspeak.com/";
         String StagingApiUrl = "https://staging.api.groundspeak.com/";
         String mPath;
@@ -933,5 +1101,15 @@ public class GroundspeakAPI {
     }
 
     public enum MemberShipTypes {Unknown, Basic, Charter, Premium}
+
+    public static class PQ implements Serializable {
+        private static final long serialVersionUID = 8308386638170255124L;
+        public String Name;
+        public int PQCount;
+        public Date DateLastGenerated;
+        public double SizeMB;
+        public boolean downloadAvailable = false;
+        String GUID;
+    }
 
 }

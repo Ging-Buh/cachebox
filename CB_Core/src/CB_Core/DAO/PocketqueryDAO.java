@@ -15,7 +15,7 @@
  */
 package CB_Core.DAO;
 
-import CB_Core.Api.PocketQuery.PQ;
+import CB_Core.Api.GroundspeakAPI.PQ;
 import CB_Core.Database;
 import CB_Utils.Log.Log;
 import de.cb.sqlite.CoreCursor;

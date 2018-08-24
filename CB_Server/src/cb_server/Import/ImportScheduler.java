@@ -30,6 +30,8 @@ import CB_Utils.fileProvider.FileFactory;
 import cb_server.CacheboxServer;
 import cb_server.Config;
 
+import static CB_Core.Api.GroundspeakAPI.GetPocketQueryList;
+
 public class ImportScheduler implements Runnable {
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	private Future<?> future = null;
@@ -120,14 +122,14 @@ public class ImportScheduler implements Runnable {
 					String pqsToImport = ";" + Config.settings.PQImportNames.getValue() + ";";
 
 					// Import PQs
-					ArrayList<PQ> pqList = new ArrayList<PQ>();
+					ArrayList<GroundspeakAPI.PQ> pqList = new ArrayList<>();
 					log.debug("Load PQ-List");
-					CB_Core.Api.PocketQuery.GetPocketQueryList(pqList);
+					GetPocketQueryList(pqList);
 					ip.setJobMax("importGC", pqList.size() + 1);
 					log.debug("Load PQ-List ready");
 					ApiGroundspeak_GetPocketQueryData ipq = new ApiGroundspeak_GetPocketQueryData();
 					PocketqueryDAO dao = new PocketqueryDAO();
-					for (PQ pq : pqList) {
+					for (GroundspeakAPI.PQ pq : pqList) {
 						ip.ProgressInkrement("importGC", "Download PQ - " + pq.Name, false);
 						log.debug("Load PQ " + pq.Name);
 						if (!pqsToImport.contains(pq.Name)) {
