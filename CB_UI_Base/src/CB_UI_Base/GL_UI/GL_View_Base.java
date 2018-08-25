@@ -823,7 +823,7 @@ public abstract class GL_View_Base extends CB_RectF {
         return behandelt;
     }
 
-    public final GL_View_Base touchDown(int x, int y, int pointer, int button) {
+    public GL_View_Base touchDown(int x, int y, int pointer, int button) {
         // Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
         // das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
         // touchDown liefert die View zurück, die dieses TochDown Ereignis angenommen hat
