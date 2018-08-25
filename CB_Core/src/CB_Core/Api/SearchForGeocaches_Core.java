@@ -43,6 +43,52 @@ import static CB_Core.Api.GroundspeakAPI.*;
 public class SearchForGeocaches_Core {
     private static final String log = "SearchForGeocaches_Core";
 
+    private static int getApiStatus(JSONObject json) {
+
+        try {
+            JSONObject jsonStatus = json.getJSONObject("Status");
+            int status = jsonStatus.getInt("StatusCode");
+            String statusMessage = jsonStatus.getString("StatusMessage");
+            String exceptionDetails = jsonStatus.getString("ExceptionDetails");
+
+            String logString = "StatusCode = " + status + "\n" + statusMessage + "\n" + exceptionDetails;
+
+            if (status == 0)
+                return status;
+
+            if (status == 2) {
+                // Not authorized
+                API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.INVALID);
+                Log.warn(log, "API-Error: " + logString);
+                return status;
+            }
+
+            if (status == 3) {
+                // API Key expired
+                API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.EXPIRED);
+                Log.warn(log, "API-Error: " + logString);
+                return status;
+            }
+
+            if (status == 141) {
+                // / {"Status":{"StatusCode":141,"StatusMessage":"The AccessToken provided is not valid"
+                API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.INVALID);
+                Log.warn(log, "API-Error: " + logString);
+                return status;
+            }
+
+            // unknown
+            API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.INVALID);
+            Log.warn(log, "API-Error: " + logString);
+            return status;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
+
     public String SearchForGeocachesJSON(Search search, CB_List<Cache> cacheList, ArrayList<LogEntry> logList, ArrayList<ImageEntry> imageList, long gpxFilenameId, ICancel icancel) {
         int startIndex = 0;
         int searchNumber = search.number <= 50 ? search.number : 50;
@@ -253,52 +299,6 @@ public class SearchForGeocaches_Core {
             showToastConnectionError();
             return "";
         }
-    }
-
-    private static int getApiStatus(JSONObject json) {
-
-        try {
-            JSONObject jsonStatus = json.getJSONObject("Status");
-            int status = jsonStatus.getInt("StatusCode");
-            String statusMessage = jsonStatus.getString("StatusMessage");
-            String exceptionDetails = jsonStatus.getString("ExceptionDetails");
-
-            String logString = "StatusCode = " + status + "\n" + statusMessage + "\n" + exceptionDetails;
-
-            if (status == 0)
-                return status;
-
-            if (status == 2) {
-                // Not authorized
-                API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.INVALID);
-                Log.warn(log, "API-Error: " + logString);
-                return status;
-            }
-
-            if (status == 3) {
-                // API Key expired
-                API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.EXPIRED);
-                Log.warn(log, "API-Error: " + logString);
-                return status;
-            }
-
-            if (status == 141) {
-                // / {"Status":{"StatusCode":141,"StatusMessage":"The AccessToken provided is not valid"
-                API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.INVALID);
-                Log.warn(log, "API-Error: " + logString);
-                return status;
-            }
-
-            // unknown
-            API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.INVALID);
-            Log.warn(log, "API-Error: " + logString);
-            return status;
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return -1;
     }
 
     private Boolean LoadBooleanValueFromDB(String sql) // Found-Status aus Datenbank auslesen

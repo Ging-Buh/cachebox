@@ -17,7 +17,6 @@ package CB_UI.GL_UI.Controls;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GcApiLogin;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Image;
@@ -36,9 +35,11 @@ public class API_Button extends Button {
         @Override
         public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
             if (Plattform.used == Plattform.Desktop) {
-                (new GcApiLogin()).RunRequest();
+                // todo implement
+                // (new GcApiLogin()).RunRequest();
+                PlatformConnector.callGetApiKey();
             } else {
-                PlatformConnector.callGetApiKeyt();
+                PlatformConnector.callGetApiKey();
             }
 
             return true;

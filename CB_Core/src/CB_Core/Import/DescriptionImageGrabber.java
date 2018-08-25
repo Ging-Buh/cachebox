@@ -32,12 +32,12 @@ import de.cb.sqlite.Database_Core.Parameters;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+
+import static CB_Utils.http.Download.Download;
 
 public class DescriptionImageGrabber {
     private static final String log = "DescriptionImageGrabber";
@@ -230,74 +230,6 @@ public class DescriptionImageGrabber {
         }
 
         return html;
-    }
-
-    public static Boolean Download(String uri, String local) {
-
-        File localFile = FileFactory.createFile(local);
-
-        try {
-            new Downloader(new URL(uri), localFile).run();
-        } catch (MalformedURLException e) {
-            Log.err(log, "Download: " + uri + " to " + local, e);
-        }
-
-        return localFile.exists();
-
-        // try
-        // {
-        // String localDir = local.substring(0, local.lastIndexOf("/"));
-        // if (!FileIO.createDirectory(localDir)) return false;
-        //
-        // URL aURL = null;
-        // try
-        // {
-        // // ungültige URL -> nicht importieren
-        // aURL = new URL(uri.replace("&amp;", "&"));
-        // }
-        // catch (Exception ex)
-        // {
-        // return true;
-        // }
-        // File file = FileFactory.createFile(local);
-        // URLConnection con = aURL.openConnection();
-        // con.setConnectTimeout(5000);
-        // con.setReadTimeout(10000);
-        // con.setRequestProperty("Accept-Charset", "UTF-8");
-        //
-        // InputStream is = con.getInputStream();
-        // FileOutputStream fos = new FileOutputStream(file);
-        // BufferedInputStream bis = new BufferedInputStream(is);
-        // ByteArrayBuffer baf = new ByteArrayBuffer(10024);
-        // int current = 0;
-        // int count = 0;
-        // while ((current = bis.read()) != -1)
-        // {
-        // baf.append((byte) current);
-        // count++;
-        // if (count > 10000)
-        // {
-        // fos.write(baf.toByteArray());
-        // count = 0;
-        // baf.clear();
-        // baf.setLength(0);
-        // }
-        // }
-        //
-        // fos.write(baf.toByteArray());
-        // /*
-        // * try { int d; while ((d = is.read()) != -1) { fos.write(d); } } catch (IOException ex) { // TODO make a callback on exception.
-        // * }
-        // */
-        // fos.close();
-        //
-        // return true;
-        // }
-        // catch (Exception e)
-        // {
-        // e.printStackTrace();
-        // return false;
-        // }
     }
 
     public static LinkedList<String> GetAllImages(Cache Cache) {

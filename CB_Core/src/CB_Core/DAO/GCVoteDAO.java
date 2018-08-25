@@ -69,7 +69,8 @@ public class GCVoteDAO {
     }
 
     /**
-     *  get users votes from db
+     * get users votes from db
+     *
      * @return GCVoteCacheInfo the ArrayList with the changed votes to upload to gcvote
      */
     public ArrayList<GCVoteCacheInfo> getPendingGCVotes() {

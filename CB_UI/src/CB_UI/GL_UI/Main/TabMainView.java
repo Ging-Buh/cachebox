@@ -141,7 +141,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
                         @Override
                         public boolean onClick(int which, Object data) {
                             if (which == GL_MsgBox.BUTTON_POSITIVE)
-                                PlatformConnector.callGetApiKeyt();
+                                PlatformConnector.callGetApiKey();
                             return true;
                         }
                     });
@@ -165,7 +165,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
                         @Override
                         public boolean onClick(int which, Object data) {
                             if (which == GL_MsgBox.BUTTON_POSITIVE)
-                                PlatformConnector.callGetApiKeyt();
+                                PlatformConnector.callGetApiKey();
                             return true;
                         }
                     });
@@ -190,7 +190,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
                         @Override
                         public boolean onClick(int which, Object data) {
                             if (which == GL_MsgBox.BUTTON_POSITIVE)
-                                PlatformConnector.callGetApiKeyt();
+                                PlatformConnector.callGetApiKey();
                             return true;
                         }
                     }, Config.RememberAsk_Get_API_Key);

@@ -403,15 +403,13 @@ public class FieldNotesView extends V_ListView {
 
             @Override
             public void run() {
-                GroundspeakAPI.LastAPIError = "";
 
                 boolean dl = fieldNote.isDirectLog;
-                int result = GroundspeakAPI.CreateFieldNoteAndPublish(fieldNote.gcCode, fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment);
+                int result = GroundspeakAPI.CreateFieldNoteAndPublish(fieldNote.gcCode, fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment, dl);
 
                 if (result == GroundspeakAPI.OK) {
+                    // after direct Log chage state to uploaded
                     fieldNote.uploaded = true;
-
-                    // after direct Log create a fieldNote with uploded state
                     addOrChangeFieldNote(fieldNote, isNewFieldNote, false);
                 }
 

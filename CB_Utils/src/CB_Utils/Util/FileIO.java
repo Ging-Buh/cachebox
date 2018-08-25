@@ -4,14 +4,8 @@ import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import CB_Utils.fileProvider.FilenameFilter;
 import com.badlogic.gdx.files.FileHandle;
-import org.apache.http.util.ByteArrayBuffer;
 
-import java.io.BufferedInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -223,38 +217,6 @@ public class FileIO {
             str = str.replace(invalidChars[i], "");
 
         return str;
-    }
-
-    public static Boolean Download(String uri, String local) {
-        try {
-            String localDir = local.substring(0, local.lastIndexOf("/"));
-
-            if (!FileIO.createDirectory(localDir))
-                return false;
-
-            URL aURL = new URL(uri.replace("&amp;", "&"));
-
-            File file = FileFactory.createFile(local);
-
-            URLConnection con = aURL.openConnection();
-
-            InputStream is = con.getInputStream();
-            BufferedInputStream bis = new BufferedInputStream(is);
-
-            ByteArrayBuffer baf = new ByteArrayBuffer(50);
-            int current = 0;
-            while ((current = bis.read()) != -1) {
-                baf.append((byte) current);
-            }
-
-            FileOutputStream fos = file.getFileOutputStream();
-            fos.write(baf.toByteArray());
-            fos.close();
-
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     /**

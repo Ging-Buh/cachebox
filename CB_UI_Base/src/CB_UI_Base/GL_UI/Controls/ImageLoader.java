@@ -27,6 +27,7 @@ import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.FileFactory;
+import CB_Utils.http.Download;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
@@ -43,8 +44,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 
 /**
@@ -294,14 +293,11 @@ public class ImageLoader {
 
                 // Download Image to Cache
                 try {
-                    URL url = new URL(iconUrl);
-
-                    final Downloader dl = new Downloader(url, FileFactory.createFile(CachePath + LocalPath));
 
                     Thread DLThread = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            dl.run();
+                            Download.Download(iconUrl, CachePath + LocalPath);
                             inLoad = false;
 
                             // chk if Download complied
@@ -316,11 +312,8 @@ public class ImageLoader {
                     });
 
                     DLThread.run();
-                } catch (MalformedURLException e) {
-                    Log.err(log, "ImageDownloader wrong URL: " + iconUrl, e);
-                    e.printStackTrace();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.err(log, "for " + iconUrl, e);
                 }
             }
         });

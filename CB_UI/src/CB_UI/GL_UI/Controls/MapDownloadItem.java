@@ -8,7 +8,6 @@ import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
 import CB_UI_Base.GL_UI.Fonts;
-import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
@@ -18,12 +17,10 @@ import CB_Utils.Util.CopyHelper.Copy;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
+import CB_Utils.http.Download;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.zip.ZipException;
 
 public class MapDownloadItem extends CB_View_Base {
     private static final String log = "MapDownloadItem";
@@ -34,7 +31,6 @@ public class MapDownloadItem extends CB_View_Base {
     private final String workPath;
     private final AtomicBoolean DownloadRuns = new AtomicBoolean(false);
     private int lastProgress = 0;
-    private Downloader dl;
     private ProgressBar pgBar;
     private boolean canceld = false;
 
@@ -151,64 +147,14 @@ public class MapDownloadItem extends CB_View_Base {
             public void run() {
                 int slashPos = mapInfo.Url.lastIndexOf("/");
                 String zipFile = mapInfo.Url.substring(slashPos + 1, mapInfo.Url.length());
-
-                File target = FileFactory.createFile(workPath + "/" + zipFile);
-
-                try {
-                    dl = new Downloader(new URL(mapInfo.Url), target);
-                } catch (MalformedURLException e) {
-                    return;
-                }
+                String target = workPath + "/" + zipFile;
 
                 pgBar.setProgress(lastProgress, lastProgress + " %");
 
-                Thread dlProgressChecker = new Thread(new Runnable() {
-
-                    @Override
-                    public void run() {
-
-                        while (!dl.isCompleted()) {
-                            // chk if canceld
-                            if (canceld) {
-                                dl.cancel();
-                                break;
-                            }
-
-                            int progress = dl.getProgressPercent();
-                            if (lastProgress != progress) {
-                                lastProgress = progress;
-                                pgBar.setProgress(lastProgress, lastProgress + " %");
-                            }
-                            try {
-                                Thread.sleep(100);
-                            } catch (InterruptedException e) {
-                                Log.err(log, e.getLocalizedMessage());
-                            }
-                        }
-
-                    }
-                });
-
-                dlProgressChecker.start();
-
-                dl.run();
-                if (!dl.isCanceled()) {
+                if (Download.Download(mapInfo.Url, target)) {
                     try {
-                        if (dl.getDownloadedLength() > 0) {
-                            UnZip.extractFolder(target.getAbsolutePath());
-                        } else {
-                            String msg;
-                            if (dl.error != null) {
-                                msg = "" + dl.error.getCause(); // dl.error.getLocalizedMessage()
-                            } else {
-                                msg = "Downloaded File is empty.";
-                            }
-                            Log.err(log, msg);
-                            GL.that.Toast(msg);
-                        }
-                    } catch (ZipException e) {
-                        Log.err(log, e.getLocalizedMessage());
-                    } catch (IOException e) {
+                        UnZip.extractFolder(target);
+                    } catch (Exception e) {
                         Log.err(log, e.getLocalizedMessage());
                     }
 
@@ -237,8 +183,8 @@ public class MapDownloadItem extends CB_View_Base {
                 }
 
                 try {
-                    target.delete();
-                    Log.info(log, "Deleted " + target.getAbsolutePath());
+                    FileFactory.createFile(target).delete();
+                    Log.info(log, "Deleted " + target);
                 } catch (IOException e) {
                     Log.err(log, e.getLocalizedMessage());
                 }
@@ -263,15 +209,10 @@ public class MapDownloadItem extends CB_View_Base {
     }
 
     public boolean isFinished() {
-        if (dl == null) {
             if (DownloadRuns.get())
                 return false;
             else
                 return true;
-        }
-        // return dl.isCompleted();
-        // the UnZip must have been run to an end;
-        return !DownloadRuns.get();
     }
 
     public void enable() {

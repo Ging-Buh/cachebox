@@ -138,8 +138,6 @@ public class PlatformConnector {
         return false;
     }
 
-    // ------ get File from File Dialog ------
-
     public static boolean isTorchOn() {
         if (hardwareListener != null) {
             return hardwareListener.isTorchOn();
@@ -173,8 +171,6 @@ public class PlatformConnector {
         return false;
     }
 
-    // ------ get folder from Folder Dialog ------
-
     public static boolean sendKeyUp(int KeyCode) {
         if (mKeyListener != null) {
             return mKeyListener.keyUp(KeyCode);
@@ -201,10 +197,6 @@ public class PlatformConnector {
             getFolderListener.getFolder(initialPath, TitleText, ButtonText, returnListener);
     }
 
-    // ----------------------------------------
-
-    // ------ Quit ------
-
     public static void setQuitListener(IQuit listener) {
         quitListener = listener;
     }
@@ -218,14 +210,10 @@ public class PlatformConnector {
         getApiKeyListener = listener;
     }
 
-    public static void callGetApiKeyt() {
+    public static void callGetApiKey() {
         if (getApiKeyListener != null)
             getApiKeyListener.getApiKey();
     }
-
-    // ----------------------------------------
-
-    // ------ GetApiKey ------
 
     public static void setsetScreenLockTimeListener(IsetScreenLockTime listener) {
         setScreenLockTimeListener = listener;
@@ -245,10 +233,6 @@ public class PlatformConnector {
             setKeybordFocusListener.setKeybordFocus(value);
     }
 
-    // ----------------------------------------
-
-    // ------ setScreenLockTime ------
-
     public static void setCallUrlListener(ICallUrl listener) {
         CallUrlListener = listener;
     }
@@ -267,14 +251,9 @@ public class PlatformConnector {
             startPictureApp.Start(file);
     }
 
-    // ----------------------------------------
-
-    // ------ setKeybordFocus ------
-
     public static void switchToGpsMeasure() {
         if (hardwareListener != null) {
             hardwareListener.switchToGpsMeasure();
-            ;
         }
     }
 
@@ -340,55 +319,55 @@ public class PlatformConnector {
     // ------ setCallUrl ------
 
     public interface KeyEventListener {
-        public boolean onKeyPressed(Character character);
+        boolean onKeyPressed(Character character);
 
-        public boolean keyUp(int KeyCode);
+        boolean keyUp(int KeyCode);
 
-        public boolean keyDown(int keycode);
+        boolean keyDown(int keycode);
     }
 
     public interface IgetFileReturnListener {
-        public void returnFile(String Path);
+        void returnFile(String Path);
     }
 
     public interface IgetFileListener {
-        public void getFile(String initialPath, String extension, String TitleText, String ButtonText, IgetFileReturnListener returnListener);
+        void getFile(String initialPath, String extension, String TitleText, String ButtonText, IgetFileReturnListener returnListener);
     }
 
     public interface IgetFolderReturnListener {
-        public void returnFolder(String Path);
+        void returnFolder(String Path);
     }
 
     // ----------------------------------------
 
     public interface IgetFolderListener {
-        public void getFolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener);
+        void getFolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListener returnListener);
     }
 
     public interface IQuit {
-        public void Quit();
+        void Quit();
     }
 
     public interface IGetApiKey {
-        public void getApiKey();
+        void getApiKey();
     }
 
     public interface IsetScreenLockTime {
-        public void setScreenLockTime(int value);
+        void setScreenLockTime(int value);
     }
 
     // -----------------------------------------
 
     public interface IsetKeybordFocus {
-        public void setKeybordFocus(boolean value);
+        void setKeybordFocus(boolean value);
     }
 
     public interface ICallUrl {
-        public void call(String url);
+        void call(String url);
     }
 
     // ----- startPictureApp -----
     public interface iStartPictureApp {
-        public void Start(String file);
+        void Start(String file);
     }
 }

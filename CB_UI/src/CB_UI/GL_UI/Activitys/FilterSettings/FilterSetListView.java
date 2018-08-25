@@ -24,11 +24,6 @@ public class FilterSetListView extends V_ListView {
     public static final int CHECK_ITEM = 1;
     public static final int THREE_STATE_ITEM = 2;
     public static final int NUMERIC_ITEM = 3;
-    public static FilterSetEntry aktFilterSetEntry;
-    // public static float lastTouchX;
-    // public static float lastTouchY;
-    public static int windowW = 0;
-    public static int windowH = 0;
     public static boolean mustSaveFilter = false;
     private static FilterSetListViewItem NotAvailable;
     private static FilterSetListViewItem Archived;
@@ -50,7 +45,6 @@ public class FilterSetListView extends V_ListView {
     private static FilterSetListViewItem maxRating;
     private static FilterSetListViewItem types;
     private static FilterSetListViewItem attribs;
-    private final CustomAdapter lvAdapter;
     int index = 0;
     private ArrayList<FilterSetEntry> lFilterSets;
     private ArrayList<FilterSetListViewItem> lFilterSetListViewItems;
@@ -61,7 +55,7 @@ public class FilterSetListView extends V_ListView {
         fillFilterSetList();
 
         this.setBaseAdapter(null);
-        lvAdapter = new CustomAdapter(lFilterSets, lFilterSetListViewItems);
+        CustomAdapter lvAdapter = new CustomAdapter(lFilterSets, lFilterSetListViewItems);
         this.setBaseAdapter(lvAdapter);
         this.setDisposeFlag(false);
     }
@@ -231,12 +225,11 @@ public class FilterSetListView extends V_ListView {
         }
         FilterSetEntry tmp = new FilterSetEntry(Name, Icon, ItemType);
         lFilterSets.add(tmp);
-        ;
+
         FilterSetListViewItem v = new FilterSetListViewItem(EditFilterSettings.ItemRec, index++, tmp);
         lFilterSetListViewItems.add(v);
 
         v.setOnClickListener(new OnClickListener() {
-
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 collapseButton_Clicked((FilterSetListViewItem) v);

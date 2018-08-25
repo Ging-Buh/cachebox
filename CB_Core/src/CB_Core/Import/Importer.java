@@ -42,6 +42,8 @@ import java.net.URI;
 import java.util.*;
 import java.util.zip.ZipException;
 
+import static CB_Utils.http.Download.Download;
+
 public class Importer {
     private static final String log = "Importer";
 
@@ -371,7 +373,7 @@ public class Importer {
 
                 if (!FileIO.FileExistsNotEmpty(localFile)) {
                     downloadedImage = true;
-                    if (downloadFaild || !DescriptionImageGrabber.Download(url, localFile)) {
+                    if (downloadFaild || !Download(url, localFile)) {
                         downloadFaild = true;
                     }
                 }

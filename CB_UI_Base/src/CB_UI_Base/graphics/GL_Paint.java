@@ -197,15 +197,15 @@ public class GL_Paint implements ext_Paint {
         return bitmapShader;
     }
 
-    public void setBitmapShader(BitmapDrawable bitmap) {
-        bitmapShader = bitmap;
-    }
-
     @Override
     public void setBitmapShader(Bitmap bitmap) {
         if (bitmap instanceof BitmapDrawable) {
             bitmapShader = (BitmapDrawable) bitmap;
         }
+    }
+
+    public void setBitmapShader(BitmapDrawable bitmap) {
+        bitmapShader = bitmap;
     }
 
     public GL_Cap getGL_Cap() {

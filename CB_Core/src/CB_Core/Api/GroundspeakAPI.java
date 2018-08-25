@@ -437,40 +437,73 @@ public class GroundspeakAPI {
 
     // End Old API
 
-    //logdrafts
-    /*
-    LOGDRAFT            Fields
-    Name        	    Type	            Description 	                                                            Required for Creation   Can Be Updated (By Draft Owner)
-    guid missing in description of GC                                                                                       Yes                 No
-    referenceCode	    string	            uniquely identifies the log draft	                                            No	                No
-    geocacheCode	    string	            identifer of the geocache	                                                    Yes	                No
-    logType	            string or integer	name or id of the geocache log type (see Geocache Log Types for more info)	    Yes	                No
-    note	            string	            display text of the log draft	                                                Optional	        Yes
-    dateLoggedUtc	    datetime	        when the user logged the geocache in UTC	                                    Optional, defaults to current datetime	No
-    imageCount	        integer	            number of images associated with draft	                                        No	                No
-    useFavoritePoint	boolean	whether to award favorite point when	                                                Optional, defaults to false	Yes
-    */
-    // UploadFieldNotes | UploadDrafts
-    public static int CreateFieldNoteAndPublish(String cacheCode, int wptLogTypeId, Date dateLogged, String note) {
+     // UploadFieldNotes | UploadDrafts | logdrafts
+    public static int CreateFieldNoteAndPublish(String cacheCode, int wptLogTypeId, Date dateLogged, String note, boolean directLog) {
 
         if (chkMembership(false) < 0) return ERROR;
 
         try {
-            Webb.create()
-                    .post(getUrl(1, "logdrafts"))
-                    .body(new JSONObject()
-                            .put("guid", UUID.randomUUID().toString())
-                            .put("geocacheCode", cacheCode)
-                            .put("logType", wptLogTypeId)
-                            .put("dateLoggedUtc", getUTCDate(dateLogged))
-                            .put("note", prepareNote(note))
-                    )
-                    .header(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken())
-                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
-                    .ensureSuccess()
-                    .asJsonObject()
-                    .getBody();
+            if (directLog) {
+                /*
+                GEOCACHELOG Fields
+                Name	Type	Description	Required for Creation	Can Be Updated (By Log Owner)
+                =================================================================================
+                referenceCode	string	uniquely identifies the geocache	No	No
+                ownerCode	string	identifier of the log owner	            No	No
+                imageCount	integer	number of images associated with geocache log	No	No
+                loggedDate	datetime	date and time of when user logged the geocache in the timezone of the geocache	Yes	Yes
+                text	string	display text of the geocache log	Yes	Yes
+                type	string or integer	name or id of the geocache log type (see Geocache Log Types for more info)	Yes	Yes
+                updatedCoordinates	Coordinates	latitude and longitude of the geocache (only used with log type 47 - Update Coordinates)	Optional	Yes
+                geocacheCode	string	identifier of the associated geocache	Yes	No
+                usedFavoritePoint	bool	if a favorite point was awarded from this log	Optional, defaults to false	No
+                isEncoded	bool	if log was encrypted using ROT13	No	No
+                isArchived	bool	if the log has been deleted	No	No
+                 */
+                Webb.create()
+                        .post(getUrl(1, "geocachelogs"))
+                        .body(new JSONObject()
+                                .put("geocacheCode", cacheCode)
+                                .put("type", wptLogTypeId)
+                                .put("loggedDate", getUTCDate(dateLogged))
+                                .put("text", prepareNote(note))
+                        )
+                        .header(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken())
+                        .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
+                        .readTimeout(CB_Core_Settings.socket_timeout.getValue())
+                        .ensureSuccess()
+                        .asJsonObject()
+                        .getBody();
+            }
+            else {
+                /*
+                LOGDRAFT Fields
+                Name        	    Type	            Description 	                                                            Required for Creation   Can Be Updated (By Draft Owner)
+                guid missing in description of GC                                                                                       Yes                 No
+                referenceCode	    string	            uniquely identifies the log draft	                                            No	                No
+                geocacheCode	    string	            identifer of the geocache	                                                    Yes	                No
+                logType	            string or integer	name or id of the geocache log type (see Geocache Log Types for more info)	    Yes	                No
+                note	            string	            display text of the log draft	                                                Optional	        Yes
+                dateLoggedUtc	    datetime	        when the user logged the geocache in UTC	                                    Optional, defaults to current datetime	No
+                imageCount	        integer	            number of images associated with draft	                                        No	                No
+                useFavoritePoint	boolean	whether to award favorite point when	                                                Optional, defaults to false	Yes
+                */
+                Webb.create()
+                        .post(getUrl(1, "logdrafts"))
+                        .body(new JSONObject()
+                                .put("guid", UUID.randomUUID().toString())
+                                .put("geocacheCode", cacheCode)
+                                .put("logType", wptLogTypeId)
+                                .put("dateLoggedUtc", getUTCDate(dateLogged))
+                                .put("note", prepareNote(note))
+                        )
+                        .header(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken())
+                        .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
+                        .readTimeout(CB_Core_Settings.socket_timeout.getValue())
+                        .ensureSuccess()
+                        .asJsonObject()
+                        .getBody();
+            }
             LastAPIError = "";
             return OK;
         } catch (Exception e) {
@@ -1018,8 +1051,7 @@ public class GroundspeakAPI {
     }
 
     static String GetSettingsAccessToken() {
-        return "GMgpNfEDRInXcSWnXxvyXfxH7l0=";
-        /*
+        /* */
         String act;
         if (CB_Core_Settings.UseTestUrl.getValue()) {
             act = CB_Core_Settings.AccessTokenForTest.getValue();
@@ -1033,7 +1065,7 @@ public class GroundspeakAPI {
             return act.substring(1, act.length());
         } else
             return "";
-        */
+        /* */
     }
 
     static String UrlEncode(String value) {

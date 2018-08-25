@@ -14,6 +14,7 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_Utils.http.Download;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -339,7 +340,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                             url = NonLocalImagesUrl.poll();
 
 
-                            if (DescriptionImageGrabber.Download(url, local)) {
+                            if (Download.Download(url, local)) {
                                 anyImagesLoaded = true;
                             }
                         } catch (Exception e) {

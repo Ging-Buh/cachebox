@@ -22,16 +22,11 @@ import CB_Utils.http.Webb;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
-
-import static CB_Utils.http.Webb.APP_FORM;
-import static CB_Utils.http.Webb.HDR_CONTENT_TYPE;
 
 public class GCVote {
     private static final String log = "GCVote";
