@@ -79,16 +79,16 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent {
                 final Button b = (Button) v;
                 if (notes.getText().length() > 0) {
                     b.setText("Cancel");
-                    // TODO implement cancel Upload
                     GL.that.RunOnGL(new IRunOnGL() {
                         @Override
                         public void run() {
-                            int result = GroundspeakAPI.updateCacheNote(aktCache.getGcCode(), notes.getText());
+                            String UploadText = notes.getText().replace("<Import from Geocaching.com>","").replace("</Import from Geocaching.com>","").trim();
+                            int result = GroundspeakAPI.uploadCacheNote(aktCache.getGcCode(), UploadText);
                             b.disable();
                             if (result == 0) {
                                 b.setText("erfolgreich");
                             } else {
-                                b.setText("Fehler: " + GroundspeakAPI.LastAPIError);
+                                b.setText("Fehler");
                             }
                         }
                     });

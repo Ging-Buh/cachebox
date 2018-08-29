@@ -9,7 +9,6 @@ import CB_Core.Types.FieldNoteList;
 import CB_Core.Types.FieldNoteList.LoadingType;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GL_UI.Views.FieldNotesView;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog.ICancelListener;
@@ -77,7 +76,7 @@ public class CB_Action_UploadFieldNote extends CB_Action {
                         anzahl++;
                 }
 
-                boolean sendGCVote = !Config.GcVotePassword.getEncryptedValue().equalsIgnoreCase("");
+                boolean sendGCVote = Config.GcVotePassword.getEncryptedValue().length() > 0;
 
                 if (anzahl > 0) {
                     UploadMeldung = "";
@@ -94,42 +93,29 @@ public class CB_Action_UploadFieldNote extends CB_Action {
                         // Progress status Melden
                         ProgresssChangedEventList.Call(fieldNote.CacheName, (100 * count) / anzahl);
 
-                        if (sendGCVote && !fieldNote.isTbFieldNote) {
-                            sendCacheVote(fieldNote);
-                        }
-
-                        int result = 0;
+                        int result;
 
                         if (fieldNote.isTbFieldNote) {
-                            result = GroundspeakAPI.createTrackableLog(fieldNote.TravelBugCode, fieldNote.TrackingNumber, fieldNote.gcCode, LogTypes.CB_LogType2GC(fieldNote.type), fieldNote.timestamp, fieldNote.comment);
+                            result = GroundspeakAPI.uploadTrackableLog(fieldNote.TravelBugCode, fieldNote.TrackingNumber, fieldNote.gcCode, LogTypes.CB_LogType2GC(fieldNote.type), fieldNote.timestamp, fieldNote.comment);
                         } else {
+                            if (sendGCVote && !fieldNote.isTbFieldNote) {
+                                if (fieldNote.gc_Vote > 0)
+                                    sendCacheVote(fieldNote);
+                            }
                             boolean dl = fieldNote.isDirectLog;
-                            result = GroundspeakAPI.CreateFieldNoteAndPublish(fieldNote.gcCode, fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment, dl);
+                            result = GroundspeakAPI.UploadDraftOrLog(fieldNote.gcCode, fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment, dl);
                         }
 
-                        if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
+                        if (result == GroundspeakAPI.ERROR) {
                             GL.that.Toast(ConnectionError.INSTANCE);
-                            PD.close();
-                            return;
-                        }
-                        if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
-                            GL.that.Toast(ApiUnavailable.INSTANCE);
-                            PD.close();
-                            return;
-                        }
-
-                        if (result == -1) {
+                            // todo with API1 timeout etc
+                            // PD.close();
+                            // return;
                             UploadMeldung += fieldNote.gcCode + "\n" + GroundspeakAPI.LastAPIError + "\n";
                         } else {
-                            if (result != -10) {
-                                // set fieldnote as uploaded only when upload was working
-                                fieldNote.uploaded = true;
-                                fieldNote.UpdateDatabase();
-                            } else {
-                                API_Key_error = true;
-                                UploadMeldung = "error";
-                                ThreadCancel = true;
-                            }
+                            // set fieldnote as uploaded only when upload was working
+                            fieldNote.uploaded = true;
+                            fieldNote.UpdateDatabase();
                         }
                         count++;
                     }

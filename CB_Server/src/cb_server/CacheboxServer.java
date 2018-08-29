@@ -46,7 +46,7 @@ import CB_Core.Database;
 import CB_Core.Database.DatabaseType;
 import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
-import CB_Core.DAO.CacheListDAO;
+import CB_Core.Types.CacheListDAO;
 import CB_Core.Types.Categories;
 import CB_Utils.Plattform;
 import CB_Utils.Settings.SettingModus;

@@ -18,7 +18,7 @@ package CB_Core.Import;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.GroundspeakAPI.PQ;
 import CB_Core.CB_Core_Settings;
-import CB_Core.DAO.CacheDAO;
+import CB_Core.Types.CacheDAO;
 import CB_Core.DAO.GCVoteDAO;
 import CB_Core.DAO.ImageDAO;
 import CB_Core.Database;
@@ -195,33 +195,36 @@ public class Importer {
     public void importGcVote(String whereClause, ImporterProgress ip) {
 
         GCVoteDAO gcVoteDAO = new GCVoteDAO();
+        int i;
 
-        ArrayList<GCVoteCacheInfo> pendingVotes = gcVoteDAO.getPendingGCVotes();
+        if (CB_Core_Settings.GcVotePassword.getValue().length() > 0) {
+            ArrayList<GCVoteCacheInfo> pendingVotes = gcVoteDAO.getPendingGCVotes();
 
-        ip.setJobMax("sendGcVote", pendingVotes.size());
-        int i = 0;
+            ip.setJobMax("sendGcVote", pendingVotes.size());
+            i = 0;
 
-        for (GCVoteCacheInfo info : pendingVotes) {
+            for (GCVoteCacheInfo info : pendingVotes) {
 
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e2) {
-                return; // Thread Canceld
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e2) {
+                    return; // Thread Canceld
+                }
+
+                i++;
+
+                ip.ProgressInkrement("sendGcVote", "Sending Votes (" + String.valueOf(i) + " / " + String.valueOf(pendingVotes.size()) + ")", false);
+
+                Boolean ret = GCVote.SendVotes(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), info.Vote, info.URL, info.GcCode);
+
+                if (ret) {
+                    gcVoteDAO.updatePendingVote(info.Id);
+                }
             }
 
-            i++;
-
-            ip.ProgressInkrement("sendGcVote", "Sending Votes (" + String.valueOf(i) + " / " + String.valueOf(pendingVotes.size()) + ")", false);
-
-            Boolean ret = GCVote.SendVotes(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), info.Vote, info.URL, info.GcCode);
-
-            if (ret) {
-                gcVoteDAO.updatePendingVote(info.Id);
+            if (pendingVotes.size() == 0) {
+                ip.ProgressInkrement("sendGcVote", "No Votes to send.", true);
             }
-        }
-
-        if (pendingVotes.size() == 0) {
-            ip.ProgressInkrement("sendGcVote", "No Votes to send.", true);
         }
 
         Integer count = gcVoteDAO.getCacheCountToGetVotesFor(whereClause);
@@ -633,7 +636,7 @@ public class Importer {
 
         if (GcCode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
         {
-            ret = GroundspeakAPI.fetchImagesForGeocache(GcCode, apiImages);
+            ret = GroundspeakAPI.downloadImageListForGeocache(GcCode, apiImages);
             if (ret == GroundspeakAPI.OK) {
                 for (URI uImage : apiImages.values()) {
                     String image = uImage.toString();

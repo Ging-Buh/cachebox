@@ -17,7 +17,7 @@ package CB_UI.GL_UI.Controls.PopUps;
 
 import CB_Core.Api.*;
 import CB_Core.*;
-import CB_Core.DAO.CacheDAO;
+import CB_Core.Types.CacheDAO;
 import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;

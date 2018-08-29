@@ -75,9 +75,32 @@ public class GCVote {
 
     }
 
-    // todo not tested cause no ui for changing vote
     public static Boolean SendVotes(String User, String password, int vote, String url, String waypoint) {
-        String guid = url.substring(url.indexOf("guid=") + 5).trim();
+        url = url.replace("http:", "https:"); // automatic redirect doesn't work from http to https
+        int pos = url.indexOf("guid=");
+        String guid = "";
+        if (pos > -1) {
+            guid = url.substring(pos + 5).trim();
+        } else {
+            // fetch guid from gc : works without login
+            try {
+                String page = Webb.create()
+                        .get(url)
+                        .ensureSuccess()
+                        .asString()
+                        .getBody();
+                String toSearch = "cache_details.aspx?guid=";
+                pos = page.indexOf(toSearch);
+                if (pos > -1) {
+                    int start = pos + toSearch.length();
+                    int stop = page.indexOf("\"", start);
+                    guid = page.substring(start, stop);
+                }
+            } catch (Exception e) {
+                Log.err(log, "Send GCVotes: Can't get GUID for " + waypoint, e);
+            }
+        }
+        if (guid.length() == 0) return false;
 
         String data = "userName=" + User + "&password=" + password + "&voteUser=" + String.valueOf(vote / 100.0) + "&cacheId=" + guid + "&waypoint=" + waypoint;
 

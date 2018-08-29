@@ -16,12 +16,11 @@
 
 package CB_UI.GL_UI.Views;
 
-import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.LiveMapQue;
 import CB_Core.Api.SearchGC;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.CacheTypes;
-import CB_Core.DAO.CacheListDAO;
+import CB_Core.Types.CacheListDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.Database;
 import CB_Core.FilterInstances;

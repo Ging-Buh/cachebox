@@ -1016,8 +1016,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
                     }
 
-                    // Importiere alle GPX Files im Import Folder, auch in ZIP
-                    // verpackte
+                    // Importiere alle GPX Files im Import Folder, auch in ZIP verpackte
                     if (checkBoxImportGPX.isChecked() && directory.exists()) {
 
                         System.gc();

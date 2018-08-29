@@ -19,7 +19,7 @@ import CB_Core.Api.ApiGroundspeak_GetPocketQueryData;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.PocketQuery;
 import CB_Core.Api.PocketQuery.PQ;
-import CB_Core.DAO.CacheListDAO;
+import CB_Core.Types.CacheListDAO;
 import CB_Core.DAO.PocketqueryDAO;
 import CB_Core.Import.Importer;
 

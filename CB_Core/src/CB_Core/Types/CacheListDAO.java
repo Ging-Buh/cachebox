@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package CB_Core.DAO;
+package CB_Core.Types;
 
 import CB_Core.CacheTypes;
+import CB_Core.DAO.ImageDAO;
+import CB_Core.DAO.WaypointDAO;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
-import CB_Core.Types.Cache;
-import CB_Core.Types.CacheList;
-import CB_Core.Types.Waypoint;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;

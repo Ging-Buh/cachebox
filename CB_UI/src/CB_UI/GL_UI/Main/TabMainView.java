@@ -20,7 +20,7 @@ import CB_Core.Api.API_ErrorEventHandlerList;
 import CB_Core.Api.API_ErrorEventHandlerList.API_ERROR;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.CoreSettingsForward;
-import CB_Core.DAO.CacheListDAO;
+import CB_Core.Types.CacheListDAO;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
 import CB_Core.Types.Cache;

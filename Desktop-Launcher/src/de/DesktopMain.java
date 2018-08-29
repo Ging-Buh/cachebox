@@ -47,7 +47,6 @@ public class DesktopMain {
     // Retrieve the user preference node for the package com.mycompany
     static Preferences prefs = Preferences.userNodeForPackage(de.DesktopMain.class);
 
-    @SuppressWarnings("unused")
     public static void start(DevicesSizes ui, boolean debug, boolean scissor, final boolean simulate, final Frame frame) {
         Plattform.used = Plattform.Desktop;
         frame.setVisible(false);
@@ -357,6 +356,14 @@ public class DesktopMain {
                     System.err.println(e.getMessage());
                 }
 
+            }
+        });
+
+        PlatformConnector.setGetApiKeyListener(new IGetApiKey() {
+            @Override
+            public void getApiKey() {
+                // Android : GetApiAuth();
+                (new GcApiLogin()).RunRequest();
             }
         });
 

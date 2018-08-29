@@ -2,7 +2,7 @@ package CB_Core.Import;
 
 import CB_Core.CB_Core_Settings;
 import CB_Core.CoreSettingsForward;
-import CB_Core.DAO.CacheDAO;
+import CB_Core.Types.CacheDAO;
 import CB_Core.DAO.CategoryDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package CB_Core.DAO;
+package CB_Core.Types;
 
 import CB_Core.CacheSizes;
 import CB_Core.CacheTypes;
@@ -80,9 +80,9 @@ public class CacheDAO {
                 cache.setListingChanged(false);
 
             if (reader.getInt(19) > 0)
-                cache.setCorrectedCoordinates(true);
+                cache.setHasCorrectedCoordinates(true);
             else
-                cache.setCorrectedCoordinates(false);
+                cache.setHasCorrectedCoordinates(false);
 
             if (fullDetails) {
                 readDetailFromCursor(reader, cache.detail, fullDetails, withDescription);

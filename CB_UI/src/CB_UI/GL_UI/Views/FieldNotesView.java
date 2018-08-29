@@ -16,9 +16,11 @@
 package CB_UI.GL_UI.Views;
 
 import CB_Core.Api.GroundspeakAPI;
-import CB_Core.DAO.CacheDAO;
-import CB_Core.DAO.CacheListDAO;
+import CB_Core.CB_Core_Settings;
+import CB_Core.Types.CacheDAO;
+import CB_Core.Types.CacheListDAO;
 import CB_Core.Database;
+import CB_Core.GCVote.GCVote;
 import CB_Core.LogTypes;
 import CB_Core.Types.*;
 import CB_Core.Types.FieldNoteList.LoadingType;
@@ -26,7 +28,6 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.EditFieldNotes;
 import CB_UI.GL_UI.Activitys.EditFieldNotes.IReturnListener;
-import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GL_UI.Controls.PopUps.QuickFieldNoteFeedbackPopUp;
 import CB_UI.GL_UI.Main.Actions.CB_Action_UploadFieldNote;
 import CB_UI.GL_UI.Main.TabMainView;
@@ -45,7 +46,6 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -73,12 +73,10 @@ public class FieldNotesView extends V_ListView {
     private static FieldNoteList lFieldNotes;
     private static WaitDialog wd;
     private static EditFieldNotes.IReturnListener returnListener = new IReturnListener() {
-
         @Override
         public void returnedFieldNote(FieldNoteEntry fieldNote, boolean isNewFieldNote, boolean directlog) {
             addOrChangeFieldNote(fieldNote, isNewFieldNote, directlog);
         }
-
     };
     private static EditFieldNotes efnActivity;
     private CustomAdapter lvAdapter;
@@ -335,8 +333,7 @@ public class FieldNotesView extends V_ListView {
         if (fieldNote != null) {
 
             if (isNewFieldNote) {
-                // nur, wenn eine FieldNote neu angelegt wurde
-                // neue FieldNote
+
                 lFieldNotes.add(0, fieldNote);
 
                 // eine evtl. vorhandene FieldNote /DNF löschen
@@ -404,21 +401,26 @@ public class FieldNotesView extends V_ListView {
             @Override
             public void run() {
 
-                boolean dl = fieldNote.isDirectLog;
-                int result = GroundspeakAPI.CreateFieldNoteAndPublish(fieldNote.gcCode, fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment, dl);
+                if (Config.GcVotePassword.getEncryptedValue().length() > 0 && !fieldNote.isTbFieldNote) {
+                    if (fieldNote.gc_Vote > 0) {
+                        // Stimme abgeben
+                        try {
+                            if (!GCVote.SendVotes(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), fieldNote.gc_Vote, fieldNote.CacheUrl, fieldNote.gcCode)) {
+                                Log.err(log, fieldNote.gcCode + " GC-Vote");
+                            }
+                        } catch (Exception e) {
+                            Log.err(log, fieldNote.gcCode + " GC-Vote");
+                        }
+                    }
+                }
 
-                if (result == GroundspeakAPI.OK) {
-                    // after direct Log chage state to uploaded
+                if (GroundspeakAPI.OK == GroundspeakAPI.UploadDraftOrLog(fieldNote.gcCode, fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment, fieldNote.isDirectLog)) {
+                    // after direct Log change state to uploaded
                     fieldNote.uploaded = true;
                     addOrChangeFieldNote(fieldNote, isNewFieldNote, false);
-                }
-
-                if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
-                    GL.that.Toast(ConnectionError.INSTANCE);
-                    if (wd != null)
-                        wd.close();
+                } else {
+                    // Error handling
                     GL_MsgBox.Show(Translation.Get("CreateFieldnoteInstead"), Translation.Get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, new OnMsgBoxClickListener() {
-
                         @Override
                         public boolean onClick(int which, Object data) {
                             switch (which) {
@@ -436,34 +438,7 @@ public class FieldNotesView extends V_ListView {
                             return true;
                         }
                     });
-                    return;
                 }
-                if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
-                    GL.that.Toast(ApiUnavailable.INSTANCE);
-                    if (wd != null)
-                        wd.close();
-                    GL_MsgBox.Show(Translation.Get("CreateFieldnoteInstead"), Translation.Get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, new OnMsgBoxClickListener() {
-
-                        @Override
-                        public boolean onClick(int which, Object data) {
-                            switch (which) {
-                                case GL_MsgBox.BUTTON_NEGATIVE:
-                                    addOrChangeFieldNote(fieldNote, isNewFieldNote, true);// try again
-                                    return true;
-
-                                case GL_MsgBox.BUTTON_NEUTRAL:
-                                    return true;
-
-                                case GL_MsgBox.BUTTON_POSITIVE:
-                                    addOrChangeFieldNote(fieldNote, isNewFieldNote, false);// create Fieldnote
-                                    return true;
-                            }
-                            return true;
-                        }
-                    });
-                    return;
-                }
-
                 if (GroundspeakAPI.LastAPIError.length() > 0) {
                     GL.that.RunOnGL(new IRunOnGL() {
 
@@ -474,8 +449,10 @@ public class FieldNotesView extends V_ListView {
                     });
                 }
 
+                // GL.that.Toast(ConnectionError.INSTANCE);
                 if (wd != null)
                     wd.close();
+
             }
 
             @Override

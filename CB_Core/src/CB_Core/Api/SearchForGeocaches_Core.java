@@ -16,7 +16,7 @@
 package CB_Core.Api;
 
 import CB_Core.*;
-import CB_Core.DAO.CacheDAO;
+import CB_Core.Types.CacheDAO;
 import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
@@ -364,7 +364,7 @@ public class SearchForGeocaches_Core {
                     }
                     cache.setDifficulty((float) jCache.getDouble("Difficulty"));
 
-                    // Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
+                    // Ein evtl. in der Datenbank vorhandenen "Favorite" nicht überschreiben
                     Boolean Favorite = LoadBooleanValueFromDB("select Favorit from Caches where GcCode = \"" + gcCode + "\"");
                     cache.setFavorite(Favorite);
 
@@ -387,8 +387,8 @@ public class SearchForGeocaches_Core {
 
                     // Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
                     Boolean userData = LoadBooleanValueFromDB("select HasUserData from Caches where GcCode = \"" + gcCode + "\"");
-
                     cache.setHasUserData(userData);
+
                     if (!isLite) {
                         try {
                             cache.setHint(jCache.getString("EncodedHints"));
@@ -446,7 +446,6 @@ public class SearchForGeocaches_Core {
                         JSONObject jCacheType = jCache.getJSONObject("CacheType");
                         cache.Type = getCacheType(jCacheType.getInt("GeocacheTypeId"));
                     } catch (Exception e) {
-
                         if (gcCode.equals("GC4K089")) {
                             cache.Type = CacheTypes.Giga;
                         } else {
@@ -581,7 +580,7 @@ public class SearchForGeocaches_Core {
                             boolean correctedCoordinateFlag = false;
 
                             try {
-                                descriptionOverideInfo = jUserWaypoint.getString("Description").equals("Coordinate Override");
+                                descriptionOverideInfo = jUserWaypoint.optString("Description","").equals("Coordinate Override");
                             } catch (JSONException e) {
                             }
 
@@ -626,11 +625,10 @@ public class SearchForGeocaches_Core {
                 lastError = "StatusCode = " + status.getInt("StatusCode") + "\n";
                 lastError += status.getString("StatusMessage") + "\n";
                 lastError += status.getString("ExceptionDetails");
+                Log.err(log, lastError);
             }
 
-        } catch (JSONException e) {
-            Log.err(log, "SearchForGeocaches:ParserException: " + lastError, e);
-        } catch (ClassCastException e) {
+        } catch (Exception e) {
             Log.err(log, "SearchForGeocaches:ParserException: " + lastError, e);
         }
         return lastError;

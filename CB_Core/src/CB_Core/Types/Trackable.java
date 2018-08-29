@@ -15,7 +15,6 @@
  */
 package CB_Core.Types;
 
-import CB_Core.Api.GroundspeakAPI;
 import CB_Core.LogTypes;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.UnitFormatter;
@@ -31,22 +30,22 @@ import java.util.Date;
 public class Trackable implements Comparable<Trackable> {
     private static final String log = "Trackable";
     final SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy");
+    public boolean Archived;
+    public String TBCode;
+    public String TrackingCode;
+    public String CurrentGeocacheCode;
+    public String CurrentGoal;
+    public String CurrentOwnerName;
+    public Date DateCreated;
+    public String Description;
+    public String IconUrl;
+    public String ImageUrl = ""; // not in API 1.0
+    public String Name;
+    public String OwnerName;
+    public String TypeName;
     private int Id = -1;
-    private boolean Archived;
-    private String TBCode = "";
     private long CacheId;
-    private String CurrentGoal = "";
-    private String CurrentGeocacheCode = "";
-    private String CurrentOwnerName = "";
-    private Date DateCreated;
-    private String Description;
-    private String IconUrl = "";
-    private String ImageUrl = "";
-    private String Name = "";
-    private String OwnerName = "";
     private String Url = "";
-    private String TypeName = "";
-    private String TrackingCode;
     // TODO must load info (the GS_API gives no info about this)
     private Date lastVisit;
     private String Home = "";
@@ -78,19 +77,6 @@ public class Trackable implements Comparable<Trackable> {
      * <img src="doc-files/1.png"/>
      */
     public Trackable() {
-    }
-
-    /**
-     * <img src="doc-files/1.png"/>
-     *
-     * @param Name
-     * @param IconUrl
-     * @param desc
-     */
-    public Trackable(String Name, String IconUrl, String desc) {
-        this.Name = Name;
-        this.IconUrl = IconUrl;
-        this.Description = desc;
     }
 
     /**
@@ -178,11 +164,7 @@ public class Trackable implements Comparable<Trackable> {
     }
 
     public Trackable(JSONObject JObj) {
-        create(0, JObj);
-    }
-
-    public Trackable(int Version, JSONObject JObj) {
-        create(Version, JObj);
+        create(JObj);
     }
 
     /*
@@ -208,87 +190,8 @@ public class Trackable implements Comparable<Trackable> {
     }
      */
 
-    public void create(int Version, JSONObject JObj) {
-        if (Version == 1) {
-            // Archived = JObj.optBoolean("Archived");
-            Archived = false;
-            // referenceCode	string	uniquely identifies the trackable
-            TBCode = JObj.optString("referenceCode", "");
-            // trackingNumber	string	unique number used to prove discovery of trackable. only returned if user matches the holderCode
-            // will not be stored (Why)
-            TrackingCode = JObj.optString("trackingNumber", "");
-            // currentGeocacheCode	string	identifier of the geocache if the trackable is currently in one
-            CurrentGeocacheCode = JObj.optString("currentGeocacheCode", "");
-            if (CurrentGeocacheCode.equals("null")) CurrentGeocacheCode = "";
-            // goal	string	the owner's goal for the trackable
-            CurrentGoal = CB_Utils.StringH.JsoupParse(JObj.optString("goal"));
-            CurrentOwnerName = GroundspeakAPI.fetchUserName(JObj.optString("holderCode", ""));
-            // releasedDate	datetime	when the trackable was activated
-            String releasedDate = JObj.optString("releasedDate", "");
-            try {
-                DateCreated = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(releasedDate);
-            } catch (Exception e) {
-                DateCreated = new Date();
-            }
-            // description	string	text about the trackable
-            Description = CB_Utils.StringH.JsoupParse(JObj.optString("description", ""));
-            // iconUrl	string	link to image for trackable icon
-            IconUrl = JObj.optString("iconUrl", "");
-            // imageCount	int	how many owner images on the trackable
-            // name	string	display name of the trackable
-            Name = JObj.optString("name", "");
-            OwnerName = GroundspeakAPI.fetchUserName(JObj.optString("ownerCode", ""));
-            // type	string	category type display name
-            TypeName = JObj.optString("type", "");
-        /*
-        originCountry	string	where the trackable originated from
-        inHolderCollection	bool	if the trackable is in the holder's collection
-        isMissing	bool	flag is trackable is marked as missing
-        allowedToBeCollected (boolean, optional),
-        */
-        } else {
-            Archived = JObj.optBoolean("Archived");
-            TBCode = JObj.optString("Code");
-            CurrentGeocacheCode = JObj.optString("CurrentGeocacheCode");
-            CurrentGoal = CB_Utils.StringH.JsoupParse(JObj.optString("CurrentGoal"));
-            JSONObject jOwner;
-            try {
-                jOwner = JObj.getJSONObject("CurrentOwner");
-                CurrentOwnerName = jOwner.optString("UserName");
-            } catch (JSONException e) {
-                Log.err(log, "CurrentOwner", e);
-            }
-            try {
-                String dateCreated = JObj.optString("DateCreated");
-                int date1 = dateCreated.indexOf("/Date(");
-                int date2 = dateCreated.indexOf("-");
-                String date = (String) dateCreated.subSequence(date1 + 6, date2);
-                DateCreated = new Date(Long.valueOf(date));
-            } catch (Exception exc) {
-                Log.err(log, "DateCreated", exc);
-            }
-            Description = CB_Utils.StringH.JsoupParse(JObj.optString("Description"));
-            IconUrl = JObj.optString("IconUrl");
-            JSONArray jArray;
-            try {
-                jArray = JObj.getJSONArray("Images");
-                if (jArray.length() > 0) {
-                    ImageUrl = jArray.getJSONObject(0).optString("Url");
-                }
-            } catch (JSONException e) {
-                Log.err(log, "Images", e);
-            }
-
-            Name = JObj.optString("Name");
-            try {
-                jOwner = JObj.getJSONObject("OriginalOwner");
-                OwnerName = jOwner.optString("UserName");
-            } catch (JSONException e) {
-                Log.err(log, "OriginalOwner", e);
-            }
-            TypeName = JObj.optString("TBTypeName");
+    public void create(JSONObject JObj) {
         }
-    }
 
     public String getTravelDistance() {
         return UnitFormatter.DistanceString(TravelDistance);

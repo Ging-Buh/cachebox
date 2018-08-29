@@ -64,7 +64,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
     private Label lblTime = null;
     private ScrollBox scrollBox = null;
     private Box scrollBoxContent;
-    private boolean isNewFieldNote = false;
+    private boolean isNewFieldNote;
     private RadioButton rbDirectLog;
     private RadioButton rbOnlyFieldNote;
     private IReturnListener mReturnListener;
@@ -165,9 +165,11 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
                     }
 
                     fieldNote.comment = etComment.getText();
+
                     if (GcVote != null) {
                         fieldNote.gc_Vote = (int) (GcVote.getValue() * 100);
                     }
+                    else fieldNote.gc_Vote = 0;
 
                     // parse Date and Time
                     String date = tvDate.getText();

@@ -23,7 +23,6 @@ import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
-import CB_Utils.Plattform;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -34,14 +33,7 @@ public class API_Button extends Button {
 
         @Override
         public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-            if (Plattform.used == Plattform.Desktop) {
-                // todo implement
-                // (new GcApiLogin()).RunRequest();
-                PlatformConnector.callGetApiKey();
-            } else {
-                PlatformConnector.callGetApiKey();
-            }
-
+            PlatformConnector.callGetApiKey();
             return true;
         }
     };

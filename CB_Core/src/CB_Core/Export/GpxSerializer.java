@@ -16,7 +16,7 @@
 package CB_Core.Export;
 
 import CB_Core.Attributes;
-import CB_Core.DAO.CacheListDAO;
+import CB_Core.Types.CacheListDAO;
 import CB_Core.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;

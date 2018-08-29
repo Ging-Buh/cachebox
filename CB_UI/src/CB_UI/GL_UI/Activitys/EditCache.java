@@ -3,7 +3,7 @@ package CB_UI.GL_UI.Activitys;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.CacheSizes;
 import CB_Core.CacheTypes;
-import CB_Core.DAO.CacheDAO;
+import CB_Core.Types.CacheDAO;
 import CB_Core.Database;
 import CB_Core.Types.Cache;
 import CB_Locator.Coordinate;
@@ -213,7 +213,7 @@ public class EditCache extends ActivityBase
                     update = true;
                     if (newValues.Type == CacheTypes.Mystery) {
                         if (!(cache.Pos.equals(newValues.Pos))) {
-                            cache.setCorrectedCoordinates(true);
+                            cache.setHasCorrectedCoordinates(true);
                         }
                     }
                 }

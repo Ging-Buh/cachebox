@@ -17,7 +17,7 @@ package CB_UI.GL_UI.Activitys;
 
 import CB_Core.CB_Core_Settings;
 import CB_Core.CacheListChangedEventList;
-import CB_Core.DAO.CacheListDAO;
+import CB_Core.Types.CacheListDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.Database;
 import CB_Core.FilterInstances;

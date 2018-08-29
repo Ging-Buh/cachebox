@@ -35,10 +35,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-class Ex_1 {
+class DCB {
 
-    public static final String br = System.getProperty("line.separator");
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(Ex_1.class);
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(DCB.class);
 
     public static void main(String[] args) {
 

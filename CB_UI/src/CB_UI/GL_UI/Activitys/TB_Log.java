@@ -253,7 +253,7 @@ public class TB_Log extends ActivityBase {
             @Override
             public void run() {
                 GroundspeakAPI.LastAPIError = "";
-                int result = GroundspeakAPI.createTrackableLog(TB, getCache_GcCode(), LogTypes.CB_LogType2GC(LT), new Date(), edit.getText());
+                int result = GroundspeakAPI.uploadTrackableLog(TB, getCache_GcCode(), LogTypes.CB_LogType2GC(LT), new Date(), edit.getText());
 
                 if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
                     GL.that.Toast(ConnectionError.INSTANCE);

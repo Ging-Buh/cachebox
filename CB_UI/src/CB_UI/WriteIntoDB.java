@@ -1,6 +1,6 @@
 package CB_UI;
 
-import CB_Core.DAO.CacheDAO;
+import CB_Core.Types.CacheDAO;
 import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
@@ -51,21 +51,25 @@ public class WriteIntoDB {
             }
 
             // Notes von Groundspeak überprüfen und evtl. in die DB an die vorhandenen Notes anhängen
+            // todo solver extrahieren
             if (cache.getTmpNote() != null) {
-                String oldNote = Database.GetNote(cache);
+                String oldNote = Database.GetNote(cache).trim();
                 String newNote = "";
                 if (oldNote == null) {
                     oldNote = "";
                 }
                 String begin = "<Import from Geocaching.com>";
+                if (!oldNote.startsWith(begin)) {
+                    begin=System.getProperty("line.separator") + begin;
+                }
                 String end = "</Import from Geocaching.com>";
                 int iBegin = oldNote.indexOf(begin);
                 int iEnd = oldNote.indexOf(end);
                 if ((iBegin >= 0) && (iEnd > iBegin)) {
                     // Note from Groundspeak already in Database
                     // -> Replace only this part in whole Note
-                    newNote = oldNote.substring(0, iBegin - 1) + System.getProperty("line.separator"); // Copy the old part of Note before
-                    // the beginning of the groundspeak block
+                    // Copy the old part of Note before the beginning of the groundspeak block
+                    newNote = oldNote.substring(0, iBegin);
                     newNote += begin + System.getProperty("line.separator");
                     newNote += cache.getTmpNote();
                     newNote += System.getProperty("line.separator") + end;

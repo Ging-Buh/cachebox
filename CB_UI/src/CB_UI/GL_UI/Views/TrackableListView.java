@@ -26,9 +26,8 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Log.Log;
-import CB_Utils.Util.ByRef;
 
-import static CB_Core.Api.GroundspeakAPI.fetchUsersTrackables;
+import static CB_Core.Api.GroundspeakAPI.downloadUsersTrackables;
 
 public class TrackableListView extends CB_View_Base {
     private static final String log = "TrackableListView";
@@ -89,47 +88,30 @@ public class TrackableListView extends CB_View_Base {
                 final String TBCode = txtSearch.getText().trim();
                 if (TBCode.length() > 0) {
                     wd = CancelWaitDialog.ShowWait(Translation.Get("search"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
-
                         @Override
                         public void isCanceled() {
-
                         }
                     }, new cancelRunnable() {
-
                         @Override
                         public void run() {
 
-                            Trackable tb = null;
-                            ByRef<Trackable> ref = new ByRef<Trackable>(tb);
+                            Trackable tb;
 
                             /* removed in API 1 */
-                            int result = GroundspeakAPI.GetTrackablesByTrackingNumber(TBCode, ref, this);
-                            if (result == GroundspeakAPI.ERROR) {
-                                GL.that.Toast(ConnectionError.INSTANCE);
-                                // GL.that.Toast(ApiUnavailable.INSTANCE);
-                                wd.close();
-                                return;
+                            tb = GroundspeakAPI.downloadTrackableByTrackingNumber(TBCode);
+                            if (tb == null) {
+                                tb = GroundspeakAPI.downloadTrackableByTBCode(TBCode);
                             }
-
-                            result = GroundspeakAPI.fetchTrackableByTBCode(TBCode, ref);
-                            if (result == GroundspeakAPI.ERROR) {
+                            if (tb == null) {
                                 GL.that.Toast(ConnectionError.INSTANCE);
                                 // GL.that.Toast(ApiUnavailable.INSTANCE);
+                                // GL.that.Toast(Translation.Get("NoTbFound"));
                                 wd.close();
                                 return;
                             }
 
                             wd.close();
-
-                            // get RefValue
-                            tb = ref.get();
-
-                            if (tb != null) {
-                                TB_Details details = new TB_Details();
-                                details.Show(tb);
-                            } else {
-                                GL.that.Toast(Translation.Get("NoTbFound"));
-                            }
+                            new TB_Details().Show(tb);
 
                         }
 
@@ -182,11 +164,12 @@ public class TrackableListView extends CB_View_Base {
 
             @Override
             public void run() {
-                TbList searchList = new TbList();
-                int result = fetchUsersTrackables(searchList);
-
+                TbList searchList = downloadUsersTrackables();
                 Log.info(log, "RefreshTbList gotTBs");
-                if (result == GroundspeakAPI.OK) {
+                if (searchList == null) {
+                    GL.that.Toast(ConnectionError.INSTANCE);
+                    // GL.that.Toast(ApiUnavailable.INSTANCE);
+                } else {
                     Log.info(log, "RefreshTbList clearDB");
                     TrackableListDAO.clearDB();
                     Log.info(log, "RefreshTbList writeToDB");
@@ -194,10 +177,6 @@ public class TrackableListView extends CB_View_Base {
                     Log.info(log, "RefreshTbList reloadTB_List");
                     reloadTB_List();
                     Log.info(log, "RefreshTbList reloadTB_List done");
-                }
-                else {
-                    GL.that.Toast(ConnectionError.INSTANCE);
-                    // GL.that.Toast(ApiUnavailable.INSTANCE);
                 }
 
                 Log.info(log, "CancelWaitDialog.close");

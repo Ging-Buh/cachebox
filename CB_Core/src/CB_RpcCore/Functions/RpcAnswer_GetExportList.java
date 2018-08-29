@@ -11,7 +11,7 @@ public class RpcAnswer_GetExportList extends RpcAnswer {
 
     public RpcAnswer_GetExportList(int result) {
         super(result);
-        list = new ArrayList<ListItem>();
+        list = new ArrayList<>();
     }
 
     public void addListItem(int id, String description, int cacheCount) {

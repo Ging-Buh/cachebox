@@ -166,23 +166,23 @@ public class CacheDetail implements Serializable {
         // > 0;
     }
 
-    public void addAttributeNegative(Attributes attribute) {
+    void addAttributeNegative(Attributes attribute) {
         if (attributesNegative == null)
             attributesNegative = new DLong(0, 0);
         attributesNegative.BitOr(Attributes.GetAttributeDlong(attribute));
     }
 
-    public void addAttributePositive(Attributes attribute) {
+    void addAttributePositive(Attributes attribute) {
         if (attributesPositive == null)
             attributesPositive = new DLong(0, 0);
         attributesPositive.BitOr(Attributes.GetAttributeDlong(attribute));
     }
 
-    public void setAttributesPositive(DLong i) {
+    void setAttributesPositive(DLong i) {
         attributesPositive = i;
     }
 
-    public void setAttributesNegative(DLong i) {
+    void setAttributesNegative(DLong i) {
         attributesNegative = i;
     }
 
@@ -197,7 +197,6 @@ public class CacheDetail implements Serializable {
                     this.attributesNegative = new DLong(0, 0);
                 break;
             }
-            ;
             c.close();
         }
         return this.attributesNegative;

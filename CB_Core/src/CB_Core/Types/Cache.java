@@ -16,7 +16,6 @@
 package CB_Core.Types;
 
 import CB_Core.*;
-import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
@@ -173,7 +172,6 @@ public class Cache implements Comparable<Cache>, Serializable {
         this.setTerrain(0);
         this.Size = CacheSizes.other;
         this.setAvailable(true);
-        ;
         waypoints = new CB_List<Waypoint>();
 
     }
@@ -718,7 +716,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         return this.getMaskValue(MASK_CORECTED_COORDS);
     }
 
-    public void setCorrectedCoordinates(boolean correctedCoordinates) {
+    public void setHasCorrectedCoordinates(boolean correctedCoordinates) {
         this.setMaskValue(MASK_CORECTED_COORDS, correctedCoordinates);
     }
 

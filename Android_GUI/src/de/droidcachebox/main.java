@@ -2247,7 +2247,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         });
 
         PlatformConnector.setGetApiKeyListener(new IGetApiKey() {
-
             @Override
             public void getApiKey() {
                 GetApiAuth();

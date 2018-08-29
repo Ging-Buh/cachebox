@@ -26,7 +26,11 @@ public enum CacheTypes {
     MyParking(true), // = 20
     Munzee(true), // 21
     Giga(true), // 22
-    Lab(true),;
+    Lab(true),
+    APE(true),
+    AdventuresExhibit(true),
+    HQ(true),
+    ;
 
     private boolean isCache;
 
@@ -44,10 +48,6 @@ public enum CacheTypes {
         return result.toArray(new CacheTypes[result.size()]);
     }
 
-    /**
-     * @param string
-     * @return
-     */
     public static CacheTypes parseString(String string) {
 
         if (string.toLowerCase().contains("virtual cache")) {

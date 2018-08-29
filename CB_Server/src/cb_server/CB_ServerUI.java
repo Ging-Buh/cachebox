@@ -38,7 +38,7 @@ import CB_Core.CacheListChangedEventList;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
-import CB_Core.DAO.CacheListDAO;
+import CB_Core.Types.CacheListDAO;
 import CB_Core.Types.CacheList;
 import cb_server.Import.ImportScheduler;
 import cb_server.Views.CB_ViewBase;
@@ -176,7 +176,7 @@ public class CB_ServerUI extends UI implements DetachListener {
 		//		views.add(wpv);
 		views.add(lv);
 		views.add(sv);
-		// VerticalLayout für Header, Inhalt und Footer erstellen
+		// VerticalLayout fï¿½r Header, Inhalt und Footer erstellen
 		VerticalLayout vl = new VerticalLayout();
 		this.setContent(vl);
 		Panel header = new Panel(); // Header
@@ -191,7 +191,7 @@ public class CB_ServerUI extends UI implements DetachListener {
 		vl.addComponent(footer);
 
 		vl.setSizeFull();
-		vl.setExpandRatio(content, 1); // Inhalt muss den größten Bereich einnehmen
+		vl.setExpandRatio(content, 1); // Inhalt muss den grï¿½ï¿½ten Bereich einnehmen
 
 		// Inhalt vom Header
 

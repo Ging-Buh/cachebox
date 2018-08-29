@@ -16,7 +16,7 @@
 package CB_UI.GL_UI.Activitys;
 
 import CB_Core.CoreSettingsForward;
-import CB_Core.DAO.CacheListDAO;
+import CB_Core.Types.CacheListDAO;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;

@@ -405,7 +405,7 @@ public class DescriptionImageGrabber {
                 int result = 0;
                 long startTs = System.currentTimeMillis();
                 do {
-                    result = GroundspeakAPI.fetchImagesForGeocache(gcCode, allimgDict);
+                    result = GroundspeakAPI.downloadImageListForGeocache(gcCode, allimgDict);
 
                     if (result == GroundspeakAPI.ERROR) {
                         return GroundspeakAPI.ERROR;
