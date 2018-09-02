@@ -54,11 +54,8 @@ public class GroundspeakAPI {
     private static int CurrentCacheCountLite = -1;
     private static int MaxCacheCountLite = -1;
     private static boolean mDownloadLimitExceeded = false;
-    private static boolean MembershipValuesFetched = false;
     private static MemberShipTypes membershipType = MemberShipTypes.Unknown;
-    private static String MemberName = "";
-    private static int findCount;
-    private static String tmpResult = "";
+    private static UserInfos me;
 
     /**
      * // Archived, Available and TrackableCount are updated
@@ -70,7 +67,7 @@ public class GroundspeakAPI {
      */
     public static int fetchGeocacheStatus(ArrayList<Cache> caches, final ICancel icancel) {
 
-        if (chkMembership(false) < 0) return ERROR;
+        if (invalidAccessToken()) return ERROR;
 
         try {
             Thread.sleep(2500);
@@ -134,7 +131,7 @@ public class GroundspeakAPI {
         // todo test all=true (but is not used (by CB_Action_LoadLogs, loads all))
 
         if (cache == null) return ERROR;
-        if (chkMembership(false) < 0) return ERROR;
+        if (invalidAccessToken()) return ERROR;
 
         try {
             Thread.sleep(1000);
@@ -220,7 +217,7 @@ public class GroundspeakAPI {
     public static int fetchCacheLimits() {
         if (CachesLeft > -1) return OK;
 
-        if (chkMembership(false) < 0) return ERROR;
+        if (invalidAccessToken()) return ERROR;
 
         LastAPIError = "";
         // zum Abfragen der CacheLimits einfach nach einem Cache suchen, der nicht existiert: "GCZZZZZ".
@@ -278,12 +275,10 @@ public class GroundspeakAPI {
         }
     }
 
-    // End Old API
-
     /* removed in API 1 */
     public static Trackable downloadTrackableByTrackingNumber(String TrackingCode) {
 
-        if (chkMembership(false) < 0) return null;
+        if (invalidAccessToken()) return null;
 
         try {
             JSONObject result = Webb.create()
@@ -463,13 +458,46 @@ public class GroundspeakAPI {
         }
     }
 
+    // End Old API
+
+    // todo add/handle geocacheLimits
+    // /users/UserName?fields=...
+    public static UserInfos fetchUserInfos(String UserCode) {
+        Log.info(log, "fetchUserInfos for " + UserCode);
+        LastAPIError = "";
+        UserInfos ui = new UserInfos();
+        try {
+            JSONObject response = Webb.create()
+                    .get(getUrl(1, "/users/" + UserCode + "?fields=username,membershipLevelId,findCount"))
+                    .header(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken())
+                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
+                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
+                    .ensureSuccess()
+                    .asJsonObject()
+                    .getBody();
+            ui.username = response.optString("username", "");
+            ui.memberShipType = MemberShipTypesFromInt(response.optInt("membershipLevelId", -1));
+            ui.findCount = response.optInt("findCount", -1);
+            Log.info(log, "fetchUserInfos done \n" + response.toString());
+        } catch (Exception ex) {
+            LastAPIError = ex.getLocalizedMessage();
+            Log.err(log, "fetchUserInfos", ex);
+            ui.username = "";
+            ui.memberShipType = MemberShipTypes.Unknown;
+            ui.findCount = 0;
+        }
+        return ui;
+    }
+
     // UploadFieldNotes | UploadDrafts | logdrafts | geocachelogs
     public static int UploadDraftOrLog(String cacheCode, int wptLogTypeId, Date dateLogged, String note, boolean directLog) {
+        Log.info(log, "UploadDraftOrLog");
 
-        if (chkMembership(false) < 0) return ERROR;
+        if (invalidAccessToken()) return ERROR;
 
         try {
             if (directLog) {
+                Log.debug(log, "is Log");
                 /*
                 GEOCACHELOG Fields
                 Name	Type	Description	Required for Creation	Can Be Updated (By Log Owner)
@@ -498,9 +526,9 @@ public class GroundspeakAPI {
                         .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
                         .readTimeout(CB_Core_Settings.socket_timeout.getValue())
                         .ensureSuccess()
-                        .asJsonObject()
-                        .getBody();
+                        .asVoid();
             } else {
+                Log.debug(log, "is draft");
                 /*
                 LOGDRAFT Fields
                 Name        	    Type	            Description 	                                                            Required for Creation   Can Be Updated (By Draft Owner)
@@ -526,14 +554,14 @@ public class GroundspeakAPI {
                         .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
                         .readTimeout(CB_Core_Settings.socket_timeout.getValue())
                         .ensureSuccess()
-                        .asJsonObject()
-                        .getBody();
+                        .asVoid();
             }
             LastAPIError = "";
+            Log.info(log, "UploadDraftOrLog done");
             return OK;
         } catch (Exception e) {
             LastAPIError = e.getLocalizedMessage();
-            Log.err(log, "UploadFieldNotes", e);
+            Log.err(log, "UploadDraftOrLog", e);
             return ERROR;
         }
     }
@@ -542,7 +570,7 @@ public class GroundspeakAPI {
     // there is no LogId in the new API
     public static int fetchGeocacheLogsOfFriends(Cache cache, ArrayList<LogEntry> logList, cancelRunnable cancelRun) {
         if (cache == null) return ERROR;
-        if (chkMembership() < 0) return ERROR;
+        if (invalidAccessToken()) return ERROR;
         Map<String, String> friends = new HashMap<String, String>();
         // todo perhaps entered more friends than allowed by limit (The max amount of usernames allowed is 50)
         try {
@@ -625,7 +653,7 @@ public class GroundspeakAPI {
         Log.info(log, "downloadImageListForGeocache");
         LastAPIError = "";
         if (cacheCode == null) return ERROR;
-        if (chkMembership() < 0) return ERROR;
+        if (invalidAccessToken()) return ERROR;
         if (list == null)
             list = new HashMap<>();
         try {
@@ -687,7 +715,7 @@ public class GroundspeakAPI {
 
     public static TbList downloadUsersTrackables() {
         Log.info(log, "downloadUsersTrackables");
-        if (chkMembership() < 0) return null;
+        if (invalidAccessToken()) return null;
         LastAPIError = "";
         try {
             JSONArray jTrackables = Webb.create()
@@ -722,7 +750,7 @@ public class GroundspeakAPI {
     public static Trackable downloadTrackableByTBCode(String TBCode) {
         Log.info(log, "downloadTrackableByTBCode for " + TBCode);
         LastAPIError = "";
-        if (chkMembership() < 0) return null;
+        if (invalidAccessToken()) return null;
         try {
             return createTrackable(Webb.create()
                     .get(getUrl(1, "trackables/" + TBCode + "?fields=referenceCode,trackingNumber,iconUrl,name,goal,description,releasedDate,ownerCode,holderCode,currentGeocacheCode,type"))
@@ -752,8 +780,7 @@ public class GroundspeakAPI {
         Log.info(log, "uploadTrackableLog");
         LastAPIError = "";
         if (cacheCode == null) cacheCode = "";
-        int chk = chkMembership();
-        if (chk < 0) return ERROR;
+        if (invalidAccessToken()) return ERROR;
         try {
             JSONObject result = Webb.create()
                     .post(getUrl(1, "trackablelogs"))
@@ -842,79 +869,18 @@ public class GroundspeakAPI {
         return note.replace("\r", "");
     }
 
-    // /users/me?fields=username,membershipLevelId"
-    public static int fetchMembership() {
-        return fetchMembership("me", "");
-    }
-
-    // /users/me?fields=username,membershipLevelId"+"findCount"
-    public static int fetchFindCount() {
-        fetchMembership("me", ",findCount");
-        return findCount;
-    }
-
-    // /users/me?fields=username,membershipLevelId"+"geocacheLimits"
-    // todo implement geocacheLimits in fetchMembership
-    public static int fetchGeocacheLimits() {
-        return fetchMembership("me", ",geocacheLimits");
-    }
-
-    // /users/UserName?fields=username,membershipLevelId"
-    public static String fetchUserName(String UserName) {
-        fetchMembership(UserName, "");
-        return tmpResult;
-    }
-
-    // /users/UserName?fields=username,membershipLevelId"+additionalFields
-    private static int fetchMembership(String UserCode, String additionalFields) {
-        Log.info(log, "fetchMembership for " + UserCode + additionalFields);
-        /*
-        the fields:
-        referenceCode	string	uniquely identifies the user
-        findCount	integer	how many geocache finds the user has
-        hideCount	integer	how many geocache hides the user has
-        favoritePoints	integer	how many favorite points the user has avaiable
-        username	string	the display username
-        membershipLevelId	integer	type of the membership (see Membership Types for more info)
-        avatarUrl	string	link to image of the user's profile avatar
-        bannerUrl	string	link to image of the user's banner image
-        profileText	string	text from Profile Information section on user profile page
-        homeCoordinates	Coordinates	latitude and longitude of the user's home location
-        geocacheLimits	GeocacheLimit	how many geocaches/lite geocaches the user has remaining and time to live until limit is refreshed
-        */
-        LastAPIError = "";
-        try {
-            JSONObject response = Webb.create()
-                    .get(getUrl(1, "/users/" + UserCode + "?fields=username,membershipLevelId" + additionalFields))
-                    .header(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken())
-                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
-                    .ensureSuccess()
-                    .asJsonObject()
-                    .getBody();
-            if (UserCode.equals("me")) {
-                MembershipValuesFetched = true;
-                membershipType = MemberShipTypesFromInt(response.getInt("membershipLevelId"));
-                MemberName = response.optString("username", "");
-                findCount = response.optInt("findCount", -1);
-            } else {
-                tmpResult = response.optString("username", "");
+    public static UserInfos fetchMyUserInfos() {
+        Log.debug(log, "fetchMyUserInfos");
+        if (me == null || me.memberShipType == MemberShipTypes.Unknown) {
+            me = fetchUserInfos("me");
+            if (me.memberShipType == MemberShipTypes.Unknown) {
+                // we need a new AccessToken
+                // API_ErrorEventHandlerList.handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.INVALID);
+                Log.err(log, "fetchMyUserInfos: Need a new Access Token");
             }
-            Log.info(log, "fetchMembership done \n" + response.toString());
-            return OK;
-        } catch (Exception ex) {
-            LastAPIError = ex.getLocalizedMessage();
-            Log.err(log, "fetchMembership", ex);
-            if (UserCode.equals("me")) {
-                MembershipValuesFetched = false;
-                membershipType = MemberShipTypes.Unknown;
-                MemberName = "";
-                findCount = -1;
-            } else {
-                tmpResult = "";
-            }
-            return ERROR;
         }
+        Log.debug(log, "fetchMyUserInfos done: " + me.username + " S=" + me.memberShipType + " F=" + me.findCount);
+        return me;
     }
 
     public static int GetPocketQueryListAPI1(ArrayList<PQ> list) {
@@ -1001,47 +967,12 @@ public class GroundspeakAPI {
         }
     }
 
-    public static MemberShipTypes getMembershipType() {
-        chkMembership(false);
-        return membershipType;
-    }
-
-    public static String fetchMemberName() {
-        MembershipValuesFetched = false;
-        chkMembership(false);
-        return MemberName;
-    }
-
-    public static int chkMembership() {
-        return chkMembership(true);
-    }
-
-    public static int chkMembership(boolean getNewAccessTokenIfNeeded) {
-        if (MembershipValuesFetched) {
-            return OK;
-        }
-
-        if (GetSettingsAccessToken().length() > 0) {
-            fetchMembership();
-        }
-
-        // we need a new AccessToken
-        if (!MembershipValuesFetched) {
-            if (getNewAccessTokenIfNeeded)
-                API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.INVALID);
-            return ERROR;
-        } else {
-            return OK;
-        }
-    }
-
-    public static boolean isAccessTokenValid() {
-        return MembershipValuesFetched;
+    public static boolean invalidAccessToken() {
+        return (fetchMyUserInfos().memberShipType == MemberShipTypes.Unknown);
     }
 
     public static boolean IsPremiumMember() {
-        chkMembership(true);
-        return membershipType == MemberShipTypes.Premium;
+        return fetchMyUserInfos().memberShipType == MemberShipTypes.Premium;
     }
 
     static String GetSettingsAccessToken() {
@@ -1125,7 +1056,7 @@ public class GroundspeakAPI {
             tb.CurrentGeocacheCode = API1Trackable.optString("currentGeocacheCode", "");
             if (tb.CurrentGeocacheCode.equals("null")) tb.CurrentGeocacheCode = "";
             tb.CurrentGoal = CB_Utils.StringH.JsoupParse(API1Trackable.optString("goal"));
-            tb.CurrentOwnerName = GroundspeakAPI.fetchUserName(API1Trackable.optString("holderCode", ""));
+            tb.CurrentOwnerName = fetchUserInfos(API1Trackable.optString("holderCode", "")).username;
             String releasedDate = API1Trackable.optString("releasedDate", "");
             try {
                 tb.DateCreated = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(releasedDate);
@@ -1135,7 +1066,7 @@ public class GroundspeakAPI {
             tb.Description = CB_Utils.StringH.JsoupParse(API1Trackable.optString("description", ""));
             tb.IconUrl = API1Trackable.optString("iconUrl", "");
             tb.Name = API1Trackable.optString("name", "");
-            tb.OwnerName = GroundspeakAPI.fetchUserName(API1Trackable.optString("ownerCode", ""));
+            tb.OwnerName = fetchUserInfos(API1Trackable.optString("ownerCode", "")).username;
             tb.TypeName = API1Trackable.optString("type", "");
             return tb;
         } catch (Exception e) {
@@ -1300,7 +1231,7 @@ public class GroundspeakAPI {
                 /*
                 name (string, optional), coordinates (Coordinates), description (string), typeId (integer), typeName (string), prefix (string)
                  */
-                JSONObject wpt = (JSONObject) wpts.get(j);
+                JSONObject wpt = wpts.optJSONObject(j);
                 Waypoint waypoint = new Waypoint(true);
                 waypoint.CacheId = cache.Id;
                 JSONObject coordinates = wpt.optJSONObject("coordinates");
@@ -1310,8 +1241,8 @@ public class GroundspeakAPI {
                     waypoint.Pos = new Coordinate();
                 }
 
-                waypoint.setTitle(wpt.getString("name"));
-                waypoint.setDescription(wpt.getString("description"));
+                waypoint.setTitle(wpt.optString("name", ""));
+                waypoint.setDescription(wpt.optString("description", ""));
                 waypoint.Type = CacheTypeFromID(wpt.optInt("typeId", 0));
                 waypoint.setGcCode(wpt.optString("prefix", "XX") + cache.getGcCode().substring(2));
                 cache.waypoints.add(waypoint);
@@ -1323,7 +1254,7 @@ public class GroundspeakAPI {
         if (wpts != null) {
             for (int j = 0; j < wpts.length(); j++) {
                 // referenceCode (string), description (string), isCorrectedCoordinates (boolean), coordinates (Coordinates), geocacheCode (string)
-                JSONObject wpt = (JSONObject) wpts.get(j);
+                JSONObject wpt = wpts.optJSONObject(j);
                 boolean CoordinateOverride = wpt.optString("description", "").equals("Coordinate Override");
                 boolean isCorrectedCoordinates = wpt.optBoolean("isCorrectedCoordinates", false);
 
@@ -1338,7 +1269,7 @@ public class GroundspeakAPI {
                     }
 
                     waypoint.setTitle("Corrected Coordinates (API)");
-                    waypoint.setDescription(wpt.getString("description"));
+                    waypoint.setDescription(wpt.optString("description", ""));
                     waypoint.Type = CacheTypes.Final;
                     waypoint.setGcCode("CO" + cache.getGcCode().substring(2));
                     cache.waypoints.add(waypoint);
@@ -1443,6 +1374,28 @@ public class GroundspeakAPI {
         String GUID;
     }
 
+    public static class UserInfos {
+        /*
+        the fields:
+        referenceCode	string	uniquely identifies the user
+        findCount	integer	how many geocache finds the user has
+        hideCount	integer	how many geocache hides the user has
+        favoritePoints	integer	how many favorite points the user has avaiable
+        username	string	the display username
+        membershipLevelId	integer	type of the membership (see Membership Types for more info)
+        avatarUrl	string	link to image of the user's profile avatar
+        bannerUrl	string	link to image of the user's banner image
+        profileText	string	text from Profile Information section on user profile page
+        homeCoordinates	Coordinates	latitude and longitude of the user's home location
+        geocacheLimits	GeocacheLimit	how many geocaches/lite geocaches the user has remaining and time to live until limit is refreshed
+        */
+        public String username;
+        public MemberShipTypes memberShipType;
+        public int findCount;
+        // geocacheLimits
+        public int remaining;
+        public int renainingLite;
+    }
 /*
 additionalWaypoints (Array[AdditionalWaypoint], optional),
 trackables (Array[Trackable], optional),

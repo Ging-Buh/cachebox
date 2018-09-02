@@ -45,6 +45,8 @@ import org.slf4j.LoggerFactory;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static CB_Core.Api.GroundspeakAPI.IsPremiumMember;
+
 public class DescriptionView extends CB_View_Base {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(DescriptionView.class);
     final static String STRING_POWERD_BY = "Powerd by Geocaching Live";
@@ -284,7 +286,7 @@ public class DescriptionView extends CB_View_Base {
 
     private String getMessage() {
         StringBuilder sb = new StringBuilder();
-        boolean basic = !GroundspeakAPI.IsPremiumMember();
+        boolean basic = !IsPremiumMember();
         String MemberType = basic ? BASIC : PREMIUM;
         String limit = basic ? BASIC_LIMIT : PREMIUM_LIMIT;
         String actLimit = Integer.toString(GroundspeakAPI.CachesLeft - 1);

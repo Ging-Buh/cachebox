@@ -105,7 +105,7 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
         GlobalCore.chkAPiLogInWithWaitDialog(new IChkRedyHandler() {
 
             @Override
-            public void checkReady(int MemberType) {
+            public void checkReady(boolean MemberType) {
                 TimerTask tt = new TimerTask() {
 
                     @Override

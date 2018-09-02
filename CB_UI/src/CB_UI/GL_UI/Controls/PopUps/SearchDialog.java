@@ -17,7 +17,6 @@ package CB_UI.GL_UI.Controls.PopUps;
 
 import CB_Core.Api.*;
 import CB_Core.*;
-import CB_Core.Types.CacheDAO;
 import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
@@ -43,7 +42,6 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -59,6 +57,8 @@ import CB_Utils.Log.Log;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import java.util.ArrayList;
+
+import static CB_Core.Api.GroundspeakAPI.invalidAccessToken;
 
 /**
  * @author Longri
@@ -536,9 +536,9 @@ public class SearchDialog extends PopUp_Base {
         GlobalCore.chkAPiLogInWithWaitDialog(new IChkRedyHandler() {
 
             @Override
-            public void checkReady(int MemberTypeId) {
+            public void checkReady(boolean invalidAccessToken) {
 
-                if (GroundspeakAPI.getMembershipType() == GroundspeakAPI.MemberShipTypes.Unknown) {
+                if (invalidAccessToken) {
                     GL.that.RunOnGL(new IRunOnGL() {
 
                         @Override
@@ -546,9 +546,6 @@ public class SearchDialog extends PopUp_Base {
                             GL_MsgBox.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
                         }
                     });
-
-                // } else if (ret == GroundspeakAPI.CONNECTION_TIMEOUT) {
-                //    GL.that.Toast(ConnectionError.INSTANCE);
                 } else {
 
                     wd = CancelWaitDialog.ShowWait(Translation.Get("search"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
@@ -561,24 +558,22 @@ public class SearchDialog extends PopUp_Base {
 
                         @Override
                         public void run() {
-                            int ret = GroundspeakAPI.fetchMembership();
-                            if (ret == 3) {
+                            if (!invalidAccessToken()) {
                                 closeWaitDialog();
                                 searchOnlineNow();
-                            } else if (ret == GroundspeakAPI.CONNECTION_TIMEOUT) {
-                                GL.that.Toast(ConnectionError.INSTANCE);
                             } else {
-                                GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener() {
+                                GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
+                                        new OnMsgBoxClickListener() {
 
-                                    @Override
-                                    public boolean onClick(int which, Object data) {
-                                        if (which == GL_MsgBox.BUTTON_POSITIVE)
-                                            searchOnlineNow();
-                                        else
-                                            closeWaitDialog();
-                                        return true;
-                                    }
-                                });
+                                            @Override
+                                            public boolean onClick(int which, Object data) {
+                                                if (which == GL_MsgBox.BUTTON_POSITIVE)
+                                                    searchOnlineNow();
+                                                else
+                                                    closeWaitDialog();
+                                                return true;
+                                            }
+                                        });
                             }
 
                         }
@@ -837,54 +832,37 @@ public class SearchDialog extends PopUp_Base {
         GlobalCore.chkAPiLogInWithWaitDialog(new IChkRedyHandler() {
 
             @Override
-            public void checkReady(int MemberType) {
-                GroundspeakAPI.MemberShipTypes ret = GroundspeakAPI.getMembershipType();
-                Log.debug(log, "SEARCH getMembershipType ret=" + ret);
-                if (ret == GroundspeakAPI.MemberShipTypes.Unknown) {
+            public void checkReady(boolean invalidAccessToken) {
+                if (invalidAccessToken()) {
                     GL.that.RunOnGL(new IRunOnGL() {
 
                         @Override
                         public void run() {
-
                             GL_MsgBox.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
                         }
                     });
 
-                //} else if (ret == GroundspeakAPI.CONNECTION_TIMEOUT) {
-                //    GL.that.RunOnGL(new IRunOnGL() {
-                //        @Override
-                //        public void run() {
-                //            GL_MsgBox.Show(Translation.Get("noInetMsg"), Translation.Get("noInetTitle"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
-                //        }
-                //    });
                 } else {
-                    // if (ret == 3) {
-                    //    // searchOnlineNow();
-                    //    showTargetApiDialog();
-                    // } else {
-                        closeWD();
+                    closeWD();
+                    GL.that.RunOnGL(new IRunOnGL() {
 
-                        GL.that.RunOnGL(new IRunOnGL() {
+                        @Override
+                        public void run() {
+                            MSB = GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener() {
 
-                            @Override
-                            public void run() {
-                                MSB = GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener() {
-
-                                    @Override
-                                    public boolean onClick(int which, Object data) {
-                                        closeMsgBox();
-                                        if (which == GL_MsgBox.BUTTON_POSITIVE) {
-                                            showTargetApiDialog();
-                                        }
-
-                                        return true;
+                                @Override
+                                public boolean onClick(int which, Object data) {
+                                    closeMsgBox();
+                                    if (which == GL_MsgBox.BUTTON_POSITIVE) {
+                                        showTargetApiDialog();
                                     }
-                                });
-                            }
-                        });
-
-                    }
+                                    return true;
+                                }
+                            });
+                        }
+                    });
                 }
+            }
         });
     }
 

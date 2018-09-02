@@ -39,6 +39,8 @@ import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static CB_Core.Api.GroundspeakAPI.IsPremiumMember;
+
 @SuppressWarnings("deprecation")
 public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(DescriptionViewControl.class);
@@ -104,7 +106,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                             return;
                         }
 
-                        if (!GroundspeakAPI.IsPremiumMember()) {
+                        if (!IsPremiumMember()) {
                             String s = "Download Details of this cache?\n";
                             s += "Full Downloads left: " + GroundspeakAPI.CachesLeft + "\n";
                             s += "Actual Downloads: " + GroundspeakAPI.CurrentCacheCount + "\n";
@@ -166,7 +168,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                         aktCache = newCache;
                         setCache(newCache);
 
-                        if (!GroundspeakAPI.IsPremiumMember()) {
+                        if (!IsPremiumMember()) {
                             String s = "Download successful!\n";
                             s += "Downloads left for today: " + GroundspeakAPI.CachesLeft + "\n";
                             s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";

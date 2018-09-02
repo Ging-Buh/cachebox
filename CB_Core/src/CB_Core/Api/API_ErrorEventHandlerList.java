@@ -33,7 +33,7 @@ public class API_ErrorEventHandlerList {
         }
     }
 
-    public static void callInvalidApiKey(final API_ERROR type) {
+    public static void handleApiKeyError(final API_ERROR type) {
         if (lastCall != 0 && lastCall > System.currentTimeMillis() - MIN_CALL_TIME)
             return;
         lastCall = System.currentTimeMillis();

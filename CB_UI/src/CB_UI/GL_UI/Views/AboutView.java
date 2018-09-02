@@ -179,7 +179,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
                                     @Override
                                     public void run() {
-                                        result = GroundspeakAPI.fetchFindCount();
+                                        result = GroundspeakAPI.fetchMyUserInfos().findCount;
                                         pd.close();
 
                                         if (result > -1) {

@@ -15,6 +15,7 @@
  */
 package CB_UI;
 
+import CB_Core.Api.API_ErrorEventHandlerList;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.CoreSettingsForward;
@@ -46,15 +47,18 @@ import CB_Utils.Log.Log;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static CB_Core.Api.API_ErrorEventHandlerList.handleApiKeyError;
+import static CB_Core.Api.GroundspeakAPI.invalidAccessToken;
+
 /**
  * @author ging-buh
  * @author arbor95
  * @author longri
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface {
-    public static final int CurrentRevision = 20180829;
+    public static final int CurrentRevision = 20180901;
     public static final String CurrentVersion = "2.0.";
-    public static final String VersionPrefix = "3162";
+    public static final String VersionPrefix = "3163";
     public static final String aboutMsg1 = "Team Cachebox (2011-2018)" + br;
     public static final String teamLink = "www.team-cachebox.de";
     public static final String aboutMsg2 = br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";
@@ -308,18 +312,16 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
             return;
         }
 
-        if (!GroundspeakAPI.isAccessTokenValid()) {
+        if (invalidAccessToken()) {
             dia = CancelWaitDialog.ShowWait("chk API Key", DownloadAnimation.GetINSTANCE(), new IcancelListener() {
-
                 @Override
                 public void isCanceled() {
                     dia.close();
                 }
             }, new cancelRunnable() {
-
                 @Override
                 public void run() {
-                    final int ret = GroundspeakAPI.chkMembership(false);
+                    handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.INVALID);
                     dia.close();
 
                     Timer ti = new Timer();
@@ -327,7 +329,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 
                         @Override
                         public void run() {
-                            handler.checkReady(ret);
+                            handler.checkReady(invalidAccessToken());
                         }
                     };
                     ti.schedule(task, 300);
@@ -341,7 +343,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
                 }
             });
         } else {
-            handler.checkReady(GroundspeakAPI.chkMembership(true));
+            handler.checkReady(invalidAccessToken());
         }
 
     }
@@ -391,7 +393,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     }
 
     public interface IChkRedyHandler {
-        public void checkReady(int MemberTypeId);
+        void checkReady(boolean invalidAccessToken);
     }
 
 }

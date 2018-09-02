@@ -442,7 +442,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         AppRater.app_launched();
 
         if (Config.AccessToken.getValue().equals(""))
-            API_ErrorEventHandlerList.callInvalidApiKey(API_ERROR.NO);
+            API_ErrorEventHandlerList.handleApiKeyError(API_ERROR.NO);
 
     }
 

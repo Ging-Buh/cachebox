@@ -129,7 +129,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                         GlobalCore.chkAPiLogInWithWaitDialog(new IChkRedyHandler() {
 
                             @Override
-                            public void checkReady(int MemberType) {
+                            public void checkReady(boolean tobeReady) {
                                 TimerTask tt = new TimerTask() {
 
                                     @Override

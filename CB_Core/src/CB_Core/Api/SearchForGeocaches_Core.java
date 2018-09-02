@@ -58,27 +58,27 @@ public class SearchForGeocaches_Core {
 
             if (status == 2) {
                 // Not authorized
-                API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.INVALID);
+                API_ErrorEventHandlerList.handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.INVALID);
                 Log.warn(log, "API-Error: " + logString);
                 return status;
             }
 
             if (status == 3) {
                 // API Key expired
-                API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.EXPIRED);
+                API_ErrorEventHandlerList.handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.EXPIRED);
                 Log.warn(log, "API-Error: " + logString);
                 return status;
             }
 
             if (status == 141) {
                 // / {"Status":{"StatusCode":141,"StatusMessage":"The AccessToken provided is not valid"
-                API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.INVALID);
+                API_ErrorEventHandlerList.handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.INVALID);
                 Log.warn(log, "API-Error: " + logString);
                 return status;
             }
 
             // unknown
-            API_ErrorEventHandlerList.callInvalidApiKey(API_ErrorEventHandlerList.API_ERROR.INVALID);
+            API_ErrorEventHandlerList.handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.INVALID);
             Log.warn(log, "API-Error: " + logString);
             return status;
 
@@ -90,12 +90,13 @@ public class SearchForGeocaches_Core {
     }
 
     public String SearchForGeocachesJSON(Search search, CB_List<Cache> cacheList, ArrayList<LogEntry> logList, ArrayList<ImageEntry> imageList, long gpxFilenameId, ICancel icancel) {
+
         int startIndex = 0;
         int searchNumber = search.number <= 50 ? search.number : 50;
 
         byte apiStatus;
         boolean isLite;
-        if (GroundspeakAPI.IsPremiumMember()) {
+        if (IsPremiumMember()) {
             isLite = false;
             apiStatus = 2;
         } else {
@@ -109,111 +110,118 @@ public class SearchForGeocaches_Core {
         }
 
         JSONObject request = new JSONObject();
-        request.put("AccessToken", GetSettingsAccessToken());
-        request.put("StartIndex", startIndex);
 
-        if (search instanceof SearchGC) {
-            isLite = false;
-            SearchGC searchGC = (SearchGC) search;
+        try {
+            request.put("AccessToken", GetSettingsAccessToken());
+            request.put("StartIndex", startIndex);
 
-            try {
-                request.put("IsLight", false);
-                request.put("MaxPerPage", 1);
-                request.put("GeocacheLogCount", 10);
-                request.put("TrackableLogCount", 10);
-                JSONObject requestcc = new JSONObject();
-                JSONArray requesta = new JSONArray();
+            if (search instanceof SearchGC) {
+                isLite = false;
+                SearchGC searchGC = (SearchGC) search;
 
-                for (String gcCode : searchGC.gcCodes) {
-                    requesta.put(gcCode);
+                try {
+                    request.put("IsLight", false);
+                    request.put("MaxPerPage", 1);
+                    request.put("GeocacheLogCount", 10);
+                    request.put("TrackableLogCount", 10);
+                    JSONObject requestcc = new JSONObject();
+                    JSONArray requesta = new JSONArray();
+
+                    for (String gcCode : searchGC.gcCodes) {
+                        requesta.put(gcCode);
+                    }
+
+                    requestcc.put("CacheCodes", requesta);
+                    request.put("CacheCode", requestcc);
+                } catch (JSONException e) {
+                    Log.err(log, "SearchForGeocaches:JSONException", e);
+                }
+                // ein einzelner Cache wird voll geladen
+                apiStatus = 2;
+
+            } else if (search instanceof SearchGCName) {
+                SearchGCName searchC = (SearchGCName) search;
+                if (isLite)
+                    request.put("IsLight", true);
+                else
+                    request.put("IsLight", false);
+                request.put("MaxPerPage", searchNumber);
+
+                JSONObject GeocacheName = new JSONObject()
+                        .put("GeocacheName", searchC.gcName);
+                request.put("GeocacheName", GeocacheName);
+
+                JSONObject Point = new JSONObject()
+                        .put("Latitude", searchC.pos.getLatitude())
+                        .put("Longitude", searchC.pos.getLongitude());
+                JSONObject PointRadius = new JSONObject()
+                        .put("DistanceInMeters", 5000000)
+                        .put("Point", Point);
+                request.put("PointRadius", PointRadius);
+
+                request = writeExclusions(request, searchC);
+
+            } else if (search instanceof SearchGCOwner) {
+                SearchGCOwner searchC = (SearchGCOwner) search;
+                if (isLite)
+                    request.put("IsLight", true);
+                else
+                    request.put("IsLight", false);
+                request.put("MaxPerPage", searchNumber);
+
+                JSONArray UserNames = new JSONArray().put(searchC.OwnerName);
+                JSONObject HiddenByUsers = new JSONObject().put("UserNames", UserNames);
+                request.put("HiddenByUsers", HiddenByUsers);
+
+                request.put("GeocacheLogCount", 3);
+                request.put("TrackableLogCount", 2);
+
+                JSONObject Point = new JSONObject()
+                        .put("Latitude", searchC.pos.getLatitude())
+                        .put("Longitude", searchC.pos.getLongitude());
+                JSONObject PointRadius = new JSONObject()
+                        .put("DistanceInMeters", 5000000)
+                        .put("Point", Point);
+                request.put("PointRadius", PointRadius);
+
+                request = writeExclusions(request, searchC);
+
+            } else if (search instanceof SearchCoordinate) {
+                SearchCoordinate searchC = (SearchCoordinate) search;
+
+                if (isLite)
+                    request.put("IsLight", true);
+                else
+                    request.put("IsLight", false);
+
+                request.put("MaxPerPage", searchNumber);
+
+                JSONObject Point = new JSONObject()
+                        .put("Latitude", searchC.pos.getLatitude())
+                        .put("Longitude", searchC.pos.getLongitude());
+                JSONObject PointRadius = new JSONObject()
+                        .put("DistanceInMeters", (int) searchC.distanceInMeters)
+                        .put("Point", Point);
+                request.put("PointRadius", PointRadius);
+
+                if (searchC.excludeHides) {
+                    JSONArray UserNames = new JSONArray().put(CB_Core_Settings.GcLogin.getValue());
+                    JSONObject NotHiddenByUsers = new JSONObject().put("UserNames", UserNames);
+                    request.put("NotHiddenByUsers", NotHiddenByUsers);
                 }
 
-                requestcc.put("CacheCodes", requesta);
-                request.put("CacheCode", requestcc);
-            } catch (JSONException e) {
-                Log.err(log, "SearchForGeocaches:JSONException", e);
+                if (searchC.excludeFounds) {
+                    JSONArray UserNames = new JSONArray().put(CB_Core_Settings.GcLogin.getValue());
+                    JSONObject NotFoundByUsers = new JSONObject().put("UserNames", UserNames);
+                    request.put("NotFoundByUsers", NotFoundByUsers);
+                }
+
+                request = writeExclusions(request, searchC);
             }
-            // ein einzelner Cache wird voll geladen
-            apiStatus = 2;
-
-        } else if (search instanceof SearchGCName) {
-            SearchGCName searchC = (SearchGCName) search;
-            if (isLite)
-                request.put("IsLight", true);
-            else
-                request.put("IsLight", false);
-            request.put("MaxPerPage", searchNumber);
-
-            JSONObject GeocacheName = new JSONObject()
-                    .put("GeocacheName", searchC.gcName);
-            request.put("GeocacheName", GeocacheName);
-
-            JSONObject Point = new JSONObject()
-                    .put("Latitude", searchC.pos.getLatitude())
-                    .put("Longitude", searchC.pos.getLongitude());
-            JSONObject PointRadius = new JSONObject()
-                    .put("DistanceInMeters", 5000000)
-                    .put("Point", Point);
-            request.put("PointRadius", PointRadius);
-
-            request = writeExclusions(request, searchC);
-
-        } else if (search instanceof SearchGCOwner) {
-            SearchGCOwner searchC = (SearchGCOwner) search;
-            if (isLite)
-                request.put("IsLight", true);
-            else
-                request.put("IsLight", false);
-            request.put("MaxPerPage", searchNumber);
-
-            JSONArray UserNames = new JSONArray().put(searchC.OwnerName);
-            JSONObject HiddenByUsers = new JSONObject().put("UserNames", UserNames);
-            request.put("HiddenByUsers", HiddenByUsers);
-
-            request.put("GeocacheLogCount", 3);
-            request.put("TrackableLogCount", 2);
-
-            JSONObject Point = new JSONObject()
-                    .put("Latitude", searchC.pos.getLatitude())
-                    .put("Longitude", searchC.pos.getLongitude());
-            JSONObject PointRadius = new JSONObject()
-                    .put("DistanceInMeters", 5000000)
-                    .put("Point", Point);
-            request.put("PointRadius", PointRadius);
-
-            request = writeExclusions(request, searchC);
-
-        } else if (search instanceof SearchCoordinate) {
-            SearchCoordinate searchC = (SearchCoordinate) search;
-
-            if (isLite)
-                request.put("IsLight", true);
-            else
-                request.put("IsLight", false);
-
-            request.put("MaxPerPage", searchNumber);
-
-            JSONObject Point = new JSONObject()
-                    .put("Latitude", searchC.pos.getLatitude())
-                    .put("Longitude", searchC.pos.getLongitude());
-            JSONObject PointRadius = new JSONObject()
-                    .put("DistanceInMeters", (int) searchC.distanceInMeters)
-                    .put("Point", Point);
-            request.put("PointRadius", PointRadius);
-
-            if (searchC.excludeHides) {
-                JSONArray UserNames = new JSONArray().put(CB_Core_Settings.GcLogin.getValue());
-                JSONObject NotHiddenByUsers = new JSONObject().put("UserNames", UserNames);
-                request.put("NotHiddenByUsers", NotHiddenByUsers);
-            }
-
-            if (searchC.excludeFounds) {
-                JSONArray UserNames = new JSONArray().put(CB_Core_Settings.GcLogin.getValue());
-                JSONObject NotFoundByUsers = new JSONObject().put("UserNames", UserNames);
-                request.put("NotFoundByUsers", NotFoundByUsers);
-            }
-
-            request = writeExclusions(request, searchC);
+        }
+        catch (Exception e) {
+            Log.err(log,"SearchForGeocaches: Can't create request", e);
+            return "";
         }
 
         try {
@@ -579,10 +587,7 @@ public class SearchForGeocaches_Core {
                             boolean descriptionOverideInfo = false;
                             boolean correctedCoordinateFlag = false;
 
-                            try {
-                                descriptionOverideInfo = jUserWaypoint.optString("Description","").equals("Coordinate Override");
-                            } catch (JSONException e) {
-                            }
+                             descriptionOverideInfo = jUserWaypoint.optString("Description","").equals("Coordinate Override");
 
                             try {
                                 correctedCoordinateFlag = jUserWaypoint.getBoolean("IsCorrectedCoordinate");
@@ -716,7 +721,8 @@ public class SearchForGeocaches_Core {
         // hier im Core nichts machen da hier keine UI vorhanden ist
     }
 
-    private JSONObject writeExclusions(JSONObject request, SearchCoordinate searchC) {
+    private JSONObject writeExclusions(JSONObject request, SearchCoordinate searchC) throws JSONException
+    {
         if (searchC.available) {
             JSONObject GeocacheExclusions = new JSONObject()
                     .put("Archived", false)

@@ -18,7 +18,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Android API 27 Platform" jdkType="Android SDK" />
     <orderEntry type="module" module-name="CB_UI_Base" />
     <orderEntry type="module" module-name="CB_mapsforge" />
     <orderEntry type="module" module-name="CB_Utils" />

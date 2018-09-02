@@ -225,7 +225,7 @@ public class LiveMapQue {
                 SEARCH_API.ParseJsonResult(requestSearch, cacheList, apiLogs, apiImages, gpxFilename.Id, json, (byte) 1, true);
                 return cacheList;
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.err("LiveMapQue", "loadDescLiveFromCache", e);
         }
 
