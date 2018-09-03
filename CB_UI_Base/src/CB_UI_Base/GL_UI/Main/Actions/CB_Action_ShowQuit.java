@@ -29,7 +29,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import org.slf4j.LoggerFactory;
 
 public class CB_Action_ShowQuit extends CB_Action {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_Action_ShowQuit.class);
     static GL_MsgBox msg;
     String OverrideAppName = null;
 

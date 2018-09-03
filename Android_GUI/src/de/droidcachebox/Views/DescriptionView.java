@@ -19,7 +19,6 @@ import de.droidcachebox.R;
 import org.slf4j.LoggerFactory;
 
 public class DescriptionView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(DescriptionView.class);
     private static DescriptionViewControl mDescriptionViewControl;
     private long aktCacheID;
     private LinearLayout mLinearLayout;

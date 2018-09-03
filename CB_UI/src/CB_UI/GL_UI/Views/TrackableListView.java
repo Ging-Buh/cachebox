@@ -1,6 +1,5 @@
 package CB_UI.GL_UI.Views;
 
-import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.TrackableListDAO;
 import CB_Core.Types.TbList;
 import CB_Core.Types.Trackable;
@@ -28,6 +27,7 @@ import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Log.Log;
 
 import static CB_Core.Api.GroundspeakAPI.downloadUsersTrackables;
+import static CB_Core.Api.GroundspeakAPI.fetchTrackable;
 
 public class TrackableListView extends CB_View_Base {
     private static final String log = "TrackableListView";
@@ -95,24 +95,15 @@ public class TrackableListView extends CB_View_Base {
                         @Override
                         public void run() {
 
-                            Trackable tb;
-
-                            /* removed in API 1 */
-                            tb = GroundspeakAPI.downloadTrackableByTrackingNumber(TBCode);
-                            if (tb == null) {
-                                tb = GroundspeakAPI.downloadTrackableByTBCode(TBCode);
-                            }
+                            Trackable tb = fetchTrackable(TBCode);
+                            wd.close();
                             if (tb == null) {
                                 GL.that.Toast(ConnectionError.INSTANCE);
                                 // GL.that.Toast(ApiUnavailable.INSTANCE);
                                 // GL.that.Toast(Translation.Get("NoTbFound"));
-                                wd.close();
                                 return;
                             }
-
-                            wd.close();
                             new TB_Details().Show(tb);
-
                         }
 
                         @Override

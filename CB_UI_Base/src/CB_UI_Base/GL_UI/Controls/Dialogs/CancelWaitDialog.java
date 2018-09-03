@@ -37,7 +37,6 @@ import org.slf4j.LoggerFactory;
  * @author Longri
  */
 public class CancelWaitDialog extends WaitDialog {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(CancelWaitDialog.class);
 
     // CancelWaitDialog that;
     private final cancelRunnable runnable;

@@ -37,8 +37,6 @@ import java.awt.event.WindowListener;
 
 class DCB {
 
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(DCB.class);
-
     public static void main(String[] args) {
 
         DisplayModel.setDeviceScaleFactor(1f);

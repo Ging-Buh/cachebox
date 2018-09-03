@@ -21,6 +21,7 @@ import CB_Core.Types.*;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 import CB_Utils.fileProvider.File;
 import com.thebuzzmedia.sjxp.XMLParser;
 import com.thebuzzmedia.sjxp.XMLParserException;
@@ -34,7 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class GPXFileImporter {
-    final static org.slf4j.Logger logger = LoggerFactory.getLogger(GPXFileImporter.class);
+    private  final static String sKlasse = "GPXFileImporter";
     private final static SimpleDateFormat DATE_PATTERN_1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
     private final static SimpleDateFormat DATE_PATTERN_3 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     private final static SimpleDateFormat DATE_PATTERN_2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -227,14 +228,14 @@ public class GPXFileImporter {
                             CacheCount++;
                         } catch (Exception e) {
                             errors++;
-                            logger.error("CreateCache", e);
+                            Log.err(sKlasse,"CreateCache", e);
                         }
                     } else if (wpt_type.startsWith("Waypoint|")) {
                         try {
                             createWaypoint(values);
                         } catch (Exception e) {
                             errors++;
-                            logger.error("CreateWaypoint", e);
+                            Log.err(sKlasse,"CreateWaypoint", e);
                         }
                     }
                 }

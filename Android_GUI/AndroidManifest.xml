@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="de.droidcachebox" android:installLocation="auto"
-	android:versionCode="20180901" android:versionName="20180901">
-	<uses-sdk android:minSdkVersion="19" android:targetSdkVersion="19" />
+	android:versionCode="20180903" android:versionName="20180903">
+	<uses-sdk android:minSdkVersion="19" android:targetSdkVersion="27" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
 

@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Slider extends CB_View_Base implements SelectedCacheEvent {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(Slider.class);
     private static final int MAX_ANIMATION_COUNT = 1000;
     public static Slider that;
     private static Box mSlideBox, mSlideBoxContent;

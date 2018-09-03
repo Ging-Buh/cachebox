@@ -21,7 +21,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import org.slf4j.LoggerFactory;
 
 public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_Action_ShowSpoilerView.class);
     private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
     private final OnClickListener onItemClickListener = new OnClickListener() {
 

@@ -25,6 +25,7 @@ import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 import org.kxml2.io.KXmlSerializer;
 import org.slf4j.LoggerFactory;
 import org.xmlpull.v1.XmlSerializer;
@@ -48,7 +49,7 @@ import java.util.Locale;
  * @author Longri
  */
 public final class GpxSerializer {
-    final static org.slf4j.Logger logger = LoggerFactory.getLogger(GpxSerializer.class);
+    private static final String sKlasse = "GpxSerializer";
     private static final SimpleDateFormat dateFormatZ = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
     private static final String PREFIX_XSI = "http://www.w3.org/2001/XMLSchema-instance";
     private static final String PREFIX_GPX = "http://www.topografix.com/GPX/1/0";
@@ -388,10 +389,8 @@ public final class GpxSerializer {
     /**
      * Writes one waypoint entry for cache waypoint.
      *
-     * @param cache
-     * @param cache  The
+     * @param cache  The cache
      * @param wp
-     * @param prefix
      * @throws IOException
      */
     private void writeCacheWaypoint(Cache cache, final Waypoint wp) throws IOException {
@@ -444,7 +443,7 @@ public final class GpxSerializer {
             try {
                 gpx.text(validateChar(log.Comment));
             } catch (final IllegalArgumentException e) {
-                logger.error("", "GpxSerializer.writeLogs: cannot write log " + log.Id + " for cache " + cache.getGcCode(), e);
+                Log.err(sKlasse, "GpxSerializer.writeLogs: cannot write log " + log.Id + " for cache " + cache.getGcCode(), e);
                 gpx.text(" [end of log omitted due to an invalid character]");
             }
             gpx.endTag(PREFIX_GROUNDSPEAK, "text");

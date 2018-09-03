@@ -38,7 +38,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 
 public class CB_AllContextMenuHandler {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(QuickButtonItem.class);
     static CancelWaitDialog wd;
     private static OnClickListener onItemClickListener = new OnClickListener() {
 

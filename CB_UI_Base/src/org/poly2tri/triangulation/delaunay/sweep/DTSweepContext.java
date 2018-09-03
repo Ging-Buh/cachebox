@@ -41,7 +41,6 @@ import java.util.Collections;
  * @author Thomas �hl�n, thahlen@gmail.com
  */
 public class DTSweepContext extends TriangulationContext<DTSweepDebugContext> {
-    // private final static Logger logger = LoggerFactory.getLogger( DTSweepContext.class );
 
     // Inital triangle factor, seed triangle will extend 30% of
     // PointSet width to both left and right.

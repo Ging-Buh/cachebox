@@ -21,7 +21,6 @@ package CB_Utils.Settings;
  * @author Longri  2016
  */
 public class SettingStringList extends SettingBase<String[]> {
-    final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SettingStringList.class);
 
     public SettingStringList(String name, SettingCategory category, SettingModus modus, String[] defaultValue, SettingStoreType StoreType, SettingUsage usage) {
         super(name, category, modus, StoreType, usage);

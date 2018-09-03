@@ -40,7 +40,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author Longri
  */
 public class Image extends CB_View_Base {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(Image.class);
     AtomicBoolean isAsRenderViewRegisted = new AtomicBoolean(false);
     private AnimationBase Wait;
     private ImageLoader imageLoader;

@@ -17,7 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import org.slf4j.LoggerFactory;
 
 public class InfoBubble extends CB_View_Base {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(InfoBubble.class);
     private static CB_RectF saveButtonRec;
     private final Drawable saveIcon;
     /**

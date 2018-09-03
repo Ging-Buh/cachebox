@@ -40,7 +40,6 @@ public class GL_MsgBox extends Dialog {
     public static final int BUTTON_POSITIVE = 1;
     public static final int BUTTON_NEUTRAL = 2;
     public static final int BUTTON_NEGATIVE = 3;
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(GL_MsgBox.class);
     static GL_MsgBox that;
     // TODO make private with getter and setter *********
     public Button button1;

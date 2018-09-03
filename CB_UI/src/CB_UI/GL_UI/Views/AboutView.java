@@ -59,7 +59,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import org.slf4j.LoggerFactory;
 
 public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsStateChangeEvent, PositionChangedEvent {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(AboutView.class);
     protected final IReturnValueListener mDialogListener = new IReturnValueListener() {
         @Override
         public void returnValue(int value) {

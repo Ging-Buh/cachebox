@@ -197,6 +197,7 @@ public class FieldNoteViewItem extends ListViewItemBackground {
         mComment.setWrapType(WrapType.WRAPPED);
         mComment.setText(fieldnote.comment);
         mComment.setEditable(false);
+        mComment.setClickable(false);
         mComment.setBackground(null, null);
         mComment.showFromLineNo(0);
         mComment.setCursorPosition(0);

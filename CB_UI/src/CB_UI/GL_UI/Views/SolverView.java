@@ -53,8 +53,6 @@ import org.slf4j.LoggerFactory;
  */
 public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(SolverView.class);
-
     private WindowState windowState = WindowState.Both;
     private Solver solver = new Solver("");
     private boolean mustLoadSolver;

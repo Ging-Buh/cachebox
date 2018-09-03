@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory;
  * @author Longri
  */
 public class QuickButtonItem extends ListViewItemBase {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(QuickButtonItem.class);
     private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
 
     private CB_Action mAction;

@@ -92,6 +92,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
         mComment.setWrapType(WrapType.WRAPPED);
         mComment.setText(logEntry.Comment);
         mComment.setEditable(false);
+        mComment.setClickable(false);
         mComment.setBackground(null, null);
         mComment.showFromLineNo(0);
         mComment.setCursorPosition(0);

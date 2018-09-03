@@ -96,6 +96,7 @@ public class CB_Action_UploadFieldNote extends CB_Action {
                         int result;
 
                         if (fieldNote.isTbFieldNote) {
+                            // there is no TB draft. we have to log direct
                             result = GroundspeakAPI.uploadTrackableLog(fieldNote.TravelBugCode, fieldNote.TrackingNumber, fieldNote.gcCode, LogTypes.CB_LogType2GC(fieldNote.type), fieldNote.timestamp, fieldNote.comment);
                         } else {
                             if (sendGCVote && !fieldNote.isTbFieldNote) {

@@ -14,6 +14,7 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_Utils.Log.Log;
 import CB_Utils.http.Download;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -43,7 +44,7 @@ import static CB_Core.Api.GroundspeakAPI.IsPremiumMember;
 
 @SuppressWarnings("deprecation")
 public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(DescriptionViewControl.class);
+    final static String log = "DescriptionViewControl";
     public static boolean isDrawn = false;
     private static ProgressDialog pd;
     private static DescriptionViewControl that;
@@ -328,8 +329,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                         try {
                             Thread.sleep(100);
                         } catch (InterruptedException e) {
-                            log.error("DescriptionViewControl.setCache()", "Thread.sleep fehler", e);
-                            e.printStackTrace();
+                            Log.err(log, "setCache()", "Thread.sleep fehler", e);
                         }
                     }
 
@@ -346,7 +346,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                                 anyImagesLoaded = true;
                             }
                         } catch (Exception e) {
-                            log.error("DescriptionViewControl.setCache()", "downloadThread run()", e);
+                            Log.err(log, "setCache()", "downloadThread run()", e);
                         }
                     }
                     if (anyImagesLoaded && downloadReadyHandler != null)

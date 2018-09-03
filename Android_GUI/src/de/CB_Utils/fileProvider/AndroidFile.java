@@ -1,5 +1,6 @@
 package de.CB_Utils.fileProvider;
 
+import CB_Utils.Log.Log;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FilenameFilter;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,7 @@ import java.util.List;
  * Created by Longri on 17.02.2016.
  */
 public class AndroidFile extends File {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(AndroidFile.class);
+    private static final String sKlasse = "AndroidFile";
 
     private final java.io.File mFile;
 
@@ -200,7 +201,7 @@ public class AndroidFile extends File {
                     mFile.delete();
                 }
             } catch (Exception e) {
-                log.error(e.getLocalizedMessage());
+                Log.err(sKlasse,e.getLocalizedMessage());
                 ret = false;
             }
 
@@ -216,7 +217,7 @@ public class AndroidFile extends File {
         }
 
         if (!prntFile.canWrite()) {
-            log.error("can't write to destination" + prntFile.getAbsolutePath());
+            Log.err(sKlasse, "can't write to destination" + prntFile.getAbsolutePath());
             return false;
         }
         FileInputStream inStream = new FileInputStream(mFile);

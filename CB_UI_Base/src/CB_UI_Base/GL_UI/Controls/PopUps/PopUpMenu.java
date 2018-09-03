@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
  */
 public class PopUpMenu extends PopUp_Base {
 
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(PopUpMenu.class);
 
     private final float[] TEMPLATE_ONE_SEGMENT = new float[]{10, 90};
     private final float[] TEMPLATE_TWO_SEGMENT = new float[]{10, 50, 90};

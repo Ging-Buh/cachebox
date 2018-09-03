@@ -21,11 +21,9 @@ import CB_Locator.Coordinate;
 import CB_Utils.Interfaces.ICancel;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Log.Log;
-import CB_Utils.http.Response;
 import CB_Utils.http.Webb;
 import CB_Utils.http.WebbException;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
@@ -273,86 +271,6 @@ public class GroundspeakAPI {
             LastAPIError = "API Error: " + e.getMessage();
             return -4;
         }
-    }
-
-    /* removed in API 1 */
-    public static Trackable downloadTrackableByTrackingNumber(String TrackingCode) {
-
-        if (invalidAccessToken()) return null;
-
-        try {
-            JSONObject result = Webb.create()
-                    .get(getUrl("downloadTrackableByTrackingNumber?AccessToken=" + UrlEncode(GetSettingsAccessToken()) + "&trackingNumber=" + TrackingCode + "&format=json"))
-                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
-                    .ensureSuccess()
-                    .asJsonObject()
-                    .getBody();
-            JSONObject status = result.getJSONObject("Status");
-            if (status.getInt("StatusCode") == 0) {
-                LastAPIError = "";
-                JSONArray jTrackables = result.getJSONArray("Trackables");
-
-                for (int i = 0; i < jTrackables.length(); ) {
-                    JSONObject json = (JSONObject) jTrackables.get(i);
-                    Trackable tb = new Trackable();
-                    tb.Archived = json.optBoolean("Archived");
-                    tb.TBCode = json.optString("Code");
-                    tb.CurrentGeocacheCode = json.optString("CurrentGeocacheCode");
-                    tb.CurrentGoal = CB_Utils.StringH.JsoupParse(json.optString("CurrentGoal"));
-                    JSONObject jOwner;
-                    try {
-                        jOwner = json.getJSONObject("CurrentOwner");
-                        tb.CurrentOwnerName = jOwner.optString("UserName");
-                    } catch (JSONException e) {
-                        Log.err(log, "CurrentOwner", e);
-                    }
-                    try {
-                        String dateCreated = json.optString("DateCreated");
-                        int date1 = dateCreated.indexOf("/Date(");
-                        int date2 = dateCreated.indexOf("-");
-                        String date = (String) dateCreated.subSequence(date1 + 6, date2);
-                        tb.DateCreated = new Date(Long.valueOf(date));
-                    } catch (Exception exc) {
-                        Log.err(log, "DateCreated", exc);
-                    }
-                    tb.Description = CB_Utils.StringH.JsoupParse(json.optString("Description"));
-                    tb.IconUrl = json.optString("IconUrl");
-                    JSONArray jArray;
-                    try {
-                        jArray = json.getJSONArray("Images");
-                        if (jArray.length() > 0) {
-                            tb.ImageUrl = jArray.getJSONObject(0).optString("Url");
-                        }
-                    } catch (JSONException e) {
-                        Log.err(log, "Images", e);
-                    }
-
-                    tb.Name = json.optString("Name");
-                    try {
-                        jOwner = json.getJSONObject("OriginalOwner");
-                        tb.OwnerName = jOwner.optString("UserName");
-                    } catch (JSONException e) {
-                        Log.err(log, "OriginalOwner", e);
-                    }
-                    tb.TypeName = json.optString("TBTypeName");
-                    tb.setTrackingCode(TrackingCode);
-                    return tb;
-                }
-            } else {
-                LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
-                LastAPIError += status.getString("StatusMessage") + "\n";
-                LastAPIError += status.getString("ExceptionDetails");
-                return null;
-            }
-
-        } catch (Exception e) {
-            LastAPIError = e.getLocalizedMessage();
-            Log.err(log, "downloadTrackableByTrackingNumber", e);
-            return null;
-        }
-
-        return null;
     }
 
     public static int GetPocketQueryList(ArrayList<PQ> list) {
@@ -747,12 +665,12 @@ public class GroundspeakAPI {
         }
     }
 
-    public static Trackable downloadTrackableByTBCode(String TBCode) {
-        Log.info(log, "downloadTrackableByTBCode for " + TBCode);
+    public static Trackable fetchTrackable(String TBCode) {
+        Log.info(log, "fetchTrackable for " + TBCode);
         LastAPIError = "";
         if (invalidAccessToken()) return null;
         try {
-            return createTrackable(Webb.create()
+            Trackable tb = createTrackable(Webb.create()
                     .get(getUrl(1, "trackables/" + TBCode + "?fields=referenceCode,trackingNumber,iconUrl,name,goal,description,releasedDate,ownerCode,holderCode,currentGeocacheCode,type"))
                     .header(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken())
                     .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
@@ -761,14 +679,18 @@ public class GroundspeakAPI {
                     .asJsonObject()
                     .getBody()
             );
+            if (!tb.TBCode.toLowerCase().equals(TBCode.toLowerCase())) {
+                // fetched by TrackingCode, the result for trackingcode is always empty, except for owner
+                tb.TrackingCode = TBCode;
+            }
+            return tb;
         } catch (Exception ex) {
             LastAPIError += ex.getLocalizedMessage();
             LastAPIError += "\n for " + getUrl(1, "trackables/" + TBCode + "?fields=url,description");
             LastAPIError += "\n APIKey: " + GetSettingsAccessToken();
-            Log.err(log, "fetchTrackablesByTBCode \n" + LastAPIError, ex);
+            Log.err(log, "fetchTrackable \n" + LastAPIError, ex);
             return null;
         }
-
     }
 
     public static int uploadTrackableLog(Trackable TB, String cacheCode, int LogTypeId, Date dateLogged, String note) {
@@ -838,12 +760,12 @@ public class GroundspeakAPI {
     }
 
     public static int uploadCacheNote(String cacheCode, String notes) {
-        Log.info(log, "uploadCacheNote");
+        Log.info(log, "uploadCacheNote for " + cacheCode);
         LastAPIError = "";
         if (cacheCode == null || cacheCode.length() == 0) return ERROR;
         if (!IsPremiumMember()) return ERROR;
         try {
-            Response<Void> response = Webb.create()
+            Webb.create()
                     .put(getUrl(1, "geocaches/" + cacheCode + "/notes"))
                     .header(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken())
                     .body(new JSONObject().put("note", prepareNote(notes)))
@@ -851,7 +773,7 @@ public class GroundspeakAPI {
                     .readTimeout(CB_Core_Settings.socket_timeout.getValue())
                     .ensureSuccess()
                     .asVoid();
-            Log.info(log, "uploadCacheNote done \n" + response.toString());
+            Log.info(log, "uploadCacheNote done");
             return OK;
         } catch (Exception ex) {
             LastAPIError = ex.getLocalizedMessage();
@@ -1056,7 +978,12 @@ public class GroundspeakAPI {
             tb.CurrentGeocacheCode = API1Trackable.optString("currentGeocacheCode", "");
             if (tb.CurrentGeocacheCode.equals("null")) tb.CurrentGeocacheCode = "";
             tb.CurrentGoal = CB_Utils.StringH.JsoupParse(API1Trackable.optString("goal"));
-            tb.CurrentOwnerName = fetchUserInfos(API1Trackable.optString("holderCode", "")).username;
+            String holderCode = API1Trackable.optString("holderCode", "");
+            if (holderCode.length() > 0) {
+                tb.CurrentOwnerName = fetchUserInfos(holderCode).username;
+            } else {
+                tb.CurrentOwnerName = "";
+            }
             String releasedDate = API1Trackable.optString("releasedDate", "");
             try {
                 tb.DateCreated = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(releasedDate);
@@ -1065,6 +992,9 @@ public class GroundspeakAPI {
             }
             tb.Description = CB_Utils.StringH.JsoupParse(API1Trackable.optString("description", ""));
             tb.IconUrl = API1Trackable.optString("iconUrl", "");
+            if (tb.IconUrl.startsWith("http:")) {
+                tb.IconUrl = "https:" + tb.getIconUrl().substring(5);
+            }
             tb.Name = API1Trackable.optString("name", "");
             tb.OwnerName = fetchUserInfos(API1Trackable.optString("ownerCode", "")).username;
             tb.TypeName = API1Trackable.optString("type", "");

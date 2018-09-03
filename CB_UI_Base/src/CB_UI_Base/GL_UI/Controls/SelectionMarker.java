@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import org.slf4j.LoggerFactory;
 
 public class SelectionMarker extends CB_View_Base {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(SelectionMarker.class);
     protected Type type;
     protected Drawable marker;
     // X-Position des Einfügepunktes des Markers relativ zur linke Seite

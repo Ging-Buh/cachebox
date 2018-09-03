@@ -33,7 +33,6 @@ import CB_Utils.fileProvider.FileFactory;
 import java.util.ArrayList;
 
 public class SpoilerView extends CB_View_Base {
-    // final static org.slf4j.Logger log = LoggerFactory.getLogger(SpoilerView.class);
     private final static int MAX_THUMB_WIDTH = 500;
     private final static int MAX_OVERVIEW_THUMB_WIDTH = 240;
     private final OnClickListener onItemClickListener = new OnClickListener() {

@@ -13,7 +13,6 @@ import java.util.TimerTask;
  */
 public class Fader {
 
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(Fader.class);
 
     /**
      * Default time to start the FadeOut Animation.<br>

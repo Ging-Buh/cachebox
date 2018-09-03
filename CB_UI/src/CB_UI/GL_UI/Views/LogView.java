@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 
 public class LogView extends V_ListView implements SelectedCacheEvent {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(LogView.class);
     public static CB_RectF ItemRec;
     public static LogView that;
     Cache aktCache;

@@ -48,7 +48,6 @@ import java.util.TimerTask;
 import static CB_Core.Api.GroundspeakAPI.IsPremiumMember;
 
 public class DescriptionView extends CB_View_Base {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(DescriptionView.class);
     final static String STRING_POWERD_BY = "Powerd by Geocaching Live";
     final static String BASIC = "Basic";
     final static String PREMIUM = "Premium";
