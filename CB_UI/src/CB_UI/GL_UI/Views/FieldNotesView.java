@@ -17,8 +17,6 @@ package CB_UI.GL_UI.Views;
 
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.CB_Core_Settings;
-import CB_Core.Types.CacheDAO;
-import CB_Core.Types.CacheListDAO;
 import CB_Core.Database;
 import CB_Core.GCVote.GCVote;
 import CB_Core.LogTypes;
@@ -68,7 +66,7 @@ public class FieldNotesView extends V_ListView {
     private static final String log = "FieldNotesView";
     public static FieldNotesView that;
     public static FieldNoteEntry aktFieldNote;
-    public static CB_RectF ItemRec;
+    private static CB_RectF ItemRec;
     public static boolean firstShow = true;
     private static FieldNoteList lFieldNotes;
     private static WaitDialog wd;

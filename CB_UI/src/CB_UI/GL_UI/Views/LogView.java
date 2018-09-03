@@ -49,6 +49,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
     public LogView(CB_RectF rec, String Name) {
         super(rec, Name);
         that = this;
+        setForceHandleTouchEvents(true);
         ItemRec = (new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.1f)).ScaleCenter(0.97f);
         setBackground(Sprites.ListBack);
 
