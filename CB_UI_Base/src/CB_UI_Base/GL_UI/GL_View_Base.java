@@ -36,13 +36,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public abstract class GL_View_Base extends CB_RectF {
-    /**
-     * Pointer ID for Mouse wheel scrolling up
-     */
     public static final int MOUSE_WHEEL_POINTER_UP = -280272;
-    /**
-     * Pointer ID for Mouse wheel scrolling down
-     */
     public static final int MOUSE_WHEEL_POINTER_DOWN = -280273;
     private static final String log = "GL_View_Base";
     public static boolean debug = false;
@@ -51,9 +45,6 @@ public abstract class GL_View_Base extends CB_RectF {
     private static ArrayList<SkinChangedEventListener> skinChangedEventList = new ArrayList<GL_View_Base.SkinChangedEventListener>();
     private static boolean calling = false;
     protected final Matrix4 rotateMatrix = new Matrix4();
-    /**
-     * Enthaelt alle GL_Views innerhalb dieser Gl_View
-     */
     protected final MoveableList<GL_View_Base> childs = new MoveableList<GL_View_Base>();
     private final ParentInfo myInfoForChild = new ParentInfo();
     public boolean withoutScissor = false;
@@ -63,7 +54,6 @@ public abstract class GL_View_Base extends CB_RectF {
     public CB_RectF thisWorldRec = new CB_RectF();
     public CB_RectF intersectRec = new CB_RectF();
     public ParentInfo myParentInfo = new ParentInfo();
-    // # private Member
     protected String name = "";
     protected Drawable drawableBackground;
     protected OnClickListener mOnClickListener;
@@ -78,18 +68,10 @@ public abstract class GL_View_Base extends CB_RectF {
     protected float rightBorder = 0;
     protected float topBorder = 0;
     protected float bottomBorder = 0;
-    /**
-     * the width (member[2]) without left and right borders (0 or from background left and right width)
-     */
     protected float innerWidth = getWidth();
-
-    // # Constructors
     protected float innerHeight = getHeight();
     protected boolean childsInvalidate = false;
     protected boolean thisInvalidate = true;
-    // ########################
-    // Rotate Property
-    // ########################
     protected float mRotate = 0;
     protected float mOriginX;
     protected float mOriginY;
@@ -103,9 +85,6 @@ public abstract class GL_View_Base extends CB_RectF {
     protected Color mColorFilter = null;
     protected Object data = null;
     private boolean forceHandleTouchEvents = false;
-    /**
-     * Don't use this Flag direct, use the method isClickable() </br></br> Maby a child is clickable!!
-     */
     private boolean isClickable = false;
     private boolean isLongClickable = false;
     private boolean isDoubleClickable = false;
@@ -457,7 +436,7 @@ public abstract class GL_View_Base extends CB_RectF {
         try {
             this.render(batch);
         } catch (IllegalStateException e) {
-            e.printStackTrace();
+            Log.err(log, "renderChilds", e);
             // reset Colorfilter ?
             if (ColorFilterSeted) {
                 // alte abgespeicherte Farbe des Batches wieder herstellen!
@@ -577,7 +556,7 @@ public abstract class GL_View_Base extends CB_RectF {
                 });
 
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.err(log, "writeDebug", e);
             }
 
         }
@@ -697,13 +676,10 @@ public abstract class GL_View_Base extends CB_RectF {
                     view.onStop();
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.err(log, "onStop", e);
             }
         }
     }
-
-    // die untergeordneten Klassen müssen diese Event-Handler überschreiben!!!
-    // public abstract boolean onClick(int x, int y, int pointer, int button);
 
     public boolean click(int x, int y, int pointer, int button) {
         // final gives errors
@@ -782,7 +758,7 @@ public abstract class GL_View_Base extends CB_RectF {
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.err(log, "doubleClick", e);
         }
         return behandelt;
     }
@@ -818,7 +794,7 @@ public abstract class GL_View_Base extends CB_RectF {
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.err(log, "longClick", e);
         }
         return behandelt;
     }
@@ -991,13 +967,13 @@ public abstract class GL_View_Base extends CB_RectF {
             });
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.err(log, "RunOnGLWithThreadCheck", e);
         }
 
         try {
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.err(log, "dummy", e);
         }
 
         name = null;
@@ -1218,7 +1194,7 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     private interface SkinChangedEventListener {
-        public void SkinChanged();
+        void SkinChanged();
     }
 
 }

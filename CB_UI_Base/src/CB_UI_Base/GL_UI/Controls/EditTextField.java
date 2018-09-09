@@ -21,7 +21,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.Global;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
 import CB_Utils.Math.Point;
@@ -82,7 +82,6 @@ public class EditTextField extends EditTextFieldBase {
      */
     protected float textHeight;
     protected TextFieldFilter mTextFieldFilter;
-    protected OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
     protected boolean passwordMode;
     protected StringBuilder passwordBuffer;
     protected Selection selection = null;
@@ -97,13 +96,8 @@ public class EditTextField extends EditTextFieldBase {
     private float topLineAtTouchDown = 0;
     private float leftPosAtTouchDown = 0;
 
-    public EditTextField(String name) {
-        super(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight(), null, name);
-        initEditTextField();
-    }
-
     public EditTextField(CB_View_Base parent, String name) {
-        super(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight(), parent, name);
+        super(UiSizes.that.getButtonRectF(), parent, name);
         initEditTextField();
     }
 
@@ -112,20 +106,7 @@ public class EditTextField extends EditTextFieldBase {
         initEditTextField();
     }
 
-    public EditTextField(CB_View_Base parent, CB_RectF rec, TextFieldStyle style, String Name) {
-        super(rec, parent, Name);
-        if (style != null)
-            this.style = style;
-        initEditTextField();
-    }
-
-    public EditTextField(CB_View_Base parent, CB_RectF rec, TextFieldStyle style, String Name, WrapType WrapType) {
-        this(parent, rec, style, Name);
-        if (WrapType != null)
-            this.mWrapType = WrapType;
-    }
-
-    public EditTextField(CB_View_Base parent, CB_RectF rec, WrapType WrapType, String Name) {
+    public EditTextField(CB_RectF rec, CB_View_Base parent, String Name, WrapType WrapType) {
         super(rec, parent, Name);
         if (WrapType != null)
             this.mWrapType = WrapType;
@@ -143,17 +124,22 @@ public class EditTextField extends EditTextFieldBase {
 
     @Override
     public void onResized(CB_RectF rec) {
-        setTextAtCursorVisible(!GL.that.hasFocus(this));
-        if (GL.that.hasFocus(this)) {
-            if (selection != null) {
-                showSelectionMarker(SelectionMarker.Type.Left, selection.cursorStart);
-                showSelectionMarker(SelectionMarker.Type.Right, selection.cursorEnd);
-            } else {
-                showSelectionMarker(SelectionMarker.Type.Center);
-                hidePopUp();
+        try {
+            boolean focused = GL.that.hasFocus(this);
+            setTextAtCursorVisible(!focused);
+            if (focused) {
+                if (selection != null) {
+                    showSelectionMarker(SelectionMarker.Type.Left, selection.cursorStart);
+                    showSelectionMarker(SelectionMarker.Type.Right, selection.cursorEnd);
+                } else {
+                    showSelectionMarker(SelectionMarker.Type.Center);
+                    hidePopUp();
+                }
             }
+            thisInvalidate = true;
+        } catch (Exception e) {
+            Log.err(log, "onResized", e);
         }
-        thisInvalidate = true;
     }
 
     public EditTextField setWrapType(WrapType WrapType) {
@@ -216,11 +202,12 @@ public class EditTextField extends EditTextFieldBase {
         displayTextLock.lock();
         try {
             boolean focused = GL.that.hasFocus(this);
+
             if (style.getBackground(focused) != null) {
                 style.getBackground(focused).draw(batch, 0f, 0f, getWidth(), getHeight());
             }
-
             batch.end();
+
             batch.begin();
 
             // Background is drawn, now set scissor to inner rect
@@ -274,6 +261,7 @@ public class EditTextField extends EditTextFieldBase {
                 }
             }
 
+            // input cursor
             if (focused && (selection == null)) {
                 if (blinkTimer == null)
                     blinkStart();
@@ -281,7 +269,9 @@ public class EditTextField extends EditTextFieldBase {
                 if (blinkTimer != null)
                     blinkStop();
             }
+
         } catch (Exception e) {
+            Log.err(log, "render ", e);
         } finally {
             displayTextLock.unlock();
         }
@@ -546,53 +536,54 @@ public class EditTextField extends EditTextFieldBase {
     @Override
     public boolean onTouchDragged(int dx, int dy, int pointer, boolean KineticPan) {
         boolean bearbeitet = false;
-        if (touchDownPos != null) {
-            float oldTopLine = topLine;
-            float oldLeftPos = leftPos;
-            if (isMultiLine()) {
-                // Scrollen Oben - Unten
-                if (lines.size() < maxLineCount) {
-                    topLine = 0;
-                } else {
-                    topLine = (int) (topLineAtTouchDown + (dy - touchDownPos.y) / this.style.font.getLineHeight());
-                    if (topLine < 0) {
+        try {
+            if (touchDownPos != null) {
+                float oldTopLine = topLine;
+                float oldLeftPos = leftPos;
+                if (isMultiLine()) {
+                    // Scrollen Oben - Unten
+                    if (lines.size() < maxLineCount) {
                         topLine = 0;
+                    } else {
+                        topLine = (int) (topLineAtTouchDown + (dy - touchDownPos.y) / this.style.font.getLineHeight());
+                        if (topLine < 0) {
+                            topLine = 0;
+                        }
+                        if (lines.size() - topLine < maxLineCount) {
+                            topLine = lines.size() - maxLineCount;
+                        }
                     }
-                    if (lines.size() - topLine < maxLineCount) {
-                        topLine = lines.size() - maxLineCount;
-                    }
+                    bearbeitet = true;
                 }
-                bearbeitet = true;
-            }
 
-            // Scrollen Links - Rechts
-            float maxWidth = maxLineWidth();
-            if (maxWidth < textWidth) {
-                // Text hat auf einmal Platz -> auf Ursprung hin scrollen
-                leftPos = 0;
-            } else {
-                // Text hat nicht auf einmal Platz -> Scrollen möglich
-                leftPos = leftPosAtTouchDown + (touchDownPos.x - dx);
-                if (leftPos < 0) {
+                // Scrollen Links - Rechts
+                float maxWidth = maxLineWidth();
+                if (maxWidth < textWidth) {
+                    // Text hat auf einmal Platz -> auf Ursprung hin scrollen
                     leftPos = 0;
+                } else {
+                    // Text hat nicht auf einmal Platz -> Scrollen möglich
+                    leftPos = leftPosAtTouchDown + (touchDownPos.x - dx);
+                    if (leftPos < 0) {
+                        leftPos = 0;
+                    }
+                    if (leftPos > maxWidth - textWidth) {
+                        leftPos = maxWidth - textWidth;
+                    }
                 }
-                if (leftPos > maxWidth - textWidth) {
-                    leftPos = maxWidth - textWidth;
-                }
-            }
 
-            moveSelectionMarkers((oldLeftPos - leftPos), (topLine - oldTopLine) * this.style.font.getLineHeight());
-            callListPosChangedEvent();
+                moveSelectionMarkers((oldLeftPos - leftPos), (topLine - oldTopLine) * this.style.font.getLineHeight());
+                callListPosChangedEvent();
+            }
+            GL.that.renderOnce();
+        } catch (Exception e) {
+            Log.err(log, "onTouchDragged", e);
         }
-        GL.that.renderOnce();
 
         // Scrollen nach oben / unten soll möglich sein trotzdem dass hier evtl. schon links / rechts gescrollt wird ????
         return bearbeitet;
     }
 
-    /**
-     * onTouchUp
-     */
     @Override
     public boolean onTouchUp(int x, int y, int pointer, int button) {
         touchDownPos = null;
@@ -627,9 +618,6 @@ public class EditTextField extends EditTextFieldBase {
         return new Point(Math.max(0, line.glyphPositions.size - 1), clickedLine);
     }
 
-    /**
-     * click
-     */
     @Override
     public boolean click(int X, int Y, int pointer, int button) {
         if (pointer != 0)
@@ -638,10 +626,7 @@ public class EditTextField extends EditTextFieldBase {
         cursor.x = newCursor.x;
         setCursorLine(newCursor.y, true);
 
-        // if not yet set
         GL.that.setFocusedEditTextField(this);
-        if (!dontShowKeyBoard())
-            keyboard.show(true);
 
         setTextAtCursorVisible(false);
 
@@ -1599,22 +1584,6 @@ public class EditTextField extends EditTextFieldBase {
         }
 
         setTextAtCursorVisible(true);
-    }
-
-    /**
-     * Default is an instance of {@link DefaultOnscreenKeyboard}.
-     */
-    @Override
-    public OnscreenKeyboard getOnscreenKeyboard() {
-        return keyboard;
-    }
-
-    /**
-     * setOnscreenKeyboard
-     */
-    @Override
-    public void setOnscreenKeyboard(OnscreenKeyboard keyboard) {
-        this.keyboard = keyboard;
     }
 
     /**

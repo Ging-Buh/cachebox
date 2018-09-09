@@ -3,7 +3,6 @@ package CB_UI_Base.GL_UI.Controls.Dialogs;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
-import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.NumPad;
@@ -40,7 +39,7 @@ public class NumericInputBox extends CB_View_Base {
         float margin = UI_Size_Base.that.getMargin();
         GL_MsgBox msgBox = new GL_MsgBox(msgBoxSize, "MsgBox");
 
-        editText = new EditTextField("NumerikInputBox editText");
+        editText = new EditTextField(null, "NumerikInputBox editText");
         float topBottom = editText.getStyle().getTopHeight(true) + editText.getStyle().getBottomHeight(true); // true if focused
         float SingleLineHeight = editText.getFont().getLineHeight() + (editText.getFont().getAscent() * 4);
         editText.setHeight(topBottom + SingleLineHeight);
@@ -72,14 +71,7 @@ public class NumericInputBox extends CB_View_Base {
 
         editText.setText(String.valueOf(initialValue));
         editText.setCursorPosition((String.valueOf(initialValue)).length());
-        editText.dontShowSoftKeyBoardOnFocus();
-        editText.setOnscreenKeyboard(new OnscreenKeyboard() {
-
-            @Override
-            public void show(boolean arg0) {
-                // do nothing, don�t show Keybord
-            }
-        });
+        editText.disableKeyboardPopup();
         editText.setFocus(true);
 
         GL.that.showDialog(msgBox);
@@ -105,7 +97,7 @@ public class NumericInputBox extends CB_View_Base {
         textFieldRec.setHeight(Fonts.getNormal().getLineHeight() * 1.6f);
 
         editText = new EditTextField(textFieldRec, msgBox, "NumerikInputBox editText");
-        editText.dontShowSoftKeyBoardOnFocus();
+        editText.disableKeyboardPopup();
         editText.setZeroPos();
         editText.setY(margin * 3);
         editText.setText(String.valueOf(initialValue));
@@ -115,14 +107,6 @@ public class NumericInputBox extends CB_View_Base {
         float SingleLineHeight = editText.getFont().getLineHeight() + (editText.getFont().getAscent() * 4);
 
         editText.setHeight(topBottom + SingleLineHeight);
-
-        editText.setOnscreenKeyboard(new OnscreenKeyboard() {
-
-            @Override
-            public void show(boolean arg0) {
-                // do nothing, don�t show Keybord
-            }
-        });
         editText.setFocus(true);
 
         CB_RectF LabelRec = msgBox.getContentSize().getBounds();
@@ -172,7 +156,7 @@ public class NumericInputBox extends CB_View_Base {
         textFieldRec.setHeight(Fonts.getNormal().getLineHeight() * 1.6f);
 
         editText = new EditTextField(textFieldRec, msgBox, "NumerikInputBox editText");
-        editText.dontShowSoftKeyBoardOnFocus();
+        editText.disableKeyboardPopup();
         editText.setZeroPos();
         editText.setY(margin * 3);
 
@@ -185,14 +169,6 @@ public class NumericInputBox extends CB_View_Base {
         float SingleLineHeight = editText.getFont().getLineHeight() + (editText.getFont().getAscent() * 4);
 
         editText.setHeight(topBottom + SingleLineHeight);
-
-        editText.setOnscreenKeyboard(new OnscreenKeyboard() {
-
-            @Override
-            public void show(boolean arg0) {
-                // do nothing, don�t show Keybord
-            }
-        });
         editText.setFocus(true);
 
         CB_RectF LabelRec = msgBox.getContentSize().getBounds();

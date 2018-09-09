@@ -88,7 +88,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste {
 
     private void iniCommentLabel() {
         CB_RectF rectF = new CB_RectF(getLeftWidth(), 0, this.getWidth() - getLeftWidthStatic() - getRightWidthStatic() - (UI_Size_Base.that.getMargin() * 2), this.getHeight() - headHeight - UI_Size_Base.that.getMargin());
-        mComment = new EditTextField(rectF, this, "Comment");
+        mComment = new EditTextField(rectF, this, "mComment");
         mComment.setWrapType(WrapType.WRAPPED);
         mComment.setText(logEntry.Comment);
         mComment.setEditable(false);

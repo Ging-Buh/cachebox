@@ -221,7 +221,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
         line.setY(checkBoxExcludeFounds.getY() - margin - line.getHeight());
         line.setX(margin);
 
-        mEingabe = new EditTextField(this, rec, WrapType.SINGLELINE, "");
+        mEingabe = new EditTextField(rec, this, "mEingabe", WrapType.SINGLELINE);
 
         mEingabe.setTextFieldListener(new TextFieldListener() {
 

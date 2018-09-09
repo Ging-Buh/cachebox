@@ -25,7 +25,7 @@ import java.io.FileOutputStream;
 public class EditCoord extends ActivityBase {
     private static final String log = "EditCoord";
     private final UTMConvert convert = new UTMConvert();
-    private final EditTextField invisibleTextField = new EditTextField(this.name + " invisibleTextField");
+    private final EditTextField invisibleTextField = new EditTextField(this, "invisibleTextField");
     private final String utmTest = "ABCDEFGHJKLMNPQRSTUVWXYZ";
     Button Leertaste; // additional to numeric input (for "deleting" input)
     private int aktPage = -1; // Deg-Min

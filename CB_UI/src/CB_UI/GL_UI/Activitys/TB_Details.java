@@ -128,7 +128,7 @@ public class TB_Details extends ActivityBase {
         iconRec = iconRec.ScaleCenter(0.8f);
 
         icon = new Image(iconRec, "Icon", false);
-        lblName = new EditTextField(iconRec, this, this.name + " lblName");
+        lblName = new EditTextField(iconRec, this, "lblName");
 
         image = new Image(iconRec, "Image", false);
         lblAbout = new Label(Translation.Get("AboutThisItem"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);

@@ -143,7 +143,7 @@ public class FieldNoteViewItem extends ListViewItemBackground {
             e.printStackTrace();
         }
 
-        lblDate = new Label(this.name + " lblDate", this.getWidth() - getRightWidth() - DateLength, this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), DateLength, MeasuredLabelHeight);
+        lblDate = new Label(" lblDate", this.getWidth() - getRightWidth() - DateLength, this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), DateLength, MeasuredLabelHeight);
         lblDate.setFont(Fonts.getNormal());
         lblDate.setText(dateString);
         this.addChild(lblDate);
@@ -168,7 +168,7 @@ public class FieldNoteViewItem extends ListViewItemBackground {
             return;
         CB_RectF rectF = new CB_RectF(ivCacheType.getMaxX() + UI_Size_Base.that.getMargin(), this.getHeight() - headHeight - MeasuredLabelHeight - UI_Size_Base.that.getMargin(),
                 this.getWidth() - ivCacheType.getMaxX() - (UI_Size_Base.that.getMargin() * 2), MeasuredLabelHeight);
-        mCacheName = new EditTextField(rectF, this, this.name + " lblCacheName");
+        mCacheName = new EditTextField(rectF, this, "lblCacheName");
         mCacheName.setText(fieldnote.isTbFieldNote ? fieldnote.TbName : fieldnote.CacheName);
         mCacheName.setEditable(false);
         mCacheName.setBackground(null, null);
@@ -181,7 +181,7 @@ public class FieldNoteViewItem extends ListViewItemBackground {
         if (this.fieldnote == null)
             return;
         CB_RectF rectF = new CB_RectF(mCacheName.getX(), mCacheName.getY() - MeasuredLabelHeight - UI_Size_Base.that.getMargin(), this.getWidth() - ivCacheType.getMaxX() - (UI_Size_Base.that.getMargin() * 2), MeasuredLabelHeight);
-        mGcCode = new EditTextField(rectF, this, this.name + " lblGcCode");
+        mGcCode = new EditTextField(rectF, this, "lblGcCode");
         mGcCode.setText(fieldnote.gcCode);
         mGcCode.setEditable(false);
         mGcCode.setBackground(null, null);

@@ -1,7 +1,6 @@
 package CB_UI_Base.GL_UI.Controls.Animation;
 
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import org.slf4j.LoggerFactory;
 
 import java.util.Timer;
 import java.util.TimerTask;

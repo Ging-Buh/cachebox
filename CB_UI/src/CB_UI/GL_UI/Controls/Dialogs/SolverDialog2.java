@@ -216,7 +216,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     private void createVariableLines() {
         innerLeft = margin;
 
-        mVariableField = new EditTextField(this, this.name + " mVariableField");
+        mVariableField = new EditTextField(this, "mVariableField");
         mVariableField.setX(innerLeft);
         mVariableField.setY(innerHeight - mVariableField.getHeight());
         mVariableField.setWidth(innerWidth - mVariableField.getHeight());
@@ -708,7 +708,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
             }
         }
 
-        mFormulaField = new EditTextField(this, this.name + " mFormulaField");
+        mFormulaField = new EditTextField(this, "mFormulaField");
         mFormulaField.setWrapType(WrapType.SINGLELINE);
         mFormulaField.setX(innerLeft);
         mFormulaField.setWidth(innerWidth);
@@ -754,8 +754,8 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
     }
 
     private void showPageZahl() {
-        tbZahl = new EditTextField(this.name + " tbZahl");
-        tbZahl.dontShowSoftKeyBoardOnFocus(true);
+        tbZahl = new EditTextField(this, "tbZahl");
+        tbZahl.disableKeyboardPopup();
         tbZahl.setText(sForm);
         scrollBox.addChild(tbZahl);
         bZahl = new Button[12];
@@ -830,7 +830,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
     private void showPageFunction() {
 
-        tbFunction = new EditTextField(this, this.name + " tbFunction");
+        tbFunction = new EditTextField(this, "tbFunction");
         tbFunction.setText(sForm);
         scrollBox.addChild(tbFunction);
 
@@ -894,7 +894,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
         lFunctionParam[i].setText(paramName);
         scrollBox.addChild(lFunctionParam[i]);
 
-        tbFunctionParam[i] = new EditTextField(SolverDialog2.this, this.name + " tbFunctionParam[" + i + "]");
+        tbFunctionParam[i] = new EditTextField(SolverDialog2.this, "tbFunctionParam[" + i + "]");
         tbFunctionParam[i].setText(string);
         scrollBox.addChild(tbFunctionParam[i]);
 
@@ -1050,7 +1050,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
         tbOperator = new EditTextField[2];
         bOperator = new Button[2];
         for (int i = 0; i < 2; i++) {
-            tbOperator[i] = new EditTextField(this.name + "tbOperator[" + i + "]");
+            tbOperator[i] = new EditTextField(this, "tbOperator[" + i + "]");
             scrollBox.addChild(tbOperator[i]);
             bOperator[i] = new Button("..");
             scrollBox.addChild(bOperator[i]);

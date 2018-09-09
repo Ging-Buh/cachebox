@@ -26,7 +26,6 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import org.slf4j.LoggerFactory;
 
 public class CB_Action_ShowQuit extends CB_Action {
     static GL_MsgBox msg;

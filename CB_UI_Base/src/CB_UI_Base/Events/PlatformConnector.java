@@ -29,7 +29,7 @@ public class PlatformConnector {
     static IQuit quitListener;
     static IGetApiKey getApiKeyListener;
     static IsetScreenLockTime setScreenLockTimeListener;
-    static IsetKeybordFocus setKeybordFocusListener;
+    static IKeybordFocusListener KeybordFocusListener;
     static ICallUrl CallUrlListener;
     private static IShowViewListener showViewListener;
     private static IHardwarStateListener hardwareListener;
@@ -215,7 +215,7 @@ public class PlatformConnector {
             getApiKeyListener.getApiKey();
     }
 
-    public static void setsetScreenLockTimeListener(IsetScreenLockTime listener) {
+    public static void setScreenLockTimeListener(IsetScreenLockTime listener) {
         setScreenLockTimeListener = listener;
     }
 
@@ -224,13 +224,18 @@ public class PlatformConnector {
             setScreenLockTimeListener.setScreenLockTime(value);
     }
 
-    public static void setsetKeybordFocusListener(IsetKeybordFocus listener) {
-        setKeybordFocusListener = listener;
+    public static void setKeybordFocusListener(IKeybordFocusListener listener) {
+        KeybordFocusListener = listener;
     }
 
-    public static void callsetKeybordFocus(boolean value) {
-        if (setKeybordFocusListener != null)
-            setKeybordFocusListener.setKeybordFocus(value);
+    public static void showVirtualKeyboard() {
+        if (KeybordFocusListener != null)
+            KeybordFocusListener.showVirtualKeyboard();
+    }
+
+    public static void hideVirtualKeyboard() {
+        if (KeybordFocusListener != null)
+            KeybordFocusListener.hideVirtualKeyboard();
     }
 
     public static void setCallUrlListener(ICallUrl listener) {
@@ -358,8 +363,9 @@ public class PlatformConnector {
 
     // -----------------------------------------
 
-    public interface IsetKeybordFocus {
-        void setKeybordFocus(boolean value);
+    public interface IKeybordFocusListener {
+        void showVirtualKeyboard();
+        void hideVirtualKeyboard();
     }
 
     public interface ICallUrl {

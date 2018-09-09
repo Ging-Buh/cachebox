@@ -84,7 +84,7 @@ public class TextFilterView extends CB_View_Base {
 
         btnRrec.setWidth(this.getWidth() - (margin * 2));
 
-        mEingabe = new EditTextField(this, btnRrec, WrapType.SINGLELINE, "");
+        mEingabe = new EditTextField(btnRrec, this, "mEingabe", WrapType.SINGLELINE);
 
         mEingabe.setTextFieldListener(new TextFieldListener() {
 

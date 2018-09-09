@@ -31,7 +31,6 @@ import CB_Utils.Config_Core;
 import CB_Utils.Settings.SettingBool;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Iterator;

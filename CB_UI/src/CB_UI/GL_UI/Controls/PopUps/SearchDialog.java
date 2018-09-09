@@ -33,6 +33,7 @@ import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GlobalCore;
 import CB_UI.GlobalCore.IChkRedyHandler;
 import CB_UI_Base.Enums.WrapType;
+import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
@@ -162,7 +163,7 @@ public class SearchDialog extends PopUp_Base {
 
         rec.setWidth(this.getWidth() - (margin * 2));
 
-        mEingabe = new EditTextField(this, rec, WrapType.SINGLELINE, "");
+        mEingabe = new EditTextField( rec, this, "mEingabe", WrapType.SINGLELINE);
 
         mEingabe.setTextFieldListener(new TextFieldListener() {
 
@@ -255,7 +256,7 @@ public class SearchDialog extends PopUp_Base {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                closeSoftKeyPad();
+                PlatformConnector.hideVirtualKeyboard();
                 mSearchAktive = false;
                 beginnSearchIndex = 0;
                 searchNow(false);
@@ -267,7 +268,7 @@ public class SearchDialog extends PopUp_Base {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                closeSoftKeyPad();
+                PlatformConnector.hideVirtualKeyboard();
                 searchNow(true);
                 return true;
 
@@ -278,7 +279,7 @@ public class SearchDialog extends PopUp_Base {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                closeSoftKeyPad();
+                PlatformConnector.hideVirtualKeyboard();
                 if (mTglBtnOnline.getState() == 1) {
                     close();
                     askPremium();
@@ -441,16 +442,6 @@ public class SearchDialog extends PopUp_Base {
     }
 
     /**
-     * schliesst die virtuelle Tastertur
-     */
-    private void closeSoftKeyPad() {
-        // close the virtual keyboard
-        // InputMethodManager mgr = (InputMethodManager) mPtrMain.getSystemService(Context.INPUT_METHOD_SERVICE);
-        // mgr.hideSoftInputFromWindow(mEingabe.getWindowToken(), 0);
-        mEingabe.getOnscreenKeyboard().show(false);
-    }
-
-    /**
      * Die aktive CahcheList wird durchsucht gefilterte Caches werden dabei nicht berücksichtigt.
      *
      * @param ignoreOnlineSearch (True, wenn Lokal gesucht werden soll, obwohl der MultiToggleButton "Online" aktiviert ist.
@@ -476,6 +467,7 @@ public class SearchDialog extends PopUp_Base {
                 }
 
                 Cache tmp = null;
+                if (beginnSearchIndex < 0) beginnSearchIndex = 0;
                 for (int i = beginnSearchIndex, n = Database.Data.Query.size(); i < n; i++) {
                     tmp = Database.Data.Query.get(i);
 

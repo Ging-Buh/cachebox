@@ -541,19 +541,6 @@ public class SVG {
     /**
      * Change the width of the document by altering the "width" attribute of the root {@code <svg>} element.
      *
-     * @param pixels The new value of width in pixels.
-     * @throws IllegalArgumentException if there is no current SVG document loaded.
-     */
-    public void setDocumentWidth(float pixels) {
-        if (this.rootElement == null)
-            throw new IllegalArgumentException("SVG document is empty");
-
-        this.rootElement.width = new Length(pixels);
-    }
-
-    /**
-     * Change the width of the document by altering the "width" attribute of the root {@code <svg>} element.
-     *
      * @param value A valid SVG 'length' attribute, such as "100px" or "10cm".
      * @throws SVGParseException        if {@code value} cannot be parsed successfully.
      * @throws IllegalArgumentException if there is no current SVG document loaded.
@@ -567,6 +554,19 @@ public class SVG {
         } catch (SAXException e) {
             throw new SVGParseException(e.getMessage());
         }
+    }
+
+    /**
+     * Change the width of the document by altering the "width" attribute of the root {@code <svg>} element.
+     *
+     * @param pixels The new value of width in pixels.
+     * @throws IllegalArgumentException if there is no current SVG document loaded.
+     */
+    public void setDocumentWidth(float pixels) {
+        if (this.rootElement == null)
+            throw new IllegalArgumentException("SVG document is empty");
+
+        this.rootElement.width = new Length(pixels);
     }
 
     /**
@@ -589,19 +589,6 @@ public class SVG {
     /**
      * Change the height of the document by altering the "height" attribute of the root {@code <svg>} element.
      *
-     * @param pixels The new value of height in pixels.
-     * @throws IllegalArgumentException if there is no current SVG document loaded.
-     */
-    public void setDocumentHeight(float pixels) {
-        if (this.rootElement == null)
-            throw new IllegalArgumentException("SVG document is empty");
-
-        this.rootElement.height = new Length(pixels);
-    }
-
-    /**
-     * Change the height of the document by altering the "height" attribute of the root {@code <svg>} element.
-     *
      * @param value A valid SVG 'length' attribute, such as "100px" or "10cm".
      * @throws SVGParseException        if {@code value} cannot be parsed successfully.
      * @throws IllegalArgumentException if there is no current SVG document loaded.
@@ -615,6 +602,19 @@ public class SVG {
         } catch (SAXException e) {
             throw new SVGParseException(e.getMessage());
         }
+    }
+
+    /**
+     * Change the height of the document by altering the "height" attribute of the root {@code <svg>} element.
+     *
+     * @param pixels The new value of height in pixels.
+     * @throws IllegalArgumentException if there is no current SVG document loaded.
+     */
+    public void setDocumentHeight(float pixels) {
+        if (this.rootElement == null)
+            throw new IllegalArgumentException("SVG document is empty");
+
+        this.rootElement.height = new Length(pixels);
     }
 
     /**

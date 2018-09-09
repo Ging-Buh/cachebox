@@ -33,11 +33,13 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.Math.CB_RectF;
+import CB_Utils.Log.Log;
 
 /**
  * @author Longri
  */
-public class NotesView extends CB_View_Base implements SelectedCacheEvent {
+public class NotesView extends CB_View_Base implements SelectedCacheEvent, KeyboardFocusChangedEvent {
+    private final String sKlasse = "NotesView";
     boolean mustLoadNotes;
     private EditTextField notes;
     private float notesDefaultYPos;
@@ -60,18 +62,11 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent {
         uploadButton = new Button("Upload");
         addLast(uploadButton);
         notesHeight = getAvailableHeight();
-        notes = new EditTextField(this, new CB_RectF(0, 0, getWidth(), notesHeight), WrapType.WRAPPED, "Note");
+        notes = new EditTextField(new CB_RectF(0, 0, getWidth(), notesHeight), this, "notes", WrapType.WRAPPED);
         this.addLast(notes);
         notesDefaultYPos = notes.getY();
 
         SelectedCacheEventList.Add(this);
-
-        KeyboardFocusChangedEventList.Add(new KeyboardFocusChangedEvent() {
-            @Override
-            public void KeyboardFocusChanged(EditTextFieldBase focus) {
-                chkFocus(focus);
-            }
-        });
 
         uploadButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -128,10 +123,16 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent {
 
     }
 
-    private void chkFocus(EditTextFieldBase focus) {
+    @Override
+    public void KeyboardFocusChanged(EditTextField editTextField) {
+        chkFocus(editTextField);
+    }
+
+    // Handling keyboard popup
+    private void chkFocus(EditTextField editTextField) {
         uploadButton.setText("Upload");
         uploadButton.enable();
-        if (focus == notes) {
+        if (editTextField == notes) {
             notes.setHeight(this.getHalfHeight());
             notes.setY(this.getHalfHeight());
         } else {
@@ -142,7 +143,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent {
 
     @Override
     public void onShow() {
-        chkFocus(GL.that.getFocusedEditTextField());
+        KeyboardFocusChangedEventList.Add(this);
         if (mustLoadNotes) {
             String text = aktCache != null ? Database.GetNote(aktCache) : "";
             if (text == null)
@@ -155,16 +156,16 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent {
 
     @Override
     public void onHide() {
-        // Save changed Note text
-        String text = notes.getText().toString();
+        KeyboardFocusChangedEventList.Remove(this);
+        // Save changed Note text to Database
+        String text = notes.getText();
         if (text != null) {
             try {
                 Database.SetNote(aktCache, text);
             } catch (Exception e) {
-                e.printStackTrace();
+               Log.err(sKlasse, "Write note to database", e);
             }
         }
-
     }
 
     @Override
@@ -173,8 +174,4 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent {
         mustLoadNotes = true;
     }
 
-    @Override
-    public void onResized(CB_RectF rec) {
-        chkFocus(GL.that.getFocusedEditTextField());
-    }
 }

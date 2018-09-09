@@ -20,25 +20,45 @@ public class Download {
         }
         InputStream inStream = null;
         BufferedOutputStream outStream = null;
-        try {
-            outStream = new BufferedOutputStream(localFile.getFileOutputStream());
-            inStream = Webb.create()
-                    .get(remote)
-                    .ensureSuccess()
-                    .asStream()
-                    .getBody();
-            WebbUtils.copyStream(inStream, outStream);
-        } catch (Exception e) {
-            Log.err("Download", remote + " to " + local, e);
-            err = true;
-        } finally {
+
+        boolean redirected = false;
+        do {
+            Response<InputStream> response = null;
             try {
-                inStream.close();
-                outStream.close();
+                response = Webb.create()
+                        .get(remote)
+                        .ensureSuccess()
+                        .asStream();
+                inStream = response.getBody();
+                outStream = new BufferedOutputStream(localFile.getFileOutputStream());
+                WebbUtils.copyStream(inStream, outStream);
             } catch (Exception e) {
-                // egal
+                if (response != null && response.getStatusCode() >= 300 && response.getStatusCode() < 400) {
+                    if (remote.startsWith("http:")) {
+                        redirected = true;
+                        remote = "https:" + remote.substring(5);
+                    }
+                    else {
+                        // other cases should have been handled automatically
+                        Log.err("Download", remote + " to " + local, e);
+                        err = true;
+                    }
+                }
+                else {
+                    Log.err("Download", remote + " to " + local, e);
+                    err = true;
+                }
+            } finally {
+                try {
+                    inStream.close();
+                    outStream.close();
+                } catch (Exception e) {
+                    // egal
+                }
             }
         }
+        while (redirected);
+
         if (err) {
             try {
                 localFile.delete();

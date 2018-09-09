@@ -7,7 +7,6 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Math.Point;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import org.slf4j.LoggerFactory;
 
 public class SelectionMarker extends CB_View_Base {
     protected Type type;

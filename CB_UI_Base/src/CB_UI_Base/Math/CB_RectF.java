@@ -43,14 +43,9 @@ public class CB_RectF {
      * [8] = centerPos.x <br>
      * [9] = centerPos.x <br>
      */
-    protected float member[] = new float[]{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+    private float member[] = new float[]{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
     private CB_List<SizeChangedEvent> list = new CB_List<SizeChangedEvent>(1);
 
-    // Constructors
-
-    /**
-     * Constructor der alle Member mit 0 initialisiert!
-     */
     public CB_RectF() {
     }
 
@@ -60,14 +55,6 @@ public class CB_RectF {
         calcCrossCorner();
     }
 
-    /**
-     * Constructor für ein neues RectF mit Angabe der linken unteren Ecke und der Höhe und Breite
-     *
-     * @param X
-     * @param Y
-     * @param Width
-     * @param Height
-     */
     public CB_RectF(float X, float Y, float Width, float Height) {
         member[0] = X;
         member[1] = Y;
@@ -78,9 +65,10 @@ public class CB_RectF {
 
     public CB_RectF(CB_RectF rec) {
         if (member == null)
-            throw new IllegalStateException("Is Disposed"); // isDisposed!;
-        if (rec != null && rec.member != null)
+            throw new IllegalStateException("Is Disposed");
+        if (rec != null && rec.member != null) {
             System.arraycopy(rec.member, 0, this.member, 0, 10);
+        }
     }
 
     public static CB_RectF ScaleCenter(CB_RectF rectangle, float ScaleFactor) {
@@ -89,6 +77,21 @@ public class CB_RectF {
         float newX = rectangle.member[0] + ((rectangle.getWidth() - newWidth) / 2);
         float newY = rectangle.member[1] + ((rectangle.getHeight() - newHeight) / 2);
         return new CB_RectF(newX, newY, newWidth, newHeight);
+    }
+
+    /**
+     * Berechnet die rechte obere Ecke
+     */
+    protected void calcCrossCorner() {
+        if (member == null)
+            throw new IllegalStateException("Is Disposed");
+        this.member[4] = this.member[2] / 2;
+        this.member[5] = this.member[3] / 2;
+
+        this.member[6] = this.member[0] + this.member[2];
+        this.member[7] = this.member[1] + this.member[3];
+        this.member[8] = this.member[0] + this.member[4];
+        this.member[9] = this.member[1] + this.member[5];
     }
 
     public float getHalfWidth() {
@@ -210,21 +213,6 @@ public class CB_RectF {
         member[3] = Height;
         calcCrossCorner();
         CallRecChanged();
-    }
-
-    /**
-     * Berechnet die rechte obere Ecke
-     */
-    protected void calcCrossCorner() {
-        if (member == null)
-            throw new IllegalStateException("Is Disposed"); // isDisposed!;// isDisposed!
-        this.member[4] = this.member[2] / 2;
-        this.member[5] = this.member[3] / 2;
-
-        this.member[6] = this.member[0] + this.member[2];
-        this.member[7] = this.member[1] + this.member[3];
-        this.member[8] = this.member[0] + this.member[4];
-        this.member[9] = this.member[1] + this.member[5];
     }
 
     public boolean contains(Vector2 ret) {
@@ -397,28 +385,23 @@ public class CB_RectF {
         for (int i = 0, n = Geraden.size(); i < n; i++) {
             switch (Geraden.get(i)) {
                 case 1:
-
                     if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[0], this.member[1]), new Vector2(this.member[6], this.member[1]), ret)) {
                         if (contains(ret))
                             return ret; // 1 unten
                     }
                     break;
-
                 case 2:
                     if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[0], this.member[1]), new Vector2(this.member[0], this.member[7]), ret)) {
                         if (contains(ret))
                             return ret; // 2 links
                     }
                     break;
-
                 case 3:
                     if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[6], this.member[7]), new Vector2(this.member[6], this.member[1]), ret)) {
                         if (contains(ret))
                             return ret; // 3 rechts
                     }
-
                     break;
-
                 case 4:
                     if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[6], this.member[7]), new Vector2(this.member[0], this.member[7]), ret)) {
                         if (contains(ret))

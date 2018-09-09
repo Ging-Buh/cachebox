@@ -14,10 +14,9 @@ import CB_Utils.Log.Log;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import org.slf4j.LoggerFactory;
 
 public class CopyPastePopUp extends PopUp_Base {
-    private  final static String sKlasse = "CopyPastePopUp";
+    private final static String sKlasse = "CopyPastePopUp";
     private ImageButton btnCopy;
     private ImageButton btnCut;
     private ImageButton btnPaste;
@@ -62,7 +61,7 @@ public class CopyPastePopUp extends PopUp_Base {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                Log.err(sKlasse,"Copy Button Clicked");
+                Log.err(sKlasse, "Copy Button Clicked");
                 close();
                 String Msg = copyPasteControl.copyToClipboard();
                 if (Msg != null)

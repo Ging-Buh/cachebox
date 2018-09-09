@@ -46,12 +46,11 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Plattform;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Longri
  */
-public class SolverView extends CB_View_Base implements SelectedCacheEvent {
+public class SolverView extends CB_View_Base implements SelectedCacheEvent, KeyboardFocusChangedEvent {
 
     private WindowState windowState = WindowState.Both;
     private Solver solver = new Solver("");
@@ -131,16 +130,16 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
         super(rec, Name);
         addControls();
         layout();
-        KeyboardFocusChangedEventList.Add(new KeyboardFocusChangedEvent() {
-            @Override
-            public void KeyboardFocusChanged(EditTextFieldBase focus) {
-                layoutEditFields(focus);
-            }
-        });
+    }
+
+    @Override
+    public void KeyboardFocusChanged(EditTextField editTextField) {
+        layoutEditFields(editTextField);
     }
 
     @Override
     public void onShow() {
+        KeyboardFocusChangedEventList.Add(this);
         if (aktCache != GlobalCore.getSelectedCache()) {
             mustLoadSolver = true;
             aktCache = GlobalCore.getSelectedCache();
@@ -164,6 +163,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
 
     @Override
     public void onHide() {
+        KeyboardFocusChangedEventList.Remove(this);
         SelectedCacheEventList.Remove(this);
         if (aktCache != null) {
             Database.SetSolver(aktCache, edInput.getText().toString());
@@ -214,14 +214,14 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent {
         btnResultWindow = new Button(Translation.Get("RightWindow"));
         this.addChild(btnResultWindow);
 
-        edInput = new EditTextField(this.name + " edInput");
+        edInput = new EditTextField(this, "edInput");
         edInput.setWrapType(WrapType.MULTILINE);
         this.addChild(edInput);
-        edResult = new EditTextField(this.name + " edResult");
+        edResult = new EditTextField(this, "edResult");
         edResult.setWrapType(WrapType.MULTILINE);
         //edResult.disable();
         edResult.setEditable(false);
-        edResult.dontShowSoftKeyBoardOnFocus(true);
+        edResult.disableKeyboardPopup();
         this.addChild(edResult);
 
         btnInputWindow.setOnClickListener(new OnClickListener() {

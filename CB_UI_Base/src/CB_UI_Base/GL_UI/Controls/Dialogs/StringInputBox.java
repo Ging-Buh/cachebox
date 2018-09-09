@@ -19,7 +19,7 @@ public class StringInputBox extends GL_MsgBox {
 
         StringInputBox msgBox = new StringInputBox(calcMsgBoxSize(msg, true, true, false));
 
-        editText = new EditTextField(msgBox, "StringInputBox").setWrapType(type);
+        editText = new EditTextField(msgBox, "StringInputBox editText").setWrapType(type);
         editText.setWidth(msgBox.getWidth());
         editText.setText(initialString);
         editText.setCursorPosition(initialString.length());

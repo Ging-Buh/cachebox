@@ -3,7 +3,6 @@ package CB_UI_Base.GL_UI.Controls;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.Math.CB_RectF;
 import com.badlogic.gdx.Input.Keys;
@@ -295,6 +294,7 @@ public class NumPad extends CB_View_Base {
 
     public void registerTextField(final EditTextField textField) {
         focusedTextField = textField;
+        /*
         textField.setOnscreenKeyboard(new OnscreenKeyboard() {
             @Override
             public void show(boolean arg0) {
@@ -302,8 +302,9 @@ public class NumPad extends CB_View_Base {
                 focusedTextField = textField;
             }
         });
+        */
 
-        textField.dontShowSoftKeyBoardOnFocus();
+        textField.disableKeyboardPopup();
     }
 
     public enum Type {

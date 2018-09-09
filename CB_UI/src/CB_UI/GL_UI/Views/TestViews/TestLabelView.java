@@ -149,7 +149,7 @@ public class TestLabelView extends CB_View_Base {
 
         rec.setHeight(300);
 
-        EditTextField edit = new EditTextField(rec, this, this.name + " edit");
+        EditTextField edit = new EditTextField(rec, this, "edit");
         edit.setWrapType(WrapType.MULTILINE);
         edit.setText("Test Text\nin zwei Zeilen");
         edit.showFromLineNo(0);

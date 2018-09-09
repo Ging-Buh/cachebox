@@ -1616,11 +1616,11 @@ public class GL implements ApplicationListener, InputProcessor {
         // Don't open KeyBoard if Keybord is Showing
         boolean dontOpenKeybord = focusedEditTextField != null;
 
-        if (editTextField != null && editTextField.dontShowKeyBoard()) {
+        if (editTextField != null && editTextField.isKeyboardPopupDisabled()) {
             dontOpenKeybord = true;
         }
 
-        // fire event
+        // inform the parent, perhaps to move the editTextField to the top of the screen
         KeyboardFocusChangedEventList.Call(editTextField);
 
         if (editTextField != null && editTextField != focusedEditTextField) {
@@ -1632,14 +1632,14 @@ public class GL implements ApplicationListener, InputProcessor {
         hideMarker();
 
         if (focusedEditTextField != null) {
-            if (!focusedEditTextField.dontShowKeyBoard()) {
+            if (!focusedEditTextField.isKeyboardPopupDisabled()) {
                 if (!dontOpenKeybord) {
-                    PlatformConnector.callsetKeybordFocus(true);
+                    PlatformConnector.showVirtualKeyboard();
                 }
             }
         } else {
             if (dontOpenKeybord) {
-                PlatformConnector.callsetKeybordFocus(false);
+                PlatformConnector.hideVirtualKeyboard();
             }
 
         }

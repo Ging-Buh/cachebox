@@ -300,11 +300,9 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
             if (allHeight > UiSizes.that.getCacheListItemRec().asFloat().getHeight()) {
 
-                if (!inChange && member[3] != allHeight) {
+                if (!inChange && getHeight() != allHeight) {
                     inChange = true;
-                    member[3] = allHeight;
-                    calcCrossCorner();
-                    CallRecChanged();
+                    setHeight(allHeight);
                     requestLayout();
                     inChange = false;
                 }

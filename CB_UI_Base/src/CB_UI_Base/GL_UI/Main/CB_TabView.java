@@ -11,14 +11,13 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_Utils.Log.Log;
 import com.badlogic.gdx.math.Vector2;
-import org.slf4j.LoggerFactory;
 
 /**
  * the CB_TabView shows the aktView<br>
  * which is shown by clicking a button of the mButtonList
  */
 public class CB_TabView extends CB_View_Base {
-    private  final static String sKlasse = "CB_TabView";
+    private final static String sKlasse = "CB_TabView";
 
     private final CB_RectF mContentRec;
     private CB_ButtonList mButtonList;
@@ -99,7 +98,7 @@ public class CB_TabView extends CB_View_Base {
                     view.setSize(CB_TabView.this.getWidth(), CB_TabView.this.getHeight() - buttonListView.getHeight());
                     view.setPos(new Vector2(0, buttonListView.getHeight()));
                 } catch (Exception e) {
-                    Log.err(sKlasse,"set view size", e);
+                    Log.err(sKlasse, "set view size", e);
                     return;
                 }
 

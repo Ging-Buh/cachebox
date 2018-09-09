@@ -77,7 +77,7 @@ public class TrackableListView extends CB_View_Base {
 
         searchBox.initRow();
 
-        txtSearch = new EditTextField(this.name + " txtSearch");
+        txtSearch = new EditTextField(this, "txtSearch");
         txtSearch.setMessageText(Translation.Get("SearchTB_Code"));
         searchBox.addNext(txtSearch);
 

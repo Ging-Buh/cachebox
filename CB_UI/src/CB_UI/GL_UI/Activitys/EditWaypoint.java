@@ -15,8 +15,6 @@ import CB_UI_Base.Events.KeyboardFocusChangedEvent;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.*;
-import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.DefaultOnscreenKeyboard;
-import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.Spinner.ISelectionChangedListener;
@@ -33,7 +31,6 @@ import java.util.ArrayList;
 public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEvent {
 
     private final ArrayList<EditTextField> allTextFields = new ArrayList<EditTextField>();
-    private final OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
     float virtualHeight = 0;
     private boolean showWaypointListAfterFinish = false;
     private Waypoint waypoint;
@@ -69,7 +66,6 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
         this.mReturnListener = listener;
         this.showCoordinateDialog = showCoordinateDialog;
 
-        // this.setBorders(margin, margin);
         iniCacheNameLabel();
         iniCoordButton();
         iniLabelTyp();
@@ -89,20 +85,6 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
         scrollBox.setY(bOK.getMaxY() + margin);
         scrollBox.setBackground(this.getBackground());
         scrollBox.setBorders(0, 0);
-
-        this.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                for (EditTextField tmp : allTextFields) {
-                    tmp.setFocus(false);
-                }
-
-                keyboard.show(false);
-                scrollToY(EditWaypoint.this.getHeight(), EditWaypoint.this.getHeight());
-                return true;
-            }
-        });
 
     }
 
@@ -271,7 +253,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
     private void iniTitleTextField() {
         CB_RectF rec = new CB_RectF(leftBorder, tvTitle.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
-        etTitle = new EditTextField(rec, this, this.name + " etTitle");
+        etTitle = new EditTextField(rec, this, "etTitle");
 
         String txt = (waypoint.getTitle() == null) ? "" : waypoint.getTitle();
 
@@ -288,7 +270,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
     private void iniTitleTextDesc() {
         CB_RectF rec = new CB_RectF(leftBorder, tvDescription.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
-        etDescription = new EditTextField(this, rec, WrapType.WRAPPED, "DescTextField");
+        etDescription = new EditTextField(rec, this, "etDescription", WrapType.WRAPPED);
 
         String txt = (waypoint.getDescription() == null) ? "" : waypoint.getDescription();
 
@@ -319,7 +301,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
     private void iniTitleTextClue() {
         CB_RectF rec = new CB_RectF(leftBorder, tvClue.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
-        etClue = new EditTextField(this, rec, WrapType.WRAPPED, "ClueTextField");
+        etClue = new EditTextField(rec, this, "etClue", WrapType.WRAPPED);
 
         String txt = (waypoint.getClue() == null) ? "" : waypoint.getClue();
 
@@ -418,12 +400,6 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     }
 
     public void registerTextField(final EditTextField textField) {
-        textField.setOnscreenKeyboard(new OnscreenKeyboard() {
-            @Override
-            public void show(boolean arg0) {
-                scrollToY(textField.getY(), textField.getMaxY());
-            }
-        });
         allTextFields.add(textField);
     }
 
@@ -485,7 +461,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
     @Override
     public void onShow() {
-        // onShow switch to editCoord Dialog if this the first show
+        // direct switch to input of coords (editCoord), if this is the first show
         if (firstShow && showCoordinateDialog)
             bCoord.performClick();
         firstShow = false;
@@ -498,14 +474,14 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
     }
 
     @Override
-    public void KeyboardFocusChanged(EditTextFieldBase focus) {
-        if (focus == null) {
-            // scrollBox.scrollTo(0);
+    public void KeyboardFocusChanged(EditTextField editTextField) {
+        if (editTextField != null) {
+            scrollToY(editTextField.getY(), editTextField.getMaxY());
         }
     }
 
     public interface IReturnListener {
-        public void returnedWP(Waypoint wp);
+        void returnedWP(Waypoint wp);
     }
 
 }

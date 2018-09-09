@@ -1085,7 +1085,7 @@ public class splash extends Activity {
         }
 
         new UiSizes();
-        UI_Size_Base.that.initial(ui);
+        UiSizes.that.initial(ui);
         GL_UISizes.defaultDPI = ui.Density;
 
         Global.Paints.init(this);

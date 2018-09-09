@@ -14,9 +14,10 @@ import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Enums.WrapType;
+import CB_UI_Base.Events.KeyboardFocusChangedEvent;
+import CB_UI_Base.Events.KeyboardFocusChangedEventList;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.*;
-import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldStyle;
 import CB_UI_Base.GL_UI.Controls.Spinner.ISelectionChangedListener;
 import CB_UI_Base.GL_UI.Fonts;
@@ -31,8 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class EditCache extends ActivityBase
-// implements KeyboardFocusChangedEvent
+public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 {
     // Allgemein
     private final CacheTypes[] CacheTypNumbers = CacheTypes.caches();
@@ -73,7 +73,7 @@ public class EditCache extends ActivityBase
         this.addLast(mainPanel);
         mainPanel.initRow(BOTTOMUP);
         // --- Description
-        cacheDescription = new EditTextField(this, this.name + " cacheDescription").setWrapType(WrapType.WRAPPED);
+        cacheDescription = new EditTextField(this, "cacheDescription").setWrapType(WrapType.WRAPPED);
         cacheDescription.setHeight(mainPanel.getAvailableHeight() / 2);
         mainPanel.addLast(cacheDescription);
         registerTextField(cacheDescription);
@@ -82,7 +82,7 @@ public class EditCache extends ActivityBase
         // --- Status
         // --- versteckt am
         // --- Owner
-        cacheOwner = new EditTextField(this, this.name + " cacheOwner");
+        cacheOwner = new EditTextField(this, "cacheOwner");
         mainPanel.addLast(cacheOwner);
         registerTextField(cacheOwner);
         // --- Coords
@@ -90,7 +90,7 @@ public class EditCache extends ActivityBase
         setCacheCoordsChangeListener();
         mainPanel.addLast(cacheCoords);
         // --- Title
-        cacheTitle = (new EditTextField(this, this.name + " cacheTitle")).setWrapType(WrapType.MULTILINE);
+        cacheTitle = (new EditTextField(this, "cacheTitle")).setWrapType(WrapType.MULTILINE);
         TextFieldStyle s = cacheTitle.getStyle();
         s.font = Fonts.getBig();
         cacheTitle.setStyle(s);
@@ -112,7 +112,7 @@ public class EditCache extends ActivityBase
         cacheDifficulty = new Spinner("cacheDifficulty", cacheDifficultyList(), cacheDifficultySelection());
         mainPanel.addLast(cacheDifficulty, 0.3f);
         // --- Code
-        cacheCode = new EditTextField(this.name + " cacheCode");
+        cacheCode = new EditTextField(this, "cacheCode");
         s.font = Fonts.getCompass();
         cacheCode.setStyle(s);
         mainPanel.addLast(cacheCode);
@@ -120,18 +120,14 @@ public class EditCache extends ActivityBase
 
         mainPanel.setVirtualHeight(mainPanel.getHeightFromBottom());
 
-        this.setOnClickListener(new OnClickListener() {
+    }
 
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                for (EditTextField tmp : allTextFields) {
-                    tmp.getOnscreenKeyboard().show(false);
-                    tmp.setFocus(false);
-                }
-                return true;
-            }
-        });
-
+    @Override
+    public void KeyboardFocusChanged(EditTextField editTextField) {
+        if (editTextField != null) {
+            scrollToY(editTextField);
+            editTextField.setCursorPosition(editTextField.getText().length());
+        }
     }
 
     public void update(Cache cache) {
@@ -395,18 +391,21 @@ public class EditCache extends ActivityBase
     }
 
     public void registerTextField(final EditTextField textField) {
-        textField.setOnscreenKeyboard(new OnscreenKeyboard() {
-            @Override
-            public void show(boolean arg0) {
-                scrollToY(textField);
-                textField.setCursorPosition(textField.getText().length());
-            }
-        });
         allTextFields.add(textField);
     }
 
-    private void scrollToY(final EditTextField textField) {
-        mainPanel.scrollTo(-mainPanel.getVirtualHeight() + textField.getY() + textField.getHeight());
+    private void scrollToY(final EditTextField editTextField) {
+        mainPanel.scrollTo(-mainPanel.getVirtualHeight() + editTextField.getY() + editTextField.getHeight());
+    }
+
+    @Override
+    public void onShow() {
+        KeyboardFocusChangedEventList.Add(this);
+    }
+
+    @Override
+    public void onHide() {
+        KeyboardFocusChangedEventList.Remove(this);
     }
 
 }

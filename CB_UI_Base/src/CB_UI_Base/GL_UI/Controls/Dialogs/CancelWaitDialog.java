@@ -29,7 +29,6 @@ import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Log.Trace;
-import org.slf4j.LoggerFactory;
 
 /**
  * Ein Wait Dialog mit �bergabe eines Runable zur Abarbeitung, welcher abgebrochen werden kann

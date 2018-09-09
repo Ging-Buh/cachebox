@@ -42,8 +42,6 @@ import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Controls.ChkBox.OnCheckChangedListener;
 import CB_UI_Base.GL_UI.Controls.CollapseBox.IAnimatedHeightChangedListener;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox;
-import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox.IReturnValueListener;
-import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
@@ -474,35 +472,30 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
         lblButKeepLeast.setText(Translation.Get("ButKeepLeast"));
         LogCollapseBox.addChild(lblButKeepLeast);
 
-        final EditTextField input = new EditTextField(checkBoxCleanLogs.ScaleCenter(2), LogCollapseBox, this.name + " input");
+        final EditTextField input = new EditTextField(checkBoxCleanLogs.ScaleCenter(2), LogCollapseBox, "input");
         input.setHeight(SmallLineHeight * 2.5f);
         input.setText(String.valueOf(Config.LogMinCount.getValue()));
         input.setPos(margin, lblButKeepLeast.getY() - margin - input.getHeight());
         LogCollapseBox.addChild(input);
-
-        // prevented Keyboard popup, show NumerikInputBox
-        input.setOnscreenKeyboard(new OnscreenKeyboard() {
+        input.setOnClickListener(new OnClickListener() {
             @Override
-            public void show(boolean visible) {
-                if (visible) {
-                    NumericInputBox.Show(Translation.Get("ButKeepLeast"), Translation.Get("DeleteLogs"), Config.LogMinCount.getValue(), new IReturnValueListener() {
+            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                NumericInputBox.Show(Translation.Get("ButKeepLeast"), Translation.Get("DeleteLogs"), Config.LogMinCount.getValue(), new NumericInputBox.IReturnValueListener() {
+                    @Override
+                    public void returnValue(int value) {
+                        Config.LogMinCount.setValue(value);
+                        Config.AcceptChanges();
+                        input.setText(String.valueOf(value));
+                    }
 
-                        @Override
-                        public void returnValue(int value) {
-                            Config.LogMinCount.setValue(value);
-                            Config.AcceptChanges();
-                            input.setText(String.valueOf(value));
-                        }
+                    @Override
+                    public void cancelClicked() {
+                    }
 
-                        @Override
-                        public void cancelClicked() {
-
-                        }
-                    });
-                }
+                });
+                return true;
             }
         });
-
     }
 
     private void createCompactDBLine() {

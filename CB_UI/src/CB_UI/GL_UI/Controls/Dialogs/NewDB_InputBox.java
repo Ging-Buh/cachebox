@@ -46,7 +46,7 @@ public class NewDB_InputBox extends GL_MsgBox {
         lbl.setY(chk.getY());
         lbl.setText(Translation.Get("UseDefaultRep"));
 
-        editText = new EditTextField(msgBox, textFieldRec, type, "MsgBoxLabel");
+        editText = new EditTextField(textFieldRec, msgBox, "editText", type);
         editText.setZeroPos();
         editText.setY(chk.getMaxY() + margin);
         editText.setText(initialString);

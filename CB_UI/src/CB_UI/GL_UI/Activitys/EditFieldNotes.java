@@ -29,7 +29,6 @@ import CB_UI_Base.Events.KeyboardFocusChangedEvent;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.*;
-import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
@@ -81,7 +80,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
     public GL_View_Base touchDown(int x, int y, int pointer, int button) {
         if (GcVote != null && GcVote.getWorldRec().contains(x, y)) {
-            GcVote.onTouchDown(x,y,pointer,button);
+            GcVote.onTouchDown(x, y, pointer, button);
             GcVote.lastItemTouchPos = new Vector2(x - GcVote.getWorldRec().getX(), y - GcVote.getWorldRec().getY());
             return GcVote;
         } else {
@@ -168,8 +167,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
                     if (GcVote != null) {
                         fieldNote.gc_Vote = (int) (GcVote.getValue() * 100);
-                    }
-                    else fieldNote.gc_Vote = 0;
+                    } else fieldNote.gc_Vote = 0;
 
                     // parse Date and Time
                     String date = tvDate.getText();
@@ -313,7 +311,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
     }
 
     private void initLogText() {
-        etComment = new EditTextField(this, "DescTextField").setWrapType(WrapType.WRAPPED);
+        etComment = new EditTextField(this, "etComment").setWrapType(WrapType.WRAPPED);
         etComment.setHeight(getHeight() / 2.5f);
         scrollBoxContent.addLast(etComment);
         etComment.setText(fieldNote.comment);
@@ -354,13 +352,6 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
     }
 
     public void registerTextField(final EditTextField textField) {
-        textField.setOnscreenKeyboard(new OnscreenKeyboard() {
-            @Override
-            public void show(boolean arg0) {
-                scrollBoxContent.setY(scrollBoxContent.getHeight() - textField.getMaxY());
-            }
-        });
-
         allTextFields.add(textField);
     }
 
@@ -417,10 +408,12 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
     }
 
     @Override
-    public void KeyboardFocusChanged(EditTextFieldBase focus) {
-        if (focus == null) {
+    public void KeyboardFocusChanged(EditTextField editTextField) {
+        if (editTextField == null) {
             if (scrollBoxContent != null)
                 scrollBoxContent.setY(0);
+        } else {
+            scrollBoxContent.setY(scrollBoxContent.getHeight() - editTextField.getMaxY());
         }
     }
 

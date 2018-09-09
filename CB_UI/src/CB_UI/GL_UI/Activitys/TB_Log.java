@@ -106,12 +106,12 @@ public class TB_Log extends ActivityBase {
         iconRec = iconRec.ScaleCenter(0.8f);
 
         icon = new Image(iconRec, "Icon", false);
-        lblName = new EditTextField(iconRec, this, this.name + " lblName");
+        lblName = new EditTextField(iconRec, this, "lblName");
 
         CacheIcon = new Image(iconRec, "CacheIcon", false);
-        lblPlaced = new Label(this.name + " lblPlaced", iconRec);
+        lblPlaced = new Label("lblPlaced", iconRec);
 
-        edit = new EditTextField(this.name + " edit").setWrapType(WrapType.WRAPPED);
+        edit = new EditTextField(this, "edit").setWrapType(WrapType.WRAPPED);
         edit.setWidth(contentBox.getInnerWidth());
         edit.setHeight(contentBox.getHalfHeight());
 

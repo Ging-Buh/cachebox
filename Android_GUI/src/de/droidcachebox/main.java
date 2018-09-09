@@ -98,6 +98,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidGraphics;
@@ -365,7 +366,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
             new UiSizes();
 
-            UI_Size_Base.that.initial(ui);
+            UiSizes.that.initial(ui);
 
             Global.Paints.init(this);
             Global.InitIcons(this);
@@ -2250,6 +2251,20 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             @Override
             public void getApiKey() {
                 GetApiAuth();
+            }
+        });
+
+        PlatformConnector.setKeybordFocusListener(new IKeybordFocusListener() {
+            @Override
+            public void showVirtualKeyboard() {
+                Log.debug("main", "showVirtualKeyboard");
+                Gdx.input.setOnscreenKeyboardVisible(true);
+            }
+
+            @Override
+            public void hideVirtualKeyboard() {
+                Log.debug("main", "hideVirtualKeyboard");
+                Gdx.input.setOnscreenKeyboardVisible(false);
             }
         });
 

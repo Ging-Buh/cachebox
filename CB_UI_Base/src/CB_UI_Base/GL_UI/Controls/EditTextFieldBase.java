@@ -15,15 +15,16 @@
  */
 package CB_UI_Base.GL_UI.Controls;
 
-import CB_UI_Base.GL_UI.*;
+import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Controls.PopUps.CopyPastePopUp;
+import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.interfaces.ICopyPaste;
 import CB_UI_Base.Global;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -40,12 +41,10 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
     static public final char DELETE = 127;
     static public final char BULLET = 149;
 
-    protected boolean dontShowKeyBoard = false;
+    protected boolean KeyboardPopupDisabled = false;
     protected boolean isEditable = true;
-    // protected boolean disabled = false; // same as isEditable ?
     protected TextFieldListener listener;
     protected TextFieldFilter filter;
-    protected OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
     protected Clipboard clipboard;
     protected CopyPastePopUp popUp;
     protected boolean cursorOn = true;
@@ -54,18 +53,8 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
     protected IBecomesFocus becomesFocusListener;
 
     public EditTextFieldBase(CB_RectF rec, CB_View_Base parent, String Name) {
-        super(rec, Name);
-        this.parent = parent;
+        super(rec, parent, Name);
         registerPopUpLongClick();
-
-        clipboard = Global.getDefaultClipboard();
-        this.setDoubleClickable(true);
-    }
-
-    public EditTextFieldBase(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name) {
-        super(X, Y, Width, Height, Parent, Name);
-        registerPopUpLongClick();
-
         clipboard = Global.getDefaultClipboard();
         this.setDoubleClickable(true);
     }
@@ -127,21 +116,10 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
     }
 
     /**
-     * @param listener May be null.
+     * @param newlistener May be null.
      */
     public void setTextFieldListener(TextFieldListener newlistener) {
         this.listener = newlistener;
-    }
-
-    /**
-     * Default is an instance of {@link DefaultOnscreenKeyboard}.
-     */
-    public OnscreenKeyboard getOnscreenKeyboard() {
-        return keyboard;
-    }
-
-    public void setOnscreenKeyboard(OnscreenKeyboard keyboard) {
-        this.keyboard = keyboard;
     }
 
     public void setClipboard(Clipboard clipboard) {
@@ -235,7 +213,7 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
     public void setEditable(boolean value) {
         isEditable = value;
         if (!isEditable) {
-            dontShowKeyBoard = true;
+            KeyboardPopupDisabled = true;
         }
     }
 
@@ -269,16 +247,12 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 
     }
 
-    public void dontShowSoftKeyBoardOnFocus() {
-        dontShowSoftKeyBoardOnFocus(true);
+    public void disableKeyboardPopup() {
+        KeyboardPopupDisabled = true;
     }
 
-    public void dontShowSoftKeyBoardOnFocus(boolean value) {
-        dontShowKeyBoard = value;
-    }
-
-    public boolean dontShowKeyBoard() {
-        return dontShowKeyBoard;
+    public boolean isKeyboardPopupDisabled() {
+        return KeyboardPopupDisabled;
     }
 
     public void setBecomesFocusListener(IBecomesFocus becomesFocusListener) {
@@ -298,10 +272,10 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
      *
      * @author mzechner
      */
-    static public interface TextFieldListener {
-        public void keyTyped(EditTextFieldBase textField, char key);
+    public interface TextFieldListener {
+        void keyTyped(EditTextFieldBase textField, char key);
 
-        public void lineCountChanged(EditTextFieldBase textField, int lineCount, float textHeight);
+        void lineCountChanged(EditTextFieldBase textField, int lineCount, float textHeight);
     }
 
     /**
@@ -309,15 +283,15 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
      *
      * @author mzechner
      */
-    static public interface TextFieldFilter {
+    public interface TextFieldFilter {
         /**
          * @param textField
          * @param key
          * @return whether to accept the character
          */
-        public boolean acceptChar(EditTextFieldBase textField, char key);
+        boolean acceptChar(EditTextFieldBase textField, char key);
 
-        static public class DigitsOnlyFilter implements TextFieldFilter {
+        class DigitsOnlyFilter implements TextFieldFilter {
             @Override
             public boolean acceptChar(EditTextFieldBase textField, char key) {
                 return Character.isDigit(key);
@@ -326,34 +300,12 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
         }
     }
 
-    /**
-     * An interface for onscreen keyboards. Can invoke the default keyboard or render your own keyboard!
-     *
-     * @author mzechner
-     */
-    static public interface OnscreenKeyboard {
-        public void show(boolean visible);
-    }
-
     public interface IBecomesFocus {
-        public void becomesFocus();
+        void becomesFocus();
     }
 
     /**
-     * The default {@link OnscreenKeyboard} used by all {@link TextField} instances. Just uses
-     * {@link Input#setOnscreenKeyboardVisible(boolean)} as appropriate. Might overlap your actual rendering, so use with care!
-     *
-     * @author mzechner
-     */
-    static public class DefaultOnscreenKeyboard implements OnscreenKeyboard {
-        @Override
-        public void show(boolean visible) {
-            Gdx.input.setOnscreenKeyboardVisible(visible);
-        }
-    }
-
-    /**
-     * The style for a text field, see {@link TextField}.
+     * The style for a text field.
      *
      * @author mzechner
      */
@@ -393,6 +345,7 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
             if (style.messageFontColor != null)
                 this.messageFontColor = new Color(style.messageFontColor);
             this.background = style.background;
+            backgroundFocused = style.backgroundFocused;
             this.cursor = style.cursor;
             this.font = style.font;
             if (style.fontColor != null)

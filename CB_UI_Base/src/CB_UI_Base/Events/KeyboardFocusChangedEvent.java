@@ -1,7 +1,7 @@
 package CB_UI_Base.Events;
 
-import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
+import CB_UI_Base.GL_UI.Controls.EditTextField;
 
 public interface KeyboardFocusChangedEvent {
-    public void KeyboardFocusChanged(EditTextFieldBase focus);
+    void KeyboardFocusChanged(EditTextField focus);
 }

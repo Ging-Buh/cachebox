@@ -15,18 +15,16 @@
  */
 package CB_UI_Base.Events;
 
-import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
+import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
-import com.badlogic.gdx.Gdx;
 
 public class KeyboardFocusChangedEventList {
-    private static final String log = "KeyboardFocusChangedEventList";
     public static CB_List<KeyboardFocusChangedEvent> list = new CB_List<KeyboardFocusChangedEvent>();
 
+    // normally is only one item in this list: the active view or activity
     public static void Add(KeyboardFocusChangedEvent event) {
         synchronized (list) {
-            Log.debug(log, "FocusChangedEventList register" + event.toString());
             if (!list.contains(event))
                 list.add(event);
         }
@@ -34,23 +32,18 @@ public class KeyboardFocusChangedEventList {
 
     public static void Remove(KeyboardFocusChangedEvent event) {
         synchronized (list) {
-            Log.debug(log, "FocusChangedEventList unregister" + event.toString());
             list.remove(event);
         }
     }
 
-    public static void Call(final EditTextFieldBase focus) {
-        if (focus != null && !focus.dontShowKeyBoard()) {
-            Gdx.input.setOnscreenKeyboardVisible(true);
-        } else {
-            Gdx.input.setOnscreenKeyboardVisible(false);
-        }
-        synchronized (list) {
-
-            for (int i = 0, n = list.size(); i < n; i++) {
-                KeyboardFocusChangedEvent event = list.get(i);
-                // Log.debug(log, "FocusChangedEventList fire to " + event.toString());
-                event.KeyboardFocusChanged(focus);
+    public static void Call(final EditTextField editTextField) {
+        if (editTextField != null && !editTextField.isKeyboardPopupDisabled()) {
+            synchronized (list) {
+                for (int i = 0, n = list.size(); i < n; i++) {
+                    KeyboardFocusChangedEvent event = list.get(i);
+                    Log.debug("KeyboardFocusChangedEventList", "call event: " + event + " for " + editTextField);
+                    event.KeyboardFocusChanged(editTextField);
+                }
             }
         }
     }

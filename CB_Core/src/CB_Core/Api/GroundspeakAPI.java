@@ -909,7 +909,7 @@ public class GroundspeakAPI {
         // for ACB we added an additional A in settings
         if ((act.startsWith("A"))) {
             Log.debug(log, "Access Token = " + act.substring(1, act.length()));
-            return act.substring(1, act.length());
+            return act.substring(1);
         } else
             return "";
         /* */
