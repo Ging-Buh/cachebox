@@ -29,7 +29,6 @@ public class PlatformConnector {
     static IQuit quitListener;
     static IGetApiKey getApiKeyListener;
     static IsetScreenLockTime setScreenLockTimeListener;
-    static IKeybordFocusListener KeybordFocusListener;
     static ICallUrl CallUrlListener;
     private static IShowViewListener showViewListener;
     private static IHardwarStateListener hardwareListener;
@@ -224,20 +223,6 @@ public class PlatformConnector {
             setScreenLockTimeListener.setScreenLockTime(value);
     }
 
-    public static void setKeybordFocusListener(IKeybordFocusListener listener) {
-        KeybordFocusListener = listener;
-    }
-
-    public static void showVirtualKeyboard() {
-        if (KeybordFocusListener != null)
-            KeybordFocusListener.showVirtualKeyboard();
-    }
-
-    public static void hideVirtualKeyboard() {
-        if (KeybordFocusListener != null)
-            KeybordFocusListener.hideVirtualKeyboard();
-    }
-
     public static void setCallUrlListener(ICallUrl listener) {
         CallUrlListener = listener;
     }
@@ -359,13 +344,6 @@ public class PlatformConnector {
 
     public interface IsetScreenLockTime {
         void setScreenLockTime(int value);
-    }
-
-    // -----------------------------------------
-
-    public interface IKeybordFocusListener {
-        void showVirtualKeyboard();
-        void hideVirtualKeyboard();
     }
 
     public interface ICallUrl {

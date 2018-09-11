@@ -41,6 +41,7 @@ public class UiSizes extends UI_Size_Base {
     int TB_icon_Size;
     int QuickButtonRef;
     CB_RectF ButtonRectF;
+    CB_RectF WideButtonRectF;
 
     public UiSizes() {
         super();
@@ -71,7 +72,8 @@ public class UiSizes extends UI_Size_Base {
         arrowScaleList = (int) (10 * scale);
         arrowScaleMap = (int) (10 * scale);
         TB_icon_Size = (int) (10 * scale);
-        ButtonRectF = new CB_RectF(0, 0, Button.width, Button.height);
+        ButtonRectF = new CB_RectF(0, 0, ButtonWidth, ButtonHeight);
+        WideButtonRectF = new CB_RectF(0, 0, WideButtonWidth, ButtonHeight);
 
     }
 
@@ -147,4 +149,7 @@ public class UiSizes extends UI_Size_Base {
         return ButtonRectF;
     }
 
+    public CB_RectF getWideButtonRectF() {
+        return WideButtonRectF;
+    }
 }

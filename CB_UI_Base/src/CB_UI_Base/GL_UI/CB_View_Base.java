@@ -58,12 +58,9 @@ public class CB_View_Base extends GL_View_Base {
     }
 
     public static void setToNull(CB_View_Base view) {
-        if (view.childs.size() == 0) {
-            view = null;
-        } else {
+        if (view.childs.size() != 0) {
             synchronized (view.childs) {
                 view.childs.clear();
-                view = null;
             }
         }
     }

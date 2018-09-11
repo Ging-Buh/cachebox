@@ -41,14 +41,12 @@ public class ImageButton extends Button {
 
     public ImageButton(ImageLoader img) {
         super("");
-        this.setText("");
         image = new Image(img, this.ScaleCenter(0.8f), "", false);
         this.addChild(image);
     }
 
     public ImageButton(Image image) {
         super("");
-        this.setText("");
         if (image == null) {
             this.image = new Image(this.ScaleCenter(0.8f), "", false);
         } else {
@@ -60,7 +58,6 @@ public class ImageButton extends Button {
     @Override
     protected void render(Batch batch) {
         super.render(batch);
-
         if (isDisabled) {
             image.setColor(new Color(1f, 1f, 1f, 0.5f));
         } else {
@@ -69,10 +66,9 @@ public class ImageButton extends Button {
     }
 
     private void chkImagePos() {
-        // chk image Pos
-        CB_RectF thisRec = this.copy();
-        thisRec.setPos(0, 0);
-        image.setRec(thisRec.ScaleCenter(0.8f * mScale));
+        CB_RectF thisRectF = this.copy();
+        thisRectF.setPos(0, 0);
+        image.setRec(thisRectF.ScaleCenter(0.8f * mScale));
     }
 
     public void setImage(Drawable drawable) {

@@ -760,7 +760,7 @@ public class GL implements ApplicationListener, InputProcessor {
         if (view == null)
             return false;
 
-        // wenn dieser TouchDown ausserhalb einer TextView war, dann resete den TextField Focus
+        // wenn dieser TouchDown ausserhalb einer TextView war, dann reset TextFieldFocus
         if (focusedEditTextField != null) {
             if (!(view instanceof EditTextFieldBase) && !(view instanceof SelectionMarker) && !(view instanceof Button) && !this.PopUpIsShown()) {
                 setFocusedEditTextField(null);
@@ -1610,39 +1610,32 @@ public class GL implements ApplicationListener, InputProcessor {
 
     public void setFocusedEditTextField(EditTextField editTextField) {
         if (editTextField == null && focusedEditTextField == null) {
+            // neither to focus the editTextField nor to unfocus the focusedEditTextField
             return;
         }
-
-        // Don't open KeyBoard if Keybord is Showing
-        boolean dontOpenKeybord = focusedEditTextField != null;
-
-        if (editTextField != null && editTextField.isKeyboardPopupDisabled()) {
-            dontOpenKeybord = true;
-        }
-
         // inform the parent, perhaps to move the editTextField to the top of the screen
         KeyboardFocusChangedEventList.Call(editTextField);
-
+        // inform the textfield, that it got the focus
         if (editTextField != null && editTextField != focusedEditTextField) {
             editTextField.becomesFocus();
         }
 
-        focusedEditTextField = editTextField;
-
         hideMarker();
 
-        if (focusedEditTextField != null) {
-            if (!focusedEditTextField.isKeyboardPopupDisabled()) {
-                if (!dontOpenKeybord) {
-                    PlatformConnector.showVirtualKeyboard();
-                }
+        // show or hide keyboard (what if the user has closed it?)
+        boolean isAlreadyOpen = focusedEditTextField != null && !focusedEditTextField.isKeyboardPopupDisabled();
+        boolean shallBeOpened = editTextField != null && !editTextField.isKeyboardPopupDisabled();
+        if (isAlreadyOpen) {
+            if (!shallBeOpened) {
+                Gdx.input.setOnscreenKeyboardVisible(false);
             }
         } else {
-            if (dontOpenKeybord) {
-                PlatformConnector.hideVirtualKeyboard();
+            if (shallBeOpened) {
+                Gdx.input.setOnscreenKeyboardVisible(true);
             }
-
         }
+
+        focusedEditTextField = editTextField;
     }
 
     public boolean hasFocus(EditTextFieldBase view) {

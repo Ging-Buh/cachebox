@@ -19,7 +19,9 @@ import CB_UI_Base.settings.CB_UI_Base_Settings;
 
 public abstract class UI_Size_Base {
     public static UI_Size_Base that;
-    protected Size Button;
+    protected int ButtonWidth;
+    protected int ButtonHeight;
+    protected int WideButtonWidth;
     protected int scaledFontSize_normal;
     protected int iconSize;
     protected int windowWidth;
@@ -56,12 +58,11 @@ public abstract class UI_Size_Base {
 
         float NormalTextSize = CB_UI_Base_Settings.FONT_SIZE_NORMAL.getValue() * 3.2f;
 
-        int b = (int) (NormalTextSize * scale);
-        Button = new Size(b, b);
+        ButtonWidth = (int) (NormalTextSize * scale);
+        ButtonHeight = ButtonWidth;
+        WideButtonWidth = (windowWidth - 4 * margin) / 3;
 
         RefWidth = windowWidth;
-
-        GL_UISizes.writeDebug("Button", Button.asFloat());
 
         scaledFontSize_normal = (int) (10 * scale);
         scaledFontSize_big = (int) (scaledFontSize_normal * 1.1);
@@ -92,20 +93,19 @@ public abstract class UI_Size_Base {
     }
 
     public int getButtonHeight() {
-        return Button.height;
+        return ButtonHeight;
     }
 
     public int getButtonWidth() {
-        return Button.width;
+        return ButtonWidth;
     }
 
     public int getButtonWidthWide() {
-        return (int) (windowWidth - 4 * margin) / 3;
-        // return (int) (Button.width * 1.6);
+        return WideButtonWidth;
     }
 
     public SizeF getChkBoxSize() {
-        float h = Button.height * 0.88f;
+        float h = ButtonWidth * 0.88f;
         return new SizeF(h, h);
     }
 

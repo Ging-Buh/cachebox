@@ -22,6 +22,7 @@ import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Util.MoveableList;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -59,12 +60,12 @@ public class Button extends CB_View_Base {
     }
 
     public Button(GL_View_Base parent, String name) {
-        super(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight(), parent, name);
+        super(UiSizes.that.getButtonRectF(),parent,name);
         this.setClickable(true);
     }
 
     public Button(String text) {
-        super(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight(), "Button " + text);
+        super(UiSizes.that.getButtonRectF(), text);
         this.setText(text);
         this.setClickable(true);
     }
@@ -74,9 +75,9 @@ public class Button extends CB_View_Base {
         this.setClickable(true);
     }
 
-    public Button(CB_RectF cb_RectF, OnClickListener onClik) {
-        this(cb_RectF, "");
-        this.setOnClickListener(onClik);
+    public Button(CB_RectF rec, OnClickListener onClick) {
+        super(rec, "");
+        this.setOnClickListener(onClick);
     }
 
     public void setninePatch(Drawable drawable) {

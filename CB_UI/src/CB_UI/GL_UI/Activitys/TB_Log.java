@@ -16,6 +16,7 @@
 package CB_UI.GL_UI.Activitys;
 
 import CB_Core.Api.GroundspeakAPI;
+import CB_Core.CacheTypes;
 import CB_Core.LogTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.FieldNoteEntry;
@@ -253,9 +254,9 @@ public class TB_Log extends ActivityBase {
             @Override
             public void run() {
                 GroundspeakAPI.LastAPIError = "";
-                int result = GroundspeakAPI.uploadTrackableLog(TB, getCache_GcCode(), LogTypes.CB_LogType2GC(LT), new Date(), edit.getText());
+                int result = GroundspeakAPI.uploadTrackableLog(TB, getCache_GcCode(), LogTypes.CB_LogType2GC(LT), new Date(), edit.getText()) ? GroundspeakAPI.OK : GroundspeakAPI.ERROR;
 
-                if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
+                if (result == GroundspeakAPI.ERROR) {
                     GL.that.Toast(ConnectionError.INSTANCE);
                     if (wd != null)
                         wd.close();
@@ -368,6 +369,12 @@ public class TB_Log extends ActivityBase {
         /**
          * Muss je nach LogType leer oder gefüllt sein
          */
+        if (!GlobalCore.getSelectedCache().getGcCode().equals(TB.CurrentGeocacheCode) && TB.CurrentGeocacheCode.length() > 0) {
+            if (LT == LogTypes.visited || LT == LogTypes.retrieve) {
+                // TB is perhaps not in the selected cache
+                return TB.CurrentGeocacheCode;
+            }
+        }
         return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getGcCode() : "";
     }
 
@@ -375,6 +382,12 @@ public class TB_Log extends ActivityBase {
         /**
          * Muss je nach LogType leer oder gefüllt sein
          */
+        if (!GlobalCore.getSelectedCache().getGcCode().equals(TB.CurrentGeocacheCode) && TB.CurrentGeocacheCode.length() > 0) {
+            if (LT == LogTypes.visited || LT == LogTypes.retrieve) {
+                // TB is perhaps not in the selected cache, but don't want to change selected Cache
+                return TB.CurrentGeocacheCode;
+            }
+        }
         return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getName() : "";
     }
 
@@ -382,6 +395,12 @@ public class TB_Log extends ActivityBase {
         /**
          * Muss je nach LogType leer oder gefüllt sein
          */
+        if (!GlobalCore.getSelectedCache().getGcCode().equals(TB.CurrentGeocacheCode) && TB.CurrentGeocacheCode.length() > 0) {
+            if (LT == LogTypes.visited || LT == LogTypes.retrieve) {
+                // TB is perhaps not in the selected cache
+                return Cache.GenerateCacheId(TB.CurrentGeocacheCode);
+            }
+        }
         return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().Id : -1;
     }
 
@@ -389,6 +408,12 @@ public class TB_Log extends ActivityBase {
         /**
          * Muss je nach LogType leer oder gefüllt sein
          */
+        if (!GlobalCore.getSelectedCache().getGcCode().equals(TB.CurrentGeocacheCode) && TB.CurrentGeocacheCode.length() > 0) {
+            if (LT == LogTypes.visited || LT == LogTypes.retrieve) {
+                // TB is perhaps not in the selected cache, but don't want to change selected Cache
+                return "https://coord.info/" + TB.CurrentGeocacheCode;
+            }
+        }
         return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getUrl() : "";
     }
 
@@ -396,6 +421,12 @@ public class TB_Log extends ActivityBase {
         /**
          * Muss je nach LogType leer oder gefüllt sein
          */
+        if (!GlobalCore.getSelectedCache().getGcCode().equals(TB.CurrentGeocacheCode) && TB.CurrentGeocacheCode.length() > 0) {
+            if (LT == LogTypes.retrieve) {
+                // TB is perhaps not in the selected cache
+                return  CacheTypes.Undefined.ordinal();
+            }
+        }
         return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().Type.ordinal() : -1;
     }
 

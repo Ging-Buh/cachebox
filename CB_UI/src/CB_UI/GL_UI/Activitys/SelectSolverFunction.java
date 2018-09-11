@@ -92,60 +92,6 @@ public class SelectSolverFunction extends ButtonDialog {
                 return true;
             }
         });
-
-        // CB_RectF btnRec = new CB_RectF(Left, Bottom, (width - Left - Right) / 2, UiSizes.getButtonHeight());
-        // bOK = new Button(btnRec, "OkButton");
-        //
-        // btnRec.setX(bOK.getMaxX());
-        // bCancel = new Button(btnRec, "CancelButton");
-        //
-        // bOK.setText(Translation.Get("ok"));
-        // bCancel.setText(Translation.Get("cancel"));
-        //
-        // this.addChild(bOK);
-        // this.addChild(bCancel);
-        //
-        // bOK.setOnClickListener(new OnClickListener()
-        // {
-        //
-        // @Override
-        // public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-        // {
-        // if (mResultListener != null)
-        // {
-        // try
-        // {
-        // mResultListener.selectedFunction(selectedFunction);
-        // }
-        // catch (NullPointerException e)
-        // {
-        // throw new IllegalArgumentException("Der Returnlistener kann hier die Rückgabe von NULL nicht verarbeiten!");
-        // }
-        // }
-        // GL.that.closeDialog(SelectSolverFunction.this);
-        // return true;
-        // }
-        // });
-        //
-        // bCancel.setOnClickListener(new OnClickListener()
-        // {
-        //
-        // @Override
-        // public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-        // {
-        // if (mResultListener != null) try
-        // {
-        // mResultListener.selectedFunction(null);
-        // }
-        // catch (NullPointerException e)
-        // {
-        // throw new IllegalArgumentException("Der Returnlistener kann hier die Rückgabe von NULL nicht verarbeiten!");
-        // }
-        // GL.that.closeDialog(SelectSolverFunction.this);
-        // return true;
-        // }
-        // });
-
     }
 
     private void iniDescLabel() {

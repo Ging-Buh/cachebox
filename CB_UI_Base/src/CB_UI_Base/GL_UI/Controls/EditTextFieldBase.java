@@ -259,9 +259,6 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
         this.becomesFocusListener = becomesFocusListener;
     }
 
-    /**
-     *
-     */
     public void becomesFocus() {
         if (becomesFocusListener != null)
             becomesFocusListener.becomesFocus();

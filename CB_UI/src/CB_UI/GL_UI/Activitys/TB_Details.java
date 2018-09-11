@@ -99,8 +99,7 @@ public class TB_Details extends ActivityBase {
     private void createControls() {
         innerHeight = 1000;
 
-        btnClose = new Button("Close");
-        btnClose.setText(Translation.Get("close"));
+        btnClose = new Button(Translation.Get("close"));
         btnClose.setOnClickListener(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -109,8 +108,7 @@ public class TB_Details extends ActivityBase {
             }
         });
 
-        btnAction = new Button("Action");
-        btnAction.setText(Translation.Get("TB_Log"));
+        btnAction = new Button(Translation.Get("TB_Log"));
         btnAction.setOnClickListener(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {

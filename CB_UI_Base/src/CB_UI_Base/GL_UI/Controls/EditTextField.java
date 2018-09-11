@@ -1234,15 +1234,6 @@ public class EditTextField extends EditTextFieldBase {
         cursor.y = selection.cursorStart.y;
         setTextAtCursorVisible(true);
         clearSelection();
-
-        // int minIndex = Math.min(cursor, selectionStart);
-        // int maxIndex = Math.max(cursor, selectionStart);
-        // text = (minIndex > 0 ? text.substring(0, minIndex) : "")
-        // + (maxIndex < text.length() ? text.substring(maxIndex, text.length()) : "");
-        // // updateDisplayText();
-        // cursor = minIndex;
-        // checkCursorVisible(true);
-        // clearSelection();
     }
 
     @Override
@@ -1606,7 +1597,6 @@ public class EditTextField extends EditTextFieldBase {
                 if (GL.that.hasFocus(this))
                     GL.that.setFocusedEditTextField(null);
             }
-            // this.calculateSizeDependencies(value); done by becomesFocus
         }
     }
 

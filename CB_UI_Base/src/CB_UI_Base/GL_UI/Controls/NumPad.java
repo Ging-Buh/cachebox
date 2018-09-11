@@ -323,7 +323,7 @@ public class NumPad extends CB_View_Base {
          *
          * @param value
          */
-        public void KeyPressed(String value);
+        void KeyPressed(String value);
     }
 
 }

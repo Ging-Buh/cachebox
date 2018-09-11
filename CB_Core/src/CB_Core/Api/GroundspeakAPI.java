@@ -21,6 +21,7 @@ import CB_Locator.Coordinate;
 import CB_Utils.Interfaces.ICancel;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Log.Log;
+import CB_Utils.http.Response;
 import CB_Utils.http.Webb;
 import CB_Utils.http.WebbException;
 import org.json.JSONArray;
@@ -43,6 +44,7 @@ public class GroundspeakAPI {
     private static final String LiteFields = "referenceCode,userData,name,difficulty,terrain,placedDate,geocacheType.id,geocacheSize.id,location,postedCoordinates,status,owner.username,ownerAlias";
     private static final String NotLiteFields = "hints,attributes,longDescription,shortDescription,additionalWaypoints,userWaypoints";
     public static String LastAPIError = "";
+    public static int APIError;
     public static int CachesLeft = -1;
     public static boolean CacheStatusValid = false;
     public static int CurrentCacheCount = -1;
@@ -668,6 +670,7 @@ public class GroundspeakAPI {
     public static Trackable fetchTrackable(String TBCode) {
         Log.info(log, "fetchTrackable for " + TBCode);
         LastAPIError = "";
+        APIError = 0;
         if (invalidAccessToken()) return null;
         try {
             Trackable tb = createTrackable(Webb.create()
@@ -685,24 +688,33 @@ public class GroundspeakAPI {
             }
             return tb;
         } catch (Exception ex) {
-            LastAPIError += ex.getLocalizedMessage();
-            LastAPIError += "\n for " + getUrl(1, "trackables/" + TBCode + "?fields=url,description");
-            LastAPIError += "\n APIKey: " + GetSettingsAccessToken();
-            Log.err(log, "fetchTrackable \n" + LastAPIError, ex);
+            if ( ex instanceof WebbException) {
+                WebbException we = (WebbException) ex;
+                APIError = we.getResponse().getStatusCode();
+                JSONObject ej = (JSONObject) we.getResponse().getErrorBody();
+                LastAPIError = ej.optString("errorMessage","" + APIError);
+            }
+            else {
+                LastAPIError = ex.getLocalizedMessage();
+            }
+            Log.err(log, "fetchTrackable \n"
+                    + LastAPIError
+                    + "\n for " + getUrl(1, "trackables/" + TBCode + "?fields=url,description")
+                    , ex);
             return null;
         }
     }
 
-    public static int uploadTrackableLog(Trackable TB, String cacheCode, int LogTypeId, Date dateLogged, String note) {
+    public static boolean uploadTrackableLog(Trackable TB, String cacheCode, int LogTypeId, Date dateLogged, String note) {
         return uploadTrackableLog(TB.getTBCode(), TB.getTrackingCode(), cacheCode, LogTypeId, dateLogged, note);
     }
 
     // "trackablelogs" CREATE TRACKABLE LOG
-    public static int uploadTrackableLog(String TBCode, String TrackingNummer, String cacheCode, int LogTypeId, Date dateLogged, String note) {
+    public static boolean uploadTrackableLog(String TBCode, String TrackingNummer, String cacheCode, int LogTypeId, Date dateLogged, String note) {
         Log.info(log, "uploadTrackableLog");
         LastAPIError = "";
         if (cacheCode == null) cacheCode = "";
-        if (invalidAccessToken()) return ERROR;
+        if (invalidAccessToken()) return false;
         try {
             JSONObject result = Webb.create()
                     .post(getUrl(1, "trackablelogs"))
@@ -730,7 +742,7 @@ public class GroundspeakAPI {
             LastAPIError += "\n typeId: " + LogTypeId;
             Log.info(log, "uploadTrackableLog done\n" + LastAPIError + result.toString());
             LastAPIError = "";
-            return OK;
+            return true;
         } catch (Exception ex) {
             LastAPIError += ex.getLocalizedMessage();
             LastAPIError += "\n for " + getUrl(1, "trackablelogs");
@@ -742,7 +754,7 @@ public class GroundspeakAPI {
             LastAPIError += "\n text: " + prepareNote(note);
             LastAPIError += "\n typeId: " + LogTypeId;
             Log.err(log, "CreateTrackableLog \n" + LastAPIError, ex);
-            return ERROR;
+            return false;
         }
     }
 

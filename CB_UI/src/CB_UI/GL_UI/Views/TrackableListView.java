@@ -1,33 +1,42 @@
 package CB_UI.GL_UI.Views;
 
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.TrackableListDAO;
+import CB_Core.LogTypes;
 import CB_Core.Types.TbList;
 import CB_Core.Types.Trackable;
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.TB_Details;
+import CB_UI.GlobalCore;
+import CB_UI.TemplateFormatter;
+import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
-import CB_UI_Base.GL_UI.Controls.Box;
+import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
-import CB_UI_Base.GL_UI.Controls.EditTextField;
-import CB_UI_Base.GL_UI.Controls.ImageButton;
+import CB_UI_Base.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.Menu.Menu;
+import CB_UI_Base.GL_UI.Menu.MenuID;
+import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Log.Log;
 
-import static CB_Core.Api.GroundspeakAPI.downloadUsersTrackables;
-import static CB_Core.Api.GroundspeakAPI.fetchTrackable;
+import java.util.Date;
+
+import static CB_Core.Api.GroundspeakAPI.*;
 
 public class TrackableListView extends CB_View_Base {
     private static final String log = "TrackableListView";
@@ -35,10 +44,33 @@ public class TrackableListView extends CB_View_Base {
     private V_ListView listView;
     private CustomAdapter lvAdapter;
     private TbList mTB_List;
-    private Box searchBox;
-    private EditTextField txtSearch;
-    private ImageButton btnSearch;
+    private Button btnAction;
     private CancelWaitDialog wd;
+    private final OnClickListener menuItemClickListener = new OnClickListener() {
+        @Override
+        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+
+            switch (((MenuItem) v).getMenuItemId()) {
+                case MenuID.MI_SEARCH:
+                    searchTB();
+                    break;
+                case MenuID.MI_REFRESH_TB_LIST:
+                    RefreshTbList();
+                    break;
+                case MenuID.MI_TB_VISIT:
+                    LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.visited), TemplateFormatter.ReplaceTemplate(Config.VisitedTemplate.getValue(), new Date()));
+                break;
+                case MenuID.MI_TB_DROPPED:
+                    LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.dropped_off), TemplateFormatter.ReplaceTemplate(Config.DroppedTemplate.getValue(), new Date()));
+                    RefreshTbList();
+                    break;
+                case MenuID.MI_TB_NOTE:
+                    LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.note), TemplateFormatter.ReplaceTemplate(Config.AddNoteTemplate.getValue(), new Date()));
+                    break;
+            }
+            return true;
+        }
+    };
 
     public TrackableListView(CB_RectF rec, String Name) {
         super(rec, Name);
@@ -52,11 +84,10 @@ public class TrackableListView extends CB_View_Base {
         reloadTB_List();
     }
 
-    public void reloadTB_List() {
-        mTB_List = TrackableListDAO.ReadTbList("");
-        lvAdapter = new CustomAdapter();
-        if (listView != null)
-            listView.setBaseAdapter(lvAdapter);
+    @Override
+    public void onResized(CB_RectF rec) {
+        super.onResized(rec);
+        Layout();
     }
 
     @Override
@@ -65,85 +96,75 @@ public class TrackableListView extends CB_View_Base {
 
     @Override
     protected void Initial() {
-        this.removeChilds();
-        // ##################################################################################################
-        // Search Box
-        // ##################################################################################################
-        searchBox = new Box(this.getWidth(), 10, "TB_Search Box");
-        btnSearch = new ImageButton("Search");
-        searchBox.setBackground(Sprites.activityBackground);
-        searchBox.setHeight(btnSearch.getHeight() + searchBox.getTopHeight() + searchBox.getBottomHeight());
-        this.addChild(searchBox);
-
-        searchBox.initRow();
-
-        txtSearch = new EditTextField(this, "txtSearch");
-        txtSearch.setMessageText(Translation.Get("SearchTB_Code"));
-        searchBox.addNext(txtSearch);
-
-        btnSearch.setImage(Sprites.getSprite(IconName.lupe.name()));
-        btnSearch.setOnClickListener(new OnClickListener() {
+        btnAction = new Button(Translation.Get("TB_Actions"));
+        btnAction.setOnClickListener(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                final String TBCode = txtSearch.getText().trim();
-                if (TBCode.length() > 0) {
-                    wd = CancelWaitDialog.ShowWait(Translation.Get("search"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
-                        @Override
-                        public void isCanceled() {
-                        }
-                    }, new cancelRunnable() {
-                        @Override
-                        public void run() {
-
-                            Trackable tb = fetchTrackable(TBCode);
-                            wd.close();
-                            if (tb == null) {
-                                GL.that.Toast(ConnectionError.INSTANCE);
-                                // GL.that.Toast(ApiUnavailable.INSTANCE);
-                                // GL.that.Toast(Translation.Get("NoTbFound"));
-                                return;
-                            }
-                            new TB_Details().Show(tb);
-                        }
-
-                        @Override
-                        public boolean cancel() {
-                            // TODO handle cancel
-                            return false;
-                        }
-                    });
-
-                }
-
+                showMenu();
                 return true;
             }
         });
-        searchBox.addLast(btnSearch, FIXED);
 
-        listView = new V_ListView(new CB_RectF(0, 0, getWidth(), getHeight() - searchBox.getHeight()), "TB_LIstView");
+        listView = new V_ListView(new CB_RectF(0, 0, getWidth(), 0), "listView");
         listView.setEmptyMsg(Translation.Get("TB_List_Empty"));
         listView.setBaseAdapter(lvAdapter);
-        this.addChild(listView);
 
         Layout();
+    }
+
+    public void reloadTB_List() {
+        mTB_List = TrackableListDAO.ReadTbList("");
+        lvAdapter = new CustomAdapter();
+        if (listView != null)
+            listView.setBaseAdapter(lvAdapter);
+    }
+
+    private boolean fetchTB(final String TBCode) {
+        if (TBCode.length() > 0) {
+            wd = CancelWaitDialog.ShowWait(Translation.Get("search"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
+                @Override
+                public void isCanceled() {
+                }
+            }, new cancelRunnable() {
+                @Override
+                public void run() {
+                    Trackable tb = fetchTrackable(TBCode);
+                    wd.close();
+                    if (tb == null) {
+                        if (APIError == 404) {
+                            GL.that.Toast(Translation.Get("NoTbFound"));
+                        } else {
+                            // GL.that.Toast(ConnectionError.INSTANCE);
+                            // GL.that.Toast(ApiUnavailable.INSTANCE);
+                            GL.that.Toast(LastAPIError);
+                        }
+                        return;
+                    }
+                    new TB_Details().Show(tb);
+                }
+
+                @Override
+                public boolean cancel() {
+                    // TODO handle cancel
+                    return false;
+                }
+            });
+        }
+        return true;
     }
 
     private void Layout() {
-        searchBox.setY(this.getHeight() - searchBox.getHeight());
-        listView.setHeight(this.getHeight() - searchBox.getHeight() - UI_Size_Base.that.getMargin());
+        this.removeChilds();
+        initRow(BOTTOMUP);
+
+        addLast(btnAction);
+        listView.setHeight(getAvailableHeight());
+        addLast(listView);
+
         listView.notifyDataSetChanged();
     }
 
-    @Override
-    public void onResized(CB_RectF rec) {
-        super.onResized(rec);
-        Layout();
-    }
-
-    public void NotifyDataSetChanged() {
-        listView.notifyDataSetChanged();
-    }
-
+    // Inventar neu laden
     public void RefreshTbList() {
         wd = CancelWaitDialog.ShowWait(Translation.Get("RefreshInventory"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
@@ -180,6 +201,72 @@ public class TrackableListView extends CB_View_Base {
                 return false;
             }
         });
+    }
+
+    public void LogTBs(String title, final int LogTypeId, final String LogText) {
+        wd = CancelWaitDialog.ShowWait(title, DownloadAnimation.GetINSTANCE(), new IcancelListener() {
+
+            @Override
+            public void isCanceled() {
+
+            }
+        }, new cancelRunnable() {
+
+            @Override
+            public void run() {
+                // todo Dialog for local or direct log
+                    /*
+                        private void LogNow () {
+                        if (rbDirectLog.isChecked())
+                            logOnline();
+                        else
+                            createFieldNote();
+                        }
+                    */
+                for (Trackable tb : mTB_List) {
+                    if (!GroundspeakAPI.uploadTrackableLog(tb, GlobalCore.getSelectedCache().getGcCode(), LogTypeId, new Date(), LogText)) {
+                        GL.that.Toast(LastAPIError);
+                    }
+                }
+                wd.close();
+            }
+
+            @Override
+            public boolean cancel() {
+                // TODO handle cancel
+                return false;
+            }
+        });
+    }
+
+    private void searchTB() {
+        StringInputBox.Show(WrapType.SINGLELINE, Translation.Get("InputTB_Code"), Translation.Get("SearchTB"), "", new GL_MsgBox.OnMsgBoxClickListener() {
+            @Override
+            public boolean onClick(int which, Object data) {
+                switch (which) {
+                    case 1: // ok
+                        fetchTB(StringInputBox.editText.getText());
+                        break;
+                    case 3: // cancel
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
+    private void showMenu() {
+
+        final Menu cm = new Menu("TBLogContextMenu");
+        cm.addOnClickListener(menuItemClickListener);
+
+        cm.addItem(MenuID.MI_SEARCH, "SearchTB", Sprites.getSprite(IconName.lupe.name()));
+        cm.addItem(MenuID.MI_REFRESH_TB_LIST, "RefreshInventory");
+        cm.addItem(MenuID.MI_TB_NOTE, "all_note", Sprites.getSprite(IconName.TBNOTE.name()));
+        cm.addItem(MenuID.MI_TB_VISIT, "all_visit", Sprites.getSprite(IconName.TBVISIT.name()));
+        cm.addItem(MenuID.MI_TB_DROPPED, "all_dropped", Sprites.getSprite(IconName.TBDROP.name()));
+
+        cm.Show();
     }
 
     public class CustomAdapter implements Adapter {

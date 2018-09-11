@@ -2254,20 +2254,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             }
         });
 
-        PlatformConnector.setKeybordFocusListener(new IKeybordFocusListener() {
-            @Override
-            public void showVirtualKeyboard() {
-                Log.debug("main", "showVirtualKeyboard");
-                Gdx.input.setOnscreenKeyboardVisible(true);
-            }
-
-            @Override
-            public void hideVirtualKeyboard() {
-                Log.debug("main", "hideVirtualKeyboard");
-                Gdx.input.setOnscreenKeyboardVisible(false);
-            }
-        });
-
         PlatformConnector.setCallUrlListener(new ICallUrl() {
 
             /**

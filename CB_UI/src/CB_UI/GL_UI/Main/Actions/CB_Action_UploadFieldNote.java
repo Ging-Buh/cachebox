@@ -41,8 +41,6 @@ public class CB_Action_UploadFieldNote extends CB_Action {
 
     @Override
     public void Execute() {
-        // GL_MsgBox.Show(Translation.Get("uploadFieldNotes?"), Translation.Get("uploadFieldNotes"), MessageBoxButtons.YesNo,
-        // MessageBoxIcon.GC_Live, UploadFieldnotesDialogListener, Config.RememberAsk_API_Coast);
         UploadFieldNotes();
     }
 
@@ -97,7 +95,7 @@ public class CB_Action_UploadFieldNote extends CB_Action {
 
                         if (fieldNote.isTbFieldNote) {
                             // there is no TB draft. we have to log direct
-                            result = GroundspeakAPI.uploadTrackableLog(fieldNote.TravelBugCode, fieldNote.TrackingNumber, fieldNote.gcCode, LogTypes.CB_LogType2GC(fieldNote.type), fieldNote.timestamp, fieldNote.comment);
+                            result = GroundspeakAPI.uploadTrackableLog(fieldNote.TravelBugCode, fieldNote.TrackingNumber, fieldNote.gcCode, LogTypes.CB_LogType2GC(fieldNote.type), fieldNote.timestamp, fieldNote.comment) ? GroundspeakAPI.OK : GroundspeakAPI.ERROR;
                         } else {
                             if (sendGCVote && !fieldNote.isTbFieldNote) {
                                 if (fieldNote.gc_Vote > 0)

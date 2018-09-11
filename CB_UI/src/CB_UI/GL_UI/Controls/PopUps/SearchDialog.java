@@ -256,7 +256,7 @@ public class SearchDialog extends PopUp_Base {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                PlatformConnector.hideVirtualKeyboard();
+                GL.that.setFocusedEditTextField(null);
                 mSearchAktive = false;
                 beginnSearchIndex = 0;
                 searchNow(false);
@@ -268,7 +268,7 @@ public class SearchDialog extends PopUp_Base {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                PlatformConnector.hideVirtualKeyboard();
+                GL.that.setFocusedEditTextField(null);
                 searchNow(true);
                 return true;
 
@@ -279,7 +279,7 @@ public class SearchDialog extends PopUp_Base {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                PlatformConnector.hideVirtualKeyboard();
+                GL.that.setFocusedEditTextField(null);
                 if (mTglBtnOnline.getState() == 1) {
                     close();
                     askPremium();

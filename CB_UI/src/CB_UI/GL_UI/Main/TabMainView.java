@@ -511,9 +511,10 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(actionShowWaypointView, false, GestureDirection.Right));
         mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(actionShowLogView, false, GestureDirection.Down));
         mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(actionShowHint, false));
-        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(actionShowDescExt, false));
         mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(actionShowSpoilerView, false));
+        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(actionShowTrackableListView, false));
         mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(actionShowNotesView, false));
+        mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(actionShowDescExt, false));
 
         mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionShowMap, true, GestureDirection.Up));
         mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionShowCompassView, false, GestureDirection.Right));
@@ -522,8 +523,9 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         if (GlobalCore.isTestVersion())
             mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionTestView, false));
 
-        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionQuickFieldNote, false, GestureDirection.Up));
+        // mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionQuickFieldNote, false, GestureDirection.Up));
         mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionShowFieldNotesView, Config.ShowFieldnotesAsDefaultView.getValue()));
+        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionShowTrackableListView, false));
         mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionRecTrack, false));
         mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionRecVoice, false));
         mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionRecPicture, false, GestureDirection.Down));

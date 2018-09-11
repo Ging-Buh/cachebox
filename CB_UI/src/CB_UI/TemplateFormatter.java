@@ -17,7 +17,7 @@ public class TemplateFormatter {
         return ReplaceTemplate(template, new Date());
     }
 
-    private static String ReplaceTemplate(String template, Date timestamp) {
+    public static String ReplaceTemplate(String template, Date timestamp) {
         DateFormat iso8601Format = new SimpleDateFormat("HH:mm");
         String stime = iso8601Format.format(timestamp);
         iso8601Format = new SimpleDateFormat("dd-MM-yyyy");

@@ -31,14 +31,18 @@ public class TrackableListViewItem extends ListViewItemBackground {
         super(rec, Index, TB.getName());
 
         float hw = this.getHeight() - this.getTopHeight() - this.getBottomHeight();
+        this.topBorder = this.getTopHeight();
+        this.bottomBorder = this.getBottomHeight();
+        this.leftBorder = this.getLeftWidth();
+        this.rightBorder=this.getRightWidth();
 
-        img = new Image(leftBorder, this.getBottomHeight(), hw, hw, "IconImage", false);
+        img = new Image(0, 0, hw, hw, "img", false);
         img.setImageURL(TB.getIconUrl());
-        this.addChild(img);
+        addNext(img,FIXED);
 
-        lblName = new Label(this.name + " lblName", img.getMaxX() + UI_Size_Base.that.getMargin(), img.getY(), this.getWidth() - img.getMaxX() - UI_Size_Base.that.getMargin(), img.getHeight());
+        lblName = new Label("lblName", 0, 0, this.getWidth() - img.getMaxX() - UI_Size_Base.that.getMargin(), img.getHeight());
         lblName.setWrappedText(TB.getName());
-        this.addChild(lblName);
+        addLast(lblName);
     }
 
     @Override
