@@ -13,7 +13,7 @@ import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.CacheListView;
 import CB_UI.GlobalCore;
-import CB_UI.GlobalCore.IChkRedyHandler;
+import CB_UI.GlobalCore.iChkReadyHandler;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -126,7 +126,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                         }
 
                         // First check API-Key with visual Feedback
-                        GlobalCore.chkAPiLogInWithWaitDialog(new IChkRedyHandler() {
+                        GlobalCore.chkAPiLogInWithWaitDialog(new iChkReadyHandler() {
 
                             @Override
                             public void checkReady(boolean tobeReady) {

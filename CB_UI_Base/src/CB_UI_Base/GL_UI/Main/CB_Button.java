@@ -5,6 +5,7 @@ import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.GestureHelp;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.GL_Listener.GL_Input;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
@@ -331,7 +332,7 @@ public class CB_Button extends Button implements OnClickListener {
             return false;
 
         if (KineticPan)
-            GL.that.StopKinetic(x, y, pointer, true);
+            GL_Input.that.StopKinetic(x, y, pointer, true);
         isDragged = true;
         return true;
     }

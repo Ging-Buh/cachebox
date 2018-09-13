@@ -147,9 +147,13 @@ public class Translation {
      *
      * @throws IOException
      */
-    public static void writeMisingStringsFile() throws IOException {
+    public static void writeMissingStringsToFile() {
         if (that != null)
-            that.writeMissingStrings();
+            try {
+                that.writeMissingStrings();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
     }
 
     /**

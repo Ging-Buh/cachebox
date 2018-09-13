@@ -30,7 +30,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
     public ViewGL(Context context, LayoutInflater inflater, View glView, GL glListener) {
         super(context);
         ViewGl = glView;
-        GL.listenerInterface = this;
+        GL.that.setGL_Listener_Interface(this);
         this.glListener = glListener;
         try {
 

@@ -323,14 +323,14 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 
         IChanged settingChangedHandler = new IChanged() {
             @Override
-            public void isChanged() {
+            public void handleChange() {
                 CoreSettingsForward.VersionString = GlobalCore.getVersionString();
                 CoreSettingsForward.DisplayOff = Energy.DisplayOff();
             }
         };
 
         // first fill
-        settingChangedHandler.isChanged();
+        settingChangedHandler.handleChange();
 
         // add changed handler
         Energy.addChangedEventListener(settingChangedHandler);
@@ -338,9 +338,9 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
     }
 
     private void initialSettingsChangedListener() {
-        Config.ImperialUnits.addChangedEventListener(new IChanged() {
+        Config.ImperialUnits.addSettingChangedListener(new IChanged() {
             @Override
-            public void isChanged() {
+            public void handleChange() {
                 UnitFormatter.setUseImperialUnits(Config.ImperialUnits.getValue());
             }
         });
@@ -350,9 +350,9 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
     }
 
     private void addSettingChangedListener(SettingBase<?> setting) {
-        setting.addChangedEventListener(new IChanged() {
+        setting.addSettingChangedListener(new IChanged() {
             @Override
-            public void isChanged() {
+            public void handleChange() {
                 reloadCacheList();
                 // must reload MapViewCacheList
                 // do this over Initial WPI-List

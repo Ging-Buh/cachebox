@@ -13,9 +13,6 @@ public class MainViewBase extends CB_View_Base {
 
     }
 
-    public void setGLViewID(ViewID id) {
-    }
-
     public void requestLayout() {
     }
 
@@ -36,7 +33,7 @@ public class MainViewBase extends CB_View_Base {
 
     @Override
     public void dispose() {
-        throw new IllegalStateException("MainViewBase can't disposed");
+        throw new IllegalStateException("MainViewBase can't dispose");
     }
 
 }

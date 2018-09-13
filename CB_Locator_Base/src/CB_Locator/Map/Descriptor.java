@@ -38,7 +38,7 @@ public class Descriptor implements Comparable<Descriptor> {
     private static final IChanged TileCacheFolderSettingChanged = new IChanged() {
 
         @Override
-        public void isChanged() {
+        public void handleChange() {
             TileCacheFolder = LocatorSettings.TileCacheFolder.getValue();
             if (LocatorSettings.TileCacheFolderLocal.getValue().length() > 0)
                 TileCacheFolder = LocatorSettings.TileCacheFolderLocal.getValue();
@@ -67,8 +67,8 @@ public class Descriptor implements Comparable<Descriptor> {
         if (LocatorSettings.TileCacheFolderLocal.getValue().length() > 0)
             TileCacheFolder = LocatorSettings.TileCacheFolderLocal.getValue();
 
-        LocatorSettings.TileCacheFolderLocal.addChangedEventListener(TileCacheFolderSettingChanged);
-        LocatorSettings.TileCacheFolder.addChangedEventListener(TileCacheFolderSettingChanged);
+        LocatorSettings.TileCacheFolderLocal.addSettingChangedListener(TileCacheFolderSettingChanged);
+        LocatorSettings.TileCacheFolder.addSettingChangedListener(TileCacheFolderSettingChanged);
     }
 
     // zur Übergabe beliebiger Daten

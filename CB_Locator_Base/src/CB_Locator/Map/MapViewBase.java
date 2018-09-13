@@ -107,7 +107,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
     protected IChanged themeChangedEventHandler = new IChanged() {
 
         @Override
-        public void isChanged() {
+        public void handleChange() {
             MapViewBase.this.invalidateTexture();
         }
     };

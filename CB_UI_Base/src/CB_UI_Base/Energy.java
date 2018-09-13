@@ -88,7 +88,7 @@ public class Energy {
     protected static void fireChangedEvent() {
         synchronized (ChangedEventList) {
             for (IChanged event : ChangedEventList) {
-                event.isChanged();
+                event.handleChange();
             }
         }
 

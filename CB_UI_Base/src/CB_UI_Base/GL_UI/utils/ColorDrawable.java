@@ -44,7 +44,7 @@ public class ColorDrawable extends EmptyDrawable {
             float b = altColor.b;
             float a = altColor.a;
 
-            GL.setBatchColor(mColor);
+            GL.that.setBatchColor(mColor);
             batch.draw(pixelSprite, x, y, width, height);
             batch.setColor(r, g, b, a);
         }

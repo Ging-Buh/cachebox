@@ -1,11 +1,11 @@
 package CB_UI_Base.GL_UI.GL_Listener;
 
 public interface GL_Listener_Interface {
-    public void RequestRender();
+     void RequestRender();
 
-    public void RenderDirty();
+     void RenderDirty();
 
-    public void RenderContinous();
+     void RenderContinous();
 
-    public boolean isContinous();
+     boolean isContinous();
 }

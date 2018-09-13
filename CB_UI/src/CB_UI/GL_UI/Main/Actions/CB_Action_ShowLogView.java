@@ -5,7 +5,7 @@ import CB_Core.CB_Core_Settings;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.LogView;
 import CB_UI.GlobalCore;
-import CB_UI.GlobalCore.IChkRedyHandler;
+import CB_UI.GlobalCore.iChkReadyHandler;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
@@ -102,7 +102,7 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
         }
 
         // First check API-Key with visual Feedback
-        GlobalCore.chkAPiLogInWithWaitDialog(new IChkRedyHandler() {
+        GlobalCore.chkAPiLogInWithWaitDialog(new iChkReadyHandler() {
 
             @Override
             public void checkReady(boolean MemberType) {

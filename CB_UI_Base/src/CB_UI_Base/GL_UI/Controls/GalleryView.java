@@ -18,6 +18,7 @@ package CB_UI_Base.GL_UI.Controls;
 import CB_UI_Base.GL_UI.Controls.List.H_ListView;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.GL_Listener.GL_Input;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Lists.CB_List;
@@ -170,7 +171,7 @@ public class GalleryView extends H_ListView {
         if (sollPos - firstItemSize > 0 || sollPos < mcalcAllSizeBase) {
             if (sollPos - (firstItemSize * 3) > 0 || sollPos + (lastItemSize * 3) < mcalcAllSizeBase) {
                 if (KineticPan)
-                    GL.that.StopKinetic(x, y, pointer, true);
+                    GL_Input.that.StopKinetic(x, y, pointer, true);
                 return true;
             }
 

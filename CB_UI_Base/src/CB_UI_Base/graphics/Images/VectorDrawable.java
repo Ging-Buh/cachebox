@@ -134,12 +134,12 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable {
         if (isDisposed.get()) {
             return;
         }
-        final Matrix4 oriMatrix = GL.batch.getProjectionMatrix().cpy();
+        final Matrix4 oriMatrix = GL.that.getPolygonSpriteBatch().getProjectionMatrix().cpy();
         Matrix4 thisDrawMatrix = oriMatrix.cpy();
         thisDrawMatrix.translate(x, y, 0);
 
         drawFbo(batch, x, y, width, height, oriMatrix, thisDrawMatrix);
-        GL.batch.setProjectionMatrix(oriMatrix);
+        GL.that.getPolygonSpriteBatch().setProjectionMatrix(oriMatrix);
     }
 
     public void draw(Batch batch, float x, float y, final float width, final float height, float rotated) {
@@ -148,7 +148,7 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable {
             return;
         }
 
-        final Matrix4 oriMatrix = GL.batch.getProjectionMatrix().cpy();
+        final Matrix4 oriMatrix = GL.that.getPolygonSpriteBatch().getProjectionMatrix().cpy();
         Matrix4 thisDrawMatrix = oriMatrix.cpy();
         thisDrawMatrix.translate(x, y, 0);
 
@@ -159,10 +159,10 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable {
             Matrix4 matrix = thisDrawMatrix.cpy();
             ext_Matrix drwMatrix = new GL_Matrix(drw.matrix);
             matrix.mul(drwMatrix.getMatrix4().cpy());
-            GL.batch.setProjectionMatrix(matrix);
-            drw.drawable.draw(GL.batch, 0, 0, width, height, -rotated * MathUtils.degreesToRadians);
+            GL.that.getPolygonSpriteBatch().setProjectionMatrix(matrix);
+            drw.drawable.draw(GL.that.getPolygonSpriteBatch(), 0, 0, width, height, -rotated * MathUtils.degreesToRadians);
         }
-        GL.batch.setProjectionMatrix(oriMatrix);
+        GL.that.getPolygonSpriteBatch().setProjectionMatrix(oriMatrix);
     }
 
     private void drawFbo(Batch batch, float x, float y, final float width, final float height, final Matrix4 oriMatrix, Matrix4 thisDrawMatrix) {
@@ -195,24 +195,24 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable {
                             // clear screen
                             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-                            GL.batch.setColor(new Color(Color.WHITE));
+                            GL.that.getPolygonSpriteBatch().setColor(new Color(Color.WHITE));
 
-                            GL.batch.begin();
+                            GL.that.getPolygonSpriteBatch().begin();
 
                             Matrix4 matrix = new Matrix4().setToOrtho2D(0, 0, width, height);
                             matrix.scale(FBO_SCALER, FBO_SCALER, 1);
-                            GL.batch.setProjectionMatrix(matrix);
+                            GL.that.getPolygonSpriteBatch().setProjectionMatrix(matrix);
 
                             // draw Background
-                            GL.batch.disableBlending();
-                            background.draw(GL.batch, 0, 0, fboScalerWidth, fboScalerHeight);
-                            GL.batch.enableBlending();
+                            GL.that.getPolygonSpriteBatch().disableBlending();
+                            background.draw(GL.that.getPolygonSpriteBatch(), 0, 0, fboScalerWidth, fboScalerHeight);
+                            GL.that.getPolygonSpriteBatch().enableBlending();
                             int count = 0;
 
                             for (int i = 0, n = drawableList.size(); i < n; i++) {
                                 MatrixDrawable drw = drawableList.get(i);
                                 if (count++ > 2500) {
-                                    GL.batch.flush();
+                                    GL.that.getPolygonSpriteBatch().flush();
                                     count = 0;
                                 }
                                 matrix = new Matrix4().setToOrtho2D(0, 0, width, height);
@@ -221,12 +221,12 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable {
                                     matrix.mul(drw.matrix.getMatrix4());
                                 }
 
-                                GL.batch.setProjectionMatrix(matrix);
-                                drw.drawable.draw(GL.batch, 0, 0, width, height, 0);
+                                GL.that.getPolygonSpriteBatch().setProjectionMatrix(matrix);
+                                drw.drawable.draw(GL.that.getPolygonSpriteBatch(), 0, 0, width, height, 0);
                             }
 
                             if (m_fbo != null) {
-                                GL.batch.end();
+                                GL.that.getPolygonSpriteBatch().end();
                                 m_fbo.end();
                                 m_fboEnabled = false;
                             }
@@ -234,7 +234,7 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable {
                             FBOisDrawed = true;
                             FBO_DrawingTime = System.currentTimeMillis() - start;
                             Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
-                            GL.batch.setProjectionMatrix(oriMatrix);
+                            GL.that.getPolygonSpriteBatch().setProjectionMatrix(oriMatrix);
 
                             m_fboEnabled = false;
                         } catch (Exception e) {
@@ -263,16 +263,16 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable {
                 if (!drw.reaelDraw)
                     continue;
                 if (count++ > 2500) {
-                    GL.batch.flush();
+                    GL.that.getPolygonSpriteBatch().flush();
                     count = 0;
                 }
                 Matrix4 matrix = thisDrawMatrix.cpy();
                 if (drw.matrix != null)
                     matrix.mul(drw.matrix.getMatrix4());
 
-                GL.batch.setProjectionMatrix(matrix);
+                GL.that.getPolygonSpriteBatch().setProjectionMatrix(matrix);
 
-                drw.drawable.draw(GL.batch, 0, 0, width, height, 0);
+                drw.drawable.draw(GL.that.getPolygonSpriteBatch(), 0, 0, width, height, 0);
             }
 
         }

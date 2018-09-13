@@ -975,9 +975,9 @@ public class splash extends Activity {
         }
 
         CB_SLF4J.changeLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
-        Config.AktLogLevel.addChangedEventListener(new IChanged() {
+        Config.AktLogLevel.addSettingChangedListener(new IChanged() {
             @Override
-            public void isChanged() {
+            public void handleChange() {
                 CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
             }
         });

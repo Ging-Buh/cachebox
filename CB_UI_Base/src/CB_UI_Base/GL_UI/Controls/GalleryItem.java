@@ -18,6 +18,7 @@ package CB_UI_Base.GL_UI.Controls;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.GL_Listener.GL_Input;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -73,7 +74,7 @@ public class GalleryItem extends ListViewItemBackground {
     @Override
     protected void render(Batch batch) {
         if (isPressed) {
-            isPressed = GL.getIsTouchDown();
+            isPressed = GL_Input.that.getIsTouchDown();
         }
 
         if (this.isDisposed() || !this.isVisible())

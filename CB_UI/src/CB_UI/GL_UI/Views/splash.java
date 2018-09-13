@@ -114,7 +114,7 @@ public class splash extends MainViewBase {
                     progress.setProgress(80, "initial Map layer");
                     break;
                 case 8:
-                    ini_MapPaks();
+                    ini_MapPacks();
                     progress.setProgress(100, "Run");
                     break;
                 case 100:
@@ -419,8 +419,8 @@ public class splash extends MainViewBase {
      * Step 7 <br>
      * chk installed map packs/layers
      */
-    private void ini_MapPaks() {
-        Log.debug(log, "ini_MapPaks");
+    private void ini_MapPacks() {
+        Log.debug(log, "ini_MapPacks");
         ManagerBase.Manager.initMapPacks();
     }
 
@@ -461,7 +461,7 @@ public class splash extends MainViewBase {
             }
 
         }
-        GL.setIsInitial();
+        GL.that.setAllIsInitialized(true);
     }
 
     @Override

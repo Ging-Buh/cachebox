@@ -26,7 +26,7 @@ import CB_Utils.Util.IChanged;
 public abstract class SettingBase<T> implements Comparable<SettingBase<T>> {
 
     private static int indexCount = 0;
-    protected CB_List<IChanged> ChangedEventList = new CB_List<IChanged>();
+    protected CB_List<IChanged> SettingChangedListeners = new CB_List<>();
     protected SettingCategory category;
     protected String name;
     protected SettingModus modus;
@@ -53,16 +53,16 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>> {
         this.index = indexCount++;
     }
 
-    public void addChangedEventListener(IChanged listener) {
-        synchronized (ChangedEventList) {
-            if (!ChangedEventList.contains(listener))
-                ChangedEventList.add(listener);
+    public void addSettingChangedListener(IChanged listener) {
+        synchronized (SettingChangedListeners) {
+            if (!SettingChangedListeners.contains(listener))
+                SettingChangedListeners.add(listener);
         }
     }
 
-    public void removeChangedEventListener(IChanged listener) {
-        synchronized (ChangedEventList) {
-            ChangedEventList.remove(listener);
+    public void removeSettingChangedListener(IChanged listener) {
+        synchronized (SettingChangedListeners) {
+            SettingChangedListeners.remove(listener);
         }
     }
 
@@ -109,15 +109,14 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>> {
     }
 
     private void fireChangedEvent() {
-        synchronized (ChangedEventList) {
+        synchronized (SettingChangedListeners) {
             // do this at new Thread, dont't block Ui-Thread
-
             Thread th = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    for (int i = 0, n = ChangedEventList.size(); i < n; i++) {
-                        IChanged event = ChangedEventList.get(i);
-                        event.isChanged();
+                    for (int i = 0, n = SettingChangedListeners.size(); i < n; i++) {
+                        IChanged listener = SettingChangedListeners.get(i);
+                        listener.handleChange();
                     }
                 }
             });

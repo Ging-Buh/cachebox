@@ -96,9 +96,9 @@ public abstract class ManagerBase {
         DISPLAY_MODEL = displaymodel;
 
         if (LocatorSettings.CurrentMapLayer != null)
-            LocatorSettings.CurrentMapLayer.addChangedEventListener(new IChanged() {
+            LocatorSettings.CurrentMapLayer.addSettingChangedListener(new IChanged() {
                 @Override
-                public void isChanged() {
+                public void handleChange() {
                     Layer layer = getOrAddLayer(LocatorSettings.CurrentMapLayer.getValue(), "", "");
                     if (layer.isMapsForge())
                         initMapDatabase(layer);
@@ -317,9 +317,9 @@ public abstract class ManagerBase {
         }
 
         try {
-            LocatorSettings.UserMap1.addChangedEventListener(new IChanged() {
+            LocatorSettings.UserMap1.addSettingChangedListener(new IChanged() {
                 @Override
-                public void isChanged() {
+                public void handleChange() {
                     try {
                         if (userMaps[0] != null) {
                             layers.remove(userMaps[0]);
@@ -347,9 +347,9 @@ public abstract class ManagerBase {
         }
 
         try {
-            LocatorSettings.UserMap2.addChangedEventListener(new IChanged() {
+            LocatorSettings.UserMap2.addSettingChangedListener(new IChanged() {
                 @Override
-                public void isChanged() {
+                public void handleChange() {
                     try {
                         if (userMaps[1] != null) {
                             layers.remove(userMaps[1]);

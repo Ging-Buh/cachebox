@@ -32,9 +32,9 @@ public class SettingsClass extends SettingsList implements LocatorSettings, CBS_
 	public SettingsClass() {
 		super();
 
-		PQImportInterval.addChangedEventListener(new IChanged() {
+		PQImportInterval.addSettingChangedListener(new IChanged() {
 			@Override
-			public void isChanged() {
+			public void handleChange() {
 				ImportScheduler.importScheduler.start();
 			}
 		});

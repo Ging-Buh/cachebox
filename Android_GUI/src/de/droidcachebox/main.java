@@ -47,6 +47,7 @@ import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.GL_Listener.GL_Input;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.ViewConst;
@@ -98,7 +99,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidGraphics;
@@ -227,7 +227,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
      * gdxView ist die Android.View für gdx
      */
     private View gdxView = null;
-    private GL glListener = null;
     private String recordingStartTime;
     private String mediaFileNameWithoutExtension;
     private String tempMediaPath;
@@ -320,7 +319,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        GL.resetIsInitial();
 
         if (GlobalCore.RunFromSplash) {
             Log.info(log, "main Activity OnCreate Run from Splash");
@@ -410,7 +408,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         // create new mainView
         TabMainView ma = new TabMainView(0, 0, UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), "mainView");
 
-        glListener = new GL(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), sp, ma);
+        new GL(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), sp, ma);
 
         // add Event Handler
         SelectedCacheEventList.Add(this);
@@ -425,9 +423,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
         Config.AcceptChanges();
 
-        AndroidSettings.RunOverLockScreen.addChangedEventListener(new IChanged() {
+        AndroidSettings.RunOverLockScreen.addSettingChangedListener(new IChanged() {
             @Override
-            public void isChanged() {
+            public void handleChange() {
                 setLockScreenProperty();
             }
         });
@@ -439,7 +437,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
         initalMicIcon();
 
-        glListener.onStart();
+        GL.that.onStart();
+
         if (tabFrame != null)
             tabFrame.setVisibility(View.INVISIBLE);
         if (frame != null)
@@ -762,7 +761,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         }
         Log.info(log, "Return from activity " + action + " with requestCode " + requestCode);
         if (requestCode != Global.REQUEST_CODE_KEYBOARDACTIVITY && requestCode != Global.REQUEST_CODE_SCREENLOCK) {
-            glListener.onStart();
+            GL.that.onStart();
         } else {
             return;
         }
@@ -941,7 +940,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     }
 
     private void showWaitToRenderStartet() {
-        if (!GL.isInitial())
+        if (!GL.that.getAllisInitialized())
             return;
 
         if (pWaitD == null) {
@@ -1019,10 +1018,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             this.mWakeLock.acquire();
         }
 
-        Config.SuppressPowerSaving.addChangedEventListener(new IChanged() {
+        Config.SuppressPowerSaving.addSettingChangedListener(new IChanged() {
 
             @Override
-            public void isChanged() {
+            public void handleChange() {
                 if (Config.SuppressPowerSaving.getValue()) {
                     Log.debug(log, "Main=> onResume SuppressPowerSaving");
                     final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -1257,7 +1256,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
         if (ID.getType() == UI_Type.OpenGl) {
 
-            ShowViewGL(ID);
+            ShowViewGL();
             return;
 
         }
@@ -1288,13 +1287,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
     }
 
-    private void ShowViewGL(ViewID Id) {
+    private void ShowViewGL() {
         Log.debug(log, "ShowViewGL " + GlFrame.getMeasuredWidth() + "/" + GlFrame.getMeasuredHeight());
 
         initialViewGL();
 
-        glListener.onStart();
-        glListener.setGLViewID(Id);
+        GL.that.onStart();
+        GL.that.setGLViewID();
 
         if (aktTabViewId != null && aktTabViewId.getType() == ViewID.UI_Type.OpenGl) {
             tabFrame.setVisibility(View.INVISIBLE);
@@ -1385,10 +1384,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
             int updateTime = Config.gpsUpdateTime.getValue();
 
-            Config.gpsUpdateTime.addChangedEventListener(new IChanged() {
+            Config.gpsUpdateTime.addSettingChangedListener(new IChanged() {
 
                 @Override
-                public void isChanged() {
+                public void handleChange() {
                     int updateTime = Config.gpsUpdateTime.getValue();
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 1, main.this);
                 }
@@ -1408,7 +1407,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
     private void initialViewGL() {
         try {
-            gdxView = initializeForView(glListener, gdxConfig);
+            gdxView = initializeForView(GL.that, gdxConfig);
 
             Log.debug(log, "Initial new gdxView=" + gdxView.toString());
 
@@ -1435,7 +1434,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             initialOnTouchListener();
 
             if (viewGL == null)
-                viewGL = new ViewGL(this, inflater, gdxView, glListener);
+                viewGL = new ViewGL(this, inflater, gdxView, GL.that);
 
             viewGL.InitializeMap();
 
@@ -1478,14 +1477,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             switch (action & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_POINTER_DOWN:
                 case MotionEvent.ACTION_DOWN:
-                    glListener.onTouchDownBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex), event.getPointerId(pointerIndex), 0);
+                    GL_Input.that.onTouchDownBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex), event.getPointerId(pointerIndex), 0);
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    glListener.onTouchDraggedBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex), event.getPointerId(pointerIndex));
+                    GL_Input.that.onTouchDraggedBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex), event.getPointerId(pointerIndex));
                     break;
                 case MotionEvent.ACTION_POINTER_UP:
                 case MotionEvent.ACTION_UP:
-                    glListener.onTouchUpBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex), event.getPointerId(pointerIndex), 0);
+                    GL_Input.that.onTouchUpBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex), event.getPointerId(pointerIndex), 0);
                     break;
             }
         } catch (Exception e) {
@@ -1911,7 +1910,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         }
 
         if (ID.getType() == UI_Type.OpenGl) {
-            ShowViewGL(ID);
+            ShowViewGL();
         }
 
     }
@@ -2090,7 +2089,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                     public void run() {
                         // chk for timer conflict (releay set invisible)
                         // only if showing Dialog or Activity
-                        if (!GL.that.isShownDialogActivity())
+                        if (!GL.that.isShownDialogOrActivity())
                             return;
 
                         if (aktView != null)
@@ -2120,7 +2119,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
                                 // chk for timer conflict (releay set invisible)
                                 // only if not showing Dialog or Activity
-                                if (!GL.that.isShownDialogActivity()) {
+                                if (!GL.that.isShownDialogOrActivity()) {
                                     if (aktView != null) {
                                         ((View) aktView).setVisibility(View.VISIBLE);
                                         aktView.OnShow();
@@ -2389,9 +2388,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         // Use Imperial units?
         try {
             Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
-            Config.ImperialUnits.addChangedEventListener(new IChanged() {
+            Config.ImperialUnits.addSettingChangedListener(new IChanged() {
                 @Override
-                public void isChanged() {
+                public void handleChange() {
                     Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
                 }
             });
@@ -2402,10 +2401,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         // GPS update time?
         try {
             Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
-            Config.gpsUpdateTime.addChangedEventListener(new IChanged() {
+            Config.gpsUpdateTime.addSettingChangedListener(new IChanged() {
 
                 @Override
-                public void isChanged() {
+                public void handleChange() {
                     Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
                 }
             });
@@ -2416,9 +2415,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         // Use magnetic Compass?
         try {
             Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
-            Config.HardwareCompass.addChangedEventListener(new IChanged() {
+            Config.HardwareCompass.addSettingChangedListener(new IChanged() {
                 @Override
-                public void isChanged() {
+                public void handleChange() {
                     Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
                 }
             });
@@ -2429,9 +2428,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         // Magnetic compass level
         try {
             Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
-            Config.HardwareCompassLevel.addChangedEventListener(new IChanged() {
+            Config.HardwareCompassLevel.addSettingChangedListener(new IChanged() {
                 @Override
-                public void isChanged() {
+                public void handleChange() {
                     Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
                 }
             });

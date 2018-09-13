@@ -42,7 +42,7 @@ import java.util.prefs.Preferences;
 
 public class DesktopMain {
     private static final String log = "DesktopMain";
-    static GL CB_UI;
+    private static GL CB_UI;
     static float compassheading = -1;
     // Retrieve the user preference node for the package com.mycompany
     static Preferences prefs = Preferences.userNodeForPackage(de.DesktopMain.class);
@@ -152,7 +152,7 @@ public class DesktopMain {
             final LwjglApplication App = new LwjglApplication(CB_UI, lwjglAppCfg);
             App.getGraphics().setContinuousRendering(false);
 
-            GL.listenerInterface = new GL_Listener_Interface() {
+            GL.that.setGL_Listener_Interface(new GL_Listener_Interface() {
 
                 AtomicBoolean isContinousRenderMode = new AtomicBoolean(true);
 
@@ -179,7 +179,7 @@ public class DesktopMain {
                     return isContinousRenderMode.get();
                 }
 
-            };
+            });
         }
 
         new UiSizes();
@@ -372,7 +372,7 @@ public class DesktopMain {
     private static void Run(boolean simulate) {
         CB_UI.onStart();
 
-        Gdx.input.setInputProcessor(CB_UI);
+        // Gdx.input.setInputProcessor(CB_UI);
 
         if (simulate) {
             showSimmulateForm();
@@ -472,37 +472,37 @@ public class DesktopMain {
 
         // Use Imperial units?
         CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
-        Config.ImperialUnits.addChangedEventListener(new IChanged() {
+        Config.ImperialUnits.addSettingChangedListener(new IChanged() {
             @Override
-            public void isChanged() {
+            public void handleChange() {
                 CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
             }
         });
 
         // GPS update time?
         CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
-        Config.gpsUpdateTime.addChangedEventListener(new IChanged() {
+        Config.gpsUpdateTime.addSettingChangedListener(new IChanged() {
 
             @Override
-            public void isChanged() {
+            public void handleChange() {
                 CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
             }
         });
 
         // Use magnetic Compass?
         CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
-        Config.HardwareCompass.addChangedEventListener(new IChanged() {
+        Config.HardwareCompass.addSettingChangedListener(new IChanged() {
             @Override
-            public void isChanged() {
+            public void handleChange() {
                 CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
             }
         });
 
         // Magnetic compass level
         CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
-        Config.HardwareCompassLevel.addChangedEventListener(new IChanged() {
+        Config.HardwareCompassLevel.addSettingChangedListener(new IChanged() {
             @Override
-            public void isChanged() {
+            public void handleChange() {
                 CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
             }
         });

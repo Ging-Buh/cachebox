@@ -152,7 +152,7 @@ public class GL_UISizes implements SizeChangedEvent {
             isInitial = false; // Grössen müssen neu berechnet werden
         }
 
-        Log.debug(log, "Initial UISizes => isInitial" + isInitial);
+        Log.debug(log, "Initial UISizes => getAllisInitialized" + isInitial);
 
         if (SurfaceSize == null) {
             SurfaceSize = new CB_RectF(0, 0, width, height);
@@ -186,10 +186,10 @@ public class GL_UISizes implements SizeChangedEvent {
         if (!isInitial) {
             calcSizes();
 
-            CB_UI_Base_Settings.nightMode.addChangedEventListener(new IChanged() {
+            CB_UI_Base_Settings.nightMode.addSettingChangedListener(new IChanged() {
 
                 @Override
-                public void isChanged() {
+                public void handleChange() {
                     Fonts.setNightMode(CB_UI_Base_Settings.nightMode.getValue());
                 }
             });

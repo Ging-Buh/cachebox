@@ -91,7 +91,7 @@ public class PolygonDrawable implements IRotateDrawable {
                 return true;
 
             if (this.PAINT.getBitmapShader() == null) {
-                GL.setBatchColor(PAINT.getGlColor());
+                GL.that.setBatchColor(PAINT.getGlColor());
             } else {
                 batch.setColor(new Color(Color.WHITE));
             }

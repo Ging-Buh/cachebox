@@ -34,7 +34,7 @@ public class SoundCache {
     private static IChanged changedListener = new IChanged() {
 
         @Override
-        public void isChanged() {
+        public void handleChange() {
             setVolumes();
         }
 
@@ -80,11 +80,11 @@ public class SoundCache {
         GPS_lose = getMusikFromSetting(Config.GPS_lose);
         AutoResort = getMusikFromSetting(Config.AutoResortSound);
 
-        Config.GlobalVolume.addChangedEventListener(changedListener);
-        Config.Approach.addChangedEventListener(changedListener);
-        Config.GPS_fix.addChangedEventListener(changedListener);
-        Config.GPS_lose.addChangedEventListener(changedListener);
-        Config.AutoResortSound.addChangedEventListener(changedListener);
+        Config.GlobalVolume.addSettingChangedListener(changedListener);
+        Config.Approach.addSettingChangedListener(changedListener);
+        Config.GPS_fix.addSettingChangedListener(changedListener);
+        Config.GPS_lose.addSettingChangedListener(changedListener);
+        Config.AutoResortSound.addSettingChangedListener(changedListener);
 
         setVolumes();
     }

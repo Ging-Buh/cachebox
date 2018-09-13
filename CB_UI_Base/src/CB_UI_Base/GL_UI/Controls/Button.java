@@ -20,6 +20,7 @@ import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.*;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.GL_Listener.GL_Input;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
@@ -119,7 +120,7 @@ public class Button extends CB_View_Base {
     @Override
     protected void render(Batch batch) {
         if (dragableButton) {
-            if (isPressed && !GL.getIsTouchDown()) {
+            if (isPressed && !GL_Input.that.getIsTouchDown()) {
                 isPressed = false;
                 GL.that.renderOnce();
             }

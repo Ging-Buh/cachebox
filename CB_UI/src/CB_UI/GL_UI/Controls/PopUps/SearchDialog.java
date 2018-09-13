@@ -31,9 +31,8 @@ import CB_UI.GL_UI.Controls.Slider.YPositionChanged;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GlobalCore;
-import CB_UI.GlobalCore.IChkRedyHandler;
+import CB_UI.GlobalCore.iChkReadyHandler;
 import CB_UI_Base.Enums.WrapType;
-import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
@@ -525,7 +524,7 @@ public class SearchDialog extends PopUp_Base {
             return;
         }
 
-        GlobalCore.chkAPiLogInWithWaitDialog(new IChkRedyHandler() {
+        GlobalCore.chkAPiLogInWithWaitDialog(new iChkReadyHandler() {
 
             @Override
             public void checkReady(boolean invalidAccessToken) {
@@ -821,7 +820,7 @@ public class SearchDialog extends PopUp_Base {
     private void askPremium() {
 
         // First check API-Key with visual Feedback
-        GlobalCore.chkAPiLogInWithWaitDialog(new IChkRedyHandler() {
+        GlobalCore.chkAPiLogInWithWaitDialog(new iChkReadyHandler() {
 
             @Override
             public void checkReady(boolean invalidAccessToken) {

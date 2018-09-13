@@ -39,7 +39,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
     IChanged settingsChangedListener = new IChanged() {
 
         @Override
-        public void isChanged() {
+        public void handleChange() {
             synchronized (FieldNoteList.this) {
                 FieldNoteList.this.clear();
                 croppedList = false;
@@ -49,8 +49,8 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
     };
 
     public FieldNoteList() {
-        CB_Core_Settings.FieldNotesLoadAll.addChangedEventListener(settingsChangedListener);
-        CB_Core_Settings.FieldNotesLoadLength.addChangedEventListener(settingsChangedListener);
+        CB_Core_Settings.FieldNotesLoadAll.addSettingChangedListener(settingsChangedListener);
+        CB_Core_Settings.FieldNotesLoadLength.addSettingChangedListener(settingsChangedListener);
     }
 
     /**

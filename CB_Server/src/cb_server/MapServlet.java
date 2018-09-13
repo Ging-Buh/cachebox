@@ -55,8 +55,8 @@ public class MapServlet extends HttpServlet {
 
 		setMapSetting();
 
-		CBS_Settings.CBS_Mapsforge_Map.addChangedEventListener(MapsettingChangedListner);
-		LocatorSettings.MapsforgeDayTheme.addChangedEventListener(MapsettingChangedListner);
+		CBS_Settings.CBS_Mapsforge_Map.addSettingChangedListener(MapsettingChangedListner);
+		LocatorSettings.MapsforgeDayTheme.addSettingChangedListener(MapsettingChangedListner);
 
 		GraphicFactory Mapsforge_Factory = AwtGraphicFactory.INSTANCE;
 		databaseRenderer = new CachedDatabaseRenderer(MF_mapDatabase, Mapsforge_Factory);
@@ -65,7 +65,7 @@ public class MapServlet extends HttpServlet {
 	IChanged MapsettingChangedListner = new IChanged() {
 
 		@Override
-		public void isChanged() {
+		public void handleChange() {
 			setMapSetting();
 		}
 	};

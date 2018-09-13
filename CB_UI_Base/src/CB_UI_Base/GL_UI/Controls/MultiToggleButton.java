@@ -189,7 +189,7 @@ public class MultiToggleButton extends Button {
             G = c.g;
             B = c.b;
 
-            GL.setBatchColor(aktState.color);
+            GL.that.setBatchColor(aktState.color);
 
             if (led != null)
                 led.draw(batch, 0, 0, getWidth(), getHeight());

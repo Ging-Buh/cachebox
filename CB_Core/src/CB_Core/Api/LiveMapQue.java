@@ -36,7 +36,6 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -139,9 +138,9 @@ public class LiveMapQue {
     private static Byte count = 0;
 
     static {
-        CB_Core.CB_Core_Settings.LiveRadius.addChangedEventListener(new IChanged() {
+        CB_Core.CB_Core_Settings.LiveRadius.addSettingChangedListener(new IChanged() {
             @Override
-            public void isChanged() {
+            public void handleChange() {
                 radius = CB_Core.CB_Core_Settings.LiveRadius.getEnumValue();
 
                 switch (radius) {
@@ -183,10 +182,10 @@ public class LiveMapQue {
 
         int maxLiveCount = CB_Core.CB_Core_Settings.LiveMaxCount.getValue();
         LiveCaches = new CacheListLive(maxLiveCount);
-        CB_Core.CB_Core_Settings.LiveMaxCount.addChangedEventListener(new IChanged() {
+        CB_Core.CB_Core_Settings.LiveMaxCount.addSettingChangedListener(new IChanged() {
 
             @Override
-            public void isChanged() {
+            public void handleChange() {
                 int maxLiveCount = CB_Core.CB_Core_Settings.LiveMaxCount.getValue();
                 LiveCaches = new CacheListLive(maxLiveCount);
             }

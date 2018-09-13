@@ -99,7 +99,7 @@ public class BitmapDrawable implements ext_Bitmap, Disposable {
             }
         }
 
-        if (GL.isGlThread()) {
+        if (GL.that.isGlThread()) {
             createData();
         } else {
             GL.that.RunOnGL(new IRenderFBO() {
@@ -122,7 +122,7 @@ public class BitmapDrawable implements ext_Bitmap, Disposable {
         HashStringList.add(AtlasHashString);
         buffer = bytes;
 
-        if (GL.isGlThread()) {
+        if (GL.that.isGlThread()) {
             createData();
         } else {
             GL.that.RunOnGL(new IRenderFBO() {

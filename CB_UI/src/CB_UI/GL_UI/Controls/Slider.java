@@ -15,6 +15,7 @@ import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.GL_Listener.GL_Input;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
@@ -23,7 +24,6 @@ import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Util.HSV_Color;
 import CB_Utils.Util.IChanged;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -146,10 +146,10 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
         this.addChild(mSlideBox);
 
         //register QuickButtonStateChangedEvent
-        CB_UI_Settings.quickButtonShow.addChangedEventListener(new IChanged() {
+        CB_UI_Settings.quickButtonShow.addSettingChangedListener(new IChanged() {
 
             @Override
-            public void isChanged() {
+            public void handleChange() {
                 if (CB_UI_Settings.quickButtonShow.getValue()) {
                     quickButtonList.setHeight(QuickButtonMaxHeight);
                 } else {
@@ -275,7 +275,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent {
     @Override
     public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
         if (KineticPan) {
-            GL.that.StopKinetic(x, y, pointer, true);
+            GL_Input.that.StopKinetic(x, y, pointer, true);
             isKinetigPan = true;
             return onTouchUp(x, y, pointer, 0);
         }

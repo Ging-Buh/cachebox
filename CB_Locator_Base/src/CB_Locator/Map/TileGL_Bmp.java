@@ -71,7 +71,7 @@ public class TileGL_Bmp extends TileGL {
             return;
         inCreation = true;
 
-        if (GL.isGlThread()) {
+        if (GL.that.isGlThread()) {
             if (texture != null)
                 return;
             if (bytes == null)
@@ -159,7 +159,7 @@ public class TileGL_Bmp extends TileGL {
         if (isDisposed)
             return;
 
-        if (GL.isGlThread()) {
+        if (GL.that.isGlThread()) {
             try {
                 if (texture != null)
                     texture.dispose();

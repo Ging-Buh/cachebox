@@ -6,6 +6,7 @@ import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.GL_Listener.GL_Input;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
@@ -81,7 +82,7 @@ public class CategorieListViewItem extends ListViewItemBackground {
             super.render(batch);
 
         if (isPressed) {
-            isPressed = GL.getIsTouchDown();
+            isPressed = GL_Input.that.getIsTouchDown();
         }
 
         // initial

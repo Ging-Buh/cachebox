@@ -71,7 +71,7 @@ import java.util.Iterator;
 public class MoveableList<T> extends CB_List<T> {
 
     private static final long serialVersionUID = -3030926604332765746L;
-    protected CB_List<IChanged> ChangedEventList = new CB_List<IChanged>();
+    protected CB_List<IChanged> ChangedEventList = new CB_List<>();
     private boolean dontFireEvent = false;
     private int _MoveResultIndex;
 
@@ -88,11 +88,10 @@ public class MoveableList<T> extends CB_List<T> {
             return;
         synchronized (ChangedEventList) {
             for (int i = 0, n = ChangedEventList.size(); i < n; i++) {
-                IChanged event = ChangedEventList.get(i);
-                event.isChanged();
+                IChanged listener = ChangedEventList.get(i);
+                listener.handleChange();
             }
         }
-
     }
 
     public void addChangedEventListener(IChanged listener) {

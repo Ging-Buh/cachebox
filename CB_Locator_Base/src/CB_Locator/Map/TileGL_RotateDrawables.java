@@ -47,7 +47,7 @@ public class TileGL_RotateDrawables {
     }
 
     public void draw(Batch batch, float rotated) {
-        oriMatrix.set(GL.batch.getProjectionMatrix());
+        oriMatrix.set(GL.that.getPolygonSpriteBatch().getProjectionMatrix());
 
         thisDrawMatrix.set(oriMatrix);
 
@@ -58,7 +58,7 @@ public class TileGL_RotateDrawables {
             boolean cantDraw = false;
             clearList.clear();
             if (drw.matrix == null) {
-                cantDraw = drw.drawable.draw(GL.batch, REC[0], REC[1], REC[2], REC[3], rotated);
+                cantDraw = drw.drawable.draw(GL.that.getPolygonSpriteBatch(), REC[0], REC[1], REC[2], REC[3], rotated);
             } else {
 
                 workMatrix.set(thisDrawMatrix);
@@ -67,11 +67,11 @@ public class TileGL_RotateDrawables {
                 }
 
                 if (!transformEquals(workMatrix, oriMatrix)) {
-                    GL.batch.setProjectionMatrix(workMatrix);
+                    GL.that.getPolygonSpriteBatch().setProjectionMatrix(workMatrix);
                     MatrixChanged = true;
                 }
 
-                cantDraw = drw.drawable.draw(GL.batch, REC[0], REC[1], REC[2], REC[3], rotated);
+                cantDraw = drw.drawable.draw(GL.that.getPolygonSpriteBatch(), REC[0], REC[1], REC[2], REC[3], rotated);
             }
 
             if (cantDraw) {
@@ -86,7 +86,7 @@ public class TileGL_RotateDrawables {
         }
 
         if (MatrixChanged)
-            GL.batch.setProjectionMatrix(oriMatrix);
+            GL.that.getPolygonSpriteBatch().setProjectionMatrix(oriMatrix);
 
     }
 

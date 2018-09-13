@@ -27,7 +27,6 @@ import CB_Utils.fileProvider.FileFactory;
 import CB_Utils.fileProvider.FilenameFilter;
 import de.CB_Utils.fileProvider.DesktopFileFactory;
 import org.mapsforge.map.model.DisplayModel;
-import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -48,9 +47,9 @@ class DCB {
         Config.settings.ReadFromDB();
         new CB_SLF4J(Config.mWorkPath);
         CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
-        Config.AktLogLevel.addChangedEventListener(new IChanged() {
+        Config.AktLogLevel.addSettingChangedListener(new IChanged() {
             @Override
-            public void isChanged() {
+            public void handleChange() {
                 CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
             }
         });

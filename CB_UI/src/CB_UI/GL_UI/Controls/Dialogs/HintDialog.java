@@ -82,7 +82,7 @@ public class HintDialog extends GL_MsgBox {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                GL_MsgBox msgBox = (GL_MsgBox) GL.that.getActDialog();
+                GL_MsgBox msgBox = (GL_MsgBox) GL.that.getCurrentDialog();
                 msgBox.label.setWrappedText(UnitFormatter.Rot13(msgBox.label.getText()));
                 return true;
             }

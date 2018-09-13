@@ -43,7 +43,7 @@ public class CB_Action_ShowQuit extends CB_Action {
     public void Execute() {
         // if (askIsShown) return;
 
-        if (msg != null && GL.that.actDialog == msg)
+        if (msg != null && GL.that.getCurrentDialog() == msg)
             return;
 
         String Msg = Translation.Get("QuitReally");

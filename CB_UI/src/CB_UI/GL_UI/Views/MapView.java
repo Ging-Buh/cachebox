@@ -222,15 +222,15 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
         this.Mode = Mode;
 
-        Config.MapsforgeDayTheme.addChangedEventListener(themeChangedEventHandler);
-        Config.MapsforgeNightTheme.addChangedEventListener(themeChangedEventHandler);
-        Config.MapsforgeCarDayTheme.addChangedEventListener(themeChangedEventHandler);
-        Config.MapsforgeCarNightTheme.addChangedEventListener(themeChangedEventHandler);
+        Config.MapsforgeDayTheme.addSettingChangedListener(themeChangedEventHandler);
+        Config.MapsforgeNightTheme.addSettingChangedListener(themeChangedEventHandler);
+        Config.MapsforgeCarDayTheme.addSettingChangedListener(themeChangedEventHandler);
+        Config.MapsforgeCarNightTheme.addSettingChangedListener(themeChangedEventHandler);
 
-        Config.MapsforgeDayStyle.addChangedEventListener(themeChangedEventHandler);
-        Config.MapsforgeNightStyle.addChangedEventListener(themeChangedEventHandler);
-        Config.MapsforgeCarDayStyle.addChangedEventListener(themeChangedEventHandler);
-        Config.MapsforgeCarNightStyle.addChangedEventListener(themeChangedEventHandler);
+        Config.MapsforgeDayStyle.addSettingChangedListener(themeChangedEventHandler);
+        Config.MapsforgeNightStyle.addSettingChangedListener(themeChangedEventHandler);
+        Config.MapsforgeCarDayStyle.addSettingChangedListener(themeChangedEventHandler);
+        Config.MapsforgeCarNightStyle.addSettingChangedListener(themeChangedEventHandler);
 
         registerSkinChangedEvent();
         setBackground(ListBack);
@@ -353,9 +353,9 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
         liveButton = new LiveButton();
         liveButton.setState(Config.LiveMapEnabeld.getDefaultValue());
-        Config.DisableLiveMap.addChangedEventListener(new IChanged() {
+        Config.DisableLiveMap.addSettingChangedListener(new IChanged() {
             @Override
-            public void isChanged() {
+            public void handleChange() {
                 requestLayout();
             }
         });
@@ -526,18 +526,18 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
         // Initial SettingsChanged Events
         MapView.that.SetNightMode(Config.nightMode.getValue());
-        Config.nightMode.addChangedEventListener(new IChanged() {
+        Config.nightMode.addSettingChangedListener(new IChanged() {
             @Override
-            public void isChanged() {
+            public void handleChange() {
                 MapView.this.SetNightMode(Config.nightMode.getValue());
             }
         });
 
         MapView.that.SetNorthOriented(Config.MapNorthOriented.getValue());
-        Config.MapNorthOriented.addChangedEventListener(new IChanged() {
+        Config.MapNorthOriented.addSettingChangedListener(new IChanged() {
 
             @Override
-            public void isChanged() {
+            public void handleChange() {
                 MapView.this.SetNorthOriented(Config.MapNorthOriented.getValue());
                 MapView.this.PositionChanged();
             }
