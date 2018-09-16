@@ -402,9 +402,23 @@ public class GroundspeakAPI {
         } catch (Exception ex) {
             if ( ex instanceof WebbException) {
                 WebbException we = (WebbException) ex;
-                APIError = we.getResponse().getStatusCode();
-                JSONObject ej = (JSONObject) we.getResponse().getErrorBody();
-                LastAPIError = ej.optString("errorMessage","" + APIError);
+                Response re = we.getResponse();
+                if (re != null) {
+                    JSONObject ej;
+                    APIError = re.getStatusCode();
+                    try {
+                        ej = (JSONObject) re.getErrorBody();
+                        if (ej != null) {
+                            LastAPIError = ej.optString("errorMessage","" + APIError);
+                        }
+                        else {
+                            LastAPIError = ex.getLocalizedMessage();
+                        }
+                    }
+                    catch (Exception exc) {
+                        LastAPIError = ex.getLocalizedMessage();
+                    }
+                }
             }
             else {
                 LastAPIError = ex.getLocalizedMessage();

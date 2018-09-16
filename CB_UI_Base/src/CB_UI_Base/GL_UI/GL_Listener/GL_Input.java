@@ -19,6 +19,7 @@ import java.util.*;
 
 import static CB_UI_Base.GL_UI.GL_Listener.GL.FRAME_RATE_ACTION;
 import static CB_UI_Base.GL_UI.GL_Listener.GL.FRAME_RATE_FAST_ACTION;
+import static java.lang.Character.CONTROL;
 
 public class GL_Input implements InputProcessor {
     private static final int MAX_KINETIC_SCROLL_DISTANCE = 100;
@@ -64,7 +65,7 @@ public class GL_Input implements InputProcessor {
 
     @Override
     public boolean touchUp(int x, int y, int pointer, int button) {
-        // InputProcessor Implementation mouseMoved
+        // InputProcessor Implementation touchUp
         return onTouchUpBase(x, y, pointer, button);
     }
 
@@ -76,10 +77,15 @@ public class GL_Input implements InputProcessor {
             return GL.that.closeCurrentDialogOrActivity();
         }
 
-        if (Character.getType(character) == 15) {
+        if (Character.getType(character) == CONTROL) {
             //check if coursor up/down/left/rigt clicked
             if (Character.getNumericValue(character) == -1) {
-                if (!(character == EditTextField.BACKSPACE || character == EditTextField.DELETE || character == EditTextField.ENTER_ANDROID || character == EditTextField.ENTER_DESKTOP || character == EditTextField.TAB)) {
+                if (!(character == EditTextField.BACKSPACE //
+                        || character == EditTextField.DELETE //
+                        || character == EditTextField.ENTER_ANDROID //
+                        || character == EditTextField.ENTER_DESKTOP //
+                        || character == EditTextField.TAB) //
+                ) {
                     return true;
                 }
             }
