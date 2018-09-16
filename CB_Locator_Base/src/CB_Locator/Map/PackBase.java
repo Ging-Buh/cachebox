@@ -7,9 +7,8 @@ import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-
-import static java.nio.charset.StandardCharsets.US_ASCII;
 
 public abstract class PackBase implements Comparable<PackBase> {
 
@@ -113,20 +112,20 @@ public abstract class PackBase implements Comparable<PackBase> {
         else
             while (text.length() < length)
                 text += " ";
-        byte[] asciiBytes = text.getBytes(US_ASCII);
+        byte[] asciiBytes = text.getBytes(StandardCharsets.US_ASCII);
         for (int i = 0; i < length; i++)
             writer.write(asciiBytes[i]);
     }
 
     protected String readString(DataInputStream reader, int length) throws IOException {
-        char[] asciiBytes = new char[length];
+        byte[] asciiBytes = new byte[length];
         int last = 0;
         for (int i = 0; i < length; i++) {
-            asciiBytes[i] = reader.readChar();
+            asciiBytes[i] = reader.readByte();
             if (asciiBytes[i] > 32)
                 last = i;
         }
-        return String.valueOf(asciiBytes, 0, last + 1).trim();
+        return new String(asciiBytes, 0, last + 1, StandardCharsets.US_ASCII);
     }
 
     public void CreateBoudingBoxesFromBounds(int minZoom, int maxZoom, double minLat, double maxLat, double minLon, double maxLon) {

@@ -59,6 +59,11 @@ public class Log {
             LoggerFactory.getLogger(sKlasse).trace(logText);
     }
 
+    public static void trace(String sKlasse, Throwable t) {
+        if (LogLevel.isLogLevel(LogLevel.TRACE))
+            LoggerFactory.getLogger(sKlasse).trace("", t);
+    }
+
     public static void warn(String sKlasse, String logText) {
         if (LogLevel.isLogLevel(LogLevel.WARN))
             LoggerFactory.getLogger(sKlasse).warn(logText);

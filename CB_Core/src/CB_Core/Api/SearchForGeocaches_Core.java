@@ -309,7 +309,7 @@ public class SearchForGeocaches_Core {
         }
     }
 
-    private Boolean LoadBooleanValueFromDB(String sql) // Found-Status aus Datenbank auslesen
+    private boolean LoadBooleanValueFromDB(String sql) // Found-Status aus Datenbank auslesen
     {
         CoreCursor reader = Database.Data.rawQuery(sql, null);
         try {
@@ -341,7 +341,7 @@ public class SearchForGeocaches_Core {
                     String name = jCache.getString("Name");
                     lastError += gcCode + " - " + name + "\n";
 
-                    Boolean CacheERROR = false;
+                    boolean CacheERROR = false;
 
                     Cache cache = new Cache(true);
                     cache.setArchived(jCache.getBoolean("Archived"));
@@ -351,7 +351,7 @@ public class SearchForGeocaches_Core {
                     for (int j = 0; j < jAttributes.length(); j++) {
                         JSONObject jAttribute = jAttributes.getJSONObject(j);
                         int AttributeTypeId = jAttribute.getInt("AttributeTypeID");
-                        Boolean isOn = jAttribute.getBoolean("IsOn");
+                        boolean isOn = jAttribute.getBoolean("IsOn");
                         Attributes att = Attributes.getAttributeEnumByGcComId(AttributeTypeId);
                         if (isOn) {
                             cache.addAttributePositive(att);
@@ -373,11 +373,11 @@ public class SearchForGeocaches_Core {
                     cache.setDifficulty((float) jCache.getDouble("Difficulty"));
 
                     // Ein evtl. in der Datenbank vorhandenen "Favorite" nicht überschreiben
-                    Boolean Favorite = LoadBooleanValueFromDB("select Favorit from Caches where GcCode = \"" + gcCode + "\"");
+                    boolean Favorite = LoadBooleanValueFromDB("select Favorit from Caches where GcCode = \"" + gcCode + "\"");
                     cache.setFavorite(Favorite);
 
                     // Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
-                    Boolean Found = LoadBooleanValueFromDB("select found from Caches where GcCode = \"" + gcCode + "\"");
+                    boolean Found = LoadBooleanValueFromDB("select found from Caches where GcCode = \"" + gcCode + "\"");
                     if (!Found) {
                         cache.setFound(jCache.getBoolean("HasbeenFoundbyUser"));
                     } else {
@@ -394,7 +394,7 @@ public class SearchForGeocaches_Core {
                     cache.setGPXFilename_ID(gpxFilenameId);
 
                     // Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
-                    Boolean userData = LoadBooleanValueFromDB("select HasUserData from Caches where GcCode = \"" + gcCode + "\"");
+                    boolean userData = LoadBooleanValueFromDB("select HasUserData from Caches where GcCode = \"" + gcCode + "\"");
                     cache.setHasUserData(userData);
 
                     if (!isLite) {
@@ -464,11 +464,11 @@ public class SearchForGeocaches_Core {
                     cache.setApiStatus(apiStatus);
 
                     // Ein evtl. in der Datenbank vorhandenen "Favorit" nicht überschreiben
-                    Boolean fav = LoadBooleanValueFromDB("select favorit from Caches where GcCode = \"" + gcCode + "\"");
+                    boolean fav = LoadBooleanValueFromDB("select favorit from Caches where GcCode = \"" + gcCode + "\"");
                     cache.setFavorite(fav);
 
                     // Chk if Own or Found
-                    Boolean exclude = false;
+                    boolean exclude = false;
                     if (search.excludeFounds && cache.isFound())
                         exclude = true;
                     if (search.excludeHides && cache.getOwner().equalsIgnoreCase(CB_Core_Settings.GcLogin.getValue()))

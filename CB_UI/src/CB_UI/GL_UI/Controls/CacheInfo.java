@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Iterator;
 
 public class CacheInfo extends CB_View_Base {
+    private final int AttributesPerLine = 12;
     public static final Color gcVoteColor = new Color(0.5f, 0.5f, 1f, 1f);
     public static final int SHOW_COMPASS = 1;
     public static final int SHOW_NAME = 2;
@@ -376,10 +377,9 @@ public class CacheInfo extends CB_View_Base {
             }
 
             if (ifModeFlag(SHOW_ATTRIBUTES)) { // create Attribute Icons
-                final int countPerLine = 6;
-                float attSize = getWidth() / countPerLine - mMargin;
+                float attSize = getWidth() / AttributesPerLine - mMargin;
                 int attCount = mCache.getAttributes().size();
-                int lineCount = getLineCount(attCount, countPerLine);
+                int lineCount = getLineCount(attCount, AttributesPerLine);
 
                 float attX = mMargin;
                 float attY = ifModeFlag(SHOW_S_D_T) ? mSSprite.getHeight() + (2 * mMargin) : mMargin;
@@ -400,7 +400,7 @@ public class CacheInfo extends CB_View_Base {
 
                         attX += mAttrSprites[count].getWidth() + mMargin;
 
-                        if (countPerLine == ++actLineCount) {
+                        if (AttributesPerLine == ++actLineCount) {
                             //next line
                             attY -= (attSize + mMargin);
                             actLineCount = 0;
@@ -470,12 +470,11 @@ public class CacheInfo extends CB_View_Base {
     }
 
     public float getAttributeHeight() {
-        final int countPerLine = 6;
-        float attSize = getWidth() / countPerLine - mMargin;
+        float attSize = getWidth() / AttributesPerLine - mMargin;
         int attCount = 0;
         if (mCache != null && mCache.getAttributes() != null)
             attCount = mCache.getAttributes().size();
-        int lineCount = getLineCount(attCount, countPerLine);
+        int lineCount = getLineCount(attCount, AttributesPerLine);
         return lineCount * (attSize + mMargin) + mMargin;
     }
 

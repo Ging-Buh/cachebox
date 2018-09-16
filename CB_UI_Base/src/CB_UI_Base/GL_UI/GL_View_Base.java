@@ -682,9 +682,9 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     public boolean click(int x, int y, int pointer, int button) {
-        // final gives errors
         // Achtung: dieser click ist nicht virtual und darf nicht überschrieben werden!!!
         // das Ereignis wird dann in der richtigen View an click übergeben!!!
+        // todo Überschreibung in EditTextField, ColorPicker, Button, .... Erklärung (final)
         boolean handled = false;
         try {
             if (childs != null && childs.size() > 0) {
@@ -724,9 +724,9 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     public boolean doubleClick(int x, int y, int pointer, int button) {
-        // final gives errors
         // Achtung: dieser doubleClick ist nicht virtual und darf nicht überschrieben werden!!!
         // das Ereignis wird dann in der richtigen View an doubleClick übergeben!!!
+        // todo Überschreibung in EditTextField, MapView Erklärung (final)
         boolean behandelt = false;
         try {
             if (childs != null && childs.size() > 0) {
@@ -764,9 +764,9 @@ public abstract class GL_View_Base extends CB_RectF {
     }
 
     public boolean longClick(int x, int y, int pointer, int button) {
-        // final gives errors
         // Achtung: dieser longClick ist nicht virtual und darf nicht überschrieben werden!!!
         // das Ereignis wird dann in der richtigen View an longClick übergeben!!!
+        // todo Überschreibung in MultiToggleButton Erklärung (final)
         boolean behandelt = false;
 
         try {
@@ -803,6 +803,7 @@ public abstract class GL_View_Base extends CB_RectF {
         // Achtung: dieser touchDown ist nicht virtual und darf nicht überschrieben werden!!!
         // das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
         // touchDown liefert die View zurück, die dieses TochDown Ereignis angenommen hat
+        // todo Überschreibung in EditFieldNotes Erklärung (final)
         GL_View_Base resultView = null;
 
         if (childs != null && childs.size() > 0) {
@@ -844,15 +845,6 @@ public abstract class GL_View_Base extends CB_RectF {
         return resultView;
     }
 
-    /**
-     * touchDragged
-     *
-     * @param x
-     * @param y
-     * @param pointer
-     * @param KineticPan
-     * @return
-     */
     public final boolean touchDragged(int x, int y, int pointer, boolean KineticPan) {
         // Achtung: dieser touchDragged ist nicht virtual und darf nicht überschrieben werden!!!
         // das Ereignis wird dann in der richtigen View an onTouchDown übergeben!!!
@@ -915,33 +907,10 @@ public abstract class GL_View_Base extends CB_RectF {
 
     public abstract boolean onLongClick(int x, int y, int pointer, int button);
 
-    /**
-     * @param x
-     * @param y
-     * @param pointer
-     * @param button
-     * @return
-     */
     public abstract boolean onTouchDown(int x, int y, int pointer, int button);
 
-    /**
-     * abstract onTouchDragged: implementation should return true, if handled.
-     *
-     * @param x
-     * @param y
-     * @param pointer
-     * @param KineticPan
-     * @return
-     */
     public abstract boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan);
 
-    /**
-     * @param x
-     * @param y
-     * @param pointer
-     * @param button
-     * @return
-     */
     public abstract boolean onTouchUp(int x, int y, int pointer, int button);
 
     @Override

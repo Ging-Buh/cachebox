@@ -45,7 +45,7 @@ public class ImageDAO {
                 Database.Data.insertWithConflictReplace("Images", args);
             }
         } catch (Exception exc) {
-            Log.err(log, "Write Image", "", exc);
+            Log.err(log,"",exc);
         }
     }
 

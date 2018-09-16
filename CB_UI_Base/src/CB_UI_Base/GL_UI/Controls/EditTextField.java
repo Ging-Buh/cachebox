@@ -842,7 +842,6 @@ public class EditTextField extends EditTextFieldBase {
     public boolean keyDown(int keycode) {
         displayTextLock.lock();
         try {
-
             if (GL.that.hasFocus(this)) {
                 if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
                     // paste
@@ -941,6 +940,11 @@ public class EditTextField extends EditTextFieldBase {
             displayTextLock.unlock();
         }
         return false;
+    }
+
+    @Override
+    public boolean keyUp(int KeyCode) {
+        return true;
     }
 
     // bewegt den Cursor an den Anfang / Ende der aktuellen Zeile
@@ -1575,14 +1579,6 @@ public class EditTextField extends EditTextFieldBase {
         }
 
         setTextAtCursorVisible(true);
-    }
-
-    /**
-     * keyUp
-     */
-    @Override
-    public boolean keyUp(int KeyCode) {
-        return true;
     }
 
     public BitmapFont getFont() {

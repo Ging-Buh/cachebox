@@ -59,23 +59,6 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
         this.setDoubleClickable(true);
     }
 
-    public static TextFieldStyle getDefaultStyle() {
-        TextFieldStyle ret = new TextFieldStyle();
-
-        ret.setBackground(Sprites.textFieldBackground, Sprites.textFieldBackgroundFocus);
-        ret.font = Fonts.getNormal();
-        ret.fontColor = COLOR.getFontColor();
-
-        ret.messageFont = Fonts.getSmall();
-        ret.messageFontColor = COLOR.getDisableFontColor();
-
-        ret.cursor = Sprites.textFieldCursor;
-
-        ret.selection = Sprites.selection;
-
-        return ret;
-    }
-
     public abstract boolean keyTyped(char character);
 
     public abstract boolean keyUp(int KeyCode);
@@ -299,6 +282,23 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 
     public interface IBecomesFocus {
         void becomesFocus();
+    }
+
+    public static TextFieldStyle getDefaultStyle() {
+        TextFieldStyle ret = new TextFieldStyle();
+
+        ret.setBackground(Sprites.textFieldBackground, Sprites.textFieldBackgroundFocus);
+        ret.font = Fonts.getNormal();
+        ret.fontColor = COLOR.getFontColor();
+
+        ret.messageFont = Fonts.getSmall();
+        ret.messageFontColor = COLOR.getDisableFontColor();
+
+        ret.cursor = Sprites.textFieldCursor;
+
+        ret.selection = Sprites.selection;
+
+        return ret;
     }
 
     /**

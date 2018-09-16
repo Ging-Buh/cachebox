@@ -400,8 +400,17 @@ public class GroundspeakAPI {
             ui.findCount = response.optInt("findCount", -1);
             Log.info(log, "fetchUserInfos done \n" + response.toString());
         } catch (Exception ex) {
-            LastAPIError = ex.getLocalizedMessage();
-            Log.err(log, "fetchUserInfos", ex);
+            if ( ex instanceof WebbException) {
+                WebbException we = (WebbException) ex;
+                APIError = we.getResponse().getStatusCode();
+                JSONObject ej = (JSONObject) we.getResponse().getErrorBody();
+                LastAPIError = ej.optString("errorMessage","" + APIError);
+            }
+            else {
+                LastAPIError = ex.getLocalizedMessage();
+            }
+            Log.err(log, "fetchUserInfos" + LastAPIError);
+            Log.trace(log, ex);
             ui.username = "";
             ui.memberShipType = MemberShipTypes.Unknown;
             ui.findCount = 0;
@@ -920,9 +929,10 @@ public class GroundspeakAPI {
 
         // for ACB we added an additional A in settings
         if ((act.startsWith("A"))) {
-            Log.debug(log, "Access Token = " + act.substring(1, act.length()));
+            Log.trace(log, "Access Token = " + act.substring(1, act.length()));
             return act.substring(1);
         } else
+            Log.err(log, "no Access Token");
             return "";
         /* */
     }

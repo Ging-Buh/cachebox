@@ -45,7 +45,7 @@ public class GL_Input implements InputProcessor {
     @Override
     public boolean touchDown(int x, int y, int pointer, int button) {
         // InputProcessor Implementation touchDown
-        return this.onTouchDownBase(x, y, pointer, button);
+        return onTouchDownBase(x, y, pointer, button);
     }
 
     @Override
@@ -65,8 +65,7 @@ public class GL_Input implements InputProcessor {
     @Override
     public boolean touchUp(int x, int y, int pointer, int button) {
         // InputProcessor Implementation mouseMoved
-        boolean ret = onTouchUpBase(x, y, pointer, button);
-        return ret;
+        return onTouchUpBase(x, y, pointer, button);
     }
 
     @Override
@@ -132,7 +131,7 @@ public class GL_Input implements InputProcessor {
     }
 
     // TouchEreignisse die von der View gesendet werden
-    // hier wird entschieden, wann TouchDonw, TouchDragged, TouchUp und Clicked, LongClicked Ereignisse gesendet werden müssen
+    // hier wird entschieden, wann TouchDown, TouchDragged, TouchUp und Clicked, LongClicked Ereignisse gesendet werden müssen
     public boolean onTouchDownBase(int x, int y, int pointer, int button) {
         GL.that.resetAmbiantMode();
 
