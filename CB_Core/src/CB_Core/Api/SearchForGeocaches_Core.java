@@ -16,7 +16,6 @@
 package CB_Core.Api;
 
 import CB_Core.*;
-import CB_Core.Types.CacheDAO;
 import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
@@ -46,6 +45,7 @@ public class SearchForGeocaches_Core {
     private static int getApiStatus(JSONObject json) {
 
         try {
+            Log.info(log, "getApiStatus");
             JSONObject jsonStatus = json.getJSONObject("Status");
             int status = jsonStatus.getInt("StatusCode");
             String statusMessage = jsonStatus.getString("StatusMessage");
@@ -90,6 +90,7 @@ public class SearchForGeocaches_Core {
     }
 
     public String SearchForGeocachesJSON(Search search, CB_List<Cache> cacheList, ArrayList<LogEntry> logList, ArrayList<ImageEntry> imageList, long gpxFilenameId, ICancel icancel) {
+        Log.info(log, "SearchForGeocachesJSON");
 
         int startIndex = 0;
         int searchNumber = search.number <= 50 ? search.number : 50;
@@ -116,6 +117,7 @@ public class SearchForGeocaches_Core {
             request.put("StartIndex", startIndex);
 
             if (search instanceof SearchGC) {
+                Log.info(log, "nach GCCode");
                 isLite = false;
                 SearchGC searchGC = (SearchGC) search;
 
@@ -125,13 +127,13 @@ public class SearchForGeocaches_Core {
                     request.put("GeocacheLogCount", 10);
                     request.put("TrackableLogCount", 10);
                     JSONObject requestcc = new JSONObject();
-                    JSONArray requesta = new JSONArray();
+                    JSONArray ArrayOfCaches = new JSONArray();
 
                     for (String gcCode : searchGC.gcCodes) {
-                        requesta.put(gcCode);
+                        ArrayOfCaches.put(gcCode);
                     }
 
-                    requestcc.put("CacheCodes", requesta);
+                    requestcc.put("CacheCodes", ArrayOfCaches);
                     request.put("CacheCode", requestcc);
                 } catch (JSONException e) {
                     Log.err(log, "SearchForGeocaches:JSONException", e);
@@ -140,6 +142,7 @@ public class SearchForGeocaches_Core {
                 apiStatus = 2;
 
             } else if (search instanceof SearchGCName) {
+                Log.info(log, "nach Name");
                 SearchGCName searchC = (SearchGCName) search;
                 if (isLite)
                     request.put("IsLight", true);
@@ -162,6 +165,7 @@ public class SearchForGeocaches_Core {
                 request = writeExclusions(request, searchC);
 
             } else if (search instanceof SearchGCOwner) {
+                Log.info(log, "nach Owner");
                 SearchGCOwner searchC = (SearchGCOwner) search;
                 if (isLite)
                     request.put("IsLight", true);
@@ -187,6 +191,7 @@ public class SearchForGeocaches_Core {
                 request = writeExclusions(request, searchC);
 
             } else if (search instanceof SearchCoordinate) {
+                Log.info(log, "nach Koordinaten");
                 SearchCoordinate searchC = (SearchCoordinate) search;
 
                 if (isLite)
@@ -218,13 +223,13 @@ public class SearchForGeocaches_Core {
 
                 request = writeExclusions(request, searchC);
             }
-        }
-        catch (Exception e) {
-            Log.err(log,"SearchForGeocaches: Can't create request", e);
+        } catch (Exception e) {
+            Log.err(log, "SearchForGeocaches: Can't create request", e);
             return "";
         }
 
         try {
+            Log.debug(log, "Webb access (first call).");
             JSONObject json = Webb.create()
                     .post(getUrl("SearchForGeocaches?format=json"))
                     .body(request)
@@ -234,6 +239,7 @@ public class SearchForGeocaches_Core {
                     .asJsonObject()
                     .getBody();
             if (getApiStatus(json) == OK) {
+                Log.debug(log, "OK Result");
                 // save result, if this is a Live-Request
                 if (search instanceof SearchLiveMap) {
                     SearchLiveMap mSearchLiveMap = (SearchLiveMap) search;
@@ -281,6 +287,7 @@ public class SearchForGeocaches_Core {
                         request.put("TrackableLogCount", 2);
 
                         try {
+                            Log.debug(log, "Webb access (following calls).");
                             json = Webb.create()
                                     .post(getUrl("GetMoreGeocaches?format=json"))
                                     .body(request)
@@ -299,7 +306,7 @@ public class SearchForGeocaches_Core {
                 }
                 return lastError;
             } else {
-                // Error
+                Log.debug(log, "Error Result");
                 return "";
             }
         } catch (Exception e) {
@@ -311,6 +318,7 @@ public class SearchForGeocaches_Core {
 
     private boolean LoadBooleanValueFromDB(String sql) // Found-Status aus Datenbank auslesen
     {
+        Log.trace(log, "LoadBooleanValueFromDB " + sql);
         CoreCursor reader = Database.Data.rawQuery(sql, null);
         try {
             reader.moveToFirst();
@@ -328,6 +336,7 @@ public class SearchForGeocaches_Core {
     }
 
     String ParseJsonResult(Search search, CB_List<Cache> cacheList, ArrayList<LogEntry> logList, ArrayList<ImageEntry> imageList, long gpxFilenameId, JSONObject json, byte apiStatus, boolean isLite) {
+        Log.info(log, "ParseJsonResult");
         String lastError = "";
         try {
             JSONObject status = json.getJSONObject("Status");
@@ -587,7 +596,7 @@ public class SearchForGeocaches_Core {
                             boolean descriptionOverideInfo = false;
                             boolean correctedCoordinateFlag = false;
 
-                             descriptionOverideInfo = jUserWaypoint.optString("Description","").equals("Coordinate Override");
+                            descriptionOverideInfo = jUserWaypoint.optString("Description", "").equals("Coordinate Override");
 
                             try {
                                 correctedCoordinateFlag = jUserWaypoint.getBoolean("IsCorrectedCoordinate");
@@ -721,8 +730,7 @@ public class SearchForGeocaches_Core {
         // hier im Core nichts machen da hier keine UI vorhanden ist
     }
 
-    private JSONObject writeExclusions(JSONObject request, SearchCoordinate searchC) throws JSONException
-    {
+    private JSONObject writeExclusions(JSONObject request, SearchCoordinate searchC) throws JSONException {
         if (searchC.available) {
             JSONObject GeocacheExclusions = new JSONObject()
                     .put("Archived", false)

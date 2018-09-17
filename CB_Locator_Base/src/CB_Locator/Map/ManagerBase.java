@@ -288,7 +288,7 @@ public abstract class ManagerBase {
                     if (!mapnames.contains(tmp)) {
                         files.add(FilePath);
                         mapnames.add(tmp);
-                        Log.debug(log, "add: " + tmp);
+                        Log.trace(log, "add: " + tmp);
                     }
                 }
             }

@@ -968,7 +968,7 @@ public class splash extends Activity {
         if (Database.Settings.isDbNew()) {
             Config.settings.LoadAllDefaultValues();
             Config.settings.WriteToDB();
-            Log.info(log, "Default Settings written to configDB.");
+            Log.info(log, "Default Settings written to new configDB.");
         } else {
             Config.settings.ReadFromDB();
             Log.info(log, "Settings read from configDB.");
@@ -1063,8 +1063,8 @@ public class splash extends Activity {
 
         // UiSize Structur für die Berechnung der Größen zusammen stellen!
 
-        Log.debug(log, GlobalCore.getVersionString());
-        Log.debug(log, "Screen width/height:" + width + "/" + height);
+        Log.info(log, GlobalCore.getVersionString());
+        Log.info(log, "Screen width/height:" + width + "/" + height);
 
         if (ui == null) {
             Resources res = splash.this.getResources();

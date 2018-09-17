@@ -52,10 +52,13 @@ public class WriteIntoDB {
 
             // Notes von Groundspeak überprüfen und evtl. in die DB an die vorhandenen Notes anhängen
             // todo solver extrahieren
-            if (cache.getTmpNote() != null) {
-                String oldNote = Database.GetNote(cache).trim();
-                String newNote = "";
-                if (oldNote == null) {
+            if (cache.getTmpNote() != null && cache.getTmpNote().length() > 0) {
+
+                String oldNote = Database.GetNote(cache);
+                if (oldNote != null) {
+                    oldNote = oldNote.trim();
+                }
+                else {
                     oldNote = "";
                 }
                 String begin = "<Import from Geocaching.com>";
@@ -65,6 +68,7 @@ public class WriteIntoDB {
                 String end = "</Import from Geocaching.com>";
                 int iBegin = oldNote.indexOf(begin);
                 int iEnd = oldNote.indexOf(end);
+                String newNote;
                 if ((iBegin >= 0) && (iEnd > iBegin)) {
                     // Note from Groundspeak already in Database
                     // -> Replace only this part in whole Note
@@ -82,6 +86,7 @@ public class WriteIntoDB {
                 }
                 cache.setTmpNote(newNote);
                 Database.SetNote(cache, cache.getTmpNote());
+
             }
 
             // Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB

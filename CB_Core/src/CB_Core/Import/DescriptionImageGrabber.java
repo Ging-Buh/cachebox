@@ -342,6 +342,7 @@ public class DescriptionImageGrabber {
      * }<br>
      */
     public static int GrabImagesSelectedByCache(ImporterProgress ip, boolean descriptionImagesUpdated, boolean additionalImagesUpdated, long id, String gcCode, String name, String description, String url) {
+        Log.debug(log, "GrabImagesSelectedByCache");
         boolean imageLoadError = false;
 
         if (!descriptionImagesUpdated) {
@@ -432,6 +433,7 @@ public class DescriptionImageGrabber {
                 if (allimgDict == null)
                     return 0;
 
+                Log.debug(log,"check what images to download Anz: " + allimgDict.keySet().size());
                 for (String key : allimgDict.keySet()) {
 
                     try {// for cancel/interupt Thread
@@ -497,17 +499,19 @@ public class DescriptionImageGrabber {
 
                     }
                 }
+                Log.debug(log, "images download done");
 
                 additionalImagesUpdated = true;
 
                 if (!imageLoadError) {
                     Parameters args = new Parameters();
                     args.put("ImagesUpdated", additionalImagesUpdated);
+                    Log.debug(log, "ImagesUpdated to database");
                     Database.Data.update("Caches", args, "Id = ?", new String[]{String.valueOf(id)});
                     // jetzt können noch alle "alten" Spoiler gelöscht werden. "alte" Spoiler sind die, die auf der SD vorhanden sind,
-                    // aber
-                    // nicht als Link über die API gemeldet wurden
+                    // aber nicht als Link über die API gemeldet wurden.
                     // Alle Spoiler in der Liste afiles sind "alte"
+                    Log.debug(log, "Delete old spoilers.");
                     for (String file : afiles) {
                         String fileNameWithOutExt = file.replaceFirst("[.][^.]+$", "");
                         // Testen, ob dieser Dateiname einen gültigen ACB Hash hat (eingeschlossen zwischen @....@>
@@ -527,6 +531,7 @@ public class DescriptionImageGrabber {
 
             }
         }
+        Log.debug(log, "GrabImagesSelectedByCache done");
         return 0;
     }
 

@@ -18,7 +18,6 @@ package CB_Core.Import;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.GroundspeakAPI.PQ;
 import CB_Core.CB_Core_Settings;
-import CB_Core.Types.CacheDAO;
 import CB_Core.DAO.GCVoteDAO;
 import CB_Core.DAO.ImageDAO;
 import CB_Core.Database;
@@ -26,6 +25,7 @@ import CB_Core.GCVote.GCVote;
 import CB_Core.GCVote.GCVoteCacheInfo;
 import CB_Core.GCVote.RatingData;
 import CB_Core.Types.Cache;
+import CB_Core.Types.CacheDAO;
 import CB_Core.Types.ImageEntry;
 import CB_Utils.Events.ProgresssChangedEventList;
 import CB_Utils.Log.Log;
@@ -627,6 +627,7 @@ public class Importer {
      * }<br>
      */
     private int importApiImages(String GcCode, long ID) {
+        Log.info(log, "importApiImages for " + GcCode);
 
         int ret = GroundspeakAPI.OK;
 

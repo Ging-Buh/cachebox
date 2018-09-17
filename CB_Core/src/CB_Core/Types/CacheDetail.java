@@ -344,7 +344,7 @@ public class CacheDetail implements Serializable {
     }
 
     private void loadSpoilerResourcesFromPath(String directory, final Cache cache) {
-        Log.debug(log, "LoadSpoilerResourcesFromPath from " + directory);
+        Log.trace(log, "LoadSpoilerResourcesFromPath from " + directory);
         if (!FileIO.DirectoryExists(directory))
             return;
         File dir = FileFactory.createFile(directory);

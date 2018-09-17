@@ -137,7 +137,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
         // Read from DB
         // Log.debug will not work, cause setting of loglevel is from settings (that and not yet read and set)
         try {
-            Log.debug(log, "Reading global settings: " + getSettingsDB().getDatabasePath());
+            Log.debug(log, "Load settings from: " + getSettingsDB().getDatabasePath());
             Log.debug(log, "and local settings: " + getDataDB().getDatabasePath());
         } catch (Exception e) {
             // gibt beim splash - Start: NPE in Translation.readMissingStringsFile
@@ -205,15 +205,15 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
 
                     if (isPlatform) {
                         if (isPlattformoverride) {
-                            Log.debug(log, "Override Platform setting [" + setting.name + "] from DB to: " + debugString);
+                            Log.trace(log, "Override Platform setting [" + setting.name + "] from DB to: " + debugString);
                         } else {
-                            Log.debug(log, "Override PlatformDB setting [" + setting.name + "] from Platform to: " + debugString);
+                            Log.trace(log, "Override PlatformDB setting [" + setting.name + "] from Platform to: " + debugString);
                         }
                     } else {
                         if (!setting.value.equals(setting.defaultValue)) {
-                            Log.debug(log, "Change " + setting.getStoreType() + " setting [" + setting.name + "] to: " + debugString);
+                            Log.trace(log, "Change " + setting.getStoreType() + " setting [" + setting.name + "] to: " + debugString);
                         } else {
-                            Log.debug(log, "Default " + setting.getStoreType() + " setting [" + setting.name + "] to: " + debugString);
+                            Log.trace(log, "Default " + setting.getStoreType() + " setting [" + setting.name + "] to: " + debugString);
                         }
                     }
                 }

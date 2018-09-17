@@ -691,31 +691,19 @@ public abstract class GL_View_Base extends CB_RectF {
                 for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext(); ) {
                     // Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
                     GL_View_Base view = iterator.next();
-
-                    if (view == null || !view.isClickable())
-                        continue;
-                    // Invisible Views can not be clicked!
-                    if (!view.isVisible())
-                        continue;
-
-                    if (view.contains(x, y)) {
-                        // touch innerhalb des Views
-                        // -> Klick an das View weitergeben
+                    if (view != null && view.isClickable() && view.isVisible() && view.contains(x, y)) {
+                        // view gefunden auf das geklickt wurde
                         handled = view.click(x - (int) view.getX(), y - (int) view.getY(), pointer, button);
-
                         // if handled, we can break and don't test the rest
-                        if (handled)
-                            break;
+                        if (handled) break;
                     }
                 }
             }
             if (!handled) {
-                // kein Klick in einem untergeordnetem View
-                // -> hier behandeln
+                // Es ist kein Klick in einem untergeordnetem View -> es muß in diesem view behandelt werden
                 if (mOnClickListener != null) {
                     handled = mOnClickListener.onClick(this, x, y, pointer, button);
                 }
-
             }
         } catch (Exception e) {
             Log.err(log, "click", e);

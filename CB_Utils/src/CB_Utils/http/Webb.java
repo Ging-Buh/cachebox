@@ -316,7 +316,7 @@ public class Webb {
     }
 
     private <T> Response<T> _execute(Request request, Class<T> clazz) {
-        Response<T> response = new Response<T>(request);
+        Response<T> response = new Response<>(request);
 
         InputStream is = null;
         boolean closeStream = true;

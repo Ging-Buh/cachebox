@@ -10,7 +10,6 @@ import java.io.InputStream;
 public class Download {
 
     public static Boolean Download(String remote, String local) {
-
         boolean err = false;
         File localFile = FileFactory.createFile(local);
         /* create parent directories, if necessary */
@@ -32,20 +31,25 @@ public class Download {
                 inStream = response.getBody();
                 outStream = new BufferedOutputStream(localFile.getFileOutputStream());
                 WebbUtils.copyStream(inStream, outStream);
-            } catch (Exception e) {
-                if (response != null && response.getStatusCode() >= 300 && response.getStatusCode() < 400) {
-                    if (remote.startsWith("http:")) {
-                        redirected = true;
-                        remote = "https:" + remote.substring(5);
+            } catch (Exception ex) {
+                if (ex instanceof WebbException) {
+                    WebbException we = (WebbException) ex;
+                    Response re = we.getResponse();
+                    if (re != null) {
+                        int APIError = re.getStatusCode();
+                        if (APIError >= 300 && APIError < 400) {
+                            if (remote.startsWith("http:")) {
+                                redirected = true;
+                                remote = "https:" + remote.substring(5);
+                            } else {
+                                // other cases should have been handled automatically
+                                Log.err("Download", remote + " to " + local, ex);
+                                err = true;
+                            }
+                        }
                     }
-                    else {
-                        // other cases should have been handled automatically
-                        Log.err("Download", remote + " to " + local, e);
-                        err = true;
-                    }
-                }
-                else {
-                    Log.err("Download", remote + " to " + local, e);
+                } else {
+                    Log.err("Download", remote + " to " + local, ex);
                     err = true;
                 }
             } finally {

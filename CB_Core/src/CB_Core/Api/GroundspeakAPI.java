@@ -400,7 +400,7 @@ public class GroundspeakAPI {
             ui.findCount = response.optInt("findCount", -1);
             Log.info(log, "fetchUserInfos done \n" + response.toString());
         } catch (Exception ex) {
-            if ( ex instanceof WebbException) {
+            if (ex instanceof WebbException) {
                 WebbException we = (WebbException) ex;
                 Response re = we.getResponse();
                 if (re != null) {
@@ -409,18 +409,15 @@ public class GroundspeakAPI {
                     try {
                         ej = (JSONObject) re.getErrorBody();
                         if (ej != null) {
-                            LastAPIError = ej.optString("errorMessage","" + APIError);
-                        }
-                        else {
+                            LastAPIError = ej.optString("errorMessage", "" + APIError);
+                        } else {
                             LastAPIError = ex.getLocalizedMessage();
                         }
-                    }
-                    catch (Exception exc) {
+                    } catch (Exception exc) {
                         LastAPIError = ex.getLocalizedMessage();
                     }
                 }
-            }
-            else {
+            } else {
                 LastAPIError = ex.getLocalizedMessage();
             }
             Log.err(log, "fetchUserInfos" + LastAPIError);
@@ -590,37 +587,39 @@ public class GroundspeakAPI {
         return (ERROR);
     }
 
-    // downloadImageListForGeocache
-    // todo es werden nur 10 geholt
     public static int downloadImageListForGeocache(String cacheCode, HashMap<String, URI> list) {
-        Log.info(log, "downloadImageListForGeocache");
+        Log.debug(log, "downloadImageListForGeocache for '" + "cacheCode" + "'");
         LastAPIError = "";
         if (cacheCode == null) return ERROR;
         if (invalidAccessToken()) return ERROR;
         if (list == null)
             list = new HashMap<>();
+        int skip = 0;
+        int take = 50;
+
+        // todo Schleife (es werden nur 50 geholt (was reicht))
+        // other fields ,referenceCode,createdDate,guid
         try {
-            //
+            Log.debug(log, "Webb.create for " + getUrl(1, String.format("geocaches/%s/images?skip=%d&take=%d&fields=url,description", cacheCode, skip, take)));
             JSONArray jImages = Webb.create()
-                    .get(getUrl(1, "geocaches/" + cacheCode + "/images?fields=url,description"))
+                    .get(getUrl(1, String.format("geocaches/%s/images?skip=%d&take=%d&fields=url,description", cacheCode, skip, take)))
                     .header(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken())
                     .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
                     .readTimeout(CB_Core_Settings.socket_timeout.getValue())
                     .ensureSuccess()
                     .asJsonArray()
                     .getBody();
-
             try {
-                Log.info(log, "downloadImageListForGeocache Anz.: " + jImages.length());
+                Log.debug(log, "Anz.: " + jImages.length());
                 for (int ii = 0; ii < jImages.length(); ii++) {
                     try {
                         JSONObject jImage = (JSONObject) jImages.get(ii);
                         String name = jImage.getString("description");
                         String uri = jImage.getString("url");
-                        Log.debug(log, "downloadImageListForGeocache getImageObject Nr.:" + ii + " '" + name + "' " + uri);
+                        Log.trace(log, "downloadImageListForGeocache getImageObject Nr.:" + ii + " '" + name + "' " + uri);
                         // ignore log images (in dieser API kommen keine Logbilder mehr)
                         if (uri.contains("/cache/log")) {
-                            Log.debug(log, "downloadImageListForGeocache getImageObject Nr.:" + ii + " ignored.");
+                            Log.trace(log, "downloadImageListForGeocache getImageObject Nr.:" + ii + " ignored.");
                             continue; // LOG-Image
                         }
                         // Check for duplicate name
@@ -711,18 +710,17 @@ public class GroundspeakAPI {
             }
             return tb;
         } catch (Exception ex) {
-            if ( ex instanceof WebbException) {
+            if (ex instanceof WebbException) {
                 WebbException we = (WebbException) ex;
                 APIError = we.getResponse().getStatusCode();
                 JSONObject ej = (JSONObject) we.getResponse().getErrorBody();
-                LastAPIError = ej.optString("errorMessage","" + APIError);
-            }
-            else {
+                LastAPIError = ej.optString("errorMessage", "" + APIError);
+            } else {
                 LastAPIError = ex.getLocalizedMessage();
             }
             Log.err(log, "fetchTrackable \n"
-                    + LastAPIError
-                    + "\n for " + getUrl(1, "trackables/" + TBCode + "?fields=url,description")
+                            + LastAPIError
+                            + "\n for " + getUrl(1, "trackables/" + TBCode + "?fields=url,description")
                     , ex);
             return null;
         }
@@ -827,7 +825,6 @@ public class GroundspeakAPI {
     }
 
     public static UserInfos fetchMyUserInfos() {
-        Log.debug(log, "fetchMyUserInfos");
         if (me == null || me.memberShipType == MemberShipTypes.Unknown) {
             me = fetchUserInfos("me");
             if (me.memberShipType == MemberShipTypes.Unknown) {
@@ -836,7 +833,6 @@ public class GroundspeakAPI {
                 Log.err(log, "fetchMyUserInfos: Need a new Access Token");
             }
         }
-        Log.debug(log, "fetchMyUserInfos done: " + me.username + " S=" + me.memberShipType + " F=" + me.findCount);
         return me;
     }
 
@@ -872,6 +868,7 @@ public class GroundspeakAPI {
                         .ensureSuccess()
                         .asJsonArray()
                         .getBody();
+                skip = skip + take;
                 for (int ii = 0; ii < json.length(); ii++) {
                     JSONObject jPQ = (JSONObject) json.get(ii);
                     PQ pq = new PQ();
@@ -947,7 +944,7 @@ public class GroundspeakAPI {
             return act.substring(1);
         } else
             Log.err(log, "no Access Token");
-            return "";
+        return "";
         /* */
     }
 

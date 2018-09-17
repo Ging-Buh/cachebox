@@ -19,6 +19,7 @@ import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.main;
 
 public class GcApiLogin extends Activity {
+    private static final String sKlasse = "GcApiLogin";
     private static GcApiLogin gcApiLogin;
     private static ProgressDialog pd;
     private static boolean pdIsShow = false;
@@ -207,6 +208,7 @@ public class GcApiLogin extends Activity {
 
                 return GC_AuthUrl;
             } catch (Exception e) {
+                Log.err(sKlasse, "", e);
                 return "";
             }
         }
