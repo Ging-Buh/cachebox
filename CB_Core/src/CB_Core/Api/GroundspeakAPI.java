@@ -67,12 +67,12 @@ public class GroundspeakAPI {
      */
     public static int fetchGeocacheStatus(ArrayList<Cache> caches, final ICancel icancel) {
 
-        if (invalidAccessToken()) return ERROR;
-
         try {
             Thread.sleep(2500);
         } catch (InterruptedException e1) {
         }
+
+        if (invalidAccessToken()) return ERROR;
 
         try {
             JSONArray CacheCodes = new JSONArray();
@@ -400,6 +400,7 @@ public class GroundspeakAPI {
             ui.findCount = response.optInt("findCount", -1);
             Log.info(log, "fetchUserInfos done \n" + response.toString());
         } catch (Exception ex) {
+            LastAPIError = ex.getLocalizedMessage();
             if (ex instanceof WebbException) {
                 WebbException we = (WebbException) ex;
                 Response re = we.getResponse();
@@ -417,10 +418,8 @@ public class GroundspeakAPI {
                         LastAPIError = ex.getLocalizedMessage();
                     }
                 }
-            } else {
-                LastAPIError = ex.getLocalizedMessage();
             }
-            Log.err(log, "fetchUserInfos" + LastAPIError);
+            Log.err(log, "fetchUserInfos:" + APIError + ":" + LastAPIError);
             Log.trace(log, ex);
             ui.username = "";
             ui.memberShipType = MemberShipTypes.Unknown;

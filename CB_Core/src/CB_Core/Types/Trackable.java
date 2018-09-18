@@ -16,11 +16,8 @@
 package CB_Core.Types;
 
 import CB_Core.LogTypes;
-import CB_Utils.Log.Log;
 import CB_Utils.Util.UnitFormatter;
 import de.cb.sqlite.CoreCursor;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;

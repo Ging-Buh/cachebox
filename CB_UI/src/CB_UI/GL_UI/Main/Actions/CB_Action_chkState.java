@@ -95,7 +95,7 @@ public class CB_Action_chkState extends CB_Action {
                     result = GroundspeakAPI.fetchGeocacheStatus(chkList100, this);
                     if (result == -1) {
                         GL.that.Toast(ConnectionError.INSTANCE);
-                        GL.that.Toast(ApiUnavailable.INSTANCE);
+                        // GL.that.Toast(ApiUnavailable.INSTANCE);
                         break;
                     }
 
@@ -164,7 +164,6 @@ public class CB_Action_chkState extends CB_Action {
 
     public CB_Action_chkState() {
         super("chkState", MenuID.AID_CHK_STATE);
-
     }
 
     @Override

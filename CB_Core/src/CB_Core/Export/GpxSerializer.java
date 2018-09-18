@@ -16,18 +16,13 @@
 package CB_Core.Export;
 
 import CB_Core.Attributes;
-import CB_Core.Types.CacheListDAO;
 import CB_Core.Database;
-import CB_Core.Types.Cache;
-import CB_Core.Types.CacheList;
-import CB_Core.Types.LogEntry;
-import CB_Core.Types.Waypoint;
+import CB_Core.Types.*;
 import CB_Locator.Coordinate;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
 import org.kxml2.io.KXmlSerializer;
-import org.slf4j.LoggerFactory;
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.IOException;

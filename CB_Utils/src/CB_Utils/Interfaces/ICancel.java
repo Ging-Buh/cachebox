@@ -15,11 +15,6 @@
  */
 package CB_Utils.Interfaces;
 
-/**
- * Interface for void cancel()
- *
- * @author Longri
- */
 public interface ICancel {
-    public boolean cancel();
+    boolean cancel();
 }

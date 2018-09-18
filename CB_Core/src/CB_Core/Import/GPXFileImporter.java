@@ -28,7 +28,6 @@ import com.thebuzzmedia.sjxp.XMLParserException;
 import com.thebuzzmedia.sjxp.rule.DefaultRule;
 import com.thebuzzmedia.sjxp.rule.IRule;
 import com.thebuzzmedia.sjxp.rule.IRule.Type;
-import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

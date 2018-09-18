@@ -1,9 +1,9 @@
 package CB_Core.Solver;
 
-import CB_Core.Types.CacheDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.Database;
 import CB_Core.Types.Cache;
+import CB_Core.Types.CacheDAO;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
