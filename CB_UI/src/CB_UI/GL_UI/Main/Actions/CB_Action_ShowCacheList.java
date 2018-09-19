@@ -16,6 +16,7 @@ import CB_UI.GlobalCore;
 import CB_UI.GlobalCore.iChkReadyHandler;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
@@ -119,31 +120,36 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                         }
                         return true;
                     case MenuID.MI_CHK_STATE_API:
-
-                        if (GroundspeakAPI.isDownloadLimitExceeded()) {
-                            GlobalCore.MsgDownloadLimit();
-                            return true;
-                        }
-
-                        // First check API-Key with visual Feedback
-                        GlobalCore.chkAPiLogInWithWaitDialog(new iChkReadyHandler() {
-
+                        GL.postAsync(new Runnable() {
                             @Override
-                            public void checkReady(boolean tobeReady) {
-                                TimerTask tt = new TimerTask() {
+                            public void run() {
+                                if (GroundspeakAPI.isDownloadLimitExceeded()) {
+                                    GlobalCore.MsgDownloadLimit();
+                                    return;
+                                }
 
+                                // First check API-Key with visual Feedback
+                                GlobalCore.chkAPiLogInWithWaitDialog(new iChkReadyHandler() {
                                     @Override
-                                    public void run() {
-                                        new CB_Action_chkState().Execute();
+                                    public void checkReady(boolean tobeReady) {
+                                        TimerTask tt = new TimerTask() {
+                                            @Override
+                                            public void run() {
+                                                GL.postAsync(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        new CB_Action_chkState().Execute();
+                                                    }
+                                                });
+                                            }
+                                        };
+                                        Timer t = new Timer();
+                                        t.schedule(tt, 100);
                                     }
-                                };
-                                Timer t = new Timer();
-                                t.schedule(tt, 100);
+                                });
                             }
                         });
-
                         return true;
-
                     case MenuID.MI_NEW_CACHE:
                         if (editCache == null)
                             editCache = new EditCache(ActivityBase.ActivityRec(), "editCache");

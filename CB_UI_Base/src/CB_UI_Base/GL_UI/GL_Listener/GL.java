@@ -51,6 +51,8 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.async.AsyncExecutor;
+import com.badlogic.gdx.utils.async.AsyncTask;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -115,7 +117,7 @@ public class GL implements ApplicationListener {
     private ArrayList<ActivityBase> activityHistory = new ArrayList<>();
     private PopUp_Base aktPopUp;
     private float darknessAlpha = 0f;
-    // private OrthographicCamera camera;
+    private static final AsyncExecutor asyncExecutor = new AsyncExecutor(8);
 
     public GL(int _width, int _height, MainViewBase splash, MainViewBase mainView) {
         width = _width;
@@ -853,6 +855,22 @@ public class GL implements ApplicationListener {
         }
         timerValue = 0;
     }
+
+    public static void postAsync(final Runnable runnable) {
+
+        asyncExecutor.submit(new AsyncTask<Void>() {
+            @Override
+            public Void call() throws Exception {
+                try {
+                    runnable.run();
+                } catch (final Exception e) {
+                    Log.err("GL", "postAsync ", e);
+                }
+                return null;
+            }
+        });
+    }
+
 
     /**
      * Run on GL-Thread!<br>
