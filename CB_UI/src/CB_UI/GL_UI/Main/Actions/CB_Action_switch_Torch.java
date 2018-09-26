@@ -25,7 +25,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public class CB_Action_switch_Torch extends CB_Action {
 
     public CB_Action_switch_Torch() {
-        super("Torch", MenuID.AID_TORCH);
+        super("torch", MenuID.AID_TORCH);
     }
 
     @Override

@@ -22,14 +22,18 @@ import CB_Locator.Locator;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
+import android.annotation.TargetApi;
+import android.os.Build;
 
 import java.io.Serializable;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
+@TargetApi(Build.VERSION_CODES.KITKAT)
 public class Cache implements Comparable<Cache>, Serializable {
     public static final String EMPTY_STRING = "";
     // ########################################################
@@ -42,7 +46,8 @@ public class Cache implements Comparable<Cache>, Serializable {
     public final static byte NOT_LIVE = 0;
     public final static byte IS_LITE = 1;
     public final static byte NOT_LITE = 2;
-    protected static final Charset US_ASCII = Charset.forName("US-ASCII");
+    protected static final Charset US_ASCII = StandardCharsets.US_ASCII;
+    protected static final Charset UTF_8 = StandardCharsets.UTF_8;
     private static final long serialVersionUID = 1015307624242318838L;
     // Masks
     // protected final static short MASK_HAS_HINT = 1 << 0; // not necessary because hasHint is always called for SelectedCache and
@@ -56,7 +61,6 @@ public class Cache implements Comparable<Cache>, Serializable {
     // private final static short MASK_SOLVER1CHANGED = 1 << 7;
     private final static short MASK_HAS_USER_DATA = 1 << 8;
     private final static short MASK_LISTING_CHANGED = 1 << 9;
-    private static final Charset UTF_8 = Charset.forName("UTF-8");
     private static String gcLogin = null;
     /**
      * Detail Information of Waypoint which are not always loaded

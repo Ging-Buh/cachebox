@@ -56,7 +56,7 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
-import CB_Utils.Interfaces.cancelRunnable;
+import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Lists.CB_FixSizeList;
 import CB_Utils.Log.Log;
 
@@ -394,7 +394,7 @@ public class FieldNotesView extends V_ListView {
             public void isCanceled() {
 
             }
-        }, new cancelRunnable() {
+        }, new ICancelRunnable() {
 
             @Override
             public void run() {
@@ -454,7 +454,7 @@ public class FieldNotesView extends V_ListView {
             }
 
             @Override
-            public boolean cancel() {
+            public boolean isCanceled() {
                 // TODO handle cancel
                 return false;
             }

@@ -196,8 +196,6 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
                 case MotionEvent.ACTION_MOVE: // touch drag with the ball
                     // move the balls the same as the finger
 
-                    // setDebugMsg("Move:" + String.format("%n")+ "x= " + X +
-                    // String.format("%n") + "y= " + Y);
                     if (drag) {
                         int value = Y - 25;// y - 25 minus halbe Button Höhe
                         int buttom = (int) (height - (10 * 2.2));
@@ -733,7 +731,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
         mLatitude = UnitFormatter.FormatLatitudeDM(location.getLatitude());
         mLongitude = UnitFormatter.FormatLongitudeDM(location.getLongitude());
 
-        String br = String.format("%n");
+        String br = "\n";
         String Text = Translation.Get("current") + " " + mLatitude + " " + mLongitude + br + Translation.Get("alt") + " " + mAlt + br + Translation.Get("accuracy") + "  +/- " + mAccuracy + "m" + br + Translation.Get("sats") + " " + mSats;
 
         if (GPSLayoutTextPaint == null) {

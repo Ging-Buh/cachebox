@@ -274,7 +274,7 @@ public class SelectDB extends ActivityBase {
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 stopTimer();
                 if (MustSelect) {
-                    TabMainView.actionClose.CallExecute();
+                    TabMainView.actionClose.Execute();
                 } else {
                     finish();
                 }

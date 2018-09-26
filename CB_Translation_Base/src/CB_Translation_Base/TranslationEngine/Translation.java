@@ -42,7 +42,6 @@ public class Translation {
      */
     public static Translation that;
     public final CB_List<MissingTranslation> mMissingStringList;
-    private final String BR;
     private final CB_List<Translations> mStringList;
     private final CB_List<Translations> mRefTranslation;
     private final String mWorkPath;
@@ -59,12 +58,10 @@ public class Translation {
     public Translation(String WorkPath, FileType internal) {
         that = this;
         mWorkPath = WorkPath;
-        BR = "\n"; // System.getProperty("line.separator");
-        mStringList = new CB_List<Translations>();
-        mRefTranslation = new CB_List<Translations>();
-        mMissingStringList = new CB_List<MissingTranslation>();
+        mStringList = new CB_List<>();
+        mRefTranslation = new CB_List<>();
+        mMissingStringList = new CB_List<>();
         mFiletype = internal;
-
     }
 
     // #######################################################################
@@ -198,9 +195,10 @@ public class Translation {
         String langRead = lang.readString();
 
         int pos1 = langRead.indexOf("lang=") + 5;
-        int pos2 = langRead.indexOf(BR, pos1);
-
+        int pos2 = langRead.indexOf("\n", pos1);
         String Value = langRead.substring(pos1, pos2);
+        if (Value.endsWith("\r"))
+            Value = langRead.substring(pos1, pos2 - 1);
         return Value;
     }
 
@@ -261,8 +259,12 @@ public class Translation {
             }
 
             String readID = line.substring(0, pos).trim();
-            String readTransl = line.substring(pos + 1);
-            String ReplacedRead = readTransl.trim().replace("\\n", String.format("%n"));
+            String readTransl;
+            if (line.endsWith("\r"))
+                readTransl = line.substring(pos + 1, line.length() - 1);
+            else
+                readTransl = line.substring(pos + 1);
+            String ReplacedRead = readTransl.trim().replace("\\n", "\n");
             if (ReplacedRead.endsWith("\"")) {
                 ReplacedRead = ReplacedRead.substring(0, ReplacedRead.length() - 1);
             }
@@ -399,26 +401,25 @@ public class Translation {
 
             while ((line = reader.readLine()) != null) {
                 if (!override)
-                    sb.append(line + BR);
+                    sb.append(line + "\n\r");
                 if (line.contains("##########  Missing Lang Strings ######")) {
                     // Beginn des schreibbereichs
                     for (int i = 0, n = mMissingStringList.size(); i < n; i++) {
                         if (i >= mMissingStringList.size())
                             break;
                         MissingTranslation tmp = mMissingStringList.get(i);
-                        sb.append(tmp.getMissingString() + BR);
+                        sb.append(tmp.getMissingString() + "\n\r");
                     }
                     override = true;
                 }
                 if (override && line.contains("############################")) {
                     // jetzt kann weiter gelesen werden
                     override = false;
-                    sb.append(line + BR);
+                    sb.append(line + "\n\r");
                 }
             }
             reader.close();
 
-            // zur�ck schreiben
             PrintWriter writer = new PrintWriter(file.getFileWriter());
 
             writer.write(sb.toString());

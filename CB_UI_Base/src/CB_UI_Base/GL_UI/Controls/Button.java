@@ -18,7 +18,6 @@ package CB_UI_Base.GL_UI.Controls;
 
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.*;
-import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Input;
 import CB_UI_Base.Math.CB_RectF;
@@ -46,6 +45,8 @@ public class Button extends CB_View_Base {
     protected boolean isDisabled = false;
     protected Label lblTxt;
     protected boolean dragableButton = false;
+    protected Label.HAlignment hAlignment = Label.HAlignment.CENTER;
+    protected Label.VAlignment vAlignment = Label.VAlignment.CENTER;
 
     private Object tag = null; // sometimes also referred as data, for to attach an arbitrary object
 
@@ -214,10 +215,6 @@ public class Button extends CB_View_Base {
     }
 
     public void setText(String Text, BitmapFont font, Color color) {
-        setText(Text, font, color, HAlignment.CENTER);
-    }
-
-    public void setText(String Text, BitmapFont font, Color color, HAlignment alignment) {
         if (Text == null) return;
         // ? no change
         if (lblTxt != null)
@@ -225,7 +222,8 @@ public class Button extends CB_View_Base {
                 if (lblTxt.mText.equals(Text))
                     if (lblTxt.mFont.equals(font))
                         if (lblTxt.mColor.equals(color))
-                            if (lblTxt.mHAlignment.equals(alignment))
+                            if (lblTxt.mHAlignment.equals(hAlignment))
+                                if (lblTxt.mVAlignment.equals(vAlignment))
                                 return;
 
         // no text -> remove label
@@ -248,7 +246,7 @@ public class Button extends CB_View_Base {
             mFont = font;
         if (mFont == null)
             mFont = Fonts.getBig();
-        lblTxt = new Label(Text, mFont, color, WrapType.WRAPPED).setHAlignment(alignment);
+        lblTxt = new Label(Text, mFont, color, WrapType.WRAPPED).setHAlignment(hAlignment).setVAlignment(vAlignment);
         this.initRow(BOTTOMUP);
         this.addLast(lblTxt);
 
@@ -301,6 +299,10 @@ public class Button extends CB_View_Base {
         setText(Text, null, null);
     }
 
+    public void setVAlignment(Label.VAlignment alignment) {
+        lblTxt.setVAlignment(alignment);
+        //GL.that.renderOnce();
+    }
     public void performClick() {
         click(0, 0, 0, 0);
 

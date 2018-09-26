@@ -17,19 +17,18 @@ package CB_UI.GL_UI.Main.Actions;
 
 import CB_Core.Api.SearchGC;
 import CB_Core.CacheListChangedEventList;
-import CB_Core.Types.CacheDAO;
-import CB_Core.Types.CacheListDAO;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
-import CB_Core.Types.Cache;
-import CB_Core.Types.ImageEntry;
-import CB_Core.Types.LogEntry;
+import CB_Core.Types.*;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
+import CB_UI.GL_UI.Activitys.DeleteSelectedCache;
+import CB_UI.GL_UI.Activitys.EditCache;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.DescriptionView;
 import CB_UI.GlobalCore;
 import CB_UI.WriteIntoDB;
+import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
@@ -46,7 +45,7 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
-import CB_Utils.Interfaces.cancelRunnable;
+import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -57,6 +56,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
     private static final String log = "CB_Action_ShowDescriptionView";
     CancelWaitDialog wd = null;
+    EditCache editCache = null;
 
     public CB_Action_ShowDescriptionView() {
         super("Description", MenuID.AID_SHOW_DESCRIPTION);
@@ -122,6 +122,15 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
                     case MenuID.MI_RELOAD_CACHE:
                         ReloadSelectedCache();
                         return true;
+                    case MenuID.MI_EDIT_CACHE:
+                        if (editCache == null)
+                            editCache = new EditCache(ActivityBase.ActivityRec(), "editCache");
+                        editCache.update(GlobalCore.getSelectedCache());
+                        return true;
+                    case MenuID.MI_DELETE_CACHE:
+                        DeleteSelectedCache.Execute();
+                        GlobalCore.setSelectedWaypoint(null, null, true);
+                        return true;
                 }
                 return false;
             }
@@ -139,6 +148,8 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
         } else {
             mi.setEnabled(false);
         }
+        cm.addItem(MenuID.MI_EDIT_CACHE, "MI_EDIT_CACHE");
+        cm.addItem(MenuID.MI_DELETE_CACHE, "MI_DELETE_CACHE");
 
         boolean selectedCacheIsNoGC = false;
 
@@ -165,7 +176,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
             public void isCanceled() {
                 // TODO handle cancel
             }
-        }, new cancelRunnable() {
+        }, new ICancelRunnable() {
 
             @Override
             public void run() {
@@ -225,7 +236,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
             }
 
             @Override
-            public boolean cancel() {
+            public boolean isCanceled() {
 
                 return false;
             }

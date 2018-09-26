@@ -49,7 +49,7 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
-import CB_Utils.Interfaces.cancelRunnable;
+import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Util.UnitFormatter;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -165,14 +165,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
                         switch (which) {
                             case 1:
                                 ms.close();
-                                pd = CancelWaitDialog.ShowWait(Translation.Get("LoadFounds"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
-
-                                    @Override
-                                    public void isCanceled() {
-
-                                    }
-                                }, new cancelRunnable() {
-
+                                pd = CancelWaitDialog.ShowWait(Translation.Get("LoadFounds"), DownloadAnimation.GetINSTANCE(), null, new ICancelRunnable() {
                                     @Override
                                     public void run() {
                                         result = GroundspeakAPI.fetchMyUserInfos().findCount;
@@ -188,10 +181,8 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
                                         }
 
                                     }
-
                                     @Override
-                                    public boolean cancel() {
-                                        // TODO handle cancel
+                                    public boolean isCanceled() {
                                         return false;
                                     }
                                 });

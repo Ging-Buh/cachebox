@@ -165,10 +165,6 @@ public class QuickButtonList extends H_ListView {
 
         }
 
-        public long getItemId(int position) {
-            return position;
-        }
-
         public ListViewItemBase getView(int position) {
 
             if (quickButtonList == null)

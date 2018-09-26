@@ -279,9 +279,7 @@ public class Global {
             if (NightResId == -1 || !Config.nightMode.getValue()) {
                 ret = res.getDrawable(ResId);
 
-                // im Nacht Mode wird das Drawable mit einem Filter belegt, um
-                // es
-                // ein wenig abzudunkeln
+                // im Nacht Mode wird das Drawable mit einem Filter belegt, um es ein wenig abzudunkeln
                 if (Config.nightMode.getValue()) {
                     ret.setColorFilter(Color.argb(255, 100, 100, 100), Mode.MULTIPLY);
                 }

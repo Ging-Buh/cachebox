@@ -1,13 +1,13 @@
 package CB_UI_Base.GL_UI.interfaces;
 
-import CB_Utils.Interfaces.cancelRunnable;
+import CB_Utils.Interfaces.ICancelRunnable;
 
 /**
  * Extends Runnable um eine Ready Meldung
  *
  * @author Longri
  */
-public abstract class RunnableReadyHandler implements cancelRunnable {
+public abstract class RunnableReadyHandler implements ICancelRunnable {
 
     // cancelRunable mRunnable;
     Thread mRunThread;

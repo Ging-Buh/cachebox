@@ -15,7 +15,6 @@ import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.DeleteSelectedCache;
 import CB_UI.GL_UI.Activitys.EditCache;
 import CB_UI.GL_UI.Controls.Dialogs.HintDialog;
-import CB_UI.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GlobalCore;
 import CB_UI.WriteIntoDB;
@@ -30,10 +29,9 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
-import CB_Utils.Interfaces.cancelRunnable;
+import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Lists.CB_List;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
@@ -57,7 +55,7 @@ public class CB_AllContextMenuHandler {
                         public void isCanceled() {
 
                         }
-                    }, new cancelRunnable() {
+                    }, new ICancelRunnable() {
 
                         @Override
                         public void run() {
@@ -90,7 +88,7 @@ public class CB_AllContextMenuHandler {
                         }
 
                         @Override
-                        public boolean cancel() {
+                        public boolean isCanceled() {
                             // TODO Handle cancel
                             return false;
                         }

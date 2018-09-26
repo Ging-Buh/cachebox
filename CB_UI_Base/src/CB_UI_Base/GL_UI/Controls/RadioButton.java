@@ -80,15 +80,18 @@ public class RadioButton extends ChkBox {
 
     @Override
     public void setText(String Text, Color color) {
-        setText(Text, null, color, HAlignment.LEFT);
+        hAlignment = HAlignment.LEFT;
+        setText(Text, null, color);
     }
 
     @Override
     public void setText(String Text) {
-        setText(Text, null, null, HAlignment.LEFT);
+        hAlignment = HAlignment.LEFT;
+        setText(Text, null, null);
     }
 
     public void setText(String Text, HAlignment alignment) {
-        setText(Text, null, null, alignment);
+        hAlignment = alignment;
+        setText(Text, null, null);
     }
 }

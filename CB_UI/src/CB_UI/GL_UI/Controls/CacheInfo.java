@@ -419,7 +419,7 @@ public class CacheInfo extends CB_View_Base {
     }
 
     private StringBuilder createText() {
-        String br = String.format("%n");
+        String br = "\n";
         StringBuilder text = new StringBuilder();
         if (ifModeFlag(SHOW_NAME)) {
             text.append(mCache.getName());

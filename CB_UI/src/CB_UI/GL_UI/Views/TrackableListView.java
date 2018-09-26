@@ -8,9 +8,11 @@ import CB_Core.Types.Trackable;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.TB_Details;
+import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GlobalCore;
 import CB_UI.TemplateFormatter;
 import CB_UI_Base.Enums.WrapType;
+import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Button;
@@ -31,14 +33,15 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
-import CB_Utils.Interfaces.cancelRunnable;
+import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Log.Log;
 
 import java.util.Date;
 
 import static CB_Core.Api.GroundspeakAPI.*;
+import static CB_UI_Base.GL_UI.Menu.MenuID.*;
 
-public class TrackableListView extends CB_View_Base {
+public class TrackableListView extends ActivityBase {
     private static final String log = "TrackableListView";
     public static TrackableListView that;
     private V_ListView listView;
@@ -57,15 +60,20 @@ public class TrackableListView extends CB_View_Base {
                 case MenuID.MI_REFRESH_TB_LIST:
                     RefreshTbList();
                     break;
-                case MenuID.MI_TB_VISIT:
+                case MI_TB_VISIT:
                     LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.visited), TemplateFormatter.ReplaceTemplate(Config.VisitedTemplate.getValue(), new Date()));
                 break;
-                case MenuID.MI_TB_DROPPED:
+                case MI_TB_DROPPED:
                     LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.dropped_off), TemplateFormatter.ReplaceTemplate(Config.DroppedTemplate.getValue(), new Date()));
                     RefreshTbList();
                     break;
-                case MenuID.MI_TB_NOTE:
+                case MI_TB_NOTE:
                     LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.note), TemplateFormatter.ReplaceTemplate(Config.AddNoteTemplate.getValue(), new Date()));
+                    break;
+                case MI_QUIT:
+                    finish();
+                    dispose();
+                    TabMainView.trackableListView = null;
                     break;
             }
             return true;
@@ -125,7 +133,7 @@ public class TrackableListView extends CB_View_Base {
                 @Override
                 public void isCanceled() {
                 }
-            }, new cancelRunnable() {
+            }, new ICancelRunnable() {
                 @Override
                 public void run() {
                     Trackable tb = fetchTrackable(TBCode);
@@ -144,7 +152,7 @@ public class TrackableListView extends CB_View_Base {
                 }
 
                 @Override
-                public boolean cancel() {
+                public boolean isCanceled() {
                     // TODO handle cancel
                     return false;
                 }
@@ -172,7 +180,7 @@ public class TrackableListView extends CB_View_Base {
             public void isCanceled() {
 
             }
-        }, new cancelRunnable() {
+        }, new ICancelRunnable() {
 
             @Override
             public void run() {
@@ -196,7 +204,7 @@ public class TrackableListView extends CB_View_Base {
             }
 
             @Override
-            public boolean cancel() {
+            public boolean isCanceled() {
                 // TODO handle cancel
                 return false;
             }
@@ -210,7 +218,7 @@ public class TrackableListView extends CB_View_Base {
             public void isCanceled() {
 
             }
-        }, new cancelRunnable() {
+        }, new ICancelRunnable() {
 
             @Override
             public void run() {
@@ -232,7 +240,7 @@ public class TrackableListView extends CB_View_Base {
             }
 
             @Override
-            public boolean cancel() {
+            public boolean isCanceled() {
                 // TODO handle cancel
                 return false;
             }
@@ -260,12 +268,12 @@ public class TrackableListView extends CB_View_Base {
         final Menu cm = new Menu("TBLogContextMenu");
         cm.addOnClickListener(menuItemClickListener);
 
-        cm.addItem(MenuID.MI_SEARCH, "SearchTB", Sprites.getSprite(IconName.lupe.name()));
-        cm.addItem(MenuID.MI_REFRESH_TB_LIST, "RefreshInventory");
-        cm.addItem(MenuID.MI_TB_NOTE, "all_note", Sprites.getSprite(IconName.TBNOTE.name()));
-        cm.addItem(MenuID.MI_TB_VISIT, "all_visit", Sprites.getSprite(IconName.TBVISIT.name()));
-        cm.addItem(MenuID.MI_TB_DROPPED, "all_dropped", Sprites.getSprite(IconName.TBDROP.name()));
-
+        cm.addItem(MI_SEARCH, "SearchTB", Sprites.getSprite(IconName.lupe.name()));
+        cm.addItem(MI_REFRESH_TB_LIST, "RefreshInventory");
+        cm.addItem(MI_TB_NOTE, "all_note", Sprites.getSprite(IconName.TBNOTE.name()));
+        cm.addItem(MI_TB_VISIT, "all_visit", Sprites.getSprite(IconName.TBVISIT.name()));
+        cm.addItem(MI_TB_DROPPED, "all_dropped", Sprites.getSprite(IconName.TBDROP.name()));
+        cm.addItem(MI_QUIT,"cancel",Sprites.getSprite(IconName.closeIcon.name()));
         cm.Show();
     }
 

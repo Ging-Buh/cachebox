@@ -4,7 +4,7 @@ import CB_Core.Api.CB_Api;
 import CB_UI.CB_UI_Settings;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
-import CB_Utils.Interfaces.cancelRunnable;
+import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Log.Log;
 import CB_Utils.http.Request;
 import CB_Utils.http.Response;
@@ -38,7 +38,7 @@ public class GcApiLogin {
             public void isCanceled() {
                 closeWaitDialog();
             }
-        }, new cancelRunnable() {
+        }, new ICancelRunnable() {
 
             @Override
             public void run() {
@@ -46,7 +46,7 @@ public class GcApiLogin {
             }
 
             @Override
-            public boolean cancel() {
+            public boolean isCanceled() {
                 // TODO Handle Cancel
                 return false;
             }

@@ -185,10 +185,10 @@ public class CacheDraw {
             String drawName = (drawStyle == DrawStyle.withOwner) ? "by " + cache.getOwner() + ", " + dateString : CacheName;
 
             if (drawStyle == DrawStyle.all) {
-                drawName += String.format("%n");
+                drawName += "\n";
                 drawName += cache.getGcCode();
             } else if (drawStyle == DrawStyle.withOwner) {
-                drawName = drawName + String.format("%n") + cache.Pos.FormatCoordinate() + String.format("%n") + cache.getGcCode();
+                drawName = drawName + "\n" + cache.Pos.FormatCoordinate() + "\n" + cache.getGcCode();
             }
 
             if (drawStyle == DrawStyle.withOwnerAndName || drawStyle == DrawStyle.withOwner) {
@@ -220,11 +220,11 @@ public class CacheDraw {
                     counter++;
                 } while (((int) namePaint.measureText(DrawText)) >= nameLayoutWidth);
 
-                DrawText = DrawText + String.format("%n") + String.format("%n") + cache.Pos.FormatCoordinate() + String.format("%n") + cache.getGcCode() + String.format("%n");
+                DrawText = DrawText + "\n" + "\n" + cache.Pos.FormatCoordinate() + "\n" + cache.getGcCode() + "\n";
 
                 String LastFound = getLastFoundLogDate(cache);
                 if (!LastFound.equals("")) {
-                    DrawText += String.format("%n");
+                    DrawText += "\n";
                     DrawText += "last found: " + LastFound;
                 }
                 layoutCacheOwner = new StaticLayout(DrawText, namePaint, nameLayoutWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);

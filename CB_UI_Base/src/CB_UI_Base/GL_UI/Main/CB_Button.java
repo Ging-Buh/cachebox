@@ -1,19 +1,18 @@
 package CB_UI_Base.GL_UI.Main;
 
-import CB_UI_Base.GL_UI.ButtonSprites;
-import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI_Base.GL_UI.*;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.GestureHelp;
+import CB_UI_Base.GL_UI.Controls.Image;
+import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Input;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Main.CB_ActionButton.GestureDirection;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
-import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
@@ -28,18 +27,99 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import java.util.ArrayList;
 
+import static CB_UI_Base.GL_UI.Sprites.getSprite;
+
 /**
  * @author Longri
  */
-public class CB_Button extends Button implements OnClickListener {
+public class CB_Button extends Button {
 
-    protected static Sprite menuSprite;
-    protected static Sprite menuSpriteFiltered;
+    private static Sprite mContextMenuSprite;
+    private static Sprite mFilteredContextMenuSprite;
     private final ArrayList<CB_ActionButton> mButtonActions;
     private CB_Action_ShowView aktActionView = null;
     private GestureHelp help;
-    private final OnClickListener longClickListener = new OnClickListener() {
+    private Image mButtonImage;
+    private final OnClickListener onClickListener = new OnClickListener() {
+        @Override
+        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 
+            // Einfacher Click -> alle Actions durchsuchen, ob die aktActionView darin enthalten ist und diese sichtbar ist
+            if ((aktActionView != null) && (aktActionView.hasContextMenu())) {
+                for (CB_ActionButton ba : mButtonActions) {
+                    if (ba.getAction() == aktActionView) {
+                        if (aktActionView.getView() != null && aktActionView.getView().isVisible()) {
+                            // Dieses View ist aktuell das Sichtbare
+                            // -> ein Click auf den Menü-Button zeigt das Contextmenü
+                            // if (aktActionView.ShowContextMenu()) return true;
+
+                            if (aktActionView.hasContextMenu()) {
+                                // das View Context Menü mit dem LongKlick Menü zusammen führen!
+
+                                // Menu zusammen stellen!
+                                // zuerst das View Context Menu
+                                Menu compoundMenu = new Menu("compoundMenu");
+
+                                Menu viewContextMenu = aktActionView.getContextMenu();
+                                if (viewContextMenu != null) {
+                                    compoundMenu.addItems(viewContextMenu.getItems());
+                                    compoundMenu.addOnClickListeners(viewContextMenu.getOnItemClickListeners());
+
+                                    // add divider
+                                    compoundMenu.addDivider();
+
+                                    // add MoreMenu
+                                    compoundMenu.addMoreMenu(viewContextMenu.getMoreMenu(), viewContextMenu.getTextLeftMoreMenu(), viewContextMenu.getTextRightMoreMenu());
+                                }
+
+                                Menu LongClickMenu = getLongClickMenu();
+                                if (LongClickMenu != null) {
+                                    compoundMenu.addItems(LongClickMenu.getItems());
+                                    compoundMenu.addOnClickListeners(LongClickMenu.getOnItemClickListeners());
+
+                                }
+
+                                if (compoundMenu.reorganizeIndexes() > 0) {
+                                    compoundMenu.Show();
+                                }
+                                return true;
+                            }
+
+                        }
+                    }
+                }
+            }
+            // Einfacher Click -> Default Action starten
+
+            boolean actionExecuted = false;
+            for (CB_ActionButton ba : mButtonActions) {
+                if (ba.getDefaultAction()) {
+                    CB_Action action = ba.getAction();
+                    if (action != null) {
+                        action.Execute();
+                        if (action instanceof CB_Action_ShowView) {
+                            aktActionView = (CB_Action_ShowView) action;
+                            setButton(aktActionView.getIcon(), aktActionView.getName());
+                        }
+                        actionExecuted = true;
+                        break;
+                    }
+                }
+            }
+
+            // wenn keine Default Action defeniert ist, dann einen LongClick (Zeige ContextMenu) ausführen
+            if (!actionExecuted) {
+                OnClickListener listener = getOnLongClickListener();
+                if (listener != null) {
+                    return listener.onClick(v, x, y, pointer, button);
+                }
+            }
+
+            return true;
+        }
+    };
+
+    private final OnClickListener longClickListener = new OnClickListener() {
         @Override
         public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
             // GL_MsgBox.Show("Button " + Me.getName() + " recivet a LongClick Event");
@@ -53,11 +133,9 @@ public class CB_Button extends Button implements OnClickListener {
                 CB_ActionButton ba = mButtonActions.get(0);
                 CB_Action action = ba.getAction();
                 if (action != null) {
-                    action.CallExecute();
-                    if (action instanceof CB_Action_ShowView)
-                        aktActionView = (CB_Action_ShowView) action;
-                    // else
-                    // aktActionView = null;
+                    action.Execute();
+                    aktActionView = (CB_Action_ShowView) action;
+                    setButton(aktActionView.getIcon(), aktActionView.getName());
                 }
             }
 
@@ -74,42 +152,51 @@ public class CB_Button extends Button implements OnClickListener {
             return true;
         }
     };
+    private boolean isFiltered;
     private boolean GestureIsOn = true;
     // Auswertung der Finger-Gesten zum Schnellzugriff auf einige ButtonActions
     private boolean isDragged = false;
     private Point downPos = null;
 
-    public CB_Button(CB_RectF rec, String Name, ArrayList<CB_ActionButton> ButtonActions) {
-        super(rec, Name);
-        mButtonActions = ButtonActions;
-        this.setOnClickListener(this);
-        this.setOnLongClickListener(longClickListener);
-    }
-
-    public CB_Button(CB_RectF rec, String Name) {
-        super(rec, Name);
-        mButtonActions = new ArrayList<CB_ActionButton>();
-        this.setOnClickListener(this);
-        this.setOnLongClickListener(longClickListener);
-    }
-
     public CB_Button(CB_RectF rec, String Name, ButtonSprites sprites) {
-
         super(rec, Name);
-        mButtonActions = new ArrayList<CB_ActionButton>();
-        this.setOnClickListener(this);
-        this.setOnLongClickListener(longClickListener);
-        this.setButtonSprites(sprites);
+        mButtonActions = new ArrayList<>();
+        setOnClickListener(onClickListener);
+        setOnLongClickListener(longClickListener);
+        drawableNormal = new SpriteDrawable(getSprite("button"));
+        drawablePressed = new SpriteDrawable(getSprite("btn-pressed"));
+        drawableDisabled = null;
+        drawableFocused = new SpriteDrawable(getSprite("btn-pressed"));
+        isFiltered = false;
+        vAlignment = Label.VAlignment.BOTTOM;
     }
 
-    // ---------- überschreiben des isPressed, weil dies zur Anzeige der Activen View benutzt wird ---------
+    public static void refreshContextMenuSprite() {
+        mContextMenuSprite = null;
+        mFilteredContextMenuSprite = null;
+    }
 
-    public static void reloadMenuSprite() {
-        menuSprite = null;
-        menuSpriteFiltered = null;
+    private void setButton(Sprite icon, String name) {
+        mButtonImage.setDrawable(new SpriteDrawable(icon));
+        if (name != null) {
+            name = Translation.Get(name);
+            setText(name.substring(0, Math.min(5, name.length())), Fonts.getSmall(), null);
+        }
+        else
+            setText("", Fonts.getSmall(), null);
     }
 
     public void addAction(CB_ActionButton Action) {
+        if (mButtonImage == null) {
+            mButtonImage = new Image(this.ScaleCenter(0.6f), "mButtonImage", false);
+            mButtonImage.setClickable(false);
+            mButtonImage.setDrawable(new SpriteDrawable(Action.getIcon()));
+            addChild(mButtonImage);
+            if (Action.getAction() instanceof CB_Action_ShowView) {
+                setButton(Action.getAction().getIcon(), Action.getAction().getName());
+            }
+        }
+
         mButtonActions.add(Action);
 
         // disable Gesture ?
@@ -159,9 +246,11 @@ public class CB_Button extends Button implements OnClickListener {
                     if (ba.getAction().getId() == mId) {
                         CB_Action action = ba.getAction();
 
-                        action.CallExecute();
-                        if (action instanceof CB_Action_ShowView)
+                        action.Execute();
+                        if (action instanceof CB_Action_ShowView) {
                             aktActionView = (CB_Action_ShowView) action;
+                            setButton(aktActionView.getIcon(), aktActionView.getName());
+                        }
 
                         GL.that.closeToast();
                         break;
@@ -190,85 +279,8 @@ public class CB_Button extends Button implements OnClickListener {
     }
 
     @Override
-    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-
-        // Einfacher Click -> alle Actions durchsuchen, ob die aktActionView darin enthalten ist und diese sichtbar ist
-        if ((aktActionView != null) && (aktActionView.hasContextMenu())) {
-            for (CB_ActionButton ba : mButtonActions) {
-                if (ba.getAction() == aktActionView) {
-                    if (aktActionView.getView() != null && aktActionView.getView().isVisible()) {
-                        // Dieses View ist aktuell das Sichtbare
-                        // -> ein Click auf den Menü-Button zeigt das Contextmenü
-                        // if (aktActionView.ShowContextMenu()) return true;
-
-                        if (aktActionView.hasContextMenu()) {
-                            // das View Context Menü mit dem LongKlick Menü zusammen führen!
-
-                            // Menu zusammen stellen!
-                            // zuerst das View Context Menu
-                            Menu compoundMenu = new Menu("compoundMenu");
-
-                            Menu viewContextMenu = aktActionView.getContextMenu();
-                            if (viewContextMenu != null) {
-                                compoundMenu.addItems(viewContextMenu.getItems());
-                                compoundMenu.addOnClickListeners(viewContextMenu.getOnItemClickListeners());
-
-                                // add divider
-                                compoundMenu.addDivider();
-
-                                // add MoreMenu
-                                compoundMenu.addMoreMenu(viewContextMenu.getMoreMenu(), viewContextMenu.getTextLeftMoreMenu(), viewContextMenu.getTextRightMoreMenu());
-                            }
-
-                            Menu LongClickMenu = getLongClickMenu();
-                            if (LongClickMenu != null) {
-                                compoundMenu.addItems(LongClickMenu.getItems());
-                                compoundMenu.addOnClickListeners(LongClickMenu.getOnItemClickListeners());
-
-                            }
-
-                            if (compoundMenu.reorganizeIndexes() > 0) {
-                                compoundMenu.Show();
-                            }
-                            return true;
-                        }
-
-                    }
-                }
-            }
-        }
-        // Einfacher Click -> Default Action starten
-
-        boolean actionExecuted = false;
-        for (CB_ActionButton ba : mButtonActions) {
-            if (ba.isDefaultAction()) {
-                CB_Action action = ba.getAction();
-                if (action != null) {
-                    action.CallExecute();
-                    if (action instanceof CB_Action_ShowView)
-                        aktActionView = (CB_Action_ShowView) action;
-                    actionExecuted = true;
-                    break;
-                }
-            }
-        }
-
-        // wenn keine Default Action defeniert ist, dann einen LongClick (Zeige ContextMenu) ausführen
-        if (!actionExecuted) {
-            OnClickListener listener = this.getOnLongClickListener();
-            if (listener != null) {
-                return listener.onClick(v, x, y, pointer, button);
-            }
-        }
-
-        return true;
-    }
-
-    // --------------------------------------------------------------------------------------------------
-
-    @Override
     public void performClick() {
-        onClick(null, 0, 0, 0, 0);
+        onClickListener.onClick(null, 0, 0, 0, 0);
     }
 
     @Override
@@ -290,28 +302,29 @@ public class CB_Button extends Button implements OnClickListener {
 
         if (hasContextMenu && isFocused) {
 
-            // draw Menu Sprite
-            if (menuSprite == null || menuSpriteFiltered == null) {
+            if (mContextMenuSprite == null || mFilteredContextMenuSprite == null) {
                 float iconWidth = this.getWidth() / 5f;
                 float iconHeight = this.getHeight() / 2.3f;
                 float VersatzX = this.getHeight() / 20f;
                 float VersatzY = this.getHeight() / 30f;
 
-                menuSprite = new Sprite(Sprites.getSprite(IconName.cmIcon.name()));
-                menuSprite.setBounds(this.getWidth() - iconWidth - VersatzX, VersatzY, iconWidth, iconHeight);
+                mContextMenuSprite = new Sprite(Sprites.getSprite(IconName.cmIcon.name()));
+                mContextMenuSprite.setBounds(this.getWidth() - iconWidth - VersatzX, VersatzY, iconWidth, iconHeight);
 
-                menuSpriteFiltered = new Sprite(Sprites.getSprite(IconName.MENUFILTERED.name()));
-                menuSpriteFiltered.setBounds(this.getWidth() - iconWidth - VersatzX, VersatzY, iconWidth, iconHeight);
+                mFilteredContextMenuSprite = new Sprite(Sprites.getSprite(IconName.MENUFILTERED.name()));
+                mFilteredContextMenuSprite.setBounds(this.getWidth() - iconWidth - VersatzX, VersatzY, iconWidth, iconHeight);
 
             }
 
-            boolean isFilterd = false;
-
-            if (!isFilterd && menuSprite != null)
-                menuSprite.draw(batch);
-            if (isFilterd && menuSpriteFiltered != null)
-                menuSpriteFiltered.draw(batch);
+            if (!isFiltered && mContextMenuSprite != null)
+                mContextMenuSprite.draw(batch);
+            if (isFiltered && mFilteredContextMenuSprite != null)
+                mFilteredContextMenuSprite.draw(batch);
         }
+    }
+
+    public void isFiltered(boolean isFiltered) {
+        this.isFiltered = isFiltered;
     }
 
     @Override
@@ -343,10 +356,9 @@ public class CB_Button extends Button implements OnClickListener {
 
         if (!isDragged)
             return (GestureIsOn) ? result : true;
-        // Log.debug(log, "CB_Button onTouchUP()");
         int dx = x - downPos.x;
         int dy = y - downPos.y;
-        GestureDirection direction = GestureDirection.Up;
+        GestureDirection direction;
         if (Math.abs(dx) > Math.abs(dy)) {
             if (dx > 0)
                 direction = GestureDirection.Right;
@@ -362,11 +374,11 @@ public class CB_Button extends Button implements OnClickListener {
             if (ba.getGestureDirection() == direction) {
                 CB_Action action = ba.getAction();
                 if (action != null) {
-                    action.CallExecute();
-                    if (action instanceof CB_Action_ShowView)
+                    action.Execute();
+                    if (action instanceof CB_Action_ShowView) {
                         aktActionView = (CB_Action_ShowView) action;
-                    // else
-                    // aktActionView = null;
+                        setButton(aktActionView.getIcon(), aktActionView.getName());
+                    }
                     break;
                 }
 
@@ -395,6 +407,7 @@ public class CB_Button extends Button implements OnClickListener {
                     ActionView = (CB_Action_ShowView) action;
                 if (ActionView != null && ActionView.getView() == View) {
                     aktActionView = ActionView;
+                    setButton(aktActionView.getIcon(), aktActionView.getName());
                     break;
                 }
             }

@@ -41,14 +41,14 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_Utils.Interfaces.cancelRunnable;
+import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Log.Log;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 import static CB_Core.Api.API_ErrorEventHandlerList.handleApiKeyError;
-import static CB_Core.Api.GroundspeakAPI.invalidAccessToken;
+import static CB_Core.Api.GroundspeakAPI.isAccessTokenInvalid;
 
 /**
  * @author ging-buh
@@ -56,9 +56,9 @@ import static CB_Core.Api.GroundspeakAPI.invalidAccessToken;
  * @author longri
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface {
-    public static final int CurrentRevision = 20180917;
+    public static final int CurrentRevision = 20180926;
     public static final String CurrentVersion = "2.0.";
-    public static final String VersionPrefix = "3171";
+    public static final String VersionPrefix = "3175";
     public static final String aboutMsg1 = "Team Cachebox (2011-2018)" + br;
     public static final String teamLink = "www.team-cachebox.de";
     public static final String aboutMsg2 = br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";
@@ -81,7 +81,6 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     public static boolean RunFromSplash = false;
     static boolean JokerPwChk = false;
     static boolean JokerPwExist = false;
-    static CancelWaitDialog dia;
     private static Cache selectedCache = null;
     private static boolean autoResort;
     private static Cache nearestCache = null;
@@ -135,7 +134,6 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     public static void setSelectedWaypoint(Cache cache, Waypoint waypoint, boolean changeAutoResort) {
 
         if (cache == null) {
-            Log.info(log, "[GlobalCore]setSelectedWaypoint: cache=null");
             selectedCache = null;
             selectedWaypoint = null;
             return;
@@ -266,7 +264,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
                 // TODO Handle Cancel
 
             }
-        }, new cancelRunnable() {
+        }, new ICancelRunnable() {
 
             @Override
             public void run() {
@@ -286,7 +284,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
             }
 
             @Override
-            public boolean cancel() {
+            public boolean isCanceled() {
                 // TODO Handle Cancel
                 return false;
             }
@@ -307,43 +305,38 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 
     public static void chkAPiLogInWithWaitDialog(final iChkReadyHandler handler) {
 
+        ICancelRunnable cancelRunnable = new ICancelRunnable() {
+            @Override
+            public void run() {
+                handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.INVALID);
+
+                Timer ti = new Timer();
+                TimerTask task = new TimerTask() {
+
+                    @Override
+                    public void run() {
+                        handler.checkReady(isAccessTokenInvalid());
+                    }
+                };
+                ti.schedule(task, 300);
+
+            }
+
+            @Override
+            public boolean isCanceled() {
+                return false;
+            }
+        };
+
         if (GroundspeakAPI.isDownloadLimitExceeded()) {
             MsgDownloadLimit();
             return;
         }
 
-        if (invalidAccessToken()) {
-            dia = CancelWaitDialog.ShowWait("chk API Key", DownloadAnimation.GetINSTANCE(), new IcancelListener() {
-                @Override
-                public void isCanceled() {
-                    dia.close();
-                }
-            }, new cancelRunnable() {
-                @Override
-                public void run() {
-                    handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.INVALID);
-                    dia.close();
-
-                    Timer ti = new Timer();
-                    TimerTask task = new TimerTask() {
-
-                        @Override
-                        public void run() {
-                            handler.checkReady(invalidAccessToken());
-                        }
-                    };
-                    ti.schedule(task, 300);
-
-                }
-
-                @Override
-                public boolean cancel() {
-                    // TODO Handle Cancel
-                    return false;
-                }
-            });
+        if (isAccessTokenInvalid()) {
+            CancelWaitDialog.ShowWait("chk API Key", DownloadAnimation.GetINSTANCE(), null, cancelRunnable);
         } else {
-            handler.checkReady(invalidAccessToken());
+            handler.checkReady(isAccessTokenInvalid());
         }
 
     }

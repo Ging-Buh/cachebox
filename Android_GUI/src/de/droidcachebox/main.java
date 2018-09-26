@@ -58,7 +58,7 @@ import CB_UI_Base.Math.DevicesSizes;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
-import CB_Utils.Interfaces.cancelRunnable;
+import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.CB_SLF4J;
 import CB_Utils.Log.Log;
@@ -591,7 +591,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                                 public void isCanceled() {
                                     wd.close();
                                 }
-                            }, new cancelRunnable() {
+                            }, new ICancelRunnable() {
 
                                 @Override
                                 public void run() {
@@ -633,7 +633,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                                 }
 
                                 @Override
-                                public boolean cancel() {
+                                public boolean isCanceled() {
                                     // TODO handle cancel
                                     return false;
                                 }

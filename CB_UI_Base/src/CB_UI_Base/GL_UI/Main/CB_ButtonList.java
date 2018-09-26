@@ -6,10 +6,6 @@ public class CB_ButtonList {
 
     public ArrayList<CB_Button> Buttons;
 
-    public CB_ButtonList(ArrayList<CB_Button> Buttons) {
-        this.Buttons = Buttons;
-    }
-
     public CB_ButtonList() {
 
     }

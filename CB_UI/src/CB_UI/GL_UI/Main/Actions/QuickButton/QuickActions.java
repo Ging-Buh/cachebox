@@ -18,14 +18,11 @@ package CB_UI.GL_UI.Main.Actions.QuickButton;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Main.Actions.*;
-import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
-import CB_UI_Base.GL_UI.Menu.MenuID;
-import CB_UI_Base.GL_UI.Sprites;
-import CB_UI_Base.GL_UI.Sprites.IconName;
-import CB_UI_Base.GL_UI.ViewConst;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Util.MoveableList;
+
+import static CB_UI.GL_UI.Main.TabMainView.*;
 
 /**
  * Enthält die Actions Möglichkeiten für die Quick Buttons
@@ -64,24 +61,7 @@ public enum QuickActions {
 
     empty,;
 
-    private static CB_Action action_TakePhoto;
-    private static CB_Action action_TakeVideo;
-    private static CB_Action action_Voicerec;
-    private static CB_Action action_Search;
-    private static CB_Action_add_WP action_add_WP;
-    private static CB_Action action_SwitchAutoResort = new CB_Action_switch_Autoresort();
-    private static CB_Action action_Hint = new CB_Action_ShowHint();
-    private static CB_Action action_DayNight = new CB_Action_switch_DayNight();
-    private static CB_Action action_Torch = new CB_Action_switch_Torch();
-
-    /**
-     * Gibt eine ArrayList von Actions zurück aus einem übergebenen String Array
-     *
-     * @param String []
-     * @return ArrayList <Actions>
-     */
     public static MoveableList<QuickButtonItem> getListFromConfig(String[] configList, float height) {
-        InitialActions();
         MoveableList<QuickButtonItem> retList = new MoveableList<QuickButtonItem>();
         if (configList == null || configList.length == 0) {
             return retList;
@@ -142,53 +122,53 @@ public enum QuickActions {
     public static CB_Action getActionEnumById(int id) {
         switch (id) {
             case 0:
-                return TabMainView.actionShowDescriptionView;
+                return actionShowDescriptionView;
             case 1:
-                return TabMainView.actionShowWaypointView;
+                return actionShowWaypointView;
             case 2:
-                return TabMainView.actionShowLogView;
+                return actionShowLogView;
             case 3:
-                return TabMainView.actionShowMap;
+                return actionShowMap;
             case 4:
-                return TabMainView.actionShowCompassView;
+                return actionShowCompassView;
             case 5:
-                return TabMainView.actionShowCacheList;
+                return actionShowCacheList;
             case 6:
-                return TabMainView.actionShowTrackListView;
+                return actionShowTrackListView;
             case 7:
-                return action_TakePhoto;
+                return actionRecPicture;
             case 8:
-                return action_TakeVideo;
+                return actionRecVideo;
             case 9:
-                return action_Voicerec;
+                return actionRecVoice;
             case 10:
-                return action_Search;
+                return actionShowSearch;
             case 11:
-                return TabMainView.actionShowFilter;
+                return actionShowFilter;
             case 12:
                 return action_SwitchAutoResort;
             case 13:
-                return TabMainView.actionShowSolverView;
+                return actionShowSolverView;
             case 14:
-                return TabMainView.actionShowSpoilerView;
+                return actionShowSpoilerView;
             case 15:
-                return action_Hint;
+                return actionShowHint;
             case 16:
-                return TabMainView.actionParking;
+                return actionShowParking;
             case 17:
                 return action_DayNight;
             case 18:
-                return TabMainView.actionShowFieldNotesView;
+                return actionShowFieldNotesView;
             case 19:
-                return TabMainView.actionQuickFieldNote;
+                return actionQuickFieldNote;
             case 20:
-                return TabMainView.actionShowTrackableListView;
+                return actionShowTrackableListView;
             case 21:
                 return action_add_WP;
             case 22:
-                return TabMainView.actionShowSolverView2;
+                return actionShowSolverView2;
             case 23:
-                return TabMainView.actionShowNotesView;
+                return actionShowNotesView;
             case 24:
                 return CB_Action_UploadFieldNote.INSTANCE;
             case 25:
@@ -255,18 +235,5 @@ public enum QuickActions {
 
         }
         return "empty";
-    }
-
-    public static void InitialActions() {
-        action_TakePhoto = new CB_Action_ShowActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO, Sprites.getSprite(IconName.log10icon.name()));
-
-        action_TakeVideo = new CB_Action_ShowActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC, Sprites.getSprite(IconName.videoIcon.name()));
-
-        action_Voicerec = new CB_Action_ShowActivity("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC, Sprites.getSprite(IconName.voiceRecIcon.name()));
-
-        action_Search = new CB_Action_Show_Search();
-        action_add_WP = new CB_Action_add_WP();
-        // action_ScreenLock = new CB_Action_ShowActivity("screenlock", MenuID.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));
-
     }
 }

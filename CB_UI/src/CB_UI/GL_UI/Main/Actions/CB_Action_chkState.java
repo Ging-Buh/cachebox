@@ -40,7 +40,7 @@ public class CB_Action_chkState extends CB_Action {
         @Override
         public void run() {
             cancel = false;
-            ArrayList<Cache> chkList = new ArrayList<Cache>();
+            ArrayList<Cache> chkList = new ArrayList<>();
 
             synchronized (Database.Data.Query) {
                 if (Database.Data.Query == null || Database.Data.Query.size() == 0)
@@ -73,7 +73,8 @@ public class CB_Action_chkState extends CB_Action {
                     // thread abgebrochen
                     cancelThread = true;
                 }
-                chkList100 = new ArrayList<Cache>();
+
+                chkList100 = new ArrayList<>();
                 if (!cancelThread) {
 
                     if (chkList == null || chkList.size() == 0) {
@@ -81,7 +82,6 @@ public class CB_Action_chkState extends CB_Action {
                     }
 
                     Iterator<Cache> Iterator2 = chkList.iterator();
-
                     int index = 0;
                     do {
                         if (index >= start && index <= stop) {
@@ -135,7 +135,7 @@ public class CB_Action_chkState extends CB_Action {
         }
 
         @Override
-        public boolean cancel() {
+        public boolean isCanceled() {
             return cancel;
         }
 

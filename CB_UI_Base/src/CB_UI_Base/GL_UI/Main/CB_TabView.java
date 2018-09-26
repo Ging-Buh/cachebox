@@ -155,11 +155,6 @@ public class CB_TabView extends CB_View_Base {
     public class CustomAdapter implements Adapter {
 
         public CustomAdapter() {
-
-        }
-
-        public long getItemId(int position) {
-            return position;
         }
 
         @Override

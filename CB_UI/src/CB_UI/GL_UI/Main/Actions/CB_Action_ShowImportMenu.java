@@ -209,7 +209,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
                 }
 
                 @Override
-                public boolean cancel() {
+                public boolean isCanceled() {
                     return cancel;
                 }
 

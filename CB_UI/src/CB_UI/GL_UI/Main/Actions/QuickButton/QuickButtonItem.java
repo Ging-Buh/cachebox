@@ -54,7 +54,7 @@ public class QuickButtonItem extends ListViewItemBase {
     /**
      * Constructor
      *
-     * @param Action Action Enum
+     * @param action Action Enum
      * @param Icon   Action icon
      * @param Desc   Action Beschreibung
      */
@@ -78,7 +78,7 @@ public class QuickButtonItem extends ListViewItemBase {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                mAction.CallExecute();
+                mAction.Execute();
                 return true;
             }
         });

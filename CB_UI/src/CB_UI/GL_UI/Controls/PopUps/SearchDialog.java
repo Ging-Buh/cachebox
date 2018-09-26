@@ -51,14 +51,14 @@ import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
-import CB_Utils.Interfaces.cancelRunnable;
+import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import java.util.ArrayList;
 
-import static CB_Core.Api.GroundspeakAPI.invalidAccessToken;
+import static CB_Core.Api.GroundspeakAPI.isAccessTokenInvalid;
 
 /**
  * @author Longri
@@ -545,11 +545,11 @@ public class SearchDialog extends PopUp_Base {
                         public void isCanceled() {
                             closeWaitDialog();
                         }
-                    }, new cancelRunnable() {
+                    }, new ICancelRunnable() {
 
                         @Override
                         public void run() {
-                            if (!invalidAccessToken()) {
+                            if (!isAccessTokenInvalid()) {
                                 closeWaitDialog();
                                 searchOnlineNow();
                             } else {
@@ -570,7 +570,7 @@ public class SearchDialog extends PopUp_Base {
                         }
 
                         @Override
-                        public boolean cancel() {
+                        public boolean isCanceled() {
                             // TODO Handle Cancel
                             return false;
                         }
@@ -596,7 +596,7 @@ public class SearchDialog extends PopUp_Base {
             public void isCanceled() {
                 closeWaitDialog();
             }
-        }, new cancelRunnable() {
+        }, new ICancelRunnable() {
 
             @Override
             public void run() {
@@ -717,7 +717,7 @@ public class SearchDialog extends PopUp_Base {
             }
 
             @Override
-            public boolean cancel() {
+            public boolean isCanceled() {
                 // TODO Handle Cancel
                 return false;
             }
@@ -824,7 +824,7 @@ public class SearchDialog extends PopUp_Base {
 
             @Override
             public void checkReady(boolean invalidAccessToken) {
-                if (invalidAccessToken()) {
+                if (isAccessTokenInvalid()) {
                     GL.that.RunOnGL(new IRunOnGL() {
 
                         @Override

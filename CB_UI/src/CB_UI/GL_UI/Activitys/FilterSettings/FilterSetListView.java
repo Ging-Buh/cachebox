@@ -129,7 +129,7 @@ public class FilterSetListView extends V_ListView {
         hasCorrectedCoordinates = general.addChild(addFilterSetItem(Sprites.getSprite("hasCorrectedCoordinates"), Translation.Get("hasCorrectedCoordinates"), THREE_STATE_ITEM));
 
         // add D/T
-        FilterSetListViewItem dt = addFilterSetCollapseItem(null, "D / T" + String.format("%n") + "GC-Vote", COLLAPSE_BUTTON_ITEM);
+        FilterSetListViewItem dt = addFilterSetCollapseItem(null, "D / T" + "\n" + "GC-Vote", COLLAPSE_BUTTON_ITEM);
         minDifficulty = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.Get("minDifficulty"), NUMERIC_ITEM, 1, 5, 1, 0.5f));
         maxDifficulty = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.Get("maxDifficulty"), NUMERIC_ITEM, 1, 5, 5, 0.5f));
         minTerrain = dt.addChild(addFilterSetItem(Sprites.Stars.toArray(), Translation.Get("minTerrain"), NUMERIC_ITEM, 1, 5, 1, 0.5f));
@@ -170,8 +170,8 @@ public class FilterSetListView extends V_ListView {
 
     private FilterSetListViewItem addFilterSetItem(Sprite[] Icons, String Name, int ItemType, double i, double j, double k, double f) {
         if (lFilterSets == null) {
-            lFilterSets = new ArrayList<FilterSetListView.FilterSetEntry>();
-            lFilterSetListViewItems = new ArrayList<FilterSetListViewItem>();
+            lFilterSets = new ArrayList<>();
+            lFilterSetListViewItems = new ArrayList<>();
         }
         //String Name, Sprite[] Icons, int itemType, double min = i, double max = j, double iniValue = k, double Step = f
         FilterSetEntry tmp = new FilterSetEntry(Name, Icons, ItemType, i, j, k, f);
@@ -187,8 +187,8 @@ public class FilterSetListView extends V_ListView {
 
     private FilterSetListViewItem addFilterSetItem(Sprite Icon, String Name, int ItemType) {
         if (lFilterSets == null) {
-            lFilterSets = new ArrayList<FilterSetListView.FilterSetEntry>();
-            lFilterSetListViewItems = new ArrayList<FilterSetListViewItem>();
+            lFilterSets = new ArrayList<>();
+            lFilterSetListViewItems = new ArrayList<>();
         }
         FilterSetEntry tmp = new FilterSetEntry(Name, Icon, ItemType);
         lFilterSets.add(tmp);
@@ -205,8 +205,8 @@ public class FilterSetListView extends V_ListView {
         String name = cacheType.name();
         int itemType = CHECK_ITEM;
         if (lFilterSets == null) {
-            lFilterSets = new ArrayList<FilterSetListView.FilterSetEntry>();
-            lFilterSetListViewItems = new ArrayList<FilterSetListViewItem>();
+            lFilterSets = new ArrayList<>();
+            lFilterSetListViewItems = new ArrayList<>();
         }
         FilterSetEntry tmp = new FilterSetEntry(cacheType, name, icon, itemType);
         lFilterSets.add(tmp);
@@ -220,8 +220,8 @@ public class FilterSetListView extends V_ListView {
 
     private FilterSetListViewItem addFilterSetCollapseItem(Sprite Icon, String Name, int ItemType) {
         if (lFilterSets == null) {
-            lFilterSets = new ArrayList<FilterSetListView.FilterSetEntry>();
-            lFilterSetListViewItems = new ArrayList<FilterSetListViewItem>();
+            lFilterSets = new ArrayList<>();
+            lFilterSetListViewItems = new ArrayList<>();
         }
         FilterSetEntry tmp = new FilterSetEntry(Name, Icon, ItemType);
         lFilterSets.add(tmp);
@@ -437,9 +437,7 @@ public class FilterSetListView extends V_ListView {
         public ListViewItemBase getView(int position) {
             FilterSetListViewItem v = lFilterSetListViewItems.get(position);
             if (!v.isVisible())
-                return null;// new FieldNoteViewItem(EditFilterSettings.ItemRec, position,
-            // null);
-
+                return null;
             return v;
         }
 

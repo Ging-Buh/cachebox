@@ -1,6 +1,5 @@
 package CB_UI.GL_UI.Main.Actions;
 
-import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
@@ -31,6 +30,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class CB_Action_ShowCacheList extends CB_Action_ShowView {
+    EditCache editCache = null;
 
     public CB_Action_ShowCacheList() {
         super("cacheList", "  (" + String.valueOf(Database.Data.Query.size()) + ")", MenuID.AID_SHOW_CACHELIST);
@@ -73,7 +73,6 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                EditCache editCache = null;
                 switch (((MenuItem) v).getMenuItemId()) {
                     case MenuID.MI_RESORT:
                         synchronized (Database.Data.Query) {
@@ -102,7 +101,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
 
                         return true;
                     case MenuID.MI_IMPORT:
-                        TabMainView.actionShowImportMenu.CallExecute();
+                        TabMainView.actionShowImportMenu.Execute();
                         return true;
                     case MenuID.MI_SYNC:
                         SyncActivity sync = new SyncActivity();
@@ -123,28 +122,25 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                         GL.postAsync(new Runnable() {
                             @Override
                             public void run() {
-                                if (GroundspeakAPI.isDownloadLimitExceeded()) {
-                                    GlobalCore.MsgDownloadLimit();
-                                    return;
-                                }
-
                                 // First check API-Key with visual Feedback
                                 GlobalCore.chkAPiLogInWithWaitDialog(new iChkReadyHandler() {
                                     @Override
-                                    public void checkReady(boolean tobeReady) {
-                                        TimerTask tt = new TimerTask() {
-                                            @Override
-                                            public void run() {
-                                                GL.postAsync(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        new CB_Action_chkState().Execute();
-                                                    }
-                                                });
-                                            }
-                                        };
-                                        Timer t = new Timer();
-                                        t.schedule(tt, 100);
+                                    public void checkReady(boolean isReady) {
+                                        if (isReady) {
+                                            TimerTask tt = new TimerTask() {
+                                                @Override
+                                                public void run() {
+                                                    GL.postAsync(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            new CB_Action_chkState().Execute();
+                                                        }
+                                                    });
+                                                }
+                                            };
+                                            Timer t = new Timer();
+                                            t.schedule(tt, 100);
+                                        }
                                     }
                                 });
                             }
@@ -157,7 +153,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                         return true;
 
                     case MenuID.AID_SHOW_DELETE_DIALOG:
-                        TabMainView.actionDelCaches.Execute();
+                        TabMainView.actionShwDeleteCaches.Execute();
                         return true;
                 }
                 return false;
@@ -181,7 +177,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
         cm.addItem(MenuID.MI_IMPORT, "importExport", Sprites.getSprite(IconName.importIcon.name()));
         if (SyncActivity.RELEASED)
             cm.addItem(MenuID.MI_SYNC, "sync", Sprites.getSprite(IconName.importIcon.name()));
-        mi = cm.addItem(MenuID.MI_MANAGE_DB, "manage", "  (" + DBName + ")", Sprites.getSprite(IconName.manageDb.name()));
+        cm.addItem(MenuID.MI_MANAGE_DB, "manage", "  (" + DBName + ")", Sprites.getSprite(IconName.manageDb.name()));
         mi = cm.addItem(MenuID.MI_AUTO_RESORT, "AutoResort");
         mi.setCheckable(true);
         mi.setChecked(GlobalCore.getAutoResort());

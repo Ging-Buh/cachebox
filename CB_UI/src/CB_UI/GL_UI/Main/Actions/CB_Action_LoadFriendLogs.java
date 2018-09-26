@@ -34,7 +34,7 @@ public class CB_Action_LoadFriendLogs extends CB_Action {
     private final RunnableReadyHandler ChkStatRunnable = new RunnableReadyHandler() {
 
         @Override
-        public boolean cancel() {
+        public boolean isCanceled() {
             return cancelThread;
         }
 

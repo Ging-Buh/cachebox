@@ -19,7 +19,7 @@ import CB_Core.*;
 import CB_Core.Types.*;
 import CB_Locator.Coordinate;
 import CB_Utils.Interfaces.ICancel;
-import CB_Utils.Interfaces.cancelRunnable;
+import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Log.Log;
 import CB_Utils.http.Response;
 import CB_Utils.http.Webb;
@@ -67,12 +67,7 @@ public class GroundspeakAPI {
      */
     public static int fetchGeocacheStatus(ArrayList<Cache> caches, final ICancel icancel) {
 
-        try {
-            Thread.sleep(2500);
-        } catch (InterruptedException e1) {
-        }
-
-        if (invalidAccessToken()) return ERROR;
+        if (isAccessTokenInvalid()) return ERROR;
 
         try {
             JSONArray CacheCodes = new JSONArray();
@@ -127,11 +122,11 @@ public class GroundspeakAPI {
         }
     }
 
-    public static int fetchGeocacheLogsByCache(Cache cache, ArrayList<LogEntry> logList, boolean all, cancelRunnable cancelRun) {
+    public static int fetchGeocacheLogsByCache(Cache cache, ArrayList<LogEntry> logList, boolean all, ICancelRunnable cancelRun) {
         // todo test all=true (but is not used (by CB_Action_LoadLogs, loads all))
 
         if (cache == null) return ERROR;
-        if (invalidAccessToken()) return ERROR;
+        if (isAccessTokenInvalid()) return ERROR;
 
         try {
             Thread.sleep(1000);
@@ -150,7 +145,7 @@ public class GroundspeakAPI {
         int start = 0;
         int count = 30;
 
-        while (!cancelRun.cancel() && (friendList.size() > 0 || all))
+        while (!cancelRun.isCanceled() && (friendList.size() > 0 || all))
         // Schleife, solange bis entweder keine Logs mehr geladen werden oder bis alle Logs aller Finder geladen sind.
         {
             try {
@@ -217,7 +212,7 @@ public class GroundspeakAPI {
     public static int fetchCacheLimits() {
         if (CachesLeft > -1) return OK;
 
-        if (invalidAccessToken()) return ERROR;
+        if (isAccessTokenInvalid()) return ERROR;
 
         LastAPIError = "";
         // zum Abfragen der CacheLimits einfach nach einem Cache suchen, der nicht existiert: "GCZZZZZ".
@@ -385,6 +380,7 @@ public class GroundspeakAPI {
     public static UserInfos fetchUserInfos(String UserCode) {
         Log.info(log, "fetchUserInfos for " + UserCode);
         LastAPIError = "";
+        APIError = 0;
         UserInfos ui = new UserInfos();
         try {
             JSONObject response = Webb.create()
@@ -432,7 +428,7 @@ public class GroundspeakAPI {
     public static int UploadDraftOrLog(String cacheCode, int wptLogTypeId, Date dateLogged, String note, boolean directLog) {
         Log.info(log, "UploadDraftOrLog");
 
-        if (invalidAccessToken()) return ERROR;
+        if (isAccessTokenInvalid()) return ERROR;
 
         try {
             if (directLog) {
@@ -507,9 +503,9 @@ public class GroundspeakAPI {
 
     // geocaches/{referenceCode}/geocachelogs
     // there is no LogId in the new API
-    public static int fetchGeocacheLogsOfFriends(Cache cache, ArrayList<LogEntry> logList, cancelRunnable cancelRun) {
+    public static int fetchGeocacheLogsOfFriends(Cache cache, ArrayList<LogEntry> logList, ICancelRunnable cancelRun) {
         if (cache == null) return ERROR;
-        if (invalidAccessToken()) return ERROR;
+        if (isAccessTokenInvalid()) return ERROR;
         Map<String, String> friends = new HashMap<String, String>();
         // todo perhaps entered more friends than allowed by limit (The max amount of usernames allowed is 50)
         try {
@@ -535,7 +531,7 @@ public class GroundspeakAPI {
         int start = 0;
         int count = 30;
 
-        while (!cancelRun.cancel() && (friends.size() > 0))
+        while (!cancelRun.isCanceled() && (friends.size() > 0))
         // Schleife, solange bis entweder keine Logs mehr geladen werden oder bis Logs aller Freunde geladen sind.
         {
             try {
@@ -590,7 +586,7 @@ public class GroundspeakAPI {
         Log.debug(log, "downloadImageListForGeocache for '" + "cacheCode" + "'");
         LastAPIError = "";
         if (cacheCode == null) return ERROR;
-        if (invalidAccessToken()) return ERROR;
+        if (isAccessTokenInvalid()) return ERROR;
         if (list == null)
             list = new HashMap<>();
         int skip = 0;
@@ -656,7 +652,7 @@ public class GroundspeakAPI {
 
     public static TbList downloadUsersTrackables() {
         Log.info(log, "downloadUsersTrackables");
-        if (invalidAccessToken()) return null;
+        if (isAccessTokenInvalid()) return null;
         LastAPIError = "";
         try {
             JSONArray jTrackables = Webb.create()
@@ -692,7 +688,7 @@ public class GroundspeakAPI {
         Log.info(log, "fetchTrackable for " + TBCode);
         LastAPIError = "";
         APIError = 0;
-        if (invalidAccessToken()) return null;
+        if (isAccessTokenInvalid()) return null;
         try {
             Trackable tb = createTrackable(Webb.create()
                     .get(getUrl(1, "trackables/" + TBCode + "?fields=referenceCode,trackingNumber,iconUrl,name,goal,description,releasedDate,ownerCode,holderCode,currentGeocacheCode,type"))
@@ -734,7 +730,7 @@ public class GroundspeakAPI {
         Log.info(log, "uploadTrackableLog");
         LastAPIError = "";
         if (cacheCode == null) cacheCode = "";
-        if (invalidAccessToken()) return false;
+        if (isAccessTokenInvalid()) return false;
         try {
             JSONObject result = Webb.create()
                     .post(getUrl(1, "trackablelogs"))
@@ -827,6 +823,7 @@ public class GroundspeakAPI {
         if (me == null || me.memberShipType == MemberShipTypes.Unknown) {
             me = fetchUserInfos("me");
             if (me.memberShipType == MemberShipTypes.Unknown) {
+                me.findCount = -1;
                 // we need a new AccessToken
                 // API_ErrorEventHandlerList.handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.INVALID);
                 Log.err(log, "fetchMyUserInfos: Need a new Access Token");
@@ -920,7 +917,7 @@ public class GroundspeakAPI {
         }
     }
 
-    public static boolean invalidAccessToken() {
+    public static boolean isAccessTokenInvalid() {
         return (fetchMyUserInfos().memberShipType == MemberShipTypes.Unknown);
     }
 

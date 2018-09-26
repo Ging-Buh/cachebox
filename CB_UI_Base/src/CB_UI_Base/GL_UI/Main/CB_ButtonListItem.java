@@ -8,15 +8,6 @@ import com.badlogic.gdx.math.Vector2;
 public class CB_ButtonListItem extends ListViewItemBase {
     CB_Button mCB_Button;
 
-    public CB_ButtonListItem(CB_RectF rec, int Index, String Name) {
-        super(rec, Index, Name);
-        mCB_Button = new CB_Button(this, "Button");
-        mCB_Button.setPos(new Vector2(0, 0));
-        mCB_Button.setY(rec.getY());
-        mCB_Button.setSize(GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight);
-        this.addChild(mCB_Button);
-    }
-
     public CB_ButtonListItem(int Index, CB_Button Button, String Name) {
         super(new CB_RectF(Button), Index, Name);
         mCB_Button = Button;

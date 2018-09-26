@@ -25,7 +25,7 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
-import CB_Utils.Interfaces.cancelRunnable;
+import CB_Utils.Interfaces.ICancelRunnable;
 
 public class DeleteDialog extends ButtonDialog {
     private SizeF msgBoxContentSize;
@@ -78,7 +78,7 @@ public class DeleteDialog extends ButtonDialog {
                     public void isCanceled() {
 
                     }
-                }, new cancelRunnable() {
+                }, new ICancelRunnable() {
 
                     @Override
                     public void run() {
@@ -98,7 +98,7 @@ public class DeleteDialog extends ButtonDialog {
                     }
 
                     @Override
-                    public boolean cancel() {
+                    public boolean isCanceled() {
                         // TODO Handle Cancel
                         return false;
                     }
@@ -119,7 +119,7 @@ public class DeleteDialog extends ButtonDialog {
                     public void isCanceled() {
 
                     }
-                }, new cancelRunnable() {
+                }, new ICancelRunnable() {
 
                     @Override
                     public void run() {
@@ -137,7 +137,7 @@ public class DeleteDialog extends ButtonDialog {
                     }
 
                     @Override
-                    public boolean cancel() {
+                    public boolean isCanceled() {
                         // TODO Handle Cancel
                         return false;
                     }
@@ -158,7 +158,7 @@ public class DeleteDialog extends ButtonDialog {
                     public void isCanceled() {
 
                     }
-                }, new cancelRunnable() {
+                }, new ICancelRunnable() {
 
                     @Override
                     public void run() {
@@ -175,7 +175,7 @@ public class DeleteDialog extends ButtonDialog {
                     }
 
                     @Override
-                    public boolean cancel() {
+                    public boolean isCanceled() {
                         // TODO Handle Cancel
                         return false;
                     }

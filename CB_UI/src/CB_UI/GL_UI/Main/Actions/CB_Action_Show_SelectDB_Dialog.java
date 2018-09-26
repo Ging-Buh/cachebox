@@ -102,7 +102,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_Action {
                 // set selectedCache from lastselected Cache
                 GlobalCore.setSelectedCache(null);
                 String sGc = Config.LastSelectedCache.getValue();
-                if (sGc != null && !sGc.equals("")) {
+                if (sGc != null && sGc.length() > 0) {
                     for (int i = 0, n = Database.Data.Query.size(); i < n; i++) {
                         Cache c = Database.Data.Query.get(i);
 

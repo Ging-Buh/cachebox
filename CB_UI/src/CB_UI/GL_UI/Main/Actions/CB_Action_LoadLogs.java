@@ -24,7 +24,7 @@ import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
-import CB_Utils.Interfaces.cancelRunnable;
+import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Lists.CB_List;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -66,7 +66,7 @@ public class CB_Action_LoadLogs extends CB_Action {
             public void isCanceled() {
 
             }
-        }, new cancelRunnable() {
+        }, new ICancelRunnable() {
 
             @Override
             public void run() {
@@ -118,7 +118,7 @@ public class CB_Action_LoadLogs extends CB_Action {
             }
 
             @Override
-            public boolean cancel() {
+            public boolean isCanceled() {
                 // TODO Handle cancel
                 return false;
             }

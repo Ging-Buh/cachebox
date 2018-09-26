@@ -65,7 +65,7 @@ import CB_UI_Base.graphics.Geometry.GeometryList;
 import CB_UI_Base.graphics.Geometry.Line;
 import CB_UI_Base.graphics.Geometry.Quadrangle;
 import CB_UI_Base.graphics.PolygonDrawable;
-import CB_Utils.Interfaces.cancelRunnable;
+import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
 import CB_Utils.MathUtils;
@@ -432,7 +432,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                         public void isCanceled() {
 
                         }
-                    }, new cancelRunnable() {
+                    }, new ICancelRunnable() {
 
                         @Override
                         public void run() {
@@ -478,7 +478,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                         }
 
                         @Override
-                        public boolean cancel() {
+                        public boolean isCanceled() {
                             // TODO handle cancel
                             return false;
                         }

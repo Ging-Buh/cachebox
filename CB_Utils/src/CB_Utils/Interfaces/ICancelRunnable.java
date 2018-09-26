@@ -20,6 +20,6 @@ package CB_Utils.Interfaces;
  *
  * @author Longri
  */
-public interface cancelRunnable extends ICancel {
+public interface ICancelRunnable extends ICancel {
     void run();
 }

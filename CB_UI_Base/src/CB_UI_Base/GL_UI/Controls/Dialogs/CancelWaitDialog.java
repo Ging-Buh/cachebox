@@ -27,7 +27,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
-import CB_Utils.Interfaces.cancelRunnable;
+import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Log.Trace;
 
 /**
@@ -38,26 +38,26 @@ import CB_Utils.Log.Trace;
 public class CancelWaitDialog extends WaitDialog {
 
     // CancelWaitDialog that;
-    private final cancelRunnable runnable;
+    private final ICancelRunnable cancelRunnable;
     protected IcancelListener cancelListener;
     RunnableReadyHandler mRunnThread;
     private IReadyListener readyListener;
     private boolean isRunning = false;
 
-    public CancelWaitDialog(Size size, String name, IcancelListener listener, cancelRunnable runnable) {
+    public CancelWaitDialog(Size size, String name, IcancelListener cancelListener, ICancelRunnable cancelRunnable) {
         super(size, name);
-        this.cancelListener = listener;
-        this.runnable = runnable;
+        this.cancelListener = cancelListener;
+        this.cancelRunnable = cancelRunnable;
     }
 
-    public static CancelWaitDialog ShowWait(String Msg, IcancelListener listener, cancelRunnable runnable) {
-        final CancelWaitDialog wd = ShowWait(Msg, WorkAnimation.GetINSTANCE(), listener, runnable);
+    public static CancelWaitDialog ShowWait(String Msg, IcancelListener listener, ICancelRunnable cancelRunnable) {
+        final CancelWaitDialog wd = ShowWait(Msg, WorkAnimation.GetINSTANCE(), listener, cancelRunnable);
         wd.setCallerName(Trace.getCallerName(2));
         return wd;
     }
 
-    public static CancelWaitDialog ShowWait(String Msg, AnimationBase Animation, IcancelListener listener, cancelRunnable runnable) {
-        final CancelWaitDialog wd = createDialog(Msg, listener, runnable);
+    public static CancelWaitDialog ShowWait(String Msg, AnimationBase Animation, IcancelListener cancelListener, ICancelRunnable cancelRunnable) {
+        final CancelWaitDialog wd = createDialog(Msg, cancelListener, cancelRunnable);
         wd.setCallerName(Trace.getCallerName(1));
         CB_RectF animationRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
         Animation.setRec(animationRec);
@@ -84,14 +84,14 @@ public class CancelWaitDialog extends WaitDialog {
         return wd;
     }
 
-    protected static CancelWaitDialog createDialog(String msg, IcancelListener listener, cancelRunnable runnable) {
+    private static CancelWaitDialog createDialog(String msg, IcancelListener listener, ICancelRunnable cancelRunnable) {
 
         if (msg == null)
             msg = "";
 
         Size size = calcMsgBoxSize(msg, false, false, true, false);
 
-        CancelWaitDialog waitDialog = new CancelWaitDialog(size, "WaitDialog", listener, runnable);
+        CancelWaitDialog waitDialog = new CancelWaitDialog(size, "WaitDialog", listener, cancelRunnable);
         waitDialog.setTitle("");
         waitDialog.setButtonCaptions(MessageBoxButtons.Cancel);
 
@@ -99,7 +99,7 @@ public class CancelWaitDialog extends WaitDialog {
 
         CB_RectF imageRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
 
-        waitDialog.label = new Label("waitDialog" + " label", contentSize.getBounds());
+        waitDialog.label = new Label("waitDialog", contentSize.getBounds());
         waitDialog.label.setWidth(contentSize.getBounds().getWidth() - margin - margin - margin - UI_Size_Base.that.getButtonHeight());
         waitDialog.label.setX(imageRec.getMaxX() + margin);
         waitDialog.label.setWrappedText(msg);
@@ -122,17 +122,17 @@ public class CancelWaitDialog extends WaitDialog {
 
     @Override
     public void onShow() {
-        if (!isRunning && this.runnable != null) {
+        if (!isRunning && this.cancelRunnable != null) {
 
             isRunning = true;
 
-            // start runnable on new Thread
+            // start cancelRunnable on new Thread
             mRunnThread = new RunnableReadyHandler() {
 
                 @Override
-                public void RunnableReady(boolean isCanceld) {
+                public void RunnableReady(boolean isCanceled) {
                     // CancelWaitDialog.this.close();
-                    if (isCanceld && cancelListener != null) {
+                    if (isCanceled && cancelListener != null) {
                         cancelListener.isCanceled();
                     }
 
@@ -140,19 +140,26 @@ public class CancelWaitDialog extends WaitDialog {
                         readyListener.isReady();
                     }
 
+                    CancelWaitDialog.this.close();
+
                 }
 
                 @Override
                 public void run() {
-                    runnable.run();
+                    cancelRunnable.run();
                     if (readyListener != null)
                         readyListener.isReady();
                     CancelWaitDialog.this.close();
                 }
 
                 @Override
-                public boolean cancel() {
-                    return runnable.cancel();
+                public boolean isCanceled() {
+                    boolean mCancel = true;
+                    if (cancelRunnable != null) {
+                        mCancel = cancelRunnable.isCanceled();
+                    }
+                    CancelWaitDialog.this.close();
+                    return mCancel;
                 }
             };
             mRunnThread.start();

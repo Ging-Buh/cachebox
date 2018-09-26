@@ -57,7 +57,7 @@ public class Label extends CB_View_Base {
     protected BitmapFont mFont = Fonts.getNormal();
     protected Color mColor = COLOR.getFontColor();
     protected HAlignment mHAlignment = HAlignment.LEFT;
-    private VAlignment mVAlignment = VAlignment.CENTER;
+    protected VAlignment mVAlignment = VAlignment.CENTER;
     private WrapType mWrapType = WrapType.SINGLELINE;
     private int ErrorCount = 0;
     private int scrollPos = 0;
@@ -393,7 +393,7 @@ public class Label extends CB_View_Base {
             }
         }
         // bottom : text starts at yPosition, Text wird von hier aus unterhalb geschrieben (Descent ist negativ, daher -)
-        float yPosition = bottomBorder + mFont.getCapHeight() - mFont.getDescent(); // VAlignment.BOTTOM
+        float yPosition = 0;
         if (mVAlignment == null)
             mVAlignment = VAlignment.CENTER;
         switch (mVAlignment) {
@@ -403,8 +403,8 @@ public class Label extends CB_View_Base {
             case CENTER:
                 yPosition = (innerHeight + bounds.height) / 2f;
                 break;
-            default:
-                break;
+            case BOTTOM:
+                yPosition = bottomBorder + mFont.getCapHeight() - mFont.getDescent();
         }
 
         try {
