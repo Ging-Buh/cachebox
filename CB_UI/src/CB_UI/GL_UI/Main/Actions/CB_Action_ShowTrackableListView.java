@@ -26,7 +26,7 @@ public class CB_Action_ShowTrackableListView extends CB_Action {
         if ((TrackableListView.that == null))
             new TrackableListView(ActivityBase.ActivityRec(), "TrackableListView");
 
-        if ((TrackableListView.that == null))
+        if ((TrackableListView.that != null))
             TrackableListView.that.show();
     }
 
