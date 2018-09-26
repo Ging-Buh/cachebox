@@ -245,7 +245,6 @@ public class CB_Button extends Button {
                 for (CB_ActionButton ba : mButtonActions) {
                     if (ba.getAction().getId() == mId) {
                         CB_Action action = ba.getAction();
-
                         action.Execute();
                         if (action instanceof CB_Action_ShowView) {
                             aktActionView = (CB_Action_ShowView) action;
@@ -285,8 +284,8 @@ public class CB_Button extends Button {
 
     @Override
     protected void render(Batch batch) {
-        boolean hasContextMenu = false;
 
+        boolean hasContextMenu = false;
         try {
             if (aktActionView != null && aktActionView.getView() != null) {
                 isFocused = aktActionView.getView().isVisible();

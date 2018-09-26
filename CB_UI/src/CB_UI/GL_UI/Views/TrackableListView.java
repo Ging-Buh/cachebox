@@ -43,6 +43,12 @@ import static CB_UI_Base.GL_UI.Menu.MenuID.*;
 
 public class TrackableListView extends ActivityBase {
     private static final String log = "TrackableListView";
+    private static final int MI_SEARCH = 37;
+    private static final int MI_REFRESH_TB_LIST = 165;
+    private static final int MI_TB_DROPPED = 167;
+    private static final int MI_TB_VISIT = 169;
+    private static final int MI_TB_NOTE = 171;
+    private static final int MI_QUIT = 24;
     public static TrackableListView that;
     private V_ListView listView;
     private CustomAdapter lvAdapter;
@@ -54,15 +60,15 @@ public class TrackableListView extends ActivityBase {
         public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
 
             switch (((MenuItem) v).getMenuItemId()) {
-                case MenuID.MI_SEARCH:
+                case MI_SEARCH:
                     searchTB();
                     break;
-                case MenuID.MI_REFRESH_TB_LIST:
+                case MI_REFRESH_TB_LIST:
                     RefreshTbList();
                     break;
                 case MI_TB_VISIT:
                     LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.visited), TemplateFormatter.ReplaceTemplate(Config.VisitedTemplate.getValue(), new Date()));
-                break;
+                    break;
                 case MI_TB_DROPPED:
                     LogTBs(((MenuItem) v).getTitle(), LogTypes.CB_LogType2GC(LogTypes.dropped_off), TemplateFormatter.ReplaceTemplate(Config.DroppedTemplate.getValue(), new Date()));
                     RefreshTbList();
@@ -72,8 +78,6 @@ public class TrackableListView extends ActivityBase {
                     break;
                 case MI_QUIT:
                     finish();
-                    dispose();
-                    TabMainView.trackableListView = null;
                     break;
             }
             return true;
@@ -87,22 +91,23 @@ public class TrackableListView extends ActivityBase {
         lvAdapter = new CustomAdapter();
     }
 
-    @Override
+    public void dispose() {
+        super.dispose();
+        that = null;
+    }
+
     public void onShow() {
         reloadTB_List();
     }
 
-    @Override
     public void onResized(CB_RectF rec) {
         super.onResized(rec);
         Layout();
     }
 
-    @Override
     public void onHide() {
     }
 
-    @Override
     protected void Initial() {
         btnAction = new Button(Translation.Get("TB_Actions"));
         btnAction.setOnClickListener(new OnClickListener() {
@@ -273,7 +278,7 @@ public class TrackableListView extends ActivityBase {
         cm.addItem(MI_TB_NOTE, "all_note", Sprites.getSprite(IconName.TBNOTE.name()));
         cm.addItem(MI_TB_VISIT, "all_visit", Sprites.getSprite(IconName.TBVISIT.name()));
         cm.addItem(MI_TB_DROPPED, "all_dropped", Sprites.getSprite(IconName.TBDROP.name()));
-        cm.addItem(MI_QUIT,"cancel",Sprites.getSprite(IconName.closeIcon.name()));
+        cm.addItem(MI_QUIT, "cancel", Sprites.getSprite(IconName.closeIcon.name()));
         cm.Show();
     }
 

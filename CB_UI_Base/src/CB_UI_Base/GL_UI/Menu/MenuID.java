@@ -53,7 +53,6 @@ public class MenuID {
     public static final int MI_DAY_NIGHT = 21;
     public static final int MI_SETTINGS = 22;
     public static final int MI_SCREENLOCK = 23;
-    public static final int MI_QUIT = 24;
     public static final int MI_DESCRIPTION = 25;
     public static final int MI_WAYPOINTS = 26;
     public static final int MI_SHOW_LOGS = 27;
@@ -66,7 +65,6 @@ public class MenuID {
     public static final int MI_Layer = 34;
     public static final int MI_ALIGN_TO_COMPSS = 35;
 
-    public static final int MI_SEARCH = 37;
     public static final int MI_TREC_REC = 38;
     public static final int MI_HIDE_FINDS = 39;
     public static final int MI_SHOW_RATINGS = 40;
@@ -205,13 +203,9 @@ public class MenuID {
     public static final int MI_DELETE_CACHE = 163;
     public static final int MI_RESET_FILTER = 164;
 
-    public static final int MI_REFRESH_TB_LIST = 165;
     public static final int MI_TB_DISCOVERED = 166;
-    public static final int MI_TB_DROPPED = 167;
     public static final int MI_TB_PICKED = 168;
-    public static final int MI_TB_VISIT = 169;
     public static final int MI_TB_GRABBED = 170;
-    public static final int MI_TB_NOTE = 171;
     public static final int MI_SELECT_PATH = 172;
     public static final int MI_CLEAR_PATH = 173;
     public static final int MI_SHOW_CENTERCROSS = 174;

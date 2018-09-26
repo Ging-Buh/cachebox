@@ -39,6 +39,9 @@ import CB_UI_Base.Math.UI_Size_Base;
  */
 public class TB_Details extends ActivityBase {
     public static TB_Details that;
+    private static final int MI_TB_DROPPED = 167;
+    private static final int MI_TB_VISIT = 169;
+    private static final int MI_TB_NOTE = 171;
     private float innerHeight;
     private ScrollBox scrollBox;
     private Button btnClose, btnAction;
@@ -54,11 +57,11 @@ public class TB_Details extends ActivityBase {
                     TB_Log.that.Show(TB, LogTypes.discovered);
                     break;
 
-                case MenuID.MI_TB_VISIT:
+                case MI_TB_VISIT:
                     TB_Log.that.Show(TB, LogTypes.visited);
                     break;
 
-                case MenuID.MI_TB_DROPPED:
+                case MI_TB_DROPPED:
                     TB_Log.that.Show(TB, LogTypes.dropped_off);
                     break;
 
@@ -70,7 +73,7 @@ public class TB_Details extends ActivityBase {
                     TB_Log.that.Show(TB, LogTypes.retrieve);
                     break;
 
-                case MenuID.MI_TB_NOTE:
+                case MI_TB_NOTE:
                     TB_Log.that.Show(TB, LogTypes.note);
                     break;
             }
@@ -303,16 +306,16 @@ public class TB_Details extends ActivityBase {
         final Menu cm = new Menu("TBLogContextMenu");
         cm.addOnClickListener(menuItemClickListener);
 
-        cm.addItem(MenuID.MI_TB_NOTE, "note", Sprites.getSprite(IconName.TBNOTE.name()));
+        cm.addItem(MI_TB_NOTE, "note", Sprites.getSprite(IconName.TBNOTE.name()));
 
         if (TB.isLogTypePossible(LogTypes.discovered, CB_Core_Settings.GcLogin.getValue()))
             cm.addItem(MenuID.MI_TB_DISCOVERED, "discovered", Sprites.getSprite(IconName.TBDISCOVER.name()));
 
         if (TB.isLogTypePossible(LogTypes.visited, CB_Core_Settings.GcLogin.getValue()))
-            cm.addItem(MenuID.MI_TB_VISIT, "visit", Sprites.getSprite(IconName.TBVISIT.name()));
+            cm.addItem(MI_TB_VISIT, "visit", Sprites.getSprite(IconName.TBVISIT.name()));
 
         if (TB.isLogTypePossible(LogTypes.dropped_off, CB_Core_Settings.GcLogin.getValue()))
-            cm.addItem(MenuID.MI_TB_DROPPED, "dropped", Sprites.getSprite(IconName.TBDROP.name()));
+            cm.addItem(MI_TB_DROPPED, "dropped", Sprites.getSprite(IconName.TBDROP.name()));
 
         if (TB.isLogTypePossible(LogTypes.grab_it, CB_Core_Settings.GcLogin.getValue()))
             cm.addItem(MenuID.MI_TB_GRABBED, "grabbed", Sprites.getSprite(IconName.TBGRAB.name()));

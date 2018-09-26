@@ -100,7 +100,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
     public static CB_Action_ShowView actionShowSolverView;
     public static CB_Action_ShowView actionShowSolverView2;
 
-    public static CB_Action_ShowView actionShowAboutView;
+    public static CB_Action_ShowAbout actionShowAboutView;
     public static CB_Action_ShowView actionShowCreditsView;
 
     public static CB_Action_ShowView actionShowWaypointView;
@@ -140,7 +140,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
     public static NotesView notesView = null;
     public static SolverView solverView = null;
     public static SpoilerView spoilerView = null;
-    public static TrackableListView trackableListView = null;
     public static TrackListView trackListView = null;
     public static WaypointView waypointView = null;
     public static TestView testView = null;

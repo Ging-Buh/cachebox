@@ -331,7 +331,7 @@ public class GL implements ApplicationListener {
             mActivity.renderChilds(mPolygonSpriteBatch, prjMatrix);
         }
 
-        if (!currentActivityIsShown) {
+        if (!currentActivityIsShown && child != null) {
             child.renderChilds(mPolygonSpriteBatch, prjMatrix);
             // reset child Matrix
             mPolygonSpriteBatch.setProjectionMatrix(prjMatrix.Matrix());

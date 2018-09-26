@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="JAVA_MODULE" version="4">
-  <component name="EclipseModuleManager">
-    <libelement value="jar://$MODULE_DIR$/lib/httpcore-4.1.jar!/" />
-    <libelement value="jar://$MODULE_DIR$/lib/httpclient-4.1.1.jar!/" />
-    <libelement value="jar://$MODULE_DIR$/lib/sjxp-2.2.jar!/" />
-    <libelement value="jar://$MODULE_DIR$/lib/jsoup-1.7.2.jar!/" />
-    <libelement value="jar://$MODULE_DIR$/lib/kxml2-2.3.0.jar!/" />
-    <libelement value="jar://$MODULE_DIR$/lib/slf4j-api-1.7.6.jar!/" />
-    <libelement value="jar://$MODULE_DIR$/lib/gdx-1.9.6.jar!/" />
-    <src_description expected_position="0">
-      <src_folder value="file://$MODULE_DIR$/src" expected_position="0" />
-    </src_description>
-  </component>
   <component name="NewModuleRootManager">
     <output url="file://$MODULE_DIR$/bin" />
     <exclude-output />
