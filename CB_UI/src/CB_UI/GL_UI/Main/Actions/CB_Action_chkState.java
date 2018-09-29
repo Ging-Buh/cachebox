@@ -23,12 +23,14 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Utils.Events.ProgresssChangedEventList;
+import CB_Utils.Log.Log;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
 public class CB_Action_chkState extends CB_Action {
+    private static final String sKlasse = "CB_Action_chkState";
 
     int ChangedCount = 0;
     int result = 0;
@@ -39,6 +41,7 @@ public class CB_Action_chkState extends CB_Action {
 
         @Override
         public void run() {
+            Log.debug(sKlasse,"chkState started");
             cancel = false;
             ArrayList<Cache> chkList = new ArrayList<>();
 
@@ -67,6 +70,7 @@ public class CB_Action_chkState extends CB_Action {
             float progress = 0;
 
             do {
+                Log.debug(sKlasse,"Begin block from " + start + " stop " + stop);
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {
@@ -92,6 +96,7 @@ public class CB_Action_chkState extends CB_Action {
                         index++;
                     } while (Iterator2.hasNext());
 
+                    Log.debug(sKlasse,"Fetch block from " + start + " stop " + stop);
                     result = GroundspeakAPI.fetchGeocacheStatus(chkList100, this);
                     if (result == -1) {
                         GL.that.Toast(ConnectionError.INSTANCE);
@@ -136,11 +141,13 @@ public class CB_Action_chkState extends CB_Action {
 
         @Override
         public boolean isCanceled() {
+            Log.debug(sKlasse,"chkState canceled");
             return cancel;
         }
 
         @Override
         public void RunnableReady(boolean canceld) {
+            Log.debug(sKlasse,"chkState ready");
             String sCanceld = canceld ? Translation.Get("isCanceld") + GlobalCore.br : "";
 
             if (result != -1) {
@@ -178,6 +185,7 @@ public class CB_Action_chkState extends CB_Action {
 
     @Override
     public void Execute() {
+        Log.debug(sKlasse, "Execute ProgressDialog");
         pd = ProgressDialog.Show(Translation.Get("chkState"), DownloadAnimation.GetINSTANCE(), ChkStatRunnable);
     }
 }

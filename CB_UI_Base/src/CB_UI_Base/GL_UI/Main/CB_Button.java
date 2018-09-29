@@ -39,7 +39,6 @@ public class CB_Button extends Button {
     private final ArrayList<CB_ActionButton> mButtonActions;
     private CB_Action_ShowView aktActionView = null;
     private GestureHelp help;
-    private Image mButtonImage;
     private final OnClickListener onClickListener = new OnClickListener() {
         @Override
         public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -157,9 +156,12 @@ public class CB_Button extends Button {
     // Auswertung der Finger-Gesten zum Schnellzugriff auf einige ButtonActions
     private boolean isDragged = false;
     private Point downPos = null;
+    private boolean useDescriptiveCB_Buttons;
+    private Image mButtonImage;
 
-    public CB_Button(CB_RectF rec, String Name, ButtonSprites sprites) {
+    public CB_Button(CB_RectF rec, String Name) {
         super(rec, Name);
+        useDescriptiveCB_Buttons = true;
         mButtonActions = new ArrayList<>();
         setOnClickListener(onClickListener);
         setOnLongClickListener(longClickListener);
@@ -171,29 +173,44 @@ public class CB_Button extends Button {
         vAlignment = Label.VAlignment.BOTTOM;
     }
 
+    public CB_Button(CB_RectF rec, String Name, ButtonSprites sprites) {
+        super(rec, Name);
+        useDescriptiveCB_Buttons = false;
+        mButtonActions = new ArrayList<>();
+        setOnClickListener(onClickListener);
+        setOnLongClickListener(longClickListener);
+        setButtonSprites(sprites);
+        isFiltered = false;
+        vAlignment = Label.VAlignment.BOTTOM;
+    }
+
     public static void refreshContextMenuSprite() {
         mContextMenuSprite = null;
         mFilteredContextMenuSprite = null;
     }
 
     private void setButton(Sprite icon, String name) {
-        mButtonImage.setDrawable(new SpriteDrawable(icon));
-        if (name != null) {
-            name = Translation.Get(name);
-            setText(name.substring(0, Math.min(5, name.length())), Fonts.getSmall(), null);
+        if (useDescriptiveCB_Buttons) {
+            mButtonImage.setDrawable(new SpriteDrawable(icon));
+            if (name != null) {
+                name = Translation.Get(name);
+                setText(name.substring(0, Math.min(5, name.length())), Fonts.getSmall(), null);
+            }
+            else
+                setText("", Fonts.getSmall(), null);
         }
-        else
-            setText("", Fonts.getSmall(), null);
     }
 
     public void addAction(CB_ActionButton Action) {
-        if (mButtonImage == null) {
-            mButtonImage = new Image(this.ScaleCenter(0.6f), "mButtonImage", false);
-            mButtonImage.setClickable(false);
-            mButtonImage.setDrawable(new SpriteDrawable(Action.getIcon()));
-            addChild(mButtonImage);
-            if (Action.getAction() instanceof CB_Action_ShowView) {
-                setButton(Action.getAction().getIcon(), Action.getAction().getName());
+        if (useDescriptiveCB_Buttons){
+            if (mButtonImage == null) {
+                mButtonImage = new Image(this.ScaleCenter(0.6f), "mButtonImage", false);
+                mButtonImage.setClickable(false);
+                mButtonImage.setDrawable(new SpriteDrawable(Action.getIcon()));
+                addChild(mButtonImage);
+                if (Action.getAction() instanceof CB_Action_ShowView) {
+                    setButton(Action.getAction().getIcon(), Action.getAction().getName());
+                }
             }
         }
 

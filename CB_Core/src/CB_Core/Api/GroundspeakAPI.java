@@ -24,6 +24,7 @@ import CB_Utils.Log.Log;
 import CB_Utils.http.Response;
 import CB_Utils.http.Webb;
 import CB_Utils.http.WebbException;
+import com.badlogic.gdx.Net;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -62,10 +63,10 @@ public class GroundspeakAPI {
      * // restriction for nr of caches must be handled by caller
      *
      * @param caches
-     * @param icancel
+     * @param cancel
      * @return int as status  on ERROR the String LastAPIError is set
      */
-    public static int fetchGeocacheStatus(ArrayList<Cache> caches, final ICancel icancel) {
+    public static int fetchGeocacheStatus(ArrayList<Cache> caches, final ICancel cancel) {
 
         if (isAccessTokenInvalid()) return ERROR;
 
@@ -74,6 +75,18 @@ public class GroundspeakAPI {
             for (Cache cache : caches) {
                 CacheCodes.put(cache.getGcCode());
             }
+
+            /*
+            Net.HttpRequest httpPost = new Net.HttpRequest(Net.HttpMethods.POST);
+            httpPost.setUrl(getUrl("GetGeocacheStatus?format=json"));
+            httpPost.setTimeOut(CB_Core_Settings.socket_timeout.getValue());
+            httpPost.setHeader("format", "json");
+            httpPost.setHeader("Accept", "application/json");
+            httpPost.setHeader("Content-type", "application/json");
+            httpPost.setContent(new JSONObject()
+                            .put("AccessToken", GetSettingsAccessToken())
+                            .put("CacheCodes", CacheCodes).toString());
+                            */
 
             JSONObject json = Webb.create()
                     .post(getUrl("GetGeocacheStatus?format=json"))

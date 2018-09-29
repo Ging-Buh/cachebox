@@ -466,11 +466,20 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         leftTab = new CB_TabView(rec, "leftTab");
 
         CB_RectF btnRec = new CB_RectF(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight);
-        mCacheListButtonOnLeftTab = new CB_Button(btnRec, "CacheList", Sprites.CacheList);
-        mDescriptionButtonOnLeftTab = new CB_Button(btnRec, "Cache", Sprites.Cache);
-        mMapButtonOnLeftTab = new CB_Button(btnRec, "Nav", Sprites.Nav);
-        mToolsButtonOnLeftTab = new CB_Button(btnRec, "Tool", Sprites.Tool);
-        mAboutButtonOnLeftTab = new CB_Button(btnRec, "Misc", Sprites.Misc);
+        if (Config.useDescriptiveCB_Buttons.getValue()) {
+            mCacheListButtonOnLeftTab = new CB_Button(btnRec, "CacheList");
+            mDescriptionButtonOnLeftTab = new CB_Button(btnRec, "Cache");
+            mMapButtonOnLeftTab = new CB_Button(btnRec, "Nav");
+            mToolsButtonOnLeftTab = new CB_Button(btnRec, "Tool");
+            mAboutButtonOnLeftTab = new CB_Button(btnRec, "Misc");
+        }
+        else {
+            mCacheListButtonOnLeftTab = new CB_Button(btnRec, "CacheList", Sprites.CacheList);
+            mDescriptionButtonOnLeftTab = new CB_Button(btnRec, "Cache", Sprites.Cache);
+            mMapButtonOnLeftTab = new CB_Button(btnRec, "Nav", Sprites.Nav);
+            mToolsButtonOnLeftTab = new CB_Button(btnRec, "Tool", Sprites.Tool);
+            mAboutButtonOnLeftTab = new CB_Button(btnRec, "Misc", Sprites.Misc);
+        }
 
         CB_ButtonList btnList = new CB_ButtonList();
         btnList.addButton(mCacheListButtonOnLeftTab);
@@ -638,13 +647,14 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         // change the icon
         isFiltered = FilterInstances.isLastFilterSet();
         mCacheListButtonOnLeftTab.isFiltered(isFiltered);
-        /*
-        if (isFiltered) {
-            mCacheListButtonOnLeftTab.setButtonSprites(Sprites.CacheListFilter);
-        } else {
-            mCacheListButtonOnLeftTab.setButtonSprites(Sprites.CacheList);
+
+        if (!Config.useDescriptiveCB_Buttons.getValue()) {
+            if (isFiltered) {
+                mCacheListButtonOnLeftTab.setButtonSprites(Sprites.CacheListFilter);
+            } else {
+                mCacheListButtonOnLeftTab.setButtonSprites(Sprites.CacheList);
+            }
         }
-        */
 
         // ##################################
         // Set new list size at context menu

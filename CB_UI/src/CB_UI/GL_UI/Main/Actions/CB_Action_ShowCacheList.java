@@ -24,6 +24,7 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
+import CB_Utils.Log.Log;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.Timer;
@@ -123,10 +124,12 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                             @Override
                             public void run() {
                                 // First check API-Key with visual Feedback
+                                Log.debug("MI_CHK_STATE_API", "chkAPiLogInWithWaitDialog");
                                 GlobalCore.chkAPiLogInWithWaitDialog(new iChkReadyHandler() {
                                     @Override
-                                    public void checkReady(boolean isReady) {
-                                        if (isReady) {
+                                    public void checkReady(boolean isAccessTokenInvalid) {
+                                        Log.debug("checkReady", "isAccessTokenInvalid: " + isAccessTokenInvalid);
+                                        if (!isAccessTokenInvalid) {
                                             TimerTask tt = new TimerTask() {
                                                 @Override
                                                 public void run() {

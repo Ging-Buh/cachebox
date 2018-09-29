@@ -56,9 +56,9 @@ import static CB_Core.Api.GroundspeakAPI.isAccessTokenInvalid;
  * @author longri
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface {
-    public static final int CurrentRevision = 20180926;
+    public static final int CurrentRevision = 20180929;
     public static final String CurrentVersion = "2.0.";
-    public static final String VersionPrefix = "3176";
+    public static final String VersionPrefix = "3177";
     public static final String aboutMsg1 = "Team Cachebox (2011-2018)" + br;
     public static final String teamLink = "www.team-cachebox.de";
     public static final String aboutMsg2 = br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";
