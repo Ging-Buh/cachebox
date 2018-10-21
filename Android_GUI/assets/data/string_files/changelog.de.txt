@@ -1,56 +1,67 @@
 
-Versions Änderungen:
+• Neuerungen = +
+• Änderungen = ~
+• Fehlerbeseitigungen = *
+• Streichungen = -
+
+Versions Änderungen seit 3136:
+	+ Möglichkeit informative Hauptschaltflächen zu verwenden.
+	~ Teilweise wird die schon die neue API von geocaching.com verwendet.
+	~ intern wird nicht mehr die Programmbibliothek von Apache verwendet.
+	+ TB Logging für "alle"
+	* GC-Vote funktioniert in allen Fällen korrekt.
+	+ Notes upload inclusive solver
+	~ korrekte Anzeige langer Logs
+	+ Navigation mit Sygic
+	~ exportierte gpx werden in MTP - Verbindungen (korrekt) angezeigt.
+	~ die internen Renderthemen funktionieren
 Version : 2.0
-	• Neuerungen:
-		+ Hochladen von Notizen
-		+ Benutzerdefinierte tileserver für Karten
-		+ Eigene Datei- / Verzeichnisauswahl
-			(OI-)Dateimanager entfällt als Vorraussetzung
-		+ Mapforge 0.6.1 Renderthemes Version 4:
-			mehrsprachige Karten
-			Styles-Menü
-			automatischer Kartendateiwechsel
-			Mapforge Default Rendertheme (von 0.8.0)
-		+ Labcache Handling
-		+ Sandbox-Lösung
-			für den Arbeitsbereich auf externer SD-Card
-			ab Android > 4.4 KitKat
-		+ Export .../user/nissan.csv
-			auf Doppelklick in Bearbeiten Koordinaten
-			für Nissan Connect
-		+ Fieldnotesvorlagen für
-			Attended und Webcam Foto taken
-		+ Filter Verlauf (bei Vorgaben)
-		+ ACB ist vor LockScreen sichtbar
-			Einstellungsmöglichkeit
-	• Änderungen
-		~ Für Android 7
-			Foto aufnehmen,
-			Content-Zwischenablage,
-			Orientierungssensor
-		~ Koordinatenformat wie bei GC
-			bei Kopie in Zwischenablage
-		~ Icon/Vorschau für Spoiler
-		~ Ansichten in openGL (Spoiler, Solver, Slider, ...)
-		~ Sichtbarkeit einiger Einstellungen
-		~ Einige Einstellungen wurden verschoben
-			ins Kontextmenü oder andere Einstellungsgruppe
-	• Fehlerbeseitigungen
-		* Erkennung der GSAK importierten Finals
-		* Schnelle Fieldnote für Events und Webcam
-		* Gpx import / export Cito
-		* Automatisierte Auswahl des nächsten Cache
-			Event, nur wenn Datum stimmt
-		* API Key Cookie zurücksetzen
-			jetzt immer Benutzername/Passwort Abfrage
-		* Freizeitkarte Karte herunterladen
-	• Streichungen
-		- gemischter Modus für Mapforge-Karten
-			Anzeige Schrift (Skalierung, Drehen)
-		- Entwicklung openGL Html Renderer
-			Anzeige der Beschreibung
-		- "interne" Routenbestimmung
-	• Bekannte Fehler
-		- Animierte gif in Beschreibung
-			werden nicht dargestellt
+	+ Hochladen von Notizen
+	+ Benutzerdefinierte tileserver für Karten
+	+ Eigene Datei- / Verzeichnisauswahl
+		(OI-)Dateimanager entfällt als Vorraussetzung
+	+ Mapforge 0.6.1 Renderthemes Version 4:
+		mehrsprachige Karten
+		Styles-Menü
+		automatischer Kartendateiwechsel
+		Mapforge Default Rendertheme (von 0.8.0)
+	+ Labcache Handling
+	+ Sandbox-Lösung
+		für den Arbeitsbereich auf externer SD-Card
+		ab Android > 4.4 KitKat
+	+ Export .../user/nissan.csv
+		auf Doppelklick in Bearbeiten Koordinaten
+		für Nissan Connect
+	+ Fieldnotesvorlagen für
+		Attended und Webcam Foto taken
+	+ Filter Verlauf (bei Vorgaben)
+	+ ACB ist vor LockScreen sichtbar
+		Einstellungsmöglichkeit
+	~ Für Android 7
+		Foto aufnehmen,
+		Content-Zwischenablage,
+		Orientierungssensor
+	~ Koordinatenformat wie bei GC
+		bei Kopie in Zwischenablage
+	~ Icon/Vorschau für Spoiler
+	~ Ansichten in openGL (Spoiler, Solver, Slider, ...)
+	~ Sichtbarkeit einiger Einstellungen
+	~ Einige Einstellungen wurden verschoben
+		ins Kontextmenü oder andere Einstellungsgruppe
+	* Erkennung der GSAK importierten Finals
+	* Schnelle Fieldnote für Events und Webcam
+	* Gpx import / export Cito
+	* Automatisierte Auswahl des nächsten Cache
+		Event, nur wenn Datum stimmt
+	* API Key Cookie zurücksetzen
+		jetzt immer Benutzername/Passwort Abfrage
+	* Freizeitkarte Karte herunterladen
+	- gemischter Modus für Mapforge-Karten
+		Anzeige Schrift (Skalierung, Drehen)
+	- Entwicklung openGL Html Renderer
+		Anzeige der Beschreibung
+	- "interne" Routenbestimmung
+• Bekannte Fehler
+	- Animierte gif in Beschreibung
+		werden nicht dargestellt
 	...

@@ -67,7 +67,7 @@ public class SearchOverPosition extends ActivityBase {
     ICancel icancel = new ICancel() {
 
         @Override
-        public boolean isCanceled() {
+        public boolean doCancel() {
             return isCanceld;
         }
     };

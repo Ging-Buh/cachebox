@@ -84,7 +84,7 @@ public class EditTextField extends EditTextFieldBase {
     protected TextFieldFilter mTextFieldFilter;
     protected boolean passwordMode;
     protected StringBuilder passwordBuffer;
-    protected Selection selection = null;
+    protected Selection selectedArea = null;
     protected char passwordCharacter = BULLET;
     float bgTopHeight = 0;
     float bgBottomHeight = 0;
@@ -128,9 +128,9 @@ public class EditTextField extends EditTextFieldBase {
             boolean focused = GL.that.hasFocus(this);
             setTextAtCursorVisible(!focused);
             if (focused) {
-                if (selection != null) {
-                    showSelectionMarker(SelectionMarker.Type.Left, selection.cursorStart);
-                    showSelectionMarker(SelectionMarker.Type.Right, selection.cursorEnd);
+                if (selectedArea != null) {
+                    showSelectionMarker(SelectionMarker.Type.Left, selectedArea.cursorStart);
+                    showSelectionMarker(SelectionMarker.Type.Right, selectedArea.cursorEnd);
                 } else {
                     showSelectionMarker(SelectionMarker.Type.Center);
                     hidePopUp();
@@ -175,23 +175,22 @@ public class EditTextField extends EditTextFieldBase {
     }
 
     /**
-     * calculates bgLeftWidth, bgRightWidth, bgTopHeight, bgBottomHeight
+     * calculates bgLeftWidth, bgRightWidth, bgTopHeight, bgBottomHeight, textWidth, textHeight, maxLineCount
      *
-     * @param focused
+     * @param focused sizes depend on focused or not
      */
     private void calculateSizeDependencies(boolean focused) {
         bgLeftWidth = style.getLeftWidth(focused);
         bgRightWidth = style.getRightWidth(focused);
         if (mWrapType == WrapType.SINGLELINE) {
-            bgTopHeight = (getHeight() - this.style.font.getLineHeight()) / 2;
-            bgBottomHeight = (getHeight() - this.style.font.getLineHeight()) / 2;
+            bgTopHeight = bgBottomHeight = Math.max(0, getHeight() - style.font.getLineHeight() / 2);
         } else {
             bgTopHeight = style.getTopHeight(focused);
             bgBottomHeight = style.getBottomHeight(focused);
         }
         textWidth = getWidth() - bgLeftWidth - bgRightWidth;
         textHeight = getHeight() - bgTopHeight - bgBottomHeight;
-        maxLineCount = (int) (textHeight / this.style.font.getLineHeight()); // !angebrochene Zeile nicht mitzählen
+        maxLineCount = (int) (textHeight / style.font.getLineHeight()); // !angebrochene Zeile nicht mitzählen
     }
 
     @Override
@@ -215,20 +214,20 @@ public class EditTextField extends EditTextFieldBase {
 
             float textY = (int) getHeight() - bgTopHeight + style.font.getDescent();
 
-            if (selection != null) {
+            if (selectedArea != null) {
                 // Selection zeilenweise durchgehen
-                for (int lineNo = selection.cursorStart.y; lineNo <= selection.cursorEnd.y; lineNo++) {
+                for (int lineNo = selectedArea.cursorStart.y; lineNo <= selectedArea.cursorEnd.y; lineNo++) {
                     Line line = getNthLine(lineNo);
                     if (line == null)
                         continue;
-                    int start = 0;
-                    if (lineNo == selection.cursorStart.y)
-                        start = selection.cursorStart.x;
-                    int end = line.displayText.length();
-                    if (lineNo == selection.cursorEnd.y)
-                        end = selection.cursorEnd.x;
-                    float selectionX = line.glyphPositions.get(start);
-                    float selectionY = line.glyphPositions.get(end);
+                    int startColumn = 0;
+                    if (lineNo == selectedArea.cursorStart.y)
+                        startColumn = selectedArea.cursorStart.x;
+                    int endColumn = line.displayText.length();
+                    if (lineNo == selectedArea.cursorEnd.y)
+                        endColumn = selectedArea.cursorEnd.x;
+                    float selectionX = line.glyphPositions.get(Math.max(0, startColumn));
+                    float selectionY = line.glyphPositions.get(Math.min(endColumn, line.glyphPositions.size - 1));
                     float selectionWidth = selectionY - selectionX;
                     style.selection.draw(batch, selectionX + bgLeftWidth - leftPos, textY + this.style.font.getLineHeight() * (topLine - 1 - lineNo) - style.font.getDescent() / 2, selectionWidth, this.style.font.getLineHeight());
                 }
@@ -262,7 +261,7 @@ public class EditTextField extends EditTextFieldBase {
             }
 
             // input cursor
-            if (focused && (selection == null)) {
+            if (focused && (selectedArea == null)) {
                 if (blinkTimer == null)
                     blinkStart();
             } else {
@@ -293,7 +292,7 @@ public class EditTextField extends EditTextFieldBase {
                 xpos = 0;
             } else {
                 // after the last character
-                xpos = line.glyphPositions.get(line.glyphPositions.size);
+                xpos = line.glyphPositions.get(line.glyphPositions.size - 1);
             }
         }
         return this.bgLeftWidth + xpos - leftPos - 3;// empirische Korrektur
@@ -657,7 +656,7 @@ public class EditTextField extends EditTextFieldBase {
             if (clickedLine >= lines.size())
                 clickedLine = lines.size() - 1;
             int endOfClickedLine = getNthLine(clickedLine).displayText.length();
-            selection = new Selection(new Point(0, clickedLine), new Point(endOfClickedLine, clickedLine));
+            selectedArea = new Selection(new Point(0, clickedLine), new Point(endOfClickedLine, clickedLine));
         } else {
             selectionIsActive = true;
             Point newCursor = getClickedCursor(x, y);
@@ -703,10 +702,10 @@ public class EditTextField extends EditTextFieldBase {
 			 */
 
             hideSelectionMarker();
-            selection = new Selection(cursorStart, cursorEnd);
+            selectedArea = new Selection(cursorStart, cursorEnd);
         }
-        showSelectionMarker(SelectionMarker.Type.Left, selection.cursorStart);
-        showSelectionMarker(SelectionMarker.Type.Right, selection.cursorEnd);
+        showSelectionMarker(SelectionMarker.Type.Left, selectedArea.cursorStart);
+        showSelectionMarker(SelectionMarker.Type.Right, selectedArea.cursorEnd);
         if (isEditable)
             showCopyPastePopUp(x, y);
         else {
@@ -758,7 +757,7 @@ public class EditTextField extends EditTextFieldBase {
     }
 
     protected void hideSelectionMarker() {
-        selection = null;
+        selectedArea = null;
         GL.that.hideMarker();
     }
 
@@ -779,13 +778,13 @@ public class EditTextField extends EditTextFieldBase {
                 useCursor = cursor;
                 break;
             case Left:
-                if (selection != null) {
-                    useCursor = selection.cursorStart;
+                if (selectedArea != null) {
+                    useCursor = selectedArea.cursorStart;
                 }
                 break;
             case Right:
-                if (selection != null) {
-                    useCursor = selection.cursorEnd;
+                if (selectedArea != null) {
+                    useCursor = selectedArea.cursorEnd;
                 }
                 break;
         }
@@ -985,8 +984,12 @@ public class EditTextField extends EditTextFieldBase {
         if (line == null)
             return;
         // aktuellen String bei Cursor-Position trennen
-        String s1 = line.displayText.toString().substring(0, cursor.x);
-        String s2 = line.displayText.toString().substring(cursor.x, line.displayText.length());
+        String s1 = "";
+        String s2 = "";
+        if (cursor.x >= 0 && cursor.x <= line.displayText.length()) {
+            s1 = line.displayText.substring(0, cursor.x);
+            s2 = line.displayText.substring(cursor.x);
+        }
         line.displayText = s1;
         Line newLine = new Line(s2, style.font);
         lines.add(cursor.y + 1, newLine);
@@ -998,7 +1001,6 @@ public class EditTextField extends EditTextFieldBase {
         int lineCount = lines.size();
 
         sendLineCountChanged(lineCount, this.style.font.getLineHeight() * lineCount);
-
     }
 
     // bewegt den Cursor nach oben / unten. X-Position des Cursors soll möglichst gleich bleiben
@@ -1113,7 +1115,7 @@ public class EditTextField extends EditTextFieldBase {
     public String copyToClipboard() {
         if (clipboard == null)
             return null;
-        if (selection != null) {
+        if (selectedArea != null) {
             String content = "";
             content = this.getSelectedText();
             clipboard.setContents(content);
@@ -1136,7 +1138,7 @@ public class EditTextField extends EditTextFieldBase {
     public String pasteFromClipboard() {
         if (clipboard == null)
             return null;
-        if (selection != null) {
+        if (selectedArea != null) {
             // zuerst evtl. markierten Text löschen
             deleteSelection();
         }
@@ -1205,37 +1207,37 @@ public class EditTextField extends EditTextFieldBase {
      * markierte Zeichen löschen
      */
     private void deleteSelection() {
-        if (selection == null)
+        if (selectedArea == null)
             return;
         String zeilenText = "";
         // Zeilenanfang bis Markierung Start
-        Line line = getNthLine(selection.cursorStart.y);
+        Line line = getNthLine(selectedArea.cursorStart.y);
         if (line == null)
             return;
-        if (selection.cursorStart.x > 0) {
-            zeilenText = line.displayText.substring(0, selection.cursorStart.x);
+        if (selectedArea.cursorStart.x > 0) {
+            zeilenText = line.displayText.substring(0, selectedArea.cursorStart.x);
         }
         // Markierung Ende bis Zeilenende
-        Line lineEnd = getNthLine(selection.cursorEnd.y);
+        Line lineEnd = getNthLine(selectedArea.cursorEnd.y);
         if (lineEnd == null)
             return;
-        if (selection.cursorEnd.x < lineEnd.displayText.length()) {
-            zeilenText = zeilenText + lineEnd.displayText.substring(selection.cursorEnd.x, lineEnd.displayText.length());
+        if (selectedArea.cursorEnd.x < lineEnd.displayText.length()) {
+            zeilenText = zeilenText + lineEnd.displayText.substring(selectedArea.cursorEnd.x, lineEnd.displayText.length());
         }
         line.displayText = zeilenText;
         updateDisplayText(line, false);
 
         try {
-            for (int i = selection.cursorEnd.y; i > selection.cursorStart.y; i--) {
+            for (int i = selectedArea.cursorEnd.y; i > selectedArea.cursorStart.y; i--) {
                 lines.remove(i);
             }
         } catch (Exception e) {
-            selection = null;
+            selectedArea = null;
             return;
         }
 
-        cursor.x = selection.cursorStart.x;
-        cursor.y = selection.cursorStart.y;
+        cursor.x = selectedArea.cursorStart.x;
+        cursor.y = selectedArea.cursorStart.y;
         setTextAtCursorVisible(true);
         clearSelection();
     }
@@ -1257,7 +1259,7 @@ public class EditTextField extends EditTextFieldBase {
 
         if (GL.that.hasFocus(this) || ignoreFocus) {
             if (character == BACKSPACE) {
-                if (selection != null) {
+                if (selectedArea != null) {
                     deleteSelection();
                     sendKeyTyped(character);
                     return true;
@@ -1293,8 +1295,9 @@ public class EditTextField extends EditTextFieldBase {
                     }
                 }
             }
+
             if (character == DELETE) {
-                if (selection != null) {
+                if (selectedArea != null) {
                     deleteSelection();
                     return true;
                 } else {
@@ -1319,39 +1322,10 @@ public class EditTextField extends EditTextFieldBase {
                     }
                 }
             }
-            // if (character == BACKSPACE && (cursor > 0 || hasSelection))
-            // {
-            // if (!hasSelection)
-            // {
-            // text = text.substring(0, cursor - 1) + text.substring(cursor);
-            // updateDisplayText();
-            // cursor--;
-            // }
-            // else
-            // {
-            // delete();
-            // }
-            // }
-            // if (character == DELETE)
-            // {
-            // if (cursor < text.length() || hasSelection)
-            // {
-            // if (!hasSelection)
-            // {
-            // text = text.substring(0, cursor) + text.substring(cursor + 1);
-            // updateDisplayText();
-            // }
-            // else
-            // {
-            // delete();
-            // }
-            // }
-            // return true;
-            // }
 
             if (character == ENTER_DESKTOP || character == ENTER_ANDROID) {
                 if (isMultiLine()) {
-                    if (selection != null)
+                    if (selectedArea != null)
                         deleteSelection();
                     insertNewLine();
                     clearSelection();
@@ -1365,7 +1339,7 @@ public class EditTextField extends EditTextFieldBase {
             }
 
             if (font.getData().getGlyph(character) != null) {
-                if (selection != null)
+                if (selectedArea != null)
                     deleteSelection();
                 {
                     try {
@@ -1487,27 +1461,27 @@ public class EditTextField extends EditTextFieldBase {
     }
 
     public String getSelectedText() {
-        if (selection == null)
+        if (selectedArea == null)
             return "";
 
         StringBuilder sb = new StringBuilder();
 
         // Alle Zeilen durchgehen, in denen selektierter Text liegt
-        for (int n = selection.cursorStart.y; n <= selection.cursorEnd.y; n++) {
+        for (int n = selectedArea.cursorStart.y; n <= selectedArea.cursorEnd.y; n++) {
             Line line = getNthLine(n);
 
             int startPos = 0;
             int endPos = line.displayText.length();
 
-            if (n == selection.cursorStart.y) {
-                startPos = selection.cursorStart.x;
+            if (n == selectedArea.cursorStart.y) {
+                startPos = selectedArea.cursorStart.x;
             }
-            if (n == selection.cursorEnd.y) {
-                endPos = selection.cursorEnd.x;
+            if (n == selectedArea.cursorEnd.y) {
+                endPos = selectedArea.cursorEnd.x;
             }
 
             sb.append(line.displayText.substring(startPos, endPos));
-            if (n < selection.cursorEnd.y) {
+            if (n < selectedArea.cursorEnd.y) {
                 sb.append(Global.br);
             }
 
@@ -1549,14 +1523,14 @@ public class EditTextField extends EditTextFieldBase {
         cursorStart.x = selectionStart;
         Point cursorEnd = new Point(0, 0);
         cursorEnd.x = selectionEnd;
-        selection = new Selection(cursorStart, cursorEnd);
+        selectedArea = new Selection(cursorStart, cursorEnd);
         // showSelectionMarker(SelectionMarker.Type.Left, selection.cursorStart);
         // showSelectionMarker(SelectionMarker.Type.Right, selection.cursorEnd);
 
     }
 
     public void clearSelection() {
-        selection = null;
+        selectedArea = null;
     }
 
     /**
@@ -1611,7 +1585,7 @@ public class EditTextField extends EditTextFieldBase {
     }
 
     public int getSelectionStart() {
-        if (selection == null) {
+        if (selectedArea == null) {
             int pos = 0;
             for (int n = 0; n <= cursor.y; n++) {
                 Line line = getNthLine(n);
@@ -1625,10 +1599,10 @@ public class EditTextField extends EditTextFieldBase {
         }
 
         int pos = 0;
-        for (int n = 0; n <= selection.cursorStart.y; n++) {
+        for (int n = 0; n <= selectedArea.cursorStart.y; n++) {
             Line line = getNthLine(n);
-            if (n == selection.cursorStart.y) {
-                pos = pos + selection.cursorStart.x;
+            if (n == selectedArea.cursorStart.y) {
+                pos = pos + selectedArea.cursorStart.x;
                 break;
             }
             pos = pos + line.displayText.length() + 1;
@@ -1638,7 +1612,7 @@ public class EditTextField extends EditTextFieldBase {
     }
 
     public int getSelectionEnd() {
-        if (selection == null) {
+        if (selectedArea == null) {
             int pos = 0;
             for (int n = 0; n <= cursor.y; n++) {
                 Line line = getNthLine(n);
@@ -1652,10 +1626,10 @@ public class EditTextField extends EditTextFieldBase {
         }
 
         int pos = 0;
-        for (int n = 0; n <= selection.cursorEnd.y; n++) {
+        for (int n = 0; n <= selectedArea.cursorEnd.y; n++) {
             Line line = getNthLine(n);
-            if (n == selection.cursorEnd.y) {
-                pos += selection.cursorEnd.x;
+            if (n == selectedArea.cursorEnd.y) {
+                pos += selectedArea.cursorEnd.x;
                 break;
             }
             pos = pos + line.displayText.length() + 1;
@@ -1777,9 +1751,9 @@ public class EditTextField extends EditTextFieldBase {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 hideSelectionMarker();
-                selection = new Selection(getClickedCursor(x, y), getClickedCursor(x, y));
-                showSelectionMarker(SelectionMarker.Type.Left, selection.cursorStart);
-                showSelectionMarker(SelectionMarker.Type.Right, selection.cursorEnd);
+                selectedArea = new Selection(getClickedCursor(x, y), getClickedCursor(x, y));
+                showSelectionMarker(SelectionMarker.Type.Left, selectedArea.cursorStart);
+                showSelectionMarker(SelectionMarker.Type.Right, selectedArea.cursorEnd);
                 if (isEditable)
                     showCopyPastePopUp(x, y);
                 else {

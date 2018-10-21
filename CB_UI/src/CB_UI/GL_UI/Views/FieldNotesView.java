@@ -454,7 +454,7 @@ public class FieldNotesView extends V_ListView {
             }
 
             @Override
-            public boolean isCanceled() {
+            public boolean doCancel() {
                 // TODO handle cancel
                 return false;
             }

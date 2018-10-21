@@ -1,5 +1,16 @@
 
 Version history:
+changes since 3136:
+	+ Possibility to use informative main buttons.
+	~ Partly the already used the new API of geocaching.com.
+	~ Internally, Apache's program library is no longer used.
+	+ TB logging for "all"
+	* GC-Vote works correctly in all cases.
+	+ Notes upload inclusive solver
+	~ correct display of long logs
+	+ Navigation with Sygic
+	~ exported gpx are displayed in MTP connections (correct).
+	~ the internal rendering themes work
 Version : 2.0
 	• New:
 		+ Upload Notes

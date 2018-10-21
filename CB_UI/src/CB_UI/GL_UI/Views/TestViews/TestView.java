@@ -275,7 +275,7 @@ public class TestView extends CB_View_Base {
             int progress = 0;
 
             @Override
-            public boolean isCanceled() {
+            public boolean doCancel() {
                 return cancel.get();
             }
 

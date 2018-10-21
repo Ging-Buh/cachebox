@@ -140,7 +140,7 @@ public class CB_Action_chkState extends CB_Action {
         }
 
         @Override
-        public boolean isCanceled() {
+        public boolean doCancel() {
             Log.debug(sKlasse,"chkState canceled");
             return cancel;
         }

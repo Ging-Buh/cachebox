@@ -88,7 +88,7 @@ public class CB_AllContextMenuHandler {
                         }
 
                         @Override
-                        public boolean isCanceled() {
+                        public boolean doCancel() {
                             // TODO Handle cancel
                             return false;
                         }

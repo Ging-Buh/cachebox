@@ -24,7 +24,6 @@ import CB_Utils.Log.Log;
 import CB_Utils.http.Response;
 import CB_Utils.http.Webb;
 import CB_Utils.http.WebbException;
-import com.badlogic.gdx.Net;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -55,7 +54,6 @@ public class GroundspeakAPI {
     private static int CurrentCacheCountLite = -1;
     private static int MaxCacheCountLite = -1;
     private static boolean mDownloadLimitExceeded = false;
-    private static MemberShipTypes membershipType = MemberShipTypes.Unknown;
     private static UserInfos me;
 
     /**
@@ -71,12 +69,14 @@ public class GroundspeakAPI {
         if (isAccessTokenInvalid()) return ERROR;
 
         try {
+            long startTs = System.currentTimeMillis();
+
             JSONArray CacheCodes = new JSONArray();
             for (Cache cache : caches) {
                 CacheCodes.put(cache.getGcCode());
             }
 
-            /*
+/*
             Net.HttpRequest httpPost = new Net.HttpRequest(Net.HttpMethods.POST);
             httpPost.setUrl(getUrl("GetGeocacheStatus?format=json"));
             httpPost.setTimeOut(CB_Core_Settings.socket_timeout.getValue());
@@ -86,48 +86,66 @@ public class GroundspeakAPI {
             httpPost.setContent(new JSONObject()
                             .put("AccessToken", GetSettingsAccessToken())
                             .put("CacheCodes", CacheCodes).toString());
-                            */
+*/
+            do {
 
-            JSONObject json = Webb.create()
-                    .post(getUrl("GetGeocacheStatus?format=json"))
-                    .body(new JSONObject()
-                            .put("AccessToken", GetSettingsAccessToken())
-                            .put("CacheCodes", CacheCodes)
-                    )
-                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
-                    .ensureSuccess()
-                    .asJsonObject()
-                    .getBody();
-            JSONObject status = json.getJSONObject("Status");
-            if (status.getInt("StatusCode") == 0) {
-                JSONArray geocacheStatuses = json.getJSONArray("GeocacheStatuses");
-                for (int ii = 0; ii < geocacheStatuses.length(); ii++) {
-                    JSONObject jCache = (JSONObject) geocacheStatuses.get(ii);
-                    Iterator<Cache> iterator = caches.iterator();
-                    do {
-                        Cache tmp = iterator.next();
-                        if (jCache.getString("CacheCode").equals(tmp.getGcCode())) {
-                            tmp.setArchived(jCache.getBoolean("Archived"));
-                            tmp.setAvailable(jCache.getBoolean("Available"));
-                            tmp.NumTravelbugs = jCache.getInt("TrackableCount");
-                            // weitere Infos in diesem Json record
-                            // CacheName (getString)
-                            // CacheType (getDouble / getLong ?)
-                            // Premium   (getBoolean)
-                            break;
+                JSONObject json = Webb.create()
+                        .post(getUrl("GetGeocacheStatus?format=json"))
+                        .body(new JSONObject()
+                                .put("AccessToken", GetSettingsAccessToken())
+                                .put("CacheCodes", CacheCodes)
+                        )
+                        .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
+                        .readTimeout(CB_Core_Settings.socket_timeout.getValue())
+                        .ensureSuccess()
+                        .asJsonObject()
+                        .getBody();
+                JSONObject status = json.getJSONObject("Status");
+                APIError = status.getInt("StatusCode");
+                if (APIError == 0) {
+                    JSONArray geocacheStatuses = json.getJSONArray("GeocacheStatuses");
+                    for (int ii = 0; ii < geocacheStatuses.length(); ii++) {
+                        JSONObject jCache = (JSONObject) geocacheStatuses.get(ii);
+                        Iterator<Cache> iterator = caches.iterator();
+                        do {
+                            Cache tmp = iterator.next();
+                            if (jCache.getString("CacheCode").equals(tmp.getGcCode())) {
+                                tmp.setArchived(jCache.getBoolean("Archived"));
+                                tmp.setAvailable(jCache.getBoolean("Available"));
+                                tmp.NumTravelbugs = jCache.getInt("TrackableCount");
+                                // weitere Infos in diesem Json record
+                                // CacheName (getString)
+                                // CacheType (getDouble / getLong ?)
+                                // Premium   (getBoolean)
+                                break;
+                            }
+                        } while (iterator.hasNext());
+                    }
+                    LastAPIError = "";
+                    return OK;
+                } else {
+                    // todo ist in API 1 vermutlich: 429	Too Many Requests
+                    if (APIError == 140) {
+                        // API-Limit überschritten -> nach 15 Sekunden wiederholen
+                        Log.debug(log,"******* API-Limit überschritten -> 15 Sekunden warten! *******");
+                        try {
+                            Thread.sleep(15000);
+                        } catch (InterruptedException ignored) {
                         }
-                    } while (iterator.hasNext());
+                        if (System.currentTimeMillis() > startTs + 60000) {
+                            // Aufruf nach 1 min immer noch nicht OK -> raus!
+                            Log.err(log, "GetGeocacheStatus " + "******* Timeout API-Limit überschritten ********");
+                            return (ERROR);
+                        }
+                    } else {
+                        LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
+                        LastAPIError += status.getString("StatusMessage") + "\n";
+                        LastAPIError += status.getString("ExceptionDetails");
+                        Log.err(log, "GetGeocacheStatus " + LastAPIError);
+                        return (ERROR);
+                    }
                 }
-                LastAPIError = "";
-                return OK;
-            } else {
-                LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
-                LastAPIError += status.getString("StatusMessage") + "\n";
-                LastAPIError += status.getString("ExceptionDetails");
-                Log.err(log, "GetGeocacheStatus " + LastAPIError);
-                return (ERROR);
-            }
+            } while (true);
         } catch (Exception e) {
             LastAPIError = e.getLocalizedMessage();
             Log.err(log, "GetGeocacheStatus", e);
@@ -158,7 +176,7 @@ public class GroundspeakAPI {
         int start = 0;
         int count = 30;
 
-        while (!cancelRun.isCanceled() && (friendList.size() > 0 || all))
+        while (!cancelRun.doCancel() && (friendList.size() > 0 || all))
         // Schleife, solange bis entweder keine Logs mehr geladen werden oder bis alle Logs aller Finder geladen sind.
         {
             try {
@@ -544,7 +562,7 @@ public class GroundspeakAPI {
         int start = 0;
         int count = 30;
 
-        while (!cancelRun.isCanceled() && (friends.size() > 0))
+        while (!cancelRun.doCancel() && (friends.size() > 0))
         // Schleife, solange bis entweder keine Logs mehr geladen werden oder bis Logs aller Freunde geladen sind.
         {
             try {

@@ -570,7 +570,7 @@ public class SearchDialog extends PopUp_Base {
                         }
 
                         @Override
-                        public boolean isCanceled() {
+                        public boolean doCancel() {
                             // TODO Handle Cancel
                             return false;
                         }
@@ -717,7 +717,7 @@ public class SearchDialog extends PopUp_Base {
             }
 
             @Override
-            public boolean isCanceled() {
+            public boolean doCancel() {
                 // TODO Handle Cancel
                 return false;
             }

@@ -128,6 +128,7 @@ public class GPXFileImporter {
         if (gpxFilename == null)
             return;
 
+        Log.info(sKlasse,"gpx import from " + gpxFilename.GpxFileName);
         Map<String, String> values = new HashMap<String, String>();
 
         System.setProperty("sjxp.namespaces", "false");
@@ -145,7 +146,12 @@ public class GPXFileImporter {
         @SuppressWarnings("unchecked")
         XMLParser<Map<String, String>> parserCache = new XMLParser<Map<String, String>>(ruleList.toArray(new IRule[0]));
 
-        parserCache.parse(mGpxFile.getFileInputStream(), values);
+        try {
+            parserCache.parse(mGpxFile.getFileInputStream(), values);
+        }
+        catch (Exception e) {
+            Log.err(sKlasse,gpxFilename.GpxFileName + ": " + e.getLocalizedMessage());
+        }
 
         mImportHandler = null;
     }

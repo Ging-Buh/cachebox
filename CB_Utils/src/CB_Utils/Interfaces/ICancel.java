@@ -16,5 +16,5 @@
 package CB_Utils.Interfaces;
 
 public interface ICancel {
-    boolean isCanceled();
+    boolean doCancel();
 }

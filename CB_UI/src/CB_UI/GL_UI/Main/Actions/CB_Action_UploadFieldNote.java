@@ -124,7 +124,7 @@ public class CB_Action_UploadFieldNote extends CB_Action {
             }
 
             @Override
-            public boolean isCanceled() {
+            public boolean doCancel() {
                 return cancel.get();
             }
 

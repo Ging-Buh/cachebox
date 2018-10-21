@@ -4,7 +4,7 @@ package CB_Utils.http;
  * Constant values and strings.
  */
 class Const {
-    static final String DEFAULT_USER_AGENT = "com.goebl.david.Webb/1.0";
+    static final String DEFAULT_USER_AGENT = "de.cb.Netz/1.0";
     static final String APP_FORM = "application/x-www-form-urlencoded";
     static final String APP_JSON = "application/json";
     static final String APP_BINARY = "application/octet-stream";

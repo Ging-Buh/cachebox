@@ -98,7 +98,7 @@ public class DeleteDialog extends ButtonDialog {
                     }
 
                     @Override
-                    public boolean isCanceled() {
+                    public boolean doCancel() {
                         // TODO Handle Cancel
                         return false;
                     }
@@ -137,7 +137,7 @@ public class DeleteDialog extends ButtonDialog {
                     }
 
                     @Override
-                    public boolean isCanceled() {
+                    public boolean doCancel() {
                         // TODO Handle Cancel
                         return false;
                     }
@@ -175,7 +175,7 @@ public class DeleteDialog extends ButtonDialog {
                     }
 
                     @Override
-                    public boolean isCanceled() {
+                    public boolean doCancel() {
                         // TODO Handle Cancel
                         return false;
                     }

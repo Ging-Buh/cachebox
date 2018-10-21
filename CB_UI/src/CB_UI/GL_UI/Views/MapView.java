@@ -478,7 +478,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                         }
 
                         @Override
-                        public boolean isCanceled() {
+                        public boolean doCancel() {
                             // TODO handle cancel
                             return false;
                         }

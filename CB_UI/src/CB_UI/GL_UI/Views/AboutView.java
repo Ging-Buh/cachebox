@@ -182,7 +182,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
                                     }
                                     @Override
-                                    public boolean isCanceled() {
+                                    public boolean doCancel() {
                                         return false;
                                     }
                                 });

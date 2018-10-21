@@ -146,7 +146,7 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent {
                 @Override
                 public void run() {
                     ProgressThread.run();
-                    ProgressThread.RunnableReady(ProgressThread.isCanceled());
+                    ProgressThread.RunnableReady(ProgressThread.doCancel());
                 }
             };
 

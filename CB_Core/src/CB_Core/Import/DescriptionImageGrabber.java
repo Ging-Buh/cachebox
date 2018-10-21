@@ -403,7 +403,7 @@ public class DescriptionImageGrabber {
                 ip.ProgressChangeMsg("importImages", Translation.Get("SpoilerImageImportForGC") + gcCode);
                 HashMap<String, URI> allimgDict = new HashMap<String, URI>();
 
-                int result = 0;
+                int result;
                 long startTs = System.currentTimeMillis();
                 do {
                     result = GroundspeakAPI.downloadImageListForGeocache(gcCode, allimgDict);

@@ -118,7 +118,7 @@ public class CB_Action_LoadLogs extends CB_Action {
             }
 
             @Override
-            public boolean isCanceled() {
+            public boolean doCancel() {
                 // TODO Handle cancel
                 return false;
             }

@@ -157,7 +157,7 @@ public class TrackableListView extends ActivityBase {
                 }
 
                 @Override
-                public boolean isCanceled() {
+                public boolean doCancel() {
                     // TODO handle cancel
                     return false;
                 }
@@ -209,7 +209,7 @@ public class TrackableListView extends ActivityBase {
             }
 
             @Override
-            public boolean isCanceled() {
+            public boolean doCancel() {
                 // TODO handle cancel
                 return false;
             }
@@ -245,7 +245,7 @@ public class TrackableListView extends ActivityBase {
             }
 
             @Override
-            public boolean isCanceled() {
+            public boolean doCancel() {
                 // TODO handle cancel
                 return false;
             }

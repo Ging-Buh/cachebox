@@ -153,10 +153,10 @@ public class CancelWaitDialog extends WaitDialog {
                 }
 
                 @Override
-                public boolean isCanceled() {
+                public boolean doCancel() {
                     boolean mCancel = true;
                     if (cancelRunnable != null) {
-                        mCancel = cancelRunnable.isCanceled();
+                        mCancel = cancelRunnable.doCancel();
                     }
                     CancelWaitDialog.this.close();
                     return mCancel;

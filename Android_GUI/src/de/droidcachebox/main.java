@@ -633,7 +633,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                                 }
 
                                 @Override
-                                public boolean isCanceled() {
+                                public boolean doCancel() {
                                     // TODO handle cancel
                                     return false;
                                 }

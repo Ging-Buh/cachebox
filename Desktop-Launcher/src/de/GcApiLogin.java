@@ -46,7 +46,7 @@ public class GcApiLogin {
             }
 
             @Override
-            public boolean isCanceled() {
+            public boolean doCancel() {
                 // TODO Handle Cancel
                 return false;
             }
@@ -244,7 +244,7 @@ public class GcApiLogin {
         WD = CancelWaitDialog.ShowWait("Please Wait", new IcancelListener() {
 
             @Override
-            public void isCanceled() {
+            public void doCancel() {
                 closeWaitDialog();
             }
         }, new cancelRunnable() {

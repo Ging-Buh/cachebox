@@ -236,7 +236,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
             }
 
             @Override
-            public boolean isCanceled() {
+            public boolean doCancel() {
 
                 return false;
             }

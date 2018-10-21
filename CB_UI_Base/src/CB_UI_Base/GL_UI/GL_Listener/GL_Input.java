@@ -266,14 +266,12 @@ public class GL_Input implements InputProcessor {
                         lastClickTime = System.currentTimeMillis();
                         lastClickPoint = akt;
                     }
-                } else {
-                    // onTouchUpBase: view is not clickable.
                 }
             } else {
                 x -= touchDraggedCorrect.x;
                 y -= touchDraggedCorrect.y;
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
         try {
@@ -285,13 +283,13 @@ public class GL_Input implements InputProcessor {
                 first.view.touchUp(x, (int) testingView.getHeight() - y, pointer, button);
                 touchDownPos.remove(pointer);
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
         return true;
     }
 
-    public Point getTouchDownPos() {
+    Point getTouchDownPos() {
         if (isTouchDown) {
             if (touchDownPos.size() > 0)
                 return touchDownPos.get(0).point;
@@ -355,7 +353,7 @@ public class GL_Input implements InputProcessor {
     }
 
     private int distance(int x1, int y1, int x2, int y2) {
-        return (int) Math.round(Math.sqrt(Math.pow(x1 - x1, 2) + Math.pow(y1 - y2, 2)));
+        return (int) Math.round(Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2)));
     }
 
     public boolean getIsTouchDown() {
@@ -369,14 +367,14 @@ public class GL_Input implements InputProcessor {
         private KineticPan kineticPan;
         private Timer timer;
 
-        public TouchDownPointer(int pointer, Point point, GL_View_Base view) {
+        TouchDownPointer(int pointer, Point point, GL_View_Base view) {
             this.pointer = pointer;
             this.point = point;
             this.view = view;
             this.kineticPan = null;
         }
 
-        public void startKinetic(final int x, final int y) {
+        void startKinetic(final int x, final int y) {
             timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override
@@ -404,7 +402,7 @@ public class GL_Input implements InputProcessor {
             }, 0, FRAME_RATE_FAST_ACTION);
         }
 
-        public void stopKinetic() {
+        void stopKinetic() {
             if (timer != null) {
                 timer.cancel();
                 timer = null;
@@ -419,7 +417,7 @@ public class GL_Input implements InputProcessor {
         private final int[] x = new int[anzPoints];
         private final int[] y = new int[anzPoints];
         private final long[] ts = new long[anzPoints];
-        int anzPointsUsed = 0;
+        int anzPointsUsed;
         private boolean started;
         private boolean fertig;
         private int diffX;
@@ -443,7 +441,7 @@ public class GL_Input implements InputProcessor {
             anzPointsUsed = 0;
         }
 
-        public void setLast(long aktTs, int aktX, int aktY) {
+        void setLast(long aktTs, int aktX, int aktY) {
             if ((anzPointsUsed > 0) && (ts[0] < aktTs - 500)) {
                 // wenn seit der letzten Verschiebung mehr Zeit Vergangen ist -> bisherige gemerkte Verschiebungen löschen
                 anzPointsUsed = 0;
@@ -487,10 +485,6 @@ public class GL_Input implements InputProcessor {
             // debugString = x[2] + " - " + x[1] + " - " + x[0];
         }
 
-        public boolean getFertig() {
-            return fertig;
-        }
-
         public boolean getStarted() {
             return started;
         }
@@ -513,7 +507,7 @@ public class GL_Input implements InputProcessor {
                 started = true;
         }
 
-        public Point getAktPan() {
+        Point getAktPan() {
             anzPointsUsed = Math.max(anzPointsUsed, 1);
             Point result = new Point(0, 0);
 
