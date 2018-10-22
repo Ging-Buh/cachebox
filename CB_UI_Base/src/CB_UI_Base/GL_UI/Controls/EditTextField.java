@@ -183,7 +183,7 @@ public class EditTextField extends EditTextFieldBase {
         bgLeftWidth = style.getLeftWidth(focused);
         bgRightWidth = style.getRightWidth(focused);
         if (mWrapType == WrapType.SINGLELINE) {
-            bgTopHeight = bgBottomHeight = Math.max(0, getHeight() - style.font.getLineHeight() / 2);
+            bgTopHeight = bgBottomHeight = Math.max(0, (getHeight() - style.font.getLineHeight()) / 2);
         } else {
             bgTopHeight = style.getTopHeight(focused);
             bgBottomHeight = style.getBottomHeight(focused);

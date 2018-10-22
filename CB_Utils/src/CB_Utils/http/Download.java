@@ -20,8 +20,11 @@ public class Download {
         InputStream inStream = null;
         BufferedOutputStream outStream = null;
 
-        boolean redirected = false;
+        boolean redirected;
+        int redirCount = 0;
         do {
+            redirected = false;
+            redirCount++;
             Response<InputStream> response = null;
             try {
                 response = Webb.create()
@@ -61,7 +64,7 @@ public class Download {
                 }
             }
         }
-        while (redirected);
+        while (redirected && redirCount < 2);
 
         if (err) {
             try {

@@ -475,9 +475,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
                 }
 
             }, 0, ANIMATION_TICK);
-        } catch (Exception e) {
-
-            e.printStackTrace();
+        } catch (Exception ignored) {
         }
     }
 
