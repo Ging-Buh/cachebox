@@ -15,6 +15,7 @@
  */
 package de.droidcachebox;
 
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.Database;
 import CB_Core.Database.DatabaseType;
@@ -457,7 +458,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         if (isFirstStart) {
             // ask for API key only if Rev-Number changed, like at new
             // installation and API Key is Empty
-            if (Config.newInstall.getValue() && Config.GetAccessToken().equals("")) {
+            if (Config.newInstall.getValue() && GroundspeakAPI.GetSettingsAccessToken().length() ==  0) {
                 askToGetApiKey();
             } else {
                 if (!GlobalCore.restartAfterKill)

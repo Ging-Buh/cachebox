@@ -35,7 +35,7 @@ import java.util.ArrayList;
 public class SpoilerView extends CB_View_Base {
     private final static int MAX_THUMB_WIDTH = 500;
     private final static int MAX_OVERVIEW_THUMB_WIDTH = 240;
-    private final OnClickListener onItemClickListener = new OnClickListener() {
+    private final OnClickListener onGalleryItemDoubleClicked = new OnClickListener() {
 
         @Override
         public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -56,7 +56,7 @@ public class SpoilerView extends CB_View_Base {
     CB_List<GalleryItem> overviewItems = new CB_List<GalleryItem>();
     GalleryView gallery;
     GalleryView galleryOverwiew;
-    private final OnClickListener onItemSelectClickListener = new OnClickListener() {
+    private final OnClickListener onIconClicked = new OnClickListener() {
 
         @Override
         public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -160,18 +160,21 @@ public class SpoilerView extends CB_View_Base {
                         ImageLoader loader = new ImageLoader(true); // image loader with thumb
                         loader.setThumbWidth(MAX_THUMB_WIDTH, "");
                         loader.setImage(imageEntry.LocalPath);
-                        String label = FileIO.GetFileNameWithoutExtension(imageEntry.Name);
+                        String label;
                         if (description.length() > 0)
-                            label = description;
+                            label = removeHashFromLabel(description);
+                        else {
+                            label = removeHashFromLabel(FileIO.GetFileNameWithoutExtension(imageEntry.Name));
+                        }
                         GalleryBigItem item = new GalleryBigItem(gallery.copy(), i, loader, label);
-                        item.setOnDoubleClickListener(onItemClickListener);
+                        item.setOnDoubleClickListener(onGalleryItemDoubleClicked);
                         bigItems.add(item);
 
                         ImageLoader overviewloader = new ImageLoader(true); // image loader with thumb
                         overviewloader.setThumbWidth(MAX_OVERVIEW_THUMB_WIDTH, FileFactory.THUMB_OVERVIEW);
                         overviewloader.setImage(imageEntry.LocalPath);
                         GalleryItem overviewItem = new GalleryItem(orItemRec, i, loader);
-                        overviewItem.setOnClickListener(onItemSelectClickListener);
+                        overviewItem.setOnClickListener(onIconClicked);
                         if (firstItem == null)
                             firstItem = overviewItem;
                         overviewItems.add(overviewItem);
@@ -195,6 +198,20 @@ public class SpoilerView extends CB_View_Base {
             }
         }
         // Log.info(log, "End onShow");
+    }
+
+    private String removeHashFromLabel(String label) {
+        int p1 = label.indexOf(" - ");
+        if (p1 < 0)
+            p1 = 0;
+        else
+            p1 = p1 + 3;
+        int p2 = label.indexOf("@");
+        if (p2 < 0)
+            label = label.substring(p1);
+        else
+            label = label.substring(p1, p2);
+        return label.trim();
     }
 
     @Override

@@ -67,7 +67,7 @@ public class Webb {
      * Set the value for a named header which is valid for all requests in the running JVM.
      * <br>
      * The value can be overwritten by calling {@link Webb#setDefaultHeader(String, Object)} and/or
-     * {@link com.goebl.david.Request#header(String, Object)}.
+     * {@link CB_Utils.http.Request#header(String, Object)}.
      * <br>
      * For the supported types for values see {@link Request#header(String, Object)}.
      *

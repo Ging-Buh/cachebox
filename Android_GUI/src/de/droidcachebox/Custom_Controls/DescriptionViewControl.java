@@ -44,17 +44,15 @@ import static CB_Core.Api.GroundspeakAPI.IsPremiumMember;
 
 @SuppressWarnings("deprecation")
 public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
-    final static String log = "DescriptionViewControl";
-    public static boolean isDrawn = false;
+    private final static String log = "DescriptionViewControl";
     private static ProgressDialog pd;
     private static DescriptionViewControl that;
-    final Handler downloadReadyHandler = new Handler();
-    private final LinkedList<String> NonLocalImages = new LinkedList<String>();
-    private final LinkedList<String> NonLocalImagesUrl = new LinkedList<String>();
-    Thread downloadThread;
+    private final Handler downloadReadyHandler = new Handler();
+    private final LinkedList<String> NonLocalImages = new LinkedList<>();
+    private final LinkedList<String> NonLocalImagesUrl = new LinkedList<>();
     private Cache aktCache;
     private String message = "";
-    WebViewClient clint = new WebViewClient() {
+    private WebViewClient webViewClient = new WebViewClient() {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             if (url.contains("fake://fake.de/Attr")) {
@@ -209,6 +207,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             }
         }
     };
+
     final Runnable downloadComplete = new Runnable() {
         @Override
         public void run() {
@@ -225,16 +224,13 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
             this.setAlwaysDrawnWithCacheEnabled(false);
         }
 
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            this.getSettings().setLightTouchEnabled(false);
-        }
         this.getSettings().setLoadWithOverviewMode(true);
         this.getSettings().setSupportZoom(true);
         this.getSettings().setBuiltInZoomControls(true);
         this.getSettings().setJavaScriptEnabled(true);
         this.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
 
-        this.setWebViewClient(clint);
+        this.setWebViewClient(webViewClient);
         that = this;
         this.setFocusable(false);
     }
@@ -253,7 +249,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
         this.getSettings().setJavaScriptEnabled(true);
         this.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
 
-        this.setWebViewClient(clint);
+        this.setWebViewClient(webViewClient);
         that = this;
     }
 
@@ -321,7 +317,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
 
         // Falls nicht geladene Bilder vorliegen und eine Internetverbindung erlaubt ist, diese laden und Bilder erneut auflösen
         if (NonLocalImagesUrl.size() > 0) {
-            downloadThread = new Thread() {
+            Thread downloadThread = new Thread() {
                 @Override
                 public void run() {
 
@@ -461,7 +457,6 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        isDrawn = true;
         invertViewControl.Me.invalidate();
     }
 

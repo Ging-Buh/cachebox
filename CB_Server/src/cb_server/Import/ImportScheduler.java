@@ -204,7 +204,7 @@ public class ImportScheduler implements Runnable {
 				if (importImages || importSpoiler) {
 
 					//					dis.setAnimationType(AnimationType.Download);
-					int result = importer.importImagesNew(ip, importImages, importSpoiler, "");
+					int result = importer.importImages(ip, importImages, importSpoiler, "");
 
 					if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
 						//						GL.that.Toast(ConnectionError.INSTANCE);

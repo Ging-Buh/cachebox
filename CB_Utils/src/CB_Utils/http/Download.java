@@ -9,7 +9,7 @@ import java.io.InputStream;
 
 public class Download {
 
-    public static Boolean Download(String remote, String local) {
+    public static boolean Download(String remote, String local) {
         boolean err = false;
         File localFile = FileFactory.createFile(local);
         /* create parent directories, if necessary */

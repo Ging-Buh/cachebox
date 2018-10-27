@@ -520,6 +520,7 @@ public class GcApiLogin {
         // nicht noch einmal verschlüsselt werden!
         Config.AccessToken.setEncryptedValue(accessToken);
         Config.AcceptChanges();
+        GroundspeakAPI.setAuthorization();
         Config.GcLogin.setValue(GroundspeakAPI.fetchMemberNameAfterGotNewAccessToken());
         Config.AcceptChanges();
 

@@ -46,7 +46,7 @@ public class GalleryView extends H_ListView {
         if (mPosDefault != null) {
             mPosDefault.clear();
         } else {
-            mPosDefault = new CB_List<Float>();
+            mPosDefault = new CB_List<>();
         }
 
         float countPos = this.getWidth();
@@ -86,16 +86,15 @@ public class GalleryView extends H_ListView {
                     //search max Div
                     final float div1 = Math.abs(mPos - pos1);
                     final float div2 = Math.abs(mPos - pos2);
-                    final int idx = i;
 
                     if (div1 <= div2) {
                         //			setSelection(idx);
-                        mBaseAdapter.getView(idx).click(0, 0, 0, 0);
-                        scrollItemToCenter(idx);
+                        mBaseAdapter.getView(i).click(0, 0, 0, 0);
+                        scrollItemToCenter(i);
                     } else {
                         //			setSelection(idx + 1);
-                        mBaseAdapter.getView(idx + 1).click(0, 0, 0, 0);
-                        scrollItemToCenter(idx + 1);
+                        mBaseAdapter.getView(i + 1).click(0, 0, 0, 0);
+                        scrollItemToCenter(i + 1);
                     }
                     break;
                 }
@@ -167,26 +166,14 @@ public class GalleryView extends H_ListView {
             return false;
         mDragged = x - mLastTouch;
         float sollPos = mLastPos_onTouch - mDragged;
-        float toMuch = 0;
         if (sollPos - firstItemSize > 0 || sollPos < mcalcAllSizeBase) {
             if (sollPos - (firstItemSize * 3) > 0 || sollPos + (lastItemSize * 3) < mcalcAllSizeBase) {
                 if (KineticPan)
                     GL_Input.that.StopKinetic(x, y, pointer, true);
                 return true;
             }
-
-            //	    if (sollPos - firstItemSize > 0) {
-            //		toMuch = 0 - sollPos + firstItemSize;
-            //		toMuch /= 2;
-            //	    } else if (sollPos < mcalcAllSizeBase) {
-            //		toMuch = mcalcAllSizeBase - sollPos;
-            //		toMuch /= 2;
-            //	    }
         }
-
-        if (toMuch != 0)
-            Log.debug(log, "tomuch" + toMuch);
-        setListPos(sollPos + toMuch, KineticPan);
+        setListPos(sollPos, KineticPan);
         return true;
     }
 
@@ -201,14 +188,11 @@ public class GalleryView extends H_ListView {
     }
 
     public void snapIn(int index) {
-
     }
 
     @Override
     public void setSelection(int i) {
         super.setSelection(i);
-
-        //scrollTo(mPosDefault.get(i));
     }
 
     @Override

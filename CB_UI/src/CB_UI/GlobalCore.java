@@ -20,6 +20,7 @@ import CB_Core.Api.GroundspeakAPI;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.CoreSettingsForward;
 import CB_Core.Database;
+import CB_Core.Import.DescriptionImageGrabber;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Solver.Solver;
@@ -56,9 +57,9 @@ import static CB_Core.Api.GroundspeakAPI.isAccessTokenInvalid;
  * @author longri
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface {
-    public static final int CurrentRevision = 20181022;
+    public static final int CurrentRevision = 20181027;
     public static final String CurrentVersion = "2.0.";
-    public static final String VersionPrefix = "3179";
+    public static final String VersionPrefix = "3181";
     public static final String aboutMsg1 = "Team Cachebox (2011-2018)" + br;
     public static final String teamLink = "www.team-cachebox.de";
     public static final String aboutMsg2 = br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";
@@ -184,7 +185,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
      * APIisOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen und ein API Access Token vorhanden ist.
      */
     public static boolean APIisOnline() {
-        if (Config.GetAccessToken().length() == 0) {
+        if (GroundspeakAPI.GetSettingsAccessToken().length() == 0) {
             Log.info(log, "GlobalCore.APIisOnline() - no GC - API AccessToken");
             return false;
         }
@@ -270,14 +271,11 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
             public void run() {
                 Importer importer = new Importer();
                 ImporterProgress ip = new ImporterProgress();
-                int result = importer.importSpoilerForCacheNew(ip, GlobalCore.getSelectedCache());
+                int result = GroundspeakAPI.ERROR;
+                if (GlobalCore.getSelectedCache() != null)
+                    result = DescriptionImageGrabber.GrabImagesSelectedByCache(ip, true, false, GlobalCore.getSelectedCache().Id, GlobalCore.getSelectedCache().getGcCode(), "", "");
                 wd.close();
-                if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
-                    GL.that.Toast(ConnectionError.INSTANCE);
-                    return;
-                }
-
-                if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
+                if (result == GroundspeakAPI.ERROR) {
                     GL.that.Toast(ApiUnavailable.INSTANCE);
                     return;
                 }

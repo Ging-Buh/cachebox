@@ -791,7 +791,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 
                     if (checkBoxPreloadImages.isChecked() || checkBoxPreloadSpoiler.isChecked()) {
                         dis.setAnimationType(AnimationType.Download);
-                        int result = importer.importImagesNew(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(), FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue()));
+                        int result = importer.importImages(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(), FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue()));
 
                         if (result == CONNECTION_TIMEOUT) {
                             GL.that.Toast(ConnectionError.INSTANCE);

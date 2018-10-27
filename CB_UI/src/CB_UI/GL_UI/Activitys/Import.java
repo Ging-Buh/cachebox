@@ -30,7 +30,6 @@ import CB_UI.GL_UI.Activitys.APIs.ImportAPIListItem;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
-import CB_UI.GlobalCore;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
@@ -61,7 +60,6 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Events.ProgressChangedEvent;
 import CB_Utils.Events.ProgresssChangedEventList;
 import CB_Utils.Log.Log;
-import CB_Utils.Settings.SettingInt;
 import CB_Utils.StringH;
 import CB_Utils.Util.CopyHelper.Copy;
 import CB_Utils.Util.CopyHelper.CopyRule;
@@ -1118,7 +1116,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
                     if (checkBoxPreloadImages.isChecked() || checkBoxPreloadSpoiler.isChecked()) {
                         dis.setAnimationType(AnimationType.Download);
-                        int result = importer.importImagesNew(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(), FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue()));
+                        int result = importer.importImages(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(), FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue()));
 
                         if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
                             GL.that.Toast(ConnectionError.INSTANCE);

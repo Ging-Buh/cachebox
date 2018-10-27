@@ -56,6 +56,84 @@ public class GroundspeakAPI {
     private static boolean mDownloadLimitExceeded = false;
     private static UserInfos me;
 
+    private static Webb netz;
+    private static long startTs;
+    private static int nrOfApiCalls;
+    private static int retryCount;
+
+    private static Webb getNetz() {
+        if (netz == null) {
+            netz = Webb.create();
+            netz.setDefaultHeader(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken());
+            Webb.setReadTimeout(CB_Core_Settings.socket_timeout.getValue());
+            Webb.setConnectTimeout(CB_Core_Settings.connection_timeout.getValue());
+            startTs = System.currentTimeMillis();
+            nrOfApiCalls = 0;
+            retryCount = 0;
+        }
+
+        if (System.currentTimeMillis() - startTs > 60000) {
+            // reset nrOfApiCalls after one minute
+            // perhaps can avoid retry for 429 by checking nrOfApiCalls. ( not implemented yet )
+            startTs = System.currentTimeMillis();
+            nrOfApiCalls = 0;
+            retryCount = 0;
+        }
+
+        nrOfApiCalls++;
+        return netz;
+    }
+
+    public static void setAuthorization() {
+        getNetz().setDefaultHeader(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken());
+    }
+
+    private static boolean retry(Exception ex) {
+        // Alternate: implement own RetryManager for 429
+        APIError = 0;
+        LastAPIError = ex.getLocalizedMessage();
+        if (ex instanceof WebbException) {
+            WebbException we = (WebbException) ex;
+            Response re = we.getResponse();
+            if (re != null) {
+                JSONObject ej;
+                APIError = re.getStatusCode();
+                if (APIError == 429) {
+                    if (retryCount == 0) {
+                        Log.debug(log, "API-Limit exceeded: " + nrOfApiCalls + " Number of Calls within " + ((System.currentTimeMillis() - startTs) / 1000) + " seconds.");
+                        // Difference 61000 is one second more than one minute. (60000 = one minute gives still 429 Exception)
+                        try {
+                            long ta = 61000 - (System.currentTimeMillis() - startTs);
+                            if (ta > 0)
+                                Thread.sleep(ta);
+                        } catch (InterruptedException ignored) {
+                        }
+                        startTs = System.currentTimeMillis();
+                        nrOfApiCalls = 0;
+                        retryCount++; //important hint: on successful execution (no Exception), retryCount must be reset to 0 else there is no retry for the next failure.
+                    } else {
+                        startTs = System.currentTimeMillis();
+                        nrOfApiCalls = 0;
+                        retryCount = 0;
+                        LastAPIError = "******* Aborting: After retry API-Limit is still exceeded.";
+                    }
+                } else {
+                    try {
+                        ej = (JSONObject) re.getErrorBody();
+                        if (ej != null) {
+                            LastAPIError = ej.optString("errorMessage", "" + APIError);
+                        } else {
+                            LastAPIError = ex.getLocalizedMessage();
+                        }
+                    } catch (Exception exc) {
+                        LastAPIError = ex.getLocalizedMessage();
+                    }
+                }
+            }
+        }
+        return retryCount > 0;
+    }
+
     /**
      * // Archived, Available and TrackableCount are updated
      * // restriction for nr of caches must be handled by caller
@@ -69,7 +147,6 @@ public class GroundspeakAPI {
         if (isAccessTokenInvalid()) return ERROR;
 
         try {
-            long startTs = System.currentTimeMillis();
 
             JSONArray CacheCodes = new JSONArray();
             for (Cache cache : caches) {
@@ -89,21 +166,20 @@ public class GroundspeakAPI {
 */
             do {
 
-                JSONObject json = Webb.create()
+                Response<JSONObject> r = getNetz()
                         .post(getUrl("GetGeocacheStatus?format=json"))
                         .body(new JSONObject()
                                 .put("AccessToken", GetSettingsAccessToken())
                                 .put("CacheCodes", CacheCodes)
                         )
-                        .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                        .readTimeout(CB_Core_Settings.socket_timeout.getValue())
                         .ensureSuccess()
-                        .asJsonObject()
-                        .getBody();
-                JSONObject status = json.getJSONObject("Status");
+                        .asJsonObject();
+
+                JSONObject response = r.getBody();
+                JSONObject status = response.getJSONObject("Status");
                 APIError = status.getInt("StatusCode");
                 if (APIError == 0) {
-                    JSONArray geocacheStatuses = json.getJSONArray("GeocacheStatuses");
+                    JSONArray geocacheStatuses = response.getJSONArray("GeocacheStatuses");
                     for (int ii = 0; ii < geocacheStatuses.length(); ii++) {
                         JSONObject jCache = (JSONObject) geocacheStatuses.get(ii);
                         Iterator<Cache> iterator = caches.iterator();
@@ -127,7 +203,7 @@ public class GroundspeakAPI {
                     // todo ist in API 1 vermutlich: 429	Too Many Requests
                     if (APIError == 140) {
                         // API-Limit überschritten -> nach 15 Sekunden wiederholen
-                        Log.debug(log,"******* API-Limit überschritten -> 15 Sekunden warten! *******");
+                        Log.debug(log, "******* API-Limit überschritten -> 15 Sekunden warten! *******");
                         try {
                             Thread.sleep(15000);
                         } catch (InterruptedException ignored) {
@@ -161,7 +237,7 @@ public class GroundspeakAPI {
 
         try {
             Thread.sleep(1000);
-        } catch (InterruptedException e1) {
+        } catch (InterruptedException ignored) {
         }
 
         LastAPIError = "";
@@ -180,10 +256,8 @@ public class GroundspeakAPI {
         // Schleife, solange bis entweder keine Logs mehr geladen werden oder bis alle Logs aller Finder geladen sind.
         {
             try {
-                JSONObject json = Webb.create()
+                JSONObject json = getNetz()
                         .get(getUrl("GetGeocacheLogsByCacheCode?format=json" + "&AccessToken=" + GetSettingsAccessToken() + "&CacheCode=" + cache.getGcCode() + "&StartIndex=" + start + "&MaxPerPage=" + count))
-                        .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                        .readTimeout(CB_Core_Settings.socket_timeout.getValue())
                         .ensureSuccess()
                         .asJsonObject()
                         .getBody();
@@ -249,7 +323,7 @@ public class GroundspeakAPI {
         // zum Abfragen der CacheLimits einfach nach einem Cache suchen, der nicht existiert: "GCZZZZZ".
         // dadurch wird der Zähler nicht erhöht, die Limits aber zurückgegeben.
         try {
-            JSONObject json = Webb.create()
+            JSONObject json = getNetz()
                     .post(getUrl("SearchForGeocaches?format=json"))
                     .body(new JSONObject()
                             .put("AccessToken", GetSettingsAccessToken())
@@ -260,8 +334,6 @@ public class GroundspeakAPI {
                             .put("TrackableLogCount", 0)
                             .put("CacheCode", new JSONObject().put("CacheCodes", new JSONArray().put("GCZZZZZ")))
                     )
-                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
                     .ensureSuccess()
                     .asJsonObject()
                     .getBody();
@@ -307,10 +379,8 @@ public class GroundspeakAPI {
         LastAPIError = "";
         if (!IsPremiumMember()) return OK; // leere Liste für Basic members
         try {
-            JSONObject json = Webb.create()
+            JSONObject json = getNetz()
                     .get(getUrl("GetPocketQueryList?AccessToken=" + UrlEncode(GetSettingsAccessToken()) + "&format=json"))
-                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
                     .ensureSuccess()
                     .asJsonObject()
                     .getBody();
@@ -362,10 +432,8 @@ public class GroundspeakAPI {
         // Replacement new API: "lists/" + pocketQuery.GUID + "/geocaches"
 
         try {
-            JSONObject json = Webb.create()
+            JSONObject json = getNetz()
                     .get(getUrl("GetPocketQueryZippedFile?format=json&AccessToken=" + UrlEncode(GetSettingsAccessToken()) + "&PocketQueryGuid=" + pocketQuery.GUID))
-                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
                     .ensureSuccess()
                     .asJsonObject()
                     .getBody();
@@ -414,43 +482,34 @@ public class GroundspeakAPI {
         APIError = 0;
         UserInfos ui = new UserInfos();
         try {
-            JSONObject response = Webb.create()
-                    .get(getUrl(1, "/users/" + UserCode + "?fields=username,membershipLevelId,findCount"))
-                    .header(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken())
-                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
+            JSONObject response = getNetz()
+                    .get(getUrl(1, "/users/" + UserCode + "?fields=username,membershipLevelId,findCount,geocacheLimits"))
                     .ensureSuccess()
                     .asJsonObject()
                     .getBody();
+            retryCount = 0;
             ui.username = response.optString("username", "");
             ui.memberShipType = MemberShipTypesFromInt(response.optInt("membershipLevelId", -1));
             ui.findCount = response.optInt("findCount", -1);
+            JSONObject geocacheLimits = response.optJSONObject("geocacheLimits");
+            if (geocacheLimits != null) {
+                ui.remaining = geocacheLimits.optInt("fullCallsRemaining", -1);
+                ui.renainingLite = geocacheLimits.optInt("liteCallsRemaining", -1);
+                ui.remainingTime = geocacheLimits.optInt("fullCallsSecondsToLive", -1);
+                ui.renainingLiteTime = geocacheLimits.optInt("liteCallsSecondsToLive", -1);
+            }
             Log.info(log, "fetchUserInfos done \n" + response.toString());
         } catch (Exception ex) {
-            LastAPIError = ex.getLocalizedMessage();
-            if (ex instanceof WebbException) {
-                WebbException we = (WebbException) ex;
-                Response re = we.getResponse();
-                if (re != null) {
-                    JSONObject ej;
-                    APIError = re.getStatusCode();
-                    try {
-                        ej = (JSONObject) re.getErrorBody();
-                        if (ej != null) {
-                            LastAPIError = ej.optString("errorMessage", "" + APIError);
-                        } else {
-                            LastAPIError = ex.getLocalizedMessage();
-                        }
-                    } catch (Exception exc) {
-                        LastAPIError = ex.getLocalizedMessage();
-                    }
-                }
-            }
+            retry(ex);
             Log.err(log, "fetchUserInfos:" + APIError + ":" + LastAPIError);
             Log.trace(log, ex);
             ui.username = "";
             ui.memberShipType = MemberShipTypes.Unknown;
             ui.findCount = 0;
+            ui.remaining = -1;
+            ui.renainingLite = -1;
+            ui.remainingTime = -1;
+            ui.renainingLiteTime = -1;
         }
         return ui;
     }
@@ -480,7 +539,7 @@ public class GroundspeakAPI {
                 isEncoded	bool	if log was encrypted using ROT13	No	No
                 isArchived	bool	if the log has been deleted	No	No
                  */
-                Webb.create()
+                getNetz()
                         .post(getUrl(1, "geocachelogs"))
                         .body(new JSONObject()
                                 .put("geocacheCode", cacheCode)
@@ -488,9 +547,6 @@ public class GroundspeakAPI {
                                 .put("loggedDate", getUTCDate(dateLogged))
                                 .put("text", prepareNote(note))
                         )
-                        .header(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken())
-                        .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                        .readTimeout(CB_Core_Settings.socket_timeout.getValue())
                         .ensureSuccess()
                         .asVoid();
             } else {
@@ -507,7 +563,7 @@ public class GroundspeakAPI {
                 imageCount	        integer	            number of images associated with draft	                                        No	                No
                 useFavoritePoint	boolean	whether to award favorite point when	                                                Optional, defaults to false	Yes
                 */
-                Webb.create()
+                getNetz()
                         .post(getUrl(1, "logdrafts"))
                         .body(new JSONObject()
                                 .put("guid", UUID.randomUUID().toString())
@@ -516,9 +572,6 @@ public class GroundspeakAPI {
                                 .put("dateLoggedUtc", getUTCDate(dateLogged))
                                 .put("note", prepareNote(note))
                         )
-                        .header(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken())
-                        .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                        .readTimeout(CB_Core_Settings.socket_timeout.getValue())
                         .ensureSuccess()
                         .asVoid();
             }
@@ -540,11 +593,8 @@ public class GroundspeakAPI {
         Map<String, String> friends = new HashMap<String, String>();
         // todo perhaps entered more friends than allowed by limit (The max amount of usernames allowed is 50)
         try {
-            JSONArray userCodes = Webb.create()
+            JSONArray userCodes = getNetz()
                     .get(getUrl(1, "users?" + "usernames=" + CB_Core_Settings.Friends.getValue().replace(" ", "").replace("|", ",") + "&fields=referenceCode,username"))
-                    .header(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken())
-                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
                     .ensureSuccess()
                     .asJsonArray()
                     .getBody();
@@ -566,11 +616,8 @@ public class GroundspeakAPI {
         // Schleife, solange bis entweder keine Logs mehr geladen werden oder bis Logs aller Freunde geladen sind.
         {
             try {
-                JSONArray geocacheLogs = Webb.create()
+                JSONArray geocacheLogs = getNetz()
                         .get(getUrl(1, "geocaches/" + cache.getGcCode() + "/geocachelogs?skip=" + start + "&take=" + count + "&fields=ownerCode,loggedDate,text,type,referenceCode"))
-                        .header(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken())
-                        .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                        .readTimeout(CB_Core_Settings.socket_timeout.getValue())
                         .ensureSuccess()
                         .asJsonArray()
                         .getBody();
@@ -613,6 +660,21 @@ public class GroundspeakAPI {
         return (ERROR);
     }
 
+    public static int downloadImageListForGeocaches(String cacheCodes, HashMap<String, URI> list) {
+
+        int skip = 0;
+        int take = 50;
+        Response<JSONArray> r = getNetz()
+                .get(getUrl(1, String.format(Locale.US, "geocaches?referenceCodes=%s&skip=%d&take=%d&&expand=images:30", cacheCodes, skip, take)))
+                .ensureSuccess()
+                .asJsonArray();
+
+        JSONArray jResult = r.getBody();
+
+        return OK;
+    }
+
+
     public static int downloadImageListForGeocache(String cacheCode, HashMap<String, URI> list) {
         Log.debug(log, "downloadImageListForGeocache for '" + "cacheCode" + "'");
         LastAPIError = "";
@@ -625,60 +687,65 @@ public class GroundspeakAPI {
 
         // todo Schleife (es werden nur 50 geholt (was reicht))
         // other fields ,referenceCode,createdDate,guid
-        try {
-            Log.debug(log, "Webb.create for " + getUrl(1, String.format("geocaches/%s/images?skip=%d&take=%d&fields=url,description", cacheCode, skip, take)));
-            JSONArray jImages = Webb.create()
-                    .get(getUrl(1, String.format("geocaches/%s/images?skip=%d&take=%d&fields=url,description", cacheCode, skip, take)))
-                    .header(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken())
-                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
-                    .ensureSuccess()
-                    .asJsonArray()
-                    .getBody();
+        do {
             try {
-                Log.debug(log, "Anz.: " + jImages.length());
-                for (int ii = 0; ii < jImages.length(); ii++) {
-                    try {
-                        JSONObject jImage = (JSONObject) jImages.get(ii);
-                        String name = jImage.getString("description");
-                        String uri = jImage.getString("url");
-                        Log.trace(log, "downloadImageListForGeocache getImageObject Nr.:" + ii + " '" + name + "' " + uri);
-                        // ignore log images (in dieser API kommen keine Logbilder mehr)
-                        if (uri.contains("/cache/log")) {
-                            Log.trace(log, "downloadImageListForGeocache getImageObject Nr.:" + ii + " ignored.");
-                            continue; // LOG-Image
-                        }
-                        // Check for duplicate name
-                        if (list.containsKey(name)) {
-                            for (int nr = 1; nr < 10; nr++) {
-                                if (list.containsKey(name + "_" + nr)) {
-                                    Log.debug(log, "downloadImageListForGeocache getImageObject Nr.:" + ii + " ignored: ");
-                                    continue; // Name already exists --> next nr
-                                }
-                                name += "_" + nr;
-                                break;
-                            }
-                        }
-                        list.put(name, new URI(uri));
-                    } catch (Exception ex) {
-                        Log.err(log, "downloadImageListForGeocache getImageObject Nr.:" + ii, ex);
-                    }
-                }
-            } catch (Exception ex) {
-                LastAPIError = ex.getLocalizedMessage();
-                Log.err(log, "downloadImageListForGeocache getJSONArray(\"Images\") ", ex);
-                return ERROR;
-            }
+                Log.debug(log, "Call " + getUrl(1, String.format(Locale.US, "geocaches/%s/images?skip=%d&take=%d&fields=url,description", cacheCode, skip, take)));
 
-            Log.info(log, "downloadImageListForGeocache done");
-            return OK;
-        } catch (Exception ex) {
-            LastAPIError += ex.getLocalizedMessage();
-            LastAPIError += "\n for " + getUrl(1, "geocaches/" + cacheCode + "/images?fields=url,description");
-            LastAPIError += "\n APIKey: " + GetSettingsAccessToken();
-            Log.err(log, "downloadImageListForGeocache \n" + LastAPIError, ex);
-            return ERROR;
-        }
+                Response<JSONArray> r = getNetz()
+                        .get(getUrl(1, String.format(Locale.US, "geocaches/%s/images?skip=%d&take=%d&fields=url,description", cacheCode, skip, take)))
+                        .ensureSuccess()
+                        .asJsonArray();
+
+                retryCount = 0;
+
+                JSONArray jImages = r.getBody();
+                try {
+                    Log.debug(log, "Anz.: " + jImages.length());
+                    for (int ii = 0; ii < jImages.length(); ii++) {
+                        try {
+                            JSONObject jImage = (JSONObject) jImages.get(ii);
+                            String name = jImage.getString("description");
+                            String uri = jImage.getString("url");
+                            Log.trace(log, "downloadImageListForGeocache getImageObject Nr.:" + ii + " '" + name + "' " + uri);
+                            // ignore log images (in dieser API kommen keine Logbilder mehr)
+                            if (uri.contains("/cache/log")) {
+                                Log.trace(log, "downloadImageListForGeocache getImageObject Nr.:" + ii + " ignored.");
+                                continue; // LOG-Image
+                            }
+                            // Check for duplicate name
+                            if (list.containsKey(name)) {
+                                for (int nr = 1; nr < 10; nr++) {
+                                    if (list.containsKey(name + "_" + nr)) {
+                                        Log.debug(log, "downloadImageListForGeocache getImageObject Nr.:" + ii + " ignored: ");
+                                        continue; // Name already exists --> next nr
+                                    }
+                                    name += "_" + nr;
+                                    break;
+                                }
+                            }
+                            list.put(name, new URI(uri));
+                        } catch (Exception ex) {
+                            Log.err(log, "downloadImageListForGeocache getImageObject Nr.:" + ii, ex);
+                        }
+                    }
+                } catch (Exception ex) {
+                    LastAPIError = ex.getLocalizedMessage();
+                    Log.err(log, "downloadImageListForGeocache getJSONArray(\"Images\") ", ex);
+                    return ERROR;
+                }
+
+                Log.info(log, "downloadImageListForGeocache done");
+                return OK;
+            } catch (Exception ex) {
+                if (!retry(ex)) {
+                    LastAPIError += ex.getLocalizedMessage();
+                    LastAPIError += "\n for " + getUrl(1, "geocaches/" + cacheCode + "/images?fields=url,description");
+                    LastAPIError += "\n APIKey: " + GetSettingsAccessToken();
+                    Log.err(log, "downloadImageListForGeocache \n" + LastAPIError, ex);
+                    return ERROR;
+                }
+            }
+        } while (true);
     }
 
     public static TbList downloadUsersTrackables() {
@@ -686,11 +753,8 @@ public class GroundspeakAPI {
         if (isAccessTokenInvalid()) return null;
         LastAPIError = "";
         try {
-            JSONArray jTrackables = Webb.create()
+            JSONArray jTrackables = getNetz()
                     .get(getUrl(1, "trackables" + "?fields=referenceCode,trackingNumber,iconUrl,name,goal,description,releasedDate,ownerCode,holderCode,currentGeocacheCode,type,inHolderCollection"))
-                    .header(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken())
-                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
                     .ensureSuccess()
                     .asJsonArray()
                     .getBody();
@@ -721,11 +785,8 @@ public class GroundspeakAPI {
         APIError = 0;
         if (isAccessTokenInvalid()) return null;
         try {
-            Trackable tb = createTrackable(Webb.create()
+            Trackable tb = createTrackable(getNetz()
                     .get(getUrl(1, "trackables/" + TBCode + "?fields=referenceCode,trackingNumber,iconUrl,name,goal,description,releasedDate,ownerCode,holderCode,currentGeocacheCode,type"))
-                    .header(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken())
-                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
                     .ensureSuccess()
                     .asJsonObject()
                     .getBody()
@@ -763,9 +824,8 @@ public class GroundspeakAPI {
         if (cacheCode == null) cacheCode = "";
         if (isAccessTokenInvalid()) return false;
         try {
-            JSONObject result = Webb.create()
+            JSONObject result = getNetz()
                     .post(getUrl(1, "trackablelogs"))
-                    .header(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken())
                     .body(new JSONObject()
                             .put("trackingNumber", TrackingNummer) // code only found on the trackable itself (only needed for creating a log)
                             .put("trackableCode", TBCode) // identifier of the related trackable, required for creation
@@ -774,8 +834,6 @@ public class GroundspeakAPI {
                             .put("text", prepareNote(note))
                             .put("typeId", LogTypeId) // see Trackable Log Types https://api.groundspeak.com/documentation#trackable-log-types
                     )
-                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
                     .ensureSuccess()
                     .asJsonObject()
                     .getBody();
@@ -824,12 +882,9 @@ public class GroundspeakAPI {
         if (cacheCode == null || cacheCode.length() == 0) return ERROR;
         if (!IsPremiumMember()) return ERROR;
         try {
-            Webb.create()
+            getNetz()
                     .put(getUrl(1, "geocaches/" + cacheCode + "/notes"))
-                    .header(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken())
                     .body(new JSONObject().put("note", prepareNote(notes)))
-                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
                     .ensureSuccess()
                     .asVoid();
             Log.info(log, "uploadCacheNote done");
@@ -887,11 +942,8 @@ public class GroundspeakAPI {
         try {
             JSONArray json;
             do {
-                json = Webb.create()
+                json = getNetz()
                         .get(getUrl(1, "users/me/lists?types=pq&skip=" + skip + "&take=" + take + "&fields=" + fields))
-                        .header(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken())
-                        .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                        .readTimeout(CB_Core_Settings.socket_timeout.getValue())
                         .ensureSuccess()
                         .asJsonArray()
                         .getBody();
@@ -931,11 +983,8 @@ public class GroundspeakAPI {
         LastAPIError = "";
         if (!IsPremiumMember()) return ERROR;
         try {
-            JSONArray response = Webb.create()
+            JSONArray response = getNetz()
                     .get(getUrl(1, "friends?fields=referenceCode"))
-                    .header(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken())
-                    .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
-                    .readTimeout(CB_Core_Settings.socket_timeout.getValue())
                     .ensureSuccess()
                     .asJsonArray()
                     .getBody();
@@ -956,7 +1005,7 @@ public class GroundspeakAPI {
         return fetchMyUserInfos().memberShipType == MemberShipTypes.Premium;
     }
 
-    static String GetSettingsAccessToken() {
+    public static String GetSettingsAccessToken() {
         /* */
         String act;
         if (CB_Core_Settings.UseTestUrl.getValue()) {
@@ -967,7 +1016,7 @@ public class GroundspeakAPI {
 
         // for ACB we added an additional A in settings
         if ((act.startsWith("A"))) {
-            Log.trace(log, "Access Token = " + act.substring(1, act.length()));
+            // Log.debug(log, "Access Token = " + act.substring(1, act.length()));
             return act.substring(1);
         } else
             Log.err(log, "no Access Token");
@@ -1385,6 +1434,8 @@ public class GroundspeakAPI {
         // geocacheLimits
         public int remaining;
         public int renainingLite;
+        public int remainingTime;
+        public int renainingLiteTime;
     }
 /*
 additionalWaypoints (Array[AdditionalWaypoint], optional),

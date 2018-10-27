@@ -8,6 +8,7 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import CB_Core.Api.GroundspeakAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,6 +88,7 @@ public class CB_ServerUI extends UI implements DetachListener {
 		button.addClickListener(new Button.ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
+				GroundspeakAPI.setAuthorization();
 				Config.settings.GcLogin.setValue(gcLogin.getValue());
 				Config.settings.WriteToDB();
 				// MessageBox.showPlain(Icon.INFO, "Settings", "Gespeichert", ButtonId.OK);

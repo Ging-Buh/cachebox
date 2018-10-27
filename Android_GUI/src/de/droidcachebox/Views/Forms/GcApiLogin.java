@@ -253,8 +253,8 @@ public class GcApiLogin extends Activity {
                     } else {
                         Config.AccessToken.setEncryptedValue(accessToken);
                     }
-                    Config.AcceptChanges();
-                    Config.GcLogin.setValue(GroundspeakAPI.fetchUserInfos("me").username);
+                    GroundspeakAPI.setAuthorization();
+                    Config.GcLogin.setValue(GroundspeakAPI.fetchMyUserInfos().username);
                     Config.AcceptChanges();
                     onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
                 }

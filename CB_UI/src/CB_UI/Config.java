@@ -301,48 +301,6 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
      * erst bei einer Änderung aktualisiert. Diese erspart das Parsen von Werten
      */
 
-    /**
-     * Read the encrypted AccessToken from the config and check wheter it is correct for Andorid CB
-     *
-     * @return
-     */
-    public static String GetAccessToken() {
-        return GetAccessToken(false);
-    }
-
-    // Read the encrypted AccessToken from the config and check wether it is correct for Andorid CB
-
-    /**
-     * Read the encrypted AccessToken from the config and check wheter it is correct for Andorid CB </br> If Url_Codiert==true so the
-     * API-Key is URL-Codiert </br> Like replase '/' with '%2F'</br></br> This is essential for PQ-List
-     *
-     * @param Url_Codiert
-     * @return
-     */
-    public static String GetAccessToken(boolean Url_Codiert) {
-        String act = "";
-        if (CB_Core_Settings.UseTestUrl.getValue()) {
-            act = CB_Core_Settings.AccessTokenForTest.getValue();
-        } else {
-            act = CB_Core_Settings.AccessToken.getValue();
-        }
-
-        // Prüfen, ob das AccessToken für ACB ist!!!
-        if (!(act.startsWith("A")))
-            return "";
-        String result = act.substring(1, act.length());
-
-        // URL encoder
-        if (Url_Codiert) {
-            result = result.replace("/", "%2F");
-            result = result.replace("\\", "%5C");
-            result = result.replace("+", "%2B");
-            result = result.replace("=", "%3D");
-        }
-
-        return result;
-    }
-
     @Override
     protected void acceptChanges() {
         if (settings.WriteToDB()) {
