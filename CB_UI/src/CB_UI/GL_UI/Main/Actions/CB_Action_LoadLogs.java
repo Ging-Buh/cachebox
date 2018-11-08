@@ -11,6 +11,7 @@ import CB_Core.Types.LogEntry;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Views.LogView;
 import CB_UI.GlobalCore;
 import CB_UI.WriteIntoDB;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
@@ -32,13 +33,10 @@ import java.util.ArrayList;
 
 public class CB_Action_LoadLogs extends CB_Action {
 
-    int ChangedCount = 0;
-    int result = 0;
     private CancelWaitDialog wd;
 
-    public CB_Action_LoadLogs() {
+    CB_Action_LoadLogs() {
         super("LoadLogs", MenuID.AID_LOADLOGS);
-
     }
 
     @Override
@@ -88,7 +86,7 @@ public class CB_Action_LoadLogs extends CB_Action {
                     e.printStackTrace();
                 }
 
-                // Reload result from DB
+                // Reload from DB
                 synchronized (Database.Data.Query) {
                     String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
                     CacheListDAO cacheListDAO = new CacheListDAO();
@@ -106,8 +104,8 @@ public class CB_Action_LoadLogs extends CB_Action {
 
                             @Override
                             public void run() {
-                                if (TabMainView.logView != null)
-                                    TabMainView.logView.onShow();
+                                if (LogView.that != null)
+                                    LogView.that.onShow();
                                 GL.that.renderOnce();
                             }
                         });

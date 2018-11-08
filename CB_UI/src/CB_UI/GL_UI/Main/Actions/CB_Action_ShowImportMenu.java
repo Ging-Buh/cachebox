@@ -214,7 +214,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
                 }
 
                 @Override
-                public void RunnableReady(boolean canceld) {
+                public void RunnableIsReady(boolean canceld) {
                     System.out.print("Export READY");
                     if (pD != null) {
                         pD.close();

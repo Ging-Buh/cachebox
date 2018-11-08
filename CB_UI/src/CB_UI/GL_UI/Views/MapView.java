@@ -80,7 +80,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.*;
 
-import static CB_Core.Types.Cache.NOT_LITE;
+import static CB_Core.Types.Cache.IS_FULL;
 import static CB_UI_Base.GL_UI.Sprites.*;
 
 /**
@@ -451,7 +451,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                                 if (apiCaches.size() > 0) {
                                     Cache c = apiCaches.get(0);
                                     if (c.getGcCode() == GcCode) {
-                                        c.setApiStatus(NOT_LITE);
+                                        c.setApiStatus(IS_FULL);
                                     }
                                     WriteIntoDB.CachesAndLogsAndImagesIntoDB(apiCaches, apiLogs, apiImages);
                                 } else {

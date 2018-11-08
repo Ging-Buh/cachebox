@@ -7,10 +7,8 @@ import java.io.IOException;
 public abstract class Config_Core {
     static final int[] Key = {128, 56, 20, 78, 33, 225};
     public static String mWorkPath = "";
-    static Config_Core that;
 
     public Config_Core(String workPath) {
-        that = this;
         mWorkPath = workPath;
     }
 
@@ -18,22 +16,17 @@ public abstract class Config_Core {
         int[] b = null;
         try {
             b = byte2intArray(Base64.decode(value));
-        } catch (IOException e) {
-
-            e.printStackTrace();
+        } catch (IOException ignore) {
         }
 
         RC4(b, Key);
-        String decrypted = "";
 
         char[] c = new char[b.length];
         for (int x = 0; x < b.length; x++) {
             c[x] = (char) b[x];
         }
 
-        decrypted = String.copyValueOf(c);
-
-        return decrypted;
+        return String.copyValueOf(c);
 
     }
 
@@ -73,8 +66,7 @@ public abstract class Config_Core {
             int[] b = byte2intArray(value.getBytes());
             RC4(b, Key);
             encrypted = Base64.encodeBytes(int2byteArray(b));
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
         }
         return encrypted;
     }
@@ -109,12 +101,5 @@ public abstract class Config_Core {
             bytes[x] = bytes[x] ^ s[t];
         }
     }
-
-    public static void AcceptChanges() {
-        if (that != null)
-            that.acceptChanges();
-    }
-
-    protected abstract void acceptChanges();
 
 }

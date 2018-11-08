@@ -80,19 +80,14 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                     public void run() {
 
                         if (!GroundspeakAPI.CacheStatusValid) {
-                            int result = GroundspeakAPI.fetchCacheLimits();
-                            if (result != 0) {
+                            GroundspeakAPI.fetchCacheLimits();
+                            if (GroundspeakAPI.APIError != 0) {
+                                GL.that.Toast(GroundspeakAPI.LastAPIError);
                                 onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
                                 return;
                             }
-
-                            if (result == GroundspeakAPI.ERROR) {
-                                GL.that.Toast(ConnectionError.INSTANCE);
-                                //GL.that.Toast(ApiUnavailable.INSTANCE);
-                                return;
-                            }
                         }
-                        if (GroundspeakAPI.CachesLeft <= 0) {
+                        if (GroundspeakAPI.me.remaining <= 0) {
                             String s = "Download limit is reached!\n";
                             s += "You have downloaded the full cache details of " + GroundspeakAPI.MaxCacheCount + " caches in the last 24 hours.\n";
                             if (GroundspeakAPI.MaxCacheCount < 10)
@@ -107,7 +102,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
 
                         if (!IsPremiumMember()) {
                             String s = "Download Details of this cache?\n";
-                            s += "Full Downloads left: " + GroundspeakAPI.CachesLeft + "\n";
+                            s += "Full Downloads left: " + GroundspeakAPI.me.remaining + "\n";
                             s += "Actual Downloads: " + GroundspeakAPI.CurrentCacheCount + "\n";
                             s += "Max. Downloads in 24h: " + GroundspeakAPI.MaxCacheCount;
                             message = s;
@@ -169,7 +164,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
 
                         if (!IsPremiumMember()) {
                             String s = "Download successful!\n";
-                            s += "Downloads left for today: " + GroundspeakAPI.CachesLeft + "\n";
+                            s += "Downloads left for today: " + GroundspeakAPI.me.remaining + "\n";
                             s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
 
                             MessageBox.Show(s, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);

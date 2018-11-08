@@ -30,11 +30,11 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
     public void Execute() {
         GlobalCore.filterLogsOfFriends = false; // Reset Filter by Friends when opening LogView
 
-        if ((TabMainView.logView == null) && (tabMainView != null) && (tab != null))
-            TabMainView.logView = new LogView(tab.getContentRec(), "LogView");
+        if ((LogView.that == null) && (tabMainView != null) && (tab != null))
+            LogView.that = new LogView(tab.getContentRec(), "LogView");
 
-        if ((TabMainView.logView != null) && (tab != null))
-            tab.ShowView(TabMainView.logView);
+        if ((LogView.that != null) && (tab != null))
+            tab.ShowView(LogView.that);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
 
     @Override
     public CB_View_Base getView() {
-        return TabMainView.logView;
+        return LogView.that;
     }
 
     @Override
@@ -101,7 +101,6 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
             return;
         }
 
-        // First check API-Key with visual Feedback
         GlobalCore.chkAPiLogInWithWaitDialog(new iChkReadyHandler() {
 
             @Override

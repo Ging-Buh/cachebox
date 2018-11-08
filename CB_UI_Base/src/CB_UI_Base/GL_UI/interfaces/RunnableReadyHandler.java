@@ -3,22 +3,20 @@ package CB_UI_Base.GL_UI.interfaces;
 import CB_Utils.Interfaces.ICancelRunnable;
 
 /**
- * Extends Runnable um eine Ready Meldung
+ * Extends ICancelRunnable with the abstract RunnableIsReady(isCanceled)
  *
  * @author Longri
  */
 public abstract class RunnableReadyHandler implements ICancelRunnable {
 
-    // cancelRunable mRunnable;
-    Thread mRunThread;
-    boolean isCanceld = false;
-    boolean isRunning = false;
+    private Thread mRunThread;
+    private boolean isCanceled = false;
+    private boolean isRunning = false;
 
     public RunnableReadyHandler() {
-        // mRunnable = runnable;
     }
 
-    public abstract void RunnableReady(boolean canceld);
+    public abstract void RunnableIsReady(boolean isCanceled);
 
     public void start() {
         if (!isRunning) {
@@ -27,7 +25,7 @@ public abstract class RunnableReadyHandler implements ICancelRunnable {
                 @Override
                 public void run() {
                     RunnableReadyHandler.this.run();
-                    RunnableReady(isCanceld);
+                    RunnableIsReady(isCanceled);
                 }
             });
             mRunThread.start();
@@ -35,10 +33,10 @@ public abstract class RunnableReadyHandler implements ICancelRunnable {
     }
 
     /*
-     * Bricht den Thread, in dem das Runnable l�uft ab!
+     * the thread of the runnable is canceled!
      */
     public void Cancel() {
-        isCanceld = true;
+        isCanceled = true;
         if (mRunThread != null)
             mRunThread.interrupt();
     }

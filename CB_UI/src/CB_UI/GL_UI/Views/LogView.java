@@ -40,11 +40,11 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 
 public class LogView extends V_ListView implements SelectedCacheEvent {
-    public static CB_RectF ItemRec;
+    private static CB_RectF ItemRec;
     public static LogView that;
-    Cache aktCache;
-    ListViewBaseAdapter lvAdapter;
-    CB_List<LogViewItem> itemList;
+    private Cache aktCache;
+    private ListViewBaseAdapter lvAdapter;
+    private CB_List<LogViewItem> itemList;
 
     public LogView(CB_RectF rec, String Name) {
         super(rec, Name);

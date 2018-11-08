@@ -45,7 +45,7 @@ public class Cache implements Comparable<Cache>, Serializable {
     // ########################################################
     public final static byte NOT_LIVE = 0;
     public final static byte IS_LITE = 1;
-    public final static byte NOT_LITE = 2;
+    public final static byte IS_FULL = 2;
     protected static final Charset US_ASCII = StandardCharsets.US_ASCII;
     protected static final Charset UTF_8 = StandardCharsets.UTF_8;
     private static final long serialVersionUID = 1015307624242318838L;

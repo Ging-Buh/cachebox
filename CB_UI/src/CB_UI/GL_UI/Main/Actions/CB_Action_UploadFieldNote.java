@@ -129,7 +129,7 @@ public class CB_Action_UploadFieldNote extends CB_Action {
             }
 
             @Override
-            public void RunnableReady(boolean canceld) {
+            public void RunnableIsReady(boolean canceld) {
                 if (!canceld) {
 
                     if (!UploadMeldung.equals("")) {

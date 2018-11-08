@@ -36,9 +36,11 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
     public static String ConfigName = "";
     static HashMap<String, String> keyLookup = null;
     static boolean initialized = false;
+    private static Config that;
 
     public Config(String workPath) {
         super(workPath);
+        that = this;
     }
 
     public static void Initialize(String workPath, String configName) {
@@ -296,13 +298,11 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
         Set(key + "Enc", encrypted);
     }
 
-    /*
-     * Nachfolgend die Getter von Einstellungen, welche sehr häufig abgerufen werden. Diese Einstellungen werden zwischen gespeichert und
-     * erst bei einer Änderung aktualisiert. Diese erspart das Parsen von Werten
-     */
+    public static void AcceptChanges() {
+        that.acceptChanges();
+    }
 
-    @Override
-    protected void acceptChanges() {
+    private void acceptChanges() {
         if (settings.WriteToDB()) {
 
             //TODO change to Dialog for restart now

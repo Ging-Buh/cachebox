@@ -130,7 +130,7 @@ public class CancelWaitDialog extends WaitDialog {
             mRunnThread = new RunnableReadyHandler() {
 
                 @Override
-                public void RunnableReady(boolean isCanceled) {
+                public void RunnableIsReady(boolean isCanceled) {
                     // CancelWaitDialog.this.close();
                     if (isCanceled && cancelListener != null) {
                         cancelListener.isCanceled();

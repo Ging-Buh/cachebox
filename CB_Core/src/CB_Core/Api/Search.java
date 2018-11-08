@@ -50,8 +50,8 @@ public class Search {
             excl.put("Archived", false);
             excl.put("Available", true);
             request.put("GeocacheExclusions", excl);
-
         }
+
         if (excludeHides) {
             JSONObject excl = new JSONObject();
             JSONArray jarr = new JSONArray();

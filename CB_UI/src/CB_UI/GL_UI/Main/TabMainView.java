@@ -136,7 +136,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
     public static CreditsView creditsView = null;
     public static DescriptionView descriptionView = null;
     public static FieldNotesView fieldNotesView = null;
-    public static LogView logView = null;
     public static NotesView notesView = null;
     public static SolverView solverView = null;
     public static SpoilerView spoilerView = null;
@@ -294,16 +293,16 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
             fieldNotesView = null;
         }
 
-        if (logView != null && !logView.isVisible()) {
+        if (LogView.that != null && !LogView.that.isVisible()) {
             boolean doRelease = true;
-            if (logView.getCache() != null)
+            if (LogView.that.getCache() != null)
                 if (GlobalCore.isSetSelectedCache())
-                    if (logView.getCache().equals(GlobalCore.getSelectedCache()))
+                    if (LogView.that.getCache().equals(GlobalCore.getSelectedCache()))
                         doRelease = false;
             if (doRelease) {
                 //Log.debug(log, "Release logView");
-                logView.dispose();
-                logView = null;
+                LogView.that.dispose();
+                LogView.that = null;
             }
         }
 

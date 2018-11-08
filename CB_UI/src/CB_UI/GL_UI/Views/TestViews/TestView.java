@@ -304,7 +304,7 @@ public class TestView extends CB_View_Base {
             }
 
             @Override
-            public void RunnableReady(boolean canceld) {
+            public void RunnableIsReady(boolean canceld) {
                 GL.that.Toast("Runable Ready");
                 PD.close();
             }

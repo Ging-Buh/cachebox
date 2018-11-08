@@ -66,6 +66,7 @@ import static CB_Core.Api.GroundspeakAPI.isAccessTokenInvalid;
 public class SearchDialog extends PopUp_Base {
     private static final String log = "SearchDialog";
     public static SearchDialog that;
+
     private final YPositionChanged listener = new YPositionChanged() {
 
         @Override

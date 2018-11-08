@@ -34,9 +34,9 @@ public class CacheDetail implements Serializable {
      */
     public Date DateHidden;
     /**
-     * ApiStatus 0: Cache wurde nicht per Api hinzugefuegt
-     * 1: Cache wurde per GC Api hinzugefuegt und ist noch nicht komplett geladen (IsLite = true)
-     * 2: Cache wurde per GC Api hinzugefuegt und ist komplett geladen (IsLite = false)
+     * ApiStatus 0 = Cache.NOT_LIVE: Cache wurde nicht per Api hinzugefuegt
+     * 1 = Cache.IS_LITE: Cache wurde per GC Api hinzugefuegt und ist noch nicht komplett geladen (IsLite = true)
+     * 2 = Cache.IS_FULL: Cache wurde per GC Api hinzugefuegt und ist komplett geladen (IsLite = false)
      */
     public byte ApiStatus;
 

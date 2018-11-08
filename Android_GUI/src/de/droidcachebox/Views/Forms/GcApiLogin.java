@@ -2,6 +2,7 @@ package de.droidcachebox.Views.Forms;
 
 import CB_Core.Api.CB_Api;
 import CB_Core.Api.GroundspeakAPI;
+import CB_Core.CB_Core_Settings;
 import CB_UI.Config;
 import CB_Utils.Log.Log;
 import android.app.Activity;
@@ -43,7 +44,7 @@ public class GcApiLogin extends Activity {
 
         setContentView(R.layout.gcapilogin);
 
-        webViewLayout = (LinearLayout) findViewById(R.id.gal_Layout);
+        webViewLayout = findViewById(R.id.gal_Layout);
 
         gcApiLogin = this;
 
@@ -248,13 +249,14 @@ public class GcApiLogin extends Activity {
                     // store the encrypted AccessToken in the Config file
                     // wir bekommen den Key schon verschlüsselt, deshalb muss er
                     // nicht noch einmal verschlüsselt werden!
-                    if (Config.UseTestUrl.getValue()) {
-                        Config.AccessTokenForTest.setEncryptedValue(accessToken);
+                    if (CB_Core_Settings.UseTestUrl.getValue()) {
+                        CB_Core_Settings.AccessTokenForTest.setEncryptedValue(accessToken);
                     } else {
-                        Config.AccessToken.setEncryptedValue(accessToken);
+                        CB_Core_Settings.AccessToken.setEncryptedValue(accessToken);
                     }
+                    Config.AcceptChanges();
                     GroundspeakAPI.setAuthorization();
-                    Config.GcLogin.setValue(GroundspeakAPI.fetchMyUserInfos().username);
+                    CB_Core_Settings.GcLogin.setValue(GroundspeakAPI.fetchMyUserInfos().username);
                     Config.AcceptChanges();
                     onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
                 }

@@ -43,18 +43,15 @@ public class GroundspeakAPI {
     private static final String log = "GroundspeakAPI";
     private static final String LiteFields = "referenceCode,userData,name,difficulty,terrain,placedDate,geocacheType.id,geocacheSize.id,location,postedCoordinates,status,owner.username,ownerAlias";
     private static final String NotLiteFields = "hints,attributes,longDescription,shortDescription,additionalWaypoints,userWaypoints";
+    private static final String StatusFields = "referenceCode,favoritePoints,status,trackableCount";
     public static String LastAPIError = "";
     public static int APIError;
-    public static int CachesLeft = -1;
     public static boolean CacheStatusValid = false;
     public static int CurrentCacheCount = -1;
     public static int MaxCacheCount = -1;
     public static boolean CacheStatusLiteValid = false;
-    private static int CachesLeftLite = -1;
-    private static int CurrentCacheCountLite = -1;
-    private static int MaxCacheCountLite = -1;
     private static boolean mDownloadLimitExceeded = false;
-    private static UserInfos me;
+    public static UserInfos me;
 
     private static Webb netz;
     private static long startTs;
@@ -99,6 +96,7 @@ public class GroundspeakAPI {
                 JSONObject ej;
                 APIError = re.getStatusCode();
                 if (APIError == 429) {
+                    // todo Die Ursache könnte aber auch die Anzahl Lite oder Full calls sein : this is only for nr of calls per minute
                     if (retryCount == 0) {
                         Log.debug(log, "API-Limit exceeded: " + nrOfApiCalls + " Number of Calls within " + ((System.currentTimeMillis() - startTs) / 1000) + " seconds.");
                         // Difference 61000 is one second more than one minute. (60000 = one minute gives still 429 Exception)
@@ -118,6 +116,7 @@ public class GroundspeakAPI {
                         LastAPIError = "******* Aborting: After retry API-Limit is still exceeded.";
                     }
                 } else {
+                    // todo Handle 401, 500, 404 ...
                     try {
                         ej = (JSONObject) re.getErrorBody();
                         if (ej != null) {
@@ -132,101 +131,6 @@ public class GroundspeakAPI {
             }
         }
         return retryCount > 0;
-    }
-
-    /**
-     * // Archived, Available and TrackableCount are updated
-     * // restriction for nr of caches must be handled by caller
-     *
-     * @param caches
-     * @param cancel
-     * @return int as status  on ERROR the String LastAPIError is set
-     */
-    public static int fetchGeocacheStatus(ArrayList<Cache> caches, final ICancel cancel) {
-
-        if (isAccessTokenInvalid()) return ERROR;
-
-        try {
-
-            JSONArray CacheCodes = new JSONArray();
-            for (Cache cache : caches) {
-                CacheCodes.put(cache.getGcCode());
-            }
-
-/*
-            Net.HttpRequest httpPost = new Net.HttpRequest(Net.HttpMethods.POST);
-            httpPost.setUrl(getUrl("GetGeocacheStatus?format=json"));
-            httpPost.setTimeOut(CB_Core_Settings.socket_timeout.getValue());
-            httpPost.setHeader("format", "json");
-            httpPost.setHeader("Accept", "application/json");
-            httpPost.setHeader("Content-type", "application/json");
-            httpPost.setContent(new JSONObject()
-                            .put("AccessToken", GetSettingsAccessToken())
-                            .put("CacheCodes", CacheCodes).toString());
-*/
-            do {
-
-                Response<JSONObject> r = getNetz()
-                        .post(getUrl("GetGeocacheStatus?format=json"))
-                        .body(new JSONObject()
-                                .put("AccessToken", GetSettingsAccessToken())
-                                .put("CacheCodes", CacheCodes)
-                        )
-                        .ensureSuccess()
-                        .asJsonObject();
-
-                JSONObject response = r.getBody();
-                JSONObject status = response.getJSONObject("Status");
-                APIError = status.getInt("StatusCode");
-                if (APIError == 0) {
-                    JSONArray geocacheStatuses = response.getJSONArray("GeocacheStatuses");
-                    for (int ii = 0; ii < geocacheStatuses.length(); ii++) {
-                        JSONObject jCache = (JSONObject) geocacheStatuses.get(ii);
-                        Iterator<Cache> iterator = caches.iterator();
-                        do {
-                            Cache tmp = iterator.next();
-                            if (jCache.getString("CacheCode").equals(tmp.getGcCode())) {
-                                tmp.setArchived(jCache.getBoolean("Archived"));
-                                tmp.setAvailable(jCache.getBoolean("Available"));
-                                tmp.NumTravelbugs = jCache.getInt("TrackableCount");
-                                // weitere Infos in diesem Json record
-                                // CacheName (getString)
-                                // CacheType (getDouble / getLong ?)
-                                // Premium   (getBoolean)
-                                break;
-                            }
-                        } while (iterator.hasNext());
-                    }
-                    LastAPIError = "";
-                    return OK;
-                } else {
-                    // todo ist in API 1 vermutlich: 429	Too Many Requests
-                    if (APIError == 140) {
-                        // API-Limit überschritten -> nach 15 Sekunden wiederholen
-                        Log.debug(log, "******* API-Limit überschritten -> 15 Sekunden warten! *******");
-                        try {
-                            Thread.sleep(15000);
-                        } catch (InterruptedException ignored) {
-                        }
-                        if (System.currentTimeMillis() > startTs + 60000) {
-                            // Aufruf nach 1 min immer noch nicht OK -> raus!
-                            Log.err(log, "GetGeocacheStatus " + "******* Timeout API-Limit überschritten ********");
-                            return (ERROR);
-                        }
-                    } else {
-                        LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
-                        LastAPIError += status.getString("StatusMessage") + "\n";
-                        LastAPIError += status.getString("ExceptionDetails");
-                        Log.err(log, "GetGeocacheStatus " + LastAPIError);
-                        return (ERROR);
-                    }
-                }
-            } while (true);
-        } catch (Exception e) {
-            LastAPIError = e.getLocalizedMessage();
-            Log.err(log, "GetGeocacheStatus", e);
-            return ERROR;
-        }
     }
 
     public static int fetchGeocacheLogsByCache(Cache cache, ArrayList<LogEntry> logList, boolean all, ICancelRunnable cancelRun) {
@@ -312,65 +216,6 @@ public class GroundspeakAPI {
             start += count;
         }
         return (ERROR);
-    }
-
-    public static int fetchCacheLimits() {
-        if (CachesLeft > -1) return OK;
-
-        if (isAccessTokenInvalid()) return ERROR;
-
-        LastAPIError = "";
-        // zum Abfragen der CacheLimits einfach nach einem Cache suchen, der nicht existiert: "GCZZZZZ".
-        // dadurch wird der Zähler nicht erhöht, die Limits aber zurückgegeben.
-        try {
-            JSONObject json = getNetz()
-                    .post(getUrl("SearchForGeocaches?format=json"))
-                    .body(new JSONObject()
-                            .put("AccessToken", GetSettingsAccessToken())
-                            .put("IsLight", false)
-                            .put("StartIndex", 0)
-                            .put("MaxPerPage", 1)
-                            .put("GeocacheLogCount", 0)
-                            .put("TrackableLogCount", 0)
-                            .put("CacheCode", new JSONObject().put("CacheCodes", new JSONArray().put("GCZZZZZ")))
-                    )
-                    .ensureSuccess()
-                    .asJsonObject()
-                    .getBody();
-            int status = checkCacheStatus(json, false);
-            // hier keine Überprüfung des Status,
-            // da dieser z.B. 118 (Überschreitung des Limits) sein kann,
-            // aber der CacheStatus trotzdem drin ist.
-            return status;
-        } catch (Exception e) {
-            LastAPIError = e.getLocalizedMessage();
-            Log.err(log, "GetGeocacheStatus ConnectTimeoutException", e);
-            return ERROR;
-        }
-    }
-
-    static int checkCacheStatus(JSONObject json, boolean isLite) {
-        LastAPIError = "";
-        try {
-            JSONObject cacheLimits = json.getJSONObject("CacheLimits");
-            if (isLite) {
-                CachesLeftLite = cacheLimits.getInt("CachesLeft");
-                CurrentCacheCountLite = cacheLimits.getInt("CurrentCacheCount");
-                MaxCacheCountLite = cacheLimits.getInt("MaxCacheCount");
-                CacheStatusLiteValid = true;
-            } else {
-                CachesLeft = cacheLimits.getInt("CachesLeft");
-                CurrentCacheCount = cacheLimits.getInt("CurrentCacheCount");
-                MaxCacheCount = cacheLimits.getInt("MaxCacheCount");
-                CacheStatusValid = true;
-            }
-            return 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-            LastAPIError = "API Error: " + e.getMessage();
-            return -4;
-        }
     }
 
     public static int GetPocketQueryList(ArrayList<PQ> list) {
@@ -474,8 +319,10 @@ public class GroundspeakAPI {
 
     // End Old API
 
-    // todo add/handle geocacheLimits
-    // /users/UserName?fields=...
+    public static void fetchCacheLimits() {
+        me = fetchUserInfos("me");
+    }
+
     public static UserInfos fetchUserInfos(String UserCode) {
         Log.info(log, "fetchUserInfos for " + UserCode);
         LastAPIError = "";
@@ -512,6 +359,82 @@ public class GroundspeakAPI {
             ui.renainingLiteTime = -1;
         }
         return ui;
+    }
+
+    public static int fetchGeocacheStatus(ArrayList<Cache> caches) {
+        return fetchGeocaches(caches, StatusFields);
+    }
+
+    // fetch geocaches
+    public static int fetchGeocaches(ArrayList<Cache> caches, String fields) {
+
+        try {
+
+            Cache[] arrayOfCaches = new Cache[caches.size()];
+            caches.toArray(arrayOfCaches);
+
+            int skip = 0;
+            int take = 50;
+
+            boolean onlyLiteFields = true;
+            for (String s : fields.split(",")) {
+                if (NotLiteFields.contains(s)) {
+                    onlyLiteFields = false;
+                    break;
+                }
+            }
+            if (onlyLiteFields) {
+                fetchCacheLimits();
+                if (me.renainingLite < me.remaining) {
+                    onlyLiteFields = false;
+                }
+            }
+
+            do {
+                Map<String, Cache> mapOfCaches = new HashMap<>();
+                StringBuffer CacheCodes = new StringBuffer();
+                for (int i = skip; i < Math.min(skip + take, arrayOfCaches.length); i++) {
+                    Cache cache = arrayOfCaches[i];
+                    mapOfCaches.put(cache.getGcCode(), cache);
+                    CacheCodes.append(",").append(cache.getGcCode());
+                }
+                String CacheList = CacheCodes.substring(1);
+                skip = skip + take;
+
+                boolean doRetry;
+                do {
+                    doRetry = false;
+                    try {
+                        Response<JSONArray> r = getNetz()
+                                .get(getUrl(1, String.format(Locale.US, "geocaches?referenceCodes=%s&fields=%s&lite=%b", CacheList, fields, onlyLiteFields)))
+                                .ensureSuccess()
+                                .asJsonArray();
+
+                        retryCount = 0;
+
+                        JSONArray response = r.getBody();
+                        for (int ii = 0; ii < response.length(); ii++) {
+                            JSONObject responseFieldsOfCache = (JSONObject) response.get(ii);
+                            String referenceCode = responseFieldsOfCache.optString("referenceCode");
+                            Cache cache = mapOfCaches.get(referenceCode);
+                            createCache(responseFieldsOfCache, fields, cache);
+                        }
+                    } catch (Exception ex) {
+                        doRetry = retry(ex);
+                        if (!doRetry) {
+                            return ERROR;
+                        }
+                    }
+                }
+                while (doRetry);
+            } while (skip < arrayOfCaches.length);
+
+        } catch (Exception e) {
+            LastAPIError = e.getLocalizedMessage();
+            Log.err(log, "fetchGeocaches", e);
+            return ERROR;
+        }
+        return OK;
     }
 
     // UploadFieldNotes | UploadDrafts | logdrafts | geocachelogs
@@ -590,7 +513,7 @@ public class GroundspeakAPI {
     public static int fetchGeocacheLogsOfFriends(Cache cache, ArrayList<LogEntry> logList, ICancelRunnable cancelRun) {
         if (cache == null) return ERROR;
         if (isAccessTokenInvalid()) return ERROR;
-        Map<String, String> friends = new HashMap<String, String>();
+        Map<String, String> friends = new HashMap<>();
         // todo perhaps entered more friends than allowed by limit (The max amount of usernames allowed is 50)
         try {
             JSONArray userCodes = getNetz()
@@ -1114,10 +1037,11 @@ public class GroundspeakAPI {
         }
     }
 
-    private static Cache createCache(JSONObject API1Cache, String fields) {
+    private static Cache createCache(JSONObject API1Cache, String fields, Cache cache) {
         // see https://api.groundspeak.com/documentation#geocache
         // see https://api.groundspeak.com/documentation#lite-geocache
-        Cache cache = new Cache(true);
+        if (cache == null)
+            cache = new Cache(true);
         cache.setAttributesPositive(new DLong(0, 0));
         cache.setAttributesNegative(new DLong(0, 0));
         try {

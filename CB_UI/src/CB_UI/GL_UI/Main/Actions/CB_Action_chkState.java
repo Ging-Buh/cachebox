@@ -37,7 +37,8 @@ public class CB_Action_chkState extends CB_Action {
     private ProgressDialog pd;
     private boolean cancel = false;
     private final RunnableReadyHandler ChkStatRunnable = new RunnableReadyHandler() {
-        final int BlockSize = 100; // die API lässt nur maximal 100 zu!
+        final int BlockSize = 100; // die Live API lässt nur maximal 100 zu!
+        // API 1.0 has a limit of 50, handled in GroundspeakAPI
 
         @Override
         public void run() {
@@ -59,7 +60,6 @@ public class CB_Action_chkState extends CB_Action {
             // in Blöcke Teilen
 
             int start = 0;
-            int stop = BlockSize;
             ArrayList<Cache> addedReturnList = new ArrayList<Cache>();
 
             result = 0;
@@ -70,7 +70,7 @@ public class CB_Action_chkState extends CB_Action {
             float progress = 0;
 
             do {
-                Log.debug(sKlasse,"Begin block from " + start + " stop " + stop);
+                Log.debug(sKlasse,"Begin block from " + start + " stop " + (start + BlockSize));
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {
@@ -88,7 +88,7 @@ public class CB_Action_chkState extends CB_Action {
                     Iterator<Cache> Iterator2 = chkList.iterator();
                     int index = 0;
                     do {
-                        if (index >= start && index <= stop) {
+                        if (index >= start && index < start + BlockSize) {
                             chkList100.add(Iterator2.next());
                         } else {
                             Iterator2.next();
@@ -96,17 +96,15 @@ public class CB_Action_chkState extends CB_Action {
                         index++;
                     } while (Iterator2.hasNext());
 
-                    Log.debug(sKlasse,"Fetch block from " + start + " stop " + stop);
-                    result = GroundspeakAPI.fetchGeocacheStatus(chkList100, this);
+                    Log.debug(sKlasse,"Fetch block from " + start);
+                    result = GroundspeakAPI.fetchGeocacheStatus(chkList100);
+                    addedReturnList.addAll(chkList100);
                     if (result == -1) {
+                        // the real reason is GroundspeakAPI.APIError
                         GL.that.Toast(ConnectionError.INSTANCE);
-                        // GL.that.Toast(ApiUnavailable.INSTANCE);
                         break;
                     }
-
-                    addedReturnList.addAll(chkList100);
-                    start += BlockSize + 1;
-                    stop += BlockSize + 1;
+                    start += BlockSize;
                 }
 
                 progress += ProgressInkrement;
@@ -114,6 +112,8 @@ public class CB_Action_chkState extends CB_Action {
                 ProgresssChangedEventList.Call("", (int) progress);
 
             } while (chkList100.size() == BlockSize + 1 && !cancelThread);
+
+
 
             if (result == 0 && !cancelThread) {
                 Database.Data.beginTransaction();
@@ -146,7 +146,7 @@ public class CB_Action_chkState extends CB_Action {
         }
 
         @Override
-        public void RunnableReady(boolean canceld) {
+        public void RunnableIsReady(boolean canceld) {
             Log.debug(sKlasse,"chkState ready");
             String sCanceld = canceld ? Translation.Get("isCanceld") + GlobalCore.br : "";
 

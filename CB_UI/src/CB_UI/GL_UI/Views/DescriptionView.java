@@ -205,13 +205,9 @@ public class DescriptionView extends CB_View_Base {
         final Thread getLimitThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                int result = GroundspeakAPI.fetchCacheLimits();
-                if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
-                    GL.that.Toast(ConnectionError.INSTANCE);
-                    return;
-                }
-                if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
-                    GL.that.Toast(ApiUnavailable.INSTANCE);
+                GroundspeakAPI.fetchCacheLimits();
+                if (GroundspeakAPI.APIError > 0) {
+                    GL.that.Toast(GroundspeakAPI.LastAPIError);
                     return;
                 }
                 resetUi();
@@ -219,7 +215,7 @@ public class DescriptionView extends CB_View_Base {
             }
         });
 
-        if (GroundspeakAPI.CachesLeft == -1)
+        if (GroundspeakAPI.me.remaining == -1)
             getLimitThread.start();
 
         float contentWidth = this.getWidth() * 0.95f;
@@ -252,7 +248,7 @@ public class DescriptionView extends CB_View_Base {
 
         downloadButton.setOnClickListener(downloadClicked);
 
-        if (GroundspeakAPI.CachesLeft <= 0)
+        if (GroundspeakAPI.me.remaining <= 0)
             downloadButton.disable();
         layout();
     }
@@ -288,19 +284,19 @@ public class DescriptionView extends CB_View_Base {
         boolean basic = !IsPremiumMember();
         String MemberType = basic ? BASIC : PREMIUM;
         String limit = basic ? BASIC_LIMIT : PREMIUM_LIMIT;
-        String actLimit = Integer.toString(GroundspeakAPI.CachesLeft - 1);
+        String actLimit = Integer.toString(GroundspeakAPI.me.remaining - 1);
 
-        if (GroundspeakAPI.CachesLeft == -1) {
+        if (GroundspeakAPI.me.remaining == -1) {
             actLimit = "?";
         }
 
         sb.append(Translation.Get("LiveDescMessage", MemberType, limit));
         sb.append(Global.br);
         sb.append(Global.br);
-        if (GroundspeakAPI.CachesLeft > 0)
+        if (GroundspeakAPI.me.remaining > 0)
             sb.append(Translation.Get("LiveDescAfter", actLimit));
 
-        if (GroundspeakAPI.CachesLeft == 0) {
+        if (GroundspeakAPI.me.remaining == 0) {
             sb.append(Translation.Get("LiveDescLimit"));
             sb.append(Global.br);
             sb.append(Global.br);

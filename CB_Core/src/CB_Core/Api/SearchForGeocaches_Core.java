@@ -45,7 +45,7 @@ public class SearchForGeocaches_Core {
     private static int getApiStatus(JSONObject json) {
 
         try {
-            Log.info(log, "getApiStatus");
+            Log.debug(log, "getApiStatus");
             JSONObject jsonStatus = json.getJSONObject("Status");
             int status = jsonStatus.getInt("StatusCode");
             String statusMessage = jsonStatus.getString("StatusMessage");
@@ -53,7 +53,7 @@ public class SearchForGeocaches_Core {
 
             String logString = "StatusCode = " + status + "\n" + statusMessage + "\n" + exceptionDetails;
 
-            if (status == 0)
+            if (status == OK)
                 return status;
 
             if (status == 2) {
@@ -83,7 +83,7 @@ public class SearchForGeocaches_Core {
             return status;
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.err(log, "API-Error: " + e.getLocalizedMessage());
         }
 
         return -1;
@@ -99,10 +99,10 @@ public class SearchForGeocaches_Core {
         boolean isLite;
         if (IsPremiumMember()) {
             isLite = false;
-            apiStatus = 2;
+            apiStatus = Cache.IS_FULL;
         } else {
             isLite = true;
-            apiStatus = 1;
+            apiStatus = Cache.IS_LITE;
         }
 
         if (!isLite) {
@@ -139,7 +139,7 @@ public class SearchForGeocaches_Core {
                     Log.err(log, "SearchForGeocaches:JSONException", e);
                 }
                 // ein einzelner Cache wird voll geladen
-                apiStatus = 2;
+                apiStatus = Cache.IS_FULL;
 
             } else if (search instanceof SearchGCName) {
                 Log.info(log, "nach Name");
@@ -634,7 +634,7 @@ public class SearchForGeocaches_Core {
                     }
 
                 }
-                GroundspeakAPI.checkCacheStatus(json, isLite);
+                // GroundspeakAPI.extractCacheLimits(json, isLite);
             } else {
                 lastError = "StatusCode = " + status.getInt("StatusCode") + "\n";
                 lastError += status.getString("StatusMessage") + "\n";
@@ -746,12 +746,13 @@ public class SearchForGeocaches_Core {
 
         Cache newCache = null;
         try {
-            SearchGC search = new SearchGC(aktCache.getGcCode());
 
             CB_List<Cache> apiCaches = new CB_List<Cache>();
             ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
             ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
-            SearchForGeocachesJSON(search, apiCaches, apiLogs, apiImages, aktCache.getGPXFilename_ID(), icancel);
+
+            SearchForGeocachesJSON(new SearchGC(aktCache.getGcCode()), apiCaches, apiLogs, apiImages, aktCache.getGPXFilename_ID(), icancel);
+
             synchronized (Database.Data.Query) {
                 if (apiCaches.size() == 1) {
                     Database.Data.beginTransaction();

@@ -27,7 +27,6 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
-import CB_Utils.Config_Core;
 import CB_Utils.Settings.SettingBool;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -235,7 +234,7 @@ public class GL_MsgBox extends Dialog {
             if (chkRemember.isChecked()) {
                 // User hat Remember aktiviert, was hier abgespeichert wird!
                 rememberSetting.setValue(true);
-                Config_Core.AcceptChanges();
+                // todo Config.AcceptChanges(); check will be saved at end
             }
         }
 

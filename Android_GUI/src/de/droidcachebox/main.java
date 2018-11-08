@@ -734,10 +734,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     public void onProviderDisabled(String provider) {
     }
 
-    /*
-     * Handler
-     */
-
     @Override
     public void onProviderEnabled(String provider) {
     }
@@ -877,15 +873,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         // Intent Result get API key
         if (requestCode == Global.REQUEST_CODE_GET_API_KEY) {
             GL.that.RunIfInitial(new IRunOnGL() {
-
                 @Override
                 public void run() {
                     SettingsActivity.resortList();
                 }
             });
-
             Config.AcceptChanges();
-
         }
 
         if (aktView != null)
