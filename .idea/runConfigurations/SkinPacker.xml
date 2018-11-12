@@ -1,8 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="SkinPacker" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="CB.SkinPacker.launch" />
-    <module name="SkinPacker" />
-    <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-    <method />
-  </configuration>
-</component>

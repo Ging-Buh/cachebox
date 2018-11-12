@@ -31,7 +31,14 @@ public abstract class Global {
         if (Plattform.used == Plattform.Android) {
             return Gdx.files.internal(path);
         } else {
-            return Gdx.files.classpath(path);
+            FileHandle ret=Gdx.files.classpath(path);
+
+            if(ret!=null&!ret.exists()){
+                //try internal
+                ret=Gdx.files.internal(path);
+            }
+
+            return ret;
         }
     }
 

@@ -302,7 +302,7 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
         that.acceptChanges();
     }
 
-    private void acceptChanges() {
+    protected void acceptChanges() {
         if (settings.WriteToDB()) {
 
             //TODO change to Dialog for restart now

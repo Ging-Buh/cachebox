@@ -45,6 +45,7 @@ import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileList;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
+
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -253,7 +254,8 @@ public class splash extends MainViewBase {
                 Config.AcceptChanges();
             }
 
-            FileType fileType = (Plattform.used == Plattform.Android) ? FileType.Internal : FileType.Classpath;
+            FileType fileType = FileType.Internal;
+
 
             new Translation(Config.mWorkPath, fileType);
             try {

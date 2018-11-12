@@ -1,0 +1,63 @@
+apply plugin: "java"
+
+sourceCompatibility = 1.8
+sourceSets.main.java.srcDirs = [ "src/" ]
+
+
+dependencies {
+    implementation project(":CB_UI")
+    implementation project(":CB_UI_Base")
+    implementation project(":CB_Locator_Base")
+    implementation project(":CB_Locator_Desktop")
+    implementation project(":CB_mapsforge")
+    implementation project(":CB_Utils")
+    implementation project(":CB_Core")
+    implementation project(":CB_Rpc")
+    implementation project(":GPS_Simulator")
+
+    //libgdx
+    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+
+    // https://mvnrepository.com/artifact/com.kitfox.svg/svg-salamander
+    implementation group: 'com.kitfox.svg', name: 'svg-salamander', version: '1.0'
+
+    // https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc
+    implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.25.2'
+
+
+
+}
+
+project.ext.mainClassName = "de.DCB"
+project.ext.assetsDir = new File("WorkingDir")
+
+task run(dependsOn: classes, type: JavaExec) {
+    main = project.mainClassName
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    workingDir = project.assetsDir
+    ignoreExitValue = true
+}
+
+
+task launcherJar(type: Jar, dependsOn: classes) {
+    classifier = 'launcher'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    exclude 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.SF'
+    manifest {
+        attributes('Main-Class': 'de.DCB')
+    }
+    with jar
+}
+
+task copyAssets(type: Copy) {
+    from("../Android_GUI/assets")
+    into("../WorkingDir")
+}
+
+
+tasks.withType(JavaCompile) {
+    compileTask -> compileTask.dependsOn copyAssets
+}

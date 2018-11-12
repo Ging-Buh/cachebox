@@ -1,0 +1,25 @@
+apply plugin: 'java-library'
+
+sourceCompatibility = 1.8
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+sourceSets.main.java.srcDirs = [ "src/" ]
+
+dependencies {
+    implementation project(":CB_UI_Base")
+    implementation project(":CB_mapsforge")
+    implementation project(":CB_Utils")
+
+    //sjxp-2.2.jar
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    //libgdx
+    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+
+    // https://mvnrepository.com/artifact/net.sf.kxml/kxml2
+    implementation group: 'net.sf.kxml', name: 'kxml2', version: '2.3.0'
+}
+
+
+sourceCompatibility = "8"
+targetCompatibility = "8"

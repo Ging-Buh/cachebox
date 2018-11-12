@@ -32,7 +32,7 @@ import android.webkit.WebViewClient;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.main;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Iterator;

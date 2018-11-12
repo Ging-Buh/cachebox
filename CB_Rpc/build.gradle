@@ -1,0 +1,20 @@
+apply plugin: 'java-library'
+
+sourceCompatibility = 1.8
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+sourceSets.main.java.srcDirs = [ "src/" ]
+
+dependencies {
+    implementation project(":CB_Utils")
+
+    //servlet-api-6.0.16.jar
+    //mina-core-2.0.4.jar
+    //commons-httpclient-3.1.jar
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+}
+
+
+sourceCompatibility = "8"
+targetCompatibility = "8"
