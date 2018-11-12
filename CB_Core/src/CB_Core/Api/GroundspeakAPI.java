@@ -18,17 +18,18 @@ package CB_Core.Api;
 import CB_Core.*;
 import CB_Core.Types.*;
 import CB_Locator.Coordinate;
-import CB_Utils.Interfaces.ICancel;
 import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Log.Log;
 import CB_Utils.http.Response;
 import CB_Utils.http.Webb;
 import CB_Utils.http.WebbException;
+import CB_Utils.http.WebbUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URI;
 import java.text.SimpleDateFormat;
@@ -46,13 +47,10 @@ public class GroundspeakAPI {
     private static final String StatusFields = "referenceCode,favoritePoints,status,trackableCount";
     public static String LastAPIError = "";
     public static int APIError;
-    public static boolean CacheStatusValid = false;
     public static int CurrentCacheCount = -1;
     public static int MaxCacheCount = -1;
-    public static boolean CacheStatusLiteValid = false;
-    private static boolean mDownloadLimitExceeded = false;
     public static UserInfos me;
-
+    private static boolean mDownloadLimitExceeded = false;
     private static Webb netz;
     private static long startTs;
     private static int nrOfApiCalls;
@@ -83,6 +81,7 @@ public class GroundspeakAPI {
 
     public static void setAuthorization() {
         getNetz().setDefaultHeader(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken());
+        me = null;
     }
 
     private static boolean retry(Exception ex) {
@@ -132,6 +131,8 @@ public class GroundspeakAPI {
         }
         return retryCount > 0;
     }
+
+    // Live API
 
     public static int fetchGeocacheLogsByCache(Cache cache, ArrayList<LogEntry> logList, boolean all, ICancelRunnable cancelRun) {
         // todo test all=true (but is not used (by CB_Action_LoadLogs, loads all))
@@ -218,106 +219,7 @@ public class GroundspeakAPI {
         return (ERROR);
     }
 
-    public static int GetPocketQueryList(ArrayList<PQ> list) {
-        // if (list == null) new NullArgumentException("PQ List"); // wer macht son scheiß
-        Log.info(log, "GetPocketQueryList");
-        LastAPIError = "";
-        if (!IsPremiumMember()) return OK; // leere Liste für Basic members
-        try {
-            JSONObject json = getNetz()
-                    .get(getUrl("GetPocketQueryList?AccessToken=" + UrlEncode(GetSettingsAccessToken()) + "&format=json"))
-                    .ensureSuccess()
-                    .asJsonObject()
-                    .getBody();
-            JSONObject status = json.getJSONObject("Status");
-            if (status.getInt("StatusCode") == 0) {
-                LastAPIError = "";
-                JSONArray jPQs = json.getJSONArray("PocketQueryList");
-
-                for (int ii = 0; ii < jPQs.length(); ii++) {
-
-                    JSONObject jPQ = (JSONObject) jPQs.get(ii);
-
-                    if (jPQ.getBoolean("IsDownloadAvailable")) {
-                        PQ pq = new PQ();
-                        pq.Name = jPQ.getString("Name");
-                        pq.GUID = jPQ.getString("GUID");
-                        pq.DateLastGenerated = new Date();
-                        try {
-                            String dateCreated = jPQ.getString("DateLastGenerated");
-                            int date1 = dateCreated.indexOf("/Date(");
-                            int date2 = dateCreated.indexOf("-");
-                            String date = (String) dateCreated.subSequence(date1 + 6, date2);
-                            pq.DateLastGenerated = new Date(Long.valueOf(date));
-                        } catch (Exception exc) {
-                            Log.err(log, "API", "SearchForGeocaches_ParseDate", exc);
-                        }
-                        pq.PQCount = jPQ.getInt("PQCount");
-                        int Byte = jPQ.getInt("FileSizeInBytes");
-                        pq.SizeMB = Byte / 1048576.0;
-                        list.add(pq);
-                    }
-                }
-                return OK;
-            } else {
-                LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
-                LastAPIError += status.getString("StatusMessage") + "\n";
-                LastAPIError += status.getString("ExceptionDetails");
-                Log.err(log, "GetPocketQueryList " + LastAPIError);
-                return (ERROR);
-            }
-        } catch (Exception e) {
-            LastAPIError = e.getLocalizedMessage();
-            Log.err(log, "GetPocketQueryList" + LastAPIError);
-            return ERROR;
-        }
-    }
-
-    public static int DownloadSinglePocketQuery(PQ pocketQuery, String PqFolder) {
-        // Replacement new API: "lists/" + pocketQuery.GUID + "/geocaches"
-
-        try {
-            JSONObject json = getNetz()
-                    .get(getUrl("GetPocketQueryZippedFile?format=json&AccessToken=" + UrlEncode(GetSettingsAccessToken()) + "&PocketQueryGuid=" + pocketQuery.GUID))
-                    .ensureSuccess()
-                    .asJsonObject()
-                    .getBody();
-            JSONObject status = json.getJSONObject("Status");
-            if (status.optInt("StatusCode", 0) == 0) {
-                LastAPIError = "";
-                String dateString = new SimpleDateFormat("yyyyMMddHHmmss").format(pocketQuery.DateLastGenerated);
-                String zipData = json.optString("ZippedFile", "");
-
-                String local = PqFolder + "/" + pocketQuery.Name + "_" + dateString + ".zip";
-                FileOutputStream fs;
-                fs = new FileOutputStream(local);
-                BufferedOutputStream bfs = new BufferedOutputStream(fs);
-                try {
-                    CB_Utils.Converter.Base64.decodeToStream(zipData, 0, zipData.length(), bfs);
-                } catch (Exception ex) {
-                    LastAPIError = ex.getLocalizedMessage();
-                    Log.err(log, "DownloadSinglePocketQuery CB_Utils.Converter.Base64.decodeToStream " + LastAPIError);
-                }
-                bfs.flush();
-                bfs.close();
-                fs.close();
-                if (LastAPIError.length() > 0) return ERROR;
-                else return OK;
-            } else {
-                LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
-                LastAPIError += status.getString("StatusMessage") + "\n";
-                LastAPIError += status.getString("ExceptionDetails");
-                Log.err(log, "DownloadSinglePocketQuery " + LastAPIError);
-                return ERROR;
-            }
-
-        } catch (Exception e) {
-            Log.err(log, "DownloadSinglePocketQuery", e);
-            return ERROR;
-        }
-    }
-
-    // End Old API
+    // API 1.0 see https://api.groundspeak.com/documentation and https://api.groundspeak.com/api-docs/index
 
     public static void fetchCacheLimits() {
         me = fetchUserInfos("me");
@@ -361,11 +263,108 @@ public class GroundspeakAPI {
         return ui;
     }
 
+    public static int fetchPocketQueryList(ArrayList<PQ> pqList) {
+
+        if (pqList == null) {
+            pqList = new ArrayList<>();
+        }
+
+        try {
+
+            int skip = 0;
+            int take = 50;
+            String fields = "referenceCode,name,lastUpdatedDateUtc,count,url";
+
+            do {
+                boolean doRetry;
+                do {
+                    doRetry = false;
+                    try {
+                        Response<JSONArray> r = getNetz()
+                                .get(getUrl(1, String.format(Locale.US, "users/me/lists?types=pq&fields=%s&skip=%d&take=%d", fields, skip, take)))
+                                .ensureSuccess()
+                                .asJsonArray();
+
+                        retryCount = 0;
+                        skip = skip + take;
+
+                        JSONArray response = r.getBody();
+
+                        for (int ii = 0; ii < response.length(); ii++) {
+                            JSONObject jPQ = (JSONObject) response.get(ii);
+                            PQ pq = new PQ();
+                            pq.GUID = jPQ.optString("referenceCode", "");
+                            if (pq.GUID.length() > 0) {
+                                pq.Name = jPQ.optString("name", "");
+                                try {
+                                    String dateCreated = jPQ.optString("lastUpdatedDateUtc", "");
+                                    pq.DateLastGenerated = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(dateCreated);
+                                } catch (Exception exc) {
+                                    Log.err(log, "fetchPocketQueryList", "DateLastGenerated", exc);
+                                    pq.DateLastGenerated = new Date();
+                                }
+                                pq.PQCount = jPQ.getInt("count");
+                                pq.SizeMB = -1;
+                                pq.downloadAvailable = true;
+                                pqList.add(pq);
+                            }
+                        }
+
+                        if (response.length() < take)
+                            return OK;
+                    } catch (Exception ex) {
+                        doRetry = retry(ex);
+                        if (!doRetry) {
+                            return ERROR;
+                        }
+                    }
+                }
+                while (doRetry);
+            } while (true);
+
+        } catch (Exception e) {
+            LastAPIError = e.getLocalizedMessage();
+            Log.err(log, "fetchPocketQueryList", e);
+            return ERROR;
+        }
+    }
+
+    public static int fetchPocketQuery(PQ pocketQuery, String PqFolder) {
+        // lists/{referenceCode}/geocaches/zipped
+        int ret = OK;
+        InputStream inStream = null;
+        BufferedOutputStream outStream = null;
+        try {
+            inStream = getNetz()
+                    .get(getUrl(1, "lists/" + pocketQuery.GUID + "/geocaches/zipped"))
+                    .ensureSuccess()
+                    .asStream()
+                    .getBody();
+            String dateString = new SimpleDateFormat("yyyyMMddHHmmss").format(pocketQuery.DateLastGenerated);
+            String local = PqFolder + "/" + pocketQuery.Name + "_" + dateString + ".zip";
+            FileOutputStream localFile = new FileOutputStream(local);
+            outStream = new BufferedOutputStream(localFile);
+            WebbUtils.copyStream(inStream, outStream);
+        } catch (Exception e) {
+            Log.err(log, "fetchPocketQuery", e);
+            ret = ERROR;
+        } finally {
+            try {
+                if (outStream != null)
+                    outStream.close();
+                if (inStream != null)
+                    inStream.close();
+            } catch (Exception ignored) {
+            }
+        }
+        return ret;
+    }
+
     public static int fetchGeocacheStatus(ArrayList<Cache> caches) {
         return fetchGeocaches(caches, StatusFields);
     }
 
-    // fetch geocaches
+    // fetch geocaches consumes a lite or full cache
     public static int fetchGeocaches(ArrayList<Cache> caches, String fields) {
 
         try {
@@ -597,7 +596,7 @@ public class GroundspeakAPI {
         return OK;
     }
 
-
+    // todo change handling to reduce nr of calls: fetch for a list of caches : see up downloadImageListForGeocaches
     public static int downloadImageListForGeocache(String cacheCode, HashMap<String, URI> list) {
         Log.debug(log, "downloadImageListForGeocache for '" + "cacheCode" + "'");
         LastAPIError = "";
@@ -740,7 +739,6 @@ public class GroundspeakAPI {
         return uploadTrackableLog(TB.getTBCode(), TB.getTrackingCode(), cacheCode, LogTypeId, dateLogged, note);
     }
 
-    // "trackablelogs" CREATE TRACKABLE LOG
     public static boolean uploadTrackableLog(String TBCode, String TrackingNummer, String cacheCode, int LogTypeId, Date dateLogged, String note) {
         Log.info(log, "uploadTrackableLog");
         LastAPIError = "";
@@ -803,7 +801,7 @@ public class GroundspeakAPI {
         Log.info(log, "uploadCacheNote for " + cacheCode);
         LastAPIError = "";
         if (cacheCode == null || cacheCode.length() == 0) return ERROR;
-        if (!IsPremiumMember()) return ERROR;
+        if (!isPremiumMember()) return ERROR;
         try {
             getNetz()
                     .put(getUrl(1, "geocaches/" + cacheCode + "/notes"))
@@ -841,70 +839,11 @@ public class GroundspeakAPI {
         return me;
     }
 
-    public static int GetPocketQueryListAPI1(ArrayList<PQ> list) {
-        // if (list == null) new NullArgumentException("PQ List"); // wer macht son scheiß
-        Log.info(log, "GetPocketQueryList");
-        LastAPIError = "";
-        if (!IsPremiumMember()) return OK; // leere Liste für Basic members
-        int skip = 0;
-        int take = 50;
-        /*
-        referenceCode	string	uniquely identifies the list	No	No
-        createdDateUtc	datetime	when the list was created in UTC	No	No
-        lastUpdatedDateUtc	datetime	when the list was last updated in UTC. for pocket queries, this represents the last time the query was generated	No	No
-        name	string	display name of the list	Yes	Yes
-        count	integer	how many geocaches are in the list	No	No
-        findCount	integer	how many of the geocaches in list are found	No	No
-        ownerCode	string	identifier of the user who owns the list	No	No
-        description	string	text about the list	No	Yes
-        typeId	integer	type of the list (see List Types for more info)	Yes	No
-        isShared	bool	if the list is accessible through a direct link	Yes	Yes
-        isPublic	bool	if the list is accessible to everyone without a direct link	Yes	Yes
-        */
-        String fields = "name,referenceCode,lastUpdatedDateUtc";
-        try {
-            JSONArray json;
-            do {
-                json = getNetz()
-                        .get(getUrl(1, "users/me/lists?types=pq&skip=" + skip + "&take=" + take + "&fields=" + fields))
-                        .ensureSuccess()
-                        .asJsonArray()
-                        .getBody();
-                skip = skip + take;
-                for (int ii = 0; ii < json.length(); ii++) {
-                    JSONObject jPQ = (JSONObject) json.get(ii);
-                    PQ pq = new PQ();
-                    pq.Name = jPQ.optString("Name", "");
-                    pq.GUID = jPQ.optString("referenceCode", "");
-                    try {
-                        String dateCreated = jPQ.optString("lastUpdatedDateUtc", "");
-                        pq.DateLastGenerated = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(dateCreated);
-                    } catch (Exception exc) {
-                        Log.err(log, "GetPocketQueryList", "DateLastGenerated", exc);
-                        pq.DateLastGenerated = new Date();
-                    }
-                    pq.PQCount = jPQ.getInt("count");
-                    pq.SizeMB = -1;
-                    pq.downloadAvailable = true;
-                    list.add(pq);
-                }
-            }
-            while (json.length() == take);
-
-            Log.info(log, "GetPocketQueryList done \n" + json.toString());
-            return OK;
-        } catch (Exception ex) {
-            LastAPIError = ex.getLocalizedMessage();
-            Log.err(log, "GetPocketQueryList", ex);
-            return ERROR;
-        }
-    }
-
-    // "friends?fields=referenceCode" only for test API 1.0
+    // only for test API 1.0
     public static int getFriends() {
         Log.info(log, "getFriends");
         LastAPIError = "";
-        if (!IsPremiumMember()) return ERROR;
+        if (!isPremiumMember()) return ERROR;
         try {
             JSONArray response = getNetz()
                     .get(getUrl(1, "friends?fields=referenceCode"))
@@ -924,7 +863,7 @@ public class GroundspeakAPI {
         return (fetchMyUserInfos().memberShipType == MemberShipTypes.Unknown);
     }
 
-    public static boolean IsPremiumMember() {
+    public static boolean isPremiumMember() {
         return fetchMyUserInfos().memberShipType == MemberShipTypes.Premium;
     }
 
@@ -998,7 +937,6 @@ public class GroundspeakAPI {
     }
 
     private static Trackable createTrackable(JSONObject API1Trackable) {
-        // see https://api.groundspeak.com/documentation#trackable
         try {
             Trackable tb = new Trackable();
             Log.debug(log, API1Trackable.toString());
@@ -1191,9 +1129,6 @@ public class GroundspeakAPI {
     private static void addWaypoints(Cache cache, JSONArray wpts) {
         if (wpts != null) {
             for (int j = 0; j < wpts.length(); j++) {
-                /*
-                name (string, optional), coordinates (Coordinates), description (string), typeId (integer), typeName (string), prefix (string)
-                 */
                 JSONObject wpt = wpts.optJSONObject(j);
                 Waypoint waypoint = new Waypoint(true);
                 waypoint.CacheId = cache.Id;
@@ -1203,7 +1138,6 @@ public class GroundspeakAPI {
                 } else {
                     waypoint.Pos = new Coordinate();
                 }
-
                 waypoint.setTitle(wpt.optString("name", ""));
                 waypoint.setDescription(wpt.optString("description", ""));
                 waypoint.Type = CacheTypeFromID(wpt.optInt("typeId", 0));
@@ -1216,11 +1150,9 @@ public class GroundspeakAPI {
     private static void addUserWaypoints(Cache cache, JSONArray wpts) {
         if (wpts != null) {
             for (int j = 0; j < wpts.length(); j++) {
-                // referenceCode (string), description (string), isCorrectedCoordinates (boolean), coordinates (Coordinates), geocacheCode (string)
                 JSONObject wpt = wpts.optJSONObject(j);
                 boolean CoordinateOverride = wpt.optString("description", "").equals("Coordinate Override");
                 boolean isCorrectedCoordinates = wpt.optBoolean("isCorrectedCoordinates", false);
-
                 if (CoordinateOverride || isCorrectedCoordinates) {
                     Waypoint waypoint = new Waypoint(true);
                     waypoint.CacheId = cache.Id;
@@ -1230,7 +1162,6 @@ public class GroundspeakAPI {
                     } else {
                         waypoint.Pos = new Coordinate();
                     }
-
                     waypoint.setTitle("Corrected Coordinates (API)");
                     waypoint.setDescription(wpt.optString("description", ""));
                     waypoint.Type = CacheTypes.Final;
@@ -1242,8 +1173,6 @@ public class GroundspeakAPI {
     }
 
     private static CacheTypes CacheTypeFromID(int id) {
-        // see https://api.groundspeak.com/documentation#geocache-types
-        // see https://api.groundspeak.com/documentation#additional-waypoint-types
         switch (id) {
             case 2:
                 return CacheTypes.Traditional;
@@ -1293,7 +1222,6 @@ public class GroundspeakAPI {
     }
 
     private static CacheSizes CacheSizeFromID(int id) {
-        // https://api.groundspeak.com/documentation#geocache-sizes
         switch (id) {
             case 1:
                 return CacheSizes.other; // not chosen
@@ -1338,20 +1266,6 @@ public class GroundspeakAPI {
     }
 
     public static class UserInfos {
-        /*
-        the fields:
-        referenceCode	string	uniquely identifies the user
-        findCount	integer	how many geocache finds the user has
-        hideCount	integer	how many geocache hides the user has
-        favoritePoints	integer	how many favorite points the user has avaiable
-        username	string	the display username
-        membershipLevelId	integer	type of the membership (see Membership Types for more info)
-        avatarUrl	string	link to image of the user's profile avatar
-        bannerUrl	string	link to image of the user's banner image
-        profileText	string	text from Profile Information section on user profile page
-        homeCoordinates	Coordinates	latitude and longitude of the user's home location
-        geocacheLimits	GeocacheLimit	how many geocaches/lite geocaches the user has remaining and time to live until limit is refreshed
-        */
         public String username;
         public MemberShipTypes memberShipType;
         public int findCount;
@@ -1361,108 +1275,5 @@ public class GroundspeakAPI {
         public int remainingTime;
         public int renainingLiteTime;
     }
-/*
-additionalWaypoints (Array[AdditionalWaypoint], optional),
-trackables (Array[Trackable], optional),
-geocacheLogs (Array[GeocacheLog], optional),
-images (Array[Image], optional),
-userWaypoints (Array[UserWaypoint], optional)
-
-User {
-membershipLevelId (integer, optional),
-findCount (integer, optional),
-hideCount (integer, optional),
-favoritePoints (integer, optional),
-homeCoordinates (Coordinates, optional),
-geocacheLimits (GeocacheLimit, optional),
-profileText (string, optional),
-bannerUrl (string, optional),
-url (string, optional),
-referenceCode (string, optional),
-username (string, optional),
-avatarUrl (string, optional)
-}
-Attribute {
-id (integer, optional),
-name (string, optional),
-isOn (boolean, optional)
-}
-AdditionalWaypoint {
-name (string, optional),
-coordinates (Coordinates, optional),
-description (string, optional),
-typeId (integer, optional),
-typeName (string, optional),
-prefix (string, optional)
-}
-Trackable {
-referenceCode (string, optional),
-iconUrl (string, optional),
-name (string, optional),
-goal (string, optional),
-description (string, optional),
-releasedDate (string, optional),
-originCountry (string, optional),
-allowedToBeCollected (boolean, optional),
-ownerCode (string, optional),
-holderCode (string, optional),
-inHolderCollection (boolean, optional),
-currentGeocacheCode (string, optional),
-isMissing (boolean, optional),
-type (string, optional),
-trackableType (TrackableType, optional),
-imageCount (integer, optional),
-trackingNumber (string, optional),
-url (string, optional)
-}
-GeocacheLog {
-referenceCode (string, optional),
-ownerCode (string, optional),
-owner (User, optional),
-imageCount (integer, optional),
-isEncoded (boolean, optional),
-isArchived (boolean, optional),
-images (Array[Image], optional),
-url (string, optional),
-loggedDate (string),
-text (string),
-type (string, optional) = ['Found It', 'DNF it', 'Write note', 'Archive', 'Needs archiving', 'Will attend', 'Attended', 'Webcam photo taken', 'Unarchive', 'Temporarily Disable Listing', 'Enable Listing', 'Publish Listing', 'Needs Maintenance', 'Owner Maintenance', 'Update Coordinates', 'Post Reviewer Note', 'Event Announcement'],
-geocacheLogType (GeocacheLogType, optional),
-updatedCoordinates (Coordinates, optional),
-geocacheCode (string),
-usedFavoritePoint (boolean, optional)
-}
-Image {
-url (string, optional),
-referenceCode (string, optional),
-createdDate (string, optional),
-description (string): Description of the image ,
-guid (string, optional)
-}
-UserWaypoint {
-referenceCode (string, optional),
-description (string, optional),
-isCorrectedCoordinates (boolean),
-coordinates (Coordinates),
-geocacheCode (string)
-}
-GeocacheLimit {
-liteCallsRemaining (integer, optional),
-liteCallsSecondsToLive (integer, optional),
-fullCallsRemaining (integer, optional),
-fullCallsSecondsToLive (integer, optional)
-}
-TrackableType {
-id (integer, optional),
-name (string, optional),
-imageUrl (string, optional)
-}
-GeocacheLogType {
-id (integer, optional),
-name (string, optional),
-imageUrl (string, optional)
-}
-
- */
 
 }

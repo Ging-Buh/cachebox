@@ -228,7 +228,6 @@ public class MenuID {
     public static final int MI_RpcGetExportList = 187;
 
     public static final int AID_SHOW_IMPORT_MENU = 188;
-    public static final int MI_IMPORT_GS = 189;
     public static final int MI_IMPORT_CBS = 190;
     public static final int MI_IMPORT_GPX = 191;
     public static final int MI_IMPORT_GCV = 192;

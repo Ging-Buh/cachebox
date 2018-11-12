@@ -1061,10 +1061,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         GL.that.RestartRender();
     }
 
-    /*
-     * Initial Methods
-     */
-
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);

@@ -25,7 +25,7 @@ public class Download {
         do {
             redirected = false;
             redirCount++;
-            Response<InputStream> response = null;
+            Response<InputStream> response;
             try {
                 response = Webb.create()
                         .get(remote)
@@ -59,8 +59,7 @@ public class Download {
                 try {
                     inStream.close();
                     outStream.close();
-                } catch (Exception e) {
-                    // egal
+                } catch (Exception ignored) {
                 }
             }
         }

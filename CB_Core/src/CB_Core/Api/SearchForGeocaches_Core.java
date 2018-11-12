@@ -97,7 +97,7 @@ public class SearchForGeocaches_Core {
 
         byte apiStatus;
         boolean isLite;
-        if (IsPremiumMember()) {
+        if (isPremiumMember()) {
             isLite = false;
             apiStatus = Cache.IS_FULL;
         } else {
@@ -109,6 +109,7 @@ public class SearchForGeocaches_Core {
             // Check if search a lite request
             isLite = search.isLite;
         }
+        // for test isLite=search.isLite=true;
 
         JSONObject request = new JSONObject();
 
@@ -635,6 +636,22 @@ public class SearchForGeocaches_Core {
 
                 }
                 // GroundspeakAPI.extractCacheLimits(json, isLite);
+                JSONObject cacheLimits = json.getJSONObject("CacheLimits");
+                if (cacheLimits != null) {
+                    // not lite {"CurrentCacheCount":8,"MaxCacheCount":6000,"CachesLeft":5992}
+                    /*
+                    JSONObject result = Webb.create()
+                            .get(getUrl("GetAPILimits?format=json&AccessToken=" + GetSettingsAccessToken()))
+                            .connectTimeout(CB_Core_Settings.connection_timeout.getValue())
+                            .readTimeout(CB_Core_Settings.socket_timeout.getValue())
+                            .ensureSuccess()
+                            .asJsonObject()
+                            .getBody();
+                    if (result != null) {
+                        // 6000 - 10000 innerhalb 1440 Minuten
+                    }
+                    */
+                }
             } else {
                 lastError = "StatusCode = " + status.getInt("StatusCode") + "\n";
                 lastError += status.getString("StatusMessage") + "\n";

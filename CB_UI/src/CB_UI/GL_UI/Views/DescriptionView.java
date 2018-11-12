@@ -18,7 +18,6 @@ package CB_UI.GL_UI.Views;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Types.Cache;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Events.PlatformConnector;
@@ -27,7 +26,6 @@ import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.HAlignment;
-import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Global;
 import CB_UI_Base.Math.CB_RectF;
@@ -40,12 +38,11 @@ import CB_UI_Base.graphics.Geometry.Quadrangle;
 import CB_UI_Base.graphics.PolygonDrawable;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import org.slf4j.LoggerFactory;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static CB_Core.Api.GroundspeakAPI.IsPremiumMember;
+import static CB_Core.Api.GroundspeakAPI.isPremiumMember;
 
 public class DescriptionView extends CB_View_Base {
     final static String STRING_POWERD_BY = "Powerd by Geocaching Live";
@@ -281,7 +278,7 @@ public class DescriptionView extends CB_View_Base {
 
     private String getMessage() {
         StringBuilder sb = new StringBuilder();
-        boolean basic = !IsPremiumMember();
+        boolean basic = !isPremiumMember();
         String MemberType = basic ? BASIC : PREMIUM;
         String limit = basic ? BASIC_LIMIT : PREMIUM_LIMIT;
         String actLimit = Integer.toString(GroundspeakAPI.me.remaining - 1);

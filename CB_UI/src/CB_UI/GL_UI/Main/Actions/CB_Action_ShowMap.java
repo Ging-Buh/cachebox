@@ -183,13 +183,13 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
             mi.setEnabled(false);
         }
         icm.addItem(MenuID.MI_MAPVIEW_OVERLAY_VIEW, "overlays");
+        icm.addItem(MenuID.MI_MAPVIEW_VIEW, "view");
         icm.addCheckableItem(MenuID.MI_ALIGN_TO_COMPSS, "AlignToCompass", MapView.that.GetAlignToCompass());
         icm.addItem(MenuID.MI_CENTER_WP, "CenterWP");
         // icm.addItem(MenuID.MI_SETTINGS, "settings", Sprites.getSprite(IconName.settings.name()));
         // icm.addItem(MenuID.MI_SEARCH, "search", SpriteCache.Icons.get(27));
-        icm.addItem(MenuID.MI_MAPVIEW_VIEW, "view");
-        //icm.addItem(MenuID.MI_TREC_REC, "RecTrack");
-        icm.addItem(MenuID.MI_MAP_DOWNOAD, "MapDownload");
+        icm.addItem(MenuID.MI_TREC_REC, "RecTrack");
+        //icm.addItem(MenuID.MI_MAP_DOWNOAD, "MapDownload");
 
         icm.addOnClickListener(onItemClickListener);
         return icm;

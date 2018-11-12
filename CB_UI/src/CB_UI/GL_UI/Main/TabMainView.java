@@ -125,7 +125,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
     public static CB_Action actionShowHint;
     public static CB_Action action_DayNight;
     public static CB_Action action_Torch;
-    public static CB_Action actionRecTrack;
+    public static CB_Action_RecTrack actionRecTrack;
     public static CB_Action actionDayNight;
     public static CB_Action actionHelp;
 
@@ -513,8 +513,9 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
 
         // Actions den Buttons zuweisen
         mCacheListButtonOnLeftTab.addAction(new CB_ActionButton(actionShowCacheList, true, GestureDirection.Up));
+        mCacheListButtonOnLeftTab.addAction(new CB_ActionButton(actionShowParking, false));
         mCacheListButtonOnLeftTab.addAction(new CB_ActionButton(actionShowTrackableListView, false, GestureDirection.Right));
-        mCacheListButtonOnLeftTab.addAction(new CB_ActionButton(actionShowTrackListView, false, GestureDirection.Down));
+        //mCacheListButtonOnLeftTab.addAction(new CB_ActionButton(actionShowTrackListView, false, GestureDirection.Down));
 
         mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(actionShowDescriptionView, true, GestureDirection.Up));
         mDescriptionButtonOnLeftTab.addAction(new CB_ActionButton(actionShowWaypointView, false, GestureDirection.Right));
@@ -528,20 +529,20 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionShowMap, true, GestureDirection.Up));
         mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionShowCompassView, false, GestureDirection.Right));
         mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionNavigateTo1, false, GestureDirection.Down));
+        mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionShowTrackListView, false, GestureDirection.Down));
         // mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionGenerateRoute, false, GestureDirection.Left));
         if (GlobalCore.isTestVersion())
             mMapButtonOnLeftTab.addAction(new CB_ActionButton(actionTestView, false));
 
-        // mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionQuickFieldNote, false, GestureDirection.Up));
         mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionShowFieldNotesView, Config.ShowFieldnotesAsDefaultView.getValue()));
         mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionShowTrackableListView, false));
-        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionRecTrack, false));
-        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionRecVoice, false));
-        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionRecPicture, false, GestureDirection.Down));
-        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionRecVideo, false));
-        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionShowParking, false));
         mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionShowSolverView, false, GestureDirection.Left));
         mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionShowSolverView2, false, GestureDirection.Right));
+        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionRecPicture, false, GestureDirection.Down));
+        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionRecVoice, false));
+        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionRecVideo, false));
+        mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionShowParking, false));
+        // mToolsButtonOnLeftTab.addAction(new CB_ActionButton(actionRecTrack, false));
 
         mAboutButtonOnLeftTab.addAction(new CB_ActionButton(actionShowAboutView, true, GestureDirection.Up));
         mAboutButtonOnLeftTab.addAction(new CB_ActionButton(actionShowCreditsView, false));

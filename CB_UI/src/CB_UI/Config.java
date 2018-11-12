@@ -211,7 +211,6 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
 
         validateSetting("MultiDBAsk", "true");
         validateSetting("MultiDBAutoStartTime", "0");
-        validateSetting("FieldnotesUploadAll", "false");
 
         validateSetting("SpoilersDescriptionTags", "");
         validateSetting("AutoResort", "false");

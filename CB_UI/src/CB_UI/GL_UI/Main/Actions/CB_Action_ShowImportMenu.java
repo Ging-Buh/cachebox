@@ -5,10 +5,7 @@ import CB_Core.Export.GpxSerializer;
 import CB_Core.Export.GpxSerializer.ProgressListener;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GL_UI.Activitys.Import;
-import CB_UI.GL_UI.Activitys.Import_CBServer;
-import CB_UI.GL_UI.Activitys.SearchOverNameOwnerGcCode;
-import CB_UI.GL_UI.Activitys.SearchOverPosition;
+import CB_UI.GL_UI.Activitys.*;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
@@ -93,55 +90,64 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
 
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                if (((MenuItem) v).getMenuItemId() == MenuID.MI_IMPORT_GS) {
-                    showImportMenu_GS();
-                } else if (((MenuItem) v).getMenuItemId() == MenuID.MI_IMPORT_CBS) {
-                    // Menü noch nicht zeigen da darin nur 1 Befehl ist
-                    // showImportMenu_CBS();
-                    import_CBS();
-                } else if (((MenuItem) v).getMenuItemId() == MenuID.MI_IMPORT_GPX) {
-                    // Menü nicht zeigen da darin nur 1 Befehl ist
-                    // showImportMenu_GPX();
-                    import_GPX();
-                } else if (((MenuItem) v).getMenuItemId() == MenuID.MI_IMPORT_GCV) {
-                    // Menü nicht zeigen da darin nur 1 Befehl ist
-                    // showImportMenu_GCV();
-                    import_GCV();
-                } else if (((MenuItem) v).getMenuItemId() == MenuID.MI_IMPORT) {
-                    Import imp = new Import();
-                    imp.show();
-                } else if (((MenuItem) v).getMenuItemId() == MenuID.MI_EXPORT_RUN) {
-                    // ExportFileName
-                    StringInputBox.Show(WrapType.SINGLELINE, Translation.Get("enterFileName"), ((MenuItem) v).getTitle(), FileIO.GetFileName(Config.gpxExportFileName.getValue()), new OnMsgBoxClickListener() {
-                        @Override
-                        public boolean onClick(int which, Object data) {
-                            if (which == 1) {
-                                final String FileName = StringInputBox.editText.getText();
-
-                                GL.that.RunOnGL(new IRunOnGL() {
-                                    @Override
-                                    public void run() {
-                                        ExportgetFolderStep(FileName);
-                                    }
-                                });
-
+                switch (((MenuItem) v).getMenuItemId()) {
+                    case MenuID.MI_IMPORT_GS_PQ:
+                        new Import(MenuID.MI_IMPORT_GS_PQ).show();
+                        return true;
+                    case MenuID.MI_IMPORT_GS_API_POSITION:
+                        SearchOverPosition.ShowInstanz();
+                        return true;
+                    case MenuID.MI_IMPORT_GS_API_SEARCH:
+                        SearchOverNameOwnerGcCode.ShowInstanz();
+                        return true;
+                    case MenuID.MI_IMPORT_GPX:
+                        new Import(MenuID.MI_IMPORT_GPX).show();
+                        return true;
+                    case MenuID.MI_IMPORT_CBS:
+                        new Import_CBServer(MenuID.MI_IMPORT_CBS).show();
+                        return true;
+                    case MenuID.MI_IMPORT_GCV:
+                        new Import(MenuID.MI_IMPORT_GCV).show();
+                        return true;
+                    case MenuID.MI_IMPORT:
+                        new Import().show();
+                        return true;
+                    case MenuID.MI_MAP_DOWNOAD:
+                        MapDownload.getInstance().show();
+                        return true;
+                    case MenuID.MI_EXPORT_RUN:
+                        StringInputBox.Show(WrapType.SINGLELINE, Translation.Get("enterFileName"), ((MenuItem) v).getTitle(), FileIO.GetFileName(Config.gpxExportFileName.getValue()), new OnMsgBoxClickListener() {
+                            @Override
+                            public boolean onClick(int which, Object data) {
+                                if (which == 1) {
+                                    final String FileName = StringInputBox.editText.getText();
+                                    GL.that.RunOnGL(new IRunOnGL() {
+                                        @Override
+                                        public void run() {
+                                            ExportgetFolderStep(FileName);
+                                        }
+                                    });
+                                }
+                                return true;
                             }
-                            return true;
-                        }
 
-                    });
+                        });
+                        return true;
                 }
-
                 return true;
             }
         });
-
-        icm.addItem(MenuID.MI_IMPORT_GS, "API_IMPORT");
-        if (!StringH.isEmpty(Config.CBS_IP.getValue()))
-            icm.addItem(MenuID.MI_IMPORT_CBS, "CB-Server");
-        icm.addItem(MenuID.MI_IMPORT_GPX, "GPX_IMPORT");
-        icm.addItem(MenuID.MI_IMPORT_GCV, "GC_Vote");
         icm.addItem(MenuID.MI_IMPORT, "moreImport");
+        icm.addItem(MenuID.MI_IMPORT_GS_API_POSITION, "API_IMPORT_OVER_POSITION");
+        icm.addItem(MenuID.MI_IMPORT_GS_API_SEARCH, "API_IMPORT_NAME_OWNER_CODE");
+        // if (Config.CBS_IP.getValue().length() > 0) icm.addItem(MenuID.MI_IMPORT_CBS, "CB-Server");
+        if (Config.GcVotePassword.getValue().length() > 0)
+            icm.addItem(MenuID.MI_IMPORT_GCV, "GCVoteRatings");
+        // icm.addItem(MenuID.MI_IMPORT_GS_PQ, "API_PocketQuery");
+        // icm.addItem(MenuID.MI_IMPORT_GPX, "GPX_IMPORT");
+        icm.addDivider();
+        icm.addItem(MenuID.MI_MAP_DOWNOAD, "MapDownload");
+        icm.addDivider();
         icm.addItem(MenuID.MI_EXPORT_RUN, "export");
         return icm;
     }
@@ -203,8 +209,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
                                 }
                             }
                         });
-                    } catch (IOException e) {
-
+                    } catch (IOException ignored) {
                     }
                 }
 
@@ -243,107 +248,6 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
         } catch (IOException e) {
 
         }
-    }
-
-    protected void showImportMenu_GCV() {
-        Menu icm = new Menu("CacheListShowImportMenu");
-
-        icm.addOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                if (((MenuItem) v).getMenuItemId() == MenuID.MI_IMPORT_GCV) {
-                    import_GCV();
-                }
-                return true;
-            }
-        });
-
-        icm.addItem(MenuID.MI_IMPORT_GCV, "GC-Vote Import");
-
-        icm.Show();
-    }
-
-    private void import_GCV() {
-        Import imp = new Import(MenuID.MI_IMPORT_GCV);
-        imp.show();
-    }
-
-    protected void showImportMenu_GPX() {
-        Menu icm = new Menu("CacheListShowImportMenu");
-
-        icm.addOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                if (((MenuItem) v).getMenuItemId() == MenuID.MI_IMPORT_GPX) {
-                    import_GPX();
-                }
-                return true;
-            }
-        });
-        icm.addItem(MenuID.MI_IMPORT_GPX, "GPX Import");
-
-        icm.Show();
-    }
-
-    private void import_GPX() {
-        Import imp = new Import(MenuID.MI_IMPORT_GPX);
-        imp.show();
-    }
-
-    protected void showImportMenu_CBS() {
-        Menu icm = new Menu("CacheListShowImportMenu");
-
-        icm.addOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                if (((MenuItem) v).getMenuItemId() == MenuID.MI_IMPORT_CBS) {
-                    import_CBS();
-                }
-                return true;
-            }
-        });
-        icm.addItem(MenuID.MI_IMPORT_CBS, "CB-Server");
-
-        icm.Show();
-    }
-
-    private void import_CBS() {
-        Import_CBServer imp = new Import_CBServer(MenuID.MI_IMPORT_CBS);
-        imp.show();
-    }
-
-    private void showImportMenu_GS() {
-        Menu icm = new Menu("CacheListShowImportMenu");
-
-        icm.addOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-
-                switch (((MenuItem) v).getMenuItemId()) {
-                    case MenuID.MI_IMPORT_GS_PQ:
-                        Import imp = new Import(MenuID.MI_IMPORT_GS_PQ);
-                        imp.show();
-                        return true;
-                    case MenuID.MI_IMPORT_GS_API_POSITION:
-                        SearchOverPosition.ShowInstanz();
-                        return true;
-                    case MenuID.MI_IMPORT_GS_API_SEARCH:
-                        SearchOverNameOwnerGcCode.ShowInstanz();
-                        return true;
-                }
-
-                return true;
-            }
-        });
-        icm.addItem(MenuID.MI_IMPORT_GS_PQ, "API_PocketQuery");
-        icm.addItem(MenuID.MI_IMPORT_GS_API_POSITION, "API_IMPORT_OVER_POSITION");
-        icm.addItem(MenuID.MI_IMPORT_GS_API_SEARCH, "API_IMPORT_NAME_OWNER_CODE");
-
-        icm.Show();
     }
 
 }

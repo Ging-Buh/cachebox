@@ -21,7 +21,6 @@ import CB_Core.CacheListChangedEventList;
 import CB_Core.CoreSettingsForward;
 import CB_Core.Database;
 import CB_Core.Import.DescriptionImageGrabber;
-import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Solver.Solver;
 import CB_Core.Solver.SolverCacheInterface;
@@ -39,7 +38,6 @@ import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_Utils.Interfaces.ICancelRunnable;
@@ -57,9 +55,9 @@ import static CB_Core.Api.GroundspeakAPI.isAccessTokenInvalid;
  * @author longri
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface {
-    public static final int CurrentRevision = 20181108;
+    public static final int CurrentRevision =20181112;
     public static final String CurrentVersion = "2.0.";
-    public static final String VersionPrefix = "3181";
+    public static final String VersionPrefix = "3186";
     public static final String aboutMsg1 = "Team Cachebox (2011-2018)" + br;
     public static final String teamLink = "www.team-cachebox.de";
     public static final String aboutMsg2 = br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";
@@ -269,7 +267,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 
             @Override
             public void run() {
-                Importer importer = new Importer();
+                // Importer importer = new Importer();
                 ImporterProgress ip = new ImporterProgress();
                 int result = GroundspeakAPI.ERROR;
                 if (GlobalCore.getSelectedCache() != null)

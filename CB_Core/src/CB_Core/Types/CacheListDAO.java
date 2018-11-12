@@ -290,7 +290,9 @@ public class CacheListDAO {
         if (DescriptionImageFolderLocal.length() > 0)
             imagespath = DescriptionImageFolderLocal;
 
+        Log.debug(log, "Del Spoilers from " + spoilerpath);
         delCacheImagesByPath(spoilerpath, list);
+        Log.debug(log, "Del Images from " + imagespath);
         delCacheImagesByPath(imagespath, list);
 
         ImageDAO imageDAO = new ImageDAO();
@@ -304,7 +306,7 @@ public class CacheListDAO {
     public void delCacheImagesByPath(String path, ArrayList<String> list) {
         for (Iterator<String> iterator = list.iterator(); iterator.hasNext(); ) {
             final String GcCode = iterator.next().toLowerCase();
-            String directory = path + "/" + GcCode.substring(0, 4);
+            String directory = path + "/" + GcCode.substring(0, Math.min(4, GcCode.length()));
             if (!FileIO.DirectoryExists(directory))
                 continue;
 

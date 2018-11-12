@@ -600,8 +600,6 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
         Thread thread = new Thread() {
             @Override
             public void run() {
-                // PqList = new ArrayList<PQ>();
-                // PocketQuery.GetPocketQueryList(PqList);
                 RpcClientCB rpc = new RpcClientCB();
                 RpcAnswer answer = rpc.getExportList();
 

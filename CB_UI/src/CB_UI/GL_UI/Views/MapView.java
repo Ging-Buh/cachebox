@@ -442,9 +442,9 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                             searchC.number = 1;
                             searchC.available = false;
 
-                            CB_List<Cache> apiCaches = new CB_List<Cache>();
-                            ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
-                            ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
+                            CB_List<Cache> apiCaches = new CB_List<>();
+                            ArrayList<LogEntry> apiLogs = new ArrayList<>();
+                            ArrayList<ImageEntry> apiImages = new ArrayList<>();
 
                             try {
                                 CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, infoBubble.getCache().getGPXFilename_ID(), this);

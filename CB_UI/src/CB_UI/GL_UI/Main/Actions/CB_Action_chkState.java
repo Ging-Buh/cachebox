@@ -63,7 +63,7 @@ public class CB_Action_chkState extends CB_Action {
             ArrayList<Cache> addedReturnList = new ArrayList<Cache>();
 
             result = 0;
-            ArrayList<Cache> chkList100;
+            ArrayList<Cache> caches;
 
             boolean cancelThread = false;
 
@@ -78,7 +78,7 @@ public class CB_Action_chkState extends CB_Action {
                     cancelThread = true;
                 }
 
-                chkList100 = new ArrayList<>();
+                caches = new ArrayList<>();
                 if (!cancelThread) {
 
                     if (chkList == null || chkList.size() == 0) {
@@ -89,7 +89,7 @@ public class CB_Action_chkState extends CB_Action {
                     int index = 0;
                     do {
                         if (index >= start && index < start + BlockSize) {
-                            chkList100.add(Iterator2.next());
+                            caches.add(Iterator2.next());
                         } else {
                             Iterator2.next();
                         }
@@ -97,8 +97,8 @@ public class CB_Action_chkState extends CB_Action {
                     } while (Iterator2.hasNext());
 
                     Log.debug(sKlasse,"Fetch block from " + start);
-                    result = GroundspeakAPI.fetchGeocacheStatus(chkList100);
-                    addedReturnList.addAll(chkList100);
+                    result = GroundspeakAPI.fetchGeocacheStatus(caches);
+                    addedReturnList.addAll(caches);
                     if (result == -1) {
                         // the real reason is GroundspeakAPI.APIError
                         GL.that.Toast(ConnectionError.INSTANCE);
@@ -111,7 +111,7 @@ public class CB_Action_chkState extends CB_Action {
 
                 ProgresssChangedEventList.Call("", (int) progress);
 
-            } while (chkList100.size() == BlockSize + 1 && !cancelThread);
+            } while (caches.size() == BlockSize + 1 && !cancelThread);
 
 
 

@@ -258,14 +258,14 @@ public class FileIO {
                 return dir.isDirectory();
             }
         });
-        for (File recursiveDir : directories) {
-            if (recursiveDir.isDirectory()) {
-                if (!(exludeHides && recursiveDir.getName().startsWith("."))) {
-                    recursiveDirectoryReader(recursiveDir, files, Endung, exludeHides);
+        if (directories != null) {
+            for (File recursiveDir : directories) {
+                if (recursiveDir.isDirectory()) {
+                    if (!(exludeHides && recursiveDir.getName().startsWith("."))) {
+                        recursiveDirectoryReader(recursiveDir, files, Endung, exludeHides);
+                    }
                 }
-
             }
-
         }
         return files;
     }

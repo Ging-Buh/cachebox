@@ -29,7 +29,6 @@ import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.APIs.ImportAPIListItem;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
-import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
@@ -47,7 +46,6 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.Controls.Spinner.ISelectionChangedListener;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -89,12 +87,13 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         }
     };
     protected Date ImportStart;
-    boolean PQ_LINE_ACTIVE = true;
-    boolean CBS_LINE_ACTIVE = false;
-    boolean GPX_LINE_ACTIVE = true;
-    boolean GCV_LINE_ACTIVE = true;
-    boolean LOG_LINE_ACTIVE = true;
-    boolean DB_LINE_ACTIVE = true;
+    private boolean PQ_LINE_ACTIVE = true;
+    private boolean CBS_LINE_ACTIVE = false;
+    private boolean GPX_LINE_ACTIVE = true;
+    private boolean GCV_LINE_ACTIVE = true;
+    private boolean LOG_LINE_ACTIVE = true;
+    private boolean DB_LINE_ACTIVE = true;
+    private boolean IMAGE_LINE_ACTIVE = true;
     ArrayList<String> values = new ArrayList<String>();
     private int importType = 0; // um direkt gleich den Import für eine bestimmte API starten zu können
     private V_ListView lvPQs, lvCBServer;
@@ -118,6 +117,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                 checkBoxImportGPX.setChecked(true);
                 checkBoxImportGPX.setEnabled(false);
                 PQ_ListCollapseBox.expand();
+                if (lvPQs.getAllListSize() == 0)
+                    refreshPqList();
             } else {
                 checkBoxImportGPX.setEnabled(true);
                 PQ_ListCollapseBox.collapse();
@@ -167,6 +168,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             if (CBS_IP.indexOf(":") <= 0)
                 CBS_IP += ":9911";
         }
+        IMAGE_LINE_ACTIVE = true;
         switch (importType) {
             case MenuID.MI_IMPORT_GS_PQ:
                 PQ_LINE_ACTIVE = true;
@@ -197,8 +199,9 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                 CBS_LINE_ACTIVE = false;
                 GPX_LINE_ACTIVE = false;
                 GCV_LINE_ACTIVE = true;
-                LOG_LINE_ACTIVE = true;
-                DB_LINE_ACTIVE = true;
+                LOG_LINE_ACTIVE = false;
+                DB_LINE_ACTIVE = false;
+                IMAGE_LINE_ACTIVE = false;
         }
 
         CollapseBoxMaxHeight = CollapseBoxHeight = UI_Size_Base.that.getButtonHeight() * 6;
@@ -210,6 +213,9 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         scrollBox.setHeight(lblProgressMsg.getY() - bOK.getMaxY() - margin - margin);
         scrollBox.setY(bOK.getMaxY() + margin);
         scrollBox.setBackground(this.getBackground());
+        if (!GroundspeakAPI.isPremiumMember()) {
+            PQ_LINE_ACTIVE = false;
+        }
         createPQLines();
         createCBServerLines();
         createPqCollapseBox();
@@ -340,8 +346,9 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         if (!PQ_LINE_ACTIVE) {
             checkImportPQfromGC.setVisible(false);
             checkImportPQfromGC.setHeight(0);
+            checkImportPQfromGC.setChecked(false);
         }
-        lblPQ = new Label(this.name + " lblPQ", checkImportPQfromGC.getMaxX() + margin, checkImportPQfromGC.getY(), innerWidth - margin * 3 - checkImportPQfromGC.getWidth(), checkImportPQfromGC.getHeight());
+        lblPQ = new Label("lblPQ", checkImportPQfromGC.getMaxX() + margin, checkImportPQfromGC.getY(), innerWidth - margin * 3 - checkImportPQfromGC.getWidth(), checkImportPQfromGC.getHeight());
         lblPQ.setFont(Fonts.getNormal());
         lblPQ.setText(Translation.Get("PQfromGC"));
         if (!PQ_LINE_ACTIVE) {
@@ -475,6 +482,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     }
 
     private void createGcVoteLine() {
+        if (Config.GcVotePassword.getValue().length() == 0)
+            GCV_LINE_ACTIVE = false;
         checkBoxGcVote = new ChkBox("GcVote");
         checkBoxGcVote.setX(innerLeft);
         checkBoxGcVote.setY(checkBoxImportGPX.getY() - margin - checkBoxImportGPX.getHeight());
@@ -504,9 +513,10 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         lblImage.setFont(Fonts.getNormal());
         lblImage.setText(Translation.Get("PreloadImages"));
 
-        scrollBox.addChild(checkBoxPreloadImages);
-        scrollBox.addChild(lblImage);
-
+        if (IMAGE_LINE_ACTIVE) {
+            scrollBox.addChild(checkBoxPreloadImages);
+            scrollBox.addChild(lblImage);
+        }
         // Preload Spoiler Images
         checkBoxPreloadSpoiler = new ChkBox("Image");
         checkBoxPreloadSpoiler.setX(innerLeft);
@@ -516,8 +526,14 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         lblSpoiler.setFont(Fonts.getNormal());
         lblSpoiler.setText(Translation.Get("PreloadSpoiler"));
 
-        scrollBox.addChild(checkBoxPreloadSpoiler);
-        scrollBox.addChild(lblSpoiler);
+        if (IMAGE_LINE_ACTIVE) {
+            scrollBox.addChild(checkBoxPreloadSpoiler);
+            scrollBox.addChild(lblSpoiler);
+        }
+        if (!IMAGE_LINE_ACTIVE) {
+            checkBoxPreloadImages.setChecked(false);
+            checkBoxPreloadSpoiler.setChecked(false);
+        }
     }
 
     private void createMapLine() {
@@ -776,7 +792,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             @Override
             public void run() {
                 PqList = new ArrayList<>();
-                GroundspeakAPI.GetPocketQueryList(PqList);
+                GroundspeakAPI.fetchPocketQueryList(PqList);
                 lvPQs.setBaseAdapter(new CustomAdapter());
                 lvPQs.notifyDataSetChanged();
 
@@ -825,8 +841,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         Thread thread = new Thread() {
             @Override
             public void run() {
-                // PqList = new ArrayList<PQ>();
-                // PocketQuery.GetPocketQueryList(PqList);
                 RpcClientCB rpc = new RpcClientCB();
                 RpcAnswer answer = rpc.getExportList();
 
@@ -987,12 +1001,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
                                     if (pq.downloadAvailable) {
                                         ip.ProgressInkrement("importGC", "Download: " + pq.Name, false);
-                                        try {
-                                            GroundspeakAPI.DownloadSinglePocketQuery(pq, Config.PocketQueryFolder.getValue());
-                                        } catch (OutOfMemoryError e) {
-                                            Log.err(log, "PQ-download", "OutOfMemoryError-" + pq.Name, e);
-                                            e.printStackTrace();
-                                        }
+                                            int ret = GroundspeakAPI.fetchPocketQuery(pq, Config.PocketQueryFolder.getValue());
                                     }
 
                                 } while (iterator.hasNext());
@@ -1118,14 +1127,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                         dis.setAnimationType(AnimationType.Download);
                         int result = importer.importImages(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(), FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue()));
 
-                        if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
-                            GL.that.Toast(ConnectionError.INSTANCE);
-                            ip.ProgressChangeMsg("", "");
-                            return;
-                        }
-
-                        if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
-                            GL.that.Toast(ApiUnavailable.INSTANCE);
+                        if (result == GroundspeakAPI.ERROR) {
+                            GL.that.Toast(GroundspeakAPI.LastAPIError);
                             ip.ProgressChangeMsg("", "");
                             return;
                         }

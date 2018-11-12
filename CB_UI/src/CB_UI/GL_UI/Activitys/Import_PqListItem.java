@@ -31,8 +31,8 @@ public class Import_PqListItem extends ListViewItemBackground {
         String dateString = postFormater.format(pq.DateLastGenerated);
         DecimalFormat df = new DecimalFormat("###.##");
         String FileSize = df.format(pq.SizeMB) + " MB";
-        String Count = "   Count=" + String.valueOf(pq.PQCount);
-        lblInfo.setText(dateString + "  " + FileSize + Count);
+        // String Count = "   Count=" + String.valueOf(pq.PQCount);
+        lblInfo.setText(dateString + "  " + FileSize); //  + Count
 
         chk = new ChkBox("");
         chk.setRec(chk.ScaleCenter(0.6f));

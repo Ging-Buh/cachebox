@@ -102,7 +102,7 @@ public class LiveMapQue {
                     gpxFilename = category.addGpxFilename("API-Import");
                 }
 
-                apiCaches = new CB_List<Cache>();
+                apiCaches = new CB_List<>();
                 SearchForGeocaches_Core t = new SearchForGeocaches_Core();
                 result = t.SearchForGeocachesJSON(requestSearch, apiCaches, apiLogs, apiImages, gpxFilename.Id, null);
             }

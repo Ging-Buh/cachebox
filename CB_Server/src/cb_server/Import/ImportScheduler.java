@@ -15,10 +15,7 @@ import CB_Core.CacheListChangedEventList;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
-import CB_Core.Api.ApiGroundspeak_GetPocketQueryData;
 import CB_Core.Api.GroundspeakAPI;
-import CB_Core.Api.PocketQuery;
-import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.Types.CacheListDAO;
 import CB_Core.DAO.PocketqueryDAO;
 import CB_Core.Import.Importer;
@@ -30,7 +27,7 @@ import CB_Utils.fileProvider.FileFactory;
 import cb_server.CacheboxServer;
 import cb_server.Config;
 
-import static CB_Core.Api.GroundspeakAPI.GetPocketQueryList;
+import static CB_Core.Api.GroundspeakAPI.fetchPocketQueryList;
 
 public class ImportScheduler implements Runnable {
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -124,10 +121,9 @@ public class ImportScheduler implements Runnable {
 					// Import PQs
 					ArrayList<GroundspeakAPI.PQ> pqList = new ArrayList<>();
 					log.debug("Load PQ-List");
-					GetPocketQueryList(pqList);
+					fetchPocketQueryList(pqList);
 					ip.setJobMax("importGC", pqList.size() + 1);
 					log.debug("Load PQ-List ready");
-					ApiGroundspeak_GetPocketQueryData ipq = new ApiGroundspeak_GetPocketQueryData();
 					PocketqueryDAO dao = new PocketqueryDAO();
 					for (GroundspeakAPI.PQ pq : pqList) {
 						ip.ProgressInkrement("importGC", "Download PQ - " + pq.Name, false);
@@ -149,8 +145,8 @@ public class ImportScheduler implements Runnable {
 						}
 
 						// Zipped Pocketquery
-						int i = PocketQuery.DownloadSinglePocketQuery(pq, CB_Core_Settings.PocketQueryFolder.getValue());
-						if (i == 0) {
+						int i = GroundspeakAPI.fetchPocketQuery(pq, CB_Core_Settings.PocketQueryFolder.getValue());
+						if (i == GroundspeakAPI.OK) {
 							// Importierte PQ in DB speichern
 							dao.writeToDatabase(pq);
 						}

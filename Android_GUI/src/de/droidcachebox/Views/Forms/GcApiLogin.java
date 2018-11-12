@@ -19,6 +19,8 @@ import de.droidcachebox.R;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.main;
 
+import static CB_Core.CB_Core_Settings.GcLogin;
+
 public class GcApiLogin extends Activity {
     private static final String sKlasse = "GcApiLogin";
     private static GcApiLogin gcApiLogin;
@@ -243,9 +245,6 @@ public class GcApiLogin extends Activity {
 
             Thread thread = new Thread() {
                 public void run() {
-                    GroundspeakAPI.CacheStatusValid = false;
-                    GroundspeakAPI.CacheStatusLiteValid = false;
-
                     // store the encrypted AccessToken in the Config file
                     // wir bekommen den Key schon verschlüsselt, deshalb muss er
                     // nicht noch einmal verschlüsselt werden!
@@ -254,9 +253,10 @@ public class GcApiLogin extends Activity {
                     } else {
                         CB_Core_Settings.AccessToken.setEncryptedValue(accessToken);
                     }
-                    Config.AcceptChanges();
                     GroundspeakAPI.setAuthorization();
-                    CB_Core_Settings.GcLogin.setValue(GroundspeakAPI.fetchMyUserInfos().username);
+                    String userNameOfAuthorization = GroundspeakAPI.fetchMyUserInfos().username;
+                    Log.debug(sKlasse, "userNameOfAuthorization: " + userNameOfAuthorization);
+                    GcLogin.setValue(userNameOfAuthorization);
                     Config.AcceptChanges();
                     onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
                 }

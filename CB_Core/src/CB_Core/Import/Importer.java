@@ -49,7 +49,6 @@ public class Importer {
 
     public void importGC(ArrayList<PQ> pqList) {
         ProgresssChangedEventList.Call("import Gc.com", "", 0);
-
     }
 
     /**
@@ -317,11 +316,11 @@ public class Importer {
                 try {// for cancel/interupt Thread
                     Thread.sleep(10);
                 } catch (InterruptedException e) {
-                    return 0;
+                    return GroundspeakAPI.OK;
                 }
 
                 if (BreakawayImportThread.isCanceled())
-                    return 0;
+                    return GroundspeakAPI.OK;
 
                 cnt++;
                 try {
