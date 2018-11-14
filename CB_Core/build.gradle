@@ -6,14 +6,14 @@ sourceCompatibility = 1.8
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 dependencies {
-    implementation project(":CB_UI_Base")
-    implementation project(":CB_mapsforge")
     implementation project(":CB_Utils")
-    implementation project(":CB_Locator_Base")
     implementation project(":CB_Rpc")
     implementation project(":CB_Translation_Base")
+    implementation project(":CB_mapsforge")
+    implementation project(":CB_UI_Base")
+    implementation project(":CB_Locator_Base")
 
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: '../libs', include: ['sjxp-2.2.jar'])
 
 
     // https://mvnrepository.com/artifact/org.json/json
