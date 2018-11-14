@@ -160,13 +160,10 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     public Import(int importType) {
         super(ActivityRec(), "importActivity");
         this.importType = importType;
-        String CBS_IP = Config.CBS_IP.getValue();
-        if (StringH.isEmpty(CBS_IP))
+        if (StringH.isEmpty(Config.CBS_IP.getValue()))
             CBS_LINE_ACTIVE = false;
         else {
             CBS_LINE_ACTIVE = true;
-            if (CBS_IP.indexOf(":") <= 0)
-                CBS_IP += ":9911";
         }
         IMAGE_LINE_ACTIVE = true;
         switch (importType) {
@@ -213,9 +210,12 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         scrollBox.setHeight(lblProgressMsg.getY() - bOK.getMaxY() - margin - margin);
         scrollBox.setY(bOK.getMaxY() + margin);
         scrollBox.setBackground(this.getBackground());
-        if (!GroundspeakAPI.isPremiumMember()) {
-            PQ_LINE_ACTIVE = false;
+        if (PQ_LINE_ACTIVE) {
+            if (!GroundspeakAPI.isPremiumMember()) {
+                PQ_LINE_ACTIVE = false;
+            }
         }
+        Log.debug(log,"is Premium = " + PQ_LINE_ACTIVE);
         createPQLines();
         createCBServerLines();
         createPqCollapseBox();
@@ -793,10 +793,10 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             public void run() {
                 PqList = new ArrayList<>();
                 GroundspeakAPI.fetchPocketQueryList(PqList);
-                lvPQs.setBaseAdapter(new CustomAdapter());
+                lvPQs.setBaseAdapter(new PqListAdapter());
                 lvPQs.notifyDataSetChanged();
 
-                stopTimer();
+                stopAnimationTimer();
                 lvPQs.setEmptyMsg(Translation.Get("EmptyPqList"));
 
                 refreshPqList.enable();
@@ -858,7 +858,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                 lvCBServer.setBaseAdapter(new CustomAdapterCBServer());
                 lvCBServer.notifyDataSetChanged();
 
-                stopTimer();
+                stopAnimationTimer();
                 lvCBServer.setEmptyMsg(Translation.Get("EmptyCBServerList"));
 
                 refreshCBServerList.enable();
@@ -894,7 +894,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
     }
 
-    private void stopTimer() {
+    private void stopAnimationTimer() {
         if (mAnimationTimer != null) {
             mAnimationTimer.cancel();
             mAnimationTimer = null;
@@ -1052,7 +1052,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
                         System.gc();
 
-                        // del alten entpackten Ordener wenn vorhanden?
+                        // delete all files and directories from import folder, normally the PocketQuery subfolder
                         File[] filelist = directory.listFiles();
                         for (File tmp : filelist) {
                             if (tmp.isDirectory()) {
@@ -1276,9 +1276,9 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         CopyThread.start();
     }
 
-    public class CustomAdapter implements Adapter {
+    public class PqListAdapter implements Adapter {
 
-        public CustomAdapter() {
+        public PqListAdapter() {
         }
 
         @Override

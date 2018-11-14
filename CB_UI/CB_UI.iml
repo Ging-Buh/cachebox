@@ -7,7 +7,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="jdk" jdkName="Android API 27 Platform" jdkType="Android SDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="module" module-name="CB_Core" />
     <orderEntry type="module" module-name="CB_Locator_Base" />
     <orderEntry type="module" module-name="CB_UI_Base" />

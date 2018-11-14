@@ -202,7 +202,7 @@ public class DescriptionView extends CB_View_Base {
         final Thread getLimitThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                GroundspeakAPI.fetchCacheLimits();
+                GroundspeakAPI.fetchMyCacheLimits();
                 if (GroundspeakAPI.APIError > 0) {
                     GL.that.Toast(GroundspeakAPI.LastAPIError);
                     return;

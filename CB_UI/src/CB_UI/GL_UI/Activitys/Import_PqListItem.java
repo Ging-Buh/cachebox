@@ -1,6 +1,7 @@
 package CB_UI.GL_UI.Activitys;
 
 import CB_Core.Api.GroundspeakAPI.PQ;
+import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Controls.ChkBox;
 import CB_UI_Base.GL_UI.Controls.ChkBox.OnCheckChangedListener;
 import CB_UI_Base.GL_UI.Controls.Label;
@@ -27,12 +28,12 @@ public class Import_PqListItem extends ListViewItemBackground {
 
         lblName.setText(pq.Name);
 
-        SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy");
-        String dateString = postFormater.format(pq.DateLastGenerated);
-        DecimalFormat df = new DecimalFormat("###.##");
-        String FileSize = df.format(pq.SizeMB) + " MB";
-        // String Count = "   Count=" + String.valueOf(pq.PQCount);
-        lblInfo.setText(dateString + "  " + FileSize); //  + Count
+        SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        String dateString = Translation.Get("PQcreationDate") + ": " + postFormater.format(pq.DateLastGenerated);
+        //DecimalFormat df = new DecimalFormat("###.##");
+        //String FileSize = df.format(pq.SizeMB) + " MB";
+        String Count = "\n" + Translation.Get("Count") + ": " + String.valueOf(pq.PQCount);
+        lblInfo.setText(dateString + Count); // + "  " + FileSize
 
         chk = new ChkBox("");
         chk.setRec(chk.ScaleCenter(0.6f));

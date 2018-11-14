@@ -132,6 +132,21 @@ public class GroundspeakAPI {
         return retryCount > 0;
     }
 
+    static String UrlEncode(String value) {
+        return value.replace("/", "%2F")
+                .replace("\\", "%5C")
+                .replace("+", "%2B")
+                .replace("=", "%3D");
+    }
+
+    public static boolean isDownloadLimitExceeded() {
+        return mDownloadLimitExceeded;
+    }
+
+    public static void setDownloadLimitExceeded() {
+        mDownloadLimitExceeded = true;
+    }
+
     // Live API
 
     public static int fetchGeocacheLogsByCache(Cache cache, ArrayList<LogEntry> logList, boolean all, ICancelRunnable cancelRun) {
@@ -221,12 +236,8 @@ public class GroundspeakAPI {
 
     // API 1.0 see https://api.groundspeak.com/documentation and https://api.groundspeak.com/api-docs/index
 
-    public static void fetchCacheLimits() {
-        me = fetchUserInfos("me");
-    }
-
     public static UserInfos fetchUserInfos(String UserCode) {
-        Log.info(log, "fetchUserInfos for " + UserCode);
+        Log.debug(log, "fetchUserInfos for " + UserCode);
         LastAPIError = "";
         APIError = 0;
         UserInfos ui = new UserInfos();
@@ -273,7 +284,7 @@ public class GroundspeakAPI {
 
             int skip = 0;
             int take = 50;
-            String fields = "referenceCode,name,lastUpdatedDateUtc,count,url";
+            String fields = "referenceCode,name,lastUpdatedDateUtc,count";
 
             do {
                 boolean doRetry;
@@ -383,7 +394,7 @@ public class GroundspeakAPI {
                 }
             }
             if (onlyLiteFields) {
-                fetchCacheLimits();
+                fetchMyCacheLimits();
                 if (me.renainingLite < me.remaining) {
                     onlyLiteFields = false;
                 }
@@ -839,6 +850,10 @@ public class GroundspeakAPI {
         return me;
     }
 
+    public static void fetchMyCacheLimits() {
+        me = fetchUserInfos("me");
+    }
+
     // only for test API 1.0
     public static int getFriends() {
         Log.info(log, "getFriends");
@@ -884,21 +899,6 @@ public class GroundspeakAPI {
             Log.err(log, "no Access Token");
         return "";
         /* */
-    }
-
-    static String UrlEncode(String value) {
-        return value.replace("/", "%2F")
-                .replace("\\", "%5C")
-                .replace("+", "%2B")
-                .replace("=", "%3D");
-    }
-
-    public static boolean isDownloadLimitExceeded() {
-        return mDownloadLimitExceeded;
-    }
-
-    public static void setDownloadLimitExceeded() {
-        mDownloadLimitExceeded = true;
     }
 
     static String getUrl(String command) {

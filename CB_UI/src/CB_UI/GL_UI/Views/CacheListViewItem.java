@@ -89,9 +89,11 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
         lastString = txt;
         synchronized (distance) {
             try {
-                GlyphLayout bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
-                float x = ArrowRec.getHalfWidth() - (bounds.width / 2f);
-                distance.setPosition(x, 0);
+                if (distance != null) {
+                    GlyphLayout bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
+                    float x = ArrowRec.getHalfWidth() - (bounds.width / 2f);
+                    distance.setPosition(x, 0);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

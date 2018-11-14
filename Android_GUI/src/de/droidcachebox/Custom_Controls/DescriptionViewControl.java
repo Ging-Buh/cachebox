@@ -77,7 +77,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                     @Override
                     public void run() {
 
-                            GroundspeakAPI.fetchCacheLimits();
+                            GroundspeakAPI.fetchMyCacheLimits();
                             if (GroundspeakAPI.APIError != 0) {
                                 GL.that.Toast(GroundspeakAPI.LastAPIError);
                                 onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));

@@ -22,8 +22,6 @@ import CB_Locator.Locator;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
-import android.annotation.TargetApi;
-import android.os.Build;
 
 import java.io.Serializable;
 import java.nio.charset.Charset;
@@ -33,7 +31,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
-@TargetApi(Build.VERSION_CODES.KITKAT)
 public class Cache implements Comparable<Cache>, Serializable {
     public static final String EMPTY_STRING = "";
     // ########################################################

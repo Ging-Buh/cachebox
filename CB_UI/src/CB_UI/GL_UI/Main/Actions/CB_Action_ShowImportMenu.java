@@ -92,7 +92,12 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 switch (((MenuItem) v).getMenuItemId()) {
                     case MenuID.MI_IMPORT_GS_PQ:
-                        new Import(MenuID.MI_IMPORT_GS_PQ).show();
+                        GL.postAsync(new Runnable() {
+                            @Override
+                            public void run() {
+                                new Import(MenuID.MI_IMPORT_GS_PQ).show();
+                            }
+                        });
                         return true;
                     case MenuID.MI_IMPORT_GS_API_POSITION:
                         SearchOverPosition.ShowInstanz();
@@ -110,7 +115,12 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
                         new Import(MenuID.MI_IMPORT_GCV).show();
                         return true;
                     case MenuID.MI_IMPORT:
-                        new Import().show();
+                        GL.postAsync(new Runnable() {
+                            @Override
+                            public void run() {
+                                new Import().show();
+                            }
+                        });
                         return true;
                     case MenuID.MI_MAP_DOWNOAD:
                         MapDownload.getInstance().show();

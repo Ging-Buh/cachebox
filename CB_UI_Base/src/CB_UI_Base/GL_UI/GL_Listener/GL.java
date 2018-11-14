@@ -62,6 +62,7 @@ public class GL implements ApplicationListener {
     public static final int FRAME_RATE_IDLE = 200;
     public static final int FRAME_RATE_ACTION = 50;
     public static final int FRAME_RATE_FAST_ACTION = 40;
+    private static final AsyncExecutor asyncExecutor = new AsyncExecutor(8);
     public static GL that;
     private int width, height;
     private MainViewBase mSplash;
@@ -72,7 +73,6 @@ public class GL implements ApplicationListener {
     private boolean darknessAnimationRuns;
     private Fader grayFader;
     private long GL_ThreadId;
-
     private Timer myTimer;
     private long timerValue;
     private ArrayList<IRunOnGL> runIfInitial = new ArrayList<>();
@@ -117,7 +117,6 @@ public class GL implements ApplicationListener {
     private ArrayList<ActivityBase> activityHistory = new ArrayList<>();
     private PopUp_Base aktPopUp;
     private float darknessAlpha = 0f;
-    private static final AsyncExecutor asyncExecutor = new AsyncExecutor(8);
 
     public GL(int _width, int _height, MainViewBase splash, MainViewBase mainView) {
         width = _width;
@@ -137,6 +136,21 @@ public class GL implements ApplicationListener {
         allIsInitialized = false;
 
         Log.debug("GL", "Constructor done");
+    }
+
+    public static void postAsync(final Runnable runnable) {
+
+        asyncExecutor.submit(new AsyncTask<Void>() {
+            @Override
+            public Void call() throws Exception {
+                try {
+                    runnable.run();
+                } catch (final Exception e) {
+                    Log.err("GL", "postAsync ", e);
+                }
+                return null;
+            }
+        });
     }
 
     @Override
@@ -855,22 +869,6 @@ public class GL implements ApplicationListener {
         }
         timerValue = 0;
     }
-
-    public static void postAsync(final Runnable runnable) {
-
-        asyncExecutor.submit(new AsyncTask<Void>() {
-            @Override
-            public Void call() throws Exception {
-                try {
-                    runnable.run();
-                } catch (final Exception e) {
-                    Log.err("GL", "postAsync ", e);
-                }
-                return null;
-            }
-        });
-    }
-
 
     /**
      * Run on GL-Thread!<br>
