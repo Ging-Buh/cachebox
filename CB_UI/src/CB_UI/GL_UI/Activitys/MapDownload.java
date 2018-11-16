@@ -32,7 +32,6 @@ import com.thebuzzmedia.sjxp.XMLParser;
 import com.thebuzzmedia.sjxp.rule.DefaultRule;
 import com.thebuzzmedia.sjxp.rule.IRule;
 import com.thebuzzmedia.sjxp.rule.IRule.Type;
-import org.json.JSONArray;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

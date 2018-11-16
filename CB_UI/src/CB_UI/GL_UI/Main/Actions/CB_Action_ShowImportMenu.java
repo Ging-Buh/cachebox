@@ -6,6 +6,7 @@ import CB_Core.Export.GpxSerializer.ProgressListener;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.*;
+import CB_UI.GlobalCore;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
@@ -27,7 +28,7 @@ import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
-import CB_Utils.StringH;
+import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
@@ -37,6 +38,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
 
@@ -91,6 +94,36 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 switch (((MenuItem) v).getMenuItemId()) {
+                    case MenuID.MI_CHK_STATE_API:
+                        GL.postAsync(new Runnable() {
+                            @Override
+                            public void run() {
+                                // First check API-Key with visual Feedback
+                                Log.debug("MI_CHK_STATE_API", "chkAPiLogInWithWaitDialog");
+                                GlobalCore.chkAPiLogInWithWaitDialog(new GlobalCore.iChkReadyHandler() {
+                                    @Override
+                                    public void checkReady(boolean isAccessTokenInvalid) {
+                                        Log.debug("checkReady", "isAccessTokenInvalid: " + isAccessTokenInvalid);
+                                        if (!isAccessTokenInvalid) {
+                                            TimerTask tt = new TimerTask() {
+                                                @Override
+                                                public void run() {
+                                                    GL.postAsync(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            new CB_Action_chkState().Execute();
+                                                        }
+                                                    });
+                                                }
+                                            };
+                                            Timer t = new Timer();
+                                            t.schedule(tt, 100);
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                        return true;
                     case MenuID.MI_IMPORT_GS_PQ:
                         GL.postAsync(new Runnable() {
                             @Override
@@ -147,10 +180,10 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
                 return true;
             }
         });
+        icm.addItem(MenuID.MI_CHK_STATE_API, "chkState"); // , Sprites.getSprite(IconName.dayGcLiveIcon.name())
         icm.addItem(MenuID.MI_IMPORT, "moreImport");
         icm.addItem(MenuID.MI_IMPORT_GS_API_POSITION, "API_IMPORT_OVER_POSITION");
         icm.addItem(MenuID.MI_IMPORT_GS_API_SEARCH, "API_IMPORT_NAME_OWNER_CODE");
-        // if (Config.CBS_IP.getValue().length() > 0) icm.addItem(MenuID.MI_IMPORT_CBS, "CB-Server");
         if (Config.GcVotePassword.getValue().length() > 0)
             icm.addItem(MenuID.MI_IMPORT_GCV, "GCVoteRatings");
         // icm.addItem(MenuID.MI_IMPORT_GS_PQ, "API_PocketQuery");
@@ -158,7 +191,8 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
         icm.addDivider();
         icm.addItem(MenuID.MI_MAP_DOWNOAD, "MapDownload");
         icm.addDivider();
-        icm.addItem(MenuID.MI_EXPORT_RUN, "export");
+        icm.addItem(MenuID.MI_EXPORT_RUN, "GPX_EXPORT");
+        if (Config.CBS_IP.getValue().length() > 0) icm.addItem(MenuID.MI_IMPORT_CBS, "ToCBServer");
         return icm;
     }
 

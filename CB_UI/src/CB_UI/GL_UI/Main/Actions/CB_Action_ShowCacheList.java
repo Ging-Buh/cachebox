@@ -184,7 +184,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
         mi = cm.addItem(MenuID.MI_AUTO_RESORT, "AutoResort");
         mi.setCheckable(true);
         mi.setChecked(GlobalCore.getAutoResort());
-        cm.addItem(MenuID.MI_CHK_STATE_API, "chkState", Sprites.getSprite(IconName.dayGcLiveIcon.name()));
+        // cm.addItem(MenuID.MI_CHK_STATE_API, "chkState", Sprites.getSprite(IconName.dayGcLiveIcon.name()));
         cm.addItem(MenuID.MI_NEW_CACHE, "MI_NEW_CACHE", Sprites.getSprite(IconName.addCacheIcon.name()));
         cm.addItem(MenuID.AID_SHOW_DELETE_DIALOG, "DeleteCaches", Sprites.getSprite(IconName.DELETE.name()));
 

@@ -403,12 +403,16 @@ public class GroundspeakAPI {
             do {
                 Map<String, Cache> mapOfCaches = new HashMap<>();
                 StringBuffer CacheCodes = new StringBuffer();
+                int took = 0;
                 for (int i = skip; i < Math.min(skip + take, arrayOfCaches.length); i++) {
                     Cache cache = arrayOfCaches[i];
-                    mapOfCaches.put(cache.getGcCode(), cache);
-                    CacheCodes.append(",").append(cache.getGcCode());
+                    if (cache.getGcCode().toLowerCase().startsWith("gc")) {
+                        mapOfCaches.put(cache.getGcCode(), cache);
+                        CacheCodes.append(",").append(cache.getGcCode());
+                        took++;
+                    }
                 }
-                String CacheList = CacheCodes.substring(1);
+                if (took == 0) return OK;
                 skip = skip + take;
 
                 boolean doRetry;
@@ -416,7 +420,7 @@ public class GroundspeakAPI {
                     doRetry = false;
                     try {
                         Response<JSONArray> r = getNetz()
-                                .get(getUrl(1, String.format(Locale.US, "geocaches?referenceCodes=%s&fields=%s&lite=%b", CacheList, fields, onlyLiteFields)))
+                                .get(getUrl(1, String.format(Locale.US, "geocaches?referenceCodes=%s&fields=%s&lite=%b", CacheCodes.substring(1), fields, onlyLiteFields)))
                                 .ensureSuccess()
                                 .asJsonArray();
 

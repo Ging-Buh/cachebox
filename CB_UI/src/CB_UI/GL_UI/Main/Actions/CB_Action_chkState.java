@@ -37,12 +37,11 @@ public class CB_Action_chkState extends CB_Action {
     private ProgressDialog pd;
     private boolean cancel = false;
     private final RunnableReadyHandler ChkStatRunnable = new RunnableReadyHandler() {
-        final int BlockSize = 100; // die Live API lässt nur maximal 100 zu!
+        final int BlockSize = 50; // size you like, limit handled in GroundspeakAPI
         // API 1.0 has a limit of 50, handled in GroundspeakAPI
 
         @Override
         public void run() {
-            Log.debug(sKlasse,"chkState started");
             cancel = false;
             ArrayList<Cache> chkList = new ArrayList<>();
 
@@ -55,7 +54,7 @@ public class CB_Action_chkState extends CB_Action {
                 }
 
             }
-            float ProgressInkrement = 100.0f / (chkList.size() / BlockSize);
+            float ProgressInkrement = 50.0f / (chkList.size() / BlockSize);
 
             // in Blöcke Teilen
 
@@ -70,7 +69,6 @@ public class CB_Action_chkState extends CB_Action {
             float progress = 0;
 
             do {
-                Log.debug(sKlasse,"Begin block from " + start + " stop " + (start + BlockSize));
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {
@@ -96,12 +94,10 @@ public class CB_Action_chkState extends CB_Action {
                         index++;
                     } while (Iterator2.hasNext());
 
-                    Log.debug(sKlasse,"Fetch block from " + start);
                     result = GroundspeakAPI.fetchGeocacheStatus(caches);
                     addedReturnList.addAll(caches);
-                    if (result == -1) {
-                        // the real reason is GroundspeakAPI.APIError
-                        GL.that.Toast(ConnectionError.INSTANCE);
+                    if (result != GroundspeakAPI.OK) {
+                        GL.that.Toast(GroundspeakAPI.LastAPIError);
                         break;
                     }
                     start += BlockSize;
@@ -111,7 +107,7 @@ public class CB_Action_chkState extends CB_Action {
 
                 ProgresssChangedEventList.Call("", (int) progress);
 
-            } while (caches.size() == BlockSize + 1 && !cancelThread);
+            } while (caches.size() == BlockSize && !cancelThread);
 
 
 

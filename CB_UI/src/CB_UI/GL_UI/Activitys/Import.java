@@ -80,6 +80,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         @Override
         public void onCheckedChanged(ChkBox view, boolean isChecked) {
             if (checkImportFromCBServer.isChecked()) {
+                refreshCBServerList();
                 CBServerCollapseBox.expand();
             } else {
                 CBServerCollapseBox.collapse();
@@ -847,7 +848,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                 if (answer != null) {
                     if (answer instanceof RpcAnswer_GetExportList) {
                         cbServerExportList = ((RpcAnswer_GetExportList) answer).getList();
-                        GL_MsgBox.Show("RpcAntwort: " + answer.toString());
+                        // GL_MsgBox.Show("RpcAntwort: " + answer.toString());
                     } else {
                         cbServerExportList = null;
                     }
