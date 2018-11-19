@@ -91,7 +91,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
     private volatile BreakawayImportThread importThread;
     private float CollapseBoxHeight;
 
-    public Import_CBServer(int importType) {
+    public Import_CBServer() {
         super(ActivityRec(), "importActivity");
         CollapseBoxHeight = UI_Size_Base.that.getButtonHeight() * 6;
         scrollBox = new ScrollBox(ActivityRec());

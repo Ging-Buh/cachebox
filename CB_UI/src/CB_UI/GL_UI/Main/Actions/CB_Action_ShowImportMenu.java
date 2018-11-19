@@ -141,8 +141,8 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
                     case MenuID.MI_IMPORT_GPX:
                         new Import(MenuID.MI_IMPORT_GPX).show();
                         return true;
-                    case MenuID.MI_IMPORT_CBS:
-                        new Import_CBServer(MenuID.MI_IMPORT_CBS).show();
+                    case MenuID.MI_EXPORT_CBS:
+                        new Import_CBServer().show();
                         return true;
                     case MenuID.MI_IMPORT_GCV:
                         new Import(MenuID.MI_IMPORT_GCV).show();
@@ -192,7 +192,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
         icm.addItem(MenuID.MI_MAP_DOWNOAD, "MapDownload");
         icm.addDivider();
         icm.addItem(MenuID.MI_EXPORT_RUN, "GPX_EXPORT");
-        if (Config.CBS_IP.getValue().length() > 0) icm.addItem(MenuID.MI_IMPORT_CBS, "ToCBServer");
+        if (Config.CBS_IP.getValue().length() > 0) icm.addItem(MenuID.MI_EXPORT_CBS, "ToCBServer");
         return icm;
     }
 

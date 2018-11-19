@@ -26,6 +26,7 @@ import CB_Utils.http.WebbException;
 import CB_Utils.http.WebbUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
@@ -115,9 +116,9 @@ public class GroundspeakAPI {
                         LastAPIError = "******* Aborting: After retry API-Limit is still exceeded.";
                     }
                 } else {
-                    // todo Handle 401, 500, 404 ...
+                    // todo Handle 401, 500, ...
                     try {
-                        ej = (JSONObject) re.getErrorBody();
+                        ej = new JSONObject(new JSONTokener((String) re.getErrorBody()));
                         if (ej != null) {
                             LastAPIError = ej.optString("errorMessage", "" + APIError);
                         } else {
@@ -436,7 +437,10 @@ public class GroundspeakAPI {
                     } catch (Exception ex) {
                         doRetry = retry(ex);
                         if (!doRetry) {
-                            return ERROR;
+                            if (APIError != 404)
+                                return ERROR;
+                            doRetry = false;
+                            Log.err(log, "skipped block cause: " + LastAPIError);
                         }
                     }
                 }
