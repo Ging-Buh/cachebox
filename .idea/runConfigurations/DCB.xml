@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="DCB" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="de.DCB" />
+    <module name="Desktop-Launcher" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/WorkingDir" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
