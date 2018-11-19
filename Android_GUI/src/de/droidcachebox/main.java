@@ -699,7 +699,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             distance = waypoint.Distance();
         }
         if (distance > Config.SoundApproachDistance.getValue()) {
-            ((main) main.mainActivity).runOnUiThread(new Runnable() {
+            (main.mainActivity).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     GlobalCore.switchToCompassCompleted = false;

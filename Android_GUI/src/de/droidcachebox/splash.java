@@ -142,10 +142,6 @@ public class splash extends Activity {
         int h = displaymetrics.heightPixels;
         int w = displaymetrics.widthPixels;
 
-        int sw = h > w ? w : h;
-        sw /= GlobalCore.displayDensity;
-
-
         int dpH = (int) (h / GlobalCore.displayDensity + 0.5);
         int dpW = (int) (w / GlobalCore.displayDensity + 0.5);
 
@@ -184,29 +180,34 @@ public class splash extends Activity {
         if (GcCode == null && guid == null && uri != null) {
             String uriHost = uri.getHost().toLowerCase(Locale.US);
             String uriPath = uri.getPath().toLowerCase(Locale.US);
+            if (uri.getScheme().startsWith("geo")) {
+                String LatLon = uri.getSchemeSpecificPart();
+                // todo prperation for to create a tempory waypoint on the map and go there
+            }
+            else {
+                if (uriHost.contains("geocaching.com")) {
+                    GcCode = uri.getQueryParameter("wp");
+                    guid = uri.getQueryParameter("guid");
 
-            if (uriHost.contains("geocaching.com")) {
-                GcCode = uri.getQueryParameter("wp");
-                guid = uri.getQueryParameter("guid");
-
-                if (GcCode != null && GcCode.length() > 0) {
-                    GcCode = GcCode.toUpperCase(Locale.US);
-                    guid = null;
-                } else if (guid != null && guid.length() > 0) {
-                    GcCode = null;
-                    guid = guid.toLowerCase(Locale.US);
-                } else {
-                    // warning.showToast(res.getString(R.string.err_detail_open));
-                    finish();
-                    return;
-                }
-            } else if (uriHost.contains("coord.info")) {
-                if (uriPath != null && uriPath.startsWith("/gc")) {
-                    GcCode = uriPath.substring(1).toUpperCase(Locale.US);
-                } else {
-                    // warning.showToast(res.getString(R.string.err_detail_open));
-                    finish();
-                    return;
+                    if (GcCode != null && GcCode.length() > 0) {
+                        GcCode = GcCode.toUpperCase(Locale.US);
+                        guid = null;
+                    } else if (guid != null && guid.length() > 0) {
+                        GcCode = null;
+                        guid = guid.toLowerCase(Locale.US);
+                    } else {
+                        // warning.showToast(res.getString(R.string.err_detail_open));
+                        finish();
+                        return;
+                    }
+                } else if (uriHost.contains("coord.info")) {
+                    if (uriPath != null && uriPath.startsWith("/gc")) {
+                        GcCode = uriPath.substring(1).toUpperCase(Locale.US);
+                    } else {
+                        // warning.showToast(res.getString(R.string.err_detail_open));
+                        finish();
+                        return;
+                    }
                 }
             }
         }

@@ -1,47 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="de.droidcachebox" android:installLocation="auto"
-	android:versionCode="20181119" android:versionName="20181119">
-	<uses-sdk android:minSdkVersion="19" android:targetSdkVersion="27" />
-	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
-	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="de.droidcachebox" android:installLocation="auto">
 
-	<uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
-	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
-	<uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
-	<uses-permission android:name="android.permission.CAMERA"></uses-permission>
-	<uses-permission android:name="android.permission.VIBRATE"></uses-permission>
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"> </uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"> </uses-permission>
+
+	<uses-permission android:name="android.permission.WAKE_LOCK"> </uses-permission>
+	<uses-permission android:name="android.permission.INTERNET"> </uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"> </uses-permission>
+	<uses-permission android:name="android.permission.RECORD_AUDIO"> </uses-permission>
+	<uses-permission android:name="android.permission.CAMERA"> </uses-permission>
+	<uses-permission android:name="android.permission.VIBRATE"> </uses-permission>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"> </uses-permission>
 	
-	<uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true"></uses-feature>
-	<uses-feature android:name="android.hardware.camera" android:required="false"></uses-feature>
-	<uses-feature android:name="android.hardware.camera.autofocus" android:required="false"></uses-feature>
+	<uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true"> </uses-feature>
+	<uses-feature android:name="android.hardware.camera" android:required="false"> </uses-feature>
+	<uses-feature android:name="android.hardware.camera.autofocus" android:required="false"> </uses-feature>
 
 
 	<application android:label="@string/app_name" android:theme="@style/Theme_day" android:icon="@drawable/cb" android:vmSafeMode="false" android:allowBackup="true">
-		<activity android:name=".main" android:label="@string/app_name" android:screenOrientation="behind"
-			    android:alwaysRetainTaskState="true"
-				android:configChanges="orientation|keyboard|keyboardHidden"
-              	android:launchMode="singleTask"
-              	android:windowSoftInputMode="adjustPan"
-              	android:exported="true">
-              	<intent-filter>
+		<activity android:name=".main"
+				  android:label="@string/app_name"
+				  android:screenOrientation="behind"
+				  android:alwaysRetainTaskState="true"
+				  android:configChanges="orientation|keyboard|keyboardHidden"
+				  android:launchMode="singleTask"
+				  android:windowSoftInputMode="adjustPan"
+				  android:exported="true">
+			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
-				
 			</intent-filter>
 		</activity>
+
 		<activity android:name="splash" android:launchMode="singleTask" >
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
+
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW"/>
+				<category android:name="android.intent.category.DEFAULT"/>
+				<category android:name="android.intent.category.BROWSABLE"/>
+				<data android:scheme="geo"/>
+			</intent-filter>
+
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
 				<category android:name="android.intent.category.DEFAULT" />
 				<category android:name="android.intent.category.BROWSABLE" />
 				<data android:scheme="http" android:host="coord.info"
-					android:pathPrefix="/GC" />
+					  android:pathPrefix="/GC" />
 			</intent-filter>
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
@@ -99,16 +107,15 @@
 		<activity android:name="de.droidcachebox.Views.Forms.GcApiLogin" android:screenOrientation="behind" android:theme="@style/Theme_day_transparent" />		    
 
 		<provider
-        android:name="android.support.v4.content.FileProvider"
-        android:authorities="de.droidcachebox.android.fileprovider"
-        android:exported="false"
-        android:grantUriPermissions="true">
-        <meta-data
-            android:name="android.support.FILE_PROVIDER_PATHS"
-            android:resource="@xml/file_paths">           
-        </meta-data>
-        </provider>
- 
- 
+				android:name="android.support.v4.content.FileProvider"
+				android:authorities="de.droidcachebox.android.fileprovider"
+				android:exported="false"
+				android:grantUriPermissions="true">
+			<meta-data
+					android:name="android.support.FILE_PROVIDER_PATHS"
+					android:resource="@xml/file_paths">
+			</meta-data>
+		</provider>
+
 	</application>
 </manifest>
