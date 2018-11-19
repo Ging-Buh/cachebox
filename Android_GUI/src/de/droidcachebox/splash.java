@@ -25,7 +25,10 @@ import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.DisplayType;
-import CB_UI_Base.Math.*;
+import CB_UI_Base.Math.DevicesSizes;
+import CB_UI_Base.Math.GL_UISizes;
+import CB_UI_Base.Math.Size;
+import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.CB_SLF4J;
 import CB_Utils.Log.Log;
 import CB_Utils.Log.LogLevel;
@@ -395,7 +398,7 @@ public class splash extends Activity {
                                 // if this button is clicked, run Sandbox Path
 
                                 showSandbox = true;
-                                Config.AcceptChanges();
+                                // Config.AcceptChanges();
 
                                 // close select dialog
                                 dialog.dismiss();
@@ -1059,6 +1062,7 @@ public class splash extends Activity {
 
         // save askAgain for show SandboxMsg
         Config.showSandbox.setValue(showSandbox);
+        Log.info(log, "showSandbox to DB");
         Config.AcceptChanges();
 
         // UiSize Structur für die Berechnung der Größen zusammen stellen!
@@ -1067,6 +1071,7 @@ public class splash extends Activity {
         Log.info(log, "Screen width/height:" + width + "/" + height);
 
         if (ui == null) {
+            Log.info(log, "getResources in splash");
             Resources res = splash.this.getResources();
 
             Log.debug(log, "create new devices-sizes");

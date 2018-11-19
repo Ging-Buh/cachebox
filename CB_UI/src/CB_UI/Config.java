@@ -180,7 +180,7 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
         validateSetting("CacheMapData", "false");
         validateSetting("CacheImageData", "false");
         validateSetting("OsmMinLevel", "8");
-        validateSetting("OsmMaxLevel", "17");
+        validateSetting("OsmMaxLevel", "21");
         validateSetting("OsmCoverage", "1000");
         validateSetting("SuppressPowerSaving", "true");
         validateSetting("PlaySounds", "true");
@@ -229,7 +229,7 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
         validateSetting("MoveMapCenterMaxSpeed", "20");
         validateSetting("lastZoomLevel", "14");
         validateSetting("quickButtonShow", "true");
-        validateSetting("quickButtonList", "5,0,1,3,2");
+        validateSetting("quickButtonList", "1,15,14,19,12,23,2,13");
         validateSetting("PremiumMember", "false");
 
         // api search settings
