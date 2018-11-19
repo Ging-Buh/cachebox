@@ -3,7 +3,6 @@ package de.CB_Utils.fileProvider;
 import CB_Utils.Log.Log;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FilenameFilter;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.MalformedURLException;

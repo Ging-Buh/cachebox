@@ -47,7 +47,7 @@
             <de.droidcachebox.Components.CacheNameView
                 android:id="@+id/main_cache_name_view"
                 android:layout_width="fill_parent"
-                android:layout_height="@+dimen/SliderHeight" />
+                android:layout_height="@dimen/SliderHeight" />
             
         </LinearLayout>
         

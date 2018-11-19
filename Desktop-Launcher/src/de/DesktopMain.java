@@ -21,17 +21,21 @@ import CB_Utils.Settings.PlatformSettings.IPlatformSettings;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.IChanged;
 import ch.fhnw.imvs.gpssimulator.SimulatorMain;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+
 import de.CB_Texturepacker.Desktop_Packer;
 import de.Map.DesktopManager;
 import de.cb.sqlite.DesktopDB;
+
 import org.mapsforge.map.model.DisplayModel;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
+
 import java.awt.*;
 import java.io.File;
 import java.util.Timer;
@@ -48,7 +52,16 @@ public class DesktopMain {
     static Preferences prefs = Preferences.userNodeForPackage(de.DesktopMain.class);
 
     public static void start(DevicesSizes ui, boolean debug, boolean scissor, final boolean simulate, final Frame frame) {
-        Plattform.used = Plattform.Desktop;
+
+        if (isWindows()) {
+            Plattform.used = Plattform.DesktopWin;
+        } else if (isMac()) {
+            Plattform.used = Plattform.DesktopMac;
+        } else if (isUnix()) {
+            Plattform.used = Plattform.DesktopLinux;
+        }
+
+
         frame.setVisible(false);
 
         // Initial Desctop TexturePacker
@@ -506,5 +519,24 @@ public class DesktopMain {
                 CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
             }
         });
+    }
+
+
+    private static String OS = System.getProperty("os.name").toLowerCase();
+
+    public static boolean isWindows() {
+        return (OS.indexOf("win") >= 0);
+    }
+
+    public static boolean isMac() {
+        return (OS.indexOf("mac") >= 0);
+    }
+
+    public static boolean isUnix() {
+        return (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0);
+    }
+
+    public static boolean isSolaris() {
+        return (OS.indexOf("sunos") >= 0);
     }
 }

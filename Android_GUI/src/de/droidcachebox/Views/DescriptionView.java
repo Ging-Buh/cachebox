@@ -16,7 +16,7 @@ import android.widget.RelativeLayout;
 import de.droidcachebox.Custom_Controls.DescriptionViewControl;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.R;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.LoggerFactory;
 
 public class DescriptionView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent {
     private static DescriptionViewControl mDescriptionViewControl;
