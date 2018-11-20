@@ -13,7 +13,3 @@ dependencies {
     implementation fileTree(dir: '../libs', include: ['commons-httpclient-3.1.jar'])
 
 }
-
-
-sourceCompatibility = "8"
-targetCompatibility = "8"
