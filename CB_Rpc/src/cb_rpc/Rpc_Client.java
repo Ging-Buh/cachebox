@@ -10,7 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class Rpc_Client {
-    // XmlRpc Objecte f�r den Zugriff auf den RPC-Server
+    // XmlRpc Objecte für den Zugriff auf den RPC-Server
     private XmlRpcClient client = null;
 
     public Rpc_Client() {
@@ -18,7 +18,7 @@ public class Rpc_Client {
     }
 
     /**
-     * Erstellt die Config-Objecte f�r den Zugriff auf den PCharge-Server �ber XmlRpc
+     * Erstellt die Config-Objecte für den Zugriff auf den PCharge-Server über XmlRpc
      */
     private void createRpcConfig() {
         client = null;

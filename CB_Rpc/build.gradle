@@ -4,12 +4,13 @@ sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.resources.srcDirs = [ "assets/" ]
 
 dependencies {
     implementation project(":CB_Utils")
 
     implementation fileTree(dir: '../libs', include: ['servlet-api-6.0.16.jar'])
     implementation fileTree(dir: '../libs', include: ['mina-core-2.0.4.jar'])
-    implementation fileTree(dir: '../libs', include: ['commons-httpclient-3.1.jar'])
-
+    implementation group: 'commons-httpclient', name: 'commons-httpclient', version: '3.1'
+    
 }

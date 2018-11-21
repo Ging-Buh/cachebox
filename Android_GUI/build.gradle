@@ -67,8 +67,8 @@ android {
         applicationId "de.droidcachebox"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 20181120
-        versionName "20181120"
+        versionCode 20181121
+        versionName "20181121"
         multiDexEnabled true
     }
 
