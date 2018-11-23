@@ -265,9 +265,6 @@ public class PlatformConnector {
         sendToMediaScannerList.add(filename);
     }
 
-    /**
-     * Interface definition for a callback to be invoked when a platform must show a view.
-     */
     public interface IShowViewListener {
         void show(ViewID viewID, int left, int top, int right, int bottom);
 
@@ -282,7 +279,6 @@ public class PlatformConnector {
         void dayNightSwitched();
 
         void firstShow();
-
     }
 
     public interface IHardwarStateListener {
@@ -301,7 +297,6 @@ public class PlatformConnector {
         void switchToGpsMeasure();
 
         void switchtoGpsDefault();
-
     }
 
     // ----------------------------------------

@@ -95,7 +95,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
         public boolean onClick(int which, Object data) {
             if (which == 1) {
                 solver.remove(mSelectedIndex);
-                solver = new Solver(solver.getSolverString());
+                solver = new Solver(solver.getSolverString(), GlobalCore.getInstance());
                 solver.Solve();
                 solver.add(solver.size(), new SolverZeile(solver, ""));
 
@@ -162,13 +162,13 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
 
     private void intiList() {
         if (cache == null) {
-            solver = new Solver("");
+            solver = new Solver("", GlobalCore.getInstance());
         } else {
             this.cache = GlobalCore.getSelectedCache();
             String s = Database.GetSolver(this.cache);
             if (s == null)
                 s = "";
-            solver = new Solver(s);
+            solver = new Solver(s, GlobalCore.getInstance());
             solver.Solve();
             // wenn der Solver noch leer ist oder die letzte Zeile nicht leer ist dann am Ende eine leere Zeile einfügen
             if ((solver.size() == 0) || (solver.get(solver.size() - 1).getOrgText().length() > 0)) {
@@ -290,25 +290,14 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
     }
 
     public void ChangeLine() {
-        // Show Dialog
-        CB_RectF rec = GL_UISizes.UI_Left.copy();
-
-        String SolverString = solver.get(mSelectedIndex).getOrgText();
-
-        // SolverDialog solverDialog = new SolverDialog(rec, "SolverDialog", SolverString);
-        SolverDialog2 solverDialog = new SolverDialog2(cache, solver, SolverString, true, DataType.None);
-
+        if (solver == null || mSelectedIndex < 0) return;
+        SolverDialog2 solverDialog = new SolverDialog2(cache, solver, solver.get(mSelectedIndex).getOrgText(), true, DataType.None);
         neu = false;
         solverDialog.show(backListener);
     }
 
     public void InsertLine() {
-        CB_RectF rec = GL_UISizes.UI_Left.copy();
-
-        String SolverString = "";
-
-        SolverDialog2 solverDialog = new SolverDialog2(cache, solver, SolverString, true, DataType.None);
-
+        SolverDialog2 solverDialog = new SolverDialog2(cache, solver, "", true, DataType.None);
         neu = true;
         solverDialog.show(backListener);
     }

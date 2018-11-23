@@ -42,12 +42,20 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Log.Log;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 
+import java.io.BufferedReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import static CB_Core.Api.API_ErrorEventHandlerList.handleApiKeyError;
 import static CB_Core.Api.GroundspeakAPI.isAccessTokenInvalid;
+import static CB_Utils.fileProvider.FileFactory.createFile;
 
 /**
  * @author ging-buh
@@ -55,23 +63,22 @@ import static CB_Core.Api.GroundspeakAPI.isAccessTokenInvalid;
  * @author longri
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface {
-    public static final int CurrentRevision =20181121;
     public static final String CurrentVersion = "2.0.";
-    public static final String VersionPrefix = "3206";
+    // public static final int CurrentRevision = 20181121;
+    private int CurrentRevision;
+    // public static final String VersionPrefix = "3206";
+    private String VersionPrefix;
     public static final String aboutMsg1 = "Team Cachebox (2011-2018)" + br;
     public static final String teamLink = "www.team-cachebox.de";
     public static final String aboutMsg2 = br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";
     public static final String aboutMsg = aboutMsg1 + teamLink + aboutMsg2;
     public static final String splashMsg = aboutMsg + br + br + "POWERED BY:";
-    // ###########create instance#############
-    public final static GlobalCore INSTANCE = new GlobalCore();
     private static final String log = "GlobalCore";
     public static boolean restartAfterKill = false;
     public static String restartCache;
     public static String restartWaypoint;
     public static boolean filterLogsOfFriends = false;
     public static Track AktuelleRoute = null;
-
     // #######################################
     public static int aktuelleRouteCount = 0;
     public static boolean switchToCompassCompleted = false;
@@ -80,6 +87,8 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     public static boolean RunFromSplash = false;
     static boolean JokerPwChk = false;
     static boolean JokerPwExist = false;
+    // ###########create instance#############
+    private static GlobalCore mINSTANCE;
     private static Cache selectedCache = null;
     private static boolean autoResort;
     private static Cache nearestCache = null;
@@ -89,6 +98,12 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     private GlobalCore() {
         super();
         Solver.solverCacheInterface = this;
+        mINSTANCE = this;
+    }
+
+    public static GlobalCore getInstance() {
+        if (mINSTANCE == null) mINSTANCE = new GlobalCore();
+        return mINSTANCE;
     }
 
     public static Cache getSelectedCache() {
@@ -213,9 +228,26 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
         return false;
     }
 
-    public static String getVersionString() {
-        final String ret = "Version: " + CurrentVersion + String.valueOf(CurrentRevision) + "  " + (VersionPrefix.equals("") ? "" : "(" + VersionPrefix + ")");
-        return ret;
+    public String getVersionString() {
+        try {
+            FileHandle fileHandle = Gdx.files.internal("build.info");
+            String info = fileHandle.readString("utf-8");
+            /*
+            File file = FileFactory.createFile("build.info");
+            BufferedReader br = new BufferedReader(file.getFileReader());
+            String info = br.readLine();
+            */
+            String[] sections = info.split("#");
+            VersionPrefix = sections[1];
+            String dat = sections[4];
+            Date d = new SimpleDateFormat("yyyy-MM-dd").parse(dat);
+            CurrentRevision = Integer.decode((new SimpleDateFormat("yyyyMMdd")).format(d));
+            final String ret = "Version: " + CurrentVersion + String.valueOf(CurrentRevision) + "  (" + VersionPrefix + ")";
+            return ret;
+        } catch (Exception ex) {
+            Log.err(log,"getVersionString " + ex.getLocalizedMessage());
+            return "";
+        }
     }
 
     public static Coordinate getSelectedCoord() {
@@ -355,6 +387,10 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     @Override
     protected String getVersionPrefix() {
         return VersionPrefix;
+    }
+
+    public Integer getCurrentRevision() {
+        return CurrentRevision;
     }
 
     // Interface für den Solver zum Zugriff auf den SelectedCache.

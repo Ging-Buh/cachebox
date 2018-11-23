@@ -68,8 +68,8 @@ class DCB {
             }
         });
 
-        if (files.length > 0 && Config.installedRev.getValue() < GlobalCore.CurrentRevision) {
-            Config.installedRev.setValue(GlobalCore.CurrentRevision);
+        if (files.length > 0 && Config.installedRev.getValue() < GlobalCore.getInstance().getCurrentRevision()) {
+            Config.installedRev.setValue(GlobalCore.getInstance().getCurrentRevision());
             Config.newInstall.setValue(true);
             Config.AcceptChanges();
         } else {

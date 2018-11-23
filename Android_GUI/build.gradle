@@ -1,6 +1,14 @@
+import java.text.SimpleDateFormat
+
 apply plugin: "com.android.application"
 
 configurations { natives }
+
+def static buildTime() {
+    def df = new SimpleDateFormat("yyyyMMdd")
+    df.setTimeZone(TimeZone.getTimeZone("UTC"))
+    return df.format(new Date())
+}
 
 dependencies {
 
@@ -67,8 +75,8 @@ android {
         applicationId "de.droidcachebox"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 20181121
-        versionName "20181121"
+        versionCode = Integer.decode(buildTime())
+        versionName = buildTime()
         multiDexEnabled true
     }
 

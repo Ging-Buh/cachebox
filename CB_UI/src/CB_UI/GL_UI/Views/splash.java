@@ -71,7 +71,6 @@ public class splash extends MainViewBase {
 
     public splash(float X, float Y, float Width, float Height, String Name) {
         super(X, Y, Width, Height, Name);
-
     }
 
     @Override
@@ -148,7 +147,7 @@ public class splash extends MainViewBase {
         this.addNext(CB_Logo, FIXED);
         this.addLast(dummy);
 
-        String VersionString = GlobalCore.getVersionString();
+        String VersionString = GlobalCore.getInstance().getVersionString();
         descTextView = new Label(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.splashMsg, null, null, WrapType.MULTILINE).setHAlignment(HAlignment.CENTER);
         descTextView.setHeight(descTextView.getTextHeight());
         this.addLast(descTextView);

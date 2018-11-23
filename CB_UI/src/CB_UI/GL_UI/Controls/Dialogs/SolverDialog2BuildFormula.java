@@ -1,6 +1,7 @@
 package CB_UI.GL_UI.Controls.Dialogs;
 
 import CB_Core.Solver.Solver;
+import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 
@@ -13,7 +14,7 @@ public class SolverDialog2BuildFormula {
 
     public SolverDialog2BuildFormula(String sForm) {
         this.sForm = sForm;
-        solver = new Solver(sForm);
+        solver = new Solver(sForm, GlobalCore.getInstance());
         solver.Solve();
         labels = new ArrayList<Label>();
     }

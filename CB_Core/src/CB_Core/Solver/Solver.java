@@ -19,7 +19,8 @@ public class Solver extends ArrayList<SolverZeile> {
     public SortedMap<String, Integer> MissingVariables = null;
     String source;
 
-    public Solver(String source) {
+    public Solver(String source, SolverCacheInterface sci) {
+        solverCacheInterface = sci;
         if (source == null)
             source = "";
         if (operatoren.size() == 0) {

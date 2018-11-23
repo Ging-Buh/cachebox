@@ -53,7 +53,7 @@ import CB_Utils.Plattform;
 public class SolverView extends CB_View_Base implements SelectedCacheEvent, KeyboardFocusChangedEvent {
 
     private WindowState windowState = WindowState.Both;
-    private Solver solver = new Solver("");
+    private Solver solver = new Solver("", GlobalCore.getInstance());
     private boolean mustLoadSolver;
     private Cache aktCache;
 
@@ -345,7 +345,7 @@ public class SolverView extends CB_View_Base implements SelectedCacheEvent, Keyb
 
         edResult.setEditable(true);
 
-        solver = new Solver(edInput.getText());
+        solver = new Solver(edInput.getText(), GlobalCore.getInstance());
         if (!solver.Solve()) {
             GL.that.Toast("Error", Toast.LENGTH_SHORT);
         }

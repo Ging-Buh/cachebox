@@ -11,6 +11,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction.IFunctionResult;
 import CB_UI.GL_UI.Controls.CoordinateButton;
+import CB_UI.GlobalCore;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.*;
@@ -727,7 +728,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
         // cbFormulaAsText.setText("Als Text in \"\" eintragen");
         cbFormulaAsText.setChecked(asText);
         lFormulaAsText = new Label("Als Text in \"\" eintragen");
-        Solver solv = new Solver(sForm);
+        Solver solv = new Solver(sForm, GlobalCore.getInstance());
         if (solv.Solve()) {
             if (solv.MissingVariables != null) {
                 for (String mv : solv.MissingVariables.keySet()) {

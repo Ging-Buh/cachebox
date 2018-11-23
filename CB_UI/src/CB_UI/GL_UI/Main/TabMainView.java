@@ -343,12 +343,12 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
             }
         });
 
-        CoreSettingsForward.VersionString = GlobalCore.getVersionString();
+        CoreSettingsForward.VersionString = GlobalCore.getInstance().getVersionString();
         CoreSettingsForward.DisplayOff = Energy.DisplayOff();
         Energy.addChangedEventListener(new IChanged() {
             @Override
             public void handleChange() {
-                CoreSettingsForward.VersionString = GlobalCore.getVersionString();
+                CoreSettingsForward.VersionString = GlobalCore.getInstance().getVersionString();
                 CoreSettingsForward.DisplayOff = Energy.DisplayOff();
             }
         });

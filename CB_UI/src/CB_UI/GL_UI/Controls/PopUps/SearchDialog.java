@@ -129,7 +129,7 @@ public class SearchDialog extends PopUp_Base {
      * 1 = Gc-Code <br/>
      * 2 = Owner <br/>
      */
-    private int mSearchState = 0;
+    private SearchMode mSearchState = SearchMode.Titel;
     /**
      * Index of the beginning search
      */
@@ -163,7 +163,7 @@ public class SearchDialog extends PopUp_Base {
 
         rec.setWidth(this.getWidth() - (margin * 2));
 
-        mEingabe = new EditTextField( rec, this, "mEingabe", WrapType.SINGLELINE);
+        mEingabe = new EditTextField(rec, this, "mEingabe", WrapType.SINGLELINE);
 
         mEingabe.setTextFieldListener(new TextFieldListener() {
 
@@ -213,47 +213,41 @@ public class SearchDialog extends PopUp_Base {
         this.addChild(mEingabe);
 
         setLang();
-        switchSearcheMode(0);
+        switchSearcheMode(SearchMode.Titel);
 
         mBtnCancel.setOnClickListener(new OnClickListener() {
-
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 close();
                 return true;
             }
-
         });
 
         mTglBtnTitle.setOnClickListener(new OnClickListener() {
-
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                switchSearcheMode(0);
+                switchSearcheMode(SearchMode.Titel);
                 return true;
             }
         });
 
         mTglBtnGc.setOnClickListener(new OnClickListener() {
-
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                switchSearcheMode(1);
+                switchSearcheMode(SearchMode.GcCode);
                 return true;
             }
         });
 
         mTglBtnOwner.setOnClickListener(new OnClickListener() {
-
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                switchSearcheMode(2);
+                switchSearcheMode(SearchMode.Owner);
                 return true;
             }
         });
 
         mBtnSearch.setOnClickListener(new OnClickListener() {
-
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 GL.that.setFocusedEditTextField(null);
@@ -265,7 +259,6 @@ public class SearchDialog extends PopUp_Base {
         });
 
         mBtnNext.setOnClickListener(new OnClickListener() {
-
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 GL.that.setFocusedEditTextField(null);
@@ -276,7 +269,6 @@ public class SearchDialog extends PopUp_Base {
         });
 
         mBtnFilter.setOnClickListener(new OnClickListener() {
-
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 GL.that.setFocusedEditTextField(null);
@@ -291,7 +283,6 @@ public class SearchDialog extends PopUp_Base {
         });
 
         mTglBtnOnline.setOnClickListener(new OnClickListener() {
-
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 setFilterBtnState();
@@ -341,20 +332,20 @@ public class SearchDialog extends PopUp_Base {
      *              1 = Gc-Code <br/>
      *              2 = Owner <br/>
      */
-    private void switchSearcheMode(int state) {
+    private void switchSearcheMode(SearchMode state) {
         mSearchState = state;
 
-        if (state == 0) {
+        if (state == SearchMode.Titel) {
             mTglBtnTitle.setState(1);
             mTglBtnGc.setState(0);
             mTglBtnOwner.setState(0);
         }
-        if (state == 1) {
+        if (state == SearchMode.GcCode) {
             mTglBtnTitle.setState(0);
             mTglBtnGc.setState(1);
             mTglBtnOwner.setState(0);
         }
-        if (state == 2) {
+        if (state == SearchMode.Owner) {
             mTglBtnTitle.setState(0);
             mTglBtnGc.setState(0);
             mTglBtnOwner.setState(1);
@@ -472,13 +463,13 @@ public class SearchDialog extends PopUp_Base {
                     tmp = Database.Data.Query.get(i);
 
                     switch (mSearchState) {
-                        case 0:
+                        case Titel:
                             criterionMatches = tmp.getName().toLowerCase().contains(searchPattern);
                             break;
-                        case 1:
+                        case GcCode:
                             criterionMatches = tmp.getGcCode().toLowerCase().contains(searchPattern);
                             break;
-                        case 2:
+                        case Owner:
                             criterionMatches = tmp.getOwner().toLowerCase().contains(searchPattern);
                             break;
                     }
@@ -636,23 +627,20 @@ public class SearchDialog extends PopUp_Base {
                 // * 2 = Owner <br/>
 
                 switch (mSearchState) {
-                    case 0:
+                    case Titel:
                         searchC = new SearchGCName(50, searchCoord, 5000000, searchPattern);
                         break;
 
-                    case 1:
+                    case GcCode:
                         searchC = new SearchGC(searchPattern);
                         break;
 
-                    case 2:
+                    case Owner:
                         searchC = new SearchGCOwner(50, searchCoord, 5000000, searchPattern);
                         break;
                 }
 
-                if (searchC == null) {
-
-                    return;
-                }
+                if (searchC == null) return;
 
                 CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id, this);
 
@@ -735,11 +723,11 @@ public class SearchDialog extends PopUp_Base {
         FilterInstances.getLastFilter().filterGcCode = "";
         FilterInstances.getLastFilter().filterOwner = "";
 
-        if (mSearchState == 0)
+        if (mSearchState == SearchMode.Titel)
             FilterInstances.getLastFilter().filterName = searchPattern;
-        else if (mSearchState == 1)
+        else if (mSearchState == SearchMode.GcCode)
             FilterInstances.getLastFilter().filterGcCode = searchPattern;
-        if (mSearchState == 2)
+        if (mSearchState == SearchMode.Owner)
             FilterInstances.getLastFilter().filterOwner = searchPattern;
 
         ApplyFilter();
@@ -753,41 +741,26 @@ public class SearchDialog extends PopUp_Base {
         EditFilterSettings.ApplyFilter(filter);
     }
 
-    public void addSearch(final String searchPattern, final searchMode Mode) {
+    public void doSearch(final String searchPattern, final SearchMode searchMode) {
         Log.debug(log, "addSearch " + searchPattern);
         try {
-            GL.that.RunOnGL(new IRunOnGL() {
-                @Override
-                public void run() { //step 1
-                    mEingabe.setText(searchPattern);
-                    GL.that.RunOnGL(new IRunOnGL() {
-                        @Override
-                        public void run() {//step 2
-                            switchSearcheMode(Mode.ordinal());
-                            GL.that.RunOnGL(new IRunOnGL() {
-                                @Override
-                                public void run() {//step 3
-                                    mTglBtnOnline.setState(1);
-                                    GL.that.RunOnGL(new IRunOnGL() {
-                                        @Override
-                                        public void run() {//step 4
-                                            setFilterBtnState();
-                                            GL.that.RunOnGL(new IRunOnGL() {
-                                                @Override
-                                                public void run() {//step 5
-                                                    mBtnSearch.performClick();
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
+            GL.that.RunOnGL(() -> {
+                mEingabe.setText(searchPattern);
+                GL.that.RunOnGL(() -> {
+                    switchSearcheMode(searchMode);
+                    GL.that.RunOnGL(() -> {
+                        mTglBtnOnline.setState(1);
+                        GL.that.RunOnGL(() -> {
+                            setFilterBtnState();
+                            GL.that.RunOnGL(() -> {
+                                mBtnSearch.performClick();
                             });
-                        }
+                        });
                     });
-                }
+                });
             });
         } catch (Exception e) {
-            Log.err(log, "Add search from notification Mail", e);
+            Log.err(log, "doSearch", e);
         }
     }
 
@@ -883,7 +856,7 @@ public class SearchDialog extends PopUp_Base {
         // do nothing is static dialog
     }
 
-    public enum searchMode {
+    public enum SearchMode {
         Titel, GcCode, Owner
     }
 

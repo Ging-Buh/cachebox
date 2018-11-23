@@ -167,7 +167,6 @@ public class splash extends Activity {
         // Check if use small skin
         GlobalCore.useSmallSkin = GlobalCore.displayType == DisplayType.Small ? true : false;
 
-        // try to get data from extras
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
             GcCode = extras.getString("geocode");
@@ -175,50 +174,48 @@ public class splash extends Activity {
             guid = extras.getString("guid");
         }
 
-        // try to get data from URI
         final Uri uri = getIntent().getData();
-        if (GcCode == null && guid == null && uri != null) {
-            String uriHost = uri.getHost().toLowerCase(Locale.US);
-            String uriPath = uri.getPath().toLowerCase(Locale.US);
-            if (uri.getScheme().startsWith("geo")) {
-                String LatLon = uri.getSchemeSpecificPart();
-                // todo prperation for to create a tempory waypoint on the map and go there
+        String LatLon = "";
+        if (uri != null) {
+            if (uri.getEncodedPath().endsWith(".gpx")) {
+                GpxPath = uri.getEncodedPath();
             }
-            else {
-                if (uriHost.contains("geocaching.com")) {
-                    GcCode = uri.getQueryParameter("wp");
-                    guid = uri.getQueryParameter("guid");
+            if (GcCode == null && guid == null) {
+                String uriHost = uri.getHost().toLowerCase(Locale.US);
+                String uriPath = uri.getPath().toLowerCase(Locale.US);
+                if (uri.getScheme().toLowerCase().startsWith("geo")) {
+                    LatLon = uri.getSchemeSpecificPart();
+                    // todo prperation for to create a tempory waypoint on the map and go there
+                }
+                else {
+                    if (uriHost.contains("geocaching.com")) {
+                        GcCode = uri.getQueryParameter("wp");
+                        guid = uri.getQueryParameter("guid");
 
-                    if (GcCode != null && GcCode.length() > 0) {
-                        GcCode = GcCode.toUpperCase(Locale.US);
-                        guid = null;
-                    } else if (guid != null && guid.length() > 0) {
-                        GcCode = null;
-                        guid = guid.toLowerCase(Locale.US);
-                    } else {
-                        // warning.showToast(res.getString(R.string.err_detail_open));
-                        finish();
-                        return;
-                    }
-                } else if (uriHost.contains("coord.info")) {
-                    if (uriPath != null && uriPath.startsWith("/gc")) {
-                        GcCode = uriPath.substring(1).toUpperCase(Locale.US);
-                    } else {
-                        // warning.showToast(res.getString(R.string.err_detail_open));
-                        finish();
-                        return;
+                        if (GcCode != null && GcCode.length() > 0) {
+                            GcCode = GcCode.toUpperCase(Locale.US);
+                            guid = null;
+                        } else if (guid != null && guid.length() > 0) {
+                            GcCode = null;
+                            guid = guid.toLowerCase(Locale.US);
+                        } else {
+                            // warning.showToast(res.getString(R.string.err_detail_open));
+                            finish();
+                            return;
+                        }
+                    } else if (uriHost.contains("coord.info")) {
+                        if (uriPath != null && uriPath.startsWith("/gc")) {
+                            GcCode = uriPath.substring(1).toUpperCase(Locale.US);
+                        } else {
+                            // warning.showToast(res.getString(R.string.err_detail_open));
+                            finish();
+                            return;
+                        }
                     }
                 }
             }
         }
 
-        if (uri != null) {
-            if (uri.getEncodedPath().endsWith(".gpx")) {
-                GpxPath = uri.getEncodedPath();
-            }
-        }
-
-        // if ACB is running, call this instance
         if (main.mainActivity != null) {
             Bundle b = new Bundle();
             if (GcCode != null) {
@@ -229,10 +226,10 @@ public class splash extends Activity {
             if (GpxPath != null) {
                 b.putSerializable("GpxPath", GpxPath);
             }
+            b.putSerializable("latlon", LatLon);
             Intent mainIntent = main.mainActivity.getIntent();
-            // Log.info(log, "Intent putExtras" + " GcCode " + GcCode + " name " + name + " guid " + guid + " GpxPath " + GpxPath); // + " UI " + ui
             mainIntent.putExtras(b);
-            Log.info(log, "startActivity mainIntent from splash for created main.mainActivity (com.badlogic.gdx.backends.android.AndroidApplication)");
+            Log.info(log, "startActivity mainIntent from splash.onCreate for created main.mainActivity (com.badlogic.gdx.backends.android.AndroidApplication)");
             startActivity(mainIntent);
             finish();
         }
@@ -245,9 +242,6 @@ public class splash extends Activity {
             mSelectDbIsStarted = savedInstanceState.getBoolean("SelectDbIsStartet");
             mOriantationRestart = savedInstanceState.getBoolean("OriantationRestart");
         }
-
-        if (mOriantationRestart)
-            return; // wait for result
 
     }
 
@@ -1037,13 +1031,13 @@ public class splash extends Activity {
 
         // copy AssetFolder only if Rev-Number changed, like at new installation
         try {
-            if (Config.installedRev.getValue() < GlobalCore.CurrentRevision) {
+            if (Config.installedRev.getValue() < GlobalCore.getInstance().getCurrentRevision()) {
 
                 String[] exclude = new String[]{"webkit", "sound", "sounds", "images", "skins", "lang", "kioskmode", "string-files", ""};
                 copyAssetFolder myCopie = new copyAssetFolder();
                 myCopie.copyAll(getAssets(), Config.mWorkPath, exclude);
 
-                Config.installedRev.setValue(GlobalCore.CurrentRevision);
+                Config.installedRev.setValue(GlobalCore.getInstance().getCurrentRevision());
                 Config.newInstall.setValue(true);
                 Config.AcceptChanges();
 
@@ -1068,7 +1062,7 @@ public class splash extends Activity {
 
         // UiSize Structur für die Berechnung der Größen zusammen stellen!
 
-        Log.info(log, GlobalCore.getVersionString());
+        Log.info(log, GlobalCore.getInstance().getVersionString());
         Log.info(log, "Screen width/height:" + width + "/" + height);
 
         if (ui == null) {

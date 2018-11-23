@@ -105,6 +105,7 @@ public class GroundspeakAPI {
                             if (ta > 0)
                                 Thread.sleep(ta);
                         } catch (InterruptedException ignored) {
+                            LastAPIError = "Aborted by user";
                         }
                         startTs = System.currentTimeMillis();
                         nrOfApiCalls = 0;
@@ -242,37 +243,43 @@ public class GroundspeakAPI {
         LastAPIError = "";
         APIError = 0;
         UserInfos ui = new UserInfos();
-        try {
-            JSONObject response = getNetz()
-                    .get(getUrl(1, "/users/" + UserCode + "?fields=username,membershipLevelId,findCount,geocacheLimits"))
-                    .ensureSuccess()
-                    .asJsonObject()
-                    .getBody();
-            retryCount = 0;
-            ui.username = response.optString("username", "");
-            ui.memberShipType = MemberShipTypesFromInt(response.optInt("membershipLevelId", -1));
-            ui.findCount = response.optInt("findCount", -1);
-            JSONObject geocacheLimits = response.optJSONObject("geocacheLimits");
-            if (geocacheLimits != null) {
-                ui.remaining = geocacheLimits.optInt("fullCallsRemaining", -1);
-                ui.renainingLite = geocacheLimits.optInt("liteCallsRemaining", -1);
-                ui.remainingTime = geocacheLimits.optInt("fullCallsSecondsToLive", -1);
-                ui.renainingLiteTime = geocacheLimits.optInt("liteCallsSecondsToLive", -1);
+        do {
+            try {
+                JSONObject response = getNetz()
+                        .get(getUrl(1, "/users/" + UserCode + "?fields=username,membershipLevelId,findCount,geocacheLimits"))
+                        .ensureSuccess()
+                        .asJsonObject()
+                        .getBody();
+                retryCount = 0;
+                ui.username = response.optString("username", "");
+                ui.memberShipType = MemberShipTypesFromInt(response.optInt("membershipLevelId", -1));
+                ui.findCount = response.optInt("findCount", -1);
+                JSONObject geocacheLimits = response.optJSONObject("geocacheLimits");
+                if (geocacheLimits != null) {
+                    ui.remaining = geocacheLimits.optInt("fullCallsRemaining", -1);
+                    ui.renainingLite = geocacheLimits.optInt("liteCallsRemaining", -1);
+                    ui.remainingTime = geocacheLimits.optInt("fullCallsSecondsToLive", -1);
+                    ui.renainingLiteTime = geocacheLimits.optInt("liteCallsSecondsToLive", -1);
+                }
+                Log.info(log, "fetchUserInfos done \n" + response.toString());
+                return ui;
+            } catch (Exception ex) {
+                if (!retry(ex)) {
+                    Log.err(log, "fetchUserInfos:" + APIError + ":" + LastAPIError);
+                    Log.trace(log, ex);
+                    ui.username = "";
+                    ui.memberShipType = MemberShipTypes.Unknown;
+                    ui.findCount = 0;
+                    ui.remaining = -1;
+                    ui.renainingLite = -1;
+                    ui.remainingTime = -1;
+                    ui.renainingLiteTime = -1;
+                    return ui;
+                }
             }
-            Log.info(log, "fetchUserInfos done \n" + response.toString());
-        } catch (Exception ex) {
-            retry(ex);
-            Log.err(log, "fetchUserInfos:" + APIError + ":" + LastAPIError);
-            Log.trace(log, ex);
-            ui.username = "";
-            ui.memberShipType = MemberShipTypes.Unknown;
-            ui.findCount = 0;
-            ui.remaining = -1;
-            ui.renainingLite = -1;
-            ui.remainingTime = -1;
-            ui.renainingLiteTime = -1;
+            Log.debug(log,"retry");
         }
-        return ui;
+        while (true);
     }
 
     public static int fetchPocketQueryList(ArrayList<PQ> pqList) {

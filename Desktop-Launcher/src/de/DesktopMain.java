@@ -121,9 +121,9 @@ public class DesktopMain {
         GL_View_Base.debug = debug;
         GL_View_Base.disableScissor = scissor;
 
-        if (Config.installedRev.getValue() < GlobalCore.CurrentRevision) {
+        if (Config.installedRev.getValue() < GlobalCore.getInstance().getCurrentRevision()) {
 
-            Config.installedRev.setValue(GlobalCore.CurrentRevision);
+            Config.installedRev.setValue(GlobalCore.getInstance().getCurrentRevision());
             Config.newInstall.setValue(true);
             Config.AcceptChanges();
         } else {
