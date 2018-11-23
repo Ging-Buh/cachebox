@@ -7,3 +7,5 @@
 /build
 /captures
 .externalNativeBuild
+Android_GUI/assets/build.info
+WorkingDir/build.info
