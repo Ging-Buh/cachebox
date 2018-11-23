@@ -72,7 +72,7 @@ import java.util.TimerTask;
 
 /**
  * the TabMainView has one tab (leftTab) on the phone<br>
- * and two tabs (leftTab , rightTab) on the tablet.<br>
+ * tablet is no longer implemented! two tabs (leftTab , rightTab) on the tablet.<br>
  * Each tab has buttons (5/3) at the bottom for selecting the different actions to do.<br>
  *
  * @author ging-buh
@@ -234,7 +234,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         if (!TrackRecIsRegisted)
             PositionChangedEventList.Add(this);
         TrackRecIsRegisted = true;
-        that = (TabMainView) (mainView = this);
+        that = this;
 
         Timer releaseTimer = new Timer();
         TimerTask releaseTask = new TimerTask() {

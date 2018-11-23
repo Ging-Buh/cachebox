@@ -63,10 +63,9 @@ import static CB_Utils.fileProvider.FileFactory.createFile;
  * @author longri
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface {
+    private static GlobalCore mINSTANCE;
     public static final String CurrentVersion = "2.0.";
-    // public static final int CurrentRevision = 20181121;
     private int CurrentRevision;
-    // public static final String VersionPrefix = "3206";
     private String VersionPrefix;
     public static final String aboutMsg1 = "Team Cachebox (2011-2018)" + br;
     public static final String teamLink = "www.team-cachebox.de";
@@ -87,8 +86,6 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     public static boolean RunFromSplash = false;
     static boolean JokerPwChk = false;
     static boolean JokerPwExist = false;
-    // ###########create instance#############
-    private static GlobalCore mINSTANCE;
     private static Cache selectedCache = null;
     private static boolean autoResort;
     private static Cache nearestCache = null;

@@ -80,7 +80,6 @@ public class MessageBox extends android.app.Dialog {
         b.putString("msg", msg);
         Dialog dialog = CreateDialog(DialogID.MSG_BOX_1, b);
         dialog.show();
-
     }
 
     public static void Show(String msg, Activity act) {
@@ -90,7 +89,6 @@ public class MessageBox extends android.app.Dialog {
         b.putString("msg", msg);
         Dialog dialog = CreateDialog(DialogID.MSG_BOX_1, b);
         dialog.show();
-
     }
 
     /**

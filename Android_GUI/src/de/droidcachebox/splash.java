@@ -82,31 +82,24 @@ import java.util.*;
 
 public class splash extends Activity {
     private static final String log = "splash";
-
     public static Activity splashActivity;
     private static DevicesSizes ui;
-    final Context context = this;
     protected int height;
     protected int width;
-    Handler handler;
-    Bitmap bitmap;
-    Dialog pleaseWaitDialog;
-    String GcCode = null;
-    String guid = null;
-    String name = null;
-    String GpxPath = null;
-    String workPath;
-    IgetFolderReturnListener getFolderReturnListener;
-    int AdditionalWorkPathCount;
-    MessageBox msg;
-    ArrayList<String> AdditionalWorkPathArray;
+    private Bitmap bitmap;
+    private Dialog pleaseWaitDialog;
+    private String GcCode = null;
+    private String guid = null;
+    private String name = null;
+    private String GpxPath = null;
+    private String workPath;
+    private IgetFolderReturnListener getFolderReturnListener;
+    private int AdditionalWorkPathCount;
+    private MessageBox msg;
+    private ArrayList<String> AdditionalWorkPathArray;
     private SharedPreferences androidSetting;
     private SharedPreferences.Editor androidSettingEditor;
-    private boolean mOriantationRestart = false;
-    private boolean isLandscape = false;
-    private boolean ToastEx = false;
     private Boolean showSandbox;
-    private String LolipopworkPath;
     private boolean mSelectDbIsStarted = false;
 
     /**
@@ -127,6 +120,7 @@ public class splash extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        splashActivity = this;
 
         if (!FileFactory.isInitial()) {
             new AndroidFileFactory();
@@ -153,12 +147,6 @@ public class splash extends Activity {
             GlobalCore.displayType = DisplayType.Normal;
         else
             GlobalCore.displayType = DisplayType.Small;
-
-        // überprüfen, ob ACB im Hochformat oder Querformat gestartet wurde.
-        // Hochformat -> Handymodus
-        // Querformat -> Tablet-Modus
-        if (w > h)
-            isLandscape = true;
 
         // Porträt erzwingen
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -234,13 +222,10 @@ public class splash extends Activity {
             finish();
         }
 
-        splashActivity = this;
-
         LoadImages();
 
         if (savedInstanceState != null) {
             mSelectDbIsStarted = savedInstanceState.getBoolean("SelectDbIsStartet");
-            mOriantationRestart = savedInstanceState.getBoolean("OriantationRestart");
         }
 
     }
@@ -248,6 +233,7 @@ public class splash extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
+        splashActivity = this;
         // Log.* ist erst nach StartInitial möglich
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             PermissionCheck.checkNeededPermissions(this);
@@ -317,7 +303,7 @@ public class splash extends Activity {
         }
 
         try {
-            final Dialog dialog = new Dialog(context) {
+            final Dialog dialog = new Dialog(splashActivity) {
                 @Override
                 public boolean onKeyDown(int keyCode, KeyEvent event) {
                     if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -328,17 +314,9 @@ public class splash extends Activity {
             };
 
             dialog.setContentView(R.layout.sdselectdialog);
+
             TextView title = (TextView) dialog.findViewById(R.id.select_sd_title);
             title.setText(Translation.Get("selectWorkSpace") + "\n\n");
-            /*
-             * TextView tbLayout = (TextView) dialog.findViewById(R.id.select_sd_layout); tbLayout.setText("\nLayout"); final RadioGroup
-             * rgLayout = (RadioGroup) dialog.findViewById(R.id.select_sd_radiogroup); final RadioButton rbHandyLayout = (RadioButton)
-             * dialog.findViewById(R.id.select_sd_handylayout); final RadioButton rbTabletLayout = (RadioButton)
-             * dialog.findViewById(R.id.select_sd_tabletlayout); rbHandyLayout.setText("Handy-Layout");
-             * rbTabletLayout.setText("Tablet-Layout"); if (!GlobalCore.possibleTabletLayout) {
-             * rgLayout.setVisibility(RadioGroup.INVISIBLE); rbHandyLayout.setChecked(true); } else { if (GlobalCore.isTab) {
-             * rbTabletLayout.setChecked(true); } else { rbHandyLayout.setChecked(true); } }
-             */
 
             Button buttonI = (Button) dialog.findViewById(R.id.button1);
             buttonI.setText("Internal SD\n\n" + workPath);
@@ -381,7 +359,7 @@ public class splash extends Activity {
                     // show KitKat Massage?
 
                     if (isSandbox && !showSandbox) {
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(splashActivity);
 
                         // set title
                         alertDialogBuilder.setTitle("KitKat Sandbox");
@@ -474,7 +452,7 @@ public class splash extends Activity {
                     continue;
                 }
 
-                Button buttonW = new Button(context);
+                Button buttonW = new Button(splashActivity);
                 buttonW.setText(Name + "\n\n" + _AdditionalWorkPath);
 
                 buttonW.setOnLongClickListener(new OnLongClickListener() {
@@ -659,7 +637,7 @@ public class splash extends Activity {
             externalSd += Folder;
         }
 
-        final java.io.File[] externalCacheDirs = ContextCompat.getExternalCacheDirs(context);
+        final java.io.File[] externalCacheDirs = ContextCompat.getExternalCacheDirs(splashActivity);
         final List<String> result = new ArrayList<String>();
 
         for (int i = 1; i < externalCacheDirs.length; ++i) {
@@ -768,6 +746,7 @@ public class splash extends Activity {
     @SuppressLint("NewApi")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        splashActivity = this;
 
         if (resultCode == RESULT_OK && requestCode == Global.REQUEST_CODE_GET_WRITE_PERMISSION_ANDROID_5) {
             Uri treeUri = data.getData();
@@ -783,8 +762,6 @@ public class splash extends Activity {
                 cr.takePersistableUriPermission(treeUri, takeFlags);
                 List<UriPermission> permissionlist = cr.getPersistedUriPermissions();
             }
-
-            LolipopworkPath = treeUri.getPath();
 
             Thread th = new Thread(new Runnable() {
                 @Override
@@ -868,7 +845,6 @@ public class splash extends Activity {
             // myTextView = null;
             // descTextView = null;
             splashActivity = null;
-
         }
         super.onDestroy();
         if (pleaseWaitDialog != null && pleaseWaitDialog.isShowing()) {
@@ -1022,10 +998,7 @@ public class splash extends Activity {
             }
         });
 
-
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        Log.debug(log, "setRequestedOrientation SCREEN_ORIENTATION_PORTRAIT");
-
 
         Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
 
@@ -1179,6 +1152,7 @@ public class splash extends Activity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        splashActivity = this;
         outState.putBoolean("SelectDbIsStartet", mSelectDbIsStarted);
         outState.putBoolean("OriantationRestart", true);
     }
@@ -1214,6 +1188,7 @@ public class splash extends Activity {
     @TargetApi(23)
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        splashActivity = this;
         switch (requestCode) {
             case PermissionCheck.MY_PERMISSIONS_REQUEST: {
                 Map<String, Integer> perms = new HashMap<String, Integer>();

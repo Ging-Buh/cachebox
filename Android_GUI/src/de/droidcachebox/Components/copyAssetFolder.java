@@ -7,7 +7,7 @@ import android.content.res.AssetManager;
 import java.io.*;
 import java.util.ArrayList;
 
-// Kopiert die OrdnerStructur des Asset-Ordners auf die SD-Karte (Cachbox Arbeitsverzeichniss)
+// Kopiert die OrdnerStructur des Asset-Ordners auf die SD-Karte (Cachebox Arbeitsverzeichniss)
 public class copyAssetFolder {
     public static ArrayList<String> FileList = new ArrayList<String>();
 

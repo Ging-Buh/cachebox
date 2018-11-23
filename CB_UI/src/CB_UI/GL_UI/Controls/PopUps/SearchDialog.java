@@ -441,11 +441,7 @@ public class SearchDialog extends PopUp_Base {
 
         if (ignoreOnlineSearch || mTglBtnOnline.getState() == 0) {
 
-            // Replase LineBreaks
-
             String searchPattern = mEingabe.getText().toLowerCase();
-
-            // Replase LineBreaks
             searchPattern = searchPattern.replace("\n", "");
             searchPattern = searchPattern.replace("\r", "");
 
@@ -741,8 +737,8 @@ public class SearchDialog extends PopUp_Base {
         EditFilterSettings.ApplyFilter(filter);
     }
 
-    public void doSearch(final String searchPattern, final SearchMode searchMode) {
-        Log.debug(log, "addSearch " + searchPattern);
+    public void doSearchOnline(final String searchPattern, final SearchMode searchMode) {
+        Log.debug(log, "doSearchOnline " + searchPattern);
         try {
             GL.that.RunOnGL(() -> {
                 mEingabe.setText(searchPattern);
@@ -752,15 +748,13 @@ public class SearchDialog extends PopUp_Base {
                         mTglBtnOnline.setState(1);
                         GL.that.RunOnGL(() -> {
                             setFilterBtnState();
-                            GL.that.RunOnGL(() -> {
-                                mBtnSearch.performClick();
-                            });
+                            GL.that.RunOnGL(() -> mBtnSearch.performClick());
                         });
                     });
                 });
             });
         } catch (Exception e) {
-            Log.err(log, "doSearch", e);
+            Log.err(log, "doSearchOnline", e);
         }
     }
 

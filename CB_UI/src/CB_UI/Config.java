@@ -1,4 +1,3 @@
-package CB_UI;
 /*
  * Copyright (C) 2014 team-cachebox.de
  *
@@ -14,7 +13,7 @@ package CB_UI;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+package CB_UI;
 
 import CB_Core.CB_Core_Settings;
 import CB_Locator.LocatorSettings;

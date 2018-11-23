@@ -6,11 +6,11 @@ import CB_UI_Base.GL_UI.ViewID;
 
 public class MainViewBase extends CB_View_Base {
     public static CB_Action_ShowQuit actionClose = new CB_Action_ShowQuit();
-    public static MainViewBase mainView = null;
+    public static MainViewBase mainView;
 
     public MainViewBase(float X, float Y, float Width, float Height, String Name) {
         super(X, Y, Width, Height, Name);
-
+        mainView = this;
     }
 
     public void requestLayout() {

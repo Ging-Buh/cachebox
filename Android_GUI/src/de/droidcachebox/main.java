@@ -136,16 +136,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     public static LinearLayout strengthLayout;
     public static Boolean isRestart = false;
     public static Boolean isFirstStart = true;
-    private static ViewID aktViewId = null;
-    private static ViewID aktTabViewId = null;
     private static DescriptionView descriptionView = null;
     private static ViewGL viewGL = null;
+    private static ViewID aktViewId = null;
+    private static ViewID aktTabViewId = null;
     private static LocationManager locationManager;
     private static ServiceConnection mConnection;
     private static BroadcastReceiver mReceiver;
     private static Uri uri;
     private static CB_Locator.Location recordingStartCoordinate;
-    private static Boolean mVoiceRecIsStart = false;
+    private static boolean mVoiceRecIsStart = false;
     private static Vibrator vibrator;
     private static AndroidApplicationConfiguration gdxConfig = new AndroidApplicationConfiguration();
 
@@ -155,9 +155,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         gdxConfig.useCompass = true;
     }
 
-    private final ArrayList<ViewOptionsMenu> ViewList = new ArrayList<ViewOptionsMenu>();
+    private final ArrayList<ViewOptionsMenu> ViewList = new ArrayList<>();
     private final AtomicBoolean waitForGL = new AtomicBoolean(false);
-    private final SensorEventListener mListener = new SensorEventListener() {
+    private final CB_List<CB_Locator.GpsStrength> coreSatList = new CB_List<>(14);
+    private final SensorEventListener mSensorEventListener = new SensorEventListener() {
         private final float orientationValues[] = new float[3];
         private final float R[] = new float[9];
         private final float I[] = new float[9];
@@ -205,14 +206,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
         }
     };
-    private final CB_List<CB_Locator.GpsStrength> coreSatList = new CB_List<CB_Locator.GpsStrength>(14);
     private HorizontalListView QuickButtonList;
     private downSlider InfoDownSlider;
     private PowerManager.WakeLock mWakeLock;
     private CancelWaitDialog wd;
     private Dialog pWaitD;
     private int horizontalListViewHeigt;
-    private boolean CacheListIsShown = false;
+    private boolean mustShowCacheList = true;
     private View gdxView = null;
     private String recordingStartTime;
     private String mediaFileNameWithoutExtension;
@@ -243,25 +243,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             vibrator.vibrate(Config.VibrateTime.getValue());
     }
 
-    public Boolean getVoiceRecIsStart() {
-        return mVoiceRecIsStart;
-    }
-
-    public void setVoiceRecIsStart(Boolean value) {
-        mVoiceRecIsStart = value;
-        if (mVoiceRecIsStart) {
-            Mic_Icon.SetOn();
-        } else { // Aufnahme stoppen
-            Mic_Icon.SetOff();
-            if (extAudioRecorder != null) {
-                extAudioRecorder.stop();
-                extAudioRecorder.release();
-                extAudioRecorder = null;
-                Toast.makeText(mainActivity, "Stop Voice Recorder", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         Log.debug(log, " => onSaveInstanceState");
@@ -282,9 +263,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    /**
-     * Called when the activity is first created.
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -357,7 +335,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
         findViewsById();
 
-        initialPlatformConector();
+        initPlatformConnector();
 
         inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -475,9 +453,33 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         initialViewGL();
     }
 
+    private void askToGetApiKey() {
+        MessageBox.Show(Translation.Get("wantApi"), Translation.Get("welcome"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int button) {
+                // Behandle das ergebniss
+                switch (button) {
+                    case -1:
+                        // yes get Api key
+                        GetApiAuth();
+                        break;
+                    case -2:
+                        // now, we check GPS
+                        chkGpsIsOn();
+                        break;
+                    case -3:
+
+                        break;
+                }
+
+                dialog.dismiss();
+            }
+
+        });
+    }
+
     private void setLockScreenProperty() {
         // add flags for run over lock screen
-
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -493,112 +495,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         });
     }
 
-    private void startSearchTimer() {
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                startSearch();
-            }
-        };
-        new Timer().schedule(task, 500);
-    }
-
-    private void startSearch() {
-        if (ExtSearch_GcCode != null) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (CacheListIsShown) {
-                        CacheListIsShown = false;
-                        if (SearchDialog.that == null) {
-                            new SearchDialog();
-                        }
-                        SearchDialog.that.showNotCloseAutomaticly();
-                        SearchDialog.that.doSearch(ExtSearch_GcCode, SearchMode.GcCode);
-                        ExtSearch_GcCode = null;
-                    } else {
-                        // show cachelist first then search dialog
-                        CacheListIsShown = true;
-                        TabMainView.that.showCacheList();
-                        startSearchTimer();
-                    }
-                }
-            });
-        }
-    }
-
-    private void startGPXImport() {
-        TimerTask gpxImportTask = new TimerTask() {
-            @Override
-            public void run() {
-                Log.info(log, "startGPXImport");
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        wd = CancelWaitDialog.ShowWait(Translation.Get("ImportGPX"), new IcancelListener() {
-                            @Override
-                            public void isCanceled() {
-                                wd.close();
-                            }
-                        }, new ICancelRunnable() {
-                            @Override
-                            public void run() {
-                                Date ImportStart = new Date();
-                                Log.info(log, "startGPXImport:Timer startet");
-                                Importer importer = new Importer();
-                                ImporterProgress ip = new ImporterProgress();
-                                Database.Data.beginTransaction();
-
-                                try {
-                                    importer.importGpx(ExtSearch_GpxPath, ip);
-                                } catch (Exception e) {
-                                }
-
-                                Database.Data.setTransactionSuccessful();
-                                Database.Data.endTransaction();
-
-                                // Import ready
-                                wd.close();
-
-                                // finish close activity and notify changes
-
-                                CacheListChangedEventList.Call();
-
-                                Date Importfin = new Date();
-                                long ImportZeit = Importfin.getTime() - ImportStart.getTime();
-
-                                String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "C " + String.valueOf(GPXFileImporter.LogCount) + "L in " + String.valueOf(ImportZeit);
-
-                                Log.debug(log, Msg);
-
-                                FilterProperties props = FilterInstances.getLastFilter();
-
-                                EditFilterSettings.ApplyFilter(props);
-
-                                ExtSearch_GpxPath = null;
-
-                                GL.that.Toast(Msg, 3000);
-                            }
-
-                            @Override
-                            public boolean doCancel() {
-                                // TODO handle cancel
-                                return false;
-                            }
-                        });
-
-                    }
-                });
-
-            }
-        };
-
-        new Timer().schedule(gpxImportTask, 500);
-    }
-
-    /**
-     * hook into menu button for activity
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return super.onCreateOptionsMenu(menu);
@@ -617,9 +513,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         return super.onPrepareOptionsMenu(menu);
     }
 
-    /**
-     * when menu button option selected
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (aktView != null)
@@ -628,18 +521,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     }
 
     @Override
-    public void onUserInteraction() {
-
-    }
-
-    @Override
     public void SelectedCacheChanged(Cache cache, Waypoint waypoint) {
-
-        setSelectedCache_onUI(cache, waypoint);
-    }
-
-    public void setSelectedCache_onUI(Cache cache, Waypoint waypoint) {
-
         float distance = cache.Distance(CalculationType.FAST, false);
         if (waypoint != null) {
             distance = waypoint.Distance();
@@ -652,7 +534,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 }
             });
         }
-
     }
 
     @Override
@@ -690,7 +571,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
     @Override
     public void CacheListChangedEvent() {
-
     }
 
     @Override
@@ -936,8 +816,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         super.onResume();
 
         if (mSensorManager != null) {
-            mSensorManager.registerListener(mListener, accelerometer, SensorManager.SENSOR_DELAY_UI);
-            mSensorManager.registerListener(mListener, magnetometer, SensorManager.SENSOR_DELAY_UI);
+            mSensorManager.registerListener(mSensorEventListener, accelerometer, SensorManager.SENSOR_DELAY_UI);
+            mSensorManager.registerListener(mSensorEventListener, magnetometer, SensorManager.SENSOR_DELAY_UI);
         }
 
         int sollHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.that.getQuickButtonListHeight() : 0;
@@ -1012,7 +892,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         Log.debug(log, "Main=> onStop");
 
         if (mSensorManager != null)
-            mSensorManager.unregisterListener(mListener);
+            mSensorManager.unregisterListener(mSensorEventListener);
 
         super.onStop();
 
@@ -1133,13 +1013,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         }
     }
 
-    /**
-     * Gibt die zur ViewID gehörige View zurück und erstellst eine Instanz, wenn
-     * sie nicht exestiert.
-     *
-     * @param ID ViewID
-     * @return View
-     */
     private ViewOptionsMenu getView(ViewID ID) {
         // first check if view on List
         if (ID.getID() < ViewList.size()) {
@@ -1235,32 +1108,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         }
 
         InfoDownSlider.invalidate();
-
-    }
-
-    private void showTabletView(ViewOptionsMenu view, ViewID Id) {
-
-        if (aktTabView != null) {
-            aktTabView.OnHide();
-
-        }
-
-        aktTabView = view;
-        try {
-            tabFrame.removeAllViews();
-            ViewParent parent = ((View) aktTabView).getParent();
-            if (parent != null) {
-                // aktView ist noch gebunden, also lösen
-                ((FrameLayout) parent).removeAllViews();
-            }
-        } catch (Exception e) {
-
-        }
-        tabFrame.addView((View) aktTabView);
-        aktTabView.OnShow();
-        aktTabViewId = Id;
-        InfoDownSlider.invalidate();
-        ((View) aktTabView).forceLayout();
 
     }
 
@@ -1429,6 +1276,25 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             return true;
         }
         return true;
+    }
+
+    public boolean getVoiceRecIsStart() {
+        return mVoiceRecIsStart;
+    }
+
+    public void setVoiceRecIsStart(boolean value) {
+        mVoiceRecIsStart = value;
+        if (mVoiceRecIsStart) {
+            Mic_Icon.SetOn();
+        } else { // Aufnahme stoppen
+            Mic_Icon.SetOff();
+            if (extAudioRecorder != null) {
+                extAudioRecorder.stop();
+                extAudioRecorder.release();
+                extAudioRecorder = null;
+                Toast.makeText(mainActivity, "Stop Voice Recorder", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void initalMicIcon() {
@@ -1778,33 +1644,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         return GpsOn;
     }
 
-    // ########### Reload CacheInfo ##########################
-
-    private void askToGetApiKey() {
-        MessageBox.Show(Translation.Get("wantApi"), Translation.Get("welcome"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int button) {
-                // Behandle das ergebniss
-                switch (button) {
-                    case -1:
-                        // yes get Api key
-                        GetApiAuth();
-                        break;
-                    case -2:
-                        // now, we check GPS
-                        chkGpsIsOn();
-                        break;
-                    case -3:
-
-                        break;
-                }
-
-                dialog.dismiss();
-            }
-
-        });
-    }
-
     public void showView(ViewID ID) {
         if (ID == null) {
             return;// keine Action
@@ -1852,11 +1691,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
     }
 
-    private void initialPlatformConector() {
+    private void initPlatformConnector() {
 
         Plattform.used = Plattform.Android;
 
-        initialLocatorBase();
+        initLocatorBase();
 
         PlatformConnector.setisOnlineListener(new IHardwarStateListener() {
 
@@ -2091,9 +1930,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             public void firstShow() {
                 if (mustRunSearch) {
                     if (ExtSearch_GcCode != null)
-                        startSearchTimer();
+                        ImportCacheByGCCode();
                     if (ExtSearch_GpxPath != null)
-                        startGPXImport();
+                        ImportGPXFile();
                 }
 
             }
@@ -2278,9 +2117,93 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
     }
 
-    // ###########################################################
+    private void ImportCacheByGCCode() {
+        TimerTask runTheSearchTasks = new TimerTask() {
+            @Override
+            public void run() {
+                if (ExtSearch_GcCode != null) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mustShowCacheList) {
+                                // show cachelist first then search dialog
+                                mustShowCacheList = false;
+                                TabMainView.that.showCacheList();
+                                ImportCacheByGCCode(); // now the search can start (doSearchOnline)
+                            } else {
+                                mustShowCacheList = true;
+                                if (SearchDialog.that == null) {
+                                    new SearchDialog();
+                                }
+                                SearchDialog.that.showNotCloseAutomaticly();
+                                SearchDialog.that.doSearchOnline(ExtSearch_GcCode, SearchMode.GcCode);
+                                ExtSearch_GcCode = null;
+                            }
+                        }
+                    });
+                }
+            }
+        };
+        new Timer().schedule(runTheSearchTasks, 500);
+    }
 
-    // #########################################################
+    private void ImportGPXFile() {
+        TimerTask gpxImportTask = new TimerTask() {
+            @Override
+            public void run() {
+                Log.info(log, "ImportGPXFile");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        wd = CancelWaitDialog.ShowWait(Translation.Get("ImportGPX"), new IcancelListener() {
+                            @Override
+                            public void isCanceled() {
+                                wd.close();
+                            }
+                        }, new ICancelRunnable() {
+                            @Override
+                            public void run() {
+                                Log.debug(log, "Import GPXFile from " + ExtSearch_GpxPath + " startet");
+                                Date ImportStart = new Date();
+                                Importer importer = new Importer();
+                                ImporterProgress ip = new ImporterProgress();
+
+                                Database.Data.beginTransaction();
+                                try {
+                                    importer.importGpx(ExtSearch_GpxPath, ip);
+                                } catch (Exception ignored) {
+                                }
+                                Database.Data.setTransactionSuccessful();
+                                Database.Data.endTransaction();
+
+                                wd.close();
+                                CacheListChangedEventList.Call();
+                                FilterProperties props = FilterInstances.getLastFilter();
+                                EditFilterSettings.ApplyFilter(props);
+
+                                long ImportZeit = new Date().getTime() - ImportStart.getTime();
+                                String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "Caches\n" + String.valueOf(GPXFileImporter.LogCount) + "Logs\n in " + String.valueOf(ImportZeit);
+                                Log.debug(log, Msg.replace("\n", "\n\r") + " from " + ExtSearch_GpxPath);
+                                GL.that.Toast(Msg, 3000);
+                                ExtSearch_GpxPath = null;
+                            }
+
+                            @Override
+                            public boolean doCancel() {
+                                // TODO handle cancel
+                                return false;
+                            }
+                        });
+
+                    }
+                });
+
+            }
+        };
+
+        new Timer().schedule(gpxImportTask, 500);
+    }
+
     public void GetApiAuth() {
         Intent intent = new Intent().setClass(mainActivity, GcApiLogin.class);
         if (intent.resolveActivity(getPackageManager()) != null) {
@@ -2290,13 +2213,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         }
     }
 
-    /**
-     * Initial all Locator functions
-     */
-    private void initialLocatorBase() {
-        // ##########################################################
+    private void initLocatorBase() {
         // initial Locator with saved Location
-        // ##########################################################
         double latitude = -1000;
         double longitude = -1000;
 
@@ -2448,29 +2366,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
     }
 
-    /**
-     * Handling Screen OFF and Screen ON Intents
-     *
-     * @author -jwei
-     * http://thinkandroid.wordpress.com/2010/01/24/handling-screen-off-and-screen-on-intents/
-     */
     public static class ScreenReceiver extends BroadcastReceiver {
-        // thanks Jason
-        public static boolean wasScreenOn = true;
-
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
                 Energy.setDisplayOff();
                 CB_Locator.Locator.setDisplayOff();
-                wasScreenOn = false;
             } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
                 Energy.setDisplayOn();
                 CB_Locator.Locator.setDisplayOn();
-                wasScreenOn = true;
             }
         }
-
     }
-
 }
