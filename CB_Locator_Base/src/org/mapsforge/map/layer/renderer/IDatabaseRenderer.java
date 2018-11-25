@@ -27,6 +27,6 @@ public interface IDatabaseRenderer {
      *
      * @param rendererJob the job that should be executed.
      */
-    public abstract TileGL execute(RendererJob rendererJob);
+    TileGL execute(RendererJob rendererJob);
 
 }

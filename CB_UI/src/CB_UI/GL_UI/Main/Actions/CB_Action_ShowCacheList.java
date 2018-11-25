@@ -174,9 +174,9 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
 
         MenuItem mi;
         cm.addItem(MenuID.MI_RESORT, "ResortList", Sprites.getSprite(IconName.sortIcon.name()));
-        cm.addItem(MenuID.MI_FilterSet, "filter", Sprites.getSprite(IconName.filter.name()));
+        cm.addItem(MenuID.MI_FilterSet, "Filter", Sprites.getSprite(IconName.filter.name()));
         cm.addItem(MenuID.MI_RESET_FILTER, "MI_RESET_FILTER", Sprites.getSprite(IconName.filter.name()));
-        cm.addItem(MenuID.MI_SEARCH_LIST, "search", Sprites.getSprite(IconName.lupe.name()));
+        cm.addItem(MenuID.MI_SEARCH_LIST, "Search", Sprites.getSprite(IconName.lupe.name()));
         cm.addItem(MenuID.MI_IMPORT, "importExport", Sprites.getSprite(IconName.importIcon.name()));
         if (SyncActivity.RELEASED)
             cm.addItem(MenuID.MI_SYNC, "sync", Sprites.getSprite(IconName.importIcon.name()));

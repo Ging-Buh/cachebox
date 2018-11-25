@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public class CB_Action_ShowFilterSettings extends CB_Action {
 
     public CB_Action_ShowFilterSettings() {
-        super("filter", MenuID.AID_SHOW_FILTER_DIALOG);
+        super("Filter", MenuID.AID_SHOW_FILTER_DIALOG);
     }
 
     @Override

@@ -16,7 +16,6 @@
 package CB_UI_Base.Math;
 
 import CB_UI_Base.GL_UI.Fonts;
-import CB_UI_Base.GL_UI.Skin.CB_Skin;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.IChanged;
@@ -195,7 +194,7 @@ public class GL_UISizes implements SizeChangedEvent {
             });
 
             try {
-                Fonts.loadFonts(CB_Skin.INSTANCE);
+                Fonts.loadFonts();
             } catch (Exception e) {
                 e.printStackTrace();
             }

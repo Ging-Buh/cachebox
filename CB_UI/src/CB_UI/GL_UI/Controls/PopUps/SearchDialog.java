@@ -353,68 +353,6 @@ public class SearchDialog extends PopUp_Base {
 
     }
 
-    // /**
-    // * setzt bei Eingabe eines Zeichens die CacheListItems auf Sichtbar oder unsichtbar
-    // */
-    // private void filterSearchByTextChnge()
-    // {
-    // if (!Config.settings.dynamicFilterAtSearch.getValue()) return;
-    // if (CacheListView.that == null) return;
-    // if (mTglBtnOnline.getState() == 1)
-    // {
-    // // nicht bei Online Suche
-    // clearSearchFilter();
-    // return;
-    // }
-    //
-    // String searchPattern = mEingabe.getText().toLowerCase();
-    //
-    // // Replase LineBreaks
-    // searchPattern = searchPattern.replace("\n", "");
-    // searchPattern = searchPattern.replace("\r", "");
-    //
-    // synchronized (Database.Data.Query)
-    // {
-    // for (Cache cache : Database.Data.Query)
-    // {
-    // boolean set = true;
-    // switch (mSearchState)
-    // {
-    // case 0:
-    // set = cache.Name.toLowerCase().contains(searchPattern);
-    // break;
-    // case 1:
-    // set = cache.GcCode.toLowerCase().contains(searchPattern);
-    // break;
-    // case 2:
-    // set = cache.Owner.toLowerCase().contains(searchPattern) || cache.PlacedBy.toLowerCase().contains(searchPattern);
-    // break;
-    // }
-    //
-    // cache.setSearchVisible(set);
-    // }
-    // }
-    // CacheListView.that.getListView().setHasInvisibleItems(true);
-    // CacheListView.that.CacheListChangedEvent();
-    // }
-
-    // private void clearSearchFilter()
-    // {
-    // if (!Config.dynamicFilterAtSearch.getValue()) return;
-    // synchronized (Database.Data.Query)
-    // {
-    // for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
-    // {
-    // Database.Data.Query.get(i).setSearchVisible(true);
-    // }
-    // }
-    // if (CacheListView.that != null)
-    // {
-    // CacheListView.that.getListView().setHasInvisibleItems(false);
-    // CacheListView.that.CacheListChangedEvent();
-    // }
-    // }
-
     private void textBox_TextChanged() {
 
         boolean isText = mEingabe.getText().length() != 0;
@@ -478,7 +416,7 @@ public class SearchDialog extends PopUp_Base {
                 if (!criterionMatches) {
                     mBtnNext.disable();
                     mSearchAktive = false;
-                    GL_MsgBox.Show(Translation.Get("NoCacheFound"), Translation.Get("search"), MessageBoxButtons.OK, MessageBoxIcon.Asterisk, null);
+                    GL_MsgBox.Show(Translation.Get("NoCacheFound"), Translation.Get("Search"), MessageBoxButtons.OK, MessageBoxIcon.Asterisk, null);
                 } else {
 
                     Waypoint finalWp = null;
@@ -527,7 +465,7 @@ public class SearchDialog extends PopUp_Base {
                     });
                 } else {
 
-                    wd = CancelWaitDialog.ShowWait(Translation.Get("search"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
+                    wd = CancelWaitDialog.ShowWait(Translation.Get("Search"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
                         @Override
                         public void isCanceled() {

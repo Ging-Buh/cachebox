@@ -42,35 +42,10 @@ public class ext_AwtBitmap extends AwtBitmap implements ext_Bitmap, TileBitmap {
         this.bufferedImage = null;
     }
 
-    ext_AwtBitmap(InputStream inputStream, int HashCode, float scaleFactor) throws IOException {
-        super(inputStream);
-
-        if (scaleFactor != 1) {
-            int w = (int) (this.getWidth() * scaleFactor);
-            int h = (int) (this.getHeight() * scaleFactor);
-            this.scaleTo(w, h);
-        }
-
-        GL_RenderType RENDERING_TYPE = LocatorSettings.MapsforgeRenderType.getEnumValue();
-
-        // Don't create GL_Image with renderType Mapsforge! GL_Images are not needed!
-        if (RENDERING_TYPE == GL_RenderType.Mapsforge) {
-            GL_image = null;
-            return;
-        }
-
-        GL_image = new BitmapDrawable(inputStream, HashCode, scaleFactor);
-        instCount++;
-    }
-
     ext_AwtBitmap(int width, int height) {
         super(width, height);
         GL_image = null;
         instCount++;
-    }
-
-    public ext_AwtBitmap(int tileSize) {
-        this(tileSize, tileSize);
     }
 
     @Override

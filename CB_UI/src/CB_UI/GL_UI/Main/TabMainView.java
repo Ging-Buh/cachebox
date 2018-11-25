@@ -26,7 +26,6 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.CacheListDAO;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
-import CB_Locator.LocatorSettings;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.*;
 import CB_UI.GL_UI.Controls.Slider;
@@ -56,10 +55,8 @@ import CB_UI_Base.GL_UI.ViewConst;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UiSizes;
-import CB_UI_Base.graphics.GL_RenderType;
 import CB_Utils.Log.Log;
 import CB_Utils.MathUtils.CalculationType;
-import CB_Utils.Settings.SettingModus;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.IChanged;
 import CB_Utils.Util.UnitFormatter;
@@ -244,15 +241,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
             }
         };
         releaseTimer.scheduleAtFixedRate(releaseTask, 5000, 5000);
-
-
-        LocatorSettings.MapsforgeRenderType.setEnumValue(GL_RenderType.Mapsforge);
-        // Set setting to invisible
-        LocatorSettings.MapsforgeRenderType.changeSettingsModus(SettingModus.Never);
-        Config.settings.WriteToDB();
-        Log.debug(log, "disable MixedDatabaseRenderer for Android Version ");
-
-
     }
 
     public static void reloadCacheList() {
@@ -471,8 +459,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
             mMapButtonOnLeftTab = new CB_Button(btnRec, "Nav");
             mToolsButtonOnLeftTab = new CB_Button(btnRec, "Tool");
             mAboutButtonOnLeftTab = new CB_Button(btnRec, "Misc");
-        }
-        else {
+        } else {
             mCacheListButtonOnLeftTab = new CB_Button(btnRec, "CacheList", Sprites.CacheList);
             mDescriptionButtonOnLeftTab = new CB_Button(btnRec, "Cache", Sprites.Cache);
             mMapButtonOnLeftTab = new CB_Button(btnRec, "Nav", Sprites.Nav);

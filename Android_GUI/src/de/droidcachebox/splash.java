@@ -245,7 +245,6 @@ public class splash extends Activity {
         androidSetting = this.getSharedPreferences(Global.PREFS_NAME, 0);
 
         workPath = androidSetting.getString("WorkPath", Environment.getDataDirectory() + "/cachebox");
-//		boolean askAgain = androidSetting.getBoolean("AskAgain", true);
         showSandbox = androidSetting.getBoolean("showSandbox", false);
 
         Global.initTheme(this);
@@ -344,6 +343,7 @@ public class splash extends Activity {
                     thread.start();
                 }
             });
+
             Button buttonE = (Button) dialog.findViewById(R.id.button2);
             final boolean isSandbox = externalSd == null ? false : externalSd.contains("Android/data/de.droidcachebox");
             if (!hasExtSd) {
@@ -352,7 +352,6 @@ public class splash extends Activity {
                 String extSdText = isSandbox ? "External SD SandBox\n\n" : "External SD\n\n";
                 buttonE.setText(extSdText + externalSd);
             }
-
             buttonE.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -419,7 +418,6 @@ public class splash extends Activity {
                             @Override
                             public void run() {
                                 workPath = externalSd2;
-                                // boolean useTabletLayout = rbTabletLayout.isChecked();
                                 saveWorkPath();
                                 startInitial();
                                 Log.info(log, "Initial for " + workPath);
@@ -437,26 +435,19 @@ public class splash extends Activity {
             AdditionalWorkPathArray = getAdditionalWorkPathArray();
 
             for (final String _AdditionalWorkPath : AdditionalWorkPathArray) {
-
                 final String Name = FileIO.GetFileNameWithoutExtension(_AdditionalWorkPath);
-
                 if (!FileFactory.createFile(_AdditionalWorkPath).exists()) {
-                    // delete this Work Path
                     deleteWorkPath(_AdditionalWorkPath);
                     continue;
                 }
-
                 if (!FileIO.canWrite(_AdditionalWorkPath)) {
-                    // delete this Work Path
                     deleteWorkPath(_AdditionalWorkPath);
                     continue;
                 }
 
                 Button buttonW = new Button(splashActivity);
                 buttonW.setText(Name + "\n\n" + _AdditionalWorkPath);
-
                 buttonW.setOnLongClickListener(new OnLongClickListener() {
-
                     @Override
                     public boolean onLongClick(View v) {
 
@@ -494,7 +485,6 @@ public class splash extends Activity {
                         return true;
                     }
                 });
-
                 buttonW.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -1028,9 +1018,7 @@ public class splash extends Activity {
             Log.err(log, "Copy Asset", e);
         }
 
-        // save askAgain for show SandboxMsg
         Config.showSandbox.setValue(showSandbox);
-        Log.info(log, "showSandbox to DB");
         Config.AcceptChanges();
 
         // UiSize Structur für die Berechnung der Größen zusammen stellen!
@@ -1039,22 +1027,13 @@ public class splash extends Activity {
         Log.info(log, "Screen width/height:" + width + "/" + height);
 
         if (ui == null) {
-            Log.info(log, "getResources in splash");
             Resources res = splash.this.getResources();
-
-            Log.debug(log, "create new devices-sizes");
             ui = new DevicesSizes();
-
             ui.Window = new Size(width, height);
             ui.Density = res.getDisplayMetrics().density;
             ui.isLandscape = false;
-
-            // Log Size values
-            Log.debug(log, "UI-Sizes");
             Log.debug(log, "ui.Window: " + ui.Window.toString());
             Log.debug(log, "ui.Density: " + ui.Density);
-            Log.debug(log, "ui.isLandscape: " + ui.isLandscape);
-
         }
 
         new UiSizes();
@@ -1075,10 +1054,6 @@ public class splash extends Activity {
         Database.FieldNotes = new AndroidDB(DatabaseType.FieldNotes, this);
 
         Config.AcceptChanges();
-
-        // Initial Ready Show main
-        //Log.info(log, "finish activity");
-        //finish();
 
         GlobalCore.RunFromSplash = true;
 
@@ -1103,6 +1078,7 @@ public class splash extends Activity {
         mainIntent.putExtras(b);
         Log.info(log, "startActivity for main.class (com.badlogic.gdx.backends.android.AndroidApplication) from splash");
         startActivity(mainIntent);
+
         finish();
 
     }

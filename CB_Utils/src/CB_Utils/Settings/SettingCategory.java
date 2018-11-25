@@ -24,30 +24,8 @@ public enum SettingCategory {
             "Internal"), CarMode("CarMode"), RememberAsk("RememberAsk"), Debug("Debug"), Button("Button"), Positions("Positions"), CBS("CBS"),;
 
     private String langString;
-    private boolean mIsCollapse = false;
 
     SettingCategory(String langString) {
         this.langString = langString;
     }
-
-    public String getLangString() {
-        return langString;
-    }
-
-    public void setLangString(String langString) {
-        this.langString = langString;
-    }
-
-    public boolean IsCollapse() {
-        return mIsCollapse;
-    }
-
-    public void Toggle() {
-        mIsCollapse = !mIsCollapse;
-    }
-
-    public void Toggle(boolean value) {
-        mIsCollapse = value;
-    }
-
 }

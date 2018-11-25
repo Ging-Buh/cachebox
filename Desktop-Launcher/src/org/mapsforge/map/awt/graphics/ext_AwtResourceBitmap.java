@@ -15,8 +15,6 @@
  */
 package org.mapsforge.map.awt.graphics;
 
-import CB_Locator.LocatorSettings;
-import CB_UI_Base.graphics.GL_RenderType;
 import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_UI_Base.graphics.extendedInterfaces.ext_Bitmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -62,15 +60,8 @@ public class ext_AwtResourceBitmap extends AwtResourceBitmap implements ext_Bitm
 
         }
 
-        GL_RenderType RENDERING_TYPE = LocatorSettings.MapsforgeRenderType.getEnumValue();
-
-        // Don't create GL_Image with renderType Mapsforge! GL_Images are not needed!
-        if (RENDERING_TYPE == GL_RenderType.Mapsforge) {
-            GL_image = null;
-            return;
-        }
-
-        GL_image = new BitmapDrawable(bytes, HashCode, scaleFactor);
+        GL_image = null;
+        return;
     }
 
     @Override

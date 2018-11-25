@@ -18,7 +18,6 @@ package CB_Locator.Map;
 import CB_Locator.LocatorSettings;
 import CB_Locator.Map.Layer.LayerType;
 import CB_Locator.Map.Layer.MapType;
-import CB_UI_Base.graphics.GL_RenderType;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.HSV_Color;
@@ -35,7 +34,6 @@ import org.mapsforge.map.datastore.MultiMapDataStore.DataPolicy;
 import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.layer.renderer.IDatabaseRenderer;
 import org.mapsforge.map.layer.renderer.MF_DatabaseRenderer;
-import org.mapsforge.map.layer.renderer.MixedDatabaseRenderer;
 import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapFile;
@@ -516,19 +514,7 @@ public abstract class ManagerBase {
         TileBasedLabelStore labelStore = null;
 
         if (databaseRenderer[ThreadIndex] == null) {
-            GL_RenderType RENDERING_TYPE = LocatorSettings.MapsforgeRenderType.getEnumValue();
-
-            switch (RENDERING_TYPE) {
-                case Mapsforge:
-                    databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(mapDatabase[ThreadIndex], getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), MF_DatabaseRenderer.firstLevelTileCache, labelStore, true, true);
-                    break;
-                case Mixing:
-                    databaseRenderer[ThreadIndex] = new MixedDatabaseRenderer(mapDatabase[ThreadIndex], getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), MF_DatabaseRenderer.firstLevelTileCache, labelStore, false, true);
-                    break;
-                default:
-                    databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(mapDatabase[ThreadIndex], getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), MF_DatabaseRenderer.firstLevelTileCache, labelStore, true, true);
-                    break;
-            }
+            databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(mapDatabase[ThreadIndex], getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), MF_DatabaseRenderer.firstLevelTileCache, labelStore, true, true);
         }
         if (databaseRenderer[ThreadIndex] == null)
             return null;

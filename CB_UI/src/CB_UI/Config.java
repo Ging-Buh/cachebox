@@ -121,7 +121,7 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
 
         initialized = true;
 
-        keyLookup = new HashMap<String, String>();
+        keyLookup = new HashMap<>();
 
         BufferedReader Filereader;
 
@@ -205,7 +205,6 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
         // validateSetting("Filter", PresetListView.presets[0].toString());
         validateSetting("ZoomCross", "16");
         // validateSetting("TomTomExportFolder", Global.AppPath + "/user");
-        validateSetting("GCAdditionalImageDownload", "false");
         validateSetting("GCRequestDelay", "10");
 
         validateSetting("MultiDBAsk", "true");

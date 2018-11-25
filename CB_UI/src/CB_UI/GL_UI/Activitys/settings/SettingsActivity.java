@@ -228,22 +228,18 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
     private void fillContent() {
 
-        // Categorie List zusammen stellen
-
         if (Categorys == null) {
-            Categorys = new CB_List<SettingCategory>();
+            Categorys = new CB_List<>();
         }
-
         Categorys.clear();
         SettingCategory[] tmp = SettingCategory.values();
         for (SettingCategory item : tmp) {
             if (item != SettingCategory.Button) {
                 Categorys.add(item);
             }
-
         }
 
-        SettingsListButtonLangSpinner<?> lang = new SettingsListButtonLangSpinner<Object>("Lang", SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
+        SettingsListButtonLangSpinner<?> lang = new SettingsListButtonLangSpinner<>("Lang", SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
         CB_View_Base langView = getLangSpinnerView(lang);
 
         addControlToLinearLayout(langView, margin);

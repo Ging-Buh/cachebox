@@ -473,6 +473,9 @@ public class SearchForGeocaches_Core {
                     cache.setUrl(jCache.getString("Url"));
                     cache.setApiStatus(apiStatus);
 
+                    cache.setCountry(jCache.optString("Country", ""));
+                    cache.setState(jCache.optString("State", ""));
+
                     // Ein evtl. in der Datenbank vorhandenen "Favorit" nicht überschreiben
                     boolean fav = LoadBooleanValueFromDB("select favorit from Caches where GcCode = \"" + gcCode + "\"");
                     cache.setFavorite(fav);

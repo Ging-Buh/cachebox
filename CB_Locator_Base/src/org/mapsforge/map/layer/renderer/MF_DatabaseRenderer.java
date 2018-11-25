@@ -20,11 +20,11 @@ import CB_Locator.Map.TileGL;
 import CB_Locator.Map.TileGL.TileState;
 import CB_Locator.Map.TileGL_Bmp;
 import CB_UI_Base.graphics.extendedInterfaces.ext_Bitmap;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
-import org.mapsforge.core.model.LatLong;
-import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.datastore.MapDataStore;
@@ -57,13 +57,19 @@ public class MF_DatabaseRenderer extends DatabaseRenderer implements IDatabaseRe
          * If the goal is to convert an Android Bitmap to a libgdx Texture, you don't need to use Pixmap at all. You can do it directly with
          * the help of simple OpenGL and Android GLUtils. Try the followings; it is 100x faster than your solution. I assume that you are
          * not in the rendering thread (you should not most likely). If you are, you don't need to call postRunnable().
-         *
-         * Gdx.app.postRunnable(new Runnable() {
-         *
-         * @Override public void run() { Texture tex = new Texture(bitmap.getWidth(), bitmap.getHeight(), Format.RGBA8888);
-         * GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, tex.getTextureObjectHandle()); GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
-         * GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0); bitmap.recycle(); // now you have the texture to do whatever you want } });
-         */
+
+        Gdx.app.postRunnable(new Runnable() {
+
+            @Override
+            public void run() {
+                Texture tex = new Texture(bitmap.getWidth(), bitmap.getHeight(), Format.RGBA8888);
+                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, tex.getTextureObjectHandle());
+                GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+                bitmap.recycle(); // now you have the texture to do whatever you want
+            }
+        });
+        */
 
         int tileSize = rendererJob.displayModel.getTileSize();
         Tile tile = rendererJob.tile;
@@ -94,18 +100,4 @@ public class MF_DatabaseRenderer extends DatabaseRenderer implements IDatabaseRe
         }
         return null;
     }
-
-    /**
-     * Converts the given LatLong into XY coordinates on the current object.
-     *
-     * @param latLong the LatLong to convert.
-     * @return the XY coordinates on the current object.
-     */
-    private Point scaleLatLong(LatLong latLong, int tileSize) {
-        double pixelX = (tileLatLon_0_x - latLong.getLongitude()) / divLon;
-        double pixelY = (tileLatLon_0_y - latLong.getLatitude()) / divLat;
-
-        return new Point((float) pixelX, (float) pixelY);
-    }
-
 }

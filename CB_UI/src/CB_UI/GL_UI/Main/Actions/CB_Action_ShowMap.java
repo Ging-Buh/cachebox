@@ -187,7 +187,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView {
         icm.addCheckableItem(MenuID.MI_ALIGN_TO_COMPSS, "AlignToCompass", MapView.that.GetAlignToCompass());
         icm.addItem(MenuID.MI_CENTER_WP, "CenterWP");
         // icm.addItem(MenuID.MI_SETTINGS, "settings", Sprites.getSprite(IconName.settings.name()));
-        // icm.addItem(MenuID.MI_SEARCH, "search", SpriteCache.Icons.get(27));
+        // icm.addItem(MenuID.MI_SEARCH, "Search", SpriteCache.Icons.get(27));
         icm.addItem(MenuID.MI_TREC_REC, "RecTrack");
         //icm.addItem(MenuID.MI_MAP_DOWNOAD, "MapDownload");
 

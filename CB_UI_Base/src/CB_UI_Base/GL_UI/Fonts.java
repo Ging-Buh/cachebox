@@ -15,8 +15,6 @@
  */
 package CB_UI_Base.GL_UI;
 
-import CB_UI_Base.GL_UI.Skin.SkinBase;
-import CB_UI_Base.GL_UI.Skin.SkinSettings;
 import CB_UI_Base.Global;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Log;
@@ -47,7 +45,6 @@ public class Fonts {
     private static BitmapFont small;
     private static BitmapFont normalBubble;
     private static BitmapFont smallBubble;
-    private static SkinSettings cfg;
     private static BitmapFontCache measureNormalCache;
     private static BitmapFontCache measureSmallCache;
     private static BitmapFontCache measureBigCache;
@@ -64,18 +61,17 @@ public class Fonts {
     /**
      * Lädt die verwendeten Bitmap Fonts und berechnet die entsprechenden Größen
      */
-    public static void loadFonts(SkinBase skin) {
+    public static void loadFonts() {
 
-        cfg = skin.getSettings();
-        COLOR.loadColors(skin);
+        COLOR.loadColors();
         FreeTypeFontGenerator generator = null;
 
         // get the first found ttf-font
 
         FileHandle font = null;
 
-        if (cfg.SkinFolder.isDirectory()) {
-            FileHandle[] ttfFonts = cfg.SkinFolder.list();
+        if (CB_Skin.getInstance().getSkinFolder().isDirectory()) {
+            FileHandle[] ttfFonts = CB_Skin.getInstance().getSkinFolder().list();
             for (FileHandle file : ttfFonts) {
                 if (file.extension().equalsIgnoreCase("ttf")) {
                     font = file;
@@ -94,12 +90,12 @@ public class Fonts {
 
         double density = UiSizes.that.getScale();
 
-        compass = loadFontFromFile(generator, (int) (cfg.SizeBiggest * density));
-        big = loadFontFromFile(generator, (int) (cfg.SizeBig * density));
-        normal = loadFontFromFile(generator, (int) (cfg.SizeNormal * density));
-        small = loadFontFromFile(generator, (int) (cfg.SizeSmall * density));
-        normalBubble = loadFontFromFile(generator, (int) (cfg.SizeNormalbubble * density));
-        smallBubble = loadFontFromFile(generator, (int) (cfg.SizeSmallBubble * density));
+        compass = loadFontFromFile(generator, (int) (CB_Skin.getInstance().getSizeBiggest() * density));
+        big = loadFontFromFile(generator, (int) (CB_Skin.getInstance().getSizeBig() * density));
+        normal = loadFontFromFile(generator, (int) (CB_Skin.getInstance().getSizeNormal() * density));
+        small = loadFontFromFile(generator, (int) (CB_Skin.getInstance().getSizeSmall() * density));
+        normalBubble = loadFontFromFile(generator, (int) (CB_Skin.getInstance().getSizeNormalBubble() * density));
+        smallBubble = loadFontFromFile(generator, (int) (CB_Skin.getInstance().getSizeSmallBubble() * density));
         generator.dispose();
     }
 
@@ -192,8 +188,8 @@ public class Fonts {
         String fontPath = "";
         // fonts-Verzeichnis "lokal" im cachebox/skins/small oder ..normal oder christmas
 
-        if (cfg.SkinFolder.type() == FileType.Absolute) {
-            String FolderPath = cfg.SkinFolder.path();
+        if (CB_Skin.getInstance().getSkinFolder().type() == FileType.Absolute) {
+            String FolderPath = CB_Skin.getInstance().getSkinFolder().path();
             String path = FolderPath.replace("/", fs) + fs + "fnts";
             if (FileIO.DirectoryExists(path)) {
                 // fonts-Verzeichnis "lokal" im cachebox/skins/small oder ..normal oder christmas
@@ -230,7 +226,7 @@ public class Fonts {
     }
 
     public static void setNightMode(boolean value) {
-        cfg.Nightmode = value;
+        CB_Skin.getInstance().setNightMode(value);
     }
 
 }

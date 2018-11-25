@@ -131,7 +131,7 @@ import static android.content.Intent.ACTION_VIEW;
 @SuppressLint("Wakelock")
 @SuppressWarnings("deprecation")
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.CacheListChangedEventListener, GpsStatus.NmeaListener, GpsStatus.Listener, CB_UI_Settings {
-    private static final String log = "main";
+    private static final String sKlasse = "main";
     public static AndroidApplication mainActivity;
     public static LinearLayout strengthLayout;
     public static Boolean isRestart = false;
@@ -193,7 +193,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
                             if (Math.abs(lastOrientation - orientation) > minChange) {
                                 CB_Locator.Locator.setHeading(orientation, CompassType.Magnetic);
-                                // log.debug("orientation: {}", orientation);
+                                // sKlasse.debug("orientation: {}", orientation);
                                 lastOrientation = orientation;
                             }
                         }
@@ -245,7 +245,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        Log.debug(log, " => onSaveInstanceState");
+        Log.debug(sKlasse, "main => onSaveInstanceState");
 
         savedInstanceState.putBoolean("useSmallSkin", GlobalCore.useSmallSkin);
         savedInstanceState.putString("WorkPath", Config.mWorkPath);
@@ -268,6 +268,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         super.onCreate(savedInstanceState);
 
         if (!GlobalCore.RunFromSplash) {
+            Log.debug(sKlasse, "main onCreate not started from splash: starting splash!");
             Intent splashIntent = new Intent().setClass(main.this, de.droidcachebox.splash.class);
             startActivity(splashIntent);
             finish();
@@ -277,6 +278,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         mainActivity = this; // com.badlogic.gdx.backends.android.AndroidApplication
 
         if (savedInstanceState != null) {
+            Log.debug(sKlasse, "main onCreate with savedInstanceState");
             GlobalCore.restartAfterKill = true;
             GlobalCore.useSmallSkin = savedInstanceState.getBoolean("useSmallSkin");
             String workPath = savedInstanceState.getString("WorkPath");
@@ -313,6 +315,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             GlobalCore.restartWaypoint = savedInstanceState.getString("selectedWayPoint");
 
         } else {
+            Log.debug(sKlasse, "main onCreate without savedInstanceState");
             GlobalCore.restartAfterKill = false;
         }
 
@@ -582,7 +585,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             if (action == null)
                 action = "";
         }
-        Log.info(log, "Return from activity " + action + " with requestCode " + requestCode);
+        Log.info(sKlasse, "Return from activity " + action + " with requestCode " + requestCode);
         if (requestCode != Global.REQUEST_CODE_KEYBOARDACTIVITY && requestCode != Global.REQUEST_CODE_SCREENLOCK) {
             GL.that.onStart();
         } else {
@@ -596,7 +599,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
                     @Override
                     public void run() {
-                        Log.info(log, "Photo taken");
+                        Log.info(sKlasse, "Photo taken");
                         try {
                             // move the photo from temp to UserImageFolder
                             String sourceName = tempMediaPath + mediaFileNameWithoutExtension + ".jpg";
@@ -605,7 +608,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                                 File source = FileFactory.createFile(sourceName);
                                 File destination = FileFactory.createFile(destinationName);
                                 if (!source.renameTo(destination)) {
-                                    Log.err(log, "move from " + sourceName + " to " + destinationName + " failed");
+                                    Log.err(sKlasse, "move from " + sourceName + " to " + destinationName + " failed");
                                 }
                             }
 
@@ -625,20 +628,20 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                             if (lastLocation == null) {
                                 lastLocation = CB_Locator.Locator.getLocation(ProviderType.any);
                                 if (lastLocation == null) {
-                                    Log.info(log, "No (GPS)-Location for Trackrecording.");
+                                    Log.info(sKlasse, "No (GPS)-Location for Trackrecording.");
                                     return;
                                 }
                             }
                             // Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und die Koordinaten nach der Aufnahme verwendet werden.
                             TrackRecorder.AnnotateMedia(mediaFileNameWithoutExtension + ".jpg", relativPath + "/" + mediaFileNameWithoutExtension + ".jpg", lastLocation, Global.GetTrackDateTimeString());
                         } catch (Exception e) {
-                            Log.err(log, e.getLocalizedMessage());
+                            Log.err(sKlasse, e.getLocalizedMessage());
                         }
                     }
                 });
 
             } else {
-                Log.err(log, "Intent Take Photo resultCode: " + resultCode);
+                Log.err(sKlasse, "Intent Take Photo resultCode: " + resultCode);
             }
 
             return;
@@ -651,7 +654,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
                     @Override
                     public void run() {
-                        Log.info(log, "Video recorded.");
+                        Log.info(sKlasse, "Video recorded.");
                         String ext = "";
                         try {
                             // move Video from temp (recordedVideoFilePath) in UserImageFolder and rename
@@ -675,9 +678,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                                 String destinationName = Config.UserImageFolder.getValue() + "/" + mediaFileNameWithoutExtension + "." + ext;
                                 File destination = FileFactory.createFile(destinationName);
                                 if (!source.renameTo(destination)) {
-                                    Log.err(log, "move from " + recordedVideoFilePath + " to " + destinationName + " failed");
+                                    Log.err(sKlasse, "move from " + recordedVideoFilePath + " to " + destinationName + " failed");
                                 } else {
-                                    Log.info(log, "Video saved at " + destinationName);
+                                    Log.info(sKlasse, "Video saved at " + destinationName);
                                     // track annotation
                                     String TrackFolder = Config.TrackFolder.getValue();
                                     String relativPath = FileIO.getRelativePath(Config.UserImageFolder.getValue(), TrackFolder, "/");
@@ -685,12 +688,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                                 }
                             }
                         } catch (Exception e) {
-                            Log.err(log, e.getLocalizedMessage());
+                            Log.err(sKlasse, e.getLocalizedMessage());
                         }
                     }
                 });
             } else {
-                Log.err(log, "Intent Record Video resultCode: " + resultCode);
+                Log.err(sKlasse, "Intent Record Video resultCode: " + resultCode);
             }
 
             return;
@@ -730,7 +733,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
     @Override
     protected void onPause() {
-        Log.info(log, "Main=> onPause");
+        Log.info(sKlasse, "main => onPause");
 
         stopped = true;
 
@@ -749,7 +752,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
         super.onPause();
 
-        Log.debug(log, "Main=> onPause release SuppressPowerSaving");
+        Log.debug(sKlasse, "Main=> onPause release SuppressPowerSaving");
 
         try {
             if (this.mWakeLock != null)
@@ -799,16 +802,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
     @Override
     protected void onResume() {
+        Log.debug(sKlasse, "main => onResume");
         viewGL.RenderContinous();
         if (stopped) {
             showWaitToRenderStartet();
             invalidateTextureEventList.Call();
         }
 
-        Log.debug(log, "Main=> onResume");
         if (input == null) {
-            Log.debug(log, "Main=> onResume input== null");
-
+            Log.debug(sKlasse, "Main => onResume input == null");
             graphics = new AndroidGraphics(this, gdxConfig, gdxConfig.resolutionStrategy == null ? new FillResolutionStrategy() : gdxConfig.resolutionStrategy);
             input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), gdxConfig);
         }
@@ -831,7 +833,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
          * be always on until this Activity gets destroyed.
          */
         if (Config.SuppressPowerSaving.getValue()) {
-            Log.debug(log, "Main=> onResume SuppressPowerSaving");
+            Log.debug(sKlasse, "Main=> onResume SuppressPowerSaving");
             final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
             int flags = PowerManager.SCREEN_BRIGHT_WAKE_LOCK;
             this.mWakeLock = pm.newWakeLock(flags, "Cachebox");
@@ -843,7 +845,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             @Override
             public void handleChange() {
                 if (Config.SuppressPowerSaving.getValue()) {
-                    Log.debug(log, "Main=> onResume SuppressPowerSaving");
+                    Log.debug(sKlasse, "Main=> onResume SuppressPowerSaving");
                     final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
                     int flags = PowerManager.SCREEN_BRIGHT_WAKE_LOCK;
                     main.this.mWakeLock = pm.newWakeLock(flags, "Cachebox");
@@ -860,7 +862,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         try {
             initialOnTouchListener();
         } catch (Exception e) {
-            Log.err(log, "onResume", "initialOnTouchListener", e);
+            Log.err(sKlasse, "onResume", "initialOnTouchListener", e);
         }
 
 
@@ -884,12 +886,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
     @Override
     protected void onNewIntent(Intent intent) {
+        Log.debug(sKlasse, "main => onNewIntent");
         super.onNewIntent(intent);
     }
 
     @Override
     protected void onStop() {
-        Log.debug(log, "Main=> onStop");
+        Log.debug(sKlasse, "main => onStop");
 
         if (mSensorManager != null)
             mSensorManager.unregisterListener(mSensorEventListener);
@@ -911,16 +914,17 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     @Override
     public void onDestroy() {
         try {
+            Log.debug(sKlasse, "main => onDestroy");
             PlatformConnector.addToMediaScannerList(Config.FieldNotesGarminPath.getValue());
             PlatformConnector.addToMediaScannerList(CB_SLF4J.logfile);
             Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
             for (String fn : PlatformConnector.getMediaScannerList()) {
                 intent.setData(Uri.fromFile(new java.io.File(fn)));
                 sendBroadcast(intent);
-                Log.info(log, "Send " + fn + " to MediaScanner.");
+                Log.info(sKlasse, "Send " + fn + " to MediaScanner.");
             }
         } catch (Exception e) {
-            Log.err(log, "Send files to MediaScanner: " + e.getMessage());
+            Log.err(sKlasse, "Send files to MediaScanner: " + e.getMessage());
         }
 
         try {
@@ -930,15 +934,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         }
         mReceiver = null;
 
-        Log.info(log, "Main=> onDestroy");
+        Log.info(sKlasse, "Main=> onDestroy");
         // frame.removeAllViews();
         if (isRestart) {
-            Log.debug(log, "Main=> onDestroy isRestart");
+            Log.debug(sKlasse, "Main=> onDestroy isRestart");
             super.onDestroy();
             isRestart = false;
         } else {
             if (isFinishing()) {
-                Log.info(log, "Main=> onDestroy isFinishing");
+                Log.info(sKlasse, "Main=> onDestroy isFinishing");
                 if (GlobalCore.RunFromSplash) {
                     Config.settings.WriteToDB();
 
@@ -997,7 +1001,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 if (GlobalCore.RunFromSplash)
                     System.exit(0);
             } else {
-                Log.info(log, "Main=> onDestroy isFinishing==false");
+                Log.info(sKlasse, "Main=> onDestroy isFinishing==false");
 
                 if (aktView != null)
                     aktView.OnHide();
@@ -1092,7 +1096,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     }
 
     private void ShowViewGL() {
-        Log.debug(log, "ShowViewGL " + GlFrame.getMeasuredWidth() + "/" + GlFrame.getMeasuredHeight());
+        Log.debug(sKlasse, "ShowViewGL " + GlFrame.getMeasuredWidth() + "/" + GlFrame.getMeasuredHeight());
 
         initialViewGL();
 
@@ -1168,7 +1172,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                     try {
                         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 1, main.this);
                     } catch (SecurityException sex) {
-                        Log.err(log, "Config.gpsUpdateTime changed: " + sex.getLocalizedMessage());
+                        Log.err(sKlasse, "Config.gpsUpdateTime changed: " + sex.getLocalizedMessage());
                     }
                 }
             });
@@ -1179,11 +1183,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 locationManager.addNmeaListener(this);
                 locationManager.addGpsStatusListener(this);
             } catch (SecurityException sex) {
-                Log.err(log, "Config.gpsUpdateTime changed: " + sex.getLocalizedMessage());
+                Log.err(sKlasse, "Config.gpsUpdateTime changed: " + sex.getLocalizedMessage());
             }
 
         } catch (Exception e) {
-            Log.err(log, "main.initialLocationManager()", "", e);
+            Log.err(sKlasse, "main.initialLocationManager()", "", e);
             e.printStackTrace();
         }
 
@@ -1193,7 +1197,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         try {
             gdxView = initializeForView(GL.that, gdxConfig);
 
-            Log.debug(log, "Initial new gdxView=" + gdxView.toString());
+            Log.debug(sKlasse, "Initial new gdxView=" + gdxView.toString());
 
             int GlSurfaceType = -1;
             if (gdxView instanceof GLSurfaceView20)
@@ -1203,7 +1207,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
             ViewGL.setSurfaceType(GlSurfaceType);
 
-            Log.debug(log, "InitializeForView...");
+            Log.debug(sKlasse, "InitializeForView...");
 
             switch (GlSurfaceType) {
                 case ViewGL.GLSURFACE_VIEW20:
@@ -1232,7 +1236,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
             // }
         } catch (Exception e) {
-            Log.err(log, "main.initialViewGL()", "", e);
+            Log.err(sKlasse, "main.initialViewGL()", "", e);
             e.printStackTrace();
         }
 
@@ -1272,7 +1276,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                     break;
             }
         } catch (Exception e) {
-            Log.err(log, "gdxView.OnTouchListener", "", e);
+            Log.err(sKlasse, "gdxView.OnTouchListener", "", e);
             return true;
         }
         return true;
@@ -1310,12 +1314,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     }
 
     private void takePhoto() {
-        Log.info(log, "takePhoto start " + GlobalCore.getSelectedCache());
+        Log.info(sKlasse, "takePhoto start " + GlobalCore.getSelectedCache());
         try {
             // define the file-name to save photo taken by Camera activity
             String directory = Config.UserImageFolder.getValue();
             if (!FileIO.createDirectory(directory)) {
-                Log.err(log, "can't create " + directory);
+                Log.err(sKlasse, "can't create " + directory);
                 return;
             }
             String cacheName;
@@ -1328,14 +1332,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             mediaFileNameWithoutExtension = Global.GetDateTimeString() + " " + cacheName;
             tempMediaPath = getExternalFilesDir("User/Media").getAbsolutePath() + "/"; // oder Environment.DIRECTORY_PICTURES
             if (!FileIO.createDirectory(tempMediaPath)) {
-                Log.err(log, "can't create " + tempMediaPath);
+                Log.err(sKlasse, "can't create " + tempMediaPath);
                 return;
             }
             String tempMediaPathAndName = tempMediaPath + mediaFileNameWithoutExtension + ".jpg";
             try {
                 FileFactory.createFile(tempMediaPathAndName).createNewFile();
             } catch (Exception e) {
-                Log.err(log, "can't create " + tempMediaPathAndName + "\r" + e.getLocalizedMessage());
+                Log.err(sKlasse, "can't create " + tempMediaPathAndName + "\r" + e.getLocalizedMessage());
                 return;
             }
 
@@ -1346,26 +1350,26 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             } else {
                 uri = Uri.fromFile(new java.io.File(tempMediaPathAndName));
             }
-            Log.info(log, uri.toString());
+            Log.info(sKlasse, uri.toString());
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
             if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivityForResult(intent, Global.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
             } else {
-                Log.err(log, MediaStore.ACTION_IMAGE_CAPTURE + " not installed.");
+                Log.err(sKlasse, MediaStore.ACTION_IMAGE_CAPTURE + " not installed.");
             }
         } catch (Exception e) {
-            Log.err(log, e.getLocalizedMessage());
+            Log.err(sKlasse, e.getLocalizedMessage());
         }
     }
 
     private void recVideo() {
         try {
-            Log.info(log, "recVideo start " + GlobalCore.getSelectedCache());
+            Log.info(sKlasse, "recVideo start " + GlobalCore.getSelectedCache());
             // define the file-name to save video taken by Camera activity
             String directory = Config.UserImageFolder.getValue();
             if (!FileIO.createDirectory(directory)) {
-                Log.err(log, "can't create " + directory);
+                Log.err(sKlasse, "can't create " + directory);
                 return;
             }
             mediaFileNameWithoutExtension = Global.GetDateTimeString();
@@ -1393,10 +1397,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivityForResult(intent, Global.CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
             } else {
-                Log.err(log, MediaStore.ACTION_VIDEO_CAPTURE + " not installed.");
+                Log.err(sKlasse, MediaStore.ACTION_VIDEO_CAPTURE + " not installed.");
             }
         } catch (Exception e) {
-            Log.err(log, e.getLocalizedMessage());
+            Log.err(sKlasse, e.getLocalizedMessage());
         }
     }
 
@@ -1407,7 +1411,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 // define the file-name to save voice taken by activity
                 String directory = Config.UserImageFolder.getValue();
                 if (!FileIO.createDirectory(directory)) {
-                    Log.err(log, "can't create " + directory);
+                    Log.err(sKlasse, "can't create " + directory);
                     return;
                 }
 
@@ -1445,7 +1449,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 return;
             }
         } catch (Exception e) {
-            Log.err(log, e.getLocalizedMessage());
+            Log.err(sKlasse, e.getLocalizedMessage());
         }
     }
 
@@ -1506,7 +1510,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 if (intent != null)
                     startActivity(intent);
             } catch (Exception e) {
-                Log.err(log, "Error Start " + selectedNavi, e);
+                Log.err(sKlasse, "Error Start " + selectedNavi, e);
             }
         }
     }
@@ -1530,11 +1534,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 }
             }
             if (intent == null) {
-                Log.err(log, "No intent for " + action + " , " + data);
+                Log.err(sKlasse, "No intent for " + action + " , " + data);
             }
         } catch (Exception e) {
             intent = null;
-            Log.err(log, "Exception: No intent for " + action + " , " + data, e);
+            Log.err(sKlasse, "Exception: No intent for " + action + " , " + data, e);
         }
         return intent;
     }
@@ -1552,7 +1556,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                     double altCorrection = Double.valueOf(s[11]);
                     if (altCorrection == 0)
                         return;
-                    Log.debug(log, "AltCorrection: " + String.valueOf(altCorrection));
+                    Log.debug(sKlasse, "AltCorrection: " + String.valueOf(altCorrection));
                     Locator.setAltCorrection(altCorrection);
                     // Höhenkorrektur ändert sich normalerweise nicht, einmal auslesen reicht...
                     locationManager.removeNmeaListener(this);
@@ -1561,7 +1565,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 }
             }
         } catch (Exception e) {
-            Log.err(log, "main.onNmeaReceived()", "", e);
+            Log.err(sKlasse, "main.onNmeaReceived()", "", e);
             e.printStackTrace();
         }
     }
@@ -1618,7 +1622,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
             }
         } catch (Exception e) {
-            Log.err(log, "main.chkGpsIsOn()", "", e);
+            Log.err(sKlasse, "main.chkGpsIsOn()", "", e);
             e.printStackTrace();
         }
     }
@@ -1758,23 +1762,23 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
             @Override
             public void switchToGpsMeasure() {
-                Log.info(log, "switchToGpsMeasure()");
+                Log.info(sKlasse, "switchToGpsMeasure()");
                 int updateTime = Config.gpsUpdateTime.getValue();
                 try {
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 0, main.this);
                 } catch (SecurityException sex) {
-                    Log.err(log, "switchToGpsMeasure: " + sex.getLocalizedMessage());
+                    Log.err(sKlasse, "switchToGpsMeasure: " + sex.getLocalizedMessage());
                 }
             }
 
             @Override
             public void switchtoGpsDefault() {
-                Log.info(log, "switchtoGpsDefault()");
+                Log.info(sKlasse, "switchtoGpsDefault()");
                 int updateTime = Config.gpsUpdateTime.getValue();
                 try {
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 1, main.this);
                 } catch (SecurityException sex) {
-                    Log.err(log, "switchtoGpsDefault: " + sex.getLocalizedMessage());
+                    Log.err(sKlasse, "switchtoGpsDefault: " + sex.getLocalizedMessage());
                 }
             }
 
@@ -1790,7 +1794,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.info(log, "Show View with ID = " + viewID.getID());
+                        Log.info(sKlasse, "Show View with ID = " + viewID.getID());
 
                         // set Content size
 
@@ -1841,7 +1845,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.info(log, "Hide View with ID = " + viewID.getID());
+                        Log.info(sKlasse, "Hide View with ID = " + viewID.getID());
 
                         if (!(aktView == null) && viewID == aktViewId) {
                             aktView.OnHide();
@@ -1883,7 +1887,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                         if (cacheNameView != null)
                             ((View) cacheNameView).setVisibility(View.INVISIBLE);
                         setLockScreenProperty();
-                        // Log.debug(log, "Show AndroidView");
+                        // Log.debug(sKlasse, "Show AndroidView");
                     }
                 });
             }
@@ -1967,7 +1971,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                     @Override
                     public void run() {
 
-                        Log.debug(log, "Set Android Content Sizeleft/top/right/bottom :" + String.valueOf(left) + "/" + String.valueOf(top) + "/" + String.valueOf(right) + "/" + String.valueOf(bottom));
+                        Log.debug(sKlasse, "Set Android Content Sizeleft/top/right/bottom :" + String.valueOf(left) + "/" + String.valueOf(top) + "/" + String.valueOf(right) + "/" + String.valueOf(bottom));
 
                         // set Content size
 
@@ -1986,7 +1990,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                                 tabFrame.requestLayout();
                             }
                         } else {
-                            Log.debug(log, "ActView & aktTabView == NULL");
+                            Log.debug(sKlasse, "ActView & aktTabView == NULL");
                         }
                     }
                 });
@@ -2000,11 +2004,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             if (cm instanceof android.content.ClipboardManager) {
                 AndroidContentClipboard acb = new AndroidContentClipboard((android.content.ClipboardManager) cm);
                 GlobalCore.setDefaultClipboard(acb);
-                Log.info(log, "got AndroidContentClipboard");
+                Log.info(sKlasse, "got AndroidContentClipboard");
             } else if (cm instanceof android.text.ClipboardManager) {
                 AndroidTextClipboard acb = new AndroidTextClipboard((android.text.ClipboardManager) cm);
                 GlobalCore.setDefaultClipboard(acb);
-                Log.info(log, "got AndroidTextClipboard");
+                Log.info(sKlasse, "got AndroidTextClipboard");
             }
         }
 
@@ -2021,7 +2025,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                     // SelectedCacheEventList läuft
                     Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
                     Config.AcceptChanges();
-                    Log.debug(log, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
+                    Log.debug(sKlasse, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
                 }
                 finish();
             }
@@ -2052,14 +2056,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                     intent.addCategory(Intent.CATEGORY_BROWSABLE);
                     intent.setDataAndType(uri, "text/html");
                     if (intent.resolveActivity(getPackageManager()) != null) {
-                        Log.info(log, "Start activity for " + uri.toString());
+                        Log.info(sKlasse, "Start activity for " + uri.toString());
                         mainActivity.startActivity(intent);
                     } else {
-                        Log.err(log, "Activity for " + url + " not installed.");
+                        Log.err(sKlasse, "Activity for " + url + " not installed.");
                         Toast.makeText(mainActivity, Translation.Get("Cann_not_open_cache_browser") + " (" + url + ")", Toast.LENGTH_LONG).show();
                     }
                 } catch (Exception exc) {
-                    Log.err(log, Translation.Get("Cann_not_open_cache_browser") + " (" + url + ")", exc);
+                    Log.err(sKlasse, Translation.Get("Cann_not_open_cache_browser") + " (" + url + ")", exc);
                 }
             }
         });
@@ -2151,7 +2155,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         TimerTask gpxImportTask = new TimerTask() {
             @Override
             public void run() {
-                Log.info(log, "ImportGPXFile");
+                Log.info(sKlasse, "ImportGPXFile");
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -2163,7 +2167,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                         }, new ICancelRunnable() {
                             @Override
                             public void run() {
-                                Log.debug(log, "Import GPXFile from " + ExtSearch_GpxPath + " startet");
+                                Log.debug(sKlasse, "Import GPXFile from " + ExtSearch_GpxPath + " startet");
                                 Date ImportStart = new Date();
                                 Importer importer = new Importer();
                                 ImporterProgress ip = new ImporterProgress();
@@ -2183,7 +2187,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
                                 long ImportZeit = new Date().getTime() - ImportStart.getTime();
                                 String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "Caches\n" + String.valueOf(GPXFileImporter.LogCount) + "Logs\n in " + String.valueOf(ImportZeit);
-                                Log.debug(log, Msg.replace("\n", "\n\r") + " from " + ExtSearch_GpxPath);
+                                Log.debug(sKlasse, Msg.replace("\n", "\n\r") + " from " + ExtSearch_GpxPath);
                                 GL.that.Toast(Msg, 3000);
                                 ExtSearch_GpxPath = null;
                             }
@@ -2209,7 +2213,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         if (intent.resolveActivity(getPackageManager()) != null) {
             mainActivity.startActivityForResult(intent, Global.REQUEST_CODE_GET_API_KEY);
         } else {
-            Log.err(log, intent.getAction() + " not installed.");
+            Log.err(sKlasse, intent.getAction() + " not installed.");
         }
     }
 
@@ -2255,7 +2259,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 }
             });
         } catch (Exception e) {
-            Log.err(log, "Error Initial Locator.UseImperialUnits");
+            Log.err(sKlasse, "Error Initial Locator.UseImperialUnits");
         }
 
         // GPS update time?
@@ -2269,7 +2273,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 }
             });
         } catch (Exception e) {
-            Log.err(log, "Error Initial Locator.MinUpdateTime");
+            Log.err(sKlasse, "Error Initial Locator.MinUpdateTime");
         }
 
         // Use magnetic Compass?
@@ -2282,7 +2286,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 }
             });
         } catch (Exception e) {
-            Log.err(log, "Error Initial Locator.UseHardwareCompass");
+            Log.err(sKlasse, "Error Initial Locator.UseHardwareCompass");
         }
 
         // Magnetic compass level
@@ -2295,7 +2299,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 }
             });
         } catch (Exception e) {
-            Log.err(log, "Error Initial Locator.HardwareCompassLevel");
+            Log.err(sKlasse, "Error Initial Locator.HardwareCompassLevel");
         }
     }
 
@@ -2309,7 +2313,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             try {
                 status = locationManager.getGpsStatus(null);
             } catch (SecurityException sex) {
-                Log.err(log, "onGpsStatusChanged: " + sex.getLocalizedMessage());
+                Log.err(sKlasse, "onGpsStatusChanged: " + sex.getLocalizedMessage());
                 return;
             }
 

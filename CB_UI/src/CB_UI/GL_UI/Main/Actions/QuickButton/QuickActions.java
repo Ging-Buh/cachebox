@@ -203,7 +203,7 @@ public enum QuickActions {
             case 10:
                 return Translation.Get("Search");
             case 11:
-                return Translation.Get("filter");
+                return Translation.Get("Filter");
             case 12:
                 return Translation.Get("AutoResort");
             case 13:

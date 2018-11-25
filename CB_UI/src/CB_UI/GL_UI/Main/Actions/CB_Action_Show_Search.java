@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public class CB_Action_Show_Search extends CB_Action {
 
     public CB_Action_Show_Search() {
-        super("search", MenuID.AID_SEARCH);
+        super("Search", MenuID.AID_SEARCH);
     }
 
     @Override

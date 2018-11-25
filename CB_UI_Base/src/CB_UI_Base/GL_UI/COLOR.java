@@ -15,8 +15,6 @@
  */
 package CB_UI_Base.GL_UI;
 
-import CB_UI_Base.GL_UI.Skin.SkinBase;
-import CB_UI_Base.GL_UI.Skin.SkinSettings;
 import CB_Utils.Util.HSV_Color;
 import com.badlogic.gdx.graphics.Color;
 
@@ -49,11 +47,7 @@ public class COLOR {
     private static HSV_Color night_popup_menu_info_back;
     private static HSV_Color night_popup_menu_border;
     private static HSV_Color night_popup_menu_icon_back;
-
-    private static SkinSettings cfg;
-
-    public static void loadColors(SkinBase skin) {
-        cfg = skin.getSettings();
+    public static void loadColors() {
 
         day_fontColor = getDayColor("font-color");
         day_fontColorDisable = getDayColor("font-color-disable");
@@ -82,13 +76,13 @@ public class COLOR {
 
         Color ret = null;
         try {
-            ret = SkinBase.getDaySkin().getColor(name);
+            ret = CB_Skin.getInstance().getDaySkin().getColor(name);
         } catch (Exception e) {
         }
 
         if (ret == null) // use default from APK
         {
-            ret = SkinBase.getDefaultDaySkin().getColor(name);
+            ret = CB_Skin.getInstance().getDefaultDaySkin().getColor(name);
         }
         return new HSV_Color(ret);
     }
@@ -97,55 +91,55 @@ public class COLOR {
 
         Color ret = null;
         try {
-            ret = SkinBase.getNightSkin().getColor(name);
+            ret = CB_Skin.getInstance().getNightSkin().getColor(name);
         } catch (Exception e) {
         }
 
         if (ret == null) // use default from APK
         {
-            ret = SkinBase.getDefaultNightSkin().getColor(name);
+            ret = CB_Skin.getInstance().getDefaultNightSkin().getColor(name);
         }
         return new HSV_Color(ret);
     }
 
     public static HSV_Color getMenuBackColor() {
-        return cfg.Nightmode ? night_MenuBackColor : day_MenuBackColor;
+        return CB_Skin.getInstance().getNightMode() ? night_MenuBackColor : day_MenuBackColor;
     }
 
     public static HSV_Color getFontColor() {
-        return cfg.Nightmode ? night_fontColor : day_fontColor;
+        return CB_Skin.getInstance().getNightMode() ? night_fontColor : day_fontColor;
     }
 
     public static HSV_Color getDisableFontColor() {
-        return cfg.Nightmode ? night_fontColorDisable : day_fontColorDisable;
+        return CB_Skin.getInstance().getNightMode() ? night_fontColorDisable : day_fontColorDisable;
     }
 
     public static HSV_Color getHighLightFontColor() {
-        return cfg.Nightmode ? night_fontColorHighLight : day_fontColorHighLight;
+        return CB_Skin.getInstance().getNightMode() ? night_fontColorHighLight : day_fontColorHighLight;
     }
 
     public static HSV_Color getLinkFontColor() {
-        return cfg.Nightmode ? night_fontColorLink : day_fontColorLink;
+        return CB_Skin.getInstance().getNightMode() ? night_fontColorLink : day_fontColorLink;
     }
 
     public static HSV_Color getDarknesColor() {
-        return cfg.Nightmode ? night_darknesColor : day_darknesColor;
+        return CB_Skin.getInstance().getNightMode() ? night_darknesColor : day_darknesColor;
     }
 
     public static HSV_Color getCrossColor() {
-        return cfg.Nightmode ? night_crossColor : day_crossColor;
+        return CB_Skin.getInstance().getNightMode() ? night_crossColor : day_crossColor;
     }
 
     public static HSV_Color getPopUpInfoBackColor() {
-        return cfg.Nightmode ? night_popup_menu_info_back : day_popup_menu_info_back;
+        return CB_Skin.getInstance().getNightMode() ? night_popup_menu_info_back : day_popup_menu_info_back;
     }
 
     public static HSV_Color getPopUpMenuBorderColor() {
-        return cfg.Nightmode ? night_popup_menu_border : day_popup_menu_border;
+        return CB_Skin.getInstance().getNightMode() ? night_popup_menu_border : day_popup_menu_border;
     }
 
     public static HSV_Color getPopUpMenuIconBackColor() {
-        return cfg.Nightmode ? night_popup_menu_icon_back : day_popup_menu_icon_back;
+        return CB_Skin.getInstance().getNightMode() ? night_popup_menu_icon_back : day_popup_menu_icon_back;
     }
 
     public static HSV_Color getTransparent() {

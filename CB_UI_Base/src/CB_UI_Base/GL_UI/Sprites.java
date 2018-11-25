@@ -16,9 +16,6 @@
 
 package CB_UI_Base.GL_UI;
 
-import CB_UI_Base.GL_UI.Skin.CB_Skin;
-import CB_UI_Base.GL_UI.Skin.SkinBase;
-import CB_UI_Base.GL_UI.Skin.SkinSettings;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
@@ -134,7 +131,7 @@ public class Sprites {
         }
     }
 
-    protected static void setPath(CB_Skin skin) {
+    protected static void setPath() {
 
         if (Gdx.gl != null) {
             Gdx.gl.glFlush();
@@ -146,18 +143,16 @@ public class Sprites {
         FileHandleCustomAtlas = null;
         FileHandleCustomNightAtlas = null;
 
-        SkinSettings skinSet = skin.getSettings();
-
-        if (skinSet.SkinFolder.type() == FileType.Absolute) {
-            FileHandleCustomAtlas = Gdx.files.absolute(skinSet.SkinFolder + "/day/" + TexturName);
-            FileHandleCustomNightAtlas = Gdx.files.absolute(skinSet.SkinFolder + "/night/" + TexturName);
+        if (CB_Skin.getInstance().getSkinFolder().type() == FileType.Absolute) {
+            FileHandleCustomAtlas = Gdx.files.absolute(CB_Skin.getInstance().getSkinFolder() + "/day/" + TexturName);
+            FileHandleCustomNightAtlas = Gdx.files.absolute(CB_Skin.getInstance().getSkinFolder() + "/night/" + TexturName);
         } else {
-            FileHandleCustomAtlas = Gdx.files.internal(skinSet.SkinFolder + "/day/" + TexturName);
-            FileHandleCustomNightAtlas = Gdx.files.internal(skinSet.SkinFolder + "/night/" + TexturName);
+            FileHandleCustomAtlas = Gdx.files.internal(CB_Skin.getInstance().getSkinFolder() + "/day/" + TexturName);
+            FileHandleCustomNightAtlas = Gdx.files.internal(CB_Skin.getInstance().getSkinFolder() + "/night/" + TexturName);
         }
 
-        FileHandleDefaultAtlas = Gdx.files.internal(skinSet.DefaultSkinFolder + "/day/" + TexturName);
-        FileHandleDefaultNightAtlas = Gdx.files.internal(skinSet.DefaultSkinFolder + "/night/" + TexturName);
+        FileHandleDefaultAtlas = Gdx.files.internal(CB_Skin.getInstance().getDefaultSkinFolder() + "/day/" + TexturName);
+        FileHandleDefaultNightAtlas = Gdx.files.internal(CB_Skin.getInstance().getDefaultSkinFolder() + "/night/" + TexturName);
 
         if (atlasDefault != null) {
             atlasDefault.dispose();
@@ -327,7 +322,7 @@ public class Sprites {
     public static void loadSprites(boolean reload) {
 
         if (!reload)
-            setPath(CB_Skin.INSTANCE);
+            setPath();
 
         if (LogIcons == null)
             LogIcons = new ArrayList<Sprite>();
@@ -556,7 +551,7 @@ public class Sprites {
 
         activityBackground = new NinePatchDrawable(new NinePatch(Sprites.getSprite("activity-back"), patch, patch, patch, patch));
         activityBorderMask = new NinePatchDrawable(new NinePatch(Sprites.getSprite("activity-border"), patch, patch, patch, patch));
-        ListBack = new ColorDrawable(SkinBase.getThemedColor("background"));
+        ListBack = new ColorDrawable(CB_Skin.getInstance().getThemedColor("background"));
         ButtonBack = new SpriteDrawable(getSprite("button-list-back"));
         AboutBack = new SpriteDrawable(getSprite("splash-back"));
         InfoBack = new NinePatchDrawable(new NinePatch(getSprite("InfoPanelBack"), patch, patch, patch, patch));
