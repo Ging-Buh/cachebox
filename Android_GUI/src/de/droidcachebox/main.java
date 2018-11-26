@@ -38,7 +38,7 @@ import CB_UI.GL_UI.Activitys.settings.SettingsActivity;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog.SearchMode;
 import CB_UI.GL_UI.Main.TabMainView;
-import CB_UI.GL_UI.Views.splash;
+import CB_UI.GL_UI.Views.MainViewInit;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.Events.PlatformConnector.*;
@@ -55,10 +55,7 @@ import CB_UI_Base.GL_UI.ViewConst;
 import CB_UI_Base.GL_UI.ViewID;
 import CB_UI_Base.GL_UI.ViewID.UI_Pos;
 import CB_UI_Base.GL_UI.ViewID.UI_Type;
-import CB_UI_Base.Math.DevicesSizes;
-import CB_UI_Base.Math.Size;
-import CB_UI_Base.Math.UI_Size_Base;
-import CB_UI_Base.Math.UiSizes;
+import CB_UI_Base.Math.*;
 import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.CB_SLF4J;
@@ -344,9 +341,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
         mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-        splash sp = new splash(0, 0, UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), "Splash");
-        TabMainView ma = new TabMainView(0, 0, UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), "mainView");
-        new GL(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), sp, ma);
+        CB_RectF rec = new CB_RectF(0, 0, UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight());
+        new GL(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), new MainViewInit(rec), new TabMainView(rec));
 
         SelectedCacheEventList.Add(this);
         CacheListChangedEventList.Add(this);
@@ -391,9 +387,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
         setQuickButtonHeight(sollHeight);
 
+        // at the moment isFirstStart is always true. Intended for change of theme (ActivityUtils): code there not used, removed
         if (isFirstStart) {
-            // ask for API key only if Rev-Number changed, like at new
-            // installation and API Key is Empty
+            // ask for API key only if Rev-Number changed, like at new installation and API Key is Empty
             if (Config.newInstall.getValue() && GroundspeakAPI.GetSettingsAccessToken().length() == 0) {
                 askToGetApiKey();
             } else {
@@ -752,7 +748,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
         super.onPause();
 
-        Log.debug(sKlasse, "Main=> onPause release SuppressPowerSaving");
+        Log.debug(sKlasse, "main => onPause release SuppressPowerSaving");
 
         try {
             if (this.mWakeLock != null)
@@ -833,7 +829,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
          * be always on until this Activity gets destroyed.
          */
         if (Config.SuppressPowerSaving.getValue()) {
-            Log.debug(sKlasse, "Main=> onResume SuppressPowerSaving");
+            Log.debug(sKlasse, "main => onResume SuppressPowerSaving");
             final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
             int flags = PowerManager.SCREEN_BRIGHT_WAKE_LOCK;
             this.mWakeLock = pm.newWakeLock(flags, "Cachebox");
@@ -845,7 +841,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             @Override
             public void handleChange() {
                 if (Config.SuppressPowerSaving.getValue()) {
-                    Log.debug(sKlasse, "Main=> onResume SuppressPowerSaving");
+                    Log.debug(sKlasse, "main => onResume SuppressPowerSaving");
                     final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
                     int flags = PowerManager.SCREEN_BRIGHT_WAKE_LOCK;
                     main.this.mWakeLock = pm.newWakeLock(flags, "Cachebox");
@@ -934,15 +930,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         }
         mReceiver = null;
 
-        Log.info(sKlasse, "Main=> onDestroy");
+        Log.info(sKlasse, "main => onDestroy");
         // frame.removeAllViews();
         if (isRestart) {
-            Log.debug(sKlasse, "Main=> onDestroy isRestart");
+            Log.debug(sKlasse, "main => onDestroy isRestart");
             super.onDestroy();
             isRestart = false;
         } else {
             if (isFinishing()) {
-                Log.info(sKlasse, "Main=> onDestroy isFinishing");
+                Log.info(sKlasse, "main => onDestroy isFinishing");
                 if (GlobalCore.RunFromSplash) {
                     Config.settings.WriteToDB();
 
@@ -1001,7 +997,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 if (GlobalCore.RunFromSplash)
                     System.exit(0);
             } else {
-                Log.info(sKlasse, "Main=> onDestroy isFinishing==false");
+                Log.info(sKlasse, "main => onDestroy isFinishing==false");
 
                 if (aktView != null)
                     aktView.OnHide();

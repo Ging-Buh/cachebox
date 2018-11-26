@@ -34,12 +34,11 @@ import CB_Utils.Log.Log;
 import CB_Utils.Log.LogLevel;
 import CB_Utils.Settings.*;
 import CB_Utils.Settings.PlatformSettings.IPlatformSettings;
+import CB_Utils.StringH;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.IChanged;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -54,7 +53,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.StatFs;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.os.EnvironmentCompat;
@@ -80,6 +78,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * what is this good for:
+ * + write some values to the config database:
+ * installedRev, newInstall
+ * + initialising some classes with good values:
+ * <p>
+ * + check if this (Intent) is called with "Params" in the Extras Bundle: if pass them to main
+ * + at last starting the gdx AndroidApplication main
+ */
 public class splash extends Activity {
     private static final String log = "splash";
     public static Activity splashActivity;
@@ -102,24 +109,10 @@ public class splash extends Activity {
     private Boolean showSandbox;
     private boolean mSelectDbIsStarted = false;
 
-    /**
-     * Given any file/folder inside an sd card, this will return the path of the sd card
-     */
-    private static String getRootOfInnerSdCardFolder(java.io.File file) {
-        if (file == null)
-            return null;
-        final long totalSpace = file.getTotalSpace();
-        while (true) {
-            final java.io.File parentFile = file.getParentFile();
-            if (parentFile == null || parentFile.getTotalSpace() != totalSpace)
-                return file.getAbsolutePath();
-            file = parentFile;
-        }
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        CB_SLF4J.changeLogLevel(LogLevel.ALL);
         splashActivity = this;
 
         if (!FileFactory.isInitial()) {
@@ -173,11 +166,23 @@ public class splash extends Activity {
                 String uriPath = uri.getPath().toLowerCase(Locale.US);
                 if (uri.getScheme().toLowerCase().startsWith("geo")) {
                     LatLon = uri.getSchemeSpecificPart();
-                    // todo prperation for to create a tempory waypoint on the map and go there
-                }
-                else {
+                    // todo preperation for to create a tempory waypoint on the map and go there
+                } else {
                     if (uriHost.contains("geocaching.com")) {
                         GcCode = uri.getQueryParameter("wp");
+                        if (StringH.isEmpty(GcCode)) {
+                            int i1 = uriPath.indexOf("/gc") + 1;
+                            int i2 = uriPath.indexOf("_");
+                            if (i2 > i1) {
+                                GcCode = uriPath.substring(i1, i2);
+                                Log.debug(log, "GCCode='" + GcCode + "'");
+                            }
+                            else if (i1 > 0) {
+                                GcCode = uriPath.substring(i1);
+                                Log.debug(log, "GCCode='" + GcCode + "'");
+                            }
+                        }
+                        // todo guid not yet implemented : implement fetch cache by  guid in main
                         guid = uri.getQueryParameter("guid");
 
                         if (GcCode != null && GcCode.length() > 0) {
@@ -186,6 +191,9 @@ public class splash extends Activity {
                         } else if (guid != null && guid.length() > 0) {
                             GcCode = null;
                             guid = guid.toLowerCase(Locale.US);
+                            if (guid.endsWith("#")) {
+                                guid = guid.substring(0, guid.length() - 1);
+                            }
                         } else {
                             // warning.showToast(res.getString(R.string.err_detail_open));
                             finish();
@@ -551,6 +559,136 @@ public class splash extends Activity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.debug(log, "onActivityResult");
+        splashActivity = this;
+
+        if (resultCode == RESULT_OK && requestCode == Global.REQUEST_CODE_GET_WRITE_PERMISSION_ANDROID_5) {
+            Uri treeUri = data.getData();
+
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            final int takeFlags = intent.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+            // Check for the freshest data.
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+                ContentResolver cr = getContentResolver();
+                grantUriPermission(getPackageName(), treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                cr.takePersistableUriPermission(treeUri, takeFlags);
+                List<UriPermission> permissionlist = cr.getPersistedUriPermissions();
+            }
+
+            Thread th = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Initial(width, height);
+                }
+            });
+            th.start();
+
+        }
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        Log.debug(log, "onSaveInstanceState");
+        super.onSaveInstanceState(outState);
+        splashActivity = this;
+        outState.putBoolean("SelectDbIsStartet", mSelectDbIsStarted);
+        outState.putBoolean("OriantationRestart", true);
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.debug(log, "onDestroy");
+        if (isFinishing()) {
+            ReleaseImages();
+            // versionTextView = null;
+            // myTextView = null;
+            // descTextView = null;
+            splashActivity = null;
+        }
+        super.onDestroy();
+        if (pleaseWaitDialog != null && pleaseWaitDialog.isShowing()) {
+            pleaseWaitDialog.dismiss();
+            pleaseWaitDialog = null;
+        }
+
+        ui = null;
+
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            this.finish();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void showPleaseWaitDialog() {
+        pleaseWaitDialog = ProgressDialog.show(splash.this, "In progress", "Copy resources");
+        pleaseWaitDialog.show();
+        TextView tv1 = (TextView) pleaseWaitDialog.findViewById(android.R.id.message);
+        tv1.setTextColor(Color.WHITE);
+    }
+
+    private String testExtSdPath(String extPath) {
+        // this will test whether the extPath is an existing path to an external sd card
+        if (extPath.equalsIgnoreCase(workPath))
+            return null; // if this extPath is the same than the actual workPath -> this is the
+        // internal SD, not
+        // the external!!!
+        try {
+            if (FileIO.FileExists(extPath)) {
+                StatFs stat = new StatFs(extPath);
+                @SuppressWarnings("deprecation")
+                long bytesAvailable = (long) stat.getBlockSize() * (long) stat.getBlockCount();
+                if (bytesAvailable == 0) {
+                    return null; // ext SD-Card is not plugged in -> do not use it
+                } else {
+                    // Check can Read/Write
+
+                    File f = FileFactory.createFile(extPath);
+                    if (f.canWrite()) {
+                        if (f.canRead()) {
+                            return f.getAbsolutePath(); // ext SD-Card is plugged in
+                        }
+                    }
+
+                    // Check can Read/Write on Application Storage
+                    String appPath = this.getApplication().getApplicationContext().getExternalFilesDir(null).getAbsolutePath();
+                    int Pos = appPath.indexOf("/Android/data/");
+                    String p = appPath.substring(Pos);
+                    File fi = FileFactory.createFile(extPath + p);// "/Android/data/de.droidcachebox/files");
+                    fi.mkdirs();
+                    if (fi.canWrite()) {
+                        if (fi.canRead()) {
+                            return fi.getAbsolutePath();
+                        }
+                    }
+                    return null;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void saveWorkPath() {
+
+        SharedPreferences settings = this.getSharedPreferences(Global.PREFS_NAME, 0);
+        // We need an Editor object to make preference changes.
+        // All objects are from android.context.Context
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("WorkPath", workPath);
+        // Commit the edits!
+        editor.commit();
+    }
+
     private String getExternalSdPath(String Folder) {
 
         // check if Layout forced from User
@@ -628,7 +766,7 @@ public class splash extends Activity {
         }
 
         final java.io.File[] externalCacheDirs = ContextCompat.getExternalCacheDirs(splashActivity);
-        final List<String> result = new ArrayList<String>();
+        final List<String> result = new ArrayList<>();
 
         for (int i = 1; i < externalCacheDirs.length; ++i) {
             final java.io.File file = externalCacheDirs[i];
@@ -696,6 +834,21 @@ public class splash extends Activity {
         return externalSd;
     }
 
+    private String getRootOfInnerSdCardFolder(java.io.File file) {
+        /**
+         * Given any file/folder inside an sd card, this will return the path of the sd card
+         */
+        if (file == null)
+            return null;
+        final long totalSpace = file.getTotalSpace();
+        while (true) {
+            final java.io.File parentFile = file.getParentFile();
+            if (parentFile == null || parentFile.getTotalSpace() != totalSpace)
+                return file.getAbsolutePath();
+            file = parentFile;
+        }
+    }
+
     private ArrayList<String> getAdditionalWorkPathArray() {
         ArrayList<String> retList = new ArrayList<String>();
         AdditionalWorkPathCount = androidSetting.getInt("AdditionalWorkPathCount", 0);
@@ -731,119 +884,6 @@ public class splash extends Activity {
         if (index >= 0)
             AdditionalWorkPathArray.remove(index);
         writeAdditionalWorkPathArray(AdditionalWorkPathArray);
-    }
-
-    @SuppressLint("NewApi")
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        splashActivity = this;
-
-        if (resultCode == RESULT_OK && requestCode == Global.REQUEST_CODE_GET_WRITE_PERMISSION_ANDROID_5) {
-            Uri treeUri = data.getData();
-
-            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            final int takeFlags = intent.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
-            // Check for the freshest data.
-
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-                ContentResolver cr = getContentResolver();
-                grantUriPermission(getPackageName(), treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                cr.takePersistableUriPermission(treeUri, takeFlags);
-                List<UriPermission> permissionlist = cr.getPersistedUriPermissions();
-            }
-
-            Thread th = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Initial(width, height);
-                }
-            });
-            th.start();
-
-        }
-
-    }
-
-    private void showPleaseWaitDialog() {
-        pleaseWaitDialog = ProgressDialog.show(splash.this, "In progress", "Copy resources");
-        pleaseWaitDialog.show();
-        TextView tv1 = (TextView) pleaseWaitDialog.findViewById(android.R.id.message);
-        tv1.setTextColor(Color.WHITE);
-    }
-
-    // this will test whether the extPath is an existing path to an external sd card
-    private String testExtSdPath(String extPath) {
-        if (extPath.equalsIgnoreCase(workPath))
-            return null; // if this extPath is the same than the actual workPath -> this is the
-        // internal SD, not
-        // the external!!!
-        try {
-            if (FileIO.FileExists(extPath)) {
-                StatFs stat = new StatFs(extPath);
-                @SuppressWarnings("deprecation")
-                long bytesAvailable = (long) stat.getBlockSize() * (long) stat.getBlockCount();
-                if (bytesAvailable == 0) {
-                    return null; // ext SD-Card is not plugged in -> do not use it
-                } else {
-                    // Check can Read/Write
-
-                    File f = FileFactory.createFile(extPath);
-                    if (f.canWrite()) {
-                        if (f.canRead()) {
-                            return f.getAbsolutePath(); // ext SD-Card is plugged in
-                        }
-                    }
-
-                    // Check can Read/Write on Application Storage
-                    String appPath = this.getApplication().getApplicationContext().getExternalFilesDir(null).getAbsolutePath();
-                    int Pos = appPath.indexOf("/Android/data/");
-                    String p = appPath.substring(Pos);
-                    File fi = FileFactory.createFile(extPath + p);// "/Android/data/de.droidcachebox/files");
-                    fi.mkdirs();
-                    if (fi.canWrite()) {
-                        if (fi.canRead()) {
-                            return fi.getAbsolutePath();
-                        }
-                    }
-                    return null;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private void saveWorkPath() {
-
-        SharedPreferences settings = this.getSharedPreferences(Global.PREFS_NAME, 0);
-        // We need an Editor object to make preference changes.
-        // All objects are from android.context.Context
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("WorkPath", workPath);
-        // Commit the edits!
-        editor.commit();
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.debug(log, "onDestroy");
-        if (isFinishing()) {
-            ReleaseImages();
-            // versionTextView = null;
-            // myTextView = null;
-            // descTextView = null;
-            splashActivity = null;
-        }
-        super.onDestroy();
-        if (pleaseWaitDialog != null && pleaseWaitDialog.isShowing()) {
-            pleaseWaitDialog.dismiss();
-            pleaseWaitDialog = null;
-        }
-
-        ui = null;
-
     }
 
     private void startInitial() {
@@ -1076,43 +1116,11 @@ public class splash extends Activity {
 
         Intent mainIntent = new Intent().setClass(splash.this, main.class);
         mainIntent.putExtras(b);
-        Log.info(log, "startActivity for main.class (com.badlogic.gdx.backends.android.AndroidApplication) from splash");
+        Log.info(log, "startActivity for main.class (com.badlogic.gdx.backends.android.AndroidApplication) from slash");
         startActivity(mainIntent);
 
         finish();
 
-    }
-
-    @SuppressLint("NewApi")
-    private void mediaInfo() {
-        //<uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE"></uses-permission> is only for system apps
-        try {
-            Log.info(log, "android.os.Build.VERSION.SDK_INT= " + android.os.Build.VERSION.SDK_INT);
-            Log.info(log, "workPath set to " + workPath);
-            Log.info(log, "getFilesDir()= " + getFilesDir());// user invisible
-            Log.info(log, "Environment.getExternalStoragePublicDirectory()= " + Environment.getExternalStoragePublicDirectory("").getAbsolutePath());
-            Log.info(log, "Environment.getExternalStorageDirectory()= " + Environment.getExternalStorageDirectory());
-            Log.info(log, "getExternalFilesDir(null)= " + getExternalFilesDir(null));
-
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-                // normally [0] is the internal SD, [1] is the external SD
-                java.io.File dirs[] = getExternalFilesDirs(null);
-                for (int i = 0; i < dirs.length; i++) {
-                    Log.info(log, "get_ExternalFilesDirs[" + i + "]= " + dirs[i].getAbsolutePath());
-                }
-                // will be automatically created
-				/*
-				if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-					dirs = getExternalMediaDirs();
-					for (int i = 0; i < dirs.length; i++) {
-						Log.info(log, "getExternalMediaDirs[" + i + "]= " + dirs[i].getAbsolutePath());
-					}
-				}
-				*/
-            }
-        } catch (Exception e) {
-            Log.err(log, e.getLocalizedMessage());
-        }
     }
 
     private void createFile(String path) {
@@ -1123,14 +1131,6 @@ public class splash extends Activity {
         } catch (IOException e) {
             Log.err(log, path + ": " + e.getLocalizedMessage());
         }
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        splashActivity = this;
-        outState.putBoolean("SelectDbIsStartet", mSelectDbIsStarted);
-        outState.putBoolean("OriantationRestart", true);
     }
 
     private void LoadImages() {
@@ -1149,19 +1149,6 @@ public class splash extends Activity {
 
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            this.finish();
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    //##############################################################################
-    // Implementation of Permission check with Android Version >23
-    //##############################################################################
-
-    @TargetApi(23)
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         splashActivity = this;
@@ -1211,4 +1198,36 @@ public class splash extends Activity {
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
+
+    private void mediaInfo() {
+        //<uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE"></uses-permission> is only for system apps
+        try {
+            Log.info(log, "android.os.Build.VERSION.SDK_INT= " + android.os.Build.VERSION.SDK_INT);
+            Log.info(log, "workPath set to " + workPath);
+            Log.info(log, "getFilesDir()= " + getFilesDir());// user invisible
+            Log.info(log, "Environment.getExternalStoragePublicDirectory()= " + Environment.getExternalStoragePublicDirectory("").getAbsolutePath());
+            Log.info(log, "Environment.getExternalStorageDirectory()= " + Environment.getExternalStorageDirectory());
+            Log.info(log, "getExternalFilesDir(null)= " + getExternalFilesDir(null));
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+                // normally [0] is the internal SD, [1] is the external SD
+                java.io.File dirs[] = getExternalFilesDirs(null);
+                for (int i = 0; i < dirs.length; i++) {
+                    Log.info(log, "get_ExternalFilesDirs[" + i + "]= " + dirs[i].getAbsolutePath());
+                }
+                // will be automatically created
+				/*
+				if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+					dirs = getExternalMediaDirs();
+					for (int i = 0; i < dirs.length; i++) {
+						Log.info(log, "getExternalMediaDirs[" + i + "]= " + dirs[i].getAbsolutePath());
+					}
+				}
+				*/
+            }
+        } catch (Exception e) {
+            Log.err(log, e.getLocalizedMessage());
+        }
+    }
+
 }

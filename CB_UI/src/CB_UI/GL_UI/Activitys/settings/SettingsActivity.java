@@ -247,7 +247,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         Iterator<SettingCategory> iteratorCat = Categorys.iterator();
         if (iteratorCat != null && iteratorCat.hasNext()) {
 
-            ArrayList<SettingBase<?>> SortedSettingList = new ArrayList<SettingBase<?>>();// Config.settings.values().toArray();
+            ArrayList<SettingBase<?>> SortedSettingList = new ArrayList<>();// Config.settings.values().toArray();
 
             for (Iterator<SettingBase<?>> it = Config.settings.iterator(); it.hasNext(); ) {
                 SettingBase<?> setting = it.next();

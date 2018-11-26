@@ -3,13 +3,9 @@ package CB_UI.GL_UI.Menu;
 import CB_Core.Api.SearchGC;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.CacheTypes;
-import CB_Core.Types.CacheDAO;
-import CB_Core.Types.CacheListDAO;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
-import CB_Core.Types.Cache;
-import CB_Core.Types.ImageEntry;
-import CB_Core.Types.LogEntry;
+import CB_Core.Types.*;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.DeleteSelectedCache;
@@ -185,19 +181,6 @@ public class CB_AllContextMenuHandler {
         mi = icm.addItem(MenuID.MI_SOLVER, "Solver", Sprites.getSprite(IconName.solverIcon.name()));
         if (selectedCacheIsNull)
             mi.setEnabled(false);
-
-        if (GlobalCore.JokerisOnline()) {
-            mi = icm.addItem(MenuID.MI_JOKER, "joker", Sprites.getSprite(IconName.jokerPhone.name()));
-            // Menu Item Telefonjoker enabled / disabled abhänging von gcJoker MD5
-
-            if (mi != null) {
-                enabled = false;
-                if (GlobalCore.JokerisOnline())
-                    enabled = true;
-                mi.setEnabled(enabled);
-            }
-
-        }
 
         mi = icm.addItem(MenuID.MI_EDIT_CACHE, "MI_EDIT_CACHE");
         if (selectedCacheIsNull)

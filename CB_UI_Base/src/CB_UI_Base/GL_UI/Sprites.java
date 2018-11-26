@@ -674,7 +674,7 @@ public class Sprites {
         btnNormal, //
         button, //
         docIcon, //
-        manualwaypoint, //
+        manualWayPoint, //
         listIcon, // CB_Action_ShowLogView
         map, // CB_Action_ShowMap
         compass, // CB_Action_ShowCompassView
@@ -692,7 +692,6 @@ public class Sprites {
         imagesIcon, // CB_Action_ShowSpoilerView, QuickButtonItem
         hintIcon, // CB_Action_ShowHint, QuickButtonItem, showBtnCacheContextMenu
         noteIcon, // 23 not used
-        jokerPhone, // 25 CB_Action_ShowJokerView, CB_Action_ShowTestView, showBtnCacheContextMenu
         settings, // 26 Image
         DELETE, //
         satellite, //

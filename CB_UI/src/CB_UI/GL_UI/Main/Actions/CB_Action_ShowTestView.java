@@ -31,7 +31,7 @@ public class CB_Action_ShowTestView extends CB_Action_ShowView {
 
     @Override
     public Sprite getIcon() {
-        return Sprites.getSprite(IconName.jokerPhone.name());
+        return Sprites.getSprite(IconName.manualWayPoint.name());
     }
 
     @Override

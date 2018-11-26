@@ -42,12 +42,9 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Log.Log;
-import CB_Utils.fileProvider.File;
-import CB_Utils.fileProvider.FileFactory;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
-import java.io.BufferedReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
@@ -55,7 +52,6 @@ import java.util.TimerTask;
 
 import static CB_Core.Api.API_ErrorEventHandlerList.handleApiKeyError;
 import static CB_Core.Api.GroundspeakAPI.isAccessTokenInvalid;
-import static CB_Utils.fileProvider.FileFactory.createFile;
 
 /**
  * @author ging-buh
@@ -63,10 +59,7 @@ import static CB_Utils.fileProvider.FileFactory.createFile;
  * @author longri
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface {
-    private static GlobalCore mINSTANCE;
     public static final String CurrentVersion = "2.0.";
-    private int CurrentRevision;
-    private String VersionPrefix;
     public static final String aboutMsg1 = "Team Cachebox (2011-2018)" + br;
     public static final String teamLink = "www.team-cachebox.de";
     public static final String aboutMsg2 = br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";
@@ -84,13 +77,14 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     // public static long TrackDistance;
     public static GlobalLocationReceiver receiver;
     public static boolean RunFromSplash = false;
-    static boolean JokerPwChk = false;
-    static boolean JokerPwExist = false;
+    private static GlobalCore mINSTANCE;
     private static Cache selectedCache = null;
     private static boolean autoResort;
     private static Cache nearestCache = null;
     private static Waypoint selectedWaypoint = null;
     private static CancelWaitDialog wd;
+    private int CurrentRevision;
+    private String VersionPrefix;
 
     private GlobalCore() {
         super();
@@ -99,7 +93,10 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     }
 
     public static GlobalCore getInstance() {
-        if (mINSTANCE == null) mINSTANCE = new GlobalCore();
+        if (mINSTANCE == null) {
+            mINSTANCE = new GlobalCore();
+            mINSTANCE.initVersionInfos();
+        }
         return mINSTANCE;
     }
 
@@ -203,48 +200,6 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
             return true;
         }
         return false;
-    }
-
-    /**
-     * JokerisOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen und ein Passwort für gcJoker.de vorhanden
-     * ist.
-     */
-    public static boolean JokerisOnline() {
-        if (!JokerPwChk) {
-            JokerPwExist = Config.GcJoker.getValue().length() == 0;
-            JokerPwChk = true;
-        }
-
-        if (JokerPwExist) {
-            // Log.info(log, "GlobalCore.JokerisOnline() - no Joker Password");
-            return false;
-        }
-        if (PlatformConnector.isOnline()) {
-            return true;
-        }
-        return false;
-    }
-
-    public String getVersionString() {
-        try {
-            FileHandle fileHandle = Gdx.files.internal("build.info");
-            String info = fileHandle.readString("utf-8");
-            /*
-            File file = FileFactory.createFile("build.info");
-            BufferedReader br = new BufferedReader(file.getFileReader());
-            String info = br.readLine();
-            */
-            String[] sections = info.split("#");
-            VersionPrefix = sections[1];
-            String dat = sections[4];
-            Date d = new SimpleDateFormat("yyyy-MM-dd").parse(dat);
-            CurrentRevision = Integer.decode((new SimpleDateFormat("yyyyMMdd")).format(d));
-            final String ret = "Version: " + CurrentVersion + String.valueOf(CurrentRevision) + "  (" + VersionPrefix + ")";
-            return ret;
-        } catch (Exception ex) {
-            Log.err(log,"getVersionString " + ex.getLocalizedMessage());
-            return "";
-        }
     }
 
     public static Coordinate getSelectedCoord() {
@@ -379,6 +334,29 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
             return false;
 
         return true;
+    }
+
+    private void initVersionInfos() {
+        try {
+            FileHandle fileHandle = Gdx.files.internal("build.info");
+            String info = fileHandle.readString("utf-8");
+            /*
+            File file = FileFactory.createFile("build.info");
+            BufferedReader br = new BufferedReader(file.getFileReader());
+            String info = br.readLine();
+            */
+            String[] sections = info.split("#");
+            VersionPrefix = sections[1];
+            String dat = sections[4];
+            Date d = new SimpleDateFormat("yyyy-MM-dd").parse(dat);
+            CurrentRevision = Integer.decode((new SimpleDateFormat("yyyyMMdd")).format(d));
+        } catch (Exception ex) {
+            Log.err(log, "initVersionInfos " + ex.getLocalizedMessage());
+        }
+    }
+
+    public String getVersionString() {
+        return "Version: " + CurrentVersion + String.valueOf(CurrentRevision) + "  (" + VersionPrefix + ")";
     }
 
     @Override

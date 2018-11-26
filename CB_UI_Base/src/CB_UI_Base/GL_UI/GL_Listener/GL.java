@@ -1002,13 +1002,13 @@ public class GL implements ApplicationListener {
         }
 
         if (mDialog == null) {
-            mDialog = new MainViewBase(0, 0, width, height, "Dialog");
+            mDialog = new MainViewBase(new CB_RectF(0, 0, width, height));
             mDialog.setClickable(true);
             mDialog.setLongClickable(true);
         }
 
         if (mActivity == null) {
-            mActivity = new MainViewBase(0, 0, width, height, "Dialog");
+            mActivity = new MainViewBase(new CB_RectF(0, 0, width, height));
             mActivity.setClickable(true);
             mActivity.setLongClickable(true);
         }

@@ -19,7 +19,6 @@ package de.droidcachebox.Ui;
 import CB_UI_Base.Math.CB_Rect;
 import CB_UI_Base.Math.UiSizes;
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.*;
 import android.graphics.Paint.Style;
 import android.graphics.PorterDuff.Mode;
@@ -35,9 +34,6 @@ import android.widget.ListView;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
-import de.droidcachebox.main;
-
-;
 
 public class ActivityUtils {
     public final static int THEME_DEFAULT = 0;
@@ -46,22 +42,6 @@ public class ActivityUtils {
     public final static int THEME_DAY_TRANSPARENT = 3;
     public final static int THEME_NIGHT_TRANSPARENT = 4;
     private static int sTheme = 1;
-
-    public static void changeToTheme(AndroidApplication activity, int theme) {
-        changeToTheme(activity, theme, false);
-    }
-
-    /**
-     * Set the theme of the Activity, and restart it by creating a new Activity of the same type.
-     */
-    public static void changeToTheme(AndroidApplication activity, int theme, boolean firstStart) {
-        sTheme = theme;
-        main.isRestart = true;
-        main.isFirstStart = firstStart;
-        activity.finish();
-
-        activity.startActivity(new Intent(activity, activity.getClass()));
-    }
 
     /**
      * Set the theme of the activity, according to the configuration.
@@ -90,21 +70,6 @@ public class ActivityUtils {
 
     }
 
-    public static void changeToTheme(Activity activity, int theme) {
-        changeToTheme(activity, theme, false);
-    }
-
-    /**
-     * Set the theme of the Activity, and restart it by creating a new Activity of the same type.
-     */
-    public static void changeToTheme(Activity activity, int theme, boolean firstStart) {
-        sTheme = theme;
-        main.isRestart = true;
-        main.isFirstStart = firstStart;
-        activity.finish();
-
-        activity.startActivity(new Intent(activity, activity.getClass()));
-    }
 
     /**
      * Set the theme of the activity, according to the configuration.

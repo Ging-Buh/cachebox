@@ -321,153 +321,54 @@ public class MessageBox extends android.app.Dialog {
             this.context = context;
         }
 
-        /**
-         * Set the Dialog message from String
-         *
-         * @param title
-         * @return
-         */
         public Builder setMessage(String message) {
             this.message = message;
             return this;
         }
 
-        /**
-         * Set the Dialog message from resource
-         *
-         * @param title
-         * @return
-         */
         public Builder setMessage(int message) {
             this.message = (String) context.getText(message);
             return this;
         }
 
-        /**
-         * Set the Dialog title from resource
-         *
-         * @param title
-         * @return
-         */
         public Builder setTitle(int title) {
             this.title = (String) context.getText(title);
             return this;
         }
 
-        /**
-         * Set the Dialog title from String
-         *
-         * @param title
-         * @return
-         */
         public Builder setTitle(String title) {
             this.title = title;
             return this;
         }
 
-        /**
-         * Set the Dialog icon from Drawable
-         *
-         * @param title
-         * @return
-         */
         public Builder setIcon(Drawable icon) {
             this.icon = icon;
             return this;
         }
 
-        /**
-         * Set a custom content view for the Dialog. If a message is set, the contentView is not added to the Dialog...
-         *
-         * @param v
-         * @return
-         */
         public Builder setContentView(View v) {
             this.contentView = v;
             return this;
         }
 
-        /**
-         * Set the positive button resource and it's listener
-         *
-         * @param positiveButtonText
-         * @param listener
-         * @return
-         */
-        public Builder setPositiveButton(int positiveButtonText, DialogInterface.OnClickListener listener) {
-            this.positiveButtonText = (String) context.getText(positiveButtonText);
-            this.positiveButtonClickListener = listener;
-            return this;
-        }
-
-        /**
-         * Set the positive button text and it's listener
-         *
-         * @param positiveButtonText
-         * @param listener
-         * @return
-         */
         public Builder setPositiveButton(String positiveButtonText, DialogInterface.OnClickListener listener) {
             this.positiveButtonText = positiveButtonText;
             this.positiveButtonClickListener = listener;
             return this;
         }
 
-        /**
-         * Set the positive button resource and it's listener
-         *
-         * @param positiveButtonText
-         * @param listener
-         * @return
-         */
-        public Builder setNeutralButton(int neutralButtonText, DialogInterface.OnClickListener listener) {
-            this.neutralButtonText = (String) context.getText(neutralButtonText);
-            this.neutralButtonClickListener = listener;
-            return this;
-        }
-
-        /**
-         * Set the positive button text and it's listener
-         *
-         * @param positiveButtonText
-         * @param listener
-         * @return
-         */
         public Builder setNeutralButton(String neutralButtonText, DialogInterface.OnClickListener listener) {
             this.neutralButtonText = neutralButtonText;
             this.neutralButtonClickListener = listener;
             return this;
         }
 
-        /**
-         * Set the negative button resource and it's listener
-         *
-         * @param negativeButtonText
-         * @param listener
-         * @return
-         */
-        public Builder setNegativeButton(int negativeButtonText, DialogInterface.OnClickListener listener) {
-            this.negativeButtonText = (String) context.getText(negativeButtonText);
-            this.negativeButtonClickListener = listener;
-            return this;
-        }
-
-        /**
-         * Set the negative button text and it's listener
-         *
-         * @param negativeButtonText
-         * @param listener
-         * @return
-         */
         public Builder setNegativeButton(String negativeButtonText, DialogInterface.OnClickListener listener) {
             this.negativeButtonText = negativeButtonText;
             this.negativeButtonClickListener = listener;
             return this;
         }
 
-        /**
-         * Create the custom dialog
-         */
         @SuppressWarnings("deprecation")
         public MessageBox create() {
             int winWidth = UI_Size_Base.that != null ? UI_Size_Base.that.getWindowWidth() : WindowWidth;

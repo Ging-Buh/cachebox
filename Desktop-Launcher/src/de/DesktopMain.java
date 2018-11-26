@@ -5,14 +5,16 @@ import CB_Core.Database.DatabaseType;
 import CB_Locator.Location.ProviderType;
 import CB_UI.Config;
 import CB_UI.GL_UI.Main.TabMainView;
-import CB_UI.GL_UI.Views.splash;
+import CB_UI.GL_UI.Views.MainViewInit;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.Events.PlatformConnector.*;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Listener_Interface;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.DevicesSizes;
+import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Log;
 import CB_Utils.Plattform;
@@ -22,7 +24,6 @@ import CB_Utils.Util.FileIO;
 import CB_Utils.Util.IChanged;
 import ch.fhnw.imvs.gpssimulator.SimulatorMain;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
@@ -110,13 +111,8 @@ public class DesktopMain {
         InitalConfig();
         Config.settings.ReadFromDB();
 
-        // create new splash
-        splash sp = new splash(0, 0, ui.Window.width, ui.Window.height, "Splash");
-
-        // create new mainView
-        TabMainView ma = new TabMainView(0, 0, ui.Window.width, ui.Window.height, "mainView");
-
-        CB_UI = new GL(ui.Window.width, ui.Window.height, sp, ma);
+        CB_RectF rec = new CB_RectF(0, 0, ui.Window.width, ui.Window.height);
+        CB_UI = new GL(ui.Window.width, ui.Window.height, new MainViewInit(rec), new TabMainView(rec));
 
         GL_View_Base.debug = debug;
         GL_View_Base.disableScissor = scissor;

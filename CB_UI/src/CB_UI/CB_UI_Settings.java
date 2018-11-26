@@ -48,7 +48,6 @@ public interface CB_UI_Settings {
     Integer[] TrackDistanceArray = new Integer[]{1, 3, 5, 10, 20};
     String[] navis = new String[]{"Google", "OsmAnd", "OsmAnd2", "Waze", "Orux", "Sygic", "Navigon"};
 
-    SettingString GcJoker = new SettingString("GcJoker", SettingCategory.Login, EXPERT, "", SettingStoreType.Platform, SettingUsage.ALL);
     SettingString OverrideUrl = (SettingString) SettingsList.addSetting(new SettingString("OverrideUrl", SettingCategory.Login, DEVELOPER, "", SettingStoreType.Global, SettingUsage.ACB));
 
     SettingBool quickButtonShow = new SettingBool("quickButtonShow", SettingCategory.QuickList, NORMAL, true, SettingStoreType.Global, SettingUsage.ACB);

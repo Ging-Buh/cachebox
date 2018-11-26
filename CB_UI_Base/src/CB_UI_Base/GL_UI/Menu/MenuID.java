@@ -61,7 +61,6 @@ public class MenuID {
     public static final int MI_FIELDNOTES = 30;
     public static final int MI_NOTES = 31;
     public static final int MI_SOLVER = 32;
-    public static final int MI_JOKER = 33;
     public static final int MI_Layer = 34;
     public static final int MI_ALIGN_TO_COMPSS = 35;
 
@@ -140,7 +139,6 @@ public class MenuID {
     public static final int AID_SHOW_CREDITS = 104;
     public static final int AID_SHOW_DESCRIPTION = 105;
     public static final int AID_SHOW_FIELDNOTES = 106;
-    public static final int AID_SHOW_JOKERS = 107;
     public static final int AID_SHOW_LOGS = 108;
     public static final int AID_SHOW_NOTES = 109;
     public static final int AID_SHOW_SOLVER = 110;

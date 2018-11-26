@@ -226,8 +226,8 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
     private boolean isInitial = false;
     private boolean isFiltered = false;
 
-    public TabMainView(float X, float Y, float Width, float Height, String Name) {
-        super(X, Y, Width, Height, Name);
+    public TabMainView(CB_RectF rec) {
+        super(rec);
         if (!TrackRecIsRegisted)
             PositionChangedEventList.Add(this);
         TrackRecIsRegisted = true;

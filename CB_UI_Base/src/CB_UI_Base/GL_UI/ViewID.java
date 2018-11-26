@@ -25,7 +25,6 @@ public class ViewID {
 
     public final static int MAP_VIEW = 0;
     public final static int DESCRIPTION_VIEW = 4;
-    public final static int JOKER_VIEW = 12;
 
     public final static int NAVIGATE_TO = 108;
     public final static int VOICE_REC = 110;
