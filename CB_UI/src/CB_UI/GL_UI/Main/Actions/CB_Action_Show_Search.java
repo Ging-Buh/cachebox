@@ -24,9 +24,7 @@ public class CB_Action_Show_Search extends CB_Action {
         if (SearchDialog.that == null) {
             new SearchDialog();
         }
-
         SearchDialog.that.showNotCloseAutomaticly();
-
     }
 
     @Override

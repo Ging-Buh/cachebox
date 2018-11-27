@@ -288,38 +288,35 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 
     public static void chkAPiLogInWithWaitDialog(final iChkReadyHandler handler) {
 
-        ICancelRunnable cancelRunnable = new ICancelRunnable() {
-            @Override
-            public void run() {
-                handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.INVALID);
-
-                Timer ti = new Timer();
-                TimerTask task = new TimerTask() {
-
-                    @Override
-                    public void run() {
-                        handler.checkReady(isAccessTokenInvalid());
-                    }
-                };
-                ti.schedule(task, 300);
-
-            }
-
-            @Override
-            public boolean doCancel() {
-                return false;
-            }
-        };
-
+        // Live API
         if (GroundspeakAPI.isDownloadLimitExceeded()) {
             MsgDownloadLimit();
             return;
         }
 
         if (isAccessTokenInvalid()) {
-            CancelWaitDialog.ShowWait("chk API Key", DownloadAnimation.GetINSTANCE(), null, cancelRunnable);
+            CancelWaitDialog.ShowWait("chk API Key", DownloadAnimation.GetINSTANCE(), null, new ICancelRunnable() {
+                @Override
+                public void run() {
+                    handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.INVALID);
+                    // check after some time, if the AccessToken is now available (is got)
+                    Timer ti = new Timer();
+                    TimerTask task = new TimerTask() {
+                        @Override
+                        public void run() {
+                            handler.checkReady(isAccessTokenInvalid());
+                        }
+                    };
+                    ti.schedule(task, 300);
+                }
+
+                @Override
+                public boolean doCancel() {
+                    return false;
+                }
+            });
         } else {
-            handler.checkReady(isAccessTokenInvalid());
+            handler.checkReady(false);
         }
 
     }

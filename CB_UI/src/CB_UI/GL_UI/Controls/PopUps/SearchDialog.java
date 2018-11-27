@@ -58,7 +58,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import java.util.ArrayList;
 
-import static CB_Core.Api.GroundspeakAPI.isAccessTokenInvalid;
 import static CB_Core.Api.GroundspeakAPI.isPremiumMember;
 
 /**
@@ -275,7 +274,7 @@ public class SearchDialog extends PopUp_Base {
                 GL.that.setFocusedEditTextField(null);
                 if (mTglBtnOnline.getState() == 1) {
                     close();
-                    askPremium();
+                    GL.postAsync(() -> askPremium());
                 } else {
                     setFilter();
                 }
@@ -476,24 +475,21 @@ public class SearchDialog extends PopUp_Base {
 
                         @Override
                         public void run() {
-                            if (!isAccessTokenInvalid()) {
-                                closeWaitDialog();
+                            if (isPremiumMember()) {
                                 searchOnlineNow();
                             } else {
                                 GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
                                         new OnMsgBoxClickListener() {
-
                                             @Override
                                             public boolean onClick(int which, Object data) {
-                                                if (which == GL_MsgBox.BUTTON_POSITIVE)
+                                                if (which == GL_MsgBox.BUTTON_POSITIVE) {
                                                     searchOnlineNow();
-                                                else
+                                                } else
                                                     closeWaitDialog();
                                                 return true;
                                             }
                                         });
                             }
-
                         }
 
                         @Override
@@ -731,23 +727,21 @@ public class SearchDialog extends PopUp_Base {
 
             @Override
             public void checkReady(boolean invalidAccessToken) {
-                if (isAccessTokenInvalid()) {
+                if (invalidAccessToken) {
                     GL.that.RunOnGL(new IRunOnGL() {
                         @Override
                         public void run() {
                             GL_MsgBox.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
                         }
                     });
-
                 } else {
                     closeWD();
                     GL.that.RunOnGL(new IRunOnGL() {
                         @Override
                         public void run() {
-                            if (!isPremiumMember()) {
+                            if (isPremiumMember()) {
                                 showTargetApiDialog();
-                            }
-                            else {
+                            } else {
                                 MSB = GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener() {
                                     @Override
                                     public boolean onClick(int which, Object data) {
@@ -777,7 +771,6 @@ public class SearchDialog extends PopUp_Base {
 
     private void showTargetApiDialog() {
         GL.that.RunOnGL(new IRunOnGL() {
-
             @Override
             public void run() {
                 SearchOverPosition.ShowInstanz();

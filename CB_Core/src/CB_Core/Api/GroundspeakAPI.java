@@ -277,7 +277,7 @@ public class GroundspeakAPI {
                     return ui;
                 }
             }
-            Log.debug(log,"retry");
+            Log.debug(log, "retry");
         }
         while (true);
     }

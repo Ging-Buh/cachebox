@@ -139,17 +139,13 @@ public class GL implements ApplicationListener {
     }
 
     public static void postAsync(final Runnable runnable) {
-
-        asyncExecutor.submit(new AsyncTask<Void>() {
-            @Override
-            public Void call() throws Exception {
-                try {
-                    runnable.run();
-                } catch (final Exception e) {
-                    Log.err("GL", "postAsync ", e);
-                }
-                return null;
+        asyncExecutor.submit((AsyncTask<Void>) () -> {
+            try {
+                runnable.run();
+            } catch (final Exception e) {
+                Log.err("GL", "postAsync ", e);
             }
+            return null;
         });
     }
 

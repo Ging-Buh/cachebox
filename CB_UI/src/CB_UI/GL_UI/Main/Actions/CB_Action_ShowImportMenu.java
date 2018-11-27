@@ -125,12 +125,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
                         });
                         return true;
                     case MenuID.MI_IMPORT_GS_PQ:
-                        GL.postAsync(new Runnable() {
-                            @Override
-                            public void run() {
-                                new Import(MenuID.MI_IMPORT_GS_PQ).show();
-                            }
-                        });
+                        GL.postAsync(() -> new Import(MenuID.MI_IMPORT_GS_PQ).show());
                         return true;
                     case MenuID.MI_IMPORT_GS_API_POSITION:
                         SearchOverPosition.ShowInstanz();
