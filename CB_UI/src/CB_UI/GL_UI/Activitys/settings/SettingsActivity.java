@@ -58,29 +58,24 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 
 public class SettingsActivity extends ActivityBase implements SelectedLangChangedEvent {
 
-    /***
-     * Enthält den Key des zu Editierenden Wertes der SettingsList
-     */
-    public static int EditKey = -1;
+    private static int EditKey = -1;
     private static SettingsActivity that;
-    /**
-     * List of audio settings which can mute with GlobalVolume settings
-     */
-    ArrayList<SettingsItem_Audio> audioSettingsList;
-    ArrayList<Lang> Sprachen;
-    OnMsgBoxClickListener msgBoxReturnListener = new OnMsgBoxClickListener() {
-
+    private ArrayList<SettingsItem_Audio> audioSettingsList;
+    private ArrayList<Lang> Sprachen;
+    private OnMsgBoxClickListener msgBoxReturnListener = new OnMsgBoxClickListener() {
         @Override
         public boolean onClick(int which, Object data) {
             show();
             return true;
         }
     };
-    private CB_List<SettingCategory> Categorys = new CB_List<SettingCategory>();
+    private CB_List<SettingCategory> Categorys = new CB_List<>();
     private Button btnOk, btnCancel, btnMenu;
     private ScrollBox scrollBox;
     private CB_RectF ButtonRec, itemRec;
@@ -137,7 +132,6 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         btnMenu = new Button(btnOk.getMaxX(), this.getBottomHeight(), UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight(), "Menu Button");
         btnCancel = new Button(btnMenu.getMaxX(), this.getBottomHeight(), btnW, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
 
-        // Translations
         btnOk.setText(Translation.Get("save"));
         btnCancel.setText(Translation.Get("cancel"));
 
@@ -249,13 +243,12 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             ArrayList<SettingBase<?>> SortedSettingList = new ArrayList<>();// Config.settings.values().toArray();
 
-            for (Iterator<SettingBase<?>> it = Config.settings.iterator(); it.hasNext(); ) {
-                SettingBase<?> setting = it.next();
+            for (SettingBase setting : Config.settings) {
                 if (setting.getUsage() == SettingUsage.ACB || setting.getUsage() == SettingUsage.ALL)
                     SortedSettingList.add(setting);
             }
 
-            //Collections.sort(SortedSettingList);
+            Collections.sort(SortedSettingList, new SettingsOrder());
 
             do {
                 int position = 0;
@@ -1485,5 +1478,11 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         SelectedLangChangedEventList.Remove(this);
 
         super.dispose();
+    }
+
+    class SettingsOrder implements Comparator<SettingBase> {
+        public int compare(SettingBase a, SettingBase b) {
+            return a.compareTo(b);
+        }
     }
 }

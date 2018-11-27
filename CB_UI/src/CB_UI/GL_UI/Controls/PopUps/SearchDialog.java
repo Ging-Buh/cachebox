@@ -59,6 +59,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import java.util.ArrayList;
 
 import static CB_Core.Api.GroundspeakAPI.isAccessTokenInvalid;
+import static CB_Core.Api.GroundspeakAPI.isPremiumMember;
 
 /**
  * @author Longri
@@ -732,7 +733,6 @@ public class SearchDialog extends PopUp_Base {
             public void checkReady(boolean invalidAccessToken) {
                 if (isAccessTokenInvalid()) {
                     GL.that.RunOnGL(new IRunOnGL() {
-
                         @Override
                         public void run() {
                             GL_MsgBox.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
@@ -742,20 +742,23 @@ public class SearchDialog extends PopUp_Base {
                 } else {
                     closeWD();
                     GL.that.RunOnGL(new IRunOnGL() {
-
                         @Override
                         public void run() {
-                            MSB = GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener() {
-
-                                @Override
-                                public boolean onClick(int which, Object data) {
-                                    closeMsgBox();
-                                    if (which == GL_MsgBox.BUTTON_POSITIVE) {
-                                        showTargetApiDialog();
+                            if (!isPremiumMember()) {
+                                showTargetApiDialog();
+                            }
+                            else {
+                                MSB = GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener() {
+                                    @Override
+                                    public boolean onClick(int which, Object data) {
+                                        closeMsgBox();
+                                        if (which == GL_MsgBox.BUTTON_POSITIVE) {
+                                            showTargetApiDialog();
+                                        }
+                                        return true;
                                     }
-                                    return true;
-                                }
-                            });
+                                });
+                            }
                         }
                     });
                 }

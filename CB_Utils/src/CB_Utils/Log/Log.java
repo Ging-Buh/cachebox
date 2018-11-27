@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
  * @author Franz  2016
  */
 public class Log {
+
     public static void err(String sKlasse, String logText) {
         LogLevel old = LogLevel.getLogLevel();
         LogLevel.setLogLevel(LogLevel.ERROR);

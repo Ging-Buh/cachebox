@@ -42,9 +42,12 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Log.Log;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
+import java.io.BufferedReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
@@ -337,21 +340,33 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
     }
 
     private void initVersionInfos() {
+        String info;
         try {
+            // GDX works with Android
             FileHandle fileHandle = Gdx.files.internal("build.info");
-            String info = fileHandle.readString("utf-8");
-            /*
+            info = fileHandle.readString("utf-8");
+        } catch (Exception ex) {
+            // but on Desktop class GDX is not loaded yet
             File file = FileFactory.createFile("build.info");
-            BufferedReader br = new BufferedReader(file.getFileReader());
-            String info = br.readLine();
-            */
+            try {
+                BufferedReader br = new BufferedReader(file.getFileReader());
+                info = br.readLine();
+            } catch (Exception ex1) {
+                // if nothing works
+                info = "#1000#master#687f624ef#2000-01-01";
+                Log.err(log, "initVersionInfos " + ex.getLocalizedMessage());
+            }
+        }
+        try {
             String[] sections = info.split("#");
             VersionPrefix = sections[1];
             String dat = sections[4];
             Date d = new SimpleDateFormat("yyyy-MM-dd").parse(dat);
             CurrentRevision = Integer.decode((new SimpleDateFormat("yyyyMMdd")).format(d));
         } catch (Exception ex) {
-            Log.err(log, "initVersionInfos " + ex.getLocalizedMessage());
+            // for parsing of date gives an error
+            VersionPrefix = "1000";
+            CurrentRevision = 0;
         }
     }
 

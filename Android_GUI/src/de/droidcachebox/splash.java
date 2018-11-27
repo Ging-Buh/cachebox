@@ -83,7 +83,7 @@ import java.util.*;
  * + write some values to the config database:
  * installedRev, newInstall
  * + initialising some classes with good values:
- * <p>
+ * ... etc todo continue infos
  * + check if this (Intent) is called with "Params" in the Extras Bundle: if pass them to main
  * + at last starting the gdx AndroidApplication main
  */
@@ -112,7 +112,7 @@ public class splash extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        CB_SLF4J.changeLogLevel(LogLevel.ALL);
+        // CB_SLF4J.changeLogLevel(LogLevel.ALL);
         splashActivity = this;
 
         if (!FileFactory.isInitial()) {
@@ -146,7 +146,7 @@ public class splash extends Activity {
 
 
         // Check if use small skin
-        GlobalCore.useSmallSkin = GlobalCore.displayType == DisplayType.Small ? true : false;
+        GlobalCore.useSmallSkin = GlobalCore.displayType == DisplayType.Small;
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
