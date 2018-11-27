@@ -702,7 +702,7 @@ public class GroundspeakAPI {
         LastAPIError = "";
         try {
             JSONArray jTrackables = getNetz()
-                    .get(getUrl(1, "trackables" + "?fields=referenceCode,trackingNumber,iconUrl,name,goal,description,releasedDate,ownerCode,holderCode,currentGeocacheCode,type,inHolderCollection"))
+                    .get(getUrl(1, "trackables" + "?fields=referenceCode,trackingNumber,iconUrl,name,goal,description,releasedDate,owner.username,holder.username,currentGeocacheCode,type,inHolderCollection"))
                     .ensureSuccess()
                     .asJsonArray()
                     .getBody();
@@ -734,7 +734,7 @@ public class GroundspeakAPI {
         if (isAccessTokenInvalid()) return null;
         try {
             Trackable tb = createTrackable(getNetz()
-                    .get(getUrl(1, "trackables/" + TBCode + "?fields=referenceCode,trackingNumber,iconUrl,name,goal,description,releasedDate,ownerCode,holderCode,currentGeocacheCode,type"))
+                    .get(getUrl(1, "trackables/" + TBCode + "?fields=referenceCode,trackingNumber,iconUrl,name,goal,description,releasedDate,owner.username,holder.username,currentGeocacheCode,type"))
                     .ensureSuccess()
                     .asJsonObject()
                     .getBody()
@@ -963,12 +963,16 @@ public class GroundspeakAPI {
             tb.CurrentGeocacheCode = API1Trackable.optString("currentGeocacheCode", "");
             if (tb.CurrentGeocacheCode.equals("null")) tb.CurrentGeocacheCode = "";
             tb.CurrentGoal = CB_Utils.StringH.JsoupParse(API1Trackable.optString("goal"));
+            // since API 1.0 from 11.26.2018
+            tb.CurrentOwnerName = API1Trackable.optJSONObject("holder").optString("username", "");
+            /* until API 1.0 from 11.26.2018
             String holderCode = API1Trackable.optString("holderCode", "");
             if (holderCode.length() > 0) {
                 tb.CurrentOwnerName = fetchUserInfos(holderCode).username;
             } else {
                 tb.CurrentOwnerName = "";
             }
+            */
             String releasedDate = API1Trackable.optString("releasedDate", "");
             try {
                 tb.DateCreated = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(releasedDate);
@@ -981,7 +985,11 @@ public class GroundspeakAPI {
                 tb.IconUrl = "https:" + tb.getIconUrl().substring(5);
             }
             tb.Name = API1Trackable.optString("name", "");
+            // since API 1.0 from 11.26.2018
+            tb.OwnerName = API1Trackable.optJSONObject("owner").optString("username", "");
+            /* until API 1.0 from 11.26.2018
             tb.OwnerName = fetchUserInfos(API1Trackable.optString("ownerCode", "")).username;
+            */
             tb.TypeName = API1Trackable.optString("type", "");
             return tb;
         } catch (Exception e) {
