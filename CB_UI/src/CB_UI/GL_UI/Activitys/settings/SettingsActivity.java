@@ -238,74 +238,72 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
         addControlToLinearLayout(langView, margin);
 
-        Iterator<SettingCategory> iteratorCat = Categorys.iterator();
-        if (iteratorCat != null && iteratorCat.hasNext()) {
+        ArrayList<SettingBase<?>> AllSettingList = new ArrayList<>();// Config.settings.values().toArray();
+        for (SettingBase settingItem : Config.settings) {
+            if (settingItem.getUsage() == SettingUsage.ACB || settingItem.getUsage() == SettingUsage.ALL)
+                // item nur zur Liste Hinzufügen, wenn der SettingModus dies auch zulässt.
+                if (((settingItem.getModus() == SettingModus.Normal) || (settingItem.getModus() == SettingModus.Expert && Config.SettingsShowExpert.getValue()) || Config.SettingsShowAll.getValue())
+                        && (settingItem.getModus() != SettingModus.Never)) {
+                    AllSettingList.add(settingItem);
+                }
+        }
 
-            ArrayList<SettingBase<?>> SortedSettingList = new ArrayList<>();// Config.settings.values().toArray();
-
-            for (SettingBase setting : Config.settings) {
-                if (setting.getUsage() == SettingUsage.ACB || setting.getUsage() == SettingUsage.ALL)
-                    SortedSettingList.add(setting);
+        for (SettingCategory cat : Categorys) {
+            ArrayList<SettingBase<?>> CatList= new ArrayList<>();
+            for (SettingBase settingItem : AllSettingList) {
+                if (settingItem.getCategory().name().equals(cat.name())) {
+                    CatList.add(settingItem);
+                }
             }
+            Collections.sort(CatList, new SettingsOrder());
 
-            Collections.sort(SortedSettingList, new SettingsOrder());
+            int position = 0;
 
-            do {
-                int position = 0;
+            SettingsListCategoryButton<?> catBtn = new SettingsListCategoryButton<Object>(cat.name(), SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
 
-                SettingCategory cat = iteratorCat.next();
-                SettingsListCategoryButton<?> catBtn = new SettingsListCategoryButton<Object>(cat.name(), SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
+            final CB_View_Base btn = getView(catBtn, 1);
 
-                final CB_View_Base btn = getView(catBtn, 1);
+            // add Cat einträge
+            final LinearCollapseBox lay = new LinearCollapseBox(btn, "");
+            lay.setClickable(true);
+            lay.setAnimationListener(new IAnimatedHeightChangedListener() {
 
-                // add Cat einträge
-                final LinearCollapseBox lay = new LinearCollapseBox(btn, "");
-                lay.setClickable(true);
-                lay.setAnimationListener(new IAnimatedHeightChangedListener() {
+                @Override
+                public void animatedHeightChanged(float Height) {
+                    LinearLayout.layout();
 
-                    @Override
-                    public void animatedHeightChanged(float Height) {
-                        LinearLayout.layout();
+                    LinearLayout.setZeroPos();
+                    scrollBox.setVirtualHeight(LinearLayout.getHeight());
 
-                        LinearLayout.setZeroPos();
-                        scrollBox.setVirtualHeight(LinearLayout.getHeight());
+                }
+            });
 
-                    }
-                });
+            int entryCount = 0;
 
-                int entryCount = 0;
-                if (cat == SettingCategory.Login) {
+            switch (cat) {
+                case Login:
                     SettingsListGetApiButton<?> lgIn = new SettingsListGetApiButton<Object>(cat.name(), SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
-                    final CB_View_Base btnLgIn = getView(lgIn, 1);
-                    lay.addChild(btnLgIn);
+                    lay.addChild(getView(lgIn, 1));
                     entryCount++;
-                }
-
-                if (cat == SettingCategory.QuickList) {
-
-                    final SettingsItem_QuickButton btnLgIn = new SettingsItem_QuickButton(itemRec, "QuickButtonEditor");
-                    lay.addChild(btnLgIn);
+                    break;
+                case QuickList:
+                    lay.addChild(new SettingsItem_QuickButton(itemRec, "QuickButtonEditor"));
                     entryCount++;
-                }
-
-                if (cat == SettingCategory.Debug) {
+                    break;
+                case Debug:
                     SettingsListCategoryButton<?> disp = new SettingsListCategoryButton<Object>("DebugDisplayInfo", SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
                     final CB_View_Base btnDisp = getView(disp, 1);
-
                     btnDisp.setSize(itemRec);
-
                     lay.addChild(btnDisp);
                     entryCount++;
-                }
-
-                if (cat == SettingCategory.Skin) {
+                    break;
+                case Skin:
                     SettingsListButtonSkinSpinner<?> skin = new SettingsListButtonSkinSpinner<Object>("Skin", SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
                     CB_View_Base skinView = getSkinSpinnerView(skin);
                     lay.addChild(skinView);
                     entryCount++;
-                }
-
-                if (cat == SettingCategory.Sounds) {
+                    break;
+                case Sounds:
                     CB_RectF rec = itemRec.copy();
                     Box lblBox = new Box(rec, "LabelBox");
 
@@ -326,60 +324,49 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
                     lay.addChild(lblBox);
                     entryCount++;
+                    break;
+
+            }
+
+            Boolean expandLayout = false;
+
+            for (SettingBase settingItem : CatList) {
+                final CB_View_Base view = getView(settingItem, position++);
+
+                if (Config.FieldNotesLoadAll.getValue() && settingItem.getName().equalsIgnoreCase("FieldNotesLoadLength")) {
+                    ((SettingsItemBase) view).disable();
+
                 }
 
-                Boolean expandLayout = false;
+                if (view instanceof Button) {
+                    view.setSize(itemRec);
+                }
 
-                // int layoutHeight = 0;
-                for (Iterator<SettingBase<?>> it = SortedSettingList.iterator(); it.hasNext(); ) {
-                    SettingBase<?> settingItem = it.next();
-                    if (settingItem.getCategory().name().equals(cat.name())) {
-                        // item nur zur Liste Hinzufügen, wenn der SettingModus dies auch zulässt.
-                        if (((settingItem.getModus() == SettingModus.Normal) || (settingItem.getModus() == SettingModus.Expert && Config.SettingsShowExpert.getValue()) || Config.SettingsShowAll.getValue())
-                                && (settingItem.getModus() != SettingModus.Never)) {
+                lay.addChild(view);
+                entryCount++;
+                Config.settings.indexOf(settingItem);
+                if (Config.settings.indexOf(settingItem) == EditKey) {
+                    expandLayout = true;
+                }
+            }
 
-                            final CB_View_Base view = getView(settingItem, position++);
+            if (entryCount > 0) {
 
-                            if (Config.FieldNotesLoadAll.getValue() && settingItem.getName().equalsIgnoreCase("FieldNotesLoadLength")) {
-                                ((SettingsItemBase) view).disable();
+                lay.setBackground(this.getBackground());// Activity Background
+                if (!expandLayout)
+                    lay.setAnimationHeight(0f);
 
-                            }
+                addControlToLinearLayout(btn, margin);
+                addControlToLinearLayout(lay, -(this.drawableBackground.getBottomHeight()) / 2);
 
-                            if (view instanceof Button) {
-                                view.setSize(itemRec);
-                            }
-
-                            lay.addChild(view);
-                            entryCount++;
-                            Config.settings.indexOf(settingItem);
-                            if (Config.settings.indexOf(settingItem) == EditKey) {
-                                expandLayout = true;
-                            }
-                        }
+                btn.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
+                        lay.Toggle();
+                        return true;
                     }
-                }
-
-
-                if (entryCount > 0) {
-
-                    lay.setBackground(this.getBackground());// Activity Background
-                    if (!expandLayout)
-                        lay.setAnimationHeight(0f);
-
-                    addControlToLinearLayout(btn, margin);
-                    addControlToLinearLayout(lay, -(this.drawableBackground.getBottomHeight()) / 2);
-
-                    btn.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                            lay.Toggle();
-                            return true;
-                        }
-                    });
-                }
-
-            } while (iteratorCat.hasNext());
-
+                });
+            }
         }
 
         setVolumeState(Config.GlobalVolume.getValue().Mute);
