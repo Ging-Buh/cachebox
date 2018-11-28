@@ -35,11 +35,14 @@ public class SettingsAudio extends SettingBase<Audio> {
         this.value = new Audio(defaultValue);
     }
 
+    /*
+    // todo why was there no sort for audio ?
     @Override
     public int compareTo(SettingBase<Audio> arg0) {
         // no sort
         return 0;
     }
+    */
 
     @Override
     public String toDBString() {
