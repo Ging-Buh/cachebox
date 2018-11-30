@@ -62,13 +62,12 @@ public class GL implements ApplicationListener {
     public static final int FRAME_RATE_IDLE = 200;
     public static final int FRAME_RATE_ACTION = 50;
     public static final int FRAME_RATE_FAST_ACTION = 40;
-    private static final AsyncExecutor asyncExecutor = new AsyncExecutor(8);
+    private AsyncExecutor asyncExecutor;
     public static GL that;
     private int width, height;
     private MainViewBase mSplash;
     private MainViewBase mMainView;
     private boolean allIsInitialized;
-    private boolean ToastIsShown;
     private boolean stopRender;
     private boolean darknessAnimationRuns;
     private Fader grayFader;
@@ -86,7 +85,6 @@ public class GL implements ApplicationListener {
     private ArrayList<IRunOnGL> runOnGL_ListWaitPool = new ArrayList<>();
     private AtomicBoolean isWorkOnRunOnGL = new AtomicBoolean(false);
     // private RenderStarted renderStartedListener = null;
-    private CB_View_Base mToastOverlay;
     private float stateTime = 0;
     private long FBO_RunBegin = System.currentTimeMillis();
     private boolean FBO_RunLapsed = false;
@@ -94,7 +92,6 @@ public class GL implements ApplicationListener {
     private HashMap<String, Integer> callerCount = new HashMap<>();
     private ModelBatch modelBatch;
     private float lastRenderOnceTime = -1;
-    private CB_UI_Base.GL_UI.Controls.Dialogs.Toast toast;
     private float lastTouchX = 0;
     private float lastTouchY = 0;
     private GrayscalShaderProgram shader;
@@ -103,19 +100,30 @@ public class GL implements ApplicationListener {
     private Texture mDarknessTexture;
     private HashMap<GL_View_Base, Integer> renderViews = new HashMap<>();
     private MainViewBase child;
-    private boolean currentDialogIsShown;
-    private Dialog currentDialog;
-    private boolean currentActivityIsShown;
-    private ActivityBase currentActivity;
+
     private CB_View_Base mDialog;
+    private Dialog currentDialog;
+    private boolean currentDialogIsShown;
+
     private CB_View_Base mActivity;
+    private ActivityBase currentActivity;
+    private boolean currentActivityIsShown;
+
+    private CB_View_Base mMarkerOverlay;
     private SelectionMarker selectionMarkerCenter, selectionMarkerLeft, selectionMarkerRight;
     private boolean MarkerIsShown;
-    private CB_View_Base mMarkerOverlay;
+
+    private CB_View_Base mToastOverlay;
+    private CB_UI_Base.GL_UI.Controls.Dialogs.Toast toast;
+    private boolean ToastIsShown;
+
     private EditTextField focusedEditTextField;
+
     private ArrayList<Dialog> dialogHistory = new ArrayList<>();
     private ArrayList<ActivityBase> activityHistory = new ArrayList<>();
+
     private PopUp_Base aktPopUp;
+
     private float darknessAlpha = 0f;
 
     public GL(int _width, int _height, MainViewBase splash, MainViewBase mainView) {
@@ -138,8 +146,11 @@ public class GL implements ApplicationListener {
         Log.debug("GL", "Constructor done");
     }
 
-    public static void postAsync(final Runnable runnable) {
-        asyncExecutor.submit((AsyncTask<Void>) () -> {
+    public void postAsync(final Runnable runnable) {
+        if (that.asyncExecutor == null) {
+            that.asyncExecutor = new AsyncExecutor(8);
+        }
+        that.asyncExecutor.submit((AsyncTask<Void>) () -> {
             try {
                 runnable.run();
             } catch (final Exception e) {

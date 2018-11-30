@@ -28,12 +28,12 @@ public interface CB_Core_Settings {
     SettingModus EXPERT = SettingModus.Expert;
     SettingModus NEVER = SettingModus.Never;
 
-    SettingEncryptedString AccessToken = new SettingEncryptedString("GcAPI", SettingCategory.Login, DEVELOPER, "", SettingStoreType.Platform, SettingUsage.ALL);
-    SettingString GcLogin = new SettingString("GcLogin", SettingCategory.Login, DEVELOPER, "", SettingStoreType.Platform, SettingUsage.ALL);
+    SettingEncryptedString AccessToken = new SettingEncryptedString("GcAPI", SettingCategory.Login, DEVELOPER, "", SettingStoreType.Global, SettingUsage.ALL);
+    SettingString GcLogin = new SettingString("GcLogin", SettingCategory.Login, DEVELOPER, "", SettingStoreType.Global, SettingUsage.ALL);
     SettingBool UseTestUrl = new SettingBool("StagingAPI", SettingCategory.Folder, DEVELOPER, false, SettingStoreType.Global, SettingUsage.ALL);
-    SettingEncryptedString AccessTokenForTest = new SettingEncryptedString("GcAPIStaging", SettingCategory.Login, DEVELOPER, "", SettingStoreType.Platform, SettingUsage.ALL);
+    SettingEncryptedString AccessTokenForTest = new SettingEncryptedString("GcAPIStaging", SettingCategory.Login, DEVELOPER, "", SettingStoreType.Global, SettingUsage.ALL);
     SettingString Friends = new SettingString("Friends", SettingCategory.Login, NORMAL, "", SettingStoreType.Global, SettingUsage.ALL);
-    SettingEncryptedString GcVotePassword = new SettingEncryptedString("GcVotePassword", SettingCategory.Login, NORMAL, "", SettingStoreType.Platform, SettingUsage.ALL);
+    SettingEncryptedString GcVotePassword = new SettingEncryptedString("GcVotePassword", SettingCategory.Login, NORMAL, "", SettingStoreType.Global, SettingUsage.ALL);
 
     SettingFolder PocketQueryFolder = new SettingFolder("PocketQueryFolder", SettingCategory.Folder, DEVELOPER, Config_Core.mWorkPath + "/PocketQuery", SettingStoreType.Global, SettingUsage.ALL, true);
     SettingFolder DescriptionImageFolder = new SettingFolder("DescriptionImageFolder", SettingCategory.Folder, NEVER, Config_Core.mWorkPath + "/repository/images", SettingStoreType.Global, SettingUsage.ALL, true);

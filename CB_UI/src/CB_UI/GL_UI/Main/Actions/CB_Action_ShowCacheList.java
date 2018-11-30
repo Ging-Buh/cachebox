@@ -120,7 +120,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                         }
                         return true;
                     case MenuID.MI_CHK_STATE_API:
-                        GL.postAsync(new Runnable() {
+                        GL.that.postAsync(new Runnable() {
                             @Override
                             public void run() {
                                 // First check API-Key with visual Feedback
@@ -133,7 +133,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                                             TimerTask tt = new TimerTask() {
                                                 @Override
                                                 public void run() {
-                                                    GL.postAsync(new Runnable() {
+                                                    GL.that.postAsync(new Runnable() {
                                                         @Override
                                                         public void run() {
                                                             new CB_Action_chkState().Execute();

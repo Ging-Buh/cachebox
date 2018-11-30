@@ -95,7 +95,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 switch (((MenuItem) v).getMenuItemId()) {
                     case MenuID.MI_CHK_STATE_API:
-                        GL.postAsync(new Runnable() {
+                        GL.that.postAsync(new Runnable() {
                             @Override
                             public void run() {
                                 // First check API-Key with visual Feedback
@@ -108,7 +108,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
                                             TimerTask tt = new TimerTask() {
                                                 @Override
                                                 public void run() {
-                                                    GL.postAsync(new Runnable() {
+                                                    GL.that.postAsync(new Runnable() {
                                                         @Override
                                                         public void run() {
                                                             new CB_Action_chkState().Execute();
@@ -125,7 +125,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
                         });
                         return true;
                     case MenuID.MI_IMPORT_GS_PQ:
-                        GL.postAsync(() -> new Import(MenuID.MI_IMPORT_GS_PQ).show());
+                        GL.that.postAsync(() -> new Import(MenuID.MI_IMPORT_GS_PQ).show());
                         return true;
                     case MenuID.MI_IMPORT_GS_API_POSITION:
                         SearchOverPosition.ShowInstanz();
@@ -143,12 +143,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
                         new Import(MenuID.MI_IMPORT_GCV).show();
                         return true;
                     case MenuID.MI_IMPORT:
-                        GL.postAsync(new Runnable() {
-                            @Override
-                            public void run() {
-                                new Import().show();
-                            }
-                        });
+                        GL.that.postAsync(() -> new Import().show());
                         return true;
                     case MenuID.MI_MAP_DOWNOAD:
                         MapDownload.getInstance().show();
@@ -159,16 +154,10 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
                             public boolean onClick(int which, Object data) {
                                 if (which == 1) {
                                     final String FileName = StringInputBox.editText.getText();
-                                    GL.that.RunOnGL(new IRunOnGL() {
-                                        @Override
-                                        public void run() {
-                                            ExportgetFolderStep(FileName);
-                                        }
-                                    });
+                                    GL.that.RunOnGL(() -> ExportgetFolderStep(FileName));
                                 }
                                 return true;
                             }
-
                         });
                         return true;
                 }

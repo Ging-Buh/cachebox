@@ -255,7 +255,6 @@ public class MainViewInit extends MainViewBase {
 
             FileType fileType = FileType.Internal;
 
-
             new Translation(Config.mWorkPath, fileType);
             try {
                 Translation.LoadTranslation(Config.Sel_LanguagePath.getValue());
@@ -263,7 +262,7 @@ public class MainViewInit extends MainViewBase {
                 try {
                     Translation.LoadTranslation(Config.Sel_LanguagePath.getDefaultValue());
                 } catch (IOException e1) {
-                    e1.printStackTrace();
+                    Log.err(log,"ini_Translations", e1);
                 }
             }
         }

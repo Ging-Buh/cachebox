@@ -274,7 +274,7 @@ public class SearchDialog extends PopUp_Base {
                 GL.that.setFocusedEditTextField(null);
                 if (mTglBtnOnline.getState() == 1) {
                     close();
-                    GL.postAsync(() -> askPremium());
+                    GL.that.postAsync(() -> askPremium());
                 } else {
                     setFilter();
                 }

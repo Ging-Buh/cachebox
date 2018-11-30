@@ -335,7 +335,6 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
                 if (Config.FieldNotesLoadAll.getValue() && settingItem.getName().equalsIgnoreCase("FieldNotesLoadLength")) {
                     ((SettingsItemBase) view).disable();
-
                 }
 
                 if (view instanceof Button) {
