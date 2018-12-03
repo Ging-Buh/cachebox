@@ -37,7 +37,7 @@ public class CacheDAO {
     static final String SQL_GET_DETAIL_WITH_DESCRIPTION = "Description, Solver, Notes, ShortDescription ";
     static final String SQL_GET_DETAIL_FROM_ID = "select " + SQL_DETAILS + SQL_BY_ID;
     static final String SQL_EXIST_CACHE = "select 1 from Caches where Id = ?";
-    static final String SQL_GET_CACHE = "select c.Id, GcCode, Latitude, Longitude, c.Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, Owner, NumTravelbugs, GcId, Rating, Favorit, HasUserData, ListingChanged, CorrectedCoordinates ";
+    static final String SQL_GET_CACHE = "select c.Id, GcCode, Latitude, Longitude, c.Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, Owner, NumTravelbugs, GcId, Rating, Favorit, HasUserData, ListingChanged, CorrectedCoordinates , FavPoints";
     private static final String log = "CacheDAO";
     public String[] SQL_ENUM = {"c.Id", "GcCode", "Latitude"};
 
@@ -81,6 +81,8 @@ public class CacheDAO {
             else
                 cache.setHasCorrectedCoordinates(false);
 
+            cache.favPoints = reader.getInt(20);
+
             if (fullDetails) {
                 readDetailFromCursor(reader, cache.detail, fullDetails, withDescription);
             }
@@ -121,7 +123,7 @@ public class CacheDAO {
 
     private boolean readDetailFromCursor(CoreCursor reader, CacheDetail detail, boolean withReaderOffset, boolean withDescription) {
         // Reader includes Compleate Cache or Details only
-        int readerOffset = withReaderOffset ? 20 : 0;
+        int readerOffset = withReaderOffset ? 21 : 0;
 
         detail.PlacedBy = reader.getString(readerOffset + 0).trim();
 
@@ -213,6 +215,7 @@ public class CacheDAO {
         // args.put("ListingCheckSum", cache.);
         args.put("CorrectedCoordinates", cache.hasCorrectedCoordinates() ? 1 : 0);
 
+        args.put("FavPoints", cache.favPoints);
         if (cache.detail != null) {
             // write detail information if existing
             args.put("GcId", cache.getGcId());
@@ -318,14 +321,13 @@ public class CacheDAO {
         args.put("ApiStatus", cache.getApiStatus());
         args.put("CorrectedCoordinates", cache.hasCorrectedCoordinates() ? 1 : 0);
         args.put("TourName", cache.getTourName());
-
+        args.put("FavPoints", cache.favPoints);
         try {
             long ret = Database.Data.update("Caches", args, "Id = ?", new String[]{String.valueOf(cache.Id)});
             return ret > 0;
         } catch (Exception exc) {
             Log.err(log, "Update Cache", "", exc);
             return false;
-
         }
     }
 
