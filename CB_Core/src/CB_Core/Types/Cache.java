@@ -76,6 +76,10 @@ public class Cache implements Comparable<Cache>, Serializable {
      */
     public float Rating;
     /**
+     * Grondspeak favorite points
+     */
+    public int favPoints = 0;
+    /**
      * Groesse des Caches. Bei Wikipediaeintraegen enthaelt dieses Feld den Radius in m
      */
     public CacheSizes Size;
@@ -514,6 +518,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         this.Name = cache.Name;
         this.Pos = cache.Pos;
         this.Rating = cache.Rating;
+        this.favPoints = cache.favPoints;
         this.Size = cache.Size;
         this.setDifficulty(cache.getDifficulty());
         this.setTerrain(cache.getTerrain());

@@ -489,6 +489,13 @@ public abstract class Database extends Database_Core {
                         execSQL("ALTER TABLE [Caches] ADD [ShortDescription] ntext NULL;");
                     }
 
+                    if (lastDatabaseSchemeVersion < 1027) {
+                        // add one column for Favorite Points
+                        // [FavPoints] SMALLINT 0
+                        execSQL( "ALTER TABLE [CACHES] ADD [FavPoints] smallint NULL default 0;");
+
+                    }
+
                     setTransactionSuccessful();
                 } catch (Exception exc) {
                     Log.err(log, "AlterDatabase", "", exc);
