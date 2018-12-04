@@ -145,6 +145,7 @@ public class SearchForGeocaches_Core {
             } else if (search instanceof SearchGCName) {
                 Log.info(log, "nach Name");
                 SearchGCName searchC = (SearchGCName) search;
+
                 if (isLite)
                     request.put("IsLight", true);
                 else
@@ -488,6 +489,7 @@ public class SearchForGeocaches_Core {
                         exclude = true;
                     if (search.available && (cache.isArchived() || !cache.isAvailable()))
                         exclude = true;
+                    cache.favPoints = jCache.optInt("FavoritePoints", 0);
 
                     if (!CacheERROR && !exclude) {
                         cacheList.add(cache);

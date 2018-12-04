@@ -37,7 +37,7 @@ public class CacheDAO {
     static final String SQL_GET_DETAIL_WITH_DESCRIPTION = "Description, Solver, Notes, ShortDescription ";
     static final String SQL_GET_DETAIL_FROM_ID = "select " + SQL_DETAILS + SQL_BY_ID;
     static final String SQL_EXIST_CACHE = "select 1 from Caches where Id = ?";
-    static final String SQL_GET_CACHE = "select c.Id, GcCode, Latitude, Longitude, c.Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, Owner, NumTravelbugs, GcId, Rating, Favorit, HasUserData, ListingChanged, CorrectedCoordinates , FavPoints";
+    static final String SQL_GET_CACHE = "select c.Id, GcCode, Latitude, Longitude, c.Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, Owner, NumTravelbugs, GcId, Rating, Favorit, HasUserData, ListingChanged, CorrectedCoordinates, FavPoints ";
     private static final String log = "CacheDAO";
     public String[] SQL_ENUM = {"c.Id", "GcCode", "Latitude"};
 
@@ -424,6 +424,11 @@ public class CacheDAO {
             Replication.NumTravelbugsChanged(writeTmp.Id, writeTmp.NumTravelbugs);
         }
 
+        if (fromDB.favPoints != writeTmp.favPoints) {
+            changed = true;
+            Replication.NumFavPointsChanged(writeTmp.Id, writeTmp.favPoints);
+        }
+
         if (changed) {
 
             Parameters args = new Parameters();
@@ -431,6 +436,7 @@ public class CacheDAO {
             args.put("Archived", writeTmp.isArchived() ? 1 : 0);
             args.put("Available", writeTmp.isAvailable() ? 1 : 0);
             args.put("NumTravelbugs", writeTmp.NumTravelbugs);
+            args.put("FavPoints",writeTmp.favPoints);
 
             try {
                 Database.Data.update("Caches", args, "Id = ?", new String[]{String.valueOf(writeTmp.Id)});

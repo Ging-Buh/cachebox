@@ -217,4 +217,19 @@ public class Replication {
 
     }
 
+    public static void NumFavPointsChanged(long CacheId, int numFavPoints) {
+        if (Database.Data.MasterDatabaseId > 0) {
+            ChangeType changeType = ChangeType.FavPoints;
+
+            Database.Data.delete("Replication", "CacheId=" + String.valueOf(CacheId) + " and ChangeType=" + changeType.ordinal(), null);
+
+            Parameters val = new Parameters();
+            val.put("CacheId", CacheId);
+            val.put("ChangeType", changeType.ordinal());
+            val.put("SolverCheckSum", numFavPoints); // todo ok? handle
+            Database.Data.insert("Replication", val);
+        }
+
+    }
+
 }

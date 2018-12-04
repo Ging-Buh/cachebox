@@ -2,20 +2,18 @@ package CB_UI.GL_UI.Main.Actions;
 
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.CacheListChangedEventList;
-import CB_Core.Types.CacheDAO;
-import CB_Core.Types.CacheListDAO;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
 import CB_Core.Types.Cache;
+import CB_Core.Types.CacheDAO;
+import CB_Core.Types.CacheListDAO;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
@@ -94,7 +92,7 @@ public class CB_Action_chkState extends CB_Action {
                         index++;
                     } while (Iterator2.hasNext());
 
-                    result = GroundspeakAPI.fetchGeocacheStatus(caches);
+                    result = GroundspeakAPI.updateGeoCacheStatus(caches);
                     addedReturnList.addAll(caches);
                     if (result != GroundspeakAPI.OK) {
                         GL.that.Toast(GroundspeakAPI.LastAPIError);
@@ -110,7 +108,6 @@ public class CB_Action_chkState extends CB_Action {
             } while (caches.size() == BlockSize && !cancelThread);
 
 
-
             if (result == 0 && !cancelThread) {
                 Database.Data.beginTransaction();
 
@@ -123,8 +120,9 @@ public class CB_Action_chkState extends CB_Action {
                         cancelThread = true;
                     }
                     Cache writeTmp = iterator.next();
-                    if (dao.UpdateDatabaseCacheState(writeTmp))
-                        ChangedCount++;
+                    if (writeTmp.getGcCode().toLowerCase().startsWith("gc"))
+                        if (dao.UpdateDatabaseCacheState(writeTmp))
+                            ChangedCount++;
                 } while (iterator.hasNext() && !cancelThread);
 
                 Database.Data.setTransactionSuccessful();
@@ -137,13 +135,13 @@ public class CB_Action_chkState extends CB_Action {
 
         @Override
         public boolean doCancel() {
-            Log.debug(sKlasse,"chkState canceled");
+            Log.debug(sKlasse, "chkState canceled");
             return cancel;
         }
 
         @Override
         public void RunnableIsReady(boolean canceld) {
-            Log.debug(sKlasse,"chkState ready");
+            Log.debug(sKlasse, "chkState ready");
             String sCanceld = canceld ? Translation.Get("isCanceld") + GlobalCore.br : "";
 
             if (result != -1) {

@@ -15,6 +15,7 @@ public enum ChangeType implements Serializable {
     NotArchived, // 9
     Available, // 10
     NotAvailable, // 11
-    NumTravelbugs // 12
+    NumTravelbugs, // 12
+    FavPoints //
 
 }

@@ -1,17 +1,13 @@
 package CB_Utils.http;
 
-import java.io.FilterInputStream;
+import CB_Utils.Log.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
@@ -53,10 +49,12 @@ public class Webb {
     RetryManager retryManager;
     Proxy proxy;
 
-    protected Webb() {}
+    protected Webb() {
+    }
 
     /**
      * Create an instance which can be reused for multiple requests in the same Thread.
+     *
      * @return the created instance.
      */
     public static Webb create() {
@@ -71,9 +69,8 @@ public class Webb {
      * <br>
      * For the supported types for values see {@link Request#header(String, Object)}.
      *
-     * @param name name of the header (regarding HTTP it is not case-sensitive, but here case is important).
+     * @param name  name of the header (regarding HTTP it is not case-sensitive, but here case is important).
      * @param value value of the header. If <code>null</code> the header value is cleared (effectively not set).
-     *
      * @see #setDefaultHeader(String, Object)
      * @see com.goebl.david.Request#header(String, Object)
      */
@@ -103,6 +100,7 @@ public class Webb {
      * The number of characters to indent child properties, <code>-1</code> for "productive" code.
      * <br>
      * Default is production ready JSON (-1) means no indentation (single-line serialization).
+     *
      * @param indentFactor the number of spaces to indent
      */
     public static void setJsonIndentFactor(int indentFactor) {
@@ -115,6 +113,7 @@ public class Webb {
      * In contrast to {@link java.net.HttpURLConnection}, we use a default timeout of 10 seconds, since no
      * timeout is odd.<br>
      * Can be overwritten for each Request with {@link com.goebl.david.Request#connectTimeout(int)}.
+     *
      * @param globalConnectTimeout the new timeout or <code>&lt;= 0</code> to use HttpURLConnection default timeout.
      */
     public static void setConnectTimeout(int globalConnectTimeout) {
@@ -127,6 +126,7 @@ public class Webb {
      * In contrast to {@link java.net.HttpURLConnection}, we use a default timeout of 3 minutes, since no
      * timeout is odd.<br>
      * Can be overwritten for each Request with {@link com.goebl.david.Request#readTimeout(int)}.
+     *
      * @param globalReadTimeout the new timeout or <code>&lt;= 0</code> to use HttpURLConnection default timeout.
      */
     public static void setReadTimeout(int globalReadTimeout) {
@@ -135,10 +135,11 @@ public class Webb {
 
     /**
      * See <a href="http://docs.oracle.com/javase/7/docs/api/java/net/HttpURLConnection.html#setInstanceFollowRedirects(boolean)">
-     *     </a>.
+     * </a>.
      * <br>
      * Use this method to set the behaviour for all requests created by this instance when receiving redirect responses.
      * You can overwrite the setting for a single request by calling {@link Request#followRedirects(boolean)}.
+     *
      * @param auto <code>true</code> to automatically follow redirects (HTTP status code 3xx).
      *             Default value comes from HttpURLConnection and should be <code>true</code>.
      */
@@ -148,6 +149,7 @@ public class Webb {
 
     /**
      * Set a custom {@link javax.net.ssl.SSLSocketFactory}, most likely to relax Certification checking.
+     *
      * @param sslSocketFactory the factory to use (see test cases for an example).
      */
     public void setSSLSocketFactory(SSLSocketFactory sslSocketFactory) {
@@ -156,6 +158,7 @@ public class Webb {
 
     /**
      * Set a custom {@link javax.net.ssl.HostnameVerifier}, most likely to relax host-name checking.
+     *
      * @param hostnameVerifier the verifier (see test cases for an example).
      */
     public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
@@ -165,10 +168,20 @@ public class Webb {
     /**
      * Sets a proxy object to be used for opening the connection.
      * See {@link URL#openConnection(Proxy)}
+     *
      * @param proxy the proxy to be used or <tt>null</tt> for no proxy.
      */
     public void setProxy(Proxy proxy) {
         this.proxy = proxy;
+    }
+
+    /**
+     * Returns the base URI of this instance.
+     *
+     * @return base URI
+     */
+    public String getBaseUri() {
+        return baseUri;
     }
 
     /**
@@ -185,15 +198,6 @@ public class Webb {
     }
 
     /**
-     * Returns the base URI of this instance.
-     *
-     * @return base URI
-     */
-    public String getBaseUri() {
-        return baseUri;
-    }
-
-    /**
      * Set the value for a named header which is valid for all requests created by this instance.
      * <br>
      * The value takes precedence over {@link Webb#setGlobalHeader(String, Object)} but can be overwritten by
@@ -201,10 +205,9 @@ public class Webb {
      * <br>
      * For the supported types for values see {@link Request#header(String, Object)}.
      *
-     * @param name name of the header (regarding HTTP it is not case-sensitive, but here case is important).
+     * @param name  name of the header (regarding HTTP it is not case-sensitive, but here case is important).
      * @param value value of the header. If <code>null</code> the header value is cleared (effectively not set).
      *              When setting the value to null, a value from global headers can shine through.
-     *
      * @see #setGlobalHeader(String, Object)
      * @see com.goebl.david.Request#header(String, Object)
      */
@@ -221,6 +224,7 @@ public class Webb {
 
     /**
      * Registers an alternative {@link com.goebl.david.RetryManager}.
+     *
      * @param retryManager the new manager for deciding whether it makes sense to retry a request.
      */
     public void setRetryManager(RetryManager retryManager) {
@@ -229,6 +233,7 @@ public class Webb {
 
     /**
      * Creates a <b>GET HTTP</b> request with the specified absolute or relative URI.
+     *
      * @param pathOrUri the URI (will be concatenated with global URI or default URI without further checking).
      *                  If it starts already with http:// or https:// this URI is taken and all base URIs are ignored.
      * @return the created Request object (in fact it's more a builder than a real request object)
@@ -239,6 +244,7 @@ public class Webb {
 
     /**
      * Creates a <b>POST</b> HTTP request with the specified absolute or relative URI.
+     *
      * @param pathOrUri the URI (will be concatenated with global URI or default URI without further checking)
      *                  If it starts already with http:// or https:// this URI is taken and all base URIs are ignored.
      * @return the created Request object (in fact it's more a builder than a real request object)
@@ -249,6 +255,7 @@ public class Webb {
 
     /**
      * Creates a <b>PUT</b> HTTP request with the specified absolute or relative URI.
+     *
      * @param pathOrUri the URI (will be concatenated with global URI or default URI without further checking)
      *                  If it starts already with http:// or https:// this URI is taken and all base URIs are ignored.
      * @return the created Request object (in fact it's more a builder than a real request object)
@@ -259,6 +266,7 @@ public class Webb {
 
     /**
      * Creates a <b>DELETE</b> HTTP request with the specified absolute or relative URI.
+     *
      * @param pathOrUri the URI (will be concatenated with global URI or default URI without further checking)
      *                  If it starts already with http:// or https:// this URI is taken and all base URIs are ignored.
      * @return the created Request object (in fact it's more a builder than a real request object)
@@ -336,7 +344,7 @@ public class Webb {
             } else {
                 connection = (HttpURLConnection) apiUrl.openConnection();
             }
-
+            Log.debug("Webb", "url " + uri);
             prepareSslConnection(connection);
             connection.setRequestMethod(request.method.name());
             if (request.followRedirects != null) {
@@ -404,10 +412,16 @@ public class Webb {
         } finally {
             if (closeStream) {
                 if (is != null) {
-                    try { is.close(); } catch (Exception ignored) {}
+                    try {
+                        is.close();
+                    } catch (Exception ignored) {
+                    }
                 }
                 if (connection != null) {
-                    try { connection.disconnect(); } catch (Exception ignored) {}
+                    try {
+                        connection.disconnect();
+                    } catch (Exception ignored) {
+                    }
                 }
             }
         }
@@ -438,7 +452,10 @@ public class Webb {
             os.flush();
         } finally {
             if (os != null) {
-                try { os.close(); } catch (Exception ignored) {}
+                try {
+                    os.close();
+                } catch (Exception ignored) {
+                }
             }
         }
     }
@@ -467,10 +484,16 @@ public class Webb {
             os.flush();
         } finally {
             if (os != null) {
-                try { os.close(); } catch (Exception ignored) {}
+                try {
+                    os.close();
+                } catch (Exception ignored) {
+                }
             }
             if (is != null && closeStream) {
-                try { is.close(); } catch (Exception ignored) {}
+                try {
+                    is.close();
+                } catch (Exception ignored) {
+                }
             }
         }
     }
@@ -524,9 +547,10 @@ public class Webb {
          * by assigning the  argument <code>in</code>
          * to the field <code>this.in</code> so as
          * to remember it for later use.
+         *
          * @param connection the underlying connection to disconnect on close.
-         * @param in the underlying input stream, or <code>null</code> if
-         * this instance is to be created without an underlying stream.
+         * @param in         the underlying input stream, or <code>null</code> if
+         *                   this instance is to be created without an underlying stream.
          */
         protected AutoDisconnectInputStream(final HttpURLConnection connection, final InputStream in) {
             super(in);

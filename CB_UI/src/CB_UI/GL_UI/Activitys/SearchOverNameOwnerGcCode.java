@@ -316,7 +316,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                                 ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
                                 Search searchC = null;
 
-                                String searchPattern = mEingabe.getText().toLowerCase();
+                                String searchPattern = mEingabe.getText(); // .toLowerCase()
 
                                 Coordinate searchCoord = null;
 
