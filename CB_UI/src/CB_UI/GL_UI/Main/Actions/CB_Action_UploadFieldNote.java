@@ -95,21 +95,17 @@ public class CB_Action_UploadFieldNote extends CB_Action {
 
                         if (fieldNote.isTbFieldNote) {
                             // there is no TB draft. we have to log direct
-                            result = GroundspeakAPI.uploadTrackableLog(fieldNote.TravelBugCode, fieldNote.TrackingNumber, fieldNote.gcCode, LogTypes.CB_LogType2GC(fieldNote.type), fieldNote.timestamp, fieldNote.comment) ? GroundspeakAPI.OK : GroundspeakAPI.ERROR;
+                            result = GroundspeakAPI.uploadTrackableLog(fieldNote.TravelBugCode, fieldNote.TrackingNumber, fieldNote.gcCode, LogTypes.CB_LogType2GC(fieldNote.type), fieldNote.timestamp, fieldNote.comment);
                         } else {
-                            if (sendGCVote && !fieldNote.isTbFieldNote) {
+                            if (sendGCVote) {
                                 if (fieldNote.gc_Vote > 0)
                                     sendCacheVote(fieldNote);
                             }
-                            boolean dl = fieldNote.isDirectLog;
-                            result = GroundspeakAPI.UploadDraftOrLog(fieldNote.gcCode, fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment, dl);
+                            result = GroundspeakAPI.UploadDraftOrLog(fieldNote.gcCode, fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment, fieldNote.isDirectLog);
                         }
 
                         if (result == GroundspeakAPI.ERROR) {
-                            GL.that.Toast(ConnectionError.INSTANCE);
-                            // todo with API1 timeout etc
-                            // PD.close();
-                            // return;
+                            GL.that.Toast(GroundspeakAPI.LastAPIError);
                             UploadMeldung += fieldNote.gcCode + "\n" + GroundspeakAPI.LastAPIError + "\n";
                         } else {
                             // set fieldnote as uploaded only when upload was working
@@ -119,7 +115,6 @@ public class CB_Action_UploadFieldNote extends CB_Action {
                         count++;
                     }
                 }
-
                 PD.close();
             }
 

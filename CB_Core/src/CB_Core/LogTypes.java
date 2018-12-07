@@ -27,6 +27,7 @@ public enum LogTypes {
     move_to_inventory, // 23
     announcement, // 24
     visited, // 25
+    Submit_for_Review, //
     ;
 
     /*
@@ -64,12 +65,36 @@ public enum LogTypes {
         70	Move to Inventory
         75	Visited
      */
+    /* Api 1.0
+    ['Found It',
+    'DNF it',
+    'Write note',
+    'Archive',
+    'Needs archiving',
+    'Will attend',
+    'Attended',
+    'Webcam photo taken',
+    'Unarchive',
+    'Post Reviewer Note',
+    'Temporarily Disable Listing',
+    'Enable Listing',
+    'Publish Listing',
+    'Needs Maintenance',
+    'Owner Maintenance',
+    'Update Coordinates',
+    'Post Reviewer Note - Post Publish',
+    'Event Announcement',
+    'Submit for Review']
+     */
     public static LogTypes parseString(String text) {
-        // API 1.0 ['Found It', 'DNF it', 'Write note', 'Archive', 'Needs archiving', 'Will attend', 'Attended', 'Webcam photo taken', 'Unarchive', 'Temporarily Disable Listing', 'Enable Listing', 'Publish Listing', 'Needs Maintenance', 'Owner Maintenance', 'Update Coordinates', 'Post Reviewer Note', 'Event Announcement']
-        if (text.equalsIgnoreCase("found it")) {
+
+        if (text.equalsIgnoreCase("Found It")) {
             return found;
         }
         if (text.equalsIgnoreCase("didn't find it")) {
+            return didnt_find;
+        }
+        if (text.equalsIgnoreCase("DNF it")) {
             return didnt_find;
         }
         if (text.equalsIgnoreCase("not found")) {
@@ -78,43 +103,49 @@ public enum LogTypes {
         if (text.equalsIgnoreCase("write note")) {
             return note;
         }
-        if (text.equalsIgnoreCase("publish listing")) {
+        if (text.equalsIgnoreCase("Publish Listing")) {
             return published;
         }
-        if (text.equalsIgnoreCase("enable listing")) {
+        if (text.equalsIgnoreCase("Enable Listing")) {
             return enabled;
         }
-        if (text.equalsIgnoreCase("needs maintenance")) {
+        if (text.equalsIgnoreCase("Needs Maintenance")) {
             return needs_maintenance;
         }
-        if (text.equalsIgnoreCase("temporarily disable listing")) {
+        if (text.equalsIgnoreCase("Temporarily Disable Listing")) {
             return temporarily_disabled;
         }
-        if (text.equalsIgnoreCase("owner maintenance")) {
+        if (text.equalsIgnoreCase("Owner Maintenance")) {
             return owner_maintenance;
         }
-        if (text.equalsIgnoreCase("update coordinates")) {
+        if (text.equalsIgnoreCase("Update Coordinates")) {
             return owner_maintenance;
         }
-        if (text.equalsIgnoreCase("will attend")) {
+        if (text.equalsIgnoreCase("Will attend")) {
             return will_attend;
         }
-        if (text.equalsIgnoreCase("attended")) {
+        if (text.equalsIgnoreCase("Attended")) {
             return attended;
         }
-        if (text.equalsIgnoreCase("webcam photo taken")) {
+        if (text.equalsIgnoreCase("Webcam photo taken")) {
             return webcam_photo_taken;
         }
-        if (text.equalsIgnoreCase("archive")) {
+        if (text.equalsIgnoreCase("Archive")) {
             return archived;
         }
-        if (text.equalsIgnoreCase("unarchive")) {
-            return archived;
+        if (text.equalsIgnoreCase("Unarchive")) {
+            return unarchive;
         }
-        if (text.equalsIgnoreCase("post reviewer note")) {
+        if (text.equalsIgnoreCase("Post Reviewer Note")) {
             return reviewer_note;
         }
+        if (text.equalsIgnoreCase("Post Reviewer Note - Post Publish")) {
+            return reviewer_note; // ? own enum
+        }
         if (text.equalsIgnoreCase("needs archived")) {
+            return needs_archived;
+        }
+        if (text.equalsIgnoreCase("Needs archiving")) {
             return needs_archived;
         }
         if (text.equalsIgnoreCase("other")) {
@@ -131,6 +162,12 @@ public enum LogTypes {
         }
         if (text.equalsIgnoreCase("retract listing")) {
             return archived;
+        }
+        if (text.equalsIgnoreCase("Event Announcement")) {
+            return announcement;
+        }
+        if (text.equalsIgnoreCase("Submit for Review")) {
+            return Submit_for_Review;
         }
         return note;
     }

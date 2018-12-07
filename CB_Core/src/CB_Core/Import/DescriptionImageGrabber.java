@@ -395,9 +395,8 @@ public class DescriptionImageGrabber {
             {
                 ip.ProgressChangeMsg("importImages", Translation.Get("SpoilerImageImportForGC") + gcCode);
 
-                HashMap<String, URI> allimgDict = new HashMap<>();
-
-                if (GroundspeakAPI.downloadImageListForGeocache(gcCode, allimgDict) == GroundspeakAPI.ERROR) {
+                HashMap<String, URI> allimgDict = GroundspeakAPI.downloadImageListForGeocache(gcCode);
+                if (GroundspeakAPI.APIError != GroundspeakAPI.OK) {
                     return GroundspeakAPI.ERROR;
                 }
 

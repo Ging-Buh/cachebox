@@ -2,7 +2,6 @@ package CB_UI.GL_UI.Main.Actions;
 
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.CB_Core_Settings;
-import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.LogView;
 import CB_UI.GlobalCore;
 import CB_UI.GlobalCore.iChkReadyHandler;
@@ -110,9 +109,9 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
                     @Override
                     public void run() {
                         if (all) {
-                            new CB_Action_LoadLogs().Execute();
+                            new CB_Action_LoadLogs(true).Execute();
                         } else {
-                            new CB_Action_LoadFriendLogs().Execute();
+                            new CB_Action_LoadLogs(false).Execute();
                         }
 
                     }

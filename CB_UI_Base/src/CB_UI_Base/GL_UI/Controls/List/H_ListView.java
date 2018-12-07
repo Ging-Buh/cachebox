@@ -247,7 +247,6 @@ public class H_ListView extends ListViewBase {
 
     @Override
     public void chkSlideBack() {
-        Log.debug(log, "chkSlideBack()");
 
         if (!mIsDraggable) {
             startAnimationToBottom();

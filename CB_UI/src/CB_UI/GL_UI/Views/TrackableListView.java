@@ -1,19 +1,16 @@
 package CB_UI.GL_UI.Views;
 
-import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.TrackableListDAO;
 import CB_Core.LogTypes;
-import CB_Core.Types.TbList;
+import CB_Core.Types.TBList;
 import CB_Core.Types.Trackable;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.TB_Details;
-import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GlobalCore;
 import CB_UI.TemplateFormatter;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
-import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
@@ -27,7 +24,6 @@ import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Menu.Menu;
-import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
@@ -39,7 +35,6 @@ import CB_Utils.Log.Log;
 import java.util.Date;
 
 import static CB_Core.Api.GroundspeakAPI.*;
-import static CB_UI_Base.GL_UI.Menu.MenuID.*;
 
 public class TrackableListView extends ActivityBase {
     private static final String log = "TrackableListView";
@@ -52,7 +47,7 @@ public class TrackableListView extends ActivityBase {
     public static TrackableListView that;
     private V_ListView listView;
     private CustomAdapter lvAdapter;
-    private TbList mTB_List;
+    private TBList mTB_List;
     private Button btnAction;
     private CancelWaitDialog wd;
     private final OnClickListener menuItemClickListener = new OnClickListener() {
@@ -189,7 +184,7 @@ public class TrackableListView extends ActivityBase {
 
             @Override
             public void run() {
-                TbList searchList = downloadUsersTrackables();
+                TBList searchList = downloadUsersTrackables();
                 Log.info(log, "RefreshTbList gotTBs");
                 if (searchList == null) {
                     GL.that.Toast(ConnectionError.INSTANCE);
@@ -237,7 +232,7 @@ public class TrackableListView extends ActivityBase {
                         }
                     */
                 for (Trackable tb : mTB_List) {
-                    if (!GroundspeakAPI.uploadTrackableLog(tb, GlobalCore.getSelectedCache().getGcCode(), LogTypeId, new Date(), LogText)) {
+                    if (uploadTrackableLog(tb, GlobalCore.getSelectedCache().getGcCode(), LogTypeId, new Date(), LogText) != OK) {
                         GL.that.Toast(LastAPIError);
                     }
                 }

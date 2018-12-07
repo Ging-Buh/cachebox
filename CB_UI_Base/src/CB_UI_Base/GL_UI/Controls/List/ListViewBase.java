@@ -376,7 +376,6 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
      */
     @Override
     public void chkSlideBack() {
-        //Log.debug(log, "chkSlideBack()");
         if (!mIsDraggable) {
             startAnimationtoTop();
             return;

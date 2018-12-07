@@ -70,7 +70,6 @@ public class GalleryView extends H_ListView {
 
     @Override
     public void chkSlideBack() {
-        Log.debug(log, "chkSlideBack()");
 
         if (showSelectedItemCenter) {
 

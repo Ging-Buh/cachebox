@@ -177,7 +177,7 @@ public class Cache implements Comparable<Cache>, Serializable {
         this.setTerrain(0);
         this.Size = CacheSizes.other;
         this.setAvailable(true);
-        waypoints = new CB_List<Waypoint>();
+        waypoints = new CB_List<>();
 
     }
 

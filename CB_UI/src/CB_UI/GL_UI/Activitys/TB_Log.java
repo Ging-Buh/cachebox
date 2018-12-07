@@ -15,7 +15,6 @@
  */
 package CB_UI.GL_UI.Activitys;
 
-import CB_Core.Api.GroundspeakAPI;
 import CB_Core.CacheTypes;
 import CB_Core.LogTypes;
 import CB_Core.Types.Cache;
@@ -23,7 +22,6 @@ import CB_Core.Types.FieldNoteEntry;
 import CB_Core.Types.Trackable;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GL_UI.Views.TrackableListView;
 import CB_UI.GlobalCore;
 import CB_UI.TemplateFormatter;
@@ -38,7 +36,6 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
@@ -49,6 +46,8 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Interfaces.ICancelRunnable;
 
 import java.util.Date;
+
+import static CB_Core.Api.GroundspeakAPI.*;
 
 public class TB_Log extends ActivityBase {
     public static TB_Log that;
@@ -253,11 +252,10 @@ public class TB_Log extends ActivityBase {
 
             @Override
             public void run() {
-                GroundspeakAPI.LastAPIError = "";
-                int result = GroundspeakAPI.uploadTrackableLog(TB, getCache_GcCode(), LogTypes.CB_LogType2GC(LT), new Date(), edit.getText()) ? GroundspeakAPI.OK : GroundspeakAPI.ERROR;
+                int result = uploadTrackableLog(TB, getCache_GcCode(), LogTypes.CB_LogType2GC(LT), new Date(), edit.getText());
 
-                if (result == GroundspeakAPI.ERROR) {
-                    GL.that.Toast(ConnectionError.INSTANCE);
+                if (result == ERROR) {
+                    GL.that.Toast(LastAPIError);
                     if (wd != null)
                         wd.close();
                     GL_MsgBox.Show(Translation.Get("CreateFieldnoteInstead"), Translation.Get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, new OnMsgBoxClickListener() {
@@ -281,8 +279,8 @@ public class TB_Log extends ActivityBase {
                     });
                     return;
                 }
-                if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
-                    GL.that.Toast(ApiUnavailable.INSTANCE);
+                if (result != OK) {
+                    GL.that.Toast(LastAPIError);
                     if (wd != null)
                         wd.close();
                     GL_MsgBox.Show(Translation.Get("CreateFieldnoteInstead"), Translation.Get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, new OnMsgBoxClickListener() {
@@ -307,12 +305,12 @@ public class TB_Log extends ActivityBase {
                     return;
                 }
 
-                if (GroundspeakAPI.LastAPIError.length() > 0) {
+                if (LastAPIError.length() > 0) {
                     GL.that.RunOnGL(new IRunOnGL() {
 
                         @Override
                         public void run() {
-                            GL_MsgBox.Show(GroundspeakAPI.LastAPIError, Translation.Get("Error"), MessageBoxIcon.Error);
+                            GL_MsgBox.Show(LastAPIError, Translation.Get("Error"), MessageBoxIcon.Error);
                         }
                     });
                 }
@@ -433,7 +431,7 @@ public class TB_Log extends ActivityBase {
             if (!GlobalCore.getSelectedCache().getGcCode().equals(TB.CurrentGeocacheCode) && TB.CurrentGeocacheCode.length() > 0) {
                 if (LT == LogTypes.retrieve) {
                     // TB is perhaps not in the selected cache
-                    return  CacheTypes.Undefined.ordinal();
+                    return CacheTypes.Undefined.ordinal();
                 }
             }
         }

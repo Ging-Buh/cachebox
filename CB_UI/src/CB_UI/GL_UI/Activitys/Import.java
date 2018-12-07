@@ -76,18 +76,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     private final float CollapseBoxMaxHeight;
     private final long ANIMATION_TICK = 450;
     private final ScrollBox scrollBox;
-    private final OnCheckChangedListener checkImportFromCBServer_CheckStateChanged = new OnCheckChangedListener() {
-        @Override
-        public void onCheckedChanged(ChkBox view, boolean isChecked) {
-            if (checkImportFromCBServer.isChecked()) {
-                refreshCBServerList();
-                CBServerCollapseBox.expand();
-            } else {
-                CBServerCollapseBox.collapse();
-            }
-        }
-    };
     protected Date ImportStart;
+    ArrayList<String> values = new ArrayList<String>();
     private boolean PQ_LINE_ACTIVE = true;
     private boolean CBS_LINE_ACTIVE = false;
     private boolean GPX_LINE_ACTIVE = true;
@@ -95,7 +85,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     private boolean LOG_LINE_ACTIVE = true;
     private boolean DB_LINE_ACTIVE = true;
     private boolean IMAGE_LINE_ACTIVE = true;
-    ArrayList<String> values = new ArrayList<String>();
     private int importType = 0; // um direkt gleich den Import für eine bestimmte API starten zu können
     private V_ListView lvPQs, lvCBServer;
     private Button bOK, bCancel, refreshPqList, refreshCBServerList, btnSelectFile;
@@ -109,21 +98,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         @Override
         public void animatedHeightChanged(float Height) {
             Layout();
-        }
-    };
-    private final OnCheckChangedListener checkImportPQfromGC_CheckStateChanged = new OnCheckChangedListener() {
-        @Override
-        public void onCheckedChanged(ChkBox view, boolean isChecked) {
-            if ((importType == MenuID.MI_IMPORT_GS_PQ) || (checkImportPQfromGC.isChecked())) {
-                checkBoxImportGPX.setChecked(true);
-                checkBoxImportGPX.setEnabled(false);
-                PQ_ListCollapseBox.expand();
-                if (lvPQs.getAllListSize() == 0)
-                    refreshPqList();
-            } else {
-                checkBoxImportGPX.setEnabled(true);
-                PQ_ListCollapseBox.collapse();
-            }
         }
     };
     private Spinner spinner;
@@ -146,7 +120,33 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     private int animationValue = 0;
     private Boolean importStarted = false;
     private ArrayList<PQ> PqList;
+    private final OnCheckChangedListener checkImportPQfromGC_CheckStateChanged = new OnCheckChangedListener() {
+        @Override
+        public void onCheckedChanged(ChkBox view, boolean isChecked) {
+            if ((importType == MenuID.MI_IMPORT_GS_PQ) || (checkImportPQfromGC.isChecked())) {
+                checkBoxImportGPX.setChecked(true);
+                checkBoxImportGPX.setEnabled(false);
+                PQ_ListCollapseBox.expand();
+                if (lvPQs.getAllListSize() == 0)
+                    refreshPqList();
+            } else {
+                checkBoxImportGPX.setEnabled(true);
+                PQ_ListCollapseBox.collapse();
+            }
+        }
+    };
     private ArrayList<RpcAnswer_GetExportList.ListItem> cbServerExportList;
+    private final OnCheckChangedListener checkImportFromCBServer_CheckStateChanged = new OnCheckChangedListener() {
+        @Override
+        public void onCheckedChanged(ChkBox view, boolean isChecked) {
+            if (checkImportFromCBServer.isChecked()) {
+                refreshCBServerList();
+                CBServerCollapseBox.expand();
+            } else {
+                CBServerCollapseBox.collapse();
+            }
+        }
+    };
     private CB_RectF itemRec;
     private CB_RectF itemRecCBServer;
     private float itemHeight = -1;
@@ -216,7 +216,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                 PQ_LINE_ACTIVE = false;
             }
         }
-        Log.debug(log,"is Premium = " + PQ_LINE_ACTIVE);
+        Log.debug(log, "is Premium = " + PQ_LINE_ACTIVE);
         createPQLines();
         createCBServerLines();
         createPqCollapseBox();
@@ -792,8 +792,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         Thread thread = new Thread() {
             @Override
             public void run() {
-                PqList = new ArrayList<>();
-                GroundspeakAPI.fetchPocketQueryList(PqList);
+                PqList = GroundspeakAPI.fetchPocketQueryList();
+                // todo do not ignore APIError
                 lvPQs.setBaseAdapter(new PqListAdapter());
                 lvPQs.notifyDataSetChanged();
 
@@ -1002,7 +1002,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
                                     if (pq.downloadAvailable) {
                                         ip.ProgressInkrement("importGC", "Download: " + pq.Name, false);
-                                            int ret = GroundspeakAPI.fetchPocketQuery(pq, Config.PocketQueryFolder.getValue());
+                                        GroundspeakAPI.fetchPocketQuery(pq, Config.PocketQueryFolder.getValue());
+                                        // todo do not ignore APIError
                                     }
 
                                 } while (iterator.hasNext());

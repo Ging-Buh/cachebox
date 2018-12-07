@@ -1,7 +1,7 @@
 package CB_Core.DAO;
 
 import CB_Core.Database;
-import CB_Core.Types.TbList;
+import CB_Core.Types.TBList;
 import CB_Core.Types.Trackable;
 import CB_Utils.Log.Log;
 import de.cb.sqlite.CoreCursor;
@@ -11,7 +11,7 @@ import java.util.Iterator;
 public class TrackableListDAO {
     private static final String log = "TrackableListDAO";
 
-    public static void WriteToDatabase(TbList trackableList) {
+    public static void WriteToDatabase(TBList trackableList) {
 
         TrackableDAO tDAO = new TrackableDAO();
 
@@ -42,8 +42,8 @@ public class TrackableListDAO {
         Log.info(log, "TrackableListDAO WriteToDatabase done.");
     }
 
-    public static TbList ReadTbList(String where) {
-        TbList trackableList = new TbList();
+    public static TBList ReadTbList(String where) {
+        TBList trackableList = new TBList();
         CoreCursor reader = Database.FieldNotes.rawQuery("select Id ,Archived ,GcCode ,CacheId ,CurrentGoal ,CurrentOwnerName ,DateCreated ,Description ,IconUrl ,ImageUrl ,Name ,OwnerName ,Url,TypeName, Home,TravelDistance   from Trackable", null);
         reader.moveToFirst();
 

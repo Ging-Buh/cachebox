@@ -92,9 +92,8 @@ public class CB_Action_chkState extends CB_Action {
                         index++;
                     } while (Iterator2.hasNext());
 
-                    result = GroundspeakAPI.updateGeoCacheStatus(caches);
-                    addedReturnList.addAll(caches);
-                    if (result != GroundspeakAPI.OK) {
+                    addedReturnList.addAll(GroundspeakAPI.updateStatusOfGeoCaches(caches));
+                    if (GroundspeakAPI.APIError != GroundspeakAPI.OK) {
                         GL.that.Toast(GroundspeakAPI.LastAPIError);
                         break;
                     }
