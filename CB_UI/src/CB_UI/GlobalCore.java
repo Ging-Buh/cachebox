@@ -54,6 +54,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static CB_Core.Api.API_ErrorEventHandlerList.handleApiKeyError;
+import static CB_Core.Api.GroundspeakAPI.LastAPIError;
+import static CB_Core.Api.GroundspeakAPI.OK;
 import static CB_Core.Api.GroundspeakAPI.isAccessTokenInvalid;
 
 /**
@@ -260,8 +262,8 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
                 if (GlobalCore.getSelectedCache() != null)
                     result = DescriptionImageGrabber.GrabImagesSelectedByCache(ip, true, false, GlobalCore.getSelectedCache().Id, GlobalCore.getSelectedCache().getGcCode(), "", "");
                 wd.close();
-                if (result == GroundspeakAPI.ERROR) {
-                    GL.that.Toast(ApiUnavailable.INSTANCE);
+                if (result != OK) {
+                    GL.that.Toast(LastAPIError);
                     return;
                 }
             }
@@ -277,7 +279,6 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 
     public static void MsgDownloadLimit() {
         GL.that.RunOnGLWithThreadCheck(new IRunOnGL() {
-
             @Override
             public void run() {
                 GL_MsgBox.Show(Translation.Get("Limit_msg"), Translation.Get("Limit_title"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);

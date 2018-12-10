@@ -20,7 +20,10 @@ import CB_Core.CB_Core_Settings;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.CoreSettingsForward;
 import CB_Core.Database;
-import CB_Core.Types.*;
+import CB_Core.Types.Cache;
+import CB_Core.Types.CacheListLive;
+import CB_Core.Types.Category;
+import CB_Core.Types.GpxFilename;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Map.Descriptor;
@@ -32,7 +35,7 @@ import CB_Utils.Util.FileIO;
 import CB_Utils.Util.IChanged;
 import CB_Utils.Util.LoopThread;
 import com.badlogic.gdx.files.FileHandle;
-import org.json.JSONObject;
+import org.json.JSONArray;
 import org.json.JSONTokener;
 
 import java.io.BufferedReader;
@@ -43,7 +46,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author Longri
  */
 public class LiveMapQue {
-    public static final SearchForGeocaches_Core SEARCH_API = new SearchForGeocaches_Core();
     public static final String LIVE_CACHE_NAME = "Live_Request";
     public static final String LIVE_CACHE_EXTENSION = ".txt";
 
@@ -54,8 +56,6 @@ public class LiveMapQue {
     public static final int MAX_REQUEST_CACHE_RADIUS_13 = 2120;
 
     public static final int MAX_REQUEST_CACHE_COUNT = 200;
-    private static final ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
-    private static final ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
     public static CacheListLive LiveCaches;
     public static Live_Radius radius = CB_Core.CB_Core_Settings.LiveRadius.getEnumValue();
     public static byte Used_Zoom;
@@ -85,15 +85,16 @@ public class LiveMapQue {
                 eventList.get(i).stateChanged();
             DownloadIsActive.set(true);
 
-            SearchLiveMap requestSearch = new SearchLiveMap(MAX_REQUEST_CACHE_COUNT, desc, Used_max_request_radius);
-            requestSearch.excludeFounds = CB_Core_Settings.LiveExcludeFounds.getValue();
-            requestSearch.excludeHides = CB_Core_Settings.LiveExcludeOwn.getValue();
-
-            CB_List<Cache> apiCaches = null;
-            String result = "";
-
+            GroundspeakAPI.Query q = new GroundspeakAPI.Query()
+                    .setMaxToFetch(MAX_REQUEST_CACHE_COUNT)
+                    .setDescriptor(desc)
+                    .searchInCircle(desc.getCenterCoordinate(), Used_max_request_radius);
+            if (CB_Core_Settings.LiveExcludeFounds.getValue()) q.excludeFinds();
+            if (CB_Core_Settings.LiveExcludeOwn.getValue()) q.excludeOwn();
+            q.resultWithLiteFields();
+            ArrayList<GroundspeakAPI.GeoCacheRelated> apiCaches = null;
             if (descExistLiveCache(desc)) {
-                apiCaches = loadDescLiveFromCache(requestSearch);
+                apiCaches = loadDescLiveFromCache(q);
             }
             if (apiCaches == null) {
 
@@ -102,16 +103,13 @@ public class LiveMapQue {
                     gpxFilename = category.addGpxFilename("API-Import");
                 }
 
-                apiCaches = new CB_List<>();
-                SearchForGeocaches_Core t = new SearchForGeocaches_Core();
-                result = t.SearchForGeocachesJSON(requestSearch, apiCaches, apiLogs, apiImages, gpxFilename.Id, null);
+                apiCaches = GroundspeakAPI.searchGeoCaches(q);
             }
 
-            if (result.equals("download limit")) {
-                GroundspeakAPI.setDownloadLimitExceeded();
-            }
-
-            final CB_List<Cache> removedCaches = LiveCaches.add(desc, apiCaches);
+            // todo change LiveCaches CB_List<Cache> to ArrayList<GroundspeakAPI.GeoCacheRelated>
+            CB_List<Cache> tmp = new CB_List<>();
+            for (GroundspeakAPI.GeoCacheRelated c : apiCaches) tmp.add(c.cache);
+            final CB_List<Cache> removedCaches = LiveCaches.add(desc, tmp);
 
             // Log.debug(log, "LIVE_QUE: add " + apiCaches.size() + "from Desc:" + desc.toString() + "/ StackSize:" + descStack.getSize());
 
@@ -193,18 +191,15 @@ public class LiveMapQue {
 
     }
 
-    public static CB_List<Cache> loadDescLiveFromCache(SearchLiveMap requestSearch) {
-        String path = requestSearch.descriptor.getLocalCachePath(LIVE_CACHE_NAME) + LIVE_CACHE_EXTENSION;
+    public static ArrayList<GroundspeakAPI.GeoCacheRelated> loadDescLiveFromCache(GroundspeakAPI.Query query) {
+        String path = query.getDescriptor().getLocalCachePath(LIVE_CACHE_NAME) + LIVE_CACHE_EXTENSION;
+
         String result;
-
         FileHandle fh = new FileHandle(path);
-
         try {
-
             BufferedReader br = fh.reader(1000);
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
-
             while (line != null) {
                 sb.append(line);
                 sb.append(System.lineSeparator());
@@ -212,17 +207,13 @@ public class LiveMapQue {
             }
             result = sb.toString();
             br.close();
-            JSONObject json = (JSONObject) new JSONTokener(result).nextValue();
-
-            CB_List<Cache> cacheList = new CB_List<Cache>();
             if (result != null && result.length() > 0) {
+                JSONArray json = (JSONArray) new JSONTokener(result).nextValue();
                 if (gpxFilename == null) {
                     Category category = CoreSettingsForward.Categories.getCategory("API-Import");
                     gpxFilename = category.addGpxFilename("API-Import");
                 }
-
-                SEARCH_API.ParseJsonResult(requestSearch, cacheList, apiLogs, apiImages, gpxFilename.Id, json, (byte) 1, true);
-                return cacheList;
+                return GroundspeakAPI.getGeoCacheRelateds(json, query.getFields(), null);
             }
         } catch (Exception e) {
             Log.err("LiveMapQue", "loadDescLiveFromCache", e);

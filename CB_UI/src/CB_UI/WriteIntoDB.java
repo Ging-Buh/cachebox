@@ -1,5 +1,6 @@
 package CB_UI;
 
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Types.CacheDAO;
 import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
@@ -9,33 +10,41 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
-import CB_Utils.Lists.CB_List;
+
+import static CB_Core.Api.GroundspeakAPI.GeoCacheRelated;
+
 
 import java.util.ArrayList;
 
 public class WriteIntoDB {
+    static CacheDAO cacheDAO = new CacheDAO();
+    static LogDAO logDAO = new LogDAO();
+    static ImageDAO imageDAO = new ImageDAO();
+    static WaypointDAO waypointDAO = new WaypointDAO();
 
-    public static void CachesAndLogsAndImagesIntoDB(CB_List<Cache> apiCaches, ArrayList<LogEntry> apiLogs, ArrayList<ImageEntry> apiImages) throws InterruptedException {
-        // Auf eventuellen Thread Abbruch reagieren
-        Thread.sleep(2);
+    public static void CachesAndLogsAndImagesIntoDB(ArrayList<GeoCacheRelated> geoCacheRelateds) throws InterruptedException {
+
+        if (cacheDAO == null) {
+            cacheDAO = new CacheDAO();
+            logDAO = new LogDAO();
+            imageDAO = new ImageDAO();
+            waypointDAO = new WaypointDAO();
+        }
 
         Database.Data.beginTransaction();
 
-        CacheDAO cacheDAO = new CacheDAO();
-        LogDAO logDAO = new LogDAO();
-        ImageDAO imageDAO = new ImageDAO();
-        WaypointDAO waypointDAO = new WaypointDAO();
+        for (GeoCacheRelated geoCacheRelated: geoCacheRelateds) {
 
-        for (int c = 0; c < apiCaches.size(); c++) {
-            Cache cache = apiCaches.get(c);
+            // Auf eventuellen Thread Abbruch reagieren
+            Thread.sleep(2);
+
+            Cache cache = geoCacheRelated.cache;
             Cache aktCache = Database.Data.Query.GetCacheById(cache.Id);
 
-            if (aktCache != null && aktCache.isLive())
-                aktCache = null;
+            if (aktCache != null && aktCache.isLive()) aktCache = null;
 
-            if (aktCache == null) {
-                aktCache = cacheDAO.getFromDbByCacheId(cache.Id);
-            }
+            if (aktCache == null) aktCache = cacheDAO.getFromDbByCacheId(cache.Id);
+
             // Read Detail Info of Cache if not available
             if ((aktCache != null) && (aktCache.detail == null)) {
                 aktCache.loadDetail();
@@ -92,19 +101,13 @@ public class WriteIntoDB {
             // Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
             cache.setLongDescription("");
 
-            for (LogEntry log : apiLogs) {
-                if (log.CacheId != cache.Id)
-                    continue;
-                // Write Log to database
-
+            logDAO.deleteLogs(cache.Id); // the LogIDs will be changed with API 1.0
+            for (LogEntry log : geoCacheRelated.logs) {
                 logDAO.WriteToDatabase(log);
             }
 
-            for (ImageEntry image : apiImages) {
-                if (image.CacheId != cache.Id)
-                    continue;
-                // Write Image to database
-
+            imageDAO.deleteImagesForCache(cache.getGcCode());
+            for (ImageEntry image : geoCacheRelated.images) {
                 imageDAO.WriteToDatabase(image, false);
             }
 
@@ -148,6 +151,7 @@ public class WriteIntoDB {
             }
 
         }
+
         Database.Data.setTransactionSuccessful();
         Database.Data.endTransaction();
 

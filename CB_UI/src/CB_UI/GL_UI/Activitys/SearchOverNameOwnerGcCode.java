@@ -15,15 +15,16 @@
  */
 package CB_UI.GL_UI.Activitys;
 
-import CB_Core.Api.*;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.CoreSettingsForward;
-import CB_Core.Types.*;
+import CB_Core.Types.Category;
+import CB_Core.Types.GpxFilename;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
+import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI.WriteIntoDB;
 import CB_UI_Base.Enums.WrapType;
@@ -36,12 +37,15 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
-import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import java.util.ArrayList;
 
+import static CB_Core.Api.GroundspeakAPI.*;
+
 public class SearchOverNameOwnerGcCode extends ActivityBase {
+    private static final String log = "SearchOverNameOwnerGcCode";
     private final float lineHeight;
     private Button bImport, bCancel;
     private Label lblTitle, lblExcludeFounds, lblOnlyAvailable, lblExcludeHides;
@@ -55,7 +59,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
     private ImportAnimation dis;
     private Box box;
     private boolean importRuns = false;
-    private SearchType actSearchType = null;
+    private SearchDialog.SearchMode actSearchType = null;
 
     /**
      * Option Title, der drei Optionen Title/GC-Code/Owner
@@ -300,6 +304,8 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                 boolean threadCanceld = false;
 
                 try {
+                    Thread.sleep(200);
+
                     if (actSearchType != null) {
 
                         // alle per API importierten Caches landen in der Category und
@@ -311,54 +317,61 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                         {
                             GpxFilename gpxFilename = category.addGpxFilename("API-Import");
                             if (gpxFilename != null) {
-                                CB_List<Cache> apiCaches = new CB_List<Cache>();
-                                ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
-                                ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
-                                Search searchC = null;
 
-                                String searchPattern = mEingabe.getText(); // .toLowerCase()
+                                String searchPattern = mEingabe.getText().trim();
 
-                                Coordinate searchCoord = null;
-
+                                Coordinate searchCoord;
                                 if (MapView.that != null && MapView.that.isVisible()) {
                                     searchCoord = MapView.that.center;
                                 } else {
                                     searchCoord = Locator.getCoordinate();
                                 }
-
                                 if (searchCoord == null) {
                                     return;
                                 }
 
-                                // * 0 = Title <br/>
-                                // * 1 = Gc-Code <br/>
-                                // * 2 = Owner <br/>
+                                Query q = new Query()
+                                        .setMaxToFetch(50)
+                                        .resultWithFullFields()
+                                        .resultWithLogs(30)
+                                        .resultWithImages(30)
+                                        ;
+                                if (Config.SearchWithoutFounds.getValue()) q.excludeFinds();
+                                if (Config.SearchWithoutOwns.getValue()) q.excludeOwn();
+                                if (Config.SearchOnlyAvailable.getValue()) q.onlyActiveGeoCaches();
 
+                                ArrayList<GeoCacheRelated> geoCacheRelateds;
+                                dis.setAnimationType(AnimationType.Download);
                                 switch (actSearchType) {
-                                    case Name:
-                                        searchC = new SearchGCName(50, searchCoord, 5000000, searchPattern);
+                                    case Title:
+                                        q.searchInCircleOf100Miles(searchCoord)
+                                                .searchForTitle(searchPattern);
+                                        geoCacheRelateds = searchGeoCaches(q);
                                         break;
-
-                                    case GC_Code:
-                                        searchC = new SearchGC(searchPattern);
-                                        break;
-
                                     case Owner:
-                                        searchC = new SearchGCOwner(50, searchCoord, 5000000, searchPattern);
+                                        q.searchInCircleOf100Miles(searchCoord)
+                                                .searchForOwner(searchPattern);
+                                        geoCacheRelateds = searchGeoCaches(q);
+                                        break;
+                                    default: // GCCode
+                                        // todo API 1.0 doesn't allow a pattern (only one GCCode, else handle a list of GCCodes
+                                        if (searchPattern.contains(",")) {
+                                            geoCacheRelateds = fetchGeoCaches(q, searchPattern);
+                                        }
+                                        else {
+                                            geoCacheRelateds = fetchGeoCache(q, searchPattern);
+                                        }
                                         break;
                                 }
 
-                                if (searchC == null)
-                                    return;
-                                searchC.excludeFounds = Config.SearchWithoutFounds.getValue();
-                                searchC.excludeHides = Config.SearchWithoutOwns.getValue();
-                                searchC.available = Config.SearchOnlyAvailable.getValue();
-
-                                dis.setAnimationType(AnimationType.Download);
-                                CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id, null);
                                 dis.setAnimationType(AnimationType.Work);
-                                if (apiCaches.size() > 0) {
-                                    WriteIntoDB.CachesAndLogsAndImagesIntoDB(apiCaches, apiLogs, apiImages);
+                                if (geoCacheRelateds.size() > 0) {
+                                    try {
+                                        dis.setAnimationType(AnimationType.Work);
+                                        WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds);
+                                    } catch (InterruptedException e) {
+                                        Log.err(log, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", e);
+                                    }
                                 }
 
                             }
@@ -398,33 +411,25 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
 
     }
 
-    /**
-     * Schaltet den Such Modus um.
-     *
-     * @param state <br/>
-     *              0 = Title <br/>
-     *              1 = Gc-Code <br/>
-     *              2 = Owner <br/>
-     */
     private void switchSearcheMode(int state) {
 
         if (state == 0) {
             mTglBtnTitle.setState(1);
             mTglBtnGc.setState(0);
             mTglBtnOwner.setState(0);
-            actSearchType = SearchType.Name;
+            actSearchType = SearchDialog.SearchMode.Title;
         }
         if (state == 1) {
             mTglBtnTitle.setState(0);
             mTglBtnGc.setState(1);
             mTglBtnOwner.setState(0);
-            actSearchType = SearchType.GC_Code;
+            actSearchType = SearchDialog.SearchMode.GcCode;
         }
         if (state == 2) {
             mTglBtnTitle.setState(0);
             mTglBtnGc.setState(0);
             mTglBtnOwner.setState(1);
-            actSearchType = SearchType.Owner;
+            actSearchType = SearchDialog.SearchMode.Owner;
         }
 
     }
@@ -487,10 +492,6 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
 
         actSearchType = null;
         super.dispose();
-    }
-
-    private enum SearchType {
-        Name, Owner, GC_Code
     }
 
 }

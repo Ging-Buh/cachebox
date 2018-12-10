@@ -1,14 +1,15 @@
 package de.droidcachebox.Custom_Controls;
 
-import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Attributes;
+import CB_Core.DAO.ImageDAO;
+import CB_Core.DAO.LogDAO;
+import CB_Core.DAO.WaypointDAO;
 import CB_Core.Database;
 import CB_Core.Import.DescriptionImageGrabber;
-import CB_Core.Types.Cache;
+import CB_Core.Types.*;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
-import CB_UI.SearchForGeocaches;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
@@ -33,12 +34,9 @@ import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.main;
 
 import java.io.File;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
-import static CB_Core.Api.GroundspeakAPI.isPremiumMember;
+import static CB_Core.Api.GroundspeakAPI.*;
 
 @SuppressWarnings("deprecation")
 public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
@@ -77,18 +75,25 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                     @Override
                     public void run() {
 
-                            GroundspeakAPI.fetchMyCacheLimits();
-                            if (GroundspeakAPI.APIError != 0) {
-                                GL.that.Toast(GroundspeakAPI.LastAPIError);
-                                onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
-                                return;
+                        fetchMyCacheLimits();
+                        if (APIError != 0) {
+                            GL.that.Toast(LastAPIError);
+                            onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
+                            return;
+                        }
+                        if (isDownloadLimitExceeded()) {
+                            String s;
+                            if (isPremiumMember()) {
+                                s = "You have left " + fetchMyUserInfos().remaining + " full and " + fetchMyUserInfos().remainingLite + " lite caches.";
+                                s += "The time to wait is " + fetchMyUserInfos().remainingTime + "/" + fetchMyUserInfos().remainingLiteTime;
+                            } else {
+                                s = "Upgrade to Geocaching.com Premium Membership today\n"
+                                        + "for as little at $2.50 per month\n"
+                                        + "to download the full details for up to 6000 caches per day,\n"
+                                        + "view all cache types in your area,\n"
+                                        + "and access many more benefits. \n"
+                                        + "Visit Geocaching.com to upgrade.";
                             }
-                        if (GroundspeakAPI.me.remaining <= 0) {
-                            String s = "Download limit is reached!\n";
-                            s += "You have downloaded the full cache details of " + GroundspeakAPI.MaxCacheCount + " caches in the last 24 hours.\n";
-                            if (GroundspeakAPI.MaxCacheCount < 10)
-                                s += "If you want to download the full cache details of 6000 caches per day you can upgrade to Premium Member at \nwww.geocaching.com!";
-
                             message = s;
 
                             onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(2));
@@ -98,9 +103,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
 
                         if (!isPremiumMember()) {
                             String s = "Download Details of this cache?\n";
-                            s += "Full Downloads left: " + GroundspeakAPI.me.remaining + "\n";
-                            s += "Actual Downloads: " + GroundspeakAPI.CurrentCacheCount + "\n";
-                            s += "Max. Downloads in 24h: " + GroundspeakAPI.MaxCacheCount;
+                            s += "Full Downloads left: " + fetchMyUserInfos().remaining + "\n";
                             message = s;
                             onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(3));
                             return;
@@ -153,19 +156,64 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
         public void onClick(DialogInterface dialog, int button) {
             switch (button) {
                 case -1:
-                    Cache newCache = SearchForGeocaches.getInstance().LoadApiDetails(aktCache, null);
-                    if (newCache != null) {
+                    Cache newCache = null;
+
+                    ArrayList<GeoCacheRelated> geoCacheRelateds = updateGeoCache(aktCache);
+                    if (geoCacheRelateds.size() > 0) {
+                        GeoCacheRelated geoCacheRelated = geoCacheRelateds.get(0);
+                        newCache = geoCacheRelated.cache;
+
+                        synchronized (Database.Data.Query) {
+                            Database.Data.beginTransaction();
+
+                            Database.Data.Query.remove(aktCache);
+                            Database.Data.Query.add(newCache);
+
+                            new CacheDAO().UpdateDatabase(newCache);
+                            newCache.setLongDescription("");
+
+                            LogDAO logDAO = new LogDAO();
+                            for (LogEntry apiLog : geoCacheRelated.logs) logDAO.WriteToDatabase(apiLog);
+
+                            WaypointDAO waypointDAO = new WaypointDAO();
+                            for (int i = 0, n = newCache.waypoints.size(); i < n; i++) {
+                                Waypoint waypoint = newCache.waypoints.get(i);
+
+                                boolean update = true;
+
+                                // dont refresh wp if aktCache.wp is user changed
+                                for (int j = 0, m = aktCache.waypoints.size(); j < m; j++) {
+                                    Waypoint wp = aktCache.waypoints.get(j);
+                                    if (wp.getGcCode().equalsIgnoreCase(waypoint.getGcCode())) {
+                                        if (wp.IsUserWaypoint)
+                                            update = false;
+                                        break;
+                                    }
+                                }
+
+                                if (update)
+                                    waypointDAO.WriteToDatabase(waypoint, false);
+                            }
+
+                            ImageDAO imageDAO = new ImageDAO();
+                            for (ImageEntry image : geoCacheRelated.images) imageDAO.WriteToDatabase(image, false);
+
+                            Database.Data.setTransactionSuccessful();
+                            Database.Data.endTransaction();
+
+                            Database.Data.GPXFilenameUpdateCacheCount();
+                        }
                         aktCache = newCache;
                         setCache(newCache);
-
                         if (!isPremiumMember()) {
                             String s = "Download successful!\n";
-                            s += "Downloads left for today: " + GroundspeakAPI.me.remaining + "\n";
+                            s += "Downloads left for today: " + fetchMyUserInfos().remaining + "\n";
                             s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
 
                             MessageBox.Show(s, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
                         }
                     }
+
                     break;
             }
             if (dialog != null)
@@ -313,11 +361,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                 public void run() {
 
                     if (downloadTryCounter > 0) {
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
-                            Log.err(log, "setCache()", "Thread.sleep fehler", e);
-                        }
+                        // Thread.sleep(100);
                     }
 
                     boolean anyImagesLoaded = false;

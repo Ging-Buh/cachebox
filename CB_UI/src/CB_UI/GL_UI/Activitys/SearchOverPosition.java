@@ -15,11 +15,10 @@
  */
 package CB_UI.GL_UI.Activitys;
 
-import CB_Core.Api.GroundspeakAPI;
-import CB_Core.Api.SearchCoordinate;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.CoreSettingsForward;
-import CB_Core.Types.*;
+import CB_Core.Types.Category;
+import CB_Core.Types.GpxFilename;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
@@ -39,12 +38,15 @@ import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Interfaces.ICancel;
-import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import java.util.ArrayList;
 
+import static CB_Core.Api.GroundspeakAPI.*;
+
 public class SearchOverPosition extends ActivityBase {
+    private static final String log = "SearchOverPosition";
     private final float lineHeight;
     private Button bOK, bCancel, btnPlus, btnMinus;
     private Label lblTitle, lblRadius, lblRadiusEinheit, lblMarkerPos, lblExcludeFounds, lblOnlyAvailable, lblExcludeHides;
@@ -409,7 +411,7 @@ public class SearchOverPosition extends ActivityBase {
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                boolean threadCanceld = false;
+                boolean threadCanceled = false;
 
                 try {
                     if (actSearchPos != null) {
@@ -423,31 +425,35 @@ public class SearchOverPosition extends ActivityBase {
                         {
                             GpxFilename gpxFilename = category.addGpxFilename("API-Import");
                             if (gpxFilename != null) {
-                                CB_List<Cache> apiCaches = new CB_List<Cache>();
-                                ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
-                                ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
-                                SearchCoordinate searchC = new SearchCoordinate(50, actSearchPos, Config.lastSearchRadius.getValue() * 1000);
-
-                                searchC.excludeFounds = Config.SearchWithoutFounds.getValue();
-                                searchC.excludeHides = Config.SearchWithoutOwns.getValue();
-                                searchC.available = Config.SearchOnlyAvailable.getValue();
+                                Query q = new Query()
+                                        .setMaxToFetch(50)
+                                        .resultWithFullFields()
+                                        .resultWithLogs(30)
+                                        .resultWithImages(30)
+                                        .searchInCircle(actSearchPos, Config.lastSearchRadius.getValue() * 1000);
+                                if (Config.SearchWithoutFounds.getValue()) q.excludeFinds();
+                                if (Config.SearchWithoutOwns.getValue()) q.excludeOwn();
+                                if (Config.SearchOnlyAvailable.getValue()) q.onlyActiveGeoCaches();
 
                                 dis.setAnimationType(AnimationType.Download);
-                                CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id, icancel);
+                                ArrayList<GeoCacheRelated> geoCacheRelateds = searchGeoCaches(q);
                                 dis.setAnimationType(AnimationType.Work);
-                                if (apiCaches.size() > 0) {
-                                    WriteIntoDB.CachesAndLogsAndImagesIntoDB(apiCaches, apiLogs, apiImages);
+                                if (geoCacheRelateds.size() > 0) {
+                                    try {
+                                        WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds);
+                                    } catch (InterruptedException e) {
+                                        Log.err(log, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", e);
+                                    }
                                 }
-
                             }
                         }
                     }
                 } catch (Exception e) {
                     // Thread abgebrochen!
-                    threadCanceld = true;
+                    threadCanceled = true;
                 }
 
-                if (!threadCanceld) {
+                if (!threadCanceled) {
                     CacheListChangedEventList.Call();
                     if (dis != null) {
                         SearchOverPosition.this.removeChildsDirekt(dis);

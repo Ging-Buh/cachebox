@@ -1,11 +1,11 @@
 package CB_UI.GL_UI.Menu;
 
-import CB_Core.Api.SearchGC;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.CacheTypes;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
-import CB_Core.Types.*;
+import CB_Core.Types.CacheDAO;
+import CB_Core.Types.CacheListDAO;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.DeleteSelectedCache;
@@ -26,14 +26,18 @@ import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_Utils.Interfaces.ICancelRunnable;
-import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Log;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import java.util.ArrayList;
 
+import static CB_Core.Api.GroundspeakAPI.GeoCacheRelated;
+import static CB_Core.Api.GroundspeakAPI.updateGeoCache;
+
 public class CB_AllContextMenuHandler {
+    private static final String log = "CB_AllContextMenuHandler";
     static CancelWaitDialog wd;
-    private static OnClickListener onItemClickListener = new OnClickListener() {
+    private static OnClickListener ReloadCacheAPIclicked = new OnClickListener() {
 
         @Override
         public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -55,30 +59,23 @@ public class CB_AllContextMenuHandler {
 
                         @Override
                         public void run() {
-                            SearchGC searchC = new SearchGC(GlobalCore.getSelectedCache().getGcCode());
+                            ArrayList<GeoCacheRelated> geoCacheRelateds = updateGeoCache(GlobalCore.getSelectedCache());
+                            if (geoCacheRelateds.size() > 0) {
+                                try {
+                                    WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds);
+                                } catch (InterruptedException e) {
+                                    Log.err(log, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", e);
+                                }
 
-                            searchC.number = 1;
+                                // Reload result from DB
+                                synchronized (Database.Data.Query) {
+                                    String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
+                                    CacheListDAO cacheListDAO = new CacheListDAO();
+                                    cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+                                }
 
-                            CB_List<Cache> apiCaches = new CB_List<Cache>();
-                            ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
-                            ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
-
-                            CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, GlobalCore.getSelectedCache().getGPXFilename_ID(), this);
-
-                            try {
-                                WriteIntoDB.CachesAndLogsAndImagesIntoDB(apiCaches, apiLogs, apiImages);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+                                CacheListChangedEventList.Call();
                             }
-
-                            // Reload result from DB
-                            synchronized (Database.Data.Query) {
-                                String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
-                                CacheListDAO cacheListDAO = new CacheListDAO();
-                                cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
-                            }
-
-                            CacheListChangedEventList.Call();
 
                             wd.close();
                         }
@@ -151,7 +148,7 @@ public class CB_AllContextMenuHandler {
         }
 
         Menu icm = new Menu("BtnCacheContextMenu");
-        icm.addOnClickListener(onItemClickListener);
+        icm.addOnClickListener(ReloadCacheAPIclicked);
         MenuItem mi;
 
         mi = icm.addItem(MenuID.MI_RELOAD_CACHE_INFO, "ReloadCacheAPI", Sprites.getSprite(IconName.dayGcLiveIcon.name()));

@@ -1,7 +1,6 @@
 package de.droidcachebox.Views.Forms;
 
 import CB_Core.Api.CB_Api;
-import CB_Core.Api.GroundspeakAPI;
 import CB_Core.CB_Core_Settings;
 import CB_UI.Config;
 import CB_Utils.Log.Log;
@@ -19,7 +18,10 @@ import de.droidcachebox.R;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.main;
 
+import static CB_Core.Api.GroundspeakAPI.fetchMyUserInfos;
+import static CB_Core.Api.GroundspeakAPI.setAuthorization;
 import static CB_Core.CB_Core_Settings.GcLogin;
+
 
 public class GcApiLogin extends Activity {
     private static final String sKlasse = "GcApiLogin";
@@ -253,8 +255,8 @@ public class GcApiLogin extends Activity {
                     } else {
                         CB_Core_Settings.AccessToken.setEncryptedValue(accessToken);
                     }
-                    GroundspeakAPI.setAuthorization();
-                    String userNameOfAuthorization = GroundspeakAPI.fetchMyUserInfos().username;
+                    setAuthorization();
+                    String userNameOfAuthorization = fetchMyUserInfos().username;
                     Log.debug(sKlasse, "userNameOfAuthorization: " + userNameOfAuthorization);
                     GcLogin.setValue(userNameOfAuthorization);
                     Config.AcceptChanges();

@@ -1,6 +1,5 @@
 package CB_UI.GL_UI.Main.Actions;
 
-import CB_Core.Api.GroundspeakAPI;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
@@ -26,6 +25,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import static CB_Core.Api.GroundspeakAPI.*;
 
 public class CB_Action_chkState extends CB_Action {
     private static final String sKlasse = "CB_Action_chkState";
@@ -57,7 +58,6 @@ public class CB_Action_chkState extends CB_Action {
             // in Blöcke Teilen
 
             int start = 0;
-            ArrayList<Cache> addedReturnList = new ArrayList<Cache>();
 
             result = 0;
             ArrayList<Cache> caches;
@@ -66,6 +66,7 @@ public class CB_Action_chkState extends CB_Action {
 
             float progress = 0;
 
+            CacheDAO dao = new CacheDAO();
             do {
                 try {
                     Thread.sleep(10);
@@ -92,9 +93,16 @@ public class CB_Action_chkState extends CB_Action {
                         index++;
                     } while (Iterator2.hasNext());
 
-                    addedReturnList.addAll(GroundspeakAPI.updateStatusOfGeoCaches(caches));
-                    if (GroundspeakAPI.APIError != GroundspeakAPI.OK) {
-                        GL.that.Toast(GroundspeakAPI.LastAPIError);
+                    // Database.Data.beginTransaction();
+                    for (GeoCacheRelated ci : updateStatusOfGeoCaches(caches)) {
+                        if (dao.UpdateDatabaseCacheState(ci.cache))
+                            ChangedCount++;
+                    }
+                    // Database.Data.setTransactionSuccessful();
+                    // Database.Data.endTransaction();
+
+                    if (APIError != OK) {
+                        GL.that.Toast(LastAPIError);
                         break;
                     }
                     start += BlockSize;
@@ -106,28 +114,7 @@ public class CB_Action_chkState extends CB_Action {
 
             } while (caches.size() == BlockSize && !cancelThread);
 
-
-            if (result == 0 && !cancelThread) {
-                Database.Data.beginTransaction();
-
-                Iterator<Cache> iterator = addedReturnList.iterator();
-                CacheDAO dao = new CacheDAO();
-                do {
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        cancelThread = true;
-                    }
-                    Cache writeTmp = iterator.next();
-                    if (writeTmp.getGcCode().toLowerCase().startsWith("gc"))
-                        if (dao.UpdateDatabaseCacheState(writeTmp))
-                            ChangedCount++;
-                } while (iterator.hasNext() && !cancelThread);
-
-                Database.Data.setTransactionSuccessful();
-                Database.Data.endTransaction();
-
-            }
+            // dao = null;
             pd.close();
 
         }

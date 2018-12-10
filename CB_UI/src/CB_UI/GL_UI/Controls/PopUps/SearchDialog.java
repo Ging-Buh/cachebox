@@ -24,6 +24,7 @@ import CB_Core.Types.*;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Activitys.SearchOverPosition;
 import CB_UI.GL_UI.Controls.Slider;
@@ -58,7 +59,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import java.util.ArrayList;
 
-import static CB_Core.Api.GroundspeakAPI.isPremiumMember;
+import static CB_Core.Api.GroundspeakAPI.*;
 
 /**
  * @author Longri
@@ -129,7 +130,7 @@ public class SearchDialog extends PopUp_Base {
      * 1 = Gc-Code <br/>
      * 2 = Owner <br/>
      */
-    private SearchMode mSearchState = SearchMode.Titel;
+    private SearchMode mSearchState = SearchMode.Title;
     /**
      * Index of the beginning search
      */
@@ -213,7 +214,7 @@ public class SearchDialog extends PopUp_Base {
         this.addChild(mEingabe);
 
         setLang();
-        switchSearcheMode(SearchMode.Titel);
+        switchSearcheMode(SearchMode.Title);
 
         mBtnCancel.setOnClickListener(new OnClickListener() {
             @Override
@@ -226,7 +227,7 @@ public class SearchDialog extends PopUp_Base {
         mTglBtnTitle.setOnClickListener(new OnClickListener() {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                switchSearcheMode(SearchMode.Titel);
+                switchSearcheMode(SearchMode.Title);
                 return true;
             }
         });
@@ -335,7 +336,7 @@ public class SearchDialog extends PopUp_Base {
     private void switchSearcheMode(SearchMode state) {
         mSearchState = state;
 
-        if (state == SearchMode.Titel) {
+        if (state == SearchMode.Title) {
             mTglBtnTitle.setState(1);
             mTglBtnGc.setState(0);
             mTglBtnOwner.setState(0);
@@ -397,7 +398,7 @@ public class SearchDialog extends PopUp_Base {
                     tmp = Database.Data.Query.get(i);
 
                     switch (mSearchState) {
-                        case Titel:
+                        case Title:
                             criterionMatches = tmp.getName().toLowerCase().contains(searchPattern);
                             break;
                         case GcCode:
@@ -512,7 +513,7 @@ public class SearchDialog extends PopUp_Base {
     }
 
     private void searchOnlineNow() {
-        Log.debug(log, "SEARCH Show WD searchOverAPI");
+        Log.debug(log, "searchOnlineNow");
         wd = CancelWaitDialog.ShowWait(Translation.Get("searchOverAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
 
             @Override
@@ -523,15 +524,13 @@ public class SearchDialog extends PopUp_Base {
 
             @Override
             public void run() {
-                Log.debug(log, "SEARCH Run search overAPI");
-                Coordinate searchCoord = null;
 
+                Coordinate searchCoord;
                 if (MapView.that != null && MapView.that.isVisible()) {
                     searchCoord = MapView.that.center;
                 } else {
                     searchCoord = Locator.getCoordinate();
                 }
-
                 if (searchCoord == null) {
                     return;
                 }
@@ -540,42 +539,46 @@ public class SearchDialog extends PopUp_Base {
                 Category category = CoreSettingsForward.Categories.getCategory("API-Import");
                 if (category == null)
                     return; // should not happen!!!
-
                 GpxFilename gpxFilename = category.addGpxFilename("API-Import");
                 if (gpxFilename == null)
                     return;
 
-                CB_List<Cache> apiCaches = new CB_List<Cache>();
-                ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
-                ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
+                GroundspeakAPI.Query q = new GroundspeakAPI.Query()
+                        .setMaxToFetch(50)
+                        .resultWithFullFields()
+                        .resultWithLogs(30)
+                        .resultWithImages(30)
+                        ;
+                if (Config.SearchWithoutFounds.getValue()) q.excludeFinds();
+                if (Config.SearchWithoutOwns.getValue()) q.excludeOwn();
+                if (Config.SearchOnlyAvailable.getValue()) q.onlyActiveGeoCaches();
 
-                Search searchC = null;
-
-                String searchPattern = mEingabe.getText().toLowerCase();
-
-                // * 0 = Title <br/>
-                // * 1 = Gc-Code <br/>
-                // * 2 = Owner <br/>
-
+                String searchPattern = mEingabe.getText();
+                ArrayList<GroundspeakAPI.GeoCacheRelated> geoCacheRelateds;
                 switch (mSearchState) {
-                    case Titel:
-                        searchC = new SearchGCName(50, searchCoord, 5000000, searchPattern);
+                    case Title:
+                        q.searchInCircleOf100Miles(searchCoord)
+                                .searchForTitle(searchPattern);
+                        geoCacheRelateds = searchGeoCaches(q);
                         break;
-
-                    case GcCode:
-                        searchC = new SearchGC(searchPattern);
-                        break;
-
                     case Owner:
-                        searchC = new SearchGCOwner(50, searchCoord, 5000000, searchPattern);
+                        q.searchInCircleOf100Miles(searchCoord)
+                                .searchForOwner(searchPattern);
+                        geoCacheRelateds = searchGeoCaches(q);
+                        break;
+                    default: // GCCode
+                        // todo API 1.0 doesn't allow a pattern (only one GCCode, else handle a list of GCCodes
+                        if (searchPattern.contains(",")) {
+                            geoCacheRelateds = fetchGeoCaches(q, searchPattern);
+                        }
+                        else {
+                            geoCacheRelateds = fetchGeoCache(q, searchPattern);
+                        }
                         break;
                 }
 
-                if (searchC == null) return;
+                if (geoCacheRelateds.size() > 0) {
 
-                CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id, this);
-
-                if (apiCaches.size() > 0) {
                     Database.Data.beginTransaction();
 
                     CacheDAO cacheDAO = new CacheDAO();
@@ -586,28 +589,20 @@ public class SearchDialog extends PopUp_Base {
                     int counter = 0;
 
                     synchronized (Database.Data.Query) {
-
-                        for (int j = 0; j < apiCaches.size(); j++) {
-                            Cache cache = apiCaches.get(j);
+                        for (int j = 0; j < geoCacheRelateds.size(); j++) {
+                            GeoCacheRelated geoCacheRelated = geoCacheRelateds.get(j);
+                            Cache cache = geoCacheRelated.cache;
                             counter++;
-                            // cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
-                            // cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
                             if (Database.Data.Query.GetCacheById(cache.Id) == null) {
                                 Database.Data.Query.add(cache);
 
                                 cacheDAO.WriteToDatabase(cache);
 
-                                for (LogEntry log : apiLogs) {
-                                    if (log.CacheId != cache.Id)
-                                        continue;
-                                    // Write Log to database
+                                for (LogEntry log : geoCacheRelated.logs) {
                                     logDAO.WriteToDatabase(log);
                                 }
 
-                                for (ImageEntry image : apiImages) {
-                                    if (image.CacheId != cache.Id)
-                                        continue;
-                                    // Write Image to database
+                                for (ImageEntry image : geoCacheRelated.images) {
                                     imageDAO.WriteToDatabase(image, false);
                                 }
 
@@ -618,6 +613,7 @@ public class SearchDialog extends PopUp_Base {
                             }
                         }
                     }
+
                     Database.Data.setTransactionSuccessful();
                     Database.Data.endTransaction();
 
@@ -627,12 +623,11 @@ public class SearchDialog extends PopUp_Base {
 
                     if (counter == 1) {
                         // select this Cache
-                        Cache cache = Database.Data.Query.GetCacheById(apiCaches.get(0).Id);
+                        Cache cache = Database.Data.Query.GetCacheById(geoCacheRelateds.get(0).cache.Id);
                         GlobalCore.setSelectedCache(cache);
                     }
 
                 }
-                Log.debug(log, "SEARCH Run search overAPI ready");
                 closeWaitDialog();
             }
 
@@ -654,7 +649,7 @@ public class SearchDialog extends PopUp_Base {
         FilterInstances.getLastFilter().filterGcCode = "";
         FilterInstances.getLastFilter().filterOwner = "";
 
-        if (mSearchState == SearchMode.Titel)
+        if (mSearchState == SearchMode.Title)
             FilterInstances.getLastFilter().filterName = searchPattern;
         else if (mSearchState == SearchMode.GcCode)
             FilterInstances.getLastFilter().filterGcCode = searchPattern;
@@ -785,7 +780,7 @@ public class SearchDialog extends PopUp_Base {
     }
 
     public enum SearchMode {
-        Titel, GcCode, Owner
+        Title, GcCode, Owner
     }
 
 }

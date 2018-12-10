@@ -107,7 +107,6 @@ public class SpoilerView extends CB_View_Base {
 
     @Override
     public void onShow() {
-        // Log.info(log, "Start onShow");
         if (GlobalCore.isSetSelectedCache()) {
 
             if (!forceReload && GlobalCore.getSelectedCache().equals(actCache)) {
@@ -119,7 +118,6 @@ public class SpoilerView extends CB_View_Base {
             actCache = GlobalCore.getSelectedCache();
 
             if (actCache.hasSpoiler()) {
-                // Log.info(log, "has Spoiler.");
 
                 GalleryItem firstItem = null;
                 synchronized (bigItems) {
@@ -131,11 +129,11 @@ public class SpoilerView extends CB_View_Base {
 
                     ArrayList<ImageEntry> dbImages = imageDAO.getImagesForCache(actCache.getGcCode());
 
-                    // Log.info(log, "make images");
                     for (int i = 0, n = actCache.getSpoilerRessources().size(); i < n; i++) {
                         ImageEntry imageEntry = actCache.getSpoilerRessources().get(i);
-                        // Log.info(log, "Image Nr.: " + i + " from " + imageEntry.LocalPath);
+
                         String description = "";
+
                         String localName = FileIO.GetFileNameWithoutExtension(imageEntry.LocalPath);
                         for (ImageEntry dbImage : dbImages) {
                             String localNameFromDB = FileIO.GetFileNameWithoutExtension(dbImage.LocalPath);
@@ -157,6 +155,7 @@ public class SpoilerView extends CB_View_Base {
                                 }
                             }
                         }
+
                         ImageLoader loader = new ImageLoader(true); // image loader with thumb
                         loader.setThumbWidth(MAX_THUMB_WIDTH, "");
                         loader.setImage(imageEntry.LocalPath);
@@ -166,6 +165,7 @@ public class SpoilerView extends CB_View_Base {
                         else {
                             label = removeHashFromLabel(FileIO.GetFileNameWithoutExtension(imageEntry.Name));
                         }
+
                         GalleryBigItem item = new GalleryBigItem(gallery.copy(), i, loader, label);
                         item.setOnDoubleClickListener(onGalleryItemDoubleClicked);
                         bigItems.add(item);

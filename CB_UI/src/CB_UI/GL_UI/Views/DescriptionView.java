@@ -212,7 +212,7 @@ public class DescriptionView extends CB_View_Base {
             }
         });
 
-        if (GroundspeakAPI.me.remaining == -1)
+        if (GroundspeakAPI.fetchMyUserInfos().remaining == -1)
             getLimitThread.start();
 
         float contentWidth = this.getWidth() * 0.95f;
@@ -245,7 +245,7 @@ public class DescriptionView extends CB_View_Base {
 
         downloadButton.setOnClickListener(downloadClicked);
 
-        if (GroundspeakAPI.me.remaining <= 0)
+        if (GroundspeakAPI.fetchMyUserInfos().remaining <= 0)
             downloadButton.disable();
         layout();
     }
@@ -278,28 +278,25 @@ public class DescriptionView extends CB_View_Base {
 
     private String getMessage() {
         StringBuilder sb = new StringBuilder();
-        boolean basic = !isPremiumMember();
-        String MemberType = basic ? BASIC : PREMIUM;
-        String limit = basic ? BASIC_LIMIT : PREMIUM_LIMIT;
-        String actLimit = Integer.toString(GroundspeakAPI.me.remaining - 1);
+        boolean premium = isPremiumMember();
+        String MemberType = premium ? PREMIUM : BASIC;
+        String limit = premium ? PREMIUM_LIMIT : BASIC_LIMIT;
+        String actLimit = Integer.toString(GroundspeakAPI.fetchMyUserInfos().remaining - 1);
 
-        if (GroundspeakAPI.me.remaining == -1) {
+        if (GroundspeakAPI.fetchMyUserInfos().remaining < 0) {
             actLimit = "?";
         }
 
         sb.append(Translation.Get("LiveDescMessage", MemberType, limit));
         sb.append(Global.br);
-        sb.append(Global.br);
-        if (GroundspeakAPI.me.remaining > 0)
-            sb.append(Translation.Get("LiveDescAfter", actLimit));
+        if (GroundspeakAPI.fetchMyUserInfos().remaining > 0)
+            sb.append(Translation.Get("LiveDescAfter", actLimit)); // "
 
-        if (GroundspeakAPI.me.remaining == 0) {
+        if (GroundspeakAPI.fetchMyUserInfos().remaining == 0) {
             sb.append(Translation.Get("LiveDescLimit"));
             sb.append(Global.br);
-            sb.append(Global.br);
-            if (basic)
+            if (!premium)
                 sb.append(Translation.Get("LiveDescLimitBasic"));
-
         }
 
         return sb.toString();

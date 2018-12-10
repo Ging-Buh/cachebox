@@ -15,11 +15,12 @@
  */
 package CB_UI.GL_UI.Main.Actions;
 
-import CB_Core.Api.SearchGC;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
-import CB_Core.Types.*;
+import CB_Core.Types.Cache;
+import CB_Core.Types.CacheDAO;
+import CB_Core.Types.CacheListDAO;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.DeleteSelectedCache;
@@ -38,7 +39,6 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
@@ -46,11 +46,13 @@ import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_Utils.Interfaces.ICancelRunnable;
-import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.ArrayList;
+
+import static CB_Core.Api.GroundspeakAPI.GeoCacheRelated;
+import static CB_Core.Api.GroundspeakAPI.updateGeoCache;
 
 public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
@@ -180,26 +182,12 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
             @Override
             public void run() {
-                String GcCode = GlobalCore.getSelectedCache().getGcCode();
-
-                SearchGC searchC = new SearchGC(GcCode);
-                searchC.number = 1;
-                searchC.available = false;
-
-                CB_List<Cache> apiCaches = new CB_List<Cache>();
-                ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
-                ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
-
-                String result = CB_UI.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, GlobalCore.getSelectedCache().getGPXFilename_ID(), this);
-
-                if (result.length() > 0) {
-
-                    Log.debug(log, "result:" + result);
-
+                ArrayList<GeoCacheRelated> geoCacheRelateds = updateGeoCache(GlobalCore.getSelectedCache());
+                if (geoCacheRelateds.size() > 0) {
                     try {
-                        WriteIntoDB.CachesAndLogsAndImagesIntoDB(apiCaches, apiLogs, apiImages);
+                        WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        Log.err(log, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", e);
                     }
 
                     // Reload result from DB
@@ -208,36 +196,23 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
                         CacheListDAO cacheListDAO = new CacheListDAO();
                         cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
                     }
-
                     CacheListChangedEventList.Call();
-                    Cache selCache = Database.Data.Query.GetCacheByGcCode(GcCode);
+                    //
+                    Cache selCache = Database.Data.Query.GetCacheByGcCode(GlobalCore.getSelectedCache().getGcCode());
                     GlobalCore.setSelectedCache(selCache);
-                    GL.that.RunOnGL(new IRunOnGL() {
-
-                        @Override
-                        public void run() {
-                            GL.that.RunOnGL(new IRunOnGL() {
-
-                                @Override
-                                public void run() {
-                                    if (TabMainView.descriptionView != null) {
-                                        TabMainView.descriptionView.forceReload();
-                                        TabMainView.descriptionView.onShow();
-                                    }
-                                    GL.that.renderOnce();
-                                }
-                            });
+                    GL.that.RunOnGL(() -> {
+                        if (TabMainView.descriptionView != null) {
+                            TabMainView.descriptionView.forceReload();
+                            TabMainView.descriptionView.onShow();
                         }
+                        GL.that.renderOnce();
                     });
-
                 }
-
                 wd.close();
             }
 
             @Override
             public boolean doCancel() {
-
                 return false;
             }
         });
