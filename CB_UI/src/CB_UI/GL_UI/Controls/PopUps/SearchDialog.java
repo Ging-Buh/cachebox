@@ -547,7 +547,7 @@ public class SearchDialog extends PopUp_Base {
                         .setMaxToFetch(50)
                         .resultWithFullFields()
                         .resultWithLogs(30)
-                        .resultWithImages(30)
+                        // .resultWithImages(30)
                         ;
                 if (Config.SearchWithoutFounds.getValue()) q.excludeFinds();
                 if (Config.SearchWithoutOwns.getValue()) q.excludeOwn();
@@ -595,6 +595,14 @@ public class SearchDialog extends PopUp_Base {
                             counter++;
                             if (Database.Data.Query.GetCacheById(cache.Id) == null) {
                                 Database.Data.Query.add(cache);
+
+                                if (cache.getGPXFilename_ID() == 0 ) {
+                                    cache.setGPXFilename_ID(gpxFilename.Id);
+                                }
+                                else {
+                                    // todo check if this must be done
+                                    // get akt category, if not pinned.
+                                }
 
                                 cacheDAO.WriteToDatabase(cache);
 

@@ -143,10 +143,8 @@ public class GroundspeakAPI {
     public static ArrayList<GeoCacheRelated> searchGeoCaches(Query query) {
         // fetch/update geocaches consumes a lite or full cache
         ArrayList<GeoCacheRelated> fetchResults = new ArrayList<>();
+        Log.debug(log, "searchGeoCaches start " + query.toString());
         try {
-
-            int skip = 0;
-            int take = 100;
 
             ArrayList<String> fields = query.getFields();
             boolean onlyLiteFields = query.containsOnlyLiteFields(fields);
@@ -156,6 +154,9 @@ public class GroundspeakAPI {
                     onlyLiteFields = false;
                 }
             }
+            int maxCachesPerHttpCall = (onlyLiteFields ? 100 : 5); // API 1.0 says may take 100, but not in what time, and with 10 I got out of memory
+            int skip = 0;
+            int take = Math.min(query.maxToFetch, maxCachesPerHttpCall);
 
             do {
                 boolean doRetry;
@@ -181,7 +182,7 @@ public class GroundspeakAPI {
                         }
                         fetchResults.addAll(getGeoCacheRelateds(fetchedCaches, fields, null));
 
-                        if (fetchedCaches.length() < take || take < 100) {
+                        if (fetchedCaches.length() < take || take < maxCachesPerHttpCall) {
                             take = 0; // we got all
                         } else {
                             skip = skip + take;
@@ -190,6 +191,7 @@ public class GroundspeakAPI {
                     } catch (Exception ex) {
                         doRetry = retry(ex);
                         if (!doRetry) {
+                            Log.debug(log, "searchGeoCaches with exception: " + LastAPIError);
                             return fetchResults;
                         }
                     }
@@ -203,6 +205,7 @@ public class GroundspeakAPI {
             Log.err(log, "searchGeoCaches", e);
             return fetchResults;
         }
+        Log.debug(log, "searchGeoCaches ready.");
         return fetchResults;
     }
 
@@ -226,7 +229,7 @@ public class GroundspeakAPI {
 
     public static ArrayList<GeoCacheRelated> updateStatusOfGeoCaches(ArrayList<Cache> caches) {
         // fetch/update geocaches consumes a lite or full cache
-        Query query = new Query().resultForStatusFields();
+        Query query = new Query().resultForStatusFields().setMaxToFetch(100);
         return updateGeoCaches(query, caches);
     }
 
@@ -237,7 +240,7 @@ public class GroundspeakAPI {
         Query query = new Query()
                 .resultWithFullFields()
                 .resultWithLogs(30)
-                .resultWithImages(30) // todo maybe remove, cause not used from DB
+                //.resultWithImages(30) // todo maybe remove, cause not used from DB
                 ;
         return updateGeoCaches(query, caches);
     }
@@ -265,14 +268,6 @@ public class GroundspeakAPI {
         ArrayList<GeoCacheRelated> fetchResults = new ArrayList<>();
         try {
 
-            // just to simplify splitting into blocks of max 50 caches
-            Cache[] arrayOfCaches = new Cache[caches.size()];
-            caches.toArray(arrayOfCaches);
-
-            int skip = 0;
-            int take = 50;
-
-
             ArrayList<String> fields = query.getFields();
             boolean onlyLiteFields = query.containsOnlyLiteFields(fields);
             if (onlyLiteFields) {
@@ -281,6 +276,14 @@ public class GroundspeakAPI {
                     onlyLiteFields = false;
                 }
             }
+
+            // just to simplify splitting into blocks of max 50 caches
+            Cache[] arrayOfCaches = new Cache[caches.size()];
+            caches.toArray(arrayOfCaches);
+
+            int maxCachesPerHttpCall = (onlyLiteFields ? 50 : 5); // API 1.0 says may take 50, but not in what time, and with 10 Full I got out of memory
+            int skip = 0;
+            int take = Math.min(query.maxToFetch, maxCachesPerHttpCall);
 
             do {
                 // preparing the next block of max 50 caches to update
@@ -760,7 +763,8 @@ public class GroundspeakAPI {
     }
 
     public static boolean isDownloadLimitExceeded() {
-        return fetchMyUserInfos().remaining <= 0 || me.remainingLite <= 0;
+        fetchMyCacheLimits(); // now I'm sure
+        return fetchMyUserInfos().remaining <= 0 && me.remainingLite <= 0;
     }
 
     public static UserInfos fetchMyUserInfos() {
@@ -1208,20 +1212,34 @@ public class GroundspeakAPI {
     }
 
     private static long generateLogId(String referenceCode) {
-        long result = 0;
-        char[] dummy = referenceCode.substring(2).toCharArray(); // ohne "GL"
-        byte[] byteDummy = new byte[8];
-        for (int i = 0; i < 8; i++) {
-            if (i < referenceCode.length() - 2)
-                byteDummy[i] = (byte) dummy[i];
-            else
-                byteDummy[i] = 0;
+        referenceCode = referenceCode.substring(2); // ohne "GL"
+        if (referenceCode.charAt(0) > 'F' || referenceCode.length() > 6) {
+            return Base31(referenceCode);
+        } else {
+            return Base16(referenceCode);
         }
-        for (int i = 7; i >= 0; i--) {
-            result *= 256;
-            result += byteDummy[i];
+    }
+
+    private static long Base16(String s) {
+        String base16chars = "0123456789ABCDEF";
+        long r = 0;
+        long f = 1;
+        for (int i = s.length() - 1; i >= 0; i--) {
+            r = r + base16chars.indexOf(s.charAt(i)) * f;
+            f = f * 16;
         }
-        return result;
+        return r;
+    }
+
+    private static long Base31(String s) {
+        String base31chars = "0123456789ABCDEFGHJKMNPQRTVWXYZ";
+        long r = -411120;
+        long f = 1;
+        for (int i = s.length() - 1; i >= 0; i--) {
+            r = r + base31chars.indexOf(s.charAt(i)) * f;
+            f = f * 31;
+        }
+        return r;
     }
 
     private static ArrayList<ImageEntry> createImageList(JSONArray jImages, String GcCode) {

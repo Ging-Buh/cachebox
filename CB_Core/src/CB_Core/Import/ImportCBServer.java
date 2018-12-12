@@ -82,7 +82,7 @@ public class ImportCBServer {
 
                         for (int i = 0, n = gclAnswer.getCacheList().size(); i < n; i++) {
                             Cache cache = gclAnswer.getCacheList().get(i);
-                            // System.out.println(cache.getName());
+                            // Alle importierten Caches werdem diesem neuen GpxFilename zugeordnet
                             cache.setGPXFilename_ID(gpxFilename.Id);
 
                             // Falls das Update nicht klappt (Cache noch nicht in der DB) Insert machen

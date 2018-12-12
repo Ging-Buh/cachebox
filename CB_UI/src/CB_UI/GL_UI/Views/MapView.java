@@ -437,7 +437,8 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                             ArrayList<GroundspeakAPI.GeoCacheRelated> geoCacheRelateds = updateGeoCache(infoBubble.getCache());
                             if (geoCacheRelateds.size() > 0) {
                                 try {
-                                    WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds);
+                                    // todo check, if correct
+                                    WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, -1);
                                 } catch (InterruptedException e) {
                                     Log.err(log, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", e);
                                 }

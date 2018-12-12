@@ -334,7 +334,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                                         .setMaxToFetch(50)
                                         .resultWithFullFields()
                                         .resultWithLogs(30)
-                                        .resultWithImages(30)
+                                        //.resultWithImages(30)
                                         ;
                                 if (Config.SearchWithoutFounds.getValue()) q.excludeFinds();
                                 if (Config.SearchWithoutOwns.getValue()) q.excludeOwn();
@@ -368,7 +368,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase {
                                 if (geoCacheRelateds.size() > 0) {
                                     try {
                                         dis.setAnimationType(AnimationType.Work);
-                                        WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds);
+                                        WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, gpxFilename.Id);
                                     } catch (InterruptedException e) {
                                         Log.err(log, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", e);
                                     }

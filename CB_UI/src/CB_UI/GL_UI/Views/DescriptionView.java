@@ -212,7 +212,7 @@ public class DescriptionView extends CB_View_Base {
             }
         });
 
-        if (GroundspeakAPI.fetchMyUserInfos().remaining == -1)
+        if (GroundspeakAPI.fetchMyUserInfos().remaining <= 0)
             getLimitThread.start();
 
         float contentWidth = this.getWidth() * 0.95f;
@@ -281,6 +281,7 @@ public class DescriptionView extends CB_View_Base {
         boolean premium = isPremiumMember();
         String MemberType = premium ? PREMIUM : BASIC;
         String limit = premium ? PREMIUM_LIMIT : BASIC_LIMIT;
+
         String actLimit = Integer.toString(GroundspeakAPI.fetchMyUserInfos().remaining - 1);
 
         if (GroundspeakAPI.fetchMyUserInfos().remaining < 0) {

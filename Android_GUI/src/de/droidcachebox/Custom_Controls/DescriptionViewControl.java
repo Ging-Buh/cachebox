@@ -207,6 +207,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                         setCache(newCache);
                         if (!isPremiumMember()) {
                             String s = "Download successful!\n";
+                            fetchMyCacheLimits();
                             s += "Downloads left for today: " + fetchMyUserInfos().remaining + "\n";
                             s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
 

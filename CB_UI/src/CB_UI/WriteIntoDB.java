@@ -22,7 +22,7 @@ public class WriteIntoDB {
     static ImageDAO imageDAO = new ImageDAO();
     static WaypointDAO waypointDAO = new WaypointDAO();
 
-    public static void CachesAndLogsAndImagesIntoDB(ArrayList<GeoCacheRelated> geoCacheRelateds) throws InterruptedException {
+    public static void CachesAndLogsAndImagesIntoDB(ArrayList<GeoCacheRelated> geoCacheRelateds, long forCategory) throws InterruptedException {
 
         if (cacheDAO == null) {
             cacheDAO = new CacheDAO();
@@ -52,6 +52,16 @@ public class WriteIntoDB {
             // If Cache into DB, extract saved rating
             if (aktCache != null) {
                 cache.Rating = aktCache.Rating;
+            }
+
+            if (forCategory >= 0) {
+                if (cache.getGPXFilename_ID() == 0 ) {
+                    cache.setGPXFilename_ID(forCategory);
+                }
+                else {
+                    // todo check if this must be done
+                    // get akt category, if not pinned.
+                }
             }
 
             // Falls das Update nicht klappt (Cache noch nicht in der DB) Insert machen

@@ -429,7 +429,7 @@ public class SearchOverPosition extends ActivityBase {
                                         .setMaxToFetch(50)
                                         .resultWithFullFields()
                                         .resultWithLogs(30)
-                                        .resultWithImages(30)
+                                        //.resultWithImages(30)
                                         .searchInCircle(actSearchPos, Config.lastSearchRadius.getValue() * 1000);
                                 if (Config.SearchWithoutFounds.getValue()) q.excludeFinds();
                                 if (Config.SearchWithoutOwns.getValue()) q.excludeOwn();
@@ -440,7 +440,7 @@ public class SearchOverPosition extends ActivityBase {
                                 dis.setAnimationType(AnimationType.Work);
                                 if (geoCacheRelateds.size() > 0) {
                                     try {
-                                        WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds);
+                                        WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, gpxFilename.Id);
                                     } catch (InterruptedException e) {
                                         Log.err(log, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", e);
                                     }
