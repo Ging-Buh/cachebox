@@ -1298,7 +1298,7 @@ public class GL implements ApplicationListener {
 
         hideMarker();
 
-        // show or hide keyboard (what if the user has closed it?)
+        // show or hide keyboard (what if the user has closed it? : it never comes up todo)
         boolean isAlreadyOpen = focusedEditTextField != null && !focusedEditTextField.isKeyboardPopupDisabled();
         boolean shallBeOpened = editTextField != null && !editTextField.isKeyboardPopupDisabled();
         if (isAlreadyOpen) {

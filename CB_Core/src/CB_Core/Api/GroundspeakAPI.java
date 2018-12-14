@@ -205,7 +205,7 @@ public class GroundspeakAPI {
             Log.err(log, "searchGeoCaches", e);
             return fetchResults;
         }
-        Log.debug(log, "searchGeoCaches ready.");
+        Log.debug(log, "searchGeoCaches ready with " + fetchResults.size() + " Caches.");
         return fetchResults;
     }
 
@@ -1553,6 +1553,22 @@ public class GroundspeakAPI {
 
         public Query onlyActiveGeoCaches() {
             addSearchFilter("ia:true");
+            return this;
+        }
+
+        public Query publishedDate(Date date, String when) {
+            String before = "";
+            String after = "";
+            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
+            if (when == "<=") {
+                before = f.format(date);
+            } else if (when == ">=") {
+                after = f.format(date);
+            } else if (when == "=") {
+                before = f.format(date);
+                after = before;
+            }
+            addSearchFilter("pd:[" + after + "," + before + "]"); // inclusive
             return this;
         }
 

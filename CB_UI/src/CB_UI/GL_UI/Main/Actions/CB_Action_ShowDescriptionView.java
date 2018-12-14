@@ -185,7 +185,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
                 ArrayList<GeoCacheRelated> geoCacheRelateds = updateGeoCache(GlobalCore.getSelectedCache());
                 if (geoCacheRelateds.size() > 0) {
                     try {
-                        WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, -1);
+                        WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
                     } catch (InterruptedException e) {
                         Log.err(log, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", e);
                     }

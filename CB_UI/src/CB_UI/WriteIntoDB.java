@@ -1,20 +1,15 @@
 package CB_UI;
 
-import CB_Core.Api.GroundspeakAPI;
-import CB_Core.Types.CacheDAO;
+import CB_Core.CoreSettingsForward;
 import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.Database;
-import CB_Core.Types.Cache;
-import CB_Core.Types.ImageEntry;
-import CB_Core.Types.LogEntry;
-import CB_Core.Types.Waypoint;
-
-import static CB_Core.Api.GroundspeakAPI.GeoCacheRelated;
-
+import CB_Core.Types.*;
 
 import java.util.ArrayList;
+
+import static CB_Core.Api.GroundspeakAPI.GeoCacheRelated;
 
 public class WriteIntoDB {
     static CacheDAO cacheDAO = new CacheDAO();
@@ -22,7 +17,7 @@ public class WriteIntoDB {
     static ImageDAO imageDAO = new ImageDAO();
     static WaypointDAO waypointDAO = new WaypointDAO();
 
-    public static void CachesAndLogsAndImagesIntoDB(ArrayList<GeoCacheRelated> geoCacheRelateds, long forCategory) throws InterruptedException {
+    public static void CachesAndLogsAndImagesIntoDB(ArrayList<GeoCacheRelated> geoCacheRelateds, GpxFilename forCategory) throws InterruptedException {
 
         if (cacheDAO == null) {
             cacheDAO = new CacheDAO();
@@ -33,7 +28,7 @@ public class WriteIntoDB {
 
         Database.Data.beginTransaction();
 
-        for (GeoCacheRelated geoCacheRelated: geoCacheRelateds) {
+        for (GeoCacheRelated geoCacheRelated : geoCacheRelateds) {
 
             // Auf eventuellen Thread Abbruch reagieren
             Thread.sleep(2);
@@ -54,13 +49,32 @@ public class WriteIntoDB {
                 cache.Rating = aktCache.Rating;
             }
 
-            if (forCategory >= 0) {
-                if (cache.getGPXFilename_ID() == 0 ) {
-                    cache.setGPXFilename_ID(forCategory);
-                }
-                else {
-                    // todo check if this must be done
-                    // get akt category, if not pinned.
+            if (forCategory != null) {
+                if (aktCache == null) {
+                    cache.setGPXFilename_ID(forCategory.Id);
+                } else if (aktCache.getGPXFilename_ID() == 0) {
+                    cache.setGPXFilename_ID(forCategory.Id);
+                } else {
+                    Category c = CoreSettingsForward.Categories.getCategoryByGpxFilenameId(aktCache.getGPXFilename_ID());
+                    if (c.GpxFilename.equals(forCategory.GpxFileName)) {
+                        // update with the new Date
+                        cache.setGPXFilename_ID(forCategory.Id);
+                    } else {
+                        if (c.pinned) {
+                            GpxFilename forPinnedCategory = null;
+                            for (GpxFilename g : c) {
+                                if (forCategory.Imported == g.Imported) {
+                                    forPinnedCategory = g;
+                                    break;
+                                }
+                            }
+                            if (forPinnedCategory == null)
+                                forPinnedCategory = c.addGpxFilename(c.GpxFilename, forCategory.Imported);
+                            cache.setGPXFilename_ID(forPinnedCategory.Id);
+                        } else {
+                            cache.setGPXFilename_ID(forCategory.Id);
+                        }
+                    }
                 }
             }
 
@@ -76,13 +90,12 @@ public class WriteIntoDB {
                 String oldNote = Database.GetNote(cache);
                 if (oldNote != null) {
                     oldNote = oldNote.trim();
-                }
-                else {
+                } else {
                     oldNote = "";
                 }
                 String begin = "<Import from Geocaching.com>";
                 if (!oldNote.startsWith(begin)) {
-                    begin=System.getProperty("line.separator") + begin;
+                    begin = System.getProperty("line.separator") + begin;
                 }
                 String end = "</Import from Geocaching.com>";
                 int iBegin = oldNote.indexOf(begin);
@@ -111,7 +124,6 @@ public class WriteIntoDB {
             // Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
             cache.setLongDescription("");
 
-            logDAO.deleteLogs(cache.Id); // the LogIDs will be changed with API 1.0
             for (LogEntry log : geoCacheRelated.logs) {
                 logDAO.WriteToDatabase(log);
             }

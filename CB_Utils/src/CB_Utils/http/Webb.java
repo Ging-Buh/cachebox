@@ -11,6 +11,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -344,7 +345,7 @@ public class Webb {
             } else {
                 connection = (HttpURLConnection) apiUrl.openConnection();
             }
-            Log.debug("Webb", "url " + uri);
+            Log.debug("Webb", "url " + URLDecoder.decode(uri,"UTF-8"));
             prepareSslConnection(connection);
             connection.setRequestMethod(request.method.name());
             if (request.followRedirects != null) {

@@ -69,7 +69,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         this.initRow(BOTTOMUP);
         this.addNext(btnOK);
         this.addLast(btnCancel);
-        mainPanel = new ScrollBox(innerWidth, getAvailableHeight()); // (innerWidth, getAvailableHeight(), "mainPanel");
+        mainPanel = new ScrollBox(innerWidth, getAvailableHeight());
         this.addLast(mainPanel);
         mainPanel.initRow(BOTTOMUP);
         // --- Description

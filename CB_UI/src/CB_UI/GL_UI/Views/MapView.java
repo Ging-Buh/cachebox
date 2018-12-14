@@ -438,7 +438,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                             if (geoCacheRelateds.size() > 0) {
                                 try {
                                     // todo check, if correct
-                                    WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, -1);
+                                    WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
                                 } catch (InterruptedException e) {
                                     Log.err(log, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", e);
                                 }

@@ -26,30 +26,28 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Controls.CoordinateButton;
-import CB_UI.GL_UI.Controls.CoordinateButton.ICoordinateChangedListener;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI.WriteIntoDB;
+import CB_UI_Base.Events.KeyboardFocusChangedEvent;
+import CB_UI_Base.Events.KeyboardFocusChangedEventList;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
+import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Fonts;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.Sprites;
-import CB_UI_Base.GL_UI.Sprites.IconName;
-import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Interfaces.ICancel;
 import CB_Utils.Log.Log;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static CB_Core.Api.GroundspeakAPI.*;
 
-public class SearchOverPosition extends ActivityBase {
+public class SearchOverPosition extends ActivityBase implements KeyboardFocusChangedEvent {
     private static final String log = "SearchOverPosition";
-    private final float lineHeight;
     private Button bOK, bCancel, btnPlus, btnMinus;
-    private Label lblTitle, lblRadius, lblRadiusEinheit, lblMarkerPos, lblExcludeFounds, lblOnlyAvailable, lblExcludeHides;
+    private Label lblTitle, lblRadius, lblRadiusEinheit, lblExcludeFounds, lblOnlyAvailable, lblExcludeHides;
     private Image gsLogo;
     private CoordinateButton coordBtn;
     private ChkBox checkBoxExcludeFounds, checkBoxOnlyAvailable, checkBoxExcludeHides;
@@ -59,32 +57,36 @@ public class SearchOverPosition extends ActivityBase {
     private volatile Thread thread;
     private ImportAnimation dis;
     private Box box;
+    private ScrollBox scrollBox;
     private boolean importRuns = false;
-
-    /**
-     * 0=GPS, 1= Map, 2= Manuell
-     */
-    private int searcheState = 0;
+    private int searcheState = 0; // 0=GPS, 1= Map, 2= Manuell
     private boolean isCanceld = false;
-    ICancel icancel = new ICancel() {
-
-        @Override
-        public boolean doCancel() {
-            return isCanceld;
-        }
-    };
+    ICancel icancel = () -> isCanceld;
+    private Label lblPublished;
+    private Button btnBeforeAfterEqual;
+    private EditTextField edtDate;
+    private Label lblCategory;
+    private EditTextField edtCategory;
+    private SimpleDateFormat simpleDateFormat;
 
     public SearchOverPosition() {
         super(ActivityRec(), "searchOverPosActivity");
-        lineHeight = UI_Size_Base.that.getButtonHeight();
+        simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
+        // add to this
+        createTitleLine();
         createOkCancelBtn();
         createBox();
-        createTitleLine();
-        createRadiusLine();
-        createChkBoxLines();
+        // add to box
+        coordBtn = new CoordinateButton("");
+        box.addLast(coordBtn);
         createToggleButtonLine();
-        createCoordButton();
+        createRadiusLine();
+        createCategoryLine();
+        createPublishedLine();
+        createChkBoxLines();
+        box.adjustHeight();
+        scrollBox.setVirtualHeight(box.getHeight());
 
         initialContent();
     }
@@ -98,59 +100,50 @@ public class SearchOverPosition extends ActivityBase {
     }
 
     private void createOkCancelBtn() {
-        bOK = new Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
-        bCancel = new Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
+        bOK = new Button(Translation.Get("import"));
+        bCancel = new Button(Translation.Get("cancel"));
 
-        // Translations
-        bOK.setText(Translation.Get("import"));
-        bCancel.setText(Translation.Get("cancel"));
+        this.initRow(BOTTOMUP);
+        this.addNext(bOK);
+        this.addLast(bCancel);
 
-        this.addChild(bOK);
-        bOK.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                ImportNow();
-                return true;
-            }
-
+        bOK.setOnClickListener((v, x, y, pointer, button) -> {
+            ImportNow();
+            return true;
         });
 
-        this.addChild(bCancel);
-        bCancel.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                if (importRuns) {
-                    isCanceld = true;
-                } else {
-                    finish();
-                }
-                return true;
+        bCancel.setOnClickListener((v, x, y, pointer, button) -> {
+            if (importRuns) {
+                isCanceld = true;
+            } else {
+                finish();
             }
+            return true;
         });
 
     }
 
     private void createBox() {
-        box = new Box(ActivityRec(), "ScrollBox");
-        this.addChild(box);
-        box.setHeight(this.getHeight() - lineHeight - bOK.getMaxY() - margin - margin);
-        box.setY(bOK.getMaxY() + margin);
-        box.setBackground(this.getBackground());
+        scrollBox = new ScrollBox(this.innerWidth, this.getAvailableHeight());
+        scrollBox.setBackground(this.getBackground());
+        this.addLast(scrollBox);
+        box = new Box(scrollBox.getInnerWidth(), 0); // height will be adjusted after containing all controls
+        scrollBox.addChild(box);
     }
 
     private void createTitleLine() {
-
-        float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
-
-        gsLogo = new Image(innerWidth - margin - lineHeight, this.getHeight() - this.getTopHeight() - lineHeight - margin, lineHeight, lineHeight, "", false);
-        gsLogo.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.dayGcLiveIcon.name())));
-        this.addChild(gsLogo);
-
-        lblTitle = new Label(this.name + " lblTitle", leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - (margin * 4) - gsLogo.getWidth(), lineHeight);
-        lblTitle.setFont(Fonts.getBig());
+        lblTitle = new Label();
+        lblTitle.setFont(Fonts.getBig()).setHAlignment(Label.HAlignment.CENTER);
+        this.addNext(lblTitle);
         lblTitle.setWrappedText(Translation.Get("importCachesOverPosition"));
-        this.addChild(lblTitle);
 
+        /*
+        float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
+        gsLogo = new Image(0,0, lineHeight, lineHeight, "", false);
+        this.addNext(gsLogo, FIXED);
+        gsLogo.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.dayGcLiveIcon.name())));
+        */
+        this.FinaliseRow();
     }
 
     private void createRadiusLine() {
@@ -160,65 +153,67 @@ public class SearchOverPosition extends ActivityBase {
         float wRadius = Fonts.Measure(sRadius).width;
         float wEinheit = Fonts.Measure(sEinheit).width;
 
-        float y = box.getHeight() - margin - lineHeight;
+        lblRadius = new Label(sRadius);
+        lblRadius.setWidth(wRadius);
+        box.addNext(lblRadius, FIXED);
 
-        lblRadius = new Label(this.name + " lblRadius", margin, y, wRadius, lineHeight);
-        lblRadius.setText(sRadius);
-        box.addChild(lblRadius);
+        Radius = new EditTextField(this, "Radius");
+        box.addNext(Radius);
 
-        CB_RectF rec = new CB_RectF(lblRadius.getMaxX() + margin, y, UI_Size_Base.that.getButtonWidthWide(), lineHeight);
-        Radius = new EditTextField(rec, this, "Radius");
-        box.addChild(Radius);
+        lblRadiusEinheit = new Label(sEinheit);
+        lblRadiusEinheit.setWidth(wEinheit);
+        box.addNext(lblRadiusEinheit, FIXED);
 
-        lblRadiusEinheit = new Label(this.name + " lblRadiusEinheit", Radius.getMaxX(), y, wEinheit, lineHeight);
-        lblRadiusEinheit.setText(sEinheit);
-        box.addChild(lblRadiusEinheit);
+        btnMinus = new Button("-");
+        box.addNext(btnMinus);
 
-        btnMinus = new Button(lblRadiusEinheit.getMaxX() + (margin * 3), y, lineHeight, lineHeight, "");
-        btnMinus.setText("-");
-        box.addChild(btnMinus);
-
-        btnPlus = new Button(btnMinus.getMaxX() + (margin * 2), y, lineHeight, lineHeight, "");
-        btnPlus.setText("+");
-        box.addChild(btnPlus);
+        btnPlus = new Button("+");
+        box.addLast(btnPlus);
 
     }
 
+    private void createCategoryLine() {
+        lblCategory = new Label(Translation.Get("category"));
+        box.addNext(lblCategory);
+        edtCategory = new EditTextField(this, "edtCategory");
+        box.addLast(edtCategory);
+    }
+
+    private void createPublishedLine() {
+        lblPublished = new Label(Translation.Get("published"));
+        box.addNext(lblPublished);
+        btnBeforeAfterEqual = new Button("<=");
+        btnBeforeAfterEqual.setWidth(Fonts.Measure(". <= .").width);
+        box.addNext(btnBeforeAfterEqual, FIXED);
+        edtDate = new EditTextField(this, "edtDate");
+        edtDate.setWidth(Fonts.Measure(". 2018-12-31 .").width);
+        edtDate.setText(simpleDateFormat.format(new Date()));
+        box.addLast(edtDate, FIXED);
+    }
+
     private void createChkBoxLines() {
+
         checkBoxOnlyAvailable = new ChkBox("");
-        checkBoxOnlyAvailable.setPos(margin, Radius.getY() - margin - checkBoxOnlyAvailable.getHeight());
-        box.addChild(checkBoxOnlyAvailable);
+        box.addNext(checkBoxOnlyAvailable, FIXED);
+        lblOnlyAvailable = new Label(Translation.Get("SearchOnlyAvailable"));
+        box.addLast(lblOnlyAvailable);
 
         checkBoxExcludeHides = new ChkBox("");
-        checkBoxExcludeHides.setPos(margin, checkBoxOnlyAvailable.getY() - margin - checkBoxExcludeHides.getHeight());
-        box.addChild(checkBoxExcludeHides);
+        box.addNext(checkBoxExcludeHides, FIXED);
+        lblExcludeHides = new Label(Translation.Get("SearchWithoutOwns"));
+        box.addLast(lblExcludeHides);
 
         checkBoxExcludeFounds = new ChkBox("");
-        checkBoxExcludeFounds.setPos(margin, checkBoxExcludeHides.getY() - margin - checkBoxExcludeFounds.getHeight());
-        box.addChild(checkBoxExcludeFounds);
-
-        lblOnlyAvailable = new Label(this.name + " lblOnlyAvailable", checkBoxOnlyAvailable, Translation.Get("SearchOnlyAvailable"));
-        lblOnlyAvailable.setX(checkBoxOnlyAvailable.getMaxX() + margin);
-        lblOnlyAvailable.setWidth(this.getWidth() - margin - checkBoxOnlyAvailable.getMaxX() - margin);
-        box.addChild(lblOnlyAvailable);
-
-        lblExcludeHides = new Label(this.name + " lblExcludeHides", checkBoxExcludeHides, Translation.Get("SearchWithoutOwns"));
-        lblExcludeHides.setX(checkBoxOnlyAvailable.getMaxX() + margin);
-        lblExcludeHides.setWidth(this.getWidth() - margin - checkBoxExcludeHides.getMaxX() - margin);
-        box.addChild(lblExcludeHides);
-
-        lblExcludeFounds = new Label(this.name + " lblExcludeFounds", checkBoxExcludeFounds, Translation.Get("SearchWithoutFounds"));
-        lblExcludeFounds.setX(checkBoxOnlyAvailable.getMaxX() + margin);
-        lblExcludeFounds.setWidth(this.getWidth() - margin - checkBoxExcludeFounds.getMaxX() - margin);
-        box.addChild(lblExcludeFounds);
+        box.addNext(checkBoxExcludeFounds, FIXED);
+        lblExcludeFounds = new Label(Translation.Get("SearchWithoutFounds"));
+        box.addLast(lblExcludeFounds);
 
     }
 
     private void createToggleButtonLine() {
-        float y = lblExcludeFounds.getY() - margin - UI_Size_Base.that.getButtonHeight();
 
-        tglBtnGPS = new MultiToggleButton(leftBorder, y, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "");
-        tglBtnMap = new MultiToggleButton(tglBtnGPS.getMaxX(), y, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "");
+        tglBtnGPS = new MultiToggleButton("");
+        tglBtnMap = new MultiToggleButton("");
 
         tglBtnGPS.setFont(Fonts.getSmall());
         tglBtnMap.setFont(Fonts.getSmall());
@@ -226,81 +221,58 @@ public class SearchOverPosition extends ActivityBase {
         tglBtnGPS.initialOn_Off_ToggleStates(Translation.Get("FromGps"), Translation.Get("FromGps"));
         tglBtnMap.initialOn_Off_ToggleStates(Translation.Get("FromMap"), Translation.Get("FromMap"));
 
-        box.addChild(tglBtnGPS);
-        box.addChild(tglBtnMap);
+        box.addNext(tglBtnGPS);
+        box.addLast(tglBtnMap);
 
         if (MapView.that == null)
             tglBtnMap.disable();
 
     }
 
-    private void createCoordButton() {
-        CB_RectF rec = new CB_RectF(margin, tglBtnGPS.getY() - margin - lineHeight, this.getWidth() - (margin * 2), lineHeight);
-        lblMarkerPos = new Label(this.name + " lblMarkerPos", rec, Translation.Get("CurentMarkerPos"));
-        box.addChild(lblMarkerPos);
-
-        coordBtn = new CoordinateButton(rec, name, null, null);
-        coordBtn.setY(lblMarkerPos.getY() - margin - lineHeight);
-        box.addChild(coordBtn);
-
-    }
-
     private void initialContent() {
 
-        btnPlus.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                incrementRadius(1);
-                return true;
-            }
-
+        btnPlus.setOnClickListener((v, x, y, pointer, button) -> {
+            incrementRadius(1);
+            return true;
         });
 
-        btnMinus.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                incrementRadius(-1);
-                return true;
-            }
+        btnMinus.setOnClickListener((v, x, y, pointer, button) -> {
+            incrementRadius(-1);
+            return true;
         });
 
-        tglBtnGPS.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                actSearchPos = Locator.getCoordinate();
-                setToggleBtnState(0);
-                return true;
-            }
+        tglBtnGPS.setOnClickListener((v, x, y, pointer, button) -> {
+            actSearchPos = Locator.getCoordinate();
+            setToggleBtnState(0);
+            return true;
         });
 
-        tglBtnMap.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                if (MapView.that == null) {
-                    actSearchPos = new CoordinateGPS(Config.MapInitLatitude.getValue(), Config.MapInitLongitude.getValue());
-                } else {
-                    actSearchPos = MapView.that.center;
-                }
-
-                setToggleBtnState(1);
-                return true;
+        tglBtnMap.setOnClickListener((v, x, y, pointer, button) -> {
+            if (MapView.that == null) {
+                actSearchPos = new CoordinateGPS(Config.MapInitLatitude.getValue(), Config.MapInitLongitude.getValue());
+            } else {
+                actSearchPos = MapView.that.center;
             }
+
+            setToggleBtnState(1);
+            return true;
         });
 
-        coordBtn.setCoordinateChangedListener(new ICoordinateChangedListener() {
-
-            @Override
-            public void coordinateChanged(Coordinate coord) {
-                if (coord != null) {
-                    actSearchPos = coord;
-                    setToggleBtnState(2);
-                }
-                SearchOverPosition.this.show();
+        coordBtn.setCoordinateChangedListener(coord -> {
+            if (coord != null) {
+                actSearchPos = coord;
+                setToggleBtnState(2);
             }
+            SearchOverPosition.this.show();
+        });
+
+        btnBeforeAfterEqual.setOnClickListener((v, x, y, pointer, button) -> {
+            if (btnBeforeAfterEqual.getText().equals("<="))
+                btnBeforeAfterEqual.setText("=");
+            else if (btnBeforeAfterEqual.getText().equals("="))
+                btnBeforeAfterEqual.setText(">=");
+            else btnBeforeAfterEqual.setText("<=");
+            return true;
         });
 
         if (MapView.that != null && MapView.that.isVisible()) {
@@ -315,17 +287,56 @@ public class SearchOverPosition extends ActivityBase {
         checkBoxOnlyAvailable.setChecked(Config.SearchOnlyAvailable.getValue());
         checkBoxExcludeHides.setChecked(Config.SearchWithoutOwns.getValue());
         Radius.setText(String.valueOf(Config.lastSearchRadius.getValue()));
+
         setToggleBtnState();
 
+        edtCategory.setText("API-Import");
+        Category category = CoreSettingsForward.Categories.getCategory(edtCategory.getText());
+        edtDate.setText(simpleDateFormat.format(category.LastImported()));
+        if (category.size() == 0)
+            btnBeforeAfterEqual.setText("<=");
+        else
+            btnBeforeAfterEqual.setText(">=");
+    }
+
+    @Override
+    public void KeyboardFocusChanged(EditTextField editTextField) {
+        if (editTextField != null) {
+            scrollToY(editTextField);
+            editTextField.setCursorPosition(editTextField.getText().length());
+        } else {
+            if (GL.that.getFocusedEditTextField().equals(edtCategory)) {
+                Category category = CoreSettingsForward.Categories.getCategory(edtCategory.getText());
+                edtDate.setText(simpleDateFormat.format(category.LastImported()));
+                if (category.size() == 0)
+                    btnBeforeAfterEqual.setText("<=");
+                else
+                    btnBeforeAfterEqual.setText(">=");
+            }
+        }
+    }
+
+    @Override
+    public void onShow() {
+        KeyboardFocusChangedEventList.Add(this);
+    }
+
+    @Override
+    public void onHide() {
+        KeyboardFocusChangedEventList.Remove(this);
+    }
+
+    private void scrollToY(final EditTextField editTextField) {
+        scrollBox.scrollTo(-scrollBox.getVirtualHeight() + editTextField.getY() + editTextField.getHeight());
     }
 
     private void initialCoordinates() {
         // initiate Coordinates to actual Map-Center or actual GPS Coordinate
         switch (searcheState) {
             case 0:
-                actSearchPos = Locator.getCoordinate();
                 break;
             case 1:
+                actSearchPos = Locator.getCoordinate();
                 if (MapView.that == null) {
                     actSearchPos = new CoordinateGPS(Config.MapInitLatitude.getValue(), Config.MapInitLongitude.getValue());
                 } else {
@@ -388,10 +399,8 @@ public class SearchOverPosition extends ActivityBase {
 
         int radius = 0;
         try {
-            radius = Integer.parseInt(Radius.getText().toString());
-        } catch (NumberFormatException e) {
-            // Kein Integer
-            e.printStackTrace();
+            radius = Integer.parseInt(Radius.getText());
+        } catch (NumberFormatException ignore) {
         }
 
         if (radius != 0)
@@ -407,76 +416,73 @@ public class SearchOverPosition extends ActivityBase {
 
         this.addChild(dis, false);
 
+        Date tmpDate;
+        try {
+            tmpDate = simpleDateFormat.parse(edtDate.getText());
+        } catch (Exception ex) {
+            tmpDate = new Date();
+        }
+        final Date publishDate = tmpDate;
+
         importRuns = true;
-        thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                boolean threadCanceled = false;
+        thread = new Thread(() -> {
+            boolean threadCanceled = false;
 
-                try {
-                    if (actSearchPos != null) {
+            try {
+                if (actSearchPos != null) {
+                    Category category = CoreSettingsForward.Categories.getCategory(edtCategory.getText());
+                    GpxFilename gpxFilename = category.addGpxFilename(category.GpxFilename); // category.GpxFilename == edtCategory.getText()
+                    if (gpxFilename != null) {
+                        Query q = new Query()
+                                .setMaxToFetch(50)
+                                .resultWithFullFields()
+                                .resultWithLogs(30)
+                                //.resultWithImages(30)
+                                .searchInCircle(actSearchPos, Config.lastSearchRadius.getValue() * 1000)
+                                .publishedDate(publishDate, btnBeforeAfterEqual.getText());
+                        if (Config.SearchWithoutFounds.getValue()) q.excludeFinds();
+                        if (Config.SearchWithoutOwns.getValue()) q.excludeOwn();
+                        if (Config.SearchOnlyAvailable.getValue()) q.onlyActiveGeoCaches();
 
-                        // alle per API importierten Caches landen in der Category und
-                        // GpxFilename
-                        // API-Import
-                        // Category suchen, die dazu gehört
-                        Category category = CoreSettingsForward.Categories.getCategory("API-Import");
-                        if (category != null) // should not happen!!!
-                        {
-                            GpxFilename gpxFilename = category.addGpxFilename("API-Import");
-                            if (gpxFilename != null) {
-                                Query q = new Query()
-                                        .setMaxToFetch(50)
-                                        .resultWithFullFields()
-                                        .resultWithLogs(30)
-                                        //.resultWithImages(30)
-                                        .searchInCircle(actSearchPos, Config.lastSearchRadius.getValue() * 1000);
-                                if (Config.SearchWithoutFounds.getValue()) q.excludeFinds();
-                                if (Config.SearchWithoutOwns.getValue()) q.excludeOwn();
-                                if (Config.SearchOnlyAvailable.getValue()) q.onlyActiveGeoCaches();
-
-                                dis.setAnimationType(AnimationType.Download);
-                                ArrayList<GeoCacheRelated> geoCacheRelateds = searchGeoCaches(q);
-                                dis.setAnimationType(AnimationType.Work);
-                                if (geoCacheRelateds.size() > 0) {
-                                    try {
-                                        WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, gpxFilename.Id);
-                                    } catch (InterruptedException e) {
-                                        Log.err(log, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", e);
-                                    }
-                                }
+                        dis.setAnimationType(AnimationType.Download);
+                        ArrayList<GeoCacheRelated> geoCacheRelateds = searchGeoCaches(q);
+                        dis.setAnimationType(AnimationType.Work);
+                        if (geoCacheRelateds.size() > 0) {
+                            try {
+                                WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, gpxFilename);
+                            } catch (InterruptedException e) {
+                                Log.err(log, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", e);
                             }
                         }
                     }
-                } catch (Exception e) {
-                    // Thread abgebrochen!
-                    threadCanceled = true;
                 }
-
-                if (!threadCanceled) {
-                    CacheListChangedEventList.Call();
-                    if (dis != null) {
-                        SearchOverPosition.this.removeChildsDirekt(dis);
-                        dis.dispose();
-                        dis = null;
-                    }
-                    bOK.enable();
-                    finish();
-                } else {
-
-                    // Notify Map
-                    if (MapView.that != null)
-                        MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
-                    if (dis != null) {
-                        SearchOverPosition.this.removeChildsDirekt(dis);
-                        dis.dispose();
-                        dis = null;
-                    }
-                    bOK.enable();
-                }
-                importRuns = false;
+            } catch (Exception e) {
+                // Thread abgebrochen!
+                threadCanceled = true;
             }
 
+            if (!threadCanceled) {
+                CacheListChangedEventList.Call();
+                if (dis != null) {
+                    SearchOverPosition.this.removeChildsDirekt(dis);
+                    dis.dispose();
+                    dis = null;
+                }
+                bOK.enable();
+                finish();
+            } else {
+
+                // Notify Map
+                if (MapView.that != null)
+                    MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
+                if (dis != null) {
+                    SearchOverPosition.this.removeChildsDirekt(dis);
+                    dis.dispose();
+                    dis = null;
+                }
+                bOK.enable();
+            }
+            importRuns = false;
         });
 
         thread.setPriority(Thread.MAX_PRIORITY);
@@ -486,74 +492,42 @@ public class SearchOverPosition extends ActivityBase {
 
     @Override
     public void dispose() {
-        if (bOK != null)
-            bOK.dispose();
-        bOK = null;
-        if (bCancel != null)
-            bCancel.dispose();
-        bCancel = null;
-        if (btnPlus != null)
-            btnPlus.dispose();
-        btnPlus = null;
-        if (btnMinus != null)
-            btnMinus.dispose();
-        btnMinus = null;
-        if (lblTitle != null)
-            lblTitle.dispose();
-        lblTitle = null;
-        if (lblRadius != null)
-            lblRadius.dispose();
-        lblRadius = null;
-        if (lblRadiusEinheit != null)
-            lblRadiusEinheit.dispose();
-        lblRadiusEinheit = null;
-        if (lblMarkerPos != null)
-            lblMarkerPos.dispose();
-        lblMarkerPos = null;
-        if (lblExcludeFounds != null)
-            lblExcludeFounds.dispose();
-        lblExcludeFounds = null;
-        if (lblOnlyAvailable != null)
-            lblOnlyAvailable.dispose();
-        lblOnlyAvailable = null;
-        if (lblExcludeHides != null)
-            lblExcludeHides.dispose();
-        lblExcludeHides = null;
-        if (gsLogo != null)
-            gsLogo.dispose();
-        gsLogo = null;
-        if (coordBtn != null)
-            coordBtn.dispose();
-        coordBtn = null;
-        if (checkBoxExcludeFounds != null)
-            checkBoxExcludeFounds.dispose();
-        checkBoxExcludeFounds = null;
-        if (checkBoxOnlyAvailable != null)
-            checkBoxOnlyAvailable.dispose();
-        checkBoxOnlyAvailable = null;
-        if (checkBoxExcludeHides != null)
-            checkBoxExcludeHides.dispose();
-        checkBoxExcludeHides = null;
-        if (Radius != null)
-            Radius.dispose();
-        Radius = null;
-        if (tglBtnGPS != null)
-            tglBtnGPS.dispose();
-        tglBtnGPS = null;
-        if (tglBtnMap != null)
-            tglBtnMap.dispose();
-        tglBtnMap = null;
-        if (dis != null)
-            dis.dispose();
-        dis = null;
-        if (box != null)
-            box.dispose();
-        box = null;
+        dispose(bOK);
+        dispose(bCancel);
+        dispose(btnBeforeAfterEqual);
+        dispose(btnPlus);
+        dispose(btnMinus);
+        dispose(lblTitle);
+        dispose(lblRadius);
+        dispose(lblRadiusEinheit);
+        dispose(lblExcludeFounds);
+        dispose(lblOnlyAvailable);
+        dispose(lblExcludeHides);
+        dispose(gsLogo);
+        dispose(coordBtn);
+        dispose(checkBoxExcludeFounds);
+        dispose(checkBoxOnlyAvailable);
+        dispose(checkBoxExcludeHides);
+        dispose(Radius);
+        dispose(tglBtnGPS);
+        dispose(tglBtnMap);
+        dispose(dis);
+        dispose(box);
+        dispose(lblPublished);
+        dispose(edtDate);
+        dispose(lblCategory);
+        dispose(edtCategory);
 
         actSearchPos = null;
 
         super.dispose();
 
+    }
+
+    private void dispose(CB_View_Base control) {
+        if (control != null)
+            control.dispose();
+        control = null;
     }
 
 }

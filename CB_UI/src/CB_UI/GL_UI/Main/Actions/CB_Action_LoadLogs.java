@@ -79,7 +79,8 @@ public class CB_Action_LoadLogs extends CB_Action {
 
                         Iterator<LogEntry> iterator = logList.iterator();
                         LogDAO dao = new LogDAO();
-                        dao.deleteLogs(GlobalCore.getSelectedCache().Id);
+                        if (loadAllLogs)
+                            dao.deleteLogs(GlobalCore.getSelectedCache().Id);
                         do {
                             ChangedCount++;
                             try {

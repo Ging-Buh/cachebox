@@ -21,7 +21,6 @@ public class CB_View_Base extends GL_View_Base {
     private MoveableList<GL_View_Base> row;
     private boolean topdown = true; // false = bottomup
     private float rowYPos = 0;
-    private float rowMaxHeight = 0;
     private float xMargin = 0;
     private float yMargin = 0;
     private float topYAdd;
@@ -133,7 +132,6 @@ public class CB_View_Base extends GL_View_Base {
             // set this to null!
             setToNull(this);
         } else {
-
             try {
                 synchronized (childs) {
                     for (int i = 0; i < childs.size(); i++) {
@@ -151,16 +149,9 @@ public class CB_View_Base extends GL_View_Base {
                     // set this to null!
                     setToNull(this);
                 }
-            } catch (NoSuchElementException e) {
-
-                setToNull(this);
-            } catch (ConcurrentModificationException e) {
-
-                setToNull(this);
-            } catch (NullPointerException e) {
-
-                setToNull(this);
-            }
+            } catch (Exception e) {
+                // NoSuchElementException
+                setToNull(this);}
         }
 
         if (row != null) {
@@ -279,8 +270,8 @@ public class CB_View_Base extends GL_View_Base {
      * * setting the margins between the added objects
      **/
     public void setMargins(float xMargin, float yMargin) {
-        xMargin = xMargin;
-        yMargin = yMargin;
+        this.xMargin = xMargin;
+        this.yMargin = yMargin;
     }
 
     /**
@@ -409,7 +400,7 @@ public class CB_View_Base extends GL_View_Base {
             row.add(c);
         if (lastInRow) {
             // Determine rowMaxHeight
-            rowMaxHeight = 0;
+            float rowMaxHeight = 0;
             for (int i = 0, n = row.size(); i < n; i++) {
                 GL_View_Base view = row.get(i);
                 if (view.getHeight() > rowMaxHeight)

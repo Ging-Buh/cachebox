@@ -58,6 +58,33 @@ public class Category extends ArrayList<GpxFilename> implements Comparable<Categ
         return result;
     }
 
+    public GpxFilename addGpxFilename(String filename, Date importedDate) {
+
+        Parameters args = new Parameters();
+        args.put("GPXFilename", filename);
+        args.put("CategoryId", this.Id);
+        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String stimestamp = iso8601Format.format(importedDate);
+        args.put("Imported", stimestamp);
+        try {
+            Database.Data.insert("GpxFilenames", args);
+        } catch (Exception exc) {
+            //Log.err(log, "CreateNewGpxFilename", filename, exc);
+        }
+
+        long GPXFilename_ID = 0;
+
+        CoreCursor reader = Database.Data.rawQuery("Select max(ID) from GpxFilenames", null);
+        reader.moveToFirst();
+        if (!reader.isAfterLast()) {
+            GPXFilename_ID = reader.getLong(0);
+        }
+        reader.close();
+        GpxFilename result = new GpxFilename(GPXFilename_ID, filename, this.Id);
+        this.add(result);
+        return result;
+    }
+
     public int CacheCount() {
         int result = 0;
         for (GpxFilename gpx : this)
@@ -87,7 +114,7 @@ public class Category extends ArrayList<GpxFilename> implements Comparable<Categ
             return name;
         }
 
-        name = name.substring(pos + 1, name.length());
+        name = name.substring(pos + 1);
 
         if (name.toLowerCase().indexOf(".gpx") == name.length() - 4)
             name = name.substring(0, name.length() - 4);
