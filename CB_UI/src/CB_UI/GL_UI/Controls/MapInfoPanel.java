@@ -66,8 +66,7 @@ public class MapInfoPanel extends CB_View_Base {
                 try {
                     lblLatitude.setText(UnitFormatter.FormatLatitudeDM(Coord.getLatitude()));
                     lblLongitude.setText(UnitFormatter.FormatLongitudeDM(Coord.getLongitude()));
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } catch (Exception ignored) {
                 }
 
                 if (CB_UI_Settings.LiveMapEnabeld.getValue() && !this.parentMapView.isCarMode())

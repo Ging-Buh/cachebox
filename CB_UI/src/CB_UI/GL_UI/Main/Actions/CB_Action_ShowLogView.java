@@ -6,6 +6,7 @@ import CB_UI.GL_UI.Views.LogView;
 import CB_UI.GlobalCore;
 import CB_UI.GlobalCore.iChkReadyHandler;
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
@@ -95,30 +96,27 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView {
     }
 
     private void reloadLogs(final boolean all) {
-        if (GroundspeakAPI.isDownloadLimitExceeded()) {
-            GlobalCore.MsgDownloadLimit();
-            return;
-        }
+        GL.that.postAsync(() -> {
+            GlobalCore.chkAPiLogInWithWaitDialog(new iChkReadyHandler() {
+                @Override
+                public void checkReady(boolean MemberType) {
+                    TimerTask tt = new TimerTask() {
 
-        GlobalCore.chkAPiLogInWithWaitDialog(new iChkReadyHandler() {
-
-            @Override
-            public void checkReady(boolean MemberType) {
-                TimerTask tt = new TimerTask() {
-
-                    @Override
-                    public void run() {
-                        if (all) {
-                            new CB_Action_LoadLogs(true).Execute();
-                        } else {
-                            new CB_Action_LoadLogs(false).Execute();
+                        @Override
+                        public void run() {
+                            GL.that.postAsync(() -> {
+                                if (all) {
+                                    new CB_Action_LoadLogs(true).Execute();
+                                } else {
+                                    new CB_Action_LoadLogs(false).Execute();
+                                }
+                            });
                         }
-
-                    }
-                };
-                Timer t = new Timer();
-                t.schedule(tt, 100);
-            }
+                    };
+                    Timer t = new Timer();
+                    t.schedule(tt, 100);
+                }
+            });
         });
     }
 

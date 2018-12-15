@@ -131,11 +131,16 @@ public class MapViewCacheList implements CacheListChangedEventListener {
     }
 
     private Sprite getCacheIcon(Cache cache, int iconSize) {
-        if ((iconSize < 1) && (cache.Id != GlobalCore.getSelectedCache().Id)) {
-            return getSmallMapIcon(cache);
-        } else {
-            // der SelectedCache wird immer mit den großen Symbolen dargestellt!
+        if (iconSize > 0) {
             return getMapIcon(cache);
+        } else {
+            if (GlobalCore.isSetSelectedCache()) {
+                if (cache.Id == GlobalCore.getSelectedCache().Id) {
+                    // the selected cache always has a big icon
+                    return getMapIcon(cache);
+                }
+            }
+            return getSmallMapIcon(cache);
         }
     }
 

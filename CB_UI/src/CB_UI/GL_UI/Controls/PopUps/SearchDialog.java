@@ -446,10 +446,6 @@ public class SearchDialog extends PopUp_Base {
      * Suchvorgang gestartet.
      */
     private void searchAPI() {
-        if (GroundspeakAPI.isDownloadLimitExceeded()) {
-            GlobalCore.MsgDownloadLimit();
-            return;
-        }
 
         GlobalCore.chkAPiLogInWithWaitDialog(new iChkReadyHandler() {
 

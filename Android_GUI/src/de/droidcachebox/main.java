@@ -15,7 +15,6 @@
  */
 package de.droidcachebox;
 
-import CB_Core.Api.GroundspeakAPI;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.Database;
 import CB_Core.Database.DatabaseType;
@@ -123,6 +122,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static CB_Core.Api.GroundspeakAPI.GetSettingsAccessToken;
 import static android.content.Intent.ACTION_VIEW;
 
 @SuppressLint("Wakelock")
@@ -390,7 +390,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
         // at the moment isFirstStart is always true. Intended for change of theme (ActivityUtils): code there not used, removed
         if (isFirstStart) {
             // ask for API key only if Rev-Number changed, like at new installation and API Key is Empty
-            if (Config.newInstall.getValue() && GroundspeakAPI.GetSettingsAccessToken().length() == 0) {
+            if (Config.newInstall.getValue() && GetSettingsAccessToken().length() == 0) {
                 askToGetApiKey();
             } else {
                 if (!GlobalCore.restartAfterKill)

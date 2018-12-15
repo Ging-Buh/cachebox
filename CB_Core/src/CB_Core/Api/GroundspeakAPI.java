@@ -123,17 +123,20 @@ public class GroundspeakAPI {
                         }
                     } catch (Exception exc) {
                         LastAPIError = ex.getLocalizedMessage();
+                        Log.err(log, APIError + ":" + LastAPIError);
                     }
                 }
             } else {
                 // re == null
                 APIError = ERROR;
                 LastAPIError = ex.getLocalizedMessage();
+                Log.err(log, APIError + ":" + LastAPIError);
             }
         } else {
             // no WebbException
             APIError = ERROR;
             LastAPIError = ex.getLocalizedMessage();
+            Log.err(log, APIError + ":" + LastAPIError, ex );
         }
         return retryCount > 0;
     }
@@ -148,13 +151,19 @@ public class GroundspeakAPI {
 
             ArrayList<String> fields = query.getFields();
             boolean onlyLiteFields = query.containsOnlyLiteFields(fields);
-            if (onlyLiteFields) {
-                fetchMyCacheLimits();
-                if (me.remainingLite < me.remaining) {
-                    onlyLiteFields = false;
+            int maxCachesPerHttpCall = (onlyLiteFields ? 100 : 5); // API 1.0 says may take 100, but not in what time, and with 10 I got out of memory
+            if (query.descriptor == null) {
+                if (onlyLiteFields) {
+                    fetchMyCacheLimits();
+                    if (me.remainingLite < me.remaining) {
+                        onlyLiteFields = false;
+                    }
                 }
             }
-            int maxCachesPerHttpCall = (onlyLiteFields ? 100 : 5); // API 1.0 says may take 100, but not in what time, and with 10 I got out of memory
+            else {
+                // for Live on map
+                maxCachesPerHttpCall = 50;
+            }
             int skip = 0;
             int take = Math.min(query.maxToFetch, maxCachesPerHttpCall);
 
@@ -192,6 +201,7 @@ public class GroundspeakAPI {
                         doRetry = retry(ex);
                         if (!doRetry) {
                             Log.debug(log, "searchGeoCaches with exception: " + LastAPIError);
+                            fetchMyCacheLimits();
                             return fetchResults;
                         }
                     }
@@ -206,6 +216,7 @@ public class GroundspeakAPI {
             return fetchResults;
         }
         Log.debug(log, "searchGeoCaches ready with " + fetchResults.size() + " Caches.");
+        fetchMyCacheLimits();
         return fetchResults;
     }
 
@@ -325,6 +336,7 @@ public class GroundspeakAPI {
                                 doRetry = false;
                                 Log.err(log, "searchGeoCaches - skipped block cause: " + LastAPIError);
                             } else {
+                                fetchMyCacheLimits();
                                 return fetchResults;
                             }
                         }
@@ -339,6 +351,7 @@ public class GroundspeakAPI {
             Log.err(log, "updateGeoCaches", e);
             return fetchResults;
         }
+        fetchMyCacheLimits();
         return fetchResults;
     }
 
@@ -763,18 +776,24 @@ public class GroundspeakAPI {
     }
 
     public static boolean isDownloadLimitExceeded() {
-        fetchMyCacheLimits(); // now I'm sure
-        return fetchMyUserInfos().remaining <= 0 && me.remainingLite <= 0;
+        // do'nt want to access Web for this info (GL.postAsync)
+        if (me == null) return false;
+        return me.remaining <= 0 && me.remainingLite <= 0;
     }
 
+    private static boolean active = false;
     public static UserInfos fetchMyUserInfos() {
         if (me == null || me.memberShipType == MemberShipTypes.Unknown) {
-            me = fetchUserInfos("me");
-            if (me.memberShipType == MemberShipTypes.Unknown) {
-                me.findCount = -1;
-                // we need a new AccessToken
-                // API_ErrorEventHandlerList.handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.INVALID);
-                Log.err(log, "fetchMyUserInfos: Need a new Access Token");
+            if (!active) {
+                active = true;
+                me = fetchUserInfos("me");
+                if (me.memberShipType == MemberShipTypes.Unknown) {
+                    me.findCount = -1;
+                    // we need a new AccessToken
+                    // API_ErrorEventHandlerList.handleApiKeyError(API_ErrorEventHandlerList.API_ERROR.INVALID);
+                    Log.err(log, "fetchMyUserInfos: Need a new Access Token");
+                }
+                active = false;
             }
         }
         return me;
@@ -810,8 +829,6 @@ public class GroundspeakAPI {
                 return ui;
             } catch (Exception ex) {
                 if (!retry(ex)) {
-                    Log.err(log, "fetchUserInfos:" + APIError + ":" + LastAPIError);
-                    Log.trace(log, ex);
                     return ui;
                 }
             }

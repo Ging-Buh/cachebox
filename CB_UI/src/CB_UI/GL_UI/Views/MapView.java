@@ -30,8 +30,8 @@ import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Locator;
-import CB_Locator.Map.*;
 import CB_Locator.Map.MapScale;
+import CB_Locator.Map.*;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.*;
 import CB_UI.GL_UI.Activitys.EditWaypoint;
@@ -969,7 +969,6 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
         super.loadTiles();
 
         if (CarMode && CB_UI_Settings.LiveMapEnabeld.getValue()) {
-
             LiveMapQue.setCenterDescriptor(center);
 
             // LiveMap queue complete screen

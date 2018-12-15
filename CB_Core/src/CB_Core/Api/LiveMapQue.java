@@ -27,6 +27,7 @@ import CB_Core.Types.GpxFilename;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Map.Descriptor;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Lists.CB_Stack;
 import CB_Utils.Lists.CB_Stack.iCompare;
@@ -65,71 +66,71 @@ public class LiveMapQue {
     public static CB_Stack<Descriptor> descStack = new CB_Stack<Descriptor>();
     private static GpxFilename gpxFilename;
     private static LoopThread loop = new LoopThread(2000) {
-
         protected boolean LoopBreak() {
             return descStack.empty();
         }
-
         protected void Loop() {
-            Descriptor desc;
-            synchronized (descStack) {
-                do {
-                    desc = descStack.get();
-                } while (LiveCaches.contains(desc));
-            }
+            Log.debug(LIVE_CACHE_NAME, "Loop start");
+            GL.that.postAsync(() -> {
 
-            if (desc == null)
-                return;
-
-            for (int i = 0; i < eventList.size(); i++)
-                eventList.get(i).stateChanged();
-            DownloadIsActive.set(true);
-
-            GroundspeakAPI.Query q = new GroundspeakAPI.Query()
-                    .setMaxToFetch(MAX_REQUEST_CACHE_COUNT)
-                    .setDescriptor(desc)
-                    .searchInCircle(desc.getCenterCoordinate(), Used_max_request_radius);
-            if (CB_Core_Settings.LiveExcludeFounds.getValue()) q.excludeFinds();
-            if (CB_Core_Settings.LiveExcludeOwn.getValue()) q.excludeOwn();
-            q.resultWithLiteFields();
-            ArrayList<GroundspeakAPI.GeoCacheRelated> apiCaches = null;
-            if (descExistLiveCache(desc)) {
-                apiCaches = loadDescLiveFromCache(q);
-            }
-            if (apiCaches == null) {
-
-                if (gpxFilename == null) {
-                    Category category = CoreSettingsForward.Categories.getCategory("API-Import");
-                    gpxFilename = category.addGpxFilename("API-Import");
+                Descriptor desc;
+                synchronized (descStack) {
+                    do {
+                        desc = descStack.get();
+                    } while (LiveCaches.contains(desc));
                 }
 
-                apiCaches = GroundspeakAPI.searchGeoCaches(q);
-            }
+                if (desc == null)
+                    return;
 
-            // todo change LiveCaches CB_List<Cache> to ArrayList<GroundspeakAPI.GeoCacheRelated>
-            CB_List<Cache> tmp = new CB_List<>();
-            for (GroundspeakAPI.GeoCacheRelated c : apiCaches) tmp.add(c.cache);
-            final CB_List<Cache> removedCaches = LiveCaches.add(desc, tmp);
+                for (int i = 0; i < eventList.size(); i++)
+                    eventList.get(i).stateChanged();
+                DownloadIsActive.set(true);
 
-            // Log.debug(log, "LIVE_QUE: add " + apiCaches.size() + "from Desc:" + desc.toString() + "/ StackSize:" + descStack.getSize());
+                GroundspeakAPI.Query q = new GroundspeakAPI.Query()
+                        .setMaxToFetch(MAX_REQUEST_CACHE_COUNT)
+                        .setDescriptor(desc)
+                        .searchInCircle(desc.getCenterCoordinate(), Used_max_request_radius);
+                if (CB_Core_Settings.LiveExcludeFounds.getValue()) q.excludeFinds();
+                if (CB_Core_Settings.LiveExcludeOwn.getValue()) q.excludeOwn();
+                q.resultWithLiteFields();
+                ArrayList<GroundspeakAPI.GeoCacheRelated> apiCaches = null;
+                if (descExistLiveCache(desc)) {
+                    apiCaches = loadDescLiveFromCache(q);
+                }
+                if (apiCaches == null) {
 
-            Thread callThread = new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-
-                    synchronized (Database.Data.Query) {
-                        Database.Data.Query.removeAll(removedCaches);
+                    if (gpxFilename == null) {
+                        Category category = CoreSettingsForward.Categories.getCategory("API-Import");
+                        gpxFilename = category.addGpxFilename("API-Import");
                     }
 
-                    CacheListChangedEventList.Call();
-                    for (int i = 0; i < eventList.size(); i++)
-                        eventList.get(i).stateChanged();
+                    apiCaches = GroundspeakAPI.searchGeoCaches(q);
                 }
-            });
-            callThread.start();
-            DownloadIsActive.set(false);
 
+                // todo change LiveCaches CB_List<Cache> to ArrayList<GroundspeakAPI.GeoCacheRelated>
+                CB_List<Cache> tmp = new CB_List<>();
+                for (GroundspeakAPI.GeoCacheRelated c : apiCaches) tmp.add(c.cache);
+                final CB_List<Cache> removedCaches = LiveCaches.add(desc, tmp);
+
+                // Log.debug(log, "LIVE_QUE: add " + apiCaches.size() + "from Desc:" + desc.toString() + "/ StackSize:" + descStack.getSize());
+
+                Thread callThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        synchronized (Database.Data.Query) {
+                            Database.Data.Query.removeAll(removedCaches);
+                        }
+                        CacheListChangedEventList.Call();
+                        for (int i = 0; i < eventList.size(); i++)
+                            eventList.get(i).stateChanged();
+                    }
+                });
+                callThread.start();
+
+                DownloadIsActive.set(false);
+
+            });
         }
     };
     private static Descriptor lastLo, lastRu;
@@ -311,6 +312,7 @@ public class LiveMapQue {
     }
 
     private static void queDesc(Descriptor desc) {
+
         if (GroundspeakAPI.isDownloadLimitExceeded())
             return;
         if (!loop.Alive())

@@ -92,18 +92,20 @@ public class AndroidManager extends ManagerBase {
             // Falls Kachel im Cache liegt, diese von dort laden!
             if (cachedTileAge != 0) {
                 android.graphics.Bitmap result = BitmapFactory.decodeFile(cachedTileFilename);
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                result.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, stream);
-                byte[] b = stream.toByteArray();
+                if (result != null) {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    result.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, stream);
+                    byte[] b = stream.toByteArray();
 
-                if (CB_UI_Base_Settings.nightMode.getValue()) {
-                    ImageData imgData = getImagePixel(b);
-                    imgData = getImageDataWithColormatrixManipulation(HSV_Color.NIGHT_COLOR_MATRIX, imgData);
-                    b = getImageFromData(imgData);
+                    if (CB_UI_Base_Settings.nightMode.getValue()) {
+                        ImageData imgData = getImagePixel(b);
+                        imgData = getImageDataWithColormatrixManipulation(HSV_Color.NIGHT_COLOR_MATRIX, imgData);
+                        b = getImageFromData(imgData);
+                    }
+
+                    TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present, format);
+                    return bmpTile;
                 }
-
-                TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present, format);
-                return bmpTile;
             }
         } catch (Exception exc) {
             Log.err(log, "Exception", exc);

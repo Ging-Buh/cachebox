@@ -337,10 +337,10 @@ public class Label extends CB_View_Base {
                     bounds = mTextObject.setText(mText, 0f, 0f, this.getWidth(), GDX_HAlignment(mHAlignment), true);
                     break;
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
             // java.lang.ArrayIndexOutOfBoundsException kommt mal vor
-            e.printStackTrace();
-            Log.err(log, this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + " \"" + mText + "\"", e);
+            // e.printStackTrace();
+            // Log.err(log, this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + " \"" + mText + "\"", e);
         }
         if (underlineStrikeoutDrawable != null) {
             underlineStrikeoutDrawable.dispose();
