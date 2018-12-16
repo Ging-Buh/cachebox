@@ -34,28 +34,28 @@ public class WriteIntoDB {
             Thread.sleep(2);
 
             Cache cache = geoCacheRelated.cache;
-            Cache aktCache = Database.Data.Query.GetCacheById(cache.Id);
+            Cache oldCache = Database.Data.Query.GetCacheById(cache.Id);
 
-            if (aktCache != null && aktCache.isLive()) aktCache = null;
+            if (oldCache != null && oldCache.isLive()) oldCache = null;
 
-            if (aktCache == null) aktCache = cacheDAO.getFromDbByCacheId(cache.Id);
+            if (oldCache == null) oldCache = cacheDAO.getFromDbByCacheId(cache.Id);
 
             // Read Detail Info of Cache if not available
-            if ((aktCache != null) && (aktCache.detail == null)) {
-                aktCache.loadDetail();
+            if ((oldCache != null) && (oldCache.detail == null)) {
+                oldCache.loadDetail();
             }
             // If Cache into DB, extract saved rating
-            if (aktCache != null) {
-                cache.Rating = aktCache.Rating;
+            if (oldCache != null) {
+                cache.Rating = oldCache.Rating;
             }
 
             if (forCategory != null) {
-                if (aktCache == null) {
+                if (oldCache == null) {
                     cache.setGPXFilename_ID(forCategory.Id);
-                } else if (aktCache.getGPXFilename_ID() == 0) {
+                } else if (oldCache.getGPXFilename_ID() == 0) {
                     cache.setGPXFilename_ID(forCategory.Id);
                 } else {
-                    Category c = CoreSettingsForward.Categories.getCategoryByGpxFilenameId(aktCache.getGPXFilename_ID());
+                    Category c = CoreSettingsForward.Categories.getCategoryByGpxFilenameId(oldCache.getGPXFilename_ID());
                     if (c.GpxFilename.equals(forCategory.GpxFileName)) {
                         // update with the new Date
                         cache.setGPXFilename_ID(forCategory.Id);
@@ -139,10 +139,10 @@ public class WriteIntoDB {
                 boolean update = true;
 
                 // dont refresh wp if aktCache.wp is user changed
-                if (aktCache != null) {
-                    if (aktCache.waypoints != null) {
-                        for (int j = 0, m = aktCache.waypoints.size(); j < m; j++) {
-                            Waypoint wp = aktCache.waypoints.get(j);
+                if (oldCache != null) {
+                    if (oldCache.waypoints != null) {
+                        for (int j = 0, m = oldCache.waypoints.size(); j < m; j++) {
+                            Waypoint wp = oldCache.waypoints.get(j);
                             if (wp.getGcCode().equalsIgnoreCase(waypoint.getGcCode())) {
                                 if (wp.IsUserWaypoint)
                                     update = false;
@@ -161,14 +161,14 @@ public class WriteIntoDB {
 
             }
 
-            if (aktCache == null) {
+            if (oldCache == null) {
                 Database.Data.Query.add(cache);
                 // cacheDAO.WriteToDatabase(cache);
             } else {
                 // 2012-11-17: do not remove old instance from Query because of problems with cacheList and MapView
                 // Database.Data.Query.remove(Database.Data.Query.GetCacheById(cache.Id));
                 // Database.Data.Query.add(cache);
-                aktCache.copyFrom(cache);
+                oldCache.copyFrom(cache);
                 // cacheDAO.UpdateDatabase(cache);
             }
 

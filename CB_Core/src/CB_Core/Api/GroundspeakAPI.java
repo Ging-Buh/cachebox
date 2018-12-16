@@ -51,6 +51,7 @@ public class GroundspeakAPI {
     private static long startTs;
     private static int nrOfApiCalls;
     private static int retryCount;
+    private static boolean active = false;
 
     private static Webb getNetz() {
         if (netz == null) {
@@ -79,6 +80,8 @@ public class GroundspeakAPI {
         getNetz().setDefaultHeader(Webb.HDR_AUTHORIZATION, "bearer " + GetSettingsAccessToken());
         me = null;
     }
+
+    // API 1.0 see https://api.groundspeak.com/documentation and https://api.groundspeak.com/api-docs/index
 
     private static boolean retry(Exception ex) {
         // Alternate: implement own RetryManager for 429
@@ -136,12 +139,10 @@ public class GroundspeakAPI {
             // no WebbException
             APIError = ERROR;
             LastAPIError = ex.getLocalizedMessage();
-            Log.err(log, APIError + ":" + LastAPIError, ex );
+            Log.err(log, APIError + ":" + LastAPIError, ex);
         }
         return retryCount > 0;
     }
-
-    // API 1.0 see https://api.groundspeak.com/documentation and https://api.groundspeak.com/api-docs/index
 
     public static ArrayList<GeoCacheRelated> searchGeoCaches(Query query) {
         // fetch/update geocaches consumes a lite or full cache
@@ -159,8 +160,7 @@ public class GroundspeakAPI {
                         onlyLiteFields = false;
                     }
                 }
-            }
-            else {
+            } else {
                 // for Live on map
                 maxCachesPerHttpCall = 50;
             }
@@ -447,7 +447,6 @@ public class GroundspeakAPI {
             return pqList;
         }
     }
-
 
     public static void fetchPocketQuery(PQ pocketQuery, String PqFolder) {
         InputStream inStream = null;
@@ -781,7 +780,6 @@ public class GroundspeakAPI {
         return me.remaining <= 0 && me.remainingLite <= 0;
     }
 
-    private static boolean active = false;
     public static UserInfos fetchMyUserInfos() {
         if (me == null || me.memberShipType == MemberShipTypes.Unknown) {
             if (!active) {
@@ -925,11 +923,11 @@ public class GroundspeakAPI {
         }
     }
 
-    private static Cache createGeoCache(JSONObject API1Cache, ArrayList<String> fields, Cache cache) {
+    private static Cache createGeoCache(JSONObject API1Cache, ArrayList<String> fields, Cache oldcache) {
         // see https://api.groundspeak.com/documentation#geocache
         // see https://api.groundspeak.com/documentation#lite-geocache
-        if (cache == null)
-            cache = new Cache(true);
+        // if (oldcache == null) todo reuse the already loaded oldcache object
+        Cache cache = new Cache(true);
         cache.setAttributesPositive(new DLong(0, 0));
         cache.setAttributesNegative(new DLong(0, 0));
         cache.setApiStatus(IS_LITE);
@@ -1021,6 +1019,7 @@ public class GroundspeakAPI {
                             cache.setFound(userData.optString("foundDate", "").length() != 0);
                             // Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
                             if (!cache.isFound()) {
+                                // todo simply use oldcache!= null && oldcache.isFound()
                                 boolean found = LoadBooleanValueFromDB("select Found from Caches where GcCode = \"" + cache.getGcCode() + "\"");
                                 if (found) cache.setFound(true);
                             }
@@ -1043,6 +1042,7 @@ public class GroundspeakAPI {
                         } else {
                             cache.setFound(false);
                             // Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
+                            // todo simply set from oldcache  use oldcache!= null && oldcache.isFound()
                             boolean found = LoadBooleanValueFromDB("select Found from Caches where GcCode = \"" + cache.getGcCode() + "\"");
                             if (found) cache.setFound(true);
                             JSONObject postedCoordinates = API1Cache.optJSONObject("postedCoordinates");
@@ -1107,19 +1107,15 @@ public class GroundspeakAPI {
                 }
             }
 
+            // todo do this in WriteIntoDb or reuse oldCache
             // Ein evtl. in der Datenbank vorhandenen "Favorite" nicht überschreiben
-            if (!cache.isFavorite()) {
-                boolean favorite = LoadBooleanValueFromDB("select Favorit from Caches where GcCode = \"" + cache.getGcCode() + "\"");
-                if (favorite) cache.setFavorite(true);
-            }
-            // Ein evtl. in der Datenbank vorhandenen "HasUserData" nicht überschreiben
-            if (!cache.isHasUserData()) {
-                boolean userData = LoadBooleanValueFromDB("select HasUserData from Caches where GcCode = \"" + cache.getGcCode() + "\"");
-                if (userData) cache.setHasUserData(true);
-            }
+            boolean favorite = LoadBooleanValueFromDB("select Favorit from Caches where GcCode = \"" + cache.getGcCode() + "\"");
+            if (favorite) cache.setFavorite(true);
 
-            // todo handle by caller ?
-            // if (cache.getGPXFilename_ID() == 0 ) cache.setGPXFilename_ID(gpxFilenameId);
+            // Ein evtl. in der Datenbank vorhandenen "HasUserData" nicht überschreiben
+            boolean userData = LoadBooleanValueFromDB("select HasUserData from Caches where GcCode = \"" + cache.getGcCode() + "\"");
+            if (userData) cache.setHasUserData(true);
+
             // todo check ? mustfields
             // cache.setListingChanged(false);
             // cache.setTourName("");
