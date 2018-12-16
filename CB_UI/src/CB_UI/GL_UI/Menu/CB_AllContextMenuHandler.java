@@ -59,6 +59,7 @@ public class CB_AllContextMenuHandler {
 
                         @Override
                         public void run() {
+                            String GCCode = GlobalCore.getSelectedCache().getGcCode();
                             ArrayList<GeoCacheRelated> geoCacheRelateds = updateGeoCache(GlobalCore.getSelectedCache());
                             if (geoCacheRelateds.size() > 0) {
                                 try {
@@ -73,8 +74,8 @@ public class CB_AllContextMenuHandler {
                                     CacheListDAO cacheListDAO = new CacheListDAO();
                                     cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
                                 }
-
                                 CacheListChangedEventList.Call();
+                                GlobalCore.setSelectedCache(Database.Data.Query.GetCacheByGcCode(GCCode));
                             }
 
                             wd.close();

@@ -434,6 +434,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                         @Override
                         public void run() {
 
+                            String GCCode = infoBubble.getCache().getGcCode();
                             ArrayList<GroundspeakAPI.GeoCacheRelated> geoCacheRelateds = updateGeoCache(infoBubble.getCache());
                             if (geoCacheRelateds.size() > 0) {
                                 try {
@@ -456,7 +457,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
                             }
                             CacheListChangedEventList.Call();
 
-                            Cache selCache = Database.Data.Query.GetCacheByGcCode(infoBubble.getCache().getGcCode());
+                            Cache selCache = Database.Data.Query.GetCacheByGcCode(GCCode);
                             GlobalCore.setSelectedCache(selCache);
                             infoBubble.setCache(selCache, null, true);
                             wd.close();

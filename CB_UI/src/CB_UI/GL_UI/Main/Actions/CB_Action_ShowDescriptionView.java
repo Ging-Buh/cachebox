@@ -182,6 +182,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
             @Override
             public void run() {
+                String GCCode = GlobalCore.getSelectedCache().getGcCode();
                 ArrayList<GeoCacheRelated> geoCacheRelateds = updateGeoCache(GlobalCore.getSelectedCache());
                 if (geoCacheRelateds.size() > 0) {
                     try {
@@ -198,8 +199,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
                     }
                     CacheListChangedEventList.Call();
                     //
-                    Cache selCache = Database.Data.Query.GetCacheByGcCode(GlobalCore.getSelectedCache().getGcCode());
-                    GlobalCore.setSelectedCache(selCache);
+                    GlobalCore.setSelectedCache(Database.Data.Query.GetCacheByGcCode(GCCode));
                     GL.that.RunOnGL(() -> {
                         if (TabMainView.descriptionView != null) {
                             TabMainView.descriptionView.forceReload();
