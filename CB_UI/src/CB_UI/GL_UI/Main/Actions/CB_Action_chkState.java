@@ -110,6 +110,7 @@ public class CB_Action_chkState extends CB_Action {
 
                 progress += ProgressInkrement;
 
+                Log.debug("StatusUpdate","Progresss at " + (int) progress);
                 ProgresssChangedEventList.Call("", (int) progress);
 
             } while (caches.size() == BlockSize && !cancelThread);

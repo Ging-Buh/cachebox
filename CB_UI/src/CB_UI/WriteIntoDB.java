@@ -34,19 +34,17 @@ public class WriteIntoDB {
             Thread.sleep(2);
 
             Cache cache = geoCacheRelated.cache;
-            Cache oldCache = Database.Data.Query.GetCacheById(cache.Id);
-
-            if (oldCache != null && oldCache.isLive()) oldCache = null;
-
-            if (oldCache == null) oldCache = cacheDAO.getFromDbByCacheId(cache.Id);
-
-            // Read Detail Info of Cache if not available
-            if ((oldCache != null) && (oldCache.detail == null)) {
-                oldCache.loadDetail();
-            }
-            // If Cache into DB, extract saved rating
+            Cache oldCache =  cacheDAO.getFromDbByCacheId(cache.Id); // !!! without Details and without Description
             if (oldCache != null) {
+                oldCache.loadDetail(); // Details and Waypoints but without "Description, Solver, Notes, ShortDescription "
                 cache.Rating = oldCache.Rating;
+                if (!cache.isFound()) {
+                    if (oldCache.isFound()) cache.setFound(true);
+                }
+                cache.setFavorite(oldCache.isFavorite());
+                cache.setHasUserData(oldCache.isHasUserData());
+                cache.setTourName(oldCache.getTourName());
+                // solver is independant
             }
 
             if (forCategory != null) {
@@ -84,10 +82,11 @@ public class WriteIntoDB {
             }
 
             // Notes von Groundspeak überprüfen und evtl. in die DB an die vorhandenen Notes anhängen
-            // todo solver extrahieren
+            // todo extract solver?
             if (cache.getTmpNote() != null && cache.getTmpNote().length() > 0) {
 
                 String oldNote = Database.GetNote(cache);
+
                 if (oldNote != null) {
                     oldNote = oldNote.trim();
                 } else {
@@ -117,6 +116,7 @@ public class WriteIntoDB {
                     newNote += System.getProperty("line.separator") + end;
                 }
                 cache.setTmpNote(newNote);
+
                 Database.SetNote(cache, cache.getTmpNote());
 
             }

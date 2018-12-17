@@ -113,7 +113,6 @@ public class GroundspeakAPI {
                         LastAPIError = "******* Aborting: After retry API-Limit is still exceeded.";
                     }
                 } else {
-                    // todo Handle 401, 500, ...
                     // 401 = Not Authorized
                     // 403 = limit exceeded: want to get more caches than remain (lite / full) : get limits for good message
                     // 404 = Not Found
@@ -281,7 +280,7 @@ public class GroundspeakAPI {
 
             ArrayList<String> fields = query.getFields();
             boolean onlyLiteFields = query.containsOnlyLiteFields(fields);
-            int maxCachesPerHttpCall = (onlyLiteFields ? 50 : 5); // API 1.0 says may take 50, but not in what time, and with 10 Full I got out of memory
+            int maxCachesPerHttpCall = (onlyLiteFields ? 50 : 5); // API 1.0 says may take 100, but not in what time, and with 10 Full I got out of memory
             if (onlyLiteFields) {
                 fetchMyCacheLimits();
                 if (me.remainingLite < me.remaining) {
@@ -606,7 +605,7 @@ public class GroundspeakAPI {
         int skip = 0;
         int take = 50;
 
-        // todo Schleife (es werden nur 50 geholt (was reicht))
+        // todo implement loop for more than 50 imagelinks (if it ever will be necessary)
         do {
             try {
                 Response<JSONArray> r = getNetz()
@@ -923,11 +922,11 @@ public class GroundspeakAPI {
         }
     }
 
-    private static Cache createGeoCache(JSONObject API1Cache, ArrayList<String> fields, Cache oldcache) {
+    private static Cache createGeoCache(JSONObject API1Cache, ArrayList<String> fields, Cache cache) {
         // see https://api.groundspeak.com/documentation#geocache
         // see https://api.groundspeak.com/documentation#lite-geocache
-        // if (oldcache == null) todo reuse the already loaded oldcache object
-        Cache cache = new Cache(true);
+        if (cache == null)
+            cache = new Cache(true);
         cache.setAttributesPositive(new DLong(0, 0));
         cache.setAttributesNegative(new DLong(0, 0));
         cache.setApiStatus(IS_LITE);
@@ -1017,12 +1016,6 @@ public class GroundspeakAPI {
                         if (userData != null) {
                             // foundDate
                             cache.setFound(userData.optString("foundDate", "").length() != 0);
-                            // Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
-                            if (!cache.isFound()) {
-                                // todo simply use oldcache!= null && oldcache.isFound()
-                                boolean found = LoadBooleanValueFromDB("select Found from Caches where GcCode = \"" + cache.getGcCode() + "\"");
-                                if (found) cache.setFound(true);
-                            }
                             // correctedCoordinates
                             JSONObject correctedCoordinates = userData.optJSONObject("correctedCoordinates");
                             if (correctedCoordinates != null) {
@@ -1035,16 +1028,9 @@ public class GroundspeakAPI {
                                     cache.Pos = new Coordinate();
                                 }
                             }
-                            // isFavorited
-                            // note (auch bei lite)
                             cache.setTmpNote(userData.optString("note", ""));
-                            // todo split solver from notes
                         } else {
                             cache.setFound(false);
-                            // Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
-                            // todo simply set from oldcache  use oldcache!= null && oldcache.isFound()
-                            boolean found = LoadBooleanValueFromDB("select Found from Caches where GcCode = \"" + cache.getGcCode() + "\"");
-                            if (found) cache.setFound(true);
                             JSONObject postedCoordinates = API1Cache.optJSONObject("postedCoordinates");
                             if (postedCoordinates != null) {
                                 cache.Pos = new Coordinate(postedCoordinates.optDouble("latitude", 0), postedCoordinates.optDouble("longitude", 0));
@@ -1107,47 +1093,11 @@ public class GroundspeakAPI {
                 }
             }
 
-            // todo do this in WriteIntoDb or reuse oldCache
-            // Ein evtl. in der Datenbank vorhandenen "Favorite" nicht überschreiben
-            boolean favorite = LoadBooleanValueFromDB("select Favorit from Caches where GcCode = \"" + cache.getGcCode() + "\"");
-            if (favorite) cache.setFavorite(true);
-
-            // Ein evtl. in der Datenbank vorhandenen "HasUserData" nicht überschreiben
-            boolean userData = LoadBooleanValueFromDB("select HasUserData from Caches where GcCode = \"" + cache.getGcCode() + "\"");
-            if (userData) cache.setHasUserData(true);
-
-            // todo check ? mustfields
-            // cache.setListingChanged(false);
-            // cache.setTourName("");
-            // cache.setNoteChecksum(0);
-            // cache.Rating = 0;
-            // cache.setSolverChecksum(0);
-
-
             return cache;
         } catch (Exception e) {
             Log.err(log, "createGeoCache(JSONObject API1Cache)", e);
             return null;
         }
-    }
-
-    private static boolean LoadBooleanValueFromDB(String sql) // Found-Status aus Datenbank auslesen
-    {
-        Log.trace(log, "LoadBooleanValueFromDB " + sql);
-        CoreCursor reader = Database.Data.rawQuery(sql, null);
-        try {
-            reader.moveToFirst();
-            while (!reader.isAfterLast()) {
-                if (reader.getInt(0) != 0) { // gefunden. Suche abbrechen
-                    return true;
-                }
-                reader.moveToNext();
-            }
-        } finally {
-            reader.close();
-        }
-
-        return false;
     }
 
     private static void addWayPoints(Cache cache, JSONArray wpts) {
@@ -1218,7 +1168,6 @@ public class GroundspeakAPI {
             logEntry.Timestamp = new Date();
         }
         logEntry.Type = LogTypes.parseString(geocacheLog.optString("type", ""));
-        // todo logEntry.Id = geocacheLog.getInt("ID"); change database? temporary solution: generateLogId
         String referenceCode = geocacheLog.optString("referenceCode", "");
         logEntry.Id = generateLogId(referenceCode);
         return logEntry;
@@ -1514,7 +1463,7 @@ public class GroundspeakAPI {
     public static class Query {
         private static final String LiteFields = "referenceCode,favoritePoints,userData,name,difficulty,terrain,placedDate,geocacheType.id,geocacheSize.id,location,postedCoordinates,status,owner.username,ownerAlias";
         private static final String NotLiteFields = "hints,attributes,longDescription,shortDescription,additionalWaypoints,userWaypoints";
-        private static final String StatusFields = "referenceCode,favoritePoints,status,trackableCount,longDescription";
+        private static final String StatusFields = "referenceCode,favoritePoints,status,trackableCount";
         private StringBuilder qString;
         private StringBuilder fieldsString;
         private StringBuilder expandString;
