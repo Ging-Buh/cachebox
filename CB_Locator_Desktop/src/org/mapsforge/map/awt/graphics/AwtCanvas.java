@@ -15,10 +15,10 @@
  */
 package org.mapsforge.map.awt.graphics;
 
-import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.Dimension;
 
 import java.awt.*;

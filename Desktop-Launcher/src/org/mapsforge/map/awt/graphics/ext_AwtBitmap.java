@@ -15,15 +15,10 @@
  */
 package org.mapsforge.map.awt.graphics;
 
-import CB_Locator.LocatorSettings;
-import CB_UI_Base.graphics.GL_RenderType;
 import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_UI_Base.graphics.extendedInterfaces.ext_Bitmap;
 import com.badlogic.gdx.graphics.Texture;
 import org.mapsforge.core.graphics.TileBitmap;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Extends the original Mapsforge AwtBitmap with the ext_Bitmap interface.

@@ -15,7 +15,7 @@
  */
 package CB_UI.GL_UI.Controls.PopUps;
 
-import CB_Core.Api.*;
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.*;
 import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
@@ -53,7 +53,6 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Interfaces.ICancelRunnable;
-import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -566,8 +565,7 @@ public class SearchDialog extends PopUp_Base {
                         // todo API 1.0 doesn't allow a pattern (only one GCCode, else handle a list of GCCodes
                         if (searchPattern.contains(",")) {
                             geoCacheRelateds = fetchGeoCaches(q, searchPattern);
-                        }
-                        else {
+                        } else {
                             geoCacheRelateds = fetchGeoCache(q, searchPattern);
                         }
                         break;
@@ -592,10 +590,9 @@ public class SearchDialog extends PopUp_Base {
                             if (Database.Data.Query.GetCacheById(cache.Id) == null) {
                                 Database.Data.Query.add(cache);
 
-                                if (cache.getGPXFilename_ID() == 0 ) {
+                                if (cache.getGPXFilename_ID() == 0) {
                                     cache.setGPXFilename_ID(gpxFilename.Id);
-                                }
-                                else {
+                                } else {
                                     // todo check if this must be done
                                     // get akt category, if not pinned.
                                 }

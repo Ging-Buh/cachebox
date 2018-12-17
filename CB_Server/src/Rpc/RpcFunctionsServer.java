@@ -1,28 +1,18 @@
 package Rpc;
 
-import java.util.HashMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import CB_Core.CB_Core_Settings;
-import CB_Core.Database;
-import CB_Core.Types.CacheListDAO;
 import CB_Core.DAO.WaypointDAO;
-import CB_Core.Types.Cache;
-import CB_Core.Types.CacheList;
-import CB_Core.Types.ExportEntry;
-import CB_Core.Types.ImageEntry;
-import CB_Core.Types.LogEntry;
-import CB_RpcCore.Functions.RpcAnswer_ExportChangesToServer;
-import CB_RpcCore.Functions.RpcAnswer_GetCacheList;
-import CB_RpcCore.Functions.RpcMessage_ExportChangesToServer;
-import CB_RpcCore.Functions.RpcMessage_GetCacheList;
-import CB_RpcCore.Functions.RpcMessage_GetExportList;
+import CB_Core.Database;
+import CB_Core.Types.*;
+import CB_RpcCore.Functions.*;
 import CB_Utils.Lists.CB_List;
 import cb_rpc.Functions.RpcAnswer;
 import cb_rpc.Functions.RpcMessage;
 import cb_server.DAO.GetExportListDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
 
 public class RpcFunctionsServer {
 	// speichert geladene CacheLists anhand der Categoriy

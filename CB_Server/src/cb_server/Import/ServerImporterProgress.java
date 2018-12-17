@@ -1,10 +1,9 @@
 package cb_server.Import;
 
+import CB_Core.Import.ImporterProgress;
+import cb_server.Views.CB_ViewBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import cb_server.Views.CB_ViewBase;
-import CB_Core.Import.ImporterProgress;
 
 public class ServerImporterProgress extends ImporterProgress {
 	private Logger log = LoggerFactory.getLogger(CB_ViewBase.class);;

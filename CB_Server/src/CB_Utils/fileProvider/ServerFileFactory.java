@@ -1,12 +1,11 @@
 package CB_Utils.fileProvider;
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+import CB_Utils.Util.FileIO;
 
 import javax.imageio.ImageIO;
-
-import CB_Utils.Util.FileIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 /**
  * Created by Longri on 17.02.2016.

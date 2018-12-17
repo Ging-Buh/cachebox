@@ -1,10 +1,5 @@
 package cb_server.Views;
 
-import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.VerticalLayout;
-
 import CB_Core.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
@@ -12,6 +7,10 @@ import CB_Core.Types.Waypoint;
 import CB_Utils.Lists.CB_List;
 import cb_server.Events.SelectedCacheChangedEventList;
 import cb_server.Events.SelectedCacheChangedEventListner;
+import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
 
 public class LogView extends CB_ViewBase implements SelectedCacheChangedEventListner {
 

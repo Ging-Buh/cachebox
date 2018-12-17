@@ -10,7 +10,6 @@ import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 public class Import_PqListItem extends ListViewItemBackground {

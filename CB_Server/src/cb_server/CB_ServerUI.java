@@ -1,5 +1,26 @@
 package cb_server;
 
+import CB_Core.Api.GroundspeakAPI;
+import CB_Core.*;
+import CB_Core.Types.CacheList;
+import CB_Core.Types.CacheListDAO;
+import cb_server.Import.ImportScheduler;
+import cb_server.Views.*;
+import com.vaadin.annotations.PreserveOnRefresh;
+import com.vaadin.annotations.Push;
+import com.vaadin.annotations.Theme;
+import com.vaadin.server.ClientConnector.DetachListener;
+import com.vaadin.server.Sizeable;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.MenuBar.Command;
+import com.vaadin.ui.MenuBar.MenuItem;
+import de.steinwedel.messagebox.MessageBox;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Timer;
@@ -7,50 +28,6 @@ import java.util.TimerTask;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import CB_Core.Api.GroundspeakAPI;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.vaadin.annotations.PreserveOnRefresh;
-import com.vaadin.annotations.Push;
-import com.vaadin.annotations.Theme;
-import com.vaadin.server.ClientConnector.DetachListener;
-import com.vaadin.server.Sizeable;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.MenuBar;
-import com.vaadin.ui.MenuBar.Command;
-import com.vaadin.ui.MenuBar.MenuItem;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.VerticalSplitPanel;
-import com.vaadin.ui.Window;
-
-import CB_Core.CB_Core_Settings;
-import CB_Core.CacheListChangedEventList;
-import CB_Core.Database;
-import CB_Core.FilterInstances;
-import CB_Core.FilterProperties;
-import CB_Core.Types.CacheListDAO;
-import CB_Core.Types.CacheList;
-import cb_server.Import.ImportScheduler;
-import cb_server.Views.CB_ViewBase;
-import cb_server.Views.CacheListView;
-import cb_server.Views.DescriptionView;
-import cb_server.Views.LogView;
-import cb_server.Views.MapView;
-import cb_server.Views.ProgressView;
-import cb_server.Views.SolverView;
-import cb_server.Views.WaypointView;
-import de.steinwedel.messagebox.MessageBox;
 
 @SuppressWarnings("serial")
 @Theme("cb_server")

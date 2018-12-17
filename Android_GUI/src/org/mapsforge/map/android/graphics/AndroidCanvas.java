@@ -20,10 +20,10 @@ import android.graphics.*;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.Dimension;
 
 class AndroidCanvas implements Canvas {

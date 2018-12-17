@@ -15,15 +15,14 @@
  */
 package cb_server;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import CB_Core.Api.CB_Api;
-
 import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * 

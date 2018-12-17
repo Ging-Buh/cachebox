@@ -1,31 +1,21 @@
 package cb_server.Views;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import org.vaadin.addon.leaflet.LLayerGroup;
-import org.vaadin.addon.leaflet.LMap;
-import org.vaadin.addon.leaflet.LMarker;
-import org.vaadin.addon.leaflet.LPolyline;
-import org.vaadin.addon.leaflet.LTileLayer;
-import org.vaadin.addon.leaflet.LeafletClickEvent;
-import org.vaadin.addon.leaflet.LeafletClickListener;
-import org.vaadin.addon.leaflet.LeafletMoveEndEvent;
-import org.vaadin.addon.leaflet.LeafletMoveEndListener;
-import org.vaadin.addon.leaflet.shared.Bounds;
-import org.vaadin.addon.leaflet.shared.Control;
-import org.vaadin.addon.leaflet.shared.Point;
-
-import com.google.gwt.dev.util.collect.HashMap;
-import com.vaadin.server.ExternalResource;
-
 import CB_Core.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import Rpc.RpcFunctionsServer;
 import cb_server.Events.SelectedCacheChangedEventList;
+import com.google.gwt.dev.util.collect.HashMap;
+import com.vaadin.server.ExternalResource;
+import org.vaadin.addon.leaflet.*;
+import org.vaadin.addon.leaflet.shared.Bounds;
+import org.vaadin.addon.leaflet.shared.Control;
+import org.vaadin.addon.leaflet.shared.Point;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MapView extends CB_ViewBase {
 

@@ -15,7 +15,6 @@
  */
 package CB_Core.Import;
 
-import CB_Core.Api.GroundspeakAPI;
 import CB_Core.CB_Core_Settings;
 import CB_Core.Database;
 import CB_Core.Types.Cache;
@@ -35,7 +34,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 
 import static CB_Core.Api.GroundspeakAPI.*;

@@ -30,7 +30,6 @@ import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.Map.Track;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
@@ -54,9 +53,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static CB_Core.Api.API_ErrorEventHandlerList.handleApiKeyError;
-import static CB_Core.Api.GroundspeakAPI.LastAPIError;
-import static CB_Core.Api.GroundspeakAPI.OK;
-import static CB_Core.Api.GroundspeakAPI.isAccessTokenInvalid;
+import static CB_Core.Api.GroundspeakAPI.*;
 
 /**
  * @author ging-buh

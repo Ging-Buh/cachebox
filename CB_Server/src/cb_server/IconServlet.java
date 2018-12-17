@@ -1,13 +1,7 @@
 package cb_server;
 
-import java.awt.BasicStroke;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
+import org.mapsforge.core.graphics.*;
+import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
@@ -15,15 +9,12 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.Matrix;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.ResourceBitmap;
-import org.mapsforge.core.graphics.Style;
-import org.mapsforge.core.graphics.TileBitmap;
-import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 public class IconServlet extends HttpServlet {
 	private static final long serialVersionUID = 1205779103262021876L;

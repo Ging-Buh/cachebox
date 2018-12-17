@@ -16,24 +16,18 @@
 
 package org.mapsforge.map.layer.renderer;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.imageio.ImageIO;
-
+import CB_Locator.LocatorSettings;
+import CB_Locator.Map.Descriptor;
+import CB_UI_Base.graphics.GL_RenderType;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 import org.mapsforge.map.awt.graphics.AwtTileBitmap;
 import org.mapsforge.map.datastore.MultiMapDataStore;
 
-import CB_Locator.LocatorSettings;
-import CB_Locator.Map.Descriptor;
-import CB_UI_Base.graphics.GL_RenderType;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 
 /**
  * Extends the Mapsforge DatabaseRenderer with a Disk Cached MapTile Loader

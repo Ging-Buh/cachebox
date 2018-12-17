@@ -1,5 +1,11 @@
 package cb_server;
 
+import CB_UI_Base.Global;
+import com.badlogic.gdx.*;
+import com.badlogic.gdx.utils.Clipboard;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -7,21 +13,6 @@ import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import CB_UI_Base.Global;
-
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Audio;
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.LifecycleListener;
-import com.badlogic.gdx.Net;
-import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.utils.Clipboard;
 
 /**
  * This class implements only the logger methods for logging on Gdx.app.debug, Gdx.app.info and Gdx.app.error!

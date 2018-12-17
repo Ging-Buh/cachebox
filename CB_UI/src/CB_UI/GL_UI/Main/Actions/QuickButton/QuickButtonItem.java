@@ -31,7 +31,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import org.slf4j.LoggerFactory;
 
 /**
  * Stellt ein Item der Quick Button List dar

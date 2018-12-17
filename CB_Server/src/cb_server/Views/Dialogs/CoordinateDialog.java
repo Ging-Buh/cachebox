@@ -1,24 +1,16 @@
 package cb_server.Views.Dialogs;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-
 import CB_Locator.Coordinate;
-
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
-import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
+import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
+
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 
 public class CoordinateDialog extends ButtonDialog implements BlurListener {
 	private static final long serialVersionUID = 1834633252228907909L;
@@ -150,7 +142,7 @@ public class CoordinateDialog extends ButtonDialog implements BlurListener {
 		tbSLatDeg = new TextField();
 		layout.addComponent(tbSLatDeg);
 
-		Label lLatGrad = new Label("°");
+		Label lLatGrad = new Label("ï¿½");
 		layout.addComponent(lLatGrad);
 
 		tbSLatMin = new TextField();
@@ -174,7 +166,7 @@ public class CoordinateDialog extends ButtonDialog implements BlurListener {
 		tbSLonDeg = new TextField();
 		layout.addComponent(tbSLonDeg);
 
-		Label lLonGrad = new Label("°");
+		Label lLonGrad = new Label("ï¿½");
 		layout.addComponent(lLonGrad);
 
 		tbSLonMin = new TextField();
@@ -240,7 +232,7 @@ public class CoordinateDialog extends ButtonDialog implements BlurListener {
 		tbMLatDeg = new TextField();
 		layout.addComponent(tbMLatDeg);
 
-		Label lLatGrad = new Label("°");
+		Label lLatGrad = new Label("ï¿½");
 		layout.addComponent(lLatGrad);
 
 		tbMLatMin = new TextField();
@@ -258,7 +250,7 @@ public class CoordinateDialog extends ButtonDialog implements BlurListener {
 		tbMLonDeg = new TextField();
 		layout.addComponent(tbMLonDeg);
 
-		Label lLonGrad = new Label("°");
+		Label lLonGrad = new Label("ï¿½");
 		layout.addComponent(lLonGrad);
 
 		tbMLonMin = new TextField();
@@ -312,7 +304,7 @@ public class CoordinateDialog extends ButtonDialog implements BlurListener {
 		//		tfLatitude.setWidth("70%");
 		layout.addComponent(tbDLat);
 
-		Label lLatitude = new Label("°");
+		Label lLatitude = new Label("ï¿½");
 		//		lLatitude.setWidth("10%");
 		layout.addComponent(lLatitude);
 
@@ -327,7 +319,7 @@ public class CoordinateDialog extends ButtonDialog implements BlurListener {
 		//		tfLongitude.setWidth("70%");
 		layout.addComponent(tbDLon);
 
-		Label lLongitude = new Label("°");
+		Label lLongitude = new Label("ï¿½");
 		//		lLongitude.setWidth("10%");
 		layout.addComponent(lLongitude);
 
@@ -461,14 +453,14 @@ public class CoordinateDialog extends ButtonDialog implements BlurListener {
 	private boolean parseView() {
 		String scoord = "";
 		if (sheets.getSelectedTab() == sheetGrad) {
-			scoord += cbDLat.getValue() + " " + tbDLat.getValue() + "°";
-			scoord += " " + cbDLon.getValue() + " " + tbDLon.getValue() + "°";
+			scoord += cbDLat.getValue() + " " + tbDLat.getValue() + "ï¿½";
+			scoord += " " + cbDLon.getValue() + " " + tbDLon.getValue() + "ï¿½";
 		} else if (sheets.getSelectedTab() == sheetGradMin) {
-			scoord += cbMLat.getValue() + " " + tbMLatDeg.getValue() + "° " + tbMLatMin.getValue() + "'";
-			scoord += " " + cbMLon.getValue() + " " + tbMLonDeg.getValue() + "° " + tbMLonMin.getValue() + "'";
+			scoord += cbMLat.getValue() + " " + tbMLatDeg.getValue() + "ï¿½ " + tbMLatMin.getValue() + "'";
+			scoord += " " + cbMLon.getValue() + " " + tbMLonDeg.getValue() + "ï¿½ " + tbMLonMin.getValue() + "'";
 		} else if (sheets.getSelectedTab() == sheetGradMinSec) {
-			scoord += cbSLat.getValue() + " " + tbSLatDeg.getValue() + "° " + tbSLatMin.getValue() + "' " + tbSLatSec.getValue() + "''";
-			scoord += " " + cbSLon.getValue() + " " + tbSLonDeg.getValue() + "° " + tbSLonMin.getValue() + "' " + tbSLonSec.getValue() + "''";
+			scoord += cbSLat.getValue() + " " + tbSLatDeg.getValue() + "ï¿½ " + tbSLatMin.getValue() + "' " + tbSLatSec.getValue() + "''";
+			scoord += " " + cbSLon.getValue() + " " + tbSLonDeg.getValue() + "ï¿½ " + tbSLonMin.getValue() + "' " + tbSLonSec.getValue() + "''";
 		} else if (sheets.getSelectedTab() == sheetUTM) {
 			// TODO                scoord += tbZone.Text + " " + tbEasting.Text + " " + tbNording.Text;
 

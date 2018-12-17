@@ -1,8 +1,10 @@
 package cb_server.Views;
 
-import java.io.Serializable;
-import java.util.HashMap;
-
+import CB_Core.Database;
+import CB_Core.Types.Cache;
+import CB_Core.Types.Waypoint;
+import cb_server.Events.SelectedCacheChangedEventList;
+import cb_server.Events.SelectedCacheChangedEventListner;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -16,11 +18,8 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 
-import CB_Core.Database;
-import CB_Core.Types.Cache;
-import CB_Core.Types.Waypoint;
-import cb_server.Events.SelectedCacheChangedEventList;
-import cb_server.Events.SelectedCacheChangedEventListner;
+import java.io.Serializable;
+import java.util.HashMap;
 
 public class CacheListView extends CB_ViewBase implements SelectedCacheChangedEventListner {
 

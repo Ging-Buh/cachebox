@@ -15,52 +15,23 @@
  */
 package cb_server;
 
+import CB_Translation_Base.TranslationEngine.Lang;
+import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
+import CB_Utils.Settings.*;
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import fi.jasoft.qrcode.QRCode;
+
 import java.io.IOException;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
-
-import com.vaadin.event.FieldEvents.TextChangeEvent;
-import com.vaadin.event.FieldEvents.TextChangeListener;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-
-import CB_Translation_Base.TranslationEngine.Lang;
-import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI_Base.settings.CB_UI_Base_Settings;
-import CB_Utils.Settings.SettingBase;
-import CB_Utils.Settings.SettingBool;
-import CB_Utils.Settings.SettingCategory;
-import CB_Utils.Settings.SettingDouble;
-import CB_Utils.Settings.SettingEncryptedString;
-import CB_Utils.Settings.SettingEnum;
-import CB_Utils.Settings.SettingFile;
-import CB_Utils.Settings.SettingFloat;
-import CB_Utils.Settings.SettingFolder;
-import CB_Utils.Settings.SettingInt;
-import CB_Utils.Settings.SettingIntArray;
-import CB_Utils.Settings.SettingModus;
-import CB_Utils.Settings.SettingString;
-import CB_Utils.Settings.SettingStringArray;
-import CB_Utils.Settings.SettingTime;
-import CB_Utils.Settings.SettingUsage;
-import CB_Utils.Settings.SettingsAudio;
-import fi.jasoft.qrcode.QRCode;
 
 public class SettingsWindow extends Window {
 	/**
@@ -270,7 +241,7 @@ public class SettingsWindow extends Window {
 
 				SettingCategory cat = iteratorCat.next();
 
-				// add Cat einträge
+				// add Cat eintrï¿½ge
 
 				lay = new VerticalLayout();
 				int entryCount = 0;

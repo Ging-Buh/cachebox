@@ -18,7 +18,6 @@ package CB_UI.GL_UI.Main.Actions;
 import CB_Core.CacheListChangedEventList;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
-import CB_Core.Types.Cache;
 import CB_Core.Types.CacheDAO;
 import CB_Core.Types.CacheListDAO;
 import CB_Translation_Base.TranslationEngine.Translation;

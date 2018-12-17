@@ -3,7 +3,6 @@ package cb_server.Views;
 import CB_Utils.Events.ProgressChangedEvent;
 import CB_Utils.Events.ProgresssChangedEventList;
 import cb_server.CB_ServerUI;
-
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;

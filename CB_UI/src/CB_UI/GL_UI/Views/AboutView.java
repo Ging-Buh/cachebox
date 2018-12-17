@@ -36,7 +36,6 @@ import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.*;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumericInputBox.IReturnValueListener;
 import CB_UI_Base.GL_UI.Controls.Image;

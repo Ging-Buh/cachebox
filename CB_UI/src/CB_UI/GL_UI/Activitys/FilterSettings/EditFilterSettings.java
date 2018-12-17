@@ -16,10 +16,10 @@
 package CB_UI.GL_UI.Activitys.FilterSettings;
 
 import CB_Core.CacheListChangedEventList;
-import CB_Core.Types.CacheListDAO;
 import CB_Core.Database;
 import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
+import CB_Core.Types.CacheListDAO;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Main.TabMainView;

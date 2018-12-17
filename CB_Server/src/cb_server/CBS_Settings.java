@@ -1,16 +1,10 @@
 package cb_server;
 
-import CB_Utils.Settings.SettingCategory;
-import CB_Utils.Settings.SettingFile;
-import CB_Utils.Settings.SettingInt;
-import CB_Utils.Settings.SettingModus;
-import CB_Utils.Settings.SettingStoreType;
-import CB_Utils.Settings.SettingString;
-import CB_Utils.Settings.SettingUsage;
+import CB_Utils.Settings.*;
 
 public interface CBS_Settings {
 
-	// Abkürzende Schreibweisen für die Übersichlichkeit bei den add Methoden
+	// Abkï¿½rzende Schreibweisen fï¿½r die ï¿½bersichlichkeit bei den add Methoden
 	public static final SettingModus DEVELOPER = SettingModus.DEVELOPER;
 	public static final SettingModus NORMAL = SettingModus.Normal;
 	public static final SettingModus EXPERT = SettingModus.Expert;

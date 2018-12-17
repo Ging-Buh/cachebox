@@ -1,27 +1,25 @@
 package cb_server.Views;
 
-import java.io.Serializable;
-
-import org.vaadin.peter.contextmenu.ContextMenu;
-import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
-import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickEvent;
-import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickListener;
-
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.Table;
-
 import CB_Core.CacheTypes;
-import CB_Core.Database;
 import CB_Core.DAO.WaypointDAO;
+import CB_Core.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import cb_server.Events.SelectedCacheChangedEventList;
 import cb_server.Events.SelectedCacheChangedEventListner;
 import cb_server.Views.Dialogs.WaypointDialog;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.Table;
+import org.vaadin.peter.contextmenu.ContextMenu;
+import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
+import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickEvent;
+import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickListener;
+
+import java.io.Serializable;
 
 public class WaypointView extends Panel implements SelectedCacheChangedEventListner {
 

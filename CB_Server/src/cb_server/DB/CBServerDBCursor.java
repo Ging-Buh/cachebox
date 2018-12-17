@@ -1,10 +1,10 @@
 package cb_server.DB;
 
+import de.cb.sqlite.CoreCursor;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import de.cb.sqlite.CoreCursor;
 
 public class CBServerDBCursor extends CoreCursor {
 	private ResultSet rs;

@@ -17,13 +17,13 @@
 package org.mapsforge.map.android.graphics;
 
 import android.annotation.TargetApi;
-import android.graphics.*;
 import android.graphics.Matrix;
+import android.graphics.*;
 import android.graphics.Shader.TileMode;
 import android.os.Build;
-import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.Point;
 
 class AndroidPaint implements Paint {

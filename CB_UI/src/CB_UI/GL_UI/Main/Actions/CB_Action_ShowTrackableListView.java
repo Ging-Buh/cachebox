@@ -1,16 +1,9 @@
 package CB_UI.GL_UI.Main.Actions;
 
-import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.TrackableListView;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
-import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
-import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
-import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
-import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import com.badlogic.gdx.graphics.g2d.Sprite;

@@ -1,15 +1,5 @@
 package cb_server.Views;
 
-import java.io.File;
-import java.net.URI;
-import java.util.Iterator;
-import java.util.LinkedList;
-
-import com.vaadin.server.Page;
-import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
-
 import CB_Core.Attributes;
 import CB_Core.CB_Core_Settings;
 import CB_Core.Database;
@@ -19,6 +9,15 @@ import CB_Core.Types.Waypoint;
 import cb_server.Config;
 import cb_server.Events.SelectedCacheChangedEventList;
 import cb_server.Events.SelectedCacheChangedEventListner;
+import com.vaadin.server.Page;
+import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
+
+import java.io.File;
+import java.net.URI;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 public class DescriptionView extends Panel implements SelectedCacheChangedEventListner {
 	private static final long serialVersionUID = -2798716474691088797L;

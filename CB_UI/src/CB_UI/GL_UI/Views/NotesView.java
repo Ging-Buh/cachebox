@@ -28,7 +28,6 @@ import CB_UI_Base.Events.KeyboardFocusChangedEventList;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
-import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;

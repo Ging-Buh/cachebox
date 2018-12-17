@@ -25,7 +25,6 @@ import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
 import CB_Utils.http.*;
-import de.cb.sqlite.CoreCursor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;

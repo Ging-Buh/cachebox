@@ -1,15 +1,15 @@
 package cb_server.Events;
 
-import java.util.ArrayList;
-
 import CB_Core.Solver.Solver;
 import CB_Core.Solver.SolverCacheInterface;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 
+import java.util.ArrayList;
+
 public class SelectedCacheChangedEventList implements SolverCacheInterface {
 	public static ArrayList<SelectedCacheChangedEventListner> list = new ArrayList<SelectedCacheChangedEventListner>();
-	// hier werden der aktuell ausgewählte cache und wp gespeichert
+	// hier werden der aktuell ausgewï¿½hlte cache und wp gespeichert
 	private static Cache selectedCache;
 	private static Waypoint selectedWaypoint;
 

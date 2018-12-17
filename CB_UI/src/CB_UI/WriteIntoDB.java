@@ -45,6 +45,15 @@ public class WriteIntoDB {
                 cache.setHasUserData(oldCache.isHasUserData());
                 cache.setTourName(oldCache.getTourName());
                 // solver is independant
+                if (oldCache.hasCorrectedCoordinates()) {
+                    if (cache.hasCorrectedCoordinates()) {
+                        // changed coords from GS stay preserved
+                    }
+                    else {
+                        cache.Pos = oldCache.Pos;
+                        cache.setHasCorrectedCoordinates(true);
+                    }
+                }
             }
 
             if (forCategory != null) {

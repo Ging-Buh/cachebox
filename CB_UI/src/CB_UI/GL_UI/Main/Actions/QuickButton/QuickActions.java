@@ -17,7 +17,7 @@ package CB_UI.GL_UI.Main.Actions.QuickButton;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GL_UI.Main.Actions.*;
+import CB_UI.GL_UI.Main.Actions.CB_Action_UploadFieldNote;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Util.MoveableList;

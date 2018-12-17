@@ -1,16 +1,11 @@
 package cb_server.Views.Dialogs;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
-
 import CB_Core.CacheTypes;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
+import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 
 public class WaypointDialog extends ButtonDialog {
 	public interface ReturnListner {

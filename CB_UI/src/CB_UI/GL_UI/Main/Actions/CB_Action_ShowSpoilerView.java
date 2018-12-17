@@ -18,7 +18,6 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import org.slf4j.LoggerFactory;
 
 public class CB_Action_ShowSpoilerView extends CB_Action_ShowView {
     private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);

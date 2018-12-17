@@ -1,17 +1,12 @@
 package cb_server.DB;
 
-import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Map.Entry;
-import java.util.Properties;
-
 import CB_Core.Database;
 import de.cb.sqlite.CoreCursor;
+
+import java.io.File;
+import java.sql.*;
+import java.util.Map.Entry;
+import java.util.Properties;
 
 public class CBServerDBPostgre extends Database {
 	Connection myDB = null;

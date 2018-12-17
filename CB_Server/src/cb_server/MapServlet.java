@@ -15,14 +15,11 @@
  */
 package cb_server;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import CB_Locator.LocatorSettings;
+import CB_Utils.Util.IChanged;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
+import de.Map.DesktopManager;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.Tile;
@@ -33,11 +30,12 @@ import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 
-import CB_Locator.LocatorSettings;
-import CB_Utils.Util.IChanged;
-import CB_Utils.fileProvider.File;
-import CB_Utils.fileProvider.FileFactory;
-import de.Map.DesktopManager;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class MapServlet extends HttpServlet {
 	private static final long serialVersionUID = 2094731483963312861L;

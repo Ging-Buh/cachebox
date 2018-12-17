@@ -47,7 +47,6 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Log;
 

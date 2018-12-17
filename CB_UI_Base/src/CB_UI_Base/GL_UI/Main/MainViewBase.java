@@ -2,7 +2,6 @@ package CB_UI_Base.GL_UI.Main;
 
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowQuit;
-import CB_UI_Base.GL_UI.ViewID;
 import CB_UI_Base.Math.CB_RectF;
 
 public class MainViewBase extends CB_View_Base {

@@ -1,32 +1,21 @@
 package cb_server;
 
-import java.awt.AWTException;
-import java.awt.CheckboxMenuItem;
-import java.awt.Image;
-import java.awt.Menu;
-import java.awt.MenuItem;
-import java.awt.PopupMenu;
-import java.awt.SystemTray;
-import java.awt.TrayIcon;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-
+import CB_Core.*;
+import CB_Core.Database.DatabaseType;
+import CB_Core.Types.CacheListDAO;
+import CB_Core.Types.Categories;
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_Utils.Plattform;
+import CB_Utils.Settings.SettingModus;
+import CB_Utils.Util.FileIO;
+import CB_Utils.fileProvider.ServerFileFactory;
+import Rpc.RpcFunctionsServer;
+import cb_rpc.Rpc_Server;
+import cb_server.DB.CBServerDB;
+import cb_server.Import.ImportScheduler;
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -36,26 +25,15 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
-
-import CB_Core.CB_Core_Settings;
-import CB_Core.CoreSettingsForward;
-import CB_Core.Database;
-import CB_Core.Database.DatabaseType;
-import CB_Core.FilterInstances;
-import CB_Core.FilterProperties;
-import CB_Core.Types.CacheListDAO;
-import CB_Core.Types.Categories;
-import CB_Utils.Plattform;
-import CB_Utils.Settings.SettingModus;
-import CB_Utils.Util.FileIO;
-import CB_Utils.fileProvider.ServerFileFactory;
-import Rpc.RpcFunctionsServer;
-import cb_rpc.Rpc_Server;
-import cb_server.DB.CBServerDB;
-import cb_server.Import.ImportScheduler;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
+import java.lang.management.ManagementFactory;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 public class CacheboxServer {
 	public static Logger log;

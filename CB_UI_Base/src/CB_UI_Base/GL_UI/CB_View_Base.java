@@ -6,9 +6,6 @@ import CB_UI_Base.Math.SizeF;
 import CB_Utils.Util.MoveableList;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
-import java.util.ConcurrentModificationException;
-import java.util.NoSuchElementException;
-
 public class CB_View_Base extends GL_View_Base {
 
     public static final int FIXED = -1;

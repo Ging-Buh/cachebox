@@ -14,7 +14,6 @@ import CB_UI_Base.GL_UI.GL_Listener.GL_Listener_Interface;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.DevicesSizes;
-import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Log;
 import CB_Utils.Plattform;
@@ -23,20 +22,16 @@ import CB_Utils.Settings.PlatformSettings.IPlatformSettings;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.IChanged;
 import ch.fhnw.imvs.gpssimulator.SimulatorMain;
-
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-
 import de.CB_Texturepacker.Desktop_Packer;
 import de.Map.DesktopManager;
 import de.cb.sqlite.DesktopDB;
-
 import org.mapsforge.map.model.DisplayModel;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
-
 import java.awt.*;
 import java.io.File;
 import java.util.Timer;

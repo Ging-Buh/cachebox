@@ -24,7 +24,6 @@ import CB_Utils.Log.Log;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import static CB_Core.Api.GroundspeakAPI.*;
 

@@ -2,14 +2,7 @@ package org.jsoup.parser;
 
 import org.jsoup.helper.StringUtil;
 import org.jsoup.helper.Validate;
-import org.jsoup.nodes.CDataNode;
-import org.jsoup.nodes.Comment;
-import org.jsoup.nodes.DataNode;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.nodes.FormElement;
-import org.jsoup.nodes.Node;
-import org.jsoup.nodes.TextNode;
+import org.jsoup.nodes.*;
 import org.jsoup.select.Elements;
 
 import java.io.Reader;

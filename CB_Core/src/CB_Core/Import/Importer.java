@@ -19,14 +19,10 @@ import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.GroundspeakAPI.PQ;
 import CB_Core.CB_Core_Settings;
 import CB_Core.DAO.GCVoteDAO;
-import CB_Core.DAO.ImageDAO;
 import CB_Core.Database;
 import CB_Core.GCVote.GCVote;
 import CB_Core.GCVote.GCVoteCacheInfo;
 import CB_Core.GCVote.RatingData;
-import CB_Core.Types.Cache;
-import CB_Core.Types.CacheDAO;
-import CB_Core.Types.ImageEntry;
 import CB_Utils.Events.ProgresssChangedEventList;
 import CB_Utils.Log.Log;
 import CB_Utils.Util.FileIO;
@@ -38,11 +34,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.util.*;
 import java.util.zip.ZipException;
-
-import static CB_Utils.http.Download.Download;
 
 public class Importer {
     private static final String log = "Importer";

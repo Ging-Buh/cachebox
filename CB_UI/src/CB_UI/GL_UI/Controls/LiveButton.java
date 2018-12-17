@@ -10,7 +10,6 @@ import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.Controls.ImageButton;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Sprites;
-import CB_Utils.Log.Log;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class LiveButton extends ImageButton implements QueStateChanged {

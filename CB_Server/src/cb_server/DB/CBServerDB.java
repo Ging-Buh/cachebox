@@ -1,16 +1,11 @@
 package cb_server.DB;
 
-import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Map.Entry;
-
 import CB_Core.Database;
 import de.cb.sqlite.CoreCursor;
+
+import java.io.File;
+import java.sql.*;
+import java.util.Map.Entry;
 
 public class CBServerDB extends Database {
 
