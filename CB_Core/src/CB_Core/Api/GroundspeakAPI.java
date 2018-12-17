@@ -49,6 +49,7 @@ public class GroundspeakAPI {
     private static UserInfos me;
     private static Webb netz;
     private static long startTs;
+    private static long lastTimeLimitFetched;
     private static int nrOfApiCalls;
     private static int retryCount;
     private static boolean active = false;
@@ -239,7 +240,7 @@ public class GroundspeakAPI {
 
     public static ArrayList<GeoCacheRelated> updateStatusOfGeoCaches(ArrayList<Cache> caches) {
         // fetch/update geocaches consumes a lite or full cache
-        Query query = new Query().resultForStatusFields().setMaxToFetch(100);
+        Query query = new Query().resultForStatusFields().setMaxToFetch(caches.size());
         return updateGeoCaches(query, caches);
     }
 
@@ -280,7 +281,7 @@ public class GroundspeakAPI {
 
             ArrayList<String> fields = query.getFields();
             boolean onlyLiteFields = query.containsOnlyLiteFields(fields);
-            int maxCachesPerHttpCall = (onlyLiteFields ? 50 : 5); // API 1.0 says may take 100, but not in what time, and with 10 Full I got out of memory
+            int maxCachesPerHttpCall = (onlyLiteFields ? 50 : 5); // API 1.0 says may take 50, but not in what time, and with 10 Full I got out of memory
             if (onlyLiteFields) {
                 fetchMyCacheLimits();
                 if (me.remainingLite < me.remaining) {
@@ -797,7 +798,11 @@ public class GroundspeakAPI {
     }
 
     public static void fetchMyCacheLimits() {
-        me = fetchUserInfos("me");
+        if (System.currentTimeMillis() - lastTimeLimitFetched > 60000) {
+            // update one time per minute may be enough
+            me = fetchUserInfos("me");
+            lastTimeLimitFetched = System.currentTimeMillis();
+        }
     }
 
     public static UserInfos fetchUserInfos(String UserCode) {

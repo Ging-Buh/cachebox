@@ -142,7 +142,6 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent {
         if (ProgressThread != null) {
             Timer runTimer = new Timer();
             TimerTask task = new TimerTask() {
-
                 @Override
                 public void run() {
                     ProgressThread.run();
