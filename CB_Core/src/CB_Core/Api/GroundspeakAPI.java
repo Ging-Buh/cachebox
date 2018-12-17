@@ -281,6 +281,7 @@ public class GroundspeakAPI {
 
             ArrayList<String> fields = query.getFields();
             boolean onlyLiteFields = query.containsOnlyLiteFields(fields);
+            int maxCachesPerHttpCall = (onlyLiteFields ? 50 : 5); // API 1.0 says may take 50, but not in what time, and with 10 Full I got out of memory
             if (onlyLiteFields) {
                 fetchMyCacheLimits();
                 if (me.remainingLite < me.remaining) {
@@ -292,7 +293,6 @@ public class GroundspeakAPI {
             Cache[] arrayOfCaches = new Cache[caches.size()];
             caches.toArray(arrayOfCaches);
 
-            int maxCachesPerHttpCall = (onlyLiteFields ? 50 : 5); // API 1.0 says may take 50, but not in what time, and with 10 Full I got out of memory
             int skip = 0;
             int take = Math.min(query.maxToFetch, maxCachesPerHttpCall);
 
@@ -413,9 +413,9 @@ public class GroundspeakAPI {
                                 pq.Name = jPQ.optString("name", "");
                                 try {
                                     String dateCreated = jPQ.optString("lastUpdatedDateUtc", "");
-                                    pq.DateLastGenerated = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(dateCreated);
+                                    pq.DateLastGenerated = DateFromString(dateCreated);
                                 } catch (Exception exc) {
-                                    Log.err(log, "fetchPocketQueryList", "DateLastGenerated", exc);
+                                    Log.err(log, "fetchPocketQueryList/DateLastGenerated", exc);
                                     pq.DateLastGenerated = new Date();
                                 }
                                 pq.PQCount = jPQ.getInt("count");
@@ -1024,7 +1024,7 @@ public class GroundspeakAPI {
                                 if (found) cache.setFound(true);
                             }
                             // correctedCoordinates
-                            JSONObject correctedCoordinates = userData.optJSONObject("correctedCoordinates ");
+                            JSONObject correctedCoordinates = userData.optJSONObject("correctedCoordinates");
                             if (correctedCoordinates != null) {
                                 cache.Pos = new Coordinate(correctedCoordinates.optDouble("latitude", 0), correctedCoordinates.optDouble("longitude", 0));
                             } else {
@@ -1037,7 +1037,7 @@ public class GroundspeakAPI {
                             }
                             // isFavorited
                             // note (auch bei lite)
-                            cache.setTmpNote(userData.optString("note ", ""));
+                            cache.setTmpNote(userData.optString("note", ""));
                             // todo split solver from notes
                         } else {
                             cache.setFound(false);
@@ -1439,6 +1439,7 @@ public class GroundspeakAPI {
         try {
             return new SimpleDateFormat(ps).parse(d);
         } catch (Exception e) {
+            Log.err(log, "DateFromString", e);
             return new Date();
         }
     }
