@@ -21,7 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.Iterator;
 
 public class CacheInfo extends CB_View_Base {
-    private final int AttributesPerLine = 12;
     public static final Color gcVoteColor = new Color(0.5f, 0.5f, 1f, 1f);
     public static final int SHOW_COMPASS = 1;
     public static final int SHOW_NAME = 2;
@@ -35,61 +34,51 @@ public class CacheInfo extends CB_View_Base {
     public static final int SHOW_VOTE = 512;
     public static final int SHOW_ICON = 1024;
     public static final int SHOW_HIDDEN_DATE = 2048;
-
     /**
      * SHOW_GC, SHOW_NAME, SHOW_COMPASS
      */
     public static final int VIEW_MODE_CACHE_LIST = SHOW_GC + SHOW_NAME + SHOW_COMPASS + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 19;
-
     /**
      * SHOW_COMPASS, SHOW_OWNER, SHOW_CORRDS, SHOW_GC, SHOW_HIDDEN_DATE
      */
     public static final int VIEW_MODE_DESCRIPTION = SHOW_GC + SHOW_COORDS + SHOW_OWNER + SHOW_HIDDEN_DATE + SHOW_COMPASS + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 29;
-
     /**
      * SHOW_OWNER, SHOW_CORRDS, SHOW_GC, SHOW_LAST_FOUND
      */
     public static final int VIEW_MODE_COMPAS = 60;
-
     /**
      * SHOW_NAME, SHOW_OWNER, SHOW_CORRDS, SHOW_GC, SHOW_LAST_FOUND, SHOW_ATTRIBUTES, SHOW_HIDDEN_DATE
      */
     public static final int VIEW_MODE_SLIDER = SHOW_ATTRIBUTES + SHOW_LAST_FOUND + SHOW_GC + SHOW_COORDS + SHOW_OWNER + SHOW_HIDDEN_DATE + SHOW_NAME + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 126
-
     /**
      * SHOW_COORDS, SHOW_COMPASS, SHOW_NAME
      */
     public static final int VIEW_MODE_WAYPOINTS = SHOW_COORDS + SHOW_NAME + SHOW_COMPASS + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 11
-
     /**
      * SHOW_COORDS, SHOW_COMPASS, SHOW_NAME
      */
     public static final int VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK = SHOW_COORDS + SHOW_NAME + SHOW_CORRDS_WITH_LINEBRAKE + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 138
-
     /**
      * SHOW_NAME, SHOW_OWNER, SHOW_CORRDS
      */
     public static final int VIEW_MODE_BUBBLE = SHOW_COORDS + SHOW_OWNER + SHOW_NAME + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 30
-
     /**
      * SHOW_NAME, SHOW_OWNER, SHOW_CORRDS
      */
     public static final int VIEW_MODE_BUBBLE_EVENT = SHOW_COORDS + SHOW_HIDDEN_DATE + SHOW_NAME + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T;
-
     /**
      * SHOW_S_D_T
      */
     public static final int VIEW_MODE_SDT_ONLY = SHOW_S_D_T;
-
     /**
      * SHOW_LAST_FOUND
      */
     public static final int VIEW_MODE_LAST_FOUND_ONLY = SHOW_LAST_FOUND;
-
     /**
      * SHOW_LAST_FOUND , SHOW_S_D_T
      */
     public static final int VIEW_MODE_LAST_FOUND_AND_DTS = SHOW_LAST_FOUND + SHOW_S_D_T;
+    private final int AttributesPerLine = 12;
     GlyphLayout layout;
     private int mViewMode = VIEW_MODE_CACHE_LIST;
     private Cache mCache;
@@ -289,7 +278,7 @@ public class CacheInfo extends CB_View_Base {
                         mLeft += mTBSprite.getWidth() + mMargin;
                         mTB_FontCache = new BitmapFontCache(mBitmapFontSmall);
                         mTB_FontCache.setColor(COLOR.getFontColor());
-                        mTB_FontCache.setText("x" + String.valueOf(numTb), mLeft, mBottom);
+                        mTB_FontCache.setText("x" + numTb, mLeft, mBottom);
                     }
                 } else {
                     mTBSprite = null;

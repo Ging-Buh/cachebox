@@ -27,6 +27,7 @@ import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Controls.CoordinateButton;
 import CB_UI.GL_UI.Views.MapView;
+import CB_UI.GlobalCore;
 import CB_UI.WriteIntoDB;
 import CB_UI_Base.Events.KeyboardFocusChangedEvent;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
@@ -47,7 +48,7 @@ import static CB_Core.Api.GroundspeakAPI.*;
 public class SearchOverPosition extends ActivityBase implements KeyboardFocusChangedEvent {
     private static final String log = "SearchOverPosition";
     private Button bOK, bCancel, btnPlus, btnMinus;
-    private Label lblTitle, lblRadius, lblRadiusEinheit, lblExcludeFounds, lblOnlyAvailable, lblExcludeHides;
+    private Label lblHeader, lblRadius, lblRadiusEinheit, lblExcludeFounds, lblOnlyAvailable, lblExcludeHides;
     private Image gsLogo;
     private CoordinateButton coordBtn;
     private ChkBox checkBoxExcludeFounds, checkBoxOnlyAvailable, checkBoxExcludeHides;
@@ -63,6 +64,12 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
     private boolean isCanceld = false;
     ICancel icancel = () -> isCanceld;
     private Label lblPublished;
+    private Label lblImportLimit;
+    private EditTextField edtImportLimit;
+    private Label lblCacheName;
+    private EditTextField edtCacheName;
+    private Label lblOwner;
+    private EditTextField edtOwner;
     private Button btnBeforeAfterEqual;
     private EditTextField edtDate;
     private Label lblCategory;
@@ -74,7 +81,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         // add to this
-        createTitleLine();
+        createHeaderLine();
         createOkCancelBtn();
         createBox();
         // add to box
@@ -82,8 +89,11 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         box.addLast(coordBtn);
         createToggleButtonLine();
         createRadiusLine();
-        createCategoryLine();
+        createImportLimitLine();
+        createCacheNameLine();
+        createOwnerLine();
         createPublishedLine();
+        createCategoryLine();
         createChkBoxLines();
         box.adjustHeight();
         scrollBox.setVirtualHeight(box.getHeight());
@@ -131,11 +141,11 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         scrollBox.addChild(box);
     }
 
-    private void createTitleLine() {
-        lblTitle = new Label();
-        lblTitle.setFont(Fonts.getBig()).setHAlignment(Label.HAlignment.CENTER);
-        this.addNext(lblTitle);
-        lblTitle.setWrappedText(Translation.Get("importCachesOverPosition"));
+    private void createHeaderLine() {
+        lblHeader = new Label(".");
+        lblHeader.setFont(Fonts.getBig()).setHAlignment(Label.HAlignment.CENTER);
+        this.addNext(lblHeader);
+        lblHeader.setWrappedText(Translation.Get("importCachesOverPosition"));
 
         /*
         float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
@@ -174,9 +184,34 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
 
     private void createCategoryLine() {
         lblCategory = new Label(Translation.Get("category"));
-        box.addNext(lblCategory);
+        lblCategory.setWidth(Fonts.Measure(lblCategory.getText()).width);
+        box.addNext(lblCategory, FIXED);
         edtCategory = new EditTextField(this, "edtCategory");
         box.addLast(edtCategory);
+    }
+
+    private void createImportLimitLine() {
+        lblImportLimit = new Label(Translation.Get("ImportLimit"));
+        lblImportLimit.setWidth(Fonts.Measure(lblImportLimit.getText()).width);
+        box.addNext(lblImportLimit, FIXED);
+        edtImportLimit = new EditTextField(this, "edtImportLimit");
+        box.addLast(edtImportLimit);
+    }
+
+    private void createCacheNameLine() {
+        lblCacheName = new Label(Translation.Get("Title"));
+        lblCacheName.setWidth(Fonts.Measure(lblCacheName.getText()).width);
+        box.addNext(lblCacheName, FIXED);
+        edtCacheName = new EditTextField(this, "edtCacheName");
+        box.addLast(edtCacheName);
+    }
+
+    private void createOwnerLine() {
+        lblOwner = new Label(Translation.Get("Owner"));
+        lblOwner.setWidth(Fonts.Measure(lblOwner.getText()).width);
+        box.addNext(lblOwner, FIXED);
+        edtOwner = new EditTextField(this, "edtOwner");
+        box.addLast(edtOwner);
     }
 
     private void createPublishedLine() {
@@ -290,13 +325,23 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
 
         setToggleBtnState();
 
-        edtCategory.setText("API-Import");
+        if (GlobalCore.isSetSelectedCache()) {
+            Category c = CoreSettingsForward.Categories.getCategoryByGpxFilenameId(GlobalCore.getSelectedCache().getGPXFilename_ID());
+            edtCategory.setText(c.GpxFilename);
+        }
+        else {
+            edtCategory.setText("API-Import");
+        }
+        edtCategory.setCursorPosition(0);
+
         Category category = CoreSettingsForward.Categories.getCategory(edtCategory.getText());
         edtDate.setText(simpleDateFormat.format(category.LastImported()));
         if (category.size() == 0)
             btnBeforeAfterEqual.setText("<=");
         else
             btnBeforeAfterEqual.setText(">=");
+
+        edtImportLimit.setText("" + Config.ImportLimit.getValue());
     }
 
     @Override
@@ -434,15 +479,27 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
                     GpxFilename gpxFilename = category.addGpxFilename(category.GpxFilename); // category.GpxFilename == edtCategory.getText()
                     if (gpxFilename != null) {
                         Query q = new Query()
-                                .setMaxToFetch(50)
                                 .resultWithFullFields()
                                 .resultWithLogs(30)
                                 //.resultWithImages(30)
-                                .searchInCircle(actSearchPos, Config.lastSearchRadius.getValue() * 1000)
                                 .publishedDate(publishDate, btnBeforeAfterEqual.getText());
+                        if (Radius.getText().trim().length() > 0) q.searchInCircle(actSearchPos, Config.lastSearchRadius.getValue() * 1000);
+                        if (edtOwner.getText().trim().length()>0) q.searchForOwner(edtOwner.getText().trim());
+                        if (edtCacheName.getText().trim().length()>0) q.searchForTitle(edtCacheName.getText().trim());
+
                         if (Config.SearchWithoutFounds.getValue()) q.excludeFinds();
                         if (Config.SearchWithoutOwns.getValue()) q.excludeOwn();
                         if (Config.SearchOnlyAvailable.getValue()) q.onlyActiveGeoCaches();
+
+
+                        int importLimit;
+                        try {
+                            importLimit = Integer.parseInt(Radius.getText());
+                        } catch (Exception ex) {
+                            importLimit = Config.ImportLimit.getDefaultValue();
+                        }
+                        q.setMaxToFetch(importLimit);
+                        Config.ImportLimit.setValue(importLimit);
 
                         dis.setAnimationType(AnimationType.Download);
                         ArrayList<GeoCacheRelated> geoCacheRelateds = searchGeoCaches(q);
@@ -497,7 +554,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         dispose(btnBeforeAfterEqual);
         dispose(btnPlus);
         dispose(btnMinus);
-        dispose(lblTitle);
+        dispose(lblHeader);
         dispose(lblRadius);
         dispose(lblRadiusEinheit);
         dispose(lblExcludeFounds);

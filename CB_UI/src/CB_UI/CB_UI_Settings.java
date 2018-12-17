@@ -114,6 +114,7 @@ public interface CB_UI_Settings {
     SettingBool ImportRatings = new SettingBool("ImportRatings", SettingCategory.API, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
     SettingBool ImportPQsFromGeocachingCom = new SettingBool("ImportPQsFromGeocachingCom", SettingCategory.API, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
     SettingInt lastSearchRadius = (SettingInt) SettingsList.addSetting(new SettingInt("lastSearchRadius", SettingCategory.API, NEVER, 5, SettingStoreType.Global, SettingUsage.ACB));
+    SettingInt ImportLimit = new SettingInt("ImportLimit", SettingCategory.API, NEVER, 50, SettingStoreType.Global, SettingUsage.ACB);
 
     SettingFolder TrackFolder = new SettingFolder("TrackFolder", SettingCategory.Folder, EXPERT, Work + "/User/Tracks", SettingStoreType.Global, SettingUsage.ACB, true);
     SettingFile FieldNotesGarminPath = (SettingFile) SettingsList

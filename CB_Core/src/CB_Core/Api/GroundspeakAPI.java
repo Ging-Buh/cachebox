@@ -152,7 +152,7 @@ public class GroundspeakAPI {
 
             ArrayList<String> fields = query.getFields();
             boolean onlyLiteFields = query.containsOnlyLiteFields(fields);
-            int maxCachesPerHttpCall = (onlyLiteFields ? 100 : 5); // API 1.0 says may take 100, but not in what time, and with 10 I got out of memory
+            int maxCachesPerHttpCall = (onlyLiteFields ? 50 : 5); // API 1.0 says may take 50, but not in what time, and with 10 I got out of memory
             if (query.descriptor == null) {
                 if (onlyLiteFields) {
                     fetchMyCacheLimits();
@@ -1025,6 +1025,7 @@ public class GroundspeakAPI {
                             JSONObject correctedCoordinates = userData.optJSONObject("correctedCoordinates");
                             if (correctedCoordinates != null) {
                                 cache.Pos = new Coordinate(correctedCoordinates.optDouble("latitude", 0), correctedCoordinates.optDouble("longitude", 0));
+                                cache.setHasCorrectedCoordinates(true);
                             } else {
                                 JSONObject postedCoordinates = API1Cache.optJSONObject("postedCoordinates");
                                 if (postedCoordinates != null) {
@@ -1481,6 +1482,11 @@ public class GroundspeakAPI {
             expandString = new StringBuilder();
             maxToFetch = 1;
             descriptor = null;
+        }
+
+        @Override
+        public String toString() {
+            return qString.toString();
         }
 
         public Query setMaxToFetch(int maxToFetch) {
