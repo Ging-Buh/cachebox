@@ -1107,6 +1107,13 @@ public class GroundspeakAPI {
 
     private static void addWayPoints(Cache cache, JSONArray wpts) {
         if (wpts != null) {
+            if (cache.waypoints != null) {
+                cache.waypoints.clear();
+                // no merging of waypoints here
+            }
+            else {
+                cache.waypoints = new CB_List<>();
+            }
             for (int j = 0; j < wpts.length(); j++) {
                 JSONObject wpt = wpts.optJSONObject(j);
                 Waypoint waypoint = new Waypoint(true);
