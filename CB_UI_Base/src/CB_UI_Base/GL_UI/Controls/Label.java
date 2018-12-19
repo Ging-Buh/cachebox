@@ -30,6 +30,7 @@ import CB_UI_Base.graphics.Geometry.Line;
 import CB_UI_Base.graphics.Geometry.Quadrangle;
 import CB_UI_Base.graphics.PolygonDrawable;
 import CB_Utils.Log.Log;
+import CB_Utils.Log.LogLevel;
 import CB_Utils.Util.HSV_Color;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -309,11 +310,14 @@ public class Label extends CB_View_Base {
 
         final int n = mText.length();
 
-        for (int start = 0; start < n; start++) {
-            if (mFont.getData().getGlyph(mText.charAt(start)) == null) {
-                char c = mText.charAt(start);
-                if (c != '\r' && c != '\n')
-                    Log.err(log, "Unknown Char {" + c + "} @:" + mText + "[" + start + "]");
+        if (LogLevel.isLogLevel(LogLevel.TRACE)) {
+            // show chars, that don't exist in the mFont
+            for (int start = 0; start < n; start++) {
+                if (mFont.getData().getGlyph(mText.charAt(start)) == null) {
+                    char c = mText.charAt(start);
+                    if (c != '\r' && c != '\n')
+                        Log.err(log, "Unknown Char {" + c + "} @:" + mText + "[" + start + "]");
+                }
             }
         }
 
@@ -458,11 +462,24 @@ public class Label extends CB_View_Base {
     }
 
     public Label setWrapType(WrapType WrapType) {
+        // layout depends on the width and text
         if (WrapType != mWrapType) {
             mWrapType = WrapType;
             setText();
         }
         return this;
+    }
+
+    public void updateHeight(CB_View_Base parentControl, boolean onlyExpand) {
+        // intended for text not fitting into the predefined height
+        // the Y position of other controls must be corrected
+        float h = getTextHeight();
+        if (!(onlyExpand && h <= getHeight())) {
+            if (parentControl != null) {
+                parentControl.updateRowY(h, this);
+            }
+            setHeight(h);
+        }
     }
 
     public Label setHAlignment(HAlignment HAlignment) {
@@ -514,8 +531,8 @@ public class Label extends CB_View_Base {
     public int getLineCount() {
         if (bounds == null)
             return 0;
-        int lc = 1 + (int) ((bounds.height - mFont.getCapHeight()) / mFont.getLineHeight());
-        return lc;
+        // int lc = 1 + (int) ((bounds.height - mFont.getCapHeight()) / mFont.getLineHeight());
+        return bounds.runs.size;
     }
 
     public float getLineHeight() {

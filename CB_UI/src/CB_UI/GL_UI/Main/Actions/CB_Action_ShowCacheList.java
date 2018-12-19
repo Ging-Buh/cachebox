@@ -150,8 +150,8 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                         });
                         return true;
                     case MenuID.MI_NEW_CACHE:
-                        if (editCache == null)
-                            editCache = new EditCache(ActivityBase.ActivityRec(), "editCache");
+                        if (editCache == null) editCache = new EditCache();
+                        if (editCache.isDisposed()) editCache = new EditCache();
                         editCache.create();
                         return true;
 

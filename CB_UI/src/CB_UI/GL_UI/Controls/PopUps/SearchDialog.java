@@ -766,13 +766,7 @@ public class SearchDialog extends PopUp_Base {
     }
 
     private void showTargetApiDialog() {
-        GL.that.RunOnGL(new IRunOnGL() {
-            @Override
-            public void run() {
-                SearchOverPosition.ShowInstanz();
-            }
-        });
-
+        GL.that.RunOnGL(() -> new SearchOverPosition().show());
     }
 
     @Override

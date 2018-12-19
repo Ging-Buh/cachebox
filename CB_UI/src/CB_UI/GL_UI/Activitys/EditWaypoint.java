@@ -108,13 +108,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
         }
         bCoord = new CoordinateButton(rec, "CoordButton", coordinate, null);
 
-        bCoord.setCoordinateChangedListener(new ICoordinateChangedListener() {
-
-            @Override
-            public void coordinateChanged(Coordinate coord) {
-                EditWaypoint.this.show();
-            }
-        });
+        bCoord.setCoordinateChangedListener(coord -> EditWaypoint.this.show());
 
         scrollBox.addChild(bCoord);
     }

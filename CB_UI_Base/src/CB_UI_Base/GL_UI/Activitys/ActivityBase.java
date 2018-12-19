@@ -15,20 +15,16 @@
  */
 package CB_UI_Base.GL_UI.Activitys;
 
-import CB_UI_Base.GL_UI.Controls.Dialog;
-import CB_UI_Base.GL_UI.Fonts;
+import CB_UI_Base.GL_UI.*;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
-public class ActivityBase extends Dialog {
-    // protected ActivityBase that;
+public class ActivityBase extends CB_View_Base {
     protected float MeasuredLabelHeight;
     protected float MeasuredLabelHeightBig;
     protected float ButtonHeight;
+    protected float margin = 0;
 
     public ActivityBase(String Name) {
         this(ActivityBase.ActivityRec(), Name);
@@ -36,8 +32,7 @@ public class ActivityBase extends Dialog {
 
     public ActivityBase(CB_RectF rec, String Name) {
         super(rec, Name);
-        // that = this;
-        dontRenderDialogBackground = true;
+        // dontRenderDialogBackground = true;
         this.setBackground(Sprites.activityBackground);
 
         MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;

@@ -492,8 +492,7 @@ public class GL implements ApplicationListener {
     }
 
     public void showDialog(final Dialog dialog) {
-        if (dialog instanceof ActivityBase)
-            throw new IllegalArgumentException("don't show an Activity as Dialog. Use \"GL_listener.showActivity()\"");
+        // if (dialog instanceof ActivityBase) throw new IllegalArgumentException("don't show an Activity as Dialog. Use \"GL_listener.showActivity()\"");
 
         showDialog(dialog, false);
     }
@@ -502,8 +501,7 @@ public class GL implements ApplicationListener {
 
         setFocusedEditTextField(null);
 
-        if (dialog instanceof ActivityBase)
-            throw new IllegalArgumentException("don't show an Activity as Dialog. Use \"GL_listener.showActivity()\"");
+        //if (dialog instanceof ActivityBase) throw new IllegalArgumentException("don't show an Activity as Dialog. Use \"GL_listener.showActivity()\"");
 
         clearRenderViews();
 

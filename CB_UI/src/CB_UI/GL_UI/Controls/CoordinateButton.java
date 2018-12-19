@@ -206,6 +206,6 @@ public class CoordinateButton extends Button implements ICopyPaste {
     }
 
     public interface ICoordinateChangedListener {
-        public void coordinateChanged(Coordinate coord);
+        void coordinateChanged(Coordinate coordinate);
     }
 }

@@ -10,9 +10,14 @@ import CB_Utils.Util.MoveableList;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 /**
+ * Scrollbox contains a V_ListView with only the item in the List
  * Height is the visible part
  * virtualHeight is the Height of the item
  * the item holds all Controls of the Scrollbox
+ * Prefer to use only one Control (a Box) in the item,
+ * so that you can use addNext/addLast (to the box),
+ * cause these are not overwritten. (Only addChild() is overwritten)
+ * the box should always be at Pos(0,0)
  */
 public class ScrollBox extends CB_View_Base {
     protected V_ListView lv;
@@ -35,14 +40,12 @@ public class ScrollBox extends CB_View_Base {
 
         lv = new V_ListView(this, this, "ListView-" + name);
         lv.setClickable(true);
-
         item = new ListViewItemBase(this, 0, "ListViewItem-" + name) {
             @Override
             protected void Initial() {
                 isInitial = true;
             }
         };
-
         item.setHeight(virtualHeight);
         item.setClickable(true);
         thisAdapter = new CustomAdapter();
@@ -52,43 +55,20 @@ public class ScrollBox extends CB_View_Base {
         this.childs.add(lv);
     }
 
-    @Override
-    public void setBorders(float l, float r) {
-        super.setBorders(l, r);
-        Layout();
-    }
-
     protected void Layout() {
-
-        //if this is disposed do nothing
         if (this.isDisposed())
             return;
-
-        //if Listview NULL initial
         if (lv == null) {
             initScrollBox();
             return;
-        }
-
-        // if Listview disposed do nothing!
-        // THIS will dispose soon!
-        if (lv.isDisposed())
+        } else if (lv.isDisposed())
             return;
 
-        lv.setSize(innerWidth, innerHeight);
-
         item.setHeight(virtualHeight);
+        lv.setSize(innerWidth, innerHeight);
         lv.calcDefaultPosList();
-
         lv.setPos(leftBorder, bottomBorder);
-
         lv.scrollTo(lv.getScrollPos());
-    }
-
-    @Override
-    public void setBackground(Drawable background) {
-        super.setBackground(background);
-        Layout();
     }
 
     public float getVirtualHeight() {
@@ -96,20 +76,20 @@ public class ScrollBox extends CB_View_Base {
     }
 
     /**
-     * * virtualHeight to take all placed objects (scrolls if > height)
+     * * virtualHeight->Heigth of the item, that takes all placed objects (scrolls if > height)
      **/
     public void setVirtualHeight(float virtualHeight) {
         this.virtualHeight = virtualHeight;
         Layout();
     }
 
+    // ################ overrides of CB_View_Base ############################################
     @Override
     public void onResized(CB_RectF rec) {
         lv.setSize(innerWidth, innerHeight);
         item.setWidth(innerWidth);
     }
 
-    // ################ add / remove overrides ############################################
     @Override
     public int getCildCount() {
         return item.getCildCount();
@@ -147,6 +127,22 @@ public class ScrollBox extends CB_View_Base {
     }
 
     @Override
+    public boolean onTouchDown(int x, int y, int pointer, int button) {
+        return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgelöst wird.
+    }
+
+    @Override
+    public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
+        return true;
+    }
+
+    @Override
+    protected void Initial() {
+        isInitial = true;
+    }
+
+    // ################ overrides of GL_View_Base ############################################
+    @Override
     public GL_View_Base addChild(final GL_View_Base view) {
         item.addChildDirekt(view);
         lv.notifyDataSetChanged();
@@ -183,8 +179,28 @@ public class ScrollBox extends CB_View_Base {
     }
 
     @Override
-    protected void Initial() {
-        isInitial = true;
+    public void setBorders(float l, float r) {
+        super.setBorders(l, r);
+        Layout();
+    }
+
+    @Override
+    public void setBackground(Drawable background) {
+        super.setBackground(background);
+        Layout();
+    }
+
+    @Override
+    public void setClickable(boolean value) {
+        lv.setClickable(value);
+        super.setClickable(value);
+    }
+
+    @Override
+    public void setLongClickable(boolean value) {
+
+        lv.setLongClickable(value);
+        super.setLongClickable(value);
     }
 
     public void setDragable() {
@@ -201,31 +217,6 @@ public class ScrollBox extends CB_View_Base {
 
     public void scrollTo(float scrollPos) {
         lv.scrollTo(scrollPos);
-    }
-
-    @Override
-    public void setClickable(boolean value) {
-        lv.setClickable(value);
-        super.setClickable(value);
-    }
-
-    @Override
-    public void setLongClickable(boolean value) {
-
-        lv.setLongClickable(value);
-        super.setLongClickable(value);
-    }
-
-    @Override
-    public boolean onTouchDown(int x, int y, int pointer, int button) {
-
-        return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgel�st wird.
-    }
-
-    @Override
-    public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan) {
-
-        return true;
     }
 
     public class CustomAdapter implements Adapter {

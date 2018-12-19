@@ -29,6 +29,7 @@ import CB_UI.GL_UI.Controls.CoordinateButton;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GlobalCore;
 import CB_UI.WriteIntoDB;
+import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.KeyboardFocusChangedEvent;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
@@ -36,8 +37,10 @@ import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.Sprites;
 import CB_Utils.Interfaces.ICancel;
 import CB_Utils.Log.Log;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -64,14 +67,14 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
     private boolean isCanceld = false;
     ICancel icancel = () -> isCanceld;
     private Label lblPublished;
+    private Button btnBeforeAfterEqual;
+    private EditTextField edtDate;
     private Label lblImportLimit;
     private EditTextField edtImportLimit;
     private Label lblCacheName;
     private EditTextField edtCacheName;
     private Label lblOwner;
     private EditTextField edtOwner;
-    private Button btnBeforeAfterEqual;
-    private EditTextField edtDate;
     private Label lblCategory;
     private EditTextField edtCategory;
     private SimpleDateFormat simpleDateFormat;
@@ -79,11 +82,19 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
     public SearchOverPosition() {
         super(ActivityRec(), "searchOverPosActivity");
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        this.removeChilds();
 
         // add to this
-        createHeaderLine();
-        createOkCancelBtn();
-        createBox();
+        // createHeaderLine();
+        bOK = new Button(Translation.Get("import"));
+        bCancel = new Button(Translation.Get("cancel"));
+        this.initRow(BOTTOMUP);
+        this.addNext(bOK);
+        this.addLast(bCancel);
+        scrollBox = new ScrollBox(0, this.getAvailableHeight());
+        scrollBox.setBackground(this.getBackground());
+        this.addLast(scrollBox);
+        box = new Box(scrollBox.getInnerWidth(), 0); // height will be adjusted after containing all controls
         // add to box
         coordBtn = new CoordinateButton("");
         box.addLast(coordBtn);
@@ -96,64 +107,23 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         createCategoryLine();
         createChkBoxLines();
         box.adjustHeight();
+        scrollBox.addChild(box);
         scrollBox.setVirtualHeight(box.getHeight());
 
-        initialContent();
-    }
+        initClickHandlersAndContent();
 
-    public static SearchOverPosition ShowInstanz() {
-
-        SearchOverPosition ret = new SearchOverPosition();
-        ret.initialCoordinates();
-        ret.show();
-        return ret;
-    }
-
-    private void createOkCancelBtn() {
-        bOK = new Button(Translation.Get("import"));
-        bCancel = new Button(Translation.Get("cancel"));
-
-        this.initRow(BOTTOMUP);
-        this.addNext(bOK);
-        this.addLast(bCancel);
-
-        bOK.setOnClickListener((v, x, y, pointer, button) -> {
-            ImportNow();
-            return true;
-        });
-
-        bCancel.setOnClickListener((v, x, y, pointer, button) -> {
-            if (importRuns) {
-                isCanceld = true;
-            } else {
-                finish();
-            }
-            return true;
-        });
-
-    }
-
-    private void createBox() {
-        scrollBox = new ScrollBox(this.innerWidth, this.getAvailableHeight());
-        scrollBox.setBackground(this.getBackground());
-        this.addLast(scrollBox);
-        box = new Box(scrollBox.getInnerWidth(), 0); // height will be adjusted after containing all controls
-        scrollBox.addChild(box);
     }
 
     private void createHeaderLine() {
-        lblHeader = new Label(".");
+        lblHeader = new Label(Translation.Get("importCachesOverPosition"));
         lblHeader.setFont(Fonts.getBig()).setHAlignment(Label.HAlignment.CENTER);
-        this.addNext(lblHeader);
-        lblHeader.setWrappedText(Translation.Get("importCachesOverPosition"));
-
-        /*
-        float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
-        gsLogo = new Image(0,0, lineHeight, lineHeight, "", false);
-        this.addNext(gsLogo, FIXED);
-        gsLogo.setDrawable(new SpriteDrawable(Sprites.getSprite(IconName.dayGcLiveIcon.name())));
-        */
-        this.FinaliseRow();
+        float lineHeight = lblHeader.getHeight();
+        gsLogo = new Image(0, 0, lineHeight, lineHeight, "", false);
+        gsLogo.setDrawable(new SpriteDrawable(Sprites.getSprite(Sprites.IconName.dayGcLiveIcon.name())));
+        this.addNext(lblHeader); // sets the width
+        this.addLast(gsLogo, FIXED);
+        lblHeader.setWrapType(WrapType.WRAPPED);
+        lblHeader.updateHeight(this, true);
     }
 
     private void createRadiusLine() {
@@ -264,7 +234,21 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
 
     }
 
-    private void initialContent() {
+    private void initClickHandlersAndContent() {
+
+        bOK.setOnClickListener((v, x, y, pointer, button) -> {
+            ImportNow();
+            return true;
+        });
+
+        bCancel.setOnClickListener((v, x, y, pointer, button) -> {
+            if (importRuns) {
+                isCanceld = true;
+            } else {
+                finish();
+            }
+            return true;
+        });
 
         btnPlus.setOnClickListener((v, x, y, pointer, button) -> {
             incrementRadius(1);
@@ -317,19 +301,17 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
             actSearchPos = Locator.getCoordinate();
             searcheState = 0;
         }
+        setToggleBtnState();
 
         checkBoxExcludeFounds.setChecked(Config.SearchWithoutFounds.getValue());
         checkBoxOnlyAvailable.setChecked(Config.SearchOnlyAvailable.getValue());
         checkBoxExcludeHides.setChecked(Config.SearchWithoutOwns.getValue());
         Radius.setText(String.valueOf(Config.lastSearchRadius.getValue()));
 
-        setToggleBtnState();
-
         if (GlobalCore.isSetSelectedCache()) {
             Category c = CoreSettingsForward.Categories.getCategoryByGpxFilenameId(GlobalCore.getSelectedCache().getGPXFilename_ID());
             edtCategory.setText(c.GpxFilename);
-        }
-        else {
+        } else {
             edtCategory.setText("API-Import");
         }
         edtCategory.setCursorPosition(0);
@@ -375,26 +357,9 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         scrollBox.scrollTo(-scrollBox.getVirtualHeight() + editTextField.getY() + editTextField.getHeight());
     }
 
-    private void initialCoordinates() {
-        // initiate Coordinates to actual Map-Center or actual GPS Coordinate
-        switch (searcheState) {
-            case 0:
-                break;
-            case 1:
-                actSearchPos = Locator.getCoordinate();
-                if (MapView.that == null) {
-                    actSearchPos = new CoordinateGPS(Config.MapInitLatitude.getValue(), Config.MapInitLongitude.getValue());
-                } else {
-                    actSearchPos = MapView.that.center;
-                }
-                break;
-        }
-        setToggleBtnState();
-    }
-
     private void incrementRadius(int value) {
         try {
-            int ist = Integer.parseInt(Radius.getText().toString());
+            int ist = Integer.parseInt(Radius.getText());
             ist += value;
 
             if (ist > 100)
@@ -483,9 +448,10 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
                                 .resultWithLogs(30)
                                 //.resultWithImages(30)
                                 .publishedDate(publishDate, btnBeforeAfterEqual.getText());
-                        if (Radius.getText().trim().length() > 0) q.searchInCircle(actSearchPos, Config.lastSearchRadius.getValue() * 1000);
-                        if (edtOwner.getText().trim().length()>0) q.searchForOwner(edtOwner.getText().trim());
-                        if (edtCacheName.getText().trim().length()>0) q.searchForTitle(edtCacheName.getText().trim());
+                        if (Radius.getText().trim().length() > 0)
+                            q.searchInCircle(actSearchPos, Config.lastSearchRadius.getValue() * 1000);
+                        if (edtOwner.getText().trim().length() > 0) q.searchForOwner(edtOwner.getText().trim());
+                        if (edtCacheName.getText().trim().length() > 0) q.searchForTitle(edtCacheName.getText().trim());
 
                         if (Config.SearchWithoutFounds.getValue()) q.excludeFinds();
                         if (Config.SearchWithoutOwns.getValue()) q.excludeOwn();
@@ -560,6 +526,12 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         dispose(lblExcludeFounds);
         dispose(lblOnlyAvailable);
         dispose(lblExcludeHides);
+        dispose(lblImportLimit);
+        dispose(edtImportLimit);
+        dispose(lblCacheName);
+        dispose(edtCacheName);
+        dispose(lblOwner);
+        dispose(edtOwner);
         dispose(gsLogo);
         dispose(coordBtn);
         dispose(checkBoxExcludeFounds);

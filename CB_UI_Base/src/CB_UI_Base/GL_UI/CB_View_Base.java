@@ -14,9 +14,9 @@ public class CB_View_Base extends GL_View_Base {
     protected boolean isInitial = false;
     // row handling by arbor95: makes live much easier
     // Designing this ( a page, a box, a panel, ...) by adding rows of objects<GL_View_Base>
-    // the position and width (stretched equally, weighted or percentual) of the objects is calculated automatically
+    // the position and width (stretched equally, weighted, fixed or percentual) of the objects is calculated automatically
     private MoveableList<GL_View_Base> row;
-    private boolean topdown = true; // false = bottomup
+    private boolean topdown = TOPDOWN; // false = bottomup
     private float rowYPos = 0;
     private float xMargin = 0;
     private float yMargin = 0;
@@ -148,7 +148,8 @@ public class CB_View_Base extends GL_View_Base {
                 }
             } catch (Exception e) {
                 // NoSuchElementException
-                setToNull(this);}
+                setToNull(this);
+            }
         }
 
         if (row != null) {
@@ -261,6 +262,33 @@ public class CB_View_Base extends GL_View_Base {
      **/
     public void setRowYPos(float YPos) {
         rowYPos = YPos;
+    }
+
+    public void updateRowY(float newHeight, CB_View_Base controlWithNewHeight) {
+        float diffHeight = newHeight - controlWithNewHeight.getHeight();
+        float lastPos = controlWithNewHeight.getY();
+        // all elements of Last Row must be corrected
+        float lastRowHeight = 0;
+        for (GL_View_Base c : this.childs) {
+            // get controls of the row
+            if (c.getY() == lastPos)
+                if (c.getHeight() > lastRowHeight)
+                    lastRowHeight = c.getHeight();
+        }
+        if (newHeight > lastRowHeight) {
+            if (topdown) {
+                rowYPos = rowYPos - diffHeight;
+                topYAdd = topYAdd - diffHeight;
+                for (GL_View_Base c : this.childs) {
+                    // get controls of the row
+                    if (c.getY() == lastPos)
+                        c.setY(lastPos - diffHeight);
+                }
+            } else {
+                rowYPos = rowYPos + diffHeight;
+                bottomYAdd = bottomYAdd + diffHeight;
+            }
+        }
     }
 
     /**
@@ -400,6 +428,7 @@ public class CB_View_Base extends GL_View_Base {
             float rowMaxHeight = 0;
             for (int i = 0, n = row.size(); i < n; i++) {
                 GL_View_Base view = row.get(i);
+                // view.parent = this;
                 if (view.getHeight() > rowMaxHeight)
                     rowMaxHeight = view.getHeight();
             }
@@ -451,14 +480,13 @@ public class CB_View_Base extends GL_View_Base {
             } else {
                 rowYPos = rowYPos + rowMaxHeight + yMargin;
                 bottomYAdd = rowYPos;
-                // todo vielleicht automatische Höhenanpassung von this
             }
             row.clear();
         }
     }
 
     public void measureRec() {
-        // Some Controls can change there size
+        // Some Controls can change their size
 
     }
 }

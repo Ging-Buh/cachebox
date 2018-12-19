@@ -481,8 +481,8 @@ public abstract class GL_View_Base extends CB_RectF {
 
                                 batch.setProjectionMatrix(getMyInfoForChild().Matrix());
                                 nDepthCounter++;
-
-                                view.renderChilds(batch, getMyInfoForChild());
+                                if (view != null && !view.isDisposed())
+                                    view.renderChilds(batch, getMyInfoForChild());
                                 nDepthCounter--;
                             }
                         } else {

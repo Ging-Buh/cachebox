@@ -388,7 +388,7 @@ public abstract class Dialog extends CB_View_Base {
 
     @Override
     public String toString() {
-        return getName() + " DialogID[" + DialogID + "] Created by: " + CallerName;
+        return getName() + " X,Y/Width,Height = " + getX() + "," + getY() + "/" + getWidth() + "," + getHeight() + " DialogID[" + DialogID + "] Created by: " + CallerName;
     }
 
     protected void setCallerName(String callerName) {

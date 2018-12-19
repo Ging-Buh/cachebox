@@ -22,18 +22,13 @@ import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldStyle;
 import CB_UI_Base.GL_UI.Controls.Spinner.ISelectionChangedListener;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Sprites;
-import CB_UI_Base.Math.CB_RectF;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-import java.util.ArrayList;
 import java.util.Date;
 
-public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
-{
+public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent {
     // Allgemein
     private final CacheTypes[] CacheTypNumbers = CacheTypes.caches();
     private final CacheSizes[] CacheSizeNumbers = new CacheSizes[]{CacheSizes.other, // 0
@@ -42,7 +37,6 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
             CacheSizes.regular, // 3
             CacheSizes.large // 4
     };
-    private final ArrayList<EditTextField> allTextFields = new ArrayList<EditTextField>();
     private Cache cache;
     private Cache newValues;
     private ScrollBox mainPanel;
@@ -59,66 +53,50 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     private EditTextField cacheDescription; // MultiLineWraped
 
     // ctor
-    public EditCache(CB_RectF rec, String Name) {
-        super(rec, Name);
+    public EditCache() {
+        super(ActivityBase.ActivityRec(), "EditCache");
         // das übliche
         btnOK = new Button(Translation.Get("ok"));
-        btnOKClickHandler();
         btnCancel = new Button(Translation.Get("cancel"));
-        btnCancelClickHandler();
         this.initRow(BOTTOMUP);
         this.addNext(btnOK);
         this.addLast(btnCancel);
-        mainPanel = new ScrollBox(innerWidth, getAvailableHeight());
+        mainPanel = new ScrollBox(0, getAvailableHeight());
         this.addLast(mainPanel);
-        mainPanel.initRow(BOTTOMUP);
-        // --- Description
-        cacheDescription = new EditTextField(this, "cacheDescription").setWrapType(WrapType.WRAPPED);
-        cacheDescription.setHeight(mainPanel.getAvailableHeight() / 2);
-        mainPanel.addLast(cacheDescription);
-        registerTextField(cacheDescription);
-        // --- Hint
-        // --- Notes
-        // --- Status
-        // --- versteckt am
-        // --- Owner
-        cacheOwner = new EditTextField(this, "cacheOwner");
-        mainPanel.addLast(cacheOwner);
-        registerTextField(cacheOwner);
-        // --- Coords
-        cacheCoords = new CoordinateButton("cacheCoords");
-        setCacheCoordsChangeListener();
-        mainPanel.addLast(cacheCoords);
-        // --- Title
+        Box box = new Box(mainPanel.getInnerWidth(), 0); // height will be adjusted after containing all controls
+        mainPanel.addChild(box);
+
         cacheTitle = (new EditTextField(this, "cacheTitle")).setWrapType(WrapType.MULTILINE);
         TextFieldStyle s = cacheTitle.getStyle();
         s.font = Fonts.getBig();
         cacheTitle.setStyle(s);
-        mainPanel.addLast(cacheTitle);
-        registerTextField(cacheTitle);
-        // --- Size
-        cacheSize = new Spinner("cacheSize", cacheSizeList(), cacheSizeSelection());
-        mainPanel.addNext(cacheSize);
-        // --- Terrain
-        cacheTerrain = new Spinner("cacheTerrain", cacheTerrainList(), cacheTerrainSelection());
-        mainPanel.addLast(cacheTerrain, 0.3f);
-        // --- Type
-        // Label lblType = new Label("lblType");
-        // mainPanel.addNext(lblType, 0.2f);
-        // lblType.setText(tl.Get("type"));
-        cacheTyp = new Spinner("cacheTyp", cacheTypList(), cacheTypSelection());
-        mainPanel.addNext(cacheTyp);
-        // --- Difficulty
-        cacheDifficulty = new Spinner("cacheDifficulty", cacheDifficultyList(), cacheDifficultySelection());
-        mainPanel.addLast(cacheDifficulty, 0.3f);
-        // --- Code
         cacheCode = new EditTextField(this, "cacheCode");
         s.font = Fonts.getCompass();
         cacheCode.setStyle(s);
-        mainPanel.addLast(cacheCode);
-        registerTextField(cacheCode);
+        cacheDifficulty = new Spinner("cacheDifficulty", cacheDifficultyList(), cacheDifficultySelection());
+        cacheTyp = new Spinner("cacheTyp", cacheTypList(), cacheTypSelection());
+        cacheTerrain = new Spinner("cacheTerrain", cacheTerrainList(), cacheTerrainSelection());
+        cacheSize = new Spinner("cacheSize", cacheSizeList(), cacheSizeSelection());
+        cacheCoords = new CoordinateButton("cacheCoords");
+        cacheOwner = new EditTextField(this, "cacheOwner");
+        // layout
+        box.addLast(cacheCode);
+        box.addNext(cacheTyp);
+        box.addLast(cacheDifficulty, 0.3f);
+        box.addNext(cacheSize);
+        box.addLast(cacheTerrain, 0.3f);
+        box.addLast(cacheTitle);
+        box.addLast(cacheCoords);
+        box.addLast(cacheOwner);
+        cacheDescription = new EditTextField(this, "cacheDescription").setWrapType(WrapType.WRAPPED);
+        cacheDescription.setHeight(mainPanel.getAvailableHeight() / 2);
+        box.addLast(cacheDescription);
+        box.adjustHeight();
+        mainPanel.setVirtualHeight(box.getHeight());
 
-        mainPanel.setVirtualHeight(mainPanel.getHeightFromBottom());
+        btnOKClickHandler();
+        btnCancelClickHandler();
+        setCacheCoordsChangeListener();
 
     }
 
@@ -191,73 +169,60 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         if (cache.getLongDescription().equals(GlobalCore.br))
             cache.setLongDescription("");
         cacheDescription.setText(cache.getLongDescription());
+        cacheDescription.setCursorPosition(0);
         this.show();
     }
 
     private void btnOKClickHandler() {
-        this.btnOK.setOnClickListener(new OnClickListener() {
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                boolean update = false;
-                CacheDAO cacheDAO = new CacheDAO();
-                String gcc = cacheCode.getText().toUpperCase(); // nur wenn kein Label
-                cache.Id = Cache.GenerateCacheId(gcc);
+        this.btnOK.setOnClickListener((v, x, y, pointer, button) -> {
+            boolean update = false;
+            CacheDAO cacheDAO = new CacheDAO();
+            String gcc = cacheCode.getText().toUpperCase(); // nur wenn kein Label
+            cache.Id = Cache.GenerateCacheId(gcc);
 
-                Cache cl = Database.Data.Query.GetCacheById(cache.Id);
+            Cache cl = Database.Data.Query.GetCacheById(cache.Id);
 
-                if (cl != null) {
-                    update = true;
-                    if (newValues.Type == CacheTypes.Mystery) {
-                        if (!(cache.Pos.equals(newValues.Pos))) {
-                            cache.setHasCorrectedCoordinates(true);
-                        }
+            if (cl != null) {
+                update = true;
+                if (newValues.Type == CacheTypes.Mystery) {
+                    if (!(cache.Pos.equals(newValues.Pos))) {
+                        cache.setHasCorrectedCoordinates(true);
                     }
                 }
-
-                cache.setGcCode(gcc);
-                cache.Type = newValues.Type;
-                cache.Size = newValues.Size;
-                cache.setDifficulty(newValues.getDifficulty());
-                cache.setTerrain(newValues.getTerrain());
-                cache.Pos = newValues.Pos;
-                cache.setName(cacheTitle.getText());
-                cache.setOwner(cacheOwner.getText());
-                cache.setLongDescription(cacheDescription.getText());
-                if (update) {
-                    cacheDAO.UpdateDatabase(cache);
-                    CacheListChangedEventList.Call();
-                } else {
-                    Database.Data.Query.add(cache);
-                    cacheDAO.WriteToDatabase(cache);
-                    CacheListChangedEventList.Call();
-                    GlobalCore.setSelectedCache(cache);
-                    if (TabMainView.cacheListView != null)
-                        TabMainView.cacheListView.setSelectedCacheVisible();
-                }
-
-                // Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
-                cache.setLongDescription("");
-                GL.that.RunOnGL(new IRunOnGL() {
-
-                    @Override
-                    public void run() {
-                        finish();
-                    }
-                });
-
-                return true;
             }
+
+            cache.setGcCode(gcc);
+            cache.Type = newValues.Type;
+            cache.Size = newValues.Size;
+            cache.setDifficulty(newValues.getDifficulty());
+            cache.setTerrain(newValues.getTerrain());
+            cache.Pos = newValues.Pos;
+            cache.setName(cacheTitle.getText());
+            cache.setOwner(cacheOwner.getText());
+            cache.setLongDescription(cacheDescription.getText());
+            if (update) {
+                cacheDAO.UpdateDatabase(cache);
+                CacheListChangedEventList.Call();
+            } else {
+                Database.Data.Query.add(cache);
+                cacheDAO.WriteToDatabase(cache);
+                CacheListChangedEventList.Call();
+                GlobalCore.setSelectedCache(cache);
+                if (TabMainView.cacheListView != null)
+                    TabMainView.cacheListView.setSelectedCacheVisible();
+            }
+
+            // Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
+            cache.setLongDescription("");
+            GL.that.RunOnGL(() -> finish());
+            return true;
         });
     }
 
     private void btnCancelClickHandler() {
-        this.btnCancel.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                finish();
-                return true;
-            }
+        this.btnCancel.setOnClickListener((v, x, y, pointer, button) -> {
+            finish();
+            return true;
         });
     }
 
@@ -388,10 +353,6 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
                 newValues.setTerrain((index + 2.0f) / 2.0f);
             }
         };
-    }
-
-    public void registerTextField(final EditTextField textField) {
-        allTextFields.add(textField);
     }
 
     private void scrollToY(final EditTextField editTextField) {

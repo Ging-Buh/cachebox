@@ -111,8 +111,8 @@ public class CB_AllContextMenuHandler {
                     return true;
 
                 case MenuID.MI_EDIT_CACHE:
-                    if (editCache == null)
-                        editCache = new EditCache(ActivityBase.ActivityRec(), "editCache");
+                    if (editCache == null) editCache = new EditCache();
+                    if (editCache.isDisposed()) editCache = new EditCache();
                     editCache.update(GlobalCore.getSelectedCache());
                     return true;
 
