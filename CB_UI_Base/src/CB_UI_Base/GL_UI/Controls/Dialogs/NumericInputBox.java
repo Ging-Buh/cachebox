@@ -6,7 +6,7 @@ import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.NumPad;
-import CB_UI_Base.GL_UI.Controls.NumPad.IKeyEventListener;
+import CB_UI_Base.GL_UI.Controls.NumPad.IKeyPressedListener;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.IRunOnGL;
@@ -52,7 +52,7 @@ public class NumericInputBox extends CB_View_Base {
         msgBox.setMargins(0, margin);
         msgBox.setBorders(margin, margin);
 
-        NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withoutDotOkCancel, getKeyListener(msgBox));
+        NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.NumPadType.withoutDotOkCancel, getKeyListener(msgBox));
 
         msgBox.initRow(BOTTOMUP, margin);
         msgBox.addLast(numPad);
@@ -124,7 +124,7 @@ public class NumericInputBox extends CB_View_Base {
 
         // ######### NumPad ################
 
-        NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withOkCancel, getKeyListener(msgBox));
+        NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.NumPadType.withOkCancel, getKeyListener(msgBox));
         numPad.setY(margin);
 
         msgBox.initRow(BOTTOMUP, margin);
@@ -160,10 +160,9 @@ public class NumericInputBox extends CB_View_Base {
         editText.setZeroPos();
         editText.setY(margin * 3);
 
-        String initialValue = String.valueOf(initialMin) + ":" + String.valueOf(initialSec);
-
-        editText.setText(String.valueOf(initialValue));
-        editText.setCursorPosition((String.valueOf(initialValue)).length());
+        String initialValue = "" + initialMin + ":" + initialSec;
+        editText.setText(initialValue);
+        editText.setCursorPosition(initialValue.length());
 
         float topBottom = editText.getStyle().getTopHeight(true) + editText.getStyle().getBottomHeight(true); // true if focused
         float SingleLineHeight = editText.getFont().getLineHeight() + (editText.getFont().getAscent() * 4);
@@ -186,7 +185,7 @@ public class NumericInputBox extends CB_View_Base {
 
         // ######### NumPad ################
 
-        NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withDoubleDotOkCancel, getKeyListener(msgBox));
+        NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.NumPadType.withDoubleDotOkCancel, getKeyListener(msgBox));
         numPad.setY(margin);
 
         msgBox.initRow(BOTTOMUP, margin);
@@ -198,9 +197,9 @@ public class NumericInputBox extends CB_View_Base {
         return msgBox;
     }
 
-    static IKeyEventListener getKeyListener(final GL_MsgBox msgBox) {
+    static IKeyPressedListener getKeyListener(final GL_MsgBox msgBox) {
 
-        IKeyEventListener keyListener = new IKeyEventListener() {
+        IKeyPressedListener keyListener = new IKeyPressedListener() {
 
             @Override
             public void KeyPressed(String value) {
@@ -259,9 +258,7 @@ public class NumericInputBox extends CB_View_Base {
                         break;
 
                     case 'C':
-                        if (mType == type.doubleType)
-
-                        {
+                        if (mType == type.doubleType) {
                             if (mReturnListenerDouble != null) {
                                 mReturnListenerDouble.cancelClicked();
                             }

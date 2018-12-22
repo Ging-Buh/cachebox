@@ -30,7 +30,7 @@ public class GL_Input implements InputProcessor {
     private boolean isTouchDown;
     private boolean touchDraggedActive;
     private Point touchDraggedCorrect = new Point(0, 0);
-    private SortedMap<Integer, TouchDownPointer> touchDownPos = Collections.synchronizedSortedMap((new TreeMap<Integer, TouchDownPointer>()));
+    private SortedMap<Integer, TouchDownPointer> touchDownPos = Collections.synchronizedSortedMap((new TreeMap<>()));
     private long mLongClickTime;
     private Timer longClickTimer;
     private long lastClickTime = 0;

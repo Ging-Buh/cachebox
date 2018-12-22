@@ -7,22 +7,28 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.Math.CB_RectF;
 import com.badlogic.gdx.Input.Keys;
 
+/**
+ * depending on the constuctor
+ * without IKeyPressedListener: you can give a TextField to be filled (by registerTextField)
+ * or
+ * with IKeyPressedListener: handle the values from the pressed Buttons by this listener (set with the constructor)
+ * The NumPadType gives the different layout of the NumPad
+ */
 public class NumPad extends CB_View_Base {
-
-    private final IKeyEventListener mKeyPressedListener;
-    private final Type mType;
-    OnClickListener clickListener = new OnClickListener() {
-
+    public enum NumPadType {
+        withDot, withOkCancel, withoutDotOkCancel, withDoubleDotOkCancel,
+    }
+    private final NumPadType mNumPadType;
+    private final IKeyPressedListener mKeyPressedListener;
+    private EditTextField textField;
+    private Button btn_0, btn_1, btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9, btn_Dot, btn_left, btn_right;
+    OnClickListener onBtnClick = new OnClickListener() {
         @Override
         public boolean onClick(final GL_View_Base v, int x, int y, int pointer, int button) {
             if (v instanceof Button) {
-                Thread t = new Thread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        if (mKeyPressedListener != null) {
-                            mKeyPressedListener.KeyPressed(((Button) v).getText());
-                        }
+                Thread t = new Thread(() -> {
+                    if (mKeyPressedListener != null) {
+                        mKeyPressedListener.KeyPressed(((Button) v).getText());
                     }
                 });
                 t.start();
@@ -30,71 +36,48 @@ public class NumPad extends CB_View_Base {
             return true;
         }
     };
-    private Button btn_0;
-    private Button btn_1;
-    private Button btn_2;
-    private Button btn_3;
-    private Button btn_4;
-    private Button btn_5;
-    private Button btn_6;
-    private Button btn_7;
-    private Button btn_8;
-    private Button btn_9;
-    private Button btn_Dot;
-    private Button btn_Del;
-    private Button btn_Bck;
-    private Button btn_left;
-    private Button btn_right;
-    private Button btn_OK;
-    private Button btn_Cancel;
+    private Button btn_Del, btn_Bck;
+    private Button btn_OK, btn_Cancel;
 
     private CB_RectF btnRec;
     private CB_RectF btnRecWide;
     private CB_RectF btnRecHalfWide;
-    private EditTextField focusedTextField = null;
-    IKeyEventListener ownKeyListener = new IKeyEventListener() {
 
-        @Override
-        public void KeyPressed(String value) {
-            if (focusedTextField == null || value == null)
+    public NumPad(CB_RectF rec, String Name, NumPadType numPadType, IKeyPressedListener listener) {
+        super(rec, Name);
+        mNumPadType = numPadType;
+        mKeyPressedListener = listener;
+    }
+
+    public NumPad(CB_RectF rec, String Name, NumPadType numPadType) {
+        super(rec, Name);
+        textField = null; // use registerTextField
+        mNumPadType = numPadType;
+        mKeyPressedListener = value -> {
+            if (textField == null || value == null)
                 return;
 
             char c = value.charAt(0);
 
             switch (c) {
                 case '<':
-                    focusedTextField.cursorLeftRight(-1);
-                    // focusedTextField.clearSelection();
+                    textField.cursorLeftRight(-1);
+                    // textField.clearSelection();
                     break;
-
                 case '>':
-                    focusedTextField.keyDown(Keys.RIGHT);
+                    textField.keyDown(Keys.RIGHT);
                     break;
-
                 case 'D':
-                    focusedTextField.keyTyped(EditTextField.DELETE);
+                    textField.keyTyped(EditTextField.DELETE);
                     break;
                 case 'B':
-                    focusedTextField.keyTyped(EditTextField.BACKSPACE);
+                    textField.keyTyped(EditTextField.BACKSPACE);
                     break;
-
                 default:
-                    focusedTextField.keyTyped(c);
+                    textField.keyTyped(c);
             }
 
-        }
-    };
-
-    public NumPad(CB_RectF rec, String Name, Type type, IKeyEventListener listener) {
-        super(rec, Name);
-        mType = type;
-        mKeyPressedListener = listener;
-    }
-
-    public NumPad(CB_RectF rec, String Name, Type type) {
-        super(rec, Name);
-        mType = type;
-        mKeyPressedListener = ownKeyListener;
+        };
     }
 
     @Override
@@ -132,7 +115,7 @@ public class NumPad extends CB_View_Base {
         btn_0.setPos(left + btn_0.getWidth(), y);
         btn_Del.setPos(btn_0.getMaxX() + btn_0.getWidth(), y);
         btn_Bck.setPos(btn_Del.getMaxX(), y);
-        if (mType == Type.withDot || mType == Type.withOkCancel || mType == Type.withDoubleDotOkCancel) {
+        if (mNumPadType == NumPadType.withDot || mNumPadType == NumPadType.withOkCancel || mNumPadType == NumPadType.withDoubleDotOkCancel) {
             btn_Dot.setPos(btn_0.getMaxX(), y);
             this.addChild(btn_Dot);
         }
@@ -148,7 +131,7 @@ public class NumPad extends CB_View_Base {
         btn_5.setPos(btn_4.getMaxX(), y);
         btn_6.setPos(btn_5.getMaxX(), y);
 
-        if (mType == Type.withOkCancel || mType == Type.withoutDotOkCancel || mType == Type.withDoubleDotOkCancel) {
+        if (mNumPadType == NumPadType.withOkCancel || mNumPadType == NumPadType.withoutDotOkCancel || mNumPadType == NumPadType.withDoubleDotOkCancel) {
             btn_Cancel.setPos(btn_6.getMaxX(), y);
             this.addChild(btn_Cancel);
         }
@@ -158,7 +141,7 @@ public class NumPad extends CB_View_Base {
         btn_2.setPos(btn_1.getMaxX(), y);
         btn_3.setPos(btn_2.getMaxX(), y);
 
-        if (mType == Type.withOkCancel || mType == Type.withoutDotOkCancel || mType == Type.withDoubleDotOkCancel) {
+        if (mNumPadType == NumPadType.withOkCancel || mNumPadType == NumPadType.withoutDotOkCancel || mNumPadType == NumPadType.withDoubleDotOkCancel) {
             btn_OK.setPos(btn_3.getMaxX(), y);
             this.addChild(btn_OK);
         }
@@ -167,7 +150,7 @@ public class NumPad extends CB_View_Base {
 
     private void calcSizes() {
 
-        this.setOnClickListener(clickListener);
+        this.setOnClickListener(onBtnClick);
 
         float btnHeight = this.getHeight() / 5f;
         float btnWidth = this.getWidth() / 5f;
@@ -210,7 +193,7 @@ public class NumPad extends CB_View_Base {
         btn_8.setText("8");
         btn_9.setText("9");
 
-        if (mType == Type.withDoubleDotOkCancel)
+        if (mNumPadType == NumPadType.withDoubleDotOkCancel)
             btn_Dot.setText(":");
         else
             btn_Dot.setText(".");
@@ -222,20 +205,20 @@ public class NumPad extends CB_View_Base {
         btn_left.setText("<");
         btn_right.setText(">");
 
-        btn_0.setOnClickListener(clickListener);
-        btn_1.setOnClickListener(clickListener);
-        btn_2.setOnClickListener(clickListener);
-        btn_3.setOnClickListener(clickListener);
-        btn_4.setOnClickListener(clickListener);
-        btn_5.setOnClickListener(clickListener);
-        btn_6.setOnClickListener(clickListener);
-        btn_7.setOnClickListener(clickListener);
-        btn_8.setOnClickListener(clickListener);
-        btn_9.setOnClickListener(clickListener);
-        btn_Dot.setOnClickListener(clickListener);
+        btn_0.setOnClickListener(onBtnClick);
+        btn_1.setOnClickListener(onBtnClick);
+        btn_2.setOnClickListener(onBtnClick);
+        btn_3.setOnClickListener(onBtnClick);
+        btn_4.setOnClickListener(onBtnClick);
+        btn_5.setOnClickListener(onBtnClick);
+        btn_6.setOnClickListener(onBtnClick);
+        btn_7.setOnClickListener(onBtnClick);
+        btn_8.setOnClickListener(onBtnClick);
+        btn_9.setOnClickListener(onBtnClick);
+        btn_Dot.setOnClickListener(onBtnClick);
 
-        btn_left.setOnClickListener(clickListener);
-        btn_right.setOnClickListener(clickListener);
+        btn_left.setOnClickListener(onBtnClick);
+        btn_right.setOnClickListener(onBtnClick);
 
         btn_OK.setOnClickListener(new OnClickListener() {
 
@@ -290,28 +273,12 @@ public class NumPad extends CB_View_Base {
 
     }
 
-    // ######## Register TextFields
-
     public void registerTextField(final EditTextField textField) {
-        focusedTextField = textField;
-        /*
-        textField.setOnscreenKeyboard(new OnscreenKeyboard() {
-            @Override
-            public void show(boolean arg0) {
-                textField.setFocus(true);
-                focusedTextField = textField;
-            }
-        });
-        */
-
+        this.textField = textField;
         textField.disableKeyboardPopup();
     }
 
-    public enum Type {
-        withDot, withOkCancel, withoutDotOkCancel, withDoubleDotOkCancel,
-    }
-
-    public interface IKeyEventListener {
+    public interface IKeyPressedListener {
         /**
          * Value hat den Wert 0-9 oder "." <br>
          * oder <br>

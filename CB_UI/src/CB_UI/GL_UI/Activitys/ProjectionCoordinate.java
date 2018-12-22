@@ -242,7 +242,7 @@ public class ProjectionCoordinate extends ActivityBase {
 
     private void iniNumPad() {
         CB_RectF numRec = new CB_RectF(leftBorder, bOK.getMaxY(), innerWidth, lblDistance.getY() - bOK.getMaxY());
-        numPad = new NumPad(numRec, "numPad", NumPad.Type.withDot);
+        numPad = new NumPad(numRec, "numPad", NumPad.NumPadType.withDot);
         this.addChild(numPad);
     }
 
