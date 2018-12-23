@@ -740,6 +740,7 @@ public class Sprites {
         cross, // 3
         live, // 4
         liveSelected, // 5
+        FavPoi,
     }
 
     public static enum DialogElement {

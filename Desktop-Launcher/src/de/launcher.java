@@ -272,7 +272,7 @@ class Gui extends Frame implements ActionListener, WindowListener {
         DevicesSizes ui = new DevicesSizes();
 
         ui.Window = myInitialSize;
-        ui.Density = 2f;
+        ui.Density = 1.3f;
 
         ui.isLandscape = false;
         return ui;

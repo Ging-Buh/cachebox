@@ -1,5 +1,6 @@
 package CB_UI.GL_UI.Activitys.FilterSettings;
 
+import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListView.FilterSetEntry;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
@@ -10,6 +11,7 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -24,14 +26,22 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     private static NinePatch btnBack_pressed;
     private static Sprite minusBtn;
     private static Sprite plusBtn;
+    private static Sprite minusMinusBtn;
+    private static Sprite plusPlusBtn;
     private static Sprite chkOff;
     private static Sprite chkOn;
     private static Sprite chkNo;
     private static CB_RectF lBounds;
     private static CB_RectF rBounds;
+    private static CB_RectF llBounds;
+    private static CB_RectF rrBounds;
     private static CB_RectF rChkBounds;
     private static BitmapFontCache Minus;
     private static BitmapFontCache Plus;
+    private static BitmapFontCache MinusMinus;
+    private static BitmapFontCache PlusPlus;
+    private static float MARGIN;
+    private static float BUTTON_MARGIN;
     private final FilterSetEntry mFilterSetEntry;
     private final ArrayList<FilterSetListViewItem> mChildList = new ArrayList<FilterSetListViewItem>();
     public Vector2 lastItemTouchPos;
@@ -45,9 +55,9 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 
     public FilterSetListViewItem(CB_RectF rec, int Index, FilterSetEntry fne) {
         super(rec, Index, fne.getName());
-
         this.mFilterSetEntry = fne;
-
+        MARGIN = UI_Size_Base.that.getMargin();
+        BUTTON_MARGIN = -(MARGIN / 10);
     }
 
     public FilterSetEntry getFilterSetEntry() {
@@ -101,6 +111,10 @@ public class FilterSetListViewItem extends ListViewItemBackground {
                     top = this.getHeight() - this.getTopHeight();
                     drawNumericItem(batch);
                     break;
+                case FilterSetListView.NUMERIC_INT_ITEM:
+                    top = this.getHeight() - this.getTopHeight();
+                    drawNumericIntItem(batch);
+                    break;
             }
             // draw Name
             if (EntryName == null) {
@@ -115,16 +129,30 @@ public class FilterSetListViewItem extends ListViewItemBackground {
             }
             EntryName.draw(batch);
 
-            if (this.mFilterSetEntry.getItemType() == FilterSetListView.NUMERIC_ITEM) {
+            if (this.mFilterSetEntry.getItemType() == FilterSetListView.NUMERIC_ITEM ||
+                    this.mFilterSetEntry.getItemType() == FilterSetListView.NUMERIC_INT_ITEM) {
                 if (Value == null) {
                     Value = new BitmapFontCache(Fonts.getBig());
                     Value.setColor(COLOR.getFontColor());
                     setValueFont = true;
                 }
-                if (setValueFont)
-                    Value.setText(String.valueOf(getValue()), (getWidth() / 1.5f), (getHeight() / 1.8f));
-                setValueFont = false;
+                if (setValueFont) {
+                    float valueOffsetX = 0;
+                    String valueString = String.valueOf(getValue());
+                    if (this.mFilterSetEntry.getItemType() == FilterSetListView.NUMERIC_INT_ITEM) {
+                        int val = (int) getValue();
+                        if (val >= 0) {
+                            valueString = String.valueOf(val);
+                            valueOffsetX = MARGIN * 4;
+                        } else {
+                            valueString = Translation.Get("DoesntMatter");
+                            valueOffsetX = this.getHeight() * 2;
+                        }
+                    }
 
+                    Value.setText(valueString, (getWidth() / 1.5f) - valueOffsetX, (getHeight() / 1.8f));
+                    setValueFont = false;
+                }
                 Value.draw(batch);
             }
         } catch (Exception e) {
@@ -295,7 +323,111 @@ public class FilterSetListViewItem extends ListViewItemBackground {
         if (mFilterSetEntry.getIcon() != null) {
             float iconHeight = this.getHalfHeight() * 0.8f;
             float iconWidth = iconHeight * 5;
-            mFilterSetEntry.getIcon().setBounds(left, UI_Size_Base.that.getMargin(), iconWidth, iconHeight);
+            mFilterSetEntry.getIcon().setBounds(left, MARGIN, iconWidth, iconHeight);
+            mFilterSetEntry.getIcon().draw(batch);
+            // top += UiSizes.getIconSize() / 1.5;
+        }
+
+    }
+
+    private void drawNumericIntItem(Batch batch) {
+        llBounds = new CB_RectF(0, 0, getHeight(), getHeight());
+        llBounds = llBounds.ScaleCenter(0.95f);
+
+        lBounds = new CB_RectF(llBounds.getMaxX() + BUTTON_MARGIN, 0, getHeight(), getHeight());
+        lBounds = lBounds.ScaleCenter(0.95f);
+
+        rrBounds = new CB_RectF(getWidth() - getHeight(), 0, getHeight(), getHeight());
+        rrBounds = rrBounds.ScaleCenter(0.95f);
+
+        rBounds = new CB_RectF(rrBounds.getX() - (BUTTON_MARGIN + getHeight()), 0, getHeight(), getHeight());
+        rBounds = rBounds.ScaleCenter(0.95f);
+
+        boolean rClick = false;
+        boolean lClick = false;
+        boolean rrClick = false;
+        boolean llClick = false;
+        if (this.lastItemTouchPos != null) {
+            if (this.isPressed) {
+                lClick = lBounds.contains(this.lastItemTouchPos);
+                rClick = rBounds.contains(this.lastItemTouchPos);
+                llClick = llBounds.contains(this.lastItemTouchPos);
+                rrClick = rrBounds.contains(this.lastItemTouchPos);
+                if (lClick || rClick || llClick || rrClick)
+                    Clicked = true;
+            } else {
+                if (Clicked) {
+                    Clicked = false;
+                    lClick = lBounds.contains(this.lastItemTouchPos);
+                    rClick = rBounds.contains(this.lastItemTouchPos);
+                    llClick = llBounds.contains(this.lastItemTouchPos);
+                    rrClick = rrBounds.contains(this.lastItemTouchPos);
+                    if (rClick)
+                        plusPlusClick();
+                    if (lClick)
+                        minusMinusClick();
+                    if (rrClick)
+                        plusClick();
+                    if (llClick)
+                        minusClick();
+                }
+            }
+        }
+
+        plusBtn = rrClick ? Sprites.getSprite("btn-pressed") : Sprites.getSprite(IconName.btnNormal.name());
+        minusBtn = llClick ? Sprites.getSprite("btn-pressed") : Sprites.getSprite(IconName.btnNormal.name());
+        plusPlusBtn = rClick ? Sprites.getSprite("btn-pressed") : Sprites.getSprite(IconName.btnNormal.name());
+        minusMinusBtn = lClick ? Sprites.getSprite("btn-pressed") : Sprites.getSprite(IconName.btnNormal.name());
+
+        minusBtn.setBounds(llBounds.getX(), llBounds.getY(), llBounds.getWidth(), llBounds.getHeight());
+        plusBtn.setBounds(rrBounds.getX(), rrBounds.getY(), rrBounds.getWidth(), rrBounds.getHeight());
+        minusMinusBtn.setBounds(lBounds.getX(), lBounds.getY(), lBounds.getWidth(), lBounds.getHeight());
+        plusPlusBtn.setBounds(rBounds.getX(), rBounds.getY(), rBounds.getWidth(), rBounds.getHeight());
+
+        if (Minus == null) {
+            Minus = new BitmapFontCache(Fonts.getBig());
+            Minus.setColor(COLOR.getFontColor());
+            Minus.setText("-", 0, 0);
+            Minus.setPosition(llBounds.getCenterPosX() - (Minus.getLayouts().first().width / 2), llBounds.getCenterPosY() + (Minus.getLayouts().first().height / 2));
+        }
+
+        if (Plus == null) {
+            Plus = new BitmapFontCache(Fonts.getBig());
+            Plus.setColor(COLOR.getFontColor());
+            Plus.setText("+", 0, 0);
+            Plus.setPosition(rrBounds.getCenterPosX() - (Plus.getLayouts().first().width / 2), rrBounds.getCenterPosY() + (Plus.getLayouts().first().height / 2));
+        }
+
+        if (MinusMinus == null) {
+            MinusMinus = new BitmapFontCache(Fonts.getBig());
+            MinusMinus.setColor(COLOR.getFontColor());
+            MinusMinus.setText("--", 0, 0);
+            MinusMinus.setPosition(lBounds.getCenterPosX() - (MinusMinus.getLayouts().first().width / 2), lBounds.getCenterPosY() + (MinusMinus.getLayouts().first().height / 2));
+        }
+
+        if (PlusPlus == null) {
+            PlusPlus = new BitmapFontCache(Fonts.getBig());
+            PlusPlus.setColor(COLOR.getFontColor());
+            PlusPlus.setText("++", 0, 0);
+            PlusPlus.setPosition(rBounds.getCenterPosX() - (PlusPlus.getLayouts().first().width / 2), rBounds.getCenterPosY() + (PlusPlus.getLayouts().first().height / 2));
+        }
+
+        minusBtn.draw(batch);
+        plusBtn.draw(batch);
+        Minus.draw(batch);
+        Plus.draw(batch);
+
+        minusMinusBtn.draw(batch);
+        plusPlusBtn.draw(batch);
+        MinusMinus.draw(batch);
+        PlusPlus.draw(batch);
+
+        left += minusMinusBtn.getWidth() + minusMinusBtn.getX();
+
+        if (mFilterSetEntry.getIcon() != null) {
+            float iconHeight = this.getHalfHeight() * 0.8f;
+            float iconWidth = iconHeight;
+            mFilterSetEntry.getIcon().setBounds(left, MARGIN, iconWidth, iconHeight);
             mFilterSetEntry.getIcon().draw(batch);
             // top += UiSizes.getIconSize() / 1.5;
         }
@@ -306,11 +438,11 @@ public class FilterSetListViewItem extends ListViewItemBackground {
         if (mFilterSetEntry.getIcon() != null) {
             float iconHeight = this.getHeight() * 0.8f;
             float iconWidth = iconHeight;
-            float y = (this.getHeight() - iconHeight) / 2f; // UI_Size_Base.that.getMargin()
+            float y = (this.getHeight() - iconHeight) / 2f; // MARGIN
             mFilterSetEntry.getIcon().setBounds(left, y, iconWidth, iconHeight);
-            // mFilterSetEntry.getIcon().setBounds(left, UI_Size_Base.that.getMargin(), iconWidth, iconHeight);
+            // mFilterSetEntry.getIcon().setBounds(left, MARGIN, iconWidth, iconHeight);
             mFilterSetEntry.getIcon().draw(batch);
-            left += iconWidth + UI_Size_Base.that.getMargin() + getLeftWidth();
+            left += iconWidth + MARGIN + getLeftWidth();
         }
 
     }
@@ -333,7 +465,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
 
     }
 
-    public void plusClick() {
+    private void plusClick() {
         this.mFilterSetEntry.plusClick();
         setValueFont = true;
         FilterSetListView.mustSaveFilter = true;
@@ -342,7 +474,7 @@ public class FilterSetListViewItem extends ListViewItemBackground {
         GL.that.renderOnce();
     }
 
-    public void minusClick() {
+    private void minusClick() {
         this.mFilterSetEntry.minusClick();
         setValueFont = true;
         FilterSetListView.mustSaveFilter = true;
@@ -351,7 +483,25 @@ public class FilterSetListViewItem extends ListViewItemBackground {
         GL.that.renderOnce();
     }
 
-    public void stateClick() {
+    private void plusPlusClick() {
+        this.mFilterSetEntry.plusPlusClick();
+        setValueFont = true;
+        FilterSetListView.mustSaveFilter = true;
+        this.isPressed = false;
+        this.lastItemTouchPos = null;
+        GL.that.renderOnce();
+    }
+
+    private void minusMinusClick() {
+        this.mFilterSetEntry.minusMinusClick();
+        setValueFont = true;
+        FilterSetListView.mustSaveFilter = true;
+        this.isPressed = false;
+        this.lastItemTouchPos = null;
+        GL.that.renderOnce();
+    }
+
+    private void stateClick() {
         this.mFilterSetEntry.stateClick();
         FilterSetListView.mustSaveFilter = true;
         this.isPressed = false;
@@ -360,22 +510,19 @@ public class FilterSetListViewItem extends ListViewItemBackground {
     }
 
     public void setValue(int value) {
-
         this.mFilterSetEntry.setState(value);
-
     }
 
-    public void setValue(float value) {
+    public void setValue(double value) {
         this.mFilterSetEntry.setState(value);
-
     }
 
-    public int getChecked() {
+    int getChecked() {
         return mFilterSetEntry.getState();
     }
 
-    public float getValue() {
-        return (float) mFilterSetEntry.getNumState();
+    public double getValue() {
+        return mFilterSetEntry.getNumState();
     }
 
     public void setValue(boolean b) {

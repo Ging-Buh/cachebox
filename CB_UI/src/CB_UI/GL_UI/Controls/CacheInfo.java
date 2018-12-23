@@ -13,6 +13,7 @@ import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.UnitFormatter;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
@@ -94,6 +95,7 @@ public class CacheInfo extends CB_View_Base {
     private Sprite mDSprite;
     private Sprite mTSprite;
     private Sprite mTBSprite;
+    private Sprite mFPSprite;
     private Sprite[] mAttrSprites;
     private BitmapFont mBitmapFont = Fonts.getNormal();
     private BitmapFont mBitmapFontSmall = Fonts.getSmall();
@@ -101,6 +103,7 @@ public class CacheInfo extends CB_View_Base {
     private BitmapFontCache mD_FontCache;
     private BitmapFontCache mT_FontCache;
     private BitmapFontCache mTB_FontCache;
+    private BitmapFontCache mFP_FontCache;
     private BitmapFontCache mInfo_FontCache;
     private boolean cacheIsInitial = false;
     private float mScaleFactor;
@@ -173,6 +176,10 @@ public class CacheInfo extends CB_View_Base {
                 mTSprite.draw(batch);
             if (mTBSprite != null)
                 mTBSprite.draw(batch);
+            if (mFPSprite != null)
+                mFPSprite.draw(batch);
+            if (mFP_FontCache != null)
+                mFP_FontCache.draw(batch);
             if (mInfo_FontCache != null)
                 mInfo_FontCache.draw(batch);
             if (mFavoriteSprite != null)
@@ -273,16 +280,34 @@ public class CacheInfo extends CB_View_Base {
                     mTBSprite.setBounds(mLeft, mBottom - (sizes / 1.8f) - mMargin, sizes, sizes);
                     mTBSprite.setOrigin(sizes / 2, sizes / 2);
                     mTBSprite.setRotation(90);
-
+                    mLeft += mTBSprite.getWidth() + mMargin;
                     if (numTb > 1) {
-                        mLeft += mTBSprite.getWidth() + mMargin;
                         mTB_FontCache = new BitmapFontCache(mBitmapFontSmall);
                         mTB_FontCache.setColor(COLOR.getFontColor());
                         mTB_FontCache.setText("x" + numTb, mLeft, mBottom);
+                        mLeft += mTB_FontCache.getLayouts().first().width + mMargin;
                     }
+                    mLeft += mMargin;
                 } else {
                     mTBSprite = null;
                     mTB_FontCache = null;
+                }
+
+                //Draw FavPoints
+                int numFP = mCache.favPoints;
+                if (numFP > 0) {
+                    float sizes = mStarSize.width / 4f;
+
+                    mFPSprite = new Sprite(Sprites.getSprite(IconName.FavPoi.name()));
+                    mFPSprite.setBounds(mLeft, mBottom - (sizes / 1.8f) - mMargin, sizes, sizes);
+
+                    mLeft += mFPSprite.getWidth() + mMargin;
+                    mFP_FontCache = new BitmapFontCache(mBitmapFontSmall);
+                    mFP_FontCache.setColor(COLOR.getFontColor());
+                    mFP_FontCache.setText("x" + numFP, mLeft, mBottom);
+                } else {
+                    mFPSprite = null;
+                    mFPSprite = null;
                 }
             }
 

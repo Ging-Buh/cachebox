@@ -18,6 +18,7 @@ package CB_Core;
 import CB_Core.Types.Cache;
 import CB_Core.Types.DLong;
 import CB_Utils.Log.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -41,14 +42,16 @@ public class FilterProperties {
     public int WithManualWaypoint;
     public int HasUserData;
 
-    public float MinDifficulty;
-    public float MaxDifficulty;
-    public float MinTerrain;
-    public float MaxTerrain;
-    public float MinContainerSize;
-    public float MaxContainerSize;
-    public float MinRating;
-    public float MaxRating;
+    public double MinDifficulty;
+    public double MaxDifficulty;
+    public double MinTerrain;
+    public double MaxTerrain;
+    public double MinContainerSize;
+    public double MaxContainerSize;
+    public double MinRating;
+    public double MaxRating;
+    public double MinFavPoints;
+    public double MaxFavPoints;
 
     public int hasCorrectedCoordinates;
     public boolean isHistory;
@@ -116,10 +119,18 @@ public class FilterProperties {
                 MinRating = Float.parseFloat(parts[cnt++]);
                 MaxRating = Float.parseFloat(parts[cnt++]);
 
-                if (parts.length == 17) {
+                if (parts.length <= 17) {
                     this.hasCorrectedCoordinates = 0;
                 } else {
                     hasCorrectedCoordinates = Integer.parseInt(parts[cnt++]);
+                }
+
+                if (parts.length <= 19) {
+                    this.MinFavPoints = -1;
+                    this.MaxFavPoints = -1;
+                } else {
+                    this.MinFavPoints = Double.parseDouble(parts[cnt++]);
+                    this.MaxFavPoints = Double.parseDouble(parts[cnt]);
                 }
 
                 mCacheTypes = parseCacheTypes(json.getString("types"));
@@ -276,6 +287,8 @@ public class FilterProperties {
         MaxContainerSize = 4;
         MinRating = 0;
         MaxRating = 5;
+        MinFavPoints = -1;
+        MaxFavPoints = -1;
 
         this.hasCorrectedCoordinates = 0;
         isHistory = false;
@@ -350,10 +363,17 @@ public class FilterProperties {
             json.put("isHistory", isHistory);
             // add Cache properties
             json.put("caches",
-                    String.valueOf(Finds) + SEPARATOR + String.valueOf(NotAvailable) + SEPARATOR + String.valueOf(Archived) + SEPARATOR + String.valueOf(Own) + SEPARATOR + String.valueOf(ContainsTravelbugs) + SEPARATOR + String.valueOf(Favorites)
-                            + SEPARATOR + String.valueOf(HasUserData) + SEPARATOR + String.valueOf(ListingChanged) + SEPARATOR + String.valueOf(WithManualWaypoint) + SEPARATOR + String.valueOf(MinDifficulty) + SEPARATOR
-                            + String.valueOf(MaxDifficulty) + SEPARATOR + String.valueOf(MinTerrain) + SEPARATOR + String.valueOf(MaxTerrain) + SEPARATOR + String.valueOf(MinContainerSize) + SEPARATOR + String.valueOf(MaxContainerSize) + SEPARATOR
-                            + String.valueOf(MinRating) + SEPARATOR + String.valueOf(MaxRating) + SEPARATOR + String.valueOf(this.hasCorrectedCoordinates));
+                    String.valueOf(Finds) + SEPARATOR + String.valueOf(NotAvailable) + SEPARATOR
+                            + String.valueOf(Archived) + SEPARATOR + String.valueOf(Own) + SEPARATOR
+                            + String.valueOf(ContainsTravelbugs) + SEPARATOR + String.valueOf(Favorites) + SEPARATOR
+                            + String.valueOf(HasUserData) + SEPARATOR + String.valueOf(ListingChanged) + SEPARATOR
+                            + String.valueOf(WithManualWaypoint) + SEPARATOR + String.valueOf(MinDifficulty) + SEPARATOR
+                            + String.valueOf(MaxDifficulty) + SEPARATOR + String.valueOf(MinTerrain) + SEPARATOR
+                            + String.valueOf(MaxTerrain) + SEPARATOR + String.valueOf(MinContainerSize) + SEPARATOR
+                            + String.valueOf(MaxContainerSize) + SEPARATOR + String.valueOf(MinRating) + SEPARATOR
+                            + String.valueOf(MaxRating) + SEPARATOR + String.valueOf(this.hasCorrectedCoordinates) + SEPARATOR
+                            + String.valueOf(MinFavPoints) + SEPARATOR + String.valueOf(MaxFavPoints));
+
             // add Cache Types
             String tmp = "";
             for (int i = 0; i < mCacheTypes.length; i++) {
@@ -473,6 +493,9 @@ public class FilterProperties {
             andParts.add("Rating >= " + String.valueOf(MinRating * 100));
             andParts.add("Rating <= " + String.valueOf(MaxRating * 100));
 
+            if (MinFavPoints >= 0) andParts.add("FavPoints >= " + String.valueOf(MinFavPoints));
+            if (MaxFavPoints >= 0) andParts.add("FavPoints <= " + String.valueOf(MaxFavPoints));
+
             FilterInstances.hasCorrectedCoordinates = hasCorrectedCoordinates;
 
             String csvTypes = "";
@@ -569,6 +592,10 @@ public class FilterProperties {
         if (MinRating != filter.MinRating)
             return false;
         if (MaxRating != filter.MaxRating)
+            return false;
+        if (MinFavPoints != filter.MinFavPoints)
+            return false;
+        if (MaxFavPoints != filter.MaxFavPoints)
             return false;
 
         if (hasCorrectedCoordinates != filter.hasCorrectedCoordinates)
