@@ -84,7 +84,9 @@ public class PresetListView extends V_ListView {
                     int pos = entry.indexOf(";");
                     String name = entry.substring(0, pos);
                     String filter = entry.substring(pos + 1);
-                    mPresetEntries.add(new PresetEntry(name, Sprites.getSprite("userdata"), new FilterProperties(filter)));
+                    FilterProperties fp = new FilterProperties(filter);
+                    if (fp.isInitialized)
+                        mPresetEntries.add(new PresetEntry(name, Sprites.getSprite("userdata"), fp));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
