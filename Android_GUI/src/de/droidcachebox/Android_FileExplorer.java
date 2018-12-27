@@ -1,5 +1,6 @@
 package de.droidcachebox;
 
+import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Events.PlatformConnector.IgetFileReturnListener;
 import CB_UI_Base.Events.PlatformConnector.IgetFolderReturnListener;
 import CB_Utils.Log.Log;
@@ -102,7 +103,7 @@ public class Android_FileExplorer {
         currentPath = initialPath;
         this.TitleText = TitleText;
         if (ButtonText == null || ButtonText.length() == 0) {
-            this.ButtonText = "Ok";
+            this.ButtonText = Translation.Get("ok");
         } else {
             this.ButtonText = ButtonText;
         }

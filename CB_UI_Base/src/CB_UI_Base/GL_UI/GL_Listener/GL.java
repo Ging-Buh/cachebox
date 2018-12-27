@@ -35,6 +35,7 @@ import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Log.Log;
 import CB_Utils.Log.Trace;
 import CB_Utils.Math.Point;
+import CB_Utils.Plattform;
 import CB_Utils.Util.HSV_Color;
 import CB_Utils.Util.IChanged;
 import com.badlogic.gdx.ApplicationListener;
@@ -62,8 +63,9 @@ public class GL implements ApplicationListener {
     public static final int FRAME_RATE_IDLE = 200;
     public static final int FRAME_RATE_ACTION = 50;
     public static final int FRAME_RATE_FAST_ACTION = 40;
-    private AsyncExecutor asyncExecutor;
     public static GL that;
+    public TextInputInterface textInput;
+    private AsyncExecutor asyncExecutor;
     private int width, height;
     private MainViewBase mSplash;
     private MainViewBase mMainView;
@@ -100,30 +102,22 @@ public class GL implements ApplicationListener {
     private Texture mDarknessTexture;
     private HashMap<GL_View_Base, Integer> renderViews = new HashMap<>();
     private MainViewBase child;
-
     private CB_View_Base mDialog;
     private Dialog currentDialog;
     private boolean currentDialogIsShown;
-
     private CB_View_Base mActivity;
     private ActivityBase currentActivity;
     private boolean currentActivityIsShown;
-
     private CB_View_Base mMarkerOverlay;
     private SelectionMarker selectionMarkerCenter, selectionMarkerLeft, selectionMarkerRight;
     private boolean MarkerIsShown;
-
     private CB_View_Base mToastOverlay;
     private CB_UI_Base.GL_UI.Controls.Dialogs.Toast toast;
     private boolean ToastIsShown;
-
     private EditTextField focusedEditTextField;
-
     private ArrayList<Dialog> dialogHistory = new ArrayList<>();
     private ArrayList<ActivityBase> activityHistory = new ArrayList<>();
-
     private PopUp_Base aktPopUp;
-
     private float darknessAlpha = 0f;
 
     public GL(int _width, int _height, MainViewBase splash, MainViewBase mainView) {
@@ -147,10 +141,10 @@ public class GL implements ApplicationListener {
     }
 
     public void postAsync(final Runnable runnable) {
-        if (that.asyncExecutor == null) {
-            that.asyncExecutor = new AsyncExecutor(8);
+        if (asyncExecutor == null) {
+            asyncExecutor = new AsyncExecutor(8);
         }
-        that.asyncExecutor.submit((AsyncTask<Void>) () -> {
+        asyncExecutor.submit((AsyncTask<Void>) () -> {
             try {
                 runnable.run();
             } catch (final Exception e) {
@@ -1301,11 +1295,14 @@ public class GL implements ApplicationListener {
         boolean shallBeOpened = editTextField != null && !editTextField.isKeyboardPopupDisabled();
         if (isAlreadyOpen) {
             if (!shallBeOpened) {
-                Gdx.input.setOnscreenKeyboardVisible(false);
+                if (!CB_UI_Base_Settings.useAndroidKeyboard.getValue() || Plattform.used != Plattform.Android)
+                    Gdx.input.setOnscreenKeyboardVisible(false);
             }
         } else {
             if (shallBeOpened) {
-                Gdx.input.setOnscreenKeyboardVisible(true);
+                if (CB_UI_Base_Settings.useAndroidKeyboard.getValue() && Plattform.used == Plattform.Android)
+                    textInput.requestKeyboard(editTextField);
+                else Gdx.input.setOnscreenKeyboardVisible(true);
             }
         }
 

@@ -343,6 +343,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
         CB_RectF rec = new CB_RectF(0, 0, UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight());
         new GL(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), new MainViewInit(rec), new TabMainView(rec));
+        GL.that.textInput = new Android_TextInput(mainActivity);
 
         SelectedCacheEventList.Add(this);
         CacheListChangedEventList.Add(this);

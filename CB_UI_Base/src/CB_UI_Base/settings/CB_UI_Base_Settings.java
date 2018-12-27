@@ -23,6 +23,7 @@ import CB_Utils.Util.HSV_Color;
 public interface CB_UI_Base_Settings extends CB_Utils_Settings {
 
     SettingBool nightMode = new SettingBool("nightMode", SettingCategory.Internal, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
+    SettingBool useAndroidKeyboard = new SettingBool("useAndroidKeyboard", SettingCategory.Skin, SettingModus.Normal, false, SettingStoreType.Global, SettingUsage.ACB);
 
     SettingFolder SkinFolder = new SettingFolder("SkinFolder", SettingCategory.Folder, DEVELOPER, "default", SettingStoreType.Global, SettingUsage.ACB, false);
 

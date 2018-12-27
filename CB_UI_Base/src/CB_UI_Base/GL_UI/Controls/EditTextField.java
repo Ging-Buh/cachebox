@@ -1664,6 +1664,9 @@ public class EditTextField extends EditTextFieldBase {
         }
     }
 
+    public int getLineCount() {
+        return lines.size();
+    }
     public void showLastLines() {
         if (lines.size() < this.maxLineCount) {
             topLine = 0;
