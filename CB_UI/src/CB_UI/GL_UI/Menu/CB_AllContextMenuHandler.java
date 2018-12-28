@@ -36,6 +36,9 @@ import static CB_Core.Api.GroundspeakAPI.updateGeoCache;
 
 public class CB_AllContextMenuHandler {
     private static final String log = "CB_AllContextMenuHandler";
+    private static final int MI_FAVORIT = 55;
+    private static final int MI_EDIT_CACHE = 160;
+    private static final int MI_DELETE_CACHE = 163;
     static CancelWaitDialog wd;
     private static OnClickListener ReloadCacheAPIclicked = new OnClickListener() {
 
@@ -110,13 +113,13 @@ public class CB_AllContextMenuHandler {
                         TabMainView.actionShowSolverView.Execute();
                     return true;
 
-                case MenuID.MI_EDIT_CACHE:
+                case MI_EDIT_CACHE:
                     if (editCache == null) editCache = new EditCache();
                     if (editCache.isDisposed()) editCache = new EditCache();
                     editCache.update(GlobalCore.getSelectedCache());
                     return true;
 
-                case MenuID.MI_FAVORIT:
+                case MI_FAVORIT:
                     if (GlobalCore.isSetSelectedCache()) {
                         GlobalCore.getSelectedCache().setFavorite(!GlobalCore.getSelectedCache().isFavorite());
                         if (dao == null)
@@ -126,7 +129,7 @@ public class CB_AllContextMenuHandler {
                     }
                     return true;
 
-                case MenuID.MI_DELETE_CACHE:
+                case MI_DELETE_CACHE:
                     DeleteSelectedCache.Execute();
                     return true;
 
@@ -180,18 +183,18 @@ public class CB_AllContextMenuHandler {
         if (selectedCacheIsNull)
             mi.setEnabled(false);
 
-        mi = icm.addItem(MenuID.MI_EDIT_CACHE, "MI_EDIT_CACHE");
+        mi = icm.addItem(MI_EDIT_CACHE, "MI_EDIT_CACHE");
         if (selectedCacheIsNull)
             mi.setEnabled(false);
 
-        mi = icm.addItem(MenuID.MI_FAVORIT, "Favorite", Sprites.getSprite(IconName.favorit.name()));
+        mi = icm.addItem(MI_FAVORIT, "Favorite", Sprites.getSprite(IconName.favorit.name()));
         mi.setCheckable(true);
         if (selectedCacheIsNull)
             mi.setEnabled(false);
         else
             mi.setChecked(GlobalCore.getSelectedCache().isFavorite());
 
-        mi = icm.addItem(MenuID.MI_DELETE_CACHE, "MI_DELETE_CACHE");
+        mi = icm.addItem(MI_DELETE_CACHE, "MI_DELETE_CACHE");
         if (selectedCacheIsNull)
             mi.setEnabled(false);
 

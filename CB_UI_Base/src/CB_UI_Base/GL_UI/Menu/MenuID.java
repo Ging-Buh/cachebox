@@ -84,10 +84,6 @@ public class MenuID {
     public static final int MI_CIRCLE = 53;
     public static final int MI_OPENROUTE = 54;
 
-    // CB_Action_ShowDescriptionView
-    public static final int MI_FAVORIT = 55;
-    public static final int MI_RELOAD_CACHE = 56;
-
     // CB_Action_ShowCacheList
     public static final int MI_MANAGE_DB = 57;
     public static final int MI_AUTO_RESORT = 58;
@@ -129,15 +125,12 @@ public class MenuID {
     // Action ID�s
 
     public static final int AID_TEST_VIEW = -1;
-    public static final int AID_TEST2 = -2;
 
     public static final int AID_SHOW_MAP = 100;
     public static final int AID_SHOW_HINT = 101;
     public static final int AID_SHOW_CACHELIST = 102;
-    public static final int AID_SHOW_CACHELIST_CONTEXT_MENU = 103;
     public static final int AID_SHOW_COMPASS = 103;
     public static final int AID_SHOW_CREDITS = 104;
-    public static final int AID_SHOW_DESCRIPTION = 105;
     public static final int AID_SHOW_FIELDNOTES = 106;
     public static final int AID_SHOW_LOGS = 108;
     public static final int AID_SHOW_NOTES = 109;
@@ -147,20 +140,11 @@ public class MenuID {
     public static final int AID_SHOW_TRACKLIST = 113;
     public static final int AID_SHOW_WAYPOINTS = 114;
     public static final int AID_SHOW_SETTINGS = 115;
-    public static final int AID_TRACKLIST_CREATE = 116;
-    public static final int AID_TRACKLIST_LOAD = 117;
-    public static final int AID_TRACKLIST_DELETE = 118;
-    public static final int AID_SHOW_FILTER_SETTINGS = 119;
     public static final int AID_NAVIGATE_TO = 120;
-    public static final int AID_TRACK_REC = 121;
     public static final int AID_VOICE_REC = 122;
     public static final int AID_TAKE_PHOTO = 123;
     public static final int AID_VIDEO_REC = 124;
-    public static final int AID_DELETE_CACHES = 125;
-    public static final int AID_PARKING = 126;
     public static final int AID_DAY_NIGHT = 127;
-    public static final int AID_LOCK = 128;
-    public static final int AID_QUIT = 129;
     public static final int AID_SHOW_ABOUT = 130;
     public static final int AID_SHOW_SOLVER2 = 131;
     public static final int AID_SEARCH = 132;
@@ -170,7 +154,6 @@ public class MenuID {
     public static final int AID_SHOW_QUIT = 136;
     public static final int AID_QUICK_FIELDNOTE = 137;
     public static final int AID_CHK_STATE = 138;
-    public static final int AID_GENERATE_ROUTE = 139;
     public static final int AID_SHOW_PARKING_DIALOG = 140;
     public static final int AID_SHOW_DELETE_DIALOG = 141;
 
@@ -195,10 +178,8 @@ public class MenuID {
 
     public static final int AID_SHOW_FILTER_DIALOG = 159;
 
-    public static final int MI_EDIT_CACHE = 160;
     public static final int MI_NEW_CACHE = 161;
     public static final int MI_MAPVIEW_OVERLAY_VIEW = 162;
-    public static final int MI_DELETE_CACHE = 163;
     public static final int MI_RESET_FILTER = 164;
 
     public static final int MI_TB_DISCOVERED = 166;

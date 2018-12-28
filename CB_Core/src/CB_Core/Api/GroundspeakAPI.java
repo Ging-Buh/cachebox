@@ -736,6 +736,48 @@ public class GroundspeakAPI {
         }
     }
 
+    public static int AddToWatchList(String gcCode) {
+        if (!isAccessTokenInvalid()) {
+            try {
+                JSONArray wl = getNetz()
+                        .get(getUrl(1, "users/me/lists?types=wl&fields=name,referenceCode"))
+                        .ensureSuccess()
+                        .asJsonArray()
+                        .getBody();
+                String wlReferenceCode = ((JSONObject) wl.get(0)).optString("referenceCode", "");
+                getNetz().post(getUrl(1, "lists/" + wlReferenceCode + "/geocaches"))
+                        .body(new JSONObject().put("referenceCode", gcCode))
+                        .ensureSuccess()
+                        .asVoid()
+                ;
+            } catch (Exception ex) {
+                retry(ex);
+                return ERROR;
+            }
+            return OK;
+        }
+        return ERROR;
+    }
+
+    public static int RemoveFromWatchList(String gcCode) {
+        if (!isAccessTokenInvalid()) {
+            try {
+                JSONArray wl = getNetz()
+                        .get(getUrl(1, "users/me/lists?types=wl&fields=name,referenceCode"))
+                        .ensureSuccess()
+                        .asJsonArray()
+                        .getBody();
+                String wlReferenceCode = ((JSONObject) wl.get(0)).optString("referenceCode", "");
+                getNetz().delete(getUrl(1, "lists/" + wlReferenceCode + "/geocaches/" + gcCode)).ensureSuccess().asVoid();
+            } catch (Exception ex) {
+                retry(ex);
+                return ERROR;
+            }
+            return OK;
+        }
+        return ERROR;
+    }
+
     public static int uploadCacheNote(String cacheCode, String notes) {
         Log.info(log, "uploadCacheNote for " + cacheCode);
         LastAPIError = "";
@@ -1110,8 +1152,7 @@ public class GroundspeakAPI {
             if (cache.waypoints != null) {
                 cache.waypoints.clear();
                 // no merging of waypoints here
-            }
-            else {
+            } else {
                 cache.waypoints = new CB_List<>();
             }
             for (int j = 0; j < wpts.length(); j++) {
