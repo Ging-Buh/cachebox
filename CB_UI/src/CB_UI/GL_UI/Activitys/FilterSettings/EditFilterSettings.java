@@ -425,7 +425,7 @@ public class EditFilterSettings extends ActivityBase {
 
                 @Override
                 public boolean onClick(int which, Object data) {
-                    that.show();
+                    TabMainView.actionShowFilter.Execute();
                     return true;
                 }
             });
@@ -445,20 +445,22 @@ public class EditFilterSettings extends ActivityBase {
 
                         // Category Filterungen aus Filter entfernen
                         int pos = aktFilter.indexOf("^");
-                        aktFilter = aktFilter.substring(0, pos);
+                        int posE = aktFilter.indexOf("\"", pos);
+                        String after = aktFilter.substring(posE);
+                        aktFilter = aktFilter.substring(0, pos) + after;
 
                         uF += text + ";" + aktFilter + "#";
                         Config.UserFilter.setValue(uF);
                         Config.AcceptChanges();
                         mPresetListView.fillPresetList();
                         mPresetListView.notifyDataSetChanged();
-                        that.show();
+                        TabMainView.actionShowFilter.Execute();
                         break;
                     case 2: // cancel clicket
-                        that.show();
+                        TabMainView.actionShowFilter.Execute();
                         break;
                     case 3:
-                        that.show();
+                        TabMainView.actionShowFilter.Execute();
                         break;
                 }
 

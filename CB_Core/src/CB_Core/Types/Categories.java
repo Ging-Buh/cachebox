@@ -1,5 +1,7 @@
 package CB_Core.Types;
 
+import java.util.ArrayList;
+
 import CB_Core.Database;
 import CB_Core.FilterProperties;
 import CB_Utils.Util.MoveableList;
@@ -121,7 +123,9 @@ public class Categories extends MoveableList<Category> {
     }
 
     public void WriteToFilter(FilterProperties filter) {
+        if (filter.GPXFilenameIds == null) filter.GPXFilenameIds = new ArrayList<>();
         filter.GPXFilenameIds.clear();
+        if(filter.Categories==null)filter.Categories=new ArrayList<>();
         filter.Categories.clear();
         int n = this.size();
         for (int i = 0; i < n; i++) {

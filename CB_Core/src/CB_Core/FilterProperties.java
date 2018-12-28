@@ -18,6 +18,7 @@ package CB_Core;
 import CB_Core.Types.Cache;
 import CB_Core.Types.DLong;
 import CB_Utils.Log.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -66,7 +67,6 @@ public class FilterProperties {
     public String filterOwner;
 
     public ArrayList<Long> Categories;
-    public boolean isInitialized;
 
     /**
      * creates the FilterProperties with default values.
@@ -83,9 +83,8 @@ public class FilterProperties {
      * @param serialization
      */
     public FilterProperties(String serialization) {
-        isInitialized = true;
+        initCreation();
         if (serialization.length() == 0) {
-            initCreation();
             return;
         }
         // Try to parse as JSON
@@ -178,12 +177,9 @@ public class FilterProperties {
                     }
                 } catch (JSONException e) {
                     Log.err(log, "Json Version FilterProperties(" + serialization + ")", "", e);
-                    isInitialized = false;
                 }
-            }
-            else {
+            } else {
                 Log.err(log, "Json Version FilterProperties(" + serialization + ")");
-                isInitialized = false;
             }
         } else {
             // Filter ist noch in alten Einstellungen gegeben...
@@ -259,7 +255,6 @@ public class FilterProperties {
                 }
             } catch (Exception exc) {
                 Log.err(log, "old Version FilterProperties(" + serialization + ")", "", exc);
-                isInitialized = false;
             }
         }
     }
@@ -345,13 +340,13 @@ public class FilterProperties {
      * @return
      */
     public boolean isExtendedFilter() {
-        if (filterName.length() > 0)
+        if (filterName != null && filterName.length() > 0)
             return true;
 
-        if (filterGcCode.length() > 0)
+        if (filterGcCode != null && filterGcCode.length() > 0)
             return true;
 
-        if (filterOwner.length() > 0)
+        if (filterOwner != null && filterOwner.length() > 0)
             return true;
 
         return false;
@@ -610,33 +605,66 @@ public class FilterProperties {
         if (hasCorrectedCoordinates != filter.hasCorrectedCoordinates)
             return false;
 
-        for (int i = 0; i < mCacheTypes.length; i++) {
-            if (filter.mCacheTypes.length <= i)
-                break;
-            if (filter.mCacheTypes[i] != this.mCacheTypes[i])
-                return false; // nicht gleich!!!
+        if (mCacheTypes == null) {
+            if (filter.mCacheTypes != null) return false;
+        } else {
+            if (filter.mCacheTypes == null) return false;
+            for (int i = 0; i < mCacheTypes.length; i++) {
+                if (filter.mCacheTypes.length <= i)
+                    break;
+                if (filter.mCacheTypes[i] != this.mCacheTypes[i])
+                    return false; // nicht gleich!!!
+            }
         }
 
-        for (int i = 1; i < mAttributes.length; i++) {
-            if (filter.mAttributes.length <= i)
-                break;
-            if (filter.mAttributes[i] != this.mAttributes[i])
-                return false; // nicht gleich!!!
+        if (mAttributes == null) {
+            if (filter.mAttributes != null) return false;
+        } else {
+            if (filter.mAttributes == null) return false;
+            for (int i = 1; i < mAttributes.length; i++) {
+                if (filter.mAttributes.length <= i)
+                    break;
+                if (filter.mAttributes[i] != this.mAttributes[i])
+                    return false; // nicht gleich!!!
+            }
         }
 
-        if (GPXFilenameIds.size() != filter.GPXFilenameIds.size())
-            return false;
-        for (Long gid : GPXFilenameIds) {
-            if (!filter.GPXFilenameIds.contains(gid))
+        if (GPXFilenameIds == null) {
+            if (filter.GPXFilenameIds != null) return false;
+        } else {
+            if (filter.GPXFilenameIds == null) return false;
+            if (GPXFilenameIds.size() != filter.GPXFilenameIds.size())
+                return false;
+            for (Long gid : GPXFilenameIds) {
+                if (!filter.GPXFilenameIds.contains(gid))
+                    return false;
+            }
+        }
+
+        if (filterOwner == null) {
+            if (filter.filterOwner != null) return false;
+        } else {
+            if (filter.filterOwner == null) return false;
+            if (!filterOwner.equals(filter.filterOwner))
                 return false;
         }
 
-        if (!filterOwner.equals(filter.filterOwner))
-            return false;
-        if (!filterGcCode.equals(filter.filterGcCode))
-            return false;
-        if (!filterName.equals(filter.filterName))
-            return false;
+        if (filterGcCode == null) {
+            if (filter.filterGcCode != null) return false;
+        } else {
+            if (filter.filterGcCode == null) return false;
+            if (!filterGcCode.equals(filter.filterGcCode))
+                return false;
+        }
+
+        if (filterName == null) {
+            if (filter.filterName != null) return false;
+        } else {
+            if (filter.filterName == null) return false;
+            if (!filterName.equals(filter.filterName))
+                return false;
+        }
+
 
         if (isHistory != filter.isHistory)
             return false;

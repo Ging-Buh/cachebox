@@ -4,6 +4,7 @@ import CB_Core.FilterInstances;
 import CB_Core.FilterProperties;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
+import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
@@ -17,6 +18,7 @@ import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Settings.SettingString;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.ArrayList;
@@ -84,9 +86,9 @@ public class PresetListView extends V_ListView {
                     int pos = entry.indexOf(";");
                     String name = entry.substring(0, pos);
                     String filter = entry.substring(pos + 1);
+                    if (filter.endsWith("#")) filter = filter.substring(0, filter.length() - 1);
                     FilterProperties fp = new FilterProperties(filter);
-                    if (fp.isInitialized)
-                        mPresetEntries.add(new PresetEntry(name, Sprites.getSprite("userdata"), fp));
+                    mPresetEntries.add(new PresetEntry(name, Sprites.getSprite("userdata"), fp));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -123,6 +125,7 @@ public class PresetListView extends V_ListView {
 
                             int pos = userEntrys[i].indexOf(";");
                             String filter = userEntrys[i].substring(pos + 1);
+                            if (filter.endsWith("#")) filter = filter.substring(0, filter.length() - 1);
                             EditFilterSettings.tmpFilterProps = new FilterProperties(filter);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -172,13 +175,13 @@ public class PresetListView extends V_ListView {
                                         }
 
                                     }
-                                    EditFilterSettings.that.show();
+                                    TabMainView.actionShowFilter.Execute();
                                     break;
                                 case 2: // cancel clicked
-                                    EditFilterSettings.that.show();
+                                    TabMainView.actionShowFilter.Execute();
                                     break;
                                 case 3:
-                                    EditFilterSettings.that.show();
+                                    TabMainView.actionShowFilter.Execute();
                                     break;
                             }
 
