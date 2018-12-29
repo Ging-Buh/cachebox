@@ -19,6 +19,7 @@ import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Types.Cache;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Menu.CacheContextMenu;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.*;
@@ -50,18 +51,9 @@ public class DescriptionView extends CB_View_Base {
     final static String PREMIUM = "Premium";
     final static String BASIC_LIMIT = "3";
     final static String PREMIUM_LIMIT = "6000";
-    final static OnClickListener downloadClicked = new OnClickListener() {
-
-        @Override
-        public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-            GL.that.RunOnGL(new IRunOnGL() {
-                @Override
-                public void run() {
-                    TabMainView.actionShowDescriptionView.ReloadSelectedCache();
-                }
-            });
-            return true;
-        }
+    final static OnClickListener downloadClicked = (v, x, y, pointer, button) -> {
+        GL.that.RunOnGL(() -> CacheContextMenu.ReloadSelectedCache());
+        return true;
     };
     private CacheListViewItem cacheInfo;
     private Button downloadButton;

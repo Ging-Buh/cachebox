@@ -15,54 +15,22 @@
  */
 package CB_UI.GL_UI.Main.Actions;
 
-import CB_Core.Api.GroundspeakAPI;
-import CB_Core.CacheListChangedEventList;
-import CB_Core.Database;
-import CB_Core.FilterInstances;
-import CB_Core.Types.CacheDAO;
-import CB_Core.Types.CacheListDAO;
-import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Config;
-import CB_UI.GL_UI.Activitys.DeleteSelectedCache;
 import CB_UI.GL_UI.Activitys.EditCache;
 import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Menu.CacheContextMenu;
 import CB_UI.GL_UI.Views.DescriptionView;
-import CB_UI.GlobalCore;
-import CB_UI.WriteIntoDB;
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListener;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
-import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
-import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.GL_UI.Sprites.IconName;
-import CB_Utils.Interfaces.ICancelRunnable;
-import CB_Utils.Log.Log;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-import java.util.ArrayList;
-
-import static CB_Core.Api.GroundspeakAPI.GeoCacheRelated;
-import static CB_Core.Api.GroundspeakAPI.updateGeoCache;
-
 public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
-    private static final int AID_SHOW_DESCRIPTION = 105;
-    private static final int MI_FAVORIT = 55;
-    private static final int MI_RELOAD_CACHE = 56;
-    private static final int MI_EDIT_CACHE = 160;
-    private static final int MI_DELETE_CACHE = 163;
-    private static final int AddToWatchList = 164;
-    private static final int RemoveFromWatchList = 165;
 
     private static final String log = "CB_Action_ShowDescriptionView";
+    private static final int AID_SHOW_DESCRIPTION = 105;
     CancelWaitDialog wd = null;
     EditCache editCache = null;
 
@@ -101,154 +69,6 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView {
 
     @Override
     public Menu getContextMenu() {
-        Menu cm = new Menu("CacheListContextMenu");
-
-        cm.addOnClickListener(new OnClickListener() {
-
-            @Override
-            public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
-                switch (((MenuItem) v).getMenuItemId()) {
-                    case MI_FAVORIT:
-                        if (GlobalCore.getSelectedCache() == null) {
-                            GL_MsgBox.Show(Translation.Get("NoCacheSelect"), Translation.Get("Error"), MessageBoxIcon.Error);
-                            return true;
-                        }
-
-                        GlobalCore.getSelectedCache().setFavorite(!GlobalCore.getSelectedCache().isFavorite());
-                        CacheDAO dao = new CacheDAO();
-                        dao.UpdateDatabase(GlobalCore.getSelectedCache());
-
-                        // Update Query
-                        Database.Data.Query.GetCacheById(GlobalCore.getSelectedCache().Id).setFavorite(GlobalCore.getSelectedCache().isFavorite());
-
-                        // Update View
-                        if (TabMainView.descriptionView != null)
-                            TabMainView.descriptionView.onShow();
-
-                        CacheListChangedEventList.Call();
-                        return true;
-                    case MI_RELOAD_CACHE:
-                        ReloadSelectedCache();
-                        return true;
-                    case MI_EDIT_CACHE:
-                        if (editCache == null) editCache = new EditCache();
-                        if (editCache.isDisposed()) editCache = new EditCache();
-                        editCache.update(GlobalCore.getSelectedCache());
-                        return true;
-                    case MI_DELETE_CACHE:
-                        DeleteSelectedCache.Execute();
-                        GlobalCore.setSelectedWaypoint(null, null, true);
-                        return true;
-                    case AddToWatchList:
-                        if (GlobalCore.isSetSelectedCache()) {
-                            GL.that.postAsync(() -> {
-                                if (GroundspeakAPI.AddToWatchList(GlobalCore.getSelectedCache().getGcCode()) == GroundspeakAPI.OK) {
-                                    GL_MsgBox.Show(Translation.Get("ok"), Translation.Get("AddToWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
-                                } else {
-                                    GL_MsgBox.Show(GroundspeakAPI.LastAPIError, Translation.Get("AddToWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
-                                }
-                            });
-                        }
-                        return true;
-                    case RemoveFromWatchList:
-                        if (GlobalCore.isSetSelectedCache()) {
-                            GL.that.postAsync(() -> {
-                                if (GroundspeakAPI.RemoveFromWatchList(GlobalCore.getSelectedCache().getGcCode()) == GroundspeakAPI.OK) {
-                                    GL_MsgBox.Show(Translation.Get("ok"), Translation.Get("RemoveFromWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
-                                } else {
-                                    GL_MsgBox.Show(GroundspeakAPI.LastAPIError, Translation.Get("RemoveFromWatchList"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
-                                }
-                            });
-                        }
-                        return true;
-                }
-                return false;
-            }
-
-        });
-
-        MenuItem mi;
-
-        boolean isSelected = (GlobalCore.isSetSelectedCache());
-        mi = cm.addItem(MI_FAVORIT, "Favorite", Sprites.getSprite(IconName.favorit.name()));
-        mi.setCheckable(true);
-        if (isSelected) {
-            mi.setChecked(GlobalCore.getSelectedCache().isFavorite());
-        } else {
-            mi.setEnabled(false);
-        }
-
-        cm.addItem(MI_EDIT_CACHE, "MI_EDIT_CACHE");
-        cm.addItem(MI_DELETE_CACHE, "MI_DELETE_CACHE");
-
-        boolean selectedCacheIsNoGC = false;
-
-        if (isSelected)
-            selectedCacheIsNoGC = !GlobalCore.getSelectedCache().getGcCode().startsWith("GC");
-        mi = cm.addItem(MI_RELOAD_CACHE, "ReloadCacheAPI", Sprites.getSprite(IconName.dayGcLiveIcon.name()));
-        if (!isSelected)
-            mi.setEnabled(false);
-        if (selectedCacheIsNoGC)
-            mi.setEnabled(false);
-
-        if (isSelected && !selectedCacheIsNoGC) {
-            cm.addItem(AddToWatchList, "AddToWatchList");
-            cm.addItem(RemoveFromWatchList, "RemoveFromWatchList");
-        }
-
-        return cm;
+        return CacheContextMenu.getCacheContextMenu(false);
     }
-
-    public void ReloadSelectedCache() {
-        if (GlobalCore.getSelectedCache() == null) {
-            GL_MsgBox.Show(Translation.Get("NoCacheSelect"), Translation.Get("Error"), MessageBoxIcon.Error);
-            return;
-        }
-
-        wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListener() {
-
-            @Override
-            public void isCanceled() {
-                // TODO handle cancel
-            }
-        }, new ICancelRunnable() {
-
-            @Override
-            public void run() {
-                String GCCode = GlobalCore.getSelectedCache().getGcCode();
-                ArrayList<GeoCacheRelated> geoCacheRelateds = updateGeoCache(GlobalCore.getSelectedCache());
-                if (geoCacheRelateds.size() > 0) {
-                    try {
-                        WriteIntoDB.CachesAndLogsAndImagesIntoDB(geoCacheRelateds, null);
-                    } catch (InterruptedException e) {
-                        Log.err(log, "WriteIntoDB.CachesAndLogsAndImagesIntoDB", e);
-                    }
-
-                    // Reload result from DB
-                    synchronized (Database.Data.Query) {
-                        String sqlWhere = FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue());
-                        CacheListDAO cacheListDAO = new CacheListDAO();
-                        cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
-                    }
-                    CacheListChangedEventList.Call();
-                    //
-                    GlobalCore.setSelectedCache(Database.Data.Query.GetCacheByGcCode(GCCode));
-                    GL.that.RunOnGL(() -> {
-                        if (TabMainView.descriptionView != null) {
-                            TabMainView.descriptionView.forceReload();
-                            TabMainView.descriptionView.onShow();
-                        }
-                        GL.that.renderOnce();
-                    });
-                }
-                wd.close();
-            }
-
-            @Override
-            public boolean doCancel() {
-                return false;
-            }
-        });
-    }
-
 }

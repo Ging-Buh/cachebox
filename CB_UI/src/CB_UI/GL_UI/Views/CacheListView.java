@@ -25,7 +25,7 @@ import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
-import CB_UI.GL_UI.Menu.CB_AllContextMenuHandler;
+import CB_UI.GL_UI.Menu.CacheContextMenu;
 import CB_UI.GlobalCore;
 import CB_UI.SelectedCacheEvent;
 import CB_UI.SelectedCacheEventList;
@@ -98,7 +98,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
             GlobalCore.setSelectedWaypoint(cache, finalWp);
 
             invalidate();
-            CB_AllContextMenuHandler.showBtnCacheContextMenu();
+            CacheContextMenu.getCacheContextMenu(true).Show();
             return true;
         }
     };

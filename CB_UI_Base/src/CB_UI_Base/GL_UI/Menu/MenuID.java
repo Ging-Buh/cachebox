@@ -48,20 +48,6 @@ public class MenuID {
     public static final int MI_EDIT_FIELDNOTE = 18;
     public static final int MI_SELECT_CACHE = 19;
 
-    // CB_AllContextMenuHandler
-    public static final int MI_ABOUT = 20;
-    public static final int MI_DAY_NIGHT = 21;
-    public static final int MI_SETTINGS = 22;
-    public static final int MI_SCREENLOCK = 23;
-    public static final int MI_DESCRIPTION = 25;
-    public static final int MI_WAYPOINTS = 26;
-    public static final int MI_SHOW_LOGS = 27;
-    public static final int MI_HINT = 28;
-    public static final int MI_SPOILER = 29;
-    public static final int MI_FIELDNOTES = 30;
-    public static final int MI_NOTES = 31;
-    public static final int MI_SOLVER = 32;
-    public static final int MI_Layer = 34;
     public static final int MI_ALIGN_TO_COMPSS = 35;
 
     public static final int MI_TREC_REC = 38;
@@ -71,7 +57,6 @@ public class MenuID {
     public static final int MI_SHOW_TITLE = 42;
     public static final int MI_SHOW_DIRECT_LINE = 43;
     public static final int MI_MAPVIEW_VIEW = 44;
-    public static final int MI_RELOAD_CACHE_INFO = 45;
 
     // CB_Action_ShowTrackListView
     public static final int MI_GENERATE = 46;
@@ -82,7 +67,6 @@ public class MenuID {
     public static final int MI_P2P = 51;
     public static final int MI_PROJECT = 52;
     public static final int MI_CIRCLE = 53;
-    public static final int MI_OPENROUTE = 54;
 
     // CB_Action_ShowCacheList
     public static final int MI_MANAGE_DB = 57;

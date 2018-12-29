@@ -73,6 +73,7 @@ public class GroundspeakAPI {
         }
 
         nrOfApiCalls++;
+        APIError = 0;
         return netz;
     }
 
@@ -530,7 +531,8 @@ public class GroundspeakAPI {
 
         LinkedList<String> friendList = new LinkedList<>();
         if (!all) {
-            for (String f : CB_Core_Settings.Friends.getValue().split("|")) {
+            String friends = CB_Core_Settings.Friends.getValue().replace(", ", "|").replace(",", "|");
+            for (String f : friends.split("|")) {
                 friendList.add(f.toLowerCase(Locale.US));
             }
         }
@@ -739,13 +741,7 @@ public class GroundspeakAPI {
     public static int AddToWatchList(String gcCode) {
         if (!isAccessTokenInvalid()) {
             try {
-                JSONArray wl = getNetz()
-                        .get(getUrl(1, "users/me/lists?types=wl&fields=name,referenceCode"))
-                        .ensureSuccess()
-                        .asJsonArray()
-                        .getBody();
-                String wlReferenceCode = ((JSONObject) wl.get(0)).optString("referenceCode", "");
-                getNetz().post(getUrl(1, "lists/" + wlReferenceCode + "/geocaches"))
+                getNetz().post(getUrl(1, "lists/" + fetchWatchListCode() + "/geocaches"))
                         .body(new JSONObject().put("referenceCode", gcCode))
                         .ensureSuccess()
                         .asVoid()
@@ -762,13 +758,7 @@ public class GroundspeakAPI {
     public static int RemoveFromWatchList(String gcCode) {
         if (!isAccessTokenInvalid()) {
             try {
-                JSONArray wl = getNetz()
-                        .get(getUrl(1, "users/me/lists?types=wl&fields=name,referenceCode"))
-                        .ensureSuccess()
-                        .asJsonArray()
-                        .getBody();
-                String wlReferenceCode = ((JSONObject) wl.get(0)).optString("referenceCode", "");
-                getNetz().delete(getUrl(1, "lists/" + wlReferenceCode + "/geocaches/" + gcCode)).ensureSuccess().asVoid();
+                getNetz().delete(getUrl(1, "lists/" + fetchWatchListCode() + "/geocaches/" + gcCode)).ensureSuccess().asVoid();
             } catch (Exception ex) {
                 retry(ex);
                 return ERROR;
@@ -776,6 +766,32 @@ public class GroundspeakAPI {
             return OK;
         }
         return ERROR;
+    }
+
+    private static String fetchWatchListCode() {
+            JSONArray wl = getNetz()
+                    .get(getUrl(1, "users/me/lists?types=wl&fields=referenceCode"))
+                    .ensureSuccess()
+                    .asJsonArray()
+                    .getBody();
+            return ((JSONObject) wl.get(0)).optString("referenceCode", "");
+    }
+
+    public static String fetchFriends() {
+        if (!isAccessTokenInvalid()) {
+            try {
+                String friends = "";
+                JSONArray jFriends = getNetz().get(getUrl(1, "friends?fields=username")).ensureSuccess().asJsonArray().getBody();
+                for (int ii = 0; ii < jFriends.length(); ii++) {
+                    friends = friends + ((JSONObject) jFriends.get(ii)).optString("username", "") + ",";
+                }
+                return friends;
+            } catch (Exception ex) {
+                retry(ex);
+                return "";
+            }
+        }
+        return "";
     }
 
     public static int uploadCacheNote(String cacheCode, String notes) {
