@@ -785,7 +785,7 @@ public class GroundspeakAPI {
                 for (int ii = 0; ii < jFriends.length(); ii++) {
                     friends = friends + ((JSONObject) jFriends.get(ii)).optString("username", "") + ",";
                 }
-                return friends;
+                return friends.substring(0, friends.length() - 1);
             } catch (Exception ex) {
                 retry(ex);
                 return "";

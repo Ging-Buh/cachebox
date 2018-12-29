@@ -121,9 +121,10 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
     public static CB_Action action_SwitchAutoResort;
     public static CB_Action actionShowHint;
     public static CB_Action action_DayNight;
-    public static CB_Action action_Torch;
     public static CB_Action_RecTrack actionRecTrack;
     public static CB_Action actionDayNight;
+    public static CB_Action_GetFriends actionGetFriends;
+    public static CB_Action_switch_Torch action_Torch;
     public static CB_Action actionHelp;
 
     public static MapView mapView = null;
@@ -388,7 +389,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         actionShowSettings = new CB_Action_Show_Settings();
         actionDayNight = new CB_Action_switch_DayNight();
         actionHelp = new CB_Action_Help();
-        action_Torch = new CB_Action_switch_Torch();
         action_DayNight = new CB_Action_switch_DayNight();
 
 
@@ -536,7 +536,8 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent {
         mAboutButtonOnLeftTab.addAction(new CB_ActionButton(actionShowSettings, false, GestureDirection.Left));
         mAboutButtonOnLeftTab.addAction(new CB_ActionButton(actionDayNight, false));
         mAboutButtonOnLeftTab.addAction(new CB_ActionButton(actionHelp, false));
-        mAboutButtonOnLeftTab.addAction((new CB_ActionButton(action_Torch, false)));
+        mAboutButtonOnLeftTab.addAction((new CB_ActionButton(actionGetFriends = new CB_Action_GetFriends(), false)));
+        mAboutButtonOnLeftTab.addAction((new CB_ActionButton(action_Torch = new CB_Action_switch_Torch(), false)));
         mAboutButtonOnLeftTab.addAction(new CB_ActionButton(actionClose, false, GestureDirection.Down));
 
         actionShowAboutView.Execute();

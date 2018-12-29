@@ -6,6 +6,7 @@ import CB_Core.Export.GpxSerializer.ProgressListener;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.*;
+import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.PlatformConnector;
@@ -160,6 +161,9 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
                             }
                         });
                         return true;
+                    case MenuID.AID_GetFriends:
+                        TabMainView.actionGetFriends.getFriends();
+                        return true;
                 }
                 return true;
             }
@@ -172,6 +176,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
             icm.addItem(MenuID.MI_IMPORT_GCV, "GCVoteRatings");
         // icm.addItem(MenuID.MI_IMPORT_GS_PQ, "API_PocketQuery");
         // icm.addItem(MenuID.MI_IMPORT_GPX, "GPX_IMPORT");
+        icm.addItem(MenuID.AID_GetFriends, "Friends");
         icm.addDivider();
         icm.addItem(MenuID.MI_MAP_DOWNOAD, "MapDownload");
         icm.addDivider();
