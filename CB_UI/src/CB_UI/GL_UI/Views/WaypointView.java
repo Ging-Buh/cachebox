@@ -289,8 +289,8 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
             cm.addItem(MI_DELETE, "delete");
         if (aktWaypoint != null || aktCache != null)
             cm.addItem(MI_PROJECTION, "Projection");
-        cm.addItem(MI_UploadCorrectedCoordinates, "UploadCorrectedCoordinates");
-        cm.setEnabled(aktCache.hasCorrectedCoordinates() || aktWaypoint.hasCorrectedFinal());
+        MenuItem mi = cm.addItem(MI_UploadCorrectedCoordinates, "UploadCorrectedCoordinates");
+        mi.setEnabled(aktCache.hasCorrectedCoordinates() || (aktWaypoint != null && aktWaypoint.hasCorrectedFinal()));
         cm.addItem(MI_FROM_GPS, "FromGps");
 
         return cm;
