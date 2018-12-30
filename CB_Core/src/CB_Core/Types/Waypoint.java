@@ -235,4 +235,7 @@ public class Waypoint implements Serializable {
         return false;
     }
 
+    public boolean hasCorrectedFinal() {
+        return this.IsUserWaypoint && this.Type == CacheTypes.Final && this.Pos.isValid();
+    }
 }

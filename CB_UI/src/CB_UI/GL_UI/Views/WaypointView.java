@@ -15,6 +15,7 @@
  */
 package CB_UI.GL_UI.Views;
 
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.CacheTypes;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.Database;
@@ -40,7 +41,6 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Menu.Menu;
-import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
@@ -52,6 +52,13 @@ import CB_Utils.Math.Point;
 
 public class WaypointView extends V_ListView implements SelectedCacheEvent, WaypointListChangedEvent {
     private static final String log = "WaypointView";
+    private static final int MI_EDIT = 0;
+    private static final int MI_ADD = 1;
+    private static final int MI_DELETE = 2;
+    private static final int MI_PROJECTION = 3;
+    private static final int MI_FROM_GPS = 4;
+    private static final int MI_WP_SHOW = 5;
+    private static final int MI_UploadCorrectedCoordinates = 6;
     public static WaypointView that;
     private final SizeChangedEvent onItemSizeChanged = new SizeChangedEvent() {
 
@@ -232,41 +239,59 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 switch (((MenuItem) v).getMenuItemId()) {
-                    case MenuID.MI_ADD:
+                    case MI_ADD:
                         addWP();
                         return true;
-                    case MenuID.MI_WP_SHOW:
+                    case MI_WP_SHOW:
                         editWP(false);
                         return true;
-                    case MenuID.MI_EDIT:
+                    case MI_EDIT:
                         editWP(true);
                         return true;
-                    case MenuID.MI_DELETE:
+                    case MI_DELETE:
                         deleteWP();
                         return true;
-                    case MenuID.MI_PROJECTION:
+                    case MI_PROJECTION:
                         addProjection();
                         return true;
-                    case MenuID.MI_FROM_GPS:
+                    case MI_FROM_GPS:
                         addMeasure();
                         return true;
+                    case MI_UploadCorrectedCoordinates:
+                        GL.that.postAsync(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (aktCache.hasCorrectedCoordinates())
+                                    GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktCache.Pos);
+                                else if (aktWaypoint.hasCorrectedFinal())
+                                    GroundspeakAPI.uploadCorrectedCoordinates(aktCache.getGcCode(), aktWaypoint.Pos);
+                                if (GroundspeakAPI.APIError == 0) {
+                                    GL_MsgBox.Show(Translation.Get("ok"), Translation.Get("UploadCorrectedCoordinates"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                                }
+                                else {
+                                    GL_MsgBox.Show(GroundspeakAPI.LastAPIError, Translation.Get("UploadCorrectedCoordinates"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+                                }
 
+                            }
+                        });
+                        return true;
                 }
                 return false;
             }
         });
 
         if (aktWaypoint != null)
-            cm.addItem(MenuID.MI_WP_SHOW, "show");
+            cm.addItem(MI_WP_SHOW, "show");
         if (aktWaypoint != null)
-            cm.addItem(MenuID.MI_EDIT, "edit");
-        cm.addItem(MenuID.MI_ADD, "AddWaypoint");
+            cm.addItem(MI_EDIT, "edit");
+        cm.addItem(MI_ADD, "AddWaypoint");
         if ((aktWaypoint != null) && (aktWaypoint.IsUserWaypoint))
-            cm.addItem(MenuID.MI_DELETE, "delete");
+            cm.addItem(MI_DELETE, "delete");
         if (aktWaypoint != null || aktCache != null)
-            cm.addItem(MenuID.MI_PROJECTION, "Projection");
-
-        cm.addItem(MenuID.MI_FROM_GPS, "FromGps");
+            cm.addItem(MI_PROJECTION, "Projection");
+        cm.addItem(MI_UploadCorrectedCoordinates, "UploadCorrectedCoordinates");
+        cm.setEnabled(aktCache.hasCorrectedCoordinates() || aktWaypoint.hasCorrectedFinal());
+        cm.addItem(MI_FROM_GPS, "FromGps");
 
         return cm;
     }

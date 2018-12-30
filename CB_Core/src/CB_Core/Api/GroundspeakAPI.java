@@ -794,6 +794,17 @@ public class GroundspeakAPI {
         return "";
     }
 
+    public static void uploadCorrectedCoordinates(String GcCode, Coordinate Pos) {
+        try {
+            getNetz().put(getUrl(1, "geocaches/" + GcCode + "/correctedcoordinates"))
+                    .body(new JSONObject().put("latitude", Pos.getLatitude()).put("longitude", Pos.getLongitude()))
+                    .ensureSuccess().asVoid();
+        }
+        catch (Exception ex) {
+            retry(ex);
+        }
+    }
+
     public static int uploadCacheNote(String cacheCode, String notes) {
         Log.info(log, "uploadCacheNote for " + cacheCode);
         LastAPIError = "";

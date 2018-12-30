@@ -22,13 +22,6 @@ package CB_UI_Base.GL_UI.Menu;
  * @author Longri
  */
 public class MenuID {
-    // WaypointView
-    public static final int MI_EDIT = 0;
-    public static final int MI_ADD = 1;
-    public static final int MI_DELETE = 2;
-    public static final int MI_PROJECTION = 3;
-    public static final int MI_FROM_GPS = 4;
-
     // SolverView2
     public static final int MI_CHANGE_LINE = 5;
     public static final int MI_DELETE_LINE = 6;
@@ -185,7 +178,6 @@ public class MenuID {
     public static final int MI_WEBCAM_FOTO_TAKEN = 182;
     public static final int MI_REVIEWER_NOTE = 183;
     public static final int MI_WILL_ATTENDED = 184;
-    public static final int MI_WP_SHOW = 185;
     public static final int MI_SYNC = 186;
 
     // Rpc
