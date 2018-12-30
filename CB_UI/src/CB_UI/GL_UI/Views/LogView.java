@@ -93,7 +93,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent {
         CB_List<LogEntry> cleanLogs = new CB_List<LogEntry>();
         cleanLogs = Database.Logs(aktCache);
 
-        String finders = Config.Friends.getValue();
+        String finders = Config.Friends.getValue().replace(", ", "|").replace(",", "|");
         String[] finder = finders.split("\\|");
         ArrayList<String> friendList = new ArrayList<String>();
         for (String f : finder) {
