@@ -172,8 +172,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
         icm.addItem(MenuID.MI_IMPORT, "moreImport");
         icm.addItem(MenuID.MI_IMPORT_GS_API_POSITION, "importCachesOverPosition"); // "import"
         icm.addItem(MenuID.MI_IMPORT_GS_API_SEARCH, "API_IMPORT_NAME_OWNER_CODE");
-        if (Config.GcVotePassword.getValue().length() > 0)
-            icm.addItem(MenuID.MI_IMPORT_GCV, "GCVoteRatings");
+        icm.addItem(MenuID.MI_IMPORT_GCV, "GCVoteRatings");
         // icm.addItem(MenuID.MI_IMPORT_GS_PQ, "API_PocketQuery");
         // icm.addItem(MenuID.MI_IMPORT_GPX, "GPX_IMPORT");
         icm.addItem(MenuID.AID_GetFriends, "Friends");
