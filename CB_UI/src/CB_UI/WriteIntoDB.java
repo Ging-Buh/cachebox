@@ -1,5 +1,6 @@
 package CB_UI;
 
+import CB_Core.CacheTypes;
 import CB_Core.CoreSettingsForward;
 import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
@@ -143,7 +144,7 @@ public class WriteIntoDB {
             }
 
             for (int i = 0, n = cache.waypoints.size(); i < n; i++) {
-                // must Cast to Full Waypoint. If Waypoint, is wrong createt!
+                // must Cast to Full Waypoint. If Waypoint, is wrong created!
                 Waypoint waypoint = cache.waypoints.get(i);
                 boolean update = true;
 
@@ -151,9 +152,14 @@ public class WriteIntoDB {
                 if (oldCache != null) {
                     if (oldCache.waypoints != null) {
                         for (int j = 0, m = oldCache.waypoints.size(); j < m; j++) {
-                            Waypoint wp = oldCache.waypoints.get(j);
-                            if (wp.getGcCode().equalsIgnoreCase(waypoint.getGcCode())) {
-                                if (wp.IsUserWaypoint)
+                            Waypoint oldWaypoint = oldCache.waypoints.get(j);
+                            if (waypoint.IsUserWaypoint && waypoint.Type == CacheTypes.Final)
+                            if (oldWaypoint.IsUserWaypoint && oldWaypoint.Type == CacheTypes.Final) {
+                                waypoint.setGcCode(oldWaypoint.getGcCode());
+                                break;
+                            }
+                            if (oldWaypoint.getGcCode().equalsIgnoreCase(waypoint.getGcCode())) {
+                                if (oldWaypoint.IsUserWaypoint)
                                     update = false;
                                 break;
                             }
@@ -177,7 +183,7 @@ public class WriteIntoDB {
                 // 2012-11-17: do not remove old instance from Query because of problems with cacheList and MapView
                 // Database.Data.Query.remove(Database.Data.Query.GetCacheById(cache.Id));
                 // Database.Data.Query.add(cache);
-                oldCache.copyFrom(cache);
+                oldCache.copyFrom(cache); // todo Problem Waypoints of user are no longer seen ? Solution Add to cache.waypoints
                 // cacheDAO.UpdateDatabase(cache);
             }
 

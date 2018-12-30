@@ -4,10 +4,17 @@
 • Fehlerbeseitigungen = *
 • Streichungen = -
 
-Versions Änderungen seit 3136:
+Änderungen bis Version 3249:
+    * diverse Kleinigkeiten
+    + Import der Freunde
+    + Hinzufügen/Entfernen eines Caches von der GC - Beobachtungsliste
+    + Import/Anzeige/Filterung GC Favoriten
+    + Umkreis Import Erweiterungen (Titel, Besitzer, Anzahl, Datum Veröffentlichung, Kategorie)
+    + Android Tastatur einschaltbar
 	+ Möglichkeit informative Hauptschaltflächen zu verwenden.
-	~ Teilweise wird die schon die neue API von geocaching.com verwendet.
-	~ intern wird nicht mehr die Programmbibliothek von Apache verwendet.
+	~ Umstellung auf Gradle
+	~ Umstellung auf die API 1.0 von geocaching.com.
+	~ Umstelung auf Java/Android Netzwerk Bibliothek.
 	+ TB Logging für "alle"
 	* GC-Vote funktioniert in allen Fällen korrekt.
 	+ Notes upload inclusive solver
@@ -15,6 +22,7 @@ Versions Änderungen seit 3136:
 	+ Navigation mit Sygic
 	~ exportierte gpx werden in MTP - Verbindungen (korrekt) angezeigt.
 	~ die internen Renderthemen funktionieren
+
 Version : 2.0
 	+ Hochladen von Notizen
 	+ Benutzerdefinierte tileserver für Karten

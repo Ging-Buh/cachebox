@@ -22,9 +22,9 @@ import CB_Utils.Settings.SettingString;
 public interface CB_Rpc_Settings {
     // Abkürzende Schreibweisen für die Übersichlichkeit bei den add Methoden
     SettingModus DEVELOPER = CB_Utils.Settings.SettingModus.DEVELOPER;
-    SettingModus NORMAL = CB_Utils.Settings.SettingModus.Normal;
-    //SettingModus EXPERT = CB_Utils.Settings.SettingModus.Expert;
-    //SettingModus NEVER = CB_Utils.Settings.SettingModus.Never;
+    SettingModus NORMAL = CB_Utils.Settings.SettingModus.NORMAL;
+    //SettingModus EXPERT = CB_Utils.Settings.SettingModus.EXPERT;
+    //SettingModus NEVER = CB_Utils.Settings.SettingModus.NEVER;
 
     SettingString CBS_IP = new SettingString("CBS_IP", CB_Utils.Settings.SettingCategory.CBS, NORMAL, "", CB_Utils.Settings.SettingStoreType.Global, CB_Utils.Settings.SettingUsage.ACB);
     SettingInt CBS_BLOCK_SIZE = new SettingInt("CBS_BLOCKSIZE", CB_Utils.Settings.SettingCategory.CBS, DEVELOPER, 100, CB_Utils.Settings.SettingStoreType.Global, CB_Utils.Settings.SettingUsage.ACB);

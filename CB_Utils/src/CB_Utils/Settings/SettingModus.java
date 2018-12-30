@@ -1,8 +1,8 @@
 package CB_Utils.Settings;
 
 /***
- * DEVELOPER, Normal, Expert
+ * DEVELOPER, Normal, EXPERT
  */
 public enum SettingModus {
-    DEVELOPER, Normal, Expert, Never
+    DEVELOPER, NORMAL, EXPERT, NEVER
 };

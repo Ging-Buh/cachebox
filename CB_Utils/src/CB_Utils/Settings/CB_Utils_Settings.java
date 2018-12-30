@@ -19,9 +19,9 @@ import CB_Utils.Log.LogLevel;
 
 public interface CB_Utils_Settings {
     SettingModus DEVELOPER = SettingModus.DEVELOPER;
-    SettingModus NORMAL = SettingModus.Normal;
-    SettingModus EXPERT = SettingModus.Expert;
-    SettingModus NEVER = SettingModus.Never;
+    SettingModus NORMAL = SettingModus.NORMAL;
+    SettingModus EXPERT = SettingModus.EXPERT;
+    SettingModus NEVER = SettingModus.NEVER;
 
     SettingEnum<Enum<LogLevel>> AktLogLevel = new SettingEnum<Enum<LogLevel>>("AktLogLevel", SettingCategory.Debug, NORMAL, LogLevel.OFF, SettingStoreType.Platform, SettingUsage.ALL, LogLevel.OFF);
 

@@ -29,9 +29,9 @@ public interface CB_UI_Settings {
 
     // Abkürzende Schreibweisen für die übersichlichkeit bei den add Methoden
     SettingModus DEVELOPER = SettingModus.DEVELOPER;
-    SettingModus NORMAL = SettingModus.Normal;
-    SettingModus EXPERT = SettingModus.Expert;
-    SettingModus NEVER = SettingModus.Never;
+    SettingModus NORMAL = SettingModus.NORMAL;
+    SettingModus EXPERT = SettingModus.EXPERT;
+    SettingModus NEVER = SettingModus.NEVER;
 
     String FOUND = "<br>###finds##, ##time##, Found it with Cachebox!";
     String ATTENDED = "<br>###finds##, ##time##, Have been there!";

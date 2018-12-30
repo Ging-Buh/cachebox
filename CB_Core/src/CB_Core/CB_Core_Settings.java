@@ -19,47 +19,46 @@ import CB_Core.Api.LiveMapQue;
 import CB_Utils.Config_Core;
 import CB_Utils.Settings.*;
 
+import static CB_Utils.Settings.SettingCategory.*;
+import static CB_Utils.Settings.SettingModus.*;
+import static CB_Utils.Settings.SettingStoreType.*;
+import static CB_Utils.Settings.SettingUsage.*;
 
 public interface CB_Core_Settings {
 
-    // Abkürzende Schreibweisen für die Übersichlichkeit bei den add Methoden
-    SettingModus DEVELOPER = SettingModus.DEVELOPER;
-    SettingModus NORMAL = SettingModus.Normal;
-    SettingModus EXPERT = SettingModus.Expert;
-    SettingModus NEVER = SettingModus.Never;
+    SettingEncryptedString AccessToken = new SettingEncryptedString("GcAPI", Login, DEVELOPER, "", Global, ALL);
+    SettingString GcLogin = new SettingString("GcLogin", Login, DEVELOPER, "", Global, ALL);
+    SettingBool UseTestUrl = new SettingBool("StagingAPI", Folder, DEVELOPER, false, Global, ALL);
+    SettingEncryptedString AccessTokenForTest = new SettingEncryptedString("GcAPIStaging", Login, DEVELOPER, "", Global, ALL);
+    SettingString Friends = new SettingString("Friends", Login, NORMAL, "", Global, ALL);
+    SettingEncryptedString GcVotePassword = new SettingEncryptedString("GcVotePassword", Login, NORMAL, "", Global, ALL);
 
-    SettingEncryptedString AccessToken = new SettingEncryptedString("GcAPI", SettingCategory.Login, DEVELOPER, "", SettingStoreType.Global, SettingUsage.ALL);
-    SettingString GcLogin = new SettingString("GcLogin", SettingCategory.Login, DEVELOPER, "", SettingStoreType.Global, SettingUsage.ALL);
-    SettingBool UseTestUrl = new SettingBool("StagingAPI", SettingCategory.Folder, DEVELOPER, false, SettingStoreType.Global, SettingUsage.ALL);
-    SettingEncryptedString AccessTokenForTest = new SettingEncryptedString("GcAPIStaging", SettingCategory.Login, DEVELOPER, "", SettingStoreType.Global, SettingUsage.ALL);
-    SettingString Friends = new SettingString("Friends", SettingCategory.Login, NORMAL, "", SettingStoreType.Global, SettingUsage.ALL);
-    SettingEncryptedString GcVotePassword = new SettingEncryptedString("GcVotePassword", SettingCategory.Login, NORMAL, "", SettingStoreType.Global, SettingUsage.ALL);
+    SettingFolder PocketQueryFolder = new SettingFolder("PocketQueryFolder", Folder, DEVELOPER, Config_Core.mWorkPath + "/PocketQuery", Global, ALL, true);
+    SettingFolder DescriptionImageFolder = new SettingFolder("DescriptionImageFolder", Folder, NEVER, Config_Core.mWorkPath + "/repository/images", Global, ALL, true);
+    SettingFolder SpoilerFolder = new SettingFolder("SpoilerFolder", Folder, NEVER, Config_Core.mWorkPath + "/repository/spoilers", Global, ALL, true);
+    SettingFolder DescriptionImageFolderLocal = new SettingFolder("DescriptionImageFolderLocal", Folder, NEVER, "", SettingStoreType.Local, ALL, true);
+    SettingFolder SpoilerFolderLocal = new SettingFolder("SpoilerFolderLocal", Folder, NEVER, "", SettingStoreType.Local, ALL, true);
+    SettingFolder UserImageFolder = new SettingFolder("UserImageFolder", Folder, NORMAL, Config_Core.mWorkPath + "/User/Media", Global, ALL, true);
 
-    SettingFolder PocketQueryFolder = new SettingFolder("PocketQueryFolder", SettingCategory.Folder, DEVELOPER, Config_Core.mWorkPath + "/PocketQuery", SettingStoreType.Global, SettingUsage.ALL, true);
-    SettingFolder DescriptionImageFolder = new SettingFolder("DescriptionImageFolder", SettingCategory.Folder, NEVER, Config_Core.mWorkPath + "/repository/images", SettingStoreType.Global, SettingUsage.ALL, true);
-    SettingFolder SpoilerFolder = new SettingFolder("SpoilerFolder", SettingCategory.Folder, NEVER, Config_Core.mWorkPath + "/repository/spoilers", SettingStoreType.Global, SettingUsage.ALL, true);
-    SettingFolder DescriptionImageFolderLocal = new SettingFolder("DescriptionImageFolderLocal", SettingCategory.Folder, NEVER, "", SettingStoreType.Local, SettingUsage.ALL, true);
-    SettingFolder SpoilerFolderLocal = new SettingFolder("SpoilerFolderLocal", SettingCategory.Folder, NEVER, "", SettingStoreType.Local, SettingUsage.ALL, true);
-    SettingFolder UserImageFolder = new SettingFolder("UserImageFolder", SettingCategory.Folder, NORMAL, Config_Core.mWorkPath + "/User/Media", SettingStoreType.Global, SettingUsage.ALL, true);
+    SettingInt connection_timeout = new SettingInt("conection_timeout", Internal, DEVELOPER, 10000, Global, ALL);
+    SettingInt socket_timeout = new SettingInt("socket_timeout", Internal, DEVELOPER, 60000, Global, ALL);
 
-    SettingInt connection_timeout = new SettingInt("conection_timeout", SettingCategory.Internal, DEVELOPER, 10000, SettingStoreType.Global, SettingUsage.ALL);
-    SettingInt socket_timeout = new SettingInt("socket_timeout", SettingCategory.Internal, DEVELOPER, 60000, SettingStoreType.Global, SettingUsage.ALL);
+    SettingDouble ParkingLatitude = new SettingDouble("ParkingLatitude", Positions, NEVER, 0, Global, ACB);
+    SettingDouble ParkingLongitude = new SettingDouble("ParkingLongitude", Positions, NEVER, 0, Global, ACB);
 
-    SettingDouble ParkingLatitude = new SettingDouble("ParkingLatitude", SettingCategory.Positions, NEVER, 0, SettingStoreType.Global, SettingUsage.ACB);
-    SettingDouble ParkingLongitude = new SettingDouble("ParkingLongitude", SettingCategory.Positions, NEVER, 0, SettingStoreType.Global, SettingUsage.ACB);
+    SettingBool DirectOnlineLog = new SettingBool("DirectOnlineLog", Fieldnotes, NORMAL, true, Global, ACB);
+    SettingBool FieldNotesLoadAll = new SettingBool("FieldNotesLoadAll", Fieldnotes, DEVELOPER, false, Global, ACB);
+    SettingInt FieldNotesLoadLength = new SettingInt("FieldNotesLoadLength", Fieldnotes, DEVELOPER, 10, Global, ACB);
 
-    SettingBool DirectOnlineLog = new SettingBool("DirectOnlineLog", SettingCategory.Fieldnotes, NORMAL, true, SettingStoreType.Global, SettingUsage.ACB);
-    SettingBool FieldNotesLoadAll = new SettingBool("FieldNotesLoadAll", SettingCategory.Fieldnotes, DEVELOPER, false, SettingStoreType.Global, SettingUsage.ACB);
-    SettingInt FieldNotesLoadLength = new SettingInt("FieldNotesLoadLength", SettingCategory.Fieldnotes, DEVELOPER, 10, SettingStoreType.Global, SettingUsage.ACB);
+    SettingEnum<LiveMapQue.Live_Radius> LiveRadius = new SettingEnum<>("LiveRadius", LiveMap, NORMAL, LiveMapQue.Live_Radius.Zoom_14, Global, ACB, LiveMapQue.Live_Radius.Zoom_14);
+    SettingBool DisableLiveMap = new SettingBool("DisableLiveMap", LiveMap, NORMAL, false, Global, ACB);
+    SettingInt LiveMaxCount = new SettingInt("LiveMaxCount", LiveMap, EXPERT, 350, Global, ACB);
+    SettingBool LiveExcludeFounds = new SettingBool("LiveExcludeFounds", LiveMap, NORMAL, true, Global, ACB);
+    SettingBool LiveExcludeOwn = new SettingBool("LiveExcludeOwn", LiveMap, NORMAL, true, Global, ACB);
+    SettingEnum<Live_Cache_Time> LiveCacheTime = new SettingEnum<>("LiveCacheTime", LiveMap, NORMAL, Live_Cache_Time.h_6, Global, ACB, Live_Cache_Time.h_6);
 
-    SettingEnum<LiveMapQue.Live_Radius> LiveRadius = new SettingEnum<>("LiveRadius", SettingCategory.LiveMap, NORMAL, LiveMapQue.Live_Radius.Zoom_14, SettingStoreType.Global, SettingUsage.ACB,
-            LiveMapQue.Live_Radius.Zoom_14);
-    SettingBool DisableLiveMap = new SettingBool("DisableLiveMap", SettingCategory.LiveMap, NORMAL, false, SettingStoreType.Global, SettingUsage.ACB);
-    SettingInt LiveMaxCount = new SettingInt("LiveMaxCount", SettingCategory.LiveMap, EXPERT, 350, SettingStoreType.Global, SettingUsage.ACB);
-    SettingBool LiveExcludeFounds = new SettingBool("LiveExcludeFounds", SettingCategory.LiveMap, NORMAL, true, SettingStoreType.Global, SettingUsage.ACB);
-    SettingBool LiveExcludeOwn = new SettingBool("LiveExcludeOwn", SettingCategory.LiveMap, NORMAL, true, SettingStoreType.Global, SettingUsage.ACB);
-    SettingEnum<Live_Cache_Time> LiveCacheTime = new SettingEnum<>("LiveCacheTime", SettingCategory.LiveMap, NORMAL, Live_Cache_Time.h_6, SettingStoreType.Global, SettingUsage.ACB, Live_Cache_Time.h_6);
+    SettingBool showSandbox = new SettingBool("showSandbox", RememberAsk, NORMAL, false, Platform, ACB);
 
-    SettingBool showSandbox = new SettingBool("showSandbox", SettingCategory.RememberAsk, NORMAL, false, SettingStoreType.Platform, SettingUsage.ACB);
+    SettingBool UseCorrectedFinal = new SettingBool("UseCorrectedFinal", Misc, NORMAL, true, Global, ALL);
 
 }

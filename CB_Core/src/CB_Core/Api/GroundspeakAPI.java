@@ -989,6 +989,12 @@ public class GroundspeakAPI {
         // see https://api.groundspeak.com/documentation#lite-geocache
         if (cache == null)
             cache = new Cache(true);
+        if (cache.waypoints != null) {
+            cache.waypoints.clear();
+            // no merging of waypoints here
+        } else {
+            cache.waypoints = new CB_List<>();
+        }
         cache.setAttributesPositive(new DLong(0, 0));
         cache.setAttributesNegative(new DLong(0, 0));
         cache.setApiStatus(IS_LITE);
@@ -1081,8 +1087,23 @@ public class GroundspeakAPI {
                             // correctedCoordinates
                             JSONObject correctedCoordinates = userData.optJSONObject("correctedCoordinates");
                             if (correctedCoordinates != null) {
-                                cache.Pos = new Coordinate(correctedCoordinates.optDouble("latitude", 0), correctedCoordinates.optDouble("longitude", 0));
-                                cache.setHasCorrectedCoordinates(true);
+                                if (CB_Core_Settings.UseCorrectedFinal.getValue()) {
+                                    JSONObject postedCoordinates = API1Cache.optJSONObject("postedCoordinates");
+                                    cache.Pos = new Coordinate(postedCoordinates.optDouble("latitude", 0), postedCoordinates.optDouble("longitude", 0));
+                                    cache.waypoints.add(new Waypoint(
+                                            "!?" + cache.getGcCode().substring(2),
+                                            CacheTypes.Final,
+                                            "",
+                                            correctedCoordinates.optDouble("latitude", 0),
+                                            correctedCoordinates.optDouble("longitude", 0),
+                                            cache.Id,
+                                            "",
+                                            "Final GSAK Corrected"));
+                                }
+                                else {
+                                    cache.Pos = new Coordinate(correctedCoordinates.optDouble("latitude", 0), correctedCoordinates.optDouble("longitude", 0));
+                                    cache.setHasCorrectedCoordinates(true);
+                                }
                             } else {
                                 JSONObject postedCoordinates = API1Cache.optJSONObject("postedCoordinates");
                                 if (postedCoordinates != null) {
@@ -1152,7 +1173,7 @@ public class GroundspeakAPI {
                         break;
                     default:
                         // Remind the programmer
-                        Log.err(log, "createCache: " + switchValue + " not handled");
+                        Log.err(log, "createGeoCache: " + switchValue + " not handled");
                 }
             }
 
@@ -1165,12 +1186,6 @@ public class GroundspeakAPI {
 
     private static void addWayPoints(Cache cache, JSONArray wpts) {
         if (wpts != null) {
-            if (cache.waypoints != null) {
-                cache.waypoints.clear();
-                // no merging of waypoints here
-            } else {
-                cache.waypoints = new CB_List<>();
-            }
             for (int j = 0; j < wpts.length(); j++) {
                 JSONObject wpt = wpts.optJSONObject(j);
                 Waypoint waypoint = new Waypoint(true);

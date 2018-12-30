@@ -232,7 +232,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
             }
         }
 
-        SettingsListButtonLangSpinner<?> lang = new SettingsListButtonLangSpinner<>("Lang", SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
+        SettingsListButtonLangSpinner<?> lang = new SettingsListButtonLangSpinner<>("Lang", SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
         CB_View_Base langView = getLangSpinnerView(lang);
 
         addControlToLinearLayout(langView, margin);
@@ -241,8 +241,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
         for (SettingBase settingItem : Config.settings) {
             if (settingItem.getUsage() == SettingUsage.ACB || settingItem.getUsage() == SettingUsage.ALL)
                 // item nur zur Liste Hinzufügen, wenn der SettingModus dies auch zulässt.
-                if (((settingItem.getModus() == SettingModus.Normal) || (settingItem.getModus() == SettingModus.Expert && Config.SettingsShowExpert.getValue()) || Config.SettingsShowAll.getValue())
-                        && (settingItem.getModus() != SettingModus.Never)) {
+                if (((settingItem.getModus() == SettingModus.NORMAL) || (settingItem.getModus() == SettingModus.EXPERT && Config.SettingsShowExpert.getValue()) || Config.SettingsShowAll.getValue())
+                        && (settingItem.getModus() != SettingModus.NEVER)) {
                     AllSettingList.add(settingItem);
                 }
         }
@@ -258,7 +258,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             int position = 0;
 
-            SettingsListCategoryButton<?> catBtn = new SettingsListCategoryButton<Object>(cat.name(), SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
+            SettingsListCategoryButton<?> catBtn = new SettingsListCategoryButton<Object>(cat.name(), SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
 
             final CB_View_Base btn = getView(catBtn, 1);
 
@@ -281,7 +281,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
             switch (cat) {
                 case Login:
-                    SettingsListGetApiButton<?> lgIn = new SettingsListGetApiButton<Object>(cat.name(), SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
+                    SettingsListGetApiButton<?> lgIn = new SettingsListGetApiButton<Object>(cat.name(), SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
                     lay.addChild(getView(lgIn, 1));
                     entryCount++;
                     break;
@@ -290,14 +290,14 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
                     entryCount++;
                     break;
                 case Debug:
-                    SettingsListCategoryButton<?> disp = new SettingsListCategoryButton<Object>("DebugDisplayInfo", SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
+                    SettingsListCategoryButton<?> disp = new SettingsListCategoryButton<Object>("DebugDisplayInfo", SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
                     final CB_View_Base btnDisp = getView(disp, 1);
                     btnDisp.setSize(itemRec);
                     lay.addChild(btnDisp);
                     entryCount++;
                     break;
                 case Skin:
-                    SettingsListButtonSkinSpinner<?> skin = new SettingsListButtonSkinSpinner<Object>("Skin", SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
+                    SettingsListButtonSkinSpinner<?> skin = new SettingsListButtonSkinSpinner<Object>("Skin", SettingCategory.Button, SettingModus.NORMAL, SettingStoreType.Global, SettingUsage.ACB);
                     CB_View_Base skinView = getSkinSpinnerView(skin);
                     lay.addChild(skinView);
                     entryCount++;

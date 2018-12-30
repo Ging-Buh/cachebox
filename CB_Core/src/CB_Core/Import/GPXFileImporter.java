@@ -1033,10 +1033,6 @@ public class GPXFileImporter {
         return ruleList;
     }
 
-    /**
-     * @param values
-     * @throws Exception
-     */
     private void createCache(Map<String, String> values) throws Exception {
         // create new Cache Object for each imported cache to avoid that informations of one cache are copied into anohter cache.
         cache = new Cache(true);
@@ -1265,39 +1261,46 @@ public class GPXFileImporter {
         }
 
         if (values.containsKey("cache_gsak_corrected_coordinates")) { // Handle GSAK Corrected Coordinates
-            if (values.get("cache_gsak_corrected_coordinates").equalsIgnoreCase("True")) {
-                double lat = Double.parseDouble(values.get("cache_gsak_corrected_coordinates_before_lat"));
-                double lon = Double.parseDouble(values.get("cache_gsak_corrected_coordinates_before_lon"));
+            if (CB_Core_Settings.UseCorrectedFinal.getValue()) {
+                if (values.get("cache_gsak_corrected_coordinates").equalsIgnoreCase("True")) {
+                    double lat = Double.parseDouble(values.get("cache_gsak_corrected_coordinates_before_lat"));
+                    double lon = Double.parseDouble(values.get("cache_gsak_corrected_coordinates_before_lon"));
 
-                Coordinate coorectedCoord = cache.Pos;
+                    Coordinate coorectedCoord = cache.Pos;
 
-                // set Original Coords
-                cache.Pos = new Coordinate(lat, lon);
+                    // set Original Coords
+                    cache.Pos = new Coordinate(lat, lon);
 
-                // create final WP with Corrected Coords
-                String newGcCode = Database.CreateFreeGcCode(cache.getGcCode());
+                    // create final WP with Corrected Coords
+                    String newGcCode = Database.CreateFreeGcCode(cache.getGcCode());
 
-                // Check if "Final GSAK Corrected" exist
-                WaypointDAO WPDao = new WaypointDAO();
-                CB_List<Waypoint> wplist = WPDao.getWaypointsFromCacheID(cache.Id, false);
+                    // Check if "Final GSAK Corrected" exist
+                    WaypointDAO WPDao = new WaypointDAO();
+                    CB_List<Waypoint> wplist = WPDao.getWaypointsFromCacheID(cache.Id, false);
 
-                for (int i = 0; i < wplist.size(); i++) {
-                    Waypoint wp = wplist.get(i);
-                    if (wp.Type == CacheTypes.Final) {
-                        if (wp.getTitle().equalsIgnoreCase("Final GSAK Corrected")) {
-                            newGcCode = wp.getGcCode();
-                            break;
+                    for (int i = 0; i < wplist.size(); i++) {
+                        Waypoint wp = wplist.get(i);
+                        if (wp.Type == CacheTypes.Final) {
+                            if (wp.getTitle().equalsIgnoreCase("Final GSAK Corrected")) {
+                                newGcCode = wp.getGcCode();
+                                break;
+                            }
                         }
                     }
+
+                    // "Final GSAK Corrected" is used for recognition of finals from GSAK on gpx - Import
+                    Waypoint FinalWp = new Waypoint(newGcCode, CacheTypes.Final, "", coorectedCoord.getLatitude(), coorectedCoord.getLongitude(), cache.Id, "", "Final GSAK Corrected");
+
+                    cache.waypoints.add(FinalWp);
+
+                    // the coordinates of the Cache are not changed. we have a Final with valid coordinates
+                    // cache.setHasCorrectedCoordinates(true);
                 }
-
-                // "Final GSAK Corrected" is used for recognition of finals from GSAK on gpx - Import
-                Waypoint FinalWp = new Waypoint(newGcCode, CacheTypes.Final, "", coorectedCoord.getLatitude(), coorectedCoord.getLongitude(), cache.Id, "", "Final GSAK Corrected");
-
-                cache.waypoints.add(FinalWp);
-
-                // the coordinates of the Cache are not changed. we have a Final with valid coordinates
-                // cache.setHasCorrectedCoordinates(true);
+            }
+            else {
+                // Coordinate coorectedCoord = cache.Pos;
+                // cache.Pos = new Coordinate(coorectedCoord.getLatitude(), coorectedCoord.getLongitude());
+                cache.setHasCorrectedCoordinates(true);
             }
         }
 

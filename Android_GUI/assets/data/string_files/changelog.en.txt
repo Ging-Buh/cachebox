@@ -1,16 +1,27 @@
+• News = +
+• Changes = ~
+• Fixes = *
+• Deletions = -
 
-Version history:
-changes since 3136:
-	+ Possibility to use informative main buttons.
-	~ Partly the already used the new API of geocaching.com.
-	~ Internally, Apache's program library is no longer used.
-	+ TB logging for "all"
-	* GC-Vote works correctly in all cases.
-	+ Notes upload inclusive solver
-	~ correct display of long logs
-	+ Navigation with Sygic
-	~ exported gpx are displayed in MTP connections (correct).
-	~ the internal rendering themes work
+Version changes until 3249:
+     * various little things
+     + Import of friends
+     + Add / remove a cache from the GC watchlist
+     + Import / Display / Filtering GC Favorites
+     + Import extensions (title, owner, number, date publication, category)
+     + Switch to Android keyboard
+     + Possibility to use informative main buttons.
+     ~ Switch to Gradle
+     ~ Switch to the API 1.0 from geocaching.com.
+     ~ Switch to Java / Android network library.
+	 + TB logging for "all"
+	 * GC-Vote works correctly in all cases.
+	 + Notes upload inclusive solver
+	 ~ correct display of long logs
+	 + Navigation with Sygic
+	 ~ exported gpx are displayed in MTP connections (correct).
+	 ~ the internal rendering themes work
+
 Version : 2.0
 	• New:
 		+ Upload Notes
