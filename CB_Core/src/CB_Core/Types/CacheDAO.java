@@ -33,7 +33,7 @@ import java.util.Date;
 public class CacheDAO {
     static final String SQL_BY_ID = "from Caches c where id = ?";
     static final String SQL_BY_GC_CODE = "from Caches c where GCCode = ?";
-    static final String SQL_DETAILS = "PlacedBy, DateHidden, Url, TourName, GpxFilename_ID, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint ";
+    static final String SQL_DETAILS = "PlacedBy, DateHidden, Url, TourName, GpxFilename_ID, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint, Country, State ";
     static final String SQL_GET_DETAIL_WITH_DESCRIPTION = "Description, Solver, Notes, ShortDescription ";
     static final String SQL_GET_DETAIL_FROM_ID = "select " + SQL_DETAILS + SQL_BY_ID;
     static final String SQL_EXIST_CACHE = "select 1 from Caches where Id = ?";
@@ -156,6 +156,8 @@ public class CacheDAO {
             detail.setHint(reader.getString(readerOffset + 10).trim());
         else
             detail.setHint("");
+        detail.State = reader.getString(readerOffset + 11);
+        detail.Country = reader.getString(readerOffset + 12);
 
         if (withDescription) {
             detail.longDescription = reader.getString(readerOffset + 11);

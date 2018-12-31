@@ -50,7 +50,9 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
     private EditTextField cacheCode; // SingleLine
     private EditTextField cacheTitle; // MultiLine
     private EditTextField cacheOwner; // SingleLine
-    private EditTextField cacheDescription; // MultiLineWraped
+    private EditTextField cacheCountry; // SingleLine
+    private EditTextField cacheState; // SingleLine
+    private EditTextField cacheDescription; // MultiLineWrapped
 
     // ctor
     public EditCache() {
@@ -62,6 +64,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         this.addNext(btnOK);
         this.addLast(btnCancel);
         mainPanel = new ScrollBox(0, getAvailableHeight());
+        mainPanel.setBackground(this.getBackground());
         this.addLast(mainPanel);
         Box box = new Box(mainPanel.getInnerWidth(), 0); // height will be adjusted after containing all controls
         mainPanel.addChild(box);
@@ -79,6 +82,8 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         cacheSize = new Spinner("cacheSize", cacheSizeList(), cacheSizeSelection());
         cacheCoords = new CoordinateButton("cacheCoords");
         cacheOwner = new EditTextField(this, "cacheOwner");
+        cacheState = new EditTextField(this, "cacheState");
+        cacheCountry = new EditTextField(this, "cacheCountry");
         // layout
         box.addLast(cacheCode);
         box.addNext(cacheTyp);
@@ -88,6 +93,8 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         box.addLast(cacheTitle);
         box.addLast(cacheCoords);
         box.addLast(cacheOwner);
+        box.addLast(cacheState);
+        box.addLast(cacheCountry);
         cacheDescription = new EditTextField(this, "cacheDescription").setWrapType(WrapType.WRAPPED);
         cacheDescription.setHeight(mainPanel.getAvailableHeight() / 2);
         box.addLast(cacheDescription);
@@ -136,6 +143,8 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         } while (Database.Data.Query.GetCacheById(Cache.GenerateCacheId(newValues.getGcCode())) != null);
         newValues.setName(newValues.getGcCode());
         newValues.setOwner("Unbekannt");
+        newValues.setState("");
+        newValues.setCountry("");
         newValues.setDateHidden(new Date());
         newValues.setArchived(false);
         newValues.setAvailable(true);
@@ -166,6 +175,8 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
         cacheCoords.setCoordinate(cache.Pos);
         cacheTitle.setText(cache.getName());
         cacheOwner.setText(cache.getOwner());
+        cacheState.setText(cache.getState());
+        cacheCountry.setText(cache.getCountry());
         if (cache.getLongDescription().equals(GlobalCore.br))
             cache.setLongDescription("");
         cacheDescription.setText(cache.getLongDescription());
@@ -199,6 +210,8 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
             cache.Pos = newValues.Pos;
             cache.setName(cacheTitle.getText());
             cache.setOwner(cacheOwner.getText());
+            cache.setState(cacheState.getText());
+            cache.setCountry(cacheCountry.getText());
             cache.setLongDescription(cacheDescription.getText());
             if (update) {
                 cacheDAO.UpdateDatabase(cache);
