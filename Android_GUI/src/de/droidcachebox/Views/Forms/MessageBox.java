@@ -37,6 +37,8 @@ import de.droidcachebox.R;
 import de.droidcachebox.main;
 import de.droidcachebox.splash;
 
+import static android.view.View.GONE;
+
 /**
  * Zeigt ein Meldungsfeld an, das Text, Schaltflächen und Symbole mit Informationen und Anweisungen für den Benutzer enthalten kann.
  * Entspricht in etwa der C# .NET Klasse.
@@ -70,11 +72,11 @@ public class MessageBox extends android.app.Dialog {
      * @param msg Die Message, welche ausgegeben werden soll.
      *
      *            <pre>
-     *        Beispiel:</b>
-     *        {@code
-     *        MessageBox.Show("Test");
-     *        }
-     *    </pre>
+     *                                                    Beispiel:</b>
+     *                                                    {@code
+     *                                                    MessageBox.Show("Test");
+     *                                                    }
+     *                                                </pre>
      */
     public static void Show(String msg) {
         listener = null;
@@ -102,43 +104,43 @@ public class MessageBox extends android.app.Dialog {
      * @param buttons  Ein MessageBoxButtons-Wert, der angibt, welche Schaltflächen im Meldungsfeld angezeigt werden sollen.
      * @param Listener Welcher die Events der Buttons behandelt
      *
-     * <pre>
-     *     <b>Wenn eine Message nicht behandelt werden soll, reicht volgendes Beispiel:</b>
-     *     {@code
-     *     MessageBox.Show("Test", "Titel" ,null);
-     *     }
-     * </pre>
+     *                 <pre>
+     *                                                                     <b>Wenn eine Message nicht behandelt werden soll, reicht volgendes Beispiel:</b>
+     *                                                                     {@code
+     *                                                                     MessageBox.Show("Test", "Titel" ,null);
+     *                                                                     }
+     *                                                                 </pre>
      *
-     * <pre>
-     *     <b>Wenn eine Message behandelt werden soll, wird noch ein DialogInterface.OnClickListener() benötigt:</b>
-     *     {@code
-     *     	MessageBox.Show("Test", "Titel",DialogListener)
-     *      private final  DialogInterface.OnClickListener  DialogListener = new  DialogInterface.OnClickListener()
-     *       {
-     *      &#64;return
-     *     	@Override
-     *     	public void onClick(DialogInterface dialog, int button)
-     *     	{
-     *     		// Behandle das ergebniss
-     *     		switch (button)
-     *     		{
-     *     			case -1:
-     *     				Toast.makeText(mainActivity, "Click Button 1", Toast.LENGTH_SHORT).show();
-     *     				break;
-     *     			case -2:
-     *     				Toast.makeText(mainActivity, "Click Button 2", Toast.LENGTH_SHORT).show();
-     *     				break;
-     *     			case -3:
-     *     				Toast.makeText(mainActivity, "Click Button 3", Toast.LENGTH_SHORT).show();
-     *     				break;
-     *     		}
+     *                 <pre>
+     *                                                                     <b>Wenn eine Message behandelt werden soll, wird noch ein DialogInterface.OnClickListener() benötigt:</b>
+     *                                                                     {@code
+     *                                                                     	MessageBox.Show("Test", "Titel",DialogListener)
+     *                                                                      private final  DialogInterface.OnClickListener  DialogListener = new  DialogInterface.OnClickListener()
+     *                                                                       {
+     *                                                                      &#64;return
+     *                                                                     	@Override
+     *                                                                     	public void onClick(DialogInterface dialog, int button)
+     *                                                                     	{
+     *                                                                     		// Behandle das ergebniss
+     *                                                                     		switch (button)
+     *                                                                     		{
+     *                                                                     			case -1:
+     *                                                                     				Toast.makeText(mainActivity, "Click Button 1", Toast.LENGTH_SHORT).show();
+     *                                                                     				break;
+     *                                                                     			case -2:
+     *                                                                     				Toast.makeText(mainActivity, "Click Button 2", Toast.LENGTH_SHORT).show();
+     *                                                                     				break;
+     *                                                                     			case -3:
+     *                                                                     				Toast.makeText(mainActivity, "Click Button 3", Toast.LENGTH_SHORT).show();
+     *                                                                     				break;
+     *                                                                     		}
      *
-     *     		dialog.dismiss();
-     *     	}
+     *                                                                     		dialog.dismiss();
+     *                                                                     	}
      *
-     *        };
-     *     }
-     *  </pre>
+     *                                                                        };
+     *                                                                     }
+     *                                                                  </pre>
      */
     public static Dialog Show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, DialogInterface.OnClickListener Listener) {
         listener = Listener;
@@ -167,43 +169,43 @@ public class MessageBox extends android.app.Dialog {
         if (listener == null) {
             // setze standard Listener zu Schliessen des Dialogs, falls kein Listener angegeben wurde
             listener = new DialogInterface.OnClickListener() {
-  @Override
-  public void onClick(DialogInterface dialog, int which) {
-    dialog.dismiss();
-  }
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
             };
         }
 
         Dialog dialog = null;
         switch (dialogId) {
             case DialogID.MSG_BOX_1:
-  MessageBox.Builder customBuilder = new MessageBox.Builder(getActivity());
-  customBuilder.setTitle("").setMessage(b.getString("msg")).setPositiveButton(Translation.Get("ok"), listener);
-  dialog = customBuilder.create();
-  break;
+                MessageBox.Builder customBuilder = new MessageBox.Builder(getActivity());
+                customBuilder.setTitle("").setMessage(b.getString("msg")).setPositiveButton(Translation.Get("ok"), listener);
+                dialog = customBuilder.create();
+                break;
 
             case DialogID.MSG_BOX_2:
-  MessageBox.Builder customBuilder2 = new MessageBox.Builder(getActivity());
-  customBuilder2.setTitle(b.getString("title")).setMessage(b.getString("msg")).setPositiveButton(Translation.Get("ok"), listener);
-  dialog = customBuilder2.create();
-  break;
+                MessageBox.Builder customBuilder2 = new MessageBox.Builder(getActivity());
+                customBuilder2.setTitle(b.getString("title")).setMessage(b.getString("msg")).setPositiveButton(Translation.Get("ok"), listener);
+                dialog = customBuilder2.create();
+                break;
 
             case DialogID.MSG_BOX_3:
 
-  setButtonCaptions(b);
-  MessageBox.Builder customBuilder3 = new MessageBox.Builder(getActivity());
-  customBuilder3.setTitle(b.getString("title")).setMessage(b.getString("msg")).setPositiveButton(button1, listener).setNeutralButton(button2, listener).setNegativeButton(button3, listener);
-  dialog = customBuilder3.create();
-  break;
+                setButtonCaptions(b);
+                MessageBox.Builder customBuilder3 = new MessageBox.Builder(getActivity());
+                customBuilder3.setTitle(b.getString("title")).setMessage(b.getString("msg")).setPositiveButton(button1, listener).setNeutralButton(button2, listener).setNegativeButton(button3, listener);
+                dialog = customBuilder3.create();
+                break;
 
             case DialogID.MSG_BOX_4:
 
-  setButtonCaptions(b);
-  setIcon(b);
-  MessageBox.Builder customBuilder4 = new MessageBox.Builder(getActivity());
-  customBuilder4.setTitle(b.getString("title")).setMessage(b.getString("msg")).setPositiveButton(button1, listener).setNeutralButton(button2, listener).setNegativeButton(button3, listener).setIcon(icon);
-  dialog = customBuilder4.create();
-  break;
+                setButtonCaptions(b);
+                setIcon(b);
+                MessageBox.Builder customBuilder4 = new MessageBox.Builder(getActivity());
+                customBuilder4.setTitle(b.getString("title")).setMessage(b.getString("msg")).setPositiveButton(button1, listener).setNeutralButton(button2, listener).setNegativeButton(button3, listener).setIcon(icon);
+                dialog = customBuilder4.create();
+                break;
 
         }
         return dialog;
@@ -258,41 +260,41 @@ public class MessageBox extends android.app.Dialog {
     private static void setIcon(Bundle b) {
         switch (b.getInt("icon")) {
             case 0:
-  icon = Global.Icons[32];
-  break;
+                icon = Global.Icons[32];
+                break;
             case 1:
-  icon = Global.Icons[31];
-  break;
+                icon = Global.Icons[31];
+                break;
             case 2:
-  icon = Global.Icons[33];
-  break;
+                icon = Global.Icons[33];
+                break;
             case 3:
-  icon = Global.Icons[31];
-  break;
+                icon = Global.Icons[31];
+                break;
             case 4:
-  icon = Global.Icons[32];
-  break;
+                icon = Global.Icons[32];
+                break;
             case 5:
-  icon = null;
-  break;
+                icon = null;
+                break;
             case 6:
-  icon = Global.Icons[34];
-  break;
+                icon = Global.Icons[34];
+                break;
             case 7:
-  icon = Global.Icons[31];
-  break;
+                icon = Global.Icons[31];
+                break;
             case 8:
-  icon = Global.Icons[33];
-  break;
+                icon = Global.Icons[33];
+                break;
             case 9:
-  icon = Global.Icons[35];
-  break;
+                icon = Global.Icons[35];
+                break;
             case 10:
-  icon = Global.Icons[36];
-  break;
+                icon = Global.Icons[36];
+                break;
 
             default:
-  icon = null;
+                icon = null;
 
         }
 
@@ -383,85 +385,89 @@ public class MessageBox extends android.app.Dialog {
             dialog.addContentView(layout, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
             // set the dialog title
             if (title != null && !title.equals("")) {
-  ((TextView) layout.findViewById(R.id.title)).setText(title);
-  // ((TextView) layout.findViewById(R.id.title)).setTextSize(txtSize);
+                ((TextView) layout.findViewById(R.id.title)).setText(title);
+                // ((TextView) layout.findViewById(R.id.title)).setTextSize(txtSize);
             } else {
-  ((TextView) layout.findViewById(R.id.title)).setVisibility(View.GONE);
+                ((TextView) layout.findViewById(R.id.title)).setVisibility(GONE);
             }
 
             // set the confirm button
             if (positiveButtonText != null && !positiveButtonText.equals("")) {
-  ((Button) layout.findViewById(R.id.positiveButton)).setText(positiveButtonText);
-  if (positiveButtonClickListener != null) {
-    ((Button) layout.findViewById(R.id.positiveButton)).setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            positiveButtonClickListener.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
-        }
-    });
-  }
+                ((Button) layout.findViewById(R.id.positiveButton)).setText(positiveButtonText);
+                if (positiveButtonClickListener != null) {
+                    ((Button) layout.findViewById(R.id.positiveButton)).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            positiveButtonClickListener.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
+                            dialog.dismiss();
+                        }
+                    });
+                }
             } else {
-  // if no confirm button just set the visibility to GONE
-  layout.findViewById(R.id.positiveButton).setVisibility(View.GONE);
+                // if no confirm button just set the visibility to GONE
+                layout.findViewById(R.id.positiveButton).setVisibility(GONE);
             }
             // set the neutral button
             if (neutralButtonText != null && !neutralButtonText.equals("")) {
-  ((Button) layout.findViewById(R.id.neutralButton)).setText(neutralButtonText);
-  if (neutralButtonClickListener != null) {
-    ((Button) layout.findViewById(R.id.neutralButton)).setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            neutralButtonClickListener.onClick(dialog, DialogInterface.BUTTON_NEUTRAL);
-        }
-    });
-  }
+                ((Button) layout.findViewById(R.id.neutralButton)).setText(neutralButtonText);
+                if (neutralButtonClickListener != null) {
+                    ((Button) layout.findViewById(R.id.neutralButton)).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            neutralButtonClickListener.onClick(dialog, DialogInterface.BUTTON_NEUTRAL);
+                            dialog.dismiss();
+                        }
+                    });
+                }
             } else {
-  // if no confirm button just set the visibility to GONE
-  layout.findViewById(R.id.neutralButton).setVisibility(View.GONE);
+                // if no confirm button just set the visibility to GONE
+                layout.findViewById(R.id.neutralButton).setVisibility(GONE);
             }
             // set the cancel button
             if (negativeButtonText != null && !negativeButtonText.equals("")) {
-  ((Button) layout.findViewById(R.id.negativeButton)).setText(negativeButtonText);
-  if (negativeButtonClickListener != null) {
-    ((Button) layout.findViewById(R.id.negativeButton)).setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            positiveButtonClickListener.onClick(dialog, DialogInterface.BUTTON_NEGATIVE);
-        }
-    });
-  }
+                ((Button) layout.findViewById(R.id.negativeButton)).setText(negativeButtonText);
+                if (negativeButtonClickListener != null) {
+                    ((Button) layout.findViewById(R.id.negativeButton)).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            negativeButtonClickListener.onClick(dialog, DialogInterface.BUTTON_NEGATIVE);
+                            dialog.dismiss();
+                        }
+                    });
+                }
             } else {
-  // if no confirm button just set the visibility to GONE
-  layout.findViewById(R.id.negativeButton).setVisibility(View.GONE);
+                // if no confirm button just set the visibility to GONE
+                layout.findViewById(R.id.negativeButton).setVisibility(GONE);
             }
             // set the content message
             if (message != null) {
 
-  ((TextView) layout.findViewById(R.id.message)).setText(message);
-  // ((TextView) layout.findViewById(R.id.message)).setTextSize(txtSize);
+                ((TextView) layout.findViewById(R.id.message)).setText(message);
+                // ((TextView) layout.findViewById(R.id.message)).setTextSize(txtSize);
 
-  ((TextView) layout.findViewById(R.id.message)).measure(winWidth - 100, winHeight - 100);
-  int height = ((TextView) layout.findViewById(R.id.message)).getMeasuredHeight();
+                ((TextView) layout.findViewById(R.id.message)).measure(winWidth - 100, winHeight - 100);
+                int height = ((TextView) layout.findViewById(R.id.message)).getMeasuredHeight();
 
-  LayoutParams params = ((ScrollView) layout.findViewById(R.id.ScrollView01)).getLayoutParams();
-  if (height > winHeight - (Buttonheight * 4)) {
-    height = winHeight - (Buttonheight * 4);
-    params.height = height;
-    ((ScrollView) layout.findViewById(R.id.ScrollView01)).setLayoutParams(params);
-  }
+                LayoutParams params = ((ScrollView) layout.findViewById(R.id.ScrollView01)).getLayoutParams();
+                if (height > winHeight - (Buttonheight * 4)) {
+                    height = winHeight - (Buttonheight * 4);
+                    params.height = height;
+                    ((ScrollView) layout.findViewById(R.id.ScrollView01)).setLayoutParams(params);
+                }
 
             } else if (contentView != null) {
-  // if no message set
-  // add the contentView to the dialog body
-  ((LinearLayout) layout.findViewById(R.id.content)).removeAllViews();
-  ((LinearLayout) layout.findViewById(R.id.content)).addView(contentView, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+                // if no message set
+                // add the contentView to the dialog body
+                ((LinearLayout) layout.findViewById(R.id.content)).removeAllViews();
+                ((LinearLayout) layout.findViewById(R.id.content)).addView(contentView, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             }
 
             // set Icon
             if (icon != null) {
-  ((ImageView) layout.findViewById(R.id.icon)).setImageDrawable(icon);
+                ((ImageView) layout.findViewById(R.id.icon)).setImageDrawable(icon);
             } else {
-  ((ImageView) layout.findViewById(R.id.icon)).setVisibility(View.GONE);
+                ImageView iv = layout.findViewById(R.id.icon);
+                if (iv != null) iv.setVisibility(GONE);
             }
 
             setBackgroundDrawables(layout);
@@ -476,7 +482,7 @@ public class MessageBox extends android.app.Dialog {
 
             boolean NightMode = false;
             if (Config.settings != null)
-  NightMode = Config.nightMode.getValue();
+                NightMode = Config.nightMode.getValue();
 
             Drawable header = res.getDrawable(NightMode ? R.drawable.night_header : R.drawable.header);
             Drawable title = res.getDrawable(NightMode ? R.drawable.night_title : R.drawable.title);
@@ -489,7 +495,9 @@ public class MessageBox extends android.app.Dialog {
             ((LinearLayout) layout.findViewById(R.id.footer)).setBackgroundDrawable(footer);
 
             ((TextView) layout.findViewById(R.id.title)).setTextColor(Global.getColor(R.attr.TextColor));
-            ((TextView) layout.findViewById(R.id.message)).setTextColor(Global.getColor(R.attr.TextColor));
+            TextView tvM = layout.findViewById(R.id.message);
+            if (tvM != null)
+                tvM.setTextColor(Global.getColor(R.attr.TextColor));
 
             res = null;
         }

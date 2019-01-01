@@ -5,11 +5,11 @@ import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.GL_Listener.TextInputInterface;
 import CB_Utils.Log.Log;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.text.InputType;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import de.droidcachebox.Views.Forms.MessageBox;
 
 public class Android_TextInput implements TextInputInterface {
     private Activity activity;
@@ -23,7 +23,9 @@ public class Android_TextInput implements TextInputInterface {
         try {
             if (editTextField == null) return;
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            // AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.Dialog);
+            MessageBox.Builder builder = new MessageBox.Builder(activity);
+
             builder.setTitle(""); // todo setting a Title
 
             // Set up the input
@@ -34,7 +36,8 @@ public class Android_TextInput implements TextInputInterface {
             input.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE); //.TYPE_CLASS_TEXT
             input.setSingleLine(false);
             input.setLines(Math.min(editTextField.getLineCount(), 10)); // todo replace 10 by max nr of lines
-            builder.setView(input);
+            // builder.setView(input);
+            builder.setContentView(input);
             // Set up the buttons
             builder.setPositiveButton(Translation.Get("ok"), (dialog, which) -> {
                         editTextField.setText(input.getText().toString());
@@ -47,7 +50,8 @@ public class Android_TextInput implements TextInputInterface {
             });
             activity.runOnUiThread(() -> {
                 InputMethodManager manager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-                builder.show();
+                // builder.show();
+                builder.create().show();
                 input.postDelayed(() -> {
                     input.requestFocus();
                     input.setSelection(input.getText().length());

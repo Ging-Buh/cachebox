@@ -22,20 +22,17 @@
 		<ImageView android:layout_width="wrap_content" android:id="@+id/icon"
 			android:src="@drawable/icon" android:layout_height="wrap_content"
 			android:minHeight="@dimen/MsgBoxIconMinHeight" android:minWidth="@dimen/MsgBoxIconMinWidth"
-			android:layout_marginLeft="10dip" android:layout_marginRight="5dip"
-			android:layout_marginTop="15dip" android:layout_marginBottom="25dip"></ImageView>
+			android:layout_marginStart="10dip" android:layout_marginEnd="5dip"
+			android:layout_marginTop="15dip" android:layout_marginBottom="25dip">
+		</ImageView>
 
 		<ScrollView android:id="@+id/ScrollView01"
 			android:layout_height="wrap_content" android:layout_width="wrap_content"
 			android:minHeight="100dip">
-
 			<TextView style="@style/DialogText" android:id="@+id/message"
 				android:padding="5dip" android:layout_height="wrap_content"
 				android:layout_width="wrap_content" />
-
 		</ScrollView>
-
-
 	</LinearLayout>
 
 	<LinearLayout android:orientation="horizontal" android:id="@+id/footer"
