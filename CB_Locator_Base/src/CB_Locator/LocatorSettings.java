@@ -3,49 +3,48 @@ package CB_Locator;
 import CB_Utils.Config_Core;
 import CB_Utils.Settings.*;
 
+import static CB_Utils.Settings.SettingCategory.*;
+import static CB_Utils.Settings.SettingModus.*;
+import static CB_Utils.Settings.SettingStoreType.*;
+import static CB_Utils.Settings.SettingUsage.*;
+
 public interface LocatorSettings {
-    // Abkürzende Schreibweisen für die Übersichlichkeit bei den add Methoden
-    SettingModus DEVELOPER = SettingModus.DEVELOPER;
-    SettingModus NORMAL = SettingModus.NORMAL;
-    SettingModus EXPERT = SettingModus.EXPERT;
-    SettingModus NEVER = SettingModus.NEVER;
 
     Integer Level[] = new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
     Integer CrossLevel[] = new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
 
-    SettingFolder TileCacheFolder = new SettingFolder("TileCacheFolder", SettingCategory.Folder, NEVER, Config_Core.mWorkPath + "/repository/cache", SettingStoreType.Global, SettingUsage.ALL, true);
-    SettingFolder TileCacheFolderLocal = new SettingFolder("TileCacheFolderLocal", SettingCategory.Folder, NEVER, "", SettingStoreType.Local, SettingUsage.ALL, true);
+    SettingFolder TileCacheFolder = new SettingFolder("TileCacheFolder", Folder, NEVER, Config_Core.mWorkPath + "/repository/cache", Global, ALL, true);
+    SettingFolder TileCacheFolderLocal = new SettingFolder("TileCacheFolderLocal", Folder, NEVER, "", Local, ALL, true);
 
-    SettingFolder MapPackFolder = new SettingFolder("MapPackFolder", SettingCategory.Map, NORMAL, Config_Core.mWorkPath + "/repository/maps", SettingStoreType.Global, SettingUsage.ALL, false);
-    SettingFolder RenderThemesFolder = new SettingFolder("RenderThemesFolder", SettingCategory.Map, NORMAL, Config_Core.mWorkPath + "/RenderThemes", SettingStoreType.Global, SettingUsage.ALL, false);
-    SettingBool PositionMarkerTransparent = new SettingBool("PositionMarkerTransparent", SettingCategory.Map, EXPERT, true, SettingStoreType.Global, SettingUsage.ACB);
-    SettingIntArray OsmMinLevel = new SettingIntArray("OsmMinLevel", SettingCategory.Map, EXPERT, 7, SettingStoreType.Global, SettingUsage.ACB, Level);
-    SettingIntArray OsmMaxLevel = new SettingIntArray("OsmMaxLevel", SettingCategory.Map, EXPERT, 21, SettingStoreType.Global, SettingUsage.ACB, Level);
-    SettingIntArray CompassMapMinZoomLevel = new SettingIntArray("CompassMapMinZoomLevel", SettingCategory.Map, EXPERT, 13, SettingStoreType.Global, SettingUsage.ACB, Level);
-    SettingIntArray CompassMapMaxZommLevel = new SettingIntArray("CompassMapMaxZommLevel", SettingCategory.Map, EXPERT, 21, SettingStoreType.Global, SettingUsage.ACB, Level);
-    SettingString UserMap1 = (SettingString) SettingsList.addSetting(
-            new SettingString("UserMap1", SettingCategory.Map, EXPERT, "{JPG}{name:ESRI World_Imagery}http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", SettingStoreType.Global, SettingUsage.ALL));
-    SettingString UserMap2 = (SettingString) SettingsList.addSetting(new SettingString("UserMap2", SettingCategory.Map, EXPERT, "", SettingStoreType.Global, SettingUsage.ALL));
-    SettingFolder MapPackFolderLocal = new SettingFolder("MapPackFolderLocal", SettingCategory.Map, NEVER, Config_Core.mWorkPath + "/repository/maps", SettingStoreType.Local, SettingUsage.ALL, false);
-    SettingStringList CurrentMapLayer = (SettingStringList) SettingsList.addSetting(new SettingStringList("CurrentMapLayer", SettingCategory.Map, NEVER, new String[]{"Mapnik"}, SettingStoreType.Global, SettingUsage.ACB));
-    SettingString CurrentMapOverlayLayer = (SettingString) SettingsList.addSetting(new SettingString("CurrentMapOverlayLayer", SettingCategory.Map, NEVER, "", SettingStoreType.Global, SettingUsage.ACB));
-    SettingInt lastZoomLevel = (SettingInt) SettingsList.addSetting(new SettingInt("lastZoomLevel", SettingCategory.Map, NEVER, 14, SettingStoreType.Global, SettingUsage.ALL));
-    SettingBool ShowAccuracyCircle = new SettingBool("ShowAccuracyCircle", SettingCategory.Map, NEVER, true, SettingStoreType.Global, SettingUsage.ACB);
-    SettingBool ShowMapCenterCross = new SettingBool("ShowMapCenterCross", SettingCategory.Map, NEVER, true, SettingStoreType.Global, SettingUsage.ACB);
-    SettingFile MapsforgeDayTheme = (SettingFile) SettingsList.addSetting(new SettingFile("MapsforgeDayTheme", SettingCategory.Map, NEVER, "", SettingStoreType.Global, SettingUsage.ACB, "xml"));
-    SettingFile MapsforgeNightTheme = (SettingFile) SettingsList.addSetting(new SettingFile("MapsforgeNightTheme", SettingCategory.Map, NEVER, "", SettingStoreType.Global, SettingUsage.ACB, "xml"));
-    SettingFile MapsforgeCarDayTheme = (SettingFile) SettingsList.addSetting(new SettingFile("MapsforgeCarDayTheme", SettingCategory.Map, NEVER, "CAR", SettingStoreType.Global, SettingUsage.ACB, "xml"));
-    SettingFile MapsforgeCarNightTheme = (SettingFile) SettingsList.addSetting(new SettingFile("MapsforgeCarNightTheme", SettingCategory.Map, NEVER, "CAR", SettingStoreType.Global, SettingUsage.ACB, "xml"));
-    SettingString MapsforgeDayStyle = (SettingString) SettingsList.addSetting(new SettingString("MapsforgeDayStyle", SettingCategory.Map, NEVER, "", SettingStoreType.Global, SettingUsage.ACB));
-    SettingString MapsforgeNightStyle = (SettingString) SettingsList.addSetting(new SettingString("MapsforgeNightStyle", SettingCategory.Map, NEVER, "", SettingStoreType.Global, SettingUsage.ACB));
-    SettingString MapsforgeCarDayStyle = (SettingString) SettingsList.addSetting(new SettingString("MapsforgeCarDayStyle", SettingCategory.Map, NEVER, "", SettingStoreType.Global, SettingUsage.ACB));
-    SettingString MapsforgeCarNightStyle = (SettingString) SettingsList.addSetting(new SettingString("MapsforgeCarNightStyle", SettingCategory.Map, NEVER, "", SettingStoreType.Global, SettingUsage.ACB));
-    SettingString PreferredMapLanguage = (SettingString) SettingsList.addSetting(new SettingString("MapLanguage", SettingCategory.Map, NEVER, "", SettingStoreType.Global, SettingUsage.ALL));
+    SettingFolder MapPackFolder = new SettingFolder("MapPackFolder", Map, NORMAL, Config_Core.mWorkPath + "/repository/maps", Global, ALL, false);
+    SettingFolder RenderThemesFolder = new SettingFolder("RenderThemesFolder", Map, NORMAL, Config_Core.mWorkPath + "/RenderThemes", Global, ALL, false);
+    SettingBool PositionMarkerTransparent = new SettingBool("PositionMarkerTransparent", Map, EXPERT, true, Global, ACB);
+    SettingIntArray OsmMinLevel = new SettingIntArray("OsmMinLevel", Map, EXPERT, 7, Global, ACB, Level);
+    SettingIntArray OsmMaxLevel = new SettingIntArray("OsmMaxLevel", Map, EXPERT, 21, Global, ACB, Level);
+    SettingIntArray CompassMapMinZoomLevel = new SettingIntArray("CompassMapMinZoomLevel", Map, EXPERT, 13, Global, ACB, Level);
+    SettingIntArray CompassMapMaxZommLevel = new SettingIntArray("CompassMapMaxZommLevel", Map, EXPERT, 21, Global, ACB, Level);
+    SettingString UserMap1 = new SettingString("UserMap1", Map, EXPERT, "{JPG}{name:ESRI World_Imagery}http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", Global, ALL);
+    SettingString UserMap2 = new SettingString("UserMap2", Map, EXPERT, "", Global, ALL);
+    SettingFolder MapPackFolderLocal = new SettingFolder("MapPackFolderLocal", Map, NEVER, Config_Core.mWorkPath + "/repository/maps", Local, ALL, false);
+    SettingStringList CurrentMapLayer = new SettingStringList("CurrentMapLayer", Map, NEVER, new String[]{"Mapnik"}, Global, ACB);
+    SettingString CurrentMapOverlayLayer = new SettingString("CurrentMapOverlayLayer", Map, NEVER, "", Global, ACB);
+    SettingInt lastZoomLevel = new SettingInt("lastZoomLevel", Map, NEVER, 14, Global, ALL);
+    SettingBool ShowAccuracyCircle = new SettingBool("ShowAccuracyCircle", Map, NEVER, true, Global, ACB);
+    SettingBool ShowMapCenterCross = new SettingBool("ShowMapCenterCross", Map, NEVER, true, Global, ACB);
+    SettingFile MapsforgeDayTheme = new SettingFile("MapsforgeDayTheme", Map, NEVER, "", Global, ACB, "xml");
+    SettingFile MapsforgeNightTheme = new SettingFile("MapsforgeNightTheme", Map, NEVER, "", Global, ACB, "xml");
+    SettingFile MapsforgeCarDayTheme = new SettingFile("MapsforgeCarDayTheme", Map, NEVER, "CAR", Global, ACB, "xml");
+    SettingFile MapsforgeCarNightTheme = new SettingFile("MapsforgeCarNightTheme", Map, NEVER, "CAR", Global, ACB, "xml");
+    SettingString MapsforgeDayStyle = new SettingString("MapsforgeDayStyle", Map, NEVER, "", Global, ACB);
+    SettingString MapsforgeNightStyle = new SettingString("MapsforgeNightStyle", Map, NEVER, "", Global, ACB);
+    SettingString MapsforgeCarDayStyle = new SettingString("MapsforgeCarDayStyle", Map, NEVER, "", Global, ACB);
+    SettingString MapsforgeCarNightStyle = new SettingString("MapsforgeCarNightStyle", Map, NEVER, "", Global, ACB);
+    SettingString PreferredMapLanguage = new SettingString("MapLanguage", Map, NEVER, "", Global, ALL);
 
-    SettingBool MoveMapCenterWithSpeed = new SettingBool("MoveMapCenterWithSpeed", SettingCategory.CarMode, NORMAL, false, SettingStoreType.Global, SettingUsage.ACB);
-    SettingInt MoveMapCenterMaxSpeed = (SettingInt) SettingsList.addSetting(new SettingInt("MoveMapCenterMaxSpeed", SettingCategory.CarMode, NORMAL, 60, SettingStoreType.Global, SettingUsage.ACB));
+    SettingBool MoveMapCenterWithSpeed = new SettingBool("MoveMapCenterWithSpeed", CarMode, NORMAL, false, Global, ACB);
+    SettingInt MoveMapCenterMaxSpeed = new SettingInt("MoveMapCenterMaxSpeed", CarMode, NORMAL, 60, Global, ACB);
 
-    SettingDouble MapInitLatitude = new SettingDouble("MapInitLatitude", SettingCategory.Positions, NEVER, -1000, SettingStoreType.Global, SettingUsage.ALL);
-    SettingDouble MapInitLongitude = new SettingDouble("MapInitLongitude", SettingCategory.Positions, NEVER, -1000, SettingStoreType.Global, SettingUsage.ALL);
+    SettingDouble MapInitLatitude = new SettingDouble("MapInitLatitude", Positions, NEVER, -1000, Global, ALL);
+    SettingDouble MapInitLongitude = new SettingDouble("MapInitLongitude", Positions, NEVER, -1000, Global, ALL);
 
 }

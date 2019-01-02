@@ -40,9 +40,9 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
     }
 
     public static void changeDayNight() {
-        Boolean value = SettingsClass.nightMode.getValue();
+        Boolean value = Config.nightMode.getValue();
         value = !value;
-        SettingsClass.nightMode.setValue(value);
+        Config.nightMode.setValue(value);
         Config.AcceptChanges();
     }
 

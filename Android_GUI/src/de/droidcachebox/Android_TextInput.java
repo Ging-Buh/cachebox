@@ -33,7 +33,10 @@ public class Android_TextInput implements TextInputInterface {
 
             // Specify the type of input expected;
             input.setText(editTextField.getText());
-            input.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE); //.TYPE_CLASS_TEXT
+            if (editTextField.getInputType() == 0)
+                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE); //.TYPE_CLASS_TEXT
+            else
+                input.setInputType(editTextField.getInputType());
             input.setSingleLine(false);
             input.setLines(Math.min(editTextField.getLineCount(), 10)); // todo replace 10 by max nr of lines
             // builder.setView(input);

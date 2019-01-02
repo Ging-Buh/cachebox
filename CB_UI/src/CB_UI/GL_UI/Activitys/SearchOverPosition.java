@@ -40,6 +40,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_Utils.Interfaces.ICancel;
 import CB_Utils.Log.Log;
+import android.text.InputType;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import java.text.SimpleDateFormat;
@@ -138,6 +139,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         box.addNext(lblRadius, FIXED);
 
         Radius = new EditTextField(this, "Radius");
+        Radius.setInputType(InputType.TYPE_CLASS_NUMBER);
         box.addNext(Radius);
 
         lblRadiusEinheit = new Label(sEinheit);
@@ -165,6 +167,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         lblImportLimit.setWidth(Fonts.Measure(lblImportLimit.getText()).width);
         box.addNext(lblImportLimit, FIXED);
         edtImportLimit = new EditTextField(this, "edtImportLimit");
+        edtImportLimit.setInputType(InputType.TYPE_CLASS_NUMBER);
         box.addLast(edtImportLimit);
     }
 
@@ -191,6 +194,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         btnBeforeAfterEqual.setWidth(Fonts.Measure(". <= .").width);
         box.addNext(btnBeforeAfterEqual, FIXED);
         edtDate = new EditTextField(this, "edtDate");
+        edtDate.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE);
         edtDate.setWidth(Fonts.Measure(". 2018-12-31 .").width);
         edtDate.setText(simpleDateFormat.format(new Date()));
         box.addLast(edtDate, FIXED);

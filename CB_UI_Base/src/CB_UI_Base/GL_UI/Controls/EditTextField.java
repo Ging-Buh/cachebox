@@ -50,6 +50,7 @@ public class EditTextField extends EditTextFieldBase {
     final Lock displayTextLock = new ReentrantLock();
     private final CB_List<IListPosChanged> listPosChangedHandlers = new CB_List<IListPosChanged>();
     protected TextFieldStyle style;
+    protected int inputType; // for Android InputType
     protected String text, messageText; // both in todo state
     /**
      * the text to display/edit, separated in lines
@@ -114,12 +115,20 @@ public class EditTextField extends EditTextFieldBase {
     }
 
     private void initEditTextField() {
+        inputType = 0;
         topLine = 0;
         leftPos = 0;
         this.style = getDefaultStyle();
         lines = new ArrayList<Line>();
         setText(""); // does all calculations
         setClickable(true);
+    }
+
+    public void setInputType(int type) {
+        inputType = type;
+    }
+    public int getInputType() {
+        return inputType;
     }
 
     @Override

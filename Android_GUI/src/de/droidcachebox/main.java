@@ -357,7 +357,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
         Config.AcceptChanges();
 
-        AndroidSettings.RunOverLockScreen.addSettingChangedListener(new IChanged() {
+        Config.RunOverLockScreen.addSettingChangedListener(new IChanged() {
             @Override
             public void handleChange() {
                 setLockScreenProperty();
@@ -485,7 +485,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             public void run() {
                 Window window = main.this.getWindow();
                 if (window != null) {
-                    if (AndroidSettings.RunOverLockScreen.getValue()) {
+                    if (Config.RunOverLockScreen.getValue()) {
                         window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
                     } else {
                         window.clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);

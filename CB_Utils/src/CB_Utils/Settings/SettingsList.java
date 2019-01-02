@@ -42,20 +42,6 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
         mbrs = null;
     }
 
-    public static SettingBase<?> addSetting(SettingBase<?> setting) {
-
-        if (that == null)
-            try {
-                throw new InstantiationException("Settings List not initial");
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-                return null;
-            }
-        that.add(setting);
-
-        return setting;
-    }
-
     public boolean isLoaded() {
         return isLoaded;
     }
