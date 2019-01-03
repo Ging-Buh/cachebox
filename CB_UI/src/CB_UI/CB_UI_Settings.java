@@ -16,13 +16,15 @@
 
 package CB_UI;
 
+import CB_Utils.Config_Core;
 import CB_Utils.Settings.*;
 
-import static CB_Locator.LocatorSettings.CrossLevel;
 import static CB_Utils.Settings.SettingCategory.*;
 import static CB_Utils.Settings.SettingModus.*;
-import static CB_Utils.Settings.SettingStoreType.*;
-import static CB_Utils.Settings.SettingUsage.*;
+import static CB_Utils.Settings.SettingStoreType.Global;
+import static CB_Utils.Settings.SettingStoreType.Platform;
+import static CB_Utils.Settings.SettingUsage.ACB;
+import static CB_Utils.Settings.SettingUsage.ALL;
 
 /**
  * @author Longri
@@ -30,7 +32,6 @@ import static CB_Utils.Settings.SettingUsage.*;
  */
 
 public interface CB_UI_Settings {
-    String Work = Config.mWorkPath;
 
     String FOUND = "<br>###finds##, ##time##, Found it with Cachebox!";
     String ATTENDED = "<br>###finds##, ##time##, Have been there!";
@@ -53,7 +54,6 @@ public interface CB_UI_Settings {
     SettingString quickButtonList = new SettingString("quickButtonList", QuickList, NEVER, "1,15,14,19,12,23,2,13", Global, ACB);
     SettingBool quickButtonLastShow = new SettingBool("quickButtonLastShow", QuickList, NEVER, false, Global, ACB);
 
-    SettingIntArray ZoomCross = new SettingIntArray("ZoomCross", Map, EXPERT, 16, Global, ACB, CrossLevel);
     SettingBool MapShowRating = new SettingBool("MapShowRating", Map, NEVER, true, Global, ACB);
     SettingBool MapShowDT = new SettingBool("MapShowDT", Map, NEVER, true, Global, ACB);
     SettingBool MapShowTitles = new SettingBool("MapShowTitles", Map, NEVER, true, Global, ACB);
@@ -115,9 +115,9 @@ public interface CB_UI_Settings {
     SettingInt lastSearchRadius = new SettingInt("lastSearchRadius", API, NEVER, 5, Global, ACB);
     SettingInt ImportLimit = new SettingInt("ImportLimit", API, NEVER, 50, Global, ACB);
 
-    SettingFolder TrackFolder = new SettingFolder("TrackFolder", Folder, EXPERT, Work + "/User/Tracks", Global, ACB, true);
-    SettingFile FieldNotesGarminPath = new SettingFile("FieldNotesGarminPath", Folder, DEVELOPER, Work + "/User/geocache_visits.txt", Global, ACB);
-    SettingFile gpxExportFileName = new SettingFile("gpxExportFileName", Folder, NEVER, Work + "/User/export.gpx", Global, ACB, "gpx");
+    SettingFolder TrackFolder = new SettingFolder("TrackFolder", Folder, EXPERT, Config_Core.mWorkPath + "/User/Tracks", Global, ACB, true);
+    SettingFile FieldNotesGarminPath = new SettingFile("FieldNotesGarminPath", Folder, DEVELOPER, Config_Core.mWorkPath + "/User/geocache_visits.txt", Global, ACB);
+    SettingFile gpxExportFileName = new SettingFile("gpxExportFileName", Folder, NEVER, Config_Core.mWorkPath + "/User/export.gpx", Global, ACB, "gpx");
 
     SettingString FoundTemplate = new SettingLongString("FoundTemplate", Templates, NORMAL, FOUND, Global, ACB);
     SettingString AttendedTemplate = new SettingLongString("AttendedTemplate", Templates, NORMAL, ATTENDED, Global, ACB);
@@ -131,8 +131,8 @@ public interface CB_UI_Settings {
     SettingString GrabbedTemplate = new SettingLongString("GrabbedTemplate", Templates, NORMAL, GRABED, Global, ACB);
     SettingString PickedTemplate = new SettingLongString("PickedTemplate", Templates, NORMAL, PICKED, Global, ACB);
 
-    SettingBool ShowFieldnotesCMwithFirstShow = new SettingBool("ShowFieldnotesCMwithFirstShow", Fieldnotes, EXPERT, false, Global, ACB);
-    SettingBool ShowFieldnotesAsDefaultView = new SettingBool("ShowFieldnotesAsDefaultView", Fieldnotes, EXPERT, false, Global, ACB);
+    SettingBool ShowFieldnotesContextMenuWithFirstShow = new SettingBool("ShowFieldnotesCMwithFirstShow", Skin, EXPERT, false, Global, ACB);
+    SettingBool ShowFieldnotesAsDefaultView = new SettingBool("ShowFieldnotesAsDefaultView", Skin, EXPERT, false, Global, ACB);
 
     SettingBool MultiDBAsk = new SettingBool("MultiDBAsk", Internal, NEVER, true, Global, ACB);
     SettingString DatabaseName = new SettingString("DatabaseName", Internal, NEVER, "cachebox.db3", Global, ACB);

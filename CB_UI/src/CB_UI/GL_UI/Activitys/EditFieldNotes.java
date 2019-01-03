@@ -39,6 +39,7 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Sprites;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
+import android.text.InputType;
 import com.badlogic.gdx.math.Vector2;
 
 import java.text.DateFormat;
@@ -280,7 +281,8 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         lblDate.setText(Translation.Get("date") + ":");
         scrollBoxContent.addNext(lblDate, 0.6f);
 
-        tvDate = new EditTextField(this, "tvDate");
+        tvDate = new EditTextField(this, "*" + Translation.Get("date"));
+        tvDate.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE);
         scrollBoxContent.addLast(tvDate, 0.4f);
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd");
         String sDate = iso8601Format.format(fieldNote.timestamp);
@@ -295,7 +297,8 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
         lblTime.setText(Translation.Get("time") + ":");
         scrollBoxContent.addNext(lblTime, 0.6f);
 
-        tvTime = new EditTextField(this, "tvTime");
+        tvTime = new EditTextField(this, "*" + Translation.Get("time"));
+        tvTime.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_TIME);
         scrollBoxContent.addLast(tvTime, 0.4f);
         DateFormat iso8601Format = new SimpleDateFormat("HH:mm");
         String sTime = iso8601Format.format(fieldNote.timestamp);

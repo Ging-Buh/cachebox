@@ -247,7 +247,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
     private void iniTitleTextField() {
         CB_RectF rec = new CB_RectF(leftBorder, tvTitle.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
-        etTitle = new EditTextField(rec, this, "etTitle");
+        etTitle = new EditTextField(rec, this, "*" + Translation.Get("Title"));
 
         String txt = (waypoint.getTitle() == null) ? "" : waypoint.getTitle();
 
@@ -264,7 +264,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
     private void iniTitleTextDesc() {
         CB_RectF rec = new CB_RectF(leftBorder, tvDescription.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
-        etDescription = new EditTextField(rec, this, "etDescription", WrapType.WRAPPED);
+        etDescription = new EditTextField(rec, this, "*" + Translation.Get("Description"), WrapType.WRAPPED);
 
         String txt = (waypoint.getDescription() == null) ? "" : waypoint.getDescription();
 
@@ -295,7 +295,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
     private void iniTitleTextClue() {
         CB_RectF rec = new CB_RectF(leftBorder, tvClue.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
-        etClue = new EditTextField(rec, this, "etClue", WrapType.WRAPPED);
+        etClue = new EditTextField(rec, this, "*" + Translation.Get("Clue"), WrapType.WRAPPED);
 
         String txt = (waypoint.getClue() == null) ? "" : waypoint.getClue();
 

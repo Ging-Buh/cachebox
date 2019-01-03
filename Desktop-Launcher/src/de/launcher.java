@@ -43,8 +43,8 @@ class DCB {
         new DesktopFileFactory();
 
         DesktopMain.InitalConfig();
-
         Config.settings.ReadFromDB();
+
         new CB_SLF4J(Config.mWorkPath);
         CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
         Config.AktLogLevel.addSettingChangedListener(new IChanged() {

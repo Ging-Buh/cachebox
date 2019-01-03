@@ -45,14 +45,14 @@ public class PasswortDialog extends ButtonDialog {
 
         CB_RectF rec = new CB_RectF(0, 0, msgBoxContentSize.width, TextFieldHeight);
 
-        editTextUser = new EditTextField( rec, this,"editTextUser", WrapType.SINGLELINE);
+        editTextUser = new EditTextField( rec, this,"*" + Translation.Get("LogIn"), WrapType.SINGLELINE);
         layout.addChild(editTextUser);
 
         Label lblPW = new Label(this.name + " lblPW", 0, 0, msgBoxContentSize.width, LabelHeight);
         lblPW.setText(Translation.Get("GCPW"));
         layout.addChild(lblPW);
 
-        editTextPW = new EditTextField( rec, this,"editTextPW", WrapType.SINGLELINE);
+        editTextPW = new EditTextField( rec, this,"*" + Translation.Get("GCPW"), WrapType.SINGLELINE);
 
         // TODO set PW-Mode => hat noch einen Fehler
         // editTextPW.setPasswordMode();

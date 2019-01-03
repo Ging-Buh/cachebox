@@ -16,6 +16,7 @@ public interface LocatorSettings {
     SettingFolder TileCacheFolder = new SettingFolder("TileCacheFolder", Folder, NEVER, Config_Core.mWorkPath + "/repository/cache", Global, ALL, true);
     SettingFolder TileCacheFolderLocal = new SettingFolder("TileCacheFolderLocal", Folder, NEVER, "", Local, ALL, true);
 
+    SettingIntArray ZoomCross = new SettingIntArray("ZoomCross", Map, EXPERT, 16, Global, ACB, CrossLevel);
     SettingFolder MapPackFolder = new SettingFolder("MapPackFolder", Map, NORMAL, Config_Core.mWorkPath + "/repository/maps", Global, ALL, false);
     SettingFolder RenderThemesFolder = new SettingFolder("RenderThemesFolder", Map, NORMAL, Config_Core.mWorkPath + "/RenderThemes", Global, ALL, false);
     SettingBool PositionMarkerTransparent = new SettingBool("PositionMarkerTransparent", Map, EXPERT, true, Global, ACB);

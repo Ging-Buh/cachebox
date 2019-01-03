@@ -138,7 +138,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         lblRadius.setWidth(wRadius);
         box.addNext(lblRadius, FIXED);
 
-        Radius = new EditTextField(this, "Radius");
+        Radius = new EditTextField(this, "*" + Translation.Get("Radius"));
         Radius.setInputType(InputType.TYPE_CLASS_NUMBER);
         box.addNext(Radius);
 
@@ -158,7 +158,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         lblCategory = new Label(Translation.Get("category"));
         lblCategory.setWidth(Fonts.Measure(lblCategory.getText()).width);
         box.addNext(lblCategory, FIXED);
-        edtCategory = new EditTextField(this, "edtCategory");
+        edtCategory = new EditTextField(this, "*" + Translation.Get("category"));
         box.addLast(edtCategory);
     }
 
@@ -166,7 +166,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         lblImportLimit = new Label(Translation.Get("ImportLimit"));
         lblImportLimit.setWidth(Fonts.Measure(lblImportLimit.getText()).width);
         box.addNext(lblImportLimit, FIXED);
-        edtImportLimit = new EditTextField(this, "edtImportLimit");
+        edtImportLimit = new EditTextField(this, "*" + Translation.Get("ImportLimit"));
         edtImportLimit.setInputType(InputType.TYPE_CLASS_NUMBER);
         box.addLast(edtImportLimit);
     }
@@ -175,7 +175,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         lblCacheName = new Label(Translation.Get("Title"));
         lblCacheName.setWidth(Fonts.Measure(lblCacheName.getText()).width);
         box.addNext(lblCacheName, FIXED);
-        edtCacheName = new EditTextField(this, "edtCacheName");
+        edtCacheName = new EditTextField(this, "*" + Translation.Get("Title"));
         box.addLast(edtCacheName);
     }
 
@@ -183,7 +183,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         lblOwner = new Label(Translation.Get("Owner"));
         lblOwner.setWidth(Fonts.Measure(lblOwner.getText()).width);
         box.addNext(lblOwner, FIXED);
-        edtOwner = new EditTextField(this, "edtOwner");
+        edtOwner = new EditTextField(this, "*" + Translation.Get("Owner"));
         box.addLast(edtOwner);
     }
 
@@ -193,7 +193,7 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         btnBeforeAfterEqual = new Button("<=");
         btnBeforeAfterEqual.setWidth(Fonts.Measure(". <= .").width);
         box.addNext(btnBeforeAfterEqual, FIXED);
-        edtDate = new EditTextField(this, "edtDate");
+        edtDate = new EditTextField(this, "*" + Translation.Get("published"));
         edtDate.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE);
         edtDate.setWidth(Fonts.Measure(". 2018-12-31 .").width);
         edtDate.setText(simpleDateFormat.format(new Date()));

@@ -127,7 +127,7 @@ public class CreateTrackOverMapActivity extends ActivityBase {
         this.addChild(btnCancel);
 
         lblName = new Label(Translation.Get("Name"));
-        editName = new EditTextField(this, "editName");
+        editName = new EditTextField(this, "*" + Translation.Get("Name"));
         lblName.setRec(new CB_RectF(leftBorder, this.getHeight() - (lblName.getHeight() + margin), lblName.getWidth(), lblName.getHeight()));
         editName.setRec(new CB_RectF(lblName.getMaxX() + margin, lblName.getY(), innerWidth - (margin + lblName.getWidth()), lblName.getHeight()));
         this.addChild(lblName);

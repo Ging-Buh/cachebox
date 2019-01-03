@@ -470,7 +470,7 @@ public class FieldNotesView extends V_ListView {
 
             GL.that.closeAllDialogs();
 
-            if (Config.ShowFieldnotesCMwithFirstShow.getValue())
+            if (Config.ShowFieldnotesContextMenuWithFirstShow.getValue())
                 TabMainView.that.mToolsButtonOnLeftTabPerformClick();
         }
 

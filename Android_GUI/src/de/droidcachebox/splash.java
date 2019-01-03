@@ -959,8 +959,6 @@ public class splash extends Activity {
         mediaInfo();
 
         new Config(workPath);
-        Config.Initialize(workPath, workPath + "/cachebox.config");
-        Log.info(log, "Settings in List: " + Config.settings.size());
 
         Log.info(log, "start Settings Database " + workPath + "/User/Config.db3");
         boolean userFolderExists = FileIO.createDirectory(workPath + "/User");

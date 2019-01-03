@@ -25,18 +25,12 @@ import cb_rpc.Settings.CB_Rpc_Settings;
 
 public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings, CB_Rpc_Settings, LocatorSettings {
     public static SettingsClass settings;
-    public static String ConfigName = "";
     private static Config that;
 
     public Config(String workPath) {
         super(workPath);
-        that = this;
-    }
-
-    public static void Initialize(String workPath, String configName) {
-        mWorkPath = workPath;
-        ConfigName = configName;
         settings = new SettingsClass();
+        that = this;
     }
 
     public static void changeDayNight() {

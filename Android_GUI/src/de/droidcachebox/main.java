@@ -278,10 +278,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
             Log.debug(sKlasse, "main onCreate with savedInstanceState");
             GlobalCore.restartAfterKill = true;
             GlobalCore.useSmallSkin = savedInstanceState.getBoolean("useSmallSkin");
-            String workPath = savedInstanceState.getString("WorkPath");
 
-            // Read Config
-            Config.Initialize(workPath, workPath + "/cachebox.config");
+            String workPath = savedInstanceState.getString("WorkPath");
+            new Config(workPath);
 
             // hier muss die Config Db initialisiert werden
             Database.Settings = new AndroidDB(DatabaseType.Settings, this);

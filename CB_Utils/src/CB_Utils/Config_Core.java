@@ -110,11 +110,6 @@ public abstract class Config_Core {
         }
     }
 
-    public static void AcceptChanges() {
-        if (that != null)
-            that.acceptChanges();
-    }
-
     protected abstract void acceptChanges();
 
 }

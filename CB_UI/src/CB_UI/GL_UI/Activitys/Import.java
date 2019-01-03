@@ -64,6 +64,7 @@ import CB_Utils.Util.CopyHelper.CopyRule;
 import CB_Utils.Util.FileIO;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
+import android.text.InputType;
 import cb_rpc.Functions.RpcAnswer;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
@@ -629,7 +630,9 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         lblButKeepLeast.setText(Translation.Get("ButKeepLeast"));
         LogCollapseBox.addChild(lblButKeepLeast);
 
-        final EditTextField input = new EditTextField(checkBoxCleanLogs.ScaleCenter(2), LogCollapseBox, "input");
+        final EditTextField input = new EditTextField(checkBoxCleanLogs.ScaleCenter(2), LogCollapseBox, "*" + Translation.Get("ButKeepLeast"));
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+
         input.setHeight(SmallLineHeight * 2.5f);
         input.setText(String.valueOf(Config.LogMinCount.getValue()));
         input.setPos(margin, lblButKeepLeast.getY() - margin - input.getHeight());

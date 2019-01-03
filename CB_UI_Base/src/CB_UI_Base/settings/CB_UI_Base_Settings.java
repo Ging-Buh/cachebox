@@ -15,49 +15,57 @@
  */
 package CB_UI_Base.settings;
 
-import CB_UI_Base.Global;
 import CB_Utils.Config_Core;
+import CB_Utils.Log.LogLevel;
 import CB_Utils.Settings.*;
 import CB_Utils.Util.HSV_Color;
 
-public interface CB_UI_Base_Settings extends CB_Utils_Settings {
+import static CB_UI_Base.Global.displayDensity;
+import static CB_Utils.Settings.SettingCategory.*;
+import static CB_Utils.Settings.SettingModus.*;
+import static CB_Utils.Settings.SettingStoreType.*;
+import static CB_Utils.Settings.SettingUsage.ACB;
+import static CB_Utils.Settings.SettingUsage.ALL;
 
-    SettingBool nightMode = new SettingBool("nightMode", SettingCategory.Internal, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
-    SettingBool useAndroidKeyboard = new SettingBool("useAndroidKeyboard", SettingCategory.Skin, SettingModus.NORMAL, false, SettingStoreType.Global, SettingUsage.ACB);
+public interface CB_UI_Base_Settings {
+    SettingEnum<Enum<LogLevel>> AktLogLevel = new SettingEnum<Enum<LogLevel>>("AktLogLevel", Debug, NORMAL, LogLevel.OFF, Platform, ALL, LogLevel.OFF);
 
-    SettingFolder SkinFolder = new SettingFolder("SkinFolder", SettingCategory.Folder, DEVELOPER, "default", SettingStoreType.Global, SettingUsage.ACB, false);
+    SettingBool nightMode = new SettingBool("nightMode", Internal, NEVER, false, Global, ACB);
+    SettingBool useAndroidKeyboard = new SettingBool("useAndroidKeyboard", Skin, NORMAL, false, Global, ACB);
 
-    SettingInt FONT_SIZE_COMPASS_DISTANCE = new SettingInt("FONT_SIZE_COMPASS_DISTANCE", SettingCategory.Skin, EXPERT, 25, SettingStoreType.Global, SettingUsage.ACB);
-    SettingInt FONT_SIZE_BIG = new SettingInt("FONT_SIZE_BIG", SettingCategory.Skin, EXPERT, 16, SettingStoreType.Global, SettingUsage.ACB);
-    SettingInt FONT_SIZE_NORMAL = new SettingInt("FONT_SIZE_NORMAL", SettingCategory.Skin, EXPERT, 14, SettingStoreType.Global, SettingUsage.ACB);
-    SettingInt FONT_SIZE_NORMAL_BUBBLE = new SettingInt("FONT_SIZE_NORMAL_BUBBLE", SettingCategory.Skin, EXPERT, 13, SettingStoreType.Global, SettingUsage.ACB);
-    SettingInt FONT_SIZE_SMALL = new SettingInt("FONT_SIZE_SMALL", SettingCategory.Skin, EXPERT, 12, SettingStoreType.Global, SettingUsage.ACB);
-    SettingInt FONT_SIZE_SMALL_BUBBLE = new SettingInt("FONT_SIZE_SMALL_BUBBLE", SettingCategory.Skin, EXPERT, 10, SettingStoreType.Global, SettingUsage.ACB);
+    SettingFolder SkinFolder = new SettingFolder("SkinFolder", Folder, DEVELOPER, "default", Global, ACB, false);
 
-    SettingBool useDescriptiveCB_Buttons = new SettingBool("useDescriptiveCB_Buttons", SettingCategory.Skin, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
+    SettingInt FONT_SIZE_COMPASS_DISTANCE = new SettingInt("FONT_SIZE_COMPASS_DISTANCE", Skin, EXPERT, 25, Global, ACB);
+    SettingInt FONT_SIZE_BIG = new SettingInt("FONT_SIZE_BIG", Skin, EXPERT, 16, Global, ACB);
+    SettingInt FONT_SIZE_NORMAL = new SettingInt("FONT_SIZE_NORMAL", Skin, EXPERT, 14, Global, ACB);
+    SettingInt FONT_SIZE_NORMAL_BUBBLE = new SettingInt("FONT_SIZE_NORMAL_BUBBLE", Skin, EXPERT, 13, Global, ACB);
+    SettingInt FONT_SIZE_SMALL = new SettingInt("FONT_SIZE_SMALL", Skin, EXPERT, 12, Global, ACB);
+    SettingInt FONT_SIZE_SMALL_BUBBLE = new SettingInt("FONT_SIZE_SMALL_BUBBLE", Skin, EXPERT, 10, Global, ACB);
 
-    SettingBool useMipMap = new SettingBool("useMipMap", SettingCategory.Skin, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
-    SettingBool dontUseAmbient = new SettingBool("dontUseAmbient", SettingCategory.Skin, EXPERT, true, SettingStoreType.Global, SettingUsage.ACB);
-    SettingInt ambientTime = new SettingInt("ambientTime", SettingCategory.Skin, EXPERT, 10, SettingStoreType.Global, SettingUsage.ACB);
+    SettingBool useDescriptiveCB_Buttons = new SettingBool("useDescriptiveCB_Buttons", Skin, EXPERT, false, Global, ACB);
 
-    SettingDouble MapViewFontFaktor = new SettingDouble("MapViewFontFaktor", SettingCategory.Map, NEVER, 1.0, SettingStoreType.Global, SettingUsage.ACB);
+    SettingBool useMipMap = new SettingBool("useMipMap", Skin, EXPERT, false, Global, ACB);
+    SettingBool dontUseAmbient = new SettingBool("dontUseAmbient", Skin, EXPERT, true, Global, ACB);
+    SettingInt ambientTime = new SettingInt("ambientTime", Skin, EXPERT, 10, Global, ACB);
 
-    SettingInt LongClickTime = new SettingInt("LongClicktime", SettingCategory.Misc, EXPERT, 600, SettingStoreType.Global, SettingUsage.ACB);
-    SettingsAudio GlobalVolume = new SettingsAudio("GlobalVolume", SettingCategory.Sounds, NORMAL, new Audio("data/sound/Approach.ogg", false, false, 1.0f), SettingStoreType.Global, SettingUsage.ACB);
+    SettingDouble MapViewFontFaktor = new SettingDouble("MapViewFontFaktor", Map, NEVER, 1.0, Global, ACB);
 
-    SettingFloat MapViewDPIFaktor = new SettingFloat("MapViewDPIFaktor", SettingCategory.Map, EXPERT, (float) Global.displayDensity, SettingStoreType.Global, SettingUsage.ACB);
+    SettingInt LongClickTime = new SettingInt("LongClicktime", Misc, EXPERT, 600, Global, ACB);
+    SettingsAudio GlobalVolume = new SettingsAudio("GlobalVolume", Sounds, NORMAL, new Audio("data/sound/Approach.ogg", false, false, 1.0f), Global, ACB);
 
-    SettingFolder ImageCacheFolder = new SettingFolder("ImageCacheFolder", SettingCategory.Folder, NEVER, Config_Core.mWorkPath + "/repository/cache", SettingStoreType.Local, SettingUsage.ACB, true);
+    SettingFloat MapViewDPIFaktor = new SettingFloat("MapViewDPIFaktor", Map, EXPERT, (float) displayDensity, Global, ACB);
 
-    SettingBool GestureOn = new SettingBool("GestureOn", SettingCategory.Misc, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
+    SettingFolder ImageCacheFolder = new SettingFolder("ImageCacheFolder", Folder, NEVER, Config_Core.mWorkPath + "/repository/cache", Local, ACB, true);
 
-    SettingColor LiveMapBackgroundColor = new SettingColor("LiveMapBackgroundColor", SettingCategory.LiveMap, NORMAL, new HSV_Color(0.8f, 0.8f, 1f, 1f), SettingStoreType.Global, SettingUsage.ACB);
+    SettingBool GestureOn = new SettingBool("GestureOn", Misc, EXPERT, false, Global, ACB);
 
-    SettingColor SolvedMysteryColor = new SettingColor("SolvedMysteryColor", SettingCategory.Skin, EXPERT, new HSV_Color(0.2f, 1f, 0.2f, 1f), SettingStoreType.Global, SettingUsage.ACB);
-    SettingBool SettingsShowExpert = new SettingBool("SettingsShowExpert", SettingCategory.Internal, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
-    SettingBool SettingsShowAll = new SettingBool("SettingsShowAll", SettingCategory.Internal, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
+    SettingColor LiveMapBackgroundColor = new SettingColor("LiveMapBackgroundColor", LiveMap, NORMAL, new HSV_Color(0.8f, 0.8f, 1f, 1f), Global, ACB);
 
-    SettingFile Sel_LanguagePath = new SettingFile("Sel_LanguagePath", SettingCategory.Folder, NEVER, "data/lang/en-GB/strings.ini", SettingStoreType.Platform, SettingUsage.ALL, "lan");
-    SettingFolder LanguagePath = new SettingFolder("LanguagePath", SettingCategory.Folder, NEVER, "data/lang", SettingStoreType.Global, SettingUsage.ALL, true);
+    SettingColor SolvedMysteryColor = new SettingColor("SolvedMysteryColor", Skin, EXPERT, new HSV_Color(0.2f, 1f, 0.2f, 1f), Global, ACB);
+    SettingBool SettingsShowExpert = new SettingBool("SettingsShowExpert", Internal, NEVER, false, Global, ACB);
+    SettingBool SettingsShowAll = new SettingBool("SettingsShowAll", Internal, NEVER, false, Global, ACB);
+
+    SettingFile Sel_LanguagePath = new SettingFile("Sel_LanguagePath", Folder, NEVER, "data/lang/en-GB/strings.ini", Platform, ALL, "lan");
+    SettingFolder LanguagePath = new SettingFolder("LanguagePath", Folder, NEVER, "data/lang", Global, ALL, true);
 
 }

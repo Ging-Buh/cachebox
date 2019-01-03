@@ -103,8 +103,9 @@ public class DesktopMain {
             }
         });
 
-        InitalConfig();
-        Config.settings.ReadFromDB();
+        // has been done by launcher
+        // InitalConfig();
+        // Config.settings.ReadFromDB();
 
         CB_RectF rec = new CB_RectF(0, 0, ui.Window.width, ui.Window.height);
         CB_UI = new GL(ui.Window.width, ui.Window.height, new MainViewInit(rec), new TabMainView(rec));
@@ -417,20 +418,11 @@ public class DesktopMain {
 
         new Config(workPath);
 
-        if (Config.settings != null && Config.settings.isLoaded())
-            return;
-
-        // Read Config
-
-        Config.Initialize(workPath, workPath + "/cachebox.config");
-
-        // hier muss die Config Db initialisiert werden
         try {
             Database.Settings = new DesktopDB(DatabaseType.Settings);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-
         Database.Settings.StartUp(Config.mWorkPath + "/User/Config.db3");
 
         try {
@@ -444,9 +436,11 @@ public class DesktopMain {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+
         if (!FileIO.createDirectory(Config.mWorkPath + "/User"))
             return;
         Database.FieldNotes.StartUp(Config.mWorkPath + "/User/FieldNotes.db3");
+
     }
 
     /**

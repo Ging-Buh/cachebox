@@ -26,7 +26,10 @@ public class Android_TextInput implements TextInputInterface {
             // AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.Dialog);
             MessageBox.Builder builder = new MessageBox.Builder(activity);
 
-            builder.setTitle(""); // todo setting a Title
+            if (editTextField.getName().startsWith("*"))
+                builder.setTitle(editTextField.getName().substring(1));
+            else
+                builder.setTitle("");
 
             // Set up the input
             final EditText input = new EditText(activity);
