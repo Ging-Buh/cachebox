@@ -55,7 +55,7 @@ public class Fonts {
         for (int i = 0x0400; i < 0x04ff + 1; i++) {
             cyril[i - 0x0400] = (char) i;
         }
-        return FreeTypeFontGenerator.DEFAULT_CHARS + String.copyValueOf(cyril) + "—–" + "ŐőŰű√€†„”“’‘☺čěřšťůž…";
+        return FreeTypeFontGenerator.DEFAULT_CHARS + String.copyValueOf(cyril) + "—–" + "ŐőŰű√€†„”“’‘☺čěřšťůž…" + "⇦⇧⇨⇩";
     }
 
     /**

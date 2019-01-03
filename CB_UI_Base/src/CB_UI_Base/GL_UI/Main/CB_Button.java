@@ -18,6 +18,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
+import CB_Utils.Config_Core;
 import CB_Utils.Math.Point;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -25,6 +26,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import static CB_UI_Base.GL_UI.Sprites.getSprite;
@@ -39,6 +41,13 @@ public class CB_Button extends Button {
     private final ArrayList<CB_ActionButton> mButtonActions;
     private CB_Action_ShowView aktActionView = null;
     private GestureHelp help;
+    private boolean isFiltered;
+    private boolean GestureIsOn = true;
+    // Auswertung der Finger-Gesten zum Schnellzugriff auf einige ButtonActions
+    private boolean isDragged = false;
+    private Point downPos = null;
+    private boolean useDescriptiveCB_Buttons;
+    private Image mButtonImage;
     private final OnClickListener onClickListener = new OnClickListener() {
         @Override
         public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -117,7 +126,6 @@ public class CB_Button extends Button {
             return true;
         }
     };
-
     private final OnClickListener longClickListener = new OnClickListener() {
         @Override
         public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
@@ -151,13 +159,6 @@ public class CB_Button extends Button {
             return true;
         }
     };
-    private boolean isFiltered;
-    private boolean GestureIsOn = true;
-    // Auswertung der Finger-Gesten zum Schnellzugriff auf einige ButtonActions
-    private boolean isDragged = false;
-    private Point downPos = null;
-    private boolean useDescriptiveCB_Buttons;
-    private Image mButtonImage;
 
     public CB_Button(CB_RectF rec, String Name) {
         super(rec, Name);
@@ -195,14 +196,13 @@ public class CB_Button extends Button {
             if (name != null) {
                 name = Translation.Get(name);
                 setText(name.substring(0, Math.min(5, name.length())), Fonts.getSmall(), null);
-            }
-            else
+            } else
                 setText("", Fonts.getSmall(), null);
         }
     }
 
     public void addAction(CB_ActionButton Action) {
-        if (useDescriptiveCB_Buttons){
+        if (useDescriptiveCB_Buttons) {
             if (mButtonImage == null) {
                 mButtonImage = new Image(this.ScaleCenter(0.6f), "mButtonImage", false);
                 mButtonImage.setClickable(false);
@@ -282,6 +282,23 @@ public class CB_Button extends Button {
             if (action == null)
                 continue;
             MenuItem mi = cm.addItem(action.getId(), action.getName(), action.getNameExtension());
+            // if (CB_UI_Base_Settings.GestureOn.getValue()) {            }
+            if (ba.getGestureDirection() != GestureDirection.None) {
+                switch (ba.getGestureDirection()) {
+                    case Up:
+                        mi.setTitle(mi.getTitle() + " (Wisch " + "Hoch" + ")");
+                        break;
+                    case Down:
+                        mi.setTitle(mi.getTitle() + " (Wisch " + "Runter" + ")");
+                        break;
+                    case Left:
+                        mi.setTitle(mi.getTitle() + " (Wisch " + "Links" + ")");
+                        break;
+                    case Right:
+                        mi.setTitle(mi.getTitle() + " (Wisch " + "Rechts" + ")");
+                        break;
+                }
+            }
             mi.setEnabled(action.getEnabled());
             mi.setCheckable(action.getIsCheckable());
             mi.setChecked(action.getIsChecked());
