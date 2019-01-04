@@ -305,7 +305,7 @@ public class DescriptionImageGrabber {
             if (!imageLoadError) {
                 Parameters args = new Parameters();
                 args.put("DescriptionImagesUpdated", descriptionImagesUpdated);
-                Database.Data.update("Caches", args, "Id = ?", new String[]{String.valueOf(id)});
+                Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(id)});
             }
             Log.debug(log, "GrabImagesSelectedByCache done");
         }
@@ -377,7 +377,7 @@ public class DescriptionImageGrabber {
                 if (!imageLoadError) {
                     Parameters args = new Parameters();
                     args.put("ImagesUpdated", additionalImagesUpdated);
-                    Database.Data.update("Caches", args, "Id = ?", new String[]{String.valueOf(id)});
+                    Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(id)});
                     // jetzt können noch alle "alten" Spoiler gelöscht werden.
                     // "alte" Spoiler sind die, die auf der SD vorhanden sind, aber nicht als Link über die API gemeldet wurden.
                     // Alle Spoiler in der Liste allSpoilers sind "alte"

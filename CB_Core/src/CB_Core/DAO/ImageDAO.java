@@ -40,9 +40,9 @@ public class ImageDAO {
         args.put("IsCacheImage", image.IsCacheImage);
         try {
             if (ignoreExisting) {
-                Database.Data.insertWithConflictIgnore("Images", args);
+                Database.Data.sql.insertWithConflictIgnore("Images", args);
             } else {
-                Database.Data.insertWithConflictReplace("Images", args);
+                Database.Data.sql.insertWithConflictReplace("Images", args);
             }
         } catch (Exception exc) {
             Log.err(log,"",exc);
@@ -56,7 +56,7 @@ public class ImageDAO {
     public ArrayList<ImageEntry> getImagesForCache(String GcCode) {
         ArrayList<ImageEntry> images = new ArrayList<ImageEntry>();
 
-        CoreCursor reader = Database.Data.rawQuery("select CacheId, GcCode, Name, Description, ImageUrl, IsCacheImage from Images where GcCode=?", new String[]{GcCode});
+        CoreCursor reader = Database.Data.sql.rawQuery("select CacheId, GcCode, Name, Description, ImageUrl, IsCacheImage from Images where GcCode=?", new String[]{GcCode});
         if (reader.getCount() > 0) {
             reader.moveToFirst();
             while (!reader.isAfterLast()) {
@@ -73,7 +73,7 @@ public class ImageDAO {
      * @param GcCode
      */
     public void deleteImagesForCache(String GcCode) {
-        Database.Data.execSQL("DELETE from Images where GcCode = '" + GcCode + "'");
+        Database.Data.sql.execSQL("DELETE from Images where GcCode = '" + GcCode + "'");
     }
 
     /**
@@ -83,7 +83,7 @@ public class ImageDAO {
     public ArrayList<ImageEntry> getDescriptionImagesForCache(String GcCode) {
         ArrayList<ImageEntry> images = new ArrayList<ImageEntry>();
 
-        CoreCursor reader = Database.Data.rawQuery("select CacheId, GcCode, Name, Description, ImageUrl, IsCacheImage from Images where GcCode=? and IsCacheImage=1", new String[]{GcCode});
+        CoreCursor reader = Database.Data.sql.rawQuery("select CacheId, GcCode, Name, Description, ImageUrl, IsCacheImage from Images where GcCode=? and IsCacheImage=1", new String[]{GcCode});
 
         if (reader == null)
             return images;
@@ -102,7 +102,7 @@ public class ImageDAO {
     public ArrayList<String> getImageURLsForCache(String GcCode) {
         ArrayList<String> images = new ArrayList<String>();
 
-        CoreCursor reader = Database.Data.rawQuery("select ImageUrl from Images where GcCode=?", new String[]{GcCode});
+        CoreCursor reader = Database.Data.sql.rawQuery("select ImageUrl from Images where GcCode=?", new String[]{GcCode});
 
         if (reader == null)
             return images;
@@ -119,7 +119,7 @@ public class ImageDAO {
     public int getImageCount(String whereClause) {
         int count = 0;
 
-        CoreCursor reader = Database.Data.rawQuery("select count(id) from Images where GcCode in (select GcCode from Caches " + ((whereClause.length() > 0) ? "where " + whereClause : whereClause) + ")", null);
+        CoreCursor reader = Database.Data.sql.rawQuery("select count(id) from Images where GcCode in (select GcCode from Caches " + ((whereClause.length() > 0) ? "where " + whereClause : whereClause) + ")", null);
 
         if (reader == null)
             return 0;

@@ -41,7 +41,7 @@ public class TrackableDAO {
     public void WriteToDatabase(Trackable trackable) {
         try {
             Log.info(log, "Write Trackable insert");
-            Database.FieldNotes.insert("Trackable", createArgs(trackable));
+            Database.FieldNotes.sql.insert("Trackable", createArgs(trackable));
             Log.info(log, "Write Trackable insert done");
         } catch (Exception exc) {
             Log.err(log, "Write Trackable error", exc);
@@ -53,7 +53,7 @@ public class TrackableDAO {
             Log.info(log, "Write Trackable createArgs");
             Parameters args = createArgs(trackable);
             Log.info(log, "Write Trackable update");
-            Database.FieldNotes.update("Trackable", args, "GcCode='" + trackable.getTBCode() + "'", null);
+            Database.FieldNotes.sql.update("Trackable", args, "GcCode='" + trackable.getTBCode() + "'", null);
         } catch (Exception exc) {
             Log.err(log, "Update Trackable error", exc);
         }
@@ -136,7 +136,7 @@ public class TrackableDAO {
     public Trackable getFromDbByGcCode(String GcCode) {
         String where = "GcCode = \"" + GcCode + "\"";
         String query = "select Id ,Archived ,GcCode ,CacheId ,CurrentGoal ,CurrentOwnerName ,DateCreated ,Description ,IconUrl ,ImageUrl ,Name ,OwnerName ,Url,TypeName, Home,TravelDistance   from Trackable WHERE " + where;
-        CoreCursor reader = Database.FieldNotes.rawQuery(query, null);
+        CoreCursor reader = Database.FieldNotes.sql.rawQuery(query, null);
 
         try {
             if (reader != null && reader.getCount() > 0) {

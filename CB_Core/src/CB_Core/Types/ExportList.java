@@ -35,7 +35,7 @@ public class ExportList extends ArrayList<ExportEntry> {
 
         CoreCursor reader = null;
         try {
-            reader = Database.Data.rawQuery(sql, null);
+            reader = Database.Data.sql.rawQuery(sql, null);
         } catch (Exception exc) {
             Log.err(log, "ExportList", "LoadExportList", exc);
         }

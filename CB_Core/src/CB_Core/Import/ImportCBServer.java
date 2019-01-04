@@ -46,7 +46,7 @@ public class ImportCBServer {
         ip.setJobMax("importCBServer", anzDownloadsTotal);
         int actDownload = 0;
 
-        Database.Data.beginTransaction();
+        Database.Data.sql.beginTransaction();
         try {
             for (ListItem item : cbServerExportList) {
                 if (!item.getDownload())
@@ -95,7 +95,7 @@ public class ImportCBServer {
                                 Parameters args = new Parameters();
                                 // orginal NoteChecksum in DB speichern
                                 args.put("Notes", cache.getTmpNote());
-                                Database.Data.update("Caches", args, "id=" + cache.Id, null);
+                                Database.Data.sql.update("Caches", args, "id=" + cache.Id, null);
 
                                 cache.setTmpNote(null);
                             }
@@ -103,7 +103,7 @@ public class ImportCBServer {
                                 cache.setSolverChecksum((int) SDBM_Hash.sdbm(cache.getTmpSolver()));
                                 Parameters args = new Parameters();
                                 args.put("Solver", cache.getTmpSolver());
-                                Database.Data.update("Caches", args, "id=" + cache.Id, null);
+                                Database.Data.sql.update("Caches", args, "id=" + cache.Id, null);
 
                                 cache.setTmpSolver(null);
                             }
@@ -169,9 +169,9 @@ public class ImportCBServer {
                     }
                 }
             }
-            Database.Data.setTransactionSuccessful();
+            Database.Data.sql.setTransactionSuccessful();
         } finally {
-            Database.Data.endTransaction();
+            Database.Data.sql.endTransaction();
         }
         long endTS = System.currentTimeMillis();
         System.out.println("Import Ende (" + (System.currentTimeMillis() - tmpTS) + ")");

@@ -163,13 +163,13 @@ public class FieldNoteEntry implements Serializable {
         args.put("TrackingNumber", TrackingNumber);
         args.put("directLog", isDirectLog);
         try {
-            Database.FieldNotes.insertWithConflictReplace("Fieldnotes", args);
+            Database.FieldNotes.sql.insertWithConflictReplace("Fieldnotes", args);
         } catch (Exception exc) {
             return;
         }
         // search FieldNote Id
         CoreCursor reader = Database.FieldNotes
-                .rawQuery("select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber, directLog from FieldNotes where GcCode='" + gcCode
+                .sql.rawQuery("select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber, directLog from FieldNotes where GcCode='" + gcCode
                         + "' and type=" + type.getGcLogTypeId(), null);
         reader.moveToFirst();
         while (!reader.isAfterLast()) {
@@ -204,7 +204,7 @@ public class FieldNoteEntry implements Serializable {
         args.put("TrackingNumber", TrackingNumber);
         args.put("directLog", isDirectLog);
         try {
-            long count = Database.FieldNotes.update("FieldNotes", args, "id=" + Id, null);
+            long count = Database.FieldNotes.sql.update("FieldNotes", args, "id=" + Id, null);
             if (count > 0)
                 return;
         } catch (Exception exc) {
@@ -214,7 +214,7 @@ public class FieldNoteEntry implements Serializable {
 
     public void DeleteFromDatabase() {
         try {
-            Database.FieldNotes.delete("FieldNotes", "id=" + Id, null);
+            Database.FieldNotes.sql.delete("FieldNotes", "id=" + Id, null);
         } catch (Exception exc) {
             return;
         }

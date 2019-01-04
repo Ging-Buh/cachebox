@@ -39,7 +39,7 @@ public class LogDAO {
         args.put("Timestamp", stimestamp);
         args.put("CacheId", logEntry.CacheId);
         try {
-            Database.Data.insertWithConflictReplace("Logs", args);
+            Database.Data.sql.insertWithConflictReplace("Logs", args);
         } catch (Exception exc) {
             Log.err(log, "Write Log", exc);
         }
@@ -80,7 +80,7 @@ public class LogDAO {
      */
     public void ClearOrphanedLogs() {
         String SQL = "DELETE  FROM  Logs WHERE  NOT EXISTS (SELECT * FROM Caches c WHERE  Logs.CacheId = c.Id)";
-        Database.Data.execSQL(SQL);
+        Database.Data.sql.execSQL(SQL);
     }
 
     /**
@@ -88,7 +88,7 @@ public class LogDAO {
      */
     public void deleteLogs(long cacheId) {
         String SQL = "DELETE  FROM  Logs WHERE Logs.CacheId = " + cacheId;
-        Database.Data.execSQL(SQL);
+        Database.Data.sql.execSQL(SQL);
     }
 
 }

@@ -1032,21 +1032,21 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
                         long startTime = System.currentTimeMillis();
 
-                        Database.Data.beginTransaction();
+                        Database.Data.sql.beginTransaction();
                         Database.Data.Query.clear();
                         try {
 
                             importer.importGpx(directoryPath, ip);
 
-                            Database.Data.setTransactionSuccessful();
+                            Database.Data.sql.setTransactionSuccessful();
                         } catch (Exception exc) {
                             exc.printStackTrace();
-                            Database.Data.endTransaction();
+                            Database.Data.sql.endTransaction();
                             cancelImport();
                             ip.ProgressChangeMsg("", "");
                             return;
                         }
-                        Database.Data.endTransaction();
+                        Database.Data.sql.endTransaction();
 
                         if (BreakawayImportThread.isCanceled()) {
                             cancelImport();
@@ -1088,16 +1088,16 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
                         long startTime = System.currentTimeMillis();
 
-                        Database.Data.beginTransaction();
+                        Database.Data.sql.beginTransaction();
                         try {
 
                             importCBServer.importCBServer(cbServerExportList, ip, true);
 
-                            Database.Data.setTransactionSuccessful();
+                            Database.Data.sql.setTransactionSuccessful();
                         } catch (Exception exc) {
                             exc.printStackTrace();
                         }
-                        Database.Data.endTransaction();
+                        Database.Data.sql.endTransaction();
 
                         if (BreakawayImportThread.isCanceled()) {
                             cancelImport();
@@ -1112,16 +1112,16 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
                     if (checkBoxGcVote.isChecked()) {
                         dis.setAnimationType(AnimationType.Download);
-                        Database.Data.beginTransaction();
+                        Database.Data.sql.beginTransaction();
                         try {
                             importer.importGcVote(FilterInstances.getLastFilter().getSqlWhere(Config.GcLogin.getValue()), ip);
 
-                            Database.Data.setTransactionSuccessful();
+                            Database.Data.sql.setTransactionSuccessful();
                         } catch (Exception exc) {
                             exc.printStackTrace();
                         }
                         dis.setAnimationType(AnimationType.Work);
-                        Database.Data.endTransaction();
+                        Database.Data.sql.endTransaction();
                         if (BreakawayImportThread.isCanceled()) {
                             cancelImport();
                             ip.ProgressChangeMsg("", "");
@@ -1163,7 +1163,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                     if (checkBoxCompactDB.isChecked()) {
                         ip.setJobMax("CompactDB", 1);
                         ip.ProgressChangeMsg("CompactDB", "");
-                        Database.Data.execSQL("vacuum");
+                        Database.Data.sql.execSQL("vacuum");
                         ip.ProgressInkrement("CompactDB", "", true);
                     }
 

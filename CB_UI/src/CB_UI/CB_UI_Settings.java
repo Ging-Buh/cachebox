@@ -16,6 +16,7 @@
 
 package CB_UI;
 
+import CB_UI_Base.Global;
 import CB_Utils.Config_Core;
 import CB_Utils.Settings.*;
 
@@ -148,6 +149,7 @@ public interface CB_UI_Settings {
     SettingInt MultiDBAutoStartTime = new SettingInt("MultiDBAutoStartTime", Internal, NEVER, 0, Global, ACB);
     SettingInt AppRaterlaunchCount = new SettingInt("AppRaterlaunchCount", Internal, NEVER, 0, Global, ACB);
     SettingString AppRaterFirstLunch = new SettingString("AppRaterFirstLunch", Internal, NEVER, "0", Global, ACB);
+    SettingString GSAKLastUsedDatabasePath = new SettingString("GSAKLastUsedDatabasePath", Internal, NEVER, "", Global, ACB);
 
     SettingBool dynamicZoom = new SettingBool("dynamicZoom", CarMode, NORMAL, true, Global, ACB);
     SettingInt dynamicZoomLevelMax = new SettingInt("dynamicZoomLevelMax", CarMode, NORMAL, 17, Global, ACB);

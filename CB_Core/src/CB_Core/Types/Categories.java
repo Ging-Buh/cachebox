@@ -51,14 +51,14 @@ public class Categories extends MoveableList<Category> {
         Parameters args = new Parameters();
         args.put("GPXFilename", filename);
         try {
-            Database.Data.insert("Category", args);
+            Database.Data.sql.insert("Category", args);
         } catch (Exception exc) {
             //Log.err(log, "CreateNewCategory", filename, exc);
         }
 
         long Category_ID = 0;
 
-        CoreCursor reader = Database.Data.rawQuery("Select max(ID) from Category", null);
+        CoreCursor reader = Database.Data.sql.rawQuery("Select max(ID) from Category", null);
         reader.moveToFirst();
         if (!reader.isAfterLast()) {
             Category_ID = reader.getLong(0);

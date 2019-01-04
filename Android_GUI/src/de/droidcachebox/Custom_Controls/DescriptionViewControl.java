@@ -164,7 +164,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                         newCache = geoCacheRelated.cache;
 
                         synchronized (Database.Data.Query) {
-                            Database.Data.beginTransaction();
+                            Database.Data.sql.beginTransaction();
 
                             Database.Data.Query.remove(aktCache);
                             Database.Data.Query.add(newCache);
@@ -198,8 +198,8 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu {
                             ImageDAO imageDAO = new ImageDAO();
                             for (ImageEntry image : geoCacheRelated.images) imageDAO.WriteToDatabase(image, false);
 
-                            Database.Data.setTransactionSuccessful();
-                            Database.Data.endTransaction();
+                            Database.Data.sql.setTransactionSuccessful();
+                            Database.Data.sql.endTransaction();
 
                             Database.Data.GPXFilenameUpdateCacheCount();
                         }

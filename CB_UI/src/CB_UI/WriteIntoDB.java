@@ -27,7 +27,7 @@ public class WriteIntoDB {
             waypointDAO = new WaypointDAO();
         }
 
-        Database.Data.beginTransaction();
+        Database.Data.sql.beginTransaction();
 
         for (GeoCacheRelated geoCacheRelated : geoCacheRelateds) {
 
@@ -189,8 +189,8 @@ public class WriteIntoDB {
 
         }
 
-        Database.Data.setTransactionSuccessful();
-        Database.Data.endTransaction();
+        Database.Data.sql.setTransactionSuccessful();
+        Database.Data.sql.endTransaction();
 
         Database.Data.GPXFilenameUpdateCacheCount();
 

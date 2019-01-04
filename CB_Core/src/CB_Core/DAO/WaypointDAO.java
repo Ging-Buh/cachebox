@@ -46,15 +46,15 @@ public class WaypointDAO {
         args.put("isStart", WP.IsStart);
 
         try {
-            long count = Database.Data.insert("Waypoint", args);
+            long count = Database.Data.sql.insert("Waypoint", args);
             if (count <= 0) {
-                Database.Data.update("Waypoint", args, "gccode=\"" + WP.getGcCode() + "\"", null);
+                Database.Data.sql.update("Waypoint", args, "gccode=\"" + WP.getGcCode() + "\"", null);
             }
             if (WP.IsUserWaypoint) {
                 // HasUserData nicht updaten wenn der Waypoint kein UserWaypoint ist!!!
                 args = new Parameters();
                 args.put("hasUserData", true);
-                Database.Data.update("Caches", args, "Id = ?", new String[]{String.valueOf(WP.CacheId)});
+                Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(WP.CacheId)});
             }
         } catch (Exception exc) {
             return;
@@ -87,7 +87,7 @@ public class WaypointDAO {
             args.put("title", WP.getTitle());
             args.put("isStart", WP.IsStart);
             try {
-                long count = Database.Data.update("Waypoint", args, "CacheId=" + WP.CacheId + " and GcCode=\"" + WP.getGcCode() + "\"", null);
+                long count = Database.Data.sql.update("Waypoint", args, "CacheId=" + WP.CacheId + " and GcCode=\"" + WP.getGcCode() + "\"", null);
                 if (count > 0)
                     result = true;
             } catch (Exception exc) {
@@ -100,7 +100,7 @@ public class WaypointDAO {
                 args = new Parameters();
                 args.put("hasUserData", true);
                 try {
-                    Database.Data.update("Caches", args, "Id = ?", new String[]{String.valueOf(WP.CacheId)});
+                    Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(WP.CacheId)});
                 } catch (Exception exc) {
                     return result;
                 }
@@ -186,11 +186,11 @@ public class WaypointDAO {
         args.put("isStart", WP.IsStart);
 
         try {
-            Database.Data.insertWithConflictReplace("Waypoint", args);
+            Database.Data.sql.insertWithConflictReplace("Waypoint", args);
 
             args = new Parameters();
             args.put("hasUserData", true);
-            Database.Data.update("Caches", args, "Id = ?", new String[]{String.valueOf(WP.CacheId)});
+            Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(WP.CacheId)});
         } catch (Exception exc) {
             return;
 
@@ -210,7 +210,7 @@ public class WaypointDAO {
                 Parameters args = new Parameters();
                 args.put("isStart", false);
                 try {
-                    long count = Database.Data.update("Waypoint", args, "CacheId=" + wp.CacheId + " and GcCode=\"" + wp.getGcCode() + "\"", null);
+                    long count = Database.Data.sql.update("Waypoint", args, "CacheId=" + wp.CacheId + " and GcCode=\"" + wp.getGcCode() + "\"", null);
 
                 } catch (Exception exc) {
 
@@ -224,7 +224,7 @@ public class WaypointDAO {
      */
     public void ClearOrphanedWaypoints() {
         String SQL = "DELETE  FROM  Waypoint WHERE  NOT EXISTS (SELECT * FROM Caches c WHERE  Waypoint.CacheId = c.Id)";
-        Database.Data.execSQL(SQL);
+        Database.Data.sql.execSQL(SQL);
     }
 
     /**
@@ -241,7 +241,7 @@ public class WaypointDAO {
         StringBuilder sqlState = new StringBuilder(Full ? SQL_WP_FULL : SQL_WP);
         sqlState.append("  where CacheId = ?");
 
-        CoreCursor reader = Database.Data.rawQuery(sqlState.toString(), new String[]{String.valueOf(CacheID)});
+        CoreCursor reader = Database.Data.sql.rawQuery(sqlState.toString(), new String[]{String.valueOf(CacheID)});
         reader.moveToFirst();
         while (!reader.isAfterLast()) {
             Waypoint wp = getWaypoint(reader, Full);

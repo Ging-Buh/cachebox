@@ -30,7 +30,7 @@ public class CoordinateEntity extends Entity {
     }
 
     private Coordinate LoadFromDB(String sql) {
-        CoreCursor reader = Database.Data.rawQuery(sql, null);
+        CoreCursor reader = Database.Data.sql.rawQuery(sql, null);
         try {
             reader.moveToFirst();
             while (!reader.isAfterLast()) {
@@ -96,7 +96,7 @@ public class CoordinateEntity extends Entity {
         WaypointDAO waypointDAO = new WaypointDAO();
         Waypoint dbWaypoint = null;
         // Suchen, ob dieser Waypoint bereits vorhanden ist.
-        CoreCursor reader = Database.Data.rawQuery(WaypointDAO.SQL_WP_FULL + " where GcCode = \"" + this.gcCode + "\"", null);
+        CoreCursor reader = Database.Data.sql.rawQuery(WaypointDAO.SQL_WP_FULL + " where GcCode = \"" + this.gcCode + "\"", null);
         try {
             reader.moveToFirst();
             if (reader.isAfterLast())

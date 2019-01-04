@@ -13,12 +13,12 @@ public class Replication {
             else
                 changeType = ChangeType.NotFound;
 
-            Database.Data.delete("Replication", "CacheId=" + String.valueOf(CacheId) + " and ChangeType=6 or CacheId=" + String.valueOf(CacheId) + " and ChangeType=7", null);
+            Database.Data.sql.delete("Replication", "CacheId=" + String.valueOf(CacheId) + " and ChangeType=6 or CacheId=" + String.valueOf(CacheId) + " and ChangeType=7", null);
 
             Parameters val = new Parameters();
             val.put("CacheId", CacheId);
             val.put("ChangeType", changeType.ordinal());
-            Database.Data.insert("Replication", val);
+            Database.Data.sql.insert("Replication", val);
         }
 
     }
@@ -38,7 +38,7 @@ public class Replication {
                     // a new entry and store the original CheckSum of the Solver
                     // Text
                     int dbCheckSum = -1;
-                    CoreCursor c = Database.Data.rawQuery("select SolverCheckSum from Replication where CacheId=? and ChangeType=?", new String[]{String.valueOf(CacheId), String.valueOf(ChangeType.SolverText.ordinal())});
+                    CoreCursor c = Database.Data.sql.rawQuery("select SolverCheckSum from Replication where CacheId=? and ChangeType=?", new String[]{String.valueOf(CacheId), String.valueOf(ChangeType.SolverText.ordinal())});
                     c.moveToFirst();
                     while (!c.isAfterLast()) {
                         dbCheckSum = c.getInt(0);
@@ -52,14 +52,14 @@ public class Replication {
                         val.put("CacheId", CacheId);
                         val.put("ChangeType", ChangeType.SolverText.ordinal());
                         val.put("SolverCheckSum", oldSolverCheckSum);
-                        Database.Data.insert("Replication", val);
+                        Database.Data.sql.insert("Replication", val);
                     } else {
                         // compare the stored CheckSum with the new
                         if (dbCheckSum == newSolverCheckSum) {
                             // the dbCheckSum is the same than the newCheckSum
                             // -> Solver text is the same than the original
                             // -> delete this entry!
-                            Database.Data.delete("Replication", "CacheId=? and ChangeType=?", new String[]{String.valueOf(CacheId), String.valueOf(ChangeType.SolverText.ordinal())});
+                            Database.Data.sql.delete("Replication", "CacheId=? and ChangeType=?", new String[]{String.valueOf(CacheId), String.valueOf(ChangeType.SolverText.ordinal())});
                         }
                     }
                 }
@@ -82,7 +82,7 @@ public class Replication {
                     // new entry and store the original CheckSum of the Note
                     // Text
                     int dbCheckSum = -1;
-                    CoreCursor c = Database.Data.rawQuery("select NotesCheckSum from Replication where CacheId=? and ChangeType=?", new String[]{String.valueOf(CacheId), String.valueOf(ChangeType.NotesText.ordinal())});
+                    CoreCursor c = Database.Data.sql.rawQuery("select NotesCheckSum from Replication where CacheId=? and ChangeType=?", new String[]{String.valueOf(CacheId), String.valueOf(ChangeType.NotesText.ordinal())});
                     c.moveToFirst();
                     while (!c.isAfterLast()) {
                         dbCheckSum = c.getInt(0);
@@ -96,14 +96,14 @@ public class Replication {
                         val.put("CacheId", CacheId);
                         val.put("ChangeType", ChangeType.NotesText.ordinal());
                         val.put("SolverCheckSum", oldNoteCheckSum);
-                        Database.Data.insert("Replication", val);
+                        Database.Data.sql.insert("Replication", val);
                     } else {
                         // compare the stored CheckSum with the new
                         if (dbCheckSum == newNoteCheckSum) {
                             // the dbCheckSum is the same than the newCheckSum
                             // -> Notes text is the same than the original
                             // -> delete this entry!
-                            Database.Data.delete("Replication", "CacheId=? and ChangeType=?", new String[]{String.valueOf(CacheId), String.valueOf(ChangeType.NotesText.ordinal())});
+                            Database.Data.sql.delete("Replication", "CacheId=? and ChangeType=?", new String[]{String.valueOf(CacheId), String.valueOf(ChangeType.NotesText.ordinal())});
                         }
                     }
                 }
@@ -136,7 +136,7 @@ public class Replication {
                 // When no entry for this Cache exists -> create a new entry and
                 // store the original CheckSum of the item
                 int dbCheckSum = -1;
-                CoreCursor c = Database.Data.rawQuery("select " + checkSumType + " from Replication where CacheId=? and ChangeType=? and WpGcCode=?", new String[]{String.valueOf(CacheId), String.valueOf(changeType.ordinal()), WpGcCode});
+                CoreCursor c = Database.Data.sql.rawQuery("select " + checkSumType + " from Replication where CacheId=? and ChangeType=? and WpGcCode=?", new String[]{String.valueOf(CacheId), String.valueOf(changeType.ordinal()), WpGcCode});
                 c.moveToFirst();
                 while (!c.isAfterLast()) {
                     dbCheckSum = c.getInt(0);
@@ -151,14 +151,14 @@ public class Replication {
                     val.put("ChangeType", changeType.ordinal());
                     val.put("WpCoordCheckSum", oldCheckSum);
                     val.put("WpGcCode", WpGcCode);
-                    Database.Data.insert("Replication", val);
+                    Database.Data.sql.insert("Replication", val);
                 } else {
                     // compare the stored CheckSum with the new
                     if (dbCheckSum == newCheckSum) {
                         // the dbCheckSum is the same than the newCheckSum ->
                         // value is the same than the original
                         // -> delete this entry!
-                        Database.Data.delete("Replication", "CacheId=? and ChangeType=?", new String[]{String.valueOf(CacheId), String.valueOf(changeType)});
+                        Database.Data.sql.delete("Replication", "CacheId=? and ChangeType=?", new String[]{String.valueOf(CacheId), String.valueOf(changeType)});
                     }
                 }
             }
@@ -173,12 +173,12 @@ public class Replication {
             else
                 changeType = ChangeType.NotAvailable;
 
-            Database.Data.delete("Replication", "CacheId=" + String.valueOf(CacheId) + " and ChangeType=10 or CacheId=" + String.valueOf(CacheId) + " and ChangeType=11", null);
+            Database.Data.sql.delete("Replication", "CacheId=" + String.valueOf(CacheId) + " and ChangeType=10 or CacheId=" + String.valueOf(CacheId) + " and ChangeType=11", null);
 
             Parameters val = new Parameters();
             val.put("CacheId", CacheId);
             val.put("ChangeType", changeType.ordinal());
-            Database.Data.insert("Replication", val);
+            Database.Data.sql.insert("Replication", val);
         }
 
     }
@@ -191,12 +191,12 @@ public class Replication {
             else
                 changeType = ChangeType.NotArchived;
 
-            Database.Data.delete("Replication", "CacheId=" + String.valueOf(CacheId) + " and ChangeType=8 or CacheId=" + String.valueOf(CacheId) + " and ChangeType=9", null);
+            Database.Data.sql.delete("Replication", "CacheId=" + String.valueOf(CacheId) + " and ChangeType=8 or CacheId=" + String.valueOf(CacheId) + " and ChangeType=9", null);
 
             Parameters val = new Parameters();
             val.put("CacheId", CacheId);
             val.put("ChangeType", changeType.ordinal());
-            Database.Data.insert("Replication", val);
+            Database.Data.sql.insert("Replication", val);
         }
 
     }
@@ -205,14 +205,14 @@ public class Replication {
         if (Database.Data.MasterDatabaseId > 0) {
             ChangeType changeType;
 
-            Database.Data.delete("Replication", "CacheId=" + String.valueOf(CacheId) + " and ChangeType=12", null);
+            Database.Data.sql.delete("Replication", "CacheId=" + String.valueOf(CacheId) + " and ChangeType=12", null);
 
             changeType = ChangeType.NumTravelbugs;
             Parameters val = new Parameters();
             val.put("CacheId", CacheId);
             val.put("ChangeType", changeType.ordinal());
             val.put("SolverCheckSum", numTravelbugs);
-            Database.Data.insert("Replication", val);
+            Database.Data.sql.insert("Replication", val);
         }
 
     }
@@ -221,13 +221,13 @@ public class Replication {
         if (Database.Data.MasterDatabaseId > 0) {
             ChangeType changeType = ChangeType.FavPoints;
 
-            Database.Data.delete("Replication", "CacheId=" + String.valueOf(CacheId) + " and ChangeType=" + changeType.ordinal(), null);
+            Database.Data.sql.delete("Replication", "CacheId=" + String.valueOf(CacheId) + " and ChangeType=" + changeType.ordinal(), null);
 
             Parameters val = new Parameters();
             val.put("CacheId", CacheId);
             val.put("ChangeType", changeType.ordinal());
             val.put("SolverCheckSum", numFavPoints); // todo ok? handle
-            Database.Data.insert("Replication", val);
+            Database.Data.sql.insert("Replication", val);
         }
 
     }

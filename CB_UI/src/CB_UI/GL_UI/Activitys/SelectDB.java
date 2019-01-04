@@ -131,7 +131,7 @@ public class SelectDB extends ActivityBase {
 
                     String database = Config.mWorkPath + "/" + NewDB_Name + ".db3";
                     Config.DatabaseName.setValue(NewDB_Name + ".db3");
-                    Database.Data.Close();
+                    Database.Data.sql.close();
                     Database.Data.StartUp(database);
 
                     // OwnRepository?

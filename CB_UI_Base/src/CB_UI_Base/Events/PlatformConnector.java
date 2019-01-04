@@ -17,6 +17,7 @@ package CB_UI_Base.Events;
 
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.ViewID;
+import de.cb.sqlite.Database_Core;
 
 import java.util.ArrayList;
 
@@ -299,10 +300,6 @@ public class PlatformConnector {
         void switchtoGpsDefault();
     }
 
-    // ----------------------------------------
-
-    // ------ setCallUrl ------
-
     public interface KeyEventListener {
         boolean onKeyPressed(Character character);
 
@@ -312,7 +309,7 @@ public class PlatformConnector {
     }
 
     public interface IgetFileReturnListener {
-        void returnFile(String Path);
+        void returnFile(String PathAndName);
     }
 
     public interface IgetFileListener {

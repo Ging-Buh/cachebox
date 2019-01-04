@@ -573,7 +573,7 @@ public class SearchDialog extends PopUp_Base {
 
                 if (geoCacheRelateds.size() > 0) {
 
-                    Database.Data.beginTransaction();
+                    Database.Data.sql.beginTransaction();
 
                     CacheDAO cacheDAO = new CacheDAO();
                     LogDAO logDAO = new LogDAO();
@@ -615,8 +615,8 @@ public class SearchDialog extends PopUp_Base {
                         }
                     }
 
-                    Database.Data.setTransactionSuccessful();
-                    Database.Data.endTransaction();
+                    Database.Data.sql.setTransactionSuccessful();
+                    Database.Data.sql.endTransaction();
 
                     Database.Data.GPXFilenameUpdateCacheCount();
 

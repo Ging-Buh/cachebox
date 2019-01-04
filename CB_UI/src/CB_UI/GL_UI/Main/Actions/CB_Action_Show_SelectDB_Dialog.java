@@ -82,7 +82,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_Action {
             @Override
             public void run() {
                 Database.Data.Query.clear();
-                Database.Data.Close();
+                Database.Data.sql.close();
                 Database.Data.StartUp(Config.mWorkPath + "/" + Config.DatabaseName.getValue());
 
                 Config.settings.ReadFromDB();

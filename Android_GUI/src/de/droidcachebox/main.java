@@ -984,12 +984,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
                     Config.AcceptChanges();
 
-                    Database.Data.Close();
-                    Database.FieldNotes.Close();
+                    Database.Data.sql.close();
+                    Database.FieldNotes.sql.close();
 
                     Sprites.destroyCache();
 
-                    Database.Settings.Close();
+                    Database.Settings.sql.close();
 
                 }
 
@@ -1004,9 +1004,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 if (aktTabView != null)
                     aktTabView.OnHide();
 
-                Database.Settings.Close();
-                Database.Data.Close();
-                Database.FieldNotes.Close();
+                Database.Settings.sql.close();
+                Database.Data.sql.close();
+                Database.FieldNotes.sql.close();
 
                 super.onDestroy();
             }
@@ -2168,13 +2168,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                                 Importer importer = new Importer();
                                 ImporterProgress ip = new ImporterProgress();
 
-                                Database.Data.beginTransaction();
+                                Database.Data.sql.beginTransaction();
                                 try {
                                     importer.importGpx(ExtSearch_GpxPath, ip);
                                 } catch (Exception ignored) {
                                 }
-                                Database.Data.setTransactionSuccessful();
-                                Database.Data.endTransaction();
+                                Database.Data.sql.setTransactionSuccessful();
+                                Database.Data.sql.endTransaction();
 
                                 wd.close();
                                 CacheListChangedEventList.Call();

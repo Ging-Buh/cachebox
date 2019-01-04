@@ -297,7 +297,7 @@ public class Importer {
         String sql = "select Id, Description, Name, GcCode, Url, ImagesUpdated, DescriptionImagesUpdated from Caches";
         if (where.length() > 0)
             sql += " where " + where;
-        CoreCursor reader = Database.Data.rawQuery(sql, null);
+        CoreCursor reader = Database.Data.sql.rawQuery(sql, null);
 
         int cnt = -1;
         int numCaches = reader.getCount();

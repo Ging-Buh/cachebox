@@ -4,13 +4,15 @@ import CB_Utils.Log.Log;
 
 import java.util.HashMap;
 
-public abstract class Database_Core {
+
+public abstract class Database_Core{
     private static final String log = "Database_Core";
     public long DatabaseId = 0; // for Database replication with WinCachebox
     public long MasterDatabaseId = 0;
     protected String databasePath;
     protected boolean newDB = false;
     protected int latestDatabaseChange = 0;
+    public SQLiteInterface sql;
 
     public Database_Core() {
     }
@@ -23,10 +25,6 @@ public abstract class Database_Core {
         return databasePath;
     }
 
-    public abstract void Initialize();
-
-    public abstract void Reset();
-
     public boolean StartUp(String databasePath) {
         try {
             Log.debug(log, "DB Startup : " + databasePath);
@@ -37,7 +35,10 @@ public abstract class Database_Core {
 
         this.databasePath = databasePath;
 
-        Initialize();
+        if (!sql.open(databasePath)) {
+            sql.create(databasePath);
+            newDB = true;
+        }
 
         int databaseSchemeVersion = GetDatabaseSchemeVersion();
         if (databaseSchemeVersion < latestDatabaseChange) {
@@ -55,7 +56,7 @@ public abstract class Database_Core {
         int result = -1;
         CoreCursor c = null;
         try {
-            c = rawQuery("select Value from Config where [Key] like ?", new String[]{"DatabaseSchemeVersionWin"});
+            c = sql.rawQuery("select Value from Config where [Key] like ?", new String[]{"DatabaseSchemeVersionWin"});
         } catch (Exception exc) {
             return -1;
         }
@@ -79,41 +80,41 @@ public abstract class Database_Core {
     private void SetDatabaseSchemeVersion() {
         Parameters val = new Parameters();
         val.put("Value", latestDatabaseChange);
-        long anz = update("Config", val, "[Key] like 'DatabaseSchemeVersionWin'", null);
+        long anz = sql.update("Config", val, "[Key] like 'DatabaseSchemeVersionWin'", null);
         if (anz <= 0) {
             // Update not possible because Key does not exist
             val.put("Key", "DatabaseSchemeVersionWin");
-            insert("Config", val);
+            sql.insert("Config", val);
         }
         // for Compatibility with WinCB
         val.put("Value", latestDatabaseChange);
-        anz = update("Config", val, "[Key] like 'DatabaseSchemeVersion'", null);
+        anz = sql.update("Config", val, "[Key] like 'DatabaseSchemeVersion'", null);
         if (anz <= 0) {
             // Update not possible because Key does not exist
             val.put("Key", "DatabaseSchemeVersion");
-            insert("Config", val);
+            sql.insert("Config", val);
         }
     }
 
     public void WriteConfigString(String key, String value) {
         Parameters val = new Parameters();
         val.put("Value", value);
-        long anz = update("Config", val, "[Key] like '" + key + "'", null);
+        long anz = sql.update("Config", val, "[Key] like '" + key + "'", null);
         if (anz <= 0) {
             // Update not possible because Key does not exist
             val.put("Key", key);
-            insert("Config", val);
+            sql.insert("Config", val);
         }
     }
 
     public void WriteConfigLongString(String key, String value) {
         Parameters val = new Parameters();
         val.put("LongString", value);
-        long anz = update("Config", val, "[Key] like '" + key + "'", null);
+        long anz = sql.update("Config", val, "[Key] like '" + key + "'", null);
         if (anz <= 0) {
             // Update not possible because Key does not exist
             val.put("Key", key);
-            insert("Config", val);
+            sql.insert("Config", val);
         }
     }
 
@@ -122,7 +123,7 @@ public abstract class Database_Core {
         CoreCursor c = null;
         boolean found = false;
         try {
-            c = rawQuery("select Value from Config where [Key] like ?", new String[]{key});
+            c = sql.rawQuery("select Value from Config where [Key] like ?", new String[]{key});
         } catch (Exception exc) {
             throw new Exception("not in DB");
         }
@@ -150,7 +151,7 @@ public abstract class Database_Core {
         CoreCursor c = null;
         boolean found = false;
         try {
-            c = rawQuery("select LongString from Config where [Key] like ?", new String[]{key});
+            c = sql.rawQuery("select LongString from Config where [Key] like ?", new String[]{key});
         } catch (Exception exc) {
             throw new Exception("not in DB");
         }
@@ -184,29 +185,6 @@ public abstract class Database_Core {
             return 0;
         }
     }
-
-    // DB Funktionen
-    public abstract CoreCursor rawQuery(String sql, String[] args);
-
-    public abstract void execSQL(String sql);
-
-    public abstract long update(String tablename, Parameters val, String whereClause, String[] whereArgs);
-
-    public abstract long insert(String tablename, Parameters val);
-
-    public abstract long delete(String tablename, String whereClause, String[] whereArgs);
-
-    public abstract void beginTransaction();
-
-    public abstract void setTransactionSuccessful();
-
-    public abstract void endTransaction();
-
-    public abstract long insertWithConflictReplace(String tablename, Parameters val);
-
-    public abstract long insertWithConflictIgnore(String tablename, Parameters val);
-
-    public abstract void Close();
 
     public abstract int getCacheCountInDB(String filename);
 

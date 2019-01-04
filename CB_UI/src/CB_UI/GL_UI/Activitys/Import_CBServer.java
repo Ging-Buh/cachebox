@@ -384,7 +384,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
         if ((answer != null) && (answer instanceof RpcAnswer_ExportChangesToServer)) {
             // Export ohne Fehler -> Replicationseinträge entfernen
             String sql = "delete from Replication";
-            Database.Data.execSQL(sql);
+            Database.Data.sql.execSQL(sql);
             // Liste neu laden
             exportList.loadExportList();
             lvExport.setBaseAdapter(new CustomAdapterExportCBServer());
@@ -397,7 +397,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
     private Waypoint readWaypoint(String wpGcCode) {
         Waypoint result = null;
-        CoreCursor reader = Database.Data.rawQuery(WaypointDAO.SQL_WP_FULL + " where GcCode = ?", new String[]{wpGcCode});
+        CoreCursor reader = Database.Data.sql.rawQuery(WaypointDAO.SQL_WP_FULL + " where GcCode = ?", new String[]{wpGcCode});
         reader.moveToFirst();
         while (!reader.isAfterLast()) {
             WaypointDAO waypointDAO = new WaypointDAO();

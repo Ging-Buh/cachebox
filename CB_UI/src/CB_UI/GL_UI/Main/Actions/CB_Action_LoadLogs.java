@@ -75,7 +75,7 @@ public class CB_Action_LoadLogs extends CB_Action {
                         GL.that.Toast(LastAPIError);
                     }
                     if (logList.size() > 0) {
-                        Database.Data.beginTransaction();
+                        Database.Data.sql.beginTransaction();
 
                         Iterator<LogEntry> iterator = logList.iterator();
                         LogDAO dao = new LogDAO();
@@ -92,8 +92,8 @@ public class CB_Action_LoadLogs extends CB_Action {
                             }
                         } while (iterator.hasNext() && !doCancelThread);
 
-                        Database.Data.setTransactionSuccessful();
-                        Database.Data.endTransaction();
+                        Database.Data.sql.setTransactionSuccessful();
+                        Database.Data.sql.endTransaction();
 
                         if (LogView.that != null) {
                             LogView.that.resetInitial();

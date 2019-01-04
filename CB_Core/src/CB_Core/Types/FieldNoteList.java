@@ -134,7 +134,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry> {
 
             CoreCursor reader = null;
             try {
-                reader = Database.FieldNotes.rawQuery(sql, null);
+                reader = Database.FieldNotes.sql.rawQuery(sql, null);
             } catch (Exception exc) {
                 Log.err(log, "FieldNoteList", "LoadFieldNotes", exc);
             }

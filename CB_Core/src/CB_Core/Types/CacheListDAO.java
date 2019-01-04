@@ -90,7 +90,7 @@ public class CacheListDAO {
             sql += " where IsStart=\"true\" or Type=" + CacheTypes.Final.ordinal(); // StartWaypoint or CacheTypes.Final
         }
         sql += " order by CacheId";
-        CoreCursor reader = Database.Data.rawQuery(sql, null);
+        CoreCursor reader = Database.Data.sql.rawQuery(sql, null);
         if (reader == null)
             return cacheList;
 
@@ -130,7 +130,7 @@ public class CacheListDAO {
             }
 
             sql += " from Caches c " + join + " " + ((where.length() > 0) ? "where " + where : where);
-            reader = Database.Data.rawQuery(sql, null);
+            reader = Database.Data.sql.rawQuery(sql, null);
 
         } catch (Exception e) {
             Log.err(log, "CacheList.LoadCaches()", "reader = Database.Data.myDB.rawQuery(....", e);
@@ -211,7 +211,7 @@ public class CacheListDAO {
     public long deleteArchived(String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
         try {
             delCacheImages(getGcCodeList("Archived=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
-            long ret = Database.Data.delete("Caches", "Archived=1", null);
+            long ret = Database.Data.sql.delete("Caches", "Archived=1", null);
             Database.Data.GPXFilenameUpdateCacheCount(); // CoreSettingsForward.Categories will be set
             return ret;
         } catch (Exception e) {
@@ -230,7 +230,7 @@ public class CacheListDAO {
     public long deleteFinds(String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
         try {
             delCacheImages(getGcCodeList("Found=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
-            long ret = Database.Data.delete("Caches", "Found=1", null);
+            long ret = Database.Data.sql.delete("Caches", "Found=1", null);
             Database.Data.GPXFilenameUpdateCacheCount(); // CoreSettingsForward.Categories will be set
             return ret;
         } catch (Exception e) {
@@ -250,7 +250,7 @@ public class CacheListDAO {
     public long deleteFiltered(String Where, String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal) {
         try {
             delCacheImages(getGcCodeList(Where), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
-            long ret = Database.Data.delete("Caches", Where, null);
+            long ret = Database.Data.sql.delete("Caches", Where, null);
             Database.Data.GPXFilenameUpdateCacheCount(); // CoreSettingsForward.Categories will be set
             return ret;
         } catch (Exception e) {

@@ -70,12 +70,12 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
     public boolean WriteToDB() {
         // Write into DB
         SettingsDAO dao = createSettingsDAO();
-        getSettingsDB().beginTransaction();
+        getSettingsDB().sql.beginTransaction();
         Database_Core Data = getDataDB();
 
         try {
             if (Data != null)
-                Data.beginTransaction();
+                Data.sql.beginTransaction();
         } catch (Exception ex) {
             // do not change Data now!
             Data = null;
@@ -107,14 +107,14 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>> {
 
             }
             if (Data != null)
-                Data.setTransactionSuccessful();
-            getSettingsDB().setTransactionSuccessful();
+                Data.sql.setTransactionSuccessful();
+            getSettingsDB().sql.setTransactionSuccessful();
 
             return needRestart;
         } finally {
-            getSettingsDB().endTransaction();
+            getSettingsDB().sql.endTransaction();
             if (Data != null)
-                Data.endTransaction();
+                Data.sql.endTransaction();
         }
 
     }

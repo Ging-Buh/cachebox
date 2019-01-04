@@ -4,26 +4,29 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
-import CB_UI_Base.GL_UI.Controls.EditTextField;
-import CB_UI_Base.GL_UI.Controls.Label;
+import CB_Utils.fileProvider.File;
+import CB_Utils.fileProvider.FileFactory;
 
 public class Import_GSAK extends ActivityBase {
 
-    private Label lblSelectDB;
-    private EditTextField edtSelectDB;
+    private String mPath;
+    private String mDatabaseName;
 
     public Import_GSAK() {
         super("Import_GSAK");
-        // todo or last used
-        PlatformConnector.getFile(Config.mWorkPath + "/User", "*.db3", Translation.Get("GSAkTitleSelectDB"), Translation.Get("GSAKButtonSelectDB"), new PlatformConnector.IgetFileReturnListener() {
-            @Override
-            public void returnFile(String Path) {
-                if (Path != null) {
-
-                }
-            }
+        mPath = Config.GSAKLastUsedDatabasePath.getValue();
+        if (mPath.length() == 0) {
+            mPath = Config.mWorkPath + "/User";
+        }
+        PlatformConnector.getFile(mPath, "*.db3", Translation.Get("GSAkTitleSelectDB"), Translation.Get("GSAKButtonSelectDB"), PathAndName -> {
+            File file = FileFactory.createFile(PathAndName);
+            mPath = file.getParent();
+            mDatabaseName = file.getName();
+            Config.GSAKLastUsedDatabasePath.setValue(mPath);
+            Config.AcceptChanges();
         });
-        edtSelectDB = new EditTextField(this, "*" + Translation.Get(""));
+        if (mPath.length() > 0) {
+        }
     }
 
 }

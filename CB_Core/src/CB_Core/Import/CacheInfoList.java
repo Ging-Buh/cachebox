@@ -47,7 +47,7 @@ public class CacheInfoList {
     public static void IndexDB() {
         mCacheInfoList = new HashMap<String, CacheInfo>();
 
-        CoreCursor reader = Database.Data.rawQuery("select GcCode, Id, ListingCheckSum, ImagesUpdated, DescriptionImagesUpdated, ListingChanged, Found, CorrectedCoordinates, Latitude, Longitude, GpxFilename_Id, Favorit from Caches", null);
+        CoreCursor reader = Database.Data.sql.rawQuery("select GcCode, Id, ListingCheckSum, ImagesUpdated, DescriptionImagesUpdated, ListingChanged, Found, CorrectedCoordinates, Latitude, Longitude, GpxFilename_Id, Favorit from Caches", null);
 
         reader.moveToFirst();
 
@@ -164,10 +164,6 @@ public class CacheInfoList {
     /**
      * Fügt die CacheInfo in der Liste mit dem Infos des übergebenen Caches zusammen und ändert gegebenenfalls die Changed Attribute neu!
      *
-     * @param cache
-     * @param DescriptionImageFolder      Config.settings.DescriptionImageFolder.getValue()
-     * @param DescriptionImageFolderLocal Config.settings.DescriptionImageFolderLocal.getValue()
-     * @throws IOException
      */
     public static void mergeCacheInfo(Cache cache) throws IOException {
         String gcCode = cache.getGcCode();
@@ -282,7 +278,7 @@ public class CacheInfoList {
             args.put("Found", info.Found ? 1 : 0);
 
             try {
-                Database.Data.update("Caches", args, "Id = ?", new String[]{String.valueOf(info.id)});
+                Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(info.id)});
             } catch (Exception exc) {
                 Log.err(log, "CacheInfoList.writeListToDB()", "", exc);
 

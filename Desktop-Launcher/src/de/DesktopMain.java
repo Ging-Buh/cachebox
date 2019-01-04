@@ -415,32 +415,14 @@ public class DesktopMain {
         String workPath = base + "/cachebox";
         workPath = "C:/Daten/_WCB";
         // not yet initialised Log.debug(log, "workPath=" + workPath);
-
         new Config(workPath);
-
-        try {
-            Database.Settings = new DesktopDB(DatabaseType.Settings);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        Database.Settings.StartUp(Config.mWorkPath + "/User/Config.db3");
-
-        try {
-            Database.Data = new DesktopDB(DatabaseType.CacheBox);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            Database.FieldNotes = new DesktopDB(DatabaseType.FieldNotes);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
         if (!FileIO.createDirectory(Config.mWorkPath + "/User"))
             return;
+        Database.Settings = new DesktopDB(DatabaseType.Settings);
+        Database.Settings.StartUp(Config.mWorkPath + "/User/Config.db3");
+        Database.Data = new DesktopDB(DatabaseType.CacheBox);
+        Database.FieldNotes = new DesktopDB(DatabaseType.FieldNotes);
         Database.FieldNotes.StartUp(Config.mWorkPath + "/User/FieldNotes.db3");
-
     }
 
     /**

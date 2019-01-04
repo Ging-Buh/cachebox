@@ -48,7 +48,7 @@ public class DeleteSelectedCache {
         }
         // Cache
         Log.debug(log, "Delete Cache " + GlobalCore.getSelectedCache().getGcCode());
-        Database.Data.delete("Caches", "GcCode='" + GlobalCore.getSelectedCache().getGcCode() + "'", null);
+        Database.Data.sql.delete("Caches", "GcCode='" + GlobalCore.getSelectedCache().getGcCode() + "'", null);
         // Logs
         Log.debug(log, "Delete Logs");
         LogDAO logdao = new LogDAO();

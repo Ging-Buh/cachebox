@@ -99,7 +99,7 @@ public class CacheDAO {
             return true;
         cache.detail = new CacheDetail();
 
-        CoreCursor reader = Database.Data.rawQuery(SQL_GET_DETAIL_FROM_ID, new String[]{String.valueOf(cache.Id)});
+        CoreCursor reader = Database.Data.sql.rawQuery(SQL_GET_DETAIL_FROM_ID, new String[]{String.valueOf(cache.Id)});
 
         try {
             if (reader != null && reader.getCount() > 0) {
@@ -241,7 +241,7 @@ public class CacheDAO {
 
         }
         try {
-            Database.Data.insert("Caches", args);
+            Database.Data.sql.insert("Caches", args);
 
         } catch (Exception exc) {
             Log.err(log, "Write Cache", "", exc);
@@ -253,7 +253,7 @@ public class CacheDAO {
         Parameters args = new Parameters();
         args.put("found", cache.isFound());
         try {
-            Database.Data.update("Caches", args, "Id = ?", new String[]{String.valueOf(cache.Id)});
+            Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(cache.Id)});
             Replication.FoundChanged(cache.Id, cache.isFound());
         } catch (Exception exc) {
             Log.err(log, "Write Cache Found", "", exc);
@@ -325,7 +325,7 @@ public class CacheDAO {
         args.put("TourName", cache.getTourName());
         args.put("FavPoints", cache.favPoints);
         try {
-            long ret = Database.Data.update("Caches", args, "Id = ?", new String[]{String.valueOf(cache.Id)});
+            long ret = Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(cache.Id)});
             return ret > 0;
         } catch (Exception exc) {
             Log.err(log, "Update Cache", "", exc);
@@ -334,7 +334,7 @@ public class CacheDAO {
     }
 
     public Cache getFromDbByCacheId(long CacheID) {
-        CoreCursor reader = Database.Data.rawQuery(SQL_GET_CACHE + SQL_BY_ID, new String[]{String.valueOf(CacheID)});
+        CoreCursor reader = Database.Data.sql.rawQuery(SQL_GET_CACHE + SQL_BY_ID, new String[]{String.valueOf(CacheID)});
 
         try {
             if (reader != null && reader.getCount() > 0) {
@@ -363,7 +363,7 @@ public class CacheDAO {
     {
         String where = SQL_GET_CACHE + (withDetail ? ", " + SQL_DETAILS : "") + SQL_BY_GC_CODE;
 
-        CoreCursor reader = Database.Data.rawQuery(where, new String[]{GcCode});
+        CoreCursor reader = Database.Data.sql.rawQuery(where, new String[]{GcCode});
 
         try {
             if (reader != null && reader.getCount() > 0) {
@@ -388,7 +388,7 @@ public class CacheDAO {
 
     public Boolean cacheExists(long CacheID) {
 
-        CoreCursor reader = Database.Data.rawQuery(SQL_EXIST_CACHE, new String[]{String.valueOf(CacheID)});
+        CoreCursor reader = Database.Data.sql.rawQuery(SQL_EXIST_CACHE, new String[]{String.valueOf(CacheID)});
 
         boolean exists = (reader.getCount() > 0);
 
@@ -441,7 +441,7 @@ public class CacheDAO {
             args.put("FavPoints",writeTmp.favPoints);
 
             try {
-                Database.Data.update("Caches", args, "Id = ?", new String[]{String.valueOf(writeTmp.Id)});
+                Database.Data.sql.update("Caches", args, "Id = ?", new String[]{String.valueOf(writeTmp.Id)});
             } catch (Exception exc) {
                 Log.err(log, "Update Cache", "", exc);
 
@@ -495,7 +495,7 @@ public class CacheDAO {
 
         ArrayList<String> GcCodes = new ArrayList<String>();
 
-        CoreCursor reader = Database.Data.rawQuery("select GcCode from Caches where Type<>4 and (ImagesUpdated=0 or DescriptionImagesUpdated=0)", null);
+        CoreCursor reader = Database.Data.sql.rawQuery("select GcCode from Caches where Type<>4 and (ImagesUpdated=0 or DescriptionImagesUpdated=0)", null);
 
         if (reader.getCount() > 0) {
             reader.moveToFirst();
@@ -510,7 +510,7 @@ public class CacheDAO {
     }
 
     public Boolean loadBooleanValue(String gcCode, String key) {
-        CoreCursor reader = Database.Data.rawQuery("select " + key + " from Caches where GcCode = \"" + gcCode + "\"", null);
+        CoreCursor reader = Database.Data.sql.rawQuery("select " + key + " from Caches where GcCode = \"" + gcCode + "\"", null);
         try {
             reader.moveToFirst();
             while (!reader.isAfterLast()) {
