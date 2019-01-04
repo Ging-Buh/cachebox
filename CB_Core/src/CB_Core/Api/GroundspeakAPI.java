@@ -779,12 +779,24 @@ public class GroundspeakAPI {
 
     public static String fetchFriends() {
         if (!isAccessTokenInvalid()) {
+            int skip = 0;
+            int take = 50;
             try {
                 String friends = "";
-                JSONArray jFriends = getNetz().get(getUrl(1, "friends?fields=username")).ensureSuccess().asJsonArray().getBody();
-                for (int ii = 0; ii < jFriends.length(); ii++) {
-                    friends = friends + ((JSONObject) jFriends.get(ii)).optString("username", "") + ",";
+                boolean ready = false;
+                do {
+                    JSONArray jFriends = getNetz().get(getUrl(1, "friends"))
+                            .param("fields", "username")
+                            .param("skip", skip)
+                            .param("take", take)
+                            .ensureSuccess().asJsonArray().getBody();
+                    for (int ii = 0; ii < jFriends.length(); ii++) {
+                        friends = friends + ((JSONObject) jFriends.get(ii)).optString("username", "") + ",";
+                    }
+                    skip = skip + take;
+                    if (jFriends.length() < take) ready = true;
                 }
+                while (!ready);
                 return friends.substring(0, friends.length() - 1);
             } catch (Exception ex) {
                 retry(ex);

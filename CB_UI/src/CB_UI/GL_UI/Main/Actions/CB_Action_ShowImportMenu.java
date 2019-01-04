@@ -43,6 +43,20 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
+    public static final int MI_IMPORT_CBS = 189;
+    public static final int MI_IMPORT_GPX = 191;
+    public static final int MI_IMPORT_GCV = 192;
+    public static final int MI_IMPORT_GS_PQ = 193;
+    private static final int MI_CHK_STATE_API = 63;
+    private static final int MI_IMPORT = 62;
+    private static final int MI_IMPORT_GS_API_POSITION = 194;
+    private static final int MI_IMPORT_GS_API_SEARCH = 195;
+    private static final int MI_EXPORT_CBS = 190;
+    private static final int MI_EXPORT_RUN = 196;
+    private static final int MI_MAP_DOWNOAD = 199;
+    private static final int MI_GetFriends = 211;
+    private static final int MI_IMPORT_GSAK = 7;
+
 
     int actExportedCount = 0;
     private ProgressDialog pD;
@@ -95,7 +109,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
             @Override
             public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button) {
                 switch (((MenuItem) v).getMenuItemId()) {
-                    case MenuID.MI_CHK_STATE_API:
+                    case MI_CHK_STATE_API:
                         GL.that.postAsync(new Runnable() {
                             @Override
                             public void run() {
@@ -125,31 +139,31 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
                             }
                         });
                         return true;
-                    case MenuID.MI_IMPORT_GS_PQ:
-                        GL.that.postAsync(() -> new Import(MenuID.MI_IMPORT_GS_PQ).show());
-                        return true;
-                    case MenuID.MI_IMPORT_GS_API_POSITION:
-                        new SearchOverPosition().show();
-                        return true;
-                    case MenuID.MI_IMPORT_GS_API_SEARCH:
-                        SearchOverNameOwnerGcCode.ShowInstanz();
-                        return true;
-                    case MenuID.MI_IMPORT_GPX:
-                        new Import(MenuID.MI_IMPORT_GPX).show();
-                        return true;
-                    case MenuID.MI_EXPORT_CBS:
-                        new Import_CBServer().show();
-                        return true;
-                    case MenuID.MI_IMPORT_GCV:
-                        new Import(MenuID.MI_IMPORT_GCV).show();
-                        return true;
-                    case MenuID.MI_IMPORT:
+                    case MI_IMPORT:
                         GL.that.postAsync(() -> new Import().show());
                         return true;
-                    case MenuID.MI_MAP_DOWNOAD:
+                    case MI_IMPORT_GS_API_POSITION:
+                        new SearchOverPosition().show();
+                        return true;
+                    case MI_IMPORT_GS_API_SEARCH:
+                        SearchOverNameOwnerGcCode.ShowInstanz();
+                        return true;
+                    case MI_IMPORT_GCV:
+                        new Import(MI_IMPORT_GCV).show();
+                        return true;
+                    case MI_IMPORT_GS_PQ:
+                        GL.that.postAsync(() -> new Import(MI_IMPORT_GS_PQ).show());
+                        return true;
+                    case MI_IMPORT_GPX:
+                        new Import(MI_IMPORT_GPX).show();
+                        return true;
+                    case MI_EXPORT_CBS:
+                        new Import_CBServer().show();
+                        return true;
+                    case MI_MAP_DOWNOAD:
                         MapDownload.getInstance().show();
                         return true;
-                    case MenuID.MI_EXPORT_RUN:
+                    case MI_EXPORT_RUN:
                         StringInputBox.Show(WrapType.SINGLELINE, Translation.Get("enterFileName"), ((MenuItem) v).getTitle(), FileIO.GetFileName(Config.gpxExportFileName.getValue()), new OnMsgBoxClickListener() {
                             @Override
                             public boolean onClick(int which, Object data) {
@@ -161,26 +175,31 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
                             }
                         });
                         return true;
-                    case MenuID.AID_GetFriends:
+                    case MI_GetFriends:
                         TabMainView.actionGetFriends.getFriends();
+                        return true;
+                    case MI_IMPORT_GSAK:
+                        new Import_GSAK().show();
+                        GL.that.closeActivity();
                         return true;
                 }
                 return true;
             }
         });
-        icm.addItem(MenuID.MI_CHK_STATE_API, "chkState"); // , Sprites.getSprite(IconName.dayGcLiveIcon.name())
-        icm.addItem(MenuID.MI_IMPORT, "moreImport");
-        icm.addItem(MenuID.MI_IMPORT_GS_API_POSITION, "importCachesOverPosition"); // "import"
-        icm.addItem(MenuID.MI_IMPORT_GS_API_SEARCH, "API_IMPORT_NAME_OWNER_CODE");
-        icm.addItem(MenuID.MI_IMPORT_GCV, "GCVoteRatings");
+        icm.addItem(MI_CHK_STATE_API, "chkState"); // , Sprites.getSprite(IconName.dayGcLiveIcon.name())
+        icm.addItem(MI_IMPORT, "moreImport");
+        icm.addItem(MI_IMPORT_GS_API_POSITION, "importCachesOverPosition"); // "import"
+        icm.addItem(MI_IMPORT_GS_API_SEARCH, "API_IMPORT_NAME_OWNER_CODE");
+        icm.addItem(MI_IMPORT_GCV, "GCVoteRatings");
         // icm.addItem(MenuID.MI_IMPORT_GS_PQ, "API_PocketQuery");
         // icm.addItem(MenuID.MI_IMPORT_GPX, "GPX_IMPORT");
-        icm.addItem(MenuID.AID_GetFriends, "Friends");
+        icm.addItem(MI_GetFriends, "Friends");
+        // icm.addItem(MI_IMPORT_GSAK, "GSAKMenuImport");
         icm.addDivider();
-        icm.addItem(MenuID.MI_MAP_DOWNOAD, "MapDownload");
+        icm.addItem(MI_MAP_DOWNOAD, "MapDownload");
         icm.addDivider();
-        icm.addItem(MenuID.MI_EXPORT_RUN, "GPX_EXPORT");
-        if (Config.CBS_IP.getValue().length() > 0) icm.addItem(MenuID.MI_EXPORT_CBS, "ToCBServer");
+        icm.addItem(MI_EXPORT_RUN, "GPX_EXPORT");
+        if (Config.CBS_IP.getValue().length() > 0) icm.addItem(MI_EXPORT_CBS, "ToCBServer");
         return icm;
     }
 

@@ -51,7 +51,6 @@ import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -70,6 +69,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import java.io.IOException;
 import java.util.*;
+
+import static CB_UI.GL_UI.Main.Actions.CB_Action_ShowImportMenu.*;
 
 public class Import extends ActivityBase implements ProgressChangedEvent {
     private static final String log = "Import";
@@ -124,7 +125,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
     private final OnCheckChangedListener checkImportPQfromGC_CheckStateChanged = new OnCheckChangedListener() {
         @Override
         public void onCheckedChanged(ChkBox view, boolean isChecked) {
-            if ((importType == MenuID.MI_IMPORT_GS_PQ) || (checkImportPQfromGC.isChecked())) {
+            if ((importType == MI_IMPORT_GS_PQ) || (checkImportPQfromGC.isChecked())) {
                 checkBoxImportGPX.setChecked(true);
                 checkBoxImportGPX.setEnabled(false);
                 PQ_ListCollapseBox.expand();
@@ -169,7 +170,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
         }
         IMAGE_LINE_ACTIVE = true;
         switch (importType) {
-            case MenuID.MI_IMPORT_GS_PQ:
+            case MI_IMPORT_GS_PQ:
                 PQ_LINE_ACTIVE = true;
                 CBS_LINE_ACTIVE = false;
                 GPX_LINE_ACTIVE = false;
@@ -177,7 +178,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                 LOG_LINE_ACTIVE = true;
                 DB_LINE_ACTIVE = true;
                 break;
-            case MenuID.MI_IMPORT_CBS:
+            case MI_IMPORT_CBS:
                 PQ_LINE_ACTIVE = false;
                 CBS_LINE_ACTIVE = true;
                 GPX_LINE_ACTIVE = false;
@@ -185,7 +186,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                 LOG_LINE_ACTIVE = true;
                 DB_LINE_ACTIVE = true;
                 break;
-            case MenuID.MI_IMPORT_GPX:
+            case MI_IMPORT_GPX:
                 PQ_LINE_ACTIVE = false;
                 CBS_LINE_ACTIVE = false;
                 GPX_LINE_ACTIVE = true;
@@ -193,7 +194,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                 LOG_LINE_ACTIVE = true;
                 DB_LINE_ACTIVE = true;
                 break;
-            case MenuID.MI_IMPORT_GCV:
+            case MI_IMPORT_GCV:
                 PQ_LINE_ACTIVE = false;
                 CBS_LINE_ACTIVE = false;
                 GPX_LINE_ACTIVE = false;
@@ -234,20 +235,20 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
         Layout();
 
-        if (importType == MenuID.MI_IMPORT_GS_PQ) {
+        if (importType == MI_IMPORT_GS_PQ) {
             checkImportPQfromGC.setChecked(true);
             checkImportPQfromGC.setVisible(true);
             refreshPqList();
             PQ_ListCollapseBox.expand();
-        } else if (importType == MenuID.MI_IMPORT_CBS) {
+        } else if (importType == MI_IMPORT_CBS) {
             checkImportFromCBServer.setChecked(true);
             checkImportFromCBServer.setVisible(true);
             refreshCBServerList();
             CBServerCollapseBox.expand();
-        } else if (importType == MenuID.MI_IMPORT_GPX) {
+        } else if (importType == MI_IMPORT_GPX) {
             checkBoxImportGPX.setChecked(true);
             checkBoxImportGPX.setVisible(true);
-        } else if (importType == MenuID.MI_IMPORT_GCV) {
+        } else if (importType == MI_IMPORT_GCV) {
             checkBoxGcVote.setChecked(true);
             checkBoxGcVote.setVisible(true);
         }

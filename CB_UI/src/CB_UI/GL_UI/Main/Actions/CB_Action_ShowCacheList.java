@@ -101,7 +101,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                         SearchDialog.that.showNotCloseAutomaticly();
 
                         return true;
-                    case MenuID.MI_IMPORT:
+                    case MenuID.AID_SHOW_IMPORT_MENU:
                         TabMainView.actionShowImportMenu.Execute();
                         return true;
                     case MenuID.MI_SYNC:
@@ -119,7 +119,8 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
                             }
                         }
                         return true;
-                    case MenuID.MI_CHK_STATE_API:
+                    case MenuID.MI_CB_Action_chkState:
+                        // todo remove the following code | is duplicate in CB_Action_ShowImportMenu
                         GL.that.postAsync(new Runnable() {
                             @Override
                             public void run() {
@@ -177,7 +178,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView {
         cm.addItem(MenuID.MI_FilterSet, "Filter", Sprites.getSprite(IconName.filter.name()));
         cm.addItem(MenuID.MI_RESET_FILTER, "MI_RESET_FILTER", Sprites.getSprite(IconName.filter.name()));
         cm.addItem(MenuID.MI_SEARCH_LIST, "Search", Sprites.getSprite(IconName.lupe.name()));
-        cm.addItem(MenuID.MI_IMPORT, "importExport", Sprites.getSprite(IconName.importIcon.name()));
+        cm.addItem(MenuID.AID_SHOW_IMPORT_MENU, "importExport", Sprites.getSprite(IconName.importIcon.name()));
         if (SyncActivity.RELEASED)
             cm.addItem(MenuID.MI_SYNC, "sync", Sprites.getSprite(IconName.importIcon.name()));
         cm.addItem(MenuID.MI_MANAGE_DB, "manage", "  (" + DBName + ")", Sprites.getSprite(IconName.manageDb.name()));

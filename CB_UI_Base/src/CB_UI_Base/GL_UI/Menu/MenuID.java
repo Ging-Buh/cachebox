@@ -67,8 +67,7 @@ public class MenuID {
     public static final int MI_RESORT = 59;
     public static final int MI_FilterSet = 60;
     public static final int MI_SEARCH_LIST = 61;
-    public static final int MI_IMPORT = 62;
-    public static final int MI_CHK_STATE_API = 63;
+    public static final int MI_CB_Action_chkState = 63;
 
     // CB_Action_RecTrack
     public static final int MI_START = 64;
@@ -99,7 +98,7 @@ public class MenuID {
 
     public static final int MI_SHOW_ALL_WAYPOINTS = 81;
 
-    // Action ID�s
+    // Action IDs
 
     public static final int AID_TEST_VIEW = -1;
 
@@ -134,6 +133,7 @@ public class MenuID {
     public static final int AID_SHOW_PARKING_DIALOG = 140;
     public static final int AID_SHOW_DELETE_DIALOG = 141;
     public static final int AID_GetFriends = 211;
+
 
     // Compass
     public static final int MI_COMPASS_SHOW_MAP = 142;
@@ -184,18 +184,10 @@ public class MenuID {
     public static final int MI_RpcGetExportList = 187;
 
     public static final int AID_SHOW_IMPORT_MENU = 188;
-    public static final int MI_IMPORT_CBS = 189;
-    public static final int MI_EXPORT_CBS = 190;
-    public static final int MI_IMPORT_GPX = 191;
-    public static final int MI_IMPORT_GCV = 192;
-    public static final int MI_IMPORT_GS_PQ = 193;
-    public static final int MI_IMPORT_GS_API_POSITION = 194;
-    public static final int MI_IMPORT_GS_API_SEARCH = 195;
 
-    // Export
-    public static final int MI_EXPORT_RUN = 196;
-
+    // CB_Action_ShowMap
     public static final int MI_MAP_DOWNOAD = 199;
+
     public static final int AID_LOADLOGS = 200;
     public static final int MI_LOAD_FRIENDS_LOGS = 201;
     public static final int MI_FILTERLOGS = 202;

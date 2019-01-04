@@ -77,7 +77,7 @@ public class AndroidDB extends Database {
 
     @Override
     public CoreCursor rawQuery(String sql, String[] args) {
-        if (LogLevel.isLogLevel(LogLevel.DEBUG)) {
+        if (LogLevel.isLogLevel(LogLevel.TRACE)) {
             StringBuilder sb = new StringBuilder("RAW_QUERY :" + sql + " ARGs= ");
             if (args != null) {
                 for (String arg : args)

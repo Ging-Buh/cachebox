@@ -745,7 +745,7 @@ public abstract class Database extends Database_Core {
     }
 
     public enum DatabaseType {
-        CacheBox, FieldNotes, Settings
+        CacheBox, FieldNotes, Settings, Other
     }
 
 }
