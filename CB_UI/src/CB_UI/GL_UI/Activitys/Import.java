@@ -797,6 +797,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
             @Override
             public void run() {
                 PqList = GroundspeakAPI.fetchPocketQueryList();
+                Collections.sort(PqList, (p1, p2) -> p1.Name.compareTo(p2.Name));
                 // todo do not ignore APIError
                 lvPQs.setBaseAdapter(new PqListAdapter());
                 lvPQs.notifyDataSetChanged();

@@ -103,6 +103,8 @@ import com.badlogic.gdx.backends.android.AndroidInput;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import de.cb.sqlite.AndroidDB;
+import de.cb.sqlite.SQLiteClass;
+import de.cb.sqlite.SQLiteInterface;
 import de.droidcachebox.CB_Texturepacker.Android_Packer;
 import de.droidcachebox.Components.CacheNameView;
 import de.droidcachebox.Custom_Controls.Mic_On_Flash;
@@ -1992,6 +1994,18 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
                 });
             }
 
+        });
+
+        PlatformConnector.setConnection(new IConnection() {
+            @Override
+            public SQLiteInterface getSQLInstance() {
+                return new SQLiteClass(mainActivity);
+            }
+
+            @Override
+            public void freeSQLInstance(SQLiteInterface sqlInstance) {
+                sqlInstance = null;
+            }
         });
 
         // set AndroidContentClipboard

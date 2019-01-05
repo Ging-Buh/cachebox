@@ -70,7 +70,7 @@ public abstract class Database extends Database_Core {
         }
     }
 
-    public static boolean WaypointExists(String gcCode) {
+    private boolean WaypointExists(String gcCode) {
         CoreCursor c = Database.Data.sql.rawQuery("select GcCode from Waypoint where GcCode=@gccode", new String[]{gcCode});
         {
             c.moveToFirst();
@@ -89,7 +89,7 @@ public abstract class Database extends Database_Core {
         }
     }
 
-    public static String CreateFreeGcCode(String cacheGcCode) throws Exception {
+    public String CreateFreeGcCode(String cacheGcCode) throws Exception {
         String suffix = cacheGcCode.substring(2);
         String firstCharCandidates = "CBXADEFGHIJKLMNOPQRSTUVWYZ0123456789";
         String secondCharCandidates = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -97,7 +97,7 @@ public abstract class Database extends Database_Core {
         for (int i = 0; i < firstCharCandidates.length(); i++)
             for (int j = 0; j < secondCharCandidates.length(); j++) {
                 String gcCode = firstCharCandidates.substring(i, i + 1) + secondCharCandidates.substring(j, j + 1) + suffix;
-                if (!WaypointExists(gcCode))
+                if (!Data.WaypointExists(gcCode))
                     return gcCode;
             }
         throw new Exception("Alle GcCodes sind bereits vergeben! Dies sollte eigentlich nie vorkommen!");

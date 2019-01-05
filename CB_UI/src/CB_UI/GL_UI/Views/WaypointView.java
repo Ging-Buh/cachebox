@@ -300,7 +300,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
         createNewWaypoint = true;
         String newGcCode = "";
         try {
-            newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
+            newGcCode = Database.Data.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
         } catch (Exception e) {
             return;
         }
@@ -441,7 +441,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
                 String newGcCode = "";
                 try {
-                    newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
+                    newGcCode = Database.Data.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
                 } catch (Exception e) {
 
                     return;
@@ -476,7 +476,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
                 String newGcCode = "";
                 try {
-                    newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
+                    newGcCode = Database.Data.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
                 } catch (Exception e) {
 
                     return;

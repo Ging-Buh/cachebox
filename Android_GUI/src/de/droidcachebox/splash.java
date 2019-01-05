@@ -253,6 +253,7 @@ public class splash extends Activity {
         androidSetting = this.getSharedPreferences(Global.PREFS_NAME, 0);
 
         workPath = androidSetting.getString("WorkPath", Environment.getDataDirectory() + "/cachebox");
+        boolean askAgain = androidSetting.getBoolean("AskAgain", true);
         showSandbox = androidSetting.getBoolean("showSandbox", false);
 
         Global.initTheme(this);
@@ -297,203 +298,38 @@ public class splash extends Activity {
 
 
         // no saved workPath found -> search sd-cards and if more than 1 is found give the user the possibility to select one
+        if (askAgain) {
 
-        String externalSd = getExternalSdPath("/CacheBox");
+            String externalSd = getExternalSdPath("/CacheBox");
 
-        boolean hasExtSd;
-        final String externalSd2 = externalSd;
+            boolean hasExtSd;
+            final String externalSd2 = externalSd;
 
-        if (externalSd != null) {
-            hasExtSd = (externalSd.length() > 0) && (!externalSd.equalsIgnoreCase(workPath));
-        } else {
-            hasExtSd = false;
-        }
-
-        try {
-            final Dialog dialog = new Dialog(splashActivity) {
-                @Override
-                public boolean onKeyDown(int keyCode, KeyEvent event) {
-                    if (keyCode == KeyEvent.KEYCODE_BACK) {
-                        splash.this.finish();
-                    }
-                    return super.onKeyDown(keyCode, event);
-                }
-            };
-
-            dialog.setContentView(R.layout.sdselectdialog);
-
-            TextView title = (TextView) dialog.findViewById(R.id.select_sd_title);
-            title.setText(Translation.Get("selectWorkSpace") + "\n\n");
-
-            Button buttonI = (Button) dialog.findViewById(R.id.button1);
-            buttonI.setText("Internal SD\n\n" + workPath);
-            buttonI.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // close select dialog
-                    dialog.dismiss();
-
-                    // show please wait dialog
-                    showPleaseWaitDialog();
-
-                    // use internal SD -> nothing to change
-                    Thread thread = new Thread() {
-                        @Override
-                        public void run() {
-
-                            // boolean useTabletLayout = rbTabletLayout.isChecked();
-                            saveWorkPath();
-                            dialog.dismiss();
-                            startInitial();
-                            Log.info(log, "Initial for use internal SD");
-                        }
-                    };
-                    thread.start();
-                }
-            });
-
-            Button buttonE = (Button) dialog.findViewById(R.id.button2);
-            final boolean isSandbox = externalSd == null ? false : externalSd.contains("Android/data/de.droidcachebox");
-            if (!hasExtSd) {
-                buttonE.setVisibility(Button.INVISIBLE);
+            if (externalSd != null) {
+                hasExtSd = (externalSd.length() > 0) && (!externalSd.equalsIgnoreCase(workPath));
             } else {
-                String extSdText = isSandbox ? "External SD SandBox\n\n" : "External SD\n\n";
-                buttonE.setText(extSdText + externalSd);
+                hasExtSd = false;
             }
-            buttonE.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // show KitKat Massage?
 
-                    if (isSandbox && !showSandbox) {
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(splashActivity);
-
-                        // set title
-                        alertDialogBuilder.setTitle("KitKat Sandbox");
-
-                        // set dialog message
-                        alertDialogBuilder.setMessage(Translation.Get("Desc_Sandbox")).setCancelable(false).setPositiveButton(Translation.Get("yes"), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
-                                // if this button is clicked, run Sandbox Path
-
-                                showSandbox = true;
-                                // Config.AcceptChanges();
-
-                                // close select dialog
-                                dialog.dismiss();
-
-                                // show please wait dialog
-                                showPleaseWaitDialog();
-
-                                // use external SD -> change workPath
-                                Thread thread = new Thread() {
-                                    @Override
-                                    public void run() {
-                                        workPath = externalSd2;
-
-                                        // boolean useTabletLayout = rbTabletLayout.isChecked();
-                                        saveWorkPath();
-                                        startInitial();
-                                        Log.info(log, "Initial for " + workPath);
-                                    }
-                                };
-                                thread.start();
-                            }
-                        }).setNegativeButton(Translation.Get("no"), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
-                                // if this button is clicked, just close
-                                // the dialog box and do nothing
-                                dialog.cancel();
-                            }
-                        });
-
-                        // create alert dialog
-                        AlertDialog alertDialog = alertDialogBuilder.create();
-
-                        // show it
-                        alertDialog.show();
-                    } else {
-                        // close select dialog
-                        dialog.dismiss();
-
-                        // show please wait dialog
-                        showPleaseWaitDialog();
-
-                        // use external SD -> change workPath
-                        Thread thread = new Thread() {
-                            @Override
-                            public void run() {
-                                workPath = externalSd2;
-                                saveWorkPath();
-                                startInitial();
-                                Log.info(log, "Initial for " + workPath);
-                            }
-                        };
-                        thread.start();
-                    }
-                }
-            });
-
-            LinearLayout ll = (LinearLayout) dialog.findViewById(R.id.scrollViewLinearLayout);
-
-            // add all Buttons for created Workspaces
-
-            AdditionalWorkPathArray = getAdditionalWorkPathArray();
-
-            for (final String _AdditionalWorkPath : AdditionalWorkPathArray) {
-                final String Name = FileIO.GetFileNameWithoutExtension(_AdditionalWorkPath);
-                if (!FileFactory.createFile(_AdditionalWorkPath).exists()) {
-                    deleteWorkPath(_AdditionalWorkPath);
-                    continue;
-                }
-                if (!FileIO.canWrite(_AdditionalWorkPath)) {
-                    deleteWorkPath(_AdditionalWorkPath);
-                    continue;
-                }
-
-                Button buttonW = new Button(splashActivity);
-                buttonW.setText(Name + "\n\n" + _AdditionalWorkPath);
-                buttonW.setOnLongClickListener(new OnLongClickListener() {
+            try {
+                final Dialog dialog = new Dialog(splashActivity) {
                     @Override
-                    public boolean onLongClick(View v) {
-
-                        // setting the MessageBox then the UI_sizes are not initial in this moment
-                        Resources res = splash.this.getResources();
-                        float scale = res.getDisplayMetrics().density;
-                        float calcBase = 533.333f * scale;
-
-                        FrameLayout frame = (FrameLayout) findViewById(R.id.frameLayout1);
-                        int width = frame.getMeasuredWidth();
-                        int height = frame.getMeasuredHeight();
-
-                        MessageBox.Builder.WindowWidth = width;
-                        MessageBox.Builder.WindowHeight = height;
-                        MessageBox.Builder.textSize = (calcBase / res.getDimensionPixelSize(R.dimen.BtnTextSize)) * scale;
-                        MessageBox.Builder.ButtonHeight = (int) (50 * scale);
-
-                        // Ask before delete
-                        msg = (MessageBox) MessageBox.Show(Translation.Get("shuredeleteWorkspace", Name), Translation.Get("deleteWorkspace"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (which == MessageBox.BUTTON_POSITIVE) {
-                                    // Delete this Workpath only from Settings don't delete any File
-                                    deleteWorkPath(_AdditionalWorkPath);
-                                }
-                                // Start again to exclude the old Folder
-                                msg.dismiss();
-                                onStart();
-                            }
-
-                        });
-
-                        dialog.dismiss();
-                        return true;
+                    public boolean onKeyDown(int keyCode, KeyEvent event) {
+                        if (keyCode == KeyEvent.KEYCODE_BACK) {
+                            splash.this.finish();
+                        }
+                        return super.onKeyDown(keyCode, event);
                     }
-                });
-                buttonW.setOnClickListener(new OnClickListener() {
+                };
+
+                dialog.setContentView(R.layout.sdselectdialog);
+
+                TextView title = (TextView) dialog.findViewById(R.id.select_sd_title);
+                title.setText(Translation.Get("selectWorkSpace") + "\n\n");
+
+                Button buttonI = (Button) dialog.findViewById(R.id.button1);
+                buttonI.setText("Internal SD\n\n" + workPath);
+                buttonI.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         // close select dialog
@@ -502,60 +338,230 @@ public class splash extends Activity {
                         // show please wait dialog
                         showPleaseWaitDialog();
 
-                        // use external SD -> change workPath
+                        // use internal SD -> nothing to change
                         Thread thread = new Thread() {
                             @Override
                             public void run() {
-                                workPath = _AdditionalWorkPath;
 
                                 // boolean useTabletLayout = rbTabletLayout.isChecked();
                                 saveWorkPath();
+                                dialog.dismiss();
                                 startInitial();
-                                Log.info(log, "Initial for " + workPath);
+                                Log.info(log, "Initial for use internal SD");
                             }
                         };
                         thread.start();
+                    }
+                });
+
+                Button buttonE = (Button) dialog.findViewById(R.id.button2);
+                final boolean isSandbox = externalSd == null ? false : externalSd.contains("Android/data/de.droidcachebox");
+                if (!hasExtSd) {
+                    buttonE.setVisibility(Button.INVISIBLE);
+                } else {
+                    String extSdText = isSandbox ? "External SD SandBox\n\n" : "External SD\n\n";
+                    buttonE.setText(extSdText + externalSd);
+                }
+                buttonE.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // show KitKat Massage?
+
+                        if (isSandbox && !showSandbox) {
+                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(splashActivity);
+
+                            // set title
+                            alertDialogBuilder.setTitle("KitKat Sandbox");
+
+                            // set dialog message
+                            alertDialogBuilder.setMessage(Translation.Get("Desc_Sandbox")).setCancelable(false).setPositiveButton(Translation.Get("yes"), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // if this button is clicked, run Sandbox Path
+
+                                    showSandbox = true;
+                                    // Config.AcceptChanges();
+
+                                    // close select dialog
+                                    dialog.dismiss();
+
+                                    // show please wait dialog
+                                    showPleaseWaitDialog();
+
+                                    // use external SD -> change workPath
+                                    Thread thread = new Thread() {
+                                        @Override
+                                        public void run() {
+                                            workPath = externalSd2;
+
+                                            // boolean useTabletLayout = rbTabletLayout.isChecked();
+                                            saveWorkPath();
+                                            startInitial();
+                                            Log.info(log, "Initial for " + workPath);
+                                        }
+                                    };
+                                    thread.start();
+                                }
+                            }).setNegativeButton(Translation.Get("no"), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // if this button is clicked, just close
+                                    // the dialog box and do nothing
+                                    dialog.cancel();
+                                }
+                            });
+
+                            // create alert dialog
+                            AlertDialog alertDialog = alertDialogBuilder.create();
+
+                            // show it
+                            alertDialog.show();
+                        } else {
+                            // close select dialog
+                            dialog.dismiss();
+
+                            // show please wait dialog
+                            showPleaseWaitDialog();
+
+                            // use external SD -> change workPath
+                            Thread thread = new Thread() {
+                                @Override
+                                public void run() {
+                                    workPath = externalSd2;
+                                    saveWorkPath();
+                                    startInitial();
+                                    Log.info(log, "Initial for " + workPath);
+                                }
+                            };
+                            thread.start();
+                        }
+                    }
+                });
+
+                LinearLayout ll = (LinearLayout) dialog.findViewById(R.id.scrollViewLinearLayout);
+
+                // add all Buttons for created Workspaces
+
+                AdditionalWorkPathArray = getAdditionalWorkPathArray();
+
+                for (final String _AdditionalWorkPath : AdditionalWorkPathArray) {
+                    final String Name = FileIO.GetFileNameWithoutExtension(_AdditionalWorkPath);
+                    if (!FileFactory.createFile(_AdditionalWorkPath).exists()) {
+                        deleteWorkPath(_AdditionalWorkPath);
+                        continue;
+                    }
+                    if (!FileIO.canWrite(_AdditionalWorkPath)) {
+                        deleteWorkPath(_AdditionalWorkPath);
+                        continue;
+                    }
+
+                    Button buttonW = new Button(splashActivity);
+                    buttonW.setText(Name + "\n\n" + _AdditionalWorkPath);
+                    buttonW.setOnLongClickListener(new OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+
+                            // setting the MessageBox then the UI_sizes are not initial in this moment
+                            Resources res = splash.this.getResources();
+                            float scale = res.getDisplayMetrics().density;
+                            float calcBase = 533.333f * scale;
+
+                            FrameLayout frame = (FrameLayout) findViewById(R.id.frameLayout1);
+                            int width = frame.getMeasuredWidth();
+                            int height = frame.getMeasuredHeight();
+
+                            MessageBox.Builder.WindowWidth = width;
+                            MessageBox.Builder.WindowHeight = height;
+                            MessageBox.Builder.textSize = (calcBase / res.getDimensionPixelSize(R.dimen.BtnTextSize)) * scale;
+                            MessageBox.Builder.ButtonHeight = (int) (50 * scale);
+
+                            // Ask before delete
+                            msg = (MessageBox) MessageBox.Show(Translation.Get("shuredeleteWorkspace", Name), Translation.Get("deleteWorkspace"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (which == MessageBox.BUTTON_POSITIVE) {
+                                        // Delete this Workpath only from Settings don't delete any File
+                                        deleteWorkPath(_AdditionalWorkPath);
+                                    }
+                                    // Start again to exclude the old Folder
+                                    msg.dismiss();
+                                    onStart();
+                                }
+
+                            });
+
+                            dialog.dismiss();
+                            return true;
+                        }
+                    });
+                    buttonW.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // close select dialog
+                            dialog.dismiss();
+
+                            // show please wait dialog
+                            showPleaseWaitDialog();
+
+                            // use external SD -> change workPath
+                            Thread thread = new Thread() {
+                                @Override
+                                public void run() {
+                                    workPath = _AdditionalWorkPath;
+
+                                    // boolean useTabletLayout = rbTabletLayout.isChecked();
+                                    saveWorkPath();
+                                    startInitial();
+                                    Log.info(log, "Initial for " + workPath);
+                                }
+                            };
+                            thread.start();
+
+                        }
+                    });
+
+                    ll.addView(buttonW);
+                }
+
+                Button buttonC = (Button) dialog.findViewById(R.id.buttonCreateWorkspace);
+                buttonC.setText(Translation.Get("createWorkSpace"));
+                buttonC.setOnClickListener(new OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        // close select dialog
+                        dialog.dismiss();
+                        getFolderReturnListener = new IgetFolderReturnListener() {
+
+                            @Override
+                            public void returnFolder(String Path) {
+                                if (FileIO.canWrite(Path)) {
+
+                                    AdditionalWorkPathArray.add(Path);
+                                    writeAdditionalWorkPathArray(AdditionalWorkPathArray);
+                                    // Start again to include the new Folder
+                                    onStart();
+                                } else {
+                                    String WriteProtectionMsg = Translation.Get("NoWriteAcces");
+                                    Toast.makeText(splash.this, WriteProtectionMsg, Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        };
+
+                        PlatformConnector.getFolder("", Translation.Get("select_folder"), Translation.Get("select"), getFolderReturnListener);
 
                     }
                 });
 
-                ll.addView(buttonW);
+                dialog.show();
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-
-            Button buttonC = (Button) dialog.findViewById(R.id.buttonCreateWorkspace);
-            buttonC.setText(Translation.Get("createWorkSpace"));
-            buttonC.setOnClickListener(new OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    // close select dialog
-                    dialog.dismiss();
-                    getFolderReturnListener = new IgetFolderReturnListener() {
-
-                        @Override
-                        public void returnFolder(String Path) {
-                            if (FileIO.canWrite(Path)) {
-
-                                AdditionalWorkPathArray.add(Path);
-                                writeAdditionalWorkPathArray(AdditionalWorkPathArray);
-                                // Start again to include the new Folder
-                                onStart();
-                            } else {
-                                String WriteProtectionMsg = Translation.Get("NoWriteAcces");
-                                Toast.makeText(splash.this, WriteProtectionMsg, Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    };
-
-                    PlatformConnector.getFolder("", Translation.Get("select_folder"), Translation.Get("select"), getFolderReturnListener);
-
-                }
-            });
-
-            dialog.show();
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        }
+        else {
+            startInitial();
         }
     }
 

@@ -8,11 +8,7 @@ public class DesktopDB extends Database {
 
     public DesktopDB(DatabaseType databaseType) {
         super(databaseType);
-        try {
-            this.sql = new SQLiteClass();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        this.sql = new SQLiteClass();
     }
 
     @Override
@@ -22,7 +18,6 @@ public class DesktopDB extends Database {
         Connection myDB = null;
         try {
             myDB = DriverManager.getConnection("jdbc:sqlite:" + filename);
-
             Statement statement = myDB.createStatement();
             ResultSet result = statement.executeQuery("select count(*) from caches");
             // result.first();

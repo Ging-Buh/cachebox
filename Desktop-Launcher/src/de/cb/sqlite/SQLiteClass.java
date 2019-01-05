@@ -14,9 +14,12 @@ public class SQLiteClass implements SQLiteInterface {
     private static final String log = "SQLiteClass";
     Connection myDB = null;
 
-    public SQLiteClass() throws ClassNotFoundException {
-        System.setProperty("sqlite.purejava", "true");
-        Class.forName("org.sqlite.JDBC");
+    public SQLiteClass() {
+        try {
+            System.setProperty("sqlite.purejava", "true");
+            Class.forName("org.sqlite.JDBC");
+        } catch (Exception ignore) {
+        }
     }
 
     @Override

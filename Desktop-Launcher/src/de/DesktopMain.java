@@ -28,6 +28,8 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import de.CB_Texturepacker.Desktop_Packer;
 import de.Map.DesktopManager;
 import de.cb.sqlite.DesktopDB;
+import de.cb.sqlite.SQLiteClass;
+import de.cb.sqlite.SQLiteInterface;
 import org.mapsforge.map.model.DisplayModel;
 
 import javax.swing.*;
@@ -322,6 +324,18 @@ public class DesktopMain {
                 }
                 System.exit(0);
 
+            }
+        });
+
+        PlatformConnector.setConnection(new IConnection() {
+            @Override
+            public SQLiteInterface getSQLInstance() {
+                return new SQLiteClass();
+            }
+
+            @Override
+            public void freeSQLInstance(SQLiteInterface sqlInstance) {
+                sqlInstance = null;
             }
         });
 

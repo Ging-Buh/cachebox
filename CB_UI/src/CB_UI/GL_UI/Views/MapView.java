@@ -901,7 +901,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
     public void createWaypointAtCenter() {
         String newGcCode = "";
         try {
-            newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
+            newGcCode = Database.Data.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
         } catch (Exception e) {
             return;
         }

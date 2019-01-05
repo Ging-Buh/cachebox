@@ -347,7 +347,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent {
             wp.setTitle("Final");
             wp.IsUserWaypoint = true;
             try {
-                wp.setGcCode(Database.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode()));
+                wp.setGcCode(Database.Data.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode()));
             } catch (Exception e) {
                 return;
             }

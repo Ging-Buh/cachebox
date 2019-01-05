@@ -6,11 +6,14 @@ import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
+import de.cb.sqlite.CoreCursor;
+import de.cb.sqlite.SQLiteInterface;
 
 public class Import_GSAK extends ActivityBase {
 
     private String mPath;
     private String mDatabaseName;
+    private SQLiteInterface sql;
 
     public Import_GSAK() {
         super("Import_GSAK");
@@ -26,6 +29,16 @@ public class Import_GSAK extends ActivityBase {
             Config.AcceptChanges();
         });
         if (mPath.length() > 0) {
+            sql = PlatformConnector.getSQLInstance();
+            if (sql.openReadOnly(mPath + "/" + mDatabaseName)) {
+               CoreCursor reader = sql.rawQuery("select * from Caches",null);
+                while (!reader.isAfterLast()) {
+                    String GcCode = reader.getString("Code");
+                    String Name = reader.getString("Name");
+                }
+                reader.close();
+            }
+            PlatformConnector.freeSQLInstance(sql);
         }
     }
 

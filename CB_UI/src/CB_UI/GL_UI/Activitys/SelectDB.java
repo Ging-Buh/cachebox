@@ -326,9 +326,8 @@ public class SelectDB extends ActivityBase {
                 for (File file : lvAdapter.files) {
                     if (fileInfos == null) return; // maybe is disposed
                     String lastModified = sdf.format(file.lastModified());
-                    String fileSize = String.valueOf(file.length() / (1024 * 1024)) + "MB";
-                    String cacheCount = String.valueOf(Database.Data.getCacheCountInDB(file.getAbsolutePath()));
-                    fileInfos[index] = cacheCount + " Caches  " + fileSize + "    last use " + lastModified;
+                    String fileSize = file.length() / (1024 * 1024) + "MB";
+                    fileInfos[index] = Database.Data.getCacheCountInDB(file.getAbsolutePath()) + " Caches  " + fileSize + "    last use " + lastModified;
                     index++;
                 }
                 if (lvFiles != null) lvFiles.setBaseAdapter(lvAdapter);

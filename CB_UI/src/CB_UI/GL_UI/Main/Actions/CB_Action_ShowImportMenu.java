@@ -57,6 +57,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
     private static final int MI_GetFriends = 211;
     private static final int MI_IMPORT_GSAK = 7;
 
+    private enum menuId {aktualisiereStatus, getFriends, downloadMap, importOverPosition, importByGcCode, importDiverse}
 
     int actExportedCount = 0;
     private ProgressDialog pD;

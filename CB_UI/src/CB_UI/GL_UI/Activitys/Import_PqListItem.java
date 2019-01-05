@@ -38,7 +38,7 @@ public class Import_PqListItem extends ListViewItemBackground {
         chk.setRec(chk.ScaleCenter(0.6f));
         chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UI_Size_Base.that.getMargin());
         chk.setY((this.getHalfHeight() - chk.getHalfHeight()) + chk.getHalfHeight());
-        chk.setChecked(pq.downloadAvailable);
+        chk.setChecked(false); // was pq.downloadAvailable
         chk.setOnCheckChangedListener(new OnCheckChangedListener() {
 
             @Override

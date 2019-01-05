@@ -18,6 +18,7 @@ package CB_UI_Base.Events;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.ViewID;
 import de.cb.sqlite.Database_Core;
+import de.cb.sqlite.SQLiteInterface;
 
 import java.util.ArrayList;
 
@@ -37,6 +38,7 @@ public class PlatformConnector {
     private static IgetFileListener getFileListener;
     private static IgetFolderListener getFolderListener;
     private static ArrayList<String> sendToMediaScannerList;
+    private static IConnection connection;
 
     public static void setShowViewListener(IShowViewListener listener) {
         showViewListener = listener;
@@ -264,6 +266,28 @@ public class PlatformConnector {
         }
         if (sendToMediaScannerList.contains(filename)) return;
         sendToMediaScannerList.add(filename);
+    }
+
+    public static void setConnection(IConnection c) {
+        connection = c;
+    }
+
+    public static SQLiteInterface getSQLInstance() {
+        if (connection != null) {
+            return connection.getSQLInstance();
+        }
+        else return null;
+    }
+
+    public static void freeSQLInstance(SQLiteInterface sqlInstance) {
+        if (connection != null) {
+            connection.freeSQLInstance(sqlInstance);
+        }
+    }
+
+    public interface IConnection {
+        SQLiteInterface getSQLInstance();
+        void freeSQLInstance(SQLiteInterface sqlInstance);
     }
 
     public interface IShowViewListener {
