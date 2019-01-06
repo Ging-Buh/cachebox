@@ -20,6 +20,7 @@ import CB_Core.Import.DescriptionImageGrabber;
 import CB_Core.Types.*;
 import CB_Locator.Coordinate;
 import CB_Locator.Map.Descriptor;
+import CB_Translation_Base.TranslationEngine.Translation;
 import CB_Utils.Interfaces.ICancelRunnable;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Log;
@@ -480,8 +481,12 @@ public class GroundspeakAPI {
 
     public static int UploadDraftOrLog(String cacheCode, int wptLogTypeId, Date dateLogged, String note, boolean directLog) {
         Log.info(log, "UploadDraftOrLog");
+        if (note.length() == 0) {
+            LastAPIError = Translation.Get("emptyLog");
+            return ERROR;
+        }
 
-        if (isAccessTokenInvalid()) return ERROR;
+        if (isAccessTokenInvalid()) return ERROR; // should be checked in advance
 
         try {
             if (directLog) {
@@ -514,8 +519,8 @@ public class GroundspeakAPI {
             Log.info(log, "UploadDraftOrLog done");
             return OK;
         } catch (Exception e) {
-            LastAPIError = e.getLocalizedMessage();
-            Log.err(log, "UploadDraftOrLog", e);
+            retry(e);
+            Log.err(log, "UploadDraftOrLog geocacheCode: " + cacheCode + " logType: " + wptLogTypeId + ".\n" + LastAPIError , e);
             return ERROR;
         }
     }
