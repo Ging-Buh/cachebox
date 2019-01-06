@@ -298,6 +298,7 @@ public class splash extends Activity {
 
 
         // no saved workPath found -> search sd-cards and if more than 1 is found give the user the possibility to select one
+        Log.err(log, "Arbeitsbereich: " + workPath);
         if (askAgain) {
 
             String externalSd = getExternalSdPath("/CacheBox");

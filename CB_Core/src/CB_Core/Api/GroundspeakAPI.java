@@ -420,7 +420,7 @@ public class GroundspeakAPI {
                                 }
                                 pq.PQCount = jPQ.getInt("count");
                                 pq.SizeMB = -1;
-                                pq.downloadAvailable = true;
+                                pq.doDownload = false;
                                 pqList.add(pq);
                             }
                         }
@@ -1529,7 +1529,7 @@ public class GroundspeakAPI {
         public int PQCount;
         public Date DateLastGenerated;
         public double SizeMB;
-        public boolean downloadAvailable = false;
+        public boolean doDownload = false;
         String GUID;
     }
 

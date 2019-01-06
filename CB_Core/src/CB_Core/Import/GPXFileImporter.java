@@ -29,6 +29,7 @@ import com.thebuzzmedia.sjxp.rule.DefaultRule;
 import com.thebuzzmedia.sjxp.rule.IRule;
 import com.thebuzzmedia.sjxp.rule.IRule.Type;
 
+import java.io.FileInputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -61,14 +62,6 @@ public class GPXFileImporter {
     private GpxFilename gpxFilename = null;
     private String gpxName = "";
     private String gpxAuthor = "";
-
-    public GPXFileImporter(File gpxFileName) // NO_UCD (test only)
-    {
-        super();
-        mGpxFile = gpxFileName;
-        mip = null;
-        mDisplayFilename = gpxFileName.getName();
-    }
 
     GPXFileImporter(File file, ImporterProgress ip) {
         super();
@@ -147,7 +140,9 @@ public class GPXFileImporter {
         XMLParser<Map<String, String>> parserCache = new XMLParser<Map<String, String>>(ruleList.toArray(new IRule[0]));
 
         try {
-            parserCache.parse(mGpxFile.getFileInputStream(), values);
+            FileInputStream fis = mGpxFile.getFileInputStream();
+            parserCache.parse(fis, values);
+            fis.close();
         }
         catch (Exception e) {
             Log.err(sKlasse,gpxFilename.GpxFileName + ": " + e.getLocalizedMessage());

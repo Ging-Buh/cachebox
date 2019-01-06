@@ -3,7 +3,6 @@ package CB_UI.GL_UI.Activitys;
 import CB_Core.Api.GroundspeakAPI.PQ;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Controls.ChkBox;
-import CB_UI_Base.GL_UI.Controls.ChkBox.OnCheckChangedListener;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.Fonts;
@@ -38,15 +37,8 @@ public class Import_PqListItem extends ListViewItemBackground {
         chk.setRec(chk.ScaleCenter(0.6f));
         chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UI_Size_Base.that.getMargin());
         chk.setY((this.getHalfHeight() - chk.getHalfHeight()) + chk.getHalfHeight());
-        chk.setChecked(false); // was pq.downloadAvailable
-        chk.setOnCheckChangedListener(new OnCheckChangedListener() {
-
-            @Override
-            public void onCheckedChanged(ChkBox view, boolean isChecked) {
-                pq.downloadAvailable = isChecked;
-            }
-        });
-
+        chk.setChecked(pq.doDownload);
+        chk.setOnCheckChangedListener((view, isChecked) -> pq.doDownload = isChecked);
         this.addChild(lblName);
         this.addChild(lblInfo);
         this.addChild(chk);

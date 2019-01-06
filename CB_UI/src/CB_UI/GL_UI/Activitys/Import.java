@@ -985,7 +985,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                             ArrayList<PQ> downloadPqList = new ArrayList<>();
 
                             for (PQ pq : PqList) {
-                                if (pq.downloadAvailable)
+                                if (pq.doDownload)
                                     downloadPqList.add(pq);
                             }
 
@@ -1005,7 +1005,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
 
                                     PQ pq = iterator.next();
 
-                                    if (pq.downloadAvailable) {
+                                    if (pq.doDownload) {
                                         ip.ProgressInkrement("importGC", "Download: " + pq.Name, false);
                                         GroundspeakAPI.fetchPocketQuery(pq, Config.PocketQueryFolder.getValue());
                                         // todo do not ignore APIError
@@ -1036,9 +1036,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                         Database.Data.sql.beginTransaction();
                         Database.Data.Query.clear();
                         try {
-
                             importer.importGpx(directoryPath, ip);
-
                             Database.Data.sql.setTransactionSuccessful();
                         } catch (Exception exc) {
                             exc.printStackTrace();
@@ -1075,6 +1073,9 @@ public class Import extends ActivityBase implements ProgressChangedEvent {
                             }
                             try {
                                 tmp.delete();
+                                if (tmp.exists()) {
+                                    Log.err(log,"Delete " + tmp.getAbsolutePath());
+                                }
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
