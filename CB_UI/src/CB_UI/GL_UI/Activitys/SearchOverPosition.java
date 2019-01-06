@@ -312,11 +312,12 @@ public class SearchOverPosition extends ActivityBase implements KeyboardFocusCha
         checkBoxExcludeHides.setChecked(Config.SearchWithoutOwns.getValue());
         Radius.setText(String.valueOf(Config.lastSearchRadius.getValue()));
 
+        edtCategory.setText("API-Import");
         if (GlobalCore.isSetSelectedCache()) {
-            Category c = CoreSettingsForward.Categories.getCategoryByGpxFilenameId(GlobalCore.getSelectedCache().getGPXFilename_ID());
-            edtCategory.setText(c.GpxFilename);
-        } else {
-            edtCategory.setText("API-Import");
+            long id = GlobalCore.getSelectedCache().getGPXFilename_ID();
+            Category c = CoreSettingsForward.Categories.getCategoryByGpxFilenameId(id);
+            if (c != null)
+                edtCategory.setText(c.GpxFilename);
         }
         edtCategory.setCursorPosition(0);
 
