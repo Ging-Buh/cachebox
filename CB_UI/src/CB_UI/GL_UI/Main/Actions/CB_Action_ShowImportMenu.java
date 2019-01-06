@@ -180,8 +180,8 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
                         TabMainView.actionGetFriends.getFriends();
                         return true;
                     case MI_IMPORT_GSAK:
-                        new Import_GSAK().show();
-                        GL.that.closeActivity();
+                        new Import_GSAK().doImport();
+                        // GL.that.closeActivity();
                         return true;
                 }
                 return true;

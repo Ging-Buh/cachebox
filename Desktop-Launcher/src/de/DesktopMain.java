@@ -285,7 +285,7 @@ public class DesktopMain {
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     if (returnListener != null)
                         returnListener.returnFile(chooser.getSelectedFile().getAbsolutePath());
-                    System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
+                    System.out.println("getFile:" + "You chose to open this file: " + chooser.getSelectedFile().getName());
                 }
 
             }
