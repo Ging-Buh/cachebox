@@ -180,8 +180,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
                         TabMainView.actionGetFriends.getFriends();
                         return true;
                     case MI_IMPORT_GSAK:
-                        new Import_GSAK().doImport();
-                        // GL.that.closeActivity();
+                        new Import_GSAK().show();
                         return true;
                 }
                 return true;
@@ -195,7 +194,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView {
         // icm.addItem(MenuID.MI_IMPORT_GS_PQ, "API_PocketQuery");
         // icm.addItem(MenuID.MI_IMPORT_GPX, "GPX_IMPORT");
         icm.addItem(MI_GetFriends, "Friends");
-        // icm.addItem(MI_IMPORT_GSAK, "GSAKMenuImport");
+        icm.addItem(MI_IMPORT_GSAK, "GSAKMenuImport");
         icm.addDivider();
         icm.addItem(MI_MAP_DOWNOAD, "MapDownload");
         icm.addDivider();
