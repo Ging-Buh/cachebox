@@ -22,7 +22,6 @@ import CB_Utils.Events.ProgresssChangedEventList;
 import CB_Utils.Log.Log;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
-import android.database.Cursor;
 import de.cb.sqlite.CoreCursor;
 import de.cb.sqlite.SQLiteInterface;
 
@@ -36,7 +35,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
     private static final String sKlasse = "Import_GSAK";
     private static final String fields = "Caches.Code,Name,OwnerName,PlacedBy,PlacedDate,Archived,TempDisabled,HasCorrected,LatOriginal,LonOriginal,Latitude,Longitude,CacheType,Difficulty,Terrain,Container,State,Country,FavPoints,Found,GcNote";
     private static final String memofields = "LongDescription,ShortDescription,Hints,UserNote";
-    EditTextField edtCategory;
+    EditTextField edtCategory, edtDBName;
     private Button bOK, bCancel, btnSelectDB;
     private ProgressBar progressBar;
     private String mPath;
@@ -60,6 +59,11 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         addNext(lblCategory, FIXED);
         edtCategory = new EditTextField(this, "*" + Translation.Get("category"));
         addLast(edtCategory);
+        Label lblDBName = new Label(Translation.Get("GSAKDatabase"));
+        lblDBName.setWidth(Fonts.Measure(lblDBName.getText()).width);
+        addNext(lblDBName, FIXED);
+        edtDBName = new EditTextField(this, "*" + Translation.Get("GSAKDatabase"));
+        addLast(edtDBName);
         btnSelectDB = new Button(Translation.Get("GSAKButtonSelectDB"));
         addLast(btnSelectDB);
         initClickHandlersAndContent();
@@ -91,23 +95,39 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             if (mPath.length() == 0) {
                 mPath = Config.mWorkPath + "/User";
             }
-            mDatabaseName = "";
             PlatformConnector.getFile(mPath, "*.db3", Translation.Get("GSAKTitleSelectDB"), Translation.Get("GSAKButtonSelectDB"), PathAndName -> {
                 File file = FileFactory.createFile(PathAndName);
                 mPath = file.getParent();
                 mDatabaseName = file.getName();
                 Config.GSAKLastUsedDatabasePath.setValue(mPath);
-                Config.AcceptChanges();
                 if (mDatabaseName.length() > 0) {
+                    Config.GSAKLastUsedDatabaseName.setValue(mDatabaseName);
                     bOK.enable();
                 }
+                Config.AcceptChanges();
+                edtDBName.setText(mDatabaseName);
             });
             return true;
         });
 
         edtCategory.setText("GSAK_Import");
+        mPath = Config.GSAKLastUsedDatabasePath.getValue();
+        if (mPath.length() == 0) {
+            mPath = Config.mWorkPath + "/User";
+        }
+        mDatabaseName = Config.GSAKLastUsedDatabaseName.getValue();
+        if (mDatabaseName.length() == 0) {
+            mDatabaseName = "sqlite.db3";
+        }
+        edtDBName.setText(mDatabaseName);
+        // todo react on edit edtDBName changes, to perhaps
+        File file = FileFactory.createFile(mPath + "/" + mDatabaseName);
+        if (file.exists())
+            bOK.enable();
+        else
+            bOK.disable();
+
         progressBar.setProgress(0, "");
-        bOK.disable();
     }
 
 
@@ -125,8 +145,10 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         sql = PlatformConnector.getSQLInstance();
         String ResultFields = fields + "," + memofields;
         ResultFieldsArray = ResultFields.split(",");
-        sql.beginTransaction();
+        // sql.beginTransaction();
         if (sql.openReadOnly(mPath + "/" + mDatabaseName)) {
+            Config.GSAKLastUsedDatabaseName.setValue(mDatabaseName);
+            Config.AcceptChanges();
             int count = -1;
             CoreCursor c = sql.rawQuery("select count(*) from Caches", null);
             c.moveToFirst();
@@ -153,9 +175,9 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                 reader.moveToNext();
             }
             reader.close();
-            sql.setTransactionSuccessful();
+            // sql.setTransactionSuccessful();
         }
-        sql.endTransaction();
+        // sql.endTransaction();
         PlatformConnector.freeSQLInstance(sql);
     }
 
