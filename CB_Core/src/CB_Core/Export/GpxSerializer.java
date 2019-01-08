@@ -350,7 +350,7 @@ public final class GpxSerializer {
 
             countExported++;
             if (progressListener != null) {
-                progressListener.publishProgress(countExported, Translation.Get("writeCahce".hashCode(), cache.getGcCode()));
+                progressListener.publishProgress(countExported, Translation.Get("writeCache".hashCode(), cache.getGcCode()));
             }
         }
 
