@@ -1,5 +1,6 @@
 package CB_Core.Import;
 
+import CB_UI_Base.Events.PlatformConnector;
 import CB_Utils.Log.Log;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
@@ -13,7 +14,6 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
-
 /**
  * @author Longri from => http://stackoverflow.com/questions/981578/how-to-unzip-files-recursively-in-java
  */
@@ -32,7 +32,14 @@ public class UnZip {
         Log.info(log, "unzip from " + zipFile);
         int BUFFER = 2048;
         File file = FileFactory.createFile(zipFile);
-        ZipFile zip = new ZipFile(file.getAbsolutePath(), Charset.forName("ISO-8859-1"));
+        ZipFile zip;
+        if (PlatformConnector.AndroidVersion >= 24) {
+            zip = new ZipFile(file.getAbsolutePath(), Charset.forName("ISO-8859-1"));
+        }
+        else {
+            zip = new ZipFile(file.getAbsolutePath());
+        }
+
         String newPath = file.getParentFile().getAbsolutePath(); //  zipFile.substring(0, zipFile.length() - 4);
 
         FileFactory.createFile(newPath).mkdir();

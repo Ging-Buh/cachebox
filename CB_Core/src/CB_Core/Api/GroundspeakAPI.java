@@ -481,15 +481,15 @@ public class GroundspeakAPI {
 
     public static int UploadDraftOrLog(String cacheCode, int wptLogTypeId, Date dateLogged, String note, boolean directLog) {
         Log.info(log, "UploadDraftOrLog");
-        if (note.length() == 0) {
-            LastAPIError = Translation.Get("emptyLog");
-            return ERROR;
-        }
 
         if (isAccessTokenInvalid()) return ERROR; // should be checked in advance
 
         try {
             if (directLog) {
+                if (note.length() == 0) {
+                    LastAPIError = Translation.Get("emptyLog");
+                    return ERROR;
+                }
                 Log.debug(log, "is Log");
                 getNetz()
                         .post(getUrl(1, "geocachelogs"))

@@ -125,6 +125,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         sql = PlatformConnector.getSQLInstance();
         String ResultFields = fields + "," + memofields;
         ResultFieldsArray = ResultFields.split(",");
+        sql.beginTransaction();
         if (sql.openReadOnly(mPath + "/" + mDatabaseName)) {
             int count = -1;
             CoreCursor c = sql.rawQuery("select count(*) from Caches", null);
@@ -152,7 +153,9 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                 reader.moveToNext();
             }
             reader.close();
+            sql.setTransactionSuccessful();
         }
+        sql.endTransaction();
         PlatformConnector.freeSQLInstance(sql);
     }
 

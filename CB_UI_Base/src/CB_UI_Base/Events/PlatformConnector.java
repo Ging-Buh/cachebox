@@ -39,6 +39,7 @@ public class PlatformConnector {
     private static IgetFolderListener getFolderListener;
     private static ArrayList<String> sendToMediaScannerList;
     private static IConnection connection;
+    public static int AndroidVersion = 999;
 
     public static void setShowViewListener(IShowViewListener listener) {
         showViewListener = listener;

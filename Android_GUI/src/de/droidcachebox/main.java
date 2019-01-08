@@ -82,6 +82,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.Vibrator;
@@ -1696,6 +1697,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
     private void initPlatformConnector() {
 
         Plattform.used = Plattform.Android;
+        PlatformConnector.AndroidVersion = Build.VERSION.SDK_INT;
 
         initLocatorBase();
 
