@@ -459,7 +459,7 @@ public class GroundspeakAPI {
                     .asStream()
                     .getBody();
             String dateString = new SimpleDateFormat("yyyyMMddHHmmss").format(pocketQuery.DateLastGenerated);
-            String local = PqFolder + "/" + pocketQuery.Name + "_" + dateString + ".zip";
+            String local = PqFolder + "/" + pocketQuery.GUID + ".zip";
             FileOutputStream localFile = new FileOutputStream(local);
             outStream = new BufferedOutputStream(localFile);
             WebbUtils.copyStream(inStream, outStream);

@@ -8,6 +8,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -31,7 +32,7 @@ public class UnZip {
         Log.info(log, "unzip from " + zipFile);
         int BUFFER = 2048;
         File file = FileFactory.createFile(zipFile);
-        ZipFile zip = new ZipFile(file.getAbsolutePath());
+        ZipFile zip = new ZipFile(file.getAbsolutePath(), Charset.forName("ISO-8859-1"));
         String newPath = file.getParentFile().getAbsolutePath(); //  zipFile.substring(0, zipFile.length() - 4);
 
         FileFactory.createFile(newPath).mkdir();
