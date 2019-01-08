@@ -1777,7 +1777,7 @@ public class EditTextField extends EditTextFieldBase {
     }
 
     public interface IListPosChanged {
-        public void listPosChanged();
+        void listPosChanged();
     }
 
     //#########################################################################################################

@@ -9,10 +9,7 @@ import CB_UI.Config;
 import CB_UI.WriteIntoDB;
 import CB_UI_Base.Events.PlatformConnector;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
-import CB_UI_Base.GL_UI.Controls.Button;
-import CB_UI_Base.GL_UI.Controls.EditTextField;
-import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.ProgressBar;
+import CB_UI_Base.GL_UI.Controls.*;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.IRunOnGL;
@@ -90,6 +87,22 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             return true;
         });
 
+        edtDBName.setTextFieldListener(new EditTextFieldBase.TextFieldListener() {
+            @Override
+            public void keyTyped(EditTextFieldBase textField, char key) {
+                File file = FileFactory.createFile(mPath + "/" + edtDBName.getText());
+                if (file.exists())
+                    bOK.enable();
+                else
+                    bOK.disable();
+            }
+
+            @Override
+            public void lineCountChanged(EditTextFieldBase textField, int lineCount, float textHeight) {
+
+            }
+        });
+
         btnSelectDB.setOnClickListener((v, x, y, pointer, button) -> {
             mPath = Config.GSAKLastUsedDatabasePath.getValue();
             if (mPath.length() == 0) {
@@ -99,12 +112,6 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
                 File file = FileFactory.createFile(PathAndName);
                 mPath = file.getParent();
                 mDatabaseName = file.getName();
-                Config.GSAKLastUsedDatabasePath.setValue(mPath);
-                if (mDatabaseName.length() > 0) {
-                    Config.GSAKLastUsedDatabaseName.setValue(mDatabaseName);
-                    bOK.enable();
-                }
-                Config.AcceptChanges();
                 edtDBName.setText(mDatabaseName);
             });
             return true;
@@ -120,12 +127,6 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
             mDatabaseName = "sqlite.db3";
         }
         edtDBName.setText(mDatabaseName);
-        // todo react on edit edtDBName changes, to perhaps
-        File file = FileFactory.createFile(mPath + "/" + mDatabaseName);
-        if (file.exists())
-            bOK.enable();
-        else
-            bOK.disable();
 
         progressBar.setProgress(0, "");
     }
@@ -147,6 +148,7 @@ public class Import_GSAK extends ActivityBase implements ProgressChangedEvent {
         ResultFieldsArray = ResultFields.split(",");
         // sql.beginTransaction();
         if (sql.openReadOnly(mPath + "/" + mDatabaseName)) {
+            Config.GSAKLastUsedDatabasePath.setValue(mPath);
             Config.GSAKLastUsedDatabaseName.setValue(mDatabaseName);
             Config.AcceptChanges();
             int count = -1;
