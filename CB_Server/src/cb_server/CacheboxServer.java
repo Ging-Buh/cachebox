@@ -263,7 +263,7 @@ public class CacheboxServer {
 		if (Config.settings != null && Config.settings.isLoaded())
 			return;
 		// make Setting for GC Api Key visible to input API Key by copy/paste
-		CB_Core_Settings.AccessToken.changeSettingsModus(SettingModus.Normal);
+		CB_Core_Settings.AccessToken.changeSettingsModus(SettingModus.NORMAL);
 		// Read Config
 		String workPath = "cachebox";
 		// nachschauen ob im aktuellen Ordner eine cachebox.db3 vorhanden ist und in diesem Fall den aktuellen Ordner als WorkPath verwenden
@@ -320,7 +320,7 @@ public class CacheboxServer {
 
 		lastLoadedTranslation = lang;
 
-		new Translation(Config.mWorkPath, FileType.Classpath);
+		new Translation(Config.mWorkPath, FileType.Local);
 		try {
 			Translation.LoadTranslation(lang);
 		} catch (IOException e) {

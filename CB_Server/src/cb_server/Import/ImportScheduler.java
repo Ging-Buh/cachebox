@@ -114,7 +114,7 @@ public class ImportScheduler implements Runnable {
 					// Import PQs
 					ArrayList<GroundspeakAPI.PQ> pqList = new ArrayList<>();
 					log.debug("Load PQ-List");
-					fetchPocketQueryList(pqList);
+//TODO NEW API					fetchPocketQueryList(pqList);
 					ip.setJobMax("importGC", pqList.size() + 1);
 					log.debug("Load PQ-List ready");
 					PocketqueryDAO dao = new PocketqueryDAO();
@@ -138,12 +138,12 @@ public class ImportScheduler implements Runnable {
 						}
 
 						// Zipped Pocketquery
-						int i = GroundspeakAPI.fetchPocketQuery(pq, CB_Core_Settings.PocketQueryFolder.getValue());
-						if (i == GroundspeakAPI.OK) {
-							// Importierte PQ in DB speichern
-							dao.writeToDatabase(pq);
-						}
-						System.out.println(i);
+//TODO NEW API						int i = GroundspeakAPI.fetchPocketQuery(pq, CB_Core_Settings.PocketQueryFolder.getValue());
+//						if (i == GroundspeakAPI.OK) {
+//							// Importierte PQ in DB speichern
+//							dao.writeToDatabase(pq);
+//						}
+//						System.out.println(i);
 					}
 					ip.ProgressInkrement("importGC", "Download PQ-List from GC finished", true);
 				}
@@ -195,17 +195,17 @@ public class ImportScheduler implements Runnable {
 					//					dis.setAnimationType(AnimationType.Download);
 					int result = importer.importImages(ip, importImages, importSpoiler, "");
 
-					if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
-						//						GL.that.Toast(ConnectionError.INSTANCE);
-						ip.ProgressChangeMsg("", "");
-						return;
-					}
+//TODO NEW API				if (result == GroundspeakAPI.CONNECTION_TIMEOUT) {
+//						//						GL.that.Toast(ConnectionError.INSTANCE);
+//						ip.ProgressChangeMsg("", "");
+//						return;
+//					}
 
-					if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
-						//						GL.that.Toast(ApiUnavailable.INSTANCE);
-						ip.ProgressChangeMsg("", "");
-						return;
-					}
+//TODO NEW API					if (result == GroundspeakAPI.API_IS_UNAVAILABLE) {
+//						//						GL.that.Toast(ApiUnavailable.INSTANCE);
+//						ip.ProgressChangeMsg("", "");
+//						return;
+//					}
 
 					//					if (BreakawayImportThread.isCanceld())
 					//					{

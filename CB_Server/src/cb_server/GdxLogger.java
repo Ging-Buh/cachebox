@@ -196,6 +196,16 @@ public class GdxLogger implements com.badlogic.gdx.Application {
 	}
 
 	@Override
+	public void setApplicationLogger(ApplicationLogger applicationLogger) {
+
+	}
+
+	@Override
+	public ApplicationLogger getApplicationLogger() {
+		return null;
+	}
+
+	@Override
 	public long getNativeHeap() {
 		// do nothing 
 		return 0;

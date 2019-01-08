@@ -212,7 +212,7 @@ public class MapView extends CB_ViewBase {
 				marker.setVisible(false);
 				marker.setCaption("Caption");
 				marker.setDescription("Description");
-				marker.setLabel(null);
+				marker.setTitle(null);
 				markers.put(cache.Id, marker);
 				llg.addComponent(marker);
 				marker.addClickListener(cacheClickListener);
@@ -273,12 +273,12 @@ public class MapView extends CB_ViewBase {
 						marker.setData(selectedCache);
 					}
 					marker.setVisible(true);
-					marker.setLabel(null);
+					marker.setTitle(null);
 
 					if (zoom > 15) {
-						marker.setLabel(title);
+						marker.setTitle(title);
 					} else {
-						marker.setLabel(null);
+						marker.setTitle(null);
 					}
 
 					cacheMarkers.add(marker);
@@ -333,9 +333,9 @@ public class MapView extends CB_ViewBase {
 			marker.setIconAnchor(new Point(backgroundSize / 2, backgroundSize / 2));
 
 			if (zoom > 15) {
-				marker.setLabel(cache.getName());
+				marker.setTitle(cache.getName());
 			} else {
-				marker.setLabel(null);
+				marker.setTitle(null);
 			}
 
 			dMarker.setVisible(visible && (zoom > 14));

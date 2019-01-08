@@ -2,6 +2,7 @@ package cb_server.DB;
 
 import CB_Core.Database;
 import de.cb.sqlite.CoreCursor;
+import de.cb.sqlite.Database_Core;
 
 import java.io.File;
 import java.sql.*;
@@ -11,7 +12,7 @@ public class CBServerDB extends Database {
 
 	Connection myDB = null;
 
-	public CBServerDB(DatabaseType databaseType) throws ClassNotFoundException {
+	public CBServerDB(Database.DatabaseType databaseType) throws ClassNotFoundException {
 		super(databaseType);
 
 		System.setProperty("sqlite.purejava", "true");

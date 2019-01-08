@@ -5,6 +5,7 @@ import CB_Core.Solver.Solver;
 import CB_Core.Solver.SolverZeile;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
+import CB_UI.GlobalCore;
 import cb_server.Events.SelectedCacheChangedEventList;
 import cb_server.Events.SelectedCacheChangedEventListner;
 import com.vaadin.ui.*;
@@ -47,7 +48,7 @@ public class SolverView extends CB_ViewBase implements SelectedCacheChangedEvent
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				Solver solver = new Solver(formula.getValue());
+				Solver solver = new Solver(formula.getValue(), GlobalCore.getInstance());
 				solver.Solve();
 				String result = "";
 				for (SolverZeile zeile : solver) {

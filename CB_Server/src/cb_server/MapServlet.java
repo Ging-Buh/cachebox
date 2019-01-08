@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2011-2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
@@ -20,95 +20,106 @@ import CB_Utils.Util.IChanged;
 import CB_Utils.fileProvider.File;
 import CB_Utils.fileProvider.FileFactory;
 import de.Map.DesktopManager;
+
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
-import org.mapsforge.map.layer.renderer.CachedDatabaseRenderer;
+import org.mapsforge.map.layer.renderer.MF_DatabaseRenderer;
 import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.reader.MapDatabase;
+import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.ExternalRenderTheme;
+import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class MapServlet extends HttpServlet {
-	private static final long serialVersionUID = 2094731483963312861L;
-	private final CachedDatabaseRenderer databaseRenderer;
-	private File mapFile;
-	private ExternalRenderTheme renderTheme;
-	MapDatabase MF_mapDatabase;
-	private final DisplayModel model;
-	private static Object syncObject = new Object();
+    private static final long serialVersionUID = 2094731483963312861L;
+    private MF_DatabaseRenderer databaseRenderer;
+    private File mapFile;
+    private ExternalRenderTheme renderTheme;
+    MapFile MF_mapDatabase;
+    private final DisplayModel model;
+    private static Object syncObject = new Object();
+    private RenderThemeFuture renderThemeFuture;
 
-	public MapServlet() {
-		model = new DisplayModel();
-		new DesktopManager(model);
-		MF_mapDatabase = new MapDatabase();
+    public MapServlet() {
+        model = new DisplayModel();
+        new DesktopManager(model);
 
-		setMapSetting();
+    }
 
-		CBS_Settings.CBS_Mapsforge_Map.addSettingChangedListener(MapsettingChangedListner);
-		LocatorSettings.MapsforgeDayTheme.addSettingChangedListener(MapsettingChangedListner);
+    IChanged MapsettingChangedListner = new IChanged() {
 
-		GraphicFactory Mapsforge_Factory = AwtGraphicFactory.INSTANCE;
-		databaseRenderer = new CachedDatabaseRenderer(MF_mapDatabase, Mapsforge_Factory);
-	}
+        @Override
+        public void handleChange() {
+            setMapSetting();
+        }
+    };
 
-	IChanged MapsettingChangedListner = new IChanged() {
+    private void setMapSetting() {
+        GraphicFactory Mapsforge_Factory = AwtGraphicFactory.INSTANCE;
+        mapFile = FileFactory.createFile(CBS_Settings.CBS_Mapsforge_Map.getValue());
+        File RenderThemeFile = FileFactory.createFile(LocatorSettings.MapsforgeDayTheme.getValue());
+        renderTheme = null;
+        try {
+            renderTheme = new ExternalRenderTheme(RenderThemeFile.getAbsolutePath());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
-		@Override
-		public void handleChange() {
-			setMapSetting();
-		}
-	};
+        renderThemeFuture = new RenderThemeFuture(Mapsforge_Factory, renderTheme, DesktopManager.Manager.DISPLAY_MODEL);
+        new Thread(renderThemeFuture).start();
 
-	private void setMapSetting() {
-		mapFile = FileFactory.createFile(CBS_Settings.CBS_Mapsforge_Map.getValue());
-		File RenderThemeFile = FileFactory.createFile(LocatorSettings.MapsforgeDayTheme.getValue());
-		renderTheme = null;
-		try {
-			renderTheme = new ExternalRenderTheme(RenderThemeFile);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		MF_mapDatabase.closeFile();
-		MF_mapDatabase.openFile(mapFile);
-	}
 
-	public MapServlet(String greeting) {
-		this();
-	}
+        MF_mapDatabase = new MapFile(mapFile.getAbsolutePath());
 
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		synchronized (syncObject) {
+        setMapSetting();
 
-			String sQuery = request.getPathInfo().replace(".png", "");
-			String[] query = sQuery.split("/");
-			int z = Integer.valueOf(query[1]);
-			int x = Integer.valueOf(query[2]);
-			int y = Integer.valueOf(query[3]);
+        CBS_Settings.CBS_Mapsforge_Map.addSettingChangedListener(MapsettingChangedListner);
+        LocatorSettings.MapsforgeDayTheme.addSettingChangedListener(MapsettingChangedListner);
 
-			response.setContentType("image/png");
-			response.setStatus(HttpServletResponse.SC_OK);
 
-			Tile ti = new Tile(x, y, (byte) z);
-			RendererJob job = new RendererJob(ti, mapFile, renderTheme, model, 1, false);
-			TileBitmap tile = databaseRenderer.executeJob(job);
+//		MapDataStore mapDataStore, GraphicFactory graphicFactory, TileCache tileCache, TileBasedLabelStore labelStore, boolean renderLabels, boolean cacheLabels
+//		databaseRenderer = new CachedDatabaseRenderer(MF_mapDatabase, Mapsforge_Factory);
+        databaseRenderer = new MF_DatabaseRenderer(MF_mapDatabase, Mapsforge_Factory, MF_DatabaseRenderer.firstLevelTileCache, null, true, true);
+    }
 
-			try {
-				tile.compress(response.getOutputStream());
-				//			tile.compress(os);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
+    public MapServlet(String greeting) {
+        this();
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        synchronized (syncObject) {
+
+            String sQuery = request.getPathInfo().replace(".png", "");
+            String[] query = sQuery.split("/");
+            int z = Integer.valueOf(query[1]);
+            int x = Integer.valueOf(query[2]);
+            int y = Integer.valueOf(query[3]);
+
+            response.setContentType("image/png");
+            response.setStatus(HttpServletResponse.SC_OK);
+
+            Tile ti = new Tile(x, y, (byte) z, 256);
+            RendererJob job = new RendererJob(ti, MF_mapDatabase, renderThemeFuture, model, 1, false, false);
+            TileBitmap tile = databaseRenderer.executeJob(job);
+
+            try {
+                tile.compress(response.getOutputStream());
+                //			tile.compress(os);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
 }
