@@ -231,7 +231,7 @@ public class SettingsWindow extends Window {
 			for (Iterator<SettingBase<?>> it = Config.settings.iterator(); it.hasNext();) {
 				SettingBase<?> setting = it.next();
 
-				if (setting.getModus() != SettingModus.Never && (setting.getUsage() == SettingUsage.ALL || setting.getUsage() == SettingUsage.CBS)) {
+				if (setting.getModus() != SettingModus.NEVER && (setting.getUsage() == SettingUsage.ALL || setting.getUsage() == SettingUsage.CBS)) {
 					SortedSettingList.add(setting);
 				}
 			}
@@ -256,7 +256,7 @@ public class SettingsWindow extends Window {
 					SettingBase<?> settingItem = it.next();
 					if (settingItem.getCategory().name().equals(cat.name())) {
 
-						if ((settingItem.getModus() == SettingModus.Normal) && (settingItem.getModus() != SettingModus.Never)) {
+						if ((settingItem.getModus() == SettingModus.NORMAL) && (settingItem.getModus() != SettingModus.NEVER)) {
 
 							final Component view = getView(settingItem, position++);
 
